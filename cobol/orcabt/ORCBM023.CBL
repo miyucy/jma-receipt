@@ -30,6 +30,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03/03/19  所在地の変更による帳票ＩＤ変更
+      *  01.00.02    NACL-藤原    03/04/10  ２００３．４改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -57,9 +58,12 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *****COPY    "HCM2C.INC".
-           COPY    "HCM2CV01.INC"  REPLACING  //HCM2CV01//
+      *****COPY    "HCM2CV01.INC"  REPLACING  //HCM2CV01//
+           COPY    "HCM2CV02.INC"  REPLACING  //HCM2CV02//
                                    BY         //HCM2C//.
-           COPY    "HCM2D.INC".
+      *****COPY    "HCM2D.INC".
+           COPY    "HCM2DV01.INC"  REPLACING  //HCM2DV01//
+                                   BY         //HCM2D//.
       *
       *    スパ領域
        01  STS-AREA.
@@ -128,6 +132,9 @@
            COPY    "CPSHELLTBL.INC".
       *     
            COPY    "ORCA-DBPATH".
+      *
+      *    ２００３年４月改正
+           03  WRK-CONS-SRYYM-200304   PIC X(06)   VALUE   "200304".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -243,11 +250,14 @@
            03  WRK-PARA-PAGE       PIC 9(10).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
       *
+       01  WRK-PRTFLG              PIC 9(01).
+      *
       ******************************************************************
       *
        PROCEDURE                       DIVISION
                                        USING   SUM-AREA
-                                               WRK-PARA.
+                                               WRK-PARA
+                                               WRK-PRTFLG.
       *
       *****************************************************************
       *    主　　処理
@@ -403,14 +413,31 @@
       *    
            MOVE    SYS-1001-HOSPCDN    TO  HCM2C-HOSPCD
       *
-           EVALUATE    IDX1
-               WHEN    1
-                   MOVE    "その他のレセ"      TO  HCM2C-TITLE  
-               WHEN    2
-                   MOVE    "在総診または在医総を算定したレセ"
-                                               TO  HCM2C-TITLE     
-           END-EVALUATE           
       *
+           IF       LNK-PRTKANRI-SRYYM <   WRK-CONS-SRYYM-200304
+               EVALUATE    IDX1
+                   WHEN    1
+                       MOVE    "その他のレセ"      TO  HCM2C-TITLE  
+                   WHEN    2
+                       MOVE    "在総診または在医総を算定したレセ"
+                                                   TO  HCM2C-TITLE     
+               END-EVALUATE
+           ELSE
+               EVALUATE    IDX1    ALSO    WRK-PRTFLG
+                   WHEN    1       ALSO    1
+                       MOVE    "その他のレセ（月遅れ分）"
+                                                   TO  HCM2C-TITLE  
+                   WHEN    2       ALSO    1
+                       MOVE
+                       "在総診または在医総を算定したレセ（月遅れ分）"
+                                                   TO  HCM2C-TITLE     
+                   WHEN    1       ALSO    2
+                       MOVE    "その他のレセ"      TO  HCM2C-TITLE  
+                   WHEN    2       ALSO    2
+                       MOVE    "在総診または在医総を算定したレセ"
+                                                   TO  HCM2C-TITLE     
+               END-EVALUATE
+           END-IF           
            .
        310-HEAD-HEN-01-EXT.
            EXIT.
@@ -424,13 +451,30 @@
       *    
            MOVE    SYS-1001-HOSPCDN    TO  HCM2D-HOSPCD 
       *
-           EVALUATE    IDX1
-               WHEN    2
-                   MOVE    "在総診または在医総を算定したレセ"
-                                               TO  HCM2D-TITLE     
-               WHEN    1
-                   MOVE    "その他のレセ"      TO  HCM2D-TITLE  
-           END-EVALUATE           
+           IF       LNK-PRTKANRI-SRYYM <   WRK-CONS-SRYYM-200304
+               EVALUATE    IDX1
+                   WHEN    1
+                       MOVE    "その他のレセ"      TO  HCM2D-TITLE  
+                   WHEN    2
+                       MOVE    "在総診または在医総を算定したレセ"
+                                                   TO  HCM2D-TITLE     
+               END-EVALUATE
+           ELSE
+               EVALUATE    IDX1    ALSO    WRK-PRTFLG
+                   WHEN    1       ALSO    1
+                       MOVE    "その他のレセ（月遅れ分）"
+                                                   TO  HCM2D-TITLE  
+                   WHEN    2       ALSO    1
+                       MOVE
+                       "在総診または在医総を算定したレセ（月遅れ分）"
+                                                   TO  HCM2D-TITLE     
+                   WHEN    1       ALSO    2
+                       MOVE    "その他のレセ"      TO  HCM2D-TITLE  
+                   WHEN    2       ALSO    2
+                       MOVE    "在総診または在医総を算定したレセ"
+                                                   TO  HCM2D-TITLE     
+               END-EVALUATE
+           END-IF           
       *
            .
        310-HEAD-HEN-02-EXT.
@@ -769,10 +813,12 @@
                                        TO  SPRT-PRIORITY
            IF      FLG-PRTKBN          =   ZERO                            
       *********MOVE    "HCM2C.red"         TO  SPRT-PRTID
-               MOVE    "HCM2CV01.red"      TO  SPRT-PRTID
+      *********MOVE    "HCM2CV01.red"      TO  SPRT-PRTID
+               MOVE    "HCM2CV02.red"      TO  SPRT-PRTID
                MOVE    HCM2C               TO  SPRT-PRTDATA
            ELSE                          
-               MOVE    "HCM2D.red"         TO  SPRT-PRTID
+      *********MOVE    "HCM2D.red"         TO  SPRT-PRTID
+               MOVE    "HCM2DV01.red"      TO  SPRT-PRTID
                MOVE    HCM2D               TO  SPRT-PRTDATA
            END-IF    
            EVALUATE    IDX1

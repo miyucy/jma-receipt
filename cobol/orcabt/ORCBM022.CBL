@@ -34,6 +34,7 @@
       *  01.00.03    NACL-Æ£¸¶    02/12/09  ¶¦ºÑÁÈ¹ç¤ÎÁ°´ü¹âÎð¼Ô¤Î½¸·×¤Î
       *                                     ½¤Àµ
       *  01.00.04    NACL-Æ£¸¶    02/12/09  Æþ±¡ÂÐ±þ
+      *  01.00.05    NACL-Æ£¸¶    03/04/10  £²£°£°£³¡¥£´²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -118,6 +119,7 @@
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-NYUGAIKBN       PIC X(01).
+           03  WRK-PRTFLG          PIC 9(01).
       *
            03  WRK-RECEERR         PIC X(200). 
            03  WRK-PATH            PIC X(64).
@@ -182,7 +184,9 @@
        01  WRK-CONS-AREA.
       *
       *    £²£°£°£²Ç¯£±£°·î²þÀµ
-           03  WRK-CONS-SRYYM        PIC X(06)   VALUE   "200210".              
+           03  WRK-CONS-SRYYM-200210   PIC X(06)   VALUE   "200210".
+      *    £²£°£°£³Ç¯£´·î²þÀµ
+           03  WRK-CONS-SRYYM-200304   PIC X(06)   VALUE   "200304".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -295,32 +299,59 @@
            OPEN    OUTPUT              UPD-FILE
       *
       *    Æþ±¡³°Ê¬
-           PERFORM 2001-GAIRAI-SYUKEI-SEC
       *
-           IF      CNT-RECE10          >   ZERO 
-               IF      WRK-PARA-NYUGAIKBN  =   "1"
-                   CALL    "ORCBM024"          USING 
-                                               SUM-AREA
-                                               WRK-PARA
-                                               WRK-NYUGAIKBN
-               ELSE
-                   CALL    "ORCBM023"          USING 
-                                               SUM-AREA
-                                               WRK-PARA
-               END-IF    
-           END-IF    
+           MOVE    "2"                 TO  WRK-NYUGAIKBN
+      *
+           PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
+                   UNTIL   WRK-PRTFLG  >       2
+      *
+               IF      WRK-PRTFLG          =   2
+               AND      LNK-PRTKANRI-SRYYM <   WRK-CONS-SRYYM-200304
+                   CONTINUE
+               ELSE    
+                   PERFORM 2001-GAIRAI-SYUKEI-SEC
+      *
+                   IF      CNT-RECE10          >   ZERO 
+                       IF      WRK-PARA-NYUGAIKBN  =   "1"
+                           CALL    "ORCBM024"          USING 
+                                                       SUM-AREA
+                                                       WRK-PARA
+                                                       WRK-NYUGAIKBN
+                                                       WRK-PRTFLG
+                       ELSE
+                           CALL    "ORCBM023"          USING 
+                                                       SUM-AREA
+                                                       WRK-PARA
+                                                       WRK-PRTFLG
+                       END-IF
+                   END-IF    
+               END-IF
+           END-PERFORM    
       *
       *    Æþ±¡Ê¬
+      *
+           MOVE    "1"                 TO  WRK-NYUGAIKBN
+      *
            IF      WRK-PARA-NYUGAIKBN  =   "1"
            AND     FLG-ERR             =   ZERO
-               PERFORM 2001-NYUIN-SYUKEI-SEC
+               PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
+                       UNTIL   WRK-PRTFLG  >       2
       *
-               IF      CNT-RECE10          >   ZERO 
-                   CALL    "ORCBM024"          USING 
-                                               SUM-AREA
-                                               WRK-PARA
-                                               WRK-NYUGAIKBN
-               END-IF    
+                   IF      WRK-PRTFLG          =   2
+                   AND      LNK-PRTKANRI-SRYYM <   WRK-CONS-SRYYM-200304
+                       CONTINUE
+                   ELSE    
+                       PERFORM 2001-NYUIN-SYUKEI-SEC
+      *
+                       IF      CNT-RECE10          >   ZERO 
+                           CALL    "ORCBM024"          USING 
+                                                       SUM-AREA
+                                                       WRK-PARA
+                                                       WRK-NYUGAIKBN
+                                                       WRK-PRTFLG
+                       END-IF
+                   END-IF    
+               END-PERFORM
            END-IF
       *
            CLOSE   UPD-FILE
@@ -332,15 +363,13 @@
               END-IF    
            END-IF
            .
-       100-INIT-EXT.
+       200-MAIN-EXT.
            EXIT.
       *
       *****************************************************************
       *    Æþ±¡³°Ê¬½¸·×½èÍý
       *****************************************************************
        2001-GAIRAI-SYUKEI-SEC         SECTION.
-      *
-           MOVE    "2"                 TO  WRK-NYUGAIKBN
       *
            INITIALIZE                      SUM-AREA
            MOVE    ZERO                TO  CNT-RECE10
@@ -384,8 +413,6 @@
       *    Æþ±¡Ê¬½¸·×½èÍý
       *****************************************************************
        2001-NYUIN-SYUKEI-SEC         SECTION.
-      *
-           MOVE    "1"                 TO  WRK-NYUGAIKBN
       *
            INITIALIZE                      SUM-AREA
            MOVE    ZERO                TO  CNT-RECE10
@@ -1021,7 +1048,16 @@
            INITIALIZE                  RECE10-REC
            MOVE    WRK-PARA-HOSPID     TO  RECE10-HOSPID
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
-           MOVE    WRK-CONS-SRYYM      TO  RECE10-SRYYM 
+           IF      WRK-PRTFLG          =   1
+               MOVE    WRK-CONS-SRYYM-200210
+                                           TO  RECE10-SRYYM
+               MOVE    WRK-CONS-SRYYM-200304
+                                           TO  RECE10-XXSRYYM
+           ELSE
+               MOVE    WRK-CONS-SRYYM-200304
+                                           TO  RECE10-SRYYM
+               MOVE    ALL "999999"        TO  RECE10-XXSRYYM
+           END-IF            
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    WRK-PATH            TO  ORC-DBPATH

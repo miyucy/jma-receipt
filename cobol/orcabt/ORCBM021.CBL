@@ -32,6 +32,7 @@
       *  01.00.03    MCC-藤原     02/05/22  テスト患者は処理しない     
       *
       *  01.01.01    NACL-藤原    02.09.17  印刷サブの追加
+      *  01.01.02    NACL-藤原    03.04.11  入院・入院外を分けない
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -388,12 +389,13 @@
            MOVE    ZERO                    TO  IDX-AREA
                                                FLG-UPD 
       *
-           EVALUATE    RECE10-NYUGAIKBN
-               WHEN    "1"
-                   MOVE    1                 TO  IDX3
-               WHEN    "2"
-                   MOVE    2                 TO  IDX3
-           END-EVALUATE           
+      *****EVALUATE    RECE10-NYUGAIKBN
+      *         WHEN    "1"
+      *             MOVE    1                 TO  IDX3
+      *         WHEN    "2"
+      *             MOVE    2                 TO  IDX3
+      *****END-EVALUATE           
+           MOVE    1                  TO  IDX3
       *
       *        老人保健
            IF      RECE10-RJNHKNNUM    NOT =   SPACE
@@ -540,11 +542,10 @@
                MOVE    KEY-O-HKNJANUM(1:6) TO  HC27-NAME (CNT-LINE)                            
            END-IF                            
       *  
-      *    入院外のみ
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       3
-               PERFORM VARYING IDY FROM    2   BY  1
-                       UNTIL   IDY >       2
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       1
                    MOVE    SUM-KENSU   (IDX IDY)
                                        TO  WRK-Z9
                    MOVE    WRK-Z9      TO  HC27-KENSU (IDX CNT-LINE)
@@ -574,11 +575,10 @@
                MOVE    "県外計"            TO  HC27-NAME (CNT-LINE)
            END-IF    
       *  
-      *    入院外のみ
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       3
-               PERFORM VARYING IDY FROM    2   BY  1
-                       UNTIL   IDY >       2
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       1
                    MOVE    SUM-GOK-KENSU   (IDX IDY)
                                        TO  WRK-Z9
                    MOVE    WRK-Z9      TO  HC27-KENSU (IDX CNT-LINE)
@@ -634,7 +634,7 @@
                                             ORCMCPAREA
                                             MCPDATA-REC
       *
-           MOVE    SUM-KOH-KENSU       (IDX 2)
+           MOVE    SUM-KOH-KENSU       (IDX 1)
                                TO  WRK-Z9
            MOVE    WRK-Z9      TO  HC27-KOHKENSU    (CNT-LINE1)
            .
