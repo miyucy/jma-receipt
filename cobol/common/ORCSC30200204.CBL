@@ -30,6 +30,9 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     MCC−多々納  01/04/19  １診療行為内で、点滴は１回とする
       * 01.00.02     MCC−多々納  01/05/16  点滴注射の判定を診療種別とする
+      * 01.00.03     NACL−多々納 02/11/22  点滴注射同時重複エラー追加
+      * 01.00.04     NACL−多々納 02/12/09  動脈注射エラー追加
+      * 01.00.05     NACL−多々納 03/01/07  入院点滴処理追加
       *****************************************************************
       *
       *
@@ -50,6 +53,8 @@
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-CHKMST          PIC 9(01).
+           03  FLG-SRYACT          PIC 9(01).
+           03  FLG-SRYACCT         PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-SP              PIC 9(01).
@@ -57,17 +62,24 @@
            03  FLG-ARIOK           PIC 9(01).
            03  FLG-NAIYAK          PIC 9(01).
            03  FLG-MADOKU          PIC 9(01).
-           03  FLG-SEIBETU         PIC 9(01).
+           03  FLG-SEIBUTU         PIC 9(01).
            03  FLG-SYUGI           PIC 9(01).
            03  FLG-ADD             PIC 9(01).
       *
            03  FLG-TENTEKI         PIC 9(01).
       *
            03  FLG-SYUGIADD        PIC 9(01).
+      *    動脈注射
+           03  FLG-DOUCHU          PIC 9(01).
+      *
+           03  FLG-OK              PIC 9(01).
+           03  FLG-ZAIARI          PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
+           03  IDY                 PIC 9(04).
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDXS                PIC 9(04).
@@ -117,6 +129,64 @@
                05  WRK-TENSU-Z     PIC ZZZZZZZZ.
            03  WRK-KAISU-X.
                05  WRK-KAISU-Z     PIC ZZZZ.
+      *    入院日＋１年
+           03  WRK-NYMD.
+               05  WRK-NYY             PIC 9(04).
+               05  WRK-NMM             PIC 9(02).
+               05  WRK-NDD             PIC 9(02).
+      *    ６歳到達日
+           03  WRK-BYMD.
+               05  WRK-BYY             PIC 9(04).
+               05  WRK-BMM             PIC 9(02).
+               05  WRK-BDD             PIC 9(02).
+      *
+      *    手技別日付
+           03  WRK-TEN-SRYCD       PIC X(09).
+           03  WRK-TEN-SRYCD2      PIC X(09).
+           03  WRK-TEN-SRYCD3      PIC X(09).
+           03  WRK-NISUU-HEN-AREA.
+               05  WRK-NIDAY           PIC 9(01)   OCCURS   31.
+      *
+           03  WRK-TEN-AUTO        PIC X(01).
+      *    年齢判定用
+           03  WRK-KGNAGE          PIC 9(03).
+           03  WRK-JGNAGE          PIC 9(03).
+      *    入院の回数
+           03  WRK-NISUU-AREA.
+               05  WRK-NISUU-TBL           OCCURS   31.
+                   07  WRK-DAY             PIC 9(02).
+                   07  WRK-SEL             PIC X(01).
+           03  IDN1                    PIC 9(02).
+           03  IDN2                    PIC 9(04).
+           03  IDN3                    PIC 9(04).
+           03  IDN4                    PIC 9(04).
+           03  FLG-DAY                 PIC 9(01).
+      *
+      *    最大液量
+           03  WRK-MAX-RYOU            PIC 9(04).
+           03  WRK-EKIRYOU             PIC 9(09)V99.
+           03  WRK-GOK-RYOU            PIC 9(09)V99.
+      *
+       01  TBL-NISUU-AREA.
+           03  TBL-NISUU-OCC           OCCURS   31.
+               05  TBL-DAY             PIC 9(01).
+               05  TBL-CHUSYA          PIC 9(09)V99.
+               05  TBL-TEN-SRYCD       PIC X(09).
+               05  TBL-TEN-SRYCD2      PIC X(09).
+               05  TBL-AUTO-SRYCD      PIC X(09).
+               05  TBL-TEN-IDX         PIC 9(04).
+      *        手術有無
+               05  TBL-SYU-DAY         PIC 9(01).
+               05  TBL-SYU-IDX         PIC 9(04).
+      *        生物学的製剤
+               05  TBL-SEIBUTU         PIC 9(01).
+               05  TBL-SEIBUTU-IDX     PIC 9(04).
+               05  TBL-SEIBUTU-ARI     PIC X(09).
+      *        麻毒加算
+               05  TBL-MADOKU          PIC 9(01).
+               05  TBL-MADOKU-IDX      PIC 9(04).
+               05  TBL-MADOKU-ARI      PIC X(09).
+      *
       *
        01  WRK-SONOTA.
            03  WRK-ERRCD           PIC X(04). 
@@ -151,6 +221,14 @@
       *    チェックマスタ−
        01  CHK-REC.
            COPY    "CPCHK.INC".
+      *
+      *    診療行為マスタ−
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
+      *
+      *    診療会計マスタ−
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -251,7 +329,7 @@
            MOVE    ZERO                TO  IDX-SYU
            MOVE    ZERO                TO  FLG-SYUGI
            MOVE    ZERO                TO  FLG-MADOKU
-           MOVE    ZERO                TO  FLG-SEIBETU
+           MOVE    ZERO                TO  FLG-SEIBUTU
            INITIALIZE                  WRK-AREA
            MOVE    SPACE               TO  WRK-ERRCD
       *
@@ -345,6 +423,11 @@
       *                手技料の位置セット
                        MOVE    IDX-Z               TO  IDX-SYU
                    END-IF
+      *            入院時の剤内容のチェック
+                   IF     (WRK-COM-DATAKBN (IDX-Z) =   "2" ) AND
+                          (SPA-NYUGAIKBN           =   1   )
+                       PERFORM 1005-ZAI-CHK-SEC
+                   END-IF
       *
       *        薬剤
                WHEN    "6"
@@ -354,12 +437,18 @@
                    END-IF
       *            生物学的製剤区分
                    IF      WRK-COM-SEIBUTUKBN(IDX-Z)   =   1
-                       MOVE   1                TO  FLG-SEIBETU
+                       MOVE   1                TO  FLG-SEIBUTU
                    END-IF
       *            注射液量加算
                    COMPUTE WRK-CHUSYA      =  (WRK-COM-CSYYOURYO(IDX-Z)
                                            *   WRK-COM-SURYO  (IDX-Z))
                                            +   WRK-CHUSYA
+      *            入院時の薬剤と手技料を分ける
+                   IF    (SPA-NYUGAIKBN        =   1   ) AND
+                         (FLG-SYUGI            =   1   )
+                       MOVE    "9020"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
+                   END-IF
       *
       *        器材
                WHEN    "7"
@@ -378,6 +467,16 @@
       *
            .
        10011-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院の剤内容チェック処理
+      *****************************************************************
+       1005-ZAI-CHK-SEC           SECTION.
+      *
+      *
+           .
+       1005-ZAI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -419,6 +518,10 @@
       *????        IF      LNK-ACCT2-SRYCD     NOT =   SPACE
       *????            MOVE    "099303301"         TO  WRK-SRYCD
       *????        END-IF
+      *            入院の時、発生しない
+                   IF      SPA-NYUGAIKBN           =   "1"
+                       MOVE    SPACE               TO  WRK-SRYCD
+                   END-IF
            END-EVALUATE
       *
            IF      WRK-SRYCD       NOT =   SPACE
@@ -452,6 +555,11 @@
       *
       *    液量により、手技料変更
            MOVE    "130009310"         TO  WRK-SRYCD
+      *    入院の時なし
+           IF      SPA-NYUGAIKBN       =   "1"
+               MOVE    SPACE               TO  WRK-SRYCD
+           END-IF
+      *
       *****IF      LNK-ORCSC-ROUJIN    =   ZERO
       *        MOVE    "130009310"         TO  WRK-SRYCD
       *    ELSE
@@ -486,6 +594,9 @@
                                                               (IDX-SYU)
                    END-IF
                END-IF
+               GO    TO      1002-TENTEKI-CHK-EXT
+           END-IF
+           IF      WRK-SRYCD           =   SPACE
                GO    TO      1002-TENTEKI-CHK-EXT
            END-IF
       *
@@ -604,7 +715,7 @@
            PERFORM 1007-NYUYOJI-SET-SEC
       *
       *    生物学的製剤
-           IF      FLG-SEIBETU         =   1
+           IF      FLG-SEIBUTU         =   1
                MOVE    "130000110"         TO  WRK-SRYCD
       *        加算チェック処理
                PERFORM 1100-KASAN-CHK-SEC
@@ -966,6 +1077,7 @@
       *----(01.00.01) LINE ADD START ----------------------------------
       *
            MOVE    ZERO                TO  FLG-TENTEKI
+           MOVE    ZERO                TO  FLG-DOUCHU
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
@@ -982,6 +1094,17 @@
                        MOVE    "1"                 TO  WRK-COM-CUR(IDX)
                    END-IF
                    MOVE    1               TO  FLG-TENTEKI
+               END-IF
+      *        動脈注射は１回のみとする
+               IF     (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
+                                                       "960") AND
+                      (WRK-COM-INPUTCD  (IDX)      =   "130006110" OR
+                                                       "130006210")
+                   IF      FLG-DOUCHU          =   1
+                       MOVE    "0157"              TO  SPA-ERRCD
+                       MOVE    "1"                 TO  WRK-COM-CUR(IDX)
+                   END-IF
+                   MOVE    1               TO  FLG-DOUCHU
                END-IF
       *****    点滴は１回のみとする
       *        IF     (WRK-GMN-INPUTCD (IDX)(1:1)   =   "."  )  AND
@@ -1002,11 +1125,759 @@
       *****************************************************************
       *    自動算定処理
       *****************************************************************
-       300-AUTO-SYORI-SEC                SECTION.
+       300-AUTO-SYORI-SEC              SECTION.
       *
+      *    Ｋ０２時、自動発生する
+           IF      LNK-ORCSC-PG        =   "K02"
+               CONTINUE
+           ELSE
+               GO      TO      300-AUTO-SYORI-EXT
+           END-IF
+      *
+      *    入院の時、自動発生する
+           IF      SPA-NYUGAIKBN       =   2
+               GO      TO      300-AUTO-SYORI-EXT
+           END-IF
+           MOVE    SPACE               TO  WRK-ERRCD
+      *
+           INITIALIZE                  TBL-NISUU-AREA
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL     ( IDX     >   200 )  OR
+                             ((WRK-GMN-INPUTCD(IDX)  =   SPACE ) AND
+                              (WRK-COM-INPUTCD(IDX)  =   SPACE ))
+      *        点滴の時のみ
+               IF      WRK-COM-SRYSYUKBN (IDX)     =   "330"  OR  "331"
+                   MOVE    1                   TO  FLG-OK
+                   PERFORM VARYING     IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   31
+                       IF      WRK-COM-NYUINDAY (IDX IDY)  >   ZERO
+                           MOVE    WRK-COM-NYUINDAY(IDX IDY)
+                                                   TO  TBL-DAY(IDY)
+      *                  液量集計
+                           IF      WRK-COM-INPUTCD(IDX)(1:1)   =   "6"
+                               COMPUTE TBL-CHUSYA (IDY)
+                                               = (WRK-COM-CSYYOURYO(IDX)
+                                               *   WRK-COM-SURYO  (IDX))
+                                               +   TBL-CHUSYA (IDY)
+      *                        生物学的製剤区分
+                               IF      WRK-COM-SEIBUTUKBN(IDX)   =   1
+                                   MOVE    1           TO  TBL-SEIBUTU
+                                                                   (IDY)
+                               END-IF
+      *                        麻毒
+                               IF      WRK-COM-MADOKUKBN(IDX)  =   1
+                                   MOVE    1           TO  TBL-MADOKU
+                                                                   (IDY)
+                               END-IF
+                           END-IF
+      *                    手技
+                           IF     (WRK-COM-INPUTCD(IDX)(1:1)  =   "1")
+                           AND    (WRK-COM-DATAKBN(IDX)       =   "1")
+                               MOVE    WRK-COM-INPUTCD(IDX)
+                                               TO  TBL-TEN-SRYCD(IDY)
+                               MOVE    IDX     TO  TBL-TEN-IDX  (IDY)
+                           END-IF
+      *                    麻毒
+                           IF      WRK-COM-INPUTCD(IDX)  =   "130000310"
+                               MOVE    IDX     TO  TBL-MADOKU-IDX (IDY)
+                           END-IF
+      *                    生物学的製剤
+                           IF      WRK-COM-INPUTCD(IDX)  =   "130000110"
+                               MOVE    IDX     TO  TBL-SEIBUTU-IDX (IDY)
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *        中心静脈の時
+               IF      WRK-COM-INPUTCD (IDX)   =   "130004410"
+                   PERFORM VARYING     IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   31
+                       IF      WRK-COM-NYUINDAY (IDX IDY)  >   ZERO
+                           MOVE    1                   TO  FLG-OK
+                           MOVE    WRK-COM-NYUINDAY(IDX IDY)
+                                                   TO  TBL-DAY(IDY)
+      *                    手技
+                           MOVE    WRK-COM-INPUTCD(IDX)
+                                               TO  TBL-TEN-SRYCD(IDY)
+                           MOVE    IDX         TO  TBL-TEN-IDX  (IDY)
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *        手術
+               IF     (WRK-COM-SRYSYUKBN(IDX)  =   "500" )  AND
+                      (WRK-COM-INPUTCD (IDX)(1:1)  =   "1")
+                   PERFORM VARYING     IDY     FROM    1   BY  1
+                           UNTIL       IDY     >   31
+                       IF      WRK-COM-NYUINDAY (IDX IDY)  >   ZERO
+                           MOVE    WRK-COM-NYUINDAY(IDX IDY)
+                                                   TO  TBL-SYU-DAY(IDY)
+                           MOVE    IDX             TO  TBL-SYU-IDX(IDY)
+                           MOVE    1                   TO  FLG-OK
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               GO      TO      300-AUTO-SYORI-EXT
+           END-IF
+      *    当日のすべての点滴液量を集計する
+           PERFORM 3001-EKIRYO-SYUKEI-SEC
+      *    当日のすべての手術の有無を判定
+           PERFORM 3003-SYUJYU-CHK-SEC
+      *
+      *    点滴注射
+      *    ６歳到達日
+           MOVE    SPA-BIRTHDAY        TO  WRK-BYMD
+           COMPUTE WRK-BYY             =   WRK-BYY
+                                       +   6
+      *    老人
+           MOVE    SPACE               TO  WRK-NYMD
+           IF     (LNK-ORCSC-ROUJIN    =   1  )  AND
+                  (LNK-ORCSC-NYUINYMD  NUMERIC )
+               MOVE    LNK-ORCSC-NYUINYMD  TO  WRK-NYMD
+               COMPUTE WRK-NYY             =   WRK-NYY
+                                           +   1
+           END-IF
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   31
+      *        ６歳未満
+               IF      WRK-BYMD(1:6)       >   SPA-SRYYMD(1:6)
+                   MOVE    "130003710"     TO  WRK-SRYCD
+                   MOVE    100             TO  WRK-MAX-RYOU
+               END-IF
+      *        ６歳
+               IF      WRK-BYMD(1:6)       =  SPA-SRYYMD(1:6)
+                   IF      WRK-BDD         <=  IDY
+                       MOVE    "130003810"     TO  WRK-SRYCD
+                       MOVE    500             TO  WRK-MAX-RYOU
+                   ELSE
+                       MOVE    "130003710"     TO  WRK-SRYCD
+                       MOVE    100             TO  WRK-MAX-RYOU
+                   END-IF
+               END-IF
+      *        ６歳以上
+               IF      WRK-BYMD(1:6)       <   SPA-SRYYMD(1:6)
+                   MOVE    "130003810"     TO  WRK-SRYCD
+                   MOVE    500             TO  WRK-MAX-RYOU
+               END-IF
+      *        老人
+               IF      (LNK-ORCSC-ROUJIN   =   1     )  AND
+                       (WRK-NYMD       NOT =   SPACE )
+      *        入院から１年以内
+                   IF      SPA-SRYYMD(1:6)     <   WRK-NYMD(1:6)
+                       MOVE    "130700310"         TO  WRK-SRYCD
+                   ELSE
+                       MOVE    "130700410"         TO  WRK-SRYCD
+                   END-IF
+                   IF      SPA-SRYYMD(1:6)    =   WRK-NYMD(1:6)
+                       IF      WRK-NDD         <   IDY
+      *                １年以内
+                           MOVE    "130700310"         TO  WRK-SRYCD
+                       ELSE
+      *                １年以以上
+                           MOVE    "130700410"         TO  WRK-SRYCD
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               IF      TBL-CHUSYA (IDY)    >=  WRK-MAX-RYOU
+                   IF     (TBL-TEN-SRYCD(IDY)  =   SPACE )  AND
+                          (TBL-SYU-DAY (IDY)   =   ZERO  )
+      *                手技料自動算定
+                       MOVE    WRK-SRYCD       TO  TBL-AUTO-SRYCD(IDY)
+                   END-IF
+               ELSE
+                   IF     (TBL-TEN-IDX  (IDY)  >   ZERO ) AND
+                          (TBL-TEN-SRYCD(IDY)  NOT =   "130004410")
+      *                手技料エラー
+      *****************MOVE    "9015"              TO  SPA-ERRCD
+      *                MOVE    TBL-TEN-IDX (IDY)   TO  IDX-K
+      **************** MOVE    "1"             TO  WRK-COM-CUR (IDX-K)
+                       MOVE    TBL-TEN-IDX (IDY)   TO  IDX-KBN
+                       IF      WRK-COM-KZMFLG (IDX-KBN)    =   SPACE
+                           MOVE    "K012"          TO  WRK-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                          (IDX-KBN)
+                       END-IF
+                   END-IF
+               END-IF
+      *        麻毒・生物のチェック
+               IF     (TBL-SEIBUTU   (IDY)     =   ZERO )  AND
+                      (TBL-SEIBUTU-IDX(IDY)    >   ZERO )
+                   MOVE    "9017"                  TO  SPA-ERRCD
+                   MOVE    TBL-SEIBUTU-IDX (IDY)   TO  IDX-K
+                   MOVE    "1"                     TO  WRK-COM-CUR
+                                                              (IDX-K)
+               END-IF
+               IF     (TBL-MADOKU    (IDY)     =   ZERO )  AND
+                      (TBL-MADOKU-IDX(IDY)     >   ZERO )
+                   MOVE    "9018"                  TO  SPA-ERRCD
+                   MOVE    TBL-MADOKU-IDX (IDY)    TO  IDX-K
+                   MOVE    "1"                     TO  WRK-COM-CUR
+                                                              (IDX-K)
+               END-IF
+      *        点滴手技の変更エラー
+               IF     (TBL-TEN-SRYCD (IDY) NOT =   SPACE)  AND
+                      (TBL-TEN-SRYCD2(IDY) NOT =   SPACE)  AND
+                      (TBL-TEN-IDX   (IDY)     >   ZERO )
+      ***          MOVE    TBL-TEN-IDX (IDY)   TO  IDX-KBN
+      *            IF      WRK-COM-KZMFLG (IDX-KBN)    =   SPACE
+      *                MOVE    "K011"          TO  WRK-ERRCD
+      *                MOVE    "1"             TO  WRK-COM-CUR
+      *                                                   (IDX-KBN)
+      ****         END-IF
+                       MOVE    "9019"              TO  SPA-ERRCD
+                       MOVE    TBL-TEN-IDX (IDY)   TO  IDX-K
+                       MOVE    "1"                 TO  WRK-COM-CUR
+                                                              (IDX-K)
+               END-IF
+      *        手術が存在する時、点滴手技は算定できない
+               IF     (TBL-SYU-DAY (IDY)       >   ZERO )  AND
+                      (TBL-TEN-SRYCD (IDY) NOT =   SPACE)
+                   IF      TBL-TEN-IDX (IDY)   >   ZERO
+      *                手技料エラー
+                       MOVE    "9016"              TO  SPA-ERRCD
+                       MOVE    TBL-TEN-IDX (IDY)   TO  IDX-K
+                       MOVE    "1"                 TO  WRK-COM-CUR
+                                                              (IDX-K)
+                   ELSE
+      *                手技料エラー（警告）
+                       IF      TBL-SYU-IDX (IDY)   >   ZERO
+                           MOVE    TBL-SYU-IDX (IDY)   TO  IDX-KBN
+                           IF      WRK-COM-KZMFLG (IDX-KBN)
+                                                       =   SPACE
+                              MOVE    "K010"       TO  WRK-ERRCD
+                              MOVE    "1"          TO  WRK-COM-CUR
+                                                          (IDX-KBN)
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      WRK-ERRCD       NOT =   SPACE
+                   MOVE    WRK-ERRCD       TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                          (IDX-KBN)
+               END-IF
+           END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      300-AUTO-SYORI-EXT
+           END-IF
+      *
+      *    点滴手技料自動発生
+           INITIALIZE                  WRK-NISUU-HEN-AREA
+           MOVE    SPACE               TO  WRK-TEN-SRYCD
+           MOVE    SPACE               TO  WRK-TEN-AUTO
+           MOVE    ZERO                TO  IDXS
+           MOVE    ZERO                TO  FLG-MADOKU
+           MOVE    ZERO                TO  FLG-SEIBUTU
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   31
+               IF      TBL-AUTO-SRYCD (IDY)    NOT =   SPACE
+                   IF     (WRK-TEN-SRYCD           =   SPACE )  OR
+                          (TBL-AUTO-SRYCD (IDY)    =   WRK-TEN-SRYCD)
+                       MOVE    TBL-AUTO-SRYCD (IDY)    TO  WRK-TEN-SRYCD
+                       MOVE    1                   TO  WRK-NIDAY (IDY)
+                   ELSE
+                       IF      WRK-TEN-SRYCD   NOT =   SPACE
+                           PERFORM 3002-AUTO-HENSYU-SEC
+                           INITIALIZE               WRK-NISUU-HEN-AREA
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF      WRK-TEN-SRYCD   NOT =   SPACE
+                PERFORM 3002-AUTO-HENSYU-SEC
+           END-IF
+      *
+      *    生物学的製剤加算自動発生
+           INITIALIZE                  WRK-NISUU-HEN-AREA
+           MOVE    SPACE               TO  WRK-TEN-SRYCD
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   31
+               IF     (TBL-AUTO-SRYCD (IDY)    NOT =   SPACE ) OR
+                      (TBL-TEN-SRYCD  (IDY)    NOT =   SPACE )
+                   IF     (TBL-SEIBUTU    (IDY)    =   1    ) AND
+                          (TBL-SEIBUTU-IDX(IDY)    =   ZERO ) AND
+                          (TBL-SEIBUTU-ARI(IDY)    =   SPACE)
+                       MOVE    "130000110"         TO  WRK-TEN-SRYCD
+                       MOVE    1                   TO  WRK-NIDAY (IDY)
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF      WRK-TEN-SRYCD   NOT =   SPACE
+               PERFORM 3002-AUTO-HENSYU-SEC
+           END-IF
+      *
+      *    麻毒加算自動発生
+           INITIALIZE                  WRK-NISUU-HEN-AREA
+           MOVE    SPACE               TO  WRK-TEN-SRYCD
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   31
+               IF     (TBL-AUTO-SRYCD (IDY)    NOT =   SPACE ) OR
+                      (TBL-TEN-SRYCD  (IDY)    NOT =   SPACE )
+                   IF     (TBL-MADOKU     (IDY)    =   1    ) AND
+                          (TBL-MADOKU-IDX (IDY)    =   ZERO ) AND
+                          (TBL-MADOKU-ARI (IDY)    =   SPACE)
+                       MOVE    "130000310"         TO  WRK-TEN-SRYCD
+                       MOVE    1                   TO  WRK-NIDAY (IDY)
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF      WRK-TEN-SRYCD   NOT =   SPACE
+                PERFORM 3002-AUTO-HENSYU-SEC
+           END-IF
       *
            .
        300-AUTO-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点滴液量集計処理
+      *****************************************************************
+       3001-EKIRYO-SYUKEI-SEC         SECTION.
+      *
+      *    診療年月の診療会計マスタ読み込み
+           MOVE    SPACE               TO  SRYACCT-REC
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    SPA-PTID            TO  ACCT-PTID
+           MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
+           MOVE    "33"                TO  ACCT-SRYKBN
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 940-SRYACCT-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+           PERFORM UNTIL       (FLG-SRYACCT         =   1       )
+               MOVE    ZERO                TO  FLG-ZAIARI
+               PERFORM VARYING     IDY     FROM    1   BY  1
+                       UNTIL       IDY     >   31
+                   IF      ACCT-DAY (1 IDY)    >   ZERO
+                       IF     (TBL-DAY (IDY)   >   ZERO )  OR
+                              (TBL-SYU-DAY(IDY)    >   ZERO )
+                           MOVE    1           TO  FLG-ZAIARI
+                       END-IF
+                   END-IF
+               END-PERFORM
+      *        訂正の時、集計なし
+               IF     (LNK-ORCSC-SYORIFLG =   "1"    )  AND
+                      (ACCT-HKNCOMBI      =   SPA-HKNCOMBINUM)
+                   MOVE    ZERO               TO  FLG-ZAIARI
+               END-IF
+      *
+      *        回数があるもの
+               IF      FLG-ZAIARI          =   1
+      *            診療行為より液量集計
+                   PERFORM 30011-SRYACT-HEN-SEC
+               END-IF
+      *
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 940-SRYACCT-READ-SEC
+           END-PERFORM
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+      *    CALL    "MCPDBSUB"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+           .
+       3001-EKIRYO-SYUKEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療行為マスター編集処理
+      *****************************************************************
+       30011-SRYACT-HEN-SEC            SECTION.
+      *
+      *    診療会計マスターから診療行為マスターを検索する
+           MOVE    SPACE               TO  SRYACT-REC
+           INITIALIZE                      SRYACT-REC
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  SRY-PTID
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               PERFORM 900-SRYACT-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACT
+           END-IF
+           MOVE    ZERO                TO  WRK-EKIRYOU
+           MOVE    ZERO                TO  WRK-GOK-RYOU
+           MOVE    SPACE               TO  WRK-TEN-SRYCD
+           MOVE    ZERO                TO  FLG-MADOKU
+           MOVE    ZERO                TO  FLG-SEIBUTU
+           PERFORM UNTIL      FLG-SRYACT   =   1
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL      (IDX2        >   5   )  OR
+                                  (SRY-SRYCD(IDX2)     =   SPACE )
+                   IF     (SRY-SRYCD (IDX2)(1:1)   =   "6" )  AND
+                          (SRY-SRYSYUKBN           =   "330"  OR
+                                                       "331")
+      *                点数マスタより、液量取得
+                       MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
+                       PERFORM 910-TENSU-READ-SEC
+                       IF      FLG-TENSU           =   ZERO
+                           IF      TNS-CSYYOURYO   =   ZERO
+                               MOVE    SRY-SRYSURYO(IDX2)
+                                                       TO  WRK-EKIRYOU
+                           ELSE
+                               COMPUTE WRK-EKIRYOU     =   TNS-CSYYOURYO
+                                                       *   SRY-SRYSURYO
+                                                                  (IDX2)
+                           END-IF
+                           ADD     WRK-EKIRYOU         TO  WRK-GOK-RYOU
+      *                    生物学的製剤区分
+                           IF      TNS-SEIBUTUGAKUKBN  =   1
+                               MOVE    1               TO  FLG-SEIBUTU
+                           END-IF
+      *                    麻毒
+                           IF      TNS-MADOKUKBN       =   1
+                               MOVE    1               TO  FLG-MADOKU
+                           END-IF
+                       END-IF
+                   END-IF
+      *            手技料（点滴・中心静脈）
+                   IF      SRY-SRYCD (IDX2)        =   "130004410"
+                                                   OR  "130003710"
+                                                   OR  "130003810"
+                                                   OR  "130700310"
+                                                   OR  "130700410"
+                                                   OR  "130702910"
+                                                   OR  "130701010"
+                                                   OR  "130702810"
+                       MOVE    SRY-SRYCD (IDX2)    TO  WRK-TEN-SRYCD
+                       MOVE    SRY-AUTOKBN (IDX2)  TO  WRK-TEN-AUTO
+                   END-IF
+      *            手技料（麻毒）
+                   IF      SRY-SRYCD (IDX2)        =   "130000310"
+                       MOVE    SRY-SRYCD (IDX2)    TO  WRK-TEN-SRYCD3
+                   END-IF
+      *            手技料（生物学的）
+                   IF      SRY-SRYCD (IDX2)        =   "130000110"
+                       MOVE    SRY-SRYCD (IDX2)    TO  WRK-TEN-SRYCD2
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               PERFORM 900-SRYACT-NEXT-SEC
+           END-PERFORM
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+      *    CALL    "MCPDBSUB"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+      *    日別の液量集計
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   31
+               IF     (ACCT-DAY (1 IDY)    >   ZERO )  AND
+                      (TBL-DAY  (IDY)      >   ZERO )
+                   ADD     WRK-GOK-RYOU    TO  TBL-CHUSYA (IDY)
+               END-IF
+               IF      ACCT-DAY (1 IDY)    >   ZERO
+                   IF      WRK-TEN-SRYCD   NOT =   SPACE
+      ********         IF     (TBL-TEN-SRYCD(IDY)  NOT =  SPACE ) AND
+      *                      ((TBL-TEN-SRYCD(IDY)  NOT =  WRK-TEN-SRYCD)
+      *******           OR    (WRK-TEN-AUTO            =  SPACE ))
+                       IF     (TBL-TEN-SRYCD(IDY)  NOT =  SPACE )
+                           MOVE    WRK-TEN-SRYCD   TO  TBL-TEN-SRYCD2
+                                                                 (IDY)
+                       ELSE
+                           MOVE    WRK-TEN-SRYCD
+                                               TO  TBL-TEN-SRYCD(IDY)
+                       END-IF
+                   END-IF
+      *            生物学的製剤区分
+                   IF      FLG-SEIBUTU         =   1
+                       MOVE    1               TO  TBL-SEIBUTU (IDY)
+                   END-IF
+                   IF      WRK-TEN-SRYCD2  NOT =   SPACE
+                       MOVE    WRK-TEN-SRYCD2  TO  TBL-SEIBUTU-ARI(IDY)
+                   END-IF
+      *            麻毒
+                   IF      FLG-MADOKU          =   1
+                       MOVE    1               TO  TBL-MADOKU (IDY)
+                   END-IF
+                   IF      WRK-TEN-SRYCD3  NOT =   SPACE
+                       MOVE    WRK-TEN-SRYCD3  TO  TBL-MADOKU-ARI(IDY)
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       30011-SRYACT-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     当日のすべての手術の有無を判定処理
+      *****************************************************************
+       3003-SYUJYU-CHK-SEC         SECTION.
+      *
+      *    診療年月の診療会計マスタ読み込み
+           MOVE    SPACE               TO  SRYACCT-REC
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    SPA-PTID            TO  ACCT-PTID
+           MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
+           MOVE    "50"                TO  ACCT-SRYKBN
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 940-SRYACCT-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+           PERFORM UNTIL       (FLG-SRYACCT         =   1       )
+               MOVE    1                   TO  FLG-ZAIARI
+      *        訂正の時、集計なし
+               IF     (LNK-ORCSC-SYORIFLG  =   "1"    )  AND
+                      (ACCT-HKNCOMBI       =   SPA-HKNCOMBINUM)
+                   MOVE    ZERO                TO  FLG-ZAIARI
+               END-IF
+      *        手技料点数がないものは対象外
+               IF      ACCT-SYUTEN1       =   ZERO
+                   MOVE    ZERO               TO  FLG-ZAIARI
+               END-IF
+      *
+      *        回数編集
+               IF      FLG-ZAIARI          =   1
+                  PERFORM VARYING     IDY     FROM    1   BY  1
+                          UNTIL       IDY     >   31
+                       IF      ACCT-DAY (1 IDY)    >   ZERO
+                           MOVE    ACCT-DAY (1 IDY)
+                                               TO  TBL-SYU-DAY(IDY)
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
+               MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+               PERFORM 940-SRYACCT-READ-SEC
+           END-PERFORM
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
+      *    CALL    "MCPDBSUB"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+           .
+       3003-SYUJYU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点滴手技料追加処理
+      *****************************************************************
+       3002-AUTO-HENSYU-SEC         SECTION.
+      *
+           MOVE    WRK-TEN-SRYCD       TO  TNS-SRYCD
+           PERFORM 910-TENSU-READ-SEC
+           IF      FLG-TENSU       NOT =   ZERO
+               MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    1                   TO  FLG-ERR
+               GO      TO      3002-AUTO-HENSYU-EXT
+           END-IF
+      *
+           ADD     1                   TO  IDXS
+           MOVE    WRK-TEN-SRYCD       TO  LNK-ORCSC-SRYCD (03 IDXS)
+           MOVE    TNS-TEN             TO  LNK-ORCSC-TENSU (03 IDXS)
+      *    年齢加算処理
+           PERFORM 30021-NENREI-KASAN-SEC
+           IF      FLG-ERR             =   ZERO
+               PERFORM 30022-NISUU-SET-SEC
+               MOVE    "330"           TO  LNK-ORCSC-SRYSYUKBN
+                                                         (03 IDXS)
+               MOVE    "33"            TO  LNK-ORCSC-SRYKBN
+                                                         (03 IDXS)
+           END-IF
+      *
+           .
+       3002-AUTO-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    年齢加算追加処理
+      *****************************************************************
+       30021-NENREI-KASAN-SEC            SECTION.
+      *
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2        >   4       )   OR
+                              (TNS-AGEKSNSRYCD(IDX2)   =   SPACE  OR
+                                                           ZERO )
+               MOVE    TNS-AGEKSNSRYCD(IDX2)   TO  WRK-SRYCD
+               MOVE    WRK-SRYCD           TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF      FLG-TENSU           =   ZERO
+      *            年齢チェック
+                   PERFORM 30021-NENREI-CHK-SEC
+                   IF      FLG-CHK              =   ZERO
+      *
+      *                加算料計算
+                       MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD-KS
+                                                       (03 IDXS)
+                       MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU-KS
+                                                       (03 IDXS)
+                       MOVE    4               TO  IDX2
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       30021-NENREI-KASAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    年齢チェック処理
+      *****************************************************************
+       30021-NENREI-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           MOVE    ZERO                TO  WRK-KGNAGE
+           MOVE    ZERO                TO  WRK-JGNAGE
+           MOVE    TNS-KGNAGE          TO  WRK-KGNAGE(2:2)
+           MOVE    TNS-JGNAGE          TO  WRK-JGNAGE(2:2)
+      *
+      *    下限年齢チェック
+           IF      TNS-KGNAGE          =   SPACE  OR  ZERO
+               CONTINUE
+           ELSE
+               IF      TNS-KGNAGE          =   "AA"
+      *            新生児判定
+                   IF     (LNK-ORCSC-NENREI-YY   =   ZERO )  AND
+                          (LNK-ORCSC-NENREI-MM   =   ZERO )  AND
+                          (LNK-ORCSC-NENREI-DD   <   28   )
+                       MOVE    1                 TO  FLG-CHK
+                   END-IF
+               ELSE
+                   IF      LNK-ORCSC-NENREI-YY   >=  WRK-KGNAGE
+                       CONTINUE
+                    ELSE
+                       MOVE    1                 TO  FLG-CHK
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    上限年齢チェック
+           IF      TNS-JGNAGE          =   SPACE  OR  ZERO
+               CONTINUE
+           ELSE
+               IF      TNS-JGNAGE          =   "AA"
+      *            新生児判定
+                   IF     (LNK-ORCSC-NENREI-YY    =   ZERO )  AND
+                          (LNK-ORCSC-NENREI-MM    =   ZERO )  AND
+                          (LNK-ORCSC-NENREI-DD    <   28   )
+                       CONTINUE
+                   ELSE
+                       MOVE    1                 TO  FLG-CHK
+                   END-IF
+               ELSE
+                   IF      LNK-ORCSC-NENREI-YY   <   WRK-JGNAGE
+                       CONTINUE
+                   ELSE
+                       MOVE    1                 TO  FLG-CHK
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       30021-NENREI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院の日数自動算定処理
+      *****************************************************************
+       30022-NISUU-SET-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  IDN1
+           MOVE    1                   TO  IDN2
+      *
+           INITIALIZE                      WRK-NISUU-AREA
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL       IDN1    >   31
+               IF      WRK-NIDAY (IDN1)    NOT =   ZERO
+                   IF     (IDN2            =   1   OR 2 )   OR
+                          (WRK-DAY (IDN2 - 1)  NOT =   (IDN1  -  1 ) )
+                       MOVE    IDN1            TO  WRK-DAY (IDN2)
+                       IF      (IDN2               =   2     )  AND
+                               (WRK-DAY (IDN2 - 1) =   (IDN1  -  1))
+                           MOVE    "-"         TO  WRK-SEL (IDN2 - 1)
+                       END-IF
+                       ADD     1               TO  IDN2
+                   ELSE
+                       MOVE    IDN1            TO  WRK-DAY (IDN2 - 1)
+                       MOVE    "."             TO  WRK-SEL (IDN2 - 1)
+                   END-IF
+               END-IF
+           END-PERFORM
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL       IDN1    >   31
+               IF     (WRK-SEL (IDN1)      =   SPACE )  AND
+                      (IDN1                <   31    )
+                   IF      WRK-DAY (IDN1 + 1 )     NOT =   ZERO
+                       MOVE    ","          TO  WRK-SEL (IDN1)
+                   END-IF
+               ELSE
+                   IF     (IDN1                    =   31    )  OR
+                          (WRK-DAY (IDN1 + 1 )     =   ZERO  )
+                       MOVE    SPACE        TO  WRK-SEL (IDN1)
+                   END-IF
+               END-IF
+           END-PERFORM
+           INITIALIZE                      LNK-ORCSC-INPUTCD-G (02 IDXS)
+           MOVE    1                   TO  IDN2
+           MOVE    1                   TO  IDN3
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL      (IDN1    >   31  )  OR
+                              (IDN2            >=  5  )  OR
+                              (WRK-DAY (IDN1)  =   ZERO )
+               IF      IDN3                >   19
+                   ADD     1               TO  IDN2
+               END-IF
+               IF      LNK-ORCSC-INPUTCD(02 IDXS IDN2)   =   SPACE
+                   MOVE    "*/"            TO  LNK-ORCSC-INPUTCD
+                                                   (03 IDXS IDN2) (1:2)
+                   ADD     2               TO  IDN3
+               END-IF
+               IF      WRK-SEL (IDN1)      =   SPACE
+                   MOVE    ","             TO  WRK-SEL (IDN1)
+               END-IF
+               MOVE    WRK-NISUU-TBL(IDN1) TO  LNK-ORCSC-INPUTCD
+                                                  (03 IDXS IDN2)(IDN3:3)
+               ADD     3                   TO  IDN3
+           END-PERFORM
+      *
+           .
+       30022-NISUU-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1055,3 +1926,47 @@
        910-TENSU-READ-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *    診療行為マスター読込
+      *****************************************************************
+       900-SRYACT-NEXT-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYACT-REC
+               MOVE    ZERO                TO  FLG-SRYACT
+           ELSE
+               INITIALIZE                      SRYACT-REC
+               MOVE    1                   TO  FLG-SRYACT
+           END-IF
+      *
+           .
+       900-SRYACT-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療会計マスタ読み込み
+      *****************************************************************
+       940-SRYACCT-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYACCT-REC
+               MOVE    ZERO                TO  FLG-SRYACCT
+           ELSE
+               INITIALIZE                      SRYACCT-REC
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+      *
+           .
+       940-SINACCT-READ-EXT.
+           EXIT.

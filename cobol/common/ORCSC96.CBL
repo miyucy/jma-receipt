@@ -32,6 +32,7 @@
       * 01.00.01     NACL-多々納  02/10/03  労災加算なしの追加
       * 01.00.02     NACL-多々納  02/10/18  入院追加
       * 01.00.03     NACL−多々納 02/11/11  ＤＵＭＭＹ診察料追加
+      * 01.00.04     NACL−多々納 02/12/09  動脈注射エラー追加
       *****************************************************************
       *
       *
@@ -591,6 +592,46 @@
                WHEN    "9013"
                    MOVE    "日付−日付の期間が違います。"
                                        TO  SPA-ERRMSG
+               WHEN    "9014"
+                   MOVE    "消炎鎮痛処理は逓減になります。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "分けて入力して下さい。"
+                                       TO  SPA-ERRMSG(31:)
+               WHEN    "9015"
+                   MOVE    "点滴手技料の算定できない液量です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "削除して下さい。"
+                                       TO  SPA-ERRMSG(35:)
+               WHEN    "9016"
+                   MOVE    "手術が算定されています。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "点滴手技料は算定できません。"
+                                       TO  SPA-ERRMSG(25:)
+               WHEN    "9017"
+                   MOVE    "生物学的製剤注射は加算できません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "削除して下さい。"
+                                       TO  SPA-ERRMSG(35:)
+               WHEN    "9018"
+                   MOVE    "麻毒注射は加算できません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "削除して下さい。"
+                                       TO  SPA-ERRMSG(27:)
+               WHEN    "9019"
+                   MOVE    "既に他の点滴手技が算定済みです。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "削除して下さい。"
+                                       TO  SPA-ERRMSG(33:)
+               WHEN    "9020"
+                   MOVE    "入院の点滴手技と薬剤は剤を分けて"
+                                       TO  SPA-ERRMSG
+                   MOVE    "入力して下さい。"
+                                       TO  SPA-ERRMSG(33:)
+               WHEN    "9021"
+                   MOVE    "検査が逓減になります。剤を分けて"
+                                       TO  SPA-ERRMSG
+                   MOVE    "入力して下さい。"
+                                       TO  SPA-ERRMSG(33:)
                WHEN    "9100"
                    MOVE    "診療内容が２００行を超えます。"
                                        TO  SPA-ERRMSG
@@ -757,6 +798,21 @@
                    MOVE    "警告！７５歳に到達しました。"
                                        TO  SPA-ERRMSG
                    MOVE    "老人公費を入力して下さい。"
+                                       TO  SPA-ERRMSG(29:)
+               WHEN    "K010"
+                   MOVE    "警告！手術と点滴手技料が同日に"
+                                       TO  SPA-ERRMSG
+                   MOVE    "算定されています。"
+                                       TO  SPA-ERRMSG(31:)
+               WHEN    "K011"
+                   MOVE    "警告！既に違う手技料が同日に"
+                                       TO  SPA-ERRMSG
+                   MOVE    "算定されています。"
+                                       TO  SPA-ERRMSG(29:)
+               WHEN    "K012"
+                   MOVE    "警告！点滴手技料の算定できる"
+                                       TO  SPA-ERRMSG
+                   MOVE    "液量ではありません。"
                                        TO  SPA-ERRMSG(29:)
                WHEN    "K020"
                    MOVE    "警告！再診料の受診回数が違います。"

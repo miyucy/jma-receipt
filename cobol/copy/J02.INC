@@ -79,3 +79,11 @@
                   05  J02-VALUE   PIC X(10).
                 04  J02-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.
                 04  J02-NYUGAIKBN-ITEM    PIC X(10)   OCCURS  2 TIMES.
+              03  J02-NYUINMSG2.
+                04  J02-NYUINMSG2-STYLE   PIC X(20).
+                04  J02-NYUINMSG2-VALUE   PIC X(50).
+              03  J02-NYUINMSG1.
+                04  J02-NYUINMSG1-STYLE   PIC X(20).
+                04  J02-NYUINMSG1-VALUE   PIC X(50).
+              03  J02-NYUINKIKAN.
+                04  J02-VALUE   PIC X(30).

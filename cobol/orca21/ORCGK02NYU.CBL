@@ -193,6 +193,7 @@
            03  FLG-CHK2            PIC 9(01).
            03  FLG-ARI2            PIC 9(01).
            03  FLG-NYU-ARI         PIC 9(01).
+           03  FLG-ZAIBETU         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -479,6 +480,9 @@
            03  WRK-NYUIN-CHK-AREA.
                05  WRK-NYUIN-KAI       PIC 9(03).
            03  IDX-N2                  PIC 9(02).
+           03  WRK-NYU-KAISU           PIC 9(03).
+      *    消炎鎮痛回数
+           03  WRK-SYOEN-CNT           PIC 9(03).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -579,6 +583,7 @@
                05  WRK-KSN-ZAINUM          PIC 9(08).
                05  WRK-KSN-ZAIEND          PIC X(01).
                05  WRK-KSN-INPUTCD         PIC X(22).
+               05  WRK-KSN-AUTOKBN         PIC X(01).
            03  WRK-KSN-IDX             PIC 9(04).
       *
       *    禁忌チェック用テーブル
@@ -608,6 +613,10 @@
        01  WRK-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //WRK-//.
+      *    画面ＳＰＡ領域ワーク
+       01  HZN-SCR-REC.
+           COPY    "CPK02SPASCR.INC"  REPLACING
+                                       //SPA-// BY //HZN-//.
       *
       *    ワークテーブル２(算定用一時保存用）
       *          (CPK02SPASCR.INC の長さを変更したら、変更すること）
@@ -618,6 +627,11 @@
                05  WRK-HCOM-TBLREC.
                    07  WRK-HCOM-DATA   PIC X(800).
        01 WRK-HOZ-IDX             PIC 9(04).
+      *
+      *          (CPK02SPASCR.INC の長さを変更したら、変更すること）
+       01  WRK-HZN-GMN-AREA.
+           03  WRK-HZN-GMN-TBL         OCCURS   200.
+               05  WRK-HZN-GMN-INPUCD     PIC X(22).
       *
       *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
@@ -2212,6 +2226,19 @@
            IF      LNK-WKSRYACT-MAX    >   ZERO
                PERFORM 3103-SAIHEN-HEN-SEC
            END-IF
+      *    受診回数編集処理
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           INITIALIZE                      ORCSC10SAREA
+           MOVE    "3"                 TO  LNK-SC10S-SYORI
+           CALL    "ORCSC10S"          USING
+                                       ORCSC10SAREA
+                                       SPA-AREA
+                                       SPA-SCR-REC
+                                       SPA-K02
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           MOVE    SPACE               TO  SPA-ERRCD
+           MOVE    SPACE               TO  SPA-KIDCD
+      *
       *    時間外区分
            MOVE    SPA-NAI-TIMEFLG     TO  SPA-K02N-JIKANKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2309,8 +2336,7 @@
                        IF     (LNK-WKSRY-SRYSYUKBN (IDX) =   "310" OR
                                                              "320" OR
                                                              "330" )
-                         AND
-                              (LNK-WKSRY-AUTOKBN (IDX IDY) =   "1"   )
+                         AND (LNK-WKSRY-AUTOKBN (IDX IDY) =   "1"  )
                            PERFORM 31011-SPA-HEN-SEC
                        END-IF
       *                自動作成のコメントは対象とする
@@ -5900,8 +5926,8 @@
                        MOVE    SPA-COM-NYUIN-AREA (IDX)
                                                TO  WRK-NYUIN-AREA
                    END-IF
-                   IF     (WRK-NYU-KAI         =   ZERO )  AND
-                          (SPA-SYORIFLG        =   ZERO )
+                   IF     (WRK-NYU-KAI         =   ZERO )
+      ************** AND  (SPA-SYORIFLG        =   ZERO )
                        MOVE    SPA-SRYYMD(7:2)     TO  IDX-N2
                        MOVE    1                   TO  WRK-NYUINDAY
                                                            (IDX-N2)
@@ -5947,6 +5973,8 @@
       *    他保険受診ありクリア
            MOVE    ZERO                TO  SPA-TAHOKEN-FLG
            MOVE    ZERO                TO  WRK-KAISU-GOK
+      *    消炎鎮痛処置当月内算定
+           MOVE    SPA-SYOEN-CNT       TO  WRK-SYOEN-CNT
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   WRK-GYO-MAX      )   OR
@@ -6099,6 +6127,7 @@
        51019-NYUIN-SANCHK-SEC             SECTION.
       *
            MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
+           MOVE    SPA-COM-KAISU (IDX) TO  WRK-NYU-KAISU
            MOVE    SPA-SRYYMD          TO  WRK-SPA-SRYYMD
       *
            PERFORM VARYING IDX-N2      FROM    1   BY  1
@@ -6114,7 +6143,7 @@
                                                TO  LNK-SC91-SRYCD
                    MOVE    "3"                 TO  LNK-SC91-KBN
                    MOVE    IDX                 TO  LNK-SC91-GMN-IDX
-                   MOVE    WRK-KAISU           TO  LNK-SC91-KAISU
+                   MOVE    WRK-NYU-KAISU       TO  LNK-SC91-KAISU
                    MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC91-TEISEI-AREA
       *
                    CALL    "ORCSC91"           USING    MCPAREA
@@ -6122,7 +6151,17 @@
                                                SPA-SCR-REC
                                                SPA-AREA
                                                TNS-TENSU-REC
+                   IF      LNK-SC91-DAYMAXCNT  >   ZERO
+                       MOVE    WRK-KAISU           TO  WRK-NYU-KAISU
+                   ELSE
+                       ADD     WRK-KAISU           TO  WRK-NYU-KAISU
+                   END-IF
                    MOVE    LNK-SC91-ERRCD      TO  SPA-ERRCD
+                   IF     (LNK-SC91-ERRCD  NOT =   SPACE )  AND
+                          (LNK-SC91-ERRMSG     =   SPACE )
+                       MOVE    IDX-N2          TO  LNK-SC91-ERRMSG(1:2)
+                       MOVE    "日算定済み"    TO  LNK-SC91-ERRMSG(3:)
+                   END-IF
                    MOVE    LNK-SC91-ERRMSG     TO  SPA-ERRMSG2
       *
                    IF      SPA-ERRCD           =   SPACE
@@ -6247,7 +6286,7 @@
            MOVE    SPA-TOKUTEIG-KNJ    TO  LNK-ORCSC-TOKUTEIG-KNJ
            MOVE    SPA-TOKUTEIG-KNJ2   TO  LNK-ORCSC-TOKUTEIG-KNJ2
       *    消炎鎮痛処置当月内算定
-           MOVE    SPA-SYOEN-CNT       TO  LNK-ORCSC-SYOEN-CNT
+           MOVE    WRK-SYOEN-CNT       TO  LNK-ORCSC-SYOEN-CNT
       *    当月外来管理加算の取れない患者
            MOVE    SPA-GAIRAI-NASI     TO  LNK-ORCSC-GAIRAI-NASI
       *    再診チェック済
@@ -6268,8 +6307,28 @@
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-ORCSC-TEISEI-AREA
       *
       *    入院期間
-      *     MOVE    SPA-K02N-NYUINYMD   TO  LNK-ORCSC-NYUINYMD
-      *     MOVE    SPA-K02N-TAIINYMD   TO  LNK-ORCSC-TAIINYMD
+           MOVE    SPA-K02N-NYUINYMD   TO  LNK-ORCSC-NYUINYMD
+           MOVE    SPA-K02N-TAIINYMD   TO  LNK-ORCSC-TAIINYMD
+      *
+           MOVE    SPA-SRYYMD          TO  WRK-SPA-SRYYMD
+      *    入院日の最後の日を診療日とする
+           PERFORM VARYING IDX-N2      FROM    1   BY  1
+                   UNTIL   IDX-N2      >   31
+               IF      SPA-COM-NYUINDAY(IDX IDX-N2)    >   ZERO
+                   MOVE    IDX-N2              TO  SPA-SRYYMD(7:2)
+               END-IF
+           END-PERFORM
+           PERFORM 51021-ZAIBETU-CHK-SEC
+           MOVE    WRK-SPA-SRYYMD      TO  SPA-SRYYMD
+           .
+       5102-ZAIBETU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    剤別のチェック処理
+      *****************************************************************
+       51021-ZAIBETU-CHK-SEC          SECTION.
+      *
       *
            EVALUATE    WRK-COM-SRYKBN (01)
       *            診療
@@ -6341,6 +6400,9 @@
                                            WRK-SCR-REC
                                            SPA-AREA
                    ADD     1               TO  SPA-SRYKBN-CNT (04)
+      *            消炎鎮痛処置当月内算定
+                   MOVE    LNK-ORCSC-SYOEN-CNT
+                                           TO  WRK-SYOEN-CNT
       *            手術
                WHEN    "50"
                    CALL    "ORCSC50"       USING
@@ -6408,13 +6470,17 @@
            END-EVALUATE
       *
       *****MOVE    LNK-ORCSC-GMN-IDX   TO  SPA-GMN-IDX
-           MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
            MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
+           MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
+      *!   INITIALIZE                  WRK-HZN-GMN-AREA
       *
       *    編集後内容セット
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   WRK-GYO-MAX  )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+      *
+      *!       MOVE    WRK-COM-INPUTCD (IDX-Z) TO  WRK-HZN-GMN-INPUCD
+      *!                                             (IDX-Z)
       *        診区
                IF      IDX-Z               =   1
                    MOVE    WRK-COM-SRYKBN (IDX-Z)
@@ -6539,7 +6605,7 @@
       *
            END-PERFORM
            .
-       5102-ZAIBETU-EXT.
+       51021-ZAIBETU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7230,8 +7296,8 @@
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-ORCSC-TEISEI-AREA
       *
       *    入院期間
-      *     MOVE    SPA-K02N-NYUINYMD   TO  LNK-ORCSC-NYUINYMD
-      *     MOVE    SPA-K02N-TAIINYMD   TO  LNK-ORCSC-TAIINYMD
+           MOVE    SPA-K02N-NYUINYMD   TO  LNK-ORCSC-NYUINYMD
+           MOVE    SPA-K02N-TAIINYMD   TO  LNK-ORCSC-TAIINYMD
       *
       *            診療
            IF      SPA-SRYKBN-CNT (01) >   ZERO
@@ -7299,7 +7365,10 @@
                GO      TO    520-ALL-CHEK-EXT
            END-IF
       *            注射
-           IF      SPA-SRYKBN-CNT (03) >   ZERO
+           IF     (SPA-SRYKBN-CNT (03) >   ZERO )
+      *            入院で手術の時も点滴チェックを行う
+             OR  ((SPA-SRYKBN-CNT (05) >   ZERO  )  AND
+                  (SPA-NYUGAIKBN       =   1     ))
                CALL    "ORCSC30"       USING
                                        MCPAREA
                                        ORCSC00AREA
@@ -9067,6 +9136,8 @@
                                                               (IDX-S)
                    MOVE    LNK-ORCSC-TENSU (IDX IDY)
                                            TO  WRK-KSN-TENSU  (IDX-S)
+                   MOVE    "3"             TO  WRK-KSN-AUTOKBN(IDX-S)
+      *
                    IF      LNK-ORCSC-SRYCD-KS(IDX IDY)   =   SPACE
                        MOVE    "1"         TO  WRK-KSN-ZAIEND (IDX-S)
                    ELSE
@@ -9090,6 +9161,8 @@
                        MOVE    LNK-ORCSC-TENSU-KS (IDX IDY)
                                            TO  WRK-KSN-TENSU  (IDX-S)
                        MOVE    "1"         TO  WRK-KSN-ZAIEND (IDX-S)
+                       MOVE    "3"         TO  WRK-KSN-AUTOKBN
+                                                            (IDX-S)
                    END-IF
       *            回数
                    PERFORM VARYING IDN1    FROM    1   BY  1
@@ -9097,7 +9170,6 @@
                                    (LNK-ORCSC-INPUTCD (IDX IDY IDN1)
                                                =   SPACE)
                        MOVE    SPACE           TO  WRK-KSN-ZAIEND(IDX-S)
-                       MOVE    ZERO            TO  WRK-KSN-TENSU (IDX-S)
                        ADD     1               TO  IDX-S
                        MOVE    WRK-ZAINUM      TO  WRK-KSN-ZAINUM
                                                               (IDX-S)
@@ -9111,8 +9183,6 @@
                        MOVE    LNK-ORCSC-INPUTCD (IDX IDY IDN1)
                                            TO  WRK-KSN-INPUTCD
                                                               (IDX-S)
-                       MOVE    LNK-ORCSC-TENSU (IDX IDY)
-                                           TO  WRK-KSN-TENSU  (IDX-S)
                    END-PERFORM
                END-IF
                END-PERFORM
@@ -9911,7 +9981,8 @@
                MOVE    WRK-KSN-INPUTCD(IDX)    TO  WKSRY-INPUTCD (IDY)
                MOVE    1                       TO  WKSRY-SRYSURYO(IDY)
                MOVE    ZERO                    TO  WKSRY-ZAIKAISU(IDY)
-               MOVE    "3"                     TO  WKSRY-AUTOKBN (IDY)
+      *********MOVE    "3"                     TO  WKSRY-AUTOKBN (IDY)
+               MOVE    WRK-KSN-AUTOKBN (IDX)   TO  WKSRY-AUTOKBN (IDY)
                IF     (WRK-KSN-SRYCD  (IDX)(1:1)   =   "8"   )  AND
                       (WRK-KSN-ATAI-G (IDX)    NOT =   SPACE )
                    PERFORM 45022-COMMNT-SET-SEC

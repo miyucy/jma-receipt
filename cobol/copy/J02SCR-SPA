@@ -74,6 +74,7 @@
       *
                        09  SPA-GMN-RRKSELNUM         PIC X(03).
                        09  SPA-GMN-HENSRYYMD         PIC X(11).
+      *
       *        ø«Œ≈Õ˙ŒÚ∆‚Õ∆
                05  SPA-GMN-RRKTBL.
                    07  SPA-GMN-RRK-LIST          OCCURS  60.
@@ -81,6 +82,10 @@
                        09  SPA-GMN-RRKYMD        PIC X(16).
                        09  SPA-GMN-RRKSRYKA      PIC X(04).
                    07  SPA-RRK-MAX               PIC 9(03).
+      *
+               05  SPA-GMN-NYUIN-AREA.
+                   07  SPA-GMN-NYUINMSG1         PIC X(50).
+                   07  SPA-GMN-NYUINMSG2         PIC X(50).
       *
                05  SPA-NAIGMN-AREA.
                    07  SPA-NAI-RRKSELNUM         PIC 9(03).
@@ -95,6 +100,7 @@
                    07  SPA-RSI-SHOBYOYMD         PIC X(08).
       *            ø«Œ≈≤ 
                    07  SPA-NAIGMN-SRYKA          PIC X(02).
+                   07  SPA-NAIGMN-SRYKBN         PIC X(02).
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SRYYM.
@@ -123,6 +129,9 @@
                            11  SPA-RRK-HKNKBN        PIC  X(01).
                            11  SPA-RRK-HKNCOMBI      PIC  X(04).
                            11  SPA-RRK-RRKYMD-MAE    PIC  X(08).
+      *                    ø∑µ¨ª˛
+                           11  SPA-RRK-SRYKBN        PIC  X(02).
+                           11  SPA-RRK-ADD           PIC  X(01).
       *        ππø∑•’•È•∞
                05  SPA-UPDFLG                    PIC X(01).
       *         ›¬∏ø«Œ≈≤ 

@@ -51,6 +51,15 @@
                05  SPA-GMN-BIRTHDAY        PIC X(08).
       *患者生年月日（和暦編集）
                05  SPA-GMN-BIRTHDAYW       PIC X(09).
+      *入院日
+               05  SPA-NAI-NYUINYMD        PIC X(08).
+      *退院日
+               05  SPA-NAI-TAIINYMD        PIC X(08).
+      *入院科
+               05  SPA-NAI-NYUINKA         PIC X(02).
+      *
+               05  SPA-GMN-NYUINYMD        PIC X(09).
+               05  SPA-GMN-TAIINYMD        PIC X(09).
       *
       *開始パラメタ番号
                05  SPA-MAE-STRNUM          PIC 9(04).

@@ -173,14 +173,12 @@
       *
       *    労災の外来管理加算読み替え点数
            03  LNK-ORCSC-GAIRAI-TEN        PIC  9(05)V9(03).
-      *    救急医療管理加算有無（労災・自賠責用）
-      *****03  LNK-ORCSC-RSI-KYUKASN       PIC  9(01).
-      *    療養の給付請求書取扱料（労災・自賠責用）
-      **** 03  LNK-ORCSC-RSI-KYUFU         PIC  9(01).
-      *    手指の創傷に係る機能回復指導加算（労災・自賠責用）
-      *****03  LNK-ORCSC-RSI-KAIFUKU       PIC  9(01).
       *    外来管理加算削除のチェック
            03  LNK-ORCSC-GAIKANRIKBN-CHK   PIC  X(01).
+      *
+      *    入院期間
+           03  LNK-ORCSC-NYUINYMD           PIC X(08).
+           03  LNK-ORCSC-TAIINYMD           PIC X(08).
       *
       *    加算追加領域（更新時の自動加算（単独剤））
            03  LNK-ORCSC-KASAN.
