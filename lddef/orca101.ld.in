@@ -20,6 +20,7 @@ bind	"W14"		"OpenCOBOL"	"ORCGW14";
 bind	"W15"		"OpenCOBOL"	"ORCGW15";
 bind	"W16"		"OpenCOBOL"	"ORCGW16";
 bind	"W17"		"OpenCOBOL"	"ORCGW17";
+bind	"W18"		"OpenCOBOL"	"ORCGW18";
 bind	"W20"		"OpenCOBOL"	"ORCGW20";
 bind	"W21"		"OpenCOBOL"	"ORCGW21";
 bind	"W22"		"OpenCOBOL"	"ORCGW22";
@@ -42,14 +43,14 @@ data	{
 	window	{
 		W01;
 		W02;
-                W03;
-                W04;
-                W05;
-                W06;
-                W07;
-                W08;
-                W09;
-                W10;
+		W03;
+		W04;
+		W05;
+		W06;
+		W07;
+		W08;
+		W09;
+		W10;
 		W11;
 		W12;
 		W13;
@@ -57,6 +58,7 @@ data	{
 		W15;
 		W16;
 		W17;
+		W18;
 		W20;
 		W21;
 		W22;
