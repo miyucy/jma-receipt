@@ -1494,6 +1494,7 @@
       *    新規以外の時老人チェック済みとする
            IF      SPA-MAE-KOHNUM (IDY)    NOT =   SPACE
                MOVE    1                   TO  SPA-NAI-AGE65 (IDY)
+               MOVE    1                   TO  SPA-NAI-AGECHK(IDY)
            END-IF
       *
       *    公費情報
