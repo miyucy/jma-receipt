@@ -162,6 +162,7 @@
            03  FLG-HIT                                 PIC 9(01).
            03  FLG-INTERACT                            PIC 9(01).
            03  FLG-ERRSET                              PIC 9(01).
+           03  FLG-JNISSU-HIT                          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -206,6 +207,7 @@
            03  IDX16                                   PIC 9(05). 
            03  IDX17                                   PIC 9(05). 
            03  IDX18                                   PIC 9(05). 
+           03  IDX19                                   PIC 9(05). 
            03  IDXA                                    PIC 9(05). 
            03  IDXE                                    PIC 9(05). 
            03  IDX-TSRYKA                              PIC 9(05).
@@ -279,6 +281,8 @@
                05  WRK-TIME-N                          PIC X(16).
            03  WRK-PTBYO-SRYYMD                        PIC X(08).
            03  WRK-HKNCOMBI                            PIC X(04).
+           03  WRK-TKAISU-SRYCD                        PIC X(09).
+           03  WRK-MAX                                 PIC 9(05).
       *    
       *    TEST
            03  WRK-DATE                                PIC X(08).
@@ -4009,12 +4013,17 @@
                MOVE    "（入院）"  TO   WRK-NYUGAI-MES
            END-IF
       *
-           MOVE    SPACE           TO   WRK-ERRMES-PLUS
-           MOVE    1               TO   WRK-PNT
+           IF    ( ORCBSD01-CHKKBN(10)  =  "1" )
+               MOVE    1           TO   WRK-MAX
+           ELSE
+               MOVE    THEIYOU-MAX TO   WRK-MAX
+           END-IF
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >    THEIYOU-MAX )
-                    OR   ( FLG-CHKEND (10) =   1 )
+                   UNTIL ( IDX0    >    WRK-MAX )
+      *
+               MOVE    SPACE       TO   WRK-ERRMES-PLUS
+               MOVE    1           TO   WRK-PNT
       *
                IF    ( THEIYOU-NYUGAIKBN1 (IDX0)
                                NOT =    ORCBSD01-NYUGAIKBN )
@@ -4066,10 +4075,6 @@
       *
                MOVE    "100001"    TO   WRK-ERRCD
                PERFORM 215-ERRMES-HEN-SEC
-      *
-               IF    ( ORCBSD01-CHKKBN (10)    =   "1" )
-                   MOVE    1       TO  FLG-CHKEND (10)
-               END-IF
       *
            END-PERFORM
       *
@@ -4194,7 +4199,7 @@
        200112-CHKMST-HEI-SRY-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    併用算定の薬剤エラーメッセージ編集処理
+      *    併用算定の診療行為エラーメッセージ編集処理
       *****************************************************************
        200112-HEI-SRY-ERRMES-HEN-SEC   SECTION.
       *
@@ -4205,12 +4210,17 @@
                MOVE    "（入院）"  TO   WRK-NYUGAI-MES
            END-IF
       *
-           MOVE    SPACE           TO   WRK-ERRMES-PLUS
-           MOVE    1               TO   WRK-PNT
+           IF    ( ORCBSD01-CHKKBN(11)  =  "1" )
+               MOVE    1           TO   WRK-MAX
+           ELSE
+               MOVE    THEIYOU-MAX TO   WRK-MAX
+           END-IF
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >    THEIYOU-MAX )
-                    OR   ( FLG-CHKEND (11) =   1 )
+                   UNTIL ( IDX0    >    WRK-MAX )
+      *
+               MOVE    SPACE       TO   WRK-ERRMES-PLUS
+               MOVE    1           TO   WRK-PNT
       *
                IF    ( THEIYOU-NYUGAIKBN1 (IDX0)
                                NOT =    ORCBSD01-NYUGAIKBN )
@@ -4264,10 +4274,6 @@
                MOVE    "110001"    TO   WRK-ERRCD
                PERFORM 215-ERRMES-HEN-SEC
       *
-               IF    ( ORCBSD01-CHKKBN (11)    =   "1" )
-                   MOVE    1       TO  FLG-CHKEND (11)
-               END-IF
-      *
            END-PERFORM
       *
            .
@@ -4309,29 +4315,39 @@
        200112-TJNISSU-CHK-SEC          SECTION.
       *
            PERFORM VARYING IDX12   FROM    1   BY  1
-                   UNTIL ( IDX12   >   TJNISSU-MAX )
+                   UNTIL ( IDX12   >   TKAISU-MAX )
                     OR   ( FLG-CHKEND (12) =   1 )
       *
-               MOVE    ZERO        TO  TJNISSU-DAY-CNT (IDX12)
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   31 )
-                   IF    ( TJNISSU-DAY (IDX12 IDX0)    =   1 )
-                       COMPUTE TJNISSU-DAY-CNT (IDX12)
-                           =   TJNISSU-DAY-CNT (IDX12) +   1
-                   END-IF
-               END-PERFORM
+               MOVE    ZERO            TO  FLG-JNISSU-HIT
       *
                PERFORM VARYING IDX13   FROM    1   BY  1
-                       UNTIL ( IDX13   >   TKAISU-MAX )
+                       UNTIL ( IDX13   >   TJNISSU-MAX )
                         OR   ( FLG-CHKEND (12) =   1 )
       *
-                   IF    ( TJNISSU-HKNNUM (IDX12)
-                                       =   TKAISU-HKNNUM (IDX13))
+                   IF    ( TJNISSU-HKNNUM (IDX13)
+                                       =   TKAISU-HKNNUM (IDX12) )
+                       MOVE    1       TO  FLG-JNISSU-HIT
                        PERFORM 200112-TJNISSU-DAY-CHK-SEC
-                       MOVE    TKAISU-MAX      TO  IDX13
+                       MOVE    TJNISSU-MAX      TO  IDX13
                    END-IF
       *
                END-PERFORM
+      *
+      *        実日数算定元の剤が存在しない場合はエラー
+               IF    ( FLG-JNISSU-HIT  =   ZERO )
+                   PERFORM VARYING IDX19   FROM    1   BY  1
+                           UNTIL ( IDX19   >   TKAISU-SRYCD-MAX (IDX12))
+                            OR   ( FLG-CHKEND (12) =   1 )
+      *
+                       MOVE    TKAISU-HKNNUM (IDX12)
+                                           TO  WRK-HKNNUM
+                       MOVE    TKAISU-SRYCD (IDX12 IDX19)
+                                           TO  WRK-TKAISU-SRYCD
+      *
+                       PERFORM 200112-JNISSU-ERRMES-HEN-SEC
+      *
+                   END-PERFORM
+               END-IF
       *
            END-PERFORM
       *
@@ -4343,44 +4359,40 @@
       *****************************************************************
        200112-TJNISSU-DAY-CHK-SEC      SECTION.
       *
+           MOVE    ZERO        TO  TJNISSU-DAY-CNT (IDX13)
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   31 )
+               IF    ( TJNISSU-DAY (IDX13 IDX0)    =   1 )
+                   COMPUTE TJNISSU-DAY-CNT (IDX13)
+                       =   TJNISSU-DAY-CNT (IDX13) +   1
+               END-IF
+           END-PERFORM
+      *
            PERFORM VARYING IDX14   FROM    1   BY  1
-                   UNTIL ( IDX14   >   TKAISU-SRYCD-MAX (IDX13))
+                   UNTIL ( IDX14   >   TKAISU-SRYCD-MAX (IDX12))
                     OR   ( FLG-CHKEND (12) =   1 )
       *
-               MOVE    ZERO        TO  TKAISU-SRYCD-CNT (IDX13 IDX14)
+               MOVE    ZERO        TO  TKAISU-SRYCD-CNT (IDX12 IDX14)
       *
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   31 )
       *
-                   IF    ( TKAISU-SRYCD-DAY (IDX13 IDX14 IDX0 )
+                   IF    ( TKAISU-SRYCD-DAY (IDX12 IDX14 IDX0 )
                                        =   1 )
-                       COMPUTE TKAISU-SRYCD-CNT (IDX13 IDX14)
-                           =   TKAISU-SRYCD-CNT (IDX13 IDX14)  +   1
+                       COMPUTE TKAISU-SRYCD-CNT (IDX12 IDX14)
+                           =   TKAISU-SRYCD-CNT (IDX12 IDX14)  +   1
                    END-IF
       *
                END-PERFORM
       *
-               IF    ( TJNISSU-DAY-CNT (IDX12)
-                                   <   TKAISU-SRYCD-CNT (IDX13 IDX14))
-                   MOVE    TKAISU-HKNNUM (IDX13)
-                                       TO  SRH-HKNNUM
-                   MOVE    TKAISU-SRYCD (IDX13 IDX14)
-                                       TO  WRK-SRYCD
-                   MOVE    WRK-KJNYMD  TO  WRK-TNS-YMD
-                   PERFORM 900-TENSU-KEY-SEL-SEC
-                   IF    ( FLG-TENSU       NOT =   ZERO )
-                       MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
-                       PERFORM 800-ZENKAKU-HEN-SEC
-                       MOVE    WRK-OUT-INPUT   TO  TNS-NAME
-                   END-IF
+               IF    ( TJNISSU-DAY-CNT (IDX13)
+                                   <   TKAISU-SRYCD-CNT (IDX12 IDX14))
+                   MOVE    TKAISU-HKNNUM (IDX12)
+                                       TO  WRK-HKNNUM
+                   MOVE    TKAISU-SRYCD (IDX12 IDX14)
+                                       TO  WRK-TKAISU-SRYCD
       *
-                   MOVE    TNS-NAME    TO  WRK-ERRMES-PLUS
-                   MOVE    "120001"    TO  WRK-ERRCD
-                   PERFORM 216-ERRMES-HEN-SEC
-      *
-                   IF    ( ORCBSD01-CHKKBN (12)    =   "1" )
-                       MOVE    1       TO  FLG-CHKEND (12)
-                   END-IF
+                   PERFORM 200112-JNISSU-ERRMES-HEN-SEC
       *
                END-IF
       *
@@ -4388,6 +4400,32 @@
       *
            .
        200112-TJNISSU-DAY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    実日数エラーメッセージ編集処理
+      *****************************************************************
+       200112-JNISSU-ERRMES-HEN-SEC    SECTION.
+      *
+           MOVE    WRK-HKNNUM          TO  SRH-HKNNUM
+           MOVE    WRK-TKAISU-SRYCD    TO  WRK-SRYCD
+           MOVE    WRK-KJNYMD  TO  WRK-TNS-YMD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( FLG-TENSU       NOT =   ZERO )
+               MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+           END-IF
+      *
+           MOVE    TNS-NAME    TO  WRK-ERRMES-PLUS
+           MOVE    "120001"    TO  WRK-ERRCD
+           PERFORM 216-ERRMES-HEN-SEC
+      *
+           IF    ( ORCBSD01-CHKKBN (12)    =   "1" )
+               MOVE    1       TO  FLG-CHKEND (12)
+           END-IF
+      *
+           .
+       200112-JNISSU-ERRMES-HEN-EXT.
            EXIT.
       *****************************************************************
       *    入院診療行為日チェック処理
