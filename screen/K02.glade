@@ -3020,15 +3020,6 @@
     </widget>
 
     <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>8</x>
-      <y>68</y>
-      <width>808</width>
-      <height>20</height>
-    </widget>
-
-    <widget>
       <class>GtkButton</class>
       <name>B12CS</name>
       <x>916</x>
@@ -3298,6 +3289,31 @@
       <width>340</width>
       <height>20</height>
       <label>Ì¾        ¾Î</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>8</x>
+      <y>76</y>
+      <width>808</width>
+      <height>20</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>JIKANMSG</name>
+      <x>8</x>
+      <y>64</y>
+      <width>141</width>
+      <height>20</height>
+      <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
