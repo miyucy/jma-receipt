@@ -53,6 +53,7 @@
       *  01.00.19    NACL-門脇    03/09/29  包括対象検査情報のセット
       *                                     検査等実施判断情報のセット
       *                                     各種番号等情報のセット
+      *  01.00.20    NACL-門脇    03/10/02  東京都地方公費対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5721,6 +5722,9 @@
                                                       OR "016")   AND
                   (RECE62-SRYYM             >=  "200304"      ))
              OR  ((RECE62-KOHNUM(KOHFTN-IDX) =  "051"         )   AND
+                  (RECE62-SRYYM             >=  "200310"      ))
+             OR  ((WRK-PREFNUM               =  "13"          )   AND
+                  (RECE62-KOHNUM(KOHFTN-IDX) =  "151"         )   AND
                   (RECE62-SRYYM             >=  "200310"      ))
       *
                 COMPUTE  WRK-FTNKEI2 = RECE62-FTNMONEY(KOHFTN-IDX + 1)
