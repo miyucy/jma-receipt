@@ -129,14 +129,14 @@ path	key7 	{
 	DBSELECT	{
 		DECLARE tbl_ptkohinf_key7_csr CURSOR FOR
 		SELECT a.*
-		FROM tbl_ptkohinf a,tbl_ptinf b
+		FROM tbl_ptkohinf a,tbl_ptnum b
 			WHERE a.HOSPID      =   :HOSPID
 			AND   a.KOHNUM      =   :KOHNUM
 			AND   a.TEKSTYMD    <   :TEKSTYMD
 			AND   a.TEKEDYMD    >=  :TEKEDYMD
 			AND   a.SAKJOKBN    <>   '1'
 			AND   a.PTID      =   b.PTID
-			ORDER   BY      a.FTNJANUM,b.KANANAME
+			ORDER   BY      a.FTNJANUM,b.PTNUM
 		;
 	};
 };
