@@ -2457,12 +2457,12 @@
                            COMPUTE   WK-SYUTEN  =  WK-SYUTEN  -  TNS-TEN
                        ELSE
                          IF    TNS-GAITENTTLKBN   =    130
-                           COMPUTE   RECE02-TENSU(7 BUN-IDX)  =
-                                     RECE02-TENSU(7 BUN-IDX)  +
+                           COMPUTE   RECE02-TENSU(7 BUN-IDX2)  =
+                                     RECE02-TENSU(7 BUN-IDX2)  +
                                     (TNS-TEN   *   ACCT-ZAIKAISU)
                          ELSE  
-                           COMPUTE   RECE02-TENSU(34 BUN-IDX)  =
-                                     RECE02-TENSU(34 BUN-IDX)  +
+                           COMPUTE   RECE02-TENSU(34 BUN-IDX2)  =
+                                     RECE02-TENSU(34 BUN-IDX2)  +
                                     (WK-SYUTEN   *   ACCT-ZAIKAISU)
                          END-IF
                        END-IF
@@ -2480,12 +2480,12 @@
                            COMPUTE   WK-SYUTEN  =  WK-SYUTEN  -  TNS-TEN
                        ELSE
                          IF    TNS-GAITENTTLKBN   =    130
-                           COMPUTE   RECE02-TENSU(7 BUN-IDX)  =
-                                     RECE02-TENSU(7 BUN-IDX)  +
+                           COMPUTE   RECE02-TENSU(7 BUN-IDX3)  =
+                                     RECE02-TENSU(7 BUN-IDX3)  +
                                     (TNS-TEN   *   ACCT-ZAIKAISU)
                          ELSE  
-                           COMPUTE   RECE02-TENSU(34 BUN-IDX)  =
-                                     RECE02-TENSU(34 BUN-IDX)  +
+                           COMPUTE   RECE02-TENSU(34 BUN-IDX3)  =
+                                     RECE02-TENSU(34 BUN-IDX3)  +
                                     (WK-SYUTEN   *   ACCT-ZAIKAISU)
                          END-IF
                        END-IF
@@ -2503,12 +2503,12 @@
                            COMPUTE   WK-SYUTEN  =  WK-SYUTEN  -  TNS-TEN
                        ELSE
                          IF    TNS-GAITENTTLKBN   =    130
-                           COMPUTE   RECE02-TENSU(7 BUN-IDX)  =
-                                     RECE02-TENSU(7 BUN-IDX)  +
+                           COMPUTE   RECE02-TENSU(7 BUN-IDX4)  =
+                                     RECE02-TENSU(7 BUN-IDX4)  +
                                     (TNS-TEN   *   ACCT-ZAIKAISU)
                          ELSE
-                           COMPUTE   RECE02-TENSU(34 BUN-IDX)  =
-                                     RECE02-TENSU(34 BUN-IDX)  +
+                           COMPUTE   RECE02-TENSU(34 BUN-IDX4)  =
+                                     RECE02-TENSU(34 BUN-IDX4)  +
                                     (WK-SYUTEN   *   ACCT-ZAIKAISU)
                          END-IF
                        END-IF
