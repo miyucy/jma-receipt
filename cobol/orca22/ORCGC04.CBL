@@ -258,8 +258,6 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *???
-           DISPLAY "SPA=" SPA-MOTOPG "#" SPA-CID2-FLG "#"
       *    病名移行確認画面より
            IF      SPA-MOTOPG(1:4)     =   "CID2"
                IF      SPA-CID2-FLG    =   "OK"
@@ -286,16 +284,15 @@
                                     INTO    SPA-NAI-C04-BYOMEI (IDZ)
                        END-STRING
                    END-PERFORM        
-      *???
-               DISPLAY "CD=" IDZ "#" IDX2 "#" SPA-C04-IKOSAKI-BYOMEICD 
-                             "#" SPA-C04-IKOSAKI-BYOMEI "#"
-                             SPA-NAI-C04-BYOMEI (IDZ) "#"
-      *???
                END-IF
                MOVE    SPACE           TO  SPA-CIDCD2
                                            SPA-ERRCD
                                            WRK-HAISIYMDH
                PERFORM 410022-BYOMEI-HENSYU-SEC
+               ADD     1                   TO  SPA-GMN-C04-CUR
+               IF      SPA-GMN-C04-CUR     >   8
+                   MOVE    2                   TO  SPA-GMN-C04-CUR
+               END-IF
                GO      TO      300-SCREEN-EXT
            END-IF
       *
@@ -823,7 +820,7 @@
       *
       *    変更処理のときの複数病名入力
            IF    ( SPA-NAI-C04-BYOMEISU-MAX
-                                       =   1    )
+                                       >   1    )
            AND   ( SPA-GMN-C02-BANGO   >   ZERO )               
                MOVE    99                  TO  SPA-GMN-C04-CUR
                MOVE    "0003"              TO  SPA-ERRCD
@@ -1262,7 +1259,7 @@
       *
       *    変更処理のときの複数病名入力
            IF    ( SPA-NAI-C04-BYOMEISU-MAX
-                                       =   1    )
+                                       >   1    )
            AND   ( SPA-GMN-C02-BANGO   >   ZERO )               
                MOVE    99                  TO  SPA-GMN-C04-CUR
                MOVE    "0003"              TO  SPA-ERRCD

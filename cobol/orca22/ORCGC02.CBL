@@ -1580,19 +1580,26 @@
                MOVE    SPA-NAI-C02-BYOMEICD (IDZ)
                                            TO  USBYO-BYOMEIINPUTCD
                PERFORM 410112-USERBYOMEI-HENSYU-SEC
-               PERFORM VARYING IDX3    FROM    1   BY  1
-                       UNTIL   IDX3    >       21
-                       OR      SPA-NAI-C04-BYOMEICD-O (IDZ IDX3)
-                                       =   SPACE
-                   MOVE    SPA-NAI-C04-BYOMEICD-O (IDZ IDX3)
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       21
+                   IF      SPA-C01-TBYOMEICD (IDZ)
+                                       =   SPA-GMN-C04-INPUTCD (IDX)
+                       PERFORM VARYING IDX3    FROM    1   BY  1
+                               UNTIL   IDX3    >       21
+                               OR      SPA-NAI-C04-BYOMEICD-O (IDX IDX3)
+                                                       =   SPACE
+                           MOVE    SPA-NAI-C04-BYOMEICD-O (IDX IDX3)
                                        TO  SPA-NAI-C02-BYOMEICD-O
                                                           (IDZ IDX3)
-                   MOVE    SPA-NAI-C04-BYOMEI-O (IDZ IDX3)
+                           MOVE    SPA-NAI-C04-BYOMEI-O (IDX IDX3)
                                        TO  SPA-NAI-C02-BYOMEI-O
                                                           (IDZ IDX3)
-               END-PERFORM
-               MOVE    SPA-NAI-C04-BYOMEI  (IDZ)
+                       END-PERFORM 
+                       MOVE    SPA-NAI-C04-BYOMEI  (IDX)
                                        TO  SPA-NAI-C02-BYOMEI (IDZ)
+                       MOVE    21      TO  IDX
+                   END-IF   
+               END-PERFORM
            END-PERFORM
       *
            PERFORM VARYING IDX3    FROM    1   BY  1
@@ -6319,14 +6326,34 @@
                MOVE    "0090"              TO  SPA-ERRCD
                GO  TO  490-USERBYOMEI-KENSAKU-EXT
            END-IF
-      *     
+      *
+      *    変更処理のとき自院コードの入力がない場合
+           IF    ( SPA-GMN-C02-BANGO   
+                                   NOT =   SPACE ) 
+           AND   ( SPA-GMN-C02-BYOMEICD-G
+                                       =   SPACE )
+           AND   (SPA-NAI-C02-BYOMEICD (1)
+                                   NOT =   SPACE )       
+               MOVE    "0069"              TO  SPA-ERRCD
+               GO  TO  490-USERBYOMEI-KENSAKU-EXT 
+           END-IF
+      *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       6
-               IF      SPA-NAI-C02-BYOMEITOP (IDX)      =   "1"
-               AND     SPA-NAI-C02-USERBYOMEIFLG (IDX)  =   SPACE            
-                   MOVE    "0069"              TO  SPA-ERRCD
-                   GO  TO  490-USERBYOMEI-KENSAKU-EXT 
-               END-IF
+               IF      SPA-GMN-C02-BYOMEICD (IDX)  NOT =   SPACE             
+                   MOVE    ZERO                TO  WRK-LENGTH                    
+                   PERFORM VARYING IDZ FROM    10  BY  -1
+                           UNTIL   IDZ <       1
+                       IF      SPA-GMN-C02-BYOMEICD(IDX)(IDZ:1)
+                                           NOT =   SPACE
+                           MOVE    IDZ             TO  WRK-LENGTH
+                           MOVE    1               TO  IDZ
+                       END-IF
+                       IF      WRK-LENGTH           =   7    
+                           MOVE    "0069"              TO  SPA-ERRCD
+                           GO  TO  490-USERBYOMEI-KENSAKU-EXT 
+                       END-IF
+                   END-PERFORM
            END-PERFORM
       *
            INITIALIZE                  SPA-C01KYOUTU
@@ -6336,9 +6363,9 @@
       * 
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       6
-               IF      SPA-NAI-C02-BYOMEICD (IDX)  NOT =   SPACE
+               IF      SPA-GMN-C02-BYOMEICD (IDX)  NOT =   SPACE
                    ADD     1               TO  IDY              
-                   MOVE    SPA-NAI-C02-BYOMEICD (IDX)
+                   MOVE    SPA-GMN-C02-BYOMEICD (IDX)
                                            TO  SPA-C01-TBYOMEICD (IDY)
                    MOVE    SPA-NAI-C02-BYOMEI   (IDX)
                                            TO  SPA-C01-TBYOMEI   (IDY)
