@@ -670,6 +670,7 @@
        3001-SCREEN-SYORI-SEC             SECTION.
       *
            MOVE    SPACE               TO  SPA-KIDCD
+           MOVE    SPACE               TO  SPA-ERRMSG2
       *
            INITIALIZE                  SPA-K03-AREA
            INITIALIZE                  SYUNOU-REC

@@ -757,6 +757,7 @@
        3000-INIT-SCREEN-SEC          SECTION.
       *
            MOVE    SPACE               TO  SPA-KIDCD
+           MOVE    SPACE               TO  SPA-ERRMSG2
       *
            INITIALIZE                  SPA-K08
            INITIALIZE                  SPA-K08-AREA
