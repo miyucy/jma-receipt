@@ -205,6 +205,12 @@
       *¿Ç»¡ÎÁÊÑ¹¹¤¢¤ê
                05  SPA-SINSATU-SAI         PIC  9(01).
       *
+      *Æþ±¡ÍÑ¡Ê£Ë£°£²£Î¡Ë
+      *        Æþ±¡Æü
+               05  SPA-K02N-NYUINYMD           PIC X(08).
+      *        Âà±¡Æü
+               05  SPA-K02N-TAIINYMD           PIC X(08).
+      *
            03  SPA-SONOTA-AREA.
       *³ÎÇ§¥á¥Ã¥»¡¼¥¸
                05  SPA-ERRMSG2             PIC  X(100).

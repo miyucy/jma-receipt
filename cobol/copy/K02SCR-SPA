@@ -179,8 +179,8 @@
                05  SPA-K02N-JIKANKBN-COMB.
                    07  SPA-K02N-JIKANKBN-LST   PIC X(12)
                                                OCCURS  5.
-               05  SPA-K02N-NYUINYMD           PIC X(08).
-               05  SPA-K02N-TAIINYMD           PIC X(08).
+      *********05  SPA-K02N-NYUINYMD           PIC X(08).
+      *********05  SPA-K02N-TAIINYMD           PIC X(08).
                05  SPA-K02N-NYUINKIKAN.
                    07  SPA-K02N-NYUINYMDW          PIC X(09).
                    07  SPA-K02N-H1                 PIC X(01).
