@@ -891,6 +891,7 @@ COPYS = \
         CPSYUTOTAL.INC \
         J025.INC \
         K97.INC  \
+	CPQSUB03.INC \
 
 
 DBPATH = \
