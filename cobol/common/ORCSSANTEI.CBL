@@ -78,6 +78,7 @@
       *    ½é¿ÇÎÁ»»ÄêÆü
            03  WRK-SYOYMD              PIC X(08).
            03  WRK-SYOSINYMD           PIC X(008).
+           03  WRK-SYOSINYMD-1         PIC X(008).
       *
            03  WRK-KBN                 PIC X(02).
       * 
@@ -223,7 +224,7 @@
            MOVE    "SANTEI-KEY3"       TO  WRK-DBPATH
            PERFORM 1001-SANTEI-KEN-SEC
            PERFORM UNTIL   (FLG-SANTEI     =   1 )  OR
-                           (SANTEI-SRYYM   <=  SSANTEI-SRYYMD)
+                           (SANTEI-SRYYM   <=  SSANTEI-SRYYMD(1:6))
                MOVE    SANTEI-FSANTEIYMD   TO  WRK-FSANTEIYMD-OLD
                MOVE    WRK-DBPATH          TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
@@ -258,7 +259,8 @@
                    MOVE    "SANTEI-KEY3"       TO  WRK-DBPATH
                    PERFORM 1001-SANTEI-KEN-SEC
                    PERFORM UNTIL   (FLG-SANTEI     =   1 )  OR
-                                   (SANTEI-SRYYM   <=  SSANTEI-SRYYMD)
+                                   (SANTEI-SRYYM   <=  SSANTEI-SRYYMD
+                                                                (1:6))
                        MOVE    WRK-DBPATH          TO  ORC-DBPATH
                        PERFORM 920-SANTEI-READ-SEC
                    END-PERFORM
@@ -274,14 +276,21 @@
                END-IF
            END-PERFORM
       *
-      *    ËýÀ­áÖÄË¼À´µ´ÉÍýÎÁ¤Î»þ¡¢½é¿ÇÎÁ»»ÄêÆü¤«¤é½é²ó»»ÄêÆü¤ò»Ï¤á¤ë
-           IF     (WRK-MAE-SRYCD       =   WRK-MANSEI ) 
-               PERFORM 1009-MANSE-CHK-SEC
-           END-IF
-      *
       *    Â¸ºß¤·¤Ê¤¤»þ¡¢¿ÇÎÅÇ¯·î
            IF      WRK-FSANTEIYMD      =   SPACE
                 MOVE    SSANTEI-SRYYMD     TO  WRK-FSANTEIYMD
+           END-IF
+      *
+           IF      (WRK-FSANTEIYMD-OLD NOT =   SPACE )  AND
+                   (WRK-FSANTEIYMD     NOT =   SPACE )  AND
+                   (WRK-FSANTEIYMD-OLD NOT =   WRK-FSANTEIYMD)
+               MOVE    WRK-FSANTEIYMD-OLD  TO  WRK-MAE-FSANTEIYMD
+               MOVE    WRK-FSANTEIYMD      TO  WRK-KON-FSANTEIYMD
+               MOVE    1                   TO  FLG-SYOKAI
+           END-IF
+      *    ËýÀ­áÖÄË¼À´µ´ÉÍýÎÁ¤Î»þ¡¢½é¿ÇÎÁ»»ÄêÆü¤«¤é½é²ó»»ÄêÆü¤ò»Ï¤á¤ë
+           IF     (WRK-MAE-SRYCD       =   WRK-MANSEI ) 
+               PERFORM 1009-MANSE-CHK-SEC
            END-IF
       *
            .
@@ -492,18 +501,22 @@
                       (WRK-SYOSINYMD       >   WRK-FSANTEIYMD)
                    MOVE    SSANTEI-SRYYMD      TO  WRK-FSANTEIYMD
                END-IF
+               MOVE    WRK-SYOSINYMD       TO  WRK-SYOSINYMD-1
            ELSE
+               MOVE    SSANTEI-SYOYMD      TO  WRK-SYOSINYMD-1
                IF      SSANTEI-SYOYMD      >   WRK-FSANTEIYMD
                    MOVE    SSANTEI-SRYYMD      TO  WRK-FSANTEIYMD
                END-IF
            END-IF
       *
            MOVE    ZERO                TO  FLG-MANSEI-ALL
+           MOVE    ZERO                TO  FLG-SYOKAI
            IF      WRK-FSANTEIYMD-OLD  NOT =   SPACE
                MOVE    WRK-FSANTEIYMD-OLD(1:6) TO  WRK-SRYYM
                PERFORM 10091-SRYKARRK-CHK-SEC
                IF     (WRK-SYOSINYMD   NOT =   SPACE     )   AND
-                      (WRK-SYOSINYMD       <=  WRK-FSANTEIYMD)
+                      (WRK-SYOSINYMD       <   WRK-FSANTEIYMD-OLD) AND
+                      (WRK-SYOSINYMD       =   WRK-SYOSINYMD-1)
                    MOVE    1               TO  FLG-MANSEI-ALL
                    MOVE    WRK-FSANTEIYMD  TO  WRK-KON-FSANTEIYMD
                END-IF
@@ -514,7 +527,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÊÝ¸±Ëè¤Î¥³¡¼¥É¤ÎÈ½Äê½èÍý
+      *    ½é¿ÇÎÁ»»ÄêÆüÈ½Äê½èÍý
       *****************************************************************
        10091-SRYKARRK-CHK-SEC      SECTION.
       *
@@ -842,6 +855,10 @@
       *
                IF      FLG-MANSEI-ALL      =   1
                    PERFORM 400-SANTEI-MANSEI-SEC
+               ELSE
+                   IF      FLG-SYOKAI          =   1
+                       PERFORM 400-SANTEI-ALLUPD-SEC
+                   END-IF
                END-IF
            ELSE
       *
@@ -1181,7 +1198,6 @@
            MOVE    SSANTEI-SRYCD       TO  WRK-SRYCD
            MOVE    WRK-MAE-YMD         TO  WRK-FSANTEIYMD
            PERFORM 300111-DEL-SYOKAI-SEC
-      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   TBL-MAX  )  OR
                               (WRK-KBN     =   SPACE    )
@@ -1192,14 +1208,15 @@
                    PERFORM 300111-DEL-SYOKAI-SEC
                END-IF
            END-PERFORM
-      *
            IF      WRK-YMD3        NOT =   SPACE
-               IF      WRK-YMD3            >   WRK-FSANTEIYMD2
+               IF     (WRK-FSANTEIYMD2 NOT =   SPACE )  AND
+                      (WRK-YMD3            >   WRK-FSANTEIYMD2)
                    MOVE    WRK-FSANTEIYMD2     TO  WRK-KON-FSANTEIYMD
                ELSE
                    MOVE    WRK-YMD3            TO  WRK-KON-FSANTEIYMD
                END-IF
            END-IF
+      *
            IF      WRK-KON-FSANTEIYMD  =   SPACE
                MOVE    ZERO                TO  FLG-SYOKAI
            END-IF
@@ -1228,7 +1245,10 @@
                    IF     (WRK-YMD3        =   SPACE  )  OR
                           (WRK-YMD3        >   WRK-YMD)
                        MOVE    WRK-YMD         TO  WRK-YMD3
-                       MOVE    SANTEI-FSANTEIYMD   TO  WRK-FSANTEIYMD2
+                       IF      SANTEI-FSANTEIYMD(1:6)  =   SANTEI-SRYYM
+                           MOVE    SANTEI-FSANTEIYMD
+                                               TO  WRK-FSANTEIYMD2
+                       END-IF
                    END-IF
                END-IF
                MOVE    WRK-DBPATH          TO  ORC-DBPATH
