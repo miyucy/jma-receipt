@@ -29,9 +29,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  03/11/06  出力先プリンタサブ追加
       *                                     出力先を予約一覧（７）へ
-      * 01.00.01     NACL-多々納  05/12/07  MONFUNC対応
-      *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
-      *  04.08.00    NACL-多々納  14/08/01  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -40,8 +37,7 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-      **** SELECT  PRT-FILE        ASSIGN  HC01PARA
-           SELECT  PRT-FILE        ASSIGN  ASGNPARA
+           SELECT  PRT-FILE        ASSIGN  HC01PARA
                                    FILE    STATUS  IS  STS-PARA.
       
       *
@@ -56,10 +52,6 @@
       *
       *    印刷データ名称領域
            COPY    "CPCOMMONPRT.INC".
-      *
-      *v4.8
-      *    一時デイレクトリ領域 
-           COPY    "CPASGNPARA.INC".
       *
       *    ステータス領域
        01  STS-AREA.
@@ -146,14 +138,10 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
-      *v4.8
-      *    一時ファイル名取得
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
-      *****COPY    "CPORCMCP.INC".
+           COPY    "CPORCMCP.INC".
       *
       ****************************************************************
       *    連絡領域
@@ -276,11 +264,11 @@
       *        患者番号変換
                IF      UKE-PTID        NOT =   ZERO
                    INITIALIZE                  ORCSPTIDAREA
-                   MOVE    SPA-HOSPNUM     TO  SPTID-HOSPNUM
+                   MOVE    SPA-HOSPID      TO  SPTID-HOSPID
                    MOVE    UKE-PTID        TO  SPTID-PTID
                    CALL    "ORCSPTID"          USING
                                                ORCSPTIDAREA
-                                               SPA-AREA
+                                               SPA-1009-TBL
                    IF      SPTID-RC    =   ZERO
                        MOVE    SPTID-PTNUM     TO  HCM16-PTNUM(CNT-LINE)
                    END-IF
@@ -311,11 +299,7 @@
                MOVE    WRK-HEN-TIME    TO  HCM16-KAIKEI(CNT-LINE)
       *
       *        受付読み込み
-               MOVE    ZERO            TO  FLG-UKETUKE
-               MOVE    ZERO            TO  UKE-UKEID
                PERFORM 900-UKETUKE-FETCH-SEC
-                       UNTIL   (FLG-UKETUKE   =  1  )  OR
-                               (UKE-UKEID     >  ZERO)
       *
            END-PERFORM
       *
@@ -329,19 +313,10 @@
        390-PRINT-OUT-SEC           SECTION.
       *
       *    ファイルＯＰＥＮ
-           MOVE    SPA-HOSPNUM     TO  HC01PARA-HOSPNUM
-           MOVE    "HC16"          TO  HC01PARA-FORM-ID
+           MOVE    "HCM16"         TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID      TO  HC01PARA-TERMID
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE        TO  HC01PARA-CNT
-      *v4.8
-      *    一時ファイル名取得
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                           SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
-      *
            OPEN    OUTPUT              PRT-FILE
            WRITE   HCM16
            CLOSE                       PRT-FILE
@@ -350,14 +325,11 @@
            MOVE    "HC01.sh"       TO  MKPRT-ID
            MOVE    "HCM16.red"     TO  MKPRT-DIA
            MOVE    SPACE           TO  MKPRT-DEF
-      *****MOVE    HC01PARA        TO  MKPRT-DAT
-           MOVE    ASGNPARA        TO  MKPRT-DAT
+           MOVE    HC01PARA        TO  MKPRT-DAT
       *****MOVE    SYS-1031-PRTNM(9)   TO  MKPRT-PRTNM
            MOVE    SYS-1031-PRTNM(7)   TO  MKPRT-PRTNM
-           MOVE    "受付一覧"          TO  MKPRT-INFO
            CALL    "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
-                                       SPA-AREA
       *
            .
        390-PRINT-OUT-EXT.
@@ -385,26 +357,35 @@
       ****************************************************************
        800-SYSKANRI-READ-SEC       SECTION.
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-SYSKANRI
-                   MOVE    MCPDATA-REC         TO  SYSKANRI-REC
+           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC      =   ZERO
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC      =   ZERO
+                   MOVE    ZERO            TO  FLG-SYSKANRI
                ELSE
-                   MOVE    1                   TO  FLG-SYSKANRI
+                   MOVE    1               TO  FLG-SYSKANRI
                END-IF
            ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
+               MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        800-SYSKANRI-READ-EXT.
@@ -419,9 +400,6 @@
            INITIALIZE                  SYS-1005-REC
            MOVE    "1005"          TO  SYS-1005-KANRICD
            MOVE    UKE-SRYKA       TO  SYS-1005-KBNCD
-           MOVE    SPA-SYSYMD      TO  SYS-1005-STYUKYMD
-           MOVE    SPA-SYSYMD      TO  SYS-1005-EDYUKYMD
-           MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI    =   ZERO
@@ -443,9 +421,6 @@
            INITIALIZE                  SYS-1010-REC
            MOVE    "1010"          TO  SYS-1010-KANRICD
            MOVE    UKE-DRCD        TO  SYS-1010-KBNCD
-           MOVE    SPA-SYSYMD      TO  SYS-1010-STYUKYMD
-           MOVE    SPA-SYSYMD      TO  SYS-1010-EDYUKYMD
-           MOVE    SPA-HOSPNUM     TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI    =   ZERO
@@ -467,9 +442,6 @@
            INITIALIZE                  SYS-1012-REC
            MOVE    "1012"          TO  SYS-1012-KANRICD
            MOVE    UKE-SRYNAIYO    TO  SYS-1012-KBNCD
-           MOVE    SPA-SYSYMD      TO  SYS-1012-STYUKYMD
-           MOVE    SPA-SYSYMD      TO  SYS-1012-EDYUKYMD
-           MOVE    SPA-HOSPNUM     TO  SYS-1012-HOSPNUM
            MOVE    SYS-1012-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI    =   ZERO
@@ -523,18 +495,17 @@
        900-UKETUKE-SELECT-SEC      SECTION.
       *
            INITIALIZE                  UKETUKE-REC
-           MOVE    SPA-HOSPNUM     TO  UKE-HOSPNUM
+           MOVE    SPA-HOSPID      TO  UKE-HOSPID
            MOVE    SPA-SYSYMD      TO  UKE-UKEYMD
            MOVE    UKETUKE-REC     TO  MCPDATA-REC
-      *
-           MOVE    "tbl_uketuke"   TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY3"  TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC      =   ZERO
-               MOVE    ZERO            TO  FLG-UKETUKE
                PERFORM 900-UKETUKE-FETCH-SEC
-                       UNTIL   (FLG-UKETUKE   =  1  )  OR
-                               (UKE-UKEID     >  ZERO)
            ELSE
                INITIALIZE                  UKETUKE-REC
                MOVE    1               TO  FLG-UKETUKE
@@ -549,12 +520,18 @@
       ****************************************************************
        900-UKETUKE-FETCH-SEC       SECTION.
       *
-           MOVE    "tbl_uketuke"   TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY3"  TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC      =   ZERO
                MOVE    MCPDATA-REC     TO  UKETUKE-REC
                MOVE    ZERO            TO  FLG-UKETUKE
+               IF      UKE-UKEID   =   ZERO
+                   GO  TO  900-UKETUKE-FETCH-SEC
+               END-IF
            ELSE
                INITIALIZE                  UKETUKE-REC
                MOVE    1               TO  FLG-UKETUKE
@@ -565,56 +542,18 @@
            EXIT.
       *
       ****************************************************************
-      *    受付ＣＬＯＳＥ
+      *    受付読み込み
       ****************************************************************
        900-UKETUKE-CLOSE-SEC       SECTION.
       *
-           MOVE    "tbl_uketuke"   TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC 
+           MOVE    "DBCLOSE"       TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY3"  TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            .
        900-UKETUKE-CLOSE-EXT.
-           EXIT.
-      *****************************************************************
-      *    テーブル検索処理
-      *****************************************************************
-       910-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       910-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ読み込み処理
-      *****************************************************************
-       920-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       920-DBFETCH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＤＢクローズ処理
-      *****************************************************************
-       990-DBCLOSE-SEC         SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       990-DBCLOSE-EXT.
            EXIT.
       *
