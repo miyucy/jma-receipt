@@ -258,6 +258,10 @@
       *訂正初期表示
                05  SPA-SINSATU-SAI         PIC  9(01).
       *
+      *内服薬剤７種類以上確認
+               05  SPA-NAIFUKU-CHK         PIC  9(01).
+               05  SPA-NAIFUKU-OK          PIC  9(01).
+      *
            03  SPA-SONOTA-AREA.
       *確認メッセージ
                05  SPA-ERRMSG2             PIC  X(100).
