@@ -1192,6 +1192,7 @@
                   (SPA-P02-UKEID   NOT =   ZERO     )) AND
                   (SPA-SYSYMD          =   SPA-SRYYMD ) AND
                   (SPA-SYORIFLG        =   ZERO       )
+             AND  (LNK-SC95-PG    NOT  =   "K01"    )
                PERFORM 10014-UKETUKE-CHK-SEC
            END-IF
       *
@@ -1938,40 +1939,6 @@
                    END-IF
                END-IF
            END-IF
-      *DEL
-           GO      TO  100111-DOUJI-JYURRK-EXT
-      *    ELSE
-               PERFORM 200211-FUKU-HEN-SEC
-      *        Ê£¿ô¿ÇÎÅ²Ê
-               IF      SYU-FUKU-KBN    NOT =   SPACE
-      *            ²ÊËè¤ËÊÔ½¸
-                   PERFORM VARYING     IDX-F   FROM   1   BY  1
-                           UNTIL       IDX-F   >   10
-                       IF     (WRK-FUKU-DENPNUM (IDX-F)   =   ZERO)
-                           MOVE    SYU-FUKU-KBN    TO  WRK-FUKU-KBN
-                                                                (IDX-F)
-                           MOVE    SYU-FUKU-DENPNUM
-                                                   TO  WRK-FUKU-DENPNUM
-                                                                (IDX-F)
-                           MOVE    SYU-HKNCOMBINUM TO  WRK-FUKU-HKNCOMBI
-                                                                (IDX-F)
-                           MOVE    SYU-SRYKA       TO  WRK-FUKU-SRYKA
-                                                                (IDX-F)
-                       END-IF
-                       IF      WRK-FUKU-DENPNUM (IDX-F)
-                                                   =   SYU-FUKU-DENPNUM
-                           IF      WRK-FUKU-KBN (IDX-F)  =   "2"
-                               CONTINUE
-                           ELSE
-                               MOVE    SYU-FUKU-KBN    TO
-                                                   WRK-FUKU-KBN (IDX-F)
-                           END-IF
-                           MOVE    10              TO  IDX-F
-                       END-IF
-                   END-PERFORM
-               END-IF
-      *    END-IF
-      *DEL
            .
        100111-DOUJI-JYURRK-EXT.
            EXIT.
@@ -4193,7 +4160,6 @@
                    IF      WKSRY-ZAIKAIKEI     =   ZERO
                        CONTINUE
                    ELSE
-      *
                        MOVE    SRY-ZAINUM          TO  WRK-ZAINUM
                        MOVE    SPACE               TO  PARA-REC
                        MOVE    "WKSRYACT"          TO  PARA-FILEMEI
