@@ -46,6 +46,7 @@
       *  01.04.04    MCC-藤原     02/04/12  労災医療機関情報の追加     
       *  01.04.05    MCC-藤原     02/04/24  県単独事業情報の追加     
       *  01.05.01    MCC-森脇     02/05/23  チェック機能制御情報の追加
+      *  01.05.02    NACL-藤原    02/10/04  区分コードの最大行を２００に変更
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -86,7 +87,7 @@
                    07  SPA-GMN-KANRICD-MAX        PIC 9(02).
       *---- (01.02.04) LINE ADD START --------------------------------
                    07  SPA-GMN-KOUMOKU.
-                       09  SPA-GMN-KBNCDLST       OCCURS  100.
+                       09  SPA-GMN-KBNCDLST       OCCURS  200.
                            11  SPA-GMN-KBNCDL     PIC X(08).
                            11  SPA-GMN-F1L        PIC X(01).
                            11  SPA-GMN-KBNCDMEIL  PIC X(26).
@@ -776,7 +777,7 @@
       *
            MOVE    ZERO                TO  IDX
            PERFORM             UNTIL   FLG-SYSKANRI   =   1
-                               OR      IDX            >=  100
+                               OR      IDX            >=  200
                ADD     1              TO  IDX
                MOVE    MCPDATA-REC        TO  SYSKANRI-REC
                MOVE    SYS-KBNCD          TO  SPA-GMN-KBNCDL (IDX)
@@ -878,7 +879,7 @@
                WHEN    "1026"
                WHEN    "1027"
       *---- (01.02.02) LINE ADD START --------------------------------
-               WHEN    "2003"
+      *********WHEN    "2003"
       *---- (01.02.02) LINE ADD END   --------------------------------
                    IF      WRK-LEN         NOT =   2
                        MOVE    "0002"          TO  SPA-ERRCD
@@ -922,6 +923,7 @@
       *---- (01.02.04) LINE ADD START --------------------------------
                WHEN    "3001"
                WHEN    "3002"
+               WHEN    "2003"
                    IF      WRK-LEN         NOT =  3       
                        MOVE    "0002"          TO  SPA-ERRCD
                        GO  TO  4105-KBNCD-CHK-EXT
