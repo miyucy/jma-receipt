@@ -1674,8 +1674,9 @@
            END-PERFORM
       *
       *    画像診断のとき順番を変える
-           IF      FLG-SRYSYUKBN721    =   1
-               MOVE    WRK-RECE05-REC      TO  RECE05-REC
+           IF      FLG-SRYSYUKBN721    >   ZERO
+               MOVE     FLG-SRYSYUKBN721   TO  IDX 
+               MOVE    WRK-721-RECE05-REC  TO  RECE05-REC
                PERFORM 2007111-KOUI-TAIHI-HENSYU-SEC
            END-IF
       *
