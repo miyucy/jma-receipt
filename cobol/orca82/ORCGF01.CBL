@@ -37,6 +37,7 @@
       *                                     機序テーブルの追加
       *                                     人名テーブルの追加
       *                                     月代り受給者番号の追加
+      * 01.00.05     ひさなが     03/05/12  入院関連テーブルの追加
       *
       *****************************************************************
       *
@@ -81,15 +82,15 @@
                05  SPA-GMN-AREA.
                    07  SPA-GMN-FILE-ID        PIC X(128).
                    07  SPA-GMN-TBLG.
-                       09  SPA-GNM-TBL2       OCCURS  60.
-                           11  SPA-GMN-MSG    PIC X(20).
+                       09  SPA-GNM-TBL2       OCCURS  90.
+                           11  SPA-GMN-MSG    PIC X(30).
                            11  SPA-GMN-BTN    PIC X(01).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-MOTOPG         PIC X(08).
        01  SPA-WRK-AREA.
            03  SPA-WRK-WRK         PIC X(13).
            03  SPA-WRK-FILE-ID     PIC X(128).
-           03  SPA-WRK-TBLG1       PIC X(1260).
+           03  SPA-WRK-TBLG1       PIC X(2790).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -121,10 +122,10 @@
       *
       *    作業テーブル名称領域
        01  WK-TBL.
-           03  WK-TBLSET       OCCURS  60.
-               05  WK-TBL-MSG-1      PIC X(20).
-               05  WK-TBL-MSG-2      PIC X(20).
-               05  WK-TBL-MSG-3      PIC X(20).
+           03  WK-TBLSET       OCCURS  90.
+               05  WK-TBL-MSG-1      PIC X(30).
+               05  WK-TBL-MSG-2      PIC X(30).
+               05  WK-TBL-MSG-3      PIC X(30).
       *
       *    シェル用領域
            COPY    "CPSHELLTBL.INC".
@@ -300,7 +301,7 @@
       *    テーブル名称セット
            MOVE    SPACE                   TO  SPA-GMN-TBLG.
            MOVE    SPACE                   TO  WK-TBL.
-           MOVE    46                      TO  SPA-GMN-MAX-A.
+           MOVE    52                      TO  SPA-GMN-MAX-A.
            MOVE    "/home/orca/orcadb.out" TO  SPA-GMN-FILE-ID.
            MOVE    "SYSKANRI            "  TO  WK-TBL-MSG-1 (01).
            MOVE    "tbl_syskanri        "  TO  WK-TBL-MSG-2 (01).
@@ -440,19 +441,78 @@
            MOVE    "MONTHLYNUM          "  TO  WK-TBL-MSG-1 (46).
            MOVE    "tbl_monthlynum      "  TO  WK-TBL-MSG-2 (46).
            MOVE    "CHKBTN46            "  TO  WK-TBL-MSG-3 (46).
+      *修正/*開始*03.05.12*********************************************
+           MOVE    "KENSASORT           "  TO  WK-TBL-MSG-1 (47).
+           MOVE    "tbl_kensasort       "  TO  WK-TBL-MSG-2 (47).
+           MOVE    "CHKBTN47            "  TO  WK-TBL-MSG-3 (47).
+           MOVE    "KOHSKY              "  TO  WK-TBL-MSG-1 (48).
+           MOVE    "tbl_kohsky          "  TO  WK-TBL-MSG-2 (48).
+           MOVE    "CHKBTN48            "  TO  WK-TBL-MSG-3 (48).
+           MOVE    "LDMAP               "  TO  WK-TBL-MSG-1 (49).
+           MOVE    "tbl_ldmap           "  TO  WK-TBL-MSG-2 (49).
+           MOVE    "CHKBTN49            "  TO  WK-TBL-MSG-3 (49).
+           MOVE    "LOCK                "  TO  WK-TBL-MSG-1 (50).
+           MOVE    "tbl_lock            "  TO  WK-TBL-MSG-2 (50).
+           MOVE    "CHKBTN50            "  TO  WK-TBL-MSG-3 (50).
+           MOVE    "PTKOHFTN            "  TO  WK-TBL-MSG-1 (51).
+           MOVE    "tbl_ptkohftn        "  TO  WK-TBL-MSG-2 (51).
+           MOVE    "CHKBTN51            "  TO  WK-TBL-MSG-3 (51).
+           MOVE    "YAKUJYO             "  TO  WK-TBL-MSG-1 (52).
+           MOVE    "tbl_yakujyo         "  TO  WK-TBL-MSG-2 (52).
+           MOVE    "CHKBTN52            "  TO  WK-TBL-MSG-3 (52).
+           IF  SPA-BEDSU   >   ZERO
+               MOVE    64                      TO  SPA-GMN-MAX-A
+               MOVE    "NYUINACCT           "  TO  WK-TBL-MSG-1 (53)
+               MOVE    "tbl_nyuinacct       "  TO  WK-TBL-MSG-2 (53)
+               MOVE    "CHKBTN53            "  TO  WK-TBL-MSG-3 (53)
+               MOVE    "NYUINACT            "  TO  WK-TBL-MSG-1 (54)
+               MOVE    "tbl_nyuinact        "  TO  WK-TBL-MSG-2 (54)
+               MOVE    "CHKBTN54            "  TO  WK-TBL-MSG-3 (54)
+               MOVE    "NYUINKHN            "  TO  WK-TBL-MSG-1 (55)
+               MOVE    "tbl_nyuinkhn        "  TO  WK-TBL-MSG-2 (55)
+               MOVE    "CHKBTN55            "  TO  WK-TBL-MSG-3 (55)
+               MOVE    "NYUINRYAKUSHO       "  TO  WK-TBL-MSG-1 (56)
+               MOVE    "tbl_nyuinryakusho   "  TO  WK-TBL-MSG-2 (56)
+               MOVE    "CHKBTN56            "  TO  WK-TBL-MSG-3 (56)
+               MOVE    "NYUKSNCHK           "  TO  WK-TBL-MSG-1 (57)
+               MOVE    "tbl_nyuksnchk       "  TO  WK-TBL-MSG-2 (57)
+               MOVE    "CHKBTN57            "  TO  WK-TBL-MSG-3 (57)
+               MOVE    "PTNYUINRRK          "  TO  WK-TBL-MSG-1 (58)
+               MOVE    "tbl_ptnyuinrrk      "  TO  WK-TBL-MSG-2 (58)
+               MOVE    "CHKBTN58            "  TO  WK-TBL-MSG-3 (58)
+               MOVE    "PTTAINFUKA          "  TO  WK-TBL-MSG-1 (59)
+               MOVE    "tbl_pttainfuka      "  TO  WK-TBL-MSG-2 (59)
+               MOVE    "CHKBTN59            "  TO  WK-TBL-MSG-3 (59)
+               MOVE    "PTTEIKIRRK          "  TO  WK-TBL-MSG-1 (60)
+               MOVE    "tbl_ptteikirrk      "  TO  WK-TBL-MSG-2 (60)
+               MOVE    "CHKBTN60            "  TO  WK-TBL-MSG-3 (60)
+               MOVE    "SENTEICDCHG         "  TO  WK-TBL-MSG-1 (61)
+               MOVE    "tbl_senteicdchg     "  TO  WK-TBL-MSG-2 (61)
+               MOVE    "CHKBTN61            "  TO  WK-TBL-MSG-3 (61)
+               MOVE    "TEIKIKANRI          "  TO  WK-TBL-MSG-1 (62)
+               MOVE    "tbl_teikikanri      "  TO  WK-TBL-MSG-2 (62)
+               MOVE    "CHKBTN62            "  TO  WK-TBL-MSG-3 (62)
+               MOVE    "TEIKIPRT            "  TO  WK-TBL-MSG-1 (63)
+               MOVE    "tbl_teikiprt        "  TO  WK-TBL-MSG-2 (63)
+               MOVE    "CHKBTN63            "  TO  WK-TBL-MSG-3 (63)
+               MOVE    "TEIKIRRK            "  TO  WK-TBL-MSG-1 (64)
+               MOVE    "tbl_teikirrk        "  TO  WK-TBL-MSG-2 (64)
+               MOVE    "CHKBTN64            "  TO  WK-TBL-MSG-3 (64)
+           END-IF.
+      *修正/*終了*03.05.12*********************************************
       *一時作業テーブルのため次のテーブルはバックアップの対象外とする
       *     MOVE    "BD001               "  TO  WK-TBL-MSG-1 (**).
       *     MOVE    "view_bd001          "  TO  WK-TBL-MSG-2 (**).
       *     MOVE    "BD002               "  TO  WK-TBL-MSG-1 (**).
       *     MOVE    "view_bd002          "  TO  WK-TBL-MSG-2 (**).
+      *     MOVE    "I001                "  TO  WK-TBL-MSG-1 (**).
+      *     MOVE    "view_I001           "  TO  WK-TBL-MSG-2 (**).
+      *     MOVE    "Q001                "  TO  WK-TBL-MSG-1 (**).
+      *     MOVE    "view_Q001           "  TO  WK-TBL-MSG-2 (**).
       *     MOVE    "WKSRYACT            "  TO  WK-TBL-MSG-1 (**).
       *     MOVE    "tbl_wksryact        "  TO  WK-TBL-MSG-2 (**).
       *     MOVE    "PARA                "  TO  WK-TBL-MSG-1 (**).
       *     MOVE    "tbl_para            "  TO  WK-TBL-MSG-2 (**).
-      *     MOVE    "QPTINF              "  TO  WK-TBL-MSG-1 (**).
-      *     MOVE    "query_ptinf         "  TO  WK-TBL-MSG-2 (**).
-      *     MOVE    "QPTINFC             "  TO  WK-TBL-MSG-1 (**).
-      *     MOVE    "query_ptinf_cnt     "  TO  WK-TBL-MSG-2 (**).
       ************************************************************
       *
            PERFORM 310-SPASET-SEC.
@@ -563,6 +623,36 @@
                WHEN    "CLICKED"       ALSO    "CHKBTN58"
                WHEN    "CLICKED"       ALSO    "CHKBTN59"
                WHEN    "CLICKED"       ALSO    "CHKBTN60"
+               WHEN    "CLICKED"       ALSO    "CHKBTN61"
+               WHEN    "CLICKED"       ALSO    "CHKBTN62"
+               WHEN    "CLICKED"       ALSO    "CHKBTN63"
+               WHEN    "CLICKED"       ALSO    "CHKBTN64"
+               WHEN    "CLICKED"       ALSO    "CHKBTN65"
+               WHEN    "CLICKED"       ALSO    "CHKBTN66"
+               WHEN    "CLICKED"       ALSO    "CHKBTN67"
+               WHEN    "CLICKED"       ALSO    "CHKBTN68"
+               WHEN    "CLICKED"       ALSO    "CHKBTN69"
+               WHEN    "CLICKED"       ALSO    "CHKBTN70"
+               WHEN    "CLICKED"       ALSO    "CHKBTN71"
+               WHEN    "CLICKED"       ALSO    "CHKBTN72"
+               WHEN    "CLICKED"       ALSO    "CHKBTN73"
+               WHEN    "CLICKED"       ALSO    "CHKBTN74"
+               WHEN    "CLICKED"       ALSO    "CHKBTN75"
+               WHEN    "CLICKED"       ALSO    "CHKBTN76"
+               WHEN    "CLICKED"       ALSO    "CHKBTN77"
+               WHEN    "CLICKED"       ALSO    "CHKBTN78"
+               WHEN    "CLICKED"       ALSO    "CHKBTN79"
+               WHEN    "CLICKED"       ALSO    "CHKBTN80"
+               WHEN    "CLICKED"       ALSO    "CHKBTN81"
+               WHEN    "CLICKED"       ALSO    "CHKBTN82"
+               WHEN    "CLICKED"       ALSO    "CHKBTN83"
+               WHEN    "CLICKED"       ALSO    "CHKBTN84"
+               WHEN    "CLICKED"       ALSO    "CHKBTN85"
+               WHEN    "CLICKED"       ALSO    "CHKBTN86"
+               WHEN    "CLICKED"       ALSO    "CHKBTN87"
+               WHEN    "CLICKED"       ALSO    "CHKBTN88"
+               WHEN    "CLICKED"       ALSO    "CHKBTN89"
+               WHEN    "CLICKED"       ALSO    "CHKBTN90"
                    PERFORM T-000-CLICKED-SEC
                WHEN    OTHER
                    MOVE    1                   TO  SPA-GMN-CUR
@@ -639,6 +729,36 @@
                WHEN    "ACTIVATE"      ALSO    "CHKBTN58"
                WHEN    "ACTIVATE"      ALSO    "CHKBTN59"
                WHEN    "ACTIVATE"      ALSO    "CHKBTN60"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN61"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN62"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN63"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN64"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN65"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN66"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN67"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN68"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN69"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN70"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN71"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN72"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN73"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN74"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN75"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN76"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN77"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN78"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN79"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN80"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN81"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN82"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN83"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN84"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN85"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN86"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN87"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN88"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN89"
+               WHEN    "ACTIVATE"      ALSO    "CHKBTN90"
                    PERFORM T-000-CLICKED-SEC
                WHEN    OTHER
                    MOVE    1                   TO  SPA-GMN-CUR
@@ -720,7 +840,7 @@
                MOVE    1                              TO  SPA-GMN-CUR
            END-IF.
       *
-           IF      SPA-GMN-CUR > 60
+           IF      SPA-GMN-CUR > 90
                MOVE    "B12"                          TO  MCP-WIDGET
            ELSE
                MOVE    WK-TBL-MSG-3 (SPA-GMN-CUR)     TO  MCP-WIDGET
@@ -880,10 +1000,10 @@
       *****************************************************************
        T-000-CLICKED-SEC                 SECTION.
       *
-           MOVE    61                TO  SPA-GMN-CUR.
+           MOVE    91                TO  SPA-GMN-CUR.
       *
            PERFORM VARYING IDX1  FROM  1  BY 1
-                   UNTIL   IDX1  >    60
+                   UNTIL   IDX1  >    90
                IF  MCP-WIDGET  =  WK-TBL-MSG-3 (IDX1)
                    EVALUATE    SPA-GMN-BTN (IDX1)
                        WHEN    "T"
@@ -899,15 +1019,15 @@
                    END-EVALUATE
                    COMPUTE  IDX2 = IDX1 + 1
                    PERFORM VARYING IDX3  FROM  IDX2  BY 1
-                           UNTIL   IDX3  >    60
+                           UNTIL   IDX3  >    90
                            IF  SPA-GMN-MSG (IDX3)  NOT =  SPACE
                                MOVE    IDX3
                                        TO  SPA-GMN-CUR
-                               MOVE    61
+                               MOVE    91
                                        TO  IDX3
                            END-IF
                    END-PERFORM
-                   MOVE    61                          TO  IDX1
+                   MOVE    91                          TO  IDX1
                END-IF
            END-PERFORM.
       *
@@ -920,14 +1040,11 @@
        T-000-WRITABLE-SEC                SECTION.
       *
            IF      SPA-GMN-MAX-A = SPA-GMN-MAX-B
-      *修正/*開始*02.09.13*********************************************
-      *         MOVE    "orcbsf02.sh"     TO  SHELL-SHELL
                INITIALIZE                    ORCSMKPASSAREA
                MOVE    "scripts/allways/orcbsf02.sh"
                                          TO  MKPASS-IN-01
                CALL    "ORCSMKPASS"      USING  ORCSMKPASSAREA
                MOVE    MKPASS-OT-01      TO  SHELL-NAME
-      *修正/*終了*02.09.13*********************************************
                MOVE    "ALL-TABLE"       TO  SHELL-T-NAME
                MOVE    "ALL-TABLE"       TO  SHELL-C-NAME
                MOVE    "ALL-TABLE"       TO  SHELL-W-NAME
@@ -951,14 +1068,11 @@
                PERFORM VARYING IDX1  FROM  1  BY 1
                        UNTIL   IDX1  >    SPA-GMN-MAX-A
                    IF      SPA-GMN-BTN (IDX1) = "T"
-      *修正/*開始*02.09.13*********************************************
-      *                 MOVE    "orcbsf01.sh"       TO  SHELL-SHELL
                        INITIALIZE                  ORCSMKPASSAREA
                        MOVE    "scripts/allways/orcbsf01.sh"
                                                    TO  MKPASS-IN-01
                        CALL    "ORCSMKPASS"        USING  ORCSMKPASSAREA
                        MOVE    MKPASS-OT-01        TO  SHELL-NAME
-      *修正/*終了*02.09.13*********************************************
                        MOVE    WK-TBL-MSG-2 (IDX1) TO  SHELL-T-NAME
                        MOVE    "CNV-TABLE"         TO  SHELL-C-NAME
                        MOVE    "OUT-TABLE-WK"      TO  SHELL-W-NAME
@@ -983,14 +1097,11 @@
                                                  MCPDATA-REC
                    END-IF
                END-PERFORM
-      *修正/*開始*02.09.13*********************************************
-      *         MOVE    "orcbsf03.sh"     TO  SHELL-SHELL
                INITIALIZE                ORCSMKPASSAREA
                MOVE    "scripts/allways/orcbsf03.sh"
                                          TO  MKPASS-IN-01
                CALL    "ORCSMKPASS"      USING  ORCSMKPASSAREA
                MOVE    MKPASS-OT-01      TO  SHELL-NAME
-      *修正/*終了*02.09.13*********************************************
                MOVE    "OUT-TABLE-WK"    TO  SHELL-T-NAME
                MOVE    "OUT-TABLE-WK"    TO  SHELL-C-NAME
                MOVE    "OUT-TABLE-WK"    TO  SHELL-W-NAME
@@ -1028,7 +1139,7 @@
            COMPUTE  IDX2 = SPA-GMN-MAX-A + 1.
       *
            PERFORM VARYING IDX1  FROM  IDX2  BY 1
-                   UNTIL   IDX1  >    60
+                   UNTIL   IDX1  >    90
                MOVE    SPACE               TO  SPA-GMN-MSG (IDX1)
                MOVE    SPACE               TO  SPA-GMN-BTN (IDX1)
            END-PERFORM.
@@ -1051,7 +1162,7 @@
                READ    FIF00-FILE
                        NOT  AT  END
                             PERFORM VARYING IDX1  FROM  1  BY 1
-                                    UNTIL   IDX1  >    60
+                                    UNTIL   IDX1  >    90
                                 MOVE    SPACE
                                         TO  SPA-GMN-BTN (IDX1)
                                 IF  (FIF00-REC(IDX1:1)      = "*")
@@ -1062,7 +1173,7 @@
                                              = SPA-GMN-MAX-B + 1
                                 END-IF
                             END-PERFORM
-                            MOVE    FIF00-REC(62:128)
+                            MOVE    FIF00-REC(92:128)
                                    TO  SPA-GMN-FILE-ID
                END-READ
                CLOSE                           FIF00-FILE
@@ -1086,7 +1197,7 @@
                    MOVE    "*"                 TO  FIF00-REC(IDX1:1)
                END-IF
            END-PERFORM.
-           MOVE    SPA-GMN-FILE-ID     TO  FIF00-REC(62:128).
+           MOVE    SPA-GMN-FILE-ID     TO  FIF00-REC(92:128).
       *
            WRITE   FIF00-REC.
       *

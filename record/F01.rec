@@ -183,185 +183,365 @@ F01	{
 		CHKBTN60	{
 			value	bool;
 		};
+		CHKBTN61	{
+			value	bool;
+		};
+		CHKBTN62	{
+			value	bool;
+		};
+		CHKBTN63	{
+			value	bool;
+		};
+		CHKBTN64	{
+			value	bool;
+		};
+		CHKBTN65	{
+			value	bool;
+		};
+		CHKBTN66	{
+			value	bool;
+		};
+		CHKBTN67	{
+			value	bool;
+		};
+		CHKBTN68	{
+			value	bool;
+		};
+		CHKBTN69	{
+			value	bool;
+		};
+		CHKBTN70	{
+			value	bool;
+		};
+		CHKBTN71	{
+			value	bool;
+		};
+		CHKBTN72	{
+			value	bool;
+		};
+		CHKBTN73	{
+			value	bool;
+		};
+		CHKBTN74	{
+			value	bool;
+		};
+		CHKBTN75	{
+			value	bool;
+		};
+		CHKBTN76	{
+			value	bool;
+		};
+		CHKBTN77	{
+			value	bool;
+		};
+		CHKBTN78	{
+			value	bool;
+		};
+		CHKBTN79	{
+			value	bool;
+		};
+		CHKBTN80	{
+			value	bool;
+		};
+		CHKBTN81	{
+			value	bool;
+		};
+		CHKBTN82	{
+			value	bool;
+		};
+		CHKBTN83	{
+			value	bool;
+		};
+		CHKBTN84	{
+			value	bool;
+		};
+		CHKBTN85	{
+			value	bool;
+		};
+		CHKBTN86	{
+			value	bool;
+		};
+		CHKBTN87	{
+			value	bool;
+		};
+		CHKBTN88	{
+			value	bool;
+		};
+		CHKBTN89	{
+			value	bool;
+		};
+		CHKBTN90	{
+			value	bool;
+		};
 		CHKMSG01	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG02	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG03	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG04	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG05	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG06	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG07	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG08	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG09	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG10	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG11	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG12	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG13	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG14	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG15	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG16	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG17	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG18	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG19	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG20	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG21	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG22	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG23	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG24	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG25	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG26	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG27	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG28	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG29	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG30	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG31	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG32	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG33	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG34	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG35	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG36	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG37	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG38	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG39	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG40	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG41	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG42	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG43	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG44	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG45	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG46	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG47	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG48	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG49	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG50	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG51	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG52	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG53	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG54	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG55	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG56	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG57	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG58	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG59	{
-			value	char(48);
+			value	char(30);
 		};
 		CHKMSG60	{
-			value	char(48);
+			value	char(30);
+		};
+		CHKMSG61	{
+			value	char(30);
+		};
+		CHKMSG62	{
+			value	char(30);
+		};
+		CHKMSG63	{
+			value	char(30);
+		};
+		CHKMSG64	{
+			value	char(30);
+		};
+		CHKMSG65	{
+			value	char(30);
+		};
+		CHKMSG66	{
+			value	char(30);
+		};
+		CHKMSG67	{
+			value	char(30);
+		};
+		CHKMSG68	{
+			value	char(30);
+		};
+		CHKMSG69	{
+			value	char(30);
+		};
+		CHKMSG70	{
+			value	char(30);
+		};
+		CHKMSG71	{
+			value	char(30);
+		};
+		CHKMSG72	{
+			value	char(30);
+		};
+		CHKMSG73	{
+			value	char(30);
+		};
+		CHKMSG74	{
+			value	char(30);
+		};
+		CHKMSG75	{
+			value	char(30);
+		};
+		CHKMSG76	{
+			value	char(30);
+		};
+		CHKMSG77	{
+			value	char(30);
+		};
+		CHKMSG78	{
+			value	char(30);
+		};
+		CHKMSG79	{
+			value	char(30);
+		};
+		CHKMSG80	{
+			value	char(30);
+		};
+		CHKMSG81	{
+			value	char(30);
+		};
+		CHKMSG82	{
+			value	char(30);
+		};
+		CHKMSG83	{
+			value	char(30);
+		};
+		CHKMSG84	{
+			value	char(30);
+		};
+		CHKMSG85	{
+			value	char(30);
+		};
+		CHKMSG86	{
+			value	char(30);
+		};
+		CHKMSG87	{
+			value	char(30);
+		};
+		CHKMSG88	{
+			value	char(30);
+		};
+		CHKMSG89	{
+			value	char(30);
+		};
+		CHKMSG90	{
+			value	char(30);
 		};
 	};
 };

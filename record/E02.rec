@@ -8,8 +8,8 @@ E02	{
 				count	int;
 				item	{
 					value1	char(25);
-				}	[500];
-				select	bool[500];
+				}	[600];
+				select	bool[600];
 			};
 		};
 		scrolledwindow2	{
@@ -17,8 +17,8 @@ E02	{
 				count	int;
 				item	{
 					value1	char(25);
-				}	[500];
-				select	bool[500];
+				}	[600];
+				select	bool[600];
 			};
 		};
 		CHKMSG000	{

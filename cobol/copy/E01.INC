@@ -20,12 +20,12 @@
               04  E01-SCROLLEDWINDOW1.
                 05  E01-CLIST1.
                   06  E01-COUNT1   PIC S9(9)   BINARY.
-                  06  E01-ITEM1        OCCURS  60 TIMES.
+                  06  E01-ITEM1        OCCURS  90 TIMES.
                     07  E01-VALUE1  PIC X(25).
-                  06  E01-SELECT1  PIC X       OCCURS  60 TIMES.
+                  06  E01-SELECT1  PIC X       OCCURS  90 TIMES.
               04  E01-SCROLLEDWINDOW2.
                 05  E01-CLIST2.
                   06  E01-COUNT2   PIC S9(9)   BINARY.
-                  06  E01-ITEM2        OCCURS  60 TIMES.
+                  06  E01-ITEM2        OCCURS  90 TIMES.
                     07  E01-VALUE2  PIC X(25).
-                  06  E01-SELECT2  PIC X       OCCURS  60 TIMES.
+                  06  E01-SELECT2  PIC X       OCCURS  90 TIMES.

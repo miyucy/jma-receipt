@@ -37,7 +37,8 @@
       *                                     機序テーブルの追加
       *                                     人名テーブルの追加
       *                                     月代り受給者番号の追加
-      *  01.00.05    ひさなが     02/09/13  ディレクトリをサブプロへ
+      * 01.00.05     ひさなが     02/09/13  ディレクトリをサブプロへ
+      * 01.00.06     ひさなが     03/05/12  入院関連テーブルの追加
       *
       *****************************************************************
       *
@@ -50,38 +51,23 @@
            SELECT  EIE00-FILE      ASSIGN  EIE00PARA
                                    FILE    STATUS  IS  STS-EIE00.
       *
-      *    抽出項目用ファイル 
-           SELECT  EIE01-FILE      ASSIGN  EIE01PARA
-                                   FILE    STATUS  IS  STS-EIE01.
-      *
-      *    抽出項目１〜６０ファイル
-           SELECT  EIE02-FILE      ASSIGN  EIE02PARA
-                                   FILE    STATUS  IS  STS-EIE02.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
       *    ＣＳＶ作成条件用ファイル
        FD  EIE00-FILE.
-       01  EIE00-REC               PIC X(200).
-      *
-      *    抽出項目用ファイル
-       FD  EIE01-FILE.
-       01  EIE01-REC               PIC X(001).
-      *
-      *    抽出項目１〜６０ファイル
-       FD  EIE02-FILE.
-       01  EIE02-REC               PIC X(128).
+       01  EIE00-REC               PIC X(50).
       *
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ＣＳＶ作成条件用ファイル 名称領域 
+      *    ＣＳＶ作成条件用ファイル 名称領域
            COPY    "CPCOMMONDAT4.INC"
                                    REPLACING  //ORCGD//
                                    BY         //EIE00//.
       *
-      *    抽出項目用ファイル 名称領域 
+      *    抽出項目用ファイル 名称領域
        01  EIE01PARA.
            03  FILLER               PIC  X(50).
        01  EIE01PARA-NAME.
@@ -89,7 +75,7 @@
                "record/".
            03  EIE01-FILE-ID        PIC  X(23).
       *
-      *    抽出項目１〜６０ファイル 名称領域 
+      *    抽出項目１〜９０ファイル 名称領域
            COPY    "CPCOMMONDAT4.INC"
                                    REPLACING  //ORCGD//
                                    BY         //EIE02//.
@@ -105,17 +91,19 @@
                05  SPA-GMN-CUR                PIC 9(02).
                05  SPA-GMN-AREA.
                    07  SPA-GMN-TBLG.
-                       09  SPA-GNM-TBL2       OCCURS  60.
+                       09  SPA-GNM-TBL2       OCCURS  90.
                            11  SPA-GMN-MSG-A  PIC X(20).
                            11  SPA-GMN-BTN-A  PIC X(01).
+                           11  SPA-GMN-TBL-A  PIC X(20).
                            11  SPA-GMN-KBN1-A PIC X(01).
                            11  SPA-GMN-KBN2-A PIC X(01).
                            11  SPA-GMN-MSG-B  PIC X(20).
                            11  SPA-GMN-BTN-B  PIC X(01).
+                           11  SPA-GMN-TBL-B  PIC X(20).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-MOTOPG         PIC X(08).
        01  SPA-WRK-AREA.
-           03  SPA-WRK-TBLG1       PIC X(2658).
+           03  SPA-WRK-TBLG1       PIC X(7578).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -134,15 +122,6 @@
            03  IDX1                PIC 9(03).
            03  IDX2                PIC 9(03).
            03  IDX3                PIC 9(03).
-           03  IDY1                PIC 9(06).
-           03  IDY2                PIC 9(06).
-           03  IDY3                PIC 9(06).
-           03  IDY4                PIC 9(06).
-           03  IDY5                PIC 9(06).
-           03  IDY6                PIC 9(06).
-           03  IDY7                PIC 9(05).
-           03  IDY8                PIC 9(05).
-           03  IDY9                PIC 9(06).
       *
       *    メッセージ領域
        01  T-MESSAGE-AREA.
@@ -155,18 +134,12 @@
                "に終了しました。".
            03  T-MESSAGE-04        PIC X(20)   VALUE
                "作成テーブル未設定。".
-      *
-      *    編集作業
-       01  W-AREA.
-           03  WK-SEW01            PIC  X(02).
-           03  WK-SEW02            PIC  X(02).
-           03  WK-SEW03            PIC  X(02).
-           03  WK-SEW04            PIC  X(128).
-           03  WK-SEW05            PIC  9(05).
+           03  T-MESSAGE-05        PIC X(18)   VALUE
+               "条件設定途中です。".
       *
       *    作業テーブル名称領域
        01  WK-TBL.
-           03  WK-TBLSET       OCCURS  60.
+           03  WK-TBLSET       OCCURS  90.
                05  WK-TBL-MSG-C      PIC X(20).
                05  WK-TBL-NAME-C     PIC X(20).
                05  WK-TBL-BTN-C      PIC X(01).
@@ -243,7 +216,7 @@
                    END-IF
            END-EVALUATE.
       *    画面遷移がない時、画面表示へ
-           IF      FLG-END             =   ZERO
+           IF  FLG-END   =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF.
       *
@@ -261,7 +234,7 @@
            INITIALIZE                  FLG-AREA.
       *
       *    エラー画面より
-           IF      SPA-MOTOPG          =   "EERR" OR "EID1" OR "EID2"
+           IF  SPA-MOTOPG   =   "EERR" OR "EID1" OR "EID2"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5011-MAPCUR-SEC
            ELSE
@@ -270,6 +243,21 @@
       *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF.
+      *
+           PERFORM VARYING IDX1  FROM  1  BY 1
+                   UNTIL   IDX1  >   SPA-GMN-MAX-A
+               IF  E01-SELECT1 (IDX1)   =   "T"
+                   MOVE    "A"              TO  FLG-SEL
+                   MOVE    91               TO  IDX1
+               END-IF
+           END-PERFORM.
+           PERFORM VARYING IDX1  FROM  1  BY 1
+                   UNTIL   IDX1  >   SPA-GMN-MAX-B
+               IF  E01-SELECT2 (IDX1)   =   "T"
+                   MOVE    "D"              TO  FLG-SEL
+                   MOVE    91               TO  IDX1
+               END-IF
+           END-PERFORM.
       *
            MOVE    SPACE               TO  MCP-PUTTYPE.
            MOVE    "E01"               TO  MCP-WINDOW.
@@ -289,7 +277,7 @@
            INITIALIZE              SPA-E01.
       *
       *    他のＬＤより
-           IF      LINKAREA        NOT =   SPACE
+           IF  LINKAREA   NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                MOVE    LNK-SCRSPA          TO  SPA-WRK-AREA
            END-IF.
@@ -390,19 +378,59 @@
            MOVE    "tbl_jinmei.db       "  TO  WK-TBL-NAME-C(45).
            MOVE    "MONTHLYNUM          "  TO  WK-TBL-MSG-C(46).
            MOVE    "tbl_monthlynum.db   "  TO  WK-TBL-NAME-C(46).
-           MOVE    "BD001               "  TO  WK-TBL-MSG-C(47).
-           MOVE    "view_bd001.db       "  TO  WK-TBL-NAME-C(47).
-           MOVE    "BD002               "  TO  WK-TBL-MSG-C(48).
-           MOVE    "view_bd002.db       "  TO  WK-TBL-NAME-C(48).
+      *修正/*開始*03.05.12*********************************************
+           MOVE    "KENSASORT           "  TO  WK-TBL-MSG-C(47).
+           MOVE    "tbl_kensasort.db    "  TO  WK-TBL-NAME-C(47).
+           MOVE    "KOHSKY              "  TO  WK-TBL-MSG-C(48).
+           MOVE    "tbl_kohsky.db       "  TO  WK-TBL-NAME-C(48).
+           MOVE    "LDMAP               "  TO  WK-TBL-MSG-C(49).
+           MOVE    "tbl_ldmap.db        "  TO  WK-TBL-NAME-C(49).
+           MOVE    "LOCK                "  TO  WK-TBL-MSG-C(50).
+           MOVE    "tbl_lock.db         "  TO  WK-TBL-NAME-C(50).
+           MOVE    "PTKOHFTN            "  TO  WK-TBL-MSG-C(51).
+           MOVE    "tbl_ptkohftn.db     "  TO  WK-TBL-NAME-C(51).
+           MOVE    "YAKUJYO             "  TO  WK-TBL-MSG-C(52).
+           MOVE    "tbl_yakujyo.db      "  TO  WK-TBL-NAME-C(52).
+           MOVE    "BD001               "  TO  WK-TBL-MSG-C(53).
+           MOVE    "view_bd001.db       "  TO  WK-TBL-NAME-C(53).
+           MOVE    "BD002               "  TO  WK-TBL-MSG-C(54).
+           MOVE    "view_bd002.db       "  TO  WK-TBL-NAME-C(54).
+           MOVE    "I001                "  TO  WK-TBL-MSG-C(55).
+           MOVE    "view_I001.db        "  TO  WK-TBL-NAME-C(55).
+           MOVE    "Q001                "  TO  WK-TBL-MSG-C(56).
+           MOVE    "view_Q001.db        "  TO  WK-TBL-NAME-C(56).
+           IF  SPA-BEDSU   >   ZERO
+               MOVE    "NYUINACCT           "  TO  WK-TBL-MSG-C(57)
+               MOVE    "tbl_nyuinacct.db    "  TO  WK-TBL-NAME-C(57)
+               MOVE    "NYUINACT            "  TO  WK-TBL-MSG-C(58)
+               MOVE    "tbl_nyuinact.db     "  TO  WK-TBL-NAME-C(58)
+               MOVE    "NYUINKHN            "  TO  WK-TBL-MSG-C(59)
+               MOVE    "tbl_nyuinkhn.db     "  TO  WK-TBL-NAME-C(59)
+               MOVE    "NYUINRYAKUSHO       "  TO  WK-TBL-MSG-C(60)
+               MOVE    "tbl_nyuinryakusho.db"  TO  WK-TBL-NAME-C(60)
+               MOVE    "NYUKSNCHK           "  TO  WK-TBL-MSG-C(61)
+               MOVE    "tbl_nyuksnchk.db    "  TO  WK-TBL-NAME-C(61)
+               MOVE    "PTNYUINRRK          "  TO  WK-TBL-MSG-C(62)
+               MOVE    "tbl_ptnyuinrrk.db   "  TO  WK-TBL-NAME-C(62)
+               MOVE    "PTTAINFUKA          "  TO  WK-TBL-MSG-C(63)
+               MOVE    "tbl_pttainfuka.db   "  TO  WK-TBL-NAME-C(63)
+               MOVE    "PTTEIKIRRK          "  TO  WK-TBL-MSG-C(64)
+               MOVE    "tbl_ptteikirrk.db   "  TO  WK-TBL-NAME-C(64)
+               MOVE    "SENTEICDCHG         "  TO  WK-TBL-MSG-C(65)
+               MOVE    "tbl_senteicdchg.db  "  TO  WK-TBL-NAME-C(65)
+               MOVE    "TEIKIKANRI          "  TO  WK-TBL-MSG-C(66)
+               MOVE    "tbl_teikikanri.db   "  TO  WK-TBL-NAME-C(66)
+               MOVE    "TEIKIPRT            "  TO  WK-TBL-MSG-C(67)
+               MOVE    "tbl_teikiprt.db     "  TO  WK-TBL-NAME-C(67)
+               MOVE    "TEIKIRRK            "  TO  WK-TBL-MSG-C(68)
+               MOVE    "tbl_teikirrk.db     "  TO  WK-TBL-NAME-C(68)
+           END-IF.
+      *修正/*終了*03.05.12*********************************************
       *一時作業テーブルのため次のテーブルはコンバートの対象外とする
       *     MOVE    "WKSRYACT            "  TO  WK-TBL-MSG-C(**).
       *     MOVE    "tbl_wksryact.db     "  TO  WK-TBL-NAME-C(**).
       *     MOVE    "PARA                "  TO  WK-TBL-MSG-C(**).
       *     MOVE    "tbl_para.db         "  TO  WK-TBL-NAME-C(**).
-      *     MOVE    "QPTINF              "  TO  WK-TBL-MSG-C(**).
-      *     MOVE    "query_ptinf         "  TO  WK-TBL-NAME-C(**).
-      *     MOVE    "QPTINFC             "  TO  WK-TBL-MSG-C(**).
-      *     MOVE    "query_ptinf_cnt     "  TO  WK-TBL-NAME-C(**).
       ************************************************************
       *
            PERFORM 310-SPASET-SEC.
@@ -411,9 +439,6 @@
       *
            PERFORM T-000-SETTABLE-SEC.
       *
-           IF  SPA-MOTOPG  NOT =  "E02"   AND   "XB01"
-               PERFORM T-000-RECEWRIT-SEC
-           END-IF.
            IF  SPA-WRK-AREA   NOT =   SPACE
                MOVE    SPA-WRK-AREA            TO  SPA-E01-AREA
            END-IF.
@@ -454,28 +479,33 @@
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 530-RIDSET3-SEC
                WHEN    "CLICKED"       ALSO    "B12"
-                   IF      SPA-GMN-MAX-B       =   ZERO
-                       MOVE    "0001"              TO    SPA-ERRCD
+                   IF  FLG-SEL   NOT =   SPACE
+                       MOVE    "0002"              TO    SPA-ERRCD
                        PERFORM 500-SET-SCREEN
                    ELSE
-                       PERFORM 530-RIDSET2-SEC
-                       IF  FLG-RUN   =   ZERO   OR   2
-                           OPEN    OUTPUT                EIE00-FILE
-                           PERFORM T-000-RECECHEK-SEC
-                           CLOSE                         EIE00-FILE
+                       IF  SPA-GMN-MAX-B   =   ZERO
+                           MOVE    "0001"              TO    SPA-ERRCD
+                           PERFORM 500-SET-SCREEN
+                       ELSE
+                           PERFORM 530-RIDSET2-SEC
+                           IF  FLG-RUN   =   ZERO   OR   2
+                               OPEN    OUTPUT                EIE00-FILE
+                               PERFORM T-000-RECECHEK-SEC
+                               CLOSE                         EIE00-FILE
       *
-                           MOVE    "E01"             TO  SPA-MOTOPG
-                           MOVE    "E02"             TO  SPA-SAKIPG
-                           INITIALIZE                SPA-KYOTUKEY
-                           INITIALIZE                SPA-WORK
-                           MOVE    SPACE             TO  LINKAREA
-                           MOVE    SPA-KYOUTU        TO  LNK-KYOUTU
-                           MOVE   "CHANGE"           TO  MCP-PUTTYPE
-                           MOVE   "E02"              TO  MCP-WINDOW
+                               MOVE    "E01"             TO  SPA-MOTOPG
+                               MOVE    "E02"             TO  SPA-SAKIPG
+                               INITIALIZE                SPA-KYOTUKEY
+                               INITIALIZE                SPA-WORK
+                               MOVE    SPACE             TO  LINKAREA
+                               MOVE    SPA-KYOUTU        TO  LNK-KYOUTU
+                               MOVE   "CHANGE"           TO  MCP-PUTTYPE
+                               MOVE   "E02"              TO  MCP-WINDOW
       *
-                           PERFORM 900-PUT-WINDOW
+                               PERFORM 900-PUT-WINDOW
       *
-                           MOVE    1                 TO  FLG-END
+                               MOVE    1                 TO  FLG-END
+                           END-IF
                        END-IF
                    END-IF
                WHEN    "CLICKED"       ALSO    "B13"
@@ -538,7 +568,7 @@
       *
            PERFORM 500-GMNHEN-SEC.
       *
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF  SPA-ERRCD   NOT =   SPACE
                PERFORM 510-ERRSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF.
@@ -597,6 +627,8 @@
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
                    MOVE    T-MESSAGE-04        TO  SPA-ERRMSG
+               WHEN    "0002"
+                   MOVE    T-MESSAGE-05        TO  SPA-ERRMSG
                WHEN    OTHER
                    MOVE    SPACE               TO  SPA-ERRMSG
            END-EVALUATE.
@@ -637,12 +669,12 @@
            MOVE    SPACE              TO  EID2.
            MOVE    ZERO               TO  FLG-RUN.
            IF  WRK-JOBKANRI-RETURN   =   ZERO
-               IF  JOB-ENDYMD            =   SPACE
+               IF  JOB-ENDYMD   =   SPACE
                    MOVE    "7777"             TO  EID2-ID2CODE
                    MOVE    T-MESSAGE-01       TO  EID2-ID2MSG
                    MOVE    1                  TO  FLG-RUN
                ELSE
-                   IF  MCP-WIDGET             =   "B13"
+                   IF  MCP-WIDGET   =   "B13"
                        MOVE    "8888"             TO  EID2-ID2CODE
                        MOVE    T-MESSAGE-02       TO  EID2-ID2MSG(1:30)
                        MOVE    JOB-ENDTIME(1:2)   TO  EID2-ID2MSG(31:2)
@@ -709,31 +741,35 @@
       *****************************************************************
        T-001-CHUSYUTU-SEC                SECTION.
       *
-           IF      FLG-SEL  =  "A"
+           IF  FLG-SEL   =   "A"
                MOVE    ZERO                   TO    IDX2
                MOVE    ZERO                   TO    IDX3
       *
                PERFORM VARYING IDX1  FROM  1  BY 1
                        UNTIL   IDX1  >   SPA-GMN-MAX-A
-                   IF      SPA-GMN-BTN-A (IDX1)  =  "T"
+                   IF  SPA-GMN-BTN-A (IDX1)   =   "T"
                        COMPUTE  IDX2          = IDX2          + 1
                        COMPUTE  SPA-GMN-MAX-B = SPA-GMN-MAX-B + 1
                        MOVE    SPA-GMN-MSG-A (IDX1)
-                               TO  SPA-GMN-MSG-B (SPA-GMN-MAX-B)
-                       MOVE    "F"
-                               TO  SPA-GMN-BTN-A (IDX1)
+                                       TO  SPA-GMN-MSG-B (SPA-GMN-MAX-B)
+                       MOVE    SPA-GMN-TBL-A (IDX1)
+                                       TO  SPA-GMN-TBL-B (SPA-GMN-MAX-B)
+                       MOVE    "F"     TO  SPA-GMN-BTN-A (IDX1)
                    ELSE
                        COMPUTE  IDX3 = IDX3 + 1
                        MOVE    SPA-GMN-MSG-A (IDX1)
-                               TO  SPA-GMN-MSG-A (IDX3)
+                                       TO  SPA-GMN-MSG-A (IDX3)
+                       MOVE    SPA-GMN-TBL-A (IDX1)
+                                       TO  SPA-GMN-TBL-A (IDX3)
                    END-IF
                END-PERFORM
       *         
                COMPUTE  IDX3 = SPA-GMN-MAX-A + 1
       *
                PERFORM VARYING IDX1  FROM  IDX3  BY 1
-                       UNTIL   IDX1  >   60
+                       UNTIL   IDX1  >   90
                    MOVE    SPACE            TO  SPA-GMN-MSG-A (IDX1)
+                   MOVE    SPACE            TO  SPA-GMN-TBL-A (IDX1)
                    MOVE    "F"              TO  SPA-GMN-BTN-A (IDX1)
                END-PERFORM
       *
@@ -749,28 +785,30 @@
       *****************************************************************
        T-001-TORIYAME-SEC                SECTION.
       *
-           IF      FLG-SEL  =  "D"
+           IF  FLG-SEL   =   "D"
                MOVE    ZERO             TO  IDX2
                MOVE    ZERO             TO  IDX3
       *
                PERFORM VARYING IDX1  FROM  1  BY 1
                        UNTIL   IDX1  >   SPA-GMN-MAX-B
-                   IF      SPA-GMN-BTN-B (IDX1)  =  "T"
+                   IF  SPA-GMN-BTN-B (IDX1)   =   "T"
                        COMPUTE  IDX2 = IDX2 + 1
-                       MOVE    "F"
-                               TO  SPA-GMN-BTN-B (IDX1)
+                       MOVE    "F"     TO  SPA-GMN-BTN-B (IDX1)
                    ELSE
                        COMPUTE  IDX3 = IDX3 + 1
                        MOVE    SPA-GMN-MSG-B (IDX1)
-                               TO  SPA-GMN-MSG-B (IDX3)
+                                       TO  SPA-GMN-MSG-B (IDX3)
+                       MOVE    SPA-GMN-TBL-B (IDX1)
+                                       TO  SPA-GMN-TBL-B (IDX3)
                    END-IF
                END-PERFORM
       *         
                COMPUTE  IDX3 = SPA-GMN-MAX-B + 1
       *
                PERFORM VARYING IDX1  FROM  IDX3  BY 1
-                       UNTIL   IDX1  >   60
+                       UNTIL   IDX1  >   90
                    MOVE    SPACE            TO  SPA-GMN-MSG-B (IDX1)
+                   MOVE    SPACE            TO  SPA-GMN-TBL-B (IDX1)
                    MOVE    "F"              TO  SPA-GMN-BTN-B (IDX1)
                END-PERFORM
       *
@@ -792,11 +830,12 @@
                    UNTIL   IDX1  >   SPA-GMN-MAX-A
                COMPUTE  SPA-GMN-MAX-B = SPA-GMN-MAX-B + 1
                MOVE    SPA-GMN-MSG-A (IDX1)
-                       TO  SPA-GMN-MSG-B (SPA-GMN-MAX-B)
-               MOVE    SPACE
-                       TO  SPA-GMN-MSG-A (IDX1)
-               MOVE    "F"
-                       TO  SPA-GMN-BTN-A (IDX1)
+                                       TO  SPA-GMN-MSG-B (SPA-GMN-MAX-B)
+               MOVE    SPA-GMN-TBL-A (IDX1)
+                                       TO  SPA-GMN-TBL-B (SPA-GMN-MAX-B)
+               MOVE    SPACE           TO  SPA-GMN-MSG-A (IDX1)
+               MOVE    SPACE           TO  SPA-GMN-TBL-A (IDX1)
+               MOVE    "F"             TO  SPA-GMN-BTN-A (IDX1)
            END-PERFORM.
       *
            MOVE    ZERO                   TO  SPA-GMN-MAX-A.
@@ -813,6 +852,7 @@
            PERFORM VARYING IDX1  FROM  1  BY 1
                    UNTIL   IDX1  >   SPA-GMN-MAX-B
                MOVE    SPACE            TO  SPA-GMN-MSG-B (IDX1)
+               MOVE    SPACE            TO  SPA-GMN-TBL-B (IDX1)
                MOVE    "F"              TO  SPA-GMN-BTN-B (IDX1)
            END-PERFORM.
       *
@@ -828,13 +868,13 @@
       *****************************************************************
        T-000-CLST1CHK-SEC                SECTION.
       *
-           IF      FLG-SEL  =  " " OR "A"
+           IF  FLG-SEL   =   " "  OR  "A"
                MOVE    SPACE            TO  FLG-SEL
                PERFORM VARYING IDX1  FROM  1  BY 1
                        UNTIL   IDX1  >   SPA-GMN-MAX-A
                    MOVE    E01-SELECT1 (IDX1)
                            TO  SPA-GMN-BTN-A (IDX1)
-                   IF      E01-SELECT1 (IDX1)  =  "T"
+                   IF  E01-SELECT1 (IDX1)   =   "T"
                        MOVE    "A"              TO  FLG-SEL
                    END-IF
                END-PERFORM
@@ -848,14 +888,14 @@
       *****************************************************************
        T-000-CLST2CHK-SEC                SECTION.
       *
-           IF      FLG-SEL  =  " " OR "D"
+           IF  FLG-SEL   =   " "  OR  "D"
                MOVE    SPACE            TO  FLG-SEL
                PERFORM VARYING IDX1  FROM  1  BY 1
                        UNTIL   IDX1  >   SPA-GMN-MAX-B
                    MOVE    E01-SELECT2 (IDX1)
                            TO  SPA-GMN-BTN-B (IDX1)
-                   IF      E01-SELECT2 (IDX1)  =  "T"
-                       MOVE    "D"              TO    FLG-SEL
+                   IF  E01-SELECT2 (IDX1)   =   "T"
+                       MOVE    "D"              TO  FLG-SEL
                    END-IF
                END-PERFORM
            END-IF.
@@ -870,8 +910,8 @@
        T-000-SETTABLE-SEC                SECTION.
       *
            PERFORM VARYING IDX1  FROM  1  BY 1
-                   UNTIL   IDX1  >    60
-               IF      WK-TBL-MSG-C (IDX1)  NOT =  SPACE
+                   UNTIL   IDX1  >    90
+               IF  WK-TBL-MSG-C (IDX1)   NOT =   SPACE
                    MOVE    "F"               TO  WK-TBL-BTN-C (IDX1)
                END-IF
            END-PERFORM.
@@ -880,13 +920,10 @@
                PERFORM VARYING IDX1  FROM  1  BY 1
                        UNTIL   IDX1  >   SPA-GMN-MAX-B
                    PERFORM VARYING IDX2  FROM  1  BY 1
-                           UNTIL   IDX2  >   60
-                       IF      SPA-GMN-MSG-B (IDX1)
-                            =  WK-TBL-MSG-C (IDX2)
-                           MOVE    "T"
-                                   TO  WK-TBL-BTN-C (IDX2)
-                           MOVE    61
-                                   TO  IDX2
+                           UNTIL   IDX2  >   90
+                       IF  SPA-GMN-MSG-B (IDX1)  =  WK-TBL-MSG-C (IDX2)
+                           MOVE    "T"       TO  WK-TBL-BTN-C (IDX2)
+                           MOVE    91        TO  IDX2
                        END-IF
                    END-PERFORM
                END-PERFORM
@@ -895,25 +932,26 @@
            MOVE    ZERO             TO  IDX3.
       *
            PERFORM VARYING IDX1  FROM  1  BY 1
-                   UNTIL   IDX1  >   60
+                   UNTIL   IDX1  >   90
                EVALUATE    WK-TBL-BTN-C (IDX1)
                    WHEN    "T"
-                       MOVE    "F"
-                               TO  WK-TBL-BTN-C (IDX1)
+                       MOVE    "F"       TO  WK-TBL-BTN-C (IDX1)
                    WHEN    "F"
                        COMPUTE  IDX3  =  IDX3  +  1
-                       MOVE    IDX3
-                               TO  SPA-GMN-MAX-A
+                       MOVE    IDX3      TO  SPA-GMN-MAX-A
                        MOVE    WK-TBL-MSG-C (IDX1)
-                               TO  SPA-GMN-MSG-A (IDX3)
+                                         TO  SPA-GMN-MSG-A (IDX3)
+                       MOVE    WK-TBL-NAME-C (IDX1)
+                                         TO  SPA-GMN-TBL-A (IDX3)
                END-EVALUATE
            END-PERFORM.
       *         
            COMPUTE  IDX3 = SPA-GMN-MAX-A + 1.
       *
            PERFORM VARYING IDX1  FROM  IDX3  BY 1
-                   UNTIL   IDX1  >   60
+                   UNTIL   IDX1  >   90
                MOVE    SPACE            TO  SPA-GMN-MSG-A (IDX1)
+               MOVE    SPACE            TO  SPA-GMN-TBL-A (IDX1)
                MOVE    "F"              TO  SPA-GMN-BTN-A (IDX1)
            END-PERFORM.
       *
@@ -932,199 +970,11 @@
                MOVE    SPA-GMN-MSG-B (IDX1)  TO  EIE00-REC(1:20)
                MOVE    "*"                   TO  EIE00-REC(22:1)
                MOVE    SPACE                 TO  EIE00-REC(24:1)
+               MOVE    SPA-GMN-TBL-B (IDX1)  TO  EIE00-REC(26:20)
                WRITE   EIE00-REC
            END-PERFORM.
       *
        T-000-RECECHEK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    抽出項目１〜６０名称 出力処理
-      *****************************************************************
-       T-000-RECEWRIT-SEC                SECTION.
-      *
-           PERFORM VARYING IDX1  FROM  1  BY 1
-                   UNTIL   IDX1  >    60
-               IF      WK-TBL-NAME-C (IDX1)  NOT =   SPACE
-      *修正/*開始*02.09.13*********************************************
-      *             MOVE    WK-TBL-NAME-C (IDX1) TO  EIE01-FILE-ID
-                   INITIALIZE                  ORCSMKPASSAREA
-                   MOVE    WK-TBL-NAME-C (IDX1) TO  EIE01-FILE-ID
-                   MOVE    EIE01PARA-NAME      TO  MKPASS-IN-01
-                   CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-                   MOVE    MKPASS-OT-01        TO  EIE01PARA
-      *修正/*終了*02.09.13*********************************************
-                   MOVE    ALL SPACE            TO  EIE02PARA-FILE
-                   STRING  WK-TBL-MSG-C (IDX1)  DELIMITED  BY  SPACE
-                           ".CNV"               DELIMITED  BY  SIZE
-                                                INTO  EIE02PARA-FILE
-                   PERFORM T-000-RECEWRIT-01-SEC
-               END-IF
-           END-PERFORM.
-      *
-       T-000-RECEWRIT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    抽出項目１〜６０名称 設定出力処理
-      *****************************************************************
-       T-000-RECEWRIT-01-SEC             SECTION.
-      *
-           MOVE    ZERO                  TO  FLG-END.
-           MOVE    1                     TO  IDY1.
-           MOVE    ZERO                  TO  IDY2.
-           MOVE    ZERO                  TO  IDY3.
-      *
-           OPEN    INPUT                 EIE01-FILE.
-           OPEN    OUTPUT                EIE02-FILE.
-      *
-           MOVE    SPACE                 TO  EIE02-REC.
-           MOVE    SPACE                 TO  WK-SEW01.
-           MOVE    SPACE                 TO  WK-SEW02.
-           MOVE    SPACE                 TO  WK-SEW03.
-           MOVE    SPACE                 TO  WK-SEW04.
-      *
-           IF  STS-EIE01   =   ZERO
-               PERFORM UNTIL   FLG-END  =    1
-                   READ    EIE01-FILE
-                     AT   END
-                          MOVE    1                 TO  FLG-END
-                     NOT  AT  END
-                          IF  (EIE01-REC  = X"0A")
-                          OR  (WK-SEW02   = "*")
-                              MOVE    ZERO              TO  IDY5
-                              MOVE    ZERO              TO  IDY6
-                              PERFORM VARYING IDY4 FROM   1  BY 1
-                                      UNTIL   IDY4  >   128
-                                  IF    WK-SEW04 (IDY4:1) = X"2C"
-                                      MOVE    IDY4          TO  IDY5
-                                  END-IF
-                                  IF    WK-SEW04 (IDY4:1) = X"29"
-                                      MOVE    IDY4          TO  IDY6
-                                      MOVE    129           TO  IDY4
-                                  END-IF
-                              END-PERFORM
-                              COMPUTE  IDY9 = IDY6 + 1
-                              COMPUTE  IDY6 = IDY6 - 1
-                              IF  ((EIE02-REC (31:4) = "char")
-                                OR (EIE02-REC (31:6) = "number")
-                                OR (EIE02-REC (31:7) = "varchar"))
-                              AND  (WK-SEW04 (IDY9:1) NOT = X"2C")
-                                  IF      IDY5 = ZERO
-                                      MOVE    5
-                                              TO  IDY7
-                                      MOVE    IDY6
-                                              TO  IDY8
-                                      MOVE    ZERO
-                                              TO  WK-SEW05
-                                      MOVE    WK-SEW05
-                                              TO  EIE02-REC (61:5)
-                                      PERFORM UNTIL   IDY8  <     1
-                                          IF    WK-SEW04 (IDY8:1)
-                                                = X"28"
-                                              MOVE  ZERO
-                                                    TO  IDY8
-                                          ELSE
-                                              MOVE  WK-SEW04 (IDY8:1)
-                                                TO  WK-SEW05 (IDY7:1)
-                                              COMPUTE IDY7 = IDY7 - 1
-                                              COMPUTE IDY8 = IDY8 - 1
-                                          END-IF
-                                      END-PERFORM
-                                      MOVE    WK-SEW05
-                                              TO  EIE02-REC (51:5)
-                                  ELSE
-                                      MOVE    5     TO  IDY7
-                                      MOVE    IDY6  TO  IDY8
-                                      MOVE    ZERO  TO  WK-SEW05
-                                      PERFORM UNTIL   IDY8  <     1
-                                          IF      WK-SEW04 (IDY8:1)
-                                                  = X"2C"
-                                              MOVE    ZERO
-                                                      TO  IDY8
-                                          ELSE
-                                              MOVE  WK-SEW04 (IDY8:1)
-                                                TO  WK-SEW05 (IDY7:1)
-                                              COMPUTE     IDY7
-                                                          = IDY7 - 1
-                                              COMPUTE     IDY8
-                                                          = IDY8 - 1
-                                          END-IF
-                                      END-PERFORM
-                                      MOVE    WK-SEW05
-                                              TO  EIE02-REC (61:5)
-                                      COMPUTE  IDY8 = IDY5 - 1
-                                      MOVE    5
-                                              TO  IDY7
-                                      MOVE    ZERO
-                                              TO  WK-SEW05
-                                      PERFORM UNTIL   IDY8  <     1
-                                          IF      WK-SEW04 (IDY8:1)
-                                                  = X"28"
-                                              MOVE    ZERO
-                                                      TO  IDY8
-                                          ELSE
-                                              MOVE  WK-SEW04 (IDY8:1)
-                                                TO  WK-SEW05 (IDY7:1)
-                                              COMPUTE      IDY7
-                                                           = IDY7 - 1
-                                              COMPUTE      IDY8
-                                                           = IDY8 - 1
-                                          END-IF
-                                      END-PERFORM
-                                      MOVE    WK-SEW05
-                                              TO  EIE02-REC (51:5)
-                                  END-IF
-                                  MOVE    IDY1
-                                          TO  EIE02-REC (71:6)
-                                  MOVE    X"0A"
-                                          TO  EIE02-REC (128:1)
-                                  WRITE   EIE02-REC
-                                  COMPUTE  IDY1 = IDY1 + WK-SEW05
-                              END-IF
-                              MOVE    ZERO            TO  IDY2
-                              MOVE    ZERO            TO  IDY3
-                              MOVE    SPACE           TO  EIE02-REC
-                              MOVE    SPACE           TO  WK-SEW01
-                              MOVE    SPACE           TO  WK-SEW02
-                              MOVE    SPACE           TO  WK-SEW03
-                              MOVE    SPACE           TO  WK-SEW04
-                          ELSE
-                              IF  (EIE01-REC > X"60")
-                              AND (EIE01-REC < X"7A")
-                              AND (WK-SEW01   =  SPACE)
-                                  MOVE    "*"           TO  WK-SEW01
-                                  MOVE    30            TO  IDY2
-                              END-IF
-                              IF  EIE01-REC = X"28"
-                                  MOVE    "*"           TO  WK-SEW03
-                              END-IF
-                              IF  EIE01-REC = X"3B"
-                                  MOVE    "*"           TO  WK-SEW02
-                              END-IF
-                              IF  (EIE01-REC  >  X"20")
-                              AND (EIE01-REC  <  X"7F")
-                              AND (WK-SEW03   =  SPACE)
-                                  COMPUTE  IDY2 = IDY2 + 1
-                                  MOVE    EIE01-REC
-                                          TO  EIE02-REC (IDY2:1)
-                              END-IF
-                              IF  (EIE01-REC  >  X"20")
-                              AND (EIE01-REC  <  X"7F")
-                              AND (WK-SEW03   =  "*")
-                                  COMPUTE  IDY3 = IDY3 + 1
-                                  MOVE    EIE01-REC
-                                          TO  WK-SEW04 (IDY3:1)
-                              END-IF
-                          END-IF
-                   END-READ
-               END-PERFORM
-           END-IF.
-      *
-           CLOSE                           EIE01-FILE.
-           CLOSE                           EIE02-FILE.
-      *
-       T-000-RECEWRIT-01-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1140,16 +990,16 @@
       *
            IF      STS-EIE00         =   ZERO
                PERFORM VARYING IDX1  FROM  1  BY 1
-                       UNTIL   IDX1  >    60
+                       UNTIL   IDX1  >    90
                    READ    EIE00-FILE
                            AT   END
-                                MOVE    61
-                                        TO  IDX1
+                                MOVE    91    TO  IDX1
                            NOT  AT  END
                                 MOVE    EIE00-REC(1:20)
-                                        TO  SPA-GMN-MSG-B (IDX1)
-                                MOVE    IDX1
-                                        TO  SPA-GMN-MAX-B
+                                              TO  SPA-GMN-MSG-B (IDX1)
+                                MOVE    EIE00-REC(26:20)
+                                              TO  SPA-GMN-TBL-B (IDX1)
+                                MOVE    IDX1  TO  SPA-GMN-MAX-B
                    END-READ
                END-PERFORM
                CLOSE                           EIE00-FILE

@@ -19,7 +19,7 @@
             03  F01-FIXED6.
               04  F01-FILENAME.
                 05  F01-VALUE   PIC X(129).
-              04  F01-CHKBTN    OCCURS  60  TIMES.
+              04  F01-CHKBTN    OCCURS  90  TIMES.
                 05  F01-VALUE1  PIC X.
-              04  F01-CHKMSG    OCCURS  60  TIMES.
-                05  F01-VALUE2  PIC X(48).
+              04  F01-CHKMSG    OCCURS  90  TIMES.
+                05  F01-VALUE2  PIC X(30).

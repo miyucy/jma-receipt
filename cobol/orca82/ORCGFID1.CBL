@@ -55,8 +55,8 @@
                05  SPA-GMN-AREA.
                    07  SPA-GMN-FILE-ID        PIC X(128).
                    07  SPA-GMN-TBLG.
-                       09  SPA-GNM-TBL2       OCCURS  60.
-                           11  SPA-GMN-MSG    PIC X(20).
+                       09  SPA-GNM-TBL2       OCCURS  90.
+                           11  SPA-GMN-MSG    PIC X(30).
                            11  SPA-GMN-BTN    PIC X(01).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-MOTOPG         PIC X(08).

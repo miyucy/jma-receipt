@@ -5,8 +5,8 @@ E01	{
 				count	int;
 				item	{
 					value1	char(25);
-				}	[60];
-				select	bool[60];
+				}	[90];
+				select	bool[90];
 			};
 		};
 		scrolledwindow2	{
@@ -14,8 +14,8 @@ E01	{
 				count	int;
 				item	{
 					value1	char(25);
-				}	[60];
-				select	bool[60];
+				}	[90];
+				select	bool[90];
 			};
 		};
 	};
