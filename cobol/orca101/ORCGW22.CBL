@@ -76,6 +76,7 @@
                05  WRK-SAGAKU1                     PIC X(05).
                05  WRK-SAGAKU1-R       REDEFINES   WRK-SAGAKU1.
                    07  WRK-SAGAKU1-9               PIC 9(05).
+           03  WRK-NUM-05                          PIC 9(05).
       *    •·•√•ª°º•∏ŒŒ∞Ë
        01  T-MESSAGE-AREA.
            03  T-MESSAGE-001       PIC X(16)   VALUE
@@ -167,6 +168,9 @@
       *
       *    ¡¥≥—•¡•ß•√•Ø•—•È•·•ø
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    øÙª˙ —¥πŒŒ∞Ë
+           COPY    "CPORCSNUM.INC".
       *
       *****************************************************************
       *    œ¢ÕÌŒŒ∞Ë
@@ -310,34 +314,38 @@
            INITIALIZE                        SPA-W22-GMN.
       *
            MOVE    SPACE                 TO  SPA-W22-KANRICDCOMBO.
-           MOVE    "5101"                TO  SPA-W22-KANRICD-1 (1).
-           MOVE    "5102"                TO  SPA-W22-KANRICD-1 (2).
-           MOVE    "5103"                TO  SPA-W22-KANRICD-1 (3).
-           MOVE    "5104"                TO  SPA-W22-KANRICD-1 (4).
-           MOVE    "5105"                TO  SPA-W22-KANRICD-1 (5).
-           MOVE    "5106"                TO  SPA-W22-KANRICD-1 (6).
-           MOVE    "5107"                TO  SPA-W22-KANRICD-1 (7).
-           MOVE    "5108"                TO  SPA-W22-KANRICD-1 (8).
-           MOVE    "5109"                TO  SPA-W22-KANRICD-1 (9).
-           MOVE    "5110"                TO  SPA-W22-KANRICD-1 (10).
-           MOVE    "5111"                TO  SPA-W22-KANRICD-1 (11).
-           MOVE    "5113"                TO  SPA-W22-KANRICD-1 (12).
-           MOVE    "5114"                TO  SPA-W22-KANRICD-1 (13).
-           MOVE    "5115"                TO  SPA-W22-KANRICD-1 (14).
-           MOVE    "…¬≈ÔºÔ Ã"            TO  SPA-W22-KANRICD-3 (1).
-           MOVE    " ø∂—∫ﬂ∆¸øÙ"          TO  SPA-W22-KANRICD-3 (2).
-           MOVE    "¥«∏Ó«€√÷"            TO  SPA-W22-KANRICD-3 (3).
-           MOVE    "¥«∏Ó»ÊŒ®"            TO  SPA-W22-KANRICD-3 (4).
-           MOVE    "¥«∏Ó ‰Ωı≤√ªª"        TO  SPA-W22-KANRICD-3 (5).
-           MOVE    "ÃÎ¥÷∂–Ã≥¥«∏Ó≤√ªª"    TO  SPA-W22-KANRICD-3 (6).
-           MOVE    "¥«∏Óª’øÕøÙ∂Ë ¨"      TO  SPA-W22-KANRICD-3 (7).
-           MOVE    "…¬ºººÔ Ã"            TO  SPA-W22-KANRICD-3 (8).
-           MOVE    "¿≠ Ã∆√ƒÍ"            TO  SPA-W22-KANRICD-3 (9).
-           MOVE    "∆√ƒÍ∆˛±°Œ¡° …¬≈Ô°À"  TO  SPA-W22-KANRICD-3 (10).
-           MOVE    "∆√ƒÍ∆˛±°Œ¡° …¬ºº°À"  TO  SPA-W22-KANRICD-3 (11).
-           MOVE    "ººŒ¡∫π≥€"            TO  SPA-W22-KANRICD-3 (12).
-           MOVE    " ›∞ÈªŒøÕøÙ∂Ë ¨"      TO  SPA-W22-KANRICD-3 (13).
-           MOVE    "¥«∏Ó ‰Ωı«€√÷"        TO  SPA-W22-KANRICD-3 (14).
+      *    MOVE    "5101"                TO  SPA-W22-KANRICD-1 (1).
+      *    MOVE    "5102"                TO  SPA-W22-KANRICD-1 (2).
+      *    MOVE    "5103"                TO  SPA-W22-KANRICD-1 (3).
+      *    MOVE    "5104"                TO  SPA-W22-KANRICD-1 (4).
+      *    MOVE    "5105"                TO  SPA-W22-KANRICD-1 (5).
+      *    MOVE    "5106"                TO  SPA-W22-KANRICD-1 (6).
+      *    MOVE    "5107"                TO  SPA-W22-KANRICD-1 (7).
+      *    MOVE    "5108"                TO  SPA-W22-KANRICD-1 (8).
+      *    MOVE    "5109"                TO  SPA-W22-KANRICD-1 (9).
+      *    MOVE    "5110"                TO  SPA-W22-KANRICD-1 (10).
+      *    MOVE    "5111"                TO  SPA-W22-KANRICD-1 (11).
+      *    MOVE    "5113"                TO  SPA-W22-KANRICD-1 (12).
+      *    MOVE    "5114"                TO  SPA-W22-KANRICD-1 (13).
+      *    MOVE    "5115"                TO  SPA-W22-KANRICD-1 (14).
+      *    MOVE    "…¬≈ÔºÔ Ã"            TO  SPA-W22-KANRICD-3 (1).
+      *    MOVE    " ø∂—∫ﬂ∆¸øÙ"          TO  SPA-W22-KANRICD-3 (2).
+      *    MOVE    "¥«∏Ó«€√÷"            TO  SPA-W22-KANRICD-3 (3).
+      *    MOVE    "¥«∏Ó»ÊŒ®"            TO  SPA-W22-KANRICD-3 (4).
+      *    MOVE    "¥«∏Ó ‰Ωı≤√ªª"        TO  SPA-W22-KANRICD-3 (5).
+      *    MOVE    "ÃÎ¥÷∂–Ã≥¥«∏Ó≤√ªª"    TO  SPA-W22-KANRICD-3 (6).
+      *    MOVE    "¥«∏Óª’øÕøÙ∂Ë ¨"      TO  SPA-W22-KANRICD-3 (7).
+      *    MOVE    "…¬ºººÔ Ã"            TO  SPA-W22-KANRICD-3 (8).
+      *    MOVE    "¿≠ Ã∆√ƒÍ"            TO  SPA-W22-KANRICD-3 (9).
+      *    MOVE    "∆√ƒÍ∆˛±°Œ¡° …¬≈Ô°À"  TO  SPA-W22-KANRICD-3 (10).
+      *    MOVE    "∆√ƒÍ∆˛±°Œ¡° …¬ºº°À"  TO  SPA-W22-KANRICD-3 (11).
+      *    MOVE    "ººŒ¡∫π≥€"            TO  SPA-W22-KANRICD-3 (12).
+      *    MOVE    " ›∞ÈªŒøÕøÙ∂Ë ¨"      TO  SPA-W22-KANRICD-3 (13).
+      *    MOVE    "¥«∏Ó ‰Ωı«€√÷"        TO  SPA-W22-KANRICD-3 (14).
+      *
+      *    ººŒ¡∫π≥€§Œ§ﬂ•≥•Û•‹§À ‘Ω∏
+           MOVE    "5113"                TO  SPA-W22-KANRICD-1 (01).
+           MOVE    "ººŒ¡∫π≥€"            TO  SPA-W22-KANRICD-3 (01).
       *
            MOVE    SPACE                 TO  SPA-W22-KANRICD.
            MOVE    SPACE                 TO  SPA-W22-KBNCD.
@@ -1290,6 +1298,14 @@
        T-000-KANRICD-SEC                 SECTION.
       *
            MOVE    2                   TO  SPA-W22-CUR.
+      *
+           MOVE    SPACE               TO  SPA-W22-KBNCD
+                                           SPA-W22-MEISYOU
+                                           SPA-W22-STYUKYMD-L
+                                           SPA-W22-EDYUKYMD-L
+                                           SPA-W22-MEISYOU-TBL
+      *
+      *
            MOVE    1                   TO  FLG-ERR.
            MOVE    W22-KANRICD         TO  SPA-W22-KANRICD.
       *
@@ -1406,7 +1422,25 @@
                    MOVE    T-MESSAGE-001         TO  SPA-W22-ERRMSG
                END-IF
                MOVE    3                     TO  SPA-W22-CUR
+               GO  TO  T-000-MEISYOU-EXT
            END-IF.
+      *
+          IF  SPA-W22-KANRICD-C         =   "5113"
+
+               INITIALIZE                     ORCSNUMAREA
+               MOVE   SPA-W22-MEISYOU  TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF  ( SNUM-RC       NOT =   ZERO  )
+                OR ( SNUM-MINKBN   NOT =   SPACE )
+                OR ( SNUM-SYOKBN   NOT =   SPACE )
+                   MOVE    T-MESSAGE-001         TO  SPA-W22-ERRMSG
+                   GO  TO  T-000-MEISYOU-EXT
+               ELSE
+                   MOVE    SNUM-OUTNUM TO  WRK-NUM-05
+                   MOVE    WRK-NUM-05  TO  SPA-W22-MEISYOU
+               END-IF
+          END-IF
       *
        T-000-MEISYOU-EXT.
            EXIT.
