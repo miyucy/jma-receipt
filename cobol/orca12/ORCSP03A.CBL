@@ -155,15 +155,18 @@
                05  WRK-HJO-REC-R1      REDEFINES   WRK-HJO-REC-G1.
                    07  WRK-HJO-REC1    PIC X(10) OCCURS  11.
                05  WRK-HJO-REC-G2.
-                   07  FILLER          PIC X(12) VALUE "0 Ìµ¤·".
-                   07  FILLER          PIC X(12) VALUE "1 £±³ä".
-                   07  FILLER          PIC X(12) VALUE "2 £²³ä".
-                   07  FILLER          PIC X(12) VALUE "3 £³³ä".
-                   07  FILLER          PIC X(12) VALUE "4 ³°£±³ä".
-                   07  FILLER          PIC X(12) VALUE "5 ³°£²³ä".
-                   07  FILLER          PIC X(12) VALUE "6 ³°£³³ä".
+                   07  FILLER          PIC X(16) VALUE "0 Ìµ¤·".
+                   07  FILLER          PIC X(16) VALUE "1 £±³ä".
+                   07  FILLER          PIC X(16) VALUE "2 £²³ä".
+                   07  FILLER          PIC X(16) VALUE "3 £³³ä".
+                   07  FILLER          PIC X(16) VALUE
+                                                 "4 ³°£±³ä Æþ£°³ä".
+                   07  FILLER          PIC X(16) VALUE
+                                                 "5 ³°£²³ä Æþ£±³ä".
+                   07  FILLER          PIC X(16) VALUE
+                                                 "6 ³°£³³ä Æþ£²³ä".
                05  WRK-HJO-REC-R2      REDEFINES   WRK-HJO-REC-G2.
-                   07  WRK-HJO-REC2    PIC X(12) OCCURS  7.
+                   07  WRK-HJO-REC2    PIC X(16) OCCURS  7.
                05  WRK-HJO-REC-G3.
                    07  FILLER          PIC X(06) VALUE "1 ²ÝÀÇ".
                    07  FILLER          PIC X(06) VALUE "2 Èó²Ý".
