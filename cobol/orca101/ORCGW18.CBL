@@ -63,12 +63,11 @@
                    07  SPA-GMN-HFAX           PIC X(15).
                    07  SPA-GMN-PRTKBN-MAX     PIC 9(02).
       *
+                   07  SPA-GMN-KBNCD-G.
+                       09  SPA-GMN-KBNCD      PIC X(02).
+                       09  SPA-GMN-F1         PIC X(01).
+                       09  SPA-GMN-KBNCDMEI   PIC X(18).
                    07  SPA-GMN-KOUMOKU1.
-                       09  SPA-GMN-KBNCD-G.
-                           11  SPA-GMN-KBNCD  PIC X(02).
-                           11  SPA-GMN-F1     PIC X(01).
-                           11  SPA-GMN-KBNCDMEI
-                                              PIC X(18).
                        09  SPA-GMN-HOSPNAME1  PIC X(80).              
                        09  SPA-GMN-HOSPNAME2  PIC X(80).              
                        09  SPA-GMN-HOSPNAME3  PIC X(80).              
@@ -530,6 +529,7 @@
            MOVE    1               TO  SPA-GMN-CUR
       *
            INITIALIZE                  SPA-GMN-KOUMOKU1
+                                       SPA-GMN-KBNCD-G
       *
            MOVE    W18-KBNCD       TO  SPA-GMN-KBNCD-G
       *         
@@ -994,6 +994,7 @@
        420-CLEAR-SEC                   SECTION.
       *
            INITIALIZE                  SPA-GMN-KOUMOKU1
+                                       SPA-GMN-KBNCD-G
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *
@@ -1056,6 +1057,18 @@
       *    入力チェック処理
            MOVE    1                   TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+              GO      TO      490-KOUSHIN-MAE-EXT
+           END-IF
+      *
+           EVALUATE   W18-PAGENO
+               WHEN   0
+                   IF    ( SPA-GMN-KBNCD   =   SPACE )
+                   AND   ( SPA-GMN-KOUMOKU1 
+                                           =   SPACE )
+                       MOVE    "0101"          TO  SPA-ERRCD
+                   END-IF                      
+           END-EVALUATE
            IF      SPA-ERRCD       NOT =   SPACE
               GO      TO      490-KOUSHIN-MAE-EXT
            END-IF
@@ -1239,6 +1252,7 @@
       *
       *            項目クリア
                    INITIALIZE                  SPA-GMN-KOUMOKU1
+                                               SPA-GMN-KBNCD-G
                    MOVE    1                   TO  SPA-GMN-CUR
                WHEN    1
       *            帳票別指定情報
@@ -1628,6 +1642,10 @@
                WHEN    "0100"
                    MOVE
                    "入力項目があるのに区分コードが入力されていません"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0101"
+                   MOVE
+                       "項目が未入力なので更新できません"
                                                          TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "帳票別指定情報の更新ができませんでした"
