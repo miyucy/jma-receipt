@@ -213,7 +213,9 @@
                            11  SPA-HKNJA-TEL           PIC X(15).
       *                    ÊÝ¸±¼Ô·Ù¹ðÉ½¼¨
                            11  SPA-HKNJA-IDOYMD        PIC X(08).
-                       09  SPA-HKNJA-KEIFLG        PIC X(01).
+                           11  SPA-HKNJA-KYURATE1      PIC 9(03).
+                           11  SPA-HKNJA-KYURATE2      PIC 9(03).
+                      09  SPA-HKNJA-KEIFLG        PIC X(01).
       *
       *            ÂÐ¾Ý³«»ÏÈÖ¹æ
                    07  SPA-NAI-HKNSTR              PIC 9(04).
@@ -386,6 +388,7 @@
                    07  SPA-MAE-BIRTHDAY        PIC X(09).
                    07  SPA-MAE-POST            PIC X(07).
                    07  SPA-MAE-DISCOUNTKBN     PIC X(02).
+                   07  SPA-MAE-HONKZKKBN       PIC X(01).
       *
       *
       *    ÊÝ¸±¡¦¸øÈñ¾ðÊó
