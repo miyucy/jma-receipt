@@ -1179,7 +1179,8 @@
            END-IF
       *
       *    初診算定日から６月以内
-           IF      LNK-ORCSC-SYOYMD    =   SPACE
+           IF     (LNK-ORCSC-SYOYMD    =   SPACE  )  OR
+                  (LNK-ORCSC-SYOSIN2   =   1      )
                MOVE    SPA-SRYYMD          TO  LNK-ORCSC-SYOYMD
            END-IF
       **** MOVE    LNK-ORCSC-SYOYMD    TO  WRK-SYOYMD
@@ -1201,6 +1202,7 @@
       *TEST
            DISPLAY "C80 LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
                    ",LNK-DAY6-KOYOMI:" LNK-DAY6-KOYOMI
+      *TEST
       *
       *
            EVALUATE    WRK-COM-INPUTCD(IDX-Z)
