@@ -52,6 +52,7 @@
       *                                     摘要欄に印刷しないように修正
       *  01.00.17    NACL-門脇    03.09.29  点数マスタを読み込まないよう
       *                                     修正
+      *  01.00.18    NACL-藤原    04.02.05  薬剤・器材の編集順を逆にする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -190,6 +191,7 @@
       *    剤診療行為コード別編集用     
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
       *     
            03  WRK-SYU-INDEX       PIC 9(04).
            03  WRK-YKZ-INDEX       PIC 9(04).
@@ -1496,8 +1498,19 @@
            MOVE    SPACE             TO  WRK-ZAI
            MOVE    "＊"              TO  WRK-ZAI-MK
       *     
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       5
+           PERFORM VARYING IDX3    FROM    1   BY  1
+                   UNTIL   IDX3    >       5
+      *
+      *        薬剤と器材の表示を逆にする
+               EVALUATE    IDX3
+                   WHEN    4
+                       MOVE    5               TO  IDX1
+                   WHEN    5
+                       MOVE    4               TO  IDX1
+                   WHEN   OTHER
+                       MOVE    IDX3            TO  IDX1
+               END-EVALUATE
+      *
                IF      RECE44-SRYKBN   <=   "33"
                    MOVE    "＊"            TO  WRK-ZAI-MK
                END-IF    
@@ -1644,8 +1657,19 @@
            MOVE    "＊"                TO  WRK-ZAI-MK
            INITIALIZE                    TBL-ZAI-AREA
            MOVE    ZERO              TO  WRK-TBLMAX
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       5  
+           PERFORM VARYING IDX3    FROM    1   BY  1
+                   UNTIL   IDX3    >       5  
+      *
+      *        薬剤と器材の表示を逆にする
+               EVALUATE    IDX3
+                   WHEN    4
+                       MOVE    5               TO  IDX1
+                   WHEN    5
+                       MOVE    4               TO  IDX1
+                   WHEN   OTHER
+                       MOVE    IDX3            TO  IDX1
+               END-EVALUATE
+      *
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL   IDX2    >   WRK-ZAIWMAX (IDX1)  
                    MOVE    IDX1          TO  WRK-WIDX1

@@ -106,6 +106,7 @@
       *                                     Ω§¿µ
       *  01.03.04    NACL-ÃÁœ∆    03.11.26  º´»Ò•Ï•ª•◊•»§Œº´»Ò ¨
       *                                     ≈¶Õ◊ÕÛµ≠∫‹¬–±˛
+      *  01.03.05    NACL-∆£∏∂    04.02.05  ÃÙ∫ﬁ°¶¥Ô∫‡§Œ ‘Ω∏ΩÁ§Úµ’§À§π§Î
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -253,6 +254,7 @@
       *    ∫ﬁø«Œ≈π‘∞Ÿ•≥°º•… Ã ‘Ω∏Õ—     
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
       *     
            03  WRK-SYU-INDEX       PIC 9(04).
            03  WRK-YKZ-INDEX       PIC 9(04).
@@ -1503,8 +1505,19 @@
            MOVE    ZERO                TO  WRK-TBLMAX
            MOVE    ZERO                TO  WRK-TENSUGOKEI
       *     
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       5  
+           PERFORM VARYING IDX3    FROM    1   BY  1
+                   UNTIL   IDX3    >       5
+      *
+      *        ÃÙ∫ﬁ§»¥Ô∫‡§Œ…Ωº®§Úµ’§À§π§Î
+               EVALUATE    IDX3
+                   WHEN    4
+                       MOVE    5               TO  IDX1
+                   WHEN    5
+                       MOVE    4               TO  IDX1
+                   WHEN   OTHER
+                       MOVE    IDX3            TO  IDX1
+               END-EVALUATE
+      *  
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL   IDX2    >   WRK-ZAIWMAX (IDX1)  
                    MOVE    IDX1          TO  WRK-WIDX1
@@ -1763,8 +1776,19 @@
            MOVE    SPACE             TO  WRK-ZAI
            MOVE    "°ˆ"              TO  WRK-ZAI-MK
       *     
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       5
+           PERFORM VARYING IDX3    FROM    1   BY  1
+                   UNTIL   IDX3    >       5
+      *
+      *        ÃÙ∫ﬁ§»¥Ô∫‡§Œ…Ωº®§Úµ’§À§π§Î
+               EVALUATE    IDX3
+                   WHEN    4
+                       MOVE    5               TO  IDX1
+                   WHEN    5
+                       MOVE    4               TO  IDX1
+                   WHEN   OTHER
+                       MOVE    IDX3            TO  IDX1
+               END-EVALUATE
+      *
                IF      RECE04-SRYKBN   <=   "33"
                    MOVE    "°ˆ"            TO  WRK-ZAI-MK
                END-IF    
@@ -1942,8 +1966,19 @@
            MOVE    "°ˆ"                TO  WRK-ZAI-MK
            INITIALIZE                    TBL-ZAI-AREA
            MOVE    ZERO              TO  WRK-TBLMAX
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       5  
+           PERFORM VARYING IDX3    FROM    1   BY  1
+                   UNTIL   IDX3    >       5  
+      *
+      *        ÃÙ∫ﬁ§»¥Ô∫‡§Œ…Ωº®§Úµ’§À§π§Î
+               EVALUATE    IDX3
+                   WHEN    4
+                       MOVE    5               TO  IDX1
+                   WHEN    5
+                       MOVE    4               TO  IDX1
+                   WHEN   OTHER
+                       MOVE    IDX3            TO  IDX1
+               END-EVALUATE
+      *
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL   IDX2    >   WRK-ZAIWMAX (IDX1)  
                    MOVE    IDX1          TO  WRK-WIDX1
