@@ -6088,6 +6088,7 @@
            MOVE    SPA-GMN-TENSU(WRK-IDX)   TO  WRK-H-ZAIKEI
       *
            MOVE    WRK-SURYO-HENSYU    TO  J04-SURYO (IDX)
+           MOVE    "user-font"         TO  J04-SURYO-STYLE(IDX)
       *
            .
        5002-SURYO-HEN-EXT.
