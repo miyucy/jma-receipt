@@ -1779,9 +1779,9 @@
                        GO      TO      20012-NTUKIMAX-CHK-EXT
                    END-IF
       *            Äþ¸ºÂÐ¾Ý³°Ê¬¤ò°ú¤¯
-      *!           Åö·î¤Î»»Äê²ó¿ô
-      *            MOVE    ZERO                TO  WRK-TUKI-CNT
-      *            IF      LNK-ORCSC-KYUSEI-90(1:6)
+      *            Åö·î¤Î»»Äê²ó¿ô
+                   MOVE    ZERO                TO  WRK-TUKI-CNT
+      ******       IF      LNK-ORCSC-KYUSEI-90(1:6)
       *                                        =   WRK-SRYYMD(1:6)
       *                MOVE    LNK-ORCSC-KYUSEI-90(7:2)
       *                                        TO  IDX-STR
@@ -1798,6 +1798,9 @@
                                                           (IDX-R1 IDY)
                        END-IF
                    END-PERFORM
+      *TEST
+           DISPLAY "C80 WRK-TUKI-CNT:" WRK-TUKI-CNT
+      *TEST
       *            £±·î£±£±Ã±°Ì¤«¤éÄþ¸º
                    IF      WRK-TUKI-CNT        >=  10
       *                Äþ¸º¤¢¤ê
