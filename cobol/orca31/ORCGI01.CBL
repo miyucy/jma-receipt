@@ -1215,7 +1215,7 @@
            WHEN    "CLICKED"       ALSO    "B12"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 480-TOUROKU-SEC
-           WHEN    "CLICKED"       ALSO    "B10"
+           WHEN    "CLICKED"       ALSO    "B04"
            WHEN    "CLICKED"       ALSO    "B21"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 480-NYUINKAIKEI-SEC

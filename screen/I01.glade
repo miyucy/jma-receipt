@@ -122,6 +122,17 @@
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F4</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 07 Aug 2002 05:11:41 GMT</last_modification_time>
+      </signal>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
 
@@ -238,17 +249,6 @@
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F10</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Wed, 07 Aug 2002 05:11:41 GMT</last_modification_time>
-      </signal>
       <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
 
