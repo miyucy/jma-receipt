@@ -1122,72 +1122,99 @@
       *****************************************************************
        3011-K98-SET2-SEC          SECTION.
       *
-           MOVE    SPA-COM-GYOU(SPA-GMN-IDX)
-                                       TO  SPA-MAP-IDX
-           MOVE    SPA-GMN-IDX         TO  WRK-STR
+      *DD  MOVE    SPA-COM-GYOU(SPA-GMN-IDX)
+      *                                TO  SPA-MAP-IDX
+      *    MOVE    SPA-GMN-IDX         TO  WRK-STR
       *
       *    １件目を画面入力分として処理する
-           MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
-           INITIALIZE                  ORCSC97AREA
-           MOVE    SPA-GMN-IDX         TO  LNK-SC97-GMN-IDX
+      *    MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
+      *    INITIALIZE                  ORCSC97AREA
+      *    MOVE    SPA-GMN-IDX         TO  LNK-SC97-GMN-IDX
       *    時間外特例区分
-           MOVE    SPA-JIKANTOKU       TO  LNK-SC97-JIKANTOKU
-           MOVE    K05-INPUTCD(SPA-MAP-IDX)
-                                       TO  LNK-SC97-INPUTCD
-           CALL    "ORCSC97"           USING
-                                       SPA-AREA
-                                       ORCSC97AREA
-                                       WRK-SCR-REC
-           MOVE    K05-INPUTCD(SPA-MAP-IDX)
-                                       TO  WRK-HEN-INPUTCD
-           MOVE    SPA-K98-SRYCD(01)   TO  K05-INPUTCD(SPA-MAP-IDX)
-           COMPUTE WRK-CD-MCNT         =   LNK-SC97-INCDCNT  +  1
-           MOVE    WRK-HEN-INPUTCD(WRK-CD-MCNT:)
-                                       TO  K05-INPUTCD(SPA-MAP-IDX)
-                                                 (10:12)
-           MOVE    "1"                 TO  SPA-COM-IN2    (SPA-GMN-IDX)
-           MOVE    K05-INPUTCD (SPA-MAP-IDX)
-                                       TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
-           MOVE    SPACE               TO  SPA-COM-KZMFLG(SPA-GMN-IDX)
-           PERFORM 41011-KOUI-HEN2-SEC
+      *    MOVE    SPA-JIKANTOKU       TO  LNK-SC97-JIKANTOKU
+      *    MOVE    K05-INPUTCD(SPA-MAP-IDX)
+      *                                TO  LNK-SC97-INPUTCD
+      *    CALL    "ORCSC97"           USING
+      *                                SPA-AREA
+      *                                ORCSC97AREA
+      *                                WRK-SCR-REC
+      *    MOVE    K05-INPUTCD(SPA-MAP-IDX)
+      *                                TO  WRK-HEN-INPUTCD
+      *    MOVE    SPA-K98-SRYCD(01)   TO  K05-INPUTCD(SPA-MAP-IDX)
+      *    COMPUTE WRK-CD-MCNT         =   LNK-SC97-INCDCNT  +  1
+      *    MOVE    WRK-HEN-INPUTCD(WRK-CD-MCNT:)
+      *                                TO  K05-INPUTCD(SPA-MAP-IDX)
+      *                                          (10:12)
+      *    MOVE    "1"                 TO  SPA-COM-IN2    (SPA-GMN-IDX)
+      *    MOVE    K05-INPUTCD (SPA-MAP-IDX)
+      *                                TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
+      *    MOVE    SPACE               TO  SPA-COM-KZMFLG(SPA-GMN-IDX)
+      *    PERFORM 41011-KOUI-HEN2-SEC
       *
       *    残りのコードは、ＳＰＡへ
-           MOVE    ZERO                TO  FLG-ARI2
-           PERFORM VARYING     IDX-K98 FROM    2   BY  1
-                   UNTIL      (IDX-K98             >   5   )  OR
-                              (SPA-K98-SRYCD(IDX-K98)  =   SPACE ) OR
-                              (SPA-ERRCD       NOT =   SPACE)
-               ADD     1               TO  SPA-GMN-IDX
+      *    MOVE    ZERO                TO  FLG-ARI2
+      *    PERFORM VARYING     IDX-K98 FROM    2   BY  1
+      *            UNTIL      (IDX-K98             >   5   )  OR
+      *                       (SPA-K98-SRYCD(IDX-K98)  =   SPACE ) OR
+      *                       (SPA-ERRCD       NOT =   SPACE)
+      *        ADD     1               TO  SPA-GMN-IDX
       *
       *        点数マスタ編集・基本チェック
-               INITIALIZE                  ORCSC92AREA
-               MOVE    "K05"               TO  LNK-SC92-PG
-               MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
-               MOVE    "1"                 TO  LNK-SC92-KBN
-               MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
-               MOVE    SPA-K98-SRYCD(IDX-K98)
-                                           TO  LNK-SC92-SRYCD
-               MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
-               MOVE    SPA-NAI-ROUJIN      TO  LNK-SC92-ROUJIN
-               MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
-               MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
-               CALL    "ORCSC92"           USING
-                                           MCPAREA
-                                           ORCSC92AREA
-                                           SPA-SCR-REC
-                                           SPA-AREA
-               IF      SPA-ERRCD       NOT =   SPACE
-                   MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
+      *        INITIALIZE                  ORCSC92AREA
+      *        MOVE    "K05"               TO  LNK-SC92-PG
+      *        MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
+      *        MOVE    "1"                 TO  LNK-SC92-KBN
+      *        MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
+      *        MOVE    SPA-K98-SRYCD(IDX-K98)
+      *                                    TO  LNK-SC92-SRYCD
+      *        MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
+      *        MOVE    SPA-NAI-ROUJIN      TO  LNK-SC92-ROUJIN
+      *        MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
+      *        MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
+      *        CALL    "ORCSC92"           USING
+      *                                    MCPAREA
+      *                                    ORCSC92AREA
+      *                                    SPA-SCR-REC
+      *                                    SPA-AREA
+      *        IF      SPA-ERRCD       NOT =   SPACE
+      *            MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
+      *        END-IF
+      *
+      *        MOVE    1               TO  FLG-ARI2
+      *    END-PERFORM
+      *
+      *    IF      SPA-ERRCD           =   SPACE
+      *        画面ＳＰＡチェック処理
+      *        MOVE    1               TO  FLG-NYU-ARI
+      *        PERFORM 410112-KOUI-SPACHK-SEC
+      *DD  END-IF
+      *
+           MOVE    ZERO                TO  WRK-IN-MAP-IDX
+           MOVE    SPA-GMN-IDX         TO  WRK-STR
+      *
+           PERFORM VARYING     IDX-K98 FROM    1   BY  1
+                   UNTIL      (IDX-K98             >   5   )  OR
+                              (SPA-K98-SRYCD(IDX-K98)  =   SPACE )
+      *
+               IF      IDX-K98             =   1
+                   MOVE    SPA-K98-SRYCD(IDX-K98)
+                                           TO  SPA-GMN-INPUTCD
+                                                       (SPA-GMN-IDX)
+               ELSE
+                   ADD     1               TO  SPA-GMN-IDX
+                   PERFORM 41014-GYOINSN-SEC
+                   MOVE    SPA-K98-SRYCD(IDX-K98)
+                                           TO  SPA-GMN-INPUTCD
+                                                       (SPA-GMN-IDX)
                END-IF
       *
-               MOVE    1               TO  FLG-ARI2
+               MOVE    "1"                 TO  SPA-COM-IN (SPA-GMN-IDX)
+               MOVE    "1"                 TO  SPA-COM-IN2(SPA-GMN-IDX)
+      *
            END-PERFORM
       *
-           IF      SPA-ERRCD           =   SPACE
-      *        画面ＳＰＡチェック処理
-               MOVE    1               TO  FLG-NYU-ARI
-               PERFORM 410112-KOUI-SPACHK-SEC
-           END-IF
+      *    入力コード・名称チェック処理
+           PERFORM 410112-KOUI-SPACHK-SEC
       *
            .
        3011-K98-SET2-EXT.
