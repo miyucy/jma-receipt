@@ -66,6 +66,8 @@
       *  01.01.13    NACL-多々納  02/09/18  保険表示修正
       *  01.01.14    NACL-藤原    02/11/05  入外区分追加
       *  01.01.15    NACL-門脇    02.11.21  自賠責（ポリネック等の対応）
+      *  01.01.16    NACL-太田    02.12.11  診療科・入外区分を判断して
+      *                                     初期表示するよう修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -93,10 +95,11 @@
                05  SPA-GMN-MAX                   PIC 9(04).
                05  SPA-GMN-CUR                   PIC 9(02).
                05  SPA-GMN-AREA.
-                   07  SPA-GMN-SRYKALST        OCCURS  10.
+                   07  SPA-GMN-SRYKALST        OCCURS  99.
                        09  SPA-GMN-SRYKAL      PIC X(02).
                        09  SPA-GMN-F1L         PIC X(01).
                        09  SPA-GMN-SRYKAMEIL   PIC X(16).
+                   07  SPA-GMN-SRYKA-MAX       PIC 9(02).
                    07  SPA-GMN-NYUGAIKBNLST    OCCURS  3.
                        11  SPA-GMN-NYUGAIKBNL  PIC X(01).
                        11  SPA-GMN-F1L         PIC X(01).
@@ -185,6 +188,8 @@
       *
            03  FLG-SYORI           PIC 9(01).
       *
+           03  FLG-ERR             PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
@@ -210,6 +215,7 @@
            03  IDX11               PIC 9(04).
            03  IDX12               PIC 9(04).
            03  IDX13               PIC 9(04).
+           03  IDX14               PIC 9(04).
            03  IDXA                PIC 9(04).                           010112
            03  SAI-IDX             PIC 9(04).
       *
@@ -544,6 +550,20 @@
       *
            EVALUATE    SPA-MOTOPG
                WHEN    "K02"
+               WHEN    "K02N"
+                   PERFORM                 310-SPA-SET-SEC
+                   IF      SPA-PTNUM       NOT =   SPACE
+                       MOVE    SPA-PTNUM       TO  S02-PTNUM
+                       PERFORM 4102-PTNUM-CHK-SEC
+      *                収納編集
+                       MOVE    SPA-SRYKAMEI    TO  SPA-GMN-SRYKAMEI
+                       MOVE    SPA-SRYKA       TO  SPA-GMN-SRYKA
+                       MOVE    SPA-NYUGAIKBN   TO  SPA-GMN-NYUGAIKBN
+      *                MOVE    SPA-NYUGAIKBN   TO  SPA-GMN-NYUGAIKBN
+                       PERFORM 3101-COMBO-SYOKI-SET-SEC
+                       PERFORM 300-SYUNOU-HENSYU-SEC
+                       MOVE    1               TO   SPA-GMN-CUR
+                   END-IF
                WHEN    "U02"
                    PERFORM                 310-SPA-SET-SEC
                    IF      SPA-PTNUM       NOT =   SPACE
@@ -552,6 +572,14 @@
       *                収納編集
                        MOVE    SPA-SRYKAMEI    TO  SPA-GMN-SRYKAMEI
                        MOVE    SPA-SRYKA       TO  SPA-GMN-SRYKA
+      *                受診履歴より診療科決定
+                       PERFORM 3103-JYURRK-CHK-SEC
+                       IF    ( SPA-BEDSU   >   ZERO )
+                           MOVE    "0"         TO  SPA-GMN-NYUGAIKBN
+                       ELSE
+                           MOVE    "2"         TO  SPA-GMN-NYUGAIKBN
+                       END-IF
+                       PERFORM 3101-COMBO-SYOKI-SET-SEC
                        PERFORM 300-SYUNOU-HENSYU-SEC
                        MOVE    1               TO   SPA-GMN-CUR
                    END-IF
@@ -592,6 +620,36 @@
            EXIT.
       *
       *
+      *****************************************************************
+      *    コンボ初期値設定処理
+      *****************************************************************
+       3101-COMBO-SYOKI-SET-SEC        SECTION.
+      *
+           PERFORM VARYING IDX14   FROM    1   BY  1
+               UNTIL     ( IDX14   >       SPA-GMN-SRYKA-MAX )
+               IF    ( SPA-GMN-SRYKA   =   SPA-GMN-SRYKAL (IDX14) )
+                   MOVE    SPA-GMN-SRYKALST (IDX14)
+                                       TO  SPA-GMN-SRYKA-G
+                   MOVE    SPA-GMN-SRYKA-MAX
+                                       TO  IDX14
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING IDX14   FROM    1   BY  1
+               UNTIL     ( IDX14   >       SPA-GMN-NYUGAIKBN-MAX )
+               IF    ( SPA-GMN-NYUGAIKBN
+                                   =   SPA-GMN-NYUGAIKBNL (IDX14) )
+                   MOVE    SPA-GMN-NYUGAIKBNLST (IDX14)
+                                       TO  SPA-GMN-NYUGAIKBN-G
+                   MOVE    SPA-GMN-NYUGAIKBN-MAX
+                                       TO  IDX14
+               END-IF
+           END-PERFORM
+      *
+      *
+           .
+       3101-COMBO-SYOKI-SET-EXT.
+           EXIT.
       **************************************************************
       *    画面編集処理
       **************************************************************
@@ -600,7 +658,7 @@
            INITIALIZE                  SPA-S02
       *
       *    患者情報（診療行為で患者番号を入力したとき） 
-           IF     (SPA-MOTOPG2         =   "K02"  OR  "U02" )
+           IF     (SPA-MOTOPG2         =   "K02" OR "K02N" OR "U02" )
            AND    (SPA-PTNUM       NOT =   SPACE    )
       **       MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
       *        MOVE    SPA-PTID            TO  SPA-GMN-PTID
@@ -620,7 +678,7 @@
                MOVE    SPA-SYSYMD  (1:6)    TO  SPA-NAI-SRYYM
                MOVE    2                    TO  SPA-GMN-CUR
            END-IF
-      *        
+      *
       *****MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
            PERFORM 3101-SRYKA-SPA-SEC
@@ -655,13 +713,15 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   10   )  OR
+                   UNTIL       (IDX            >   99   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC           TO  SYS-1005-REC
                MOVE    SYS-1005-KBNCD (1:2)  TO
                                              SPA-GMN-SRYKAL    (IDX)
                MOVE    SYS-1005-SRYKANAME1   TO
                                              SPA-GMN-SRYKAMEIL (IDX)
+               MOVE    IDX                   TO
+                                             SPA-GMN-SRYKA-MAX
       *
                MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
                PERFORM 900-KANRIMST-READ-SEC
@@ -688,19 +748,57 @@
            MOVE    "1"                 TO  SPA-GMN-NYUGAIKBNL       (2)
            MOVE    "入院"              TO  SPA-GMN-NYUGAIKBNMEIL    (2)
            MOVE    "2"                 TO  SPA-GMN-NYUGAIKBNL       (3)
-           MOVE    "入院外"            TO  SPA-GMN-NYUGAIKBNMEIL    (3)
+           MOVE    "外来"              TO  SPA-GMN-NYUGAIKBNMEIL    (3)
            MOVE    3                   TO  SPA-GMN-NYUGAIKBN-MAX
       *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       3
-               IF      SPA-GMN-NYUGAIKBN   =   SPA-GMN-NYUGAIKBNL (IDX)
-                   MOVE    SPA-GMN-NYUGAIKBNMEIL (IDX)
-                                               TO  SPA-GMN-NYUGAIKBNMEI
-                   MOVE    3                   TO  IDX
-               END-IF
-           END-PERFORM                                               
            .
        3102-NYUGAIKBN-SPA-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   受診履歴より診療科決定処理
+      *****************************************************************
+       3103-JYURRK-CHK-SEC             SECTION.
+      *
+      *    受診歴を検索する  医療機関、患者ＩＤ
+           INITIALIZE                  JYURRK-REC
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-NAI-SRYYM       TO  JYURRK-SRYYMD(1:6)
+           MOVE    "31"                TO  JYURRK-SRYYMD(7:2)
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "JYURRK-KEY10"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "JYURRK-KEY10"      TO  ORC-DBPATH
+               PERFORM 960-JYURRK-READ-SEC
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+           DISPLAY "SPA-NAI-SRYYM = " SPA-NAI-SRYYM
+           DISPLAY "JYURRK-SRYYMD = " JYURRK-SRYYMD
+           PERFORM
+               UNTIL   FLG-JYURRK          =   1
+               IF      SPA-NAI-SRYYM       =   JYURRK-SRYYMD(1:6)
+                   MOVE    JYURRK-SRYKA        TO  SPA-GMN-SRYKA
+                   MOVE    JYURRK-NYUGAIKBN    TO  SPA-GMN-NYUGAIKBN
+               END-IF
+      *
+               MOVE    "JYURRK-KEY10"      TO  ORC-DBPATH
+               PERFORM 960-JYURRK-READ-SEC
+               DISPLAY "FLG-JYURRK = " FLG-JYURRK
+           END-PERFORM
+           .
+      *
+       3103-JYURRK-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -728,8 +826,8 @@
       *        
            PERFORM 3102-NYUGAIKBN-SPA-SEC
       *     
-           IF      SPA-MOTOPG2         =   "K02"
-           AND     SPA-PTNUM       NOT =   SPACE
+           IF    ( SPA-MOTOPG2         =   "K02" OR "K02N" )
+           AND   ( SPA-PTNUM       NOT =   SPACE )
                MOVE    2                   TO  SPA-GMN-CUR
            ELSE        
                MOVE    1                   TO  SPA-GMN-CUR
@@ -990,7 +1088,7 @@
       *    画面編集処理
       **************************************************************
        500-GMNHEN-SEC                  SECTION.
-      * 
+      *
            MOVE    SPACE               TO  S02
       *
            MOVE    SPA-GMN-PTNUM       TO  S02-PTNUM
@@ -1000,10 +1098,12 @@
            MOVE    SPA-GMN-SRYYM       TO  S02-SRYYM
            MOVE    SPA-GMN-BIRTHDAY    TO  S02-BIRTHDAY
            MOVE    SPA-GMN-SRYKA-G     TO  S02-SRYKA
+           DISPLAY "SPA-GMN-SRYKA-G =  "   SPA-GMN-SRYKA-G
+           DISPLAY "S02-SRYKA       =  "   S02-SRYKA
            MOVE    SPA-GMN-NYUGAIKBN-G TO  S02-NYUGAIKBN
       *     
            PERFORM VARYING   IDX     FROM    1   BY  1
-                   UNTIL     IDX     >       10
+                   UNTIL     IDX     >       SPA-GMN-SRYKA-MAX
                    OR        SPA-GMN-SRYKAL  (IDX)   =   SPACE 
                MOVE    SPA-GMN-SRYKALST (IDX)
                                           TO  S02-SRYKALST(IDX)
@@ -1011,7 +1111,7 @@
            END-PERFORM
       *     
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       3
+                   UNTIL   IDX     >       SPA-GMN-NYUGAIKBN-MAX
                    OR          SPA-GMN-NYUGAIKBNL  (IDX)  =   SPACE
                MOVE    SPA-GMN-NYUGAIKBNLST (IDX)
                                            TO  S02-NYUGAIKBN-ITEM (IDX)
@@ -1304,7 +1404,29 @@
            MOVE    SPA-GMN-PTID        TO  SPA-LAST-PTID
            MOVE    SPA-GMN-PTNUM       TO  SPA-LAST-PTNUM
       *
-           MOVE    3                 TO  SPA-GMN-CUR
+      *    受診歴チェック処理
+           PERFORM 3103-JYURRK-CHK-SEC
+      *
+      *    入外区分
+           IF    ( SPA-BEDSU       >   ZERO )
+               MOVE    "0"             TO  SPA-GMN-NYUGAIKBN
+           ELSE
+               IF    ( SPA-GMN-NYUGAIKBN
+                                   =   SPACE )
+                   MOVE    "2"         TO  SPA-GMN-NYUGAIKBN
+               END-IF
+           END-IF
+      *
+           PERFORM 3101-COMBO-SYOKI-SET-SEC
+      *
+           PERFORM 300-SYUNOU-HENSYU-SEC
+           IF    ( SPA-GMN-MAX     = ZERO )
+               MOVE    "0020"      TO  SPA-ERRCD
+               MOVE    3           TO  SPA-GMN-CUR
+           ELSE
+               MOVE    1           TO  SPA-GMN-CUR
+           END-IF
+      *
            .
        4102-PTNUM-CHK-EXT.
            EXIT.
@@ -1326,18 +1448,35 @@
       *
            IF      SPA-GMN-SRYKAMEI   =   SPACE
                MOVE    "0030"               TO  SPA-ERRCD
-           END-IF        
+               GO  TO  4103-SRYKA-CHK-EXT
+           END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-GMN-PTID        =   ZERO
-               OR      SPA-NAI-SRYYM       =   ZERO
-                   MOVE    "0050"              TO  SPA-ERRCD
+           MOVE    1                  TO  FLG-ERR
+           PERFORM VARYING IDX14   FROM    1   BY  1
+               UNTIL     ( IDX14   >       SPA-GMN-SRYKA-MAX )
+               IF    ( SPA-GMN-SRYKA   =   SPA-GMN-SRYKAL (IDX14) )
+                   MOVE    ZERO        TO  FLG-ERR
+                   MOVE    SPA-GMN-SRYKA-MAX
+                                       TO  IDX14
                END-IF
-           END-IF        
+           END-PERFORM
       *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    5                   TO  SPA-GMN-CUR
-           END-IF    
+           IF    ( FLG-ERR     NOT =   ZERO )
+               MOVE    "0030"               TO  SPA-ERRCD
+               GO  TO  4103-SRYKA-CHK-EXT
+           END-IF
+      *
+           IF      SPA-GMN-PTID        =   ZERO
+           OR      SPA-NAI-SRYYM       =   ZERO
+               MOVE    "0050"              TO  SPA-ERRCD
+               GO  TO  4103-SRYKA-CHK-EXT
+           END-IF
+      *
+           PERFORM 300-SYUNOU-HENSYU-SEC
+           IF    ( SPA-GMN-MAX     >   ZERO )
+               MOVE    1           TO  SPA-GMN-CUR
+           END-IF
+      *
            .
        4103-SRYKA-CHK-EXT.
            EXIT.
@@ -1368,11 +1507,29 @@
       ******** MOVE    SGDAY-SDAY          TO  SPA-SRYYMD
            ELSE
                MOVE    "0033"              TO  SPA-ERRCD
+               GO  TO  4104-SRYYM-CHK-EXT
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    4                   TO  SPA-GMN-CUR
+      *    受診歴チェック処理
+           PERFORM 3103-JYURRK-CHK-SEC
+      *
+      *    入外区分
+           IF    ( SPA-BEDSU       >   ZERO )
+               MOVE    "0"             TO  SPA-GMN-NYUGAIKBN
+           ELSE
+               IF    ( SPA-GMN-NYUGAIKBN
+                                   =   SPACE )
+                   MOVE    "2"         TO  SPA-GMN-NYUGAIKBN
+               END-IF
            END-IF
+      *
+           PERFORM 3101-COMBO-SYOKI-SET-SEC
+      *
+           PERFORM 300-SYUNOU-HENSYU-SEC
+           IF    ( SPA-GMN-MAX     >   ZERO )
+               MOVE    1           TO  SPA-GMN-CUR
+           END-IF
+      *
            .
        4104-SRYYM-CHK-EXT.
            EXIT.
@@ -1424,21 +1581,37 @@
       *
            IF      SPA-GMN-NYUGAIKBN  =   SPACE
                MOVE    "0034"             TO  SPA-ERRCD
-           END-IF        
+               GO  TO  4106-NYUGAIKBN-CHK-EXT
+           END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-GMN-PTID        =   ZERO
-               OR      SPA-NAI-SRYYM       =   ZERO
-               OR      SPA-GMN-SRYKA       =   SPACE
-                   MOVE    "0050"              TO  SPA-ERRCD
+           MOVE    1                  TO  FLG-ERR
+           PERFORM VARYING IDX14   FROM    1   BY  1
+               UNTIL     ( IDX14   >       SPA-GMN-NYUGAIKBN-MAX )
+               IF    ( SPA-GMN-NYUGAIKBN
+                                   =   SPA-GMN-NYUGAIKBNL (IDX14) )
+                   MOVE    ZERO        TO  FLG-ERR
+                   MOVE    SPA-GMN-NYUGAIKBN-MAX
+                                       TO  IDX14
                END-IF
-           END-IF        
-      *             
+           END-PERFORM
       *
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 300-SYUNOU-HENSYU-SEC
-               MOVE    1                   TO  SPA-GMN-CUR
-           END-IF    
+           IF    ( FLG-ERR     NOT =   ZERO )
+               MOVE    "0050"               TO  SPA-ERRCD
+               GO  TO  4106-NYUGAIKBN-CHK-EXT
+           END-IF
+      *
+           IF      SPA-GMN-PTID        =   ZERO
+           OR      SPA-NAI-SRYYM       =   ZERO
+           OR      SPA-GMN-SRYKA       =   SPACE
+               MOVE    "0050"              TO  SPA-ERRCD
+               GO  TO  4106-NYUGAIKBN-CHK-EXT
+           END-IF
+      *
+           PERFORM 300-SYUNOU-HENSYU-SEC
+           IF    ( SPA-GMN-MAX     >   ZERO )
+               MOVE    1           TO  SPA-GMN-CUR
+           END-IF
+      *
            .
        4106-NYUGAIKBN-CHK-EXT.
            EXIT.
@@ -1450,7 +1623,7 @@
       *
       *    診療行為より遷移時、診療行為へ
            MOVE    SPACE               TO  LINKAREA
-           IF      SPA-MOTOPG2         =   "K02"   OR  "U02"
+           IF      SPA-MOTOPG2         =   "K02" OR "K02N" OR "U02"
                MOVE    SPA-MOTOPG2         TO  SPA-SAKIPG
                MOVE    "S02"               TO  SPA-MOTOPG
                MOVE    SPACE               TO  SPA-MOTOPG2
@@ -3587,6 +3760,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "請求取消し済みの為、再発行はできません"
+                                       TO  SPA-ERRMSG
+               WHEN    "0020"
+                   MOVE    "対象の診療年月に収納はありません"
                                        TO  SPA-ERRMSG
                WHEN    "0030"
                    MOVE    "診療科目入力エラー"

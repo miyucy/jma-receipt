@@ -49,7 +49,7 @@
               03  S02-SRYKACOMBO.
                 04  S02-SRYKA         PIC X(22).
                 04  S02-SRYKA-COUNT   PIC S9(9)   BINARY.
-                04  S02-SRYKALST      PIC X(21)   OCCURS  10 TIMES.
+                04  S02-SRYKALST      PIC X(21)   OCCURS  99 TIMES.
               03  S02-B03S.
                 04  S02-B03S-STATE   PIC S9(9)   BINARY.
               03  S02-NYUGAIKBNCOMBO.

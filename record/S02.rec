@@ -45,7 +45,7 @@ S02	{
 				value	varchar(22);
 			};
 			count	int;
-			item	varchar(21)[10];
+			item	varchar(21)[99];
 		};
 		B03S	{
 	           	state	int;
