@@ -172,6 +172,7 @@
            03  WRK-SRYKBN              PIC X(02).
            03  WRK-KBN                 PIC X(01).
            03  WRK-KBN2                PIC X(01).
+           03  WRK-KBN3                PIC X(01).
       *
       *    算定年月
            03  WRK-SANTEI-YM           PIC X(06).
@@ -3997,7 +3998,7 @@
            MOVE    ZERO                TO  FLG-GAI
            MOVE    ZERO                TO  FLG-DUMMY
            MOVE    ZERO                TO  FLG-SINSATU-ARI
-           MOVE    SPACE               TO  WRK-KBN2
+           MOVE    SPACE               TO  WRK-KBN3
       *    訂正の時、初診料を算定中かの判定
            IF     (SPA-SYORIFLG        =   1    )  OR
                   (LNK-SC10S-SYORI     =   "W"  )
@@ -4016,7 +4017,7 @@
                            MOVE    1                   TO  FLG-ARI
                            MOVE    TBL-KBN  (TBL-IDX)  TO  WRK-KBN
                            MOVE    1               TO  FLG-SINSATU-ARI
-                           MOVE    TBL-KBN  (TBL-IDX)  TO  WRK-KBN2
+                           MOVE    TBL-KBN  (TBL-IDX)  TO  WRK-KBN3
                    END-SEARCH
       *
                    IF      FLG-ARI         =   ZERO
@@ -4096,7 +4097,7 @@
            END-IF
       *    中途終了で電話再診の時
            IF     (LNK-SC10S-SYORI     =   "W"  )  AND
-                  (WRK-KBN2            =   "T"  OR  "S" )
+                  (WRK-KBN3            =   "T"  OR  "S" )
                GO      TO      1010-SINSATU-HEN-EXT
            END-IF
       *
