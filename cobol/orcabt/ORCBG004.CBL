@@ -336,9 +336,7 @@
       *
            IF    ( WRK-PARA-PROCKBN   =    "1" )
                MOVE    WRK-PARA-HOSPID     TO  PTNYUINRRK-HOSPID
-               MOVE    WRK-PARA-KJNYMD     TO  WRK-SYMD
-               PERFORM 800-GETUMATU-SEC
-               MOVE    WRK-YMD             TO  PTNYUINRRK-NYUINYMD
+               MOVE    WRK-PARA-KJNYMD     TO  PTNYUINRRK-NYUINYMD
                MOVE    WRK-PARA-KJNYMD (1:6)
                                            TO  PTNYUINRRK-TAIINYMD
                MOVE    "01"                TO  PTNYUINRRK-TAIINYMD(7:2)
@@ -347,7 +345,8 @@
            ELSE
                MOVE    WRK-PARA-HOSPID     TO  PTNYUINRRK-HOSPID
                MOVE    WRK-PARA-KJNYMD     TO  PTNYUINRRK-NYUINYMD
-               MOVE    "PTNYUINRRK-KEY28"  TO  WRK-DBPATH
+                                               PTNYUINRRK-TAIINYMD
+               MOVE    "PTNYUINRRK-KEY32"  TO  WRK-DBPATH
            END-IF
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
