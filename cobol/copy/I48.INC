@@ -30,11 +30,6 @@
                     06  I48-TANI    PIC X(6).
                     06  I48-KISOTEN  PIC X(10).
                   05  I48-SELECT  PIC X       OCCURS  200 TIMES.
-              03  I48-JIINCOB.
-                04  I48-JIIN.
-                  05  I48-VALUE   PIC X(16).
-                04  I48-JIIN-COUNT   PIC S9(9)   BINARY.
-                04  I48-JIIN-ITEM    PIC X(16)   OCCURS  10 TIMES.
               03  I48-USERCOB.
                 04  I48-USER.
                   05  I48-VALUE   PIC X(10).
