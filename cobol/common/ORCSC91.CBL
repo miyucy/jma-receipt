@@ -62,6 +62,8 @@
       *    一時領域
        01  WRK-AREA.
       *
+           03  WRK-ORC-DBPATH          PIC X(64).
+      *
       *    算定回数チェック用
            03  WRK-STRYM.
                05  WRK-STRYY           PIC 9(04).
@@ -88,6 +90,12 @@
            03  WRK-RIGAKU-KBN          PIC X(01). 
       *    労災のリハビリ件数
            03  WRK-RSI-CNT             PIC 9(04).
+      *
+           03  WRK-CHK-SRYCD           PIC X(09).
+           03  WRK-CHK-SRYYMD.
+               05  WRK-CHK-SRYYM           PIC X(06).
+               05  WRK-CHK-SRYDD           PIC X(02).
+           03  WRK-CHK-NAME            PIC X(100).
       *
       *    同時に算定する診療行為コード一覧
        01  TBL-DOUJI-AREA.
@@ -155,6 +163,10 @@
       *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
+      *
+      *   日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -275,6 +287,7 @@
                    MOVE    ZERO            TO  FLG-HKNSAN
                    MOVE    SPACE           TO  WRK-RIGAKU-RYO
                    MOVE    SPACE           TO  WRK-RIGAKU-KBN
+                   MOVE    SPACE           TO  WRK-RSI-KBN
                WHEN    WRK-SRYCD       =   TBL-SANTEI-SRYCD
                                                           (TBL-SAN)
                    MOVE    1               TO  FLG-HKNSAN
@@ -282,6 +295,8 @@
                                            TO  WRK-RIGAKU-RYO
                    MOVE    TBL-RIGAKU-KBN (TBL-SAN)
                                            TO  WRK-RIGAKU-KBN
+                   MOVE    TBL-RSI-KBN    (TBL-SAN)
+                                           TO  WRK-RSI-KBN
            END-SEARCH
       *
            IF      WRK-RIGAKU-RYO      =   SPACE
@@ -304,6 +319,7 @@
            MOVE    ZERO                TO  WRK-DOCNT
            MOVE    ZERO                TO  WRK-DAYCNT
            MOVE    ZERO                TO  WRK-ATO-CNT
+           MOVE    SPACE               TO  WRK-CHK-SRYYMD
       *
            IF      LNK-SC91-KBN        =   "4"
                MOVE    ZERO            TO  WRK-DOCNT
@@ -377,6 +393,27 @@
                END-IF
            END-IF
       *
+      *    労災毎の算定時
+           IF     (LNK-SC91-ERRCD  NOT =   SPACE  )  AND
+                  (WRK-RSI-KBN     NOT =   SPACE  )
+               MOVE    "0094"          TO  LNK-SC91-ERRCD
+           END-IF
+      *    月上限のエラーの時、算定日を編集
+           IF     (LNK-SC91-ERRCD  NOT =   SPACE  )  AND
+                  (LNK-SC91-MAXCNT     >   ZERO   )  AND
+                  (WRK-CHK-SRYYMD  NOT =   SPACE  )
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    WRK-CHK-SRYYMD      TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               STRING  LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
+                       "に算定済です"      DELIMITED  BY  SIZE
+                       INTO                LNK-SC91-ERRMSG
+               END-STRING
+           END-IF
+      *
       *    訂正後の回数
            MOVE    WRK-ATO-CNT         TO  LNK-SC91-ATO-CNT
       *
@@ -420,22 +457,33 @@
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
       *
+           IF      WRK-RSI-KBN         =   SPACE
+      *        主キー
+               MOVE    "SANTEI-KEY"        TO  WRK-ORC-DBPATH
+           ELSE
+      *        労災毎の算定
+               MOVE    "SANTEI-KEY3"       TO  WRK-ORC-DBPATH
+           END-IF
+      *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+      **** MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+      ******** MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SANTEI
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+      *****MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -458,6 +506,11 @@
                MOVE    LNK-SC91-CNT        TO  WRK-RSI-CNT
                PERFORM 10012-RSI-MCNT-SEC
                MOVE    WRK-RSI-CNT         TO  LNK-SC91-CNT
+           END-IF
+      *    エラー内容用
+           IF      LNK-SC91-CNT        >   ZERO
+               MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYM
+               MOVE    SANTEI-MSANTEID     TO  WRK-CHK-SRYDD
            END-IF
       *
       *    上限１日
@@ -484,14 +537,14 @@
                    MOVE    ZERO                TO  LNK-SC91-CNT
                END-IF
       *        上限１日の時、訂正日以降の回数を求める
-               IF      TNS-JGNCNT1D        >   ZERO
+      *****    IF      TNS-JGNCNT1D        >   ZERO
                    MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                    ADD     1                   TO  IDX-Y2
                    PERFORM VARYING     IDY     FROM    IDX-Y2  BY  1
                            UNTIL       IDY     >   30
                        ADD     SANTEI-DAY (IDY)    TO  WRK-ATO-CNT
                    END-PERFORM
-               END-IF
+      *****    END-IF
            END-IF
       *
            .
@@ -696,6 +749,9 @@
                        MOVE    TBL-CODE   (TBL-IDX)    TO  WRK-CODE
            END-SEARCH
       *
+           MOVE    SPACE               TO  WRK-CHK-SRYCD
+           MOVE    SPACE               TO  WRK-CHK-NAME
+           MOVE    SPACE               TO  WRK-CHK-SRYYMD
            MOVE    ZERO                TO  WRK-CNT
            MOVE    ZERO                TO  WRK-DOCNT
            MOVE    ZERO                TO  WRK-DAYCNT
@@ -778,6 +834,31 @@
                END-IF
            END-IF
       *
+      *    併用算定エラーの内容を編集する（最後に算定したもの）
+           IF     LNK-SC91-ERRCD   NOT =   SPACE
+               IF      WRK-CHK-NAME        =   SPACE
+                   MOVE    WRK-CHK-SRYCD       TO  TNS-SRYCD
+                   PERFORM 910-TENSU-READ-SEC
+                   MOVE    TNS-NAME            TO  WRK-CHK-NAME
+                   STRING  "今回　"            DELIMITED  BY  SIZE
+                           WRK-CHK-NAME        DELIMITED  BY  SPACE
+                           INTO                LNK-SC91-ERRMSG
+                   END-STRING
+               ELSE
+                   INITIALIZE                      STS-AREA-DAY
+                   INITIALIZE                      LNK-DAY2-AREA
+                   MOVE    "21"                TO  LNK-DAY2-IRAI
+                   MOVE    WRK-CHK-SRYYMD      TO  LNK-DAY2-YMD
+                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY2-AREA
+                   STRING  LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
+                           "　"                DELIMITED  BY  SIZE
+                           WRK-CHK-NAME        DELIMITED  BY  SPACE
+                           INTO                LNK-SC91-ERRMSG
+                   END-STRING
+               END-IF
+           END-IF
+      *
       *    点数マスタの内容を入力分へ戻す
            MOVE    LNK-SC91-SRYCD      TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
@@ -821,22 +902,33 @@
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
       *
+           IF      WRK-RSI-KBN         =   SPACE
+      *        主キー
+               MOVE    "SANTEI-KEY"        TO  WRK-ORC-DBPATH
+           ELSE
+      *        労災毎の算定
+               MOVE    "SANTEI-KEY3"       TO  WRK-ORC-DBPATH
+           END-IF
+      *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+      *****MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+      ******** MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SANTEI
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+      *****MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -879,6 +971,14 @@
                ELSE
                    MOVE    ZERO            TO  WRK-CNT
                END-IF
+           END-IF
+      *
+           IF     (WRK-CNT             >   ZERO  )  OR
+                  (WRK-DAYCNT          >   ZERO  )
+               MOVE    WRK-SRYCD           TO  WRK-CHK-SRYCD
+               MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYM
+               MOVE    SANTEI-MSANTEID     TO  WRK-CHK-SRYDD
+               MOVE    TNS-NAME            TO  WRK-CHK-NAME
            END-IF
            .
        2001-DOJSANTEI-YMD-EXT.
@@ -974,6 +1074,13 @@
                END-IF
                ADD     WRK-SANTEI-CNTW     TO  WRK-SANTEI-CNT
       *
+               IF      WRK-SANTEI-CNTW     >   ZERO
+                   MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYM
+                   MOVE    SANTEI-MSANTEID     TO  WRK-CHK-SRYDD
+                   MOVE    WRK-SRYCD           TO  WRK-CHK-SRYCD
+                   MOVE    TNS-NAME            TO  WRK-CHK-NAME
+               END-IF
+      *
                ADD     1                   TO  WRK-STRMM
                IF      WRK-STRMM           >   12
                    COMPUTE WRK-STRYY       =   WRK-STRYY   +   1
@@ -1016,6 +1123,8 @@
                                            =   WRK-SRYCD  )
                            ADD     SPA-COM-KAISU(IDX)
                                                TO  WRK-DOCNT
+                           MOVE    SPA-COM-CHK-SRYCD (IDX)
+                                               TO  WRK-CHK-SRYCD
                        END-IF
                    END-IF
                ELSE
@@ -1025,6 +1134,8 @@
                                            =   WRK-SRYCD  )
                        ADD     SPA-COM-KAISU(IDX)
                                                TO  WRK-DOCNT
+                       MOVE    SPA-COM-CHK-SRYCD (IDX)
+                                               TO  WRK-CHK-SRYCD
                    END-IF
                END-IF
            END-PERFORM
