@@ -1280,6 +1280,7 @@
                                                          (02 IDXS)
                END-IF
              END-IF
+           END-IF
       *
       *----(01.00.02) LINE ADD START ----------------------------------
       *    ÃÙ∫ﬁæ ÛƒÛ∂°Œ¡
@@ -1715,11 +1716,6 @@
                ADD     3                   TO  IDN3
            END-PERFORM
       * 
-      *TEST
-           DISPLAY "C20 SRYCD:" LNK-ORCSC-SRYCD  (02 IDXS)
-           DISPLAY "C20 LNK-ORCSC-INPUTCD:" LNK-ORCSC-INPUTCD
-                                        (02 IDXS IDN2)
-      *TEST
            .
        300212-NISUU-SET-EXT.
            EXIT.

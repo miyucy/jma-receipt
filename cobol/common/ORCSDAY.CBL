@@ -1056,6 +1056,7 @@
 102100                 GO  TO  DTMEND-EXT
 102200             ELSE
 102300                 NEXT    SENTENCE
+                   END-IF
 102400         ELSE
 102500             MOVE    20              TO    STS-DAY-RC1
 102600             GO  TO  DTMEND-EXT.
@@ -1121,11 +1122,14 @@
 108100             GO  TO    YMD-CHK-200
 108200         ELSE
 108300             GO  TO    YMD-CHK-EXT
+               END-IF
 108400     ELSE
 108500         IF  (WK-DD  <  1)  OR  (WK-DD  >  31)
 108600             GO  TO    YMD-CHK-200
 108700         ELSE
-108800             GO  TO    YMD-CHK-EXT.
+108800             GO  TO    YMD-CHK-EXT
+               END-IF
+           END-IF.
 108900*************
 109000 YMD-CHK-100.
 109100*************
@@ -1135,11 +1139,14 @@
 109500             GO  TO    YMD-CHK-200
 109600         ELSE
 109700             GO  TO    YMD-CHK-EXT
+               END-IF
 109800     ELSE
 109900         IF  (WK-DD  <  1)  OR  (WK-DD  >  29)
 110000             GO  TO    YMD-CHK-200
 110100         ELSE
-110200             GO  TO    YMD-CHK-EXT.
+110200             GO  TO    YMD-CHK-EXT
+               END-IF
+           END-IF.
 110300*************
 110400 YMD-CHK-200.
 110500*************
@@ -1328,6 +1335,7 @@
 128200             MOVE    WK-YYMMDD     TO    WK-YUKO
 128300             PERFORM  DT-MMLAST-RTN
 128400             MOVE    WK-YUKO-DD    TO    WK-DD
+               END-IF
 128500     ELSE
 128600         COMPUTE  WK-DD  =  WK-DD  -  1.
 128700     PERFORM  YSK-KBN-RTN.
@@ -1350,6 +1358,7 @@
 130400         ELSE
 130500             COMPUTE  WK-MM  =  WK-MM  +  1
 130600             MOVE    1             TO    WK-DD
+               END-IF
 130700     ELSE
 130800         COMPUTE  WK-DD  =  WK-DD  +  1.
 130900     PERFORM  YSK-KBN-RTN.
@@ -1442,6 +1451,7 @@
 139600             GO  TO    NISSU-KANSAN-200
 139700         ELSE
 139800             GO  TO    NISSU-KANSAN-200
+               END-IF
 139900     ELSE
 140000         MOVE    WK-SANSYUTS     TO  WK-DD.
 140100 NISSU-KANSAN-EXT.

@@ -913,6 +913,7 @@
                    MOVE    SPA-GMN-HONKZKKBNL(IDX)
                                                TO  SPA-GMN-HONKZKKBN-G
                    MOVE    1                   TO  FLG-CHK
+               END-IF
            END-PERFORM
            IF     FLG-CHK              =   ZERO
                MOVE    "0045"          TO  SPA-ERRCD
@@ -1051,6 +1052,7 @@
                    MOVE    SPA-GMN-CONTKBNL(IDX)
                                                TO  SPA-GMN-CONTKBN-G
                    MOVE    1                   TO  FLG-CHK
+               END-IF
            END-PERFORM
            IF     FLG-CHK              =   ZERO
                MOVE    "0047"          TO  SPA-ERRCD

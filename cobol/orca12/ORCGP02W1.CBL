@@ -962,6 +962,7 @@
                        IF      SPA-PTHKN-TEKSTYMD(IDX) >=  "20021001"
                            PERFORM 31001-HKNTBL-RJNHEN-SEC
                        END-IF
+                   END-IF
                END-EVALUATE
            END-PERFORM
       *

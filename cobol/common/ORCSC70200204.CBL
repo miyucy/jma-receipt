@@ -1477,8 +1477,8 @@
       **           MOVE    WRK-COM-INPUTCD (IDX-GEN)
       *            MOVE    WRK-GEN-SRYCD   TO  WRK-SRYCD
       *            PERFORM 1002-JIDOUSET-SEC
-      *        END-IF
-      *****END-IF
+      ******   END-IF
+           END-IF
       *
       *    ¾Ã²½´É¤ÇÂ¤±ÆºÞ»£±Æ¤Î»þ¡¢Æ©»ë¿ÇÃÇÎÁ¤ÎÄÉ²Ã¡Ê»£±ÆÎÁ¤Î¾å¤ËÄÉ²Ã¡Ë
            IF     (FLG-BUIKBN          =   3  )   AND

@@ -1319,6 +1319,8 @@
 086800                     MOVE    SPACE  TO  WRK-GMN-TBLREC1 (IDX2)
 086900                     MOVE    SPACE  TO  WRK-NAI-TBLREC1 (IDX2)
 087000             END-EVALUATE
+      *
+               END-IF
 087100         END-PERFORM
 087200*
 087300         IF      IDX3                >   ZERO

@@ -237,6 +237,7 @@
                            MOVE    WK-INPT-ITM (WK-IDX01)
                                                TO  WK-SEISUU1T-AREA
                                                              (WK-IDX02)
+                       END-IF
                END-EVALUATE
            ELSE
                IF      WK-SYOSW            =     SPACE

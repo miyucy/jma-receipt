@@ -402,6 +402,7 @@
                        MOVE    MCPDATA-REC         TO  ADRS-REC
                        MOVE    ADRS-EDITADRS-NAME
                                            TO  SPA-GMN981-TOWNNAME
+                   END-IF
                END-IF
            END-IF
       *
