@@ -42,6 +42,7 @@
       *  01.00.11    NACL-多々納  04/03/15  改正対応
       *  01.00.12    NACL-多々納  04/06/XX  入院初回算定日重複算定チェック追加他
       *                                     複数保険・科追加
+      *  01.00.13    NACL-多々納  04/12/09  重複チェック修正
       *****************************************************************
       *
       *
@@ -91,6 +92,8 @@
       *
            03  FLG-SYOKAI-OK       PIC 9(01).
       *
+           03  FLG-HOUKATU         PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -128,6 +131,8 @@
            03  IDX-BV              PIC 9(04).
            03  IDX-BA              PIC 9(04).
            03  IDX-BC              PIC 9(04).
+      *
+           03  IDX-STR             PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -681,6 +686,11 @@
       *            手技料 加算チェック
                    IF      WRK-COM-DATAKBN (IDX-Z) =   "2"
                        PERFORM 1005-KASAN-CHK-SEC
+                   END-IF
+      *            同一剤内に同じ検査がないこと
+                   IF     (SPA-ERRCD           =   SPACE ) AND
+                          (WRK-COM-DATAKBN(IDX-Z)  =   "1" )
+                       PERFORM 100114-JYUFUKUCHEK-SEC
                    END-IF
       *            逓減加算算定チェック
                    IF     (WRK-COM-DATAKBN (IDX-Z)     =   "1" )  AND
@@ -1265,6 +1275,28 @@
            END-IF
            .
        100113-NYUINSYOKAI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同一検査チェック処理
+      *****************************************************************
+       100114-JYUFUKUCHEK-SEC                  SECTION.
+      *
+      *    入院か包括外の時
+           IF     (SPA-NYUGAIKBN       =   "1"   )  OR
+                  (WRK-COM-SRYSYUKBN (IDX-Z)
+                                       =   "610" )
+               PERFORM VARYING     IDX1    FROM    1   BY  1
+                       UNTIL       IDX1    >=  IDX-Z
+                   IF      WRK-COM-INPUTCD(IDX1)
+                                           =   WRK-COM-INPUTCD(IDX-Z)
+                       MOVE    "0064"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       100114-JYUFUKUCHEK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1920,6 +1952,7 @@
                END-IF
            END-PERFORM
       *
+      *
            MOVE    ZERO                TO  FLG-JIKASAN
            MOVE    ZERO                TO  IDX-JIKAN
            MOVE    ZERO                TO  IDX-TEIGEN
@@ -1985,6 +2018,8 @@
                IF     (WRK-COM-SRYKBN    (IDX-Z)   =   "60"  )  AND
                       (WRK-COM-DATAKBN   (IDX-Z)   =   "1"   )  AND
                       (WRK-COM-TEIGEN-FLG(IDX-Z)   =   ZERO )
+      *        包括対象以外
+               AND    (WRK-COM-SRYSYUKBN (IDX-Z)   NOT =   "610")
                    PERFORM 20011-JYUFUKU-CHK-SEC
                END-IF
            END-PERFORM
@@ -2231,6 +2266,14 @@
            IF      WRK-JYU-KBN         =   SPACE
                GO      TO      20011-JYUFUKU-CHK-EXT
            END-IF
+      *    包括対象以外
+           IF      WRK-COM-SRYSYUKBN(IDX-Z)    =   "610"
+               MOVE    1               TO  FLG-HOUKATU
+               MOVE    IDX-Z           TO  IDX-STR
+           ELSE
+               MOVE    ZERO            TO  FLG-HOUKATU
+               MOVE    1               TO  IDX-STR
+           END-IF
       *
            MOVE    ZERO                TO  WRK-JYU-CNT
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2242,7 +2285,7 @@
                                            NOT =   WRK-COM-INPUTCD
                                                          (IDX-Z))
                    MOVE    TBL-JYU-SRYCD (JYU-IDX) TO  WRK-SRYCD
-                   PERFORM VARYING     IDX2    FROM    1   BY  1
+                   PERFORM VARYING     IDX2    FROM    IDX-STR  BY  1
                            UNTIL      (IDX2    >   200  )  OR
                                       (WRK-COM-INPUTCD (IDX2)
                                                    =   SPACE  AND
@@ -2252,8 +2295,15 @@
                                                NOT =   WRK-COM-INPUTCD
                                                              (IDX2)) AND
                               (WRK-COM-INPUTCD (IDX2)  =   WRK-SRYCD)
+      *                   包括対象以外
+                         AND  (WRK-COM-SRYSYUKBN(IDX2) NOT =   "610")
                            ADD     1               TO  WRK-JYU-CNT
                            MOVE    IDX2            TO  WRK-JYU-IDX
+                       END-IF
+      *                包括の時は剤内
+                       IF     (FLG-HOUKATU             =   1  )  AND
+                              (WRK-COM-ZAIEND(IDX2)    =   "1" )
+                           MOVE    200                 TO  IDX2
                        END-IF
                    END-PERFORM
                END-IF
@@ -2316,6 +2366,8 @@
                                                NOT =   WRK-COM-INPUTCD
                                                              (IDX2)) AND
                               (WRK-COM-INPUTCD (IDX2)  =   WRK-SRYCD)
+      *                   包括対象以外
+                         AND  (WRK-COM-SRYSYUKBN(IDX2) NOT =   "610")
                            ADD     1               TO  WRK-JYU-CNT
                            MOVE    IDX2            TO  WRK-JYU-IDX
                        END-IF
