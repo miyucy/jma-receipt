@@ -216,6 +216,60 @@
 
     <widget>
       <class>GtkPandaEntry</class>
+      <name>YUKOSTYMD</name>
+      <x>520</x>
+      <y>8</y>
+      <width>120</width>
+      <height>24</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 13 Jul 2001 09:30:08 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 13 Jul 2001 09:32:34 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>9</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>YUKOEDYMD</name>
+      <x>680</x>
+      <y>8</y>
+      <width>120</width>
+      <height>24</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Fri, 13 Jul 2001 09:30:08 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 13 Jul 2001 09:32:34 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>9</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
       <name>SEIKYU01</name>
       <x>240</x>
       <y>65</y>
@@ -300,22 +354,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>labe2301</name>
-      <x>90</x>
-      <y>20</y>
-      <width>90</width>
-      <height>22</height>
-      <label> Äê´üÀÁµáÅÐÏ¿</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>labe2303</name>
       <x>184</x>
       <y>105</y>
@@ -370,6 +408,38 @@
       <width>90</width>
       <height>22</height>
       <label>·îËöÆü¤Ï£¹£¹</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>labe2301</name>
+      <x>112</x>
+      <y>32</y>
+      <width>90</width>
+      <height>22</height>
+      <label> Äê´üÀÁµáÅÐÏ¿</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label2305</name>
+      <x>640</x>
+      <y>8</y>
+      <width>38</width>
+      <height>24</height>
+      <label>¡Á</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

@@ -1,5 +1,11 @@
 W23	{
 	fixed6	{
+		YUKOSTYMD	{
+			value	varchar(9);
+		};
+		YUKOEDYMD	{
+			value	varchar(9);
+		};
 		SEIKYU01	{
 			value	varchar(3);
 		};

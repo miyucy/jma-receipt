@@ -63,6 +63,8 @@
                05  SPA-GMN-KBN                PIC X(02).
                05  SPA-GMN-RUN                PIC 9(01).
                05  SPA-GMN-AREA.
+                   07  SPA-GMN-YUKOSTYMD      PIC X(9).
+                   07  SPA-GMN-YUKOEDYMD      PIC X(9).
                    07  SPA-GMN-SEIKYU-VAL.
                        09  SPA-GMN-SEIKYU01   PIC X(03).
                        09  SPA-GMN-SEIKYU02   PIC X(03).
@@ -297,6 +299,9 @@
       *
            INITIALIZE   SPA-W23
       *
+           MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-YUKOSTYMD
+           MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-YUKOEDYMD
+      *
            MOVE    SPACE               TO  SYS-5010-REC.
            INITIALIZE                      SYS-5010-REC.
            MOVE    "5010"              TO  SYS-5010-KANRICD.
@@ -527,6 +532,9 @@
        500-GMNHEN-SEC              SECTION.
       *
            MOVE    SPACE                   TO  W23.
+      *
+           MOVE    SPA-GMN-YUKOSTYMD       TO  W23-YUKOSTYMD
+           MOVE    SPA-GMN-YUKOEDYMD       TO  W23-YUKOEDYMD
       *
            MOVE    SPA-GMN-SEIKYU01        TO  W23-SEIKYU01
            MOVE    SPA-GMN-SEIKYU02        TO  W23-SEIKYU02
