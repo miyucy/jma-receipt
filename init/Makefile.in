@@ -31,10 +31,9 @@ all:   $(init_scripts)
 filecheck:
 
 clean: 
-	-rm -f build-stamp
+	-rm $(init_scripts)
 
-distclean: 
-	-rm -f build-stamp
+distclean: clean
 	-rm -f Makefile
 
 install: all
