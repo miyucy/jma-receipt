@@ -636,6 +636,8 @@
                MOVE    SPA-K98-GMN-INPUT(3:3)   TO  TNS-CDKBN-KBNNUM
                MOVE    "TENSU-KEY91"            TO  WRK-PATH
            ELSE
+               MOVE    SPACE                    TO  SPA-K98-GMN-INPUT
+                                                                (3:)
                MOVE    "TENSU-KEY90"            TO  WRK-PATH
            END-IF
       *    老人
@@ -2663,6 +2665,10 @@
            IF      SPA-K98-GMN-SYORI   =   "9"
                GO      TO      290-MAE-EXT
            END-IF
+      *    区分番号以外の時のみ
+           IF      SPA-K98-GMN-INPUT(1:1)  =   "*"
+               GO      TO      290-MAE-EXT
+           END-IF
       *
            INSPECT SPA-K98-GMN-INPUT   REPLACING  ALL "＊"  BY  "  "
            MOVE    SPACE               TO  WRK-INPUTCD
@@ -2697,6 +2703,10 @@
            END-IF
       *    検査以外の時のみ
            IF      SPA-K98-GMN-SYORI   =   "9"
+               GO      TO      291-BUB-EXT
+           END-IF
+      *    区分番号以外の時のみ
+           IF      SPA-K98-GMN-INPUT(1:1)  =   "*"
                GO      TO      291-BUB-EXT
            END-IF
       *
@@ -2737,6 +2747,10 @@
            END-IF
       *    検査以外の時のみ
            IF      SPA-K98-GMN-SYORI   =   "9"
+               GO      TO      292-ATO-EXT
+           END-IF
+      *    区分番号以外の時のみ
+           IF      SPA-K98-GMN-INPUT(1:1)  =   "*"
                GO      TO      292-ATO-EXT
            END-IF
       *
