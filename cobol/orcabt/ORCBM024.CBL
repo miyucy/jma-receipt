@@ -781,7 +781,7 @@
                                MOVE    SUM-KOH-SHOKUJIFTN(IDX1 IDX IDX2)
                                            TO  WRK-SHOFTNZ
                                MOVE    WRK-SHOFTNZ TO
-                                           HCM2B-ROU-SYOFTNGAK (IDX IDY)
+                                           HCM2B-KOH-SYOFTNGAK (IDX IDY)
                            END-IF
                            MOVE    SUM-KOH-FTNMONEY (IDX1 IDX IDX2)
                                            TO  WRK-FTNMONEYZ
