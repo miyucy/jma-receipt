@@ -444,7 +444,7 @@
                        ADD     3               TO  SUM-TOTALKENSU
                END-EVALUATE
       *
-      *****    ADD     RECEDEN-TOTALTEN    TO  SUM-TOTALTEN       
+               ADD     RECEDEN-TOTALTEN    TO  SUM-TOTALTEN       
            END-IF
       *          
            MOVE    RECEDEN-RECEDATA    TO  RECE30-R

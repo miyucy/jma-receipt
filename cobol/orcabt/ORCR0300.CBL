@@ -181,7 +181,8 @@
            03  FLG-RECE09              PIC 9(01).
       *
            03  FLG-TEIGEN              PIC 9(01).
-           03  FLG-YKZ20               PIC 9(01).     
+           03  FLG-YKZ20               PIC 9(01).
+           03  FLG-TOTALTEN            PIC 9(01).      
 020700*
 020800*    ¥«¥¦¥ó¥ÈÎÎ°è
 020900 01  CNT-AREA.
@@ -621,7 +622,6 @@
       *
            MOVE    ZERO            TO  WRK-VOLNUM
                                        WRK-RECENUM
-                                       SUM-AREA
       *
       *    ¿³ºº»ÙÊ§µ¡´Ø¡¦¿ÇÎÅ²ÊÊÌ½èÍý              
            MOVE    KEY-NEW         TO  KEY-OLD
@@ -633,61 +633,23 @@
       *        ÊÝ¸±ÍúÎò¾ðÊóÊÔ½¸½èÍý
                PERFORM     2001-RIREKI-HEN-SEC 
       *
-      *        »°¼ï¸øÈñÊ»ÍÑ¤Î¥Á¥§¥Ã¥¯
-               MOVE    SPACE              TO  WRK-3SYU-KBN
-               MOVE    ZERO               TO  SEHIDX
-                                              KEKIDX
-                                              SESIDX
-      * 
-               IF      RECE02-HKNNUM      =   SPACE      
-                   PERFORM   VARYING   IDX  FROM    1   BY  1
-                         UNTIL   ( IDX                >    4    )
-                         OR      ( RECE02-KOHID(IDX)  =   SPACE )
-      *                À¸ÊÝ
-                       IF  RECE02-KOHNUM (IDX)  =   "012"
-                           MOVE    "1"          TO  WRK-3SYU (1:1)
-                           MOVE    IDX          TO  SEHIDX 
-                       END-IF
-      *                ·ë³Ë
-                       IF  RECE02-KOHNUM (IDX)  =   "010"  OR  "011"
-                           MOVE    "1"          TO  WRK-3SYU (2:1)
-                           MOVE    IDX          TO  KEKIDX 
-                       END-IF
-      *                Àº¿À
-                       IF  RECE02-KOHNUM (IDX)  =   "020"  OR  "021"
-                           MOVE    "1"          TO  WRK-3SYU (3:1)
-                           MOVE    IDX          TO  SESIDX 
-                       END-IF
-                   END-PERFORM
-               END-IF    
-      *    ¼ÂÆü¿ô¡¿¹ç·×ÅÀ¿ôÅù¤Î£É£Î£Ä£Å£Ø
-               IF      WRK-3SYU-KBN           =   ALL "1" AND 
-                       RECE02-HKNNUM          =   SPACE            
-                   IF  KEKIDX             >   SESIDX
-                       COMPUTE IDX2     =   SESIDX     +   1
-                       COMPUTE IDX3     =   KEKIDX     +   1
-                   ELSE
-                       COMPUTE IDX2     =   KEKIDX     +   1
-                       COMPUTE IDX3     =   SESIDX     +   1
-                   END-IF
-                   COMPUTE IDX1     =   SEHIDX     +   1
-               ELSE
-                   MOVE    1               TO  IDX1
-                   MOVE    2               TO  IDX2
-                   MOVE    3               TO  IDX3
-               END-IF
+      *        ¼ÂÆü¿ô¡¿¹ç·×ÅÀ¿ôÅù¤Î£É£Î£Ä£Å£Ø
+               MOVE    1               TO  IDX1
+               MOVE    2               TO  IDX2
+               MOVE    3               TO  IDX3
       *
-      *        Áí·ï¿ô¡¿Áí¹ç·×ÅÀ¿ô¤Î½¸·×      
-               ADD     1                   TO  SUM-TOTALKENSU
+      *        Áí·ï¿ô¡¿Áí¹ç·×ÅÀ¿ô¤Î½¸·×
+               MOVE    ZERO                TO  SUM-TOTALTEN
+                                               FLG-TOTALTEN       
                IF      RECE02-RJNHKNNUM    =   SPACE           
                AND     RECE02-HKNNUM       =   SPACE
                    IF      RECE02-KOHNUM (3)   NOT =   SPACE
-                       ADD     RECE02-TOTALTEN (1) TO  SUM-TOTALTEN
+                       MOVE    RECE02-TOTALTEN (4) TO  SUM-TOTALTEN
                    ELSE
-                       ADD     RECE02-TOTALTEN (2) TO  SUM-TOTALTEN
+                       MOVE    RECE02-TOTALTEN (2) TO  SUM-TOTALTEN
                    END-IF
                ELSE
-                   ADD     RECE02-TOTALTEN (1) TO  SUM-TOTALTEN
+                   MOVE     RECE02-TOTALTEN (1) TO  SUM-TOTALTEN
                END-IF
       *         
       *        ¥ì¥»¥×¥È¶¦ÄÌ¥ì¥³¡¼¥É
@@ -806,6 +768,7 @@
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC         
       *
+           MOVE    1                   TO  FLG-TOTALTEN
            PERFORM 5001-FILE-WRITE-SEC
            .
        2002-HENSYU-EXT.
@@ -2524,6 +2487,9 @@
            MOVE    "1"                 TO  RECEDEN-RECKBN
            MOVE    WRK-RENNUM          TO  RECEDEN-RENNUM
            MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
+           IF      FLG-TOTALTEN        =   1
+               MOVE    SUM-TOTALTEN        TO  RECEDEN-TOTALTEN
+           END-IF
            MOVE    WRK-REC             TO  RECEDEN-RECEDATA
       *
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
@@ -2535,6 +2501,7 @@
                                             MCPDATA-REC      
       *
            ADD     1                   TO  CNT-OUT
+           MOVE    ZERO                TO  FLG-TOTALTEN
            .
        5001-FILE-WRITE-EXT.
            EXIT.
