@@ -43,6 +43,7 @@
       *  02.00.06    NACL-Â¿¡¹Ç¼  02/10/21  ËýÀ­áÖÄË´ÉÍýÎÁ¤Î²þÀµÄÉ²Ã
       *  02.00.07    NACL-Â¿¡¹Ç¼  02/11/28  ËýÀ­áÖÄË´ÉÍýÎÁ¤Î²þÀµ½¤Àµ
       *  02.00.08    NACL-Â¿¡¹Ç¼  02/12/06  ËýÀ­áÖÄË¤Î»»Äê¥Á¥§¥Ã¥¯½¤Àµ
+      *  02.00.09    NACL-Â¿¡¹Ç¼  03/02/10  ÉÂ¾²¿ô¡Ê°ìÈÌ¡Ë¥Á¥§¥Ã¥¯ÄÉ²Ã
       *****************************************************************
       *
       *
@@ -873,6 +874,19 @@
                        CONTINUE
                    ELSE
       *****************MOVE    "0025"          TO  LNK-SC92-ERRCD6
+                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
+                   END-IF
+      *        °ìÈÌÉÂ¾²¿ôÈ½Äê
+               WHEN    5
+                   IF      SYS-1001-BEDSUIPN   >=  0  AND  <=  199
+                       CONTINUE
+                   ELSE
+                       MOVE    "0075"          TO  LNK-SC92-ERRCD6
+                   END-IF
+               WHEN    6
+                   IF      SYS-1001-BEDSUIPN   >=  200
+                       CONTINUE
+                   ELSE
                        MOVE    "0075"          TO  LNK-SC92-ERRCD6
                    END-IF
            END-EVALUATE
