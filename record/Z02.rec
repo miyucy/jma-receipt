@@ -1,28 +1,28 @@
 Z02	{
 	fixed1	{
 		SRYCDH	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		YUKOSTYMDH	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		YUKOEDYMDH	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		NAMEH	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		NAME	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		KANANAME	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		YUKOSTYMD	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		YUKOEDYMD	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		COLUMN1	{
 			value	number(3);
@@ -53,7 +53,7 @@ Z02	{
 		};
 		HKNTEKKBN_COMBO	{
 			HKNTEKKBN	{
-				value	varchar(13);
+				value	varchar(12);
 			};
 			count	int;
 			item	varchar(12)[3];
@@ -66,13 +66,13 @@ Z02	{
 		};
 		BUIKBN_COMBO	{
 			BUIKBN	{
-				value	varchar(9);
+				value	varchar(8);
 			};
 			count	int;
-			item	varchar(8)[8];
+			item	varchar(8)[9];
 		};
 		FORMALNAME	{
-			value	varchar(201);
+			value	varchar(200);
 		};
 		INPCHKKBN	{
 			value	number(1);

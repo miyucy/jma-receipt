@@ -173,6 +173,26 @@ J02	{
 				select	bool[400];
 			};
 		};
+		SRYKAMEI	{
+			value	varchar(4);
+		};
+		scrolledwindow2	{
+			RRKLIST	{
+				count	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(20);
+				}	[60];
+				select	bool[60];
+			};
+		};
+		SRYKBNCOMB	{
+			SRYKBN	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(19)[30];
+		};
 		SRYKACOMB	{
 			SRYKA	{
 				value	varchar(16);
@@ -180,15 +200,12 @@ J02	{
 			count	int;
 			item	varchar(16)[10];
 		};
-		scrolledwindow2	{
-			RRKLIST	{
-				count	int;
-				item	{
-					value1	varchar(3);
-					value2	varchar(16);
-				}	[30];
-				select	bool[30];
+		NYUGAIKBNCOMB	{
+			NYUGAIKBN	{
+				value	varchar(10);
 			};
+			count	int;
+			item	varchar(10)[2];
 		};
 	};
 };

@@ -1,56 +1,56 @@
 Z06	{
 	fixed1	{
 		SRYCDH	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		YUKOSTYMDH	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		YUKOEDYMDH	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		NAMEH	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		NAME	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		KANANAME	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		YUKOSTYMD	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		YUKOEDYMD	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		FORMALNAME	{
-			value	varchar(201);
+			value	varchar(200);
 		};
 		JITEN1COMB	{
 			JITEN1	{
-				value	varchar(13);
+				value	varchar(12);
 			};
 			count	int;
 			item	varchar(12)[2];
 		};
 		JITEN2COMB	{
 			JITEN2	{
-				value	varchar(13);
+				value	varchar(12);
 			};
 			count	int;
 			item	varchar(12)[2];
 		};
 		JITEN3COMB	{
 			JITEN3	{
-				value	varchar(13);
+				value	varchar(12);
 			};
 			count	int;
 			item	varchar(12)[2];
 		};
 		JITEN4COMB	{
 			JITEN4	{
-				value	varchar(13);
+				value	varchar(12);
 			};
 			count	int;
 			item	varchar(12)[2];

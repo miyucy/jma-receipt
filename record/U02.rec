@@ -1,50 +1,50 @@
 U02	{
 	fixed1	{
 		SRYYMD	{
-			value	varchar(30);
+			value	varchar(31);
 		};
 		PTNUM	{
 	           	state	int;
-			value	varchar(20);
+			value	varchar(21);
 		};
 		NAME	{
 	           	state	int;
-			value	varchar(50);
+			value	varchar(51);
 		};
 		BIRTHDAY	{
-			value	varchar(9);
+			value	varchar(10);
 		};
 		SRYKA_COMBO	{
 			SRYKA	{
-				value	varchar(21);
+				value	varchar(22);
 			};
 			count	int;
 			item	varchar(21)[10];
 		};
 		DRNAME_COMBO	{
 			DRNAME	{
-				value	varchar(27);
+				value	varchar(28);
 			};
 			count	int;
 			item	varchar(27)[10];
 		};
 		SRYNAIYO_COMBO	{
 			SRYNAIYO	{
-				value	varchar(21);
+				value	varchar(22);
 			};
 			count	int;
 			item	varchar(21)[10];
 		};
 		KARUTE_COMBO	{
 			KARUTE	{
-				value	varchar(14);
+				value	varchar(15);
 			};
 			count	int;
 			item	varchar(14)[2];
 		};
 		SYOHO_COMBO	{
 			SYOHO	{
-				value	varchar(14);
+				value	varchar(15);
 			};
 			count	int;
 			item	varchar(14)[2];
@@ -59,12 +59,12 @@ U02	{
 			HKNCOMBI_LIST	{
 				count	int;
 				item	{
-					value1	varchar(4);
-					value2	varchar(10);
-					value3	varchar(10);
-					value4	varchar(10);
-					value5	varchar(10);
-					value6	varchar(10);
+					value1	varchar(5);
+					value2	varchar(11);
+					value3	varchar(11);
+					value4	varchar(11);
+					value5	varchar(11);
+					value6	varchar(11);
 				}	[15];
 				select	bool[15];
 			};
@@ -80,36 +80,36 @@ U02	{
 		};
 		BHK1	{
 			value	bool;
-			label	varchar(2);
+			label	varchar(3);
 		};
 		BHK2	{
 			value	bool;
-			label	varchar(2);
+			label	varchar(3);
 		};
 		BHK3	{
 			value	bool;
-			label	varchar(2);
+			label	varchar(3);
 		};
 		BHK4	{
 			value	bool;
-			label	varchar(2);
+			label	varchar(3);
 		};
 		BHK5	{
 			value	bool;
-			label	varchar(2);
+			label	varchar(3);
 		};
 		scrolledwindow4	{
 			UKETUKE_LIST	{
 				count	int;
 				item	{
-					value1	varchar(4);
+					value1	varchar(5);
 					value2	varchar(6);
 					value3	varchar(6);
-					value4	varchar(20);
-					value5	varchar(50);
-					value6	varchar(10);
-					value7	varchar(20);
-					value8	varchar(20);
+					value4	varchar(21);
+					value5	varchar(51);
+					value6	varchar(11);
+					value7	varchar(21);
+					value8	varchar(21);
 					value9	varchar(10);
 				}	[100];
 				select	bool[100];

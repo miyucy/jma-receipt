@@ -1,10 +1,10 @@
 U1ERR	{
 	fixed1	{
 		ERRCODE	{
-			value	char(11);
+			value	char(10);
 		};
 		ERRMSG	{
-			value	char(61);
+			value	char(60);
 		};
 	};
 };

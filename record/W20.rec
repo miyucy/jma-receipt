@@ -1,0 +1,200 @@
+W20	{
+	fixed6	{
+		B02	{
+			state	int;
+		};
+		B05	{
+			state	int;
+		};
+		B06	{
+			state	int;
+		};
+		B07	{
+			state	int;
+		};
+		B08	{
+			state	int;
+		};
+		B09	{
+			label	varchar(4);
+			state	int;
+		};
+		B12	{
+			state	int;
+		};
+		BTU_NUM	{
+			value	number(2);
+		};
+		BTU_NAME	{
+			value	varchar(20);
+			state	int;
+		};
+		BTU_TANNAME	{
+			value	varchar(10);
+			state	int;
+		};
+		CMB_BTU_TOKUTEINYUIN	{
+			BTU_TOKUTEINYUIN	{
+				value	varchar(33);
+				state	int;
+			};
+			count	int;
+			item	varchar(33)[15];
+			state	int;
+		};
+		CMB_BTU_KA	{
+			BTU_KA	{
+				value	varchar(23);
+				state	int;
+			};
+			count	int;
+			item	varchar(23)[10];
+			state	int;
+		};
+		CMB_BTU_SBT	{
+			BTU_SBT	{
+				value	varchar(23);
+				state	int;
+			};
+			count	int;
+			item	varchar(23)[15];
+			state	int;
+		};
+		CMB_BTU_HEIKINZAIKBN	{
+			BTU_HEIKINZAIKBN	{
+				value	varchar(15);
+				state	int;
+			};
+			count	int;
+			item	varchar(15)[15];
+			state	int;
+		};
+		CMB_BTU_KNGHAICHIKBN	{
+			BTU_KNGHAICHIKBN	{
+				value	varchar(17);
+				state	int;
+			};
+			count	int;
+			item	varchar(17)[20];
+			state	int;
+		};
+		CMB_BTU_KNGHIRITUKBN	{
+			BTU_KNGHIRITUKBN	{
+				value	varchar(23);
+				state	int;
+			};
+			count	int;
+			item	varchar(23)[10];
+			state	int;
+		};
+		CMB_BTU_KNGHJOHAI	{
+			BTU_KNGHJOHAI	{
+				value	varchar(15);
+				state	int;
+			};
+			count	int;
+			item	varchar(15)[10];
+			state	int;
+		};
+		CMB_BTU_KNGHJOKSN	{
+			BTU_KNGHJOKSN	{
+				value	varchar(13);
+				state	int;
+			};
+			count	int;
+			item	varchar(13)[10];
+			state	int;
+		};
+		CMB_BTU_YAKANKNGKSN	{
+			BTU_YAKANKNGKSN	{
+				value	varchar(23);
+				state	int;
+			};
+			count	int;
+			item	varchar(23)[10];
+			state	int;
+		};
+		CHK_BTU_SYOKUDOKBN	{
+			value	bool;
+			state	int;
+		};
+		CHK_BTU_KNGSISUKBN	{
+			value	bool;
+			state	int;
+		};
+		CHK_BTU_HIKSISUKBN	{
+			value	bool;
+			state	int;
+		};
+		YUKOSTYMD	{
+			value	varchar(9);
+			state	int;
+		};
+		YUKOEDYMD	{
+			value	varchar(9);
+			state	int;
+		};
+		CMB_BTU_EDKBN	{
+			BTU_EDKBN	{
+				value	varchar(8);
+				state	int;
+			};
+			count	int;
+			item	varchar(8)[2];
+			state	int;
+		};
+		CMB_BTU_KHNRYO	{
+			BTU_KHNRYO	{
+				value	varchar(63);
+				state	int;
+			};
+			count	int;
+			item	varchar(63)[50];
+			state	int;
+		};
+		BTU_KHNTEN	{
+			value	number(6);
+			state	int;
+		};
+		SELNUM	{
+			value	number(2);
+		};
+		scrolledwindow28	{
+			BTULST	{
+				count	int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(20);
+					value2	varchar(20);
+					value3	varchar(10);
+					value4	varchar(20);
+					value5	varchar(30);
+					value6	varchar(12);
+					value7	varchar(10);
+					value8	varchar(14);
+					value9	varchar(20);
+					value10	varchar(12);
+					value11	varchar(10);
+					value12	varchar(12);
+					value13	varchar(20);
+					value14	varchar(06);
+					value15	varchar(08);
+					value16	varchar(08);
+					value17	varchar(09);
+					value18	varchar(09);
+				}	[50];
+				select	bool[50];
+			};
+		};
+		scrolledwindow29	{
+			RIREKILST	{
+				count	int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(22);
+				}	[20];
+				select	bool[20];
+			};
+		};
+	};
+};

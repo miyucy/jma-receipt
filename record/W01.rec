@@ -4,38 +4,38 @@ W01	{
 			TENSU_LIST	{
 				count	int;
 				item	{
-					value1	varchar(4);
-					value2	varchar(10);
-					value3	varchar(10);
+					value1	varchar(3);
+					value2	varchar(9);
+					value3	varchar(9);
 				}	[100];
 				select	bool[100];
 			};
 		};
 		STYUKYMD	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		EDYUKYMD	{
-			value	varchar(11);
-		};
-		KANRICD_COMBO	{
-			KANRICD	{
-				value	varchar(36);
-			};
-			count	int;
-			item	varchar(35)[30];
+			value	varchar(10);
 		};
 		SELNUM	{
 			value	number(3);
 		};
+		MIDASI	{
+			value	varchar(20);
+		};
 		KBNCD_COMBO	{
 			KBNCD	{
-				value	varchar(36);
+				value	varchar(35);
 			};
 			count	int;
 			item	varchar(35)[200];
 		};
-		MIDASI	{
-			value	varchar(20);
+		KANRICD_COMBO	{
+			KANRICD	{
+				value	varchar(35);
+			};
+			count	int;
+			item	varchar(35)[50];
 		};
 	};
 };

@@ -4,10 +4,10 @@ Z03	{
 			pageno	int;
 			fixed9	{
 				KANANAME	{
-					value	varchar(101);
+					value	varchar(100);
 				};
 				NAME	{
-					value	varchar(101);
+					value	varchar(100);
 				};
 				TEN	{
 					value	number(10,2);
@@ -19,151 +19,151 @@ Z03	{
 					value	number(1);
 				};
 				YUKOSTYMD	{
-					value	varchar(11);
+					value	varchar(10);
 				};
 				YUKOEDYMD	{
-					value	varchar(11);
+					value	varchar(10);
 				};
 				TSUSOKUAGE	{
 					value	number(1);
 				};
 				KGNAGE	{
-					value	varchar(3);
+					value	varchar(2);
 				};
 				JGNAGE	{
-					value	varchar(3);
+					value	varchar(2);
 				};
 				FORMALNAME	{
-					value	varchar(201);
+					value	varchar(200);
 				};
 				INPCHKKBN	{
 					value	number(1);
 				};
 				HOSPSRYKBNCOMB	{
 					HOSPSRYKBN	{
-						value	varchar(21);
+						value	varchar(20);
 					};
 					count	int;
 					item	varchar(20)[70];
 				};
-				ROUTEKKBNCOMB	{
-					ROUTEKKBN	{
-						value	varchar(21);
-					};
-					count	int;
-					item	varchar(20)[3];
-				};
-				SAIKETUCOMB	{
-					SAIKETUKBN	{
-						value	varchar(17);
-					};
-					count	int;
-					item	varchar(16)[4];
-				};
 				TANICDCOB	{
 					TANICD	{
-						value	varchar(21);
+						value	varchar(20);
 					};
 					count	int;
 					item	varchar(20)[90];
 				};
-				HKNTEKKBNCOB	{
-					HKNTEKKBN	{
-						value	varchar(21);
-					};
-					count	int;
-					item	varchar(20)[2];
-				};
 				SRYKBNCOB	{
 					SRYKBN	{
-						value	varchar(21);
+						value	varchar(20);
 					};
 					count	int;
 					item	varchar(20)[100];
 				};
 				TENSIKIBETUCOB	{
 					TENSIKIBETU	{
-						value	varchar(31);
+						value	varchar(30);
 					};
 					count	int;
 					item	varchar(30)[7];
 				};
 				OLDTENSKBCOB	{
 					OLDTENSKB	{
-						value	varchar(31);
+						value	varchar(30);
 					};
 					count	int;
 					item	varchar(30)[7];
 				};
 				SRYSYUKBNCOB	{
 					SRYSYUKBN	{
-						value	varchar(75);
+						value	varchar(74);
 					};
 					count	int;
 					item	varchar(74)[100];
 				};
-				NYUGAITEKKBNCOMB	{
-					NYUGAITEKKBN	{
-						value	varchar(21);
-					};
-					count	int;
-					item	varchar(20)[3];
-				};
-				SANTEIRRKKBNCOB	{
-					SANTEIRRKKBN	{
-						value	varchar(31);
-					};
-					count	int;
-					item	varchar(30)[5];
-				};
-				TIMEKSNKBNCOB	{
-					TIMEKSNKBN	{
-						value	varchar(31);
-					};
-					count	int;
-					item	varchar(30)[7];
-				};
-				GAIKANRIKBNCOB	{
-					GAIKANRIKBN	{
-						value	varchar(31);
-					};
-					count	int;
-					item	varchar(30)[3];
-				};
-				OSINKBNCOB	{
-					OSINKBN	{
-						value	varchar(21);
-					};
-					count	int;
-					item	varchar(20)[8];
-				};
 				DATAKBNCOB	{
 					DATAKBN	{
-						value	varchar(17);
+						value	varchar(16);
 					};
 					count	int;
 					item	varchar(16)[3];
 				};
 				BYOKANRENKBNCOB	{
 					BYOKANRENKBN	{
-						value	varchar(51);
+						value	varchar(50);
 					};
 					count	int;
 					item	varchar(50)[5];
 				};
+				SDOKNRYOCOB	{
+					SDOKNRYO	{
+						value	varchar(50);
+					};
+					count	int;
+					item	varchar(50)[50];
+				};
+				HKNTEKKBNCOB	{
+					HKNTEKKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
+				OSINKBNCOB	{
+					OSINKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[8];
+				};
+				SAIKETUCOMB	{
+					SAIKETUKBN	{
+						value	varchar(16);
+					};
+					count	int;
+					item	varchar(16)[4];
+				};
 				YKZKNRKBNCOB	{
 					YKZKNRKBN	{
-						value	varchar(31);
+						value	varchar(30);
 					};
 					count	int;
 					item	varchar(30)[5];
 				};
-				SDOKNRYOCOB	{
-					SDOKNRYO	{
-						value	varchar(51);
+				TIMEKSNKBNCOB	{
+					TIMEKSNKBN	{
+						value	varchar(30);
 					};
 					count	int;
-					item	varchar(50)[50];
+					item	varchar(30)[7];
+				};
+				SANTEIRRKKBNCOB	{
+					SANTEIRRKKBN	{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[5];
+				};
+				GAIKANRIKBNCOB	{
+					GAIKANRIKBN	{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[3];
+				};
+				NYUGAITEKKBNCOMB	{
+					NYUGAITEKKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[3];
+				};
+				ROUTEKKBNCOMB	{
+					ROUTEKKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[3];
 				};
 			};
 			fixed10	{
@@ -183,46 +183,46 @@ Z03	{
 					value	number(1);
 				};
 				CHUKSNCD	{
-					value	varchar(5);
+					value	varchar(4);
 				};
 				CHUKSNTSUBAN	{
-					value	varchar(2);
+					value	varchar(1);
 				};
 				AGEKSNKGN1	{
-					value	varchar(3);
+					value	varchar(2);
 				};
 				AGEKSNJGN1	{
-					value	varchar(3);
+					value	varchar(2);
 				};
 				AGEKSNSRYCD1	{
-					value	varchar(10);
+					value	varchar(9);
 				};
 				AGEKSNKGN2	{
-					value	varchar(3);
+					value	varchar(2);
 				};
 				AGEKSNKGN4	{
-					value	varchar(3);
+					value	varchar(2);
 				};
 				AGEKSNKGN3	{
-					value	varchar(3);
+					value	varchar(2);
 				};
 				AGEKSNJGN4	{
-					value	varchar(3);
+					value	varchar(2);
 				};
 				AGEKSNJGN3	{
-					value	varchar(3);
+					value	varchar(2);
 				};
 				AGEKSNJGN2	{
-					value	varchar(3);
+					value	varchar(2);
 				};
 				AGEKSNSRYCD4	{
-					value	varchar(10);
+					value	varchar(9);
 				};
 				AGEKSNSRYCD3	{
-					value	varchar(10);
+					value	varchar(9);
 				};
 				AGEKSNSRYCD2	{
-					value	varchar(10);
+					value	varchar(9);
 				};
 				JGNCNT	{
 					value	number(3);
@@ -370,10 +370,10 @@ Z03	{
 					value	number(1);
 				};
 				CDKBN_KBN	{
-					value	varchar(2);
+					value	varchar(1);
 				};
 				KOKUCHI_KBN	{
-					value	varchar(2);
+					value	varchar(1);
 				};
 				KOKUCHI_SYO	{
 					value	number(1);
@@ -408,16 +408,16 @@ Z03	{
 			};
 		};
 		SRYCDH	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		NAMEH	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		YUKOSTYMDH	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		YUKOEDYMDH	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 	};
 };

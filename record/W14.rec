@@ -1,235 +1,235 @@
 W14	{
 	fixed2	{
 		STYUKYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		EDYUKYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		CD01	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD02	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD03	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD04	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD05	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD06	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD07	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD08	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD09	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD10	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD11	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD12	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD13	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD14	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD15	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD16	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD17	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD18	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD19	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD20	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD21	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD22	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD23	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD24	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD25	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		SHELLID01	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID02	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID03	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID04	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID05	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID06	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID07	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID08	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID09	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID10	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID11	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID12	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID13	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID14	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID15	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID16	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID17	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID18	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID19	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID20	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID21	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID22	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID23	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID24	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHELLID25	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SHORIMSG01	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG02	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG03	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG04	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG05	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG06	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG07	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG08	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG09	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG10	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG11	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG12	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG13	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG14	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG15	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG16	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG17	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG18	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG19	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG20	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG21	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG22	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG23	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG24	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SHORIMSG25	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		CHKBTN001	{
 			value	bool;
@@ -529,6 +529,18 @@ W14	{
 			value	bool;
 		};
 		CHKBTN100	{
+			value	bool;
+		};
+		PRTKBN11	{
+			value	bool;
+		};
+		PRTKBN12	{
+			value	bool;
+		};
+		PRTKBN21	{
+			value	bool;
+		};
+		PRTKBN22	{
 			value	bool;
 		};
 	};

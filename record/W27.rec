@@ -1,0 +1,60 @@
+W27	{
+	fixed6	{
+		CMB_BTU_NAME	{
+			BTU_NAME	{
+				value	varchar(23);
+			};
+			count	int;
+			item	varchar(23)[50];
+		};
+		BTU_SBT	{
+			value	varchar(20);
+		};
+		BTU_KHNRYO	{
+			value	varchar(60);
+		};
+		scrolledwindow1	{
+			BRMLST	{
+				count	int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(4);
+					value2	varchar(10);
+					value3	varchar(10);
+					value4	varchar(20);
+					value5	varchar(10);
+					value6	varchar(9);
+					value7	varchar(9);
+				}	[400];
+				select	bool[400];
+			};
+		};
+		STSELNUM	{
+			value	number(3);
+		};
+		EDSELNUM	{
+			value	number(3);
+		};
+		STBRMNUM	{
+			value	varchar(6);
+		};
+		EDBRMNUM	{
+			value	varchar(6);
+		};
+		CHK_SINSEIJI	{
+			value	bool;
+		};
+		CHK_SNR_RYOYO1	{
+			value	bool;
+		};
+		CHK_SNR_RYOYO2	{
+			value	bool;
+		};
+		CHK_HOSYASEN	{
+			value	bool;
+		};
+		CHK_RYOYO	{
+			value	bool;
+		};
+	};
+};

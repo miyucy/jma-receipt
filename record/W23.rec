@@ -1,0 +1,16 @@
+W23	{
+	fixed6	{
+		SEIKYU01	{
+			value	varchar(3);
+		};
+		SEIKYU02	{
+			value	varchar(3);
+		};
+		SEIKYU03	{
+			value	varchar(3);
+		};
+		RESEIKYUKBN	{
+			value	varchar(2);
+		};
+	};
+};

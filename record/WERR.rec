@@ -1,10 +1,10 @@
 WERR	{
 	fixed1	{
 		ERRCODE	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		ERRMSG	{
-			value	varchar(61);
+			value	varchar(80);
 		};
 	};
 };

@@ -1,28 +1,28 @@
 W04	{
 	fixed2	{
 		NEN	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		RENNUM	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PTID	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		STYUKYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		EDYUKYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		PTNUMKSIKBN	{
-			value	varchar(2);
+			value	varchar(1);
 		};
 		notebook1	{
 			pageno	int;
 			fixed5	{
 				JIYKSIKBN	{
-					value	varchar(2);
+					value	varchar(1);
 				};
 				JIYKSIKETA	{
 					value	number(2);
@@ -30,13 +30,13 @@ W04	{
 			};
 			fixed4	{
 				HJNKSIKBN	{
-					value	varchar(2);
+					value	varchar(1);
 				};
 				HJNKSINENKBN	{
-					value	varchar(2);
+					value	varchar(1);
 				};
 				HJNKSIRENNUMKBN	{
-					value	varchar(2);
+					value	varchar(1);
 				};
 				HJNKSIRENNUMKETA	{
 					value	number(2);
@@ -44,7 +44,7 @@ W04	{
 			};
 			fixed3	{
 				KKCKSIKBN	{
-					value	varchar(2);
+					value	varchar(1);
 				};
 				KKCKSIMAEKETA	{
 					value	number(2);

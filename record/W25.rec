@@ -1,25 +1,25 @@
-Z98	{
+W25	{
 	fixed32	{
 		INPUT	{
-			value	varchar(22);
+			value	varchar(23);
 		};
 		SENTAKU	{
-			value	varchar(30);
+			value	varchar(31);
 		};
 		SELNUM1	{
-			value	varchar(3);
+			value	varchar(4);
 		};
 		SELNUM2	{
-			value	varchar(3);
+			value	varchar(4);
 		};
 		SELNUM3	{
-			value	varchar(3);
+			value	varchar(4);
 		};
 		SELNUM4	{
-			value	varchar(3);
+			value	varchar(4);
 		};
 		SELNUM5	{
-			value	varchar(3);
+			value	varchar(4);
 		};
 		scrolledwindow26	{
 			LIST	{
@@ -35,14 +35,14 @@ Z98	{
 		};
 		JIINCOB	{
 			JIIN	{
-				value	varchar(16);
+				value	varchar(17);
 			};
 			count	int;
 			item	varchar(16)[10];
 		};
 		USERCOB	{
 			USER	{
-				value	varchar(10);
+				value	varchar(11);
 			};
 			count	int;
 			item	varchar(10)[10];

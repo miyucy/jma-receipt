@@ -1,11 +1,11 @@
 Z91	{
 	fixed2	{
 		MSTYMD	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SRYSTRCOMBO	{
 			SRYSTR	{
-				value	varchar(18);
+				value	varchar(17);
 			};
 			state   int;
 			count	int;
@@ -13,7 +13,7 @@ Z91	{
 		};
 		SRYENDCOMBO	{
 			SRYEND	{
-				value	varchar(18);
+				value	varchar(17);
 			};
 			state   int;
 			count	int;

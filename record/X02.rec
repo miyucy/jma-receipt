@@ -1,142 +1,142 @@
 X02	{
 	fixed2	{
 		NAME	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 	        B03	{
 	           	state	int;
 	        };
 		TEKCD01	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD02	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD03	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD04	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD05	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD06	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD07	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD08	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD09	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD10	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD11	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD12	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD13	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD14	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD15	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD16	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD17	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD18	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD19	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		TEKCD20	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		DSPNAME01	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME02	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME03	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME04	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME05	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME06	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME07	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME08	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME09	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME10	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME11	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME12	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME13	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME14	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME15	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME16	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME17	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME18	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME19	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME20	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		SRYCD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		STYUKYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		EDYUKYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		CHKKBN	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 	};
 };

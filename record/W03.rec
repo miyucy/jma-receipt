@@ -1,160 +1,160 @@
 W03	{
 	fixed2	{
 		CD01	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD02	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD03	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD04	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD05	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD06	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD07	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD08	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD09	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD10	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD11	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD12	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD13	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD14	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD15	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD16	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD17	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD18	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD19	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD20	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD21	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD22	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD23	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD24	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		CD25	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		DSPNAME01	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME02	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME03	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME04	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME05	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME06	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME07	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME08	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME09	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME10	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME11	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME12	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME13	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME14	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME15	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME16	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME17	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME18	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME19	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME20	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME21	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME22	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME23	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME24	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		DSPNAME25	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STYUKYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		EDYUKYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		SSTKIJUN01	{
 			value	number(1);

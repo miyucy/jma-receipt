@@ -12,23 +12,23 @@ X01	{
 			};
 		};
 		SELNUM	{
-			value	varchar(4);
+			value	varchar(3);
 		};
 		STYUKYMD	{
-			value	varchar(11);
-		};
-		EDYUKYMD	{
-			value	varchar(11);
-		};
-		SRYCD	{
 			value	varchar(10);
 		};
+		EDYUKYMD	{
+			value	varchar(10);
+		};
+		SRYCD	{
+			value	varchar(9);
+		};
 		NAME	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		CHKKBNCOMB	{
 			CHKKBN	{
-				value	varchar(23);
+				value	varchar(22);
 			};
 			count	int;
 			item	varchar(22)[9];

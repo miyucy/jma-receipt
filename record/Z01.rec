@@ -1,7 +1,7 @@
 Z01	{
 	fixed1	{
 		SRYCD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		BS1	{
 			value	bool;
@@ -19,16 +19,16 @@ Z01	{
 			};
 		};
 		SELNUM	{
-			value	varchar(4);
+			value	varchar(3);
 		};
 		YUKOSTYMD	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		YUKOEDYMD	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		NAME	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 	};
 };

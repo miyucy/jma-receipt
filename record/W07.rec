@@ -1,10 +1,10 @@
 W07	{
 	fixed1	{
 		YUKOSTYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		YUKOEDYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		B03 {
 		    state   int;
@@ -14,28 +14,28 @@ W07	{
 			TAG1	{
 				DATA01_COMBO	{
 					DATA01	{
-						value	varchar(13);
+						value	varchar(12);
 					};
 					count	int;
 					item	varchar(12)[2];
 				};
 				DATA02_COMBO	{
 					DATA02	{
-						value	varchar(13);
+						value	varchar(12);
 					};
 					count	int;
 					item	varchar(12)[2];
 				};
 				DATA03_COMBO	{
 					DATA03	{
-						value	varchar(13);
+						value	varchar(12);
 					};
 					count	int;
 					item	varchar(12)[2];
 				};
 				DATA04_COMBO	{
 					DATA04	{
-						value	varchar(13);
+						value	varchar(12);
 					};
 					count	int;
 					item	varchar(12)[2];
@@ -50,7 +50,7 @@ W07	{
 				};
 				GAIKANRIKBNCOMB	{
 					GAIKANRIKBN	{
-						value	varchar(23);
+						value	varchar(22);
 					};
 					count	int;
 					item	varchar(22)[3];

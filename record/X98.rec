@@ -1,13 +1,13 @@
 X98	{
 	fixed32	{
 		SELNUM	{
-			value	varchar(4);
+			value	varchar(3);
 		};
 		INPUT	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		SENTAKU	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		scrolledwindow26	{
 			LIST	{

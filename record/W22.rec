@@ -1,0 +1,35 @@
+W22	{
+	fixed6	{
+		KANRICDCOMBO	{
+			KANRICD		{
+						value	varchar(31);
+				};
+				count	int;
+				item	varchar(30)[20];
+		};
+		KBNCD	{
+			value	varchar(09);
+		};
+		MEISYOU	{
+			value	varchar(51);
+		};
+		STYUKYMD	{
+			value	varchar(10);
+		};
+		EDYUKYMD	{
+			value	varchar(10);
+		};
+		MEISYOUWINDOW	{
+			MEISYOULIST	{
+				count	int;
+				item	{
+					value1	varchar(16);
+					value2	varchar(60);
+					value3	varchar(19);
+					value4	varchar(19);
+				}	[20];
+				select	bool[20];
+			};
+		};
+	};
+};

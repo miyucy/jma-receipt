@@ -1,31 +1,31 @@
 W05	{
 	fixed1	{
 		YUKOSTYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		YUKOEDYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 	        B03	{
 	           	state	int;
 	        };
 		SRYKANAME1	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SRYKANAME	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SRYCD	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKANAME2	{
-			value	varchar(7);
+			value	varchar(6);
 		};
 		SRYKANAME3	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		RECESRYKA	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 	};
 };

@@ -4,76 +4,76 @@ W11	{
 			pageno	int;
 			fi23	{
 				DSPNAME01	{
-					value	varchar(31);
+					value	varchar(30);
 				};
 				DSPNAME02	{
-					value	varchar(31);
+					value	varchar(30);
 				};
 				DSPNAME03	{
-					value	varchar(31);
+					value	varchar(30);
 				};
 				DSPNAME04	{
-					value	varchar(31);
+					value	varchar(30);
 				};
 				DSPNAME05	{
-					value	varchar(31);
+					value	varchar(30);
 				};
 				DSPNAME06	{
-					value	varchar(31);
+					value	varchar(30);
 				};
 				DSPNAME07	{
-					value	varchar(31);
+					value	varchar(30);
 				};
 				DSPNAME08	{
-					value	varchar(31);
+					value	varchar(30);
 				};
 				DSPNAME09	{
-					value	varchar(31);
+					value	varchar(30);
 				};
 				DSPNAME10	{
-					value	varchar(31);
+					value	varchar(30);
 				};
 				PRTNM01	{
-					value	varchar(17);
+					value	varchar(16);
 				};
 				PRTNM02	{
-					value	varchar(17);
+					value	varchar(16);
 				};
 				PRTNM03	{
-					value	varchar(17);
+					value	varchar(16);
 				};
 				PRTNM04	{
-					value	varchar(17);
+					value	varchar(16);
 				};
 				PRTNM05	{
-					value	varchar(17);
+					value	varchar(16);
 				};
 				PRTNM06	{
-					value	varchar(17);
+					value	varchar(16);
 				};
 				PRTNM07	{
-					value	varchar(17);
+					value	varchar(16);
 				};
 				PRTNM08	{
-					value	varchar(17);
+					value	varchar(16);
 				};
 				PRTNM09	{
-					value	varchar(17);
+					value	varchar(16);
 				};
 				PRTNM10	{
-					value	varchar(17);
+					value	varchar(16);
 				};
 				ORCAORGNM01	{
-					value	varchar(21);
+					value	varchar(20);
 				};
 				ORCAORGNM02	{
-					value	varchar(21);
+					value	varchar(20);
 				};
 				ORCAORGNM03	{
-					value	varchar(21);
+					value	varchar(20);
 				};
 				ORCAORGNM04	{
-					value	varchar(21);
+					value	varchar(20);
 				};
 				ORCAORGCHK01	{
 					value	bool;
@@ -88,16 +88,16 @@ W11	{
 					value	bool;
 				};
 				ORCACSTNM01	{
-					value	varchar(21);
+					value	varchar(20);
 				};
 				ORCACSTNM02	{
-					value	varchar(21);
+					value	varchar(20);
 				};
 				ORCACSTNM03	{
-					value	varchar(21);
+					value	varchar(20);
 				};
 				ORCACSTNM04	{
-					value	varchar(21);
+					value	varchar(20);
 				};
 				ORCACSTCHK01	{
 					value	bool;
@@ -117,11 +117,11 @@ W11	{
 			};
 			fi28	{
 				SYOHODSPNAME	{
-					value	varchar(11);
+					value	varchar(10);
 				};
 				SYOHOGEPRTFLG_COMBO	{
 					SYOHOGEPRTFLG	{
-						value	varchar(13);
+						value	varchar(12);
 					};
 					count	int;
 					item	varchar(12)[2];
@@ -132,10 +132,10 @@ W11	{
 			};
 		};
 		STYUKYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		EDYUKYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 	};
 };

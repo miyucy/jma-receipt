@@ -1,0 +1,136 @@
+W21	{
+	fixed6	{
+		B02	{
+			state	int;
+		};
+		B05	{
+			state	int;
+		};
+		B06	{
+			state	int;
+		};
+		B07	{
+			state	int;
+		};
+		B08	{
+			state	int;
+		};
+		B09	{
+			label	varchar(4);
+			state	int;
+		};
+		B12	{
+			state	int;
+		};
+		CMB_BTU_NAME	{
+			BTU_NAME	{
+				value	varchar(23);
+			};
+			count	int;
+			item	varchar(23)[50];
+		};
+		BTU_KHNRYO	{
+			value	varchar(60);
+		};
+		SELNUM1	{
+			value	number(3);
+		};
+		BRM_NUM	{
+			value	varchar(6);
+			state	int;
+		};
+		CMB_BRM_SBT	{
+			BRM_SBT	{
+				value	varchar(23);
+				state	int;
+			};
+			count	int;
+			item	varchar(23)[15];
+			state	int;
+		};
+		CMB_BRM_TOKUTEINYUIN	{
+			BRM_TOKUTEINYUIN	{
+				value	varchar(33);
+				state	int;
+			};
+			count	int;
+			item	varchar(33)[15];
+			state	int;
+		};
+		BRM_NINZU	{
+			value	number(2);
+			state	int;
+		};
+		CMB_BRM_SAGAKU	{
+			BRM_SAGAKU	{
+				value	varchar(10);
+				state	int;
+			};
+			count	int;
+			item	varchar(10)[20];
+			state	int;
+		};
+		CMB_BRM_SEX	{
+			BRM_SEX	{
+				value	varchar(12);
+				state	int;
+			};
+			count	int;
+			item	varchar(12)[10];
+			state	int;
+		};
+		BRM_NAITEL	{
+			value	varchar(5);
+			state	int;
+		};
+		CMB_BRM_KA	{
+			BRM_KA	{
+				value	varchar(23);
+				state	int;
+			};
+			count	int;
+			item	varchar(23)[10];
+			state	int;
+		};
+		YUKOSTYMD	{
+			value	varchar(9);
+			state	int;
+		};
+		YUKOEDYMD	{
+			value	varchar(9);
+			state	int;
+		};
+		SELNUM2	{
+			value	number(2);
+		};
+		scrolledwindow28	{
+			BRMLST	{
+				count	int;
+				item	{
+					value0	varchar(04);
+					value1	varchar(10);
+					value2	varchar(20);
+					value3	varchar(10);
+					value4	varchar(10);
+					value5	varchar(10);
+					value6	varchar(10);
+					value7	varchar(05);
+					value8	varchar(20);
+					value9	varchar(09);
+					value10	varchar(09);
+				}	[200];
+				select	bool[200];
+			};
+		};
+		scrolledwindow29	{
+			RIREKILST	{
+				count	int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(22);
+				}	[20];
+				select	bool[20];
+			};
+		};
+	};
+};
