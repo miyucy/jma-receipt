@@ -273,7 +273,7 @@
                                                SYUNOU-REC
                                                WRK-SYUNOU-REC-T
       *
-                IF       LNK-ORCS02-TEIKI-KBN =   "X"
+                IF       WRK-S02-TEIKI-KBN    =   "X"
                     MOVE     "X"              TO  SYU-DENPJTIKBN
                 ELSE
                     MOVE     "A"              TO  SYU-DENPJTIKBN
