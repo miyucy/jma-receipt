@@ -1155,12 +1155,17 @@
 
     <widget>
       <class>GtkButton</class>
-      <name>button9</name>
+      <name>B10</name>
       <x>768</x>
       <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F10</key>
+	<signal>clicked</signal>
+      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
