@@ -30,6 +30,8 @@
       *  01.00.01    NACL-藤原    03.07.05  タイマー機能の追加
       *  01.00.02    NACL-伊藤    04.02.17  レセ電ファイルの転送エラー
       *                                     メッセージの追加
+      * 公費個別発行機能対応
+      *  01.06.01    NACL-藤原    04/10/25  公費個別発行機能の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -47,72 +49,7 @@
            COPY    "COMMON-SPA".
       *
       *    画面用ＳＰＡ
-       01  SPA-T01.
-           03  SPA-T01-AREA.
-               05  SPA-GMN-MAX                     PIC 9(04).
-               05  SPA-GMN-PAGE                    PIC 9(02).
-               05  SPA-GMN-CUR                     PIC 9(02).
-               05  SPA-GMN-AREA.
-                   07  SPA-GMN-DATAKBNLST          OCCURS  3.
-                       09  SPA-GMN-DATAKBNL        PIC X(01).
-                       09  SPA-GMN-F1L             PIC X(01).
-                       09  SPA-GMN-DATAKBNMEIL     PIC X(20).
-                   07  SPA-GMN-DATAKBN-MAX         PIC 9(02).    
-                   07  SPA-GMN-NYUGAIKBNLST        OCCURS  3.
-                       09  SPA-GMN-NYUGAIKBNL      PIC X(01).
-                       09  SPA-GMN-F1L             PIC X(01).
-                       09  SPA-GMN-NYUGAIKBNMEIL   PIC X(12).
-                   07  SPA-GMN-NYUGAIKBN-MAX       PIC 9(02).    
-      *                                             
-                   07  SPA-GMN-DATAKBN-G.
-                       09  SPA-GMN-DATAKBN         PIC X(01).
-                       09  SPA-GMN-F1              PIC X(01).
-                       09  SPA-GMN-DATAKBNMEI      PIC X(20).
-      *                                             
-                   07  SPA-GMN-NYUGAIKBN-G.
-                       09  SPA-GMN-NYUGAIKBN       PIC X(01).
-                       09  SPA-GMN-F1              PIC X(01).
-                       09  SPA-GMN-NYUGAIKBNMEI    PIC X(12).
-      *                                             
-                   07  SPA-GMN-SKYYM               PIC X(07).
-                   07  SPA-GMN-SRYYM               PIC X(20).
-                   07  SPA-GMN-SKYYMD              PIC X(10).
-                   07  SPA-GMN-PRTKBN1.
-                       09  SPA-GMN-PRTKBN1-STYLE   PIC X(20).
-                       09  SPA-GMN-PRTKBN1-VALUE   PIC X(04). 
-                   07  SPA-GMN-PRTKBN2.
-                       09  SPA-GMN-PRTKBN2-STYLE   PIC X(20).
-                       09  SPA-GMN-PRTKBN2-VALUE   PIC X(04).
-                   07  SPA-GMN-HKNJANUM            PIC X(08).
-                   07  SPA-GMN-HKNJAMEI            PIC X(40). 
-      *
-               05  SPA-NAIB-T01-AREA.
-                   07  SPA-NAI-WIDGET              PIC X(08). 
-                   07  SPA-NAI-SKYYM               PIC 9(06).
-                   07  SPA-NAI-SRYYM               PIC 9(06).
-                   07  SPA-NAI-SKYYMD              PIC 9(08).
-                   07  SPA-NAI-PRTKBN1             PIC X(01).
-                   07  SPA-NAI-PRTKBN2             PIC X(01).
-                   07  SPA-NAI-HKNJANUM            PIC X(08). 
-      *
-               05  SPA-STATE.             
-                   07  SPA-B06-STATE               PIC S9(09)  BINARY.
-                   07  SPA-B07-STATE               PIC S9(09)  BINARY.
-                   07  SPA-DATA-STATE              PIC S9(09)  BINARY.
-                   07  SPA-NYUGAIKBN-STATE         PIC S9(09)  BINARY.
-                   07  SPA-SRYYM-STATE             PIC S9(09)  BINARY.
-                   07  SPA-DATAKBN1-STATE          PIC S9(09)  BINARY.
-                   07  SPA-DATAKBN2-STATE          PIC S9(09)  BINARY.
-                   07  SPA-DATAKBN3-STATE          PIC S9(09)  BINARY.
-                   07  SPA-DATAKBN4-STATE          PIC S9(09)  BINARY.
-                   07  SPA-DATAKBN5-STATE          PIC S9(09)  BINARY.
-      *
-               05  SPA-DATAKBN.         
-                   07  SPA-DATAKBN1-VALUE          PIC X(01).
-                   07  SPA-DATAKBN2-VALUE          PIC X(01).
-                   07  SPA-DATAKBN3-VALUE          PIC X(01).
-                   07  SPA-DATAKBN4-VALUE          PIC X(01).
-                   07  SPA-DATAKBN5-VALUE          PIC X(01).
+           COPY    "T01SCR-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -181,6 +118,7 @@
       *
        01  SCRAREA.
            COPY    "T01.INC".
+           COPY    "T02.INC".
            COPY    "T99.INC".
            COPY    "TERR.INC".
            COPY    "TID1.INC".
@@ -198,7 +136,7 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-FREE        TO  SPA-T01
+           MOVE    SPA-FREE        TO  SPA-T01FREE
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -209,7 +147,7 @@
            END-EVALUATE
       *
            MOVE    SPA-AREA        TO  SPA-COMMON
-      *****MOVE    SPA-T01         TO  SPA-FREE
+      *****MOVE    SPA-T01FREE     TO  SPA-FREE
       *
            .
            EXIT    PROGRAM
