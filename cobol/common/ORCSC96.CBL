@@ -1282,6 +1282,9 @@
                WHEN    "1030"
                    MOVE    "剤削除は入力できません"
                                        TO  SPA-ERRMSG
+               WHEN    "1031"
+                   MOVE    "明細がありません。変更できません。"
+                                       TO  SPA-ERRMSG
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"
                                        TO  SPA-ERRMSG
