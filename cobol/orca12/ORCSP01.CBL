@@ -197,6 +197,19 @@
                    MOVE    WRK-PTNUM3          TO  ORCSP01-PTNUM3
            END-EVALUATE
       *
+      *    登録済みかのチェック
+           IF      ORCSP01-PTNUM   NOT =   SPACE
+               INITIALIZE                      ORCSPTIDAREA
+               MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+               MOVE    ORCSP01-PTNUM       TO  SPTID-PTNUM
+               CALL    "ORCSPTID"      USING   ORCSPTIDAREA
+                                               SPA-1009-TBL
+               IF      SPTID-RC            =   ZERO
+      *            既に患者番号が登録されている場合、再度取得
+                   GO      TO              100-HAKKOU-SEC
+               END-IF
+           END-IF
+      *
            .
        100-HAKKOU-EXT.
            EXIT.
