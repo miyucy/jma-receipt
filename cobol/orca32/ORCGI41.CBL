@@ -1248,26 +1248,21 @@
                    COMPUTE WRK-TUSAN
                        =   WRK-TUSAN   -   STUSAN-RRK-NISSU (IDX10)
                    IF    ( WRK-TUSAN  <    91 )
-                       IF    ( STUSAN-RRK-JTIKBN (IDX10)
-                                               = "6" )
-                           MOVE    "********"  TO  SPA-GMN-IJYOU91
-                       ELSE
-                           INITIALIZE                  STS-AREA-DAY
-                           INITIALIZE                  LNK-DAY6-AREA
-                           MOVE    "61"            TO  LNK-DAY6-IRAI
-                           MOVE    STUSAN-RRK-NYUINYMD (IDX10)
-                                                   TO  LNK-DAY6-KIJUN
-                           MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-                           COMPUTE LNK-DAY6-ZOGEN
-                               =   91   -          WRK-TUSAN
-                           CALL    "ORCSDAY"   USING   STS-AREA-DAY
-                                                       LNK-DAY6-AREA
-                           MOVE    LNK-DAY6-KOYOMI TO  SPA-GMN-IJYOU91
-                           MOVE    LNK-DAY6-KOYOMI TO  WRK-SYMD
-                           PERFORM 41012-SEIWA-HEN-SEC
-                           MOVE    WRK-HENYMDG     TO  SPA-GMN-IJYOU91
-                       END-IF
-                       MOVE    STUSAN-RRK-CNT      TO  IDX10
+                       INITIALIZE                  STS-AREA-DAY
+                       INITIALIZE                  LNK-DAY6-AREA
+                       MOVE    "61"            TO  LNK-DAY6-IRAI
+                       MOVE    STUSAN-RRK-NYUINYMD (IDX10)
+                                               TO  LNK-DAY6-KIJUN
+                       MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                       COMPUTE LNK-DAY6-ZOGEN
+                           =   91   -          WRK-TUSAN
+                       CALL    "ORCSDAY"   USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                       MOVE    LNK-DAY6-KOYOMI TO  SPA-GMN-IJYOU91
+                       MOVE    LNK-DAY6-KOYOMI TO  WRK-SYMD
+                       PERFORM 41012-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMDG     TO  SPA-GMN-IJYOU91
+                       MOVE    STUSAN-RRK-CNT  TO  IDX10
                    END-IF
                END-IF
            END-PERFORM
@@ -1292,8 +1287,7 @@
                COMPUTE WRK-TUSAN
                    =   WRK-TUSAN   -   STUSAN-RRK-NISSU (IDX10)
                IF    ( WRK-TUSAN   <   180 )
-                   IF    ( STUSAN-RRK-JTIKBN (IDX10)
-                                           = "5"   OR  "6" )
+                   IF    ( STUSAN-RRK-JTIKBN (IDX10)   = "5" )
                        MOVE    "********"  TO  SPA-GMN-IJYOU180
                    ELSE
                        INITIALIZE                  STS-AREA-DAY
