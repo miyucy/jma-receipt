@@ -20,30 +20,17 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
-      *
-      *  04.02.01    NACL-藤原    08/04/10  平成２０年４月改正対応
-      *                                     就学前区分追加
-      *
-      *  04.05.01    NACL-藤原    12/07/02  住所欄に番地方書を追加
-      *
-      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
-      *                                     キーにkohid 追加
-      *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
-      *                                     ０８（老健）のレセプト対応
       ************************************************************
       *01  TOUKEI01-REC.
            03  TOUKEI01-KEY.
       *        医療機関ＩＤ
-               05  TOUKEI01-HOSPNUM        PIC 9(2).
+               05  TOUKEI01-HOSPID         PIC  X(24).
       *        診療年月
                05  TOUKEI01-SRYYM          PIC  9(06).
       *        入外区分
                05  TOUKEI01-NYUGAIKBN      PIC  X(01).
       *        患者ＩＤ
                05  TOUKEI01-PTID           PIC  9(10).
-      *        入所中区分
-               05  TOUKEI01-RECEIPT-KBN    PIC  X(10).
       *        レセプト診療科
                05  TOUKEI01-RECEKA         PIC  X(02).
       *        主保険保険番号
@@ -56,8 +43,6 @@
                05  TOUKEI01-HONKZKKBN      PIC  X(01).
       *        補助区分
                05  TOUKEI01-HOJOKBN        PIC  X(01).
-      *        公費ＩＤ（公費単独時使用）
-               05  TOUKEI01-KOH-KOHID      PIC  9(10).
       *
       *        主保険ＩＤ
            03  TOUKEI01-HKNID              PIC  9(10).
@@ -84,31 +69,23 @@
                    07  TOUKEI01-TTEKEDYMD  PIC  X(08). 
       *            主保険−継続区分
                    07  TOUKEI01-TCONTKBN   PIC  X(01).
-      *            主保険−補助区分
-                   07  TOUKEI01-THOJOKBN   PIC X(01).
-      *            主保険−本人家族区分
-                   07  TOUKEI01-THONKZKKBN PIC  X(01).
       *        主保険−法別番号
                05  TOUKEI01-HKNHBTNUM      PIC  X(02).
       *        主保険−公費種別区分
                05  TOUKEI01-HKNKOHSBTKBN   PIC X(01).
+      *        主保険−補助区分
+               05  TOUKEI01-HKN-HOJOKBN    PIC X(01).
       *
       *    老人保健情報
            03  TOUKEI01-RJNHKN.
       *        老人保険−保険番号
                05  TOUKEI01-RJNHKNNUM      PIC  X(03).
-      *        老人支払区分
-               05  TOUKEI01-RJNPAYKBN      PIC  X(02).
       *        老人保険−法別番号
                05  TOUKEI01-RJNHBTNUM      PIC  X(02).
       *        老人保険−市町村番号
                05  TOUKEI01-RJNFTNJANUM    PIC  X(08).
       *        老人保険−受給者番号
                05  TOUKEI01-RJNJKYSNUM     PIC  X(07).
-      *        老人適用開始年月日
-               05  TOUKEI01-RJNTEKSTYMD    PIC  X(08).
-      *        老人適用終了年月日
-               05  TOUKEI01-RJNTEKEDYMD    PIC  X(08).
       * 
       *    公費情報
            03 TOUKEI01-KOHI-AREA.
@@ -192,25 +169,17 @@
                05  TOUKEI01-BIRTHDAY        PIC  9(08).
       *        年齢
                05  TOUKEI01-AGE             PIC  9(03).
-      *        就学前区分（１：就学前）
-               05  TOUKEI01-SYUGAKUKBN      PIC 9(01).
       *        自宅−郵便番号
                05  TOUKEI01-HOME-POST       PIC  X(07).
       *        自宅−住所
-               05  TOUKEI01-HOME-ADRS       PIC  X(400).
+               05  TOUKEI01-HOME-ADRS       PIC  X(200).
       *        自宅−昼電話番号
                05  TOUKEI01-HOME-TEL1       PIC  X(15).
       *       地方公共団体コード
                05  TOUKEI01-LPUBCD          PIC  X(05).
-      *    保険組合せ
-           03 TOUKEI01-HKNCOMBIINF.
-               05  TOUKEI01-HKNCOMBI        PIC  9(04)  OCCURS  10.
-      *    診療科情報
-           03 TOUKEI01-SRYKAINF.
-               05  TOUKEI01-SRYKA           PIC  X(02)  OCCURS  20.
       *
       *    レセプト種別
-           03  TOUKEI01-RECESYUBETU         PIC  9(04).
+           03  TOUKEI01-RECESYUBETU        PIC  9(04).
       *
       *    未訂正区分
            03  TOUKEI01-TEISEIKBN           PIC  X(01).

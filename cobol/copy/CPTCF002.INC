@@ -20,29 +20,18 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
-      *
-      *  04.05.01    NACL-藤原    12/11/15  剤点数等のマイナス表記対応
-      *  04.05.02    NACL-藤原    10/10/12  公費単独のレセ分離対応
-      *                                     キーにkohid 追加
-      *
-      *  04.06.01    NACL-藤原    12/10/26  特記事項０７（老併）及び
-      *                                     ０８（老健）のレセプト対応
       ************************************************************
       *01  TOUKEI02-REC.
            03  TOUKEI02-KEY.
                05  TOUKEI02-KEY1.
       *            医療機関ＩＤ
-                   07  TOUKEI02-HOSPNUM    PIC 9(2).
+                   07  TOUKEI02-HOSPID     PIC  X(24).
       *            診療年月
                    07  TOUKEI02-SRYYM      PIC  9(06).
       *            入外区分
                    07  TOUKEI02-NYUGAIKBN  PIC  X(01).
       *            患者ＩＤ
                    07  TOUKEI02-PTID       PIC  9(10).
-      *            入所中区分
-                   07  TOUKEI02-RECEIPT-KBN
-                                           PIC  X(10).
       *            レセプト診療科
                    07  TOUKEI02-RECEKA     PIC  X(02).
       *            主保険保険番号
@@ -55,8 +44,6 @@
                    07  TOUKEI02-HONKZKKBN  PIC  X(01).
       *            補助区分
                    07  TOUKEI02-HOJOKBN    PIC  X(01).
-      *            公費ＩＤ（公費単独時使用）
-                   07  TOUKEI02-KOH-KOHID  PIC  9(10).
       *        診療科
                05  TOUKEI02-SRYKA          PIC  X(02).
       *        診療区分
@@ -80,19 +67,19 @@
       *自保区分
            03  TOUKEI02-JIHOKBN            PIC  X(01).
       *剤点数
-           03  TOUKEI02-ZAITEN             PIC  S9(08).
+           03  TOUKEI02-ZAITEN             PIC  9(08).
       *剤回数
            03  TOUKEI02-ZAIKAISU           PIC  9(04).
       *明細数
            03  TOUKEI02-MEISAISU           PIC  9(04).
       *手技点数１
-           03  TOUKEI02-SYUTEN1            PIC  S9(07).
+           03  TOUKEI02-SYUTEN1            PIC  9(07).
       *手技点数２
-           03  TOUKEI02-SYUTEN2            PIC  S9(07).
+           03  TOUKEI02-SYUTEN2            PIC  9(07).
       *薬剤点数
-           03  TOUKEI02-YKZTEN             PIC  S9(07).
+           03  TOUKEI02-YKZTEN             PIC  9(07).
       *器材点数
-           03  TOUKEI02-KIZAITEN           PIC  S9(07).
+           03  TOUKEI02-KIZAITEN           PIC  9(07).
       *ドクターコード
            03  TOUKEI02-DRCD               PIC  X(05).
       *日数回数テーブル
@@ -107,7 +94,7 @@
       *診療コード
                05  TOUKEI02-SRYCD          PIC  X(09).
       *数量
-               05  TOUKEI02-SRYSURYO       PIC  9(05)V9(05).
+               05  TOUKEI02-SRYSURYO       PIC  9(05)V9(03).
       *回数
                05  TOUKEI02-SRYKAISU       PIC  9(03).
       *点数識別区分
