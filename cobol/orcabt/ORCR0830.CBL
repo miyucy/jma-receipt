@@ -137,6 +137,7 @@
                05  WRK-DAY6-ZAITEN                     PIC 9(08).
                05  WRK-ACCT90                          PIC 9(08).
                05  WRK-ACCT-KASAN                      PIC S9(08).
+               05  WRK-ROUNYUIN-JOUSU-KBN              PIC X(01).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -173,6 +174,11 @@
            03  WRK-ZAIKAISU-JI                         PIC  9(03).
            03  WRK-KEISAN-JI                           PIC  9(09).
            03  WRK-TEN-JI                              PIC  9(09).
+      *
+           03  WRK-KOYOMI-YMD                          PIC  9(08).
+           03  WRK-KOYOMI2-YMD.
+               05  WRK-KOYOMI2-YYMM                    PIC  9(06).
+               05  WRK-KOYOMI2-DD                      PIC  9(02).
       *
        01  WRK-TENTEK.
            03  WRK-TENTEK-SYUTEN                       PIC 9(07).
@@ -997,6 +1003,8 @@
       *****************************************************************
        230-RECE82-HENSYU2-SEC                SECTION.
       *
+           PERFORM      2301-ROSAIJYOSU-GET-SEC
+      *
            PERFORM      2301-MIJISI-GET-SEC
       *
            INITIALIZE                            NYUINACCT-REC
@@ -1108,6 +1116,43 @@
            EXIT.
       *
       *****************************************************************
+      *    Æþ±¡´ðËÜÎÁÏ«ºÒ¾è¿ô¼èÆÀ
+      *****************************************************************
+       2301-ROSAIJYOSU-GET-SEC                 SECTION.
+      *
+           MOVE    ZERO                TO  WRK-KOYOMI-YMD
+                                           WRK-KOYOMI2-YMD
+      *
+      *    ½é²óÆþ±¡Ç¯·îÆü¤«¤é£²½µ´ÖÌÜ¤ò»»Äê
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    RECE82-NYUINYMD     TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    14                  TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+      *
+           MOVE    LNK-DAY6-KOYOMI     TO  WRK-KOYOMI-YMD
+      *
+      *    Ï«ºÒ¾è¿ô¶èÊ¬¥»¥Ã¥È
+           PERFORM    VARYING   IDY   FROM   1   BY   1
+                       UNTIL    IDY    >    31
+      *
+              MOVE    RECE82-SRYYM     TO  WRK-KOYOMI2-YYMM
+              MOVE    IDY              TO  WRK-KOYOMI2-DD
+              IF      WRK-KOYOMI2-YMD  <=  WRK-KOYOMI-YMD
+                   MOVE    "1"    TO   WRK-ROUNYUIN-JOUSU-KBN(IDY)
+              ELSE
+                   MOVE    "2"    TO   WRK-ROUNYUIN-JOUSU-KBN(IDY)
+              END-IF
+           END-PERFORM
+      *
+           .
+       2301-ROSAIJYOSU-GET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    Ì¤¼Â»Ü¸º»»³Û¼èÆÀ
       *****************************************************************
        2301-MIJISI-GET-SEC                 SECTION.
@@ -1196,13 +1241,14 @@
                          COMPUTE  WRK-KEISAN  =  WRK-KHNTEN
                                               -  WRK-MIJISI
                                               +  WRK-ACCT-KASAN(IDY)
-      *@@@               IF   @@@@@@
+                         EVALUATE  WRK-ROUNYUIN-JOUSU-KBN(IDY)
+                           WHEN  "1"
                             COMPUTE  WRK-KEISAN  = (WRK-KEISAN * 1.30)
                                                  +  0.5
-      *@@@               ELSE
-      *@@@                  COMPUTE  WRK-KEISAN  = (WRK-KEISAN * 1.01)
-      *@@@                                       +  0.5
-      *@@@               END-IF
+                           WHEN  "2"
+                            COMPUTE  WRK-KEISAN  = (WRK-KEISAN * 1.01)
+                                                 +  0.5
+                         END-EVALUATE
                          COMPUTE  WRK-NYUKHNRYO  =  WRK-KEISAN
                                                  +  WRK-KSNTEN
                        WHEN   1
@@ -1214,15 +1260,16 @@
                            COMPUTE  WRK-KEISAN =
                                  (WRK-KHNTEN   *  0.15)  +  0.5
                          END-IF
-                         COMPUTE    WRK-KEISAN =  WRK-KEISAN
-                                               +  WRK-ACCT-KASAN(IDY)
-      *@@@               IF   @@@@@@
+      *>                 COMPUTE    WRK-KEISAN =  WRK-KEISAN
+      *>                                       +  WRK-ACCT-KASAN(IDY)
+                         EVALUATE  WRK-ROUNYUIN-JOUSU-KBN(IDY)
+                           WHEN  "1"
                              COMPUTE  WRK-NYUKHNRYO  = 
                                      (WRK-KEISAN * 1.30)  +  0.5
-      *@@@               ELSE
-      *@@@                   COMPUTE  WRK-NYUKHNRYO  = 
-      *@@@                           (WRK-KEISAN * 1.01)  +  0.5
-      *@@@               END-IF
+                           WHEN  "2"
+                             COMPUTE  WRK-NYUKHNRYO  = 
+                                     (WRK-KEISAN * 1.01)  +  0.5
+                         END-EVALUATE
                        WHEN   2
                          IF   WRK-KHNTEN2  NOT =  ZERO
                            COMPUTE  WRK-KEISAN =
@@ -1231,15 +1278,16 @@
                            COMPUTE  WRK-KEISAN =
                                  (WRK-KHNTEN   *  0.3)  +  0.5
                          END-IF
-                         COMPUTE    WRK-KEISAN =  WRK-KEISAN
-                                               +  WRK-ACCT-KASAN(IDY)
-      *@@@               IF   @@@@@@
+      *>                 COMPUTE    WRK-KEISAN =  WRK-KEISAN
+      *>                                       +  WRK-ACCT-KASAN(IDY)
+                         EVALUATE  WRK-ROUNYUIN-JOUSU-KBN(IDY)
+                           WHEN  "1"
                              COMPUTE  WRK-NYUKHNRYO  = 
                                      (WRK-KEISAN * 1.30)  +  0.5
-      *@@@               ELSE
-      *@@@                   COMPUTE  WRK-NYUKHNRYO  = 
-      *@@@                           (WRK-KEISAN * 1.01)  +  0.5
-      *@@@               END-IF
+                           WHEN  "2"
+                             COMPUTE  WRK-NYUKHNRYO  = 
+                                     (WRK-KEISAN * 1.01)  +  0.5
+                         END-EVALUATE
                   END-EVALUATE
                   EVALUATE   WRK-DAY2(IDY)
                      WHEN   ZERO
@@ -1272,13 +1320,14 @@
                          COMPUTE  WRK-KEISAN  =  WRK-KHNTEN
                                               -  WRK-MIJISI
                                               +  WRK-ACCT-KASAN(IDY)
-      *@@@               IF   @@@@@@
+                         EVALUATE  WRK-ROUNYUIN-JOUSU-KBN(IDY)
+                           WHEN  "1"
                             COMPUTE  WRK-KEISAN  = (WRK-KEISAN * 1.30)
                                                  +  0.5
-      *@@@               ELSE
-      *@@@                  COMPUTE  WRK-KEISAN  = (WRK-KEISAN * 1.01)
-      *@@@                                       +  0.5
-      *@@@               END-IF
+                           WHEN  "2"
+                            COMPUTE  WRK-KEISAN  = (WRK-KEISAN * 1.01)
+                                                 +  0.5
+                         END-EVALUATE
                          COMPUTE  WRK-NYUTOKRYO  =  WRK-KEISAN
                                                  +  WRK-KSNTEN
                        WHEN   1
@@ -1290,15 +1339,16 @@
                            COMPUTE  WRK-KEISAN =
                                  (WRK-KHNTEN   *  0.15)  +  0.5
                          END-IF
-                         COMPUTE    WRK-KEISAN =  WRK-KEISAN
-                                               +  WRK-ACCT-KASAN(IDY)
-      *@@@               IF   @@@@@@
+      *>                 COMPUTE    WRK-KEISAN =  WRK-KEISAN
+      *>                                       +  WRK-ACCT-KASAN(IDY)
+                         EVALUATE  WRK-ROUNYUIN-JOUSU-KBN(IDY)
+                           WHEN  "1"
                              COMPUTE  WRK-NYUTOKRYO  = 
                                      (WRK-KEISAN * 1.30)  +  0.5
-      *@@@               ELSE
-      *@@@                   COMPUTE  WRK-NYUTOKRYO  = 
-      *@@@                           (WRK-KEISAN * 1.01)  +  0.5
-      *@@@               END-IF
+                           WHEN  "2"
+                             COMPUTE  WRK-NYUTOKRYO  = 
+                                     (WRK-KEISAN * 1.01)  +  0.5
+                         END-EVALUATE
                          MOVE   1   TO   FLG-GAIHAKU
                        WHEN   2
                          IF   WRK-KHNTEN2  NOT =  ZERO
@@ -1308,15 +1358,16 @@
                            COMPUTE  WRK-KEISAN =
                                  (WRK-KHNTEN   *  0.3)  +  0.5
                          END-IF
-                         COMPUTE    WRK-KEISAN =  WRK-KEISAN
-                                               +  WRK-ACCT-KASAN(IDY)
-      *@@@               IF   @@@@@@
+      *>                 COMPUTE    WRK-KEISAN =  WRK-KEISAN
+      *>                                       +  WRK-ACCT-KASAN(IDY)
+                         EVALUATE  WRK-ROUNYUIN-JOUSU-KBN(IDY)
+                           WHEN  "1"
                              COMPUTE  WRK-NYUTOKRYO  = 
                                      (WRK-KEISAN * 1.30)  +  0.5
-      *@@@               ELSE
-      *@@@                   COMPUTE  WRK-NYUTOKRYO  = 
-      *@@@                           (WRK-KEISAN * 1.01)  +  0.5
-      *@@@               END-IF
+                           WHEN  "2"
+                             COMPUTE  WRK-NYUTOKRYO  = 
+                                     (WRK-KEISAN * 1.01)  +  0.5
+                         END-EVALUATE
                          MOVE   1   TO   FLG-GAIHAKU
                   END-EVALUATE
                   EVALUATE   WRK-DAY2(IDY)
