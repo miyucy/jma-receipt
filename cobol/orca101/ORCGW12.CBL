@@ -48,6 +48,7 @@
       *  02.00.10    NACL-太田    04/01/15  自費レセプト摘要欄記載区分追加
       *  02.00.11    NACL-藤原    04/02/18  社保ＯＣＲ区分の追加
       *  02.00.12    NACL-藤原    04/03/05  主病名編集フラグに区分を追加
+      *  02.00.13    NACL-藤原    04/03/29  続紙区分に縦形式（長）追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -152,13 +153,13 @@
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-NEXTPRTKBNMEI
-                                              PIC X(08).
+                                              PIC X(14).
                        09  SPA-GMN-NEXTPRTKBN1-G.
                            11  SPA-GMN-NEXTPRTKBN1
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-NEXTPRTKBN1MEI
-                                              PIC X(08).
+                                              PIC X(14).
                        09  SPA-GMN-RJNGNBKKBN-G.
                            11  SPA-GMN-RJNGNBKKBN
                                               PIC X(01).
@@ -254,21 +255,21 @@
                    07  SPA-GMN-RENNUMHENKBN-MAX
                                               PIC 9(02).    
       *                                        
-                   07  SPA-GMN-NEXTPRTKBNLST        OCCURS  2.
+                   07  SPA-GMN-NEXTPRTKBNLST        OCCURS  3.
                        09  SPA-GMN-NEXTPRTKBNL
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-NEXTPRTKBNMEIL
-                                              PIC X(10).
+                                              PIC X(14).
                    07  SPA-GMN-NEXTPRTKBN-MAX
                                               PIC 9(02).    
       *                                        
-                   07  SPA-GMN-NEXTPRTKBN1LST       OCCURS  3.
+                   07  SPA-GMN-NEXTPRTKBN1LST       OCCURS  4.
                        09  SPA-GMN-NEXTPRTKBN1L
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-NEXTPRTKBN1MEIL
-                                              PIC X(10).
+                                              PIC X(14).
                    07  SPA-GMN-NEXTPRTKBN1-MAX
                                               PIC 9(02).    
       *                                        
@@ -614,7 +615,9 @@
            MOVE    "横タイプ"          TO  SPA-GMN-NEXTPRTKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-NEXTPRTKBNL    (2)
            MOVE    "縦タイプ"          TO  SPA-GMN-NEXTPRTKBNMEIL (2)
-           MOVE    2                   TO  SPA-GMN-NEXTPRTKBN-MAX 
+           MOVE    "2"                 TO  SPA-GMN-NEXTPRTKBNL    (3)
+           MOVE    "縦タイプ（長）"    TO  SPA-GMN-NEXTPRTKBNMEIL (3)
+           MOVE    3                   TO  SPA-GMN-NEXTPRTKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-NEXTPRTKBN1L    (1)
            MOVE    "指定なし"          TO  SPA-GMN-NEXTPRTKBN1MEIL (1)
@@ -622,7 +625,9 @@
            MOVE    "横タイプ"          TO  SPA-GMN-NEXTPRTKBN1MEIL (2)
            MOVE    "2"                 TO  SPA-GMN-NEXTPRTKBN1L    (3)
            MOVE    "縦タイプ"          TO  SPA-GMN-NEXTPRTKBN1MEIL (3)
-           MOVE    3                   TO  SPA-GMN-NEXTPRTKBN1-MAX 
+           MOVE    "3"                 TO  SPA-GMN-NEXTPRTKBN1L    (4)
+           MOVE    "縦タイプ（長）"    TO  SPA-GMN-NEXTPRTKBN1MEIL (4)
+           MOVE    4                   TO  SPA-GMN-NEXTPRTKBN1-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-RJNGNBKKBNL    (1)
            MOVE    "社保、国保とも印刷不可"
