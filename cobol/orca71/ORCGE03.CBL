@@ -293,8 +293,13 @@
                                   MOVE    501
                                           TO  IDX1
                              NOT  AT  END
-                                  MOVE    EIE01-REC
-                                          TO  WK-TBL-RMSG (IDX1)
+                                  IF      EIE01-REC(1:8)  =  "SRYYM***"
+                                      MOVE    EIE01-REC(71:6)
+                                                 TO  WK-SRYYM-S
+                                  ELSE
+                                      MOVE    EIE01-REC
+                                                 TO  WK-TBL-RMSG (IDX1)
+                                  END-IF
                           END-READ
                       END-PERFORM
                END-READ
@@ -346,7 +351,7 @@
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
-                                       MCPDATA-REC.    
+                                       MCPDATA-REC.
       *
        T-001-TBLFETCH-01-EXT.
            EXIT.
@@ -358,79 +363,97 @@
            IF      WK-TBL-RMSG (IDX1)   =   SPACE
                MOVE    501                         TO  IDX1
            ELSE
-      *½¤Àµ/*³«»Ï*03.04.08*********************************************
-               IF      WK-TBL-RMSG (IDX1)(1:5)   =   "SRYYM"
-                   MOVE    WK-TBL-RMSG (IDX1)(71:6)    TO  WK-SRYYM-S
-               END-IF
-      *½¤Àµ/*½ªÎ»*03.04.08*********************************************
                MOVE    WK-TBL-RMSG (IDX1)(71:6)    TO  WK-STPNT
                MOVE    WK-TBL-RMSG (IDX1)(51:5)    TO  WK-KTPNT
                MOVE    WK-TBL-RMSG (IDX1)(61:5)    TO  WK-PTPNT
-      *
-               IF      WK-TBL-RMSG (IDX1)(31:4)  =   "char"
-                   MOVE    MCPDATA-REC(WK-STPNT:WK-KTPNT)
-                           TO  WK-EIECS-REC(IDX4:WK-KTPNT)
-                   COMPUTE       IDX4 = IDX4 + WK-KTPNT
-                   MOVE    ","
-                           TO  WK-EIECS-REC(IDX4:1)
-                   COMPUTE       IDX4 = IDX4 + 1
-               END-IF
-               IF       WK-TBL-RMSG (IDX1)(31:6)  =   "number"
-                   IF      WK-PTPNT     =   ZERO
-                       MOVE    MCPDATA-REC(WK-STPNT:WK-KTPNT)
-                               TO  WK-EIECS-REC(IDX4:WK-KTPNT)
-                       COMPUTE       IDX4 = IDX4 + WK-KTPNT
-                       MOVE    ","
-                               TO  WK-EIECS-REC(IDX4:1)
-                       COMPUTE       IDX4 = IDX4 + 1
-                   ELSE
-                       COMPUTE       WK-KTPNT = WK-KTPNT - WK-PTPNT
-                       MOVE    MCPDATA-REC(WK-STPNT:WK-KTPNT)
-                               TO  WK-EIECS-REC(IDX4:WK-KTPNT)
-                       COMPUTE       IDX4 = IDX4 + WK-KTPNT
-                       MOVE    "."
-                               TO  WK-EIECS-REC(IDX4:1)
-                       COMPUTE       IDX4 = IDX4 + 1
-                       COMPUTE       WK-STPNT = WK-STPNT + WK-KTPNT
-                       MOVE    MCPDATA-REC(WK-STPNT:WK-PTPNT)
-                               TO  WK-EIECS-REC(IDX4:WK-PTPNT)
-                       COMPUTE       IDX4 = IDX4 + WK-PTPNT
-                       MOVE    ","
-                               TO  WK-EIECS-REC(IDX4:1)
-                       COMPUTE       IDX4 = IDX4 + 1
+               IF      WK-SRYYM   =   ALL SPACE
+                   PERFORM T-001-TBLCNVAT-02-SEC
+               ELSE
+                   IF      ((WK-TBL-MSG (IDX2)(1:6) = "JYURRK")   AND
+                            (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))  OR
+                           ((WK-TBL-MSG (IDX2)(1:8) = "PTBYOMEI") AND
+                            (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))  OR
+                           ((WK-TBL-MSG (IDX2)(1:7) = "SRYACCT")  AND
+                            (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))  OR
+                           ((WK-TBL-MSG (IDX2)(1:6) = "SRYACT")   AND
+                            (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))  OR
+                           ((WK-TBL-MSG (IDX2)(1:8) = "WKSRYACT") AND
+                            (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))  OR
+                           ((WK-TBL-MSG (IDX2)(1:6) = "SANTEI")   AND
+                            (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))  OR
+                           ((WK-TBL-MSG (IDX2)(1:6) = "SEIKYU")   AND
+                            (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))  OR
+                           ((WK-TBL-MSG (IDX2)(1:5) = "BD002")    AND
+                            (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))
+                       PERFORM T-001-TBLCNVAT-02-SEC
                    END-IF
                END-IF
-               IF       WK-TBL-RMSG (IDX1)(31:7)  =   "varchar"
+           END-IF.
+      *
+       T-001-TBLCNVAT-01-EXT.
+           EXIT.
+      *
+      **********************
+      *
+       T-001-TBLCNVAT-02-SEC             SECTION.
+      *
+           IF      WK-TBL-RMSG (IDX1)(31:4)  =   "char"
+               MOVE    MCPDATA-REC(WK-STPNT:WK-KTPNT)
+                             TO  WK-EIECS-REC(IDX4:WK-KTPNT)
+               COMPUTE       IDX4 = IDX4 + WK-KTPNT
+               MOVE    ","   TO  WK-EIECS-REC(IDX4:1)
+               COMPUTE       IDX4 = IDX4 + 1
+           END-IF.
+           IF       WK-TBL-RMSG (IDX1)(31:6)  =   "number"
+               IF      WK-PTPNT     =   ZERO
                    MOVE    MCPDATA-REC(WK-STPNT:WK-KTPNT)
-                           TO  WK-EIECS-REC(IDX4:WK-KTPNT)
-                   MOVE    SPACE
-                           TO  WK-SPACE
-                   MOVE    IDX4
-                           TO  IDX7
+                                 TO  WK-EIECS-REC(IDX4:WK-KTPNT)
                    COMPUTE       IDX4 = IDX4 + WK-KTPNT
-                   PERFORM UNTIL   WK-SPACE  =   "*"
-                       IF      WK-EIECS-REC(IDX4:1)   =   SPACE
-                           COMPUTE       IDX4 = IDX4 - 1
-                       ELSE
-                           COMPUTE       IDX8 = IDX4 - 1
-                           IF      WK-EIECS-REC(IDX8:2)   =   "¡¡"
-                               COMPUTE       IDX4 = IDX4 - 2
-                           ELSE
-                               MOVE    "*"   TO  WK-SPACE
-                               COMPUTE       IDX4 = IDX4 + 1
-                           END-IF
-                       END-IF
-                       IF      IDX4   <   IDX7
-                           MOVE    IDX7   TO  IDX4
-                           MOVE    "*"    TO  WK-SPACE
-                       END-IF
-                   END-PERFORM
+                   MOVE    ","   TO  WK-EIECS-REC(IDX4:1)
+                   COMPUTE       IDX4 = IDX4 + 1
+               ELSE
+                   COMPUTE       WK-KTPNT = WK-KTPNT - WK-PTPNT
+                   MOVE    MCPDATA-REC(WK-STPNT:WK-KTPNT)
+                                 TO  WK-EIECS-REC(IDX4:WK-KTPNT)
+                   COMPUTE       IDX4 = IDX4 + WK-KTPNT
+                   MOVE    "."   TO  WK-EIECS-REC(IDX4:1)
+                   COMPUTE       IDX4 = IDX4 + 1
+                   COMPUTE       WK-STPNT = WK-STPNT + WK-KTPNT
+                   MOVE    MCPDATA-REC(WK-STPNT:WK-PTPNT)
+                                 TO  WK-EIECS-REC(IDX4:WK-PTPNT)
+                   COMPUTE       IDX4 = IDX4 + WK-PTPNT
                    MOVE    ","   TO  WK-EIECS-REC(IDX4:1)
                    COMPUTE       IDX4 = IDX4 + 1
                END-IF
-           END-IF.    
+           END-IF.
+           IF       WK-TBL-RMSG (IDX1)(31:7)  =   "varchar"
+               MOVE    MCPDATA-REC(WK-STPNT:WK-KTPNT)
+                               TO  WK-EIECS-REC(IDX4:WK-KTPNT)
+               MOVE    SPACE   TO  WK-SPACE
+               MOVE    IDX4    TO  IDX7
+               COMPUTE       IDX4 = IDX4 + WK-KTPNT
+               PERFORM UNTIL   WK-SPACE  =   "*"
+                   IF      WK-EIECS-REC(IDX4:1)   =   SPACE
+                       COMPUTE       IDX4 = IDX4 - 1
+                   ELSE
+                       COMPUTE       IDX8 = IDX4 - 1
+                       IF      WK-EIECS-REC(IDX8:2)   =   "¡¡"
+                           COMPUTE       IDX4 = IDX4 - 2
+                       ELSE
+                           MOVE    "*"   TO  WK-SPACE
+                           COMPUTE       IDX4 = IDX4 + 1
+                       END-IF
+                   END-IF
+                   IF      IDX4   <   IDX7
+                       MOVE    IDX7   TO  IDX4
+                       MOVE    "*"    TO  WK-SPACE
+                   END-IF
+               END-PERFORM
+               MOVE    ","   TO  WK-EIECS-REC(IDX4:1)
+               COMPUTE       IDX4 = IDX4 + 1
+           END-IF.
       *
-       T-001-TBLCNVAT-01-EXT.
+       T-001-TBLCNVAT-02-EXT.
            EXIT.
       *
       **********************
@@ -440,54 +463,11 @@
            COMPUTE       IDX4 = IDX4 - 1.
            MOVE    X"0A"                TO  WK-EIECS-REC(IDX4:1).
       *
-           IF      WK-SRYYM   =   SPACE
-               PERFORM VARYING IDX5   FROM   1   BY   1
-                       UNTIL   IDX5   >   IDX4
-                   MOVE    WK-EIECS-REC(IDX5:1)    TO  EIECS-REC
-                   WRITE   EIECS-REC
-               END-PERFORM
-           ELSE
-      *½¤Àµ/*³«»Ï*03.04.08*********************************************
-      *         IF      ((WK-TBL-MSG (IDX2)(1:6) = "JYURRK")
-      *             AND  (MCPDATA-REC(37:6) = WK-SRYYM))
-      *         OR      ((WK-TBL-MSG (IDX2)(1:8) = "PTBYOMEI")
-      *             AND  (MCPDATA-REC(37:6) = WK-SRYYM))
-      *         OR      ((WK-TBL-MSG (IDX2)(1:7) = "SRYACCT")
-      *             AND  (MCPDATA-REC(38:6) = WK-SRYYM))
-      *         OR      ((WK-TBL-MSG (IDX2)(1:6) = "SRYACT")
-      *             AND  (MCPDATA-REC(38:6) = WK-SRYYM))
-      *         OR      ((WK-TBL-MSG (IDX2)(1:8) = "WKSRYACT")
-      *             AND  (MCPDATA-REC(38:6) = WK-SRYYM))
-      *         OR      ((WK-TBL-MSG (IDX2)(1:6) = "SANTEI")
-      *             AND  (MCPDATA-REC(35:6) = WK-SRYYM))
-      *         OR      ((WK-TBL-MSG (IDX2)(1:6) = "SEIKYU")
-      *             AND  (MCPDATA-REC(25:6) = WK-SRYYM))
-      *         OR      ((WK-TBL-MSG (IDX2)(1:5) = "BD002")
-      *             AND  (MCPDATA-REC(47:6) = WK-SRYYM))
-               IF      ((WK-TBL-MSG (IDX2)(1:6) = "JYURRK")     AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:8) = "PTBYOMEI")   AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:7) = "SRYACCT")    AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:6) = "SRYACT")     AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:8) = "WKSRYACT")   AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:6) = "SANTEI")     AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:6) = "SEIKYU")     AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))     OR
-                       ((WK-TBL-MSG (IDX2)(1:5) = "BD002")      AND
-                        (MCPDATA-REC(WK-SRYYM-S:6) = WK-SRYYM))
-      *½¤Àµ/*½ªÎ»*03.04.08*********************************************
-                   PERFORM VARYING IDX5   FROM   1   BY   1
-                           UNTIL   IDX5   >   IDX4
-                       MOVE    WK-EIECS-REC(IDX5:1)    TO  EIECS-REC
-                       WRITE   EIECS-REC
-                   END-PERFORM
-               END-IF
-           END-IF. 
+           PERFORM VARYING IDX5   FROM   1   BY   1
+                   UNTIL   IDX5   >   IDX4
+               MOVE    WK-EIECS-REC(IDX5:1)    TO  EIECS-REC
+               WRITE   EIECS-REC
+           END-PERFORM.
       *
        T-001-WRITWRIT-01-EXT.
            EXIT.
