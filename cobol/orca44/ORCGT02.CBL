@@ -314,7 +314,10 @@
            IF      SPA-TID1-FLG    =   "OK"
                EVALUATE    SPA-TIDCD
                    WHEN    "6666"
+                       MOVE    SPACE           TO  SPA-TID1-FLG
+                       MOVE    SPACE           TO  SPA-TIDCD
                        PERFORM 210-BACK
+                       GO  TO  3002-TID1-SET-EXT
                END-EVALUATE        
            END-IF
       *
@@ -420,7 +423,7 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
-                   PERFORM 210-BACK
+                   PERFORM 210-BACK-MAE-SEC
       *    追加
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 420-TUIKA-SEC
@@ -790,34 +793,41 @@
        41004-SYORIFLG-CHK-SEC          SECTION.
       *
            MOVE    2                   TO  SPA-GMN-T02-CUR
-      *         
-           MOVE    T02-SYORIFLG        TO  SPA-GMN-T02-SYORIFLG-G
       *
-           EVALUATE    SPA-GMN-T02-SYORIFLG
-               WHEN    SPACE
-                   MOVE    SPACE           TO  SPA-GMN-T02-SYORIFLG-G
+           IF      SPA-NAI-T02-SELNUM1 =   ZERO
+               MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-T02-CUR
+           END-IF
+      *         
+           IF      SPA-ERRCD          =   SPACE
+               MOVE    T02-SYORIFLG        TO  SPA-GMN-T02-SYORIFLG-G
+      *
+               EVALUATE    SPA-GMN-T02-SYORIFLG
+                   WHEN    SPACE
+                       MOVE    SPACE       TO  SPA-GMN-T02-SYORIFLG-G
                                                SPA-GMN-T02-TSYORIFLG
                                                    (SPA-NAI-T02-SELNUM1)
-               WHEN    "1"
-                   MOVE    SPA-GMN-T02-SYORIFLGLST (1)
+                   WHEN    "1"
+                       MOVE    SPA-GMN-T02-SYORIFLGLST (1)
                                            TO  SPA-GMN-T02-SYORIFLG-G
                                                SPA-GMN-T02-TSYORIFLG
                                                    (SPA-NAI-T02-SELNUM1)
-               WHEN    OTHER
-                   MOVE    "0004"          TO  SPA-ERRCD
-           END-EVALUATE            
+                   WHEN    OTHER
+                       MOVE    "0004"          TO  SPA-ERRCD
+               END-EVALUATE            
       *
-           IF      SPA-ERRCD          =   SPACE
-               IF    ( SPA-GMN-T02-SYORIFLG   =   SPACE )
-               OR    ( SPA-GMN-T02-TPARAKBN (SPA-NAI-T02-SELNUM1)
-                                              =   SPACE )       
-                   INITIALIZE                     SPA-GMN-T02-KOUMOKU
+               IF      SPA-ERRCD          =   SPACE
+                   IF    ( SPA-GMN-T02-SYORIFLG   =   SPACE )
+                   OR    ( SPA-GMN-T02-TPARAKBN (SPA-NAI-T02-SELNUM1)
+                                                  =   SPACE )       
+                       INITIALIZE                 SPA-GMN-T02-KOUMOKU
                                                   SPA-NAI-T02-KOUMOKU
                                                   SPA-GMN-T02-PARA-TBL
                                                   SPA-NAI-T02-PARA-TBL 
-                   MOVE    1                      TO  SPA-GMN-T02-CUR
-               ELSE
-                   MOVE    3                      TO  SPA-GMN-T02-CUR
+                       MOVE    1                  TO  SPA-GMN-T02-CUR
+                   ELSE
+                       MOVE    3                  TO  SPA-GMN-T02-CUR
+                   END-IF
                END-IF
            END-IF
            .
@@ -903,14 +913,33 @@
            EXIT.
       *
       *****************************************************************
+      *    戻る前処理
+      *****************************************************************
+       210-BACK-MAE-SEC                 SECTION.
+      *
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >   SPA-GMN-T02-SHELLID-MAX
+               IF      SPA-GMN-T02-TSYORIFLG (IDX)  =   "1"
+                   MOVE    "6666"          TO  SPA-TIDCD
+                   GO  TO 210-BACK-MAE-EXT
+               END-IF
+           END-PERFORM
+      *
+           PERFORM 210-BACK
+           .
+       210-BACK-MAE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+      *
            MOVE    "T01"               TO  SPA-SAKIPG
            MOVE    "T02"               TO  SPA-MOTOPG
       *
-           MOVE   "JOIN"               TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
@@ -1530,20 +1559,8 @@
            MOVE    SPACE               TO  WRK-TIDMSG
       *
            EVALUATE    SPA-TIDCD
-               WHEN    "1012"
-                   MOVE    "集計表（社保）の印刷処理を行います"
-                                       TO  WRK-TIDMSG
-               WHEN    "1013"
-                   MOVE    "集計表（国保）の印刷処理を行います"
-                                       TO  WRK-TIDMSG
-               WHEN    "2001"
-                   MOVE    "媒体をドライブにセットして下さい"
-                                       TO  WRK-TIDMSG
                WHEN    "6666"
-                   MOVE    "印刷処理中です"
-                                            TO  WRK-TIDMSG
-               WHEN    "8888"
-                   MOVE    "処理が正常終了しました"
+                   MOVE    "入力途中です。処理を終了しますか"
                                             TO  WRK-TIDMSG
            END-EVALUATE
       *
@@ -1552,7 +1569,7 @@
            MOVE    WRK-TIDMSG           TO  TID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
       *
-           MOVE    "T01"                TO  SPA-MOTOPG
+           MOVE    "T02"                TO  SPA-MOTOPG
            MOVE    "TID1"               TO  SPA-SAKIPG
       *
            MOVE    "NEW"                TO  MCP-PUTTYPE
