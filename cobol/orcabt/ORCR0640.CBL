@@ -126,6 +126,7 @@
       *                                     ÉéÃ´¶â³Û¡Ê¹µ½ü³Û¡Ë¡¦
       *                                     °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñÉ¸½à
       *                                     ÉéÃ´³Û¶èÊ¬¤ÎÊÔ½¸
+      *  01.03.01    NACL-ÌçÏÆ    05/03/24  ¾®»ùÆÃÄê¾å¸ÂÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7048,6 +7049,8 @@
              OR  ((WRK-PREFNUM               =  "28"          )   AND
                   (RECE62-KOHNUM(KOHFTN-IDX) =  "186"         )   AND
                   (RECE62-SRYYM             >=  "200310"      ))
+             OR  ((RECE62-KOHNUM(KOHFTN-IDX) =  "052"         )   AND
+                  (RECE62-SRYYM             >=  "200504"      ))
       *
                 COMPUTE  WRK-FTNKEI2 = RECE62-FTNMONEY(KOHFTN-IDX + 1)
                                      + WRK-SKJ-FTN(KOHFTN-IDX + 1)
@@ -7164,6 +7167,21 @@
                    END-IF
       *
                  END-IF
+               END-IF
+      *
+             END-PERFORM
+      *
+           END-IF
+      *
+           IF    RECE62-SRYYM        >=  "200504"
+      *
+             PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
+                         UNTIL    KOHFTN-IDX     >    4
+      *
+               IF   RECE62-KOHNUM(KOHFTN-IDX) =  "052"
+                     MOVE  "1"   TO
+                             RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+      *
                END-IF
       *
              END-PERFORM

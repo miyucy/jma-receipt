@@ -198,6 +198,7 @@
       *                                     ÉéÃ´¶â³Û¡Ê¹µ½ü³Û¡Ë¡¦
       *                                     °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñÉ¸½à
       *                                     ÉéÃ´³Û¶èÊ¬¤ÎÊÔ½¸
+      *  01.06.01    NACL-ÌçÏÆ    05/03/24  ¾®»ùÆÃÄê¾å¸ÂÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5266,6 +5267,20 @@
                    END-IF
       *
                  END-IF
+               END-IF
+      *
+             END-PERFORM
+      *
+           END-IF
+      *
+           IF    RECE02-SRYYM        >=  "200504"
+      *
+             PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
+                         UNTIL    KOHFTN-IDX     >    4
+      *
+               IF   RECE02-KOHNUM(KOHFTN-IDX) =  "052"
+                     MOVE  "1"  TO
+                             RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                END-IF
       *
              END-PERFORM
