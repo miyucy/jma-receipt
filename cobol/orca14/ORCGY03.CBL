@@ -548,6 +548,7 @@
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDX-G
            MOVE    ZERO                TO  SPA-NAI-NEXT
+           MOVE    ZERO                TO  SPA-GMN-MAX
            PERFORM
                    UNTIL      (FLG-YYK     =   1   )
                          OR   (IDX         >   200 )
@@ -593,7 +594,6 @@
                                         MCPDATA-REC
                                         MCPDATA-REC
       *
-           MOVE    IDX             TO  SPA-GMN-MAX
       *
            PERFORM 3001-TBL-SORT-SEC
       *
@@ -618,6 +618,7 @@
                GO      TO      3101-YOYAKU-HEN-EXT
            END-IF
       *
+           MOVE    IDX             TO  SPA-GMN-MAX
       *****MOVE    IDX             TO  SPA-GMN-TBANGO  (IDX)
            MOVE    IDX-G           TO  SPA-GMN-TBANGO  (IDX)
            MOVE    YYK-KEYYYKTIME  TO  SPA-NAI-TKYYKTIME (IDX)
