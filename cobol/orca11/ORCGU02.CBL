@@ -1197,7 +1197,7 @@
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *            カルテ
-            PERFORM 4107-KARUTE-CHK-SEC
+           PERFORM 4107-KARUTE-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -2511,6 +2511,13 @@
       *    印刷のみ処理
       *****************************************************************
        495-PRINT-SEC             SECTION.
+      *
+           MOVE    1                   TO  FLG-TOUROKU
+      *    登録チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      495-PRINT-EXT
+           END-IF
       *
       *    帳票プログラム取得
            PERFORM 4901-PRINT-PG-SEC
