@@ -231,10 +231,10 @@ I04	{
 		};
 		CMB_DR	{
 			DR	{
-				value	varchar(27);
+				value	varchar(29);
 			};
 			count	int;
-			item	varchar(27)[10];
+			item	varchar(29)[10];
 		};
 		scrolledwindow1	{
 			HKNCOMBILST	{

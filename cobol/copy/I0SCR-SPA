@@ -107,7 +107,7 @@
                      15  SPA-GMN-I01-DR.
                        17  SPA-GMN-I01-DR-CD       PIC X(04).
                        17                          PIC X(01).
-                       17  SPA-GMN-I01-DR-NM       PIC X(22).
+                       17  SPA-GMN-I01-DR-NM       PIC X(24).
                      15  SPA-GMN-I01-DR-STT        PIC S9(9)   BINARY.
       *          保険組み合わせ
                  11  SPA-GMN-I01-HKNCOMBI.
@@ -277,7 +277,7 @@
                  11  SPA-GMN-I01-CMB-DR.
                    13 SPA-GMN-I01-CMB-DR-OCC       OCCURS  3.
                      15  SPA-GMN-I01-DR-CNT        PIC S9(9)   BINARY.
-                     15  SPA-GMN-I01-DR-ITM        PIC X(27)
+                     15  SPA-GMN-I01-DR-ITM        PIC X(29)
                                            OCCURS  50
                                            INDEXED BY  CMB-IDX06.
                      15  SPA-GMN-I01-DR-ITM-STT    PIC S9(9)   BINARY.
@@ -616,7 +616,7 @@
                            13   SPA-GMN-I04-DR-CD
                                                      PIC X(04).
                            13                        PIC X(01).
-                           13   SPA-GMN-I04-DR-NM    PIC X(22).
+                           13   SPA-GMN-I04-DR-NM    PIC X(24).
       *
       *            保険組み合わせリスト
                    09  SPA-GMN-I04-HKNCOMBILST.
@@ -691,7 +691,7 @@
       *                    主治医氏名
                        11  SPA-GMN-I04-CMB-DR.
                            13  SPA-GMN-I04-DR-CNT    PIC S9(9)   BINARY.
-                           13  SPA-GMN-I04-DR-ITM    PIC X(27)
+                           13  SPA-GMN-I04-DR-ITM    PIC X(29)
                                                      OCCURS  10
                                                INDEXED BY  CMB-IDX15.
       *  収納データ

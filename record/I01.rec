@@ -95,29 +95,29 @@ I01	{
 		};
 		CMB_DR1	{
 			DR1	{
-				value	varchar(27);
+				value	varchar(29);
 				state	int;
 			};
 			count	int;
-			item	varchar(27)[50];
+			item	varchar(29)[50];
 			state	int;
 		};
 		CMB_DR2	{
 			DR2	{
-				value	varchar(27);
+				value	varchar(29);
 				state	int;
 			};
 			count	int;
-			item	varchar(27)[50];
+			item	varchar(29)[50];
 			state	int;
 		};
 		CMB_DR3	{
 			DR3	{
-				value	varchar(27);
+				value	varchar(29);
 				state	int;
 			};
 			count	int;
-			item	varchar(27)[50];
+			item	varchar(29)[50];
 			state	int;
 		};
 		CMB_HKNCOMBI	{
