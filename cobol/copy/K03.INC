@@ -169,6 +169,6 @@
                 04  K03-YAKJYOFLG-ITEM    PIC X(18)   OCCURS  4 TIMES.
               03  K03-DRCDCOMBO.
                 04  K03-DRCD.
-                  05  K03-VALUE   PIC X(20).
+                  05  K03-VALUE   PIC X(27).
                 04  K03-DRCD-COUNT   PIC S9(9)   BINARY.
-                04  K03-DRCD-ITEM    PIC X(20)   OCCURS  10 TIMES.
+                04  K03-DRCD-ITEM    PIC X(27)   OCCURS  50 TIMES.
