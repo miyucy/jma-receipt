@@ -785,7 +785,7 @@
       *    保険変更後、訂正していないとき
       *    保険組合せがないとき
            IF      RECE40-TEISEIKBN     =   "1"
-               GO  TO  RECESYUBETU-SET-EXT
+               GO  TO  2101-RECESYUBETU-SET-EXT
            END-IF
       *
            EVALUATE  RECE41-HKNKBN  ALSO  RECE41-SAIGAIKBN
@@ -2242,6 +2242,7 @@
       *
                 PERFORM 500-ERR-HENSYU-SEC
                 MOVE    1               TO  FLG-END
+                GO  TO  900-SYSKANRI-HENSYU-EXT
               END-IF
       *
       *       労災自賠医療機関情報
@@ -2282,6 +2283,7 @@
                 END-STRING
                 PERFORM 500-ERR-HENSYU-SEC
                 MOVE    1               TO  FLG-END
+                GO  TO  900-SYSKANRI-HENSYU-EXT
               END-IF
            END-IF
       *
