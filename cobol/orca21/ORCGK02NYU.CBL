@@ -2705,6 +2705,8 @@
       *
                    IF     (SPA-COM-CUR (IDX-1) =   SPACE )  AND
                           (SPA-COM-CHKFLG (IDX-1)  =   "1"   )
+      *                コメントの全角チェックをする
+                     AND  (SPA-COM-MEIFLG (IDX-1)  =   SPACE )
                        MOVE    SPA-GMN-INPUTCD(IDX-1)
                                           TO  SPA-MAE-INPUTCD (IDX-1)
                    ELSE
