@@ -40,6 +40,7 @@
       *  01.02.06    NACL-多々納  03/03/14  特定薬剤治療管理料追加
       *  02.01.01    NACL-森脇    03/10/17  画面変更につき一括変更
       *  02.01.02    NACL-多々納  03/11/07  入院初診料追加
+      *  02.01.03    NACL-多々納  04/01/09  包括登録追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -106,6 +107,14 @@
                        09  SPA-GMN-GAIMOVE-COMB.
                            11  SPA-GMN-GAIMOVE-LIST        PIC X(22)
                                                            OCCURS  3.
+      *                包括まとめ
+                       09  SPA-GMN-HOUKATU-G.
+                           11  SPA-GMN-HOUKATU             PIC X(01).
+                           11  SPA-GMN-HOUKATU-F1          PIC X(01).
+                           11  SPA-GMN-HOUKATUMEI          PIC X(28).
+                       09  SPA-GMN-HOUKATU-COMB.
+                           11  SPA-GMN-HOUKATU-LIST        PIC X(30)
+                                                           OCCURS  2.
                    07  SPA-GMN-PAGE2-AREA.
       *                カルテの病名対象
                        09  SPA-GMN-BYOMEIKBN-G.
@@ -430,6 +439,13 @@
            MOVE    "1 保険組合せ"      TO  SPA-GMN-GAIMOVE-LIST(2)
            MOVE    "2 診療科"          TO  SPA-GMN-GAIMOVE-LIST(3)
       *
+      *
+           MOVE    "0 包括まとめ入力をしない"
+                                       TO  SPA-GMN-HOUKATU-LIST(1)
+           MOVE    "1 包括まとめ入力をする"
+                                       TO  SPA-GMN-HOUKATU-LIST(2)
+      *
+      *
            MOVE    "0 すべての病名"    TO  SPA-GMN-BYOMEIKBN-LIST(1)
            MOVE    "1 継続病名のみ"    TO  SPA-GMN-BYOMEIKBN-LIST(2)
       *
@@ -531,6 +547,10 @@
       *        入院初診料自動発生
                MOVE    SYS-1008-NYU-SYOSIN
                                        TO  SPA-GMN-NYUSYOSIN
+      *
+      *        包括まとめ
+               MOVE    SYS-1008-HOUKATU-FLG
+                                       TO  SPA-GMN-HOUKATU
            END-IF
       *
       *    入院初診料
@@ -585,6 +605,22 @@
                 WHEN    OTHER
                     MOVE    SPA-GMN-GAIKANRIKBN-LIST(1)
                                                TO  SPA-GMN-GAIKANRIKBN-G
+            END-EVALUATE
+      *
+      *    包括まとめ
+           IF      SPA-GMN-HOUKATU    =   SPACE
+               MOVE    "0"            TO  SPA-GMN-HOUKATU
+           END-IF
+           EVALUATE    SPA-GMN-HOUKATU
+                WHEN    "0"
+                    MOVE    SPA-GMN-HOUKATU-LIST(1)
+                                               TO  SPA-GMN-HOUKATU-G
+                WHEN    "1"
+                    MOVE    SPA-GMN-HOUKATU-LIST(2)
+                                               TO  SPA-GMN-HOUKATU-G
+                WHEN    OTHER
+                    MOVE    SPA-GMN-HOUKATU-LIST(1)
+                                               TO  SPA-GMN-HOUKATU-G
             END-EVALUATE
       *
       *     診療科コードセット
@@ -744,6 +780,8 @@
            MOVE    W07-GAIKANKBN       TO  SPA-GMN-GAIKANRIKBN-G
            MOVE    W07-GAIMOVE         TO  SPA-GMN-GAIMOVE-G
       *
+           MOVE    W07-HOUKATU         TO  SPA-GMN-HOUKATU-G
+      *
       *    患者登録情報
            MOVE    W07-BYOMEIKBN       TO  SPA-GMN-BYOMEIKBN-G
            MOVE    W07-JISYOKBN        TO  SPA-GMN-JISYOKBN-G
@@ -788,6 +826,11 @@
                    END-IF
       *            外来カーソル移動チェック
                    PERFORM 4103-GAIMOVE-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+      *            包括入力チェック
+                   PERFORM 4103-HOUKATU-CHK-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                        GO      TO      4102-KIHON-CHK-EXT
                    END-IF
@@ -985,6 +1028,32 @@
       *
           .
        4103-GAIMOVE-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来カーソル移動チェック処理
+      *****************************************************************
+       4103-HOUKATU-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               IF      SPA-GMN-HOUKATU
+                                      =   SPA-GMN-HOUKATU-LIST(IDX)
+                                                                (1:1)
+                   MOVE    SPA-GMN-HOUKATU-LIST(IDX)
+                                          TO  SPA-GMN-HOUKATU-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    14              TO  SPA-GMN-CUR
+               MOVE    "0014"          TO  SPA-ERRCD
+               GO      TO      4103-HOUKATU-CHK-EXT
+           END-IF
+      *
+          .
+       4103-HOUKATU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1339,6 +1408,8 @@
            MOVE    SPA-GMN-GAIMOVE         TO  SYS-1008-GAI-CURSOR-SET-1
       *    入院初診料自動発生
            MOVE    SPA-GMN-NYUSYOSIN       TO  SYS-1008-NYU-SYOSIN
+      *    包括入力
+           MOVE    SPA-GMN-HOUKATU         TO  SYS-1008-HOUKATU-FLG
       *
            MOVE    SYS-1008-REC            TO  SYSKANRI-REC
       *     
@@ -1534,6 +1605,15 @@
            END-PERFORM
            MOVE    3                   TO  W07-GAIMOVE-COUNT
       *
+      *    包括入力
+           MOVE    SPA-GMN-HOUKATU-G       TO  W07-HOUKATU
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN-HOUKATU-LIST (IDX)
+                                       TO  W07-HOUKATU-ITEM(IDX)
+           END-PERFORM
+           MOVE    2                   TO  W07-HOUKATU-COUNT
+      *
       *    カルテの病名対象
            MOVE    SPA-GMN-BYOMEIKBN-G     TO  W07-BYOMEIKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1650,6 +1730,9 @@
                                                        TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "入院初診料入力エラー"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE    "包括登録入力エラー"
                                                        TO  SPA-ERRMSG
       *
                WHEN    "0020"
@@ -1770,6 +1853,8 @@
                    MOVE  "GAIKANKBN"       TO   MCP-WIDGET
                WHEN    12
                    MOVE  "GAIMOVE"         TO   MCP-WIDGET
+               WHEN    14
+                   MOVE  "HOUKATU"         TO   MCP-WIDGET
       *
                WHEN    20
                    MOVE  "BYOMEIKBN"       TO   MCP-WIDGET
@@ -1828,6 +1913,8 @@
                WHEN    "GAIKANKBN"
                    MOVE    12              TO  SPA-GMN-CUR
                WHEN    "GAIMOVE"
+                   MOVE    14              TO  SPA-GMN-CUR
+               WHEN    "HOUKATU"
                    MOVE    99              TO  SPA-GMN-CUR
       *        患者登録情報
                WHEN    "BYOMEIKBN"

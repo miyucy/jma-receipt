@@ -92,6 +92,13 @@ W07	{
 					count	int;
 					item	varchar(22)[3];
 				};
+				HOUKATU_COMBO	{
+					HOUKATU	{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[2];
+				};
 			};
 			TAGNAME1    {
 			    state   int;
