@@ -5,13 +5,9 @@
   <name>O01</name>
   <program_name>O01</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -29,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 22 Dec 2000 05:08:28 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -187,7 +183,18 @@
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
-      <label></label>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F8</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 06 Dec 2002 05:18:38 GMT</last_modification_time>
+      </signal>
+      <label>°ì³ç¡¿¸ÄÊÌ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -245,7 +252,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 05:02:40 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>¾ðÊóºï½ü</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -268,17 +275,40 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 05:03:32 GMT</last_modification_time>
       </signal>
-      <label>ÅÐÏ¿</label>
+      <label>³ÎÄê</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B13</name>
+      <x>935</x>
+      <y>695</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F12</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 22 Dec 2000 05:02:40 GMT</last_modification_time>
+      </signal>
+      <label>½èÍý·ë²Ì</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkPandaEntry</class>
       <name>SEIYM</name>
-      <x>250</x>
-      <y>110</y>
-      <width>78</width>
-      <height>26</height>
+      <x>340</x>
+      <y>104</y>
+      <width>104</width>
+      <height>24</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
@@ -301,28 +331,137 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label01</name>
-      <x>155</x>
-      <y>110</y>
-      <width>60</width>
+      <class>GtkRadioButton</class>
+      <name>IKKATU</name>
+      <x>128</x>
+      <y>104</y>
+      <width>104</width>
+      <height>26</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Thu, 05 Dec 2002 07:03:39 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 05 Dec 2002 07:03:57 GMT</last_modification_time>
+      </signal>
+      <label>°ì³çºîÀ®</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>PRTKBN</group>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>KOBETU</name>
+      <x>128</x>
+      <y>448</y>
+      <width>104</width>
+      <height>26</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Thu, 05 Dec 2002 07:06:24 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 05 Dec 2002 07:06:51 GMT</last_modification_time>
+      </signal>
+      <label>¸ÄÊÌºîÀ®</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>PRTKBN</group>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHK_KIKAN01</name>
+      <x>200</x>
+      <y>224</y>
+      <width>45</width>
       <height>24</height>
-      <label>ÀÁµáÇ¯·î</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Tue, 20 Aug 2002 01:25:14 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<after>True</after>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 20 Aug 2002 01:25:42 GMT</last_modification_time>
+      </signal>
+      <label>£±´ü</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHK_KIKAN02</name>
+      <x>200</x>
+      <y>264</y>
+      <width>45</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Tue, 20 Aug 2002 01:26:20 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<after>True</after>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 20 Aug 2002 01:26:59 GMT</last_modification_time>
+      </signal>
+      <label>£²´ü</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHK_KIKAN03</name>
+      <x>200</x>
+      <y>304</y>
+      <width>45</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Tue, 20 Aug 2002 01:27:27 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<after>True</after>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 20 Aug 2002 01:27:53 GMT</last_modification_time>
+      </signal>
+      <label>£³´ü</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
     </widget>
 
     <widget>
       <class>GtkPandaEntry</class>
       <name>KIKAN01</name>
-      <x>248</x>
-      <y>180</y>
+      <x>256</x>
+      <y>224</y>
       <width>150</width>
-      <height>24</height>
+      <height>25</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
@@ -347,8 +486,8 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>KIKAN02</name>
-      <x>250</x>
-      <y>250</y>
+      <x>256</x>
+      <y>264</y>
       <width>150</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -375,8 +514,8 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>KIKAN03</name>
-      <x>250</x>
-      <y>320</y>
+      <x>256</x>
+      <y>304</y>
       <width>150</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -401,128 +540,64 @@
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKBUTON05</name>
-      <x>75</x>
+      <class>GtkLabel</class>
+      <name>label01</name>
+      <x>264</x>
+      <y>108</y>
+      <width>54</width>
+      <height>18</height>
+      <label>ÀÁµáÇ¯·î</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>176</x>
+      <y>200</y>
+      <width>270</width>
+      <height>1</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator3</name>
+      <x>10</x>
       <y>420</y>
-      <width>90</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Tue, 20 Aug 2002 01:28:29 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 20 Aug 2002 01:28:53 GMT</last_modification_time>
-      </signal>
-      <label>  ¸ÄÊÌºîÀ®</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <width>1000</width>
+      <height>16</height>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKBUTON01</name>
-      <x>75</x>
-      <y>40</y>
-      <width>90</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Tue, 20 Aug 2002 01:24:00 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 20 Aug 2002 01:24:29 GMT</last_modification_time>
-      </signal>
-      <label>  °ì³çºîÀ®</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <class>GtkHSeparator</class>
+      <name>hseparator2</name>
+      <x>176</x>
+      <y>370</y>
+      <width>270</width>
+      <height>1</height>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKBUTON02</name>
-      <x>185</x>
-      <y>180</y>
-      <width>45</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Tue, 20 Aug 2002 01:25:14 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 20 Aug 2002 01:25:42 GMT</last_modification_time>
-      </signal>
-      <label>£±´ü</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <class>GtkVSeparator</class>
+      <name>vseparator2</name>
+      <x>446</x>
+      <y>200</y>
+      <width>1</width>
+      <height>170</height>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKBUTON03</name>
-      <x>185</x>
-      <y>250</y>
-      <width>45</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Tue, 20 Aug 2002 01:26:20 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 20 Aug 2002 01:26:59 GMT</last_modification_time>
-      </signal>
-      <label>£²´ü</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKBUTON04</name>
-      <x>185</x>
-      <y>320</y>
-      <width>45</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Tue, 20 Aug 2002 01:27:27 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 20 Aug 2002 01:27:53 GMT</last_modification_time>
-      </signal>
-      <label>£³´ü</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <class>GtkVSeparator</class>
+      <name>vseparator1</name>
+      <x>176</x>
+      <y>200</y>
+      <width>1</width>
+      <height>170</height>
     </widget>
   </widget>
 </widget>
