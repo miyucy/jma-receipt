@@ -39,6 +39,7 @@
       *  01.00.10    NACL-¬ø°π«º  03/03/05  «”¬æ¿©∏ÊΩËÕ˝ƒ…≤√
       *  01.00.11    NACL-¬ø°π«º  03/04/30  º´»Ò ‘Ω∏Ω§¿µ
       *  01.00.12    NACL-¬ø°π«º  03/05/13  º´«Â¿’§Œπ¯…Ù∏«ƒÍ¬”≤√ªªΩ§¿µ
+      *  01.00.13    NACL-¬ø°π«º  03/08/25   °≤¨∏©√œ ˝∏¯»Ò¬–±˛
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -213,6 +214,10 @@
       *
       *    £”£–£¡∆‚»÷πÊ
            03  IDX-NAI             PIC 9(04).
+      *
+      *     °≤¨∏©¬–±˛Õ—
+           03  IDX-SYU             PIC 9(04).
+           03  IDX-SYU2            PIC 9(04).
       *
       *    ∞Ïª˛ŒŒ∞Ë
        01  WRK-AREA.
@@ -453,6 +458,11 @@
       *
       *    «”¬æ¿©∏Ê•µ•÷•—•È•·•ø
            COPY    "CPORCSLOCK.INC".
+      *
+      * °≤¨∏©¬–±˛Õ—
+      *    µÎ…’¬–æ›≥∞≈¿øÙ ‘Ω∏•µ•÷•—•È•·•ø
+           COPY    "CPORCSSYU40.INC".
+      *
       *
       *    £”£–£¡•—•È•·•ø° ORCSC97.CBL Õ—§ŒDAMMY)
        01  SPA-SCR-REC.
@@ -2441,6 +2451,14 @@
                PERFORM 45053-SENINFLG-SET-SEC
            END-IF
       *
+      * °≤¨∏©∏¯»Ò¬–±˛
+      *     °≤¨∏©§«°¢∞Ï»Ã ›∏±ªªƒÍª˛
+           IF     (SPA-PREFNUM         =   40   )  AND
+                  (SPA-HKNKBN          =   ZERO )
+               PERFORM 45054-PREFNUM-40-SEC
+           END-IF
+      *
+      *
       *****CALL    "ORCS01NEW"         USING   MCPAREA
            CALL    "ORCS01"            USING   MCPAREA
                                                LNK-ORCS01-REC
@@ -2656,6 +2674,71 @@
            END-IF
            .
        45053-SENINFLG-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     °≤¨∏©∏¯»Ò¬–±˛ΩËÕ˝
+      *****************************************************************
+       45054-PREFNUM-40-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  IDX-SYU
+           MOVE    ZERO                TO  IDX-SYU2
+           INITIALIZE                  ORCSSYU40AREA
+           MOVE    "1"                 TO  ORCS40-KBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   LNK-WKSRYACT-MAX )  OR
+                              (IDX-SYU >=  5                )
+      *        ∫ﬁÀË§À•Ø•Í•¢§π§Î
+               IF     (IDX                 >   1    )  AND
+                      (LNK-WKSRY-ZAINUM (IDX) NOT =
+                                           LNK-WKSRY-ZAINUM (IDX - 1))
+                   MOVE    ZERO            TO  IDX-SYU2
+               END-IF
+      *
+      *        ΩÈø«°¶±˝ø«°¢æÆª˘≤ ≥∞ÕËø«ª°Œ¡§ŒΩÈø«ª˛
+               IF     (LNK-WKSRY-SRYKBN (IDX)  =   "11"
+                                               OR  "14" )  OR
+                     ((SPA-SYONIKA-ARI         =   1    )  AND
+                      (SPA-SYOSIN              =   1    )  AND
+                      (LNK-WKSRY-SRYKBN (IDX)  =   "13"
+                                               OR  "99"  ))
+      *            œ¢»÷§¨£±§Œª˛°¢•∆°º•÷•Î ‘Ω∏
+                   IF      LNK-WKSRY-RENNUM (IDX)  =   1
+                       ADD     1                   TO  IDX-SYU
+                       MOVE    LNK-WKSRY-SRYKBN (IDX)  TO  ORCS40-SRYKBN
+                                                           (IDX-SYU)
+                   END-IF
+                   MOVE    LNK-WKSRY-ZAITENKEI (IDX)   TO  ORCS40-ZAITEN
+                                                           (IDX-SYU)
+      *            ø«Œ≈∆‚Õ∆ ‘Ω∏
+                   PERFORM VARYING     IDS     FROM    1   BY  1
+                           UNTIL      (IDS         >   5   )  OR
+                                      (LNK-WKSRY-SRYCD(IDX IDS)
+                                                   =   SPACE )  OR
+                                      (IDX-SYU2    >=  5     )
+                       IF     (LNK-WKSRY-SRYCD(IDX IDS)(1:1) =   "1") OR
+                              (LNK-WKSRY-SRYCD(IDX IDS) =   "099134001")
+                            ADD     1              TO  IDX-SYU2
+                            MOVE    LNK-WKSRY-SRYCD(IDX IDS)
+                                                   TO  ORCS40-SRYCD
+                                                     (IDX-SYU IDX-SYU2)
+                       END-IF
+                   END-PERFORM
+      *
+               END-IF
+           END-PERFORM
+      *
+      *    ¬–æ›§¨§¢§√§øæÏπÁ
+           IF      IDX-SYU             >   ZERO
+      *        µÎ…’¬–æ›≥∞≈¿øÙ ‘Ω∏
+               CALL    "ORCSSYU40"     USING
+                                       SPA-AREA
+                                       ORCSSYU40AREA
+                                       SYUNOU-REC
+           END-IF
+      *
+           .
+       45054-PREFNUM-40-EXT.
            EXIT.
       *
       *****************************************************************
