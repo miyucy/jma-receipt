@@ -1,5 +1,5 @@
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/copy/CPCOMMONSHELL.INC jma-receipt-0.9.38/cobol/copy/CPCOMMONSHELL.INC
---- jma-receipt/cobol/copy/CPCOMMONSHELL.INC	Thu Oct 17 06:06:10 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/cobol/copy/CPCOMMONSHELL.INC jma-receipt-0.9.38/cobol/copy/CPCOMMONSHELL.INC
+--- jma-receipt/cobol/copy/CPCOMMONSHELL.INC	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/cobol/copy/CPCOMMONSHELL.INC	Thu Oct 17 00:56:08 2002
 @@ -29,22 +29,22 @@
             03  SHELL-NAME.
@@ -32,8 +32,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/copy/CPCOMMONSHELL.IN
        *******05  SHELL-DEF          PIC  X(10).
               05  SHELL-DEF          PIC  X(50).
               05  FILLER             PIC  X(01) VALUE SPACE.
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/copy/CPCOMMONSHELL1.INC jma-receipt-0.9.38/cobol/copy/CPCOMMONSHELL1.INC
---- jma-receipt/cobol/copy/CPCOMMONSHELL1.INC	Wed Sep 25 20:14:28 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/cobol/copy/CPCOMMONSHELL1.INC jma-receipt-0.9.38/cobol/copy/CPCOMMONSHELL1.INC
+--- jma-receipt/cobol/copy/CPCOMMONSHELL1.INC	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/cobol/copy/CPCOMMONSHELL1.INC	Thu Oct 17 00:57:11 2002
 @@ -36,8 +36,8 @@
         01  SHELL-AREA.
@@ -46,8 +46,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/copy/CPCOMMONSHELL1.I
               05  SHELL-SHELL        PIC  X(30).
             03  SHELL-ARG1.
               05  SHELL-SRYYM        PIC  X(06).
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/copy/CPCOMMONSHELL4.INC jma-receipt-0.9.38/cobol/copy/CPCOMMONSHELL4.INC
---- jma-receipt/cobol/copy/CPCOMMONSHELL4.INC	Wed Sep  4 16:00:29 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/cobol/copy/CPCOMMONSHELL4.INC jma-receipt-0.9.38/cobol/copy/CPCOMMONSHELL4.INC
+--- jma-receipt/cobol/copy/CPCOMMONSHELL4.INC	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/cobol/copy/CPCOMMONSHELL4.INC	Thu Oct 17 00:59:05 2002
 @@ -25,22 +25,22 @@
        *****************************************************************
@@ -80,8 +80,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/copy/CPCOMMONSHELL4.I
                 05  SHELL-DEF          PIC  X(50).
                 05  FILLER             PIC  X(27) VALUE SPACE.
             03  SHELL-ARG4.
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/copy/CPCOMMONSHELLMST.INC jma-receipt-0.9.38/cobol/copy/CPCOMMONSHELLMST.INC
---- jma-receipt/cobol/copy/CPCOMMONSHELLMST.INC	Wed Sep  4 16:00:29 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/cobol/copy/CPCOMMONSHELLMST.INC jma-receipt-0.9.38/cobol/copy/CPCOMMONSHELLMST.INC
+--- jma-receipt/cobol/copy/CPCOMMONSHELLMST.INC	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/cobol/copy/CPCOMMONSHELLMST.INC	Thu Oct 17 01:00:15 2002
 @@ -31,8 +31,8 @@
        *****************************************************************
@@ -94,8 +94,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/copy/CPCOMMONSHELLMST
                 05  SHELL-SHELL        PIC  X(17).
                 05  FILLER             PIC  X(51) VALUE SPACE.
             03  SHELL-ARG1.
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/copy/CPHOMEDIR.INC jma-receipt-0.9.38/cobol/copy/CPHOMEDIR.INC
---- jma-receipt/cobol/copy/CPHOMEDIR.INC	Fri Oct 18 18:16:14 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/cobol/copy/CPHOMEDIR.INC jma-receipt-0.9.38/cobol/copy/CPHOMEDIR.INC
+--- jma-receipt/cobol/copy/CPHOMEDIR.INC	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/cobol/copy/CPHOMEDIR.INC	Thu Oct 17 00:54:54 2002
 @@ -25,8 +25,8 @@
        ************************************************************
@@ -108,8 +108,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/copy/CPHOMEDIR.INC jm
 -               "/usr/local/orca/".
 +               "/usr/lib/jma-receipt/site-lib/".
        *
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/copy/K02.INC jma-receipt-0.9.38/cobol/copy/K02.INC
---- jma-receipt/cobol/copy/K02.INC	Fri Oct 18 18:16:15 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/cobol/copy/K02.INC jma-receipt-0.9.38/cobol/copy/K02.INC
+--- jma-receipt/cobol/copy/K02.INC	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/cobol/copy/K02.INC	Fri Oct 18 17:55:16 2002
 @@ -45,8 +45,9 @@
                  04  K02-VALUE   PIC X(22).
@@ -123,16 +123,16 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/copy/K02.INC jma-rece
                03  K02-NENREI.
                  04  K02-VALUE   PIC X(6).
                03  K02-ZAITENTOTAL.
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/copy/K08.INC jma-receipt-0.9.38/cobol/copy/K08.INC
---- jma-receipt/cobol/copy/K08.INC	Wed Sep  4 16:00:28 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/cobol/copy/K08.INC jma-receipt-0.9.38/cobol/copy/K08.INC
+--- jma-receipt/cobol/copy/K08.INC	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/cobol/copy/K08.INC	Fri Oct 18 17:48:54 2002
 @@ -79,3 +79,4 @@
                      06  K08-DELFLG    PIC X(4).
                      06  K08-MEISAI    PIC X(150).
                    05  K08-SELECT  PIC X       OCCURS  300 TIMES.
 +                  05  K08-MEI-STYLE   PIC X(20).
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/orca21/ORCGK02.CBL jma-receipt-0.9.38/cobol/orca21/ORCGK02.CBL
---- jma-receipt/cobol/orca21/ORCGK02.CBL	Fri Oct 18 18:16:18 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/cobol/orca21/ORCGK02.CBL jma-receipt-0.9.38/cobol/orca21/ORCGK02.CBL
+--- jma-receipt/cobol/orca21/ORCGK02.CBL	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/cobol/orca21/ORCGK02.CBL	Fri Oct 18 17:50:48 2002
 @@ -2434,11 +2434,6 @@
             MOVE    ZERO                TO  SPA-GMN-MAX
@@ -167,8 +167,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/orca21/ORCGK02.CBL jm
        *
             .
         5002-SURYO-HEN-EXT.
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/orca21/ORCGK08.CBL jma-receipt-0.9.38/cobol/orca21/ORCGK08.CBL
---- jma-receipt/cobol/orca21/ORCGK08.CBL	Thu Sep 26 15:12:01 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/cobol/orca21/ORCGK08.CBL jma-receipt-0.9.38/cobol/orca21/ORCGK08.CBL
+--- jma-receipt/cobol/orca21/ORCGK08.CBL	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/cobol/orca21/ORCGK08.CBL	Fri Oct 18 17:50:48 2002
 @@ -2453,6 +2453,7 @@
        **** END-IF
@@ -178,8 +178,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/orca21/ORCGK08.CBL jm
             PERFORM   VARYING   IDX     FROM    1   BY  1
                       UNTIL     IDX         >   SPA-GMN-MAX
        *********MOVE    SPA-GMN-TMEISYO (IDX)   TO  K08-ITEM(IDX)
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/orcabt/ORCR0030.CBL jma-receipt-0.9.38/cobol/orcabt/ORCR0030.CBL
---- jma-receipt/cobol/orcabt/ORCR0030.CBL	Fri Oct 18 18:16:19 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/cobol/orcabt/ORCR0030.CBL jma-receipt-0.9.38/cobol/orcabt/ORCR0030.CBL
+--- jma-receipt/cobol/orcabt/ORCR0030.CBL	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/cobol/orcabt/ORCR0030.CBL	Fri Oct 18 17:50:48 2002
 @@ -628,6 +628,11 @@
                 PERFORM     210-HENSYU-SEC
@@ -229,10 +229,10 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/orcabt/ORCR0030.CBL j
 +           EXIT.
 +      *      
 +      *****************************************************************
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/orcabt/ORCR0100.CBL jma-receipt-0.9.38/cobol/orcabt/ORCR0100.CBL
---- jma-receipt/cobol/orcabt/ORCR0100.CBL	Fri Oct 18 18:16:19 2002
-+++ jma-receipt-0.9.38/cobol/orcabt/ORCR0100.CBL	Fri Oct 18 17:50:48 2002
-@@ -841,6 +841,11 @@
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/cobol/orcabt/ORCR0100.CBL jma-receipt-0.9.38/cobol/orcabt/ORCR0100.CBL
+--- jma-receipt/cobol/orcabt/ORCR0100.CBL	Thu Oct 24 14:28:59 2002
++++ jma-receipt-0.9.38/cobol/orcabt/ORCR0100.CBL	Thu Oct 24 14:34:33 2002
+@@ -843,6 +843,11 @@
                         PERFORM 2001-SYORI-SEC
        *
                         PERFORM 990-RECE02-READ-SEC
@@ -244,7 +244,7 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/orcabt/ORCR0100.CBL j
                     END-PERFORM
                 END-PERFORM    
             END-PERFORM
-@@ -3681,3 +3686,31 @@
+@@ -3692,3 +3697,31 @@
             .
         900-DBCLOSE-EXT.
             EXIT.
@@ -276,8 +276,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/cobol/orcabt/ORCR0100.CBL j
 +       900-DBSTART-EXT.
 +           EXIT.
 +      *      
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/doc/orcarc jma-receipt-0.9.38/doc/orcarc
---- jma-receipt/doc/orcarc	Wed Sep  4 16:01:43 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/doc/orcarc jma-receipt-0.9.38/doc/orcarc
+--- jma-receipt/doc/orcarc	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/doc/orcarc	Thu Oct 17 01:06:24 2002
 @@ -62,3 +62,7 @@
  	fontset = "-misc-fixed-medium-r-normal-*-14-*-*-*-*-*-*-*"
@@ -287,8 +287,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/doc/orcarc jma-receipt-0.9.
 + 	fontset = "-misc-fixed-medium-r-normal-*-14-*-*-*-c-*-*-*"
 + 	fg[NORMAL] = { 0.0, 0.0, 0.0}
 +}
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/etc/dbgroup.inc jma-receipt-0.9.38/etc/dbgroup.inc
---- jma-receipt/etc/dbgroup.inc	Wed Sep  4 16:01:43 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/etc/dbgroup.inc jma-receipt-0.9.38/etc/dbgroup.inc
+--- jma-receipt/etc/dbgroup.inc	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/etc/dbgroup.inc	Thu Oct 17 01:06:24 2002
 @@ -10,8 +10,8 @@
   priority 100;
@@ -301,8 +301,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/etc/dbgroup.inc jma-receipt
  };
  db_group "shell" {
   type "shell";
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/etc/jma-receipt.env.in jma-receipt-0.9.38/etc/jma-receipt.env.in
---- jma-receipt/etc/jma-receipt.env.in	Fri Oct  4 20:29:00 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/etc/jma-receipt.env.in jma-receipt-0.9.38/etc/jma-receipt.env.in
+--- jma-receipt/etc/jma-receipt.env.in	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/etc/jma-receipt.env.in	Thu Oct 17 00:26:57 2002
 @@ -26,4 +26,4 @@
  SITESCREENDIR=${SITEDIR}/screen
@@ -310,8 +310,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/etc/jma-receipt.env.in jma-
  
 -DBSTUB=/usr/local/panda/bin/dbstub
 +DBSTUB=/usr/lib/panda/sbin/dbstub
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/init/orca-db-create.sh jma-receipt-0.9.38/init/orca-db-create.sh
---- jma-receipt/init/orca-db-create.sh	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/init/orca-db-create.sh jma-receipt-0.9.38/init/orca-db-create.sh
+--- jma-receipt/init/orca-db-create.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/init/orca-db-create.sh	Thu Oct 17 01:06:24 2002
 @@ -1,6 +1,6 @@
  #! /bin/sh
@@ -321,8 +321,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/init/orca-db-create.sh jma-
  PATH=$PATH:/usr/lib/postgresql/bin
  
  if su - postgres -c 'psql template1 -l|grep orca'
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/init/orca-db-install.sh jma-receipt-0.9.38/init/orca-db-install.sh
---- jma-receipt/init/orca-db-install.sh	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/init/orca-db-install.sh jma-receipt-0.9.38/init/orca-db-install.sh
+--- jma-receipt/init/orca-db-install.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/init/orca-db-install.sh	Thu Oct 17 01:06:24 2002
 @@ -1,9 +1,10 @@
  #!/bin/bash
@@ -355,8 +355,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/init/orca-db-install.sh jma
  FTP=ftp.orca.med.or.jp/pub/orca_data/
  #FTP=beta:inisalo@ftp.orca.med.or.jp/pub/orca_data/
  
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/directory jma-receipt-0.9.38/lddef/directory
---- jma-receipt/lddef/directory	Fri Oct 18 18:16:22 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/directory jma-receipt-0.9.38/lddef/directory
+--- jma-receipt/lddef/directory	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/directory	Wed Oct 16 23:44:44 2002
 @@ -2,11 +2,11 @@
  
@@ -384,8 +384,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/directory jma-receipt
  
 -#include	<../etc/dbgroup.inc>
 +#include	<./dbgroup.inc>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca00.ld jma-receipt-0.9.38/lddef/orca00.ld
---- jma-receipt/lddef/orca00.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca00.ld jma-receipt-0.9.38/lddef/orca00.ld
+--- jma-receipt/lddef/orca00.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca00.ld	Wed Oct 16 23:54:40 2002
 @@ -15,7 +15,7 @@
  
@@ -396,8 +396,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca00.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca01.ld jma-receipt-0.9.38/lddef/orca01.ld
---- jma-receipt/lddef/orca01.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca01.ld jma-receipt-0.9.38/lddef/orca01.ld
+--- jma-receipt/lddef/orca01.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca01.ld	Wed Oct 16 23:54:40 2002
 @@ -11,7 +11,7 @@
  
@@ -408,8 +408,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca01.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca02.ld jma-receipt-0.9.38/lddef/orca02.ld
---- jma-receipt/lddef/orca02.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca02.ld jma-receipt-0.9.38/lddef/orca02.ld
+--- jma-receipt/lddef/orca02.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca02.ld	Wed Oct 16 23:54:40 2002
 @@ -10,7 +10,7 @@
  
@@ -420,8 +420,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca02.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca101.ld jma-receipt-0.9.38/lddef/orca101.ld
---- jma-receipt/lddef/orca101.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca101.ld jma-receipt-0.9.38/lddef/orca101.ld
+--- jma-receipt/lddef/orca101.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca101.ld	Wed Oct 16 23:54:40 2002
 @@ -22,7 +22,7 @@
  
@@ -432,8 +432,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca101.ld jma-receip
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca102.ld jma-receipt-0.9.38/lddef/orca102.ld
---- jma-receipt/lddef/orca102.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca102.ld jma-receipt-0.9.38/lddef/orca102.ld
+--- jma-receipt/lddef/orca102.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca102.ld	Wed Oct 16 23:54:40 2002
 @@ -21,7 +21,7 @@
  
@@ -444,8 +444,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca102.ld jma-receip
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca103.ld jma-receipt-0.9.38/lddef/orca103.ld
---- jma-receipt/lddef/orca103.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca103.ld jma-receipt-0.9.38/lddef/orca103.ld
+--- jma-receipt/lddef/orca103.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca103.ld	Wed Oct 16 23:54:40 2002
 @@ -12,7 +12,7 @@
  
@@ -456,8 +456,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca103.ld jma-receip
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca104.ld jma-receipt-0.9.38/lddef/orca104.ld
---- jma-receipt/lddef/orca104.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca104.ld jma-receipt-0.9.38/lddef/orca104.ld
+--- jma-receipt/lddef/orca104.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca104.ld	Wed Oct 16 23:54:40 2002
 @@ -11,7 +11,7 @@
  
@@ -468,8 +468,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca104.ld jma-receip
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca105.ld jma-receipt-0.9.38/lddef/orca105.ld
---- jma-receipt/lddef/orca105.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca105.ld jma-receipt-0.9.38/lddef/orca105.ld
+--- jma-receipt/lddef/orca105.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca105.ld	Wed Oct 16 23:54:40 2002
 @@ -10,7 +10,7 @@
  
@@ -480,8 +480,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca105.ld jma-receip
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca106.ld jma-receipt-0.9.38/lddef/orca106.ld
---- jma-receipt/lddef/orca106.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca106.ld jma-receipt-0.9.38/lddef/orca106.ld
+--- jma-receipt/lddef/orca106.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca106.ld	Wed Oct 16 23:54:40 2002
 @@ -10,7 +10,7 @@
  
@@ -492,8 +492,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca106.ld jma-receip
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca107.ld jma-receipt-0.9.38/lddef/orca107.ld
---- jma-receipt/lddef/orca107.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca107.ld jma-receipt-0.9.38/lddef/orca107.ld
+--- jma-receipt/lddef/orca107.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca107.ld	Wed Oct 16 23:54:40 2002
 @@ -10,7 +10,7 @@
  
@@ -504,8 +504,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca107.ld jma-receip
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca11.ld jma-receipt-0.9.38/lddef/orca11.ld
---- jma-receipt/lddef/orca11.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca11.ld jma-receipt-0.9.38/lddef/orca11.ld
+--- jma-receipt/lddef/orca11.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca11.ld	Wed Oct 16 23:54:40 2002
 @@ -9,7 +9,7 @@
  
@@ -516,8 +516,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca11.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca12.ld jma-receipt-0.9.38/lddef/orca12.ld
---- jma-receipt/lddef/orca12.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca12.ld jma-receipt-0.9.38/lddef/orca12.ld
+--- jma-receipt/lddef/orca12.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca12.ld	Wed Oct 16 23:54:40 2002
 @@ -21,7 +21,7 @@
  
@@ -528,8 +528,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca12.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca13.ld jma-receipt-0.9.38/lddef/orca13.ld
---- jma-receipt/lddef/orca13.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca13.ld jma-receipt-0.9.38/lddef/orca13.ld
+--- jma-receipt/lddef/orca13.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca13.ld	Wed Oct 16 23:54:40 2002
 @@ -15,7 +15,7 @@
  
@@ -540,8 +540,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca13.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca14.ld jma-receipt-0.9.38/lddef/orca14.ld
---- jma-receipt/lddef/orca14.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca14.ld jma-receipt-0.9.38/lddef/orca14.ld
+--- jma-receipt/lddef/orca14.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca14.ld	Wed Oct 16 23:54:40 2002
 @@ -11,7 +11,7 @@
  
@@ -552,8 +552,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca14.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca18.ld jma-receipt-0.9.38/lddef/orca18.ld
---- jma-receipt/lddef/orca18.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca18.ld jma-receipt-0.9.38/lddef/orca18.ld
+--- jma-receipt/lddef/orca18.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca18.ld	Wed Oct 16 23:54:40 2002
 @@ -9,7 +9,7 @@
  
@@ -564,8 +564,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca18.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca19.ld jma-receipt-0.9.38/lddef/orca19.ld
---- jma-receipt/lddef/orca19.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca19.ld jma-receipt-0.9.38/lddef/orca19.ld
+--- jma-receipt/lddef/orca19.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca19.ld	Wed Oct 16 23:54:40 2002
 @@ -9,7 +9,7 @@
  
@@ -576,8 +576,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca19.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca21.ld jma-receipt-0.9.38/lddef/orca21.ld
---- jma-receipt/lddef/orca21.ld	Wed Sep  4 16:13:39 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca21.ld jma-receipt-0.9.38/lddef/orca21.ld
+--- jma-receipt/lddef/orca21.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca21.ld	Wed Oct 16 23:54:40 2002
 @@ -28,7 +28,7 @@
  
@@ -588,8 +588,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca21.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca22.ld jma-receipt-0.9.38/lddef/orca22.ld
---- jma-receipt/lddef/orca22.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca22.ld jma-receipt-0.9.38/lddef/orca22.ld
+--- jma-receipt/lddef/orca22.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca22.ld	Wed Oct 16 23:54:40 2002
 @@ -17,7 +17,7 @@
  
@@ -600,8 +600,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca22.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca23.ld jma-receipt-0.9.38/lddef/orca23.ld
---- jma-receipt/lddef/orca23.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca23.ld jma-receipt-0.9.38/lddef/orca23.ld
+--- jma-receipt/lddef/orca23.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca23.ld	Wed Oct 16 23:54:40 2002
 @@ -10,7 +10,7 @@
  
@@ -612,8 +612,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca23.ld jma-receipt
  
  
  data	{
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca24.ld jma-receipt-0.9.38/lddef/orca24.ld
---- jma-receipt/lddef/orca24.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca24.ld jma-receipt-0.9.38/lddef/orca24.ld
+--- jma-receipt/lddef/orca24.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca24.ld	Wed Oct 16 23:54:40 2002
 @@ -20,7 +20,7 @@
  
@@ -624,8 +624,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca24.ld jma-receipt
  
  
  data	{
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca41.ld jma-receipt-0.9.38/lddef/orca41.ld
---- jma-receipt/lddef/orca41.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca41.ld jma-receipt-0.9.38/lddef/orca41.ld
+--- jma-receipt/lddef/orca41.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca41.ld	Wed Oct 16 23:54:40 2002
 @@ -12,7 +12,7 @@
  
@@ -636,8 +636,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca41.ld jma-receipt
  
  
  data	{
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca42.ld jma-receipt-0.9.38/lddef/orca42.ld
---- jma-receipt/lddef/orca42.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca42.ld jma-receipt-0.9.38/lddef/orca42.ld
+--- jma-receipt/lddef/orca42.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca42.ld	Wed Oct 16 23:54:40 2002
 @@ -16,7 +16,7 @@
  
@@ -648,8 +648,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca42.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca43.ld jma-receipt-0.9.38/lddef/orca43.ld
---- jma-receipt/lddef/orca43.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca43.ld jma-receipt-0.9.38/lddef/orca43.ld
+--- jma-receipt/lddef/orca43.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca43.ld	Wed Oct 16 23:54:40 2002
 @@ -11,7 +11,7 @@
  
@@ -660,8 +660,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca43.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca44.ld jma-receipt-0.9.38/lddef/orca44.ld
---- jma-receipt/lddef/orca44.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca44.ld jma-receipt-0.9.38/lddef/orca44.ld
+--- jma-receipt/lddef/orca44.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca44.ld	Wed Oct 16 23:54:40 2002
 @@ -11,7 +11,7 @@
  
@@ -672,8 +672,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca44.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca51.ld jma-receipt-0.9.38/lddef/orca51.ld
---- jma-receipt/lddef/orca51.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca51.ld jma-receipt-0.9.38/lddef/orca51.ld
+--- jma-receipt/lddef/orca51.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca51.ld	Wed Oct 16 23:54:40 2002
 @@ -11,7 +11,7 @@
  
@@ -684,8 +684,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca51.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca52.ld jma-receipt-0.9.38/lddef/orca52.ld
---- jma-receipt/lddef/orca52.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca52.ld jma-receipt-0.9.38/lddef/orca52.ld
+--- jma-receipt/lddef/orca52.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca52.ld	Wed Oct 16 23:54:40 2002
 @@ -11,7 +11,7 @@
  
@@ -696,8 +696,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca52.ld jma-receipt
  
  data	{
  	spa	orcaspa;
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca71.ld jma-receipt-0.9.38/lddef/orca71.ld
---- jma-receipt/lddef/orca71.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca71.ld jma-receipt-0.9.38/lddef/orca71.ld
+--- jma-receipt/lddef/orca71.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca71.ld	Wed Oct 16 23:54:40 2002
 @@ -12,7 +12,7 @@
  
@@ -708,8 +708,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca71.ld jma-receipt
  
  
  data	{
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca82.ld jma-receipt-0.9.38/lddef/orca82.ld
---- jma-receipt/lddef/orca82.ld	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/lddef/orca82.ld jma-receipt-0.9.38/lddef/orca82.ld
+--- jma-receipt/lddef/orca82.ld	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/lddef/orca82.ld	Wed Oct 16 23:54:40 2002
 @@ -11,7 +11,7 @@
  
@@ -720,8 +720,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/lddef/orca82.ld jma-receipt
  
  
  data	{
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/orca-hospid-set.sh jma-receipt-0.9.38/orca-hospid-set.sh
---- jma-receipt/orca-hospid-set.sh	Wed Sep  4 16:00:24 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/orca-hospid-set.sh jma-receipt-0.9.38/orca-hospid-set.sh
+--- jma-receipt/orca-hospid-set.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/orca-hospid-set.sh	Thu Oct 17 01:06:24 2002
 @@ -39,7 +39,7 @@
  #
@@ -732,8 +732,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/orca-hospid-set.sh jma-rece
  	echo "$f ------------"
  	echo "update $f set hospid = '$LASTHOSPID';" | psql orca
  	echo "---------------------"
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/record/K02.rec jma-receipt-0.9.38/record/K02.rec
---- jma-receipt/record/K02.rec	Fri Oct 18 18:16:23 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/record/K02.rec jma-receipt-0.9.38/record/K02.rec
+--- jma-receipt/record/K02.rec	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/record/K02.rec	Fri Oct 18 17:53:41 2002
 @@ -214,63 +214,83 @@
  			value	varchar(62);
@@ -819,8 +819,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/record/K02.rec jma-receipt-
  			value	varchar(60);
  		};
  		NENREI	{
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/record/K08.rec jma-receipt-0.9.38/record/K08.rec
---- jma-receipt/record/K08.rec	Wed Sep  4 16:02:57 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/record/K08.rec jma-receipt-0.9.38/record/K08.rec
+--- jma-receipt/record/K08.rec	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/record/K08.rec	Fri Oct 18 17:50:48 2002
 @@ -118,6 +118,7 @@
  					value3	varchar(150);
@@ -830,8 +830,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/record/K08.rec jma-receipt-
  			};
  		};
  	};
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/H99.glade jma-receipt-0.9.38/screen/H99.glade
---- jma-receipt/screen/H99.glade	Wed Sep  4 16:03:03 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/H99.glade jma-receipt-0.9.38/screen/H99.glade
+--- jma-receipt/screen/H99.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/H99.glade	Fri Oct 18 17:50:48 2002
 @@ -407,7 +407,7 @@
        <y>100</y>
@@ -842,8 +842,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/H99.glade jma-receip
        <justify>GTK_JUSTIFY_CENTER</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/J04.glade jma-receipt-0.9.38/screen/J04.glade
---- jma-receipt/screen/J04.glade	Wed Sep  4 16:03:01 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/J04.glade jma-receipt-0.9.38/screen/J04.glade
+--- jma-receipt/screen/J04.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/J04.glade	Fri Oct 18 17:50:48 2002
 @@ -2045,7 +2045,7 @@
        <y>80</y>
@@ -854,8 +854,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/J04.glade jma-receip
        <justify>GTK_JUSTIFY_CENTER</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/K02.glade jma-receipt-0.9.38/screen/K02.glade
---- jma-receipt/screen/K02.glade	Wed Sep  4 16:03:01 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/K02.glade jma-receipt-0.9.38/screen/K02.glade
+--- jma-receipt/screen/K02.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/K02.glade	Fri Oct 18 17:50:48 2002
 @@ -2546,7 +2546,7 @@
        <y>88</y>
@@ -866,8 +866,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/K02.glade jma-receip
        <justify>GTK_JUSTIFY_CENTER</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/K021.glade jma-receipt-0.9.38/screen/K021.glade
---- jma-receipt/screen/K021.glade	Wed Sep  4 16:03:01 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/K021.glade jma-receipt-0.9.38/screen/K021.glade
+--- jma-receipt/screen/K021.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/K021.glade	Fri Oct 18 17:50:48 2002
 @@ -214,7 +214,7 @@
        <y>344</y>
@@ -878,8 +878,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/K021.glade jma-recei
        <justify>GTK_JUSTIFY_CENTER</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/K023.glade jma-receipt-0.9.38/screen/K023.glade
---- jma-receipt/screen/K023.glade	Wed Sep  4 16:02:59 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/K023.glade jma-receipt-0.9.38/screen/K023.glade
+--- jma-receipt/screen/K023.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/K023.glade	Fri Oct 18 17:50:48 2002
 @@ -1939,7 +1939,7 @@
        <y>36</y>
@@ -890,8 +890,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/K023.glade jma-recei
        <justify>GTK_JUSTIFY_CENTER</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/K05.glade jma-receipt-0.9.38/screen/K05.glade
---- jma-receipt/screen/K05.glade	Wed Sep  4 16:03:02 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/K05.glade jma-receipt-0.9.38/screen/K05.glade
+--- jma-receipt/screen/K05.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/K05.glade	Fri Oct 18 17:50:48 2002
 @@ -2444,7 +2444,7 @@
        <y>80</y>
@@ -902,8 +902,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/K05.glade jma-receip
        <justify>GTK_JUSTIFY_CENTER</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/N01.glade jma-receipt-0.9.38/screen/N01.glade
---- jma-receipt/screen/N01.glade	Wed Sep  4 16:03:06 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/N01.glade jma-receipt-0.9.38/screen/N01.glade
+--- jma-receipt/screen/N01.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/N01.glade	Fri Oct 18 17:50:48 2002
 @@ -604,7 +604,7 @@
        <y>40</y>
@@ -977,8 +977,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/N01.glade jma-receip
        <justify>GTK_JUSTIFY_CENTER</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/P02.glade jma-receipt-0.9.38/screen/P02.glade
---- jma-receipt/screen/P02.glade	Fri Oct 18 18:16:23 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/P02.glade jma-receipt-0.9.38/screen/P02.glade
+--- jma-receipt/screen/P02.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/P02.glade	Fri Oct 18 17:50:48 2002
 @@ -5364,7 +5364,7 @@
  	  <y>516</y>
@@ -998,8 +998,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/P02.glade jma-receip
  	  <height>24</height>
  	  <label>FAX</label>
  	  <justify>GTK_JUSTIFY_LEFT</justify>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/P02D.glade jma-receipt-0.9.38/screen/P02D.glade
---- jma-receipt/screen/P02D.glade	Wed Sep 25 20:21:21 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/P02D.glade jma-receipt-0.9.38/screen/P02D.glade
+--- jma-receipt/screen/P02D.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/P02D.glade	Fri Oct 18 17:50:48 2002
 @@ -447,7 +447,7 @@
        <y>116</y>
@@ -1118,8 +1118,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/P02D.glade jma-recei
        <justify>GTK_JUSTIFY_CENTER</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/P02E.glade jma-receipt-0.9.38/screen/P02E.glade
---- jma-receipt/screen/P02E.glade	Wed Sep  4 16:03:10 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/P02E.glade jma-receipt-0.9.38/screen/P02E.glade
+--- jma-receipt/screen/P02E.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/P02E.glade	Fri Oct 18 17:50:48 2002
 @@ -359,7 +359,7 @@
        <y>120</y>
@@ -1139,8 +1139,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/P02E.glade jma-recei
        <justify>GTK_JUSTIFY_LEFT</justify>
        <wrap>True</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/R98.glade jma-receipt-0.9.38/screen/R98.glade
---- jma-receipt/screen/R98.glade	Wed Sep  4 16:03:10 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/R98.glade jma-receipt-0.9.38/screen/R98.glade
+--- jma-receipt/screen/R98.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/R98.glade	Fri Oct 18 17:50:48 2002
 @@ -2449,7 +2449,7 @@
        <y>50</y>
@@ -1151,8 +1151,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/R98.glade jma-receip
        <justify>GTK_JUSTIFY_CENTER</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/V02.glade jma-receipt-0.9.38/screen/V02.glade
---- jma-receipt/screen/V02.glade	Wed Sep  4 16:03:07 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/V02.glade jma-receipt-0.9.38/screen/V02.glade
+--- jma-receipt/screen/V02.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/V02.glade	Fri Oct 18 17:50:48 2002
 @@ -3718,7 +3718,7 @@
        <height>16</height>
@@ -1316,8 +1316,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/V02.glade jma-receip
        <xalign>0.5</xalign>
        <yalign>0.5</yalign>
        <xpad>0</xpad>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/W03.glade jma-receipt-0.9.38/screen/W03.glade
---- jma-receipt/screen/W03.glade	Wed Sep  4 16:03:06 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/W03.glade jma-receipt-0.9.38/screen/W03.glade
+--- jma-receipt/screen/W03.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/W03.glade	Fri Oct 18 17:50:53 2002
 @@ -1729,7 +1729,7 @@
        <y>10</y>
@@ -1328,8 +1328,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/W03.glade jma-receip
        <justify>GTK_JUSTIFY_LEFT</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/W04.glade jma-receipt-0.9.38/screen/W04.glade
---- jma-receipt/screen/W04.glade	Wed Sep  4 16:03:06 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/W04.glade jma-receipt-0.9.38/screen/W04.glade
+--- jma-receipt/screen/W04.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/W04.glade	Fri Oct 18 17:50:53 2002
 @@ -397,7 +397,7 @@
        <y>10</y>
@@ -1421,8 +1421,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/W04.glade jma-receip
  	  <justify>GTK_JUSTIFY_LEFT</justify>
  	  <wrap>False</wrap>
  	  <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/W06.glade jma-receipt-0.9.38/screen/W06.glade
---- jma-receipt/screen/W06.glade	Wed Sep  4 16:03:07 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/W06.glade jma-receipt-0.9.38/screen/W06.glade
+--- jma-receipt/screen/W06.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/W06.glade	Fri Oct 18 17:50:53 2002
 @@ -111,7 +111,7 @@
        <y>156</y>
@@ -1557,8 +1557,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/W06.glade jma-receip
        <xalign>0.5</xalign>
        <yalign>0.5</yalign>
        <xpad>0</xpad>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/W07.glade jma-receipt-0.9.38/screen/W07.glade
---- jma-receipt/screen/W07.glade	Fri Oct 18 18:16:24 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/W07.glade jma-receipt-0.9.38/screen/W07.glade
+--- jma-receipt/screen/W07.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/W07.glade	Fri Oct 18 17:50:53 2002
 @@ -351,9 +351,9 @@
  	  <y>128</y>
@@ -1608,8 +1608,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/W07.glade jma-receip
  	  <xalign>0.5</xalign>
  	  <yalign>0.5</yalign>
  	  <xpad>0</xpad>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/W10.glade jma-receipt-0.9.38/screen/W10.glade
---- jma-receipt/screen/W10.glade	Wed Sep  4 16:02:59 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/W10.glade jma-receipt-0.9.38/screen/W10.glade
+--- jma-receipt/screen/W10.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/W10.glade	Fri Oct 18 17:50:53 2002
 @@ -297,7 +297,7 @@
        <height>16</height>
@@ -1629,8 +1629,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/W10.glade jma-receip
        <xalign>0.5</xalign>
        <yalign>0.5</yalign>
        <xpad>0</xpad>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/W11.glade jma-receipt-0.9.38/screen/W11.glade
---- jma-receipt/screen/W11.glade	Wed Sep  4 16:03:08 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/W11.glade jma-receipt-0.9.38/screen/W11.glade
+--- jma-receipt/screen/W11.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/W11.glade	Fri Oct 18 17:50:53 2002
 @@ -1482,7 +1482,7 @@
        <y>10</y>
@@ -1641,8 +1641,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/W11.glade jma-receip
        <justify>GTK_JUSTIFY_LEFT</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/W12.glade jma-receipt-0.9.38/screen/W12.glade
---- jma-receipt/screen/W12.glade	Wed Sep  4 16:03:08 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/W12.glade jma-receipt-0.9.38/screen/W12.glade
+--- jma-receipt/screen/W12.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/W12.glade	Fri Oct 18 17:50:53 2002
 @@ -411,7 +411,7 @@
        <y>100</y>
@@ -1676,8 +1676,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/W12.glade jma-receip
        <justify>GTK_JUSTIFY_LEFT</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/X01.glade jma-receipt-0.9.38/screen/X01.glade
---- jma-receipt/screen/X01.glade	Wed Sep  4 16:03:06 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/X01.glade jma-receipt-0.9.38/screen/X01.glade
+--- jma-receipt/screen/X01.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/X01.glade	Fri Oct 18 17:50:53 2002
 @@ -461,7 +461,7 @@
        <y>90</y>
@@ -1697,8 +1697,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/X01.glade jma-receip
        <justify>GTK_JUSTIFY_LEFT</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/X02.glade jma-receipt-0.9.38/screen/X02.glade
---- jma-receipt/screen/X02.glade	Wed Sep  4 16:03:06 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/X02.glade jma-receipt-0.9.38/screen/X02.glade
+--- jma-receipt/screen/X02.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/X02.glade	Fri Oct 18 17:50:53 2002
 @@ -1467,7 +1467,7 @@
        <y>56</y>
@@ -1727,8 +1727,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/X02.glade jma-receip
        <justify>GTK_JUSTIFY_CENTER</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/Z02.glade jma-receipt-0.9.38/screen/Z02.glade
---- jma-receipt/screen/Z02.glade	Wed Sep  4 16:03:05 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/Z02.glade jma-receipt-0.9.38/screen/Z02.glade
+--- jma-receipt/screen/Z02.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/Z02.glade	Fri Oct 18 17:50:53 2002
 @@ -989,7 +989,7 @@
        <height>18</height>
@@ -1784,8 +1784,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/Z02.glade jma-receip
        <xalign>0.5</xalign>
        <yalign>0.5</yalign>
        <xpad>0</xpad>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/Z03.glade jma-receipt-0.9.38/screen/Z03.glade
---- jma-receipt/screen/Z03.glade	Wed Sep  4 16:03:05 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/Z03.glade jma-receipt-0.9.38/screen/Z03.glade
+--- jma-receipt/screen/Z03.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/Z03.glade	Fri Oct 18 17:50:53 2002
 @@ -567,7 +567,7 @@
  	  <y>536</y>
@@ -1805,8 +1805,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/Z03.glade jma-receip
  	  <justify>GTK_JUSTIFY_LEFT</justify>
  	  <wrap>True</wrap>
  	  <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/Z05.glade jma-receipt-0.9.38/screen/Z05.glade
---- jma-receipt/screen/Z05.glade	Wed Sep  4 16:03:05 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/Z05.glade jma-receipt-0.9.38/screen/Z05.glade
+--- jma-receipt/screen/Z05.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/Z05.glade	Fri Oct 18 17:50:53 2002
 @@ -1235,7 +1235,7 @@
        <y>364</y>
@@ -1817,8 +1817,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/Z05.glade jma-receip
        <justify>GTK_JUSTIFY_RIGHT</justify>
        <wrap>True</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/Z06.glade jma-receipt-0.9.38/screen/Z06.glade
---- jma-receipt/screen/Z06.glade	Wed Sep  4 16:03:10 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/Z06.glade jma-receipt-0.9.38/screen/Z06.glade
+--- jma-receipt/screen/Z06.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/Z06.glade	Fri Oct 18 17:50:53 2002
 @@ -601,7 +601,7 @@
        <y>200</y>
@@ -1829,8 +1829,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/Z06.glade jma-receip
        <justify>GTK_JUSTIFY_LEFT</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/Z90.glade jma-receipt-0.9.38/screen/Z90.glade
---- jma-receipt/screen/Z90.glade	Wed Sep  4 16:03:08 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/Z90.glade jma-receipt-0.9.38/screen/Z90.glade
+--- jma-receipt/screen/Z90.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/Z90.glade	Fri Oct 18 17:50:53 2002
 @@ -459,7 +459,7 @@
        <y>72</y>
@@ -1841,8 +1841,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/Z90.glade jma-receip
        <justify>GTK_JUSTIFY_CENTER</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/Z91.glade jma-receipt-0.9.38/screen/Z91.glade
---- jma-receipt/screen/Z91.glade	Wed Sep  4 16:03:08 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/screen/Z91.glade jma-receipt-0.9.38/screen/Z91.glade
+--- jma-receipt/screen/Z91.glade	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/screen/Z91.glade	Fri Oct 18 17:50:53 2002
 @@ -303,7 +303,7 @@
        <y>96</y>
@@ -1853,8 +1853,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/screen/Z91.glade jma-receip
        <justify>GTK_JUSTIFY_CENTER</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/ORCBQ01.sh jma-receipt-0.9.38/scripts/allways/ORCBQ01.sh
---- jma-receipt/scripts/allways/ORCBQ01.sh	Wed Sep  4 16:03:11 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/allways/ORCBQ01.sh jma-receipt-0.9.38/scripts/allways/ORCBQ01.sh
+--- jma-receipt/scripts/allways/ORCBQ01.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/allways/ORCBQ01.sh	Thu Oct 17 01:06:24 2002
 @@ -11,9 +11,10 @@
  #        $8 ¥·¥§¥ë£É£Ä
@@ -1877,8 +1877,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/ORCBQ01.sh 
 +       $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE$7$8
  
          exit
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/master_upgrade.sh jma-receipt-0.9.38/scripts/allways/master_upgrade.sh
---- jma-receipt/scripts/allways/master_upgrade.sh	Wed Sep 25 20:22:51 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/allways/master_upgrade.sh jma-receipt-0.9.38/scripts/allways/master_upgrade.sh
+--- jma-receipt/scripts/allways/master_upgrade.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/allways/master_upgrade.sh	Fri Oct 18 21:23:04 2002
 @@ -1,5 +1,6 @@
  #!/bin/bash
@@ -1978,8 +1978,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/master_upgr
  
  
  #wait
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/orcbsd01.sh jma-receipt-0.9.38/scripts/allways/orcbsd01.sh
---- jma-receipt/scripts/allways/orcbsd01.sh	Wed Sep  4 16:03:11 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/allways/orcbsd01.sh jma-receipt-0.9.38/scripts/allways/orcbsd01.sh
+--- jma-receipt/scripts/allways/orcbsd01.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/allways/orcbsd01.sh	Thu Oct 17 01:06:24 2002
 @@ -1,6 +1,7 @@
  #!/bin/bash
@@ -2020,8 +2020,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/orcbsd01.sh
 -        exit
 \ No newline at end of file
 +        exit
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/orcbse01.sh jma-receipt-0.9.38/scripts/allways/orcbse01.sh
---- jma-receipt/scripts/allways/orcbse01.sh	Wed Sep  4 16:03:11 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/allways/orcbse01.sh jma-receipt-0.9.38/scripts/allways/orcbse01.sh
+--- jma-receipt/scripts/allways/orcbse01.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/allways/orcbse01.sh	Thu Oct 17 01:06:24 2002
 @@ -1,6 +1,7 @@
  #!/bin/bash
@@ -2044,8 +2044,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/orcbse01.sh
 +	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE0000001ORCBSE1
  	
          exit
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/orcbsf02.sh jma-receipt-0.9.38/scripts/allways/orcbsf02.sh
---- jma-receipt/scripts/allways/orcbsf02.sh	Wed Sep  4 16:03:11 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/allways/orcbsf02.sh jma-receipt-0.9.38/scripts/allways/orcbsf02.sh
+--- jma-receipt/scripts/allways/orcbsf02.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/allways/orcbsf02.sh	Thu Oct 17 01:06:24 2002
 @@ -1,6 +1,7 @@
  #!/bin/bash
@@ -2067,8 +2067,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/orcbsf02.sh
 -        exit
 \ No newline at end of file
 +        exit
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/orcbsf03.sh jma-receipt-0.9.38/scripts/allways/orcbsf03.sh
---- jma-receipt/scripts/allways/orcbsf03.sh	Wed Sep  4 16:03:11 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/allways/orcbsf03.sh jma-receipt-0.9.38/scripts/allways/orcbsf03.sh
+--- jma-receipt/scripts/allways/orcbsf03.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/allways/orcbsf03.sh	Thu Oct 17 01:06:24 2002
 @@ -1,6 +1,7 @@
  #!/bin/bash
@@ -2090,8 +2090,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/orcbsf03.sh
 -        exit
 \ No newline at end of file
 +        exit
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/orhcml09.sh jma-receipt-0.9.38/scripts/allways/orhcml09.sh
---- jma-receipt/scripts/allways/orhcml09.sh	Wed Sep  4 16:03:11 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/allways/orhcml09.sh jma-receipt-0.9.38/scripts/allways/orhcml09.sh
+--- jma-receipt/scripts/allways/orhcml09.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/allways/orhcml09.sh	Thu Oct 17 01:06:24 2002
 @@ -5,6 +5,7 @@
  #        $2 SYSYMD     X(8)
@@ -2104,8 +2104,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/orhcml09.sh
 -            $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca -bd orcabt ORHCML09 -parameter $1,$2,$3
 \ No newline at end of file
 +            $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca -bd orcabt ORHCML09 -parameter $1,$2,$3
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/print.sh jma-receipt-0.9.38/scripts/allways/print.sh
---- jma-receipt/scripts/allways/print.sh	Wed Sep  4 16:03:11 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/allways/print.sh jma-receipt-0.9.38/scripts/allways/print.sh
+--- jma-receipt/scripts/allways/print.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/allways/print.sh	Thu Oct 17 01:06:24 2002
 @@ -1,6 +1,7 @@
  #!/bin/bash
@@ -2131,8 +2131,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/print.sh jm
  	fi
  
          exit 
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/tensu.sh jma-receipt-0.9.38/scripts/allways/tensu.sh
---- jma-receipt/scripts/allways/tensu.sh	Wed Sep  4 16:03:11 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/allways/tensu.sh jma-receipt-0.9.38/scripts/allways/tensu.sh
+--- jma-receipt/scripts/allways/tensu.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/allways/tensu.sh	Thu Oct 17 01:06:24 2002
 @@ -1,6 +1,7 @@
  #!/bin/bash
@@ -2158,8 +2158,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/allways/tensu.sh jm
 +        $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE${12}${13}
  
          exit 
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/daily/HC01.sh jma-receipt-0.9.38/scripts/daily/HC01.sh
---- jma-receipt/scripts/daily/HC01.sh	Fri Sep 27 17:16:56 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/daily/HC01.sh jma-receipt-0.9.38/scripts/daily/HC01.sh
+--- jma-receipt/scripts/daily/HC01.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/daily/HC01.sh	Thu Oct 17 05:25:02 2002
 @@ -1,5 +1,6 @@
  #! /bin/sh
@@ -2168,8 +2168,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/daily/HC01.sh jma-r
  	if	[ $1 = 'red2ps' ]	;then
  		if	[ $5 != '' ]	;then
  			$1 $2 $4 -p $5
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/daily/HCALL.sh jma-receipt-0.9.38/scripts/daily/HCALL.sh
---- jma-receipt/scripts/daily/HCALL.sh	Wed Sep  4 16:03:10 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/daily/HCALL.sh jma-receipt-0.9.38/scripts/daily/HCALL.sh
+--- jma-receipt/scripts/daily/HCALL.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/daily/HCALL.sh	Thu Oct 17 05:25:18 2002
 @@ -1,5 +1,6 @@
 -#!/usr/bin/env sh
@@ -2188,8 +2188,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/daily/HCALL.sh jma-
 +ruby "$ORCADIR"/scripts/daily/print_parent.rb "/var/tmp/temp.tmp" "ruby '$ORCADIR'/scripts/daily/print-data.rb " $1 $2 $3 $4 $5
  
  	echo	`date`
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/daily/HCALL2.sh jma-receipt-0.9.38/scripts/daily/HCALL2.sh
---- jma-receipt/scripts/daily/HCALL2.sh	Fri Oct 18 18:16:24 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/daily/HCALL2.sh jma-receipt-0.9.38/scripts/daily/HCALL2.sh
+--- jma-receipt/scripts/daily/HCALL2.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/daily/HCALL2.sh	Fri Oct 18 22:39:14 2002
 @@ -1,13 +1,15 @@
 -#!/usr/bin/env sh
@@ -2209,8 +2209,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/daily/HCALL2.sh jma
  
  	rm -f $1
  	echo	`date`
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/daily/execoprg.sh jma-receipt-0.9.38/scripts/daily/execoprg.sh
---- jma-receipt/scripts/daily/execoprg.sh	Wed Sep  4 16:03:10 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/daily/execoprg.sh jma-receipt-0.9.38/scripts/daily/execoprg.sh
+--- jma-receipt/scripts/daily/execoprg.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/daily/execoprg.sh	Thu Oct 17 01:06:24 2002
 @@ -1,6 +1,7 @@
  #!/bin/bash
@@ -2237,8 +2237,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/daily/execoprg.sh j
 +       $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE${12}${13}
  
          exit 
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/daily/print_parent2.rb jma-receipt-0.9.38/scripts/daily/print_parent2.rb
---- jma-receipt/scripts/daily/print_parent2.rb	Mon Oct 21 17:59:51 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/daily/print_parent2.rb jma-receipt-0.9.38/scripts/daily/print_parent2.rb
+--- jma-receipt/scripts/daily/print_parent2.rb	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/daily/print_parent2.rb	Wed Oct 23 14:18:43 2002
 @@ -64,8 +64,8 @@
  
@@ -2251,8 +2251,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/daily/print_parent2
  
  DIA_DIR = 'form/'
  DEF_DIR = 'record/'
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept1.sh jma-receipt-0.9.38/scripts/monthly/recept1.sh
---- jma-receipt/scripts/monthly/recept1.sh	Fri Oct 18 18:16:24 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/monthly/recept1.sh jma-receipt-0.9.38/scripts/monthly/recept1.sh
+--- jma-receipt/scripts/monthly/recept1.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/monthly/recept1.sh	Fri Oct 18 22:47:48 2002
 @@ -1,7 +1,7 @@
  #!/bin/bash
@@ -2265,8 +2265,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept1.sh 
  #-------------------------------------------#
  #    °åÎÅÀÁµá½ñÍÑ¥Õ¥¡¥¤¥ëºîÀ®
  #        £²£°£°£²Ç¯£±£°·î²þÀµÂÐ±þ
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept2.sh jma-receipt-0.9.38/scripts/monthly/recept2.sh
---- jma-receipt/scripts/monthly/recept2.sh	Fri Oct 18 18:16:24 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/monthly/recept2.sh jma-receipt-0.9.38/scripts/monthly/recept2.sh
+--- jma-receipt/scripts/monthly/recept2.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/monthly/recept2.sh	Fri Oct 18 22:49:03 2002
 @@ -1,7 +1,7 @@
  #!/bin/bash
@@ -2287,8 +2287,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept2.sh 
  	   $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0101 -parameter $1,$2,$3,$7,$8,$9,${10},
          else 
  	   $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0102 -parameter $1,$2,$3,$7,$8
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept3.sh jma-receipt-0.9.38/scripts/monthly/recept3.sh
---- jma-receipt/scripts/monthly/recept3.sh	Fri Oct 18 18:16:24 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/monthly/recept3.sh jma-receipt-0.9.38/scripts/monthly/recept3.sh
+--- jma-receipt/scripts/monthly/recept3.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/monthly/recept3.sh	Fri Oct 18 22:47:58 2002
 @@ -1,7 +1,7 @@
  #!/bin/bash
@@ -2328,8 +2328,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept3.sh 
         $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE${16}${17}
  
          exit 
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept4.sh jma-receipt-0.9.38/scripts/monthly/recept4.sh
---- jma-receipt/scripts/monthly/recept4.sh	Fri Oct 18 18:16:24 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/monthly/recept4.sh jma-receipt-0.9.38/scripts/monthly/recept4.sh
+--- jma-receipt/scripts/monthly/recept4.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/monthly/recept4.sh	Fri Oct 18 22:48:03 2002
 @@ -1,7 +1,7 @@
  #!/bin/bash
@@ -2342,8 +2342,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept4.sh 
  #-------------------------------------------#
  #    ¥ì¥»ÅÅ¥Õ¥¡¥¤¥ëºîÀ®½èÍý
  #        CPCOMMONSHELL1.INC  
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept5.sh jma-receipt-0.9.38/scripts/monthly/recept5.sh
---- jma-receipt/scripts/monthly/recept5.sh	Fri Oct 18 18:16:24 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/monthly/recept5.sh jma-receipt-0.9.38/scripts/monthly/recept5.sh
+--- jma-receipt/scripts/monthly/recept5.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/monthly/recept5.sh	Fri Oct 18 22:48:11 2002
 @@ -1,7 +1,7 @@
  #!/bin/bash
@@ -2356,8 +2356,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept5.sh 
  -------------------------------------------#
  #    Ì¤ÀÁµá°ìÍ÷ºîÀ®
  #        CPCOMMONSHELL1.INC  
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept6.sh jma-receipt-0.9.38/scripts/monthly/recept6.sh
---- jma-receipt/scripts/monthly/recept6.sh	Fri Oct 18 18:16:24 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/monthly/recept6.sh jma-receipt-0.9.38/scripts/monthly/recept6.sh
+--- jma-receipt/scripts/monthly/recept6.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/monthly/recept6.sh	Fri Oct 18 22:48:18 2002
 @@ -1,7 +1,7 @@
  #!/bin/bash
@@ -2370,8 +2370,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept6.sh 
  #-------------------------------------------#
  #    Ï«ºÒÀÁµá½ñÍÑ¥Õ¥¡¥¤¥ëºîÀ®
  #        CPCOMMONSHELL1.INC  
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept7.sh jma-receipt-0.9.38/scripts/monthly/recept7.sh
---- jma-receipt/scripts/monthly/recept7.sh	Fri Oct 18 18:16:24 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/monthly/recept7.sh jma-receipt-0.9.38/scripts/monthly/recept7.sh
+--- jma-receipt/scripts/monthly/recept7.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/monthly/recept7.sh	Fri Oct 18 22:48:40 2002
 @@ -1,7 +1,7 @@
  #!/bin/bash
@@ -2384,8 +2384,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept7.sh 
  #-------------------------------------------#
  #    Ï«ºÒ°åÎÅÀÁµá½ñ½ÐÎÏ½èÍý
  #        CPCOMMONSHELL1.INC($3-$6)  
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept8.sh jma-receipt-0.9.38/scripts/monthly/recept8.sh
---- jma-receipt/scripts/monthly/recept8.sh	Fri Oct 18 18:16:24 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/monthly/recept8.sh jma-receipt-0.9.38/scripts/monthly/recept8.sh
+--- jma-receipt/scripts/monthly/recept8.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/monthly/recept8.sh	Fri Oct 18 22:48:34 2002
 @@ -1,7 +1,7 @@
  #!/bin/bash
@@ -2398,8 +2398,8 @@ diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/recept8.sh 
  #-------------------------------------------#
  #    ¼«ÇåÀÕÀÁµá½ñÍÑ¥Õ¥¡¥¤¥ëºîÀ®
  #        CPCOMMONSHELL1.INC  
-diff -ruN -x CVS -x .cvsignore -x debian jma-receipt/scripts/monthly/sokatsu.sh jma-receipt-0.9.38/scripts/monthly/sokatsu.sh
---- jma-receipt/scripts/monthly/sokatsu.sh	Fri Oct 18 18:16:24 2002
+diff -ruN -x debian -x CVS -x .cvsignore jma-receipt/scripts/monthly/sokatsu.sh jma-receipt-0.9.38/scripts/monthly/sokatsu.sh
+--- jma-receipt/scripts/monthly/sokatsu.sh	Thu Oct 24 14:28:59 2002
 +++ jma-receipt-0.9.38/scripts/monthly/sokatsu.sh	Fri Oct 18 22:52:12 2002
 @@ -1,7 +1,7 @@
  #!/bin/bash
