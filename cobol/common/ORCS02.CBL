@@ -150,6 +150,7 @@
            03  FLG-SANTEI-SYU          PIC X(01).
            03  FLG-KOUREI              PIC 9(01).
            03  FLG-IRYOHI              PIC 9(01).
+           03  FLG-KOUGAKUCYO          PIC 9(01).
            03  FLG-SKJ                 PIC 9(01).
            03  WK-SYU-SYUCOMPFTN       PIC 9(08).
            03  WK-KOUREI-IRYOHI        PIC 9(08).
@@ -372,8 +373,12 @@
       *
       *    »»½ÐÀÁµá³Û¤Î£±£°±ßÌ¤Ëþ»Í¼Î¸ÞÆþ¡ÊÌôºÞ°ìÉôÉéÃ´¶â¤â´Þ¤à¡Ë
       *    ¢¨Ï«ºÒÊÝ¸±¤Î¾ì¹ç¤Ï»Í¼Î¸ÞÆþ¤ò¹Ô¤ï¤Ê¤¤
+      *    ¢¨Ï·¿Í£²³ä¤Ç¸ÂÅÙ¤¬£·£²£³£°£°±ß¡Ü¡÷±ß¤Î¾ì¹ç¤Ï»Í¼Î¸ÞÆþ¤ò¹Ô¤ï¤Ê¤¤
            IF     (LNK-SYU-SKYMONEY      NOT =   ZERO)   
-               IF   WK-HKNKBN            NOT =   "1"
+               IF   WK-HKNKBN                =   "1"
+               OR   FLG-KOUGAKUCYO           =    1 
+                   CONTINUE
+               ELSE
                    COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +  5
                    COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
                    COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
@@ -1175,6 +1180,7 @@
                       (( WK-KOUREI-IRYOHI  -  361500 ) * 0.01 ) + 0.5
                 COMPUTE  MAX-KIN-KOHI1-M  =   MAX-KIN-KOHI1-M 
                                           +   WK-KOUREI-IRYOHI2
+                MOVE    1    TO    FLG-KOUGAKUCYO
              END-IF
            END-IF.
            IF     FLG-IRYOHI     =      2
@@ -1183,6 +1189,7 @@
                       (( WK-KOUREI-IRYOHI  -  361500 ) * 0.01 ) + 0.5
                 COMPUTE  MAX-KIN-SYU-M    =   MAX-KIN-SYU-M 
                                           +   WK-KOUREI-IRYOHI2
+                MOVE    1    TO    FLG-KOUGAKUCYO
              END-IF
            END-IF.
       *
@@ -1200,12 +1207,12 @@
                IF  LNK-SYU-SYUHKNNUM    =  SYU-SYUHKNNUM
       *
                  IF COMB-KOH1HKNNUM      =    "027"                     
-                      COMPUTE  WK-SYU-SYUCOMPFTN  =                     
-                                        SYU-KOH1COMPFTN    +   5        
-                      COMPUTE  WK-SYU-SYUCOMPFTN  =                     
-                                        WK-SYU-SYUCOMPFTN  /  10        
-                      COMPUTE  WK-SYU-SYUCOMPFTN  =                     
-                                        WK-SYU-SYUCOMPFTN  *  10        
+      *               COMPUTE  WK-SYU-SYUCOMPFTN  =                     
+      *                                 SYU-KOH1COMPFTN    +   5        
+      *               COMPUTE  WK-SYU-SYUCOMPFTN  =                     
+      *                                 WK-SYU-SYUCOMPFTN  /  10        
+      *               COMPUTE  WK-SYU-SYUCOMPFTN  =                     
+      *                                 WK-SYU-SYUCOMPFTN  *  10        
                       IF  (SYU-KOH2HKNNUM     NOT = SPACE)              
                       OR  (SYU-KOH3HKNNUM     NOT = SPACE)
                       OR  (SYU-KOH4HKNNUM     NOT = SPACE)
@@ -1220,6 +1227,9 @@
                           IF  (SYU-KOH2HKNNUM     =  SPACE)              
                           AND (SYU-KOH3HKNNUM     =  SPACE)
                           AND (SYU-KOH4HKNNUM     =  SPACE)
+                             MOVE   SYU-KOH1COMPFTN
+                                            TO   WK-SYU-SYUCOMPFTN
+      *
                              COMPUTE   WK-KOUREI-IRYOHI  =   
                                        WK-KOUREI-IRYOHI  +  
                                       (SYU-HKNTEN (12) * 10)
@@ -1228,12 +1238,12 @@
                       ADD   WK-SYU-SYUCOMPFTN     TO   FTN-KOHI1-M      
                       MOVE  1                     TO   FLG-KOUREI       
                  ELSE                                                   
-                      COMPUTE  WK-SYU-SYUCOMPFTN  =                     
-                                        SYU-SYUCOMPFTN     +   5        
-                      COMPUTE  WK-SYU-SYUCOMPFTN  =                     
-                                        WK-SYU-SYUCOMPFTN  /  10        
-                      COMPUTE  WK-SYU-SYUCOMPFTN  =                     
-                                        WK-SYU-SYUCOMPFTN  *  10        
+      *               COMPUTE  WK-SYU-SYUCOMPFTN  =                     
+      *                                 SYU-SYUCOMPFTN     +   5        
+      *               COMPUTE  WK-SYU-SYUCOMPFTN  =                     
+      *                                 WK-SYU-SYUCOMPFTN  /  10        
+      *               COMPUTE  WK-SYU-SYUCOMPFTN  =                     
+      *                                 WK-SYU-SYUCOMPFTN  *  10        
                       IF  (SYU-KOH1HKNNUM     NOT = SPACE)              
                       OR  (SYU-KOH2HKNNUM     NOT = SPACE)
                       OR  (SYU-KOH3HKNNUM     NOT = SPACE)
@@ -1250,6 +1260,9 @@
                           AND (SYU-KOH2HKNNUM     =  SPACE)
                           AND (SYU-KOH3HKNNUM     =  SPACE)
                           AND (SYU-KOH4HKNNUM     =  SPACE)
+                             MOVE   SYU-SYUCOMPFTN
+                                            TO   WK-SYU-SYUCOMPFTN
+      *
                              COMPUTE   WK-KOUREI-IRYOHI  =   
                                        WK-KOUREI-IRYOHI  +  
                                       (SYU-HKNTEN (12) * 10)
@@ -2585,7 +2598,8 @@
                IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
                    (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
                   ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
-                  ( HKN-RECEFTNDSPKBN            =      "2"   )
+                  ( HKN-RECEFTNDSPKBN            =      "2"   ) OR
+                  ( FLG-KOUGAKUCYO               =       1    )
                    CONTINUE
                ELSE
                    COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
@@ -3185,13 +3199,14 @@
            MOVE    WK-RYOYOHI-SKJ           TO  LNK-SYU-RYOYOHI-SKJ.
            MOVE    WK-KNJFTNKIN-SKJ         TO  LNK-SYU-SKYMONEY-SKJ.
            IF   LNK-SYU-SYUSKJ-FTNKBN  =  "4"
-             IF   ( COMB-SYU-HKNKOHSBTKBN  =  "8" )
-             AND  ( COMB-HOJOKBN           =  "1" )
-               CONTINUE
-             ELSE
-               COMPUTE LNK-SYU-SKYMONEY-SKJ-TAX 
+             IF    COMB-SYU-HKNKOHSBTKBN  =  "8" 
+               IF    COMB-HOJOKBN           =  "1" 
+                 CONTINUE
+               ELSE
+                 COMPUTE LNK-SYU-SKYMONEY-SKJ-TAX 
                                               = LNK-SYU-SKYMONEY-SKJ
                                               * 0.05
+               END-IF
              END-IF
            END-IF.
            COMPUTE  LNK-SYU-SKYMONEY-SKJ-KEI = LNK-SYU-SKYMONEY-SKJ
@@ -3206,7 +3221,9 @@
                IF        WK-FTN    >  13995
                  COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
                                             +  LNK-SYU-SKYMONEY-SKJ-KEI
-                 MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ-KEI
+                 MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
+                                               LNK-SYU-SKYMONEY-SKJ-TAX
+                                               LNK-SYU-SKYMONEY-SKJ-KEI
                END-IF
            END-IF.
       *
