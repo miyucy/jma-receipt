@@ -43,6 +43,7 @@
       *  新患者病名マスタ対応
       *  01.04.01    NACL-藤原    03/12/17  前・次頁対応
       *                                     移行先の確認画面追加
+      *  01.04.02    NACL-藤原    04/07/07  部分検索・後方検索ボタン追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -122,6 +123,8 @@
            03  WRK-BANGO           PIC 9(05).
            03  WRK-HAISIYMDH       PIC X(22).
            03  WRK-CIDMSG          PIC X(100).
+           03  WRK-BYOKEN          PIC X(30).
+           03  WRK-BYOMEI          PIC X(40).
       *
       *    並びかえ用ワーク
            03  WRK-GMN-BYOMEICD-G.
@@ -470,6 +473,12 @@
       *    確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-KAKUTEI-SEC
+      *    部分
+               WHEN    "CLICKED"       ALSO    "B22"
+                   PERFORM 491-BUBUN-KENSAKU-SEC
+      *    後方
+               WHEN    "CLICKED"       ALSO    "B23"
+                   PERFORM 492-ATO-KENSAKU-SEC
            END-EVALUATE
            .
        200-GMNSENI-EXT.
@@ -745,6 +754,115 @@
            EXIT.
       *
       *****************************************************************
+      *    部分一致処理
+      *****************************************************************
+       491-BUBUN-KENSAKU-SEC       SECTION.
+      *
+      *    入力時のみ
+           IF      SPA-GMN-BYOKEN      =   SPACE
+               GO  TO  491-BUBUN-KENSAKU-EXT
+           END-IF
+      *
+      *    半角チェック
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI 
+           MOVE    SPA-GMN-BYOKEN      TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+           IF      KANACHK-RC          =   ZERO
+           AND     KANACHK-SYUBETU     =   "2"
+               CONTINUE
+           ELSE
+               MOVE    "0071"              TO  SPA-ERRCD
+               MOVE    3                   TO  SPA-GMN-CUR
+               GO  TO  491-BUBUN-KENSAKU-EXT
+           END-IF
+      *
+           INSPECT SPA-GMN-BYOKEN      REPLACING  ALL "＊"  BY  "  "
+           MOVE    SPACE               TO  WRK-BYOKEN
+           MOVE    ZERO                TO  IDX2
+           PERFORM VARYING     IDX1    FROM    1   BY  1
+                   UNTIL       IDX1    >   30
+               IF      SPA-GMN-BYOKEN(IDX1:1)  NOT =   SPACE
+                   ADD     1                   TO  IDX2
+                   MOVE    SPA-GMN-BYOKEN(IDX1:1)
+                                               TO  WRK-BYOKEN(IDX2:1)
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPACE               TO  WRK-BYOMEI
+           STRING  "＊"                DELIMITED  BY  SIZE
+                   WRK-BYOKEN          DELIMITED  BY  SPACE
+                   "＊"                DELIMITED  BY  SIZE
+                                       INTO    WRK-BYOMEI
+           END-STRING
+      *
+           MOVE    1               TO  SPA-GMN-PAGE
+           PERFORM 410112-BYOMEI-LST-SEC
+      *
+      *    選択番号へカーソルを移動させる
+           IF      SPA-GMN-BYOMEI-MAX  >   ZERO
+               MOVE    2               TO  SPA-GMN-CUR
+           END-IF
+      *
+          .
+       491-BUBUN-KENSAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    後分一致処理
+      *****************************************************************
+       492-ATO-KENSAKU-SEC             SECTION.
+      *
+      *    入力時のみ
+           IF      SPA-GMN-BYOKEN      =   SPACE
+               GO  TO  492-ATO-KENSAKU-EXT
+           END-IF
+      *
+      *    半角チェック
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI 
+           MOVE    SPA-GMN-BYOKEN      TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+           IF      KANACHK-RC          =   ZERO
+           AND     KANACHK-SYUBETU     =   "2"
+               CONTINUE
+           ELSE
+               MOVE    "0071"              TO  SPA-ERRCD
+               MOVE    3                   TO  SPA-GMN-CUR
+               GO  TO  492-ATO-KENSAKU-EXT
+           END-IF
+      *
+           INSPECT SPA-GMN-BYOKEN      REPLACING  ALL "＊"  BY  "  "
+           MOVE    SPACE               TO  WRK-BYOKEN
+           MOVE    ZERO                TO  IDX2
+           PERFORM VARYING     IDX1    FROM    1   BY  1
+                   UNTIL       IDX1    >   30
+               IF      SPA-GMN-BYOKEN(IDX1:1)  NOT =   SPACE
+                   ADD     1                   TO  IDX2
+                   MOVE    SPA-GMN-BYOKEN(IDX1:1)
+                                               TO  WRK-BYOKEN(IDX2:1)
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPACE               TO  WRK-BYOMEI
+           STRING  "＊"                DELIMITED  BY  SIZE
+                   WRK-BYOKEN          DELIMITED  BY  SPACE
+                                       INTO    WRK-BYOMEI
+           END-STRING
+      *
+           MOVE    1               TO  SPA-GMN-PAGE
+           PERFORM 410112-BYOMEI-LST-SEC
+      *
+      *    選択番号へカーソルを移動させる
+           IF      SPA-GMN-BYOMEI-MAX  >   ZERO
+               MOVE    2               TO  SPA-GMN-CUR
+           END-IF
+      *
+          .
+       492-ATO-KENSAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    病名検索処理
       *****************************************************************
        41011-BYOKEN-HEN-SEC        SECTION.
@@ -783,6 +901,7 @@
            END-IF
       *
            MOVE    1               TO  SPA-GMN-PAGE
+           MOVE    SPA-GMN-BYOKEN  TO  WRK-BYOMEI
            PERFORM 410112-BYOMEI-LST-SEC
       *
       *    選択番号へカーソルを移動させる
@@ -799,7 +918,8 @@
        410112-BYOMEI-LST-SEC           SECTION.
       *      
            INITIALIZE                  BYOMEI-REC
-           MOVE    SPA-GMN-BYOKEN      TO  BYO-BYOMEI
+      *****MOVE    SPA-GMN-BYOKEN      TO  BYO-BYOMEI
+           MOVE    WRK-BYOMEI          TO  BYO-BYOMEI
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "BYOMEI-KEY2"       TO  ORC-DBPATH
