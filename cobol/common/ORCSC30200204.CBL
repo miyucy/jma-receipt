@@ -1474,7 +1474,7 @@
       *        訂正の時、集計なし
                IF     (LNK-ORCSC-SYORIFLG =   "1"    )  AND
                       (ACCT-SRYKA         =   LNK-ORCSC-OLD-SRYKA) AND
-                      (ACCT-HKNCOMBI      =   SPA-HKNCOMBINUM)
+                      (ACCT-HKNCOMBI      =   LNK-ORCSC-OLD-HKNCOMBI)
                    MOVE    ZERO               TO  FLG-ZAIARI
                END-IF
       *
@@ -1716,7 +1716,7 @@
       *        訂正の時、集計なし
                IF     (LNK-ORCSC-SYORIFLG  =   "1"    )  AND
                       (ACCT-SRYKA          =   LNK-ORCSC-OLD-SRYKA) AND
-                      (ACCT-HKNCOMBI       =   SPA-HKNCOMBINUM)
+                      (ACCT-HKNCOMBI       =   LNK-ORCSC-OLD-HKNCOMBI)
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
       *        手技料点数がないものは対象外
@@ -1780,7 +1780,7 @@
       *        訂正の時、集計なし
                IF     (LNK-ORCSC-SYORIFLG  =   "1"    )  AND
                       (ACCT-SRYKA          =   LNK-ORCSC-OLD-SRYKA) AND
-                      (ACCT-HKNCOMBI       =   SPA-HKNCOMBINUM)
+                      (ACCT-HKNCOMBI       =   LNK-ORCSC-OLD-HKNCOMBI)
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
       *        手技料点数がないものは対象外
@@ -1791,7 +1791,7 @@
       *            診療行為より液量集計
                    PERFORM 30031-SRYACT-HEN-SEC
       *
-      *        回数編集
+      *            回数編集
                    IF      FLG-GAZO-ARI        =   1
                        PERFORM VARYING IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
