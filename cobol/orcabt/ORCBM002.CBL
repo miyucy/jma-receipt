@@ -613,7 +613,8 @@
                                        TO  SPRT-TBL-KEY
            MOVE    LNK-PRTKANRI-TBL-GROUP
                                        TO  SPRT-TBL-GROUP
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SPRT-SRYYM
+      *     MOVE    LNK-PRTKANRI-SRYYM  TO  SPRT-SRYYM
+           MOVE    WRK-PARA-SKYYM      TO  SPRT-SRYYM
            MOVE    LNK-PRTKANRI-SKYYMD TO  SPRT-SKYYMD
            MOVE    LNK-PRTKANRI-SHELLID 
                                        TO  SPRT-SHELLID
