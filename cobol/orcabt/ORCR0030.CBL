@@ -102,6 +102,7 @@
       *  01.02.14    NACL-藤原    03.01.17  データ区分の追加
       *                                     診療行為による特記事項の編集の修正
       *  01.02.15   NACL-門脇     03.02.06  コメントカウントフラグの編集追加
+      *  01.02.14   NACL-藤原     03.03.12  補助区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -857,7 +858,8 @@
            MOVE    RECE02-RECEKA        TO      RECE04-RECEKA
            MOVE    RECE02-TEISYUTUSAKI  TO      RECE04-TEISYUTUSAKI
            MOVE    RECE02-RECESYUBETU   TO      RECE04-RECESYUBETU
-           MOVE    RECE02-HKNJANUM      TO      RECE04-HKNJANUM
+           MOVE    RECE02-HKNJANUM-KEY  TO      RECE04-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY   TO      RECE04-HOJOKBN
            MOVE    RECE02-TEKSTYMD      TO      RECE04-TEKSTYMD
            MOVE    ZERO                 TO      RECE04-KOHBUNRI
            MOVE    ACCT-SRYKBN          TO      RECE04-SRYKBN
@@ -953,7 +955,8 @@
            MOVE    RECE02-RECEKA        TO      RECE05-RECEKA
            MOVE    RECE02-TEISYUTUSAKI  TO      RECE05-TEISYUTUSAKI
            MOVE    RECE02-RECESYUBETU   TO      RECE05-RECESYUBETU
-           MOVE    RECE02-HKNJANUM      TO      RECE05-HKNJANUM
+           MOVE    RECE02-HKNJANUM-KEY  TO      RECE05-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY   TO      RECE05-HOJOKBN
            MOVE    RECE02-TEKSTYMD      TO      RECE05-TEKSTYMD
            MOVE    ZERO                 TO      RECE05-KOHBUNRI
            MOVE    SRY-ZAINUM           TO      RECE05-ZAINUM

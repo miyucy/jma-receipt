@@ -37,6 +37,7 @@
       *  01.00.07    MCC-藤原     02.05.13  病名の疑いフラグからの編集
       *  01.00.08    NACL-藤原    02.11.11  転帰日が未来日のとき病名の表示
       *                                     をするように修正
+      *  01.00.09    NACL-藤原    03.03.12  補助区分の追加
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -524,7 +525,8 @@
            MOVE    RECE02-RECEKA       TO  RECE03-RECEKA
            MOVE    RECE02-TEISYUTUSAKI TO  RECE03-TEISYUTUSAKI
            MOVE    RECE02-RECESYUBETU  TO  RECE03-RECESYUBETU
-           MOVE    RECE02-HKNJANUM     TO  RECE03-HKNJANUM
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE03-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE03-HOJOKBN
            MOVE    RECE02-TEKSTYMD     TO  RECE03-TEKSTYMD
            MOVE    PTBYO-SRYYMD        TO  RECE03-SRYYMD
            MOVE    WRK-RENNUM          TO  RECE03-RENNUM

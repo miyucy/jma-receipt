@@ -92,6 +92,7 @@
       *  01.02.16    NACL-Æ£¸¶    03.01.10  ¸¡ºº¤Î²ó¿ô¤ÎÊÔ½¸
       *  01.02.17    NACL-Æ£¸¶    03.01.10  ²èÁü¿ÇÃÇ¤Î¥Õ¥£¥ë¥à¤ò¼êµ»¤ËÉ½¼¨
       *  01.00.18    NACL-Æ£¸¶    03.01.30  ÆýÍÄ»ù²Ã»»¤Î»þ¼êµ»¤ËÉ½¼¨
+      *  01.00.09    NACL-Æ£¸¶    03.03.12  Êä½õ¶èÊ¬¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -284,17 +285,6 @@
            03  WRK-EDIT-AREA.
                05  WRK-CLM                     PIC 9(03).
                05  WRK-WCLM                    PIC 9(03).
-      *
-           03  WRK-RECE02-KEY.
-               05  WRK-R02-HOSPID              PIC  X(24).
-               05  WRK-R02-SRYYM               PIC  9(06).
-               05  WRK-R02-NYUGAIKBN           PIC  X(01).
-               05  WRK-R02-PTID                PIC  9(10).
-               05  WRK-R02-RECEKA              PIC  X(02).
-               05  WRK-R02-TEISYUTUSAKI        PIC  9(01).
-               05  WRK-R02-RECESYUBETU         PIC  9(04).
-               05  WRK-R02-HKNJANUM-KEY        PIC  X(08).
-               05  WRK-R02-TEKSTYMD            PIC  X(08). 
       *
            03  WRK-KOUI                        PIC X(210).
       *
@@ -819,7 +809,8 @@
            MOVE    RECE02-RECEKA       TO  RECE04-RECEKA
            MOVE    RECE02-TEISYUTUSAKI TO  RECE04-TEISYUTUSAKI
            MOVE    RECE02-RECESYUBETU  TO  RECE04-RECESYUBETU
-           MOVE    RECE02-HKNJANUM     TO  RECE04-HKNJANUM
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE04-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE04-HOJOKBN
            MOVE    RECE02-TEKSTYMD     TO  RECE04-TEKSTYMD
            MOVE    ZERO                TO  RECE04-ZAINUM
       *
@@ -842,7 +833,10 @@
                                          NOT =   RECE04-TEISYUTUSAKI )
                OR     ( RECE02-RECESYUBETU
                                          NOT =   RECE04-RECESYUBETU  )
-               OR     ( RECE02-HKNJANUM  NOT =   RECE04-HKNJANUM     )
+               OR     ( RECE02-HKNJANUM-KEY
+                                         NOT =   RECE04-HKNJANUM     )
+               OR     ( RECE02-HOJOKBN-KEY
+                                         NOT =   RECE04-HOJOKBN      )
                OR     ( RECE02-TEKSTYMD  NOT =   RECE04-TEKSTYMD     )
       *
                MOVE    ZERO                  TO  FLG-SRYCD1
@@ -939,6 +933,7 @@
            MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
            MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
            MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
+           MOVE    RECE04-HOJOKBN      TO  RECE05-HOJOKBN
            MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
            MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
            START   RECE05-FILE
@@ -961,6 +956,7 @@
                OR     ( RECE04-RECESYUBETU
                                          NOT =   RECE05-RECESYUBETU  )
                OR     ( RECE04-HKNJANUM  NOT =   RECE05-HKNJANUM     )
+               OR     ( RECE04-HOJOKBN   NOT =   RECE05-HOJOKBN      )
                OR     ( RECE04-TEKSTYMD  NOT =   RECE05-TEKSTYMD     )
                OR     ( RECE04-ZAINUM    NOT =   RECE05-ZAINUM       )
       *
@@ -2494,7 +2490,7 @@
                IF  STS-RECE          NOT =   ZERO
                    DISPLAY "*** ORCR0090 RECE06 WRITE ERR  ***"
                    MOVE   WRK-TBLMAX     TO  IDY
-      *???             MOVE    2             TO  SPA-STS                       
+      *********    MOVE    2             TO  SPA-STS                       
                ELSE
                    ADD     1             TO  CNT-RECE06
                END-IF    

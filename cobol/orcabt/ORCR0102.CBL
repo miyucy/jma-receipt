@@ -45,6 +45,7 @@
       *  01.01.02    NACL-藤原    02/10/21  印刷用ファイルにサイト区分を追加
       *  01.01.03    NACL-藤原    03/01/08  印刷順通し番号を追加
       *  01.01.04    NACL-藤原    03/02/07  頁数のジョブ管理ＤＢへの更新
+      *  01.01.05    NACL-藤原    03/02/24  プリンタ名をオンラインより渡す
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -149,6 +150,8 @@
                    07  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).                              
                05  WRK-PARA-TERMID32             PIC X(32).
                05  WRK-PARA-SYOKBN               PIC X(01).
+               05  WRK-PARA-SYAPRTNM             PIC X(16).
+               05  WRK-PARA-KKHPRTNM             PIC X(16).
       *
            COPY    "HCM06.INC".
            COPY    "HCM06V01.INC".
@@ -239,6 +242,8 @@
                                              WRK-PARA-RECE09-KEY
                                              WRK-PARA-TERMID32
                                              WRK-PARA-SYOKBN
+                                             WRK-PARA-SYAPRTNM
+                                             WRK-PARA-KKHPRTNM
            END-UNSTRING                                  
       *
            PERFORM 100-DBOPEN-SEC
@@ -257,7 +262,7 @@
                                    JOBKANRI-REC
       *
       *    出力先プリンタ名割り当て情報処理
-           PERFORM 110-SYSKANRI-HENSYU-SEC
+      *****PERFORM 110-SYSKANRI-HENSYU-SEC
       *     
            MOVE    "HC06"              TO  HC01PARA-FORM-ID
            MOVE    WRK-PARA-TERMID32   TO  HC01PARA-TERMID
@@ -389,9 +394,11 @@
            EVALUATE    RECE08-TEISYUTUSAKI
                WHEN    "0"
                WHEN    "1" 
-                   MOVE    SYS-2005-SYAPRTNM   TO  PRT-PRTNM
+      *************MOVE    SYS-2005-SYAPRTNM   TO  PRT-PRTNM
+                   MOVE    WRK-PARA-SYAPRTNM   TO  PRT-PRTNM
                WHEN    "2" 
-                   MOVE    SYS-2005-KKHPRTNM   TO  PRT-PRTNM
+      *************MOVE    SYS-2005-KKHPRTNM   TO  PRT-PRTNM
+                   MOVE    WRK-PARA-KKHPRTNM   TO  PRT-PRTNM
            END-EVALUATE
       *
       *    通し番号印刷のときのみ編集

@@ -180,6 +180,7 @@
            03  FLG-PTNYUINRRK                          PIC 9(01).
            03  FLG-PTNYUINRRK12                        PIC 9(01).
            03  FLG-PTNYUINRRK13                        PIC 9(01).
+           03  FLG-ARI                                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -194,6 +195,9 @@
            03  IDX                                     PIC 9(03).
            03  IDY                                     PIC 9(03).
            03  IDX2                                    PIC 9(03).
+           03  IDX3                                    PIC 9(02).
+           03  IDX4                                    PIC 9(02).
+           03  IDX5                                    PIC 9(02).
            03  IDZ                                     PIC 9(02).
            03  TOKKI-IDX                               PIC 9(02).
       *
@@ -231,6 +235,13 @@
            03  WRK-CHOKI                 PIC X(03).
       *
            03  RJN-RATE-KBN              PIC X(01).
+      *
+      *    病棟区分テーブル                                             
+       01  WRK-BYOTOKBN-TABLE.                                          
+           03  WRK-BYOTOKBN-T            OCCURS  4.                     
+               05  WRK-BYOTOKBN          PIC X(02).                     
+      *                                                                 
+       01  WRK-BYOTOKBN-DATA             PIC X(02).                     
       *
            COPY    "MCPAREA".
       *
@@ -297,6 +308,9 @@
       *
       *    医療機関情報
            COPY    "CPSK1001.INC".
+      *
+      *    病棟情報                                                     
+           COPY    "CPSK5001.INC".                                      
       *
       *    患者番号構成管理情報
            COPY  "CPSK1009.INC".
@@ -395,6 +409,8 @@
            INITIALIZE                      SYSKANRI-REC
            MOVE    "1001"              TO  SYS-KANRICD
            MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)              
+           MOVE    "01"                TO  ORC-DBYMD (7:2)              
            PERFORM 960-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
@@ -410,6 +426,8 @@
            INITIALIZE                      SYSKANRI-REC
            MOVE    "1009"              TO  SYS-KANRICD
            MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)              
+           MOVE    "01"                TO  ORC-DBYMD (7:2)              
            PERFORM 960-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1009-REC
@@ -593,6 +611,8 @@
                    MOVE   PTINF-SEX        TO  RECE62-SEX
                    MOVE   PTINF-BIRTHDAY   TO  RECE62-BIRTHDAY
                    MOVE   PTINF-DEATHKBN   TO  RECE62-DEATHKBN
+                   MOVE   PTINF-TSTPTNUMKBN
+                                           TO  RECE62-TSTPTNUMKBN 
       *            患者年齢計算
                    INITIALIZE                  ORCSAGECHKAREA
                    MOVE    RECE61-HOSPID   TO  AGECHK-HOSPID
@@ -936,6 +956,11 @@
                    MOVE     SPACE   TO       RECE62-TEISYOTOKU
                WHEN    0             ALSO     1
                    MOVE     "2"     TO       RECE62-TEISYOTOKU
+                   IF  (TSYRRK-SKJGNSTYMD     NOT =  SPACE       )
+                   AND (TSYRRK-SKJGNSTYMD(1:6)   <=  RECE61-SRYYM)
+                   AND (TSYRRK-NINEDYMD  (1:6)   >=  RECE61-SRYYM)
+                      MOVE  "3"     TO       RECE62-TEISYOTOKU
+                   END-IF                                     
                WHEN    0             ALSO     0
                WHEN    1             ALSO     0
                    MOVE     "1"     TO       RECE62-TEISYOTOKU
@@ -987,6 +1012,9 @@
       *病院・診療所区分
            MOVE    SYS-1001-HOSPSBT TO  RECE62-HOSPSBT               
            .
+      *
+      *    病棟区分セット
+           PERFORM    BYOTOKBN-SET-SEC
        210-HENSYU-EXT.
            EXIT.
       *
@@ -1849,6 +1877,101 @@
            EXIT.
       *
       *****************************************************************
+      *    病棟区分セット                                              
+      *****************************************************************
+       BYOTOKBN-SET-SEC                SECTION.                        
+      *                                                                
+           INITIALIZE                      WRK-BYOTOKBN-TABLE          
+      *                                                                
+           INITIALIZE                      PTNYUINRRK-REC              
+           MOVE    RECE61-HOSPID       TO  PTNYUINRRK-HOSPID           
+           MOVE    RECE61-PTID         TO  PTNYUINRRK-PTID             
+           MOVE    RECE62-SRYYM        TO  PTNYUINRRK-NYUINYMD (1:6)   
+           MOVE    "31"                TO  PTNYUINRRK-NYUINYMD (7:2)   
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC                 
+           MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH                  
+           MOVE    "DBSELECT"          TO  MCP-FUNC                    
+           CALL    "ORCMCPSUB"         USING   MCPAREA                 
+                                               ORCMCPAREA              
+                                               MCPDATA-REC             
+           IF      MCP-RC              =   ZERO                        
+               MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH              
+               PERFORM 900-PTNYUINRRK-KEY12-READ-SEC                   
+           ELSE                                                        
+               MOVE    1                   TO  FLG-PTNYUINRRK12        
+           END-IF                                                      
+           PERFORM   UNTIL   FLG-PTNYUINRRK12    =   1                 
+                      OR     PTNYUINRRK-TAIINYMD (1:6)                 
+                                           <   RECE62-SRYYM            
+               IF      PTNYUINRRK-NYUINYMD (1:6)                       
+                                           <=  RECE62-SRYYM            
+      *             病棟情報                                           
+                    MOVE    SPACE                 TO  SYSKANRI-REC     
+                    INITIALIZE                        SYSKANRI-REC     
+                    MOVE    "5001"                TO  SYS-KANRICD      
+                    MOVE    PTNYUINRRK-BTUNUM     TO  SYS-KBNCD        
+                    MOVE    PTNYUINRRK-TENNYUYMD  TO  ORC-DBYMD        
+                    PERFORM 960-SYSKANRI-READ-SEC                      
+                    IF      FLG-SYSKANRI        =   ZERO               
+                      MOVE  MCPDATA-REC           TO  SYS-5001-REC     
+                      IF    SYS-5001-RECEDSPKBN =  SPACE               
+                        CONTINUE                                       
+                      ELSE                                             
+                        MOVE     ZERO     TO    FLG-ARI                
+                        PERFORM  VARYING  IDX3   FROM    1   BY  1     
+                                 UNTIL    IDX3    >  4                 
+                                  OR    WRK-BYOTOKBN(IDX3) = SPACE     
+                                  OR    FLG-ARI            = 1         
+                             IF  WRK-BYOTOKBN(IDX3)                    
+                                        =  SYS-5001-RECEDSPKBN         
+                                 MOVE  1   TO   FLG-ARI                
+                             END-IF                                    
+                        END-PERFORM                                    
+                        IF   FLG-ARI  =  ZERO                          
+                        AND  IDX3    <=  4                             
+                             MOVE   SYS-5001-RECEDSPKBN                
+                                           TO   WRK-BYOTOKBN(IDX3)     
+                        END-IF                                         
+                      END-IF                                           
+                    END-IF                                             
+               END-IF                                                  
+               MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH              
+               PERFORM 900-PTNYUINRRK-KEY12-READ-SEC                   
+           END-PERFORM                                                 
+      *                                                                
+           MOVE    "PTNYUINRRK-KEY12"  TO  ORC-DBPATH                  
+           MOVE    "DBCLOSE"           TO  MCP-FUNC                    
+           CALL    "ORCMCPSUB"         USING   MCPAREA                 
+                                               ORCMCPAREA              
+                                               MCPDATA-REC             
+      *                                                                
+      *    コード順に並び替え                                          
+      *                                                                
+           PERFORM    VARYING   IDX3     FROM    1   BY  1             
+                  UNTIL  ( IDX3                   >   4    )           
+                    OR   ( WRK-BYOTOKBN(IDX3)     =  SPACE )           
+             COMPUTE    IDX4  =  IDX3  +  1                            
+             PERFORM  VARYING  IDX5  FROM  IDX4  BY  1                 
+                        UNTIL  ( IDX5                >   4    )        
+                          OR   ( WRK-BYOTOKBN(IDX5)  =  SPACE )        
+                IF       WRK-BYOTOKBN(IDX3)  >                         
+                                           WRK-BYOTOKBN(IDX5)          
+                   MOVE  WRK-BYOTOKBN(IDX3) TO  WRK-BYOTOKBN-DATA      
+                   MOVE  WRK-BYOTOKBN(IDX5) TO  WRK-BYOTOKBN(IDX3)     
+                   MOVE  WRK-BYOTOKBN-DATA  TO  WRK-BYOTOKBN(IDX5)     
+                END-IF                                                 
+             END-PERFORM                                               
+           END-PERFORM                                                 
+      *                                                                
+           PERFORM    VARYING   IDX3     FROM    1   BY  1             
+                  UNTIL   IDX3    >     4                              
+                MOVE    WRK-BYOTOKBN(IDX3)  TO  RECE62-BYOTOKBN(IDX3)  
+           END-PERFORM                                                 
+           .                                                           
+       BYOTOKBN-SET-EXT.                                               
+           EXIT.                                                       
+      *
+      *****************************************************************
       *    データ出力処理
       *****************************************************************
        220-DATA-WRITE-SEC                SECTION.
@@ -2291,8 +2414,8 @@
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-           MOVE    WRK-PARA-SRYYM  TO  ORC-DBYMD (1:6)
-           MOVE    "01"            TO  ORC-DBYMD (7:2) 
+      *****MOVE    WRK-PARA-SRYYM  TO  ORC-DBYMD (1:6)
+      *****MOVE    "01"            TO  ORC-DBYMD (7:2) 
            CALL    "ORCMCPSUB"     USING
                                    MCPAREA
                                    ORCMCPAREA

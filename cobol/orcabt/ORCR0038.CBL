@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    03.03.12  補助区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -285,7 +286,8 @@
            MOVE    RECE02-RECEKA       TO  RECE04-RECEKA
            MOVE    RECE02-TEISYUTUSAKI TO  RECE04-TEISYUTUSAKI
            MOVE    RECE02-RECESYUBETU  TO  RECE04-RECESYUBETU
-           MOVE    RECE02-HKNJANUM     TO  RECE04-HKNJANUM
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE04-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE04-HOJOKBN
            MOVE    RECE02-TEKSTYMD     TO  RECE04-TEKSTYMD
            MOVE    ZERO                TO  RECE04-ZAINUM
       *
@@ -307,7 +309,8 @@
                                          NOT =   RECE04-TEISYUTUSAKI )
                OR     ( RECE02-RECESYUBETU
                                          NOT =   RECE04-RECESYUBETU  )
-               OR     ( RECE02-HKNJANUM  NOT =   RECE04-HKNJANUM     )
+               OR     ( RECE02-HKNJANUM-KEY  NOT =  RECE04-HKNJANUM    )
+               OR     ( RECE02-HOJOKBN-KEY   NOT =  RECE04-HOJOKBN     )
                OR     ( RECE02-TEKSTYMD  NOT =   RECE04-TEKSTYMD     )
       *
       *        複数診療科受診でないとき
@@ -322,6 +325,7 @@
                    MOVE    RECE04-TEISYUTUSAKI TO  RECE042-TEISYUTUSAKI
                    MOVE    RECE04-RECESYUBETU  TO  RECE042-RECESYUBETU
                    MOVE    RECE04-HKNJANUM     TO  RECE042-HKNJANUM
+                   MOVE    RECE04-HOJOKBN      TO  RECE042-HOJOKBN
                    MOVE    RECE04-TEKSTYMD     TO  RECE042-TEKSTYMD
                    MOVE    RECE04-KOHBUNRI     TO  RECE042-KOHBUNRI
                    MOVE    RECE04-SRYKBN       TO  RECE042-SRYKBN
@@ -357,6 +361,7 @@
                    MOVE    RECE04-TEISYUTUSAKI TO  RECE042-TEISYUTUSAKI
                    MOVE    RECE04-RECESYUBETU  TO  RECE042-RECESYUBETU
                    MOVE    RECE04-HKNJANUM     TO  RECE042-HKNJANUM
+                   MOVE    RECE04-HOJOKBN      TO  RECE042-HOJOKBN
                    MOVE    RECE04-TEKSTYMD     TO  RECE042-TEKSTYMD
                    MOVE    RECE04-KOHBUNRI     TO  RECE042-KOHBUNRI
                    MOVE    RECE04-SRYKBN       TO  RECE042-SRYKBN

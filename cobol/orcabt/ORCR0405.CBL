@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    02.09.09  自賠責対応
+      *  01.00.02    NACL-藤原    03.02.24  最新のレセプトのみＤＢに残す
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -95,6 +96,7 @@
            03  FLG-RECE40                              PIC 9(01).
            03  FLG-PTRSIINF                            PIC 9(01).
            03  FLG-PTINF                               PIC 9(01).
+           03  FLG-RECE07                              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -136,6 +138,8 @@
       *
            03  WRK-HKNNUM              PIC 9(03).     
       *
+           03  WRK-PATH                PIC X(64).
+      *
            03  WRK-SRYYMD.
                05  WRK-SRYYM           PIC 9(06).
                05  WRK-SRYDD           PIC 9(02).  
@@ -164,6 +168,10 @@
        01  WRK-RECE40-REC. 
            COPY    "CPRCF040.INC"  REPLACING  //RECE40//
                                    BY         //WRK-RECE40//.
+      *
+       01  WRK-RECE07-REC. 
+           COPY    "CPRCF007.INC"  REPLACING  //RECE07//
+                                   BY         //WRK-RECE07//.
       *
            COPY    "MCPAREA".
       *
@@ -201,6 +209,13 @@
       *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
+      *
+      *    レセプト管理     
+       01  RECE07-REC. 
+           COPY    "CPRCF007.INC".
+      *
+      *    レセプト
+           COPY    "CPRCF008.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -333,6 +348,43 @@
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD 
+      *
+      *    診療年月レセプト管理削除処理（一括分）
+           INITIALIZE                  RECE07-REC
+           MOVE    "HC23"              TO  RECE07-PRTID
+           MOVE    WRK-PARA-SRYYM      TO  RECE07-SRYYM
+           MOVE    "1"                 TO  RECE07-SYOKBN
+           MOVE    "2"                 TO  RECE07-NYUGAIKBN
+           MOVE    WRK-PARA-RECEKBN    TO  RECE07-RECEKBN
+           MOVE    RECE07-REC          TO  MCPDATA-REC
+           MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
+           PERFORM 900-RECE07-INV-SEC
+           IF      FLG-RECE07          =   ZERO
+               MOVE    RECE07-REC          TO  WRK-RECE07-REC
+               MOVE    RECE07-REC          TO  MCPDATA-REC 
+               MOVE    "RECEKANRI-DEL1"    TO  ORC-DBPATH
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC    
+      *
+      *        診療年月レセプト削除処理（一括分）
+               INITIALIZE                  RECE08-REC
+               MOVE    WRK-RECE07-PRTID    TO  RECE08-PRTID
+               MOVE    WRK-RECE07-SRYYM    TO  RECE08-RECEYM
+               MOVE    WRK-RECE07-CREYMD   TO  RECE08-CREYMD
+               MOVE    WRK-RECE07-CREHMS   TO  RECE08-CREHMS
+               MOVE    WRK-RECE07-NYUGAIKBN
+                                           TO  RECE08-NYUGAIKBN
+               MOVE    RECE08-REC          TO  MCPDATA-REC
+               MOVE    "RECEPRT-DEL1"      TO  ORC-DBPATH
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+           END-IF  
       *
       *    診療会計読み込み（患者ＩＤ、保険組合せ、診療科順）
            INITIALIZE                  SRYACCT-REC
@@ -631,6 +683,30 @@
       *    個別処理
       *****************************************************************
        2002-KOBETU-SYORI-SEC               SECTION.
+      *
+      *    レセプト管理削除処理（個別分）
+           INITIALIZE                  RECE07-REC
+           MOVE    "HC23"              TO  RECE07-PRTID
+           MOVE    "2"                 TO  RECE07-NYUGAIKBN
+           MOVE    RECE07-REC          TO  MCPDATA-REC
+           MOVE    "RECEKANRI-DEL2"    TO  ORC-DBPATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC      
+      *
+      *    レセプト削除処理（個別分）
+           INITIALIZE                  RECE08-REC
+           MOVE    "HC23"              TO  RECE08-PRTID
+           MOVE    "2"                 TO  RECE08-NYUGAIKBN
+           MOVE    RECE08-REC          TO  MCPDATA-REC
+           MOVE    "RECEPRT-DEL2"      TO  ORC-DBPATH
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC      
       *
       *        レセプト指示（個別指示）コード読み込み
            INITIALIZE                      SYS-2002-REC
@@ -1065,6 +1141,44 @@
       *
            .
        900-PTINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト管理読込（キー）
+      *****************************************************************
+       900-RECE07-INV-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    WRK-PATH            TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-RECE07
+                   MOVE    MCPDATA-REC         TO  RECE07-REC
+               ELSE
+                   MOVE    1                   TO  FLG-RECE07
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-RECE07
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           .
+       900-RECE07-INV-EXT.
            EXIT.
       *
       *****************************************************************

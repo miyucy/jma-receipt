@@ -71,6 +71,7 @@
       *  01.00.21   NACL-藤原     03.01.20  月代り受給者番号に入外区分を追加
       *  01.00.22   NACL-藤原     03.01.30  特記事項０４老保の判定にを７０歳
       *                                     を追加
+      *  01.00.23    NACL-藤原    03/03/12  テスト患者番号区分・補助区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -538,6 +539,7 @@
            MOVE    RECE01-PTID          TO  RECE02-PTID
            MOVE    RECE01-RECEKA        TO  RECE02-RECEKA
            MOVE    RECE01-HKNJANUM      TO  RECE02-HKNJANUM-KEY
+           MOVE    RECE01-HOJOKBN       TO  RECE02-HOJOKBN-KEY
       *****MOVE    RECE01-TEKSTYMD      TO  RECE02-TEKSTYMD
       *****MOVE    RECE01-TEKSTYMDX     TO  RECE02-TEKSTYMD
            PERFORM VARYING IDX FROM    1   BY  1
@@ -583,6 +585,8 @@
                    MOVE   PTINF-SEX        TO  RECE02-SEX
                    MOVE   PTINF-BIRTHDAY   TO  RECE02-BIRTHDAY
                    MOVE   PTINF-DEATHKBN   TO  RECE02-DEATHKBN
+                   MOVE   PTINF-TSTPTNUMKBN
+                                           TO  RECE02-TSTPTNUMKBN
       *            患者年齢計算
                    INITIALIZE                  ORCSAGECHKAREA
                    MOVE    RECE01-HOSPID   TO  AGECHK-HOSPID

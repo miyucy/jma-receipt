@@ -38,6 +38,7 @@
       *  01.00.06    NACL-門脇    03/02/12  医療機関名の長さ変更のため
       *                                     帳票ＩＤ追加
       *  01.00.07    NACL-藤原    03/02/14  頁数のジョブ管理ＤＢへの更新
+      *  01.00.08    NACL-藤原    03/02/24  プリンタ名をオンラインより渡す
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -141,6 +142,7 @@
                    07  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).                              
                05  WRK-PARA-TERMID32             PIC X(32).
                05  WRK-PARA-SYOKBN               PIC X(01).
+               05  WRK-PARA-PRTNM                PIC X(16).
       *
       *    労災レセプト
            COPY    "HCM21.INC".
@@ -242,6 +244,7 @@
                                              WRK-PARA-RECE09-KEY
                                              WRK-PARA-TERMID32
                                              WRK-PARA-SYOKBN
+                                             WRK-PARA-PRTNM
            END-UNSTRING                                  
       *
            PERFORM 100-DBOPEN-SEC
@@ -260,7 +263,7 @@
                                    JOBKANRI-REC
       *
       *    出力先プリンタ名割り当て情報処理
-           PERFORM 110-SYSKANRI-HENSYU-SEC
+      *****PERFORM 110-SYSKANRI-HENSYU-SEC
       *     
            MOVE    "HC21"              TO  HC01PARA-FORM-ID
            MOVE    WRK-PARA-TERMID32   TO  HC01PARA-TERMID
@@ -405,7 +408,8 @@
       *            MOVE    "HC29"          TO  PRT-PRTID   
       *****END-EVALUATE
            MOVE    RECE08-FORMID       TO  PRT-PRTID
-           MOVE    SYS-1031-PRTNM(4)   TO  PRT-PRTNM 
+      *****MOVE    SYS-1031-PRTNM(4)   TO  PRT-PRTNM 
+           MOVE    WRK-PARA-PRTNM      TO  PRT-PRTNM
       *
       *    通し番号印刷のときのみ編集
            IF      SYS-2005-RENNUMHENKBN   =   "1"

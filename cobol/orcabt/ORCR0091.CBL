@@ -47,6 +47,7 @@
       *  01.00.09    NACL-¾®Æ¦Âô  02.09.28  ¸¡ºº¤ÎÅ¦Í×Íó°õºþ½ç¤ò½¤Àµ
       *  01.00.10    NACL-Æ£¸¶    02.11.07  °åÎÅµ¡´Ø£É£Ä¡¦¿ÇÎÅÇ¯·î¤òÄÉ²Ã
       *  01.00.11    NACL-ÌçÏÆ    02.11.26  ¸¡¿Ç¥³¡¼¥É¤Î¿ÇÎÅ¶èÊ¬ÊÔ½¸
+      *  01.00.12    NACL-Æ£¸¶    03.03.12  Êä½õ¶èÊ¬¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -275,6 +276,7 @@
            MOVE    RECE06-TEISYUTUSAKI  TO      RECE061-TEISYUTUSAKI
            MOVE    RECE06-RECESYUBETU   TO      RECE061-RECESYUBETU
            MOVE    RECE06-HKNJANUM      TO      RECE061-HKNJANUM
+           MOVE    RECE06-HOJOKBN       TO      RECE061-HOJOKBN
            MOVE    RECE06-TEKSTYMD      TO      RECE061-TEKSTYMD
            MOVE    RECE06-KOHBUNRI      TO      RECE061-KOHBUNRI
            MOVE    RECE06-ZAINUM        TO      RECE061-ZAINUM

@@ -15,7 +15,6 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCR0710.
       *****************************************************************
@@ -29,6 +28,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-Æ£¸¶    03.01.30  ¿©»öÉéÃ´³Û¤¬¥¼¥í¤Î¤È¤­½èÍý¤·¤Ê¤¤
+      *  01.00.10    NACL-Æ£¸¶    03/01/27  ¸øÈñÀÁµá½ñ£Ä£Â¤òÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -42,6 +42,13 @@
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE62-KEY
                                    FILE    STATUS  IS  STS-RECE62.
+      *
+      *    ¥ì¥»¥×¥È£°£²¥Ç¡¼¥¿¡Ê¸øÈñÀÁµá½ñ¡Ë
+           SELECT  RECE62X-FILE    ASSIGN  RECE62XPARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE62X-KEY
+                                   FILE    STATUS  IS  STS-RECE62X.
       *    ¥ì¥»¥×¥È£°£³£±¥Ç¡¼¥¿
            SELECT  RECE631-FILE     ASSIGN  RECE63PARA
                                    ORGANIZATION    IS  INDEXED
@@ -85,6 +92,12 @@
        01  RECE62-REC.
            COPY    "CPRCF062.INC".
       *
+      *    ¥ì¥»¥×¥È£°£²¥Ç¡¼¥¿¡Ê¸øÈñÀÁµá½ñ¡Ë
+       FD  RECE62X-FILE.
+       01  RECE62X-REC. 
+           COPY    "CPRCF062.INC"  REPLACING  //RECE62//
+                                   BY         //RECE62X//.
+      *
       *    ¥ì¥»¥×¥È£°£³£±¥Ç¡¼¥¿
        FD  RECE631-FILE.
        01  RECE631-REC.
@@ -121,6 +134,10 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01//
                                    BY         //RECE62//.
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE62X//.
       *
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01//
@@ -164,6 +181,7 @@
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
            03  STS-RECE62          PIC X(02).
+           03  STS-RECE62X         PIC X(02).
            03  STS-RECE63          PIC X(02).
            03  STS-RECE66          PIC X(02).
            03  STS-RECE68          PIC X(02).
@@ -191,12 +209,15 @@
            03  FLG-ERR             PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
       *
+           03  FLG-KOHSKY          PIC 9(01).
+           03  FLG-RECE62X         PIC 9(01).
            03  FLG-TENKI           PIC 9(01).     
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
            03  CNT-RECE62          PIC 9(06).
+           03  CNT-RECE62X         PIC 9(06).
            03  CNT-RECE03          PIC 9(06).
            03  CNT-RECE661         PIC 9(06).
            03  CNT-RECE69          PIC 9(06).
@@ -236,6 +257,8 @@
            03  IDY1                PIC 9(03).
            03  IDY2                PIC 9(03).
            03  IDY3                PIC 9(03).
+           03  IDY4                PIC 9(03).                           
+           03  IDY5                PIC 9(03).                           
       *     
            03  SEIHIDX             PIC 9(02).
            03  KAKKIDX             PIC 9(02).
@@ -294,6 +317,8 @@
       *
            03  WRK-ERRMSG          PIC X(40).
       *
+           03  WRK-PATH            PIC X(64).
+      *
            03  WRK-1033-TABLE.
                05  WRK-1033-TBL    OCCURS  5.
                    07  WRK-1033-HKNJANUM-G.
@@ -305,7 +330,7 @@
                                    PIC X(08).                                       
       *
       *    ¸©Ã±ÍÑ¹àÌÜ¥Õ¥¡¥¤¥ëÍÑ¥ï¡¼¥¯     
-           COPY    "HC06.INC"     REPLACING  //HC06//
+           COPY    "HCN06.INC"     REPLACING  //HCN06//
                                    BY         //RECE67-HC06//.
       *
        01  WRK-HENSYU-AREA.
@@ -582,6 +607,9 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
+      *    ¸øÈñÀÁµá½ñ
+           COPY    "CPKOHSKY.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -686,6 +714,9 @@
            MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
       *
+           MOVE    "RECE62X"           TO  RECE62XPARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE62XPARA-TERMID
+      *
            MOVE    "RECE631"           TO  RECE63PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE63PARA-TERMID
       *
@@ -707,6 +738,12 @@
            OPEN    INPUT               RECE62-FILE
            IF  STS-RECE62          NOT =   ZERO
                DISPLAY "*** ORCR0710 RECE62 OPEN ERR  ***"
+               MOVE    2               TO  SPA-STS
+           END-IF
+      *
+           OPEN    INPUT               RECE62X-FILE
+           IF  STS-RECE62X         NOT =   ZERO
+               DISPLAY "*** ORCR0710 RECE62X OPEN ERR  ***"
                MOVE    2               TO  SPA-STS
            END-IF
       *
@@ -884,6 +921,9 @@
                    END-PERFORM
                END-PERFORM    
            END-PERFORM
+      *
+      *    ¸øÈñÀÁµá½ñ½ÐÎÏ
+           PERFORM 2002-KOHSKY-WRITE-SEC        
       *
            MOVE    2               TO  SPA-STS
       *
@@ -1115,6 +1155,173 @@
            .
        2001-SYORI-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ¸øÈñÀÁµá½ñ½ÐÎÏ½èÍý
+      *****************************************************************
+       2002-KOHSKY-WRITE-SEC           SECTION.
+      *
+           PERFORM 990-RECE62X-READ-SEC
+      *
+           PERFORM                     UNTIL   FLG-RECE62X =   1
+                                       OR      FLG-ERR     =   1
+               MOVE    SPACE               TO  KOHSKY-REC
+               INITIALIZE                      KOHSKY-REC
+               MOVE    RECE62X-HOSPID      TO  KOHSKY-HOSPID
+               MOVE    RECE62X-SRYYM       TO  KOHSKY-SRYYM
+               MOVE    RECE62X-NYUGAIKBN   TO  KOHSKY-NYUGAIKBN
+               MOVE    RECE62X-PTID        TO  KOHSKY-PTID
+               IF      RECE62X-RECEKA      =   SPACE
+                   MOVE    ZERO                TO  KOHSKY-RECEKA
+               ELSE
+                   MOVE    RECE62X-RECEKA      TO  KOHSKY-RECEKA
+               END-IF
+               MOVE    RECE62X-TEISYUTUSAKI    TO  KOHSKY-TEISYUTUSAKI
+               IF      RECE62X-HKNJANUM-KEY    =   SPACE
+                   MOVE    ZERO            TO  KOHSKY-HKNJANUM-KEY
+               ELSE
+                   MOVE    RECE62X-HKNJANUM-KEY
+                                           TO  KOHSKY-HKNJANUM-KEY
+               END-IF
+               IF      RECE62X-HOJOKBN-KEY    =   SPACE
+                   MOVE    ZERO            TO  KOHSKY-HOJOKBN-KEY
+               ELSE
+                   MOVE    RECE62X-HOJOKBN-KEY
+                                           TO  KOHSKY-HOJOKBN-KEY
+               END-IF
+               IF      RECE62X-TEKSTYMD    =   SPACE
+                   MOVE    ZERO                TO  KOHSKY-TEKSTYMD
+               ELSE
+                   MOVE    RECE62X-TEKSTYMD    TO  KOHSKY-TEKSTYMD
+               END-IF
+      *
+      *        ¥ì¥»¥×¥È¼ïÊÌ¤òÀÁµá´ÉÍý¤è¤êÊÔ½¸
+               INITIALIZE                      RECE10-REC
+               MOVE    KOHSKY-KEY          TO  RECE10-KEY
+               MOVE    "SEIKYU-KEY15"      TO  WRK-PATH
+               PERFORM 900-SEIKYU-INV-SEC
+               IF      FLG-SEIKYU          =   ZERO
+                   MOVE    MCPDATA-REC         TO  RECE10-REC
+                   MOVE    RECE10-RECESYUBETU  TO  KOHSKY-RECESYUBETU
+               ELSE
+                   STRING  "¥ì¥»¥×¥È¼ïÊÌ¤¬ÀßÄêÉÔÇ½ PTNUM="
+                                               DELIMITED  BY  SIZE
+                           RECE62X-PTNUM       DELIMITED  BY  SIZE 
+                                               INTO  WRK-RECEERR
+                   END-STRING
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    1                  TO  FLG-ERR
+                   GO  TO  2002-KOHSKY-WRITE-EXT
+               END-IF
+      *
+               PERFORM 900-KOHSKY-INV-SEC
+               IF      FLG-KOHSKY          =   ZERO
+                   MOVE    MCPDATA-REC         TO  KOHSKY-REC
+                   MOVE    WRK-PARA-SYSYMD     TO  KOHSKY-UPDYMD
+                   IF      KOHSKY-SKYKBN       =   "2"
+                       MOVE    "1"                 TO  KOHSKY-SKYKBN
+                   END-IF 
+                   MOVE    "2"                 TO  KOHSKY-TEISEIKBN
+               ELSE
+                   MOVE    "1"                 TO  KOHSKY-SKYKBN
+                   MOVE    WRK-PARA-SYSYMD     TO  KOHSKY-CREYMD
+                   MOVE    ZERO                TO  KOHSKY-UPDYMD
+                   MOVE    ZERO                TO  KOHSKY-SKYYM
+                                                   KOHSKY-HENREIYM
+                                                   KOHSKY-TEISEIKBN
+               END-IF
+               MOVE    RECE62X-PTNUM       TO  KOHSKY-PTNUM
+               MOVE    RECE62X-KANANAME    TO  KOHSKY-KANANAME
+               MOVE    RECE62X-NAME        TO  KOHSKY-NAME
+               MOVE    RECE62X-SEX         TO  KOHSKY-SEX
+               MOVE    RECE62X-BIRTHDAY    TO  KOHSKY-BIRTHDAY
+               MOVE    RECE62X-AGE         TO  KOHSKY-AGE  
+               MOVE    RECE62X-DEATHKBN    TO  KOHSKY-DEATHKBN
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       10
+                   MOVE    RECE62X-SRYKA        TO  KOHSKY-SRYKA
+               END-PERFORM
+               MOVE    RECE62X-HKN         TO  KOHSKY-HKN
+               IF      RECE62X-KYURATE  >  ZERO
+                   COMPUTE WRK-KYURATE-9   =
+                              (100     -   RECE62X-KYURATE)
+                                               / 10 
+                   MOVE    WRK-KYURATE-9   TO  KOHSKY-KYURATE
+               ELSE
+               IF      RECE62-TEISYUTUSAKI =   "1"
+                   MOVE    ZERO            TO  RECE10-KYURATE
+               ELSE
+                   MOVE    10              TO  RECE10-KYURATE
+               END-IF        
+               END-IF             
+               MOVE    RECE62X-RJNHKN      TO  KOHSKY-RJNHKN
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       4
+                   MOVE    RECE62X-KOHID       (IDX) 
+                                       TO  KOHSKY-KOHID      (IDX)
+                   MOVE    RECE62X-KOHNUM      (IDX)
+                                       TO  KOHSKY-KOHNUM     (IDX)
+                   MOVE    RECE62X-KOHHBTNUM   (IDX)
+                                       TO  KOHSKY-KOHHBTNUM  (IDX)
+                   MOVE    RECE62X-KOHFTNJANUM (IDX)
+                                       TO  KOHSKY-KOHFTNJANUM(IDX)
+                   MOVE    RECE62X-KOHJKYSNUM  (IDX)
+                                       TO  KOHSKY-KOHJKYSNUM (IDX)
+               END-PERFORM
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       10
+                   MOVE    RECE62X-HKNCOMBIINF (IDX)
+                                           TO KOHSKY-HKNCOMBIINF (IDX)
+               END-PERFORM
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       50
+                   MOVE    RECE62X-SRYKBNINF (IDX)
+                                           TO  KOHSKY-SRYKBNINF (IDX)
+               END-PERFORM
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       5
+                   MOVE    RECE62X-JNISSUINF (IDX)
+                                           TO  KOHSKY-JNISSUINF (IDX)
+                   MOVE    RECE62X-TOTALTENINF (IDX)
+                                           TO  KOHSKY-TOTALTENINF (IDX)
+                   MOVE    RECE62X-FTNMONEYINF(IDX)
+                                           TO  KOHSKY-FTNMONEYINF (IDX)
+                   MOVE    RECE62X-SHOKUJIINF (IDX)
+                                           TO  KOHSKY-SHOKUJIINF (IDX)
+               END-PERFORM
+               MOVE    RECE62X-SHOSHINTIME TO  KOHSKY-SHOSHINTIME
+      *
+               MOVE    KOHSKY-REC          TO  MCPDATA-REC
+               MOVE    "KOHSKY-KEY"        TO  ORC-DBPATH
+               IF      FLG-KOHSKY          =   1    
+                   MOVE    "DBINSERT"          TO  MCP-FUNC
+               ELSE
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+               END-IF 
+               CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC      
+      *
+               IF      MCP-RC     =   ZERO
+                   PERFORM 990-RECE62X-READ-SEC
+               ELSE
+                   DISPLAY "ORCR0710 KOHSKY MCP-RC= "  MCP-RC   
+                   IF      FLG-KOHSKY          =   1    
+                       MOVE    "¸øÈñÀÁµá£Ä£Â¤ËÄÉ²Ã¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+                                               TO  WRK-RECEERR
+                   ELSE
+                       MOVE    "¸øÈñÀÁµá£Ä£Â¤Ë¹¹¿·¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+                                               TO  WRK-RECEERR
+                   END-IF 
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    1                  TO  FLG-ERR
+               END-IF
+           END-PERFORM
+      *
+           .
+       2002-KOHSKY-WRITE-EXT.
+           EXIT.
       *****************************************************************
       *    ¸©Ã±ÍÑ¹àÌÜ¥Õ¥¡¥¤¥ëÆÉ¹þ½èÍý
       *****************************************************************
@@ -1123,16 +1330,7 @@
            MOVE    SPACE               TO  RECE67-HC06
       *       
            INITIALIZE                      RECE67-REC
-           MOVE    RECE62-HOSPID       TO  RECE67-HOSPID
-           MOVE    RECE62-SRYYM        TO  RECE67-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE67-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE67-PTID
-           MOVE    RECE62-RECEKA       TO  RECE67-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE67-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE67-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE67-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE67-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE67-TEKSTYMD
+           MOVE    RECE62-KEY          TO  RECE67-KEY
            PERFORM 900-RECE67-READ-SEC
            IF      FLG-RECE67          =   ZERO
                MOVE    RECE67-PRTDATA      TO  RECE67-HC06
@@ -1237,6 +1435,9 @@
       *
       *    ÆÃµ­»ö¹à
            PERFORM 3110-TOKKI-SET-SEC
+      *
+      *    ÉÂÅï¶èÊ¬ 
+           PERFORM 3110-BYOTOKBN-SET-SEC
       *
       *    ¿¦Ì³¾å¤Î»öÍ³
            EVALUATE    RECE62-HKNNUM
@@ -1725,6 +1926,47 @@
            .
        3110-TOKKI-SET-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    Ä¢É¼  <ÉÂÅï¶èÊ¬>¡¡ÊÔ½¸½èÍý                                  
+      *****************************************************************
+       3110-BYOTOKBN-SET-SEC          SECTION.                         
+      *                                                                 
+           MOVE     1      TO     IDY5                                  
+      *                                                                 
+           PERFORM    VARYING   IDY4     FROM    1   BY  1              
+                  UNTIL   IDY4                  >   4                   
+                    OR    RECE62-BYOTOKBN(IDY4) =  SPACE                
+      *                                                                 
+                EVALUATE  RECE62-BYOTOKBN(IDY4)                         
+                   WHEN "01"                                            
+                      MOVE  "Àº¿À¡¡"   TO  HC06-NYUINKBN(IDY5:6)        
+                      ADD    6         TO  IDY5                         
+                   WHEN "02"                                            
+                      MOVE  "·ë³Ë¡¡"   TO  HC06-NYUINKBN(IDY5:6)        
+                      ADD    6         TO  IDY5                         
+                   WHEN "03"                                            
+                      MOVE  "ÆÃÎã¡¡"   TO  HC06-NYUINKBN(IDY5:6)        
+                      ADD    6         TO  IDY5                         
+                   WHEN "05"                                            
+                      MOVE  "Ï·¿Í¡¡"   TO  HC06-NYUINKBN(IDY5:6)        
+                      ADD    6         TO  IDY5                         
+                   WHEN "07"                                            
+                      MOVE  "ÎÅÍÜ¡¡"   TO  HC06-NYUINKBN(IDY5:6)        
+                      ADD    6         TO  IDY5                         
+                   WHEN "08"                                            
+                      MOVE  "Ê£¹ç¡¡"   TO  HC06-NYUINKBN(IDY5:6)        
+                      ADD    6         TO  IDY5                         
+                   WHEN "09"                                            
+                      MOVE  "Ê£ÎÅ¡¡"   TO  HC06-NYUINKBN(IDY5:6)        
+                      ADD    6         TO  IDY5                         
+                END-EVALUATE                                            
+      *                                                                 
+           END-PERFORM                                                  
+      *                                                                 
+           .                                                            
+       3110-BYOTOKBN-SET-EXT.                                           
+           EXIT.                                                        
       *
       *****************************************************************
       *    Ä¢É¼ÊÔ½¸<½ýÉÂÌ¾>½èÍý
@@ -2452,6 +2694,22 @@
                    END-EVALUATE        
                END-IF                                        
            END-PERFORM          
+      *                                                                 
+      *        <¸º¡¢ÌÈ¡¢Í±¡¢Äã½êÆÀ£±¡¢Äã½êÆÀ£²¡¢£³·îÄ¶>            
+      *                                                                
+           IF      RECE62-TEISYOTOKU   =   SPACE                       
+               CONTINUE                                                
+           ELSE                                                        
+               EVALUATE    RECE62-TEISYOTOKU                           
+                   WHEN    "1"                                         
+                      MOVE    "Äã½êÆÀ£±"  TO  HC06-GENGAKUMEI          
+                   WHEN    "2"                                         
+                      MOVE    "Äã½êÆÀ£²"  TO  HC06-GENGAKUMEI          
+                   WHEN    "3"                                         
+                      MOVE    "Äã½êÆÀ£²¡¡£³·îÄ¶"                       
+                                          TO  HC06-GENGAKUMEI          
+               END-EVALUATE                                            
+           END-IF                                                      
       *
       *        <ÀÁµáÅÀ¡¦°ìÉôÉéÃ´¶â¡¦¿©»öÆü¿ô¡¦ÀÁµá³Û¡¦É¸½àÉéÃ´³Û>
       *
@@ -2613,34 +2871,6 @@
                ELSE    
                    MOVE    WRK-KUGIRI1 TO  HC061-TEKIYO (WRK-LINETEK)
                END-IF    
-           END-IF
-      *
-           IF      RECE62-TEISYOTOKU   =   SPACE
-           OR      RECE62-KOUREI       =   SPACE
-               CONTINUE
-           ELSE
-               IF  WRK-LINETEK           >   WRK-TEKIYOU-LINE
-                   PERFORM 34120-PAGE-SEC
-               END-IF    
-               ADD     1               TO  WRK-LINETEK
-               EVALUATE    RECE62-TEISYOTOKU
-                   WHEN    "1"
-                       IF      CNT-PAGE        =   1   
-                           MOVE    "Äã½êÆÀ£±"
-                                       TO  HC06-TEKIYO (WRK-LINETEK)
-                       ELSE                
-                           MOVE    "Äã½êÆÀ£±"
-                                       TO  HC061-TEKIYO(WRK-LINETEK)
-                       END-IF                
-                   WHEN    "2"
-                       IF      CNT-PAGE        =   1   
-                           MOVE    "Äã½êÆÀ£²"
-                                       TO  HC06-TEKIYO (WRK-LINETEK)
-                       ELSE                
-                           MOVE    "Äã½êÆÀ£²"
-                                       TO  HC061-TEKIYO(WRK-LINETEK)
-                       END-IF                
-               END-EVALUATE        
            END-IF
       *         
            MOVE    ZERO                TO  WRK-R061-ZAINUM-O
@@ -2882,7 +3112,10 @@
            IF      FLG-RECE67           =   ZERO
                INSPECT RECE67-HC06-BODY     REPLACING   ALL "  "
                                                         BY  "¡¡" 
+               INSPECT RECE67-HC06-FOOT     REPLACING   ALL "  "
+                                                        BY  "¡¡" 
                MOVE    RECE67-HC06-BODY     TO  HC06-BODY
+               MOVE    RECE67-HC06-FOOT     TO  HC06-FOOT
            END-IF
       *
            .
@@ -3448,17 +3681,22 @@
            MOVE    RECE62-TEISYUTUSAKI TO  RECE10-TEISYUTUSAKI
            MOVE    RECE62-RECESYUBETU  TO  RECE10-RECESYUBETU
            IF      RECE62-HKNJANUM-KEY =   SPACE
-               MOVE    ZERO            TO  RECE10-HKNJANUM
+               MOVE    ZERO                TO  RECE10-HKNJANUM
            ELSE
-               MOVE    RECE62-HKNJANUM-KEY
-                                       TO  RECE10-HKNJANUM
+               MOVE    RECE62-HKNJANUM-KEY TO  RECE10-HKNJANUM
            END-IF
+           IF      RECE62-HOJOKBN-KEY      =   SPACE
+               MOVE    ZERO                TO  RECE10-HOJOKBN-KEY
+           ELSE
+               MOVE    RECE62-HOJOKBN-KEY  TO  RECE10-HOJOKBN-KEY
+           END-IF   
            IF      RECE62-TEKSTYMD     =   SPACE
                MOVE    ZERO            TO  RECE10-TEKSTYMD
            ELSE
                MOVE    RECE62-TEKSTYMD TO  RECE10-TEKSTYMD
            END-IF
       *
+           MOVE    "SEIKYU-KEY"        TO  WRK-PATH   
            PERFORM 900-SEIKYU-INV-SEC
            IF      FLG-SEIKYU          =   ZERO
                MOVE    MCPDATA-REC         TO  RECE10-REC
@@ -3516,10 +3754,83 @@
                MOVE    RECE62-SHOKUJIINF (IDX) TO
                                        RECE10-SHOKUJIINF (IDX)
            END-PERFORM
+      *    £±£±½é¿Ç¡Á£¸£°Â¾
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       30
+                   UNTIL   IDX >       22
                MOVE    RECE62-SRYKBNINF (IDX)  TO
                                        RECE10-SRYKBNINF (IDX)
+           END-PERFORM
+      *
+      *    £¹£°Æþ±¡´ðËÜÎÁ¡¦²Ã»»
+           MOVE    ZERO              TO  IDY
+           PERFORM   VARYING   IDX   FROM    23   BY  1
+                     UNTIL     IDX       >   26
+               ADD     1                 TO  IDY
+               MOVE    RECE62-NYUKHNRYO  (IDY)
+                                         TO  RECE10-KHNTEN (IDX)
+               MOVE    RECE62-NYUKHNNISSU(IDY)
+                                         TO  RECE10-KAISU  (IDX)
+               PERFORM   VARYING   IDY1  FROM    1   BY  1
+                         UNTIL     IDY1      >   5
+                   MOVE    RECE62-NYUKHNKEI  (IDY IDY1)
+                                         TO  RECE10-TENSU  (IDX IDY1)
+               END-PERFORM
+           END-PERFORM
+           IF        RECE62-NYUKHNRYO (5)    >   ZERO
+               MOVE    ZERO                  TO  RECE10-KHNTEN (26)
+               PERFORM   VARYING   IDY   FROM    5   BY  1
+                         UNTIL     IDY       >   10
+                         OR        RECE62-NYUKHNRYO (IDY)    =   ZERO
+                   ADD     RECE62-NYUKHNNISSU(IDY)
+                                                 TO  RECE10-KAISU  (26)
+                   PERFORM   VARYING   IDY1  FROM    1   BY  1
+                             UNTIL     IDY1      >   5
+                       ADD       RECE62-NYUKHNKEI  (IDY IDY1)
+                                         TO  RECE10-TENSU  (26 IDY1)
+                   END-PERFORM
+               END-PERFORM    
+           END-IF
+           PERFORM   VARYING   IDY1  FROM    1   BY  1
+                     UNTIL     IDY1      >   5
+               MOVE    RECE62-NYUKHNKEI2 (IDY1)
+                                         TO  RECE10-TENSU  (27 IDY1)
+           END-PERFORM
+      *     
+      *    £¹£²ÆÃÄêÆþ±¡ÎÁ¡¦²Ã»»
+           MOVE    ZERO              TO  IDY
+           PERFORM   VARYING   IDX   FROM    28   BY  1
+                     UNTIL     IDX       >   31
+               ADD     1                 TO  IDY
+               IF      RECE62-NYUTOKRYO-RYAKU (IDY)
+                                             =   SPACE
+                   MOVE    RECE62-NYUTOKRYO  (IDY)
+                                         TO  RECE10-KHNTEN (IDX)
+               MOVE    RECE62-NYUTOKNISSU(IDY)
+                                         TO  RECE10-KAISU  (IDX)
+               PERFORM   VARYING   IDY1  FROM    1   BY  1
+                         UNTIL     IDY1      >   5
+                   MOVE    RECE62-NYUTOKKEI  (IDY IDY1)
+                                         TO  RECE10-TENSU  (IDX IDY1)
+               END-PERFORM
+           END-PERFORM
+           IF        RECE62-NYUTOKNISSU (5)  >   ZERO
+               MOVE    ZERO                  TO  RECE10-KHNTEN (31)
+               PERFORM   VARYING   IDY   FROM    5   BY  1
+                         UNTIL     IDY       >   10
+                         OR        RECE62-NYUTOKRYO (IDY)    =   ZERO
+                   ADD     RECE62-NYUTOKNISSU(IDY)
+                                                 TO  RECE10-KAISU  (31)
+                   PERFORM   VARYING   IDY1  FROM    1   BY  1
+                             UNTIL     IDY1      >   5
+                       ADD       RECE62-NYUTOKKEI  (IDY IDY1)
+                                         TO  RECE10-TENSU  (31 IDY1)
+                   END-PERFORM
+               END-PERFORM    
+           END-IF
+           PERFORM   VARYING   IDY1  FROM    1   BY  1
+                     UNTIL     IDY1      >   5
+               MOVE    RECE62-NYUTOKKEI2 (IDY1)
+                                         TO  RECE10-TENSU  (32 IDY1)
            END-PERFORM
       *    µëÉÕ³ä¹ç
            IF      RECE62-KYURATE  >   ZERO
@@ -3528,7 +3839,11 @@
                                                / 10 
                MOVE    WRK-KYURATE-9   TO  RECE10-KYURATE
            ELSE
-               MOVE    ZERO            TO  RECE10-KYURATE
+               IF      RECE62-TEISYUTUSAKI =   "1"
+                   MOVE    ZERO            TO  RECE10-KYURATE
+               ELSE
+                   MOVE    10              TO  RECE10-KYURATE
+               END-IF        
            END-IF             
       *     
            MOVE    RECE62-AGE          TO  RECE10-AGE  
@@ -3641,6 +3956,7 @@
       *
       *    ¥Õ¥¡¥¤¥ë£Ã£Ì£Ï£Ó£Å½èÍý
            CLOSE                       RECE62-FILE
+           CLOSE                       RECE62X-FILE
            CLOSE                       RECE631-FILE
            CLOSE                       RECE661-FILE
            CLOSE                       RECE67-FILE
@@ -3651,7 +3967,8 @@
                MOVE    "ÂÐ¾Ý¥Ç¡¼¥¿¤¬¤¢¤ê¤Þ¤»¤ó¤Ç¤·¤¿" TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
-           DISPLAY "*** ORCR0710 IN   "  CNT-RECE62
+           DISPLAY "*** ORCR0710 IN  RECE62 ="  CNT-RECE62
+           DISPLAY "*** ORCR0103 IN  RECE62X="  CNT-RECE62X
            DISPLAY "*** ORCR0710 OUT  "  CNT-OUT
            DISPLAY "*** ORCR0710 END ***"
       ***     ACCEPT  WRK-IN
@@ -3714,6 +4031,36 @@
       *
            .
        900-RECE62-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ì¥»¥×¥È£°£²¥Ç¡¼¥¿¡Ê¸øÈñÀÁµá½ñ¡Ë½ç¸¡º÷½èÍý
+      *****************************************************************
+       990-RECE62X-READ-SEC           SECTION.
+      *
+           READ    RECE62X-FILE       NEXT
+               AT  END
+                   MOVE    1                   TO  FLG-RECE62X
+               NOT AT  END
+      *            ¥Æ¥¹¥È´µ¼Ô¡¦¥ì¥»¥×¥È¼ïÊÌÉÔÌÀ¤Î¤È¤­ÆÉ¤ßÈô¤Ð¤¹
+                   IF    ( RECE62X-TSTPTNUMKBN     =   "1"    )
+                   OR    ( RECE62X-RECESYUBETU     =   "0000" )
+                       GO  TO  990-RECE62X-READ-SEC
+                   END-IF
+      *            ÅÀ¿ô¤¬Á´¤Æ¥¼¥í¤Î¤È¤­ÆÉ¤ßÈô¤Ð¤¹
+                   IF      RECE62X-TOTALTEN (1) =   ZERO
+                   AND     RECE62X-TOTALTEN (2) =   ZERO 
+                   AND     RECE62X-TOTALTEN (3) =   ZERO 
+                   AND     RECE62X-TOTALTEN (4) =   ZERO
+                   AND     RECE62X-TOTALTEN (5) =   ZERO
+                       GO  TO  990-RECE62X-READ-SEC
+                   END-IF
+                   MOVE    ZERO                TO  FLG-RECE62X
+                   ADD     1                   TO  CNT-RECE62X
+           END-READ
+      *
+           .
+       990-RECE62X-READ-EXT.
            EXIT.
       *
       ****************************************************************
@@ -3972,20 +4319,20 @@
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
+               MOVE   WRK-PATH             TO  ORC-DBPATH
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SEIKYU
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -4014,6 +4361,46 @@
            .
        900-SEIKYU-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ¸øÈñÀÁµá¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Ê¼ç¥­¡¼¡Ë
+      *****************************************************************
+       900-KOHSKY-INV-SEC         SECTION.
+      *
+           MOVE    KOHSKY-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "KOHSKY-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE   "KOHSKY-KEY"         TO  ORC-DBPATH
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO            TO  FLG-KOHSKY
+               ELSE
+                   MOVE    1               TO  FLG-KOHSKY
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-KOHSKY
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "KOHSKY-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       900-KOHSKY-INV-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ¥ì¥»¥×¥È¥³¥á¥ó¥È¥Þ¥¹¥¿¡¡£Ò£Å£Á£Ä
       *****************************************************************

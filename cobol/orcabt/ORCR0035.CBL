@@ -30,6 +30,7 @@
       *  01.00.01    MCC-藤原     01.06.29  保険者番号・
       *                                     適用開始年月日の追加
       *  01.01.02    MCC-藤原     02.02.13  保険組合せを３から１０に変更
+      *  01.00.03    NACL-藤原    03.03.12  補助区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -278,7 +279,8 @@
            MOVE    RECE02-RECEKA        TO      RECE04-RECEKA
            MOVE    RECE02-TEISYUTUSAKI  TO      RECE04-TEISYUTUSAKI
            MOVE    RECE02-RECESYUBETU   TO      RECE04-RECESYUBETU
-           MOVE    RECE02-HKNJANUM      TO      RECE04-HKNJANUM
+           MOVE    RECE02-HKNJANUM-KEY  TO      RECE04-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY   TO      RECE04-HOJOKBN
            MOVE    RECE02-TEKSTYMD      TO      RECE04-TEKSTYMD
            START   RECE04-FILE   KEY  IS  >=    RECE04-KEY
                    INVALID
@@ -294,7 +296,8 @@
                     (RECE02-RECEKA    NOT = RECE04-RECEKA)    OR
                     (RECE02-TEISYUTUSAKI NOT = RECE04-TEISYUTUSAKI) OR
                     (RECE02-RECESYUBETU  NOT = RECE04-RECESYUBETU)  OR
-                    (RECE02-HKNJANUM  NOT = RECE04-HKNJANUM)  OR
+                    (RECE02-HKNJANUM-KEY   NOT = RECE04-HKNJANUM)  OR
+                    (RECE02-HOJOKBN-KEY    NOT = RECE04-HOJOKBN )  OR
                     (RECE02-TEKSTYMD  NOT = RECE04-TEKSTYMD)  OR
                     (FLG-RECE04       =    1)
                      MOVE   RECE04-ZAINUM    TO   WK-ZAINUM
@@ -366,7 +369,8 @@
            MOVE    RECE02-RECEKA        TO      RECE05-RECEKA
            MOVE    RECE02-TEISYUTUSAKI  TO      RECE05-TEISYUTUSAKI
            MOVE    RECE02-RECESYUBETU   TO      RECE05-RECESYUBETU
-           MOVE    RECE02-HKNJANUM      TO      RECE05-HKNJANUM
+           MOVE    RECE02-HKNJANUM-KEY  TO      RECE05-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY   TO      RECE05-HOJOKBN
            MOVE    RECE02-TEKSTYMD      TO      RECE05-TEKSTYMD
            MOVE    WK-ZAINUM            TO      RECE05-ZAINUM
            START   RECE05-FILE   KEY  IS  >=    RECE05-KEY
@@ -383,7 +387,8 @@
                   (RECE02-RECEKA        NOT =  RECE05-RECEKA)    OR
                   (RECE02-TEISYUTUSAKI  NOT =  RECE05-TEISYUTUSAKI) OR
                   (RECE02-RECESYUBETU   NOT =  RECE05-RECESYUBETU)  OR
-                  (RECE02-HKNJANUM      NOT =  RECE05-HKNJANUM)  OR
+                  (RECE02-HKNJANUM-KEY  NOT =  RECE05-HKNJANUM)  OR
+                  (RECE02-HOJOKBN-KEY   NOT =  RECE05-HOJOKBN )  OR
                   (RECE02-TEKSTYMD      NOT =  RECE05-TEKSTYMD)  OR
                   (WK-ZAINUM            NOT =  RECE05-ZAINUM)    OR
                   (FLG-RECE05           =      1)

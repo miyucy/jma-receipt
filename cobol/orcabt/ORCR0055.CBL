@@ -34,6 +34,7 @@
       *  01.00.03    MCC-藤原     02.06.11  転帰日を表示するとき同一開始日・
       *                                     病名・転帰区分・転帰日のとき
       *                                     ひとつだけ出力する
+      *  01.00.04    NACL-藤原    03.03.12  補助区分の追加
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -139,6 +140,7 @@
                05  KEY-N-TEISYUTUSAKI  PIC 9(01).
                05  KEY-N-RECESYUBETU   PIC 9(04).
                05  KEY-N-HKNJANUM      PIC X(08).
+               05  KEY-N-HOJOKBN       PIC X(01).
                05  KEY-N-TEKSTYMD      PIC X(08). 
                05  KEY-N-SRYYMD        PIC X(08).
                05  KEY-N-TENKIKBN      PIC X(01).
@@ -153,6 +155,7 @@
                05  KEY-O-TEISYUTUSAKI  PIC 9(01).
                05  KEY-O-RECESYUBETU   PIC 9(04).
                05  KEY-O-HKNJANUM      PIC X(08).
+               05  KEY-N-HOJOKBN       PIC X(01).
                05  KEY-O-TEKSTYMD      PIC X(08). 
                05  KEY-O-SRYYMD        PIC X(08).
                05  KEY-O-TENKIKBN      PIC X(01).
@@ -287,6 +290,7 @@
            MOVE    RECE03-TEISYUTUSAKI TO  RECE031-TEISYUTUSAKI
            MOVE    RECE03-RECESYUBETU  TO  RECE031-RECESYUBETU
            MOVE    RECE03-HKNJANUM     TO  RECE031-HKNJANUM
+           MOVE    RECE03-HOJOKBN      TO  RECE031-HOJOKBN
            MOVE    RECE03-TEKSTYMD     TO  RECE031-TEKSTYMD
            MOVE    RECE03-SRYYMD       TO  RECE031-SRYYMD
       *****IF      RECE03-SYUBYOFLG    =   "1"
@@ -406,6 +410,7 @@
                    MOVE    RECE03-TEISYUTUSAKI TO  KEY-N-TEISYUTUSAKI
                    MOVE    RECE03-RECESYUBETU  TO  KEY-N-RECESYUBETU
                    MOVE    RECE03-HKNJANUM     TO  KEY-N-HKNJANUM
+                   MOVE    RECE03-HOJOKBN      TO  KEY-N-HOJOKBN
                    MOVE    RECE03-TEKSTYMD     TO  KEY-N-TEKSTYMD
                    MOVE    RECE03-SRYYMD       TO  KEY-N-SRYYMD
                    MOVE    RECE03-TENKIKBN     TO  KEY-N-TENKIKBN
