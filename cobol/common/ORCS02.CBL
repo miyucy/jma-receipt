@@ -442,6 +442,16 @@
                                  LNK-SYU-JIHI-TOTAL            +
                                  LNK-SYU-JIHI-TOTAL-TAX        +
                                  LNK-SYU-JIHI-TAX.
+      *
+      *    ¼«ÈñÊÝ¸±¤ÎÊä½õ¶èÊ¬¤¬²ÝÀÇ¤Î¾ì¹ç¡¢¾ÃÈñÀÇ·×»»¤ò¹Ô¤¦
+           IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" ) AND
+               ( COMB-HOJOKBN           =  "1" )
+      *
+              COMPUTE  LNK-SYU-SKYMONEY   =  LNK-SYU-SKYMONEY
+                                          *  1.05
+      *
+           END-IF.     
+      *
       *    ÉÂ±¡¸ºÌÈ¤Î·×»»
            IF     LNK-SYU-SKYMONEY      NOT =   ZERO
                    INITIALIZE                           PTINF-REC
@@ -3121,9 +3131,14 @@
            MOVE    WK-RYOYOHI-SKJ           TO  LNK-SYU-RYOYOHI-SKJ.
            MOVE    WK-KNJFTNKIN-SKJ         TO  LNK-SYU-SKYMONEY-SKJ.
            IF   LNK-SYU-SYUSKJ-FTNKBN  =  "4"
+             IF   ( COMB-SYU-HKNKOHSBTKBN  =  "8" )
+             AND  ( COMB-HOJOKBN           =  "1" )
+               CONTINUE
+             ELSE
                COMPUTE LNK-SYU-SKYMONEY-SKJ-TAX 
                                               = LNK-SYU-SKYMONEY-SKJ
                                               * 0.05
+             END-IF
            END-IF.
            COMPUTE  LNK-SYU-SKYMONEY-SKJ-KEI = LNK-SYU-SKYMONEY-SKJ
                                              + LNK-SYU-SKYMONEY-SKJ-TAX.
@@ -3133,11 +3148,11 @@
            OR  ( LNK-SYU-KOH3HKNNUM    =  "051" )
            OR  ( LNK-SYU-KOH4HKNNUM    =  "051" )
                COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
-                                  +   LNK-SYU-SKYMONEY-SKJ
+                                  +   LNK-SYU-SKYMONEY-SKJ-KEI
                IF        WK-FTN    >  13995
-                  COMPUTE   LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
-                                              +  LNK-SYU-SKYMONEY-SKJ
-                  MOVE      ZERO             TO  LNK-SYU-SKYMONEY-SKJ
+                 COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
+                                            +  LNK-SYU-SKYMONEY-SKJ-KEI
+                 MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ-KEI
                END-IF
            END-IF.
       *

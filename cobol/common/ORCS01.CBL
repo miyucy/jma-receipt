@@ -97,6 +97,7 @@
       *  01.00.27    NACL−小豆沢 02/12/20  ６５歳以上の寝たきり老人について
       *                                     薬剤負担金を算定しないよう修正
       *                                     （フラグ初期化位置変更）
+      *  01.00.28    NACL−門脇   03/02/06  自費保険の課税対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -730,6 +731,16 @@
                                             LNK-SYU-JIHI-TOTAL  +
                                             LNK-SYU-JIHI-TOTAL-TAX  +
                                             LNK-SYU-JIHI-TAX.
+      *
+      *    自費保険の補助区分が課税の場合、消費税計算を行う
+           IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" ) AND
+               ( COMB-HOJOKBN           =  "1" )
+      *
+              COMPUTE  LNK-SYU-SKYMONEY   =  LNK-SYU-SKYMONEY
+                                          *  1.05
+      *
+           END-IF.     
+      *
       *    病院減免の計算
            IF     LNK-SYU-SKYMONEY      NOT =   ZERO
       ***      IF   LNK-S01-SAIKEISAN-KBN    =   "1"
