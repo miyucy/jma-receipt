@@ -136,6 +136,8 @@
       *                                     編集の修正
       *  01.08.09    NACL-藤原    04/04/13  修飾語コードのみ検索時の病名
       *                                     編集フラグのクリア
+      *                                     種別が部位の自院コード入力のとき
+      *                                     の病名編集フラグの設定を修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3957,8 +3959,13 @@
                    END-IF
                END-IF  
       *
-               IF      SPA-ERRCD             =   SPACE   OR  "0079"
-                   IF      SPA-NAI-C02-BYOMEICD(IDX)     NOT =   SPACE
+               IF      SPA-NAI-C02-BYOMEICD(IDX)     NOT =   SPACE
+                   IF      SPA-ERRCD             =   "0079"
+                       MOVE    SPACE                 TO  SPA-ERRCD
+                   END-IF
+                   IF    ( SPA-ERRCD             =   SPACE   OR  "0079")
+                   AND   ( SPA-NAI-C02-BYOMEIHENFLG
+                                             =   SPACE                 )
                        IF      SPA-NAI-C02-USERBYOMEIFLG(IDX)
                                                      =   SPACE
                          MOVE    SPACE                 TO  SPA-ERRCD                      
@@ -3990,10 +3997,10 @@
                        ELSE
                          EVALUATE    SPA-NAI-C02-BYOMEISBT (IDX)
                            WHEN    "1"
-                               MOVE    "1"       TO
-                                               SPA-NAI-C02-BYOMEIHENFLG
                                IF    ( WRK-RECECD (2)    NOT =   SPACE )
                                OR    ( WRK-RECECD (3)    NOT =   SPACE )
+                                   MOVE    "1"       TO
+                                               SPA-NAI-C02-BYOMEIHENFLG
                                    IF      SPA-NAI-C02-BYOMEI (IDX)(1:2)
                                                      =   "（"
                                        CONTINUE
@@ -4081,7 +4088,7 @@
       *
       *    病名編集フラグセット
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       6 
+                   UNTIL   IDX >       6
                IF      SPA-NAI-C02-US-BYOMEIHENFLG (IDX)
                                        =   "1"
                    MOVE    "1"             TO  SPA-NAI-C02-BYOMEIHENFLG
