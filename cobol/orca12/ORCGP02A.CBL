@@ -77,6 +77,8 @@
                05  WRK-SDD         PIC 9(02).
            03  WRK-RENNUMZ         PIC ZZZZ.
       *
+           03  WRK-ORC-DBPATH      PIC X(64).
+      *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
                05  WRK-HGO         PIC X(01).
@@ -133,6 +135,7 @@
            COPY    "P02E.INC".
            COPY    "P02F.INC".
            COPY    "P014.INC".
+           COPY    "P015.INC".
            COPY    "P98.INC".
            COPY    "P981.INC".
            COPY    "P99.INC".
@@ -234,8 +237,19 @@
       *        確認メッセージ
                WHEN    "PID1"
                    PERFORM 3001-PID1-SYORI-SEC
-                   GO      TO                  300-SCREEN-EXT
+      *
+               WHEN    OTHER
+                   PERFORM 3000-SCREEN-INIT-SEC
            END-EVALUATE
+      *
+           .
+       300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初期編集処理
+      *****************************************************************
+       3000-SCREEN-INIT-SEC            SECTION.
       *
       *    ＳＰＡ編集
            MOVE    ZERO                TO  SPA-GMN2A-MAX
@@ -244,16 +258,24 @@
            INITIALIZE                      PTINF-REC
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-GMN-KANANAME    TO  PTINF-KANANAME
+           IF     (SPA-P02A-SYORI          =   2  )  AND
+                  (SPA-NAI-JYUFUKU-CHKKBN  =   "2")
+               MOVE    SPA-NAI-BIRTHDAY    TO  PTINF-BIRTHDAY
+               MOVE    SPA-GMN-SEX         TO  PTINF-SEX
+               MOVE    "PTINF-KEY7"        TO  WRK-ORC-DBPATH
+           ELSE
+               MOVE    "PTINF-KEY3"        TO  WRK-ORC-DBPATH
+           END-IF
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTINF-KEY3"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTINF-KEY3"    TO  ORC-DBPATH
+               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 900-PTINF-READ-SEC
            ELSE
                INITIALIZE                  PTINF-REC
@@ -265,20 +287,38 @@
                MOVE    MCPDATA-REC         TO  PTINF-REC
                MOVE    ZERO                TO  FLG-CHK
                IF      SPA-P02A-SYORI      =   1
-      *            氏名のみ一致
-                   IF      PTINF-PTID  NOT =   SPA-GMN-PTID
+      *            カナ氏名のみ一致
+                   IF     (PTINF-KANANAME  =   SPA-GMN-KANANAME ) AND
+                          (PTINF-PTID  NOT =   SPA-GMN-PTID     )
                        MOVE    1               TO  FLG-CHK
                    END-IF
                ELSE
-      *            氏名・性別・生年月日一致
-                   IF      (PTINF-SEX          =   SPA-GMN-SEX )   AND
-                           (PTINF-BIRTHDAY     =   SPA-NAI-BIRTHDAY) AND
-                           (PTINF-PTID     NOT =   SPA-GMN-PTID   )
-                       MOVE    1               TO  FLG-CHK
-                   END-IF
-               END-IF
-               IF      SPA-GMN-KANANAME    NOT =   PTINF-KANANAME
-                   MOVE    ZERO                TO  FLG-CHK
+                   EVALUATE    SPA-NAI-JYUFUKU-CHKKBN
+                       WHEN    "0"
+      *                    氏名・性別・生年月日一致
+                           IF     (PTINF-KANANAME  =   SPA-GMN-KANANAME)
+                             AND  (PTINF-SEX       =   SPA-GMN-SEX )
+                             AND  (PTINF-BIRTHDAY  =   SPA-NAI-BIRTHDAY)
+                             AND  (PTINF-PTID  NOT =   SPA-GMN-PTID   )
+                               MOVE    1               TO  FLG-CHK
+                           END-IF
+                       WHEN    "1"
+      *                    氏名・漢字氏名・性別・生年月日一致
+                           IF     (PTINF-KANANAME  =   SPA-GMN-KANANAME)
+                             AND  (PTINF-NAME      =   SPA-GMN-NAME    )
+                             AND  (PTINF-SEX       =   SPA-GMN-SEX )
+                             AND  (PTINF-BIRTHDAY  =   SPA-NAI-BIRTHDAY)
+                             AND  (PTINF-PTID  NOT =   SPA-GMN-PTID   )
+                               MOVE    1               TO  FLG-CHK
+                           END-IF
+                       WHEN    "2"
+      *                    性別・生年月日一致
+                           IF     (PTINF-SEX       =   SPA-GMN-SEX )
+                             AND  (PTINF-BIRTHDAY  =   SPA-NAI-BIRTHDAY)
+                             AND  (PTINF-PTID  NOT =   SPA-GMN-PTID   )
+                               MOVE    1               TO  FLG-CHK
+                           END-IF
+                   END-EVALUATE
                END-IF
       *
                IF      FLG-CHK             =   1
@@ -323,20 +363,20 @@
                    END-IF
                END-IF
       *
-               MOVE    "PTINF-KEY3"    TO  ORC-DBPATH
+               MOVE    WRK-ORC-DBPATH  TO  ORC-DBPATH
                PERFORM 900-PTINF-READ-SEC
            END-PERFORM
            MOVE    IDY                 TO  SPA-GMN2A-MAX
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "PTINF-KEY3"        TO  ORC-DBPATH
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"              USING
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
       *
            .
-       300-SCREEN-EXT.
+       3000-SCREEN-INIT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -440,7 +480,7 @@
        200-ENTRY                   SECTION.
       *
            MOVE    MCP-WIDGET          TO  SPA-MCP-WIDGET
-           MOVE    ZERO                TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  SPA-GMN2A-CUR
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        リスト選択
@@ -464,18 +504,10 @@
            MOVE    ZERO                TO  SPA-GMN2A-SELNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN2A-MAX
-      *TEST
-           DISPLAY "P02A P02A-DUALLIST-SELECT:" P02A-DUALLIST-SELECT
-                                                     (IDX)
-      *TEST
                IF      P02A-DUALLIST-SELECT (IDX)    =   "T"
                    MOVE    IDX             TO  SPA-GMN2A-SELNUM
                END-IF
            END-PERFORM
-      *TEST
-           DISPLAY "P02A SPA-GMN2A-SELNUM:" SPA-GMN2A-SELNUM
-           DISPLAY "P02A SPA-GMN2A-MAX:" SPA-GMN2A-MAX
-      *TEST
       *
            IF      SPA-GMN2A-SELNUM    NOT =   ZERO
                PERFORM 4102-SELNUM-CHK-SEC

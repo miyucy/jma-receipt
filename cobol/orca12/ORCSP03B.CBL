@@ -361,11 +361,6 @@
       *****************************************************************
        1001-FTNJANUM-CHK-SEC           SECTION.
       *
-      *    未入力
-           IF      SPA-GMN-FTNJANUM (IDX-K)  =   SPACE
-               GO      TO      1001-FTNJANUM-CHK-EXT
-           END-IF
-      *
       *    桁数チェック
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
@@ -373,6 +368,9 @@
                                        TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           IF      KANACHK-RC2         =   7
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-FTNJANUM (IDX-K)
+           END-IF
       *    全角の時、すべてのチェックをはずす
            IF     (KANACHK-RC          =   ZERO  )  AND
                   (KANACHK-SYUBETU     =   2     )
@@ -381,22 +379,39 @@
                    MOVE    "0095"              TO  SPA-ERRCD
                    MOVE    20                  TO  SPA-GMN-CUR
                END-IF
-               GO      TO      1001-FTNJANUM-CHK-EXT
            END-IF
       *    半角で間に空白がないこと
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-RC2     NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   2     )
-               MOVE    "0071"              TO  SPA-ERRCD
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    "0071"              TO  SPA-ERRCD
+               END-IF
                MOVE    20                  TO  SPA-GMN-CUR
-               GO      TO      1001-FTNJANUM-CHK-EXT
            END-IF
-           IF     (KANACHK-MAX         <=  1   )  OR
-                  (KANACHK-MAX         >   8   )
-               MOVE    "0071"              TO  SPA-ERRCD
+      *
+           IF     (SPA-GMN-FTNJANUM (IDX-K)  NOT =   SPACE ) AND
+                 ((KANACHK-MAX         <=  1   )  OR
+                  (KANACHK-MAX         >   8   ))
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    "0071"              TO  SPA-ERRCD
+               END-IF
                MOVE    20                  TO  SPA-GMN-CUR
-               GO      TO      1001-FTNJANUM-CHK-EXT
            END-IF
+      *
+           IF     (SPA-GMN-FTNJANUM (IDX-K)  NOT =   SPACE ) AND
+                  (SPA-ERRCD           =   SPACE )
+               PERFORM 10011-FTNJANUM-DB-CHK-SEC
+           END-IF
+      *
+           .
+       1001-FTNJANUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    法別番号チェック区分編集処理
+      *****************************************************************
+       10011-FTNJANUM-DB-CHK-SEC           SECTION.
       *
       *    保険者番号　検索チェック
            INITIALIZE                    HKNJAINF-REC
@@ -465,7 +480,6 @@
                                    MOVE    20         TO  SPA-GMN-CUR
                                    MOVE    1          TO  SPA-NAI-FTNCHK
                                                                 (IDX-K)
-                                   GO      TO      1001-FTNJANUM-CHK-EXT
                                ELSE
       *                            法別番号より公費種類を決定する
                                    PERFORM 10011-HKNNUM-SET-SEC
@@ -480,38 +494,35 @@
                END-IF
            END-IF
       *
-           IF      WRK-MAE-KOHNUM      =   SPACE
-               GO      TO      1001-FTNJANUM-CHK-EXT
-           END-IF
-      *    更新の時、保険区分変更時、エラーとする
-           MOVE    SPA-NAI-PTKOH-EDANUM (IDX-K)    TO  IDX-K2
-           IF     (IDX-K2                  >   ZERO      ) AND
-                  (SPA-PTKOH-SINKIKBN (IDX-K2)
-                                           =   SPACE    )  AND
-                  (SPA-MAE-KOHNUM (IDX-K)
-                                       NOT =   SPACE    )
-               IF      WRK-MAE-KOHNUM  NOT =   SPA-MAE-KOHNUM(IDX-K)
-                   PERFORM 10011-HKNNUM-HENCHK-SEC
-      *********    IF      SPA-GMN-FTNJANUM (IDX-K)
-      *                                NOT =   SPA-MAE-FTNJANUM(IDX-K)
-      *                MOVE    "0074"          TO  SPA-ERRCD
-      *                MOVE    20              TO  SPA-GMN-CUR
-      ************ END-IF
-               END-IF
+           IF     (WRK-MAE-KOHNUM      =   SPACE )  OR
+                  (SPA-ERRCD       NOT =   SPACE )
+               CONTINUE
            ELSE
-               IF      SPA-GMN-KOHNUM(IDX-K)   =   SPACE
-                   MOVE    WRK-MAE-KOHNUM      TO  SPA-GMN-KOHNUM(IDX-K)
-                   MOVE    SPACE               TO  SPA-GMN-KOHKBN(IDX-K)
+      *    更新の時、保険区分変更時、エラーとする
+               MOVE    SPA-NAI-PTKOH-EDANUM (IDX-K)    TO  IDX-K2
+               IF     (IDX-K2              >   ZERO  ) AND
+                      (SPA-PTKOH-SINKIKBN (IDX-K2)
+                                           =   SPACE  )  AND
+                      (SPA-MAE-KOHNUM (IDX-K)
+                                       NOT =   SPACE    )
+                   IF      WRK-MAE-KOHNUM  NOT =   SPA-MAE-KOHNUM(IDX-K)
+                       PERFORM 10011-HKNNUM-HENCHK-SEC
+                   END-IF
+               ELSE
+                   IF      SPA-GMN-KOHNUM(IDX-K)   =   SPACE
+                       MOVE    WRK-MAE-KOHNUM  TO  SPA-GMN-KOHNUM(IDX-K)
+                       MOVE    SPACE           TO  SPA-GMN-KOHKBN(IDX-K)
       *            Ｈ１４．１０以降、老人の初期値は０１とする
-                   IF      (SPA-SYSYMD         >=  "20021001" )  AND
-                           (WRK-MAE-KOHNUM     =   "027"      )
-                       MOVE    "1"             TO  SPA-GMN-KOHKBN(IDX-K)
+                       IF      (SPA-SYSYMD         >=  "20021001" ) AND
+                               (WRK-MAE-KOHNUM     =   "027"      )
+                           MOVE    "1"         TO  SPA-GMN-KOHKBN(IDX-K)
+                       END-IF
                    END-IF
                END-IF
            END-IF
       *
            .
-       1001-FTNJANUM-CHK-EXT.
+       10011-FTNJANUM-DB-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -863,6 +874,9 @@
                                        TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           IF      KANACHK-RC2         =   7
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-JKYSNUM (IDX-K)
+           END-IF
            IF      KANACHK-RC      NOT =   ZERO
       *        半角・全角混在エラー
                MOVE    "0075"              TO  SPA-ERRCD

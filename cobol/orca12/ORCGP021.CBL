@@ -163,6 +163,7 @@
            COPY    "P02E.INC".
            COPY    "P02F.INC".
            COPY    "P014.INC".
+           COPY    "P015.INC".
            COPY    "P98.INC".
            COPY    "P981.INC".
            COPY    "P99.INC".
@@ -615,6 +616,12 @@
       *****************************************************************
        4102-KIHON-CHK-SEC          SECTION.
       *
+      *    仕事
+           PERFORM 4101-JOB-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
       *    連絡先−名前
            PERFORM 4101-RENRAKUNAME-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
@@ -704,6 +711,7 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-RENRAKU-NAME   TO  WRK-MAE-INPUT
            PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-NAME
            IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-NAME
            ELSE
@@ -715,6 +723,21 @@
        4101-RENRAKUNAME-CHK-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *    仕事チェック処理
+      *****************************************************************
+       4101-JOB-CHK-SEC          SECTION.
+      *
+      *    半角空白を全角空白へ
+           MOVE    SPA-GMN21-JOB       TO  WRK-MAE-INPUT
+           PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-JOB
+           .
+      *
+       4101-JOB-CHK-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    連絡先−名前チェック処理
       *****************************************************************
@@ -723,6 +746,7 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-RENRAKU-ZOKUGARA   TO  WRK-MAE-INPUT
            PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT   TO  SPA-GMN21-RENRAKU-ZOKUGARA
            IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT   TO  SPA-GMN21-RENRAKU-ZOKUGARA
            ELSE
@@ -771,6 +795,7 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-RENRAKU-ADRS   TO  WRK-MAE-INPUT
            PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-ADRS
            IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-ADRS
            ELSE
@@ -789,6 +814,7 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-RENRAKU-BANTI TO  WRK-MAE-INPUT
            PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-BANTI
            IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-BANTI
            ELSE
@@ -808,6 +834,7 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-OFFICE-NAME   TO  WRK-MAE-INPUT
            PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-NAME
            IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-NAME
            ELSE
@@ -856,6 +883,7 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-OFFICE-ADRS   TO  WRK-MAE-INPUT
            PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-ADRS
            IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-ADRS
            ELSE
@@ -874,6 +902,7 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-OFFICE-BANTI  TO  WRK-MAE-INPUT
            PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-BANTI
            IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-BANTI
            ELSE
@@ -893,6 +922,7 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-KISEI-NAME    TO  WRK-MAE-INPUT
            PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-NAME
            IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-NAME
            ELSE
@@ -941,6 +971,7 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-KISEI-ADRS    TO  WRK-MAE-INPUT
            PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-ADRS
            IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-ADRS
            ELSE
@@ -959,6 +990,7 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-KISEI-BANTI   TO  WRK-MAE-INPUT
            PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-BANTI
            IF      FLG-ERR             =   ZERO
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-BANTI
            ELSE
@@ -1122,6 +1154,9 @@
                   (KANACHK-SYUBETU     =   1     )
                MOVE    1                   TO  FLG-ERR
                MOVE    WRK-MAE-INPUT       TO  WRK-ATO-INPUT
+               IF      KANACHK-RC2         =   7
+                   MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
+               END-IF
            ELSE
                MOVE    ZERO                TO  FLG-ERR
                MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT

@@ -239,6 +239,7 @@
            COPY    "P02E.INC".
            COPY    "P02F.INC".
            COPY    "P014.INC".
+           COPY    "P015.INC".
            COPY    "P98.INC".
            COPY    "P981.INC".
            COPY    "P99.INC".
@@ -1011,8 +1012,8 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN25-TKYU-KANANAME TO  WRK-MAE-INPUT
            PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN25-TKYU-KANANAME
            IF      SPA-ERRCD           =   SPACE
-               MOVE    WRK-ATO-INPUT   TO  SPA-GMN25-TKYU-KANANAME
                MOVE    4                   TO  SPA-GMN25-CUR
            ELSE
                MOVE    3                   TO  SPA-GMN25-CUR
@@ -1031,8 +1032,8 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN25-TKYU-NAME TO  WRK-MAE-INPUT
            PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN25-TKYU-NAME
            IF      SPA-ERRCD           =   SPACE
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN25-TKYU-NAME
                MOVE    5                   TO  SPA-GMN25-CUR
            ELSE
                MOVE    4                   TO  SPA-GMN25-CUR
@@ -1051,8 +1052,8 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN25-TKYU-NICKNAME TO  WRK-MAE-INPUT
            PERFORM 890-HALF-ZEN-SEC
+           MOVE    WRK-ATO-INPUT       TO  SPA-GMN25-TKYU-NICKNAME
            IF      SPA-ERRCD           =   SPACE
-               MOVE    WRK-ATO-INPUT   TO  SPA-GMN25-TKYU-NICKNAME
                MOVE    6                   TO  SPA-GMN25-CUR
            ELSE
                MOVE    5                   TO  SPA-GMN25-CUR
@@ -1076,6 +1077,9 @@
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "2530"              TO  SPA-ERRCD
                MOVE    WRK-MAE-INPUT       TO  WRK-ATO-INPUT
+               IF      KANACHK-RC2         =   7
+                   MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
+               END-IF
            ELSE
                MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
            END-IF

@@ -422,6 +422,7 @@
            COPY    "P02E.INC".
            COPY    "P02F.INC".
            COPY    "P014.INC".
+           COPY    "P015.INC".
            COPY    "P98.INC".
            COPY    "P981.INC".
            COPY    "P99.INC".
@@ -499,28 +500,28 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
-               IF  ( FLG-END           =   1 )  OR
-                   ( SPA-FLG-END       =   1 )
-                   GO      TO      100-INIT-EXT
-               END-IF
       *
-      *        画面編集
-               PERFORM 500-GMNHEN-SEC
                IF  ( FLG-END           =   1 )  OR
                    ( SPA-FLG-END       =   1 )
-                   GO      TO      100-INIT-EXT
+                   CONTINUE
+               ELSE
+      *            画面編集
+                   PERFORM 500-GMNHEN-SEC
                END-IF
            END-IF
       *
+           IF  ( FLG-END           =   1 )  OR
+               ( SPA-FLG-END       =   1 )
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    SPACE               TO  LINKAREA
+               MOVE   SPACE                TO  MCP-PUTTYPE
+               MOVE   "P02"                TO  MCP-WINDOW
       *
-           MOVE   SPACE                TO  MCP-PUTTYPE.
-           MOVE   "P02"                TO  MCP-WINDOW.
-      *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                   TO  FLG-END
+           END-IF
       *
            .
        100-INIT-EXT.
@@ -593,7 +594,6 @@
       *        確認メッセージ
                WHEN    "PID1"
                    PERFORM 3001-PID1-SYORI-SEC
-                   GO      TO                  300-SCREEN-EXT
       *        拡張患者番号設定
                WHEN    "P014"
                    MOVE    "P02"           TO  SPA-P02-GAMEN
@@ -602,11 +602,20 @@
                    ELSE
                        MOVE    SPA-GMN014-PTNUM    TO  SPA-GMN-PTNUM
                        MOVE    1                   TO  SPA-P02-SYORI
-                       PERFORM 310-SPA-SET-SEC
+                       IF      SPA-GMN014-SYORI    =   ZERO
+                           PERFORM 310-SPA-SET-SEC
+                       ELSE
+                           MOVE    1                   TO  P02-PAGENO
+                       END-IF
                        MOVE    1                   TO  SPA-GMN-CUR
                        MOVE    SPACE               TO  SPA-P02-WIDGET
                    END-IF
-                   GO      TO                  300-SCREEN-EXT
+      *        患者番号再設定
+               WHEN    "P015"
+                   MOVE    "P02"               TO  SPA-P02-GAMEN
+                   MOVE    1                   TO  SPA-GMN-CUR
+                   MOVE    SPACE               TO  SPA-P02-WIDGET
+                   MOVE    1                   TO  P02-PAGENO
       *        患者複写
                WHEN    "P02E"
                    MOVE    "P02"               TO  SPA-P02-GAMEN
@@ -620,7 +629,6 @@
                        PERFORM 49012-GMNSPA-SET-SEC
                        MOVE    1                   TO  SPA-GMN-CUR
                    END-IF
-                   GO      TO                  300-SCREEN-EXT
       *        二重登録画面より
                WHEN    "P02A"
                    IF      SPA-NAI2A-PTNUM NOT =   SPACE
@@ -640,7 +648,6 @@
                    ELSE
                        PERFORM 3009-CLAIM-SYORI-SEC
                    END-IF
-                   GO      TO                  300-SCREEN-EXT
       *        各画面より
                WHEN    OTHER
                    MOVE    "LINK"              TO  MCP-STATUS
@@ -710,6 +717,7 @@
                    MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
                WHEN    10
       *            新規患者検索へ
+                   MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
                    IF      SPTNUM-SYUBETU       =   1
                        CONTINUE
                    ELSE
@@ -1210,7 +1218,6 @@
            .
        200-ENTRY-EXT.
            EXIT.
-           .
       *
       *****************************************************************
       *    患者番号入力処理
@@ -1225,6 +1232,7 @@
            MOVE    ZERO                TO  SPA-GMN-CUR
            MOVE    ZERO                TO  SPA-P02-SYORI
            MOVE    P02-PTNUM           TO  SPA-GMN-PTNUM
+      *
            IF      SPA-GMN-PTNUM(1:1)      =   "*"
                MOVE    ZERO                TO  SPA-GMN-PTID
       *        新規自動採番
@@ -1247,6 +1255,7 @@
            MOVE    SPA-GMN-PTNUM       TO  SPTNUM-PTNUM
            CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
                                                SPA-AREA
+           MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
            EVALUATE    SPTNUM-RC
                WHEN    00
       *            患者あり
@@ -1257,7 +1266,8 @@
                           (SPA-PTID                =   ZERO   )  AND
                           (SPA-NAME            NOT =   SPACE  )
                        MOVE    "1010"              TO  SPA-ERRCD
-                       GO      TO      4100-PTNUM-SYORI-EXT
+                   ELSE
+                       PERFORM 41001-PTNUM-HENSYU-SEC
                    END-IF
                WHEN    20
                    MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
@@ -1276,7 +1286,6 @@
                    MOVE    "P97"               TO  MCP-WINDOW
                    PERFORM 900-PUT-WINDOW
                    MOVE    1                   TO  FLG-END
-                   GO      TO     4100-PTNUM-SYORI-EXT
                WHEN    10
       *            新規患者検索へ
                    IF      SPTNUM-SYUBETU       =   1
@@ -1284,45 +1293,52 @@
                    ELSE
                        MOVE    "1003"              TO  SPA-ERRCD
                    END-IF
-                   GO      TO     4100-PTNUM-SYORI-EXT
                WHEN    OTHER
       *            エラー
                    MOVE    "1003"              TO  SPA-ERRCD
-                   GO      TO     4100-PTNUM-SYORI-EXT
            END-EVALUATE
+           .
+       4100-PTNUM-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者番号決定処理
+      *****************************************************************
+       41001-PTNUM-HENSYU-SEC            SECTION.
       *
       *    患者マスターあり
            INITIALIZE                  SPA-P02SCRAREA
            MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
            MOVE    SPTID-PTID          TO  SPA-GMN-PTID
       *    患者マスター存在チェック
-           MOVE    SPA-HOSPID         TO  PTINF-HOSPID
-           MOVE    SPA-GMN-PTID       TO  PTINF-PTID
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTINF-PTID
            PERFORM  900-PTINF-READ-SEC
-           IF      FLG-PTINF      NOT =   ZERO
+           IF      FLG-PTINF       NOT =   ZERO
                MOVE    SPACE               TO  SPA-GMN-NAME
                MOVE    "1003"              TO  SPA-ERRCD
-               GO      TO      4100-PTNUM-SYORI-EXT
+           ELSE
+               MOVE    "P02 "              TO  SPA-P02-GAMEN
            END-IF
-           MOVE    "P02 "              TO  SPA-P02-GAMEN
       *
       *    排他制御処理
-           PERFORM 990-LOCK-IN-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4100-PTNUM-SYORI-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 990-LOCK-IN-SEC
            END-IF
       *
-           MOVE    2                   TO  SPA-P02-SYORI
-           MOVE    1                   TO  SPA-GMN-CUR
-           PERFORM 310-SPA-SET-SEC
-           MOVE    SPACE               TO  SPA-P02-WIDGET
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    2                   TO  SPA-P02-SYORI
+               MOVE    1                   TO  SPA-GMN-CUR
+               PERFORM 310-SPA-SET-SEC
+               MOVE    SPACE               TO  SPA-P02-WIDGET
       *
-      *    前回患者
-           MOVE    SPA-GMN-PTNUM       TO  SPA-LAST-PTNUM
-           MOVE    SPA-GMN-PTID        TO  SPA-LAST-PTID
+      *        前回患者
+               MOVE    SPA-GMN-PTNUM       TO  SPA-LAST-PTNUM
+               MOVE    SPA-GMN-PTID        TO  SPA-LAST-PTID
+           END-IF
       *
            .
-       4100-PTNUM-SYORI-EXT.
+       41001-PTNUM-HENSYU-EXT.
            EXIT.
       *****************************************************************
       *    患者番号入力チェック処理
@@ -1367,19 +1383,17 @@
                MOVE    "1005"              TO  SPA-ERRCD
            END-IF
       *
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      41002-PTNUMCHK-EXT
-           END-IF
-      *
       *    患者構成チェック
-           INITIALIZE                  ORCSP01AREA
-           MOVE    "2"                 TO  ORCSP01-SYORI
-           MOVE    SPA-GMN-PTNUM       TO  ORCSP01-PTNUM
-           MOVE    SPA-GMN-PTID        TO  ORCSP01-PTID
+           IF      SPA-ERRCD           =   SPACE
+               INITIALIZE                  ORCSP01AREA
+               MOVE    "2"                 TO  ORCSP01-SYORI
+               MOVE    SPA-GMN-PTNUM       TO  ORCSP01-PTNUM
+               MOVE    SPA-GMN-PTID        TO  ORCSP01-PTID
       *
-           CALL    "ORCSP01"           USING
-                                       ORCSP01AREA
-                                       SPA-AREA
+               CALL    "ORCSP01"           USING
+                                           ORCSP01AREA
+                                           SPA-AREA
+           END-IF
       *
            IF      SPA-ERRCD           =   SPACE
                MOVE    SPA-HZN-PTNUM       TO  WRK-HZN-PTNUM
@@ -1447,7 +1461,11 @@
                MOVE    ORCSP01-PTID        TO  SPA-GMN-PTID
                MOVE    1                   TO  SPA-P02-SYORI
                MOVE    "P02 "              TO  SPA-P02-GAMEN
-               PERFORM 310-SPA-SET-SEC
+               IF      FLG-HAKKOU          =   ZERO
+                   PERFORM 310-SPA-SET-SEC
+               ELSE
+                   MOVE    1                   TO  P02-PAGENO
+               END-IF
                MOVE    1                   TO  SPA-GMN-CUR
                MOVE    SPACE               TO  SPA-P02-WIDGET
                IF      SPA-ERRCD           =   SPACE
@@ -1490,6 +1508,7 @@
            MOVE    ORCSP01-PTNUM2      TO  SPA-GMN014-PTNUM2
            MOVE    ORCSP01-PTNUM3      TO  SPA-GMN014-PTNUM3
       *
+           MOVE    FLG-HAKKOU          TO  SPA-GMN014-SYORI
       *
            MOVE    SPA-P02KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
@@ -1587,11 +1606,82 @@
                MOVE    1                   TO  FLG-HAKKOU
                PERFORM 41001-AUTONUM-SEC
            ELSE
-               MOVE    "1004"              TO  SPA-ERRCD
+               IF     (SPA-GMN-PTNUM   NOT =   SPACE ) AND
+                      (SPA-GMN-PTID    NOT =   ZERO  ) AND
+                      (SPA-P02-SYORI       =   2     )
+                   PERFORM 4501-P015-SYORI-SEC
+               ELSE
+                   MOVE    "1004"              TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            .
        450-SAINUM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者番号再設定画面処理
+      *****************************************************************
+       4501-P015-SYORI-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  SPA-ERRCD
+      *    他から患者選択での遷移時はできない
+           EVALUATE    SPA-HZN-MOTOPG 
+               WHEN    "K02"
+               WHEN    "K02N"
+               WHEN    "U02"
+               WHEN    "Q02"
+               WHEN    "I01"
+                   IF     (SPA-HZN-PTNUM   NOT =   SPACE  )  AND
+                          (SPA-HZN-PTNUM       =   SPA-GMN-PTNUM )
+                       MOVE    "1012"              TO  SPA-ERRCD
+                   END-IF
+           END-EVALUATE
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 45011-P015-SET-SEC
+           END-IF
+      *
+           .
+       4501-P015-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者番号再設定画面処理
+      *****************************************************************
+       45011-P015-SET-SEC            SECTION.
+      *
+           INITIALIZE                  SPA-P015-AREA
+      *
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGP015"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+      *
+           MOVE    "P02"               TO  SPA-MOTOPG
+           MOVE    "P015"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "P015"              TO  MCP-WINDOW
+      *    カーソル移動
+           MOVE    "PTNUM2"            TO  MCP-WIDGET
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       45011-P015-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3504,6 +3594,11 @@
                WHEN    "1011"
                    MOVE    "患者番号が登録済みです。再度入力して下さい"
                                                TO  SPA-ERRMSG
+               WHEN    "1012"
+                   MOVE    "他画面からの遷移中です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "患者番号の再発行はできません。"
+                                               TO  SPA-ERRMSG(25:)
                WHEN    "1020"
                    MOVE    "患者ＩＤが取得できません。"
                                                TO  SPA-ERRMSG

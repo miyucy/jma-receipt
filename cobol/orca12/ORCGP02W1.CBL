@@ -165,6 +165,8 @@
            03  FLG-HKNCHK          PIC 9(01).
            03  FLG-SEIHOGO         PIC 9(01).
       *
+           03  FLG-P02A-CHK       PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
@@ -634,6 +636,7 @@
            COPY    "P02E.INC".
            COPY    "P02F.INC".
            COPY    "P014.INC".
+           COPY    "P015.INC".
            COPY    "P98.INC".
            COPY    "P981.INC".
            COPY    "P99.INC".
@@ -754,7 +757,7 @@
                    END-IF
       *        二重登録確認画面処理
                WHEN    "P02A"
-                   MOVE    1               TO  SPA-GMN-CUR
+                   CONTINUE
       *        労災保険更新画面処理
                WHEN    "P02D"
                    PERFORM 4910-RSKOH-PARAOUT-SEC
@@ -791,7 +794,7 @@
       *
       *
            .
-       3OO-SCREEN-EXT.
+       300-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2031,33 +2034,45 @@
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-PIDCD       NOT =   SPACE )  OR
                   (SPA-FLG-END     NOT =   ZERO  )
-               GO      TO      410-INPUT-CHK-EXT
-           END-IF
-      *
-      *    登録時、必須入力チェック
-           IF      FLG-TOUROKU         =   1
-               PERFORM 4109-TOUROKU-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO      TO      410-INPUT-CHK-EXT
-               END-IF
-           END-IF
-      *    保険・公費のテーブルセットとチェック
-           IF      SPA-HKNKOH-FLG      =   1
-               PERFORM 4103-HKNKOH-TBL-SEC
-           END-IF
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-PIDCD       NOT =   SPACE )
-               GO      TO      410-INPUT-CHK-EXT
-           END-IF
-      *
-      *    公費に追加があった時、最初の１行を追加する
-           IF      FLG-KOH-ADD         =   1
-               PERFORM 4104-KOH-ADD-SEC
+               CONTINUE
+           ELSE
+               PERFORM 410-INPUT-CHK2-SEC
            END-IF
       *
            .
       *
        410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面ＳＰＡ編集処理
+      *****************************************************************
+       410-INPUT-CHK2-SEC          SECTION.
+      *
+      *    登録時、必須入力チェック
+           IF      FLG-TOUROKU         =   1
+               PERFORM 4109-TOUROKU-CHK-SEC
+           END-IF
+      *    保険・公費のテーブルセットとチェック
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-HKNKOH-FLG      =   1
+                   PERFORM 4103-HKNKOH-TBL-SEC
+               END-IF
+           END-IF
+      *
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )
+               CONTINUE
+           ELSE
+      *
+      *        公費に追加があった時、最初の１行を追加する
+               IF      FLG-KOH-ADD         =   1
+                   PERFORM 4104-KOH-ADD-SEC
+               END-IF
+           END-IF
+           .
+      *
+       410-INPUT-CHK2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2288,70 +2303,68 @@
       *
       *    カナ氏名
            PERFORM 4101-KANANAME-CHK-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-FLG-END     NOT =   ZERO  )
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
       *
       *    漢字氏名
-           PERFORM 4101-NAME-CHK-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-FLG-END     NOT =   ZERO  )
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-NAME-CHK-SEC
            END-IF
       *
       *    性別
-           PERFORM 4101-SEX-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-SEX-CHK-SEC
            END-IF
       *    生年月日
-           PERFORM 4101-BIRTHDAY-CHK-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-FLG-END     NOT =   ZERO  )
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-BIRTHDAY-CHK-SEC
            END-IF
       *    通称
-           PERFORM 4101-NICKNAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-NICKNAME-CHK-SEC
            END-IF
       *    テスト患者
-           PERFORM 4101-TSTPTNUMKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-TSTPTNUMKBN-CHK-SEC
            END-IF
       *    カルテ発行
-           PERFORM 4101-HAKKO-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-HAKKO-CHK-SEC
            END-IF
       *    保険者番号
-           PERFORM 4101-KHNJANUM-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-KHNJANUM-CHK-SEC
            END-IF
-           IF      FLG-HKN-DEL         =   ZERO
-      *        保険情報チェックサブ
-               CALL    "ORCSP03A"          USING   SPA-AREA
+      *
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               IF      FLG-HKN-DEL         =   ZERO
+      *            保険情報チェックサブ
+                   CALL    "ORCSP03A"      USING   SPA-AREA
                                                    SPA-P02SCRAREA
                                                    SPA-P02KYOUTU
-      *        タグ切り替えの時、期間重複はクリアする
-               IF      SPA-TAGU-FLG        =   1
-                   IF      SPA-ERRCD       =   "0064"  OR
-                                               "0089"
-                       MOVE   SPACE            TO  SPA-ERRCD
-                   END-IF
-                   IF      SPA-PIDCD   NOT =   SPACE
-                       MOVE   SPACE            TO  SPA-PIDCD
+      *            タグ切り替えの時、期間重複はクリアする
+                   IF      SPA-TAGU-FLG        =   1
+                       IF      SPA-ERRCD       =   "0064"  OR
+                                                   "0089"
+                           MOVE   SPACE            TO  SPA-ERRCD
+                       END-IF
+                       IF      SPA-PIDCD   NOT =   SPACE
+                           MOVE   SPACE            TO  SPA-PIDCD
+                       END-IF
                    END-IF
                END-IF
+           END-IF
       *
-               IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                      (SPA-PIDCD       NOT =   SPACE )  OR
-                      (SPA-FLG-END     NOT =   ZERO  )
-                   GO      TO      4102-KIHON-CHK-EXT
-               END-IF
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )  OR
+                  (SPA-FLG-END     NOT =   ZERO  )
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
       *    公費
@@ -2435,9 +2448,6 @@
            END-IF
       *    診療科選択
            PERFORM 4101-SRYKA-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
            .
       *
        4102-KIHON-CHK-EXT.
@@ -2684,7 +2694,14 @@
       *    漢字氏名検索処理
            IF     (FLG-IN-KANANAME         =   1    )  AND
                   (SPA-GMN-KANANAME    NOT =   SPA-GMN-OLD-KANANAME)
-               PERFORM 4101-KANJI-NAME-EDIT-SEC
+      *        人名辞書不使用の場合
+               IF      SPA-NAI-JINMEI-USE  =   "1"
+                   MOVE    SPA-GMN-KANANAME
+                                           TO  SPA-GMN-OLD-KANANAME
+                   MOVE    SPA-GMN-NAME    TO  SPA-GMN-OLD-NAME
+               ELSE
+                   PERFORM 4101-KANJI-NAME-EDIT-SEC
+               END-IF
            END-IF
       *
            .
@@ -2730,10 +2747,15 @@
            END-IF
       *
       *    同姓同名
-           IF       SPA-P02A-FLG1      =   ZERO
+           IF      (SPA-P02A-FLG1      =   ZERO  )  AND
+                  ((SPA-MCP-WIDGET NOT =   "P02_KANANAME" ) OR
+                   (SPA-NAI-JINMEI-USE NOT =   "1"   ))
                MOVE    1               TO  FLG-P02A-SYORI
                MOVE    1               TO  SPA-P02A-FLG1
-               PERFORM 41012-NIJYU-TRKGMN-SEC
+      *        同姓同名チェックあり
+               IF      SPA-NAI-DOUMEI-CHKFLG   =   ZERO
+                   PERFORM 41012-NIJYU-TRKGMN-SEC
+               END-IF
            END-IF
       *
            .
@@ -2744,22 +2766,19 @@
       ****************************************************************
        4101-SEX-CHK-SEC      SECTION.
       *
-           IF      SPA-GMN-SEX         =   SPACE
-               GO      TO      4101-SEX-CHK-EXT
-           END-IF
-      *
            EVALUATE    SPA-GMN-SEX
                WHEN    "1"
                    MOVE    "男"            TO  SPA-GMN-SEXH
+                   MOVE    SPA-GMN-SEX     TO  SPA-MAE-SEX
                WHEN    "2"
                    MOVE    "女"            TO  SPA-GMN-SEXH
+                   MOVE    SPA-GMN-SEX     TO  SPA-MAE-SEX
+               WHEN    SPACE
+                   CONTINUE
                WHEN    OTHER
                    MOVE    "0021"          TO  SPA-ERRCD
                    MOVE    3               TO  SPA-GMN-CUR
-                   GO      TO      4101-SEX-CHK-EXT
            END-EVALUATE
-      *
-           MOVE    SPA-GMN-SEX         TO  SPA-MAE-SEX
       *
            .
        4101-SEX-CHK-EXT.
@@ -4368,36 +4387,37 @@
       ****************************************************************
        41012-NIJYU-TRKGMN-SEC          SECTION.
       *
+           MOVE    ZERO                TO  FLG-P02A-CHK
            IF      FLG-P02A-SYORI      =   1
                IF     (SPA-GMN-KANANAME    =   SPACE )  OR
                       (SPA-GMN-NAME        =   SPACE )
-                   GO      TO              41012-NIJYU-TRKGMN-EXT
+                   MOVE    1               TO  FLG-P02A-CHK
                END-IF
            ELSE
                IF  ( SPA-GMN-KANANAME      =   SPACE )  OR
                    ( SPA-NAI-BIRTHDAY      =   SPACE )  OR
                    ( SPA-GMN-SEX           =   SPACE )
-                   GO      TO              41012-NIJYU-TRKGMN-EXT
+                   MOVE    1               TO  FLG-P02A-CHK
                END-IF
            END-IF
       *
-           PERFORM 41013-NIJYU-GMN-SET-SEC
-           IF      SPA-GMN2A-MAX       =   ZERO
-               GO      TO              41012-NIJYU-TRKGMN-EXT
+           MOVE    ZERO                TO  SPA-GMN2A-MAX
+           IF      FLG-P02A-CHK        =   ZERO
+               PERFORM 41013-NIJYU-GMN-SET-SEC
            END-IF
       *
-           MOVE    "P02"               TO  SPA-MOTOPG
-           MOVE    "P02A"              TO  SPA-SAKIPG
+           IF      SPA-GMN2A-MAX       >   ZERO
+      *        二重登録疑い画面へ
+               MOVE    "P02"               TO  SPA-MOTOPG
+               MOVE    "P02A"              TO  SPA-SAKIPG
       *
-      *    二重登録疑い画面へ
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    "P02A"              TO  MCP-WINDOW
-           MOVE    "B01"               TO  MCP-WIDGET
+               MOVE    "NEW"               TO  MCP-PUTTYPE
+               MOVE    "P02A"              TO  MCP-WINDOW
+               MOVE    "B01"               TO  MCP-WIDGET
       *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  SPA-FLG-END
-      *
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                   TO  SPA-FLG-END
+           END-IF
            .
        41012-NIJYU-TRKGMN-EXT.
            EXIT.

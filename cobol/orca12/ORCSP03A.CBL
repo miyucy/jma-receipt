@@ -269,12 +269,10 @@
                WHEN    "0104"
                    PERFORM 310-RJNHENKAN-SYORI-SEC
                    MOVE    SPACE           TO  SPA-PIDCD
-                   GO      TO      000-PROC-EXT
       *        保険重複期間処理
                WHEN    "0105"
                    PERFORM 300-HKNKIKAN-SYORI-SEC
                    MOVE    SPACE           TO  SPA-PIDCD
-                   GO      TO      000-PROC-EXT
       *        保険自動切り替え処理
                WHEN    "0201"
                WHEN    "0202"
@@ -282,17 +280,16 @@
                WHEN    "0204"
                    PERFORM 320-HKNCHANGE-SYORI-SEC
                    MOVE    SPACE           TO  SPA-PIDCD
-                   GO      TO      000-PROC-EXT
+      *
+               WHEN    OTHER
+                   MOVE    SPACE           TO  SPA-PIDCD
+      *            基本チェック
+                   PERFORM 100-KIHON-CHK-SEC
+                   IF      SPA-ERRCD           =   SPACE
+      *                関連チェックを行う
+                       PERFORM 200-KANREN-CHK-SEC
+                   END-IF
            END-EVALUATE
-      *
-      *    基本チェック
-           PERFORM 100-KIHON-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      000-PROC-EXT
-           END-IF
-      *
-      *    関連チェックを行う
-           PERFORM 200-KANREN-CHK-SEC
       *
            .
        000-PROC-EXT.
@@ -307,15 +304,13 @@
        100-KIHON-CHK-SEC     SECTION.
       *
       *    保険者番号
-           PERFORM 100-HKNJANUM-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 100-HKNJANUM-CHK-SEC
            END-IF
       *
       *    保険の種類
-           PERFORM 1001-HKNNUM-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1001-HKNNUM-CHK-SEC
            END-IF
       *
       *    労災保険の時、以下処理なし
@@ -325,49 +320,40 @@
            END-IF
       *
       *    本家
-           PERFORM 1001-HONKZKKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1001-HONKZKKBN-CHK-SEC
            END-IF
       *    補助
-           PERFORM 1001-HOJOKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1001-HOJOKBN-CHK-SEC
            END-IF
       *    継続
-           PERFORM 1001-CONTKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1001-CONTKBN-CHK-SEC
            END-IF
       *    記号・番号
-           PERFORM 1001-KIGO-NUM-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1001-KIGO-NUM-CHK-SEC
            END-IF
       *    資格取得日
-           PERFORM 1001-SKKGETYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1001-SKKGETYMD-CHK-SEC
            END-IF
       *    適用開始日
-           PERFORM 1001-HTEKSTYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1001-HTEKSTYMD-CHK-SEC
            END-IF
       *    適用終了日
-           PERFORM 1001-HTEKEDYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1001-HTEKEDYMD-CHK-SEC
            END-IF
       *    被保険者
-           PERFORM 1001-HIHKNJANAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1001-HIHKNJANAME-CHK-SEC
            END-IF
       *    確認日
-           PERFORM 1001-HKAKUNINYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 1001-HKAKUNINYMD-CHK-SEC
            END-IF
            .
        100-KIHON-CHK-EXT.
@@ -390,6 +376,9 @@
            MOVE    SPA-GMN-HKNJANUM    TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           IF      KANACHK-RC2         =   7
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-HKNJANUM
+           END-IF
       *    半角で間に空白がないこと
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-RC2     NOT =   ZERO  )  OR
@@ -1211,7 +1200,6 @@
                ELSE
                    MOVE    "1048"          TO  SPA-ERRCD
                    MOVE    12              TO  SPA-GMN-CUR
-                   GO      TO      1001-CONTKBN-CHK-EXT
                END-IF
            END-IF
       *
@@ -1232,34 +1220,31 @@
                IF      FLG-ERR             =   1
                    MOVE    "0048"              TO  SPA-ERRCD
                    MOVE    13                  TO  SPA-GMN-CUR
-                   GO      TO      1001-KIGO-NUM-CHK-EXT
                END-IF
       *        半角の時、変更はＯＫとする
                IF      FLG-ERR             =   2
                    IF      SPA-GMN-KIGO    NOT =   SPA-MAE-KIGO
                        MOVE    "0048"              TO  SPA-ERRCD
                        MOVE    13                  TO  SPA-GMN-CUR
-                       GO      TO      1001-KIGO-NUM-CHK-EXT
                    END-IF
                END-IF
            END-IF
       *
       *    番号全角チェック
-           IF      SPA-GMN-NUM     NOT =   SPACE
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-GMN-NUM     NOT =   SPACE )
                MOVE    SPA-GMN-NUM         TO  WRK-MAE-INPUT
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-NUM
                IF      FLG-ERR             =   1
                    MOVE    "0049"              TO  SPA-ERRCD
                    MOVE    14                  TO  SPA-GMN-CUR
-                   GO      TO      1001-KIGO-NUM-CHK-EXT
                END-IF
       *        半角の時、変更はＯＫとする
                IF      FLG-ERR             =   2
                    IF      SPA-GMN-NUM     NOT =   SPA-MAE-NUM
                        MOVE    "0049"              TO  SPA-ERRCD
                        MOVE    14                  TO  SPA-GMN-CUR
-                       GO      TO      1001-KIGO-NUM-CHK-EXT
                    END-IF
                END-IF
            END-IF
@@ -2433,7 +2418,10 @@
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    1                   TO  FLG-ERR
-               MOVE    WRK-MAE-INPUT       TO  WRK-ATO-INPUT
+               MOVE    KANACHK-MAE-INPUT       TO  WRK-ATO-INPUT
+               IF      KANACHK-RC2         =   7
+                   MOVE    KANACHK-OUT-INPUT       TO  WRK-ATO-INPUT
+               END-IF
                IF      KANACHK-SYUBETU     =   1
                    MOVE    2                   TO  FLG-ERR
                END-IF

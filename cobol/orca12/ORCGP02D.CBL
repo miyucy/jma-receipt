@@ -197,6 +197,7 @@
            COPY    "P02E.INC".
            COPY    "P02F.INC".
            COPY    "P014.INC".
+           COPY    "P015.INC".
            COPY    "P98.INC".
            COPY    "P981.INC".
            COPY    "P99.INC".
@@ -1365,6 +1366,9 @@
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
+               IF      KANACHK-RC2         =   7
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN2D-COMMENT
+               END-IF
                MOVE    "0031"              TO  SPA-ERRCD
                MOVE    02                  TO  SPA-GMN2D-CUR
            ELSE
@@ -1399,7 +1403,6 @@
            ELSE
                MOVE    "0003"              TO  SPA-ERRCD
                MOVE    3                   TO  SPA-GMN2D-CUR
-               GO      TO      4101-KOFUNUM-CHK-EXT
            END-IF
       *
       ***  IF      KANACHK-MAX         =   11
@@ -1432,7 +1435,6 @@
            ELSE
                MOVE    "0004"              TO  SPA-ERRCD
                MOVE    4                   TO  SPA-GMN2D-CUR
-               GO      TO      4101-KOHNUM2-CHK-EXT
            END-IF
       *
            .
@@ -1693,6 +1695,9 @@
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0029"              TO  SPA-ERRCD
                MOVE    11                  TO  SPA-GMN2D-CUR
+               IF      KANACHK-RC2         =   7
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN2D-JIGYOUNAME
+               END-IF
            ELSE
                MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN2D-JIGYOUNAME
            END-IF
@@ -1769,6 +1774,9 @@
                   (KANACHK-SYUBETU     =   1     )
                MOVE    "0030"              TO  SPA-ERRCD
                MOVE    14                  TO  SPA-GMN2D-CUR
+               IF      KANACHK-RC2         =   7
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN2D-CITYNAME
+               END-IF
            ELSE
                MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN2D-CITYNAME
            END-IF
@@ -1829,7 +1837,6 @@
            ELSE
                MOVE    "0028"              TO  SPA-ERRCD
                MOVE    16                  TO  SPA-GMN2D-CUR
-               GO      TO      4101-KOHNUM3-CHK-EXT
            END-IF
       *
       **** IF      KANACHK-MAX         =   10
@@ -1888,7 +1895,6 @@
            IF      SPA-GMN2D-SINSATUYMD     =   SPACE  OR  ZERO
                IF      SPA-GMN2D-HKNKBN    =   "3"
                    MOVE    "0019"              TO  SPA-ERRCD
-                   GO      TO      4101-SINSATUYMD-CHK-EXT
                ELSE
                    MOVE    SPACE               TO  SPA-NAI2D-SINSATUYMD
                END-IF
@@ -1904,7 +1910,6 @@
                    MOVE    SPACE               TO  SPA-NAI2D-SINSATUYMD
                    MOVE    "0017"              TO  SPA-ERRCD
                    MOVE    18                  TO  SPA-GMN2D-CUR
-                   GO      TO                  4101-SINSATUYMD-CHK-EXT
                END-IF
            END-IF
       *
@@ -1940,13 +1945,14 @@
                    MOVE    SPACE               TO  SPA-NAI2D-SINSATUEND
                    MOVE    "0010"              TO  SPA-ERRCD
                    MOVE    19                  TO  SPA-GMN2D-CUR
-                   GO      TO                  4101-SINSATUEND-CHK-EXT
                END-IF
            END-IF
       *
            IF      SPA-NAI2D-SINSATUYMD    >   SPA-NAI2D-SINSATUEND
-               MOVE    "0011"              TO  SPA-ERRCD
-               MOVE    19                  TO  SPA-GMN2D-CUR
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    "0011"              TO  SPA-ERRCD
+                   MOVE    19                  TO  SPA-GMN2D-CUR
+               END-IF
            END-IF
       *
            .
@@ -2041,28 +2047,28 @@
            MOVE    1                   TO  FLG-TOUROKU
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
-           IF  SPA-ERRCD         NOT =   SPACE
-               GO  TO                490-TOROKU-EXT
-           END-IF
       *
       *    保険期間重複チェック
-           PERFORM 49011-KANREN-HKN-CHECK-SEC
-           IF  SPA-ERRCD         NOT =   SPACE
-               GO  TO                490-TOROKU-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 49011-KANREN-HKN-CHECK-SEC
            END-IF
       *
       *    患者保険処理
-           PERFORM 49012-PTHKNINF-HEN-SEC
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 49012-PTHKNINF-HEN-SEC
+           END-IF
       *
       *    労災保険編集処理
-           PERFORM 4905-PTRSIINF-HEN-SEC
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4905-PTRSIINF-HEN-SEC
+           END-IF
       *
-           MOVE    SPACE               TO  SPA-RSPAR-FLG
-      *
-           MOVE    1                   TO  FLG-END
-      *
-      *    終了へ
-           PERFORM 210-BACK
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    SPACE               TO  SPA-RSPAR-FLG
+               MOVE    1                   TO  FLG-END
+      *        終了へ
+               PERFORM 210-BACK
+           END-IF
            .
        490-TOROKU-EXT.
            EXIT.
@@ -2078,66 +2084,66 @@
                    IF      SPA-GMN2D-KOHNUM1   =   SPACE
                        MOVE    "0022"              TO  SPA-ERRCD
                        MOVE    3                   TO  SPA-GMN2D-CUR
-                       GO      TO      4109-TOUROKU-CHK-EXT
                    END-IF
                    IF      SPA-GMN2D-SAIGAI        =   SPACE
+                     AND  (SPA-ERRCD               =   SPACE )
                        MOVE    "0027"              TO  SPA-ERRCD
                        MOVE    21                  TO  SPA-GMN2D-CUR
-                       GO      TO      4109-TOUROKU-CHK-EXT
                    END-IF
                    IF      SPA-GMN2D-SHOBYOYMD     =   SPACE
+                     AND  (SPA-ERRCD               =   SPACE )
                        MOVE    "0025"              TO  SPA-ERRCD
                        MOVE    8                   TO  SPA-GMN2D-CUR
-                       GO      TO      4109-TOUROKU-CHK-EXT
                    END-IF
                    IF      SPA-GMN2D-RYOSTYMD =   SPACE
+                     AND  (SPA-ERRCD               =   SPACE )
                        MOVE    "0012"              TO  SPA-ERRCD
                        MOVE    9                   TO  SPA-GMN2D-CUR
-                       GO      TO      4109-TOUROKU-CHK-EXT
                    END-IF
       *        傷病
                WHEN    "2"
                    IF      SPA-GMN2D-KOHNUM2   =   SPACE
+                     AND  (SPA-ERRCD               =   SPACE )
                        MOVE    "0023"              TO  SPA-ERRCD
                        MOVE    4                   TO  SPA-GMN2D-CUR
-                       GO      TO      4109-TOUROKU-CHK-EXT
                    END-IF
                    IF      SPA-GMN2D-SAIGAI        =   SPACE
+                     AND  (SPA-ERRCD               =   SPACE )
                        MOVE    "0027"              TO  SPA-ERRCD
                        MOVE    21                  TO  SPA-GMN2D-CUR
-                       GO      TO      4109-TOUROKU-CHK-EXT
                    END-IF
                    IF      SPA-GMN2D-SHOBYOYMD     =   SPACE
+                     AND  (SPA-ERRCD               =   SPACE )
                        MOVE    "0025"              TO  SPA-ERRCD
                        MOVE    8                   TO  SPA-GMN2D-CUR
-                       GO      TO      4109-TOUROKU-CHK-EXT
                    END-IF
                    IF      SPA-GMN2D-RYOSTYMD      =   SPACE
+                     AND  (SPA-ERRCD               =   SPACE )
                        MOVE    "0012"              TO  SPA-ERRCD
                        MOVE    9                   TO  SPA-GMN2D-CUR
-                       GO      TO      4109-TOUROKU-CHK-EXT
                    END-IF
                WHEN    "3"
                    IF      SPA-GMN2D-KOHNUM3   =   SPACE
+                     AND  (SPA-ERRCD               =   SPACE )
                        MOVE    "0024"              TO  SPA-ERRCD
                        MOVE    16                  TO  SPA-GMN2D-CUR
-                       GO      TO      4109-TOUROKU-CHK-EXT
                    END-IF
                    IF      SPA-GMN2D-SINSATUYMD    =   SPACE
+                     AND  (SPA-ERRCD               =   SPACE )
                        MOVE    "0019"              TO  SPA-ERRCD
                        MOVE    18                  TO  SPA-GMN2D-CUR
                    END-IF
       *        自賠責
                WHEN    "4"
                    IF      SPA-GMN2D-SHOBYOYMD     =   SPACE
+                     AND  (SPA-ERRCD               =   SPACE )
                        MOVE    "0025"              TO  SPA-ERRCD
                        MOVE    8                   TO  SPA-GMN2D-CUR
-                       GO      TO      4109-TOUROKU-CHK-EXT
                    END-IF
                    IF      SPA-GMN2D-RYOSTYMD      =   SPACE
+                     AND  (SPA-ERRCD               =   SPACE )
                        MOVE    "0012"              TO  SPA-ERRCD
                        MOVE    9                   TO  SPA-GMN2D-CUR
-                       GO      TO      4109-TOUROKU-CHK-EXT
                    END-IF
            END-EVALUATE
       *

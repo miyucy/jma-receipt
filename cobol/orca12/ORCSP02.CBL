@@ -742,11 +742,22 @@
                MOVE    SYS-1017-KARUTE-HAKKO   TO  SPA-NAI-KARUTE-HAKKO
       *        ¼«ÈñÊÝ¸±¤ÎÊä½õ¶èÊ¬
                MOVE    SYS-1017-JIHIHKN-TAX    TO  SPA-NAI-JIHIHKN-TAX
+      *        Æ±À«Æ±Ì¾¥Á¥§¥Ã¥¯
+               MOVE    SYS-1017-DOUMEI-CHKFLG  TO  SPA-NAI-DOUMEI-CHKFLG
+      *        Æó½ÅÅÐÏ¿µ¿¤¤¥Á¥§¥Ã¥¯¶èÊ¬
+               MOVE    SYS-1017-JYUFUKU-CHKKBN TO
+                                               SPA-NAI-JYUFUKU-CHKKBN
            ELSE
       *        Ì¤ÅÐÏ¿¤Î»þ¡¢¥¼¥í¤È¤¹¤ë
                MOVE    ZERO                    TO  SPA-NAI-JINMEI-USE
                MOVE    ZERO                    TO  SPA-NAI-KARUTE-HAKKO
                MOVE    ZERO                    TO  SPA-NAI-JIHIHKN-TAX
+           END-IF
+           IF      SPA-NAI-DOUMEI-CHKFLG   =   SPACE
+               MOVE    ZERO                TO  SPA-NAI-DOUMEI-CHKFLG
+           END-IF
+           IF      SPA-NAI-JYUFUKU-CHKKBN  =   SPACE
+               MOVE    ZERO                TO  SPA-NAI-JYUFUKU-CHKKBN
            END-IF
       *
            .

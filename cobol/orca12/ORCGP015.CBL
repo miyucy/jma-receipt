@@ -16,14 +16,14 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCGP014.
+       PROGRAM-ID.             ORCGP015.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 患者登録
-      *  コンポーネント名  : 患者番号発行（拡張（P014）
+      *  コンポーネント名  : 患者番号再設定
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  01/12/05    MCC-多々納    新規作成
+      *  04/10/XX    NACL-多々納   新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -56,43 +56,16 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
-           03  FLG-PARA            PIC 9(01).
-           03  FLG-PTGETNUM        PIC 9(01).
-           03  FLG-UKETUKE         PIC 9(01).
-           03  FLG-KANRIMST        PIC 9(01).
-      *
-      *    カウント領域
-       01  CNT-AREA.
-           03  CNT-ERR             PIC 9(06).
-      *
-      *    システム領域
-       01  SYS-AREA.
-           03  SYS-YMD.
-               05  SYS-YY          PIC 9(02).
-               05  SYS-MM          PIC 9(02).
-               05  SYS-DD          PIC 9(02).
-           03  SYS-TIME.
-               05  SYS-THH         PIC 9(02).
-               05  SYS-TMM         PIC 9(02).
-               05  SYS-TSS         PIC 9(02).
-               05  SYS-TDD         PIC 9(02).
+           03  FLG-PTNUM           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
-           03  IDZ                 PIC 9(04).
-           03  IDX2                PIC 9(02).
-           03  IDX3                PIC 9(02).
-           03  IDX4                PIC 9(02).
-           03  IDX-LINE            PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
-      *
-           03  WRK-ERRMSG          PIC X(40).
-           03  WRK-KNJID           PIC 9(10).
-           03  WRK-END             PIC 9(04).
+           03  WRK-PIDMSG          PIC X(100).
       *
            03  WRK-WAYMD.
                05  WRK-WAGO         PIC 9(01).
@@ -149,6 +122,8 @@
            COPY    "CPORCSPTID.INC".
       *   チェックデジット
            COPY    "CPORCCHKDGT.INC".
+      *   患者番号変換サブ
+           COPY    "CPORCSPTNUM.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -170,8 +145,6 @@
        01  SCRAREA.
            COPY    "P02.INC".
            COPY    "P02A.INC".
-      *****COPY    "P02B.INC".
-      *****COPY    "P02C.INC".
            COPY    "P02D.INC".
            COPY    "P02E.INC".
            COPY    "P02F.INC".
@@ -200,7 +173,6 @@
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
-           INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
@@ -241,7 +213,6 @@
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
-           INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
       *
       *    エラー画面より
@@ -252,18 +223,20 @@
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
       *        画面編集
-               PERFORM 500-GMNHEN-SEC
+               IF      FLG-END         =   ZERO
+                   PERFORM 500-GMNHEN-SEC
+               END-IF
            END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
+           IF      FLG-END             =   ZERO
+               MOVE    SPACE               TO  LINKAREA
       *
-           MOVE   "NEW"                TO  MCP-PUTTYPE.
-           MOVE   "P014"               TO  MCP-WINDOW.
+               MOVE   "NEW"                TO  MCP-PUTTYPE
+               MOVE   "P015"               TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
-      *
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                   TO  FLG-END
+           END-IF
            .
        100-INIT-EXT.
            EXIT.
@@ -273,22 +246,20 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-           EVALUATE    SPA-1009-KKCKSIKBN
-      *        拡張構成 <フリー + 連番号 + フリー>
-               WHEN    "1"
-                   MOVE    1                   TO  SPA-GMN014-CUR
-      *        拡張構成 <フリー + 連番号>
-               WHEN    "2"
-                   MOVE    1                   TO  SPA-GMN014-CUR
-      *        拡張構成 <連番号 + フリー>
-               WHEN    "3"
-                   MOVE    2                   TO  SPA-GMN014-CUR
+           EVALUATE    SPA-MOTOPG
+               WHEN    "PID1"
+                   IF      SPA-PID1-FLG        =   SPACE
+                       CONTINUE
+                   ELSE
+                       PERFORM 4901-KOUSIN-SYORI-SEC
+                   END-IF
+                   MOVE    SPACE           TO  SPA-PIDCD
+               WHEN    OTHER
+                   PERFORM 310-SPASET-SEC
            END-EVALUATE
       *
-           
-      *
            .
-       3OO-SCREEN-EXT.
+       300-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -296,6 +267,8 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
+           INITIALIZE                      SPA-P015-AREA
+           MOVE    1                   TO  SPA-GMN015-CUR
       *
            .
        31O-SPASET-EXT.
@@ -306,29 +279,10 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           INITIALIZE                      P014
+           INITIALIZE                      P015
       *
-           MOVE    SPA-GMN014-PTNUM1   TO  P014-PTNUM1
-           MOVE    SPA-GMN014-PTNUM2   TO  P014-PTNUM2
-           MOVE    SPA-GMN014-PTNUM3   TO  P014-PTNUM3
-      *
-      *    拡張構成区分
-           MOVE    WIDGET-INSENSITIVE  TO  P014-PTNUM1-STATE
-           MOVE    WIDGET-INSENSITIVE  TO  P014-PTNUM2-STATE
-           MOVE    WIDGET-INSENSITIVE  TO  P014-PTNUM3-STATE
-      *
-           EVALUATE    SPA-1009-KKCKSIKBN
-      *        拡張構成 <フリー + 連番号 + フリー>
-               WHEN    "1"
-                   MOVE    WIDGET-NORMAL       TO  P014-PTNUM1-STATE
-                   MOVE    WIDGET-NORMAL       TO  P014-PTNUM3-STATE
-      *        拡張構成 <フリー + 連番号>
-               WHEN    "2"
-                   MOVE    WIDGET-NORMAL       TO  P014-PTNUM1-STATE
-      *        拡張構成 <連番号 + フリー>
-               WHEN    "3"
-                   MOVE    WIDGET-NORMAL       TO  P014-PTNUM2-STATE
-           END-EVALUATE
+           MOVE    SPA-GMN-PTNUM       TO  P015-PTNUM1
+           MOVE    SPA-GMN015-PTNUM    TO  P015-PTNUM2
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -341,19 +295,11 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-         EVALUATE    SPA-GMN014-CUR
+         EVALUATE    SPA-GMN015-CUR
               WHEN    01
-                  MOVE    "PTNUM1"       TO  MCP-WIDGET
-              WHEN    02
                   MOVE    "PTNUM2"       TO  MCP-WIDGET
-              WHEN    03
-                  MOVE    "PTNUM3"       TO  MCP-WIDGET
-              WHEN    04
+              WHEN    02
                   MOVE    "B12"          TO  MCP-WIDGET
-      *----(01.00.01) LINE ADD START -------------------------------
-              WHEN    05
-                  MOVE    "B04"          TO  MCP-WIDGET
-      *----(01.00.01) LINE ADD END   -------------------------------
           END-EVALUATE
       *
            .
@@ -368,10 +314,8 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
+                   MOVE    SPACE       TO  SPA-GMN015-PTNUM
                    PERFORM 210-BACK
-      *        再発行
-               WHEN    "CLICKED"       ALSO    "B04"
-                   PERFORM 420-SAIHAKKOU-SEC
       *        確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-KAKUTEI-SEC
@@ -386,136 +330,74 @@
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-               WHEN    "ACTIVATE"      ALSO    "PTNUM1"
-                   PERFORM 4001-PTNUM1-SEC
                WHEN    "ACTIVATE"      ALSO    "PTNUM2"
-                   PERFORM 4002-PTNUM2-SEC
-               WHEN    "ACTIVATE"      ALSO    "PTNUM3"
-                   PERFORM 4003-PTNUM3-SEC
+                   PERFORM 4001-PTNUM-SEC
            END-EVALUATE
       *
            .
        200-ENTRY-EXT.
            EXIT.
       *****************************************************************
-      *    番号１処理
+      *    患者番号処理
       *****************************************************************
-       4001-PTNUM1-SEC             SECTION.
+       4001-PTNUM-SEC             SECTION.
       *
-           MOVE    1                   TO  SPA-GMN014-CUR
-           MOVE    P014-PTNUM1         TO  SPA-GMN014-PTNUM1
+           MOVE    1                   TO  SPA-GMN015-CUR
+           MOVE    P015-PTNUM2         TO  SPA-GMN015-PTNUM
       *
-      *    桁数チェック
-           MOVE    ZERO              TO  WRK-END
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL    (IDX           >   20)
-                     OR       (SPA-GMN014-PTNUM1(IDX:1) =   SPACE)
-               MOVE    IDX                 TO  WRK-END
-           END-PERFORM
-      *
-      *    拡張構成前桁数チェック
-           IF      WRK-END         NOT =   SPA-1009-KKCKSIMAEKETA
-               MOVE    "0001"          TO  SPA-ERRCD
+           IF     (SPA-GMN015-PTNUM        =   SPACE )  OR
+                  (SPA-GMN015-PTNUM(1:1)   =   "*" AND
+                   SPA-GMN015-PTNUM(2:)    =   SPACE )
+               MOVE    "0001"              TO  SPA-ERRCD
            ELSE
-               EVALUATE    SPA-1009-KKCKSIKBN
-      *        拡張構成 <フリー + 連番号 + フリー>
-                   WHEN    "1"
-                       MOVE    3               TO  SPA-GMN014-CUR
+               INITIALIZE                      ORCSPTNUMAREA
+               MOVE    SPA-GMN015-PTNUM    TO  SPTNUM-PTNUM
+               CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
+                                                   SPA-AREA
+               EVALUATE    SPTNUM-RC
+                   WHEN    00
+      *            患者あり
+                       MOVE    SPTNUM-PTNUM        TO  SPA-GMN015-PTNUM
+                       MOVE    "0003"              TO  SPA-ERRCD
+                   WHEN    20
+      *            漢字
+                       MOVE    "0001"              TO  SPA-ERRCD
+                   WHEN    10
+      *            患者構成チェック
+                       MOVE    SPTNUM-PTNUM        TO  SPA-GMN015-PTNUM
+                       PERFORM 40011-PTNUM-CHK-SEC
                    WHEN    OTHER
-                       MOVE    4               TO  SPA-GMN014-CUR
+                       MOVE    "0001"              TO  SPA-ERRCD
                END-EVALUATE
            END-IF
-           .
-       4001-PTNUM1-EXT.
-           EXIT.
-      *****************************************************************
-      *    番号２処理
-      *****************************************************************
-       4002-PTNUM2-SEC             SECTION.
-      *
-           MOVE    2                   TO  SPA-GMN014-CUR
-           MOVE    P014-PTNUM2         TO  SPA-GMN014-PTNUM2
-      *
-      *    桁数チェック
-           MOVE    ZERO              TO  WRK-END
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL    (IDX           >   20)
-                     OR       (SPA-GMN014-PTNUM2(IDX:1) =   SPACE)
-               MOVE    IDX                 TO  WRK-END
-           END-PERFORM
-      *
-      *    拡張構成後桁数チェック
-           IF      WRK-END         NOT =   SPA-1009-KKCKSIATOKETA
-               MOVE    "0001"          TO  SPA-ERRCD
-           ELSE
-               MOVE    4               TO  SPA-GMN014-CUR
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    2                   TO  SPA-GMN015-CUR
            END-IF
+      *
            .
-       4002-PTNUM2-EXT.
+       4001-PTNUM-EXT.
            EXIT.
       *****************************************************************
-      *    番号３処理
+      *    患者構成チェック処理
       *****************************************************************
-       4003-PTNUM3-SEC             SECTION.
+       40011-PTNUM-CHK-SEC             SECTION.
       *
-           MOVE    3                   TO  SPA-GMN014-CUR
-           MOVE    P014-PTNUM3         TO  SPA-GMN014-PTNUM3
-      *
-      *    桁数チェック
-           MOVE    ZERO              TO  WRK-END
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL    (IDX           >   20)
-                     OR       (SPA-GMN014-PTNUM3(IDX:1) =   SPACE)
-               MOVE    IDX                 TO  WRK-END
-           END-PERFORM
-      *
-      *    拡張構成後桁数チェック
-           IF      WRK-END         NOT =   SPA-1009-KKCKSIATOKETA
-               MOVE    "0001"          TO  SPA-ERRCD
-           ELSE
-               MOVE    4               TO  SPA-GMN014-CUR
-           END-IF
-           .
-       4003-PTNUM3-EXT.
-           EXIT.
-      *****************************************************************
-      *    再発行処理
-      *****************************************************************
-       420-SAIHAKKOU-SEC             SECTION.
-      *
-           MOVE    5                   TO  SPA-GMN014-CUR
-      *
+      *    患者構成チェック
            INITIALIZE                  ORCSP01AREA
-           MOVE    "3"                 TO  ORCSP01-SYORI
+           MOVE    "2"                 TO  ORCSP01-SYORI
+           MOVE    SPA-GMN015-PTNUM    TO  ORCSP01-PTNUM
            MOVE    SPA-GMN-PTID        TO  ORCSP01-PTID
-           MOVE    SPA-GMN-PTNUM       TO  ORCSP01-PTNUM
+      *
            CALL    "ORCSP01"           USING
                                        ORCSP01AREA
                                        SPA-AREA
       *
-           IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    "0002"              TO  SPA-ERRCD
-               GO      TO      420-SAIHAKKOU-EXT
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    ORCSP01-PTNUM       TO  SPA-GMN015-PTNUM
            END-IF
       *
-           EVALUATE    SPA-1009-KKCKSIKBN
-      *        拡張構成 <フリー + 連番号 + フリー>
-               WHEN    "1"
-                   MOVE    ORCSP01-PTNUM2      TO  SPA-GMN014-PTNUM2
-                   MOVE    1                   TO  SPA-GMN014-CUR
-      *        拡張構成 <フリー + 連番号>
-               WHEN    "2"
-                   MOVE    ORCSP01-PTNUM2      TO  SPA-GMN014-PTNUM2
-                   MOVE    1                   TO  SPA-GMN014-CUR
-      *        拡張構成 <連番号 + フリー>
-               WHEN    "3"
-                   MOVE    ORCSP01-PTNUM1      TO  SPA-GMN014-PTNUM1
-                   MOVE    2                   TO  SPA-GMN014-CUR
-           END-EVALUATE
-      *
-           MOVE    4                   TO  SPA-GMN014-CUR
            .
-       420-SAIHAKKOU-EXT.
+       40011-PTNUM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -523,60 +405,122 @@
       *****************************************************************
        490-KAKUTEI-SEC             SECTION.
       *
-      *
       *    更新前チェック
-           EVALUATE    SPA-1009-KKCKSIKBN
-      *        拡張構成 <フリー + 連番号 + フリー>
-               WHEN    "1"
-                   PERFORM 4001-PTNUM1-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO  TO                490-KAKUTEI-EXT
-                   END-IF
-                   PERFORM 4003-PTNUM3-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO  TO                490-KAKUTEI-EXT
-                   END-IF
-      *        拡張構成 <フリー + 連番号>
-               WHEN    "2"
-                   PERFORM 4001-PTNUM1-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO  TO                490-KAKUTEI-EXT
-                   END-IF
-      *        拡張構成 <連番号 + フリー>
-               WHEN    "3"
-                   PERFORM 4002-PTNUM2-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO  TO                490-KAKUTEI-EXT
-                   END-IF
-           END-EVALUATE
+           PERFORM 4001-PTNUM-SEC
       *
-      *    患者番号編集
-           MOVE    SPACE               TO  SPA-GMN014-PTNUM
-           STRING  SPA-GMN014-PTNUM1   DELIMITED  BY  " "
-                   SPA-GMN014-PTNUM2   DELIMITED  BY  " "
-                   SPA-GMN014-PTNUM3   DELIMITED  BY  " "
-                   INTO                SPA-GMN014-PTNUM
-           END-STRING
-      *
-      *
-      *    患者番号変換(管理）を検索
-           INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
-           MOVE    SPA-GMN014-PTNUM    TO  SPTID-PTNUM
-           CALL    "ORCSPTID"      USING   ORCSPTIDAREA
-                                           SPA-1009-TBL
-           IF      SPTID-RC            =   ZERO
-      *        既に患者番号が登録されている場合
-               MOVE    "0003"              TO  SPA-ERRCD
-               MOVE    05                  TO  SPA-GMN-CUR
-               MOVE    SPACE               TO  SPA-GMN014-PTNUM
-               GO      TO              490-KAKUTEI-EXT
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    "0101"          TO  SPA-PIDCD
            END-IF
-      *
-           PERFORM 210-BACK
       *
           .
        490-KAKUTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    更新処理
+      *****************************************************************
+       4901-KOUSIN-SYORI-SEC           SECTION.
+      *
+           INITIALIZE                      PTNUM-REC
+           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
+           MOVE    SPA-GMN015-PTNUM    TO  PTNUM-PTNUM
+      *
+           MOVE    PTNUM-REC           TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTNUM-KEY2"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTNUM-KEY2"        TO  ORC-DBPATH
+               PERFORM 950-PTNUM-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTNUM
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTNUM-KEY2"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           IF      FLG-PTNUM           =   ZERO
+               MOVE    "0003"              TO  SPA-ERRCD
+           ELSE
+               PERFORM 49011-PTNUM-UPDATE-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 210-BACK
+           ELSE
+               MOVE    1                   TO  SPA-GMN015-CUR
+           END-IF
+          .
+       4901-KOUSIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    更新処理
+      *****************************************************************
+       49011-PTNUM-UPDATE-SEC           SECTION.
+      *
+           INITIALIZE                      PTNUM-REC
+           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTNUM-PTID
+      *
+           MOVE    PTNUM-REC           TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+               PERFORM 950-PTNUM-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTNUM
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF     (FLG-PTNUM           =   1  )  OR
+                  (PTNUM-PTNUM     NOT =   SPA-GMN-PTNUM)
+               MOVE    "0004"              TO  SPA-ERRCD
+           ELSE
+      *        患者番号更新
+               MOVE    SPA-GMN015-PTNUM    TO  PTNUM-PTNUM
+      *
+               MOVE    PTNUM-REC           TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "P015 PTNUM UPDATE:" MCP-RC
+                           ",KEY:" PTNUM-KEY
+                   MOVE    "0009"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-PTNUM           =   SPA-GMN-PTNUM
+                   MOVE    SPA-GMN015-PTNUM    TO  SPA-PTNUM
+               END-IF
+               IF      SPA-GMN-PTNUM       =   SPA-LAST-PTNUM
+                   MOVE    SPA-GMN015-PTNUM    TO  SPA-LAST-PTNUM
+               END-IF
+               MOVE    SPA-GMN015-PTNUM    TO  SPA-GMN-PTNUM
+           END-IF
+      *
+           .
+       49011-PTNUM-UPDATE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -591,10 +535,15 @@
                GO      TO              500-SET-SCREEN-EXT
            END-IF
       *
+           IF      SPA-PIDCD       NOT =   SPACE
+               PERFORM 520-JIDSET-SEC
+               GO      TO              500-SET-SCREEN-EXT
+           END-IF
+      *
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "P014"              TO  MCP-WINDOW.
+           MOVE    "P015"              TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
            .
@@ -610,12 +559,51 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "桁数と違います"        TO  SPA-ERRMSG
-               WHEN    "0002"
-                   MOVE    "検証番号が取得できませんでした。"
+                   MOVE    "患者番号が違います。"
                                            TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "既に登録済の患者番号です"  TO  SPA-ERRMSG
+                   MOVE    "既に登録済の患者番号です"
+                                           TO  SPA-ERRMSG
+               WHEN    "0004"
+                   MOVE    "患者ＩＤと患者番号が違います。"
+                                           TO  SPA-ERRMSG
+                   MOVE    "更新できません。"
+                                           TO  SPA-ERRMSG(31:)
+               WHEN    "0009"
+                   MOVE    "マスタが更新できませんでした。"
+                                           TO  SPA-ERRMSG
+      *        サブエラー
+               WHEN    "1005"
+                   MOVE    "患者番号の桁数が違います。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1006"
+                   MOVE    "患者番号の構成が違います。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1007"
+                   MOVE    "患者番号の検証番号が違います。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1008"
+                   MOVE    "患者番号の連番は管理連番以下にして下さい"
+                                               TO  SPA-ERRMSG
+      *        患者番号取得エラー
+               WHEN    "8000"
+                   MOVE    "自動採番の患者番号が最大値です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "初期番号から採番しました。"
+                                               TO  SPA-ERRMSG(33:)
+               WHEN    "8001"
+                   MOVE    "患者ＩＤが最大値です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "初期番号から採番しました。"
+                                               TO  SPA-ERRMSG(23:)
+               WHEN    "8002"
+                   MOVE    "自動採番の患者番号が最大値になりました。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "連番号桁数を変更して下さい。"
+                                               TO  SPA-ERRMSG(41:)
+               WHEN    "8003"
+                   MOVE    "患者ＩＤが登録済です。登録できません。"
+                                               TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  PERR
@@ -623,7 +611,7 @@
            MOVE    SPA-ERRMSG          TO  PERR-ERRMSG
            MOVE    "B01"               TO  MCP-WIDGET
       *
-           MOVE    "P014"              TO  SPA-MOTOPG
+           MOVE    "P015"              TO  SPA-MOTOPG
            MOVE    "PERR"              TO  SPA-SAKIPG
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE.
@@ -638,12 +626,52 @@
            EXIT.
       *
       *****************************************************************
+      *    エラーメッセージ表示理
+      *****************************************************************
+       520-JIDSET-SEC              SECTION.
+      *
+           EVALUATE    SPA-PIDCD
+               WHEN    "0101"
+                   MOVE    "患者番号を変更します。"
+                                               TO  WRK-PIDMSG
+                   MOVE    "現在の患者番号は欠番となります。"
+                                               TO  WRK-PIDMSG(23:)
+                   MOVE    "よろしいですか？"
+                                               TO  WRK-PIDMSG(55:)
+               WHEN    OTHER
+                   MOVE    SPA-PIDCD
+                                       TO  WRK-PIDMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  SPA-PID1-FLG
+      *
+           MOVE    SPACE               TO  PID1
+           MOVE    SPA-PIDCD           TO  PID1-ID1CODE
+           MOVE    WRK-PIDMSG          TO  PID1-ID1MSG
+      *
+           MOVE    "B12"               TO  MCP-WIDGET
+      *
+           MOVE    "P015"              TO  SPA-MOTOPG
+           MOVE    "PID1"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "PID1"              TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       520-JIDSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
       *
-           MOVE    "P014"              TO  SPA-MOTOPG
+           MOVE    "P015"              TO  SPA-MOTOPG
            MOVE    "P02"               TO  SPA-SAKIPG
       *
            MOVE    SPACE               TO  LNK-KYOUTU
@@ -657,6 +685,26 @@
       *
            .
        210-BACK-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者番号変換読み込み
+      *****************************************************************
+       950-PTNUM-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTNUM-REC
+               MOVE    ZERO            TO  FLG-PTNUM
+           ELSE
+               MOVE    1               TO  FLG-PTNUM
+           END-IF
+      *
+           .
+       950-PTNUM-READ-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
