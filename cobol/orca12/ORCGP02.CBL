@@ -2997,6 +2997,11 @@
            MOVE    "XX"                TO  SHELLTBL-ARG3
            MOVE    WRK-UKETIME         TO  SHELLTBL-ARG4
            MOVE    SPA-HOSPID          TO  SHELLTBL-ARG5
+      *    ドクター
+           MOVE    "@@@@@"             TO  SHELLTBL-ARG6
+      *    保険組合せ
+           MOVE    "@@@@"              TO  SHELLTBL-ARG7
+      *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL    TO  MCP-PATH

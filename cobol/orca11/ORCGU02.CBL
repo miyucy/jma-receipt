@@ -3105,6 +3105,21 @@
            MOVE    SPA-GMN-SRYKA       TO  SHELLTBL-ARG3
            MOVE    UKE-UKETIME         TO  SHELLTBL-ARG4
            MOVE    SPA-HOSPID          TO  SHELLTBL-ARG5
+      *    ドクター
+           IF      SPA-GMN-DRCD        =   SPACE
+               MOVE    "@@@@@"             TO  SHELLTBL-ARG6
+           ELSE
+               MOVE    SPACE               TO  SHELLTBL-ARG6
+               MOVE    "1"                 TO  SHELLTBL-ARG6(1:1)
+               MOVE    SPA-GMN-DRCD        TO  SHELLTBL-ARG6(2:4)
+           END-IF
+      *    保険組合せ
+           IF      SPA-GMN-COMBINUM    =   ZERO
+               MOVE    "@@@@"              TO  SHELLTBL-ARG7
+           ELSE
+               MOVE    SPA-GMN-COMBINUM    TO  SHELLTBL-ARG7
+           END-IF
+      *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
