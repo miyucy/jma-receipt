@@ -990,7 +990,7 @@
               END-IF
       *
               MOVE    "SYUNOU-KEY39"  TO  ORC-DBPATH
-              MOVE    "DBCLOSE"       TO  MCP-FUNC
+              MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
               CALL    "ORCMCPSUB"     USING   MCPAREA
                                               ORCMCPAREA
                                               MCPDATA-REC
