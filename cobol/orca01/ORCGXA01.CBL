@@ -30,7 +30,8 @@
       *  01.00.01    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *  01.00.02    NACL-藤原    02/10/18  確定のとき自動的に情報確認画面を表示
       *  01.00.03    NACL-藤原    03/03/03  レセプト再印刷の追加
-      *  01.04.02    NACL-藤原    03/05/12  印刷開始・終了頁の編集の修正 
+      *  01.00.04    NACL-藤原    03/04/12  印刷開始・終了頁の編集の修正
+      *  01.00.04    NACL-藤原    03/05/19  未印刷のときのダイアログを止める
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1105,14 +1106,14 @@
       *    ガイドメッセージセット
            MOVE    "1001"              TO  SPA-XAIDCD
       *
-      *    未処理の帳票があるとき
-           PERFORM                     UNTIL   FLG-PRTKANRI    =   1
-               IF      PRTKANRI-PRTFLG         =   SPACE
-                   MOVE    "1004"          TO  SPA-XAIDCD
-                   MOVE    1               TO  FLG-PRTKANRI
-               END-IF
-               PERFORM 900-PRTKANRI-FET2-SEC
-           END-PERFORM                   
+      *****未処理の帳票があるとき
+      *****PERFORM                     UNTIL   FLG-PRTKANRI    =   1
+      *        IF      PRTKANRI-PRTFLG         =   SPACE
+      *            MOVE    "1004"          TO  SPA-XAIDCD
+      *            MOVE    1               TO  FLG-PRTKANRI
+      *        END-IF
+      *        PERFORM 900-PRTKANRI-FET2-SEC
+      *****END-PERFORM                   
       *                  
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    PATH-TBL-PRTKANRI-KEY2
