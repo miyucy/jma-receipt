@@ -325,6 +325,7 @@
       *
       *    検索項目入力(確定)
            PERFORM 201-SCODE-SEC
+           DISPLAY "2102-KIHON-CHK SPA-ERRCD = " SPA-ERRCD
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      2102-KIHON-CHK-EXT
            END-IF
@@ -344,7 +345,7 @@
        201-SCODE-SEC                SECTION.
       *
       *
-           MOVE    SPACE               TO  FLG-OK
+           MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       WRK-COMBO-SCODE-MAX
                IF      SPA-GMN-SCODE-G(1:1)
