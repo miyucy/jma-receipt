@@ -1,7 +1,7 @@
 O01	{
 	fixed17	{
 		SRYYM	{
-			value	varchar(6);
+			value	varchar(7);
 		};
 		IKKATU	{
 			value	bool;

@@ -98,6 +98,7 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-TEIKIRRK        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -190,6 +191,10 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    定期請求履歴
+       01  TEIKIRRK-REC.
+           COPY    "CPTEIKIRRK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -364,33 +369,23 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-           MOVE    SPA-SYSYMD      TO  WRK-SYMD
-           PERFORM 5002-HIZUKE-HEN-SEC
-           MOVE    WRK-HENYMDG3(1:16)
-                                   TO  SPA-O01-SYSYMH
-      *
            MOVE    SPACE           TO  SPA-O01
            INITIALIZE                  SPA-O01
       *
            MOVE    "T"             TO  SPA-GMN-IKKATU
            MOVE    "F"             TO  SPA-GMN-KOBETU
       *
-           MOVE    SPA-SYSYMD (1:6)
-                                   TO  SPA-NAI-SRYYM
-           MOVE    SPA-SYSYMDWH (1:6)
-                                   TO  SPA-GMN-SRYYM
-           MOVE    SPA-O01-SYSYMH  TO  SPA-NAI-SRYYMH
       *
            MOVE    "F"             TO  SPA-GMN-CHK-KIKAN01
                                        SPA-GMN-CHK-KIKAN02
                                        SPA-GMN-CHK-KIKAN03
       *
+      *    診療年月編集処理
+           PERFORM 3101-SRYYM-EDIT-SEC
+      *
       *    定期請求期間取得処理
            PERFORM 3101-TEIKI-KIKAN-GET-SEC
       *
-           MOVE    1               TO  SPA-GMN-CUR
-      *
-           MOVE    "T"             TO  SPA-GMN-CHK-KIKAN01
            MOVE    7               TO  SPA-GMN-CUR
       *
            .
@@ -455,6 +450,49 @@
       *
            .
        3101-TEIKI-KIKAN-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療年月編集処理
+      *****************************************************************
+       3101-SRYYM-EDIT-SEC        SECTION.
+      *
+      *    最新の一括処理月・期別を取得する
+           MOVE    SPACE           TO  TEIKIRRK-REC
+           PERFORM 900-TEIKIRRK-KEY2-READ-SEC
+           IF    ( FLG-TEIKIRRK    =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    SPA-SYSYMD      TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG3(1:16)
+                                       TO  SPA-O01-SYSYMH
+               MOVE    SPA-SYSYMD (1:6)
+                                       TO  SPA-NAI-SRYYM
+               MOVE    SPA-SYSYMDWH (1:6)
+                                       TO  SPA-GMN-SRYYM
+               MOVE    SPA-O01-SYSYMH  TO  SPA-NAI-SRYYMH
+               GO  TO  3101-SRYYM-EDIT-EXT
+           END-IF
+      *
+           MOVE    TEIKIRRK-SRYYM      TO  SPA-NAI-SRYYM
+           MOVE    TEIKIRRK-SRYYM      TO  WRK-SYMD
+           MOVE    "01"                TO  WRK-SYMD (7 : 2)
+           PERFORM 5002-HIZUKE-HEN-SEC
+           MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SRYYM
+           MOVE    WRK-HENYMDG3(1:16)  TO  SPA-O01-SYSYMH
+                                           SPA-NAI-SRYYMH
+      *
+           EVALUATE    TEIKIRRK-SAKKBN
+           WHEN    "1"
+               MOVE    "T"             TO  SPA-GMN-CHK-KIKAN01
+           WHEN    "2"
+               MOVE    "T"             TO  SPA-GMN-CHK-KIKAN02
+           WHEN    "3"
+               MOVE    "T"             TO  SPA-GMN-CHK-KIKAN03
+           END-EVALUATE
+      *
+           .
+       3101-SRYYM-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    確認画面（ＯＩＤ１）ＯＫ処理
@@ -1509,6 +1547,45 @@
        900-SYSKANRI-INV-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    定期履歴読込
+      *****************************************************************
+       900-TEIKIRRK-KEY2-READ-SEC      SECTION.
+      *
+           MOVE    TEIKIRRK-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TEIKIRRK-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "TEIKIRRK-KEY2"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-TEIKIRRK
+                   MOVE    MCPDATA-REC     TO  TEIKIRRK-REC
+               ELSE
+                   MOVE    1                   TO  FLG-TEIKIRRK
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-TEIKIRRK
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TEIKIRRK-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           .
+      *
+       900-TEIKIRRK-KEY2-READ-EXT.
+           EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************

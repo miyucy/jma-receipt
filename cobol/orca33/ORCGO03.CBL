@@ -386,7 +386,9 @@
       *    ファイル作成区分
            EVALUATE    SPA-O01-FILEKBN
                WHEN    "1"
-                   MOVE    TEIKIKANRI-CREYMD   TO  WRK-SYMD
+                   MOVE    SPACE               TO  WRK-SYMD
+                   MOVE    TEIKIKANRI-SRYYM    TO  WRK-SYMD (1 : 6)
+                   MOVE    "01"                TO  WRK-SYMD (7 : 2)
                    PERFORM 5002-HIZUKE-HEN-SEC
                    STRING  WRK-HENYMDG3(1:16) DELIMITED  BY  SIZE
                            "一括作成分"       DELIMITED  BY  SIZE

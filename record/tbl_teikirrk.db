@@ -27,6 +27,17 @@ path	key		{
 	};
 };
 
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_teikirrk_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_teikirrk
+		WHERE  SAKKBN  <>   '9'
+		ORDER BY SRYYM DESC,SAKKBN DESC
+		;
+	};
+};
+
 path	all		{ 	
 	DBSELECT	{
 		DECLARE tbl_teikirrk_all_csr CURSOR FOR

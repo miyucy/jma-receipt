@@ -1239,7 +1239,7 @@
                                        TO  TEIKIKANRI-BTUNUM
                MOVE    WRK-PARA-SYOKBN
                                        TO  TEIKIKANRI-SYOKBN
-               MOVE    SYS-YMD         TO  TEIKIKANRI-CREYMD
+               MOVE    WRK-PARA-SYSYMD TO  TEIKIKANRI-CREYMD
                MOVE    SYS-TIME        TO  TEIKIKANRI-CREHMS
       *
                IF    ( WRK-PARA-SYOKBN =   "1" )
