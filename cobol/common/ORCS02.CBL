@@ -1076,7 +1076,8 @@
                            UNTIL  (IDZ    >    10)
                              OR   (LNK-WRK-SYU-SKYSTYMD(IDZ) =  SPACE)
       *
-                  IF  LNK-SYU-SKYSTYMD(1:6) = LNK-WRK-SYU-SKYSTYMD(1:6) 
+                  IF  LNK-SYU-SKYSTYMD(1:6) = 
+                                   LNK-WRK-SYU-SKYSTYMD(IDZ)(1:6) 
                       MOVE    LNK-WRK-SYUNOU-REC(IDZ)  
                                              TO  SYU-SYUNOU-REC
                       PERFORM        2201-SYUNOU-COUNT-SEC
