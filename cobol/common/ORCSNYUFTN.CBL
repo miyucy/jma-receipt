@@ -157,8 +157,8 @@
       *
       * 入院保険適用外金額退避用領域
        01  HKNTEKGAI-NYUIN.
-           03  NYUIN-TGMONEY               PIC 9(08).
-           03  NYUIN-TGMONEY-TAX           PIC 9(08).
+           03  NYUIN-TGMONEY               PIC 9(08)V9(1).
+           03  NYUIN-TGMONEY-TAX           PIC 9(08)V9(1).
       *
       * 自費退避用テーブル
        01  JIHI-TABLE.
