@@ -363,7 +363,7 @@
        110-PARA-HENSYU-SEC         SECTION.
       *
       *    システム日付セット
-           MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYSYMD
+      *     MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYSYMD
       *
       *    対象年月編集
            MOVE    PARA-DENPPRTYM      TO  WRK-SYMD(1:6)
@@ -375,6 +375,8 @@
            MOVE    PARA-DENPPRTYM      TO  WRK-SYMD(1:6)
            PERFORM 20021-GETUMATU-GET-SEC
            MOVE    WRK-SYMD(7:2)       TO  WRK-DAYED
+      *
+           MOVE    WRK-SYMD            TO  WRK-SYSYMD
       *
       *    医療機関ＩＤ編集
            INITIALIZE                  SYS-1001-REC
