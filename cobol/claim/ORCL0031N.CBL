@@ -79,9 +79,12 @@
            03  WRK-SRYSYUBETSUTBL      PIC X(20).
            03  WRK-IJICD               PIC X(10).
            03  WRK-CREKBN              PIC X(01).
+           03  WRK-UKEYMD              PIC X(08).
+           03  WRK-UKEHMS              PIC X(06).
       *
        01  ERRCD-AREA.
            03  ERRCD-KHNERR            PIC X(04).
+           03  ERRCD-IDOERR            PIC X(04).
            03  ERRCD-ERRCD             PIC X(04)
                                        OCCURS  2.
       *
@@ -181,6 +184,10 @@
            IF    ( FLG-KARTE-KEY   =   9 )
                GO  TO  100-INIT-EXT
            END-IF
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD        TO  WRK-UKEYMD
+           MOVE    SMCNDATE-HMS        TO  WRK-UKEHMS
       *
            PERFORM 1001-KIHON-CHK-SEC
       *
@@ -296,21 +303,16 @@
                    COMPUTE WRK-ORDERNUM
                        =   WRK-ORDERNUM    +   1
       *
-                   IF    ( ERRCD-ERRCD (1) NOT =   SPACE )
-                       MOVE    ERRCD-ERRCD (1)
-                                           TO  WRK-ERRCD
-                       PERFORM 20011-ZAIERR-HEN-SEC
-                   ELSE
-                       EVALUATE    LF04-SRYCD (IDXA)
-                       WHEN    "01"
+                   EVALUATE    LF04-SRYCD (IDXA)
+                   WHEN    "01"
                            PERFORM 2001-NYUINIDO-SEC
-      *                WHEN    "02"
-      *                    PERFORM 2001-KYUSYOKU-SEC
-                       WHEN    OTHER
-                           MOVE    "1005"  TO  WRK-ERRCD
-                           PERFORM 20011-ZAIERR-HEN-SEC
-                       END-EVALUATE
-                   END-IF
+      *            WHEN    "02"
+      *                PERFORM 2001-KYUSYOKU-SEC
+                   WHEN    OTHER
+                       MOVE    "1005"  TO  WRK-ERRCD
+                       MOVE    "00"    TO  WRK-IDOKBN
+                       PERFORM 20011-ZAIERR-HEN-SEC
+                   END-EVALUATE
       *
                END-IF
       *
@@ -325,15 +327,21 @@
       *****************************************************************
        2001-NYUINIDO-SEC                   SECTION.
       *
-           MOVE    SPACE           TO  WRK-IDOKBN
-      *
            PERFORM 20011-NYUINIDOKBN-CHK-SEC
-           IF    ( WRK-ERRCD       NOT =   SPACE )
-               PERFORM 20011-ZAIERR-HEN-SEC
-               GO  TO  2001-NYUINIDO-EXT
-           END-IF
       *
-           PERFORM 20011-NYUINIDO-SYORI-SEC
+           IF    ( ERRCD-ERRCD (1) =   SPACE )
+            AND  ( ERRCD-IDOERR    =   SPACE )
+                   PERFORM 20011-NYUINIDO-SYORI-SEC
+      *
+           ELSE
+               IF    ( ERRCD-ERRCD (1) NOT =   SPACE )
+                   MOVE    ERRCD-ERRCD (1) TO  WRK-ERRCD
+                   PERFORM 20011-ZAIERR-HEN-SEC
+               ELSE
+                   MOVE    ERRCD-IDOERR    TO  WRK-ERRCD
+                   PERFORM 20011-ZAIERR-HEN-SEC
+               END-IF
+           END-IF
       *
            .
        2001-NYUINIDO-EXT.
@@ -346,7 +354,9 @@
            MOVE    ZERO            TO  CNT-ORDER
                                        CNT-IDOKBN
       *
-           MOVE    SPACE           TO  WRK-ERRCD
+           MOVE    SPACE           TO  WRK-IDOKBN
+      *
+           MOVE    SPACE           TO  ERRCD-IDOERR
       *
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL ( IDXB        >   CONST-SRYTBLC-MAX )
@@ -368,22 +378,22 @@
            END-PERFORM
       *
            IF    ( CNT-ORDER           <=  ZERO )
-               MOVE    "1001"          TO  WRK-ERRCD
+               MOVE    "1001"          TO  ERRCD-IDOERR
                GO  TO  20011-NYUINIDOKBN-CHK-EXT
            END-IF
       *
            IF    ( CNT-IDOKBN          <=  ZERO )
-               MOVE    "1002"          TO  WRK-ERRCD
+               MOVE    "1002"          TO  ERRCD-IDOERR
                GO  TO  20011-NYUINIDOKBN-CHK-EXT
            END-IF
       *
            IF    ( CNT-ORDER           >   1 )
-               MOVE    "1003"          TO  WRK-ERRCD
+               MOVE    "1003"          TO  ERRCD-IDOERR
                GO  TO  20011-NYUINIDOKBN-CHK-EXT
            END-IF
       *
            IF    ( CNT-IDOKBN          >   1 )
-               MOVE    "1004"          TO  WRK-ERRCD
+               MOVE    "1004"          TO  ERRCD-IDOERR
                GO  TO  20011-NYUINIDOKBN-CHK-EXT
            END-IF
       *
@@ -434,6 +444,8 @@
            MOVE   SCL31N-PTID          TO  SODR-PTID
            MOVE   SCL31N-HKNCOMBI      TO  SODR-HKNCOMBI
            MOVE   SCL31N-SRYYMD        TO  SODR-SRYYMD
+           MOVE   WRK-UKEYMD           TO  SODR-UKEYMD
+           MOVE   WRK-UKEHMS           TO  SODR-UKEHMS
            MOVE   LF04-UID8            TO  SODR-UID8
       *
            MOVE    "0"                 TO  SODR-PROCKBN
@@ -450,6 +462,8 @@
                MOVE    "ORCSODR01"     TO  WRK-PGNAME
       *
            WHEN   "002"
+      *
+               MOVE    "02"            TO  SODR-IDOKBN
       *
                MOVE    "ORCSODR02"     TO  WRK-PGNAME
       *
@@ -521,6 +535,8 @@
            MOVE    SCL31N-HKNCOMBI     TO  LNK-ORDER-HKNCOMBI  (IDX1)
            MOVE    WRK-ORDERNUM        TO  LNK-ORDER-ORDERNUM  (IDX1)
            MOVE    IDX1                TO  LNK-ORDER-RENNUM    (IDX1)
+           MOVE    WRK-UKEYMD          TO  LNK-ORDER-UKEYMD    (IDX1)
+           MOVE    WRK-UKEHMS          TO  LNK-ORDER-UKEHMS    (IDX1)
            MOVE    SCL31N-DRCD         TO  LNK-ORDER-DRCD      (IDX1)
       *
            MOVE    LF04-SRYCD (IDXA)   TO  WRK-KANACHK-MAE-INPUT
@@ -747,8 +763,6 @@
       *
            COMPUTE WRK-RENNUM  =   WRK-RENNUM  +   1
       *
-           PERFORM 800-MCNDATE-SEC
-      *
            INITIALIZE                      ORDER-REC
            MOVE    SCL31N-HOSPID       TO  ORDER-HOSPID
            MOVE    WRK-KARTE-KEY       TO  ORDER-KARTE-KEY
@@ -760,8 +774,8 @@
            MOVE    SCL31N-HKNCOMBI     TO  ORDER-HKNCOMBI
            MOVE    WRK-ORDERNUM        TO  ORDER-ORDERNUM
            MOVE    WRK-RENNUM          TO  ORDER-RENNUM
-           MOVE    SMCNDATE-YMD        TO  ORDER-UKEYMD
-           MOVE    SMCNDATE-HMS        TO  ORDER-UKEHMS
+           MOVE    WRK-UKEYMD          TO  ORDER-UKEYMD
+           MOVE    WRK-UKEHMS          TO  ORDER-UKEHMS
            MOVE    SCL31N-DRCD         TO  ORDER-DRCD
            MOVE    "1"                 TO  ORDER-STATUS
            MOVE    ERRCD-ERRCD (1)     TO  ORDER-ERRCD1
@@ -779,7 +793,16 @@
       *
            MOVE    SPACE               TO  ORDER-SRYSYUKBN
       *
-           MOVE    "00"                TO  ORDER-IDOKBN
+      *
+           EVALUATE    WRK-IDOKBN
+           WHEN   "001"
+               MOVE    "01"            TO  ORDER-IDOKBN
+           WHEN   "002"
+               MOVE    "02"            TO  ORDER-IDOKBN
+           WHEN   OTHER
+               MOVE    "00"            TO  ORDER-IDOKBN
+           END-EVALUATE
+      *
            MOVE    WRK-SRYSKBKBN       TO  ORDER-SRYSKBKBN
       *
            MOVE    LF04-IJICD (IDXA IDXB)
@@ -812,9 +835,9 @@
            END-IF
            MOVE    SPACE               TO  ORDER-TERMID
            MOVE    "CLAIM"             TO  ORDER-OPID
-           MOVE    SMCNDATE-YMD        TO  ORDER-CREYMD
+           MOVE    WRK-UKEYMD          TO  ORDER-CREYMD
                                            ORDER-UPYMD
-           MOVE    SMCNDATE-HMS        TO  ORDER-UPHMS
+           MOVE    WRK-UKEHMS          TO  ORDER-UPHMS
       *
            PERFORM 900-ORDER-KEY-SEL-SEC
            IF    ( FLG-ORDER           =   ZERO )

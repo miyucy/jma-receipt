@@ -30,9 +30,13 @@
            03  SODR-HKNCOMBI           PIC 9(04).
            03  SODR-SRYYMD             PIC X(08).
       *
+           03  SODR-UKEYMD             PIC X(08).
+           03  SODR-UKEHMS             PIC X(06).
+      *
            03  SODR-UID8               PIC X(36).
       *
            03  SODR-PROCKBN            PIC X(01).
+      *
            03  SODR-IDOKBN             PIC X(02).
       *    0:正常 / 1:２重送信/ 2:ダミーデータ作成 
            03  SODR-NYUKBN-FLG         PIC 9(01).

@@ -44,6 +44,7 @@
            03  FLG-PTNYUINRRK          PIC 9(01).
            03  FLG-ORDER               PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
+           03  FLG-PTINF               PIC 9(01).
            03  FLG-END                 PIC 9(01).
            03  FLG-ORCSNUM             PIC 9(01).
            03  FLG-ENTRYCHK            PIC 9(01).
@@ -91,6 +92,11 @@
       *    入院CLAIM項目IDコピー句
            COPY    "CPNCLAIMID.INC".
       *
+      *    患者入院履歴退避
+       01  TRRK-REC.
+           COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
+                                       BY         //TRRK-//.
+      *
       *    患者入院履歴ワーク
        01  WKPTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
@@ -115,6 +121,10 @@
       *    オーダーテーブル
        01  ORDER-REC.
            COPY    "CPORDER.INC".
+      *
+      *    患者マスタ
+       01  PTINF-REC.
+           COPY    "CPPTINF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -188,6 +198,7 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  ERRCD-AREA
            INITIALIZE                  ITEM-AREA
+           INITIALIZE                  TRRK-REC
       *
            .
        100-INIT-EXT.
@@ -212,25 +223,24 @@
            END-IF
       *
            IF    ( ERRCD-ZAI    =   SPACE )
-               PERFORM 2101-PTNYUINRRK-INSERT-SEC
-               IF    ( FLG-END  =   1 )
-                   GO  TO  200-MAIN-EXT
+               IF    ( FLG-END  =   ZERO )
+                   PERFORM 2101-PTNYUINRRK-INSERT-SEC
                END-IF
       *
-               PERFORM 2101-ORCSODRNACCT-CALL-SEC
-               IF    ( FLG-END  =   1 )
-                   GO  TO  200-MAIN-EXT
+               IF    ( FLG-END  =   ZERO )
+                  PERFORM 2101-ORCSODRNACCT-CALL-SEC
                END-IF
       *
-               PERFORM 2101-ORDER-INSERT-SEC
-               IF    ( FLG-END  =   1 )
-                   GO  TO  200-MAIN-EXT
+               IF    ( FLG-END  =   ZERO )
+                  PERFORM 2101-PTINF-UPDATE-SEC
+               END-IF
+      *
+               IF    ( FLG-END  =   ZERO )
+                  PERFORM 2101-ORDER-INSERT-SEC
                END-IF
            ELSE
-      *
-               PERFORM 2101-ORDER-INSERT-SEC
-               IF    ( FLG-END  =   1 )
-                   GO  TO  200-MAIN-EXT
+               IF    ( FLG-END  =   ZERO )
+                  PERFORM 2101-ORDER-INSERT-SEC
                END-IF
            END-IF
       *
@@ -722,10 +732,10 @@
       *    入院中区分 ("0"固定)
            MOVE    "0"             TO  PTNYUINRRK-NYUINCHUKBN
       *
-           PERFORM 800-MCNDATE-SEC
-           MOVE    SMCNDATE-YMD    TO  PTNYUINRRK-CREYMD
+           MOVE    "CLAIM"         TO  PTNYUINRRK-TERMID
+           MOVE    SODR-UKEYMD     TO  PTNYUINRRK-CREYMD
                                        PTNYUINRRK-UPYMD
-           MOVE    SMCNDATE-HMS    TO  PTNYUINRRK-UPHMS
+           MOVE    SODR-UKEHMS     TO  PTNYUINRRK-UPHMS
       *
            PERFORM 900-PTNYUINRRK-KEY-SEL-SEC
            IF    ( FLG-PTNYUINRRK      =   ZERO )
@@ -746,6 +756,8 @@
                        " KARTE-KEY="   SODR-UID8
                MOVE    1               TO  FLG-END
            END-IF
+      *
+           MOVE    PTNYUINRRK-REC      TO  TRRK-REC
       *
            .
        2101-PTNYUINRRK-INSERT-EXT.
@@ -831,12 +843,7 @@
       *****************************************************************
        21011-ORDER-HEN-SEC             SECTION.
       *
-           PERFORM 800-MCNDATE-SEC
-      *
            MOVE    LNK-ORDER-OCC (IDXA)    TO  ORDER-REC
-      *
-           MOVE    SMCNDATE-YMD        TO  ORDER-UKEYMD
-           MOVE    SMCNDATE-HMS        TO  ORDER-UKEHMS
       *
            IF    ( ERRCD-ZAI           =   SPACE )
                MOVE    "0"             TO  ORDER-STATUS
@@ -860,9 +867,9 @@
            END-IF
       *
            MOVE    "CLAIM"             TO  ORDER-OPID
-           MOVE    SMCNDATE-YMD        TO  ORDER-CREYMD
+           MOVE    SODR-UKEYMD         TO  ORDER-CREYMD
                                            ORDER-UPYMD
-           MOVE    SMCNDATE-HMS        TO  ORDER-UPHMS
+           MOVE    SODR-UKEHMS         TO  ORDER-UPHMS
       *
       *
            PERFORM 900-ORDER-KEY-SEL-SEC
@@ -895,6 +902,7 @@
            INITIALIZE                  SODRNACCT-AREA
            MOVE    SODR-IDOKBN     TO  SODRNACCT-IDOKBN
            MOVE    ITEM-NYUKBN     TO  SODRNACCT-NYUKBN
+           MOVE    TRRK-REC        TO  LNK-PTNYUINRRK-REC
       *
            CALL    "ORCSODRNACCT"      USING
                                        SODRNACCT-AREA
@@ -907,10 +915,84 @@
        2101-ORCSODRNACCT-CALL-EXT.
            EXIT.
       *****************************************************************
+      *    患者情報更新処理
+      *****************************************************************
+       2101-PTINF-UPDATE-SEC           SECTION.
+      *
+      *    入院歴より最新の歴情報を取得
+           INITIALIZE  PTNYUINRRK-REC
+           MOVE    SODR-HOSPID         TO  PTNYUINRRK-HOSPID
+           MOVE    SODR-PTID           TO  PTNYUINRRK-PTID
+           MOVE    PTNYUINRRK-REC    TO  MCPDATA-REC
+           MOVE    PATH-TBL-PTNYUINRRK-KEY35   TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+           ELSE
+               INITIALIZE      PTNYUINRRK-REC
+           END-IF
+      *
+           MOVE    PATH-TBL-PTNYUINRRK-KEY35   TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+      *    患者マスタ検索
+           MOVE    ZERO                TO  FLG-PTINF
+           INITIALIZE  PTINF-REC
+           MOVE    SODR-HOSPID         TO  PTINF-HOSPID
+           MOVE    SODR-PTID           TO  PTINF-PTID
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+      *
+           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTINF-REC
+           ELSE
+               MOVE    1               TO  FLG-PTINF
+               INITIALIZE                  PTINF-REC
+           END-IF
+      *
+      *    患者マスタクローズ
+           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           IF    ( FLG-PTINF           NOT =   ZERO )
+               DISPLAY "ORCSDR01 ERROR:PTINF UPDATE CHK ERR"
+                       " PTID="        SODR-PTID
+                       " KARTE-KEY="   SODR-UID8
+               MOVE    1               TO  FLG-END
+               GO  TO  2101-PTINF-UPDATE-EXT
+           END-IF
+      *
+      *    患者情報の入院歴番号を更新する
+           MOVE   PTNYUINRRK-RRKNUM
+                                       TO  PTINF-RRKNUM
+           MOVE   PTNYUINRRK-RRKEDANUM
+                                       TO  PTINF-RRKEDANUM
+      *
+           MOVE    "CLAIM"             TO  PTINF-TERMID
+           MOVE    SODR-UKEYMD         TO  PTINF-UPYMD
+           MOVE    SODR-UKEHMS         TO  PTINF-UPHMS
+      *
+      *    患者情報更新
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    PATH-TBL-PTINF-KEY  TO  MCP-PATH
+           PERFORM 910-DBUPDATE-SEC
+           IF     ( MCP-RC         NOT =  ZERO )
+               DISPLAY "ORCSDR01 ERROR:PTINF UPDATE ERR"
+                       " PTID="        SODR-PTID
+                       " KARTE-KEY="   SODR-UID8
+               MOVE    1               TO  FLG-END
+           END-IF
+      *
+           .
+       2101-PTINF-UPDATE-EXT.
+           EXIT.
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
       *
+           MOVE    FLG-END         TO  SODR-RC
       *
            .
        300-END-EXT.
@@ -965,17 +1047,6 @@
            .
       *
        800-ORCSNUM-EXT.
-           EXIT.
-      *****************************************************************
-      *    マシン日付取得サブ
-      *****************************************************************
-       800-MCNDATE-SEC         SECTION.
-      *
-           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
-      *
-           .
-      *
-       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    システム管理検索処理(KEY10)
@@ -1140,4 +1211,18 @@
            .
       *
        910-DBINSERT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ更新処理
+      *****************************************************************
+       910-DBUPDATE-SEC                SECTION.
+      *
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DBUPDATE-EXT.
            EXIT.
