@@ -2271,20 +2271,7 @@
       *
            INITIALIZE                  WRK-BTUDEF-G
       *
-           IF    ( WRK-MCP-WIDGET          =   "BRMNUM" )
-            OR   ( WRK-MCP-WIDGET          =   "BTUNAME" )
-            OR   ( WRK-MCP-WIDGET          =   "B12" )
-               CONTINUE
-           ELSE
-               GO  TO  4101-BRMNUM-CHK-EXT
-           END-IF
-      *
            IF    ( SPA-GMN-BRMNUM          =   SPACE )
-               INITIALIZE                  SPA-GMN-BTUNAME-G
-               PERFORM 3101-BTUDEF-SEC
-               PERFORM 3101-BTUNAMELST-SET-SEC
-               PERFORM 3101-TOKNYUINLST-SET-SEC
-               PERFORM 4101-TOKNYUIN-SYOKI-SEC
                GO  TO  4101-BRMNUM-CHK-EXT
            END-IF
       *
@@ -2301,6 +2288,14 @@
            IF    ( SPA-NAI-BTUDEF-MAX  =   ZERO )
                MOVE    "0003"      TO  SPA-ERRCD
                MOVE   3            TO  SPA-GMN-CUR
+               GO  TO  4101-BRMNUM-CHK-EXT
+           END-IF
+      *
+           IF    ( WRK-MCP-WIDGET          =   "BRMNUM" )
+            OR   ( WRK-MCP-WIDGET          =   "BTUNAME" )
+            OR   ( WRK-MCP-WIDGET          =   "B12" )
+               CONTINUE
+           ELSE
                GO  TO  4101-BRMNUM-CHK-EXT
            END-IF
       *

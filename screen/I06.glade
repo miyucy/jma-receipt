@@ -1373,25 +1373,6 @@
 	<class>GtkPandaCList</class>
 	<name>KJNIDOLST</name>
 	<can_focus>True</can_focus>
-	<signal>
-	  <name>select_row</name>
-	  <handler>clist_send_event</handler>
-	  <after>True</after>
-	  <data>SELECT</data>
-	  <last_modification_time>Wed, 09 Mar 2005 05:30:18 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>select_row</name>
-	  <handler>selection_changed</handler>
-	  <data>SELECT</data>
-	  <last_modification_time>Wed, 09 Mar 2005 05:30:35 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>unselect_row</name>
-	  <handler>selection_changed</handler>
-	  <data>SELECT</data>
-	  <last_modification_time>Wed, 09 Mar 2005 05:31:05 GMT</last_modification_time>
-	</signal>
 	<columns>4</columns>
 	<column_widths>30,60,70,50</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
