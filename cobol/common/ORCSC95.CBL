@@ -360,7 +360,7 @@
       *        保険区分変更時
                WHEN    "7"
       *            保険組合せが使用できるかのチェック
-      *************PERFORM 100131-HKNCOMBI-CHK-SEC
+                   PERFORM 100131-HKNCOMBI-CHK-SEC
       *********    IF      SPA-SYORIFLG        =   ZERO
                        PERFORM 200-WKSRYACT-SYORI-SEC
       ***********  END-IF
