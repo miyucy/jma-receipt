@@ -41,6 +41,7 @@
       *  01.00.07    NACL-藤原    02/11/26  共済組合の下船３ヶ月の表示の追加 
       *  01.00.08    NACL-藤原    02/11/27  国保の県内扱い保険者番号をシス管より
       *                                     編集するように修正
+      *  01.00.09    NACL-藤原    03/01/07  給付割合の編集修正 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2958,7 +2959,11 @@
                                                / 10 
                MOVE    WRK-KYURATE-9   TO  RECE10-KYURATE
            ELSE
-               MOVE    ZERO            TO  RECE10-KYURATE
+               IF      RECE02-TEISYUTUSAKI =   "1"
+                   MOVE    ZERO            TO  RECE10-KYURATE
+               ELSE
+                   MOVE    10              TO  RECE10-KYURATE
+               END-IF        
            END-IF             
       *     
            MOVE    RECE02-AGE          TO  RECE10-AGE  

@@ -590,7 +590,6 @@
            ADD     RECE10-FTNMONEY (IDX1) TO
                                    SUM-FTNMONEY   (IDX2 IDX3)
            IF      IDX3                   =   2
-           AND     IDX2                   =   3   OR  8   OR  11 
                ADD     RECE10-YKZFTN   (IDX1) TO
                                        SUM-YKZFTN     (IDX2)
            END-IF                            
@@ -799,7 +798,8 @@
                                            TO  WRK-TENSUZ
                    MOVE    WRK-TENSUZ      TO  HCM2G-TENSU (IDX IDY)
                    IF      IDY             =   2
-                   AND     IDX             =   3   OR  8   OR  11
+                   AND     IDX             =   3   OR  4   OR  5   OR
+                                               6   OR  8   OR  11    
                        MOVE    SUM-YKZFTN  (IDX)
                                                TO  WRK-YKZFTNZ
                        MOVE    WRK-YKZFTNZ     TO  HCM2G-YKZFTN(IDX IDY)
