@@ -493,7 +493,8 @@
                            11  SPA-GMN20-TSRYNAI     PIC X(10).
                            11  SPA-GMN20-TKARUTE     PIC X(02).
                            11  SPA-GMN20-TSYOHOU     PIC X(02).
-                           11  SPA-GMN20-THKNKUMI    PIC X(04).
+                           11  SPA-GMN20-THKNCOMBI   PIC X(04).
+                           11  SPA-GMN20-THKNCOMBIMEI    PIC X(60).
                    07  SPA-NAI20-UKEMAX             PIC 9(04).
                    07  SPA-GMN20-YSELNUM         PIC X(04).
                    07  SPA-NAI20-YSELNUM         PIC 9(04).
@@ -544,6 +545,7 @@
       *
                    07  SPA-GMN20-HKNKUMI         PIC X(04).
                    07  SPA-NAI20-HKNKUMI         PIC 9(04).
+                   07  SPA-NAI20-HKNCOMBIMEI     PIC X(60).
       *            保険組合せ
       *            07  SPA-GMN20-KUMITBL.
       *                09  SPA-GMN20-KUMIREC          OCCURS  10.

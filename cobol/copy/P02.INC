@@ -59,7 +59,7 @@
                         08  P02-P020-ULSRYNAIYO PIC X(20).
                         08  P02-P020-ULKARUTE   PIC X(2).
                         08  P02-P020-ULSYOHO    PIC X(2).
-                        08  P02-P020-ULHKNCOMBINUM PIC X(4).
+                        08  P02-P020-ULHKNCOMBINUM PIC X(60).
                       07  P02-P020-UKETUKE-LIST-SELECT  PIC X
                                                OCCURS  10.
                   05  P02-P020-SELNUM.

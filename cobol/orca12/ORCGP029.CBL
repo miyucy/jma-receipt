@@ -1665,15 +1665,15 @@
                                                =   ZERO  OR  SPACE )
       *        カルテ出力
       *********IF  ( SPA-GMN20-TKARUTE (IDX2)      =   "1"   )  AND
-      *            ( SPA-GMN20-THKNKUMI(IDX2)  NOT =   SPACE  AND
-      **********     SPA-GMN20-THKNKUMI(IDX2)  NOT =   ZERO  )
+      *            ( SPA-GMN20-THKNCOMBI(IDX2)  NOT =   SPACE  AND
+      **********     SPA-GMN20-THKNCOMBI(IDX2)  NOT =   ZERO  )
                IF    SPA-GMN20-TKARUTE (IDX2)      =   "1"  OR  "2"
                    PERFORM 21001-HC01-CALL-SEC
                END-IF
       *        処方箋出力
       ******** IF  ( SPA-GMN20-TSYOHOU (IDX2)      =   "1"   )  AND
-      *            ( SPA-GMN20-THKNKUMI(IDX2)  NOT =   SPACE  AND
-      **********     SPA-GMN20-THKNKUMI(IDX2)  NOT =   ZERO  )
+      *            ( SPA-GMN20-THKNCOMBI(IDX2)  NOT =   SPACE  AND
+      **********     SPA-GMN20-THKNCOMBI(IDX2)  NOT =   ZERO  )
                IF    SPA-GMN20-TSYOHOU (IDX2)      =   "1"
                    PERFORM 21001-HC02-CALL-SEC
                END-IF
@@ -1815,7 +1815,7 @@
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
            MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
       *----(01.00.02) LINE ADD START -------------------------------
-           MOVE    SPA-GMN20-THKNKUMI(IDX2)
+           MOVE    SPA-GMN20-THKNCOMBI(IDX2)
                                      TO  SPA-HKNCOMBINUM
            MOVE    SPA-NAI20-SRYKA   (IDX2)
                                      TO  SPA-SRYKA
@@ -1855,7 +1855,7 @@
            MOVE    "1"                            TO  SPA-DRCD (1:1)
            MOVE    SPA-NAI20-DRCD    (IDX2)       TO  SPA-DRCD (2:)
       *----(01.00.01) LINE MOD END   --------------------------------
-           MOVE    SPA-GMN20-THKNKUMI(IDX2)       TO  SPA-HKNCOMBINUM
+           MOVE    SPA-GMN20-THKNCOMBI(IDX2)       TO  SPA-HKNCOMBINUM
       **** CALL    "ORCHC02"         USING   MCPAREA
       *                                      SPA-AREA
       *********                              ORCHC02AREA

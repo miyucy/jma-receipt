@@ -410,6 +410,12 @@
            MOVE    UKE-SRYKA           TO  SPA-NAI20-SRYKA   (IDX)
            MOVE    UKE-SRYNAIYO        TO  SPA-NAI20-SRYNAI  (IDX)
            MOVE    UKE-DRCD     (2:4)  TO  SPA-NAI20-DRCD    (IDX)
+      *    保険組合せ
+           IF      UKE-HKNCOMBI        =   ZERO
+              MOVE    SPACE            TO  SPA-GMN20-THKNCOMBI(IDX)
+           ELSE
+              MOVE    UKE-HKNCOMBI     TO  SPA-GMN20-THKNCOMBI(IDX)
+           END-IF
            MOVE    UKE-KEYYYKTIME      TO  SPA-NAI20-KEYYYKTIME(IDX)
            MOVE    UKE-YYKTIME         TO  SPA-NAI20-YYKTIME (IDX)
            MOVE    UKE-YYKID           TO  SPA-NAI20-YYKID   (IDX)
@@ -447,6 +453,22 @@
                    IF  SPA-NAI20-SRYNAI (IDX)   =   SPA-SRYNAI-CD(IDY)
                        MOVE    SPA-SRYNAI-MEI (IDY)
                                              TO  SPA-GMN20-TSRYNAI(IDX)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *    保険組合せ編集
+           IF  SPA-GMN20-THKNCOMBI(IDX)    NOT =   SPACE
+               MOVE    SPA-GMN20-THKNCOMBI(IDX)
+                                         TO  SPA-GMN20-THKNCOMBIMEI
+                                                                (IDX)
+               PERFORM     VARYING   IDY   FROM    1   BY  1
+                           UNTIL    (IDY    >   SPA-HKNCOMBI-MAX)
+                   IF      SPA-GMN20-THKNCOMBI(IDX)
+                                       =   SPA-GMN-THKNCOMBINUM(IDY)
+                       MOVE    SPA-GMN-THKNCOMBIMEI (IDY)
+                                           TO  SPA-GMN20-THKNCOMBIMEI
+                                                                (IDX)
+                       MOVE    SPA-HKNCOMBI-MAX    TO  IDY
                    END-IF
                END-PERFORM
            END-IF
@@ -1006,7 +1028,7 @@
                MOVE    SPA-GMN20-TSRYNAI (IDX) TO  SPA-GMN20-SRYNAIMEI
                MOVE    SPA-GMN20-TKARUTE (IDX) TO  SPA-GMN20-KARUTE
                MOVE    SPA-GMN20-TSYOHOU (IDX) TO  SPA-GMN20-SYOHOU
-               MOVE    SPA-GMN20-THKNKUMI(IDX) TO  SPA-GMN20-HKNKUMI
+               MOVE    SPA-GMN20-THKNCOMBI(IDX) TO  SPA-GMN20-HKNKUMI
                IF      SPA-GMN20-SYOHOU        =   SPACE
                    MOVE    SPA-GMN20-SYOHOU-LST(1)
                                        TO  SPA-GMN20-SYOHOU-G
@@ -1159,6 +1181,8 @@
                       (SPA-HKNCOMBI-MAX      =   1    )
                    MOVE    SPA-GMN-THKNCOMBINUM (1)
                                              TO  SPA-NAI20-HKNKUMI
+                   MOVE    SPA-GMN-THKNCOMBIMEI (1)
+                                             TO  SPA-NAI20-HKNCOMBIMEI
                    MOVE    SPA-GMN-THKNCOMBINUM (1)
                                              TO  SPA-GMN20-HKNKUMI
                END-IF
@@ -1200,6 +1224,7 @@
       *
            IF      SPA-GMN20-HKNKUMI   =   SPACE
                MOVE    ZERO            TO  SPA-NAI20-HKNKUMI
+               MOVE    SPACE           TO  SPA-NAI20-HKNCOMBIMEI
                GO      TO                  4101-HKNKUMI-CHK-EXT
            END-IF
       *
@@ -1212,31 +1237,35 @@
                   (SNUM-SYOKBN     NOT =   SPACE )
                MOVE    "2002"          TO  SPA-ERRCD
                MOVE    7               TO  SPA-GMN20-CUR
-               GO      TO              4101-HKNKUMI-CHK-EXT
            ELSE
                MOVE    SNUM-OUTNUM     TO  SPA-NAI20-HKNKUMI
                IF      SPA-NAI20-HKNKUMI   =   ZERO
-                   MOVE    SPA-NAI20-HKNKUMI   TO  WRK-RENNUMZ
-                   MOVE    WRK-RENNUMZ         TO  SPA-GMN20-HKNKUMI
+                   MOVE    SPACE           TO  SPA-NAI20-HKNCOMBIMEI
+                   MOVE    SPA-NAI20-HKNKUMI   TO  SPA-GMN20-HKNKUMI
                    MOVE    8                   TO  SPA-GMN20-CUR
-                   GO      TO                  4101-HKNKUMI-CHK-EXT
                ELSE
                    MOVE    SPA-NAI20-HKNKUMI   TO  SPA-GMN20-HKNKUMI
                END-IF
            END-IF
       *
-            MOVE    ZERO               TO  FLG-OK
-            PERFORM VARYING     IDX    FROM    1   BY  1
+           IF      (SPA-ERRCD          =   SPACE )  AND
+                   (SPA-NAI20-HKNKUMI  NOT =   ZERO)
+                MOVE    ZERO               TO  FLG-OK
+                PERFORM VARYING     IDX    FROM    1   BY  1
                     UNTIL      (IDX    >   15         )
                     OR         (IDX    >   SPA-HKNCOMBI-MAX)
-               IF      SPA-NAI20-HKNKUMI   =   SPA-GMN-THKNCOMBINUM(IDX)
-                   MOVE    1               TO  FLG-OK
-               END-IF
-           END-PERFORM
+                   IF      SPA-NAI20-HKNKUMI
+                                       =   SPA-GMN-THKNCOMBINUM(IDX)
+                       MOVE    SPA-GMN-THKNCOMBIMEI (IDX)
+                                           TO  SPA-NAI20-HKNCOMBIMEI
+                       MOVE    1           TO  FLG-OK
+                   END-IF
+               END-PERFORM
       *
-           IF      FLG-OK              =   ZERO
-               MOVE    "2002"          TO  SPA-ERRCD
-               MOVE    7               TO  SPA-GMN20-CUR
+               IF      FLG-OK              =   ZERO
+                   MOVE    "2002"          TO  SPA-ERRCD
+                   MOVE    7               TO  SPA-GMN20-CUR
+              END-IF
           END-IF
       *
            .
@@ -1366,7 +1395,9 @@
            MOVE    SPA-GMN20-SRYNAIMEI TO  SPA-GMN20-TSRYNAI (IDX)
            MOVE    SPA-GMN20-KARUTE    TO  SPA-GMN20-TKARUTE (IDX)
            MOVE    SPA-GMN20-SYOHOU    TO  SPA-GMN20-TSYOHOU (IDX)
-           MOVE    SPA-GMN20-HKNKUMI   TO  SPA-GMN20-THKNKUMI(IDX)
+           MOVE    SPA-GMN20-HKNKUMI   TO  SPA-GMN20-THKNCOMBI(IDX)
+           MOVE    SPA-NAI20-HKNCOMBIMEI
+                                       TO  SPA-GMN20-THKNCOMBIMEI(IDX)
       *
            MOVE    SPACE               TO  SPA-GMN20-YSELNUM
            MOVE    ZERO                TO  SPA-NAI20-YSELNUM
@@ -1704,6 +1735,12 @@
            MOVE    SPA-NAI20-KEYYYKTIME(IDX) TO  UKE-KEYYYKTIME
            MOVE    SPA-NAI20-YYKTIME(IDX)    TO  UKE-YYKTIME
            MOVE    SPA-NAI20-YYKID  (IDX)    TO  UKE-YYKID
+      *    保険組合せ
+           IF      SPA-GMN20-THKNCOMBI(IDX)  =   SPACE
+               MOVE    ZERO                      TO  UKE-HKNCOMBI
+           ELSE
+               MOVE    SPA-GMN20-THKNCOMBI(IDX)  TO  UKE-HKNCOMBI
+           END-IF
       *
       *    受付氏名は患者氏名を編集する
            IF      SPA-P02-UKEID   NOT =   UKE-UKEID

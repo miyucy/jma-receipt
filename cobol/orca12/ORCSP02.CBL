@@ -36,6 +36,7 @@
       * 02.00.04     NACL-多々納  03/01/08  公費の最大件数１００件へ
       * 02.00.05     NACL-多々納  03/03/19  Ｈ１５年４月改正対応追加
       * 02.00.06     NACL-多々納  03/03/24  公費負担額追加
+      * 02.00.07     NACL-多々納  05/02/10  特定の受給者番号表示追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2497,10 +2498,10 @@
                                        TO  P02-P020-ULKARUTE  (IDX)
                MOVE    SPA-GMN20-TSYOHOU  (IDX)
                                        TO  P02-P020-ULSYOHO   (IDX)
-               IF      SPA-GMN20-THKNKUMI (IDX)  =   SPACE  OR  ZERO
+               IF      SPA-GMN20-THKNCOMBIMEI (IDX)  =   SPACE  OR  ZERO
                    CONTINUE
                ELSE
-                   MOVE  SPA-GMN20-THKNKUMI(IDX)
+                   MOVE  SPA-GMN20-THKNCOMBIMEI(IDX)
                                        TO  P02-P020-ULHKNCOMBINUM(IDX)
                END-IF
                IF      IDX             =   SPA-NAI20-YSELNUM
