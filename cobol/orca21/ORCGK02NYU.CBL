@@ -108,6 +108,7 @@
        01  FLG-AREA.
            03  FLG-SPASCR          PIC 9(01).
            03  FLG-END             PIC 9(01).
+           03  FLG-END2            PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-KNJBYO          PIC 9(01).
            03  FLG-WKSRYACT        PIC 9(01).
@@ -811,6 +812,9 @@
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -901,7 +905,9 @@
            END-IF
       *
       *    画面ＳＰＡ書込み
-           PERFORM 1003-K02SPA-OUT-SEC
+           IF      FLG-END2            =   ZERO
+               PERFORM 1003-K02SPA-OUT-SEC
+           END-IF
       *
            MOVE    "K02N"          TO  SPA-HZN-MOTOPG
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
@@ -7840,10 +7846,22 @@
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID2
       *
-           OPEN    OUTPUT              PARA-FILE
-           MOVE    SPACE               TO  PARA-REC
-           WRITE   PARA-REC
-           CLOSE                       PARA-FILE
+      **** OPEN    OUTPUT              PARA-FILE
+      *    MOVE    SPACE               TO  PARA-REC
+      *    WRITE   PARA-REC
+      *****CLOSE                       PARA-FILE
+      *
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+      *
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME2          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+      *
+           MOVE    1                   TO  FLG-END2
       *
            .
        210-PARA-DEL-EXT.

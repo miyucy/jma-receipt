@@ -109,6 +109,7 @@
        01  FLG-AREA.
            03  FLG-SPASCR          PIC 9(01).
            03  FLG-END             PIC 9(01).
+           03  FLG-END2            PIC 9(01).
            03  FLG-KNJBYO          PIC 9(01).
            03  FLG-WKSRYACT        PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
@@ -667,6 +668,9 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -753,7 +757,9 @@
            END-IF
       *
       *    画面ＳＰＡ書込み
-           PERFORM 1003-K05SPA-OUT-SEC
+           IF      FLG-END2             =   ZERO
+               PERFORM 1003-K05SPA-OUT-SEC
+           END-IF
       *
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -4648,6 +4654,16 @@
                MOVE    ZERO                TO  SPA-NENREI-YY
            END-IF
       *
+      *    中間ファイルのクリア
+           MOVE    SPA-TERMID          TO  FILE-TERMID1
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+      *
+           MOVE    1                   TO  FLG-END2
+      *
+      *
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
            MOVE    "K05"               TO  SPA-MOTOPG
@@ -4668,6 +4684,15 @@
       *    戻る　処理
       *****************************************************************
        210-BACK-OK-SEC               SECTION.
+      *
+      *    中間ファイルのクリア
+           MOVE    SPA-TERMID          TO  FILE-TERMID1
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+      *
+           MOVE    1                   TO  FLG-END2
       *
       *
            MOVE    SPACE               TO  LINKAREA
@@ -4932,6 +4957,16 @@
            IF      SPA-GMN-PTNUM       =   SPACE
                MOVE    ZERO                TO  SPA-NENREI-YY
            END-IF
+      *
+      *    中間ファイルのクリア
+           MOVE    SPA-TERMID          TO  FILE-TERMID1
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+      *
+           MOVE    1                   TO  FLG-END2
+      *
       *
            MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
            MOVE    "K05"               TO  SPA-MOTOPG

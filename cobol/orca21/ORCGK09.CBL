@@ -152,6 +152,7 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
+           03  FLG-END2            PIC 9(01).
            03  FLG-SPASCR          PIC 9(01).
            03  FLG-SRYKBN          PIC 9(01).
            03  FLG-WKSRYACT        PIC 9(01).
@@ -383,6 +384,9 @@
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -463,7 +467,9 @@
            END-IF
       *
       *    画面ＳＰＡ書込み
-           PERFORM 1003-K09SPA-OUT-SEC
+           IF      FLG-END2            =   ZERO
+               PERFORM 1003-K09SPA-OUT-SEC
+           END-IF
       *
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -2021,6 +2027,15 @@
       *    戻る　処理
       *****************************************************************
        210-BACK                        SECTION.
+      *
+      *    中間ファイル削除
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+      *
+           MOVE    1                   TO  FLG-END2
+      *
       *
            MOVE    ZERO                TO  SPA-NAI-DOSELNUM
            MOVE    SPACE               TO  SPA-GMN-DOSELNUM
