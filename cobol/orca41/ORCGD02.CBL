@@ -41,6 +41,7 @@
       *  01.00.09    ひさなが     02/09/06  ５２０ー０３メッセージ修正
       *  01.00.10    ひさなが     02/11/28  保険番号記号チェックの修正
       *  01.00.11    ひさなが     02/12/06  ５００ー０３メッセージ修正
+      *  01.00.12    ひさなが     02/12/18  院外処方のチェック追加
       *
       *****************************************************************
       *
@@ -724,10 +725,18 @@
                PERFORM UNTIL      MCP-RC   NOT  =  ZERO
                    MOVE    MCPDATA-REC               TO    SRYACCT-REC
                    COMPUTE T-CNT-IN    =   T-CNT-IN    +   1
-                   IF  (ACCT-ZAIKAISU   NOT =  ZERO)  AND
-                       (ACCT-ZAITEN     NOT =  ZERO)
+      *修正/*開始*02.12.18*********************************************
+      *             IF  (ACCT-ZAIKAISU   NOT =  ZERO)  AND
+      *                 (ACCT-ZAITEN     NOT =  ZERO)
+      *                 PERFORM T-100-RECECHEK-HANTI-SEC
+      *             END-IF
+                   IF  ((ACCT-ZAIKAISU   NOT =  ZERO)  AND
+                        (ACCT-ZAITEN     NOT =  ZERO))  OR
+                       ((ACCT-ZAIKAISU       =   1)    AND
+                        (ACCT-ZAITEN         =  ZERO))
                        PERFORM T-100-RECECHEK-HANTI-SEC
                    END-IF
+      *修正/*終了*02.12.18*********************************************
                    PERFORM T-100-RECECHEK-READ-SEC
                END-PERFORM
                IF  (W1-SRY-HOSPID   NOT =   ALL "*")  AND
