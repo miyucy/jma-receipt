@@ -1,14 +1,14 @@
 H01	{
 	fixed6	{
 		PTNUM	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SRYYM	{
-			value	varchar(8);
+			value	varchar(7);
 		};
 		SRYKA	{
                     state   int;
-			value	varchar(3);
+			value	varchar(2);
 		};
 		MIDASI01	{
                     style   varchar(20);
@@ -1470,10 +1470,10 @@ H01	{
 			item	varchar(14)[3];
 		};
 		SKYYM	{
-			value	varchar(8);
+			value	varchar(7);
 		};
 		HENREIYM	{
-			value	varchar(8);
+			value	varchar(7);
 		};
 		SRYKANAME	{
                     style   varchar(20);
@@ -1481,7 +1481,7 @@ H01	{
 		};
 		NAME	{
                     style   varchar(20);
-			value	varchar(25);
+			value	varchar(24);
 		};
 		TEISEIKBNNM	{
                     style   varchar(20);

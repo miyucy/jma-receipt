@@ -1,14 +1,14 @@
 H99	{
 	fixed6	{
 		PTNUM	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SRYYM	{
-			value	varchar(9);
+			value	varchar(8);
 		};
 		SRYKA	{
                     state   int;
-			value	varchar(3);
+			value	varchar(2);
 		};
 		scrolledwindow1	{
 			RECELST	{
@@ -30,7 +30,7 @@ H99	{
 		};
 		NAME	{
                     style   varchar(20);
-			value	varchar(25);
+			value	varchar(24);
 		};
 		SRYKANAME	{
                     style   varchar(20);

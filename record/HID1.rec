@@ -1,10 +1,10 @@
 HID1	{
 	fixed1	{
 		ID1CODE	{
-			value	char(11);
+			value	char(10);
 		};
 		ID1MSG	{
-			value	char(71);
+			value	char(70);
 		};
 	};
 };
