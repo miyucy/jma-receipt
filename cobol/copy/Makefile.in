@@ -772,6 +772,8 @@ COPYS = \
         CPORCSSYU40.INC \
         CPORCSKOHPLUS.INC \
         CPKOHPLUS.INC \
+        HCM2Q.INC \
+        HCM2R.INC \
 
 DBPATH = \
 	ORCA-DBPATH
