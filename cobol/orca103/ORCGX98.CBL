@@ -2085,7 +2085,6 @@
                END-IF
            END-IF
       *
-           MOVE    X98-SELNUM(IDX-1)   TO  SPA-X98-GMN-SELNUM (IDX-1)
       *    １件のみとき、１とする
            IF     (SPA-X98-GMN-MAX     =   1  )  AND
                   (IDX-1               =   1  )  AND
@@ -2101,7 +2100,7 @@
                IF      SPA-X98-NAI-NO (IDX)    =   SPA-X98-NAI-SELNUM
                                                             (IDX-1)
                    MOVE    IDX             TO  WRK-SELNO
-                   MOVE    200             TO  IDX
+                   MOVE    SPA-X98-GMN-MAX TO  IDX
                END-IF
            END-PERFORM
       *
@@ -2215,7 +2214,7 @@
       *
            MOVE    ZERO                TO  FLG-SYURYOU
            IF      SPA-X98-NAI-SELNUM(IDX-1)   =   ZERO
-               IF     (IDX-1               =   5   )
+               IF     (IDX-1               =   IDX-N   )
       *              ((IDX-1               <   5   )  AND
       *               (SPA-X98-NAI-SELNUM(IDX-1 + 1)  =   ZERO) )
                    IF      IDX-1           >   1
