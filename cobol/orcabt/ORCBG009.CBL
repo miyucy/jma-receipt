@@ -26,9 +26,10 @@
       *  03/07/23    NACL−森脇    新規作成
       *****************************************************************
       *  プログラム修正履歴
-      * Maj/Min/Rev  修正者       日付      内容
-      * 01.01.01     NACL-森脇    03/08/21  分類区分判定
-      * 01.01.02     NACL-森脇    03/08/26  使用量カウント構成変更
+      * Maj/Min/Rev  修正者        日付      内容
+      * 01.01.01     NACL-森脇     03/08/21  分類区分判定
+      * 01.01.02     NACL-森脇     03/08/26  使用量カウント構成変更
+      * 01.01.03     NACL-森脇     03/08/27  患者指定時修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -566,52 +567,56 @@
        200-MAIN-EXT.
            EXIT.
       *
+      *----(01.01.03)--UPD-START---
       *****************************************************************
       *    統計ファイルセット
       *****************************************************************
        210-TOKEI-SET-SEIKYU-SEC    SECTION.
       *
-      *    請求管理情報読み込み
-           PERFORM 900-SEIKYU-SELECT-SEC
+           EVALUATE    PARA-SYORIKBN
+           WHEN    "1"
+      *        請求管理情報読み込み
+               PERFORM 900-SEIKYU-SELECT-SEC
       *
-      *    請求管理情報セット
-           PERFORM UNTIL   FLG-SEIKYU      =   1
-               EVALUATE    PARA-SYORIKBN
-               WHEN    "1"
+      *        請求管理情報セット
+               PERFORM UNTIL   FLG-SEIKYU      =   1
                    MOVE    PARA-NAIYO              TO  WRK-NAIYO
                    IF          RECE10-TOTALTEN(1)  >=  WRK-NAIYO
+                       INITIALIZE                  SRYACCT-REC
+                       MOVE    RECE10-HOSPID       TO  ACCT-HOSPID
+                       MOVE    RECE10-NYUGAIKBN    TO  ACCT-NYUGAIKBN
+                       MOVE    RECE10-PTID         TO  ACCT-PTID
+                       MOVE    RECE10-SRYYM        TO  ACCT-SRYYM
       *                統計ファイルセット
                        PERFORM 220-MAIN-ACCT-SEC
                    END-IF
-               WHEN    "2"
-                   IF          RECE10-PTID     =   PARA-NAIYO
-      *                統計ファイルセット
-                       PERFORM 220-MAIN-ACCT-SEC
-                   END-IF
-               END-EVALUATE
-      *        請求管理情報読み込み
-               PERFORM 900-SEIKYU-FETCH-SEC
-           END-PERFORM
+      *            請求管理情報読み込み
+                   PERFORM 900-SEIKYU-FETCH-SEC
+               END-PERFORM
       *
-      *    請求管理情報読み込み
-           PERFORM 900-SEIKYU-CLOSE-SEC
+      *        請求管理情報読み込み
+               PERFORM 900-SEIKYU-CLOSE-SEC
+           WHEN    "2"
+               INITIALIZE                  SRYACCT-REC
+               MOVE    PARA-HOSPID         TO  ACCT-HOSPID
+               MOVE    PARA-DENPPRTYM      TO  ACCT-SRYYM
+               MOVE    "1"                 TO  ACCT-NYUGAIKBN
+               MOVE    PARA-NAIYO          TO  ACCT-PTID
+      *        統計ファイルセット
+               PERFORM 220-MAIN-ACCT-SEC
+           END-EVALUATE
       *
            .
        210-TOKEI-SET-SEIKYU-EXT.
            EXIT.
       *
+      *----(01.01.03)--UPD-END-----
       *****************************************************************
       *    診療会計集計処理
       *****************************************************************
        220-MAIN-ACCT-SEC           SECTION.
       *
       *    対象診療年月で検索
-           INITIALIZE                  SRYACCT-REC
-           MOVE    RECE10-HOSPID       TO  ACCT-HOSPID
-           MOVE    RECE10-NYUGAIKBN    TO  ACCT-NYUGAIKBN
-           MOVE    RECE10-PTID         TO  ACCT-PTID
-           MOVE    RECE10-SRYYM        TO  ACCT-SRYYM
-      *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SRYACCT-KEY7"      TO  ORC-DBPATH
