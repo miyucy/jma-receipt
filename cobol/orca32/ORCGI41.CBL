@@ -757,7 +757,7 @@
       *            明細選択の確認
                    IF      SPA-I4ID-FLG        =   "OK"
                        MOVE    1                  TO  SPA-GMN-CUR-41
-                       MOVE    SPA-GMN-NUM-41     TO  I41-NUM
+                       MOVE    SPA-NAI-NUM-41     TO  I41-NUM
                        PERFORM 41011-BANGO-CHK-SEC
                        MOVE    SPACE              TO  SPA-GMN-KOMENTO-41
                    ELSE
