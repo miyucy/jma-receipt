@@ -18,6 +18,6 @@
          02  JID1.
       *D      02  JID1-FIXED1.
               03  JID1-ID1CODE.
-                04  JID1-VALUE  PIC X(11).
+                04  JID1-VALUE  PIC X(10).
               03  JID1-ID1MSG.
-                04  JID1-VALUE  PIC X(81).
+                04  JID1-VALUE  PIC X(80).

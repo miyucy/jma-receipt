@@ -1,22 +1,22 @@
 J03	{
 	fixed19	{
 		PTNUM	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		KANANAME	{
-			value	varchar(31);
+			value	varchar(30);
 		};
 		NAME	{
-			value	varchar(31);
+			value	varchar(30);
 		};
 		BIRTHDAY	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		SEX	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYKA	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		scrolledwindow1	{
 			SRYACTYMD	{
@@ -33,7 +33,7 @@ J03	{
 				count	int;
 				item	{
 					value1	varchar(7);
-					value2	varchar(41);
+					value2	varchar(40);
 					value3	varchar(5);
 				}	[100];
 				select	bool[100];

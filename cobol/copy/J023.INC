@@ -24,12 +24,12 @@
               03  J023-BUNNUM.
                 04  J023-VALUE  PIC S9(3).
               03  J023-SRYYM.
-                04  J023-VALUE  PIC X(7).
+                04  J023-VALUE  PIC X(6).
               03  J023-SRYKACOMB.
                 04  J023-SRYKA.
                   05  J023-VALUE  PIC X(21).
                 04  J023-SRYKA-COUNT  PIC S9(9)   BINARY.
-                04  J023-SRYKA-ITEM   PIC X(20)   OCCURS  10 TIMES.
+                04  J023-SRYKA-ITEM   PIC X(21)   OCCURS  10 TIMES.
               03  J023-MIDASI-G.
                 04  J023-MIDASI-STYLE  PIC X(20).
                 04  J023-MIDASI       PIC X(20).
@@ -37,7 +37,7 @@
                 04  J023-HKNCOMBI.
                   05  J023-VALUE  PIC X(41).
                 04  J023-HKNCOMBI-COUNT  PIC S9(9)   BINARY.
-                04  J023-HKNCOMBI-ITEM   PIC X(40)   OCCURS  10 TIMES.
+                04  J023-HKNCOMBI-ITEM   PIC X(41)   OCCURS  10 TIMES.
               03  J023-SCROLLEDWINDOW1.
                 04  J023-RECELIST.
                   05  J023-RECE-COUNT  PIC S9(9)   BINARY.

@@ -18,10 +18,10 @@
         02  J98.
      ***  02  J98-FIXED32.
               03  J98-INPUT.
-                04  J98-VALUE   PIC X(23).
+                04  J98-VALUE   PIC X(22).
               03  J98-SENTAKU.
-                04  J98-VALUE   PIC X(31).
-              03  J98-SELNUM     PIC X(04)   OCCURS  5.
+                04  J98-VALUE   PIC X(30).
+              03  J98-SELNUM     PIC X(03)   OCCURS  5.
               03  J98-SCROLLEDWINDOW26.
                 04  J98-LIST.
                   05  J98-COUNT   PIC S9(9)   BINARY.
@@ -33,12 +33,12 @@
                   05  J98-SELECT  PIC X       OCCURS  200 TIMES.
               03  J98-JIINCOB.
                 04  J98-JIIN.
-                  05  J98-VALUE   PIC X(17).
+                  05  J98-VALUE   PIC X(16).
                 04  J98-JIIN-COUNT   PIC S9(9)   BINARY.
                 04  J98-JIIN-ITEM    PIC X(16)   OCCURS  10 TIMES.
               03  J98-USERCOB.
                 04  J98-USER.
-                  05  J98-VALUE   PIC X(11).
+                  05  J98-VALUE   PIC X(10).
                 04  J98-USER-COUNT   PIC S9(9)   BINARY.
                 04  J98-USER-ITEM    PIC X(10)   OCCURS  10 TIMES.
 

@@ -18,17 +18,17 @@
         02  J03.
       ****   02  J03-FIXED19.
               03  J03-PTNUM.
-                04  J03-VALUE   PIC X(21).
+                04  J03-VALUE   PIC X(20).
               03  J03-KANANAME.
-                04  J03-VALUE   PIC X(31).
+                04  J03-VALUE   PIC X(30).
               03  J03-NAME.
-                04  J03-VALUE   PIC X(31).
+                04  J03-VALUE   PIC X(30).
               03  J03-BIRTHDAY.
-                04  J03-VALUE   PIC X(10).
+                04  J03-VALUE   PIC X(09).
               03  J03-SEX.
-                04  J03-VALUE   PIC X(3).
+                04  J03-VALUE   PIC X(2).
               03  J03-SRYKA.
-                04  J03-VALUE   PIC X(11).
+                04  J03-VALUE   PIC X(10).
               03  J03-SCROLLEDWINDOW1.
                 04  J03-SRYACTYMD.
                   05  J03-SRYACTYMD-COUNT   PIC S9(9)   BINARY.
@@ -41,6 +41,6 @@
                   05  J03-SRYACTCNT-COUNT   PIC S9(9)   BINARY.
                   05  J03-SRYACTCNT-ITEM        OCCURS  100 TIMES.
                     06  J03-SRYACTCNT-YM    PIC X(7).
-                    06  J03-SRYACTCNT-NAME  PIC X(41).
+                    06  J03-SRYACTCNT-NAME  PIC X(40).
                     06  J03-SRYACTCNT-CNT    PIC X(5).
                   05  J03-SRYACTCNT-SELECT  PIC X    OCCURS  100 TIMES.

@@ -18,10 +18,10 @@
         02 J022.
            03  J022-FIXED1.
               04  J022-SRYYMD.
-                05  J022-VALUE  PIC X(15).
+                05  J022-VALUE  PIC X(14).
               04  J022-DAY1.
-                05  J022-VALUE  PIC X(3).
+                05  J022-VALUE  PIC X(2).
               04  J022-DAY2.
-                05  J022-VALUE  PIC X(3).
+                05  J022-VALUE  PIC X(2).
               04  J022-DAY3.
-                05  J022-VALUE  PIC X(3).
+                05  J022-VALUE  PIC X(2).

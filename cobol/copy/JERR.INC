@@ -18,6 +18,6 @@
         02  JERR.
             03  JERR-FIXED1.
               04  JERR-ERRCODE.
-                05  JERR-VALUE  PIC X(11).
+                05  JERR-VALUE  PIC X(10).
               04  JERR-ERRMSG.
-                05  JERR-VALUE  PIC X(81).
+                05  JERR-VALUE  PIC X(80).

@@ -18,6 +18,6 @@
         02  J99.
       **      02  J99-FIXED1.
               03  J99-PED.
-                04  J99-VALUE   PIC X(21).
+                04  J99-VALUE   PIC X(20).
               03  J99-PIN.
-                04  J99-VALUE   PIC X(3).
+                04  J99-VALUE   PIC X(2).

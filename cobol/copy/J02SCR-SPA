@@ -25,6 +25,7 @@
       * 01.00.02     MCC-多々納   02/04/25  労災追加
       * 01.00.03     NACL-多々納  02/08/06  コメント入力へアフターケア
       *                                     追加
+      * 01.00.04     NACL-多々納  02/10/25  入院対応追加
       ************************************************************
       *
        01  SPA-J02.
@@ -36,6 +37,7 @@
                05  SPA-GMN-IDX                   PIC 9(04).
                05  SPA-GMN-CUR                   PIC 9(02).
                05  SPA-IDXZ                      PIC 9(02).
+               05  SPA-SRYACCT-MAX               PIC 9(04).
       *        剤変更フラグ
                05  SPA-J02-SYORI                 PIC 9(01).
       *        月変更フラグ
@@ -47,6 +49,15 @@
                        09  SPA-GMN-SRYKA         PIC X(02).
                        09  SPA-GMN-SRYKAH        PIC X(01).
                        09  SPA-GMN-SRYKAMEI      PIC X(12).
+                   07  SPA-GMN-NYUGAIKBN-G.
+                       09  SPA-GMN-NYUGAIKBN         PIC X(01).
+                       09  SPA-GMN-NYUGAIKBNH        PIC X(01).
+                       09  SPA-GMN-NYUGAIKBNMEI      PIC X(08).
+      *
+                   07  SPA-GMN-SRYKBN-G.
+                       09  SPA-GMN-SRYKBN            PIC X(02).
+                       09  SPA-GMN-SRYKBNH           PIC X(01).
+                       09  SPA-GMN-SRYKBNMEI         PIC X(16).
       *
                    07  SPA-GMN-INPUT.
                        09  SPA-GMN-BANGO             PIC 9(03).
@@ -57,6 +68,7 @@
                        09  SPA-GMN-HKNCOMBI          PIC X(04).
                        09  SPA-GMN-HKNCOMBIMEI       PIC X(100).
                        09  SPA-GMN-FTNRATEMEI        PIC X(10).
+                       09  SPA-GMN-BSRYKAMEI         PIC X(12).
       *
                        09  SPA-GMN-ZAINUM            PIC 9(08).
       *
@@ -64,7 +76,7 @@
                        09  SPA-GMN-HENSRYYMD         PIC X(11).
       *        診療履歴内容
                05  SPA-GMN-RRKTBL.
-                   07  SPA-GMN-RRK-LIST          OCCURS  30.
+                   07  SPA-GMN-RRK-LIST          OCCURS  60.
                        09  SPA-GMN-RRKNO         PIC 9(03).
                        09  SPA-GMN-RRKYMD        PIC X(16).
                    07  SPA-RRK-MAX               PIC 9(03).
@@ -95,17 +107,19 @@
                    07  SPA-DAY-IDX         PIC 9(02).
       *            診療履歴
                    07  SPA-NAI-RRKTBL.
-                       09  SPA-NAI-RRK-LIST          OCCURS   30.
+                       09  SPA-NAI-RRK-LIST          OCCURS   60.
                            11  SPA-RRK-RRKYMD        PIC  X(08).
                            11  SPA-RRK-RENNUM        PIC  9(01).
+                           11  SPA-RRK-SRYKA         PIC  X(02).
                            11  SPA-RRK-DOUJI-RENNUM  PIC  9(01).
                            11  SPA-RRK-KAIKEI-RENNUM PIC  9(03).
                            11  SPA-RRK-DENPNUM       PIC  9(07).
                            11  SPA-RRK-ZAINUM-G.
-                               13  SPA-RRK-ZAINUM-OCC     OCCURS  60.
+                               13  SPA-RRK-ZAINUM-OCC     OCCURS  135.
                                    15  SPA-RRK-ZAINUM    PIC 9(08).
                            11  SPA-RRK-HKNKBN        PIC  X(01).
                            11  SPA-RRK-HKNCOMBI      PIC  X(04).
+                           11  SPA-RRK-RRKYMD-MAE    PIC  X(08).
       *        更新フラグ
                05  SPA-UPDFLG                    PIC X(01).
       *        保存診療科
@@ -114,6 +128,7 @@
                    07  SPA-MAE-SRYKAH        PIC X(01).
                    07  SPA-MAE-SRYKAMEI      PIC X(12).
                05  SPA-MAE-BANGO             PIC 9(03).
+               05  SPA-MAE-SRYKBN            PIC X(02).
       *
       *    保険組合せ一覧画面用
            03  SPA-J021-AREA.
@@ -132,6 +147,7 @@
                        09  SPA-NAI-TEKSTYMD      PIC X(08).
                        09  SPA-NAI-TEKEDYMD      PIC X(08).
                        09  SPA-NAI-TROUJIN       PIC 9(01).
+                       09  SPA-NAI-TDELKBN       PIC X(01).
                        09  SPA-NAI-FTNWARI       PIC 9(03)V99.
                05  SPA-J021-HKNIDX               PIC 9(04).
       *
@@ -171,12 +187,12 @@
                05  SPA-J023-HKNCOMBI-G.
                    07  SPA-J023-HKNCOMBINUM     PIC X(04).
                    07  SPA-J023-HKNCOMBY1       PIC X(01).
-                   07  SPA-J023-HKNCOMBIMEI     PIC X(35).
+                   07  SPA-J023-HKNCOMBIMEI     PIC X(36).
                05  SPA-J023-HKNCOMB-COMB.
                    07  SPA-J023-HKN-LIST    OCCURS  10.
                        09  SPA-J023-THKNCOMBINUM    PIC X(04).
                        09  SPA-J023-THKNCOMBY1      PIC X(01).
-                       09  SPA-J023-THKNCOMBIMEI    PIC X(35).
+                       09  SPA-J023-THKNCOMBIMEI    PIC X(36).
                    07  SPA-J023-HKNMAX              PIC 9(04).
       *            労災保険区分
                    07  SPA-J023-RSI-THKNKBN-OCC  OCCURS  10.

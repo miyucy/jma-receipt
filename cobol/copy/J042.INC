@@ -17,10 +17,10 @@
       ********************************************************************
          02  J042.
             03  J042-FIXED10.
-              04  J042-POP-TOUMEI PIC X(41).
+              04  J042-POP-TOUMEI PIC X(40).
               04  J042-SCROLLEDWINDOW1.
                 05  J042-VIEWPORT1.
                   06  J042-LIST1.
                     07  J042-COUNT  PIC S9(9)   BINARY.
-                    07  J042-KNKMEI   PIC X(41)   OCCURS  50 TIMES.
+                    07  J042-KNKMEI   PIC X(40)   OCCURS  50 TIMES.
                     07  J042-SELECT PIC X       OCCURS  50 TIMES.

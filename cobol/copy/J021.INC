@@ -18,17 +18,17 @@
         02  J021.
    ********** 02  J021-KNMINO.
               03  J021-MAE-HKNCOMBI.
-                04  J021-VALUE  PIC X(5).
+                04  J021-VALUE  PIC X(4).
               03  J021-MAE-HKNCOMBIMEI.
-                04  J021-VALUE  PIC X(41).
+                04  J021-VALUE  PIC X(40).
               03  J021-ATO-HKNCOMBI.
-                04  J021-VALUE  PIC X(5).
+                04  J021-VALUE  PIC X(4).
               03  J021-ATO-HKNCOMBIMEI.
-                04  J021-VALUE  PIC X(41).
+                04  J021-VALUE  PIC X(40).
               03  J021-MAE-FTNRATE.
-                04  J021-VALUE  PIC X(9).
+                04  J021-VALUE  PIC X(8).
               03  J021-ATO-FTNRATE.
-                04  J021-VALUE  PIC X(9).
+                04  J021-VALUE  PIC X(8).
               03  J021-SCROLLEDWINDOW1.
                 04  J021-HKNLIST.
                   05  J021-HKNLIST-COUNT  PIC S9(9)   BINARY.

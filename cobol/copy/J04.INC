@@ -16,34 +16,35 @@
       * 113-8621, Japan.
       ********************************************************************
         02  J04.
-     ****    02  J04-FIXED2.
-              03  J04-SRYKBN    OCCURS 20.
-                04  J04-VALUE   PIC X(3).
+      ***  02  J04-FIXED2.
+              03  J04-SRYKBN    OCCURS  20.
+                04  J04-VALUE   PIC X(2).
               03  J04-INPUTCD   OCCURS  20.
-                04  J04-VALUE   PIC X(23).
+                04  J04-VALUE   PIC X(22).
               03  J04-MEISYO    OCCURS  20.
-                04  J04-VALUE   PIC X(63).
-              03  J04-SURYO     OCCURS  20.
-                04  J04-VALUE   PIC X(41).
+                04  J04-VALUE   PIC X(62).
+              03  J04-SURYO-G   OCCURS  20.
+                04  J04-SURYO-STYLE   PIC X(20).
+                04  J04-SURYO   PIC X(40).
               03  J04-PTNUM.
-                04  J04-VALUE   PIC X(21).
+                04  J04-VALUE   PIC X(20).
               03  J04-SRYYM.
-                04  J04-VALUE   PIC X(9).
+                04  J04-VALUE   PIC X(8).
               03  J04-KANANAME.
-                04  J04-VALUE   PIC X(51).
+                04  J04-VALUE   PIC X(50).
               03  J04-NAME.
-                04  J04-VALUE   PIC X(51).
+                04  J04-VALUE   PIC X(50).
               03  J04-BIRTHDAY.
-                04  J04-VALUE   PIC X(10).
+                04  J04-VALUE   PIC X(9).
               03  J04-SEX.
-                04  J04-VALUE   PIC X(3).
+                04  J04-VALUE   PIC X(2).
               03  J04-HKNCOMBI.
-                04  J04-VALUE   PIC X(41).
+                04  J04-VALUE   PIC X(40).
               03  J04-SRYKA.
-                04  J04-VALUE   PIC X(11).
+                04  J04-VALUE   PIC X(10).
               03  J04-RATE.
-                04  J04-VALUE   PIC X(7).
+                04  J04-VALUE   PIC X(6).
               03  J04-RRKYMD.
-                04  J04-VALUE   PIC X(14).
+                04  J04-VALUE   PIC X(13).
               03  J04-DAY       OCCURS  31.
-                04  J04-VALUE   PIC X(3).
+                04  J04-VALUE   PIC X(2).

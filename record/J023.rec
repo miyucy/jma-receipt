@@ -10,14 +10,14 @@ J023	{
 			value	number(3);
 		};
 		SRYYM	{
-			value	varchar(7);
+			value	varchar(6);
 		};
 		SRYKACOMB	{
 			SRYKA	{
 				value	varchar(21);
 			};
 			count	int;
-			item	varchar(20)[10];
+			item	varchar(21)[10];
 		};
 		MIDASI	{
 		    style   varchar(20);
@@ -28,7 +28,7 @@ J023	{
 				value	varchar(41);
 			};
 			count	int;
-			item	varchar(40)[10];
+			item	varchar(41)[10];
 		};
 		scrolledwindow1	{
 			RECELIST	{

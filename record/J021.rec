@@ -1,22 +1,22 @@
 J021	{
 	knmino	{
 		MAE_HKNCOMBI	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		MAE_HKNCOMBIMEI	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		ATO_HKNCOMBI	{
-			value	varchar(5);
+			value	varchar(4);
 		};
 		ATO_HKNCOMBIMEI	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		MAE_FTNRATE	{
-			value	varchar(9);
+			value	varchar(8);
 		};
 		ATO_FTNRATE	{
-			value	varchar(9);
+			value	varchar(8);
 		};
 		scrolledwindow1	{
 			HKNLIST	{
