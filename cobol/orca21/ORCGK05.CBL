@@ -6301,7 +6301,9 @@
            END-IF
       *
            IF      WRK-IDX2            >   23
-               MOVE    06              TO  SPA-GMN5-CUR
+               IF      SPA-GMN5-CUR    =   3  OR  4
+                   MOVE    06              TO  SPA-GMN5-CUR
+               END-IF
            END-IF
       *
       *
