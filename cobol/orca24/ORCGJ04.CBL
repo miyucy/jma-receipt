@@ -34,6 +34,7 @@
       * 02.00.03     NACL−多々納 02/09/19  インターフェースの変更
       * 02.00.04     NACL-多々納  02/11/20  自賠責器材追加
       * 02.00.05     NACL-多々納  02/12/02  食事の追加
+      * 02.00.06     NACL-多々納  02/12/18  診療種別の判定追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -165,6 +166,8 @@
       *    空白入力
            03  FLG-KUHAKU          PIC 9(01).
            03  FLG-INS             PIC 9(01).
+      *
+           03  FLG-CHK-OK          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -417,6 +420,9 @@
                05  WRK-MEIHHZN             PIC X(02).
                05  WRK-MEISYOHZN           PIC X(60).
            03  IDX-MEI                 PIC 9(04).
+      *
+      *    診療種別
+           03  WRK-MAE-SRYSYUKBN          PIC X(03).
       *
       *    行位置編集
        01  WRK-GMNGYO-AREA.
@@ -3125,6 +3131,8 @@
                    (SPA-NAI-NENREI-YY  <   3   )
                MOVE    1                   TO  LNK-SC93-SYONIKA-ARI2
            END-IF
+      *    寝たきり在宅科算定有りとする
+           MOVE    1                   TO  LNK-SC93-NETAKIRI-ARI
       *
            CALL    "ORCSC93"           USING
                                        MCPAREA
@@ -3287,6 +3295,7 @@
                WHEN    "21"
                WHEN    "22"
                WHEN    "23"
+               WHEN    "24"
                WHEN    "25"
                WHEN    "26"
                WHEN    "27"
@@ -4574,6 +4583,15 @@
                MOVE   WRK-JIHIMONEY        TO  WRK-ZAITEN
            END-IF
       *
+      *    診療種別により判定を追加する
+           IF     (SPA-COM-SRYSYUKBN (01)  =   SPACE )  OR
+                  (SPA-COM-SRYSYUKBN (01)  =   "210"  OR
+                                               "230" )
+               MOVE    SPACE               TO  WRK-SRYSYUKBN
+           ELSE
+               MOVE    SPA-COM-SRYSYUKBN (01)  TO  WRK-SRYSYUKBN
+           END-IF
+      *
       *    診療コードがない時、処理をしない
       *****IF      WRK-MEISAISU        =   ZERO
       *        GO      TO      45011-NAIYOU-CHK-EXT
@@ -4678,6 +4696,22 @@
                MOVE    1                   TO  FLG-SRYACT
            END-IF
            PERFORM UNTIL     (FLG-SRYACT       =   1  )
+      *        診療種別により判定を追加する
+               IF     (SRY-SRYSYUKBN       =   SPACE )  OR
+                      (SRY-SRYSYUKBN       =   "210"  OR
+                                               "230" )
+                  MOVE    SPACE            TO  WRK-MAE-SRYSYUKBN
+               ELSE
+                   MOVE    SRY-SRYSYUKBN   TO  WRK-MAE-SRYSYUKBN
+               END-IF
+      *        診療種別区分判定
+               IF       WRK-SRYSYUKBN       =   WRK-MAE-SRYSYUKBN
+                   MOVE     1               TO  FLG-CHK-OK
+               ELSE
+                   MOVE     ZERO            TO  FLG-CHK-OK
+               END-IF
+               IF      FLG-CHK-OK          =   1
+      *
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2        >   5   )  OR
                                   (SRY-SRYCD(IDX2)     =   SPACE )
@@ -4705,6 +4739,8 @@
                        END-IF
                    END-IF
                END-PERFORM
+      *
+               END-IF
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SRYACT-NEXT-SEC
            END-PERFORM

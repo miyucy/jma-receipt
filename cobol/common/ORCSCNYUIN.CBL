@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-Â¿¡¹Ç¼  02/12/17  ¿ÇÎÅ¼ïÊÌ¤ÎÈ½ÄêÄÉ²Ã
       *****************************************************************
       *
       *
@@ -85,6 +86,8 @@
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-TOKTEI          PIC 9(01).
+      *
+           03  FLG-CHK-OK          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -145,6 +148,10 @@
       *
            03  WRK-PATH                    PIC X(64).
            03  WRK-MEIBAN                  PIC 9(03).
+      *
+      *    ¿ÇÎÅ¼ïÊÌ
+           03  WRK-SRYSYUKBN              PIC X(03).
+           03  WRK-MAE-SRYSYUKBN          PIC X(03).
       *
       *    ¿ÇÎÅ¹Ô°ÙÆâÍÆÈæ³ÓÍÑ¥Æ¡¼¥Ö¥ë
        01  TBL-AREA.
@@ -553,6 +560,14 @@
            IF      WRK-MEISAISU        =   ZERO
                GO      TO      1002-SRYACCT-SYORI-EXT
            END-IF 
+      *    ¿ÇÎÅ¼ïÊÌ¤Ë¤è¤êÈ½Äê¤òÄÉ²Ã¤¹¤ë
+           IF     (LNK-WKSRY-SRYSYUKBN (01)    =   SPACE )  OR
+                  (LNK-WKSRY-SRYSYUKBN (01)    =   "210"  OR
+                                                   "230" )
+               MOVE    SPACE                   TO  WRK-SRYSYUKBN
+           ELSE
+               MOVE    LNK-WKSRY-SRYSYUKBN(01) TO  WRK-SRYSYUKBN
+           END-IF
       *
            MOVE    ZERO                TO  WRK-ZAINUM
            MOVE    ZERO                TO  FLG-OK
@@ -726,6 +741,22 @@
                MOVE    1                   TO  FLG-SRYACT
            END-IF
            PERFORM UNTIL     (FLG-SRYACT       =   1  )
+      *        ¿ÇÎÅ¼ïÊÌ¤Ë¤è¤êÈ½Äê¤òÄÉ²Ã¤¹¤ë
+               IF     (SRY-SRYSYUKBN       =   SPACE )  OR
+                      (SRY-SRYSYUKBN       =   "210"  OR
+                                               "230" )
+                   MOVE    SPACE           TO  WRK-MAE-SRYSYUKBN
+               ELSE
+                   MOVE    SRY-SRYSYUKBN   TO  WRK-MAE-SRYSYUKBN
+               END-IF
+      *        ¿ÇÎÅ¼ïÊÌ¶èÊ¬È½Äê
+               IF       WRK-SRYSYUKBN       =   WRK-MAE-SRYSYUKBN
+                   MOVE     1               TO  FLG-CHK-OK
+               ELSE
+                   MOVE     ZERO            TO  FLG-CHK-OK
+               END-IF
+               IF      FLG-CHK-OK          =   1
+      *
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2        >   5   )  OR
                                   (SRY-SRYCD(IDX2)     =   SPACE )
@@ -753,6 +784,8 @@
                        END-IF
                    END-IF
                END-PERFORM
+      *
+               END-IF
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
                PERFORM 915-SRYACT-NEXT-SEC
            END-PERFORM
