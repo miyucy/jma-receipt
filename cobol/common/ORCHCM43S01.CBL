@@ -484,7 +484,7 @@
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO  SYU-PTID
-           STRING  ORCHCM43-SRYYM      DELIMITED   BY  SPACE
+           STRING  ORCHCM43-STSRYYM    DELIMITED   BY  SPACE
                    "%"                 DELIMITED   BY  SIZE
            INTO    SYU-SRYYMD
            END-STRING
@@ -560,10 +560,10 @@
       *****************************************************************
        910-DBCLOSE-SEC                 SECTION.
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    CALL    "MCPSUB"            USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
       *
            .
       *

@@ -207,7 +207,7 @@
       *****************************************************************
        100-SYORI-SEC                SECTION.
       *
-           MOVE    ORCHCM43-SRYYM      TO  WRK-SRYYMD
+           MOVE    ORCHCM43-STSRYYM    TO  WRK-SRYYMD
            MOVE    "01"                TO  WRK-SRYYMD (7:)
       *
       *    医療機関情報−所在地、連絡先
@@ -729,6 +729,7 @@
       *****************************************************************
        400-PRINT-SEC                SECTION.
       *
+           MOVE    SPA-PTID            TO  SPRT-PTID
            MOVE    "HCM43.red"         TO  SPRT-PRTID
            MOVE    HCM43               TO  SPRT-PRTDATA
            MOVE    "1"                 TO  SPRT-SITEKBN
@@ -1001,10 +1002,10 @@
       *****************************************************************
        910-DBCLOSE-SEC           SECTION.
       *
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+      *    MOVE    "DBCLOSE"       TO  MCP-FUNC
+      *    CALL    "MCPSUB"            USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
       *
            .
        910-DBCLOSE-EXT.

@@ -443,7 +443,7 @@
       *            患者番号取得
                    MOVE    SYU-PTID    TO  WRK-PTID
                    PERFORM 900-PTNUM-KEY-SEL-SEC
-                   IF    ( FLG-PTINF   =   ZERO )
+                   IF    ( FLG-PTNUM   =   ZERO )
                        MOVE    MCPDATA-REC TO  PTNUM-REC
                    ELSE
                        PERFORM 21011-PTNUM-ERR-HEN-SEC
@@ -615,8 +615,8 @@
            MOVE    WRK-PTNUM           TO  SPA-PTNUM
       *
            INITIALIZE                      ORCHCM43AREA
-           MOVE    "2"                 TO  ORCHCM43-KBN
-           MOVE    WRK-PARA-SRYYM      TO  ORCHCM43-SRYYM
+           MOVE    "1"                 TO  ORCHCM43-KBN
+           MOVE    WRK-PARA-SRYYM      TO  ORCHCM43-STSRYYM
            MOVE    WRK-PARA-HAKUHOUFLG TO  ORCHCM43-HAKUHOUFLG
            MOVE    WRK-PARA-HAKYMD     TO  ORCHCM43-HAKYMD
            MOVE    WRK-PARA-ZEROSKYFLG TO  ORCHCM43-ZEROSKYFLG

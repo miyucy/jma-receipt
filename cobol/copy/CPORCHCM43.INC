@@ -28,10 +28,12 @@
       *
            03  ORCHCM43-IN.
       *
-      *        呼出元区分（1:収納業務/2:統計業務）
+      *        呼出元区分（1:統計業務/2:収納業務）
                05  ORCHCM43-KBN            PIC X(01).
-      *        診療年月
-               05  ORCHCM43-SRYYM          PIC X(06).
+      *        開始診療年月
+               05  ORCHCM43-STSRYYM        PIC X(06).
+      *        終了診療年月
+               05  ORCHCM43-EDSRYYM        PIC X(06).
       *        発行方法
                05  ORCHCM43-HAKUHOUFLG     PIC X(01).
       *        発行日
@@ -39,9 +41,6 @@
       *
       *        ゼロ円請求書発行フラグ
                05  ORCHCM43-ZEROSKYFLG     PIC X(01).
-      *
-      *        一括パラメタ
-               05  ORCHCM43-PRTAREA        PIC X(15000).
       *
            03  ORCHCM43-OT.
       *        編集ページ数
