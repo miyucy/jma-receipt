@@ -99,6 +99,7 @@
            03  IDXB                            PIC 9(05).
            03  IDXC                            PIC 9(05).
            03  IDXD                            PIC 9(05).
+           03  IDXE                            PIC 9(05).
            03  IDX-KHN                         PIC 9(05).
       *
       *    °ì»þÎÎ°è
@@ -1261,6 +1262,7 @@
            WHEN    221 THRU  222
            WHEN    224
            WHEN    227 THRU  228
+           WHEN    230 THRU  232
                MOVE    "190116590"     TO  WRK-GAIHAKU-SRYCD
            WHEN    013 THRU  021
            WHEN    101 THRU  109
@@ -1296,9 +1298,16 @@
            ELSE
                EVALUATE  FLG-GAIHAKUDAY(IDXD)
                WHEN   1
-               WHEN   4
                    COMPUTE WRK-GAIHAKU-TEN
                        = ( WRK-KHNTEN  *   0.15)   +  0.5
+               WHEN   4
+                   IF    ( NACCT-SRYYM     <=  "200403" )
+                       COMPUTE WRK-GAIHAKU-TEN
+                           = ( WRK-KHNTEN  *   0.15)   +  0.5
+                   ELSE
+                       COMPUTE WRK-GAIHAKU-TEN
+                           = ( WRK-KHNTEN  *   0.3 )   +  0.5
+                   END-IF
                WHEN   2
                    COMPUTE WRK-GAIHAKU-TEN
                        = ( WRK-KHNTEN  *   0.3 )   +  0.5
@@ -2848,33 +2857,42 @@
       *
            MOVE    WRK-SENTEI-PTFTN    TO  HCM34S01-SENTEI-PTFTN
       *
-           MOVE    SRT-MAX             TO  HCM34S01-HENKYAKU-MAX
+           MOVE    ZERO                TO  HCM34S01-HENKYAKU-MAX
       *
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL ( IDXB    >   SRT-MAX )
                     OR   ( IDXB    >   CONST-HENKYAKU-MAX )
       *
-               MOVE    SRT-SRYKBN   (IDXB)     TO  HCM34S01-SRYKBN
-                                                              (IDXB)
-               MOVE    SRT-ZAITEN   (IDXB)     TO  HCM34S01-ZAITEN
-                                                              (IDXB)
-               MOVE    SRT-ZAIKAISU (IDXB)     TO  HCM34S01-ZAIKAISU
-                                                              (IDXB)
-               MOVE    SRT-ZAISKBKBN(IDXB)     TO  HCM34S01-ZAISKBKBN
-                                                              (IDXB)
-               PERFORM VARYING IDXC    FROM    1   BY  1
-                       UNTIL ( IDXC    >   5 )
-                   MOVE    SRT-SRYCD(IDXB IDXC)
-                                               TO  HCM34S01-SRYCD
-                                                           (IDXB IDXC)
-               END-PERFORM
+               IF    ( SRT-ZAITEN   (IDXB) NOT =   ZERO )
+                AND  ( SRT-ZAIKAISU (IDXB) NOT =   ZERO )
       *
-               PERFORM VARYING IDXD    FROM    1   BY  1
-                       UNTIL ( IDXD    >   31 )
-                   MOVE    SRT-DAY  (IDXB IDXD)
+                   COMPUTE HCM34S01-HENKYAKU-MAX
+                       =   HCM34S01-HENKYAKU-MAX   +   1
+      *
+                   MOVE    HCM34S01-HENKYAKU-MAX   TO  IDXE
+      *
+                   MOVE    SRT-SRYKBN   (IDXB) TO  HCM34S01-SRYKBN
+                                                              (IDXE)
+                   MOVE    SRT-ZAITEN   (IDXB) TO  HCM34S01-ZAITEN
+                                                              (IDXE)
+                   MOVE    SRT-ZAIKAISU (IDXB) TO  HCM34S01-ZAIKAISU
+                                                              (IDXE)
+                   MOVE    SRT-ZAISKBKBN(IDXB) TO  HCM34S01-ZAISKBKBN
+                                                              (IDXE)
+                   PERFORM VARYING IDXC    FROM    1   BY  1
+                           UNTIL ( IDXC    >   5 )
+                       MOVE    SRT-SRYCD(IDXB IDXC)
+                                               TO  HCM34S01-SRYCD
+                                                           (IDXE IDXC)
+                   END-PERFORM
+      *
+                   PERFORM VARYING IDXD    FROM    1   BY  1
+                           UNTIL ( IDXD    >   31 )
+                       MOVE    SRT-DAY  (IDXB IDXD)
                                                TO  HCM34S01-DAY
-                                                           (IDXB IDXD)
-               END-PERFORM
+                                                           (IDXE IDXD)
+                   END-PERFORM
+               END-IF
       *
            END-PERFORM
       *

@@ -89,6 +89,7 @@
            03  IDXB                            PIC 9(05).
            03  IDXC                            PIC 9(05).
            03  IDXD                            PIC 9(05).
+           03  IDXE                            PIC 9(05).
            03  IDX-KHN                         PIC 9(05).
            03  IDX-DAY                         PIC 9(02).
       *
@@ -2268,33 +2269,43 @@
       *****************************************************************
        2001-HENKYAKU-SET-SEC           SECTION.
       *
-           MOVE    SRT-MAX             TO  HCM34S01-HENKYAKU-MAX
+           MOVE    ZERO            TO  HCM34S01-HENKYAKU-MAX
       *
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL ( IDXB    >   SRT-MAX )
                     OR   ( IDXB    >   CONST-HENKYAKU-MAX )
       *
-               MOVE    SRT-SRYKBN   (IDXB)     TO  HCM34S01-SRYKBN
-                                                              (IDXB)
-               MOVE    SRT-ZAITEN   (IDXB)     TO  HCM34S01-ZAITEN
-                                                              (IDXB)
-               MOVE    SRT-ZAIKAISU (IDXB)     TO  HCM34S01-ZAIKAISU
-                                                              (IDXB)
-               MOVE    SRT-ZAISKBKBN(IDXB)     TO  HCM34S01-ZAISKBKBN
-                                                              (IDXB)
-               PERFORM VARYING IDXC    FROM    1   BY  1
-                       UNTIL ( IDXC    >   20 )
-                   MOVE    SRT-SRYCD(IDXB IDXC)
-                                               TO  HCM34S01-SRYCD
-                                                           (IDXB IDXC)
-               END-PERFORM
+               IF    ( SRT-ZAITEN   (IDXB) NOT =   ZERO )
+                AND  ( SRT-ZAIKAISU (IDXB) NOT =   ZERO )
       *
-               PERFORM VARYING IDXD    FROM    1   BY  1
-                       UNTIL ( IDXD    >   31 )
-                   MOVE    SRT-DAY  (IDXB IDXD)
+                   COMPUTE HCM34S01-HENKYAKU-MAX
+                       =   HCM34S01-HENKYAKU-MAX   +   1
+      *
+                   MOVE    HCM34S01-HENKYAKU-MAX   TO  IDXE
+      *
+      *
+                   MOVE    SRT-SRYKBN   (IDXB) TO  HCM34S01-SRYKBN
+                                                              (IDXE)
+                   MOVE    SRT-ZAITEN   (IDXB) TO  HCM34S01-ZAITEN
+                                                              (IDXE)
+                   MOVE    SRT-ZAIKAISU (IDXB) TO  HCM34S01-ZAIKAISU
+                                                              (IDXE)
+                   MOVE    SRT-ZAISKBKBN(IDXB) TO  HCM34S01-ZAISKBKBN
+                                                              (IDXE)
+                   PERFORM VARYING IDXC    FROM    1   BY  1
+                           UNTIL ( IDXC    >   20 )
+                       MOVE    SRT-SRYCD(IDXB IDXC)
+                                               TO  HCM34S01-SRYCD
+                                                           (IDXE IDXC)
+                   END-PERFORM
+      *
+                   PERFORM VARYING IDXD    FROM    1   BY  1
+                           UNTIL ( IDXD    >   31 )
+                       MOVE    SRT-DAY  (IDXB IDXD)
                                                TO  HCM34S01-DAY
-                                                           (IDXB IDXD)
-               END-PERFORM
+                                                           (IDXE IDXD)
+                   END-PERFORM
+               END-IF
       *
            END-PERFORM
       *
