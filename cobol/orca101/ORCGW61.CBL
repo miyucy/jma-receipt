@@ -783,7 +783,8 @@
            MOVE    PATH-TBL-SYSKANRI-KEY10
                                        TO  WRK-SYSKANRI-PATH
            PERFORM 900-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
+           IF     FLG-SYSKANRI         =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-2006-REC
                MOVE    SYS-2006-KBNCD      TO  SPA-NAI-KBNCD
       *
                MOVE    SYS-2006-STYUKYMD   TO  SPA-NAI-STYUKYMD
