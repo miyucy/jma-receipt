@@ -1077,6 +1077,7 @@
                END-IF
            END-PERFORM
       *    同日複数回数の判定
+           MOVE    ZERO                TO  IDX-IN
            PERFORM 410129-DAY-NAICHK-SEC
            IF      FLG-END             =   1
                GO      TO      3002-J022-HEN-EXT
