@@ -13,7 +13,7 @@ W09	{
 			value	varchar(41);
 		};
 		PRTJYUNI	{
-			value	varchar(3);
+			value	varchar(4);
 		};
 		SYUBETU01	{
 			value	varchar(5);
@@ -81,6 +81,16 @@ W09	{
 			};
 			count	int;
 			item	varchar(26)[5];
+		};
+		NYUGAIKBN_COMBO	{
+			NYUGAIKBN	{
+				value	varchar(11);
+			};
+			count	int;
+			item	varchar(10)[2];
+		};
+		DSPSEQ	{
+			value	number(3);
 		};
 	};
 };

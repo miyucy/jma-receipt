@@ -114,6 +114,46 @@ R02	{
 	           	state	int;
 			value	varchar(101);
 		};
+		STDATA27	{
+	           	state	int;
+			value	varchar(101);
+		};
+		STDATA28	{
+	           	state	int;
+			value	varchar(101);
+		};
+		STDATA29	{
+	           	state	int;
+			value	varchar(101);
+		};
+		STDATA30	{
+	           	state	int;
+			value	varchar(101);
+		};
+		STDATA31	{
+	           	state	int;
+			value	varchar(101);
+		};
+		STDATA32	{
+	           	state	int;
+			value	varchar(101);
+		};
+		STDATA33	{
+	           	state	int;
+			value	varchar(101);
+		};
+		STDATA34	{
+	           	state	int;
+			value	varchar(101);
+		};
+		STDATA35	{
+	           	state	int;
+			value	varchar(101);
+		};
+		STDATA36	{
+	           	state	int;
+			value	varchar(101);
+		};
 		EDDATA01	{
 	           	state	int;
 			value	varchar(101);
@@ -218,6 +258,46 @@ R02	{
 	           	state	int;
 			value	varchar(101);
 		};
+		EDDATA27	{
+	           	state	int;
+			value	varchar(101);
+		};
+		EDDATA28	{
+	           	state	int;
+			value	varchar(101);
+		};
+		EDDATA29	{
+	           	state	int;
+			value	varchar(101);
+		};
+		EDDATA30	{
+	           	state	int;
+			value	varchar(101);
+		};
+		EDDATA31	{
+	           	state	int;
+			value	varchar(101);
+		};
+		EDDATA32	{
+	           	state	int;
+			value	varchar(101);
+		};
+		EDDATA33	{
+	           	state	int;
+			value	varchar(101);
+		};
+		EDDATA34	{
+	           	state	int;
+			value	varchar(101);
+		};
+		EDDATA35	{
+	           	state	int;
+			value	varchar(101);
+		};
+		EDDATA36	{
+	           	state	int;
+			value	varchar(101);
+		};
 		PAGE1	{
 			value	number(4);
 		};
@@ -296,6 +376,36 @@ R02	{
 		PAGE26	{
 			value	number(4);
 		};
+		PAGE27	{
+			value	number(4);
+		};
+		PAGE28	{
+			value	number(4);
+		};
+		PAGE29	{
+			value	number(4);
+		};
+		PAGE30	{
+			value	number(4);
+		};
+		PAGE31	{
+			value	number(4);
+		};
+		PAGE32	{
+			value	number(4);
+		};
+		PAGE33	{
+			value	number(4);
+		};
+		PAGE34	{
+			value	number(4);
+		};
+		PAGE35	{
+			value	number(4);
+		};
+		PAGE36	{
+			value	number(4);
+		};
 		KENSU1	{
 			value	number(4);
 		};
@@ -372,6 +482,36 @@ R02	{
 			value	number(4);
 		};
 		KENSU26	{
+			value	number(4);
+		};
+		KENSU27	{
+			value	number(4);
+		};
+		KENSU28	{
+			value	number(4);
+		};
+		KENSU29	{
+			value	number(4);
+		};
+		KENSU30	{
+			value	number(4);
+		};
+		KENSU31	{
+			value	number(4);
+		};
+		KENSU32	{
+			value	number(4);
+		};
+		KENSU33	{
+			value	number(4);
+		};
+		KENSU34	{
+			value	number(4);
+		};
+		KENSU35	{
+			value	number(4);
+		};
+		KENSU36	{
 			value	number(4);
 		};
 		CHK01	{
@@ -504,6 +644,56 @@ R02	{
 			value	bool;
 			label	varchar(41);
 		};
+		CHK27	{
+	           	state	int;
+			value	bool;
+			label	varchar(41);
+		};
+		CHK28	{
+	           	state	int;
+			value	bool;
+			label	varchar(41);
+		};
+		CHK29	{
+	           	state	int;
+			value	bool;
+			label	varchar(41);
+		};
+		CHK30	{
+	           	state	int;
+			value	bool;
+			label	varchar(41);
+		};
+		CHK31	{
+	           	state	int;
+			value	bool;
+			label	varchar(41);
+		};
+		CHK32	{
+	           	state	int;
+			value	bool;
+			label	varchar(41);
+		};
+		CHK33	{
+	           	state	int;
+			value	bool;
+			label	varchar(41);
+		};
+		CHK34	{
+	           	state	int;
+			value	bool;
+			label	varchar(41);
+		};
+		CHK35	{
+	           	state	int;
+			value	bool;
+			label	varchar(41);
+		};
+		CHK36	{
+	           	state	int;
+			value	bool;
+			label	varchar(41);
+		};
 		FILEKBN	{
 			value	varchar(35);
 		};
@@ -516,19 +706,19 @@ R02	{
 		PAGE	{
 			value	number(4);
 		};
-		PREFKBN_COMBO	{
-			PREFKBN	{
-				value	varchar(7);
-			};
-			count	int;
-			item	varchar(6)[3];
-		};
 		PRTJYUN_COMBO	{
 			PRTJYUN	{
 				value	varchar(26);
 			};
 			count	int;
 			item	varchar(26)[5];
+		};
+		PREFKBN_COMBO	{
+			PREFKBN	{
+				value	varchar(7);
+			};
+			count	int;
+			item	varchar(6)[3];
 		};
 	};
 };

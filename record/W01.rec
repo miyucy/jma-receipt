@@ -32,7 +32,7 @@ W01	{
 				value	varchar(36);
 			};
 			count	int;
-			item	varchar(35)[100];
+			item	varchar(35)[200];
 		};
 		MIDASI	{
 			value	varchar(20);
