@@ -1682,7 +1682,7 @@
       *****************************************************************
        10012-AKUSEI-SEC           SECTION.
       *
-      *    診療情報提供料算定日
+      *    腫瘍マーカー検査名
            MOVE    "830000015"         TO  WRK-SRYCD
            PERFORM 1110-KASAN-CHK-SEC
            IF      FLG-ARI             =   1
@@ -1691,6 +1691,9 @@
       *
            MOVE    IDX-Z               TO  IDX-S
            PERFORM 1100-KASAN-SET-SEC
+           IF      FLG-ADD             =   1
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-S)
+           END-IF
       *
            .
        10012-AKUSEI-EXT.
