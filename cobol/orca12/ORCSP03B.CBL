@@ -37,6 +37,7 @@
       * 01.00.08     NACL-多々納  03/09/02  公費自動切替え追加
       * 01.00.09     NACL-多々納  03/12/16  ”５１”チェックに”７０１”追加
       * 01.00.10     NACL-多々納  05/01/13  有効開始日の初期設定追加
+      * 01.00.11     NACL-多々納  05/02/10  特定の重複登録可能
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1743,6 +1744,15 @@
                                        >   SPA-NAI-KTEKEDYMD(IDK2) )
                        CONTINUE
                    ELSE
+      *                特定は重複可とする
+                       IF     (SPA-GMN-KOHNUM (IDX-K)
+                                           =   SPA-GMN-KOHNUM(IDK2))
+                       AND    (SPA-GMN-KOHNUM(IDX-K)
+                                           =   "051"  OR  "052"
+                                           OR  "091"       )
+                           CONTINUE
+                       ELSE
+      *
                        IF      SPA-GMN-KOHNUM (IDX-K)
                                            =   SPA-GMN-KOHNUM(IDK2)
                            MOVE    "0088"      TO  SPA-ERRCD
@@ -1757,6 +1767,8 @@
                            MOVE    IDX-K       TO  WRK-IDX1
                            MOVE    IDK2        TO  WRK-IDX2
                        END-IF
+                   END-IF
+      *
                    END-IF
                END-IF
            END-PERFORM
@@ -1843,6 +1855,15 @@
                END-IF
       *
                IF      FLG-CHK         =   1
+      *            特定は重複可とする
+                   IF     (SPA-GMN-KOHNUM (IDX-K)
+                                           =   SPA-PTKOH-KOHNUM(IDX))
+                   AND    (SPA-GMN-KOHNUM(IDX-K)
+                                           =   "051"  OR  "052"
+                                           OR  "091"       )
+                     CONTINUE
+                   ELSE
+      *
       *            [公費]期間重複チェック
                    IF     (SPA-GMN-KOHNUM (IDX-K)
                                        =   SPA-PTKOH-KOHNUM (IDX))  OR
@@ -1851,6 +1872,8 @@
                        MOVE    "0088"      TO  SPA-ERRCD
                        MOVE    23          TO  SPA-GMN-CUR
                        MOVE    IDX         TO  WRK-IDX1
+                   END-IF
+      *
                    END-IF
                END-IF
            END-PERFORM

@@ -4860,6 +4860,8 @@
       *
            MOVE    SPA-PTKOH-KOHID     (IDX)   TO  SPA-NAI24-KOHID (IDY)
            MOVE    SPA-PTKOH-KOHNUM    (IDX)   TO  SPA-NAI24-KOHNUM(IDY)
+           MOVE    SPA-PTKOH-JKYSNUM   (IDX)   TO  SPA-NAI24-TJKYSNUM
+                                                                 (IDY)
            MOVE    SPA-PTKOH-PAYKBN    (IDX)   TO  SPA-NAI24-PAYKBN(IDY)
            MOVE    SPA-PTKOH-TEKSTYMD  (IDX)   TO  SPA-NAI24-TKOHSTYMD
                                                                    (IDY)

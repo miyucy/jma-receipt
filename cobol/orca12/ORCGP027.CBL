@@ -89,6 +89,7 @@
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
+           03  IDX4                PIC 9(04).
            03  IDY                 PIC 9(04).
       *
            03  IDX-STR             PIC 9(04).
@@ -119,6 +120,10 @@
                 05  WRK-SRT-TEKISTYMD      PIC X(08).
                 05  WRK-SRT-HKNCOMBINUM    PIC X(04).
                 05  WRK-SRT-IDX            PIC 9(04).
+      *
+           03  WRK-KOHNUM          PIC X(03).
+           03  WRK-KOHID           PIC 9(10).
+           03  WRK-JKYSNUM         PIC X(20).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -491,12 +496,65 @@
                    PERFORM 3201-RSI-HENSYU-SEC
                END-IF
       *
+      *        特定負有の時、受給者番号設定
+               IF      LNK-COMB-KOH1HKNNUM (IDX)   =   "051"
+                                                   OR  "052"
+                                                   OR  "091"
+                   MOVE    LNK-COMB-KOH1HKNNUM (IDX)   TO  WRK-KOHNUM
+                   MOVE    LNK-COMB-KOH1ID (IDX)       TO  WRK-KOHID
+                   PERFORM 3202-JKYSNUM-HENSYU-SEC
+               END-IF
+               IF      LNK-COMB-KOH2HKNNUM (IDX)   =   "051"
+                                                   OR  "052"
+                                                   OR  "091"
+                   MOVE    LNK-COMB-KOH2HKNNUM (IDX)   TO  WRK-KOHNUM
+                   MOVE    LNK-COMB-KOH2ID (IDX)       TO  WRK-KOHID
+                   PERFORM 3202-JKYSNUM-HENSYU-SEC
+               END-IF
+               IF      LNK-COMB-KOH3HKNNUM (IDX)   =   "051"
+                                                   OR  "052"
+                                                   OR  "091"
+                   MOVE    LNK-COMB-KOH3HKNNUM (IDX)   TO  WRK-KOHNUM
+                   MOVE    LNK-COMB-KOH3ID (IDX)       TO  WRK-KOHID
+                   PERFORM 3202-JKYSNUM-HENSYU-SEC
+               END-IF
+               IF      LNK-COMB-KOH4HKNNUM (IDX)   =   "051"
+                                                   OR  "052"
+                                                   OR  "091"
+                   MOVE    LNK-COMB-KOH4HKNNUM (IDX)   TO  WRK-KOHNUM
+                   MOVE    LNK-COMB-KOH4ID (IDX)       TO  WRK-KOHID
+                   PERFORM 3202-JKYSNUM-HENSYU-SEC
+               END-IF
+      *
            END-PERFORM
       *
            .
        320-HONCOMBI-SET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    特定疾患の受給者番号編集処理
+      *****************************************************************
+       3202-JKYSNUM-HENSYU-SEC            SECTION.
+     *
+           MOVE    SPACE               TO  WRK-JKYSNUM
+           PERFORM VARYING     IDX4    FROM    1   BY  1
+                   UNTIL       IDX4    >   SPA-PTKOH-MAX
+               IF     (SPA-PTKOH-KOHID (IDX4)  NOT =   ZERO )  AND
+                      (SPA-PTKOH-KOHID (IDX4)  =   WRK-KOHID)
+                   MOVE    SPA-PTKOH-JKYSNUM (IDX4)
+                                               TO  WRK-JKYSNUM
+                   MOVE    SPA-PTKOH-MAX       TO  IDX4
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-JKYSNUM     NOT =   SPACE
+               MOVE    WRK-JKYSNUM         TO  SPA-GMN27-TJKYSNUM(IDX)
+           END-IF
+      *
+           .
+       3202-JKYSNUM-HENSYUT-EXT.
+           EXIT.
       *
       *****************************************************************
       *    適用開始日順にＳＯＲＴ編集処理

@@ -3016,6 +3016,9 @@
                                          TO  P02-P027-TEKSTYMD(IDX)
                MOVE    SPA-GMN27-TEKEDYMD(IDX) 
                                          TO  P02-P027-TEKEDYMD(IDX)
+      *        特定の受給者番号
+               MOVE    SPA-GMN27-TJKYSNUM(IDX) 
+                                         TO  P02-P027-TJKYSNUM(IDX)
                MOVE    IDX               TO  P02-P027-HKNKUMI-COUNT
       *
                IF      SPA-GMN27-NUM (IDX)(1:4)
@@ -3258,6 +3261,8 @@
            MOVE    SPA-GMN24-TNKSELNUM TO  P02-P024-TNKSELNUM
            MOVE    SPA-GMN24-TNKSTYMDW TO  P02-P024-TNKSTYMD
            MOVE    SPA-GMN24-TNKEDYMDW TO  P02-P024-TNKEDYMD
+      *
+           MOVE    SPA-GMN24-JKYSNUM   TO  P02-P024-JKYSNUM
       *
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1

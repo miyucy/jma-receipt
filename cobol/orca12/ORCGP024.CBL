@@ -35,6 +35,7 @@
       *  02.00.01    NACL-多々納  03/02/13  食事標準負担減額日追加
       *  02.00.02    NACL-多々納  03/03/24  公費負担額追加
       *  02.00.03    NACL-多々納  03/10/14  公費負担額初期編集追加
+      *  02.00.04    NACL-多々納  05/02/10  特定の受給者番号表示追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -469,11 +470,29 @@
            END-PERFORM
       *
       *TEST
+      *    前回の選択番号は反映させない
+           MOVE    ZERO                TO  SPA-MAE24-FTNSELNUM
+           INITIALIZE                  SPA-GMN24-FTN-AREA
+           INITIALIZE                  SPA-GMN24-FTN-AREA2
       *    公費負担の最初を選択とする
            IF      (SPA-GMN24-FTNSELNUM    =   ZERO )  AND
                    (SPA-MAE24-FTNSELNUM    =   ZERO )  AND
                    (SPA-FTN1-MAX           >   ZERO )
                PERFORM 3102-KOHFTN-HEN-SEC
+           END-IF
+      *    特定の受給者番号
+           MOVE    SPACE               TO  SPA-GMN24-JKYSNUM
+           IF      SPA-GMN24-FTNSELNUM >   ZERO
+               IF      (SPA-NAI24-FTNSELNUM >   ZERO   )  AND
+                       (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "051"
+                                           OR  "052"
+                                           OR  "091"    )
+                   MOVE    "受給者番号："      TO  SPA-GMN24-JKYSNUM
+                   MOVE    SPA-NAI24-TJKYSNUM (SPA-NAI24-FTNSELNUM)
+                                               TO  SPA-GMN24-JKYSNUM
+                                                          (13:)
+               END-IF
            END-IF
       *TEST
            .
@@ -524,6 +543,7 @@
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  WRK-PARA-EDANUM
            MOVE    SPACE               TO  LNK-PTKOHFTN-AREA
+           INITIALIZE                  SPA-GMN24-KOHFTNTBL2
            PERFORM
                UNTIL   FLG-PARA            =   1
                MOVE    PARA-DATA-REC           TO  PTKOHFTN-REC
@@ -1276,12 +1296,10 @@
        400-GMN-INPUT-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    低所得者選択
       *****************************************************************
        41012-TSYLIST-SEC           SECTION.
-      *
       *
            MOVE    ZERO                TO  WRK-SELNUM
       *
@@ -1388,6 +1406,7 @@
       *
            INITIALIZE                  SPA-GMN24-KOHFTNTBL2
            INITIALIZE                  SPA-GMN24-FTN-AREA2
+           MOVE    SPACE               TO  SPA-GMN24-JKYSNUM
       *
            MOVE    ZERO                TO  WRK-FTN1-IDX
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1408,6 +1427,18 @@
                GO      TO                  41013-FTNSELNUM-EXT
            END-IF
            MOVE    SPA-GMN24-FTNSELNUM TO  SPA-MAE24-FTNSELNUM
+      *
+      *    特定の受給者番号
+           MOVE    SPACE               TO  SPA-GMN24-JKYSNUM
+           IF     (SPA-NAI24-FTNSELNUM >   ZERO   )  AND
+                  (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                       =   "051"  OR   "052"
+                                       OR  "091"    )
+               MOVE    "受給者番号："      TO  SPA-GMN24-JKYSNUM
+               MOVE    SPA-NAI24-TJKYSNUM (SPA-NAI24-FTNSELNUM)
+                                           TO  SPA-GMN24-JKYSNUM
+                                                          (13:)
+           END-IF
       *
       *    対象のデータをパラメタファイルより編集する
            INITIALIZE                      PARA-REC
@@ -1789,9 +1820,6 @@
       *    登録時、必須入力チェック
            IF      FLG-TOUROKU     NOT =   ZERO
                PERFORM 4109-TOUROKU-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO      TO      410-INPUT-CHK-EXT
-               END-IF
            END-IF
       *
            .
