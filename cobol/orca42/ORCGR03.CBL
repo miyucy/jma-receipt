@@ -66,6 +66,8 @@
       *  01.04.01    NACL-藤原    03/06/05  労災・自賠責の入院処理追加
       *  01.04.02    NACL-藤原    03/08/05  外来レセ電処理の追加
       *  01.04.03    NACL-藤原    03/11/05  県番号を診療年月から取得
+      *  01.04.04    NACL-藤原    04/05/07  処理開始前にジョブ管理の
+      *                                     チェックを再度行なう
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -554,7 +556,11 @@
                    MOVE    "JOIN"          TO  MCP-PUTTYPE
                    PERFORM 210-BACK-SYORI-SEC
                ELSE    
-                   PERFORM 450-KOUSHIN-SEC
+      *            ジョブ管理チェック処理
+                   PERFORM 4501-JOBKANRI-CHK-SEC
+                   IF      SPA-ERRCD      =   SPACE
+                       PERFORM 450-KOUSHIN-SEC
+                   END-IF    
                END-IF    
            END-IF
       *
@@ -1185,28 +1191,9 @@
        450-TOUROKU-SEC                SECTION.
       *
       *    ジョブ管理チェック処理
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-CONS-JOB-JOBID
-                                   TO  JOB-JOBID
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC 
-           IF      SJOBKANRI-RETURN
-                                   =   ZERO
-               IF      JOB-ENDYMD      =   SPACE
-                   MOVE    "7777"          TO  SPA-ERRCD
-                   MOVE    SPACE             TO  WRK-RECEERR
-                   STRING  "レセプト作成処理中です【"
-                                             DELIMITED  BY  SIZE
-                           JOB-SHELLMSG      DELIMITED  BY  SPACE
-                           "】"              DELIMITED  BY  SIZE      
-                                             INTO  WRK-RECEERR
-                   END-STRING                          
-                   GO  TO  450-TOUROKU-EXT
-               END-IF
+           PERFORM 4501-JOBKANRI-CHK-SEC
+           IF      SPA-ERRCD      NOT =   SPACE
+               GO  TO  450-TOUROKU-EXT
            END-IF    
       *
       *    画面移行用のパラメタ変更
@@ -1294,6 +1281,39 @@
            END-IF    
            .
        450-TOUROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ジョブ管理チェック処理
+      *****************************************************************
+       4501-JOBKANRI-CHK-SEC       SECTION.
+      *
+           MOVE    SPACE           TO  SPA-ERRCD
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA 
+                                   JOBKANRI-REC 
+           IF      SJOBKANRI-RETURN
+                                   =   ZERO
+               IF      JOB-ENDYMD      =   SPACE
+                   MOVE    "7777"          TO  SPA-ERRCD
+                   MOVE    SPACE             TO  WRK-RECEERR
+                   STRING  "レセプト作成処理中です【"
+                                             DELIMITED  BY  SIZE
+                           JOB-SHELLMSG      DELIMITED  BY  SPACE
+                           "】"              DELIMITED  BY  SIZE      
+                                             INTO  WRK-RECEERR
+                   END-STRING                          
+               END-IF
+           END-IF    
+           .
+       4501-JOBKANRI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1853,7 +1873,7 @@
            ELSE
                MOVE    WRK-YM(1:5)      TO  WRK-WYMD (1:5)
            END-IF
-           MOVE    "01"             TO  WRK-WDD
+           MOVE    1                TO  WRK-WDD
       *
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY1-AREA
