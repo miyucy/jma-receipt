@@ -28,6 +28,8 @@
       ****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-太田    03/01/14  システム日付をパラメータより
+      *                                     取得するよう修正
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -214,10 +216,12 @@
        MAIN-RTN            SECTION.
        MAIN-000.
       *
-           ACCEPT  SYS-YMD         FROM    DATE.
-           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000.
-           MOVE    SYS-MM          TO  WRK-SYSMM.
-           MOVE    SYS-DD          TO  WRK-SYSDD.
+      *     ACCEPT  SYS-YMD         FROM    DATE.
+      *     COMPUTE WRK-SYSYY       =   SYS-YY      +   2000.
+      *     MOVE    SYS-MM          TO  WRK-SYSMM.
+      *     MOVE    SYS-DD          TO  WRK-SYSDD.
+      *
+           MOVE    LNK-S02-SYSYMD  TO  WRK-SYSYMD
       *
            MOVE    ZERO            TO  LNK-S02-RC.
            MOVE    ZERO            TO  NYUIN-COUNT.
