@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    04/04/09  登録後の一覧の保険名称修正
+      *  01.00.02    NACL-藤原    05/03/03  訂正日指定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -176,6 +177,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    レセプト作成管理マスタ更新サブ
+           COPY    "CPORCSRECEUPD.INC".
       *
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
@@ -1859,6 +1863,8 @@
                MOVE    "1002"              TO  SPA-ERRCD
                DISPLAY "OPECOM-KEY =>" OPECOM-KEY " " MCP-FUNC  
                GO  TO  4120-TOUROKU-EXT
+           ELSE
+               PERFORM 41211-RECEUPD-UPDATE-SEC
            END-IF
       *
       *    一覧表示
@@ -1880,6 +1886,26 @@
        4120-TOUROKU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    レセプト作成管理マスタ更新処理
+      *****************************************************************
+       41211-RECEUPD-UPDATE-SEC           SECTION.
+      *
+           INITIALIZE                      ORCSRECEUPDAREA
+           MOVE    "1"                 TO  LNK-UPD-SYORI
+           MOVE    SPA-HOSPID          TO  LNK-UPD-HOSPID
+           MOVE    SPA-NAI-C02-PTID    TO  LNK-UPD-PTID
+           MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
+           MOVE    SPA-OPID            TO  LNK-UPD-OPID
+           CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
+           IF      LNK-UPD-RC      NOT =   ZERO
+               MOVE    "1006"              TO  SPA-ERRCD
+               DISPLAY "LNK-UPD-RC =>" LNK-UPD-RC
+           END-IF
+      *
+           .
+       41211-RECEUPD-UPDATE-EXT.
+           EXIT.
       *
       *****************************************************************
       *    戻る　処理
