@@ -173,6 +173,7 @@
            COPY    "K08.INC".
            COPY    "K081.INC".
            COPY    "K09.INC".
+           COPY    "K10.INC".
            COPY    "K97.INC".
            COPY    "K98.INC".
            COPY    "K99.INC".
@@ -1467,6 +1468,9 @@
                WHEN    "0004"
                    MOVE    "ドクター入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    OTHER
+                   MOVE    SPA-ERRCD
+                                               TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  KERR
@@ -1474,7 +1478,7 @@
            MOVE    SPA-ERRMSG          TO  KERR-ERRMSG
            MOVE    "B01"               TO  MCP-WIDGET
       *
-           MOVE    "K081"               TO  SPA-MOTOPG
+           MOVE    "K081"              TO  SPA-MOTOPG
            MOVE    "KERR"              TO  SPA-SAKIPG
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE.
@@ -1483,7 +1487,6 @@
            PERFORM 900-PUT-WINDOW.
       *
            MOVE    1                   TO  FLG-END
-      *
       *
            .
        510-ERRSET-EXT.
