@@ -3024,6 +3024,11 @@
       *    保険適用外金額の集計テーブルから収納テーブルへのセット
            PERFORM    4405-HKNTEKGAI-SET-SEC
       *----(01.00.07) LINE ADD END   -------------------------------
+           PERFORM   VARYING   IDX1     FROM    1   BY  1
+                     UNTIL     IDX1         >   11
+               COMPUTE   SYU-HKNTEN (12)  =   SYU-HKNTEN (12)
+                                          +   SYU-HKNTEN (IDX1)
+           END-PERFORM
       *
       *    患者負担額計算処理
            MOVE    "1"                 TO  LNK-S01-SAIKEISAN-KBN
