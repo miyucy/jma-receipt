@@ -2733,7 +2733,7 @@
                                                    =   SPACE )  OR
                                       (IDX-SYU2    >=  5     )
                        IF     (LNK-WKSRY-SRYCD(IDX IDS)(1:1) =   "1") OR
-                              (LNK-WKSRY-SRYCD(IDX IDS) =   "099134001")
+                              (LNK-WKSRY-SRYCD(IDX IDS) =   "099114001")
                             ADD     1              TO  IDX-SYU2
                             MOVE    LNK-WKSRY-SRYCD(IDX IDS)
                                                    TO  ORCS40-SRYCD
