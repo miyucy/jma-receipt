@@ -23,10 +23,12 @@
 000700*  コンポーネント名  : レセプト電算ファイル作成（ＣＳＶ形式）
 000800*  管理者            : 
 000900*  作成日付    作業者        記述
-      *  00/12/01    MCC−藤原　   新規作成
+      *  03/07/18    NACL−藤原    新規作成
 001100*****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    03/07/18  主病名編集フラグによって
+      *                                     主傷病名コードを変更する
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -340,8 +342,10 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+           COPY    "CPSK2005.INC".
+      *
       *    医療機関情報
-           COPY  "CPSK1001.INC".
+           COPY   "CPSK1001.INC".
       *
       *    病名マスタ−
        01  BYOMEI-REC.
@@ -493,6 +497,23 @@
                MOVE    "*** ORCR0300 SYS1001 INVALID ***" 
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *         
+      *    レセプト編集区分情報
+           MOVE    SPACE               TO  SYS-2005-REC
+           INITIALIZE                      SYS-2005-REC
+           MOVE    "2005"              TO  SYS-2005-KANRICD
+           MOVE    "*"                 TO  SYS-2005-KBNCD
+           MOVE    WRK-PARA-SYSYMD     TO  ORC-DBYMD
+           MOVE    SYS-2005-REC        TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC      TO  SYS-2005-REC
+           ELSE    
+               MOVE    SPACE            TO  SYS-2005-REC
+           END-IF
+           IF      SYS-2005-SYUBYOHENFLG    =   SPACE
+               MOVE    ZERO             TO  SYS-2005-SYUBYOHENFLG
            END-IF
       *    
            .
@@ -825,10 +846,7 @@
            MOVE    8                     TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    薬剤一部負担金
-           IF      RECE02-NYUGAIKBN      =   "2"
-               MOVE    RECE02-YKZFTN(IDX1)   TO  WRK-NUM
-               MOVE    5                     TO  WRK-NAGASA
-           END-IF    
+           MOVE    ZERO                  TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    食事療養費（日数）
            IF      RECE02-NYUGAIKBN      =   "1"
@@ -1082,11 +1100,7 @@
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC
       *    薬剤一部負担金
-           IF      RECE02-HKNNUM     NOT =   SPACE    
-           AND     RECE02-NYUGAIKBN      =   "1"
-               MOVE    RECE02-YKZFTN(IDX)    TO  WRK-NUM
-               MOVE    5                     TO  WRK-NAGASA
-           END-IF    
+           MOVE    ZERO                  TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    食事療養費（日数）
            IF      RECE02-NYUGAIKBN      =   "1"
@@ -1178,7 +1192,12 @@
       *     
            IF      RECE031-BYOMEIHENFLG =   "1"
       *        編集病名のとき未傷病名コードにする
-               MOVE    "0000999"            TO  WRK-BYOMEICD
+               IF      RECE031-SYUBYOFLG            =   "1" 
+               AND     SYS-2005-SYUBYOHENFLG    NOT =   ZERO
+                   MOVE    "0000998"            TO  WRK-BYOMEICD
+               ELSE
+                   MOVE    "0000999"            TO  WRK-BYOMEICD
+               END-IF
            ELSE    
                MOVE    ZERO                TO  IDY
                PERFORM VARYING IDX FROM    1   BY  1
@@ -1231,10 +1250,18 @@
            MOVE    80                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    傷病名称
-           IF      WRK-BYOMEICD        =   "0000999"
+           IF      WRK-BYOMEICD        =   "0000999"   OR
+                                           "0000998"
                MOVE    RECE031-BYOMEI      TO  WRK-DATA
                MOVE    40                  TO  WRK-NAGASA
            END-IF    
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    主傷病
+           IF      RECE031-SYUBYOFLG           =   "1" 
+           AND     SYS-2005-SYUBYOHENFLG   NOT =   ZERO
+               MOVE    "01"                TO  WRK-DATA
+           END-IF 
+           MOVE    2                   TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC  
       *
