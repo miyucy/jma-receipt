@@ -5501,8 +5501,9 @@
                    MOVE    SPA-GMN-MEISYO-G (IDX)
                                                TO  ISET-COMMENT
                ELSE
-                   IF     (SPA-COM-INPUTCD (IDX)(1:1)  =   "8"  ) AND
-                          (SPA-COM-INPUTCHI-G(IDX) NOT =   SPACE)
+                   IF    ((SPA-COM-INPUTCD (IDX)(1:1)  =   "8"  ) AND
+                          (SPA-COM-INPUTCHI-G(IDX) NOT =   SPACE))
+                   OR     (SPA-COM-INPUTCD (IDX)(1:2)  =   "83" )
                        MOVE    SPA-GMN-MEISYO(IDX)
                                                TO  ISET-COMMENT
                    END-IF
