@@ -32,6 +32,7 @@
       *  01.00.02    NACL-藤原    02.09.20  検査の編集のために回数を
       *                                     全て編集する
       *  01.00.03    NACL-門脇    02.10.02  摘要出力項目変更の為の編集
+      *  01.00.04    NACL-門脇    02.11.06  約束処方時の点数欄表示修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1420,7 +1421,7 @@
                              (WK-YKZTEN   *   WK-ZAIKAISU)
       *    投薬のレセ点数欄の編集
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"
+                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(14)  =
                                  RECE41-TENSU(14)  -
@@ -1469,7 +1470,7 @@
                              RECE41-TENSU(16)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"
+                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(17)
                        COMPUTE   RECE41-TENSU(17)  =
                                  RECE41-TENSU(17)  +
@@ -1729,7 +1730,7 @@
                                    (TNS-TEN   *   WRK-ZAIKAISU-XXX)
       *    投薬のレセ点数欄の編集
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"
+                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(7)  =
                                  RECE41-TENSU(7)  -
@@ -1770,7 +1771,7 @@
                              RECE41-TENSU(9)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"
+                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(10)
                        COMPUTE   RECE41-TENSU(10)  =
                                  RECE41-TENSU(10)  +
@@ -2091,7 +2092,7 @@
                              (WK-YKZTEN   *   WK-ZAIKAISU)
       *    投薬のレセ点数欄の編集
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"
+                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU-YAK(9)  =
                                  RECE41-TENSU-YAK(9)  -
@@ -2140,7 +2141,7 @@
                              RECE41-TENSU-YAK(11)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"
+                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(12)
                        COMPUTE   RECE41-TENSU-YAK(12)  =
                                  RECE41-TENSU-YAK(12)  +
