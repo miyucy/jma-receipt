@@ -333,8 +333,10 @@
       *
       *    診療行為ＳＯＲＴ
            03  WRK-SORT-KEY.
-               05  WRK-ZAINUM          PIC  9(08).
-               05  WRK-RENNUM          PIC  9(02).
+               05  WRK-ZAINUM-X.
+                   07  WRK-ZAINUM          PIC  9(08).
+               05  WRK-RENNUM-X.
+                   07  WRK-RENNUM          PIC  9(02).
                05  WRK-SRYKBN          PIC  X(02).
            03  WRK-MAX                 PIC  9(04).
       *    日数
@@ -838,8 +840,8 @@
       *
            PERFORM VARYING   IDX       FROM   1   BY  1
                    UNTIL     IDX       >   WRK-MAX
-               MOVE    ALL "9"             TO  WRK-ZAINUM
-               MOVE    ALL "9"             TO  WRK-RENNUM
+               MOVE    ALL "9"             TO  WRK-ZAINUM-X
+               MOVE    ALL "9"             TO  WRK-RENNUM-X
                MOVE    ALL "9"             TO  WRK-SRYKBN
                MOVE    ZERO                TO  IDX2
                PERFORM VARYING   IDX1      FROM   1   BY  1
@@ -1471,7 +1473,8 @@
            END-IF
       *
       *    コメントの時、内容設定
-           IF     (LNK-WKSRY-SRYCD   (IDX IDZ)(1:1)  =   "8"   )  AND
+           IF    ((LNK-WKSRY-SRYCD   (IDX IDZ)(1:1)  =   "8"   ) OR
+                  (LNK-WKSRY-SRYCD   (IDX IDZ)(1:3)  =   "008" )) AND
       *DDDDDDDDDD (LNK-WKSRY-INPUTNUM(IDX IDZ)    NOT =   ZERO OR
                   (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
                MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
@@ -1546,7 +1549,8 @@
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
            END-IF
       *    コメントの時、内容設定
-           IF     (LNK-WKSRY-SRYCD   (IDX IDZ)(1:1)  =   "8"   )  AND
+           IF    ((LNK-WKSRY-SRYCD   (IDX IDZ)(1:1)  =   "8"   ) OR
+                  (LNK-WKSRY-SRYCD   (IDX IDZ)(1:3)  =   "008" ))  AND
                   (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
                MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
                                            TO  SPA-GMN-TMEISYO2(IDG)
@@ -2520,6 +2524,7 @@
                MOVE    SPA-PTID            TO  AGECHK-PTID
                MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
                MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
+               MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
                CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
                IF     (AGECHK-NENREI       >=   70  )  OR

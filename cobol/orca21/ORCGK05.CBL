@@ -135,10 +135,7 @@
       *
            03  FLG-SST             PIC 9(01).
       *
-           03  FLG-NAIYAK          PIC X(01).
-           03  FLG-TONPUK          PIC X(01).
-           03  FLG-GAIYAK          PIC X(01).
-           03  FLG-ARI             PIC X(01).
+           03  FLG-ARI             PIC 9(01).
       *    時間外加算用
            03  FLG-DELFLG          PIC 9(01).
            03  FLG-ZAIEND          PIC 9(01).
@@ -2346,8 +2343,10 @@
       *
       *        フリーコメントの名称の全角チェックはすべて行う
                IF     (SPA-ERRCD           =   SPACE )  AND
-                      (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
-                                           =   "81" OR "83" OR "84") AND
+                     ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
+                                           =   "81" OR "83" OR "84") OR
+                      (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
+                                           =   "008" ) ) AND
                       (SPA-GMN-MEISYO-G(SPA-GMN-IDX) 
                                        NOT =   SPACE  )
                    PERFORM 401131-MEISYO-HENKAN-SEC
@@ -2657,8 +2656,10 @@
            END-IF
       *    名称入力へのカーソル移動
            IF      WRK-IN-IDX          >   ZERO
-               IF      SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
-                                           =   "81"  OR  "83"
+               IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
+                                           =   "81"  OR  "83" ) OR
+                      (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
+                                           =   "0083"   )
                    MOVE    "3"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
                END-IF
            END-IF
@@ -2777,6 +2778,9 @@
                                                    =   "001" ) OR
                      ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:2)
                                                    =   "84" ) AND
+                      (TNS-SSTKIJUNCDTBL(1)    NOT =   ZERO ))  OR
+                     ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:4)
+                                                   =   "0084") AND
                       (TNS-SSTKIJUNCDTBL(1)    NOT =   ZERO ))  OR
                      ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:5)
                                                    =   "09500" OR
@@ -3121,6 +3125,9 @@
                                            TO  WRK-MOJI
            IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)   =   "059"
                MOVE    "7"                 TO  WRK-MOJI
+           END-IF
+           IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)   =   "008"
+               MOVE    "8"                 TO  WRK-MOJI
            END-IF
       *
            EVALUATE    WRK-MOJI
@@ -3519,7 +3526,7 @@
       *                入力コードの画面用再編集
                        PERFORM 3101-INPUTCD-HEN-SEC
       *                約束名称編集
-                       MOVE    6                   TO  LNK-SC97-CDSYU
+                       MOVE    "6"                 TO  LNK-SC97-CDSYU
                        MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:6)
                                                    TO  WRK-INPUTCD
                        PERFORM 41011921-INPSET-MEI-SEC
@@ -4042,7 +4049,8 @@
                         MOVE    1               TO  FLG-TAISYO
                    END-IF
       *            自動追加コメントで入力値ありの時対象外
-                   IF       SPA-COM-INPUTCD (IDX)(1:2)   =  "84"
+                   IF      (SPA-COM-INPUTCD (IDX)(1:2)   =  "84") OR
+                           (SPA-COM-INPUTCD (IDX)(1:4)   =  "0084")
                         MOVE    ZERO            TO  FLG-TAISYO
                    END-IF
                END-IF
@@ -4300,7 +4308,8 @@
                                            TO  WRK-COM-SRYSYUKBN(IDX-Z)
                END-IF
       *        名称（最初の行に’＊’）
-               IF      WRK-COM-INPUTCD(IDX-Z)(1:1) =   "8"
+               IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "8" )  OR
+                      (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "008")
                    CONTINUE
                ELSE
                    IF      IDX-Z               =   1
@@ -4488,7 +4497,9 @@
                                                        (SPA-GMN-IDX)
            END-IF
            IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  = "83" OR
-                                                         "84")
+                                                         "84" )  OR
+                  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  = "0083" OR
+                                                         "0084")
                IF     (FLG-NYURYOKU        =   ZERO )  AND
                       (FLG-IN-ATAI         =   ZERO )
                    MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G
@@ -5816,7 +5827,8 @@
                MOVE    SPA-COM-KAISU  (IDX)    TO  ISET-KAISU
            END-IF
       *    入力コメント番号
-           IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "8"
+           IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "8" )  OR
+                  (SPA-COM-INPUTCD(IDX)(1:3)   =   "008")
       *        入力コメント
                IF      SPA-COM-INPUTCD (IDX)    =   "810000001"
                    MOVE    SPA-GMN-MEISYO-G (IDX)
@@ -5824,7 +5836,10 @@
                ELSE
                    IF    ((SPA-COM-INPUTCD (IDX)(1:1)  =   "8"  ) AND
                           (SPA-COM-INPUTCHI-G(IDX) NOT =   SPACE))
+                   OR    ((SPA-COM-INPUTCD (IDX)(1:4)  =   "0084") AND
+                          (SPA-COM-INPUTCHI-G(IDX) NOT =   SPACE))
                    OR     (SPA-COM-INPUTCD (IDX)(1:2)  =   "83" )
+                   OR     (SPA-COM-INPUTCD (IDX)(1:4)  =   "0083")
                        MOVE    SPA-GMN-MEISYO(IDX)
                                                TO  ISET-COMMENT
                    END-IF
