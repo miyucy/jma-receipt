@@ -1789,9 +1789,6 @@
       *??              (SPA-RRK-LSTYMD      =   SPA-SRYYMD ))
                    MOVE    1                   TO  FLG-DOUJITU
                END-IF
-      *TEST
-           DISPLAY " FLG-DOUJITU :"  FLG-DOUJITU
-      *TEST
                IF      (SPA-SYORIFLG        =   1       )   AND
                        (WRK-DAY-SINSATUCNT  >   ZERO    )
                    MOVE    1                   TO  FLG-DOUJITU
@@ -3069,6 +3066,14 @@
       *****************************************************************
        300-DOUSAISIN-SET-SEC         SECTION.
       *
+      *    電話再診かのチェック
+           IF      SPA-GMN-IDX         >   ZERO
+               PERFORM 3001-TELSAISIN-CHK-SEC
+               IF      FLG-TEL-ARI         =   1
+                   GO      TO      300-DOUSAISIN-SET-EXT
+               END-IF
+           END-IF
+      *
            MOVE    SPA-SCR-REC         TO  HZN-SCR-REC
       *
            MOVE    SPACE               TO  SPA-SCR-REC
@@ -3096,6 +3101,42 @@
            PERFORM 10102-SINSATU-CHENGE-SEC
            .
        300-DOUSAISIN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    電話再診算定チェック処理（入力分）
+      *****************************************************************
+       3001-TELSAISIN-CHK-SEC         SECTION.
+      *
+      *    電話再診かのチェック
+           MOVE    SPA-COM-INPUTCD (SPA-GMN-IDX)   TO  WRK-SRYCD
+           SET     TBL-IDX             TO  1
+           SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
+                   AT   END
+                       MOVE    SPACE           TO  WRK-KBN
+                       MOVE    SPACE           TO  WRK-KBN2
+                       MOVE    ZERO            TO  WRK-KAISU
+                   WHEN   (TBL-SRYCD (TBL-IDX) =   WRK-SRYCD) 
+                       MOVE    TBL-KBN   (TBL-IDX)     TO  WRK-KBN
+                       MOVE    TBL-KBN2  (TBL-IDX)     TO  WRK-KBN2
+                       MOVE    ZERO            TO  WRK-KAISU
+           END-SEARCH
+      *
+      *    同日再診料へ置換え
+           IF      WRK-KBN             =   "T"
+               MOVE    "12"                TO  WRK-SRYKBN
+               MOVE    "S"                 TO  WRK-KBN
+      *        診察コードをテーブルより決定
+               PERFORM 2001-SRYCD-TBL-SEC
+      *        電話再診の時、同日電話再診へ振り替え
+               MOVE    SPA-GMN-IDX         TO  WRK-IDX-IN
+               PERFORM 33041-SRYCD-ADD-SEC
+               MOVE    1                   TO  FLG-TEL-ARI
+           ELSE
+               MOVE    ZERO                TO  FLG-TEL-ARI
+           END-IF
+           .
+       3001-TELSAISIN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
