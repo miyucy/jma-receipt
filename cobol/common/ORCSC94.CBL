@@ -362,7 +362,7 @@
                MOVE    SPACE               TO  WRK-HEN-INPUTCD
                STRING  WRK-JIKAN               DELIMITED   BY  SPACE
                        " "                     DELIMITED   BY  SIZE
-                       SPA-GMN-INPUTCD(IDX)    DELIMITED   BY  SPACE
+                       SPA-GMN-INPUTCD(IDX)    DELIMITED   BY  SIZE
                        INTO                    WRK-HEN-INPUTCD
                END-STRING
                MOVE    WRK-HEN-INPUTCD         TO  SPA-GMN-INPUTCD(IDX)
