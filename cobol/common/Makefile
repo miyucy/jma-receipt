@@ -85,6 +85,8 @@ SRCS = ORCHC01.CBL \
        ORCSLOCK.CBL \
        ORCSHKNSET.CBL \
        ORCSCZAICHK.CBL \
+       ORCSTUSANCHK.CBL \
+       ORCSBRMNUM.CBL \
 
 CSRCS = \
 	orcfiledel.c

@@ -240,6 +240,7 @@
       *                                     JYURRK-KEY23追加
       *  01.01.69    NACL-太田    03/05/06  SYUNOU-KEY18追加
       *  01.01.70    NACL-太田    03/05/09  I001-KEY2追加
+      *  01.01.71    NACL-太田    03/05/15  I001-KEY3追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2504,6 +2505,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "I001-KEY2"
                    MOVE    PATH-VIEW-I001-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "I001-KEY3"
+                   MOVE    PATH-VIEW-I001-KEY3
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "I001-ALL"
                    MOVE    PATH-VIEW-I001-ALL

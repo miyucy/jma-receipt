@@ -39,6 +39,18 @@ path	key2		{
 	};
 };
 
+path	key3		{ 	
+	DBSELECT	{
+		DECLARE view_I001_key3_csr CURSOR FOR
+		SELECT * FROM  view_I001
+	    WHERE	HOSPID    =    :HOSPID
+		AND     NYUINYMD  <=   :NYUINYMD
+		AND     TAIINYMD  =   '99999999'
+		ORDER BY BRMNUM,NYUINKA,PTNUM
+		;
+	};
+};
+
 path	all 	{
 	DBSELECT	{
 		DECLARE view_I001_all_csr CURSOR FOR
