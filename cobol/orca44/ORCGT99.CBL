@@ -51,6 +51,17 @@
                05  SPA-GMN-PAGE                    PIC 9(02).
                05  SPA-GMN-CUR                     PIC 9(02).
                05  SPA-GMN-AREA.
+                   07  SPA-GMN-DATAKBNLST          OCCURS  3.
+                       09  SPA-GMN-DATAKBNL        PIC X(01).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-DATAKBNMEIL     PIC X(20).
+                   07  SPA-GMN-DATAKBN-MAX         PIC 9(02).    
+      *                                             
+                   07  SPA-GMN-DATAKBN-G.
+                       09  SPA-GMN-DATAKBN         PIC X(01).
+                       09  SPA-GMN-F1              PIC X(01).
+                       09  SPA-GMN-DATAKBNMEI      PIC X(20).
+      *                                             
                    07  SPA-GMN-SKYYM               PIC X(07).
                    07  SPA-GMN-SRYYM               PIC X(20).
                    07  SPA-GMN-SKYYMD              PIC X(10).
@@ -59,7 +70,7 @@
                        09  SPA-GMN-PRTKBN1-VALUE   PIC X(04). 
                    07  SPA-GMN-PRTKBN2.
                        09  SPA-GMN-PRTKBN2-STYLE   PIC X(20).
-                       09  SPA-GMN-PRTKBN2-VALUE   PIC X(04). 
+                       09  SPA-GMN-PRTKBN2-VALUE   PIC X(04).
                    07  SPA-GMN-HKNJANUM            PIC X(08).
                    07  SPA-GMN-HKNJAMEI            PIC X(40). 
       *
@@ -69,12 +80,13 @@
                    07  SPA-NAI-SRYYM               PIC 9(06).
                    07  SPA-NAI-SKYYMD              PIC 9(08).
                    07  SPA-NAI-PRTKBN1             PIC X(01).
-                   07  SPA-NAI-PRTKBN2             PIC X(01). 
+                   07  SPA-NAI-PRTKBN2             PIC X(01).
                    07  SPA-NAI-HKNJANUM            PIC X(08). 
       *
                05  SPA-STATE.             
                    07  SPA-B06-STATE               PIC S9(09)  BINARY.
                    07  SPA-B07-STATE               PIC S9(09)  BINARY.
+                   07  SPA-DATA-STATE              PIC S9(09)  BINARY.
                    07  SPA-SRYYM-STATE             PIC S9(09)  BINARY.
                    07  SPA-DATAKBN1-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN2-STATE          PIC S9(09)  BINARY.

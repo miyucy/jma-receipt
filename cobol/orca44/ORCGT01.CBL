@@ -58,6 +58,7 @@
       *  01.05.01    NACL-藤原    03.08.06  レセ電処理の追加
       *  01.05.02    NACL-藤原    03.09.02  メッセージコードの修正
       *  01.05.03    NACL-藤原    03.09.24  レセ電ファイルの出力先指定の修正
+      *  01.05.04    NACL-藤原    04.02.17  レセ電ファイルの出力先指定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -101,6 +102,17 @@
                05  SPA-GMN-PAGE                    PIC 9(02).
                05  SPA-GMN-CUR                     PIC 9(02).
                05  SPA-GMN-AREA.
+                   07  SPA-GMN-DATAKBNLST          OCCURS  3.
+                       09  SPA-GMN-DATAKBNL        PIC X(01).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-DATAKBNMEIL     PIC X(20).
+                   07  SPA-GMN-DATAKBN-MAX         PIC 9(02).    
+      *                                             
+                   07  SPA-GMN-DATAKBN-G.
+                       09  SPA-GMN-DATAKBN         PIC X(01).
+                       09  SPA-GMN-F1              PIC X(01).
+                       09  SPA-GMN-DATAKBNMEI      PIC X(20).
+      *                                             
                    07  SPA-GMN-SKYYM               PIC X(07).
                    07  SPA-GMN-SRYYM               PIC X(20).
                    07  SPA-GMN-SKYYMD              PIC X(10).
@@ -125,6 +137,7 @@
                05  SPA-STATE.             
                    07  SPA-B06-STATE               PIC S9(09)  BINARY.
                    07  SPA-B07-STATE               PIC S9(09)  BINARY.
+                   07  SPA-DATA-STATE              PIC S9(09)  BINARY.
                    07  SPA-SRYYM-STATE             PIC S9(09)  BINARY.
                    07  SPA-DATAKBN1-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN2-STATE          PIC S9(09)  BINARY.
@@ -407,6 +420,13 @@
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
                END-IF
+               IF      SPA-TIDCD       NOT =   SPACE
+                   EVALUATE    SPA-TIDCD
+                       WHEN    "2001"
+                           PERFORM 520-TIDSET-SEC
+                           GO  TO  100-INIT-EXT
+                   END-EVALUATE
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -450,6 +470,9 @@
                    GO      TO      300-SCREEN-EXT
                WHEN    "TID2"
                    PERFORM 340-TID2-SET-SEC
+      *???
+           DISPLAY "SPA-TIDCD=" SPA-TIDCD "#"
+      *???
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
@@ -465,6 +488,18 @@
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE              SPA-T01-AREA
+      *
+           MOVE    "1"             TO  SPA-GMN-DATAKBNL        (1)
+           MOVE    "フロッピィ"    TO  SPA-GMN-DATAKBNMEIL     (1)
+           MOVE    "2"             TO  SPA-GMN-DATAKBNL        (2)
+           MOVE    "ＭＯ"          TO  SPA-GMN-DATAKBNMEIL     (2)
+           MOVE    "3"             TO  SPA-GMN-DATAKBNL        (3)
+           MOVE    "システム管理設定場所"
+                                   TO  SPA-GMN-DATAKBNMEIL     (3)
+           MOVE    3               TO  SPA-GMN-DATAKBN-MAX
+      *
+           MOVE    SPA-GMN-DATAKBNLST (1)
+                                       TO  SPA-GMN-DATAKBN-G
       *
       *    レセプト指示コード
            INITIALIZE                  SYS-2001-REC
@@ -510,6 +545,12 @@
                MOVE    WIDGET-NORMAL      TO  SPA-B07-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE TO  SPA-B07-STATE
+           END-IF
+           IF    ( SYS-2005-SYARECEKBN =   "1" )
+           OR    ( SYS-2005-KKHRECEKBN =   "1" )
+               MOVE    WIDGET-NORMAL      TO  SPA-DATA-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE TO  SPA-DATA-STATE
            END-IF
       *
            MOVE    WIDGET-INSENSITIVE TO  SPA-SRYYM-STATE
@@ -604,6 +645,8 @@
                    WHEN    "1012"
                    WHEN    "1013"
                        PERFORM 480-PRINT-SEC
+                   WHEN    "2001"
+                       PERFORM 460-RECEDEN-SEC
                END-EVALUATE        
            END-IF
       *
@@ -624,7 +667,13 @@
                EVALUATE    SPA-TIDCD
                    WHEN    "1010"
                    WHEN    "1014"
-                       PERFORM 460-RECEDEN-SEC
+                       IF      SPA-GMN-DATAKBN     =   "1" OR  "2"
+                           MOVE    SPACE           TO  SPA-TID1-FLG
+                           MOVE    "2001"          TO  SPA-TIDCD
+                           GO  TO  340-TID2-SET-EXT
+                       ELSE
+                           PERFORM 460-RECEDEN-SEC
+                       END-IF
                    WHEN    OTHER
                        PERFORM 450-PRINT-SEC
                END-EVALUATE 
@@ -708,6 +757,8 @@
                    PERFORM 4102-SKYYMD-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "HKNJANUM"
                    PERFORM 4103-HKNJANUM-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "DATA"
+                   PERFORM 4104-DATAKBN-CHK-SEC
            END-EVALUATE
       *
            .
@@ -876,6 +927,46 @@
       *
            .
        4103-HKNJANUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイル出力先入力処理
+      *****************************************************************
+       4104-DATAKBN-CHK-SEC            SECTION.
+      *
+           MOVE    4                   TO  SPA-GMN-CUR
+      *
+           MOVE    T01-DATA            TO  SPA-GMN-DATAKBN-G
+      *
+      *???
+           DISPLAY "DATAKBN=" SPA-GMN-DATAKBN "#" T01-DATA "#"
+      *???
+           IF      SPA-GMN-DATAKBN     =   SPACE
+               MOVE    SPA-GMN-DATAKBNLST (1)
+                                           TO  SPA-GMN-DATAKBN-G
+           ELSE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-DATAKBN-MAX
+                   IF        SPA-GMN-DATAKBN
+                                   =   SPA-GMN-DATAKBNL (IDX)
+                       MOVE    SPA-GMN-DATAKBNMEIL (IDX)
+                                           TO  SPA-GMN-DATAKBNMEI
+                       MOVE    SPA-GMN-DATAKBN-MAX
+                                           TO  IDX
+                   END-IF
+               END-PERFORM        
+      *???
+           DISPLAY "DATA=" SPA-GMN-DATAKBN "#" SPA-GMN-DATAKBNMEI "#"
+      *???
+               IF      SPA-GMN-DATAKBNMEI  =   SPACE  
+                   MOVE    SPA-GMN-DATAKBNLST (1)
+                                               TO  SPA-GMN-DATAKBN-G
+               END-IF
+           END-IF
+      *
+           MOVE    7                   TO  SPA-GMN-CUR
+           .
+       4104-DATAKBN-CHK-EXT.
            EXIT.
       *
       *
@@ -1935,6 +2026,7 @@
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG15         
            MOVE    RECEERR         TO  SHELLTBL-ARG16
+           MOVE    SPA-GMN-DATAKBN TO  SHELLTBL-ARG17
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
@@ -2345,6 +2437,7 @@
       *
            MOVE    SPA-B06-STATE       TO  T01-B06-STATE
            MOVE    SPA-B07-STATE       TO  T01-B07-STATE
+           MOVE    SPA-DATA-STATE      TO  T01-DATA-STATE
            MOVE    SPA-SRYYM-STATE     TO  T01-SRYYM-STATE
            MOVE    SPA-DATAKBN1-STATE  TO  T01-DATAKBN1-STATE
            MOVE    SPA-DATAKBN2-STATE  TO  T01-DATAKBN2-STATE
@@ -2356,6 +2449,14 @@
            MOVE    SPA-DATAKBN3-VALUE  TO  T01-DATAKBN3-VALUE
            MOVE    SPA-DATAKBN4-VALUE  TO  T01-DATAKBN4-VALUE
            MOVE    SPA-DATAKBN5-VALUE  TO  T01-DATAKBN5-VALUE
+      *
+           MOVE    SPA-GMN-DATAKBN-G   TO  T01-DATA
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-GMN-DATAKBN-MAX
+               MOVE    SPA-GMN-DATAKBNLST (IDX)
+                                           TO  T01-DATA-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-DATAKBN-MAX TO  T01-DATA-COUNT
       *
            MOVE    SPA-GMN-PRTKBN1-VALUE
                                        TO  T01-PRTKBN1-VALUE
@@ -2384,6 +2485,8 @@
                     MOVE  "SKYYMD"     TO  MCP-WIDGET   
              WHEN    3
                     MOVE  "HKNJANUM"   TO  MCP-WIDGET   
+             WHEN    4
+                    MOVE  "DATA"       TO  MCP-WIDGET   
              WHEN    7
                     MOVE  "B12"        TO  MCP-WIDGET   
          END-EVALUATE
@@ -2467,6 +2570,9 @@
                                        TO  WRK-TIDMSG
                WHEN    "1013"
                    MOVE    "集計表（国保）の印刷処理を行います"
+                                       TO  WRK-TIDMSG
+               WHEN    "2001"
+                   MOVE    "媒体をドライブにセットして下さい"
                                        TO  WRK-TIDMSG
                WHEN    "6666"
                    MOVE    "印刷処理中です"
