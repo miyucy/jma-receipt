@@ -122,6 +122,7 @@
       *  01.00.45    NACL-ÃÁœ∆    04/01/14  ø«Œ≈π‘∞Ÿ§Œ Ò≥Á ¨§œΩ¸§Ø
       *                                     SRYACCT5¢™31
       *  01.00.46    NACL-ÃÁœ∆    04/01/15  æ√»Ò¿«π‡Ã‹≈˘ƒ…≤√π‡Ã‹ ‘Ω∏
+      *  01.00.47    NACL-ÃÁœ∆    04/02/10  ¿∏ ›§Œ∏¯»Ò…È√¥∏¬≈Ÿ≥€¿ﬂƒÍ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2737,6 +2738,7 @@
                                   <=   LNK-SYU-SRYYMD   (1:6)) AND
                         (LNK-SYU-SRYYMD(1:6)
                                   <=   PTKOHFTN-TEKEDYMD(1:6)))
+                      MOVE     "PTKOHFTN-KEY4"  TO   ORC-DBPATH
                       PERFORM   PTKOHFTN-READ-SEC
                     END-PERFORM
                 ELSE
@@ -2755,8 +2757,14 @@
                           AND ( COMB-KOH1HKNNUM(1:1)   <=   "8")
                             CONTINUE
                           ELSE
-                            IF    MAX-KIN-KOHI1-M    >  12000
-                              MOVE    12000    TO   MAX-KIN-KOHI1-M
+                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
+                              IF    MAX-KIN-KOHI1-M    >   8000
+                                MOVE     8000    TO   MAX-KIN-KOHI1-M
+                              END-IF
+                            ELSE
+                              IF    MAX-KIN-KOHI1-M    >  12000
+                                MOVE    12000    TO   MAX-KIN-KOHI1-M
+                              END-IF
                             END-IF
                             IF    FLG-CHIHOU(1)      =  "1"
                                MOVE   SPACE    TO   FLG-CHIHOU(1)
@@ -2773,8 +2781,14 @@
                           AND ( COMB-KOH2HKNNUM(1:1)   <=   "8")
                             CONTINUE
                           ELSE
-                            IF    MAX-KIN-KOHI2-M    >  12000
-                              MOVE    12000    TO   MAX-KIN-KOHI2-M
+                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
+                              IF    MAX-KIN-KOHI2-M    >   8000
+                                MOVE     8000    TO   MAX-KIN-KOHI2-M
+                              END-IF
+                            ELSE
+                              IF    MAX-KIN-KOHI2-M    >  12000
+                                MOVE    12000    TO   MAX-KIN-KOHI2-M
+                              END-IF
                             END-IF
                             IF    FLG-CHIHOU(2)      =  "1"
                                MOVE   SPACE    TO   FLG-CHIHOU(2)
@@ -2791,8 +2805,14 @@
                           AND ( COMB-KOH3HKNNUM(1:1)   <=   "8")
                             CONTINUE
                           ELSE
-                            IF    MAX-KIN-KOHI3-M    >  12000
-                              MOVE    12000    TO   MAX-KIN-KOHI3-M
+                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
+                              IF    MAX-KIN-KOHI3-M    >   8000
+                                MOVE     8000    TO   MAX-KIN-KOHI3-M
+                              END-IF
+                            ELSE
+                              IF    MAX-KIN-KOHI3-M    >  12000
+                                MOVE    12000    TO   MAX-KIN-KOHI3-M
+                              END-IF
                             END-IF
                             IF    FLG-CHIHOU(3)      =  "1"
                                MOVE   SPACE    TO   FLG-CHIHOU(3)
@@ -2809,8 +2829,14 @@
                           AND ( COMB-KOH4HKNNUM(1:1)   <=   "8")
                             CONTINUE
                           ELSE
-                            IF    MAX-KIN-KOHI4-M    >  12000
-                              MOVE    12000    TO   MAX-KIN-KOHI4-M
+                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
+                              IF    MAX-KIN-KOHI4-M    >   8000
+                                MOVE     8000    TO   MAX-KIN-KOHI4-M
+                              END-IF
+                            ELSE
+                              IF    MAX-KIN-KOHI4-M    >  12000
+                                MOVE    12000    TO   MAX-KIN-KOHI4-M
+                              END-IF
                             END-IF
                             IF    FLG-CHIHOU(4)      =  "1"
                                MOVE   SPACE    TO   FLG-CHIHOU(4)

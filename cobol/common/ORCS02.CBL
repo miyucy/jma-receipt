@@ -54,6 +54,8 @@
       *  01.00.16    NACL-ÌçÏÆ    04/02/06  ¼«ÇåÀÕ¤Î¿©»öÎÅÍÜÈñ¤òÏ«ºÒ
       *                                     ¤Î£±¡¥£²ÇÜ¤Ç·×»»¤¹¤ë
       *  01.00.17    NACL-ÌçÏÆ    04/02/10  ¿©»öÉéÃ´³Û½õÀ®ÂÐ±þ
+      *  01.00.18    NACL-ÌçÏÆ    04/02/10  À¸ÊÝ¤Î¿©»öÉéÃ´·×»»½¤Àµ
+      *  01.00.19    NACL-ÌçÏÆ    04/02/10  À¸ÊÝ¤Î¸øÈñÉéÃ´¸ÂÅÙ³ÛÀßÄê
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1987,7 +1989,7 @@
       ******************************************************************
        2107-KOHFTN-KINGAKU-SEC           SECTION.
       *
-           MOVE       ZERO        TO    WK-NYUJGNGAK
+           MOVE       ZERO        TO    WK-NYUJGNGAK.
       *
            PERFORM    VARYING   KOH-IDX    FROM   1   BY   1
                       UNTIL    (KOH-IDX    >      4)
@@ -2025,6 +2027,7 @@
                                   <=   LNK-SYU-SRYYMD   (1:6)) AND
                         (LNK-SYU-SRYYMD(1:6)
                                   <=   PTKOHFTN-TEKEDYMD(1:6)))
+                      MOVE     "PTKOHFTN-KEY4"  TO   ORC-DBPATH
                       PERFORM   PTKOHFTN-READ-SEC
                     END-PERFORM
                 ELSE
@@ -2112,8 +2115,16 @@
                           AND ( COMB-KOH1HKNNUM(1:1)   <=   "8")
                             CONTINUE
                           ELSE
-                            IF    MAX-KIN-KOHI1-M    >  40200
-                              MOVE    40200    TO   MAX-KIN-KOHI1-M
+                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
+                              IF    MAX-KIN-KOHI1-M    >  15000
+                                MOVE    15000    TO   MAX-KIN-KOHI1-M
+                                                      WK-NYUJGNGAK
+                              END-IF
+                            ELSE
+                              IF    MAX-KIN-KOHI1-M    >  40200
+                                MOVE    40200    TO   MAX-KIN-KOHI1-M
+                                                      WK-NYUJGNGAK
+                              END-IF
                             END-IF
                             IF    FLG-CHIHOU(1)      =  "1"
                                MOVE   SPACE    TO   FLG-CHIHOU(1)
@@ -2130,8 +2141,16 @@
                           AND ( COMB-KOH2HKNNUM(1:1)   <=   "8")
                             CONTINUE
                           ELSE
-                            IF    MAX-KIN-KOHI2-M    >  40200
-                              MOVE    40200    TO   MAX-KIN-KOHI2-M
+                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
+                              IF    MAX-KIN-KOHI2-M    >  15000
+                                MOVE    15000    TO   MAX-KIN-KOHI2-M
+                                                      WK-NYUJGNGAK
+                              END-IF
+                            ELSE
+                              IF    MAX-KIN-KOHI2-M    >  40200
+                                MOVE    40200    TO   MAX-KIN-KOHI2-M
+                                                      WK-NYUJGNGAK
+                              END-IF
                             END-IF
                             IF    FLG-CHIHOU(2)      =  "1"
                                MOVE   SPACE    TO   FLG-CHIHOU(2)
@@ -2148,8 +2167,16 @@
                           AND ( COMB-KOH3HKNNUM(1:1)   <=   "8")
                             CONTINUE
                           ELSE
-                            IF    MAX-KIN-KOHI3-M    >  40200
-                              MOVE    40200    TO   MAX-KIN-KOHI3-M
+                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
+                              IF    MAX-KIN-KOHI3-M    >  15000
+                                MOVE    15000    TO   MAX-KIN-KOHI3-M
+                                                      WK-NYUJGNGAK
+                              END-IF
+                            ELSE
+                              IF    MAX-KIN-KOHI3-M    >  40200
+                                MOVE    40200    TO   MAX-KIN-KOHI3-M
+                                                      WK-NYUJGNGAK
+                              END-IF
                             END-IF
                             IF    FLG-CHIHOU(3)      =  "1"
                                MOVE   SPACE    TO   FLG-CHIHOU(3)
@@ -2166,8 +2193,16 @@
                           AND ( COMB-KOH4HKNNUM(1:1)   <=   "8")
                             CONTINUE
                           ELSE
-                            IF    MAX-KIN-KOHI4-M    >  40200
-                              MOVE    40200    TO   MAX-KIN-KOHI4-M
+                            IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
+                              IF    MAX-KIN-KOHI4-M    >  15000
+                                MOVE    15000    TO   MAX-KIN-KOHI4-M
+                                                      WK-NYUJGNGAK
+                              END-IF
+                            ELSE
+                              IF    MAX-KIN-KOHI4-M    >  40200
+                                MOVE    40200    TO   MAX-KIN-KOHI4-M
+                                                      WK-NYUJGNGAK
+                              END-IF
                             END-IF
                             IF    FLG-CHIHOU(4)      =  "1"
                                MOVE   SPACE    TO   FLG-CHIHOU(4)
@@ -4831,11 +4866,11 @@
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
                    END-IF
-                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
-                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
-                   AND (WK-NYUJGNGAK         NOT  =  ZERO          )
-                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
-                   END-IF
+      ***          IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
+      ***          AND (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
+      ***          AND (WK-NYUJGNGAK         NOT  =  ZERO          )
+      ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
+      ***          END-IF
                    IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "051"         )
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
@@ -4853,11 +4888,11 @@
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
                    END-IF
-                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
-                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
-                   AND (WK-NYUJGNGAK         NOT  =  ZERO          )
-                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
-                   END-IF
+      ***          IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
+      ***          AND (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
+      ***          AND (WK-NYUJGNGAK         NOT  =  ZERO          )
+      ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
+      ***          END-IF
                    IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "051"         )
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
@@ -4875,11 +4910,11 @@
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
                    END-IF
-                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
-                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
-                   AND (WK-NYUJGNGAK         NOT  =  ZERO          )
-                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
-                   END-IF
+      ***          IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
+      ***          AND (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
+      ***          AND (WK-NYUJGNGAK         NOT  =  ZERO          )
+      ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
+      ***          END-IF
                    IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "051"         )
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
@@ -6241,23 +6276,23 @@
                CONTINUE
            ELSE
       *      À¸³èÊÝ¸î¤¬¤¢¤ëÊý¤ÎÆÃÎã½èÍý
-             IF ((LNK-SYU-KOH1HKNNUM    =  "012") AND (FLG-HIKAKU = 1))
-             OR ((LNK-SYU-KOH2HKNNUM    =  "012") AND (FLG-HIKAKU = 2))
-             OR ((LNK-SYU-KOH3HKNNUM    =  "012") AND (FLG-HIKAKU = 3))
-             OR ((LNK-SYU-KOH4HKNNUM    =  "012") AND (FLG-HIKAKU = 4))
-               COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
-                                  +   LNK-SYU-SKYMONEY-SKJ-KEI
-               COMPUTE   WK-FTN   =   WK-FTN     +   5
-               COMPUTE   WK-FTN   =   WK-FTN     /  10
-               COMPUTE   WK-FTN   =   WK-FTN     *  10
-               IF        WK-FTN    >=  WK-NYUJGNGAK
-                 COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
-                                            +  LNK-SYU-SKYMONEY-SKJ-KEI
-                 MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
-                                               LNK-SYU-SKYMONEY-SKJ-TAX
-                                               LNK-SYU-SKYMONEY-SKJ-KEI
-               END-IF
-             END-IF
+      ***    IF ((LNK-SYU-KOH1HKNNUM    =  "012") AND (FLG-HIKAKU = 1))
+      ***    OR ((LNK-SYU-KOH2HKNNUM    =  "012") AND (FLG-HIKAKU = 2))
+      ***    OR ((LNK-SYU-KOH3HKNNUM    =  "012") AND (FLG-HIKAKU = 3))
+      ***    OR ((LNK-SYU-KOH4HKNNUM    =  "012") AND (FLG-HIKAKU = 4))
+      ***      COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
+      ***                         +   LNK-SYU-SKYMONEY-SKJ-KEI
+      ***      COMPUTE   WK-FTN   =   WK-FTN     +   5
+      ***      COMPUTE   WK-FTN   =   WK-FTN     /  10
+      ***      COMPUTE   WK-FTN   =   WK-FTN     *  10
+      ***      IF        WK-FTN    >=  WK-NYUJGNGAK
+      ***        COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
+      ***                                   +  LNK-SYU-SKYMONEY-SKJ-KEI
+      ***        MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
+      ***                                      LNK-SYU-SKYMONEY-SKJ-TAX
+      ***                                      LNK-SYU-SKYMONEY-SKJ-KEI
+      ***      END-IF
+      ***    END-IF
       *      ¹¹Àµ¤¬¤¢¤ëÊý¤ÎÆÃÎã½èÍý
              IF ((LNK-SYU-KOH1HKNNUM    =  "015") AND (FLG-HIKAKU = 1))
              OR ((LNK-SYU-KOH2HKNNUM    =  "015") AND (FLG-HIKAKU = 2))
