@@ -375,6 +375,8 @@
                                                     (SPA-J021-MAX)
                    MOVE    COMB-TEKEDYMD       TO  SPA-NAI-TEKEDYMD
                                                     (SPA-J021-MAX)
+                   MOVE    COMB-DELKBN         TO  SPA-NAI-TDELKBN
+                                                    (SPA-J021-MAX)
       *            老人判定
                    IF    ((COMB-KOH1HKNNUM     =   "027"  )  OR
                           (COMB-KOH2HKNNUM     =   "027"  )  OR
@@ -933,6 +935,11 @@
                    ELSE
                        MOVE    "0008"              TO  SPA-ERRCD
                    END-IF
+      *            削除でないこと
+                   IF      SPA-NAI-TDELKBN (IDX)   =   "1"
+                       MOVE    "0012"              TO  SPA-ERRCD
+                   END-IF
+      *
                    MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
@@ -1447,6 +1454,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "ありません。変更して下さい"
                                        TO  SPA-ERRMSG(37:)
+               WHEN    "0012"
+                   MOVE    "変更後の保険組合せは削除分です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "変更して下さい"
+                                       TO  SPA-ERRMSG(33:)
                WHEN    "0010"
                    MOVE    "保険組合せの変更が終了しました。"
                                        TO  SPA-ERRMSG
