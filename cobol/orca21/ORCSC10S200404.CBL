@@ -1529,6 +1529,7 @@
                MOVE    SPACE           TO  WRK-YMD
            END-IF
       *
+           .
        100191-KYUSEI-SANTEI-EXT.
            EXIT.
       *
