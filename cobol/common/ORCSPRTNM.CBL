@@ -171,7 +171,11 @@
            END-IF
       *
            IF      WRK-PRTPG           =   SPACE
-               MOVE    10                  TO  ORCSPRTNM-RC
+      *        標準のプログラム名とする
+               PERFORM 11011-HYOJUN-PRTPG-SEC
+               IF      ORCSPRTNM-PRTPG        =   SPACE
+                   MOVE    10                 TO  ORCSPRTNM-RC
+               END-IF
            ELSE
                MOVE    WRK-PRTPG           TO  ORCSPRTNM-PRTPG
            END-IF
@@ -180,7 +184,50 @@
       *TEST
       *
            .
-       110-PTNUM-SE-EXT.
+       110-PTNUM-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票名システム管理検索処理
+      *****************************************************************
+       11011-HYOJUN-PRTPG-SEC                SECTION.
+      *
+           IF      WRK-NYUGAIKBN       =   "1"
+      *        入院
+               EVALUATE    ORCSPRTNM-KBNCD
+      *            カルテ
+                   WHEN    "00000001"
+                       MOVE    "ORCHCN01"      TO  ORCSPRTNM-PRTPG
+      *            退院証明書
+                   WHEN    "00000002"
+                       MOVE    "ORCHCN02"      TO  ORCSPRTNM-PRTPG
+      *            請求書
+                   WHEN    "00000003"
+                       MOVE    "ORCHCN03"      TO  ORCSPRTNM-PRTPG
+               END-EVALUATE
+           ELSE
+      *        外来
+               EVALUATE    ORCSPRTNM-KBNCD
+      *            カルテ
+                   WHEN    "00000001"
+                       MOVE    "ORCHC01"       TO  ORCSPRTNM-PRTPG
+      *            処方せん
+                   WHEN    "00000002"
+                       MOVE    "ORCHC19"       TO  ORCSPRTNM-PRTPG
+      *            請求書
+                   WHEN    "00000003"
+                       MOVE    "ORCHC03"       TO  ORCSPRTNM-PRTPG
+      *            薬剤情報
+                   WHEN    "00000004"
+                       MOVE    "ORCHC30"       TO  ORCSPRTNM-PRTPG
+      *            カルテ（３号紙）
+                   WHEN    "00000005"
+                       MOVE    "ORCHC33"       TO  ORCSPRTNM-PRTPG
+               END-EVALUATE
+           END-IF
+      *
+           .
+       11011-HYOJUN-PRTPG-EXT.
            EXIT.
       *
       *****************************************************************
@@ -304,7 +351,7 @@
       *
       *    職員毎の出力先プリンタ名取得
            MOVE    SPACE               TO  WRK-KBNCD
-           MOVE    SPA-STAFFCD         TO  WRK-KBNCD
+           MOVE    SPA-STAFFCD         TO  WRK-KBNCD(1:5)
            PERFORM 2001-PRTNAME-SET-SEC
       *
            IF      FLG-OK              =   ZERO
