@@ -59,7 +59,7 @@ else
 fi
 
 #プログラム管理テーブル更新
-	$DBSTUB  -dir "$LDDEFDIR"/directory -bd orcabt ORCXPMNT1 -parameter $HOME/$PRGDIR/$PRGCFILE
+	$DBSTUB  -noredirect -dir "$LDDEFDIR"/directory -bd orcabt ORCXPMNT1 -parameter $HOME/$PRGDIR/$PRGCFILE
 	if [ $? -ne 0 ]	;	then 
 		echo "プログラム管理テーブルの更新に失敗しました"
 		$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
@@ -107,7 +107,7 @@ do
 done
 
 #プログラム更新処理
-	$DBSTUB  -dir "$LDDEFDIR"/directory -bd orcabt ORCXPMNT3 -parameter $RSTFILE
+	$DBSTUB  -noredirect -dir "$LDDEFDIR"/directory -bd orcabt ORCXPMNT3 -parameter $RSTFILE
 	echo $?
 	if [ $? -ne 0 ]	;	then 
 		$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
