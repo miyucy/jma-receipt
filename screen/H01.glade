@@ -34,7 +34,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>>(H01)レセプト請求管理登録−手書き訂正入力</title>
+  <title>(H01)レセプト請求管理登録−手書き訂正入力</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
