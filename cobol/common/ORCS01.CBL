@@ -165,7 +165,6 @@
            03  FLG-PTINF               PIC 9(01).
            03  FLG-SRYACCT             PIC 9(01).
            03  FLG-SRYACT              PIC 9(01).
-           03  FLG-KOTEIGAKU           PIC 9(01).
            03  FLG-SANSHOU             PIC X(01).
            03  FLG-SANSHOU2            PIC X(01).
            03  FLG-SANSHOU3            PIC X(01).                       
@@ -2841,7 +2840,6 @@
            END-IF.
       *
            MOVE     ZERO     TO     WK-TOKUTEI-COMPFTN3.
-           MOVE     ZERO     TO     FLG-KOTEIGAKU.
       *
            PERFORM    VARYING   KOH-IDX    FROM   1   BY   1
                       UNTIL    (KOH-IDX    >      4)
@@ -3761,10 +3759,50 @@
                END-IF                                                   
                MOVE  WK-GAIYKZFTNKBN TO  LNK-SYU-KOH-YKZFTNKBN(KOH-IDX)
            ELSE
+      *
                IF    WK-GAIKKOTGAK  NOT =  ZERO
-                 MOVE  1             TO  FLG-KOTEIGAKU
+      *
                  MOVE  WK-GAIKKOTGAK TO  LNK-SYU-KOH-COMPFTN(KOH-IDX)
+      *
+                 IF    ((HKN-HKNKOHSBTKBN     =       "3")    AND
+                        (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
+                       ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
+                       ( HKN-RECEFTNDSPKBN            =      "2"   )
+                   IF    WK-TOKUTEI-COMPFTN   NOT =    ZERO
+                       MOVE  WK-TOKUTEI-COMPFTN  TO  LNK-SYU-SYUCOMPFTN
+                   END-IF
+                 END-IF
+                 IF   (((HKN-HKNKOHSBTKBN     =       "3")    AND       
+                        (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR 
+                       ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR 
+                       ( HKN-RECEFTNDSPKBN            =      "2"   ))   
+                 AND  (  LNK-SYU-KOH-HKNNUM(1)        =   "027"     )   
+                   IF    WK-TOKUTEI-COMPFTN3   NOT =    ZERO            
+                       MOVE   WK-TOKUTEI-COMPFTN3                       
+                                            TO  LNK-SYU-KOH-COMPFTN(1)  
+                   END-IF                                               
+                 END-IF
+      *
+                 IF  ( LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" )                
+                 OR  ( FLG-KOUREI-KBN               =   "1" )
+                  IF    LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027"         
+                    COMPUTE  FTN-KOH-YYY  =  12000  -  FTN-KOH-XXX        
+                    IF  LNK-SYU-KOH-COMPFTN(KOH-IDX)  >  FTN-KOH-YYY      
+                      MOVE  FTN-KOH-YYY TO LNK-SYU-KOH-COMPFTN(KOH-IDX)  
+                    END-IF                                                
+                  END-IF                                                  
+                 END-IF                                   
+      *
+                 IF    LNK-SYU-SYUCOMPFTN   NOT =    ZERO
+                   IF  LNK-SYU-KOH-COMPFTN(KOH-IDX)  
+                                       >  LNK-SYU-SYUCOMPFTN      
+                      MOVE  LNK-SYU-SYUCOMPFTN
+                                       TO LNK-SYU-KOH-COMPFTN(KOH-IDX)  
+                   END-IF                     
+                 END-IF
+      *
                END-IF
+      *
            END-IF.
            PERFORM    KOHHI-HIKAKU-SEC.
            EVALUATE   WK-GAIYKZFTNKBN
@@ -3899,12 +3937,9 @@
                END-IF
            END-IF.
       *
-           IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"    AND
-                COMB-KOH1HKNNUM        NOT   =   "027"  AND
-                COMB-HKNNUM            NOT   =   SPACE)
-           OR  (COMB-KOH1HKNNUM        NOT   =   "027"  AND
-                COMB-HKNNUM            NOT   =   SPACE  AND
-                FLG-KOTEIGAKU                =   "1"  )
+           IF   LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"   
+           AND  COMB-KOH1HKNNUM        NOT   =   "027" 
+           AND  COMB-HKNNUM            NOT   =   SPACE
                MOVE    LNK-SYU-SYUCOMPFTN     TO  WK-KNJFTNKIN
                IF   LNK-SYU-KOH1HKNNUM   NOT =  SPACE
                AND  LNK-SYU-KOH1COMPFTN      <     WK-KNJFTNKIN
