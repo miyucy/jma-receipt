@@ -60,6 +60,7 @@
       *  01.00.21    NACL-ÌçÏÆ    04/04/06  ¹âÎð¼Ô¥Õ¥é¥°ÊÔ½¸½¤Àµ
       *  01.00.22    NACL-ÌçÏÆ    04/07/27  ¹ñÊÝÉéÃ´³ä¹çÊÔ½¸½¤Àµ
       *  01.00.23    NACL-ÌçÏÆ    04/08/04  Æ±°ìÊÝ¸±ÈÖ¹æÂÐ±þ
+      *  01.00.24    NACL-ÌçÏÆ    04/08/20  Ê¼¸Ë¸©ÃÏÊý¸øÈñÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2114,6 +2115,10 @@
              OR ((WK-1001-PREFNUM              =  13            )  AND
                  (COMB-KOHHKNNUM(KOH-IDX)      = "151" OR "451" )  AND
                  (LNK-SYU-SRYYMD(1:6)         >= "200310")           )
+      *
+             OR ((WK-1001-PREFNUM              =  28     )  AND
+                 (COMB-KOHHKNNUM(KOH-IDX)      = "186"   )  AND
+                 (LNK-SYU-SRYYMD(1:6)         >= "200310"))
       *
       ***    OR ( COMB-KOHHKNNUM(KOH-IDX)(1:1) = "1" OR "2" OR "3" OR 
       ***                                        "4" OR "5" OR "6" OR
@@ -5316,6 +5321,11 @@
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "151" OR "451")
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
                    END-IF
+                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
+                   AND (WK-1001-PREFNUM           =   28           )
+                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "186"         )
+                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
+                   END-IF
                WHEN   "2"
                    MOVE    HKN-TSY-NYUKFTNRATE  TO   WK-NYUKFTNRATE
                    MOVE    HKN-TSY-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
@@ -5341,6 +5351,11 @@
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "151" OR "451")
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
                    END-IF
+                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
+                   AND (WK-1001-PREFNUM           =   28           )
+                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "186"         )
+                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
+                   END-IF
                WHEN   "3"
                    MOVE    HKN-TNK-NYUKFTNRATE  TO   WK-NYUKFTNRATE
                    MOVE    HKN-TNK-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
@@ -5364,6 +5379,11 @@
                    IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
                    AND (WK-1001-PREFNUM           =   13           )
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "151" OR "451")
+                       MOVE    "2"              TO   WK-NYUSKJRYYKBN
+                   END-IF
+                   IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
+                   AND (WK-1001-PREFNUM           =   28           )
+                   AND (COMB-KOHHKNNUM(KOH-IDX)   =  "186"         )
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
                    END-IF
            END-EVALUATE.
@@ -6961,6 +6981,31 @@
                                               AND (FLG-HIKAKU = 3))
                OR ((LNK-SYU-KOH4HKNNUM = "151" OR "451")
                                               AND (FLG-HIKAKU = 4))
+                COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
+                                   +   LNK-SYU-SKYMONEY-SKJ-KEI
+                COMPUTE   WK-FTN   =   WK-FTN     +   5
+                COMPUTE   WK-FTN   =   WK-FTN     /  10
+                COMPUTE   WK-FTN   =   WK-FTN     *  10
+                IF        WK-FTN    >=  WK-NYUJGNGAK
+                  COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
+                                             +  LNK-SYU-SKYMONEY-SKJ-KEI
+                  MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
+                                                LNK-SYU-SKYMONEY-SKJ-TAX
+                                                LNK-SYU-SKYMONEY-SKJ-KEI
+                END-IF
+               END-IF
+             END-IF
+           END-IF.
+      *
+           IF    LNK-SYU-SRYYMD(1:6)   <   "200310"
+               CONTINUE
+           ELSE
+      *      Ê¼¸Ë¸©ÃÏÊý¸øÈñ£±£¸£¶¤¬¤¢¤ëÊý¤ÎÆÃÎã½èÍý
+             IF   WK-1001-PREFNUM    =   28
+               IF ((LNK-SYU-KOH1HKNNUM = "186") AND (FLG-HIKAKU = 1))
+               OR ((LNK-SYU-KOH2HKNNUM = "186") AND (FLG-HIKAKU = 2))
+               OR ((LNK-SYU-KOH3HKNNUM = "186") AND (FLG-HIKAKU = 3))
+               OR ((LNK-SYU-KOH4HKNNUM = "186") AND (FLG-HIKAKU = 4))
                 COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                    +   LNK-SYU-SKYMONEY-SKJ-KEI
                 COMPUTE   WK-FTN   =   WK-FTN     +   5

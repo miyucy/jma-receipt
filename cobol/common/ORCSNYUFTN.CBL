@@ -3252,6 +3252,11 @@
                                                 TBL-TGMONEY(11)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
+                                   WHEN   OTHER
+                                       COMPUTE  TBL-TGMONEY(10)  =
+                                                TBL-TGMONEY(10)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
                                END-EVALUATE
                            END-IF
                        ELSE
@@ -3338,6 +3343,7 @@
                                        END-IF
                                      END-IF
                                      IF   TNS-SRYCD(1:1)    =   "7"
+                                     OR   TNS-SRYCD(1:3)    =   "059"
                                        COMPUTE  TBL-TGMONEY(10)  =
                                                 TBL-TGMONEY(10)  +
                                                (SRY-JIHIMONEY(IDZ) *
@@ -3455,6 +3461,11 @@
                                                 TBL-TGMONEY-TAX(11)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
+                                   WHEN   OTHER
+                                       COMPUTE  TBL-TGMONEY-TAX(10)  =
+                                                TBL-TGMONEY-TAX(10)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
                                END-EVALUATE
                            END-IF
                        ELSE
@@ -3541,6 +3552,7 @@
                                        END-IF
                                      END-IF
                                      IF   TNS-SRYCD(1:1)    =   "7"
+                                     OR   TNS-SRYCD(1:3)    =   "059"
                                        COMPUTE  TBL-TGMONEY-TAX(10)  =
                                                 TBL-TGMONEY-TAX(10)  +
                                                (SRY-JIHIMONEY(IDZ) *

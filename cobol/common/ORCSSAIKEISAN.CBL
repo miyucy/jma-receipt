@@ -1404,6 +1404,11 @@
                                             =   TBL-TGMONEY(10)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   OTHER
+                                       COMPUTE  TBL-TGMONEY(10)
+                                            =   TBL-TGMONEY(10)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
                                END-EVALUATE
                            END-IF
                        ELSE
@@ -1470,12 +1475,20 @@
                                               * TBL-ZAIKAISU(IDX1)) 
                                    WHEN   OTHER
                                      IF   TNS-SRYCD(1:1)    =   "6"
-                                       COMPUTE  TBL-TGMONEY(4)
-                                            =   TBL-TGMONEY(4)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
+                                       IF    TNS-YKZKBN     =    4
+                                          COMPUTE  TBL-TGMONEY(5)
+                                               =   TBL-TGMONEY(5)
+                                               +  (SRY-JIHIMONEY(IDX3)
+                                                 * TBL-ZAIKAISU(IDX1)) 
+                                       ELSE
+                                          COMPUTE  TBL-TGMONEY(4)
+                                               =   TBL-TGMONEY(4)
+                                               +  (SRY-JIHIMONEY(IDX3)
+                                                 * TBL-ZAIKAISU(IDX1)) 
+                                       END-IF
                                      END-IF
                                      IF   TNS-SRYCD(1:1)    =   "7"
+                                     OR   TNS-SRYCD(1:3)    =   "059"
                                        COMPUTE  TBL-TGMONEY(10)
                                             =   TBL-TGMONEY(10)
                                             +  (SRY-JIHIMONEY(IDX3)
@@ -1586,6 +1599,11 @@
                                             =   TBL-TGMONEY-TAX(10)
                                             +  (SRY-JIHIMONEY(IDX3)
                                               * TBL-ZAIKAISU(IDX1)) 
+                                   WHEN   OTHER
+                                       COMPUTE  TBL-TGMONEY-TAX(10)
+                                            =   TBL-TGMONEY-TAX(10)
+                                            +  (SRY-JIHIMONEY(IDX3)
+                                              * TBL-ZAIKAISU(IDX1)) 
                                END-EVALUATE
                            END-IF
                        ELSE
@@ -1652,12 +1670,20 @@
                                               * TBL-ZAIKAISU(IDX1)) 
                                    WHEN   OTHER
                                      IF   TNS-SRYCD(1:1)    =   "6"
-                                       COMPUTE  TBL-TGMONEY-TAX(4)
-                                            =   TBL-TGMONEY-TAX(4)
-                                            +  (SRY-JIHIMONEY(IDX3)
-                                              * TBL-ZAIKAISU(IDX1)) 
+                                       IF    TNS-YKZKBN     =    4
+                                          COMPUTE  TBL-TGMONEY-TAX(5)
+                                               =   TBL-TGMONEY-TAX(5)
+                                               +  (SRY-JIHIMONEY(IDX3)
+                                                 * TBL-ZAIKAISU(IDX1)) 
+                                       ELSE
+                                          COMPUTE  TBL-TGMONEY-TAX(4)
+                                               =   TBL-TGMONEY-TAX(4)
+                                               +  (SRY-JIHIMONEY(IDX3)
+                                                 * TBL-ZAIKAISU(IDX1)) 
+                                       END-IF
                                      END-IF
                                      IF   TNS-SRYCD(1:1)    =   "7"
+                                     OR   TNS-SRYCD(1:3)    =   "059"
                                        COMPUTE  TBL-TGMONEY-TAX(10)
                                             =   TBL-TGMONEY-TAX(10)
                                             +  (SRY-JIHIMONEY(IDX3)

@@ -131,6 +131,7 @@
       *  01.00.53    NACL-ÌçÏÆ    04/08/04  Æ±°ìÊÝ¸±ÈÖ¹æÂÐ±þ
       *
       *  01.01.01    NACL-ÌçÏÆ    04/08/10  Ê£¿ôÊÝ¸±¡¦Ê£¿ô²ÊÆþÎÏÂÐ±þ
+      *  01.01.02    NACL-ÌçÏÆ    04/08/20  Ê¼¸Ë¸©ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2865,6 +2866,10 @@
              OR ((WK-1001-PREFNUM              =  13            )  AND
                  (COMB-KOHHKNNUM(KOH-IDX)      = "151" OR "451" )  AND
                  (LNK-SYU-SRYYMD(1:6)         >= "200310")           )
+      *
+             OR ((WK-1001-PREFNUM              =  28     )  AND
+                 (COMB-KOHHKNNUM(KOH-IDX)      = "186"   )  AND
+                 (LNK-SYU-SRYYMD(1:6)         >= "200310"))
       *
       ***    OR ( COMB-KOHHKNNUM(KOH-IDX)(1:1) = "1" OR "2" OR "3" OR 
       ***                                        "4" OR "5" OR "6" OR
