@@ -266,6 +266,7 @@ RECORD_files = \
         I22.rec \
         I23.rec \
         M97.rec \
+        S06.rec \
 
 DEF_files = \
 	HC01.def \
