@@ -214,63 +214,83 @@ K02	{
 			value	varchar(62);
 		};
 		SURYO01	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO02	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO03	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO04	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO05	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO06	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO07	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO08	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO09	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO10	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO11	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO12	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO13	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO14	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO15	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO16	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO17	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO18	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO19	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		SURYO20	{
+ 		    style   varchar(20);
 			value	varchar(60);
 		};
 		NENREI	{

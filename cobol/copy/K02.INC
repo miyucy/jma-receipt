@@ -45,8 +45,9 @@
                 04  K02-VALUE   PIC X(22).
               03  K02-MEISYO    OCCURS  20.
                 04  K02-VALUE   PIC X(62).
-              03  K02-SURYO     OCCURS  20.
-                04  K02-VALUE   PIC X(60).
+              03  K02-SURYO-R     OCCURS  20.
+                04  K02-SURYO-STYLE   PIC X(20).
+                04  K02-SURYO   PIC X(60).
               03  K02-NENREI.
                 04  K02-VALUE   PIC X(6).
               03  K02-ZAITENTOTAL.
