@@ -303,12 +303,12 @@
       *    ÆÃ¼ì»£±Æ¡Ê»£±Æ¡¦¿ÇÃÇ¡ËÆýÍÄ»ù
            03  FILLER              PIC X(09)  VALUE   "170019230".
            03  FILLER              PIC X(09)  VALUE   "170019430".
-      *    Ã±½ã»£±Æ¡¦ÆÃ¼ì»£±Æ
-           03  FILLER              PIC X(09)  VALUE   "170001910".
-           03  FILLER              PIC X(09)  VALUE   "170002010".
+      *****Ã±½ã»£±Æ¡¦ÆÃ¼ì»£±Æ
+      *    03  FILLER              PIC X(09)  VALUE   "170001910".
+      *****03  FILLER              PIC X(09)  VALUE   "170002010".
       *
        01  TBL-DOUJI-HEISI-R       REDEFINES  TBL-DOUJI-HEISI-AREA.
-           03  TBL-DOUJI-OCC       OCCURS     16  INDEXED  TBL-IDX.
+           03  TBL-DOUJI-OCC       OCCURS     15  INDEXED  TBL-IDX.
                05  TBL-DOUJI-1     PIC X(09).
                05  TBL-DOUJI-2     PIC X(09).
       *
@@ -2642,13 +2642,6 @@
                                        WRK-SCR-REC
                                        SPA-AREA
                                        TNS-TENSU-REC
-      *TEST
-           DISPLAY "C70 WRK-SRYCD:" WRK-SRYCD
-                 ",LNK-SC91-CNT:" LNK-SC91-CNT
-                 ",LNK-SC91-ATO-CNT:" LNK-SC91-ATO-CNT
-                 ",LNK-SC91-MAXCNT:" LNK-SC91-MAXCNT
-                 ",LNK-SC91-DAYCNT:" LNK-SC91-DAYCNT
-      *TEST
       *
       *    Åö·î»»Äê¤Ê¤·
            IF      LNK-SC91-ATO-CNT    <=  LNK-SC91-CNT
