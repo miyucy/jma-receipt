@@ -810,3 +810,22 @@ path	key33 	{
 		;
 	};
 };
+
+path	key34 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key34_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_syunou a,tbl_ptinf b
+			WHERE a.HOSPID      =   :HOSPID
+			AND   a.NYUGAIKBN   =   :NYUGAIKBN
+			AND   a.SRYYMD      >=  :SKYSTYMD
+			AND   a.SRYYMD      <=  :SKYEDYMD
+			AND   a.CREATEKBN   <>  '3'
+			AND   a.CHOSEI      <>  0
+			AND   a.HOSPID    =   b.HOSPID
+			AND   a.PTID      =   b.PTID
+			AND   b.TSTPTNUMKBN   <> '1'
+		;
+	};
+};
+

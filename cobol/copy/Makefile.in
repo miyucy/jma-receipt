@@ -950,6 +950,7 @@ COPYS = \
 	CPSK1042.INC \
 	S99.INC \
 	SID2.INC \
+	HCM42.INC \
 
 
 DBPATH = \
