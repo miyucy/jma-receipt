@@ -241,7 +241,7 @@
                                                                  (IDX)
                MOVE    SYS-9001-ADDRESS      TO  SPA-K03X-GMN-ADRL
                                                                  (IDX)
-               MOVE    SYS-9001-PORT1        TO  SPA-K03X-GMN-PORTL
+               MOVE    SYS-9001-PORT2        TO  SPA-K03X-GMN-PORTL
                                                                   (IDX)
                MOVE    SYS-9001-MEMO         TO  SPA-K03X-GMN-MEMOL
                                                                   (IDX)
