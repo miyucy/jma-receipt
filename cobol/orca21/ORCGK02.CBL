@@ -64,6 +64,8 @@
       *  03.00.16    NACL-多々納  03/06/27  カスタマイズ帳票名取得サブ追加
       *  03.00.17    NACL-多々納  03/07/17  入力修正他
       *  03.00.18    NACL-多々納  03/08/01  数量入力判定追加
+      *  03.00.19    NACL-多々納  03/09/12  同一検査削除追加
+      *  03.00.20    NACL-多々納  03/09/26  ＣＴ、ＭＲＩ同時入力追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5813,6 +5815,21 @@
                                        SPA-SCR-REC
                                        SPA-AREA
       *
+      *    画像診断のＣＴ．ＭＲＩは２回目のコードが違うので
+      *    算定回数のチェックなし
+           IF     (SPA-COM-TNSSRYSYUKBN (SPA-GMN-IDX)
+                                               =   "723"
+                                               OR  "724"  )  AND
+                  (SPA-COM-HOUKATUTEIGENKBN(SPA-GMN-IDX)
+                                               =   "201"
+                                               OR  "202"
+                                               OR  "203"  )  AND
+                   (SPA-COM-KAISU (SPA-GMN-IDX)
+                                               =   1      )
+               MOVE    SPACE           TO  LNK-SC92-ERRCD(3)
+           END-IF
+      *
+      *
            PERFORM VARYING     IDX-ERR FROM    1  BY  1
                    UNTIL      (IDX-ERR     >   10     )  OR
                               (SPA-ERRCD   NOT =   SPACE)
@@ -9343,6 +9360,14 @@
       *****************************************************************
        440-KNJADD-SEC             SECTION.
       *
+      *    患者登録の権限がない時、エラー
+           IF      SPA-GSRAUTH-12      =   "1"
+               CONTINUE
+           ELSE
+               MOVE    "9300"              TO  SPA-ERRCD
+               MOVE    ZERO                TO  SPA-GMN-CUR
+               GO  TO  440-KNJADD-EXT
+           END-IF
       *
            IF      SPA-PTNUM(1:1)      =   "*"
                MOVE    ZERO                TO  SPA-PTID
@@ -12797,6 +12822,9 @@
            END-PERFORM
            MOVE    SPA-TABOO-MAX       TO  K02-TABOO-COUNT
       *
+      *    非活性処理
+           PERFORM 510-GSRAUTH-SEC
+      *
            IF      FLG-END             =   ZERO
       *         カーソルセット
                 PERFORM 5001-MAPCUR-SEC
@@ -12804,6 +12832,48 @@
            .
        500-GMNHEN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    非活性処理
+      *****************************************************************
+       510-GSRAUTH-SEC             SECTION.
+      *
+      *業務処理権限設定
+      *    受付
+           IF      SPA-GSRAUTH-11      =   "1"
+               MOVE    WIDGET-NORMAL       TO  K02-B04S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02-B04S-STATE
+           END-IF
+      *    患者登録
+           IF      SPA-GSRAUTH-12      =   "1"
+               MOVE    WIDGET-NORMAL       TO  K02-B05S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02-B05S-STATE
+           END-IF
+      *    病名登録
+           IF      SPA-GSRAUTH-22      =   "1"
+               MOVE    WIDGET-NORMAL       TO  K02-B07S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02-B07S-STATE
+           END-IF
+      *    収納登録
+           IF      SPA-GSRAUTH-23      =   "1"
+               MOVE    WIDGET-NORMAL       TO  K02-B08S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02-B08S-STATE
+           END-IF
+      *    会計照会
+           IF      SPA-GSRAUTH-24      =   "1"
+               MOVE    WIDGET-NORMAL       TO  K02-B09S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02-B09S-STATE
+           END-IF
+      *
+           .
+       51O-GSRAUTH-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    画面数量項目編集処理

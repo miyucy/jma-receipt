@@ -11415,6 +11415,9 @@
            END-PERFORM
            MOVE    SPA-TABOO-MAX       TO  K02N-TABOO-COUNT
       *
+      *    非活性処理
+           PERFORM 510-GSRAUTH-SEC
+      *
            IF      FLG-END             =   ZERO
       *         カーソルセット
                 PERFORM 5001-MAPCUR-SEC
@@ -11422,6 +11425,48 @@
            .
        500-GMNHEN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    非活性処理
+      *****************************************************************
+       510-GSRAUTH-SEC             SECTION.
+      *
+      *業務処理権限設定
+      *    受付
+           IF      SPA-GSRAUTH-11      =   "1"
+               MOVE    WIDGET-NORMAL       TO  K02N-B04S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B04S-STATE
+           END-IF
+      *    患者登録
+           IF      SPA-GSRAUTH-12      =   "1"
+               MOVE    WIDGET-NORMAL       TO  K02N-B05S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B05S-STATE
+           END-IF
+      *    病名登録
+           IF      SPA-GSRAUTH-22      =   "1"
+               MOVE    WIDGET-NORMAL       TO  K02N-B07S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B07S-STATE
+           END-IF
+      *    収納登録
+           IF      SPA-GSRAUTH-23      =   "1"
+               MOVE    WIDGET-NORMAL       TO  K02N-B08S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B08S-STATE
+           END-IF
+      *    会計照会
+           IF      SPA-GSRAUTH-24      =   "1"
+               MOVE    WIDGET-NORMAL       TO  K02N-B09S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B09S-STATE
+           END-IF
+      *
+           .
+       51O-GSRAUTH-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    画面数量項目編集処理
