@@ -121,6 +121,18 @@
                       07  W07-VALUE   PIC X(28).
                     06  W07-HOJYOKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-HOJYOKBN-ITEM    PIC X(28)   OCCURS  2.
+                  05  W07-DOUMEI-CHKFLG-COMBO.
+                    06  W07-DOUMEI-CHKFLG.
+                      07  W07-VALUE   PIC X(28).
+                    06  W07-DOUMEI-CHKFLG-COUNT   PIC S9(9)   BINARY.
+                    06  W07-DOUMEI-CHKFLG-ITEM
+                            PIC X(28)   OCCURS  2 TIMES.
+                  05  W07-JYUFUKU-CHKKBN-CONBO.
+                    06  W07-JYUFUKU-CHKKBN.
+                      07  W07-VALUE   PIC X(60).
+                    06  W07-JYUFUKU-CHKKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-JYUFUKU-CHKKBN-ITEM
+                            PIC X(60)   OCCURS  5 TIMES.
                 04  W07-TAGNAME2.
                   05  W07-TAGNAME2-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG3.

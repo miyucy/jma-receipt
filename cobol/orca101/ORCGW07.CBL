@@ -52,6 +52,7 @@
       *  02.01.12    NACL-多々納  04/07/05  最終受診日から初診の期間追加
       *                                     請求書発行方法他追加
       *  02.01.13    NACL-藤原    04/07/08  生保受給者番号を削除
+      *  02.01.14    NACL-多々納  04/10/06  同姓同名者、二重登録疑い追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -213,6 +214,23 @@
                        09  SPA-GMN-HOJYOKBN-COMB.
                            11  SPA-GMN-HOJYOKBN-LIST       PIC X(28)
                                                            OCCURS  2.
+      *                同姓同名リスト
+                       09  SPA-GMN-DOUMEI-CHKFLG-G.
+                           11  SPA-GMN-DOUMEI-CHKFLG       PIC X(01).
+                           11  SPA-GMN-DOUMEI-F1           PIC X(01).
+                           11  SPA-GMN-DOUMEI-MEI          PIC X(26).
+                       09  SPA-GMN-DOUMEI-CHKFLG-COMB.
+                           11  SPA-GMN-DOUMEI-CHKFLG-LIST  PIC X(28)
+                                                           OCCURS  2.
+      *                二重登録疑い区分
+                       09  SPA-GMN-JYUFUKU-CHKKBN-G.
+                           11  SPA-GMN-JYUFUKU-CHKKBN      PIC X(01).
+                           11  SPA-GMN-JYUFUKU-F1          PIC X(01).
+                           11  SPA-GMN-JYUFUKU-MEI         PIC X(58).
+                       09  SPA-GMN-JYUFUKU-CHKKBN-COMB.
+                           11  SPA-GMN-JYUFUKU-CHKKBN-LIST PIC X(60)
+                                                           OCCURS  5.
+                       09  SPA-GMN-JYUFUKU-MAX             PIC 9(04).
                    07  SPA-GMN-PAGE3-AREA.
       *                入金管理情報（診療行為機能情報）
                        09  SPA-GMN-SRYNYKNKNRKBN-G.
@@ -529,10 +547,9 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "WID1"
                    PERFORM 330-WID1-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+               WHEN    OTHER
+                   PERFORM 310-SPASET-SEC
            END-EVALUATE
-      *
-           PERFORM 310-SPASET-SEC
       *
            .
        300-SCREEN-EXT.
@@ -650,6 +667,17 @@
       *
            MOVE    "0 課税"            TO  SPA-GMN-HOJYOKBN-LIST(1)
            MOVE    "1 非課税"          TO  SPA-GMN-HOJYOKBN-LIST(2)
+      *
+           MOVE    "0 表示する"        TO  SPA-GMN-DOUMEI-CHKFLG-LIST(1)
+           MOVE    "1 表示しない"      TO  SPA-GMN-DOUMEI-CHKFLG-LIST(2)
+      *
+           MOVE    "0 カナ氏名＋性別＋生年月日" 
+                                   TO  SPA-GMN-JYUFUKU-CHKKBN-LIST (1)
+           MOVE    "1 カナ氏名＋漢字氏名＋性別＋生年月日" 
+                                   TO  SPA-GMN-JYUFUKU-CHKKBN-LIST (2)
+           MOVE    "2 性別＋生年月日" 
+                                   TO  SPA-GMN-JYUFUKU-CHKKBN-LIST (3)
+           MOVE    3                   TO  SPA-GMN-JYUFUKU-MAX 
       *
            MOVE    "1 今回請求分のみ入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(1)
@@ -1044,6 +1072,12 @@
       *        自費保険の補助区分
                MOVE    SYS-1017-JIHIHKN-TAX
                                        TO  SPA-GMN-HOJYOKBN
+      *        同姓同名リスト
+               MOVE    SYS-1017-DOUMEI-CHKFLG
+                                       TO  SPA-GMN-DOUMEI-CHKFLG
+      *        二重登録疑い区分
+               MOVE    SYS-1017-JYUFUKU-CHKKBN
+                                       TO  SPA-GMN-JYUFUKU-CHKKBN
            END-IF
       *
       *    初期設定
@@ -1085,6 +1119,32 @@
                     MOVE    SPA-GMN-HOJYOKBN-LIST(1)
                                                TO  SPA-GMN-HOJYOKBN-G
            END-EVALUATE
+      *
+           EVALUATE    SPA-GMN-DOUMEI-CHKFLG
+               WHEN    "1"
+                   MOVE    SPA-GMN-DOUMEI-CHKFLG-LIST(2)
+                                           TO  SPA-GMN-DOUMEI-CHKFLG-G
+               WHEN    OTHER
+                   MOVE    SPA-GMN-DOUMEI-CHKFLG-LIST(1)
+                                           TO  SPA-GMN-DOUMEI-CHKFLG-G
+           END-EVALUATE
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-JYUFUKU-MAX ) OR
+                              (FLG-OK  =   1    )
+               IF      SPA-GMN-JYUFUKU-CHKKBN
+                                       =   SPA-GMN-JYUFUKU-CHKKBN-LIST
+                                                        (IDX)(1:1)
+                   MOVE    SPA-GMN-JYUFUKU-CHKKBN-LIST(IDX)
+                                          TO  SPA-GMN-JYUFUKU-CHKKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-JYUFUKU-CHKKBN-LIST(1)
+                                          TO  SPA-GMN-JYUFUKU-CHKKBN-G
+           END-IF
       *
            MOVE    20                 TO  SPA-GMN-CUR
       *
@@ -1280,9 +1340,6 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      410-INPUT-CHK-EXT
-           END-IF
       *
            .
        410-INPUT-CHK-EXT.
@@ -1338,6 +1395,8 @@
            MOVE    W07-JISYOKBN        TO  SPA-GMN-JISYOKBN-G
            MOVE    W07-HAKKOKBN        TO  SPA-GMN-HAKKOKBN-G
            MOVE    W07-HOJYOKBN        TO  SPA-GMN-HOJYOKBN-G
+           MOVE    W07-DOUMEI-CHKFLG   TO  SPA-GMN-DOUMEI-CHKFLG-G
+           MOVE    W07-JYUFUKU-CHKKBN  TO  SPA-GMN-JYUFUKU-CHKKBN-G
       *
       *    診療行為機能情報
            MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
@@ -1360,118 +1419,102 @@
            EVALUATE    SPA-W01-KANRICD
                WHEN    "1007"
       *            調剤技術基本料チェック
-                   PERFORM 4100-DATA-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4100-DATA-CHK-SEC
                    END-IF
       *            診療科チェック
-                   PERFORM 4102-SRYKACD-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4102-SRYKACD-CHK-SEC
                    END-IF
       *            入院初診料自動算定チェック
-                   PERFORM 4103-NYUSYOSIN-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-NYUSYOSIN-CHK-SEC
                    END-IF
       *            時間外加算特例乳幼児
-                   PERFORM 4103-JIKANTOKU-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-JIKANTOKU-CHK-SEC
                    END-IF
       *            画像診断管理加算１
-                   PERFORM 4103-GAZOUKSN1-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-GAZOUKSN1-CHK-SEC
                    END-IF
       *            相互作用チェック期間
-                   PERFORM 4100-KIKAN-CHK2-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4100-KIKAN-CHK2-SEC
                    END-IF
       *            外来管理加算チェック
-                   PERFORM 4101-GAIKANRIKBN-CHK2-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4101-GAIKANRIKBN-CHK2-SEC
                    END-IF
       *            外来カーソル移動チェック
-                   PERFORM 4103-GAIMOVE-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-GAIMOVE-CHK-SEC
                    END-IF
       *            数量ゼロチェック
-                   PERFORM 4103-SURYOZERO-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-SURYOZERO-CHK-SEC
                    END-IF
       *            入院調基チェック
-                   PERFORM 4103-CHOKICHK-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-CHOKICHK-CHK-SEC
                    END-IF
       *            時間外加算乳幼児チェック
-                   PERFORM 4103-JIKANTOKU-CHK-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-JIKANTOKU-CHK-CHK-SEC
                    END-IF
       *            チェック除外時間
-                   PERFORM 4103-JIKANCHK-TIME-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-JIKANCHK-TIME-SEC
                    END-IF
       *            包括入力チェック
-                   PERFORM 4103-HOUKATU-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-HOUKATU-CHK-SEC
                    END-IF
                WHEN    "1017"
       *            カルテの病名対象チェック
-                   PERFORM 4104-BYOMEI-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4104-BYOMEI-CHK-SEC
                    END-IF
       *            人名辞書使用チェック
-                   PERFORM 4105-JISYO-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4105-JISYO-CHK-SEC
                    END-IF
       *            患者登録のカルテ発行チェック
-                   PERFORM 4106-HAKKO-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4106-HAKKO-CHK-SEC
                    END-IF
       *            自費保険の補助区分チェック
-                   PERFORM 4107-HOJYO-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4107-HOJYO-CHK-SEC
+                   END-IF
+      *            同姓同名リスト区分チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4107-DOUMEI-CHK-SEC
+                   END-IF
+      *            二重登録疑い区分チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4107-JYUFUKU-CHK-SEC
                    END-IF
                WHEN    "1038"
       *            入金管理区分チェック
-                   PERFORM 4108-SRYNYKNKNRKBN-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-SRYNYKNKNRKBN-CHK-SEC
                    END-IF
       *            複数科まとめチェック
-                   PERFORM 4108-KAGRPFLG-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-KAGRPFLG-CHK-SEC
                    END-IF
       *            請求書発行方法チェック
-                   PERFORM 4108-HAKHOUFLG-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-HAKHOUFLG-CHK-SEC
                    END-IF
                WHEN    "1039"
       *            入金管理区分チェック
-                   PERFORM 4109-SYUNYKNKNRKBN-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4109-SYUNYKNKNRKBN-CHK-SEC
                    END-IF
       *            請求書兼領収書発行区分区分チェック
       *            PERFORM 4110-SYUSKYPRTKBN-CHK-SEC
-      *            IF      SPA-ERRCD       NOT =   SPACE
-      *                GO      TO      4102-KIHON-CHK-EXT
-      *            END-IF
            END-EVALUATE
       *
            .
@@ -1626,7 +1669,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    11              TO  SPA-GMN-CUR
                MOVE    "0006"          TO  SPA-ERRCD
-               GO      TO      4101-GAIKANRIKBN-CHK2-EXT
            END-IF
       *
           .
@@ -1661,7 +1703,6 @@
                        MOVE    9               TO  SPA-GMN-CUR
                        MOVE    SPACE           TO  SPA-GMN-SRYKAMEI
                        MOVE    "0011"          TO  SPA-ERRCD
-                       GO      TO       4102-SRYKACD-CHK-EXT
                    END-IF
                END-IF
            ELSE
@@ -1691,7 +1732,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    12              TO  SPA-GMN-CUR
                MOVE    "0012"          TO  SPA-ERRCD
-               GO      TO      4103-GAIMOVE-CHK-EXT
            END-IF
       *
           .
@@ -1717,7 +1757,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    14              TO  SPA-GMN-CUR
                MOVE    "0015"          TO  SPA-ERRCD
-               GO      TO      4103-SURYOZERO-CHK-EXT
            END-IF
       *
           .
@@ -1743,7 +1782,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    15              TO  SPA-GMN-CUR
                MOVE    "0016"          TO  SPA-ERRCD
-               GO      TO      4103-CHOKICHK-CHK-EXT
            END-IF
       *
           .
@@ -1769,7 +1807,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    50              TO  SPA-GMN-CUR
                MOVE    "0030"          TO  SPA-ERRCD
-               GO      TO      4103-JIKANTOKU-CHK-CHK-EXT
            END-IF
       *
           .
@@ -1791,8 +1828,19 @@
                MOVE    ZERO            TO  SPA-NAI-JIKANCHK-WEEK(2)
                MOVE    ZERO            TO  SPA-NAI-JIKANCHK-SAT (1)
                MOVE    ZERO            TO  SPA-NAI-JIKANCHK-SAT (2)
-               GO      TO      4103-JIKANCHK-TIME-EXT
+           ELSE
+      *        時間判定
+               PERFORM 41031-JIKANCHK-TIMECHK-SEC
            END-IF
+      *
+          .
+       4103-JIKANCHK-TIME-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    時間判定処理
+      *****************************************************************
+       41031-JIKANCHK-TIMECHK-SEC       SECTION.
       *
       *    時間判定
            PERFORM VARYING     IDT     FROM    1   BY  1
@@ -1944,12 +1992,9 @@
       *
            END-PERFORM
       *
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4103-JIKANCHK-TIME-EXT
-           END-IF
-      *
            PERFORM VARYING     IDT     FROM    1   BY  1
-                   UNTIL       IDT     >   2
+                   UNTIL      (IDT     >   2   )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
                MOVE    SPA-NAI-JIKANWST-HH(IDT)
                                       TO  SPA-GMN-JIKANWST-HH(IDT)
                MOVE    SPA-NAI-JIKANWST-MM(IDT)
@@ -2051,7 +2096,7 @@
            END-PERFORM
       *
           .
-       4103-JIKANCHK-TIME-EXT.
+       41031-JIKANCHK-TIMECHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2073,7 +2118,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    16              TO  SPA-GMN-CUR
                MOVE    "0014"          TO  SPA-ERRCD
-               GO      TO      4103-HOUKATU-CHK-EXT
            END-IF
       *
           .
@@ -2099,7 +2143,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    20              TO  SPA-GMN-CUR
                MOVE    "0020"          TO  SPA-ERRCD
-               GO      TO      4104-BYOMEI-CHK-EXT
            END-IF
       *
           .
@@ -2125,7 +2168,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    21              TO  SPA-GMN-CUR
                MOVE    "0021"          TO  SPA-ERRCD
-               GO      TO      4105-JISYO-CHK-EXT
            END-IF
       *
           .
@@ -2151,7 +2193,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    22              TO  SPA-GMN-CUR
                MOVE    "0022"          TO  SPA-ERRCD
-               GO      TO      4106-HAKKO-CHK-EXT
            END-IF
       *
           .
@@ -2177,11 +2218,60 @@
            IF      FLG-OK              =   ZERO
                MOVE    23              TO  SPA-GMN-CUR
                MOVE    "0023"          TO  SPA-ERRCD
-               GO      TO      4107-HOJYO-CHK-EXT
            END-IF
       *
           .
        4107-HOJYO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    同姓同名リスト区分チェック処理
+      *****************************************************************
+       4107-DOUMEI-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               IF      SPA-GMN-DOUMEI-CHKFLG
+                                       =   SPA-GMN-DOUMEI-CHKFLG-LIST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN-DOUMEI-CHKFLG-LIST(IDX)
+                                          TO  SPA-GMN-DOUMEI-CHKFLG-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    24              TO  SPA-GMN-CUR
+               MOVE    "0040"          TO  SPA-ERRCD
+           END-IF
+      *
+          .
+       4107-DOUMEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同姓同名リスト区分チェック処理
+      *****************************************************************
+       4107-JYUFUKU-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-JYUFUKU-MAX) OR
+                              (FLG-OK  =   1    )
+               IF      SPA-GMN-JYUFUKU-CHKKBN
+                                       =   SPA-GMN-JYUFUKU-CHKKBN-LIST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN-JYUFUKU-CHKKBN-LIST(IDX)
+                                          TO  SPA-GMN-JYUFUKU-CHKKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    25              TO  SPA-GMN-CUR
+               MOVE    "0041"          TO  SPA-ERRCD
+           END-IF
+      *
+          .
+       4107-JYUFUKU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2202,7 +2292,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    30              TO  SPA-GMN-CUR
                MOVE    "0024"          TO  SPA-ERRCD
-               GO      TO      4108-SRYNYKNKNRKBN-CHK-EXT
            END-IF
       *
            .
@@ -2227,7 +2316,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    31              TO  SPA-GMN-CUR
                MOVE    "0036"          TO  SPA-ERRCD
-               GO      TO      4108-KAGRPFLG-CHK-EXT
            END-IF
       *
            .
@@ -2252,7 +2340,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    32              TO  SPA-GMN-CUR
                MOVE    "0035"          TO  SPA-ERRCD
-               GO      TO      4108-HAKHOUFLG-CHK-EXT
            END-IF
       *
            .
@@ -2276,7 +2363,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    40              TO  SPA-GMN-CUR
                MOVE    "0025"          TO  SPA-ERRCD
-               GO      TO      4109-SYUNYKNKNRKBN-CHK-EXT
            END-IF
       *
            .
@@ -2300,7 +2386,6 @@
            IF      FLG-OK              =   ZERO
                MOVE    41              TO  SPA-GMN-CUR
                MOVE    "0026"          TO  SPA-ERRCD
-               GO      TO      4110-SYUSKYPRTKBN-CHK-EXT
            END-IF
       *
            .
@@ -2513,11 +2598,9 @@
       *
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      490-TOUROKU-EXT
-           END-IF
       *
-           EVALUATE    SPA-W01-KANRICD
+           IF      SPA-ERRCD           =   SPACE
+               EVALUATE    SPA-W01-KANRICD
                WHEN    "1007"
                    PERFORM 4900-KANRENCHK-SEC
                    IF      SPA-ERRCD        =   SPACE
@@ -2535,8 +2618,9 @@
                    IF      SPA-ERRCD        =   SPACE
                        MOVE    "1007"           TO  SPA-WIDCD
                    END-IF
-          END-EVALUATE
-      *     
+              END-EVALUATE
+          END-IF
+      *
            .
        490-TOUROKU-EXT.
            EXIT.
@@ -2745,6 +2829,8 @@
            MOVE    SPA-GMN-JISYOKBN        TO  SYS-1017-JINMEI-USE
            MOVE    SPA-GMN-HAKKOKBN        TO  SYS-1017-KARUTE-HAKKO
            MOVE    SPA-GMN-HOJYOKBN        TO  SYS-1017-JIHIHKN-TAX
+           MOVE    SPA-GMN-DOUMEI-CHKFLG   TO  SYS-1017-DOUMEI-CHKFLG
+           MOVE    SPA-GMN-JYUFUKU-CHKKBN  TO  SYS-1017-JYUFUKU-CHKKBN
       *
            MOVE    SYS-1017-REC            TO  SYSKANRI-REC
       *
@@ -2941,19 +3027,18 @@
                AND     SPA-GMN-DATA (4)     =   "1"
                    MOVE    "0005"               TO  SPA-ERRCD
                    MOVE    4                    TO  SPA-GMN-CUR
-                   GO      TO      4900-KANRENCHK-EXT
                END-IF
            END-IF
       *
       *    時間外チェックありの時、ゼロはエラー
-           IF      SPA-GMN-JIKANTOKU-CHK   =   "1"
+           IF     (SPA-ERRCD               =   SPACE  )  AND
+                  (SPA-GMN-JIKANTOKU-CHK   =   "1"    )
                IF     (SPA-NAI-JIKANCHK-WEEK(1)    =   ZERO )  AND
                       (SPA-NAI-JIKANCHK-WEEK(2)    =   ZERO )  AND
                       (SPA-NAI-JIKANCHK-SAT (1)    =   ZERO )  AND
                       (SPA-NAI-JIKANCHK-SAT (2)    =   ZERO )
                    MOVE    "0033"              TO  SPA-ERRCD
                    MOVE    51                  TO  SPA-GMN-CUR
-                   GO      TO      4900-KANRENCHK-EXT
                END-IF
            END-IF
       *
@@ -3183,6 +3268,24 @@
            END-PERFORM
            MOVE    2               TO  W07-HOJYOKBN-COUNT
       *
+      *    同姓同名チェック
+           MOVE    SPA-GMN-DOUMEI-CHKFLG-G     TO  W07-DOUMEI-CHKFLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN-DOUMEI-CHKFLG-LIST (IDX)
+                                       TO  W07-DOUMEI-CHKFLG-ITEM(IDX)
+           END-PERFORM
+           MOVE    2               TO  W07-DOUMEI-CHKFLG-COUNT
+      *
+      *    同姓同名チェック
+           MOVE    SPA-GMN-JYUFUKU-CHKKBN-G    TO  W07-JYUFUKU-CHKKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-JYUFUKU-MAX
+               MOVE    SPA-GMN-JYUFUKU-CHKKBN-LIST (IDX)
+                                       TO  W07-JYUFUKU-CHKKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-JYUFUKU-MAX TO  W07-JYUFUKU-CHKKBN-COUNT
+      *
       *    入金管理区分（診療行為機能情報）
            MOVE    SPA-GMN-SRYNYKNKNRKBN-G TO  W07-SRYNYKNKNRKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3400,6 +3503,12 @@
                WHEN    "0023"
                    MOVE    "自費保険の補助区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "0040"
+                   MOVE    "同姓同名者リスト区分がありません。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0041"
+                   MOVE    "二重登録疑いリスト区分がありません。"
+                                                       TO  SPA-ERRMSG
                WHEN    "0024"
                    MOVE    "入金管理区分がありません。"
                                                        TO  SPA-ERRMSG
@@ -3592,6 +3701,10 @@
                    MOVE  "HAKKOKBN"        TO   MCP-WIDGET
                WHEN    23
                    MOVE  "HOJYOKBN"        TO   MCP-WIDGET
+               WHEN    24
+                   MOVE  "DOUMEI_CHKFLG"   TO   MCP-WIDGET
+               WHEN    25
+                   MOVE  "JYUFUKU_CHKKBN"  TO   MCP-WIDGET
       *
                WHEN    30
                    MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
@@ -3727,6 +3840,10 @@
                WHEN    "HAKKOKBN"
                    MOVE    23              TO  SPA-GMN-CUR
                WHEN    "HOJYOKBN"
+                   MOVE    24              TO  SPA-GMN-CUR
+               WHEN    "DOUMEI_CHKFLG"
+                   MOVE    25              TO  SPA-GMN-CUR
+               WHEN    "JYUFUKU_CHKKBN"
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN    "SRYNYKNKNRKBN"
