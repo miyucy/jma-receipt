@@ -16,120 +16,93 @@
       * 113-8621, Japan.
       ********************************************************************
         02  S03.
-              03  S03-PTNUM.
-                04  S03-VALUE   PIC X(21).
-              03  S03-SRYYMD.
-                04  S03-VALUE   PIC X(10).
-              03  S03-KANANAME.
-                04  S03-VALUE   PIC X(51).
-              03  S03-NAME.
-                04  S03-VALUE   PIC X(51).
-              03  S03-SEX.
-                04  S03-VALUE   PIC X(5).
-              03  S03-BIRTHDAY.
-                04  S03-VALUE   PIC X(10).
-              03  S03-HKNCOMBI.
-                04  S03-VALUE   PIC X(31).
-              03  S03-RATE.
-                04  S03-VALUE   PIC X(7).
-              03  S03-SRYKA.
-                04  S03-VALUE   PIC X(11).
-              03  S03-HAKYMD.
-                04  S03-VALUE   PIC X(10).
-              03  S03-DENPNUM.
-                04  S03-VALUE   PIC X(11).
-              03  S03-SSUHKNTEN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-SJTHKNTEN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-SYCHKNTEN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-CSYHKNTEN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-ZTKHKNTEN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-SDOHKNTEN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-TOTALHKNTEN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-HKNTEKMONEY.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-HKNTEKGAI.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-SYKMONEY.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-FTNTOTAL.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-RJNFTN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-ZENMISYU.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-GZUHKNTEN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-KOHFTN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-YKZFTN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-JIHI5.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-JIHI2.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-JIHI1.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-ETCHKNTEN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-KNSHKNTEN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-JIHITAX.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-JIHITOTAL.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-JIHI4.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-JIHI3.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-DENPJTI.
-                04  S03-VALUE   PIC X(11).
-              03  S03-NYUKINGK1.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-GOKMISYU.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-NAIYO.
-                04  S03-VALUE   PIC X(11).
-              03  S03-MISYUZAN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-NYUKINGK2.
-                04  S03-VALUE   PIC S9(10).
+              03  S03-PTNUM     PIC X(20).
+              03  S03-SRYYMD    PIC X(9).
+              03  S03-KANANAME  PIC X(50).
+              03  S03-NAME      PIC X(50).
+              03  S03-SEX       PIC X(4).
+              03  S03-BIRTHDAY  PIC X(9).
+              03  S03-HKNCOMBI  PIC X(30).
+              03  S03-RATE      PIC X(6).
+              03  S03-SRYKA     PIC X(10).
+              03  S03-NYUGAIKBN PIC X(6).
+              03  S03-NAIYO     PIC X(10).
+              03  S03-DENPNUM   PIC X(10).
+              03  S03-DENPJTI   PIC X(10).
+              03  S03-HAKYMD    PIC X(9).
+              03  S03-SSUHKNTEN PIC S9(10).
+              03  S03-SDOHKNTEN PIC S9(10).
+              03  S03-ZTKHKNTEN PIC S9(10).
+              03  S03-TYKHKNTEN PIC S9(10).
+              03  S03-CSYHKNTEN PIC S9(10).
+              03  S03-SYCHKNTEN PIC S9(10).
+              03  S03-SJTHKNTEN PIC S9(10).
+              03  S03-KNSHKNTEN PIC S9(10).
+              03  S03-GZUHKNTEN PIC S9(10).
+              03  S03-ETCHKNTEN PIC S9(10).
+              03  S03-TOTALHKNTEN
+                                PIC S9(10).
+              03  S03-SSUTGMONEY
+                                PIC S9(10).
+              03  S03-SDOTGMONEY
+                                PIC S9(10).
+              03  S03-ZTKTGMONEY
+                                PIC S9(10).
+              03  S03-TYKTGMONEY
+                                PIC S9(10).
+              03  S03-CSYTGMONEY
+                                PIC S9(10).
+              03  S03-SYCTGMONEY
+                                PIC S9(10).
+              03  S03-SJTGMONEY PIC S9(10).
+              03  S03-KNSTGMONEY
+                                PIC S9(10).
+              03  S03-GZUTGMONEY
+                                PIC S9(10).
+              03  S03-ETCTGMONEY
+                                PIC S9(10).
+              03  S03-HKNTEKMONEY
+                                PIC S9(10).
+              03  S03-HKNTEKGAI PIC S9(10).
+              03  S03-JIHIMSG-G OCCURS  5.
+                04  S03-JIHIMSG PIC X(20).
+              03  S03-JIHI1     PIC S9(10).
+              03  S03-JIHI2     PIC S9(10).
+              03  S03-JIHI3     PIC S9(10).
+              03  S03-JIHI4     PIC S9(10).
+              03  S03-JIHI5     PIC S9(10).
+              03  S03-JIHITOTAL PIC S9(10).
+              03  S03-JIHI1TAX  PIC S9(10).
+              03  S03-JIHI2TAX  PIC S9(10).
+              03  S03-JIHI3TAX  PIC S9(10).
+              03  S03-JIHI4TAX  PIC S9(10).
+              03  S03-JIHI5TAX  PIC S9(10).
+              03  S03-JIHITAXTOTAL
+                                PIC S9(10).
+              03  S03-JIHITAX   PIC S9(10).
+              03  S03-YKZFTN    PIC S9(10).
+              03  S03-RJNFTN    PIC S9(10).
+              03  S03-KOHFTN    PIC S9(10).
+              03  S03-FTNTOTAL  PIC S9(10).
+              03  S03-RSISHOSHIN
+                                PIC S9(10).
+              03  S03-RSISAISHIN
+                                PIC S9(10).
+              03  S03-RSISDO    PIC S9(10).
+              03  S03-RSIETC    PIC S9(10).
+              03  S03-SYKMONEY  PIC S9(10).
+              03  S03-NYUKINGK1 PIC S9(10).
+              03  S03-MISYUZAN  PIC S9(10).
+              03  S03-ZENMISYU  PIC S9(10).
+              03  S03-GOKMISYU  PIC S9(10).
+              03  S03-NYUKINGK2 PIC S9(10).
               03  S03-NYUKINYMD.
-                04  S03-VALUE   PIC X(11).
-              03  S03-RIREKIIN.
-                04  S03-VALUE   PIC S9(2).
-              03  S03-TYKHKNTEN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-SSUTGMONEY.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-SDOTGMONEY.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-ZTKTGMONEY.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-TYKTGMONEY.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-CSYTGMONEY.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-SYCTGMONEY.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-SJTGMONEY.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-KNSTGMONEY.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-GZUTGMONEY.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-ETCTGMONEY.
-                04  S03-VALUE   PIC S9(10).
+                04  S03-VALUE   PIC X(10).
               03  S03-NYUKINHOUHOU-COMBO.
                 04  S03-NYUKINHOUHOU PIC X(27).
                 04  S03-NYUKINHOUHOU-COUNT   PIC S9(9)   BINARY.
                 04  S03-NYUKINHOUHOULST      PIC X(27) OCCURS 3 TIMES.
+              03  S03-RIREKIIN PIC S9(2).
               03  S03-SCROLLEDWINDOW1.
                 04  S03-CLIST1.
                   05  S03-CLIST1-COUNT   PIC S9(9)   BINARY.
@@ -140,27 +113,3 @@
                   06  S03-TSYORIYMD   PIC X(11).
                   06  S03-TJTI    PIC X(12).
                   05  S03-SELECT  PIC X       OCCURS  10 TIMES.
-              03  S03-JIHIMSG-G OCCURS  5.
-                04  S03-JIHIMSG PIC X(20).
-              03  S03-JIHITAXTOTAL.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-JIHI1TAX.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-JIHI2TAX.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-JIHI3TAX.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-JIHI4TAX.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-JIHI5TAX.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-RSISHOSHIN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-RSISAISHIN.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-RSISDO.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-RSIETC.
-                04  S03-VALUE   PIC S9(10).
-              03  S03-NYUGAIKBN.
-                04  S03-VALUE   PIC X(06).

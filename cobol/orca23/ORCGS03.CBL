@@ -433,7 +433,6 @@
       *
       *************************************************************
       *    ½é´ü²èÌÌ½èÍý
-
       *************************************************************
        300-SCREEN-SEC             SECTION.
       *
@@ -634,7 +633,7 @@
       *    ¹ç·×ÀÁµá³Û·×»»½èÍý
            PERFORM    3102-SEIKYU-KEI-SEC.
       *    Á°²óÌ¤¼ý
-           PERFORM    3101-ZENMISYU-SEC.              
+           PERFORM    3101-ZENMISYU-SEC.
       *    ¹ç·×Ì¤¼ý³Û
            IF      SPA-GMN-MISYU-ZAN   >   ZERO
                COMPUTE SPA-GMN-SEIGOK      =   SPA-GMN-MISYU-ZAN
@@ -847,7 +846,8 @@
                    MOVE    1                 TO  FLG-SYORI
                END-IF
       *
-               IF     (SPA-S01-DENPNUM    <=      SYU-DENPNUM)
+               IF     (SPA-S01-DENPPRTYMD  <  SYU-DENPPRTYMD )
+                OR    (SPA-S01-DENPNUM     =  SYU-DENPNUM )
                        MOVE    1     TO      FLG-SYORI
                END-IF
       *

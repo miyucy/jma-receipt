@@ -21,5 +21,5 @@
       *****************************************************************
          02  SERR.
             03  SERR-FIXED1.
-              04  SERR-ERRCODE    PIC X(11).
-              04  SERR-ERRMSG PIC X(61).
+              04  SERR-ERRCODE    PIC X(10).
+              04  SERR-ERRMSG PIC X(60).

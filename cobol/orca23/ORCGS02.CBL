@@ -3386,6 +3386,8 @@
                                        TO  SPA-S01-FTNRATEMEI
            MOVE    SPA-GMN-TDENPNUM (SPA-GMN-SELBAN)
                                        TO  SPA-S01-DENPNUM
+           MOVE    SPA-NAI-HAKYMD   (SPA-GMN-SELBAN)
+                                       TO  SPA-S01-DENPPRTYMD
            MOVE    SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
                                        TO  SPA-S01-NYUGAIKBN
            MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-S01-HNYUGAIKBN

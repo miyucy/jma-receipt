@@ -15,22 +15,24 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-            02  S02.
+        02  S02.
+              03  S02-B03S.
+                04  S02-B03S-STATE   PIC S9(9)   BINARY.
               03  S02-PTNUM-STATE
                                 PIC S9(9)   BINARY.
-              03  S02-PTNUM     PIC X(21).
+              03  S02-PTNUM     PIC X(20).
               03  S02-KANANAME.
-                04  S02-VALUE   PIC X(51).
+                04  S02-VALUE   PIC X(50).
               03  S02-NAME.
-                04  S02-VALUE   PIC X(51).
+                04  S02-VALUE   PIC X(50).
               03  S02-BIRTHDAY.
-                04  S02-VALUE   PIC X(10).
+                04  S02-VALUE   PIC X(9).
               03  S02-SEX.
-                04  S02-VALUE   PIC X(3).
+                04  S02-VALUE   PIC X(2).
               03  S02-SELNUM.
-                04  S02-VALUE   PIC X(5).
+                04  S02-VALUE   PIC X(4).
               03  S02-SRYYM.
-                04  S02-VALUE   PIC X(8).
+                04  S02-VALUE   PIC X(7).
               03  S02-SCROLLEDWINDOW1.
                 04  S02-THLIST.
                   05  S02-COUNT   PIC S9(9)   BINARY.
@@ -38,7 +40,7 @@
                   06  S02-NUM        PIC X(5).
                   06  S02-DENPNUM    PIC X(9).
                   06  S02-NYUGAI     PIC X(4).
-                  06  S02-HKN        PIC X(17).
+                  06  S02-HKN        PIC X(30).
                   06  S02-FTNRATE    PIC X(5).
                   06  S02-SKYSTYMD   PIC X(11).
                   06  S02-SRYYMD2    PIC X(15).
@@ -47,11 +49,9 @@
                   06  S02-DENPJTI    PIC X(12).
                   05  S02-SELECT  PIC X       OCCURS  60 TIMES.
               03  S02-SRYKACOMBO.
-                04  S02-SRYKA         PIC X(22).
+                04  S02-SRYKA         PIC X(21).
                 04  S02-SRYKA-COUNT   PIC S9(9)   BINARY.
                 04  S02-SRYKALST      PIC X(21)   OCCURS  99 TIMES.
-              03  S02-B03S.
-                04  S02-B03S-STATE   PIC S9(9)   BINARY.
               03  S02-NYUGAIKBNCOMBO.
                 04  S02-NYUGAIKBN.
                   05  S02-VALUE   PIC X(8).
