@@ -67,6 +67,7 @@
       *                                     のみの剤もレセ記載の対象にする
       *  01.00.27    NACL-門脇    04/02/05  診療コード＊数量の累計編集
       *  01.00.28    NACL-門脇    04/02/10  生保の一部負担金額記載修正
+      *  01.00.29    NACL-門脇    04/02/27  未実施減算月途中変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -237,6 +238,8 @@
            03  SYUKEI-IDX3                             PIC 9(03).
            03  SYUKEI-IDX4                             PIC 9(03).
            03  GENSAN-IDX                              PIC 9(03).
+           03  GENSAN-IDX2                             PIC 9(03).
+           03  IDV                                     PIC 9(02).
            03  NYUINACT-IDX                            PIC 9(03).
            03  KOHFTN-IDX                              PIC 9(03).
            03  SYSKAN-IDX                              PIC 9(03).
@@ -407,6 +410,10 @@
            03  WRK-TOKKI                               PIC X(02).
            03  TOKKI-IDX                               PIC 9(02). 
       *
+           03  WRK-SRYYM-5000                          PIC X(06).
+      *
+           03  WRK-SYS5000-COUNT                       PIC 9(02).
+      *
            03  WRK-KHNTEN                              PIC 9(08).
            03  WRK-KSNTEN                              PIC S9(08).
            03  WRK-SENTEI-KHNTEN                       PIC 9(08).
@@ -425,6 +432,8 @@
            03  WRK-SYS-MIJISI-T.
              04  WRK-SYS-MIJISI-OCC                    OCCURS  4.
                05  WRK-SYS-MIJISI                      PIC 9(01).
+               05  WRK-SYS-MIJISI-FLG                  PIC 9(01)
+                                                       OCCURS 31.
                05  WRK-SYS-MIJISI-ZAITEN               PIC 9(08).
       *
            03  WRK-SKJ-FTN-T.
@@ -786,6 +795,9 @@
            END-IF
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
+      *
+             MOVE      WRK-PARA-SRYYM    TO  WRK-SRYYM-5000
+             PERFORM   SYS-5000-CHK-SEC
       *      食事・未実施減算情報（システム管理テーブルより）
              MOVE     ZERO            TO  WRK-SHOKUJIRYOYO
                                           WRK-TOKUKANRIKASAN
@@ -815,6 +827,12 @@
       *
              MOVE   "SYSKANRI-KEY"       TO  WK-PATH
              PERFORM   CSR-CLOSE-SEC
+      *
+             IF        WRK-SYS5000-COUNT    =     ZERO
+                 CONTINUE
+             ELSE
+                 PERFORM  SYS-5000-GET-SEC
+             END-IF
       *
            ELSE
       *
@@ -892,6 +910,96 @@
        100-INIT-EXT.
            EXIT.
       *
+      ******************************************************************
+      *    月内に複数の医療期間情報がないか検索（医療機関減算の確認）  *
+      ******************************************************************
+       SYS-5000-CHK-SEC                 SECTION.
+      *
+           MOVE     ZERO               TO  WRK-SYS5000-COUNT
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5000"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    WRK-SRYYM-5000      TO  ORC-DBYMD(1:6)
+           MOVE    "__"                TO  ORC-DBYMD(7:2)
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY11"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+               PERFORM 960-KANRIMST-READ-SEC
+               PERFORM  UNTIL    FLG-SYSKANRI   =   1
+                   ADD     1     TO        WRK-SYS5000-COUNT
+                   MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+                   PERFORM 960-KANRIMST-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE   "SYSKANRI-KEY11"        TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+           .
+      *
+       SYS-5000-CHK-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    月内の医療期間情報取得（医療機関減算情報）                  *
+      ******************************************************************
+       SYS-5000-GET-SEC                 SECTION.
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5000"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    WRK-SRYYM-5000      TO  ORC-DBYMD(1:6)
+           MOVE    "__"                TO  ORC-DBYMD(7:2)
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY11"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+               PERFORM 960-KANRIMST-READ-SEC
+               PERFORM  UNTIL    FLG-SYSKANRI   =   1
+                 MOVE   MCPDATA-REC  TO  SYS-5000-REC
+                 MOVE   SYS-5000-STYUKYMD(7:2)  TO  IDV
+                 PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
+                            UNTIL     GENSAN-IDX   >   4
+                    IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"    
+                        MOVE   1   TO   WRK-SYS-MIJISI(GENSAN-IDX)
+                        PERFORM VARYING GENSAN-IDX2 FROM IDV BY 1
+                           UNTIL     GENSAN-IDX2   >   31
+                          MOVE   1      TO
+                             WRK-SYS-MIJISI-FLG(GENSAN-IDX GENSAN-IDX2)
+                        END-PERFORM
+                    ELSE
+                        PERFORM VARYING GENSAN-IDX2 FROM IDV BY 1
+                           UNTIL     GENSAN-IDX2   >   31
+                          MOVE   ZERO   TO
+                             WRK-SYS-MIJISI-FLG(GENSAN-IDX GENSAN-IDX2)
+                        END-PERFORM
+                    END-IF
+                 END-PERFORM
+                 MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+                 PERFORM 960-KANRIMST-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE   "SYSKANRI-KEY11"        TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+           .
+      *
+       SYS-5000-GET-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    シスカンの編集
       *****************************************************************
@@ -901,6 +1009,11 @@
                     UNTIL     GENSAN-IDX   >   4
                 IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"    
                     MOVE   1   TO   WRK-SYS-MIJISI(GENSAN-IDX)
+                    PERFORM VARYING GENSAN-IDX2 FROM 1 BY 1
+                        UNTIL     GENSAN-IDX2   >   31
+                          MOVE   1   TO
+                             WRK-SYS-MIJISI-FLG(GENSAN-IDX GENSAN-IDX2)
+                    END-PERFORM
                 END-IF
            END-PERFORM
       *
@@ -1360,17 +1473,23 @@
                                 IF   WRK-DAY21(IDY)  NOT =  ZERO
                                   EVALUATE WRK-DAY1-NYUTENTTLKBN(IDY)
                                     WHEN   903
-                                      MOVE   RECE62-HKNCOMBI (IDX1)
-                                        TO   WRK-MIJ-HKNCOMBI(IDX1)
-                                      MOVE   WRK-DAY21(IDY)  
-                                        TO   WRK-MIJ-DAY90
-                                             (IDX1 SYUKEI-IDX3 IDY) 
+                                      IF  WRK-SYS-MIJISI-FLG
+                                             (SYUKEI-IDX3 IDY)  = 1
+                                         MOVE   RECE62-HKNCOMBI (IDX1)
+                                           TO   WRK-MIJ-HKNCOMBI(IDX1)
+                                         MOVE   WRK-DAY21(IDY)  
+                                           TO   WRK-MIJ-DAY90
+                                                (IDX1 SYUKEI-IDX3 IDY) 
+                                      END-IF
                                     WHEN   920
-                                      MOVE   RECE62-HKNCOMBI (IDX1)
-                                        TO   WRK-MIJ-HKNCOMBI(IDX1)
-                                      MOVE   WRK-DAY21(IDY)  
-                                        TO   WRK-MIJ-DAY92
-                                             (IDX1 SYUKEI-IDX3 IDY)
+                                      IF  WRK-SYS-MIJISI-FLG
+                                             (SYUKEI-IDX3 IDY)  = 1
+                                         MOVE   RECE62-HKNCOMBI (IDX1)
+                                           TO   WRK-MIJ-HKNCOMBI(IDX1)
+                                         MOVE   WRK-DAY21(IDY)  
+                                           TO   WRK-MIJ-DAY92
+                                                (IDX1 SYUKEI-IDX3 IDY)
+                                      END-IF
                                   END-EVALUATE
                                 END-IF
                                END-PERFORM
@@ -1395,17 +1514,23 @@
                                 IF  WRK-DAY21-SENTEI(IDY)  NOT =  ZERO
                                   EVALUATE WRK-DAY1-NYUTENTTLKBN(IDY)
                                     WHEN   903
-                                      MOVE   RECE62-HKNCOMBI (IDX1)
-                                        TO   WRK-MIJ-HKNCOMBI(IDX1)
-                                      MOVE   WRK-DAY21-SENTEI(IDY)  
-                                        TO   WRK-MIJ-DAY90
-                                             (IDX1 SYUKEI-IDX3 IDY) 
+                                      IF  WRK-SYS-MIJISI-FLG
+                                             (SYUKEI-IDX3 IDY)  = 1
+                                         MOVE   RECE62-HKNCOMBI (IDX1)
+                                           TO   WRK-MIJ-HKNCOMBI(IDX1)
+                                         MOVE   WRK-DAY21-SENTEI(IDY)  
+                                           TO   WRK-MIJ-DAY90
+                                                (IDX1 SYUKEI-IDX3 IDY) 
+                                      END-IF
                                     WHEN   920
-                                      MOVE   RECE62-HKNCOMBI (IDX1)
-                                        TO   WRK-MIJ-HKNCOMBI(IDX1)
-                                      MOVE   WRK-DAY21-SENTEI(IDY)  
-                                        TO   WRK-MIJ-DAY92
-                                             (IDX1 SYUKEI-IDX3 IDY)
+                                      IF  WRK-SYS-MIJISI-FLG
+                                             (SYUKEI-IDX3 IDY)  = 1
+                                         MOVE   RECE62-HKNCOMBI (IDX1)
+                                           TO   WRK-MIJ-HKNCOMBI(IDX1)
+                                         MOVE   WRK-DAY21-SENTEI(IDY)  
+                                           TO   WRK-MIJ-DAY92
+                                                (IDX1 SYUKEI-IDX3 IDY)
+                                      END-IF
                                   END-EVALUATE
                                 END-IF
                                END-PERFORM
@@ -6789,6 +6914,8 @@
                    IF   WRK-PARA-SRYYM    NOT =  ZERO
                       CONTINUE
                    ELSE
+                      MOVE      RECE62-SRYYM   TO  WRK-SRYYM-5000
+                      PERFORM   SYS-5000-CHK-SEC
       *               食事・未実施減算情報（システム管理テーブルより）
                       MOVE     ZERO      TO  WRK-SHOKUJIRYOYO
                                              WRK-TOKUKANRIKASAN
@@ -6811,6 +6938,11 @@
                        END-IF
       *
                       END-PERFORM
+                      IF        WRK-SYS5000-COUNT    =     ZERO
+                          CONTINUE
+                      ELSE
+                          PERFORM  SYS-5000-GET-SEC
+                      END-IF
                    END-IF
            END-READ
            .

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    04/02/27  未実施減算月途中変更対応
       *****************************************************************
       *
       *
@@ -65,6 +66,8 @@
            03  ID1                 PIC 9(04).
            03  KSN-IDX             PIC 9(04).
            03  GENSAN-IDX          PIC 9(04).
+           03  GENSAN-IDX2         PIC 9(04).
+           03  IDV                 PIC 9(02).
            03  SRYACT-IDX          PIC 9(04).
       *
       *    コンスタント値
@@ -106,6 +109,8 @@
            03  WRK-KSNKBN                  PIC 9(03).
            03  WRK-ZAISKBKBN               PIC X(01).
       *
+           03  WRK-SYS5000-COUNT           PIC 9(02).
+      *
            03  WRK-GENSAN2-MIJISI          PIC 9(01).
            03  WRK-GENSAN3-MIJISI          PIC 9(01).
            03  WRK-GENSAN4-MIJISI          PIC 9(01).
@@ -124,6 +129,13 @@
                    07  WRK-NYUKSN          PIC X(09).
                    07  WRK-NYUKSN-ZAITEN   PIC 9(08).
                    07  WRK-NYUKSN-DAY      PIC 9(03)  OCCURS 31.
+      *
+      *    未実施減算退避用フラグテーブル
+           03  WRK-GENSAN-TABLE.
+               05  WRK-GENSAN-INF          OCCURS  31.
+                   07  WRK-GENSAN-INNAI    PIC X(01).
+                   07  WRK-GENSAN-IRYO     PIC X(01).
+                   07  WRK-GENSAN-JYOKU    PIC X(01).
       *
       *    院内感染防止対策未実施減算ワーク
            03  WRK-GENSAN2                 PIC X(09).
@@ -437,6 +449,9 @@
       *老人対象患者チェック
            PERFORM   210-RJN-TAISYO-CHK-SEC
       *
+      *月内に複数の入院基本情報（５０００）がないか検索
+           PERFORM   210-SYS-5000-CHK-SEC
+      *
       *医療機関減算情報の取得（システム管理テーブルより）
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYSKANRI-REC
@@ -466,6 +481,11 @@
       **                          ELSE
       **                              MOVE  "190799770"  TO  WRK-GENSAN2
       **                          END-IF
+                                PERFORM VARYING GENSAN-IDX2 FROM 1 BY 1
+                                    UNTIL     GENSAN-IDX2   >   31
+                                  MOVE   "1"  TO
+                                          WRK-GENSAN-INNAI(GENSAN-IDX2)
+                                END-PERFORM
                             WHEN  3
                                 MOVE  "190111690"  TO  WRK-GENSAN3
       **                          IF   FLG-RJN    =    ZERO
@@ -473,6 +493,11 @@
       **                          ELSE
       **                              MOVE  "190809090"  TO  WRK-GENSAN3
       **                          END-IF
+                                PERFORM VARYING GENSAN-IDX2 FROM 1 BY 1
+                                    UNTIL     GENSAN-IDX2   >   31
+                                  MOVE   "1"  TO
+                                          WRK-GENSAN-IRYO(GENSAN-IDX2)
+                                END-PERFORM
                             WHEN  4
                                 MOVE  "190111790"  TO  WRK-GENSAN4
       **                          IF   FLG-RJN    =    ZERO
@@ -480,10 +505,25 @@
       **                          ELSE
       **                              MOVE  "190809190"  TO  WRK-GENSAN4
       **                          END-IF
+                                PERFORM VARYING GENSAN-IDX2 FROM 1 BY 1
+                                    UNTIL     GENSAN-IDX2   >   31
+                                  MOVE   "1"  TO
+                                          WRK-GENSAN-JYOKU(GENSAN-IDX2)
+                                END-PERFORM
                         END-EVALUATE
                     END-IF
                END-PERFORM
            END-IF
+      *    システム管理クローズ
+           MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
+      *
+           IF        WRK-SYS5000-COUNT    =     ZERO
+                 CONTINUE
+           ELSE
+                 PERFORM  210-SYS-5000-GET-SEC
+           END-IF
+      *
       *
       *労災入院時の入院料加算取得（入院会計より）
            MOVE    ZERO                    TO  KSN-IDX
@@ -774,7 +814,7 @@
       *        減算情報（システム管理）
                IF      (WRK-NYUINKHN(IDX1)   NOT =         SPACE)  AND
                        (WRK-GAIHAKU(IDX1)        =         SPACE)  AND
-                       (WRK-GENSAN2         NOT =         SPACE)
+                       (WRK-GENSAN-INNAI(IDX1)   NOT =     SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GENSAN2       TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
@@ -782,7 +822,7 @@
                END-IF
                IF      (WRK-NYUINKHN(IDX1)   NOT =         SPACE)  AND
                        (WRK-GAIHAKU(IDX1)        =         SPACE)  AND
-                       (WRK-GENSAN3         NOT =         SPACE)
+                       (WRK-GENSAN-IRYO(IDX1)   NOT =      SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GENSAN3       TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
@@ -790,7 +830,7 @@
                END-IF
                IF      (WRK-NYUINKHN(IDX1)   NOT =         SPACE)  AND
                        (WRK-GAIHAKU(IDX1)        =         SPACE)  AND
-                       (WRK-GENSAN4         NOT =         SPACE)
+                       (WRK-GENSAN-JYOKU(IDX1)   NOT =     SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GENSAN4       TO  LNK-SROUNYUIN-SRYCD
                                            (IDX1 WRK-MEISAISU)
@@ -1378,6 +1418,146 @@
       *
            .
        210-SRYACT-HENSYU-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    月内に複数の医療期間情報がないか検索（医療機関減算の確認）  *
+      ******************************************************************
+       210-SYS-5000-CHK-SEC                 SECTION.
+      *
+           MOVE    ZERO                TO  WRK-SYS5000-COUNT
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5000"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    LNK-SROUNYUIN-SANTEIYM
+                                       TO  ORC-DBYMD(1:6)
+           MOVE    "__"                TO  ORC-DBYMD(7:2)
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY11"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+               PERFORM  910-SYSKANRI-READ-SEC
+               PERFORM  UNTIL    FLG-SYSKANRI   =   1
+                   ADD     1     TO        WRK-SYS5000-COUNT
+                   MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+                   PERFORM  910-SYSKANRI-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY11"    TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
+      *
+           .
+      *
+       210-SYS-5000-CHK-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    月内の医療期間情報取得（医療機関減算情報）                  *
+      ******************************************************************
+       210-SYS-5000-GET-SEC                 SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "5000"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    LNK-SROUNYUIN-SANTEIYM
+                                       TO  ORC-DBYMD(1:6)
+           MOVE    "__"                TO  ORC-DBYMD(7:2)
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY11"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+               PERFORM  910-SYSKANRI-READ-SEC
+               PERFORM  UNTIL    FLG-SYSKANRI   =   1
+                 MOVE   SYS-5000-STYUKYMD(7:2)  TO  IDV
+                 PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
+                            UNTIL     GENSAN-IDX   >   4
+                    IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"
+                        EVALUATE  GENSAN-IDX
+                            WHEN  2
+                              MOVE  "190080570"  TO  WRK-GENSAN2
+      **                        IF   FLG-RJN    =    ZERO
+      **                            MOVE  "190080570"  TO  WRK-GENSAN2
+      **                        ELSE
+      **                            MOVE  "190799770"  TO  WRK-GENSAN2
+      **                        END-IF
+                              PERFORM VARYING GENSAN-IDX2 FROM IDV BY 1
+                                  UNTIL     GENSAN-IDX2   >   31
+                                MOVE   "1"  TO
+                                        WRK-GENSAN-INNAI(GENSAN-IDX2)
+                              END-PERFORM
+                            WHEN  3
+                              MOVE  "190111690"  TO  WRK-GENSAN3
+      **                        IF   FLG-RJN    =    ZERO
+      **                            MOVE  "190111690"  TO  WRK-GENSAN3
+      **                        ELSE
+      **                            MOVE  "190809090"  TO  WRK-GENSAN3
+      **                        END-IF
+                              PERFORM VARYING GENSAN-IDX2 FROM IDV BY 1
+                                  UNTIL     GENSAN-IDX2   >   31
+                                MOVE   "1"  TO
+                                        WRK-GENSAN-IRYO(GENSAN-IDX2)
+                              END-PERFORM
+                            WHEN  4
+                              MOVE  "190111790"  TO  WRK-GENSAN4
+      **                        IF   FLG-RJN    =    ZERO
+      **                            MOVE  "190111790"  TO  WRK-GENSAN4
+      **                        ELSE
+      **                            MOVE  "190809190"  TO  WRK-GENSAN4
+      **                        END-IF
+                              PERFORM VARYING GENSAN-IDX2 FROM IDV BY 1
+                                  UNTIL     GENSAN-IDX2   >   31
+                                MOVE   "1"  TO
+                                        WRK-GENSAN-JYOKU(GENSAN-IDX2)
+                              END-PERFORM
+                        END-EVALUATE
+                    ELSE
+                        EVALUATE  GENSAN-IDX
+                            WHEN  2
+                              PERFORM VARYING GENSAN-IDX2 FROM IDV BY 1
+                                  UNTIL     GENSAN-IDX2   >   31
+                                MOVE   SPACE  TO
+                                        WRK-GENSAN-INNAI(GENSAN-IDX2)
+                              END-PERFORM
+                            WHEN  3
+                              PERFORM VARYING GENSAN-IDX2 FROM IDV BY 1
+                                  UNTIL     GENSAN-IDX2   >   31
+                                MOVE   SPACE  TO
+                                        WRK-GENSAN-IRYO(GENSAN-IDX2)
+                              END-PERFORM
+                            WHEN  4
+                              PERFORM VARYING GENSAN-IDX2 FROM IDV BY 1
+                                  UNTIL     GENSAN-IDX2   >   31
+                                MOVE   SPACE  TO
+                                        WRK-GENSAN-JYOKU(GENSAN-IDX2)
+                              END-PERFORM
+                        END-EVALUATE
+                    END-IF
+                 END-PERFORM
+                 MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+                 PERFORM  910-SYSKANRI-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY11"    TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
+      *
+           .
+      *
+       210-SYS-5000-GET-EXT.
            EXIT.
       *
       *****************************************************************
