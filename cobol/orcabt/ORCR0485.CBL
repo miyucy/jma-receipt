@@ -30,6 +30,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02/10/03  入外区分・処理区分の追加
+      *  01.00.02    NACL-藤原    03/01/09  通し番号の追加のため
+      *                                     ＭＯＮＰＥに変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -137,10 +139,14 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    自賠責     
-           COPY    "HC23.INC".
+      *****COPY    "HC23.INC".
+           COPY    "HCM23.INC"     REPLACING  //HCM23//
+                                   BY         //HC23//.
       *
       *    自賠責（続紙）     
-           COPY    "HC29.INC".
+      *****COPY    "HC29.INC".
+           COPY    "HCM29.INC"     REPLACING  //HCM29//
+                                   BY         //HC29//.
       *
       *    スパ領域
        01  SPA-AREA.
@@ -1656,10 +1662,12 @@
                                                RECE08-PRTRENNUM
                IF      CNT-PAGE            =   1                                 
                    MOVE    HC23                TO  RECE08-PRTDATA
-                   MOVE    "HC23"              TO  RECE08-FORMID
+      *************MOVE    "HC23"              TO  RECE08-FORMID
+                   MOVE    "HCM23.red"         TO  RECE08-FORMID
                ELSE
                    MOVE    HC29                TO  RECE08-PRTDATA
-                   MOVE    "HC29"              TO  RECE08-FORMID
+      *************MOVE    "HC29"              TO  RECE08-FORMID
+                   MOVE    "HCM29.red"         TO  RECE08-FORMID
                END-IF        
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC

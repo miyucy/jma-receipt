@@ -31,6 +31,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02/10/03  入外区分・処理区分の追加
       *  01.00.02    NACL-藤原    02/11/26  日付ファイルのクローズ追加
+      *  01.00.03    NACL-藤原    03/01/09  通し番号の追加のため
+      *                                     ＭＯＮＰＥに変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -138,10 +140,14 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    アフターケア（３７７０２）     
-           COPY    "HC18.INC".
+      *****COPY    "HC18.INC".
+           COPY    "HCM18.INC"     REPLACING  //HCM18//
+                                   BY         //HC18//.
       *
       *    アフターケア（続紙）     	
-           COPY    "HC20.INC".
+      *****COPY    "HC20.INC".
+           COPY    "HCM20.INC"     REPLACING  //HCM20//
+                                   BY         //HC20//.
       *
       *    スパ領域
        01  SPA-AREA.
@@ -1238,10 +1244,12 @@
                                                RECE08-PRTRENNUM
                IF      CNT-PAGE            =   1                                 
                    MOVE    HC18                TO  RECE08-PRTDATA
-                   MOVE    "HC18"              TO  RECE08-FORMID
+      *************MOVE    "HC18"              TO  RECE08-FORMID
+                   MOVE    "HCM18.red"         TO  RECE08-FORMID
                ELSE
                    MOVE    HC20                TO  RECE08-PRTDATA
-                   MOVE    "HC20"              TO  RECE08-FORMID
+      *************MOVE    "HC20"              TO  RECE08-FORMID
+                   MOVE    "HCM20.red"         TO  RECE08-FORMID
                END-IF        
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC

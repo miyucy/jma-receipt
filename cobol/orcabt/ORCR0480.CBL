@@ -30,6 +30,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02/10/03  入外区分・処理区分の追加
+      *  01.00.02    NACL-藤原    03/01/09  通し番号の追加のため
+      *                                     ＭＯＮＰＥに変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -137,10 +139,14 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    短期（３４７０７）     
-           COPY    "HC22.INC".
+      *****COPY    "HC22.INC".
+           COPY    "HCM22.INC"     REPLACING  //HCM22//
+                                   BY         //HC22//.
       *
       *    長期・短期（続紙）     
-           COPY    "HC24.INC".
+      *****COPY    "HC24.INC".
+           COPY    "HCM24.INC"     REPLACING  //HCM24//
+                                   BY         //HC24//.
       *
       *    スパ領域
        01  SPA-AREA.
@@ -839,6 +845,8 @@
            END-EVALUATE        
       *    氏名
            MOVE    RECE41-NAME         TO  HC24-PTNAME
+      *    カナ氏名
+           MOVE    RECE41-KANANAME     TO  HC24-PTKANANAME
       *    年齢
            MOVE    WRK-NENREI-X        TO  HC24-PTAGE
       *
@@ -1624,10 +1632,12 @@
                                                RECE08-PRTRENNUM
                IF      CNT-PAGE            =   1                                 
                    MOVE    HC22                TO  RECE08-PRTDATA
-                   MOVE    "HC22"              TO  RECE08-FORMID
+      *************MOVE    "HC22"              TO  RECE08-FORMID
+                   MOVE    "HCM22.red"         TO  RECE08-FORMID
                ELSE
                    MOVE    HC24                TO  RECE08-PRTDATA
-                   MOVE    "HC24"              TO  RECE08-FORMID
+      *************MOVE    "HC24"              TO  RECE08-FORMID
+                   MOVE    "HCM24.red"         TO  RECE08-FORMID
                END-IF        
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC
