@@ -100,6 +100,7 @@
       *
       *    添字領域
        01  IDX-AREA.
+           03  IDX0                                PIC 9(04).
            03  IDX1                                PIC 9(04).
            03  IDX2                                PIC 9(04).
            03  IDX3                                PIC 9(04).
@@ -115,6 +116,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-ADRS                            PIC 9(04).
+           03  CNT-PNT                             PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -151,6 +153,7 @@
            03  WRK-STIDX                           PIC 9(04).
            03  WRK-INPUTCD                         PIC X(20).
            03  WRK-CD-MCNT                         PIC 9(02).
+           03  WRK-KANACHK-MAE-INPUT               PIC X(500).
       *
       *
        01  WRK-WIDGET-AREA.
@@ -234,6 +237,7 @@
            03  CONST-KMK-ITEM-R    REDEFINES       CONST-KMK-ITEM-AREA.
                05  CONST-KMK-ITEM                  PIC X(30)
                                                    OCCURS  10.
+           03  CONST-BYOMEI-MAX                    PIC 9(05)   VALUE 80.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -3252,7 +3256,27 @@
       *    半角チェック
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI 
-           MOVE    SPA-GMN-Q01-BYOMEI (IDX1)
+      *
+           MOVE    ZERO                TO  CNT-PNT
+           MOVE    SPACE               TO  WRK-KANACHK-MAE-INPUT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   CONST-BYOMEI-MAX )
+                    OR   ( SPA-GMN-Q01-BYOMEI (IDX1) (IDX0 :  )
+                                       =   SPACE )
+      *
+               IF    ( SPA-GMN-Q01-BYOMEI (IDX1) (IDX0 : 1 )
+                                       =   "*" )
+                   CONTINUE
+               ELSE
+                   COMPUTE CNT-PNT =   CNT-PNT +   1
+                   MOVE    SPA-GMN-Q01-BYOMEI (IDX1) (IDX0 : 1 )
+                                       TO  WRK-KANACHK-MAE-INPUT
+                                                       (CNT-PNT : 1 )
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    WRK-KANACHK-MAE-INPUT
                                        TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
            IF    ( KANACHK-RC          =   ZERO )
@@ -4529,6 +4553,10 @@
                    UNTIL ( IDXC    >   5 )
                MOVE    SPA-GMN-Q01-BYOMEI(IDXC)
                                            TO  SPA-Q01-BYOMEI(IDXC)
+      *
+               INSPECT SPA-Q01-BYOMEI(IDXC)
+                       REPLACING   ALL "*" BY  "%"
+      *
                MOVE    SPA-NAI-Q01-SRYCD (IDXC)
                                            TO  SPA-Q01-SRYCD (IDXC)
            END-PERFORM
