@@ -394,11 +394,6 @@
       *
                MOVE    "PTINF-KEY10"       TO  ORC-DBPATH
                PERFORM 900-PTINF-READ-SEC
-      *TEST
-               IF      CNT-PAGE      >   5
-                  MOVE    1              TO  FLG-PTINF
-               END-IF
-      *TEST
            END-PERFORM
       *
              .
