@@ -1,0 +1,16 @@
+J022	{
+	fixed1	{
+		SRYYMD	{
+			value	varchar(15);
+		};
+		DAY1	{
+			value	varchar(3);
+		};
+		DAY2	{
+			value	varchar(3);
+		};
+		DAY3	{
+			value	varchar(3);
+		};
+	};
+};

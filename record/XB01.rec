@@ -1,0 +1,26 @@
+ORCXB01	{
+	fixed3	{
+		SELNO	{
+			value	number(4);
+		};
+		scrolledwindow2	{
+			LIST    	{
+				count	int;
+				item	{
+					value1	varchar(4);
+					value2	varchar(40);
+					value3	varchar(4);
+					value4	varchar(9);
+					value5	varchar(9);
+					value6	varchar(8);
+					value7	varchar(9);
+					value8	varchar(8);
+					value9	varchar(8);
+					value10	varchar(8);
+					value11	varchar(4);
+				}	[100];
+				select	bool[100];
+			};
+		};
+	};
+};

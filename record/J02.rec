@@ -1,0 +1,194 @@
+J02	{
+	fixed1	{
+		PTNUM	{
+			value	varchar(21);
+		};
+		SRYYM	{
+			value	varchar(7);
+		};
+		KANANAME	{
+			value	varchar(51);
+		};
+		NAME	{
+			value	varchar(51);
+		};
+		BIRTHDAY	{
+			value	varchar(10);
+		};
+		MEISYO	{
+			value	varchar(51);
+		};
+		NUM	{
+			value	varchar(4);
+		};
+		HKNCOMBI	{
+			value	varchar(5);
+		};
+		HKNCOMBIMEI	{
+			value	varchar(61);
+		};
+		SEX	{
+			value	varchar(3);
+		};
+		DAY01	{
+			value	varchar(3);
+		};
+		DAY02	{
+			value	varchar(3);
+		};
+		DAY03	{
+			value	varchar(3);
+		};
+		DAY04	{
+			value	varchar(3);
+		};
+		DAY05	{
+			value	varchar(3);
+		};
+		DAY06	{
+			value	varchar(3);
+		};
+		DAY07	{
+			value	varchar(3);
+		};
+		DAY08	{
+			value	varchar(3);
+		};
+		DAY09	{
+			value	varchar(3);
+		};
+		DAY10	{
+			value	varchar(3);
+		};
+		DAY11	{
+			value	varchar(3);
+		};
+		DAY12	{
+			value	varchar(3);
+		};
+		DAY13	{
+			value	varchar(3);
+		};
+		DAY14	{
+			value	varchar(3);
+		};
+		DAY15	{
+			value	varchar(3);
+		};
+		DAY16	{
+			value	varchar(3);
+		};
+		DAY17	{
+			value	varchar(3);
+		};
+		DAY18	{
+			value	varchar(3);
+		};
+		DAY19	{
+			value	varchar(3);
+		};
+		DAY20	{
+			value	varchar(3);
+		};
+		DAY21	{
+			value	varchar(3);
+		};
+		DAY22	{
+			value	varchar(3);
+		};
+		DAY23	{
+			value	varchar(3);
+		};
+		DAY24	{
+			value	varchar(3);
+		};
+		DAY25	{
+			value	varchar(3);
+		};
+		DAY26	{
+			value	varchar(3);
+		};
+		DAY27	{
+			value	varchar(3);
+		};
+		DAY28	{
+			value	varchar(3);
+		};
+		DAY29	{
+			value	varchar(3);
+		};
+		DAY30	{
+			value	varchar(3);
+		};
+		DAY31	{
+			value	varchar(3);
+		};
+		RRKSELNUM	{
+			value	varchar(4);
+		};
+		HENSRYYMD	{
+			value	varchar(11);
+		};
+		scrolledwindow1	{
+			DATALIST	{
+				count	int;
+				item	{
+					value1	varchar(3);
+					value2	varchar(60);
+					value3	varchar(13);
+					value4	varchar(7);
+					value5	varchar(4);
+					value6	varchar(3);
+					value7	varchar(3);
+					value8	varchar(3);
+					value9	varchar(3);
+					value10	varchar(3);
+					value11	varchar(3);
+					value12	varchar(3);
+					value13	varchar(3);
+					value14	varchar(3);
+					value15	varchar(3);
+					value16	varchar(3);
+					value17	varchar(3);
+					value18	varchar(3);
+					value19	varchar(3);
+					value20	varchar(3);
+					value21	varchar(3);
+					value22	varchar(3);
+					value23	varchar(3);
+					value24	varchar(3);
+					value25	varchar(3);
+					value26	varchar(3);
+					value27	varchar(3);
+					value28	varchar(3);
+					value29	varchar(3);
+					value30	varchar(3);
+					value31	varchar(3);
+					value32	varchar(3);
+					value33	varchar(3);
+					value34	varchar(3);
+					value35	varchar(3);
+					value36	varchar(3);
+				}	[400];
+				select	bool[400];
+			};
+		};
+		SRYKACOMB	{
+			SRYKA	{
+				value	varchar(17);
+			};
+			count	int;
+			item	varchar(16)[10];
+		};
+		scrolledwindow2	{
+			RRKLIST	{
+				count	int;
+				item	{
+					value1	varchar(3);
+					value2	varchar(16);
+				}	[30];
+				select	bool[30];
+			};
+		};
+	};
+};

@@ -1,0 +1,10 @@
+ORCXBID 	{
+	fixed1	{
+		XBIDCODE {
+			value	varchar(11);
+		};
+		XBIDMSG	 {
+			value	varchar(71);
+		};
+	};
+};

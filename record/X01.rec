@@ -1,0 +1,37 @@
+X01	{
+	fixed1	{
+		scrolledwindow1	{
+			TENSU_LIST	{
+				count	int;
+				item	{
+					value1	varchar(4);
+					value2	varchar(10);
+					value3	varchar(10);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		SELNUM	{
+			value	varchar(4);
+		};
+		STYUKYMD	{
+			value	varchar(11);
+		};
+		EDYUKYMD	{
+			value	varchar(11);
+		};
+		SRYCD	{
+			value	varchar(10);
+		};
+		NAME	{
+			value	varchar(101);
+		};
+		CHKKBNCOMB	{
+			CHKKBN	{
+				value	varchar(23);
+			};
+			count	int;
+			item	varchar(22)[9];
+		};
+	};
+};

@@ -1,0 +1,54 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+            02  S02.
+              03  S02-PTNUM-STATE
+                                PIC S9(9)   BINARY.
+              03  S02-PTNUM     PIC X(21).
+              03  S02-KANANAME.
+                04  S02-VALUE   PIC X(51).
+              03  S02-NAME.
+                04  S02-VALUE   PIC X(51).
+              03  S02-BIRTHDAY.
+                04  S02-VALUE   PIC X(10).
+              03  S02-SEX.
+                04  S02-VALUE   PIC X(3).
+              03  S02-SELNUM.
+                04  S02-VALUE   PIC X(5).
+              03  S02-SRYYM.
+                04  S02-VALUE   PIC X(8).
+              03  S02-SCROLLEDWINDOW1.
+                04  S02-THLIST.
+                  05  S02-COUNT   PIC S9(9)   BINARY.
+                  05  S02-ITEM        OCCURS  60 TIMES.
+                  06  S02-NUM        PIC X(5).
+                  06  S02-DENPNUM    PIC X(9).
+                  06  S02-NYUGAI     PIC X(4).
+                  06  S02-HKN        PIC X(17).
+                  06  S02-FTNRATE    PIC X(5).
+                  06  S02-SKYSTYMD   PIC X(11).
+                  06  S02-SRYYMD2    PIC X(11).
+                  06  S02-SKYMONEY   PIC X(11).
+                  06  S02-MISYUMONEY PIC X(11).
+                  06  S02-DENPJTI    PIC X(12).
+                  05  S02-SELECT  PIC X       OCCURS  60 TIMES.
+              03  S02-SRYKACOMBO.
+                04  S02-SRYKA         PIC X(22).
+                04  S02-SRYKA-COUNT   PIC S9(9)   BINARY.
+                04  S02-SRYKALST      PIC X(21)   OCCURS  10 TIMES.
+              03  S02-B03S.
+                04  S02-B03S-STATE   PIC S9(9)   BINARY.

@@ -1,0 +1,721 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCR0435.
+      *****************************************************************
+      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
+      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥ì¥»¥×¥È¡ÊÏ«ºÒ¡Ë
+      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ·î¼¡¶ÈÌ³¡¡Ï«ºÒÌÀºÙ½ñ¥Õ¥¡¥¤¥ëºîÀ®
+      *                      ¡Ê¥ì¥»¥×¥È¥³¥á¥ó¥ÈÊÔ½¸£²¡Ë 
+      *  ´ÉÍý¼Ô            : 
+      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
+      *  02/07/01    MCC-ÌçÏÆ¡¡    ¿·µ¬ºîÀ®
+      *****************************************************************
+      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
+      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *****************************************************************
+      *
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION               SECTION.
+       INPUT-OUTPUT                SECTION.
+       FILE-CONTROL.
+      *
+           SELECT  RECE41-FILE     ASSIGN  RECE41PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE41-KEY
+                                   FILE    STATUS  IS  STS-RECE41.
+      *
+           SELECT  RECE44-FILE     ASSIGN  RECE44PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE44-KEY
+                                   FILE    STATUS  IS  STS-RECE44.
+      *
+           SELECT  RECE45-FILE     ASSIGN  RECE45PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE45-KEY
+                                   FILE    STATUS  IS  STS-RECE45.
+      *
+           SELECT  RECE441-FILE    ASSIGN  RECE441PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE441-KEY
+                                   FILE    STATUS  IS  STS-RECE441.
+           SELECT  RECE4441-FILE   ASSIGN  RECE441PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE4441-KEY
+                                   FILE    STATUS  IS  STS-RECE441.
+      *
+           SELECT  RECE451-FILE    ASSIGN  RECE451PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE451-KEY
+                                   FILE    STATUS  IS  STS-RECE451.
+           SELECT  RECE4551-FILE   ASSIGN  RECE451PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE4551-KEY
+                                   FILE    STATUS  IS  STS-RECE451.
+006900*    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+           SELECT  RECEERR-FILE    ASSIGN  RECEERR
+                                   FILE    STATUS  IS  STS-RECEERR.
+      *
+       DATA                    DIVISION.
+       FILE                        SECTION.
+      *
+      *
+       FD  RECE41-FILE.
+       01  RECE41-REC.
+           COPY    "CPRCF041.INC".
+      *
+      *
+       FD  RECE44-FILE.
+       01  RECE44-REC.
+           COPY    "CPRCF044.INC".
+      *
+      *
+       FD  RECE45-FILE.
+       01  RECE45-REC.
+           COPY    "CPRCF045.INC".
+      *
+       FD  RECE441-FILE.
+       01  RECE441-REC. 
+           COPY    "CPRCF044.INC"  REPLACING   //RECE44//
+                                   BY          //RECE441//.
+      *
+       FD  RECE451-FILE.
+       01  RECE451-REC. 
+           COPY    "CPRCF045.INC"  REPLACING   //RECE45//
+                                   BY          //RECE451//.
+      *
+       FD  RECE4441-FILE.
+       01  RECE4441-REC. 
+           COPY    "CPRCF044.INC"  REPLACING   //RECE44//
+                                   BY          //RECE4441//.
+      *
+       FD  RECE4551-FILE.
+       01  RECE4551-REC. 
+           COPY    "CPRCF045.INC"  REPLACING   //RECE45//
+                                   BY          //RECE4551//.
+      *
+006900*    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+       FD  RECEERR-FILE.
+       01  RECEERR-REC             PIC X(200). 
+      *
+       WORKING-STORAGE             SECTION.
+      *
+      *     ¥ì¥»¥×¥ÈÌÀºÙ¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE41//.
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE44//.
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE45//.
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE441//.
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE451//.
+      *
+      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01PARA//
+                                   BY         //RECEERR//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *
+      *    ¥Õ¥é¥°ÎÎ°è
+       01  STS-AREA.
+           03  STS-RECE41          PIC X(02).
+           03  STS-RECE44          PIC X(02).
+           03  STS-RECE441         PIC X(02).
+           03  STS-RECE45          PIC X(02).
+           03  STS-RECE451         PIC X(02).
+           03  STS-RECEERR         PIC X(02).
+      *
+      *    ¥Õ¥é¥°ÎÎ°è
+       01  FLG-AREA.
+           03  FLG-END             PIC 9(01).
+           03  FLG-RECE44          PIC 9(01).
+           03  FLG-RECE45          PIC 9(01).
+      *    
+      *    ¥«¥¦¥ó¥ÈÎÎ°è
+       01  CNT-AREA.
+           03  CNT-RECE41          PIC 9(06).
+           03  CNT-RECE44          PIC 9(06).
+           03  CNT-RECE45          PIC 9(06).
+      *
+      *    Åº»úÎÎ°è
+       01  IDX-AREA.
+           03  IDX                 PIC 9(04).
+           03  DAY-IDX             PIC 9(02).
+      *     
+      *    °ì»þÎÎ°è
+       01  WRK-AREA.
+           03  WRK-PARA.
+               05  WRK-PARA-SRYYM              PIC  X(06).
+               05  WRK-PARA-TERMID             PIC  X(16).
+               05  WRK-PARA-SYSYMD             PIC  X(08).
+               05  WRK-PARA-JOBID              PIC  9(07).
+               05  WRK-PARA-SHELLID            PIC  X(08).
+      *
+           03  WRK-RECEERR         PIC X(200).
+      *
+      *    ÆüÉÕÁ´³ÑÊÑ´¹ÎÎ°è
+       01  TBL-TUKI-AREA.
+           03  FILLER              PIC X(04)  VALUE "¡¡£±".
+           03  FILLER              PIC X(04)  VALUE "¡¡£²".
+           03  FILLER              PIC X(04)  VALUE "¡¡£³".
+           03  FILLER              PIC X(04)  VALUE "¡¡£´".
+           03  FILLER              PIC X(04)  VALUE "¡¡£µ".
+           03  FILLER              PIC X(04)  VALUE "¡¡£¶".
+           03  FILLER              PIC X(04)  VALUE "¡¡£·".
+           03  FILLER              PIC X(04)  VALUE "¡¡£¸".
+           03  FILLER              PIC X(04)  VALUE "¡¡£¹".
+           03  FILLER              PIC X(04)  VALUE "£±£°".
+           03  FILLER              PIC X(04)  VALUE "£±£±".
+           03  FILLER              PIC X(04)  VALUE "£±£²".
+       01  TBL-TUKI-AREA-R         REDEFINES   TBL-TUKI-AREA.
+           03  TBL-TUKI            PIC X(04)   OCCURS   12.
+      *
+      *    ÆüÉÕÁ´³ÑÊÑ´¹ÎÎ°è
+       01  TBL-DAY-AREA.
+           03  FILLER              PIC X(04)  VALUE "¡¡£±".
+           03  FILLER              PIC X(04)  VALUE "¡¡£²".
+           03  FILLER              PIC X(04)  VALUE "¡¡£³".
+           03  FILLER              PIC X(04)  VALUE "¡¡£´".
+           03  FILLER              PIC X(04)  VALUE "¡¡£µ".
+           03  FILLER              PIC X(04)  VALUE "¡¡£¶".
+           03  FILLER              PIC X(04)  VALUE "¡¡£·".
+           03  FILLER              PIC X(04)  VALUE "¡¡£¸".
+           03  FILLER              PIC X(04)  VALUE "¡¡£¹".
+           03  FILLER              PIC X(04)  VALUE "£±£°".
+           03  FILLER              PIC X(04)  VALUE "£±£±".
+           03  FILLER              PIC X(04)  VALUE "£±£²".
+           03  FILLER              PIC X(04)  VALUE "£±£³".
+           03  FILLER              PIC X(04)  VALUE "£±£´".
+           03  FILLER              PIC X(04)  VALUE "£±£µ".
+           03  FILLER              PIC X(04)  VALUE "£±£¶".
+           03  FILLER              PIC X(04)  VALUE "£±£·".
+           03  FILLER              PIC X(04)  VALUE "£±£¸".
+           03  FILLER              PIC X(04)  VALUE "£±£¹".
+           03  FILLER              PIC X(04)  VALUE "£²£°".
+           03  FILLER              PIC X(04)  VALUE "£²£±".
+           03  FILLER              PIC X(04)  VALUE "£²£²".
+           03  FILLER              PIC X(04)  VALUE "£²£³".
+           03  FILLER              PIC X(04)  VALUE "£²£´".
+           03  FILLER              PIC X(04)  VALUE "£²£µ".
+           03  FILLER              PIC X(04)  VALUE "£²£¶".
+           03  FILLER              PIC X(04)  VALUE "£²£·".
+           03  FILLER              PIC X(04)  VALUE "£²£¸".
+           03  FILLER              PIC X(04)  VALUE "£²£¹".
+           03  FILLER              PIC X(04)  VALUE "£³£°".
+           03  FILLER              PIC X(04)  VALUE "£³£±".
+       01  TBL-DAY-AREA-R          REDEFINES   TBL-DAY-AREA.
+           03  TBL-DAY             PIC X(04)   OCCURS   31.
+      *
+      *    ¸ÇÄêÃÍ
+       01  CONST-AREA.
+      *    µßµÞ°åÎÅ´ÉÍý²Ã»»
+           03  CONS-KYUKYU1    PIC X(09)   VALUE   "101110020".
+           03  CONS-KYUKYU2    PIC X(09)   VALUE   "101110030".
+      *
+      *
+           COPY    "MCPAREA".
+      *
+           COPY    "COMMON-SPA".
+      *
+      *****************************************************************
+      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *****************************************************************
+      *
+      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
+      *
+      *****************************************************************
+      *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
+      *****************************************************************
+      *   ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+           COPY    "CPORCSJOBKANRI.INC".
+      *     
+      *    ¿ôÃÍÊÑ´¹¥µ¥Ö
+           COPY    "CPORCSNUM.INC".
+      *
+      *    £Ä£Â¸¡º÷
+           COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
+      *
+      ****************************************************************
+       LINKAGE                 SECTION.
+       01  COMMAND-PARAM.
+           02  FILLER      PIC X(256).
+      ****************************************************************
+       PROCEDURE           DIVISION
+               USING
+           COMMAND-PARAM.
+      *
+      *****************************************************************
+      *    ¼ç¡¡¡¡½èÍý
+      *****************************************************************
+       000-PROC-SEC                SECTION.
+      *
+           PERFORM 100-INIT-SEC
+      *
+           PERFORM 200-MAIN-SEC
+                   UNTIL   FLG-END  =  1
+      *
+           PERFORM 300-END-SEC
+      *
+           STOP    RUN
+           .
+      *****************************************************************
+      *    ½é´ü¡¡½èÍý
+      *****************************************************************
+       100-INIT-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  CNT-AREA
+      *
+      *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î½èÍý
+      *
+           PERFORM 110-FILE-OPEN-SEC
+           PERFORM 120-DBOPEN-SEC
+      *
+      *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
+           MOVE    "STS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    "ORCR0435"      TO  JOB-PGID
+           MOVE    "¥³¥á¥ó¥ÈÊÔ½¸£²¡ÊÏ«ºÒ¡Ë"    TO  JOB-SHELLMSG
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *
+           PERFORM 990-RECE41-READ-SEC
+           .
+       100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î½èÍý
+      *****************************************************************
+       110-FILE-OPEN-SEC          SECTION.
+      *
+           MOVE    COMMAND-PARAM       TO  WRK-PARA
+      *
+           MOVE    "RECE410"           TO  RECE41PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE41PARA-TERMID
+      *
+           MOVE    "RECE441"           TO  RECE44PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE44PARA-TERMID
+      *
+           MOVE    "RECE451"           TO  RECE45PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE45PARA-TERMID
+      *
+           MOVE    "RECE44B"           TO  RECE441PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE441PARA-TERMID
+      *
+           MOVE    "RECE45B"           TO  RECE451PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE451PARA-TERMID
+      *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
+           OPEN    INPUT               RECE41-FILE
+      *
+           OPEN    INPUT               RECE44-FILE
+      *
+           OPEN    INPUT               RECE45-FILE
+      *
+           OPEN    OUTPUT              RECE4441-FILE
+           CLOSE                       RECE4441-FILE
+      *
+           OPEN    OUTPUT              RECE4551-FILE
+           CLOSE                       RECE4551-FILE
+      *
+           OPEN    OUTPUT              RECE441-FILE
+      *
+           OPEN    OUTPUT              RECE451-FILE
+      *
+           .
+       110-FILE-OPEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ç½èÍý
+      *****************************************************************
+       200-MAIN-SEC                SECTION.
+      *
+           INITIALIZE                      RECE44-REC
+           MOVE    RECE41-HOSPID       TO  RECE44-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE44-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE44-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE44-PTID
+           MOVE    RECE41-RECEKA       TO  RECE44-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE44-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE44-TEKSTYMD
+           MOVE    ZERO                TO  RECE44-ZAINUM
+      *
+           START   RECE44-FILE
+               KEY IS    >=   RECE44-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE44
+               NOT INVALID
+                   PERFORM 990-RECE44-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE44           =   1                   )
+               OR     ( RECE41-HOSPID    NOT =   RECE44-HOSPID       )
+               OR     ( RECE41-SRYYM     NOT =   RECE44-SRYYM        )
+               OR     ( RECE41-NYUGAIKBN NOT =   RECE44-NYUGAIKBN    )
+               OR     ( RECE41-PTID      NOT =   RECE44-PTID         )
+               OR     ( RECE41-RECEKA    NOT =   RECE44-RECEKA       )
+               OR     ( RECE41-HKNID     NOT =   RECE44-HKNID        )
+               OR     ( RECE41-TEKSTYMD  NOT =   RECE44-TEKSTYMD     )
+      *
+               MOVE          SPACE       TO      RECE441-REC
+               INITIALIZE                        RECE441-REC
+      *
+               EVALUATE      RECE44-SRYKBN
+                   WHEN      "11"
+                      IF  ( RECE41-KYUKYU-PRTKBN    =      1         )
+                      AND ( RECE44-SRYCDTOTAL(6:9)  =   CONS-KYUKYU1
+                                                   OR   CONS-KYUKYU2 )        
+                          PERFORM    2001-KYUKYU-COMMENT-SEC
+                      ELSE
+                          MOVE       RECE44-REC    TO   RECE441-REC
+                          WRITE      RECE441-REC
+                          ADD     1          TO      CNT-RECE44
+                          PERFORM    2002-RECE45-TENSOU-SEC
+                      END-IF         
+                   WHEN   OTHER
+                      MOVE       RECE44-REC    TO   RECE441-REC
+                      WRITE      RECE441-REC
+                      ADD     1          TO      CNT-RECE44
+                      PERFORM    2002-RECE45-TENSOU-SEC
+               END-EVALUATE
+      *
+               PERFORM 990-RECE44-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           PERFORM 990-RECE41-READ-SEC
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    µßµÞ°åÎÅ´ÉÍý²Ã»»¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       2001-KYUKYU-COMMENT-SEC          SECTION.
+      *
+           MOVE       RECE44-REC    TO   RECE441-REC
+           ADD        1             TO   RECE441-MEISAISU
+           WRITE      RECE441-REC
+           ADD        1             TO   CNT-RECE44
+      *
+           INITIALIZE                      RECE45-REC
+           MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
+           MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
+           MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
+           MOVE    RECE44-PTID         TO  RECE45-PTID
+           MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
+           MOVE    RECE44-HKNID        TO  RECE45-HKNID
+           MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
+           MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
+           START   RECE45-FILE
+                 KEY IS    >=   RECE45-KEY
+                 INVALID
+                     MOVE    1         TO  FLG-RECE45
+                 NOT INVALID
+                     PERFORM 990-RECE45-NEXT-SEC
+           END-START
+      *
+           MOVE    RECE45-REC           TO  RECE451-REC
+           MOVE    RECE45-SRYACTINF(1)  TO  RECE451-SRYACTINF(1)
+           MOVE    RECE45-SRYACTINF(2)  TO  RECE451-SRYACTINF(3)
+           MOVE    RECE45-SRYACTINF(3)  TO  RECE451-SRYACTINF(4)
+           MOVE    RECE45-SRYACTINF(4)  TO  RECE451-SRYACTINF(5)
+           MOVE    RECE45-NAMEINF(1)    TO  RECE451-NAMEINF(1)
+           MOVE    RECE45-NAMEINF(2)    TO  RECE451-NAMEINF(3)
+           MOVE    RECE45-NAMEINF(3)    TO  RECE451-NAMEINF(4)
+           MOVE    RECE45-NAMEINF(4)    TO  RECE451-NAMEINF(5)
+           MOVE    RECE45-SIKFLGINF(1)  TO  RECE451-SIKFLGINF(1)
+           MOVE    RECE45-SIKFLGINF(2)  TO  RECE451-SIKFLGINF(3)
+           MOVE    RECE45-SIKFLGINF(3)  TO  RECE451-SIKFLGINF(4)
+           MOVE    RECE45-SIKFLGINF(4)  TO  RECE451-SIKFLGINF(5)
+      *
+           MOVE    SPACE                TO  RECE451-SRYACTINF(2)
+           INITIALIZE                       RECE451-SRYACTINF(2)
+           MOVE    SPACE                TO  RECE451-NAMEINF(2)
+           INITIALIZE                       RECE451-NAMEINF(2)
+           MOVE    SPACE                TO  RECE451-SIKFLGINF(2)
+           INITIALIZE                       RECE451-SIKFLGINF(2)
+      *
+           MOVE    "840000045"          TO  RECE451-SRYCD(2)
+           MOVE    ZERO                 TO  RECE451-SRYSURYO(2)
+           MOVE    9                    TO  RECE451-YUKOKETA(2)
+      * 
+           MOVE    "È¯¾É¡¡¡¡¡¡·î¡¡¡¡Æü" TO  RECE451-NAME(2)
+           MOVE     RECE41-KYUKYUYMD(5:2)
+                                        TO  DAY-IDX
+           MOVE     TBL-TUKI(DAY-IDX)   TO  RECE451-NAME(2)(7:4)
+           MOVE     RECE41-KYUKYUYMD(7:2)
+                                        TO  DAY-IDX
+           MOVE     TBL-DAY(DAY-IDX)    TO  RECE451-NAME(2)(13:4)
+      *
+           MOVE     "2"                 TO  RECE451-SIKFLG(2)
+      *
+           WRITE    RECE451-REC
+           ADD      1                   TO  CNT-RECE45
+      *    
+           .
+       2001-KYUKYU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ì¥»¥×¥È£°£µÅ¾Á÷½èÍý
+      *****************************************************************
+       2002-RECE45-TENSOU-SEC     SECTION.
+      *
+           INITIALIZE                      RECE45-REC
+           MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
+           MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
+           MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
+           MOVE    RECE44-PTID         TO  RECE45-PTID
+           MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
+           MOVE    RECE44-HKNID        TO  RECE45-HKNID
+           MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
+           MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
+           START   RECE45-FILE
+               KEY IS    >=   RECE45-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE45
+               NOT INVALID
+                   PERFORM 990-RECE45-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE45           =   1                   )
+               OR     ( RECE44-HOSPID    NOT =   RECE45-HOSPID       )
+               OR     ( RECE44-SRYYM     NOT =   RECE45-SRYYM        )
+               OR     ( RECE44-NYUGAIKBN NOT =   RECE45-NYUGAIKBN    )
+               OR     ( RECE44-PTID      NOT =   RECE45-PTID         )
+               OR     ( RECE44-RECEKA    NOT =   RECE45-RECEKA       )
+               OR     ( RECE44-HKNID     NOT =   RECE45-HKNID        )
+               OR     ( RECE44-TEKSTYMD  NOT =   RECE45-TEKSTYMD     )
+               OR     ( RECE44-ZAINUM    NOT =   RECE45-ZAINUM       )
+      *
+               MOVE          RECE45-REC       TO      RECE451-REC
+               WRITE         RECE451-REC
+               ADD           1                TO      CNT-RECE45
+      *
+               PERFORM 990-RECE45-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           .
+       2002-RECE45-TENSOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥¨¥é¡¼½ÐÎÏ½èÍý
+      *****************************************************************
+       500-ERR-HENSYU-SEC                SECTION.
+      *
+           OPEN    INPUT   RECEERR-FILE
+           IF      STS-RECEERR         =   ZERO
+               CLOSE   RECEERR-FILE
+           ELSE
+               OPEN    OUTPUT              RECEERR-FILE
+      *
+               MOVE    WRK-RECEERR         TO  RECEERR-REC
+               WRITE   RECEERR-REC
+               CLOSE   RECEERR-FILE
+      *         
+      *        ¥¸¥ç¥Ö´ÉÍý³«»Ï½èÍý
+               MOVE    "JBE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               MOVE    WRK-RECEERR     TO  JOB-YOBI
+               MOVE    "9999"          TO  JOB-ERRCD
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
+           END-IF
+      *                             
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ½ªÎ»¡¡¡¡½èÍý
+      *****************************************************************
+       300-END-SEC                 SECTION.
+      *
+      *    ¥Õ¥¡¥¤¥ë£Ã£Ì£Ï£Ó£Å½èÍý
+           PERFORM 310-FILE-CLOSE-SEC
+      *
+      *    ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *
+           PERFORM 900-DBDISCONNECT-SEC
+      *
+           DISPLAY "RECE41  IN  " CNT-RECE41 CONSOLE 
+           DISPLAY "RECE44  CNT " CNT-RECE44 CONSOLE 
+           DISPLAY "RECE45  CNT " CNT-RECE45 CONSOLE 
+           DISPLAY "*** ORCR0435 END ***"
+      *
+           .
+       300-END-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥Õ¥¡¥¤¥ë£Ã£Ì£Ï£Ó£Å½èÍý
+      *****************************************************************
+       310-FILE-CLOSE-SEC              SECTION.
+      *
+           CLOSE                       RECE41-FILE
+      *
+           CLOSE                       RECE44-FILE
+      *
+           CLOSE                       RECE45-FILE
+      *
+           CLOSE                       RECE441-FILE     
+           CLOSE                       RECE451-FILE     
+      *
+           .
+       310-FILE-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ì¥»¥×¥È£°£²¥Ç¡¼¥¿½ç¸¡º÷½èÍý
+      *****************************************************************
+       990-RECE41-READ-SEC           SECTION.
+      *
+           READ    RECE41-FILE         NEXT
+               AT  END
+                   MOVE    1           TO  FLG-END
+               NOT AT  END
+                   ADD     1           TO  CNT-RECE41
+                   MOVE    ZERO        TO  FLG-END
+           END-READ
+      *
+           .
+       990-RECE41-READ-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    ¥ì¥»¥×¥È£°£´¥Ç¡¼¥¿ÆÉ¤ß
+      ****************************************************************
+       990-RECE44-NEXT-SEC           SECTION.
+      *
+           READ    RECE44-FILE       NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE44
+               NOT AT  END
+                   MOVE    ZERO      TO  FLG-RECE44
+           END-READ
+      *
+           .
+       990-RECE44-NEXT-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    ¥ì¥»¥×¥È£°£µ¥Ç¡¼¥¿ÆÉ¤ß
+      ****************************************************************
+       990-RECE45-NEXT-SEC           SECTION.
+      *
+           READ    RECE45-FILE       NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE45
+               NOT AT  END
+                   MOVE    ZERO      TO  FLG-RECE45
+           END-READ
+      *
+           .
+       990-RECE45-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
+      *****************************************************************
+       120-DBOPEN-SEC                SECTION.
+      *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       100-DBOPEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
+      *****************************************************************
+       900-DBDISCONNECT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       900-DBCLOSE-EXT.
+           EXIT.
+      *
+      

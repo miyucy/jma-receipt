@@ -1,0 +1,284 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+        01  DBINFO.
+            02  DBINFO-NUM  PIC S9(9)   BINARY  VALUE   37.
+            02  DBINFO-SET.
+              03  DBINFO-1.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_syskanri'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 582.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-2.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_chk'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 176.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-3.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_hkncombi'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 518.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-4.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_srykarrk'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 100.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-5.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_ptbyomei'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 403.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-6.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_ptnum'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 123.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-7.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_pthkninf'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 383.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-8.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_ptkohinf'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 140.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-9.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_ptinf'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 4361.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 5.
+              03  DBINFO-10.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_sryacct'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 553.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-11.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_sryact'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 230.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-12.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_byomei'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 935.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-13.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_inputcd'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 328.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-14.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_hknnum'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 508.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-15.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_inputset'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 217.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-16.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_adrs'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1336.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 2.
+              03  DBINFO-17.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_jyurrk'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 245.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-18.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_ptcom'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 206.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-19.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_kyuseirrk'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 382.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1. 
+              03  DBINFO-20.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_syumei'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 148.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-21.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_syunou'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 931.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-22.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_tsyrrk'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 90.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-23.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_tensu'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1051.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 2.
+              03  DBINFO-24.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_uketuke'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 222.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-25.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_yyk'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 162.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-26.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_sykrrk'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 495.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-27.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_tnkrrk'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 90.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-28.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_wksryact'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 993.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-29.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_santei'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 167.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-30.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_para'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 5042.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 5.
+              03  DBINFO-31.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_receprt'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 392.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-32.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_srycdchg'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 72.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-33.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_tensuplus'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 283.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-34.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_hknjainf'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 971.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-35.
+                04  FILLER      PIC X(64)
+                    VALUE 'tbl_seikyu'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 2919.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 3.
+              03  DBINFO-36.
+                04  FILLER      PIC X(64)
+                    VALUE 'view_bd001'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 187.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1.
+              03  DBINFO-37.
+                04  FILLER      PIC X(64)
+                    VALUE 'view_bd002'.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 1050.
+                04  FILLER      PIC S9(9)   BINARY
+                    VALUE 2.
+            02  DBINFO-RED  REDEFINES   DBINFO-SET.
+              03  DBINFO-ITEM OCCURS  37.
+                04  DBINFO-NAME     PIC X(64).
+                04  DBINFO-SIZE     PIC S9(9)   BINARY.
+                04  DBINFO-BLOCKS   PIC S9(9)   BINARY.

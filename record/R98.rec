@@ -1,0 +1,314 @@
+R98	{
+	fixed2	{
+	        B06	{
+	           	state	int;
+	        };
+	        B07	{
+	           	state	int;
+	        };
+		PTNUM01	{
+			value	varchar(21);
+		};
+		NAME01	{
+			value	varchar(31);
+		};
+		FTNJANUM01	{
+			value	varchar(9);
+		};
+		JKYSNUM01	{
+			value	varchar(21);
+		};
+		PTNUM02	{
+			value	varchar(21);
+		};
+		NAME02	{
+			value	varchar(31);
+		};
+		FTNJANUM02	{
+			value	varchar(9);
+		};
+		JKYSNUM02	{
+			value	varchar(21);
+		};
+		PTNUM03	{
+			value	varchar(21);
+		};
+		NAME03	{
+			value	varchar(31);
+		};
+		FTNJANUM03	{
+			value	varchar(9);
+		};
+		JKYSNUM03	{
+			value	varchar(21);
+		};
+		PTNUM04	{
+			value	varchar(21);
+		};
+		NAME04	{
+			value	varchar(31);
+		};
+		FTNJANUM04	{
+			value	varchar(9);
+		};
+		JKYSNUM04	{
+			value	varchar(21);
+		};
+		PTNUM05	{
+			value	varchar(21);
+		};
+		NAME05	{
+			value	varchar(31);
+		};
+		FTNJANUM05	{
+			value	varchar(9);
+		};
+		JKYSNUM05	{
+			value	varchar(21);
+		};
+		PTNUM06	{
+			value	varchar(21);
+		};
+		NAME06	{
+			value	varchar(31);
+		};
+		FTNJANUM06	{
+			value	varchar(9);
+		};
+		JKYSNUM06	{
+			value	varchar(21);
+		};
+		PTNUM07	{
+			value	varchar(21);
+		};
+		NAME07	{
+			value	varchar(31);
+		};
+		FTNJANUM07	{
+			value	varchar(9);
+		};
+		JKYSNUM07	{
+			value	varchar(21);
+		};
+		PTNUM08	{
+			value	varchar(21);
+		};
+		NAME08	{
+			value	varchar(31);
+		};
+		FTNJANUM08	{
+			value	varchar(9);
+		};
+		JKYSNUM08	{
+			value	varchar(21);
+		};
+		PTNUM09	{
+			value	varchar(21);
+		};
+		NAME09	{
+			value	varchar(31);
+		};
+		FTNJANUM09	{
+			value	varchar(9);
+		};
+		JKYSNUM09	{
+			value	varchar(21);
+		};
+		PTNUM10	{
+			value	varchar(21);
+		};
+		NAME10	{
+			value	varchar(31);
+		};
+		FTNJANUM10	{
+			value	varchar(9);
+		};
+		JKYSNUM10	{
+			value	varchar(21);
+		};
+		PTNUM11	{
+			value	varchar(21);
+		};
+		NAME11	{
+			value	varchar(31);
+		};
+		FTNJANUM11	{
+			value	varchar(9);
+		};
+		JKYSNUM11	{
+			value	varchar(21);
+		};
+		PTNUM12	{
+			value	varchar(21);
+		};
+		NAME12	{
+			value	varchar(31);
+		};
+		FTNJANUM12	{
+			value	varchar(9);
+		};
+		JKYSNUM12	{
+			value	varchar(21);
+		};
+		PTNUM13	{
+			value	varchar(21);
+		};
+		NAME13	{
+			value	varchar(31);
+		};
+		FTNJANUM13	{
+			value	varchar(9);
+		};
+		JKYSNUM13	{
+			value	varchar(21);
+		};
+		PTNUM14	{
+			value	varchar(21);
+		};
+		NAME14	{
+			value	varchar(31);
+		};
+		FTNJANUM14	{
+			value	varchar(9);
+		};
+		JKYSNUM14	{
+			value	varchar(21);
+		};
+		PTNUM15	{
+			value	varchar(21);
+		};
+		NAME15	{
+			value	varchar(31);
+		};
+		FTNJANUM15	{
+			value	varchar(9);
+		};
+		JKYSNUM15	{
+			value	varchar(21);
+		};
+		PTNUM16	{
+			value	varchar(21);
+		};
+		NAME16	{
+			value	varchar(31);
+		};
+		FTNJANUM16	{
+			value	varchar(9);
+		};
+		JKYSNUM16	{
+			value	varchar(21);
+		};
+		PTNUM17	{
+			value	varchar(21);
+		};
+		NAME17	{
+			value	varchar(31);
+		};
+		FTNJANUM17	{
+			value	varchar(9);
+		};
+		JKYSNUM17	{
+			value	varchar(21);
+		};
+		PTNUM18	{
+			value	varchar(21);
+		};
+		NAME18	{
+			value	varchar(31);
+		};
+		FTNJANUM18	{
+			value	varchar(9);
+		};
+		JKYSNUM18	{
+			value	varchar(21);
+		};
+		PTNUM19	{
+			value	varchar(21);
+		};
+		NAME19	{
+			value	varchar(31);
+		};
+		FTNJANUM19	{
+			value	varchar(9);
+		};
+		JKYSNUM19	{
+			value	varchar(21);
+		};
+		PTNUM20	{
+			value	varchar(21);
+		};
+		NAME20	{
+			value	varchar(31);
+		};
+		FTNJANUM20	{
+			value	varchar(9);
+		};
+		JKYSNUM20	{
+			value	varchar(21);
+		};
+		PTNUM21	{
+			value	varchar(21);
+		};
+		NAME21	{
+			value	varchar(31);
+		};
+		FTNJANUM21	{
+			value	varchar(9);
+		};
+		JKYSNUM21	{
+			value	varchar(21);
+		};
+		PTNUM22	{
+			value	varchar(21);
+		};
+		NAME22	{
+			value	varchar(31);
+		};
+		FTNJANUM22	{
+			value	varchar(9);
+		};
+		JKYSNUM22	{
+			value	varchar(21);
+		};
+		PTNUM23	{
+			value	varchar(21);
+		};
+		NAME23	{
+			value	varchar(31);
+		};
+		FTNJANUM23	{
+			value	varchar(9);
+		};
+		JKYSNUM23	{
+			value	varchar(21);
+		};
+		PTNUM24	{
+			value	varchar(21);
+		};
+		NAME24	{
+			value	varchar(31);
+		};
+		FTNJANUM24	{
+			value	varchar(9);
+		};
+		JKYSNUM24	{
+			value	varchar(21);
+		};
+		PTNUM25	{
+			value	varchar(21);
+		};
+		NAME25	{
+			value	varchar(31);
+		};
+		FTNJANUM25	{
+			value	varchar(9);
+		};
+		JKYSNUM25	{
+			value	varchar(21);
+		};
+		SRYYMH	{
+		    style   varchar(20);
+			value	varchar(25);
+		};
+	};
+};

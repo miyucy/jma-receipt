@@ -1,0 +1,194 @@
+tbl_wksryact {
+	HOSPID			    char(24);
+	NYUGAIKBN			char(1);
+	PTID				number(10,0);
+	SRYKA				char(2);
+	SRYYMD				char(8);
+	HKNCOMBI			number(4,0);
+	ZAINUM			        number(8,0);
+	RENNUM                          number(2,0);
+	SRYSYUKBN			char(3);
+	SRYKBN			        char(2);
+	JIHIMONEYTOTAL			number(7,0);
+	SRYCD_1			        char(9);
+	SRYSURYO_1			number(8,3);
+	SRYKAISU_1			number(3,0);
+	ZAIKAISU_1			number(8,0);
+	AUTOKBN_1			char(1);
+	INPUTNUM_1			number(3,0);
+	INPUTCOMENT_1			varchar(80);
+	INPUTCHI1_1			char(8);
+	INPUTCHI1_2			char(8);
+	INPUTCHI1_3			char(8);
+	INPUTCHI1_4			char(8);
+	INPUTCD_1  			char(22);
+	JIHIMONEY_1			number(7,0);
+	SRYCD_2			        char(9);
+	SRYSURYO_2			number(8,3);
+	SRYKAISU_2			number(3,0);
+	ZAIKAISU_2			number(8,0);
+	AUTOKBN_2			char(1);
+	INPUTNUM_2			number(3,0);
+	INPUTCOMENT_2			varchar(80);
+	INPUTCHI2_1			char(8);
+	INPUTCHI2_2			char(8);
+	INPUTCHI2_3			char(8);
+	INPUTCHI2_4			char(8);
+	INPUTCD_2  			char(22);
+	JIHIMONEY_2			number(7,0);
+	SRYCD_3			        char(9);
+	SRYSURYO_3			number(8,3);
+	SRYKAISU_3			number(3,0);
+	ZAIKAISU_3			number(8,0);
+	AUTOKBN_3			char(1);
+	INPUTNUM_3			number(3,0);
+	INPUTCOMENT_3			varchar(80);
+	INPUTCHI3_1			char(8);
+	INPUTCHI3_2			char(8);
+	INPUTCHI3_3			char(8);
+	INPUTCHI3_4			char(8);
+	INPUTCD_3  			char(22);
+	JIHIMONEY_3			number(7,0);
+	SRYCD_4			        char(9);
+	SRYSURYO_4			number(8,3);
+	SRYKAISU_4			number(3,0);
+	ZAIKAISU_4			number(8,0);
+	AUTOKBN_4			char(1);
+	INPUTNUM_4			number(3,0);
+	INPUTCOMENT_4			varchar(80);
+	INPUTCHI4_1			char(8);
+	INPUTCHI4_2			char(8);
+	INPUTCHI4_3			char(8);
+	INPUTCHI4_4			char(8);
+	INPUTCD_4  			char(22);
+	JIHIMONEY_4			number(7,0);
+	SRYCD_5			        char(9);
+	SRYSURYO_5			number(8,3);
+	SRYKAISU_5			number(3,0);
+	ZAIKAISU_5			number(8,0);
+	AUTOKBN_5			char(1);
+	INPUTNUM_5			number(3,0);
+	INPUTCOMENT_5			varchar(80);
+	INPUTCHI5_1			char(8);
+	INPUTCHI5_2			char(8);
+	INPUTCHI5_3			char(8);
+	INPUTCHI5_4			char(8);
+	INPUTCD_5  			char(22);
+	JIHIMONEY_5			number(7,0);
+	ZAITENKEI			number(8,0);
+	ZAIKAIKEI			number(7,0);
+	SYUTEN1                         number(7,0);
+	SYUTEN2                         number(7,0);
+	YKZTEN                          number(7,0);
+	KIZAITEN                        number(7,0);
+	DOUJI_DENPNUM			number(7,0);
+	DOUJI_RENNUM			number(1,0);
+	CONTKBN  			char(1);
+	TERMID   			varchar(16);
+	OPID     			varchar(16);
+	CREYMD   			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+};
+primary	{
+	HOSPID,NYUGAIKBN,PTID,SRYKA,SRYYMD,HKNCOMBI,ZAINUM,RENNUM;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_wksryact_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_wksryact
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYMD      =   :SRYYMD
+			AND   HKNCOMBI    =   :HKNCOMBI
+			AND   ZAINUM      =   :ZAINUM
+			AND   RENNUM      =   :RENNUM
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_wksryact_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_wksryact
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYMD      =   :SRYYMD
+			AND   HKNCOMBI    =   :HKNCOMBI
+		;
+	};
+};
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_wksryact_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_wksryact
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYMD      =   :SRYYMD
+			AND   ZAINUM      =   :ZAINUM
+		;
+	};
+};
+path	del11 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_wksryact
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYMD      =   :SRYYMD
+			AND   HKNCOMBI    =   :HKNCOMBI
+		;
+	};
+};
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_wksryact_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_wksryact
+ 		;
+	};
+};
+path	del12 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_wksryact
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};
+
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_wksryact_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_wksryact
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+		;
+	};
+};
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_wksryact_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_wksryact
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+		;
+	};
+};

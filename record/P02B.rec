@@ -1,0 +1,68 @@
+P02B	{
+	fixed10	{
+		TEKSTYMD	{
+			value	varchar(11);
+		};
+		TEKEDYMD	{
+			value	varchar(11);
+		};
+		HIHKNJANAME	{
+			value	varchar(51);
+		};
+		KAKUNINYMD	{
+			value	varchar(11);
+		};
+		HKNJANUM	{
+			value	varchar(9);
+		};
+		KIGO	{
+			value	varchar(41);
+		};
+		NUM	{
+			value	varchar(41);
+		};
+		HKNJAADRS	{
+			value	varchar(35);
+		};
+		HKNJABANTI	{
+			value	varchar(35);
+		};
+		HKNJATEL	{
+			value	varchar(35);
+		};
+		HKNJANAME	{
+			value	varchar(35);
+		};
+		HKNNUMCOMB	{
+			HKNNUM	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[50];
+		};
+		HONKZKKBNCOMB	{
+			HONKZKKBN	{
+				value	varchar(7);
+			};
+			count	int;
+			item	varchar(6)[5];
+		};
+		HOJOKBNCOMB	{
+			HOJOKBN	{
+				value	varchar(7);
+			};
+			count	int;
+			item	varchar(6)[5];
+		};
+		KEIKBNCOMB	{
+			KEIKBN	{
+				value	varchar(7);
+			};
+			count	int;
+			item	varchar(6)[2];
+		};
+		SKKGETYMD	{
+			value	varchar(11);
+		};
+	};
+};

@@ -1,0 +1,408 @@
+Y01	{
+	fixed1	{
+		CALENDAR1	{
+			year	int;
+			month	int;
+			day	int;
+		};
+		SELNUM	{
+			value	varchar(4);
+		};
+		PTNUM	{
+	            state	int;
+			value	varchar(21);
+		};
+		YYKNAME	{
+	            state	int;
+			value	varchar(31);
+		};
+		viewport1	{
+			fixed2	{
+				KENSUU01	{
+					value	varchar(6);
+				};
+				KENSUU02	{
+					value	varchar(6);
+				};
+				KENSUU03	{
+					value	varchar(6);
+				};
+				KENSUU04	{
+					value	varchar(6);
+				};
+				KENSUU05	{
+					value	varchar(6);
+				};
+				KENSUU06	{
+					value	varchar(6);
+				};
+				KENSUU07	{
+					value	varchar(6);
+				};
+				KENSUU08	{
+					value	varchar(6);
+				};
+				KENSUU09	{
+					value	varchar(6);
+				};
+				KENSUU10	{
+					value	varchar(6);
+				};
+				KENSUU11	{
+					value	varchar(6);
+				};
+				KENSUU12	{
+					value	varchar(6);
+				};
+				KENSUU13	{
+					value	varchar(6);
+				};
+				KENSUU14	{
+					value	varchar(6);
+				};
+				KENSUU15	{
+					value	varchar(6);
+				};
+				KENSUU16	{
+					value	varchar(6);
+				};
+				KENSUU17	{
+					value	varchar(6);
+				};
+				KENSUU18	{
+					value	varchar(6);
+				};
+				KENSUU19	{
+					value	varchar(6);
+				};
+				KENSUU20	{
+					value	varchar(6);
+				};
+				KENSUU21	{
+					value	varchar(6);
+				};
+				KENSUU22	{
+					value	varchar(6);
+				};
+				KENSUU23	{
+					value	varchar(6);
+				};
+				KENSUU24	{
+					value	varchar(6);
+				};
+				KENSUU25	{
+					value	varchar(6);
+				};
+				KENSUU26	{
+					value	varchar(6);
+				};
+				KENSUU27	{
+					value	varchar(6);
+				};
+				KENSUU28	{
+					value	varchar(6);
+				};
+				KENSUU29	{
+					value	varchar(6);
+				};
+				KENSUU30	{
+					value	varchar(6);
+				};
+				KENSUU31	{
+					value	varchar(6);
+				};
+				KENSUU32	{
+					value	varchar(6);
+				};
+				KENSUU33	{
+					value	varchar(6);
+				};
+				KENSUU34	{
+					value	varchar(6);
+				};
+				KENSUU35	{
+					value	varchar(6);
+				};
+				KENSUU36	{
+					value	varchar(6);
+				};
+				KENSUU37	{
+					value	varchar(6);
+				};
+				KENSUU38	{
+					value	varchar(6);
+				};
+				KENSUU39	{
+					value	varchar(6);
+				};
+				KENSUU40	{
+					value	varchar(6);
+				};
+				KENSUU41	{
+					value	varchar(6);
+				};
+				KENSUU42	{
+					value	varchar(6);
+				};
+				KENSUU43	{
+					value	varchar(6);
+				};
+				KENSUU44	{
+					value	varchar(6);
+				};
+				KENSUU45	{
+					value	varchar(6);
+				};
+				KENSUU46	{
+					value	varchar(6);
+				};
+				KENSUU47	{
+					value	varchar(6);
+				};
+				KENSUU48	{
+					value	varchar(6);
+				};
+				KENSUU49	{
+					value	varchar(6);
+				};
+				KENSUU50	{
+					value	varchar(6);
+				};
+				KENSUU51	{
+					value	varchar(6);
+				};
+				KENSUU52	{
+					value	varchar(6);
+				};
+				KENSUU53	{
+					value	varchar(6);
+				};
+				KENSUU54	{
+					value	varchar(6);
+				};
+				KENSUU55	{
+					value	varchar(6);
+				};
+				KENSUU56	{
+					value	varchar(6);
+				};
+				KENSUU57	{
+					value	varchar(6);
+				};
+				KENSUU58	{
+					value	varchar(6);
+				};
+				KENSUU59	{
+					value	varchar(6);
+				};
+				KENSUU60	{
+					value	varchar(6);
+				};
+				KENSUU61	{
+					value	varchar(6);
+				};
+				KENSUU62	{
+					value	varchar(6);
+				};
+				KENSUU63	{
+					value	varchar(6);
+				};
+				KENSUU64	{
+					value	varchar(6);
+				};
+				KENSUU65	{
+					value	varchar(6);
+				};
+				KENSUU66	{
+					value	varchar(6);
+				};
+				KENSUU67	{
+					value	varchar(6);
+				};
+				KENSUU68	{
+					value	varchar(6);
+				};
+				KENSUU69	{
+					value	varchar(6);
+				};
+				KENSUU70	{
+					value	varchar(6);
+				};
+				KENSUU71	{
+					value	varchar(6);
+				};
+				KENSUU72	{
+					value	varchar(6);
+				};
+				KENSUU73	{
+					value	varchar(6);
+				};
+				KENSUU74	{
+					value	varchar(6);
+				};
+				KENSUU75	{
+					value	varchar(6);
+				};
+				KENSUU76	{
+					value	varchar(6);
+				};
+				KENSUU77	{
+					value	varchar(6);
+				};
+				KENSUU78	{
+					value	varchar(6);
+				};
+				KENSUU79	{
+					value	varchar(6);
+				};
+				KENSUU80	{
+					value	varchar(6);
+				};
+				KENSUU81	{
+					value	varchar(6);
+				};
+				KENSUU82	{
+					value	varchar(6);
+				};
+				KENSUU83	{
+					value	varchar(6);
+				};
+				KENSUU84	{
+					value	varchar(6);
+				};
+				KENSUU85	{
+					value	varchar(6);
+				};
+				KENSUU86	{
+					value	varchar(6);
+				};
+				KENSUU87	{
+					value	varchar(6);
+				};
+				KENSUU88	{
+					value	varchar(6);
+				};
+				KENSUU89	{
+					value	varchar(6);
+				};
+				KENSUU90	{
+					value	varchar(6);
+				};
+				KENSUU91	{
+					value	varchar(6);
+				};
+				KENSUU92	{
+					value	varchar(6);
+				};
+				KENSUU93	{
+					value	varchar(6);
+				};
+				KENSUU94	{
+					value	varchar(6);
+				};
+				KENSUU95	{
+					value	varchar(6);
+				};
+				KENSUU96	{
+					value	varchar(6);
+				};
+				KENSUU97	{
+					value	varchar(6);
+				};
+				KENSUU98	{
+					value	varchar(6);
+				};
+			};
+		};
+		SEX	{
+			value	varchar(3);
+		};
+		BARTHDAY	{
+			value	varchar(10);
+		};
+		TAIYYMM	{
+			value	varchar(13);
+		};
+		TAIYMD	{
+			value	varchar(17);
+		};
+		TAIKENSUU	{
+			value	varchar(7);
+		};
+		DAY1	{
+			value	varchar(6);
+		};
+		DAY2	{
+			value	varchar(6);
+		};
+		DAY3	{
+			value	varchar(6);
+		};
+		DAY4	{
+			value	varchar(6);
+		};
+		DAY5	{
+			value	varchar(6);
+		};
+		DAY6	{
+			value	varchar(6);
+		};
+		DAY7	{
+			value	varchar(6);
+		};
+		YYKYMD	{
+			value	varchar(11);
+		};
+		YYKTIME	{
+			value	varchar(6);
+		};
+		DRNAME_COMBO	{
+			DRNAME	{
+				value	varchar(28);
+			};
+			count	int;
+			item	varchar(27)[10];
+		};
+		SRYNAIYO_COMBO	{
+			SRYNAIYO	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(21)[10];
+		};
+		scrolledwindow3	{
+			PTLIST	{
+				count	int;
+				item	{
+					value1	varchar(3);
+					value2	varchar(5);
+					value3	varchar(20);
+					value4	varchar(4);
+					value5	varchar(4);
+				}	[50];
+				select	bool[50];
+			};
+		};
+		SRYKA_COMB	{
+			SRYKA	{
+				value	varchar(17);
+			};
+			count	int;
+			item	varchar(16)[10];
+		};
+		YYKKBN_COMB	{
+			YYKKBN	{
+				value	varchar(29);
+			};
+			count	int;
+			item	varchar(28)[10];
+		};
+		KAKREN_COMB	{
+			KAKREN	{
+				value	varchar(23);
+			};
+			count	int;
+			item	varchar(22)[10];
+		};
+	};
+};

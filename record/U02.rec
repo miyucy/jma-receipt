@@ -1,0 +1,118 @@
+U02	{
+	fixed1	{
+		SRYYMD	{
+			value	varchar(31);
+		};
+		PTNUM	{
+	           	state	int;
+			value	varchar(21);
+		};
+		NAME	{
+	           	state	int;
+			value	varchar(51);
+		};
+		BIRTHDAY	{
+			value	varchar(10);
+		};
+		SELNUM	{
+			value	number(4);
+		};
+		HKNCOMBI	{
+			value	number(4);
+		};
+		DRNAME_COMBO	{
+			DRNAME	{
+				value	varchar(28);
+			};
+			count	int;
+			item	varchar(27)[10];
+		};
+		SRYNAIYO_COMBO	{
+			SRYNAIYO	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(21)[10];
+		};
+		SRYKA_COMBO	{
+			SRYKA	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(21)[10];
+		};
+		scrolledwindow4	{
+			UKETUKE_LIST	{
+				count	int;
+				item	{
+					value1	varchar(5);
+					value2	varchar(6);
+					value3	varchar(6);
+					value4	varchar(21);
+					value5	varchar(51);
+					value6	varchar(11);
+					value7	varchar(21);
+					value8	varchar(21);
+					value9	varchar(10);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		KARUTE_COMBO	{
+			KARUTE	{
+				value	varchar(15);
+			};
+			count	int;
+			item	varchar(14)[2];
+		};
+		SYOHO_COMBO	{
+			SYOHO	{
+				value	varchar(15);
+			};
+			count	int;
+			item	varchar(14)[2];
+		};
+		BHK1	{
+			value	bool;
+			label	varchar(3);
+		};
+		MIKAKUNINN_LIST	{
+			count	int;
+			item	{
+				value1	varchar(22);
+				value2	varchar(10);
+			}	[5];
+			select	bool[5];
+		};
+		scrolledwindow3	{
+			HKNCOMBI_LIST	{
+				count	int;
+				item	{
+					value1	varchar(5);
+					value2	varchar(11);
+					value3	varchar(11);
+					value4	varchar(11);
+					value5	varchar(11);
+					value6	varchar(11);
+				}	[15];
+				select	bool[15];
+			};
+		};
+		BHK2	{
+			value	bool;
+			label	varchar(3);
+		};
+		BHK3	{
+			value	bool;
+			label	varchar(3);
+		};
+		BHK4	{
+			value	bool;
+			label	varchar(3);
+		};
+		BHK5	{
+			value	bool;
+			label	varchar(3);
+		};
+	};
+};

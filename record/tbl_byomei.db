@@ -1,0 +1,92 @@
+tbl_byomei {
+	BYOMEICD			char(7);
+	BYOMEI				varchar(200);
+	BYOMEIMOJI			number(3);
+	TANBYOMEI			varchar(200);
+	TANBYOMEIMOJI			number(3);
+	BYOMEIKANA			varchar(200);
+	IKOSAKICD			char(7);
+	TOKSKNCD			number(2);
+	UTAGAIFLG			char(1);
+	TANDOKUKBN			number(2);
+	HKNSKYKBN			number(1);
+	HYOJUNCD        		char(8);
+	SAITAKUKBN			char(1);
+	BYOMEICHGCD			varchar(4);
+	ICD10   			varchar(5);
+	SYUSAIYMD			char(8);
+	CHGYMD				char(8);
+	HAISIYMD			char(8);
+	TERMID  			varchar(32);
+	OPID    			varchar(16);
+	CREYMD  			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+};
+primary	{
+	BYOMEICD;
+};
+
+path	key	{ 	
+	DBSELECT	{
+		DECLARE tbl_byomei_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_byomei
+			WHERE   BYOMEICD    =   :BYOMEICD
+		;
+
+	};
+};
+
+path	key2	{ 	
+	DBSELECT	{
+		DECLARE tbl_byomei_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_byomei
+			WHERE  (BYOMEI       LIKE :BYOMEI
+			OR      BYOMEIKANA   LIKE :BYOMEI)
+		;
+	};
+};
+
+path	key3	{ 	
+	DBSELECT	{
+		DECLARE tbl_byomei_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_byomei
+			WHERE  (BYOMEIKANA   LIKE :BYOMEIKANA)
+			ORDER BY             BYOMEI
+		;
+	};
+};
+
+path	key4	{ 	
+	DBSELECT	{
+		DECLARE tbl_byomei_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_byomei
+			WHERE   BYOMEI       =   :BYOMEI
+			AND     BYOMEICD     <   'ZZZ0000'
+		;
+	};
+};
+
+path	key5	{ 	
+	DBSELECT	{
+		DECLARE tbl_byomei_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_byomei
+			WHERE   BYOMEI       =   :BYOMEI
+			AND     BYOMEICD     >=   'ZZZ0000'
+		;
+	};
+};
+
+path	all	{ 	
+	DBSELECT	{
+		DECLARE tbl_byomei_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_byomei
+		;
+	};
+};

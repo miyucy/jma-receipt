@@ -1,0 +1,1020 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+       IDENTIFICATION              DIVISION.
+       PROGRAM-ID.                 ORCGK10.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : 中途終了一覧　（Ｋ１０）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  01/05/25    MCC−多々納   新規作成
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+      *
+       ENVIRONMENT                 DIVISION.
+       CONFIGURATION               SECTION.
+       INPUT-OUTPUT                SECTION.
+       FILE-CONTROL.
+      *
+      *    パラメタデータ
+           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-PARA.
+      *
+       DATA                        DIVISION.
+       FILE                        SECTION.
+      *    パラメタデータ
+       FD  PARA-FILE.
+       01  PARA-REC.
+           03  PARA-KEY.
+               05  PARA-FILEMEI         PIC X(08).
+               05  PARA-EDANUM          PIC 9(03).
+           03  PARA-DATA-REC            PIC X(60000).
+      *
+       WORKING-STORAGE             SECTION.
+      *    パラメタファイル名
+       01  FILE-NAME2.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(09)   VALUE   "K01PARA".
+           03  FILE-TERMID2        PIC X(16)   VALUE   SPACE.
+           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *
+      *    スパ領域
+           COPY    "COMMON-SPA".
+      *
+      *    診療行為用共通パラメタ
+           COPY    "K01COMMON-SPA".
+      *
+      *    画面用共通スパ領域
+           COPY    "K02SCR-SPA".
+      *
+      *    画面スパ領域
+      *01  SPA-K10.
+      *
+      *    フラグ領域
+       01  STS-AREA.
+           03  STS-PARA            PIC X(02).
+           03  STS-SPASCR          PIC X(02).
+      *
+      *    フラグ領域
+       01  FLG-AREA.
+           03  FLG-END             PIC 9(01).
+           03  FLG-PARA            PIC 9(01).
+           03  FLG-WKSRYACT        PIC 9(01).
+           03  FLG-PTINF           PIC 9(01).
+           03  FLG-HKNCOMBI        PIC 9(01).
+      *
+      *
+      *    添字領域
+       01  IDX-AREA.
+           03  IDX                 PIC 9(04).
+           03  IDY                 PIC 9(04).
+           03  IDZ                 PIC 9(04).
+      *
+      *
+      *    一時領域
+       01  WRK-AREA.
+           03  WRK-SYSYMD.
+               05  WRK-SYSYY       PIC 9(04).
+               05  WRK-SYSMM       PIC 9(02).
+               05  WRK-SYSDD       PIC 9(02).
+      *
+           03  WRK-WYMD.
+               05  WRK-WGO         PIC X(01).
+               05  WRK-WYY         PIC 9(02).
+               05  WRK-WFIL1       PIC X(01).
+               05  WRK-WMM         PIC 9(02).
+               05  WRK-WFIL2       PIC X(01).
+               05  WRK-WDD         PIC 9(02).
+           03  WRK-SYMD.
+               05  WRK-SYY         PIC 9(04).
+               05  WRK-SMM         PIC 9(02).
+               05  WRK-SDD         PIC 9(02).
+      *    保険組合せ
+           03  WRK-HKNCOMBI        PIC X(100).
+           03  WRK-SELNUM          PIC 9(03).
+      *
+           03  WRK-KIDMSG          PIC X(80).
+      *
+           03  WRK-PATH            PIC X(64).
+      *
+           03  WRK-ZZ              PIC ZZZ.
+      *
+           03  WRK-ERRMSG          PIC X(40).
+      *
+       01  WRK-HEN-AREA.
+           03  WRK-HENYMDG         PIC X(09).
+           03  WRK-HENYMD.
+               05  WRK-HGO         PIC X(01).
+               05  WRK-HYY         PIC 9(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-HMM         PIC 9(02).
+               05  FILLER          PIC X(01)   VALUE   ".".
+               05  WRK-HDD         PIC 9(02).
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+      *
+      *    ワーク診療行為マスタ−
+       01  WKSRYACT-REC.
+           COPY    "CPWKSRYACT.INC".
+      *
+      *    保険組合せマスタ−
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
+      *
+      *    患者マスタ−
+       01  PTINF-REC.
+           COPY    "CPPTINF.INC".
+      *
+      *****************************************************************
+      *    サブプロ用　領域
+      *****************************************************************
+      *
+      *   日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *    数字変換領域
+           COPY    "CPORCSNUM.INC".
+      *   患者番号変換サブ
+           COPY    "CPORCSPTID.INC".
+      *    ＤＢ検索
+      *01  MCPDATA-REC                 PIC X(5000).
+           COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
+      *
+      *****************************************************************
+      *    連絡　領域
+      *****************************************************************
+        LINKAGE                     SECTION.
+      *
+           COPY    "MCPAREA".
+           COPY    "ORCA-SPA".
+      *
+           COPY    "LINKAREA".
+      *
+       01  SCRAREA.
+           COPY    "K01.INC".
+           COPY    "K02.INC".
+           COPY    "K021.INC".
+           COPY    "K022.INC".
+           COPY    "K023.INC".
+           COPY    "K03.INC".
+           COPY    "K04.INC".
+           COPY    "K05.INC".
+           COPY    "K051.INC".
+           COPY    "K052.INC".
+           COPY    "K06.INC".
+           COPY    "K07.INC".
+           COPY    "K08.INC".
+           COPY    "K09.INC".
+           COPY    "K10.INC".
+           COPY    "K98.INC".
+           COPY    "K99.INC".
+           COPY    "KERR.INC".
+           COPY    "KID1.INC".
+           COPY    "KID2.INC".
+      *
+       PROCEDURE                   DIVISION    USING
+           MCPAREA
+           SPAAREA
+           LINKAREA
+           SCRAREA.
+      *
+      *****************************************************************
+      *    主　　処理
+      *****************************************************************
+       000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  IDX-AREA
+           INITIALIZE                  WRK-AREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA.
+           MOVE    SPA-FREE        TO  SPA-K02
+           MOVE    SPA-WORK        TO  SPA-K01KYOUTU
+      *
+           MOVE    SPACE           TO  SPA-ERRCD
+           MOVE    ZERO            TO  FLG-END
+           EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
+               WHEN    "LINK"          ALSO    ANY
+                   PERFORM 100-INIT-SEC
+      *    画面遷移
+               WHEN     "PUTG"           ALSO   "CLICKED"
+                   PERFORM 200-GMNSENI
+      *    入力
+               WHEN      OTHER
+                   PERFORM 200-ENTRY
+           END-EVALUATE.
+      *
+      *    画面遷移がない時、画面表示へ
+           IF      FLG-END             =   ZERO
+               PERFORM 500-SET-SCREEN
+           END-IF
+      *
+           MOVE    SPA-K01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-K02         TO  SPA-FREE
+      *
+           .
+           EXIT    PROGRAM
+           .
+      *
+      *****************************************************************
+      *    初期　処理
+      *****************************************************************
+       100-INIT-SEC                SECTION.
+      *
+      *    DISPLAY "*** ORCSNPL    START  ***"
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+           INITIALIZE                  WRK-AREA
+      *
+      *    エラー画面より
+           IF      SPA-MOTOPG          =   "KERR"
+               MOVE    SPACE               TO  SPA-MOTOPG
+               PERFORM 5001-MAPCUR-SEC
+           ELSE
+      *
+      *        初期画面編集
+               PERFORM 300-SCREEN-SEC
+      *
+      *        画面編集
+               PERFORM 500-GMNHEN-SEC
+           END-IF
+      *
+           MOVE   "NEW"                TO  MCP-PUTTYPE.
+           MOVE   "K10"                TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+           .
+      *
+       100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初期画面処理
+      *****************************************************************
+       300-SCREEN-SEC             SECTION.
+      *
+      *    内部画面より
+           EVALUATE    SPA-MOTOPG
+               WHEN    "KID1"
+      *            確認画面より
+                   PERFORM 30010-KID1-SET-SEC
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   GO      TO      300-SCREEN-EXT
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  SPA-KIDCD
+           INITIALIZE                  SPA-K10GMN-AREA
+      *
+           PERFORM                     310-SPA-SET-SEC
+      *
+           .
+       300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面（ＫＩＤ１）ＯＫ処理
+      *****************************************************************
+       30010-KID1-SET-SEC          SECTION.
+      *
+           EVALUATE    SPA-KIDCD
+               WHEN    "0101"
+                   IF      SPA-KID1-FLG        =   "OK"
+      *                中途終了分削除
+                       PERFORM                 30011-WKSRYCD-DEL-SEC
+                       MOVE    1               TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    SPACE           TO  SPA-K10-GMN-SELNUM
+                       MOVE    ZERO            TO  SPA-K10-SELNUM
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
+           END-EVALUATE
+           .
+       30010-KID1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面編集処理
+      *****************************************************************
+       310-SPA-SET-SEC                  SECTION.
+      *
+      *    ワーク診療行為を検索する
+           MOVE    ZERO                TO  IDX
+      *
+           INITIALIZE                  WKSRYACT-REC
+           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  WKSRY-PTID
+           IF      SPA-GMN-PTID        =   ZERO
+               MOVE    "WKSRYACT-KEY5"     TO  WRK-PATH
+           ELSE
+               MOVE    "WKSRYACT-KEY4"     TO  WRK-PATH
+           END-IF
+      *
+           MOVE    WKSRYACT-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-PATH          TO  ORC-DBPATH
+               PERFORM 940-WKSINKOUI-READ-SEC
+           ELSE
+               INITIALIZE                  WKSRYACT-REC
+               MOVE    1               TO  FLG-WKSRYACT
+           END-IF
+           PERFORM
+               UNTIL   (FLG-WKSRYACT   =   1 )  OR
+                       (IDX            >=  50 )
+      *
+               IF      (WKSRY-ZAINUM       =   1   )  AND
+                       (WKSRY-RENNUM       =   1   )
+                   ADD     1                   TO  IDX
+                   MOVE    IDX                 TO  SPA-K10-MAX
+                   MOVE    IDX                 TO  SPA-K10-SEQ    (IDX)
+                   MOVE    WKSRY-PTID          TO  SPA-K10-PTID   (IDX)
+                   MOVE    WKSRY-SRYKA         TO  SPA-K10-SRYKA (IDX)
+                   MOVE    WKSRY-SRYYMD        TO  SPA-K10-SRYYMD (IDX)
+                   MOVE    WKSRY-HKNCOMBI      TO  SPA-K10-HKNCOMBI(IDX)
+      *
+                   PERFORM 3101-TBL-HENSYU-SEC
+               END-IF
+      *
+               MOVE    WRK-PATH            TO  ORC-DBPATH
+               PERFORM 940-WKSINKOUI-READ-SEC
+           END-PERFORM
+      *
+      *
+           .
+       310-SPA-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    画面編集用処理
+      *****************************************************************
+       3101-TBL-HENSYU-SEC             SECTION.
+      *
+      *    患者マスター読み込み
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    WKSRY-PTID          TO  PTINF-PTID
+           PERFORM 900-PTINF-READ-SEC
+           MOVE    PTINF-NAME          TO  SPA-K10-GMN-NAME  (IDX)
+      *
+      *    診療科
+           PERFORM VARYING     IDY     FROM    1  BY  1
+                   UNTIL       IDY     >   SPA-SRYKA-MAX
+               IF      WKSRY-SRYKA         =   SPA-GMN-SRYKAL (IDY)
+                   MOVE    SPA-GMN-SRYKAMEIL (IDY)
+                                           TO  SPA-K10-GMN-SRYKA
+                                                               (IDX)
+                   MOVE    SPA-SRYKA-MAX   TO  IDY
+               END-IF
+           END-PERFORM
+      *
+      *    診察日
+           MOVE    WKSRY-SRYYMD        TO  SPA-K10-SRYYMD(IDX)
+           MOVE    WKSRY-SRYYMD        TO  WRK-SYMD
+           PERFORM 520-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  SPA-K10-GMN-SRYYMD (IDX)
+      *
+      *    保険組合せ
+           MOVE    SPACE               TO  HKNCOMBI-REC
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    WKSRY-PTID          TO  COMB-PTID
+           MOVE    WKSRY-HKNCOMBI      TO  COMB-HKNCOMBINUM
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+               PERFORM 910-HKNCOMBI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+               INITIALIZE                  HKNCOMBI-REC
+           END-IF
+      *
+           PERFORM 31011-HKNCOMBI-HEN-SEC
+           MOVE    WRK-HKNCOMBI        TO  SPA-K10-GMN-HKNCOMBI
+                                                          (IDX)
+      *
+           .
+       3101-TBL-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ名称編集処理
+      *****************************************************************
+       31011-HKNCOMBI-HEN-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  WRK-HKNCOMBI
+      *
+           STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+                   " "                     DELIMITED  BY  SIZE
+                   COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                   " "                     DELIMITED  BY  SIZE
+                   COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                   " "                     DELIMITED  BY  SIZE
+                   COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                   " "                     DELIMITED  BY  SIZE
+                   COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                         INTO              WRK-HKNCOMBI
+           END-STRING
+      *
+           .
+       31011-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面遷移処理
+      *****************************************************************
+       200-GMNSENI                   SECTION.
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        戻る
+               WHEN    "CLICKED"       ALSO    "B01"
+                   PERFORM 210-BACK
+      *        削除
+               WHEN    "CLICKED"       ALSO    "B04"
+                    PERFORM 440-DELETE-SEC
+      *        登録
+               WHEN    "CLICKED"       ALSO    "B12"
+                    PERFORM 450-TOROKU-SEC
+           END-EVALUATE
+      *
+           .
+       200-GMNSENI-EXT.
+           EXIT.
+      *****************************************************************
+      *    会話　処理
+      *****************************************************************
+       200-ENTRY                   SECTION.
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        選択番号
+               WHEN    "ACTIVATE"      ALSO    "SELNUM"
+                   PERFORM 410-SELNUM-CHK-SEC
+      *        診療日選択
+               WHEN    ANY             ALSO    "LIST"
+                   PERFORM 420-LIST-CHK-SEC
+           END-EVALUATE
+           .
+       200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療日選択番号入力チェック処理
+      *****************************************************************
+       410-SELNUM-CHK-SEC              SECTION.
+      *
+           MOVE    1                   TO  SPA-K10GMN-CUR
+      *
+           MOVE    K10-SELNUM          TO  SPA-K10-GMN-SELNUM
+           IF      K10-SELNUM          =   SPACE
+               MOVE    ZERO                TO  SPA-K10-SELNUM
+           ELSE
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    K10-SELNUM          TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN     NOT =   SPACE )   OR
+                      (SNUM-SYOKBN     NOT =   SPACE )
+                   MOVE    "0001"              TO  SPA-ERRCD
+                   GO      TO      410-SELNUM-CHK-EXT
+               ELSE
+                   MOVE    SNUM-OUTNUM       TO  SPA-K10-SELNUM
+               END-IF
+           END-IF
+           MOVE    SPA-K10-SELNUM      TO  WRK-ZZ
+           MOVE    WRK-ZZ              TO  SPA-K10-GMN-SELNUM
+      *
+           IF      SPA-K10-SELNUM      <   01   OR
+                                       >   SPA-K10-MAX
+               MOVE    "0001"              TO  SPA-ERRCD
+           ELSE
+               MOVE    2                   TO  SPA-K10GMN-CUR
+           END-IF
+      *
+           .
+       410-SELNUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療日選択処理
+      *****************************************************************
+       420-LIST-CHK-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  WRK-SELNUM
+      *
+           PERFORM VARYING     IDX   FROM   1   BY  1
+                   UNTIL       IDX   >   SPA-K10-MAX
+              IF      K10-SELECT (IDX)        =  "T"
+                  IF      IDX                 =   SPA-K10-SELNUM
+                      CONTINUE
+                  ELSE
+                      MOVE    SPA-K10-SEQ(IDX)    TO  WRK-SELNUM
+                  END-IF
+              END-IF
+           END-PERFORM
+      *
+           IF      WRK-SELNUM          >   ZERO
+               MOVE    WRK-SELNUM          TO  SPA-K10-SELNUM
+           END-IF
+      *
+           IF      SPA-K10-SELNUM      <   01   OR
+                                       >   SPA-K10-MAX
+               CONTINUE
+           ELSE
+               MOVE    SPA-K10-SELNUM      TO  WRK-ZZ
+               MOVE    WRK-ZZ              TO  SPA-K10-GMN-SELNUM
+               MOVE    2                   TO  SPA-K10GMN-CUR
+           END-IF
+      *
+           .
+       420-LIST-CHK-SEC-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    戻る　処理
+      *****************************************************************
+       210-BACK                        SECTION.
+      *
+           MOVE    ZERO                TO  SPA-K10-SELNUM
+      *
+           MOVE    "K02"               TO  SPA-SAKIPG
+           MOVE    "K10"               TO  SPA-MOTOPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    "K02"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       210-BACK-EXT.
+           EXIT.
+      *****************************************************************
+      *    確定　処理
+      *****************************************************************
+       450-TOROKU-SEC             SECTION.
+      *
+           IF      SPA-K10-SELNUM      >   SPA-K10-MAX
+               MOVE    "0001"              TO  SPA-ERRCD
+               GO      TO      450-TOROKU-EXT
+           ELSE
+               IF      SPA-K10-SELNUM      >   ZERO
+                   PERFORM 4510-KAKUTEI-SYORI-SEC
+               END-IF
+           END-IF
+      *
+           MOVE    "K02"               TO  SPA-SAKIPG
+           MOVE    "K10"               TO  SPA-MOTOPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *
+      *****MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    "K02"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       450-TOROKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    確定　処理
+      *****************************************************************
+       4510-KAKUTEI-SYORI-SEC             SECTION.
+      *
+           MOVE    SPA-K10-SELNUM      TO  IDX
+      *
+           MOVE    SPA-K10-PTID (IDX)  TO  SPA-PTID
+           MOVE    SPA-K10-SRYKA(IDX)  TO  SPA-SRYKA
+           MOVE    SPA-K10-SRYYMD(IDX) TO  SPA-SRYYMD
+           MOVE    SPA-K10-GMN-SRYYMD(IDX)
+                                       TO  SPA-SRYYMDW
+           MOVE    SPA-K10-HKNCOMBI(IDX)
+                                       TO  SPA-HKNCOMBINUM
+      *
+           INITIALIZE                      ORCSPTIDAREA
+           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+           MOVE    SPA-PTID            TO  SPTID-PTID
+           CALL    "ORCSPTID"          USING   ORCSPTIDAREA
+                                               SPA-1009-TBL
+           MOVE    SPTID-PTID          TO  SPA-PTID
+           MOVE    SPTID-PTNUM         TO  SPA-PTNUM
+      *
+           .
+      *
+       4510-KAKUTEI-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    削除　処理
+      *****************************************************************
+       440-DELETE-SEC             SECTION.
+      *
+           IF      SPA-K10-SELNUM      >   SPA-K10-MAX
+               MOVE    "0001"              TO  SPA-ERRCD
+           ELSE
+               IF      SPA-K10-SELNUM      >   ZERO
+                   MOVE    "0101"          TO  SPA-KIDCD
+               END-IF
+           END-IF
+      *
+           .
+       440-DELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    中途終了分削除処理
+      *****************************************************************
+        30011-WKSRYCD-DEL-SEC             SECTION.
+      *
+           MOVE    SPA-K10-SELNUM      TO  IDX
+      *    ワーク診療行為マスタ検索
+           MOVE    SPACE               TO  WKSRYACT-REC
+           INITIALIZE                  WKSRYACT-REC
+           MOVE    SPA-HOSPID          TO  WKSRY-HOSPID
+           MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
+           MOVE    SPA-K10-PTID (IDX)  TO  WKSRY-PTID
+           MOVE    SPA-K10-SRYKA(IDX)  TO  WKSRY-SRYKA
+           MOVE    SPA-K10-SRYYMD(IDX) TO  WKSRY-SRYYMD
+           MOVE    SPA-K10-HKNCOMBI(IDX)
+                                       TO  WKSRY-HKNCOMBI
+      *
+           MOVE    WKSRYACT-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "WKSRYACT-KEY2"   TO  ORC-DBPATH
+               PERFORM 940-WKSINKOUI-READ-SEC
+           ELSE
+               INITIALIZE                  WKSRYACT-REC
+               MOVE    1               TO  FLG-WKSRYACT
+           END-IF
+           PERFORM
+               UNTIL   FLG-WKSRYACT   =   1
+      *
+               MOVE    WKSRYACT-REC        TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "WKSRYACT-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+               MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
+               PERFORM 940-WKSINKOUI-READ-SEC
+           END-PERFORM
+      *
+           MOVE    SPA-K10-SELNUM      TO  IDY
+           PERFORM VARYING    IDX      FROM    SPA-K10-SELNUM   BY  1
+                   UNTIL      IDX      >   SPA-K10-MAX
+               IF      IDX             =   SPA-K10-SELNUM
+                   INITIALIZE                  SPA-K10-LIST-OCC(IDX)
+               ELSE
+                   MOVE    IDY         TO  SPA-K10-SEQ (IDX)
+                   MOVE    SPA-K10-LIST-OCC(IDX)
+                                       TO  SPA-K10-LIST-OCC(IDX - 1)
+                   INITIALIZE                  SPA-K10-LIST-OCC(IDX)
+                   ADD     1           TO  IDY
+               END-IF
+           END-PERFORM
+           COMPUTE SPA-K10-MAX         =   SPA-K10-MAX   -   1
+           MOVE    SPACE               TO  SPA-K10-GMN-SELNUM
+           MOVE    ZERO                TO  SPA-K10-SELNUM
+      *
+           .
+        30011-WKSRYCD-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    西暦和暦編集処理
+      *****************************************************************
+       520-SEIWA-HEN-SEC             SECTION.
+      *
+           IF      WRK-SYMD            =   ALL "9"  OR   SPACE
+               MOVE    SPACE               TO  WRK-HGO
+               MOVE    WRK-SYMD(3:2)       TO  WRK-HYY
+               MOVE    WRK-SYMD(5:2)       TO  WRK-HMM
+               MOVE    WRK-SYMD(7:2)       TO  WRK-HDD
+               MOVE    WRK-HENYMD          TO  WRK-HENYMDG
+           ELSE
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"            USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG
+           END-IF
+           .
+       520-SEIWA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自画面編集処理
+      *****************************************************************
+       500-SET-SCREEN              SECTION.
+      *
+           PERFORM 500-GMNHEN-SEC
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               PERFORM 510-ERRSET-SEC
+               GO      TO      500-SET-SCREEN-EXT
+           END-IF
+      *
+           IF      SPA-KIDCD       NOT =   SPACE
+               PERFORM 520-KIDSET-SEC
+               GO      TO      500-SET-SCREEN-EXT
+           END-IF
+      *
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
+           MOVE    "K10"               TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+           .
+       500-SET-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面編集処理
+      *****************************************************************
+       500-GMNHEN-SEC                  SECTION.
+      *
+           MOVE    SPACE               TO  K10
+      *
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL     IDX         >   SPA-K10-MAX
+               MOVE    SPA-K10-SEQ    (IDX)    TO  WRK-ZZ
+               MOVE    WRK-ZZ                  TO  K10-NO  (IDX)
+               MOVE    SPA-K10-GMN-NAME   (IDX)
+                                               TO  K10-NAME  (IDX)
+               MOVE    SPA-K10-GMN-SRYKA  (IDX)
+                                               TO  K10-SRYKA (IDX)
+               MOVE    SPA-K10-GMN-SRYYMD (IDX)
+                                               TO  K10-SRYYMD(IDX)
+               MOVE    SPA-K10-GMN-HKNCOMBI (IDX)
+                                               TO  K10-HKNCOMBI(IDX)
+               IF      SPA-K10-SEQ(IDX)    =   SPA-K10-SELNUM
+                   MOVE    "T"             TO  K10-SELECT  (IDX)
+               ELSE
+                   MOVE    "F"             TO  K10-SELECT  (IDX)
+               END-IF
+           END-PERFORM
+           MOVE    SPA-K10-MAX         TO  K10-COUNT
+      *
+           MOVE    SPA-K10-GMN-SELNUM  TO  K10-SELNUM
+      *
+           PERFORM 5001-MAPCUR-SEC
+           .
+       500-GMNHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面カーソルセット処理
+      *****************************************************************
+       5001-MAPCUR-SEC             SECTION.
+      *
+           EVALUATE    SPA-K10GMN-CUR
+               WHEN    01
+                   MOVE    "SELNUM"          TO  MCP-WIDGET
+               WHEN    02
+                   MOVE    "B12"             TO  MCP-WIDGET
+           END-EVALUATE
+      *
+           .
+       5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージ表示理
+      *****************************************************************
+       510-ERRSET-SEC              SECTION.
+           MOVE    SPACE               TO  SPA-ERRMSG
+      *
+           EVALUATE    SPA-ERRCD
+               WHEN    "0001"
+                   MOVE    "番号選択入力エラー"
+                                       TO  SPA-ERRMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  KERR
+           MOVE    SPA-ERRCD           TO  KERR-ERRCODE
+           MOVE    SPA-ERRMSG          TO  KERR-ERRMSG
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "K10"               TO  SPA-MOTOPG
+           MOVE    "KERR"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "KERR"              TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+      *
+           .
+       510-ERRSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認メッセージ表示理
+      *****************************************************************
+       520-KIDSET-SEC              SECTION.
+      *
+           EVALUATE    SPA-KIDCD
+               WHEN    "0101"
+                   MOVE
+                   "対象のデータを削除します。よろしいですか？"
+                                       TO  WRK-KIDMSG
+               WHEN    OTHER
+                   MOVE    SPA-KIDCD
+                                       TO  WRK-KIDMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  KID1
+           MOVE    SPA-KIDCD           TO  KID1-ID1CODE
+           MOVE    WRK-KIDMSG          TO  KID1-ID1MSG
+      *
+           MOVE    "戻る"              TO  KID1-B01
+           MOVE    "ＯＫ"              TO  KID1-B12
+      *
+           MOVE    "B12"               TO  MCP-WIDGET
+      *
+           MOVE    "K10"               TO  SPA-MOTOPG
+           MOVE    "KID1"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "KID1"              TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       520-KIDSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者マスター読込（主キー）
+      *****************************************************************
+       900-PTINF-READ-SEC         SECTION.
+      *
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  PTINF-REC
+                   MOVE    ZERO                TO  FLG-PTINF
+               ELSE
+                   MOVE    1                   TO  FLG-PTINF
+                   INITIALIZE                  PTINF-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-PTINF
+               INITIALIZE                  PTINF-REC
+           END-IF
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+      *    CALL    "MCPDBSUB"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+      *
+           .
+       900-PTINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せマスター読込
+      *****************************************************************
+       910-HKNCOMBI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+               MOVE    ZERO            TO  FLG-HKNCOMBI
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       910-HKNCOMBI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ワーク診療行為データ読込
+      *****************************************************************
+       940-WKSINKOUI-READ-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  WKSRYACT-REC
+               MOVE    ZERO            TO  FLG-WKSRYACT
+           ELSE
+               INITIALIZE                  WKSRYACT-REC
+               MOVE    1               TO  FLG-WKSRYACT
+           END-IF
+      *
+           .
+       940-WKSINKOUI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    パラメタデータ順読み
+      *****************************************************************
+       980-PARA-READ-SEC         SECTION.
+      *
+           READ    PARA-FILE 
+               AT  END
+                   MOVE    1           TO  FLG-PARA
+               NOT AT  END
+                   MOVE    ZERO        TO  FLG-PARA
+           END-READ
+      *
+           .
+       980-PARA-READ-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    ＰＵＴ　処理
+      *****************************************************************
+       900-PUT-WINDOW              SECTION.
+      *
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
+           CALL   "ORCMCPSUB"   USING
+                                MCPAREA
+                                ORCMCPAREA
+                                MCPDATA-REC.
+      *
+           .
+       900-PUT-WINDOW-EXT.
+           EXIT.
+      *

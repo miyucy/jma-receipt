@@ -1,0 +1,15 @@
+P013	{
+	fixed1	{
+		PTNUM1	{
+			state	int;
+			value	varchar(21);
+		};
+		PTNUM2	{
+			value	varchar(21);
+		};
+		PTNUM3	{
+			state	int;
+			value	varchar(21);
+		};
+	};
+};

@@ -1,0 +1,16 @@
+K022	{
+	fixed10	{
+		POP_TOUMEI	{
+			value	varchar(40);
+		};
+		scrolledwindow1	{
+			viewport1	{
+				list1	{
+					count	int;
+					item	varchar(40)[20];
+					select	bool[20];
+				};
+			};
+		};
+	};
+};

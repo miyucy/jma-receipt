@@ -1,0 +1,55 @@
+C04	{
+	fixed6	{
+		SELNUM2	{
+			value	number(3);
+		};
+		INPUTCD1	{
+			value	varchar(11);
+		};
+		INPUTCD2	{
+			value	varchar(11);
+		};
+		INPUTCD3	{
+			value	varchar(11);
+		};
+		INPUTCD4	{
+			value	varchar(11);
+		};
+		INPUTCD5	{
+			value	varchar(11);
+		};
+		INPUTCD6	{
+			value	varchar(11);
+		};
+		BYOMEI	{
+			value	varchar(401);
+		};
+		SELNUM1	{
+			value	number(3);
+		};
+		KENBYOMEI	{
+			value	varchar(51);
+		};
+		SCR_ACTLST	{
+			BUNRUILST	{
+				count	int;
+				item	{
+					value1	varchar(4);
+					value2	varchar(20);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		scrolledwindow28	{
+			BYOMEILST	{
+				count	int;
+				item	{
+					value1	varchar(4);
+					value3	varchar(10);
+					value4	varchar(80);
+				}	[700];
+				select	bool[700];
+			};
+		};
+	};
+};

@@ -1,0 +1,56 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      *****************************************************************
+      *
+      *    収納 共通ＳＰＡ     (SPA-WORK の内容  最大RL=550)
+      *    画面　S01 S02 S03 で使用                              *
+      *****************************************************************
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     01/11/06  患者ＩＤ〜診療科の追加
+      *****************************************************************
+       01  SPA-S01KYOUTU.
+      *処理番号     
+           05  SPA-S01-SYORINO           PIC X(02).
+      *伝票番号
+           05  SPA-S01-DENPNUM           PIC 9(07).
+      *患者ＩＤ
+           05  SPA-S01-PTID              PIC 9(10).
+      *患者番号
+           05  SPA-S01-PTNUM             PIC X(20).
+      *患者カナ氏名
+           05  SPA-S01-KANANAME          PIC X(50).
+      *患者漢字氏名
+           05  SPA-S01-NAME              PIC X(50).
+      *患者性別
+           05  SPA-S01-SEX               PIC X(02).
+      *患者生年月日（和暦編集）
+           05  SPA-S01-BIRTHDAYW         PIC X(09).
+      *診療年月
+           05  SPA-S01-SRYYM             PIC X(06).
+      *診療年月（和暦編集済）
+           05  SPA-S01-SRYYMW            PIC X(07).
+      *診療科
+           05  SPA-S01-SRYKA             PIC X(02).
+      *診療科名
+           05  SPA-S01-SRYKAMEI          PIC X(30).
+      *負担率名称
+           05  SPA-S01-FTNRATEMEI        PIC X(10).
+      *保険組合せ内容
+           05  SPA-S01-HKNCOMBIMEI       PIC X(40).

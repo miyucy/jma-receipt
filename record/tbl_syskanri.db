@@ -1,0 +1,182 @@
+tbl_syskanri	{
+	KANRICD		char(4);
+	KBNCD		char(8);
+	STYUKYMD	char(8);
+	EDYUKYMD	char(8);
+	KANRITBL	varchar(500);
+	TERMID		varchar(16);
+	OPID		varchar(16);
+	CREYMD		char(8);
+	UPYMD		char(8);
+	UPHMS		char(6);
+#-----> 主キー更新用項目
+	UPKANRICD	char(4),virtual;
+	UPKBNCD	char(8),virtual;
+	UPSTYUKYMD	char(8),virtual;
+	UPEDYUKYMD	char(8),virtual;
+};
+
+primary	{
+	KANRICD,KBNCD,STYUKYMD,EDYUKYMD;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_syskanri_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+			WHERE   KANRICD      =   :KANRICD 
+			AND		KBNCD        LIKE   :KBNCD
+			AND		STYUKYMD     <=  :STYUKYMD
+			AND		EDYUKYMD     >=  :EDYUKYMD
+		;
+	};
+};
+
+path	key2	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+			WHERE   KANRICD      =   :KANRICD
+			AND     STYUKYMD     <=  :STYUKYMD
+			AND     EDYUKYMD     >=  :EDYUKYMD
+		;
+	};
+};
+path	key3	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+			WHERE   KANRICD      =   :KANRICD
+			AND		STYUKYMD     <=  :STYUKYMD
+			AND     EDYUKYMD     >=  :EDYUKYMD
+			AND     KANRITBL     LIKE  :KANRITBL
+		;
+	};
+};
+path	key4	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+			WHERE   KANRICD      =   :KANRICD
+			AND   KBNCD          LIKE   :KBNCD
+			ORDER	BY	KBNCD,STYUKYMD
+		;
+	};
+};
+path	key5	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+			WHERE   KANRICD      =   :KANRICD
+		;
+	};
+};
+path	key6	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key6_csr CURSOR FOR
+		SELECT DISTINCT ON (KBNCD) *
+		FROM tbl_syskanri 
+			WHERE   KANRICD      =   :KANRICD
+			ORDER	BY	KBNCD
+		;
+	};
+};
+
+path	key7	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+			WHERE   KANRICD      =   :KANRICD
+			AND     STYUKYMD     <=  :STYUKYMD
+			AND     EDYUKYMD     >=  :EDYUKYMD
+			ORDER	BY	KBNCD
+		;
+	};
+};
+
+path	key8	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+			WHERE   KANRICD      =   :KANRICD
+			AND   KBNCD          =   :KBNCD
+			ORDER	BY	STYUKYMD DESC
+		;
+	};
+};
+
+path	key9		{ 	
+	DBSELECT	{
+		DECLARE tbl_syskanri_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+			WHERE   KANRICD      =   :KANRICD 
+			AND	KBNCD        LIKE   :KBNCD
+			AND	STYUKYMD     <=  :STYUKYMD
+			AND	EDYUKYMD     >=  :EDYUKYMD
+			ORDER	BY	KBNCD
+		;
+	};
+};
+
+path	key10		{ 	
+	DBSELECT	{
+		DECLARE tbl_syskanri_key10_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+			WHERE   KANRICD      =   :KANRICD 
+			AND	KBNCD        =   :KBNCD
+			AND	STYUKYMD     <=  :STYUKYMD
+			AND	EDYUKYMD     >=  :EDYUKYMD
+		;
+	};
+};
+
+path	upd1	{ 	
+	DBUPDATE	{
+		UPDATE	tbl_syskanri 
+				SET	
+#					:*
+					KANRICD      =   :KANRICD,
+					KBNCD     	 =   :KBNCD,
+					STYUKYMD     =   :STYUKYMD,
+					EDYUKYMD     =   :EDYUKYMD,
+					KANRITBL     =   :KANRITBL,
+					TERMID       =   :TERMID,
+					OPID         =   :OPID,
+					CREYMD       =   :CREYMD,
+					UPYMD        =   :UPYMD,
+					UPHMS        =   :UPHMS
+			WHERE   KANRICD      =   :UPKANRICD
+			AND		KBNCD        =   :UPKBNCD
+			AND		STYUKYMD     =   :UPSTYUKYMD
+			AND		EDYUKYMD     =   :UPEDYUKYMD
+		;
+	};
+};
+path	del11	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syskanri
+			WHERE   KANRICD      =   :KANRICD
+			AND     STYUKYMD     <=  :STYUKYMD
+			AND     EDYUKYMD     >=  :EDYUKYMD
+		;
+	};
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+      		;
+	};
+};

@@ -1,0 +1,52 @@
+tbl_srycdchg {
+	IPNSRYCD   		char(9);
+	RJNSRYCD  		char(9);
+	TERMID  		varchar(16);
+	OPID    		varchar(16);
+	CREYMD  		char(8);
+	UPYMD   		char(8);
+	UPHMS			char(6);
+};
+primary	{
+	IPNSRYCD,RJNSRYCD;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_srycdchg_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_srycdchg
+			WHERE   IPNSRYCD  =   :IPNSRYCD
+			AND   RJNSRYCD    =   :RJNSRYCD
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_srycdchg_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_srycdchg
+			WHERE   IPNSRYCD  =   :IPNSRYCD
+		;
+	};
+};
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_srycdchg_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_srycdchg
+			WHERE   RJNSRYCD  =   :RJNSRYCD
+		;
+	};
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_srycdchg_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_srycdchg
+ 		;
+	};
+};

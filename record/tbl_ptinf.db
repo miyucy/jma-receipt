@@ -1,0 +1,125 @@
+tbl_ptinf {
+	HOSPID				char(24);
+	PTID				number(10,0);
+	KANANAME			varchar(100);
+	NAME 				varchar(100);
+	NICKNAME			varchar(100);
+	SEX        			char(1);
+	BIRTHDAY 			char(8);
+	DEATHKBN			char(1);
+	HOME_POST			varchar(7);
+	HOME_ADRS			varchar(200);
+	HOME_BANTI 			varchar(200);
+	HOME_TEL1 			varchar(15);
+	HOME_TEL2 			varchar(15);
+	SETAINUSI			varchar(100);
+	ZOKUGARA			varchar(60);
+	JOB 		        varchar(40);
+	KEITAI_TEL			varchar(15);
+	FAX				varchar(15);
+	EMAIL				varchar(50);
+	DISCOUNT			char(2);
+	DISCOUNT_RATE			char(2);
+	CONDITION_1			char(2);
+	CONDITION_2			char(2);
+	CONDITION_3			char(2);
+	COMMENT_1			varchar(200);
+	COMMENT_2			varchar(200);
+	TABOO_1				varchar(200);
+	TABOO_2				varchar(200);
+	ALLERGY_1			varchar(200);
+	ALLERGY_2			varchar(200);
+	KANSENSYO_1			varchar(200);
+	KANSENSYO_2			varchar(200);
+	RENRAKU_NAME			varchar(100);
+	RENRAKU_ZOKUGARA		varchar(60);
+	RENRAKU_POST 			varchar(7);
+	RENRAKU_ADRS			varchar(200);
+	RENRAKU_BANTI			varchar(200);
+	RENRAKU_TEL1			varchar(15);
+	RENRAKU_TEL2			varchar(15);
+	OFFICE_NAME 			varchar(100);
+	OFFICE_POST			varchar(7);
+	OFFICE_ADRS 			varchar(200);
+	OFFICE_BANTI			varchar(200);
+	OFFICE_TEL 			varchar(15);
+	KISEI_NAME 			varchar(100);
+	KISEI_POST 			varchar(7);
+	KISEI_ADRS 			varchar(200);
+	KISEI_BANTI			varchar(200);
+	KISEI_TEL  			varchar(15);
+	TSTPTNUMKBN			char(1);
+	MAXZAINUM   			number(8,0);
+	TERMID   			varchar(16);
+	OPID     			varchar(16);
+	CREYMD   			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+};
+
+primary	{
+	HOSPID,PTID;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptinf_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptinf
+			WHERE   HOSPID      =   :HOSPID  AND
+					PTID  		=   :PTID
+		;
+	};
+};
+
+path	key2	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptinf
+			WHERE  (HOSPID    = :HOSPID) AND
+					NAME   LIKE :NAME
+			ORDER BY NAME
+		;
+	};
+};
+path	key3	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptinf
+			WHERE  (HOSPID    = :HOSPID) AND
+			(KANANAME  LIKE :KANANAME)
+			ORDER BY   KANANAME
+		;
+	};
+};
+path	key4	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptinf
+			WHERE   HOSPID    =   :HOSPID
+		;
+	};
+};
+path	key5	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptinf
+			WHERE ( HOSPID    =   :HOSPID )  AND
+			((NAME   LIKE :NAME  ) OR
+			(KANANAME  LIKE :KANANAME))
+			ORDER BY   KANANAME
+		;
+	};
+};
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptinf
+ 		;
+	};
+};

@@ -1,0 +1,117 @@
+tbl_inputcd {
+	HOSPID				char(24);
+	CDSYU   			char(1);
+	INPUTCD 			char(20);
+	SRYKBN				char(2);
+	SRYCD				char(9);
+	DSPSEQ				number(2);
+	DSPNAME				varchar(200);
+	TERMID  			varchar(16);
+	OPID    			varchar(16);
+	CREYMD  			char(8);
+	UPYMD   			char(8);
+	UPHMS				char(6);
+};
+
+primary	{
+	HOSPID,CDSYU,INPUTCD;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_inputcd_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_inputcd
+			WHERE   HOSPID     =   :HOSPID
+			AND   CDSYU        =   :CDSYU
+			AND   INPUTCD      LIKE   :INPUTCD
+		;
+	};
+};
+
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_inputcd_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_inputcd
+			WHERE   HOSPID     =   :HOSPID
+			AND   CDSYU        =   :CDSYU
+			AND   INPUTCD      =   :INPUTCD
+		;
+	};
+};
+
+path	key3	{ 	
+	DBSELECT	{
+		DECLARE tbl_inputcd_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_inputcd
+			WHERE   HOSPID     =   :HOSPID
+			AND  SRYCD         LIKE :SRYCD
+			ORDER   BY         DSPSEQ
+		;
+	};
+};
+
+path	key4	{ 	
+	DBSELECT	{
+		DECLARE tbl_inputcd_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_inputcd
+			WHERE   SRYCD      =   :SRYCD
+			AND   HOSPID       =   :HOSPID
+			ORDER   BY         DSPSEQ
+		;
+	};
+};
+
+path	del11	{ 	
+	DBDELETE	{
+               DELETE
+		FROM tbl_inputcd
+			WHERE   HOSPID     =   :HOSPID
+			AND   CDSYU        =   :CDSYU
+			AND   INPUTCD      LIKE   :INPUTCD
+		;
+	};
+};
+
+path	del12	{ 	
+	DBDELETE	{
+               DELETE
+		FROM tbl_inputcd
+			WHERE   HOSPID     =   :HOSPID
+			AND   CDSYU        =   :CDSYU
+			AND   INPUTCD      =   :INPUTCD
+		;
+	};
+};
+
+path	del21	{ 	
+	DBDELETE	{
+               DELETE
+		FROM tbl_inputcd
+			WHERE   HOSPID     =   :HOSPID
+			AND  SRYCD         LIKE :SRYCD
+		;
+	};
+};
+
+path	del22	{ 	
+	DBDELETE	{
+               DELETE
+		FROM tbl_inputcd
+			WHERE   HOSPID     =   :HOSPID
+			AND  SRYCD         =   :SRYCD
+		;
+	};
+};
+
+path	all	{ 	
+	DBSELECT	{
+		DECLARE tbl_inputcd_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_inputcd
+ 		;
+	};
+};

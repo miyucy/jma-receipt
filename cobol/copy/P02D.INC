@@ -1,0 +1,88 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+        02  P02D.
+     ****   02  P02D-FIXED10.
+              03  P02D-KOHNUM2.
+                04  P02D-VALUE  PIC X(10).
+              03  P02D-JIGYOUNAME.
+                04  P02D-VALUE  PIC X(21).
+              03  P02D-HIHKNJANAME.
+                04  P02D-VALUE  PIC X(51).
+              03  P02D-SHOBYOYMD.
+                04  P02D-VALUE  PIC X(11).
+              03  P02D-KOHNUM1.
+                04  P02D-VALUE  PIC X(15).
+              03  P02D-SINSATUYMD.
+                04  P02D-VALUE  PIC X(11).
+              03  P02D-KOHNUM3.
+                04  P02D-VALUE  PIC X(14).
+              03  P02D-RYOEDYMD.
+                04  P02D-VALUE  PIC X(11).
+              03  P02D-RYOSTYMD.
+                04  P02D-VALUE  PIC X(11).
+              03  P02D-CITYNAME.
+                04  P02D-VALUE  PIC X(21).
+              03  P02D-HKNKBNCOMBO.
+                04  P02D-HKNKBN.
+                  05  P02D-VALUE  PIC X(17).
+                04  P02D-HKNKBN-COUNT  PIC S9(9)   BINARY.
+                04  P02D-HKNKBN-ITEM   PIC X(16)   OCCURS  3 TIMES.
+              03  P02D-COMMENT.
+                04  P02D-VALUE  PIC X(101).
+              03  P02D-SONSHOUKBNCOMBO.
+                04  P02D-SONSHOUKBN.
+                  05  P02D-VALUE  PIC X(41).
+                04  P02D-SONSHOUKBN-COUNT  PIC S9(9)   BINARY.
+                04  P02D-SONSHOUKBN-ITEM   PIC X(40)   OCCURS  30 TIMES.
+              03  P02D-PREFNAMECOMBO.
+                04  P02D-PREFNAME.
+                  05  P02D-VALUE  PIC X(21).
+                04  P02D-PREFNAME-COUNT  PIC S9(9)   BINARY.
+                04  P02D-PREFNAME-ITEM   PIC X(20)   OCCURS  47 TIMES.
+              03  P02D-PREFKBNCOMBO.
+                04  P02D-PREFKBN.
+                  05  P02D-VALUE  PIC X(5).
+                04  P02D-PREFKBN-COUNT  PIC S9(9)   BINARY.
+                04  P02D-PREFKBN-ITEM   PIC X(4)    OCCURS  4 TIMES.
+              03  P02D-CITYKBNCOMBO.
+                04  P02D-CITYKBN.
+                  05  P02D-VALUE  PIC X(5).
+                04  P02D-CITYKBN-COUNT  PIC S9(9)   BINARY.
+                04  P02D-CITYKBN-ITEM   PIC X(4)    OCCURS  3 TIMES.
+              03  P02D-SISIKBNCOMBO.
+                04  P02D-SISIKBN.
+                  05  P02D-VALUE  PIC X(9).
+                04  P02D-SISIKBN-COUNT  PIC S9(9)   BINARY.
+                04  P02D-SISIKBN-ITEM   PIC X(8)    OCCURS  3 TIMES.
+              03  P02D-SINKEICOMBO.
+                04  P02D-SINKEI.
+                  05  P02D-VALUE  PIC X(11).
+                04  P02D-SINKEI-COUNT  PIC S9(9)   BINARY.
+                04  P02D-SINKEI-ITEM   PIC X(10)   OCCURS  4 TIMES.
+              03  P02D-TENKICOMBO.
+                04  P02D-TENKI.
+                  05  P02D-VALUE  PIC X(9).
+                04  P02D-TENKI-COUNT  PIC S9(9)   BINARY.
+                04  P02D-TENKI-ITEM   PIC X(8)    OCCURS  5 TIMES.
+              03  P02D-SAIGAICOB.
+                04  P02D-SAIGAI.
+                  05  P02D-VALUE  PIC X(21).
+                04  P02D-SAIGAI-COUNT  PIC S9(9)   BINARY.
+                04  P02D-SAIGAI-ITEM   PIC X(20)   OCCURS  3 TIMES.
+              03  P02D-SINSATUEND.
+                04  P02D-VALUE  PIC X(11).

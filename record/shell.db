@@ -1,0 +1,35 @@
+shell	{
+	name	varchar(200);
+	arg1		varchar(100);
+	arg2		varchar(100);
+	arg3		varchar(100);
+	arg4		varchar(100);
+	arg5		varchar(100);
+	arg6		varchar(100);
+	arg7		varchar(100);
+	arg8		varchar(100);
+	arg9		varchar(100);
+	arg10		varchar(100);
+	arg11		varchar(100);
+	arg12		varchar(100);
+	arg13		varchar(100);
+	arg14		varchar(100);
+	arg15		varchar(100);
+	arg16		varchar(100);
+	arg17		varchar(100);
+	arg18		varchar(100);
+	arg19		varchar(100);
+	arg20		varchar(100);
+};
+
+path	shell	{
+	SHELL	{
+		echo :name :arg1;
+		sh :name :arg1 :arg2 :arg3 :arg4 :arg5 :arg6 :arg7 :arg8 :arg9 :arg10 :arg11 :arg12 :arg13 :arg14 :arg15 :arg16 :arg17 :arg18 :arg19 :arg20;
+	};
+};
+path	command	{
+	COMMAND	{
+		:name :arg1;
+	};
+};

@@ -1,0 +1,32 @@
+M96	{
+	fixed3	{
+		LIST1	{
+				count	int;
+				item	{
+					value1	varchar(64);
+					value2	varchar(64);
+					value3	varchar(64);
+					value4	varchar(64);
+					value5	varchar(64);
+					value6	varchar(09);
+				}	[02];
+				select	bool[02];
+		};
+		LIST2	{
+				count	int;
+				item	{
+					value1	varchar(09);
+					value2	varchar(08);
+					value3	varchar(09);
+					value4	varchar(08);
+					value5	varchar(08);
+					value6	varchar(08);
+				}	[02];
+				select	bool[02];
+		};
+		MSG1	{
+		        style   varchar(20);
+				value	varchar(62);
+		};
+	};
+};

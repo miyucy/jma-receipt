@@ -1,0 +1,22 @@
+E01	{
+	fixed6	{
+		scrolledwindow1	{
+			CLIST1	{
+				count	int;
+				item	{
+					value1	char(25);
+				}	[60];
+				select	bool[60];
+			};
+		};
+		scrolledwindow2	{
+			CLIST2	{
+				count	int;
+				item	{
+					value1	char(25);
+				}	[60];
+				select	bool[60];
+			};
+		};
+	};
+};

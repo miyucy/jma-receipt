@@ -1,0 +1,134 @@
+Z04	{
+	fixed6	{
+		SRYCDH	{
+			value	varchar(10);
+		};
+		NAMEH	{
+			value	varchar(101);
+		};
+		YUKOSTYMDH	{
+			value	varchar(10);
+		};
+		YUKOEDYMDH	{
+			value	varchar(10);
+		};
+		KANANAME	{
+			value	varchar(101);
+		};
+		SHONAME	{
+			value	varchar(101);
+		};
+		NAME	{
+			value	varchar(101);
+		};
+		TEN	{
+			value	number(10,2);
+		};
+		OLDTEN	{
+			value	number(10,2);
+		};
+		TANICD_COMBO	{
+			TANICD	{
+				value	varchar(15);
+			};
+			count	int;
+			item	varchar(14)[90];
+		};
+		YAKKAKJNCD	{
+			value	varchar(13);
+		};
+		SYOMEIKANREN	{
+			value	varchar(10);
+		};
+		KEIKASOCHIYMD	{
+			value	varchar(11);
+		};
+		YUKOSTYMD	{
+			value	varchar(11);
+		};
+		YUKOEDYMD	{
+			value	varchar(11);
+		};
+		CSYYOURYO	{
+			value	number(5);
+		};
+		KOUHYOJYUNNUM	{
+			value	number(9);
+		};
+		MADOKUKBN_COMBO	{
+			MADOKUKBN	{
+				value	varchar(17);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		SINKEIHAKAIKBN_COMBO	{
+			SINKEIHAKAIKBN	{
+				value	varchar(19);
+			};
+			count	int;
+			item	varchar(18)[2];
+		};
+		SEIBUTUGAKUKBN_COMBO	{
+			SEIBUTUGAKUKBN	{
+				value	varchar(33);
+			};
+			count	int;
+			item	varchar(32)[2];
+		};
+		ZOEIZAIKBN_COMBO	{
+			ZOEIZAIKBN	{
+				value	varchar(27);
+			};
+			count	int;
+			item	varchar(26)[3];
+		};
+		YKZKBN_COMBO	{
+			YKZKBN	{
+				value	varchar(17);
+			};
+			count	int;
+			item	varchar(16)[6];
+		};
+		ZAIGATAKBN_COMBO	{
+			ZAIGATAKBN	{
+				value	varchar(37);
+			};
+			count	int;
+			item	varchar(36)[4];
+		};
+		LONGTOYOKBN	{
+			value	number(1);
+		};
+		TENSIKIBETU_COMBO	{
+			TENSIKIBETU	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[3];
+		};
+		OLDTENSKB_COMBO	{
+			OLDTENSKB	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[3];
+		};
+		SYUSAISKB	{
+			value	number(1);
+		};
+		FORMALNAME	{
+			value	varchar(201);
+		};
+		INPCHKKBN	{
+			value	number(1);
+		};
+		KOUHATUKBN_COMB	{
+			KOUHATUKBN	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[2];
+		};
+	};
+};

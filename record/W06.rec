@@ -1,0 +1,161 @@
+W06	{
+	fixed1	{
+		YUKOSTYMD	{
+			value	varchar(10);
+		};
+		YUKOEDYMD	{
+			value	varchar(10);
+		};
+		KBNCD	{
+			value	varchar(6);
+		};
+		KBNNAME	{
+			value	varchar(21);
+		};
+		USERID	{
+			value	varchar(17);
+		};
+		KANANAME	{
+			value	varchar(81);
+		};
+		NAME	{
+			value	varchar(81);
+		};
+		ISEKINUM	{
+			value	varchar(9);
+		};
+		HKNDRNUMS	{
+			value	varchar(9);
+		};
+		HKNDRNUMK	{
+			value	varchar(13);
+		};
+		MAYAKULICENSE	{
+			value	varchar(41);
+		};
+		SEMONKACOMBO1	{
+			SEMONKACD1	{
+				value	varchar(18);
+			};
+			count	int;
+			item	varchar(17)[10];
+		};
+		SEMONKACOMBO2	{
+			SEMONKACD2	{
+				value	varchar(18);
+			};
+			count	int;
+			item	varchar(17)[10];
+		};
+		SEMONKACOMBO3	{
+			SEMONKACD3	{
+				value	varchar(18);
+			};
+			count	int;
+			item	varchar(17)[10];
+		};
+		SEMONKACOMBO4	{
+			SEMONKACD4	{
+				value	varchar(18);
+			};
+			count	int;
+			item	varchar(17)[10];
+		};
+		SEMONKACOMBO5	{
+			SEMONKACD5	{
+				value	varchar(18);
+			};
+			count	int;
+			item	varchar(17)[10];
+		};
+		CHK1	{
+			value	bool;
+		};
+		CHK2	{
+			value	bool;
+		};
+		CHK3	{
+			value	bool;
+		};
+		CHK4	{
+			value	bool;
+		};
+		CHK5	{
+			value	bool;
+		};
+		CHK6	{
+			value	bool;
+		};
+		CHK7	{
+			value	bool;
+		};
+		CHK8	{
+			value	bool;
+		};
+		CHK9	{
+			value	bool;
+		};
+		CHK10	{
+			value	bool;
+		};
+		CHK11	{
+			value	bool;
+		};
+		CHK12	{
+			value	bool;
+		};
+		CHK13	{
+			value	bool;
+		};
+		CHK14	{
+			value	bool;
+		};
+		CHK15	{
+			value	bool;
+		};
+		CHK16	{
+			value	bool;
+		};
+		CHK17	{
+			value	bool;
+		};
+		CHK18	{
+			value	bool;
+		};
+		CHK19	{
+			value	bool;
+                        state   int;
+		};
+		CHK20	{
+			value	bool;
+		};
+		CHK21	{
+			value	bool;
+		};
+		CHK22	{
+			value	bool;
+		};
+		CHK23	{
+			value	bool;
+		};
+		CHK24	{
+			value	bool;
+		};
+		CHK25	{
+			value	bool;
+		};
+		CHK26	{
+			value	bool;
+		};
+		KANRIAUTHCOMBO	{
+			KANRIAUTHFLG	{
+				value	varchar(13);
+			};
+			count	int;
+			item	varchar(12)[2];
+		};
+                B03	{
+			state   int;
+		};
+	};
+};

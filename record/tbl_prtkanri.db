@@ -1,0 +1,75 @@
+tbl_prtkanri	{
+	TBL_KEY			char(8);
+	RENNUM  		number(4);
+	TBL_GROUP		char(14);
+	SHORI_RENNUM	number(4);
+	SHELLID			varchar(20);
+	SRYYM			varchar(06);
+	SKYYMD  		varchar(08);
+	PRIORITY        number(4);
+	PAGE    		number(5);
+	PRTFLG			char(1);
+	TITLE	        varchar(100);
+	TERMID			varchar(32);
+	OPID			varchar(16);
+	PRTNM			varchar(16);
+};
+
+primary	{
+	TBL_KEY,RENNUM,TBL_GROUP,SHORI_RENNUM;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_prtkanri_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_prtkanri
+                    WHERE   TBL_KEY      =   :TBL_KEY
+                    AND     RENNUM       =   :RENNUM
+                    AND     TBL_GROUP    =   :TBL_GROUP
+                    AND     SHORI_RENNUM =   :SHORI_RENNUM 
+		;
+	};
+};
+
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_prtkanri_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_prtkanri
+                    WHERE   TBL_KEY      =   :TBL_KEY
+                    AND     TBL_GROUP    =   :TBL_GROUP
+                    ORDER BY  RENNUM,SHORI_RENNUM
+		;
+	};
+};
+
+path	key3		{ 	
+	DBSELECT	{
+		DECLARE tbl_prtkanri_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_prtkanri
+                    WHERE    TBL_KEY    =   :TBL_KEY
+                    ORDER BY  TBL_GROUP desc,RENNUM,SHORI_RENNUM
+		;
+	};
+};
+
+path	del11	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_prtkanri
+                    WHERE   TBL_KEY      =   :TBL_KEY
+                    AND     TBL_GROUP    =   :TBL_GROUP
+		;
+	};
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_prtkanri_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_prtkanri
+ 		;
+	};
+};

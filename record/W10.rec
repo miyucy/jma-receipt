@@ -1,0 +1,80 @@
+W10	{
+	fixed12	{
+                B03	{
+	           	state	int;
+	        };
+		STYUKYMD	{
+			value	varchar(10);
+		};
+		EDYUKYMD	{
+			value	varchar(10);
+		};
+		notebook	{
+			pageno	int;
+			fixed	{
+				PROGNAME	{
+					value	varchar(25);
+				};
+				HCNAME	{
+					value	varchar(81);
+				};
+				HCNUM	{
+					value	number(3);
+				};
+				PARAHYOJI1	{
+					value	varchar(21);
+				};
+				PARA1	{
+					value	varchar(11);
+				};
+				PARAHYOJI2	{
+					value	varchar(21);
+				};
+				PARA2	{
+					value	varchar(11);
+				};
+				PARAHYOJI3	{
+					value	varchar(21);
+				};
+				PARA3	{
+					value	varchar(11);
+				};
+			};
+                    N01	{
+                        state	int;
+                    };
+			fixed1	{
+				PROGNAME1	{
+					value	varchar(25);
+				};
+				HCNAME1	{
+					value	varchar(81);
+				};
+				HCNUM1	{
+					value	number(3);
+				};
+				PARAHYOJI11	{
+					value	varchar(21);
+				};
+				PARA11	{
+					value	varchar(11);
+				};
+				PARAHYOJI21	{
+					value	varchar(21);
+				};
+				PARA21	{
+					value	varchar(11);
+				};
+				PARAHYOJI31	{
+					value	varchar(21);
+				};
+				PARA31	{
+					value	varchar(11);
+				};
+			};
+                    N02	{
+                        state	int;
+                    };
+		};
+	};
+};

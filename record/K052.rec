@@ -1,0 +1,10 @@
+K052	{
+	fixed1	{
+		INPUTCD1	{
+			value	varchar(7);
+		};
+		INPUTCD2	{
+			value	varchar(7);
+		};
+	};
+};

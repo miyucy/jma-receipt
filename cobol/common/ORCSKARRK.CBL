@@ -1,0 +1,540 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCSKARRK.
+      *****************************************************************
+      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
+      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : 
+      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¿ÇÎÅ²ÊÍúÎò¡¡½é¿Ç»»ÄêÆü¹¹¿·½èÍý
+      *  ÊÖµÑ¥¨¥é¡¼¥³¡¼¥É  : 00:Àµ¾ï¡¡10:¥Ñ¥é¥á¡¼¥¿ÉÔÀµ¡¦ÂÐ¾Ý¥Ç¡¼¥¿¤Ê¤·
+      *  ´ÉÍý¼Ô            : 
+      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
+      *  01.00.01    MCC-Â¿¡¹Ç¼   02/05/15  Ï«ºÒÍÑÄÉ²Ã
+      *****************************************************************
+      *
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION               SECTION.
+       INPUT-OUTPUT                SECTION.
+       FILE-CONTROL.
+      *
+      *
+       DATA                    DIVISION.
+      *FILE                        SECTION.
+      *
+      *
+       WORKING-STORAGE             SECTION.
+      *
+      *    ¥Õ¥é¥°ÎÎ°è
+       01  FLG-AREA.
+           03  FLG-SRYKARRK        PIC 9(01).
+           03  FLG-TENSU           PIC 9(01).
+           03  FLG-SANTEI          PIC 9(01).
+           03  FLG-JYURRK          PIC 9(01).
+           03  FLG-OK              PIC 9(01).
+      *
+      *    Åº»úÎÎ°è
+       01  IDX-AREA.
+           03  IDX                 PIC 9(04).
+           03  IDY                 PIC 9(04).
+      *
+      *    °ì»þÎÎ°è
+       01  WRK-AREA.
+           03  WRK-SRYCD               PIC X(09). 
+           03  WRK-SYOSINYMD1          PIC X(08). 
+           03  WRK-SYOSINYMD2          PIC X(08). 
+           03  WRK-LST-SRYYMD          PIC X(08). 
+           03  WRK-LST-SRYYMD2         PIC X(08). 
+      *
+      *    ÊÝ¸±ÊÌ»»ÄêÍúÎò¥Æ¡¼¥Ö¥ë
+           COPY   "CMSANTEITBL.INC".
+      *
+      *
+      *    ¶¦ÄÌÎÎ°è
+           COPY    "MCPAREA".
+      *
+      *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
+           COPY    "CPTENSU.INC".
+      *
+      *    ¿ÇÎÅ²ÊÍúÎò
+       01  SRYKARRK-REC.
+           COPY    "CPSRYKARRK.INC".
+      *
+      *    »»ÄêÍúÎò
+       01  SANTEI-REC.
+           COPY    "CPSANTEI.INC".
+      *
+      *    ¼õ¿ÇÍúÎò
+       01  JYURRK-REC.
+           COPY    "CPJYURRK.INC".
+      *
+      *01  MCPDATA-REC                 PIC X(5000).
+           COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
+      *
+      *****************************************************************
+      *    Ï¢Íí¡¡ÎÎ°è
+      *****************************************************************
+       LINKAGE                     SECTION.
+      *
+           COPY    "CPORCSKARRK.INC".
+      *    ¥¹¥ÑÎÎ°è
+           COPY    "COMMON-SPA".
+      *
+      *
+       PROCEDURE                    DIVISION    USING
+           ORCSKARRKAREA
+           SPA-AREA.
+      *
+      *****************************************************************
+      *    ¼ç¡¡¡¡½èÍý
+      *****************************************************************
+       000-PROC-SEC                 SECTION.
+      *
+           MOVE    ZERO                TO  SKARRK-RC
+           MOVE    SPACE               TO  SKARRK-ERRMSG
+      *
+      *    ¿ÇÎÅ²ÊÍúÎò½é´ü½èÍý
+           PERFORM 100-SRYKA-SYOKI-SEC
+      *    »»ÄêÍúÎò¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 200-SANTEIRRK-CHK-SEC
+      *    ¿ÇÎÅ²ÊÍúÎò¹¹¿·½èÍý
+           PERFORM 300-SRYKARRK-HEN-SEC
+      *
+           IF      SPA-ERRCD           NOT =   SPACE
+               MOVE    "¿ÇÎÅ²ÊÍúÎò¹¹¿·¥¨¥é¡¼"      TO  SKARRK-ERRMSG
+               MOVE    SPACE               TO  SPA-ERRCD
+               MOVE    10                  TO  SKARRK-RC
+           END-IF
+           .
+      *
+           EXIT PROGRAM
+           .
+      *
+      *****************************************************************
+      *    ¿ÇÎÅ²ÊÍúÎò½é´ü½èÍý
+      *****************************************************************
+       100-SRYKA-SYOKI-SEC                SECTION.
+      *
+      *    ¿ÇÎÅ²ÊÍúÎòÆÉ¹þ
+           MOVE    SPACE               TO  SRYKARRK-REC
+           INITIALIZE                      SRYKARRK-REC
+           MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+           MOVE    SPA-PTID            TO  KARRK-PTID
+           MOVE    SPA-SRYKA           TO  KARRK-SRYKA
+      *
+           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+               PERFORM 975-SRYKARRK-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYKARRK
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *    ¿ÇÎÅ²Ê¿·µ¬ºîÀ®
+           IF      FLG-SRYKARRK           =   1
+               MOVE    SPACE               TO  SRYKARRK-REC
+               INITIALIZE                      SRYKARRK-REC
+               MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+               MOVE    SPA-PTID            TO  KARRK-PTID
+               MOVE    SPA-SRYKA           TO  KARRK-SRYKA
+           END-IF
+           .
+      *
+       100-SRYKA-SYOKI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »»ÄêÍúÎò¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       200-SANTEIRRK-CHK-SEC                SECTION.
+      *
+      *    ½é¿ÇÎÁ¤Î»»ÄêÍúÎò¤Î¥Á¥§¥Ã¥¯
+           MOVE    SPACE               TO  WRK-SYOSINYMD1
+           MOVE    SPACE               TO  WRK-SYOSINYMD2
+      *
+           EVALUATE    SPA-HOSPSBT
+      *        ÉÂ±¡
+               WHEN    1
+      *            Ï·¿Í
+                   MOVE    "111700110"         TO  WRK-SRYCD
+                   PERFORM 2001-SANTEI-CHK-SEC
+      *            Ï·¿Í³°
+                   MOVE    "111000110"         TO  WRK-SRYCD
+                   PERFORM 2001-SANTEI-CHK-SEC
+      *        ¿ÇÎÅ½ê
+               WHEN    2
+      *            Ï·¿Í
+                   MOVE    "111700210"         TO  WRK-SRYCD
+                   PERFORM 2001-SANTEI-CHK-SEC
+      *            Ï·¿Í³°
+                   MOVE    "111003610"         TO  WRK-SRYCD
+                   PERFORM 2001-SANTEI-CHK-SEC
+           END-EVALUATE
+      *    ¾®»ù²Ê¿Ç»¡ÎÁ
+      *    ¡¡¡¡±¡³°½èÊý   ½é¿Ç
+           MOVE    "113003510"         TO  WRK-SRYCD
+           PERFORM 2001-SANTEI-CHK-SEC
+      *    ¡¡¡¡±¡Æâ½èÊý   ½é¿Ç
+           MOVE    "113003710"         TO  WRK-SRYCD
+           PERFORM 2001-SANTEI-CHK-SEC
+      *
+      *    ²¾¤Î½é¿ÇÎÁ
+           MOVE    "099110001"         TO  WRK-SRYCD
+           PERFORM 2001-SANTEI-CHK-SEC
+      *
+      *    Ï«ºÒ½é¿ÇÎÁ
+           MOVE    "101110010"         TO  WRK-SRYCD
+           PERFORM 2001-SANTEI-CHK-SEC
+      *
+           .
+      *
+       200-SANTEIRRK-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »»ÄêÍúÎò¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       2001-SANTEI-CHK-SEC                SECTION.
+      *
+      *
+           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+           PERFORM 910-TENSU-READ-SEC
+      *
+      *    »»ÄêÍúÎò¸¡º÷
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    SKARRK-SRYYM        TO  SANTEI-SRYYM
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           EVALUATE    TNS-SANTEIRRKKBN
+               WHEN    1
+                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+                   MOVE    ZERO                TO  SANTEI-SRYKA
+               WHEN    2
+                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+                   MOVE    ZERO                TO  SANTEI-SRYKA
+               WHEN    3
+                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+               WHEN    4
+                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+           END-EVALUATE
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           PERFORM UNTIL       FLG-SANTEI          =   1
+      *
+               IF      SANTEI-MSANTEICNT   >   ZERO
+                   IF     (WRK-SYOSINYMD1          =   SPACE  )  OR
+                          (SANTEI-FSANTEIYMD       <   WRK-SYOSINYMD1)
+                       MOVE    SANTEI-FSANTEIYMD   TO  WRK-SYOSINYMD1
+                   END-IF
+                   IF      SANTEI-FSANTEIYMD       >   WRK-SYOSINYMD2
+                       MOVE    SANTEI-FSANTEIYMD   TO  WRK-SYOSINYMD2
+                   END-IF
+               END-IF
+      *
+               MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+      *
+       2001-SANTEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿ÇÎÅ²ÊÍúÎò¹¹¿·½èÍý
+      *****************************************************************
+       300-SRYKARRK-HEN-SEC                SECTION.
+      *
+      *    ºÇ½ª¼õ¿ÇÍúÎò
+           MOVE    SPACE               TO  WRK-LST-SRYYMD
+           MOVE    SPACE               TO  WRK-LST-SRYYMD2
+           MOVE    SPACE               TO  JYURRK-REC
+           INITIALIZE                      JYURRK-REC
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-PTID            TO  JYURRK-PTID
+      *****MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "JYURRK-KEY8"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "JYURRK-KEY8"       TO  ORC-DBPATH
+               PERFORM 970-JYURRK-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-JYURRK
+           END-IF
+           PERFORM
+               UNTIL      (FLG-JYURRK      =   1   )  OR
+                          (WRK-LST-SRYYMD  NOT =   SPACE  AND
+                           WRK-LST-SRYYMD2 NOT =   SPACE  )
+               IF      SPA-SRYKA       =   JYURRK-SRYKA
+                   IF      WRK-LST-SRYYMD      =   SPACE
+                       MOVE    JYURRK-SRYYMD       TO  WRK-LST-SRYYMD
+                   END-IF
+               ELSE
+                   IF      WRK-LST-SRYYMD2     =   SPACE
+                       MOVE    JYURRK-SRYYMD       TO  WRK-LST-SRYYMD2
+                   END-IF
+               END-IF
+               MOVE    "JYURRK-KEY8"       TO  ORC-DBPATH
+               PERFORM 970-JYURRK-NEXT-SEC
+           END-PERFORM
+      *
+      *    ºÇ½ª¼õ¿ÇÆü
+           MOVE    WRK-LST-SRYYMD      TO  KARRK-LASTYMD
+      *    ½é¿ÇÎÁ£±
+           IF    ( KARRK-SYOSINYMD1    =   SPACE    )  OR
+                 ( SKARRK-SRYYM        =   KARRK-SYOSINYMD1(1:6))
+               IF      WRK-SYOSINYMD1      =   SPACE
+                   IF      WRK-LST-SRYYMD      =   SPACE  AND
+                           WRK-LST-SRYYMD2     =   SPACE
+      *                 ¤¹¤Ù¤Æ¤ÎÍúÎò¤Ê¤·
+                       MOVE    SPACE           TO  KARRK-SYOSINYMD1
+                   END-IF
+               ELSE
+                   MOVE   WRK-SYOSINYMD1   TO  KARRK-SYOSINYMD1
+               END-IF
+           END-IF
+      *    ½é¿ÇÎÁ£²
+           IF    ( KARRK-SYOSINYMD2    =   SPACE    )  OR
+                 ( SKARRK-SRYYM        =   KARRK-SYOSINYMD2(1:6))
+               IF      WRK-SYOSINYMD2      =   SPACE
+                   IF      WRK-LST-SRYYMD      =   SPACE
+                       MOVE    SPACE           TO  KARRK-SYOSINYMD2
+                   END-IF
+               ELSE
+                   MOVE   WRK-SYOSINYMD2   TO  KARRK-SYOSINYMD2
+               END-IF
+           END-IF
+      *    IF      KARRK-LASTYMD       =   SPACE
+      *        ºÇ½ª¼õ¿ÇÆü
+      *        MOVE    KARRK-SYOSINYMD2    TO  KARRK-LASTYMD
+      *    END-IF
+      *
+      *
+      *        ¤¹¤Ù¤Æ¤ÎÆüÉÕ¤¬¶õÇò¤Î»þ¡¢ºï½ü¤¹¤ë
+           IF     (KARRK-SYOSINYMD1        =   SPACE )  AND
+                  (KARRK-SYOSINYMD2        =   SPACE )  AND
+                  (KARRK-LASTYMD           =   SPACE )
+               IF      FLG-SRYKARRK           =   ZERO
+                   MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                   IF      MCP-RC          NOT =   ZERO
+                       DISPLAY "ORCSCKARRK SRYKARRK DEL ERR:"
+                                                    MCP-RC  "."
+                       MOVE    "3000"          TO  SPA-ERRCD
+                   END-IF
+              END-IF
+              GO      TO      300-SRYKARRK-HEN-EXT
+           END-IF
+      *
+           IF      FLG-SRYKARRK           =   ZERO
+      *        ¹¹¿·
+               MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+               MOVE    SPA-PTID            TO  KARRK-PTID
+               MOVE    SPA-SRYKA           TO  KARRK-SRYKA
+      *
+               MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "ORCSCKARRK SRYKARRK UPD ERR:"  MCP-RC  "."
+                   MOVE    "3000"          TO  SPA-ERRCD
+               END-IF
+           ELSE
+      *        ¿·µ¬
+               MOVE    SPA-HOSPID          TO  KARRK-HOSPID
+               MOVE    SPA-PTID            TO  KARRK-PTID
+               MOVE    SPA-SRYKA           TO  KARRK-SRYKA
+      *
+               MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "ORCSCKARRK SRYKARRK INS ERR:"  MCP-RC  "."
+                   MOVE    "3000"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+      *
+       300-SRYKARRK-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       910-TENSU-READ-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  TNS-YUKOSTYMD
+           MOVE    ALL "9"             TO  TNS-YUKOEDYMD
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           MOVE    SKARRK-SRYYM        TO  ORC-DBYMD(1:6)
+           MOVE    "01"                TO  ORC-DBYMD(7:2)
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+                   MOVE    ZERO                TO  FLG-TENSU
+               ELSE
+                   INITIALIZE                  TNS-TENSU-REC
+                   MOVE    1                   TO  FLG-TENSU
+               END-IF
+           ELSE
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       910-TENSU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »»ÄêÎò¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       920-SANTEI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SANTEI-REC
+               MOVE    ZERO                TO  FLG-SANTEI
+           ELSE
+               INITIALIZE                      SANTEI-REC
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           .
+       920-SANTEI-READ-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    ¿ÇÎÅ²ÊÎò¥Ç¡¼¥¿¼ç¥­¡¼¸¡º÷
+      *****************************************************************
+       975-SRYKARRK-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYKARRK-REC
+               MOVE    ZERO                TO  FLG-SRYKARRK
+           ELSE
+               MOVE    1                   TO  FLG-SRYKARRK
+               INITIALIZE                  SRYKARRK-REC
+           END-IF
+      *
+           .
+       975-SRYKARRK-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼õ¿ÇÍúÎò½çÆÉ¤ß
+      *****************************************************************
+       970-JYURRK-NEXT-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  JYURRK-REC 
+               MOVE    ZERO                TO  FLG-JYURRK
+           ELSE
+               MOVE    1                   TO  FLG-JYURRK
+           END-IF
+      *
+           .
+       970-JYURRK-NEXT-EXT.
+           EXIT.
+      *

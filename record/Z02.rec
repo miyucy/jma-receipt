@@ -1,0 +1,81 @@
+Z02	{
+	fixed1	{
+		SRYCDH	{
+			value	varchar(10);
+		};
+		YUKOSTYMDH	{
+			value	varchar(10);
+		};
+		YUKOEDYMDH	{
+			value	varchar(10);
+		};
+		NAMEH	{
+			value	varchar(101);
+		};
+		NAME	{
+			value	varchar(101);
+		};
+		KANANAME	{
+			value	varchar(101);
+		};
+		YUKOSTYMD	{
+			value	varchar(11);
+		};
+		YUKOEDYMD	{
+			value	varchar(11);
+		};
+		COLUMN1	{
+			value	number(3);
+		};
+		DIGIT4	{
+			value	number(3);
+		};
+		DIGIT3	{
+			value	number(3);
+		};
+		DIGIT2	{
+			value	number(3);
+		};
+		DIGIT1	{
+			value	number(3);
+		};
+		COLUMN4	{
+			value	number(3);
+		};
+		COLUMN3	{
+			value	number(3);
+		};
+		COLUMN2	{
+			value	number(3);
+		};
+		TEN	{
+			value	number(9);
+		};
+		HKNTEKKBN_COMBO	{
+			HKNTEKKBN	{
+				value	varchar(13);
+			};
+			count	int;
+			item	varchar(12)[3];
+		};
+		GAITENTTLKBN	{
+			value	number(3);
+		};
+		NYUTENTTLKBN	{
+			value	number(3);
+		};
+		BUIKBN_COMBO	{
+			BUIKBN	{
+				value	varchar(9);
+			};
+			count	int;
+			item	varchar(8)[8];
+		};
+		FORMALNAME	{
+			value	varchar(201);
+		};
+		INPCHKKBN	{
+			value	number(1);
+		};
+	};
+};

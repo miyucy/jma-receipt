@@ -1,0 +1,74 @@
+tbl_monthlynum {
+	HOSPID				char(24);
+	PTID 				number(10);
+	KOHNUM				char(3);
+	SRYYM  				char(6);
+	JKYSNUM 			char(20);
+	TERMID   			varchar(32);
+	OPID     			varchar(16);
+	CREYMD   			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+};
+
+primary	{
+	HOSPID,PTID,KOHNUM,SRYYM;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_monthlynum_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_monthlynum
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   KOHNUM      =   :KOHNUM
+			AND   SRYYM       =   :SRYYM
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_monthlynum_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_monthlynum
+			WHERE   HOSPID      =   :HOSPID
+			AND     PTID        =   :PTID
+			AND     KOHNUM      =   :KOHNUM
+			ORDER   BY  SRYYM
+		;
+	};
+};
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_monthlynum_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_monthlynum
+			WHERE   HOSPID    =   :HOSPID
+			AND     KOHNUM    =   :KOHNUM
+			AND     SRYYM     =   :SRYYM
+			ORDER   BY  PTID
+		;
+	};
+};
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_monthlynum_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_monthlynum
+ 		;
+	};
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_monthlynum
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};

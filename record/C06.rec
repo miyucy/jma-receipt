@@ -1,0 +1,42 @@
+C06	{
+	fixed9	{
+		SELNUM1	{
+			value	varchar(5);
+		};
+		SELNUM2	{
+			value	varchar(5);
+		};
+		SRYYM	{
+			value	varchar(8);
+		};
+		SRYKBN_COMBO	{
+			SRYKBN	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[10];
+		};
+		SCR_TEKILST	{
+			BYOMEILST	{
+				count	int;
+				item	{
+					value1	varchar(5);
+					value2	varchar(51);
+					value3	varchar(10);
+					value4	varchar(7);
+				}	[50];
+				select	bool[50];
+			};
+		};
+		SCR_ACTLST	{
+			SRYACTLST	{
+				count	int;
+				item	{
+					value1	varchar(5);
+					value2	varchar(41);
+				}	[50];
+				select	bool[50];
+			};
+		};
+	};
+};

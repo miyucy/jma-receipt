@@ -1,0 +1,141 @@
+W11	{
+	fixed2	{
+		note3	{
+			pageno	int;
+			fi23	{
+				DSPNAME01	{
+					value	varchar(31);
+				};
+				DSPNAME02	{
+					value	varchar(31);
+				};
+				DSPNAME03	{
+					value	varchar(31);
+				};
+				DSPNAME04	{
+					value	varchar(31);
+				};
+				DSPNAME05	{
+					value	varchar(31);
+				};
+				DSPNAME06	{
+					value	varchar(31);
+				};
+				DSPNAME07	{
+					value	varchar(31);
+				};
+				DSPNAME08	{
+					value	varchar(31);
+				};
+				DSPNAME09	{
+					value	varchar(31);
+				};
+				DSPNAME10	{
+					value	varchar(31);
+				};
+				PRTNM01	{
+					value	varchar(17);
+				};
+				PRTNM02	{
+					value	varchar(17);
+				};
+				PRTNM03	{
+					value	varchar(17);
+				};
+				PRTNM04	{
+					value	varchar(17);
+				};
+				PRTNM05	{
+					value	varchar(17);
+				};
+				PRTNM06	{
+					value	varchar(17);
+				};
+				PRTNM07	{
+					value	varchar(17);
+				};
+				PRTNM08	{
+					value	varchar(17);
+				};
+				PRTNM09	{
+					value	varchar(17);
+				};
+				PRTNM10	{
+					value	varchar(17);
+				};
+				ORCAORGNM01	{
+					value	varchar(21);
+				};
+				ORCAORGNM02	{
+					value	varchar(21);
+				};
+				ORCAORGNM03	{
+					value	varchar(21);
+				};
+				ORCAORGNM04	{
+					value	varchar(21);
+				};
+				ORCAORGCHK01	{
+					value	bool;
+				};
+				ORCAORGCHK02	{
+					value	bool;
+				};
+				ORCAORGCHK03	{
+					value	bool;
+				};
+				ORCAORGCHK04	{
+					value	bool;
+				};
+				ORCACSTNM01	{
+					value	varchar(21);
+				};
+				ORCACSTNM02	{
+					value	varchar(21);
+				};
+				ORCACSTNM03	{
+					value	varchar(21);
+				};
+				ORCACSTNM04	{
+					value	varchar(21);
+				};
+				ORCACSTCHK01	{
+					value	bool;
+				};
+				ORCACSTCHK02	{
+					value	bool;
+				};
+				ORCACSTCHK03	{
+					value	bool;
+				};
+				ORCACSTCHK04	{
+					value	bool;
+				};
+			};
+                        N01	{
+				state	int;
+			};
+			fi28	{
+				SYOHODSPNAME	{
+					value	varchar(11);
+				};
+				SYOHOGEPRTFLG_COMBO	{
+					SYOHOGEPRTFLG	{
+						value	varchar(13);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+			};
+                        N02	{
+				state	int;
+			};
+		};
+		STYUKYMD	{
+			value	varchar(10);
+		};
+		EDYUKYMD	{
+			value	varchar(10);
+		};
+	};
+};

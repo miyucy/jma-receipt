@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<GTK-Interface>
+
+<project>
+  <name>K022</name>
+  <program_name>K022</program_name>
+  <directory></directory>
+  <source_directory>src</source_directory>
+  <pixmaps_directory>pixmaps</pixmaps_directory>
+  <language>C</language>
+  <gnome_support>True</gnome_support>
+  <gettext_support>True</gettext_support>
+  <use_widget_names>False</use_widget_names>
+  <output_main_file>False</output_main_file>
+  <output_support_files>True</output_support_files>
+  <output_build_files>True</output_build_files>
+  <backup_source_files>True</backup_source_files>
+  <main_source_file>interface.c</main_source_file>
+  <main_header_file>interface.h</main_header_file>
+  <handler_source_file>callbacks.c</handler_source_file>
+  <handler_header_file>callbacks.h</handler_header_file>
+  <support_source_file>support.c</support_source_file>
+  <support_header_file>support.h</support_header_file>
+  <translatable_strings_file></translatable_strings_file>
+</project>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>K022</name>
+  <width>515</width>
+  <height>220</height>
+  <signal>
+    <name>map_event</name>
+    <handler>map_event</handler>
+    <last_modification_time>Mon, 25 Dec 2000 06:03:19 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>set_focus</name>
+    <handler>set_focus</handler>
+    <last_modification_time>Mon, 25 Dec 2000 06:03:25 GMT</last_modification_time>
+  </signal>
+  <title>(K022)ÉÂÌ¾ÅÐÏ¿¡Ý´µ¼ÔÈÖ¹æÆþÎÏ</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_CENTER</position>
+  <modal>True</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkFixed</class>
+    <name>fixed10</name>
+    <width>480</width>
+    <height>215</height>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>POP_TOUMEI</name>
+      <x>16</x>
+      <y>32</y>
+      <width>469</width>
+      <height>28</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Mon, 25 Dec 2000 09:29:12 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>40</text_max_length>
+      <text></text>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label244</name>
+      <x>8</x>
+      <y>8</y>
+      <width>136</width>
+      <height>16</height>
+      <label>·Ù¹ð  ¶Ø´÷ÌôºÞ¤Ç¤¹</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow1</name>
+      <x>16</x>
+      <y>88</y>
+      <width>469</width>
+      <height>91</height>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+
+      <widget>
+	<class>GtkViewport</class>
+	<name>viewport1</name>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+
+	<widget>
+	  <class>GtkList</class>
+	  <name>list1</name>
+	  <signal>
+	    <name>selection_changed</name>
+	    <handler>selection_changed</handler>
+	    <data>SELECT</data>
+	    <last_modification_time>Mon, 25 Dec 2000 06:04:33 GMT</last_modification_time>
+	  </signal>
+	  <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label245</name>
+      <x>16</x>
+      <y>72</y>
+      <width>104</width>
+      <height>16</height>
+      <label>¶Ø´÷ÂÐ¾ÝÌôÉÊÌ¾</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B01</name>
+      <x>456</x>
+      <y>192</y>
+      <width>40</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F1</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 12 Jan 2001 08:06:06 GMT</last_modification_time>
+      </signal>
+      <label>Ìá¤ë</label>
+    </widget>
+  </widget>
+</widget>
+
+</GTK-Interface>

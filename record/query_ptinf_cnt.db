@@ -1,0 +1,12 @@
+query_ptinf_cnt {
+  TOTAL		number(10,0);
+  SQL		dbcode(15000),virtual;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		SELECT COUNT(DISTINCT a.ptid) FROM tbl_ptinf a,tbl_ptnum h :SQL INTO :TOTAL
+		;
+	};
+};
+

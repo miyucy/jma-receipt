@@ -1,0 +1,51 @@
+C05	{
+	fixed9	{
+		SELNUM	{
+			value	number(4);
+		};
+		EDITSORTNUM	{
+			value	varchar(7);
+		};
+		EDITBYOMEI	{
+			value	varchar(101);
+		};
+		BYOMEIKEN	{
+			value	varchar(31);
+		};
+		BYOMEICD1	{
+			value	varchar(8);
+		};
+		BYOMEICD2	{
+			value	varchar(8);
+		};
+		BYOMEICD3	{
+			value	varchar(8);
+		};
+		BYOMEICD4	{
+			value	varchar(8);
+		};
+		BYOMEICD5	{
+			value	varchar(8);
+		};
+		BYOMEICD6	{
+			value	varchar(8);
+		};
+		DELBYOMEICD	{
+			value	number(1);
+		};
+		SCR_BYOMEILST	{
+			BYOMEILST	{
+				count	int;
+				item	{
+					value1	varchar(5);
+					value2	varchar(7);
+					value3  varchar(5);  
+					value4	varchar(51);
+					value5  varchar(10);
+					value6	varchar(8);
+				}	[100];
+				select	bool[100];
+			};
+		};
+ 	};
+};

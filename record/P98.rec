@@ -1,0 +1,88 @@
+P98	{
+	fixed1	{
+		ADRS	{
+			value	varchar(101);
+		};
+		POST	{
+			value	varchar(8);
+		};
+		TADRS11	{
+			value	varchar(21);
+		};
+		TADRS12	{
+			value	varchar(21);
+		};
+		TADRS13	{
+			value	varchar(21);
+		};
+		TADRS14	{
+			value	varchar(21);
+		};
+		TADRS15	{
+			value	varchar(21);
+		};
+		TADRS21	{
+			value	varchar(21);
+		};
+		TADRS22	{
+			value	varchar(21);
+		};
+		TADRS23	{
+			value	varchar(21);
+		};
+		TADRS24	{
+			value	varchar(21);
+		};
+		TADRS25	{
+			value	varchar(21);
+		};
+		TADRS31	{
+			value	varchar(21);
+		};
+		TADRS32	{
+			value	varchar(21);
+		};
+		TADRS33	{
+			value	varchar(21);
+		};
+		TADRS34	{
+			value	varchar(21);
+		};
+		TADRS35	{
+			value	varchar(21);
+		};
+		TADRS41	{
+			value	varchar(21);
+		};
+		TADRS42	{
+			value	varchar(21);
+		};
+		TADRS43	{
+			value	varchar(21);
+		};
+		TADRS44	{
+			value	varchar(21);
+		};
+		TADRS45	{
+			value	varchar(21);
+		};
+		TADRS51	{
+			value	varchar(21);
+		};
+		TADRS52	{
+			value	varchar(21);
+		};
+		TADRS53	{
+			value	varchar(21);
+		};
+		TADRS54	{
+			value	varchar(21);
+		};
+		TADRS55	{
+			value	varchar(21);
+		};
+		SELNUM	{
+			value	number(3);
+		};
+	};
+};

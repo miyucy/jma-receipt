@@ -1,0 +1,19 @@
+P0201	{
+	fixed1	{
+		SELNUM	{
+			value	varchar(5);
+		};
+		scrolledwindow1	{
+			YYKLIST	{
+				count	int;
+				item	{
+					value1	varchar(5);
+					value2	varchar(6);
+					value3	varchar(31);
+					value4	varchar(11);
+				}	[20];
+				select	bool[20];
+			};
+		};
+	};
+};

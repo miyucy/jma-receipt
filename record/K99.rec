@@ -1,0 +1,10 @@
+K99	{
+	fixed1	{
+		PED	{
+			value	varchar(21);
+		};
+		PIN	{
+			value	varchar(3);
+		};
+	};
+};

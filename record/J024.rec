@@ -1,0 +1,17 @@
+J024	{
+	fixed1	{
+		SELNUM	{
+			value	number(3);
+		};
+		scrolledwindow1	{
+			BUNREILIST	{
+				count	int;
+				item	{
+					value1	varchar(3);
+					value2	varchar(100);
+				}	[200];
+				select	bool[200];
+			};
+		};
+	};
+};

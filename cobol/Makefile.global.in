@@ -1,0 +1,42 @@
+COBOL = cobc
+INSTALL = @INSTALL@
+MKDIR = mkdir -p
+COBOLFLAGS =  -m -dynamic
+COBOLFLAGSE = -dynamic
+DEPDIR = .deps
+prefix = @prefix@
+exec_prefix= @exec_prefix@
+orcadir = ${exec_prefix}/orca
+libdir  = ${orcadir}/lib
+copydir = ../copy
+
+define postprocess-depend
+@if test ! -d $(DEPDIR); then mkdir $(DEPDIR); fi
+endef
+
+%.so: %.CBL
+	$(postprocess-depend)
+	$(COBOL) $(COBOLFLAGS) -I $(copydir) -MT $@ -MF $(DEPDIR)/${@:.so=.Po} $< 
+	
+%: %.CBL
+	$(postprocess-depend)
+	$(COBOL) $(COBOLFLAGSE) -I $(copydir) -MT $@ -MF $(DEPDIR)/${@:=.Po} $<
+
+all: $(OBJS)
+
+clean: 
+	-rm -f $(OBJS)
+
+distclean: 
+	-rm -f $(OBJS)
+	-rm -R $(DEPDIR)
+
+
+install: all
+	-@if [ ! -d $(libdir) ]; then \
+	  $(MKDIR) $(libdir); \
+	fi
+	for f in $(OBJS); do \
+	  $(INSTALL) -m 555 $${f} $(libdir) ; done
+
+-include $(wildcard $(DEPDIR)/*.Po) /dev/null

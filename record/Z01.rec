@@ -1,0 +1,34 @@
+Z01	{
+	fixed1	{
+		SRYCD	{
+			value	varchar(10);
+		};
+		BS1	{
+			value	bool;
+			label	varchar(10);
+		};
+		scrolledwindow1	{
+			TENSU_LIST	{
+				count	int;
+				item	{
+					value1	varchar(3);
+					value2	varchar(9);
+					value3	varchar(9);
+				}	[30];
+				select	bool[30];
+			};
+		};
+		SELNUM	{
+			value	varchar(4);
+		};
+		YUKOSTYMD	{
+			value	varchar(11);
+		};
+		YUKOEDYMD	{
+			value	varchar(11);
+		};
+		NAME	{
+			value	varchar(101);
+		};
+	};
+};

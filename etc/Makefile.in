@@ -1,0 +1,23 @@
+COBOL = cobc
+INSTALL = @INSTALL@
+MKDIR = mkdir -p
+CP = cp
+
+prefix = @prefix@
+exec_prefix= @exec_prefix@
+orcadir = ${exec_prefix}/orca
+etcdir = ${orcadir}/etc
+install_ignore := Makefile build-stmp
+
+all:   
+	touch build-stmp
+clean: 
+	-rm -f build-stmp
+
+distclean: 
+	-rm -f Makefile
+
+install: all
+	$(INSTALL) -d $(etcdir)
+	$(CP) -R * $(etcdir)/; \
+	for i in $(install_ignore) ;do rm -f $(etcdir)/$$i; done

@@ -1,0 +1,41 @@
+N01	{
+	fixed6	{
+		HKNJANUM	{
+			value	varchar(9);
+		};
+		BANTI	{
+			value	varchar(101);
+		};
+		HKNJANAMETAN1	{
+			value	varchar(51);
+		};
+		HKNJANAMETAN2	{
+			value	varchar(21);
+		};
+		HKNJANAMETAN3	{
+			value	varchar(21);
+		};
+		POST	{
+			value	varchar(8);
+		};
+		ADRS	{
+			value	varchar(101);
+		};
+		HKNJANAME	{
+			value	varchar(101);
+		};
+		TEL	{
+			value	varchar(16);
+		};
+		KIGO	{
+			value	varchar(41);
+		};
+		HKNNUMCOMBO	{
+			HKNNUM	{
+				value	varchar(31);
+			};
+			count	int;
+			item	varchar(30)[50];
+		};
+	};
+};

@@ -1,0 +1,31 @@
+E02	{
+	fixed6	{
+		SRYYM	{
+			value	varchar(7);
+		};
+		scrolledwindow1	{
+			CLIST1	{
+				count	int;
+				item	{
+					value1	char(25);
+				}	[500];
+				select	bool[500];
+			};
+		};
+		scrolledwindow2	{
+			CLIST2	{
+				count	int;
+				item	{
+					value1	char(25);
+				}	[500];
+				select	bool[500];
+			};
+		};
+		CHKMSG000	{
+			value	varchar(48);
+		};
+		FILENAME	{
+			value	varchar(129);
+		};
+	};
+};

@@ -1,0 +1,47 @@
+N21	{
+	fixed17	{
+		KENCD	{
+			value	varchar(21);
+		};
+		KENNAIYO	{
+			value	varchar(27);
+		};
+		KENNAME	{
+			value	varchar(101);
+		};
+		scrolledwindow1	{
+			KEKKALST	{
+				count	int;
+				item	{
+					value1	varchar(5);
+					value2	varchar(100);
+				}	[200];
+				select	bool[200];
+			};
+		};
+		SELNUM	{
+			value	number(3);
+		};
+		NAME	{
+			value	varchar(85);
+		};
+		EFFECT	{
+			value	varchar(200);
+		};
+		COLOR	{
+			value	varchar(180);
+		};
+		SHAPE	{
+			value	varchar(180);
+		};
+		MARK	{
+			value	varchar(180);
+		};
+		CAUTION	{
+			value	varchar(425);
+		};
+		PHOTO	{
+			value	varchar(256);
+		};
+	};
+};

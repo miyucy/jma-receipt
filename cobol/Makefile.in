@@ -1,0 +1,23 @@
+COBOL = cobc
+INSTALL = @INSTALL@
+MKDIR = mkdir -p
+
+prefix = @prefix@
+exec_prefix= @exec_prefix@
+orcadir = ${exec_prefix}/orca
+libdir = ${orcadir}/lib
+
+SUBDIRS = common orca00 orca01 orca02 orca11 orca12 orca13 orca14 orca18 orca19 \
+	  orca21 orca22 orca23 orca24 orca41 orca42 orca43 orca44 \
+          orca51 orca52 orca71 orca82 orca101 orca102 orca103 orca104 orca105 orca106 \
+	  orca107 orcabt
+all:   
+	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i all; done
+clean: 
+	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i clean; done
+distclean: 
+	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i distclean; done
+
+install: all
+	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i install; done
+

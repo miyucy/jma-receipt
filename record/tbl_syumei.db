@@ -1,0 +1,75 @@
+tbl_syumei {
+	HOSPID				char(24);
+	NYUGAIKBN			char(1);
+	PTID				number(10,0);
+	DENPNUM          		number(7,0);
+	DENPEDANUM			number(2,0);
+	NYUKINRENNUM			number(3,0);
+	SRYKA				char(2);
+	MEISAIJOUTAIKBN                 char(1);
+	SKY_PRINTYMD			char(8);
+	SKY_REPRINTYMD			char(8);
+	RYOSYU_PRINTYMD			char(8);
+	RYOSYU_REPRINTYMD		char(8);
+	SKYMONEY			number(7,0);
+	NYUHEN_KBN			char(1);
+	NYUHEN_MONEY			number(7,0);
+	NYUHEN_YMD			char(8);
+	NYUKIN_HOHO			char(2);
+	JOUTAIKBN			char(1);
+	TERMID  			varchar(16);
+	OPID    			varchar(16);
+	CREYMD  			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+};
+primary	{
+	HOSPID,NYUGAIKBN,PTID,DENPNUM,DENPEDANUM;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_syumei_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syumei
+			WHERE   HOSPID        =  :HOSPID
+			AND   NYUGAIKBN       =  :NYUGAIKBN
+			AND   PTID            =  :PTID
+			AND   DENPNUM         =  :DENPNUM
+			AND   DENPEDANUM      =  :DENPEDANUM
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_syumei_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syumei
+			WHERE   HOSPID        =  :HOSPID
+			AND   NYUGAIKBN       =  :NYUGAIKBN
+			AND   PTID            =  :PTID
+			AND   DENPNUM         =  :DENPNUM
+		;
+	};
+};
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_syumei_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syumei
+		;
+	};
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syumei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};
+

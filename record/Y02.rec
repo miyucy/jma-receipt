@@ -1,0 +1,65 @@
+Y02	{
+	fixed1	{
+		PTNUM	{
+			value	varchar(21);
+		};
+		YYKNAME	{
+			value	varchar(31);
+		};
+		YYKYMD	{
+			value	varchar(11);
+		};
+		YYKTIME	{
+			value	varchar(6);
+		};
+		CALENDAR1	{
+			year	int;
+			month	int;
+			day	int;
+		};
+		NAME	{
+			value	varchar(31);
+		};
+		SEX	{
+			value	varchar(3);
+		};
+		BIRTHDAY	{
+			value	varchar(10);
+		};
+		SRYKA_COMBO	{
+			SRYKA	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[10];
+		};
+		SRYNAIYO2_COMBO	{
+			SRYNAIYO2	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[10];
+		};
+		KAKREN_COMBO	{
+			KAKREN	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[10];
+		};
+		DRNAME_COMBO	{
+			DRNAME	{
+				value	varchar(28);
+			};
+			count	int;
+			item	varchar(28)[10];
+		};
+		SRYNAIYO1_COMBO	{
+			SRYNAIYO1	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[10];
+		};
+	};
+};

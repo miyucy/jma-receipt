@@ -1,0 +1,271 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      ************************************************************
+      *    診療行為 共通ＳＰＡ     (SPA-WORK の内容  最大RL=1555)
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC−多々納  01/06/30  当月累計点数の追加
+      *  01.00.02    MCC−多々納  01/09/12  診療科一覧の追加(RL=549)
+      *  01.00.02    MCC−多々納  01/09/12  診療科一覧の追加(RL=559)
+      *  01.00.03    MCC-多々納   02/04/09  労災用追加
+      ************************************************************
+      *
+       01  SPA-K01KYOUTU.
+      *処理フラグ（０：通常、１：訂正）
+           03  SPA-SYORIFLG                PIC  9(01).
+      *訂正伝票番号
+           03  SPA-DENPNUM                 PIC  9(07).
+      *継続中フラグ（１：継続中）
+           03  SPA-CONTFLG                 PIC  9(01).
+      *
+           03  SPA-K01SET-AREA.
+      *前回処方表示フラグ
+               05  SPA-ZENSYOHOFLG         PIC  X(01).
+      *相互作用チェック期間
+               05  SPA-INTERACT-KIKAN      PIC 9(02).
+      *分散入力フラグ
+               05  SPA-BUNSAN              PIC  X(01).
+      *薬剤情報発行フラグ
+               05  SPA-YAKJYOPRTFLG        PIC  9(01).
+      *主保険−保険番号
+               05  SPA-HKNNUM              PIC  X(03).
+      *公費１−保険番号
+               05  SPA-KOH1HKNNUM          PIC  X(03).
+      *公費２−保険番号
+               05  SPA-KOH2HKNNUM          PIC  X(03).
+      *公費３−保険番号
+               05  SPA-KOH3HKNNUM          PIC  X(03).
+      *公費４−保険番号
+               05  SPA-KOH4HKNNUM          PIC  X(03).
+      *主保険ＩＤ（労災・自賠責用）
+               05  SPA-HKNID               PIC  9(10).
+      *傷病年月日（労災・自賠責用）
+               05  SPA-RSI-SHOBYOYMD       PIC  X(08).
+      *発生年月日（労災・自賠責用）
+               05  SPA-RSI-HASSYOYMD       PIC  X(08).
+      *救急医療管理加算有無（労災・自賠責用）
+               05  SPA-RSI-KYUKASN         PIC  9(01).
+      *労災  アフターケアフラグ
+               05  SPA-RSI-HKNKBN          PIC  X(01).
+      *労災  療養の給付請求書有無
+               05  SPA-RSI-KYUFU           PIC  9(01).
+      *労災  手指の創傷に係る機能回復始動加算有無
+               05  SPA-RSI-KAIFUKU         PIC  9(01).
+      *
+      *初診算定日
+               05  SPA-SYOYMD              PIC  X(08).
+      *最終受診日
+               05  SPA-LSTYMD              PIC  X(08).
+      *最終受診科
+               05  SPA-LSTSRYKA            PIC  X(02).
+      *他科受診科有り
+               05  SPA-TAKA-SRYKA-R.
+                   07  SPA-TAKA-SRYKA          PIC  X(02)
+                                               OCCURS  10.
+      *最終受診科
+               05  SPA-LSTSRYKAMEI         PIC  X(20).
+      *最終受診日（履歴）
+               05  SPA-RRK-LSTYMD          PIC  X(08).
+               05  SPA-RRK-LSTSRYKA        PIC  X(02).
+      *初診料算定有無
+               05  SPA-SYOSIN              PIC  9(01).
+      *他保険受診科有り
+               05  SPA-TA-HKNCOMBI-AREA.
+                   07  SPA-TA-HKNCOMBI         PIC  9(04)
+                                               OCCURS  10.
+      *特定疾患有無（病名）
+               05  SPA-TOKUTEI             PIC  9(01).
+               05  SPA-TOKUTEIFLG          PIC  9(01).
+      *皮膚科特定疾患有無（病名）
+               05  SPA-TOKUTEI-F           PIC  9(02).
+      *病床数
+               05  SPA-BEDSU               PIC  9(04).
+      *未収金
+               05  SPA-MISYUMONEY          PIC  S9(08).
+      *
+      *当月累計点数
+               05  SPA-ZAITENTOTAL         PIC  9(10).
+      *年齢（Ｋ０２で計算）
+               05  SPA-NENREI.
+                   09  SPA-NENREI-YY       PIC 9(03).
+                   09  SPA-NENREI-MM       PIC 9(02).
+                   09  SPA-NENREI-DD       PIC 9(02).
+      *年齢（表示）
+               05  SPA-NENREI-HEN          PIC X(10).
+      *外来管理料算定有無（Ｋ０２で使用）
+               05  SPA-NAI-GAIFLG          PIC 9(01).
+      *
+      *受け渡し診療日（和暦）
+               05  SPA-RRKYMDW             PIC  X(09).
+      *受け渡し診療日
+               05  SPA-RRKYMD              PIC  X(08).
+      *受け渡し連番
+               05  SPA-RENNUM              PIC  9(01).
+      *院外処方区分
+               05  SPA-INGAIKBN            PIC  X(01).
+      *継続区分
+               05  SPA-CONTKBN             PIC  X(01).
+      *伝票状態区分
+               05  SPA-DENPJTIKBN          PIC  X(01).
+      *同時診療伝票番号
+               05  SPA-DOUJI-DENPNUM       PIC  9(07).
+      *同時診療連番
+               05  SPA-DOUJI-RENNUM        PIC  9(01).
+      *初診算定時の最終行
+               05  SPA-FRST-LINE           PIC  9(04).
+      *初診算定時の最終診療行為
+               05  SPA-FRST-SRYCD          PIC  X(09).
+      *中途終了分の保険組合せ
+               05  SPA-WKSRY-HKNCOMBI      PIC  9(04).
+      *
+           03  SPA-K02SET-AREA.
+      *小児科外来診療科
+               05  SPA-SYONIKA             PIC  9(01).
+      *小児科外来診療科算定有り
+               05  SPA-SYONIKA-ARI         PIC  9(01).
+               05  SPA-SYONIKA-ARI2        PIC  9(01).
+      *老人慢性疾患外来総合診療科
+               05  SPA-ROUMANSEI           PIC  9(01).
+      *老人慢性疾患外来総合診療科有り（１：院外、２:院内）
+               05  SPA-ROUMANSEI-ARI       PIC  9(01).
+      *老人慢性疾患外来総合診療科有り（前回）
+               05  SPA-ROUMANSEI-ARI2      PIC  9(01).
+      *在宅訪問診療科有り
+               05  SPA-HOUMON-ARI          PIC  9(01).
+      *
+      *調剤技術基本料有無
+               05  SPA-CHOKI-FLG           PIC  9(01).
+      *薬剤情報提供料有無(一般）
+               05  SPA-YAKJYO-1            PIC  9(01).
+      *薬剤情報提供料有無(老人１）
+               05  SPA-YAKJYO-2            PIC  9(01).
+      *薬剤情報提供料有無(老人２）
+               05  SPA-YAKJYO-3            PIC  9(01).
+      *
+      *寝たきり老人在宅総合診察料あり
+               05  SPA-NETAKIRI-ARI        PIC  9(01).
+               05  SPA-NETAKIRI-ARI2       PIC  9(01).
+      *
+      *生活習慣病指導管理料あり
+               05  SPA-SEIKATU-ARI         PIC  9(01).
+               05  SPA-SEIKATU-ARI2        PIC  9(01).
+      *
+      *受診回数
+               05  SPA-SINSATU-CNT         PIC  9(03).
+      *１５歳未満再診科算定有り
+               05  SPA-15MIMAN-ARI         PIC  9(01).
+      *
+      *特定薬剤治療管理料初回年月日
+               05  SPA-TOKTEI-YMD          PIC  X(08).
+      *厚生省が定める患者（再診料）
+               05  SPA-TOKUTEI-KNJ         PIC  9(01).
+               05  SPA-TOKUTEI-KNJ2        PIC  9(01).
+      *厚生省が定める患者（外来管理）
+               05  SPA-TOKUTEIG-KNJ        PIC  9(01).
+               05  SPA-TOKUTEIG-KNJ2       PIC  9(01).
+      *人工腎臓
+               05  SPA-TOKUTEI-JNZ         PIC  9(01).
+      *再診料変更確認済み
+               05  SPA-SAISIN-CHK          PIC  9(01).
+      *
+      *消炎鎮痛処置当月内算定
+               05  SPA-SYOEN-CNT           PIC  9(03).
+      *当月外来管理加算の取れない患者
+               05  SPA-GAIRAI-NASI         PIC  9(01).
+      *労災外来管理加算点数
+               05  SPA-GAIRAI-TEN          PIC  9(08)V9(03).
+      *
+      *時間外特例医療機関
+               05  SPA-JIKANTOKU           PIC  9(01).
+      *他保険受診有無
+               05  SPA-TAHOKEN-FLG         PIC  9(01).
+      *
+           03  SPA-SONOTA-AREA.
+      *
+      *確認メッセージ
+               05  SPA-KIDCD               PIC  X(04).
+      *確認画面より
+               05  SPA-KID1-AREA.
+                   07  SPA-KID1-FLG        PIC  X(02).
+      *確認画面２
+               05  SPA-KIDCD2              PIC  X(04).
+               05  SPA-KID2-AREA.
+      *        メッセージ
+                   07  SPA-KID2-FLG        PIC  X(02).
+                   07  SPA-KID2-KIDMSG     PIC  X(80).
+      *DDDDDDDD    処方発行
+      *            07  SPA-KID2-SYOHOPRT-G.
+      *                09  SPA-KID2-SYOHOPRT   PIC  X(01).
+      *                09  SPA-KID2-SYOHOH     PIC  X(01).
+      *                09  SPA-KID2-SYOHOPRTM  PIC  X(14).
+      *            07  SPA-KID2-SYOHOPRT-LIST.
+      *                09  SPA-KID2-SYOHOPRTLST     PIC X(18)
+      *                                             OCCURS   3.
+      *            薬情発行
+      *            07  SPA-KID2-YAKJYOPRT-G.
+      *                09  SPA-KID2-YAKJYOPRT  PIC  X(01).
+      *                09  SPA-KID2-YAKJYOH    PIC  X(01).
+      *                09  SPA-KID2-YAKJYOPRTM PIC  X(14).
+      *            07  SPA-KID2-YAKJYOPRT-LIST.
+      *                09  SPA-KID2-YAKJYOPRTLST    PIC X(18)
+      *DDDDDDDDDD                                   OCCURS   3.
+      *
+      *Ｐ入力画面より
+               05  SPA-K99-DATA            PIC  X(25).
+      *Ｋ９８画面より
+               05  SPA-K98-AREA.
+                   07  SPA-K98-CDSYUBETU       PIC X(01).
+                   07  SPA-K98-INPUTCD         PIC X(22).
+                   07  SPA-K98-TYPE            PIC X(01).
+      *
+                   07  SPA-K98-SRYCD-G.
+                       09  SPA-K98-SRYCD       PIC X(09)  OCCURS  5.
+      *
+      *禁忌一覧画面より（Ｋ０２１）
+               05  SPA-K021-CHK             PIC  9(01).
+               05  SPA-K021-SAKI            PIC  X(03).
+      *
+      *入力コード入力画面より（Ｋ０５１）
+               05  SPA-K051-TBL.
+                   07  SPA-K051-TBL-G       OCCURS  5.
+                       09  SPA-K051-INPUTCD    PIC X(20).
+                       09  SPA-K051-CDSYU      PIC X(01).
+      *
+      *ＤＯ画面より（Ｋ０９）
+               05  SPA-K09-SELOK            PIC  9(01).
+      *
+      *初診料自動算定日付
+               05  SPA-SYOSIN-AREA.
+                   07  SPA-SYOSIN-YMD          PIC X(08).
+                   07  SPA-SYOSIN-SRYCD        PIC X(09).
+      *
+      *請求確認画面より（Ｋ０３）
+           03  SPA-K03SONOTA.
+               05  SPA-K03-CHOSEI           PIC S9(07).
+               05  SPA-K03-SKYKUKBN         PIC  X(01).
+      *
+      *診療科一覧
+           03  SPA-K01SONOTA.
+               05  SPA-GMN-SRYKA-AREA.
+                   07  SPA-GMN-SRYKALST                OCCURS  10.
+                       09  SPA-GMN-SRYKAL      PIC X(02).
+                       09  SPA-GMN-F1L         PIC X(01).
+                       09  SPA-GMN-SRYKAMEIL   PIC X(12).
+                   07  SPA-SRYKA-MAX           PIC 9(04).
+      *

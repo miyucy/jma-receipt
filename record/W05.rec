@@ -1,0 +1,31 @@
+W05	{
+	fixed1	{
+		YUKOSTYMD	{
+			value	varchar(10);
+		};
+		YUKOEDYMD	{
+			value	varchar(10);
+		};
+	        B03	{
+	           	state	int;
+	        };
+		SRYKANAME1	{
+			value	varchar(11);
+		};
+		SRYKANAME	{
+			value	varchar(41);
+		};
+		SRYCD	{
+			value	varchar(3);
+		};
+		SRYKANAME2	{
+			value	varchar(7);
+		};
+		SRYKANAME3	{
+			value	varchar(3);
+		};
+		RECESRYKA	{
+			value	varchar(3);
+		};
+	};
+};

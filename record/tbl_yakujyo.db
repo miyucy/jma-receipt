@@ -1,0 +1,41 @@
+tbl_yakujyo {
+        HOSPID  			char(24);
+        SRYCD				char(9);
+        TEKNUM	         		number(2);
+        NAME                            varchar(170);
+        EFFECT  			varchar(400);
+        CAUTION  			varchar(850);
+        PHOTO                    	varchar(256);
+        COLOR                     	varchar(360);
+        SHAPE           	        varchar(360);
+        MARK                    	varchar(360);
+        TERMID  			varchar(32);
+        OPID    			varchar(16);
+        CREYMD  			char(8);
+        UPYMD    			char(8);
+        UPHMS				char(6);
+};
+primary	{
+	HOSPID,SRYCD,TEKNUM;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_yakujyo_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_yakujyo
+			WHERE   HOSPID	=	:HOSPID
+			AND	SRYCD	=	:SRYCD
+			AND	TEKNUM	=	:TEKNUM
+		;
+	};
+};
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_yakujyo_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_yakujyo
+ 		;
+	};
+};

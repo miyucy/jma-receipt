@@ -1,0 +1,10 @@
+ZID2	{
+	fixed1	{
+		ID1CODE	{
+			value	varchar(11);
+		};
+		ID1MSG	{
+			value	varchar(71);
+		};
+	};
+};

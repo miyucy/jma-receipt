@@ -1,0 +1,124 @@
+K08	{
+	fixed1	{
+		PTNUM	{
+			value	varchar(21);
+		};
+		KANANAME	{
+			value	varchar(51);
+		};
+		NAME	{
+			value	varchar(51);
+		};
+		SEX	{
+			value	varchar(3);
+		};
+		HKNKUMI	{
+			value	varchar(61);
+		};
+		RATE	{
+			value	varchar(7);
+		};
+		LASTYMD	{
+			value	varchar(10);
+		};
+		SYOSINYMD	{
+			value	varchar(10);
+		};
+		MISYUMONEY	{
+			value	varchar(16);
+		};
+		SRYKA	{
+			value	varchar(11);
+		};
+		SRYYMD	{
+			value	varchar(15);
+		};
+		GOKEITEN	{
+			value	varchar(16);
+		};
+		ZAITENTOTAL	{
+			value	varchar(17);
+		};
+		BIRTHDAY	{
+			value	varchar(10);
+		};
+		NENREI	{
+			value	varchar(7);
+		};
+		SYORIMEI	{
+		    style   varchar(20);
+			value	varchar(12);
+		};
+		SSUHKNTEN	{
+			value	varchar(11);
+		};
+		SDOHKNTEN	{
+			value	varchar(11);
+		};
+		ZTKHKNTEN	{
+			value	varchar(11);
+		};
+		TYKHKNTEN	{
+			value	varchar(11);
+		};
+		CSYHKNTEN	{
+			value	varchar(11);
+		};
+		SYCHKNTEN	{
+			value	varchar(11);
+		};
+		SJTHKNTEN	{
+			value	varchar(11);
+		};
+		KNSHKNTEN	{
+			value	varchar(11);
+		};
+		GZUHKNTEN	{
+			value	varchar(11);
+		};
+		ETCHKNTEN	{
+			value	varchar(11);
+		};
+		SELNUM01	{
+			value	number(3);
+		};
+		SELNUM02	{
+			value	number(3);
+		};
+		SELNUM03	{
+			value	number(3);
+		};
+		SELNUM04	{
+			value	number(3);
+		};
+		SELNUM05	{
+			value	number(3);
+		};
+		SELNUM06	{
+			value	number(3);
+		};
+		SELNUM07	{
+			value	number(3);
+		};
+		SELNUM08	{
+			value	number(3);
+		};
+		SELNUM09	{
+			value	number(3);
+		};
+		SELNUM10	{
+			value	number(3);
+		};
+		scrolledwindow1	{
+			MEILIST	{
+				count	int;
+				item	{
+					value1	varchar(3);
+					value2	varchar(4);
+					value3	varchar(150);
+				}	[300];
+				select	bool[300];
+			};
+		};
+	};
+};

@@ -1,0 +1,49 @@
+#!/bin/bash
+ORCABT=/usr/local/orca/lib
+DBSTUB=/usr/local/panda/bin/dbstub
+RENNUM=0
+-------------------------------------------#
+#    総括表用ファイル作成
+#        $1-${11} 印刷ＤＢ用固定引数
+#        ${12} SRYYM TERID SYSYMD
+#        ${13} RECEKBN(総括表の種類)
+#           0:全体  1:社保　2:国保
+#        ${14} 医療機関ＩＤ 
+#        ${15} 国保診療報酬請求書印刷区分
+#        ${16} ジョブＩＤ
+#        ${17} シェルＩＤ
+#        ${18} エラーファイル名 
+#-------------------------------------------#
+#
+##      エラーファイル削除
+	echo $#
+	echo "echo " ${18}
+        if  [ -e ${18} ]; then
+            rm  ${18}
+        fi 
+        
+        cd  $ORCABT
+
+##      総括表（社保）
+        if  [ ${13} -ne 2 ]; then
+           RENNUM=$(expr $RENNUM + 1) 
+           $DBSTUB  -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBM001 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${14},${16},${17}
+           if  [ -e ${18} ]; then
+               exit
+           fi
+        fi 
+##      総括表（国保）
+        if  [ ${13} -ne 1 ]; then
+            RENNUM=$(expr $RENNUM + 1) 
+            if  [ ${15} = 1 ]; then
+                 $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBM012 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${14},${16},${17}
+            else
+                 $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBM004 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${14},${16},${17}
+            fi	
+            if  [ -e ${18} ]; then
+                exit
+            fi
+       fi
+       $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE${16}${17}
+
+        exit 

@@ -1,0 +1,46 @@
+W13	{
+	fixed1	{
+		YUKOSTYMD	{
+			value	varchar(10);
+		};
+		YUKOEDYMD	{
+			value	varchar(10);
+		};
+		RSIIRYOKBN_COMBO	{
+			RSIIRYOKBN	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[2];
+		};
+		RSIIRYOCDN	{
+			value	varchar(41);
+		};
+		TENKBN_COMBO	{
+			TENKBN	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[2];
+		};
+		SONSHOUKBN1	{
+			value	varchar(3);
+		};
+		SONSHOUKBN2	{
+			value	varchar(2);
+		};
+		SONSHOUNAME	{
+			value	varchar(61);
+		};
+		scrolledwindow6	{
+			SONSHOUKBNLST	{
+				count	int;
+				item	{
+					value1	varchar(4);
+					value2	varchar(60);
+				}	[40];
+				select	bool[40];
+			};
+		};
+	};
+};

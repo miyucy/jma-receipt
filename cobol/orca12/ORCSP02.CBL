@@ -1,0 +1,3274 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCSP02.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者登録
+      *  コンポーネント名  : 患者登録画面編集、ＳＰＡ初期セットサブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  01/12/04    MCC-多々納    新規作成
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     MCC-多々納   02/03/30  ドクター表示の修正
+      * 01.00.02     MCC-多々納   02/04/05  労災保険の追加
+      * 02.00.00     MCC-多々納   02/06/25  レイアウト変更
+      * 02.00.01     NACL-多々納  02/07/31  パラメタファイルをＤＢへ
+      *****************************************************************
+      *
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION               SECTION.
+       INPUT-OUTPUT                SECTION.
+       FILE-CONTROL.
+      *
+      *    パラメタデータ
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME1
+      *                            ORGANIZATION    IS  INDEXED
+      *                            ACCESS  MODE    IS  DYNAMIC
+      *                            RECORD  KEY     IS  PAR-KEY
+      *                            FILE    STATUS  IS  STS-PARA.
+      *
+      *    パラメタデータ
+      *    SELECT  PARA-FILE2      ASSIGN  FILE-NAME1
+      *                            ORGANIZATION    IS  INDEXED
+      *                            ACCESS  MODE    IS  SEQUENTIAL
+      *                            RECORD  KEY     IS  PAR-KEY2
+      *                            FILE    STATUS  IS  STS-PARA.
+      *
+       DATA                    DIVISION.
+       FILE                        SECTION.
+      *
+      *    パラメタデータ
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PAR-KEY.
+      *        05  PAR-FILEMEI         PIC X(08).
+      *        05  PAR-EDANUM          PIC 9(04).
+      *    03  PAR-DATA-REC            PIC X(3000).
+      *
+      *    パラメタデータ
+      *FD  PARA-FILE2.
+      *01  PARA-REC2.
+      *    03  PAR-KEY2.
+      *        05  PAR-FILEMEI2        PIC X(08).
+      *        05  PAR-EDANUM2         PIC 9(04).
+      *    03  PAR-DATA-REC2           PIC X(3000).
+      *
+       WORKING-STORAGE             SECTION.
+      *
+      *    パラメタファイル名
+      *01  FILE-NAME1.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "P01PARA".
+      *    03  FILE-TERMID1        PIC X(32)   VALUE   SPACE.
+      *
+      *
+      *    フラグ領域
+       01  STS-AREA.
+           03  STS-PARA            PIC X(02).
+      *
+      *    フラグ領域
+       01  FLG-AREA.
+           03  FLG-END             PIC 9(01).
+           03  FLG-PARA            PIC 9(01).
+           03  FLG-UKETUKE         PIC 9(01).
+           03  FLG-PTNUMO          PIC 9(01).
+           03  FLG-PTNUM           PIC 9(01).
+           03  FLG-YYK             PIC 9(01).
+           03  FLG-PTINF           PIC 9(01).
+           03  FLG-PTHKNINF        PIC 9(01).
+           03  FLG-PTKOHINF        PIC 9(01).
+           03  FLG-HKNCOMBI        PIC 9(01).
+           03  FLG-KYUSEIRRK       PIC 9(01).
+           03  FLG-PTGETNUM        PIC 9(01).
+           03  FLG-TSYRRK          PIC 9(01).
+           03  FLG-TNKRRK          PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
+      *
+           03  FLG-PTRSIINF        PIC 9(01).
+           03  FLG-HKNNUM          PIC 9(01).
+      *
+           03  FLG-OK              PIC 9(01).
+      *
+      *    添字領域
+       01  IDX-AREA.
+           03  IDX                 PIC 9(04).
+           03  IDX2                PIC 9(04).
+           03  IDY                 PIC 9(04).
+      *
+      *    一時領域
+       01  WRK-AREA.
+           03  WRK-PTID            PIC 9(10).
+           03  WRK-PTNUM           PIC X(20).
+      *
+           03  WRK-MEISAI1         PIC 9(06).
+           03  WRK-MEISAI2         PIC 9(06).
+           03  WRK-MEISAI3         PIC 9(06).
+           03  WRK-YMD             PIC X(08).
+           03  WRK-RENNUMZ         PIC ZZZZ.
+           03  WRK-HST                 PIC 9(04).
+           03  WRK-HED                 PIC 9(04).
+           03  WRK-KST                 PIC 9(04).
+           03  WRK-KED                 PIC 9(04).
+           03  WRK-KBNCD               PIC X(02).
+      *
+           03  WRK-RATE-AREA.
+               05  WRK-RATE-KBN        PIC X(02).
+               05  WRK-RATE-SP         PIC X(01).
+               05  WRK-RATE-EDIT.
+                   07  WRK-RATE-EDITZ  PIC ZZZZZZZ.
+                   07  WRK-RATE-TANI   PIC X(04).
+               05  WRK-RATE-EDIT-R  REDEFINES    WRK-RATE-EDIT.
+                   07  WRK-RATE-EDITR  PIC X(11).
+      *
+      *    保険公費種別
+           03  WRK-HKNNUM              PIC X(03).
+           03  WRK-HKNKOHSBTKBN        PIC X(01).
+           03  WRK-TANSEIDONAME        PIC X(20).
+           03  WRK-TEKSTYMD            PIC X(08).
+           03  WRK-TEKEDYMD            PIC X(08).
+      *
+      *   年齢表示
+       01  WRK-NENREI-AREA.
+           03  WRK-YMDS1.
+               05  WRK-YYS1        PIC 9(04).
+               05  WRK-MMS1        PIC 9(02).
+               05  WRK-DDS1        PIC 9(02).
+           03  WRK-YMDS2.
+               05  WRK-YYS2        PIC 9(04).
+               05  WRK-MMS2        PIC 9(02).
+               05  WRK-DDS2        PIC 9(02).
+           03  WRK-NENREI.
+               05  WRK-NENREI-YY       PIC 9(04).
+               05  WRK-NENREI-MM       PIC 9(02).
+               05  WRK-NENREI-DD       PIC 9(02).
+       01  WRK-NENREI-G.
+           03  WRK-NENREI-Z        PIC ZZ9.
+           03  WRK-NENREI-MEI      PIC X(04).
+       01  WRK-NENREI-GR           REDEFINES   WRK-NENREI-G.
+           03  WRK-NENREI-ZN       PIC Z9.
+           03  WRK-NENREI-MEIN     PIC X(08).
+      *
+       01  WRK-HENSYU-AREA.
+           03  WRK-SYMD            PIC X(08).
+           03  WRK-HENYMD.
+               05  WRK-HGO         PIC X(01).
+               05  WRK-HYY         PIC Z9.
+               05  FILLER          PIC X(01)   VALUE  ".".
+               05  WRK-HMM         PIC Z9.
+               05  FILLER          PIC X(01)   VALUE  ".".
+               05  WRK-HDD         PIC Z9.
+      *
+           03  WRK-HENTIME.
+               05  WRK-THH         PIC 99.
+               05  FILLER          PIC X(01)   VALUE  ":".
+               05  WRK-TMM         PIC 99.
+      *
+      *    全角空白
+       01  WRK-SPACE           PIC X(02)   VALUE  "　".
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+      *
+           COPY    "CPSK1001.INC".
+      *
+           COPY    "CPSK1009.INC".
+      *    状態情報
+           COPY    "CPSK1018.INC".
+      *    減免事由情報
+           COPY    "CPSK1026.INC".
+      *    割引率情報
+           COPY    "CPSK1027.INC".
+      *    診療内容情報
+           COPY    "CPSK1012.INC".
+      *    診療科目情報
+           COPY    "CPSK1005.INC".
+      *    職員情報
+           COPY    "CPSK1010.INC".
+      *
+      *    受付
+       01  UKETUKE-REC.
+           COPY    "CPUKETUKE.INC".
+      *
+      *    患者番号変換マスタ
+       01  PTNUM-REC.
+           COPY    "CPPTNUM.INC".
+      *
+      *    患者マスタ−
+       01  PTINF-REC.
+           COPY    "CPPTINF.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
+      *
+      *    保険マスタ
+       01  PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC".
+      *
+      *    公費マスタ
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
+      *
+      *    旧姓履歴
+       01  KYUSEIRRK-REC.
+           COPY    "CPKYUSEIRRK.INC".
+      *
+      *    低所得
+       01  TSYRRK-REC.
+           COPY    "CPTSYRRK.INC".
+      *
+      *    年金
+       01  TNKRRK-REC.
+           COPY    "CPTNKRRK.INC".
+      *
+      *    紹介履歴
+       01  SYKRRK-REC.
+           COPY    "CPSYKRRK.INC".
+      *
+      *    診療行為マスタ−
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
+      *
+      *    ワーク診療行為マスタ−
+       01  WKSRYACT-REC.
+           COPY    "CPWKSRYACT.INC".
+      *
+      *    診療会計マスタ−
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
+      *
+      *    患者コメント
+       01  PTCOM-REC.
+           COPY    "CPPTCOM.INC".
+      *
+      *    受診履歴
+       01  JYURRK-REC.
+           COPY    "CPJYURRK.INC".
+      *
+      *    診療科履歴
+       01  SRYKARRK-REC.
+           COPY    "CPSRYKARRK.INC".
+      *
+      *    算定履歴
+       01  SANTEI-REC.
+           COPY    "CPSANTEI.INC".
+      *
+      *    収納マスタワーク
+       01  SYUNOU-REC.
+           COPY    "CPSYUNOU.INC".
+      *
+      *    収納明細
+       01  SYUMEI-REC.
+           COPY    "CPSYUMEI.INC".
+      *
+      *    患者病名
+       01  PTBYOMEI-REC.
+           COPY    "CPPTBYOMEI.INC".
+      *
+      *    予約マスター
+       01  YYK-REC.
+           COPY    "CPYYK.INC".
+      *
+      *    予約マスター保存
+       01  WRK-YYK-REC.
+           COPY    "CPYYK.INC"       REPLACING
+                                     //YYK-// BY //WRK-YYK-//.
+      *
+      *    請求管理
+           COPY    "CPRCF010.INC".
+      *
+      *    患者労災保険情報
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
+      *
+      *    保険番号
+       01  HKNNUM-REC.
+           COPY    "CPHKNNUM.INC".
+      *
+      *    パラメタテーブル
+       01  PARA-REC.
+           COPY    "CPPARA.INC".
+      *
+      *****************************************************************
+      *    サブプロ用　領域
+      *****************************************************************
+      *
+      *   日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *
+      *    ＤＢ検索
+           COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
+      *
+      *
+           COPY    "MCPAREA".
+           COPY    "ORCA-SPA".
+      *
+      *****************************************************************
+      *    連絡　領域
+      *****************************************************************
+        LINKAGE                     SECTION.
+      *
+      *    パラメタ
+           COPY    "CPORCSP02.INC".
+      *    スパ領域
+           COPY    "COMMON-SPA".
+      *    患者登録スパ領域
+           COPY    "P02COMMON-SPA".
+      *    患者登録全画面スパ領域
+           COPY    "P02SCR-SPA".
+      *
+       01  P02-SCR.
+           COPY    "P02.INC".
+      *
+       PROCEDURE                   DIVISION    USING
+           ORCSP02AREA
+           SPA-AREA
+           SPA-P02KYOUTU
+           SPA-P02SCRAREA
+           P02-SCR.
+      *
+      *
+      *****************************************************************
+      *    主　　処理
+      *****************************************************************
+       000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
+           INITIALIZE                  FLG-AREA
+      *
+      *
+           EVALUATE    ORCSP02-SYORI
+               WHEN    "INIT"
+      *            初期パラメタ、ＳＰＡ初期編集
+                   PERFORM 100-P01PARA-OUT-SEC
+               WHEN    "GMN"
+      *            初期パラメタ、ＳＰＡ初期編集
+                   PERFORM 200-P02-SET-SEC
+           END-EVALUATE
+      *
+      *
+           .
+           EXIT    PROGRAM
+           .
+      *****************************************************************
+      *    患者番号発行処理
+      *****************************************************************
+       100-P01PARA-OUT-SEC               SECTION.
+      *
+      *    パラメタファイルのクリア
+           PERFORM 1001-PARA-DEL-SEC
+      *
+           MOVE    SPA-GMN-PTID        TO  WRK-PTID
+           MOVE    SPA-GMN-PTNUM       TO  WRK-PTNUM
+           INITIALIZE                      SPA-P02GMNAREA
+           INITIALIZE                      SPA-P02SCRAREA
+           MOVE    WRK-PTNUM           TO  SPA-GMN-PTNUM
+           MOVE    WRK-PTID            TO  SPA-GMN-PTID
+      *
+      *    システム管理より情報取り込み
+           PERFORM 1003-SYSKAN-SET-SEC
+      *
+      *    保険・公費一覧情報取り込み
+           PERFORM 1004-HKNKOH-SET-SEC
+      *
+      *    その他のコンボ
+           PERFORM 1005-COMB-SET-SEC
+      *
+      *    患者情報取り込み
+           IF     (SPA-P02-SYORI       =   1   )   OR
+                  (SPA-GMN-PTNUM       =   SPACE )
+      *        新規パラメタ作成
+               PERFORM 1004-SINKI-PARA-SEC
+           ELSE
+      *        患者情報取り込み
+               PERFORM 1002-KYOUTU-SET-SEC
+           END-IF
+      *
+           .
+       100-P01PARA-OUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ削除処理
+      *****************************************************************
+       1001-PARA-DEL-SEC          SECTION.
+      *
+      *    パラメタ削除
+           INITIALIZE                      PARA-REC
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "PARA-DEL2"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       1001-PARA-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理よりＳＰＡ設定処理
+      *****************************************************************
+       1003-SYSKAN-SET-SEC          SECTION.
+      *
+      *    医療機関ＩＤ編集
+           MOVE    SPACE               TO  SYS-1001-REC
+           INITIALIZE                  SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+      *        都道府県区分
+               MOVE    SYS-1001-PREFNUM    TO  SPA-NAI-PREFNUM
+           END-IF
+      *
+      *    減免事由情報
+           INITIALIZE                  SPA-GMN-DISCOUNTKBN-TBL
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "1026"              TO  SYS-KANRICD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL   ( FLG-SYSKANRI  =   1  )
+                     OR      ( IDX           >   10 )
+               MOVE    MCPDATA-REC     TO  SYS-1026-REC
+               MOVE    SYS-1026-KBNCD (1:2)
+                                   TO  SPA-GMN-DISCOUNTKBN-KBNCD  (IDX)
+               MOVE    SYS-1026-DISCOUNT-BODY
+                                   TO  SPA-GMN-DISCOUNTKBN-BODY   (IDX)
+               MOVE    SYS-1026-DISCOUNT-KBN
+                                   TO  SPA-GMN-DISCOUNTKBN-RATEKBN(IDX)
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *----(01.00.07) LINE ADD START -------------------------------
+           IF  SPA-GMN-DISCOUNTKBN-KBNCD (1)  =   SPACE
+               MOVE    ZERO        TO  SPA-GMN-DISCOUNTKBN-KBNCD  (1)
+               MOVE    "該当なし"  TO  SPA-GMN-DISCOUNTKBN-BODY   (1)
+               MOVE    ZERO        TO  SPA-GMN-DISCOUNTKBN-RATEKBN(1)
+           END-IF
+      *
+           MOVE    SPA-GMN-DISCOUNTKBN-KBNCD(1)
+                                       TO  SPA-GMN-DISCOUNTKBN
+           MOVE    SPA-GMN-DISCOUNTKBN-BODY(1)
+                                       TO  SPA-GMN-DISCOUNTKBN-MEI
+      *
+      *    割引率情報
+           INITIALIZE                  SPA-GMN-DISCOUNT-TBL
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "1027"              TO  SYS-KANRICD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL   ( FLG-SYSKANRI  =   1  )
+                     OR      ( IDX           >   10 )
+               MOVE    MCPDATA-REC     TO  SYS-1027-REC
+               MOVE    SPACE           TO  WRK-RATE-AREA
+               MOVE    SYS-1027-KBNCD (1:2)
+                                     TO  SPA-GMN-DISCOUNT-KBNCD  (IDX)
+               MOVE    SYS-1027-TEIRITU
+                                     TO  SPA-GMN-DISCOUNT-TEIRITU(IDX)
+               MOVE    SYS-1027-DISCOUNT-RATE
+                                     TO  SPA-GMN-DISCOUNT-RITU   (IDX)
+               MOVE    SPACE         TO  WRK-RATE-AREA
+               MOVE    SYS-1027-KBNCD (1:2)
+                                       TO  WRK-RATE-KBN
+               MOVE    SYS-1027-DISCOUNT-RATE
+                                       TO  WRK-RATE-EDITZ
+               EVALUATE    SYS-1027-TEIRITU
+               WHEN    "0"
+                   MOVE    "該当なし"  TO  WRK-RATE-EDIT-R
+               WHEN    "1"
+                   MOVE    "(%)"       TO  WRK-RATE-TANI
+               WHEN    "2"
+                   MOVE    "(円)"      TO  WRK-RATE-TANI
+               END-EVALUATE
+               MOVE    WRK-RATE-AREA   TO  SPA-GMN-DISCOUNT-EDIT (IDX)
+      *
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *----(01.00.07) LINE ADD START -------------------------------
+           IF  SPA-GMN-DISCOUNT-KBNCD (1)  =   SPACE
+               MOVE    ZERO        TO  SPA-GMN-DISCOUNT-KBNCD  (1)
+               MOVE    ZERO        TO  SPA-GMN-DISCOUNT-TEIRITU(1)
+               MOVE    ZERO        TO  SPA-GMN-DISCOUNT-RITU   (1)
+               MOVE    "00 該当なし"
+                                   TO  SPA-GMN-DISCOUNT-EDIT   (1)
+           END-IF
+      *----(01.00.07) LINE ADD END   -------------------------------
+      *
+           MOVE    SPA-GMN-DISCOUNT-EDIT(1) TO  SPA-GMN-DISCOUNT
+      *
+      *    状態１〜３情報スパセット処理
+           INITIALIZE                    SPA-GMN-CONDITION-TBL
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL     IDX       >   3
+             INITIALIZE                      SYSKANRI-REC
+             EVALUATE    IDX
+             WHEN    1
+                 MOVE    "1018"          TO  SYS-KANRICD
+             WHEN    2
+                 MOVE    "1019"          TO  SYS-KANRICD
+             WHEN    3
+                 MOVE    "1020"          TO  SYS-KANRICD
+             END-EVALUATE
+             MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+             MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+             CALL    "ORCMCPSUB"              USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+             IF      MCP-RC              =   ZERO
+                 MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+                 PERFORM 900-SYSTEM-READ-SEC
+             ELSE
+                 MOVE    1               TO  FLG-SYSKANRI
+             END-IF
+             PERFORM   VARYING   IDY   FROM    1   BY  1
+                       UNTIL   ( FLG-SYSKANRI  =   1  )
+                       OR      ( IDY           >   10 )
+               MOVE    MCPDATA-REC       TO  SYS-1018-REC
+               MOVE    SYS-1018-KBNCD (1:2)
+                                 TO  SPA-GMN-CONDITION-KBNCD (IDX IDY)
+               MOVE    SYS-1018-CONDITION-BODY
+                                 TO  SPA-GMN-CONDITION-BODY  (IDX IDY)
+               MOVE    SYS-1018-CONDITION-WORD
+                                 TO  SPA-GMN-CONDITION-WORD  (IDX IDY)
+               MOVE    "SYSKANRI-KEY2" TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+             END-PERFORM
+      *      カーソルクロース
+             MOVE    "DBCLOSE"           TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"          USING
+                                          MCPAREA
+                                          ORCMCPAREA
+                                          MCPDATA-REC
+      *----(01.00.07) LINE ADD START -------------------------------
+             IF  SPA-GMN-CONDITION-KBNCD (IDX 1)  =   SPACE
+                 MOVE    ZERO        TO  SPA-GMN-CONDITION-KBNCD(IDX 1)
+                 MOVE    "該当なし"  TO  SPA-GMN-CONDITION-BODY (IDX 1)
+                 MOVE    SPACE       TO  SPA-GMN-CONDITION-WORD (IDX 1)
+             END-IF
+      *----(01.00.07) LINE ADD END   -------------------------------
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-CONDITION-KBNCD (1  1)
+                                       TO  SPA-GMN-CONDITION(1)
+           MOVE    SPA-GMN-CONDITION-BODY  (1  1)
+                                       TO  SPA-GMN-CONDITION(1)(4:)
+           MOVE    SPA-GMN-CONDITION-KBNCD (2  1)
+                                       TO  SPA-GMN-CONDITION(2)
+           MOVE    SPA-GMN-CONDITION-BODY  (2  1)
+                                       TO  SPA-GMN-CONDITION(2)(4:)
+           MOVE    SPA-GMN-CONDITION-KBNCD (3  1)
+                                       TO  SPA-GMN-CONDITION(3)
+           MOVE    SPA-GMN-CONDITION-BODY  (3  1)
+                                       TO  SPA-GMN-CONDITION(3)(4:)
+      *
+      *    診療内容をＳＰＡにセット
+           PERFORM 311-SRYNAI-SPASET-SEC
+      *
+      *    職員情報をＳＰＡにセット
+           PERFORM 312-DOCTOR-SPASET-SEC
+      *
+      *    診療科をＳＰＡにセット
+           PERFORM 313-SRYKA-SPASET-SEC
+      *
+           .
+       1003-SYSKAN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療内容  スパ初期編集処理
+      *****************************************************************
+       311-SRYNAI-SPASET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1012-REC
+           MOVE    "1012"              TO  SYS-1012-KANRICD
+           MOVE    SYS-1012-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM VARYING IDX
+                   FROM    1       BY  1
+                   UNTIL      (IDX             >   8     )   OR
+                              (FLG-SYSKANRI    =   1     )
+               MOVE    MCPDATA-REC             TO  SYS-1012-REC
+               MOVE    SYS-1012-KBNCD          TO  SPA-GMN20-SRYNAICD
+               MOVE    SPACE                   TO  SPA-GMN20-SRYNA1
+               MOVE    SYS-1012-SRYNAIYODSP    TO  SPA-GMN20-SRYNAIMEI
+               MOVE    SPA-GMN20-SRYNAI        TO  SPA-GMN20-SRYNAILST
+                                                                  (IDX)
+               MOVE    IDX                     TO  SPA-GMN20-SRYNAI-MAX
+      *
+               MOVE    "SYSKANRI-KEY2"         TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+           END-PERFORM
+      *
+           IF      SPA-SRYNAI-CD (1)   NOT =   SPACE
+               MOVE    SPA-GMN20-SRYNAILST(1)  TO  SPA-GMN20-SRYNAI
+           END-IF
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       311-SRYNAI-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    職員情報  スパ初期編集処理
+      *****************************************************************
+       312-DOCTOR-SPASET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1010-REC
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      ***  PERFORM VARYING IDX
+      *            FROM    1       BY  1
+      *            UNTIL      (IDX             >   10    )   OR
+      ******                  (FLG-SYSKANRI    =   1     ) 
+           MOVE    ZERO                TO  IDX
+           PERFORM     UNTIL  (FLG-SYSKANRI    =   1     )    OR
+                              (IDX             >=  10    )
+               MOVE    MCPDATA-REC             TO  SYS-1010-REC
+               IF      SYS-1010-KBNCD (1:1)  =   "1"
+                   ADD     1                   TO  IDX
+                   MOVE    SYS-1010-KBNCD (2:4)    TO  SPA-GMN20-DRCDCD
+                   MOVE    SPACE               TO  SPA-GMN20-TANT1
+                   MOVE    SYS-1010-NAME       TO  SPA-GMN20-DRCDMEI
+                   MOVE    SPA-GMN20-DRCD      TO  SPA-GMN20-DRCDLST
+                                                                 (IDX)
+               END-IF
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+           END-PERFORM
+      *
+           IF     SPA-GMN20-DRCDLST (1)    NOT =   SPACE
+               MOVE    SPA-GMN20-DRCDLST(1)   TO  SPA-GMN20-DRCD
+           END-IF
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       312-DOCTOR-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科  スパ初期編集処理
+      *****************************************************************
+       313-SRYKA-SPASET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1005-REC
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM VARYING IDX
+                   FROM    1       BY  1
+                   UNTIL      (IDX             >   10    )   OR
+                              (FLG-SYSKANRI    =   1     )
+               MOVE    MCPDATA-REC             TO  SYS-1005-REC
+               MOVE    SYS-1005-KBNCD (1:2)    TO  SPA-GMN-SRYKA-LST
+                                                        (IDX)
+               MOVE    SYS-1005-SRYKANAME1     TO  SPA-GMN-SRYKA-LST
+                                                        (IDX)(4:)
+               MOVE    IDX                     TO  SPA-SRYKA-MAX
+      *
+               MOVE    "SYSKANRI-KEY2"         TO  ORC-DBPATH
+               PERFORM 900-SYSTEM-READ-SEC
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-SRYKA-LST (1)   TO  SPA-GMN-SRYKA-G
+           MOVE    SPA-GMN-SRYKA-LST (1)   TO  SPA-GMN20-SRYKA-G
+      *
+           .
+       313-SRYKA-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険・公費一覧情報取り込み処理
+      *****************************************************************
+       1004-HKNKOH-SET-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  SPA-HKN-HOK-AREA
+           INITIALIZE                      SPA-HKN-HOK-AREA
+      *
+      *    保険番号　全件編集（適用範囲分）
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
+           MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNNUM-KEY3"       TO  ORC-DBPATH
+               PERFORM 921-HKNMST-NEXT-SEC
+           ELSE
+               INITIALIZE                  HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+      *
+           PERFORM UNTIL       FLG-HKNNUM  =   1
+               MOVE    ZERO                TO  FLG-OK
+               IF      HKN-HKNKOHSBTKBN    =   "1"  OR  "4"
+                                           OR  "8"  OR  "9"
+      *            保険
+                   IF      SPA-GMN-HKNMAX      >   ZERO
+                       IF      HKN-HKNNUM      =   SPA-GMN-HKNNUML
+                                                    (SPA-GMN-HKNMAX)
+                           CONTINUE
+                       ELSE
+                           MOVE    1               TO  FLG-OK
+                       END-IF
+                   ELSE
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+      **           労災を対象外とする
+      *            IF      HKN-HKNNUM          =   "971"
+      *                MOVE    ZERO            TO  FLG-OK
+      ***          END-IF
+                   IF      FLG-OK              =   1
+      *                保険情報編集
+                       PERFORM 10041-HKNHEN-SEC
+                   END-IF
+               ELSE
+      *            公費
+                   IF      SPA-GMN-KOHMAX      >   ZERO
+                       IF      HKN-HKNNUM      =   SPA-GMN-KOHNUML
+                                                    (SPA-GMN-KOHMAX)
+                           CONTINUE
+                       ELSE
+                           MOVE    1               TO  FLG-OK
+                       END-IF
+                   ELSE
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+                   IF      FLG-OK              =   1
+      *                公費情報編集
+                       PERFORM 10042-KOHHEN-SEC
+                   END-IF
+               END-IF
+      *
+               MOVE    "HKNNUM-KEY3"       TO  ORC-DBPATH
+               PERFORM 921-HKNMST-NEXT-SEC
+           END-PERFORM
+      *
+           .
+       1004-HKNKOH-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険情報編集処理
+      *****************************************************************
+       10041-HKNHEN-SEC          SECTION.
+      *
+           ADD     1                   TO  SPA-GMN-HKNMAX
+           MOVE    HKN-HKNNUM          TO  SPA-GMN-HKNNUML
+                                                    (SPA-GMN-HKNMAX)
+           MOVE    HKN-TANSEIDONAME    TO  SPA-GMN-HKNNUMMEIL
+                                                    (SPA-GMN-HKNMAX)
+           MOVE    HKN-HKNKOHSBTKBN    TO  SPA-NAI-HKNSBTKBN
+                                                    (SPA-GMN-HKNMAX)
+      *
+           .
+       10041-HKNHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費情報編集処理
+      *****************************************************************
+       10042-KOHHEN-SEC          SECTION.
+      *
+           ADD     1                   TO  SPA-GMN-KOHMAX
+           MOVE    HKN-HKNNUM          TO  SPA-GMN-KOHNUML
+                                                    (SPA-GMN-KOHMAX)
+           IF      HKN-HKNNUM          =   "027"
+               MOVE    "老人保健"          TO  SPA-GMN-KOHNUMMEIL
+                                                    (SPA-GMN-KOHMAX)
+           ELSE
+               MOVE    HKN-TANSEIDONAME    TO  SPA-GMN-KOHNUMMEIL
+                                                    (SPA-GMN-KOHMAX)
+           END-IF
+           MOVE    HKN-HKNKOHSBTKBN    TO  SPA-NAI-KOHSBTKBN
+                                                    (SPA-GMN-KOHMAX)
+           MOVE    HKN-JKYSKENSNUMCHKKBN
+                                       TO  SPA-NAI-JKYSKENSNUMCHKKBN
+                                                    (SPA-GMN-KOHMAX)
+           MOVE    HKN-KENSNUMCHKKBN   TO  SPA-NAI-KENSNUMCHKKBN
+                                                    (SPA-GMN-KOHMAX)
+           .
+       10042-KOHHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    その他のコンボ設定処理
+      *****************************************************************
+       1005-COMB-SET-SEC          SECTION.
+      *
+      *    性別
+           MOVE    "1 男"              TO  SPA-GMN-SEX-LST (1)
+           MOVE    "2 女"              TO  SPA-GMN-SEX-LST (2)
+      *
+      *    テスト患者
+           MOVE    "0 患者"            TO  SPA-GMN-TSTPTNUMKBN-LST (1)
+           MOVE    "1 テスト患者"      TO  SPA-GMN-TSTPTNUMKBN-LST (2)
+           MOVE    SPA-GMN-TSTPTNUMKBN-LST(1)
+                                       TO  SPA-GMN-TSTPTNUMKBN-G
+      *
+           MOVE    "0 カルテ発行なし"  TO  SPA-GMN-HAKKO-LST (1)
+           MOVE    "1 カルテ発行あり"  TO  SPA-GMN-HAKKO-LST (2)
+           MOVE    SPA-GMN-HAKKO-LST (1)
+                                       TO  SPA-GMN-HAKKO-G
+      *
+           MOVE    "0 発行なし"        TO  SPA-GMN20-KARUTE-LST (1)
+           MOVE    "1 発行あり"        TO  SPA-GMN20-KARUTE-LST (2)
+           MOVE    SPA-GMN20-KARUTE-LST(1)
+                                       TO  SPA-GMN20-KARUTE-G
+      *
+           MOVE    "0 発行なし"        TO  SPA-GMN20-SYOHOU-LST (1)
+           MOVE    "1 発行あり"        TO  SPA-GMN20-SYOHOU-LST (2)
+           MOVE    SPA-GMN20-SYOHOU-LST(1)
+                                       TO  SPA-GMN20-SYOHOU-G
+      *
+           .
+       1005-COMB-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    新規パラメタ作成処理
+      *****************************************************************
+       1004-SINKI-PARA-SEC          SECTION.
+      *
+      *    患者マスタ初期編集
+           MOVE    SPACE               TO  PTINF-REC
+           INITIALIZE                      PTINF-REC
+           IF      SPA-NAME        NOT =   SPACE
+               MOVE    SPA-NAME            TO  PTINF-NAME
+           END-IF
+      *
+           IF      SPA-NAME        NOT =   SPACE
+               MOVE    SPA-NAME            TO  SPA-GMN-NAMEH
+               MOVE    SPA-NAME            TO  SPA-GMN-NAME
+           END-IF
+      *
+      *    患者番号変換マスタ初期編集
+           MOVE    SPACE               TO  PTNUM-REC
+           INITIALIZE                      PTNUM-REC
+           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTNUM-PTID
+           MOVE    SPA-GMN-PTNUM       TO  PTNUM-PTNUM
+      *
+      *    患者番号変換の初期内容
+           INITIALIZE                  SPA-MAE-PTNUM-AREA
+           IF      SPA-P02-UKEID   NOT =   ZERO
+               PERFORM 4104-UKETUKE-HEN-SEC
+               MOVE    SPA-NAME        TO  SPA-GMN-NAMEH
+               MOVE    SPA-NAME        TO  SPA-GMN-NAME
+            END-IF
+      *
+           .
+       1004-SINKI-PARA-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    受診データ　患者ID設定処理
+      *      UKETUKEからの患者登録なので受診マスタを探して患者IDセット
+      *****************************************************************
+       4104-UKETUKE-HEN-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-UKETUKE
+           INITIALIZE                      UKETUKE-REC
+           MOVE    SPA-HOSPID          TO  UKE-HOSPID
+           MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
+           MOVE    SPA-P02-UKEID       TO  UKE-UKEID
+           MOVE    UKETUKE-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
+               PERFORM 930-UKETUKE-NEXT-SEC
+           ELSE
+               MOVE    1               TO  FLG-UKETUKE
+           END-IF
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL       FLG-UKETUKE     =  1
+               MOVE    SPACE               TO  PARA-REC
+               MOVE    "UKETUKE"           TO  PARA-FILEMEI
+               MOVE    IDX                 TO  PARA-EDANUM
+      ******** MOVE    SPA-PTID            TO  UKE-PTID
+               MOVE    UKETUKE-REC         TO  PARA-DATA-REC
+               PERFORM 400-PARA-INSERT-SEC
+      *********WRITE   PARA-REC
+      *        画面ＳＰＡへ編集
+               PERFORM 3101-UKETU-HEN-SEC
+               MOVE    UKE-NAME            TO  SPA-NAME
+      *
+               MOVE    PARA-EDANUM          TO  SPA-NAI20-UKEMAX
+      *
+               MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
+               PERFORM 930-UKETUKE-NEXT-SEC
+           END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           .
+       4104-UKETUKE-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    予約，受付編集処理
+      *****************************************************************
+       3101-UKETU-HEN-SEC              SECTION.
+      *
+           MOVE    IDX                 TO  SPA-GMN20-YBANGOU (IDX)
+           MOVE    UKE-UKEID           TO  SPA-NAI20-UKEID (IDX)
+           MOVE    UKE-UKETIME         TO  SPA-NAI20-UKETIME (IDX)
+           MOVE    UKE-SRYKA           TO  SPA-NAI20-SRYKA   (IDX)
+           MOVE    UKE-SRYNAIYO        TO  SPA-NAI20-SRYNAI  (IDX)
+           MOVE    UKE-DRCD     (2:4)  TO  SPA-NAI20-DRCD    (IDX)
+           MOVE    UKE-KEYYYKTIME      TO  SPA-NAI20-KEYYYKTIME(IDX)
+           MOVE    UKE-YYKTIME         TO  SPA-NAI20-YYKTIME (IDX)
+           MOVE    UKE-YYKID           TO  SPA-NAI20-YYKID   (IDX)
+           IF      UKE-UKETIME         =   SPACE  OR  ZERO
+               CONTINUE
+           ELSE
+               MOVE    UKE-UKETIME (1:2)
+                                       TO  SPA-GMN20-TUKETIME(IDX)(1:2)
+               MOVE    ":"             TO  SPA-GMN20-TUKETIME(IDX)(3:1)
+               MOVE    UKE-UKETIME (3:2)
+                                       TO  SPA-GMN20-TUKETIME(IDX)(4:2)
+           END-IF
+           IF      UKE-YYKTIME         =   SPACE   OR  ZERO
+               CONTINUE
+           ELSE
+               MOVE    UKE-YYKTIME (1:2)
+                                       TO  SPA-GMN20-TYYKTIME(IDX)(1:2)
+               MOVE    ":"             TO  SPA-GMN20-TYYKTIME(IDX)(3:1)
+               MOVE    UKE-YYKTIME (3:2)
+                                       TO  SPA-GMN20-TYYKTIME(IDX)(4:2)
+           END-IF
+      *    診療科　内容編集
+           IF  SPA-NAI20-SRYKA (IDX)   NOT =   SPACE
+               PERFORM     VARYING   IDY   FROM    1   BY  1
+                           UNTIL     IDY       >   SPA-SRYKA-MAX
+                   IF      SPA-NAI20-SRYKA (IDX)
+                                          =    SPA-GMN-SRYKA-LST(IDY)
+                                                              (1:2)
+                       MOVE    SPA-GMN-SRYKA-LST (IDY)(4:)
+                                               TO  SPA-GMN20-TSRYKA(IDX)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *    担当ドクター編集
+           IF  SPA-NAI20-DRCD (IDX)    NOT =   SPACE
+               PERFORM     VARYING   IDY   FROM    1   BY  1
+                           UNTIL    (IDY               >   10)
+                           OR       (SPA-GMN20-DRCDLST(IDY) =   SPACE)
+                   IF  SPA-NAI20-DRCD (IDX)   =   SPA-GMN20-DRCDLST(IDY)
+                                                        (1:4)
+                       MOVE    SPA-GMN20-DRCDLST (IDY)(6:)
+                                              TO  SPA-GMN20-TDRCD(IDX)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *    診療行為内容編集
+           IF      SPA-NAI20-SRYNAI (IDX)  NOT =   SPACE
+               PERFORM     VARYING   IDY   FROM    1   BY  1
+                           UNTIL     IDY   >   SPA-GMN20-SRYNAI-MAX
+                   IF  SPA-NAI20-SRYNAI (IDX)   =   SPA-SRYNAI-CD(IDY)
+                       MOVE    SPA-SRYNAI-MEI (IDY)
+                                             TO  SPA-GMN20-TSRYNAI(IDX)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       3101-UKETU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者登録へＳＰＡ、パラメタ設定処理
+      *****************************************************************
+       1002-KYOUTU-SET-SEC          SECTION.
+      *
+      *****MOVE    SPA-TERMID          TO  FILE-TERMID1
+      *****OPEN    OUTPUT              PARA-FILE
+      *
+      *    患者情報編集
+           PERFORM 10021-PTINF-SET-SEC
+      *
+      *    他の情報編集
+           PERFORM 10022-PARA-SET-SEC
+      *    患者労災情報編集
+           PERFORM 10023-RSIPARA-SET-SEC
+      *
+      *****CLOSE                       PARA-FILE
+      *
+           .
+       1002-KYOUTU-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者情報設定処理
+      *****************************************************************
+       10021-PTINF-SET-SEC          SECTION.
+      *
+      *    患者情報検索
+           INITIALIZE                      PTINF-REC
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTINF-PTID
+           PERFORM 900-PTINF-READ-SEC
+           IF      FLG-PTINF           =   1
+               GO      TO      1002-KYOUTU-SET-EXT
+           END-IF
+      *
+      **** 患者マスタ　パラメータ追加
+      *    MOVE    SPACE               TO  PARA-REC
+      *    MOVE    "PTINF"             TO  PARA-FILEMEI
+      *    MOVE    01                  TO  PARA-EDANUM
+      *    MOVE    PTINF-REC           TO  PARA-DATA-REC
+      *    WRITE   PARA-REC
+      *
+      *    MOVE    02                  TO  PARA-EDANUM
+      *    MOVE    PTINF-REC (3001:)   TO  PARA-DATA-REC
+      **** WRITE   PARA-REC
+      *
+      *    画面編集
+           MOVE    PTINF-NAME          TO  SPA-GMN-NAMEH
+           EVALUATE    PTINF-SEX
+               WHEN    "1"
+                   MOVE    "男"                TO  SPA-GMN-SEXH
+               WHEN    "2"
+                   MOVE    "女"                TO  SPA-GMN-SEXH
+           END-EVALUATE
+           MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
+           PERFORM 4001-SEIWA-YMDEDIT-SEC
+           MOVE    WRK-HENYMD          TO  SPA-GMN-BIRTHDAYH
+           MOVE    PTINF-BIRTHDAY      TO  SPA-NAI-BIRTHDAY
+      *
+           MOVE    PTINF-KANANAME      TO  SPA-GMN-KANANAME
+           MOVE    PTINF-NAME          TO  SPA-GMN-NAME
+      *    変更確認用氏名保存
+           MOVE    SPA-GMN-KANANAME    TO  SPA-GMN-OLD-KANANAME
+           MOVE    SPA-GMN-NAME        TO  SPA-GMN-OLD-NAME
+      *    旧姓
+           MOVE    PTINF-NAME          TO  SPA-OLD-NAME
+           MOVE    PTINF-KANANAME      TO  SPA-OLD-KANANAME
+           MOVE    PTINF-NICKNAME      TO  SPA-OLD-NICKNAME
+      *
+           MOVE    SPA-GMN-BIRTHDAYH   TO  SPA-GMN-BIRTHDAYW
+      *    性別
+           MOVE    PTINF-SEX           TO  SPA-GMN-SEX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               IF      SPA-GMN-SEX     =   SPA-GMN-SEX-LST(IDX)(1:1)
+                   MOVE    SPA-GMN-SEX-LST (IDX)   TO  SPA-GMN-SEX-G
+                   MOVE    2                       TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           MOVE    PTINF-NICKNAME      TO  SPA-GMN-NICKNAME
+           MOVE    PTINF-DEATHKBN      TO  SPA-GMN-DEATHKBN
+           IF      SPA-GMN-DEATHKBN    =   ZERO
+               MOVE    SPACE               TO  SPA-GMN-DEATHKBN
+           END-IF
+      *    テスト患者
+           MOVE    PTINF-TSTPTNUMKBN   TO  SPA-GMN-TSTPTNUMKBN
+           IF      SPA-GMN-TSTPTNUMKBN =   SPACE
+               MOVE    ZERO                TO  SPA-GMN-TSTPTNUMKBN
+           END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               IF      SPA-GMN-TSTPTNUMKBN =   SPA-GMN-TSTPTNUMKBN-LST
+                                                        (IDX)(1:1)
+                   MOVE    SPA-GMN-TSTPTNUMKBN-LST (IDX)
+                                           TO  SPA-GMN-TSTPTNUMKBN-G
+                   MOVE    2               TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           MOVE    PTINF-HOME-POST     TO  SPA-GMN-POST
+           MOVE    PTINF-HOME-ADRS     TO  SPA-GMN-EDITADRS-NAME
+           MOVE    PTINF-HOME-BANTI    TO  SPA-GMN-BANTI
+           MOVE    PTINF-HOME-TEL1     TO  SPA-GMN-TEL1
+           MOVE    PTINF-HOME-TEL2     TO  SPA-GMN-TEL2
+           MOVE    PTINF-SETAINUSI     TO  SPA-GMN-SETAINUSI
+           MOVE    PTINF-ZOKUGARA      TO  SPA-GMN-ZOKUGARA
+           MOVE    PTINF-COMMENT-1     TO  SPA-GMN-COMMENT-1
+           MOVE    PTINF-COMMENT-2     TO  SPA-GMN-COMMENT-2
+      *    年齢計算
+           PERFORM 410121-NENREI-SET-SEC
+      *    減免事由
+           MOVE    PTINF-DISCOUNT-KBN  TO  SPA-GMN-DISCOUNTKBN
+      *    割引率
+           MOVE    PTINF-DISCOUNT      TO  SPA-GMN-DISCOUNT
+      *    状態１〜３
+           MOVE    PTINF-CONDITION-1   TO  SPA-GMN-CONDITION(1)
+           MOVE    PTINF-CONDITION-2   TO  SPA-GMN-CONDITION(2)
+           MOVE    PTINF-CONDITION-3   TO  SPA-GMN-CONDITION(3)
+      *
+      *    連絡先
+           MOVE    PTINF-FAX           TO  SPA-GMN21-FAX
+           MOVE    PTINF-KEITAI-TEL    TO  SPA-GMN21-KEITAI-TEL
+           MOVE    PTINF-EMAIL         TO  SPA-GMN21-EMAIL
+           MOVE    PTINF-JOB           TO  SPA-GMN21-JOB
+           MOVE    PTINF-RENRAKU-NAME  TO  SPA-GMN21-RENRAKU-NAME
+           MOVE    PTINF-RENRAKU-ZOKUGARA
+                                       TO  SPA-GMN21-RENRAKU-ZOKUGARA
+           MOVE    PTINF-RENRAKU-POST  TO  SPA-GMN21-RENRAKU-POST
+           MOVE    PTINF-RENRAKU-ADRS  TO  SPA-GMN21-RENRAKU-ADRS
+           MOVE    PTINF-RENRAKU-BANTI TO  SPA-GMN21-RENRAKU-BANTI
+           MOVE    PTINF-RENRAKU-TEL1  TO  SPA-GMN21-RENRAKU-TEL1
+           MOVE    PTINF-RENRAKU-TEL2  TO  SPA-GMN21-RENRAKU-TEL2
+           MOVE    PTINF-OFFICE-NAME   TO  SPA-GMN21-OFFICE-NAME
+           MOVE    PTINF-OFFICE-POST   TO  SPA-GMN21-OFFICE-POST
+           MOVE    PTINF-OFFICE-ADRS   TO  SPA-GMN21-OFFICE-ADRS
+           MOVE    PTINF-OFFICE-BANTI  TO  SPA-GMN21-OFFICE-BANTI
+           MOVE    PTINF-OFFICE-TEL    TO  SPA-GMN21-OFFICE-TEL
+           MOVE    PTINF-KISEI-NAME    TO  SPA-GMN21-KISEI-NAME
+           MOVE    PTINF-KISEI-POST    TO  SPA-GMN21-KISEI-POST
+           MOVE    PTINF-KISEI-ADRS    TO  SPA-GMN21-KISEI-ADRS
+           MOVE    PTINF-KISEI-BANTI   TO  SPA-GMN21-KISEI-BANTI
+           MOVE    PTINF-KISEI-TEL     TO  SPA-GMN21-KISEI-TEL
+      *
+      *    禁忌情報
+           MOVE    PTINF-TABOO-1       TO  SPA-GMN-TABOO-1
+           MOVE    PTINF-TABOO-2       TO  SPA-GMN-TABOO-2
+           MOVE    PTINF-ALLERGY-1     TO  SPA-GMN-ALLERGY-1
+           MOVE    PTINF-ALLERGY-2     TO  SPA-GMN-ALLERGY-2
+           MOVE    PTINF-KANSENSYO-1   TO  SPA-GMN-KANSENSYO-1
+           MOVE    PTINF-KANSENSYO-2   TO  SPA-GMN-KANSENSYO-2
+      *
+           IF  SPA-GMN-DISCOUNTKBN     =   SPACE
+               MOVE    ZERO               TO  SPA-GMN-DISCOUNTKBN
+           END-IF
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL   ( IDX       >   10 )
+                     OR    ( SPA-GMN-DISCOUNTKBN-KBNCD(IDX) = SPACE )
+                     OR    ( SPA-GMN-DISCOUNTKBN (4:)   NOT = SPACE )
+               IF  SPA-GMN-DISCOUNTKBN
+                                     =   SPA-GMN-DISCOUNTKBN-KBNCD(IDX)
+                   MOVE    SPA-GMN-DISCOUNTKBN-BODY (IDX)
+                                     TO  SPA-GMN-DISCOUNTKBN-MEI
+               END-IF
+           END-PERFORM
+      *    割引率
+           MOVE    PTINF-DISCOUNT      TO  SPA-GMN-DISCOUNT
+           IF  SPA-GMN-DISCOUNT (1:2)      =   SPACE
+               MOVE    ZERO                TO  SPA-GMN-DISCOUNT (1:2)
+           END-IF
+           MOVE    SPACE                   TO  WRK-RATE-AREA
+           MOVE    SPA-GMN-DISCOUNT        TO  WRK-RATE-KBN
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL   ( IDX         >   10 )
+                     OR      ( SPA-GMN-DISCOUNT-KBNCD(IDX) = SPACE )
+                     OR      ( WRK-RATE-EDIT-R         NOT = SPACE )
+               IF  WRK-RATE-KBN        =   SPA-GMN-DISCOUNT-KBNCD(IDX)
+                   MOVE    SPA-GMN-DISCOUNT-RITU (IDX)
+                                           TO  WRK-RATE-EDITZ
+                   EVALUATE    SPA-GMN-DISCOUNT-TEIRITU (IDX)
+                   WHEN    "0"
+                       MOVE    "該当なし"  TO  WRK-RATE-EDIT-R
+                   WHEN    "1"
+                       MOVE    "(%)"       TO  WRK-RATE-TANI
+                   WHEN    "2"
+                       MOVE    "(円)"      TO  WRK-RATE-TANI
+                   END-EVALUATE
+               END-IF
+           END-PERFORM
+           MOVE    WRK-RATE-AREA       TO  SPA-GMN-DISCOUNT
+      *    状態１〜３
+           MOVE    PTINF-CONDITION-1   TO  SPA-GMN-CONDITION(1)
+           IF      SPA-GMN-CONDITION(1)(1:2)  =   SPACE
+               MOVE    ZERO            TO  SPA-GMN-CONDITION(1)(1:2)
+           END-IF
+           MOVE    1                   TO  IDX
+           PERFORM 31110-CONDITIONH-SPASET-SEC
+      *
+           MOVE    PTINF-CONDITION-2   TO  SPA-GMN-CONDITION(2)
+           IF      SPA-GMN-CONDITION(2)(1:2)   =   SPACE
+               MOVE    ZERO            TO  SPA-GMN-CONDITION(2)(1:2)
+           END-IF
+           MOVE    2                   TO  IDX
+           PERFORM 31110-CONDITIONH-SPASET-SEC
+      *
+           MOVE    PTINF-CONDITION-3   TO  SPA-GMN-CONDITION(3)
+           IF      SPA-GMN-CONDITION(3)(1:2)   =   SPACE
+               MOVE    ZERO            TO  SPA-GMN-CONDITION(3)(1:2)
+           END-IF
+           MOVE    3                   TO  IDX
+           PERFORM 31110-CONDITIONH-SPASET-SEC
+      *
+      *    入力の有無判定用
+           MOVE    SPA-GMN-POST        TO  SPA-MAE-POST
+           MOVE    SPA-GMN-KANANAME    TO  SPA-MAE-KANANAME
+           MOVE    SPA-GMN-NAME        TO  SPA-MAE-NAME
+           MOVE    SPA-GMN-SEX         TO  SPA-MAE-SEX
+           MOVE    SPA-GMN-BIRTHDAYW   TO  SPA-MAE-BIRTHDAY
+      *
+           .
+       10021-PTINF-SET-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    状態名称スパセット処理
+      ****************************************************************
+       31110-CONDITIONH-SPASET-SEC         SECTION.
+      *
+           MOVE    SPA-GMN-CONDITION (IDX)(1:2)    TO  WRK-KBNCD
+      *
+           PERFORM   VARYING   IDY     FROM    1   BY  1
+                     UNTIL   ( IDY     >   10    )
+                     OR      ( SPA-GMN-CONDITION-KBNCD (IDX IDY)
+                                           =   SPACE )
+               IF      WRK-KBNCD       =   SPA-GMN-CONDITION-KBNCD
+                                                           (IDX IDY)
+                   MOVE    SPA-GMN-CONDITION-BODY (IDX IDY)
+                                         TO  SPA-GMN-CONDITION(IDX)(4:)
+                   MOVE    SPA-GMN-CONDITION-WORD (IDX IDY)
+                                         TO  SPA-GMN-CONDITIONH (IDX)
+               END-IF
+           END-PERFORM
+      *
+           .
+       31110-CONDITIONH-SPASET-EXT.
+           EXIT.
+      *****************************************************************
+      *    年齢計算処理
+      *****************************************************************
+       410121-NENREI-SET-SEC             SECTION.
+      *
+           IF      SPA-NAI-BIRTHDAY    =   SPACE  OR  ZERO
+               MOVE    SPACE               TO  SPA-GMN-NENREI
+               GO      TO      410121-NENREI-SET-EXT
+           END-IF
+      *
+           MOVE    SPA-NAI-BIRTHDAY    TO  WRK-YMDS1
+           MOVE    SPA-SYSYMD          TO  WRK-YMDS2
+           COMPUTE WRK-NENREI-YY       =   WRK-YYS2
+                                       -   WRK-YYS1
+           IF      WRK-YMDS1(5:4)      >   WRK-YMDS2(5:4)
+               COMPUTE WRK-NENREI-YY   =   WRK-NENREI-YY
+                                           -   1
+               COMPUTE WRK-NENREI-MM   =  (WRK-MMS2  +  12 )
+                                           -   WRK-MMS1
+           ELSE
+               COMPUTE WRK-NENREI-MM   =   WRK-MMS2
+                                           -   WRK-MMS1
+           END-IF
+           IF      WRK-DDS1            >   WRK-DDS2
+               COMPUTE WRK-NENREI-MM   =   WRK-NENREI-MM
+                                           -   1
+           END-IF
+      *
+      *    画面表示用
+           IF      WRK-NENREI-YY       =   ZERO
+               MOVE    WRK-NENREI-MM       TO  WRK-NENREI-ZN
+               MOVE    "ヶ月"              TO  WRK-NENREI-MEIN
+           ELSE
+               MOVE    WRK-NENREI-YY       TO  WRK-NENREI-Z
+               MOVE    "才"                TO  WRK-NENREI-MEI
+           END-IF
+           MOVE    WRK-NENREI-G        TO  SPA-GMN-NENREI
+      *
+           MOVE    WRK-NENREI-YY       TO  SPA-NAI-NENREI-YY
+           MOVE    WRK-NENREI-MM       TO  SPA-NAI-NENREI-MM
+      *
+           .
+       410121-NENREI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     他の情報編集処理
+      *****************************************************************
+       10022-PARA-SET-SEC          SECTION.
+      *
+      *    保険者編集
+           INITIALIZE                  SPA-PTHKNINF-AREA
+      *    保険者編集
+           INITIALIZE                  PTHKNINF-REC
+           MOVE    PTINF-HOSPID        TO  PTHKN-HOSPID
+           MOVE    PTINF-PTID          TO  PTHKN-PTID
+      *
+           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTHKNINF-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTHKNINF-KEY2"     TO  ORC-DBPATH
+               PERFORM 910-PTHKNINF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTHKNINF
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM     UNTIL   FLG-PTHKNINF    =   1
+               IF      PTHKN-SAKJOKBN        =   SPACE
+                   ADD     1                   TO  IDX
+                   MOVE    SPACE               TO  PARA-REC
+                   INITIALIZE                      PARA-REC
+                   MOVE    "PTHKNINF"          TO  PARA-FILEMEI
+                   MOVE    IDX                 TO  PARA-EDANUM
+                   MOVE    PTHKNINF-REC        TO  PARA-DATA-REC
+                   PERFORM 400-PARA-INSERT-SEC
+      *************WRITE   PARA-REC
+      *            ＳＰＡにも編集する
+                   IF      IDX               >  40
+                       CONTINUE
+                   ELSE
+                       PERFORM 100221-PTHKNINF-SPA-SEC
+                   END-IF
+               END-IF
+      *
+               MOVE    "PTHKNINF-KEY2"   TO  ORC-DBPATH
+               PERFORM 910-PTHKNINF-READ-SEC
+           END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTHKNINF-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+      *
+      *    公費編集
+           INITIALIZE                  SPA-PTKOHINF-AREA
+           INITIALIZE                  PTKOHINF-REC
+           MOVE    PTINF-HOSPID        TO  PTKOH-HOSPID
+           MOVE    PTINF-PTID          TO  PTKOH-PTID
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTKOHINF-KEY2"     TO  ORC-DBPATH
+               PERFORM 920-PTKOHINF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM     UNTIL     FLG-PTKOHINF  =   1
+               IF      PTKOH-SAKJOKBN        =   SPACE
+                   ADD     1                   TO  IDX
+                   MOVE    SPACE               TO  PARA-REC
+                   INITIALIZE                      PARA-REC
+                   MOVE    "PTKOHINF"          TO  PARA-FILEMEI
+                   MOVE    IDX                 TO  PARA-EDANUM
+                   MOVE    PTKOHINF-REC        TO  PARA-DATA-REC
+                   PERFORM 400-PARA-INSERT-SEC
+      ************ WRITE   PARA-REC
+      *            ＳＰＡにも編集する
+                   IF      IDX               >  40
+                       CONTINUE
+                   ELSE
+                       PERFORM 100222-PTKOHINF-SPA-SEC
+                   END-IF
+             END-IF
+      *
+             MOVE    "PTKOHINF-KEY2"   TO  ORC-DBPATH
+             PERFORM 920-PTKOHINF-READ-SEC
+           END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    受診マスターより
+           INITIALIZE                      UKETUKE-REC
+           MOVE    SPA-HOSPID          TO  UKE-HOSPID
+           MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
+           MOVE    SPA-GMN-PTID        TO  UKE-PTID
+      *
+           MOVE    UKETUKE-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+               PERFORM 930-UKETUKE-NEXT-SEC
+           ELSE
+               MOVE    1               TO  FLG-UKETUKE
+           END-IF
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL       FLG-UKETUKE     =  1
+               MOVE    SPACE               TO  PARA-REC
+               INITIALIZE                      PARA-REC
+               MOVE    "UKETUKE"           TO  PARA-FILEMEI
+               MOVE    IDX                 TO  PARA-EDANUM
+               MOVE    UKETUKE-REC         TO  PARA-DATA-REC
+               PERFORM 400-PARA-INSERT-SEC
+      ******** WRITE   PARA-REC
+      *
+               MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+               PERFORM 930-UKETUKE-NEXT-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"          TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    保険組合せより
+           INITIALIZE                      HKNCOMBI-REC
+           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-GMN-PTID        TO  COMB-PTID
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+               PERFORM 940-HKNCOMB-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-HKNCOMBI
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM   UNTIL     FLG-HKNCOMBI    =   1
+               IF  COMB-DELKBN             =   SPACE
+                   ADD     1                   TO  IDX
+                   MOVE    SPACE               TO  PARA-REC
+                   INITIALIZE                      PARA-REC
+                   MOVE    "HKNCOMBI"          TO  PARA-FILEMEI
+                   MOVE    IDX                 TO  PARA-EDANUM
+                   MOVE    HKNCOMBI-REC        TO  PARA-DATA-REC
+                   PERFORM 400-PARA-INSERT-SEC
+               END-IF
+               MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+               PERFORM 940-HKNCOMB-NEXT-SEC
+           END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    保険組合せマスタ　総件数（既削除データ除く）
+           MOVE    IDX                 TO  SPA-P02-COMBMAX
+      *    保険組合せ削除データ数（パラメータファイル内）
+           MOVE    ZERO                TO  SPA-P02-COMBDCNT
+      *
+      *    旧姓履歴出力
+           INITIALIZE                      KYUSEIRRK-REC
+           MOVE    SPA-HOSPID          TO  KYUSEI-HOSPID
+           MOVE    SPA-GMN-PTID        TO  KYUSEI-PTID
+           MOVE    KYUSEIRRK-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "KYUSEIRRK-KEY2"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "KYUSEIRRK-KEY2"    TO  ORC-DBPATH
+               PERFORM 950-KYUSEI-NEXT-SEC
+           ELSE
+               MOVE    1               TO  FLG-KYUSEIRRK
+           END-IF
+           MOVE    SPACE               TO  SPA-GMN-KYUSEIH
+           MOVE    ZERO                TO  IDX
+           PERFORM
+               UNTIL     FLG-KYUSEIRRK    =   1
+      *
+               ADD     1                   TO  IDX
+      *        最終の旧姓を見出しへ
+               MOVE    KYUSEI-NAME         TO  SPA-GMN-KYUSEIH
+      *        ＳＰＡ編集を行う
+               IF      IDX                 >   20
+                   MOVE    20              TO  IDX
+               END-IF
+               MOVE    IDX                 TO  SPA-NAI25-KYU-MAX
+               MOVE    KYUSEI-CHGYMD       TO  SPA-GMN25-KYU-CHGYMD(IDX)
+               MOVE    KYUSEI-CHGYMD       TO  WRK-SYMD
+               PERFORM 4001-SEIWA-YMDEDIT-SEC
+               MOVE    WRK-HENYMD          TO  SPA-GMN25-KYU-CHGYMDW
+                                                                 (IDX)
+               MOVE    KYUSEI-KANANAME     TO  SPA-GMN25-KYU-KANANAME
+                                                                (IDX)
+               MOVE    KYUSEI-NAME         TO  SPA-GMN25-KYU-NAME(IDX)
+               MOVE    KYUSEI-NICKNAME     TO  SPA-GMN25-KYU-NICKNAME
+                                                                (IDX)
+               MOVE    KYUSEI-UPYMD        TO  SPA-GMN25-KYU-UPYMD
+                                                                (IDX)
+               MOVE    KYUSEI-CREYMD       TO  SPA-GMN25-KYU-CREYMD
+                                                                (IDX)
+               MOVE    SPACE               TO  SPA-GMN25-KYU-DELKBN
+                                                                (IDX)
+      *
+               MOVE    "KYUSEIRRK-KEY2"    TO  ORC-DBPATH
+               PERFORM 950-KYUSEI-NEXT-SEC
+           END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "KYUSEIRRK-KEY2"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    低所得より
+           INITIALIZE                      TSYRRK-REC
+           MOVE    SPA-HOSPID          TO  TSYRRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  TSYRRK-PTID
+      *
+           MOVE    TSYRRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TSYRRK-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "TSYRRK-KEY3"      TO  ORC-DBPATH
+               PERFORM 990-TSYRRK-NEXT-SEC
+           ELSE
+               MOVE    1               TO  FLG-TSYRRK
+           END-IF
+           MOVE    ZERO                TO  IDX
+      *
+           PERFORM   UNTIL    FLG-TSYRRK    =   1
+      *
+               ADD     1                   TO  IDX
+               MOVE    SPACE               TO  PARA-REC
+               INITIALIZE                      PARA-REC
+               MOVE    "TSYRRK"            TO  PARA-FILEMEI
+               MOVE    IDX                 TO  PARA-EDANUM
+               MOVE    TSYRRK-REC          TO  PARA-DATA-REC
+               PERFORM 400-PARA-INSERT-SEC
+      *********WRITE   PARA-REC
+      *
+               MOVE    "TSYRRK-KEY3"      TO  ORC-DBPATH
+               PERFORM 990-TSYRRK-NEXT-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TSYRRK-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    年金履歴より
+           INITIALIZE                      TNKRRK-REC
+           MOVE    SPA-HOSPID          TO  TNKRRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  TNKRRK-PTID
+           MOVE    TNKRRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TNKRRK-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "TNKRRK-KEY3"      TO  ORC-DBPATH
+               PERFORM 991-TNKRRK-NEXT-SEC
+           ELSE
+               MOVE    1               TO  FLG-TNKRRK
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM   UNTIL    FLG-TNKRRK   =   1
+               ADD     1                   TO  IDX
+               MOVE    SPACE               TO  PARA-REC
+               INITIALIZE                      PARA-REC
+               MOVE    "TNKRRK"            TO  PARA-FILEMEI
+               MOVE    IDX                 TO  PARA-EDANUM
+               MOVE    TNKRRK-REC          TO  PARA-DATA-REC
+               PERFORM 400-PARA-INSERT-SEC
+      *********WRITE   PARA-REC
+      *
+               MOVE    "TNKRRK-KEY3"      TO  ORC-DBPATH
+               PERFORM 991-TNKRRK-NEXT-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TNKRRK-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    患者番号管理(変換)マスタ編集
+           PERFORM 970-PTNUM-READ-SEC
+      *
+      *    患者番号変換の保存
+           IF      FLG-PTNUM           =   ZERO
+               MOVE    PTNUM-HKNID         TO  SPA-PTNUM-HKNID
+               MOVE    PTNUM-KOHID         TO  SPA-PTNUM-KOHID
+               MOVE    PTNUM-AUTOCOMBINUM  TO  SPA-PTNUM-AUTOCOMBINUM
+               MOVE    PTNUM-MANUCOMBINUM  TO  SPA-PTNUM-MANUCOMBINUM
+      *        患者番号変換の初期内容保存
+               MOVE    PTNUM-HKNID         TO  SPA-MAE-HKNID
+               MOVE    PTNUM-KOHID         TO  SPA-MAE-KOHID
+               MOVE    PTNUM-AUTOCOMBINUM  TO  SPA-MAE-AUTOCOMBINUM
+               MOVE    PTNUM-MANUCOMBINUM  TO  SPA-MAE-MANUCOMBINUM
+           ELSE
+               INITIALIZE                  SPA-PTNUM-AREA
+               INITIALIZE                  SPA-MAE-PTNUM-AREA
+           END-IF
+      *
+      *
+           .
+       10022-PARA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタファイル作成処理
+      *****************************************************************
+       400-PARA-INSERT-SEC           SECTION.
+      *
+      *    パラメタ登録
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PARA-KEY"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PARA-KEY"          TO  ORC-DBPATH
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PARA
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PARA-KEY"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      FLG-PARA            =   1
+               MOVE    PARA-REC            TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "PARA-KEY"          TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "P02 PARA INSERT ERR:"  MCP-RC
+                           ",KEY2:" PARA-KEY
+                           ",EDANUM:" PARA-EDANUM
+               END-IF
+           ELSE
+               MOVE    PARA-REC            TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "PARA-KEY"          TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "P02 PARA UPDATE ERR:"  MCP-RC
+                           ",KEY2:" PARA-KEY
+                           ",EDANUM:" PARA-EDANUM
+               END-IF
+           END-IF
+      *
+           .
+       400-PARA-INSERT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者保険情報ＳＰＡ編集処理
+      *****************************************************************
+       100221-PTHKNINF-SPA-SEC           SECTION.
+      *
+           MOVE    PTHKN-HKNID         TO  SPA-PTHKN-HKNID      (IDX)
+           MOVE    PTHKN-HKNNUM        TO  SPA-PTHKN-HKNNUM     (IDX)
+           MOVE    PTHKN-HKNJANUM      TO  SPA-PTHKN-HKNJANUM   (IDX)
+           MOVE    PTHKN-HIHKNJANAME   TO  SPA-PTHKN-HIHKNJANAME(IDX)
+           MOVE    PTHKN-HONKZKKBN     TO  SPA-PTHKN-HONKZKKBN  (IDX)
+           MOVE    PTHKN-HOJOKBN       TO  SPA-PTHKN-HOJOKBN    (IDX)
+           MOVE    PTHKN-CONTKBN       TO  SPA-PTHKN-CONTKBN    (IDX)
+           MOVE    PTHKN-KIGO          TO  SPA-PTHKN-KIGO       (IDX)
+           MOVE    PTHKN-NUM           TO  SPA-PTHKN-NUM        (IDX)
+           MOVE    PTHKN-SKKGETYMD     TO  SPA-PTHKN-SKKGETYMD  (IDX)
+           MOVE    PTHKN-TEKSTYMD      TO  SPA-PTHKN-TEKSTYMD   (IDX)
+           MOVE    PTHKN-TEKEDYMD      TO  SPA-PTHKN-TEKEDYMD   (IDX)
+           MOVE    PTHKN-KAKUNINYMD    TO  SPA-PTHKN-KAKUNINYMD (IDX)
+           MOVE    PTHKN-SAKJOKBN      TO  SPA-PTHKN-SAKJOKBN   (IDX)
+      *
+           MOVE    PTHKN-SKKGETYMD     TO  WRK-SYMD
+           PERFORM 4001-SEIWA-YMDEDIT-SEC
+           MOVE    WRK-HENYMD          TO  SPA-PTHKN-SKKGETYMDW (IDX)
+      *
+           MOVE    PTHKN-TEKSTYMD      TO  WRK-SYMD
+           PERFORM 4001-SEIWA-YMDEDIT-SEC
+           MOVE    WRK-HENYMD          TO  SPA-PTHKN-TEKSTYMDW (IDX)
+      *
+           MOVE    PTHKN-TEKEDYMD      TO  WRK-SYMD
+           PERFORM 4001-SEIWA-YMDEDIT-SEC
+           MOVE    WRK-HENYMD          TO  SPA-PTHKN-TEKEDYMDW (IDX)
+      *
+           MOVE    PTHKN-KAKUNINYMD    TO  WRK-SYMD
+           PERFORM 4001-SEIWA-YMDEDIT-SEC
+           MOVE    WRK-HENYMD          TO  SPA-PTHKN-KAKUNINYMDW (IDX)
+      *
+      *    保険公費区分編集
+           MOVE    PTHKN-HKNNUM        TO  WRK-HKNNUM
+           MOVE    PTHKN-TEKSTYMD      TO  WRK-TEKSTYMD
+           MOVE    PTHKN-TEKEDYMD      TO  WRK-TEKEDYMD
+           PERFORM 1002211-HKNNUM-SET-SEC
+           MOVE    WRK-HKNKOHSBTKBN    TO  SPA-PTHKN-HKN-SBTKBN (IDX)
+           MOVE    WRK-TANSEIDONAME    TO  SPA-PTHKN-HKNNUM-MEI (IDX)
+      *    確認年月日保存
+           MOVE    PTHKN-KAKUNINYMD    TO  SPA-PTHKN-MAEKAKUNINYMD (IDX)
+           MOVE    SPA-PTHKN-KAKUNINYMDW (IDX)
+                                       TO  SPA-PTHKN-MAEKAKUNINYMDW(IDX)
+      *
+           MOVE    IDX                 TO  SPA-PTHKN-MAX
+      *
+           .
+       100221-PTHKNINF-SPA-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者公費情報ＳＰＡ編集処理
+      *****************************************************************
+       100222-PTKOHINF-SPA-SEC           SECTION.
+      *
+           MOVE    PTKOH-KOHID         TO  SPA-PTKOH-KOHID      (IDX)
+           MOVE    PTKOH-KOHNUM        TO  SPA-PTKOH-KOHNUM     (IDX)
+           MOVE    PTKOH-FTNJANUM      TO  SPA-PTKOH-FTNJANUM   (IDX)
+           MOVE    PTKOH-JKYSNUM       TO  SPA-PTKOH-JKYSNUM    (IDX)
+           MOVE    PTKOH-TEKSTYMD      TO  SPA-PTKOH-TEKSTYMD   (IDX)
+           MOVE    PTKOH-TEKEDYMD      TO  SPA-PTKOH-TEKEDYMD   (IDX)
+           MOVE    PTKOH-KAKUNINYMD    TO  SPA-PTKOH-KAKUNINYMD (IDX)
+           MOVE    PTKOH-SAKJOKBN      TO  SPA-PTKOH-SAKJOKBN   (IDX)
+      *
+           MOVE    PTKOH-TEKSTYMD      TO  WRK-SYMD
+           PERFORM 4001-SEIWA-YMDEDIT-SEC
+           MOVE    WRK-HENYMD          TO  SPA-PTKOH-TEKSTYMDW (IDX)
+      *
+           MOVE    PTKOH-TEKEDYMD      TO  WRK-SYMD
+           PERFORM 4001-SEIWA-YMDEDIT-SEC
+           MOVE    WRK-HENYMD          TO  SPA-PTKOH-TEKEDYMDW (IDX)
+      *
+           MOVE    PTKOH-KAKUNINYMD    TO  WRK-SYMD
+           PERFORM 4001-SEIWA-YMDEDIT-SEC
+           MOVE    WRK-HENYMD          TO  SPA-PTKOH-KAKUNINYMDW (IDX)
+      *
+      *    保険公費区分編集
+           MOVE    PTKOH-KOHNUM        TO  WRK-HKNNUM
+           MOVE    PTKOH-TEKSTYMD      TO  WRK-TEKSTYMD
+           MOVE    PTKOH-TEKEDYMD      TO  WRK-TEKEDYMD
+           PERFORM 1002211-HKNNUM-SET-SEC
+           MOVE    WRK-HKNKOHSBTKBN    TO  SPA-PTKOH-HKN-SBTKBN (IDX)
+           MOVE    WRK-TANSEIDONAME    TO  SPA-PTKOH-KOHNUM-MEI (IDX)
+      *    確認年月日保存
+           MOVE    PTKOH-KAKUNINYMD    TO  SPA-PTKOH-MAEKAKUNINYMD (IDX)
+           MOVE    SPA-PTKOH-KAKUNINYMDW (IDX)
+                                       TO  SPA-PTKOH-MAEKAKUNINYMDW(IDX)
+      *
+           MOVE    IDX                 TO  SPA-PTKOH-MAX
+      *
+           .
+       100222-PTKOHINF-SPA-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険公費区分編集処理
+      *****************************************************************
+       1002211-HKNNUM-SET-SEC           SECTION.
+      *
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    WRK-HKNNUM          TO  HKN-HKNNUM
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNNUM-KEY2"   TO  ORC-DBPATH
+               PERFORM 921-HKNMST-NEXT-SEC
+           ELSE
+               INITIALIZE              HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-HKNKOHSBTKBN
+           MOVE    SPACE               TO  WRK-TANSEIDONAME
+           PERFORM
+               UNTIL   FLG-HKNNUM      =   1
+               IF     (WRK-TEKSTYMD        >=  HKN-TEKSTYMD )  AND
+                      (WRK-TEKEDYMD        <=  HKN-TEKEDYMD )
+                   MOVE    HKN-HKNKOHSBTKBN    TO  WRK-HKNKOHSBTKBN
+                   MOVE    HKN-TANSEIDONAME    TO  WRK-TANSEIDONAME
+                   MOVE    1                   TO  FLG-HKNNUM
+               ELSE
+                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+                   PERFORM 921-HKNMST-NEXT-SEC
+               END-IF
+           END-PERFORM
+      *
+           .
+       1002211-HKNNUM-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者労災情報編集編集
+      *****************************************************************
+       10023-RSIPARA-SET-SEC           SECTION.
+      *
+      *    患者労災情報編集
+           INITIALIZE                      PTRSIINF-REC
+           MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTRSI-PTID
+           MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTRSIINF-KEY3"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTRSIINF-KEY3"     TO  ORC-DBPATH
+               PERFORM 993-PTRSIINF-NEXT-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTRSIINF
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM   UNTIL    FLG-PTRSIINF   =   1
+               IF      PTRSI-SAKUJOKBN       =   SPACE
+                   ADD     1                   TO  IDX
+                   MOVE    SPACE               TO  PARA-REC
+                   MOVE    "PTRSIINF"          TO  PARA-FILEMEI
+                   MOVE    IDX                 TO  PARA-EDANUM
+                   MOVE    PTRSIINF-REC        TO  PARA-DATA-REC
+                   PERFORM 400-PARA-INSERT-SEC
+      *************WRITE   PARA-REC
+               END-IF
+      *
+               MOVE    "PTRSIINF-KEY3"     TO  ORC-DBPATH
+               PERFORM 993-PTRSIINF-NEXT-SEC
+           END-PERFORM
+      *
+      *    患者労災保険情報マスタ　総件数（既削除データ除く）
+           MOVE    IDX                 TO  SPA-P02-RSHKNMAX
+      *
+           .
+       10023-RSIPARA-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    西暦→和暦FORMAT日付編集
+      *****************************************************************
+       4001-SEIWA-YMDEDIT-SEC           SECTION.
+      *
+           IF      WRK-SYMD            =   ZERO
+               MOVE    WRK-SYMD            TO  WRK-HENYMD
+               GO      TO      4001-SEIWA-YMDEDIT-EXT
+           END-IF
+      *
+           IF      WRK-SYMD            =   SPACE   OR  ALL "9"
+               MOVE    WRK-SYMD            TO  WRK-HENYMD
+           ELSE
+               MOVE    SPACE               TO  STS-AREA-DAY
+               INITIALIZE                      STS-AREA-DAY
+               MOVE    SPACE               TO  LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                               LNK-DAY2-AREA
+               IF      STS-DAY-RC1             =   ZERO
+                   MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMD
+               ELSE
+                   MOVE    SPACE               TO  WRK-HENYMD
+               END-IF
+           END-IF
+           .
+       4001-SEIWA-YMDEDIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面編集処理
+      *****************************************************************
+       200-P02-SET-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  P02
+      *
+           EVALUATE    SPA-P02-GAMEN
+               WHEN    "P020"
+                   MOVE    ZERO                TO  P02-PAGENO
+               WHEN    "P02 "
+                   MOVE    1                   TO  P02-PAGENO
+               WHEN    "P027"
+                   MOVE    2                   TO  P02-PAGENO
+               WHEN    "P021"
+                   MOVE    3                   TO  P02-PAGENO
+      *******  WHEN    "P022"
+      *******      MOVE    4                   TO  P02-PAGENO
+               WHEN    "P023"
+                   MOVE    4                   TO  P02-PAGENO
+               WHEN    "P024"
+                   MOVE    5                   TO  P02-PAGENO
+               WHEN    "P025"
+                   MOVE    6                   TO  P02-PAGENO
+               WHEN    OTHER
+                   MOVE    "P02 "              TO  SPA-P02-GAMEN
+                   MOVE    1                   TO  P02-PAGENO
+           END-EVALUATE
+      *
+      *    見出し状態
+           MOVE    SPA-GMN-PTNUM           TO  P02-PTNUM
+           MOVE    SPA-GMN-NAMEH           TO  P02-NAMEH
+           MOVE    SPA-GMN-SEXH            TO  P02-SEXH
+           MOVE    SPA-GMN-BIRTHDAYH       TO  P02-BIRTHDAYH
+           MOVE    SPA-GMN-KYUSEIH         TO  P02-KYUSEIH
+           MOVE    SPA-GMN-CONDITIONH (1)  TO  P02-P02-CONDITIONH1
+           MOVE    SPA-GMN-CONDITIONH (2)  TO  P02-P02-CONDITIONH2
+           MOVE    SPA-GMN-CONDITIONH (3)  TO  P02-P02-CONDITIONH3
+      *
+      *
+           PERFORM 2001-P020-SET-SEC
+      *
+           PERFORM 2001-P02W1-SET-SEC
+      *
+           PERFORM 2001-P027-SET-SEC
+      *
+           PERFORM 2001-P021-SET-SEC
+      *
+           PERFORM 2001-P023-SET-SEC
+      *
+           PERFORM 2001-P024-SET-SEC
+      *
+           PERFORM 2001-P025-SET-SEC
+           .
+       200-P02-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    受付画面編集処理
+      *****************************************************************
+       2001-P020-SET-SEC         SECTION.
+      *
+      *****INITIALIZE                  P02-FIXPAGE1
+      *
+           MOVE    ZERO                TO  P02-P020-UKETUKE-LIST-COUNT
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL     ( IDX     >   10 )
+                   OR        ( SPA-GMN20-YBANGOU(IDX)  =  ZERO )
+               MOVE    SPA-GMN20-YBANGOU  (IDX) TO  WRK-RENNUMZ
+               MOVE    WRK-RENNUMZ              TO  P02-P020-ULNUM(IDX)
+               MOVE    SPA-GMN20-TYYKTIME (IDX)
+                                       TO  P02-P020-ULYYKTIME (IDX)(3:)
+               MOVE    SPA-GMN20-TUKETIME (IDX)
+                                       TO  P02-P020-ULUKETIME (IDX)(3:)
+               MOVE    SPA-GMN20-TSRYKA   (IDX)
+                                       TO  P02-P020-ULSRYKA   (IDX)
+               MOVE    SPA-GMN20-TDRCD    (IDX)
+                                       TO  P02-P020-ULDRNAME  (IDX)
+               MOVE    SPA-GMN20-TSRYNAI  (IDX)
+                                       TO  P02-P020-ULSRYNAIYO(IDX)
+               MOVE    SPA-GMN20-TKARUTE  (IDX)
+                                       TO  P02-P020-ULKARUTE  (IDX)
+               MOVE    SPA-GMN20-TSYOHOU  (IDX)
+                                       TO  P02-P020-ULSYOHO   (IDX)
+               IF      SPA-GMN20-THKNKUMI (IDX)  =   SPACE  OR  ZERO
+                   CONTINUE
+               ELSE
+                   MOVE  SPA-GMN20-THKNKUMI(IDX)
+                                       TO  P02-P020-ULHKNCOMBINUM(IDX)
+               END-IF
+               IF      IDX             =   SPA-NAI20-YSELNUM
+                   MOVE    "T"         TO  P02-P020-UKETUKE-LIST-SELECT
+                                                                  (IDX)
+               ELSE
+                   MOVE    "F"         TO  P02-P020-UKETUKE-LIST-SELECT
+                                                                  (IDX)
+               END-IF
+               MOVE    IDX             TO  P02-P020-UKETUKE-LIST-COUNT
+           END-PERFORM
+           MOVE    SPA-GMN20-YSELNUM   TO  P02-P020-SELNUM
+      *
+      *
+      *    診療科
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SRYKA-MAX
+               MOVE    SPA-GMN-SRYKA-LST (IDX)
+                                       TO  P02-P020-SRYKA-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-SRYKA-MAX       TO  P02-P020-SRYKA-COUNT
+           MOVE    SPA-GMN20-SRYKA-G   TO  P02-P020-SRYKA
+      *
+           MOVE    ZERO         TO  P02-P020-DRNAME-COUNT
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL     ( IDX     >   10  )
+                   OR        ( SPA-GMN20-DRCDLST (IDX)  =   SPACE )
+               MOVE    SPA-GMN20-DRCDLST(IDX)
+                                       TO  P02-P020-DRNAME-ITEM (IDX)
+               MOVE    IDX             TO  P02-P020-DRNAME-COUNT
+           END-PERFORM
+           MOVE    SPA-GMN20-DRCD      TO  P02-P020-DRNAME
+      *
+           MOVE    ZERO        TO  P02-P020-SRYNAIYO-COUNT
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN20-SRYNAI-MAX
+               MOVE    SPA-GMN20-SRYNAILST(IDX)
+                                   TO  P02-P020-SRYNAIYO-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN20-SRYNAI-MAX    TO  P02-P020-SRYNAIYO-COUNT
+           MOVE    SPA-GMN20-SRYNAI        TO  P02-P020-SRYNAIYO
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN20-KARUTE-LST (IDX)
+                                       TO  P02-P020-KARUTE-ITEM (IDX)
+               IF      SPA-GMN20-KARUTE  =   SPA-GMN20-KARUTE-LST (IDX)
+                                                                 (1:1)
+                   MOVE    SPA-GMN20-KARUTE-LST (IDX)
+                                           TO  SPA-GMN20-KARUTE-G
+               END-IF
+               MOVE    IDX             TO  P02-P020-KARUTE-COUNT
+           END-PERFORM
+           MOVE    SPA-GMN20-KARUTE-G  TO  P02-P020-KARUTE
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN20-SYOHOU-LST (IDX)
+                                       TO  P02-P020-SYOHOU-ITEM (IDX)
+               IF      SPA-GMN20-SYOHOU  =   SPA-GMN20-SYOHOU-LST (IDX)
+                                                                 (1:1)
+                   MOVE    SPA-GMN20-SYOHOU-LST (IDX)
+                                           TO  SPA-GMN20-SYOHOU-G
+               END-IF
+               MOVE    IDX                 TO  P02-P020-SYOHOU-COUNT
+           END-PERFORM
+           MOVE    SPA-GMN20-SYOHOU-G  TO  P02-P020-SYOHOU
+      *
+           MOVE    SPA-GMN20-HKNKUMI   TO  P02-P020-HKNKUMI
+      *
+      *    保険組合せ
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-HKNCOMBI-MAX
+               MOVE    SPA-GMN-THKNCOMBINUM(IDX)
+                                           TO   P02-P020-HKNCOBNUM (IDX)
+               MOVE    SPA-GMN-THKNCOMBIMEI (IDX)
+                                           TO  P02-P020-HKNCOBMEI (IDX)
+               MOVE    SPA-GMN-TTEKSTYMD (IDX)
+                                           TO  P02-P020-TEKSTYMD (IDX)
+               MOVE    SPA-GMN-TTEKEDYMD (IDX)
+                                           TO  P02-P020-TEKEDYMD (IDX)
+      *
+               IF      SPA-GMN-THKNCOMBINUM (IDX)  =   SPA-NAI20-HKNKUMI
+                   MOVE    "T"             TO  P02-P020-HKNCOMBI-SELECT
+                                                                  (IDX)
+               ELSE
+                   MOVE    "F"             TO  P02-P020-HKNCOMBI-SELECT
+                                                                  (IDX)
+               END-IF
+      *
+           END-PERFORM
+           MOVE    SPA-HKNCOMBI-MAX    TO  P02-P020-HKNCOMBI-COUNT
+      *
+           .
+       2001-P020-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    基本情報画面編集処理
+      *****************************************************************
+       2001-P02W1-SET-SEC         SECTION.
+      *
+           MOVE    SPA-GMN-KANANAME    TO  P02-P02-KANANAME
+           MOVE    SPA-GMN-NAME        TO  P02-P02-NAME
+           MOVE    SPA-GMN-NICKNAME    TO  P02-P02-NICKNAME
+      *
+           MOVE    SPA-GMN-SEX-G           TO  P02-P02-SEX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN-SEX-LST (IDX)
+                                   TO  P02-P02-SEX-ITEM (IDX)
+               MOVE    IDX         TO  P02-P02-SEX-COUNT
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-BIRTHDAYW       TO  P02-P02-BIRTHDAY
+           MOVE    SPA-GMN-NENREI          TO  P02-P02-NENREI
+           IF    SPA-GMN-DEATHKBN          =   "1"
+               MOVE    "T"                 TO  P02-P02-DEATHKBN-VALUE
+               MOVE    "死亡"              TO  P02-P02-DEATHKBN-LABEL
+           ELSE
+               MOVE    "F"                 TO  P02-P02-DEATHKBN-VALUE
+               MOVE    SPACE               TO  P02-P02-DEATHKBN-LABEL
+           END-IF
+      *    テスト患者
+           MOVE    SPA-GMN-TSTPTNUMKBN-G   TO  P02-TSTPTNUMKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN-TSTPTNUMKBN-LST (IDX)
+                                       TO  P02-TSTPTNUMKBN-ITEM (IDX)
+               MOVE    IDX             TO  P02-TSTPTNUMKBN-COUNT
+           END-PERFORM
+      *    カルテ発行有無
+           MOVE    SPA-GMN-HAKKO-G     TO  P02-P02-HAKKO
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN-HAKKO-LST (IDX)
+                                       TO  P02-P02-HAKKO-ITEM (IDX)
+               MOVE    IDX             TO  P02-P02-HAKKO-COUNT
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-TABOO-1         TO  P02-P02-TABOO1
+           MOVE    SPA-GMN-TABOO-2         TO  P02-P02-TABOO2
+           MOVE    SPA-GMN-ALLERGY-1       TO  P02-P02-ALLERGY1
+           MOVE    SPA-GMN-ALLERGY-2       TO  P02-P02-ALLERGY2
+           MOVE    SPA-GMN-KANSENSYO-1     TO  P02-P02-KANSENSYO1
+           MOVE    SPA-GMN-KANSENSYO-2     TO  P02-P02-KANSENSYO2
+      *
+           MOVE    SPA-GMN-POST            TO  P02-P02-POST
+           MOVE    SPA-GMN-EDITADRS-NAME   TO  P02-P02-ADRS
+           MOVE    SPA-GMN-BANTI           TO  P02-P02-BANTI
+           MOVE    SPA-GMN-TEL1            TO  P02-P02-TEL1
+           MOVE    SPA-GMN-TEL2            TO  P02-P02-TEL2
+           MOVE    SPA-GMN-SETAINUSI       TO  P02-P02-SETAINUSI
+           MOVE    SPA-GMN-ZOKUGARA        TO  P02-P02-ZOKUGARA
+           MOVE    SPA-GMN-DISCOUNTKBN-G   TO  P02-P02-DISCOUNTKBN
+           MOVE    SPA-GMN-CONDITION (1)   TO  P02-P02-CONDITION1
+           MOVE    SPA-GMN-CONDITION (2)   TO  P02-P02-CONDITION2
+           MOVE    SPA-GMN-CONDITION (3)   TO  P02-P02-CONDITION3
+           MOVE    SPA-GMN-DISCOUNT        TO  P02-P02-DISCOUNT
+           MOVE    SPA-GMN-COMMENT-1       TO  P02-P02-COMMENT1
+           MOVE    SPA-GMN-COMMENT-2       TO  P02-P02-COMMENT2
+      *
+           MOVE    ZERO                TO  P02-P02-CONDITION1-COUNT
+           MOVE    ZERO                TO  P02-P02-CONDITION2-COUNT
+           MOVE    ZERO                TO  P02-P02-CONDITION3-COUNT
+      *    状態１
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL    (IDX         >   10  )  OR
+                              (SPA-GMN-CONDITION-KBNCD (1 IDX)
+                                           =   SPACE)
+               MOVE    SPA-GMN-CONDITION-KBNCD (1 IDX)
+                                           TO  P02-P02-CONDITION1-ITEM
+                                                           (IDX)(1:)
+               MOVE    SPA-GMN-CONDITION-BODY  (1 IDX)
+                                           TO  P02-P02-CONDITION1-ITEM
+                                                           (IDX)(4:)
+               MOVE    IDX                 TO  P02-P02-CONDITION1-COUNT
+           END-PERFORM
+      *    状態２
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL    (IDX         >   10  )  OR
+                              (SPA-GMN-CONDITION-KBNCD (2 IDX)
+                                           =   SPACE)
+               MOVE    SPA-GMN-CONDITION-KBNCD (2 IDX)
+                                           TO  P02-P02-CONDITION2-ITEM
+                                                           (IDX)(1:)
+               MOVE    SPA-GMN-CONDITION-BODY  (2 IDX)
+                                           TO  P02-P02-CONDITION2-ITEM
+                                                           (IDX)(4:)
+               MOVE    IDX                 TO  P02-P02-CONDITION2-COUNT
+           END-PERFORM
+      *    状態３
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL    (IDX         >   10  )  OR
+                              (SPA-GMN-CONDITION-KBNCD (3 IDX)
+                                           =   SPACE)
+               MOVE    SPA-GMN-CONDITION-KBNCD (3 IDX)
+                                           TO  P02-P02-CONDITION3-ITEM
+                                                           (IDX)(1:)
+               MOVE    SPA-GMN-CONDITION-BODY  (3 IDX)
+                                           TO  P02-P02-CONDITION3-ITEM
+                                                           (IDX)(4:)
+               MOVE    IDX                 TO  P02-P02-CONDITION3-COUNT
+           END-PERFORM
+      *    減免事由
+           MOVE    ZERO                TO  P02-P02-DISCOUNTKBN-COUNT
+           PERFORM VARYING   IDX       FROM    1   BY  1
+                   UNTIL    (IDX           >   10  )  OR
+                            (SPA-GMN-DISCOUNTKBN-KBNCD (IDX)
+                                           =   SPACE)
+               MOVE    SPA-GMN-DISCOUNTKBN-KBNCD (IDX)
+                                       TO  P02-P02-DISCOUNTKBN-ITEM
+                                                             (IDX)(1:)
+               MOVE    SPA-GMN-DISCOUNTKBN-BODY  (IDX)
+                                       TO  P02-P02-DISCOUNTKBN-ITEM
+                                                             (IDX)(4:)
+               MOVE    IDX             TO  P02-P02-DISCOUNTKBN-COUNT
+           END-PERFORM
+      *    割引率
+           MOVE    ZERO                TO  P02-P02-DISCOUNT-COUNT
+           PERFORM VARYING   IDX       FROM    1   BY  1
+                   UNTIL    (IDX           >   10  )  OR
+                            (SPA-GMN-DISCOUNT-EDIT (IDX)
+                                           =   SPACE)
+               MOVE    SPA-GMN-DISCOUNT-EDIT (IDX)
+                                       TO  P02-P02-DISCOUNT-ITEM(IDX)
+               MOVE    IDX             TO  P02-P02-DISCOUNT-COUNT
+           END-PERFORM
+      *
+      *    保険情報
+      *    保険者番号
+           MOVE    SPA-GMN-HKNJANUM    TO  P02-P02-HKNJANUM
+      *    保険種別
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-HKNMAX
+               MOVE    SPA-GMN-HKNNUMLST (IDX)
+                                       TO  P02-HKNNUM-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-HKNMAX      TO  P02-HKNNUM-COUNT
+           MOVE    SPA-GMN-HKNNUM-G    TO  P02-P02-HKNNUM
+      *    本人家族
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-HONKZK-MAX
+               MOVE    SPA-GMN-HONKZKKBNL (IDX)
+                                       TO  P02-HONKZKBN-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-HONKZK-MAX  TO  P02-HONKZKBN-COUNT
+           MOVE    SPA-GMN-HONKZKKBN-G TO  P02-P02-HONKZKBN
+      *    補助区分
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-HOJO-MAX
+               MOVE    SPA-GMN-HOJOKBNL (IDX)
+                                       TO  P02-HOJOKBN-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-HOJO-MAX    TO  P02-HOJOKBN-COUNT
+           MOVE    SPA-GMN-HOJOKBN-G   TO  P02-P02-HOJOKBN
+      *    継続
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-CONT-MAX
+               MOVE    SPA-GMN-CONTKBNL (IDX)
+                                       TO  P02-CONTKBN-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-CONT-MAX    TO  P02-CONTKBN-COUNT
+           MOVE    SPA-GMN-CONTKBN-G   TO  P02-P02-CONTKBN
+      *    有効開始
+           MOVE    SPA-GMN-HTEKSTYMD   TO  P02-P02-HTEKSTYMD
+           MOVE    SPA-GMN-HTEKEDYMD   TO  P02-P02-HTEKEDYMD
+           MOVE    SPA-GMN-KIGO        TO  P02-P02-KIGO
+           MOVE    SPA-GMN-NUM         TO  P02-P02-NUM
+           MOVE    SPA-GMN-HKAKUNINYMD TO  P02-P02-HKAKUNINYMD
+           MOVE    SPA-GMN-SKKGETYMD   TO  P02-P02-SKKGETYMD
+           MOVE    SPA-GMN-HIHKNJANAME TO  P02-P02-HIHKNJANAME
+      *
+           IF      SPA-NAI-HKAKUNINYMD (1:6)
+                                       =   SPA-SYSYMD (1:6)
+               MOVE    "T"             TO  P02-BH1-VALUE
+               MOVE    "済"            TO  P02-BH1-LABEL
+           ELSE
+               MOVE    "F"             TO  P02-BH1-VALUE
+               MOVE    "未"            TO  P02-BH1-LABEL
+           END-IF
+      *    保険情報
+           MOVE    SPA-HKNJA-HKNJANAME TO  P02-P02-HKNNAME
+           MOVE    SPA-HKNJA-HKNJANAME(26:)
+                                       TO  P02-P02-HKNNAME2
+           MOVE    SPA-HKNJA-ADRS      TO  P02-P02-HKNJAADRS
+           MOVE    SPA-HKNJA-BANTI     TO  P02-P02-HKNJAADRS2
+           MOVE    SPA-HKNJA-TEL       TO  P02-P02-HKNJATEL
+      *
+      *    公費情報１
+           MOVE    SPA-GMN-KOHNUM-G (01)   TO  P02-P02-KOHNUM1
+           MOVE    SPA-GMN-FTNJANUM (01)   TO  P02-P02-FTNJANUM1
+           MOVE    SPA-GMN-JKYSNUM  (01)   TO  P02-P02-JKYSNUM1
+           MOVE    SPA-GMN-KTEKSTYMD(01)   TO  P02-P02-KTEKSTYMD1
+           MOVE    SPA-GMN-KTEKEDYMD(01)   TO  P02-P02-KTEKEDYMD1
+           MOVE    SPA-GMN-KKAKUNINYMD(01) TO  P02-P02-KKAKUNINYMD1
+           IF      SPA-NAI-KKAKUNINYMD(01)(1:6)
+                                           =   SPA-SYSYMD(1:6)
+               MOVE    "T"                 TO  P02-BK1-VALUE
+               MOVE    "済"                TO  P02-BK1-LABEL
+           ELSE
+               MOVE    "F"                 TO  P02-BK1-VALUE
+               MOVE    "未"                TO  P02-BK1-LABEL
+           END-IF
+      *    公費情報２
+           MOVE    SPA-GMN-KOHNUM-G (02)   TO  P02-P02-KOHNUM2
+           MOVE    SPA-GMN-FTNJANUM (02)   TO  P02-P02-FTNJANUM2
+           MOVE    SPA-GMN-JKYSNUM  (02)   TO  P02-P02-JKYSNUM2
+           MOVE    SPA-GMN-KTEKSTYMD(02)   TO  P02-P02-KTEKSTYMD2
+           MOVE    SPA-GMN-KTEKEDYMD(02)   TO  P02-P02-KTEKEDYMD2
+           MOVE    SPA-GMN-KKAKUNINYMD(02) TO  P02-P02-KKAKUNINYMD2
+           IF      SPA-NAI-KKAKUNINYMD(02)(1:6)
+                                           =   SPA-SYSYMD(1:6)
+               MOVE    "T"                 TO  P02-BK2-VALUE
+               MOVE    "済"                TO  P02-BK2-LABEL
+           ELSE
+               MOVE    "F"                 TO  P02-BK2-VALUE
+               MOVE    "未"                TO  P02-BK2-LABEL
+           END-IF
+      *    公費情報３
+           MOVE    SPA-GMN-KOHNUM-G (03)   TO  P02-P02-KOHNUM3
+           MOVE    SPA-GMN-FTNJANUM (03)   TO  P02-P02-FTNJANUM3
+           MOVE    SPA-GMN-JKYSNUM  (03)   TO  P02-P02-JKYSNUM3
+           MOVE    SPA-GMN-KTEKSTYMD(03)   TO  P02-P02-KTEKSTYMD3
+           MOVE    SPA-GMN-KTEKEDYMD(03)   TO  P02-P02-KTEKEDYMD3
+           MOVE    SPA-GMN-KKAKUNINYMD(03) TO  P02-P02-KKAKUNINYMD3
+           IF      SPA-NAI-KKAKUNINYMD(03)(1:6)
+                                           =   SPA-SYSYMD(1:6)
+               MOVE    "T"                 TO  P02-BK3-VALUE
+               MOVE    "済"                TO  P02-BK3-LABEL
+           ELSE
+               MOVE    "F"                 TO  P02-BK3-VALUE
+               MOVE    "未"                TO  P02-BK3-LABEL
+           END-IF
+      *    公費種類を編集する
+           PERFORM 20011-HOKNUM-HEN-SEC
+      *
+      *    保険組合せ
+           MOVE    ZERO                TO  IDX2
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-HKNCOMBI-MAX
+               ADD     1                   TO  IDX2
+               MOVE    SPA-GMN-THKNCOMBINUM(IDX)
+                                           TO   P02-HKNCOBNUM (IDX2)
+               MOVE    SPA-GMN-THKNCOMBIMEI (IDX)
+                                           TO  P02-HKNCOBNAME (IDX2)
+      *
+               IF      SPA-GMN-THKNCOMBINUM (IDX)  =   SPA-GMN-SELNUM
+                   MOVE    "T"             TO  P02-HKNLIST-SELECT (IDX2)
+               ELSE
+                   MOVE    "F"             TO  P02-HKNLIST-SELECT (IDX2)
+               END-IF
+      *
+               ADD     1                   TO  IDX2
+               MOVE    SPA-GMN-TTEKSTYMD (IDX)
+                                           TO  P02-HKNCOBNAME (IDX2)
+               MOVE    "〜"                TO  P02-HKNCOBNAME (IDX2)
+                                                            (11:2)
+               MOVE    SPA-GMN-TTEKEDYMD (IDX)
+                                           TO  P02-HKNCOBNAME (IDX2)
+                                                            (14:)
+      *
+               MOVE    "F"             TO  P02-HKNLIST-SELECT (IDX2)
+           END-PERFORM
+           MOVE    IDX2                TO  P02-HKNLIST-COUNT
+      *
+           MOVE    SPA-GMN-SELNUM      TO  P02-P02-SELNUM
+      *
+      *    診療科
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SRYKA-MAX
+               MOVE    SPA-GMN-SRYKA-LST (IDX)
+                                       TO  P02-SRYKA-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-SRYKA-MAX       TO  P02-SRYKA-COUNT
+           MOVE    SPA-GMN-SRYKA-G     TO  P02-P02-SRYKA
+           .
+       2001-P02W1-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    公費種類編集処理
+      *****************************************************************
+       20011-HOKNUM-HEN-SEC         SECTION.
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-KOHMAX
+               MOVE    SPA-GMN-KOHNUMLST (IDY)     TO  P02-KOHNUM1-ITEM
+                                                                  (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-KOHMAX      TO  P02-KOHNUM1-COUNT
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-KOHMAX
+               MOVE    SPA-GMN-KOHNUMLST (IDY)     TO  P02-KOHNUM2-ITEM
+                                                                  (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-KOHMAX      TO  P02-KOHNUM2-COUNT
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-KOHMAX
+               MOVE    SPA-GMN-KOHNUMLST (IDY)     TO  P02-KOHNUM3-ITEM
+                                                                  (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-KOHMAX      TO  P02-KOHNUM3-COUNT
+           .
+       20011-HOKNUM-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    連絡先画面編集処理
+      *****************************************************************
+       2001-P021-SET-SEC         SECTION.
+      *
+           MOVE    SPA-GMN21-FAX           TO  P02-P021-FAX
+           MOVE    SPA-GMN21-KEITAI-TEL    TO  P02-P021-KEITAI
+           MOVE    SPA-GMN21-EMAIL         TO  P02-P021-EMAIL
+           MOVE    SPA-GMN21-JOB           TO  P02-P021-JOB
+           MOVE    SPA-GMN21-RENRAKU-NAME  TO  P02-P021-RENNAME
+           MOVE    SPA-GMN21-RENRAKU-ZOKUGARA
+                                        TO  P02-P021-RENZOKUGARA
+           MOVE    SPA-GMN21-RENRAKU-POST   TO  P02-P021-RENPOST
+           MOVE    SPA-GMN21-RENRAKU-ADRS   TO  P02-P021-RENADRS
+           MOVE    SPA-GMN21-RENRAKU-BANTI  TO  P02-P021-RENBANTI
+           MOVE    SPA-GMN21-RENRAKU-TEL1   TO  P02-P021-RENTEL1
+           MOVE    SPA-GMN21-RENRAKU-TEL2   TO  P02-P021-RENTEL2
+           MOVE    SPA-GMN21-OFFICE-NAME    TO  P02-P021-OFFNAME
+           MOVE    SPA-GMN21-OFFICE-POST    TO  P02-P021-OFFPOST
+           MOVE    SPA-GMN21-OFFICE-ADRS    TO  P02-P021-OFFADRS
+           MOVE    SPA-GMN21-OFFICE-BANTI   TO  P02-P021-OFFBANTI
+           MOVE    SPA-GMN21-OFFICE-TEL     TO  P02-P021-OFFTEL
+           MOVE    SPA-GMN21-KISEI-NAME     TO  P02-P021-KISNAME
+           MOVE    SPA-GMN21-KISEI-POST     TO  P02-P021-KISPOST
+           MOVE    SPA-GMN21-KISEI-ADRS     TO  P02-P021-KISADRS
+           MOVE    SPA-GMN21-KISEI-BANTI    TO  P02-P021-KISBANTI
+           MOVE    SPA-GMN21-KISEI-TEL      TO  P02-P021-KISTEL
+           .
+       2001-P021-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合画面編集処理
+      *****************************************************************
+       2001-P027-SET-SEC         SECTION.
+      *
+           MOVE    " 負担区分"   TO  P02-P027-TITLE1
+           MOVE    "回−割合"    TO  P02-P027-TITLE2
+           MOVE    "回−固定額"  TO  P02-P027-TITLE3
+           MOVE    "回−上限額"  TO  P02-P027-TITLE4
+           MOVE    "日−上限額"  TO  P02-P027-TITLE5
+           MOVE    "日−上回数"  TO  P02-P027-TITLE6
+           MOVE    "月−上限額"  TO  P02-P027-TITLE7
+           MOVE    "月−上回数"  TO  P02-P027-TITLE8
+           MOVE    "   薬剤負担" TO  P02-P027-TITLE9
+      *
+           PERFORM   VARYING     IDX     FROM   1   BY  1
+                     UNTIL       IDX     >   SPA-GMN27-MAX
+                     OR        ( SPA-GMN27-NUM   (IDX)
+                                            =   SPACE )
+      *
+               MOVE    SPA-GMN27-NUM   (IDX)
+                                         TO  P02-P027-NUM(IDX)
+               MOVE    SPA-GMN27-HKNSEIDO (IDX)
+                                         TO  P02-P027-HKNSEIDO(IDX)
+               MOVE    SPA-GMN27-KOHSEIDO1 (IDX)
+                                         TO  P02-P027-KOHSEIDO1(IDX)
+               MOVE    SPA-GMN27-KOHSEIDO2 (IDX)
+                                         TO  P02-P027-KOHSEIDO2(IDX)
+               MOVE    SPA-GMN27-KOHSEIDO3 (IDX)
+                                         TO  P02-P027-KOHSEIDO3(IDX)
+               MOVE    SPA-GMN27-KOHSEIDO4(IDX)
+                                         TO  P02-P027-KOHSEIDO4(IDX)
+               MOVE    SPA-GMN27-TEKSTYMD(IDX) 
+                                         TO  P02-P027-TEKSTYMD(IDX)
+               MOVE    SPA-GMN27-TEKEDYMD(IDX) 
+                                         TO  P02-P027-TEKEDYMD(IDX)
+               MOVE    IDX               TO  P02-P027-HKNKUMI-COUNT
+      *
+               IF      SPA-GMN27-NUM (IDX)(1:4)
+                                           =   SPA-NAI27-SELNUM
+                   MOVE    "T"             TO  P02-P027-HKNKUMI-SELECT
+                                                               (IDX)
+               ELSE
+                   MOVE    "F"             TO  P02-P027-HKNKUMI-SELECT
+                                                               (IDX)
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPA-GMN27-SELNUM      TO  P02-P027-SELNUM
+           MOVE    SPA-GMN27-HKNNUM      TO  P02-P027-HKNNUM
+           MOVE    SPA-GMN27-HKNSEIDON   TO  P02-P027-HKNSEIDON
+           MOVE    SPA-GMN27-KOH1HKNNUM  TO  P02-P027-KOHNUM1
+           MOVE    SPA-GMN27-KOHSEIDO1N  TO  P02-P027-KOHSEIDO1N
+           MOVE    SPA-GMN27-KOH2HKNNUM  TO  P02-P027-KOHNUM2
+           MOVE    SPA-GMN27-KOHSEIDO2N  TO  P02-P027-KOHSEIDO2N
+           MOVE    SPA-GMN27-KOH3HKNNUM  TO  P02-P027-KOHNUM3
+           MOVE    SPA-GMN27-KOHSEIDO3N  TO  P02-P027-KOHSEIDO3N
+           MOVE    SPA-GMN27-KOH4HKNNUM  TO  P02-P027-KOHNUM4
+           MOVE    SPA-GMN27-KOHSEIDO4N  TO  P02-P027-KOHSEIDO4N
+      *
+           PERFORM     VARYING   IDX   FROM    1   BY  1
+                       UNTIL     IDX       >   3
+               MOVE    SPA-GMN27-MEI-FTNKBN     (IDX)
+                                 TO  P02-P027-FTNKBN   (IDX)
+               MOVE    SPA-GMN27-MEI-KFTNRATE   (IDX)
+                                 TO  P02-P027-KAIWARI  (IDX)
+               MOVE    SPA-GMN27-MEI-KKOTGAK    (IDX)
+                                 TO  P02-P027-KAIKOTGAK(IDX)
+               MOVE    SPA-GMN27-MEI-KJGNGAK    (IDX)
+                                 TO  P02-P027-KAIJOGGAK(IDX)
+               MOVE    SPA-GMN27-MEI-DJGNGAK    (IDX)
+                                 TO  P02-P027-HIJOGGAK (IDX)
+               MOVE    SPA-GMN27-MEI-DJGNCNT    (IDX)
+                                 TO  P02-P027-HIJOGCNT (IDX)
+               MOVE    SPA-GMN27-MEI-MNAIJGNGAK (IDX)
+                                 TO  P02-P027-TUKJOGGAK(IDX)
+               MOVE    SPA-GMN27-MEI-MJGNCNT    (IDX)
+                                 TO  P02-P027-TUKJOGCNT(IDX)
+               MOVE    SPA-GMN27-MEI-FTNKBN2    (IDX)
+                                 TO  P02-P027-YAKKBN   (IDX)
+      **        MOVE    SPA-GMN27-MEI-MGAIJGNGAK(IDX)
+      **                          TO  P02-MGAIJGNGAK   (IDX)
+           END-PERFORM
+      *
+           MOVE    SPA-GMN27-TENTNK    TO  WRK-RENNUMZ
+           MOVE    WRK-RENNUMZ         TO  P02-P027-TNSTANKA
+           MOVE    SPA-GMN27-TAXKBN    TO  P02-P027-TAXKBN
+      *
+      *    保険情報（全件テーブルの開始と終了位置より）
+           IF      SPA-GMN27-HKN-PCNT  =   ZERO
+               MOVE    1               TO  SPA-GMN27-HKN-PCNT
+           END-IF
+           MOVE    SPA-GMN27-HKN-PCNT  TO  IDX2
+           PERFORM VARYING     IDX     FROM    1    BY  1
+                   UNTIL     ( IDX         >   5    )
+                   OR        ( SPA-GMN27-HKNRENNUM (IDX2 IDX)
+                                          =   ZERO )
+               MOVE    SPA-GMN27-HKNRENNUM (IDX2 IDX)
+                                             TO  IDY
+               MOVE    SPA-PTHKN-HKNNUM-MEI(IDY)
+                                             TO  P02-THKNNUM   (IDX)
+               MOVE    SPA-PTHKN-HKNJANUM(IDY)
+                                             TO  P02-THKNJANUM (IDX)
+               MOVE    SPA-PTHKN-HONKZKKBN-MEI (IDY)
+                                             TO  P02-THONKAZKBN (IDX)
+               MOVE    SPA-PTHKN-HOJOKBN-MEI(IDY)
+                                             TO  P02-THOJOKBN (IDX)
+               MOVE    SPA-PTHKN-CONTKBN-MEI(IDY)
+                                             TO  P02-TCONTKBN (IDX)
+               MOVE    SPA-PTHKN-KIGO  (IDY) TO  P02-TKIGO    (IDX)
+               MOVE    SPA-PTHKN-NUM   (IDY) TO  P02-TNUM    (IDX)
+               MOVE    SPA-PTHKN-TEKSTYMDW (IDY)
+                                             TO  P02-THTEKSTYMD (IDX)
+               MOVE    SPA-PTHKN-TEKEDYMDW (IDY)
+                                             TO  P02-THTEKEDYMD (IDX)
+               MOVE    SPA-PTHKN-KAKUNINYMDW (IDY)
+                                             TO  P02-THKAKUNINYMD (IDX)
+               MOVE    SPA-PTHKN-SKKGETYMDW (IDY)
+                                             TO  P02-TSKKGETYMD (IDX)
+               MOVE    IDX                   TO  P02-P027-HKNLIST-COUNT
+      *
+               IF      SPA-PTHKN-KAKUNINYMD(IDY) (1:6)
+                                       NOT =   SPA-SYSYMD (1:6)
+                   EVALUATE    IDX
+                   WHEN    1
+                       MOVE    "F"         TO  P02-BHO1-VALUE
+                       MOVE    "未"        TO  P02-BHO1-LABEL
+                   WHEN    2
+                       MOVE    "F"         TO  P02-BHO2-VALUE
+                       MOVE    "未"        TO  P02-BHO2-LABEL
+                   WHEN    3
+                       MOVE    "F"         TO  P02-BHO3-VALUE
+                       MOVE    "未"        TO  P02-BHO3-LABEL
+                   WHEN    4      
+                       MOVE    "F"         TO  P02-BHO4-VALUE
+                       MOVE    "未"        TO  P02-BHO4-LABEL
+                   WHEN    5
+                       MOVE    "F"         TO  P02-BHO5-VALUE
+                       MOVE    "未"        TO  P02-BHO5-LABEL
+                   END-EVALUATE
+               ELSE
+                   EVALUATE    IDX
+                   WHEN    1
+                       MOVE    "T"         TO  P02-BHO1-VALUE
+                       MOVE    "済"        TO  P02-BHO1-LABEL
+                   WHEN    2
+                       MOVE    "T"         TO  P02-BHO2-VALUE
+                       MOVE    "済"        TO  P02-BHO2-LABEL
+                   WHEN    3
+                       MOVE    "T"         TO  P02-BHO3-VALUE
+                       MOVE    "済"        TO  P02-BHO3-LABEL
+                   WHEN    4
+                       MOVE    "T"         TO  P02-BHO4-VALUE
+                       MOVE    "済"        TO  P02-BHO4-LABEL
+                   WHEN    5
+                       MOVE    "T"         TO  P02-BHO5-VALUE
+                       MOVE    "済"        TO  P02-BHO5-LABEL
+                   END-EVALUATE
+               END-IF
+           END-PERFORM
+      *
+      *    公費情報
+           IF      SPA-GMN27-KOH-PCNT  =   ZERO
+               MOVE    1               TO  SPA-GMN27-KOH-PCNT
+           END-IF
+           MOVE    SPA-GMN27-KOH-PCNT  TO  IDX2
+           PERFORM VARYING     IDX     FROM    1    BY  1
+                   UNTIL     ( IDX         >   5    )
+                   OR        ( SPA-GMN27-KOHRENNUM (IDX2 IDX)
+                                          =   ZERO )
+               MOVE    SPA-GMN27-KOHRENNUM (IDX2 IDX)
+                                             TO  IDY
+               MOVE    SPA-PTKOH-KOHNUM-MEI(IDY)
+                                             TO  P02-TKOHNUM   (IDX)
+               MOVE    SPA-PTKOH-FTNJANUM(IDY)
+                                             TO  P02-TFTNJANUM (IDX)
+               MOVE    SPA-PTKOH-JKYSNUM(IDY)
+                                             TO  P02-TJKYSNUM (IDX)
+               MOVE    SPA-PTKOH-TEKSTYMDW (IDY)
+                                             TO  P02-TKTEKSTYMD (IDX)
+               MOVE    SPA-PTKOH-TEKEDYMDW (IDY)
+                                             TO  P02-TKTEKEDYMD (IDX)
+               MOVE    SPA-PTKOH-KAKUNINYMDW (IDY)
+                                             TO  P02-TKKAKUNINYMD (IDX)
+               MOVE    IDX                   TO  P02-P027-KOHLIST-COUNT
+      *
+               IF      SPA-PTKOH-KAKUNINYMD(IDY) (1:6)
+                                       NOT =   SPA-SYSYMD (1:6)
+                   EVALUATE    IDX
+                   WHEN    1
+                       MOVE    "F"          TO  P02-BKH1-VALUE
+                       MOVE    "未"         TO  P02-BKH1-LABEL
+                   WHEN    2
+                       MOVE    "F"          TO  P02-BKH2-VALUE
+                       MOVE    "未"         TO  P02-BKH2-LABEL
+                   WHEN    3
+                       MOVE    "F"          TO  P02-BKH3-VALUE
+                       MOVE    "未"         TO  P02-BKH3-LABEL
+                   WHEN    4
+                       MOVE    "F"          TO  P02-BKH4-VALUE
+                       MOVE    "未"         TO  P02-BKH4-LABEL
+                   WHEN    5
+                       MOVE    "F"          TO  P02-BKH5-VALUE
+                       MOVE    "未"         TO  P02-BKH5-LABEL
+                   END-EVALUATE
+               ELSE
+                   EVALUATE    IDX
+                   WHEN    1
+                       MOVE    "T"          TO  P02-BKH1-VALUE
+                       MOVE    "済"         TO  P02-BKH1-LABEL
+                   WHEN    2
+                       MOVE    "T"          TO  P02-BKH2-VALUE
+                       MOVE    "済"         TO  P02-BKH2-LABEL
+                   WHEN    3
+                       MOVE    "T"          TO  P02-BKH3-VALUE
+                       MOVE    "済"         TO  P02-BKH3-LABEL
+                   WHEN    4
+                       MOVE    "T"          TO  P02-BKH4-VALUE
+                       MOVE    "済"         TO  P02-BKH4-LABEL
+                   WHEN    5
+                       MOVE    "T"          TO  P02-BKH5-VALUE
+                       MOVE    "済"         TO  P02-BKH5-LABEL
+                   END-EVALUATE
+               END-IF
+           END-PERFORM
+      *
+           .
+       2001-P027-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    紹介画面編集処理
+      *****************************************************************
+       2001-P023-SET-SEC         SECTION.
+           .
+       2001-P023-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    所得情報画面編集処理
+      *****************************************************************
+       2001-P024-SET-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  IDY
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                    UNTIL    ( IDX     >   SPA-TNK-MAX )
+                    OR       ( IDY     >=  10          )
+             IF  SPA-GMN24-TNKDELKBN(IDX)  =   SPACE
+                 ADD     1                 TO  IDY
+                 MOVE    IDY               TO  WRK-RENNUMZ
+                 MOVE    WRK-RENNUMZ(2:)   TO  P02-P024-TNKLNUM  (IDY)
+                 MOVE    SPA-GMN24-TNKDPSTYMDW (IDX)
+                                           TO  P02-P024-TNKLSTYMD(IDY)
+                 MOVE    SPA-GMN24-TNKDPEDYMDW (IDX)
+                                           TO  P02-P024-TNKLEDYMD(IDY)
+      *
+                 IF      IDX           =   SPA-NAI24-TNKSELNUM
+                     MOVE    "T"           TO  P02-P024-TNKLIST-SELECT
+                                                                 (IDY)
+                 ELSE
+                     MOVE    "F"           TO  P02-P024-TNKLIST-SELECT
+                                                                 (IDY)
+                 END-IF
+             END-IF
+           END-PERFORM
+           MOVE    IDY                 TO  P02-P024-TNKLIST-COUNT
+           MOVE    SPA-GMN24-TNKSELNUM TO  P02-P024-TNKSELNUM
+           MOVE    SPA-GMN24-TNKSTYMDW TO  P02-P024-TNKSTYMD
+           MOVE    SPA-GMN24-TNKEDYMDW TO  P02-P024-TNKEDYMD
+      *
+           MOVE    ZERO                TO  IDY
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                    UNTIL    ( IDX     >   SPA-TSY-MAX )
+                    OR       ( IDY     >=  20          )
+             IF  SPA-GMN24-TSYDELKBN(IDX)  =   SPACE
+                 ADD     1                 TO  IDY
+                 MOVE    IDY               TO  WRK-RENNUMZ
+                 MOVE    WRK-RENNUMZ(2:)   TO  P02-P024-TSYLNUM  (IDY)
+                 MOVE    SPA-GMN24-TSYDPSTYMDW (IDX)
+                                           TO  P02-P024-TSYLSTYMD(IDY)
+                 MOVE    SPA-GMN24-TSYDPEDYMDW (IDX)
+                                           TO  P02-P024-TSYLEDYMD(IDY)
+      *
+                 IF      IDX           =   SPA-NAI24-TSYSELNUM
+                     MOVE    "T"           TO  P02-P024-TSYLIST-SELECT
+                                                                 (IDY)
+                 ELSE
+                     MOVE    "F"           TO  P02-P024-TSYLIST-SELECT
+                                                                 (IDY)
+                 END-IF
+             END-IF
+           END-PERFORM
+           MOVE    IDY                 TO  P02-P024-TSYLIST-COUNT
+           MOVE    SPA-GMN24-TSYSELNUM TO  P02-P024-TSRSELNUM
+           MOVE    SPA-GMN24-TSYSTYMDW TO  P02-P024-TSYSTYMD
+           MOVE    SPA-GMN24-TSYEDYMDW TO  P02-P024-TSYEDYMD
+      *
+           .
+       2001-P024-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    各種履歴画面編集処理
+      *****************************************************************
+       2001-P025-SET-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  IDY
+           PERFORM   VARYING     IDX   FROM    1   BY  1
+                     UNTIL      (IDX       >   10)
+                     OR         (IDX       >   SPA-NAI25-KYU-MAX)
+             IF  SPA-GMN25-KYU-DELKBN (IDX)    =   SPACE
+               ADD     1               TO  IDY 
+               MOVE    IDY             TO  WRK-RENNUMZ
+               MOVE    WRK-RENNUMZ(2:)  TO  P02-P025-NUM1    (IDY)
+               MOVE    SPA-GMN25-KYU-CHGYMDW (IDX)
+                                       TO  P02-P025-HENKOYMD(IDY)
+               MOVE    SPA-GMN25-KYU-KANANAME(IDX)
+                                       TO  P02-P025-KANANAME(IDY)
+               MOVE    SPA-GMN25-KYU-NAME(IDX)  TO  P02-P025-NAME(IDY)
+               MOVE    SPA-GMN25-KYU-NICKNAME  (IDX)
+                                       TO  P02-P025-NICKNAME (IDY)
+               MOVE    IDY             TO  P02-P025-KYUSEILIST-COUNT
+               IF      IDY             =   SPA-NAI25-SELNUM
+                   MOVE    "T"         TO  P02-P025-KYUSEILIST-SELECT
+                                                              (IDY)
+               ELSE
+                   MOVE    "F"         TO  P02-P025-KYUSEILIST-SELECT
+                                                              (IDY)
+               END-IF
+             END-IF
+           END-PERFORM
+      *
+           MOVE    SPA-GMN25-TKYU-CHGYMDW  TO  P02-P025-THENYMD
+           MOVE    SPA-GMN25-TKYU-KANANAME TO  P02-P025-TKANANAME
+           MOVE    SPA-GMN25-TKYU-NAME     TO  P02-P025-TNAME
+           MOVE    SPA-GMN25-TKYU-NICKNAME TO  P02-P025-TNICKNAME
+      *
+           MOVE    SPA-NAI25-SRY-MAX   TO  P02-P025-JYUSINLIST1-COUNT
+           PERFORM   VARYING     IDX     FROM   1   BY  1
+                     UNTIL      (IDX         >   30)
+                     OR         (IDX         >   SPA-NAI25-SRY-MAX)
+               MOVE    IDX             TO  WRK-RENNUMZ
+               MOVE    WRK-RENNUMZ(2:)  TO  P02-P025-NUM2    (IDX)
+               MOVE    SPA-GMN25-SRY-SRYKA (IDX)
+                                       TO  P02-P025-SRYKA1    (IDX)
+               MOVE    SPA-GMN25-SRY-SYOSINYMD(IDX)
+                                       TO  P02-P025-SYOSINYMD(IDX)
+               MOVE    SPA-GMN25-SRY-LASTYMD(IDX)
+                                       TO  P02-P025-LASTYMD  (IDX)
+      *
+               IF      IDX             =   SPA-NAI25-SELNUM2
+                   MOVE    "T"         TO  P02-P025-JYUSINLIST1-SELECT
+                                                              (IDX)
+               ELSE
+                   MOVE    "F"         TO  P02-P025-JYUSINLIST1-SELECT
+                                                              (IDX)
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    SPA-GMN25-SELNUM    TO  P02-P025-SELNUM1
+      *
+           MOVE    SPA-NAI25-JYU-MAX   TO  P02-P025-JYUSINLIST2-COUNT
+           PERFORM   VARYING     IDX     FROM   1   BY  1
+                     UNTIL     ( IDX     >   50 )
+                     OR        ( IDX     >   SPA-NAI25-JYU-MAX )
+               MOVE    SPA-GMN25-JYU-SRYYMD (IDX)
+                                       TO  P02-P025-SRYYMD  (IDX)
+               MOVE    SPA-GMN25-JYU-SRYKA  (IDX)
+                                       TO  P02-P025-SRYKA2  (IDX)
+               MOVE    SPA-GMN25-JYU-SRYKBN(IDX)
+                                       TO  P02-P025-SRYNAIYO(IDX)
+           END-PERFORM
+      *
+           MOVE    SPA-GMN25-SELNUM2   TO  P02-P025-SELNUM2
+      *
+           .
+       2001-P025-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理マスタ読込
+      *****************************************************************
+       900-SYSTEM-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1009-REC
+               MOVE    ZERO                TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSTEM-READ--EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者マスター読込（主キー）
+      *****************************************************************
+       900-PTINF-READ-SEC         SECTION.
+      *
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  PTINF-REC
+                   MOVE    ZERO                TO  FLG-PTINF
+               ELSE
+                   MOVE    1                   TO  FLG-PTINF
+                   INITIALIZE                  PTINF-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-PTINF
+               INITIALIZE                  PTINF-REC
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       900-PTINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険マスター読み込み
+      *****************************************************************
+       910-PTHKNINF-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTHKNINF-REC
+               MOVE    ZERO            TO  FLG-PTHKNINF
+           ELSE
+               INITIALIZE                  PTHKNINF-REC
+               MOVE    1               TO  FLG-PTHKNINF
+           END-IF
+      *
+           .
+       910-PTHKNINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費履歴読み込み
+      *****************************************************************
+       920-PTKOHINF-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+               MOVE    ZERO            TO  FLG-PTKOHINF
+           ELSE
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       920-PTKOHINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    受付読み込み
+      *****************************************************************
+       930-UKETUKE-NEXT-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  UKETUKE-REC
+               MOVE    ZERO            TO  FLG-UKETUKE
+           ELSE
+               INITIALIZE                  UKETUKE-REC
+               MOVE    1               TO  FLG-UKETUKE
+           END-IF
+      *
+           .
+       930-UKETUKE-NEXT-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険マスター読み込み
+      *****************************************************************
+       940-HKNCOMB-NEXT-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+               MOVE    ZERO            TO  FLG-HKNCOMBI
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       940-HKNCOMB-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    旧姓履歴マスタ読み込み
+      *****************************************************************
+       950-KYUSEI-NEXT-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  KYUSEIRRK-REC
+               MOVE    ZERO            TO  FLG-KYUSEIRRK
+           ELSE
+               INITIALIZE                  KYUSEIRRK-REC
+               MOVE    1               TO  FLG-KYUSEIRRK
+           END-IF
+      *
+           .
+       950-KYUSEI-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者番号変換（管理）マスタ読み込み
+      *****************************************************************
+       970-PTNUM-READ-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  PTNUM-REC
+           INITIALIZE                      PTNUM-REC
+           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTNUM-PTID
+      *
+           MOVE    PTNUM-REC           TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  PTNUM-REC
+                   MOVE    ZERO                TO  FLG-PTNUM
+               ELSE
+                   MOVE    1                   TO  FLG-PTNUM
+                   INITIALIZE                  PTNUM-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-PTNUM
+               INITIALIZE                  PTNUM-REC
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       970-PTNUM-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    低所得マスタ読み込み
+      *****************************************************************
+       990-TSYRRK-NEXT-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  TSYRRK-REC
+               MOVE    ZERO            TO  FLG-TSYRRK
+           ELSE
+               INITIALIZE                  TSYRRK-REC
+               MOVE    1               TO  FLG-TSYRRK
+           END-IF
+      *
+           .
+       990-TSYRRK-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    年金マスタ読み込み
+      *****************************************************************
+       991-TNKRRK-NEXT-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  TNKRRK-REC
+               MOVE    ZERO            TO  FLG-TNKRRK
+           ELSE
+               INITIALIZE                  TNKRRK-REC
+               MOVE    1               TO  FLG-TNKRRK
+           END-IF
+      *
+           .
+       991-TNKRRK-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者労災保険情報読み込み
+      *****************************************************************
+       993-PTRSIINF-NEXT-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTRSIINF-REC
+               MOVE    ZERO            TO  FLG-PTRSIINF
+           ELSE
+               INITIALIZE                  PTRSIINF-REC
+               MOVE    1               TO  FLG-PTRSIINF
+           END-IF
+      *
+           .
+       993-PTRSIINF-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険番号マスタ次検索処理
+      *****************************************************************
+       921-HKNMST-NEXT-SEC              SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  HKNNUM-REC
+               MOVE    ZERO            TO  FLG-HKNNUM
+           ELSE
+               INITIALIZE              HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+           .
+       921-HKNMST-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ情報読み込み
+      *****************************************************************
+       990-PARA-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+      *********MOVE    MCPDATA-REC     TO  PARA-REC
+               MOVE    ZERO            TO  FLG-PARA
+           ELSE
+      *********INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           .
+       990-PARA-READ-EXT.
+           EXIT.
+      *
+      *

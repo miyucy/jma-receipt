@@ -1,0 +1,125 @@
+tbl_jobkanri	{
+#--> ジョブＩＤ
+	JOBID			number(7,0);
+#--> シェルＩＤ
+	SHELLID			char(8);
+#--> シェルメッセージ
+	SHELLMSG		char(100);
+	TERMID			varchar(32);
+	OPID			varchar(16);
+	PGID	 		char(20);
+	STARTYMD		char(8);
+	ENDYMD			char(8);
+	JOBSTARTTIME	char(8);
+	JOBENDTIME		char(8);
+	STEPSTARTTIME	char(8);
+	STEPENDTIME		char(8);
+	PARAM			char(256);
+	ERRCD			char(4);
+	SRYYMD			char(8);
+	PTID			number(10,0);
+	UPDCNT			number(10,0);
+	YOBI			varchar(500);
+#-----> 主キー更新用項目
+#	UPSHELLID	char(8),virtual;
+};
+
+primary	{
+	JOBID,SHELLID;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_jobkanri_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jobkanri
+			WHERE   SHELLID		=   :SHELLID 
+			ORDER   BY        JOBID	DESC 
+		;
+	};
+};
+
+path	key2	{
+	DBSELECT	{
+		DECLARE tbl_jobkanri_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jobkanri
+			WHERE   SHELLID		=   :SHELLID 
+			AND		JOBID		=  :JOBID
+		;
+	};
+};
+
+path	key3	{
+	DBSELECT	{
+		DECLARE tbl_jobkanri_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jobkanri
+			WHERE   SHELLID		=  :SHELLID 
+			AND		JOBID		=  :JOBID
+			AND		TERMID		=  :TERMID
+		;
+	};
+};
+path	upd1	{ 	
+	DBUPDATE	{
+		UPDATE	tbl_jobkanri 
+				SET
+					SHELLMSG	=	:SHELLMSG,
+					TERMID		=	:TERMID,
+					OPID		=	:OPID,
+					PGID		=   :PGID,
+					STARTYMD	=	:STARTYMD,
+					ENDYMD		=	:ENDYMD,
+					JOBSTARTTIME	=	:JOBSTARTTIME,
+					JOBENDTIME	=	:JOBENDTIME,
+					STEPSTARTTIME	=	:STEPSTARTTIME,
+					STEPENDTIME	=	:STEPENDTIME,
+					PARAM		=	:PARAM,
+					ERRCD		=	:ERRCD,
+					SRYYMD		=	:SRYYMD,
+					PTID		=	:PTID,
+					UPDCNT		=	:UPDCNT,
+					YOBI		=	:YOBI
+			WHERE   SHELLID		=   :SHELLID 
+			AND		JOBID			=  :JOBID
+		;
+	};
+};
+path	del11	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_jobkanri
+			WHERE   SHELLID		=   :SHELLID 
+			AND		JOBID			=  :JOBID
+		;
+	};
+};
+path	del12	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_jobkanri
+			WHERE   SHELLID		=   :SHELLID 
+		;
+	};
+};
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_jobkanri_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jobkanri
+ 		;
+	};
+};
+path	all02	{
+	DBSELECT	{
+		DECLARE tbl_jobkanri_all02_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jobkanri
+			ORDER   BY        STARTYMD DESC,
+			                  ENDYMD,
+			                  SHELLID,
+			                  JOBID
+ 		;
+	};
+};

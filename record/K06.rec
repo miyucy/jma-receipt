@@ -1,0 +1,168 @@
+K06	{
+	fixed5	{
+		PTNUM	{
+			value	varchar(21);
+		};
+		SRYYM	{
+			value	varchar(8);
+		};
+		KANANAME	{
+			value	varchar(31);
+		};
+		MEISYO	{
+			value	varchar(71);
+		};
+		SEX	{
+			value	varchar(3);
+		};
+		DAY01	{
+			value	number(2);
+		};
+		DAY02	{
+			value	number(2);
+		};
+		DAY03	{
+			value	number(2);
+		};
+		DAY04	{
+			value	number(2);
+		};
+		DAY05	{
+			value	number(2);
+		};
+		DAY06	{
+			value	number(2);
+		};
+		DAY07	{
+			value	number(2);
+		};
+		DAY08	{
+			value	number(2);
+		};
+		DAY09	{
+			value	number(2);
+		};
+		DAY10	{
+			value	number(2);
+		};
+		DAY11	{
+			value	number(2);
+		};
+		DAY12	{
+			value	number(2);
+		};
+		DAY13	{
+			value	number(2);
+		};
+		DAY14	{
+			value	number(2);
+		};
+		DAY15	{
+			value	number(2);
+		};
+		DAY16	{
+			value	number(2);
+		};
+		DAY17	{
+			value	number(2);
+		};
+		DAY18	{
+			value	number(2);
+		};
+		DAY19	{
+			value	number(2);
+		};
+		DAY20	{
+			value	number(2);
+		};
+		DAY21	{
+			value	number(2);
+		};
+		DAY22	{
+			value	number(2);
+		};
+		DAY23	{
+			value	number(2);
+		};
+		DAY24	{
+			value	number(2);
+		};
+		DAY25	{
+			value	number(2);
+		};
+		DAY26	{
+			value	number(2);
+		};
+		DAY27	{
+			value	number(2);
+		};
+		DAY28	{
+			value	number(2);
+		};
+		DAY29	{
+			value	number(2);
+		};
+		DAY30	{
+			value	number(2);
+		};
+		DAY31	{
+			value	number(2);
+		};
+		SRYCD	{
+			value	varchar(10);
+		};
+		NYUGAIKBN	{
+			value	number(1);
+		};
+		FSANTEIYMD	{
+			value	varchar(11);
+		};
+		NAME	{
+			value	varchar(31);
+		};
+		BIRTHDAY	{
+			value	varchar(10);
+		};
+		SELNUM	{
+			value	number(3);
+		};
+		MSANTEID	{
+			value	number(2);
+		};
+		MSANTEICNT	{
+			value	number(3);
+		};
+		NENREI	{
+			value	varchar(7);
+		};
+		SRYKA	{
+			value	number(2);
+		};
+		scrolledwindow1	{
+			SANTEILST	{
+				count	int;
+				item	{
+					value1	varchar(4);
+					value2	varchar(10);
+					value3	varchar(3);
+					value4	varchar(11);
+					value5	varchar(20);
+					value6	varchar(60);
+					value7	varchar(10);
+					value8	varchar(3);
+					value9	varchar(4);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		HKNCOMBI	{
+			value	number(4);
+		};
+		SRYKAMEI	{
+			value	varchar(8);
+		};
+		HKNCOMBIMEI	{
+			value	varchar(21);
+		};
+	};
+};

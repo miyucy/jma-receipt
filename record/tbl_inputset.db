@@ -1,0 +1,87 @@
+tbl_inputset {
+	HOSPID				char(24);
+	SETCD   			char(6);
+	SETSEQ  			number(3);
+	INPUTCD				char(9);
+	SURYO1  			number(10,3);
+	SURYO2				number(10,3);
+	KAISU				number(3);
+	COMENT				varchar(80);
+	ATAI1				char(8);
+	ATAI2				char(8);
+	ATAI3				char(8);
+	ATAI4				char(8);
+	TERMID  			varchar(16);
+	OPID    			varchar(16);
+	CREYMD  			char(8);
+	UPYMD   			char(8);
+	UPHMS				char(6);
+};
+primary	{
+	HOSPID,SETCD,SETSEQ;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_inputset_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_inputset
+			WHERE   HOSPID    =   :HOSPID
+			AND   SETCD       =   :SETCD
+			AND   SETSEQ      =   :SETSEQ
+		;
+	};
+};
+
+path	key2	{
+	DBSELECT	{
+		DECLARE tbl_inputset_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_inputset
+			WHERE   HOSPID    =   :HOSPID
+			AND   SETCD       =   :SETCD
+		;
+	};
+};
+path	del11	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_inputset
+			WHERE   HOSPID    =   :HOSPID
+			AND   SETCD       =   :SETCD
+		;
+	};
+};
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_inputset_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_inputset
+ 		;
+	};
+};
+
+path	key3	{
+	DBSELECT	{
+		DECLARE tbl_inputset_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_inputset
+			WHERE   HOSPID    =   :HOSPID
+			ORDER   BY        SETCD,
+			                  SETSEQ
+		;
+	};
+};
+path	key4	{
+	DBSELECT	{
+		DECLARE tbl_inputset_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_inputset
+			WHERE   HOSPID    =   :HOSPID
+                        AND     SETCD     >=  :SETCD
+                        AND     SETCD     <=  :UPHMS
+			ORDER   BY        SETCD,
+			                  SETSEQ
+		;
+	};
+};

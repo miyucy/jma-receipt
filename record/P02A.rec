@@ -1,0 +1,20 @@
+P02A	{
+	fixed1	{
+		scrolledwindow1	{
+			DUALLIST	{
+				count	int;
+				item	{
+					value1	varchar(4);
+					value2	varchar(21);
+					value3	varchar(31);
+					value4	varchar(51);
+					value5	varchar(16);
+				}	[20];
+				select	bool[20];
+			};
+		};
+		MIDASI	{
+			value	varchar(21);
+		};
+	};
+};

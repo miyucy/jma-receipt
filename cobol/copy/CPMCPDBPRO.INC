@@ -1,0 +1,2416 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      *****************************************************************
+      *
+      *    ＤＢサブ   処理領域     CPMCPDBPRO.INC
+      *
+      *****************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-太田     01/04/11  PTINF-KEY4 追加
+      *  01.00.02    MCC-多々納   01/05/21  INPUTCD-KEY3 追加
+      *  01.00.03    MCC-多々納   01/06/04  TENSU-KEY41
+      *                                     TENSU-KEY42 
+      *                                     TENSU-KEY51 
+      *                                     TENSU-KEY52 
+      *                                     TENSU-KEY53  追加
+      *  01.00.04    MCC-藤原     01/05/22  PTHKNINF-KEY3 追加
+      *  01.00.05    MCC-藤原     01/06/15  PostgreSQL 対応  
+      *  01.00.06    MCC-多々納   01/08/07  TENSU-KEY DELETE 追加
+      *  01.00.07    MCC-藤原     01/08/07  PTKOHINF-KEY3      
+      *  01.00.08    MCC-藤原     01/08/08  SEIKYU-KEY UPHKNJANUM 追加      
+      *                                     RECEPRT-KEY  追加      
+      *  01.00.09    MCC-多々納   01/08/20  PTINF-KEY5   追加
+      *  01.00.10    MCC-藤原     01/08/21  SEIKYU-KEY UPHKNJANUM 削除      
+      *  01.00.11    MCC-藤原     01/09/03  HKNJAINF-KEY 追加      
+      *  01.00.12    MCC-藤原     01/09/04  HKNNUM-KEY3  追加      
+      *  01.00.13    MCC-藤原     01/09/05  HKNNUM-KEY4  追加 
+      *                                     HKNNUM-KEY5  追加
+      *                                     BD001-KEY    追加
+      *                                     BD002-KEY    追加      
+      *  01.00.14    MCC-藤原     01/09/11  SYSKANRI-KEYの修正
+      *  01.00.15    ひさなが     01/09/12  PTBYOMEI-KEY4
+      *                                     CHK-KEY5
+      *                                     SRYACT-KEY6 追加
+      *  01.00.16    MCC-小豆沢   01/09/17  JYURRK-UPD1  追加
+      *  01.00.17    MCC-藤原     01/10/01  RECEPRT-KEY2 追加
+      *  01.00.18    ひさなが     01/09/15  全てのテーブルに ALL 条件追加
+      *  01.00.19    MCC-多々納   01/11/12  患者ＩＤによる削除を対象の
+      *                                     テーブルすべてに追加
+      *  01.00.20    MCC-藤原     01/11/15  BYOMEI-KEYのかな検索のとき
+      *                                     半角のときのチェック修正 
+      *  01.00.21    MCC-多々納   01/11/15  請求管理の患者ＩＤによる削除
+      *                                     を追加
+      *  01.00.22    MCC-多々納   01/11/29  受診履歴のKEY8 を追加
+      *  01.00.23    MCC-藤原     01/12/05  TENSU-KEY10K,KEY10S,KEY11K,
+      *                                     KEY11Sを追加
+      *  01.00.24    MCC-藤原     01/12/06  自院病名マスタの追加
+      *  01.00.25    MCC-藤原     01/12/26  BYOMEI-KEY4,KEY5の追加
+      *  01.00.26    MCC-多々納   01/12/27  受診履歴のKEY9 を追加
+      *  01.00.27    MCC-多々納   02/01/10  JYURRK-KEY10,JYURRK-KEY11
+      *                                     追加
+      *  01.00.28    MCC-多々納   02/01/30  WKSRYACT-KEY4,KEY5   追加
+      *  01.00.29    MCC-藤原     02/01/30  RECEPRT-KEY3,KEY4の追加
+      *  01.00.30    MCC-多々納   02/02/05  JYURRK-KEY12追加
+      *  01.00.31    MCC-藤原     02/02/06  レセプトコメントマスタの追加
+      *                                     雛形マスタの追加
+      *  01.00.32    MCC-多々納   02/02/06  RECECOM-KEY2 追加
+      *                                     EXAMPLE-KEY2 追加
+      *  01.00.33    MCC-多々納   02/02/07  JYURRK-KEY13 追加
+      *  01.00.34    MCC-藤原     02/02/08  KYUSEIRRK-KEY3 追加
+      *  01.00.35    MCC-藤原     02/02/08  KYUSEIRRK-UPD1 へ変更
+      *  01.00.36    MCC-藤原     02/02/12  TENSU-KEY10K〜KEY12K1の追加、
+      *                                     変更
+      *  01.00.37    MCC-多々納   02/02/15  RECECOM-DEL1 追加
+      *  01.00.38    MCC-藤原     02/02/15  PTKOHINF-KEY4の追加
+      *  01.00.39    MCC-多々納   02/02/22  DBKANRI-KEYの追加
+      *  01.00.40    MCC-藤原     02/02/25  RECEPRT-KEY5,KEY6の追加
+      *  01.00.41    MCC-藤原     02/02/26  RECEKANRI-KEYの追加
+      *  01.00.42    MCC-小豆沢   02/03/04  SRYACT-KEY7の追加
+      *  01.00.43    MCC-藤原     02/03/05  SEIKYU-KEY5の追加
+      *  01.00.44    MCC-多々納   02/03/08  SANTEI-KEY4の追加
+      *  01.00.45    MCC-藤原     02/03/13  PTHKNINF-KEY4の追加
+      *  01.00.46    MCC-伊藤     02/03/14  CHK-UPD1の追加
+      *  01.00.47    MCC-藤原     02/03/15  SEIKYU-KEY6,KEY7の追加
+      *  01.00.48    MCC-多々納   02/03/17  JYURRK-KEY14の追加
+      *  01.00.49    ひさなが     02/03/19  PTBYOMEI-KEY5の追加
+      *  01.00.50    MCC-藤原     02/03/22  HKNJAINF-KEY2の追加
+      *  01.00.51    MCC-藤原     02/04/02  SYSKANRI-KEY6の追加
+      *  01.00.52    MCC-藤原     02/04/04  USERBYOMEI-KEY6の追加
+      *  01.00.53    MCC-多々納   02/04/04  ADRS-KEY3,KEY4,KEY5の追加
+      *  01.00.54    MCC-小豆沢   02/04/08  PTRSIINF-KEY,KEY2,ALL,DEL1の追加
+      *  01.00.55    MCC-藤原     02/04/08  USERBYOMEI-KEY7,KEY8の追加
+      *  01.00.56    MCC-藤原     02/04/10  SRYACCT-KEY8,KEY9の追加
+      *  01.00.57    MCC-多々納   02/04/10  JYURRK-KEY15,KEY16の追加
+      *  01.00.58    MCC-多々納   02/04/18  INPUTSET-KEY3の追加
+      *  01.00.59    MCC-多々納   02/04/23  INPUTSET-KEY4の追加
+      *  01.00.60    MCC-多々納   02/04/23  CHK-KEY6の追加
+      *  01.00.61    MCC-小豆沢   02/04/25  SRYACT-KEY8の追加
+      *  01.00.62    MCC-藤原     02/04/30  RECEPRT-KEY7,KEY8の追加
+      *                                     RECEKANRI-KEY3の追加
+      *  01.00.63    MCC-太田     02/05/15  USERBYOMEI-KEY9の追加
+      *  01.00.64    MCC-藤原     02/05/21  SEIKYU-DEL2,DEL3,DEL4の追加
+      *  01.00.65    ひさなが     02/05/22  JOBKANRI-ALL02の追加
+      *  01.00.66    MCC-多々納   02/05/23  SANTEI-KEY5の追加
+      *  01.00.67    MCC-多々納   02/05/27  SSKIJYO,INTERACTの追加
+      *  01.00.68    MCC-多々納   02/05/29  SRYACCT-KEY10の追加
+      *  01.00.69    MCC-太田     02/05/31  JINMEIの追加
+      *  01.00.70    MCC-多々納   02/06/06  CHK-KEYの更新・削除の修正
+      *  01.00.71    MCC-多々納   02/06/17  MONTHLYNUMの追加
+      *  01.00.72    MCC-森脇     02/06/19  JINMEI-KEY3の追加
+      *  01.00.73    MCC-藤原     02/07/03  RECEPRT-KEY9の追加
+      *  01.00.74    MCC-藤原     02/07/11  PTKOHINF-KEY5の追加
+      *  01.00.75    NACL-森脇    02/07/19  YAKUJYO-KEY,ALLの追加
+      *  01.00.76    NACL-多々納  02/07/31  PARA-DEL2,PARA-KEY3 の追加
+      *  01.00.77    NACL-多々納  02/08/06  PARA-KEY のUPDATE修正
+      *  01.00.78    NACL-多々納  02/08/08  JYURRK-KEY17,KEY-18追加
+      *  01.00.79    NACL-太田    02/08/09  SYSKANRI-KEY7追加
+      *  01.00.80    NACL-太田    02/08/19  SYSKANRI-KEY8追加
+      *  01.00.81    NACL-藤原    02/08/19  RECECOM-KEY3追加
+      *  01.00.82    NACL-多々納  02/08/20  TENSU-KEY42K,KEY-42JK8追加
+      *  01.00.83    NACL-太田    02/08/22  SYSKANRI-KEY9,KEY10追加
+      *  01.00.84    NACL-藤原    02/08/27  BD002-KEY2追加
+      *****************************************************************
+      *
+       PROCEDURE                   DIVISION
+           USING   MCPAREA
+                   ORCMCPAREA
+                   MCPDATA-REC.
+      *****************************************************************
+       000-ENTRY               SECTION.
+      *
+           EVALUATE    MCP-FUNC
+             WHEN     'DBOPEN'
+             WHEN     'PUTWINDOW'
+             WHEN     'DBDISCONNECT'
+             WHEN     'DBCLOSE'
+             WHEN     'DBSTART'
+             WHEN     'DBCOMMIT'
+               CONTINUE
+             WHEN      OTHER
+               PERFORM 200-SQL
+               MOVE    WRK-PATH        TO  MCP-PATH
+           END-EVALUATE.
+      *
+      *
+           EVALUATE    MCP-FUNC
+             WHEN     'DBCLOSE'
+                 CONTINUE
+             WHEN      OTHER
+                 CALL    "MCPSUB"    USING   MCPAREA
+                                             MCPDATA-REC    
+           END-EVALUATE.
+      *
+           EXIT    PROGRAM.
+      *****************************************************************
+       200-SQL                 SECTION.
+      *---- (01.00.05) LINE ADD START --------------------------------
+           EVALUATE    MCP-FUNC        ALSO    ORC-DBPATH
+               WHEN    "DBUPDATE"      ALSO    "SYSKANRI-KEY"
+               WHEN    "DBUPDATE"      ALSO    "SYSKANRI-KEY2"
+               WHEN    "DBUPDATE"      ALSO    "SYSKANRI-KEY3"
+               WHEN    "DBUPDATE"      ALSO    "SYSKANRI-KEY4"
+               WHEN    "DBUPDATE"      ALSO    "SYSKANRI-KEY5"
+               WHEN    "DBUPDATE"      ALSO    "SYSKANRI-KEY6"
+                   MOVE    PATH-TBL-SYSKANRI-KEY
+                                       TO  WRK-PATH
+      *********    PERFORM 2001-SEL-SYSKANRI-SEC
+               WHEN    "DBUPDATE"      ALSO    "SYSKANRI-UPD1"
+                   MOVE    PATH-TBL-SYSKANRI-UPD1
+                                       TO  WRK-PATH
+      *********    PERFORM 2002-SEL-SYSKANRI-SEC
+               WHEN    "DBDELETE"      ALSO    "SYSKANRI-KEY"
+               WHEN    "DBDELETE"      ALSO    "SYSKANRI-KEY3"
+               WHEN    "DBDELETE"      ALSO    "SYSKANRI-KEY4"
+               WHEN    "DBDELETE"      ALSO    "SYSKANRI-KEY5"
+                   MOVE    PATH-TBL-SYSKANRI-KEY 
+                                       TO  WRK-PATH
+      *********    PERFORM 2001-SEL-SYSKANRI-SEC
+               WHEN    "DBDELETE"      ALSO    "SYSKANRI-KEY2"
+                   MOVE    PATH-TBL-SYSKANRI-DEL11 
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-SYSKANRI-SEC
+               WHEN    "DBUPDATE"      ALSO   "BYOMEI-KEY"
+               WHEN    "DBUPDATE"      ALSO   "BYOMEI-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "BYOMEI-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "BYOMEI-KEY4"
+               WHEN    "DBUPDATE"      ALSO   "BYOMEI-KEY5"
+               WHEN    "DBDELETE"      ALSO   "BYOMEI-KEY"
+               WHEN    "DBDELETE"      ALSO   "BYOMEI-KEY2"
+               WHEN    "DBDELETE"      ALSO   "BYOMEI-KEY3"
+               WHEN    "DBDELETE"      ALSO   "BYOMEI-KEY4"
+               WHEN    "DBDELETE"      ALSO   "BYOMEI-KEY5"
+                   MOVE    PATH-TBL-BYOMEI-KEY 
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "CHK-KEY"
+               WHEN    "DBUPDATE"      ALSO   "CHK-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "CHK-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "CHK-KEY4"
+               WHEN    "DBDELETE"      ALSO   "CHK-KEY"
+               WHEN    "DBDELETE"      ALSO   "CHK-KEY2"
+               WHEN    "DBDELETE"      ALSO   "CHK-KEY3"
+                   MOVE    PATH-TBL-CHK-KEY
+                                       TO  WRK-PATH
+      *************PERFORM 2001-SEL-CHK-SEC
+               WHEN    "DBUPDATE"      ALSO   "CHK-UPD1"
+                   MOVE    PATH-TBL-CHK-UPD1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "CHK-KEY4"
+                   MOVE    PATH-TBL-CHK-DEL11
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "INPUTCD-KEY"
+               WHEN    "DBUPDATE"      ALSO   "INPUTCD-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "INPUTCD-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "INPUTCD-KEY4"
+                   MOVE    PATH-TBL-INPUTCD-KEY
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-INPUTCD-SEC
+               WHEN    "DBDELETE"      ALSO   "INPUTCD-KEY"
+                   MOVE    PATH-TBL-INPUTCD-DEL11
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-INPUTCD-SEC
+               WHEN    "DBDELETE"      ALSO   "INPUTCD-KEY2"
+                   MOVE    PATH-TBL-INPUTCD-DEL12
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-INPUTCD-SEC
+               WHEN    "DBDELETE"      ALSO   "INPUTCD-KEY3"
+                   MOVE    PATH-TBL-INPUTCD-DEL21
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-INPUTCD-SEC
+               WHEN    "DBDELETE"      ALSO   "INPUTCD-KEY4"
+                   MOVE    PATH-TBL-INPUTCD-DEL22
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-INPUTCD-SEC
+               WHEN    "DBUPDATE"      ALSO   "HKNCOMBI-KEY"
+               WHEN    "DBUPDATE"      ALSO   "HKNCOMBI-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "HKNCOMBI-KEY3"
+               WHEN    "DBDELETE"      ALSO   "HKNCOMBI-KEY"
+               WHEN    "DBDELETE"      ALSO   "HKNCOMBI-KEY2"
+               WHEN    "DBDELETE"      ALSO   "HKNCOMBI-KEY3"
+                   MOVE    PATH-TBL-HKNCOMBI-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "HKNCOMBI-DEL1"
+                   MOVE    PATH-TBL-HKNCOMBI-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "HKNNUM-KEY"
+               WHEN    "DBUPDATE"      ALSO   "HKNNUM-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "HKNNUM-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "HKNNUM-KEY4"
+               WHEN    "DBUPDATE"      ALSO   "HKNNUM-KEY5"
+               WHEN    "DBDELETE"      ALSO   "HKNNUM-KEY"
+               WHEN    "DBDELETE"      ALSO   "HKNNUM-KEY2"
+               WHEN    "DBDELETE"      ALSO   "HKNNUM-KEY3"
+               WHEN    "DBDELETE"      ALSO   "HKNNUM-KEY4"
+               WHEN    "DBDELETE"      ALSO   "HKNNUM-KEY5"
+                   MOVE    PATH-TBL-HKNNUM-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "INPUTSET-KEY"
+               WHEN    "DBUPDATE"      ALSO   "INPUTSET-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "INPUTSET-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "INPUTSET-KEY4"
+               WHEN    "DBDELETE"      ALSO   "INPUTSET-KEY"
+               WHEN    "DBDELETE"      ALSO   "INPUTSET-KEY3"
+               WHEN    "DBDELETE"      ALSO   "INPUTSET-KEY4"
+                   MOVE    PATH-TBL-INPUTSET-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "INPUTSET-KEY2"
+                   MOVE    PATH-TBL-INPUTSET-DEL11
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "ADRS-KEY"
+               WHEN    "DBUPDATE"      ALSO   "ADRS-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "ADRS-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "ADRS-KEY4"
+               WHEN    "DBUPDATE"      ALSO   "ADRS-KEY5"
+               WHEN    "DBDELETE"      ALSO   "ADRS-KEY"
+               WHEN    "DBDELETE"      ALSO   "ADRS-KEY2"
+               WHEN    "DBDELETE"      ALSO   "ADRS-KEY3"
+               WHEN    "DBDELETE"      ALSO   "ADRS-KEY4"
+               WHEN    "DBDELETE"      ALSO   "ADRS-KEY5"
+                   MOVE    PATH-TBL-ADRS-KEY
+                                       TO  WRK-PATH
+      *
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY4"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY5"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY6"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY8"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY9"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY10"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY11"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY14"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY15"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY16"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY17"
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-KEY18"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY2"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY3"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY4"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY5"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY6"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY7"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY8"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY9"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY10"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY11"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY14"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY15"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY16"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY17"
+               WHEN    "DBDELETE"      ALSO   "JYURRK-KEY18"
+                   MOVE    PATH-TBL-JYURRK-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "JYURRK-UPD1"
+                   MOVE    PATH-TBL-JYURRK-UPD1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "JYURRK-DEL1"
+                   MOVE    PATH-TBL-JYURRK-DEL1
+                                       TO  WRK-PATH
+      *
+               WHEN    "DBUPDATE"      ALSO   "SRYKARRK-KEY"
+               WHEN    "DBUPDATE"      ALSO   "SRYKARRK-KEY2"
+               WHEN    "DBDELETE"      ALSO   "SRYKARRK-KEY"
+               WHEN    "DBDELETE"      ALSO   "SRYKARRK-KEY2"
+                   MOVE    PATH-TBL-SRYKARRK-KEY 
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SRYKARRK-DEL1"
+                   MOVE    PATH-TBL-SRYKARRK-DEL1
+                                       TO  WRK-PATH
+      *
+               WHEN    "DBUPDATE"      ALSO   "PTBYOMEI-KEY"
+               WHEN    "DBUPDATE"      ALSO   "PTBYOMEI-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "PTBYOMEI-KEY3"
+               WHEN    "DBDELETE"      ALSO   "PTBYOMEI-KEY"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY 
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "PTBYOMEI-KEY2"
+                   MOVE    PATH-TBL-PTBYOMEI-DEL11 
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "PTBYOMEI-KEY3"
+                   MOVE    PATH-TBL-PTBYOMEI-DEL21
+                                       TO  WRK-PATH
+      *
+               WHEN    "DBUPDATE"      ALSO   "PTCOM-KEY"
+               WHEN    "DBDELETE"      ALSO   "PTCOM-KEY"
+               WHEN    "DBUPDATE"      ALSO   "PTCOM-KEY2"
+                   MOVE    PATH-TBL-PTCOM-KEY 
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "PTCOM-KEY2"
+                   MOVE    PATH-TBL-PTCOM-DEL11 
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "PTCOM-DEL2"
+                   MOVE    PATH-TBL-PTCOM-DEL12 
+                                       TO  WRK-PATH
+      *
+               WHEN    "DBUPDATE"      ALSO    "PTINF-KEY"
+               WHEN    "DBUPDATE"      ALSO    "PTINF-KEY2"
+               WHEN    "DBUPDATE"      ALSO    "PTINF-KEY3"
+               WHEN    "DBUPDATE"      ALSO    "PTINF-KEY4"
+               WHEN    "DBUPDATE"      ALSO    "PTINF-KEY5"
+               WHEN    "DBDELETE"      ALSO    "PTINF-KEY"
+               WHEN    "DBDELETE"      ALSO    "PTINF-KEY2"
+               WHEN    "DBDELETE"      ALSO    "PTINF-KEY3"
+               WHEN    "DBDELETE"      ALSO    "PTINF-KEY4"
+               WHEN    "DBDELETE"      ALSO    "PTINF-KEY5"
+                   MOVE    PATH-TBL-PTINF-KEY 
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO    "YYK-KEY"
+               WHEN    "DBUPDATE"      ALSO    "YYK-KEY2"
+               WHEN    "DBUPDATE"      ALSO    "YYK-KEY3"
+               WHEN    "DBUPDATE"      ALSO    "YYK-KEY4"
+               WHEN    "DBUPDATE"      ALSO    "YYK-KEY5"
+               WHEN    "DBDELETE"      ALSO    "YYK-KEY"
+               WHEN    "DBDELETE"      ALSO    "YYK-KEY2"
+               WHEN    "DBDELETE"      ALSO    "YYK-KEY3"
+               WHEN    "DBDELETE"      ALSO    "YYK-KEY4"
+               WHEN    "DBDELETE"      ALSO    "YYK-KEY5"
+               WHEN    "DBDELETE"      ALSO    "YYK-KEY6"
+                   MOVE    PATH-TBL-YYK-KEY 
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO    "PTNUM-KEY"
+               WHEN    "DBUPDATE"      ALSO    "PTNUM-KEY2"
+               WHEN    "DBDELETE"      ALSO    "PTNUM-KEY"
+               WHEN    "DBDELETE"      ALSO    "PTNUM-KEY2"
+                   MOVE    PATH-TBL-PTNUM-KEY 
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO    "PTNUM-DEL1"
+                   MOVE    PATH-TBL-PTNUM-DEL1
+                                       TO  WRK-PATH
+      ************ PERFORM 2001-SEL-PTNUM-SEC
+               WHEN    "DBUPDATE"      ALSO   "PTHKNINF-KEY"
+               WHEN    "DBUPDATE"      ALSO   "PTHKNINF-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "PTHKNINF-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "PTHKNINF-KEY4"
+               WHEN    "DBDELETE"      ALSO   "PTHKNINF-KEY"
+               WHEN    "DBDELETE"      ALSO   "PTHKNINF-KEY2"
+               WHEN    "DBDELETE"      ALSO   "PTHKNINF-KEY3"
+               WHEN    "DBDELETE"      ALSO   "PTHKNINF-KEY4"
+                   MOVE    PATH-TBL-PTHKNINF-KEY 
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "PTHKNINF-DEL1"
+                   MOVE    PATH-TBL-PTHKNINF-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "PTKOHINF-KEY"
+               WHEN    "DBUPDATE"      ALSO   "PTKOHINF-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "PTKOHINF-KEY3"
+               WHEN    "DBDELETE"      ALSO   "PTKOHINF-KEY"
+               WHEN    "DBDELETE"      ALSO   "PTKOHINF-KEY2"
+               WHEN    "DBDELETE"      ALSO   "PTKOHINF-KEY3"
+                   MOVE    PATH-TBL-PTKOHINF-KEY 
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "PTKOHINF-DEL1"
+                   MOVE    PATH-TBL-PTKOHINF-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "SRYACCT-KEY"
+               WHEN    "DBUPDATE"      ALSO   "SRYACCT-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "SRYACCT-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "SRYACCT-KEY4"
+               WHEN    "DBUPDATE"      ALSO   "SRYACCT-KEY5"
+               WHEN    "DBUPDATE"      ALSO   "SRYACCT-KEY6"
+               WHEN    "DBUPDATE"      ALSO   "SRYACCT-KEY7"
+               WHEN    "DBUPDATE"      ALSO   "SRYACCT-KEY8"
+               WHEN    "DBUPDATE"      ALSO   "SRYACCT-KEY9"
+               WHEN    "DBUPDATE"      ALSO   "SRYACCT-KEY10"
+               WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY"
+               WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY2"
+               WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY3"
+               WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY4"
+               WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY5"
+               WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY6"
+               WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY7"
+               WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY8"
+               WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY9"
+               WHEN    "DBDELETE"      ALSO   "SRYACCT-KEY10"
+                   MOVE    PATH-TBL-SRYACCT-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SRYACCT-DEL1"
+                   MOVE    PATH-TBL-SRYACCT-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "SRYACT-KEY"
+               WHEN    "DBUPDATE"      ALSO   "SRYACT-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "SRYACT-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "SRYACT-KEY4"
+               WHEN    "DBUPDATE"      ALSO   "SRYACT-KEY5"
+               WHEN    "DBDELETE"      ALSO   "SRYACT-KEY"
+               WHEN    "DBDELETE"      ALSO   "SRYACT-KEY3"
+               WHEN    "DBDELETE"      ALSO   "SRYACT-KEY4"
+               WHEN    "DBDELETE"      ALSO   "SRYACT-KEY5"
+                   MOVE    PATH-TBL-SRYACT-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SRYACT-KEY2"
+                   MOVE    PATH-TBL-SRYACT-DEL11
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SRYACT-DEL1"
+                   MOVE    PATH-TBL-SRYACT-DEL12
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY"
+               WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY4"
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY"
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY2"
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY3"
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY4"
+                   MOVE    PATH-TBL-SYUNOU-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL1"
+                   MOVE    PATH-TBL-SYUNOU-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY"
+               WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY2"
+               WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY"
+               WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY2"
+                   MOVE    PATH-TBL-SYUMEI-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUMEI-DEL1"
+                   MOVE    PATH-TBL-SYUMEI-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "TSYRRK-KEY"
+               WHEN    "DBUPDATE"      ALSO   "TSYRRK-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "TSYRRK-KEY3"
+               WHEN    "DBDELETE"      ALSO   "TSYRRK-KEY"
+                   MOVE    PATH-TBL-TSYRRK-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "TSYRRK-KEY2"
+               WHEN    "DBDELETE"      ALSO   "TSYRRK-KEY3"
+                   MOVE    PATH-TBL-TSYRRK-DEL11
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "TSYRRK-UPD1"
+                   MOVE    PATH-TBL-TSYRRK-UPD1
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "TENSU-UPD1"
+                   MOVE    PATH-TBL-TENSU-UPD1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "TENSU-KEY"
+                   MOVE    PATH-TBL-TENSU-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "UKETUKE-KEY"
+               WHEN    "DBUPDATE"      ALSO   "UKETUKE-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "UKETUKE-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "UKETUKE-KEY4"
+               WHEN    "DBDELETE"      ALSO   "UKETUKE-KEY"
+               WHEN    "DBDELETE"      ALSO   "UKETUKE-KEY2"
+               WHEN    "DBDELETE"      ALSO   "UKETUKE-KEY3"
+                   MOVE    PATH-TBL-UKETUKE-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "UKETUKE-KEY4"
+                   MOVE    PATH-TBL-UKETUKE-DEL11
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "UKETUKE-DEL1"
+                   MOVE    PATH-TBL-UKETUKE-DEL12
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "SYKRRK-KEY"
+               WHEN    "DBUPDATE"      ALSO   "SYKRRK-KEY2"
+               WHEN    "DBDELETE"      ALSO   "SYKRRK-KEY"
+               WHEN    "DBDELETE"      ALSO   "SYKRRK-KEY2"
+                   MOVE    PATH-TBL-SYKRRK-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYKRRK-DEL1"
+                   MOVE    PATH-TBL-SYKRRK-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "TNKRRK-KEY"
+               WHEN    "DBUPDATE"      ALSO   "TNKRRK-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "TNKRRK-KEY3"
+               WHEN    "DBDELETE"      ALSO   "TNKRRK-KEY"
+                   MOVE    PATH-TBL-TNKRRK-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "TNKRRK-KEY2"
+               WHEN    "DBDELETE"      ALSO   "TNKRRK-KEY3"
+                   MOVE    PATH-TBL-TNKRRK-DEL11
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "TNKRRK-UPD1"
+                   MOVE    PATH-TBL-TNKRRK-UPD1
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "WKSRYACT-KEY"
+               WHEN    "DBUPDATE"      ALSO   "WKSRYACT-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "WKSRYACT-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "WKSRYACT-KEY4"
+               WHEN    "DBUPDATE"      ALSO   "WKSRYACT-KEY5"
+               WHEN    "DBDELETE"      ALSO   "WKSRYACT-KEY"
+               WHEN    "DBDELETE"      ALSO   "WKSRYACT-KEY3"
+               WHEN    "DBDELETE"      ALSO   "WKSRYACT-KEY4"
+               WHEN    "DBDELETE"      ALSO   "WKSRYACT-KEY5"
+                   MOVE    PATH-TBL-WKSRYACT-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "WKSRYACT-KEY2"
+                   MOVE    PATH-TBL-WKSRYACT-DEL11
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "WKSRYACT-DEL1"
+                   MOVE    PATH-TBL-WKSRYACT-DEL12
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "PARA-KEY"
+               WHEN    "DBUPDATE"      ALSO   "PARA-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "PARA-KEY3"
+               WHEN    "DBDELETE"      ALSO   "PARA-KEY"
+                   MOVE    PATH-TBL-PARA-KEY
+                                       TO  WRK-PATH
+      *************PERFORM 2001-SEL-PARA-SEC
+               WHEN    "DBDELETE"      ALSO   "PARA-KEY2"
+               WHEN    "DBDELETE"      ALSO   "PARA-DEL11"
+                   MOVE    PATH-TBL-PARA-DEL11
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PARA-SEC
+               WHEN    "DBDELETE"      ALSO   "PARA-KEY3"
+               WHEN    "DBDELETE"      ALSO   "PARA-DEL2"
+                   MOVE    PATH-TBL-PARA-DEL2
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "SANTEI-KEY"
+               WHEN    "DBUPDATE"      ALSO   "SANTEI-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "SANTEI-KEY4"
+               WHEN    "DBUPDATE"      ALSO   "SANTEI-KEY5"
+               WHEN    "DBDELETE"      ALSO   "SANTEI-KEY"
+               WHEN    "DBDELETE"      ALSO   "SANTEI-KEY2"
+               WHEN    "DBDELETE"      ALSO   "SANTEI-KEY4"
+               WHEN    "DBDELETE"      ALSO   "SANTEI-KEY5"
+                   MOVE    PATH-TBL-SANTEI-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SANTEI-DEL1"
+                   MOVE    PATH-TBL-SANTEI-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "TENSUPLUS-UPD1"
+                   MOVE    PATH-TBL-TENSUPLUS-UPD1
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "SRYCDCHG-KEY"
+               WHEN    "DBUPDATE"      ALSO   "SRYCDCHG-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "SRYCDCHG-KEY3"
+               WHEN    "DBDELETE"      ALSO   "SRYCDCHG-KEY"
+               WHEN    "DBDELETE"      ALSO   "SRYCDCHG-KEY2"
+               WHEN    "DBDELETE"      ALSO   "SRYCDCHG-KEY3"
+                   MOVE    PATH-TBL-SRYCDCHG-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "SEIKYU-KEY"
+               WHEN    "DBUPDATE"      ALSO   "SEIKYU-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "SEIKYU-KEY3"
+               WHEN    "DBUPDATE"      ALSO   "SEIKYU-KEY4"
+               WHEN    "DBDELETE"      ALSO   "SEIKYU-KEY"
+               WHEN    "DBDELETE"      ALSO   "SEIKYU-KEY2"
+               WHEN    "DBDELETE"      ALSO   "SEIKYU-KEY3"
+               WHEN    "DBDELETE"      ALSO   "SEIKYU-KEY4"
+                   MOVE    PATH-TBL-SEIKYU-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SEIKYU-DEL1"
+                   MOVE    PATH-TBL-SEIKYU-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SEIKYU-DEL2"
+                   MOVE    PATH-TBL-SEIKYU-DEL2
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SEIKYU-DEL3"
+                   MOVE    PATH-TBL-SEIKYU-DEL3
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SEIKYU-DEL4"
+                   MOVE    PATH-TBL-SEIKYU-DEL4
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "HKNJAINF-KEY"
+               WHEN    "DBDELETE"      ALSO   "HKNJAINF-KEY"
+                   MOVE    PATH-TBL-HKNJAINF-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "USERBYOMEI-KEY"
+               WHEN    "DBDELETE"      ALSO   "USERBYOMEI-KEY"
+                   MOVE    PATH-TBL-USERBYOMEI-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "RECECOM-KEY"
+               WHEN    "DBUPDATE"      ALSO   "RECECOM-KEY1"
+               WHEN    "DBUPDATE"      ALSO   "RECECOM-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "RECECOM-KEY3"
+               WHEN    "DBDELETE"      ALSO   "RECECOM-KEY"
+               WHEN    "DBDELETE"      ALSO   "RECECOM-KEY1"
+               WHEN    "DBDELETE"      ALSO   "RECECOM-KEY2"
+               WHEN    "DBDELETE"      ALSO   "RECECOM-KEY3"
+                   MOVE    PATH-TBL-RECECOM-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "RECECOM-DEL1"
+                   MOVE    PATH-TBL-RECECOM-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "EXAMPLE-KEY"
+               WHEN    "DBUPDATE"      ALSO   "EXAMPLE-KEY1"
+               WHEN    "DBUPDATE"      ALSO   "EXAMPLE-KEY2"
+               WHEN    "DBDELETE"      ALSO   "EXAMPLE-KEY"
+               WHEN    "DBDELETE"      ALSO   "EXAMPLE-KEY1"
+               WHEN    "DBDELETE"      ALSO   "EXAMPLE-KEY2"
+                   MOVE    PATH-TBL-EXAMPLE-KEY
+                                       TO  WRK-PATH
+      *
+               WHEN    "DBUPDATE"      ALSO   "DBKANRI-KEY"
+               WHEN    "DBDELETE"      ALSO   "DBKANRI-KEY"
+                   MOVE    PATH-TBL-DBKANRI-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "RECEKANRI-KEY"
+               WHEN    "DBDELETE"      ALSO   "RECEKANRI-KEY"
+               WHEN    "DBUPDATE"      ALSO   "RECEKANRI-KEY2"
+               WHEN    "DBDELETE"      ALSO   "RECEKANRI-KEY2"
+                   MOVE    PATH-TBL-RECEKANRI-KEY
+                                       TO  WRK-PATH
+      *
+               WHEN    "DBUPDATE"      ALSO   "PTRSIINF-KEY"
+               WHEN    "DBUPDATE"      ALSO   "PTRSIINF-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "PTRSIINF-KEY3"
+               WHEN    "DBDELETE"      ALSO   "PTRSIINF-KEY"
+               WHEN    "DBDELETE"      ALSO   "PTRSIINF-KEY2"
+               WHEN    "DBDELETE"      ALSO   "PTRSIINF-KEY3"
+                   MOVE    PATH-TBL-PTRSIINF-KEY 
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "PTRSIINF-DEL1"
+                   MOVE    PATH-TBL-PTRSIINF-DEL1
+                                       TO  WRK-PATH
+      *        
+               WHEN    "DBUPDATE"      ALSO   "INTERACT-KEY"
+               WHEN    "DBUPDATE"      ALSO   "INTERACT-KEY1"
+               WHEN    "DBUPDATE"      ALSO   "INTERACT-KEY2"
+               WHEN    "DBDELETE"      ALSO   "INTERACT-KEY"
+               WHEN    "DBDELETE"      ALSO   "INTERACT-KEY1"
+               WHEN    "DBDELETE"      ALSO   "INTERACT-KEY2"
+                   MOVE    PATH-TBL-INTERACT-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "SSKIJYO-KEY"
+               WHEN    "DBDELETE"      ALSO   "SSKIJYO-KEY"
+                   MOVE    PATH-TBL-SSKIJYO-KEY
+                                       TO  WRK-PATH
+      *
+               WHEN    "DBUPDATE"      ALSO   "MONTHLYNUM-KEY"
+               WHEN    "DBUPDATE"      ALSO   "MONTHLYNUM-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "MONTHLYNUM-KEY3"
+               WHEN    "DBDELETE"      ALSO   "MONTHLYNUM-KEY"
+               WHEN    "DBDELETE"      ALSO   "MONTHLYNUM-KEY2"
+               WHEN    "DBDELETE"      ALSO   "MONTHLYNUM-KEY3"
+                   MOVE    PATH-TBL-MONTHLYNUM-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "MONTHLYNUM-DEL1"
+                   MOVE    PATH-TBL-MONTHLYNUM-DEL1
+                                       TO  WRK-PATH
+      *------------------------------------
+               WHEN    ANY             ALSO   "SYSKANRI-KEY"
+                   MOVE    PATH-TBL-SYSKANRI-KEY
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-SYSKANRI-SEC
+               WHEN    ANY             ALSO   "SYSKANRI-KEY2"
+                   MOVE    PATH-TBL-SYSKANRI-KEY2
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-SYSKANRI-SEC
+               WHEN    ANY             ALSO   "SYSKANRI-KEY3"
+                   MOVE    PATH-TBL-SYSKANRI-KEY3
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-SYSKANRI-SEC
+               WHEN    ANY             ALSO   "SYSKANRI-KEY4"
+                   MOVE    PATH-TBL-SYSKANRI-KEY4
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-SYSKANRI-SEC
+               WHEN    ANY             ALSO   "SYSKANRI-KEY5"
+                   MOVE    PATH-TBL-SYSKANRI-KEY5
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-SYSKANRI-SEC
+               WHEN    ANY             ALSO   "SYSKANRI-KEY6"
+                   MOVE    PATH-TBL-SYSKANRI-KEY6
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYSKANRI-KEY7"
+                   MOVE    PATH-TBL-SYSKANRI-KEY7
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-SYSKANRI-SEC
+               WHEN    ANY             ALSO   "SYSKANRI-KEY8"
+                   MOVE    PATH-TBL-SYSKANRI-KEY8
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-SYSKANRI-SEC
+               WHEN    ANY             ALSO   "SYSKANRI-KEY9"
+                   MOVE    PATH-TBL-SYSKANRI-KEY9
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-SYSKANRI-SEC
+               WHEN    ANY             ALSO   "SYSKANRI-KEY10"
+                   MOVE    PATH-TBL-SYSKANRI-KEY10
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-SYSKANRI-SEC
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "SYSKANRI-ALL"
+                   MOVE    PATH-TBL-SYSKANRI-ALL
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-SYSKANRI-SEC
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "BYOMEI-KEY"
+                   MOVE    PATH-TBL-BYOMEI-KEY 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "BYOMEI-KEY2"
+                   MOVE    PATH-TBL-BYOMEI-KEY2
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-BYOKEY-SEC
+               WHEN    ANY             ALSO   "BYOMEI-KEY3"
+                   MOVE    PATH-TBL-BYOMEI-KEY3
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-BYOKEY-SEC
+               WHEN    ANY             ALSO   "BYOMEI-KEY4"
+                   MOVE    PATH-TBL-BYOMEI-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "BYOMEI-KEY5"
+                   MOVE    PATH-TBL-BYOMEI-KEY5
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "BYOMEI-ALL"
+                   MOVE    PATH-TBL-BYOMEI-ALL
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-BYOKEY-SEC
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "CHK-KEY"
+                   MOVE    PATH-TBL-CHK-KEY
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-CHK-SEC
+               WHEN    ANY             ALSO   "CHK-KEY2"
+                   MOVE    PATH-TBL-CHK-KEY2
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-CHK-SEC
+               WHEN    ANY             ALSO   "CHK-KEY3"
+                   MOVE    PATH-TBL-CHK-KEY3
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-CHK-SEC
+               WHEN    ANY             ALSO   "CHK-KEY4"
+                   MOVE    PATH-TBL-CHK-KEY4
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-CHK-SEC
+      *追加/*開始*01.09.12********************************************
+               WHEN    ANY             ALSO   "CHK-KEY5"
+                   MOVE    PATH-TBL-CHK-KEY5
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-CHK-SEC
+               WHEN    ANY             ALSO   "CHK-KEY6"
+                   MOVE    PATH-TBL-CHK-KEY6
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-CHK-SEC
+      *追加/*終了*01.09.12********************************************
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "CHK-ALL"
+                   MOVE    PATH-TBL-CHK-ALL
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-CHK-SEC
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "INPUTCD-KEY"
+                   MOVE    PATH-TBL-INPUTCD-KEY
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-INPUTCD-SEC
+               WHEN    ANY             ALSO   "INPUTCD-KEY2"
+                   MOVE    PATH-TBL-INPUTCD-KEY2
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-INPUTCD-SEC
+               WHEN    ANY             ALSO   "INPUTCD-KEY3"
+                   MOVE    PATH-TBL-INPUTCD-KEY3
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-INPUTCD-SEC
+               WHEN    ANY             ALSO   "INPUTCD-KEY4"
+                   MOVE    PATH-TBL-INPUTCD-KEY4
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-INPUTCD-SEC
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "INPUTCD-ALL"
+                   MOVE    PATH-TBL-INPUTCD-ALL
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-INPUTCD-SEC
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "HKNCOMBI-KEY"
+                   MOVE    PATH-TBL-HKNCOMBI-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HKNCOMBI-KEY2"
+                   MOVE    PATH-TBL-HKNCOMBI-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HKNCOMBI-KEY3"
+                   MOVE    PATH-TBL-HKNCOMBI-KEY3
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "HKNCOMBI-ALL"
+                   MOVE    PATH-TBL-HKNCOMBI-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "HKNNUM-KEY"
+                   MOVE    PATH-TBL-HKNNUM-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HKNNUM-KEY2"
+                   MOVE    PATH-TBL-HKNNUM-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HKNNUM-KEY3"
+                   MOVE    PATH-TBL-HKNNUM-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HKNNUM-KEY4"
+                   MOVE    PATH-TBL-HKNNUM-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "HKNNUM-KEY5"
+                   MOVE    PATH-TBL-HKNNUM-KEY5
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "HKNNUM-ALL"
+                   MOVE    PATH-TBL-HKNNUM-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "INPUTSET-KEY"
+                   MOVE    PATH-TBL-INPUTSET-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "INPUTSET-KEY2"
+                   MOVE    PATH-TBL-INPUTSET-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "INPUTSET-KEY3"
+                   MOVE    PATH-TBL-INPUTSET-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "INPUTSET-KEY4"
+                   MOVE    PATH-TBL-INPUTSET-KEY4
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "INPUTSET-ALL"
+                   MOVE    PATH-TBL-INPUTSET-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "ADRS-KEY"
+                   MOVE    PATH-TBL-ADRS-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "ADRS-KEY2"
+                   MOVE    PATH-TBL-ADRS-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "ADRS-KEY3"
+                   MOVE    PATH-TBL-ADRS-KEY3
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-ADRS-SEC
+               WHEN    ANY             ALSO   "ADRS-KEY4"
+                   MOVE    PATH-TBL-ADRS-KEY4
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-ADRS-SEC
+               WHEN    ANY             ALSO   "ADRS-KEY5"
+                   MOVE    PATH-TBL-ADRS-KEY5
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-ADRS-SEC
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "ADRS-ALL"
+                   MOVE    PATH-TBL-ADRS-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "JYURRK-KEY"
+                   MOVE    PATH-TBL-JYURRK-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY2"
+                   MOVE    PATH-TBL-JYURRK-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY3"
+                   MOVE    PATH-TBL-JYURRK-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY4"
+                   MOVE    PATH-TBL-JYURRK-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY5"
+                   MOVE    PATH-TBL-JYURRK-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY6"
+                   MOVE    PATH-TBL-JYURRK-KEY6
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY7"
+                   MOVE    PATH-TBL-JYURRK-KEY7
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY8"
+                   MOVE    PATH-TBL-JYURRK-KEY8
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY9"
+                   MOVE    PATH-TBL-JYURRK-KEY9
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY10"
+                   MOVE    PATH-TBL-JYURRK-KEY10
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY11"
+                   MOVE    PATH-TBL-JYURRK-KEY11
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY12"
+                   MOVE    PATH-TBL-JYURRK-KEY12
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY13"
+                   MOVE    PATH-TBL-JYURRK-KEY13
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY14"
+                   MOVE    PATH-TBL-JYURRK-KEY14
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY15"
+                   MOVE    PATH-TBL-JYURRK-KEY15
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY16"
+                   MOVE    PATH-TBL-JYURRK-KEY16
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY17"
+                   MOVE    PATH-TBL-JYURRK-KEY17
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JYURRK-KEY18"
+                   MOVE    PATH-TBL-JYURRK-KEY18
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "JYURRK-ALL"
+                   MOVE    PATH-TBL-JYURRK-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "SRYKARRK-KEY"
+                   MOVE    PATH-TBL-SRYKARRK-KEY 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYKARRK-KEY2"
+                   MOVE    PATH-TBL-SRYKARRK-KEY2 
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "SRYKARRK-ALL"
+                   MOVE    PATH-TBL-SRYKARRK-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY2"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY2 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY3"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY3 
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.12********************************************
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY4"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY4 
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.12********************************************
+      *追加/*開始*02.03.19********************************************
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY5"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY5 
+                                       TO  WRK-PATH
+      *追加/*終了*02.03.19********************************************
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "PTBYOMEI-ALL"
+                   MOVE    PATH-TBL-PTBYOMEI-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "PTCOM-KEY"
+                   MOVE    PATH-TBL-PTCOM-KEY 
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "PTCOM-ALL"
+                   MOVE    PATH-TBL-PTCOM-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "PTNUM-KEY"
+                   MOVE    PATH-TBL-PTNUM-KEY 
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PTNUM-SEC
+               WHEN    ANY             ALSO   "PTNUM-KEY2"
+                   MOVE    PATH-TBL-PTNUM-KEY2 
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PTNUM-SEC
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "PTNUM-ALL"
+                   MOVE    PATH-TBL-PTNUM-ALL
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PTNUM-SEC
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "PTHKNINF-KEY"
+                   MOVE    PATH-TBL-PTHKNINF-KEY 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTHKNINF-KEY2"
+                   MOVE    PATH-TBL-PTHKNINF-KEY2 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTHKNINF-KEY3"
+                   MOVE    PATH-TBL-PTHKNINF-KEY3 
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PTHKNINF-SEC
+               WHEN    ANY             ALSO   "PTHKNINF-KEY4"
+                   MOVE    PATH-TBL-PTHKNINF-KEY4
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "PTHKNINF-ALL"
+                   MOVE    PATH-TBL-PTHKNINF-ALL
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PTHKNINF-SEC
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "PTKOHINF-KEY"
+                   MOVE    PATH-TBL-PTKOHINF-KEY 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTKOHINF-KEY2"
+                   MOVE    PATH-TBL-PTKOHINF-KEY2 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTKOHINF-KEY3"
+                   MOVE    PATH-TBL-PTKOHINF-KEY3 
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PTKOHINF-SEC
+               WHEN    ANY             ALSO   "PTKOHINF-KEY4"
+                   MOVE    PATH-TBL-PTKOHINF-KEY4 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTKOHINF-KEY5"
+                   MOVE    PATH-TBL-PTKOHINF-KEY5 
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "PTKOHINF-ALL"
+                   MOVE    PATH-TBL-PTKOHINF-ALL
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PTKOHINF-SEC
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "PTINF-KEY"
+                   MOVE    PATH-TBL-PTINF-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTINF-KEY2"
+                   MOVE    PATH-TBL-PTINF-KEY2
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PTINF-SEC
+               WHEN    ANY             ALSO   "PTINF-KEY3"
+                   MOVE    PATH-TBL-PTINF-KEY3
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PTINF-SEC
+               WHEN    ANY             ALSO   "PTINF-KEY5"
+                   MOVE    PATH-TBL-PTINF-KEY5
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PTINF-SEC
+               WHEN    ANY             ALSO   "PTINF-KEY4"
+                   MOVE    PATH-TBL-PTINF-KEY4
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "PTINF-ALL"
+                   MOVE    PATH-TBL-PTINF-ALL
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PTINF-SEC
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "KYUSEIRRK-KEY"
+                   MOVE    PATH-TBL-KYUSEIRRK-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KYUSEIRRK-KEY2"
+                   MOVE    PATH-TBL-KYUSEIRRK-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KYUSEIRRK-KEY3"
+                   MOVE    PATH-TBL-KYUSEIRRK-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "KYUSEIRRK-UPD1"
+                   MOVE    PATH-TBL-KYUSEIRRK-UPD1
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "KYUSEIRRK-ALL"
+                   MOVE    PATH-TBL-KYUSEIRRK-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN     "DBDELETE"     ALSO   "KYUSEIRRK-DEL1"
+                   MOVE    PATH-TBL-KYUSEIRRK-DEL1
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "SRYACCT-KEY"
+                   MOVE    PATH-TBL-SRYACCT-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY2"
+                   MOVE    PATH-TBL-SRYACCT-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY3"
+                   MOVE    PATH-TBL-SRYACCT-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY4"
+                   MOVE    PATH-TBL-SRYACCT-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY5"
+                   MOVE    PATH-TBL-SRYACCT-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY6"
+                   MOVE    PATH-TBL-SRYACCT-KEY6
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY7"
+                   MOVE    PATH-TBL-SRYACCT-KEY7
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY8"
+                   MOVE    PATH-TBL-SRYACCT-KEY8
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY9"
+                   MOVE    PATH-TBL-SRYACCT-KEY9
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY10"
+                   MOVE    PATH-TBL-SRYACCT-KEY10
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "SRYACCT-ALL"
+                   MOVE    PATH-TBL-SRYACCT-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "SRYACT-KEY"
+                   MOVE    PATH-TBL-SRYACT-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACT-KEY2"
+                   MOVE    PATH-TBL-SRYACT-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACT-KEY3"
+                   MOVE    PATH-TBL-SRYACT-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACT-KEY4"
+                   MOVE    PATH-TBL-SRYACT-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACT-KEY5"
+                   MOVE    PATH-TBL-SRYACT-KEY5
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.12********************************************
+               WHEN    ANY             ALSO   "SRYACT-KEY6"
+                   MOVE    PATH-TBL-SRYACT-KEY6
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACT-KEY7"
+                   MOVE    PATH-TBL-SRYACT-KEY7
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACT-KEY8"
+                   MOVE    PATH-TBL-SRYACT-KEY8
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.12********************************************
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "SRYACT-ALL"
+                   MOVE    PATH-TBL-SRYACT-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "SYUMEI-KEY"
+                   MOVE    PATH-TBL-SYUMEI-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUMEI-KEY2"
+                   MOVE    PATH-TBL-SYUMEI-KEY2
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "SYUMEI-ALL"
+                   MOVE    PATH-TBL-SYUMEI-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "SYUNOU-KEY"
+                   MOVE    PATH-TBL-SYUNOU-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY2"
+                   MOVE    PATH-TBL-SYUNOU-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY3"
+                   MOVE    PATH-TBL-SYUNOU-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY4"
+                   MOVE    PATH-TBL-SYUNOU-KEY4
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "SYUNOU-ALL"
+                   MOVE    PATH-TBL-SYUNOU-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "TSYRRK-KEY"
+                   MOVE    PATH-TBL-TSYRRK-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TSYRRK-KEY2"
+                   MOVE    PATH-TBL-TSYRRK-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TSYRRK-KEY3"
+                   MOVE    PATH-TBL-TSYRRK-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TSYRRK-UPD1"
+                   MOVE    PATH-TBL-TSYRRK-KEY
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "TSYRRK-ALL"
+                   MOVE    PATH-TBL-TSYRRK-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "TENSU-KEY"
+                   MOVE    PATH-TBL-TENSU-KEY
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY2"
+                   MOVE    PATH-TBL-TENSU-KEY2
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY3"
+                   MOVE    PATH-TBL-TENSU-KEY3
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY4"
+                   MOVE    PATH-TBL-TENSU-KEY4
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY5"
+                   MOVE    PATH-TBL-TENSU-KEY5
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY6"
+                   MOVE    PATH-TBL-TENSU-KEY6
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY7"
+                   MOVE    PATH-TBL-TENSU-KEY7
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY41"
+                   MOVE    PATH-TBL-TENSU-KEY41
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY42"
+                   MOVE    PATH-TBL-TENSU-KEY42
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY42J"
+                   MOVE    PATH-TBL-TENSU-KEY42J
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY42K"
+                   MOVE    PATH-TBL-TENSU-KEY42K
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY42JK"
+                   MOVE    PATH-TBL-TENSU-KEY42JK
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY51"
+                   MOVE    PATH-TBL-TENSU-KEY51
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY51J"
+                   MOVE    PATH-TBL-TENSU-KEY51J
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY52"
+                   MOVE    PATH-TBL-TENSU-KEY52
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY52J"
+                   MOVE    PATH-TBL-TENSU-KEY52J
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY53"
+                   MOVE    PATH-TBL-TENSU-KEY53
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY53J"
+                   MOVE    PATH-TBL-TENSU-KEY53J
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY6"
+                   MOVE    PATH-TBL-TENSU-KEY6
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY6J"
+                   MOVE    PATH-TBL-TENSU-KEY6J
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY7"
+                   MOVE    PATH-TBL-TENSU-KEY7
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY7J"
+                   MOVE    PATH-TBL-TENSU-KEY7J
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY10S"
+                   MOVE    PATH-TBL-TENSU-KEY10S
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY10K"
+                   MOVE    PATH-TBL-TENSU-KEY10K
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY10M"
+                   MOVE    PATH-TBL-TENSU-KEY10M
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY10S1"
+                   MOVE    PATH-TBL-TENSU-KEY10S1
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY10K1"
+                   MOVE    PATH-TBL-TENSU-KEY10K1
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY10M1"
+                   MOVE    PATH-TBL-TENSU-KEY10M1
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY11S"
+                   MOVE    PATH-TBL-TENSU-KEY11S
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY11K"
+                   MOVE    PATH-TBL-TENSU-KEY11K
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY11M"
+                   MOVE    PATH-TBL-TENSU-KEY11M
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY11S1"
+                   MOVE    PATH-TBL-TENSU-KEY11S1
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY11K1"
+                   MOVE    PATH-TBL-TENSU-KEY11K1
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY11M1"
+                   MOVE    PATH-TBL-TENSU-KEY11M1
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY12S"
+                   MOVE    PATH-TBL-TENSU-KEY12S
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY12K"
+                   MOVE    PATH-TBL-TENSU-KEY12K
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY12M"
+                   MOVE    PATH-TBL-TENSU-KEY12M
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY12S1"
+                   MOVE    PATH-TBL-TENSU-KEY12S1
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY12K1"
+                   MOVE    PATH-TBL-TENSU-KEY12K1
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY12M1"
+                   MOVE    PATH-TBL-TENSU-KEY12M1
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-UPD1"
+                   MOVE    PATH-TBL-TENSU-KEY
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "TENSU-ALL"
+                   MOVE    PATH-TBL-TENSU-ALL
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "UKETUKE-KEY"
+                   MOVE    PATH-TBL-UKETUKE-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "UKETUKE-KEY2"
+                   MOVE    PATH-TBL-UKETUKE-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "UKETUKE-KEY3"
+                   MOVE    PATH-TBL-UKETUKE-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "UKETUKE-KEY4"
+                   MOVE    PATH-TBL-UKETUKE-KEY4
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "UKETUKE-ALL"
+                   MOVE    PATH-TBL-UKETUKE-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "YYK-KEY"
+                   MOVE    PATH-TBL-YYK-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "YYK-KEY2"
+                   MOVE    PATH-TBL-YYK-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "YYK-KEY3"
+                   MOVE    PATH-TBL-YYK-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "YYK-KEY4"
+                   MOVE    PATH-TBL-YYK-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "YYK-KEY5"
+                   MOVE    PATH-TBL-YYK-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "YYK-KEY6"
+                   MOVE    PATH-TBL-YYK-KEY6
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "YYK-ALL"
+                   MOVE    PATH-TBL-YYK-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "SYKRRK-KEY"
+                   MOVE    PATH-TBL-SYKRRK-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYKRRK-KEY2"
+                   MOVE    PATH-TBL-SYKRRK-KEY2
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "SYKRRK-ALL"
+                   MOVE    PATH-TBL-SYKRRK-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "TNKRRK-KEY"
+                   MOVE    PATH-TBL-TNKRRK-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TNKRRK-KEY2"
+                   MOVE    PATH-TBL-TNKRRK-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TNKRRK-KEY3"
+                   MOVE    PATH-TBL-TNKRRK-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TNKRRK-UPD1"
+                   MOVE    PATH-TBL-TNKRRK-KEY
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "TNKRRK-ALL"
+                   MOVE    PATH-TBL-TNKRRK-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+      *------------------------------------
+               WHEN    ANY             ALSO   "WKSRYACT-KEY"
+                   MOVE    PATH-TBL-WKSRYACT-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "WKSRYACT-KEY2"
+                   MOVE    PATH-TBL-WKSRYACT-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "WKSRYACT-KEY3"
+                   MOVE    PATH-TBL-WKSRYACT-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "WKSRYACT-KEY4"
+                   MOVE    PATH-TBL-WKSRYACT-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "WKSRYACT-KEY5"
+                   MOVE    PATH-TBL-WKSRYACT-KEY5
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "WKSRYACT-ALL"
+                   MOVE    PATH-TBL-WKSRYACT-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "PARA-KEY"
+                   MOVE    PATH-TBL-PARA-KEY
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PARA-SEC
+               WHEN    ANY             ALSO   "PARA-KEY2"
+                   MOVE    PATH-TBL-PARA-KEY2
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PARA-SEC
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "PARA-ALL"
+                   MOVE    PATH-TBL-PARA-ALL
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PARA-SEC
+               WHEN    ANY             ALSO   "PARA-KEY3"
+                   MOVE    PATH-TBL-PARA-KEY3
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-PARA-SEC
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "SANTEI-KEY"
+                   MOVE    PATH-TBL-SANTEI-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SANTEI-KEY2"
+                   MOVE    PATH-TBL-SANTEI-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SANTEI-KEY3"
+                   MOVE    PATH-TBL-SANTEI-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SANTEI-KEY4"
+                   MOVE    PATH-TBL-SANTEI-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SANTEI-KEY5"
+                   MOVE    PATH-TBL-SANTEI-KEY5
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "SANTEI-ALL"
+                   MOVE    PATH-TBL-SANTEI-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "TENSUPLUS-KEY"
+                   MOVE    PATH-TBL-TENSUPLUS-KEY
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "TENSUPLUS-ALL"
+                   MOVE    PATH-TBL-TENSUPLUS-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "SRYCDCHG-KEY"
+                   MOVE    PATH-TBL-SRYCDCHG-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYCDCHG-KEY2"
+                   MOVE    PATH-TBL-SRYCDCHG-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYCDCHG-KEY3"
+                   MOVE    PATH-TBL-SRYCDCHG-KEY3
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "SRYCDCHG-ALL"
+                   MOVE    PATH-TBL-SRYCDCHG-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+                WHEN    ANY             ALSO   "RECEPRT-KEY"
+                   MOVE    PATH-TBL-RECEPRT-KEY
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY2"
+                   MOVE    PATH-TBL-RECEPRT-KEY2
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY3"
+                   MOVE    PATH-TBL-RECEPRT-KEY3
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY4"
+                   MOVE    PATH-TBL-RECEPRT-KEY4
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY5"
+                   MOVE    PATH-TBL-RECEPRT-KEY5
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY6"
+                   MOVE    PATH-TBL-RECEPRT-KEY6
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY7"
+                   MOVE    PATH-TBL-RECEPRT-KEY7
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY8"
+                   MOVE    PATH-TBL-RECEPRT-KEY8
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "RECEPRT-KEY9"
+                   MOVE    PATH-TBL-RECEPRT-KEY9
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "RECEPRT-ALL"
+                   MOVE    PATH-TBL-RECEPRT-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+                WHEN    ANY             ALSO   "SEIKYU-KEY"
+                   MOVE    PATH-TBL-SEIKYU-KEY
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY2"
+                   MOVE    PATH-TBL-SEIKYU-KEY2
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY3"
+                   MOVE    PATH-TBL-SEIKYU-KEY3
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY4"
+                   MOVE    PATH-TBL-SEIKYU-KEY4
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY5"
+                   MOVE    PATH-TBL-SEIKYU-KEY5
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY6"
+                   MOVE    PATH-TBL-SEIKYU-KEY6
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "SEIKYU-KEY7"
+                   MOVE    PATH-TBL-SEIKYU-KEY7
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "SEIKYU-ALL"
+                   MOVE    PATH-TBL-SEIKYU-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+                WHEN    ANY             ALSO   "HKNJAINF-KEY"
+                   MOVE    PATH-TBL-HKNJAINF-KEY
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "HKNJAINF-KEY2"
+                   MOVE    PATH-TBL-HKNJAINF-KEY2
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "HKNJAINF-ALL"
+                   MOVE    PATH-TBL-HKNJAINF-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+                WHEN    ANY             ALSO   "BD001-KEY"
+                   MOVE    PATH-VIEW-BD001-KEY
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "BD001-ALL"
+                   MOVE    PATH-VIEW-BD001-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+                WHEN    ANY             ALSO   "BD002-KEY"
+                   MOVE    PATH-VIEW-BD002-KEY
+                                       TO  WRK-PATH
+                WHEN    ANY             ALSO   "BD002-KEY2"
+                   MOVE    PATH-VIEW-BD002-KEY2
+                                       TO  WRK-PATH
+      *追加/*開始*01.09.15********************************************
+               WHEN    ANY             ALSO   "BD002-ALL"
+                   MOVE    PATH-VIEW-BD002-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*01.09.15********************************************
+               WHEN    ANY             ALSO   "USERBYOMEI-KEY"
+                   MOVE    PATH-TBL-USERBYOMEI-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "USERBYOMEI-KEY2"
+                   MOVE    PATH-TBL-USERBYOMEI-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "USERBYOMEI-KEY3"
+                   MOVE    PATH-TBL-USERBYOMEI-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "USERBYOMEI-KEY4"
+                   MOVE    PATH-TBL-USERBYOMEI-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "USERBYOMEI-KEY5"
+                   MOVE    PATH-TBL-USERBYOMEI-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "USERBYOMEI-KEY6"
+                   MOVE    PATH-TBL-USERBYOMEI-KEY6
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "USERBYOMEI-KEY7"
+                   MOVE    PATH-TBL-USERBYOMEI-KEY7
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "USERBYOMEI-KEY8"
+                   MOVE    PATH-TBL-USERBYOMEI-KEY8
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-USERBYOMEI-SEC
+               WHEN    ANY             ALSO   "USERBYOMEI-KEY9"
+                   MOVE    PATH-TBL-USERBYOMEI-KEY9
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "USERBYOMEI-ALL"
+                   MOVE    PATH-TBL-USERBYOMEI-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECECOM-KEY"
+                   MOVE    PATH-TBL-RECECOM-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECECOM-KEY1"
+                   MOVE    PATH-TBL-RECECOM-KEY1
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECECOM-KEY2"
+                   MOVE    PATH-TBL-RECECOM-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECECOM-KEY3"
+                   MOVE    PATH-TBL-RECECOM-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECECOM-ALL"
+                   MOVE    PATH-TBL-RECECOM-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "EXAMPLE-KEY"
+                   MOVE    PATH-TBL-EXAMPLE-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "EXAMPLE-KEY1"
+                   MOVE    PATH-TBL-EXAMPLE-KEY1
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "EXAMPLE-KEY2"
+                   MOVE    PATH-TBL-EXAMPLE-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "EXAMPLE-ALL"
+                   MOVE    PATH-TBL-EXAMPLE-ALL
+                                       TO  WRK-PATH
+      *追加/*開始*02.02.04********************************************
+               WHEN    ANY             ALSO   "JOBKANRI-ALL"
+                   MOVE    PATH-TBL-JOBKANRI-ALL
+                                       TO  WRK-PATH
+      *追加/*終了*02.02.04********************************************
+      *追加/*開始*02.05.01********************************************
+               WHEN    ANY             ALSO   "JOBKANRI-ALL02"
+                   MOVE    PATH-TBL-JOBKANRI-ALL02
+                                       TO  WRK-PATH
+      *追加/*終了*02.05.01********************************************
+      *
+               WHEN    ANY             ALSO   "DBKANRI-KEY"
+                   MOVE    PATH-TBL-DBKANRI-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "DBKANRI-ALL"
+                   MOVE    PATH-TBL-DBKANRI-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "RECEKANRI-KEY"
+                   MOVE    PATH-TBL-RECEKANRI-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECEKANRI-KEY2"
+                   MOVE    PATH-TBL-RECEKANRI-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECEKANRI-KEY3"
+                   MOVE    PATH-TBL-RECEKANRI-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "RECEKANRI-ALL"
+                   MOVE    PATH-TBL-RECEKANRI-ALL
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "PTRSIINF-KEY"
+                   MOVE    PATH-TBL-PTRSIINF-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTRSIINF-KEY2"
+                   MOVE    PATH-TBL-PTRSIINF-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTRSIINF-ALL"
+                   MOVE    PATH-TBL-PTRSIINF-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTRSIINF-KEY3"
+                   MOVE    PATH-TBL-PTRSIINF-KEY3
+                                       TO  WRK-PATH
+      *
+               WHEN    ANY             ALSO   "PRTKANRI-KEY"
+                   MOVE    PATH-TBL-PRTKANRI-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PRTKANRI-KEY2"
+                   MOVE    PATH-TBL-PRTKANRI-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PRTKANRI-ALL"
+                   MOVE    PATH-TBL-PRTKANRI-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PRTDATA-KEY"
+                   MOVE    PATH-TBL-PRTDATA-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PRTDATA-KEY2"
+                   MOVE    PATH-TBL-PRTDATA-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PRTDATA-ALL"
+                   MOVE    PATH-TBL-PRTDATA-ALL
+                                       TO  WRK-PATH
+      *
+      *---- (01.00.60) LINE ADD END   --------------------------------
+               WHEN    ANY             ALSO   "INTERACT-KEY"
+                   MOVE    PATH-TBL-INTERACT-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "INTERACT-KEY1"
+                   MOVE    PATH-TBL-INTERACT-KEY1
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "INTERACT-KEY2"
+                   MOVE    PATH-TBL-INTERACT-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "INTERACT-ALL"
+                   MOVE    PATH-TBL-INTERACT-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SSKIJYO-KEY"
+                   MOVE    PATH-TBL-SSKIJYO-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SSKIJYO-KEY"
+                   MOVE    PATH-TBL-SSKIJYO-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SSKIJYO-ALL"
+                   MOVE    PATH-TBL-SSKIJYO-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JINMEI-KEY"
+                   MOVE    PATH-TBL-JINMEI-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JINMEI-KEY2"
+                   MOVE    PATH-TBL-JINMEI-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JINMEI-KEY3"
+                   MOVE    PATH-TBL-JINMEI-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JINMEI-UPD1"
+                   MOVE    PATH-TBL-JINMEI-UPD1
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "JINMEI-ALL"
+                   MOVE    PATH-TBL-JINMEI-ALL
+                                       TO  WRK-PATH
+      *----
+               WHEN    ANY             ALSO   "MONTHLYNUM-KEY"
+                   MOVE    PATH-TBL-MONTHLYNUM-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "MONTHLYNUM-KEY2"
+                   MOVE    PATH-TBL-MONTHLYNUM-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "MONTHLYNUM-KEY3"
+                   MOVE    PATH-TBL-MONTHLYNUM-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "MONTHLYNUM-ALL"
+                   MOVE    PATH-TBL-MONTHLYNUM-ALL
+                                       TO  WRK-PATH
+      *---- (01.00.05) LINE ADD END   --------------------------------
+      *---- (01.00.75) LINE ADD START --------------------------------
+               WHEN    ANY             ALSO   "YAKUJYO-KEY"
+                   MOVE    PATH-TBL-YAKUJYO-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "YAKUJYO-ALL"
+                   MOVE    PATH-TBL-YAKUJYO-ALL
+                                       TO  WRK-PATH
+      *---- (01.00.75) LINE ADD END   --------------------------------
+               WHEN    OTHER
+                   MOVE    -9          TO  MCP-RC
+           END-EVALUATE
+           .
+      *---- (01.00.05) LINE ADD END   --------------------------------
+      *     PERFORM 210-SEND-SQL.
+      *     PERFORM 220-RECV-ANS.
+      *****************************************************************
+      *     　　　システム管理編集検索処理
+      *****************************************************************
+       2001-SEL-SYSKANRI-SEC          SECTION.
+      *
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2001-SEL-SYSKANRI-EXT
+           END-IF
+      *
+      *    DISPLAY "2001-SEL-SYSKANRI-SEC ST ORC-DBPATH = " 
+      *            "[" ORC-DBPATH "]"
+           MOVE    MCPDATA-REC         TO  SYSKANRI-REC
+           MOVE    ORC-DBYMD             TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD 
+      *    区分コードの文字数を確定
+           MOVE    ZERO                TO  WRK-MOJISU
+           IF      ORC-DBPATH            =   "SYSKANRI-KEY"
+                                       OR  "SYSKANRI-KEY4"
+                                       OR  "SYSKANRI-KEY9"
+             IF    SYS-KBNCD           NOT =   SPACE
+               PERFORM VARYING     IDX     FROM    8   BY  -1
+                       UNTIL       IDX     <       1
+                   IF      SYS-KBNCD(IDX:1)  NOT =   SPACE
+                       MOVE    IDX     TO  WRK-MOJISU 
+                       MOVE    1       TO  IDX
+                   END-IF  
+               END-PERFORM
+             ELSE
+               MOVE    1               TO  WRK-MOJISU
+             END-IF
+             IF  WRK-MOJISU            <   8
+               COMPUTE IDX             =   WRK-MOJISU  +  1
+               MOVE    "%"             TO  SYS-KBNCD(IDX:1)
+             END-IF 
+           END-IF
+      *
+      *    ユーザーＩＤの文字数を確定
+           IF      ORC-DBPATH            =   "SYSKANRI-KEY3"
+             IF    SYS-KANRITBL(1:16)  NOT =   SPACE
+               MOVE    SYS-KANRITBL(1:16)  TO  WRK-OPID
+               MOVE    ZERO                TO  WRK-MOJISU
+               PERFORM VARYING     IDX     FROM    16  BY  -1
+                       UNTIL       IDX     <       1
+                   IF      WRK-OPID(IDX:1)  NOT =   SPACE
+                       MOVE    IDX                 TO  WRK-MOJISU 
+                       MOVE    1                   TO  IDX
+                   END-IF  
+               END-PERFORM
+             ELSE
+               MOVE    1               TO  WRK-MOJISU
+             END-IF
+      *
+      *      MOVE    SYS-KANRITBL(1:WRK-MOJISU)  
+      *                                TO  TNS-NAME(1:WRK-MOJISU)
+             COMPUTE IDX             =   WRK-MOJISU  +  1
+             MOVE    "%"             TO  SYS-KANRITBL(IDX:1)
+           END-IF
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           .
+       2001-SEL-SYSKANRI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     　　　システム管理編集検索処理
+      *****************************************************************
+       2002-SEL-SYSKANRI-SEC          SECTION.
+      *
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2002-SEL-SYSKANRI-EXT
+           END-IF
+      *
+           MOVE    MCPDATA-REC         TO  SYSKANRI-REC
+      *    区分コードの文字数を確定
+           MOVE    ZERO                TO  WRK-MOJISU
+           IF    SYSUP-KBNCD           NOT =   SPACE
+               PERFORM VARYING     IDX     FROM    8   BY  -1
+                       UNTIL       IDX     <       1
+                   IF      SYSUP-KBNCD(IDX:1)  NOT =   SPACE
+                       MOVE    IDX     TO  WRK-MOJISU 
+                       MOVE    1       TO  IDX
+                   END-IF  
+               END-PERFORM
+           ELSE
+               MOVE    1               TO  WRK-MOJISU
+           END-IF
+           IF  WRK-MOJISU            <   8
+               COMPUTE IDX             =   WRK-MOJISU  +  1
+               MOVE    "%"             TO  SYSUP-KBNCD(IDX:1)
+           END-IF 
+      *
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           .
+       2002-SEL-SYSKANRI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     　　　患者保険情報編集処理
+      *****************************************************************
+       2001-SEL-PTHKNINF-SEC          SECTION.
+      *
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2001-SEL-PTHKNINF-EXT
+           END-IF
+      *
+      *    DISPLAY "2001-SEL-SYSKANRI-SEC ST ORC-DBPATH = " 
+      *            "[" ORC-DBPATH "]"
+           MOVE    MCPDATA-REC         TO  PTHKNINF-REC
+           MOVE    ORC-DBYMD             TO  PTHKN-TEKSTYMD
+                                           PTHKN-TEKEDYMD 
+      *
+           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+           .
+       2001-SEL-PTHKNINF-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     　　　患者保険情報編集処理
+      *****************************************************************
+       2001-SEL-PTKOHINF-SEC          SECTION.
+      *
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2001-SEL-PTKOHINF-EXT
+           END-IF
+      *
+      *    DISPLAY "2001-SEL-SYSKANRI-SEC ST ORC-DBPATH = " 
+      *            "[" ORC-DBPATH "]"
+           MOVE    MCPDATA-REC         TO  PTKOHINF-REC
+           MOVE    ORC-DBYMD             TO  PTKOH-TEKSTYMD
+                                           PTKOH-TEKEDYMD 
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           .
+       2001-SEL-PTKOHINF-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     病名マスターを漢字病名より検索処理
+      *****************************************************************
+       2001-SEL-BYOKEY-SEC             SECTION.
+      *
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2001-SEL-BYOKEY-EXT
+           END-IF
+      *
+           MOVE    MCPDATA-REC         TO  BYOMEI-REC
+           IF      ORC-DBPATH            =   "BYOMEI-KEY2"
+               MOVE    ZERO                TO  WRK-MOJISU
+               PERFORM VARYING     IDX     FROM    200  BY  -1
+                       UNTIL       IDX     <       1
+                   IF      BYO-BYOMEI(IDX:1)  NOT =   SPACE
+                       MOVE    IDX                 TO  WRK-MOJISU 
+                       MOVE    1                   TO  IDX
+                   END-IF  
+               END-PERFORM
+      *
+      *    検索名称編集
+               PERFORM 2001B-NAME-SET-SEC
+           END-IF
+      *
+           IF      ORC-DBPATH            =   "BYOMEI-KEY3"
+               MOVE    ZERO                TO  WRK-MOJISU
+               PERFORM VARYING     IDX     FROM    160  BY  -1
+                       UNTIL       IDX     <       1
+                   IF      BYO-BYOMEIKANA(IDX:1)  NOT =   SPACE
+                       MOVE    IDX                 TO  WRK-MOJISU 
+                       MOVE    1                   TO  IDX
+                   END-IF  
+               END-PERFORM
+      *
+               MOVE    BYO-BYOMEIKANA(1:WRK-MOJISU)
+                                    TO  BYO-BYOMEIKANA(2:WRK-MOJISU)
+               MOVE    "%"                 TO  BYO-BYOMEIKANA(1:1)
+               COMPUTE IDX                 =   WRK-MOJISU  +  2
+               MOVE    "%"                 TO  BYO-BYOMEIKANA(IDX:1)
+           END-IF
+      *
+           MOVE    BYOMEI-REC          TO  MCPDATA-REC
+      *
+           .
+       2001-SEL-BYOKEY-EXT.
+           EXIT.
+      *----(01.00.01) LINE ADD START ----------------------------------
+      *
+      *****************************************************************
+      *     検索名称編集処理
+      *****************************************************************
+       2001B-NAME-SET-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  WRK-ICHI1
+           MOVE    ZERO                TO  WRK-ICHI2
+           MOVE    ZERO                TO  WRK-MOJISU2
+           MOVE    SPACE               TO  WRK-BYOMEI
+      *
+           IF      WRK-MOJISU          <   2
+               CONTINUE
+           ELSE                
+               IF      BYO-BYOMEI(1:2)       =   "＊"
+                   MOVE    1                   TO  WRK-ICHI1
+               END-IF
+               COMPUTE WRK-MOJISU2         =   WRK-MOJISU      -   1
+               IF      BYO-BYOMEI(WRK-MOJISU2:2)     =   "＊"
+                   MOVE    1                   TO  WRK-ICHI2
+               END-IF
+           END-IF    
+      *
+           EVALUATE    TRUE
+      *        部分一致
+               WHEN    (WRK-ICHI1           =   1    )  AND
+                     (WRK-ICHI2           =   1    )
+                   COMPUTE WRK-MOJISU2         =   WRK-MOJISU    -   4
+                   MOVE    "%"                 TO  WRK-BYOMEI(1:1)
+                   MOVE    BYO-BYOMEI(3:WRK-MOJISU2)
+                                          TO  WRK-BYOMEI(2:WRK-MOJISU2)
+                   COMPUTE IDX                 =   WRK-MOJISU2   +  2
+                   MOVE    "%"                 TO  WRK-BYOMEI(IDX:1)
+      *        後方一致
+               WHEN    (WRK-ICHI1           =   1    )  AND
+                       (WRK-ICHI2           =   ZERO )
+                   COMPUTE WRK-MOJISU2         =   WRK-MOJISU    -   2
+                   MOVE    "%"                 TO  WRK-BYOMEI(1:1)
+                   MOVE    BYO-BYOMEI(3:WRK-MOJISU2)
+                                          TO  WRK-BYOMEI(2:WRK-MOJISU2)
+      *        前方一致
+               WHEN    OTHER
+                   IF      WRK-ICHI1           =   ZERO
+                   AND     WRK-ICHI2           =   ZERO
+                       MOVE    WRK-MOJISU          TO  WRK-MOJISU2
+                   ELSE    
+                       COMPUTE WRK-MOJISU2     =   WRK-MOJISU    -   2
+                   END-IF    
+                   MOVE    BYO-BYOMEI(1:WRK-MOJISU2)
+                                          TO  WRK-BYOMEI(1:WRK-MOJISU2)
+                   COMPUTE IDX                 =   WRK-MOJISU2  +  1
+                   MOVE    "%"                 TO  WRK-BYOMEI(IDX:1)
+           END-EVALUATE
+      *
+           MOVE    SPACE                  TO  BYO-BYOMEI
+           MOVE    WRK-BYOMEI             TO  BYO-BYOMEI
+           .
+       2001B-NAME-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     チェックマスタを主キーより検索処理
+      *****************************************************************
+       2001-SEL-CHK-SEC          SECTION.
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2001-SEL-CHK-EXT
+           END-IF
+      *
+      *
+           MOVE    MCPDATA-REC         TO  CHK-REC
+      *
+           MOVE    ORC-DBYMD             TO  CHK-YUKOSTYMD
+                                           CHK-YUKOEDYMD
+           MOVE    CHK-REC             TO  MCPDATA-REC
+           .
+       2001-SEL-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     　　　入力セット編集検索処理
+      *****************************************************************
+       2001-SEL-INPUTCD-SEC      SECTION.
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2001-SEL-INPUTCD-EXT
+           END-IF
+      *
+           MOVE    MCPDATA-REC         TO  INPUTCD-REC
+      *    入力コードの文字数を確定
+      *  1.
+           IF      ORC-DBPATH            =   "INPUTCD-KEY"
+             MOVE    ICD-INPUTCD         TO  WRK-INPUTCD
+             MOVE    ZERO                TO  WRK-MOJISU
+             PERFORM VARYING     IDX     FROM    20  BY  -1
+                     UNTIL       IDX     <       1
+                 IF      WRK-INPUTCD(IDX:1)  NOT =   SPACE
+                     MOVE    IDX                 TO  WRK-MOJISU 
+                     MOVE    1                   TO  IDX
+                 END-IF  
+             END-PERFORM
+             COMPUTE IDX                 =   WRK-MOJISU  +  1
+             MOVE    "%"                 TO  ICD-INPUTCD(IDX:1)
+           END-IF
+      *  2.
+           IF      ORC-DBPATH            =   "INPUTCD-KEY3"
+             MOVE    ICD-SRYCD           TO  WRK-INPUTCD
+             MOVE    ZERO                TO  WRK-MOJISU
+             PERFORM VARYING     IDX     FROM    20  BY  -1
+                     UNTIL       IDX     <       1
+                 IF      WRK-INPUTCD(IDX:1)  NOT =   SPACE
+                     MOVE    IDX                 TO  WRK-MOJISU 
+                     MOVE    1                   TO  IDX
+                 END-IF  
+             END-PERFORM
+      *
+             COMPUTE IDX                 =   WRK-MOJISU  +  1
+             MOVE    "%"                 TO  ICD-SRYCD(IDX:1)
+             END-IF
+      *
+           MOVE    INPUTCD-REC         TO  MCPDATA-REC
+           .
+       2001-SEL-INPUTCD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     患者番号編集処理
+      *****************************************************************
+       2001-SEL-PTNUM-SEC             SECTION.
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2001-SEL-PTNUM-EXT
+           END-IF
+      *
+           MOVE    MCPDATA-REC         TO  PTNUM-REC
+           MOVE    ZERO                TO  WRK-MOJISU
+           PERFORM VARYING     IDX     FROM    20   BY  -1
+                   UNTIL       IDX     <       1
+               IF      PTNUM-PTNUM(IDX:1)  NOT =   SPACE
+                   MOVE    IDX                 TO  WRK-MOJISU 
+                   MOVE    1                   TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           IF  WRK-MOJISU              <   20
+               COMPUTE IDX             =   WRK-MOJISU  +  1
+               MOVE    "%"             TO  PTNUM-PTNUM(IDX:1)
+           END-IF
+      *
+           MOVE    PTNUM-REC           TO  MCPDATA-REC
+           .
+       2001-SEL-PTNUM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     患者マスターを漢字氏名より検索処理
+      *****************************************************************
+       2001-SEL-PTINF-SEC             SECTION.
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2001-SEL-PTINF-EXT
+           END-IF
+      *
+           MOVE    MCPDATA-REC         TO  PTINF-REC
+      *
+           IF      ORC-DBPATH            =   "PTINF-KEY2"  OR
+                                           "PTINF-KEY5"
+               MOVE    ZERO                TO  WRK-MOJISU
+               MOVE    SPACE               TO  WRK-NAME
+               PERFORM VARYING     IDX     FROM    100   BY  -1
+                       UNTIL       IDX     <       1
+                   IF      PTINF-NAME(IDX:1)  NOT =   SPACE
+                       MOVE    IDX                 TO  WRK-MOJISU 
+                       MOVE    1                   TO  IDX
+                   END-IF  
+               END-PERFORM
+      *
+               MOVE    PTINF-NAME(1:WRK-MOJISU)
+                                           TO  WRK-NAME(1:WRK-MOJISU)
+               COMPUTE IDX                 =   WRK-MOJISU  +  1
+               MOVE    "%"                 TO  WRK-NAME(IDX:1)
+               MOVE    WRK-NAME            TO  PTINF-NAME
+           END-IF
+      *
+           IF      ORC-DBPATH            =   "PTINF-KEY3"  OR
+                                           "PTINF-KEY5"
+               MOVE    ZERO                TO  WRK-MOJISU
+               MOVE    SPACE               TO  WRK-NAME
+               PERFORM VARYING     IDX     FROM    100   BY  -1
+                       UNTIL       IDX     <       1
+                   IF      PTINF-KANANAME(IDX:1)  NOT =   SPACE
+                       MOVE    IDX                 TO  WRK-MOJISU 
+                       MOVE    1                   TO  IDX
+                   END-IF  
+               END-PERFORM
+      *
+               MOVE    PTINF-KANANAME(1:WRK-MOJISU)
+                                           TO  WRK-NAME(1:WRK-MOJISU)
+               COMPUTE IDX                 =   WRK-MOJISU  +  1
+               MOVE    "%"                 TO  WRK-NAME(IDX:1)
+               MOVE    WRK-NAME            TO  PTINF-KANANAME
+           END-IF
+      *
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+      *
+           .
+       2001-SEL-PTINF-EXT.
+           EXIT.
+      *****************************************************************
+      *     　　　住所編集検索処理
+      *****************************************************************
+       2001-SEL-ADRS-SEC         SECTION.
+      *
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2001-SEL-ADRS-EXT
+           END-IF
+      *
+           MOVE    MCPDATA-REC         TO  ADRS-REC
+      *    地方公共団体文字数を確定
+           MOVE    ZERO                TO  WRK-MOJISU
+           IF      ORC-DBPATH          =   "ADRS-KEY3"   OR
+                                           "ADRS-KEY4"   OR
+                                           "ADRS-KEY5"
+               IF      ADRS-LPUBCD     NOT =   SPACE
+                   PERFORM VARYING     IDX     FROM    5   BY  -1
+                           UNTIL       IDX     <       1
+                       IF      ADRS-LPUBCD(IDX:1)  NOT =   SPACE
+                           MOVE    IDX     TO  WRK-MOJISU 
+                           MOVE    1       TO  IDX
+                       END-IF
+                   END-PERFORM
+               ELSE
+                   MOVE    1               TO  WRK-MOJISU
+               END-IF
+               IF    WRK-MOJISU            <   5
+                   COMPUTE IDX             =   WRK-MOJISU  +  1
+                   MOVE    "%"             TO  ADRS-LPUBCD(IDX:1)
+                END-IF
+           END-IF
+      *    郵便番号の文字数を確定
+           MOVE    ZERO                TO  WRK-MOJISU
+           IF      ORC-DBPATH          =   "ADRS-KEY3"   OR
+                                           "ADRS-KEY4"   OR
+                                           "ADRS-KEY5"
+               IF      ADRS-POST     NOT =   SPACE
+                   PERFORM VARYING     IDX     FROM    7   BY  -1
+                           UNTIL       IDX     <       1
+                       IF      ADRS-POST(IDX:1)  NOT =   SPACE
+                           MOVE    IDX     TO  WRK-MOJISU 
+                           MOVE    1       TO  IDX
+                       END-IF
+                   END-PERFORM
+               ELSE
+                   MOVE    1               TO  WRK-MOJISU
+               END-IF
+               IF    WRK-MOJISU            <   7
+                   COMPUTE IDX             =   WRK-MOJISU  +  1
+                   MOVE    "%"             TO  ADRS-POST(IDX:1)
+                END-IF
+           END-IF
+      *
+           MOVE    ADRS-REC        TO  MCPDATA-REC
+           .
+       2001-SEL-ADRS-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     点数マスタを名称等により検索処理
+      *****************************************************************
+       2001-SEL-TENSU-REC          SECTION.
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2001-SEL-TENSU-EXT
+           END-IF
+      *
+           MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+           MOVE    ORC-DBYMD             TO  TNS-YUKOSTYMD
+                                           TNS-YUKOEDYMD
+           MOVE    ZERO                TO  WRK-MOJISU
+           PERFORM VARYING     IDX     FROM    100  BY  -1
+                   UNTIL       IDX     <       1
+               IF      TNS-NAME(IDX:1)  NOT =   SPACE
+                   MOVE    IDX                 TO  WRK-MOJISU 
+                   MOVE    1                   TO  IDX
+               END-IF  
+           END-PERFORM
+      *
+      *    検索名称編集
+           IF      TNS-NAME            NOT =   SPACE
+                   PERFORM 20011-NAME-SET-SEC
+           END-IF
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+      *
+           .
+       2001-SEL-TENSU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     検索名称編集処理
+      *****************************************************************
+       20011-NAME-SET-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  WRK-ICHI1
+           MOVE    ZERO                TO  WRK-ICHI2
+           MOVE    ZERO                TO  WRK-MOJISU2
+      *
+           IF      TNS-NAME(1:2)       =   "＊"
+               MOVE    1                   TO  WRK-ICHI1
+           END-IF
+           COMPUTE WRK-MOJISU2         =   WRK-MOJISU      -   1
+           IF      TNS-NAME(WRK-MOJISU2:2)     =   "＊"
+               MOVE    1                   TO  WRK-ICHI2
+           END-IF
+      *
+           EVALUATE    TRUE
+      *        部分一致
+               WHEN    (WRK-ICHI1           =   1    )  AND
+                       (WRK-ICHI2           =   1    )
+                   COMPUTE WRK-MOJISU2         =   WRK-MOJISU    -   4
+                   MOVE    "%"                 TO  TNS-NAME(1:1)
+                   MOVE    TNS-NAME(3:WRK-MOJISU2)
+                                               TO  TNS-NAME
+                                                   (2:WRK-MOJISU2)
+                   COMPUTE IDX                 =   WRK-MOJISU2   +  2
+                   MOVE    "%"                 TO  TNS-NAME(IDX:1)
+      *--- TAKE ADD ST 
+                   COMPUTE IDX                 =   IDX  +  1 
+                   MOVE    SPACE               TO  TNS-NAME(IDX:2)
+      *--- TAKE ADD ED 
+      *        後方一致
+               WHEN    (WRK-ICHI1           =   1    )  AND
+                       (WRK-ICHI2           =   ZERO )
+                   COMPUTE WRK-MOJISU2         =   WRK-MOJISU    -   2
+                   MOVE    "%"                 TO  TNS-NAME(1:1)
+                   MOVE    TNS-NAME(3:WRK-MOJISU2)
+                                           TO  TNS-NAME(2:WRK-MOJISU2)
+      *--- TAKE ADD ST 
+      *            COMPUTE IDX             =   200 - (WRK-MOJISU2  +  2)
+                   COMPUTE WRK-MOJISU2     =   WRK-MOJISU2  +  2 
+      *            MOVE    SPACE           TO TNS-NAME(WRK-MOJISU2:IDX)
+                   MOVE    SPACE           TO  TNS-NAME(WRK-MOJISU2:2)
+      *--- TAKE ADD ED 
+      *        前方一致
+               WHEN    OTHER
+                   MOVE    TNS-NAME(1:WRK-MOJISU)
+                                              TO TNS-NAME(1:WRK-MOJISU)
+                   COMPUTE IDX                 =   WRK-MOJISU  +  1
+                   MOVE    "%"                 TO  TNS-NAME(IDX:1)
+      *--- TAKE ADD ST 
+                   COMPUTE IDX                 =   IDX  +  1 
+                   MOVE    SPACE               TO  TNS-NAME(IDX:2)
+      *--- TAKE ADD ED 
+           END-EVALUATE
+           MOVE    TNS-NAME                    TO  TNS-KANANAME
+           .
+       20011-NAME-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     パラメタテーブル編集処理
+      *****************************************************************
+       2001-SEL-PARA-SEC            SECTION.
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2001-SEL-PARA-EXT
+           END-IF
+      *
+      *    ファイル名の文字数を確定
+           MOVE    MCPDATA-REC         TO  PARA-REC
+           MOVE    PARA-FILEMEI        TO  WRK-FILEMEI
+           MOVE    ZERO                TO  WRK-MOJISU
+           PERFORM VARYING     IDX     FROM    20  BY  -1
+                   UNTIL       IDX     <       1
+               IF      WRK-FILEMEI(IDX:1)  NOT =   SPACE
+                   MOVE    IDX                 TO  WRK-MOJISU 
+                   MOVE    1                   TO  IDX
+               END-IF  
+           END-PERFORM
+      *
+           COMPUTE IDX                 =   WRK-MOJISU  +  1
+           MOVE    "%"                 TO  PARA-FILEMEI(IDX:1)
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+      *
+           .
+       2001-SEL-PARA-EXT.
+           EXIT. 
+      *
+      *****************************************************************
+      *     自院病名マスタを病名より検索処理
+      *****************************************************************
+       2001-SEL-USERBYOMEI-SEC         SECTION.
+      *
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2001-SEL-USERBYOMEI-EXT
+           END-IF
+      *
+           MOVE    MCPDATA-REC         TO  USERBYOMEI-REC
+           MOVE    ZERO                TO  WRK-MOJISU
+           PERFORM VARYING     IDX     FROM    160  BY  -1
+                   UNTIL       IDX     <       1
+               IF      USBYO-BYOMEI(IDX:1)  NOT =   SPACE
+                   MOVE    IDX                 TO  WRK-MOJISU 
+                   MOVE    1                   TO  IDX
+               END-IF  
+           END-PERFORM
+      *
+      *    検索名称編集
+           MOVE    SPACE               TO  WRK-BYOMEI
+           MOVE    "%"                 TO  WRK-BYOMEI(1:1)
+           MOVE    USBYO-BYOMEI(1:WRK-MOJISU)
+                                       TO  WRK-BYOMEI(2:WRK-MOJISU)
+           COMPUTE IDX                 =   WRK-MOJISU   +  2
+           MOVE    "%"                 TO  WRK-BYOMEI(IDX:1)
+           MOVE    SPACE               TO  USBYO-BYOMEI
+           MOVE    WRK-BYOMEI          TO  USBYO-BYOMEI
+      *
+           MOVE    USERBYOMEI-REC          TO  MCPDATA-REC
+      *
+           .
+       2001-SEL-USERBYOMEI-EXT.
+           EXIT.

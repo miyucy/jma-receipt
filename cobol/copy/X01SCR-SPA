@@ -1,0 +1,50 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      *****************************************************************
+      *
+      *    チェックマスタ 画面ＳＰＡ 
+      *            画面　Ｘ０１、Ｘ０２、Ｘ９９
+      *****************************************************************
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+       01  SPA-X01FREE.
+      *
+      *    Ｘ９８画面用
+           03  SPA-X98-MOTOPG              PIC X(08).
+           03  SPA-X98GMN-AREA.
+               05  SPA-X98-GMN-MAX               PIC 9(03).
+               05  SPA-X98-GMN-CUR               PIC 9(03).
+               05  SPA-X98-NAI-SELNUM            PIC 9(03).
+               05  SPA-X98-GMN-SELNUM            PIC X(03).
+               05  SPA-X98-GMN-INPUT             PIC X(22).
+               05  SPA-X98-GMN-SYORI             PIC X(01).
+               05  SPA-X98-GMN-KBN               PIC X(01).
+               05  SPA-X98-GMN-TBL.
+                   07  SPA-X98-GMN-TBLREC        OCCURS   200.
+                       11  SPA-X98-GMN-NO         PIC 9(03).
+                       11  SPA-X98-GMN-INPUTCD    PIC X(20).
+                       11  SPA-X98-GMN-SRYCD      PIC X(09).
+                       11  SPA-X98-GMN-NAME       PIC X(60).
+                       11  SPA-X98-GMN-KISOTEN    PIC 9(07)V99.
+      *
+                       11  SPA-X98-NAI-NO         PIC 9(03).
+      *
+      *    他の画面
+           03  SPA-X01SONOTA                  PIC X(30000). 

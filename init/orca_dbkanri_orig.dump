@@ -1,0 +1,34 @@
+--
+-- Selected TOC Entries:
+--
+--
+-- TOC Entry ID 2 (OID 2548487)
+--
+-- Name: tbl_dbkanri Type: TABLE Owner: orca
+--
+
+CREATE TABLE "tbl_dbkanri" (
+	"kanricd" character(8) NOT NULL,
+	"version" character varying(64),
+	"dbsversion1" character varying(64),
+	"dbsversion2" character varying(64),
+	"dbrversion1" character varying(64),
+	"dbrversion2" character varying(64),
+	"termid" character varying(32),
+	"opid" character varying(16),
+	"creymd" character(8),
+	"upymd" character(8),
+	"uphms" character(6),
+	Constraint "tbl_dbkanri_primary_key" Primary Key ("kanricd")
+);
+
+--
+-- Data for TOC Entry ID 3 (OID 2548487)
+--
+-- Name: tbl_dbkanri Type: TABLE DATA Owner: orca
+--
+
+
+COPY "tbl_dbkanri"  FROM stdin;
+ORCADB00	000000-0	S-000000-0-00000000-0	S-000000-0-00000000-0	R-000926-1-20020821-1	R-000926-1-20020821-1			20020826	        	      
+\.

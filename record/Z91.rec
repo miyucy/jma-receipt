@@ -1,0 +1,76 @@
+Z91	{
+	fixed2	{
+		MSTYMD	{
+			value	varchar(11);
+		};
+		SRYSTRCOMBO	{
+			SRYSTR	{
+				value	varchar(18);
+			};
+			state   int;
+			count	int;
+			item	varchar(17)[13];
+		};
+		SRYENDCOMBO	{
+			SRYEND	{
+				value	varchar(18);
+			};
+			state   int;
+			count	int;
+			item	varchar(17)[13];
+		};
+		SRYCHK	{
+			value	bool;
+		};
+		IYKCHK1	{
+			value	bool;
+		};
+		IYKCHK2	{
+			value	bool;
+		};
+		IYKCHK3	{
+			value	bool;
+		};
+		IYKCHK4	{
+			value	bool;
+		};
+		IYKCHK5	{
+			value	bool;
+		};
+		IYKCHK6	{
+			value	bool;
+		};
+		TOKCHK	{
+			value	bool;
+		};
+		SRY1	{
+			value	bool;
+		};
+		SRY2	{
+			value	bool;
+		};
+	        CYU1   {
+		        value	bool;
+		        state  int;    
+		};
+                CYU2	{
+		        value	bool;
+		        state  int;
+		};
+		SYU1	{
+			value	bool;
+		};
+		SYU2	{
+			value	bool;
+		};
+		SYU3	{
+			value	bool;
+		};
+		KEI1	{
+			value	bool;
+		};
+		KEI2	{
+			value	bool;
+		};
+	};
+};

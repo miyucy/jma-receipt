@@ -1,0 +1,59 @@
+tbl_srykarrk {
+	HOSPID				char(24);
+	PTID 				number(10);
+	SRYKA				char(2);
+	SYOSINYMD1			char(8);
+	SYOSINYMD2			char(8);
+	LASTYMD				char(8);
+	TERMID   			varchar(16);
+	OPID     			varchar(16);
+	CREYMD   			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+};
+
+primary	{
+	HOSPID,PTID,SRYKA;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_srykarrk_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_srykarrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_srykarrk_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_srykarrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_srykarrk_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_srykarrk
+ 		;
+	};
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_srykarrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};

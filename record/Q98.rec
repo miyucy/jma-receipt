@@ -1,0 +1,193 @@
+Q98	{
+	fixed1	{
+		POST	{
+			value	varchar(8);
+		};
+		ADRS	{
+			value	varchar(101);
+		};
+		TADRS01	{
+			value	varchar(21);
+		};
+		TADRS02	{
+			value	varchar(21);
+		};
+		TADRS03	{
+			value	varchar(21);
+		};
+		TADRS04	{
+			value	varchar(21);
+		};
+		TADRS05	{
+			value	varchar(21);
+		};
+		TADRS06	{
+			value	varchar(21);
+		};
+		TADRS07	{
+			value	varchar(21);
+		};
+		TADRS08	{
+			value	varchar(21);
+		};
+		TADRS09	{
+			value	varchar(21);
+		};
+		TADRS10	{
+			value	varchar(21);
+		};
+		TADRS11	{
+			value	varchar(21);
+		};
+		TADRS12	{
+			value	varchar(21);
+		};
+		TADRS13	{
+			value	varchar(21);
+		};
+		TADRS14	{
+			value	varchar(21);
+		};
+		TADRS15	{
+			value	varchar(21);
+		};
+		TADRS16	{
+			value	varchar(21);
+		};
+		TADRS17	{
+			value	varchar(21);
+		};
+		TADRS18	{
+			value	varchar(21);
+		};
+		TADRS19	{
+			value	varchar(21);
+		};
+		TADRS20	{
+			value	varchar(21);
+		};
+		TADRS21	{
+			value	varchar(21);
+		};
+		TADRS22	{
+			value	varchar(21);
+		};
+		TADRS23	{
+			value	varchar(21);
+		};
+		TADRS24	{
+			value	varchar(21);
+		};
+		TADRS25	{
+			value	varchar(21);
+		};
+		TADRS26	{
+			value	varchar(21);
+		};
+		TADRS27	{
+			value	varchar(21);
+		};
+		TADRS28	{
+			value	varchar(21);
+		};
+		TADRS29	{
+			value	varchar(21);
+		};
+		TADRS30	{
+			value	varchar(21);
+		};
+		TADRS31	{
+			value	varchar(21);
+		};
+		TADRS32	{
+			value	varchar(21);
+		};
+		TADRS33	{
+			value	varchar(21);
+		};
+		TADRS34	{
+			value	varchar(21);
+		};
+		TADRS35	{
+			value	varchar(21);
+		};
+		TADRS36	{
+			value	varchar(21);
+		};
+		TADRS37	{
+			value	varchar(21);
+		};
+		TADRS38	{
+			value	varchar(21);
+		};
+		TADRS39	{
+			value	varchar(21);
+		};
+		TADRS40	{
+			value	varchar(21);
+		};
+		TADRS41	{
+			value	varchar(21);
+		};
+		TADRS42	{
+			value	varchar(21);
+		};
+		TADRS43	{
+			value	varchar(21);
+		};
+		TADRS44	{
+			value	varchar(21);
+		};
+		TADRS45	{
+			value	varchar(21);
+		};
+		TADRS46	{
+			value	varchar(21);
+		};
+		TADRS47	{
+			value	varchar(21);
+		};
+		TADRS48	{
+			value	varchar(21);
+		};
+		TADRS49	{
+			value	varchar(21);
+		};
+		TADRS50	{
+			value	varchar(21);
+		};
+		TADRS51	{
+			value	varchar(21);
+		};
+		TADRS52	{
+			value	varchar(21);
+		};
+		TADRS53	{
+			value	varchar(21);
+		};
+		TADRS54	{
+			value	varchar(21);
+		};
+		TADRS55	{
+			value	varchar(21);
+		};
+		TADRS56	{
+			value	varchar(21);
+		};
+		TADRS57	{
+			value	varchar(21);
+		};
+		TADRS58	{
+			value	varchar(21);
+		};
+		TADRS59	{
+			value	varchar(21);
+		};
+		TADRS60	{
+			value	varchar(21);
+		};
+		SELNUM	{
+			value	number(3);
+		};
+	};
+};

@@ -1,0 +1,57 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this licence along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+        02  Z06.
+     *******02  Z06-FIXED1.
+              03  Z06-SRYCDH.
+                04  Z06-VALUE   PIC X(10).
+              03  Z06-YUKOSTYMDH.
+                04  Z06-VALUE   PIC X(10).
+              03  Z06-YUKOEDYMDH.
+                04  Z06-VALUE   PIC X(10).
+              03  Z06-NAMEH.
+                04  Z06-VALUE   PIC X(101).
+              03  Z06-NAME.
+                04  Z06-VALUE   PIC X(101).
+              03  Z06-KANANAME.
+                04  Z06-VALUE   PIC X(101).
+              03  Z06-YUKOSTYMD.
+                04  Z06-VALUE   PIC X(11).
+              03  Z06-YUKOEDYMD.
+                04  Z06-VALUE   PIC X(11).
+              03  Z06-FORMALNAME.
+                04  Z06-VALUE   PIC X(201).
+              03  Z06-JITEN1COMB.
+                04  Z06-JITEN1.
+                  05  Z06-VALUE   PIC X(13).
+                04  Z06-JITEN1-COUNT   PIC S9(9)   BINARY.
+                04  Z06-JITEN1-ITEM    PIC X(12)   OCCURS  2 TIMES.
+              03  Z06-JITEN2COMB.
+                04  Z06-JITEN2.
+                  05  Z06-VALUE   PIC X(13).
+                04  Z06-JITEN2-COUNT   PIC S9(9)   BINARY.
+                04  Z06-JITEN2-ITEM    PIC X(12)   OCCURS  2 TIMES.
+              03  Z06-JITEN3COMB.
+                04  Z06-JITEN3.
+                  05  Z06-VALUE   PIC X(13).
+                04  Z06-JITEN3-COUNT   PIC S9(9)   BINARY.
+                04  Z06-JITEN3-ITEM    PIC X(12)   OCCURS  2 TIMES.
+              03  Z06-JITEN4COMB.
+                04  Z06-JITEN4.
+                  05  Z06-VALUE   PIC X(13).
+                04  Z06-JITEN4-COUNT   PIC S9(9)   BINARY.
+                04  Z06-JITEN4-ITEM    PIC X(12)   OCCURS  2 TIMES.

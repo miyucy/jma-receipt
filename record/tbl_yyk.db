@@ -1,0 +1,110 @@
+tbl_yyk {
+	HOSPID				char(24);
+	SRYNAIYO			char(2);
+	DRCD    			char(5);
+	YYKYMD  			char(8);
+	KEYYYKTIME          		number(4,0);
+	YYKID   			number(2,0);
+	YYKMAXCNT   			number(3,0);
+	YYKCNT                          number(3,0);
+	YYKTIME 			number(4,0);
+	PTID     			number(10,0);
+	NAME    			varchar(100);
+	SRYKA                           char(2);
+	YYKKBN  	   		char(2);
+	KAKREN  			char(2);
+	RAIINZUMI   			char(1);
+	TERMID  		  	varchar(16);
+	OPID    			varchar(16);
+	CREYMD  			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+};
+primary	{
+	HOSPID,SRYNAIYO,DRCD,YYKYMD,KEYYYKTIME,YYKID;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_yyk_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_yyk
+			WHERE   HOSPID        =   :HOSPID
+			AND		SRYNAIYO      =   :SRYNAIYO
+			AND		DRCD          =   :DRCD
+			AND		YYKYMD        =   :YYKYMD
+			AND		KEYYYKTIME    =   :KEYYYKTIME
+			AND		YYKID         =   :YYKID
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_yyk_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_yyk
+			WHERE   HOSPID        =   :HOSPID
+			AND		SRYNAIYO      =   :SRYNAIYO
+			AND		DRCD          =   :DRCD
+			AND 	YYKYMD        =   :YYKYMD
+			AND		KEYYYKTIME    =   :KEYYYKTIME
+		;
+	};
+};
+             
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_yyk_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_yyk
+			WHERE   HOSPID        =   :HOSPID
+			AND		SRYNAIYO      =   :SRYNAIYO
+			AND		DRCD          =   :DRCD
+			AND		YYKYMD        =   :YYKYMD
+		;
+	};
+};
+
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_yyk_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_yyk
+			WHERE   HOSPID        =   :HOSPID
+			AND		YYKYMD        =   :YYKYMD
+			AND		PTID          =   :PTID
+		;
+	};
+};
+
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_yyk_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_yyk
+			WHERE   HOSPID        =   :HOSPID
+			AND		YYKYMD        =   :YYKYMD
+		;
+	};
+};
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_yyk_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_yyk
+ 		;
+	};
+};
+
+path	key6 	{
+	DBSELECT	{
+		DECLARE tbl_yyk_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_yyk
+			WHERE   HOSPID      =   :HOSPID
+			AND     PTID        =   :PTID
+		;
+	};
+};

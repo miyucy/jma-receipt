@@ -1,0 +1,10 @@
+ORCXBER 	{
+	fixed1	{
+		XBERCODE {
+			value	varchar(11);
+		};
+		XBERMSG	 {
+			value	varchar(61);
+		};
+	};
+};

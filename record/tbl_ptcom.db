@@ -1,0 +1,63 @@
+tbl_ptcom {
+	HOSPID				char(24);
+	PTID				number(10);
+	ZAINUM  			number(8);
+	SRYCD  				char(9) ;
+	RENNUM				number(3);
+	INPUTCOMENT  			varchar(80);
+	INPUTCHI1			char(8);
+	INPUTCHI2			char(8);
+	INPUTCHI3			char(8);
+	INPUTCHI4			char(8);
+	TERMID  			varchar(16);
+	OPID    			varchar(16);
+	CREYMD  			char(8);
+	UPYMD   			char(8);
+	UPHMS				char(6);
+};
+
+
+primary	{
+	HOSPID,PTID,ZAINUM,SRYCD,RENNUM;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_ptcom_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptcom
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   ZAINUM      =   :ZAINUM
+			AND   SRYCD       =   :SRYCD
+			AND   RENNUM      =   :RENNUM
+		;
+	};
+};
+path	del11 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_ptcom
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   ZAINUM      =   :ZAINUM
+		;
+	};
+};
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_ptcom_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptcom
+ 		;
+	};
+};
+path	del12 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_ptcom
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};

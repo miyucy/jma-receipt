@@ -1,0 +1,59 @@
+Z06	{
+	fixed1	{
+		SRYCDH	{
+			value	varchar(10);
+		};
+		YUKOSTYMDH	{
+			value	varchar(10);
+		};
+		YUKOEDYMDH	{
+			value	varchar(10);
+		};
+		NAMEH	{
+			value	varchar(101);
+		};
+		NAME	{
+			value	varchar(101);
+		};
+		KANANAME	{
+			value	varchar(101);
+		};
+		YUKOSTYMD	{
+			value	varchar(11);
+		};
+		YUKOEDYMD	{
+			value	varchar(11);
+		};
+		FORMALNAME	{
+			value	varchar(201);
+		};
+		JITEN1COMB	{
+			JITEN1	{
+				value	varchar(13);
+			};
+			count	int;
+			item	varchar(12)[2];
+		};
+		JITEN2COMB	{
+			JITEN2	{
+				value	varchar(13);
+			};
+			count	int;
+			item	varchar(12)[2];
+		};
+		JITEN3COMB	{
+			JITEN3	{
+				value	varchar(13);
+			};
+			count	int;
+			item	varchar(12)[2];
+		};
+		JITEN4COMB	{
+			JITEN4	{
+				value	varchar(13);
+			};
+			count	int;
+			item	varchar(12)[2];
+		};
+	};
+};

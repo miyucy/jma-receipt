@@ -1,0 +1,27 @@
+Y03	{
+	fixed1	{
+		SRYMD	{
+			value	varchar(10);
+		};
+		HYODAI	{
+			value	varchar(21);
+		};
+		scrolledwindow1	{
+			TSLIST	{
+				count	int;
+				item	{
+					value1	varchar(4);
+					value2	varchar(5);
+					value3	varchar(10);
+					value4	varchar(8);
+					value5	varchar(12);
+					value6	varchar(20);
+					value7	varchar(20);
+					value8	varchar(15);
+					value9	varchar(4);
+				}	[90];
+				select	bool[90];
+			};
+		};
+	};
+};

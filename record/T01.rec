@@ -1,0 +1,34 @@
+T01	{
+	fixed6	{
+		SKYYM	{
+			value	varchar(8);
+		};
+		DATAKBN1	{
+                    state   int;
+			value	bool;
+		};
+		DATAKBN2	{
+                    state   int;
+			value	bool;
+		};
+		DATAKBN4	{
+                    state   int;
+			value	bool;
+		};
+		DATAKBN5	{
+                    state   int;
+			value	bool;
+		};
+		DATAKBN3	{
+                    state   int;
+			value	bool;
+		};
+		SRYYM	{
+                    state   int;
+			value	varchar(21);
+		};
+		SKYYMD	{
+			value	varchar(11);
+		};
+	};
+};

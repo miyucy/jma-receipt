@@ -1,0 +1,87 @@
+tbl_rececom {
+	HOSPID				char(24);
+	PTID				number(10);
+	SRYKA				char(2);
+	SRYYM				char(6);
+	HKNCOMBI       		number(4);
+        SRYDD                           char(2);
+	COMMENT        		varchar(800);
+	TERMID  			varchar(16);
+	OPID    			varchar(16);
+	CREYMD  			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+};
+primary	{
+	HOSPID,PTID,SRYKA,SRYYM,HKNCOMBI,SRYDD;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_rececom_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_rececom
+			WHERE   HOSPID    =   :HOSPID
+			AND     PTID      =   :PTID
+			AND     SRYKA     =   :SRYKA
+			AND     SRYYM     =   :SRYYM
+			AND     HKNCOMBI  =   :HKNCOMBI
+                        AND     SRYDD     =   :SRYDD
+		;
+	};
+};
+
+path	key1		{ 	
+	DBSELECT	{
+		DECLARE tbl_rececom_key1_csr CURSOR FOR
+		SELECT *
+		FROM tbl_rececom
+			WHERE   HOSPID    =   :HOSPID
+			AND     PTID      =   :PTID
+			AND     SRYYM     =   :SRYYM
+		;
+	};
+};
+
+path	all	{ 	
+	DBSELECT	{
+		DECLARE tbl_rececom_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_rececom
+ 		;
+	};
+};
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_rececom_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_rececom
+			WHERE   HOSPID    =   :HOSPID
+			AND     PTID      =   :PTID
+			ORDER   BY        SRYYM  DESC
+		;
+	};
+};
+
+path	key3		{ 	
+	DBSELECT	{
+		DECLARE tbl_rececom_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_rececom
+			WHERE   HOSPID    =   :HOSPID
+			AND     PTID      =   :PTID
+			AND     SRYYM     =   :SRYYM
+                    AND     SRYDD     =   :SRYDD
+		;
+	};
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_rececom
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};

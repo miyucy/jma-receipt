@@ -1,0 +1,65 @@
+tbl_tensuplus {
+	SRYCD				char(9);
+	YUKOSTYMD			char(8);
+	YUKOEDYMD			char(8);
+	SHOYUKOKETA			number(2,0);
+	SHONAME				char(200);
+	SAIKETUKBN			number(1,0);
+	INPCHKKBN			number(1,0);
+	TERMID   			char(16);
+	OPID     			char(16);
+	CREYMD   			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+#-----> 主キー更新用項目
+	UPSRYCD				char(9),virtual;
+	UPYUKOSTYMD			char(8),virtual;
+	UPYUKOEDYMD			char(8),virtual;
+};
+primary	{
+	SRYCD,YUKOSTYMD,YUKOEDYMD;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_tensuplus_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensuplus
+			WHERE   SRYCD    =   :SRYCD
+ 			AND   YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+		;
+	};
+};
+
+path	upd1	{ 	
+	DBUPDATE	{
+		UPDATE	tbl_tensuplus 
+				SET	
+	SRYCD	=	:SRYCD,
+	YUKOSTYMD	=	:YUKOSTYMD,
+	YUKOEDYMD	=	:YUKOEDYMD,
+	SHOYUKOKETA	=	:SHOYUKOKETA,
+	SHONAME 	=	:SHONAME,
+	SAIKETUKBN	=	:SAIKETUKBN,
+	INPCHKKBN	=	:INPCHKKBN,
+	TERMID 			=	:TERMID,
+	OPID 			=	:OPID,
+	CREYMD 			=	:CREYMD,
+	UPYMD 			=	:UPYMD,
+	UPHMS			=	:UPHMS
+			WHERE   SRYCD      =   :UPSRYCD
+			AND		YUKOSTYMD     =  :UPYUKOSTYMD
+			AND		YUKOEDYMD     =  :UPYUKOEDYMD
+		;
+	};
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_tensuplus_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensuplus
+ 		;
+	};
+};

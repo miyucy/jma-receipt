@@ -1,0 +1,23 @@
+COBOL = cobc
+INSTALL = @INSTALL@
+MKDIR = mkdir -p
+CP = cp
+
+prefix = @prefix@
+exec_prefix= @exec_prefix@
+orcadir = ${exec_prefix}/orca
+lddefdir = ${orcadir}/lddef
+install_ignore := Makefile build-stmp
+
+all:   
+	touch build-stmp
+clean: 
+	-rm -f build-stmp
+
+distclean: 
+	-rm -f Makefile
+
+install: all
+	$(INSTALL) -d $(lddefdir)
+	$(CP) * $(lddefdir)/ ;\
+	for i in $(install_ignore) ;do rm -f $(lddefdir)/$$i; done

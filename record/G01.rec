@@ -1,0 +1,310 @@
+L01	{
+	fixed	{
+	        B06	{
+	           	state	int;
+	        };
+	        B07	{
+	           	state	int;
+	        };
+		CHK01	{
+	           	state	int;
+			value	bool;
+			label	varchar(80);
+		};
+		CHK02	{
+	           	state	int;
+			value	bool;
+			label	varchar(80);
+		};
+		CHK03	{
+	           	state	int;
+			value	bool;
+			label	varchar(80);
+		};
+		CHK04	{
+	           	state	int;
+			value	bool;
+			label	varchar(80);
+		};
+		CHK05	{
+	           	state	int;
+			value	bool;
+			label	varchar(80);
+		};
+		CHK06	{
+	           	state	int;
+			value	bool;
+			label	varchar(80);
+		};
+		CHK07	{
+	           	state	int;
+			value	bool;
+			label	varchar(80);
+		};
+		CHK08	{
+	           	state	int;
+			value	bool;
+			label	varchar(80);
+		};
+		CHK09	{
+	           	state	int;
+			value	bool;
+			label	varchar(80);
+		};
+		CHK10	{
+	           	state	int;
+			value	bool;
+			label	varchar(80);
+		};
+		PARA011	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA012	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA013	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARAHYOJI011	{
+			value	varchar(20);
+		};
+		PARAHYOJI012	{
+			value	varchar(20);
+		};
+		PARAHYOJI013	{
+			value	varchar(20);
+		};
+		PARA021	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA022	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA023	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARAHYOJI021	{
+			value	varchar(20);
+		};
+		PARAHYOJI022	{
+			value	varchar(20);
+		};
+		PARAHYOJI023	{
+			value	varchar(20);
+		};
+		PARA031	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA032	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA033	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARAHYOJI031	{
+			value	varchar(20);
+		};
+		PARAHYOJI032	{
+			value	varchar(20);
+		};
+		PARAHYOJI033	{
+			value	varchar(20);
+		};
+		PARA041	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA042	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA043	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARAHYOJI041	{
+			value	varchar(20);
+		};
+		PARAHYOJI042	{
+			value	varchar(20);
+		};
+		PARAHYOJI043	{
+			value	varchar(20);
+		};
+		PARA051	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA052	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA053	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARAHYOJI051	{
+			value	varchar(20);
+		};
+		PARAHYOJI052	{
+			value	varchar(20);
+		};
+		PARAHYOJI053	{
+			value	varchar(20);
+		};
+		PARA061	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA062	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA063	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARAHYOJI061	{
+			value	varchar(20);
+		};
+		PARAHYOJI062	{
+			value	varchar(20);
+		};
+		PARAHYOJI063	{
+			value	varchar(20);
+		};
+		PARA071	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA072	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA073	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARAHYOJI071	{
+			value	varchar(20);
+		};
+		PARAHYOJI072	{
+			value	varchar(20);
+		};
+		PARAHYOJI073	{
+			value	varchar(20);
+		};
+		PARA081	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA082	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA083	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARAHYOJI081	{
+			value	varchar(20);
+		};
+		PARAHYOJI082	{
+			value	varchar(20);
+		};
+		PARAHYOJI083	{
+			value	varchar(20);
+		};
+		PARA091	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA092	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA093	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARAHYOJI091	{
+			value	varchar(20);
+		};
+		PARAHYOJI092	{
+			value	varchar(20);
+		};
+		PARAHYOJI093	{
+			value	varchar(20);
+		};
+		PARA101	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA102	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARA103	{
+	           	state	int;
+			value	varchar(11);
+		};
+		PARAHYOJI101	{
+			value	varchar(20);
+		};
+		PARAHYOJI102	{
+			value	varchar(20);
+		};
+		PARAHYOJI103	{
+			value	varchar(20);
+		};
+		NUM1	{
+	           	state	int;
+			value	varchar(3);
+		};
+		NUM2	{
+	           	state	int;
+			value	varchar(3);
+		};
+		NUM3	{
+	           	state	int;
+			value	varchar(3);
+		};
+		NUM4	{
+	           	state	int;
+			value	varchar(3);
+		};
+		NUM5	{
+	           	state	int;
+			value	varchar(3);
+		};
+		NUM6	{
+	           	state	int;
+			value	varchar(3);
+		};
+		NUM7	{
+	           	state	int;
+			value	varchar(3);
+		};
+		NUM8	{
+	           	state	int;
+			value	varchar(3);
+		};
+		NUM9	{
+	           	state	int;
+			value	varchar(3);
+		};
+		NUM10	{
+	           	state	int;
+			value	varchar(3);
+		};
+	};
+};

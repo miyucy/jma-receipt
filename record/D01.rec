@@ -1,0 +1,136 @@
+D01	{
+	fixed6	{
+		SRYYM	{
+			value	varchar(7);
+		};
+		NYUGAIKBN	{
+			value	bool;
+		};
+		CHKBTN1	{
+			value	bool;
+		};
+		CHKBTN2	{
+			value	bool;
+		};
+		CHKBTN3	{
+			value	bool;
+		};
+		CHKBTN4	{
+			value	bool;
+		};
+		CHKBTN5	{
+			value	bool;
+		};
+		CHKBTN6	{
+			value	bool;
+		};
+		CHKBTN7	{
+			value	bool;
+		};
+		CHKBTN8	{
+			value	bool;
+		};
+		CHKBTN9	{
+			value	bool;
+		};
+		CHKBTN10	{
+			value	bool;
+		};
+		CHKBTN11	{
+			value	bool;
+		};
+		CHKBTN12	{
+			value	bool;
+		};
+		CHKBTN13	{
+			value	bool;
+		};
+		CHKBTN14	{
+			value	bool;
+		};
+		CHKBTN15	{
+			value	bool;
+		};
+		CHKBTN16	{
+			value	bool;
+		};
+		CHKBTN17	{
+			value	bool;
+		};
+		CHKBTN18	{
+			value	bool;
+		};
+		CHKBTN19	{
+			value	bool;
+		};
+		CHKBTN20	{
+			value	bool;
+		};
+		NYUGAIMSG	{
+			value	varchar(62);
+		};
+		CHKMSG1	{
+			value	varchar(62);
+		};
+		CHKMSG2	{
+			value	varchar(62);
+		};
+		CHKMSG3	{
+			value	varchar(62);
+		};
+		CHKMSG4	{
+			value	varchar(62);
+		};
+		CHKMSG5	{
+			value	varchar(62);
+		};
+		CHKMSG6	{
+			value	varchar(62);
+		};
+		CHKMSG7	{
+			value	varchar(62);
+		};
+		CHKMSG8	{
+			value	varchar(62);
+		};
+		CHKMSG9	{
+			value	varchar(62);
+		};
+		CHKMSG10	{
+			value	varchar(62);
+		};
+		CHKMSG11	{
+			value	varchar(62);
+		};
+		CHKMSG12	{
+			value	varchar(62);
+		};
+		CHKMSG13	{
+			value	varchar(62);
+		};
+		CHKMSG14	{
+			value	varchar(62);
+		};
+		CHKMSG15	{
+			value	varchar(62);
+		};
+		CHKMSG16	{
+			value	varchar(62);
+		};
+		CHKMSG17	{
+			value	varchar(62);
+		};
+		CHKMSG18	{
+			value	varchar(62);
+		};
+		CHKMSG19	{
+			value	varchar(62);
+		};
+		CHKMSG20	{
+			value	varchar(62);
+		};
+		CHKMSG99	{
+			value	varchar(62);
+		};
+	};
+};

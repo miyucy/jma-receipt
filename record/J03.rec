@@ -1,0 +1,43 @@
+J03	{
+	fixed19	{
+		PTNUM	{
+			value	varchar(21);
+		};
+		KANANAME	{
+			value	varchar(31);
+		};
+		NAME	{
+			value	varchar(31);
+		};
+		BIRTHDAY	{
+			value	varchar(10);
+		};
+		SEX	{
+			value	varchar(3);
+		};
+		SRYKA	{
+			value	varchar(11);
+		};
+		scrolledwindow1	{
+			SRYACTYMD	{
+				count	int;
+				item	{
+					value1	varchar(10);
+					value2	varchar(40);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		scrolledwindow2	{
+			SRYACTCNT	{
+				count	int;
+				item	{
+					value1	varchar(7);
+					value2	varchar(41);
+					value3	varchar(5);
+				}	[100];
+				select	bool[100];
+			};
+		};
+	};
+};

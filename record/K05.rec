@@ -1,0 +1,290 @@
+K05	{
+	fixed2	{
+		SETCODE	{
+			value	varchar(7);
+		};
+		NAME	{
+			value	varchar(81);
+		};
+		SRYKBN01	{
+			value	varchar(3);
+		};
+		SRYKBN02	{
+			value	varchar(3);
+		};
+		SRYKBN03	{
+			value	varchar(3);
+		};
+		SRYKBN04	{
+			value	varchar(3);
+		};
+		SRYKBN05	{
+			value	varchar(3);
+		};
+		SRYKBN06	{
+			value	varchar(3);
+		};
+		SRYKBN07	{
+			value	varchar(3);
+		};
+		SRYKBN08	{
+			value	varchar(3);
+		};
+		SRYKBN09	{
+			value	varchar(3);
+		};
+		SRYKBN10	{
+			value	varchar(3);
+		};
+		SRYKBN11	{
+			value	varchar(3);
+		};
+		SRYKBN12	{
+			value	varchar(3);
+		};
+		SRYKBN13	{
+			value	varchar(3);
+		};
+		SRYKBN14	{
+			value	varchar(3);
+		};
+		SRYKBN15	{
+			value	varchar(3);
+		};
+		SRYKBN16	{
+			value	varchar(3);
+		};
+		SRYKBN17	{
+			value	varchar(3);
+		};
+		SRYKBN18	{
+			value	varchar(3);
+		};
+		SRYKBN19	{
+			value	varchar(3);
+		};
+		SRYKBN20	{
+			value	varchar(3);
+		};
+		SRYKBN21	{
+			value	varchar(3);
+		};
+		SRYKBN22	{
+			value	varchar(3);
+		};
+		SRYKBN23	{
+			value	varchar(3);
+		};
+		INPUTCD01	{
+			value	varchar(23);
+		};
+		INPUTCD02	{
+			value	varchar(23);
+		};
+		INPUTCD03	{
+			value	varchar(23);
+		};
+		INPUTCD04	{
+			value	varchar(23);
+		};
+		INPUTCD05	{
+			value	varchar(23);
+		};
+		INPUTCD06	{
+			value	varchar(23);
+		};
+		INPUTCD07	{
+			value	varchar(23);
+		};
+		INPUTCD08	{
+			value	varchar(23);
+		};
+		INPUTCD09	{
+			value	varchar(23);
+		};
+		INPUTCD10	{
+			value	varchar(23);
+		};
+		INPUTCD11	{
+			value	varchar(23);
+		};
+		INPUTCD12	{
+			value	varchar(23);
+		};
+		INPUTCD13	{
+			value	varchar(23);
+		};
+		INPUTCD14	{
+			value	varchar(23);
+		};
+		INPUTCD15	{
+			value	varchar(23);
+		};
+		INPUTCD16	{
+			value	varchar(23);
+		};
+		INPUTCD17	{
+			value	varchar(23);
+		};
+		INPUTCD18	{
+			value	varchar(23);
+		};
+		INPUTCD19	{
+			value	varchar(23);
+		};
+		INPUTCD20	{
+			value	varchar(23);
+		};
+		INPUTCD21	{
+			value	varchar(23);
+		};
+		INPUTCD22	{
+			value	varchar(23);
+		};
+		INPUTCD23	{
+			value	varchar(23);
+		};
+		MEISYO01	{
+			value	varchar(63);
+		};
+		MEISYO02	{
+			value	varchar(63);
+		};
+		MEISYO03	{
+			value	varchar(63);
+		};
+		MEISYO04	{
+			value	varchar(63);
+		};
+		MEISYO05	{
+			value	varchar(63);
+		};
+		MEISYO06	{
+			value	varchar(63);
+		};
+		MEISYO07	{
+			value	varchar(63);
+		};
+		MEISYO08	{
+			value	varchar(63);
+		};
+		MEISYO09	{
+			value	varchar(63);
+		};
+		MEISYO10	{
+			value	varchar(63);
+		};
+		MEISYO11	{
+			value	varchar(63);
+		};
+		MEISYO12	{
+			value	varchar(63);
+		};
+		MEISYO13	{
+			value	varchar(63);
+		};
+		MEISYO14	{
+			value	varchar(63);
+		};
+		MEISYO15	{
+			value	varchar(63);
+		};
+		MEISYO16	{
+			value	varchar(63);
+		};
+		MEISYO17	{
+			value	varchar(63);
+		};
+		MEISYO18	{
+			value	varchar(63);
+		};
+		MEISYO19	{
+			value	varchar(63);
+		};
+		MEISYO20	{
+			value	varchar(63);
+		};
+		MEISYO21	{
+			value	varchar(63);
+		};
+		MEISYO22	{
+			value	varchar(63);
+		};
+		MEISYO23	{
+			value	varchar(63);
+		};
+		SURYO01	{
+			value	varchar(21);
+		};
+		SURYO02	{
+			value	varchar(21);
+		};
+		SURYO03	{
+			value	varchar(21);
+		};
+		SURYO04	{
+			value	varchar(21);
+		};
+		SURYO05	{
+			value	varchar(21);
+		};
+		SURYO06	{
+			value	varchar(21);
+		};
+		SURYO07	{
+			value	varchar(21);
+		};
+		SURYO08	{
+			value	varchar(21);
+		};
+		SURYO09	{
+			value	varchar(21);
+		};
+		SURYO10	{
+			value	varchar(21);
+		};
+		SURYO11	{
+			value	varchar(21);
+		};
+		SURYO12	{
+			value	varchar(21);
+		};
+		SURYO13	{
+			value	varchar(21);
+		};
+		SURYO14	{
+			value	varchar(21);
+		};
+		SURYO15	{
+			value	varchar(21);
+		};
+		SURYO16	{
+			value	varchar(21);
+		};
+		SURYO17	{
+			value	varchar(21);
+		};
+		SURYO18	{
+			value	varchar(21);
+		};
+		SURYO19	{
+			value	varchar(21);
+		};
+		SURYO20	{
+			value	varchar(21);
+		};
+		SURYO21	{
+			value	varchar(21);
+		};
+		SURYO22	{
+			value	varchar(21);
+		};
+		SURYO23	{
+			value	varchar(21);
+		};
+		SYORINAME	{
+		    style   varchar(20);
+			value	varchar(21);
+		};
+	};
+};

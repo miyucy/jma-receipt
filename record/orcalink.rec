@@ -1,0 +1,4 @@
+orcalink	{
+	linktext	char(200000);
+};
+

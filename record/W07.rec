@@ -1,0 +1,57 @@
+W07	{
+	fixed1	{
+		YUKOSTYMD	{
+			value	varchar(10);
+		};
+		YUKOEDYMD	{
+			value	varchar(10);
+		};
+		B03 {
+		    state   int;
+		};
+		notebook1	{
+			pageno	int;
+			TAG1	{
+				DATA01_COMBO	{
+					DATA01	{
+						value	varchar(13);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+				DATA02_COMBO	{
+					DATA02	{
+						value	varchar(13);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+				DATA03_COMBO	{
+					DATA03	{
+						value	varchar(13);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+				DATA04_COMBO	{
+					DATA04	{
+						value	varchar(13);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
+			};
+			TAGNAME1    {
+			    state   int;
+			};
+			TAG2	{
+				KIKAN	{
+					value   number(2);
+				};
+			};
+			TAGNAME2    {
+			    state   int;
+			};
+		};
+	};
+};

@@ -1,0 +1,12 @@
+M95	{
+	fixed1	{
+		CALENDAR1	{
+			year	int;
+			month	int;
+			day	int;
+		};
+		SYSYMD	{
+			value	varchar(11);
+		};
+	};
+};

@@ -1,0 +1,94 @@
+C03	{
+	fixed6	{
+		BANGO	{
+			value	number(3);
+		};
+		BYOMEICD_1	{
+			value	varchar(8);
+		};
+		BYOMEICD_2	{
+			value	varchar(8);
+		};
+		BYOMEICD_3	{
+			value	varchar(8);
+		};
+		BYOMEICD_4	{
+			value	varchar(8);
+		};
+		BYOMEICD_5	{
+			value	varchar(8);
+		};
+		BYOMEICD_6	{
+			value	varchar(8);
+		};
+		BYOMEI	{
+			value	varchar(81);
+		};
+		CHARTBYOMEI	{
+			value	varchar(81);
+		};
+		BYOMEIHENFLG	{
+			value	varchar(11);
+		};
+		SCR_ACTLST	{
+			BUNRUILST	{
+				count	int;
+				item	{
+					value1	varchar(4);
+					value2	varchar(20);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		BUNRUICD	{
+			value	number(3);
+		};
+		BUNRUIMEI	{
+			value	varchar(31);
+		};
+		DSPSEQ	{
+			value	number(2);
+		};
+		scrolledwindow28	{
+			BYOMEILST	{
+				count	int;
+				item	{
+					value1	varchar(4);
+					value2	varchar(16);
+					value3	varchar(10);
+					value4	varchar(80);
+					value5	varchar(80);
+					value6	varchar(14);
+					value7	varchar(42);
+					value8	varchar(8);
+					value9	varchar(4);
+				}	[700];
+				select	bool[700];
+			};
+		};
+		UTAGAIFLGCOMBO	{
+			UTAGAIFLG	{
+				value	varchar(15);
+			};
+			count	int;
+			item	varchar(14)[5];
+		};
+		BYOMEIINPUTCD	{
+			value	varchar(11);
+		};
+		MANSEIFLGCOMBO	{
+			MANSEIFLG	{
+				value	varchar(47);
+			};
+			count	int;
+			item	varchar(46)[5];
+		};
+		HKNBYOMEIFLGCOMBO	{
+			HKNBYOMEIFLG	{
+				value	varchar(11);
+			};
+			count	int;
+			item	varchar(10)[5];
+		};
+	};
+};

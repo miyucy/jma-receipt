@@ -1,0 +1,81 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+        02  K08.
+    ****** 02  K08-FIXED1.
+              03  K08-PTNUM.
+                04  K08-VALUE   PIC X(21).
+              03  K08-KANANAME.
+                04  K08-VALUE   PIC X(51).
+              03  K08-NAME.
+                04  K08-VALUE   PIC X(51).
+              03  K08-SEX.
+                04  K08-VALUE   PIC X(3).
+              03  K08-HKNKUMI.
+                04  K08-VALUE   PIC X(61).
+              03  K08-RATE.
+                04  K08-VALUE   PIC X(7).
+              03  K08-LASTYMD.
+                04  K08-VALUE   PIC X(10).
+              03  K08-SYOSINYMD.
+                04  K08-VALUE   PIC X(10).
+              03  K08-MISYUMONEY.
+                04  K08-VALUE   PIC X(16).
+              03  K08-SRYKA.
+                04  K08-VALUE   PIC X(11).
+              03  K08-SRYYMD.
+                04  K08-VALUE   PIC X(15).
+              03  K08-GOKEITEN.
+                04  K08-VALUE   PIC X(16).
+              03  K08-ZAITENTOTAL.
+                04  K08-VALUE   PIC X(17).
+              03  K08-BIRTHDAY.
+                04  K08-VALUE   PIC X(10).
+              03  K08-NENREI.
+                04  K08-VALUE   PIC X(7).
+              03  K08-SYORIMEI.
+                04  K08-SYORIMEI-STYLE   PIC X(20).
+                04  K08-SYORIMEI-VALUE   PIC X(12).
+              03  K08-SSUHKNTEN.
+                04  K08-VALUE   PIC X(11).
+              03  K08-SDOHKNTEN.
+                04  K08-VALUE   PIC X(11).
+              03  K08-ZTKHKNTEN.
+                04  K08-VALUE   PIC X(11).
+              03  K08-TYKHKNTEN.
+                04  K08-VALUE   PIC X(11).
+              03  K08-CSYHKNTEN.
+                04  K08-VALUE   PIC X(11).
+              03  K08-SYCHKNTEN.
+                04  K08-VALUE   PIC X(11).
+              03  K08-SJTHKNTEN.
+                04  K08-VALUE   PIC X(11).
+              03  K08-KNSHKNTEN.
+                04  K08-VALUE   PIC X(11).
+              03  K08-GZUHKNTEN.
+                04  K08-VALUE   PIC X(11).
+              03  K08-ETCHKNTEN.
+                04  K08-VALUE   PIC X(11).
+              03  K08-SELNUM    PIC S9(3)  OCCURS  10.
+              03  K08-SCROLLEDWINDOW1.
+                04  K08-MEILIST.
+                  05  K08-COUNT   PIC S9(9)   BINARY.
+                  05  K08-ITEM        OCCURS  300 TIMES.
+                    06  K08-BANGO     PIC X(3).
+                    06  K08-DELFLG    PIC X(4).
+                    06  K08-MEISAI    PIC X(150).
+                  05  K08-SELECT  PIC X       OCCURS  300 TIMES.

@@ -1,0 +1,18 @@
+OBJS = ORCBD001.so   ORCBD002.so   ORCBM001.so   ORCBM002.so   ORCBM003.so \
+       ORCBM004.so   ORCBM006.so   ORCBM007.so   ORCBM008.so \
+       ORCBM009.so   ORCBM010.so   ORCBM011.so   ORCR0010.so   ORCR0020.so \
+       ORCR0025.so   ORCR0030.so   ORCR0035.so   ORCR0050.so   ORCR0055.so \
+       ORCR0090.so   ORCR0091.so   ORCR0100.so   ORCR0101.so   ORCR0102.so \
+       ORCMUP0000.so ORCMUP0001.so ORCXRMST1.so  ORCXRMST2.so  ORCXSMST1  \
+       ORCR0200.so   ORCR0210.so   ORCR0300.so   ORCBM005.so   ORCBM020.so \
+       ORCBM021.so   ORCMUP0021.so ORCBM012.so   ORCMUP0041.so \
+       ORCR0030_200203.so  ORCR0090_200203.so  ORCR0100_200203.so \
+       ORCBPRT.so    ORCR0040.so   ORHCML01.so   ORHCML02.so   ORHCML03.so \
+       ORHCML06.so   ORHCML07.so   ORHCML08.so   ORHCML09.so   ORCBQ01.so \
+       ORCR0400.so   ORCR0410.so   ORCR0420.so   ORCR0430.so   ORCR0435.so \
+       ORCR0440.so   ORCR0450.so   ORCR0460.so   ORCR0465.so   ORCR0470.so \
+       ORCR0475.so   ORCR0480.so   ORCR0481.so   ORCR0490.so   ORCR0500.so \
+       ORCR0466.so   ORCR0482.so   ORCBD003.so
+
+top_builddir = ../..
+include $(top_builddir)/cobol/Makefile.global

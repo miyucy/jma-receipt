@@ -1,0 +1,36 @@
+R01	{
+	fixed6	{
+		RENNUM	{
+			value	number(3);
+		};
+		SRYYM	{
+			value	varchar(8);
+		};
+		PTNUM	{
+			value	varchar(21);
+		};
+		NYUGAIKBN	{
+			value	varchar(2);
+		};
+		NAME	{
+			value	varchar(51);
+		};
+		scrolledwindow1	{
+			RECELST	{
+				count	int;
+				item	{
+					value1	varchar(4);
+					value2	varchar(21);
+					value3	varchar(51);
+					value4	varchar(7);
+					value5	varchar(2);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		SYOKBN	{
+		    style   varchar(20); 
+			value	varchar(20);
+		};
+	};
+};

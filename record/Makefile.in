@@ -1,0 +1,23 @@
+COBOL = cobc
+INSTALL = @INSTALL@
+MKDIR = mkdir -p
+CP = cp
+
+prefix = @prefix@
+exec_prefix= @exec_prefix@
+orcadir = ${exec_prefix}/orca
+recorddir = ${orcadir}/record
+install_ignore := Makefile build-stmp
+
+all:   
+	touch build-stmp
+clean: 
+	-rm -f build-stmp
+
+distclean: 
+	-rm -f Makefile
+
+install: all
+	$(INSTALL) -d $(recorddir)
+	$(CP) * $(recorddir)/ ;\
+	for i in $(install_ignore) ;do rm -f $(recorddir)/$$i; done

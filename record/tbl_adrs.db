@@ -1,0 +1,90 @@
+tbl_adrs {
+	LPUBCD				char(5);
+	POST				char(7);
+	RENNUM				number(2);
+	PREFKANA			varchar(40);
+	CITYKANA			varchar(200);
+	TOWNKANA			varchar(200);
+	PREFNAME			varchar(20);
+	CITYNAME			varchar(100);
+	TOWNNAME			varchar(100);
+	EDITADRS_KANA		varchar(440);
+	EDITADRS_NAME		varchar(220);
+	TOWNDIVFLG			char(1);
+	MANYTOWNFLG			char(1);
+};
+
+primary	{
+	LPUBCD,POST,RENNUM;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_adrs_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_adrs
+			WHERE   LPUBCD    =   :LPUBCD
+			AND   POST        =   :POST
+			AND   RENNUM      =   :RENNUM
+;
+	};
+};
+
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_adrs_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_adrs
+			WHERE   POST      =   :POST
+;
+	};
+};
+
+path	all		{ 	
+	DBSELECT	{
+		DECLARE tbl_adrs_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_adrs
+;
+	};
+};
+
+path	key3		{ 	
+	DBSELECT	{
+		DECLARE tbl_adrs_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_adrs
+			WHERE   (LPUBCD   LIKE :LPUBCD)
+			ORDER  BY  LPUBCD,
+                                   POST,
+                                   RENNUM
+;
+	};
+};
+
+path	key4		{ 	
+	DBSELECT	{
+		DECLARE tbl_adrs_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_adrs
+			WHERE   (POST   LIKE :POST)
+			ORDER  BY  LPUBCD,
+                                   POST,
+                                   RENNUM
+;
+	};
+};
+
+path	key5		{ 	
+	DBSELECT	{
+		DECLARE tbl_adrs_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_adrs
+			WHERE   (LPUBCD LIKE :LPUBCD)  AND
+			        (POST   LIKE :POST)
+			ORDER  BY  LPUBCD,
+                                   POST,
+                                   RENNUM
+;
+	};
+};

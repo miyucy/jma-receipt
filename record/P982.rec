@@ -1,0 +1,19 @@
+P982	{
+	fixed32	{
+		SELNUM	{
+			value	varchar(4);
+		};
+		scrolledwindow26	{
+			LIST	{
+				count	int;
+				item	{
+					value1	varchar(3);
+					value2	varchar(7);
+					value3	varchar(5);
+					value4	varchar(100);
+				}	[100];
+				select	bool[100];
+			};
+		};
+	};
+};

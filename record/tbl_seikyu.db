@@ -1,0 +1,577 @@
+tbl_seikyu	{
+HOSPID				char(24);
+SRYYM				number(6);
+NYUGAIKBN			char(1);
+PTID				number(10);
+RECEKA				char(2);
+TEISYUTUSAKI			number(1,0);
+RECESYUBETU			char(4);
+HKNJANUM			char(8);
+TEKSTYMD			char(8);
+PTNUM				char(20);
+SKYYM				char(6);
+HENREIYM			char(6);
+SKYKBN		        char(1);
+TEISEIKBN	        char(1);
+HKNNUM          		char(3);
+HONKZKKBN          		char(1);
+KIGO				varchar(80);
+NUM				varchar(80);
+RJNHKNNUM          		char(3);
+KOHNUM1          		char(3);
+KOHNUM2          		char(3);
+KOHNUM3          		char(3);
+KOHNUM4          		char(3);
+JNISSU1	        		number(2,0);
+JNISSU2	        		number(2,0);
+JNISSU3	        		number(2,0);
+JNISSU4	        		number(2,0);
+JNISSU5	        		number(2,0);
+KHNTEN1	        		number(8,0);
+KAISU1	        		number(5,0);
+TENSU1_1        		number(8,0);
+TENSU1_2	        number(8,0);
+TENSU1_3        		number(8,0);
+TENSU1_4        		number(8,0);
+TENSU1_5        		number(8,0);
+KHNTEN2	        		number(8,0);
+KAISU2	        		number(5,0);
+TENSU2_1        		number(8,0);
+TENSU2_2        		number(8,0);
+TENSU2_3        		number(8,0);
+TENSU2_4        		number(8,0);
+TENSU2_5        		number(8,0);
+KHNTEN3	        		number(8,0);
+KAISU3	        		number(5,0);
+TENSU3_1        		number(8,0);
+TENSU3_2        		number(8,0);
+TENSU3_3        		number(8,0);
+TENSU3_4        		number(8,0);
+TENSU3_5        		number(8,0);
+KHNTEN4	        		number(8,0);
+KAISU4	        		number(5,0);
+TENSU4_1        		number(8,0);
+TENSU4_2        		number(8,0);
+TENSU4_3        		number(8,0);
+TENSU4_4        		number(8,0);
+TENSU4_5        		number(8,0);
+KHNTEN5	        		number(8,0);
+KAISU5	        		number(5,0);
+TENSU5_1        		number(8,0);
+TENSU5_2        		number(8,0);
+TENSU5_3        		number(8,0);
+TENSU5_4        		number(8,0);
+TENSU5_5        		number(8,0);
+KHNTEN6	        		number(8,0);
+KAISU6	        		number(5,0);
+TENSU6_1        		number(8,0);
+TENSU6_2        		number(8,0);
+TENSU6_3        		number(8,0);
+TENSU6_4        		number(8,0);
+TENSU6_5        		number(8,0);
+KHNTEN7	        		number(8,0);
+KAISU7	        		number(5,0);
+TENSU7_1        		number(8,0);
+TENSU7_2        		number(8,0);
+TENSU7_3        		number(8,0);
+TENSU7_4        		number(8,0);
+TENSU7_5        		number(8,0);
+KHNTEN8	        		number(8,0);
+KAISU8	        		number(5,0);
+TENSU8_1        		number(8,0);
+TENSU8_2        		number(8,0);
+TENSU8_3        		number(8,0);
+TENSU8_4        		number(8,0);
+TENSU8_5        		number(8,0);
+KHNTEN9	        		number(8,0);
+KAISU9	        		number(5,0);
+TENSU9_1        		number(8,0);
+TENSU9_2        		number(8,0);
+TENSU9_3        		number(8,0);
+TENSU9_4        		number(8,0);
+TENSU9_5        		number(8,0);
+KHNTEN10	       	number(8,0);
+KAISU10	        		number(5,0);
+TENSU10_1        		number(8,0);
+TENSU10_2        		number(8,0);
+TENSU10_3        		number(8,0);
+TENSU10_4        		number(8,0);
+TENSU10_5        		number(8,0);
+KHNTEN11	       	number(8,0);
+KAISU11	        		number(5,0);
+TENSU11_1        		number(8,0);
+TENSU11_2        		number(8,0);
+TENSU11_3        		number(8,0);
+TENSU11_4        		number(8,0);
+TENSU11_5        		number(8,0);
+KHNTEN12	       	number(8,0);
+KAISU12	        		number(5,0);
+TENSU12_1        		number(8,0);
+TENSU12_2        		number(8,0);
+TENSU12_3        		number(8,0);
+TENSU12_4        		number(8,0);
+TENSU12_5        		number(8,0);
+KHNTEN13	       	number(8,0);
+KAISU13	        		number(5,0);
+TENSU13_1        		number(8,0);
+TENSU13_2        		number(8,0);
+TENSU13_3        		number(8,0);
+TENSU13_4        		number(8,0);
+TENSU13_5        		number(8,0);
+KHNTEN14	       	number(8,0);
+KAISU14	        		number(5,0);
+TENSU14_1        		number(8,0);
+TENSU14_2        		number(8,0);
+TENSU14_3        		number(8,0);
+TENSU14_4        		number(8,0);
+TENSU14_5        		number(8,0);
+KHNTEN15	       		number(8,0);
+KAISU15	        		number(5,0);
+TENSU15_1        		number(8,0);
+TENSU15_2        		number(8,0);
+TENSU15_3        		number(8,0);
+TENSU15_4        		number(8,0);
+TENSU15_5        		number(8,0);
+KHNTEN16	       		number(8,0);
+KAISU16	        		number(5,0);
+TENSU16_1        		number(8,0);
+TENSU16_2        		number(8,0);
+TENSU16_3        		number(8,0);
+TENSU16_4        		number(8,0);
+TENSU16_5        		number(8,0);
+KHNTEN17	       		number(8,0);
+KAISU17	        		number(5,0);
+TENSU17_1        		number(8,0);
+TENSU17_2        		number(8,0);
+TENSU17_3        		number(8,0);
+TENSU17_4        		number(8,0);
+TENSU17_5        		number(8,0);
+KHNTEN18	       		number(8,0);
+KAISU18	        		number(5,0);
+TENSU18_1        		number(8,0);
+TENSU18_2        		number(8,0);
+TENSU18_3        		number(8,0);
+TENSU18_4        		number(8,0);
+TENSU18_5        		number(8,0);
+KHNTEN19	       		number(8,0);
+KAISU19	        		number(5,0);
+TENSU19_1        		number(8,0);
+TENSU19_2        		number(8,0);
+TENSU19_3        		number(8,0);
+TENSU19_4        		number(8,0);
+TENSU19_5        		number(8,0);
+KHNTEN20	       		number(8,0);
+KAISU20	        		number(5,0);
+TENSU20_1        		number(8,0);
+TENSU20_2        		number(8,0);
+TENSU20_3        		number(8,0);
+TENSU20_4        		number(8,0);
+TENSU20_5        		number(8,0);
+KHNTEN21	       		number(8,0);
+KAISU21	        		number(5,0);
+TENSU21_1        		number(8,0);
+TENSU21_2        		number(8,0);
+TENSU21_3        		number(8,0);
+TENSU21_4        		number(8,0);
+TENSU21_5        		number(8,0);
+KHNTEN22	       		number(8,0);
+KAISU22	        		number(5,0);
+TENSU22_1        		number(8,0);
+TENSU22_2        		number(8,0);
+TENSU22_3        		number(8,0);
+TENSU22_4        		number(8,0);
+TENSU22_5        		number(8,0);
+KHNTEN23	       		number(8,0);
+KAISU23	        		number(5,0);
+TENSU23_1        		number(8,0);
+TENSU23_2        		number(8,0);
+TENSU23_3        		number(8,0);
+TENSU23_4        		number(8,0);
+TENSU23_5        		number(8,0);
+KHNTEN24	       		number(8,0);
+KAISU24	        		number(5,0);
+TENSU24_1        		number(8,0);
+TENSU24_2        		number(8,0);
+TENSU24_3        		number(8,0);
+TENSU24_4        		number(8,0);
+TENSU24_5        		number(8,0);
+KHNTEN25	       		number(8,0);
+KAISU25	        		number(5,0);
+TENSU25_1        		number(8,0);
+TENSU25_2        		number(8,0);
+TENSU25_3        		number(8,0);
+TENSU25_4        		number(8,0);
+TENSU25_5        		number(8,0);
+KHNTEN26	       		number(8,0);
+KAISU26	        		number(5,0);
+TENSU26_1        		number(8,0);
+TENSU26_2        		number(8,0);
+TENSU26_3        		number(8,0);
+TENSU26_4        		number(8,0);
+TENSU26_5        		number(8,0);
+KHNTEN27	       		number(8,0);
+KAISU27	        		number(5,0);
+TENSU27_1        		number(8,0);
+TENSU27_2        		number(8,0);
+TENSU27_3        		number(8,0);
+TENSU27_4        		number(8,0);
+TENSU27_5        		number(8,0);
+KHNTEN28	       		number(8,0);
+KAISU28	        		number(5,0);
+TENSU28_1        		number(8,0);
+TENSU28_2        		number(8,0);
+TENSU28_3        		number(8,0);
+TENSU28_4        		number(8,0);
+TENSU28_5        		number(8,0);
+KHNTEN29	       		number(8,0);
+KAISU29	        		number(5,0);
+TENSU29_1        		number(8,0);
+TENSU29_2        		number(8,0);
+TENSU29_3        		number(8,0);
+TENSU29_4        		number(8,0);
+TENSU29_5        		number(8,0);
+KHNTEN30	       		number(8,0);
+KAISU30	        		number(5,0);
+TENSU30_1        		number(8,0);
+TENSU30_2        		number(8,0);
+TENSU30_3        		number(8,0);
+TENSU30_4        		number(8,0);
+TENSU30_5        		number(8,0);
+KHNTEN31	       		number(8,0);
+KAISU31	        		number(5,0);
+TENSU31_1        		number(8,0);
+TENSU31_2        		number(8,0);
+TENSU31_3        		number(8,0);
+TENSU31_4        		number(8,0);
+TENSU31_5        		number(8,0);
+KHNTEN32	       		number(8,0);
+KAISU32	        		number(5,0);
+TENSU32_1        		number(8,0);
+TENSU32_2        		number(8,0);
+TENSU32_3        		number(8,0);
+TENSU32_4        		number(8,0);
+TENSU32_5        		number(8,0);
+KHNTEN33	       		number(8,0);
+KAISU33	        		number(5,0);
+TENSU33_1        		number(8,0);
+TENSU33_2        		number(8,0);
+TENSU33_3        		number(8,0);
+TENSU33_4        		number(8,0);
+TENSU33_5        		number(8,0);
+KHNTEN34	       		number(8,0);
+KAISU34	        		number(5,0);
+TENSU34_1        		number(8,0);
+TENSU34_2        		number(8,0);
+TENSU34_3        		number(8,0);
+TENSU34_4        		number(8,0);
+TENSU34_5        		number(8,0);
+KHNTEN35	       		number(8,0);
+KAISU35	        		number(5,0);
+TENSU35_1        		number(8,0);
+TENSU35_2        		number(8,0);
+TENSU35_3        		number(8,0);
+TENSU35_4        		number(8,0);
+TENSU35_5        		number(8,0);
+KHNTEN36	       		number(8,0);
+KAISU36	        		number(5,0);
+TENSU36_1        		number(8,0);
+TENSU36_2        		number(8,0);
+TENSU36_3        		number(8,0);
+TENSU36_4        		number(8,0);
+TENSU36_5        		number(8,0);
+KHNTEN37	       		number(8,0);
+KAISU37	        		number(5,0);
+TENSU37_1        		number(8,0);
+TENSU37_2        		number(8,0);
+TENSU37_3        		number(8,0);
+TENSU37_4        		number(8,0);
+TENSU37_5        		number(8,0);
+KHNTEN38	       		number(8,0);
+KAISU38	        		number(5,0);
+TENSU38_1        		number(8,0);
+TENSU38_2        		number(8,0);
+TENSU38_3        		number(8,0);
+TENSU38_4        		number(8,0);
+TENSU38_5        		number(8,0);
+KHNTEN39	       		number(8,0);
+KAISU39	        		number(5,0);
+TENSU39_1        		number(8,0);
+TENSU39_2        		number(8,0);
+TENSU39_3        		number(8,0);
+TENSU39_4        		number(8,0);
+TENSU39_5        		number(8,0);
+KHNTEN40	       		number(8,0);
+KAISU40	        		number(5,0);
+TENSU40_1        		number(8,0);
+TENSU40_2        		number(8,0);
+TENSU40_3        		number(8,0);
+TENSU40_4        		number(8,0);
+TENSU40_5        		number(8,0);
+KHNTEN41	       		number(8,0);
+KAISU41	        		number(5,0);
+TENSU41_1        		number(8,0);
+TENSU41_2        		number(8,0);
+TENSU41_3        		number(8,0);
+TENSU41_4        		number(8,0);
+TENSU41_5        		number(8,0);
+KHNTEN42	       		number(8,0);
+KAISU42	        		number(5,0);
+TENSU42_1        		number(8,0);
+TENSU42_2        		number(8,0);
+TENSU42_3        		number(8,0);
+TENSU42_4        		number(8,0);
+TENSU42_5        		number(8,0);
+KHNTEN43	       		number(8,0);
+KAISU43	        		number(5,0);
+TENSU43_1        		number(8,0);
+TENSU43_2        		number(8,0);
+TENSU43_3        		number(8,0);
+TENSU43_4        		number(8,0);
+TENSU43_5        		number(8,0);
+KHNTEN44	       		number(8,0);
+KAISU44	        		number(5,0);
+TENSU44_1        		number(8,0);
+TENSU44_2        		number(8,0);
+TENSU44_3        		number(8,0);
+TENSU44_4        		number(8,0);
+TENSU44_5        		number(8,0);
+KHNTEN45	       		number(8,0);
+KAISU45	        		number(5,0);
+TENSU45_1        		number(8,0);
+TENSU45_2        		number(8,0);
+TENSU45_3        		number(8,0);
+TENSU45_4        		number(8,0);
+TENSU45_5        		number(8,0);
+TOTALTEN1        		number(8,0);
+TOTALTEN2        		number(8,0);
+TOTALTEN3        		number(8,0);
+TOTALTEN4        		number(8,0);
+TOTALTEN5        		number(8,0);
+FTNMONEY1        		number(9,0);
+FTNMONEY2        		number(9,0);
+FTNMONEY3        		number(9,0);
+FTNMONEY4        		number(9,0);
+FTNMONEY5        		number(9,0);
+SHOKUJINISSU1       		number(2,0);
+SHOKUJIRYOYOHI1       		number(9,0);
+SHOKUJIFTN1 			number(9,0);
+SHOKUJINISSU2       		number(2,0);
+SHOKUJIRYOYOHI2       		number(9,0);
+SHOKUJIFTN2 			number(9,0);
+SHOKUJINISSU3       		number(2,0);
+SHOKUJIRYOYOHI3       		number(9,0);
+SHOKUJIFTN3 			number(9,0);
+SHOKUJINISSU4       		number(2,0);
+SHOKUJIRYOYOHI4       		number(9,0);
+SHOKUJIFTN4 			number(9,0);
+SHOKUJINISSU5       		number(2,0);
+SHOKUJIRYOYOHI5       		number(9,0);
+SHOKUJIFTN5 			number(9,0);
+YKZFTN1 			number(5,0);
+YKZFTN2 			number(5,0);
+YKZFTN3 			number(5,0);
+YKZFTN4 			number(5,0);
+YKZFTN5 			number(5,0);
+HKNNUM_S                char(3); 
+HKNJANUM_S			char(8);
+CREYMD				char(8);
+UPDYMD				char(8);
+#-----> 主キー更新用項目
+UPHKNJANUM			char(10),virtual;
+#-----> 検索用項目
+XXPREFNUM 			char(2),virtual;
+};
+
+primary	{
+	HOSPID,SRYYM,NYUGAIKBN,PTID,RECEKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM,TEKSTYMD;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_seikyu_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE   HOSPID      =   :HOSPID
+                  AND   SRYYM       =   :SRYYM
+                  AND   NYUGAIKBN   =   :NYUGAIKBN
+                  AND   PTID        =   :PTID
+                  AND   RECEKA      =   :RECEKA 
+                  AND   TEISYUTUSAKI =  :TEISYUTUSAKI
+                  AND   RECESYUBETU =   :RECESYUBETU
+                  AND   HKNJANUM    =   :HKNJANUM
+                  AND   TEKSTYMD    =   :TEKSTYMD
+		;
+	};
+};
+
+path	key2	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE   HOSPID      =   :HOSPID
+                  AND   SRYYM       =   :SRYYM
+                  AND   PTID        =   :PTID
+                  AND   RECEKA      =   :RECEKA 
+		;
+	};
+};
+
+path	key3	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (      HKNNUM_S    <>  '060'       )
+                  AND (      HKNNUM_S    <>  '067'       ) 
+                  AND (      RECESYUBETU <>  '0000'      )
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+		;
+	};
+};
+
+path	key4	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID     )
+                  AND (      HKNNUM_S    =  '060'                   
+                        OR   HKNNUM_S    =  '067'        ) 
+                  AND (      RECESYUBETU <>  '0000'      ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                ORDER  BY  HKNJANUM_S   
+		;
+	};
+};
+
+path	key5	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE   HOSPID              =   :HOSPID
+                AND     RECESYUBETU         <>  '0000'  
+                AND     SRYYM               <=  :SKYYM
+                AND   (     ( SKYKBN        <>  '2'       )
+                         OR (      SKYYM     =   :SKYYM  
+                              AND  SRYYM     <>  :SKYYM   ) )
+                ORDER   BY  TEISYUTUSAKI,SRYYM,SKYYM,HKNJANUM,PTNUM,SKYYM     
+		;
+	};
+};
+
+path	key6	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID              )
+                  AND (      HKNNUM_S    =  '060'                   
+                        OR   HKNNUM_S    =  '067'                 ) 
+                  AND (      RECESYUBETU <>  '0000'               ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      ))          )
+                  AND (      SUBSTR(HKNJANUM_S,1,2) =  :XXPREFNUM ) 
+                ORDER  BY  HKNJANUM_S   
+		;
+	};
+};
+
+
+path	key7	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPID      =   :HOSPID              )
+                  AND (      HKNNUM_S    =  '060'                   
+                        OR   HKNNUM_S    =  '067'                 ) 
+                  AND (      RECESYUBETU <>  '0000'               ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      ))          )
+                  AND (      SUBSTR(HKNJANUM_S,1,2) <>  :XXPREFNUM ) 
+                ORDER  BY  HKNJANUM_S   
+		;
+	};
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+		;
+	};
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_seikyu
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};
+
+path	del2 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_seikyu
+                WHERE   HOSPID      =   :HOSPID
+                  AND   SRYYM       =   :SRYYM
+                  AND   RECESYUBETU =   '0000' 
+                  AND   SKYKBN      <>  "0" 
+		;
+	};
+};
+
+
+path	del3 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_seikyu
+                WHERE   HOSPID       =   :HOSPID
+                  AND   SRYYM        =   :SRYYM
+                  AND   TEISYUTUSAKI =   :TEISYUTUSAKI
+                  AND   SKYKBN       <>  "0" 
+		;
+	};
+};
+
+path	del4 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_seikyu
+                WHERE   HOSPID      =   :HOSPID
+                  AND   SRYYM       =   :SRYYM
+                  AND   NYUGAIKBN   =   :NYUGAIKBN
+                  AND   PTID        =   :PTID
+                  AND   SKYKBN      <>  "0" 
+		;
+	};
+};
+
+
+
+
+
+
+
+ 

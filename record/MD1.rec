@@ -1,0 +1,7 @@
+MD1	{
+	fixed1	{
+		MSGAREA	{
+			value	varchar(41);
+		};
+	};
+};

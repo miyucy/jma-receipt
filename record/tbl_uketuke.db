@@ -1,0 +1,101 @@
+tbl_uketuke {
+	HOSPID				char(24);
+	UKEYMD  			char(8);
+	UKEID    			number(5,0);
+	UKETIME 			char(6);
+	PTID	   			number(10,0);
+	NAME	 			varchar(100);
+	SRYKA   			char(2);
+	DRCD    			char(5);
+	SRYNAIYO			char(2);
+	KAIKEITIME			number(4,0);
+	KEYYYKTIME			number(4,0);
+	YYKTIME 			number(4,0);
+	YYKID   			number(2);
+	HYOJIJUN  			number(4);
+	KAKREN  			char(2);
+	TERMID  			varchar(16);
+	OPID    			varchar(16);
+	CREYMD  			char(8);
+	UPYMD   			char(8);
+	UPHMS				char(6);
+};
+primary	{
+	HOSPID,UKEYMD,UKEID;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_uketuke_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_uketuke
+			WHERE   HOSPID    =   :HOSPID
+			AND   UKEYMD      =   :UKEYMD
+			AND   UKEID       =   :UKEID
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_uketuke_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_uketuke
+			WHERE   HOSPID    =   :HOSPID
+			AND   UKEYMD      =   :UKEYMD
+			AND   PTID        =   :PTID
+		;
+	};
+};
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_uketuke_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_uketuke
+			WHERE   HOSPID    =   :HOSPID
+			AND   UKEYMD      =   :UKEYMD
+		;
+	};
+};
+
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_uketuke_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_uketuke
+			WHERE   HOSPID    =   :HOSPID
+			AND   UKEYMD      =   :UKEYMD
+			AND   PTID        =   :PTID
+			AND   UKETIME     =   :UKETIME
+		;
+	};
+};
+path	del11 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_uketuke
+			WHERE   HOSPID    =   :HOSPID
+			AND   UKEYMD      =   :UKEYMD
+			AND   PTID        =   :PTID
+			AND   UKETIME     =   :UKETIME
+		;
+	};
+};
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_uketuke_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_uketuke
+ 		;
+	};
+};
+path	del12 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_uketuke
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};

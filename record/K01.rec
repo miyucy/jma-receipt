@@ -1,0 +1,83 @@
+K01	{
+	fixed2	{
+		PTNUM	{
+			value	varchar(21);
+		};
+		SRYYMD	{
+			value	varchar(11);
+		};
+		HKNKUMI	{
+			value	varchar(5);
+		};
+		NAME	{
+			value	varchar(51);
+		};
+		KZKKBNNAME	{
+			value	varchar(51);
+		};
+		CALENDAR1	{
+			year	int;
+			month	int;
+			day	int;
+		};
+		SRYKACOMBO	{
+			SRYKA	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(21)[10];
+		};
+		ZENKAICOMB	{
+			ZENKAI	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
+		DRNAMECOMBO	{
+			DRNAME	{
+				value	varchar(28);
+			};
+			count	int;
+			item	varchar(27)[10];
+		};
+		BUNSANCOMB	{
+			BUNSAN	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
+		INGAIKBNCOMB	{
+			INGAISHOHOKBN	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
+		CONTKBNCOMB	{
+			CONTKBN	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(21)[5];
+		};
+		SYORIMEI	{
+		    style   varchar(20);
+			value	varchar(12);
+		};
+		scrolledwindow3	{
+			HKNKUMILST	{
+				count	int;
+				item	{
+					value1	varchar(5);
+					value2	varchar(51);
+					value3	varchar(10);
+					value4	varchar(10);
+					value5	varchar(5);
+				}	[100];
+				select	bool[100];
+			};
+		};
+	};
+};

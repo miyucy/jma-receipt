@@ -1,0 +1,22 @@
+P981	{
+	fixed1	{
+		POST	{
+			value	varchar(8);
+		};
+		TOWNNAMEDSP	{
+			value	varchar(21);
+		};
+		LPUBCD	{
+			value	varchar(6);
+		};
+		RENNUM	{
+			value	number(2);
+		};
+		TOWNNAME	{
+			value	varchar(101);
+		};
+		KBNCD	{
+			value	number(3);
+		};
+	};
+};

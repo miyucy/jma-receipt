@@ -1,0 +1,35 @@
+V01	{
+	fixed1	{
+		STYUKYMD	{
+			value	varchar(11);
+		};
+		EDYUKYMD	{
+			value	varchar(11);
+		};
+		HKNNUM	{
+			value	varchar(4);
+		};
+		TANSEIDONAME	{
+			value	varchar(11);
+		};
+		SELNUM	{
+			value	number(3);
+		};
+		PAYKBN	{
+	           	state	int;
+			value	varchar(3);
+		};
+		scrolledwindow1	{
+			LIST	{
+				count	int;
+				item	{
+					value1	varchar(4);
+					value2	varchar(3);
+					value3	varchar(10);
+					value4	varchar(10);
+				}	[100];
+				select	bool[100];
+			};
+		};
+	};
+};

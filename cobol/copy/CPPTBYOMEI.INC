@@ -1,0 +1,98 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      *****************************************************************
+      *  患者病名マスター       (CPPTBYOMEI.INC)
+      *****************************************************************
+      *  修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     01/06/06  保険病名フラグの追加
+      *  01/00/02    MCC-藤原     01.12.06  新しいレイアウトに変更     
+      *****************************************************************
+      *
+      *01  PTBYOMEI-REC.
+           03  PTBYO-KEY.
+      *医療機関ＩＤ
+               05  PTBYO-HOSPID        PIC X(24).
+      *患者ＩＤ
+               05  PTBYO-PTID          PIC 9(10).
+      *診療科
+               05  PTBYO-SRYKA         PIC X(02).
+      *診療開始日
+               05  PTBYO-SRYYMD        PIC X(08).
+      *連番号
+               05  PTBYO-RENNUM        PIC 9(02).
+      *基本病名コード
+           03  PTBYO-KHNBYOMEICD       PIC X(07).
+      *病名入力コード
+           03  PTBYO-BYOMEIINPUTCD     PIC X(20).
+      *病名コード数
+           03  PTBYO-BYOMEICDSU        PIC 9(01).
+      *病名コード
+           03  PTBYO-BYOMEICD-G.
+               05  PTBYO-BYOMEICD-1    PIC X(07).
+               05  PTBYO-BYOMEICD-2    PIC X(07).
+               05  PTBYO-BYOMEICD-3    PIC X(07).
+               05  PTBYO-BYOMEICD-4    PIC X(07).
+               05  PTBYO-BYOMEICD-5    PIC X(07).
+               05  PTBYO-BYOMEICD-6    PIC X(07).
+      *
+           03  PTBYO-BYOMEICD-R        REDEFINES   PTBYO-BYOMEICD-G.
+               05  PTBYO-BYOMEICD      PIC X(07)
+                                       OCCURS   6.
+      *疑いフラグ
+           03  PTBYO-UTAGAIFLG         PIC X(01).
+      *主病名フラグ
+           03  PTBYO-SYUBYOFLG         PIC X(01).
+      *慢性フラグ
+           03  PTBYO-MANSEIKBN         PIC 9(02).
+      *入外区分
+           03  PTBYO-NYUGAIKBN         PIC X(01).
+      *保険組合せ番号
+           03  PTBYO-HKNCOMBI          PIC 9(04).
+      *レセプト表示フラグ
+           03  PTBYO-REZEFLG           PIC X(01).
+      *レセプト表示月数
+           03  PTBYO-REZEMM            PIC 9(02).
+      *転帰区分
+           03  PTBYO-TENKIKBN          PIC X(01).
+      *転帰日
+           03  PTBYO-TENKIYMD          PIC X(08).
+      *病名
+           03  PTBYO-BYOMEI            PIC X(160).
+      *病名文字数
+           03  PTBYO-BYOMEIMOJI        PIC 9(02).
+      *カルテ病名
+           03  PTBYO-CHARTBYOMEI       PIC X(160).
+      *カルテ病名文字数
+           03  PTBYO-CHARTBYOMEIMOJI   PIC 9(02).
+      *病名編集フラグ
+           03  PTBYO-BYOMEIHENFLG      PIC X(01).
+      *----(01.00.01) LINE ADD START ----------------------------------
+      *保険病名フラグ
+           03  PTBYO-HKNBYOMEIFLG      PIC X(01).
+      *----(01.00.01) LINE ADD END   ----------------------------------
+      *端末ＩＤ
+           03  PTBYO-TERMID            PIC X(16).
+      *オペーレータＩＤ
+           03  PTBYO-OPID              PIC X(16).
+      *作成年月日
+           03  PTBYO-CREYMD            PIC X(08).
+      *更新年月日
+           03  PTBYO-UPYMD             PIC X(08).
+      *更新時間
+           03  PTBYO-UPHMS             PIC X(06).

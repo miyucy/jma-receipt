@@ -1,0 +1,71 @@
+W12	{
+	fixed1	{
+		YUKOSTYMD	{
+			value	varchar(10);
+		};
+		YUKOEDYMD	{
+			value	varchar(10);
+		};
+		BYOMEIHENKBN_COMBO	{
+			BYOMEIHENKBN	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[2];
+		};
+		BYOMEIHENKBN1_COMBO	{
+			BYOMEIHENKBN1	{
+				value	varchar(23);
+			};
+			count	int;
+			item	varchar(22)[2];
+		};
+		TENKIHENKBN_COMBO	{
+			TENKIHENKBN	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[2];
+		};
+		KKHRECEKBN_COMBO	{
+			KKHRECEKBN	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[3];
+		};
+		SYARECEKBN_COMBO	{
+			SYARECEKBN	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[3];
+		};
+		RECEDENOUT	{
+			value	varchar(31);
+		};
+		KKHOCRKBN_COMBO	{
+			KKHOCRKBN	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[2];
+		};
+		PREFPRGID	{
+			value	varchar(16);
+		};
+		SYAPRTNM	{
+			value	varchar(17);
+		};
+		KKHPRTNM	{
+			value	varchar(17);
+		};
+		KKHPRTKBN_COMBO	{
+			KKHPRTKBN	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[2];
+		};
+	};
+};

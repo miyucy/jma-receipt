@@ -1,0 +1,61 @@
+tbl_ptnum {
+	HOSPID		    char(24);
+	PTID		    number(10);
+	PTNUM		    char(20);
+	HKNID		    number(10);
+	KOHID		    number(10);
+	AUTOCOMBINUM    number(4);
+	MANUCOMBINUM	number(4);
+	TSTPTNUMKBN	    char(1);
+	TERMID		    varchar(16);
+	OPID		    varchar(16);
+	CREYMD		    char(8);
+	UPYMD		    char(8);
+	UPHMS		    char(6);
+};
+
+primary	{
+	HOSPID,PTID;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_ptnum_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnum
+			WHERE   HOSPID        =   :HOSPID  AND
+					PTID          =   :PTID
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_ptnum_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnum
+			WHERE  (HOSPID       =   :HOSPID)  AND
+			(PTNUM      LIKE  :PTNUM)
+		;
+	};
+};
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_ptnum_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnum
+		;
+	};
+};
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_ptnum
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};
+
+

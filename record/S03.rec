@@ -1,0 +1,234 @@
+S03	{
+	fixed14	{
+		PTNUM	{
+			value	varchar(21);
+		};
+		SRYYMD	{
+			value	varchar(10);
+		};
+		KANANAME	{
+			value	varchar(51);
+		};
+		NAME	{
+			value	varchar(51);
+		};
+		SEX	{
+			value	varchar(5);
+		};
+		BIRTHDAY	{
+			value	varchar(10);
+		};
+		HKNCOMBI	{
+			value	varchar(31);
+		};
+		RATE	{
+			value	varchar(7);
+		};
+		SRYKA	{
+			value	varchar(11);
+		};
+		HAKYMD	{
+			value	varchar(10);
+		};
+		DENPNUM	{
+			value	varchar(11);
+		};
+		SSUHKNTEN	{
+			value	number(10);
+		};
+		SJTHKNTEN	{
+			value	number(10);
+		};
+		SYCHKNTEN	{
+			value	number(10);
+		};
+		CSYHKNTEN	{
+			value	number(10);
+		};
+		ZTKHKNTEN	{
+			value	number(10);
+		};
+		SDOHKNTEN	{
+			value	number(10);
+		};
+		TOTALHKNTEN	{
+			value	number(10);
+		};
+		HKNTEKMONEY	{
+			value	number(10);
+		};
+		HKNTEKGAI	{
+			value	number(10);
+		};
+		SYKMONEY	{
+			value	number(10);
+		};
+		FTNTOTAL	{
+			value	number(10);
+		};
+		RJNFTN	{
+			value	number(10);
+		};
+		ZENMISYU	{
+			value	number(10);
+		};
+		GZUHKNTEN	{
+			value	number(10);
+		};
+		KOHFTN	{
+			value	number(10);
+		};
+		YKZFTN	{
+			value	number(10);
+		};
+		JIHI5	{
+			value	number(10);
+		};
+		JIHI2	{
+			value	number(10);
+		};
+		JIHI1	{
+			value	number(10);
+		};
+		ETCHKNTEN	{
+			value	number(10);
+		};
+		KNSHKNTEN	{
+			value	number(10);
+		};
+		JIHITAX	{
+			value	number(10);
+		};
+		JIHITOTAL	{
+			value	number(10);
+		};
+		JIHI4	{
+			value	number(10);
+		};
+		JIHI3	{
+			value	number(10);
+		};
+		DENPJTI	{
+			value	varchar(11);
+		};
+		NYUKINGK1	{
+			value	number(10);
+		};
+		GOKMISYU	{
+			value	number(10);
+		};
+		NAIYO	{
+			value	varchar(11);
+		};
+		MISYUZAN	{
+			value	number(10);
+		};
+		NYUKINGK2	{
+			value	number(10);
+		};
+		NYUKINYMD	{
+			value	varchar(11);
+		};
+		RIREKIIN	{
+			value	number(2);
+		};
+		TYKHKNTEN	{
+			value	number(10);
+		};
+		SSUTGMONEY	{
+			value	number(10);
+		};
+		SDOTGMONEY	{
+			value	number(10);
+		};
+		ZTKTGMONEY	{
+			value	number(10);
+		};
+		TYKTGMONEY	{
+			value	number(10);
+		};
+		CSYTGMONEY	{
+			value	number(10);
+		};
+		SYCTGMONEY	{
+			value	number(10);
+		};
+		SJTGMONEY	{
+			value	number(10);
+		};
+		KNSTGMONEY	{
+			value	number(10);
+		};
+		GZUTGMONEY	{
+			value	number(10);
+		};
+		ETCTGMONEY	{
+			value	number(10);
+		};
+		NYUKINHOUHOU_COMBO	{
+			NYUKINHOUHOU	{
+				value	varchar(27);
+			};
+			count	int;
+			item	varchar(27)[3];
+		};
+		scrolledwindow1	{
+			clist1	{
+				count	int;
+				item	{
+					value1	varchar(4);
+					value2	varchar(12);
+					value3	varchar(12);
+					value4	varchar(11);
+					value5	varchar(12);
+				}	[10];
+				select	bool[10];
+			};
+		};
+		JIHIMSG1	{
+			value	varchar(20);
+		};
+		JIHIMSG2	{
+			value	varchar(20);
+		};
+		JIHIMSG3	{
+			value	varchar(20);
+		};
+		JIHIMSG4	{
+			value	varchar(20);
+		};
+		JIHIMSG5	{
+			value	varchar(20);
+		};
+		JIHITAXTOTAL	{
+			value	number(10);
+		};
+		JIHI1TAX	{
+			value	number(10);
+		};
+		JIHI2TAX	{
+			value	number(10);
+		};
+		JIHI3TAX	{
+			value	number(10);
+		};
+		JIHI4TAX	{
+			value	number(10);
+		};
+		JIHI5TAX	{
+			value	number(10);
+		};
+		RSISHOSHIN	{
+			value	number(10);
+		};
+		RSISAISHIN	{
+			value	number(10);
+		};
+		RSISDO		{
+			value	number(10);
+		};
+		RSIETC		{
+			value	number(10);
+		};
+	};
+};

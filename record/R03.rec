@@ -1,0 +1,41 @@
+R03	{
+	fixed6	{
+		SRYYM	{
+			value	varchar(8);
+		};
+		SYOKBN	{
+			value	bool;
+			label	varchar(20);
+		};
+		DATAKBN2	{
+			value	bool;
+		};
+		DATAKBN3	{
+			value	bool;
+		};
+		DATAKBN22	{
+			value	bool;
+		};
+		DATAKBN23	{
+			value	bool;
+		};
+		DATAKBN1	{
+			value	bool;
+		};
+		DATAKBN21	{
+			value	bool;
+		};
+		IKKATU	{
+			value	bool;
+		};
+		KOBETU	{
+			value	bool;
+		};
+		DATAKBN31	{
+			value	bool;
+		};
+		DATAKBN11	{
+			value	bool;
+		};
+	};
+};

@@ -1,0 +1,506 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+       IDENTIFICATION              DIVISION.
+       PROGRAM-ID.                 ORCSC94.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : 画面表示編集処理（SPA-COM -> SPA-GMN)
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  01/08/03    MCC−多々納   新規作成
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+      *
+      *
+       ENVIRONMENT                 DIVISION.
+       CONFIGURATION               SECTION.
+       INPUT-OUTPUT                SECTION.
+       FILE-CONTROL.
+      *
+      *
+       DATA                        DIVISION.
+      *FILE                        SECTION.
+      *
+       WORKING-STORAGE             SECTION.
+      *
+      *    フラグ領域
+       01  FLG-AREA.
+           03  FLG-END             PIC 9(01).
+           03  FLG-SP              PIC 9(01).
+      *
+      *    添字領域
+       01  IDX-AREA.
+           03  IDX                 PIC 9(04).
+           03  IDX2                PIC 9(04).
+           03  IDM                 PIC 9(04).
+           03  IDY                 PIC 9(04).
+           03  IDS1                PIC 9(04).
+           03  IDS2                PIC 9(04).
+      *
+           03  IDK1                PIC 9(04).
+           03  IDK2                PIC 9(04).
+      *
+           03  IDZ                 PIC 9(02).
+           03  IDX-ICD1            PIC 9(01).
+           03  IDX-ICD             PIC 9(02).
+      *
+      *    一時領域
+       01  WRK-AREA.
+           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
+               05  WRK-SURYO-S1    PIC 9(05).
+               05  WRK-SURYO-S2    PIC 9(03).
+      *
+           03  WRK-SURYO-X.
+               05  WRK-SURYO-Z1    PIC ZZZZZ.
+               05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
+                                   PIC ZZZZ9.
+               05  WRK-SURYO-Z2    PIC X(01).
+               05  WRK-SURYO-Z3    PIC ZZZ.
+           03  WRK-TENSU-X.
+               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
+           03  WRK-TENSUS-X.
+               05  WRK-TENSUS-Z    PIC ZZZZ9.99.
+           03  WRK-KAISU-X.
+               05  WRK-KAISU-Z     PIC ZZZZ.
+           03  WRK-BUNGSU-X.
+               05  WRK-BUNGSU-Z    PIC ZZZZZZZZ.
+           03  WRK-KEICOM-X.
+               05  WRK-KEICOM-Z    PIC ZZZZZZZ9.
+           03  WRK-KEICOMS-X.
+               05  WRK-KEICOMS-Z   PIC ZZZZ9V99.
+           03  WRK-GOKEI-X.
+               05  WRK-GOKEI-Z     PIC ZZZZZZZZ.
+      *
+           03  WRK-SURYO-H         PIC X(09).
+           03  WRK-KAISU-H         PIC X(04).
+           03  WRK-BUNGSU-H        PIC X(09).
+           03  WRK-KAKERU          PIC X(01).
+           03  WRK-ATAI            PIC X(20).
+      *
+           03  WRK-HEN-INPUTCD         PIC X(22).
+           03  WRK-HEN-INPUTCDW        PIC X(22).
+           03  WRK-JIKAN               PIC X(01).
+      *    入力コード変換用
+           03  WRK-IDX-FT              PIC 9(04).
+           03  WRK-CD-MCNT             PIC 9(04).
+      *
+           03  WRK-MOJI            PIC X(01).
+      *
+           03  WRK-MAISU           PIC 9(05).
+      *
+      *
+      *****************************************************************
+      *    連絡　領域
+      *****************************************************************
+        LINKAGE                     SECTION.
+      *    診療行為算定用共通パラメタ
+           COPY    "CPORCSC94.INC".
+      *
+       01  SPA-SCR-REC.
+           COPY    "CPK02SPASCR.INC".
+      *
+       PROCEDURE                   DIVISION    USING
+           ORCSC94AREA
+           SPA-SCR-REC
+           .
+      *
+      *****************************************************************
+      *    主　　処理
+      *****************************************************************
+       000-PROC-SEC                SECTION.
+      *
+      *    対象行チェック
+           IF      LNK-SC94-IDX    >=   1  AND  <=  200
+               CONTINUE
+           ELSE
+               GO      TO     000-PROC-EXT
+           END-IF
+      *
+           MOVE    LNK-SC94-IDX        TO  IDX
+      *    診療行為コードより、処理を決定
+      *
+           IF      SPA-GMN-INPUTCD(IDX)(1:1)       =   "." OR "S"
+               MOVE    SPA-GMN-INPUTCD(IDX)(1:1)   TO  WRK-MOJI
+           ELSE
+               MOVE    SPA-COM-INPUTCD(IDX)(1:1)   TO  WRK-MOJI
+               IF      SPA-COM-INPUTCD(IDX)(1:3)   =   "059"
+                   MOVE    "7"                     TO  WRK-MOJI
+               END-IF
+           END-IF
+      *
+           IF      WRK-MOJI            =   "."
+               GO     TO      000-PROC-EXT
+           END-IF
+      *    自費の時、０とする
+           IF      SPA-COM-SRYKBN (IDX)    =   "95"  OR  "96"
+               IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "6" OR "7"
+                   CONTINUE
+               ELSE
+                   MOVE    "0"                 TO  WRK-MOJI
+               END-IF
+           END-IF
+      *
+           EVALUATE    LNK-SC94-KBN
+      *        画面入力項目編集用へ（画面入力以外の再編集）
+               WHEN    "1"
+                   PERFORM 100-COM-GMNINPUT-SEC
+      *            入力値を画面編集用へ
+               WHEN    "2"
+                   PERFORM 200-GMNINPUT-GMN-SEC
+           END-EVALUATE
+      *
+           .
+       000-PROC-EXT.
+      *
+           EXIT    PROGRAM
+           .
+      *
+      *****************************************************************
+      *    診療コードを画面編集用処理
+      *****************************************************************
+       100-COM-GMNINPUT-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-KAISU-X
+           MOVE    SPACE               TO  WRK-SURYO-X
+           MOVE    SPACE               TO  WRK-KAKERU
+           MOVE    SPACE               TO  WRK-ATAI
+           MOVE    SPACE               TO  WRK-BUNGSU-X
+           MOVE    SPACE               TO  WRK-ATAI
+      *
+           EVALUATE    WRK-MOJI
+      *            手技料
+               WHEN    "1"
+                   IF      SPA-COM-SURYO  (IDX)     >  1
+                       MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
+                       PERFORM 2001-SURYO-HEN-SEC
+                   END-IF
+      *            医薬品     数量・回数
+               WHEN    "6"
+      *            特定器材   数量・回数
+               WHEN    "7"
+                   MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
+                   PERFORM 2001-SURYO-HEN-SEC
+      *            画像診断用　分画数
+                   IF      SPA-COM-DATAKBN(IDX)        =   "3"
+                       IF      SPA-COM-BUNGSU (IDX)    >   ZERO
+                           MOVE    SPA-COM-BUNGSU (IDX)
+                                                   TO  WRK-BUNGSU-Z
+                       END-IF
+                   END-IF
+      *
+      *            自費金額
+               WHEN    "0"
+                   IF      SPA-COM-KEIFLG(IDX)     =   "1"
+                       IF      SPA-COM-KISOTEN (IDX)   =   ZERO
+                           MOVE    SPA-COM-KEI(IDX)    TO  WRK-SURYO
+                           PERFORM 2001-SURYO-HEN-SEC
+                       END-IF
+                   END-IF
+      *
+      *            コメント
+               WHEN    "8"
+                   IF      SPA-COM-INPUTCHI-G (IDX)    NOT =   SPACE
+                      MOVE    SPACE                TO  WRK-ATAI
+                      STRING 
+                          SPA-COM-ATAI1   (IDX)   DELIMITED   BY  SPACE
+                          " "                     DELIMITED   BY  SIZE
+                          SPA-COM-ATAI2   (IDX)   DELIMITED   BY  SPACE
+                          " "                     DELIMITED   BY  SIZE
+                          SPA-COM-ATAI3   (IDX)   DELIMITED   BY  SPACE
+                          " "                     DELIMITED   BY  SIZE
+                          SPA-COM-ATAI4   (IDX)   DELIMITED   BY  SPACE
+                          INTO                 WRK-ATAI
+                       END-STRING
+                   END-IF
+      *        約束セット
+               WHEN    "S"
+                   IF      SPA-COM-SURYO  (IDX)     >  1
+                       MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
+                       PERFORM 2001-SURYO-HEN-SEC
+                   END-IF
+           END-EVALUATE
+      *
+      *****IF    ((SPA-COM-KAIFLG (IDX)    =   "1"  )  AND
+      *           (SPA-COM-KAISU  (IDX)    >   1    ))  OR
+      *          ( SPA-COM-INPUTCD(IDX)(1:1)   =   "S" AND
+      *           (SPA-COM-KAISU  (IDX)    >   1    ))  OR
+      *          ((SPA-COM-KAIFLG (IDX)    =   "1"  )  AND
+      *****       (SPA-COM-SRYKBN (IDX)(1:1)   =   "2" ))
+           IF      SPA-COM-KAIFLG (IDX)    =   "1"
+               MOVE    "*"                     TO  WRK-KAKERU
+               MOVE    SPA-COM-KAISU  (IDX)    TO  WRK-KAISU-Z
+           ELSE
+               MOVE    SPACE                   TO  SPA-COM-KAIFLG (IDX)
+           END-IF
+      *
+           MOVE    ZERO                TO  IDK2
+           MOVE    SPACE               TO  WRK-KAISU-H 
+           MOVE    SPACE               TO  WRK-SURYO-H 
+           MOVE    SPACE               TO  WRK-BUNGSU-H 
+      *    回数
+           IF      LNK-SC94-PG         =   "J04"
+               MOVE    SPACE               TO  WRK-KAISU-H
+           ELSE
+               PERFORM VARYING     IDK1    FROM    1   BY  1
+                       UNTIL       IDK1    >   4
+                   IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
+                       ADD     1           TO  IDK2
+                       MOVE    WRK-KAISU-X (IDK1:1)
+                                           TO  WRK-KAISU-H (IDK2:1)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *    分画
+           MOVE    1                   TO  IDK2
+           PERFORM VARYING     IDK1    FROM    1   BY  1
+                   UNTIL       IDK1    >   8
+               IF      WRK-BUNGSU-X(IDK1:1)    NOT =   SPACE
+                   ADD     1           TO  IDK2
+                   MOVE    WRK-BUNGSU-X (IDK1:1)
+                                       TO  WRK-BUNGSU-H (IDK2:1)
+               END-IF
+           END-PERFORM
+           MOVE    ZERO                TO  IDK2
+           PERFORM VARYING     IDK1    FROM    1   BY  1
+                   UNTIL       IDK1    >   9
+               IF      WRK-SURYO-X (IDK1:1)    NOT =   SPACE
+                   ADD     1           TO  IDK2
+                   MOVE    WRK-SURYO-X (IDK1:1)
+                                       TO  WRK-SURYO-H (IDK2:1)
+               END-IF
+           END-PERFORM
+      *
+      *    入力値再編集
+      *
+      *     文字列調査の開始位置　取得
+           IF     (SPA-GMN-INPUTCD(IDX)(1:1)  IS  NUMERIC    ) AND
+                  (SPA-GMN-INPUTCD(IDX)(2:1)      =   SPACE  ) AND
+                  (SPA-GMN-INPUTCD(IDX)(3:1)  NOT =   SPACE  )
+      *        時間加算あり
+               MOVE    SPA-GMN-INPUTCD(IDX)(1:1)      TO  WRK-JIKAN
+           ELSE
+               MOVE    SPACE                          TO  WRK-JIKAN
+           END-IF
+      *
+           IF      SPA-COM-ICD-INPUTCD (IDX)   =   SPACE
+               MOVE    SPA-COM-INPUTCD (IDX)   TO  WRK-HEN-INPUTCD
+           ELSE
+               MOVE    SPA-COM-ICD-INPUTCD (IDX)
+                                               TO  WRK-HEN-INPUTCD
+           END-IF
+           MOVE    SPACE               TO  SPA-GMN-INPUTCD(IDX)
+      *
+           IF      WRK-ATAI            =   SPACE
+               STRING  WRK-HEN-INPUTCD         DELIMITED   BY  SPACE
+                       " "                     DELIMITED   BY  SIZE
+                       WRK-SURYO-H             DELIMITED   BY  SPACE
+                       WRK-BUNGSU-H            DELIMITED   BY  "  "
+                       WRK-KAKERU              DELIMITED   BY  SPACE
+                       WRK-KAISU-H             DELIMITED   BY  SPACE
+                       INTO                   SPA-GMN-INPUTCD(IDX)
+               END-STRING
+           ELSE
+               STRING  WRK-HEN-INPUTCD         DELIMITED   BY  SPACE
+                       " "                     DELIMITED   BY  SIZE
+                       WRK-ATAI                DELIMITED   BY  "  "
+                       INTO                    SPA-GMN-INPUTCD(IDX)
+               END-STRING
+           END-IF
+           IF      WRK-JIKAN       NOT =   SPACE
+               MOVE    SPACE               TO  WRK-HEN-INPUTCD
+               STRING  WRK-JIKAN               DELIMITED   BY  SPACE
+                       " "                     DELIMITED   BY  SIZE
+                       SPA-GMN-INPUTCD(IDX)    DELIMITED   BY  SPACE
+                       INTO                    WRK-HEN-INPUTCD
+               END-STRING
+               MOVE    WRK-HEN-INPUTCD         TO  SPA-GMN-INPUTCD(IDX)
+           END-IF
+      *
+      *    入力桁数算定
+           MOVE    ZERO                TO  IDX-ICD
+           IF      WRK-JIKAN           =   ZERO
+               MOVE    1                   TO  WRK-IDX-FT
+           ELSE
+               MOVE    3                   TO  WRK-IDX-FT
+           END-IF
+           PERFORM VARYING     IDX2    FROM    WRK-IDX-FT BY  1
+                   UNTIL      (IDX2        >   22      )  OR
+                              (SPA-GMN-INPUTCD(IDX)(IDX2:1)
+                                           =   SPACE OR  "*" )
+               ADD     1               TO  IDX-ICD
+           END-PERFORM
+      *    入力表示桁数のセット
+           MOVE    IDX-ICD             TO  SPA-GMN-INCNT (IDX)
+      *    入力コード表示済み
+           MOVE    "1"                 TO  SPA-COM-GMNFLG (IDX)
+      *
+           .
+       100-COM-GMNINPUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力値を画面編集用処理
+      *****************************************************************
+       200-GMNINPUT-GMN-SEC            SECTION.
+      *
+      *    数量
+           IF     (WRK-MOJI            =   "6" OR  "7"  OR  "S" ) OR
+                 ((WRK-MOJI            =   "1" )   AND
+                  (SPA-COM-SURYO(IDX)  >   1           ))
+      *        薬剤・器材、診療療行為・約束セットの時、数量＝１は空白
+               MOVE    SPA-COM-SURYO (IDX)
+                                           TO  WRK-SURYO
+               PERFORM 2001-SURYO-HEN-SEC
+               MOVE    WRK-SURYO-X         TO  SPA-GMN-SURYO (IDX)
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN-SURYO (IDX)
+           END-IF
+      *
+      *    剤終了行のみの編集（約束セットの時は入力行）
+           IF     (SPA-COM-ZAIEND (IDX)    =   "1" )  OR
+                  (WRK-MOJI                =   "S" )  OR
+                  (SPA-COM-SRYSYUKBN(IDX)  =   "950"  OR "960" )
+      *        点数
+               MOVE    SPA-COM-TENSU(IDX)      TO  WRK-TENSU-Z
+               MOVE    WRK-TENSU-X             TO  SPA-GMN-TENSU(IDX)
+      *        回数
+               MOVE    SPA-COM-KAISU (IDX)     TO  WRK-KAISU-Z
+               MOVE    WRK-KAISU-Z             TO  SPA-GMN-KAISU(IDX)
+      *        計
+               MOVE    SPA-COM-KEI   (IDX)     TO  SPA-GMN-KEI  (IDX)
+           ELSE
+               MOVE    SPACE                   TO  SPA-GMN-TENSU(IDX)
+               MOVE    SPACE                   TO  SPA-GMN-KAISU(IDX)
+               MOVE    ZERO                    TO  SPA-GMN-KEI  (IDX)
+           END-IF
+      *
+      *    入力値の表示を入力コードへ置換える
+           IF      SPA-COM-GMNFLG (IDX)    =   SPACE
+               PERFORM 2002-INPUTCD-HEN-SEC
+      *        入力コード表示済み
+               MOVE    "1"                 TO  SPA-COM-GMNFLG (IDX)
+           END-IF
+           .
+       200-GMNINPUT-GMN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    数量表示用編集処理
+      *****************************************************************
+       2001-SURYO-HEN-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SURYO-X
+           MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
+      *
+           MOVE    ZERO                TO  FLG-SP
+           PERFORM VARYING     IDM     FROM    3  BY  -1
+                   UNTIL       IDM     <   1
+               IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
+                   MOVE    1               TO  FLG-SP
+               END-IF
+               IF      FLG-SP          =   1
+                   MOVE    WRK-SURYO-S2(IDM:1) TO  WRK-SURYO-Z3(IDM:1)
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-SURYO-Z3        NOT =   SPACE
+               MOVE    "."                 TO  WRK-SURYO-Z2
+               IF      WRK-SURYO-X(1:5)    =   SPACE
+                   MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1-9
+               END-IF
+           END-IF
+           .
+       2001-SURYO-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    入力コードの主表示コードに編集処理
+      *****************************************************************
+       2002-INPUTCD-HEN-SEC         SECTION.
+      *
+      *     文字列調査の開始位置　取得
+           IF     (SPA-GMN-INPUTCD(IDX)(1:1)  IS  NUMERIC    ) AND
+                  (SPA-GMN-INPUTCD(IDX)(2:1)      =   SPACE  ) AND
+                  (SPA-GMN-INPUTCD(IDX)(3:1)  NOT =   SPACE  )
+      *        時間加算あり
+               MOVE    3                   TO  WRK-IDX-FT
+           ELSE
+               MOVE    1                   TO  WRK-IDX-FT
+           END-IF
+           MOVE    ZERO                TO  WRK-CD-MCNT
+           PERFORM VARYING     IDX2    FROM    WRK-IDX-FT  BY  1
+                   UNTIL      (IDX2        >   22  )   OR
+                              (SPA-GMN-INPUTCD(IDX)(IDX2:1)
+                                           =   SPACE   OR  "*" )
+               MOVE    IDX2                TO  WRK-CD-MCNT
+           END-PERFORM
+      *
+      *    主表示コードの桁数チェック
+           MOVE    ZERO                TO  IDX-ICD
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2        >   20      )  OR
+                              (SPA-COM-ICD-INPUTCD(IDX)(IDX2:1)
+                                           =   SPACE )
+               ADD     1               TO  IDX-ICD
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-INPUTCD(IDX)
+                                       TO  WRK-HEN-INPUTCD
+           IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "S"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN-INPUTCD(IDX)
+                                               (WRK-IDX-FT:)
+               IF      IDX-ICD             >   ZERO
+                   MOVE    SPA-COM-ICD-INPUTCD(IDX)
+                                           TO  SPA-GMN-INPUTCD(IDX)
+                                                  (WRK-IDX-FT:IDX-ICD)
+               ELSE
+                   MOVE    9                   TO  IDX-ICD
+                   MOVE    SPA-COM-INPUTCD(IDX)
+                                               TO  SPA-GMN-INPUTCD(IDX)
+                                                    (WRK-IDX-FT:9)
+               END-IF
+               COMPUTE IDY             =   WRK-CD-MCNT   +  1
+               COMPUTE IDZ             =   WRK-IDX-FT    +  IDX-ICD
+      *
+               MOVE    WRK-HEN-INPUTCD(IDY:)
+                                       TO  SPA-GMN-INPUTCD(IDX)
+                                                          (IDZ:)
+           END-IF
+      *    入力表示桁数のセット
+           MOVE    ZERO                TO  WRK-CD-MCNT
+           PERFORM VARYING     IDX2    FROM    WRK-IDX-FT  BY  1
+                   UNTIL      (IDX2        >   22  )   OR
+                              (SPA-GMN-INPUTCD(IDX)(IDX2:1)
+                                           =   SPACE   OR  "*" )
+      *         MOVE    IDX2                TO  WRK-CD-MCNT
+               ADD     1                   TO  WRK-CD-MCNT
+           END-PERFORM
+      *****COMPUTE SPA-GMN-INCNT (IDX) =   WRK-IDX-FT    +  WRK-CD-MCNT
+      *                                 -   1
+      *    入力表示桁数のセット
+           MOVE    WRK-CD-MCNT         TO  SPA-GMN-INCNT (IDX)
+      *
+           .
+       2002-INPUTCD-HEN-EXT.
+           EXIT.
+      *

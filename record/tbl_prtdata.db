@@ -1,0 +1,80 @@
+tbl_prtdata	{
+	TBL_KEY			char(8);
+	RENNUM  		number(4);
+	TBL_GROUP		char(14);
+	SHORI_RENNUM	number(4);
+	SHELLID			varchar(20);
+	PRTID   		varchar(20);
+	SRYYM			varchar(06);
+	SKYYMD   		varchar(08);
+	PTID			number(10);
+	PRIORITY        number(4);
+	PAGE        	number(5);
+	PRTFLG			char(1);
+	PRTDATA1		varchar(1000);
+	PRTDATA2		varchar(1000);
+	PRTDATA3		varchar(1000);
+	PRTDATA4		varchar(1000);
+	PRTDATA5		varchar(1000);
+	PRTDATA6		varchar(1000);
+	PRTDATA7		varchar(1000);
+	PRTDATA8		varchar(1000);
+	PRTDATA9		varchar(1000);
+	PRTDATA10   	varchar(1000);
+#-----> ¸¡º÷ÍÑ¹àÌÜ
+	STPAGE			number(5),virtual;
+	EDPAGE			number(5),virtual;
+};
+
+primary	{
+	TBL_KEY,RENNUM,TBL_GROUP,SHORI_RENNUM,PAGE;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_prtdata_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_prtdata
+                    WHERE   TBL_KEY      =   :TBL_KEY
+                    AND     RENNUM       =   :RENNUM
+                    AND     TBL_GROUP    =   :TBL_GROUP
+                    AND     SHORI_RENNUM =   :SHORI_RENNUM 
+                    AND     PAGE         =   :PAGE 
+		;
+	};
+};
+
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_prtdata_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_prtdata
+                    WHERE   TBL_KEY      =   :TBL_KEY
+                    AND     RENNUM       =   :RENNUM
+                    AND     TBL_GROUP    =   :TBL_GROUP
+                    AND     SHORI_RENNUM =   :SHORI_RENNUM 
+                    AND     PAGE         >=  :STPAGE
+                    AND     PAGE         <=  :EDPAGE
+                    ORDER BY PAGE    
+		;
+	};
+};
+
+path	del11	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_prtdata
+                    WHERE   TBL_KEY      =   :TBL_KEY
+                    AND     TBL_GROUP    =   :TBL_GROUP
+		;
+	};
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_prtdata_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_prtdata
+ 		;
+	};
+};

@@ -1,0 +1,115 @@
+Z05	{
+	fixed7	{
+		JGNAGE	{
+			value	varchar(3);
+		};
+		KGNAGE	{
+			value	varchar(3);
+		};
+		SRYCDH	{
+			value	varchar(10);
+		};
+		NAMEH	{
+			value	varchar(101);
+		};
+		YUKOSTYMDH	{
+			value	varchar(10);
+		};
+		YUKOEDYMDH	{
+			value	varchar(10);
+		};
+		KANANAME	{
+			value	varchar(101);
+		};
+		NAME	{
+			value	varchar(101);
+		};
+		TEN	{
+			value	number(10,2);
+		};
+		OLDTEN	{
+			value	number(10,2);
+		};
+		YUKOSTYMD	{
+			value	varchar(11);
+		};
+		YUKOEDYMD	{
+			value	varchar(11);
+		};
+		JGNTEN	{
+			value	number(7);
+		};
+		KOUHYOJYUNNUM	{
+			value	number(9);
+		};
+		FORMALNAME	{
+			value	varchar(201);
+		};
+		INPCHKKBN	{
+			value	number(1);
+		};
+		TENSIKIBETUCOB	{
+			TENSIKIBETU	{
+				value	varchar(27);
+			};
+			count	int;
+			item	varchar(26)[7];
+		};
+		OLDTENSKBCOB	{
+			OLDTENSKB	{
+				value	varchar(27);
+			};
+			count	int;
+			item	varchar(26)[7];
+		};
+		TANICDCOB	{
+			TANICD	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[90];
+		};
+		MEIUSESKBCOB	{
+			MEIUSESKB	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[3];
+		};
+		TOKUKIZAIAGEKSNKBNCOB	{
+			TOKUKIZAIAGEKSNKBN	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[2];
+		};
+		SANSOKBNCOB	{
+			SANSOKBN	{
+				value	varchar(31);
+			};
+			count	int;
+			item	varchar(30)[2];
+		};
+		DATAKBNCOB	{
+			DATAKBN	{
+				value	varchar(17);
+			};
+			count	int;
+			item	varchar(16)[3];
+		};
+		TOKUKIZAISBT1COB	{
+			TOKUKIZAISBT1	{
+				value	varchar(31);
+			};
+			count	int;
+			item	varchar(30)[4];
+		};
+		TOKUKIZAISBT2COB	{
+			TOKUKIZAISBT2	{
+				value	varchar(31);
+			};
+			count	int;
+			item	varchar(30)[2];
+		};
+	};
+};

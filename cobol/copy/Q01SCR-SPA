@@ -1,0 +1,668 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     MCC-森脇     02/06/04  Q02:患者番号の追加
+      * 01.00.01     MCC-太田     02/06/06  Q01:性別の桁数変更
+      *                                     Q01:ソートコンボエリアの
+      *                                         レイアウト変更
+      *                                     Q01:最終受診日削除
+      *                                     Q01:開始最終受診日追加
+      *                                     Q01:終了最終受診日追加
+      *                                     Q01:患者番号１〜５削除
+      *                                     Q01:開始患者番号追加
+      *                                     Q01:終了患者番号追加
+      *                                     Q01:病名追加
+      *                                     Q01:診療行為名追加
+      *                                     Q02:総件数取得処理フラグ追加
+      *                                     QID1:確認ダイアログ変更
+      *                                     QID1:Q100へ名称変更
+      *                                     QID1:新規作成
+      * 01.00.02     MCC-太田     02/06/26  Q100:画面QID1から名称変更
+      *                                     QID1:新規作成
+      *                                     Q02:リストに年齢追加
+      *                                     Q02:病名の検索条件修正
+      *                                     Q01:保険者番号追加
+      *                                     Q01:保険の種類追加
+      *                                     Q01:公費の種類をコンボに変更
+      *                                     Q01:テスト患者を検索対象から
+      *                                         外せるようにする
+      *****************************************************************
+       01   SPA-Q01FREE.
+      *    Ｑ０１用
+           03  SPA-Q01.
+               05  SPA-Q01-AREA.
+                   07  SPA-GMN-Q01-CTLSEQ              PIC 9(02).
+                   07  SPA-GMN-Q01-PAGE                PIC 9(02).
+                   07  SPA-GMN-Q01-MAX                 PIC 9(02).
+                   07  SPA-GMN-Q01-CUR                 PIC 9(05).
+      *
+                   07  SPA-GMN-Q01-AREA.
+      *
+      *                診察年月日開始日
+                       09  SPA-GMN-Q01-STSRYYMD        PIC X(09).
+      *                診察年月日終了日
+                       09  SPA-GMN-Q01-EDSRYYMD        PIC X(09).
+      *                基本情報
+                       09  SPA-GMN-Q01-KIHON-AREA.
+      *                    生年月日開始日
+                           11  SPA-GMN-Q01-STBIRTHDAY  PIC X(09).
+      *                    生年月日終了日
+                           11  SPA-GMN-Q01-EDBIRTHDAY  PIC X(09).
+      *                    年齢開始日
+                           11  SPA-GMN-Q01-STAGE       PIC X(03).
+      *                    年齢終了日
+                           11  SPA-GMN-Q01-EDAGE       PIC X(03).
+      *                    基準日開始日
+                           11  SPA-GMN-Q01-KJYNYMD     PIC X(09).
+      *----(01.00.01) LINE DEL START ----------------------------------
+      *                    最終受診日
+      *                    11  SPA-GMN-Q01-LASTYMD     PIC X(09).
+      *----(01.00.01) LINE DEL END   ----------------------------------
+      *----(01.00.01) LINE ADD START ----------------------------------
+      *                    開始最終受診日
+                           11  SPA-GMN-Q01-STLASTYMD   PIC X(09).
+      *                    終了最終受診日
+                           11  SPA-GMN-Q01-EDLASTYMD   PIC X(09).
+      *----(01.00.01) LINE ADD END   ----------------------------------
+      *                    性別
+                           11  SPA-GMN-Q01-CNB-SEX.
+      *----(01.00.01) LINE DEL START ----------------------------------
+      *                        13  SPA-GMN-Q01-SEX
+      *                                                PIC X(5).
+      *                        13  SPA-GMN-Q01-SEX-ITEM
+      *                                                PIC X(4)
+      *                                                OCCURS  2.
+      *----(01.00.01) LINE DEL END   ----------------------------------
+      *----(01.00.01) LINE ADD START ----------------------------------
+                               13  SPA-GMN-Q01-SEX
+                                                       PIC X(11).
+                               13  SPA-GMN-Q01-SEX-ITEM-AREA.
+                                   15  SPA-GMN-Q01-SEX-ITEM
+                                                       PIC X(10)
+                                                       OCCURS  3.
+      *----(01.00.01) LINE ADD END   ----------------------------------
+      *----(01.00.01) LINE DEL START ----------------------------------
+      *                    患者番号
+      *                    11  SPA-GMN-Q01-PTNUMTBL.
+      *                        13  SPA-GMN-Q01-PTNUM
+      *                                                PIC X(20)
+      *                                                OCCURS  5.
+      *----(01.00.01) LINE DEL END   ----------------------------------
+      *----(01.00.01) LINE ADD START ----------------------------------
+                           11  SPA-GMN-Q01-STPTNUM
+                                                       PIC X(20).
+                           11  SPA-GMN-Q01-EDPTNUM
+                                                       PIC X(20).
+      *----(01.00.01) LINE ADD END   ----------------------------------
+      *----(01.00.02) LINE ADD START ----------------------------------
+                           11  SPA-GMN-Q01-CHKTSTPT    PIC X.
+      *----(01.00.02) LINE ADD END   ----------------------------------
+      *                    郵便番号
+                           11  SPA-GMN-Q01-POSTTBL.
+                               13  SPA-GMN-Q01-POST
+                                                       PIC X(07)
+                                                       OCCURS  5.
+      *                    住所
+                           11  SPA-GMN-Q01-JYUSHOTBL.
+                               13  SPA-GMN-Q01-JYUSHO
+                                                       PIC X(50)
+                                                       OCCURS  5.
+      *                    カナ氏名
+                           11  SPA-GMN-Q01-KANANAMETBL.
+                               13  SPA-GMN-Q01-KANANAME
+                                                       PIC X(50)
+                                                       OCCURS  5.
+      *                    漢字氏名
+                           11  SPA-GMN-Q01-NAMETBL.
+                               13  SPA-GMN-Q01-NAME    PIC X(50)
+                                                       OCCURS  5.
+      *                    コメント
+                           11  SPA-GMN-Q01-COMMENTTBL.
+                               13  SPA-GMN-Q01-COMMENT PIC X(50)
+                                                       OCCURS  3.
+      *                保険　公費
+                       09  SPA-GMN-Q01-HOKEN-AREA.
+      *----(01.00.02) LINE ADD START ----------------------------------
+      *                    保険　保険者番号
+                           11  SPA-GMN-Q01-HKNJANUM-TBL.
+                               13  SPA-GMN-Q01-HKNJANUM
+                                                       PIC X(09)
+                                                       OCCURS 5.
+      *                    保険　保険の種類
+                           11  SPA-GMN-Q01-CNB-HKNNUM-TBL.
+                               13  SPA-GMN-Q01-CNB-HKNNUM-OCC
+                                                       OCCURS 5.
+                                   15  SPA-GMN-Q01-HKNNUM
+                                                       PIC X(21).
+                                   15  SPA-GMN-Q01-CNB-HKNNUM-COUNT
+                                                       PIC S9(9)
+                                                       BINARY.
+                                   15  SPA-GMN-Q01-CNB-HKNNUM-ITEM-AR.
+                                       17  SPA-GMN-Q01-CNB-HKNNUM-ITEM
+                                                       PIC X(20)
+                                                       OCCURS  50.
+      *----(01.00.02) LINE ADD END   ----------------------------------
+      *                    保険　記号
+                           11  SPA-GMN-Q01-KIGOTBL.
+                               13  SPA-GMN-Q01-KIGO    PIC X(40)
+                                                       OCCURS  5.
+      *                    保険　番号
+                           11  SPA-GMN-Q01-NUMTBL.
+                               13  SPA-GMN-Q01-NUM     PIC X(40)
+                                                       OCCURS  5.
+      *----(01.00.02) LINE DEL START ----------------------------------
+      *                    公費　保険者番号
+      *                    11  SPA-GMN-Q01-KOHNUMTBL.
+      *                        13  SPA-GMN-Q01-KOHNUM  PIC X(04)
+      *                                                OCCURS  5.
+      *----(01.00.02) LINE DEL END   ----------------------------------
+      *----(01.00.02) LINE ADD START ----------------------------------
+                           11  SPA-GMN-Q01-CNB-KOHNUM-TBL.
+                               13  SPA-GMN-Q01-CNB-KOHNUM-OCC
+                                                       OCCURS 5.
+                                   15  SPA-GMN-Q01-KOHNUM 
+                                                       PIC X(21).
+                                   15  SPA-GMN-Q01-CNB-KOHNUM-COUNT
+                                                       PIC S9(9)
+                                                       BINARY.
+                                   15  SPA-GMN-Q01-CNB-KOHNUM-ITEM-AR.
+                                       17  SPA-GMN-Q01-CNB-KOHNUM-ITEM
+                                                       PIC X(20)
+                                                       OCCURS  50.
+      *----(01.00.02) LINE ADD END   ----------------------------------
+      *                    公費　負担者番号
+                           11  SPA-GMN-Q01-FTNJANUMTBL.
+                               13  SPA-GMN-Q01-FTNJANUM
+                                                       PIC X(08)
+                                                       OCCURS  5.
+      *
+      *                病名　診療行為
+                       09  SPA-GMN-Q01-BYOMEI-AREA.
+      *                    病名分類区分コンボ
+                           11  SPA-GMN-Q01-CNB-BYOBUN.
+      *                        病名分類区分名称
+                               13  SPA-GMN-Q01-BYOBUN  PIC X(20).
+      *                        病名分類区分状態
+                               13  SPA-GMN-Q01-BYOBUN-STATE
+                                                       PIC S9(9)
+                                                       BINARY.
+      *                        病名分類区分コンボ項目件数
+                               13  SPA-GMN-Q01-CNB-BYOBUN-COUNT
+                                                       PIC S9(9)
+                                                       BINARY.
+      *                        病名分類区分コンボ病名分類区分
+                               13  SPA-GMN-Q01-CNB-BB-ITEM-AREA.
+                                   15  SPA-GMN-Q01-CNB-BYOBUNCD
+                                                       PIC X(3)
+                                                       OCCURS  100.
+                                   15  SPA-GMN-Q01-CNB-BYOBUN-ITEM
+                                                       PIC X(20)
+                                                       OCCURS  100.
+      *                        病名分類区分コンボ状態
+                               13  SPA-GMN-Q01-CNB-BYOBUN-STATE
+                                                       PIC S9(9)
+                                                       BINARY.
+      *                    病名ラジオボタン（自院）
+                           11  SPA-GMN-Q01-RDBYOMEI-U  PIC X.
+      *                    病名ラジオボタン状態（自院）
+                           11  SPA-GMN-Q01-RDBYOMEI-U-STATE
+                                                       PIC S9(9)
+                                                       BINARY.
+      *                    病名ラジオボタン（全体）
+                           11  SPA-GMN-Q01-RDBYOMEI-A  PIC X.
+      *                    病名ラジオボタン状態（全体）
+                           11  SPA-GMN-Q01-RDBYOMEI-A-STATE
+                                                       PIC S9(9)
+                                                       BINARY.
+      *                    病名検索
+                           11  SPA-GMN-Q01-BYOMEISEL   PIC X(80).
+      *                    病名コード
+                           11  SPA-GMN-Q01-BYOMEICDTBL.
+                               13  SPA-GMN-Q01-BYOMEICD
+                                                       PIC X(20)
+                                                       OCCURS  5.
+      *----(01.00.01) LINE ADD START ----------------------------------
+      *                    病名
+                           11  SPA-GMN-Q01-BYOMEINMTBL.
+                               13  SPA-GMN-Q01-BYOMEI
+                                                       PIC X(80)
+                                                       OCCURS  5.
+      *----(01.00.01) LINE ADD END   ----------------------------------
+      *                    病名テーブル
+                           11  SPA-GMN-Q01-BYOTBL.
+                               13  SPA-GMN-Q01-BYOTBL-G
+                                                       OCCURS  200.
+      *                            病名コード
+                                   15  SPA-GMN-Q01-TBYOMEICD
+                                                       PIC X(20).
+      *                            病名
+                                   15  SPA-GMN-Q01-TBYOMEI
+                                                       PIC X(80).
+                           11  SPA-GMN-Q01-BYOMEI-MAX  PIC 9(05).
+                           11  SPA-GMN-Q01-BYOMEI-SEL  PIC 9(01).
+      *                    病名検索フラグ
+                           11  SPA-GMN-Q01-BYOTBL-FLG  PIC 9(1).
+      *                    行為名検索
+                           11  SPA-GMN-Q01-SRYACTSEL   PIC X(80).
+      *                    診療行為コード
+                           11  SPA-GMN-Q01-SRYCDTBL.
+                               13  SPA-GMN-Q01-SRYCD
+                                                       PIC X(20)
+                                                       OCCURS  5. 
+      *----(01.00.01) LINE ADD START ----------------------------------
+      *                    診療行為
+                           11  SPA-GMN-Q01-SRYACTNMTBL.
+                               13  SPA-GMN-Q01-SRYACT
+                                                       PIC X(80)
+                                                       OCCURS  5. 
+      *----(01.00.01) LINE ADD END   ----------------------------------
+      *                    診療行為名テーブル
+                           11  SPA-GMN-Q01-SRYACTTBL.
+                               13  SPA-GMN-Q01-SRYACT-G
+                                                       OCCURS  200.
+      *                            行為コード
+                                   15  SPA-GMN-Q01-TSRYCD
+                                                       PIC X(09).
+      *                            行為名
+                                   15  SPA-GMN-Q01-TSRYACT
+                                                       PIC X(80).
+                           11  SPA-GMN-Q01-SRYACT-MAX  PIC 9(05).
+                           11  SPA-GMN-Q01-SRYACT-SEL  PIC 9(01).
+      *
+      *                並び順
+                       09  SPA-GMN-Q01-NARABI-AREA.
+                           11  SPA-GMN-Q01-KOUMOKU-G   OCCURS  3.
+                               13  SPA-GMN-Q01-KMK     PIC X(30).
+      *----(01.00.01) LINE DEL START ----------------------------------
+      *                        13  SPA-GMN-Q01-KMK-ITEM
+      *                                                PIC X(30)
+      *                                                OCCURS  10.
+      *----(01.00.01) LINE DEL END   ----------------------------------
+      *----(01.00.01) LINE ADD START ----------------------------------
+                                13  SPA-GMN-Q01-KMK-ITEM-AREA.
+                                    15  SPA-GMN-Q01-KMK-ITEM
+                                                       PIC X(30)
+                                                       OCCURS  10.
+      *----(01.00.01) LINE ADD END   ----------------------------------
+                           11  SPA-GMN-Q01-RDIO-G      OCCURS  3.
+                               13  SPA-GMN-Q01-RDIO1   PIC X(01).
+                               13  SPA-GMN-Q01-RDIO2   PIC X(01).
+      *                タブページ番号
+                       09  SPA-GMN-Q01-PAGENO          PIC 9(01).
+      *
+      *            画面エラー情報
+                   07  SPA-GMN-Q01-ERRCD-TBL.
+                       09  SPA-GMN-Q01-ERRCD-OCC OCCURS  500.
+                          11  SPA-GMN-Q01-ERRCD        PIC X(04).
+      *    Ｑ０２用
+           03  SPA-Q02.
+               05  SPA-Q02-AREA.
+                   07  SPA-GMN-Q02-CTLSEQ              PIC 9(02).
+                   07  SPA-GMN-Q02-PAGE                PIC 9(02).
+                   07  SPA-GMN-Q02-MAX                 PIC 9(02).
+                   07  SPA-GMN-Q02-CUR                 PIC 9(05).
+      *
+                   07  SPA-GMN-Q02-AREA.
+      *
+      *----(01.00.01) LINE ADD START ----------------------------------
+      *                前頁ボタンステータス
+                       09  SPA-GMN-Q02-B06-STATE       PIC S9(9)
+                                                       BINARY.
+      *                次頁ボタンステータス
+                       09  SPA-GMN-Q02-B07-STATE       PIC S9(9)
+                                                       BINARY.
+      *----(01.00.01) LINE ADD END   ----------------------------------
+      *                表題
+                       09  SPA-GMN-Q02-HYODAI          PIC X(101).
+      *                条件上段
+                       09  SPA-GMN-Q02-JYOKEN1         PIC X(101).
+      *                条件下段
+                       09  SPA-GMN-Q02-JYOKEN2         PIC X(101).
+      *                検索結果
+                       09  SPA-GMN-Q02-KEKKATBL.
+                           11  SPA-GMN-Q02-KEKKAOCC    OCCURS 200.
+      *                        連番
+                               13  SPA-GMN-Q02-KEKKALST-NO
+                                                       PIC X(5).
+      *---- (01.00.01) LINE ADD START --------------------------------
+      *                        患者番号
+                               13  SPA-GMN-Q02-KEKKALST-PTNUM
+                                                       PIC X(20).
+      *---- (01.00.01) LINE ADD END ----------------------------------
+      *                        氏名
+                               13  SPA-GMN-Q02-KEKKALST-NAME
+                                                       PIC X(50).
+      *                        性別
+                               13  SPA-GMN-Q02-KEKKALST-SEX
+                                                       PIC X(2).
+      *                        誕生日
+                               13  SPA-GMN-Q02-KEKKALST-BIRTH
+                                                       PIC X(10).
+      *----(01.00.02) LINE ADD START ----------------------------------
+      *                        年齢
+                               13  SPA-GMN-Q02-KEKKALST-AGE
+                                                       PIC X(08).
+      *----(01.00.02) LINE ADD END   ----------------------------------
+      *
+      *                        診療内容
+                               13  SPA-GMN-Q02-KEKKALST-SRYACT
+                                                       PIC X(80).
+      *
+                           11  SPA-GMN-Q02-KEKKA-MAX   PIC 9(05).
+                           11  SPA-GMN-Q02-KEKKA-SEL   PIC 9(05).
+      *
+      *                総件数
+                       09  SPA-GMN-Q02-TOTAL           PIC X(22).
+      *----(01.00.01) LINE ADD START ----------------------------------
+                       09  SPA-GMN-Q02-TOTAL-NUM       PIC 9(09).
+      *                総件数取得処理フラグ
+                       09  SPA-GMN-Q02-TOTAL-GET-FLG   PIC 9(1).
+      *----(01.00.01) LINE ADD END   ----------------------------------
+      *
+      *                選択番号
+                       09  SPA-GMN-Q02-SELNUM          PIC 9(05).
+      *
+      *                検索結果読み飛ばし件数
+                       09  SPA-GMN-Q02-SKIP-KNS        PIC 9(08).
+      *
+      *                患者マスタ読込フラグ退避用
+                       09  SPA-GMN-Q02-FLG-PTINF       PIC 9(01).
+      *
+      *                画面に表示されない患者の情報
+                       09  SPA-GMN-Q02-PTINF-AREA.
+                           11  SPA-GMN-Q02-PTINF-OCC   OCCURS  200.
+      *
+      *                        患者ＩＤ
+                               13  SPA-GMN-Q02-PTINF-PTID
+                                                       PIC 9(10).
+      *
+      *            画面エラー情報
+                   07  SPA-GMN-Q02-ERRCD-TBL.
+                       09  SPA-GMN-Q02-ERRCD-OCC OCCURS  50.
+                          11  SPA-GMN-Q02-ERRCD        PIC X(04).
+      *
+      *    Ｑ９８用
+           03  SPA-Q98.
+               05  SPA-Q98-AREA.
+                   07  SPA-GMN-Q98-CTLSEQ              PIC 9(02).
+                   07  SPA-GMN-Q98-PAGE                PIC 9(02).
+                   07  SPA-GMN-Q98-MAX                 PIC 9(02).
+                   07  SPA-GMN-Q98-CUR                 PIC 9(05).
+      *
+                   07  SPA-GMN-Q98-AREA.
+                       09  SPA-GMN-Q98-POST            PIC X(8).
+                       09  SPA-GMN-Q98-ADRS            PIC X(101).
+                       09  SPA-GMN-Q98-ADRS-TBL.
+                           11  SPA-GMN-Q98-ADRS-OCC    OCCURS  60.
+                               13  SPA-GMN-Q98-TADRS   PIC X(21).
+                       09  SPA-GMN-Q98-SELNUM          PIC 9(3).
+      *                検索結果読み飛ばし件数
+                       09  SPA-GMN-Q98-SKIP-KNS        PIC 9(08).
+      *
+      *                システム管理マスタ読込フラグ退避用
+                       09  SPA-GMN-Q98-FLG-SYSKANRI    PIC 9(01).
+      *
+      *                画面に表示されないシステム管理マスタの情報
+                       09  SPA-GMN-Q98-SYSKANRI-AREA.
+                           11  SPA-GMN-Q98-SYSKANRI-OCC
+                                                       OCCURS  60
+                                           INDEXED BY  SPA-Q98-TBLIDX1.
+                               13  SPA-GMN-Q98-TKBNCD  PIC X(03).
+                               13  SPA-GMN-Q98-TLPUBCD PIC X(05).
+                               13  SPA-GMN-Q98-TPOST   PIC X(07).
+                               13  SPA-GMN-Q98-TRENNUM PIC 9(02).
+      *    Ｑ９９用
+           03  SPA-Q99.
+               05  SPA-Q99-AREA.
+                   07  SPA-GMN-Q99-CTLSEQ              PIC 9(02).
+                   07  SPA-GMN-Q99-PAGE                PIC 9(02).
+                   07  SPA-GMN-Q99-MAX                 PIC 9(05).
+                   07  SPA-GMN-Q99-SEL                 PIC 9(05).
+                   07  SPA-GMN-Q99-CUR                 PIC 9(05).
+      *
+                   07  SPA-GMN-Q99-AREA.
+                       09  SPA-GMN-Q99-TBL.
+                           11  SPA-GMN-Q99-OCC         OCCURS  200.
+                               13  SPA-GMN-Q99-NUM     PIC X(04).
+                               13  SPA-GMN-Q99-POST    PIC X(07).
+                               13  SPA-GMN-Q99-ADRS    PIC X(50).
+                       09  SPA-GMN-Q99-SELNUM          PIC 9(04).
+      *
+      *----(01.00.02) LINE DEL START ----------------------------------
+      *----(01.00.01) LINE ADD START ----------------------------------
+      *    ＱＩＤ１
+      *    03  SPA-QID1.
+      *        05  SPA-QID1-AREA.
+      *            07  SPA-GMN-QID1-CUR                 PIC 9(05).
+      *
+      *            メッセージコード
+      *            07  SPA-GMN-QID1-CD                 PIC X(04).
+      *            メッセージ
+      *            07  SPA-GMN-QID1-MSG                PIC X(80).
+      *            ファイル名ラベル
+      *            07  SPA-GMN-QID1-LBLFILENAME        PIC X(12).
+      *            ファイル名
+      *            07  SPA-GMN-QID1-FILENAME           PIC X(100).
+      *            07  SPA-GMN-QID1-FILENAME-STATE     PIC S9(9)
+      *                                                BINARY.
+      *            件数（ページ数）ラベル
+      *            07  SPA-GMN-QID1-LBLNUMSEL          PIC X(100).
+      *            開始件数（ページ数）
+      *            07  SPA-GMN-QID1-STNUM              PIC  9(09).
+      *            終了件数（ページ数）
+      *            07  SPA-GMN-QID1-EDNUM              PIC  9(09).
+      *----(01.00.01) LINE ADD END   ----------------------------------
+      *----(01.00.02) LINE DEL END   ----------------------------------
+      *----(01.00.02) LINE ADD START ----------------------------------
+      *    Ｑ１００
+           03  SPA-Q100.
+               05  SPA-Q100-AREA.
+                   07  SPA-GMN-Q100-CUR                 PIC 9(05).
+      *
+      *            メッセージコード
+                   07  SPA-GMN-Q100-CD                 PIC X(04).
+      *            メッセージ
+                   07  SPA-GMN-Q100-MSG                PIC X(80).
+      *            ファイル名ラベル
+                   07  SPA-GMN-Q100-LBLFILENAME        PIC X(12).
+      *            ファイル名
+                   07  SPA-GMN-Q100-FILENAME           PIC X(100).
+                   07  SPA-GMN-Q100-FILENAME-STATE     PIC S9(9)
+                                                       BINARY.
+      *            件数（ページ数）ラベル
+                   07  SPA-GMN-Q100-LBLNUMSEL          PIC X(100).
+      *            開始件数（ページ数）
+                   07  SPA-GMN-Q100-STNUM              PIC  9(09).
+      *            終了件数（ページ数）
+                   07  SPA-GMN-Q100-EDNUM              PIC  9(09).
+      *----(01.00.02) LINE ADD END   ----------------------------------
+           03  SPA-Q01KYOUTU.
+      *        Q01←→Q02遷移情報
+               05  SPA-Q01-PTINF-SELECT-AREA.
+                   07  SPA-Q01-GAITO-TABLE.
+                       09  SPA-Q01-GTBL                PIC X(01)
+                                                       OCCURS  9.
+      *----(01.00.02) LINE ADD START ----------------------------------
+                   07  SPA-Q01-AGE-CALC-KBN            PIC 9(01).
+      *----(01.00.02) LINE ADD END   ----------------------------------
+                   07  SPA-Q01-STSRYYMD                PIC 9(08).
+                   07  SPA-Q01-EDSRYYMD                PIC 9(08).
+      *
+      *            基本情報
+                   07  SPA-Q01-KIHON-AREA.
+                       09  SPA-Q01-STBIRTHDAY          PIC 9(08).
+                       09  SPA-Q01-EDBIRTHDAY          PIC 9(08).
+                       09  SPA-Q01-STAGE               PIC 9(03).
+                       09  SPA-Q01-EDAGE               PIC 9(03).
+                       09  SPA-Q01-KJYNYMD             PIC 9(08).
+                       09  SPA-Q01-SEX                 PIC X(01).
+      *----(01.00.01) LINE DEL START ----------------------------------
+      *                09  SPA-Q01-LASTYMD             PIC 9(08).
+      *----(01.00.01) LINE DEL END   ----------------------------------
+      *----(01.00.01) LINE ADD START ----------------------------------
+                       09  SPA-Q01-STLASTYMD           PIC 9(08).
+                       09  SPA-Q01-EDLASTYMD           PIC 9(08).
+      *----(01.00.01) LINE ADD END   ----------------------------------
+      *----(01.00.01) LINE DEL START ----------------------------------
+      *                09  SPA-Q01-PTID-G.
+      *                    11  SPA-Q01-PTID            PIC 9(10)
+      *                                                OCCURS  5.
+      *----(01.00.01) LINE DEL END   ----------------------------------
+      *----(01.00.01) LINE ADD START ----------------------------------
+                       09  SPA-Q01-STPTNUM             PIC X(20).
+                       09  SPA-Q01-EDPTNUM             PIC X(20).
+      *----(01.00.01) LINE ADD END   ----------------------------------
+      *----(01.00.02) LINE ADD START ----------------------------------
+                       09  SPA-Q01-CHKTSTPT            PIC X.
+      *----(01.00.02) LINE ADD END   ----------------------------------
+                       09  SPA-Q01-JYUSHO-G.
+                           11  SPA-Q01-JYUSHO          PIC X(50)
+                                                       OCCURS  5.
+                       09  SPA-Q01-KANANAME-G.
+                           11  SPA-Q01-KANANAME        PIC X(50)
+                                                       OCCURS  5.
+                       09  SPA-Q01-NAME-G.
+                           11  SPA-Q01-NAME            PIC X(50)
+                                                       OCCURS  5.
+                       09  SPA-Q01-COMMENT-G.
+                           11  SPA-Q01-COMMENT         PIC X(50)
+                                                       OCCURS  5.
+      *            保険　公費
+                   07  SPA-Q01-HOKEN-AREA.
+      *----(01.00.02) LINE ADD START ----------------------------------
+                       09  SPA-Q01-HKNJANUM-G.
+                           11  SPA-Q01-HKNJANUM        PIC X(08)
+                                                       OCCURS 5.
+                       09  SPA-Q01-HKNNUM-G.
+                           11  SPA-Q01-HKNNUM          PIC X(03)
+                                                       OCCURS 5.
+      *----(01.00.02) LINE ADD END   ----------------------------------
+                       09  SPA-Q01-KIGO-G.
+                           11  SPA-Q01-KIGO            PIC X(40)
+                                                       OCCURS  5.
+                       09  SPA-Q01-NUM-G.
+                           11  SPA-Q01-NUM             PIC X(40)
+                                                       OCCURS  5.
+                       09  SPA-Q01-KOHNUM-G.
+                           11  SPA-Q01-KOHNUM          PIC X(04)
+                                                       OCCURS  5.
+                       09  SPA-Q01-FTNJANUM-G.
+                           11  SPA-Q01-FTNJANUM        PIC X(08)
+                                                       OCCURS  5.
+      *
+      *            病名　診療行為
+                   07  SPA-Q01-BYOMEI-AREA.
+                       09  SPA-Q01-BYOMEICD-OCC        OCCURS  5.
+      *----(01.00.01) LINE DEL START ----------------------------------
+      *                    11  SPA-Q01-USERBYOMEIFLG   PIC X(01).
+      *                    11  SPA-Q01-BYOMEICD        PIC X(20).
+      *----(01.00.01) LINE DEL END   ----------------------------------
+      *----(01.00.01) LINE ADD START ----------------------------------
+                           11  SPA-Q01-BYOMEI          PIC X(80).
+      *----(01.00.01) LINE ADD END   ----------------------------------
+                       09  SPA-Q01-SRYCD               PIC X(09)
+                                                       OCCURS  5.
+      *
+      *            並び順
+                   07  SPA-Q01-NARABI-AREA.
+                       09  SPA-Q01-KOUMOKU-TBL.
+                           11  SPA-Q01-KMK             PIC 9(01)
+                                                       OCCURS  3.
+                       09  SPA-Q01-NARABE-TBL.
+                           11  SPA-Q01-NARABE          PIC 9(01)
+                                                       OCCURS  3.
+      *
+      *
+      *        Q01←→Q98遷移情報
+               05  SPA-Q01-ADRS-SELECT-AREA2.
+      *            住所エントリーインデックス
+                   07  SPA-Q01-JYUSHO-IDX2             PIC 9(03).
+      *            郵便番号
+                   07  SPA-Q01-POST2                   PIC X(07).
+      *            住所
+                   07  SPA-Q01-JYUSHO3                 PIC X(50).
+      *
+      *        Q01←→Q99遷移情報
+               05  SPA-Q01-ADRS-SELECT-AREA.
+      *            住所エントリーインデックス
+                   07  SPA-Q01-JYUSHO-IDX              PIC 9(03).
+      *            郵便番号
+                   07  SPA-Q01-POST                    PIC X(07).
+      *            住所
+                   07  SPA-Q01-JYUSHO2                 PIC X(50).
+      *----(01.00.02) LINE DEL START ----------------------------------
+      *        Q01←→QID1遷移情報
+      *        05  SPA-Q01-QID-AREA.
+      *----(01.00.02) LINE DEL END   ----------------------------------
+      *----(01.00.01) LINE DEL START ----------------------------------
+      *            警告画面より
+      *            07  SPA-QID1-FLG                    PIC  X(02).
+      *        その他
+      *        警告メッセージ
+      *        05  SPA-QIDCD                           PIC  X(04).
+      *----(01.00.01) LINE DEL END   ----------------------------------
+      *----(01.00.02) LINE DEL START ----------------------------------
+      *----(01.00.01) LINE ADD START ----------------------------------
+      *            処理フラグ（ＣＳＶ出力／印刷）(I)
+      *            07  SPA-QID1-PROC-FLG               PIC  9(01).
+      *            ファイル名(O)
+      *            07  SPA-QID1-FILENAME               PIC  X(100).
+      *            開始件数（ページ数）(I)
+      *            07  SPA-QID1-STNUM                  PIC  9(09).
+      *            終了件数（ページ数）(I)
+      *            07  SPA-QID1-EDNUM                  PIC  9(09).
+      *            開始件数(O)
+      *            07  SPA-QID1-STKNS                  PIC  9(09).
+      *            終了件数(O)
+      *            07  SPA-QID1-EDKNS                  PIC  9(09).
+      *            開始ページ数(O)...印刷処理時のみ設定
+      *            07  SPA-QID1-STPAGE                 PIC  9(09).
+      *            終了ページ数(O)...印刷処理時のみ設定
+      *            07  SPA-QID1-EDPAGE                 PIC  9(09).
+      *            戻る／ＯＫフラグ(O)
+      *            07  SPA-QID1-RTOK-FLG               PIC  9(01).
+      *----(01.00.01) LINE ADD END   ----------------------------------
+      *----(01.00.02) LINE DEL END   ----------------------------------
+      *----(01.00.02) LINE ADD START ----------------------------------
+      *        Q02←→Q100遷移情報
+               05  SPA-Q02-Q100-AREA.
+                   07  SPA-Q02-Q100-PROC-FLG           PIC  9(01).
+      *            ファイル名(O)
+                   07  SPA-Q02-Q100-FILENAME           PIC  X(100).
+      *            開始件数（ページ数）(I)
+                   07  SPA-Q02-Q100-STNUM              PIC  9(09).
+      *            終了件数（ページ数）(I)
+                   07  SPA-Q02-Q100-EDNUM              PIC  9(09).
+      *            開始件数(O)
+                   07  SPA-Q02-Q100-STKNS              PIC  9(09).
+      *            終了件数(O)
+                   07  SPA-Q02-Q100-EDKNS              PIC  9(09).
+      *            開始ページ数(O)...印刷処理時のみ設定
+                   07  SPA-Q02-Q100-STPAGE             PIC  9(09).
+      *            終了ページ数(O)...印刷処理時のみ設定
+                   07  SPA-Q02-Q100-EDPAGE             PIC  9(09).
+      *            戻る／ＯＫフラグ(O)
+                   07  SPA-Q02-Q100-RTOK-FLG           PIC  9(01).
+      *        QID1遷移情報
+               05  SPA-Q00-QID-AREA.
+      *            警告画面より
+                   07  SPA-QID1-FLG                    PIC  X(02).
+      *            警告メッセージ
+                   07  SPA-QIDCD                       PIC  X(04).
+      *----(01.00.02) LINE ADD END   ----------------------------------

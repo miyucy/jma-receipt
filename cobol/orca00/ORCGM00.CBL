@@ -1,0 +1,862 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCGM00.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 業務選択
+      *  コンポーネント名  : マスタメニュー（Ｍ００）
+      *  管理者            : 
+      *  00/12/01    MCC−藤原　   新規作成
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     01/05/22  自動算定情報の追加
+      *  01.00.02    MCC-藤原     01/05/23  患者番号構成管理の追加
+      *  01.00.03    MCC-藤原     01/06/05  自動算定情報のセット中止
+      *  01.00.04    MCC-藤原     01/06/29  システム日付のセット追加
+      *  01.00.05    MCC-森脇     01/07/30  MID1の追加
+      *  01.00.06    MCC-藤原     01/09/13  終了のときの処理修正
+      *  01.01.01    MCC-多々納   01/09/20  JOINの修正      
+      *  01.01.02    MCC-藤原     01/09/27  MVERの追加  
+      *  01.01.03    MCC-多々納   01/10/03  自由構成の桁数をＳＰＡへ追加
+      *  01.01.04    MCC-多々納   01/11/27  自由構成区分をＳＰＡへ追加
+      *                                     SPAの端末ＩＤを３６桁ヘ
+      *  01.02.01    MCC-藤原     01/11/21  ORCMCPSUBへ変更  
+      *  01.02.02    MCC-多々納   01/12/11  拡張構成の追加
+      *  01.02.03    MCC-多々納   02/02/13  デモ用項目の削除
+      *  01.02.02    MCC-多々納   02/02/22  MID1の追加
+      *****************************************************************
+      *
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION               SECTION.
+       INPUT-OUTPUT                SECTION.
+       FILE-CONTROL.
+      *
+       DATA                    DIVISION.
+      *FILE                        SECTION.
+      *
+       WORKING-STORAGE             SECTION.
+      *
+      *    スパ領域
+           COPY    "COMMON-SPA".
+      *    スパ領域
+           COPY    "M00COMMON-SPA".
+      *   
+           COPY    "ENUM-VALUE".
+      *
+      *    Ｍ００スパ領域
+           COPY    "M00SCR-SPA".
+      *
+      *    フラグ領域
+       01  FLG-AREA.
+           03  FLG-END             PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
+      *
+      *    システム領域
+       01  SYS-AREA.
+           03  SYS-YMD.
+               05  SYS-YY          PIC 9(02).
+               05  SYS-MM          PIC 9(02).
+               05  SYS-DD          PIC 9(02).
+      *
+      *    一時領域
+       01  WRK-AREA.
+           03  IDX                   PIC 9(03).
+           03  WRK-SYSYMD.
+               05  WRK-SYSYY         PIC 9(04).
+               05  WRK-SYSMM         PIC 9(02).
+               05  WRK-SYSDD         PIC 9(02).
+           03  WRK-WSYSYMDH          PIC X(09).
+      *
+           03  WRK-WSYSYMD.
+               05  WRK-WSGO         PIC X(01).
+               05  WRK-WSYY         PIC 9(02).
+               05  WRK-WSMM         PIC 9(02).
+               05  WRK-WSDD         PIC 9(02).
+           03  WRK-SYMD.
+               05  WRK-SYY         PIC 9(04).
+               05  WRK-SMM         PIC 9(02).
+               05  WRK-SDD         PIC 9(02).
+           03  WRK-WYMD.
+               05  WRK-WGO         PIC X(01).
+               05  WRK-WYY         PIC 9(02).
+               05  WRK-WMM         PIC 9(02).
+               05  WRK-WDD         PIC 9(02).
+      *
+           03  WRK-GNO             PIC X(02).
+      *
+           03  WRK-PATH            PIC X(64).
+      *
+           03  WRK-ERRMSG          PIC X(40).
+           03  WRK-PRGNAME         PIC X(08).
+      *
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+      *    システム管理マスタ領域
+      *    職員情報
+           COPY  "CPSK1010.INC".
+      *    医療機関情報
+           COPY  "CPSK1001.INC".
+      *---- (01.00.01) LINE ADD START --------------------------------
+      *    自動算定情報
+           COPY  "CPSK1007.INC".
+      *---- (01.00.01) LINE ADD END   --------------------------------
+      *---- (01.00.02) LINE ADD START --------------------------------
+      *    患者番号構成管理情報
+           COPY  "CPSK1009.INC".
+      *---- (01.00.02) LINE ADD END   --------------------------------
+      *
+      *****************************************************************
+      *    サブプロ用　領域
+      *****************************************************************
+      *
+      *   日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *
+      *    ＤＢ検索
+           COPY    "MCPDATA.INC".
+      *     
+           COPY    "CPORCMCP.INC".  
+      *
+      *****************************************************************
+      *    連絡　領域
+      *****************************************************************
+        LINKAGE                     SECTION.
+      *
+           COPY    MCPAREA.
+           COPY    "ORCA-SPA".
+      *
+           COPY    "LINKAREA".
+      *
+       01  SCRAREA.
+           COPY    "M00.INC".
+           COPY    "M01.INC".
+           COPY    "M02.INC". 
+           COPY    "M95.INC".
+           COPY    "M96.INC".
+           COPY    "MERR.INC".
+           COPY    "MID1.INC".
+           COPY    "MVER.INC".
+      *
+       PROCEDURE                   DIVISION    USING
+           MCPAREA
+           SPAAREA
+           LINKAREA
+           SCRAREA.
+      *
+      *****************************************************************
+      *    主　　処理
+      *****************************************************************
+       000-PROC-SEC                SECTION.
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-M00KYOUTU
+           MOVE    SPA-SYS-1010-REC    TO  SYS-1010-REC
+           MOVE    SPA-FREE        TO  SPA-M00
+      *
+           MOVE    SPACE           TO  SPA-ERRCD
+           MOVE    ZERO            TO  FLG-END
+      *
+           EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
+               WHEN    "LINK"          ALSO    ANY
+                   PERFORM 100-INIT-SEC
+      *    画面遷移
+               WHEN     "PUTG"           ALSO   "CLICKED"
+                   PERFORM 200-GMNSENI
+      *    入力
+               WHEN      OTHER
+                   PERFORM 200-ENTRY
+           END-EVALUATE.
+      *
+      *    画面遷移がない時、画面表示へ
+           IF      FLG-END             =   ZERO
+               PERFORM 500-SET-SCREEN
+           END-IF
+      *
+           MOVE    SYS-1010-REC    TO  SPA-SYS-1010-REC
+           MOVE    SPA-M00KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-M00         TO  SPA-FREE
+      *
+           .
+           EXIT    PROGRAM
+           .
+      *****************************************************************
+      *    初期　処理
+      *****************************************************************
+       100-INIT-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
+      *
+      *    エラー画面より
+           IF      SPA-MOTOPG          =   "MERR"
+               MOVE    SPACE               TO  SPA-MOTOPG
+               PERFORM 5001-MAPCUR-SEC
+           ELSE
+      *        初期画面セット
+               PERFORM 300-SCREEN-SEC
+      *        画面編集
+               PERFORM 500-GMNHEN-SEC
+               PERFORM 510-GSRAUTH-SEC
+      *
+               IF      SPA-ERRCD       NOT =   SPACE
+                   PERFORM 510-ERRSET-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
+           END-IF
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    SPACE               TO  MCP-PUTTYPE.
+           MOVE    "M00    "           TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       100-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    初期画面処理
+      *****************************************************************
+       300-SCREEN-SEC              SECTION.
+      *
+           INITIALIZE              SPA-M00-AREA
+      *---- (01.00.04) LINE ADD START --------------------------------
+      *    日付セット画面より
+           IF      SPA-MOTOPG          =   "M95"  OR
+                                           "MVER"
+               MOVE    1               TO  SPA-GMN-CUR
+               GO      TO      3OO-SCREEN-EXT
+           END-IF
+      *---- (01.00.04) LINE ADD END   --------------------------------
+      *
+           IF      LNK-KYOUTU      NOT =   SPACE
+               MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
+           END-IF
+      *
+           PERFORM 310-SPASET-SEC
+      *
+           MOVE    1               TO  SPA-GMN-CUR
+      *
+      *
+           .
+       3OO-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       310-SPASET-SEC              SECTION.
+      *
+           DISPLAY "310-SPASET SPA-MOTOPG:" SPA-MOTOPG "."
+      *
+      *---- (01.00.04) LINE ADD START --------------------------------
+      *    Ｍ０１より戻ってきた時、システム日付のセットをしない
+           IF      SPA-MOTOPG          =   "M01"
+               MOVE    SPA-SYSYMDWH        TO  WRK-WSYSYMDH
+               MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
+               MOVE    SPA-SYSYMDW         TO  WRK-WYMD
+               INITIALIZE                  SPA-AREA
+               MOVE    WRK-WSYSYMDH        TO  SPA-SYSYMDWH
+               MOVE    WRK-SYSYMD          TO  SPA-SYSYMD
+               MOVE    WRK-WYMD            TO  SPA-SYSYMDW
+           ELSE
+      *---- (01.00.04) LINE ADD END   --------------------------------
+      *
+           INITIALIZE              SPA-AREA
+      *    システム日付セット
+           ACCEPT  SYS-YMD         FROM    DATE
+           COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
+           MOVE    SYS-MM              TO  WRK-SYSMM
+           MOVE    SYS-DD              TO  WRK-SYSDD
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY1-AREA
+           MOVE    "11"                TO  LNK-DAY1-IRAI
+           MOVE    WRK-SYSYMD          TO  LNK-DAY1-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY1-AREA
+           IF      STS-DAY-RC1         =   ZERO 
+               MOVE    LNK-DAY1-YMD (2:7)  TO  SPA-SYSYMDW
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    WRK-SYSYMD          TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               IF      STS-DAY-RC1         =   ZERO 
+                   MOVE    LNK-DAY2-EDTYMD1    TO  SPA-SYSYMDWH
+                   MOVE    WRK-SYSYMD          TO  SPA-SYSYMD
+               END-IF
+           END-IF
+           IF      STS-DAY-RC1     NOT =   ZERO 
+               MOVE    "1003"              TO  SPA-ERRCD
+               GO  TO  310-SPASET-EXT
+           END-IF
+      *
+      *---- (01.00.04) LINE ADD START --------------------------------
+           END-IF
+      *---- (01.00.04) LINE ADD END   --------------------------------
+      *
+      *    医療機関ＩＤ編集
+           MOVE    SPACE               TO  SYS-1001-REC
+           INITIALIZE                  SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  WRK-PATH
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1001-REC
+               MOVE    SYS-1001-HOSPID     TO  SPA-HOSPID
+               MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
+               MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
+               MOVE    SYS-1001-SYOHOKBN   TO  SPA-SYOHOKBN
+               MOVE    SYS-1001-SKYPRTFLG  TO  SPA-SKYPRTFLG
+           ELSE
+               MOVE    "1002"              TO  SPA-ERRCD
+               GO  TO  310-SPASET-EXT
+           END-IF
+      *---- (01.00.03) LINE DEL START --------------------------------
+      *---- (01.00.01) LINE ADD START --------------------------------
+      *
+      *    自動算定情報編集
+      *     INITIALIZE                  SYS-1007-REC
+      *     MOVE    "1007"              TO  SYS-1007-KANRICD
+      *     MOVE    "*"                 TO  SYS-1007-KBNCD
+      *     MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+      *     MOVE    SYS-1007-REC        TO  MCPDATA-REC
+      *     MOVE    "SYSKANRI-KEY"      TO  WRK-PATH
+      *     PERFORM 800-SYSKANRI-READ-SEC
+      *     IF      FLG-SYSKANRI        =   ZERO
+      *         MOVE    SYSKANRI-REC            TO  SYS-1007-REC
+      *         MOVE    SYS-1007-SANTEI (1:1)   TO  SPA-CHOKI
+      **** ELSE
+      ****     MOVE    "1004"              TO  SPA-ERRCD
+      ****     GO  TO  310-SPASET-EXT
+      *     END-IF
+      *---- (01.00.01) LINE ADD END   --------------------------------
+      *---- (01.00.03) LINE DEL END   --------------------------------
+      *---- (01.00.02) LINE ADD START --------------------------------
+      *
+      *    患者番号構成管理情報編集
+           MOVE    SPACE               TO  SYS-1009-REC
+           INITIALIZE                  SYS-1009-REC
+           MOVE    "1009"              TO  SYS-1009-KANRICD
+           MOVE    "*"                 TO  SYS-1009-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1009-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY"      TO  WRK-PATH
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC    TO  SYS-1009-REC
+               MOVE    SYS-1009-PTNUMKSIKBN
+                                       TO  SPA-1009-PTNUMKSIKBN
+               MOVE    SYS-1009-JIYKSIKBN
+                                       TO  SPA-1009-JIYKSIKBN
+               MOVE    SYS-1009-JIYKSIKETA
+                                       TO  SPA-1009-JIYKSIKETA
+               MOVE    SYS-1009-HJNKSIKBN
+                                       TO  SPA-1009-HJNKSIKBN
+               MOVE    SYS-1009-HJNKSINENKBN
+                                       TO  SPA-1009-HJNKSINENKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKBN
+                                       TO  SPA-1009-HJNKSIRENNUMKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKETA
+                                       TO  SPA-1009-HJNKSIRENNUMKETA
+      *拡張構成区分
+               MOVE    SYS-1009-KKCKSIKBN
+                                       TO  SPA-1009-KKCKSIKBN
+               MOVE    SYS-1009-KKCKSIMAEKETA
+                                       TO  SPA-1009-KKCKSIMAEKETA
+               MOVE    SYS-1009-KKCKSIRENNUMKETA
+                                       TO  SPA-1009-KKCKSIRENNUMKETA
+               MOVE    SYS-1009-KKCKSIATOKETA
+                                       TO  SPA-1009-KKCKSIATOKETA
+           ELSE
+               MOVE    "1005"              TO  SPA-ERRCD
+               GO  TO  310-SPASET-EXT
+           END-IF
+           DISPLAY "310-SPASET-SEC SPA-1009-PTNUMKSIKBN = "
+                                       SPA-1009-PTNUMKSIKBN
+      *---- (01.00.02) LINE ADD END   --------------------------------
+      *
+      *    端末ＩＤ
+      *****MOVE    MCP-TERM (5:)       TO  SPA-TERMID
+           MOVE    MCP-TERM            TO  SPA-TERMID-G
+      **** PERFORM VARYING IDX FROM    16  BY  -1
+           PERFORM VARYING IDX FROM    32  BY  -1
+                   UNTIL   IDX <       1
+               IF      SPA-TERMID (IDX:1)  NOT =   SPACE
+                   MOVE    1                   TO  IDX 
+               ELSE  
+                   MOVE    "Z"                 TO  SPA-TERMID (IDX:1)
+               END-IF
+           END-PERFORM 
+           DISPLAY "310-SPASET-SEC SPA-TERMID = " SPA-TERMID
+      *
+      *    オペレータＩＤ
+           MOVE    MCP-USER            TO  SPA-OPID
+           DISPLAY "310-SPASET-SEC SPA-OPID = " SPA-OPID
+      *
+      *    職員情報
+           MOVE    SPACE               TO  SYS-1010-REC
+           INITIALIZE                  SYS-1010-REC
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           MOVE    SPA-OPID            TO  SYS-1010-USERID
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY3"     TO  WRK-PATH
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1010-REC
+      *
+      *2001.9.27 強制プロテクト（ＰＧ未作成）
+               MOVE    "0"             TO  SYS-1010-GSRAUTH(3:1)
+                                           SYS-1010-GSRAUTH(4:1)
+                                           SYS-1010-GSRAUTH(18:1)
+                                           SYS-1010-GSRAUTH(26:1)
+                                           SYS-1010-GSRAUTH(32:1)
+                                           SYS-1010-GSRAUTH(41:1)
+                                           SYS-1010-GSRAUTH(46:1)
+                                           SYS-1010-GSRAUTH(47:1)
+      *2001.9.27 強制プロテクト（ＰＧ未作成）END
+      *********MOVE    SYS-1010-REC        TO  SPA-WORK
+           ELSE
+               MOVE    "1001"              TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面遷移処理
+      *****************************************************************
+       200-GMNSENI                   SECTION.
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        終了
+               WHEN    "CLICKED"       ALSO    "B01"
+                   PERFORM 210-BACK
+      *        システム日付設定
+               WHEN    "CLICKED"       ALSO    "B06"
+                   PERFORM 460-M95-SEC
+      *        情報画面
+               WHEN    "CLICKED"       ALSO    "B12"
+                   PERFORM 470-MVER-SEC
+      *    各業務移動へ
+               WHEN    "CLICKED"       ALSO    ANY
+                   PERFORM 400-GYOMU-SEL-SEC
+           END-EVALUATE
+      *
+           .
+       200-GMNSENI-EXT.
+           EXIT.
+      *****************************************************************
+      *    会話　処理
+      *****************************************************************
+       200-ENTRY                   SECTION.
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+               WHEN    "ACTIVATE"      ALSO    "SELNUM"
+                   PERFORM 4101-KEY-ENT-SEC
+           END-EVALUATE
+      *
+          .
+       200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力　処理
+      *****************************************************************
+       4101-KEY-ENT-SEC            SECTION.
+      *
+           MOVE    M00-SELNUM      TO  SPA-GMN-GSEL
+      *
+           IF      SPA-GMN-GSEL    NOT =   ZERO
+               MOVE    SPA-GMN-GSEL        TO  WRK-GNO
+               PERFORM 420-GYOMU-START-SEC
+           END-IF
+      *
+           .
+       4101-KEY-ENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力　処理
+      *****************************************************************
+       400-GYOMU-SEL-SEC            SECTION.
+      *
+           MOVE   MCP-WIDGET(2:2)      TO  WRK-GNO
+      *
+           PERFORM 420-GYOMU-START-SEC
+           .
+       400-GYOMU-SEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    業務起動　処理
+      *****************************************************************
+       420-GYOMU-START-SEC         SECTION.
+      *
+      **** MOVE    SPA-WORK            TO  SYS-1010-REC
+      *
+      *
+          MOVE    SPACE               TO  SPA-SAKIPG
+          EVALUATE    WRK-GNO
+      *        医事業務
+               WHEN    "01"
+                   IF      SYS-1010-GSRAUTH(1:1)    =  "0"
+                       MOVE    "0002"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    "M01"           TO  SPA-SAKIPG
+                   END-IF 
+      *        プログラム更新処理
+               WHEN    "03"
+                   IF      SYS-1010-GSRAUTH(3:1)    =  "0"
+                       MOVE    "0002"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    "???"           TO  SPA-SAKIPG
+                   END-IF 
+      *        点数改正処理
+               WHEN    "04"
+                   IF      SYS-1010-GSRAUTH(4:1)    =  "0"
+                       MOVE    "0002"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    "???"           TO  SPA-SAKIPG
+                   END-IF
+               WHEN    OTHER
+                   MOVE    "0001"          TO  SPA-ERRCD
+           END-EVALUATE.
+      *
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-SAKIPG      NOT =  SPACE
+                   EVALUATE    SPA-SAKIPG
+                       WHEN    "M01"
+                           CONTINUE
+                       WHEN    OTHER
+                           INITIALIZE                  LINKAREA
+                           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+                   END-EVALUATE
+                   MOVE    SPACE               TO  SPA-MOTOPG2
+                   MOVE    "M00"               TO  SPA-MOTOPG
+                   MOVE     "CHANGE"           TO  MCP-PUTTYPE
+                   MOVE     SPA-SAKIPG         TO  MCP-WINDOW
+      *
+                   PERFORM 900-PUT-WINDOW
+      *
+                   MOVE    1                   TO  FLG-END
+               END-IF
+           END-IF
+           .
+      *
+       420-GYOMU-START-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム日付変更画面へ1
+      *****************************************************************
+       460-M95-SEC                    SECTION.
+      *
+      *    ＳＰＡセット
+           MOVE    SPA-SYSYMD          TO  SPA-NAI-SYSYMD
+           MOVE    SPA-SYSYMDW         TO  SPA-NAI-SYSYMDW
+           MOVE    SPA-SYSYMDWH        TO  SPA-GMN-SYSYMD
+      *
+           MOVE    1                    TO  SPA-M95-CUR
+      *
+           MOVE    SPACE                TO  M95
+           MOVE    SPA-SYSYMDWH         TO  M95-SYSYMD
+           MOVE    SPA-SYSYMD           TO  WRK-SYMD
+           MOVE    WRK-SYY              TO  M95-YEAR
+           MOVE    WRK-SMM              TO  M95-MONTH
+           MOVE    WRK-SDD              TO  M95-DAY
+      *
+           MOVE    "B01"                TO  MCP-WIDGET
+      *
+           MOVE    "M00"                TO  SPA-MOTOPG
+           MOVE    "M95"                TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "M95"                TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+      *
+           .
+       460-M95-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ヴァージョン情報表示画面へ
+      *****************************************************************
+       470-MVER-SEC                    SECTION.
+      *
+      *     MOVE    SPACE                TO  MVER
+           MOVE    "B12"                TO  MCP-WIDGET
+      *
+           MOVE    "M00"                TO  SPA-MOTOPG
+           MOVE    "MVER"               TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "MVER"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END 
+      *
+           .
+       470-MVER-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    終了　処理
+      *****************************************************************
+       210-BACK                    SECTION.
+      *
+      *---- (01.00.06) LINE MOD START --------------------------------
+      ***  MOVE    "L01"               TO  SPA-SAKIPG
+           MOVE    SPACE               TO  SPA-SAKIPG
+      *---- (01.00.06) LINE MOD END   --------------------------------
+           MOVE    "M00"               TO  SPA-MOTOPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+      *---- (01.00.06) LINE MOD START --------------------------------
+      ***  MOVE    "L01"               TO  MCP-WINDOW
+           MOVE    SPACE               TO  MCP-WINDOW
+      *---- (01.00.06) LINE MOD END   --------------------------------
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       210-BACK-EXT.
+           EXIT.
+      *****************************************************************
+      *    自画面編集処理
+      *****************************************************************
+       500-SET-SCREEN              SECTION.
+      *
+           PERFORM 500-GMNHEN-SEC
+      *
+           PERFORM 510-GSRAUTH-SEC
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               PERFORM 510-ERRSET-SEC
+               GO  TO  500-SET-SCREEN-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
+           MOVE    "M00    "           TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+           .
+       500-SET-SCREEN-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    画面編集処理
+      *****************************************************************
+       500-GMNHEN-SEC              SECTION.
+      *
+           INITIALIZE                  M00
+      *
+           MOVE    SPA-GMN-GSEL        TO  M00-SELNUM
+      *
+           PERFORM 5001-MAPCUR-SEC
+      *
+           .
+       500-GMNHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    業務権限非活性処理
+      *****************************************************************
+       510-GSRAUTH-SEC             SECTION.
+      *
+      *****MOVE    SPA-WORK            TO  SYS-1010-REC
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       3
+               MOVE    WIDGET-INSENSITIVE      TO  M00-STATE-O (IDX)
+           END-PERFORM           
+      *
+           IF      SYS-1010-GSRAUTH(1:1)    =  "1"
+               MOVE    WIDGET-NORMAL      TO  M00-G01-STATE
+           END-IF
+           IF      SYS-1010-GSRAUTH(3:1)    =  "1"
+               MOVE    WIDGET-NORMAL      TO  M00-G03-STATE
+           END-IF
+           IF      SYS-1010-GSRAUTH(4:1)    =  "1"
+               MOVE    WIDGET-NORMAL      TO  M00-G04-STATE
+           END-IF
+      *
+      *2001.8.7 強制プロテクト（ＰＧ未作成）
+      ***     MOVE    WIDGET-INSENSITIVE      TO  M00-G03-STATE
+      ***     MOVE    WIDGET-INSENSITIVE      TO  M00-G04-STATE
+          .
+       51O-GSRAUTH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面カーソルセット処理
+      *****************************************************************
+       5001-MAPCUR-SEC             SECTION.
+      *
+           EVALUATE    SPA-GMN-CUR
+               WHEN    1
+                   MOVE  "SELNUM"    TO  MCP-WIDGET
+           END-EVALUATE
+      *
+           .
+       5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージ表示理
+      *****************************************************************
+       510-ERRSET-SEC              SECTION.
+           MOVE    SPACE               TO  SPA-ERRMSG
+      *
+           EVALUATE    SPA-ERRCD
+               WHEN    "0001"
+                   MOVE    "入力エラー"        TO  SPA-ERRMSG
+               WHEN    "0002"
+                   MOVE    "この業務は選択できません"
+                                               TO  SPA-ERRMSG
+               WHEN    "1001"
+                   MOVE
+                   "職員情報が取得できませんので、処理を終了します。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1002"
+                   MOVE
+                 "医療機関情報が取得できませんので、処理を終了します。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1003"
+                   MOVE
+                 "システム日付が取得できませんので、処理を終了します。"
+                                               TO  SPA-ERRMSG
+      *---- (01.00.01) LINE ADD START --------------------------------
+               WHEN    "1004"
+                   MOVE
+               "自動算定情報が取得できませんので、処理を終了します。"
+                                               TO  SPA-ERRMSG
+      *---- (01.00.01) LINE ADD END   --------------------------------
+      *---- (01.00.02) LINE ADD START --------------------------------
+               WHEN    "1005"
+                   MOVE
+            "患者番号構成情報が取得できませんので、処理を終了します。"
+                                               TO  SPA-ERRMSG
+      *---- (01.00.02) LINE ADD END   --------------------------------
+           END-EVALUATE
+      *
+           MOVE    SPA-ERRCD            TO  SPA-GMN-ERRCD  
+      *
+           MOVE    SPACE                TO  MERR
+           MOVE    SPA-ERRCD            TO  MERR-ERRCODE
+           MOVE    SPA-ERRMSG           TO  MERR-ERRMSG
+           MOVE    "B01"                TO  MCP-WIDGET
+      *
+           MOVE    "M00"                TO  SPA-MOTOPG
+           MOVE    "MERR"               TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "MERR"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+      *
+           .
+       510-ERRSET-EXT.
+           EXIT.
+      *****************************************************************
+      *    管理マスタ読み込み
+      *****************************************************************
+       800-SYSKANRI-READ-SEC           SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+               ELSE
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       800-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＰＵＴ　処理
+      *****************************************************************
+       900-PUT-WINDOW              SECTION.
+      *
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-PUT-WINDOW-EXT.
+           EXIT.
+      *

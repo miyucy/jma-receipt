@@ -1,0 +1,56 @@
+Q02	{
+	fixed17	{
+		B05	{
+			state	int;
+		};
+		B06	{
+			state	int;
+		};
+		B07	{
+			state	int;
+		};
+		B10	{
+			state	int;
+		};
+		B11	{
+			state	int;
+		};
+		B12	{
+			state	int;
+		};
+		B24	{
+			state	int;
+		};
+		HYODAI	{
+			value	varchar(101);
+		};
+		JYOKEN1	{
+			value	varchar(101);
+		};
+		JYOKEN2	{
+			value	varchar(101);
+		};
+		SCR_KEKKALST	{
+			KEKKALST	{
+				count	int;
+				item	{
+					value1	varchar(5);
+					value2  varchar(20);
+					value3	varchar(50);
+					value4	varchar(2);
+					value5	varchar(10);
+					value6	varchar(8);
+					value7	varchar(80);
+				}	[200];
+				select	bool[200];
+			};
+		};
+                TOTAL   {
+                        value   varchar(22);
+                };
+
+                SELNUM  {
+                        value   number(5);
+                };
+	};
+};

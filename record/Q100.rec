@@ -1,0 +1,26 @@
+Q100	{
+	fixed1	{
+		ID1CODE	{
+			value	varchar(11);
+		};
+		ID1MSG	{
+			value	varchar(81);
+		};
+		LBLFILENAME	{
+			value	varchar(13);
+		};
+		FILENAME	{
+			value	varchar(101);
+			state	int;
+		};
+		LBLNUMSEL	{
+			value	varchar(11);
+		};
+		STNUM	{
+			value	number(9);
+		};
+		EDNUM	{
+			value	number(9);
+		};
+	};
+};

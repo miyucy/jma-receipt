@@ -1,0 +1,95 @@
+tbl_tsyrrk {
+	HOSPID				char(24);
+	PTID				number(10,0);
+	NINSTYMD			char(8);
+	NINEDYMD			char(8);
+	TERMID  			varchar(16);
+	OPID    			varchar(16);
+	CREYMD  			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+#-----> 主キー更新用項目
+	UPHOSPID			char(24),virtual;
+	UPPTID 				number(10,0),virtual;
+	UPNINSTYMD			char(8),virtual;
+};
+
+primary	{
+	HOSPID;
+	PTID;
+	NINSTYMD;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_tsyrrk_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tsyrrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   NINSTYMD    =   :NINSTYMD
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_tsyrrk_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tsyrrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_tsyrrk_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tsyrrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			ORDER   BY        NINSTYMD    DESC
+		;
+	};
+};
+path	del11 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_tsyrrk
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};
+
+path	upd1	{ 	
+	DBUPDATE	{
+		UPDATE	tbl_tsyrrk 
+				SET	
+#					:*
+                   HOSPID              = :HOSPID,
+                   PTID                = :PTID,
+                   NINSTYMD            = :NINSTYMD,
+                   NINEDYMD            = :NINEDYMD,
+                   TERMID              = :TERMID,
+                   OPID                = :OPID,
+                   CREYMD              = :CREYMD,
+                   UPYMD               = :UPYMD,
+                   UPHMS               = :UPHMS
+               WHERE   HOSPID      =   :UPHOSPID
+                 AND   PTID        =   :UPPTID
+                 AND   NINSTYMD    =   :UPNINSTYMD
+		;
+	};
+};
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_tsyrrk_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tsyrrk
+		;
+	};
+};

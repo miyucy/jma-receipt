@@ -1,0 +1,24 @@
+OBJS = ORCHC01.so    ORCHC02.so      ORCHC03.so  ORCHC19.so   ORCHC28.so \
+       ORCMCPSUB.so  ORCS01NEW.so \
+       ORCSC10.so    ORCSC20.so      ORCSC30.so  ORCSC40.so \
+       ORCSC50.so    ORCSC54.so      ORCSC60.so  ORCSC70.so \
+       ORCSC80.so    ORCSC90.so      ORCSC91.so  ORCSC92.so \
+       ORCSC93.so    ORCSC94.so      ORCSC95.so  ORCSC96.so   ORCSC97.so \
+       ORCSCHKDGT.so ORCSCHKDGT11.so ORCSDAY.so  ORCSGDAY.so \
+       ORCSKARRK.so    ORCSNUM.so  ORCSPTID.so  ORCBJOB.so \
+       ORCSJOB.so    ORCSSRYSYU.so   ORCSSANTEI.so  \
+       ORCSC10200203.so  ORCSC10200204.so \
+       ORCSC20200203.so  ORCSC20200204.so \
+       ORCSC30200203.so  ORCSC30200204.so \
+       ORCSC40200203.so  ORCSC40200204.so \
+       ORCSC50200203.so  ORCSC50200204.so \
+       ORCSC54200203.so  ORCSC54200204.so \
+       ORCSC60200203.so  ORCSC60200204.so \
+       ORCSC70200203.so  ORCSC70200204.so \
+       ORCSC80200203.so  ORCSC80200204.so \
+       ORCSMENJYO.so ORCSCJIH.so ORCSPRT.so ORCSKANACHK.so ORCSPTNUM.so \
+       ORCSKANACNV.so ORCHC30.so ORCSCH30.so ORCSFILECHK.so
+
+top_builddir = ../..
+include $(top_builddir)/cobol/Makefile.global
+

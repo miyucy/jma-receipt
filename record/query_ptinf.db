@@ -1,0 +1,33 @@
+query_ptinf {
+	HOSPID				char(24);
+	PTID						number(10,0);
+	KANANAME			varchar(100);
+	NAME 						varchar(100);
+	SEX        			char(1);
+	BIRTHDAY 				char(8);
+	HOME_ADRS				varchar(200);
+	HOME_BANTI 			varchar(200);
+	PTNUM		 				char(20);
+  SQL		          dbcode(15000),virtual;
+};
+
+primary	{
+	HOSPID,PTID;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE query_ptinf_key_csr CURSOR FOR
+		SELECT distinct a.ptid,
+										a.kananame,
+										a.name,
+										a.sex,
+										a.birthday,
+										a.home_adrs,
+										a.home_banti,
+										h.ptnum
+					 FROM tbl_ptinf a,tbl_ptnum h :SQL
+		;
+	};
+};
+

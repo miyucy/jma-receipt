@@ -1,0 +1,184 @@
+W02	{
+	fixed12	{
+	        B03	{
+	           	state	int;
+	        };
+		STYUKYMD	{
+			value	varchar(10);
+		};
+		EDYUKYMD	{
+			value	varchar(10);
+		};
+		notebook3	{
+			pageno	int;
+			fixed23	{
+				HOSPNAME	{
+					value	varchar(61);
+				};
+				KAISETUNAME	{
+					value	varchar(61);
+				};
+				KANRINAME	{
+					value	varchar(41);
+				};
+				ROUPAYKBN_COMBO	{
+					ROUPAYKBN	{
+						value	varchar(9);
+					};
+					count	int;
+					item	varchar(8)[2];
+				};
+				HOSPCDN	{
+					value	varchar(21);
+				};
+				PREFNUM_COMBO	{
+					PREFNUM	{
+						value	varchar(14);
+					};
+					count	int;
+					item	varchar(13)[47];
+				};
+				TENHYOKBN_COMBO	{
+					TENHYOKBN	{
+						value	varchar(9);
+					};
+					count	int;
+					item	varchar(8)[2];
+				};
+				HOSPCD	{
+					value	number(7);
+				};
+				HOSPSBT_COMBO	{
+					HOSPSBT	{
+						value	varchar(11);
+					};
+					count	int;
+					item	varchar(10)[2];
+				};
+				BEDSU	{
+					value	number(4);
+				};
+				HOSPSBT1_COMBO	{
+					HOSPSBT1	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
+				HOSPID	{
+					value	varchar(25);
+				};
+				SYOHOKBN_COMBO	{
+					SYOHOKBN	{
+						value	varchar(9);
+					};
+					count	int;
+					item	varchar(8)[2];
+				};
+				SKYPRTFLG_COMBO	{
+					SKYPRTFLG	{
+						value	varchar(15);
+					};
+					count	int;
+					item	varchar(14)[2];
+				};
+				SYOHOPRTFLG_COMBO	{
+					SYOHOPRTFLG	{
+						value	varchar(15);
+					};
+					count	int;
+					item	varchar(14)[3];
+				};
+				ZENSYOHOFLG_COMBO	{
+					ZENSYOHOFLG	{
+						value	varchar(15);
+					};
+					count	int;
+					item	varchar(14)[2];
+				};
+				YAKUJYOFLG_COMBO	{
+					YAKUJYOFLG	{
+						value	varchar(15);
+					};
+					count	int;
+					item	varchar(14)[2];
+				};
+			};
+	            N01	{
+	            	state	int;
+	            };
+			fixed24	{
+				POST	{
+					value	varchar(8);
+				};
+				ADRS	{
+					value	varchar(101);
+				};
+				TEL	{
+					value	varchar(16);
+				};
+				FAX	{
+					value	varchar(16);
+				};
+			};
+	            N02	{
+	            	state	int;
+	            };
+			fixed25	{
+				EMAIL	{
+					value	varchar(101);
+				};
+				HPURL	{
+					value	varchar(101);
+				};
+			};
+	            N03	{
+	            	state	int;
+	            };
+			fixed26	{
+				TEIRITU	{
+					value	varchar(2);
+				};
+				DISCOUNTRATE	{
+					value	number(7);
+				};
+			};
+	            N04	{
+	            	state	int;
+	            };
+			fixed27	{
+				DISCOUNTBODY	{
+					value	varchar(21);
+				};
+				DISCOUNTKBN	{
+					value	varchar(3);
+				};
+			};
+	            N05	{
+	            	state	int;
+	            };
+			fixed28	{
+				CONDITIONBODY	{
+					value	varchar(21);
+				};
+				CONDITIONWORD	{
+					value	varchar(3);
+				};
+				ICONFILENAME	{
+					value	varchar(101);
+				};
+			};
+	            N06	{
+	            	state	int;
+	            };
+			fixed29	{
+				JIHINAME	{
+					value	varchar(21);
+				};
+			};
+	            N07	{
+	            	state	int;
+	            };
+		};
+	};
+};

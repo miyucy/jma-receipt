@@ -1,0 +1,52 @@
+P100	{
+	fixed1	{
+		FRA_KANJI1	{
+			fixed2	{
+				KANANAME1	{
+					value	varchar(50);
+				};
+				SCR_KANJILST1	{
+					KANJILST1	{
+						count	int;
+						item	{
+							value1	varchar(2);
+							value2	varchar(50);
+						}	[50];
+						select	bool[50];
+					};
+				};
+				SELNUM1	{
+					value	number(3);
+					state	int;
+				};
+				KANJINAME1	{
+					value	varchar(51);
+				};
+			};
+		};
+		FRA_KANJI2	{
+			fixed3	{
+				KANANAME2	{
+					value	varchar(50);
+				};
+				SCR_KANJILST2	{
+					KANJILST2	{
+						count	int;
+						item	{
+							value1	varchar(2);
+							value2	varchar(50);
+						}	[50];
+						select	bool[50];
+					};
+				};
+				SELNUM2	{
+					value	number(3);
+					state	int;
+				};
+				KANJINAME2	{
+					value	varchar(51);
+				};
+			};
+		};
+	};
+};

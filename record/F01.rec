@@ -1,0 +1,367 @@
+F01	{
+	fixed6	{
+		FILENAME	{
+			value	varchar(129);
+		};
+		CHKBTN1	{
+			value	bool;
+        	};
+		CHKBTN2	{
+			value	bool;
+		};
+		CHKBTN3	{
+			value	bool;
+		};
+		CHKBTN4	{
+			value	bool;
+		};
+		CHKBTN5	{
+			value	bool;
+		};
+		CHKBTN6	{
+			value	bool;
+		};
+		CHKBTN7	{
+			value	bool;
+		};
+		CHKBTN8	{
+			value	bool;
+		};
+		CHKBTN9	{
+			value	bool;
+		};
+		CHKBTN10	{
+			value	bool;
+		};
+		CHKBTN11	{
+			value	bool;
+		};
+		CHKBTN12	{
+			value	bool;
+		};
+		CHKBTN13	{
+			value	bool;
+		};
+		CHKBTN14	{
+			value	bool;
+		};
+		CHKBTN15	{
+			value	bool;
+		};
+		CHKBTN16	{
+			value	bool;
+		};
+		CHKBTN17	{
+			value	bool;
+		};
+		CHKBTN18	{
+			value	bool;
+		};
+		CHKBTN19	{
+			value	bool;
+		};
+		CHKBTN20	{
+			value	bool;
+		};
+		CHKBTN21	{
+			value	bool;
+		};
+		CHKBTN22	{
+			value	bool;
+		};
+		CHKBTN23	{
+			value	bool;
+		};
+		CHKBTN24	{
+			value	bool;
+		};
+		CHKBTN25	{
+			value	bool;
+		};
+		CHKBTN26	{
+			value	bool;
+		};
+		CHKBTN27	{
+			value	bool;
+		};
+		CHKBTN28	{
+			value	bool;
+		};
+		CHKBTN29	{
+			value	bool;
+		};
+		CHKBTN30	{
+			value	bool;
+		};
+		CHKBTN31	{
+			value	bool;
+		};
+		CHKBTN32	{
+			value	bool;
+		};
+		CHKBTN33	{
+			value	bool;
+		};
+		CHKBTN34	{
+			value	bool;
+		};
+		CHKBTN35	{
+			value	bool;
+		};
+		CHKBTN36	{
+			value	bool;
+		};
+		CHKBTN37	{
+			value	bool;
+		};
+		CHKBTN38	{
+			value	bool;
+		};
+		CHKBTN39	{
+			value	bool;
+		};
+		CHKBTN40	{
+			value	bool;
+		};
+		CHKBTN41	{
+			value	bool;
+		};
+		CHKBTN42	{
+			value	bool;
+		};
+		CHKBTN43	{
+			value	bool;
+		};
+		CHKBTN44	{
+			value	bool;
+		};
+		CHKBTN45	{
+			value	bool;
+		};
+		CHKBTN46	{
+			value	bool;
+		};
+		CHKBTN47	{
+			value	bool;
+		};
+		CHKBTN48	{
+			value	bool;
+		};
+		CHKBTN49	{
+			value	bool;
+		};
+		CHKBTN50	{
+			value	bool;
+		};
+		CHKBTN51	{
+			value	bool;
+		};
+		CHKBTN52	{
+			value	bool;
+		};
+		CHKBTN53	{
+			value	bool;
+		};
+		CHKBTN54	{
+			value	bool;
+		};
+		CHKBTN55	{
+			value	bool;
+		};
+		CHKBTN56	{
+			value	bool;
+		};
+		CHKBTN57	{
+			value	bool;
+		};
+		CHKBTN58	{
+			value	bool;
+		};
+		CHKBTN59	{
+			value	bool;
+		};
+		CHKBTN60	{
+			value	bool;
+		};
+		CHKMSG01	{
+			value	char(48);
+		};
+		CHKMSG02	{
+			value	char(48);
+		};
+		CHKMSG03	{
+			value	char(48);
+		};
+		CHKMSG04	{
+			value	char(48);
+		};
+		CHKMSG05	{
+			value	char(48);
+		};
+		CHKMSG06	{
+			value	char(48);
+		};
+		CHKMSG07	{
+			value	char(48);
+		};
+		CHKMSG08	{
+			value	char(48);
+		};
+		CHKMSG09	{
+			value	char(48);
+		};
+		CHKMSG10	{
+			value	char(48);
+		};
+		CHKMSG11	{
+			value	char(48);
+		};
+		CHKMSG12	{
+			value	char(48);
+		};
+		CHKMSG13	{
+			value	char(48);
+		};
+		CHKMSG14	{
+			value	char(48);
+		};
+		CHKMSG15	{
+			value	char(48);
+		};
+		CHKMSG16	{
+			value	char(48);
+		};
+		CHKMSG17	{
+			value	char(48);
+		};
+		CHKMSG18	{
+			value	char(48);
+		};
+		CHKMSG19	{
+			value	char(48);
+		};
+		CHKMSG20	{
+			value	char(48);
+		};
+		CHKMSG21	{
+			value	char(48);
+		};
+		CHKMSG22	{
+			value	char(48);
+		};
+		CHKMSG23	{
+			value	char(48);
+		};
+		CHKMSG24	{
+			value	char(48);
+		};
+		CHKMSG25	{
+			value	char(48);
+		};
+		CHKMSG26	{
+			value	char(48);
+		};
+		CHKMSG27	{
+			value	char(48);
+		};
+		CHKMSG28	{
+			value	char(48);
+		};
+		CHKMSG29	{
+			value	char(48);
+		};
+		CHKMSG30	{
+			value	char(48);
+		};
+		CHKMSG31	{
+			value	char(48);
+		};
+		CHKMSG32	{
+			value	char(48);
+		};
+		CHKMSG33	{
+			value	char(48);
+		};
+		CHKMSG34	{
+			value	char(48);
+		};
+		CHKMSG35	{
+			value	char(48);
+		};
+		CHKMSG36	{
+			value	char(48);
+		};
+		CHKMSG37	{
+			value	char(48);
+		};
+		CHKMSG38	{
+			value	char(48);
+		};
+		CHKMSG39	{
+			value	char(48);
+		};
+		CHKMSG40	{
+			value	char(48);
+		};
+		CHKMSG41	{
+			value	char(48);
+		};
+		CHKMSG42	{
+			value	char(48);
+		};
+		CHKMSG43	{
+			value	char(48);
+		};
+		CHKMSG44	{
+			value	char(48);
+		};
+		CHKMSG45	{
+			value	char(48);
+		};
+		CHKMSG46	{
+			value	char(48);
+		};
+		CHKMSG47	{
+			value	char(48);
+		};
+		CHKMSG48	{
+			value	char(48);
+		};
+		CHKMSG49	{
+			value	char(48);
+		};
+		CHKMSG50	{
+			value	char(48);
+		};
+		CHKMSG51	{
+			value	char(48);
+		};
+		CHKMSG52	{
+			value	char(48);
+		};
+		CHKMSG53	{
+			value	char(48);
+		};
+		CHKMSG54	{
+			value	char(48);
+		};
+		CHKMSG55	{
+			value	char(48);
+		};
+		CHKMSG56	{
+			value	char(48);
+		};
+		CHKMSG57	{
+			value	char(48);
+		};
+		CHKMSG58	{
+			value	char(48);
+		};
+		CHKMSG59	{
+			value	char(48);
+		};
+		CHKMSG60	{
+			value	char(48);
+		};
+	};
+};

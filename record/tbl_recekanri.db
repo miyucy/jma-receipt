@@ -1,0 +1,69 @@
+tbl_recekanri	{
+        PRTID               char(4);
+        SRYYM               char(6);
+        CREYMD              char(8);
+        CREHMS              char(6);
+        TEISYUTUSAKI        char(1);
+        RECESYUBETU         char(4);
+        PAGE                number(5);
+        KENSU               number(5);
+        RECEKBN             char(1);
+        TERMID              varchar(16);
+};
+
+primary	{
+	PRTID,SRYYM,CREYMD,CREHMS,TEISYUTUSAKI,RECESYUBETU;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_recekanri_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_recekanri
+                    WHERE   PRTID        =   :PRTID
+                    AND     SRYYM        =   :SRYYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     RECESYUBETU  =   :RECESYUBETU
+                    ORDER BY  PRTID,SRYYM,CREYMD,CREHMS,TEISYUTUSAKI,RECESYUBETU
+		;
+	};
+};
+
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_recekanri_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_recekanri
+                    WHERE   PRTID        =   :PRTID
+                    AND     SRYYM        =   :SRYYM
+                    ORDER BY  CREYMD DESC,CREHMS DESC,TEISYUTUSAKI,RECESYUBETU
+		;
+	};
+};
+
+path	key3		{ 	
+	DBSELECT	{
+		DECLARE tbl_recekanri_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_recekanri
+                    WHERE   PRTID        =   :PRTID
+                    AND     SRYYM        =   :SRYYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     RECESYUBETU  <>  '0000'
+		;
+	};
+};
+
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_recekanri_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_recekanri
+ 		;
+	};
+};

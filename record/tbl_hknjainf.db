@@ -1,0 +1,54 @@
+tbl_hknjainf {
+	HOSPID				char(24);
+	HKNJANUM			char(8);
+	HKNJANAME			varchar(200);
+	HKNJANAME_TAN1		varchar(100);
+	HKNJANAME_TAN2		varchar(40);
+	HKNJANAME_TAN3		varchar(40);
+	HKNNUM  			char(3);
+	POST        		varchar(7);
+	ADRS			    varchar(200);
+	BANTI 		    	varchar(200);
+	TEL 			    varchar(15);
+	KIGO    			varchar(80);
+	TERMID   			varchar(16);
+	OPID     			varchar(16);
+	CREYMD   			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+};
+
+primary	{
+	HOSPID,HKNJANUM;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_hknjainf_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_hknjainf
+			WHERE   HOSPID      =   :HOSPID  AND
+					HKNJANUM	=   :HKNJANUM
+		;
+	};
+};
+
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_hknjainf_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_hknjainf
+			WHERE   HOSPID      =   :HOSPID  AND
+					SUBSTR(HKNJANUM,1,5)	=   SUBSTR(:HKNJANUM,1,5)
+		;
+	};
+};
+
+path	all	{ 	
+	DBSELECT	{
+		DECLARE tbl_hknjainf_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_hknjainf
+ 		;
+	};
+};

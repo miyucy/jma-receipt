@@ -1,0 +1,22 @@
+COBOL = cobc
+INSTALL = @INSTALL@
+MKDIR = mkdir -p
+CP = cp
+
+prefix = @prefix@
+exec_prefix= @exec_prefix@
+orcadir = ${exec_prefix}/orca
+
+SUBDIRS = cobol lddef record screen form scripts doc data etc init
+
+all:   
+	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i all; done
+clean: 
+	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i clean; done
+
+distclean: 
+	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i distclean; done
+	-rm -f Makefile
+
+install: all
+	set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i install; done

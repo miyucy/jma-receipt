@@ -1,0 +1,399 @@
+Q01	{
+	fixed12	{
+		STSRYYMD	{
+			value	varchar(10);
+		};
+		EDSRYYMD	{
+			value	varchar(10);
+		};
+		notebook3	{
+			pageno	int;
+			fixed16	{
+				STBIRTHDAY	{
+					value	varchar(10);
+				};
+				EDBIRTHDAY	{
+					value	varchar(10);
+				};
+				STAGE	{
+					value	varchar(4);
+				};
+				EDAGE	{
+					value	varchar(4);
+				};
+				KJYNYMD	{
+					value	varchar(10);
+				};
+				CNB_SEX      {
+					SEX	{
+						value	varchar(11);
+					};
+					count	int;
+					item	varchar(10)[3];
+				};
+				STLASTYMD	{
+					value	varchar(10);
+				};
+				EDLASTYMD	{
+					value	varchar(10);
+				};
+				STPTNUM	{
+					value	varchar(21);
+				};
+				EDPTNUM	{
+					value	varchar(21);
+				};
+				CHKTSTPT	{
+					value	bool;
+				};
+				POST1	{
+					value	varchar(8);
+				};
+				POST2	{
+					value	varchar(8);
+				};
+				POST3	{
+					value	varchar(8);
+				};
+				POST4	{
+					value	varchar(8);
+				};
+				POST5	{
+					value	varchar(8);
+				};
+				JYUSHO1	{
+					value	varchar(51);
+				};
+				JYUSHO2	{
+					value	varchar(51);
+				};
+				JYUSHO3	{
+					value	varchar(51);
+				};
+				JYUSHO4	{
+					value	varchar(51);
+				};
+				JYUSHO5	{
+					value	varchar(51);
+				};
+				KANANAME1	{
+					value	varchar(51);
+				};
+				KANANAME2	{
+					value	varchar(51);
+				};
+				KANANAME3	{
+					value	varchar(51);
+				};
+				KANANAME4	{
+					value	varchar(51);
+				};
+				KANANAME5	{
+					value	varchar(51);
+				};
+				NAME1	{
+					value	varchar(51);
+				};
+				NAME2	{
+					value	varchar(51);
+				};
+				NAME3	{
+					value	varchar(51);
+				};
+				NAME4	{
+					value	varchar(51);
+				};
+				NAME5	{
+					value	varchar(51);
+				};
+				COMMENT1	{
+					value	varchar(51);
+				};
+				COMMENT2	{
+					value	varchar(51);
+				};
+				COMMENT3	{
+					value	varchar(51);
+				};
+			};
+			fixed17	{
+				HKNJANUM1	{
+					value	varchar(9);
+				};
+				HKNJANUM2	{
+					value	varchar(9);
+				};
+				HKNJANUM3	{
+					value	varchar(9);
+				};
+				HKNJANUM4	{
+					value	varchar(9);
+				};
+				HKNJANUM5	{
+					value	varchar(9);
+				};
+				CNB_HKNNUM1	{
+					HKNNUM1	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(20)[50];
+				};
+				CNB_HKNNUM2	{
+					HKNNUM2	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(20)[50];
+				};
+				CNB_HKNNUM3	{
+					HKNNUM3	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(20)[50];
+				};
+				CNB_HKNNUM4	{
+					HKNNUM4	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(20)[50];
+				};
+				CNB_HKNNUM5	{
+					HKNNUM5	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(20)[50];
+				};
+				KIGO1	{
+					value	varchar(41);
+				};
+				KIGO2	{
+					value	varchar(41);
+				};
+				KIGO3	{
+					value	varchar(41);
+				};
+				KIGO4	{
+					value	varchar(41);
+				};
+				KIGO5	{
+					value	varchar(41);
+				};
+				NUM1	{
+					value	varchar(41);
+				};
+				NUM2	{
+					value	varchar(41);
+				};
+				NUM3	{
+					value	varchar(41);
+				};
+				NUM4	{
+					value	varchar(41);
+				};
+				NUM5	{
+					value	varchar(41);
+				};
+				CNB_KOHNUM1	{
+					KOHNUM1	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(20)[50];
+				};
+				CNB_KOHNUM2	{
+					KOHNUM2	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(20)[50];
+				};
+				CNB_KOHNUM3	{
+					KOHNUM3	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(20)[50];
+				};
+				CNB_KOHNUM4	{
+					KOHNUM4	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(20)[50];
+				};
+				CNB_KOHNUM5	{
+					KOHNUM5	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(20)[50];
+				};
+				FTNJANUM1	{
+					value	varchar(9);
+				};
+				FTNJANUM2	{
+					value	varchar(9);
+				};
+				FTNJANUM3	{
+					value	varchar(9);
+				};
+				FTNJANUM4	{
+					value	varchar(9);
+				};
+				FTNJANUM5	{
+					value	varchar(9);
+				};
+			};
+			fixed18	{
+				CNB_BYOBUN	{
+					BYOBUN	{
+						value	varchar(21);
+						state	int;
+					};
+					count	int;
+					item	varchar(20)[100];
+					state	int;
+				};
+				RDBYOMEI_U	{
+					value	bool;
+					state	int;
+				};
+				RDBYOMEI_A	{
+					value	bool;
+					state	int;
+				};
+				BYOMEISEL	{
+					value	varchar(81);
+				};
+				BYOMEICD1	{
+					value	varchar(21);
+				};
+				BYOMEICD2	{
+					value	varchar(21);
+				};
+				BYOMEICD3	{
+					value	varchar(21);
+				};
+				BYOMEICD4	{
+					value	varchar(21);
+				};
+				BYOMEICD5	{
+					value	varchar(21);
+				};
+				BYOMEI1	{
+					value	varchar(81);
+				};
+				BYOMEI2	{
+					value	varchar(81);
+				};
+				BYOMEI3	{
+					value	varchar(81);
+				};
+				BYOMEI4	{
+					value	varchar(81);
+				};
+				BYOMEI5	{
+					value	varchar(81);
+				};
+				SCR_BYOLST	{
+					BYOLST	{
+						count	int;
+						item	{
+							value1	varchar(21);
+							value2	varchar(81);
+						}	[200];
+						select	bool[200];
+					};
+				};
+				SRYACTSEL	{
+					value	varchar(81);
+				};
+				SRYCD1	{
+					value	varchar(21);
+				};
+				SRYCD2	{
+					value	varchar(21);
+				};
+				SRYCD3	{
+					value	varchar(21);
+				};
+				SRYCD4	{
+					value	varchar(21);
+				};
+				SRYCD5	{
+					value	varchar(21);
+				};
+				SRYACT1	{
+					value	varchar(81);
+				};
+				SRYACT2	{
+					value	varchar(81);
+				};
+				SRYACT3	{
+					value	varchar(81);
+				};
+				SRYACT4	{
+					value	varchar(81);
+				};
+				SRYACT5	{
+					value	varchar(81);
+				};
+				SCR_SRYLST	{
+					SRYLST	{
+						count	int;
+						item	{
+							value1	varchar(10);
+							value2	varchar(81);
+						}	[200];
+						select	bool[200];
+					};
+				};
+			};
+			fixed19	{
+				CNB_KMK1	{
+					KMK1	{
+						value	varchar(31);
+					};
+					count	int;
+					item	varchar(30)[10];
+				};
+				CNB_KMK2	{
+					KMK2	{
+						value	varchar(31);
+					};
+					count	int;
+					item	varchar(30)[10];
+				};
+				CNB_KMK3	{
+					KMK3	{
+						value	varchar(31);
+					};
+					count	int;
+					item	varchar(30)[10];
+				};
+				RDIO11	{
+					value	bool;
+				};
+				RDIO12	{
+					value	bool;
+				};
+				RDIO21	{
+					value	bool;
+				};
+				RDIO22	{
+					value	bool;
+				};
+				RDIO31	{
+					value	bool;
+				};
+				RDIO32	{
+					value	bool;
+				};
+			};
+		};
+	};
+};

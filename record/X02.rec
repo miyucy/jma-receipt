@@ -1,0 +1,142 @@
+X02	{
+	fixed2	{
+		NAME	{
+			value	varchar(101);
+		};
+	        B03	{
+	           	state	int;
+	        };
+		TEKCD01	{
+			value	varchar(10);
+		};
+		TEKCD02	{
+			value	varchar(10);
+		};
+		TEKCD03	{
+			value	varchar(10);
+		};
+		TEKCD04	{
+			value	varchar(10);
+		};
+		TEKCD05	{
+			value	varchar(10);
+		};
+		TEKCD06	{
+			value	varchar(10);
+		};
+		TEKCD07	{
+			value	varchar(10);
+		};
+		TEKCD08	{
+			value	varchar(10);
+		};
+		TEKCD09	{
+			value	varchar(10);
+		};
+		TEKCD10	{
+			value	varchar(10);
+		};
+		TEKCD11	{
+			value	varchar(10);
+		};
+		TEKCD12	{
+			value	varchar(10);
+		};
+		TEKCD13	{
+			value	varchar(10);
+		};
+		TEKCD14	{
+			value	varchar(10);
+		};
+		TEKCD15	{
+			value	varchar(10);
+		};
+		TEKCD16	{
+			value	varchar(10);
+		};
+		TEKCD17	{
+			value	varchar(10);
+		};
+		TEKCD18	{
+			value	varchar(10);
+		};
+		TEKCD19	{
+			value	varchar(10);
+		};
+		TEKCD20	{
+			value	varchar(10);
+		};
+		DSPNAME01	{
+			value	varchar(101);
+		};
+		DSPNAME02	{
+			value	varchar(101);
+		};
+		DSPNAME03	{
+			value	varchar(101);
+		};
+		DSPNAME04	{
+			value	varchar(101);
+		};
+		DSPNAME05	{
+			value	varchar(101);
+		};
+		DSPNAME06	{
+			value	varchar(101);
+		};
+		DSPNAME07	{
+			value	varchar(101);
+		};
+		DSPNAME08	{
+			value	varchar(101);
+		};
+		DSPNAME09	{
+			value	varchar(101);
+		};
+		DSPNAME10	{
+			value	varchar(101);
+		};
+		DSPNAME11	{
+			value	varchar(101);
+		};
+		DSPNAME12	{
+			value	varchar(101);
+		};
+		DSPNAME13	{
+			value	varchar(101);
+		};
+		DSPNAME14	{
+			value	varchar(101);
+		};
+		DSPNAME15	{
+			value	varchar(101);
+		};
+		DSPNAME16	{
+			value	varchar(101);
+		};
+		DSPNAME17	{
+			value	varchar(101);
+		};
+		DSPNAME18	{
+			value	varchar(101);
+		};
+		DSPNAME19	{
+			value	varchar(101);
+		};
+		DSPNAME20	{
+			value	varchar(101);
+		};
+		SRYCD	{
+			value	varchar(10);
+		};
+		STYUKYMD	{
+			value	varchar(10);
+		};
+		EDYUKYMD	{
+			value	varchar(10);
+		};
+		CHKKBN	{
+			value	varchar(51);
+		};
+	};
+};

@@ -1,0 +1,27 @@
+P97	{
+	fixed3	{
+		SELNO	{
+			value	number(4);
+		};
+		NAMEKEN	{
+			value	varchar(31);
+		};
+		KANA	{
+			value	varchar(11);
+		};
+		scrolledwindow2	{
+			LIST	{
+				count	int;
+				item	{
+					value1	varchar(5);
+					value2	varchar(21);
+					value3	varchar(51);
+					value4	varchar(5);
+					value5	varchar(13);
+					value6	varchar(13);
+				}	[100];
+				select	bool[100];
+			};
+		};
+	};
+};

@@ -1,0 +1,22 @@
+P02F	{
+	fixed10	{
+		SELNUM	{
+			value	number(3);
+		};
+		KNJKEY	{
+			value	varchar(21);
+		};
+		scrolledwindow1	{
+			KNJLIST	{
+				count	int;
+				item	{
+					value1	varchar(3);
+					value2	varchar(22);
+					value3	varchar(50);
+					value4	varchar(10);
+				}	[100];
+				select	bool[100];
+			};
+		};
+	};
+};

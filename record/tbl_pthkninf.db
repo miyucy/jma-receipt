@@ -1,0 +1,99 @@
+tbl_pthkninf {
+	HOSPID				char(24);
+	PTID				number(10);
+	HKNID				number(10);
+	HKNNUM				char(3);
+	HKNJANUM			char(8);
+	HIHKNJANAME			varchar(100);
+	HONKZKKBN			char(1);
+	HOJOKBN				char(1);
+	CONTKBN				char(1);
+	KIGO				varchar(80);
+	NUM				varchar(80);
+	SKKGETYMD			char(8);
+	TEKSTYMD			char(8);
+	TEKEDYMD			char(8);
+	KAKUNINYMD			char(8);
+	SAKJOKBN			char(1);
+	TERMID   			varchar(16);
+	OPID     			varchar(16);
+	CREYMD   			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+};
+
+primary	{
+	HOSPID,PTID,HKNID;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_pthkninf_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pthkninf
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   HKNID       =   :HKNID
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_pthkninf_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pthkninf
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			ORDER   BY  TEKEDYMD DESC,
+			TEKSTYMD DESC
+		;
+	};
+};
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_pthkninf_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pthkninf
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   HKNID       =   :HKNID
+			AND   TEKSTYMD    <=  :TEKSTYMD
+			AND   TEKEDYMD    >=  :TEKEDYMD
+		;
+	};
+};
+
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_pthkninf_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pthkninf
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   HKNNUM      =   :HKNNUM
+			AND   TEKSTYMD    =   :TEKSTYMD
+			AND   TEKEDYMD    =   :TEKEDYMD
+		;
+	};
+};
+
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_pthkninf_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pthkninf
+ 		;
+	};
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_pthkninf
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+		;
+	};
+};

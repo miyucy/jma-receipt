@@ -1,0 +1,171 @@
+C02	{
+	fixed6	{
+		PTNUM	{
+	           	state	int;
+			value	varchar(21);
+		};
+		SYSYMD	{
+			value	varchar(10);
+		};
+		KANANAME	{
+			value	varchar(31);
+		};
+		NAME	{
+			value	varchar(31);
+		};
+		SEX	{
+			value	varchar(3);
+		};
+		BIRTHDAY	{
+			value	varchar(13);
+		};
+		HKNNAME	{
+			value	varchar(31);
+		};
+		PTFTNRATE	{
+			value	varchar(5);
+		};
+		SRYKA_COMBO	{
+			SRYKA	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[10];
+		};
+		B03	{
+	           	state	int;
+		};
+		B09	{
+	           	state	int;
+		};
+		BANGO	{
+			value	number(3);
+		};
+		SRYYMD	{
+			value	varchar(11);
+		};
+		REZEMM	{
+			value	number(2);
+		};
+		TENKIYMD	{
+			value	varchar(11);
+		};
+		BYOMEICD_1	{
+			value	varchar(11);
+		};
+		BYOMEICD_2	{
+			value	varchar(11);
+		};
+		BYOMEICD_3	{
+			value	varchar(11);
+		};
+		BYOMEICD_4	{
+			value	varchar(11);
+		};
+		BYOMEICD_5	{
+			value	varchar(11);
+		};
+		BYOMEICD_6	{
+			value	varchar(11);
+		};
+		BYOMEI	{
+			value	varchar(481);
+		};
+		CHARTBYOMEI	{
+			value	varchar(481);
+		};
+		SYUBYOFLGCOMBO	{
+			SYUBYOFLG	{
+				value	varchar(15);
+			};
+			count	int;
+			item	varchar(14)[5];
+		};
+		UTAGAIFLGCOMBO	{
+			UTAGAIFLG	{
+				value	varchar(15);
+			};
+			count	int;
+			item	varchar(14)[5];
+		};
+		NYUGAIKBNCOMBO	{
+			NYUGAIKBN	{
+				value	varchar(9);
+			};
+			count	int;
+			item	varchar(8)[5];
+		};
+		HKNBYOMEIFLGCOMBO	{
+			HKNBYOMEIFLG	{
+				value	varchar(11);
+			};
+			count	int;
+			item	varchar(10)[5];
+		};
+		HKNCOMBICOMBO	{
+			HKNCOMBI	{
+				value	varchar(41);
+			};
+			count	int;
+			item	varchar(40)[10];
+		};
+		BYOMEIHENFLG	{
+			value	varchar(11);
+		};
+		BYOMEIINPUTCD	{
+			value	varchar(11);
+		};
+		TENKICOMBO	{
+			TENKIKBN	{
+				value	varchar(9);
+			};
+			count	int;
+			item	varchar(8)[5];
+		};
+		MANSEIFLGCOMBO	{
+			MANSEIFLG	{
+				value	varchar(47);
+			};
+			count	int;
+			item	varchar(46)[5];
+		};
+		scrolledwindow6	{
+			HKNCOMBILST	{
+				count	int;
+				item	{
+					value1	varchar(5);
+					value2	varchar(51);
+				}	[20];
+				select	bool[20];
+			};
+		};
+		REZEFLGCOMBO	{
+			REZEFLG	{
+				value	varchar(13);
+			};
+			count	int;
+			item	varchar(12)[5];
+		};
+		scrolledwindow28	{ 
+			BYOMEILST	{
+				count	int;
+				item	{
+					value1	varchar(4);
+					value2	varchar(51);
+					value3	varchar(10);
+					value4	varchar(10);
+					value5	varchar(7);
+					value6	varchar(10);
+					value7	varchar(7);
+					value8	varchar(13);
+					value9	varchar(7);
+					value10	varchar(41);
+					value11	varchar(11);
+					value12	varchar(3);
+					value13	varchar(9);
+				}	[200];
+				select	bool[200];
+			};
+		};
+	};
+};

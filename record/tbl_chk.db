@@ -1,0 +1,181 @@
+tbl_chk	{
+	CHKKBN			char(1);
+	SRYCD   		char(9);
+	YUKOSTYMD  		char(8);
+	YUKOEDYMD  		char(8);
+	CDKBN   		char(1);
+	RENNUM			number(2);
+	TEKCDNUM		number(3);
+	CD1				char(9);
+	CD2				char(9);
+	CD3				char(9);
+	CD4				char(9);
+	CD5				char(9);
+	CD6				char(9);
+	CD7				char(9);
+	CD8				char(9);
+	CD9				char(9);
+	CD10			char(9);
+	TERMID  		varchar(16);
+	OPID    		varchar(16);
+	CREYMD  		char(8);
+	UPYMD   		char(8);
+	UPHMS			char(6);
+#-----> 主キー更新用項目
+	UPCHKKBN		char(1),virtual;
+	UPSRYCD   		char(9),virtual;
+	UPYUKOSTYMD 	char(8),virtual;
+	UPYUKOEDYMD 	char(8),virtual;
+	UPCDKBN   		char(1),virtual;
+	UPRENNUM		number(2),virtual;
+};
+
+primary	{
+	CHKKBN,SRYCD,YUKOSTYMD,YUKOEDYMD,CDKBN,RENNUM;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk
+			WHERE CHKKBN      =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			AND   YUKOSTYMD  <=   :YUKOSTYMD
+			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			AND   CDKBN       =   :CDKBN
+			AND   RENNUM      =   :RENNUM
+		;
+	};
+};
+
+path	key2	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			AND   YUKOSTYMD  <=   :YUKOSTYMD
+			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			ORDER   BY        SRYCD,
+                                          RENNUM
+		;
+	};
+};
+
+path	key3	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			AND   YUKOSTYMD  <=   :YUKOSTYMD
+			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			AND   CDKBN       =   :CDKBN
+			ORDER   BY        SRYCD,
+                                          RENNUM
+		;
+	};
+};
+
+path	key4	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			AND   YUKOSTYMD  <=   :YUKOSTYMD
+			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			ORDER   BY        SRYCD,
+                                          RENNUM
+		;
+	};
+};
+
+path	key5	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   CDKBN       =   :CDKBN
+			AND   YUKOSTYMD  <=   :YUKOSTYMD
+			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			ORDER   BY        SRYCD,
+                                          RENNUM
+		;
+	};
+};
+
+path	upd1	{
+	DBUPDATE		{
+		UPDATE	tbl_chk
+				SET
+	CHKKBN		=	:CHKKBN,
+	SRYCD		=	:SRYCD,
+	YUKOSTYMD	=	:YUKOSTYMD,
+	YUKOEDYMD	=	:YUKOEDYMD,
+	CDKBN		=	:CDKBN,
+	RENNUM		=	:RENNUM,
+	TEKCDNUM	=	:TEKCDNUM,
+	CD1		=	:CD1,
+	CD2		=	:CD2,
+	CD3		=	:CD3,
+	CD4		=	:CD4,
+	CD5		=	:CD5,
+	CD6		=	:CD6,
+	CD7		=	:CD7,
+	CD8		=	:CD8,
+	CD9		=	:CD9,
+	CD10		=	:CD10,
+	TERMID		=	:TERMID,
+	OPID		=	:OPID,
+	CREYMD		=	:CREYMD,
+	UPYMD		=	:UPYMD,
+	UPHMS		=	:UPHMS
+			WHERE	CHKKBN		=	:UPCHKKBN
+			AND		SRYCD		=	:UPSRYCD
+			AND		YUKOSTYMD	=	:UPYUKOSTYMD
+			AND		YUKOEDYMD	=	:UPYUKOEDYMD
+			AND		CDKBN		=	:UPCDKBN
+			AND		RENNUM		=	:UPRENNUM
+		;
+	};
+};
+
+path	del11	{ 	
+	DBDELETE	{
+		DELETE
+		FROM tbl_chk
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			AND   YUKOSTYMD   =   :YUKOSTYMD
+			AND   YUKOEDYMD   =   :YUKOEDYMD
+		;
+	};
+};
+
+path	all	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk
+ 		;
+	};
+};
+
+path	key6	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			ORDER  BY  YUKOSTYMD,
+                                   RENNUM
+		;
+	};
+};

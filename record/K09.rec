@@ -1,0 +1,29 @@
+K09	{
+	fixed1	{
+		DOSEL	{
+			value	varchar(41);
+		};
+		SELNUM	{
+			value	varchar(4);
+		};
+		scrolledwindow2	{
+			RRKLIST	{
+				count	int;
+				item	{
+					value1	varchar(3);
+					value2	varchar(16);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		scrolledwindow1	{
+			viewport1	{
+				list1	{
+					count	int;
+					item	varchar(90)[200];
+					select	bool[200];
+				};
+			};
+		};
+	};
+};

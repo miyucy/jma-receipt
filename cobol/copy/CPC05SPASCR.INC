@@ -1,0 +1,75 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      *****************************************************************
+      *
+      *    病名登録 画面ＳＰＡ 
+      *            画面　Ｃ０５で使用 
+      *          
+      *****************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     01/11/13  病名コードを７桁に変更     
+      *
+      *  01.01.01    NACL-藤原    02/08/20  新傷病名マスタ対応
+      *****************************************************************
+      *
+      *01  SPA-SCR-REC.
+           03  SPA-C05.
+               05  SPA-C05-AREA.
+                   07  SPA-GMN-PAGE        PIC 9(02).
+                   07  SPA-GMN-LINE        PIC 9(02).
+                   07  SPA-GMN-MAX         PIC 9(04).
+                   07  SPA-GMN-CUR         PIC 9(02).
+                   07  SPA-GMN-AREA.
+                       09  SPA-GMN-HENBYO      PIC X(100).
+                       09  SPA-GMN-BYOKEN      PIC X(30).
+                       09  SPA-GMN-BYOMEI-TBL.
+                           11  SPA-GMN-BYOMEI-G        OCCURS  100.
+                               13  SPA-GMN-TBANGO      PIC 9(04).
+                               13  SPA-GMN-TSYUBET     PIC X(06).
+                               13  SPA-GMN-TBYOMEI     PIC X(200).
+      *************************13  SPA-GMN-TBYOCD      PIC X(05).
+                               13  SPA-GMN-TBYOCD      PIC X(07).
+                               13  SPA-GMN-TIKOSAKICD  PIC X(04).
+                               13  SPA-GMN-THAISIYMD   PIC X(10).
+                       09  SPA-GMN-TBL2.
+                           11  SPA-GMN-TBL2O           OCCURS  6.
+      *************************13  SPA-GMN-BYOCD       PIC X(05).
+                               13  SPA-GMN-BYOCD       PIC X(07).
+                       09  SPA-GMN-TBL3.
+                           11  SPA-GMN-TBL3O           OCCURS  6.
+                               13  SPA-GMN-HENCOD      PIC X(01).
+                       09  SPA-GMN-SELNUM              PIC 9(04).
+      *
+                   07  SPA-NAIB-AREA.
+                       09  SPA-NAI-KOUMOKU.
+                           11  SPA-NAI-SYOBYO          PIC 9(01).
+                           11  SPA-NAI-TBL2.
+                               13  SPA-NAI-TBL2O       OCCURS  6.
+                                   15  SPA-NAI-BYOMEI  PIC X(50).
+      *****************************15  SPA-NAI-RECECD  PIC X(07).
+                           11  SPA-MAX-BYOCD2          PIC 9(02).
+                       09  SPA-NAI-BYOMEI-TBL.
+                           11  SPA-NAI-BYOMEI-G        OCCURS  100.
+      *****************        13  SPA-NAI-TRECECD     PIC X(07).
+                               13  SPA-NAI-THAISIYMDH  PIC X(22).
+                               13  SPA-NAI-THAISIYMD   PIC X(08).
+                               13  SPA-NAI-TIKOSAKICD  PIC X(07).
+      *
+                   07  SPA-NAI-SELNO                   PIC 9(04).                             
+                   
