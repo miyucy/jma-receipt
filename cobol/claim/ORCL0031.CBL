@@ -43,6 +43,7 @@
       *  01.00.08    NACL-多々納  04/03/29  外用回数編集修正
       *  01.00.09    NACL-多々納  04/08/24  入院回数修正
       *  01.00.10    NACL-多々納  04/10/21  ドクター追加
+      *  01.00.11    NACL-多々納  04/11/09  入院追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -395,6 +396,9 @@
       *
       *    病名コード検索サブ
            COPY    "CPORCSBYOMEI.INC".
+      *
+      *    入院サブ
+           COPY    "CPORCL0031N.INC".
       * 
       *****************************************************************
       *    連絡　領域
@@ -677,13 +681,18 @@
       *****************************************************************
        2007-ORCL0031N-SEC                SECTION.
       *
+           INITIALIZE                  SCL31N-LNK
+           MOVE    WRK-HOSPID          TO  SCL31N-HOSPID
+           MOVE    WRK-SRYKA           TO  SCL31N-SRYKA
+           MOVE    WRK-DRCD            TO  SCL31N-DRCD
+           MOVE    SPTID-PTNUM         TO  SCL31N-PTNUM
+           MOVE    WRK-PTID            TO  SCL31N-PTID
+           MOVE    WRK-HKNCOMBI        TO  SCL31N-HKNCOMBI
+           MOVE    WRK-NYUGAIKBN       TO  SCL31N-NYUGAIKBN
+           MOVE    WRK-SRYYMD          TO  SCL31N-SRYYMD
+      *
            CALL    "ORCL0031N"         USING
-                                       WRK-HOSPID
-                                       WRK-SRYKA
-                                       WRK-DRCD
-                                       SPTID-PTNUM
-                                       WRK-PTID
-                                       WRK-HKNCOMBI
+                                       SCL31N-LNK
                                        LF04-REC
       *
            .
