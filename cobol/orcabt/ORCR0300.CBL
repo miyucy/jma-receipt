@@ -133,6 +133,7 @@
       *                                     ÊýË¡¤ò½¤Àµ
       *  01.02.12    NACL-Æ£¸¶    05/01/25  »ÀÁÇ¤Î·×»»¼°¤òÂÐ¾Ý¤È¤·¤Ê¤¤¤è
       *                                     ¤¦¤Ë¤¹¤ë
+      *  01.02.13    NACL-¾®Æ¦Âô  05/02/10  ÉéÃ´¶èÊ¬¤ÎÈ½Äê¤Ë¸øÈñ£É£Ä¤òÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2068,8 +2069,10 @@
                    PERFORM VARYING IDY FROM    1   BY  1
                            UNTIL   IDY >       3
                            OR      RECE02-KOHNUM(IDY)  =   SPACE
-                       IF      COMB-KOHHKNNUM(IDX) =
-                                                   RECE02-KOHNUM(IDY)
+                       IF     (COMB-KOHHKNNUM(IDX) =
+                                              RECE02-KOHNUM(IDY)) AND
+                              (COMB-KOHID(IDX) =
+                                              RECE02-KOHID(IDY))
                            MOVE    1           TO  WRK-KOHNUM (IDY)
                            MOVE    3           TO  IDY                
                        END-IF
