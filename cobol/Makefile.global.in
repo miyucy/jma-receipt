@@ -18,6 +18,7 @@ libdir  = @libdir@
 
 COBOL = @COBC@
 INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
 MKDIR = mkdir -p
 COBOLFLAGS =  -m -dynamic
 EXEC_COBOLFLAGS = -dynamic

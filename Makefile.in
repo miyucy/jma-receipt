@@ -1,4 +1,5 @@
 INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
 
 prefix = @prefix@
 exec_prefix= @exec_prefix@
