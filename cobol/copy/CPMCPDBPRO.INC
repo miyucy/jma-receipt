@@ -321,6 +321,8 @@
       *                                     RECEDEN-DEL3
       *                                     OPECOM-DEL2
       *                                     SYUDAY-DEL2 追加
+      *  01.01.137   NACL-太田    04/03/29  PTTEIKIRRK-KEY6追加
+      *  01.01.138   NACL-太田    04/04/08  SYUMEI-KEY7追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -758,6 +760,7 @@
                WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY4"
                WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY5"
                WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY6"
+               WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY7"
                    MOVE    PATH-TBL-SYUMEI-KEY
                                        TO  WRK-PATH
       *追加/*終了*01.01.45********************************************
@@ -1855,6 +1858,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUMEI-KEY6"
                    MOVE    PATH-TBL-SYUMEI-KEY6
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUMEI-KEY7"
+                   MOVE    PATH-TBL-SYUMEI-KEY7
                                        TO  WRK-PATH
       *追加/*終了*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-KEY"
@@ -3055,6 +3061,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTTEIKIRRK-KEY5"
                    MOVE    PATH-TBL-PTTEIKIRRK-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTTEIKIRRK-KEY6"
+                   MOVE    PATH-TBL-PTTEIKIRRK-KEY6
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTTEIKIRRK-ALL"
                    MOVE    PATH-TBL-PTTEIKIRRK-ALL
