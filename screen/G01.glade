@@ -130,7 +130,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:36 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>統計データ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -753,6 +753,7 @@
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
+
     <widget>
       <class>GtkPandaEntry</class>
       <name>PARA011</name>
@@ -5552,6 +5553,7 @@
       <xpad>0</xpad>
       <ypad>0</ypad>
     </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>NUM1</name>
