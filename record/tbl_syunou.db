@@ -558,4 +558,16 @@ path	del3 	{
 	};
 };
 
-
+path	key20 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key20_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   CREATEKBN   <>  '3'
+            AND   SKYMONEY    <>  NYUKIN_TOTAL
+			ORDER   BY            SRYYMD,NYUGAIKBN,DENPNUM
+		;
+	};
+};

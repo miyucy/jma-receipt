@@ -281,6 +281,7 @@
       *  01.01.102   NACL-太田    03/09/08  PTCOM-KEY2追加
       *  01.01.103   NACL-門脇    03/09/24  SRYACCT-KEY24追加
       *                                     SRYACCT-KEY25追加
+      *  01.01.104   NACL-太田    03/09/30  SYUNOU-KEY20追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1743,6 +1744,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY19"
                    MOVE    PATH-TBL-SYUNOU-KEY19
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY20"
+                   MOVE    PATH-TBL-SYUNOU-KEY20
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"
