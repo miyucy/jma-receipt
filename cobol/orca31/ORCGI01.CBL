@@ -9478,9 +9478,7 @@
       *
       **     MOVE    SENCHG-SENTEISRYCD
       **                             TO  LNK-SCNYUACCT-SENTEI-SRYCD
-           IF     (SENCHG-SENTEISRYCD    NOT =  SPACE)   AND
-                  (COMB-HKNNUM           NOT =  "971" )  AND
-                  (COMB-HKNNUM           NOT =  "973" )
+           IF      SENCHG-SENTEISRYCD    NOT =  SPACE
                MOVE    "099999916"   TO  LNK-SCNYUACCT-SENTEI-SRYCD
                MOVE    WRK-SENTEI-STYMD
                                      TO  LNK-SCNYUACCT-SENTEI-STYMD
