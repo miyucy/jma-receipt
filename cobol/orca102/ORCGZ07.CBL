@@ -404,28 +404,28 @@
            MOVE    SPACE               TO  WRK-MAE-SRYCD
            PERFORM UNTIL    (FLG-TENSU     =   1  )  OR
                             (IDX           >=  200)
-               MOVE    ZERO                TO  FLG-OK
-               MOVE    TNS-YUKOSTYMD       TO  WRK-TNS-YUKOSTYMD
+      *        MOVE    ZERO                TO  FLG-OK
+      *        MOVE    TNS-YUKOSTYMD       TO  WRK-TNS-YUKOSTYMD
       *
-               MOVE    SPA-NAI-YUKOYMD     TO  TNS-YUKOSTYMD
+      *        MOVE    SPA-NAI-YUKOYMD     TO  TNS-YUKOSTYMD
       *
-               MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "TENSU-KEY21"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "TENSU-KEY21"       TO  ORC-DBPATH
-                   PERFORM 910-TENSU-NEXT-SEC
-               ELSE
-                   MOVE    1                   TO  FLG-TENSU
-               END-IF
+      *        MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+      *        MOVE    "DBSELECT"          TO  MCP-FUNC
+      *        MOVE    "TENSU-KEY21"       TO  ORC-DBPATH
+      *        CALL    "ORCMCPSUB"         USING
+      *                                    MCPAREA
+      *                                    ORCMCPAREA
+      *                                    MCPDATA-REC
+      *        IF      MCP-RC              =   ZERO
+      *            MOVE    "TENSU-KEY21"       TO  ORC-DBPATH
+      *            PERFORM 910-TENSU-NEXT-SEC
+      *        ELSE
+      *            MOVE    1                   TO  FLG-TENSU
+      *        END-IF
       *        判定
-               IF      FLG-TENSU           =   1
+      *        IF      FLG-TENSU           =   1
                    MOVE    1               TO  FLG-OK
-               END-IF
+      *        END-IF
                IF      FLG-OK              =   1
       *
       *        テーブル編集
@@ -450,7 +450,7 @@
                            END-STRING
                        END-IF
       *
-                       MOVE    WRK-TNS-YUKOSTYMD   TO  WRK-SYMD
+                       MOVE    TNS-YUKOSTYMD   TO  WRK-SYMD
                        PERFORM 520-SEIWA-HEN-SEC
                        MOVE    WRK-HENYMDG     TO  SPA-GMN-TYUKOSTYMD
                                                                 (IDX)
