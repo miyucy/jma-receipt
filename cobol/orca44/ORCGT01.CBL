@@ -63,8 +63,10 @@
       *                                     メッセージの追加
       *  01.05.06    NACL-藤原    04.03.18  レセ電時の印刷指示による処理の修正
       *  01.05.07    NACL-藤原    04.07.20  請求年月未入力のチェックの条件を修正
-      *  01.00.04    NACL-藤原    04.08.10  処理開始前にジョブ管理の
+      *  01.05.08    NACL-藤原    04.08.10  処理開始前にジョブ管理の
       *                                     チェックを再度行なう
+      *  01.05.09    NACL-藤原    04/09/17  入外区分によってレセ電の
+      *                                     処理対象を限定する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -110,11 +112,21 @@
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-DATAKBNMEIL     PIC X(20).
                    07  SPA-GMN-DATAKBN-MAX         PIC 9(02).    
+                   07  SPA-GMN-NYUGAIKBNLST        OCCURS  3.
+                       09  SPA-GMN-NYUGAIKBNL      PIC X(01).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-NYUGAIKBNMEIL   PIC X(12).
+                   07  SPA-GMN-NYUGAIKBN-MAX       PIC 9(02).    
       *                                             
                    07  SPA-GMN-DATAKBN-G.
                        09  SPA-GMN-DATAKBN         PIC X(01).
                        09  SPA-GMN-F1              PIC X(01).
                        09  SPA-GMN-DATAKBNMEI      PIC X(20).
+      *                                             
+                   07  SPA-GMN-NYUGAIKBN-G.
+                       09  SPA-GMN-NYUGAIKBN       PIC X(01).
+                       09  SPA-GMN-F1              PIC X(01).
+                       09  SPA-GMN-NYUGAIKBNMEI    PIC X(12).
       *                                             
                    07  SPA-GMN-SKYYM               PIC X(07).
                    07  SPA-GMN-SRYYM               PIC X(20).
@@ -141,6 +153,7 @@
                    07  SPA-B06-STATE               PIC S9(09)  BINARY.
                    07  SPA-B07-STATE               PIC S9(09)  BINARY.
                    07  SPA-DATA-STATE              PIC S9(09)  BINARY.
+                   07  SPA-NYUGAIKBN-STATE         PIC S9(09)  BINARY.
                    07  SPA-SRYYM-STATE             PIC S9(09)  BINARY.
                    07  SPA-DATAKBN1-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN2-STATE          PIC S9(09)  BINARY.
@@ -185,7 +198,7 @@
            03  WRK-RECEERR         PIC X(200).
            03  WRK-SKYYM           PIC X(06).
            03  WRK-CREYMD          PIC X(08).
-           03  WRK-TIDMSG          PIC X(70).
+           03  WRK-TIDMSG          PIC X(80).
            03  WRK-YM              PIC X(07). 
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -502,6 +515,23 @@
            MOVE    SPA-GMN-DATAKBNLST (1)
                                        TO  SPA-GMN-DATAKBN-G
       *
+           IF      SPA-BEDSU       >   ZERO
+               MOVE    "0"             TO  SPA-GMN-NYUGAIKBNL        (1)
+               MOVE    "入院・入院外"  TO  SPA-GMN-NYUGAIKBNMEIL     (1)
+               MOVE    "1"             TO  SPA-GMN-NYUGAIKBNL        (2)
+               MOVE    "入  院"        TO  SPA-GMN-NYUGAIKBNMEIL     (2)
+               MOVE    "2"             TO  SPA-GMN-NYUGAIKBNL        (3)
+               MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBNMEIL     (3)
+               MOVE    3               TO  SPA-GMN-NYUGAIKBN-MAX
+           ELSE
+               MOVE    "2"             TO  SPA-GMN-NYUGAIKBNL        (1)
+               MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBNMEIL     (1)
+               MOVE    1               TO  SPA-GMN-NYUGAIKBN-MAX
+           END-IF 
+      *
+           MOVE    SPA-GMN-NYUGAIKBNLST (1)
+                                   TO  SPA-GMN-NYUGAIKBN-G
+      *
       *    レセプト指示コード
            INITIALIZE                  SYS-2001-REC
            MOVE    "2001"              TO  SYS-2001-KANRICD
@@ -550,8 +580,10 @@
            IF    ( SYS-2005-SYARECEKBN =   "1" )
            OR    ( SYS-2005-KKHRECEKBN =   "1" )
                MOVE    WIDGET-NORMAL      TO  SPA-DATA-STATE
+                                              SPA-NYUGAIKBN-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE TO  SPA-DATA-STATE
+                                              SPA-NYUGAIKBN-STATE
            END-IF
       *
            MOVE    WIDGET-INSENSITIVE TO  SPA-SRYYM-STATE
@@ -672,6 +704,10 @@
                EVALUATE    SPA-TIDCD
                    WHEN    "1010"
                    WHEN    "1014"
+                   WHEN    "1015"
+                   WHEN    "1016"
+                   WHEN    "1017"
+                   WHEN    "1018"
       *                ジョブ管理チェック処理
                        PERFORM 4501-JOBKANRI-CHK-SEC
                        IF      SPA-ERRCD       =   SPACE
@@ -776,6 +812,8 @@
                    PERFORM 4103-HKNJANUM-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "DATA"
                    PERFORM 4104-DATAKBN-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
+                   PERFORM 4105-NYUGAIKBN-CHK-SEC
            END-EVALUATE
       *
            .
@@ -967,11 +1005,45 @@
                END-IF
            END-IF
       *
-           MOVE    7                   TO  SPA-GMN-CUR
+           MOVE    5                   TO  SPA-GMN-CUR
            .
        4104-DATAKBN-CHK-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *    入外区分入力処理
+      *****************************************************************
+       4105-NYUGAIKBN-CHK-SEC          SECTION.
+      *
+           MOVE    5                   TO  SPA-GMN-CUR
+      *
+           MOVE    T01-NYUGAIKBN       TO  SPA-GMN-NYUGAIKBN-G
+      *
+           IF      SPA-GMN-NYUGAIKBN   =   SPACE
+               MOVE    SPA-GMN-NYUGAIKBNLST (1)
+                                           TO  SPA-GMN-NYUGAIKBN-G
+           ELSE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-NYUGAIKBN-MAX
+                   IF        SPA-GMN-NYUGAIKBN
+                                   =   SPA-GMN-NYUGAIKBNL (IDX)
+                       MOVE    SPA-GMN-NYUGAIKBNMEIL (IDX)
+                                           TO  SPA-GMN-NYUGAIKBNMEI
+                       MOVE    SPA-GMN-NYUGAIKBN-MAX
+                                           TO  IDX
+                   END-IF
+               END-PERFORM        
+               IF      SPA-GMN-NYUGAIKBNMEI  =   SPACE  
+                   MOVE    SPA-GMN-NYUGAIKBNLST (1)
+                                               TO  SPA-GMN-NYUGAIKBN-G
+               END-IF
+           END-IF
+      *
+           MOVE    7                   TO  SPA-GMN-CUR
+           .
+       4105-NYUGAIKBN-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    戻る　処理
@@ -1870,11 +1942,19 @@
                IF      SPA-ERRCD       =   SPACE
                    MOVE    MCP-WIDGET          TO  SPA-NAI-WIDGET
       *            ガイドメッセージセット
-                   EVALUATE    MCP-WIDGET
-                       WHEN    "B06"
+                   EVALUATE    MCP-WIDGET    ALSO    SPA-GMN-NYUGAIKBN
+                       WHEN    "B06"         ALSO    ZERO
                            MOVE    "1010"              TO  SPA-TIDCD
-                       WHEN    "B07"
+                       WHEN    "B06"         ALSO    "1"
+                           MOVE    "1015"              TO  SPA-TIDCD
+                       WHEN    "B06"         ALSO    "2"
+                           MOVE    "1016"              TO  SPA-TIDCD
+                       WHEN    "B07"         ALSO    ZERO
                            MOVE    "1014"              TO  SPA-TIDCD
+                       WHEN    "B07"         ALSO    "1"
+                           MOVE    "1017"              TO  SPA-TIDCD
+                       WHEN    "B07"         ALSO    "2"
+                           MOVE    "1018"              TO  SPA-TIDCD
                    END-EVALUATE
                END-IF
            END-IF
@@ -2031,6 +2111,8 @@
                                    MCPAREA
                                    DBMETA
            MOVE    DBMETA-HOST     TO  SHELLTBL-ARG18
+           MOVE    SPA-GMN-NYUGAIKBN
+                                   TO  SHELLTBL-ARG19
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
@@ -2510,6 +2592,10 @@
                    WHEN    "1010"
                    WHEN    "1011"
                    WHEN    "1014"  
+                   WHEN    "1015"
+                   WHEN    "1016"
+                   WHEN    "1017"
+                   WHEN    "1018"  
                        PERFORM 530-TID2SET-SEC
                        GO  TO  500-SET-SCREEN-EXT
                    WHEN    OTHER
@@ -2544,6 +2630,7 @@
            MOVE    SPA-B06-STATE       TO  T01-B06-STATE
            MOVE    SPA-B07-STATE       TO  T01-B07-STATE
            MOVE    SPA-DATA-STATE      TO  T01-DATA-STATE
+           MOVE    SPA-NYUGAIKBN-STATE TO  T01-NYUGAIKBN-STATE
            MOVE    SPA-SRYYM-STATE     TO  T01-SRYYM-STATE
            MOVE    SPA-DATAKBN1-STATE  TO  T01-DATAKBN1-STATE
            MOVE    SPA-DATAKBN2-STATE  TO  T01-DATAKBN2-STATE
@@ -2563,6 +2650,15 @@
                                            TO  T01-DATA-ITEM (IDX)
            END-PERFORM
            MOVE    SPA-GMN-DATAKBN-MAX TO  T01-DATA-COUNT
+      *
+           MOVE    SPA-GMN-NYUGAIKBN-G TO  T01-NYUGAIKBN
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-GMN-NYUGAIKBN-MAX
+               MOVE    SPA-GMN-NYUGAIKBNLST (IDX)
+                                           TO  T01-NYUGAIKBN-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-NYUGAIKBN-MAX
+                                       TO  T01-NYUGAIKBN-COUNT
       *
            MOVE    SPA-GMN-PRTKBN1-VALUE
                                        TO  T01-PRTKBN1-VALUE
@@ -2741,6 +2837,30 @@
                                        TO  WRK-TIDMSG
                    MOVE    "（症状詳記の印刷を指定）"
                                        TO  WRK-TIDMSG (39:)
+               WHEN    "1015"
+                   MOVE
+                       "社保分（入院）のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+                   MOVE    "（症状詳記の印刷を指定）"
+                                       TO  WRK-TIDMSG (47:)
+               WHEN    "1016"
+                   MOVE
+                   "社保分（入院外）のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+                   MOVE    "（症状詳記の印刷を指定）"
+                                       TO  WRK-TIDMSG (49:)
+               WHEN    "1017"
+                   MOVE
+                       "国保分（入院）のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+                   MOVE    "（症状詳記の印刷を指定）"
+                                       TO  WRK-TIDMSG (47:)
+               WHEN    "1018"
+                   MOVE
+                   "国保分（入院外）のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+                   MOVE    "（症状詳記の印刷を指定）"
+                                       TO  WRK-TIDMSG (49:)
            END-EVALUATE
       *
            MOVE    SPACE                TO  TID2
