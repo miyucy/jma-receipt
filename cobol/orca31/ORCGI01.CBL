@@ -6033,9 +6033,9 @@
                GO  TO  4801-TAIIN-TOUROKU-CHK-EXT
            END-IF
       *
-      *    ·îÅÓÃæ¤ÎÄê´üÀÁµá½ªÎ»¸å...­¡¡¢
+      *    ·îÅÓÃæ¤ÎÄê´üÀÁµá½ªÎ»¸å...(1)¡¢
       *    Äê´üÀÁµá¶èÊ¬¤ò¡Ö2 ·îËö»þ¤Î¤ßÀÁµá¡×¤ËÊÑ¹¹¤µ¤ì¤¿¾ì¹ç¡¢
-      *    ­¡¤ÇºîÀ®¤µ¤ì¤¿¼ýÇ¼¤¬Ì¤Æþ¶â¤Ç¤¢¤ë¤³¤È
+      *    (1)¤ÇºîÀ®¤µ¤ì¤¿¼ýÇ¼¤¬Ì¤Æþ¶â¤Ç¤¢¤ë¤³¤È
            PERFORM 4801-MAE-TEIKI-SKYEDYMD-GET-SEC
            IF    ( SPA-GMN-I01-SEIKYU-CD   =   "2" )
              AND ( WRK-MAE-SKYEDYMD    NOT =   SPACE )
