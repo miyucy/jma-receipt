@@ -1939,7 +1939,7 @@
       <y>36</y>
       <width>268</width>
       <height>20</height>
-      <label>Ì¾¡¡¡¡¾Î</label>
+      <label>Ì¾        ¾Î</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

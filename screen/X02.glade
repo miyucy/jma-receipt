@@ -1467,7 +1467,7 @@
       <y>56</y>
       <width>100</width>
       <height>18</height>
-      <label>有効期間　　　</label>
+      <label>有効期間      </label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1547,7 +1547,7 @@
       <y>16</y>
       <width>100</width>
       <height>18</height>
-      <label>チェック区分　</label>
+      <label>チェック区分  </label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1563,7 +1563,7 @@
       <y>130</y>
       <width>445</width>
       <height>20</height>
-      <label>名　　　　　　　　称</label>
+      <label>名                                称</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

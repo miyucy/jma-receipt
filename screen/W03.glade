@@ -1729,7 +1729,7 @@
       <y>10</y>
       <width>100</width>
       <height>18</height>
-      <label>有効期間　　　</label>
+      <label>有効期間      </label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

@@ -303,7 +303,7 @@
       <y>96</y>
       <width>64</width>
       <height>24</height>
-      <label>¡Á¡¡½ªÎ»</label>
+      <label>¡Á    ½ªÎ»</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

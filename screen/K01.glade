@@ -450,23 +450,10 @@
 	  <last_modification_time>Mon, 10 Sep 2001 07:34:30 GMT</last_modification_time>
 	</signal>
 	<signal>
-	  <name>unselect_row</name>
-	  <handler>clist_send_event</handler>
-	  <after>True</after>
-	  <data>SELECT</data>
-	  <last_modification_time>Mon, 10 Sep 2001 07:34:54 GMT</last_modification_time>
-	</signal>
-	<signal>
 	  <name>select_row</name>
 	  <handler>selection_changed</handler>
 	  <data>SELECT</data>
 	  <last_modification_time>Mon, 10 Sep 2001 07:35:07 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>unselect_row</name>
-	  <handler>selection_changed</handler>
-	  <data>SELECT</data>
-	  <last_modification_time>Mon, 10 Sep 2001 07:35:25 GMT</last_modification_time>
 	</signal>
 	<columns>5</columns>
 	<column_widths>35,381,107,105,48</column_widths>

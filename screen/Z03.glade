@@ -567,7 +567,7 @@
 	  <y>536</y>
 	  <width>64</width>
 	  <height>24</height>
-	  <label>〜　上限</label>
+	  <label>〜    上限</label>
 	  <justify>GTK_JUSTIFY_RIGHT</justify>
 	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
@@ -5023,7 +5023,7 @@
 	  <y>112</y>
 	  <width>188</width>
 	  <height>22</height>
-	  <label>点数欄集計先識別　入院外　</label>
+	  <label>点数欄集計先識別    入院外  </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>

@@ -359,7 +359,7 @@
       <y>120</y>
       <width>52</width>
       <height>24</height>
-      <label>交　疥</label>
+      <label>交    疥</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -391,7 +391,7 @@
       <y>64</y>
       <width>52</width>
       <height>24</height>
-      <label>会　叹</label>
+      <label>会    叹</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>

@@ -2045,7 +2045,7 @@
       <y>80</y>
       <width>405</width>
       <height>20</height>
-      <label>名　　　　　　　　称</label>
+      <label>名                                称</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

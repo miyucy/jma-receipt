@@ -351,9 +351,9 @@
 	  <y>128</y>
 	  <width>300</width>
 	  <height>16</height>
-	  <label>２：薬剤情報提供料（一般）　　　　　　　</label>
+	  <label>２：薬剤情報提供料（一般）              </label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -367,9 +367,9 @@
 	  <y>160</y>
 	  <width>300</width>
 	  <height>16</height>
-	  <label>３：薬剤情報提供料（老人　手帳記載あり）</label>
+	  <label>３：薬剤情報提供料（老人    手帳記載あり）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -383,9 +383,9 @@
 	  <y>192</y>
 	  <width>300</width>
 	  <height>16</height>
-	  <label>４：薬剤情報提供料（老人　手帳記載なし）</label>
+	  <label>４：薬剤情報提供料（老人    手帳記載なし）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
@@ -559,9 +559,9 @@
 	  <y>96</y>
 	  <width>300</width>
 	  <height>16</height>
-	  <label>１：調剤技術基本料　　　　　　　　　　　</label>
+	  <label>１：調剤技術基本料                      </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
+	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>

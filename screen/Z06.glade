@@ -601,7 +601,7 @@
       <y>200</y>
       <width>80</width>
       <height>24</height>
-      <label>服用時点　</label>
+      <label>服用時点  </label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

@@ -79,7 +79,7 @@
       <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>0</modifiers>
-	<key>GDK_F12</key>
+	<key>GDK_F9</key>
 	<signal>clicked</signal>
       </accelerator>
       <signal>

@@ -989,7 +989,7 @@
       <height>18</height>
       <label>レセプト編集情報</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -1005,7 +1005,7 @@
       <height>18</height>
       <label>カラム位置</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -1062,7 +1062,7 @@
       <height>18</height>
       <label>有効年月日</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -1087,7 +1087,7 @@
       <height>18</height>
       <label>漢字名称</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -1103,7 +1103,7 @@
       <height>18</height>
       <label>カナ名称</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -1119,7 +1119,7 @@
       <height>18</height>
       <label>正式名称</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>

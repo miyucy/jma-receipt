@@ -214,7 +214,7 @@
       <y>344</y>
       <width>56</width>
       <height>20</height>
-      <label>¾É¡¡¾õ</label>
+      <label>¾É    ¾õ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

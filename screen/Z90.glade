@@ -459,7 +459,7 @@
       <y>72</y>
       <width>344</width>
       <height>24</height>
-      <label>名　　　　　　　　称</label>
+      <label>名                                称</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

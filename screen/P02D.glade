@@ -447,7 +447,7 @@
       <y>116</y>
       <width>120</width>
       <height>24</height>
-      <label>　　労働保険番号</label>
+      <label>        労働保険番号</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -563,7 +563,7 @@
       <y>424</y>
       <width>120</width>
       <height>24</height>
-      <label>　　　　損傷区分</label>
+      <label>            損傷区分</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -579,7 +579,7 @@
       <y>324</y>
       <width>120</width>
       <height>24</height>
-      <label>　事業場の所在地</label>
+      <label>   事業場の所在地</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -747,7 +747,7 @@
       <y>292</y>
       <width>120</width>
       <height>24</height>
-      <label>　　　事業の名称</label>
+      <label>      事業の名称</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -763,7 +763,7 @@
       <y>260</y>
       <width>120</width>
       <height>24</height>
-      <label>　　　傷病年月日</label>
+      <label>       傷病年月日</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -779,7 +779,7 @@
       <y>224</y>
       <width>120</width>
       <height>24</height>
-      <label>　　　　新継再別</label>
+      <label>              新継再別</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -795,7 +795,7 @@
       <y>224</y>
       <width>100</width>
       <height>24</height>
-      <label>　　　転帰事由</label>
+      <label>       転帰事由</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -811,7 +811,7 @@
       <y>260</y>
       <width>100</width>
       <height>24</height>
-      <label>　　療養開始日</label>
+      <label>    療養開始日</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -827,7 +827,7 @@
       <y>260</y>
       <width>120</width>
       <height>24</height>
-      <label>　　　療養終了日</label>
+      <label>          療養終了日</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -843,7 +843,7 @@
       <y>228</y>
       <width>120</width>
       <height>24</height>
-      <label>　　四肢特例区分</label>
+      <label>     四肢特例区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -939,7 +939,7 @@
       <y>152</y>
       <width>120</width>
       <height>24</height>
-      <label>　　年金証書番号</label>
+      <label>         年金証書番号</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -1067,7 +1067,7 @@
       <y>452</y>
       <width>120</width>
       <height>24</height>
-      <label>　　　療養開始日</label>
+      <label>        療養開始日</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1186,7 +1186,7 @@
       <y>88</y>
       <width>212</width>
       <height>20</height>
-      <label>＜短期給付　傷病年金  自賠責＞</label>
+      <label>＜短期給付    傷病年金  自賠責＞</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

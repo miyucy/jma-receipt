@@ -3818,9 +3818,9 @@
 	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>P02_HOJOKBNCOB</name>
-	  <x>212</x>
+	  <x>216</x>
 	  <y>112</y>
-	  <width>115</width>
+	  <width>100</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -3848,7 +3848,7 @@
 	    </signal>
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
-	    <text_max_length>12</text_max_length>
+	    <text_max_length>6</text_max_length>
 	    <text></text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
@@ -5364,7 +5364,7 @@
 	  <y>516</y>
 	  <width>44</width>
 	  <height>24</height>
-	  <label>通　常</label>
+	  <label>通    常</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -6397,7 +6397,7 @@
 	  <name>label1768</name>
 	  <x>24</x>
 	  <y>24</y>
-	  <width>22</width>
+	  <width>26</width>
 	  <height>24</height>
 	  <label>FAX</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>

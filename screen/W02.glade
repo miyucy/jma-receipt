@@ -522,102 +522,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label561</name>
-	  <x>56</x>
-	  <y>56</y>
-	  <width>155</width>
-	  <height>18</height>
-	  <label>点数表                </label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label562</name>
-	  <x>56</x>
-	  <y>88</y>
-	  <width>155</width>
-	  <height>18</height>
-	  <label>医療機関コード        </label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label563</name>
-	  <x>56</x>
-	  <y>120</y>
-	  <width>155</width>
-	  <height>18</height>
-	  <label>医療機関種別          </label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label564</name>
-	  <x>56</x>
-	  <y>152</y>
-	  <width>155</width>
-	  <height>18</height>
-	  <label>医療機関ＩＤ          </label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label565</name>
-	  <x>56</x>
-	  <y>184</y>
-	  <width>155</width>
-	  <height>18</height>
-	  <label>医療機関名称          </label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label566</name>
-	  <x>56</x>
-	  <y>216</y>
-	  <width>155</width>
-	  <height>18</height>
-	  <label>開設者名              </label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label567</name>
 	  <x>56</x>
 	  <y>248</y>
@@ -650,44 +554,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label569</name>
-	  <x>56</x>
-	  <y>312</y>
-	  <width>155</width>
-	  <height>18</height>
-	  <label>老人支払区分          </label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label570</name>
 	  <x>56</x>
 	  <y>344</y>
 	  <width>155</width>
 	  <height>18</height>
 	  <label>旧総合病院フラグ      </label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label572</name>
-	  <x>56</x>
-	  <y>24</y>
-	  <width>155</width>
-	  <height>18</height>
-	  <label>都道府県番号          </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
@@ -1012,38 +884,6 @@
 	</widget>
 
 	<widget>
-	  <class>GtkLabel</class>
-	  <name>label596</name>
-	  <x>460</x>
-	  <y>312</y>
-	  <width>155</width>
-	  <height>18</height>
-	  <label>請求書発行フラグ      </label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label600</name>
-	  <x>460</x>
-	  <y>344</y>
-	  <width>152</width>
-	  <height>24</height>
-	  <label>院外処方せん発行フラグ</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>SYOHOPRTFLG_COMBO</name>
 	  <x>640</x>
@@ -1084,38 +924,6 @@
 	</widget>
 
 	<widget>
-	  <class>GtkLabel</class>
-	  <name>label601</name>
-	  <x>460</x>
-	  <y>376</y>
-	  <width>128</width>
-	  <height>24</height>
-	  <label>前回処方表示フラグ</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label602</name>
-	  <x>460</x>
-	  <y>408</y>
-	  <width>128</width>
-	  <height>24</height>
-	  <label>薬剤情報発行フラグ</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>ZENSYOHOFLG_COMBO</name>
 	  <x>640</x>
@@ -1153,22 +961,6 @@
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label571</name>
-	  <x>56</x>
-	  <y>440</y>
-	  <width>155</width>
-	  <height>18</height>
-	  <label>医療機関コード（漢字）</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
 	</widget>
 
 	<widget>
@@ -1225,6 +1017,214 @@
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label562</name>
+	  <x>56</x>
+	  <y>88</y>
+	  <width>155</width>
+	  <height>18</height>
+	  <label>医療機関コード        </label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label563</name>
+	  <x>56</x>
+	  <y>120</y>
+	  <width>155</width>
+	  <height>18</height>
+	  <label>医療機関種別          </label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label564</name>
+	  <x>56</x>
+	  <y>152</y>
+	  <width>155</width>
+	  <height>18</height>
+	  <label>医療機関ＩＤ          </label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label561</name>
+	  <x>56</x>
+	  <y>56</y>
+	  <width>155</width>
+	  <height>18</height>
+	  <label>点数表                </label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label572</name>
+	  <x>56</x>
+	  <y>24</y>
+	  <width>155</width>
+	  <height>18</height>
+	  <label>都道府県番号          </label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label565</name>
+	  <x>56</x>
+	  <y>184</y>
+	  <width>155</width>
+	  <height>18</height>
+	  <label>医療機関名称          </label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label566</name>
+	  <x>56</x>
+	  <y>216</y>
+	  <width>155</width>
+	  <height>18</height>
+	  <label>開設者名              </label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label571</name>
+	  <x>56</x>
+	  <y>440</y>
+	  <width>155</width>
+	  <height>18</height>
+	  <label>医療機関コード（漢字）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label569</name>
+	  <x>56</x>
+	  <y>312</y>
+	  <width>155</width>
+	  <height>18</height>
+	  <label>老人支払区分          </label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label596</name>
+	  <x>460</x>
+	  <y>316</y>
+	  <width>155</width>
+	  <height>18</height>
+	  <label>請求書発行フラグ      </label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label600</name>
+	  <x>460</x>
+	  <y>344</y>
+	  <width>152</width>
+	  <height>24</height>
+	  <label>院外処方せん発行フラグ</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label601</name>
+	  <x>460</x>
+	  <y>376</y>
+	  <width>128</width>
+	  <height>24</height>
+	  <label>前回処方表示フラグ</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label602</name>
+	  <x>460</x>
+	  <y>408</y>
+	  <width>128</width>
+	  <height>24</height>
+	  <label>薬剤情報発行フラグ</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
 	</widget>
       </widget>
 
