@@ -88,6 +88,7 @@
            03  FLG-TOKTEI          PIC 9(01).
       *
            03  FLG-CHK-OK          PIC 9(01).
+           03  FLG-DAY             PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -435,6 +436,9 @@
       *        ²ó¿ô·×
                MOVE    LNK-WKSRY-ZAIKAIKEI (IDX-KOUI)
                                            TO  TBL-KAISU (01)
+               IF      TBL-KAISU (01)      =   ZERO
+                   MOVE    1               TO  TBL-KAISU (01)
+               END-IF
                MOVE    SPA-SRYYMD(7:2)     TO  IDX-KAI2
                MOVE    1                   TO  TBL-DAY   (01 IDX-KAI2)
            END-IF
@@ -514,13 +518,19 @@
            END-PERFORM
       *
       *    »»ÄêÆü
+           MOVE    ZERO                TO  FLG-DAY
            PERFORM VARYING     IDX-KAI2    FROM    1   BY  1
                    UNTIL       IDX-KAI2    >   31
                IF      LNK-SC97-NYU-DAY (IDX-KAI2) NOT =   ZERO
                    MOVE    1               TO  TBL-DAY
                                                    (IDX-KAI1 IDX-KAI2)
+                   MOVE    1               TO  FLG-DAY
                END-IF
            END-PERFORM
+           IF      FLG-DAY             =   ZERO
+               MOVE    SPA-SRYYMD(7:2) TO  IDX-2
+               MOVE    1               TO  TBL-DAY(IDX-KAI1 IDX-2)
+           END-IF
            .
        1001-KAISUU-SYORI-EXT.
            EXIT.
