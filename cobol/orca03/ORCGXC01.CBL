@@ -618,10 +618,6 @@
                    PERFORM 2011-SELECT-HENSYU-SEC
                END-IF    
            END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    3                   TO  SPA-GMN-CUR
-           END-IF    
            .
        201-SELNUM-EXT.
            EXIT.
