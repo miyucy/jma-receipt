@@ -467,6 +467,17 @@
                END-PERFORM
            END-PERFORM
       *
+      *    編集結果の表示
+           PERFORM      VARYING    IDX   FROM   1  BY  1
+                        UNTIL      IDX   >   31
+               DISPLAY   "IDX = "  IDX
+               DISPLAY   "ZAITEN = "  LNK-SROUNYUIN-ZAITEN(IDX)
+               PERFORM   VARYING   IDX2    FROM   1  BY   1
+                         UNTIL (LNK-SROUNYUIN-SRYCD(IDX IDX2) = SPACE)
+                            OR (IDX2    >      20)
+                   DISPLAY  "SRYCD = " LNK-SROUNYUIN-SRYCD(IDX IDX2)
+               END-PERFORM
+           END-PERFORM
            .
        200-MAIN-EXT.
            EXIT.
