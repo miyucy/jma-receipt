@@ -210,7 +210,7 @@
            ELSE
                MOVE    FLG-PTNUM       TO  SPTID-RC
       *----(01.00.01) LINE ADD START --------------------------------
-               MOVE    WRK-PTNUM       TO  SPTID-PTNUM
+      ****     MOVE    WRK-PTNUM       TO  SPTID-PTNUM
       *----(01.00.01) LINE ADD END   --------------------------------
            END-IF
       *

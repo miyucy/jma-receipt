@@ -155,6 +155,7 @@
                                                SPA-1009-TBL
            IF      SPTID-RC        NOT =   ZERO
                MOVE    10                  TO  SPTNUM-RC
+               MOVE    SPTID-PTNUM         TO  SPTNUM-PTNUM
            ELSE
                MOVE    SPTID-PTID          TO  SPTNUM-PTID
                MOVE    SPTID-PTNUM         TO  SPTNUM-PTNUM
