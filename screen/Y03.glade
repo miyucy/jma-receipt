@@ -258,7 +258,6 @@
       <y>8</y>
       <width>158</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>9</text_max_length>
@@ -274,7 +273,6 @@
       <y>8</y>
       <width>128</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
