@@ -547,12 +547,8 @@
                    END-IF
       *
                    IF    ( SPA-GMN-CUR >=  WRK-CONS-LINE-MAX )
-                       IF    ( SPA-GMN-PAGE    <   WRK-CONS-PAGE )
-                           COMPUTE SPA-GMN-PAGE
-                               =   SPA-GMN-PAGE    +   1
-                           MOVE    1       TO  SPA-GMN-CUR
-                       END-IF
-      *
+                       MOVE    WRK-CONS-LINE-MAX
+                                           TO  SPA-GMN-CUR
                    ELSE
                        COMPUTE SPA-GMN-CUR =   SPA-GMN-CUR +   1
                    END-IF
