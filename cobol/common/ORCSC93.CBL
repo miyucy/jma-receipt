@@ -174,6 +174,9 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  IDX-AREA
       *    クリア処理
            PERFORM 100-INTI-SYORI-SEC
       *
@@ -314,6 +317,12 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
+      *
+      *    クリア
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   200
+               MOVE    SPACE           TO  SPA-COM-ZAIEND (IDX)
+           END-PERFORM
       *
            MOVE    ZERO                TO  FLG-SYUGI
       *!
@@ -1062,6 +1071,7 @@
       *
                MOVE    2               TO  FLG-SYORI
            END-IF
+      *
       *    約束セット終了時、終了とする
            IF      IDX                 <   200
                IF     (SPA-COM-SET (IDX)        =   "1" )  AND
