@@ -4072,8 +4072,10 @@
                PERFORM 600-SANTEI-CNT-SEC
            END-IF
       *    同時他科受診があった時は、診察料の変更をおこなわない
-           IF      SPA-LSTYMD          =   SPA-SRYYMD  OR
-                   SPA-RRK-LSTYMD      =   SPA-SRYYMD
+      *    （中途終了時以外）
+           IF    ( LNK-SC10S-SYORI NOT =   "W"  )  AND
+                 ((SPA-LSTYMD          =   SPA-SRYYMD) OR
+                  (SPA-RRK-LSTYMD      =   SPA-SRYYMD))
                IF      SPA-TAKA-SRYKA-R    NOT =   SPACE
                    GO      TO      1010-SINSATU-HEN-EXT
                END-IF
@@ -4093,6 +4095,8 @@
       *             初診料以外の時、自動発生あり
                IF      SPA-SRYYMD      NOT =   SPA-LSTYMD
                    GO      TO      1010-SINSATU-HEN-EXT
+               ELSE
+                   MOVE    ZERO            TO  SPA-SYOSIN
                END-IF
            END-IF
       *    中途終了で電話再診の時
