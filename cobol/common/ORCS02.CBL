@@ -132,6 +132,7 @@
            03  FLG-HIKAKU              PIC X(01).
       *
            03  WK-PAYKBN               PIC X(02).
+           03  WK-HOSPID               PIC X(24).
       *
       *    Äã½êÆÀ£±¤ÎÄ¹´üÆþ±¡Ç§ÄêÇ¯·îÆü
            03  WRK-SKJGNSTYMD-S        PIC X(08).
@@ -479,6 +480,7 @@
            COPY    "CPSK1001.INC".
            COPY    "CPSK1026.INC".
            COPY    "CPSK1027.INC".
+           COPY    "CPSK1037.INC".
            COPY    "CPSK4001.INC".
            COPY    "CPSK5000.INC".
       *
@@ -623,6 +625,7 @@
                                         TO    WK-TAX1001-KBN
                MOVE      SYS-1001-PREFNUM
                                         TO    WK-1001-PREFNUM
+               MOVE    SYS-1001-HOSPID  TO    WK-HOSPID
            END-IF.
       *
            MOVE    "DBCLOSE"            TO  MCP-FUNC.
@@ -1114,6 +1117,38 @@
                               LNK-SYU-RSISDO-MONEY       +  
                               LNK-SYU-RSIETC-MONEY          
            END-IF.
+      *
+      *    ´µ¼ÔÉéÃ´¶â¡¡ÆÈ¼«·×»»ÂÐ±þ
+      *
+           INITIALIZE                         SYS-1037-REC
+           MOVE    "1037"               TO    SYS-1037-KANRICD
+           MOVE    "*"                  TO    SYS-1037-KBNCD
+           MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
+           MOVE    SYS-1037-REC         TO    MCPDATA-REC
+           MOVE    "DBSELECT"           TO    MCP-FUNC
+           MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
+           CALL    "ORCMCPSUB"    USING       MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+           IF      MCP-RC               =     ZERO
+               MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
+               PERFORM   SYSKANRI-READ-SEC
+               IF    MCP-RC             =     ZERO
+                   IF   WK-HOSPID  =    SYS-1037-HOSPID
+                       IF  SYS-1037-PGID-NYU NOT = SPACE
+                          CALL   SYS-1037-PGID-NYU  USING   MCPAREA
+                                                    LNK-SYUNOU-REC
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
+           MOVE    "DBCLOSE"            TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    ÀÁµá¶â³Û¤Î·×»»¡ÊÄ´À°¶â¤Î²Ã¸º»»¡Ë
            COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY    +
@@ -7326,6 +7361,7 @@
                MOVE    MCPDATA-REC     TO  SYS-1001-REC
                                            SYS-1026-REC
                                            SYS-1027-REC
+                                           SYS-1037-REC
                                            SYS-4001-REC
                                            SYS-5000-REC
                MOVE    ZERO            TO  FLG-SYSKANRI
@@ -7333,6 +7369,7 @@
                INITIALIZE                  SYS-1001-REC
                                            SYS-1026-REC
                                            SYS-1027-REC
+                                           SYS-1037-REC
                                            SYS-4001-REC
                                            SYS-5000-REC
                MOVE    1               TO  FLG-SYSKANRI

@@ -1213,37 +1213,37 @@
       *
       *    ´µ¼ÔÉéÃ´¶â¡¡ÆÈ¼«·×»»ÂÐ±þ
       *
-               PERFORM   2101-SYS1001-READ-SEC
-               MOVE    SYS-1001-HOSPID      TO    WK-HOSPID
-               INITIALIZE                         SYS-1037-REC
-               MOVE    "1037"               TO    SYS-1037-KANRICD
-               MOVE    "*"                  TO    SYS-1037-KBNCD
-               MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
-               MOVE    SYS-1037-REC         TO    MCPDATA-REC
-               MOVE    "DBSELECT"           TO    MCP-FUNC
-               MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
-               CALL    "ORCMCPSUB"    USING       MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC
-               IF      MCP-RC               =     ZERO
-                   MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
-                   PERFORM   SYSKANRI-READ-SEC
-                   IF    MCP-RC             =     ZERO
-                       IF   WK-HOSPID  =    SYS-1037-HOSPID
-                           IF  SYS-1037-PGID NOT = SPACE
-                              CALL   SYS-1037-PGID   USING   MCPAREA
-                                                   LNK-SYU-SYUNOU-REC
-                           END-IF
+           PERFORM   2101-SYS1001-READ-SEC
+           MOVE    SYS-1001-HOSPID      TO    WK-HOSPID
+           INITIALIZE                         SYS-1037-REC
+           MOVE    "1037"               TO    SYS-1037-KANRICD
+           MOVE    "*"                  TO    SYS-1037-KBNCD
+           MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
+           MOVE    SYS-1037-REC         TO    MCPDATA-REC
+           MOVE    "DBSELECT"           TO    MCP-FUNC
+           MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
+           CALL    "ORCMCPSUB"    USING       MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+           IF      MCP-RC               =     ZERO
+               MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
+               PERFORM   SYSKANRI-READ-SEC
+               IF    MCP-RC             =     ZERO
+                   IF   WK-HOSPID  =    SYS-1037-HOSPID
+                       IF  SYS-1037-PGID NOT = SPACE
+                          CALL   SYS-1037-PGID   USING   MCPAREA
+                                                 LNK-SYU-SYUNOU-REC
                        END-IF
                    END-IF
                END-IF
+           END-IF
       *
-               MOVE    "DBCLOSE"            TO  MCP-FUNC
-               MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"           USING
-                                             MCPAREA
-                                             ORCMCPAREA
-                                             MCPDATA-REC
+           MOVE    "DBCLOSE"            TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *
       *    ÀÁµá¶â³Û¤Î·×»»¡ÊÄ´À°¶â¤Î²Ã¸º»»¡Ë
