@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.01.01    MCC-藤原     01/09/21  JOINの修正   
       *  02.00.01    NACL-多々納  02/11/12  一括入力 
+      *  02.00.02    NACL-多々納  03/10/02  新規登録・削除追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -69,6 +70,8 @@
                        09  SPA-NAI-TBLO            OCCURS  1000.
                            11  SPA-NAI-TSSTKIJUN   PIC 9(01).
       *
+                   07  SPA-SYORIFLG                PIC 9(01).
+      *
       *    フラグエリア
        01  FLG-AREA.
            03  FLG-END                            PIC 9(01).
@@ -103,6 +106,8 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
       *
+           03  WRK-EDYUKYMD        PIC X(08).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -113,7 +118,8 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
       *
-                    
+      *   
+           COPY    "ENUM-VALUE".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -328,19 +334,19 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
-      * 
+      *
       *    施設基準情報
            MOVE    SPACE               TO  SYS-1006-REC
            INITIALIZE                      SYS-1006-REC
-           MOVE    "1006"                  TO  SYS-1006-KANRICD
-           MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
-           MOVE    SYS-1006-REC            TO  MCPDATA-REC
+           MOVE    "1006"              TO  SYS-1006-KANRICD
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
@@ -348,10 +354,16 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
+      *    対象のシステム管理がない場合、新規とする
+           IF      FLG-SYSKANRI        =   1
+               PERFORM 3102-SINKI-CHK-SEC
+           ELSE
+      *
            MOVE    ZERO                TO  IDX
            PERFORM             UNTIL   FLG-SYSKANRI   =   1
                                OR      IDX            >=  1000
-               MOVE    MCPDATA-REC        TO  SYS-1006-REC
+               MOVE    ZERO                TO  SPA-SYORIFLG
+               MOVE    MCPDATA-REC         TO  SYS-1006-REC
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       500      
                    ADD     1               TO  IDX
@@ -362,6 +374,7 @@
                MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
+      *
       *    カーソルクロース
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
@@ -369,6 +382,8 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+      *
+           END-IF
       *
            MOVE    IDX                 TO  SPA-GMN-MAX
       *
@@ -380,6 +395,75 @@
       *
            .
        310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    施設基準新規編集処理
+      *****************************************************************
+       3102-SINKI-CHK-SEC            SECTION.
+      *
+      *    施設基準情報
+           MOVE    SPACE               TO  SYS-1006-REC
+           INITIALIZE                      SYS-1006-REC
+           MOVE    "1006"              TO  SYS-1006-KANRICD
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           MOVE    SYS-1006-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           MOVE    SPACE               TO  WRK-EDYUKYMD
+           PERFORM     UNTIL   FLG-SYSKANRI   =   1
+                       OR      IDX            >=  1000
+               MOVE    MCPDATA-REC         TO  SYS-1006-REC
+               IF      SPA-W01-STYUKYMD    >   SYS-1006-EDYUKYMD
+                   IF      WRK-EDYUKYMD        <   SYS-1006-EDYUKYMD
+      *                別の日があった場合、クリア
+                       MOVE    ZERO                TO  IDX
+                       INITIALIZE                  SPA-NAI-TBL
+                       MOVE    SYS-1006-EDYUKYMD   TO  WRK-EDYUKYMD
+                   END-IF
+      *            前の日付あり（新規）
+                   MOVE    1               TO  SPA-SYORIFLG
+                   PERFORM VARYING IDY     FROM    1   BY  1
+                           UNTIL   IDY     >   500
+                       ADD     1               TO  IDX
+                       MOVE    SYS-1006-SSTKIJUN  (IDY)
+                                               TO  SPA-NAI-TSSTKIJUN
+                                                              (IDX)
+                   END-PERFORM
+               END-IF
+      *
+               MOVE    "SYSKANRI-KEY5"       TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+      *
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    対象がない時、１レコード分とする
+           IF      IDX                 =   ZERO
+               MOVE    1               TO  SPA-SYORIFLG
+               MOVE    500             TO  IDX
+           END-IF
+      *
+           .
+       3102-SINKI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -426,9 +510,19 @@
       *****************************************************************
        330-WID1-SET-SEC            SECTION.
       *
-           IF      SPA-WID1-FLG    =   "OK"
-               PERFORM 490-KOUSHIN-SEC
-           END-IF
+           EVALUATE    SPA-WIDCD
+      *        登録
+               WHEN    "1001"
+               WHEN    "1003"
+                   IF      SPA-WID1-FLG    =   "OK"
+                       PERFORM 490-KOUSHIN-SEC
+                   END-IF
+      *        削除
+               WHEN    "1002"
+                   IF      SPA-WID1-FLG    =   "OK"
+                       PERFORM 4031-DEL-SEC
+                   END-IF
+           END-EVALUATE
       *
            MOVE    SPACE           TO  SPA-WID1-FLG
            MOVE    SPACE           TO  SPA-WIDCD      
@@ -455,6 +549,9 @@
       *        確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM  410-KAKUTEI-SEC
+      *        削除
+               WHEN    "CLICKED"       ALSO    "B03"
+                   PERFORM  403-DEL-SEC
            END-EVALUATE
            .
       *
@@ -619,7 +716,11 @@
       *
            PERFORM 4901-KANRENCHK-SEC
            IF      SPA-ERRCD        =   SPACE
-               MOVE    "1001"           TO  SPA-WIDCD
+               IF      SPA-SYORIFLG     =   ZERO
+                   MOVE    "1001"           TO  SPA-WIDCD
+               ELSE
+                   MOVE    "1003"           TO  SPA-WIDCD
+               END-IF
            END-IF
            .
        410-KAKUTEI-EXT.
@@ -630,19 +731,23 @@
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
       * 
-      *    施設基準情報
-           MOVE    SPACE               TO  SYS-1006-REC
-           INITIALIZE                      SYS-1006-REC
-           MOVE    "1006"                  TO  SYS-1006-KANRICD
-           MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
-           MOVE    SYS-1006-REC            TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      * 
+      *    施設基準情報削除
+           IF      SPA-SYORIFLG        =   ZERO
+      *        更新の時のみ
+               MOVE    SPACE               TO  SYS-1006-REC
+               INITIALIZE                      SYS-1006-REC
+               MOVE    "1006"              TO  SYS-1006-KANRICD
+               MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+               MOVE    SYS-1006-REC        TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           END-IF
+      *
+      *    新規作成
            MOVE    ZERO                TO  IDX
                                            WRK-KBNCD
            PERFORM             UNTIL   IDX            >=  SPA-GMN-MAX
@@ -668,7 +773,9 @@
                                                     MCPAREA
                                                     ORCMCPAREA
                                                     MCPDATA-REC
-               IF      MCP-RC              NOT =   ZERO 
+               IF      MCP-RC              NOT =   ZERO
+                   DISPLAY "W03 SYSKANRI INS ERR:" MCP-RC
+                            ",KEY:" SYS-1006-KEY
                    MOVE    "1003"                  TO  SPA-ERRCD
                    GO  TO  490-KOUSHIN-EXT
                END-IF
@@ -711,6 +818,47 @@
            .
        4901-KANRENCHK-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    削除確認画面表示処理
+      *****************************************************************
+       403-DEL-SEC                               SECTION.
+      *
+           MOVE    "1002"              TO  SPA-WIDCD
+      *
+           .
+       403-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    削除処理
+      *****************************************************************
+       4031-DEL-SEC                              SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1006-REC
+           INITIALIZE                      SYS-1006-REC
+           MOVE    "1006"              TO  SYS-1006-KANRICD
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           MOVE    SYS-1006-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC              NOT =   ZERO 
+               MOVE    "1002"                  TO  SPA-ERRCD
+               DISPLAY "SYSKANRI-KEY =>" SYS-1006-KEY 
+               GO  TO  4031-DEL-EXT
+           END-IF
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           PERFORM 210-BACK
+           .
+       4031-DEL-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    日付チェック・編集処理
@@ -825,12 +973,30 @@
       *
            MOVE    SPA-GMN-STYUKYMD     TO  W03-STYUKYMD
            MOVE    SPA-GMN-EDYUKYMD     TO  W03-EDYUKYMD
+      *    業務権限非活性処理
+           PERFORM 510-GSRAUTH-SEC
       *
            PERFORM 5001-MAPCUR-SEC
       *
            .
        500-GMNHEN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    業務権限非活性処理
+      *****************************************************************
+       510-GSRAUTH-SEC             SECTION.
+      *
+      *    開始日がゼロの場合、削除できないこととする
+           IF      SPA-W01-STYUKYMD    =   SPACE  OR  ZERO
+               MOVE    WIDGET-INSENSITIVE  TO  W03-B03-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  W03-B03-STATE
+           END-IF
+           .
+       51O-GSRAUTH-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    画面カーソルセット処理
@@ -927,6 +1093,9 @@
                WHEN    "1001"
                    MOVE    "更新ができませんでした"
                                                       TO  SPA-ERRMSG
+               WHEN    "1002"
+                   MOVE    "削除処理ができませんでした"
+                                               TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  WERR
@@ -957,7 +1126,14 @@
       *
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
-                   MOVE    "登録処理をします"    TO  WRK-WIDMSG
+                   MOVE    "登録処理をします"
+                                               TO  WRK-WIDMSG
+               WHEN    "1003"
+                   MOVE    "新規の登録処理をします"
+                                               TO  WRK-WIDMSG
+               WHEN    "1002"
+                   MOVE    "削除処理をします"
+                                               TO  WRK-WIDMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
