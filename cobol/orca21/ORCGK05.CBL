@@ -1562,6 +1562,9 @@
                                                TO  SPA-COM-KEI   (IDX2)
                    MOVE    LNK-WKSRY-JIHIMONEY(IDX IDY)
                                                TO  SPA-GMN-KEI   (IDX2)
+                   MOVE    LNK-WKSRY-JIHIMONEY(IDX IDY)
+                                               TO  SPA-COM-JIHIMONEY
+                                                                 (IDX2)
                ELSE
                    MOVE    "2"                 TO  SPA-COM-KEIFLG(IDX2)
                    MOVE    SPA-COM-KISOTEN (IDX2)
@@ -3621,6 +3624,8 @@
                                                           (SPA-GMN-IDX)
                    MOVE    ISET-SURYO1         TO  SPA-GMN-KEI
                                                           (SPA-GMN-IDX)
+                   MOVE    ISET-SURYO1         TO  SPA-COM-JIHIMONEY
+                                                          (SPA-GMN-IDX)
                    MOVE    1                   TO  SPA-COM-SURYO
                                                         (SPA-GMN-IDX)
                ELSE
@@ -5486,7 +5491,8 @@
                END-IF
            ELSE
       *        ÊÝ¸±³°¶â³Û
-               MOVE    SPA-COM-KEI (IDX)       TO  ISET-SURYO1
+      *********MOVE    SPA-COM-KEI (IDX)       TO  ISET-SURYO1
+               MOVE    SPA-COM-JIHIMONEY (IDX)     TO  ISET-SURYO1
            END-IF
            MOVE    SPA-COM-BUNGSU (IDX)    TO  ISET-SURYO2
       *
