@@ -45,6 +45,8 @@
       *                                     ときは不明分としてレセプトを作成する
       *  01.00.14    NACL-門脇    03/04/22  食事療養”３月超”の記載
       *  01.00.15    NACL-藤原    03/04/23  公費請求書ＤＢの給付割合を修正
+      *  01.00.16    NACL-藤原    03/05/09  入退院履歴情報の入院中区分が
+      *                                     １のとき次の退院日と一緒に表示する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -438,6 +440,9 @@
                    07  WRK-NYUTAI-FL1          PIC X(02).
                    07  WRK-NYUTAI-TAIINYMD     PIC X(18).
                    07  WRK-NYUTAI-FL2          PIC X(02).
+      *
+      *    入退院履歴編集（自院歴−入院中区分）
+           03  WRK-NYUINCHUKBN                 PIC X(01).
       *                 
       *    保険履歴編集（適用欄）
            03  WRK-HKN-RIREKI-AREA.
@@ -3947,6 +3952,15 @@
       *****************************************************************
        380-HC101-NYUTAI-RIREKI-HEN-SEC      SECTION.
       *
+      *    最初の行のとき２行あける
+           COMPUTE WRK-WLINETEK    =   WRK-LINETEK +   2                                       
+           IF  WRK-WLINETEK        >   WRK-TEKIYOU-LINE
+               PERFORM 34120-PAGE-SEC
+           END-IF    
+           ADD     2               TO  WRK-LINETEK     
+      *
+           MOVE    ZERO                TO  WRK-NYUINCHUKBN
+      * 
       *    最初の行のコメントのセット
            MOVE    SPACE               TO  WRK-NYUTAI-RIREKI-AREA
            MOVE    "入退院履歴"        TO  WRK-NYUTAI-MSG
@@ -3987,28 +4001,21 @@
                                              NOT =  RECE68-HOJOKBN     )
                    OR    ( RECE62-TEKSTYMD   NOT =  RECE68-TEKSTYMD    )
       *
-      *        最初の行のとき２行あける
-               IF      WRK-NYUTAI-RIREKI-AREA
-                                       NOT =   SPACE
-                   COMPUTE WRK-WLINETEK    =   WRK-LINETEK +   2                                       
-                   IF  WRK-WLINETEK        >   WRK-TEKIYOU-LINE
-                       PERFORM 34120-PAGE-SEC
-                   END-IF    
-                   ADD     2               TO  WRK-LINETEK     
-               END-IF
-      *
                IF  WRK-LINETEK         >   WRK-TEKIYOU-LINE
                    PERFORM 34120-PAGE-SEC
                END-IF    
       *
-               ADD     1                   TO  WRK-LINETEK
-               MOVE    RECE68-NYUINYMD     TO  WRK-SYMD
-               PERFORM 31012-SEIWA-HEN-SEC
-               MOVE    LNK-DAY2-EDTYMD3(5:18)    TO  
-                                           WRK-NYUTAI-NYUINYMD
-               MOVE    "〜"                TO  WRK-NYUTAI-FL1                                
+               IF      WRK-NYUINCHUKBN     =   ZERO
+                   MOVE    RECE68-NYUINYMD     TO  WRK-SYMD
+                   PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    LNK-DAY2-EDTYMD3(5:18)    TO  
+                                               WRK-NYUTAI-NYUINYMD
+                   MOVE    "〜"                TO  WRK-NYUTAI-FL1
+               END-IF
+      *                          
                IF      RECE68-TAIINYMD (1:6)   
                                            >   RECE62-SRYYM
+                   MOVE    SPACE               TO  WRK-NYUTAI-TAIINYMD
                    CONTINUE
                ELSE
                    MOVE    RECE68-TAIINYMD     TO  WRK-SYMD
@@ -4016,6 +4023,36 @@
                    MOVE    LNK-DAY2-EDTYMD3(5:18)    TO  
                                                WRK-NYUTAI-TAIINYMD
                END-IF
+      *
+               IF      RECE68-NYUINCHUKBN  =   ZERO
+                   ADD     1                   TO  WRK-LINETEK
+                   INSPECT WRK-NYUTAI-RIREKI-AREA  REPLACING   ALL "  "
+                                                               BY  "　"  
+                   IF      CNT-PAGE        =   1   
+                       MOVE    WRK-NYUTAI-RIREKI-AREA
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                   ELSE                    
+                       IF      SYS-2005-NEXTPRTKBN =   "0"   
+                           MOVE    WRK-NYUTAI-RIREKI-AREA
+                                           TO  HC061-TEKIYO(WRK-LINETEK)
+                       ELSE
+                           MOVE    WRK-NYUTAI-RIREKI-AREA
+                                           TO  HC062-TEKIYO(WRK-LINETEK)
+                       END-IF
+                   END-IF                    
+                   MOVE    SPACE           TO  WRK-NYUTAI-RIREKI-AREA
+               END-IF
+      *
+               MOVE    RECE68-NYUINCHUKBN  TO  WRK-NYUINCHUKBN    
+      *
+               PERFORM 900-RECE68-NEXT-SEC
+           END-PERFORM
+      *
+      *    最後の履歴が入院中のときに編集する
+           IF      WRK-NYUTAI-RIREKI-AREA
+                                       NOT =   SPACE                   
+               ADD     1                   TO  WRK-LINETEK
+      *
                INSPECT WRK-NYUTAI-RIREKI-AREA  REPLACING   ALL "  "
                                                            BY  "　"  
                IF      CNT-PAGE        =   1   
@@ -4030,12 +4067,10 @@
                                        TO  HC062-TEKIYO(WRK-LINETEK)
                    END-IF
                END-IF                    
-               MOVE    SPACE           TO  WRK-NYUTAI-RIREKI-AREA    
+               MOVE    SPACE           TO  WRK-NYUTAI-RIREKI-AREA
+           END-IF
       *
-               PERFORM 900-RECE68-NEXT-SEC
-           END-PERFORM
-      *
-      *    最後の行のとき１行あける
+      *    最後の行の後に１行あける
            IF      WRK-NYUTAI-RIREKI-AREA
                                        =   SPACE                   
                ADD     1               TO  WRK-LINETEK     

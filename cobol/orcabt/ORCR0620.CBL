@@ -36,6 +36,7 @@
       *                                     フラグセット
       *  01.00.07    NACL-藤原    03/04/21  地方公費データのとき主保険が
       *                                     無い場合は不明分とする
+      *  01.00.08    NACL-藤原    03/05/09  入退院履歴情報に入院中区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2285,8 +2286,10 @@
            MOVE    RECE68-REC          TO  WRK-RECE68-REC          
            PERFORM 900-RECE68-READ-SEC
            IF      FLG-RECE68          =   1
-               MOVE    WRK-RECE68-REC       TO  RECE68-REC 
+               MOVE    WRK-RECE68-REC      TO  RECE68-REC 
                MOVE    PTNYUINRRK-TAIINYMD TO  RECE68-TAIINYMD
+               MOVE    PTNYUINRRK-NYUINCHUKBN
+                                           TO  RECE68-NYUINCHUKBN
                WRITE   RECE68-REC
                ADD     1                   TO  CNT-RECE68
            END-IF    
