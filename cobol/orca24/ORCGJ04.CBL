@@ -131,6 +131,7 @@
            03  FLG-PTINF           PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
+           03  FLG-SYUNOU          PIC 9(01).
       *
            03  FLG-GMN             PIC 9(01).
            03  FLG-KANA            PIC 9(01).
@@ -171,6 +172,7 @@
            03  FLG-CHK-OK          PIC 9(01).
       *
            03  FLG-FIRUMU          PIC 9(01).
+           03  FLG-SYUNOU-ERR      PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -648,6 +650,9 @@
       *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
+      *    収納マスタ
+       01  SYUNOU-REC.
+           COPY    "CPSYUNOU.INC".
       *
       *     パラメタテーブル
        01  PARA-REC.
@@ -5375,6 +5380,11 @@
                MOVE    "1027"              TO  SPA-ERRCD
                GO      TO      4502-SINKAI-KOU-EXT
            END-IF
+           IF      WRK-ZAITEN          =   ACCT-ZAITEN
+               MOVE    ZERO            TO  FLG-SYUNOU-ERR
+           ELSE
+               MOVE    1               TO  FLG-SYUNOU-ERR
+           END-IF
       *
       *    剤点数
            MOVE    WRK-ZAITEN          TO  ACCT-ZAITEN
@@ -5410,11 +5420,15 @@
       *
       *    算定履歴追加
            PERFORM 450422-SANTEI-UPD-SEC
+      *    収納変更処理
+           IF     (SPA-NYUGAIKBN       =   "2" )  AND
+                  (FLG-SYUNOU-ERR      =   1   )
+               PERFORM 450423-SYUNOU-UPD1-SEC
+           END-IF
            .
       *
        4502-SINKAI-KOU-EXT.
            EXIT.
-      *
       *****************************************************************
       *   算定履歴追加処理
       *****************************************************************
@@ -5502,6 +5516,64 @@
            .
        450123-SANTEI-UPD-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *   更新時の収納更新処理
+      *****************************************************************
+       450423-SYUNOU-UPD1-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  JYURRK-REC
+           INITIALIZE                      JYURRK-REC
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-J01-SRYKA       TO  JYURRK-SRYKA
+           MOVE    SPA-J01-SRYKA       TO  JYURRK-SRYKA
+           MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
+           PERFORM VARYING     IDZ     FROM    1   BY  1
+                   UNTIL       IDZ     >   15
+               MOVE    SPA-ZAINUM          TO  JYURRK-ZAINUM (IDZ)
+           END-PERFORM
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "JYURRK-KEY20"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "JYURRK-KEY20"      TO  ORC-DBPATH
+               PERFORM 970-JYURRK-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-JYURRK
+           END-IF
+           MOVE    ZERO                TO  FLG-UPD
+           PERFORM
+                   UNTIL       FLG-JYURRK      =   1
+               IF      JYURRK-SRYYMD(1:6)  =   SPA-J02-SRYYMD(1:6)
+      *            収納の会計変更区分変更
+                   IF      SPA-NYUGAIKBN       =   "2"
+                       PERFORM 450431-SYUNOU-UPD-SEC
+                   END-IF
+               END-IF
+      *
+               MOVE    "JYURRK-KEY20"          TO  ORC-DBPATH
+               PERFORM 970-JYURRK-NEXT-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "JYURRK-KEY20"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       450423-SYUNOU-UPD1-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *   診療会計マスタ追加、受診履歴変更処理
@@ -5703,6 +5775,10 @@
                END-IF
       *
                IF      FLG-UPD             =   1
+      *            収納の会計変更区分変更
+                   IF      SPA-NYUGAIKBN       =   "2"
+                       PERFORM 450431-SYUNOU-UPD-SEC
+                   END-IF
       *
                    MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                    MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
@@ -5731,6 +5807,50 @@
        45043-JYURRK-UPD-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    収納更新処理
+      *****************************************************************
+       450431-SYUNOU-UPD-SEC          SECTION.
+      *
+           INITIALIZE                  SYUNOU-REC
+           MOVE    JYURRK-HOSPID       TO  SYU-HOSPID
+           MOVE    JYURRK-PTID         TO  SYU-PTID
+           MOVE    JYURRK-NYUGAIKBN    TO  SYU-NYUGAIKBN
+           MOVE    JYURRK-DENPNUM      TO  SYU-DENPNUM
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYUNOU-REC
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           IF      FLG-SYUNOU          =   ZERO
+               MOVE    "1"                 TO  SYU-ACCT-UPDKBN
+               MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
+               MOVE    SYUNOU-REC          TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           END-IF
+      *
+           .
+       450431-SYUNOU-UPD-EXT.
+           EXIT.
       *
       *****************************************************************
       *   診療会計パラメタ更新処理
@@ -6794,6 +6914,27 @@
       *
            .
        970-JYURRK-NEXT-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納マスター読込
+      *****************************************************************
+       980-SYUNOU-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+               MOVE    ZERO            TO  FLG-SYUNOU
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           .
+       980-SYUNOU-READ-EXT.
            EXIT.
       *
       *****************************************************************

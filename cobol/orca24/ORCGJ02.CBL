@@ -163,6 +163,7 @@
       *
            03  FLG-ACCT-ERR        PIC 9(01).
            03  FLG-ERR             PIC 9(01).
+           03  FLG-JYURRK-ARI      PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -6171,6 +6172,7 @@
        49011-JYURRK-PARAUPD-SEC           SECTION.
       *
            MOVE    1                   TO  IDR
+           MOVE    ZERO                TO  FLG-JYURRK-ARI
       *
       *    ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä¡¢ÅÁÉ¼ÈÖ¹æ
            INITIALIZE                  JYURRK-REC
@@ -6368,6 +6370,7 @@
                                ",KEY:" JYURRK-KEY
                MOVE    "2001"              TO  SPA-ERRCD
            END-IF
+           MOVE    1                   TO  FLG-JYURRK-ARI
       *
            .
        490113-JYURRK-UPD-EXT.
@@ -6398,7 +6401,7 @@
                MOVE    "2001"              TO  SPA-ERRCD
            END-IF
            INITIALIZE                  JYURRK-ZAINUM-G
-      *
+           MOVE    1                   TO  FLG-JYURRK-ARI
            .
        490111-JYURRK-INS-EXT.
            EXIT.
@@ -6566,8 +6569,8 @@
            END-IF
       *
            IF      FLG-SYUNOU          =   ZERO
-      *        ÂÐ¾Ý¤ÎºÞÈÖ¹æ¤¬Ìµ¤¤»þ¡¢ºï½ü
-               IF      SPA-RRK-ZAINUM-G (IDX)  =   ZERO
+      *        ¼õ¿ÇÍúÎò¤¬Ìµ¤¤»þ¡¢ºï½ü
+               IF      FLG-JYURRK-ARI      =   ZERO
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
