@@ -40,6 +40,10 @@
       *                                     基本点数剤とする
       *  01.00.05    NACL-藤原    03/08/17  廃止年月日の取扱
       *  01.00.06    NACL-藤原    03/08/20  レセプト番号の編集を止める
+      *  01.00.07    NACL-藤原    03/08/22  画像診断の乳幼児加算の点数の修正
+      *                                     薬剤料逓減を出力する
+      *                                     未コード化傷病名コードのとき
+      *                                     修飾語コードの編集をしない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1268,8 +1272,14 @@
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    修飾語コード
-           MOVE    WRK-RECECD-G        TO  WRK-DATA
-           MOVE    80                  TO  WRK-NAGASA
+           EVALUATE    WRK-BYOMEICD 
+               WHEN    "0000998"
+               WHEN    "0000999"
+                   CONTINUE
+               WHEN    OTHER
+                   MOVE    WRK-RECECD-G        TO  WRK-DATA
+                   MOVE    80                  TO  WRK-NAGASA
+           END-EVALUATE
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    傷病名称
            IF      WRK-BYOMEICD        =   "0000999"   OR
@@ -1623,21 +1633,12 @@
                        ELSE
                            MOVE    SPACE               TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)  
-                           INITIALIZE              ORCSKANACHKAREA
-                           MOVE    "2"             TO  KANACHK-SYORI 
                            STRING  PTCOM-INPUTCHI1 DELIMITED  BY  SPACE
                                    PTCOM-INPUTCHI2 DELIMITED  BY  SPACE
                                    PTCOM-INPUTCHI3 DELIMITED  BY  SPACE
                                    PTCOM-INPUTCHI4 DELIMITED  BY  SPACE
-                                   INTO    KANACHK-MAE-INPUT
+                                   INTO   TBL-COMMENT-NAME (WRK-TBLMAX8)
                            END-STRING
-                           CALL    "ORCSKANACHK"   USING
-                                                       ORCSKANACHKAREA
-                           IF      KANACHK-RC      =   ZERO
-                               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                                   TO
-                                          TBL-COMMENT-NAME (WRK-TBLMAX8)
-                           END-IF
                        END-IF
                      END-IF
                    END-IF    
@@ -1712,8 +1713,13 @@
       *
            EVALUATE    RECE05-SRYCD (IDX) (1:1)
                WHEN    "6"
-                   IF      RECE041-YKZTEN    =   ZERO
-                       GO  TO  200711-ELSE-TAIHI-EXT
+                   IF      RECE05-SRYCD (IDX)
+                                       =   WRK-CONS-TEIGEN
+                       CONTINUE
+                   ELSE
+                       IF      RECE041-YKZTEN    =   ZERO
+                           GO  TO  200711-ELSE-TAIHI-EXT
+                       END-IF
                    END-IF
                WHEN    "7"
                    IF      RECE041-SRYKBN    NOT =   "70"
@@ -1983,18 +1989,29 @@
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
       *    使用量
-           IF      TBL-ZAIW-SRYSURYO (IDX) >   ZERO
-               MOVE    TBL-ZAIW-SRYSURYO (IDX) TO  WRK-SRYSURYO
-               MOVE    WRK-SRYSURYO            TO  WRK-NUM
-               MOVE    9                       TO  WRK-NAGASA
-               MOVE    3                       TO  WRK-SYOSUU     
+           IF      TBL-ZAIW-SRYCD (IDX)
+                                       =   WRK-CONS-TEIGEN
+               CONTINUE
+           ELSE
+               IF      TBL-ZAIW-SRYSURYO (IDX) >   ZERO
+                   MOVE    TBL-ZAIW-SRYSURYO (IDX) TO  WRK-SRYSURYO
+                   MOVE    WRK-SRYSURYO            TO  WRK-NUM
+                   MOVE    9                       TO  WRK-NAGASA
+                   MOVE    3                       TO  WRK-SYOSUU     
+               END-IF
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
       *    点数 
            IF      IDX                 =   WRK-TBLMAX6
-               IF      RECE041-YKZTEN      >   ZERO
-                   MOVE    RECE041-YKZTEN      TO  WRK-NUM
+               IF      TBL-ZAIW-SRYCD (IDX)
+                                       =   WRK-CONS-TEIGEN
+                   MOVE    RECE041-ZAITEN      TO  WRK-NUM
                    MOVE    7                   TO  WRK-NAGASA
+               ELSE
+                   IF      RECE041-YKZTEN      >   ZERO
+                       MOVE    RECE041-YKZTEN      TO  WRK-NUM
+                       MOVE    7                   TO  WRK-NAGASA
+                   END-IF
                END-IF
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
@@ -2058,10 +2075,18 @@
                    MOVE    WRK-TENSU           TO  WRK-NUM
                    MOVE    7                   TO  WRK-NAGASA
                ELSE
-                   IF      RECE041-KIZAITEN    >   ZERO
-                       MOVE    RECE041-KIZAITEN    TO  WRK-TENSU
+                   IF     ( RECE041-SRYKBN    =   "70" )
+                   AND    ( TBL-ZAIW-SRYCD (IDX)
+                                              =   "799990070"  )
+                       MOVE    RECE041-SYUTEN2     TO  WRK-TENSU
                        MOVE    WRK-TENSU           TO  WRK-NUM
                        MOVE    7                   TO  WRK-NAGASA
+                   ELSE
+                       IF      RECE041-KIZAITEN    >   ZERO
+                           MOVE    RECE041-KIZAITEN    TO  WRK-TENSU
+                           MOVE    WRK-TENSU           TO  WRK-NUM
+                           MOVE    7                   TO  WRK-NAGASA
+                       END-IF
                    END-IF
                END-IF
            END-IF        
