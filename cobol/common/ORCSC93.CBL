@@ -73,6 +73,7 @@
            03  IDX-Z               PIC 9(04).
            03  IDX-SET             PIC 9(04).
       *
+           03  IDX-1               PIC 9(04).
            03  IDX-2               PIC 9(04).
            03  IDX-HZN             PIC 9(04).
            03  IDX-TBL             PIC 9(04).
@@ -205,6 +206,10 @@
            IF     (SPA-NYUGAIKBN       =   "1" )  AND
                   (LNK-SC93-PG         =   "K02N")
                CONTINUE
+              IF      FLG-KENSA-ARI       =   1
+      *            ºÞÊ¬Î¥
+                   PERFORM 1002-ZAIBUNNRI-SEC
+               END-IF
            ELSE
               IF      FLG-KENSA-ARI       =   1
                    PERFORM 200-KENSA-SORT-SEC
@@ -856,13 +861,19 @@
       *    ¸¡ºº¤Î»þ¡¢Êñ³çÂÐ¾Ý¸¡ºº¤Ë¤è¤ê¡¢ºÞ¤ò·èÄê¤¹¤ë
            IF     (SPA-COM-SRYKBN (IDX)    =   "60" )  AND
                   (SPA-GMN-INPUTCD(IDX)(1:1)   NOT =   "." )  AND
-                  (SPA-COM-DATAKBN(IDX)    =   "1"  )  AND
-                  (IDX                     >   1    )
+                  (SPA-COM-DATAKBN(IDX)    =   "1"  )
+      *           (SPA-COM-DATAKBN(IDX)    =   "1"  )  AND
+      *           (IDX                     >   1    )
+                IF      IDX                =   1
+                     MOVE    1             TO  IDX-1
+                ELSE
+                    COMPUTE IDX-1          =   IDX    -   1
+                END-IF
       *         Êñ³çÂÐ¾Ý¸¡ºº·ï¿ô¥Á¥§¥Ã¥¯
                 PERFORM 51013-KENSA-ZAI-CHK-SEC
       *
-               IF     (SPA-GMN-INPUTCD(IDX - 1)(1:1)   =   "." )  OR
-                      (SPA-COM-SRYKBN (IDX - 1)   NOT =  SPA-COM-SRYKBN
+               IF     (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "." )  OR
+                      (SPA-COM-SRYKBN (IDX-1)   NOT =  SPA-COM-SRYKBN
                                                                  (IDX))
                    CONTINUE
                ELSE
@@ -874,7 +885,7 @@
       *                Êñ³çÂÐ¾Ý¸¡ººÊÑ¹¹»þ
                        IF      SPA-COM-HOUKNSKBN(IDX)
                                               NOT =  SPA-COM-HOUKNSKBN
-                                                             (IDX - 1)
+                                                             (IDX-1)
                            MOVE    2                    TO  FLG-SYORI
                        END-IF
                    END-IF
@@ -1059,14 +1070,14 @@
            END-EVALUATE
       *
            IF      SPA-COM-HOUKNSKBN(IDX)
-                                         NOT =   SPA-COM-HOUKNSKBN
-                                                          (IDX - 1)
-               MOVE    ZERO                  TO  WRK-KENSA-CNT
+                                   NOT =   SPA-COM-HOUKNSKBN
+                                                          (IDX-1)
+               MOVE    ZERO                TO  WRK-KENSA-CNT
            END-IF
       *
-           ADD     1                     TO  WRK-KENSA-CNT
-           IF      WRK-KENSA-CNT         =   1
-               MOVE    ZERO                    TO  FLG-KENSA
+           ADD     1                   TO  WRK-KENSA-CNT
+           IF      WRK-KENSA-CNT       =   1
+               MOVE    ZERO                TO  FLG-KENSA
                PERFORM VARYING     IDX-KEN     FROM    1   BY  1
                        UNTIL       IDX-KEN     >=  WRK-KENSA-MAX
                    COMPUTE IDX-KEN2            =   IDX     +   IDX-KEN
@@ -1080,7 +1091,7 @@
                END-PERFORM
            END-IF
            IF     (FLG-KENSA           =   ZERO   )  OR
-                  (SPA-GMN-INPUTCD(IDX - 1)(1:1)   =   "." ) 
+                  (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "." ) 
                CONTINUE
            ELSE
                MOVE    2               TO  FLG-SYORI
