@@ -408,44 +408,44 @@
                CONTINUE
            WHEN    "2"
       *    患者番号構成管理情報編集
-	           MOVE    SPACE               TO  SYS-1009-REC
-	           INITIALIZE                  SYS-1009-REC
-	           MOVE    "1009"              TO  SYS-1009-KANRICD
-	           MOVE    "*"                 TO  SYS-1009-KBNCD
-	           MOVE    SYS-1009-REC        TO  MCPDATA-REC
-	           PERFORM 800-SYSKANRI-READ-SEC
-	           IF      FLG-SYSKANRI        =   ZERO
-	               MOVE    MCPDATA-REC     TO  SYS-1009-REC
-	               MOVE    SYS-1009-PTNUMKSIKBN
-	                                   TO  SPA-1009-PTNUMKSIKBN
-	               MOVE    SYS-1009-JIYKSIKBN
-	                                   TO  SPA-1009-JIYKSIKBN
-	               MOVE    SYS-1009-JIYKSIKETA
-	                                   TO  SPA-1009-JIYKSIKETA
-	               MOVE    SYS-1009-HJNKSIKBN
-	                                   TO  SPA-1009-HJNKSIKBN
-	               MOVE    SYS-1009-HJNKSINENKBN
-	                                   TO  SPA-1009-HJNKSINENKBN
-	               MOVE    SYS-1009-HJNKSIRENNUMKBN
-	                                   TO  SPA-1009-HJNKSIRENNUMKBN
-	               MOVE    SYS-1009-HJNKSIRENNUMKETA
-	                                   TO  SPA-1009-HJNKSIRENNUMKETA
+               MOVE    SPACE               TO  SYS-1009-REC
+               INITIALIZE                  SYS-1009-REC
+               MOVE    "1009"              TO  SYS-1009-KANRICD
+               MOVE    "*"                 TO  SYS-1009-KBNCD
+               MOVE    SYS-1009-REC        TO  MCPDATA-REC
+               PERFORM 800-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-1009-REC
+                   MOVE    SYS-1009-PTNUMKSIKBN
+                                       TO  SPA-1009-PTNUMKSIKBN
+                   MOVE    SYS-1009-JIYKSIKBN
+                                       TO  SPA-1009-JIYKSIKBN
+                   MOVE    SYS-1009-JIYKSIKETA
+                                       TO  SPA-1009-JIYKSIKETA
+                   MOVE    SYS-1009-HJNKSIKBN
+                                       TO  SPA-1009-HJNKSIKBN
+                   MOVE    SYS-1009-HJNKSINENKBN
+                                       TO  SPA-1009-HJNKSINENKBN
+                   MOVE    SYS-1009-HJNKSIRENNUMKBN
+                                       TO  SPA-1009-HJNKSIRENNUMKBN
+                   MOVE    SYS-1009-HJNKSIRENNUMKETA
+                                       TO  SPA-1009-HJNKSIRENNUMKETA
       *            拡張構成区分
-	               MOVE    SYS-1009-KKCKSIKBN
-	                                   TO  SPA-1009-KKCKSIKBN
-	               MOVE    SYS-1009-KKCKSIMAEKETA
-	                                   TO  SPA-1009-KKCKSIMAEKETA
-	               MOVE    SYS-1009-KKCKSIRENNUMKETA
-	                                   TO  SPA-1009-KKCKSIRENNUMKETA
-	               MOVE    SYS-1009-KKCKSIATOKETA
-	                                   TO  SPA-1009-KKCKSIATOKETA
-	           ELSE
-	               MOVE    "医療機関情報が取得できませんでした"
-	                                           TO  WRK-RECEERR
-	               PERFORM 500-ERR-HENSYU-SEC
-	               MOVE    1                   TO  FLG-END
-	               GO  TO  110-PARA-HENSYU-EXT
-	           END-IF
+                   MOVE    SYS-1009-KKCKSIKBN
+                                       TO  SPA-1009-KKCKSIKBN
+                   MOVE    SYS-1009-KKCKSIMAEKETA
+                                       TO  SPA-1009-KKCKSIMAEKETA
+                   MOVE    SYS-1009-KKCKSIRENNUMKETA
+                                       TO  SPA-1009-KKCKSIRENNUMKETA
+                   MOVE    SYS-1009-KKCKSIATOKETA
+                                       TO  SPA-1009-KKCKSIATOKETA
+               ELSE
+                   MOVE    "医療機関情報が取得できませんでした"
+                                               TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    1                   TO  FLG-END
+                   GO  TO  110-PARA-HENSYU-EXT
+               END-IF
       *
       *        患者番号変換
                INITIALIZE                  ORCSPTIDAREA
@@ -458,17 +458,17 @@
                    MOVE    SPTID-PTID      TO  PARA-NAIYO
                ELSE
                    MOVE    "指定された患者番号は登録されていません"
-	                                           TO  WRK-RECEERR
-	               PERFORM 500-ERR-HENSYU-SEC
-	               MOVE    1                   TO  FLG-END
-	               GO  TO  110-PARA-HENSYU-EXT
+                                               TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    1                   TO  FLG-END
+                   GO  TO  110-PARA-HENSYU-EXT
                END-IF
            WHEN    OTHER
                MOVE    "処理区分が正しくありません"
-	                                       TO  WRK-RECEERR
-	           PERFORM 500-ERR-HENSYU-SEC
-	           MOVE    1                   TO  FLG-END
-	           GO  TO  110-PARA-HENSYU-EXT
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1                   TO  FLG-END
+               GO  TO  110-PARA-HENSYU-EXT
            END-EVALUATE
       *
            .
@@ -718,46 +718,46 @@
                MOVE    TNS-TANINAME        TO  TOKEI-TANINAME
       *
                IF      WRK-SYUBETU         =   "1"
-	               COMPUTE WRK-DAY =   WRK-DD  +   ACCT-DAY(1 WRK-DD)
-	               MOVE    WRK-DD              TO  CNT-DAY
+                   COMPUTE WRK-DAY =   WRK-DD  +   ACCT-DAY(1 WRK-DD)
+                   MOVE    WRK-DD              TO  CNT-DAY
       *
-	               PERFORM UNTIL ( CNT-DAY     =   WRK-DAY )
-	                       OR    ( CNT-DAY     >   WRK-DAYED )
-	                   MOVE    ZERO            TO  TOKEI-CNT(CNT-DAY)
-	                   COMPUTE TOKEI-CNT(CNT-DAY)
+                   PERFORM UNTIL ( CNT-DAY     =   WRK-DAY )
+                           OR    ( CNT-DAY     >   WRK-DAYED )
+                       MOVE    ZERO            TO  TOKEI-CNT(CNT-DAY)
+                       COMPUTE TOKEI-CNT(CNT-DAY)
                                                =   TOKEI-CNT(CNT-DAY)
-	                                           +   SRY-SRYSURYO(IDX)
-	                   COMPUTE CNT-DAY =   CNT-DAY +   1
-	               END-PERFORM
+                                               +   SRY-SRYSURYO(IDX)
+                       COMPUTE CNT-DAY =   CNT-DAY +   1
+                   END-PERFORM
                ELSE
                    MOVE    ZERO            TO  WRK-SURYO
                    COMPUTE WRK-SURYO       =   SRY-SRYSURYO(IDX)
                                            *   ACCT-DAY(1 WRK-DD)
-	               MOVE    ZERO            TO  TOKEI-CNT(WRK-DD)
-	               COMPUTE TOKEI-CNT(WRK-DD)   =   TOKEI-CNT(WRK-DD)
-	                                           +   WRK-SURYO
+                   MOVE    ZERO            TO  TOKEI-CNT(WRK-DD)
+                   COMPUTE TOKEI-CNT(WRK-DD)   =   TOKEI-CNT(WRK-DD)
+                                               +   WRK-SURYO
                END-IF
       *
                WRITE   TOKEI-REC
                COMPUTE CNT-TOKEI           =   CNT-TOKEI   +   1
            ELSE
                IF      WRK-SYUBETU         =   "1"
-	               COMPUTE WRK-DAY =   WRK-DD  +   ACCT-DAY(1 WRK-DD)
-	               MOVE    WRK-DD              TO  CNT-DAY
+                   COMPUTE WRK-DAY =   WRK-DD  +   ACCT-DAY(1 WRK-DD)
+                   MOVE    WRK-DD              TO  CNT-DAY
       *
-	               PERFORM UNTIL ( CNT-DAY     =   WRK-DAY )
-	                       OR    ( CNT-DAY     >   WRK-DAYED )
-	                   COMPUTE TOKEI-CNT(CNT-DAY)
+                   PERFORM UNTIL ( CNT-DAY     =   WRK-DAY )
+                           OR    ( CNT-DAY     >   WRK-DAYED )
+                       COMPUTE TOKEI-CNT(CNT-DAY)
                                                =   TOKEI-CNT(CNT-DAY)
-	                                           +   SRY-SRYSURYO(IDX)
-	                   COMPUTE CNT-DAY =   CNT-DAY +   1
-	               END-PERFORM
+                                               +   SRY-SRYSURYO(IDX)
+                       COMPUTE CNT-DAY =   CNT-DAY +   1
+                   END-PERFORM
                ELSE
                    MOVE    ZERO            TO  WRK-SURYO
                    COMPUTE WRK-SURYO       =   SRY-SRYSURYO(IDX)
                                            *   ACCT-DAY(1 WRK-DD)
-	               COMPUTE TOKEI-CNT(WRK-DD)   =   TOKEI-CNT(WRK-DD)
-	                                           +   WRK-SURYO
+                   COMPUTE TOKEI-CNT(WRK-DD)   =   TOKEI-CNT(WRK-DD)
+                                               +   WRK-SURYO
                END-IF
       *
                REWRITE TOKEI-REC
