@@ -58,6 +58,7 @@
       *  01.04.01    NACL-藤原    02/12/11  入外区分追加 
       *  01.04.02    NACL-藤原    03/01/08  通し番号のためのパラメタ追加 
       *  01.04.03    NACL-藤原    03/01/15  確定のとき自動的に情報確認画面を表示
+      *  01.04.04    NACL-藤原    03/02/25  プリンタ名をオンラインより渡す
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -161,6 +162,8 @@
                    07  SPA-NAI-2005-KKHRECEKBN     PIC X(01).
                    07  SPA-NAI-2005-SYARECEKBN     PIC X(01).
                    07  SPA-NAI-2005-RECEDENOUT     PIC X(30).
+                   07  SPA-NAI-2005-SYAPRTNM       PIC X(16).
+                   07  SPA-NAI-2005-KKHPRTNM       PIC X(16).
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBL-OCC         OCCURS  2.
                            11  SPA-NAI-TBL-G       OCCURS  36.
@@ -282,6 +285,9 @@
            COPY    "CPSK2004.INC".
       *
            COPY    "CPSK2005.INC".
+      *
+      *    出力先プリンタ名割り当て情報
+           COPY    "CPSK1031.INC".
       *
       *    患者マスタ−
        01  PTINF-REC.
@@ -563,6 +569,29 @@
            MOVE    SYS-2005-KKHRECEKBN  TO  SPA-NAI-2005-KKHRECEKBN
            MOVE    SYS-2005-SYARECEKBN  TO  SPA-NAI-2005-SYARECEKBN
            MOVE    SYS-2005-RECEDENOUT  TO  SPA-NAI-2005-RECEDENOUT
+           MOVE    SYS-2005-SYAPRTNM    TO  SPA-NAI-2005-SYAPRTNM
+           MOVE    SYS-2005-KKHPRTNM    TO  SPA-NAI-2005-KKHPRTNM
+      *
+      *    出力先プリンタ名割り当て情報編集
+           MOVE    SPACE               TO  SYS-1031-REC
+           INITIALIZE                  SYS-1031-REC
+           MOVE    "1031"              TO  SYS-1031-KANRICD
+           MOVE    "*"                 TO  SYS-1031-KBNCD
+           MOVE    SYS-1031-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI     =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1031-REC
+           ELSE    
+               INITIALIZE                  SYS-1031-REC
+           END-IF                                     
+      *
+           IF      SYS-2005-SYAPRTNM   =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SPA-NAI-2005-SYAPRTNM
+           END-IF                                              
+      *
+           IF      SYS-2005-KKHPRTNM   =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SPA-NAI-2005-KKHPRTNM
+           END-IF                                              
       *
       *
            IF      SPA-GMN-PRTJYUN     =   "01"    OR  "02"
@@ -1659,6 +1688,10 @@
            MOVE    RECEERR         TO  SHELLTBL-ARG6
            MOVE    WRK-RECE09-KEY  TO  SHELLTBL-ARG7 
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG8
+           MOVE    SPA-NAI-2005-SYAPRTNM
+                                   TO  SHELLTBL-ARG11
+           MOVE    SPA-NAI-2005-KKHPRTNM
+                                   TO  SHELLTBL-ARG12
       *     
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC

@@ -35,6 +35,7 @@
       *  01.01.02    NACL-藤原    02/09/20  自賠責の追加
       *  01.01.03    NACL-藤原    03/01/09  通し番号のためのパラメタ追加 
       *  01.01.04    NACL-藤原    03/02/08  確定のとき自動的に情報確認画面を表示
+      *  01.01.05    NACL-藤原    03/02/25  プリンタ名をオンラインより渡す
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -136,6 +137,7 @@
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-WIDGET              PIC X(08). 
+                   07  SPA-NAI-1031-PRTNM          PIC X(16).
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBL-G           OCCURS  25.
                            11  SPA-NAI-PRTJYUNI    PIC X(02).
@@ -251,7 +253,8 @@
       *    レセプト作成指示（レセプト種別）情報
            COPY    "CPSK2004.INC".
       *
-           COPY    "CPSK2005.INC".
+      *    出力先プリンタ名割り当て情報
+           COPY    "CPSK1031.INC".
       *
       *    患者マスタ−
        01  PTINF-REC.
@@ -484,6 +487,20 @@
            MOVE    SPA-GMN-PREFKBNLST(01)
                                          TO  SPA-GMN-PREFKBN-G
       *
+      *    出力先プリンタ名割り当て情報編集
+           MOVE    SPACE               TO  SYS-1031-REC
+           INITIALIZE                  SYS-1031-REC
+           MOVE    "1031"              TO  SYS-1031-KANRICD
+           MOVE    "*"                 TO  SYS-1031-KBNCD
+           MOVE    SYS-1031-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI     =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1031-REC
+           ELSE    
+               INITIALIZE                  SYS-1031-REC
+           END-IF                                     
+      *
+           MOVE    SYS-1031-PRTNM (4)  TO  SPA-NAI-1031-PRTNM
       *
            PERFORM 3101-PAGE-HENSYU-03-SEC     
       *
@@ -1275,6 +1292,8 @@
            MOVE    RECEERR             TO  SHELLTBL-ARG6
            MOVE    WRK-RECE09-KEY      TO  SHELLTBL-ARG7 
            MOVE    SPA-TERMID          TO  SHELLTBL-ARG8
+           MOVE    SPA-NAI-1031-PRTNM
+                                   TO  SHELLTBL-ARG11
       *     
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
