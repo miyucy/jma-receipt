@@ -24,11 +24,7 @@ fi
 
 	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCGD02 -parameter $1$2$3
 
-        if  [ -e $4 ]; then
-            exit
-        else
-	   $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCGD03 -parameter $1$2$3
-        fi
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCGD03 -parameter $1$2$3
 
 	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCGD04 -parameter $1$2$3
 
