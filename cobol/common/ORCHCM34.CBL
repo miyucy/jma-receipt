@@ -3290,7 +3290,11 @@
       *****************************************************************
        210-KAIPEGE-CHK-SEC             SECTION.
       *
-           IF    ( CNT-SRYACT-LINE >=  CONST-LINE-MAX )
+           IF   (( FLG-HEAD         =  ZERO )
+              AND( CNT-SRYACT-LINE >=  CONST-LINE-MAX ))
+            OR  (( FLG-HEAD         =  1 )
+              AND( CNT-SRYACT-LINE >=  CONST-ZKSI-LINE-MAX ))
+      *
                PERFORM 290-PRINT-SEC
                MOVE    1           TO  FLG-HEAD
                INITIALIZE              HCM342
