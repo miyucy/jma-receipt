@@ -2475,7 +2475,7 @@
       *****************************************************************
        990-EXIT-PROGRAM-SEC            SECTION.
       *
-           DISPLAY "ORCHCM34S01 ERRCD [" HCM34S01-RC "]"
+           DISPLAY "ORCHCM34S02 ERRCD [" HCM34S01-RC "]"
       *
            EXIT PROGRAM
       *
