@@ -32,6 +32,7 @@
       *  02.00.02    NACL-¬ø°π«º  02/08/21  •¢•’•ø°º•±•¢§ŒŒ≈Õ‹¥¸¥÷ƒ…≤√
       *  02.00.03    NACL-¬ø°π«º  02/09/10  º´«Â¿’§Œƒ…≤√
       *  02.00.04    NACL-¬ø°π«º  02/09/27  •≥•Û•‹§Œ•¡•ß•√•Øƒ…≤√
+      *  02.00.05    NACL-¬ø°π«º  03/05/12  º´»Ò¿¡µ·∂Ë ¨ƒ…≤√
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -426,6 +427,9 @@
       *•≥•·•Û•»
            MOVE    PTRSI-COMMENT       TO  SPA-GMN2D-COMMENT
       *
+      *º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
+           MOVE    PTRSI-JIBAISEIKBN   TO  SPA-GMN2D-JIBAISEIKBN
+      *
            .
        3001-RSHKN-SET-EXT.
            EXIT.
@@ -467,6 +471,25 @@
                                            =   SPA-GMN2D-SAIGAI
                    MOVE    SPA-GMN2D-SAIGAI-LST (IDX)
                                            TO  SPA-GMN2D-SAIGAI-G
+               END-IF
+           END-PERFORM
+      *
+      *    º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
+           MOVE    "1 ¥µº‘¿¡µ·§π§Î(100%)"
+                                       TO  SPA-GMN2D-JIBAISEIKBN-LST(01)
+           MOVE    "2 ¥µº‘¿¡µ·§∑§ §§(0%)"
+                                       TO  SPA-GMN2D-JIBAISEIKBN-LST(02)
+           IF      SPA-GMN2D-HKNKBN    =   "4"
+               MOVE    2                   TO  SPA-GMN2D-JIBAISEIKBN-MAX
+           ELSE
+               MOVE    ZERO                TO  SPA-GMN2D-JIBAISEIKBN-MAX
+           END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN2D-JIBAISEIKBN-MAX
+               IF      SPA-GMN2D-JIBAISEIKBN-LST(IDX) (1:1)
+                                           =   SPA-GMN2D-JIBAISEIKBN
+                   MOVE    SPA-GMN2D-JIBAISEIKBN-LST (IDX)
+                                           TO  SPA-GMN2D-JIBAISEIKBN-G
                END-IF
            END-PERFORM
       *
@@ -664,6 +687,17 @@
            END-PERFORM
            MOVE    SPA-GMN2D-HKNKBN-MAX    TO  P02D-HKNKBN-COUNT
       *
+      *
+      *    º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
+           MOVE    SPA-GMN2D-JIBAISEIKBN-G     TO  P02D-JIBAISEIKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN2D-JIBAISEIKBN-MAX
+               MOVE    SPA-GMN2D-JIBAISEIKBN-LST (IDX)
+                                       TO  P02D-JIBAISEIKBN-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN2D-JIBAISEIKBN-MAX 
+                                           TO  P02D-JIBAISEIKBN-COUNT
+      *
            MOVE    SPA-GMN2D-HIHKNJANAME   TO  P02D-HIHKNJANAME
            MOVE    SPA-GMN2D-KOHNUM1       TO  P02D-KOHNUM1
            MOVE    SPA-GMN2D-KOHNUM2       TO  P02D-KOHNUM2
@@ -820,6 +854,8 @@
                    MOVE    "SINSATUYMD"        TO  MCP-WIDGET
                WHEN    19
                    MOVE    "SINSATUEND"        TO  MCP-WIDGET
+               WHEN    22
+                   MOVE    "JIBAISEIKBN"       TO  MCP-WIDGET
       *********WHEN    19
       **********   MOVE    "KENSAYMD"          TO  MCP-WIDGET
                WHEN    20
@@ -838,6 +874,13 @@
       *
            EVALUATE    WRK-MCP-WIDGET
                WHEN    "HKNKBN"
+                   MOVE    2               TO  SPA-GMN2D-CUR
+                   EVALUATE    SPA-GMN2D-HKNKBN
+                       WHEN    "4"
+                           MOVE    22              TO  SPA-GMN2D-CUR
+                   END-EVALUATE
+      *        º´«Â¿’¿¡µ·∂Ë ¨
+               WHEN    "JIBAISEIKBN"
                    MOVE    2               TO  SPA-GMN2D-CUR
                WHEN    "COMMENT"
       *            •≥•·•Û•»
@@ -965,6 +1008,9 @@
       *
       *     ›∏±∂Ë ¨
            MOVE    P02D-HKNKBN         TO  SPA-GMN2D-HKNKBN-G
+      *    º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
+           MOVE    P02D-JIBAISEIKBN    TO  SPA-GMN2D-JIBAISEIKBN-G
+      *
            MOVE    P02D-HIHKNJANAME    TO  SPA-GMN2D-HIHKNJANAME
            MOVE    P02D-KOHNUM1        TO  SPA-GMN2D-KOHNUM1
            MOVE    P02D-KOHNUM2        TO  SPA-GMN2D-KOHNUM2
@@ -999,6 +1045,11 @@
        4102-KIHON-CHK-SEC          SECTION.
       *
            PERFORM 4101-HKNKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
+           PERFORM 41011-JIBAISEIKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1147,6 +1198,39 @@
            EXIT.
       *
       *****************************************************************
+      *    º´«Â¿’¥µº‘¿¡µ·∂Ë ¨°°ΩËÕ˝
+      *****************************************************************
+       41011-JIBAISEIKBN-CHK-SEC           SECTION.
+      *
+      *    º´«Â¿’∞ ≥∞§œ∆˛Œœ§ §∑§»§π§Î
+           IF      SPA-GMN2D-HKNKBN    =   "4"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN2D-JIBAISEIKBN-G
+               GO      TO      41011-JIBAISEIKBN-CHK-EXT
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN2D-JIBAISEIKBN-MAX
+               IF      SPA-GMN2D-JIBAISEIKBN    =
+                                           SPA-GMN2D-JIBAISEIKBN-LST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN2D-JIBAISEIKBN-LST (IDX)
+                                           TO  SPA-GMN2D-JIBAISEIKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0035"              TO  SPA-ERRCD
+               MOVE    22                  TO  SPA-GMN2D-CUR
+           END-IF
+      *
+          .
+       41011-JIBAISEIKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    »Ô ›∏±ÃæΩÈ¥¸…Ωº®°°ΩËÕ˝
       *****************************************************************
        41011-SYOKI-SET-SEC           SECTION.
@@ -1154,6 +1238,9 @@
            EVALUATE    SPA-GMN2D-HKNKBN
                WHEN    "1"
                WHEN    "2"
+      *            º´«Â¿’¿¡µ·∂Ë ¨
+                   MOVE    SPACE           TO  SPA-GMN2D-JIBAISEIKBN-G
+                   MOVE    ZERO            TO  SPA-GMN2D-JIBAISEIKBN-MAX
       *            ø∑∑—∫∆ Ã ‘Ω∏
                    PERFORM 41012-SINKEI-SET-SEC
                    IF      SPA-GMN2D-SINKEIMEI =   SPACE
@@ -1201,12 +1288,23 @@
       *************END-IF
       *
                WHEN    "3"
+      *            º´«Â¿’¿¡µ·∂Ë ¨
+                   MOVE    SPACE           TO  SPA-GMN2D-JIBAISEIKBN-G
+                   MOVE    ZERO            TO  SPA-GMN2D-JIBAISEIKBN-MAX
+      *
                    IF      SPA-GMN2D-SONSHOUKBN   =   SPACE
                        MOVE    SPA-GMN2D-SONSHOUKBN-LST (01)
                                            TO  SPA-GMN2D-SONSHOUKBN-G
                    END-IF
                WHEN    "4"
       *            º´«Â¿’
+      *            º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
+                   MOVE    2               TO  SPA-GMN2D-JIBAISEIKBN-MAX
+                   IF      SPA-GMN2D-JIBAISEIKBN   =   SPACE
+                       MOVE    SPA-GMN2D-JIBAISEIKBN-LST (1)
+                                           TO  SPA-GMN2D-JIBAISEIKBN-G
+                   END-IF
+      *
                    PERFORM 41012-SINKEI-SET-SEC
                    MOVE    SPACE           TO  SPA-GMN2D-SINKEI-G
       *            ≈æµ¢
@@ -2152,6 +2250,13 @@
                    MOVE    SPA-GMN2D-KOHNUM3   TO  PTRSI-KOFUNUM
            END-EVALUATE
       *
+      *    º´«Â¿’¥µº‘¿¡µ·∂Ë ¨
+           EVALUATE    SPA-GMN2D-HKNKBN
+               WHEN    "4"
+                   MOVE    SPA-GMN2D-JIBAISEIKBN
+                                               TO  PTRSI-JIBAISEIKBN
+           END-EVALUATE
+      *
            MOVE    SPA-GMN2D-HIHKNJANAME
                                        TO  PTRSI-HIHKNJANAME
            MOVE    SPA-GMN2D-COMMENT   TO  PTRSI-COMMENT
@@ -2447,6 +2552,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0034"
                    MOVE    "¬ªΩ˝∂Ë ¨§¨§¢§Í§ﬁ§ª§Û°£"
+                                               TO  SPA-ERRMSG
+               WHEN    "0035"
+                   MOVE    "º´«Â¿’¿¡µ·∂Ë ¨§¨§¢§Í§ﬁ§ª§Û°£"
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *

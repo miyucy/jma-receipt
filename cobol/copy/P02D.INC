@@ -86,3 +86,8 @@
                 04  P02D-SAIGAI-ITEM   PIC X(20)   OCCURS  3 TIMES.
               03  P02D-SINSATUEND.
                 04  P02D-VALUE  PIC X(10).
+              03  P02D-JIBAISEIKBNCOB.
+                04  P02D-JIBAISEIKBN.
+                  05  P02D-VALUE  PIC X(30).
+                04  P02D-JIBAISEIKBN-COUNT  PIC S9(9)   BINARY.
+                04  P02D-JIBAISEIKBN-ITEM   PIC X(30)   OCCURS  2 TIMES.
