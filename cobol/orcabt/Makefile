@@ -81,6 +81,10 @@ LIB_SRCS = \
        ORHCML05.CBL \
        ORCR0610.CBL \
        ORCR0620.CBL \
+       ORCR0630.CBL \
+       ORCR0640.CBL \
+       ORCR0650.CBL \
+       ORCR0660.CBL \
        ORCR0670.CBL \
        ORCR0680.CBL \
        ORCR0690.CBL \
