@@ -1164,7 +1164,8 @@
            MOVE    G01-CHK-VALUE (IDX) TO  SPA-GMN-G01-CHK-VALUE (IDZ)
       *
            COMPUTE SPA-GMN-G01-CUR   = ( IDX -   1 )
-                                 *     WRK-CONS-PARA-MAX
+                                 *   ( WRK-CONS-PARA-MAX    +     1 )
+                                 +     1
                                  +     1
       *
            MOVE    IDZ                 TO  IDXA
