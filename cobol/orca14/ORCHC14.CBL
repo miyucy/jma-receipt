@@ -67,7 +67,7 @@
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
-           03  FLG-YYK             PIC X(01).
+           03  FLG-YYK             PIC 9(01).
            03  FLG-KNJHEN          PIC X(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
