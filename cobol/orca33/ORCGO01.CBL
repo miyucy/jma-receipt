@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    02/11/04  暫定的に定期請求を月初〜月末迄
+      *                                     の期間のみのみ指定可能とする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -81,6 +83,12 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
       *
+      *---- (01.00.01) LINE ADD START --------------------------------
+       01  WRK-AREA.
+           03  WRK-STYMD           PIC X(09).
+           03  WRK-EDYMD           PIC X(09).
+      *
+      *---- (01.00.01) LINE ADD END   --------------------------------
       *    メッセージ領域
        01  T-MESSAGE-AREA.
            03  T-MESSAGE-001       PIC X(24)   VALUE
@@ -880,7 +888,12 @@
       *
            MOVE    2                   TO  SPA-GMN-CUR.
            MOVE    1                   TO  FLG-ERR.
+      *---- (01.00.01) LINE ADD START --------------------------------
+           MOVE    SPACE               TO  WRK-STYMD
+                                           WRK-EDYMD
+      *---- (01.00.01) LINE ADD START --------------------------------
       *
+      
            INITIALIZE                  ORCSGDAYAREA.
            MOVE    "1"                 TO  SGDAY-INTYPE.
            MOVE    O01-SEIYM           TO  SGDAY-INDAY.
@@ -900,6 +913,9 @@
                IF  STS-DAY-RC1   =   ZERO
                    MOVE    SGDAY-OTDAY(1:6)         TO  SPA-GMN-SEIYM
                    MOVE    ZERO                     TO  FLG-ERR
+      *---- (01.00.01) LINE ADD START --------------------------------
+                   MOVE    SGDAY-OTDAY              TO  WRK-STYMD
+      *---- (01.00.01) LINE ADD END   --------------------------------
                END-IF
            END-IF.
       *
@@ -915,75 +931,101 @@
                MOVE    1                     TO  SPA-GMN-CUR
                MOVE    1                     TO  FLG-END
            ELSE
-               DISPLAY "  **SYS-5010-SEIKYU-DAY1=" SYS-5010-SEIKYU-DAY1
-               DISPLAY "  **SYS-5010-SEIKYU-DAY2=" SYS-5010-SEIKYU-DAY2
-               DISPLAY "  **SYS-5010-SEIKYU-DAY3=" SYS-5010-SEIKYU-DAY3
-               IF  SYS-5010-SEIKYU-DAY1   NOT =   ZERO
-                   MOVE    "1"                   TO   SPA-GMN-KKBN02
-                   INITIALIZE                    ORCSGDAYAREA
-                   MOVE    SPACE                 TO  SGDAY-INTYPE
-                   MOVE    "01"                  TO  WRK-YMD(7:2)
-                   MOVE    WRK-YMD               TO  SGDAY-INDAY
-                   CALL    "ORCSGDAY"            USING   ORCSGDAYAREA
-                   IF  SGDAY-RC   =   ZERO
-                       MOVE    SGDAY-OTDAY
-                                               TO  SPA-GMN-KIKAN01(1:9)
-                   END-IF
-                   MOVE    "〜"                TO  SPA-GMN-KIKAN01(10:2)
-                   INITIALIZE                    ORCSGDAYAREA
-                   MOVE    SPACE                 TO  SGDAY-INTYPE
-                   MOVE    SYS-5010-SEIKYU-DAY1  TO  WRK-YMD(7:2)
-                   MOVE    WRK-YMD               TO  SGDAY-INDAY
-                   CALL    "ORCSGDAY"            USING   ORCSGDAYAREA
-                   IF  SGDAY-RC   =   ZERO
-                       MOVE    SGDAY-OTDAY
-                                               TO  SPA-GMN-KIKAN01(12:9)
-                   END-IF
-               END-IF
-               IF  SYS-5010-SEIKYU-DAY2   NOT =   ZERO
-                   MOVE    "1"                   TO   SPA-GMN-KKBN03
-                   INITIALIZE                    ORCSGDAYAREA
-                   MOVE    SPACE                 TO  SGDAY-INTYPE
-                   COMPUTE WRK-YMD  =  WRK-YMD  +  1
-                   MOVE    WRK-YMD               TO  SGDAY-INDAY
-                   CALL    "ORCSGDAY"            USING   ORCSGDAYAREA
-                   IF  SGDAY-RC   =   ZERO
-                       MOVE    SGDAY-OTDAY
-                                               TO  SPA-GMN-KIKAN02(1:9)
-                   END-IF
-                   MOVE    "〜"                TO  SPA-GMN-KIKAN02(10:2)
-                   INITIALIZE                    ORCSGDAYAREA
-                   MOVE    SPACE                 TO  SGDAY-INTYPE
-                   MOVE    SYS-5010-SEIKYU-DAY2  TO  WRK-YMD(7:2)
-                   MOVE    WRK-YMD               TO  SGDAY-INDAY
-                   CALL    "ORCSGDAY"            USING   ORCSGDAYAREA
-                   IF  SGDAY-RC   =   ZERO
-                       MOVE    SGDAY-OTDAY
-                                               TO  SPA-GMN-KIKAN02(12:9)
-                   END-IF
-               END-IF
-               IF  SYS-5010-SEIKYU-DAY3   NOT =   ZERO
-                   MOVE    "1"                   TO   SPA-GMN-KKBN04
-                   INITIALIZE                    ORCSGDAYAREA
-                   MOVE    SPACE                 TO  SGDAY-INTYPE
-                   COMPUTE WRK-YMD  =  WRK-YMD  +  1
-                   MOVE    WRK-YMD               TO  SGDAY-INDAY
-                   CALL    "ORCSGDAY"            USING   ORCSGDAYAREA
-                   IF  SGDAY-RC   =   ZERO
-                       MOVE    SGDAY-OTDAY
-                                               TO  SPA-GMN-KIKAN03(1:9)
-                   END-IF
-                   MOVE    "〜"                TO  SPA-GMN-KIKAN03(10:2)
-                   INITIALIZE                    ORCSGDAYAREA
-                   MOVE    SPACE                 TO  SGDAY-INTYPE
-                   MOVE    SYS-5010-SEIKYU-DAY3  TO  WRK-YMD(7:2)
-                   MOVE    WRK-YMD               TO  SGDAY-INDAY
-                   CALL    "ORCSGDAY"            USING   ORCSGDAYAREA
-                   IF  SGDAY-RC   =   ZERO
-                       MOVE    SGDAY-OTDAY
-                                               TO  SPA-GMN-KIKAN03(12:9)
-                   END-IF
-               END-IF
+      *---- (01.00.01) LINE ADD START --------------------------------
+               MOVE    "1"                   TO   SPA-GMN-KKBN02
+      *
+               INITIALIZE                    STS-AREA-DAY
+               INITIALIZE                    LNK-DAY1-AREA
+               MOVE    "71"                  TO   LNK-DAY7-IRAI
+               MOVE    WRK-YMD (1:6)         TO   LNK-DAY7-YM
+               CALL    "ORCSDAY"             USING   STS-AREA-DAY
+                                                     LNK-DAY7-AREA
+      *
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    LNK-DAY7-KOYOMI     TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                               ORCSGDAYAREA
+               MOVE    SGDAY-OTDAY         TO  WRK-EDYMD
+      *
+               MOVE    SPACE               TO  SPA-GMN-KIKAN01
+               STRING  WRK-STYMD
+                       "〜"
+                       WRK-EDYMD
+                       DELIMITED   BY  SIZE
+               INTO    SPA-GMN-KIKAN01
+               END-STRING
+      *
+      *---- (01.00.01) LINE DEL START --------------------------------
+      *???     DISPLAY "  **SYS-5010-SEIKYU-DAY1=" SYS-5010-SEIKYU-DAY1
+      *???     DISPLAY "  **SYS-5010-SEIKYU-DAY2=" SYS-5010-SEIKYU-DAY2
+      *???     DISPLAY "  **SYS-5010-SEIKYU-DAY3=" SYS-5010-SEIKYU-DAY3
+      *???     IF  SYS-5010-SEIKYU-DAY1   NOT =   ZERO
+      *???         MOVE    "1"                   TO   SPA-GMN-KKBN02
+      *???         INITIALIZE                    ORCSGDAYAREA
+      *???         MOVE    SPACE                 TO  SGDAY-INTYPE
+      *???         MOVE    "01"                  TO  WRK-YMD(7:2)
+      *???         MOVE    WRK-YMD               TO  SGDAY-INDAY
+      *???         CALL    "ORCSGDAY"            USING   ORCSGDAYAREA
+      *???         IF  SGDAY-RC   =   ZERO
+      *???             MOVE    SGDAY-OTDAY
+      *???                                     TO  SPA-GMN-KIKAN01(1:9)
+      *???         END-IF
+      *???         MOVE    "〜"                TO  SPA-GMN-KIKAN01(10:2)
+      *???         INITIALIZE                    ORCSGDAYAREA
+      *???         MOVE    SPACE                 TO  SGDAY-INTYPE
+      *???         MOVE    SYS-5010-SEIKYU-DAY1  TO  WRK-YMD(7:2)
+      *???         MOVE    WRK-YMD               TO  SGDAY-INDAY
+      *???         CALL    "ORCSGDAY"            USING   ORCSGDAYAREA
+      *???         IF  SGDAY-RC   =   ZERO
+      *???             MOVE    SGDAY-OTDAY
+      *???                                     TO  SPA-GMN-KIKAN01(12:9)
+      *???         END-IF
+      *???     END-IF
+      *???     IF  SYS-5010-SEIKYU-DAY2   NOT =   ZERO
+      *???         MOVE    "1"                   TO   SPA-GMN-KKBN03
+      *???         INITIALIZE                    ORCSGDAYAREA
+      *???         MOVE    SPACE                 TO  SGDAY-INTYPE
+      *???         COMPUTE WRK-YMD  =  WRK-YMD  +  1
+      *???         MOVE    WRK-YMD               TO  SGDAY-INDAY
+      *???         CALL    "ORCSGDAY"            USING   ORCSGDAYAREA
+      *???         IF  SGDAY-RC   =   ZERO
+      *???             MOVE    SGDAY-OTDAY
+      *???                                     TO  SPA-GMN-KIKAN02(1:9)
+      *???         END-IF
+      *???         MOVE    "〜"                TO  SPA-GMN-KIKAN02(10:2)
+      *???         INITIALIZE                    ORCSGDAYAREA
+      *???         MOVE    SPACE                 TO  SGDAY-INTYPE
+      *???         MOVE    SYS-5010-SEIKYU-DAY2  TO  WRK-YMD(7:2)
+      *???         MOVE    WRK-YMD               TO  SGDAY-INDAY
+      *???         CALL    "ORCSGDAY"            USING   ORCSGDAYAREA
+      *???         IF  SGDAY-RC   =   ZERO
+      *???             MOVE    SGDAY-OTDAY
+      *???                                     TO  SPA-GMN-KIKAN02(12:9)
+      *???         END-IF
+      *???     END-IF
+      *???     IF  SYS-5010-SEIKYU-DAY3   NOT =   ZERO
+      *???         MOVE    "1"                   TO   SPA-GMN-KKBN04
+      *???         INITIALIZE                    ORCSGDAYAREA
+      *???         MOVE    SPACE                 TO  SGDAY-INTYPE
+      *???         COMPUTE WRK-YMD  =  WRK-YMD  +  1
+      *???         MOVE    WRK-YMD               TO  SGDAY-INDAY
+      *???         CALL    "ORCSGDAY"            USING   ORCSGDAYAREA
+      *???         IF  SGDAY-RC   =   ZERO
+      *???             MOVE    SGDAY-OTDAY
+      *???                                     TO  SPA-GMN-KIKAN03(1:9)
+      *???         END-IF
+      *???         MOVE    "〜"                TO  SPA-GMN-KIKAN03(10:2)
+      *???         INITIALIZE                    ORCSGDAYAREA
+      *???         MOVE    SPACE                 TO  SGDAY-INTYPE
+      *???         MOVE    SYS-5010-SEIKYU-DAY3  TO  WRK-YMD(7:2)
+      *???         MOVE    WRK-YMD               TO  SGDAY-INDAY
+      *???         CALL    "ORCSGDAY"            USING   ORCSGDAYAREA
+      *???         IF  SGDAY-RC   =   ZERO
+      *???             MOVE    SGDAY-OTDAY
+      *???                                     TO  SPA-GMN-KIKAN03(12:9)
+      *???         END-IF
+      *???     END-IF
+      *---- (01.00.01) LINE DEL END   --------------------------------
            END-IF.
       *
        T-000-SEIYM-EXT.
