@@ -30,6 +30,8 @@
       *  01.00.01    NACL-Æ£¸¶    04/02/01  ÉÂÌ¾¥³¡¼¥É£²£±¤ËÊÑ¹¹
       *  01.00.02    NACL-Æ£¸¶    04/02/06  Êñ³ç¤ÎÂÐ¾Ý¤ËÊÝ¸±ÁÈ¹ç¤»£¹£¹£¹£¹
       *                                     ¤òÄÉ²Ã
+      *  01.00.03    NACL-Æ£¸¶    04/02/09  ´µ¼Ô¼«¸ÊÉéÃ´³Û¤¬¸øÈñ¤Î¾å¸Â³Û
+      *                                     ¤ËÅþÃ£¤·¤Ê¤¤¾ì¹ç¤Î¥ì¥»¼ïÊÌ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -386,6 +388,8 @@
            COPY    "CPORCSJOBKANRI.INC".
       *   ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
            COPY    "CPORCSAGECHK.INC".
+      *    ´µ¼Ô¼«¸ÊÉéÃ´¶â¥ì¥»¥×¥Èµ­ºÜÈ½Äê
+           COPY    "CPORCSFTNJGNCHK.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -1140,6 +1144,28 @@
                            ELSE
                                MOVE    1   TO  TOUKEI01-TRECESKYKBN(IDY)
                            END-IF
+                       END-IF
+                   END-IF
+                   IF     TOUKEI01-TRECESKYKBN (IDY)   =   1
+      *                ÃÏÊý¸øÈñ¥ì¥»µ­ºÜÈ½Äê
+                       INITIALIZE          ORCSFTNJGNCHKAREA
+                       MOVE    COMB-HOSPID TO  LNK-FTNJGNCHK-HOSPID
+                       MOVE    COMB-PTID   TO  LNK-FTNJGNCHK-PTID
+                       MOVE    "2"         TO  LNK-FTNJGNCHK-NYUGAIKBN
+      *                ¿ÇÎÅÇ¯·î
+                       MOVE    WRK-PARA-SRYYM
+                                           TO  LNK-FTNJGNCHK-SRYYM
+      *                ¸øÈñÈÖ¹æ
+                       MOVE    COMB-KOHHKNNUM (IDX)
+                                           TO  LNK-FTNJGNCHK-KOHNUM
+      *                ¸øÈñ£É£Ä
+                       MOVE    COMB-KOHID (IDX)
+                                           TO  LNK-FTNJGNCHK-KOHID
+      *
+                       CALL    "ORCSFTNJGNCHK" USING
+                                               ORCSFTNJGNCHKAREA
+                       IF     LNK-FTNJGNCHK-RC =   1
+                           MOVE       2    TO  TOUKEI01-TRECESKYKBN(IDY)
                        END-IF
                    END-IF
                ELSE
