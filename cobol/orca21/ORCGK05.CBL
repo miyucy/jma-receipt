@@ -2788,8 +2788,9 @@
            IF      SPA-SURYOZERO-FLG   =   1
                IF     (WRK-SUR-MCNT        >   ZERO )  AND
                       (WRK-SURYO           =   ZERO )
-                   IF      SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
-                                               =   "6"  OR  "7"
+                   IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
+                                               =   "6"  OR  "7") AND
+                          (SPA-GMN-SETCODE(1:1)    =   "P"    )
                        CONTINUE
                    ELSE
                        MOVE    "A002"          TO  SPA-ERRCD
