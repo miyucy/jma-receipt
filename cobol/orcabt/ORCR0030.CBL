@@ -827,48 +827,49 @@
                    PERFORM   VARYING   IDX  FROM    1   BY  1
                          UNTIL   ( IDX                >    4    )
                          OR      ( RECE02-KOHID(IDX)  =   SPACE )
-      *            生保
-                   IF  RECE02-KOHNUM (IDX)  =   "012"
-                       MOVE    "1"          TO  WRK-3SYU (1:1)
-                       MOVE     IDX         TO  SEIHIDX
-                   END-IF
-      *            結核
-                   IF  RECE02-KOHNUM (IDX)  =   "010"  OR  "011"
-                       MOVE    "1"          TO  WRK-3SYU (2:1)
-                       MOVE     IDX         TO  KAKKIDX
-                   END-IF
-      *            精神
-                   IF  RECE02-KOHNUM (IDX)  =   "020"  OR  "021"
-                       MOVE    "1"          TO  WRK-3SYU (3:1)
-                       MOVE     IDX         TO  SESNIDX
-                   END-IF
-               END-PERFORM
+      *                生保
+                       IF  RECE02-KOHNUM (IDX)  =   "012"
+                           MOVE    "1"          TO  WRK-3SYU (1:1)
+                           MOVE     IDX         TO  SEIHIDX
+                       END-IF
+      *                結核
+                       IF  RECE02-KOHNUM (IDX)  =   "010"  OR  "011"
+                           MOVE    "1"          TO  WRK-3SYU (2:1)
+                           MOVE     IDX         TO  KAKKIDX
+                       END-IF
+      *                精神
+                       IF  RECE02-KOHNUM (IDX)  =   "020"  OR  "021"
+                           MOVE    "1"          TO  WRK-3SYU (3:1)
+                           MOVE     IDX         TO  SESNIDX
+                       END-IF
+                   END-PERFORM
       *    
-               IF      WRK-3SYU-KBN           =   ALL "1" AND 
-                       RECE02-HKNNUM          =   SPACE            
-      *            ３種の場合
-                   IF  KAKKIDX         >   SESNIDX
-                       MOVE    SESNIDX     TO  IDA
-                       MOVE    KAKKIDX     TO  IDB
-                   ELSE
-                       MOVE    KAKKIDX     TO  IDA
-                       MOVE    SESNIDX     TO  IDB
+                   IF      WRK-3SYU-KBN           =   ALL "1" AND 
+                           RECE02-HKNNUM          =   SPACE            
+      *                ３種の場合
+                       IF  KAKKIDX         >   SESNIDX
+                           MOVE    SESNIDX     TO  IDA
+                           MOVE    KAKKIDX     TO  IDB
+                       ELSE
+                           MOVE    KAKKIDX     TO  IDA
+                           MOVE    SESNIDX     TO  IDB
+                       END-IF
+                       COMPUTE IDX5     =   SEIHIDX    +   1
+                       COMPUTE IDX6     =   IDA        +   1
+                       COMPUTE IDX7     =   IDB        +   1
+                   ELSE    
+      *                ３種以外の場合
+                       MOVE    1               TO  IDA
+                       MOVE    2               TO  IDB
+                       MOVE    1               TO  IDX5
+                       MOVE    2               TO  IDX6
+                       MOVE    3               TO  IDX7
                    END-IF
-                   COMPUTE IDX5     =   SEIHIDX    +   1
-                   COMPUTE IDX6     =   IDA        +   1
-                   COMPUTE IDX7     =   IDB        +   1
-               ELSE    
-      *            ３種以外の場合
-                   MOVE    1               TO  IDA
-                   MOVE    2               TO  IDB
-                   MOVE    1               TO  IDX5
-                   MOVE    2               TO  IDX6
-                   MOVE    3               TO  IDX7
-               END-IF
       *
-               PERFORM     OCR1-HENSYU-SEC
-               PERFORM     OCR2-HENSYU-SEC
-               PERFORM     OCR3-HENSYU-SEC
+                   PERFORM     OCR1-HENSYU-SEC
+                   PERFORM     OCR2-HENSYU-SEC
+                   PERFORM     OCR3-HENSYU-SEC
+               END-IF
            END-IF
       *
            PERFORM     RECE02-REWRITE-SEC
@@ -4002,9 +4003,6 @@
                    MOVE  ZERO           TO      OCR3-CHKDGT1
            END-IF
       *公費２診療実日数・請求点数
-      *???
-           DISPLAY "IDX=" IDX5 "#" IDX7 "#"
-      *???
            IF      RECE02-JNISSU   (IDX5)  =   RECE02-JNISSU   (IDX7)
            AND     RECE02-TOTALTEN (IDX5)  =   RECE02-TOTALTEN (IDX7)
                MOVE    ZERO                 TO  OCR3-JNISSU
