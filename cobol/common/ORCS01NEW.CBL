@@ -1377,8 +1377,7 @@
                CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
                IF      AGECHK-RC       =   ZERO
-                   IF  (AGECHK-NENREI   >=  70)   AND
-                       (AGECHK-NENREI   <=  74)
+                   IF  AGECHK-NENREI   >=  70
                        CONTINUE
                    ELSE
                        MOVE  SPACE   TO  LNK-S01-KOUREI-ZAITAKU-KBN
@@ -1425,15 +1424,29 @@
       *¹âÎð¼Ô¤ÎºßÂðÁí¹ç¡¦ºßÂðËö´ü»»Äê´µ¼Ô¤Î¼çÊÝ¸±¾å¸Â³Û»»Äê
       *
            IF  LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
-               EVALUATE   COMB-HOJOKBN
-                   WHEN   "9"
-                       IF  FLG-SANSHOU      =   "1"
-                           MOVE   12000   TO   MAX-KIN-SYU-M
-                       ELSE
-                           MOVE    8000   TO   MAX-KIN-SYU-M
-                   WHEN   "8"
-                       MOVE   40200     TO   MAX-KIN-SYU-M
-               END-EVALUATE
+               IF  COMB-KOH1-HKNKOHSBTKBN   =   "3"
+                   EVALUATE   COMB-KOH1PAYKBN
+                       WHEN   "01"
+                           IF  FLG-SANSHOU      =   "1"
+                               MOVE   12000   TO   MAX-KIN-SYU-M
+                           ELSE
+                               MOVE    8000   TO   MAX-KIN-SYU-M
+                           END-IF
+                       WHEN   "02"
+                           MOVE   40200     TO   MAX-KIN-SYU-M
+                   END-EVALUATE
+               ELSE
+                   EVALUATE   COMB-HOJOKBN
+                       WHEN   "9"
+                           IF  FLG-SANSHOU      =   "1"
+                               MOVE   12000   TO   MAX-KIN-SYU-M
+                           ELSE
+                               MOVE    8000   TO   MAX-KIN-SYU-M
+                           END-IF
+                       WHEN   "8"
+                           MOVE   40200     TO   MAX-KIN-SYU-M
+                   END-EVALUATE
+               END-IF
            END-IF.
       *----(01.00.23) LINE ADD END   --------------------------
       *
