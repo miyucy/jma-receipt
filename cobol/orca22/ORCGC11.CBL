@@ -1919,15 +1919,15 @@
       *****************************************************************
        480-SAKUJYO-SEC             SECTION.
       *
-           INITIALIZE                  OPECOM-REC
+           INITIALIZE                      OPECOM-REC
            MOVE    SPA-HOSPID          TO  OPECOM-HOSPID
            MOVE    SPA-NAI-C11-PTID    TO  OPECOM-PTID
            MOVE    SPA-NAI-C11-SRYYMD  TO  OPECOM-SRYYMD
            MOVE    SPA-NAI-C11-SRYCD   TO  OPECOM-SRYCD
-           MOVE    SPA-NAI-C11-RENNUM  TO  OPECOM-RENNUM 
+           MOVE    SPA-NAI-C11-RENNUM  TO  OPECOM-RENNUM
            MOVE    OPECOM-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY"      TO  ORC-DBPATH
+           MOVE    "OPECOM-KEY"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -2292,7 +2292,12 @@
            MOVE    SPACE           TO  CID1
            MOVE    SPA-CIDCD       TO  CID1-ID1CODE
            MOVE    WRK-CIDMSG      TO  CID1-ID1MSG
-           MOVE    "B12"           TO  MCP-WIDGET
+           EVALUATE    SPA-CIDCD
+               WHEN    "0102"
+                   MOVE    "B01"           TO  MCP-WIDGET
+               WHEN    OTHER
+                   MOVE    "B12"           TO  MCP-WIDGET
+           END-EVALUATE
       *
            MOVE    "C11"           TO  SPA-MOTOPG
            MOVE    "CID1"          TO  SPA-SAKIPG
