@@ -279,6 +279,13 @@
       *    診療行為算定編集パラメタ
            COPY    "CPORCSC90.INC".
       *
+      *    入院通算日数編集パラメタ
+           COPY    "CPORCSTUSAN.INC".
+      *
+      *   日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *
       *    診療行為算定歴チェックパラメタ
            COPY    "CPORCSC91.INC".
       *    診療行為点数編集・基本チェック
@@ -2197,73 +2204,34 @@
        30051-NYUINREKI-SEC         SECTION.
       *
            MOVE    SPACE               TO  WRK-NYMD
-      *    入院履歴判定
-           MOVE    SPACE               TO  PTNYUINRRK-REC
-           INITIALIZE                  PTNYUINRRK-REC
-           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
-           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-           MOVE    LNK-ORCSC-NYUINYMD  TO  PTNYUINRRK-NYUINYMD
-           MOVE    LNK-ORCSC-TAIINYMD  TO  PTNYUINRRK-TAIINYMD
       *
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNYUINRRK-KEY11"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY11"  TO  ORC-DBPATH
-               PERFORM 910-PTNYUINRRK-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-PTNYUINRRK
-               INITIALIZE                  PTNYUINRRK-REC
-           END-IF
-      *
-           IF      FLG-PTNYUINRRK      =   ZERO
-      *
-      *    入院履歴判定
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNYUINRRK-KEY13"  TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "PTNYUINRRK-KEY13"  TO  ORC-DBPATH
-               PERFORM 910-PTNYUINRRK-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-PTNYUINRRK
-               INITIALIZE                  PTNYUINRRK-REC
-           END-IF
-           IF      FLG-PTNYUINRRK      =   ZERO
-               MOVE    PTNYUINRRK-NYUINYMD     TO  WRK-NYMD
-           END-IF
-      *
-           END-IF
-      *
+           INITIALIZE                  ORCSTUSANAREA
+           MOVE    SPA-HOSPID          TO  STUSAN-HOSPID
+           MOVE    SPA-PTID            TO  STUSAN-PTID
+           MOVE    SPA-SRYYMD          TO  STUSAN-KJNYMD
+           CALL    "ORCSTUSAN"         USING   ORCSTUSANAREA
       *TEST
-           DISPLAY "LNK-ORCSC-NYUINYMD:" LNK-ORCSC-NYUINYMD
-                   ",WRK-NYMD:" WRK-NYMD
+           DISPLAY "STUSAN-NISSU03:" STUSAN-NISSU03
       *TEST
-      ***  MOVE    SPACE               TO  WRK-NYMD
-      *    MOVE    ZERO                TO  FLG-OK
-      *    PERFORM
-      *            UNTIL      (FLG-PTNYUINRRK      =   1 )  OR
-      *                       (FLG-OK              =   1 )
-      *        入院日前
-      *        IF      PTNYUINRRK-NYUINYMD     <   LNK-ORCSC-NYUINYMD
-      *            入院中区分判定
-      *            IF      PTNYUINRRK-NYUINCHUKBN  =   "1"
-      *                MOVE    PTNYUINRRK-NYUINYMD     TO  WRK-NYMD
-      *            END-IF
-      *            MOVE    1                   TO  FLG-OK
-      *        END-IF
       *
-      *        MOVE    "PTNYUINRRK-KEY2"   TO  ORC-DBPATH
-      *        PERFORM 910-PTNYUINRRK-READ-SEC
-      *****END-PERFORM
+      *    通算入院日を求める
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    SPA-SRYYMD          TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           COMPUTE LNK-DAY6-ZOGEN      =  (STUSAN-NISSU03 -  1 )
+                                       *   -1
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+      *TEST
+           DISPLAY "LNK-DAY6-ZOGEN:" LNK-DAY6-ZOGEN
+                 ",SPA-SRYYMD:" SPA-SRYYMD
+           DISPLAY "LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
+                   ",LNK-DAY6-KOYOMI:" LNK-DAY6-KOYOMI
+      *TEST
+      *
+           MOVE    LNK-DAY6-KEISAN     TO  WRK-NYMD
       *
            IF      WRK-NYMD            =   SPACE
                MOVE    LNK-ORCSC-NYUINYMD  TO  WRK-NYMD
