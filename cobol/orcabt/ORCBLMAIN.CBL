@@ -92,7 +92,7 @@
       *****************************************************************
        LINKAGE                 SECTION.
       *
-       01  COMMAND-PARAM       PIC X(2000).
+       01  COMMAND-PARAM       PIC X(400).
       *
       ****************************************************************
        PROCEDURE           DIVISION
@@ -122,6 +122,7 @@
                                        CNT-AREA
                                        WRK-AREA
                                        SYS-AREA
+      *
       *
            MOVE    1               TO  WRK-POINT
            UNSTRING        COMMAND-PARAM   DELIMITED   BY  ","
