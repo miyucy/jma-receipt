@@ -207,6 +207,7 @@
       *  01.01.42    NACL-伊藤    03/03/03  KENSASORT-KEY追加
       *                                     KENSASORT-ALL追加 
       *  01.01.43    NACL-多々納　03/03/04  SYUNOU-KEY11,KEY12追加
+      *  01.01.44    ひさなが     03/03/05  PTNYUINRRK-KEY19の追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2245,6 +2246,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-KEY18"
                    MOVE    PATH-TBL-PTNYUINRRK-KEY18
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY19"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY19
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-ALL"
                    MOVE    PATH-TBL-PTNYUINRRK-ALL
