@@ -130,6 +130,7 @@
       *  01.08.04    NACL-藤原    04/03/09  手術歴の追加
       *  01.08.05    NACL-藤原    04/03/25  レセ電エラーフラグの判定に
       *                                     廃止年月日を追加
+      *  01.08.06    NACL-藤原    04/03/29  主病名の確認画面後の更新の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -170,6 +171,13 @@
            COPY    "CPPTBYOMEI.INC"
                                    REPLACING  //PTBYO-//
                                    BY         //SPA-PTBYO-//.
+      *01  WRK-PTBYOMEI-AREA.
+           02  WRK-HAISIYMD-OCC.
+               03  WRK-HAISIYMD-O  PIC 9(08)   OCCURS  6.
+           02  WRK-PTBYOMEI-REC    OCCURS  6.
+           COPY    "CPPTBYOMEI.INC"
+                                   REPLACING   //PTBYO-//
+                                   BY          //WRK-PTBYO-//.
            COPY    "CPC02SPASCR.INC".
       *
       *    スパ領域
@@ -363,14 +371,6 @@
            COPY    "CPPTBYOMEI.INC"
                                    REPLACING   //PTBYO-//
                                    BY          //WRK-PTBYO-CHK-//.
-      *
-      *    患者病名マスタ−（ワーク）
-       01  WRK-PTBYOMEI-AREA.
-           02  WRK-HAISIYMD-O      PIC 9(08)   OCCURS  6.
-           02  WRK-PTBYOMEI-REC    OCCURS  6.
-           COPY    "CPPTBYOMEI.INC"
-                                   REPLACING   //PTBYO-//
-                                   BY          //WRK-PTBYO-//.
       *
       *    スパ領域（ワーク）
            COPY    "COMMON-SPA"    REPLACING   //SPA-//
@@ -4193,9 +4193,6 @@
            PERFORM 5001-RECEDENFLG-HENSYU-SEC
            MOVE    WRK-PTBYO-CHK-RECEDENFLG
                                        TO  SPA-NAI-C02-RECEDENFLG
-      *???
-               DISPLAY "RECEDENFLG=" SPA-NAI-C02-RECEDENFLG "#"
-      *??
            .
        41041-RECEDENFLG-CHK-EXT.
            EXIT.
@@ -5411,8 +5408,20 @@
                MOVE    SPA-NAI-C02-SYSYMD   TO  SPA-NAI-C02-SRYYMD
            END-IF
       *
-           MOVE    SPACE           TO  WRK-PTBYOMEI-AREA
-           INITIALIZE                  WRK-PTBYOMEI-AREA
+           MOVE    SPACE           TO  WRK-HAISIYMD-OCC
+                                       WRK-PTBYOMEI-REC (1)
+                                       WRK-PTBYOMEI-REC (2)
+                                       WRK-PTBYOMEI-REC (3)
+                                       WRK-PTBYOMEI-REC (4)
+                                       WRK-PTBYOMEI-REC (5)
+                                       WRK-PTBYOMEI-REC (6)
+           INITIALIZE                  WRK-HAISIYMD-OCC
+                                       WRK-PTBYOMEI-REC (1)
+                                       WRK-PTBYOMEI-REC (2)
+                                       WRK-PTBYOMEI-REC (3)
+                                       WRK-PTBYOMEI-REC (4)
+                                       WRK-PTBYOMEI-REC (5)
+                                       WRK-PTBYOMEI-REC (6)
            MOVE    ZERO            TO  IDXX
            MOVE    ZERO            TO  IDY
       *
@@ -6690,12 +6699,6 @@
                        END-IF
                END-EVALUATE
            END-IF    
-      *???
-           DISPLAY "MOJISU=" WRK-MOJISU "#" WRK-BYOMEIHENFLG "#"
-                   WRK-HAISIYMD-CHK "#" WRK-PTBYO-CHK-SRYYMD "#"
-                   WRK-PTBYO-CHK-SYUBYOFLG "#"
-                   WRK-PTBYO-CHK-RECEDENFLG "#" WRK-PTBYO-CHK-UTAGAIFLG
-      *???
            .
        5001-RECEDENFLG-HENSYU-EXT.
            EXIT
