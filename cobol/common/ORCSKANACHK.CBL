@@ -25,6 +25,7 @@
       *  管理者            : 
       *  作成日付    作業者        記述
       *  01.00.01    NACL-多々納  02/08/09  入力・出力領域をX(1000)へ
+      *  01.00.02    NACL-多々納  04/09/30  全角エラー追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -45,6 +46,7 @@
            03  FLG-KANA            PIC 9(01).
            03  FLG-KANA2           PIC 9(01).
            03  FLG-KANJI           PIC 9(01).
+           03  FLG-KANJI-ERR       PIC 9(01).
            03  FLG-KUHAKU          PIC 9(01).
       *
       *    添字領域
@@ -52,8 +54,11 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDX-MAX             PIC 9(04).
+           03  IDX-MAX2            PIC 9(04).
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
+           03  IDX4                PIC 9(04).
       *
       *
         01  WRK-AREA.
@@ -305,6 +310,8 @@
                MOVE    SPACE               TO  KANACHK-OUT-INPUT
                GO      TO      000-PROC-EXT
            END-IF
+      *    全角の内容判定
+           PERFORM 1000-KOUMOKU-CHK-SEC
       *
            EVALUATE    KANACHK-SYORI
                WHEN    "1"
@@ -319,6 +326,52 @@
        000-PROC-EXT.
            EXIT PROGRAM
            .
+      *
+      *****************************************************************
+      *    全角チェック処理
+      *****************************************************************
+       1000-KOUMOKU-CHK-SEC           SECTION.
+      *
+      *    全角のチェック
+           MOVE    IDX-MAX             TO  IDX-MAX2
+           MOVE    SPACE               TO  WRK-MEISYO
+           MOVE    1                   TO  IDY
+           MOVE    1                   TO  IDX
+           MOVE    ZERO                TO  FLG-KANJI-ERR
+           PERFORM
+                   UNTIL       IDX         >   IDX-MAX
+      *        全角判定
+               IF      KANACHK-MAE-INPUT (IDX:1)
+                                           >=  X"A1"
+                   IF      IDX             <   1000
+                       COMPUTE IDX3        =   IDX     +  1
+                       IF      KANACHK-MAE-INPUT (IDX3:1) >=  X"A1"
+                           MOVE    KANACHK-MAE-INPUT (IDX:2)
+                                                   TO  WRK-MEISYO(IDY:2)
+                           ADD     2               TO  IDX
+                           ADD     2               TO  IDY
+                       ELSE
+                           ADD     1               TO  IDX
+                           MOVE    1               TO  FLG-KANJI-ERR
+                           COMPUTE IDX-MAX2        =   IDX-MAX2  -  1
+                       END-IF
+                   ELSE
+                       MOVE    1               TO  FLG-KANJI-ERR
+                   END-IF
+               ELSE
+                   MOVE    KANACHK-MAE-INPUT (IDX:1)
+                                               TO  WRK-MEISYO(IDY:1)
+                   ADD     1                   TO  IDX
+                   ADD     1                   TO  IDY
+               END-IF
+           END-PERFORM
+           MOVE    WRK-MEISYO          TO  KANACHK-MAE-INPUT
+           MOVE    WRK-MEISYO          TO  KANACHK-OUT-INPUT
+           MOVE    IDX-MAX2            TO  IDX-MAX
+      *
+           .
+       1000-KOUMOKU-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    全角判定処理
@@ -361,6 +414,10 @@
                    MOVE    9                   TO  KANACHK-RC2
                END-IF
                MOVE    1                   TO  KANACHK-RC
+      *        全角エラー文字あり
+               IF      FLG-KANJI-ERR   NOT =   ZERO
+                   MOVE    7               TO  KANACHK-RC2
+               END-IF
                GO      TO      100-ZENKAKU-CHECK-EXT
            END-IF
       *    半角の時、以下の処理なし
@@ -377,12 +434,20 @@
                        MOVE    8                   TO  KANACHK-RC2
                    END-IF
                END-IF
+      *        全角エラー文字あり
+               IF      FLG-KANJI-ERR   NOT =   ZERO
+                   MOVE    7               TO  KANACHK-RC2
+               END-IF
            ELSE
       *        全角処理
                PERFORM 1020-ZENKAKU-SYORI-SEC
       *        間に空白あり
                IF      FLG-KUHAKU          =   1
                    MOVE    8                   TO  KANACHK-RC2
+               END-IF
+      *        全角エラー文字あり
+               IF      FLG-KANJI-ERR   NOT =   ZERO
+                   MOVE    7               TO  KANACHK-RC2
                END-IF
            END-IF
       *
