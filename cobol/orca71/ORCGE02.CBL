@@ -292,14 +292,11 @@
                    CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA
                                                JOBKANRI-REC
-      *½¤Àµ/*³«»Ï*02.09.13*********************************************
-      *             MOVE    "orcbse01.sh"       TO  SHELL-SHELL
                    INITIALIZE                      ORCSMKPASSAREA
                    MOVE    "scripts/allways/orcbse01.sh"
                                                TO  MKPASS-IN-01
                    CALL    "ORCSMKPASS"     USING  ORCSMKPASSAREA
                    MOVE    MKPASS-OT-01        TO  SHELL-NAME
-      *½¤Àµ/*½ªÎ»*02.09.13*********************************************
                    MOVE    SPA-SYSYMD(1:6)     TO  SHELL-SRYYM
                    MOVE    SPA-TERMID          TO  SHELL-TERMID
                    MOVE    SPA-SYSYMD          TO  SHELL-SYSYMD
@@ -704,14 +701,14 @@
       *****************************************************************
        T-000-SNENCHEK-SEC                SECTION.
       *
-           IF      (WK-TBL-MSG (IDX2)(1:6) = "JYURRK")
-           OR      (WK-TBL-MSG (IDX2)(1:8) = "PTBYOMEI")
-           OR      (WK-TBL-MSG (IDX2)(1:7) = "SRYACCT")
-           OR      (WK-TBL-MSG (IDX2)(1:6) = "SRYACT")
-           OR      (WK-TBL-MSG (IDX2)(1:8) = "WKSRYACT")
-           OR      (WK-TBL-MSG (IDX2)(1:6) = "SANTEI")
-           OR      (WK-TBL-MSG (IDX2)(1:6) = "SEIKYU")
-           OR      (WK-TBL-MSG (IDX2)(1:5) = "BD002")
+           IF      (WK-TBL-MSG (IDX2)(1:6) = "JYURRK")       OR
+                   (WK-TBL-MSG (IDX2)(1:8) = "PTBYOMEI")     OR
+                   (WK-TBL-MSG (IDX2)(1:7) = "SRYACCT")      OR
+                   (WK-TBL-MSG (IDX2)(1:6) = "SRYACT")       OR
+                   (WK-TBL-MSG (IDX2)(1:8) = "WKSRYACT")     OR
+                   (WK-TBL-MSG (IDX2)(1:6) = "SANTEI")       OR
+                   (WK-TBL-MSG (IDX2)(1:6) = "SEIKYU")       OR
+                   (WK-TBL-MSG (IDX2)(1:5) = "BD002")
                MOVE    E02-SRYYM(1:6)      TO  SPA-GMN-SRYYM
            ELSE
                MOVE    SPACE               TO  SPA-GMN-SRYYM
@@ -1128,10 +1125,13 @@
                                       MOVE    501
                                               TO  IDX1
                                  NOT  AT  END
+                                   IF      EIE01-REC(1:8)  NOT =
+                                                           "SRYYM***"
                                       MOVE    EIE01-REC
                                               TO  WK-TBL-MSG-B (IDX1)
                                       MOVE    IDX1
                                               TO  SPA-GMN-MAX-B
+                                   END-IF
                                END-READ
                            END-PERFORM
               END-READ
@@ -1185,6 +1185,26 @@
                MOVE    WK-TBL-MSG-B (IDX1)     TO  EIE01-REC
                WRITE   EIE01-REC
            END-PERFORM.
+      *
+           IF      (SPA-GMN-TBLNM(1:6) = "JYURRK")       OR
+                   (SPA-GMN-TBLNM(1:8) = "PTBYOMEI")     OR
+                   (SPA-GMN-TBLNM(1:7) = "SRYACCT")      OR
+                   (SPA-GMN-TBLNM(1:6) = "SRYACT")       OR
+                   (SPA-GMN-TBLNM(1:8) = "WKSRYACT")     OR
+                   (SPA-GMN-TBLNM(1:6) = "SANTEI")       OR
+                   (SPA-GMN-TBLNM(1:6) = "SEIKYU")       OR
+                   (SPA-GMN-TBLNM(1:5) = "BD002")
+               PERFORM VARYING IDX1  FROM  1  BY 1
+                       UNTIL   IDX1  >     500
+                   IF      WK-TBL-MSG-C (IDX1)(1:5) = "SRYYM"
+                       MOVE    SPACE                 TO  EIE01-REC
+                       MOVE    WK-TBL-MSG-C (IDX1)   TO  EIE01-REC
+                       MOVE    "SRYYM***"            TO  EIE01-REC(1:8)
+                       WRITE   EIE01-REC
+                       MOVE    501                   TO  IDX1
+                   END-IF
+               END-PERFORM
+           END-IF.
       *
            CLOSE                           EIE01-FILE.
       *
@@ -1259,7 +1279,7 @@
            MOVE    ZERO                  TO  FLG-FIL.
            MOVE    SPACE                 TO  FLG-SEL.
            MOVE    SPACE                 TO  WK-TBL2.
-      *     
+      *
            OPEN    INPUT                 EIE02-FILE.
       *
            IF  STS-EIE02   =   ZERO
