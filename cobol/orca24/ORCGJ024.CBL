@@ -652,6 +652,9 @@
                WHEN    "0002"
                    MOVE    "保険組合せ選択エラー"
                                        TO  SPA-ERRMSG
+               WHEN    "0003"
+                   MOVE    "選択番号を選択して下さい"
+                                       TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  JERR
