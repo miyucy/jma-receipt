@@ -222,10 +222,6 @@
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ¼ýÇ¼ÌÀºÙ¥Þ¥¹¥¿¡Ý
-       01  SYUMEI-REC.
-           COPY    "CPSYUMEI.INC".
-      *
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
