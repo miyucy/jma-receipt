@@ -913,7 +913,7 @@
       *
            IF      (WK-TBL-SW-CNT  >  1)
            AND     (WK-TBL-SW-SW  =  "*")
-               NEXT SENTENCE
+               CONTINUE
            ELSE
                MOVE    1                 TO  IDX9
                PERFORM UNTIL   IDX9  >   SPA-GMN-MAX-B
@@ -960,7 +960,7 @@
       *
            IF      (WK-TBL-SW-CNT  >  1)
            AND     (WK-TBL-SW-SW  =  "*")
-               NEXT SENTENCE
+               CONTINUE
            ELSE
                MOVE    SPA-GMN-MAX-B     TO  IDX9
                PERFORM UNTIL   IDX9  <   1
