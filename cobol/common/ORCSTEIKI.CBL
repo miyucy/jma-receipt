@@ -38,6 +38,9 @@
       *                                     ¡Ü½é¿Ç»þ¡¡ÂÐ±þ
       *  00.00.07    NACL-ÌçÏÆ    03/07/28  Ï«ºÒ¡¦¼«ÇåÀÕÆþ±¡ÂÐ±þ
       *  00.00.08    NACL-ÌçÏÆ    03/12/02  ÆüÊÌ¼ýÇ¼¥Þ¥¹¥¿¹¹¿·Åù
+      *  00.00.09    NACL-ÌçÏÆ    04/01/14  ¿ÇÎÅ¹Ô°Ù¤ÎÊñ³çÊ¬¤Ï½ü¤¯
+      *                                     SRYACCT7¢ª33
+      *                                     SRYACCT9¢ª30
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -651,19 +654,19 @@
               MOVE    WRK-SKYYM(IDX)        TO      ACCT-SRYYM
               MOVE    SRYACCT-REC           TO      MCPDATA-REC
               MOVE    "DBSELECT"            TO      MCP-FUNC
-              MOVE    "SRYACCT-KEY7"        TO      ORC-DBPATH
+              MOVE    "SRYACCT-KEY33"       TO      ORC-DBPATH
               CALL    "ORCMCPSUB"           USING   MCPAREA
                                                     ORCMCPAREA
                                                     MCPDATA-REC
               IF      MCP-RC             =       ZERO
       *
-                  MOVE    "SRYACCT-KEY7"    TO      ORC-DBPATH
+                  MOVE    "SRYACCT-KEY33"   TO      ORC-DBPATH
                   PERFORM  SRYACCT-READ-SEC
                   PERFORM  UNTIL  (FLG-SRYACCT  =    "1")
       *
                     PERFORM    NYUIN-DAY-TAIHI2-SEC
       *
-                    MOVE          "SRYACCT-KEY7"  TO   ORC-DBPATH
+                    MOVE          "SRYACCT-KEY33" TO   ORC-DBPATH
                     PERFORM        SRYACCT-READ-SEC
       *
                   END-PERFORM
@@ -671,7 +674,7 @@
               END-IF
       *
               MOVE    "DBCLOSE"               TO  MCP-FUNC
-              MOVE    "SRYACCT-KEY7"          TO  ORC-DBPATH
+              MOVE    "SRYACCT-KEY33"         TO  ORC-DBPATH
               CALL    "ORCMCPSUB"             USING
                                               MCPAREA
                                               ORCMCPAREA
@@ -1613,8 +1616,10 @@
            IF     NACCT-SRYYM         =   SYU-SKYSTYMD(1:6)
       *        ¼¼ÎÁº¹³Û¤Î½¸·×
                IF   NACCT-ZAISKBKBN       =   "3"
+      *
       *            ¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ë¤«¤éÀßÄê¼¼ÎÁº¹³Û¤Î¼è¤ê¹þ¤ß
-                   INITIALIZE                  SYS-5113-REC
+                   MOVE    ZERO                TO   FLG-SYSKANRI
+                   INITIALIZE                       SYS-5113-REC
                    MOVE    "5113"              TO   SYS-5113-KANRICD
                    MOVE    SYU-SKYSTYMD        TO   ORC-DBYMD
                    MOVE    SYS-5113-REC        TO   MCPDATA-REC
@@ -1637,7 +1642,10 @@
                             PERFORM  SYSKANRI-READ-SEC
                         END-PERFORM
                    END-IF
-      *             
+      *
+                   MOVE     "SYSKANRI-KEY2"    TO    WK-PATH
+                   PERFORM   CSR-CLOSE-SEC
+      *
                    PERFORM   VARYING  SYU-IDX  FROM  1  BY  1
                              UNTIL    SYU-IDX  >   31
                        IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
@@ -2199,21 +2207,26 @@
                            WHEN   "1"
                                EVALUATE   TBL-GAIHAKU(SYU-IDX)
                                  WHEN   ZERO
-                                   IF    WRK-TAX1001-KBN  =  "1"
-                                     COMPUTE  NYUIN-TGMONEY =
-                                              NYUIN-TGMONEY +
+      **                           IF    WRK-TAX1001-KBN  =  "1"
+      **                             COMPUTE  NYUIN-TGMONEY =
+      **                                      NYUIN-TGMONEY +
+      **                                    ((WRK-KHNTEN  -  
+      **                                      WRK-SENTEI-KHNTEN) * 
+      **                                      SYS-5000-SENTEI-TANKA *
+      **                                      1.05)  +  0.5
+                                     COMPUTE  NYUIN-TGMONEY-TAX =
+                                              NYUIN-TGMONEY-TAX +
                                             ((WRK-KHNTEN  -  
                                               WRK-SENTEI-KHNTEN) * 
-                                              SYS-5000-SENTEI-TANKA *
-                                              1.05)  +  0.5
-                                   ELSE
-                                     COMPUTE  NYUIN-TGMONEY =
-                                              NYUIN-TGMONEY +
-                                             (WRK-KHNTEN  -  
-                                              WRK-SENTEI-KHNTEN) * 
-                                              SYS-5000-SENTEI-TANKA *
-                                              1.05
-                                   END-IF
+                                              SYS-5000-SENTEI-TANKA)
+      **                           ELSE
+      **                             COMPUTE  NYUIN-TGMONEY =
+      **                                      NYUIN-TGMONEY +
+      **                                     (WRK-KHNTEN  -  
+      **                                      WRK-SENTEI-KHNTEN) * 
+      **                                      SYS-5000-SENTEI-TANKA *
+      **                                      1.05
+      **                           END-IF
       *                          ³°Çñ¡Ê£±£µ¡ó¤ÈÁªÄê³°Çñ¤Îº¹³Û¡Ë
                                  WHEN   3
                                  WHEN   4
@@ -2225,21 +2238,26 @@
                                              (WRK-KHNTEN * 
                                               WRK-SENTEI-GAIHAKU-KEISU)
                                                                  + 0.5
-                                     IF    WRK-TAX1001-KBN  =  "1"
-                                       COMPUTE  NYUIN-TGMONEY  =
-                                                NYUIN-TGMONEY  +
+      **                             IF    WRK-TAX1001-KBN  =  "1"
+      **                               COMPUTE  NYUIN-TGMONEY  =
+      **                                        NYUIN-TGMONEY  +
+      **                                    ((WRK-SENTEI-GAIHAKU1 -
+      **                                      WRK-SENTEI-GAIHAKU2)
+      **                                      *  SYS-5000-SENTEI-TANKA
+      **                                      *  1.05)  +  0.5
+                                       COMPUTE  NYUIN-TGMONEY-TAX  =
+                                                NYUIN-TGMONEY-TAX  +
                                             ((WRK-SENTEI-GAIHAKU1 -
                                               WRK-SENTEI-GAIHAKU2)
-                                              *  SYS-5000-SENTEI-TANKA
-                                              *  1.05)  +  0.5
-                                     ELSE
-                                       COMPUTE  NYUIN-TGMONEY  =
-                                                NYUIN-TGMONEY  +
-                                             (WRK-SENTEI-GAIHAKU1 -
-                                              WRK-SENTEI-GAIHAKU2)
-                                              *  SYS-5000-SENTEI-TANKA
-                                              *  1.05
-                                     END-IF
+                                              *  SYS-5000-SENTEI-TANKA)
+      **                             ELSE
+      **                               COMPUTE  NYUIN-TGMONEY  =
+      **                                        NYUIN-TGMONEY  +
+      **                                     (WRK-SENTEI-GAIHAKU1 -
+      **                                      WRK-SENTEI-GAIHAKU2)
+      **                                      *  SYS-5000-SENTEI-TANKA
+      **                                      *  1.05
+      **                             END-IF
                                END-EVALUATE
                        END-EVALUATE
       *            °åÎÅµ¡´ØÄê³ÛÀßÄê
@@ -2265,17 +2283,20 @@
                                  WHEN   ZERO
                                  WHEN   3
                                  WHEN   4
-                                   IF    WRK-TAX1001-KBN  =  "1"
-                                     COMPUTE  NYUIN-TGMONEY =
-                                              NYUIN-TGMONEY +
-                                             (SYS-5000-SENTEI-KINGAKU *
-                                              1.05)  +  0.5
-                                   ELSE
-                                     COMPUTE  NYUIN-TGMONEY =
-                                              NYUIN-TGMONEY +
-                                             (SYS-5000-SENTEI-KINGAKU *
-                                              1.05)
-                                   END-IF
+      **                           IF    WRK-TAX1001-KBN  =  "1"
+      **                             COMPUTE  NYUIN-TGMONEY =
+      **                                      NYUIN-TGMONEY +
+      **                                     (SYS-5000-SENTEI-KINGAKU *
+      **                                      1.05)  +  0.5
+                                     COMPUTE  NYUIN-TGMONEY-TAX =
+                                              NYUIN-TGMONEY-TAX +
+                                              SYS-5000-SENTEI-KINGAKU
+      **                           ELSE
+      **                             COMPUTE  NYUIN-TGMONEY =
+      **                                      NYUIN-TGMONEY +
+      **                                     (SYS-5000-SENTEI-KINGAKU *
+      **                                      1.05)
+      **                           END-IF
                                END-EVALUATE
                        END-EVALUATE
       *            ÉÂÅïÀßÄê
@@ -2327,21 +2348,26 @@
                        WHEN   "1"
                            EVALUATE   TBL-GAIHAKU(SYU-IDX)
                              WHEN   ZERO
-                               IF    WRK-TAX1001-KBN  =  "1"
-                                 COMPUTE  NYUIN-TGMONEY =
-                                          NYUIN-TGMONEY +
+      **                       IF    WRK-TAX1001-KBN  =  "1"
+      **                         COMPUTE  NYUIN-TGMONEY =
+      **                                  NYUIN-TGMONEY +
+      **                                ((WRK-KHNTEN  -  
+      **                                  WRK-SENTEI-KHNTEN) * 
+      **                               SBTUSENTEI-DAY-TANKA(SYU-IDX) *
+      **                                  1.05)  +  0.5
+                                 COMPUTE  NYUIN-TGMONEY-TAX =
+                                          NYUIN-TGMONEY-TAX +
                                         ((WRK-KHNTEN  -  
                                           WRK-SENTEI-KHNTEN) * 
-                                       SBTUSENTEI-DAY-TANKA(SYU-IDX) *
-                                          1.05)  +  0.5
-                               ELSE
-                                 COMPUTE  NYUIN-TGMONEY =
-                                          NYUIN-TGMONEY +
-                                         (WRK-KHNTEN  -  
-                                          WRK-SENTEI-KHNTEN) * 
-                                       SBTUSENTEI-DAY-TANKA(SYU-IDX) *
-                                          1.05
-                               END-IF
+                                       SBTUSENTEI-DAY-TANKA(SYU-IDX))
+      **                       ELSE
+      **                         COMPUTE  NYUIN-TGMONEY =
+      **                                  NYUIN-TGMONEY +
+      **                                 (WRK-KHNTEN  -  
+      **                                  WRK-SENTEI-KHNTEN) * 
+      **                               SBTUSENTEI-DAY-TANKA(SYU-IDX) *
+      **                                  1.05
+      **                       END-IF
       *                      ³°Çñ¡Ê£±£µ¡ó¤ÈÁªÄê³°Çñ¤Îº¹³Û¡Ë
                              WHEN   3
                              WHEN   4
@@ -2353,21 +2379,26 @@
                                          (WRK-KHNTEN * 
                                           WRK-SENTEI-GAIHAKU-KEISU)
                                                              + 0.5
-                                 IF    WRK-TAX1001-KBN  =  "1"
-                                   COMPUTE  NYUIN-TGMONEY  =
-                                            NYUIN-TGMONEY  +
+      **                         IF    WRK-TAX1001-KBN  =  "1"
+      **                           COMPUTE  NYUIN-TGMONEY  =
+      **                                    NYUIN-TGMONEY  +
+      **                                ((WRK-SENTEI-GAIHAKU1 -
+      **                                  WRK-SENTEI-GAIHAKU2)
+      **                              *  SBTUSENTEI-DAY-TANKA(SYU-IDX)
+      **                              *  1.05)  +  0.5
+                                   COMPUTE  NYUIN-TGMONEY-TAX  =
+                                            NYUIN-TGMONEY-TAX  +
                                         ((WRK-SENTEI-GAIHAKU1 -
                                           WRK-SENTEI-GAIHAKU2)
-                                      *  SBTUSENTEI-DAY-TANKA(SYU-IDX)
-                                      *  1.05)  +  0.5
-                                 ELSE
-                                   COMPUTE  NYUIN-TGMONEY  =
-                                            NYUIN-TGMONEY  +
-                                         (WRK-SENTEI-GAIHAKU1 -
-                                          WRK-SENTEI-GAIHAKU2)
-                                      *  SBTUSENTEI-DAY-TANKA(SYU-IDX)
-                                      *  1.05
-                                 END-IF
+                                      *  SBTUSENTEI-DAY-TANKA(SYU-IDX))
+      **                         ELSE
+      **                           COMPUTE  NYUIN-TGMONEY  =
+      **                                    NYUIN-TGMONEY  +
+      **                                 (WRK-SENTEI-GAIHAKU1 -
+      **                                  WRK-SENTEI-GAIHAKU2)
+      **                              *  SBTUSENTEI-DAY-TANKA(SYU-IDX)
+      **                              *  1.05
+      **                         END-IF
                            END-EVALUATE
                    END-EVALUATE
       *        ÉÂÅïÄê³ÛÀßÄê
@@ -2390,17 +2421,20 @@
                              WHEN   ZERO
                              WHEN   3
                              WHEN   4
-                               IF    WRK-TAX1001-KBN  =  "1"
-                                 COMPUTE  NYUIN-TGMONEY =
-                                          NYUIN-TGMONEY +
-                                    (SBTUSENTEI-DAY-KINGAKU(SYU-IDX) *
-                                          1.05)  +  0.5
-                               ELSE
-                                 COMPUTE  NYUIN-TGMONEY =
-                                          NYUIN-TGMONEY +
-                                    (SBTUSENTEI-DAY-KINGAKU(SYU-IDX) *
-                                          1.05)
-                               END-IF
+      **                       IF    WRK-TAX1001-KBN  =  "1"
+      **                         COMPUTE  NYUIN-TGMONEY =
+      **                                  NYUIN-TGMONEY +
+      **                            (SBTUSENTEI-DAY-KINGAKU(SYU-IDX) *
+      **                                  1.05)  +  0.5
+                                 COMPUTE  NYUIN-TGMONEY-TAX =
+                                          NYUIN-TGMONEY-TAX +
+                                     SBTUSENTEI-DAY-KINGAKU(SYU-IDX)
+      **                       ELSE
+      **                         COMPUTE  NYUIN-TGMONEY =
+      **                                  NYUIN-TGMONEY +
+      **                            (SBTUSENTEI-DAY-KINGAKU(SYU-IDX) *
+      **                                  1.05)
+      **                       END-IF
                            END-EVALUATE
                    END-EVALUATE
            END-EVALUATE
@@ -2432,13 +2466,13 @@
            MOVE    SYU-SKYSTYMD(1:6)   TO  ACCT-SRYYM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY9"      TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY9"  TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY30" TO  ORC-DBPATH
                PERFORM    SRYACCT-READ-SEC
       *
                PERFORM    SRYACCT-SET-SEC
@@ -2448,7 +2482,7 @@
                MOVE    1               TO  FLG-SRYACCT
            END-IF
       *
-           MOVE   "SRYACCT-KEY9"       TO  WK-PATH
+           MOVE   "SRYACCT-KEY30"      TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
       *    Ï«ºÒ¡¦¼«ÇåÀÕÅ¾Á÷½èÍý
@@ -2734,7 +2768,7 @@
                END-EVALUATE
            END-IF
       *
-           MOVE    "SRYACCT-KEY9"  TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY30" TO  ORC-DBPATH
            PERFORM SRYACCT-READ-SEC
       *
            .
