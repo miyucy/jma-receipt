@@ -12,34 +12,41 @@ fi
 #-------------------------------------------#
 #    レセ電ファイル作成処理
 #        $1-${11} 印刷ＤＢ用固定引数
-#        $12 請求年月
-#        $13 提出先
-#        $14 レセ電ファイル出力先
-#        $15 JOBID 
-#        $16 SHELLID
-#        $17 エラーファイル名 
+#        $12 提出先
+#        $13 レセ電ファイル出力先
+#        $14 JOBID 
+#        $15 SHELLID
+#        $16 エラーファイル名 
 #-------------------------------------------#
-##      エラーファイル削除
+
+    rennum=0
+
+##  エラーファイル削除
 	echo $#
-	echo "echo " ${17}
+	echo "echo " ${16}
 
-        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM500 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${15},${16}
-        if  [ -e ${17} ]; then
-            rm  ${17}
-        fi
-        
-        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM510 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${15},${16}
-        
-        
-        if  [ -e ${17} ]; then
-            exit 
-        fi
-        
-        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${15}${16}
+#   レセ電ファイル作成
 
+    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM500 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${14},${15}
+    if  [ -e ${16} ]; then
+        rm  ${16}
+    fi
         
+#   症状詳記作成
 
-#       漢字コード変換（ＥＵＣからシフトＪＩＳ）	
-        nkf -s /var/tmp/RECE300.dat > ${14}RECEIPTC.UKE
-
+    rennum=$(expr $rennum + 1) 
+    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM510 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${14},${15}
+        
+        
+    if  [ -e ${16} ]; then
         exit 
+    fi
+        
+    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${14}${15}
+
+        
+
+#   漢字コード変換（ＥＵＣからシフトＪＩＳ）	
+    nkf -s /var/tmp/RECE300.dat > ${13}RECEIPTC.UKE
+
+    exit 
