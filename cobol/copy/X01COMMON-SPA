@@ -56,6 +56,7 @@
       *£Ø£¹£¸²èÌÌ¤è¤ê
            05  SPA-X98-AREA.
                07  SPA-X98-SYORIKBN        PIC X(01).
+               07  SPA-X98-CHK-IDX         PIC 9(03).
                07  SPA-X98-CDSYUBETU       PIC X(01).
                07  SPA-X98-INPUTCD         PIC X(22).
                07  SPA-X98-NAIYOU          PIC X(07).
@@ -64,8 +65,9 @@
       *
                07  SPA-X98-GMN-ALL         PIC X(01).
       *
-               07  SPA-X98-SRYCD           PIC X(09).
-               07  SPA-X98-NAME            PIC X(60).
+               07  SPA-X98-SRYCD-G.
+                   09  SPA-X98-SRYCD       PIC X(09)
+                                           OCCURS  5.
       *
                07  SPA-X98-RC              PIC 9(04).
       *

@@ -34,6 +34,7 @@ X98	{
 					value2	varchar(70);
 					value3	varchar(6);
 					value4	varchar(10);
+					value5	varchar(2);
 				}	[200];
 				select	bool[200];
 			};

@@ -77,6 +77,9 @@
       *
            03  FLG-SYURYOU         PIC 9(01).
            03  FLG-MAX             PIC 9(01).
+           03  FLG-HENSYU          PIC 9(01).
+           03  FLG-TOUROKU         PIC 9(01).
+           03  FLG-GMN-INIT        PIC  9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -96,6 +99,7 @@
            03  IDY                 PIC 9(04).
       *
            03  IDX-1               PIC 9(01).
+           03  IDX-N               PIC 9(01).
       *
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
@@ -124,7 +128,7 @@
            03  WRK-MAP-INDEX       PIC 9(03).
            03  WRK-SELNO           PIC 9(04).
            03  WRK-GMN-SELNO       PIC 9(03).
-           03  WRK-NOZ             PIC ZZ9.
+           03  WRK-NOZ             PIC ZZZ.
            03  WRK-TENSUS-X.
                05  WRK-TENSUS      PIC ZZZZZZ9.99.
       *
@@ -145,6 +149,7 @@
       *
            03  WRK-HEN-NAME        PIC X(70).
            03  WRK-KENSA-HEN       PIC X(02).
+           03  WRK-X98-ROW         PIC S9(09).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
@@ -385,7 +390,6 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    DISPLAY "*** ORCSNPL    START  ***"
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  CNT-AREA
@@ -465,6 +469,8 @@
       *    画面編集処理
       *****************************************************************
        310-SPA-SET-SEC                 SECTION.
+      *
+           MOVE    1                   TO  FLG-GMN-INIT
       *
            INITIALIZE                  SPA-X98-GMN-TBL
            MOVE    ZERO                TO  SPA-X98-GMN-MAX
@@ -875,6 +881,11 @@
       *    薬剤・器材の時単位
            IF      TNS-SRYCD (1:1) =   "6"  OR  "7"
                 MOVE    TNS-TANINAME       TO  SPA-X98-GMN-TANI(IDX)
+           END-IF
+      *
+      *    診療コードの時、種別
+           IF      TNS-SRYCD (1:1)     =   "1"
+               MOVE    TNS-SRYKBN          TO  SPA-X98-GMN-TANI(IDX)
            END-IF
       *
       *----(01.00.01) LINE ADD START ----------------------------------
@@ -1328,6 +1339,11 @@
                MOVE    TNS-TANINAME        TO  SPA-X98-GMN-TANI(IDX)
            END-IF
       *
+      *    診療コードの時、種別
+           IF      TNS-SRYCD (1:1)     =   "1"
+               MOVE    TNS-SRYKBN          TO  SPA-X98-GMN-TANI(IDX)
+           END-IF
+      *
       *    診療行為で老人の時、再編集
       *****IF     (SPA-X98-GMN-SYORI   =   "8" )  AND
            IF     (TNS-ROUTEKKBN       =   2   )
@@ -1382,8 +1398,22 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+           IF     (FLG-GMN-INIT        =   1   )  OR
+                  (SPA-X98-GMN-MAX     =   ZERO )
+               MOVE    ZERO                TO  WRK-X98-ROW
+           ELSE
+               MOVE    X98-ROW             TO  WRK-X98-ROW
+           END-IF
+      *
            MOVE    SPACE               TO  X98
            INITIALIZE                      X98
+      *
+      *    コラムリストの位置指定
+           MOVE    ZERO                TO  X98-ROW
+           MOVE    ZERO                TO  X98-ROWATTR
+           IF      WRK-X98-ROW     NOT =   ZERO
+               MOVE    WRK-X98-ROW         TO  X98-ROW
+           END-IF
       *
            MOVE    SPA-X98-GMN-INPUT   TO  X98-INPUT
       *
@@ -1573,7 +1603,20 @@
                    MOVE    WRK-TENSUS          TO  X98-KISOTEN (IDX)
                END-IF
       *
-               MOVE    SPA-X98-GMN-TANI (IDX)  TO  X98-TANI (IDX)
+      *        MOVE    SPA-X98-GMN-TANI (IDX)  TO  X98-TANI (IDX)
+               IF      SPA-X98-GMN-SRYCD (IDX) (1:1)   =   "1"
+                   MOVE    SPA-X98-GMN-TANI (IDX)  TO  X98-SRYKBN(IDX)
+               ELSE
+                   MOVE    SPA-X98-GMN-TANI (IDX)  TO  X98-TANI (IDX)
+               END-IF
+      *        選択中
+               IF      (IDX                =   SPA-X98-NAI-SELNUM(1)) OR
+                       (IDX                =   SPA-X98-NAI-SELNUM(2)) OR
+                       (IDX                =   SPA-X98-NAI-SELNUM(3)) OR
+                       (IDX                =   SPA-X98-NAI-SELNUM(4)) OR
+                       (IDX                =   SPA-X98-NAI-SELNUM(5))
+                   MOVE    "*"                 TO  X98-NO  (IDX)(1:1)
+               END-IF
            END-PERFORM
       *
            MOVE    SPA-X98-GMN-MAX     TO  X98-COUNT
@@ -1733,7 +1776,7 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
-                   MOVE    SPACE               TO  SPA-X98-SRYCD
+                   MOVE    SPACE               TO  SPA-X98-SRYCD-G
                    PERFORM 210-BACK
       *        内服
                WHEN    "CLICKED"       ALSO    "B02"
@@ -1771,6 +1814,9 @@
       *        病名
                WHEN    "CLICKED"       ALSO    "B02S"
                    PERFORM 285-BYOMEI-SEC
+      *        確定
+               WHEN    "CLICKED"       ALSO    "B12"
+                   PERFORM 290-KAKUTEI-SEC
            END-EVALUATE
            .
       *
@@ -1791,10 +1837,12 @@
                WHEN    "ACTIVATE"      ALSO    "SELNUM3"
                WHEN    "ACTIVATE"      ALSO    "SELNUM4"
                WHEN    "ACTIVATE"      ALSO    "SELNUM5"
-                   MOVE    MCP-WIDGET(7:1)     TO  IDX-1
-                   PERFORM 41011-SELNUM-CHK-SEC
+                   MOVE    MCP-WIDGET(7:1)     TO  IDX-N
+                   MOVE    ZERO                TO  FLG-TOUROKU
+                   PERFORM 41011-SELNUM-ALLCHK-SEC
       *        行選択
                WHEN    ANY             ALSO    "LIST"
+                   MOVE    X98-ROW             TO  WRK-X98-ROW
                    PERFORM 41012-LISTSEL-SEC
       *        自院入力
                WHEN    "ACTIVATE"      ALSO    "JIIN"
@@ -1941,6 +1989,65 @@
            EXIT.
       *
       *****************************************************************
+      *    番号選択　処理（全体）
+      *****************************************************************
+       41011-SELNUM-ALLCHK-SEC                SECTION.
+      *
+      *
+           PERFORM VARYING     IDX-1   FROM   1   BY   1
+                   UNTIL      (IDX-1       >   5  )
+               PERFORM 410110-GMN-SPA-SEC
+           END-PERFORM
+      *
+           MOVE    ZERO                TO  FLG-HENSYU
+           PERFORM VARYING     IDX-1   FROM   1   BY   1
+                   UNTIL      (IDX-1       >   5  )  OR
+                              (FLG-HENSYU  =   1  )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               PERFORM 41011-SELNUM-CHK-SEC
+           END-PERFORM
+      *
+           .
+       41011-SELNUM-ALLCHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    番号選択ＳＰＡ処理
+      *****************************************************************
+       410110-GMN-SPA-SEC                SECTION.
+      *
+           MOVE    X98-SELNUM(IDX-1)   TO  SPA-X98-GMN-SELNUM (IDX-1)
+      *    ＊ 入力時、全対象とする
+           IF      X98-SELNUM(IDX-1)   =   "*  "  OR
+                                           " * "  OR
+                                           "  *" 
+               GO      TO      410110-GMN-SPA-EXT
+           END-IF
+           IF      SPA-X98-GMN-SELNUM (IDX-1)  =   SPACE
+               MOVE    ZERO                TO  SPA-X98-NAI-SELNUM(IDX-1)
+           ELSE
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    SPA-X98-GMN-SELNUM (IDX-1)
+                                           TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN         =   "1"   )   OR
+                      (SNUM-SYOKBN         =   "1"   )
+                   MOVE    "0001"          TO  SPA-ERRCD
+                   MOVE    IDX-1           TO  SPA-X98-GMN-CUR
+               ELSE
+                   MOVE    SNUM-OUTNUM     TO  SPA-X98-NAI-SELNUM(IDX-1)
+                   MOVE    SPA-X98-NAI-SELNUM(IDX-1)
+                                           TO  WRK-NOZ
+                   MOVE    WRK-NOZ         TO  SPA-X98-GMN-SELNUM(IDX-1)
+               END-IF
+           END-IF
+      *
+      *
+           .
+       410110-GMN-SPA-EXT.
+           EXIT.
+      *****************************************************************
       *    番号選択　処理
       *****************************************************************
        41011-SELNUM-CHK-SEC                SECTION.
@@ -1964,11 +2071,12 @@
       *    
                            INITIALIZE              SPA-X98-NAI-SELNUM-G
                            INITIALIZE              SPA-X98-GMN-SELNUM-G
-                           MOVE    SPACE           TO  SPA-X98-SRYCD
+                           MOVE    SPACE           TO  SPA-X98-SRYCD-G
       *                    ＳＰＡセット
                            MOVE    ZERO                TO  SPA-X98-NEXT
                            PERFORM                     310-SPA-SET-SEC
                        END-IF
+                       MOVE    1           TO  FLG-HENSYU
                        GO      TO      41011-SELNUM-CHK-EXT
                    END-IF
                ELSE
@@ -1978,20 +2086,6 @@
            END-IF
       *
            MOVE    X98-SELNUM(IDX-1)   TO  SPA-X98-GMN-SELNUM (IDX-1)
-      *    選択番号入力
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    X98-SELNUM(IDX-1)   TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF     (SNUM-RC         NOT =   ZERO  )   OR
-                  (SNUM-MINKBN         =   "1"   )   OR
-                  (SNUM-SYOKBN         =   "1"   )
-               MOVE    "0001"              TO  SPA-ERRCD
-               MOVE    IDX-1               TO  SPA-X98-GMN-CUR
-               GO      TO      41011-SELNUM-CHK-EXT
-           ELSE
-               MOVE    SNUM-OUTNUM     TO  SPA-X98-NAI-SELNUM(IDX-1)
-           END-IF
       *    １件のみとき、１とする
            IF     (SPA-X98-GMN-MAX     =   1  )  AND
                   (IDX-1               =   1  )  AND
@@ -2016,22 +2110,27 @@
                IF      SPA-X98-GMN-SYORI   =   "9"
                    IF      SPA-X98-GMN-SYORI2  =   SPACE
                        PERFORM 41013-KENSA-GRP-SEC
+                       MOVE    1           TO  FLG-HENSYU
                    ELSE
-      *****************PERFORM 41014-KENSA-SEL-SEC
-                       PERFORM 41012-SRYCD-SEL-SEC
+                       IF    ( SPA-X98-MOTOPG  =   "X02" )
+                           PERFORM 41014-KENSA-SEL-SEC
+                       ELSE
+                           PERFORM 41012-SRYCD-SEL-SEC
+                       END-IF
                    END-IF
                ELSE
-      *************PERFORM 41014-KENSA-SEL-SEC
-                   PERFORM 41012-SRYCD-SEL-SEC
-      *            診療行為の時１件以上入力可
-      *************IF      SPA-X98-GMN-SYORI   =   "8"
-      *                PERFORM 41014-KENSA-SEL-SEC
-      *            ELSE
-      *                PERFORM 41012-SRYCD-SEL-SEC
-      ************ END-IF
+                       IF    ( SPA-X98-MOTOPG  =   "X02" )
+                           PERFORM 41014-KENSA-SEL-SEC
+                       ELSE
+                           PERFORM 41012-SRYCD-SEL-SEC
+                       END-IF
                END-IF
            ELSE
-               PERFORM 41012-SRYCD-SEL-SEC
+                       IF    ( SPA-X98-MOTOPG  =   "X02" )
+                           PERFORM 41014-KENSA-SEL-SEC
+                       ELSE
+                           PERFORM 41012-SRYCD-SEL-SEC
+                       END-IF
            END-IF
            .
        41011-SELNUM-CHK-EXT.
@@ -2043,13 +2142,8 @@
        41012-SRYCD-SEL-SEC       SECTION.
       *
            MOVE    1                   TO  SPA-X98-GMN-CUR
-           IF     (SPA-X98-NAI-SELNUM(IDX-1)
-                                       NOT =   ZERO ) AND
-                  (IDX-1               NOT =   1    ) 
-               MOVE    "0003"          TO  SPA-ERRCD
-           ELSE
-               PERFORM 41011-SELNO-SEC
-           END-IF
+           PERFORM 41011-SELNO-SEC
+      *
       *
            IF      SPA-ERRCD           =   SPACE
       *         戻るへ
@@ -2104,7 +2198,7 @@
                MOVE    SPACE               TO  SPA-X98-TYPE
                INITIALIZE                      SPA-X98-GMN-SELNUM-G
                INITIALIZE                      SPA-X98-NAI-SELNUM-G
-               MOVE    SPACE               TO  SPA-X98-SRYCD
+               MOVE    SPACE               TO  SPA-X98-SRYCD-G
       *
       *        ＳＰＡセット
                MOVE    ZERO                TO  SPA-X98-NEXT
@@ -2121,9 +2215,9 @@
       *
            MOVE    ZERO                TO  FLG-SYURYOU
            IF      SPA-X98-NAI-SELNUM(IDX-1)   =   ZERO
-               IF     (IDX-1               =   5   )  OR
-                     ((IDX-1               <   5   )  AND
-                      (SPA-X98-NAI-SELNUM(IDX-1 + 1)  =   ZERO) )
+               IF     (IDX-1               =   5   )
+      *              ((IDX-1               <   5   )  AND
+      *               (SPA-X98-NAI-SELNUM(IDX-1 + 1)  =   ZERO) )
                    IF      IDX-1           >   1
                        MOVE    1               TO  FLG-SYURYOU
                    END-IF
@@ -2161,10 +2255,11 @@
            MOVE    ZERO                TO  IDX1
            MOVE    SPA-X98-NAI-SELNUM-G    TO  WRK-NAI-SELNUM-G
            MOVE    SPA-X98-GMN-SELNUM-G    TO  WRK-GMN-SELNUM-G
+           MOVE    SPA-X98-SRYCD-G         TO  WRK-X98-SRYCD-G
       *
            INITIALIZE                  SPA-X98-GMN-SELNUM-G
            INITIALIZE                  SPA-X98-NAI-SELNUM-G
-           INITIALIZE                  SPA-X98-SRYCD
+           INITIALIZE                  SPA-X98-SRYCD-G
       *****MOVE    SPACE               TO  SPA-X98-SRYKBN
       *
            PERFORM VARYING     IDX2    FROM    1   BY  1
@@ -2178,7 +2273,7 @@
                    MOVE    WRK-NAI-SELNUM (IDX2)
                                            TO  SPA-X98-NAI-SELNUM(IDX1)
                    MOVE    WRK-X98-SRYCD (IDX2)
-                                           TO  SPA-X98-SRYCD
+                                           TO  SPA-X98-SRYCD (IDX1)
       *
                    MOVE    IDX1            TO  IDX
       *
@@ -2220,9 +2315,11 @@
                    UNTIL       IDX2    >   5
                IF      SPA-X98-NAI-SELNUM(IDX2)    =   ZERO
                    MOVE    IDX2                TO  IDX-1
+                   MOVE    IDX-1               TO  IDX-N
                    MOVE    WRK-SELNO           TO  SPA-X98-NAI-SELNUM
                                                                 (IDX-1)
-                   MOVE    WRK-GMN-SELNO       TO  SPA-X98-GMN-SELNUM
+                   MOVE    WRK-GMN-SELNO       TO  WRK-NOZ
+                   MOVE    WRK-NOZ             TO  SPA-X98-GMN-SELNUM
                                                                 (IDX-1)
                    MOVE    5                   TO  IDX2
                END-IF
@@ -2232,22 +2329,36 @@
                GO      TO              41012-LISTSEL-EXT
            END-IF
       *
+      *
+      *
       *    検査チェック
            IF       SPA-X98-GMN-KBN    =   "2"
                IF      SPA-X98-GMN-SYORI   =   "9"
                    IF      SPA-X98-GMN-SYORI2  =   SPACE
                        PERFORM 41013-KENSA-GRP-SEC
                    ELSE
-      **************   PERFORM 41014-KENSA-SEL-SEC
-                       PERFORM 41012-SRYCD-SEL-SEC
+                       IF    ( SPA-X98-MOTOPG  =   "X02" )
+                           PERFORM 41014-KENSA-SEL-SEC
+                       ELSE
+                           PERFORM 41012-SRYCD-SEL-SEC
+                       END-IF
                    END-IF
                ELSE
-      *************PERFORM 41014-KENSA-SEL-SEC
-                   PERFORM 41012-SRYCD-SEL-SEC
+                       IF    ( SPA-X98-MOTOPG  =   "X02" )
+                           PERFORM 41014-KENSA-SEL-SEC
+                       ELSE
+                           PERFORM 41012-SRYCD-SEL-SEC
+                       END-IF
                END-IF
            ELSE
-               PERFORM 41012-SRYCD-SEL-SEC
+                       IF    ( SPA-X98-MOTOPG  =   "X02" )
+                           PERFORM 41014-KENSA-SEL-SEC
+                       ELSE
+                           PERFORM 41012-SRYCD-SEL-SEC
+                       END-IF
            END-IF
+      *
+      *
            .
        41012-LISTSEL-EXT.
            EXIT.
@@ -2268,7 +2379,7 @@
       *****PERFORM 410111-SEL-SYUKBN-CHK-SEC
       *
            MOVE    SPA-X98-GMN-SRYCD (IDX)
-                                       TO  SPA-X98-SRYCD
+                                       TO  SPA-X98-SRYCD  (IDX-1)
       *
            .
        41011-SELNO-EXT.
@@ -2316,7 +2427,7 @@
       *
            INITIALIZE                      SPA-X98-NAI-SELNUM-G
            INITIALIZE                      SPA-X98-GMN-SELNUM-G
-           MOVE    SPACE               TO  SPA-X98-SRYCD
+           MOVE    SPACE               TO  SPA-X98-SRYCD-G
            MOVE    SPACE               TO  SPA-X98-GMN-ALL
            MOVE    ZERO                TO  SPA-X98-NEXT
       *    ＳＰＡセット
@@ -2337,7 +2448,7 @@
       *
            INITIALIZE                      SPA-X98-NAI-SELNUM-G
            INITIALIZE                      SPA-X98-GMN-SELNUM-G
-           MOVE    SPACE               TO  SPA-X98-SRYCD
+           MOVE    SPACE               TO  SPA-X98-SRYCD-G
            MOVE    SPACE               TO  SPA-X98-GMN-ALL
       *    ＳＰＡセット
            MOVE    ZERO                TO  SPA-X98-NEXT
@@ -2358,7 +2469,7 @@
       *
            INITIALIZE                      SPA-X98-NAI-SELNUM-G
            INITIALIZE                      SPA-X98-GMN-SELNUM-G
-           MOVE    SPACE               TO  SPA-X98-SRYCD
+           MOVE    SPACE               TO  SPA-X98-SRYCD-G
            MOVE    SPACE               TO  SPA-X98-GMN-ALL
       *    ＳＰＡセット
            MOVE    ZERO                TO  SPA-X98-NEXT
@@ -2379,7 +2490,7 @@
       *
            INITIALIZE                      SPA-X98-NAI-SELNUM-G
            INITIALIZE                      SPA-X98-GMN-SELNUM-G
-           MOVE    SPACE               TO  SPA-X98-SRYCD
+           MOVE    SPACE               TO  SPA-X98-SRYCD-G
            MOVE    SPACE               TO  SPA-X98-GMN-ALL
       *    ＳＰＡセット
            MOVE    ZERO                TO  SPA-X98-NEXT
@@ -2400,7 +2511,7 @@
       *
            INITIALIZE                      SPA-X98-NAI-SELNUM-G
            INITIALIZE                      SPA-X98-GMN-SELNUM-G
-           MOVE    SPACE               TO  SPA-X98-SRYCD
+           MOVE    SPACE               TO  SPA-X98-SRYCD-G
            MOVE    SPACE               TO  SPA-X98-GMN-ALL
       *    ＳＰＡセット
            MOVE    ZERO                TO  SPA-X98-NEXT
@@ -2421,7 +2532,7 @@
       *
            INITIALIZE                      SPA-X98-NAI-SELNUM-G
            INITIALIZE                      SPA-X98-GMN-SELNUM-G
-           MOVE    SPACE               TO  SPA-X98-SRYCD
+           MOVE    SPACE               TO  SPA-X98-SRYCD-G
            MOVE    SPACE               TO  SPA-X98-GMN-ALL
       *    ＳＰＡセット
            MOVE    ZERO                TO  SPA-X98-NEXT
@@ -2469,7 +2580,7 @@
       *
            INITIALIZE                      SPA-X98-NAI-SELNUM-G
            INITIALIZE                      SPA-X98-GMN-SELNUM-G
-           MOVE    SPACE               TO  SPA-X98-SRYCD
+           MOVE    SPACE               TO  SPA-X98-SRYCD-G
            MOVE    SPACE               TO  SPA-X98-GMN-ALL
       *    ＳＰＡセット
            MOVE    ZERO                TO  SPA-X98-NEXT
@@ -2510,7 +2621,7 @@
       *
            INITIALIZE                      SPA-X98-NAI-SELNUM-G
            INITIALIZE                      SPA-X98-GMN-SELNUM-G
-           MOVE    SPACE               TO  SPA-X98-SRYCD
+           MOVE    SPACE               TO  SPA-X98-SRYCD-G
            MOVE    SPACE               TO  SPA-X98-GMN-ALL
       *    ＳＰＡセット
            MOVE    ZERO                TO  SPA-X98-NEXT
@@ -2536,7 +2647,7 @@
            MOVE    ZERO                TO  SPA-X98-GMN-MAX
            INITIALIZE                      SPA-X98-NAI-SELNUM-G
            INITIALIZE                      SPA-X98-GMN-SELNUM-G
-           MOVE    SPACE               TO  SPA-X98-SRYCD
+           MOVE    SPACE               TO  SPA-X98-SRYCD-G
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   24
@@ -2573,7 +2684,7 @@
       *
                    INITIALIZE                  SPA-X98-NAI-SELNUM-G
                    INITIALIZE                  SPA-X98-GMN-SELNUM-G
-                   MOVE    SPACE               TO  SPA-X98-SRYCD
+                   MOVE    SPACE               TO  SPA-X98-SRYCD-G
                    MOVE    ZERO                TO  SPA-X98-NEXT
       *            ＳＰＡセット
                    PERFORM                     310-SPA-SET-SEC
@@ -2748,6 +2859,25 @@
        210-BACK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    確定処理
+      *****************************************************************
+       290-KAKUTEI-SEC            SECTION.
+      *
+           MOVE    1                   TO  FLG-TOUROKU
+           MOVE    ZERO                TO  IDX-N
+      *
+           PERFORM 41011-SELNUM-ALLCHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      290-KAKUTEI-EXT
+           END-IF
+      *
+      *    戻るへ
+           PERFORM 210-BACK
+      *
+           .
+       290-KAKUTEI-EXT.
+           EXIT.
       *****************************************************************
       *    自画面編集処理
       *****************************************************************

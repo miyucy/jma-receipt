@@ -67,7 +67,7 @@
                05  SPA-GMN-PAGE        PIC 9(02).
                05  SPA-GMN-LINE        PIC 9(02).
                05  SPA-GMN-MAX         PIC 9(03).
-               05  SPA-GMN-CUR         PIC 9(02).
+               05  SPA-GMN-CUR         PIC 9(03).
       *
                05  SPA-GMN-AREA.
                    07  SPA-GMN-STYUKYMD    PIC X(09).
@@ -96,7 +96,8 @@
       *
       *
        01  CNT-AREA.
-           03  CNT-BYOMEI                      PIC 9(03).
+           03  CNT-BYOMEI                         PIC 9(03).
+           03  CNT-SRYCD                          PIC 9(03).
       *
       *    フラグエリア
        01  FLG-AREA.
@@ -118,12 +119,16 @@
            03  IDY                               PIC 9(03).
            03  IDZ                               PIC 9(03).
            03  IDZ1                              PIC 9(03).
+           03  IDX0                              PIC 9(05).
            03  IDX1                              PIC 9(03).
            03  IDX2                              PIC 9(02).
            03  IDX3                              PIC 9(02).
            03  IDX4                              PIC 9(03).
            03  IDX5                              PIC 9(03).
            03  IDX6                              PIC 9(03).
+           03  IDX7                              PIC 9(03).
+           03  IDX8                              PIC 9(03).
+           03  IDX-CHK                           PIC 9(03).
       *
       *    一時領域
        01  WRK-AREA.
@@ -161,6 +166,10 @@
                05  WRK-PAGE-DSP-ACTIVE PIC Z9.
                05  WRK-PAGE-DSP-LBL    PIC X(01).
                05  WRK-PAGE-DSP-MAX    PIC Z9.
+           03  WRK-STIDX               PIC 9(03).
+           03  WRK-EDIDX               PIC 9(03).
+           03  WRK-GMN-PAGE            PIC 9(03).
+           03  WRK-ERR-NAME            PIC X(100).
       *
        01  TBL-AREA.
            03  TBL-GMN-AREA.
@@ -527,60 +536,96 @@
       *****************************************************************
       *    診療行為コードセット処理
       *****************************************************************
-       320-X98SPASET-SEC          SECTION.
+       320-X98SPASET-SEC               SECTION.
       *
-           IF      SPA-X98-SRYCD   NOT =   SPACE
-               MOVE    1           TO  WRK-CURSOR
-               IF    ( SPA-X98-SYORIKBN    =   "1" )
       *
-                   COMPUTE WRK-CURSOR
-                       = ( SPA-GMN-PAGE -  1 )
-                       *   WRK-CONS-LINE-MAX
-                       +   SPA-GMN-CUR
+           MOVE    ZERO            TO  CNT-SRYCD
+           INITIALIZE                  TBL-AREA
+           INITIALIZE                  SPA-NAI-TBL
       *
-                   MOVE    SPA-X98-SRYCD
-                                   TO  SPA-GMN-TTEKCD  (WRK-CURSOR)
+           IF    ( SPA-X98-SRYCD (1)   =   SPACE )
+               GO  TO  320-X98SPASET-EXT
+           END-IF
       *
-                   PERFORM 4101-TEKCD-CHK-SEC
-                   IF    ( SPA-ERRCD   NOT =   SPACE )
-                       GO  TO  320-X98SPASET-EXT
+           IF    ( SPA-X98-SYORIKBN    =   "1" )
+               MOVE    SPA-X98-CHK-IDX TO  IDX7
+           ELSE
+               COMPUTE IDX7    =       SPA-GMN-MAX +   1
+           END-IF
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   5 )
+      *
+               IF    ( SPA-X98-SRYCD (IDX0)    NOT =   SPACE )
+                   IF    ( IDX7    <=  WRK-CONS-MAX )
+                       MOVE    SPA-X98-SRYCD (IDX0)
+                                       TO  TBL-GMN-TTEKCD (IDX7)
+                       COMPUTE IDX7    =   IDX7    +   1
+                       COMPUTE CNT-SRYCD   =   CNT-SRYCD   +   1
                    END-IF
-      *
-                   IF    ( SPA-GMN-CUR >=  WRK-CONS-LINE-MAX )
-                       MOVE    WRK-CONS-LINE-MAX
-                                           TO  SPA-GMN-CUR
-                   ELSE
-                       COMPUTE SPA-GMN-CUR =   SPA-GMN-CUR +   1
-                   END-IF
-      *
-               ELSE
-      *
-                   MOVE    ZERO        TO  SPA-GMN-CUR
-      *
-                   COMPUTE SPA-GMN-MAX =   SPA-GMN-MAX +   1
-                   IF    ( SPA-GMN-MAX >   WRK-CONS-MAX )
-                       MOVE    WRK-CONS-MAX
-                                       TO  SPA-GMN-MAX
-                   END-IF
-                   MOVE    SPA-X98-SRYCD
-                                   TO  SPA-GMN-TTEKCD  (SPA-GMN-MAX)
-      *
-                   COMPUTE SPA-GMN-PAGE
-                       = ( SPA-GMN-MAX -   1 )
-                       /   WRK-CONS-LINE-MAX   +   1
-      *
-                   PERFORM 4101-TEKCD-CHK-SEC
-                   IF    ( SPA-ERRCD   NOT =   SPACE )
-                       GO  TO  320-X98SPASET-EXT
-                   END-IF
-      *
                END-IF
       *
+           END-PERFORM
+      *
+           MOVE    ZERO            TO  IDX0
+                                       SPA-GMN-MAX
+      *
+           PERFORM VARYING IDX7    FROM    1   BY  1
+                   UNTIL ( IDX7    >   WRK-CONS-MAX )
+      *
+               IF    ( TBL-GMN-TTEKCD (IDX7)   =   SPACE )
+      *
+                   COMPUTE IDX0    =   IDX0    +   1
+      *
+                   IF    ( SPA-X98-SYORIKBN    =   "1" )
+                    AND  ( SPA-X98-CHK-IDX     =   IDX0 )
+                       COMPUTE IDX0    =   IDX0    +   1
+                   END-IF
+      *
+                   IF    ( IDX0    <=  WRK-CONS-MAX )
+                       IF    ( SPA-GMN-TTEKCD (IDX0)
+                                                   NOT =   SPACE )
+                           MOVE    SPA-GMN-TBLO (IDX0)
+                                   TO  TBL-GMN-TBLO (IDX7)
+                       END-IF
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    TBL-GMN-AREA        TO  SPA-GMN-TBL
+      *
+           PERFORM 4101-TEKCD-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  320-X98SPASET-EXT
            END-IF
+      *
+           IF    ( SPA-X98-SYORIKBN    =   "1" )
+               COMPUTE WRK-CURSOR  =   SPA-X98-CHK-IDX +   CNT-SRYCD
+           ELSE
+               COMPUTE WRK-CURSOR  =   SPA-GMN-MAX +   1
+           END-IF
+      *
+           COMPUTE WRK-GMN-PAGE
+               = ( WRK-CURSOR      -   1 )
+               /   WRK-CONS-LINE-MAX   +   1
+      *
+           COMPUTE SPA-GMN-CUR
+               =   WRK-CURSOR
+               - ( SPA-GMN-PAGE    -   1 )
+               *   WRK-CONS-LINE-MAX
+      *
+           IF    ( WRK-GMN-PAGE    >   SPA-GMN-PAGE )
+               IF    ( SPA-GMN-PAGE    =   WRK-CONS-PAGE )
+                   MOVE    212             TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    207             TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
            .
        320-X98SPASET-EXT.
            EXIT.
-      *
       *****************************************************************
       *    確認画面（ＣＩＤ１）ＯＫ処理
       *****************************************************************
@@ -806,7 +851,8 @@
       *
                    MOVE    SPACE       TO  WRK-INPUTCD
                    MOVE    ZERO        TO  WRK-MOJI
-                   PERFORM  409-KENSAKU-SEC
+                   MOVE    IDX         TO  IDX-CHK
+                   PERFORM 409-KENSAKU-SEC
                ELSE
       *            変更のあった時チェック
                    IF      SPA-GMN-TTEKCD(IDX) NOT =
@@ -822,12 +868,46 @@
                END-IF
            END-PERFORM
       *
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4101-TEKCD-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+      *
+      *        同一コードチェック
+               PERFORM 41014-JYUFUKU-CHK-SEC
            END-IF
       *
-      *    同一コードチェック
-           PERFORM 41014-JYUFUKU-CHK-SEC
+      *
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+      *
+               COMPUTE IDY     =   SPA-GMN-PAGE    *   WRK-CONS-LINE-MAX
+               COMPUTE IDZ     =   IDY             -   19
+      *
+               PERFORM VARYING IDZ1    FROM   1   BY  1
+                       UNTIL ( IDZ1    >   SPA-GMN-MAX )
+      *
+      *            エラー位置
+                   IF    ( SPA-NAI-ERR (IDZ1) =   "1" )
+                       EVALUATE    TRUE
+                       WHEN  ( IDZ1        <   IDZ )
+      *
+                           MOVE    206     TO  SPA-GMN-CUR
+      *
+                       WHEN  ( IDZ1        >   IDY )
+      *
+                           MOVE    207         TO  SPA-GMN-CUR
+                           MOVE    SPA-GMN-MAX TO  IDZ1
+      *
+                       WHEN    OTHER
+      *
+                           COMPUTE SPA-GMN-CUR
+                               =   IDZ1    -   IDZ +   1
+                           MOVE    SPA-GMN-MAX TO  IDZ1
+      *
+                       END-EVALUATE
+      *
+                   END-IF
+      *
+               END-PERFORM
+           END-IF
+      *
       *
            .
        4101-TEKCD-CHK-EXT.
@@ -920,6 +1000,7 @@
                    COMPUTE SPA-GMN-CUR         =   IDX
                                                -  ((SPA-GMN-PAGE  -  1)
                                                *  WRK-CONS-LINE-MAX )
+                   MOVE    IDX         TO  IDX-CHK
                    PERFORM 409-KENSAKU-SEC
                    GO  TO  41012-BYOMEI-CHK-EXT
                END-IF
@@ -1002,7 +1083,7 @@
       *
       *    セットコードでの入力はエラーとする。
            IF  ( SPA-GMN-TTEKCD (IDX)(1:1) =   "P"  OR  "S" )
-               MOVE    "0011"          TO  SPA-ERRCD
+               MOVE    "0012"          TO  SPA-ERRCD
                MOVE    "1"             TO  SPA-NAI-ERR (IDX)
                GO  TO  41013-TENSU-CHK-EXT
            END-IF
@@ -1062,6 +1143,7 @@
                                                -  ((SPA-GMN-PAGE  -  1)
                                                *   WRK-CONS-LINE-MAX )
                    MOVE    WRK-SRYCD       TO  WRK-INPUTCD
+                   MOVE    IDX             TO  IDX-CHK
                    PERFORM 409-KENSAKU-SEC
                    GO  TO  41013-TENSU-CHK-EXT
                END-IF
@@ -1188,6 +1270,8 @@
                    ELSE
                        IF      SPA-GMN-TTEKCD (IDX)    =
                                                    SPA-GMN-TTEKCD (IDY)
+                           MOVE    SPA-GMN-TNAME (IDX)
+                                                   TO  WRK-ERR-NAME
                            MOVE    "0005"          TO  SPA-ERRCD
                            MOVE    "1"             TO  SPA-NAI-ERR (IDX)
                            MOVE    "1"             TO  SPA-NAI-ERR (IDY)
@@ -1205,10 +1289,13 @@
        430-MAEGMN-SEC             SECTION.
       *
       *    入力チェック処理
-           PERFORM 410-INPUT-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      430-MAEGMN-EXT
-           END-IF
+      *    PERFORM 410-INPUT-CHK-SEC
+      *    IF      SPA-ERRCD       NOT =   SPACE
+      *        GO      TO      430-MAEGMN-EXT
+      *    END-IF
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
       *
            IF      SPA-GMN-PAGE       =   1
                MOVE    "0006"             TO  SPA-ERRCD
@@ -1226,23 +1313,46 @@
        440-ATOGMN-SEC             SECTION.
       *
       *    入力チェック処理
-           PERFORM 410-INPUT-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      440-ATOGMN-EXT
-           END-IF
+      *    PERFORM 410-INPUT-CHK-SEC
+      *    IF      SPA-ERRCD       NOT =   SPACE
+      *        GO      TO      440-ATOGMN-EXT
+      *    END-IF
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
       *
            IF      SPA-GMN-PAGE       =   WRK-CONS-PAGE
-               MOVE    "0007"             TO  SPA-ERRCD
+               MOVE    "0007"          TO  SPA-ERRCD
                GO  TO  440-ATOGMN-EXT
            ELSE
                COMPUTE IDX     =   SPA-GMN-PAGE   *   WRK-CONS-LINE-MAX
                IF      SPA-GMN-TTEKCD (IDX)   =   SPACE
-                   MOVE    "0007"             TO  SPA-ERRCD
+                   MOVE    "0007"      TO  SPA-ERRCD
                    GO  TO  440-ATOGMN-EXT
                END-IF
            END-IF
+      *
            COMPUTE SPA-GMN-PAGE   =   SPA-GMN-PAGE    +   1
-           MOVE    1                  TO  SPA-GMN-CUR
+      *
+           COMPUTE IDX
+               = ( SPA-GMN-PAGE    -   1 )
+               *   WRK-CONS-LINE-MAX
+               +   1
+      *
+           PERFORM VARYING IDX8    FROM    1   BY  1
+                   UNTIL ( IDX8           >    WRK-CONS-LINE-MAX )
+                    OR   ( SPA-GMN-TTEKCD (IDX)    =   SPACE )
+      *
+               COMPUTE IDX =   IDX +   1
+      *
+           END-PERFORM
+      *
+           IF    ( IDX8           >    WRK-CONS-LINE-MAX )
+               MOVE    1               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    IDX8            TO  SPA-GMN-CUR
+           END-IF
+      *
            .
        440-ATOGMN-EXT.
            EXIT.
@@ -1378,6 +1488,8 @@
       *    共通ＳＰＡ編集
            INITIALIZE                  SPA-X98-AREA
            MOVE    "2"                 TO  SPA-X98-TYPE
+      *
+           MOVE    IDX-CHK             TO  SPA-X98-CHK-IDX
       *
            INITIALIZE                  SPA-X98GMN-AREA
       *
@@ -1663,15 +1775,13 @@
                MOVE    IDZ1                      TO  X02-NO (IDX)
                MOVE    SPA-GMN-TTEKCD  (IDZ1)    TO  X02-TEKCD (IDX)
                MOVE    SPA-GMN-TNAME   (IDZ1)    TO  X02-DSPNAME  (IDX)
+      *
                IF      SPA-GMN-TTEKCD  (IDZ1)  NOT =   SPACE
                    MOVE    IDX                 TO  WRK-MAX
                END-IF
       *
-      *        エラー位置
-               IF      SPA-NAI-ERR (IDZ1)  =   "1"
-                   MOVE    IDX                 TO  SPA-GMN-CUR
-               END-IF
            END-PERFORM
+      *
            MOVE    SPA-GMN-CHKKBN-G    TO  X02-CHKKBN
            MOVE    SPA-GMN-SRYCD       TO  X02-SRYCD
            MOVE    SPA-GMN-NAME        TO  X02-NAME
@@ -1724,7 +1834,14 @@
                    MOVE    IDX2                    TO  SPA-GMN-CUR
                    ADD     1                       TO  SPA-GMN-CUR
                    IF      SPA-GMN-CUR             >   WRK-CONS-LINE-MAX
-                       MOVE    99                  TO  SPA-GMN-CUR
+                       COMPUTE IDX
+                           =   SPA-GMN-PAGE   *   WRK-CONS-LINE-MAX
+                       IF  ( SPA-GMN-TTEKCD (IDX)  =   SPACE )
+                           MOVE    WRK-CONS-LINE-MAX
+                                                   TO  SPA-GMN-CUR
+                       ELSE
+                           MOVE    207             TO  SPA-GMN-CUR
+                       END-IF
                    END-IF
                ELSE
                    IF  WRK-MAX     NOT =   WRK-CONS-LINE-MAX
@@ -1777,7 +1894,11 @@
                     MOVE  "TEKCD19"    TO  MCP-WIDGET
                 WHEN   20
                     MOVE  "TEKCD20"    TO  MCP-WIDGET
-                 WHEN   99
+                 WHEN   206
+                    MOVE  "B06"        TO  MCP-WIDGET
+                 WHEN   207
+                    MOVE  "B07"        TO  MCP-WIDGET
+                 WHEN   212
                     MOVE  "B12"        TO  MCP-WIDGET
            END-EVALUATE
       *
@@ -1803,8 +1924,20 @@
                    MOVE    "適用コードに入力がありません"
                                                       TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "適用コードが重複しています"
-                                                      TO  SPA-ERRMSG
+      *
+                   IF    ( WRK-ERR-NAME    NOT =   SPACE )
+                       MOVE    SPACE       TO  SPA-ERRMSG
+                       STRING  "適用コードが重複しています【"
+                                                   DELIMITED BY SIZE
+                               WRK-ERR-NAME        DELIMITED BY SPACE
+                               "】"                DELIMITED BY SIZE
+                       INTO    SPA-ERRMSG
+                       END-STRING
+                   ELSE
+                       MOVE    "適用コードが重複しています"
+                                           TO  SPA-ERRMSG
+                   END-IF
+      *
                WHEN    "0006"
                    MOVE    "前頁はありません"         TO  SPA-ERRMSG
                WHEN    "0007"
@@ -1818,7 +1951,7 @@
                WHEN    "0011"
                    MOVE    "適用コードの登録上限数に到達しています" 
                                                       TO  SPA-ERRMSG
-               WHEN    "0011"
+               WHEN    "0012"
                    MOVE    "セットコードは入力できません"
                                                       TO  SPA-ERRMSG
                WHEN    "1001"

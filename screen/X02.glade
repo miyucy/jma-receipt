@@ -887,7 +887,6 @@
       <y>155</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -915,7 +914,6 @@
       <y>175</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -943,7 +941,6 @@
       <y>195</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -971,7 +968,6 @@
       <y>215</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -999,7 +995,6 @@
       <y>235</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1027,7 +1022,6 @@
       <y>255</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1055,7 +1049,6 @@
       <y>275</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1083,7 +1076,6 @@
       <y>295</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1111,7 +1103,6 @@
       <y>315</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1139,7 +1130,6 @@
       <y>335</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1167,7 +1157,6 @@
       <y>355</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1195,7 +1184,6 @@
       <y>375</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1223,7 +1211,6 @@
       <y>395</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1251,7 +1238,6 @@
       <y>415</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1279,7 +1265,6 @@
       <y>435</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1307,7 +1292,6 @@
       <y>455</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1335,7 +1319,6 @@
       <y>475</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1363,7 +1346,6 @@
       <y>495</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1391,7 +1373,6 @@
       <y>515</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1419,7 +1400,6 @@
       <y>535</y>
       <width>573</width>
       <height>20</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>

@@ -353,9 +353,9 @@
        320-X98SPASET-SEC          SECTION.
       *
       *
-           IF      SPA-X98-SRYCD   NOT =   SPACE    
+           IF      SPA-X98-SRYCD (1)   NOT =   SPACE    
       ******** MOVE    SPA-X98-SRYCD       TO  X01-SRYCD
-               MOVE    SPA-X98-SRYCD       TO  SPA-GMN-SRYCD
+               MOVE    SPA-X98-SRYCD (1)   TO  SPA-GMN-SRYCD
                PERFORM 4104-SRYCD-CHK-SEC
            END-IF  
            .
