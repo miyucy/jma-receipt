@@ -5622,7 +5622,7 @@
            IF    ( FLG-DBRC    NOT =   ZERO )
       *        入院歴を再編集
                PERFORM 4101-NYUREKI-EDIT-SEC
-               MOVE    "2005"      TO  SPA-ERRCD
+               MOVE    "4001"      TO  SPA-ERRCD
                GO  TO  4801-PTNYUINRRK-UPD-EXT
            END-IF
       *
@@ -6456,7 +6456,7 @@
                IF    ( WRK-UPDKBN  =   "INS" )
       *            入院歴を再編集
                    PERFORM 4101-NYUREKI-EDIT-SEC
-                   MOVE    "2001"  TO  SPA-ERRCD
+                   MOVE    "4002"  TO  SPA-ERRCD
                    GO  TO  4801-PTNYUINRRK-EDIT-MAE-EXT
                ELSE
       *
@@ -6475,7 +6475,7 @@
                IF    ( WRK-UPDKBN  =   "UPD" OR "DEL")
       *            入院歴を再編集
                    PERFORM 4101-NYUREKI-EDIT-SEC
-                   MOVE    "2002"  TO  SPA-ERRCD
+                   MOVE    "4003"  TO  SPA-ERRCD
                    GO  TO  4801-PTNYUINRRK-EDIT-MAE-EXT
                END-IF
            END-IF
@@ -6548,7 +6548,7 @@
                                        =   PTNYUINRRK-RRKEDANUM )
                        CONTINUE
                    ELSE
-                       MOVE    "2004"  TO  SPA-ERRCD
+                       MOVE    "4004"  TO  SPA-ERRCD
                        GO  TO  4801-TAIINYMD-UPD-EXT
                    END-IF
                ELSE
@@ -6563,7 +6563,7 @@
                    MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                    PERFORM 900-TBL-UPDATE-SEC
                    IF    ( FLG-DBRC    NOT =   ZERO )
-                       MOVE    "2004"  TO  SPA-ERRCD
+                       MOVE    "4005"  TO  SPA-ERRCD
                        GO  TO  4801-TAIINYMD-UPD-EXT
                    END-IF
                END-IF
@@ -6577,7 +6577,7 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( WRK-TAIINUPDCNT     =   ZERO )
-               MOVE    "2004"  TO  SPA-ERRCD
+               MOVE    "4006"  TO  SPA-ERRCD
                GO  TO  4801-TAIINYMD-UPD-EXT
            END-IF
       *
@@ -6623,7 +6623,7 @@
                    MOVE    "SYUNOU-KEY"    TO  WRK-DBPATH
                    PERFORM 900-TBL-UPDATE-SEC
                    IF    ( FLG-DBRC    NOT =   ZERO )
-                       MOVE    "2010"      TO  SPA-ERRCD
+                       MOVE    "4007"      TO  SPA-ERRCD
                        GO  TO  4801-SYUNOU-UPD-EXT
                    END-IF
                END-IF
@@ -6752,7 +6752,7 @@
            MOVE    "SYUMEI-KEY"        TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC            =   ZERO )
-               MOVE    "2010"          TO  SPA-ERRCD
+               MOVE    "4008"          TO  SPA-ERRCD
                GO  TO  4801-SYUMEI-SAKUSEI-EXT
            END-IF
       *
@@ -6764,7 +6764,7 @@
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            PERFORM 900-TBL-INSERT-SEC
            IF    ( FLG-DBRC        NOT =   ZERO )
-               MOVE    "2010"          TO  SPA-ERRCD
+               MOVE    "4009"          TO  SPA-ERRCD
                GO  TO  4801-SYUMEI-SAKUSEI-EXT
            END-IF
       *
@@ -6819,7 +6819,7 @@
            MOVE    "PTTEIKIRRK-DEL2"   TO  WRK-DBPATH
            PERFORM 900-TBL-DELETE-SEC
            IF    ( FLG-DBRC        NOT =   ZERO )
-               MOVE    "2011"          TO  SPA-ERRCD
+               MOVE    "4010"          TO  SPA-ERRCD
                GO  TO  4801-PTTEIKIRRK-DEL-EXT
            END-IF
       *
@@ -6907,7 +6907,7 @@
                    MOVE    "TEIKIRRK-KEY"  TO  WRK-DBPATH
                    PERFORM 900-TBL-UPDATE-SEC
                    IF  (   FLG-DBRC    NOT =   ZERO )
-                       MOVE    "2011"      TO  SPA-ERRCD
+                       MOVE    "4011"      TO  SPA-ERRCD
                        GO  TO  4801-TEIKIRRK-UPD-EXT
                    END-IF
                ELSE
@@ -6916,7 +6916,7 @@
                    MOVE    "TEIKIRRK-KEY"  TO  WRK-DBPATH
                    PERFORM 900-TBL-INSERT-SEC
                    IF  (   FLG-DBRC    NOT =   ZERO )
-                       MOVE    "2011"      TO  SPA-ERRCD
+                       MOVE    "4012"      TO  SPA-ERRCD
                        GO  TO  4801-TEIKIRRK-UPD-EXT
                    END-IF
                END-IF
@@ -6989,7 +6989,7 @@
       *    入院履歴マスタ検索
            PERFORM 4802-PTNYUINRRK-SEL-SEC
            IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
-               MOVE    "2013"  TO  SPA-ERRCD
+               MOVE    "4013"  TO  SPA-ERRCD
                GO  TO  4801-IDO-MAE-UPD-EXT
            END-IF
       *
@@ -7004,7 +7004,7 @@
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            PERFORM 900-TBL-UPDATE-SEC
            IF    ( FLG-DBRC    NOT =   ZERO )
-               MOVE    "2013"  TO  SPA-ERRCD
+               MOVE    "4014"  TO  SPA-ERRCD
                GO  TO  4801-IDO-MAE-UPD-EXT
            END-IF
       *
@@ -7019,7 +7019,7 @@
       *    入院履歴マスタ検索
            PERFORM 4801-PTNYUINRRK-SEL-SEC
            IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
-               MOVE    "2003"  TO  SPA-ERRCD
+               MOVE    "4015"  TO  SPA-ERRCD
                GO  TO  4801-TENSYUTU-MOTO-UPD-EXT
            END-IF
       *
@@ -7035,7 +7035,7 @@
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            PERFORM 900-TBL-UPDATE-SEC
            IF    ( FLG-DBRC    NOT =   ZERO )
-               MOVE    "2004"  TO  SPA-ERRCD
+               MOVE    "4016"  TO  SPA-ERRCD
                GO  TO  4801-TENSYUTU-MOTO-UPD-EXT
            END-IF
       *
@@ -7227,11 +7227,11 @@
                    PERFORM   4801-RJNCD-CHG-SEC
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
-                       MOVE    "2006"      TO  SPA-ERRCD
+                       MOVE    "4017"      TO  SPA-ERRCD
                        GO  TO  4801-NYUKAIKEI-EDIT-EXT
                    END-IF
                ELSE
-                   MOVE    "2006"      TO  SPA-ERRCD
+                   MOVE    "4018"      TO  SPA-ERRCD
                    GO  TO  4801-NYUKAIKEI-EDIT-EXT
                END-IF
            END-IF
@@ -7752,11 +7752,11 @@
                    PERFORM   4801-RJNCD-CHG-SEC
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
-                       MOVE    "2006"      TO  SPA-ERRCD
+                       MOVE    "4019"      TO  SPA-ERRCD
                        GO  TO  4801-TAIINKAIKEI-CANCEL-EXT
                    END-IF
                ELSE
-                   MOVE    "2006"      TO  SPA-ERRCD
+                   MOVE    "4020"      TO  SPA-ERRCD
                    GO  TO  4801-TAIINKAIKEI-CANCEL-EXT
                END-IF
            END-IF
@@ -7882,11 +7882,11 @@
                    PERFORM   4801-RJNCD-CHG-SEC
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
-                       MOVE    "2006"      TO  SPA-ERRCD
+                       MOVE    "4021"      TO  SPA-ERRCD
                        GO  TO  4801-TENROOM-EDIT-EXT
                    END-IF
                ELSE
-                   MOVE    "2006"      TO  SPA-ERRCD
+                   MOVE    "4022"      TO  SPA-ERRCD
                    GO  TO  4801-TENROOM-EDIT-EXT
                END-IF
            END-IF
@@ -8076,11 +8076,11 @@
                    PERFORM   4801-RJNCD-CHG-SEC
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
-                       MOVE    "2006"      TO  SPA-ERRCD
+                       MOVE    "4023"      TO  SPA-ERRCD
                        GO  TO  4801-IDOKAIKEI-CANCEL-EXT
                    END-IF
                ELSE
-                   MOVE    "2006"      TO  SPA-ERRCD
+                   MOVE    "4024"      TO  SPA-ERRCD
                    GO  TO  4801-IDOKAIKEI-CANCEL-EXT
                END-IF
            END-IF
@@ -8219,7 +8219,7 @@
                                    TO  STUSAN-KJNYMD
            CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
            IF    ( STUSAN-RC       NOT =   ZERO )
-               MOVE    "2003"      TO  SPA-ERRCD
+               MOVE    "4025"      TO  SPA-ERRCD
                GO  TO  4801-TSUSAN-SANTEI-GET-EXT
            END-IF
       *
@@ -8789,7 +8789,7 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF    ( FLG-PTINF           NOT =   ZERO )
-               MOVE    "2007"          TO  SPA-ERRCD
+               MOVE    "4026"          TO  SPA-ERRCD
                GO  TO  4801-PTINF-UPD-EXT
            END-IF
       *
@@ -8809,7 +8809,7 @@
            MOVE    "PTINF-KEY"         TO  WRK-DBPATH
            PERFORM 900-TBL-UPDATE-SEC
            IF     ( FLG-DBRC       NOT =  ZERO )
-               MOVE    "2007"          TO  SPA-ERRCD
+               MOVE    "4027"          TO  SPA-ERRCD
                GO  TO  4801-PTINF-UPD-EXT
            END-IF
       *
@@ -9395,6 +9395,7 @@
            MOVE   WRK-MCP-PUTTYPE      TO  MCP-PUTTYPE
            MOVE   SPA-SAKIPG           TO  MCP-WINDOW
       *
+           DISPLAY "SPA-I0-SYUNOU-TBL = "  SPA-I0-SYUNOU-TBL
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
@@ -10140,22 +10141,10 @@
            WHEN    "2012"
                MOVE    "退院計算に必要な会計情報が作成されていません"
                                        TO  SPA-ERRMSG
-           WHEN    "2001"
-               MOVE    "登録処理に失敗しました"
-                                       TO  SPA-ERRMSG
            WHEN    "2008"
                MOVE    "負担金計算処理に失敗しました"
                                        TO  SPA-ERRMSG
-           WHEN    "2002"
-           WHEN    "2003"
-           WHEN    "2004"
-           WHEN    "2005"
-           WHEN    "2006"
-           WHEN    "2007"
-           WHEN    "2009"
-           WHEN    "2010"
-           WHEN    "2011"
-           WHEN    "2013"
+           WHEN    "4001"  THRU    "4999"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
            WHEN    "9999"
