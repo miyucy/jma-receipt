@@ -77,6 +77,7 @@
            03  IDW                 PIC 9(04).
            03  IDX1                PIC 9(04). 
            03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
            03  IDXX                PIC 9(04).
       *
       *    一時領域
@@ -109,6 +110,9 @@
            03  WRK-CIDMSG          PIC X(80).
       *
        01  WRK-TBL-MAX             PIC 9(03)   VALUE   100.
+      *
+      *    未コード化傷病名コード
+       01  WRK-CONS-BYOMEICD       PIC X(07)   VALUE   "0000999". 
       *
       *    患者病名マスタ−（ワーク）
        01  WRK-BYOMEI-AREA.
@@ -314,8 +318,8 @@
                    OR      SPA-C01-TBYOMEICD(IDX)  =   SPACE
                MOVE    SPA-C01-TBYOMEICD(IDX)
                                        TO  SPA-GMN-C04-INPUTCD(IDX)
-               MOVE    SPA-C01-TBYOMEI  (IDX)
-                                       TO  SPA-NAI-C04-BYOMEI (IDX)
+      *********MOVE    SPA-C01-TBYOMEI  (IDX)
+      *********                        TO  SPA-NAI-C04-BYOMEI (IDX)
       *
                INITIALIZE                  USERBYOMEI-REC
                MOVE    SPA-HOSPID          TO  USBYO-HOSPID
@@ -323,6 +327,8 @@
                                            TO  USBYO-BYOMEIINPUTCD
                PERFORM 900-USBYO-INV-SEC                            
                IF      FLG-USERBYOMEI      =   ZERO
+                   MOVE    USBYO-BYOMEI        TO
+                                            SPA-NAI-C04-BYOMEI   (IDX)
                    MOVE    USBYO-BYOMEISBT     TO
                                            SPA-NAI-C04-BYOMEISBT (IDX)
                    PERFORM VARYING IDY FROM    1   BY  1
@@ -330,6 +336,21 @@
                            OR      USBYO-BYOMEICD (IDY)    =   SPACE
                        MOVE    USBYO-BYOMEICD (IDY)    TO
                                        SPA-NAI-C04-BYOMEICD-O (IDX IDY)
+                       IF      SPA-NAI-C04-BYOMEICD-O (IDX IDY)
+                                       =   WRK-CONS-BYOMEICD
+                           MOVE    SPA-NAI-C04-BYOMEI   (IDX)
+                                           TO
+                                       SPA-NAI-C04-BYOMEI-O (IDX IDY)
+                       ELSE                           
+                           MOVE    SPA-NAI-C04-BYOMEICD-O (IDX IDY)
+                                           TO   BYO-BYOMEICD
+                           PERFORM 900-BYOMEI-READ-SEC
+                           IF      FLG-BYOMEI        =   ZERO
+                               MOVE    BYO-BYOMEI
+                                           TO
+                                   SPA-NAI-C04-BYOMEI-O    (IDX IDY)
+                           END-IF 
+                       END-IF    
                    END-PERFORM   
                END-IF
            END-PERFORM
@@ -606,6 +627,8 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
+                   MOVE    SPACE           TO  SPA-C01KYOUTU 
+                   MOVE    SPA-C01KYOUTU   TO  SPA-WORK
                    PERFORM 210-BACK
       *    全分類検索
                WHEN    "CLICKED"       ALSO    "B04"
@@ -794,6 +817,21 @@
                            OR      USBYO-BYOMEICD (IDY)    =   SPACE
                        MOVE    USBYO-BYOMEICD (IDY)    TO
                                        SPA-NAI-C04-BYOMEICD-O (IDZ IDY)
+                       IF      SPA-NAI-C04-BYOMEICD-O (IDZ IDY)
+                                       =   WRK-CONS-BYOMEICD
+                           MOVE    SPA-NAI-C04-BYOMEI   (IDZ)
+                                           TO
+                                       SPA-NAI-C04-BYOMEI-O (IDZ IDY)
+                       ELSE                           
+                           MOVE    SPA-NAI-C04-BYOMEICD-O (IDZ IDY)
+                                           TO   BYO-BYOMEICD
+                           PERFORM 900-BYOMEI-READ-SEC
+                           IF      FLG-BYOMEI        =   ZERO
+                               MOVE    BYO-BYOMEI
+                                           TO
+                                   SPA-NAI-C04-BYOMEI-O    (IDZ IDY)
+                           END-IF 
+                       END-IF    
                    END-PERFORM   
       *            廃止年月日・移行先がある病名のチェック
                    IF      USBYO-BYOMEIHENFLG      =   SPACE        
@@ -1532,7 +1570,7 @@
                    MOVE    "入力された自院病名の病名はマスタ"
                                        TO  WRK-CIDMSG
                    MOVE    "ー上で移行病名の扱いとなっています。"
-                                       TO  WRK-CIDMSG (41:)
+                                       TO  WRK-CIDMSG (33:)
            END-EVALUATE
       *
            MOVE    SPACE               TO  CID2

@@ -1581,7 +1581,7 @@
                                            TO  USBYO-BYOMEIINPUTCD
                PERFORM 410112-USERBYOMEI-HENSYU-SEC
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       21
+                       UNTIL   IDX >       6
                    IF      SPA-C01-TBYOMEICD (IDZ)
                                        =   SPA-GMN-C04-INPUTCD (IDX)
                        PERFORM VARYING IDX3    FROM    1   BY  1
@@ -1597,7 +1597,7 @@
                        END-PERFORM 
                        MOVE    SPA-NAI-C04-BYOMEI  (IDX)
                                        TO  SPA-NAI-C02-BYOMEI (IDZ)
-                       MOVE    21      TO  IDX
+                       MOVE    6       TO  IDX
                    END-IF   
                END-PERFORM
            END-PERFORM
@@ -6403,8 +6403,8 @@
                    ADD     1               TO  IDY              
                    MOVE    SPA-GMN-C02-BYOMEICD (IDX)
                                            TO  SPA-C01-TBYOMEICD (IDY)
-                   MOVE    SPA-NAI-C02-BYOMEI   (IDX)
-                                           TO  SPA-C01-TBYOMEI   (IDY)
+      *************MOVE    SPA-NAI-C02-BYOMEI   (IDX)
+      *************                        TO  SPA-C01-TBYOMEI   (IDY)
                END-IF                              
            END-PERFORM
       *
