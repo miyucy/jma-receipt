@@ -829,12 +829,12 @@
       *    既に同じ特記事項コードが編集済みのときはセットしない
            PERFORM VARYING TOKKI-IDX  FROM    1   BY  1
                    UNTIL ( TOKKI-IDX       >   5     )
-               IF      RECE02-TOKKI(IDX)   =   SPACE
+               IF      RECE02-TOKKI (TOKKI-IDX)   =   SPACE
                    MOVE    WRK-TOKKI       TO  RECE02-TOKKI (TOKKI-IDX)
                    MOVE    5               TO  TOKKI-IDX
                ELSE
-                   IF      WRK-TOKKI     =   RECE02-TOKKI(IDX)
-                       MOVE    5                 TO  TOKKI-IDX
+                   IF      WRK-TOKKI       =   RECE02-TOKKI (TOKKI-IDX)
+                       MOVE    5               TO  TOKKI-IDX
                    END-IF 
                END-IF
            END-PERFORM

@@ -744,11 +744,11 @@
       *    既に同じ特記事項コードが編集済みのときはセットしない
            PERFORM VARYING TOKKI-IDX  FROM    1   BY  1
                    UNTIL ( TOKKI-IDX       >   5     )
-               IF      RECE62-TOKKI(IDX)   =   SPACE
+               IF      RECE62-TOKKI(TOKKI-IDX)   =   SPACE
                    MOVE    WRK-TOKKI       TO  RECE62-TOKKI (TOKKI-IDX)
                    MOVE    5               TO  TOKKI-IDX
                ELSE
-                   IF      WRK-TOKKI     =   RECE62-TOKKI(IDX)
+                   IF      WRK-TOKKI     =   RECE62-TOKKI   (TOKKI-IDX)
                        MOVE    5                 TO  TOKKI-IDX
                    END-IF 
                END-IF
