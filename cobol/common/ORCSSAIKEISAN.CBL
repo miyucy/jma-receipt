@@ -1024,11 +1024,14 @@
                     (  ACCT-MEISAISU     =    1              ))         
                  CONTINUE                                               
               ELSE                                                      
-                 MOVE  ACCT-SYUTEN1  TO  TBL-SYUTEN(IDX1)               
+      *          MOVE  ACCT-SYUTEN1  TO  TBL-SYUTEN(IDX1)               
+                 COMPUTE  TBL-SYUTEN(IDX1)  =  ACCT-SYUTEN1
+                                            *  TBL-ZAIKAISU(IDX1)
                  IF  (LNK-SYU-SYUHKNNUM(IDY)  =   "973")
                  AND (ACCT-SRYKBN             =   "70" )
-                     COMPUTE  TBL-SYUTEN(IDX1) =  TBL-SYUTEN(IDX1)
-                                               -  ACCT-SYUTEN2
+                     COMPUTE  TBL-SYUTEN(IDX1) =
+                              TBL-SYUTEN(IDX1) -
+                             (ACCT-SYUTEN2 * TBL-ZAIKAISU(IDX1))
                  END-IF
               END-IF
               ADD     1              TO  IDX1
