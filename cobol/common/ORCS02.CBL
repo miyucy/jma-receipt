@@ -4871,6 +4871,9 @@
       ***          AND (WK-NYUJGNGAK         NOT  =  ZERO          )
       ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
       ***          END-IF
+                   IF  (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
+                       MOVE    "3"              TO   WK-NYUSKJRYYKBN
+                   END-IF
                    IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "051"         )
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
@@ -4893,6 +4896,9 @@
       ***          AND (WK-NYUJGNGAK         NOT  =  ZERO          )
       ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
       ***          END-IF
+                   IF  (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
+                       MOVE    "3"              TO   WK-NYUSKJRYYKBN
+                   END-IF
                    IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "051"         )
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
@@ -4915,6 +4921,9 @@
       ***          AND (WK-NYUJGNGAK         NOT  =  ZERO          )
       ***              MOVE    "2"              TO   WK-NYUSKJRYYKBN
       ***          END-IF
+                   IF  (COMB-KOHHKNNUM(KOH-IDX)   =  "012"         )
+                       MOVE    "3"              TO   WK-NYUSKJRYYKBN
+                   END-IF
                    IF  (LNK-SYU-SRYYMD(1:6)      >=  "200310"      )
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "051"         )
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
