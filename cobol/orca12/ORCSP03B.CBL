@@ -36,6 +36,7 @@
       * 01.00.07     NACL-多々納  03/08/07  公費負担者番号チェック修正
       * 01.00.08     NACL-多々納  03/09/02  公費自動切替え追加
       * 01.00.09     NACL-多々納  03/12/16  ”５１”チェックに”７０１”追加
+      * 01.00.10     NACL-多々納  05/01/13  有効開始日の初期設定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -60,6 +61,7 @@
            03  FLG-HKNJAINF        PIC 9(01).
       *
            03  FLG-CHK             PIC 9(01).
+           03  FLG-CHK-ERR         PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-OK2             PIC 9(01).
            03  FLG-KAKUTEI         PIC 9(01).
@@ -972,10 +974,45 @@
       *    適応開始入力　処理
       *****************************************************************
        1001-KTEKSTYMD-CHK-SEC           SECTION.
-      *
+     *
            IF      SPA-GMN-KTEKSTYMD(IDX-K)    =   SPACE
-               GO      TO      1001-KTEKSTYMD-CHK-EXT
+               MOVE    ZERO            TO  FLG-CHK-ERR
+               EVALUATE    IDX-K
+                   WHEN    1
+                       IF      SPA-MCP-WIDGET  =   "P02_KTEKSTYMD1"
+                                               OR  "P02_KTEKEDYMD1"
+                           MOVE    1           TO  FLG-CHK-ERR
+                       END-IF
+                   WHEN    2
+                       IF      SPA-MCP-WIDGET  =   "P02_KTEKSTYMD2"
+                                               OR  "P02_KTEKEDYMD2"
+                           MOVE    1           TO  FLG-CHK-ERR
+                       END-IF
+                   WHEN    3
+                       IF      SPA-MCP-WIDGET  =   "P02_KTEKSTYMD3"
+                                               OR  "P02_KTEKEDYMD3"
+                           MOVE    1           TO  FLG-CHK-ERR
+                       END-IF
+               END-EVALUATE
+               IF     (FLG-CHK-ERR         =   1        )  AND
+                      (SPA-GMN-KOHNUM(IDX-K)   NOT =   SPACE)
+                   CONTINUE
+               ELSE
+                   IF     (SPA-HKNKOH-FLG      =   1    )  AND
+                          (SPA-GMN-KOHNUM(IDX-K)   NOT =   SPACE)
+                       CONTINUE
+                   ELSE
+                       GO      TO      1001-KTEKSTYMD-CHK-EXT
+                   END-IF
+               END-IF
+      *        システム日付を設定
+               MOVE    SPA-SYSYMD          TO  SPA-NAI-KTEKSTYMD(IDX-K)
+               MOVE    SPA-SYSYMDWH        TO  SPA-GMN-KTEKSTYMD(IDX-K)
            END-IF
+      *
+      *!   IF      SPA-GMN-KTEKSTYMD(IDX-K)    =   SPACE
+      *!       GO      TO      1001-KTEKSTYMD-CHK-EXT
+      *!   END-IF
       *
       *    日付画面チェックサブ
            INITIALIZE                      ORCSGDAYAREA

@@ -1290,10 +1290,29 @@
       ****************************************************************
        1001-HTEKSTYMD-CHK-SEC       SECTION.
       *
+      *    システム日付設定
            IF      SPA-GMN-HTEKSTYMD   =   SPACE
-               MOVE    SPACE               TO  SPA-NAI-HTEKSTYMD
-               GO      TO      1001-HTEKSTYMD-CHK-EXT
-           ELSE
+               IF    ((SPA-MCP-WIDGET      =   "P02_HTEKSTYMD") OR
+                      (SPA-MCP-WIDGET      =   "P02_HTEKEDYMD"))  AND
+                     ( SPA-GMN-HKNNUM  NOT =   SPACE    )
+                   CONTINUE
+               ELSE
+                   IF     (SPA-HKNKOH-FLG      =   1    )  AND
+                          (SPA-GMN-HKNNUM  NOT =   SPACE)
+                       CONTINUE
+                   ELSE
+                       GO      TO      1001-HTEKSTYMD-CHK-EXT
+                   END-IF
+               END-IF
+      *        システム日付を設定
+               MOVE    SPA-SYSYMD          TO  SPA-NAI-HTEKSTYMD
+               MOVE    SPA-SYSYMDWH        TO  SPA-GMN-HTEKSTYMD
+           END-IF
+      *
+      *!   IF      SPA-GMN-HTEKSTYMD   =   SPACE
+      *        MOVE    SPACE               TO  SPA-NAI-HTEKSTYMD
+      *        GO      TO      1001-HTEKSTYMD-CHK-EXT
+      *!   ELSE
                INITIALIZE                      ORCSGDAYAREA
                MOVE    SPA-GMN-HTEKSTYMD   TO  SGDAY-INDAY
                CALL    "ORCSGDAY"          USING
@@ -1305,7 +1324,7 @@
                    MOVE    "0051"              TO  SPA-ERRCD
                    MOVE    16                  TO  SPA-GMN-CUR
                END-IF
-           END-IF
+      *!   END-IF
       *    有効開始入力時に老人補助区分の再編集
            IF      (SPA-NAI-HTEKSTYMD  >=  "20021001" )  AND
                    (SPA-BYMD-70        >   ZERO       )   AND
