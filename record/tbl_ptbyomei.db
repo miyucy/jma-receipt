@@ -486,3 +486,18 @@ path	key24	{
 		;
 	};
 };
+
+path	key25	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key25_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYYMD      <=  :SRYYMD
+			AND  (TENKIKBN    =   :TENKIKBN  OR
+                              TENKIYMD    >=  :SRYYMD)
+			ORDER BY SRYKA,SRYYMD,RENNUM 
+		;
+	};
+};

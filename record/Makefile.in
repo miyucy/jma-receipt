@@ -290,6 +290,10 @@ RECORD_files = \
 	SID2.rec \
 	J026.rec \
 	O04.rec \
+	KHELP.rec \
+	N41.rec \
+	N41ERR.rec \
+	N41ID1.rec \
 
 
 DEF_files = \
@@ -438,6 +442,7 @@ DB_files = \
 	tbl_toukeimemo.db \
 	tbl_btpara.db \
 	tbl_order.db \
+	tbl_help.db \
 
 all:   
 
