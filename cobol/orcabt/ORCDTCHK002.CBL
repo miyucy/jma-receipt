@@ -1355,7 +1355,7 @@
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0        >   THKNCOMBI-MAX )
                     OR   ( IDX0        >   CONST-THKNCOMBI-MAX )
-                    OR   ( COMB-HKNCOMBINUM
+                    OR   ( ACCT-HKNCOMBI
                                        =   THKNCOMBI-HKNCOMBI (IDX0) )
       *
                CONTINUE
@@ -1370,7 +1370,7 @@
                    MOVE    CONST-THKNCOMBI-MAX
                                        TO  THKNCOMBI-MAX
                ELSE
-                   MOVE    COMB-HKNCOMBINUM
+                   MOVE    ACCT-HKNCOMBI
                                        TO  THKNCOMBI-HKNCOMBI
                                                        (THKNCOMBI-MAX)
                    MOVE    "99999999"  TO  THKNCOMBI-STYMD
@@ -4289,6 +4289,13 @@
            END-IF
       *
            IF    ( FLG-CHKEND (12)     =   ZERO )
+      *
+      *        実日数退避ワーク日数カウント
+               PERFORM 200112-TJNISSU-DAY-CNT-SEC
+      *
+      *        算定回数退避ワーク日数カウント
+               PERFORM 200112-TKAISU-DAY-CNT-SEC
+      *
       *        実日数退避ワークチェック
                PERFORM 200112-TJNISSU-CHK-SEC
            END-IF
@@ -4308,6 +4315,54 @@
       *
            .
        200111-JNISSU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    実日数退避ワーク日数カウント処理
+      *****************************************************************
+       200112-TJNISSU-DAY-CNT-SEC      SECTION.
+      *
+           PERFORM VARYING IDX13   FROM    1   BY  1
+                   UNTIL ( IDX13   >   TJNISSU-MAX )
+      *
+               MOVE    ZERO        TO  TJNISSU-DAY-CNT (IDX13)
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   31 )
+                   IF    ( TJNISSU-DAY (IDX13 IDX0)    =   1 )
+                       COMPUTE TJNISSU-DAY-CNT (IDX13)
+                           =   TJNISSU-DAY-CNT (IDX13) +   1
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+           .
+       200112-TJNISSU-DAY-CNT-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定回数退避ワーク日数カウント処理
+      *****************************************************************
+       200112-TKAISU-DAY-CNT-SEC       SECTION.
+      *
+           PERFORM VARYING IDX12   FROM    1   BY  1
+                   UNTIL ( IDX12   >   TKAISU-MAX )
+      *
+               PERFORM VARYING IDX14   FROM    1   BY  1
+                       UNTIL ( IDX14   >   TKAISU-SRYCD-MAX (IDX12))
+      *
+                   MOVE    ZERO    TO  TKAISU-SRYCD-CNT (IDX12 IDX14)
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   31 )
+      *
+                       IF    ( TKAISU-SRYCD-DAY (IDX12 IDX14 IDX0 )
+                                       =   1 )
+                           COMPUTE TKAISU-SRYCD-CNT (IDX12 IDX14)
+                               =   TKAISU-SRYCD-CNT (IDX12 IDX14)  +   1
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
+           END-PERFORM
+      *
+           .
+       200112-TKAISU-DAY-CNT-EXT.
            EXIT.
       *****************************************************************
       *    実日数退避ワークチェック
@@ -4333,18 +4388,23 @@
       *
                END-PERFORM
       *
-      *        実日数算定元の剤が存在しない場合はエラー
+      *        実日数算定元の剤が存在しない場合で、
+      *        診療行為の算定回数が設定されている場合はエラーとする
                IF    ( FLG-JNISSU-HIT  =   ZERO )
                    PERFORM VARYING IDX19   FROM    1   BY  1
                            UNTIL ( IDX19   >   TKAISU-SRYCD-MAX (IDX12))
                             OR   ( FLG-CHKEND (12) =   1 )
       *
-                       MOVE    TKAISU-HKNNUM (IDX12)
+                       IF    ( TKAISU-SRYCD-CNT (IDX12 IDX19)
+                                               >   ZERO )
+      *
+                           MOVE    TKAISU-HKNNUM (IDX12)
                                            TO  WRK-HKNNUM
-                       MOVE    TKAISU-SRYCD (IDX12 IDX19)
+                           MOVE    TKAISU-SRYCD (IDX12 IDX19)
                                            TO  WRK-TKAISU-SRYCD
       *
-                       PERFORM 200112-JNISSU-ERRMES-HEN-SEC
+                           PERFORM 200112-JNISSU-ERRMES-HEN-SEC
+                       END-IF
       *
                    END-PERFORM
                END-IF
@@ -4359,31 +4419,9 @@
       *****************************************************************
        200112-TJNISSU-DAY-CHK-SEC      SECTION.
       *
-           MOVE    ZERO        TO  TJNISSU-DAY-CNT (IDX13)
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   31 )
-               IF    ( TJNISSU-DAY (IDX13 IDX0)    =   1 )
-                   COMPUTE TJNISSU-DAY-CNT (IDX13)
-                       =   TJNISSU-DAY-CNT (IDX13) +   1
-               END-IF
-           END-PERFORM
-      *
            PERFORM VARYING IDX14   FROM    1   BY  1
                    UNTIL ( IDX14   >   TKAISU-SRYCD-MAX (IDX12))
                     OR   ( FLG-CHKEND (12) =   1 )
-      *
-               MOVE    ZERO        TO  TKAISU-SRYCD-CNT (IDX12 IDX14)
-      *
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   31 )
-      *
-                   IF    ( TKAISU-SRYCD-DAY (IDX12 IDX14 IDX0 )
-                                       =   1 )
-                       COMPUTE TKAISU-SRYCD-CNT (IDX12 IDX14)
-                           =   TKAISU-SRYCD-CNT (IDX12 IDX14)  +   1
-                   END-IF
-      *
-               END-PERFORM
       *
                IF    ( TJNISSU-DAY-CNT (IDX13)
                                    <   TKAISU-SRYCD-CNT (IDX12 IDX14))
@@ -5108,9 +5146,9 @@
       *    ステップ途中処理
            MOVE    "STM"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
-           STRING  "処理患者数："      DELIMITED BY SIZE
+           STRING  "チェック済患者数："    DELIMITED BY SIZE
                    WRK-KNS-N           DELIMITED BY SPACE
-                   "件　"              DELIMITED BY SIZE
+                   "人　"              DELIMITED BY SIZE
                    WRK-TIME-N          DELIMITED BY SPACE
            INTO    JOB-YOBI
            END-STRING
