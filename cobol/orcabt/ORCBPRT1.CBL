@@ -33,6 +33,7 @@
       *  01.01.01    NACL-藤原    02/10/10  印刷用コンスタント領域の追加
       *                                     印刷用ファイルにサイト区分を追加
       *  01.01.02    NACL-藤原    03/01/20  プレビューＤＢ処理追加
+      *  01.01.03    NACL-小豆沢  04/05/28  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -940,18 +941,11 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC.
-           .
        100-DBOPEN-EXT.
            EXIT.
       *
@@ -966,11 +960,5 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-           .
        900-DBCLOSE-EXT.
            EXIT.
