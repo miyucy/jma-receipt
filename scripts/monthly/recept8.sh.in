@@ -49,6 +49,18 @@ fi
         if  [ -e $4 ]; then
             exit 
         else 
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0425 -parameter $1$5$6
+        fi
+
+        if  [ -e $4 ]; then
+            exit 
+        else 
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0428 -parameter $1$5$6
+        fi
+
+        if  [ -e $4 ]; then
+            exit 
+        else 
 	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0430 -parameter $1$5$6
         fi
 
