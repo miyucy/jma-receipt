@@ -225,9 +225,6 @@
                        MOVE    SMCNDATE-HMS        TO  RECEUPD-UPHMS
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                END-EVALUATE    
-      *???
-           DISPLAY "RECEUPD-REC=" MCP-FUNC "#" RECEUPD-REC "#" 
-      *???
       *
                MOVE    RECEUPD-REC         TO  MCPDATA-REC
                MOVE    PATH-TBL-RECEUPD-KEY
@@ -235,11 +232,8 @@
                CALL    "MCPSUB"            USING
                                                MCPAREA
                                                MCPDATA-REC
-      *???
-           DISPLAY "RECEUPD MCP-RC=" MCP-RC "#"
-      *???
                IF      MCP-RC          NOT =   ZERO
-                   MOVE    2                   TO  LNK-UPD-RC
+                   MOVE    "2"                 TO  LNK-UPD-RC
                ELSE
                    MOVE    WRK-DBPATH          TO  MCP-PATH
                    PERFORM 900-JYURRK-READ-N-SEC
