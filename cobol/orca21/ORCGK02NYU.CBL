@@ -3994,6 +3994,9 @@
       *****PERFORM 410112-KOUI-SPACHK-SEC
       *
            IF      FLG-INPUT-NASI      =   1
+      *        空白行をなくす
+               PERFORM 420-SYOKYO-SEC
+      *        カーソル位置
                PERFORM 410119-SAIINPUT-SEC
            ELSE
       *        入力コード・名称チェック処理

@@ -38,6 +38,7 @@
       *  01.00.07    NACL−多々納 02/08/20  検査グループ変更
       *  01.00.08    NACL−多々納 02/11/05  一括入力へ変更
       *  01.00.09    NACL−多々納 02/12/11  期限外の空白表示修正
+      *  01.00.10    NACL−多々納 03/04/29  ５明細入力追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -644,6 +645,11 @@
                 MOVE    TNS-TANINAME       TO  SPA-K98-GMN-TANI(IDX)
            END-IF
       *
+      *    診療コードの時、種別
+           IF      TNS-SRYCD (1:1)     =   "1"
+               MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
+           END-IF
+      *
       *----(01.00.01) LINE ADD START ----------------------------------
       *    診療行為で老人の時、再編集
            IF     (TNS-SRYCD(1:1)      =   "1") AND
@@ -1086,6 +1092,11 @@
       *     薬剤・器材の時単位
            IF      TNS-SRYCD (1:1)     =   "6"  OR  "7"
                MOVE    TNS-TANINAME        TO  SPA-K98-GMN-TANI(IDX)
+           END-IF
+      *
+      *    診療コードの時、種別
+           IF      TNS-SRYCD (1:1)     =   "1"
+               MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
            END-IF
       *
       *    診療行為で老人の時、再編集
@@ -1714,8 +1725,8 @@
                    PERFORM 41014-KENSA-SEL-SEC
                END-IF
            ELSE
-      *DDDDDDD PERFORM 41014-KENSA-SEL-SEC
-               PERFORM 41012-SRYCD-SEL-SEC
+               PERFORM 41014-KENSA-SEL-SEC
+      *!!!!!!! PERFORM 41012-SRYCD-SEL-SEC
       *        診療行為の時１件以上入力可
       *********IF      SPA-K98-GMN-SYORI   =   "8"
       *            PERFORM 41014-KENSA-SEL-SEC
@@ -1932,8 +1943,8 @@
                    PERFORM 41014-KENSA-SEL-SEC
                END-IF
            ELSE
-      *********PERFORM 41014-KENSA-SEL-SEC
-               PERFORM 41012-SRYCD-SEL-SEC
+               PERFORM 41014-KENSA-SEL-SEC
+      *!!!     PERFORM 41012-SRYCD-SEL-SEC
            END-IF
            .
        41012-LISTSEL-EXT.
