@@ -1,0 +1,111 @@
+W18	{
+	fi1	{
+		YUKOSTYMD	{
+			value	varchar(9);
+		};
+		YUKOEDYMD	{
+			value	varchar(9);
+		};
+		B02	{
+			state	int;
+		};
+		note3	{
+			pageno	int;
+			fi23	{
+				KBNCD_COMBO	{
+					KBNCD	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
+				HOSPNAME1	{
+					value	varchar(80);
+				};
+				HOSPNAME2	{
+					value	varchar(80);
+				};
+				HOSPNAME3	{
+					value	varchar(80);
+				};
+				POST	{
+					value	varchar(7);
+				};
+				ADRS1	{
+					value	varchar(76);
+				};
+				ADRS2	{
+					value	varchar(76);
+				};
+				ADRS3	{
+					value	varchar(76);
+				};
+				TEL	{
+					value	varchar(15);
+				};
+				FAX	{
+					value	varchar(15);
+				};
+			};
+			fi24	{
+				PRTKBN1_COMBO	{
+					PRTKBN1	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
+				PRTKBN2_COMBO	{
+					PRTKBN2	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
+				PRTKBN3_COMBO	{
+					PRTKBN3	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
+				PRTKBN4_COMBO	{
+					PRTKBN4	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
+				PRTKBN5_COMBO	{
+					PRTKBN5	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
+				PRTKBN6_COMBO	{
+					PRTKBN6	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
+			};
+		};
+		HHOSPNAME	{
+			value	varchar(60);
+		};
+		HADRS	{
+			value	varchar(100);
+		};
+		HPOST	{
+			value	varchar(7);
+		};
+		HTEL	{
+			value	varchar(15);
+		};
+		HFAX	{
+			value	varchar(15);
+		};
+	};
+};
