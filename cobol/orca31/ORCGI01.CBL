@@ -100,6 +100,7 @@
       *  01.00.49    NACL-¾®Æ¦Âô  04.03.15  ¹­ÈÏ°ÏÇ®½ýÆÃÄê½¸Ãæ¼£ÎÅ¼¼´ÉÍýÎÁ¤Î
       *                                     »»ÄêÂÐ±þºÆÄÉ²Ã
       *  01.00.50    NACL-¾®Æ¦Âô  04.03.15  °¡µÞÀ­´üÆþ±¡°åÎÅ´ÉÍýÎÁ¤Î»»ÄêÂÐ±þÄÉ²Ã
+      *  01.00.51    NACL-¾®Æ¦Âô  04.03.16  £±£µºÐÌ¤Ëþ¤Î´µ¼Ô¤ÏÁªÄêÆþ±¡ÂÐ¾Ý³°
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -301,6 +302,10 @@
            03  WRK-NYUINNISSU                  PIC 9(05).
            03  WRK-SANTEISTYMD                 PIC X(08).
            03  WRK-SENTEI-STYMD                PIC X(08).
+           03  WRK-BIRTHDAY-15                 PIC X(08).
+           03  WRK-BIRTHDAY-15R   REDEFINES    WRK-BIRTHDAY-15.
+               05  WRK-BIRTHDAY-15Y            PIC 9(04).
+               05  WRK-BIRTHDAY-15MD           PIC 9(04).
            03  WRK-REKI-ZIIN-TBL.
                05  WRK-REKI-ZIIN-CNT           PIC 9(05).
                05  WRK-REKI-ZIIN-OCC           OCCURS  50.
@@ -10327,6 +10332,12 @@
                MOVE    "099999916"   TO  LNK-SCNYUACCT-SENTEI-SRYCD
                MOVE    WRK-SENTEI-STYMD
                                      TO  LNK-SCNYUACCT-SENTEI-STYMD
+           END-IF
+      *    £±£µºÍÌ¤Ëþ¤Î´µ¼Ô¤ÏÁªÄêÆþ±¡ÂÐ¾Ý³°
+           MOVE     PTINF-BIRTHDAY   TO  WRK-BIRTHDAY-15
+           ADD      15               TO  WRK-BIRTHDAY-15Y
+           IF       WRK-SENTEI-STYMD <=  WRK-BIRTHDAY-15
+               MOVE   WRK-BIRTHDAY-15  TO  LNK-SCNYUACCT-SENTEI-STYMD
            END-IF
       *
       *
