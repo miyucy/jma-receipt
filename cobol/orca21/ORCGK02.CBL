@@ -7418,36 +7418,6 @@
                    MOVE    ZERO                TO  IDX-Z
                    MOVE    ZERO                TO  WRK-KAISU
                END-IF
-      *        エラーコードを保存する
-               IF      SPA-ERRCD       NOT =   SPACE
-                   IF      SPA-ERRCD(1:1)      =   "K"
-      *                既にエラーがある時、フラグをクリアする
-                       IF     (WRK-ERR-ERRCD   NOT =   SPACE )  OR
-                              (WRK-KEI-ERRCD   NOT =   SPACE )  OR
-                              (WRK-KIDCD       NOT =   SPACE )
-                           MOVE    SPACE           TO  WRK-COM-KZMFLG
-                                                    (LNK-ORCSC-KEI-IDX)
-                       END-IF
-                       MOVE    SPA-ERRCD       TO  WRK-KEI-ERRCD
-                       MOVE    SPA-ERRMSG2     TO  WRK-KEI-ERRMSG2
-                   ELSE
-                       IF      WRK-ERR-ERRCD       =   SPACE
-                           MOVE    SPA-ERRCD       TO  WRK-ERR-ERRCD
-                           MOVE    SPA-ERRMSG2     TO  WRK-ERR-ERRMSG2
-                       END-IF
-                   END-IF
-                   MOVE    SPACE           TO  SPA-ERRCD
-               END-IF
-      *
-      *        既にエラーがある時、フラグをクリアする
-               IF    ( SPA-KIDCD       NOT =   SPACE )  AND
-                     ((WRK-ERR-ERRCD   NOT =   SPACE )  OR
-                      (WRK-KEI-ERRCD   NOT =   SPACE )  OR
-                      (WRK-KIDCD       NOT =   SPACE ))
-                   MOVE    SPACE           TO  WRK-COM-KZMFLG
-                                                    (LNK-ORCSC-KEI-IDX)
-               END-IF
-               MOVE    SPA-KIDCD           TO  WRK-KIDCD
            END-PERFORM
       *
       *    エラーの再セットを行う
@@ -7786,6 +7756,38 @@
            MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
       *
            MOVE    LNK-ORCSC-ERRMSG    TO  SPA-ERRMSG2
+      *
+      *        エラーコードを保存する
+           IF      SPA-ERRCD       NOT =   SPACE
+               IF      SPA-ERRCD(1:1)      =   "K"
+      *            既にエラーがある時、フラグをクリアする
+                   IF     (WRK-ERR-ERRCD   NOT =   SPACE )  OR
+                          (WRK-KEI-ERRCD   NOT =   SPACE )  OR
+                          (WRK-KIDCD       NOT =   SPACE )
+                       MOVE    SPACE           TO  WRK-COM-KZMFLG
+                                                   (LNK-ORCSC-KEI-IDX)
+                   ELSE
+                       MOVE    SPA-ERRCD       TO  WRK-KEI-ERRCD
+                       MOVE    SPA-ERRMSG2     TO  WRK-KEI-ERRMSG2
+                   END-IF
+               ELSE
+                   IF      WRK-ERR-ERRCD       =   SPACE
+                       MOVE    SPA-ERRCD       TO  WRK-ERR-ERRCD
+                       MOVE    SPA-ERRMSG2     TO  WRK-ERR-ERRMSG2
+                   END-IF
+               END-IF
+               MOVE    SPACE           TO  SPA-ERRCD
+           END-IF
+      *
+      *        既にエラーがある時、フラグをクリアする
+           IF    ( SPA-KIDCD       NOT =   SPACE )  AND
+                 ((WRK-ERR-ERRCD   NOT =   SPACE )  OR
+                  (WRK-KEI-ERRCD   NOT =   SPACE )  OR
+                  (WRK-KIDCD       NOT =   SPACE ))
+               MOVE    SPACE           TO  WRK-COM-KZMFLG
+                                                    (LNK-ORCSC-KEI-IDX)
+           END-IF
+           MOVE    SPA-KIDCD           TO  WRK-KIDCD
       *
       *    編集後内容セット
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
