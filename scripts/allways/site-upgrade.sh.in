@@ -36,9 +36,17 @@ for d in scripts/daily  scripts/kaisei scripts/monthly  \
 done
 echo "done"
 
+# copy lddef file
+echo -n "Copying lddef files..."
+mkdir -p "${SITEDIR}/lddef"
+for f in `ls ${SITESRCDIR}/lddef`; do 
+    $CPP -I"${LDDEFDIR}" -x c "${SITESRCDIR}/lddef/${f}" > "${SITEDIR}/lddef/${f}"
+done
+echo "done"
+
 # copy data files
 echo -n "Copying data files..."
-for d in data doc form init lddef record screen ; do
+for d in data doc form init record screen ; do
   if test -d "${SITESRCDIR}/${d}"; then
     mkdir -p "${SITEDIR}/${d}"
     chown orca.orca "${SITEDIR}/${d}"
