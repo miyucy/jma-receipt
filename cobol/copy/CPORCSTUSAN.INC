@@ -31,7 +31,7 @@
            03  STUSAN-KJNYMD               PIC X(08).
       *    特定入院料コード（設定は任意）
            03  STUSAN-TOKUTEI-SRYCD        PIC X(09)
-                                           OCCURS  5.
+                                           OCCURS 10.
       *
       *  出力領域
       *    通算日数

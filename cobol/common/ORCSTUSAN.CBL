@@ -33,6 +33,8 @@
       *  01.00.03    NACL-太田    03.03.12  日付５を追加
       *  01.00.04    NACL-太田    03.06.04  基準日当日の通算日数対象
       *                                     チェック追加
+      *  01.00.05    NACL-太田    03.09.10  入力パラメータ特定入院料コード
+      *                                     の最大数を１０に変更
       *****************************************************************
       *
        ENVIRONMENT                         DIVISION.
@@ -92,6 +94,9 @@
            03  WRK-DAY-X                   PIC X(02).
            03  WRK-DAY-R   REDEFINES   WRK-DAY-X.
                05  WRK-DAY-9               PIC 9(02).
+      *
+       01  CONST-AREA.
+           03  CONST-TOKUTEI-SRYCD-MAX     PIC 9(03)   VALUE 10.
       *
       *    患者入院履歴ワーク
        01  WKPTNYUINRRK-REC.
@@ -173,7 +178,7 @@
            DISPLAY "STUSAN-PTID    = "  STUSAN-PTID
            DISPLAY "STUSAN-KJNYMD  = "  STUSAN-KJNYMD
            PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1    >   5 )
+               UNTIL     ( IDX1    >   CONST-TOKUTEI-SRYCD-MAX )
                IF    ( STUSAN-TOKUTEI-SRYCD (IDX1)
                                NOT =   SPACE )
                DISPLAY "STUSAN-TOKUTEI-SRYCD (" IDX1 ")= "
@@ -622,14 +627,15 @@
                MOVE    1               TO  FLG-TOKUTEI
       *
                PERFORM VARYING IDX3    FROM    1   BY  1
-                       UNTIL ( IDX3    >   5 )
+                       UNTIL ( IDX3    >   CONST-TOKUTEI-SRYCD-MAX )
       *
                    IF    ( STUSAN-TOKUTEI-SRYCD (IDX3)
                                    NOT =   SPACE )
                        IF    ( STUSAN-TOKUTEI-SRYCD (IDX3)
                                        =   TNS-SRYCD )
                            MOVE    1   TO  FLG-TOKUTEI-SITEI
-                           MOVE    5   TO  IDX3
+                           MOVE    CONST-TOKUTEI-SRYCD-MAX
+                                       TO  IDX3
                        END-IF
                    END-IF
       *
