@@ -300,8 +300,18 @@
            05 PIC  X(30)   VALUE   "入院料加算が登録されています  ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+           05 PIC  X(06)   VALUE   "990003".
+           05 PIC  X(30)   VALUE   "内分泌負荷試験の算定点数に誤り".
+           05 PIC  X(30)   VALUE   "があります（上限オーバー）    ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
+           05 PIC  X(06)   VALUE   "990004".
+           05 PIC  X(30)   VALUE   "内分泌負荷試験の算定点数に誤り".
+           05 PIC  X(30)   VALUE   "があります（過誤の逓減）      ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  48.
+           05 ERRMES-OCC   OCCURS  50.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   48.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   50.

@@ -170,6 +170,9 @@
            03  FLG-PTBYO-HKN                           PIC 9(01).
            03  FLG-THEIYOU-SET                         PIC 9(01).
            03  FLG-RECEDEN-CHK                         PIC 9(01).
+           03  FLG-SANTEI                              PIC 9(01).
+           03  FLG-NBFUKACD                            PIC 9(01).
+           03  FLG-NBFUKATG                            PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -335,6 +338,8 @@
                05  WRK-SYOSIN-CHK-YY                   PIC 9(04).
                05  WRK-SYOSIN-CHK-MM                   PIC 9(02).
                05  WRK-SYOSIN-CHK-DD                   PIC 9(02).
+           03  WRK-TNS-NBFUKATEN                   PIC 9(10).
+           03  WRK-SNT-NBFUKATEN                   PIC 9(10).
       *
       *    ÊÝ¸±£É£ÄÂàÈò¥ï¡¼¥¯
        01  THKNID-AREA.
@@ -605,40 +610,42 @@
       *
       *    ¸ÇÄêÃÍÎÎ°è
        01  CONST-AREA.
-           03  CONST-THKNID-MAX                        PIC 9(05)
-                                                       VALUE   20.
-           03  CONST-TKOHID-MAX                        PIC 9(05)
-                                                       VALUE   20.
-           03  CONST-THKNCOMBI-MAX                     PIC 9(05)
-                                                       VALUE   20.
-           03  CONST-TNACCT-HKNCOMBI-MAX               PIC 9(05)
-                                                       VALUE   20.
-           03  CONST-TSRYKA-MAX                        PIC 9(05)
-                                                       VALUE   30.
-           03  CONST-TSRYKA-SRYCD-MAX                  PIC 9(05)
-                                                       VALUE   2000.
-           03  CONST-TSRYCD-MAX                        PIC 9(05)
-                                                       VALUE   2000.
-           03  CONST-TJNISSU-MAX                       PIC 9(05)
-                                                       VALUE   20.
-           03  CONST-TKAISU-MAX                        PIC 9(05)
-                                                       VALUE   20.
-           03  CONST-TKAISU-SRYCD-MAX                  PIC 9(05)
-                                                       VALUE   2000.
-           03  CONST-THEIYOU-MAX                       PIC 9(05)
-                                                       VALUE   2000.
-           03  CONST-TBYOMEICD-MAX                     PIC 9(05)
-                                                       VALUE   100.
-           03  CONST-TNYUKSN-MAX                       PIC 9(05)
-                                                       VALUE   20.
-           03  CONST-TGENZAN-MAX                       PIC 9(05)
-                                                       VALUE   3.
-           03  CONST-TCHK-MAX                          PIC 9(05)
-                                                       VALUE   2000.
-           03  CONST-TTNS-MAX                          PIC 9(05)
-                                                       VALUE   2000.
-           03  CONST-CHKPTN                            PIC X(05)
-                                                       VALUE   "1 111".
+           03  CONST-THKNID-MAX                    PIC 9(05)
+                                                   VALUE   20.
+           03  CONST-TKOHID-MAX                    PIC 9(05)
+                                                   VALUE   20.
+           03  CONST-THKNCOMBI-MAX                 PIC 9(05)
+                                                   VALUE   20.
+           03  CONST-TNACCT-HKNCOMBI-MAX           PIC 9(05)
+                                                   VALUE   20.
+           03  CONST-TSRYKA-MAX                    PIC 9(05)
+                                                   VALUE   30.
+           03  CONST-TSRYKA-SRYCD-MAX              PIC 9(05)
+                                                   VALUE   2000.
+           03  CONST-TSRYCD-MAX                    PIC 9(05)
+                                                   VALUE   2000.
+           03  CONST-TJNISSU-MAX                   PIC 9(05)
+                                                   VALUE   20.
+           03  CONST-TKAISU-MAX                    PIC 9(05)
+                                                   VALUE   20.
+           03  CONST-TKAISU-SRYCD-MAX              PIC 9(05)
+                                                   VALUE   2000.
+           03  CONST-THEIYOU-MAX                   PIC 9(05)
+                                                   VALUE   2000.
+           03  CONST-TBYOMEICD-MAX                 PIC 9(05)
+                                                   VALUE   100.
+           03  CONST-TNYUKSN-MAX                   PIC 9(05)
+                                                   VALUE   20.
+           03  CONST-TGENZAN-MAX                   PIC 9(05)
+                                                   VALUE   3.
+           03  CONST-TCHK-MAX                      PIC 9(05)
+                                                   VALUE   2000.
+           03  CONST-TTNS-MAX                      PIC 9(05)
+                                                   VALUE   2000.
+           03  CONST-CHKPTN                        PIC X(05)
+                                                   VALUE   "1 111".
+           03  CONST-NBHOUKTCD                     PIC X(09)
+                                                   VALUE   "099600801".
       *
       *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸
            COPY    "CPDTCHKERRMES.INC".
@@ -729,6 +736,10 @@
       *    Áê¸ßºîÍÑ¾ðÊó
        01  INTERACT-REC.
            COPY    "CPINTERACT.INC".
+      *
+      *    »»ÄêÍúÎò
+       01  SANTEI-REC.
+           COPY    "CPSANTEI.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
@@ -879,7 +890,10 @@
       *
            INITIALIZE                      TCHK-AREA
                                            TTNS-AREA
-
+      *
+           MOVE    CONST-NBHOUKTCD     TO  WRK-SRYCD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           MOVE    TNS-TEN             TO  WRK-TNS-NBFUKATEN
       *
            .
        1001-INIT-VAL-SET-EXT.
@@ -5568,6 +5582,9 @@
       *
            END-IF
       *
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 200111-NBFUKA-CHK-SEC
+      *
            .
        200111-SONOTA-HISSU-CHK-EXT.
            EXIT.
@@ -5692,6 +5709,85 @@
       *
            .
        200111-NYUKSN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       200111-NBFUKA-CHK-SEC           SECTION.
+      *
+           MOVE    ZERO            TO  FLG-NBFUKACD
+                                       FLG-NBFUKATG
+      *
+           MOVE    ZERO            TO  WRK-SNT-NBFUKATEN
+      *
+           INITIALIZE                  WRK-NISSU-AREA
+      *
+           PERFORM 900-SANTEI-KEY9-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-SANTEI  NOT =   ZERO )
+      *
+               IF    ( SANTEI-SRYCD    =   CONST-NBHOUKTCD )
+                   MOVE    1       TO  FLG-NBFUKACD
+                   MOVE    SANTEI-MSANTEITEN
+                                   TO  WRK-SNT-NBFUKATEN
+                   PERFORM VARYING IDX-DAY FROM    1   BY  1
+                           UNTIL ( IDX-DAY >   31 )
+      *
+                       IF    ( SANTEI-DAY (IDX-DAY) >   ZERO )
+                           MOVE    1   TO  WRK-NISSU-DAY (IDX-DAY)
+                       END-IF
+      *
+                   END-PERFORM
+               END-IF
+      *
+               IF    ( SANTEI-MSANTEITENKBN    =   "2" )
+                   MOVE    1       TO  FLG-NBFUKATG
+               END-IF
+      *
+               PERFORM 900-SANTEI-KEY9-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    PATH-TBL-SANTEI-KEY TO  MCP-PATH
+           PERFORM 920-DBCLOSE-SEC
+      *
+           IF    ( FLG-NBFUKACD       =    1 )
+      *
+               IF    ( FLG-NBFUKATG            =   ZERO )
+                AND  ( WRK-SNT-NBFUKATEN       >   WRK-TNS-NBFUKATEN )
+      *
+                   PERFORM 200111-NISSU-HEN-SEC
+      *
+                   MOVE    SPACE       TO  WRK-ERRMES-PLUS
+      *
+                   STRING  WRK-NISSU-MES   DELIMITED   BY  SPACE
+                   INTO    WRK-ERRMES-PLUS
+                   END-STRING
+      *
+                   MOVE    "990003"    TO  WRK-ERRCD
+                   PERFORM 215-ERRMES-HEN-SEC
+      *
+               END-IF
+      *
+               IF    ( FLG-NBFUKATG            =   1 )
+                AND  ( WRK-SNT-NBFUKATEN   NOT =   WRK-TNS-NBFUKATEN )
+      *
+                   PERFORM 200111-NISSU-HEN-SEC
+      *
+                   MOVE    SPACE       TO  WRK-ERRMES-PLUS
+      *
+                   STRING  WRK-NISSU-MES   DELIMITED   BY  SPACE
+                   INTO    WRK-ERRMES-PLUS
+                   END-STRING
+      *
+                   MOVE    "990004"    TO  WRK-ERRCD
+                   PERFORM 215-ERRMES-HEN-SEC
+      *
+               END-IF
+           END-IF
+      *
+           .
+       200111-NBFUKA-CHK-EXT.
            EXIT.
       *****************************************************************
       *    Æü¿ôÊÔ½¸½èÍý
@@ -6737,6 +6833,49 @@
            .
       *
        900-PTINF-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    »»ÄêÍúÎò¸¡º÷½èÍý(KEY9)
+      *****************************************************************
+       900-SANTEI-KEY9-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SANTEI
+      *
+           INITIALIZE                      SANTEI-REC
+           MOVE    DTCHK003-HOSPID     TO  SANTEI-HOSPID
+           MOVE    DTCHK003-PTID       TO  SANTEI-PTID
+           MOVE    ORCBSD01-SRYYM      TO  SANTEI-SRYYM
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
+           PERFORM 920-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SANTEI-REC
+           ELSE
+               INITIALIZE                  SANTEI-REC
+               MOVE    1               TO  FLG-SANTEI
+           END-IF
+      *
+           .
+      *
+       900-SANTEI-KEY9-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    »»ÄêÍúÎòÆÉ¹þ½èÍý(KEY9)
+      *****************************************************************
+       900-SANTEI-KEY9-FET-SEC         SECTION.
+      *
+           MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
+           PERFORM 920-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SANTEI-REC
+           ELSE
+               INITIALIZE                  SANTEI-REC
+               MOVE    1               TO  FLG-SANTEI
+           END-IF
+      *
+           .
+      *
+       900-SANTEI-KEY9-FET-EXT.
            EXIT.
       *****************************************************************
       *    ÊÝ¸±ÁÈ¹ç¤»¸¡º÷½èÍý(KEY)
