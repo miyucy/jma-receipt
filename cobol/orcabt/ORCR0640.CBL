@@ -4264,28 +4264,12 @@
            ELSE
                IF (RECE62-TOTALTEN(2)   NOT =  ZERO)              AND
                   (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(2))
-                   MOVE    ZERO             TO   HC-IDX
-                   PERFORM VARYING IDX1    FROM    1   BY  1
-                           UNTIL   IDX1    >       10
-                           OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
-                       IF      ACCT-HKNCOMBI   =
-                                                RECE62-HKNCOMBI (IDX1)
-                           MOVE    IDX1            TO  HC-IDX
-                           MOVE    10              TO  IDX1
-                       END-IF
-                   END-PERFORM          
-                   MOVE       ZERO              TO   KH-IDX
+                   MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
-                      IF  (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1))
+                      IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(1)
                            MOVE      2       TO     BUN-IDX2
                       END-IF
                    END-PERFORM
@@ -4298,28 +4282,12 @@
            ELSE
                IF (RECE62-TOTALTEN(3)   NOT =  ZERO)              AND
                   (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(3))
-                   MOVE    ZERO                TO  HC-IDX
-                   PERFORM VARYING IDX1    FROM    1   BY  1
-                           UNTIL   IDX1    >       10
-                           OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
-                       IF      ACCT-HKNCOMBI   =
-                                                RECE62-HKNCOMBI (IDX1)
-                           MOVE    IDX1            TO  HC-IDX
-                           MOVE    10              TO  IDX1
-                       END-IF
-                   END-PERFORM          
-                   MOVE       ZERO              TO   KH-IDX
+                   MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
-                      IF  (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2))
+                      IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(2)
                            MOVE      3       TO     BUN-IDX3
                       END-IF
                    END-PERFORM
@@ -4332,28 +4300,12 @@
            ELSE
                IF (RECE62-TOTALTEN(4)   NOT =  ZERO)              AND
                   (RECE62-TOTALTEN(1)   NOT =  RECE62-TOTALTEN(4))
-                   MOVE    ZERO                TO  HC-IDX
-                   PERFORM VARYING IDX1    FROM    1   BY  1
-                           UNTIL   IDX1    >       10
-                           OR      RECE62-HKNCOMBI (IDX1)   =   ZERO 
-                       IF      ACCT-HKNCOMBI   =
-                                                RECE62-HKNCOMBI (IDX1)
-                           MOVE    IDX1            TO  HC-IDX
-                           MOVE    10              TO  IDX1
-                       END-IF
-                   END-PERFORM          
-                   MOVE       ZERO              TO   KH-IDX
+                   MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
-                      IF  (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3))
+                      IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(3)
                            MOVE      4       TO     BUN-IDX4
                       END-IF
                    END-PERFORM
@@ -4435,14 +4387,8 @@
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
-                      IF  (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(1))
+                      IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(1)
                            MOVE      2       TO     BUN-IDX2
                       END-IF
                    END-PERFORM
@@ -4459,14 +4405,8 @@
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
-                      IF  (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(2))
+                      IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(2)
                            MOVE      3       TO     BUN-IDX3
                       END-IF
                    END-PERFORM
@@ -4483,14 +4423,8 @@
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)     OR
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
-                      IF  (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3)) OR
-                          (RECE62-KOHNUMHC(HC-IDX IDX2) =
-                                                   RECE62-KOHNUM(3))
+                      IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
+                                                   RECE62-KOHNUM(3)
                            MOVE      4       TO     BUN-IDX4
                       END-IF
                    END-PERFORM

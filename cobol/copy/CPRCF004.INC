@@ -90,6 +90,22 @@
            03  RECE04-TEIGENRATE          PIC  X(01).
       *コメントコードフラグ
            03  RECE04-COMCDFLG            PIC  X(01).
+      *
+      *初診料算定科：
+           03  RECE04-SYOSANTEIKA-COMMENT PIC  X(01).
+      *再診料算定科：
+           03  RECE04-SAISANTEIKA-COMMENT PIC  X(01).
+      *電話再診
+           03  RECE04-DENWASAI-COMMENT    PIC  X(01).
+      *同日再診
+           03  RECE04-DOUJITUSAI-COMMENT  PIC  X(01).
+      *再診（４回目以降／人工腎臓）
+           03  RECE04-SAIJINKO-COMMENT    PIC  X(01).
+      *人工腎臓
+           03  RECE04-JINKOJIN-COMMENT    PIC  X(01).
+      *リハビリ
+           03  RECE04-RIHABIRI-COMMENT    PIC  X(01).
+      *
       *慢性疼痛疾患管理料
            03  RECE04-FLG-SHIDOU-COMMENT  PIC  X(01).
       *傷病手当金意見書交付料

@@ -1292,7 +1292,9 @@
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         
                                             OR  CONS-COMMENT8         )
-           OR    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  = "8"    )
+           OR    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  = "8" AND    
+                  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)   
+                                                     NOT = "830000020")
                    CONTINUE
            ELSE
                    MOVE    1                 TO  FLG-NOPRT
