@@ -538,31 +538,55 @@
            CALL    "ORCSSRYSYU"        USING
                                        MSYU-DATA-REC
       *
+           MOVE    ZERO                TO  SPA-K98-GMN-MAX
+           MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   100
                SET     MSYU-IDX                TO  IDX
+      *        入力できない診療種別は対象外とする
+               EVALUATE    MSYU-SRYSYUKBN (MSYU-IDX)
+      *            ギブス
+                   WHEN    "520"
+      *            Ｘ線
+                   WHEN    "711"
+                   WHEN    "712"
+                   WHEN    "713"
+                   WHEN    "720"
+                   WHEN    "721"
+                   WHEN    "723"
+                   WHEN    "724"
+                   WHEN    "724"
+      *            リハビリ
+                   WHEN    "810"
+                       MOVE    1               TO  FLG-ERR
+                   WHEN    OTHER
+                       MOVE    ZERO            TO  FLG-ERR
+               END-EVALUATE
                IF      MSYU-SRYKBN (MSYU-IDX)  =   SPACE
                    MOVE    100                 TO  IDX
                ELSE
-                   MOVE    IDX                 TO  SPA-K98-GMN-MAX
-                   MOVE    IDX                 TO  SPA-K98-GMN-NO
-                                                                (IDX)
-                   MOVE    "."                 TO  SPA-K98-GMN-INPUTCD
-                                                                (IDX)
-                   MOVE    MSYU-SRYSYUKBN (MSYU-IDX)
+                   IF      FLG-ERR             =   ZERO
+                       ADD     1               TO  IDX2
+                       MOVE    IDX2            TO  SPA-K98-GMN-MAX
+                       MOVE    IDX2            TO  SPA-K98-GMN-NO
+                                                                (IDX2)
+                       MOVE    "."             TO  SPA-K98-GMN-INPUTCD
+                                                                (IDX2)
+                       MOVE    MSYU-SRYSYUKBN (MSYU-IDX)
                                                TO  SPA-K98-GMN-INPUTCD
-                                                        (IDX)(2:3)
-                   MOVE    "."                 TO  SPA-K98-GMN-SRYCD
-                                                                (IDX)
-                   MOVE    MSYU-SRYSYUKBN (MSYU-IDX)
+                                                        (IDX2)(2:3)
+                       MOVE    "."             TO  SPA-K98-GMN-SRYCD
+                                                                (IDX2)
+                       MOVE    MSYU-SRYSYUKBN (MSYU-IDX)
                                                TO  SPA-K98-GMN-SRYCD
-                                                        (IDX)(2:3)
-                   MOVE    MSYU-SRYSYUKBN (MSYU-IDX)
+                                                        (IDX2)(2:3)
+                       MOVE    MSYU-SRYSYUKBN (MSYU-IDX)
                                                TO  SPA-K98-GMN-NAME
-                                                                (IDX)
-                   MOVE    MSYU-SRYMEI (MSYU-IDX)
+                                                                (IDX2)
+                       MOVE    MSYU-SRYMEI (MSYU-IDX)
                                                TO  SPA-K98-GMN-NAME
-                                                         (IDX)(5:)
+                                                         (IDX2)(5:)
+                   END-IF
                END-IF
            END-PERFORM
       *
