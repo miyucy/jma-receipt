@@ -6359,6 +6359,7 @@
            MOVE    SPA-FUKU-SRYKA      TO  LNK-ORCSC-FUKU-SRYKA
       *    訂正前診療科
            MOVE    SPA-OLD-SRYKA       TO  LNK-ORCSC-OLD-SRYKA
+           MOVE    SPA-OLD-HKNCOMBI    TO  LNK-ORCSC-OLD-HKNCOMBI
       *    時間外特例区分
            MOVE    SPA-JIKANTOKU       TO  LNK-ORCSC-JIKANTOKU
       *
@@ -7353,6 +7354,7 @@
            MOVE    SPA-FUKU-SRYKA      TO  LNK-ORCSC-FUKU-SRYKA
       *    訂正前診療科
            MOVE    SPA-OLD-SRYKA       TO  LNK-ORCSC-OLD-SRYKA
+           MOVE    SPA-OLD-HKNCOMBI    TO  LNK-ORCSC-OLD-HKNCOMBI
       *    電話再診の有無
            MOVE    SPA-TELSAI-ARI      TO  LNK-ORCSC-TELSAI-ARI
       *    特定疾患あり
@@ -7723,6 +7725,9 @@
                                        TO  SPA-SRYKA
            MOVE    SPA-NAI-RRK-SRYKA(SPA-NAI-DOSELNUM)
                                        TO  SPA-OLD-SRYKA
+      *    保険組合せ
+           MOVE    SPA-NAI-RRK-HKNCOMBI(SPA-NAI-DOSELNUM)
+                                       TO  SPA-OLD-HKNCOMBI
       *
       *    訂正処理
            MOVE    1                   TO  SPA-SYORIFLG

@@ -143,6 +143,8 @@
       *
       *訂正前診療科
                05  SPA-OLD-SRYKA           PIC X(02).
+      *訂正前保険組合せ
+               05  SPA-OLD-HKNCOMBI        PIC X(04).
       *
       *入院用（Ｋ０２Ｎ）
       *        入院日

@@ -45,6 +45,8 @@
            03  LNK-ORCSC-SYOSIN2       PIC 9(01).
       *    訂正前診療科
            03  LNK-ORCSC-OLD-SRYKA     PIC X(02).
+      *    訂正前保険組合せ
+           03  LNK-ORCSC-OLD-HKNCOMBI  PIC X(04).
       *
       *    画面行位置
            03  LNK-ORCSC-CHK-IDX       PIC 9(04).
