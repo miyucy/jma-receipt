@@ -10038,22 +10038,15 @@
       *
       *            診療行為入力チェック
                    PERFORM 41011-KOUI-ALLHEN-SEC
-                   IF     (SPA-ERRCD       NOT =   SPACE) AND
-                          (SPA-ERRCD       NOT =   "A001")
+                   IF      SPA-ERRCD       NOT =   SPACE
                       GO      TO      440-KNJADD-EXT
                    END-IF
-      *        更新前のチェック
-                   IF      SPA-ERRCD       =   "A001"
-                       MOVE    SPACE           TO  SPA-ERRCD
-                   ELSE
       *
                    MOVE    "1"                 TO  FLG-TOROKU
                    PERFORM 510-TBLHEN-SEC
                    MOVE    SPACE               TO  FLG-TOROKU
                    IF      SPA-ERRCD       NOT =   SPACE
                       GO      TO      440-KNJADD-EXT
-                   END-IF
-      *
                    END-IF
       *
                END-IF
