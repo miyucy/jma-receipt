@@ -9830,10 +9830,10 @@
            MOVE    "K02N"              TO  LNK-ORDERPRT-PG
            IF      FLG-SYORI           =   "1"
       *        中途終了時
-               MOVE    1                   TO  LNK-ORDERPRT-KBN
+               MOVE    "1"                 TO  LNK-ORDERPRT-KBN
            ELSE
       *        パラメタより（印刷のみ）
-               MOVE    2                   TO  LNK-ORDERPRT-KBN
+               MOVE    "2"                 TO  LNK-ORDERPRT-KBN
            END-IF
       *
            IF      SPA-K081GMN-SYOHOU  =   "1"

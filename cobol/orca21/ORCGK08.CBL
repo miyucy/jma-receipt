@@ -4345,7 +4345,7 @@
            INITIALIZE                  ORCSORDERPRTAREA
            MOVE    "K08"               TO  LNK-ORDERPRT-PG
       *    パラメタより
-           MOVE    2                   TO  LNK-ORDERPRT-KBN
+           MOVE    "2"                 TO  LNK-ORDERPRT-KBN
       *
            IF      SPA-K081GMN-SYOHOU  =   "1"
                MOVE    1                   TO  LNK-ORDERPRT-SYOHOU
