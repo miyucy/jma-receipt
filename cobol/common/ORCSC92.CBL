@@ -326,6 +326,19 @@
                MOVE    1               TO  FLG-ERR
            END-IF
       *
+      *    ’８９’のレセ電用コメント入力エラー
+           IF      LNK-SC92-SRYCD(1:1) =   "8"
+               IF      LNK-SC92-SRYCD(1:2) =   "81"
+                                           OR  "82"
+                                           OR  "83"
+                                           OR  "84"
+                   CONTINUE
+               ELSE
+                   MOVE    "0890"          TO  SPA-ERRCD
+                   MOVE    1               TO  FLG-ERR
+               END-IF
+           END-IF
+      *
       *    主処理
            IF     (FLG-ERR             =   ZERO )  AND
                   (SPA-ERRCD           =   SPACE )

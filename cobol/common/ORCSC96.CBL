@@ -105,6 +105,11 @@
                WHEN    "0001"
                    MOVE    "該当する点数マスターが存在しません"
                                        TO  SPA-ERRMSG
+               WHEN    "0890"
+                   MOVE    "診療行為では使用できないコードです。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "フリーコメントコードに変更して下さい。"
+                                       TO  SPA-ERRMSG(37:)
                WHEN    "0002"
                    MOVE    "診療行為は数量を入力できません"
                                        TO  SPA-ERRMSG
