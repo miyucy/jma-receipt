@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    03.03.05  点滴編集追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -139,9 +140,9 @@
            03  FLG-MIJISI                              PIC 9(01).
            03  FLG-MIJISI2                             PIC 9(01).
            03  FLG-TOKUTEI                             PIC 9(01).
-           03  FLG-TENTEKI                             PIC 9(01).       0226
-           03  FLG-WRITE65                             PIC 9(01).       0226
-           03  FLG-SIKIBETU                            PIC 9(01).       0226
+           03  FLG-TENTEKI                             PIC 9(01).
+           03  FLG-WRITE65                             PIC 9(01).
+           03  FLG-SIKIBETU                            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -163,8 +164,8 @@
            03  IDX2                                    PIC 9(03).
            03  IDX3                                    PIC 9(03).
            03  IDX4                                    PIC 9(03).
-           03  IDX5                                    PIC 9(03).       0226
-           03  IDX6                                    PIC 9(03).       0226
+           03  IDX5                                    PIC 9(03).
+           03  IDX6                                    PIC 9(03).
            03  IDY                                     PIC 9(03).
            03  IDZ                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
@@ -283,13 +284,13 @@
                    07  WRK-MIJ-DAY90                   PIC 9(04).
                    07  WRK-MIJ-DAY92                   PIC 9(04).
       *
-       01  WRK-ORCSTEN-TABLE.                                           0226
-           03  WRK-ORCSTEN-T                           OCCURS  100.     0226
-               05  WRK-ORCSTEN-SRYCD                   PIC X(09).       0226
-               05  WRK-ORCSTEN-SURYO                   PIC 9(05)V9(03). 0226
-           03  WRK-ORCSTEN-T2                          OCCURS   31.     0226
-               05  WRK-ORCSTEN-DAY                     PIC 9(03).       0226
-           03  WRK-ORCSTEN-ZAIKAISU                    PIC 9(04).       0226
+       01  WRK-ORCSTEN-TABLE.
+           03  WRK-ORCSTEN-T                           OCCURS  100.
+               05  WRK-ORCSTEN-SRYCD                   PIC X(09).
+               05  WRK-ORCSTEN-SURYO                   PIC 9(05)V9(03).
+           03  WRK-ORCSTEN-T2                          OCCURS   31.
+               05  WRK-ORCSTEN-DAY                     PIC 9(03).
+           03  WRK-ORCSTEN-ZAIKAISU                    PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -308,10 +309,10 @@
            03  WRK-EDIDX                               PIC 9(02).
            03  WRK-SRYCD                               PIC 9(09).
            03  WRK-ZAINUM                              PIC 9(08).
-           03  WRK-RENNUM                              PIC 9(02).       0226
-           03  WRK-TANICD                              PIC 9(03).       0226
-           03  WRK-TANIMOJISU                          PIC 9(01).       0226
-           03  WRK-TANINAME                            PIC X(24).       0226
+           03  WRK-RENNUM                              PIC 9(02).
+           03  WRK-TANICD                              PIC 9(03).
+           03  WRK-TANIMOJISU                          PIC 9(01).
+           03  WRK-TANINAME                            PIC X(24).
       *
            03  WRK-RECEERR                             PIC X(200).
       *
@@ -459,7 +460,7 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *    入院点滴一括更新サブ
-           COPY    "CPORCSTENTEK.INC".                                  0226
+           COPY    "CPORCSTENTEK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -665,7 +666,7 @@
       ***                       (RECE62-SRYKA(IDX)   =   SPACE)
                PERFORM    RECE64-HENSYU-SEC
                PERFORM    RECE64-HENSYU2-SEC
-               PERFORM    RECE64-HENSYU3-SEC                            0226
+               PERFORM    RECE64-HENSYU3-SEC
                PERFORM    FTN-SET-SEC
       ***  END-PERFORM
            PERFORM     SAIKEI-KEISAN-SEC
@@ -705,12 +706,12 @@
                                                RECE62-HKNCOMBI (IDX1)
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
-                               MOVE   ZERO   TO   FLG-WRITE65           0226
+                               MOVE   ZERO   TO   FLG-WRITE65
                                PERFORM   RECE64-TENSOU-SEC
                                PERFORM   RECE65-HENSYU-SEC
-                               IF    FLG-WRITE65  =   1                 0226
+                               IF    FLG-WRITE65  =   1
                                  PERFORM RECE64-WRITE-SEC
-                               END-IF                                   0226
+                               END-IF
                            ELSE
                                IF   ACCT-SRYKBN  =  "11"  OR  "12" 
                                                           OR  "99" 
@@ -727,12 +728,12 @@
                                                        CONS-TOKKI12
                                       PERFORM   TOKKI-HENSYU-SEC
                                  ELSE
-                                      MOVE   ZERO   TO   FLG-WRITE65    0226
+                                      MOVE   ZERO   TO   FLG-WRITE65
                                       PERFORM   RECE64-TENSOU-SEC
                                       PERFORM   RECE65-HENSYU-SEC
-                                      IF    FLG-WRITE65  =   1          0226
+                                      IF    FLG-WRITE65  =   1
                                         PERFORM RECE64-WRITE-SEC
-                                      END-IF                            0226
+                                      END-IF
                                  END-IF
                                END-IF
                            END-IF
@@ -1074,7 +1075,7 @@
       *****************************************************************
       *    レセプト中間ファイルの作成（Ｆ００４）
       *****************************************************************
-       RECE64-HENSYU3-SEC                SECTION.                       0226
+       RECE64-HENSYU3-SEC                SECTION.
       *
       *    点滴の計算
       *
@@ -1180,7 +1181,7 @@
       *
            .
        RECE64-HENSYU3-EXT.
-           EXIT.                                                        0226
+           EXIT.
       *
       *****************************************************************
       *    特記事項の編集
@@ -1981,7 +1982,7 @@
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００４）
       *****************************************************************
-       RECE64-TENSOU3-SEC                SECTION.                       0226
+       RECE64-TENSOU3-SEC                SECTION.
       *
            MOVE    SPACE                TO      RECE64-REC
            INITIALIZE                           RECE64-REC
@@ -2058,7 +2059,7 @@
            END-IF
            .
        RECE64-TENSOU3-EXT.
-           EXIT.                                                        0226
+           EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの作成（Ｆ００５）
@@ -2083,13 +2084,13 @@
                MOVE    "SRYACT-KEY9"    TO      ORC-DBPATH
                PERFORM  SRYACT-READ-SEC
                PERFORM  UNTIL  FLG-SRYACT    =    1
-                   MOVE    ZERO         TO      FLG-TENTEKI             0226
+                   MOVE    ZERO         TO      FLG-TENTEKI
                    PERFORM   RECE65-TENSOU-SEC
-                   IF   FLG-TENTEKI  =  ZERO                            0226
+                   IF   FLG-TENTEKI  =  ZERO
                      PERFORM RECE62-HENSYU-SEC
                      PERFORM RECE65-WRITE-SEC
-                     MOVE  1            TO      FLG-WRITE65             0226
-                   END-IF                                               0226
+                     MOVE  1            TO      FLG-WRITE65
+                   END-IF
                    MOVE     "SRYACT-KEY9"    TO   ORC-DBPATH
                    PERFORM   SRYACT-READ-SEC
                END-PERFORM
@@ -2250,15 +2251,15 @@
                                                   "6" OR  "7" OR
                                                   "8"
       *
-              IF  (  SRY-SRYSYUKBN            = "330" OR "331"     )    0226
-              AND (( SRY-SRYCD(IDX2)(1:3)     = "059"             ) OR  0226
-                   ( SRY-SRYCD(IDX2)(1:1)     = "7"               ) OR  0226
-                   ( SRY-SRYCD(IDX2)          = "099309901"       ) OR  0226
-                   ( SRY-SRYCD(IDX2)(1:1)     = "6"               ))    0226
+              IF  (  SRY-SRYSYUKBN            = "330" OR "331"     )    
+              AND (( SRY-SRYCD(IDX2)(1:3)     = "059"             ) OR  
+                   ( SRY-SRYCD(IDX2)(1:1)     = "7"               ) OR  
+                   ( SRY-SRYCD(IDX2)          = "099309901"       ) OR  
+                   ( SRY-SRYCD(IDX2)(1:1)     = "6"               ))    
       *
-               MOVE    1                  TO    FLG-TENTEKI             0226
+               MOVE    1                  TO    FLG-TENTEKI             
       *
-              ELSE                                                      0226
+              ELSE                                                      
       *
                ADD     1                  TO    IDX4    
       *
@@ -2332,7 +2333,7 @@
                    END-IF
                END-IF
       *
-              END-IF                                                    0226
+              END-IF
       *
              END-IF  
       *
@@ -2766,7 +2767,7 @@
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００５）
       *****************************************************************
-       RECE65-TENSOU3-SEC                SECTION.                       0226
+       RECE65-TENSOU3-SEC                SECTION.
       *
            MOVE    1                       TO   IDX2
            MOVE    ZERO                    TO   WRK-RENNUM
@@ -2874,7 +2875,7 @@
       *
            .
        RECE65-TENSOU3-EXT.
-           EXIT.                                                        0226
+           EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送２（Ｆ００２）
@@ -3044,7 +3045,7 @@
       *****************************************************************
       *    レセプト中間ファイルの項目転送２（Ｆ００２）
       *****************************************************************
-       RECE62-HENSYU3-IDX-SEC               SECTION.                    0226
+       RECE62-HENSYU3-IDX-SEC               SECTION.
       *
       *    公費の分離表示用インデックスの確定
            MOVE          ZERO       TO     BUN-IDX
@@ -3128,12 +3129,12 @@
            .                                           
       *
        RECE62-HENSYU3-IDX-EXT.
-           EXIT.                                                        0226
+           EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送２（Ｆ００２）
       *****************************************************************
-       RECE62-HENSYU3-SEC               SECTION.                        0226
+       RECE62-HENSYU3-SEC               SECTION.
       *
       *    その他注射のレセ点数欄の編集
            ADD   RECE64-ZAIKAISU    TO   RECE62-KAISU(12)
@@ -3162,7 +3163,7 @@
            .                                           
       *
        RECE62-HENSYU3-EXT.
-           EXIT.                                                        0226
+           EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送２（Ｆ００２）
