@@ -1385,9 +1385,6 @@
                END-IF
            END-PERFORM.
       *
-      *    対象の患者の入院会計作成済み年月判定
-           PERFORM 31019-NYUINACCT-SEL-SEC
-      *
            .
        3101-NYUINACCT-HEN-EXT.
            EXIT.
@@ -4062,10 +4059,6 @@
            MOVE    ZERO                TO  FLG-SET
            MOVE    SPA-NAI-SRYYM       TO  WRK-SRYYM
       *
-      *TEST
-           DISPLAY "I41 WRK-SRYYM:" WRK-SRYYM
-                  ",SPA-SRYYM-BIG:" SPA-SRYYM-BIG
-      *TEST
            PERFORM UNTIL  (FLG-SET         =   1   )  OR
                           (WRK-SRYYM       >   SPA-SRYYM-BIG)
       *        入院会計マスターより対象の判定
