@@ -61,4 +61,3 @@
                            11  SPA-W22-ITEM4       PIC X(19).
                            11  SPA-W22-BTNO        PIC X(01).
                        09  SPA-W22-MEISYOU-COUNT   PIC 9(4).
-               05  SPA-W22-MOTOPG                  PIC X(08).
