@@ -44,8 +44,7 @@
       *    ¥¹¥ÑÎÎ°è
            COPY    "COMMON-SPA".
       *
-      *    ²èÌÌÍÑ£Ó£Ð£Á
-           COPY    "O01SCR-SPA".
+           COPY    "O01COMMON-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -95,7 +94,7 @@
        000-PROC-SEC                              SECTION.
       *
            MOVE    SPA-COMMON                    TO  SPA-AREA.
-           MOVE    SPA-FREE                      TO  SPA-O01.
+           MOVE    SPA-WORK                      TO  SPA-O01KYOUTU
       * 
            EVALUATE    MCP-STATUS                ALSO    MCP-EVENT
                WHEN    "LINK"                    ALSO    ANY
@@ -105,8 +104,8 @@
                    PERFORM 200-GMNSENI
            END-EVALUATE.
       *
+           MOVE    SPA-O01KYOUTU                 TO  SPA-WORK
            MOVE    SPA-AREA                      TO  SPA-COMMON.
-           MOVE    SPA-O01                       TO  SPA-FREE.
       *
            EXIT    PROGRAM.
       *****************************************************************
@@ -126,11 +125,11 @@
            EVALUATE    MCP-EVENT                 ALSO    MCP-WIDGET
       *        Ìá¤ë
                WHEN    "CLICKED"                 ALSO    "B01"
-                   MOVE    SPACE                 TO  SPA-GMN-KBN
+                   MOVE    SPACE                 TO  SPA-OID1-FLG
                    PERFORM 210-BACK
       *     ÅÐÏ¿
                WHEN    "CLICKED"                 ALSO    "B12"
-                   MOVE    "OK"                  TO  SPA-GMN-KBN
+                   MOVE    "OK"                  TO  SPA-OID1-FLG
                    PERFORM 210-BACK
            END-EVALUATE.
       *
