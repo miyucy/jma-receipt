@@ -48,6 +48,7 @@
       *  01.00.17    NACL-多々納  03/11/11  基本情報期間変更追加
       *  01.00.18    NACL-多々納  04/05/11  減免事由の割引対象を９９件へ
       *  01.00.19    NACL-太田    04/07/05  請求書発行コンボ項目追加
+      *  01.00.20    NACL-太田    04/07/07  入金方法情報タブ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -274,6 +275,22 @@
                        09  SPA-GMN-SRYNAIYO       PIC X(20).
                        09  SPA-GMN-SRYNAIYODSP    PIC X(12).
       *
+                   07  SPA-GMN-1041-AREA.
+                       09  SPA-GMN-NYKN-KBNCD     PIC X(02).
+                       09  SPA-GMN-NYKN-NAME      PIC X(30).
+                       09  SPA-GMN-NYKN-TANNAME   PIC X(10).
+                       09  SPA-GMN-NYKN-BUNRUI-G.
+                           11  SPA-GMN-NYKN-BUNRUI
+                                                  PIC X(02).
+                           11                     PIC X(01).
+                           11  SPA-GMN-NYKN-BUNRUIMEI
+                                                  PIC X(20).
+                       09  SPA-GMN-NYKN-BUNRUILST OCCURS  10.
+                           11  SPA-GMN-NYKN-BUNRUIL    PIC X(02).
+                           11                          PIC X(01).
+                           11  SPA-GMN-NYKN-BUNRUIMEIL PIC X(20).
+                       09  SPA-GMN-NYKN-BUNRUI-MAX     PIC 9(03).
+      *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD           PIC 9(08).
                    07  SPA-NAI-EDYUKYMD           PIC 9(08).
@@ -303,6 +320,7 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
+           03  IDX1                PIC 9(04).
       *
       *    一時領域
       *
@@ -359,6 +377,9 @@
       *
       *    診療内容名称情報
            COPY  "CPSK1012.INC".
+      *
+      *    入金方法情報
+           COPY  "CPSK1041.INC".
       *
       *
       *****************************************************************
@@ -744,6 +765,9 @@
       *    割引率区分設定処理
            PERFORM 3101-DISCOUNT-KBN-SET-SEC
       * 
+      *    入金方法分類区分設定処理
+           PERFORM 3101-NYKN-BUNRUI-SET-SEC
+      * 
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                      SYS-1001-REC
            MOVE    SPA-W01-KANRICD         TO  SYS-1001-KANRICD
@@ -755,6 +779,7 @@
                WHEN    "1020"
                WHEN    "1026"
                WHEN    "1027"
+               WHEN    "1041"
                    MOVE    SPA-W01-KBNCD       TO  SYS-1001-KBNCD
                WHEN    OTHER
                    MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -852,6 +877,26 @@
                        MOVE    SYS-1012-SRYNAIYO   TO  SPA-GMN-SRYNAIYO
                        MOVE    SYS-1012-SRYNAIYODSP
                                                TO  SPA-GMN-SRYNAIYODSP
+      *    入金方法情報
+                   WHEN    "1041"
+                       MOVE    MCPDATA-REC     TO  SYS-1041-REC
+                       MOVE    SYS-1041-KBNCD  TO  SPA-GMN-NYKN-KBNCD
+                       MOVE    SYS-1041-NYKN-NAME
+                                               TO  SPA-GMN-NYKN-NAME
+                       MOVE    SYS-1041-NYKN-TANNAME
+                                               TO  SPA-GMN-NYKN-TANNAME
+                       MOVE    SPA-GMN-NYKN-BUNRUILST (1)
+                                               TO  SPA-GMN-NYKN-BUNRUI-G
+      *
+                       PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL ( IDX1    >   SPA-GMN-NYKN-BUNRUI-MAX )
+                           IF    ( SYS-1041-NYKN-BUNRUI
+                                       =   SPA-GMN-NYKN-BUNRUIL (IDX1))
+                               MOVE    SPA-GMN-NYKN-BUNRUILST (IDX1)
+                                   TO  SPA-GMN-NYKN-BUNRUI-G
+                           END-IF
+                       END-PERFORM
+      *
                END-EVALUATE
       *
            ELSE
@@ -860,6 +905,10 @@
       *            医療機関情報ー基本情報
                    WHEN    "1001"
                        PERFORM 3109-1001-HENKOU-SEC
+                   WHEN    "1041"
+                       MOVE    SPA-W01-KBNCD   TO  SPA-GMN-NYKN-KBNCD
+                       MOVE    SPA-GMN-NYKN-BUNRUILST (1)
+                                               TO  SPA-GMN-NYKN-BUNRUI-G
                END-EVALUATE
            END-IF 
       *  
@@ -883,6 +932,8 @@
                    MOVE    70                  TO  SPA-GMN-CUR
                WHEN    "1012"
                    MOVE    80                  TO  SPA-GMN-CUR
+               WHEN    "1041"
+                   MOVE    90                  TO  SPA-GMN-CUR
            END-EVALUATE
            . 
        310-SPASET-EXT.
@@ -1152,6 +1203,24 @@
        3101-DISCOUNT-KBN-SET-EXT.
            EXIT.
       *****************************************************************
+      *    入金方法分類区分設定処理
+      *****************************************************************
+       3101-NYKN-BUNRUI-SET-SEC        SECTION.
+      *
+           MOVE    "01"                TO  SPA-GMN-NYKN-BUNRUIL (1)
+           MOVE    "現金"              TO  SPA-GMN-NYKN-BUNRUIMEIL (1)
+           MOVE    "02"                TO  SPA-GMN-NYKN-BUNRUIL (2)
+           MOVE    "振込み"            TO  SPA-GMN-NYKN-BUNRUIMEIL (2)
+           MOVE    "03"                TO  SPA-GMN-NYKN-BUNRUIL (3)
+           MOVE    "デビットカード"    TO  SPA-GMN-NYKN-BUNRUIMEIL (3)
+           MOVE    "99"                TO  SPA-GMN-NYKN-BUNRUIL (4)
+           MOVE    "その他"            TO  SPA-GMN-NYKN-BUNRUIMEIL (4)
+           MOVE    4                   TO  SPA-GMN-NYKN-BUNRUI-MAX
+      *
+           .
+       3101-NYKN-BUNRUI-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
@@ -1263,6 +1332,12 @@
            MOVE    W02-SRYNAIYO        TO  SPA-GMN-SRYNAIYO
            MOVE    W02-SRYNAIYODSP     TO  SPA-GMN-SRYNAIYODSP
       *
+      *    入金方法
+           MOVE    W02-NYKN-KBNCD      TO  SPA-GMN-NYKN-KBNCD
+           MOVE    W02-NYKN-NAME       TO  SPA-GMN-NYKN-NAME
+           MOVE    W02-NYKN-TANNAME    TO  SPA-GMN-NYKN-TANNAME
+           MOVE    W02-NYKN-BUNRUI     TO  SPA-GMN-NYKN-BUNRUI-G
+      *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
@@ -1299,6 +1374,9 @@
                WHEN    "1027"
       *             医療機関情報ー割引率情報
                    PERFORM 41021-KIHON-1027-SEC
+               WHEN    "1041"
+      *             医療機関情報ー入金方法情報
+                   PERFORM 41021-KIHON-1041-SEC
            END-EVALUATE
       *
            .
@@ -1489,6 +1567,33 @@
       *
            .
        41021-KIHON-1027-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入金方法情報タグ処理
+      *****************************************************************
+       41021-KIHON-1041-SEC       SECTION.
+      *
+      *    入金方法名称チェック
+           PERFORM 4122-NYKN-NAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  41021-KIHON-1041-EXT
+           END-IF
+      *
+      *    入金方法短縮名称チェック
+           PERFORM 4122-NYKN-TANNAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  41021-KIHON-1041-EXT
+           END-IF
+      *
+      *    分類区分チェック
+           PERFORM 4122-NYKN-BUNRUI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  41021-KIHON-1041-EXT
+           END-IF
+      *
+           .
+       41021-KIHON-1041-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2008,6 +2113,78 @@
            EXIT.
       *
       *****************************************************************
+      *    入金方法名称チェック処理
+      *****************************************************************
+       4122-NYKN-NAME-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-NYKN-NAME   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0017"          TO  SPA-ERRCD
+               MOVE    90              TO  SPA-GMN-CUR
+           ELSE
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-NYKN-NAME
+           END-IF
+      *
+           .
+       4122-NYKN-NAME-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入金方法短縮名称チェック処理
+      *****************************************************************
+       4122-NYKN-TANNAME-CHK-SEC       SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-NYKN-TANNAME
+                                       TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0018"          TO  SPA-ERRCD
+               MOVE    91              TO  SPA-GMN-CUR
+           ELSE
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-NYKN-TANNAME
+           END-IF
+      *
+           .
+       4122-NYKN-TANNAME-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    分類区分チェック処理
+      *****************************************************************
+       4122-NYKN-BUNRUI-CHK-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >       SPA-GMN-NYKN-BUNRUI-MAX )
+                    OR   ( FLG-OK  =       1 )
+      *
+               IF    ( SPA-GMN-NYKN-BUNRUI
+                                   =   SPA-GMN-NYKN-BUNRUIL (IDX1))
+                   MOVE    SPA-GMN-NYKN-BUNRUILST (IDX1)
+                                           TO  SPA-GMN-NYKN-BUNRUI-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( FLG-OK          =   ZERO )
+               MOVE    SPA-GMN-NYKN-BUNRUILST (1)
+                                           TO  SPA-GMN-NYKN-BUNRUI-G
+           END-IF
+      *
+           .
+       4122-NYKN-BUNRUI-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    タグ編集処理
       *****************************************************************
        440-TAG-CHANGE-SEC            SECTION.
@@ -2087,6 +2264,7 @@
                WHEN    "1020"
                WHEN    "1026"
                WHEN    "1027"
+               WHEN    "1041"
                    MOVE    SPA-W01-KBNCD       TO  SYS-1001-KBNCD
                WHEN    OTHER
                    MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -2154,6 +2332,7 @@
                WHEN    "1020"
                WHEN    "1026"
                WHEN    "1027"
+               WHEN    "1041"
                    MOVE    SPA-W01-KBNCD       TO  SYS-1001-KBNCD
                WHEN    OTHER
                    MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -2332,6 +2511,24 @@
                    MOVE    SPA-GMN-DISCOUNT-RATE
                                            TO  SYS-1027-DISCOUNT-RATE
                    MOVE    SYS-1027-REC        TO  SYSKANRI-REC
+      *    入金方法情報
+               WHEN    "1041"    
+                   IF      FLG-SYSKANRI        =   ZERO
+                       MOVE    MCPDATA-REC     TO  SYS-1041-REC
+                   ELSE
+                       MOVE    SPACE           TO  SYS-1041-REC
+                       INITIALIZE                  SYS-1041-REC
+                       MOVE   "1041"           TO  SYS-1041-KANRICD
+                       MOVE    SPA-W01-KBNCD   TO  SYS-1041-KBNCD
+                   END-IF 
+                   MOVE    SPA-W01-STYUKYMD    TO  SYS-1041-STYUKYMD
+                   MOVE    SPA-W01-EDYUKYMD    TO  SYS-1041-EDYUKYMD
+                   MOVE    SPA-GMN-NYKN-NAME   TO  SYS-1041-NYKN-NAME
+                   MOVE    SPA-GMN-NYKN-TANNAME
+                                               TO  SYS-1041-NYKN-TANNAME
+                   MOVE    SPA-GMN-NYKN-BUNRUI
+                                               TO  SYS-1041-NYKN-BUNRUI
+                   MOVE    SYS-1041-REC        TO  SYSKANRI-REC
            END-EVALUATE 
       *     
            IF      FLG-SYSKANRI            =   ZERO
@@ -2390,6 +2587,8 @@
                    PERFORM 4901-TAG5-CHK-SEC
                WHEN    5
                    PERFORM 4901-TAG6-CHK-SEC
+               WHEN    8
+                   PERFORM 4901-TAG9-CHK-SEC
            END-EVALUATE    
            .
        4900-KANRENCHK-EXT.
@@ -2456,6 +2655,33 @@
        4901-TAG6-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *       入金方法情報タグの関連チェック処理
+      *****************************************************************
+       4901-TAG9-CHK-SEC           SECTION.
+      *
+           IF    ( SPA-GMN-NYKN-NAME       =   SPACE )
+               MOVE    90              TO  SPA-GMN-CUR
+               MOVE    "0099"          TO  SPA-ERRCD
+               GO  TO  4901-TAG9-CHK-EXT
+           END-IF
+      *
+           IF    ( SPA-GMN-NYKN-TANNAME    =   SPACE )
+               MOVE    91              TO  SPA-GMN-CUR
+               MOVE    "0099"          TO  SPA-ERRCD
+               GO  TO  4901-TAG9-CHK-EXT
+           END-IF
+      *
+           IF    ( SPA-GMN-NYKN-BUNRUI-G   =   SPACE )
+               MOVE    92              TO  SPA-GMN-CUR
+               MOVE    "0099"          TO  SPA-ERRCD
+               GO  TO  4901-TAG9-CHK-EXT
+           END-IF
+      *
+           .
+       4901-TAG9-CHK-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    自画面編集処理
@@ -2492,7 +2718,7 @@
       *
            MOVE    SPA-GMN-STYUKYMD    TO  W02-STYUKYMD
            MOVE    SPA-GMN-EDYUKYMD    TO  W02-EDYUKYMD
-      * 
+      *
       *            医療機関情報ー基本情報
            MOVE    SPA-GMN-PREFNUM-G   TO  W02-PREFNUM
            MOVE    SPA-GMN-TENHYOKBN-G TO  W02-TENHYOKBN
@@ -2648,6 +2874,20 @@
            MOVE    SPA-GMN-SRYNAIYO    TO  W02-SRYNAIYO
            MOVE    SPA-GMN-SRYNAIYODSP TO  W02-SRYNAIYODSP
       *
+      *    入金方法情報
+           MOVE    SPA-GMN-NYKN-KBNCD      TO  W02-NYKN-KBNCD
+           MOVE    SPA-GMN-NYKN-NAME       TO  W02-NYKN-NAME
+           MOVE    SPA-GMN-NYKN-TANNAME    TO  W02-NYKN-TANNAME
+           MOVE    SPA-GMN-NYKN-BUNRUI-G   TO  W02-NYKN-BUNRUI
+           MOVE    SPA-GMN-NYKN-BUNRUI-MAX TO  W02-NYKN-BUNRUI-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-NYKN-BUNRUI-MAX )
+      *
+               MOVE    SPA-GMN-NYKN-BUNRUILST (IDX1)
+                                           TO  W02-NYKN-BUNRUILST (IDX1)
+      *
+           END-PERFORM
+      *
       *    画面カーソルセット処理    
            PERFORM 5001-MAPCUR-SEC
       *
@@ -2668,6 +2908,7 @@
                                                W02-N06-STATE
                                                W02-N07-STATE
                                                W02-N08-STATE
+                                               W02-N09-STATE
                                                W02-B03-STATE
       *
            IF      SPA-W01-SELNUM          >   ZERO    
@@ -2702,6 +2943,8 @@
                    MOVE    WIDGET-NORMAL      TO  W02-N07-STATE
                WHEN    "1012" 
                    MOVE    WIDGET-NORMAL      TO  W02-N08-STATE
+               WHEN    "1041" 
+                   MOVE    WIDGET-NORMAL      TO  W02-N09-STATE
            END-EVALUATE
            .
        51O-GSRAUTH-EXT.
@@ -2762,6 +3005,15 @@
                                                TO  SPA-ERRMSG
                WHEN    "0016"
                    MOVE    "割引対象入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0017"
+                   MOVE    "入金方法名称入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0018"
+                   MOVE    "入金方法短縮名称入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0019"
+                   MOVE    "分類区分入力エラー"
                                                TO  SPA-ERRMSG
       *----(01.00.09) LINE ADD END   ----------------------------------
                WHEN    "0099"
@@ -2921,6 +3173,13 @@
                     MOVE  "SRYNAIYO"       TO   MCP-WIDGET
                 WHEN    81
                     MOVE  "SRYNAIYODSP"    TO   MCP-WIDGET
+      *
+                WHEN    90
+                    MOVE  "NYKN_NAME"      TO   MCP-WIDGET
+                WHEN    91
+                    MOVE  "NYKN_TANNAME"   TO   MCP-WIDGET
+                WHEN    92
+                    MOVE  "NYKN_BUNRUI"    TO   MCP-WIDGET
             END-EVALUATE
       *
             EVALUATE    SPA-GMN-CUR
@@ -2944,6 +3203,8 @@
                     MOVE    6                TO  W02-PAGENO
                 WHEN    80  THRU    89
                     MOVE    7                TO  W02-PAGENO
+                WHEN    90  THRU    99
+                    MOVE    8                TO  W02-PAGENO
             END-EVALUATE
       *
            .
@@ -3036,6 +3297,13 @@
                   MOVE    81               TO  SPA-GMN-CUR
               WHEN    "SRYNAIYODSP"
                   MOVE    80               TO  SPA-GMN-CUR
+      *       入金方法情報
+              WHEN    "NYKN_NAME"
+                  MOVE    91               TO  SPA-GMN-CUR
+              WHEN    "NYKN_TANNAME"
+                  MOVE    92               TO  SPA-GMN-CUR
+              WHEN    "NYKN_BUNRUI"
+                  MOVE    90               TO  SPA-GMN-CUR
           END-EVALUATE
       *
            .

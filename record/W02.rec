@@ -225,6 +225,27 @@ W02	{
 	            N08	{
 	            	state	int;
 	            };
+			fixed31	{
+				NYKN_KBNCD	{
+					value	varchar(02);
+				};
+				NYKN_NAME	{
+					value	varchar(30);
+				};
+				NYKN_TANNAME	{
+					value	varchar(10);
+				};
+				NYKN_BUNRUI_COMBO	{
+					NYKN_BUNRUI	{
+						value	varchar(23);
+					};
+					count	int;
+					item	varchar(23)[10];
+				};
+			};
+	            N09	{
+	            	state	int;
+	            };
 		};
 	};
 };

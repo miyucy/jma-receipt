@@ -254,6 +254,8 @@
            03  FILLER              PIC X(35)   VALUE
                "1040 データチェック機能情報".
            03  FILLER              PIC X(35)   VALUE
+               "1041 入金方法情報".
+           03  FILLER              PIC X(35)   VALUE
                "2003 レセプト作成指示（印刷順）情報".
            03  FILLER              PIC X(35)   VALUE
                "2005 レセプト・総括印刷情報".
@@ -267,11 +269,11 @@
                "4001 労災自賠医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   29.
+           03  TBL-KANRICD-TBL         OCCURS   30.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   29.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   30.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -350,6 +352,8 @@
            COPY    "CPSK2003.INC".
       *
            COPY    "CPSK2004.INC".
+      *
+           COPY    "CPSK1041.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -983,6 +987,7 @@
                WHEN    "1020"
                WHEN    "1026"
                WHEN    "1027"
+               WHEN    "1041"
       *---- (01.02.04) LINE ADD START --------------------------------
                WHEN    "3001"
                WHEN    "3002"
@@ -1002,6 +1007,9 @@
                                                    TO  SPA-GMN-MIDASI
                        WHEN    "2004"
                            MOVE    "レセプト種別　"
+                                                   TO  SPA-GMN-MIDASI
+                       WHEN    "1041"
+                           MOVE    "入金方法コード"
                                                    TO  SPA-GMN-MIDASI
                        WHEN    OTHER
                            MOVE    "区分コード　　"
@@ -1255,6 +1263,10 @@
                        MOVE    SYSKANRI-REC   TO  SYS-2004-REC
                        MOVE    SYS-2004-SYUBETUNAME (1:26)
                                               TO  SPA-GMN-KBNCDMEIL(IDX)
+                   WHEN    "1041"
+                       MOVE    SYSKANRI-REC   TO  SYS-1041-REC
+                       MOVE    SYS-1041-NYKN-NAME
+                                              TO  SPA-GMN-KBNCDMEIL(IDX)
                END-EVALUATE
       *
                MOVE    "SYSKANRI-KEY6"    TO  ORC-DBPATH
@@ -1314,6 +1326,7 @@
                WHEN    "1020"
                WHEN    "1026"
                WHEN    "1027"
+               WHEN    "1041"
       *---- (01.02.02) LINE ADD START --------------------------------
       *********WHEN    "2003"
       *---- (01.02.02) LINE ADD END   --------------------------------
@@ -1609,6 +1622,8 @@
                    MOVE    "W16"               TO  SPA-SAKIPG
                WHEN    "1040"
                    MOVE    "W17"               TO  SPA-SAKIPG
+               WHEN    "1041" 
+                   MOVE    "W02"               TO  SPA-SAKIPG
                WHEN    "5000"
                    MOVE    "W24"               TO  SPA-SAKIPG
                WHEN    "5001"
@@ -1684,6 +1699,7 @@
                WHEN    "1020"
                WHEN    "1026"
                WHEN    "1027"
+               WHEN    "1041"
       *---- (01.02.04) LINE ADD START --------------------------------
                WHEN    "3001"
                WHEN    "3002"
@@ -1770,6 +1786,7 @@
                WHEN    "1020" 
                WHEN    "1026"
                WHEN    "1027"
+               WHEN    "1041"
       *---- (01.02.04) LINE ADD START --------------------------------
                WHEN    "3001"
                WHEN    "3002"

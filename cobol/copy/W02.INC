@@ -159,4 +159,19 @@
                     06  W02-VALUE   PIC X(12).
                 04  W02-N08.
                   05  W02-N08-STATE   PIC S9(9)   BINARY.
+                04  W02-FIXED31.
+                  05  W02-NYKN-KBNCD.
+                    06  W02-VALUE   PIC X(02).
+                  05  W02-NYKN-NAME.
+                    06  W02-VALUE   PIC X(30).
+                  05  W02-NYKN-TANNAME.
+                    06  W02-VALUE   PIC X(10).
+                  05  W02-NYKN-BUNRUI-COMBO.
+                    06  W02-NYKN-BUNRUI      PIC X(23).
+                    06  W02-NYKN-BUNRUI-COUNT
+                                             PIC S9(9)   BINARY.
+                    06  W02-NYKN-BUNRUILST   PIC X(23)
+                                                     OCCURS  10.
+                04  W02-N09.
+                  05  W02-N09-STATE   PIC S9(9)   BINARY.
 
