@@ -220,3 +220,14 @@ path	upd2	{
 		;
 	};
 };
+
+path	key13	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key13_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+			WHERE   KANRICD      =   :KANRICD
+			ORDER	BY	KBNCD DESC
+		;
+	};
+};
