@@ -155,6 +155,8 @@
            03  WRK-UKETIME                PIC X(06).
            03  WRK-PTID                   PIC X(10).
       *
+      *
+           03  WRK-GMN-SELNUM        PIC 9(02). 
       *    ＣＬＡＩＭファイル名
        01  CLAIM-FILE.
            03  FILLER              PIC X(30)   VALUE
@@ -2427,6 +2429,8 @@
                CONTINUE
            ELSE
                MOVE    MCPDATA-REC         TO  SYS-9000-REC
+               MOVE    SYS-9000-CODE       TO  SPA-GMN-SCODE
+               MOVE    1                   TO  SPA-P02X-GMN-SEL
                IF      SYS-9000-SETUZOKU   =   ZERO
                    CONTINUE
                ELSE
@@ -2487,6 +2491,48 @@
       *    ＣＬＡＩＭ接続情報取得処理
       *****************************************************************
        4906-CLAIM-SOUSIN-SEC               SECTION.
+      *
+           MOVE    SPACE               TO  SYS-9001-REC
+           INITIALIZE                  SYS-9001-REC
+           MOVE    "9001"              TO  SYS-9001-KANRICD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+      *    システム管理検索
+           MOVE    SYS-9001-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-9001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       (IDX            >   10   )  OR
+                               (FLG-SYSKANRI   =   1    )
+               MOVE    MCPDATA-REC           TO  SYS-9001-REC
+               MOVE    SYS-9001-KBNCD (1:2)  TO  WRK-GMN-SELNUM
+               IF      WRK-GMN-SELNUM        =   SPA-P02X-GMN-SEL
+                 MOVE    SYS-9001-ADDRESS    TO  SHELLTBL-ARG6
+                 MOVE    SYS-9001-PORT1      TO  SHELLTBL-ARG7
+                 MOVE    99                    TO  IDX
+               END-IF
+      *
+               MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+      *
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    最後の受付時間を対象とする
            MOVE    SPACE               TO  WRK-UKETIME

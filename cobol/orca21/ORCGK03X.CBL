@@ -236,10 +236,10 @@
                    UNTIL       (IDX            >   10   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC           TO  SYS-9001-REC
-               MOVE    SYS-9001-KBNCD (1:2)  TO  SPA-K03X-GMN-SELNOL
-                                                                 (IDX)
                MOVE    SYS-9001-KBNCD (1:2)  TO  WRK-GMN-SELNUM     
-               MOVE    WRK-GMN-SELNUM        TO  SPA-K03X-GMN-ADRL
+               MOVE    WRK-GMN-SELNUM        TO  SPA-K03X-GMN-SELNOL
+                                                                 (IDX)
+               MOVE    SYS-9001-ADDRESS      TO  SPA-K03X-GMN-ADRL
                                                                  (IDX)
                MOVE    SYS-9001-PORT1        TO  SPA-K03X-GMN-PORTL
                                                                   (IDX)
