@@ -47,6 +47,7 @@
       *  02.01.07    NACL-太田    04/01/23  収納機能情報タグ追加
       *  02.01.08    NACL-多々納  04/03/08  時間外加算特例乳幼児他追加
       *  02.01.09    NACL-藤原    04/03/08  生保受給者番号の追加
+      *  02.01.10    NACL-多々納  04/03/10  時間外加算乳幼児チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -124,6 +125,30 @@
                        09  SPA-GMN-GAIMOVE-COMB.
                            11  SPA-GMN-GAIMOVE-LIST        PIC X(22)
                                                            OCCURS  3.
+      *                時間外加算チェック
+                       09  SPA-GMN-JIKANTOKU-CHK-G.
+                           11  SPA-GMN-JIKANTOKU-CHK       PIC X(01).
+                           11  SPA-GMN-JIKANTOKU-CHK-F1    PIC X(01).
+                           11  SPA-GMN-JIKANTOKU-CHKMEI    PIC X(20).
+                       09  SPA-GMN-JIKANTOKU-CHK-COMB.
+                           11  SPA-GMN-JIKANTOKU-CHK-LIST  PIC X(22)
+                                                           OCCURS  2.
+      *                チェック除外時間
+                       09  SPA-GMN-JIKANCHK-WEEK           OCCURS   2.
+                           11  SPA-GMN-JIKANCHK-WST.
+                               13  SPA-GMN-JIKANWST-HH      PIC X(02).
+                               13  SPA-GMN-JIKANWST-MM      PIC X(02).
+                           11  SPA-GMN-JIKANCHK-WED.
+                               13  SPA-GMN-JIKANWED-HH      PIC X(02).
+                               13  SPA-GMN-JIKANWED-MM      PIC X(02).
+                       09  SPA-GMN-JIKANCHK-SAT            OCCURS   2.
+                           11  SPA-GMN-JIKANCHK-SST.
+                               13  SPA-GMN-JIKANSST-HH      PIC X(02).
+                               13  SPA-GMN-JIKANSST-MM      PIC X(02).
+                           11  SPA-GMN-JIKANCHK-SED.
+                               13  SPA-GMN-JIKANSED-HH      PIC X(02).
+                               13  SPA-GMN-JIKANSED-MM      PIC X(02).
+      *
       *                包括まとめ
                        09  SPA-GMN-HOUKATU-G.
                            11  SPA-GMN-HOUKATU             PIC X(01).
@@ -239,6 +264,23 @@
                    07  SPA-NAI-STYUKYMD       PIC 9(08).
                    07  SPA-NAI-EDYUKYMD       PIC 9(08).
       *
+      *                チェック除外時間
+                   07  SPA-NAI-JIKAN-TIME.
+                       09  SPA-NAI-JIKANCHK-WEEK           OCCURS   2.
+                           11  SPA-NAI-JIKANCHK-WST.
+                               13  SPA-NAI-JIKANWST-HH      PIC 9(02).
+                               13  SPA-NAI-JIKANWST-MM      PIC 9(02).
+                           11  SPA-NAI-JIKANCHK-WED.
+                               13  SPA-NAI-JIKANWED-HH      PIC 9(02).
+                               13  SPA-NAI-JIKANWED-MM      PIC 9(02).
+                       09  SPA-NAI-JIKANCHK-SAT             OCCURS   2.
+                           11  SPA-NAI-JIKANCHK-SST.
+                               13  SPA-NAI-JIKANSST-HH      PIC 9(02).
+                               13  SPA-NAI-JIKANSST-MM      PIC 9(02).
+                           11  SPA-NAI-JIKANCHK-SED.
+                               13  SPA-NAI-JIKANSED-HH      PIC 9(02).
+                               13  SPA-NAI-JIKANSED-MM      PIC 9(02).
+      *
            COPY    "ENUM-VALUE".
       *
        01  FLG-AREA.
@@ -254,6 +296,8 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+      *
+           03  IDT                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -320,6 +364,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    数字変換領域
+           COPY    "CPORCSNUM.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -551,6 +598,11 @@
                                        TO  SPA-GMN-SURYOZERO-LIST(1)
            MOVE    "1 入力エラーとする"
                                        TO  SPA-GMN-SURYOZERO-LIST(2)
+      *    時間外加算チェック
+           MOVE    "0 チェックしない"
+                                       TO  SPA-GMN-JIKANTOKU-CHK-LIST(1)
+           MOVE    "1 チェックする"
+                                       TO  SPA-GMN-JIKANTOKU-CHK-LIST(2)
       *
       *    入院調基チェック
            MOVE    "0 チェックしない"
@@ -707,7 +759,58 @@
       *        画像診断管理加算１
                MOVE    SYS-1008-GAZOUKSN1-FLG
                                        TO  SPA-GMN-GAZOUKSN1
+      *
+      *        時間外加算チェック
+               MOVE    SYS-1008-JIKANTOKU-CHK
+                                       TO  SPA-GMN-JIKANTOKU-CHK
+      *        チェック除外時間
+               MOVE    SYS-1008-JIKANTOKU-CHK
+                                       TO  SPA-GMN-JIKANTOKU-CHK
+      *        平日
+               IF      SYS-1008-JIKANCHK-WEEK-G    NOT NUMERIC
+                   MOVE    ZERO            TO  SYS-1008-JIKANCHK-WEEK-G
+               END-IF
+               MOVE      SYS-1008-JIKANCHK-WST(1)
+                                           TO  SPA-NAI-JIKANCHK-WST(1)
+               MOVE      SYS-1008-JIKANCHK-WST(2)
+                                           TO  SPA-NAI-JIKANCHK-WST(2)
+               MOVE      SYS-1008-JIKANCHK-WED(1)
+                                           TO  SPA-NAI-JIKANCHK-WED(1)
+               MOVE      SYS-1008-JIKANCHK-WED(2)
+                                           TO  SPA-NAI-JIKANCHK-WED(2)
+      *        土曜
+               IF      SYS-1008-JIKANCHK-SAT-G    NOT NUMERIC
+                   MOVE    ZERO            TO  SYS-1008-JIKANCHK-SAT-G
+               END-IF
+               MOVE      SYS-1008-JIKANCHK-SST(1)
+                                           TO  SPA-NAI-JIKANCHK-SST(1)
+               MOVE      SYS-1008-JIKANCHK-SST(2)
+                                           TO  SPA-NAI-JIKANCHK-SST(2)
+               MOVE      SYS-1008-JIKANCHK-SED(1)
+                                           TO  SPA-NAI-JIKANCHK-SED(1)
+               MOVE      SYS-1008-JIKANCHK-SED(2)
+                                           TO  SPA-NAI-JIKANCHK-SED(2)
            END-IF
+      *    チェック除外時間
+           PERFORM VARYING     IDT     FROM    1   BY  1
+                   UNTIL       IDT     >   2
+               MOVE    SPA-NAI-JIKANWST-HH(IDT)
+                                      TO  SPA-GMN-JIKANWST-HH(IDT)
+               MOVE    SPA-NAI-JIKANWST-MM(IDT)
+                                      TO  SPA-GMN-JIKANWST-MM(IDT)
+               MOVE    SPA-NAI-JIKANWED-HH(IDT)
+                                      TO  SPA-GMN-JIKANWED-HH(IDT)
+               MOVE    SPA-NAI-JIKANWED-MM(IDT)
+                                      TO  SPA-GMN-JIKANWED-MM(IDT)
+               MOVE    SPA-NAI-JIKANSST-HH(IDT)
+                                      TO  SPA-GMN-JIKANSST-HH(IDT)
+               MOVE    SPA-NAI-JIKANSST-MM(IDT)
+                                      TO  SPA-GMN-JIKANSST-MM(IDT)
+               MOVE    SPA-NAI-JIKANSED-HH(IDT)
+                                      TO  SPA-GMN-JIKANSED-HH(IDT)
+               MOVE    SPA-NAI-JIKANSED-MM(IDT)
+                                      TO  SPA-GMN-JIKANSED-MM(IDT)
+           END-PERFORM
       *
       *    入院初診料
            MOVE    ZERO                TO  FLG-OK
@@ -841,6 +944,21 @@
                 WHEN    OTHER
                     MOVE    SPA-GMN-CHOKICHK-LIST(1)
                                                TO  SPA-GMN-CHOKICHK-G
+            END-EVALUATE
+      *    チェック除外時間
+           IF      SPA-GMN-JIKANTOKU-CHK   =   SPACE
+               MOVE    "0"            TO  SPA-GMN-JIKANTOKU-CHK
+           END-IF
+           EVALUATE    SPA-GMN-JIKANTOKU-CHK
+                WHEN    "0"
+                    MOVE    SPA-GMN-JIKANTOKU-CHK-LIST(1)
+                                           TO  SPA-GMN-JIKANTOKU-CHK-G
+                WHEN    "1"
+                    MOVE    SPA-GMN-JIKANTOKU-CHK-LIST(2)
+                                           TO  SPA-GMN-JIKANTOKU-CHK-G
+                WHEN    OTHER
+                    MOVE    SPA-GMN-JIKANTOKU-CHK-LIST(1)
+                                           TO  SPA-GMN-JIKANTOKU-CHK-G
             END-EVALUATE
       *
       *     診療科コードセット
@@ -1117,6 +1235,21 @@
       *
            MOVE    W07-SRYKACD         TO  SPA-GMN-SRYKACD
            MOVE    W07-SRYKAMEI        TO  SPA-GMN-SRYKAMEI
+      *    時間外加算乳幼児チェック
+           MOVE    W07-JIKANTOKU-CHK   TO  SPA-GMN-JIKANTOKU-CHK-G
+      *    チェック除外時間
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    W07-JIKANW1-HH(IDX) TO  SPA-GMN-JIKANWST-HH (IDX)
+               MOVE    W07-JIKANW1-MM(IDX) TO  SPA-GMN-JIKANWST-MM (IDX)
+               MOVE    W07-JIKANW2-HH(IDX) TO  SPA-GMN-JIKANWED-HH (IDX)
+               MOVE    W07-JIKANW2-MM(IDX) TO  SPA-GMN-JIKANWED-MM (IDX)
+      *
+               MOVE    W07-JIKANS1-HH(IDX) TO  SPA-GMN-JIKANSST-HH (IDX)
+               MOVE    W07-JIKANS1-MM(IDX) TO  SPA-GMN-JIKANSST-MM (IDX)
+               MOVE    W07-JIKANS2-HH(IDX) TO  SPA-GMN-JIKANSED-HH (IDX)
+               MOVE    W07-JIKANS2-MM(IDX) TO  SPA-GMN-JIKANSED-MM (IDX)
+           END-PERFORM
       *
       *    チェック制御
            MOVE    W07-KIKAN           TO  SPA-GMN-INTERACT-KIKAN
@@ -1199,6 +1332,16 @@
                    END-IF
       *            入院調基チェック
                    PERFORM 4103-CHOKICHK-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+      *            時間外加算乳幼児チェック
+                   PERFORM 4103-JIKANTOKU-CHK-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
+      *            チェック除外時間
+                   PERFORM 4103-JIKANCHK-TIME-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                        GO      TO      4102-KIHON-CHK-EXT
                    END-IF
@@ -1526,6 +1669,310 @@
       *
           .
        4103-CHOKICHK-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    時間外加算乳幼児入力チェック処理
+      *****************************************************************
+       4103-JIKANTOKU-CHK-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               IF      SPA-GMN-JIKANTOKU-CHK
+                                      =   SPA-GMN-JIKANTOKU-CHK-LIST
+                                                           (IDX)(1:1)
+                   MOVE    SPA-GMN-JIKANTOKU-CHK-LIST(IDX)
+                                          TO  SPA-GMN-JIKANTOKU-CHK-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    50              TO  SPA-GMN-CUR
+               MOVE    "0030"          TO  SPA-ERRCD
+               GO      TO      4103-JIKANTOKU-CHK-CHK-EXT
+           END-IF
+      *
+          .
+       4103-JIKANTOKU-CHK-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    チェック除外時間チェック処理
+      *****************************************************************
+       4103-JIKANCHK-TIME-SEC          SECTION.
+      *
+      *    時間外チェックなしの時、ゼロとする
+           IF      SPA-GMN-JIKANTOKU-CHK   NOT =   "1"
+               MOVE    SPACE           TO  SPA-GMN-JIKANCHK-WEEK(1)
+               MOVE    SPACE           TO  SPA-GMN-JIKANCHK-WEEK(2)
+               MOVE    SPACE           TO  SPA-GMN-JIKANCHK-SAT (1)
+               MOVE    SPACE           TO  SPA-GMN-JIKANCHK-SAT (2)
+               MOVE    ZERO            TO  SPA-NAI-JIKANCHK-WEEK(1)
+               MOVE    ZERO            TO  SPA-NAI-JIKANCHK-WEEK(2)
+               MOVE    ZERO            TO  SPA-NAI-JIKANCHK-SAT (1)
+               MOVE    ZERO            TO  SPA-NAI-JIKANCHK-SAT (2)
+               GO      TO      4103-JIKANCHK-TIME-EXT
+           END-IF
+      *
+      *    時間判定
+           PERFORM VARYING     IDT     FROM    1   BY  1
+                   UNTIL      (IDT     >   2   )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
+      *
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    SPA-GMN-JIKANWST-HH(IDT)    TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN     NOT =   SPACE )   OR
+                      (SNUM-SYOKBN     NOT =   SPACE )
+                   MOVE    "0031"              TO  SPA-ERRCD
+                   MOVE    51                  TO  SPA-GMN-CUR
+                   COMPUTE SPA-GMN-CUR         =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+               ELSE
+                   MOVE    SNUM-OUTNUM         TO  SPA-NAI-JIKANWST-HH
+                                                                (IDT)
+               END-IF
+      *
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    SPA-GMN-JIKANWST-MM(IDT)    TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN     NOT =   SPACE )   OR
+                      (SNUM-SYOKBN     NOT =   SPACE )
+                   IF      SPA-ERRCD       =   SPACE
+                       MOVE    "0031"          TO  SPA-ERRCD
+                       MOVE    52              TO  SPA-GMN-CUR
+                       COMPUTE SPA-GMN-CUR     =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+                   END-IF
+               ELSE
+                   MOVE    SNUM-OUTNUM         TO  SPA-NAI-JIKANWST-MM
+                                                                (IDT)
+               END-IF
+      *
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    SPA-GMN-JIKANWED-HH(IDT)    TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN     NOT =   SPACE )   OR
+                      (SNUM-SYOKBN     NOT =   SPACE )
+                   IF      SPA-ERRCD       =   SPACE
+                       MOVE    "0031"          TO  SPA-ERRCD
+                       MOVE    53              TO  SPA-GMN-CUR
+                       COMPUTE SPA-GMN-CUR     =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+                   END-IF
+               ELSE
+                   MOVE    SNUM-OUTNUM         TO  SPA-NAI-JIKANWED-HH
+                                                                (IDT)
+               END-IF
+      *
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    SPA-GMN-JIKANWED-MM(IDT)    TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN     NOT =   SPACE )   OR
+                      (SNUM-SYOKBN     NOT =   SPACE )
+                   IF      SPA-ERRCD       =   SPACE
+                       MOVE    "0031"          TO  SPA-ERRCD
+                       MOVE    54              TO  SPA-GMN-CUR
+                       COMPUTE SPA-GMN-CUR     =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+                   END-IF
+               ELSE
+                   MOVE    SNUM-OUTNUM         TO  SPA-NAI-JIKANWED-MM
+                                                                (IDT)
+               END-IF
+      *
+      *
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    SPA-GMN-JIKANSST-HH(IDT)    TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN     NOT =   SPACE )   OR
+                      (SNUM-SYOKBN     NOT =   SPACE )
+                   IF      SPA-ERRCD       =   SPACE
+                       MOVE    "0031"          TO  SPA-ERRCD
+                       MOVE    59              TO  SPA-GMN-CUR
+                       COMPUTE SPA-GMN-CUR     =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+                   END-IF
+               ELSE
+                   MOVE    SNUM-OUTNUM         TO  SPA-NAI-JIKANSST-HH
+                                                                (IDT)
+               END-IF
+      *
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    SPA-GMN-JIKANSST-MM(IDT)    TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN     NOT =   SPACE )   OR
+                      (SNUM-SYOKBN     NOT =   SPACE )
+                   IF      SPA-ERRCD       =   SPACE
+                       MOVE    "0031"          TO  SPA-ERRCD
+                       MOVE    60              TO  SPA-GMN-CUR
+                       COMPUTE SPA-GMN-CUR     =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+                   END-IF
+               ELSE
+                   MOVE    SNUM-OUTNUM         TO  SPA-NAI-JIKANSST-MM
+                                                                (IDT)
+               END-IF
+      *
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    SPA-GMN-JIKANSED-HH(IDT)    TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN     NOT =   SPACE )   OR
+                      (SNUM-SYOKBN     NOT =   SPACE )
+                   IF      SPA-ERRCD       =   SPACE
+                       MOVE    "0031"          TO  SPA-ERRCD
+                       MOVE    61              TO  SPA-GMN-CUR
+                       COMPUTE SPA-GMN-CUR     =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+                   END-IF
+               ELSE
+                   MOVE    SNUM-OUTNUM         TO  SPA-NAI-JIKANSED-HH
+                                                                (IDT)
+               END-IF
+      *
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    SPA-GMN-JIKANSED-MM(IDT)    TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN     NOT =   SPACE )   OR
+                      (SNUM-SYOKBN     NOT =   SPACE )
+                   IF      SPA-ERRCD       =   SPACE
+                       MOVE    "0031"          TO  SPA-ERRCD
+                       MOVE    62              TO  SPA-GMN-CUR
+                       COMPUTE SPA-GMN-CUR     =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+                   END-IF
+               ELSE
+                   MOVE    SNUM-OUTNUM         TO  SPA-NAI-JIKANSED-MM
+                                                                (IDT)
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4103-JIKANCHK-TIME-EXT
+           END-IF
+      *
+           PERFORM VARYING     IDT     FROM    1   BY  1
+                   UNTIL       IDT     >   2
+               MOVE    SPA-NAI-JIKANWST-HH(IDT)
+                                      TO  SPA-GMN-JIKANWST-HH(IDT)
+               MOVE    SPA-NAI-JIKANWST-MM(IDT)
+                                      TO  SPA-GMN-JIKANWST-MM(IDT)
+               MOVE    SPA-NAI-JIKANWED-HH(IDT)
+                                      TO  SPA-GMN-JIKANWED-HH(IDT)
+               MOVE    SPA-NAI-JIKANWED-MM(IDT)
+                                      TO  SPA-GMN-JIKANWED-MM(IDT)
+               MOVE    SPA-NAI-JIKANSST-HH(IDT)
+                                      TO  SPA-GMN-JIKANSST-HH(IDT)
+               MOVE    SPA-NAI-JIKANSST-MM(IDT)
+                                      TO  SPA-GMN-JIKANSST-MM(IDT)
+               MOVE    SPA-NAI-JIKANSED-HH(IDT)
+                                      TO  SPA-GMN-JIKANSED-HH(IDT)
+               MOVE    SPA-NAI-JIKANSED-MM(IDT)
+                                      TO  SPA-GMN-JIKANSED-MM(IDT)
+           END-PERFORM
+      *
+      *    時間判定
+           PERFORM VARYING     IDT     FROM    1   BY  1
+                   UNTIL      (IDT     >   2   )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      SPA-NAI-JIKANWST-HH(IDT)    >   23
+                   MOVE    "0031"              TO  SPA-ERRCD
+                   MOVE    51                  TO  SPA-GMN-CUR
+                   COMPUTE SPA-GMN-CUR         =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+               END-IF
+               IF      SPA-NAI-JIKANWST-MM(IDT)    >   59
+                 AND  (SPA-ERRCD           =   SPACE )
+                   MOVE    "0031"              TO  SPA-ERRCD
+                   MOVE    52                  TO  SPA-GMN-CUR
+                   COMPUTE SPA-GMN-CUR         =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+               END-IF
+               IF      SPA-NAI-JIKANWED-HH(IDT)    >   23
+                 AND  (SPA-ERRCD           =   SPACE )
+                   MOVE    "0031"              TO  SPA-ERRCD
+                   MOVE    53                  TO  SPA-GMN-CUR
+                   COMPUTE SPA-GMN-CUR         =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+               END-IF
+               IF      SPA-NAI-JIKANWED-MM(IDT)    >   59
+                 AND  (SPA-ERRCD           =   SPACE )
+                   MOVE    "0031"              TO  SPA-ERRCD
+                   MOVE    54                  TO  SPA-GMN-CUR
+                   COMPUTE SPA-GMN-CUR         =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+               END-IF
+               IF      SPA-NAI-JIKANSST-HH(IDT)    >   23
+                 AND  (SPA-ERRCD           =   SPACE )
+                   MOVE    "0031"              TO  SPA-ERRCD
+                   MOVE    59                  TO  SPA-GMN-CUR
+                   COMPUTE SPA-GMN-CUR         =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+               END-IF
+               IF      SPA-NAI-JIKANSST-MM(IDT)    >   59
+                 AND  (SPA-ERRCD           =   SPACE )
+                   MOVE    "0031"              TO  SPA-ERRCD
+                   MOVE    60                  TO  SPA-GMN-CUR
+                   COMPUTE SPA-GMN-CUR         =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+               END-IF
+               IF      SPA-NAI-JIKANSED-HH(IDT)    >   23
+                 AND  (SPA-ERRCD           =   SPACE )
+                   MOVE    "0031"              TO  SPA-ERRCD
+                   MOVE    61                  TO  SPA-GMN-CUR
+                   COMPUTE SPA-GMN-CUR         =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+               END-IF
+               IF      SPA-NAI-JIKANSED-MM(IDT)    >   59
+                 AND  (SPA-ERRCD           =   SPACE )
+                   MOVE    "0031"              TO  SPA-ERRCD
+                   MOVE    62                  TO  SPA-GMN-CUR
+                   COMPUTE SPA-GMN-CUR         =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING     IDT     FROM    1   BY  1
+                   UNTIL      (IDT     >   2   )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF     (SPA-NAI-JIKANCHK-WED(IDT)   >   ZERO  ) AND
+                      (SPA-NAI-JIKANCHK-WST(IDT)
+                                           >  SPA-NAI-JIKANCHK-WED(IDT))
+                   MOVE    "0032"              TO  SPA-ERRCD
+                   MOVE    51                  TO  SPA-GMN-CUR
+                   COMPUTE SPA-GMN-CUR         =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+               END-IF
+               IF     (SPA-NAI-JIKANCHK-SED(IDT)   >   ZERO  )  AND
+                      (SPA-NAI-JIKANCHK-SST(IDT)
+                                           >  SPA-NAI-JIKANCHK-SED(IDT))
+                   MOVE    "0032"              TO  SPA-ERRCD
+                   MOVE    59                  TO  SPA-GMN-CUR
+                   COMPUTE SPA-GMN-CUR         =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+               END-IF
+           END-PERFORM
+      *
+          .
+       4103-JIKANCHK-TIME-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2102,8 +2549,29 @@
       *    画像診断管理加算１（写真診断）
            MOVE    SPA-GMN-GAZOUKSN1       TO  SYS-1008-GAZOUKSN1-FLG
       *
+      *    時間外加算乳幼児チェック
+           MOVE    SPA-GMN-JIKANTOKU-CHK   TO
+                                           SYS-1008-JIKANTOKU-CHK
+      *    チェック除外時間
+           MOVE    SPA-NAI-JIKANCHK-WST(1) TO
+                                           SYS-1008-JIKANCHK-WST(1)
+           MOVE    SPA-NAI-JIKANCHK-WST(2) TO
+                                           SYS-1008-JIKANCHK-WST(2)
+           MOVE    SPA-NAI-JIKANCHK-WED(1) TO
+                                           SYS-1008-JIKANCHK-WED(1)
+           MOVE    SPA-NAI-JIKANCHK-WED(2) TO
+                                           SYS-1008-JIKANCHK-WED(2)
+           MOVE    SPA-NAI-JIKANCHK-SST(1) TO
+                                           SYS-1008-JIKANCHK-SST(1)
+           MOVE    SPA-NAI-JIKANCHK-SST(2) TO
+                                           SYS-1008-JIKANCHK-SST(2)
+           MOVE    SPA-NAI-JIKANCHK-SED(1) TO
+                                           SYS-1008-JIKANCHK-SED(1)
+           MOVE    SPA-NAI-JIKANCHK-SED(2) TO
+                                           SYS-1008-JIKANCHK-SED(2)
+      *
            MOVE    SYS-1008-REC            TO  SYSKANRI-REC
-      *     
+      *
            IF      FLG-SYSKANRI            =   ZERO
       *
                PERFORM 800-MCNDATE-SEC
@@ -2366,8 +2834,45 @@
                AND     SPA-GMN-DATA (4)     =   "1"
                    MOVE    "0005"               TO  SPA-ERRCD
                    MOVE    4                    TO  SPA-GMN-CUR
+                   GO      TO      4900-KANRENCHK-EXT
                END-IF
            END-IF
+      *
+      *    時間外チェックありの時、ゼロはエラー
+           IF      SPA-GMN-JIKANTOKU-CHK   =   "1"
+               IF     (SPA-NAI-JIKANCHK-WEEK(1)    =   ZERO )  AND
+                      (SPA-NAI-JIKANCHK-WEEK(2)    =   ZERO )  AND
+                      (SPA-NAI-JIKANCHK-SAT (1)    =   ZERO )  AND
+                      (SPA-NAI-JIKANCHK-SAT (2)    =   ZERO )
+                   MOVE    "0033"              TO  SPA-ERRCD
+                   MOVE    51                  TO  SPA-GMN-CUR
+                   GO      TO      4900-KANRENCHK-EXT
+               END-IF
+           END-IF
+      *
+           PERFORM VARYING     IDT     FROM    1   BY  1
+                   UNTIL      (IDT     >   2   )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF    ((SPA-NAI-JIKANCHK-WST(IDT)   >   ZERO  ) OR
+                      (SPA-NAI-JIKANCHK-WED(IDT)   >   ZERO  )) AND
+                      (SPA-NAI-JIKANCHK-WST(IDT)
+                                           >  SPA-NAI-JIKANCHK-WED(IDT))
+                   MOVE    "0032"              TO  SPA-ERRCD
+                   MOVE    51                  TO  SPA-GMN-CUR
+                   COMPUTE SPA-GMN-CUR         =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+               END-IF
+               IF    ((SPA-NAI-JIKANCHK-SST(IDT)   >   ZERO  ) OR
+                      (SPA-NAI-JIKANCHK-SED(IDT)   >   ZERO  )) AND
+                      (SPA-NAI-JIKANCHK-SST(IDT)
+                                           >  SPA-NAI-JIKANCHK-SED(IDT))
+                   MOVE    "0032"              TO  SPA-ERRCD
+                   MOVE    59                  TO  SPA-GMN-CUR
+                   COMPUTE SPA-GMN-CUR         =  ((IDT  -   1  )  *  4)
+                                               +   SPA-GMN-CUR
+               END-IF
+           END-PERFORM
+      *
       *
            IF      SPA-ERRCD            =   SPACE
                MOVE    WRK-GMN-CUR          TO  SPA-GMN-CUR
@@ -2499,6 +3004,40 @@
            END-PERFORM
            MOVE    2                   TO  W07-HOUKATU-COUNT
       *
+      *    時間外加算チェック
+           MOVE    SPA-GMN-JIKANTOKU-CHK-G TO  W07-JIKANTOKU-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   2
+               MOVE    SPA-GMN-JIKANTOKU-CHK-LIST (IDX)
+                                       TO  W07-JIKANTOKU-CHK-ITEM(IDX)
+           END-PERFORM
+           MOVE    2                   TO  W07-JIKANTOKU-CHK-COUNT
+      *    チェック除外時間
+           IF      SPA-GMN-JIKANTOKU-CHK   =   "0"
+               CONTINUE
+           ELSE
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                        UNTIL       IDX     >   2
+                   MOVE    SPA-GMN-JIKANWST-HH(IDX)
+                                           TO  W07-JIKANW1-HH (IDX)
+                   MOVE    SPA-GMN-JIKANWST-MM(IDX)
+                                           TO  W07-JIKANW1-MM (IDX)
+                   MOVE    SPA-GMN-JIKANWED-HH(IDX)
+                                           TO  W07-JIKANW2-HH (IDX)
+                   MOVE    SPA-GMN-JIKANWED-MM(IDX)
+                                           TO  W07-JIKANW2-MM (IDX)
+      *
+                   MOVE    SPA-GMN-JIKANSST-HH(IDX)
+                                           TO  W07-JIKANS1-HH (IDX)
+                   MOVE    SPA-GMN-JIKANSST-MM(IDX)
+                                           TO  W07-JIKANS1-MM (IDX)
+                   MOVE    SPA-GMN-JIKANSED-HH(IDX)
+                                           TO  W07-JIKANS2-HH (IDX)
+                   MOVE    SPA-GMN-JIKANSED-MM(IDX)
+                                           TO  W07-JIKANS2-MM (IDX)
+               END-PERFORM
+           END-IF
+      *
       *    カルテの病名対象
            MOVE    SPA-GMN-BYOMEIKBN-G     TO  W07-BYOMEIKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2610,6 +3149,40 @@
            IF      SPA-GMN-DATA(7)         =   "1"
                MOVE    WIDGET-NORMAL   TO  W07-SRYKACD-STATE
            END-IF
+      *    チェック除外時間
+           IF      SPA-GMN-JIKANTOKU-CHK   =   "1"
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   2
+                   MOVE    WIDGET-NORMAL   TO  W07-JIKANW1-HH-STATE(IDX)
+                   MOVE    WIDGET-NORMAL   TO  W07-JIKANW1-MM-STATE(IDX)
+                   MOVE    WIDGET-NORMAL   TO  W07-JIKANW2-HH-STATE(IDX)
+                   MOVE    WIDGET-NORMAL   TO  W07-JIKANW2-MM-STATE(IDX)
+                   MOVE    WIDGET-NORMAL   TO  W07-JIKANS1-HH-STATE(IDX)
+                   MOVE    WIDGET-NORMAL   TO  W07-JIKANS1-MM-STATE(IDX)
+                   MOVE    WIDGET-NORMAL   TO  W07-JIKANS2-HH-STATE(IDX)
+                   MOVE    WIDGET-NORMAL   TO  W07-JIKANS2-MM-STATE(IDX)
+               END-PERFORM
+           ELSE
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   2
+                   MOVE    WIDGET-INSENSITIVE  TO  W07-JIKANW1-HH-STATE
+                                                                  (IDX)
+                   MOVE    WIDGET-INSENSITIVE  TO  W07-JIKANW1-MM-STATE
+                                                                  (IDX)
+                   MOVE    WIDGET-INSENSITIVE  TO  W07-JIKANW2-HH-STATE
+                                                                  (IDX)
+                   MOVE    WIDGET-INSENSITIVE  TO  W07-JIKANW2-MM-STATE
+                                                                  (IDX)
+                   MOVE    WIDGET-INSENSITIVE  TO  W07-JIKANS1-HH-STATE
+                                                                  (IDX)
+                   MOVE    WIDGET-INSENSITIVE  TO  W07-JIKANS1-MM-STATE
+                                                                  (IDX)
+                   MOVE    WIDGET-INSENSITIVE  TO  W07-JIKANS2-HH-STATE
+                                                                  (IDX)
+                   MOVE    WIDGET-INSENSITIVE  TO  W07-JIKANS2-MM-STATE
+                                                                  (IDX)
+               END-PERFORM
+           END-IF
            .
        51O-GSRAUTH-EXT.
            EXIT.
@@ -2678,6 +3251,22 @@
                                                        TO  SPA-ERRMSG
                    MOVE    "チェックエラー"
                                                    TO  SPA-ERRMSG(33:)
+               WHEN    "0030"
+                   MOVE    "時間外加算（乳幼児）チェックエラー"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0031"
+                   MOVE    "チェック除外時間が違います。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0032"
+                   MOVE    "チェック除外開始時間＜終了時間で"
+                                                       TO  SPA-ERRMSG
+                   MOVE    "入力して下さい"
+                                               TO  SPA-ERRMSG(35:)
+               WHEN    "0033"
+                   MOVE    "チェック除外時間が設定されていません。"
+                                                       TO  SPA-ERRMSG
+                   MOVE    "入力して下さい"
+                                               TO  SPA-ERRMSG(39:)
       *
                WHEN    "0020"
                    MOVE    "カルテの病名対象区分がありません。"
@@ -2831,6 +3420,41 @@
                    MOVE  "JIKANTOKUNYU"    TO   MCP-WIDGET
                WHEN    18
                    MOVE  "GAZOUKSN1"       TO   MCP-WIDGET
+      *        時間外加算チェック
+               WHEN    50
+                   MOVE  "JIKANTOKU_CHK"   TO   MCP-WIDGET
+               WHEN    51
+                   MOVE  "JIKANW1_HH1"     TO   MCP-WIDGET
+               WHEN    52
+                   MOVE  "JIKANW1_MM1"     TO   MCP-WIDGET
+               WHEN    53
+                   MOVE  "JIKANW1_HH2"     TO   MCP-WIDGET
+               WHEN    54
+                   MOVE  "JIKANW1_MM2"     TO   MCP-WIDGET
+               WHEN    55
+                   MOVE  "JIKANW2_HH1"     TO   MCP-WIDGET
+               WHEN    56
+                   MOVE  "JIKANW2_MM1"     TO   MCP-WIDGET
+               WHEN    57
+                   MOVE  "JIKANW2_HH2"     TO   MCP-WIDGET
+               WHEN    58
+                   MOVE  "JIKANW2_MM2"     TO   MCP-WIDGET
+               WHEN    59
+                   MOVE  "JIKANS1_HH1"     TO   MCP-WIDGET
+               WHEN    60
+                   MOVE  "JIKANS1_MM1"     TO   MCP-WIDGET
+               WHEN    61
+                   MOVE  "JIKANS1_HH2"     TO   MCP-WIDGET
+               WHEN    62
+                   MOVE  "JIKANS1_MM2"     TO   MCP-WIDGET
+               WHEN    63
+                   MOVE  "JIKANS2_HH1"     TO   MCP-WIDGET
+               WHEN    64
+                   MOVE  "JIKANS2_MM1"     TO   MCP-WIDGET
+               WHEN    65
+                   MOVE  "JIKANS2_HH2"     TO   MCP-WIDGET
+               WHEN    66
+                   MOVE  "JIKANS2_MM2"     TO   MCP-WIDGET
       *
                WHEN    20
                    MOVE  "BYOMEIKBN"       TO   MCP-WIDGET
@@ -2910,7 +3534,48 @@
                WHEN    "SURYOZERO"
                    MOVE    15              TO  SPA-GMN-CUR
                WHEN    "CHOKICHK"
+      ************ MOVE    16              TO  SPA-GMN-CUR
+                   MOVE    50              TO  SPA-GMN-CUR
+      *        時間外加算チェック
+               WHEN    "JIKANTOKU_CHK"
+                   IF      SPA-GMN-JIKANTOKU-CHK   =   "1"
+                       MOVE    51          TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    16          TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    "JIKANW1_HH1"
+                   MOVE    52              TO  SPA-GMN-CUR
+               WHEN    "JIKANW1_MM1"
+                   MOVE    53              TO  SPA-GMN-CUR
+               WHEN    "JIKANW1_HH2"
+                   MOVE    54              TO  SPA-GMN-CUR
+               WHEN    "JIKANW1_MM2"
+                   MOVE    55              TO  SPA-GMN-CUR
+               WHEN    "JIKANW2_HH1"
+                   MOVE    56              TO  SPA-GMN-CUR
+               WHEN    "JIKANW2_MM1"
+                   MOVE    57              TO  SPA-GMN-CUR
+               WHEN    "JIKANW2_HH2"
+                   MOVE    58              TO  SPA-GMN-CUR
+               WHEN    "JIKANW2_MM2"
+                   MOVE    59              TO  SPA-GMN-CUR
+               WHEN    "JIKANS1_HH1"
+                   MOVE    60              TO  SPA-GMN-CUR
+               WHEN    "JIKANS1_MM1"
+                   MOVE    61              TO  SPA-GMN-CUR
+               WHEN    "JIKANS1_HH2"
+                   MOVE    62              TO  SPA-GMN-CUR
+               WHEN    "JIKANS1_MM2"
+                   MOVE    63              TO  SPA-GMN-CUR
+               WHEN    "JIKANS2_HH1"
+                   MOVE    64              TO  SPA-GMN-CUR
+               WHEN    "JIKANS2_MM1"
+                   MOVE    65              TO  SPA-GMN-CUR
+               WHEN    "JIKANS2_HH2"
+                   MOVE    66              TO  SPA-GMN-CUR
+               WHEN    "JIKANS2_MM2"
                    MOVE    16              TO  SPA-GMN-CUR
+      *
                WHEN    "HOUKATU"
                    MOVE    99              TO  SPA-GMN-CUR
       *        患者登録情報
