@@ -140,13 +140,24 @@
                    MOVE    "手技料を入力して下さい" 
                                        TO  SPA-ERRMSG
                WHEN    "0014"
-                   MOVE    "入外適用エラー" 
+                   MOVE    "入院のコードです。外来では入力できません。" 
+                                       TO  SPA-ERRMSG
+               WHEN    "0114"
+                   MOVE    "外来のコードです。入院では入力できません。" 
                                        TO  SPA-ERRMSG
                WHEN    "0015"
-                   MOVE    "老人適用エラー" 
+                   MOVE    "老人のコードです。入力できません。" 
                                        TO  SPA-ERRMSG
+               WHEN    "0115"
+                   MOVE    "老人のコードではありません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "入力できません。" 
+                                       TO  SPA-ERRMSG(29:)
                WHEN    "0016"
-                   MOVE    "病院診療所適用エラー" 
+                   MOVE    "病院のコードです。診療所では入力できません"
+                                       TO  SPA-ERRMSG
+               WHEN    "0116"
+                   MOVE    "診療所のコードです。病院では入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "0017"
                    MOVE    "初診・再診は重複できません"
@@ -734,6 +745,12 @@
                WHEN    "9200"
                    MOVE    "入院・食事は外来では入力できません。"
                                        TO  SPA-ERRMSG
+      *
+               WHEN    "9300"
+                   MOVE    "患者登録の業務権限はありません。"
+                                                TO  SPA-ERRMSG
+                   MOVE    "患者登録はできません。"
+                                                TO  SPA-ERRMSG(33:)
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.

@@ -41,6 +41,7 @@
       * 01.00.12     NACL-Â¿¡¹Ç¼  03/02/26  ÅÀ¿ô¥¼¥í¤Î¤­¤¶¤ßÃÍ·×»»¤Î½¤Àµ
       * 01.00.13     NACL-Â¿¡¹Ç¼  03/04/25  Ã±½ã»£±Æ¤Ë´ÖÀÜ»£±Æ¤Ê¤É¤òÄÉ²Ã
       * 01.00.14     NACL-Â¿¡¹Ç¼  03/07/30  Æ±»þÊ»»ÜÅÀ¿ô·×»»½¤ÀµÂ¾
+      * 01.00.15     NACL-Â¿¡¹Ç¼  03/09/26  £Ã£Ô¡¢£Í£Ò£ÉÆ±»þÆþÎÏÄÉ²Ã
       *****************************************************************
       *
       *
@@ -218,6 +219,11 @@
            03  WRK-XSEN-SRYCD-I     PIC X(09).
            03  WRK-XSEN-SRYCD-R     PIC X(09).
       *
+      *    £Ã£Ô¡¤£Í£Ò£É²ó¿ô
+           03  WRK-CTMRI-CNT-G.
+               05  WRK-CTMRI-CNT   PIC 9(04)    OCCURS  3.
+           03  WRK-CTMRI-KAI       PIC 9(03).
+      *
       *    ·Ù¹ð¥á¥Ã¥»¡¼¥¸
            03  WRK-KIDCD           PIC X(04).
       *
@@ -348,7 +354,6 @@
                05  TBL-XSEN-SRYCD-I    PIC X(09).
                05  TBL-XSEN-KBN2       PIC X(02).
                05  TBL-XSEN-SRYCD-R    PIC X(09).
-      *
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -913,12 +918,14 @@
       *
       *    »»ÄêÍúÎò¥Á¥§¥Ã¥¯
            INITIALIZE                      ORCSC91AREA
-           MOVE    "3"                 TO  LNK-SC91-KBN
+      *****MOVE    "3"                 TO  LNK-SC91-KBN
+           MOVE    "4"                 TO  LNK-SC91-KBN
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
            MOVE    WRK-HEN-SRYCD       TO  LNK-SC91-SRYCD
            MOVE    IDX-Z               TO  LNK-SC91-GMN-IDX
+           MOVE    LNK-ORCSC-KAISU     TO  LNK-SC91-KAISU
            MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
-           CALL    "ORCSC91"       USING
+           CALL    "ORCSC91"           USING
                                        MCPAREA
                                        ORCSC91AREA
                                        WRK-SCR-REC
@@ -934,21 +941,22 @@
            IF      LNK-SC91-CNT        =   ZERO
       *
       *        £Ã£Ô¡¥£Í£Ò£É¤Î»»Äê¥Á¥§¥Ã¥¯
-               IF      WRK-COM-INPUTCD (IDX-Z)     =   "170022290"  OR
-                                                       "170022390"  OR
-                                                       "170022490"  OR
-                                                       "170701470"  OR
-                                                       "170701570"  OR
-                                                       "170701670"
-                   IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE )  AND 
-                          (LNK-ORCSC-TOROKU    NOT =   "2"   )
-                       MOVE    "K003"              TO  WRK-KIDCD
-                       MOVE    "1"                 TO  WRK-COM-KZMFLG
-                                                             (IDX-Z)
-                       MOVE    "2"                 TO  WRK-COM-CUR
-                                                             (IDX-Z)
-                   END-IF
-               END-IF
+      *        IF      WRK-COM-INPUTCD (IDX-Z)     =   "170022290"  OR
+      *                                                "170022390"  OR
+      *                                                "170022490"  OR
+      *                                                "170701470"  OR
+      *                                                "170701570"  OR
+      *                                                "170701670"
+      *            IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE )  AND 
+      *                   (LNK-ORCSC-TOROKU    NOT =   "2"   )
+      *                MOVE    "K003"              TO  WRK-KIDCD
+      *                MOVE    "1"                 TO  WRK-COM-KZMFLG
+      *                                                      (IDX-Z)
+      *                MOVE    "2"                 TO  WRK-COM-CUR
+      *                                                      (IDX-Z)
+      *            END-IF
+      ******** END-IF
+               CONTINUE
            ELSE
       *        Êñ³çÄþ¸º¶èÊ¬È½Äê
                EVALUATE    WRK-COM-HOUKATUTEIGENKBN (IDX-Z)
@@ -2344,6 +2352,10 @@
            MOVE    ZERO                TO  IDX-CT
       *
            MOVE    ZERO                TO  FLG-TENTEKI
+      *    £Ã£Ô¡¢£Í£Ò£É¥Á¥§¥Ã¥¯
+           PERFORM 2002-CTMRI-CNT-SEC
+      *
+           MOVE    ZERO                TO  FLG-TENTEKI
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
@@ -2420,19 +2432,42 @@
            .
        200-ALL-SYORI-EXT.
            EXIT.
-      *        
+      *
+      *****************************************************************
+      *    £Ã£Ô¡¥£Í£Ò£É¤Î»»Äê²ó¿ôÊÔ½¸½èÍý
+      *****************************************************************
+       2002-CTMRI-CNT-SEC                SECTION.
+      *
+           INITIALIZE                      WRK-CTMRI-CNT-G
+      *    Æ¬Éô
+           MOVE    "099700101"         TO  WRK-SRYCD
+           PERFORM 20021-CTMRI-SANTEI-SEC
+           MOVE    LNK-SC91-CNT        TO  WRK-CTMRI-CNT (1)
+      *    ¶í´´
+           MOVE    "099700102"         TO  WRK-SRYCD
+           PERFORM 20021-CTMRI-SANTEI-SEC
+           MOVE    LNK-SC91-CNT        TO  WRK-CTMRI-CNT (2)
+      *        »Í»è
+           MOVE    "099700103"         TO  WRK-SRYCD
+           PERFORM 20021-CTMRI-SANTEI-SEC
+           MOVE    LNK-SC91-CNT        TO  WRK-CTMRI-CNT (3)
+      *
+           .
+       2002-CTMRI-CNT-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    £Ã£Ô¡¥£Í£Ò£É¤Î»»Äê¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
-       2001-CTMRI-CHK-SEC                SECTION.
+       20021-CTMRI-SANTEI-SEC                SECTION.
       *
       *    »»ÄêÍúÎò¥Á¥§¥Ã¥¯
            INITIALIZE                      ORCSC91AREA
-           MOVE    "3"                 TO  LNK-SC91-KBN
+      *****MOVE    "3"                 TO  LNK-SC91-KBN
+           MOVE    "4"                 TO  LNK-SC91-KBN
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
-           MOVE    WRK-COM-CHK-SRYCD (IDX-Z)
-                                       TO  LNK-SC91-SRYCD
-           MOVE    IDX-Z               TO  LNK-SC91-GMN-IDX
+           MOVE    WRK-SRYCD           TO  LNK-SC91-SRYCD
+           MOVE    ZERO                TO  LNK-SC91-GMN-IDX
            MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
            CALL    "ORCSC91"           USING
                                        MCPAREA
@@ -2440,11 +2475,6 @@
                                        WRK-SCR-REC
                                        SPA-AREA
                                        TNS-TENSU-REC
-           IF      LNK-SC91-ERRCD      =   "0001"
-               MOVE    LNK-SC91-ERRCD      TO  SPA-ERRCD
-               MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
-               GO      TO      2001-CTMRI-CHK-EXT
-           END-IF
       *
       *    Åö·î»»Äê¤Ê¤·
            IF      LNK-SC91-ATO-CNT    <=  LNK-SC91-CNT
@@ -2453,59 +2483,86 @@
            ELSE
                MOVE    ZERO            TO  LNK-SC91-CNT
            END-IF
-           IF      LNK-SC91-CNT        =  ZERO
-      *        £Ã£Ô¡¥£Í£Ò£É¤Î»»Äê¥Á¥§¥Ã¥¯
-               IF      WRK-COM-INPUTCD (IDX-Z)     =   "170022290"  OR
-                                                       "170022390"  OR
-                                                       "170022490"  OR
-                                                       "170701470"  OR
-                                                       "170701570"  OR
-                                                       "170701670"
-                   IF     (WRK-COM-KZMFLG (IDX-Z)      =   SPACE ) AND 
-                          (LNK-ORCSC-TOROKU        NOT =   "2"   )
-                       MOVE    "K003"              TO  SPA-ERRCD
-                       MOVE    "2"                 TO  WRK-COM-CUR
-                                                               (IDX-Z)
-                       MOVE    "1"                 TO  WRK-COM-KZMFLG
-                                                               (IDX-Z)
-                       MOVE    IDX-Z               TO  IDX-CT
-                   END-IF
-               END-IF
+      *
+           .
+       20021-CTMRI-SANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ã£Ô¡¥£Í£Ò£É¤Î»»Äê¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       2001-CTMRI-CHK-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-KIDCD
+           MOVE    SPACE               TO  WRK-SRYCD
+           IF      SPA-NYUGAIKBN       =   "2"
+               MOVE    WRK-COM-KAISU (IDX-Z)   TO  WRK-CTMRI-KAI
            ELSE
-               IF      WRK-COM-INPUTCD (IDX-Z)     =   "170022290"  OR
-                                                       "170022390"  OR
-                                                       "170022490"  OR
-                                                       "170701470"  OR
-                                                       "170701570"  OR
-                                                       "170701670"
-                   CONTINUE
-               ELSE
-      *************MOVE    "0034"              TO  SPA-ERRCD
-                   MOVE    "0078"              TO  SPA-ERRCD
-                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
-                   MOVE    IDX-Z               TO  IDX-CT
-                   MOVE    ZERO                TO  FLG-CHK
-                   IF      LNK-SC91-CNT        =   1
-      *                ²èÌÌÆâ¤Ë¤Î¤ßÂ¸ºß¤¹¤ë»þ¡¢¸å¤ò¥¨¥é¡¼¤È¤¹¤ë 
-                       PERFORM VARYING     IDX-Z2  FROM   IDX-Z   BY  1
-                               UNTIL       IDX-Z2  >   200
-                           IF     (IDX-Z2      NOT =   IDX-Z  )  AND
-                                  (WRK-COM-CHK-SRYCD (IDX-Z2)
-                                                   =  WRK-COM-CHK-SRYCD
-                                                               (IDX-Z))
-                               MOVE    1              TO  FLG-CHK
-                               MOVE    200            TO  IDX-Z2
-                           END-IF
-                       END-PERFORM
-                       IF      FLG-CHK             =   1
-                           MOVE    SPACE           TO  SPA-ERRCD
-                           MOVE    ZERO            TO  IDX-CT
+               MOVE    WRK-COM-NYU-KAI(IDX-Z)  TO  WRK-CTMRI-KAI
+           END-IF
+      *
+      *    Êñ³çÄþ¸º¶èÊ¬È½Äê
+           EVALUATE    WRK-COM-HOUKATUTEIGENKBN (IDX-Z)
+      *        Æ¬Éô
+               WHEN    "201"
+                   IF      WRK-COM-INPUTCD (IDX-Z) =   "170022290"
+                       IF      WRK-CTMRI-CNT (1)   =   ZERO
+                            MOVE    "K003"              TO  WRK-KIDCD
+                       END-IF
+                   ELSE
+                       IF      WRK-CTMRI-CNT (1)   >   ZERO
+                           MOVE    "170022290"     TO  WRK-SRYCD
                        END-IF
                    END-IF
-                   IF      IDX-CT          NOT =   ZERO
-                       MOVE    "1"                 TO  WRK-COM-CUR
-                                                              (IDX-Z)
+                   ADD     WRK-CTMRI-KAI       TO  WRK-CTMRI-CNT (1)
+      *        ¶í´´
+               WHEN    "202"
+                   IF      WRK-COM-INPUTCD (IDX-Z) =   "170022390"
+                       IF      WRK-CTMRI-CNT (2)   =   ZERO
+                            MOVE    "K003"              TO  WRK-KIDCD
+                       END-IF
+                   ELSE
+                       IF      WRK-CTMRI-CNT (2)   >   ZERO
+                           MOVE    "170022390"     TO  WRK-SRYCD
+                       END-IF
                    END-IF
+                   ADD     WRK-CTMRI-KAI       TO  WRK-CTMRI-CNT (2)
+      *        »Í»è
+               WHEN    "203"
+                   IF      WRK-COM-INPUTCD (IDX-Z) =   "170022490"
+                       IF      WRK-CTMRI-CNT (3)   =   ZERO
+                            MOVE    "K003"              TO  WRK-KIDCD
+                       END-IF
+                   ELSE
+                       IF      WRK-CTMRI-CNT (3)   >   ZERO
+                           MOVE    "170022490"     TO  WRK-SRYCD
+                       END-IF
+                   END-IF
+                   ADD     WRK-CTMRI-KAI       TO  WRK-CTMRI-CNT (3)
+           END-EVALUATE
+      *
+           IF      WRK-SRYCD       NOT =   SPACE
+      *        ¿ÇÎÅ¥³¡¼¥ÉÊÑ¹¹
+               MOVE    WRK-COM-CHK-SRYCD(IDX-Z)
+                                           TO  WRK-HEN-SRYCD
+               MOVE    1                   TO  FLG-ARI
+               MOVE    IDX-Z               TO  IDX-T
+               PERFORM 1002-JIDOUSET-SEC
+               MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-Z)
+               IF      FLG-ADD             =   1
+      *            ÊÑ¹¹¤Î¿ÇÎÅ¥³¡¼¥É¤ò¥»¥Ã¥È
+                   MOVE    WRK-HEN-SRYCD   TO  WRK-COM-CHK-SRYCD(IDX-S)
+               END-IF
+           END-IF
+      *
+           IF      WRK-KIDCD       NOT =  SPACE
+      *        £Ã£Ô¡¥£Í£Ò£É¤Î·Ù¹ð¥Á¥§¥Ã¥¯
+               IF      WRK-COM-KZMFLG (IDX-Z)    =   SPACE
+                   MOVE    "K003"              TO  SPA-ERRCD
+                   MOVE    "2"                 TO  WRK-COM-CUR
+                                                               (IDX-Z)
+                   MOVE    "1"                 TO  WRK-COM-KZMFLG
+                                                               (IDX-Z)
                END-IF
            END-IF
            .
