@@ -5,13 +5,9 @@
   <name>I20</name>
   <program_name>I20</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -29,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 05 Jan 2001 11:20:35 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -77,7 +73,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>STNYUINYMD</name>
-      <x>456</x>
+      <x>428</x>
       <y>40</y>
       <width>104</width>
       <height>24</height>
@@ -105,9 +101,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>NAME</name>
-      <x>456</x>
+      <x>428</x>
       <y>16</y>
-      <width>192</width>
+      <width>228</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -133,7 +129,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>EDNYUINYMD</name>
-      <x>610</x>
+      <x>560</x>
       <y>40</y>
       <width>96</width>
       <height>24</height>
@@ -1313,10 +1309,15 @@
 
       <widget>
 	<class>GtkButton</class>
-	<name>BDMY1</name>
-	<sensitive>False</sensitive>
+	<name>BA082</name>
 	<can_focus>True</can_focus>
-	<label></label>
+	<signal>
+	  <name>clicked</name>
+	  <handler>send_event</handler>
+	  <data>CLICKED</data>
+	  <last_modification_time>Tue, 26 Dec 2000 00:49:40 GMT</last_modification_time>
+	</signal>
+	<label> </label>
 	<relief>GTK_RELIEF_NORMAL</relief>
 	<child>
 	  <left_attach>7</left_attach>
@@ -1364,10 +1365,15 @@
 
       <widget>
 	<class>GtkButton</class>
-	<name>BDMY2</name>
-	<sensitive>False</sensitive>
+	<name>BA084</name>
 	<can_focus>True</can_focus>
-	<label></label>
+	<signal>
+	  <name>clicked</name>
+	  <handler>send_event</handler>
+	  <data>CLICKED</data>
+	  <last_modification_time>Tue, 26 Dec 2000 00:49:40 GMT</last_modification_time>
+	</signal>
+	<label> </label>
 	<relief>GTK_RELIEF_NORMAL</relief>
 	<child>
 	  <left_attach>7</left_attach>
@@ -1920,7 +1926,6 @@
       <widget>
 	<class>GtkButton</class>
 	<name>BA112</name>
-	<sensitive>False</sensitive>
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>clicked</name>
@@ -1928,7 +1933,7 @@
 	  <data>CLICKED</data>
 	  <last_modification_time>Tue, 26 Dec 2000 00:49:40 GMT</last_modification_time>
 	</signal>
-	<label></label>
+	<label> </label>
 	<relief>GTK_RELIEF_NORMAL</relief>
 	<child>
 	  <left_attach>10</left_attach>
@@ -1949,7 +1954,6 @@
       <widget>
 	<class>GtkButton</class>
 	<name>BA113</name>
-	<sensitive>False</sensitive>
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>clicked</name>
@@ -1957,7 +1961,7 @@
 	  <data>CLICKED</data>
 	  <last_modification_time>Tue, 26 Dec 2000 00:49:40 GMT</last_modification_time>
 	</signal>
-	<label></label>
+	<label> </label>
 	<relief>GTK_RELIEF_NORMAL</relief>
 	<child>
 	  <left_attach>10</left_attach>
@@ -1978,7 +1982,6 @@
       <widget>
 	<class>GtkButton</class>
 	<name>BA114</name>
-	<sensitive>False</sensitive>
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>clicked</name>
@@ -1986,7 +1989,7 @@
 	  <data>CLICKED</data>
 	  <last_modification_time>Tue, 26 Dec 2000 00:49:40 GMT</last_modification_time>
 	</signal>
-	<label></label>
+	<label> </label>
 	<relief>GTK_RELIEF_NORMAL</relief>
 	<child>
 	  <left_attach>10</left_attach>
@@ -2007,7 +2010,6 @@
       <widget>
 	<class>GtkButton</class>
 	<name>BA115</name>
-	<sensitive>False</sensitive>
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>clicked</name>
@@ -2015,7 +2017,7 @@
 	  <data>CLICKED</data>
 	  <last_modification_time>Tue, 26 Dec 2000 00:49:40 GMT</last_modification_time>
 	</signal>
-	<label></label>
+	<label> </label>
 	<relief>GTK_RELIEF_NORMAL</relief>
 	<child>
 	  <left_attach>10</left_attach>
@@ -2764,6 +2766,23 @@
 
     <widget>
       <class>GtkButton</class>
+      <name>BSP</name>
+      <x>955</x>
+      <y>180</y>
+      <width>50</width>
+      <height>40</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 05 Feb 2001 05:07:17 GMT</last_modification_time>
+      </signal>
+      <label>¶õÇò</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+    <widget>
+      <class>GtkButton</class>
       <name>BSH</name>
       <x>955</x>
       <y>220</y>
@@ -2806,168 +2825,6 @@
       <width>75</width>
       <height>18</height>
       <label>´µ¼ÔÈÖ¹æ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label526</name>
-      <x>376</x>
-      <y>16</y>
-      <width>75</width>
-      <height>18</height>
-      <label>´µ¼Ô»áÌ¾</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>EDAGECOMBO</name>
-      <x>870</x>
-      <y>15</y>
-      <width>120</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items>
-</items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>EDAGE</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>14</text_max_length>
-	<text>1 £±£°ºÐÌ¤Ëþ</text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label902</name>
-      <x>850</x>
-      <y>20</y>
-      <width>16</width>
-      <height>16</height>
-      <label>¡Á</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>STAGECOMBO</name>
-      <x>730</x>
-      <y>16</y>
-      <width>120</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items>1 µ¿¤¤
-</items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>STAGE</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>14</text_max_length>
-	<text>1 £±£°ºÐÌ¤Ëþ</text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label502</name>
-      <x>660</x>
-      <y>20</y>
-      <width>60</width>
-      <height>16</height>
-      <label>Ç¯Îð</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label901</name>
-      <x>575</x>
-      <y>45</y>
-      <width>20</width>
-      <height>18</height>
-      <label>¡Á</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label488</name>
-      <x>384</x>
-      <y>68</y>
-      <width>75</width>
-      <height>18</height>
-      <label>ÉÂ Åï¡¡¡¡</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -3043,48 +2900,6 @@
 	<text_visible>True</text_visible>
 	<text_max_length>21</text_max_length>
 	<text></text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>BTUNUMCOMBO</name>
-      <x>456</x>
-      <y>64</y>
-      <width>230</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items>
-
-</items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>BTUNUM</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>23</text_max_length>
-	<text>11 £±£²£³£´£µ£¶£·£¸£¹£°</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -3308,9 +3123,25 @@
 
     <widget>
       <class>GtkLabel</class>
+      <name>label1502</name>
+      <x>24</x>
+      <y>696</y>
+      <width>75</width>
+      <height>18</height>
+      <label>ÁªÂòÈÖ¹æ¡¡</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
       <name>label477</name>
-      <x>384</x>
-      <y>45</y>
+      <x>364</x>
+      <y>44</y>
       <width>75</width>
       <height>18</height>
       <label>Æþ±¡Æü¡¡¡¡</label>
@@ -3324,18 +3155,287 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label1502</name>
-      <x>24</x>
-      <y>696</y>
+      <name>label526</name>
+      <x>356</x>
+      <y>16</y>
       <width>75</width>
       <height>18</height>
-      <label>ÁªÂòÈÖ¹æ¡¡</label>
+      <label>´µ¼Ô»áÌ¾</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>BTUNUMCOMBO</name>
+      <x>428</x>
+      <y>64</y>
+      <width>230</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items>
+
+</items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>BTUNUM</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>23</text_max_length>
+	<text>11 £±£²£³£´£µ£¶£·£¸£¹£°</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label488</name>
+      <x>360</x>
+      <y>68</y>
+      <width>75</width>
+      <height>18</height>
+      <label>ÉÂ Åï¡¡¡¡</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label901</name>
+      <x>536</x>
+      <y>44</y>
+      <width>20</width>
+      <height>18</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label502</name>
+      <x>670</x>
+      <y>20</y>
+      <width>40</width>
+      <height>16</height>
+      <label>Ç¯Îð</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1503</name>
+      <x>670</x>
+      <y>68</y>
+      <width>40</width>
+      <height>18</height>
+      <label>¾õÂÖ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>STAGECOMBO</name>
+      <x>710</x>
+      <y>16</y>
+      <width>120</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items>1 µ¿¤¤
+</items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>STAGE</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>14</text_max_length>
+	<text>1 £±£°ºÐÌ¤Ëþ</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label902</name>
+      <x>836</x>
+      <y>20</y>
+      <width>16</width>
+      <height>16</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>EDAGECOMBO</name>
+      <x>856</x>
+      <y>16</y>
+      <width>120</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items>
+</items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>EDAGE</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>14</text_max_length>
+	<text>1 £±£°ºÐÌ¤Ëþ</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>JOTAICOMBO</name>
+      <x>710</x>
+      <y>64</y>
+      <width>120</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items>1 µ¿¤¤
+</items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>JOTAI</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>14</text_max_length>
+	<text>1 Æþ±¡Ãæ</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHKTESTPT</name>
+      <x>856</x>
+      <y>64</y>
+      <width>136</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Tue, 04 Feb 2003 06:48:02 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 04 Feb 2003 06:48:15 GMT</last_modification_time>
+      </signal>
+      <label>¥Æ¥¹¥È´µ¼Ô¤ò´Þ¤à</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
     </widget>
   </widget>
 </widget>

@@ -44,6 +44,11 @@
                 04  I20-BTUNUM          PIC X(23).
                 04  I20-BTUNUM-COUNT    PIC S9(9)   BINARY.
                 04  I20-BTUNUMLST       PIC X(23)   OCCURS  50 TIMES.
+              03  I20-JOTAICOMBO.
+                04  I20-JOTAI           PIC X(14).
+                04  I20-JOTAI-COUNT     PIC S9(9)   BINARY.
+                04  I20-JOTAILST        PIC X(14)   OCCURS  5 TIMES.
+              03  I20-CHKTESTPT         PIC X(01).
               03  I20-SCROLLEDWINDOW28.
                 04  I20-KANJYALST.
                   05  I20-COUNT   PIC S9(9)   BINARY.

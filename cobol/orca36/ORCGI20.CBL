@@ -76,6 +76,11 @@
                    07  SPA-GMN-F3L         PIC X(01).
                    07  SPA-GMN-BTUNUMMEIL  PIC X(20).
                05  SPA-GMN-BTUNUM-MAX      PIC 9(02). 
+               05  SPA-GMN-JOTAILST        OCCURS  5.
+                   07  SPA-GMN-JOTAIL      PIC X(01).
+                   07  SPA-GMN-F3L         PIC X(01).
+                   07  SPA-GMN-JOTAIMEIL   PIC X(12).
+               05  SPA-GMN-JOTAI-MAX       PIC 9(02). 
       *             
                05  SPA-GMN-KOUMOKU.   
                    07  SPA-GMN-PTNUM       PIC X(20).
@@ -103,6 +108,11 @@
                        09  SPA-GMN-BTUNUM      PIC X(02).
                        09  SPA-GMN-F3          PIC X(01).
                        09  SPA-GMN-BTUNUMMEI   PIC X(20).
+                   07  SPA-GMN-JOTAI-G.
+                       09  SPA-GMN-JOTAI       PIC X(01).
+                       09  SPA-GMN-F3          PIC X(01).
+                       09  SPA-GMN-JOTAIMEI    PIC X(12).
+                   07  SPA-GMN-CHKTESTPT       PIC X(1).
       *
                05  SPA-GMN-TBL.
                    07  SPA-GMN-TBLO            OCCURS   200.
@@ -259,6 +269,7 @@
            03  KANA-TBL-R          REDEFINES  KANA-TBL.
                05  PKANAX          OCCURS   17.
                    07  PKANA       PIC X(02)  OCCURS  10.
+       01  CONST-NAME-MAX          PIC 9(02)  VALUE 15.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -579,6 +590,15 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
       *
+      *    状態
+           MOVE    "1"                 TO  SPA-GMN-JOTAIL (1)
+           MOVE    "2"                 TO  SPA-GMN-JOTAIL (2)
+           MOVE    "入院中"            TO  SPA-GMN-JOTAIMEIL (1)
+           MOVE    "退院済"            TO  SPA-GMN-JOTAIMEIL (2)
+           MOVE    2                   TO  SPA-GMN-JOTAI-MAX
+      *
+           MOVE    "F"                 TO  SPA-GMN-CHKTESTPT
+      *
            MOVE    1                   TO  SPA-GMN-CUR                                 
            .
        310-SPASET-EXT.
@@ -626,6 +646,15 @@
       *    検索開始
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-KENSAKU-MAE-SEC
+      *    テスト患者区分
+               WHEN    "CLICKED"       ALSO    "CHKTESTPT"
+                   MOVE   "CHANGE"             TO  MCP-PUTTYPE
+      *            入力個所のセット
+                   PERFORM 400-GMN-INPUT-SEC
+      *
+                   MOVE    ZERO                TO  FLG-TOUROKU
+      *            入力チェック処理
+                   PERFORM 410-INPUT-CHK-SEC
       *    カナ入力             
                WHEN    OTHER       
                    IF      MCP-EVENT           =   "CLICKED" 
@@ -635,12 +664,14 @@
                                PERFORM 410111-PIN-SET-SEC
                            END-IF
                        END-IF
-                       IF      MCP-WIDGET          =   "BSH"
-                               PERFORM 410112-SHIFT-SEC
-                       END-IF
-                       IF      MCP-WIDGET          =   "BAK"
+                       EVALUATE    MCP-WIDGET
+                       WHEN    "BSP"
+                           PERFORM 410114-SPACE-SEC
+                       WHEN    "BSH"
+                           PERFORM 410112-SHIFT-SEC
+                       WHEN    "BAK"
                            PERFORM 410113-BACK-SEC
-                       END-IF
+                       END-EVALUATE
                    END-IF
            END-EVALUATE
       *
@@ -697,7 +728,7 @@
       *****************************************************************
        400-SELNUM-CHK-SEC         SECTION.
       *
-           MOVE    10             TO  SPA-GMN-CUR
+           MOVE    12             TO  SPA-GMN-CUR
       *
            MOVE    I20-SELNUM     TO  SPA-GMN-SELNUM
       *
@@ -769,6 +800,9 @@
            MOVE    I20-EDNYUINYMD      TO  SPA-GMN-EDNYUINYMD
            MOVE    I20-SRYKA           TO  SPA-GMN-SRYKA-G
            MOVE    I20-BTUNUM          TO  SPA-GMN-BTUNUM-G
+           MOVE    I20-JOTAI           TO  SPA-GMN-JOTAI-G
+           MOVE    I20-CHKTESTPT       TO  SPA-GMN-CHKTESTPT
+           DISPLAY "I20-CHKTESTPT = " I20-CHKTESTPT
       *
       *****MOVE    I20-SELNUM          TO  SPA-GMN-SELNUM
            .
@@ -823,6 +857,16 @@
            END-IF
       *    病棟         
            PERFORM 41028-BTUNUM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE 
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *    状態
+           PERFORM 41029-JOTAI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE 
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *    テスト患者
+           PERFORM 41030-CHKTESTPT-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE 
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -939,7 +983,7 @@
       *****************************************************************
        41029-EDAGE-CHK-SEC                SECTION.
       *
-           MOVE    9                   TO  SPA-GMN-CUR
+           MOVE    4                   TO  SPA-GMN-CUR
       *
            IF      SPA-GMN-EDAGE         =   SPACE
                CONTINUE
@@ -967,7 +1011,7 @@
       *****************************************************************
        41024-ADRS-CHK-SEC             SECTION.
       *
-           MOVE    4                    TO  SPA-GMN-CUR
+           MOVE    5                    TO  SPA-GMN-CUR
       *
            IF      SPA-GMN-ADRS         =   SPACE
                GO  TO  41024-ADRS-CHK-EXT
@@ -994,7 +1038,7 @@
       *****************************************************************
        41025-STNYUINYMD-CHK-SEC         SECTION.
       *
-           MOVE    5                    TO  SPA-GMN-CUR
+           MOVE    6                    TO  SPA-GMN-CUR
       *
            IF     SPA-GMN-STNYUINYMD    =   SPACE
                MOVE    SPACE                TO  SPA-NAI-STNYUINYMD
@@ -1020,7 +1064,7 @@
       *****************************************************************
        41026-EDNYUINYMD-CHK-SEC         SECTION.
       *
-           MOVE    6                    TO  SPA-GMN-CUR
+           MOVE    7                    TO  SPA-GMN-CUR
       *
            IF     SPA-GMN-EDNYUINYMD    =   SPACE
                MOVE    "99999999"           TO  SPA-NAI-EDNYUINYMD
@@ -1046,7 +1090,7 @@
       *****************************************************************
        41027-SRYKA-CHK-SEC             SECTION.
       *
-           MOVE    7                   TO  SPA-GMN-CUR
+           MOVE    8                   TO  SPA-GMN-CUR
       *
            IF      SPA-GMN-SRYKA       =   SPACE
                CONTINUE
@@ -1075,7 +1119,7 @@
       *****************************************************************
        41028-BTUNUM-CHK-SEC             SECTION.
       *
-           MOVE    8                   TO  SPA-GMN-CUR
+           MOVE    9                   TO  SPA-GMN-CUR
       *
            IF      SPA-GMN-BTUNUM      =   SPACE
                CONTINUE
@@ -1092,13 +1136,50 @@
                    END-IF
                END-PERFORM
                IF      WRK-HENFLG         =   ZERO
-                   MOVE    "0030"               TO  SPA-ERRCD
+                   MOVE    "0008"               TO  SPA-ERRCD
                END-IF
            END-IF            
            .
        41028-BTUNUM-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    状態入力処理
+      *****************************************************************
+       41029-JOTAI-CHK-SEC             SECTION.
+      *
+           MOVE    10                  TO  SPA-GMN-CUR
+      *
+           IF      SPA-GMN-JOTAI      =   SPACE
+               CONTINUE
+           ELSE
+               MOVE    ZERO               TO  WRK-HENFLG
+               PERFORM VARYING IDY FROM   1   BY  1
+                       UNTIL   IDY >      SPA-GMN-JOTAI-MAX
+                       OR      WRK-HENFLG =   1
+                   IF      SPA-GMN-JOTAI 
+                                      =   SPA-GMN-JOTAIL (IDY)
+                       MOVE    SPA-GMN-JOTAILST (IDY)
+                                         TO  SPA-GMN-JOTAI-G
+                       MOVE    1          TO  WRK-HENFLG
+                   END-IF
+               END-PERFORM
+               IF      WRK-HENFLG         =   ZERO
+                   MOVE    "0009"               TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       41029-JOTAI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    テスト患者入力処理
+      *****************************************************************
+       41030-CHKTESTPT-CHK-SEC         SECTION.
+      *
+      *
+           .
+       41030-CHKTESTPT-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    関連チェック処理
       *****************************************************************
@@ -1224,8 +1305,12 @@
                END-IF
            END-IF
       *
-           MOVE    WRK-PKANA           TO  SPA-GMN-NAME-X
+           IF    ( SPA-NAI-NAME-MAX    >   CONST-NAME-MAX )
+               MOVE    CONST-NAME-MAX      TO  SPA-NAI-NAME-MAX
+           ELSE
+               MOVE    WRK-PKANA           TO  SPA-GMN-NAME-X
                                                 (SPA-NAI-NAME-MAX)
+           END-IF
            .
        410111-PIN-SET-EXT.
            EXIT.
@@ -1305,6 +1390,22 @@
            EXIT.
       *
       *****************************************************************
+      *    空白　処理
+      *****************************************************************
+       410114-SPACE-SEC                    SECTION.
+      *
+           IF    ( SPA-NAI-NAME-MAX    <   CONST-NAME-MAX )
+               COMPUTE SPA-NAI-NAME-MAX
+                   =   SPA-NAI-NAME-MAX    +   1
+               MOVE    "　"    TO  SPA-GMN-NAME-X (SPA-NAI-NAME-MAX)
+           ELSE
+               MOVE    CONST-NAME-MAX      TO  SPA-NAI-NAME-MAX
+           END-IF
+           .
+       410114-SPACE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -1340,6 +1441,8 @@
            MOVE    ZERO                TO  SPA-GMN-MAX
                                            SPA-NAI-NAME-MAX                            
       *
+           MOVE    "F"                 TO  SPA-GMN-CHKTESTPT
+      *
            MOVE    1                   TO  SPA-GMN-CUR
            .
        420-CLEAR-EXT.
@@ -1353,7 +1456,7 @@
       *    選択されていないとき
            IF      SPA-GMN-SELNUM      =   ZERO
                MOVE    "0201"              TO  SPA-ERRCD
-               MOVE    10                  TO  SPA-GMN-CUR
+               MOVE    12                  TO  SPA-GMN-CUR
                GO  TO  440-SYOSAI-EXT
            END-IF
       *
@@ -1497,7 +1600,7 @@
                                            TO  SPA-GMN-TNAME (1)
                MOVE    1                   TO  SPA-GMN-CUR
            ELSE
-               MOVE    10                  TO  SPA-GMN-CUR                                
+               MOVE    12                  TO  SPA-GMN-CUR                                
            END-IF                                                                     
       *       
            .
@@ -1675,6 +1778,43 @@
                END-STRING
                MOVE    1                   TO  FLG-JYOKEN
            END-IF    
+      *
+      *    状態
+           IF      SPA-GMN-JOTAI      =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM 45011-JYOKEN-HENSYU-SEC
+      *
+               EVALUATE    SPA-GMN-JOTAI
+               WHEN    "1"
+                   STRING  "taiinymd = '99999999'"
+                           DELIMITED  BY  SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               WHEN    "2"
+                   STRING  "taiinymd <> '99999999'"
+                           DELIMITED  BY  SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               END-EVALUATE
+      *
+               MOVE    1                   TO  FLG-JYOKEN
+           END-IF    
+      *
+      *    テスト患者
+           IF      SPA-GMN-CHKTESTPT   =   "T"
+               CONTINUE
+           ELSE
+               PERFORM 45011-JYOKEN-HENSYU-SEC
+               STRING  "tstptnumkbn <> '1'"
+                       DELIMITED  BY  SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+               MOVE    1                   TO  FLG-JYOKEN
+           END-IF    
            .
        4501-SQL-EDIT-EXT.
            EXIT.
@@ -1730,10 +1870,14 @@
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMDG     TO  SPA-GMN-TNYUINYMD   (IDX)
            MOVE    I001-NYUINYMD   TO  SPA-NAI-TNYUINYMD   (IDX)
-           MOVE    I001-TAIINYMD   TO  WRK-SYMD
-           PERFORM 5002-HIZUKE-HEN-SEC
-           MOVE    WRK-HENYMDG     TO  SPA-GMN-TTAIINYMD   (IDX)
-           MOVE    I001-TAIINYMD   TO  SPA-NAI-TTAIINYMD   (IDX)
+           IF    ( I001-TAIINYMD   =   "99999999" )
+               MOVE    SPACE           TO  SPA-GMN-TTAIINYMD   (IDX)
+           ELSE
+               MOVE    I001-TAIINYMD   TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-TTAIINYMD   (IDX)
+           END-IF
+           MOVE    I001-TAIINYMD       TO  SPA-NAI-TTAIINYMD   (IDX)
            PERFORM VARYING IDY FROM   1   BY  1
                    UNTIL   IDY >      SPA-GMN-SRYKA-MAX
                IF      I001-NYUINKA   =   SPA-GMN-SRYKAL (IDY)
@@ -1894,6 +2038,9 @@
            MOVE    SPA-GMN-EDNYUINYMD  TO  I20-EDNYUINYMD
            MOVE    SPA-GMN-SRYKA-G     TO  I20-SRYKA
            MOVE    SPA-GMN-BTUNUM-G    TO  I20-BTUNUM
+           MOVE    SPA-GMN-JOTAI-G     TO  I20-JOTAI
+           MOVE    SPA-GMN-CHKTESTPT   TO  I20-CHKTESTPT
+           DISPLAY "I20-CHKTESTPT = " I20-CHKTESTPT
            MOVE    SPA-GMN-SELNUM      TO  I20-SELNUM
       *     
            PERFORM VARYING IDX FROM    1   BY  1
@@ -1916,6 +2063,12 @@
                MOVE    SPA-GMN-BTUNUMLST (IDX) TO  I20-BTUNUMLST (IDX)
            END-PERFORM
            MOVE    SPA-GMN-BTUNUM-MAX  TO  I20-BTUNUM-COUNT
+      *         
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL       IDX         >   SPA-GMN-JOTAI-MAX
+               MOVE    SPA-GMN-JOTAILST (IDX) TO  I20-JOTAILST (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-JOTAI-MAX  TO  I20-JOTAI-COUNT
       *
            IF      SPA-GMN-MAX             =   ZERO
            AND     SPA-GMN-TNAME (1)   NOT =   SPACE
@@ -1970,18 +2123,22 @@
                WHEN    3
                    MOVE  "STAGE"           TO  MCP-WIDGET 
                WHEN    4
-                   MOVE  "ADRS"            TO  MCP-WIDGET 
-               WHEN    5
-                   MOVE  "STNYUINYMD"      TO  MCP-WIDGET 
-               WHEN    6
-                   MOVE  "EDNYUINYMD"      TO  MCP-WIDGET 
-               WHEN    7
-                   MOVE  "SRYKA"           TO  MCP-WIDGET 
-               WHEN    8
-                   MOVE  "BTUNUM"          TO  MCP-WIDGET 
-               WHEN    9
                    MOVE  "EDAGE"           TO  MCP-WIDGET 
+               WHEN    5
+                   MOVE  "ADRS"            TO  MCP-WIDGET 
+               WHEN    6
+                   MOVE  "STNYUINYMD"      TO  MCP-WIDGET 
+               WHEN    7
+                   MOVE  "EDNYUINYMD"      TO  MCP-WIDGET 
+               WHEN    8
+                   MOVE  "SRYKA"           TO  MCP-WIDGET 
+               WHEN    9
+                   MOVE  "BTUNUM"          TO  MCP-WIDGET 
                WHEN    10
+                   MOVE  "JOTAI"           TO  MCP-WIDGET 
+               WHEN    11
+                   MOVE  "CHKTESTPT"       TO  MCP-WIDGET 
+               WHEN    12
                    MOVE  "SELNUM"          TO  MCP-WIDGET 
            END-EVALUATE
       *
@@ -2001,18 +2158,22 @@
                    MOVE    2                   TO  SPA-GMN-CUR
                WHEN    "STAGE"
                    MOVE    3                   TO  SPA-GMN-CUR
-               WHEN    "ADRS"
-                   MOVE    4                   TO  SPA-GMN-CUR
-               WHEN    "STNYUINYMD"
-                   MOVE    5                   TO  SPA-GMN-CUR
-               WHEN    "EDNYUINYMD"
-                   MOVE    6                   TO  SPA-GMN-CUR
-               WHEN    "SRYKA"
-                   MOVE    7                   TO  SPA-GMN-CUR
-               WHEN    "BTUNUM"
-                   MOVE    8                   TO  SPA-GMN-CUR
                WHEN    "EDAGE"
+                   MOVE    4                   TO  SPA-GMN-CUR
+               WHEN    "ADRS"
+                   MOVE    5                   TO  SPA-GMN-CUR
+               WHEN    "STNYUINYMD"
+                   MOVE    6                   TO  SPA-GMN-CUR
+               WHEN    "EDNYUINYMD"
+                   MOVE    7                   TO  SPA-GMN-CUR
+               WHEN    "SRYKA"
+                   MOVE    8                   TO  SPA-GMN-CUR
+               WHEN    "BTUNUM"
                    MOVE    9                   TO  SPA-GMN-CUR
+               WHEN    "JOTAI"
+                   MOVE    11                  TO  SPA-GMN-CUR
+               WHEN    "CHKTESTPT"
+                   MOVE    11                  TO  SPA-GMN-CUR
            END-EVALUATE
            .
       *
@@ -2042,6 +2203,8 @@
                    MOVE    "診療科入力エラー"          TO  SPA-ERRMSG
                WHEN    "0008"
                    MOVE    "病棟入力エラー"            TO  SPA-ERRMSG
+               WHEN    "0009"
+                   MOVE    "状態入力エラー"            TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "該当の番号はありません"    TO  SPA-ERRMSG
       *             
