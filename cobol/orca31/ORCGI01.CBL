@@ -6334,6 +6334,9 @@
                                    TO  PTNYUINRRK-TENSTUYMD
            END-EVALUATE
       *
+      *    Æþ±¡Ãæ¶èÊ¬ ("0"¸ÇÄê)
+           MOVE    "0"             TO  PTNYUINRRK-NYUINCHUKBN
+      *
            IF    ( WRK-UPDKBN      =   "UPD" )
                ACCEPT  SYS-TIME        FROM    TIME
                MOVE    SYS-TIME    TO  PTNYUINRRK-UPHMS
