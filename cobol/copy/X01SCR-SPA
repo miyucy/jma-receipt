@@ -97,6 +97,7 @@
            03  SPA-X98GMN-AREA.
                05  SPA-X98-GMN-MAX               PIC 9(03).
                05  SPA-X98-NEXT                  PIC 9(04).
+               05  SPA-X98-PAGE                  PIC 9(04).
                05  SPA-X98-GMN-CUR               PIC 9(03).
       *
                05  SPA-X98-GMN-SELNUM-G.
