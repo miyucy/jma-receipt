@@ -51,6 +51,7 @@
       *  02.01.11    NACL-藤原    04/03/08  生保受給者番号の機能停止
       *  02.01.12    NACL-多々納  04/07/05  最終受診日から初診の期間追加
       *                                     請求書発行方法他追加
+      *  02.01.13    NACL-藤原    04/07/08  生保受給者番号を削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -211,14 +212,6 @@
                            11  SPA-GMN-HOJYOKBNMEI         PIC X(26).
                        09  SPA-GMN-HOJYOKBN-COMB.
                            11  SPA-GMN-HOJYOKBN-LIST       PIC X(28)
-                                                           OCCURS  2.
-      *                生活保護受給者番号
-                       09  SPA-GMN-SEIHO-JKYSNUM-G.
-                           11  SPA-GMN-SEIHO-JKYSNUM       PIC X(01).
-                           11  SPA-GMN-SEIHO-JKYSNUM-F1    PIC X(01).
-                           11  SPA-GMN-SEIHO-JKYSNUMMEI    PIC X(26).
-                       09  SPA-GMN-SEIHO-JKYSNUM-COMB.
-                           11  SPA-GMN-SEIHO-JKYSNUM-LIST  PIC X(28)
                                                            OCCURS  2.
                    07  SPA-GMN-PAGE3-AREA.
       *                入金管理情報（診療行為機能情報）
@@ -656,9 +649,6 @@
            MOVE    "0 課税"            TO  SPA-GMN-HOJYOKBN-LIST(1)
            MOVE    "1 非課税"          TO  SPA-GMN-HOJYOKBN-LIST(2)
       *
-           MOVE    "0 毎月付番"        TO  SPA-GMN-SEIHO-JKYSNUM-LIST(1)
-           MOVE    "1 固定番号"        TO  SPA-GMN-SEIHO-JKYSNUM-LIST(2)
-      *
            MOVE    "1 今回請求分のみ入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(1)
            MOVE    "2 今回分・伝票の古い未収順に入金"
@@ -1052,9 +1042,6 @@
       *        自費保険の補助区分
                MOVE    SYS-1017-JIHIHKN-TAX
                                        TO  SPA-GMN-HOJYOKBN
-      *        生活保護受給者番号
-               MOVE    SYS-1017-SEIHO-JKYSNUM
-                                       TO  SPA-GMN-SEIHO-JKYSNUM
            END-IF
       *
       *    初期設定
@@ -1095,15 +1082,6 @@
                 WHEN    OTHER
                     MOVE    SPA-GMN-HOJYOKBN-LIST(1)
                                                TO  SPA-GMN-HOJYOKBN-G
-           END-EVALUATE
-      *
-           EVALUATE    SPA-GMN-SEIHO-JKYSNUM
-                WHEN    "1"
-                    MOVE    SPA-GMN-SEIHO-JKYSNUM-LIST(2)
-                                           TO  SPA-GMN-SEIHO-JKYSNUM-G
-                WHEN    OTHER
-                    MOVE    SPA-GMN-SEIHO-JKYSNUM-LIST(1)
-                                           TO  SPA-GMN-SEIHO-JKYSNUM-G
            END-EVALUATE
       *
            MOVE    20                 TO  SPA-GMN-CUR
@@ -1358,7 +1336,6 @@
            MOVE    W07-JISYOKBN        TO  SPA-GMN-JISYOKBN-G
            MOVE    W07-HAKKOKBN        TO  SPA-GMN-HAKKOKBN-G
            MOVE    W07-HOJYOKBN        TO  SPA-GMN-HOJYOKBN-G
-           MOVE    W07-SEIHO-JKYSNUM   TO  SPA-GMN-SEIHO-JKYSNUM-G
       *
       *    診療行為機能情報
            MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
@@ -1463,11 +1440,6 @@
                    END-IF
       *            自費保険の補助区分チェック
                    PERFORM 4107-HOJYO-CHK-SEC
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       GO      TO      4102-KIHON-CHK-EXT
-                   END-IF
-      *            生活保護受給者番号チェック
-                   PERFORM 4112-SEIHO-JKYSNUM-CHK-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                        GO      TO      4102-KIHON-CHK-EXT
                    END-IF
@@ -2334,31 +2306,6 @@
            EXIT.
       *
       *****************************************************************
-      *    自費保険の補助区分チェック処理
-      *****************************************************************
-       4112-SEIHO-JKYSNUM-CHK-SEC      SECTION.
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   2
-               IF      SPA-GMN-SEIHO-JKYSNUM
-                                   =   SPA-GMN-SEIHO-JKYSNUM-LIST(IDX)
-                                                                (1:1)
-                   MOVE    SPA-GMN-SEIHO-JKYSNUM-LIST(IDX)
-                                          TO  SPA-GMN-SEIHO-JKYSNUM-G
-                   MOVE    1              TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    24              TO  SPA-GMN-CUR
-               MOVE    "0027"          TO  SPA-ERRCD
-               GO      TO      4112-SEIHO-JKYSNUM-CHK-EXT
-           END-IF
-      *
-          .
-       4112-SEIHO-JKYSNUM-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -2796,7 +2743,6 @@
            MOVE    SPA-GMN-JISYOKBN        TO  SYS-1017-JINMEI-USE
            MOVE    SPA-GMN-HAKKOKBN        TO  SYS-1017-KARUTE-HAKKO
            MOVE    SPA-GMN-HOJYOKBN        TO  SYS-1017-JIHIHKN-TAX
-           MOVE    SPA-GMN-SEIHO-JKYSNUM   TO  SYS-1017-SEIHO-JKYSNUM
       *
            MOVE    SYS-1017-REC            TO  SYSKANRI-REC
       *
@@ -3235,15 +3181,6 @@
            END-PERFORM
            MOVE    2               TO  W07-HOJYOKBN-COUNT
       *
-      *    生活保護受給者番号
-           MOVE    SPA-GMN-SEIHO-JKYSNUM-G     TO  W07-SEIHO-JKYSNUM
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   2
-               MOVE    SPA-GMN-SEIHO-JKYSNUM-LIST (IDX)
-                                       TO  W07-SEIHO-JKYSNUM-ITEM(IDX)
-           END-PERFORM
-           MOVE    2               TO  W07-SEIHO-JKYSNUM-COUNT
-      *
       *    入金管理区分（診療行為機能情報）
            MOVE    SPA-GMN-SRYNYKNKNRKBN-G TO  W07-SRYNYKNKNRKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3653,8 +3590,6 @@
                    MOVE  "HAKKOKBN"        TO   MCP-WIDGET
                WHEN    23
                    MOVE  "HOJYOKBN"        TO   MCP-WIDGET
-               WHEN    24
-                   MOVE  "SEIHO_JKYSNUM"   TO   MCP-WIDGET
       *
                WHEN    30
                    MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
@@ -3783,9 +3718,6 @@
                WHEN    "HAKKOKBN"
                    MOVE    23              TO  SPA-GMN-CUR
                WHEN    "HOJYOKBN"
-      *************MOVE    24              TO  SPA-GMN-CUR
-                   MOVE    99              TO  SPA-GMN-CUR
-               WHEN    "SEIHO_JKYSNUM"
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN    "SRYNYKNKNRKBN"
