@@ -210,11 +210,11 @@
       *   レセ以外はここで中間ファイルを削除する
       *  10        20        30        40        50        60
 ----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
+           MOVE    PRT-TBL-KEY         TO  WRK-PRT-TBL-KEY
            IF      PRT-TBL-KEY     NOT =   "RECEPT2"
                    PERFORM 900-PRV-RRKSET-SEC
            END-IF
       *
-           DISPLAY "prtkbn = ["  PRT-PRTKBN    "]"
            IF  PRT-PRTKBN              =   "4"
                MOVE    1               TO  FLG-END 
                GO  TO  100-INIT-EXT
@@ -430,6 +430,7 @@
       *  10        20        30        40        50        60
 ----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
       *
+           DISPLAY "tbl-key = "     WRK-PRT-TBL-KEY
            IF      WRK-PRT-TBL-KEY     NOT =   "RECEPT2"
                    PERFORM 900-PRV-RRKDEL-SEC
            END-IF
@@ -489,7 +490,8 @@
              PERFORM VARYING   IDZ     FROM    1   BY  1
                        UNTIL       IDZ     >        5
               IF  (WK-TBL-G(IDZ)       NOT  =  SPACE)
-              AND (WK-TBL-G(IDZ)       NOT  =  WRK-PRT-TBL-GROUP)
+               IF (WK-TBL-G(IDZ)       NOT  =  WRK-PRT-TBL-GROUP)
+              DISPLAY  "wk-tbl-g (1) " WK-TBL-G(IDZ) 
                    MOVE  SPACE         TO  WRK-FILENAME
                    STRING
                       "/var/tmp/"         DELIMITED  BY  SPACE
@@ -532,6 +534,7 @@
                CALL    "MCPSUB"        USING
                                            MCPAREA
                                            MCPDATA-REC
+               END-IF
               END-IF
              END-PERFORM
            END-PERFORM
@@ -607,6 +610,7 @@
                ELSE
                    MOVE    1               TO  FLG-PRVKANRI
                    MOVE    SPACE           TO  WRK-TBL-GROUP
+                   INITIALIZE              WRK-TBL-GROUP
                END-IF
            ELSE
                MOVE    1                   TO  FLG-PRVKANRI
