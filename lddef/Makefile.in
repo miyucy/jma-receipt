@@ -63,7 +63,7 @@ INSTALL_LDFILE = $(LDFILE) $(BDFILE) $(DIRECTORYFILE) \
 
 all: $(LDFILE) $(BDFILE) $(DIRECTORYFILE)
 
-$(LDFILE) $(BDFILE):  orcahome.inc
+$(LDFILE) $(BDFILE):  orcadb.inc orcahome.inc
 
 directory:
 	sed -e 's,\@exec_prefix\@,$(exec_prefix),g' \
