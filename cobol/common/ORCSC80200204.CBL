@@ -205,10 +205,6 @@
                05  WRK-GAICNT-G.
                    07  WRK-GCNT            PIC 9(01)   OCCURS  31.
       *
-      *    早期リハビリ加算有無
-       01  WRK-SOUKI-G.
-           03  WRK-SOUKI-FLG        PIC 9(01)   OCCURS  31.
-      *
       *    保存用
        01  HOZ-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
@@ -1298,7 +1294,8 @@
                    MOVE    ZERO                TO  WRK-TUKI-CNT
                    PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   IDD
-                       IF      WRK-GCNT (IDY)      =   ZERO
+                       IF     (WRK-GCNT (IDY)      =   ZERO) AND
+                              (LNK-ORCSC-GAI-FLG (IDY) =   ZERO)
                            COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
                                                    +   WRK-DCNT-KN
                                                           (IDX-R1 IDY)
@@ -1406,6 +1403,7 @@
       *    当日に早期リハ加算等がある時、早期リハありとする
            IF     (FLG-SOUKI-ARI       =   1    )
                OR (WRK-GCNT (IDD)      >   ZERO )
+               OR (LNK-ORCSC-GAI-FLG(IDD)  >   ZERO )
       *        早期リハビリ加算あり１日最大６単位とする
                MOVE    6               TO  WRK-RIGAK-MAX
            ELSE
@@ -1452,7 +1450,7 @@
            END-EVALUATE
       *    早期リハビリ他
            IF      FLG-SOUKI-ARI       =   1
-               ADD     WRK-KAISU           TO  WRK-GCNT (IDD)
+               ADD     1                   TO  LNK-ORCSC-GAI-FLG (IDD)
            END-IF
       *
            .
@@ -1491,23 +1489,6 @@
       *****************************************************************
        20024-RIGAKU-TEIGEN-SEC            SECTION.
       *
-      *    逓減ＯＫの処理
-           IF      WRK-COM-KZMFLG (IDX-Z)  =   SPACE
-               IF      LNK-ORCSC-KEI-IDX   =   ZERO
-                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
-                   MOVE    "2"             TO  WRK-COM-KZMFLG (IDX-Z)
-               END-IF
-               MOVE    "0180"          TO  LNK-ORCSC-KIDCD
-               GO      TO      20024-RIGAKU-TEIGEN-EXT
-           END-IF
-      *
-      *    リハビリ逓減確認
-           IF     (LNK-ORCSC-FLG-RIHTEI    =   ZERO )  OR
-                  (WRK-COM-KZMFLG (IDX-Z)  =   "1"  )
-               MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
-               GO      TO      20024-RIGAKU-TEIGEN-EXT
-           END-IF
-      *
       *    理学療法の逓減は、傷病発生３月以降
            IF      SPA-HKNKBN          =   1
       *        減額診療コード（労災）
@@ -1518,6 +1499,23 @@
                ELSE
                    MOVE    "180709070"         TO  WRK-SRYCD
                END-IF
+           END-IF
+      *
+      *    逓減ＯＫの処理
+           IF     (WRK-COM-KZMFLG2 (IDX-Z) =   SPACE )  AND
+                  (WRK-COM-INPUTCD (IDX-Z + 1) NOT =   WRK-SRYCD)
+               IF      LNK-ORCSC-KEI-IDX   =   ZERO
+                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                   MOVE    "1"             TO  WRK-COM-KZMFLG2 (IDX-Z)
+               END-IF
+               MOVE    "0180"          TO  LNK-ORCSC-KIDCD
+               GO      TO      20024-RIGAKU-TEIGEN-EXT
+           END-IF
+      *
+      *    リハビリ逓減確認
+           IF      LNK-ORCSC-FLG-RIHTEI    =   ZERO
+               MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
+               GO      TO      20024-RIGAKU-TEIGEN-EXT
            END-IF
       *
            IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
@@ -1578,7 +1576,8 @@
       *            当日上限チェック
                    MOVE    WRK-COM-KAISU(IDX-Z)   TO  WRK-KAISU
       *            当日に早期リハ加算がある時、ありとする
-                   IF     (WRK-GCNT (IDD)          >   ZERO)
+                   IF     (WRK-GCNT (IDD)          >   ZERO) OR
+                          (LNK-ORCSC-GAI-FLG (IDD) >   ZERO )
                        MOVE    1                   TO  FLG-SOUKI-ARI2
                    ELSE
                        MOVE    ZERO                TO  FLG-SOUKI-ARI2
@@ -1651,7 +1650,9 @@
                    MOVE    ZERO                TO  WRK-TUKI-CNT
                    PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   IDD
-                       IF      WRK-GCNT (IDY)      =   ZERO
+                       IF     (WRK-GCNT (IDY)      =   ZERO) AND
+                              (LNK-ORCSC-GAI-FLG (IDY)
+                                                   =   ZERO)
                            COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
                                                    +   WRK-DCNT-KN
                                                           (IDX-R1 IDY)

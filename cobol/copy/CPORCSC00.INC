@@ -167,6 +167,9 @@
       *        早期リハ等加算（逓減対象外）
                05  LNK-ORCSC-GAICNT-G.
                    07  LNK-ORCSC-GCNT            PIC 9(01)   OCCURS  31.
+      *    早期リハ等加算（今回入力分）
+           03  LNK-ORCSC-GAI-FLG-G.
+               05  LNK-ORCSC-GAI-FLG           PIC 9(01)   OCCURS  31.
       *******  05  LNK-ORCSC-RIGAKU-OCCS       OCCURS  6.
       *            07  LNK-ORCSC-RIGAKU-SRYCD  PIC  X(09).
       *            07  LNK-ORCSC-RIGAKU-CNT    PIC  9(03).

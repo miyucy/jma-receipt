@@ -420,6 +420,9 @@
       *        05  WRK-ORCSC-SOUKI-G.
       *            07  WRK-ORCSC-SOUKI-FLG PIC  9(01)
       ***********                              OCCURS 31.
+      *    リハビリ回数集計
+           03  WRK-RIGAKU-TBL.
+               05  WRK-GAI-FLG             PIC 9(01)   OCCURS  31.
       *
       *    約束セット用
            03  WRK-IDX-YAKUSOKU.
@@ -2341,6 +2344,7 @@
                           ((SPA-GMN-INPUTCD(IDX)   =   SPACE ) AND
                            (SPA-COM-INPUTCD(IDX)   =   SPACE ))
                MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
+               MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
                MOVE    SPACE           TO  SPA-COM-NYU-KZMFLG-G(IDX)
            END-PERFORM
       *
@@ -4304,6 +4308,7 @@
       *
            MOVE    ZERO                TO  WRK-STR
            MOVE    ZERO                TO  FLG-KUHAKU
+           MOVE    ZERO                TO  SPA-GMN-IDX
            PERFORM VARYING     WRK-IDX2    FROM    1   BY  1
                    UNTIL      (WRK-IDX2    >   24   )   OR
                               (SPA-GMN-IDX     >=  WRK-GYO-MAX)
@@ -6457,7 +6462,7 @@
            MOVE    SPACE               TO  WRK-ERR-ERRCD
            MOVE    ZERO                TO  WRK-KEI-IDX
            MOVE    ZERO                TO  WRK-GOKEI-9
-      *****INITIALIZE                  WRK-RIGAKU-TBL
+           INITIALIZE                  WRK-RIGAKU-TBL
       *    特定薬剤治療管理加算の初回算定日クリア
            MOVE    SPACE               TO  SPA-TOKTEI-YMD
       *    他保険受診ありクリア
@@ -6835,6 +6840,8 @@
       *****MOVE    WRK-RIGAKU-TBL      TO  LNK-ORCSC-RIGAKU-TBL
            MOVE    ORCSC80CNT-RIGAKU-AREA
                                        TO  LNK-ORCSC-RIGAKU-TBL
+      *    早期リハ等加算（今回入力分）
+           MOVE    WRK-RIGAKU-TBL      TO  LNK-ORCSC-GAI-FLG-G
       *    労災用 外来管理点数
            MOVE    SPA-GAIRAI-TEN      TO  LNK-ORCSC-GAIRAI-TEN
       *
@@ -6990,6 +6997,9 @@
       *            理学療法当月内算定
                    MOVE    LNK-ORCSC-RIGAKU-TBL
                                            TO  ORCSC80CNT-RIGAKU-AREA
+      *            早期リハ等加算（今回入力分）
+                   MOVE    LNK-ORCSC-GAI-FLG-G
+                                           TO  WRK-RIGAKU-TBL
       *            コメント等
       *********WHEN    "90"
                WHEN    "93"
@@ -7847,6 +7857,8 @@
       *****MOVE    WRK-RIGAKU-TBL      TO  LNK-ORCSC-RIGAKU-TBL
            MOVE    ORCSC80CNT-RIGAKU-AREA
                                        TO  LNK-ORCSC-RIGAKU-TBL
+      *    早期リハ等加算（今回入力分）
+           MOVE    WRK-RIGAKU-TBL      TO  LNK-ORCSC-GAI-FLG-G
       *    労災用 救急医療管理加算有無
       **   MOVE    SPA-RSI-KYUKASN     TO  LNK-ORCSC-RSI-KYUKASN
       *    労災用 療養の給付請求書有無
