@@ -50,6 +50,7 @@
       *  01.00.19    NACL-太田    04/07/05  請求書発行コンボ項目追加
       *  01.00.20    NACL-太田    04/07/07  入金方法情報タブ追加
       *  01.00.21    NACL-太田    04/09/30  請求額端数区分（減免無）追加
+      *  01.00.22    NACL-太田    04/12/01  更正・育成限度額日割計算区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -146,6 +147,13 @@
                            11  SPA-GMN-F12L           PIC X(01).
                            11  SPA-GMN-TAX-HASU-KBNMEIL
                                                       PIC X(30).
+                       09  SPA-GMN-HIWARIKBNLST
+                                                      OCCURS  2.
+                           11  SPA-GMN-HIWARIKBNL
+                                                      PIC X(01).
+                           11  SPA-GMN-F13L           PIC X(01).
+                           11  SPA-GMN-HIWARIKBNMEIL
+                                                      PIC X(18).
                        09  SPA-GMN-KOUMOKU.
                            11  SPA-GMN-PREFNUM-G.
                                13  SPA-GMN-PREFNUM    PIC X(02).
@@ -230,6 +238,12 @@
                                13  SPA-GMN-F12        PIC X(01).
                                13  SPA-GMN-TAX-HASU-KBNMEI
                                                       PIC X(30).
+                           11  SPA-GMN-HIWARIKBN-G.
+                               13  SPA-GMN-HIWARIKBN
+                                                      PIC X(01).
+                               13  SPA-GMN-F13        PIC X(01).
+                               13  SPA-GMN-HIWARIKBNMEI
+                                                      PIC X(18).
       *----(01.00.09) LINE ADD END   ----------------------------------
                    07  SPA-GMN-1002-AREA.
                        09  SPA-GMN-POST           PIC X(07).
@@ -778,6 +792,15 @@
            MOVE    SPA-GMN-TAX-HASU-KBNLST (2)
                                TO  SPA-GMN-TAX-HASU-KBN-G
       *
+           MOVE    "1"         TO  SPA-GMN-HIWARIKBNL    (1)
+           MOVE    "日割計算しない"  
+                               TO  SPA-GMN-HIWARIKBNMEIL (1)
+           MOVE    "2"         TO  SPA-GMN-HIWARIKBNL    (2)
+           MOVE    "日割計算する" 
+                               TO  SPA-GMN-HIWARIKBNMEIL (2)
+           MOVE    SPA-GMN-HIWARIKBNLST (1)
+                               TO  SPA-GMN-HIWARIKBN-G
+      *
            MOVE    "1"         TO  SPA-GMN-TEIRITUL (1)
            MOVE    "定率"      TO  SPA-GMN-TEIRITUMEIL (1)
       * 
@@ -1184,6 +1207,20 @@
                 END-IF
            END-PERFORM
       *
+      *    更正・育成限度額日割計算区分 空白の時、"1"とする
+           IF      SYS-1001-HIWARIKBN   =   SPACE
+               MOVE    "1"             TO  SYS-1001-HIWARIKBN
+           END-IF
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       2
+               IF      SYS-1001-HIWARIKBN
+                                       =   SPA-GMN-HIWARIKBNL (IDY)
+                   MOVE    SPA-GMN-HIWARIKBNLST (IDY)
+                                           TO  SPA-GMN-HIWARIKBN-G
+                   MOVE    2               TO  IDY
+                END-IF
+           END-PERFORM
+      *
            . 
        31091-KIHON-HENSYU-EXT.
            EXIT.
@@ -1356,6 +1393,7 @@
            MOVE    W02-DISCOUNTHASU    TO  SPA-GMN-DISCOUNT-HASU-KBN-G
            MOVE    W02-DISCOUNTHASU2   TO  SPA-GMN-DISCOUNT-HASU-KBN2-G
            MOVE    W02-TAXHASU         TO  SPA-GMN-TAX-HASU-KBN-G
+           MOVE    W02-HIWARIKBN       TO  SPA-GMN-HIWARIKBN-G
       *
       *    連絡先情報タグ
            MOVE    W02-POST            TO  SPA-GMN-POST
@@ -1533,6 +1571,11 @@
            END-IF
       *
            PERFORM 4131-TAX-HASU-KBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KIHON-1001-EXT
+           END-IF
+      *
+           PERFORM 4131-HIWARIKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41021-KIHON-1001-EXT
            END-IF
@@ -2077,6 +2120,30 @@
        4131-TAX-HASU-KBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    更正・育成限度額日割計算区分
+      *****************************************************************
+       4131-HIWARIKBN-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       2
+               IF      SPA-GMN-HIWARIKBN
+                                       =   SPA-GMN-HIWARIKBNL
+                                                              (IDY)
+                   MOVE    SPA-GMN-HIWARIKBNLST (IDY)
+                                       TO  SPA-GMN-HIWARIKBN-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0021"          TO  SPA-ERRCD
+               MOVE    202             TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4131-HIWARIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    郵便番号チェック処理
       *****************************************************************
        4112-POST-CHK-SEC           SECTION.
@@ -2460,6 +2527,8 @@
                                        TO  SYS-1001-DISCOUNT-HASU-KBN2
                    MOVE    SPA-GMN-TAX-HASU-KBN
                                        TO  SYS-1001-TAX-HASU-KBN
+                   MOVE    SPA-GMN-HIWARIKBN
+                                       TO  SYS-1001-HIWARIKBN
                    MOVE    SYS-1001-REC    TO  SYSKANRI-REC
       * 
       *    医療機関情報ー所在地、連絡先情報
@@ -2830,6 +2899,8 @@
                                        TO  W02-DISCOUNTHASU2
            MOVE    SPA-GMN-TAX-HASU-KBN-G
                                        TO  W02-TAXHASU
+           MOVE    SPA-GMN-HIWARIKBN-G
+                                       TO  W02-HIWARIKBN
       *     
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       47
@@ -2910,6 +2981,12 @@
                                        TO  W02-TAXHASULST (IDX)
            END-PERFORM    
            MOVE    2                   TO  W02-TAXHASU-COUNT     
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       2
+               MOVE    SPA-GMN-HIWARIKBNLST(IDX)
+                                       TO  W02-HIWARIKBNLST (IDX)
+           END-PERFORM    
+           MOVE    2                   TO  W02-HIWARIKBN-COUNT     
       *----(01.00.09) LINE ADD END   ----------------------------------
       *
       *    医療機関情報ー所在地、連絡先情報
@@ -3107,6 +3184,9 @@
                WHEN    "0020"
                    MOVE    "請求金端数設定（減免無）入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0021"
+                   MOVE    "更正・育成限度額日割計算区分入力エラー"
+                                               TO  SPA-ERRMSG
       *----(01.00.09) LINE ADD END   ----------------------------------
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
@@ -3243,6 +3323,9 @@
                 WHEN    39
                     MOVE  "TAXHASU"
                                            TO   MCP-WIDGET
+                WHEN    202
+                    MOVE  "HIWARIKBN"
+                                           TO   MCP-WIDGET
                 WHEN    40
                     MOVE  "TEIRITU"        TO   MCP-WIDGET
                 WHEN    41
@@ -3353,6 +3436,8 @@
               WHEN    "DISCOUNTHASU2"
                   MOVE    39               TO  SPA-GMN-CUR
               WHEN    "TAXHASU"
+                  MOVE    202              TO  SPA-GMN-CUR
+              WHEN    "HIWARIKBN"
                   MOVE    01               TO  SPA-GMN-CUR
       *       連絡先情報
               WHEN    "POST"

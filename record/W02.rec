@@ -127,6 +127,13 @@ W02	{
 					count	int;
 					item	varchar(32)[2];
 				};
+				HIWARIKBN_COMBO	{
+					HIWARIKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
 			};
 	            N01	{
 	            	state	int;

@@ -102,6 +102,12 @@
                                              PIC S9(9)   BINARY.
                     06  W02-TAXHASULST       PIC X(32)
                                                       OCCURS  2.
+                  05  W02-HIWARIKBN-COMBO.
+                    06  W02-HIWARIKBN        PIC X(20).
+                    06  W02-HIWARIKBN-COUNT
+                                             PIC S9(9)   BINARY.
+                    06  W02-HIWARIKBNLST     PIC X(20)
+                                                      OCCURS  2.
                 04  W02-N01-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED24.
                   05  W02-POST.
