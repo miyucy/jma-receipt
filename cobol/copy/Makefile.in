@@ -671,6 +671,12 @@ COPYS = \
         HCM08.INC \
         CPSENTEICDCHG.INC \
         CPORCSFDEL.INC \
+        CPLDMAP.INC \
+        CPLOCKCONST.INC \
+        CPORCSLOCK.INC \
+        CPSK9800.INC \
+        CPTBLLOCK.INC \
+        W98.INC \
 
 DBPATH = \
 	ORCA-DBPATH
