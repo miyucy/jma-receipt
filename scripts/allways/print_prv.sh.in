@@ -8,6 +8,10 @@ if ! test -f "$JMARECEIPT_ENV"; then
 fi
 
 . $JMARECEIPT_ENV
+if ! test -d /var/tmp/.orca_ps ; then
+    mkdir /var/tmp/.orca_ps
+fi
+
 #-------------------------------------------#
 #    °õºþ£Ä£Â¤«¤é¤Î°õºþ½èÍý
 #        $1-${11} °õºþ£Ä£ÂÍÑ¸ÇÄê°ú¿ô

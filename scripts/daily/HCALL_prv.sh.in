@@ -10,6 +10,10 @@ fi
 . $JMARECEIPT_ENV
 export HOME=/home/orca
 
+if ! test -d /var/tmp/.orca_ps ; then
+    mkdir /var/tmp/.orca_ps
+fi
+
 #----------------------------------------------------------------------#
 #       引数	
 #       1:DATAファイル名称
