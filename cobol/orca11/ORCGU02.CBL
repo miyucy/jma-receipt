@@ -48,6 +48,7 @@
       *  01.03.07    MCC-多々納   02/04/18  一覧表の表示修正
       *  02.00.00    NACL-多々納  02/08/12  保険確認の追加、
       *                                     インターフェースの変更
+      *  02.00.01    NACL-多々納  02/10/09  未確認に記号番号追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -132,6 +133,7 @@
                    07  SPA-GMN-MIKAKUNIN.
                        09  SPA-GMN-MIKAKU-TBL          OCCURS  10.
                            11  SPA-GMN-TMIKAKUNAME     PIC X(22).
+                           11  SPA-GMN-TMIKIGONUM      PIC X(40).
                            11  SPA-GMN-TMIKAKUYMD      PIC X(12).
                    07  SPA-MIKAKU-MAX                  PIC 9(04).
       *
@@ -224,6 +226,7 @@
            03  IDX3                                    PIC 9(04).
            03  IDY                                     PIC 9(04).
            03  IDZ                                     PIC 9(04).
+           03  IDX-C                                   PIC 9(04).
       *
       *
       *    一時領域
@@ -1963,6 +1966,18 @@
                        MOVE    WRK-HENYMDG         TO
                                                    SPA-GMN-TMIKAKUYMD
                                                                 (IDX)
+      *                記号・番号
+                       IF     (PTHKN-KIGO          =   SPACE )  AND
+                              (PTHKN-NUM           =   SPACE )
+                           CONTINUE
+                       ELSE
+                           STRING  PTHKN-KIGO      DELIMITED  BY  SPACE
+                                   "・"            DELIMITED  BY  SIZE
+                                   PTHKN-NUM       DELIMITED  BY  SPACE
+                                   INTO            SPA-GMN-TMIKIGONUM
+                                                                (IDX)
+                           END-STRING
+                       END-IF
       *
                        MOVE    PTHKN-KAKUNINYMD    TO
                                                    SPA-NAI-KAKUNINYMD
@@ -2136,6 +2151,8 @@
            MOVE    PTKOH-KAKUNINYMD    TO  WRK-SYMD
            PERFORM 500-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-TMIKAKUYMD(IDX)
+      *    受給者番号
+           MOVE    PTKOH-JKYSNUM       TO  SPA-GMN-TMIKIGONUM (IDX)
       *
            MOVE    PTKOH-KAKUNINYMD    TO  SPA-NAI-KAKUNINYMD (IDX)
            MOVE    PTKOH-KOHID         TO  SPA-NAI-HKNID      (IDX)
@@ -2177,6 +2194,7 @@
                MOVE    1               TO  FLG-JYURRK
            END-IF
       *
+           MOVE    ZERO                TO  WRK-JRK-HKNCOMBI
            INITIALIZE                  WRK-JYURRK-AREA
            PERFORM     UNTIL           FLG-JYURRK   =   1
                MOVE    JYURRK-SRYKA        TO  WRK-JRK-SRYKA
@@ -2226,7 +2244,18 @@
                    MOVE    SYS-1010-NAME    TO  SPA-GMN-DRNAME
                END-IF
       *        保険組合せ
-               MOVE    WRK-JRK-HKNCOMBI    TO  SPA-GMN-COMBINUM
+      *********MOVE    WRK-JRK-HKNCOMBI    TO  SPA-GMN-COMBINUM
+      *        削除分ならないことと
+               PERFORM VARYING    IDX-C    FROM    1   BY  1
+                       UNTIL     (IDX-C    >   15  )  OR
+                                 (SPA-GMN-HKNCOMBINUM(IDX-C)
+                                           =   ZERO  )
+                   IF      WRK-JRK-HKNCOMBI    =   SPA-GMN-HKNCOMBINUM
+                                                              (IDX-C)
+                       MOVE    WRK-JRK-HKNCOMBI    TO  SPA-GMN-COMBINUM
+                       MOVE    15                  TO  IDX-C
+                   END-IF
+               END-PERFORM
            END-IF
            .
        410116-JYURRKSET-EXT.
@@ -3423,6 +3452,8 @@
                    MOVE    IDX             TO  U02-MIKAKUNINN-COUNT
                    MOVE    SPA-GMN-TMIKAKUNAME (IDY)
                                            TO  U02-MLSEIDONAME (IDX)
+                   MOVE    SPA-GMN-TMIKIGONUM  (IDY)
+                                           TO  U02-MLKIGONUM   (IDX)
                    MOVE    SPA-GMN-TMIKAKUYMD (IDY)
                                            TO  U02-MLLASTYMD   (IDX)
       *            保険確認
