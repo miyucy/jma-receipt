@@ -744,8 +744,10 @@
            MOVE    SPA-NAI-O04-PTID    TO  PTTEIKIRRK-PTID
            MOVE    SPA-NAI-O04-SRYYMD (1:6) 
                                        TO  PTTEIKIRRK-SRYYM
+           MOVE    SPA-NAI-O04-RRKNUM
+                                       TO  PTTEIKIRRK-RRKNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
-           MOVE    PATH-TBL-PTTEIKIRRK-KEY2
+           MOVE    PATH-TBL-PTTEIKIRRK-KEY9
                                        TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
@@ -796,7 +798,7 @@
       *
                END-IF
       *
-               MOVE    PATH-TBL-PTTEIKIRRK-KEY2
+               MOVE    PATH-TBL-PTTEIKIRRK-KEY9
                                        TO  MCP-PATH
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
@@ -808,7 +810,7 @@
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-PTTEIKIRRK-KEY2
+           MOVE    PATH-TBL-PTTEIKIRRK-KEY9
                                        TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
       *
@@ -1829,13 +1831,15 @@
       *
            MOVE    SPA-GMN-O04-SKYLIST-SEL TO  IDX4
       *
-      *
            MOVE    ZERO                TO  FLG-SRYYM-CHG
-           IF    ( SPA-NAI-O04-DENPNUM =   ZERO )
-            OR   ( SPA-NAI-O04-SRYYMD (1:6)
-                                   NOT =   SPA-NAI-O04-TSK-SRYYM (IDX4))
+           EVALUATE    TRUE
+           WHEN  ( SPA-NAI-O04-DENPNUM =   ZERO )
+           WHEN  ( SPA-NAI-O04-SRYYMD (1:6)
+                               NOT =   SPA-NAI-O04-TSK-SRYYM (IDX4))
+              OR ( SPA-NAI-O04-RRKNUM
+                               NOT =   SPA-NAI-O04-TSK-RRKNUM(IDX4))
                MOVE    1               TO  FLG-SRYYM-CHG
-           END-IF
+           END-EVALUATE
       *
            MOVE    SPA-NAI-O04-TSK-SRYKAMEI  (IDX4)
                                        TO  SPA-GMN-O04-SRYKA
@@ -1843,6 +1847,8 @@
                                        TO  SPA-NAI-O04-SRYKA
            MOVE    SPA-NAI-O04-TSK-DENPNUM (IDX4)
                                        TO  SPA-NAI-O04-DENPNUM
+           MOVE    SPA-NAI-O04-TSK-RRKNUM (IDX4)
+                                       TO  SPA-NAI-O04-RRKNUM
            MOVE    SPA-NAI-O04-TSK-SAKKBN  (IDX4)
                                        TO  SPA-NAI-O04-SAKKBN
            MOVE    SPA-NAI-O04-TSK-SAKKBN-MAX  (IDX4)
@@ -2108,6 +2114,8 @@
       *
                MOVE    PTTEIKIRRK-DENPNUM
                                    TO  SPA-NAI-O04-TSK-DENPNUM (IDX-LST)
+               MOVE    PTTEIKIRRK-RRKNUM
+                                   TO  SPA-NAI-O04-TSK-RRKNUM  (IDX-LST)
                IF    ( PTTEIKIRRK-SAKKBN   =   "9" )
                    MOVE    SPA-NAI-O04-TSK-SAKKBN-MAX  (IDX-LST)
                                    TO  SPA-NAI-O04-TSK-SAKKBN  (IDX-LST)

@@ -171,3 +171,15 @@ path	key8		{
 	};
 };
 
+path	key9		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptteikirrk_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptteikirrk
+        WHERE  HOSPID  =   :HOSPID
+        AND    PTID    =   :PTID
+        AND    SRYYM   =   :SRYYM
+        AND    RRKNUM  =   :RRKNUM
+        		;
+	};
+};

@@ -206,6 +206,7 @@
                        09  SPA-NAI-O04-SAKKBN-MAX      PIC X(01).
                        09  SPA-NAI-O04-SRYKA           PIC X(02).
                        09  SPA-NAI-O04-DENPNUM         PIC 9(07).
+                       09  SPA-NAI-O04-RRKNUM          PIC 9(03).
                    07  SPA-NAI-O04-KINGAKU-AREA.
                        09  SPA-NAI-O04-DENPPRTYMD      PIC X(08).
                        09  SPA-NAI-O04-HEAD-DENPJTIKBN PIC X(01).
@@ -235,6 +236,7 @@
                05  SPA-NAI-O04-SKYTBL-AREA.
                    07  SPA-NAI-O04-SKYTBL-OCC          OCCURS  50.
                        09  SPA-NAI-O04-TSK-DENPNUM     PIC 9(07).
+                       09  SPA-NAI-O04-TSK-RRKNUM      PIC 9(03).
                        09  SPA-NAI-O04-TSK-SRYYM       PIC X(06).
                        09  SPA-NAI-O04-TSK-SKYSTYMD    PIC X(08).
                        09  SPA-NAI-O04-TSK-SAKKBN      PIC X(01).
