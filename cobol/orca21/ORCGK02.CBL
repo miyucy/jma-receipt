@@ -6790,11 +6790,10 @@
       *        診療種別一覧
                    WHEN    "."
                        MOVE    "."             TO  SPA-K98-INPUTCD
-      *        保険組合せ
-                   WHEN    "#"
-                       MOVE    "#"             TO  SPA-K98-INPUTCD
       *            区分番号別
                    WHEN    "*"
+                       MOVE    SPA-K98-INPUTCD(3:) TO  SPA-K98-INPUTCD
+                   WHEN    "/"
                        MOVE    SPA-K98-INPUTCD(3:) TO  SPA-K98-INPUTCD
                    WHEN    OTHER
                        MOVE    SPACE               TO  SPA-K98-INPUTCD
@@ -11833,6 +11832,7 @@
            WRITE                       PARA-REC
       *
       *    Ｋ０２ＳＰＡをパラメタへ出力
+           MOVE    SPACE               TO  SPA-K021GMN-AREA
            MOVE    SPACE               TO  PARA-REC
            MOVE    "K02SPA"            TO  PARA-FILEMEI
            MOVE    1                   TO  PARA-EDANUM

@@ -5118,6 +5118,7 @@
                ELSE
       *            区分番号別
                    IF      SPA-K98-INPUTCD(3:1)    =   "*"
+                                                   OR  "/"
                        MOVE    SPA-K98-INPUTCD(3:) TO  SPA-K98-INPUTCD
                    ELSE
                        MOVE    SPACE               TO  SPA-K98-INPUTCD
@@ -9976,6 +9977,7 @@
            OPEN    OUTPUT              PARA-FILE
       *
       *    共通ＳＰＡをパラメタへ出力
+           MOVE    SPACE               TO  SPA-K021GMN-AREA
            MOVE    SPACE               TO  PARA-REC
            MOVE    "K01PARA"           TO  PARA-FILEMEI
            MOVE    1                   TO  PARA-EDANUM

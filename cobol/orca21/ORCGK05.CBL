@@ -2979,27 +2979,28 @@
            INITIALIZE                  SPA-K98GMN-AREA
       *****IF      SPA-K98-INPUTCD         =   SPACE
            IF      SPA-K98-INPUTCD(1:2)    =   "//"
+               EVALUATE    SPA-K98-INPUTCD(3:1)
       *        コメント一覧
-               IF      SPA-K98-INPUTCD(3:1)    =   "C" OR "c"
-                   MOVE    "U"                 TO  SPA-K98-GMN-SYORI
-                   MOVE    "U4"                TO  SPA-K98-GMN-SYORI3
-               END-IF
+                   WHEN    "C"
+                   WHEN    "c"
+                       MOVE    "U"             TO  SPA-K98-GMN-SYORI
+                       MOVE    "U4"            TO  SPA-K98-GMN-SYORI3
       *        用法
-               IF      SPA-K98-INPUTCD(3:1)    =   "Y" OR "y"
-                   MOVE    "U"                 TO  SPA-K98-GMN-SYORI
-                   MOVE    "U1"                TO  SPA-K98-GMN-SYORI3
-               END-IF
+                   WHEN    "Y"
+                   WHEN    "y"
+                       MOVE    "U"             TO  SPA-K98-GMN-SYORI
+                       MOVE    "U1"            TO  SPA-K98-GMN-SYORI3
       *        診療種別一覧
-               IF      SPA-K98-INPUTCD(3:1)    =   "."
-                   MOVE    "."                 TO  SPA-K98-INPUTCD
-               ELSE
+                   WHEN    "."
+                       MOVE    "."             TO  SPA-K98-INPUTCD
       *            区分番号別
-                   IF      SPA-K98-INPUTCD(3:1)    =   "*"
+                   WHEN    "*"
                        MOVE    SPA-K98-INPUTCD(3:) TO  SPA-K98-INPUTCD
-                   ELSE
+                   WHEN    "/"
+                       MOVE    SPA-K98-INPUTCD(3:) TO  SPA-K98-INPUTCD
+                   WHEN    OTHER
                        MOVE    SPACE               TO  SPA-K98-INPUTCD
-                   END-IF
-               END-IF
+               END-EVALUATE
       *        画面編集
                MOVE    SPACE               TO  K98
                INITIALIZE                      K98
