@@ -337,6 +337,7 @@
       *                                     SYUTOTAL-KEY追加
       *                                     SYUTOTAL-DEL1追加
       *                                     SYUNOU-KEY26,KEY27,KEY28追加
+      *  01.01.150   NACL-多々納  04/09/07  PTNYUINRRK-KEY33,KEY34追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2926,6 +2927,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-KEY32"
                    MOVE    PATH-TBL-PTNYUINRRK-KEY32
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY33"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY33
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY34"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY34
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-ALL"
                    MOVE    PATH-TBL-PTNYUINRRK-ALL
