@@ -714,5 +714,12 @@ R02	{
 			count	int;
 			item	varchar(6)[3];
 		};
+		PRTKBN_COMBO	{
+			PRTKBN	{
+				value	varchar(14);
+			};
+			count	int;
+			item	varchar(14)[3];
+		};
 	};
 };

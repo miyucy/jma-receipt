@@ -39,14 +39,14 @@ W12	{
 				value	varchar(20);
 			};
 			count	int;
-			item	varchar(20)[3];
+			item	varchar(20)[2];
 		};
 		SYARECEKBN_COMBO	{
 			SYARECEKBN	{
 				value	varchar(20);
 			};
 			count	int;
-			item	varchar(20)[3];
+			item	varchar(20)[2];
 		};
 		RECEDENOUT	{
 			value	varchar(30);
@@ -62,13 +62,19 @@ W12	{
 			value	varchar(15);
 		};
 		PREFPRGID1	{
-	           	state	int;
+	    	state	int;
 			value	varchar(15);
 		};
 		SYAPRTNM	{
 			value	varchar(16);
 		};
+		SYAPRTNM_NEXT	{
+			value	varchar(16);
+		};
 		KKHPRTNM	{
+			value	varchar(16);
+		};
+		KKHPRTNM_NEXT	{
 			value	varchar(16);
 		};
 		RENNUMHENKBN_COMBO	{
@@ -80,10 +86,17 @@ W12	{
 		};
 		NEXTPRTKBN_COMBO	{
 			NEXTPRTKBN	{
-				value	varchar(22);
+				value	varchar(10);
 			};
 			count	int;
-			item	varchar(22)[2];
+			item	varchar(10)[2];
+		};
+		NEXTPRTKBN1_COMBO	{
+			NEXTPRTKBN_1	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[3];
 		};
 		KKHPRTKBN_COMBO	{
 			KKHPRTKBN	{
