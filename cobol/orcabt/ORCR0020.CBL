@@ -88,6 +88,7 @@
       *                                     ¡ÊË¡ÊÌÈÖ¹æ£´£±°Ê³°¤Î¤È¤­¡Ë
       *  01.00.32    NACL-Æ£¸¶    03/10/27  ´µ¼Ô¾ðÊó¤ÎÊÔ½¸¤Î½¤Àµ
       *                                     ¸©ÈÖ¹æ¤ÎÄÉ²Ã
+      *  01.00.33    NACL-ÌçÏÆ    03/11/27  ¡ÉÏ·ÊÝ¡ÉÊÔ½¸¾ò·ï½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -834,7 +835,8 @@
       *    ÆÃµ­»ö¹à¤Î¥»¥Ã¥È
       *    Ï·ÊÝ¤ÎÊÔ½¸
            IF      RECE02-HKNHBTNUM     =   SPACE
-           AND     RECE02-KOHHBTNUM (1) =   "12"
+      ***> AND     RECE02-KOHHBTNUM (1) =   "12"
+           AND     RECE02-KOHHBTNUM (1)   NOT =  SPACE
            AND     RECE02-KOHHBTNUM (2) =   SPACE
            AND     RECE02-KOHHBTNUM (3) =   SPACE
            AND     RECE02-KOHHBTNUM (4) =   SPACE
@@ -863,6 +865,7 @@
                                                     RECE01-SRYYM
                            AND     RECE01-SRYYM         <=
                                                     PTKOH-TEKEDYMD(1:6)
+                           AND     PTKOH-SAKJOKBN   =  SPACE
                                ADD      1           TO  TOKKI-IDX
                                MOVE    "04"         TO  RECE02-TOKKI
                                                             (TOKKI-IDX)
