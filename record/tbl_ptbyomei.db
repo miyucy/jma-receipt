@@ -275,3 +275,27 @@ path	key13	{
 		;
 	};
 };
+path	key14	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key14_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND     SRYKA     =   :SRYKA
+			AND     SYUBYOFLG =   '1'
+		;
+	};
+};
+
+path	key15	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key15_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND     SYUBYOFLG =   '1'
+		;
+	};
+};
