@@ -555,13 +555,13 @@
            MOVE    WRK-PARA-DENPPRTYM  TO  SRY-SRYYM
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACT-KEY10"      TO  ORC-DBPATH
+           MOVE    "SRYACT-KEY11"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACT-KEY10"      TO  ORC-DBPATH
+               MOVE    "SRYACT-KEY11"      TO  ORC-DBPATH
                PERFORM 900-SRY-DBFETCH-SEC
            ELSE
                INITIALIZE                  SRYACT-REC
@@ -572,12 +572,12 @@
       *        診療会計集計処理
                PERFORM 230-MAIN-ACCT-SEC
 
-               MOVE    "SRYACT-KEY10"      TO  ORC-DBPATH
+               MOVE    "SRYACT-KEY11"      TO  ORC-DBPATH
                PERFORM 900-SRY-DBFETCH-SEC
       *
            END-PERFORM
       *
-           MOVE    "SRYACT-KEY10"   TO  ORC-DBPATH
+           MOVE    "SRYACT-KEY11"   TO  ORC-DBPATH
            PERFORM 900-SRY-DBCLOSE-SEC
             .
        220-MAIN-SRY-EXT.
