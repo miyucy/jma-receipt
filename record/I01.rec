@@ -9,6 +9,12 @@ I01	{
 		B12	{
 			state	int;
 		};
+		B05	{
+			state	int;
+		};
+		B21	{
+			state	int;
+		};
 		PTNUM	{
 			value	varchar(20);
 		};
