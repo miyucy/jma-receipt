@@ -493,7 +493,7 @@
                INITIALIZE                  SYUNOU-REC
                MOVE    SYS-1001-HOSPID     TO  SYU-HOSPID
                MOVE    "1"                 TO  SYU-NYUGAIKBN
-               MOVE    "X"                 TO  SYU-DENPJTIKBN
+               MOVE    "3"                 TO  SYU-CREATEKBN
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "SYUNOU-DEL2"       TO  ORC-DBPATH
                MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -536,9 +536,9 @@
                    MOVE    SYS-1001-HOSPID TO  SYU-HOSPID
                    MOVE    "1"             TO  SYU-NYUGAIKBN
                    MOVE    SYS-5012-PTID   TO  SYU-PTID
-                   MOVE    "X"             TO  SYU-DENPJTIKBN
+                   MOVE    "3"             TO  SYU-CREATEKBN
                    MOVE    SYUNOU-REC      TO  MCPDATA-REC
-                   MOVE    "SYUNOU-DEL4"   TO  ORC-DBPATH
+                   MOVE    "SYUNOU-DEL3"   TO  ORC-DBPATH
                    MOVE    "DBDELETE"      TO  MCP-FUNC
                    CALL    "ORCMCPSUB"     USING
                                            MCPAREA
