@@ -2913,6 +2913,9 @@
            CALL    "ORCSCNYUIN"        USING
                                        SPA-AREA
                                        ORCSCNYUINAREA
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO     4502-NYUKOUSIN-SYORI-EXT
+           END-IF
       *
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
@@ -3172,6 +3175,14 @@
                                        TO  SPA-ERRMSG
                    MOVE    "削除できません。"
                                        TO  SPA-ERRMSG(27:)
+               WHEN    "0005"
+                   MOVE    "更新ができませんでした。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE    "１日の受診履歴が１３５剤以上になります。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "剤を減らして入力して下さい。"
+                                       TO  SPA-ERRMSG(41:)
                WHEN    "1000"
                    MOVE    "５００行以上になります。"
                                        TO  SPA-ERRMSG

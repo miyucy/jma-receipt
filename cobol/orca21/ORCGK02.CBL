@@ -1708,6 +1708,10 @@
                               (SPA-K98-SRYCD(IDX-K98)  =   SPACE )
       *
                IF      IDX-K98             =   1
+                   INITIALIZE                  SPA-COM-TBLREC
+                                                       (SPA-GMN-IDX)
+                   INITIALIZE                  SPA-GMN-TBLREC
+                                                       (SPA-GMN-IDX)
                    MOVE    SPA-K98-SRYCD(IDX-K98)
                                            TO  SPA-GMN-INPUTCD
                                                        (SPA-GMN-IDX)
