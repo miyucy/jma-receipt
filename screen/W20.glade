@@ -1392,22 +1392,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label999</name>
-      <x>10</x>
-      <y>565</y>
-      <width>84</width>
-      <height>16</height>
-      <label>¥«∏Ó ‰Ωı≤√ªª</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label917</name>
       <x>255</x>
       <y>565</y>
@@ -1695,9 +1679,25 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label999</name>
+      <x>10</x>
+      <y>565</y>
+      <width>84</width>
+      <height>16</height>
+      <label>¥«∏Ó ‰Ωı≤√ªª</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkCheckButton</class>
       <name>CHK_BTU_SYOKUDOKBN</name>
-      <x>35</x>
+      <x>10</x>
       <y>590</y>
       <width>80</width>
       <height>24</height>
@@ -1721,9 +1721,9 @@
     <widget>
       <class>GtkCheckButton</class>
       <name>CHK_BTU_ISISUKBN</name>
-      <x>125</x>
+      <x>100</x>
       <y>590</y>
-      <width>110</width>
+      <width>140</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -1737,7 +1737,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 31 Jul 2002 06:06:25 GMT</last_modification_time>
       </signal>
-      <label>∞Âª’«€√÷≈¨πÁ</label>
+      <label> £øÙ∞ÂŒ≈«€√÷≈¨πÁ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
