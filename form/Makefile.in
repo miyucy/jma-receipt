@@ -217,6 +217,18 @@ FORM_files = \
               HCM2JV02.red \
               HCM43.red \
               HCM44.red \
+              HCM2CV04.red \
+              HCM2DV02.red \
+              HCM2AV03.red \
+              HCM2BV02.red \
+              HCM2KV02.red \
+              HCM2LV02.red \
+              HCM2IV02.red \
+              HCM2JV03.red \
+              HCM2MV01.red \
+              HCM2NV01.red \
+              HCM2OV01.red \
+              HCM2PV01.red \
 
 all:   
 
