@@ -30,8 +30,6 @@ fi
         fi
         
         rm  /var/tmp/RECE4*
-        
-     cd  $ORCABT
 
 	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0405 -parameter $1$2$3$5$6
 	

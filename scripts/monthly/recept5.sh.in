@@ -24,8 +24,6 @@ fi
         if  [ -e $3 ]; then
             rm  $3
         fi
-        
-        cd  $ORCABT
 
 ##      Ì¤ÀÁµá°ìÍ÷
      	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBM005 -parameter $1,$4,$2,$5

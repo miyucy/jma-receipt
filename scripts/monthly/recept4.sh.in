@@ -28,8 +28,6 @@ fi
             rm  $8
         fi
         
-     cd  $ORCABT
-
         $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0200 -parameter $1$6$7
         
         if  [ $4 = '1' ]; then          

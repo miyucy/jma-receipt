@@ -32,8 +32,6 @@ RENNUM=0
             rm  ${18}
         fi 
         
-        cd  $ORCABT
-
 ##      総括表（社保）
         if  [ ${13} -ne 2 ]; then
            RENNUM=$(expr $RENNUM + 1) 

@@ -34,11 +34,7 @@ fi
             rm  $6
         fi
         
-###     cd  $ORCABT
-        
-
         if [ $4 =  0 ]; then
-#          fcu  -P$1 ORCR0101
 	   $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0101 -parameter $1,$2,$3,$7,$8,$9,${10},
         else 
 	   $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0102 -parameter $1,$2,$3,$7,$8
