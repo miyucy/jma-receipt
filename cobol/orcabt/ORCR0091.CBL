@@ -278,7 +278,7 @@
            MOVE    RECE06-ZAINUM        TO      RECE061-ZAINUM
            IF      RECE06-SRYKBN        =       "60"
               IF   RECE06-KNSJISKBN     =       2
-                   MOVE    4            TO      RECE061-KNSJISKBN
+                   MOVE    5            TO      RECE061-KNSJISKBN
               ELSE
                   IF   (RECE06-CDKBN-KBNNUM >=        0)   AND
                        (RECE06-CDKBN-KBNNUM <=      199)
@@ -291,6 +291,9 @@
                   IF   (RECE06-CDKBN-KBNNUM >=      200)   AND
                        (RECE06-CDKBN-KBNNUM <=      399)
                           MOVE   3      TO      RECE061-KNSJISKBN
+                  END-IF
+                  IF   RECE06-CDKBN-KBN      =      "9"
+                          MOVE   4      TO      RECE061-KNSJISKBN
                   END-IF
               END-IF
            END-IF     
@@ -340,6 +343,7 @@
                                            TO  RECE061-CDKBN-KBNNUM-EDA
                MOVE   RECE06-CDKBN-KOUBAN  TO  RECE061-CDKBN-KOUBAN
                MOVE   RECE06-KOUHYOJUNNUM  TO  RECE061-KOUHYOJUNNUM
+           END-IF
       **         IF      RECE06-SRYKBN        =   "60"
       **            CONTINUE
       **         ELSE    
