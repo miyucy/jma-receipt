@@ -1419,38 +1419,6 @@
                PERFORM    2102-SHOHOUSEN-HANTEI-SEC
            END-IF.
       *
-      *----(01.00.23) LINE ADD START --------------------------
-      *Ê¿À®£±£´Ç¯£±£°·î²þÀµÂÐ±þ
-      *¹âÎð¼Ô¤ÎºßÂðÁí¹ç¡¦ºßÂðËö´ü»»Äê´µ¼Ô¤Î¼çÊÝ¸±¾å¸Â³Û»»Äê
-      *
-           IF  LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
-               IF  COMB-KOH1-HKNKOHSBTKBN   =   "3"
-                   EVALUATE   COMB-KOH1PAYKBN
-                       WHEN   "01"
-                           IF  FLG-SANSHOU      =   "1"
-                               MOVE   12000   TO   MAX-KIN-SYU-M
-                           ELSE
-                               MOVE    8000   TO   MAX-KIN-SYU-M
-                           END-IF
-                       WHEN   "02"
-                           MOVE   40200     TO   MAX-KIN-SYU-M
-                   END-EVALUATE
-               ELSE
-                   EVALUATE   COMB-HOJOKBN
-                       WHEN   "9"
-                           IF  FLG-SANSHOU      =   "1"
-                               MOVE   12000   TO   MAX-KIN-SYU-M
-                           ELSE
-                               MOVE    8000   TO   MAX-KIN-SYU-M
-                           END-IF
-                       WHEN   "8"
-                           MOVE   40200     TO   MAX-KIN-SYU-M
-                   END-EVALUATE
-               END-IF
-           END-IF.
-      *----(01.00.23) LINE ADD END   --------------------------
-      *
-      *
       *    *¸øÈñ£±¤Î¾å¸Â²ó¿ô¡Ê¶â³Û¡Ë¼è¹þ¤ß
            IF (COMB-KOH1HKNNUM           NOT =  SPACE)    AND
               (COMB-KOH1-GAIJGNKBN       =     "1")
@@ -1618,6 +1586,43 @@
                                          MCPAREA
                                          ORCMCPAREA
                                          MCPDATA-REC.
+      *
+      *----(01.00.23) LINE ADD START --------------------------
+      *Ê¿À®£±£´Ç¯£±£°·î²þÀµÂÐ±þ
+      *¹âÎð¼Ô¤ÎºßÂðÁí¹ç¡¦ºßÂðËö´ü»»Äê´µ¼Ô¤Î¼çÊÝ¸±¾å¸Â³Û»»Äê
+      *
+           IF  LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
+               IF  COMB-KOH1-HKNKOHSBTKBN   =   "3"
+                   EVALUATE   COMB-KOH1PAYKBN
+                       WHEN   "01"
+                           MOVE  "1"          TO   COMB-KOH1-GAIJGNKBN
+                           IF  FLG-SANSHOU      =   "1"
+                               MOVE   12000   TO   MAX-KIN-KOHI1-D
+                                                   MAX-KIN-KOHI1-M
+                           ELSE
+                               MOVE    8000   TO   MAX-KIN-KOHI1-D
+                                                   MAX-KIN-KOHI1-M
+                           END-IF
+                       WHEN   "02"
+                           MOVE  "1"          TO   COMB-KOH1-GAIJGNKBN
+                           MOVE   40200     TO     MAX-KIN-KOHI1-D
+                                                   MAX-KIN-KOHI1-M
+                   END-EVALUATE
+               ELSE
+                   EVALUATE   COMB-HOJOKBN
+                       WHEN   "9"
+                           IF  FLG-SANSHOU      =   "1"
+                               MOVE   12000   TO   MAX-KIN-SYU-M
+                           ELSE
+                               MOVE    8000   TO   MAX-KIN-SYU-M
+                           END-IF
+                       WHEN   "8"
+                           MOVE   40200     TO   MAX-KIN-SYU-M
+                   END-EVALUATE
+               END-IF
+           END-IF.
+      *----(01.00.23) LINE ADD END   --------------------------
+      *
       *
        210-HOKEN-KAISU-EXT.
            EXIT.
