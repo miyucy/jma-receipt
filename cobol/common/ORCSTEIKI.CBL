@@ -31,6 +31,7 @@
       *  00.00.01    NACL-太田    03/01/14  システム日付をパラメータより
       *                                     取得するよう修正
       *  00.00.02    NACL-小豆沢  03/02/10  入院調剤料の一括更新を処理追加
+      *  00.00.03    NACL-門脇    03/02/17  公費優先での負担計算
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -60,11 +61,19 @@
       *
        01  WRK-HANBETU-TABLE.
            02  WRK-HANBETU-TBL OCCURS   10.
-              03 WRK-HANBETU-SKYYM         PIC X(06).
+              03 WRK-HANBETU-KEY.
+                05 WRK-HANBETU-SKYYM       PIC X(06).
+                05 WRK-HANBETU-YUSENBAN    PIC 9(03).
               03 WRK-HANBETU-HKNCOMBINUM   PIC 9(04).
               03 WRK-HANBETU-DAY           PIC X(01)   OCCURS   31.
               03 WRK-HANBETU-KAISHI        PIC X(02).
               03 WRK-HANBETU-SYURYO        PIC X(02).
+              03 WRK-HANBETU-SYUHKNNUM     PIC X(03).
+              03 WRK-HANBETU-KOH1HKNNUM    PIC X(03).
+              03 WRK-HANBETU-KOH2HKNNUM    PIC X(03).
+              03 WRK-HANBETU-KOH3HKNNUM    PIC X(03).
+              03 WRK-HANBETU-KOH4HKNNUM    PIC X(03).
+              03 WRK-HANBETU-PTFTNRATE     PIC 9(03).
       *
        01  WRK-HANBETU2-TABLE.
            02  WRK-HANBETU2-TBL OCCURS   10.
@@ -72,7 +81,7 @@
               03 WRK-HANBETU2-HKNCOMBINUM  PIC 9(04).
               03 WRK-HANBETU2-DAY          PIC X(01)   OCCURS   31.
       *
-       01  WRK-HANBETU-DATA                PIC X(45).
+       01  WRK-HANBETU-DATA                PIC X(66).
       *
       *    入院点数算定用ワークエリア
        01  WRK-NYUIN-TENSU-AREA.
@@ -223,12 +232,10 @@
        MAIN-RTN            SECTION.
        MAIN-000.
       *
-      *     ACCEPT  SYS-YMD         FROM    DATE.
-      *     COMPUTE WRK-SYSYY       =   SYS-YY      +   2000.
-      *     MOVE    SYS-MM          TO  WRK-SYSMM.
-      *     MOVE    SYS-DD          TO  WRK-SYSDD.
-      *
-           MOVE    LNK-S02-SYSYMD  TO  WRK-SYSYMD
+      *    ACCEPT  SYS-YMD         FROM    DATE.
+      *    COMPUTE WRK-SYSYY       =   SYS-YY      +   2000.
+      *    MOVE    SYS-MM          TO  WRK-SYSMM.
+      *    MOVE    SYS-DD          TO  WRK-SYSDD.
       *
            MOVE    ZERO            TO  LNK-S02-RC.
            MOVE    ZERO            TO  NYUIN-COUNT.
@@ -340,6 +347,8 @@
            PERFORM    SINRYOKAIKEI-SYORI-SEC.
       *
            PERFORM    KAISHISYURYO-SYORI-SEC.
+      *
+           PERFORM    HKNNUM-SYUTOKU-SYORI-SEC.
       *
            PERFORM    NARABIKAE-SYORI-SEC.
       *
@@ -660,38 +669,9 @@
            EXIT.
       *
       ******************************************************************
-      *    データを請求年月順に並び替え                                *
+      *    保険番号取得                                                *
       ******************************************************************
-       NARABIKAE-SYORI-SEC        SECTION.
-      *
-           PERFORM    VARYING   IDX    FROM   1   BY   1
-                              UNTIL  (IDX            >    10)
-                                OR   (WRK-HANBETU-SKYYM(IDX) =  SPACE)
-      *
-              COMPUTE    IDZ  =  IDX  +  1
-      *
-              PERFORM    VARYING   IDY   FROM   IDZ   BY   1
-                              UNTIL  (IDY            >    10)
-                                OR   (WRK-HANBETU-SKYYM(IDY) =  SPACE)
-      *
-                IF       WRK-HANBETU-SKYYM(IDX)   >
-                                                 WRK-HANBETU-SKYYM(IDY) 
-                   MOVE  WRK-HANBETU-TBL(IDX)  TO  WRK-HANBETU-DATA
-                   MOVE  WRK-HANBETU-TBL(IDY)  TO  WRK-HANBETU-TBL(IDX)
-                   MOVE  WRK-HANBETU-DATA      TO  WRK-HANBETU-TBL(IDY)
-                END-IF
-      *
-              END-PERFORM
-      *
-           END-PERFORM.
-      *
-       NARABIKAE-SYORI-EXT.
-           EXIT.
-      *
-      ******************************************************************
-      *    ワーク収納レコードセット処理                                *
-      ******************************************************************
-       SYUNOU-SET-SEC         SECTION.
+       HKNNUM-SYUTOKU-SYORI-SEC        SECTION.
       *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL  (IDX            >    10)
@@ -721,6 +701,138 @@
                                                     ORCMCPAREA
                                                     MCPDATA-REC
       *
+              MOVE COMB-HKNNUM        TO WRK-HANBETU-SYUHKNNUM(IDX)
+              MOVE COMB-KOH1HKNNUM    TO WRK-HANBETU-KOH1HKNNUM(IDX)
+              MOVE COMB-KOH2HKNNUM    TO WRK-HANBETU-KOH2HKNNUM(IDX)
+              MOVE COMB-KOH3HKNNUM    TO WRK-HANBETU-KOH3HKNNUM(IDX)
+              MOVE COMB-KOH4HKNNUM    TO WRK-HANBETU-KOH4HKNNUM(IDX)
+              MOVE COMB-NYU-KFTNRATE  TO WRK-HANBETU-PTFTNRATE(IDX)
+      *
+      *       公費優先に優先番号セット
+              IF  WRK-HANBETU-KOH1HKNNUM(IDX) = SPACE OR "027"
+                  CONTINUE
+              ELSE
+                  IF  WRK-HANBETU-KOH1HKNNUM(IDX)  =  "051"
+                     MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
+                  ELSE
+                     MOVE  WRK-HANBETU-KOH1HKNNUM(IDX)
+                                TO  WRK-HANBETU-YUSENBAN(IDX)
+                  END-IF
+              END-IF
+      *
+              IF  WRK-HANBETU-KOH2HKNNUM(IDX) = SPACE 
+                  CONTINUE
+              ELSE
+                  IF  WRK-HANBETU-KOH2HKNNUM(IDX)  =  "051"
+                     MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
+                  ELSE
+                    IF  WRK-HANBETU-YUSENBAN(IDX) 
+                                       > WRK-HANBETU-KOH2HKNNUM(IDX)
+                     MOVE  WRK-HANBETU-KOH2HKNNUM(IDX)
+                                      TO WRK-HANBETU-YUSENBAN(IDX)
+                    END-IF
+                  END-IF
+              END-IF
+      *
+              IF  WRK-HANBETU-KOH3HKNNUM(IDX) = SPACE 
+                  CONTINUE
+              ELSE
+                  IF  WRK-HANBETU-KOH3HKNNUM(IDX)  =  "051"
+                     MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
+                  ELSE
+                    IF  WRK-HANBETU-YUSENBAN(IDX) 
+                                       > WRK-HANBETU-KOH3HKNNUM(IDX)
+                     MOVE  WRK-HANBETU-KOH3HKNNUM(IDX)
+                                      TO WRK-HANBETU-YUSENBAN(IDX)
+                    END-IF
+                  END-IF
+              END-IF
+      *
+              IF  WRK-HANBETU-KOH4HKNNUM(IDX) = SPACE 
+                  CONTINUE
+              ELSE
+                  IF  WRK-HANBETU-KOH4HKNNUM(IDX)  =  "051"
+                     MOVE   1   TO  WRK-HANBETU-YUSENBAN(IDX)
+                  ELSE
+                    IF  WRK-HANBETU-YUSENBAN(IDX) 
+                                       > WRK-HANBETU-KOH4HKNNUM(IDX)
+                     MOVE  WRK-HANBETU-KOH4HKNNUM(IDX)
+                                      TO WRK-HANBETU-YUSENBAN(IDX)
+                    END-IF
+                  END-IF
+              END-IF
+      *
+              IF  WRK-HANBETU-YUSENBAN(IDX)  =   ZERO
+                     MOVE   999       TO  WRK-HANBETU-YUSENBAN(IDX)
+              END-IF
+      *
+           END-PERFORM.
+      *
+       HKNNUM-SYUTOKU-SYORI-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    データを請求年月、優先番号順に並び替え                      *
+      ******************************************************************
+       NARABIKAE-SYORI-SEC        SECTION.
+      *
+           PERFORM    VARYING   IDX    FROM   1   BY   1
+                              UNTIL  (IDX            >    10)
+                                OR   (WRK-HANBETU-SKYYM(IDX) =  SPACE)
+      *
+              COMPUTE    IDZ  =  IDX  +  1
+      *
+              PERFORM    VARYING   IDY   FROM   IDZ   BY   1
+                              UNTIL  (IDY            >    10)
+                                OR   (WRK-HANBETU-SKYYM(IDY) =  SPACE)
+      *
+                IF       WRK-HANBETU-KEY(IDX)   >
+                                                 WRK-HANBETU-KEY(IDY) 
+                   MOVE  WRK-HANBETU-TBL(IDX)  TO  WRK-HANBETU-DATA
+                   MOVE  WRK-HANBETU-TBL(IDY)  TO  WRK-HANBETU-TBL(IDX)
+                   MOVE  WRK-HANBETU-DATA      TO  WRK-HANBETU-TBL(IDY)
+                END-IF
+      *
+              END-PERFORM
+      *
+           END-PERFORM.
+      *
+       NARABIKAE-SYORI-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    ワーク収納レコードセット処理                                *
+      ******************************************************************
+       SYUNOU-SET-SEC         SECTION.
+      *
+           PERFORM    VARYING   IDX    FROM   1   BY   1
+                              UNTIL  (IDX            >    10)
+                                OR   (WRK-HANBETU-SKYYM(IDX) =  SPACE)
+      *
+      *       保険組合せマスタの検索
+      *       INITIALIZE                           HKNCOMBI-REC
+      *       MOVE    LNK-S02-HOSPID       TO      COMB-HOSPID
+      *       MOVE    LNK-S02-PTID         TO      COMB-PTID
+      *       MOVE    WRK-HANBETU-HKNCOMBINUM(IDX)
+      *                                    TO      COMB-HKNCOMBINUM
+      *       MOVE    HKNCOMBI-REC         TO      MCPDATA-REC
+      *       MOVE    "DBSELECT"           TO      MCP-FUNC
+      *       MOVE    "HKNCOMBI-KEY"       TO      ORC-DBPATH
+      *       CALL    "ORCMCPSUB"          USING   MCPAREA
+      *                                            ORCMCPAREA
+      *                                            MCPDATA-REC
+      *
+      *       IF      MCP-RC               =       ZERO
+      *          MOVE    "HKNCOMBI-KEY"   TO      ORC-DBPATH 
+      *          PERFORM   HKNCOMBI-READ-SEC
+      *       END-IF
+      *
+      *       MOVE    "DBCLOSE"            TO      MCP-FUNC
+      *       MOVE    "HKNCOMBI-KEY"       TO      ORC-DBPATH
+      *       CALL    "ORCMCPSUB"           USING   MCPAREA
+      *                                             ORCMCPAREA
+      *                                             MCPDATA-REC
+      *
               MOVE LNK-S02-HOSPID     TO LNK-SYU-HOSPID(IDX)
               MOVE LNK-S02-NYUGAIKBN  TO LNK-SYU-NYUGAIKBN(IDX)
               MOVE LNK-S02-PTID       TO LNK-SYU-PTID(IDX)
@@ -730,7 +842,8 @@
                                       TO LNK-SYU-SRYYMD(IDX)(7:2)
       *       定期請求時は無条件に未収状態で作成
               MOVE "2"                TO LNK-SYU-DENPJTIKBN(IDX)
-              MOVE WRK-SYSYMD         TO LNK-SYU-DENPPRTYMD(IDX)
+      *       MOVE WRK-SYSYMD         TO LNK-SYU-DENPPRTYMD(IDX)
+              MOVE LNK-S02-SYSYMD     TO LNK-SYU-DENPPRTYMD(IDX)
               MOVE WRK-HANBETU-SKYYM(IDX)
                                       TO LNK-SYU-SKYSTYMD(IDX)(1:6)
               MOVE WRK-HANBETU-KAISHI(IDX)
@@ -741,12 +854,24 @@
                                       TO LNK-SYU-SKYEDYMD(IDX)(7:2)
               MOVE WRK-HANBETU-HKNCOMBINUM(IDX)
                                       TO LNK-SYU-HKNCOMBINUM(IDX)
-              MOVE COMB-HKNNUM        TO LNK-SYU-SYUHKNNUM(IDX)
-              MOVE COMB-KOH1HKNNUM    TO LNK-SYU-KOH1HKNNUM(IDX)
-              MOVE COMB-KOH2HKNNUM    TO LNK-SYU-KOH2HKNNUM(IDX)
-              MOVE COMB-KOH3HKNNUM    TO LNK-SYU-KOH3HKNNUM(IDX)
-              MOVE COMB-KOH4HKNNUM    TO LNK-SYU-KOH4HKNNUM(IDX)
-              MOVE COMB-NYU-KFTNRATE  TO LNK-SYU-PTFTNRATE(IDX)
+      *       MOVE COMB-HKNNUM        TO LNK-SYU-SYUHKNNUM(IDX)
+              MOVE WRK-HANBETU-SYUHKNNUM(IDX)
+                                      TO LNK-SYU-SYUHKNNUM(IDX)
+      *       MOVE COMB-KOH1HKNNUM    TO LNK-SYU-KOH1HKNNUM(IDX)
+              MOVE WRK-HANBETU-KOH1HKNNUM(IDX)
+                                      TO LNK-SYU-KOH1HKNNUM(IDX)
+      *       MOVE COMB-KOH2HKNNUM    TO LNK-SYU-KOH2HKNNUM(IDX)
+              MOVE WRK-HANBETU-KOH2HKNNUM(IDX)
+                                      TO LNK-SYU-KOH2HKNNUM(IDX)
+      *       MOVE COMB-KOH3HKNNUM    TO LNK-SYU-KOH3HKNNUM(IDX)
+              MOVE WRK-HANBETU-KOH3HKNNUM(IDX)
+                                      TO LNK-SYU-KOH3HKNNUM(IDX)
+      *       MOVE COMB-KOH4HKNNUM    TO LNK-SYU-KOH4HKNNUM(IDX)
+              MOVE WRK-HANBETU-KOH4HKNNUM(IDX)
+                                      TO LNK-SYU-KOH4HKNNUM(IDX)
+      *       MOVE COMB-NYU-KFTNRATE  TO LNK-SYU-PTFTNRATE(IDX)
+              MOVE WRK-HANBETU-PTFTNRATE(IDX)
+                                      TO LNK-SYU-PTFTNRATE(IDX)
               PERFORM    VARYING   IDY    FROM   1   BY   1
                              UNTIL  IDY            >    31
                    MOVE  WRK-HANBETU-DAY(IDX IDY) 
@@ -842,7 +967,7 @@
                PERFORM  SYSKANRI-READ-SEC
                PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
                         UNTIL     GENSAN-IDX   >   4
-                    IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"    
+                    IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"
                         EVALUATE  GENSAN-IDX
                             WHEN  2
                                 COMPUTE SYU-HKNTEN(11) = SYU-HKNTEN(11)
@@ -1110,7 +1235,7 @@
            MOVE   "SRYACCT-KEY9"       TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
-      *  保険点数集計
+      *    保険点数集計
            PERFORM     VARYING   IDZ    FROM   1    BY    1
                          UNTIL   IDZ    >      10
                   ADD    SYU-HKNTEN(IDZ)      TO  SYU-HKNTEN(12)
