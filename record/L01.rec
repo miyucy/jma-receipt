@@ -58,15 +58,15 @@ L01	{
 		};
 		PARA011	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA012	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA013	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARAHYOJI011	{
 			value	varchar(20);
@@ -79,15 +79,15 @@ L01	{
 		};
 		PARA021	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA022	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA023	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARAHYOJI021	{
 			value	varchar(20);
@@ -100,15 +100,15 @@ L01	{
 		};
 		PARA031	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA032	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA033	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARAHYOJI031	{
 			value	varchar(20);
@@ -121,15 +121,15 @@ L01	{
 		};
 		PARA041	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA042	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA043	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARAHYOJI041	{
 			value	varchar(20);
@@ -142,15 +142,15 @@ L01	{
 		};
 		PARA051	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA052	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA053	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARAHYOJI051	{
 			value	varchar(20);
@@ -163,15 +163,15 @@ L01	{
 		};
 		PARA061	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA062	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA063	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARAHYOJI061	{
 			value	varchar(20);
@@ -184,15 +184,15 @@ L01	{
 		};
 		PARA071	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA072	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA073	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARAHYOJI071	{
 			value	varchar(20);
@@ -205,15 +205,15 @@ L01	{
 		};
 		PARA081	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA082	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA083	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARAHYOJI081	{
 			value	varchar(20);
@@ -226,15 +226,15 @@ L01	{
 		};
 		PARA091	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA092	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA093	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARAHYOJI091	{
 			value	varchar(20);
@@ -247,15 +247,15 @@ L01	{
 		};
 		PARA101	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA102	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARA103	{
 	           	state	int;
-			value	varchar(11);
+			value	varchar(10);
 		};
 		PARAHYOJI101	{
 			value	varchar(20);

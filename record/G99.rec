@@ -1,7 +1,7 @@
 T99	{
 	fixed6	{
 		MSG	{
-			value	varchar(81);
+			value	varchar(80);
 		};
 		scrolledwindow28	{
 			JOBKANRILST	{
