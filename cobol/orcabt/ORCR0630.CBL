@@ -922,8 +922,9 @@
                             OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
       *
                          IF  WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
-                              IF   NACCT-ZAITEN    NOT =    ZERO  
-                              AND  NACCT-DAY(IDY)  NOT =    ZERO  
+                              IF   (NACCT-ZAITEN    NOT =    ZERO)  
+                              AND  (NACCT-DAY(IDY)  NOT =    ZERO)  
+                              AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
                                    PERFORM      RECE62-TENSOU22-SEC
                               END-IF
                          END-IF
@@ -971,8 +972,8 @@
                            OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
                        IF      ACCT-HKNCOMBI   =
                                                RECE62-HKNCOMBI (IDX1)
-                           IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                                (ACCT-ZAIKAISU  NOT =    ZERO)
+                           IF   (ACCT-ZAITEN    NOT =    ZERO)
+                           AND  (ACCT-ZAIKAISU  NOT =    ZERO)
                                 IF   ACCT-SRYKBN  =  "90" OR "92"  
                                     PERFORM      RECE62-TENSOU23-SEC
                                 END-IF
@@ -1332,8 +1333,9 @@
                                   WRK-MIJISI
                          MOVE     1      TO    FLG-MIJISI-GENSAN        
                   END-EVALUATE
-                  IF  WRK-DAY6(IDY)          NOT =  ZERO
-                  AND WRK-DAY6-ZAITEN(IDY)   NOT =  ZERO
+                  IF  (WRK-DAY6(IDY)          NOT =  ZERO)
+                  AND (WRK-DAY6-ZAITEN(IDY)   NOT =  ZERO)
+                  AND (WRK-DAY2(IDY)              =  ZERO  OR  4)
                       COMPUTE  WRK-NYUTOKRYO = WRK-NYUTOKRYO
                                              + WRK-DAY6-ZAITEN(IDY)
                   END-IF
@@ -1878,11 +1880,13 @@
                              OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
       *
                          IF  WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
-                         AND WRK-DAY1-NYUTENTTLKBN(IDY) = 903
-                              IF   NACCT-ZAITEN    NOT =    ZERO  
+                              IF   WRK-DAY1-NYUTENTTLKBN(IDY) = 903
+                              AND  NACCT-ZAITEN    NOT =    ZERO  
                               AND  NACCT-DAY(IDY)  NOT =    ZERO  
                                    PERFORM   NYUINKHN-GET3-SEC
+                                   MOVE    31    TO    IDY
                               END-IF
+                              MOVE    10    TO    IDX1
                          END-IF
       *
                       END-PERFORM
@@ -1933,10 +1937,13 @@
                              OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
       *
                          IF  WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
-                              IF   NACCT-ZAITEN    NOT =    ZERO  
-                              AND  NACCT-DAY(IDY)  NOT =    ZERO  
+                              IF   (NACCT-ZAITEN    NOT =    ZERO)  
+                              AND  (NACCT-DAY(IDY)  NOT =    ZERO)  
+                              AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
                                    PERFORM   NYUINKHN-GET3-SEC
+                                   MOVE    31    TO    IDY
                               END-IF
+                              MOVE    10    TO    IDX1
                          END-IF
       *
                       END-PERFORM
@@ -1984,10 +1991,17 @@
                                                RECE62-HKNCOMBI (IDX1)
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
-                                IF   ACCT-SRYKBN  =  "90" OR "92"  
-                                    PERFORM   ACCTKHN-GET3-SEC
-                                END-IF
+                             IF   ACCT-SRYKBN  =  "90" OR "92"  
+                               PERFORM VARYING ACCT-IDX FROM 1 BY 1
+                                  UNTIL    ACCT-IDX   >   31
+                                  IF  ACCT-DAY(1 ACCT-IDX) NOT = ZERO
+                                        PERFORM   ACCTKHN-GET3-SEC
+                                        MOVE  31  TO  ACCT-IDX
+                                  END-IF
+                               END-PERFORM
+                             END-IF
                            END-IF
+                           MOVE    10    TO    IDX1
                        END-IF
                    END-PERFORM
                    MOVE     "SRYACCT-KEY7"   TO   ORC-DBPATH
@@ -2229,9 +2243,11 @@
                              OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
       *
                  IF  WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
-                      IF   WRK-DAY4(IDY)   NOT =    ZERO  
+                      IF   (WRK-DAY4(IDY)   NOT =    ZERO)  
+                      AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
                            PERFORM   NYUINKHN-GET4-SEC
                       END-IF
+                      MOVE    10    TO    IDX1
                  END-IF
       *
               END-PERFORM

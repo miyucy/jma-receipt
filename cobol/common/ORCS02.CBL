@@ -194,6 +194,10 @@
        01  WK-SHOKUDOKASAN-TABLE.
            03  WK-SHOKUDOKASAN-T       OCCURS   31.
                05  WK-SHOKUDOKASAN     PIC 9(04).
+      *    ³°ÇñÂàÈò¥Æ¡¼¥Ö¥ë
+       01  WK-GAIHAKU-TABLE.
+           03  WK-GAIHAKU-T            OCCURS   31.
+               05  WK-GAIHAKU          PIC 9(04).
       *    Ï«ºÒÆþ±¡Ãæ¤ÎÆÃÊÌ¿©²Ã»»ÂàÈò¥Æ¡¼¥Ö¥ë
        01  WK-ROSAITOKU-TABLE.
            03  WK-ROSAITOKU-T          OCCURS   31.
@@ -1834,6 +1838,7 @@
       *
            INITIALIZE    WK-SHOKUJI-TAIHI-AREA 
                          WK-SHOKUDOKASAN-TABLE 
+                         WK-GAIHAKU-TABLE
                          WK-ROSAITOKU-TABLE.   
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡Ê£µ£°£°£°¡Ë¤«¤é¿©»ö¾ðÊó¼èÆÀ
@@ -1909,7 +1914,11 @@
                  IF     NACCT-SRYCDTOTAL    =    197000570   
                              PERFORM        23001-SHOKUDOKASAN-TAIHI-SEC
                  END-IF
-      * 
+      *
+                 IF     NACCT-ZAISKBKBN     =    "2"  
+                             PERFORM        23001-GAIHAKU-TAIHI-SEC
+                 END-IF
+      *
                  MOVE          "NYUINACCT-KEY7"  TO   ORC-DBPATH
                  PERFORM        NYUINACCT-READ-SEC
                END-PERFORM
@@ -2027,6 +2036,23 @@
            EXIT.
       *
       ******************************************************************
+      *        ³°ÇñÂàÈò                                            *
+      ******************************************************************
+       23001-GAIHAKU-TAIHI-SEC         SECTION.
+      *
+           PERFORM    VARYING   IDY   FROM   1   BY   1
+                                    UNTIL    IDY    >    31
+      *
+             IF       NACCT-DAY(IDY)   NOT =  ZERO 
+                    MOVE   NACCT-DAY(IDY)  TO   WK-GAIHAKU(IDY) 
+             END-IF
+      *
+           END-PERFORM.
+      *
+       23001-GAIHAKU-TAIHI-EXT.
+           EXIT.
+      *
+      ******************************************************************
       *        Ï«ºÒÆþ±¡Ãæ¤ÎÆÃÊÌ¿©²Ã»»ÂàÈò                              *
       ******************************************************************
        23001-ROSAITOKU-TAIHI-SEC         SECTION.
@@ -2077,6 +2103,7 @@
       *
              IF       ( NACCT-DAY(IDY)   NOT =  ZERO )
              AND      ( LNK-SYU-DAY(IDY)     =  "1"  )
+             AND      ( WK-GAIHAKU(IDY)      =  ZERO  OR  4 )
       *
               IF  WK-SHOKUDOKASAN(IDY)  =  ZERO
       *

@@ -1391,7 +1391,8 @@
                    PERFORM   VARYING  SYU-IDX  FROM  1  BY  1
                              UNTIL    SYU-IDX  >   31
                        IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
-                           (NACCT-DAY(SYU-IDX) NOT =  ZERO)
+                           (NACCT-DAY(SYU-IDX) NOT =  ZERO)    AND
+                           (TBL-GAIHAKU(SYU-IDX)   =  ZERO  OR  4)
                            ADD   NACCT-ZAITEN   TO    SYU-HKNTEN(11)
                        END-IF
                    END-PERFORM

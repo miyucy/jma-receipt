@@ -998,10 +998,12 @@
                                   END-IF                                
                                  END-IF
                               ELSE
-                                 MOVE   NACCT-DAY(IDY)  
-                                            TO   WRK-DAY21(IDY) 
-                                 ADD    1     TO   CNT-DAY21
-                                 MOVE   1     TO   FLG-DAY21
+                                 IF  WRK-DAY2(IDY) =  ZERO  OR  4
+                                    MOVE   NACCT-DAY(IDY)  
+                                               TO   WRK-DAY21(IDY) 
+                                    ADD    1     TO   CNT-DAY21
+                                    MOVE   1     TO   FLG-DAY21
+                                 END-IF
                               END-IF
                             END-IF
       *                     *³°Çñ
@@ -1022,11 +1024,13 @@
                             IF   NACCT-ZAITEN        =  ZERO
                             AND  NACCT-ZAISKBKBN     =  "4"
                             AND  NACCT-DAY(IDY)  NOT =  ZERO
-                               MOVE   NACCT-DAY(IDY)  
+                               IF  WRK-DAY2(IDY) =  ZERO  OR  4
+                                  MOVE   NACCT-DAY(IDY)  
                                             TO   WRK-DAY24(IDY) 
-                               PERFORM      NYUINACCT-SYU2-SEC
-                               ADD    1     TO   CNT-DAY24
-                               MOVE   1     TO   FLG-DAY24
+                                  PERFORM      NYUINACCT-SYU2-SEC
+                                  ADD    1     TO   CNT-DAY24
+                                  MOVE   1     TO   FLG-DAY24
+                               END-IF
                             END-IF
                          END-IF
       *
