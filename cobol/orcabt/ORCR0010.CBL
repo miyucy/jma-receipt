@@ -79,6 +79,8 @@
       *  01.02.08    NACL-小豆沢  04/02/09  患者自己負担額が公費の上限額
       *                                     に到達しない場合、レセ記載から
       *                                     外す
+      *  01.02.09    NACL-藤原    04/04/15  福岡県の地方公費対応（国保）
+      *                                      ＤＢ更新エラー時の処理
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -708,7 +710,15 @@
            CALL    "ORCMCPSUB"              USING
                                             MCPAREA
                                             ORCMCPAREA
-                                            MCPDATA-REC      
+                                            MCPDATA-REC
+           IF      MCP-RC           NOT =   ZERO
+               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+               MOVE
+                   "請求管理削除処理（種別不明分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  2001-IKKATU-SYORI-EXT
+           END-IF
       *
       *    診療年月の請求管理削除処理（社保分）
            IF      WRK-PARA-RECEKBN    =   "0" OR  "1"          
@@ -726,6 +736,14 @@
                                                 MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC      
+               IF      MCP-RC           NOT =   ZERO
+                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                   MOVE
+                       "請求管理削除処理（社保分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  2001-IKKATU-SYORI-EXT
+               END-IF
            END-IF      
       *
       *    診療年月の請求管理削除処理（国保分）
@@ -744,6 +762,14 @@
                                                 MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC      
+               IF      MCP-RC           NOT =   ZERO
+                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                   MOVE
+                       "請求管理削除処理（国保分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  2001-IKKATU-SYORI-EXT
+               END-IF
            END-IF      
       *
       *    診療年月の公費請求書削除処理（社保分）
@@ -760,6 +786,14 @@
                                                 MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC      
+               IF      MCP-RC           NOT =   ZERO
+                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                   MOVE
+                     "公費請求書削除処理（社保分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  2001-IKKATU-SYORI-EXT
+               END-IF
            END-IF      
       *
       *    診療年月公費請求書削除処理（国保分）
@@ -776,6 +810,14 @@
                                                 MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC      
+               IF      MCP-RC           NOT =   ZERO
+                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                   MOVE
+                     "公費請求書削除処理（国保分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  2001-IKKATU-SYORI-EXT
+               END-IF
            END-IF      
       *
       *    診療年月のレセ電削除処理（社保分）
@@ -792,6 +834,14 @@
                                                 MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC      
+               IF      MCP-RC           NOT =   ZERO
+                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                   MOVE
+                     "レセ電削除処理（社保分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  2001-IKKATU-SYORI-EXT
+               END-IF
            END-IF      
       *
       *    診療年月のレセ電削除処理（国保分）
@@ -808,6 +858,14 @@
                                                 MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC      
+               IF      MCP-RC           NOT =   ZERO
+                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                   MOVE
+                     "レセ電削除処理（国保分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  2001-IKKATU-SYORI-EXT
+               END-IF
            END-IF      
       *
       *    診療年月レセプト管理削除処理（一括分）
@@ -829,6 +887,14 @@
                                                 MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC    
+               IF      MCP-RC           NOT =   ZERO
+                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                   MOVE
+                     "レセプト管理削除処理でエラーとなりました"
+                                           TO    WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  2001-IKKATU-SYORI-EXT
+               END-IF
       *
       *        診療年月レセプト削除処理（一括分）
                INITIALIZE                  RECE08-REC
@@ -845,6 +911,14 @@
                                                 MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC
+               IF      MCP-RC           NOT =   ZERO
+                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+                   MOVE
+                     "レセプト削除処理でエラーとなりました"
+                                           TO    WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  2001-IKKATU-SYORI-EXT
+               END-IF
            END-IF  
       *
       *    診療会計読み込み（患者ＩＤ、保険組合せ、診療科順）
@@ -1185,7 +1259,19 @@
                                           WRK-SEIKYU-KOHHKNNUM(IDX1 IDY)
                        MOVE    COMB-KOHID     (IDX)   TO
                                           WRK-SEIKYU-KOHID    (IDX1 IDY)
-                   END-IF
+      *                福岡県の国保のとき（４１老人以外）
+                       IF    ( COMB-HKNNUM     =   "060"   OR  "067" )
+                       AND   ( SYS-1001-PREFNUM
+                                               =   "40"              )
+                       AND   ( HKN-HBTNUM  NOT =   "41"              )    
+                           ADD     1                      TO  IDZ    
+                           MOVE    COMB-KOHHKNNUM (IDX)   TO 
+                                          WRK-SEIKYU-KOHHKNNUM(2 IDZ)
+                           MOVE    COMB-KOHID     (IDX)   TO
+                                          WRK-SEIKYU-KOHID    (2 IDZ)
+                           MOVE    1                      TO  FLG-KOH 
+                       END-IF
+                   END-IF    
                ELSE
                    ADD     1                      TO  IDZ    
                    MOVE    COMB-KOHHKNNUM (IDX)   TO 
@@ -1756,6 +1842,14 @@
                                                 MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC      
+           IF      MCP-RC           NOT =   ZERO
+               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+               MOVE
+                   "レセプト管理削除処理（個別分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  2002-KOBETU-SYORI-EXT
+           END-IF
       *
       *    レセプト削除処理（個別分）
            INITIALIZE                  RECE08-REC
@@ -1768,6 +1862,14 @@
                                                 MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC      
+           IF      MCP-RC           NOT =   ZERO
+               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+               MOVE
+                   "レセプト削除処理（個別分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  2002-KOBETU-SYORI-EXT
+           END-IF
       *
       *        レセプト指示（個別指示）コード読み込み
            INITIALIZE                      SYS-2002-REC
@@ -1863,6 +1965,14 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC      
+           IF      MCP-RC           NOT =   ZERO
+               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+               MOVE
+                   "請求管理削除処理（個別分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  20021-KOBETU-HENSYU-EXT
+           END-IF
       *
       *    診療年月の公費請求書削除処理
            INITIALIZE                  KOHSKY-REC
@@ -1877,6 +1987,14 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
+           IF      MCP-RC           NOT =   ZERO
+               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+               MOVE
+                   "公費請求書削除処理（個別分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  20021-KOBETU-HENSYU-EXT
+           END-IF
       *
       *    診療年月のレセ電削除処理
            INITIALIZE                  RECEDEN-REC
@@ -1891,6 +2009,14 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
+           IF      MCP-RC           NOT =   ZERO
+               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
+               MOVE
+                   "レセ電削除処理（個別分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  20021-KOBETU-HENSYU-EXT
+           END-IF
       *
       *        診療会計読み込み
            INITIALIZE                  SRYACCT-REC
