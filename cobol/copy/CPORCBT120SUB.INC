@@ -147,9 +147,9 @@
       *∏¯»Ò°›ªŸ ß∂Ë ¨
                      09  LNK-ORCBT120SUB-KOH-PAYKBN  PIC  X(02).
       *œ´∫“ ›∏±∂Ë ¨
-                 05  LNK-ORCBT120SUB-RSIHKNKBN       PIC  X(01).
+                 07  LNK-ORCBT120SUB-RSIHKNKBN       PIC  X(01).
       *º´«Â¿’¿¡µ·
-                 05  LNK-ORCBT120SUB-JIBAIKBN        PIC  X(01).
+                 07  LNK-ORCBT120SUB-JIBAIKBN        PIC  X(01).
       *∫“≥≤∂Ë ¨° •Ï•ª•◊•»ºÔ ÃºË∆¿Õ—°À
                  07  LNK-ORCBT120SUB-SAIGAIKBN       PIC  X(01).
       *
