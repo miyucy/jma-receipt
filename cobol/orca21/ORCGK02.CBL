@@ -2148,10 +2148,8 @@
                    MOVE    SPACE               TO  SPA-KIDCD
                    MOVE    SPACE               TO  SPA-KID1-FLG
       *            画面制御
+                   MOVE    "JOIN"              TO  WRK-PUTTYPE
                    PERFORM 41002-KOUSIN-SYORI-SEC
-                   IF      SPA-KIDCD           =   SPACE
-                       MOVE    "JOIN"              TO  WRK-PUTTYPE
-                   END-IF
       *
       *        再診の振替え
                WHEN    "0114"
@@ -3660,7 +3658,6 @@
                END-IF
       *        数量の再計算
                IF     (SPA-COM-SURYO2  (IDX2)  >   ZERO )
-                 AND  (LNK-WKSRY-SRYCD (IDX IDY)(1:1) NOT =  "S")
                    COMPUTE SPA-COM-SURYO2  (IDX2)
                                        =   SPA-COM-SURYO2  (IDX2)
                                        /   SPA-COM-KAISU2(IDX2)
@@ -3669,6 +3666,7 @@
                                        TO  SPA-COM-KAISU (IDX2)
                MOVE    SPA-COM-SURYO2  (IDX2)
                                        TO  SPA-COM-SURYO (IDX2)
+           END-IF
       *!!
       *
            IF      LNK-WKSRY-INPUTCD (IDX IDY) =   SPACE
@@ -6888,6 +6886,9 @@
            MOVE    1                   TO  SPA-SINSATU-SAI
       *
            MOVE    SPACE               TO  WRK-ERRCD
+      *
+      *    数量・回数編集
+           PERFORM 4101122-KOMOKU-HENSYU-SEC
       *
            MOVE    ZERO                TO  WRK-IDX-YAKUSOKU
            MOVE    ZERO                TO  IDX-YAKUSOKU
