@@ -6403,6 +6403,8 @@
                    MOVE    HKN-HON-GAIKKOTGAK   TO   WK-GAIKKOTGAK
       *
                    MOVE    HKN-HON-GAIKFTNRATE  TO   WK-KOH-FTNRATE
+      *
+                   MOVE    "1"                  TO   HKN-RECEFTNDSPKBN
            END-IF.
       *
       *    福岡県の地方公費対応（公費付加情報の取得）

@@ -406,7 +406,7 @@
            03  WK-NISSU-SKJ            PIC 9(02).
            03  WK-KNJFTNKIN-SKJ        PIC 9(07).
            03  WK-RYOYOHI-SKJ          PIC 9(07).
-           03  WK-SRYCD                PIC 9(09).
+           03  WK-SRYCD                PIC X(09).
       *    03  WK-TSUSAN-NISSU         PIC 9(04).
       *    03  WK-SEIKYUKIKAN-NISSU    PIC 9(04).
       *    ¿©Æ²²Ã»»ÂàÈò¥Æ¡¼¥Ö¥ë
@@ -1585,6 +1585,8 @@
                MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY.
                MOVE    LNK-SYU-HKNCOMBINUM 
                                        TO  AGECHK-HKNCOMBINUM.
+               MOVE    LNK-SYU-NYUGAIKBN
+                                       TO  AGECHK-NYUGAIKBN
                CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA.
                IF      AGECHK-RC       =   ZERO
@@ -2088,7 +2090,7 @@
            EXIT.
       *
       ******************************************************************
-      *        ´µ¼Ô¸øÈñÉéÃ´¡Ê¶â³Û¡Ë¼è¹þ¤ß½èÍý                                *
+      *        ´µ¼Ô¸øÈñÉéÃ´¡Ê¶â³Û¡Ë¼è¹þ¤ß½èÍý                          *
       ******************************************************************
        2107-KOHFTN-KINGAKU-SEC           SECTION.
       *
@@ -5303,6 +5305,8 @@
                    MOVE    HKN-HON-NYUKFTNRATE  TO   WK-NYUKFTNRATE
                    MOVE    HKN-HON-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
                    MOVE    HKN-HON-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
+      *
+                   MOVE    "1"                  TO   HKN-RECEFTNDSPKBN
            END-IF.
       *
        2302-KOH-HKNREAD-EXT.

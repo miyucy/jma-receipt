@@ -594,7 +594,7 @@
       *Ï«ºÒÆþ±¡»þ¤ÎÆþ±¡ÎÁ²Ã»»¼èÆÀ¡Ê¿ÇÎÅ²ñ·×¤è¤ê¡Ë
            INITIALIZE                           SRYACCT-REC
            MOVE    LNK-SROUNYUIN-HOSPID    TO   ACCT-HOSPID
-           MOVE    1                       TO   ACCT-NYUGAIKBN
+           MOVE    "1"                     TO   ACCT-NYUGAIKBN
            MOVE    LNK-SROUNYUIN-PTID      TO   ACCT-PTID
            MOVE    LNK-SROUNYUIN-SANTEIYM  TO   ACCT-SRYYM
            MOVE    LNK-SROUNYUIN-HKNCOMBI  TO   ACCT-HKNCOMBI
