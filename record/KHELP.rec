@@ -21,5 +21,9 @@ KHELP	{
 				select	bool[100];
 			};
 		};
+		HEAD	{
+		    style   varchar(20);
+			value	varchar(10);
+		};
 	};
 };

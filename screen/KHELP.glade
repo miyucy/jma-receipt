@@ -72,7 +72,7 @@
       <class>GtkPandaEntry</class>
       <name>INPUT</name>
       <x>4</x>
-      <y>12</y>
+      <y>28</y>
       <width>220</width>
       <height>28</height>
       <can_focus>True</can_focus>
@@ -185,22 +185,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label457</name>
-      <x>4</x>
-      <y>628</y>
-      <width>64</width>
-      <height>24</height>
-      <label>選択番号</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM</name>
       <x>68</x>
@@ -297,9 +281,9 @@
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow26</name>
       <x>4</x>
-      <y>48</y>
+      <y>60</y>
       <width>224</width>
-      <height>576</height>
+      <height>564</height>
       <hscrollbar_policy>GTK_POLICY_ALWAYS</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
@@ -362,6 +346,38 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label457</name>
+      <x>4</x>
+      <y>628</y>
+      <width>64</width>
+      <height>24</height>
+      <label>選択番号</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>HEAD</name>
+      <x>8</x>
+      <y>4</y>
+      <width>100</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
