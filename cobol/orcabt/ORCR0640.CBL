@@ -87,6 +87,10 @@
       *  01.01.06    NACL-ÌçÏÆ    04/05/13  ½é¿Ç»þ¤Ë»þ´Ö³°¡¦¿¼Ìë¡¦µÙÆü¤¬
       *                                     £²¤Ä°Ê¾å¤¢¤Ã¤¿¾ì¹ç¤Îµ­ºÜÂÐ±þ
       *  01.01.07    NACL-ÌçÏÆ    04/05/20  ÅÀÅ©¤Î´ïºàÃ±²ÁÊÔ½¸
+      *  01.01.08    NACL-ÌçÏÆ    04/06/08  ÁªÄê³°Çñ¤Î¥³¥á¥ó¥ÈÂÐ±þ
+      *  01.01.09    NACL-¾®Æ¦Âô  04/06/08  £Ã£Ô¡¦£Í£Ò£É¡Ê£²²óÌÜ°Ê¹ß¡Ë¤Î
+      *                                     Å¦Í×Íóµ­ºÜ½ç½¤Àµ
+      *  01.01.10    NACL-ÌçÏÆ    04/06/21  À¸³èÊÝ¸î¤ÎÉéÃ´¶â³Ûµ­ºÜ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2274,7 +2278,10 @@
       **************************************************************
        NYUINACCT-SYU-SEC           SECTION.
       *
-           IF   WRK-DAY22-NYUKHNRYO(IDY)  NOT =  ZERO
+           IF  ( WRK-DAY22-NYUKHNRYO(IDY)  NOT =  ZERO     )
+      *
+           OR  ((WRK-DAY22-NYUKHNRYO(IDY)      =  ZERO    )  AND
+                (SYUKEI-IDX   =   3  OR  5  OR  8  OR  10 ))
       *
              MOVE     ZERO     TO    FLG-ARI
              PERFORM  VARYING  SYUKEI-IDX2    FROM    1   BY  1
@@ -3772,6 +3779,14 @@
                                       TO RECE65-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE65-KOUHYOJYUNNUM(IDX4)
+      *
+               IF     TNS-SRYCD       =  "170022290"  OR
+                                         "170022390"  OR
+                                         "170022490"
+                      MOVE   202      TO  RECE65-CDKBN-KBNNUM(IDX4)
+                      MOVE   99       TO  RECE65-CDKBN-KOUBAN(IDX4)
+               END-IF
+      *
                IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
                       (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
                AND   ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  )
@@ -6372,8 +6387,10 @@
                 PERFORM  KOHFTN-KINGAKU-SEC
       *
                 IF  RECE62-KOHNUM(KOHFTN-IDX) =  "012"
+                    IF    RECE62-HKNNUM   =  SPACE
                       MOVE  WRK-NYUJGNGAK
                                    TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                    END-IF
                 ELSE
                   IF  WRK-NYUJGNGAK  NOT =  ZERO
                     IF  WRK-FTNKEI3  =  WRK-NYUJGNGAK

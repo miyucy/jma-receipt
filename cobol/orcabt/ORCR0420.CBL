@@ -68,6 +68,10 @@
       *  01.01.04    NACL-ÌçÏÆ    04.04.10  ºßÂð´µ¼ÔË¬ÌäÅÀÅ©Ãí¼Í´ÉÍý»ØÆ³ÎÁ
       *                                     »»Äê»þ¤ÎÅÀÅ©Ãí¼Í¤Î¥³¥á¥ó¥ÈÂÐ±þ
       *  01.01.05    NACL-ÌçÏÆ    04.04.26  ¥æ¡¼¥¶¡¼¥³¥á¥ó¥ÈÄÉ²ÃÂÐ±þ
+      *  01.01.06    NACL-¾®Æ¦Âô  04.06.08  £Ã£Ô¡¦£Í£Ò£É¡Ê£²²óÌÜ°Ê¹ß¡Ë¤Î
+      *                                     Å¦Í×Íóµ­ºÜ½ç½¤Àµ
+      *  01.01.07    NACL-ÌçÏÆ    04.06.11  Èé²¼¶ÚÆùÃí¼Í¤Ç¡¢ÌôºÞÅÀ¡¦´ïºàÅÀ
+      *                                     ¤¬Ìµ¤¤¤Î¾ì¹ç¤ÎÅ¦Í×Íóµ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -524,6 +528,12 @@
       *    ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ
            03  CONS-HINKAI-COMMENT   PIC X(09)  VALUE  "114009410".
       *
+      *    Èé²¼¶ÚÆùÃí¼Í
+           03  CONS-HIKAKIN          PIC X(09)  VALUE  "130000510".
+      *    À¸Êª³ØÅªÀ½ºÞÃí¼Í
+           03  CONS-SEIBUTU          PIC X(09)  VALUE  "130000110".
+      *    ËãÌôÃí¼Í
+           03  CONS-MAYAKU           PIC X(09)  VALUE  "130000310".
       *
       *****»ÀÁÇ 
       *****COPY    "CMSANSOTBL.INC".
@@ -1368,6 +1378,14 @@
                                       TO RECE45-CDKBN-KOUBAN(IDX4)
                MOVE    TNS-KOUHYOJYUNNUM  
                                       TO RECE45-KOUHYOJYUNNUM(IDX4)
+      *
+               IF     TNS-SRYCD       =  "170022290"  OR
+                                         "170022390"  OR
+                                         "170022490"
+                      MOVE   202      TO  RECE45-CDKBN-KBNNUM(IDX4)
+                      MOVE   99       TO  RECE45-CDKBN-KOUBAN(IDX4)
+               END-IF
+      *
                IF    ((SRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
                       (SRY-SRYCD    (IDX2)(1:3)     =   "008"))
                AND   ( SRY-INPUTNUM (IDX2)      NOT =   ZERO  )
@@ -1400,6 +1418,11 @@
       *
                END-IF
       *
+               IF          SRY-SRYCD(IDX2)  =    CONS-HIKAKIN
+                                           OR    CONS-SEIBUTU
+                                           OR    CONS-MAYAKU
+                   MOVE    SPACE           TO    RECE45-NAME(IDX4)
+               END-IF
                IF  ( SRY-SRYSYUKBN         =  "334"       )
                AND ((SRY-SRYCD(IDX2)       =  "810000001") OR
                     (SRY-SRYCD(IDX2)(1:3)  =  "008"      ))
@@ -2240,7 +2263,8 @@
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(11)
                        COMPUTE   RECE41-TENSU(11)  =
                                  RECE41-TENSU(11)  +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                                (WK-SYUTEN         * ACCT-ZAIKAISU)
+      ***                       (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    END-IF
       *            ¤½¤ÎÂ¾
                    IF    FLG-ZAITAKU    =   ZERO
@@ -2945,7 +2969,8 @@
                        MOVE   1              TO   FLG-ZAITAKU
                        COMPUTE   RECE41-TENSU(7)  =
                                  RECE41-TENSU(7)  +
-                                (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                                (WK-SYUTEN         * ACCT-ZAIKAISU)
+      ***                       (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    END-IF
       *            ¤½¤ÎÂ¾
                    IF    FLG-ZAITAKU    =   ZERO
