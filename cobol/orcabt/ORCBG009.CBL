@@ -284,6 +284,9 @@
       *    半角全角変換
            COPY    "CPORCSKANACHK.INC".
       *
+      *    数値変換サブ
+           COPY    "CPORCSNUM.INC".
+      *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -449,7 +452,27 @@
       *
            EVALUATE    PARA-SYORIKBN
            WHEN    "1"
-               CONTINUE
+               INITIALIZE                  ORCSNUMAREA
+               MOVE    PARA-NAIYO          TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF      SNUM-RC             =   ZERO
+                   IF         SNUM-KETSUU  <=  8
+                       MOVE   SNUM-OUTNUM      TO  WRK-NAIYO
+                   ELSE
+                       MOVE    "点数が大きすぎます"
+                                           TO  WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       MOVE    1               TO  FLG-END
+                       GO  TO  110-PARA-HENSYU-EXT
+                   END-IF
+               ELSE
+                   MOVE    "点数が正しく入力されていません"
+                                           TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    1               TO  FLG-END
+                   GO  TO  110-PARA-HENSYU-EXT
+               END-IF
            WHEN    "2"
       *    患者番号構成管理情報編集
                MOVE    SPACE               TO  SYS-1009-REC
@@ -499,7 +522,7 @@
                                            ORCSPTIDAREA
                                            SPA-1009-TBL
                IF          SPTID-RC        =   ZERO
-                   MOVE    SPTID-PTID      TO  PARA-NAIYO
+                   MOVE    SPTID-PTID      TO  WRK-NAIYO
                ELSE
                    MOVE    "指定された患者番号は登録されていません"
                                                TO  WRK-RECEERR
@@ -582,7 +605,6 @@
       *
       *        請求管理情報セット
                PERFORM UNTIL   FLG-SEIKYU      =   1
-                   MOVE    PARA-NAIYO              TO  WRK-NAIYO
                    IF          RECE10-TOTALTEN(1)  >=  WRK-NAIYO
                        INITIALIZE                  SRYACCT-REC
                        MOVE    RECE10-HOSPID       TO  ACCT-HOSPID
@@ -603,7 +625,7 @@
                MOVE    PARA-HOSPID         TO  ACCT-HOSPID
                MOVE    PARA-DENPPRTYM      TO  ACCT-SRYYM
                MOVE    "1"                 TO  ACCT-NYUGAIKBN
-               MOVE    PARA-NAIYO          TO  ACCT-PTID
+               MOVE    WRK-NAIYO           TO  ACCT-PTID
       *        統計ファイルセット
                PERFORM 220-MAIN-ACCT-SEC
            END-EVALUATE
