@@ -342,6 +342,7 @@
                END-IF
            END-PERFORM
       *
+           MOVE    "2"             TO  SPA-GMN27-NYUGAIKBN
       *
            .
        310-SPASET-EXT.
@@ -665,6 +666,9 @@
       *    登録処理
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
+      *    入院・外来切り替え
+               WHEN    "CLICKED"       ALSO    "P027_NYUGAIKBN"
+                   PERFORM 400-NYUGAI-SYORI-SEC
       *     以外はエラー
                WHEN    "CLICKED"       ALSO     ANY
                    MOVE    "0110"          TO  SPA-ERRCD
@@ -831,6 +835,25 @@
           .
        500-SPA-PARA-HEN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    入院・外来切り替え処理
+      *****************************************************************
+       400-NYUGAI-SYORI-SEC            SECTION.
+      *
+           IF      SPA-GMN27-NYUGAIKBN =   "1"
+               MOVE    "2"             TO  SPA-GMN27-NYUGAIKBN
+           ELSE
+               MOVE    "1"             TO  SPA-GMN27-NYUGAIKBN
+           END-IF
+      *    表示内容変更
+           IF      SPA-NAI27-SELNUM    NOT =   ZERO
+               PERFORM 2109-HONCOMBI-HEN-SEC
+           END-IF
+      *
+           .
+       400-NYUGAI-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *    会話　処理
       *****************************************************************
@@ -879,22 +902,34 @@
            END-IF
       *    選択番号　入力チェック
            MOVE    ZERO                TO  IDY
+           MOVE    ZERO                TO  SPA-NAI27-IDX
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL   ( IDX         >   15   )
                      OR      ( IDX         >   SPA-GMN27-MAX )
                      OR      ( IDY     NOT =   ZERO )
                IF  LNK-COMB-HKNCOMBINUM (IDX)  =   SPA-NAI27-SELNUM
-                   MOVE    IDX                 TO  IDY
+                   MOVE    IDX                 TO  SPA-NAI27-IDX
                END-IF
            END-PERFORM
-           IF  IDY                     =   ZERO
+           IF       SPA-NAI27-IDX      =   ZERO
                MOVE    "2701"          TO  SPA-ERRCD
                MOVE    1               TO  SPA-GMN27-CUR
                GO  TO                  210-SELNUM-CHK-EXT
            END-IF
+      *    保険組合せ編集
+           PERFORM 2109-HONCOMBI-HEN-SEC
+           .
+       210-SELNUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ編集処理
+      *****************************************************************
+       2109-HONCOMBI-HEN-SEC            SECTION.
+      *
+           MOVE    SPA-NAI27-IDX       TO  IDX
       *
            INITIALIZE                  SPA-GMN27-MEISAI-AREA
-           MOVE    IDY                 TO  IDX
            MOVE    LNK-COMB-HKNNUM     (IDX) TO  SPA-GMN27-HKNNUM
            MOVE    LNK-COMB-KOH1HKNNUM (IDX) TO  SPA-GMN27-KOH1HKNNUM
            MOVE    LNK-COMB-KOH2HKNNUM (IDX) TO  SPA-GMN27-KOH2HKNNUM
@@ -911,17 +946,174 @@
            MOVE    LNK-COMB-KOH4-TANSEIDONAME(IDX)
                                        TO  SPA-GMN27-KOHSEIDO4N
       *----(01.00.01) LINE ADD START -------------------------------
-           MOVE    ZERO                      TO  WRK-SBTA
+      *    特殊負担
+           MOVE    ZERO                TO  WRK-SBTA
            IF  ( LNK-COMB-KOH1-HKNKOHSBTKBN(IDX) =   "A" )  OR
                ( LNK-COMB-KOH2-HKNKOHSBTKBN(IDX) =   "A" )  OR
                ( LNK-COMB-KOH3-HKNKOHSBTKBN(IDX) =   "A" )  OR
                ( LNK-COMB-KOH4-HKNKOHSBTKBN(IDX) =   "A" )
                MOVE    1                     TO  WRK-SBTA
            END-IF
-      *----(01.00.01) LINE ADD END   -------------------------------
-           PERFORM     VARYING    IDY    FROM    1   BY  1
-                       UNTIL      IDY        >   3
-      *----(01.00.01) LINE ADD START -------------------------------
+      *
+           IF      SPA-GMN27-NYUGAIKBN     =   "1"
+      *        入院
+               PERFORM 21091-NYU-HEN-SEC
+           ELSE
+      *        外来
+               PERFORM 21092-GAI-HEN-SEC
+           END-IF
+           .
+       2109-HONCOMBI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ編集処理（入院）
+      *****************************************************************
+       21091-NYU-HEN-SEC            SECTION.
+      *
+           PERFORM VARYING    IDY    FROM    1   BY  1
+                   UNTIL      IDY        >   3
+             EVALUATE    IDY
+             WHEN    1
+                 MOVE    LNK-COMB-NYU-FTNKBN    (IDX)    TO  WRK-FTNKBN
+             WHEN    2
+                 MOVE    LNK-COMB-TSY-NYUFTNKBN (IDX)    TO  WRK-FTNKBN
+             WHEN    3
+                 MOVE    LNK-COMB-TNK-NYUFTNKBN (IDX)    TO  WRK-FTNKBN
+             END-EVALUATE
+             IF  ( WRK-SBTA                  =   1   )  AND
+                 ( WRK-FTNKBN            NOT =   "2" )
+                 MOVE    "特殊負担"      TO  SPA-GMN27-MEI-FTNKBN (IDY)
+             ELSE
+               EVALUATE    IDY
+                   WHEN    1
+                   MOVE    LNK-COMB-NYU-FTNKBN     (IDX)
+                                               TO  WRK-FTNKBN
+                   MOVE    LNK-COMB-NYU-SKJRYOKBN  (IDX)
+                                               TO  WRK-FTNKBN2
+                   MOVE    LNK-COMB-NYU-KFTNRATE   (IDX)
+                                               TO  WRK-ZHEN-GAI-KFTNRATE
+                   MOVE    LNK-COMB-NYU-KKOTGAK (IDX)
+                                               TO  WRK-ZHEN-GAI-KKOTGAK
+                   MOVE    LNK-COMB-NYU-KJGNGAK (IDX)
+                                               TO  WRK-ZHEN-GAI-KJGNGAK
+                   MOVE    LNK-COMB-NYU-DJGNGAK  (IDX)
+                                               TO  WRK-ZHEN-GAI-DJGNGAK
+                   MOVE    LNK-COMB-NYU-DJGNCNT  (IDX)
+                                               TO  WRK-ZHEN-GAI-DJGNCNT
+                   MOVE    LNK-COMB-NYU-MJGNGAK (IDX)
+                                               TO
+                                               WRK-ZHEN-GAI-MNAIJGNGAK
+                   MOVE    LNK-COMB-NYU-MJGNCNT (IDX)
+                                               TO  WRK-ZHEN-GAI-MJGNCNT
+               WHEN    2
+      *            低所得
+                   MOVE    LNK-COMB-TSY-NYUFTNKBN    (IDX)
+                                               TO  WRK-FTNKBN
+                   MOVE    LNK-COMB-TSY-NYUSKJRYOKBN (IDX)
+                                               TO  WRK-FTNKBN2
+                   MOVE    LNK-COMB-TSY-NYUKFTNRATE  (IDX)
+                                               TO  WRK-ZHEN-GAI-KFTNRATE
+                   MOVE    LNK-COMB-TSY-NYUKKOTGAK(IDX)
+                                               TO  WRK-ZHEN-GAI-KKOTGAK
+                   MOVE    LNK-COMB-TSY-NYUKJGNGAK(IDX)
+                                               TO  WRK-ZHEN-GAI-KJGNGAK
+                   MOVE    LNK-COMB-TSY-NYUDJGNGAK (IDX) 
+                                               TO  WRK-ZHEN-GAI-DJGNGAK
+                   MOVE    LNK-COMB-TSY-NYUDJGNCNT (IDX)
+                                               TO  WRK-ZHEN-GAI-DJGNCNT
+                   MOVE    LNK-COMB-TSY-NYUMJGNGAK (IDX)
+                                           TO  WRK-ZHEN-GAI-MNAIJGNGAK
+                   MOVE    LNK-COMB-TSY-NYUMJGNCNT(IDX)
+                                               TO  WRK-ZHEN-GAI-MJGNCNT
+               WHEN    3
+      *            低年金
+                   MOVE    LNK-COMB-TNK-NYUFTNKBN    (IDX)
+                                    TO  WRK-FTNKBN
+                   MOVE    LNK-COMB-TNK-NYUSKJRYOKBN (IDX)
+                                    TO  WRK-FTNKBN2
+                   MOVE    LNK-COMB-TNK-NYUKFTNRATE  (IDX)
+                                    TO  WRK-ZHEN-GAI-KFTNRATE
+                   MOVE    LNK-COMB-TNK-NYUKKOTGAK(IDX)
+                                    TO  WRK-ZHEN-GAI-KKOTGAK
+                   MOVE    LNK-COMB-TNK-NYUKJGNGAK(IDX)
+                                    TO  WRK-ZHEN-GAI-KJGNGAK
+                   MOVE    LNK-COMB-TNK-NYUDJGNGAK (IDX)
+                                    TO  WRK-ZHEN-GAI-DJGNGAK
+                   MOVE    LNK-COMB-TNK-NYUDJGNCNT (IDX)
+                                    TO  WRK-ZHEN-GAI-DJGNCNT
+                   MOVE    LNK-COMB-TNK-NYUMJGNGAK (IDX)
+                                    TO  WRK-ZHEN-GAI-MNAIJGNGAK
+                   MOVE    LNK-COMB-TNK-NYUMJGNCNT(IDX)
+                                    TO  WRK-ZHEN-GAI-MJGNCNT
+               END-EVALUATE
+      *
+               MOVE    WRK-ZHEN-GAI-KFTNRATE
+                                    TO  SPA-GMN27-MEI-KFTNRATE (IDY)
+               MOVE    WRK-ZHEN-GAI-KKOTGAK
+                                    TO  SPA-GMN27-MEI-KKOTGAK(IDY)
+               MOVE    WRK-ZHEN-GAI-KJGNGAK
+                                    TO  SPA-GMN27-MEI-KJGNGAK(IDY)
+               MOVE    WRK-ZHEN-GAI-DJGNGAK
+                                    TO  SPA-GMN27-MEI-DJGNGAK (IDY)
+               MOVE    WRK-ZHEN-GAI-DJGNCNT
+                                    TO  SPA-GMN27-MEI-DJGNCNT (IDY)
+               MOVE    WRK-ZHEN-GAI-MNAIJGNGAK
+                                    TO  SPA-GMN27-MEI-MNAIJGNGAK(IDY)
+               MOVE    WRK-ZHEN-GAI-MJGNCNT
+                                    TO  SPA-GMN27-MEI-MJGNCNT(IDY)
+      *         MOVE    WRK-ZHEN-GAI-MGAIJGNGAK (IDX)
+      *                              TO  SPA-GMN27-MEI-MGAIJGNGAK(IDY)
+      *
+      *        負担区分 0:使用しない / 1:患者負担有り / 2:患者負担無し
+      *                 3:患者負担有り（固定額）
+               EVALUATE    WRK-FTNKBN
+               WHEN    "0"
+                   MOVE    "不使用"   TO  SPA-GMN27-MEI-FTNKBN (IDY)
+               WHEN    "1"
+                   MOVE    "負担有り" TO  SPA-GMN27-MEI-FTNKBN (IDY)
+               WHEN    "2"
+                   MOVE    "負担無し" TO  SPA-GMN27-MEI-FTNKBN (IDY)
+               WHEN    "3"
+                   MOVE    "固定額"   TO  SPA-GMN27-MEI-FTNKBN (IDY)
+               END-EVALUATE
+      *        食事療養費   0:使用しない 　1:患者負担有り
+      *                     2:患者負担有り（上限含む） / 3:患者負担無し
+      *                     4:患者負担有り（消費税あり）
+               EVALUATE    WRK-FTNKBN2
+               WHEN    "0"
+                   MOVE    "不使用"   TO  SPA-GMN27-MEI-FTNKBN2(IDY)
+               WHEN    "1"
+                   MOVE    "有り"     TO  SPA-GMN27-MEI-FTNKBN2(IDY)
+               WHEN    "2"
+                   MOVE  "有り(上限含む)"
+                                      TO  SPA-GMN27-MEI-FTNKBN2(IDY)
+               WHEN    "3"
+                   MOVE  "無し"       TO  SPA-GMN27-MEI-FTNKBN2(IDY)
+               WHEN    "4"
+                   MOVE  "有り(消費税有)"
+                                      TO  SPA-GMN27-MEI-FTNKBN2(IDY)
+               END-EVALUATE
+             END-IF
+           END-PERFORM
+           MOVE    LNK-COMB-TENTNK(IDX) TO  SPA-GMN27-TENTNK
+           IF    LNK-COMB-TAXKBN  (IDX) =   "1"
+               MOVE    "課税"           TO  SPA-GMN27-TAXKBN
+           ELSE
+               MOVE    "非課税"         TO  SPA-GMN27-TAXKBN
+           END-IF
+           .
+       21091-NYU-HEN-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    保険組合せ編集処理（外来）
+      *****************************************************************
+       21092-GAI-HEN-SEC            SECTION.
+      *
+           PERFORM VARYING    IDY    FROM    1   BY  1
+                   UNTIL      IDY        >   3
              EVALUATE    IDY
              WHEN    1
                  MOVE    LNK-COMB-GAI-FTNKBN    (IDX)    TO  WRK-FTNKBN
@@ -1054,7 +1246,7 @@
                MOVE    "非課税"         TO  SPA-GMN27-TAXKBN
            END-IF
            .
-       210-SELNUM-CHK-EXT.
+       21092-GAI-HEN-EXT.
            EXIT.
       *
       *****************************************************************

@@ -2766,7 +2766,11 @@
            MOVE    "Æü¡Ý¾å²ó¿ô"    TO  P02-P027-TITLE6
            MOVE    "·î¡Ý¾å¸Â³Û"    TO  P02-P027-TITLE7
            MOVE    "·î¡Ý¾å²ó¿ô"    TO  P02-P027-TITLE8
-           MOVE    "  ÌôºÞÉéÃ´"    TO  P02-P027-TITLE9
+           IF      SPA-GMN27-NYUGAIKBN     =   "2"
+               MOVE    "  ÌôºÞÉéÃ´"    TO  P02-P027-TITLE9
+           ELSE
+               MOVE    "¿©»öÎÅÍÜÈñ"    TO  P02-P027-TITLE9
+           END-IF
       *
            MOVE    ZERO                TO  P02-P027-HKNKUMI-COUNT
            PERFORM   VARYING     IDX     FROM   1   BY  1

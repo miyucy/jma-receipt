@@ -1521,7 +1521,8 @@
            PERFORM VARYING IDX         FROM    1   BY  1
                    UNTIL   IDX         >   IDP-1
                PERFORM VARYING IDY         FROM    1   BY  1
-                       UNTIL   IDY         >   IDP-2
+                       UNTIL  (IDY         >   50  )  OR
+                              (HZN-PTKOHFTN-REC(IDX IDY) =   SPACE)
                    ADD     1                   TO  WRK-PARA-EDANUM
                    MOVE    SPACE               TO  PARA-REC
                    INITIALIZE                      PARA-REC
@@ -1561,6 +1562,7 @@
            END-IF
       *
            IF      SPA-GMN24-FTNSELNUM2    NOT =   ZERO
+               MOVE    SPA-GMN24-FTNSELNUM2    TO  P02-P024-FTNSELNUM2
                PERFORM 41014-FTNSELNUM2-SEC
                MOVE    31                  TO  SPA-GMN24-CUR
            END-IF
@@ -1572,6 +1574,8 @@
       *    给锐砷么】给锐联买戎规联买
       *****************************************************************
        41014-FTNSELNUM2-SEC           SECTION.
+      *
+           MOVE    P02-P024-FTNSELNUM2     TO  SPA-GMN24-FTNSELNUM2
       *
            IF      SPA-GMN24-FTNSELNUM2    =   ZERO
                GO     TO      41014-FTNSELNUM2-EXT
@@ -2104,6 +2108,8 @@
                MOVE    ALL "9"             TO  SPA-GMN24-FTNEDYMD(1:7)
                MOVE    ALL "9"             TO  SPA-NAI24-FTNEDYMD
                GO      TO      41031-FTNEDYMD-EXT
+           END-IF
+      *
       *    泣烧茶烫チェックサブ
            INITIALIZE                      ORCSGDAYAREA
            MOVE    SPA-GMN24-FTNEDYMD  TO  SGDAY-INDAY
@@ -2128,7 +2134,7 @@
            IF      SPA-GMN24-FTNSTYMD  <  SPA-GMN24-FTNEDYMD
                CONTINUE
            ELSE
-               MOVE    "2434"              TO  SPA-ERRCD
+               MOVE    "2438"              TO  SPA-ERRCD
                MOVE    33                  TO  SPA-GMN24-CUR
            END-IF
       *
