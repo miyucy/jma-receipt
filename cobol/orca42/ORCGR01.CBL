@@ -74,6 +74,8 @@
       *  01.04.04    NACL-藤原    04/03/08  コラムリストの行制御
       *  01.04.05    NACL-藤原    04/05/06  保険組合せが無いときの
       *                                     エラーを追加
+      *  01.04.06    NACL-藤原    04/05/07  処理開始前にジョブ管理の
+      *                                     チェックを再度行なう
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -600,7 +602,11 @@
                    PERFORM 210-BACK-SYORI-SEC
                ELSE    
                    IF      SPA-RIDCD       =   "1002"
-                       PERFORM 450-KOUSHIN-SEC
+      *                ジョブ管理チェック処理
+                       PERFORM 4501-JOBKANRI-CHK-SEC
+                       IF      SPA-ERRCD      =   SPACE
+                           PERFORM 450-KOUSHIN-SEC
+                       END-IF    
                    ELSE
                        IF      SPA-RIDCD       =   "1003"
                           PERFORM 460-CLEAR-SEC
@@ -1548,6 +1554,27 @@
        450-TOUROKU-SEC                SECTION.
       *
       *    ジョブ管理チェック処理
+           PERFORM 4501-JOBKANRI-CHK-SEC
+           IF      SPA-ERRCD      NOT =   SPACE
+               GO  TO  450-TOUROKU-EXT
+           END-IF    
+      *
+           IF      SPA-GMN-MAX        =   ZERO
+               MOVE    "0010"             TO  SPA-ERRCD
+           ELSE
+               MOVE    "1002"             TO  SPA-RIDCD
+           END-IF
+           .
+       450-TOUROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ジョブ管理チェック処理
+      *****************************************************************
+       4501-JOBKANRI-CHK-SEC       SECTION.
+      *
+           MOVE    SPACE           TO  SPA-ERRCD
+      *
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-JOBID
@@ -1568,17 +1595,10 @@
                            "】"              DELIMITED  BY  SIZE      
                                              INTO  WRK-RECEERR
                    END-STRING                          
-                   GO  TO  450-TOUROKU-EXT
                END-IF
            END-IF    
-      *
-           IF      SPA-GMN-MAX        =   ZERO
-               MOVE    "0010"             TO  SPA-ERRCD
-           ELSE
-               MOVE    "1002"             TO  SPA-RIDCD
-           END-IF
            .
-       450-TOUROKU-EXT.
+       4501-JOBKANRI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
