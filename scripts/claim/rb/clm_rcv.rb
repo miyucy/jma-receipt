@@ -10,6 +10,8 @@
 # version 1.4.1 １秒中の複数受信対応
 #               後ろに、受信の度にカウントアップされる番号を付加している
 #                  '03-10-15 by hiki
+# version 1.4.2 telnet接続・nmapコマンドへの対策
+#                  '05-02-08 by hiki
 
 Dir.chdir(File.dirname(__FILE__))
 
@@ -42,6 +44,12 @@ $fname_seq = 0      # 受信カウンタ(ファイル名に使用する)
 
 #----- Define Classes --------------------------------
 
+# 2005/02/08 add start (hiki)
+# 例外クラス
+class ConnectError < StandardError ; end
+class CReadError < StandardError ; end
+# 2005/02/08 add end (hiki)
+
 class FileSockRcv
   def initialize(fl, s)
     @fl_path_name = fl
@@ -52,10 +60,24 @@ class FileSockRcv
   def start
     open(@fl_path_name, "wb") do |f|
       buf = ""
-      while @eot != (buf = @sckt.read(1))
-        print buf
-        f.print buf
+# 2005/02/08 edit start (hiki)
+      begin
+        while @eot != (buf = @sckt.read(1))
+          if buf == nil
+            # ソケット接続が切れた
+            raise ConnectError, 'read socket data is nil.'
+          end
+          print buf
+          f.print buf
+        end
+      rescue ConnectError
+        # telnetを試したり、途中で接続が切れた場合への対応
+        raise ConnectError, ''
+      rescue
+        # nmapコマンドへの対応
+        raise CReadError, 'socket read error.'
       end
+# 2005/02/08 edit end (hiki)
     end
   end
 end
@@ -177,59 +199,73 @@ while true
   ans = SndRsp.new(sock)
   
   print svppt + "Start Receiving File --------------------------\n"
-  rcvbuf.start
-  print svppt + "Complete Receiving File -----------------------\n"
+# 2005/02/08 edit start (hiki)
+#  rcvbuf.start
+  begin
+    rcvbuf.start
+  rescue ConnectError, CReadError
+    print svppt + "Connection Error\n"
+    print svppt + "Client disconnects\n"
+    gsock.close
+    print svppt + "temporary file delete.\n"
+    File.delete(file_path_name)
+  else
+# 2005/02/08 edit end (hiki)
+    print svppt + "Complete Receiving File -----------------------\n"
   
 #----- convert claim data J-code to UTF8 ---------------
-  print svppt + "Convert to UTF-8\n"
-  u8_file = file_path_name.gsub(/.xml$/, "_u8.xml")
-  `ruby xml_jcnv.rb #{file_path_name} tou8 -f > #{u8_file}`  
-  file_path_name = u8_file
+    print svppt + "Convert to UTF-8\n"
+    u8_file = file_path_name.gsub(/.xml$/, "_u8.xml")
+    `ruby xml_jcnv.rb #{file_path_name} tou8 -f > #{u8_file}`  
+    file_path_name = u8_file
 
 #----- check claim data and send respons to client -----
-  print svppt + "Claim valid check\n"
-  if parser_check(file_path_name, $dtdfl, $logfl)
-    print svppt + "Send [ack] to client\n" ; ans.ok ; valid_check_flg = true
-  else
-    print svppt + "Send [nak] to client\n" ; ans.ng ; valid_check_flg = false
-  end
+    print svppt + "Claim valid check\n"
+    if parser_check(file_path_name, $dtdfl, $logfl)
+      print svppt + "Send [ack] to client\n" ; ans.ok ; valid_check_flg = true
+    else
+      print svppt + "Send [nak] to client\n" ; ans.ng ; valid_check_flg = false
+    end
 
 #-------------------------------------------------------
-  print svppt + "Client disconnects\n"
-  gsock.close
-  print svppt + "Close port [" + Time.now.strftime("%H:%M:%S") + "]\n\n"
+    print svppt + "Client disconnects\n"
+    gsock.close
+    print svppt + "Close port [" + Time.now.strftime("%H:%M:%S") + "]\n\n"
 
 #----- kick shell script ( decode(ruby) and cobol) ) ---
-  if valid_check_flg
-    out_file = file_path_name.gsub(/_u8.xml$/, ".txt")
-    print svppt + "Decode claim data to #{out_file} and kick COBOL\n"
-    print "#{$sh_path_name} #{file_path_name} #{out_file}\n\n"
+    if valid_check_flg
+      out_file = file_path_name.gsub(/_u8.xml$/, ".txt")
+      print svppt + "Decode claim data to #{out_file} and kick COBOL\n"
+      print "#{$sh_path_name} #{file_path_name} #{out_file}\n\n"
 # 2002/11/12 update start (hiki)
-#    `#{$sh_path_name} #{file_path_name} #{out_file}`
-    # スレッドの生成処理
-    thr_execflg = 0
-    Thread.start {
-      print svppt + "Thread Start[" + String($seq_put + 1) + "]\n"     if $debug != 0
-      thr_start_time = ''; thr_end_time = ''                           if $debug != 0
-      thr_start_time = Time.now.strftime("%H:%M:%S")                   if $debug != 0
-      thr = nil
-      # スレッド生成メイン処理
-      thr = ExecThreadMain.new($seq_put, $sh_path_name, file_path_name, out_file)
-      $seq_put += 1
-      if $seq_put > $seq_max
-        $seq_put = 0
+#      `#{$sh_path_name} #{file_path_name} #{out_file}`
+      # スレッドの生成処理
+      thr_execflg = 0
+      Thread.start {
+        print svppt + "Thread Start[" + String($seq_put + 1) + "]\n"     if $debug != 0
+        thr_start_time = ''; thr_end_time = ''                           if $debug != 0
+        thr_start_time = Time.now.strftime("%H:%M:%S")                   if $debug != 0
+        thr = nil
+        # スレッド生成メイン処理
+        thr = ExecThreadMain.new($seq_put, $sh_path_name, file_path_name, out_file)
+        $seq_put += 1
+        if $seq_put > $seq_max
+          $seq_put = 0
+        end
+        thr_execflg = 1
+        thr.main  # メイン処理
+        thr_end_time = Time.now.strftime("%H:%M:%S")                      if $debug != 0
+        print svppt + "Thread End[" + String($seq_exec) + "] [" + thr_start_time + "〜" + thr_end_time + "]\n"       if $debug != 0
+        print svppt + "End Sequence NO. = [" + String($seq_put) + "]\n"       if $debug != 0
+      }
+      # スレッド生成のウエイト処理
+      while thr_execflg == 0
+        sleep 1
       end
-      thr_execflg = 1
-      thr.main  # メイン処理
-      thr_end_time = Time.now.strftime("%H:%M:%S")                      if $debug != 0
-      print svppt + "Thread End[" + String($seq_exec) + "] [" + thr_start_time + "〜" + thr_end_time + "]\n"       if $debug != 0
-      print svppt + "End Sequence NO. = [" + String($seq_put) + "]\n"       if $debug != 0
-    }
-    # スレッド生成のウエイト処理
-    while thr_execflg == 0
-      sleep 1
-    end
 # 2002/11/12 update end (hiki)
+# 2005/02/08 add start (hiki)
+    end
+# 2005/02/08 add end (hiki)
   end
 end
 #----- Script end -----------------------------------
