@@ -117,17 +117,18 @@
            03  WRK-PAGE            PIC ZZ9.
            03  WRK-HSRYMD          PIC X(12).
       *
-           03  WRK-NAI-TBL         OCCURS  30.
-               05  WRK-PTNUM       PIC X(20).
-               05  WRK-NAME        PIC X(36).
-               05  WRK-SEX         PIC X(2).
-               05  WRK-BIRTHDAY    PIC X(22).
-               05  WRK-DENPNUM     PIC 9(07).
-               05  WRK-SRYMD       PIC X(12).
-               05  WRK-SEIKYU      PIC S9(07).
-               05  WRK-RYOSYU      PIC S9(07).
-               05  WRK-MISYU       PIC S9(07).
-               05  WRK-JYOTAI      PIC X(10).
+           03  WRK-NAI-TBL.
+               05  WRK-NAI-G       OCCURS  30.
+                   07  WRK-PTNUM       PIC X(20).
+                   07  WRK-NAME        PIC X(36).
+                   07  WRK-SEX         PIC X(2).
+                   07  WRK-BIRTHDAY    PIC X(22).
+                   07  WRK-DENPNUM     PIC 9(07).
+                   07  WRK-SRYMD       PIC X(12).
+                   07  WRK-SEIKYU      PIC S9(07).
+                   07  WRK-RYOSYU      PIC S9(07).
+                   07  WRK-MISYU       PIC S9(07).
+                   07  WRK-JYOTAI      PIC X(10).
       *
            03  WRK-SUM-TBL         OCCURS  4.
                05  WRK-GSEIKYU     PIC S9(08).
