@@ -279,9 +279,9 @@
                                                WRK-SYUNOU-REC-T
       *
                 IF       WRK-S02-TEIKI-KBN    =   "X"
-                    MOVE     "X"              TO  SYU-DENPJTIKBN
+                    MOVE     "3"              TO  SYU-CREATEKBN
                 ELSE
-                    MOVE     "A"              TO  SYU-DENPJTIKBN
+                    MOVE     "2"              TO  SYU-CREATEKBN
                 END-IF
                 MOVE     SYUNOU-REC           TO  LNK-SYUNOU-REC(IDX)
                 MOVE     WRK-ORCS02-REC       TO  LNK-ORCS02-REC 
