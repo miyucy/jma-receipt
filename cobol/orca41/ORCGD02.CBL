@@ -47,6 +47,11 @@
       *  01.00.14    ひさなが     03/02/05  老人保健の条件を診療年月の
       *                                     １日現在に修正
       *  01.00.15    ひさなが     03/02/07  初診日と病名関係の確認修正
+      *  01.00.16    ひさなが     03/04/01  入外区分が入院の診療会計の
+      *                                     実日数チェックの修正
+      *  01.00.16    ひさなが     03/04/17  入外区分が入院の入院会計の
+      *                                     実日数チェック
+      *                                     外泊チェックの追加
       *
       *****************************************************************
       *
@@ -154,6 +159,7 @@
            03  T-ERR-13            PIC X(01).
            03  T-ERR-13-2          PIC X(01).
            03  T-ERR-13-3          PIC X(01).
+           03  T-ERR-14            PIC X(01).
            03  T-CNT-IN            PIC 9(09).
            03  T-CNT-OUT           PIC 9(09).
       *
@@ -175,6 +181,8 @@
       *
       *    添字領域
        01  IDX-AREA.
+           03  IDW1                PIC 9(03).
+           03  IDW2                PIC 9(03).
            03  IDX1                PIC 9(03).
            03  IDX2                PIC 9(03).
            03  IDX3                PIC 9(03).
@@ -232,9 +240,7 @@
                05  WRK-PARA-OPID                   PIC X(16).
                05  WRK-PARA-SYOKBN                 PIC X(01).
                05  WRK-PARA-RECEKBN                PIC X(01).
-      *修正/*開始*03.01.31*********************************************
            03  WRK-TSTPTNUMKBN                     PIC X(01).
-      *修正/*終了*03.01.31*********************************************
       *
       *    保険組合せ作業
        01  W-HKNCOMBI.
@@ -271,6 +277,24 @@
                    07  W-SRYCD-21      PIC X(09).
                    07  W-SRYCD-22      PIC X(09).
                    07  W-ZAINUM-21     PIC 9(08).
+      *修正/*開始*03.04.17*********************************************
+      *    入院会計の区分作業
+           03  WK-ZAISKBKBN        PIC X(01).
+           03  WK-NYUGAIKBN        PIC X(01).
+           03  WK-SRYKA            PIC X(02).
+           03  WK-ZAINUM           PIC 9(08).
+           03  WK-SRYSYUKBN        PIC X(01).
+      *    入院会計の日作業
+       01  W-NYUINACCT.
+           03  WK-NYUINACCT.
+               05  W-NACCT-DAY     PIC 9(03)  OCCURS   31.
+           03  WK-NYUINACCT-K.
+               05  W-NACCT-K-DAY   PIC 9(03)  OCCURS   31.
+           03  W-NACCT-DAY-B       PIC X(08).
+           03  W-NACCT-DAY-D       PIC 9(03).
+           03  W-NACCT-DAY-ERR     PIC 9(01).
+           03  W-NACCT-DAY-K-ERR   PIC 9(01).
+      *修正/*終了*03.04.17*********************************************
       *
       *    メッセージ領域
        01  T-MESSAGE-AREA.
@@ -349,6 +373,9 @@
            03  T-MESSAGE-500-05    PIC X(90)   VALUE
                "500-05該当患者は老人保険が未設定です                    
       -        "                                  ".
+           03  T-MESSAGE-500-06    PIC X(90)   VALUE
+               "500-06保険の適用が切れている期間があります              
+      -        "                                  ".
            03  T-MESSAGE-510-01    PIC X(90)   VALUE
                "510-01患者病名情報テーブル異常                          
       -        "                                  ".
@@ -408,18 +435,62 @@
            03  T-MESSAGE-540-03    PIC X(90)   VALUE
                "540-03該当患者は実日数を越えた回数を算定しています      
       -        "                                  ".
+           03  T-MESSAGE-540-04    PIC X(90)   VALUE
+               "540-04患者入院履歴情報テーブル異常                      
+      -        "                                  ".
+           03  T-MESSAGE-540-05    PIC X(90)   VALUE
+               "540-05入院会計テーブル異常                              
+      -        "                                  ".
+           03  T-MESSAGE-540-06    PIC X(90)   VALUE
+               "540-06入院行為テーブル異常                              
+      -        "                                  ".
+           03  T-MESSAGE-540-07    PIC X(90)   VALUE
+               "540-07入院していない日に入院診療があります              
+      -        "                                  ".
+           03  T-MESSAGE-540-08    PIC X(90)   VALUE
+               "540-08外泊のときに入院調剤料が発生しています            
+      -        "                                  ".
            03  T-MESSAGE-600-01    PIC X(90)   VALUE
                "600-01該当患者は氏名に全角文字以外が入力されています    
       -        "                                  ".
            03  T-MESSAGE-600-02    PIC X(90)   VALUE
-               "600-02該当患者は記号に全角文字以外が入力されています   
+               "600-02該当患者は記号に全角文字以外が入力されています    
       -        "                                  ".
            03  T-MESSAGE-600-03    PIC X(90)   VALUE
-               "600-03該当患者は番号に全角文字以外が入力されています   
+               "600-03該当患者は番号に全角文字以外が入力されています    
       -        "                                  ".
            03  T-MESSAGE-600-04    PIC X(90)   VALUE
-               "600-04該当患者は病名に全角文字以外が入力されています   
+               "600-04該当患者は病名に全角文字以外が入力されています    
       -        "                                  ".
+      *
+      *    予約コード領域
+       01  WRK-YOYAKU.
+      *    初診（病院）
+           03  W-YOYAKU1           PIC X(09)   VALUE   "111700110".
+      *    初診（診療所）
+           03  W-YOYAKU2           PIC X(09)   VALUE   "111700210".
+      *    初診（病院）
+           03  W-YOYAKU3           PIC X(09)   VALUE   "111000110".
+      *    初診（診療所）
+           03  W-YOYAKU4           PIC X(09)   VALUE   "111003610".
+      *    小児科外来診療料（院外処方）初診時
+           03  W-YOYAKU5           PIC X(09)   VALUE   "113003510".
+      *    小児科外来診療料（院内処方）初診時
+           03  W-YOYAKU6           PIC X(09)   VALUE   "113003710".
+       01  WRK-HKNNUM.
+      *    労災
+           03  W-HKNNUM1           PIC X(03)   VALUE   "971".
+      *    自費
+           03  W-HKNNUM2           PIC X(03)   VALUE   "980".
+       01  WRK-BIRTHDAY.
+      *    老人
+           03  W-BIRTHDAY1         PIC X(08)   VALUE   "19320929".
+       01  WRK-PTKOHI.
+      *    保険番号（公費）
+           03  W-KOHNUM1           PIC X(03)   VALUE   "027".
+       01  WRK-SRYSYUKBN.
+      *    入院調剤料
+           03  W-SRYSYUKBN1        PIC X(03)   VALUE   "240".
       *
       *
       *****************************************************************
@@ -468,6 +539,20 @@
       *    相互作用情報
        01  INTERACT-REC.
            COPY    "CPINTERACT.INC".
+      *修正/*開始*03.04.17*********************************************
+      *
+      *    患者入院履歴
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
+      *
+      *    入院会計マスタ−
+       01  NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC".
+      *
+      *    入院行為マスタ−
+       01  NYUINACT-REC.
+           COPY    "CPNYUINACT.INC".
+      *修正/*終了*03.04.17*********************************************
       *
       *    連絡
            COPY    "MCPDATA.INC".
@@ -478,6 +563,13 @@
       *
       *    半角チェック
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    数字変換領域
+           COPY    "CPORCSNUM.INC".
+      *
+      *   日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
       *
       *
       *****************************************************************
@@ -503,6 +595,19 @@
            IF  SPA-GMN-HOSPID    NOT =   SPACE
                PERFORM T-000-RECECHEK-SEC
            END-IF.
+      *修正/*開始*03.04.17*********************************************
+           IF  (SPA-GMN-HOSPID    NOT =   SPACE)  AND
+               (T-NYUGAIKBN-AREA      =   "1")    AND
+               ((SPA-GMN-CNV (12)      =   "1")    OR
+                (SPA-GMN-CNV (14)      =   "1"))
+               INITIALIZE                W-SRYACT
+               INITIALIZE                WK-NYUINACCT
+               MOVE    ZERO              TO  W-JITU-DAY4
+               MOVE    ZERO              TO  W-JITU-DAY5
+               MOVE    ALL SPACE         TO  WK-JITUDAY2
+               PERFORM T-540-RECECHEK-CHK4-SEC
+           END-IF.
+      *修正/*終了*03.04.17*********************************************
       *    終了処理
            PERFORM T-000-CHEKTERM-SEC.
       *
@@ -644,7 +749,7 @@
        T-000-RECECHEK-SEC                SECTION.
       *
            MOVE    SPACE                   TO    T-HANNTEI1.
-           MOVE    SPACE                   TO    T-HANNTEI2.           
+           MOVE    SPACE                   TO    T-HANNTEI2.
            MOVE    ZERO                    TO    T-CNT-IN.
            MOVE    ZERO                    TO    T-CNT-OUT.
       *
@@ -653,7 +758,7 @@
            ELSE
                IF  T-SINRYOU-Y    <  2000
                    MOVE    "*"                   TO    T-HANNTEI1
-               END-IF               
+               END-IF
            END-IF.
       *
            IF  T-SINRYOU-M    NOT  NUMERIC
@@ -811,9 +916,7 @@
       *
            IF  (ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
                (ACCT-PTID     NOT =   W1-SRY-PTID)
-      *修正/*開始*03.01.31*********************************************
                PERFORM T-500-RECECHEK2-SEC
-      *修正/*終了*03.01.31*********************************************
                IF  (W1-SRY-HOSPID   NOT =   ALL "*")  AND
                    ((T-ERR-04            =   SPACE)  OR
                     (T-ERR-13            =   SPACE))
@@ -829,6 +932,8 @@
                INITIALIZE                WK-JITUDAY2
                INITIALIZE                W-TABLE-S1
                INITIALIZE                W-TABLE-S2
+               INITIALIZE                WK-NYUINACCT-K
+               MOVE    ALL ZERO          TO  W-NACCT-DAY-K-ERR
                MOVE    ZERO              TO  W-JITU-DAY4
                MOVE    ZERO              TO  W-JITU-DAY5
                MOVE    SPACE             TO  T-HANNTEI6
@@ -851,10 +956,17 @@
                MOVE    SPACE             TO  T-ERR-12
                MOVE    SPACE             TO  T-ERR-13
                MOVE    SPACE             TO  T-ERR-13-2
+               MOVE    SPACE             TO  T-ERR-14
+               MOVE    SPACE             TO  WK-SRYSYUKBN
+      *修正/*開始*03.04.17*********************************************
+               IF  (T-NYUGAIKBN-AREA    =  "1")   AND
+                   (SPA-GMN-CNV (12)    =  "1")
+                   PERFORM T-540-RECECHEK-CHK3-SEC
+                   PERFORM T-540-RECECHEK-CHK7-SEC
+               END-IF
+      *修正/*終了*03.04.17*********************************************
            END-IF.
-      *修正/*開始*03.01.31*********************************************
            IF  WRK-TSTPTNUMKBN  NOT =  "1"
-      *修正/*終了*03.01.31*********************************************
                IF  (ACCT-HOSPID     NOT =   COMB-HOSPID)  OR
                    (ACCT-PTID       NOT =   COMB-PTID)  OR
                    (ACCT-HKNCOMBI   NOT =   COMB-HKNCOMBINUM)
@@ -863,8 +975,8 @@
                IF  T-HANNTEI5   =   "*"
                    PERFORM T-200-RECECHEK-CHK1-SEC
                END-IF
-               IF  COMB-HKNNUM   =   "971"
-                   MOVE    "971"             TO  WK1-HKNNUM-S
+               IF  COMB-HKNNUM   =   W-HKNNUM1
+                   MOVE    W-HKNNUM1         TO  WK1-HKNNUM-S
                ELSE
                    MOVE    SPACE             TO  WK1-HKNNUM-S
                END-IF
@@ -885,6 +997,41 @@
                    WRITE   DID2-REC
                    MOVE    "*"               TO  T-ERR-05
                END-IF
+      *修正/*開始*03.04.17*********************************************
+               IF  (SPA-GMN-CNV (12)    =  "1")    AND
+                   (W-NACCT-DAY-K-ERR   =   ZERO)  AND
+                   (T-NYUGAIKBN-AREA    =   "1")
+                   PERFORM VARYING  IDY3  FROM  1  BY  1
+                           UNTIL    IDY3  >    31
+                       IF  (ACCT-DAY (1,IDY3)    NOT =  ZERO)  AND
+                           (W-NACCT-K-DAY (IDY3)     =  ZERO)
+                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                           MOVE    SPACE             TO  DID2-REC
+                           MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
+                           MOVE    "-"               TO  DID2-REC(25:1)
+                           MOVE    ACCT-PTID         TO  DID2-REC(26:10)
+                           MOVE    T-MESSAGE-540-07  TO  DID2-REC(71:90)
+                           WRITE   DID2-REC
+                           MOVE    1               TO  W-NACCT-DAY-K-ERR
+                           MOVE    40              TO  IDY3
+                       END-IF
+      *
+                       IF  (WK-SRYSYUKBN             =  "1")   AND
+                           (ACCT-DAY (1,IDY3)    NOT =  ZERO)  AND
+                           (W-NACCT-K-DAY (IDY3)     =  2)
+                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                           MOVE    SPACE             TO  DID2-REC
+                           MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
+                           MOVE    "-"               TO  DID2-REC(25:1)
+                           MOVE    ACCT-PTID         TO  DID2-REC(26:10)
+                           MOVE    T-MESSAGE-540-08  TO  DID2-REC(71:90)
+                           WRITE   DID2-REC
+                           MOVE    1               TO  W-NACCT-DAY-K-ERR
+                           MOVE    40              TO  IDY3
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *修正/*終了*03.04.17*********************************************
            END-IF.
       *
            MOVE    ACCT-HOSPID  TO  W1-SRY-HOSPID.
@@ -937,6 +1084,12 @@
                ELSE
                    MOVE    MCPDATA-REC            TO  HKNCOMBI-REC
                    MOVE    "*"                    TO  T-HANNTEI5
+      *修正/*開始*03.04.17*********************************************
+                   IF  (SPA-GMN-CNV (14)   =  "1")    AND
+                       (T-ERR-14           =  SPACE)
+                       PERFORM T-200-RECECHEK-CHK2-SEC
+                   END-IF
+      *修正/*終了*03.04.17*********************************************
                END-IF
            END-IF.
       *
@@ -960,7 +1113,7 @@
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
-                                       MCPDATA-REC.    
+                                       MCPDATA-REC.
       *
        T-200-RECECHEK-READ-EXT.
            EXIT.
@@ -977,7 +1130,7 @@
                 ((ACCT-PTID         =   PTHKN-PTID)  AND
                  (COMB-HKNID    NOT =   PTHKN-HKNID) AND
                  (COMB-HKNID    NOT =   ZERO)))      AND
-               (COMB-HKNNUM   NOT =   "971"  AND  "980")
+               (COMB-HKNNUM   NOT =   W-HKNNUM1  AND  W-HKNNUM2)
                PERFORM T-300-RECECHEK-SEC
            END-IF.
            IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
@@ -1011,6 +1164,39 @@
       *
        T-200-RECECHEK-CHK1-EXT.
            EXIT.
+      *修正/*開始*03.04.17*********************************************
+      *
+      *******************
+      *
+       T-200-RECECHEK-CHK2-SEC           SECTION.
+      *
+           PERFORM VARYING    IDX6    FROM    1   BY  1
+                   UNTIL      IDX6    >      31
+               IF  ACCT-DAY (1,IDX6)   NOT =    ZERO
+                   MOVE    ACCT-SRYYM         TO  W-NACCT-DAY-B(1:6)
+                   MOVE    IDX6(2:2)          TO  W-NACCT-DAY-B(7:2)
+                   IF  (COMB-TEKSTYMD  >  W-NACCT-DAY-B)  OR
+                       (COMB-TEKEDYMD  <  W-NACCT-DAY-B)
+                       COMPUTE T-CNT-OUT   =   T-CNT-OUT   +   1 
+                       MOVE    SPACE              TO  DID2-REC
+                       MOVE    ACCT-HOSPID        TO  DID2-REC(1:24)
+                       MOVE    "-"                TO  DID2-REC(25:1)
+                       MOVE    ACCT-PTID          TO  DID2-REC(26:10)
+                       MOVE    "-"                TO  DID2-REC(36:1)
+                       MOVE    ACCT-HKNCOMBI      TO  DID2-REC(37:4)
+                       MOVE    T-MESSAGE-500-06   TO  DID2-REC(71:90)
+                       MOVE    "診療"             TO  DID2-REC(115:4)
+                       WRITE   DID2-REC
+                       MOVE    "*"                TO  T-ERR-14
+                       MOVE    40                 TO  IDX6
+                   END-IF
+               END-IF
+           END-PERFORM.
+      *
+       T-200-RECECHEK-CHK2-EXT.
+           EXIT.
+      *
+      *修正/*終了*03.04.17*********************************************
       *
       *****************************************************************
       *    患者保険情報テーブル 参照処理
@@ -1256,7 +1442,7 @@
                        WRITE   DID2-REC
                        MOVE    "*"               TO  T-ERR-03
                    END-IF
-                   IF  PTKOH-KOHNUM   =   "027"
+                   IF  PTKOH-KOHNUM   =   W-KOHNUM1
                        MOVE    PTKOH-KOHNUM      TO  W-COMB-HANNTEI1
                    ELSE
                        MOVE    SPACE             TO  W-COMB-HANNTEI1
@@ -1331,7 +1517,7 @@
                        WRITE   DID2-REC
                        MOVE    "*"               TO  T-ERR-03
                    END-IF
-                   IF  PTKOH-KOHNUM   =   "027"
+                   IF  PTKOH-KOHNUM   =   W-KOHNUM1
                        MOVE    PTKOH-KOHNUM      TO  W-COMB-HANNTEI1
                    ELSE
                        MOVE    SPACE             TO  W-COMB-HANNTEI1
@@ -1406,7 +1592,7 @@
                        WRITE   DID2-REC
                        MOVE    "*"               TO  T-ERR-03
                    END-IF
-                   IF  PTKOH-KOHNUM   =   "027"
+                   IF  PTKOH-KOHNUM   =   W-KOHNUM1
                        MOVE    PTKOH-KOHNUM      TO  W-COMB-HANNTEI1
                    ELSE
                        MOVE    SPACE             TO  W-COMB-HANNTEI1
@@ -1481,7 +1667,7 @@
                        WRITE   DID2-REC
                        MOVE    "*"               TO  T-ERR-03
                    END-IF
-                   IF  PTKOH-KOHNUM   =   "027"
+                   IF  PTKOH-KOHNUM   =   W-KOHNUM1
                        MOVE    PTKOH-KOHNUM      TO  W-COMB-HANNTEI1
                    ELSE
                        MOVE    SPACE             TO  W-COMB-HANNTEI1
@@ -1552,23 +1738,18 @@
                ELSE
                    MOVE    MCPDATA-REC             TO  PTINF-REC
                    IF  (T-ERR-04              =   SPACE)  AND
-      *修正/*開始*03.01.31*********************************************
                        (PTINF-TSTPTNUMKBN NOT =   "1")    AND
-      *修正/*終了*03.01.31*********************************************
                        (SPA-GMN-CNV (4)       =   "1")
                        MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM1
                        MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM2
                        MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM3
                        COMPUTE W-YY1 = W-YY1 + 15
                        COMPUTE W-YY2 = W-YY2 + 65
-      *修正/*開始*03.01.31*********************************************
-      *                 COMPUTE W-YY3 = W-YY3 + 70
-                       IF   PTINF-BIRTHDAY   <=   19320929
+                       IF   PTINF-BIRTHDAY   <=   W-BIRTHDAY1
                             COMPUTE W-YY3 = W-YY3 + 70
                        ELSE
                             COMPUTE W-YY3 = W-YY3 + 75
                        END-IF
-      *修正/*終了*03.01.31*********************************************
                        IF  (W-COMB-HANNTEI2   =   "1")    AND
                            (T-SINRYOU-AREA    <   W-YM1)
                            COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
@@ -1580,7 +1761,7 @@
                            WRITE   DID2-REC
                            MOVE    "*"               TO  T-ERR-04
                        END-IF
-                       IF  (W-COMB-HANNTEI1   =   "027")  AND
+                       IF  (W-COMB-HANNTEI1   =   W-KOHNUM1)  AND
                            (T-SINRYOU-AREA    <   W-YM2)
                            COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                            MOVE    SPACE             TO  DID2-REC
@@ -1591,18 +1772,6 @@
                            WRITE   DID2-REC
                            MOVE    "*"               TO  T-ERR-04
                        END-IF
-      *修正/*開始*03.02.05*********************************************
-      *                 IF  (W-COMB-HANNTEI1      =   "---")  AND
-      *                     (T-SINRYOU-AREA   NOT <   W-YM3)
-      *                     COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-      *                     MOVE    SPACE             TO  DID2-REC
-      *                     MOVE    W1-SRY-HOSPID     TO  DID2-REC(1:24)
-      *                     MOVE    "-"               TO  DID2-REC(25:1)
-      *                     MOVE    W1-SRY-PTID       TO  DID2-REC(26:10)
-      *                     MOVE    T-MESSAGE-500-05  TO  DID2-REC(71:90)
-      *                     WRITE   DID2-REC
-      *                     MOVE    "*"               TO  T-ERR-04
-      *                 END-IF
                        IF  (W-COMB-HANNTEI1      =   "---")  AND
                            (T-SINRYOU-AREA       >   W-YM3)
                            COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
@@ -1616,7 +1785,7 @@
                        END-IF
                        IF  (W-COMB-HANNTEI1      =   "---")  AND
                            (T-SINRYOU-AREA       =   W-YM3)  AND
-                           (PTINF-BIRTHDAY(7:2)  =   01)
+                           (PTINF-BIRTHDAY(7:2)  =   "01")
                            COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                            MOVE    SPACE             TO  DID2-REC
                            MOVE    W1-SRY-HOSPID     TO  DID2-REC(1:24)
@@ -1626,12 +1795,9 @@
                            WRITE   DID2-REC
                            MOVE    "*"               TO  T-ERR-04
                        END-IF
-      *修正/*終了*03.02.05*********************************************
                    END-IF
                    IF  (T-ERR-13               =   SPACE)  AND
-      *修正/*開始*03.01.31*********************************************
                        (PTINF-TSTPTNUMKBN  NOT =   "1")    AND
-      *修正/*終了*03.01.31*********************************************
                        (SPA-GMN-CNV (13)       =   "1")
                        INITIALIZE              ORCSKANACHKAREA
                        MOVE    "1"             TO  KANACHK-SYORI
@@ -1693,7 +1859,6 @@
       *
        T-500-RECECHEK-READ-EXT.
            EXIT.
-      *修正/*開始*03.01.31*********************************************
       *
       *******************
       *
@@ -1746,7 +1911,6 @@
       *
        T-500-RECECHEK2-EXT.
            EXIT.
-      *修正/*終了*03.01.31*********************************************
       *
       *****************************************************************
       *    患者病名情報テーブル 参照処理
@@ -1914,10 +2078,8 @@
                            MOVE    PTBYO-SRYYMD(7:2)  TO  IDX7
                            IF  W-ACCT-DAY (IDX7) =  ZERO
                                MOVE    "ER"           TO  T-HANNTEI7
-      *修正/*開始*03.02.07*********************************************
                            ELSE
                                MOVE    "ED"           TO  T-HANNTEI6
-      *修正/*終了*03.02.07*********************************************
                            END-IF
                        END-IF
                        IF  (ACCT-SRYKBN            = "11")      AND
@@ -2042,7 +2204,7 @@
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
-                                       MCPDATA-REC.    
+                                       MCPDATA-REC.
       *
        T-520-RECECHEK-READ-EXT.
            EXIT.
@@ -2083,6 +2245,9 @@
                    MOVE    MCPDATA-REC          TO  SRYACT-REC
                    IF  (SPA-GMN-CNV (12)   =  "1")    AND
                        (T-ERR-12           =  SPACE)  AND
+      *修正/*開始*03.04.17*********************************************
+                       (T-NYUGAIKBN-AREA   =  "2")    AND
+      *修正/*終了*03.04.17*********************************************
                        (ACCT-SRYKBN    NOT <  "10")   AND
                        (ACCT-SRYKBN    NOT >  "80")   AND
                        ((SRY-SRYKBN         =  "11")   OR
@@ -2116,12 +2281,12 @@
                        IF  (SRY-SRYCD (IDX3)   NOT =   ZERO)   AND
                            (SRY-SRYCD (IDX3)   NOT =   SPACE)
                            IF  SPA-GMN-CNV (11)   =   "1"
-                               IF  (T-ERR-11           =   SPACE)  AND
-                                   (WK1-HKNNUM-S       =   "971")
+                               IF  (T-ERR-11           =   SPACE)    AND
+                                   (WK1-HKNNUM-S       =   W-HKNNUM1)
                                    PERFORM T-530-RECECHEK-CHK3-1-SEC
                                END-IF
-                               IF  (T-ERR-11-2         =   SPACE)  AND
-                                   (WK1-HKNNUM-S   NOT =   "971")
+                               IF  (T-ERR-11-2         =   SPACE)    AND
+                                   (WK1-HKNNUM-S   NOT =   W-HKNNUM1)
                                    PERFORM T-530-RECECHEK-CHK3-2-SEC
                                END-IF
                            END-IF
@@ -2163,36 +2328,36 @@
                        MOVE    ZERO                    TO  FLG-END
                    END-IF
                    IF  (T-HANNTEI6      =   SPACE)  AND
-                       ((SRY-SRYCD (1)   =   "111700110")   OR
-                        (SRY-SRYCD (2)   =   "111700110")   OR
-                        (SRY-SRYCD (3)   =   "111700110")   OR
-                        (SRY-SRYCD (4)   =   "111700110")   OR
-                        (SRY-SRYCD (5)   =   "111700110")   OR
-                        (SRY-SRYCD (1)   =   "111700210")   OR
-                        (SRY-SRYCD (2)   =   "111700210")   OR
-                        (SRY-SRYCD (3)   =   "111700210")   OR
-                        (SRY-SRYCD (4)   =   "111700210")   OR
-                        (SRY-SRYCD (5)   =   "111700210")   OR
-                        (SRY-SRYCD (1)   =   "111000110")   OR
-                        (SRY-SRYCD (2)   =   "111000110")   OR
-                        (SRY-SRYCD (3)   =   "111000110")   OR
-                        (SRY-SRYCD (4)   =   "111000110")   OR
-                        (SRY-SRYCD (5)   =   "111000110")   OR
-                        (SRY-SRYCD (1)   =   "111003610")   OR
-                        (SRY-SRYCD (2)   =   "111003610")   OR
-                        (SRY-SRYCD (3)   =   "111003610")   OR
-                        (SRY-SRYCD (4)   =   "111003610")   OR
-                        (SRY-SRYCD (5)   =   "111003610")   OR
-                        (SRY-SRYCD (1)   =   "113003510")   OR
-                        (SRY-SRYCD (2)   =   "113003510")   OR
-                        (SRY-SRYCD (3)   =   "113003510")   OR
-                        (SRY-SRYCD (4)   =   "113003510")   OR
-                        (SRY-SRYCD (5)   =   "113003510")   OR
-                        (SRY-SRYCD (1)   =   "113003710")   OR
-                        (SRY-SRYCD (2)   =   "113003710")   OR
-                        (SRY-SRYCD (3)   =   "113003710")   OR
-                        (SRY-SRYCD (4)   =   "113003710")   OR
-                        (SRY-SRYCD (5)   =   "113003710"))
+                       ((SRY-SRYCD (1)   =   W-YOYAKU1)   OR
+                        (SRY-SRYCD (2)   =   W-YOYAKU1)   OR
+                        (SRY-SRYCD (3)   =   W-YOYAKU1)   OR
+                        (SRY-SRYCD (4)   =   W-YOYAKU1)   OR
+                        (SRY-SRYCD (5)   =   W-YOYAKU1)   OR
+                        (SRY-SRYCD (1)   =   W-YOYAKU2)   OR
+                        (SRY-SRYCD (2)   =   W-YOYAKU2)   OR
+                        (SRY-SRYCD (3)   =   W-YOYAKU2)   OR
+                        (SRY-SRYCD (4)   =   W-YOYAKU2)   OR
+                        (SRY-SRYCD (5)   =   W-YOYAKU2)   OR
+                        (SRY-SRYCD (1)   =   W-YOYAKU3)   OR
+                        (SRY-SRYCD (2)   =   W-YOYAKU3)   OR
+                        (SRY-SRYCD (3)   =   W-YOYAKU3)   OR
+                        (SRY-SRYCD (4)   =   W-YOYAKU3)   OR
+                        (SRY-SRYCD (5)   =   W-YOYAKU3)   OR
+                        (SRY-SRYCD (1)   =   W-YOYAKU4)   OR
+                        (SRY-SRYCD (2)   =   W-YOYAKU4)   OR
+                        (SRY-SRYCD (3)   =   W-YOYAKU4)   OR
+                        (SRY-SRYCD (4)   =   W-YOYAKU4)   OR
+                        (SRY-SRYCD (5)   =   W-YOYAKU4)   OR
+                        (SRY-SRYCD (1)   =   W-YOYAKU5)   OR
+                        (SRY-SRYCD (2)   =   W-YOYAKU5)   OR
+                        (SRY-SRYCD (3)   =   W-YOYAKU5)   OR
+                        (SRY-SRYCD (4)   =   W-YOYAKU5)   OR
+                        (SRY-SRYCD (5)   =   W-YOYAKU5)   OR
+                        (SRY-SRYCD (1)   =   W-YOYAKU6)   OR
+                        (SRY-SRYCD (2)   =   W-YOYAKU6)   OR
+                        (SRY-SRYCD (3)   =   W-YOYAKU6)   OR
+                        (SRY-SRYCD (4)   =   W-YOYAKU6)   OR
+                        (SRY-SRYCD (5)   =   W-YOYAKU6))
                        MOVE    "CH"                    TO  T-HANNTEI6
                        MOVE    "ER"                    TO  T-HANNTEI8
                        MOVE    ACCT-DAY-TBL2 (1)       TO  WK-SRYACCT
@@ -2200,6 +2365,11 @@
                    IF  T-HANNTEI6   =   SPACE
                        MOVE    ZERO                    TO  FLG-END
                    END-IF
+      *修正/*開始*03.04.17*********************************************
+                   IF  SRY-SRYSYUKBN       =   W-SRYSYUKBN1
+                       MOVE    "1"                     TO  WK-SRYSYUKBN
+                   END-IF
+      *修正/*終了*03.04.17*********************************************
                    PERFORM T-530-RECECHEK-READ1-SEC
                END-PERFORM
            END-IF.
@@ -2355,7 +2525,7 @@
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
-                                       MCPDATA-REC.    
+                                       MCPDATA-REC.
       *
        T-530-RECECHEK-READ2-EXT.
            EXIT.
@@ -2910,6 +3080,628 @@
       *
        T-540-RECECHEK-CHK2-EXT.
            EXIT.
+      *修正/*開始*03.04.17*********************************************
+      *
+      *****************************************************************
+      *    患者入院履歴情報テーブル 参照処理
+      *****************************************************************
+       T-540-RECECHEK-CHK3-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  W-JITU-DAY4.
+           MOVE    ALL SPACE           TO  WK-JITUDAY1.
+      *    患者入院履歴を検索する
+      *    医療機関、患者ＩＤ、転入日、転出日を参照
+           INITIALIZE                  PTNYUINRRK-REC.
+           MOVE    ACCT-HOSPID         TO  PTNYUINRRK-HOSPID.
+           MOVE    ACCT-PTID           TO  PTNYUINRRK-PTID.
+           MOVE    T-SINRYOU-AREA      TO  PTNYUINRRK-TENNYUYMD(1:6).
+           MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD(7:2).
+           MOVE    T-SINRYOU-AREA      TO  PTNYUINRRK-TENSTUYMD(1:6).
+           MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD(7:2).
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC.
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "PTNYUINRRK-KEY19"  TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+           IF  MCP-RC   NOT =   ZERO
+               MOVE    ZERO                    TO  FLG-CHK
+               MOVE    SPACE                   TO  DID2-REC
+               MOVE    T-MESSAGE-540-04        TO  DID2-REC(10:90)
+               WRITE   DID2-REC
+               MOVE    SPACE                   TO  DID3-REC
+               MOVE    T-MESSAGE-540-04(1:60)  TO  DID3-REC(1:60)
+               WRITE   DID3-REC
+           ELSE
+               PERFORM T-540-RECECHEK-READ3-SEC
+               PERFORM UNTIL   MCP-RC    NOT =   ZERO
+                   MOVE    MCPDATA-REC         TO  PTNYUINRRK-REC
+                   IF  T-SINRYOU-AREA   =   PTNYUINRRK-TENNYUYMD(1:6)
+                       MOVE    PTNYUINRRK-TENNYUYMD(7:2)  TO  SNUM-INX
+                       CALL    "ORCSNUM"           USING
+                                                   ORCSNUMAREA
+                       IF  (SNUM-RC         NOT =   ZERO)    OR
+                           (SNUM-MINKBN     NOT =   SPACE)   OR
+                           (SNUM-SYOKBN     NOT =   SPACE)
+                           CONTINUE
+                       ELSE
+                           MOVE    SNUM-OUTNUM     TO  IDW1
+                       END-IF
+                   ELSE
+                       MOVE    1               TO  IDW1
+                   END-IF
+      *
+                   IF  T-SINRYOU-AREA   =   PTNYUINRRK-TENSTUYMD(1:6)
+                       MOVE    PTNYUINRRK-TENSTUYMD(7:2)  TO  SNUM-INX
+                       CALL    "ORCSNUM"           USING
+                                                   ORCSNUMAREA
+                       IF  (SNUM-RC         NOT =   ZERO)    OR
+                           (SNUM-MINKBN     NOT =   SPACE)   OR
+                           (SNUM-SYOKBN     NOT =   SPACE)
+                           CONTINUE
+                       ELSE
+                           IF  PTNYUINRRK-TAIINYMD   =
+                                                 PTNYUINRRK-TENSTUYMD
+                               MOVE    SNUM-OUTNUM     TO  IDW2
+                           ELSE
+                               COMPUTE   IDW2   =   SNUM-OUTNUM   -   1
+                           END-IF
+                       END-IF
+                   ELSE
+                       MOVE    31              TO  IDW2
+                   END-IF
+      *
+                   PERFORM VARYING    IDX6    FROM    IDW1   BY  1
+                           UNTIL      IDX6    >   IDW2
+                       MOVE    "1"        TO  W-JITU-DAY1 (IDX6)
+                   END-PERFORM
+      *
+                   PERFORM T-540-RECECHEK-READ3-SEC
+               END-PERFORM
+           END-IF.
+      *
+           INITIALIZE                  MCPAREA.
+           MOVE    "DBCLOSE"           TO  MCP-FUNC.
+           MOVE    "PTNYUINRRK-KEY19"  TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+           INITIALIZE                       STS-AREA-DAY.
+           INITIALIZE                       LNK-DAY7-AREA.
+           MOVE    "71"                 TO  LNK-DAY7-IRAI.
+           MOVE    T-SINRYOU-AREA       TO  LNK-DAY7-YM.
+           CALL    "ORCSDAY"            USING   STS-AREA-DAY
+                                                LNK-DAY7-AREA.
+           MOVE    LNK-DAY7-KOYOMI(7:2) TO  SNUM-INX.
+           CALL    "ORCSNUM"            USING
+                                        ORCSNUMAREA.
+           IF  (SNUM-RC         NOT =   ZERO)    OR
+               (SNUM-MINKBN     NOT =   SPACE)   OR
+               (SNUM-SYOKBN     NOT =   SPACE)
+               CONTINUE
+           ELSE
+               COMPUTE   IDW1   =   SNUM-OUTNUM   +   1
+           END-IF.
+           PERFORM VARYING    IDX6     FROM    IDW1   BY  1
+                   UNTIL      IDX6     >   31
+               MOVE    ALL SPACE       TO  W-JITU-DAY1 (IDX6)
+           END-PERFORM.
+      *
+           PERFORM VARYING  IDX6  FROM  1  BY  1
+                   UNTIL    IDX6  >    31
+               IF  W-JITU-DAY1 (IDX6)   =    "1"
+                   COMPUTE W-JITU-DAY4 = W-JITU-DAY4 + 1
+               END-IF
+           END-PERFORM.
+      *
+       T-540-RECECHEK-CHK3-EXT.
+           EXIT.
+      *
+      *******************
+      *
+       T-540-RECECHEK-READ3-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           MOVE    "PTNYUINRRK-KEY19"  TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC. 
+      *
+       T-540-RECECHEK-READ3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院会計情報テーブル 参照処理
+      *****************************************************************
+       T-540-RECECHEK-CHK4-SEC           SECTION.
+      *
+           INITIALIZE                  NYUINACCT-REC.
+           MOVE    SPA-GMN-HOSPID      TO  NACCT-HOSPID.
+           MOVE    T-NYUGAIKBN-AREA    TO  NACCT-NYUGAIKBN.
+           MOVE    T-SINRYOU-AREA      TO  NACCT-SRYYM.
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "NYUINACCT-KEY18"   TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+           IF  MCP-RC    NOT  =   ZERO
+               MOVE    SPACE                     TO    DID2-REC
+               MOVE    T-MESSAGE-540-05          TO    DID2-REC(10:90)
+               WRITE   DID2-REC
+               MOVE    SPACE                     TO    DID3-REC
+               MOVE    T-MESSAGE-540-05(1:60)    TO    DID3-REC(1:60)
+               WRITE   DID3-REC
+           ELSE
+               PERFORM T-540-RECECHEK-READ4-SEC
+               PERFORM UNTIL      MCP-RC   NOT  =  ZERO
+                   MOVE    MCPDATA-REC               TO    NYUINACCT-REC
+                   COMPUTE T-CNT-IN    =   T-CNT-IN    +   1
+                   IF  (NACCT-HOSPID  NOT =   W1-SRY-HOSPID)  OR
+                       (NACCT-PTID    NOT =   W1-SRY-PTID)
+                       IF  WK-ZAISKBKBN  =   "1"
+                           MOVE    ZERO             TO  W-JITU-DAY5
+                           PERFORM VARYING  IDX6  FROM  1  BY  1
+                                   UNTIL    IDX6  >    31
+                               IF  W-JITU-DAY1 (IDX6)   =    "1"
+                                   COMPUTE W-JITU-DAY5 = W-JITU-DAY5 + 1
+                               END-IF
+                           END-PERFORM
+                       ELSE
+                           MOVE    ZERO             TO  W-JITU-DAY4
+                           PERFORM VARYING  IDX6  FROM  1  BY  1
+                                   UNTIL    IDX6  >    31
+                               IF  W-JITU-DAY1 (IDX6)   =    "1"
+                                   COMPUTE W-JITU-DAY4 = W-JITU-DAY4 + 1
+                               END-IF
+                           END-PERFORM
+                       END-IF
+                       IF  W-JITU-DAY5  <   W-JITU-DAY4
+                           PERFORM T-540-RECECHEK-CHK5-SEC
+                       END-IF
+                       IF  SPA-GMN-CNV (14)      =   "1"
+                           MOVE    ALL ZERO      TO  W-NACCT-DAY-ERR
+                           MOVE    ALL ZERO      TO  W-NACCT-DAY-D
+                           PERFORM VARYING    IDX6    FROM    1   BY  1
+                                   UNTIL      IDX6    >      31
+                               IF  W-NACCT-DAY (IDX6)  =  W-NACCT-DAY-D
+                                   MOVE    ALL ZERO   TO
+                                                      W-NACCT-DAY (IDX6)
+                               END-IF
+                               IF  W-NACCT-DAY (IDX6)   NOT =   ALL ZERO
+                                   PERFORM T-540-RECECHEK-CHK6-SEC
+                                   IF  W-NACCT-DAY-ERR  NOT =  ZERO
+                                       MOVE    40         TO  IDX6
+                                   END-IF
+                               END-IF
+                           END-PERFORM
+                           IF  WK-NYUINACCT    NOT =   ALL ZERO
+                               COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                               MOVE    SPACE         TO  DID2-REC
+                               MOVE    W1-SRY-HOSPID TO  DID2-REC(1:24)
+                               MOVE    "-"           TO  DID2-REC(25:1)
+                               MOVE    W1-SRY-PTID   TO  DID2-REC(26:10)
+                               MOVE    "-"           TO  DID2-REC(36:1)
+                               MOVE    W-JITU-SRYCD (IDY3)
+                                                     TO  DID2-REC(37:9)
+                               MOVE    T-MESSAGE-500-06
+                                                     TO  DID2-REC(71:90)
+                               MOVE    "入院"        TO  DID2-REC(115:4)
+                               WRITE   DID2-REC
+                           END-IF
+                       END-IF
+                       IF  SPA-GMN-CNV (12)      =   "1"
+                           PERFORM VARYING  IDY3  FROM  1  BY  1
+                                   UNTIL    IDY3  >    20
+                               IF  W-JITU-SRYCD (IDY3)    NOT =   SPACE
+                                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                                   MOVE    SPACE     TO  DID2-REC
+                                   MOVE    W1-SRY-HOSPID
+                                                     TO  DID2-REC(1:24)
+                                   MOVE    "-"       TO  DID2-REC(25:1)
+                                   MOVE    W1-SRY-PTID
+                                                     TO  DID2-REC(26:10)
+                                   MOVE    "-"       TO  DID2-REC(36:1)
+                                   MOVE    W-JITU-SRYCD (IDY3)
+                                                     TO  DID2-REC(37:9)
+                                   MOVE    T-MESSAGE-540-03
+                                                     TO  DID2-REC(71:90)
+                                   WRITE   DID2-REC
+                               ELSE
+                                   MOVE    30        TO  IDY3
+                               END-IF
+                           END-PERFORM
+                       END-IF
+                       INITIALIZE                WK-NYUINACCT
+                       MOVE    ZERO              TO  W-JITU-DAY4
+                       MOVE    ZERO              TO  W-JITU-DAY5
+                       MOVE    ALL SPACE         TO  WK-JITUDAY1
+                       MOVE    ALL SPACE         TO  WK-JITUDAY2
+                       MOVE    NACCT-ZAISKBKBN   TO  WK-ZAISKBKBN
+                       MOVE    NACCT-NYUGAIKBN   TO  WK-NYUGAIKBN
+                       MOVE    NACCT-SRYKA       TO  WK-SRYKA
+                       MOVE    NACCT-ZAINUM      TO  WK-ZAINUM
+                       PERFORM VARYING    IDX6    FROM    1   BY  1
+                               UNTIL      IDX6    >      31
+                           IF  NACCT-DAY (IDX6)   NOT =    ZERO
+                               MOVE    "1"        TO  W-JITU-DAY1 (IDX6)
+                           END-IF
+                       END-PERFORM
+                   ELSE
+                       IF  NACCT-ZAISKBKBN  =   WK-ZAISKBKBN
+                           PERFORM VARYING    IDX6    FROM    1   BY  1
+                                   UNTIL      IDX6    >      31
+                               IF  NACCT-DAY (IDX6)   NOT =    ZERO
+                                   MOVE    "1"        TO
+                                                      W-JITU-DAY1 (IDX6)
+                               END-IF
+                           END-PERFORM
+                       ELSE
+                           IF  WK-ZAISKBKBN  =   "1"
+                               MOVE    ZERO             TO  W-JITU-DAY5
+                               PERFORM VARYING  IDX6  FROM  1  BY  1
+                                       UNTIL    IDX6  >    31
+                                   IF  W-JITU-DAY1 (IDX6)   =    "1"
+                                       COMPUTE W-JITU-DAY5 = W-JITU-DAY5
+                                                                     + 1
+                                   END-IF
+                               END-PERFORM
+                           ELSE
+                               MOVE    ZERO             TO  W-JITU-DAY4
+                               PERFORM VARYING  IDX6  FROM  1  BY  1
+                                       UNTIL    IDX6  >    31
+                                   IF  W-JITU-DAY1 (IDX6)   =    "1"
+                                       COMPUTE W-JITU-DAY4 = W-JITU-DAY4
+                                                                     + 1
+                                   END-IF
+                               END-PERFORM
+                           END-IF
+                           IF  W-JITU-DAY5  <   W-JITU-DAY4
+                               PERFORM T-540-RECECHEK-CHK5-SEC
+                           END-IF
+                           MOVE    NACCT-ZAISKBKBN  TO  WK-ZAISKBKBN
+                           MOVE    ALL SPACE        TO  WK-JITUDAY1
+                           PERFORM VARYING    IDX6    FROM    1   BY  1
+                                   UNTIL      IDX6    >      31
+                               IF  NACCT-DAY (IDX6)   NOT =    ZERO
+                                   MOVE    "1"    TO  W-JITU-DAY1 (IDX6)
+                               END-IF
+                           END-PERFORM
+                       END-IF
+                   END-IF
+                   IF  NACCT-ZAISKBKBN  =   "5"
+                       PERFORM VARYING    IDX6    FROM    1   BY  1
+                               UNTIL      IDX6    >      31
+                           IF  NACCT-DAY (IDX6)   NOT =    ZERO
+                               MOVE    NACCT-DAY (IDX6)   TO
+                                                      W-NACCT-DAY (IDX6)
+                           END-IF
+                       END-PERFORM
+                   END-IF
+                   MOVE    NACCT-HOSPID      TO  W1-SRY-HOSPID
+                   MOVE    NACCT-PTID        TO  W1-SRY-PTID
+                   MOVE    NACCT-NYUGAIKBN   TO  WK-NYUGAIKBN
+                   MOVE    NACCT-SRYKA       TO  WK-SRYKA
+                   MOVE    NACCT-ZAINUM      TO  WK-ZAINUM
+                   PERFORM T-540-RECECHEK-READ4-SEC
+               END-PERFORM
+               IF  WK-ZAISKBKBN  =   "1"
+                   MOVE    ZERO             TO  W-JITU-DAY5
+                   PERFORM VARYING  IDX6  FROM  1  BY  1
+                           UNTIL    IDX6  >    31
+                       IF  W-JITU-DAY1 (IDX6)   =    "1"
+                           COMPUTE W-JITU-DAY5 = W-JITU-DAY5 + 1
+                       END-IF
+                   END-PERFORM
+               ELSE
+                   MOVE    ZERO             TO  W-JITU-DAY4
+                   PERFORM VARYING  IDX6  FROM  1  BY  1
+                           UNTIL    IDX6  >    31
+                       IF  W-JITU-DAY1 (IDX6)   =    "1"
+                           COMPUTE W-JITU-DAY4 = W-JITU-DAY4 + 1
+                       END-IF
+                   END-PERFORM
+               END-IF
+               IF  W-JITU-DAY5  <   W-JITU-DAY4
+                   PERFORM T-540-RECECHEK-CHK5-SEC
+               END-IF
+               IF  SPA-GMN-CNV (14)      =   "1"
+                   MOVE    ALL ZERO      TO  W-NACCT-DAY-ERR
+                   MOVE    ALL ZERO      TO  W-NACCT-DAY-D
+                   PERFORM VARYING    IDX6    FROM    1   BY  1
+                           UNTIL      IDX6    >      31
+                       IF  W-NACCT-DAY (IDX6)  =  W-NACCT-DAY-D
+                           MOVE    ALL ZERO   TO  W-NACCT-DAY (IDX6)
+                       END-IF
+                       IF  W-NACCT-DAY (IDX6)   NOT =   ALL ZERO
+                           PERFORM T-540-RECECHEK-CHK6-SEC
+                           IF  W-NACCT-DAY-ERR   NOT =    ZERO
+                               MOVE    40         TO  IDX6
+                           END-IF
+                       END-IF
+                   END-PERFORM
+                   IF  WK-NYUINACCT    NOT =   ALL ZERO
+                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                       MOVE    SPACE                 TO  DID2-REC
+                       MOVE    W1-SRY-HOSPID         TO  DID2-REC(1:24)
+                       MOVE    "-"                   TO  DID2-REC(25:1)
+                       MOVE    W1-SRY-PTID           TO  DID2-REC(26:10)
+                       MOVE    "-"                   TO  DID2-REC(36:1)
+                       MOVE    W-JITU-SRYCD (IDY3)   TO  DID2-REC(37:9)
+                       MOVE    T-MESSAGE-500-06      TO  DID2-REC(71:90)
+                       MOVE    "入院"                TO  DID2-REC(115:4)
+                       WRITE   DID2-REC
+                   END-IF
+               END-IF
+               IF  SPA-GMN-CNV (12)      =   "1"
+                   PERFORM VARYING  IDY3  FROM  1  BY  1
+                           UNTIL    IDY3  >    20
+                       IF  W-JITU-SRYCD (IDY3)    NOT =   SPACE
+                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                           MOVE    SPACE             TO  DID2-REC
+                           MOVE    W1-SRY-HOSPID     TO  DID2-REC(1:24)
+                           MOVE    "-"               TO  DID2-REC(25:1)
+                           MOVE    W1-SRY-PTID       TO  DID2-REC(26:10)
+                           MOVE    "-"               TO  DID2-REC(36:1)
+                           MOVE    W-JITU-SRYCD (IDY3)
+                                                     TO  DID2-REC(37:9)
+                           MOVE    T-MESSAGE-540-03  TO  DID2-REC(71:90)
+                           WRITE   DID2-REC
+                       ELSE
+                           MOVE    30                TO  IDY3
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-IF.
+      *
+           INITIALIZE                  MCPAREA.
+           MOVE    "DBCLOSE"           TO  MCP-FUNC.
+           MOVE    "NYUINACCT-KEY18"   TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+       T-540-RECECHEK-CHK4-EXT.
+           EXIT.
+      *
+      *******************
+      *
+       T-540-RECECHEK-READ4-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           MOVE    "NYUINACCT-KEY18"   TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+       T-540-RECECHEK-READ4-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院行為情報テーブル 参照処理
+      *****************************************************************
+       T-540-RECECHEK-CHK5-SEC           SECTION.
+      *
+           INITIALIZE                  NYUINACT-REC.
+           MOVE    W1-SRY-HOSPID       TO  NSRY-HOSPID.
+           MOVE    WK-NYUGAIKBN        TO  NSRY-NYUGAIKBN.
+           MOVE    W1-SRY-PTID         TO  NSRY-PTID.
+           MOVE    WK-SRYKA            TO  NSRY-SRYKA.
+           MOVE    T-SINRYOU-AREA      TO  NSRY-SRYYM.
+           MOVE    WK-ZAINUM           TO  NSRY-ZAINUM.
+      *
+           MOVE    NYUINACT-REC        TO  MCPDATA-REC.
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "NYUINACT-KEY2"     TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+           IF  MCP-RC    NOT  =   ZERO
+               MOVE    SPACE                     TO    DID2-REC
+               MOVE    T-MESSAGE-540-06          TO    DID2-REC(10:90)
+               WRITE   DID2-REC
+               MOVE    SPACE                     TO    DID3-REC
+               MOVE    T-MESSAGE-540-06(1:60)    TO    DID3-REC(1:60)
+               WRITE   DID3-REC
+           ELSE
+               PERFORM T-540-RECECHEK-READ5-SEC
+               PERFORM UNTIL      MCP-RC   NOT  =  ZERO
+                   MOVE    MCPDATA-REC               TO    NYUINACT-REC
+                   PERFORM VARYING  IDX6  FROM  1  BY  1
+                           UNTIL    IDX6  >     5
+                       PERFORM VARYING  IDY3  FROM  1  BY  1
+                               UNTIL    IDY3  >    20
+                           IF  W-JITU-SRYCD (IDY3)  =  NSRY-SRYCD (IDX6)
+                               MOVE    30            TO  IDX7
+                           ELSE
+                               IF  W-JITU-SRYCD (IDY3)   =   SPACE
+                                   MOVE    NSRY-SRYCD (IDX6)
+                                                 TO  W-JITU-SRYCD (IDY3)
+                                   MOVE    30        TO  IDY3
+                               END-IF
+                           END-IF
+                       END-PERFORM
+                   END-PERFORM
+                   PERFORM T-540-RECECHEK-READ5-SEC
+               END-PERFORM
+           END-IF.
+      *
+           INITIALIZE                  MCPAREA.
+           MOVE    "DBCLOSE"           TO  MCP-FUNC.
+           MOVE    "NYUINACT-KEY2"     TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+       T-540-RECECHEK-CHK5-EXT.
+           EXIT.
+      *
+      *******************
+      *
+       T-540-RECECHEK-READ5-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           MOVE    "NYUINACT-KEY2"     TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+       T-540-RECECHEK-READ5-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せテーブル 参照処理（入院）
+      *****************************************************************
+       T-540-RECECHEK-CHK6-SEC           SECTION.
+      *
+           INITIALIZE                  HKNCOMBI-REC.
+           MOVE    SPACE               TO  T-HANNTEI5.
+           MOVE    W1-SRY-HOSPID       TO  COMB-HOSPID.
+           MOVE    W1-SRY-PTID         TO  COMB-PTID.
+           MOVE    W-NACCT-DAY (IDX6)  TO  COMB-HKNCOMBINUM.
+           MOVE    W-NACCT-DAY (IDX6)  TO  W-NACCT-DAY-D.
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC.
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+           IF  MCP-RC    NOT  =   ZERO
+               MOVE    SPACE                  TO  DID2-REC
+               MOVE    T-MESSAGE-200-01       TO  DID2-REC(10:90)
+               WRITE   DID2-REC
+               MOVE    SPACE                  TO  DID3-REC
+               MOVE    T-MESSAGE-200-01(1:60) TO  DID3-REC(1:60)
+               WRITE   DID3-REC
+           ELSE
+               PERFORM T-200-RECECHEK-READ-SEC
+               IF  MCP-RC    NOT  =   ZERO
+                   MOVE    1                  TO  W-NACCT-DAY-ERR
+               ELSE
+                   MOVE    MCPDATA-REC            TO  HKNCOMBI-REC
+                   MOVE    T-SINRYOU-AREA         TO  W-NACCT-DAY-B(1:6)
+                   PERFORM VARYING  IDY3  FROM  IDX6  BY  1
+                           UNTIL    IDY3  >     31
+                       MOVE    IDY3(2:2)          TO  W-NACCT-DAY-B(7:2)
+                       IF  W-NACCT-DAY (IDY3)  =  W-NACCT-DAY-D
+                           IF  (COMB-TEKSTYMD    <=  W-NACCT-DAY-B)  AND
+                               (COMB-TEKEDYMD    >=  W-NACCT-DAY-B)
+                               MOVE    ALL ZERO   TO  W-NACCT-DAY (IDY3)
+                           ELSE
+                               MOVE    1          TO  W-NACCT-DAY-ERR
+                               MOVE    40         TO  IDY3
+                           END-IF
+                       ELSE
+                           MOVE    40             TO  IDY3
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-IF.
+      *
+           INITIALIZE                  MCPAREA.
+           MOVE    "DBCLOSE"           TO  MCP-FUNC.
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+       T-540-RECECHEK-CHK6-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院会計情報テーブル 参照処理（診療会計の関連チェック）
+      *****************************************************************
+       T-540-RECECHEK-CHK7-SEC           SECTION.
+      *
+           INITIALIZE                  NYUINACCT-REC.
+           MOVE    ACCT-HOSPID         TO  NACCT-HOSPID.
+           MOVE    ACCT-PTID           TO  NACCT-PTID.
+           MOVE    T-SINRYOU-AREA      TO  NACCT-SRYYM.
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "NYUINACCT-KEY16"   TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+           IF  MCP-RC    NOT  =   ZERO
+               MOVE    SPACE                     TO    DID2-REC
+               MOVE    T-MESSAGE-540-05          TO    DID2-REC(10:90)
+               WRITE   DID2-REC
+               MOVE    SPACE                     TO    DID3-REC
+               MOVE    T-MESSAGE-540-05(1:60)    TO    DID3-REC(1:60)
+               WRITE   DID3-REC
+           ELSE
+               PERFORM T-540-RECECHEK-READ7-SEC
+               PERFORM UNTIL      MCP-RC   NOT  =  ZERO
+                   MOVE    MCPDATA-REC               TO    NYUINACCT-REC
+                   PERFORM VARYING  IDY3  FROM  1  BY  1
+                           UNTIL    IDY3  >    31
+                       IF  (NACCT-DAY (IDY3)     NOT =   ZERO)   AND
+                           (NACCT-ZAISKBKBN          =   "1")    AND
+                           (W-NACCT-K-DAY (IDY3)     =   ZERO)
+                           MOVE    1      TO  W-NACCT-K-DAY (IDY3)
+                       END-IF
+                       IF  (NACCT-DAY (IDY3)     NOT =   ZERO)   AND
+                           (NACCT-ZAISKBKBN          =   "2")    AND
+                           (W-NACCT-K-DAY (IDY3)     =   1)
+                           MOVE    2      TO  W-NACCT-K-DAY (IDY3)
+                       END-IF
+                   END-PERFORM
+                   PERFORM T-540-RECECHEK-READ7-SEC
+                   IF  (NACCT-ZAISKBKBN    NOT =   "1")   AND
+                       (NACCT-ZAISKBKBN    NOT =   "2")
+                       MOVE    1      TO  MCP-RC
+                   END-IF
+               END-PERFORM
+           END-IF.
+      *
+           INITIALIZE                  MCPAREA.
+           MOVE    "DBCLOSE"           TO  MCP-FUNC.
+           MOVE    "NYUINACCT-KEY16"   TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+       T-540-RECECHEK-CHK7-EXT.
+           EXIT.
+      *
+      *******************
+      *
+       T-540-RECECHEK-READ7-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           MOVE    "NYUINACCT-KEY16"   TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+       T-540-RECECHEK-READ7-EXT.
+           EXIT.
+      *修正/*終了*03.04.17*********************************************
       *
       *****************************************************************
       *    エラー出力処理
