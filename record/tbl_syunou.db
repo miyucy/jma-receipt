@@ -307,3 +307,53 @@ path	del1 	{
 	};
 };
 
+path	del2 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syunou
+			WHERE   HOSPID       =   :HOSPID
+			AND     NYUGAIKBN    =   :NYUGAIKBN
+			AND     DENPJTIKBN   =   :DENPJTIKBN
+		;
+	};
+};
+
+path	del3 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND     NYUGAIKBN    =   :NYUGAIKBN
+			AND     DENPJTIKBN   =   :DENPJTIKBN
+			AND     SKYSTYMD     >=  :SKYSTYMD
+			AND     SKYEDYMD     <=  :SKYEDYMD
+		;
+	};
+};
+
+path	del4 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syunou
+			WHERE   HOSPID       =   :HOSPID
+			AND     NYUGAIKBN    =   :NYUGAIKBN
+			AND     PTID         =   :PTID
+			AND     DENPJTIKBN   =   :DENPJTIKBN
+		;
+	};
+};
+
+path	del5 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND     NYUGAIKBN    =   :NYUGAIKBN
+			AND     PTID         =   :PTID
+			AND     DENPJTIKBN   =   :DENPJTIKBN
+			AND     SKYSTYMD     >=  :SKYSTYMD
+			AND     SKYEDYMD     <=  :SKYEDYMD
+		;
+	};
+};
+

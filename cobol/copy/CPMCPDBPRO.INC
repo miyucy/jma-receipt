@@ -170,6 +170,8 @@
       *  01.01.23    NACL-太田    02/12/13  NYUINRYAKUSHO-KEY,ALL追加
       *                                     SRYACT-KEY9追加
       *                                     NYUINACT-KEY9追加
+      *                                     PTNYUINRRK-KEY14追加
+      *                                     SYUNOU-DEL2,3,4,5追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -537,6 +539,18 @@
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL1"
                    MOVE    PATH-TBL-SYUNOU-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL2"
+                   MOVE    PATH-TBL-SYUNOU-DEL2
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL3"
+                   MOVE    PATH-TBL-SYUNOU-DEL3
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL4"
+                   MOVE    PATH-TBL-SYUNOU-DEL4
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL5"
+                   MOVE    PATH-TBL-SYUNOU-DEL5
                                        TO  WRK-PATH
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY"
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY2"
@@ -2085,6 +2099,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-KEY13"
                    MOVE    PATH-TBL-PTNYUINRRK-KEY13
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY14"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY14
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTTAINFUKA-KEY"
                    MOVE    PATH-TBL-PTTAINFUKA-KEY
