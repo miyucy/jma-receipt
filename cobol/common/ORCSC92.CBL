@@ -303,6 +303,14 @@
                GO      TO      000-PROC-EXT
            END-IF
       *
+      *    数量・回数のみ変更の時、編集のみ
+           IF     (LNK-SC92-KBN        =   "5"  )  AND
+                  (SPA-COM-INPUTCD(IDX-T)  NOT =   SPACE )  AND
+                  (SPA-COM-CHKFLG (IDX-T)  NOT =   SPACE )
+               PERFORM 300-SURYOHEN-SEC
+               GO      TO      000-PROC-EXT
+           END-IF
+      *
            MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
            IF      FLG-TENSU           =   1
@@ -1313,13 +1321,6 @@
                    ELSE
                        MOVE    1                   TO  IDX-STR
                    END-IF
-      *TEST
-             DISPLAY "C92 PTNYUINRRK-NYUINNYMD:" PTNYUINRRK-NYUINYMD
-                      ",PTNYUINRRK-TAIINNYMD:"  PTNYUINRRK-TAIINYMD
-                      ",IDX-STR:" IDX-STR
-                      ",IDX-END:" IDX-END
-                      ",WRK-SANTEI-CNT:" WRK-SANTEI-CNT
-      *TEST
       *            算定回数の削除
                    PERFORM VARYING     IDX-Y3  FROM    IDX-STR   BY   1
                            UNTIL      (IDX-Y3  >   IDX-END      )  OR
@@ -1327,9 +1328,6 @@
                        COMPUTE WRK-SANTEI-CNT  =   WRK-SANTEI-CNT
                                            -   SANTEI-DAY (IDX-Y3)
                    END-PERFORM
-      *TEST
-             DISPLAY "C92 WRK-SANTEI-CNT:" WRK-SANTEI-CNT
-      *TEST
                END-IF
       *
                MOVE    "PTNYUINRRK-KEY2"   TO  ORC-DBPATH
@@ -1417,7 +1415,7 @@
       *
            .
       *
-       200531-SYOSIN-SANTEI--EXT.
+       200531-SYOSIN-SANTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2237,6 +2235,54 @@
            .
        500-GMN-HEN-EXT.
            EXIT.
+      *
+      *
+      *****************************************************************
+      *    数量・回数のみ変更の時の編集処理
+      *****************************************************************
+       300-SURYOHEN-SEC         SECTION.
+      *
+      *    入力値のある時、再編集
+           IF      SPA-COM-INPUTCD (IDX-T)(1:2)    =   "84"
+               MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF      FLG-TENSU           =   ZERO
+                   PERFORM 3002-INPUT-MEISYO-SEC
+                   MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
+               ELSE
+                   MOVE    "0001"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *    診療科名埋め込み再編集
+           IF     (SPA-COM-INPUTCD (IDX-T)(1:2)    =   "83")  AND
+                  (SPA-COM-ATAI1   (IDX-T)     NOT =   SPACE)
+               MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF      FLG-TENSU           =   ZERO
+                    PERFORM 3003-INPUT-MEISYO2-SEC
+                    MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
+               ELSE
+                   MOVE    "0001"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+      *    きざみ値計算識別判定
+           IF     (SPA-COM-INPUTCD (IDX-T)(1:1)
+                                       =   "1"     )  AND
+                  (SPA-COM-KZMCOMPSIKIBETU (IDX-T) =  1 )
+               MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF      FLG-TENSU           =   ZERO
+                   PERFORM 3005-SYOCHI-SYUGI-SEC
+               ELSE
+                   MOVE    "0001"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       300-SURYOHEN-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    システム管理マスタ読み込み処理

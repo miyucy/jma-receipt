@@ -221,6 +221,11 @@
                GO      TO          100-INPUTCD-SYORI-EXT
            END-IF
       *
+      *    半角変換のみの時
+           IF      LNK-SC97-KBN        =   "1"
+               GO      TO          100-INPUTCD-SYORI-EXT
+           END-IF
+      *
       *    入院の回数
            IF      (LNK-SC97-PG        =   "K02N" )  AND
                    (LNK-SC97-INPUTCD(1:1)  =   "*"    )

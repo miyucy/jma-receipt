@@ -50,6 +50,7 @@
       * 02.00.13     NACL-Â¿¡¹Ç¼  03/04/04  ºßÂð²Ã»»ÎÁ¤Î»»Äê¥Á¥§¥Ã¥¯½¤Àµ
       * 02.00.14     NACL-Â¿¡¹Ç¼  03/05/06  £±·î¸å¤ÎÈ½Äê½¤Àµ
       * 02.00.16     NACL-Â¿¡¹Ç¼  03/06/17  ¿ÇÎÅ¾ðÊóÄó¶¡ÎÁ½ÅÊ££Ï£Ë
+      * 02.00.17     NACL-Â¿¡¹Ç¼  03/07/17  »»ÄêÍúÎò¸¡º÷½¤ÀµÂ¾
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -256,6 +257,10 @@
       *    ½ÅÊ£·Ù¶ç¥¨¥é¡¼ÍÑ
            03  IDX-KEI                 PIC 9(04).
            03  FLG-KEI                 PIC 9(01).
+      *    Ç¯ÎðÈ½ÄêÍÑ
+           03  WRK-KGNAGE              PIC 9(03).
+           03  WRK-JGNAGE              PIC 9(03).
+           03  FLG-NENREI-OK           PIC 9(01).
       *
       *    ÊÝÂ¸ÍÑ£Ó£Ð£Á
        01  HZN-SCR-REC.
@@ -1460,7 +1465,6 @@
            .
        1100-KASAN-SET-EXT.
            EXIT.
-           .
       *****************************************************************
       *    Ç¯Îð²Ã»»ÄÉ²Ã½èÍý
       *****************************************************************
@@ -1470,6 +1474,8 @@
                    UNTIL      (IDX2        >   4       )   OR
                               (WRK-COM-AGEKSNSRYCD(IDX-Z IDX2)
                                           =   SPACE  OR  ZERO )
+               PERFORM 10071-NENREI-CHK-SEC
+               IF      FLG-NENREI-OK          =   1
       *
                MOVE    WRK-COM-AGEKSNSRYCD (IDX-Z IDX2)  TO  WRK-SRYCD
       *        ²Ã»»¥Á¥§¥Ã¥¯
@@ -1481,10 +1487,74 @@
                    MOVE    4                   TO  IDX2
                    MOVE    WRK-SRYCD           TO  WRK-NYU-SRYCD
                END-IF
+      *
+               END-IF
            END-PERFORM
       *
            .
        1007-NYUYOJI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ç¯Îð²Ã»»»þ´Ö³°¼«Æ°¿¶ÂØ½èÍý
+      *****************************************************************
+       10071-NENREI-CHK-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NENREI-OK
+      *
+           MOVE    ZERO                TO  WRK-KGNAGE
+           MOVE    ZERO                TO  WRK-JGNAGE
+           MOVE    WRK-COM-AGEKSNKGN  (IDX-Z IDX2)
+                                       TO  WRK-KGNAGE(2:2)
+           MOVE    WRK-COM-AGEKSNJGN  (IDX-Z IDX2)
+                                       TO  WRK-JGNAGE(2:2)
+      *
+      *    ²¼¸ÂÇ¯Îð¥Á¥§¥Ã¥¯
+           IF      WRK-COM-AGEKSNKGN  (IDX-Z IDX2) =   SPACE  OR  ZERO
+               CONTINUE
+           ELSE
+               IF      WRK-COM-AGEKSNKGN  (IDX-Z IDX2) =   "AA"
+      *            ¿·À¸»ùÈ½Äê
+                   IF     (LNK-ORCSC-NENREI-YY     =   ZERO )  AND
+                          (LNK-ORCSC-NENREI-MM     =   ZERO )  AND
+                          (LNK-ORCSC-NENREI-DD     <   28   )
+                       MOVE    ZERO                TO  FLG-NENREI-OK
+                   ELSE
+                       MOVE    1                   TO  FLG-NENREI-OK
+                   END-IF
+               ELSE
+                   IF      LNK-ORCSC-NENREI-YY     >=  WRK-KGNAGE
+                       MOVE    1                   TO  FLG-NENREI-OK
+                   ELSE
+                       MOVE    ZERO                TO  FLG-NENREI-OK
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    ¾å¸ÂÇ¯Îð¥Á¥§¥Ã¥¯
+           IF      WRK-COM-AGEKSNJGN  (IDX-Z IDX2) =   SPACE  OR  ZERO
+               CONTINUE
+           ELSE
+               IF      WRK-COM-AGEKSNJGN  (IDX-Z IDX2) =   "AA"
+      *            ¿·À¸»ùÈ½Äê
+                   IF     (LNK-ORCSC-NENREI-YY     =   ZERO )  AND
+                          (LNK-ORCSC-NENREI-MM     =   ZERO )  AND
+                          (LNK-ORCSC-NENREI-DD     <   28   )
+                       MOVE    1                   TO  FLG-NENREI-OK
+                   ELSE
+                       MOVE    ZERO                TO  FLG-NENREI-OK
+                   END-IF
+               ELSE
+                   IF      LNK-ORCSC-NENREI-YY     <   WRK-JGNAGE
+                       MOVE    1                   TO  FLG-NENREI-OK
+                   ELSE
+                       MOVE    ZERO                TO  FLG-NENREI-OK
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       10071-NENREI-CHK-EXT.
            EXIT.
       *
       *****************************************************************

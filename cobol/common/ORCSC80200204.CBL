@@ -1199,10 +1199,6 @@
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY6-AREA
            MOVE    LNK-DAY6-KOYOMI     TO  WRK-SYOYMD
-      *TEST
-           DISPLAY "C80 LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
-                   ",LNK-DAY6-KOYOMI:" LNK-DAY6-KOYOMI
-      *TEST
       *
       *
            EVALUATE    WRK-COM-INPUTCD(IDX-Z)

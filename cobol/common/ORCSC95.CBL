@@ -34,6 +34,7 @@
       *  01.00.05    NACL−多々納 02/10/18  入院追加
       *  01.00.06    NACL-多々納  03/02/19  療養担当手当追加
       *  01.00.07    NACL-多々納  03/04/09  保険編集サブプロ追加
+      *  01.00.08    NACL-多々納  03/07/17  検索変更他
       *****************************************************************
       *
       *
@@ -1087,9 +1088,8 @@
       *    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
       *    CALL    "MCPDBSUB"          USING
       *                                MCPAREA
+      *                                ORCMCPAREA
       *                                MCPDATA-REC
-      *
-      *
       *
            .
        200211-FUKU-HEN-EXT.
@@ -1704,7 +1704,7 @@
            MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
            MOVE    SPA-PTID            TO  AGECHK-PTID
            MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
-      **** MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
+           MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
            MOVE    SPA-HKNCOMBINUM     TO  AGECHK-HKNCOMBINUM
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
@@ -1820,6 +1820,8 @@
                MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
                MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
                MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
+      *
+               MOVE    "1003"              TO  SPA-ERRCD
                GO      TO      110-K02SYOSIN-EXT
            END-IF
            MOVE    PTINF-KANANAME      TO  SPA-KANANAME
@@ -2075,16 +2077,18 @@
            INITIALIZE                  PTBYOMEI-REC
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-PTID            TO  PTBYO-PTID
+           MOVE    SPA-SRYYMD          TO  PTBYO-SRYYMD
+           MOVE    SPA-SRYYMD          TO  PTBYO-TENKIYMD
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY3"     TO  ORC-DBPATH
+           MOVE    "PTBYOMEI-KEY9"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTBYOMEI-KEY3"     TO  ORC-DBPATH
+               MOVE    "PTBYOMEI-KEY9"     TO  ORC-DBPATH
                PERFORM 980-PTBYOMEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
@@ -2118,12 +2122,12 @@
                          END-IF
                    END-EVALUATE
                END-IF
-               MOVE    "PTBYOMEI-KEY3"     TO  ORC-DBPATH
+               MOVE    "PTBYOMEI-KEY9"     TO  ORC-DBPATH
                PERFORM 980-PTBYOMEI-READ-SEC
            END-PERFORM
       *
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "PTBYOMEI-KEY3"     TO  ORC-DBPATH
+      *    MOVE    "PTBYOMEI-KEY9"     TO  ORC-DBPATH
       *    CALL    "MCPDBSUB"          USING
       *                                MCPAREA
       *                                MCPDATA-REC
@@ -2318,16 +2322,17 @@
            MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
            MOVE    SPA-PTID            TO  PTBYO-PTID
            MOVE    SPA-SRYKA           TO  PTBYO-SRYKA
+           MOVE    SPA-SRYYMD          TO  PTBYO-SRYYMD
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTBYOMEI-KEY2"     TO  ORC-DBPATH
+           MOVE    "PTBYOMEI-KEY10"    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "PTBYOMEI-KEY2"     TO  ORC-DBPATH
+               MOVE    "PTBYOMEI-KEY10"    TO  ORC-DBPATH
                PERFORM 980-PTBYOMEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
@@ -2358,7 +2363,7 @@
                         END-IF
                    END-IF
                END-IF
-               MOVE    "PTBYOMEI-KEY2"     TO  ORC-DBPATH
+               MOVE    "PTBYOMEI-KEY10"    TO  ORC-DBPATH
                PERFORM 980-PTBYOMEI-READ-SEC
            END-PERFORM
            .
@@ -2495,7 +2500,9 @@
       *    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
       *    CALL    "MCPDBSUB"          USING
       *                                MCPAREA
+      *                                ORCMCPAREA
       *                                MCPDATA-REC
+      *
            IF      FLG-SYUNOU          =   ZERO
       *        伝票状態区分
                MOVE    SYU-CONTKBN         TO  SPA-CONTKBN
