@@ -27,7 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *
+      *  01.00.01    NACL¡ÝÂÀÅÄ   04/01/23  DBSTART,DBCOMMIT½èÍýºï½ü
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -588,8 +588,6 @@
            PERFORM VARYING     IDX    FROM    1   BY  1
                    UNTIL       IDX    >   SPA-GMN-MAX
                IF  SPA-KBN-SHELLID   =  SPA-GMN-SHELLID (IDX)
-                   PERFORM 900-DBCOMMIT-SEC
-                   PERFORM 900-DBSTART-SEC
                    INITIALIZE                      JOBKANRI-REC
                    MOVE    SPA-GMN-JOBID (IDX) TO  JOB-JOBID
                    MOVE    SPA-KBN-SHELLID     TO  JOB-SHELLID
@@ -682,8 +680,6 @@
                                            MCPAREA
                                            MCPDATA-REC 
       *
-               PERFORM 900-DBCOMMIT-SEC
-               PERFORM 900-DBSTART-SEC
            END-IF.
       *
        2013-JOBKANRI-DELETE-EXT.
@@ -919,30 +915,3 @@
        900-PUT-WINDOW-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    £Ä£Â¡¡£Ã£Ï£Í£Í£É£Ô½èÍý
-      *****************************************************************
-       900-DBCOMMIT-SEC            SECTION.
-      *
-           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
-           CALL    "MCPSUB"          USING
-                                        MCPAREA
-                                        MCPDATA-REC.
-      *
-           .
-       900-DBCOMMIT-EXT.
-           EXIT.
-      *      
-      *****************************************************************
-      *    £Ä£Â¡¡£Ó£Ô£Á£Ò£Ô½èÍý
-      *****************************************************************
-       900-DBSTART-SEC                SECTION.
-      *
-           MOVE    "DBSTART"           TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-           .
-       900-DBSTART-EXT.
-           EXIT.
