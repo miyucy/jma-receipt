@@ -1122,7 +1122,7 @@
                        IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
                            (NACCT-DAY(SYU-IDX) NOT =  ZERO)
                            ADD        1      TO    NYUIN-COUNT
-                           IF    TBL-SENTEI(SYU-IDX)   =   ZERO  OR  1
+                           IF    TBL-SENTEI(SYU-IDX)   =   ZERO
                                EVALUATE   TBL-GAIHAKU(SYU-IDX)
                                  WHEN   ZERO
                                      ADD    NACCT-ZAITEN
