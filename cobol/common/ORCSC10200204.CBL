@@ -48,6 +48,7 @@
       * 02.00.12     NACL-Â¿¡¹Ç¼  02/12/17  ºßÂð»ØÆ³ÎÁ¤ÎÄÉ²Ã¡Ê143)
       * 02.00.13     NACL-Â¿¡¹Ç¼  03/03/14  ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍý»»ÄêÍ­ÌµÄÉ²Ã
       * 02.00.13     NACL-Â¿¡¹Ç¼  03/04/04  ºßÂð²Ã»»ÎÁ¤Î»»Äê¥Á¥§¥Ã¥¯½¤Àµ
+      * 02.00.14     NACL-Â¿¡¹Ç¼  03/05/06  £±·î¸å¤ÎÈ½Äê½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -203,6 +204,7 @@
                05  WRK-KEI-YY          PIC 9(04).
                05  WRK-KEI-MM          PIC 9(02).
                05  WRK-KEI-DD          PIC 9(02).
+           03  WRK-KEIYMDZEN           PIC X(08).
       *----(01.00.01) LINE ADD START ----------------------------------
       *    ÆýÍÄ»ù¤Î¼«Æ°²Ã»»¥³¡¼¥É
            03  WRK-NYU-SRYCD           PIC X(09).
@@ -3204,6 +3206,7 @@
            MOVE    ZERO                TO  FLG-KYUJITU
            IF      LNK-ORCSC-SYOYMD    =   SPACE
                MOVE    SPA-SRYYMD          TO  WRK-KEIYMD
+               MOVE    SPA-SRYYMD          TO  WRK-KEIYMDZEN
            ELSE
       *        ½é¿ÇÎÁ»»ÄêÆü¡Ü£±·î¸å
                INITIALIZE                      STS-AREA-DAY
@@ -3214,8 +3217,18 @@
                MOVE    1                   TO  LNK-DAY6-ZOGEN
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
-               MOVE    LNK-DAY6-KOYOMI     TO  WRK-KEIYMD
-               IF      LNK-DAY6-KOYOMI NOT =   LNK-DAY6-KOYOMIZEN
+      *TEST
+               DISPLAY "C10 LNK-ORCSC-SYOYMD:" LNK-ORCSC-SYOYMD
+                     ",LNK-DAY6-KOYOMI:" LNK-DAY6-KOYOMI
+                     ",LNK-DAY6-KOYOMIZEN:" LNK-DAY6-KOYOMIZEN
+                     ",LNK-DAY6-KOYOMIGO:" LNK-DAY6-KOYOMIGO
+               DISPLAY "C10 LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
+                     ",LNK-DAY6-KEISANZEN:" LNK-DAY6-KEISANZEN
+                     ",LNK-DAY6-KEISANGO:" LNK-DAY6-KEISANGO
+      *TEST
+               MOVE    LNK-DAY6-KEISAN     TO  WRK-KEIYMD
+               MOVE    LNK-DAY6-KEISANZEN  TO  WRK-KEIYMDZEN
+               IF      LNK-DAY6-KEISAN NOT =   LNK-DAY6-KEISANZEN
                    MOVE    1                   TO  FLG-KYUJITU
                END-IF
            END-IF
@@ -3224,21 +3237,36 @@
                WHEN    WRK-KEIYMD          <   SPA-SRYYMD
                    CONTINUE
                WHEN    WRK-KEIYMD          >   SPA-SRYYMD
-                   MOVE    "0034"          TO  SPA-ERRCD
-               WHEN    WRK-KEIYMD          =   SPA-SRYYMD
+      *!           MOVE    "0034"          TO  SPA-ERRCD
+      *            £±·î¸å¤ÎÁ°±Ä¶ÈÆü¤ÈÆ±¤¸»þ¡¢£Ï£Ë
                    IF      FLG-SIDOU       =   1
                        MOVE    "0034"          TO  SPA-ERRCD
                    ELSE
-                       IF      FLG-KYUJITU     =   ZERO
-                           MOVE    "0034"          TO  SPA-ERRCD
-                       ELSE
+                       IF      WRK-KEIYMDZEN   =   SPA-SRYYMD
                            IF      WRK-COM-KZMFLG (IDX-Z)  =   SPACE
                                MOVE    "1"         TO  WRK-COM-KZMFLG
                                                                 (IDX-Z)
                                MOVE    "K002"          TO  SPA-ERRCD
                            END-IF
+                       ELSE
+                           MOVE    "0034"          TO  SPA-ERRCD
                        END-IF
                    END-IF
+               WHEN    WRK-KEIYMD          =   SPA-SRYYMD
+                   CONTINUE
+      *********    IF      FLG-SIDOU       =   1
+      *                MOVE    "0034"          TO  SPA-ERRCD
+      *            ELSE
+      *                IF      FLG-KYUJITU     =   ZERO
+      *                    MOVE    "0034"          TO  SPA-ERRCD
+      *                ELSE
+      *                    IF      WRK-COM-KZMFLG (IDX-Z)  =   SPACE
+      *                        MOVE    "1"         TO  WRK-COM-KZMFLG
+      *                                                         (IDX-Z)
+      *                        MOVE    "K002"          TO  SPA-ERRCD
+      *                    END-IF
+      *                END-IF
+      ***********  END-IF
            END-EVALUATE
       *
            IF      SPA-ERRCD       NOT =   SPACE
