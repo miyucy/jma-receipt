@@ -172,7 +172,7 @@
       *    複数科まとめ集計
            03  WRK-HKNTEN-KIN              PIC 9(07).
            03  WRK-HKNTEN-KEI              PIC 9(07)V99.
-           03  WRK-NYUKIN                  PIC 9(07).
+           03  WRK-NYUKIN                  PIC S9(07).
       *
            03  WRK-SRYKA-MEI               PIC X(30).
            03  WRK-PAGE                    PIC 9(03).
