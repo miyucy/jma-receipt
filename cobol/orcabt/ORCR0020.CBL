@@ -77,6 +77,8 @@
       *  01.00.25    NACL-門脇    03/03/07  在総診フラグセット
       *  01.00.26    NACL-藤原    03/03/11  種別不明の情報を編集
       *  01.00.27    NACL-門脇    03/03/18  在総診フラグセットの修正
+      *  01.00.28    NACL-門脇    03/04/16  船員保険（被保険者）＋通勤災害
+      *                                     フラグセット
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1988,6 +1990,16 @@
               END-IF
            END-IF
       *----(01.00.14) LINE ADD START --------------------------
+      *
+      *    船員保険（被保険者）＋通勤災害フラグセット
+           IF    RECE01-HKNNUM           =    "002"
+               EVALUATE   COMB-HOJOKBN
+                    WHEN   "3"
+                    WHEN   "C"
+                    WHEN   "F"
+                        MOVE     "1"     TO     RECE02-SENIN-TUUSAI
+               END-EVALUATE
+           END-IF
       *
            .
        KYURATE-SET-EXT.

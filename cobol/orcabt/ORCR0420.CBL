@@ -41,6 +41,8 @@
       *  01.00.10    NACL-ÌçÏÆ    03.03.10  ¿ÇÎÅ²Ê£±£°¤«¤é£²£°¤Ø
       *  01.00.11    NACL-Æ£¸¶    03.04.09  ÆÃÄê´ïºà¡Ê²èÁü¿ÇÃÇ¤Î¥Õ¥£¥ë¥à°Ê³°¡Ë
       *                                     ¤ÎÃ±²Á¤òÉ½¼¨¤¹¤ë¤è¤¦¤Ë½¤Àµ
+      *  01.00.12    NACL-ÌçÏÆ    03.04.14  ¼«ÇåÀÕ¤Î¾®¿ôÅÀ°Ê²¼¶â³Û·×»»
+      *                                     »Í¼Î¸ÞÆþ¤ËÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2827,31 +2829,51 @@
                COMPUTE   RECE41-TENSU-YAK(24) =  RECE41-TENSU-YAK(22)   
       *
                COMPUTE   WRK-KSNRATE          =  RECE41-KSNRATE / 100   
+      *
+      ***      PERFORM    VARYING    ID1    FROM    1   BY   1          
+      ***                 UNTIL      ID1    >     31                    
+      *              
+      ***         ADD   RECE41-SYUTEN-JI(ID1)  TO  RECE41-TOTALTEN
+      ***         ADD   RECE41-YKZTEN-JI(ID1)  TO  RECE41-TOTALTEN-YAK
+      *
+      ***         COMPUTE   WRK-KEISAN        =  RECE41-SYUTEN-JI(ID1)  
+      ***                                     *  WRK-TANKA              
+      ***         COMPUTE   RECE41-TOTALKIN   =  RECE41-TOTALKIN  +
+      ***                              ( WRK-KEISAN  *  WRK-KSNRATE )   
+      *
+      ***         COMPUTE   WRK-KEISAN        =  RECE41-YKZTEN-JI(ID1)  
+      ***                                     *  WRK-TANKA              
+      ***         COMPUTE   RECE41-TOTALKIN-YAK =  RECE41-TOTALKIN-YAK
+      ***                                       +  WRK-KEISAN           
+      *
+      ***      END-PERFORM                                              
+      *
                PERFORM    VARYING    ID1    FROM    1   BY   1          
-                          UNTIL      ID1    >     31                    
+                       UNTIL      ID1    >     31                    
       *              
                   ADD   RECE41-SYUTEN-JI(ID1)  TO  RECE41-TOTALTEN
                   ADD   RECE41-YKZTEN-JI(ID1)  TO  RECE41-TOTALTEN-YAK
       *
-                  COMPUTE   WRK-KEISAN        =  RECE41-SYUTEN-JI(ID1)  
-                                              *  WRK-TANKA              
-                  COMPUTE   RECE41-TOTALKIN   =  RECE41-TOTALKIN  +
-                                       ( WRK-KEISAN  *  WRK-KSNRATE )   
+               END-PERFORM
       *
-                  COMPUTE   WRK-KEISAN        =  RECE41-YKZTEN-JI(ID1)  
-                                              *  WRK-TANKA              
-                  COMPUTE   RECE41-TOTALKIN-YAK =  RECE41-TOTALKIN-YAK
-                                                +  WRK-KEISAN           
+               COMPUTE   RECE41-TOTALKIN   =  
+                  (RECE41-TOTALTEN  *  WRK-TANKA  *  WRK-KSNRATE) 
+                                                  +  0.5
       *
-               END-PERFORM                                              
+               COMPUTE   RECE41-TOTALKIN-YAK =  
+                  (RECE41-TOTALTEN-YAK  *  WRK-TANKA)  
+                                                  +  0.5
       *
                COMPUTE   RECE41-KINGAKU2(5)   =  RECE41-KINGAKU2(1)     
                                               +  RECE41-KINGAKU2(2)     
                                               +  RECE41-KINGAKU2(3)     
                                               +  RECE41-KINGAKU2(4)     
       *
-               COMPUTE   RECE41-TOTALKIN2     =  RECE41-KINGAKU2(5)     
-                                              *  WRK-KSNRATE            
+      ***      COMPUTE   RECE41-TOTALKIN2     =  RECE41-KINGAKU2(5)     
+      ***                                     *  WRK-KSNRATE            
+      *
+               COMPUTE   RECE41-TOTALKIN2     =  
+                  (RECE41-KINGAKU2(5)   *  WRK-KSNRATE)  +  0.5         
       *
                COMPUTE   RECE41-TOTALKIN2-ETC =  RECE41-KINGAKU2(6)     
                                               +  RECE41-SINDAN-KIN      

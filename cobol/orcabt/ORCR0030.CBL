@@ -104,8 +104,10 @@
       *  01.02.15   NACL-門脇     03.02.06  コメントカウントフラグの編集追加
       *  01.02.14   NACL-藤原     03.02.12  補助区分の追加
       *  01.02.15   NACL-門脇     03.03.07  在総診フラグセット取りやめ
-      *  01.02.16   NACL-藤原     03.04.09  特定器材（画像診断のフィルム以外）の
-      *                                     単価を表示するように修正
+      *  01.02.16   NACL-藤原     03.04.09  特定器材（画像診断のフィルム以外）
+      *                                     の単価を表示するように修正
+      *  01.02.17   NACL-門脇     03.04.16  船員保険（被保険者）＋通勤災害
+      *                                     ＋初診時　対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2913,11 +2915,19 @@
                 IF    RECE02-RJNHKNNUM    NOT =    SPACE                
                   ADD    SYU-KOH1COMPFTN  TO   RECE02-RJNGAIFTN         
                 END-IF                                                  
+      *         船員保険（被保険者）＋通勤災害
+                IF    RECE02-SENIN-TUUSAI     =    "1"
+                  ADD    SYU-SYUCOMPFTN   TO   RECE02-FTNMONEY(1)
+                END-IF
              END-IF
            ELSE
              IF    RECE02-RJNHKNNUM    NOT =    SPACE
                 ADD    SYU-KOH1COMPFTN  TO   RECE02-FTNMONEY(1)
                 ADD    SYU-KOH1COMPFTN  TO   RECE02-RJNGAIFTN
+             END-IF
+      *      船員保険（被保険者）＋通勤災害
+             IF    RECE02-SENIN-TUUSAI     =    "1"
+                ADD    SYU-SYUCOMPFTN   TO   RECE02-FTNMONEY(1)
              END-IF
            END-IF
       *****EVALUATE  TRUE

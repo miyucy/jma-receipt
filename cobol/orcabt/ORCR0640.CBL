@@ -33,6 +33,8 @@
       *  01.00.04    NACL-∆£∏∂    03.04.09  ∆√ƒÍ¥Ô∫‡° ≤Ë¡¸ø«√«§Œ•’•£•Î•‡∞ ≥∞°À
       *                                     §Œ√±≤¡§Ú…Ωº®§π§Î§Ë§¶§ÀΩ§¿µ
       *  01.00.05    NACL-ÃÁœ∆    03.04.10  ¥«∏Ó«€√÷≈¨πÁ§Œ≥∞«Ò¬–±˛
+      *  01.00.06    NACL-ÃÁœ∆    03.04.16  ¡•∞˜ ›∏±° »Ô ›∏±º‘°À°‹ƒÃ∂–∫“≥≤
+      *                                     °‹ΩÈø«ª˛°°¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4916,15 +4918,23 @@
       *
                 ADD   SYU-KOH-FTN   TO   WRK-KOH-FTN
       *
-      **>    ELSE                                                       
+             ELSE                                                       
       **>       IF    RECE62-RJNHKNNUM    NOT =    SPACE                
       **>         ADD    SYU-KOH1COMPFTN  TO   RECE62-RJNNYUFTN         
       **>       END-IF                                                  
+      *         ¡•∞˜ ›∏±° »Ô ›∏±º‘°À°‹ƒÃ∂–∫“≥≤
+                IF    RECE62-SENIN-TUUSAI     =    "1"
+                   ADD    SYU-SYUCOMPFTN   TO   RECE62-FTNMONEY(1)
+                END-IF
              END-IF
            ELSE
              IF    RECE62-RJNHKNNUM    NOT =    SPACE
                 ADD    SYU-KOH1COMPFTN  TO   RECE62-FTNMONEY(1)
                 ADD    SYU-KOH1COMPFTN  TO   RECE62-RJNNYUFTN
+             END-IF
+      *      ¡•∞˜ ›∏±° »Ô ›∏±º‘°À°‹ƒÃ∂–∫“≥≤
+             IF    RECE62-SENIN-TUUSAI     =    "1"
+                ADD    SYU-SYUCOMPFTN   TO   RECE62-FTNMONEY(1)
              END-IF
            END-IF
       *

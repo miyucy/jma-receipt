@@ -78,6 +78,9 @@
       *  01.01.21    NACL-ÂÀÅÄ    03/03/07  ÇÓÂ¾À©¸æµ¡Ç½ÄÉ²Ã
       *  01.01.22    NACL-ÂÀÅÄ    03/03/13  Æþ±¡ÀÁµá½ñÊ£¿ôËç°ì³ç°õºþÂÐ±þ
       *  01.01.23    NACL-ÂÀÅÄ    03.03.18  Æþ±¡¥«¥¹¥¿¥Þ¥¤¥ºÄ¢É¼ÂÐ±þ
+      *  01.01.24    NACL-ÌçÏÆ    03.04.15  ¼«ÇåÀÕÊ¸½ñÎÁ¾ÃÈñÀÇÂÐ±þ
+      *  01.01.25    NACL-ÌçÏÆ    03.04.16  Á¥°÷ÊÝ¸±¡ÊÈïÊÝ¸±¼Ô¡Ë¡ÜÄÌ¶ÐºÒ³²
+      *                                     ¡Ü½é¿Ç»þ¡¡ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -203,6 +206,8 @@
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-PTTEIKIRRK      PIC 9(01).
            03  FLG-TEIKIRRK        PIC 9(01).
+           03  FLG-SENIN           PIC 9(01).                           
+           03  FLG-SENIN-SYOSIN    PIC 9(01).                           
       *
            03  FLG-SYORI           PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -346,6 +351,9 @@
            03  WK-RSISAISHIN       PIC  9(08).                          010112
            03  WK-RSISDO           PIC  9(08).                          010112
            03  WK-RSIETC           PIC  9(08).                          010112
+      *
+           03  WK-SINDAN           PIC  9(08).                          
+           03  WK-MEISAI           PIC  9(08).                          
       *
            03  WK-SYUTEN-KEI       PIC  9(08).                          010112
            03  WRK-TEN             PIC  9(08).                          010112
@@ -2512,6 +2520,45 @@
                    PERFORM   960-JYURRK-READ-SEC
                END-PERFORM
            END-IF
+      *
+           MOVE    ZERO                TO  FLG-SENIN                    
+           INITIALIZE                  HKNCOMBI-REC                     
+           MOVE    SPA-HOSPID          TO  COMB-HOSPID                  
+           MOVE    SPA-GMN-PTID        TO  COMB-PTID                    
+           MOVE    SYU-HKNCOMBINUM     TO  COMB-HKNCOMBINUM             
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC                  
+           MOVE    "DBSELECT"          TO  MCP-FUNC                     
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH                   
+           CALL    "ORCMCPSUB"          USING                           
+                                        MCPAREA                         
+                                        ORCMCPAREA                      
+                                        MCPDATA-REC                     
+           IF      MCP-RC              =   ZERO                         
+               MOVE    "HKNCOMBI-KEY"  TO  ORC-DBPATH                   
+               PERFORM 910-HKNCOMBI-READ-SEC                            
+           ELSE                                                         
+               MOVE    1               TO  FLG-HKNKUMI                  
+           END-IF                                                       
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC                     
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH                   
+           CALL    "ORCMCPSUB"          USING                           
+                                        MCPAREA                         
+                                        ORCMCPAREA                      
+                                        MCPDATA-REC                     
+      *
+           IF     FLG-HKNKUMI         =   ZERO                          
+              IF    COMB-HKNNUM           =    "002"                    
+                 EVALUATE   COMB-HOJOKBN                                
+                    WHEN   "3"                                          
+                    WHEN   "C"                                          
+                    WHEN   "F"                                          
+                        MOVE     1     TO     FLG-SENIN                 
+                 END-EVALUATE                                           
+              END-IF                                                    
+           END-IF                                                       
+      *
       *    ¼è¤ê¹þ¤ó¤À¿ÇÎÅÆü¤«¤é³ºÅö´µ¼Ô¤Î¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¤ò¸¡º÷¤·
       *    ¿ÇÎÅ¶èÊ¬¤ÈºÞÈÖ¹æ¤òºÞÈÖ¹æ¥Æ¡¼¥Ö¥ë¤ËÂàÈò¤¹¤ë
       *   ¡ÊÊÝ¸±ÁÈ¹ç¤»¤¬Æ±¤¸¥Ç¡¼¥¿¤Ë¸Â¤ë¡Ë
@@ -2551,6 +2598,11 @@
                                                WK-RSIETC                010112
                                                WK-SYUTEN-KEI            010112
       *
+           MOVE     ZERO               TO      WK-SINDAN                
+                                               WK-MEISAI                
+      *
+           MOVE     ZERO               TO      FLG-SENIN-SYOSIN         
+      *
            PERFORM      4401-SINKAI-SET-SEC
                UNTIL   (FLG-SINKAI     =       1      ) OR
                        (IDX            >       100    )
@@ -2589,6 +2641,10 @@
                    WHEN    "12"
                     COMPUTE SYU-HKNTEN (01) =  SYU-HKNTEN (01)  +
                            (TBL-ZAITEN (IDX) *   TBL-ZAIKAISU (IDX))
+                    IF   TBL-SRYKBN  (IDX)  =  "11"                     
+                    AND  FLG-SENIN          =   1                       
+                         MOVE    1     TO     FLG-SENIN-SYOSIN          
+                    END-IF                                              
       *            »ØÆ³
                    WHEN    "13"
                     COMPUTE SYU-HKNTEN (02) =  SYU-HKNTEN (02)  +
@@ -2846,12 +2902,14 @@
                    COMPUTE SYU-HKNTEN (01)      =  SYU-HKNTEN (01)   -  010112
                                                    WK-RSISAISHIN-TENSU  010112
              END-IF                                                     010112
+             COMPUTE  SYU-RSISDO-MONEY      =  WK-RSISDO         * 10   
              IF      SYU-RSISDO-MONEY       NOT =    ZERO               010112
                    MOVE    ZERO           TO  WK-RSISDO-TENSU           010112
                    COMPUTE WK-RSISDO-TENSU   =   SYU-RSISDO-MONEY / 10  010112
                    COMPUTE SYU-HKNTEN (02)   =   SYU-HKNTEN (02)   -    010112
                                               WK-RSISDO-TENSU           010112
              END-IF                                                     010112
+             COMPUTE  SYU-RSIETC-MONEY      =  WK-RSIETC         * 10   
              IF      SYU-RSIETC-MONEY       NOT =    ZERO               010112
                    MOVE    ZERO           TO  WK-RSIETC-TENSU           010112
                    COMPUTE WK-RSIETC-TENSU   =   SYU-RSIETC-MONEY / 10  010112
@@ -2864,6 +2922,10 @@
                                        -   WK-RSISAISHIN                010112
                                        -   WK-RSISDO                    010112
                                        -   WK-RSIETC                    010112
+      *
+             COMPUTE   LNK-S01-SINDAN  =  WK-SINDAN  *  10
+             COMPUTE   LNK-S01-MEISAI  =  WK-MEISAI  *  10
+      *
            END-IF                                                       010112
       *----(01.00.03) LINE ADD END -------------------------------
       *
@@ -2878,6 +2940,9 @@
       *    ´µ¼ÔÉéÃ´³Û·×»»½èÍý
            MOVE    "1"                 TO  LNK-S01-SAIKEISAN-KBN
            MOVE    SYU-DENPNUM         TO  LNK-S01-SAIKEISAN-DENPYO
+           IF      FLG-SENIN-SYOSIN   =   1                             
+               MOVE       "1"          TO  LNK-S01-SENINFLG             
+           END-IF                                                       
            MOVE    SYUNOU-REC          TO      LNK-SYUNOU-REC
       *    CALL    "ORCS01NEW"         USING   MCPAREA
            CALL    "ORCS01"            USING   MCPAREA
@@ -3436,6 +3501,14 @@
                            COMPUTE WK-RSIETC = WK-RSIETC +              010112
                                   (WRK-TEN  *   TBL-ZAIKAISU (IDX))     010112
                          END-IF                                         010112
+                         IF    SRY-SRYCD (IDXA)(1:5)   =   "09591"      
+                           COMPUTE WK-SINDAN = WK-SINDAN +              
+                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX))     
+                         END-IF                                         
+                         IF    SRY-SRYCD (IDXA)(1:5)   =   "09592"      
+                           COMPUTE WK-MEISAI = WK-MEISAI +              
+                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX))     
+                         END-IF                                         
       *                                                                 010112
                     END-IF                                              010112
       *                                                                 010112

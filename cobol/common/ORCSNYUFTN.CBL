@@ -31,6 +31,8 @@
       *  00.00.01    NACL-ÃÁœ∆    03/02/17  ∏¯»ÒÕ•¿Ë§«§Œ…È√¥∑◊ªª
       *  00.00.02    NACL-æÆ∆¶¬Ù  03/03/06  ≈¿≈©ÃÙ∫ﬁ§Œ§ﬁ§»§·∑◊ªª
       *  00.00.03    NACL-¬¿≈ƒ    03/04/02  ∆˛Œœ∞˙øÙΩ§¿µ
+      *  00.00.04    NACL-ÃÁœ∆    03/04/16  ¡•∞˜ ›∏±° »Ô ›∏±º‘°À°‹ƒÃ∂–∫“≥≤
+      *                                     °‹ΩÈø«ª˛°°¬–±˛
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -74,6 +76,8 @@
               03 WRK-HANBETU-KOH3HKNNUM    PIC X(03).
               03 WRK-HANBETU-KOH4HKNNUM    PIC X(03).
               03 WRK-HANBETU-PTFTNRATE     PIC 9(03).
+              03 WRK-HANBETU-SENINFLG      PIC X(01).                   
+              03 WRK-HANBETU-SENINFLG2     PIC X(01).                   
       *
        01  WRK-HANBETU2-TABLE.
            02  WRK-HANBETU2-TBL OCCURS   10.
@@ -81,7 +85,7 @@
               03 WRK-HANBETU2-HKNCOMBINUM  PIC 9(04).
               03 WRK-HANBETU2-DAY          PIC X(01)   OCCURS   31.
       *
-       01  WRK-HANBETU-DATA                PIC X(66).
+       01  WRK-HANBETU-DATA                PIC X(68).                   
       *
        01  WRK-KOSEI-TABLE.
            03  WRK-KOSEI-TBL    OCCURS    2.
@@ -332,6 +336,9 @@
                               UNTIL  (IDX            >    10)
                                 OR   (LNK-SYU-SKYSTYMD(IDX) =  SPACE)
                                 OR   (LNK-S02-RC        NOT =  ZERO )
+      *
+                MOVE     WRK-HANBETU-SENINFLG2(IDX)                     
+                                              TO  LNK-S02-SENINFLG      
       *
                 MOVE     LNK-ORCS02-REC       TO  WRK-ORCS02-REC
                 MOVE     LNK-SYUNOU-REC(IDX)  TO  SYUNOU-REC
@@ -761,6 +768,15 @@
               MOVE COMB-KOH3HKNNUM    TO WRK-HANBETU-KOH3HKNNUM(IDX)
               MOVE COMB-KOH4HKNNUM    TO WRK-HANBETU-KOH4HKNNUM(IDX)
               MOVE COMB-NYU-KFTNRATE  TO WRK-HANBETU-PTFTNRATE(IDX)
+      *
+              IF   COMB-HKNNUM        =    "002"                        
+                 EVALUATE   COMB-HOJOKBN                                
+                    WHEN   "3"                                          
+                    WHEN   "C"                                          
+                    WHEN   "F"                                          
+                        MOVE   "1"    TO WRK-HANBETU-SENINFLG(IDX)      
+                 END-EVALUATE                                           
+              END-IF                                                    
       *
       *       ∏¯»ÒÕ•¿Ë§ÀÕ•¿Ë»÷πÊ•ª•√•»
               IF  WRK-HANBETU-KOH1HKNNUM(IDX) = SPACE OR "027"
@@ -1772,6 +1788,11 @@
                    WHEN    "12"
                     COMPUTE SYU-HKNTEN (01) =  SYU-HKNTEN (01)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
+                    IF   ACCT-SRYKBN                =  "11"             
+                    AND  ACCT-ZAITEN           NOT  =  ZERO             
+                    AND  WRK-HANBETU-SENINFLG(IDX)  =   "1"             
+                         MOVE   "1"   TO   WRK-HANBETU-SENINFLG2(IDX)   
+                    END-IF                                              
       *            ªÿ∆≥
                    WHEN    "13"
                     COMPUTE SYU-HKNTEN (02) =  SYU-HKNTEN (02)  +

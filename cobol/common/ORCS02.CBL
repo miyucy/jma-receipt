@@ -31,6 +31,8 @@
       *  01.00.01    NACL-ÌçÏÆ    03/03/07  Ï·¿Í¸ÂÅÙ³Û¤Î½¸·×ÊÑ¹¹
       *  01.00.02    NACL-ÌçÏÆ    03/03/10  ¿©»ö¶èÊ¬¡É£´¡É¤ÎÂÐ±þÄÉ²Ã
       *  01.00.03    NACL-ÌçÏÆ    03/03/25  ¹¹Àµ¡¦°éÀ®Åù¤Î´µ¼Ô¸øÈñÉéÃ´ÂÐ±þ
+      *  01.00.04    NACL-ÌçÏÆ    03/04/16  Á¥°÷ÊÝ¸±¡ÊÈïÊÝ¸±¼Ô¡Ë¡ÜÄÌ¶ÐºÒ³²
+      *                                     ¡Ü½é¿Ç»þ¡¡ÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2656,6 +2658,7 @@
       *    ÊÝ¸±ÁÈ¹ç¤»¥Æ¡¼¥Ö¥ë¤ÎÊä½õ¶èÊ¬¤«¤é´µ¼Ô¤ÎÉéÃ´³ä¹ç¤òÊÝ¸±ÈÖ¹æ
       *    ¥Æ¡¼¥Ö¥ë¤ËºÆ¥»¥Ã¥È¡ÊÁ¥°÷ÊÝ¸±»þ¡Ë
            IF    COMB-HKNNUM           =    "002"
+           AND   LNK-S02-SENINFLG  NOT =    "1"                         
                EVALUATE   COMB-HOJOKBN
                    WHEN   "1"
                    WHEN   "2"
@@ -2698,6 +2701,11 @@
                                         HKN-HON-NYUKFTNRATE  /  100
                               COMPUTE   LNK-SYU-SYUCOMPFTN  =
                                         WK-ZENGAKU   *  WK-FUTANWARI
+                              IF   LNK-S02-SENINFLG    =  "1"           
+                                IF LNK-SYU-SYUCOMPFTN  >  200           
+                                   MOVE   200  TO  LNK-SYU-SYUCOMPFTN   
+                                END-IF                                  
+                              END-IF                                    
                               MOVE      LNK-SYU-SYUCOMPFTN
                                                  TO WK-TOKUTEI-COMPFTN2
                               COMPUTE   LNK-SYU-SYUCOMPFTN =

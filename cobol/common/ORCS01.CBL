@@ -102,6 +102,11 @@
       *  01.00.30    NACL¡ÝÌçÏÆ   03/03/24  Ê¿À®£±£µÇ¯£´·î£±Æü²þÀµÂÐ±þ
       *                                     ¡ãÌôºÞ°ìÉôÉéÃ´¶âÇÑ»ß¡ä
       *  01.00.31    NACL¡ÝÌçÏÆ   03/03/25  ¹¹Àµ¡¦°éÀ®Åù¤Î´µ¼Ô¸øÈñÉéÃ´ÂÐ±þ
+      *  01.00.32    NACL¡ÝÌçÏÆ   03/04/11  Ï«ºÒ¡¦¼«ÇåÀÕÉéÃ´¶â·×»»ÊÑ¹¹
+      *                                     ¡ÊÏ«ºÒÈó»ØÄê°åÎÅµ¡´ØÂÐ±þ´Þ¤à¡Ë
+      *  01.00.33    NACL¡ÝÌçÏÆ   03/04/15  ¼«ÇåÀÕÊ¸½ñÎÁ¾ÃÈñÀÇÂÐ±þ
+      *  01.00.34    NACL¡ÝÌçÏÆ   03/04/16  Á¥°÷ÊÝ¸±¡ÊÈïÊÝ¸±¼Ô¡Ë¡ÜÄÌ¶ÐºÒ³²
+      *                                     ¡Ü½é¿Ç»þ¡¡ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -117,6 +122,8 @@
        01  WK-END                      PIC 9(08).
        01  WK-KSNRATE9                 PIC 9(03).
        01  WK-KSNRATE                  PIC 9V99.
+       01  WK-RSIIRYOKBN               PIC X(01).                       
+       01  WK-TAXKBN                   PIC X(01).                       
        01  STS-AREA.
            03  STS-SYUNOU              PIC X(02).
            03  STS-TSYRRK              PIC X(02).
@@ -788,8 +795,10 @@
            END-IF.
       *
       *    ÀÁµá¶â³Û¤Î·×»»¡ÊÏ«ºÒÊÝ¸±Å¬ÍÑ»þ¤Î±ß·ú¤Æ¹àÌÜ²Ã»»¡Ë
-           IF   (WK-HKNKBN               =    "1")   AND
-                (LNK-SYU-SYUHKNNUM       =    "971")  
+      *    ¡ãÏ«ºÒ»ØÄê¡ä                                                 
+           IF   (WK-HKNKBN               =    "1"  ) AND                
+                (LNK-SYU-SYUHKNNUM       =    "971") AND                
+                (WK-RSIIRYOKBN           =    "1"  )                    
                  MOVE    ZERO      TO       LNK-SYU-SKYMONEY
            COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY    +
                                             LNK-SYU-TGMONEY(12) +
@@ -799,23 +808,40 @@
                                             LNK-SYU-JIHI-TAX
            END-IF.
       *
-      *----(01.00.19) LINE ADD START --------------------------
+      *    ¡ãÈóÏ«ºÒ»ØÄê¡ä                                               
+           IF   (WK-HKNKBN               =    "1"  ) AND                
+                (LNK-SYU-SYUHKNNUM       =    "971") AND                
+                (WK-RSIIRYOKBN           =    "0"  )                    
+                 COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY   +  
+                                            LNK-SYU-RSISHOSHIN-MONEY +  
+                                            LNK-SYU-RSISAISHIN-MONEY +  
+                                            LNK-SYU-RSISDO-MONEY     +  
+                                            LNK-SYU-RSIETC-MONEY        
+           END-IF.                                                      
+      *
       *    ¼«ÇåÀÕÊÝ¸±¤Î¾ì¹ç¡¢Ï«ºÒ±ß·ú¤Æ¹àÌÜ¤Ø¤Î²Ã»»Î¨·×»»ÄÉ²Ã
            IF   (WK-HKNKBN               =    "1")   AND
                 (LNK-SYU-SYUHKNNUM       =    "973")
                  COMPUTE  LNK-SYU-RSISHOSHIN-MONEY  =
-                          LNK-SYU-RSISHOSHIN-MONEY  *  WK-KSNRATE      
+                         (LNK-SYU-RSISHOSHIN-MONEY  *  WK-KSNRATE) 
+                                                    +  0.5      
                  COMPUTE  LNK-SYU-RSISAISHIN-MONEY  =
-                          LNK-SYU-RSISAISHIN-MONEY  *  WK-KSNRATE
+                         (LNK-SYU-RSISAISHIN-MONEY  *  WK-KSNRATE)
+                                                    +  0.5
       *          COMPUTE  LNK-SYU-RSISDO-MONEY      =
       *                   LNK-SYU-RSISDO-MONEY      *  WK-KSNRATE
+                 IF   WK-TAXKBN   =   "2"                               
+                     COMPUTE  LNK-SYU-RSIETC-MONEY      =               
+                              LNK-SYU-RSIETC-MONEY      +               
+                             (LNK-S01-SINDAN  *  0.05)  +               
+                             (LNK-S01-MEISAI  *  0.05)                  
+                 END-IF                                                 
                  COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY  +
                                             LNK-SYU-RSISHOSHIN-MONEY +
                                             LNK-SYU-RSISAISHIN-MONEY +
                                             LNK-SYU-RSISDO-MONEY     +
                                             LNK-SYU-RSIETC-MONEY
            END-IF.
-      *----(01.00.19) LINE ADD END ----------------------------
       *
       *    ÀÁµá¶â³Û¤Î·×»»¡ÊÄ´À°¶â¤Î²Ã¸º»»¡Ë
            COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY    +
@@ -1118,6 +1144,7 @@
                                    (ACCT-ZAIKAISU NOT =  ZERO)
                                    MOVE  "1"    TO   
                                             LNK-S01-KOUREI-ZAITAKU-KBN
+                               END-IF
                                MOVE    "DBCLOSE"       TO  MCP-FUNC
                                MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
                                CALL    "ORCMCPSUB"         USING
@@ -1198,6 +1225,7 @@
                                    (ACCT-ZAIKAISU NOT =  ZERO)
                                    MOVE  "1"    TO   
                                             LNK-S01-KOUREI-ZAITAKU-KBN
+                               END-IF
                                MOVE    "DBCLOSE"       TO  MCP-FUNC
                                MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
                                CALL    "ORCMCPSUB"         USING
@@ -1278,6 +1306,7 @@
                                    (ACCT-ZAIKAISU NOT =  ZERO)
                                    MOVE  "1"    TO   
                                             LNK-S01-KOUREI-ZAITAKU-KBN
+                               END-IF
                                MOVE    "DBCLOSE"       TO  MCP-FUNC
                                MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
                                CALL    "ORCMCPSUB"         USING
@@ -1358,6 +1387,7 @@
                                    (ACCT-ZAIKAISU NOT =  ZERO)
                                    MOVE  "1"    TO   
                                             LNK-S01-KOUREI-ZAITAKU-KBN
+                               END-IF
                                MOVE    "DBCLOSE"       TO  MCP-FUNC
                                MOVE    "SRYACCT-KEY5"  TO  ORC-DBPATH
                                CALL    "ORCMCPSUB"         USING
@@ -2821,6 +2851,7 @@
                     ELSE
                          PERFORM   2304-KOH-KEISAN-SEC
                     END-IF
+               END-IF
            END-PERFORM.
       *-------------------------------------------------------------
       *
@@ -2981,6 +3012,7 @@
       *    ÊÝ¸±ÁÈ¹ç¤»¥Æ¡¼¥Ö¥ë¤ÎÊä½õ¶èÊ¬¤«¤é´µ¼Ô¤ÎÉéÃ´³ä¹ç¤òÊÝ¸±ÈÖ¹æ
       *    ¥Æ¡¼¥Ö¥ë¤ËºÆ¥»¥Ã¥È¡ÊÁ¥°÷ÊÝ¸±»þ¡Ë
            IF    COMB-HKNNUM           =    "002"
+           AND   LNK-S01-SENINFLG  NOT =    "1"                         
                EVALUATE   COMB-HOJOKBN
                    WHEN   "1"
                    WHEN   "2"
@@ -3023,6 +3055,11 @@
                                         HKN-HON-GAIKFTNRATE  /  100
                               COMPUTE   LNK-SYU-SYUCOMPFTN  =
                                         WK-ZENGAKU   *  WK-FUTANWARI
+                              IF   LNK-S01-SENINFLG    =  "1"           
+                                IF LNK-SYU-SYUCOMPFTN  >  200           
+                                   MOVE   200  TO  LNK-SYU-SYUCOMPFTN   
+                                END-IF                                  
+                              END-IF                                    
                               MOVE      LNK-SYU-SYUCOMPFTN
                                                  TO WK-TOKUTEI-COMPFTN2
                               COMPUTE   LNK-SYU-SYUCOMPFTN =
@@ -3216,15 +3253,30 @@
                                                   +  100 
                             COMPUTE  WK-KSNRATE   =  WK-KSNRATE9  /  100
                      END-IF  
+                     MOVE   SYS-4001-TAXKBN     TO   WK-TAXKBN          
+                     IF     LNK-SYU-SYUHKNNUM       =  "971"            
+                       MOVE  SYS-4001-RSIIRYOKBN  TO   WK-RSIIRYOKBN    
+                       IF    WK-RSIIRYOKBN          =  "0"              
+                         MOVE     100      TO   HKN-HON-GAIKFTNRATE     
+                                                HKN-KZK-GAIKFTNRATE     
+                                                HKN-TSY-GAIKFTNRATE     
+                                                HKN-TNK-GAIKFTNRATE     
+                       ELSE                                             
+                         MOVE     ZERO     TO   HKN-HON-GAIKFTNRATE     
+                                                HKN-KZK-GAIKFTNRATE     
+                                                HKN-TSY-GAIKFTNRATE     
+                                                HKN-TNK-GAIKFTNRATE     
+                       END-IF                                           
+                     END-IF                                             
       *----(01.00.19) LINE ADD END   --------------------------
                      IF     LNK-SYU-SYUHKNNUM       =  "971"
                        EVALUATE  SYS-4001-TENKBN
                            WHEN  "1"
                                COMPUTE  WK-ZENGAKU  =  
-                                        WK-ZENGAKU  / 10 * 11.5
+                                       (WK-ZENGAKU  / 10 * 11.5) + 0.5  
                            WHEN  "2"
                                COMPUTE  WK-ZENGAKU  =  
-                                        WK-ZENGAKU  / 10 * 12.0
+                                       (WK-ZENGAKU  / 10 * 12.0) + 0.5  
                        END-EVALUATE
                      ELSE
       *----(01.00.19) LINE ADD START --------------------------
@@ -3234,12 +3286,18 @@
                               MOVE  LNK-S01-SYUTEN  TO  WK-ZENGAKU-SYU
                               COMPUTE  WK-ZENGAKU-YAK = WK-ZENGAKU 
                                                       - LNK-S01-SYUTEN
-                              COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU
-                                                      * 11.5
-                              COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU
-                                                      * WK-KSNRATE
-                              COMPUTE  WK-ZENGAKU-YAK = WK-ZENGAKU-YAK
-                                                      * 11.5
+      ***                     COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU  
+      ***                                             * 11.5            
+      ***                     COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU  
+      ***                                             * WK-KSNRATE      
+      ***                     COMPUTE  WK-ZENGAKU-YAK = WK-ZENGAKU-YAK  
+      ***                                             * 11.5            
+                              COMPUTE  WK-ZENGAKU-SYU =                 
+                                (WK-ZENGAKU-SYU * 11.5 * WK-KSNRATE)    
+                                                       + 0.5            
+                              COMPUTE  WK-ZENGAKU-YAK =                 
+                                (WK-ZENGAKU-YAK * 11.5)                 
+                                                       + 0.5            
                               COMPUTE  WK-ZENGAKU     = WK-ZENGAKU-SYU
                                                       + WK-ZENGAKU-YAK
                            WHEN  "2"
@@ -3247,12 +3305,18 @@
                               MOVE  LNK-S01-SYUTEN  TO  WK-ZENGAKU-SYU
                               COMPUTE  WK-ZENGAKU-YAK = WK-ZENGAKU 
                                                       - LNK-S01-SYUTEN
-                              COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU
-                                                      * 12.0
-                              COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU
-                                                      * WK-KSNRATE
-                              COMPUTE  WK-ZENGAKU-YAK = WK-ZENGAKU-YAK
-                                                      * 12.0
+      ***                     COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU  
+      ***                                             * 12.0            
+      ***                     COMPUTE  WK-ZENGAKU-SYU = WK-ZENGAKU-SYU  
+      ***                                             * WK-KSNRATE      
+      ***                     COMPUTE  WK-ZENGAKU-YAK = WK-ZENGAKU-YAK  
+      ***                                             * 12.0            
+                              COMPUTE  WK-ZENGAKU-SYU =                 
+                                (WK-ZENGAKU-SYU * 12.0 * WK-KSNRATE)    
+                                                       + 0.5            
+                              COMPUTE  WK-ZENGAKU-YAK =                 
+                                (WK-ZENGAKU-YAK * 12.0)                 
+                                                       + 0.5            
                               COMPUTE  WK-ZENGAKU     = WK-ZENGAKU-SYU
                                                       + WK-ZENGAKU-YAK
                        END-EVALUATE
@@ -3283,9 +3347,10 @@
                IF    HKN-HON-GAIYKZFTNKBN  NOT =  "0"
                      MOVE  YAKFTN-SOGOKEI
                                    TO   LNK-SYU-SYUCOMPYKZFTN
-               IF    HKN-HON-GAIYKZFTNKBN  =  "1"
+                  IF    HKN-HON-GAIYKZFTNKBN  =  "1"
                      MOVE  YAKFTN-SOGOKEI
                                    TO   WK-SYU-YAKFTN
+                  END-IF
                END-IF
                COMPUTE   LNK-SYU-SYUCOMPTOTAL   =
                          LNK-SYU-SYUCOMPFTN     +

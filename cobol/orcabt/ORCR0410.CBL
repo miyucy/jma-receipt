@@ -32,6 +32,9 @@
       *  01.00.02    NACL-門脇    02.11.21  自賠責（ポリネック等の対応）
       *  01.00.03    NACL-門脇    02.11.25  診療実日数算定のコード追加
       *  01.00.04    NACL-門脇    03.03.10  診療科１０から２０へ
+      *  01.00.05    NACL-門脇    03.04.14  労災の小数点以下金額計算
+      *                                     四捨五入に変更
+      *  01.00.06    NACL-門脇    03.04.15  自賠責文書料消費税対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -148,6 +151,7 @@
            03  WRK-KIN                                 PIC  9(09).
            03  WRK-TANKA                               PIC  9(02)V99.
            03  WRK-KSNRATE                             PIC  9(03).      
+           03  WRK-TAXKBN                              PIC  X(01).      
       *
            03  WRK-TAIHI-FLG                           PIC  9(01).
            03  WRK-TAIHI-SRYYMD.
@@ -403,6 +407,7 @@
                    COMPUTE WRK-KSNRATE  =  SYS-4001-KSNRATE             
                                         +  100                          
                END-IF                                                   
+               MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN                
            ELSE
                MOVE    "労災自賠医療機関情報が取得できませんでした"     
                                            TO  WRK-RECEERR
@@ -1681,6 +1686,10 @@
                 CONTINUE                                                
            ELSE                                                         
                 MOVE   WRK-SINDAN-TUU      TO  RECE41-SINDAN-TUU        
+                IF    WRK-TAXKBN      =   "2"                           
+                   COMPUTE  WRK-SINDAN-KIN  =  WRK-SINDAN-KIN           
+                                            *  1.05                     
+                END-IF                                                  
                 MOVE   WRK-SINDAN-KIN      TO  RECE41-SINDAN-KIN        
            END-IF
       *
@@ -1688,7 +1697,11 @@
                 CONTINUE                                                
            ELSE                                                         
                 MOVE   WRK-MEISAI-TUU      TO  RECE41-MEISAI-TUU        
-                MOVE   WRK-MEISAI-KIN      TO  RECE41-MEISAI-KIN        
+                IF    WRK-TAXKBN      =   "2"                           
+                   COMPUTE  WRK-MEISAI-KIN  =  WRK-MEISAI-KIN           
+                                            *  1.05                     
+                END-IF                                                  
+                MOVE   WRK-MEISAI-KIN      TO  RECE41-MEISAI-KIN
            END-IF                                                       
       *
            PERFORM    VARYING    IDZ    FROM    1   BY   1              
@@ -1711,8 +1724,10 @@
            IF    RECE41-HKNKBN   =   "4"                                
                CONTINUE                                                 
            ELSE                                                         
-               COMPUTE  RECE41-TOTALKIN   =   RECE41-TOTALTEN   *
-                                              WRK-TANKA    
+      ****     COMPUTE  RECE41-TOTALKIN   =   RECE41-TOTALTEN   *
+      ****                                    WRK-TANKA    
+               COMPUTE  RECE41-TOTALKIN   =   
+                       (RECE41-TOTALTEN   *   WRK-TANKA)   +   0.5      
            END-IF                                                       
       *
            .

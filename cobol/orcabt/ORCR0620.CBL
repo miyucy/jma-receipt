@@ -32,6 +32,8 @@
       *  01.00.03    NACL-藤原    03/03/11  種別不明の情報を編集
       *  01.00.04    NACL-藤原    03/03/15  入院履歴から診療科の編集を行う
       *  01.00.05    NACL-藤原    03/04/14  不明分の保険履歴情報は作成しない
+      *  01.00.06    NACL-門脇    03/04/16  船員保険（被保険者）＋通勤災害
+      *                                     フラグセット
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1852,6 +1854,17 @@
                              MOVE   20        TO  RECE62-KYURATE
                   END-EVALUATE
               END-IF
+      *
+      *    船員保険（被保険者）＋通勤災害フラグセット
+           IF    RECE61-HKNNUM           =    "002"
+               EVALUATE   COMB-HOJOKBN
+                    WHEN   "3"
+                    WHEN   "C"
+                    WHEN   "F"
+                        MOVE     "1"     TO     RECE62-SENIN-TUUSAI
+               END-EVALUATE
+           END-IF
+      *
            .
        KYURATE-SET-EXT.
            EXIT.

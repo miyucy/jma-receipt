@@ -58,6 +58,8 @@
               05  LNK-S02-IKUSEI-OCC       OCCURS   2.
                 07  LNK-S02-IKUSEI-YYMM    PIC  X(06).
                 07  LNK-S02-IKUSEI-NISUU   PIC  9(02).
+      *Á¥°÷ÊÝ¸±¡ÊÈïÊÝ¸±¼Ô¡Ë¡ÜÄÌ¶ÐºÒ³²¡Ü½é¿Ç»þ
+           03  LNK-S02-SENINFLG            PIC  X(01).
       *Éüµ¢¥³¡¼¥É
            03  LNK-S02-RC                  PIC S9(9)   BINARY.
       *
