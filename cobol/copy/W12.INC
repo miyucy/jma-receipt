@@ -30,9 +30,9 @@
                                            PIC S9(9)   BINARY.
                 04  W12-BYOMEIHENKBN1LST   PIC X(22)   OCCURS  2 TIMES.
               03  W12-SYUBYOHENFLG-COMBO.
-                04  W12-SYUBYOHENFLG       PIC X(32).
+                04  W12-SYUBYOHENFLG       PIC X(46).
                 04  W12-SYUBYOHENFLG-COUNT PIC S9(9)   BINARY.
-                04  W12-SYUBYOHENFLGLST    PIC X(32)   OCCURS  3 TIMES.
+                04  W12-SYUBYOHENFLGLST    PIC X(46)   OCCURS  4 TIMES.
               03  W12-TENKIHENKBN-COMBO.
                 04  W12-TENKIHENKBN        PIC X(20).
                 04  W12-TENKIHENKBN-COUNT  PIC S9(9)   BINARY.

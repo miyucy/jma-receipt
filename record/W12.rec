@@ -22,10 +22,10 @@ W12	{
 		};
 		SYUBYOHENFLG_COMBO	{
 			SYUBYOHENFLG	{
-				value	varchar(32);
+				value	varchar(46);
 			};
 			count	int;
-			item	varchar(32)[3];
+			item	varchar(46)[4];
 		};
 		TENKIHENKBN_COMBO	{
 			TENKIHENKBN	{

@@ -411,7 +411,7 @@
       <name>SYUBYOHENFLG_COMBO</name>
       <x>250</x>
       <y>196</y>
-      <width>250</width>
+      <width>280</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -439,7 +439,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>32</text_max_length>
+	<text_max_length>46</text_max_length>
 	<text></text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -664,22 +664,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label325</name>
-      <x>530</x>
-      <y>200</y>
-      <width>150</width>
-      <height>16</height>
-      <label>            （続紙）</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label224</name>
       <x>530</x>
       <y>250</y>
@@ -696,60 +680,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label326</name>
-      <x>530</x>
-      <y>300</y>
-      <width>150</width>
-      <height>16</height>
-      <label>            （続紙）</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>labe2212</name>
       <x>530</x>
       <y>100</y>
       <width>150</width>
       <height>16</height>
       <label>通し番号編集区分</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>labe2213</name>
-      <x>530</x>
-      <y>350</y>
-      <width>170</width>
-      <height>16</height>
-      <label>続紙区分（入院）      </label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>labe2214</name>
-      <x>530</x>
-      <y>400</y>
-      <width>170</width>
-      <height>16</height>
-      <label>        （入院外）    </label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1484,6 +1420,70 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label326</name>
+      <x>530</x>
+      <y>300</y>
+      <width>170</width>
+      <height>16</height>
+      <label>              （続紙）</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>labe2213</name>
+      <x>530</x>
+      <y>350</y>
+      <width>170</width>
+      <height>16</height>
+      <label>続紙区分（入院）      </label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label325</name>
+      <x>530</x>
+      <y>200</y>
+      <width>170</width>
+      <height>16</height>
+      <label>              （続紙）</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>labe2214</name>
+      <x>530</x>
+      <y>400</y>
+      <width>170</width>
+      <height>16</height>
+      <label>              （入院外）    </label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
