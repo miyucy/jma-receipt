@@ -48,6 +48,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-CHK             PIC 9(01).
+           03  FLG-CHK2            PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
       *    添字領域
@@ -167,6 +168,9 @@
                           (SPA-HOSPSBT         =   1     )
                        PERFORM 1001-SEMONKACD-CHK-SEC
                    ELSE
+                       IF      ORCSDR-SRYKA    NOT =   SPACE
+                           PERFORM 1001-SEMONKACD-CHK-SEC
+                       END-IF
                        MOVE    1               TO  FLG-CHK
                    END-IF
                    IF      FLG-CHK             =   1
@@ -174,6 +178,10 @@
                        MOVE    SYS-1010-KBNCD(2:4)
                                                TO  ORCSDR-DRCD   (IDX)
                        MOVE    SYS-1010-NAME   TO  ORCSDR-DRCDMEI(IDX)
+                       IF     (FLG-CHK2        =   1  )  AND
+                              (ORCSDR-DRCD-IDX =   ZERO )
+                           MOVE    IDX             TO  ORCSDR-DRCD-IDX
+                       END-IF
                    END-IF
                END-IF
       *
@@ -182,12 +190,6 @@
            END-PERFORM
       *
            MOVE    IDX                 TO  ORCSDR-DRCD-MAX
-      *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SRYACCT-KEY14"     TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"         USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
       *
       *    ドクターコードがある時、ドクター編集
            IF      ORCSDR-IN-DRCD  NOT =   SPACE
@@ -205,6 +207,8 @@
       *
       *    専門科コード
            MOVE    ZERO                TO  FLG-OK
+           MOVE    ZERO                TO  FLG-CHK
+           MOVE    ZERO                TO  FLG-CHK2
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2            >   5   )   OR
                               (FLG-CHK     NOT =   ZERO )
@@ -213,6 +217,7 @@
                    IF      SYS-1010-SEMONKACD (IDX2)
                                            =   ORCSDR-SRYKA
                        MOVE    1               TO  FLG-CHK
+                       MOVE    1               TO  FLG-CHK2
                    END-IF
                END-IF
            END-PERFORM
@@ -293,13 +298,6 @@
                INITIALIZE                  SYS-1010-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-      *TEST
-           DISPLAY "DRSET FLG-SYSKANRI:" FLG-SYSKANRI
-                   ",MCP-RC:" MCP-RC
-                   ",ORCSDR-SYSYMD:" ORCSDR-SYSYMD
-                   ",SYS-1010-KANRICD:" SYS-1010-KANRICD
-                    ".SYS-1010-KBNCD:" SYS-1010-KBNCD
-      *TEST
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
                MOVE    SPACE               TO  ORCSDR-IN-DRCD-H

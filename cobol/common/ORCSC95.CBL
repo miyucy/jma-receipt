@@ -98,6 +98,7 @@
            03  FLG-SYORI           PIC 9(01).
       *
            03  FLG-DRCDOK          PIC 9(01).
+           03  FLG-DRCDCHK         PIC 9(01).
            03  FLG-NO              PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
@@ -189,6 +190,9 @@
                    07  WRK-FUKU-KBN            PIC X(01).
                    07  WRK-FUKU-DENPNUM        PIC 9(07).
            03  IDX-F                   PIC 9(04).
+      *
+           03  WRK-DRCD                PIC X(05).
+           03  WRK-DRCD2               PIC X(05).
       *
       *他科受診科有り
        01  WRK-TAKA-SRYKA-AREA.
@@ -1648,6 +1652,8 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            MOVE    ZERO                TO  FLG-DRCDOK
+           MOVE    SPACE               TO  WRK-DRCD
+           MOVE    SPACE               TO  WRK-DRCD2
            PERFORM
                    UNTIL      (FLG-SYSKANRI    =   1 )  OR
                               (FLG-DRCDOK      =   1 )
@@ -1655,7 +1661,18 @@
                IF      SYS-1010-KBNCD(1:1)     =   "1"
       *            ドクターの指定がない時、最初のドクターとする
                    IF      SPA-DRCD            =   SPACE
-                       MOVE    SYS-1010-KBNCD(1:5) TO  SPA-DRCD
+      *                対象の科のドクターを優先する
+                       PERFORM 100121-SEMONKACD-CHK-SEC
+                       IF      WRK-DRCD2           =   SPACE 
+                           MOVE    SYS-1010-KBNCD(1:5) TO  WRK-DRCD2
+                       END-IF
+                       IF     (WRK-DRCD            =   SPACE ) AND
+                              (FLG-DRCDCHK         =   2     )
+                           MOVE    SYS-1010-KBNCD(1:5) TO  WRK-DRCD
+                       END-IF
+                       IF      FLG-DRCDCHK         =   1
+                           MOVE    SYS-1010-KBNCD(1:5) TO  SPA-DRCD
+                       END-IF
                    END-IF
                    IF      SPA-DRCD            =   SYS-1010-KBNCD(1:5)
                        MOVE    1                   TO  FLG-DRCDOK
@@ -1674,8 +1691,48 @@
       *    CALL    "MCPDBSUB"          USING
       *                                MCPAREA
       *                                MCPDATA-REC
+      *
+      *    対象の科のドクターがなかった時、科指定なしか最初
+           IF      SPA-DRCD            =   SPACE
+               IF      WRK-DRCD            =   SPACE
+                   MOVE    WRK-DRCD2       TO  SPA-DRCD
+               ELSE
+                   MOVE    WRK-DRCD        TO  SPA-DRCD
+               END-IF
+           END-IF
+      *
            .
        10012-SYSKAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    対象の科のドクター処理
+      *****************************************************************
+       100121-SEMONKACD-CHK-SEC        SECTION.
+      *
+      *    専門科コード
+           MOVE    ZERO                TO  FLG-OK
+           MOVE    ZERO                TO  FLG-DRCDCHK
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2            >   5   )   OR
+                              (FLG-DRCDCHK     NOT =   ZERO )
+               IF      SYS-1010-SEMONKACD (IDX2)   NOT =   SPACE
+                   MOVE    1               TO  FLG-OK
+                   IF      SYS-1010-SEMONKACD (IDX2)
+                                           =   SPA-SRYKA
+                       MOVE    1               TO  FLG-DRCDCHK
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-DRCDCHK         =   ZERO
+               IF      FLG-OK          =   ZERO
+                   MOVE    2               TO  FLG-DRCDCHK
+               END-IF
+           END-IF
+      *
+           .
+       100121-SEMONKACD-CHK-EXT.
            EXIT.
       *
       *****************************************************************
