@@ -769,7 +769,8 @@
            MOVE    SYS-1013-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           MOVE    SPA-S01-SRYYM       TO  ORC-DBYMD (1 : 6)
+           MOVE    "01"                TO  ORC-DBYMD (7 : 2)
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA

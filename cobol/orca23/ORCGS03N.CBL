@@ -772,7 +772,8 @@
            MOVE    SYS-1013-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           MOVE    SPA-S01-SRYYM       TO  ORC-DBYMD (1 : 6)
+           MOVE    "01"                TO  ORC-DBYMD (7 : 2)
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -1079,6 +1080,7 @@
            PERFORM     VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       5 
                MOVE    SPA-GMN-JIHIMSG(IDX)  TO  S03N-JIHIMSG (IDX)
+               DISPLAY "S03N-JIHIMSG (" IDX ") = " S03N-JIHIMSG (IDX)
            END-PERFORM
       *    Ï«ºÒÊÝ¸±Å¬ÍÑÊ¬
            MOVE    SPA-GMN-RSISHOSHIN    TO  S03N-RSISHOSHIN
