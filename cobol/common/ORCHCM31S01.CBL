@@ -46,10 +46,10 @@
            03  FLG-TAISYO              PIC 9(01).
       *
        01  IDX-AREA.
-           03  IDX0                    PIC 9(01).
-           03  IDX1                    PIC 9(01).
-           03  IDX2                    PIC 9(01).
-           03  IDX3                    PIC 9(01).
+           03  IDX0                    PIC 9(05).
+           03  IDX1                    PIC 9(05).
+           03  IDX2                    PIC 9(05).
+           03  IDX3                    PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-SIHARAI-AREA.
