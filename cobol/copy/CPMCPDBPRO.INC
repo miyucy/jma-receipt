@@ -2198,6 +2198,7 @@
                WHEN    ANY             ALSO   "NYUINRYAKUSHO-KEY"
                    MOVE    PATH-TBL-NYUINRYAKUSHO-KEY
                                        TO  WRK-PATH
+                   PERFORM 2001-SEL-NYUINRYAKUSHO-SEC
                WHEN    ANY             ALSO   "NYUINRYAKUSHO-ALL"
                    MOVE    PATH-TBL-NYUINRYAKUSHO-ALL
                                        TO  WRK-PATH
@@ -2497,6 +2498,26 @@
            EXIT.
       *
       *---- (NYUIN.15) LINE ADD END      -----------------------------
+      *
+      *****************************************************************
+      *     入院略称マスタを主キーより検索処理
+      *****************************************************************
+       2001-SEL-NYUINRYAKUSHO-SEC    SECTION.
+           IF      MCP-FUNC            =   "DBFETCH" OR
+                                           "DBINSERT"
+                   GO                  TO  2001-SEL-NYUINRYAKUSHO-EXT
+           END-IF
+      *
+      *
+           MOVE    MCPDATA-REC         TO  NYURYAKUSHO-REC
+      *
+           MOVE    ORC-DBYMD           TO  NYURYAKUSHO-YUKOSTYMD
+                                           NYURYAKUSHO-YUKOEDYMD
+           MOVE    NYURYAKUSHO-REC     TO  MCPDATA-REC
+           .
+       2001-SEL-NYUINRYAKUSHO-EXT.
+           EXIT.
+      *
       *****************************************************************
       *     　　　入力セット編集検索処理
       *****************************************************************
