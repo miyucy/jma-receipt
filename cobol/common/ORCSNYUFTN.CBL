@@ -2761,11 +2761,13 @@
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
                                            SYS-5000-REC
+                                           SYS-5001-REC
                                            SYS-5113-REC
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
                INITIALIZE                  SYSKANRI-REC
                                            SYS-5000-REC
+                                           SYS-5001-REC
                                            SYS-5113-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
