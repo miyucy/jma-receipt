@@ -42,6 +42,7 @@
       *  01.00.11    NACL-ÌçÏÆ    03.06.19  ¼ÂÆü¿ô¥Æ¡¼¥Ö¥ëÊÔ½¸¤ÎÄÉ²Ã
       *  01.00.12    NACL-ÌçÏÆ    04.01.21  Ï«ºÒ¤ÎÆÃÄê´ïºà(09593)ÂÐ±þ
       *  01.00.13    NACL-ÌçÏÆ    04.05.18  ¡ÊÆÃ¡Ë¤Îµ­ºÜÂÐ¾Ý¤ËËã¿ìÄÉ²Ã
+      *  01.00.14    NACL-ÌçÏÆ    04.10.15  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ±þ
       *  Ãæ»ß½èÍýÄÉ²Ã
       *  01.01.01    NACL-Æ£¸¶    04/10/13  Ãæ»ß½èÍý¤ÎÄÉ²Ã
       *****************************************************************
@@ -166,6 +167,7 @@
            03  WRK-RECEERR                             PIC  X(200).
       *
            03  WRK-KEISAN                              PIC  9(09).
+           03  WRK-KEISAN2                             PIC  9(09).
            03  WRK-TEN                                 PIC  9(09).
            03  WRK-KIN                                 PIC  9(09).
            03  WRK-TANKA                               PIC  9(02)V99.
@@ -1272,18 +1274,53 @@
       *
                           COMPUTE  WRK-SINDAN-TUU = WRK-SINDAN-TUU +
                                                     ACCT-ZAIKAISU
-                          COMPUTE  WRK-SINDAN-KIN = WRK-SINDAN-KIN +
-                                       ( TNS-TEN  *  ACCT-ZAIKAISU )         
+      ****
+                          IF    WRK-TAXKBN      =   "2"
+                            IF  WRK-TAX1001-KBN =   "1"
+                               COMPUTE  WRK-KEISAN  =
+                                   (TNS-TEN     *  1.05)  +  0.5
+                            ELSE
+                               COMPUTE  WRK-KEISAN  =
+                                    TNS-TEN     *  1.05
+                            END-IF
+                            COMPUTE  WRK-KEISAN2     =  WRK-KEISAN
+                                                     *  ACCT-ZAIKAISU
+                            COMPUTE  WRK-SINDAN-KIN  =  WRK-SINDAN-KIN
+                                                     +  WRK-KEISAN2
+                          ELSE
+                            COMPUTE  WRK-SINDAN-KIN  =  WRK-SINDAN-KIN +
+                                       ( TNS-TEN  *  ACCT-ZAIKAISU )
+                          END-IF
+      ****
+      ***>                COMPUTE  WRK-SINDAN-KIN = WRK-SINDAN-KIN +
+      ***>                             ( TNS-TEN  *  ACCT-ZAIKAISU )         
       *
                        END-IF
       *
                        IF   SRY-SRYCD(IDY)(1:5) =  "09592"
       *
-      *
                           COMPUTE  WRK-MEISAI-TUU = WRK-MEISAI-TUU +
                                                     ACCT-ZAIKAISU
-                          COMPUTE  WRK-MEISAI-KIN = WRK-MEISAI-KIN +
-                                       ( TNS-TEN  *  ACCT-ZAIKAISU )         
+      ****
+                          IF    WRK-TAXKBN      =   "2"
+                            IF  WRK-TAX1001-KBN =   "1"
+                               COMPUTE  WRK-KEISAN  =
+                                   (TNS-TEN     *  1.05)  +  0.5
+                            ELSE
+                               COMPUTE  WRK-KEISAN  =
+                                    TNS-TEN     *  1.05
+                            END-IF
+                            COMPUTE  WRK-KEISAN2     =  WRK-KEISAN
+                                                     *  ACCT-ZAIKAISU
+                            COMPUTE  WRK-MEISAI-KIN  =  WRK-MEISAI-KIN
+                                                     +  WRK-KEISAN2
+                          ELSE
+                            COMPUTE  WRK-MEISAI-KIN  =  WRK-MEISAI-KIN +
+                                       ( TNS-TEN  *  ACCT-ZAIKAISU )
+                          END-IF
+      ****
+      ***>                COMPUTE  WRK-MEISAI-KIN = WRK-MEISAI-KIN +
+      ***>                             ( TNS-TEN  *  ACCT-ZAIKAISU )         
       *
                        END-IF
       *
@@ -1607,15 +1644,15 @@
                 CONTINUE                                                
            ELSE                                                         
                 MOVE   WRK-SINDAN-TUU      TO  RECE41-SINDAN-TUU        
-                IF    WRK-TAXKBN      =   "2"                           
-                  IF  WRK-TAX1001-KBN =   "1"
-                     COMPUTE  WRK-SINDAN-KIN  =  
-                             (WRK-SINDAN-KIN  *  1.05)  +  0.5          
-                  ELSE
-                     COMPUTE  WRK-SINDAN-KIN  =  
-                              WRK-SINDAN-KIN  *  1.05                   
-                  END-IF
-                END-IF                                                  
+      ***>      IF    WRK-TAXKBN      =   "2"                           
+      ***>        IF  WRK-TAX1001-KBN =   "1"
+      ***>           COMPUTE  WRK-SINDAN-KIN  =  
+      ***>                   (WRK-SINDAN-KIN  *  1.05)  +  0.5          
+      ***>        ELSE
+      ***>           COMPUTE  WRK-SINDAN-KIN  =  
+      ***>                    WRK-SINDAN-KIN  *  1.05                   
+      ***>        END-IF
+      ***>      END-IF                                                  
                 MOVE   WRK-SINDAN-KIN      TO  RECE41-SINDAN-KIN        
            END-IF
       *
@@ -1623,15 +1660,15 @@
                 CONTINUE                                                
            ELSE                                                         
                 MOVE   WRK-MEISAI-TUU      TO  RECE41-MEISAI-TUU        
-                IF    WRK-TAXKBN      =   "2"                           
-                  IF  WRK-TAX1001-KBN =   "1"
-                     COMPUTE  WRK-MEISAI-KIN  =  
-                             (WRK-MEISAI-KIN  *  1.05)  +  0.5          
-                  ELSE
-                     COMPUTE  WRK-MEISAI-KIN  =  
-                              WRK-MEISAI-KIN  *  1.05                   
-                  END-IF
-                END-IF                                                  
+      ***>      IF    WRK-TAXKBN      =   "2"                           
+      ***>        IF  WRK-TAX1001-KBN =   "1"
+      ***>           COMPUTE  WRK-MEISAI-KIN  =  
+      ***>                   (WRK-MEISAI-KIN  *  1.05)  +  0.5          
+      ***>        ELSE
+      ***>           COMPUTE  WRK-MEISAI-KIN  =  
+      ***>                    WRK-MEISAI-KIN  *  1.05                   
+      ***>        END-IF
+      ***>      END-IF                                                  
                 MOVE   WRK-MEISAI-KIN      TO  RECE41-MEISAI-KIN
            END-IF                                                       
       *

@@ -48,6 +48,7 @@
       *                                     Å¦Í×Íóµ­ºÜ½ç½¤Àµ
       *  01.01.07    NACL-ÌçÏÆ    04/07/28  ÅêÌôÎÁ¤Î´ïºàÅÀ¤Î½¸·×½¤Àµ
       *  01.01.08    NACL-ÌçÏÆ    04/10/04  ÅÀÅ©¤Î¿ÇÎÅ¥³¡¼¥É¡ö¿ôÎÌ¤ÎÎß·×ÊÔ½¸
+      *  01.01.09    NACL-ÌçÏÆ    04/10/15  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ±þ
       *  Ãæ»ß½èÍýÄÉ²Ã
       *  01.02.01    NACL-Æ£¸¶    04/10/13  Ãæ»ß½èÍý¤ÎÄÉ²Ã
       *****************************************************************
@@ -218,6 +219,7 @@
            03  FLG-NYUINRYO                            PIC 9(01).
            03  FLG-HKNCOMBI                            PIC 9(01).
            03  FLG-HOUSIJI-COM                         PIC 9(01).
+           03  FLG-TAIGAI                              PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -243,6 +245,7 @@
            03  IDX7                                    PIC 9(03).
            03  IDX8                                    PIC 9(03).
            03  IDX9                                    PIC 9(03).
+           03  IDX10                                   PIC 9(03).
            03  IDY                                     PIC 9(03).
            03  IDY2                                    PIC 9(03).
            03  IDY3                                    PIC 9(03).
@@ -326,6 +329,10 @@
        01  TBL-SYS5000-T.
            03  TBL-SYS5000-OCC     OCCURS  10.
                05  TBL-SYS5000                         PIC X(610).
+      *    °åÎÅµ¡´Ø¡Ê´ðËÜ¾ðÊó¡ËÂàÈòÍÑÎÎ°è
+       01  TBL-SYS1001-T.
+           03  TBL-SYS1001-OCC     OCCURS  10.
+               05  TBL-SYS1001                         PIC X(610).
       *    Ï«ºÒ¼«Çå°åÎÅµ¡´ØÂàÈòÍÑÎÎ°è
        01  TBL-SYS4001-T.
            03  TBL-SYS4001-OCC     OCCURS  10.
@@ -369,12 +376,25 @@
            03  WRK-SHOKUJIRYOYO                        PIC 9(01).
            03  WRK-TOKUKANRIKASAN                      PIC 9(01).
            03  WRK-4001-SKJKBN                         PIC X(01).
+           03  WRK-4001-TAXKBN-KZI                     PIC X(01).
       *
            03  WRK-KEISAN                              PIC 9(09).
       *
            03  WRK-SROUNYUIN-SRYCDTOTAL                PIC 9(14).
            03  WRK-SROUNYUIN-MEISAISU                  PIC 9(07).
            03  WRK-SROUNYUIN-SRYCD                     PIC 9(09).
+      *
+           03  WRK-TEN-KZI                             PIC 9(09).
+           03  WRK-TEN-KZI-SYO                         PIC 9(09).
+      *
+      *    ¼«ÇåÀÕÆÃÄê´ïºàÅù¤ÎÅÀ¿ôÂàÈò
+           03  WRK-JIBAIKZI-TNS-TAIHI-TABLE.
+               05  WRK-JIBAIKZI-TNS-TAIHI-OCC          OCCURS  5.
+                 06  WRK-JIBAIKZI-TNS                  PIC 9(09).
+                 06  WRK-JIBAIKZI-SYO                  PIC 9(09).
+      *
+      *    ¾ÃÈñÀÇÃ¼¿ô¶èÊ¬
+           03  WRK-TAX1001-KBN                         PIC X(01).
       *
       *    ¿ô»úÈ¾³ÑÁ´³ÑÊÑ´¹ÍÑ     
            03  WRK-CHAR-IDX                    PIC 9(02).
@@ -572,8 +592,12 @@
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý
            COPY    "CPSYSKANRI.INC".
+      *    °åÎÅµ¡´Ø¾ðÊó¡Ý´ðËÜ
+           COPY    "CPSK1001.INC".
       *    Ï«ºÒ¼«Çå°åÎÅµ¡´Ø¾ðÊó
            COPY    "CPSK4001.INC".
+      *
+           COPY    "CPSK4003.INC".
       *
            COPY    "CPSK5000.INC".
       *
@@ -680,6 +704,87 @@
            PERFORM 500-CANCEL-HENSYU-SEC
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
+      *       ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡Ê£±£°£°£±¡Ë¤«¤é¾ÃÈñÀÇÃ¼¿ô¶èÊ¬
+      *       ¤Î¼èÆÀ
+              MOVE    SPACE               TO  WRK-TAX1001-KBN
+      *
+              INITIALIZE                      SYSKANRI-REC
+              MOVE    "1001"              TO  SYS-KANRICD
+              MOVE    "*"                 TO  SYS-KBNCD
+              MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+              MOVE    "01"                TO  ORC-DBYMD (7:2)
+              MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+                  PERFORM 960-KANRIMST-READ-SEC
+                  IF      FLG-SYSKANRI        =   ZERO
+                    MOVE    MCPDATA-REC   TO  SYS-1001-REC
+                    MOVE    SYS-1001-TAX-HASU-KBN
+                                          TO  WRK-TAX1001-KBN
+                  ELSE
+                    MOVE    "°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡£"
+                                          TO  WRK-RECEERR
+                    PERFORM 500-ERR-HENSYU-SEC
+                    MOVE    1             TO  FLG-END
+                  END-IF
+              ELSE
+                    MOVE    "°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡£"
+                                          TO  WRK-RECEERR
+                    PERFORM 500-ERR-HENSYU-SEC
+                    MOVE    1             TO  FLG-END
+              END-IF
+      *
+              MOVE   "SYSKANRI-KEY"       TO  WK-PATH
+              PERFORM   CSR-CLOSE-SEC
+      *
+           ELSE
+      *
+              MOVE     ZERO               TO  SYSKAN-IDX
+              MOVE     SPACE              TO  TBL-SYS1001-T
+              INITIALIZE                      TBL-SYS1001-T
+      *
+              INITIALIZE                      SYSKANRI-REC
+              MOVE    "1001"              TO  SYS-KANRICD
+              MOVE    "*"                 TO  SYS-KBNCD
+              MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                  PERFORM 960-KANRIMST-READ-SEC
+                  PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
+      *
+                    MOVE    MCPDATA-REC   TO  SYS-1001-REC
+                    ADD     1             TO  SYSKAN-IDX
+                    MOVE    SYS-1001-REC  TO  TBL-SYS1001(SYSKAN-IDX)
+      *
+                    MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                    PERFORM 960-KANRIMST-READ-SEC
+      *
+                  END-PERFORM
+              ELSE
+                  MOVE    "°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡£"
+                                          TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+                  MOVE    1               TO  FLG-END
+              END-IF
+      *
+              MOVE   "SYSKANRI-KEY8"      TO  WK-PATH
+              PERFORM   CSR-CLOSE-SEC
+      *
+           END-IF
+      *
+           IF   WRK-PARA-SRYYM    NOT =  ZERO
       *      ¿©»ö¡¦Ì¤¼Â»Ü¸º»»¾ðÊó¡Ê¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ë¤è¤ê¡Ë
              MOVE     ZERO            TO  WRK-SHOKUJIRYOYO
                                           WRK-TOKUKANRIKASAN
@@ -761,8 +866,9 @@
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
       *       ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡Ê£´£°£°£±¡Ë¤«¤é¼«ÇåÀÕ¿©»ö
-      *       ÎÅÍÜÈñ¶èÊ¬¤Î¼èÆÀ
+      *       ÎÅÍÜÈñ¶èÊ¬¡¦ÆÃÄê´ïºàÅù¾ÃÈñÀÇ¶èÊ¬¤Î¼èÆÀ
               MOVE    SPACE                TO    WRK-4001-SKJKBN
+              MOVE    SPACE                TO    WRK-4001-TAXKBN-KZI
       *
               INITIALIZE                         SYSKANRI-REC
               MOVE    "4001"               TO    SYS-KANRICD
@@ -782,6 +888,8 @@
                   IF      FLG-SYSKANRI        =   ZERO
                     MOVE    MCPDATA-REC      TO  SYS-4001-REC
                     MOVE    SYS-4001-SKJKBN  TO  WRK-4001-SKJKBN
+                    MOVE    SYS-4001-TAXKBN-KZI
+                                             TO  WRK-4001-TAXKBN-KZI
                   ELSE
                     MOVE "Ï«ºÒ¼«Çå°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
                                           TO  WRK-RECEERR
@@ -2233,6 +2341,8 @@
       *****************************************************************
        22011-RECE85-TENSOU-SEC                SECTION.
       *
+           INITIALIZE          WRK-JIBAIKZI-TNS-TAIHI-TABLE
+      *
            MOVE    SPACE                TO      RECE85-REC
            INITIALIZE                           RECE85-REC
            MOVE    RECE82-HOSPID        TO      RECE85-HOSPID
@@ -2450,7 +2560,17 @@
                IF ( ACCT-SRYKBN          =  "80"              ) AND     
                   ( SRY-SRYCD(IDX2)(1:5) =  "09593" OR "09594")         
                     MOVE  1               TO  RECE85-TENSIKIBETU(IDX4)  
-                    MOVE  TNS-TEN         TO  RECE85-TEN(IDX4)          
+                    IF      RECE82-HKNKBN        =  "4"
+                    AND     ACCT-SRYKBN          =  "80"
+                    AND     SRY-SRYCD(IDX2)(1:5) =  "09593"
+                        PERFORM   220111-JIBAI-KIZAI-TENSU-HENSYU-SEC
+                        MOVE  WRK-TEN-KZI TO  RECE85-TEN(IDX4)
+                        MOVE  WRK-TEN-KZI TO  WRK-JIBAIKZI-TNS(IDX2)
+                        MOVE  WRK-TEN-KZI-SYO
+                                          TO  WRK-JIBAIKZI-SYO(IDX2)
+                    ELSE
+                        MOVE  TNS-TEN     TO  RECE85-TEN(IDX4)
+                    END-IF
                ELSE                                                     
                  IF   RECE82-HKNKBN     =  "4"
                  AND  SRY-SRYCD(IDX2)   =  CONS-RYOYOTEATE
@@ -2855,6 +2975,72 @@
       *
            .
        220111-RECE85-TENSOU-COMCNT-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼«ÇåÀÕÆÃÄê´ïºàÅÀ¿ôÊÔ½¸½èÍý
+      *****************************************************************
+       220111-JIBAI-KIZAI-TENSU-HENSYU-SEC     SECTION.
+      *
+           MOVE     ZERO                   TO    WRK-TEN-KZI
+           MOVE     ZERO                   TO    WRK-TEN-KZI-SYO
+           MOVE     ZERO                   TO    FLG-TAIGAI
+      *
+           IF   WRK-4001-TAXKBN-KZI   =   "2"
+      *
+      *       ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡Ê£´£°£°£³¡Ë¤Ë¤Æ¾ÃÈñÀÇÂÐ¾Ý³°¥³¡¼¥É¤«È½ÊÌ
+              INITIALIZE                         SYSKANRI-REC
+              MOVE    "4003"               TO    SYS-KANRICD
+              MOVE    "*"                  TO    SYS-KBNCD
+              MOVE    RECE82-SRYYM         TO    ORC-DBYMD (1:6)
+              MOVE    "01"                 TO    ORC-DBYMD (7:2)
+              MOVE    SYSKANRI-REC         TO    MCPDATA-REC
+              MOVE    "DBSELECT"           TO    MCP-FUNC
+              MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
+              CALL    "ORCMCPSUB"                USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY"   TO  ORC-DBPATH
+                  PERFORM 960-KANRIMST-READ-SEC
+                  IF      FLG-SYSKANRI        =   ZERO
+                    MOVE    MCPDATA-REC    TO  SYS-4003-REC
+                    PERFORM   VARYING   IDX10    FROM   1   BY   1
+                             UNTIL   (IDX10                 >    10 )
+                               OR    (SYS-4003-SRYCD(IDX10) =  SPACE)
+                               OR    (FLG-TAIGAI           =     1 )
+                      IF   SYS-4003-SRYCD(IDX10)  =  SRY-SRYCD(IDX2)
+                          MOVE     1       TO    FLG-TAIGAI
+                      END-IF
+                    END-PERFORM
+                  END-IF
+              END-IF
+              MOVE   "SYSKANRI-KEY"        TO    WK-PATH
+              PERFORM   CSR-CLOSE-SEC
+      *
+      *       ÆÃÄê´ïºàÅù¾ÃÈñÀÇ·×»»
+              IF   FLG-TAIGAI  =  ZERO
+                   IF    WRK-TAX1001-KBN  =  "1"
+                      COMPUTE  WRK-TEN-KZI  =
+                              (TNS-TEN  *  1.05)  +  0.5
+                      COMPUTE  WRK-TEN-KZI-SYO =
+                              (TNS-TEN  *  0.05)  +  0.5
+                   ELSE
+                      COMPUTE  WRK-TEN-KZI  =
+                              (TNS-TEN  *  1.05)
+                      COMPUTE  WRK-TEN-KZI-SYO =
+                              (TNS-TEN  *  0.05)
+                   END-IF
+              ELSE
+                   MOVE     TNS-TEN       TO     WRK-TEN-KZI
+              END-IF
+           ELSE
+                   MOVE     TNS-TEN       TO     WRK-TEN-KZI
+           END-IF
+      *
+           .
+       220111-JIBAI-KIZAI-TENSU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3966,7 +4152,11 @@
                        ( SRY-SRYCD(IDX3)(1:5) =  "09593" )              
                        COMPUTE    RECE82-KINGAKU3(3)  =                 
                                   RECE82-KINGAKU3(3)  +                 
-                                 (TNS-TEN   *   ACCT-ZAIKAISU)          
+      ***>                       (TNS-TEN   *   ACCT-ZAIKAISU)          
+                         (WRK-JIBAIKZI-TNS(IDX3) *   ACCT-ZAIKAISU)
+                       COMPUTE    RECE82-KINGAKU3-SYO  =
+                                  RECE82-KINGAKU3-SYO  +
+                         (WRK-JIBAIKZI-SYO(IDX3) *   ACCT-ZAIKAISU)
                     ELSE                                                
                      IF  SRY-SRYCD(IDX3)      =    CONS-RYOYOTEATE
                        COMPUTE    RECE82-KINGAKU3(3)  =                 
@@ -4487,6 +4677,39 @@
            IF   WRK-PARA-SRYYM    NOT =  ZERO
                CONTINUE
            ELSE
+      *        ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡Ê£±£°£°£±¡Ë¤«¤é¾ÃÈñÀÇÃ¼¿ô¶èÊ¬
+      *        ¤Î¼èÆÀ
+               MOVE    SPACE      TO  WRK-TAX1001-KBN
+      *
+               MOVE  ZERO         TO  FLG-SET
+               MOVE  RECE82-SRYYM TO  WRK-SYS-SRYYMD(1:6)
+               MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
+               PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                    UNTIL  ( SYSKAN-IDX              >  10   )
+                     OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                     OR    ( FLG-SET                 =   1   )
+      *
+                  MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
+                  IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                  AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
+                     MOVE     1       TO    FLG-SET
+                     MOVE    SYS-1001-TAX-HASU-KBN
+                                      TO    WRK-TAX1001-KBN
+                  END-IF
+      *
+               END-PERFORM
+               IF     FLG-SET  =  ZERO
+                  STRING
+                  "°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡£¿ÇÎÅÇ¯·î¡á"
+                                               DELIMITED  BY  SIZE 
+                       RECE82-SRYYM            DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+                  END-STRING
+                  PERFORM 500-ERR-HENSYU-SEC
+                  MOVE    1               TO  FLG-END
+                  GO  TO  910-SYSKANRI-HENSYU-EXT
+               END-IF
+      *
       *        ¿©»ö¡¦Ì¤¼Â»Ü¸º»»¾ðÊó¡Ê¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ë¤è¤ê¡Ë
                MOVE     ZERO      TO  WRK-SHOKUJIRYOYO
                                       WRK-TOKUKANRIKASAN
@@ -4519,8 +4742,10 @@
                   GO  TO  910-SYSKANRI-HENSYU-EXT
                END-IF
       *
-      *        ¼«ÇåÀÕ¿©»öÎÅÍÜÈñ¶èÊ¬¡Ê¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ë¤è¤ê¡Ë
+      *        ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡Ê£´£°£°£±¡Ë¤«¤é¼«ÇåÀÕ¿©»ö
+      *        ÎÅÍÜÈñ¶èÊ¬¡¦ÆÃÄê´ïºàÅù¾ÃÈñÀÇ¶èÊ¬¤Î¼èÆÀ
                MOVE    SPACE      TO  WRK-4001-SKJKBN
+               MOVE    SPACE      TO  WRK-4001-TAXKBN-KZI
       *
                MOVE  ZERO         TO  FLG-SET
                MOVE  RECE82-SRYYM TO  WRK-SYS-SRYYMD(1:6)
@@ -4535,6 +4760,8 @@
                   AND  ( WRK-SYS-SRYYMD     <=  SYS-4001-EDYUKYMD )
                      MOVE     1               TO    FLG-SET
                      MOVE    SYS-4001-SKJKBN  TO    WRK-4001-SKJKBN
+                     MOVE    SYS-4001-TAXKBN-KZI
+                                              TO    WRK-4001-TAXKBN-KZI
                   END-IF
       *
                END-PERFORM
