@@ -68,6 +68,11 @@
       *  01.01.15    NACL-門脇    02.11.21  自賠責（ポリネック等の対応）
       *  01.01.16    NACL-太田    02.12.11  診療科・入外区分を判断して
       *                                     初期表示するよう修正
+      *  01.01.17    NACL-太田    02.12.13  入院分の請求書再発行対応
+      *  01.01.18    NACL-太田    02.12.16  帳票引数入外区分に選択された
+      *                                     収納の入外区分を渡すよう修正
+      *                                     コラムリストの金額欄を
+      *                                     カンマ編集するよう修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -187,6 +192,7 @@
            03  FLG-PTRSIINF        PIC 9(01).
       *
            03  FLG-SYORI           PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
       *
@@ -262,8 +268,8 @@
            03  WRK-SAGAKU          PIC S9(07).
       *     
            03  WRK-TBANGO-W        PIC ZZZ.
-           03  WRK-TSEIKYU-W       PIC ZZZZZZZZZZ.
-           03  WRK-TMISYU-W        PIC ----------.
+           03  WRK-TSEIKYU-W       PIC ZZ,ZZZ,ZZZ.
+           03  WRK-TMISYU-W        PIC --,---,---.
            03  WRK-SELBAN-W        PIC ZZZZ.  
       *    請求書ＰＧ名
            03  WRK-SEIKYU-PG           PIC X(20).
@@ -404,6 +410,9 @@
            COPY    "CPORCS01.INC".
       *    請求書印刷パラメタ
            COPY    "CPORCHC03.INC".
+      *
+      *    帳票サブ < 請求書兼領収書 >
+           COPY    "CPORCHCN03.INC".
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -631,6 +640,7 @@
       *****************************************************************
        3101-COMBO-SYOKI-SET-SEC        SECTION.
       *
+           MOVE    1               TO  FLG-CHK
            PERFORM VARYING IDX14   FROM    1   BY  1
                UNTIL     ( IDX14   >       SPA-GMN-SRYKA-MAX )
                IF    ( SPA-GMN-SRYKA   =   SPA-GMN-SRYKAL (IDX14) )
@@ -638,9 +648,15 @@
                                        TO  SPA-GMN-SRYKA-G
                    MOVE    SPA-GMN-SRYKA-MAX
                                        TO  IDX14
+                   MOVE    ZERO        TO  FLG-CHK
                END-IF
            END-PERFORM
       *
+           IF    ( FLG-CHK     NOT =   ZERO )
+               MOVE    SPACE           TO  SPA-GMN-SRYKA-G
+           END-IF
+      *
+           MOVE    1               TO  FLG-CHK
            PERFORM VARYING IDX14   FROM    1   BY  1
                UNTIL     ( IDX14   >       SPA-GMN-NYUGAIKBN-MAX )
                IF    ( SPA-GMN-NYUGAIKBN
@@ -649,9 +665,13 @@
                                        TO  SPA-GMN-NYUGAIKBN-G
                    MOVE    SPA-GMN-NYUGAIKBN-MAX
                                        TO  IDX14
+                   MOVE    ZERO        TO  FLG-CHK
                END-IF
            END-PERFORM
       *
+           IF    ( FLG-CHK     NOT =   ZERO )
+               MOVE    SPACE           TO  SPA-GMN-NYUGAIKBN-G
+           END-IF
       *
            .
        3101-COMBO-SYOKI-SET-EXT.
@@ -1698,23 +1718,39 @@
       *            帳票プログラム取得
                    PERFORM 4201-PRINT-PG-SEC
       *
-                       MOVE   SPA-AREA     TO  WRK-SPA-AREA
-                       MOVE   SYU-SRYYMD   TO  WRK-SPA-SRYYMD
-                       MOVE   SPA-GMN-PTID TO  WRK-SPA-PTID
-                       MOVE   SPA-GMN-PTNUM TO WRK-SPA-PTNUM
-                       MOVE   SPA-GMN-NAME TO  WRK-SPA-NAME
-                       MOVE   SPA-GMN-SRYKA TO WRK-SPA-SRYKA
-                       MOVE   SPA-GMN-SRYKAMEI
-                                           TO  WRK-SPA-SRYKAMEI     
+                   MOVE   SPA-AREA         TO  WRK-SPA-AREA
+                   MOVE   SYU-SRYYMD       TO  WRK-SPA-SRYYMD
+                   MOVE   SYU-NYUGAIKBN    TO  WRK-SPA-NYUGAIKBN
+                   MOVE   SPA-GMN-PTID     TO  WRK-SPA-PTID
+                   MOVE   SPA-GMN-PTNUM    TO  WRK-SPA-PTNUM
+                   MOVE   SPA-GMN-NAME     TO  WRK-SPA-NAME
+                   MOVE   SPA-GMN-SRYKA    TO  WRK-SPA-SRYKA
+                   MOVE   SPA-GMN-SRYKAMEI TO  WRK-SPA-SRYKAMEI
+      *
+                   IF    ( SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN) =   "1" )
+                       INITIALIZE      ORCHCN03AREA
+      *
+                       MOVE   SYU-DENPNUM  TO  ORCHCN03-DENPNUM
+                       MOVE   SYU-SKYMONEY TO  ORCHCN03-SEIKYU
+                       MOVE   SYU-NYUKIN-TOTAL
+                                           TO  ORCHCN03-NYUKIN
+      *
+                       CALL    "ORCHCN03"  USING  WRK-SPA-AREA
+                                                  ORCHCN03AREA
+                   ELSE
+      *
                        MOVE   SYU-DENPNUM  TO  ORCHC03-DENPNUM
                        MOVE   SYU-SKYMONEY TO  ORCHC03-SEIKYU
                        MOVE   SYU-NYUKIN-TOTAL
                                            TO  ORCHC03-NYUKIN
       *****************CALL  "ORCHC03"     USING   WRK-SPA-AREA
                        CALL  WRK-SEIKYU-PG     USING
-                                                   WRK-SPA-AREA
-                                                   ORCHC03AREA
-                       MOVE   SPACE        TO  SPA-SRYYMD(7:2)
+                                               WRK-SPA-AREA
+                                               ORCHC03AREA
+                   END-IF
+      *
+                   MOVE   SPACE        TO  SPA-SRYYMD(7:2)
+      *
                END-IF
            END-IF
       *

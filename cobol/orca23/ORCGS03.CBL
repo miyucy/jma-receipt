@@ -43,6 +43,8 @@
       *  01.01.11    NACL-太田    02/12/12  前回未収額表示の不具合を修正
       *  01.01.12    NACL-太田    02/12/13  請求金額を超えて入金できる
       *                                     不具合を修正
+      *  01.01.13    NACL-太田    02.12.16  コラムリストの金額欄を
+      *                                     カンマ編集するよう修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -229,7 +231,7 @@
            03  WRK-KIN             PIC 9(07).
            03  WRK-GMN-LINE        PIC 9(02).
       *
-           03  WRK-Z9              PIC ----------.
+           03  WRK-Z9              PIC --,---,---.
            03  WRK-EDABAN          PIC ZZ.
       *    診療行為計算用
            03  WRK-TENSU           PIC 9(08).
@@ -1037,8 +1039,7 @@
            MOVE    SPA-GMN-SEIKYU      TO  S03-SYKMONEY
            MOVE    SPA-GMN-ZENMISYU    TO  S03-ZENMISYU
            MOVE    SPA-GMN-SEIGOK      TO  S03-GOKMISYU
-           MOVE    SPA-GMN-MISYU-ZAN   TO  WRK-Z9
-           MOVE    WRK-Z9              TO  S03-MISYUZAN
+           MOVE    SPA-GMN-MISYU-ZAN   TO  S03-MISYUZAN
            MOVE    SPA-GMN-DENPYO-KEI  TO  S03-NYUKINGK1
       *    入金欄
            IF     SPA-S01-SYORINO        =   "05"  OR  "08"

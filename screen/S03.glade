@@ -1305,7 +1305,7 @@
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
-      <format>----------</format>
+      <format>--,---,---</format>
     </widget>
 
     <widget>

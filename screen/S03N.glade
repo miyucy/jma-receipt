@@ -1135,7 +1135,7 @@
       <class>GtkNumberEntry</class>
       <name>SKJRYOYO</name>
       <x>504</x>
-      <y>372</y>
+      <y>380</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -1146,7 +1146,7 @@
       <class>GtkNumberEntry</class>
       <name>SKJFTN</name>
       <x>504</x>
-      <y>408</y>
+      <y>424</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -1156,7 +1156,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>YKZFTN</name>
-      <x>504</x>
+      <x>2000</x>
       <y>436</y>
       <width>88</width>
       <height>24</height>
@@ -1168,7 +1168,7 @@
       <class>GtkNumberEntry</class>
       <name>RJNFTN</name>
       <x>504</x>
-      <y>464</y>
+      <y>456</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -1179,7 +1179,7 @@
       <class>GtkNumberEntry</class>
       <name>KOHFTN</name>
       <x>504</x>
-      <y>492</y>
+      <y>488</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -1282,7 +1282,7 @@
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
-      <format>----------</format>
+      <format>--,---,---</format>
     </widget>
 
     <widget>
@@ -1984,7 +1984,7 @@
       <class>GtkLabel</class>
       <name>label561</name>
       <x>400</x>
-      <y>468</y>
+      <y>460</y>
       <width>96</width>
       <height>18</height>
       <label>œ∑øÕ∞Ï…Ù…È√¥</label>
@@ -2000,7 +2000,7 @@
       <class>GtkLabel</class>
       <name>label686</name>
       <x>400</x>
-      <y>376</y>
+      <y>384</y>
       <width>96</width>
       <height>18</height>
       <label>ø©ªˆŒ≈Õ‹»Ò</label>
@@ -2016,7 +2016,7 @@
       <class>GtkLabel</class>
       <name>label685</name>
       <x>400</x>
-      <y>412</y>
+      <y>428</y>
       <width>96</width>
       <height>18</height>
       <label>ø©ªˆ…È√¥≥€</label>
@@ -2041,7 +2041,7 @@
       <class>GtkLabel</class>
       <name>label562</name>
       <x>400</x>
-      <y>496</y>
+      <y>492</y>
       <width>96</width>
       <height>18</height>
       <label>∏¯»Ò∞Ï…Ù…È√¥</label>
@@ -2056,7 +2056,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label365</name>
-      <x>400</x>
+      <x>2000</x>
       <y>440</y>
       <width>96</width>
       <height>18</height>

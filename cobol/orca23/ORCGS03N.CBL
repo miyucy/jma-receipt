@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.01.01    NACL-太田    02.12.16  コラムリストの金額欄を
+      *                                     カンマ編集するよう修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -217,7 +219,7 @@
            03  WRK-KIN             PIC 9(07).
            03  WRK-GMN-LINE        PIC 9(02).
       *
-           03  WRK-Z9              PIC ----------.
+           03  WRK-Z9              PIC --,---,---.
            03  WRK-EDABAN          PIC ZZ.
       *    診療行為計算用
            03  WRK-TENSU           PIC 9(08).
@@ -1041,8 +1043,7 @@
            MOVE    SPA-GMN-ZENMISYU-NYU
                                        TO  S03N-ZENMISYU-NYU
            MOVE    SPA-GMN-SEIGOK      TO  S03N-GOKMISYU
-           MOVE    SPA-GMN-MISYU-ZAN   TO  WRK-Z9
-           MOVE    WRK-Z9              TO  S03N-MISYUZAN
+           MOVE    SPA-GMN-MISYU-ZAN   TO  S03N-MISYUZAN
            MOVE    SPA-GMN-DENPYO-KEI  TO  S03N-NYUKINGK1
       *    入金欄
            IF     SPA-S01-SYORINO        =   "05"  OR  "08"
