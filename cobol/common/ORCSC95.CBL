@@ -2875,7 +2875,9 @@
            PERFORM UNTIL      (FLG-PTBYOMEI    =   1 )  OR
                               (SPA-TOKUTEI     =   1 )
       *            特定疾患の有無
-              IF      PTBYO-SRYYMD        <=   SPA-SRYYMD
+              IF     (PTBYO-SRYYMD        <=   SPA-SRYYMD )
+      *            疑い病名は対象外とする
+                 AND (PTBYO-UTAGAIFLG  NOT =   "1"  AND  "3" )
       *            特定疾患の有無
                    IF      PTBYO-MANSEIKBN     =   05
                        IF     (PTBYO-TENKIKBN      =   SPACE )  OR
