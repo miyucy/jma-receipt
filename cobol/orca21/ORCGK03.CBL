@@ -45,6 +45,7 @@
       *  02.00.10    NACL-多々納  02/12/17  診療種別の判定追加
       *  02.00.11    NACL-多々納  02/12/18  継続の時今回請求額を編集する
       *  02.00.12    NACL-多々納  03/01/08  入金額の上限修正
+      *  02.00.13    NACL-多々納  03/02/13  訂正時の診療科履歴修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1928,6 +1929,13 @@
            IF      SPA-SYORIFLG        =   ZERO
       *        診療科履歴作成終了処理
                PERFORM 45009-SRYKARRK-OUT-SEC
+           ELSE
+      *        診療科履歴変更
+               INITIALIZE                  ORCSKARRKAREA
+               MOVE    SPA-SRYYMD(1:6)     TO  SKARRK-SRYYM
+               CALL    "ORCSKARRK"         USING
+                                           ORCSKARRKAREA
+                                           SPA-AREA
            END-IF
       *
       *    ワーク診療行為マスタ−が存在した時、削除する
@@ -2886,7 +2894,7 @@
                                       (SRY-SRYCD (IDY) =   SPACE)
       *
       *            手技料の時、算定歴を判定する
-                   IF      SRY-SRYCD (IDY)(1:1)    =   "1"
+                   IF     (SRY-SRYCD (IDY)(1:1)    =   "1"    )
       *                ダミー追加
                        OR (SRY-SRYCD (IDY)         =   "099110001" )
                        MOVE    SRY-SRYCD (IDY)     TO  WRK-SRYCD
@@ -3435,6 +3443,7 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      FLG-SRYKARRK        =   ZERO
+      *      訂正の時、最終受診日はそのまま
                IF      KARRK-LASTYMD       <   SYU-SRYYMD
                    MOVE    SYU-SRYYMD      TO  KARRK-LASTYMD
                END-IF

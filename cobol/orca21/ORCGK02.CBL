@@ -6842,6 +6842,8 @@
                                            WRK-SCR-REC
                                            SPA-AREA
                    ADD     1               TO  SPA-SRYKBN-CNT (01)
+      *            初診フラグ
+                   MOVE    LNK-ORCSC-SYOSIN2   TO  SPA-SYOSIN
       *            診察の時間加算の時、全体へ
                    MOVE    LNK-ORCSC-TIMEFLG   TO  WRK-TIMEFLG
       *
