@@ -1417,6 +1417,8 @@
                            MOVE    "3"            TO  WRK-FTNKBN
                        WHEN    1              ALSO    1
                            MOVE    "4"            TO  WRK-FTNKBN
+                       WHEN    ZERO           ALSO    ZERO
+                           MOVE    "1"            TO  WRK-FTNKBN
                    END-EVALUATE
                ELSE
       *    老人保険があるとき     
@@ -1427,6 +1429,8 @@
                            MOVE    "8"            TO  WRK-FTNKBN
                        WHEN    1              ALSO    1
                            MOVE    "A"            TO  WRK-FTNKBN
+                       WHEN    ZERO           ALSO    ZERO
+                           MOVE    "1"            TO  WRK-FTNKBN
                    END-EVALUATE
                END-IF    
            ELSE
