@@ -52,6 +52,7 @@
       *  01.05.04    NACL-多々納  02/11/25  ベット数より入院表示判定
       *  01.05.05    NACL-藤原    02/11/27  W15の追加
       *  01.05.06    NACL-藤原    02/11/28  2004 レセプト種別情報を表示しない
+      *  01.05.07    NACL-太田    03/03/05  9800 排他制御情報追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -460,8 +461,15 @@
            MOVE    "入院用管理マスタ設定"  TO  SPA-GMN-KANRICDMEIL(30)
            MOVE    "5010"                  TO  SPA-GMN-KANRICDL (31)
            MOVE    "定期請求情報"          TO  SPA-GMN-KANRICDMEIL(31)
+      ***  排他 INS ST
+           MOVE    "9800"                  TO  SPA-GMN-KANRICDL (32)
+           MOVE    "排他制御情報"          TO  SPA-GMN-KANRICDMEIL(32)
+      ***  排他 INS ED
       *
-           MOVE    31                      TO  SPA-GMN-KANRICD-MAX
+      ***  排他 UPD ST
+      *    MOVE    31                      TO  SPA-GMN-KANRICD-MAX
+           MOVE    32                      TO  SPA-GMN-KANRICD-MAX
+      ***  排他 UPD ED
       *
            MOVE    1               TO  SPA-GMN-CUR
       *
@@ -1306,6 +1314,10 @@
                    MOVE    "W23"               TO  SPA-SAKIPG
                WHEN    "9000"
                    MOVE    "W99"               TO  SPA-SAKIPG
+      *        排他 INS ST
+               WHEN    "9800"
+                   MOVE    "W98"               TO  SPA-SAKIPG
+      *        排他 INS ED
            END-EVALUATE
            MOVE    "W01"               TO  SPA-MOTOPG
       *
