@@ -38,6 +38,7 @@
       *  01.00.03    NACL-藤原    03/09/30  病名コードの取り込み
       *  01.00.04    NACL-藤原    04/01/29  転帰区分の編集
       *  01.00.05    NACL-多々納  04/02/27  保険修正
+      *  01.00.06    NACL-藤原    04/03/19  病名検索にサブパラメタ追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2462,6 +2463,8 @@
       *    疾患コードがエラーのとき病名からコード検索
                INITIALIZE                  ORCSBYOMEIAREA
                MOVE    "1"                 TO  LNK-BYO-SYORI
+               MOVE    PTBYO-SRYYMD        TO  LNK-BYO-SRYYMD-IN
+               MOVE    PTBYO-UTAGAIFLG     TO  LNK-BYO-UTAGAIFLG-IN
                MOVE    WRK-BYOMEI1         TO  LNK-BYO-BYOMEI
                MOVE    PTBYO-SYUBYOFLG     TO  LNK-BYO-SYUBYOFLG 
                CALL    "ORCSBYOMEI"        USING    ORCSBYOMEIAREA
