@@ -31,6 +31,7 @@
       * 01.00.01     MCC-多々納   02/04/16  労災用追加
       * 01.00.02     NACL-多々納  02/10/03  労災加算なしの追加
       * 01.00.03     NACL-多々納  02/11/20  自賠責器材追加
+      * 01.00.04     NACL-多々納  03/03/19  老人の労災加算の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1265,6 +1266,16 @@
                        END-EVALUATE
                        MOVE    1                    TO  FLG-ROUSAI
                END-EVALUATE
+           END-IF
+      *    老人のコードでリハビリは対象とする
+           IF      FLG-ROUSAI          =   ZERO
+               MOVE    WRK-COM-INPUTCD (IDX-Z)     TO  WRK-SRYCD2
+               PERFORM 10011312-RIGAKU-SERCH-SEC
+               IF      FLG-RIGAKU          =   1
+      *            １．５倍とする
+                   MOVE    "101800010"     TO  WRK-SRYCD
+                   MOVE    1               TO  FLG-ROUSAI
+               END-IF
            END-IF
       *
       *    既に他の労災加算が入力されている時は自動算定しない
