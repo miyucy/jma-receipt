@@ -2845,9 +2845,11 @@
            MOVE    TSRYKA-SRYKA (IDX4) TO  PTBYO-SRYKA
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "PTBYOMEI-KEY18"    TO  ORC-DBPATH
-           PERFORM 910-DBSELECT-SEC
+           PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
+               MOVE    "PTBYOMEI-KEY18"
+                                       TO  ORC-DBPATH
+               PERFORM 900-PTBYOMEI-FETCH-SEC
            ELSE
                MOVE    1               TO  FLG-PTBYOMEI
            END-IF
@@ -2896,14 +2898,8 @@
                    MOVE    1           TO  FLG-CHK-END
                END-IF
       *
-               MOVE    "PTBYOMEI-KEY18"
-                                       TO  ORC-DBPATH
-               PERFORM 910-DBFETCH-SEC
-               IF    ( MCP-RC          =   ZERO )
-                   MOVE    MCPDATA-REC TO  PTBYOMEI-REC
-               ELSE
-                   MOVE    1           TO  FLG-PTBYOMEI
-               END-IF
+               MOVE    "PTBYOMEI-KEY18"    TO  ORC-DBPATH
+               PERFORM 900-PTBYOMEI-FETCH-SEC
       *
            END-PERFORM
       *
@@ -3481,9 +3477,11 @@
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "PTBYOMEI-KEY19"    TO  ORC-DBPATH
-           PERFORM 910-DBSELECT-SEC
+           PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
+               MOVE    "PTBYOMEI-KEY19"
+                                       TO  ORC-DBPATH
+               PERFORM 900-PTBYOMEI-FETCH-SEC
            ELSE
                MOVE    1               TO  FLG-PTBYOMEI
            END-IF
@@ -3536,12 +3534,7 @@
       *
                MOVE    "PTBYOMEI-KEY19"
                                        TO  ORC-DBPATH
-               PERFORM 910-DBFETCH-SEC
-               IF    ( MCP-RC          =   ZERO )
-                   MOVE    MCPDATA-REC TO  PTBYOMEI-REC
-               ELSE
-                   MOVE    1           TO  FLG-PTBYOMEI
-               END-IF
+               PERFORM 900-PTBYOMEI-FETCH-SEC
       *
            END-PERFORM
       *
@@ -5612,6 +5605,56 @@
            .
       *
        900-SRYACCT-KEY28-FETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者病名読込処理
+      *****************************************************************
+       900-PTBYOMEI-FETCH-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-LOOP-END
+      *
+           PERFORM UNTIL ( FLG-PTBYOMEI    NOT =   ZERO )
+                    OR   ( FLG-LOOP-END    NOT =   ZERO )
+      *
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+      *
+                   MOVE    MCPDATA-REC TO  PTBYOMEI-REC
+      *
+                   MOVE    1           TO  FLG-LOOP-END
+      *
+      *            レセプト表示期間を過ぎていないかチェック
+                   IF    ( PTBYO-REZEMM    >   ZERO )
+      *
+                       MOVE    PTBYO-SRYYMD    TO  WRK-SYMD
+      *
+                       IF    ( PTBYO-REZEMM    >   1 )
+                           MOVE    "2"         TO  WRK-ZOGENPTN
+                           COMPUTE WRK-ZOGEN   =   PTBYO-REZEMM
+                                               -   1
+                           PERFORM 800-CALENDAR-SEC
+                       END-IF
+      *
+                       IF    ( WRK-KJNYMD(1:6) >   WRK-SYMD(1:6))
+                           MOVE    ZERO        TO  FLG-LOOP-END
+                       END-IF
+      *
+                   END-IF
+      *
+      *            レセプト表示を行うか
+                   IF    ( PTBYO-REZEFLG   =   "1" )
+                           MOVE    ZERO        TO  FLG-LOOP-END
+                   END-IF
+      *
+               ELSE
+                   MOVE    1           TO  FLG-PTBYOMEI
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+      *
+       900-PTBYOMEI-FETCH-EXT.
            EXIT.
       *****************************************************************
       *    点数マスタ検索処理(KEY1)
