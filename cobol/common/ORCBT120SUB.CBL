@@ -598,8 +598,10 @@
            MOVE    SYU-TOTAL-HKNTEN    TO  LNK-ORCBT120SUB-HKNTEN
                                                            (SYU-IDX)
       *     ›∏±…È√¥∂‚≥€
-           MOVE    SYU-TOTAL-MONEY     TO  LNK-ORCBT120SUB-HKNMONEY
-                                                           (SYU-IDX)
+           COMPUTE    LNK-ORCBT120SUB-HKNMONEY (SYU-IDX)
+                                       =   SYU-HKNTEKMONEY
+                                       +   SYU-RJN-FTN
+                                       +   SYU-KOH-FTN
       *     ›∏±≈¨Õ—≥∞∂‚≥€
            COMPUTE    LNK-ORCBT120SUB-TGMONEY (SYU-IDX)
                                        =   SYU-TOTAL-TGMONEY
