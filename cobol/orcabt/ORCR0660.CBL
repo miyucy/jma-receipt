@@ -43,6 +43,8 @@
       *  01.00.09    NACL-ÌçÏÆ    03.09.29  ¥³¥á¥ó¥ÈÊÔ½¸½¤Àµ
       *  01.00.10    NACL-ÌçÏÆ    03.12.15  ¼«Æ°ÊÔ½¸¥³¥á¥ó¥È¤Î¸øÈñÊ¬Î¥¶èÊ¬
       *                                     ¥»¥Ã¥È
+      *  01.00.11    NACL-ÌçÏÆ    04.01.14  ¿ÇÎÅ¹Ô°Ù¤ÎÊñ³çÊ¬¤Ï½ü¤¯
+      *                                     SRYACCT5¢ª31
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1296,7 +1298,7 @@
       *
                      MOVE    SRYACCT-REC    TO      MCPDATA-REC
                      MOVE    "DBSELECT"     TO      MCP-FUNC
-                     MOVE    "SRYACCT-KEY5" TO      ORC-DBPATH
+                     MOVE    "SRYACCT-KEY31"  TO    ORC-DBPATH
                      CALL    "ORCMCPSUB"       USING
                                                MCPAREA
                                                ORCMCPAREA
@@ -1304,7 +1306,7 @@
       *
                      IF  MCP-RC                =  ZERO
                          MOVE    "DBFETCH"      TO      MCP-FUNC
-                         MOVE    "SRYACCT-KEY5" TO      ORC-DBPATH
+                         MOVE    "SRYACCT-KEY31"  TO    ORC-DBPATH
                          CALL    "ORCMCPSUB"           USING
                                                        MCPAREA
                                                        ORCMCPAREA
@@ -1327,7 +1329,7 @@
       *
                      INITIALIZE                        MCPAREA
                      MOVE    "DBCLOSE"         TO      MCP-FUNC
-                     MOVE    "SRYACCT-KEY5"    TO      ORC-DBPATH
+                     MOVE    "SRYACCT-KEY31"   TO      ORC-DBPATH
                      CALL    "ORCMCPSUB"       USING
                                                MCPAREA
                                                ORCMCPAREA

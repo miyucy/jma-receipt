@@ -2156,7 +2156,8 @@
                              (WK-YKZTEN   *   WK-ZAIKAISU)
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)  =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)  =  "001"            )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(14)  =
                                  RECE41-TENSU(14)  -
@@ -2194,7 +2195,8 @@
                              RECE41-TENSU(16)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)  =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)  =  "001"            )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(17)
                        COMPUTE   RECE41-TENSU(17)  =
                                  RECE41-TENSU(17)  +
@@ -2488,7 +2490,8 @@
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)  =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)  =  "001"            )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(7)  =
                                  RECE41-TENSU(7)  -
@@ -2518,7 +2521,8 @@
                              RECE41-TENSU(9)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(10)
                        COMPUTE   RECE41-TENSU(10)  =
                                  RECE41-TENSU(10)  +
@@ -2830,7 +2834,8 @@
                              (WK-YKZTEN   *   WK-ZAIKAISU)
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU-YAK(9)  =
                                  RECE41-TENSU-YAK(9)  -
@@ -2868,7 +2873,8 @@
                              RECE41-TENSU-YAK(11)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(12)
                        COMPUTE   RECE41-TENSU-YAK(12)  =
                                  RECE41-TENSU-YAK(12)  +

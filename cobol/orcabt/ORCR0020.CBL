@@ -89,6 +89,8 @@
       *  01.00.32    NACL-∆£∏∂    03/10/27  ¥µº‘æ Û§Œ ‘Ω∏§ŒΩ§¿µ
       *                                     ∏©»÷πÊ§Œƒ…≤√
       *  01.00.33    NACL-ÃÁœ∆    03/11/27  °…œ∑ ›°… ‘Ω∏æÚ∑ÔΩ§¿µ
+      *  01.00.34    NACL-ÃÁœ∆    04/01/14  ø«Œ≈π‘∞Ÿ§Œ Ò≥Á ¨§œΩ¸§Ø
+      *                                     SRYACCT5¢™31
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2144,13 +2146,13 @@
                        MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
                        MOVE    SRYACCT-REC      TO   MCPDATA-REC
                        MOVE    "DBSELECT"       TO   MCP-FUNC
-                       MOVE    "SRYACCT-KEY5"   TO   ORC-DBPATH
+                       MOVE    "SRYACCT-KEY31"  TO   ORC-DBPATH
                        CALL    "ORCMCPSUB"           USING
                                                      MCPAREA
                                                      ORCMCPAREA
                                                      MCPDATA-REC
                        IF      MCP-RC           =       ZERO
-                           MOVE    "SRYACCT-KEY5"   TO  ORC-DBPATH 
+                           MOVE    "SRYACCT-KEY31"  TO  ORC-DBPATH 
                            PERFORM   SRYACCT-READ-SEC
                            IF      FLG-SRYACCT  =       ZERO
                                IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
@@ -2160,7 +2162,7 @@
                            END-IF
                        END-IF
       *
-                       MOVE    "SRYACCT-KEY5"  TO    WK-PATH
+                       MOVE    "SRYACCT-KEY31" TO    WK-PATH
                        PERFORM   CSR-CLOSE-SEC
       *
                    END-IF

@@ -31,6 +31,9 @@
       *  01.00.01    NACL-ÌçÏÆ    02.09.09  ¼«ÇåÀÕÂÐ±þ
       *  01.00.02    NACL-Æ£¸¶    03.02.24  ºÇ¿·¤Î¥ì¥»¥×¥È¤Î¤ß£Ä£Â¤Ë»Ä¤¹
       *  01.00.03    NACL-ÌçÏÆ    03.03.10  ¿ÇÎÅ²Ê£±£°¤«¤é£²£°¤Ø
+      *  01.00.04    NACL-ÌçÏÆ    04.01.14  ¿ÇÎÅ¹Ô°Ù¤ÎÊñ³çÊ¬¤Ï½ü¤¯
+      *                                     SRYACCT8¢ª29
+      *                                     SRYACCT9¢ª30
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -445,13 +448,13 @@
            MOVE    "2"                 TO  ACCT-NYUGAIKBN
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY8"      TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY8"      TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
                PERFORM 900-SRYACCT-READ-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
@@ -463,7 +466,7 @@
            END-PERFORM
       *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY8"      TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -490,7 +493,7 @@
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
-                   MOVE    "SRYACCT-KEY8"          TO  ORC-DBPATH
+                   MOVE    "SRYACCT-KEY29"         TO  ORC-DBPATH
                    PERFORM 900-SRYACCT-READ-SEC
                END-PERFORM
            ELSE
@@ -541,11 +544,11 @@
                            MOVE    KEY-NEW             TO  KEY-OLD
                            PERFORM     UNTIL   FLG-SRYACCT =   1 
                                        OR      KEY-NEW NOT =   KEY-OLD
-                               MOVE    "SRYACCT-KEY8"  TO  ORC-DBPATH
+                               MOVE    "SRYACCT-KEY29" TO  ORC-DBPATH
                                PERFORM 900-SRYACCT-READ-SEC
                            END-PERFORM
                        ELSE
-                           MOVE    "SRYACCT-KEY8"      TO  ORC-DBPATH
+                           MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
                            PERFORM 900-SRYACCT-READ-SEC
                        END-IF
                    END-PERFORM    
@@ -851,13 +854,13 @@
                MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "SRYACCT-KEY9"      TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    "SRYACCT-KEY9"      TO  ORC-DBPATH
+                   MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
                    PERFORM 900-SRYACCT-READ-SEC
                ELSE
                    INITIALIZE                  SRYACCT-REC
@@ -869,7 +872,7 @@
                END-PERFORM
       *        ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
                MOVE    "DBCLOSE"           TO  MCP-FUNC
-               MOVE    "SRYACCT-KEY9"      TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
@@ -934,11 +937,11 @@
                        MOVE    KEY-NEW             TO  KEY-OLD
                        PERFORM     UNTIL   FLG-SRYACCT     =   1 
                                    OR      KEY-NEW     NOT =   KEY-OLD
-                           MOVE    "SRYACCT-KEY9"      TO  ORC-DBPATH
+                           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
                            PERFORM 900-SRYACCT-READ-SEC
                         END-PERFORM
                    ELSE
-                       MOVE    "SRYACCT-KEY9"      TO  ORC-DBPATH
+                       MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
                        PERFORM 900-SRYACCT-READ-SEC
                    END-IF
                END-PERFORM    

@@ -93,6 +93,8 @@
       *                                     対象外点数を取り込み）
       *  01.00.33    NACL-太田    03.10.01  未収金管理機能強化対応
       *  01.00.34    NACL-太田    03.11.12  更新日付編集対応
+      *  01.00.35    NACL-門脇    04.01.14  診療行為の包括分は除く
+      *                                     SRYACCT2→32
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2820,13 +2822,13 @@
            MOVE    SYU-SRYYMD (1:6)    TO  ACCT-SRYYM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY2"      TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY32"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY2"  TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY32" TO  ORC-DBPATH
                PERFORM SINKAI-NEXT-SEC
            ELSE
                MOVE    1               TO      FLG-SINKAI
@@ -2857,7 +2859,7 @@
                UNTIL   (FLG-SINKAI     =       1      ) OR
                        (IDX1            >       100    )
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY2"      TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY32"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -3346,7 +3348,7 @@
              ADD     1             TO  IDX1
       * 
            END-IF
-           MOVE    "SRYACCT-KEY2"         TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY32"        TO  ORC-DBPATH
            PERFORM SINKAI-NEXT-SEC
            .
        4401-SINKAI-SET-EXT.

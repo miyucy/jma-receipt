@@ -58,6 +58,8 @@
       *                                     Å¦Í×Íóµ­ºÜÂÐ±þ
       *  01.00.22    NACL-ÌçÏÆ    04/01/06  ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¤Î£±·åÌÜ¤ÎÈ½Äê
       *                                     ½¤Àµ
+      *  01.00.23    NACL-ÌçÏÆ    04/01/14  ¿ÇÎÅ¹Ô°Ù¤ÎÊñ³çÊ¬¤Ï½ü¤¯
+      *                                     SRYACCT7¢ª33
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -990,13 +992,13 @@
            MOVE    RECE62-SRYYM         TO      ACCT-SRYYM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY7"       TO      ORC-DBPATH
+           MOVE    "SRYACCT-KEY33"      TO      ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "SRYACCT-KEY7"   TO      ORC-DBPATH
+               MOVE    "SRYACCT-KEY33"  TO      ORC-DBPATH
                PERFORM  SRYACCT-READ-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
@@ -1061,14 +1063,14 @@
                            MOVE    10                TO  IDX1
                        END-IF
                    END-PERFORM          
-                   MOVE     "SRYACCT-KEY7"   TO   ORC-DBPATH
+                   MOVE     "SRYACCT-KEY33"  TO   ORC-DBPATH
                    PERFORM   SRYACCT-READ-SEC
                END-PERFORM
            ELSE
                DISPLAY   "SRYACCT SELECT ERR" 
            END-IF
       *
-           MOVE   "SRYACCT-KEY7"      TO  WK-PATH
+           MOVE   "SRYACCT-KEY33"     TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
            .
@@ -4665,7 +4667,8 @@
                    END-IF
       *    ÅêÌô¤Î¥ì¥»ÅÀ¿ôÍó¤ÎÊÔ½¸
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        IF    BUN-IDX        =   1
                            COMPUTE   RECE62-TENSU(4 BUN-IDX)  =

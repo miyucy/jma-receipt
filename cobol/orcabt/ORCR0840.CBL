@@ -3370,7 +3370,8 @@
                              (WK-ZAITEN   *   WK-ZAIKAISU)
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                            COMPUTE   RECE82-TENSU(4)  =
                                      RECE82-TENSU(4)  -
@@ -3625,7 +3626,8 @@
                              (WK-YKZTEN     *   WK-ZAIKAISU)
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
+                   IF    (SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8")
+                   OR    (SRY-SRYCD(IDX3) (1:3)   =  "001"            )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                            COMPUTE   RECE82-TENSU-YAK(4)  =
                                      RECE82-TENSU-YAK(4)  -

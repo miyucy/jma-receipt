@@ -38,6 +38,8 @@
       *  01.00.08    NACL-門脇    03/06/06  特定入院料の略称が無い場合の
       *                                     対応
       *  01.00.09    NACL-門脇    03/06/19  実日数テーブル編集の追加
+      *  01.00.10    NACL-門脇    04/01/14  診療行為の包括分は除く
+      *                                     SRYACCT7→33
       *****************************************************************
       *
       *
@@ -601,12 +603,12 @@
            MOVE    RECE62-SRYYM         TO      ACCT-SRYYM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY7"       TO      ORC-DBPATH
+           MOVE    "SRYACCT-KEY33"      TO      ORC-DBPATH
            CALL    "ORCMCPSUB"          USING   MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "SRYACCT-KEY7"   TO      ORC-DBPATH
+               MOVE    "SRYACCT-KEY33"  TO      ORC-DBPATH
                PERFORM  SRYACCT-READ-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
@@ -641,13 +643,13 @@
                            MOVE    10              TO    IDX1
                        END-IF
                    END-PERFORM
-                   MOVE     "SRYACCT-KEY7"   TO   ORC-DBPATH
+                   MOVE     "SRYACCT-KEY33"  TO   ORC-DBPATH
                    PERFORM   SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY7"          TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY33"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -1021,12 +1023,12 @@
            MOVE    RECE62-SRYYM         TO      ACCT-SRYYM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY7"       TO      ORC-DBPATH
+           MOVE    "SRYACCT-KEY33"      TO      ORC-DBPATH
            CALL    "ORCMCPSUB"          USING   MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "SRYACCT-KEY7"   TO      ORC-DBPATH
+               MOVE    "SRYACCT-KEY33"  TO      ORC-DBPATH
                PERFORM  SRYACCT-READ-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
@@ -1044,13 +1046,13 @@
                            MOVE    10            TO    IDX1
                        END-IF
                    END-PERFORM
-                   MOVE     "SRYACCT-KEY7"   TO   ORC-DBPATH
+                   MOVE     "SRYACCT-KEY33"  TO   ORC-DBPATH
                    PERFORM   SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY7"          TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY33"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -2033,12 +2035,12 @@
            MOVE    RECE62-SRYYM         TO      ACCT-SRYYM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY7"       TO      ORC-DBPATH
+           MOVE    "SRYACCT-KEY33"      TO      ORC-DBPATH
            CALL    "ORCMCPSUB"          USING   MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "SRYACCT-KEY7"   TO      ORC-DBPATH
+               MOVE    "SRYACCT-KEY33"  TO      ORC-DBPATH
                PERFORM  SRYACCT-READ-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
@@ -2063,13 +2065,13 @@
                            MOVE    10    TO    IDX1
                        END-IF
                    END-PERFORM
-                   MOVE     "SRYACCT-KEY7"   TO   ORC-DBPATH
+                   MOVE     "SRYACCT-KEY33"  TO   ORC-DBPATH
                    PERFORM   SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY7"          TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY33"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -2419,12 +2421,12 @@
            MOVE    RECE62-SRYYM         TO      ACCT-SRYYM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY7"       TO      ORC-DBPATH
+           MOVE    "SRYACCT-KEY33"      TO      ORC-DBPATH
            CALL    "ORCMCPSUB"           USING   MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "SRYACCT-KEY7"   TO      ORC-DBPATH
+               MOVE    "SRYACCT-KEY33"  TO      ORC-DBPATH
                PERFORM  SRYACCT-READ-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
@@ -2441,13 +2443,13 @@
                            MOVE   10            TO   IDX1
                        END-IF
                    END-PERFORM
-                   MOVE     "SRYACCT-KEY7"   TO   ORC-DBPATH
+                   MOVE     "SRYACCT-KEY33"  TO   ORC-DBPATH
                    PERFORM   SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY7"          TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY33"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA

@@ -69,6 +69,8 @@
       *  01.04.01    NACL-藤原    03/06/05  労災・自賠責の入院対象が
       *                                     あるかチェック
       *  01.04.02    NACL-藤原    03/08/05  外来レセ電処理の追加
+      *  01.04.03    NACL-門脇    04/01/14  診療行為の包括分は除く
+      *                                     SRYACCT9→30
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -871,13 +873,13 @@
            MOVE    SPA-GMN-NYUGAIKBN   TO  ACCT-NYUGAIKBN
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY9"      TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY9"      TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
                PERFORM 900-SRYACCT-READ-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
@@ -890,7 +892,7 @@
            END-PERFORM
       *    カーソルクロース
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY9"      TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -950,7 +952,7 @@
            PERFORM UNTIL   FLG-SRYACCT     =   1
                    OR      FLG-CHK         =   1 
                    OR      KEY-NEW     NOT =   KEY-OLD
-               MOVE    "SRYACCT-KEY9"      TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
                PERFORM 900-SRYACCT-READ-SEC
            END-PERFORM
            .
@@ -2560,14 +2562,14 @@
        910-SRYACCT-INV-SEC         SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY9"      TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "SRYACCT-KEY9"      TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
@@ -2583,7 +2585,7 @@
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY9"      TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
