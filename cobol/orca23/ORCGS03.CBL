@@ -46,7 +46,8 @@
       *  01.01.13    NACL-太田    02.12.16  コラムリストの金額欄を
       *                                     カンマ編集するよう修正
       *  01.01.14    NACL-森脇    03.01.06  S04の追加
-      *  01.01.15    NACL-太田    03.01.07  入金上限額のチェックを修正
+      *  01.01.15    NACL-太田    03.10.27  入金上限額のチェックを修正
+      *  01.01.16    NACL-太田    03.10.29  履歴修正処理修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1209,6 +1210,7 @@
                                    CONTINUE
                                ELSE
                                    MOVE    1       TO  SPA-GMN-CUR
+                                   MOVE    ZERO    TO  SPA-IDX
                                    MOVE    "0009"  TO  SPA-ERRCD
                                    GO  TO  200-ENTRY-EXT
                                END-IF
@@ -1246,6 +1248,7 @@
                                CONTINUE
                            ELSE
                                MOVE    1       TO  SPA-GMN-CUR
+                               MOVE    ZERO    TO  SPA-IDX
                                MOVE    "0009"  TO  SPA-ERRCD
                                GO  TO  200-ENTRY-EXT
                            END-IF
@@ -1349,12 +1352,6 @@
       *************************************************************
        410-TOROK-MAE-CHK-SEC           SECTION.
       *
-      *    入金額チェック処理
-           PERFORM 41011-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  410-TOROK-MAE-CHK-EXT
-           END-IF
-      *
       *    入金日チェック
            IF  SPA-S01-SYORINO    =    "08"
            AND SPA-IDX            =   ZERO
@@ -1362,6 +1359,12 @@
                MOVE    3               TO  SPA-GMN-CUR
                GO  TO  410-TOROK-MAE-CHK-EXT
            END-IF    
+      *
+      *    入金額チェック処理
+           PERFORM 41011-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  410-TOROK-MAE-CHK-EXT
+           END-IF
       *
            MOVE   ZERO               TO  SPA-GMN-NYUKINYMD-IN99
       *
