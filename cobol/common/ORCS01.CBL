@@ -116,6 +116,7 @@
       *  01.00.39    NACL-ÌçÏÆ    03/06/06  ¾ÃÈñÀÇÃ¼¿ôÂÐ±þ
       *  01.00.40    NACL-ÌçÏÆ    03/07/01  ¥ì¥»µ­ºÜÍÑ°ìÉôÉéÃ´¶âÊÔ½¸½¤Àµ
       *  01.00.41    NACL-ÌçÏÆ    03/08/27  ÆÃÄê¼À´µ²þÀµÂÐ±þ
+      *  01.00.42    NACL-¾®Æ¦Âô  03/09/02  Ê¡²¬¸©ÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -526,6 +527,10 @@
       *
       *    ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
            COPY    "CPORCSAGECHK.INC".
+      *
+      *    ¸øÈñÉÕ²Ã¾ðÊó¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSKOHPLUS.INC".
+      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -4077,7 +4082,40 @@
                    MOVE    HKN-HON-GAIKKOTGAK   TO   WK-GAIKKOTGAK
            END-IF.
       *
+      *    Ê¡²¬¸©¤ÎÃÏÊý¸øÈñÂÐ±þ¡Ê¸øÈñÉÕ²Ã¾ðÊó¤Î¼èÆÀ¡Ë
+           IF     (SYS-1001-PREFNUM          =       40)    AND
+                  (COMB-KOHHKNNUM(KOH-IDX)(1:1)  >= "1")    AND
+                  (COMB-KOHHKNNUM(KOH-IDX)(1:1)  <= "8")
+               PERFORM     2302-KOHPLUS-FUKUOKA-SEC
+           END-IF.
+      *
        2302-KOH-HKNREAD-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *        ¸øÈñÉÕ²Ã¾ðÊó¤Î¼èÆÀ¡ÊÊ¡²¬¸©ÂÐ±þ¡Ë                  *
+      ******************************************************************
+       2302-KOHPLUS-FUKUOKA-SEC           SECTION.
+      *
+           INITIALIZE                  ORCSKOHPLUS-AREA
+           MOVE    LNK-SYU-HOSPID  TO  LNK-SKOHPLUS-HOSPID
+           MOVE    SYS-1001-PREFNUM
+                                   TO  LNK-SKOHPLUS-PREFNUM
+           MOVE    LNK-SYU-PTID    TO  LNK-SKOHPLUS-PTID
+           MOVE    LNK-SYU-HKNCOMBINUM
+                                   TO  LNK-SKOHPLUS-HKNCOMBI
+           MOVE    LNK-SYU-SRYYMD  TO  LNK-SKOHPLUS-SRYYMD
+           CALL    "ORCSKOHPLUS"       USING
+                                       ORCSKOHPLUS-AREA
+           IF      LNK-SKOHPLUS-RC =   ZERO
+               CONTINUE
+           ELSE
+               DISPLAY "ORCSKOHPLUS ERR  RC = " LNK-SKOHPLUS-RC
+           END-IF
+      *
+           .
+      *
+       2302-KOHPLUS-FUKUOKA-EXT.
            EXIT.
       *
       ******************************************************************
