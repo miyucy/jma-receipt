@@ -724,6 +724,15 @@
                                            TO  SPA-GMN-HOJOKBNL
                                                     (SPA-GMN-HOJO-MAX)
                    END-PERFORM
+                   IF      SPA-GMN-HOJOKBN     =   SPACE
+      *                £»£±£¥°•£±£∞∞ πﬂ°¢œ∑øÕ§œ£±≥‰§ÚΩÈ¥¸§»§π§Î
+                       IF    ((SPA-NAI-HTEKSTYMD   >=  "20021001" ) AND
+                              (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70)) OR
+                             ((SPA-SYSYMD          >=  "20021001" ) AND
+                              (SPA-SYSYMD          >=  SPA-BYMD-70))
+                           MOVE    "9"         TO  SPA-GMN-HOJOKBN
+                       END-IF
+                   END-IF
       *        πÒ ›
                WHEN    "060"
                    PERFORM VARYING   IDT     FROM    1  BY  1
