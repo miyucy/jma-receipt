@@ -820,25 +820,30 @@
                        WHEN    "028"
                            MOVE    9               TO  IDY1
                        WHEN    "051"
+                       WHEN    "091"
                            MOVE    10              TO  IDY1
+                       WHEN    OTHER
+                           MOVE    ZERO            TO  IDY1
                    END-EVALUATE
       *
-                   COMPUTE IDX1    =   IDW     +       1
-                   ADD     1
+                   IF      IDY1                >   ZERO 
+                       COMPUTE IDX1    =   IDW     +       1
+                       ADD     1
                              TO  SUM-ROU-KOH-KENSU          (IDY3 IDY1)
-      *************IF      IDY1                =   1           
-                       ADD     RECE10-JNISSU         (IDX1)
+      *************    IF      IDY1                =   1           
+                           ADD     RECE10-JNISSU         (IDX1)
                              TO  SUM-ROU-KOH-NISSU          (IDY3 IDY1)
-                       ADD     RECE10-FTNMONEY       (IDX1)
+                           ADD     RECE10-FTNMONEY       (IDX1)
                              TO  SUM-ROU-KOH-FTNMONEY       (IDY3 IDY1)
       *                           
-                       ADD     RECE10-SHOKUJINISSU   (IDX1)
+                           ADD     RECE10-SHOKUJINISSU   (IDX1)
                              TO  SUM-ROU-KOH-SHOKUJINISSU   (IDY3 IDY1)
-                       ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
+                           ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
                              TO  SUM-ROU-KOH-SHOKUJIRYOYOHI (IDY3 IDY1)
-                       ADD     RECE10-SHOKUJIFTN     (IDX1)
+                           ADD     RECE10-SHOKUJIFTN     (IDX1)
                              TO  SUM-ROU-KOH-SHOKUJIFTN     (IDY3 IDY1)
-      *************END-IF          
+      *************    END-IF
+                   END-IF           
                END-PERFORM
            END-IF                  
       *
