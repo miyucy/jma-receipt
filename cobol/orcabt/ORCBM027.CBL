@@ -29,6 +29,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-Æ£¸¶    03/06/10  Ï·¿ÍÊÝ¸±¤Î°ìÉôÉéÃ´¶â¤ÎÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -551,14 +552,18 @@
                        UNTIL   IDY >       3
                    MOVE    SUM-ROU-KENSU    (IDX1 IDX IDY) 
                                            TO  WRK-KENSUZ
-                   MOVE    WRK-KENSUZ      TO  HCM2L-ROU-KENSU (IDX IDY) 
+                   MOVE    WRK-KENSUZ      TO  HCM2L-ROU-KENSU (IDX IDY)
                    IF      IDY                 <   3
                        MOVE    SUM-ROU-NISSU    (IDX1 IDX IDY)
                                            TO  WRK-NISSUZ 
-                       MOVE    WRK-NISSUZ  TO  HCM2L-ROU-NISSU (IDX IDY) 
+                       MOVE    WRK-NISSUZ  TO  HCM2L-ROU-NISSU (IDX IDY)
                        MOVE    SUM-ROU-TOTALTEN (IDX1 IDX IDY)
                                            TO  WRK-TENSUZ
-                       MOVE    WRK-TENSUZ  TO  HCM2L-ROU-TENSU (IDX IDY) 
+                       MOVE    WRK-TENSUZ  TO  HCM2L-ROU-TENSU (IDX IDY)
+                       MOVE    SUM-ROU-FTNMONEY (IDX1 IDX IDY)
+                                           TO  WRK-FTNMONEYZ
+                       MOVE    WRK-FTNMONEYZ
+                                           TO  HCM2L-ROU-ITBFTN(IDX IDY)
                    END-IF
                END-PERFORM    
            END-PERFORM
