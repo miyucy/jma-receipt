@@ -31,6 +31,7 @@
       *  01.01.01    MCC-藤原     01/09/21  JOINの修正      
       *  01.01.02    NACL-多々納  03/06/16  確認画面追加
       *  01.01.03    NACL-森脇    03/06/24  印刷処理追加
+      *  01.01.04    NACL-多々納  03/06/25  受付一覧更新追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -442,6 +443,10 @@
       *        印刷処理
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 4010-PRINT-SEC
+      *        受付一覧更新
+               WHEN    "CLICKED"       ALSO    "pandatimer1"
+               WHEN    "CLICKED"       ALSO    "B11"
+                   PERFORM 4011-UKELIST-SEC
            END-EVALUATE
       *
            .
@@ -874,6 +879,30 @@
            .
        800-PRINT-SYORI-EXT.
            EXIT.
+      *****************************************************************
+      *    受付一覧更新処理
+      *****************************************************************
+       4011-UKELIST-SEC              SECTION.
+      *
+      *    選択中でないこと
+           IF      SPA-GMN-SELNUM(1)   NOT =   ZERO
+               MOVE    "0002"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
+               GO      TO      4011-UKELIST-EXT
+           END-IF
+           IF      SPA-GMN-SELNUM(2)   NOT =   ZERO
+               MOVE    "0002"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-CUR
+               GO      TO      4011-UKELIST-EXT
+           END-IF
+      *
+      *    受付情報表示
+           PERFORM                     5001-U010-HEN-SEC
+           MOVE    1               TO  SPA-GMN-CUR
+      *
+           .
+       4011-UKELIST-EXT.
+           EXIT.
       *
       *****************************************************************
       *    戻る　処理
@@ -1073,10 +1102,7 @@
                    MOVE    "選択番号が有りません"  
                                        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "病名コード選択が６以上です"
-                                       TO  SPA-ERRMSG
-               WHEN    "0003"
-                   MOVE    "病名コード順がエラーです"
+                   MOVE    "選択中です。受付一覧の更新はできません"
                                        TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "新患は選択できません"

@@ -281,7 +281,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 08:28:00 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>一覧更新</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -868,6 +868,22 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaTimer</class>
+      <name>pandatimer1</name>
+      <x>888</x>
+      <y>696</y>
+      <width>21</width>
+      <height>21</height>
+      <signal>
+	<name>timeout</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 25 Jun 2003 06:37:26 GMT</last_modification_time>
+      </signal>
+      <duration>60</duration>
     </widget>
   </widget>
 </widget>

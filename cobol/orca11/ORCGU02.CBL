@@ -55,6 +55,7 @@
       *  02.00.05    NACL-多々納  03/02/26  診療科・ドクター件数修正
       *  02.00.06    NACL-多々納  03/03/05  排他制御処理追加
       *  02.00.07    NACL-多々納  03/03/26  カルテ続紙印刷追加
+      *  02.00.08    NACL-多々納  03/06/25  受付一覧更新追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -990,6 +991,11 @@
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 493-CLEAR-SEC
       *---- (01.00.05) LINE ADD END ----------------------------------
+      *TEST    受付一覧更新
+               WHEN    "CLICKED"       ALSO    "pandatimer1"
+               WHEN    "CLICKED"       ALSO    "B11S"
+                   PERFORM 4931-UKELIST-SEC
+      *
       *    受付取消へ
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 491-SAKUJO-SEC
@@ -2313,6 +2319,23 @@
            EXIT.
       *---- (01.00.05) LINE ADD END -----------------------------------
       *
+      *****************************************************************
+      *    受付一覧更新処理
+      *****************************************************************
+       4931-UKELIST-SEC                   SECTION.
+      *
+      *    選択中でないこと
+           IF      SPA-GMN-SELNUM  NOT =   ZERO
+               MOVE    "0027"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
+               GO      TO      4931-UKELIST-EXT
+           END-IF
+      *    受付一覧編集
+           PERFORM 3101-UKETU-HEN-SEC
+      *
+           .
+       4931-UKELIST-EXT.
+           EXIT.
       *
       *****************************************************************
       *    前回患者処理
@@ -3913,6 +3936,10 @@
                WHEN    "0026"
                    MOVE
                    "診療科と診療内容は必ず選択して下さい。"
+                                                TO  SPA-ERRMSG
+               WHEN    "0027"
+                   MOVE
+                   "選択中です。受付一覧の更新はできません。"
                                                 TO  SPA-ERRMSG
                WHEN    "2001"
                    MOVE    "前の未確認保険はありません。。"
