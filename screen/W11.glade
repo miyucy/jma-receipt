@@ -1409,7 +1409,7 @@
 	  <label>処方せんＧＥ表示区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
+	  <xalign>0.0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1418,14 +1418,14 @@
 	<widget>
 	  <class>GtkLabel</class>
 	  <name>label215</name>
-	  <x>104</x>
+	  <x>100</x>
 	  <y>168</y>
 	  <width>144</width>
 	  <height>24</height>
 	  <label>後発医薬品表示名称</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
+	  <xalign>0.0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1487,10 +1487,10 @@
       <y>10</y>
       <width>100</width>
       <height>18</height>
-      <label>有効期間      </label>
+      <label>有効期間</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>0.0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
