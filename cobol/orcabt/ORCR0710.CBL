@@ -4425,6 +4425,7 @@
                                              =   SPACE
                    MOVE    RECE62-NYUTOKRYO  (IDY)
                                          TO  RECE10-KHNTEN (IDX)
+               END-IF
                MOVE    RECE62-NYUTOKNISSU(IDY)
                                          TO  RECE10-KAISU  (IDX)
                PERFORM   VARYING   IDY1  FROM    1   BY  1
@@ -4595,7 +4596,7 @@
       *****    PERFORM 500-ERR-HENSYU-SEC
       *****END-IF
            DISPLAY "*** ORCR0710 IN  RECE62 ="  CNT-RECE62
-           DISPLAY "*** ORCR0103 IN  RECE62X="  CNT-RECE62X
+           DISPLAY "*** ORCR0710 IN  RECE62X="  CNT-RECE62X
            DISPLAY "*** ORCR0710 OUT  "  CNT-OUT
            DISPLAY "*** ORCR0710 END ***"
       *
