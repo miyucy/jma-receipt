@@ -31,7 +31,9 @@
       *  01.00.02    NACL-藤原    02/10/18  確定のとき自動的に情報確認画面を表示
       *  01.00.03    NACL-藤原    03/03/03  レセプト再印刷の追加
       *  01.00.04    NACL-藤原    03/04/12  印刷開始・終了頁の編集の修正
-      *  01.00.04    NACL-藤原    03/05/19  未印刷のときのダイアログを止める
+      *  01.00.05    NACL-藤原    03/05/19  未印刷のときのダイアログを止める
+      *　プレビュー機能追加
+      *  01.01.01    NACL-藤原    03/07/07  プレビュー機能追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -39,21 +41,21 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル シェル領域 
-      *****COPY    "CPCOMMONSHELL1.INC".
+      **** COPY    "CPCOMMONSHELL1.INC".
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
@@ -107,6 +109,7 @@
                            11  SPA-NAI-TTBL-KEY    PIC X(08).
                            11  SPA-NAI-TTBL-GROUP  PIC X(14).
                            11  SPA-NAI-TPRTFLG     PIC X(01).
+      *
       *                     
                05  SPA-WRK-TBL-KEY                 PIC X(08).            
       *                 
@@ -201,6 +204,9 @@
       *
        01  WRK-LNK-AREA.
            COPY    "CPORCSPRTLNK.INC".   
+      *     
+      *    プレビュー用情報
+           COPY    "CPXC01LNK.INC".
       *              
       *
        01  WRK-CONS-AREA.
@@ -219,6 +225,7 @@
       *
            03  WRK-CONS-LINE-MAX   PIC 9(03)   VALUE   100.     
       *
+      **** COPY    "XC01COMMON-SPA".
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -265,13 +272,14 @@
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
       *
-           COPY    "LINKAREA".
+           COPY    "LINKAREA". 
       *
        01  SCRAREA.
            COPY    "XA01.INC".
            COPY    "XA99.INC".
            COPY    "XAERR.INC".
            COPY    "XAID1.INC".
+           COPY    "XAID2.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -341,6 +349,8 @@
                END-IF
            END-IF
       *
+      *****MOVE    SPACE               TO  LINKAREA
+      *
            MOVE    SPACE               TO  MCP-PUTTYPE
            MOVE    "XA01"              TO  MCP-WINDOW
       *
@@ -359,17 +369,37 @@
            EVALUATE    SPA-MOTOPG
       *    作表処理
                WHEN    "XA99" 
+                   PERFORM 340-XA99-SET-SEC
                    GO      TO      300-SCREEN-EXT
                WHEN    "XAID1"
                    PERFORM 330-XAID1-SET-SEC
                    GO      TO      300-SCREEN-EXT
+               WHEN    "XAID2"
+                   PERFORM 330-XAID2-SET-SEC
+                   GO      TO      300-SCREEN-EXT
            END-EVALUATE
+      *
       *    他のＬＤより
-           IF      LNK-KYOUTU      NOT =   SPACE
+           IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
-               MOVE    SPA-MOTOPG          TO  SPA-MOTOPG2
+               MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
+      *
+      *        元の画面へ戻す
+               IF      WRK-MOTOPG      =   "XC01"
+                   INITIALIZE              SPA-XA01-AREA
+                                           SPA-XA01KYOUTU
+                   MOVE    SPA-WORK        TO  LNK-XC01-AREA
+                   MOVE    LNK-XC01-MOTOPG TO  SPA-XA01-MOTOPG  
+                   PERFORM 310-SPASET-SEC
+                   GO  TO  300-SCREEN-EXT
+               END-IF
+      *
+               MOVE    WRK-MOTOPG          TO  SPA-XA01-MOTOPG
            END-IF
       *
+      *
+           INITIALIZE              SPA-XA01-AREA
+                                   SPA-XA01KYOUTU
            PERFORM 310-SPASET-SEC
       *
            .
@@ -380,9 +410,6 @@
       *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
-      *
-           INITIALIZE              SPA-XA01-AREA
-                                   SPA-XA01KYOUTU
       *
            EVALUATE    SPA-PRTKANRI-TBL-KEY
                WHEN    "SOKATU"
@@ -492,23 +519,100 @@
                    WHEN    "6666"
                        MOVE    "JOIN"          TO  MCP-PUTTYPE
                        PERFORM 210-BACK-SYORI-SEC
-                   WHEN    "1001"
-                   WHEN    "1004"
-                       PERFORM 450-PRINT-SEC
                    WHEN    "1002"
                    WHEN    "1003"
                        PERFORM 430-DELETE-SEC
+                   WHEN    "1001"
+      *************WHEN    "1004"
+                       PERFORM 450-PRINT-SEC
                END-EVALUATE        
            END-IF
       *
            MOVE    1               TO  SPA-GMN-CUR
       *
            MOVE    SPACE           TO  SPA-XAID1-FLG
+                                       SPA-XA99-FLG
            MOVE    SPACE           TO  SPA-XAIDCD
+           MOVE    SPACE           TO  SPA-XAIDCD2      
            .
        330-XAID1-SET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    確認画面２ ＯＫ処理
+      *****************************************************************
+       330-XAID2-SET-SEC            SECTION.
+      *
+           IF      SPA-XAID1-FLG    NOT =   SPACE
+               EVALUATE    SPA-XAIDCD2
+                   WHEN    "1001"
+      *************WHEN    "1004"
+                   WHEN    "1005"
+                       PERFORM 450-PRINT-SEC
+               END-EVALUATE
+           ELSE        
+               MOVE    SPACE           TO  SPA-XAID1-FLG
+           END-IF
+      *
+           MOVE    SPACE           TO  SPA-XA99-FLG
+           MOVE    SPACE           TO  SPA-XAIDCD
+           MOVE    SPACE           TO  SPA-XAIDCD2      
+           .
+       330-XAID2-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処理表示画面戻り処理
+      *****************************************************************
+       340-XA99-SET-SEC            SECTION.
+      *
+           IF      SPA-XA99-FLG     =   "OK"
+               PERFORM 4501-NEXT-GMN-SEC
+           END-IF    
+      *
+           MOVE    SPACE           TO  SPA-XAID1-FLG
+                                       SPA-XA99-FLG
+           MOVE    SPACE           TO  SPA-XAIDCD
+           MOVE    SPACE           TO  SPA-XAIDCD2      
+           .
+       340-XA99-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    プレビュー処理
+      *****************************************************************
+       4501-NEXT-GMN-SEC            SECTION.       
+      *
+      *****MOVE    SPACE               TO  LINKAREA
+      *****MOVE    SPA-KYOUTU          TO  LNK-COMMON
+      *****MOVE    SPA-XA01            TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "XA01"              TO  SPA-MOTOPG
+           MOVE    "XC01"              TO  SPA-SAKIPG
+      *
+           MOVE    SPA-GMN-RENNUM      TO  LNK-XC01-RENNUM
+           MOVE    SPA-GMN-TBL-GROUP   TO  LNK-XC01-TBL-GROUP
+           MOVE    SPA-GMN-SHORI-RENNUM
+                                       TO  LNK-XC01-SHORI-RENNUM
+           MOVE    SPA-GMN-STPAGE      TO  LNK-XC01-ST-PAGE
+           MOVE    SPA-GMN-EDPAGE      TO  LNK-XC01-ED-PAGE
+           MOVE    SPA-XA01-MOTOPG     TO  LNK-XC01-MOTOPG
+           MOVE    SPACE               TO  LNK-XC01-MODE
+      *          
+           MOVE    LNK-XC01-AREA       TO  SPA-WORK
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           MOVE   "XC01   "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4501-NEXT-GMN-EXT.
+           EXIT.
       *****************************************************************
       *    画面遷移処理
       *****************************************************************
@@ -527,6 +631,9 @@
                    PERFORM 430-DELETE-GID-SEC
       *     印刷
                WHEN    "CLICKED"       ALSO    "B12"
+                   PERFORM 450-PRINT-GID-SEC
+      *     プレビュー
+               WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 450-PRINT-GID-SEC
       *     処理確認
                WHEN    "CLICKED"       ALSO    "B13"
@@ -621,7 +728,7 @@
            MOVE    ZERO                TO  SPA-GMN-STPAGE
                                            SPA-GMN-EDPAGE
                                            SPA-GMN-SELNUM
-                                           SPA-NAI-SELNUM
+                                           SPA-NAI-SELNUM      
            IF      SPA-GMN-RENNUM      =   ZERO
                MOVE    ZERO                TO  SPA-GMN-SHORI-RENNUM
                MOVE    99                  TO  SPA-GMN-CUR
@@ -874,7 +981,7 @@
       *****************************************************************
        210-BACK-SYORI-SEC              SECTION.
       *
-           MOVE    SPA-MOTOPG2         TO  SPA-SAKIPG
+           MOVE    SPA-XA01-MOTOPG     TO  SPA-SAKIPG
            MOVE    "XA01"              TO  SPA-MOTOPG
       *
            MOVE    SPACE               TO  SPA-WORK 
@@ -1053,6 +1160,10 @@
            IF      SPA-ERRCD       NOT =   SPACE                 
                GO  TO  450-PRINT-GID-EXT               
            END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE                 
+               GO  TO  450-PRINT-GID-EXT               
+           END-IF
       *     
            IF      SPA-GMN-TBL-GROUP   =   SPACE
                MOVE    "0001"              TO  SPA-ERRCD
@@ -1104,23 +1215,27 @@
            END-IF
       *     
       *    ガイドメッセージセット
-           MOVE    "1001"              TO  SPA-XAIDCD
+           IF     MCP-WIDGET           =   "B12"
+                  MOVE    "1001"       TO  SPA-XAIDCD2
+           ELSE
+                  MOVE    "1005"       TO  SPA-XAIDCD2
+           END-IF
       *
-      *****未処理の帳票があるとき
+      *    未処理の帳票があるとき
       *****PERFORM                     UNTIL   FLG-PRTKANRI    =   1
       *        IF      PRTKANRI-PRTFLG         =   SPACE
-      *            MOVE    "1004"          TO  SPA-XAIDCD
+      *            MOVE    "1004"          TO  SPA-XAIDCD2
       *            MOVE    1               TO  FLG-PRTKANRI
       *        END-IF
       *        PERFORM 900-PRTKANRI-FET2-SEC
       *****END-PERFORM                   
-      *                  
+      *                 
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    PATH-TBL-PRTKANRI-KEY2
-                                       TO  MCP-PATH
+                                     TO  MCP-PATH
            CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+                                      MCPAREA
+                                      MCPDATA-REC
            .
        450-PRINT-GID-EXT.
            EXIT.
@@ -1198,7 +1313,7 @@
            MOVE    SPACE               TO  SHELLTBL
       *****MOVE    "/usr/local/orca/scripts/allways/print.sh"
       *****                            TO  SHELLTBL-NAME
-           MOVE    "print.sh"          TO  WRK-SHELL-SHELL
+           MOVE    "print_prv.sh"          TO  WRK-SHELL-SHELL
       *    ファイルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
            MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
@@ -1212,7 +1327,7 @@
            MOVE    SPA-GMN-RENNUM      TO  LNK-PRTKANRI-RENNUM
            MOVE    SPA-GMN-SHORI-RENNUM
                                        TO  LNK-PRTKANRI-SHORI-RENNUM
-           MOVE    "print.sh"          TO  LNK-PRTKANRI-SHELLID
+           MOVE    "print_prv.sh"      TO  LNK-PRTKANRI-SHELLID
            MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
            MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
            MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1       
@@ -1232,12 +1347,21 @@
            MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
            MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
       *                 
+      *                 
            MOVE    RECEERR             TO  SHELLTBL-ARG12
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG14
            MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
            MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
+           EVALUATE    SPA-XAID1-FLG
+               WHEN    "PV"
+                   MOVE    "3"             TO  SHELLTBL-ARG17
+               WHEN    "NO"
+                   MOVE    "3"             TO  SHELLTBL-ARG17
+               WHEN    "OK"
+                   MOVE    "2"             TO  SHELLTBL-ARG17
+           END-EVALUATE
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
@@ -1340,6 +1464,7 @@
       *
            MOVE    SPACE               TO  XA99
            MOVE    ZERO                TO  XA99-COUNT
+           MOVE    WIDGET-INSENSITIVE  TO  XA99-B12-STATE
       *        
            MOVE    SPACE               TO  SYS-3003-REC 
            INITIALIZE                      SYS-3003-REC
@@ -1398,16 +1523,22 @@
                    END-IF
                END-PERFORM
            END-IF
+           MOVE    "B01"                TO  MCP-WIDGET
            IF      XA99-MSG              =   SPACE
                IF      XA99-COUNT            >   ZERO    
                    MOVE    "処理は正常に終了しました"
                                                 TO  XA99-MSG
+                   IF      SPA-XAID1-FLG    =   "PV"
+                       MOVE    WIDGET-NORMAL    TO  XA99-B12-STATE
+                       MOVE    "B12"            TO  MCP-WIDGET
+                   ELSE
+                       MOVE    "B01"            TO  MCP-WIDGET
+                   END-IF
                ELSE
                    MOVE    "該当する処理はありません"
                                                 TO  XA99-MSG
                END-IF                                 
            END-IF                                 
-           MOVE    "B01"                TO  MCP-WIDGET
       *
            MOVE    "XA01"                TO  SPA-MOTOPG
            MOVE    "XA99"                TO  SPA-SAKIPG
@@ -1464,7 +1595,12 @@
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
-      *****MOVE    SPACE               TO  LINKAREA
+           IF      SPA-XAIDCD2      NOT =   SPACE
+               PERFORM 530-XAID2SET-SEC
+               GO  TO  500-SET-SCREEN-EXT
+           END-IF
+      *
+      **** MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
            MOVE    "XA01    "          TO  MCP-WINDOW.
@@ -1620,9 +1756,6 @@
            MOVE    SPACE               TO  WRK-XAIDMSG
       *
            EVALUATE    SPA-XAIDCD
-               WHEN    "1001"
-                   MOVE    "印刷処理を行います"
-                                       TO  WRK-XAIDMSG
                WHEN    "1002"
                    MOVE    "該当のグループの削除処理を行います"
                                        TO  WRK-XAIDMSG
@@ -1630,9 +1763,8 @@
                    MOVE
                    "処理中の可能性がありますが削除処理を行いますか"
                                        TO  WRK-XAIDMSG
-               WHEN    "1004"
-                   MOVE
-                   "処理中の可能性がありますが印刷処理を行いますか"
+               WHEN    "1005"
+                   MOVE    "プレビュー処理を行います"
                                        TO  WRK-XAIDMSG
                WHEN    "6666"
                    MOVE    "印刷処理中です"
@@ -1659,6 +1791,42 @@
       *
            .
        520-TIDSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ガイドメッセージ３表示処理
+      *****************************************************************
+       530-XAID2SET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-XAIDMSG
+      *
+           EVALUATE    SPA-XAIDCD2
+               WHEN    "1001"
+                   MOVE    "印刷処理を行います"
+                                       TO  WRK-XAIDMSG
+      *********WHEN    "1004"
+      **           MOVE
+      **           "処理中の可能性がありますが印刷処理を行いますか"
+      *********                        TO  WRK-XAIDMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE                TO  XAID2
+           MOVE    SPA-XAIDCD2          TO  XAID2-ID1CODE
+           MOVE    WRK-XAIDMSG          TO  XAID2-ID1MSG
+           MOVE    "B12"                TO  MCP-WIDGET
+      *
+           MOVE    "XA01"               TO  SPA-MOTOPG
+           MOVE    "XAID2"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "XAID2"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END              
+      *
+           .
+       530-XAID2SET-EXT.
            EXIT.
       *
       *****************************************************************

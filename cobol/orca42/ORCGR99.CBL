@@ -137,6 +137,7 @@
            COPY    "RERR.INC".
            COPY    "RID1.INC".
            COPY    "RID2.INC".
+           COPY    "RID3.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -225,6 +226,12 @@
            MOVE    SPACE               TO  R99
                          
            MOVE    ZERO                TO  R99-COUNT
+      *
+           IF      SPA-RID1-FLG    =   "PV"
+               MOVE    "F12 プレビュー"    TO  R99-B12-LABEL
+           ELSE
+               MOVE    "B12 印      刷"    TO  R99-B12-LABEL
+           END-IF
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
@@ -331,9 +338,16 @@
                                                     TO  R99-MSG
                    END-IF
                    MOVE   100                   TO
-                                            R99-PROGRESSBAR-VALUE                             
+                                            R99-PROGRESSBAR-VALUE   
+      *???
+              DISPLAY "SPA="   SPA-R01-GMNKBN "#" SPA-RID1-FLG "#"                        
                    IF      SPA-R01-GMNKBN  =   "R02"   OR  "R04"
-                       MOVE    "B01"                TO  MCP-WIDGET
+                       IF      SPA-RID1-FLG    =   "PV"
+                           MOVE    WIDGET-NORMAL    TO  R99-B12-STATE
+                           MOVE    "B12"            TO  MCP-WIDGET
+                       ELSE
+                           MOVE    "B01"            TO  MCP-WIDGET
+                       END-IF
                    ELSE
                        MOVE    WIDGET-NORMAL        TO  R99-B12-STATE
                        MOVE    "B12"                TO  MCP-WIDGET

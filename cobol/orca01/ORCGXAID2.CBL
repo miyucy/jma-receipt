@@ -16,13 +16,13 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGXAID1.
+       PROGRAM-ID.                 ORCGXAID2.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 再印刷
-      *  コンポーネント名  : 確認画面１
+      *  コンポーネント名  : 確認画面２
       *  管理者            : 
-      *  00/12/01    MCC−藤原　   新規作成
+      *  03/07/10    NACL−藤原   新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -92,7 +92,7 @@
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-XA01KYOUTU
-      * 
+      *
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
@@ -126,6 +126,10 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    SPACE           TO  SPA-XAID1-FLG
                    PERFORM 210-BACK
+      *     プレビュー
+               WHEN    "CLICKED"       ALSO    "B10"
+                   MOVE    "PV"            TO  SPA-XAID1-FLG
+                   PERFORM 210-BACK
       *     登録
                WHEN    "CLICKED"       ALSO    "B12"
                    MOVE    "OK"            TO  SPA-XAID1-FLG
@@ -141,7 +145,7 @@
        210-BACK                    SECTION.
       * 
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "XAID1"              TO  SPA-MOTOPG
+           MOVE    "XAID2"             TO  SPA-MOTOPG
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW

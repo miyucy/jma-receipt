@@ -75,6 +75,7 @@
            COPY    "XA99.INC".
            COPY    "XAERR.INC".
            COPY    "XAID1.INC".
+           COPY    "XAID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

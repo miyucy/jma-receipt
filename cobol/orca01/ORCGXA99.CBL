@@ -40,9 +40,14 @@
       *
       *
        WORKING-STORAGE             SECTION.
+      *   
+           COPY    "ENUM-VALUE".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
+      *
+      *    再印刷共通パラメタ
+           COPY    "XA01COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -115,6 +120,7 @@
            COPY    "XA99.INC".
            COPY    "XAERR.INC".
            COPY    "XAID1.INC".
+           COPY    "XAID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -128,6 +134,7 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-XA01KYOUTU
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -137,6 +144,7 @@
                    PERFORM 200-GMNSENI
            END-EVALUATE
       *
+           MOVE    SPA-XA01KYOUTU  TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
            .
@@ -164,6 +172,9 @@
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
+      *    プレビュー画面へ
+               WHEN    "CLICKED"       ALSO    "B12"
+                   PERFORM 4501-NEXT-GMN-SEC
            END-EVALUATE
       *
            .
@@ -174,8 +185,10 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
+           MOVE    SPACE               TO  SPA-XA99-FLG
+      *
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "XA99"               TO  SPA-MOTOPG
+           MOVE    "XA99"              TO  SPA-MOTOPG
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
@@ -189,13 +202,35 @@
            EXIT.
       *
       *****************************************************************
+      *    更新処理
+      *****************************************************************
+       4501-NEXT-GMN-SEC            SECTION.
+      *
+           MOVE    "OK"                TO  SPA-XA99-FLG
+      *     
+           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           MOVE    "XA99"               TO  SPA-MOTOPG
+      *
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4501-NEXT-GMN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  XA99
            MOVE    ZERO                TO  XA99-COUNT
-      *        
+           MOVE    WIDGET-INSENSITIVE  TO  XA99-B12-STATE
+      *
            MOVE    SPACE               TO  SYS-3003-REC 
            INITIALIZE                      SYS-3003-REC
            MOVE    "3003"              TO  SYS-3003-KANRICD
@@ -253,11 +288,18 @@
                    END-IF
                END-PERFORM
            END-IF
+      *
            IF      XA99-MSG              =   SPACE
                MOVE    "B01"                TO  MCP-WIDGET
                IF      XA99-COUNT            >   ZERO    
                    MOVE    "処理は正常に終了しました"
                                                 TO  XA99-MSG
+                   IF      SPA-XAID1-FLG    =   "PV"
+                       MOVE    WIDGET-NORMAL    TO  XA99-B12-STATE
+                       MOVE    "B12"            TO  MCP-WIDGET
+                   ELSE
+                       MOVE    "B01"            TO  MCP-WIDGET
+                   END-IF
                ELSE
                    MOVE    "該当する処理はありません"
                                                 TO  XA99-MSG

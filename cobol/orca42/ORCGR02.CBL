@@ -66,6 +66,8 @@
       *  01.04.08    NACL-藤原    03/08/05  レセ電のボタンを削除
       *  01.04.09    NACL-藤原    03/08/19  件数印刷の処理を追加
       *  01.04.10    NACL-藤原    03/08/29  出力帳票の指定を追加
+      *　プレビュー機能追加
+      *  01.05.01    NACL-藤原    03/07/07  プレビュー機能追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -188,6 +190,13 @@
                                    15  SPA-NAI-SYUBETU
                                                    PIC X(04)
                                                    OCCURS 10.
+      *    プレビュー用情報
+           03  SPA-LNK-XC01-KEY.
+               05  SPA-LNK-XC01-TBL-KEY    PIC X(8).
+               05  SPA-LNK-XC01-RENNUM     PIC 9(4).
+               05  SPA-LNK-XC01-TBL-GROUP  PIC X(14).
+               05  SPA-LNK-XC01-SHORI-RENNUM
+                                          PIC 9(4).
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -279,6 +288,11 @@
                                              "scripts/monthly/".
            05  WRK-SHELL-SHELL    PIC X(20).         
       *
+       01  WRK-SHELL-NAME1.
+           05  FILLER             PIC X(16) VALUE
+                                             "scripts/allways/".
+           05  WRK-SHELL-SHELL1   PIC X(20).         
+      *
        01  WRK-LNK-AREA.
            COPY    "CPORCSPRTLNK.INC".             
       *
@@ -295,6 +309,8 @@
                                    PIC X(08)   VALUE   "RECEPT2".
            03  WRK-CONS-PRTKANRI-TBL-GROUP
                                    PIC X(14)   VALUE   SPACE.
+      *    プレビュー用情報
+           COPY    "CPXC01LNK.INC".
       *
            COPY    "CPSHELLTBL.INC".
       *     
@@ -373,6 +389,7 @@
            COPY    "RERR.INC".
            COPY    "RID1.INC".
            COPY    "RID2.INC".
+           COPY    "RID3.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -460,7 +477,7 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
       *
       *        元の画面へ戻す
-               IF      SPA-MOTOPG      =   "XB01"
+               IF      SPA-MOTOPG      =   "XB01"  OR  "XC01"
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    SPA-WORK        TO  SPA-R01KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-R02
@@ -474,6 +491,9 @@
       *    作表処理
                WHEN    "RID1"
                    PERFORM 330-RID1-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+               WHEN    "RID3"
+                   PERFORM 330-RID3-SET-SEC
                    GO      TO      300-SCREEN-EXT
                WHEN    "R99"
                    PERFORM 340-R99-SET-SEC
@@ -1013,9 +1033,6 @@
                    WHEN    "6666"
                        MOVE    "JOIN"           TO  MCP-PUTTYPE
                        PERFORM 210-BACK-SYORI-SEC
-                   WHEN    "1001"
-                   WHEN    "1002"    
-                       PERFORM 450-PRINT-SEC
                    WHEN    "1003"    
                        PERFORM 440-PRINT-KENSU-SEC
                    WHEN    "8888"
@@ -1030,17 +1047,76 @@
            EXIT.
       *
       *****************************************************************
+      *    確認画面（ＲＩＤ３）ＯＫ処理
+      *****************************************************************
+       330-RID3-SET-SEC            SECTION.
+      *
+           IF      SPA-RID1-FLG    NOT =   SPACE
+               EVALUATE    SPA-RIDCD3
+                   WHEN    "1001"
+                   WHEN    "1002"    
+                       PERFORM 450-PRINT-SEC
+               END-EVALUATE
+           ELSE        
+               MOVE    SPACE           TO  SPA-RID1-FLG
+           END-IF
+      *
+           MOVE    SPACE           TO  SPA-RIDCD3      
+           .
+       330-RID3-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    処理表示画面戻り処理
       *****************************************************************
        340-R99-SET-SEC            SECTION.
+      *
+           IF      SPA-R99-FLG     =   "OK"
+               PERFORM 4501-NEXT-GMN-SEC
+           END-IF    
       *
            MOVE    SPACE           TO  SPA-RID1-FLG
                                        SPA-R99-FLG
            MOVE    SPACE           TO  SPA-RIDCD
            MOVE    SPACE           TO  SPA-RIDCD2      
+           MOVE    SPACE           TO  SPA-RIDCD3
            MOVE    ZERO            TO  SPA-R01-JOBCNT       
            .
        340-R99-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    プレビュー処理
+      *****************************************************************
+       4501-NEXT-GMN-SEC            SECTION.       
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-R02             TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "R02"               TO  SPA-MOTOPG
+           MOVE    "XC01"              TO  SPA-SAKIPG
+      *
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                       TO  SPA-PRTKANRI-TBL-KEY
+           MOVE    SPA-LNK-XC01-KEY    TO  LNK-XC01-KEY
+           MOVE    1                   TO  LNK-XC01-SHORI-RENNUM
+           MOVE    1                   TO  LNK-XC01-ST-PAGE
+           MOVE    ALL "9"             TO  LNK-XC01-ED-PAGE             
+           MOVE    "1"                 TO  LNK-XC01-MODE            
+           MOVE    LNK-XC01-AREA       TO  SPA-WORK
+      *          
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           MOVE   "XC01   "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       4501-NEXT-GMN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1682,9 +1758,9 @@
       *    ガイドメッセージセット
            EVALUATE    SPA-GMN-SYOKBN
                WHEN    "T"
-                   MOVE    "1001"              TO  SPA-RIDCD
+                   MOVE    "1001"              TO  SPA-RIDCD3
                WHEN    "F"
-                   MOVE    "1002"              TO  SPA-RIDCD
+                   MOVE    "1002"              TO  SPA-RIDCD3
            END-EVALUATE
       *
            .
@@ -1823,7 +1899,8 @@
            END-IF    
            MOVE    RECEERR         TO  SHELLTBL-ARG6
            MOVE    WRK-RECE09-KEY  TO  SHELLTBL-ARG7 
-           MOVE    SPA-TERMID      TO  SHELLTBL-ARG8
+           MOVE    "00000"         TO  SHELLTBL-ARG8
+           MOVE    "99999"         TO  SHELLTBL-ARG9
            MOVE    SPA-NAI-2005-SYAPRTNM
                                    TO  SHELLTBL-ARG11
            MOVE    SPA-NAI-2005-KKHPRTNM
@@ -1831,11 +1908,14 @@
       *                                 
            MOVE    SPACE           TO  LNK-PRTKANRI-AREA
            INITIALIZE                  LNK-PRTKANRI-AREA
-           MOVE    1               TO  LNK-PRTKANRI-RENNUM 
+           MOVE    1               TO  LNK-PRTKANRI-RENNUM
+                                       SPA-LNK-XC01-RENNUM
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
-                                   TO  LNK-PRTKANRI-TBL-KEY 
+                                   TO  LNK-PRTKANRI-TBL-KEY
+                                       SPA-LNK-XC01-TBL-KEY
            MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
                                    TO  LNK-PRTKANRI-TBL-GROUP
+                                       SPA-LNK-XC01-TBL-GROUP
            MOVE    SPA-R01-RECE07-SRYYM
                                    TO  LNK-PRTKANRI-SRYYM 
            MOVE    SPA-SYSYMD      TO  LNK-PRTKANRI-SKYYMD
@@ -1876,6 +1956,14 @@
                                    TO  SHELLTBL-ARG25
            MOVE    SPA-NAI-2005-KKHPRTNM-NEXT
                                    TO  SHELLTBL-ARG26
+           EVALUATE    SPA-RID1-FLG
+               WHEN    "PV"
+                   MOVE    "4"             TO  SHELLTBL-ARG27
+               WHEN    "NO"
+                   MOVE    "3"             TO  SHELLTBL-ARG27
+               WHEN    "OK"
+                   MOVE    "2"             TO  SHELLTBL-ARG27
+           END-EVALUATE
       *     
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -2106,6 +2194,12 @@
            MOVE    ZERO                TO  R99-COUNT
                                            R99-PROGRESSBAR-VALUE
       *
+           IF      SPA-RID1-FLG    =   "PV"
+               MOVE    "F12:プレビュー"    TO  R99-B12-LABEL
+           ELSE
+               MOVE    "F12:印    刷"      TO  R99-B12-LABEL
+           END-IF
+      *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -2171,6 +2265,10 @@
                    END-IF
                    MOVE   100                   TO
                                             R99-PROGRESSBAR-VALUE                             
+                   IF      SPA-RID1-FLG    =   "PV"
+                       MOVE    WIDGET-NORMAL    TO  R99-B12-STATE
+                       MOVE    "B12"            TO  MCP-WIDGET
+                   END-IF
                ELSE
                    MOVE    "該当する処理はありません"
                                                 TO  R99-MSG
@@ -2251,6 +2349,11 @@
       *
            IF      SPA-RIDCD       NOT =   SPACE
                PERFORM 520-RIDSET-SEC
+               GO  TO  500-SET-SCREEN-EXT
+           END-IF
+      *
+           IF      SPA-RIDCD3      NOT =   SPACE
+               PERFORM 530-RID3SET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
@@ -2648,10 +2751,6 @@
            MOVE    SPACE               TO  WRK-RIDMSG
       *
            EVALUATE    SPA-RIDCD
-               WHEN    "1001"
-                   MOVE    "全件印刷をします"        TO  WRK-RIDMSG
-               WHEN    "1002"
-                   MOVE    "指定印刷をします"        TO  WRK-RIDMSG
                WHEN    "1003"
                    MOVE    "件数印刷をします"        TO  WRK-RIDMSG
                WHEN    "6666"
@@ -2679,6 +2778,39 @@
       *
            .
        520-RIDSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ガイドメッセージ３表示処理
+      *****************************************************************
+       530-RID3SET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-RIDMSG
+      *
+           EVALUATE    SPA-RIDCD3
+               WHEN    "1001"
+                   MOVE    "全件印刷をします"        TO  WRK-RIDMSG
+               WHEN    "1002"
+                   MOVE    "指定印刷をします"        TO  WRK-RIDMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE                TO  RID3
+           MOVE    SPA-RIDCD3           TO  RID3-ID1CODE
+           MOVE    WRK-RIDMSG           TO  RID3-ID1MSG
+           MOVE    "B12"                TO  MCP-WIDGET
+      *
+           MOVE    "R02"                TO  SPA-MOTOPG
+           MOVE    "RID3"               TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "RID3"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END              
+      *
+           .
+       530-RID3SET-EXT.
            EXIT.
       *
       *****************************************************************
