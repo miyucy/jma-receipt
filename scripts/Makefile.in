@@ -75,11 +75,15 @@ claim_scripts = \
 	claim/rb/send_xml_main.rb \
 	claim/rb/xml_jcnv.rb \
 	claim/rb/xml_valid.rb \
+	claim/rb2/claim2_decode.rb \
+	claim/rb2/claim2_lib.rb \
+	claim/rb2/hircnv.rb \
 
 claim_data = \
 	claim/def/orca_layout_accounting.def \
 	claim/def/orca_layout_decode.def \
 	claim/def/orca_layout_front.def \
+	claim/def/orca_decode.hir \
 	claim/dtd/MML1014_euc.dtd \
 	claim/link/link_decode.def \
 	claim/rb/claim_empty_elem.list \
@@ -119,6 +123,7 @@ filecheck:
 	-name "dtd" -o \
 	-name "link" -o \
 	-name "rb" -o \
+	-name "rb2" -o \
 	-name "template" -o \
 	-name "HC01.sh" -o \
 	-name "HCALL.sh" -o \
@@ -182,6 +187,7 @@ install: all
 	$(INSTALL) -d $(scriptsdir)/claim/def
 	$(INSTALL) -d $(scriptsdir)/claim/dtd
 	$(INSTALL) -d $(scriptsdir)/claim/rb
+	$(INSTALL) -d $(scriptsdir)/claim/rb2
 	$(INSTALL) -d $(scriptsdir)/claim/link
 	$(INSTALL) -d $(scriptsdir)/claim/template
 	for file in $(shell_scripts) $(ruby_scripts) $(claim_scripts); do \
