@@ -47,6 +47,8 @@
       *  01.00.12    NACL-¾®Æ¦Âô  04/02/24  ·îÅÓÃæ¤Î°åÎÅµ¡´Ø¸º»»ÂÐ±þ
       *  01.00.13    NACL-¾®Æ¦Âô  04/03/11  Í­¾²¿ÇÎÅ½ê£±·²Æþ±¡´ðËÜÎÁ£±
       *                                     ¡Ê°å»ÕÇÛÃÖÅ¬¹ç¡Ë¤ÎÂÐ±þ
+      *  01.00.14    NACL-¾®Æ¦Âô  04/03/16  Â¾°åÎÅµ¡´Ø¼õ¿Ç¤Î·×»»³ä¹çÊÑ¹¹
+      *                                     Ê¿À®£±£¶Ç¯£´·î¤è¤ê£³£°¡ó
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1577,7 +1579,7 @@
                                               SDAY-HKNTEN(SYU-IDX) +    XXX
                                             ((WRK-KHNTEN      *  0.3)   XXX
                                                               +  0.5)   XXX
-      *                          ³°Çñ¡ÊÁªÄêÎÅÍÜÈñ£±£°¡ó¡Ë
+      *                          ³°Çñ¡ÊÁªÄêÎÅÍÜÈñ¡Ë
                                  WHEN   3
                                      COMPUTE  SYU-HKNTEN(11)  =
                                               SYU-HKNTEN(11)  +
@@ -1589,16 +1591,27 @@
                                             ((WRK-KHNTEN      *         XXX
                                               WRK-SENTEI-GAIHAKU-KEISU) XXX
                                                               +  0.5)   XXX
-      *                          Â¾°åÎÅµ¡´Ø¼õ¿Ç¡Ê£±£µ¡ó¡Ë
+      *                          Â¾°åÎÅµ¡´Ø¼õ¿Ç¡Ê£±£µ¡ó¡ËÊ¿À®£±£¶Ç¯£´·î¤è¤ê£³£°¡ó¤ËÊÑ¹¹
                                  WHEN   4
-                                     COMPUTE  SYU-HKNTEN(11)  =
-                                              SYU-HKNTEN(11)  +
-                                            ((WRK-KHNTEN      *  0.15)
+                                     IF  SYU-SKYSTYMD(1:6) >= "200404"
+                                         COMPUTE  SYU-HKNTEN(11)  =
+                                                  SYU-HKNTEN(11)  +
+                                                ((WRK-KHNTEN  *  0.3)
                                                               +  0.5)
-                                     COMPUTE  SDAY-HKNTEN(SYU-IDX) =    XXX
-                                              SDAY-HKNTEN(SYU-IDX) +    XXX
-                                            ((WRK-KHNTEN      *  0.15)  XXX
-                                                              +  0.5)   XXX
+                                         COMPUTE SDAY-HKNTEN(SYU-IDX) =
+                                                 SDAY-HKNTEN(SYU-IDX) +
+                                               ((WRK-KHNTEN  *  0.3)
+                                                              +  0.5)
+                                     ELSE
+                                         COMPUTE  SYU-HKNTEN(11)  =
+                                                  SYU-HKNTEN(11)  +
+                                                ((WRK-KHNTEN  *  0.15)
+                                                              +  0.5)
+                                         COMPUTE SDAY-HKNTEN(SYU-IDX) =
+                                                 SDAY-HKNTEN(SYU-IDX) +
+                                               ((WRK-KHNTEN  *  0.15)
+                                                              +  0.5)
+                                     END-IF
                                END-EVALUATE
                            ELSE
       *                        ÁªÄê´ü´Ö¤ÎÅÀ¿ô»»Äê
