@@ -41,6 +41,8 @@
       *  01.00.10    NACL-藤原    03/06/16  レセプト種別の修正
       *  01.00.11    NACL-藤原    03/07/25  入院歴に労災・自賠責を対象
       *                                     としないようにする
+      *                                     入院会計の医保の組合せがないとき
+      *                                     入院歴を全て表示する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2062,20 +2064,24 @@
                    MOVE    PTNYUINRRK-TAIINYMD TO  WRK-SRYYMD
                    MOVE    WRK-SRYDD           TO  IDX5
                END-IF
-      *        保険組合せのチェック
-               PERFORM VARYING IDX FROM    IDX4    BY  1
-                       UNTIL   IDX >       IDX5
-                   PERFORM VARYING IDY FROM    1   BY  1
-                           UNTIL   IDY >       10
-                           OR  RECE62-HKNCOMBI (IDY)   =   ZERO
-                       IF      RECE61-DAY (IDX)
+      *        保険組合せのチェック（会計に対象の組合せがないときは全て）
+               IF      RECE61-DAY-AREA     =   ALL "0"
+                   PERFORM 2401-PTNYUINRRK-HENSYU-SEC
+               ELSE
+                   PERFORM VARYING IDX FROM    IDX4    BY  1
+                           UNTIL   IDX >       IDX5
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >       10
+                               OR  RECE62-HKNCOMBI (IDY)   =   ZERO
+                           IF      RECE61-DAY (IDX)
                                            =   RECE62-HKNCOMBI (IDY)
-                           PERFORM 2401-PTNYUINRRK-HENSYU-SEC
-                           MOVE    10                  TO  IDY
-                           MOVE   IDX5                 TO  IDX
-                       END-IF
+                               PERFORM 2401-PTNYUINRRK-HENSYU-SEC
+                               MOVE    10                  TO  IDY
+                               MOVE   IDX5                 TO  IDX
+                           END-IF
+                       END-PERFORM
                    END-PERFORM
-               END-PERFORM        
+               END-IF        
       *                 
                MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
                PERFORM 900-PTNYUINRRK-KEY23-READ-SEC
