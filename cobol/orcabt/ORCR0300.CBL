@@ -104,6 +104,9 @@
       *                                     告示等識別区分１
       *                                     きざみ値計算識別
       *                                     注加算コードの追加
+      *  01.02.02    NACL-藤原    04/06/17  症状詳記をデータにも編集する
+      *                                     01:保険履歴、手術歴
+      *                                     99:レセコメント
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -272,6 +275,7 @@
            03  FLG-SET                 PIC 9(01).
            03  FLG-OPECOM-CHK          PIC 9(01).
            03  FLG-HIT                 PIC 9(01).
+           03  FLG-COMMENT             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -292,6 +296,7 @@
            03  IDXX                    PIC 9(03).
            03  IDXY                    PIC 9(03).
            03  IDW1                    PIC 9(03).
+           03  IDW2                    PIC 9(03).
            03  SYSKAN-IDX              PIC 9(03).
            03  IDX0                    PIC 9(03).
       *
@@ -338,6 +343,7 @@
            03  WRK-HENSYU              PIC X(20).
       *    出力データ編集用
            03  WRK-SRYKBN              PIC X(02).
+           03  WRK-COM-SRYKBN          PIC X(02).
            03  WRK-REC                 PIC X(200).
            03  WRK-REC-LENGTH          PIC 9(03).
            03  WRK-HENSYU-AREA.
@@ -360,8 +366,10 @@
            03  WRK-RECENUM             PIC 9(06).        
       *       
            03  WRK-RENNUM              PIC 9(04).
+           03  WRK-COM-RENNUM          PIC 9(04).
       *
            03  WRK-RECE041-SRYKBN      PIC X(02).
+           03  WRK-COM-FTNKBN          PIC X(01).
       *
       *    1桁目:生保 2桁目:結核 3桁目:精神
            03  WRK-3SYU-KBN.
@@ -1013,6 +1021,9 @@
            IF      SYS-2005-SYUBYOHENFLG    =   SPACE
                MOVE    ZERO             TO  SYS-2005-SYUBYOHENFLG
            END-IF
+           IF      SYS-2005-RECECOMKBN      =   SPACE
+               MOVE    ZERO             TO  SYS-2005-RECECOMKBN
+           END-IF
       *    
            .
        110-SYSKANRI-HENSYU-EXT.
@@ -1035,6 +1046,12 @@
                PERFORM 301-RECE11-HENSYU-SEC
       *
                MOVE    ZERO               TO  WRK-RENNUM
+                                              
+      *
+               MOVE    ZERO               TO  WRK-COM-RENNUM
+                                              FLG-COMMENT
+               MOVE    SPACE              TO  WRK-COM-SRYKBN
+                                              WRK-COM-FTNKBN
       *
                INITIALIZE                     WRK-RECE041-SRYKBN
                                               TBL-KOUI-SRYKBN12-AREA
@@ -1076,8 +1093,8 @@
                PERFORM     2006-HENSYU-SEC
       *        適用レコード
                PERFORM     2007-HENSYU-SEC
-      *        症状表記
-               PERFORM     2009-COMMENT-HEN-SEC
+      *        症状詳記（レセコメント）
+               PERFORM     2009-COMMENT-HEN-99-SEC
       *
                ADD     1           TO  CNT-COMMIT
                IF  CNT-COMMIT      =    300
@@ -1834,11 +1851,21 @@
       ***         AND     RECE041-SRYKBN         >   "12"
       ***             PERFORM 20079-SRYKBN12-JIKANGAI-HENSYU-SEC
       ***             MOVE    SPACE                  TO  WRK-RECE041-SRYKBN
-      ***         END-IF 
+      ***         END-IF
+      * 
       *        負担区分編集処理
-               PERFORM 20070-FTNKBN-HENSYU-SEC        
+               PERFORM 20070-FTNKBN-HENSYU-SEC
+      *
+      *        症状詳記（手術歴・保険履歴）
+               IF      FLG-COMMENT         =   ZERO
+                   MOVE    1                   TO  FLG-COMMENT
+                   MOVE    WRK-FTNKBN          TO  WRK-COM-FTNKBN
+                   PERFORM 2008-COMMENT-HEN-01-SEC
+               END-IF
+      *
       *        明細テーブル退避処理
                PERFORM 20071-ZAI-TAIHI-SEC
+      *
       *       摘要データ編集処理
                IF      FLG-END           =   ZERO
       *****        PERFORM 20074-ZAI-KOUI-SORT-SEC
@@ -3350,20 +3377,20 @@
            EXIT.
       *
       *****************************************************************
-      *    症状詳記編集処理
+      *    症状詳記（手術歴・保険履歴）
       *****************************************************************
-       2009-COMMENT-HEN-SEC      SECTION.
+       2008-COMMENT-HEN-01-SEC      SECTION.
       *
-           MOVE    ZERO                TO  WRK-RENNUM
+           MOVE    "01"                TO  WRK-COM-SRYKBN
       *
       *    手術歴編集
-           PERFORM 20091-OPECOM-HEN-SEC
+           PERFORM 20081-OPECOM-HEN-SEC
       *
       *    保険履歴情報
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       WRK-RIREKI-MAX  
       *
-               ADD     1                   TO  WRK-RENNUM
+               ADD     1                   TO  WRK-COM-RENNUM
       *          
                INITIALIZE                  RECEDEN-REC
                MOVE    RECE02-HOSPID       TO  RECEDEN-HOSPID
@@ -3395,7 +3422,7 @@
                    MOVE    RECE02-TEKSTYMD TO  RECEDEN-TEKSTYMD
                END-IF
                MOVE    "2"                 TO  RECEDEN-RECKBN
-               MOVE    WRK-RENNUM          TO  RECEDEN-RENNUM
+               MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
                MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
                INSPECT WRK-HKN-RIREKI-TBL  (IDXX)  REPLACING   ALL "  "
                                                                BY  "　"
@@ -3411,51 +3438,18 @@
                                                MCPDATA-REC      
       *
                ADD     1                   TO  CNT-OUT
+      *
+      *        症状詳記（コメント）編集処理
+               PERFORM 20099-COMMENT-HENSYU-SEC
            END-PERFORM
-      *
-      *    レセプトコメント編集 
-           INITIALIZE                      RECECOM-REC
-           MOVE    RECE02-HOSPID       TO  RECECOM-HOSPID
-           MOVE    RECE02-SRYYM        TO  RECECOM-SRYYM
-           MOVE    RECE02-PTID         TO  RECECOM-PTID
-           MOVE    RECE02-NYUGAIKBN    TO  RECECOM-NYUGAIKBN
-      * 
-           MOVE    RECECOM-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
-               PERFORM 900-RECECOM-READ-SEC
-           ELSE
-               INITIALIZE                  RECECOM-REC
-               MOVE    1               TO  FLG-RECECOM
-           END-IF
-      *
-           PERFORM             UNTIL   FLG-RECECOM   =   1
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       10
-                       OR      RECE02-HKNCOMBI (IDY) =   ZERO
-                   IF      RECECOM-HKNCOMBI    =   RECE02-HKNCOMBI(IDY)
-                       PERFORM 20092-COMMENT-HENSYU-SEC                 
-                       MOVE    10                  TO  IDY
-                   END-IF
-               END-PERFORM
-      *                 
-               PERFORM 900-RECECOM-READ-SEC
-           END-PERFORM
-      *
            .
-       2009-COMMENT-HEN-EXT.
+       2008-COMMENT-HEN-01-EXT.
            EXIT.
       *
       *****************************************************************
-      *    手術歴編集処理
+      *    症状詳記（手術歴）編集処理
       *****************************************************************
-       20091-OPECOM-HEN-SEC      SECTION.
+       20081-OPECOM-HEN-SEC      SECTION.
       *
            MOVE    SPACE               TO  WRK-OPECOM-HEN
       *
@@ -3500,12 +3494,12 @@
                    MOVE    OPECOM-SRYYMD       TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
                    MOVE    LNK-DAY2-EDTYMD3    TO  WRK-OPECOM-HEN
-                   PERFORM 200911-OPECOM-HENSYU-SEC                 
+                   PERFORM 200811-OPECOM-HENSYU-SEC                 
                    MOVE    OPECOM-OPENAME      TO  WRK-OPECOM-HEN
-                   PERFORM 200911-OPECOM-HENSYU-SEC
+                   PERFORM 200811-OPECOM-HENSYU-SEC
                    IF      OPECOM-OPECOMMENT   NOT =   SPACE                
                        MOVE    OPECOM-OPECOMMENT   TO  WRK-OPECOM-HEN
-                       PERFORM 200911-OPECOM-HENSYU-SEC
+                       PERFORM 200811-OPECOM-HENSYU-SEC
                    END-IF                 
                END-IF               
       *                 
@@ -3559,10 +3553,10 @@
                END-IF
                IF      FLG-OPECOM-CHK          =   1
                    MOVE    OPECOM-OPENAME      TO  WRK-OPECOM-HEN
-                   PERFORM 200911-OPECOM-HENSYU-SEC
+                   PERFORM 200811-OPECOM-HENSYU-SEC
                    IF      OPECOM-OPECOMMENT   NOT =   SPACE                
                        MOVE    OPECOM-OPECOMMENT   TO  WRK-OPECOM-HEN
-                       PERFORM 200911-OPECOM-HENSYU-SEC
+                       PERFORM 200811-OPECOM-HENSYU-SEC
                    END-IF                 
                END-IF               
       *                 
@@ -3578,15 +3572,15 @@
                                            MCPDATA-REC
       *
            .
-       20091-OPECOM-HEN-EXT.
+       20081-OPECOM-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    コメントの改行コード削除処理
+      *    症状詳記（手術歴）コメントの改行コード削除処理
       *****************************************************************
-       200911-OPECOM-HENSYU-SEC    SECTION.
+       200811-OPECOM-HENSYU-SEC    SECTION.
       *
-           ADD     1                   TO  WRK-RENNUM
+           ADD     1                   TO  WRK-COM-RENNUM
       *          
            INITIALIZE                  RECEDEN-REC
            MOVE    RECE02-HOSPID       TO  RECEDEN-HOSPID
@@ -3618,7 +3612,7 @@
                MOVE    RECE02-TEKSTYMD TO  RECEDEN-TEKSTYMD
            END-IF
            MOVE    "2"                 TO  RECEDEN-RECKBN
-           MOVE    WRK-RENNUM          TO  RECEDEN-RENNUM
+           MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
            MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
            INSPECT WRK-OPECOM-HEN      REPLACING   ALL "  "
                                                    BY  "　"
@@ -3634,15 +3628,63 @@
       *
            ADD     1                   TO  CNT-OUT
       *
+      *    症状詳記（コメント）編集処理
+           PERFORM 20099-COMMENT-HENSYU-SEC
+      *
            MOVE    SPACE               TO  WRK-OPECOM-HEN
            .
-       200911-OPECOM-HENSYU-EXT.
+       200811-OPECOM-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    コメントの改行コード削除処理
+      *    症状詳記（レセコメント）
       *****************************************************************
-       20092-COMMENT-HENSYU-SEC    SECTION.
+       2009-COMMENT-HEN-99-SEC      SECTION.
+      *
+           MOVE    "99"                TO  WRK-COM-SRYKBN
+      *
+           INITIALIZE                      RECECOM-REC
+           MOVE    RECE02-HOSPID       TO  RECECOM-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECECOM-SRYYM
+           MOVE    RECE02-PTID         TO  RECECOM-PTID
+           MOVE    RECE02-NYUGAIKBN    TO  RECECOM-NYUGAIKBN
+      * 
+           MOVE    RECECOM-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "RECECOM-KEY1"      TO  ORC-DBPATH
+               PERFORM 900-RECECOM-READ-SEC
+           ELSE
+               INITIALIZE                  RECECOM-REC
+               MOVE    1               TO  FLG-RECECOM
+           END-IF
+      *
+           PERFORM             UNTIL   FLG-RECECOM   =   1
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       10
+                       OR      RECE02-HKNCOMBI (IDY) =   ZERO
+                   IF      RECECOM-HKNCOMBI    =   RECE02-HKNCOMBI(IDY)
+                       PERFORM 20091-RECECOM-HENSYU-SEC                 
+                       MOVE    10                  TO  IDY
+                   END-IF
+               END-PERFORM
+      *                 
+               PERFORM 900-RECECOM-READ-SEC
+           END-PERFORM
+      *
+           .
+       2009-COMMENT-HEN-99-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    症状詳記（レセコメント）コメントの改行コード削除処理
+      *****************************************************************
+       20091-RECECOM-HENSYU-SEC    SECTION.
       *                                          
            MOVE    RECECOM-COMMENT TO  WRK-COMM
            MOVE    ZERO            TO  WRK-RECEHEN                      
@@ -3681,7 +3723,7 @@
                              UNTIL   IDW >       8
                            OR      WRK-COMMENT (IDW)   =   SPACE
       *
-                       ADD     1                   TO  WRK-RENNUM
+                       ADD     1                   TO  WRK-COM-RENNUM
       *          
                        INITIALIZE                  RECEDEN-REC
                        MOVE    RECE02-HOSPID       TO  RECEDEN-HOSPID
@@ -3717,7 +3759,7 @@
                            MOVE    RECE02-TEKSTYMD TO  RECEDEN-TEKSTYMD
                        END-IF
                        MOVE    "2"                 TO  RECEDEN-RECKBN
-                       MOVE    WRK-RENNUM          TO  RECEDEN-RENNUM
+                       MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
                        MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
                        MOVE    WRK-COMMENT (IDW)   TO  RECEDEN-RECEDATA
       *
@@ -3730,6 +3772,9 @@
                                                        MCPDATA-REC      
       *
                        ADD     1                   TO  CNT-OUT
+      *
+      *                症状詳記（コメント）編集処理
+                       PERFORM 20099-COMMENT-HENSYU-SEC
                      END-PERFORM
                  END-IF
                END-IF  
@@ -3737,7 +3782,47 @@
            END-PERFORM   
       *
            .
-       20092-COMMENT-HENSYU-EXT.
+       20091-RECECOM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    症状詳記（コメント）編集処理
+      *****************************************************************
+       20099-COMMENT-HENSYU-SEC       SECTION.
+      *
+           IF      SYS-2005-RECECOMKBN =   "1"
+               GO  TO  20099-COMMENT-HENSYU-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-REC
+           MOVE    ZERO                TO  WRK-REC-LENGTH
+      *
+           MOVE    "CO,"               TO  WRK-REC
+           MOVE    3                   TO  WRK-REC-LENGTH
+      *    診療識別
+           IF      WRK-COM-SRYKBN      NOT =   SPACE     
+               MOVE    WRK-COM-SRYKBN      TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               MOVE    SPACE               TO  WRK-COM-SRYKBN
+           END-IF    
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    負担区分
+           MOVE    WRK-COM-FTNKBN      TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    コメントコード
+           MOVE    "810000001"         TO  WRK-DATA
+           MOVE    9                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    文字データ
+           MOVE    RECEDEN-RECEDATA    TO  WRK-DATA
+           MOVE    76                  TO  WRK-NAGASA
+           MOVE    1                   TO  WRK-END 
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *
+            PERFORM 5001-FILE-WRITE-SEC
+           .
+       20099-COMMENT-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3942,17 +4027,17 @@
            IF      WRK-DATA        =   SPACE
                CONTINUE
            ELSE                   
-               PERFORM VARYING IDW FROM    WRK-NAGASA  BY  -1
-                       UNTIL   IDW <       1
-                   IF      WRK-DATA (IDW:1)   NOT =   SPACE
+               PERFORM VARYING IDW2    FROM    WRK-NAGASA  BY  -1
+                       UNTIL   IDW2    <       1
+                   IF      WRK-DATA (IDW2:1)   NOT =   SPACE
                        STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED
                                                              BY  SIZE
-                               WRK-DATA(1:IDW)           DELIMITED
+                               WRK-DATA(1:IDW2)          DELIMITED
                                                              BY  SIZE
                                INTO        WRK-REC
                        END-STRING
-                       ADD     IDW                 TO  WRK-REC-LENGTH        
-                       MOVE    1                   TO  IDW
+                       ADD     IDW2                TO  WRK-REC-LENGTH        
+                       MOVE    1                   TO  IDW2
                    END-IF
                END-PERFORM
            END-IF
@@ -3986,22 +4071,22 @@
                                                +   1
                END-IF                                
       *     
-               PERFORM VARYING IDW FROM    WRK-ST    BY  1
-                       UNTIL   IDW >       10
-                   IF      WRK-NUM (IDW:1)   NOT =   SPACE
+               PERFORM VARYING IDW2    FROM    WRK-ST    BY  1
+                       UNTIL   IDW2    >       10
+                   IF      WRK-NUM (IDW2:1)  NOT =   SPACE
                         COMPUTE IDZ     =    11  +   WRK-SYOSUU
-                                                 -   IDW       
+                                                 -   IDW2       
                         IF      WRK-SYOSUU       >   ZERO
                             ADD     1                TO  IDZ
                         END-IF     
                         STRING  WRK-REC(1:WRK-REC-LENGTH)
                                                  DELIMITED  BY  SIZE
-                               WRK-NUM(IDW:IDZ)  DELIMITED  BY  SIZE
+                               WRK-NUM(IDW2:IDZ)  DELIMITED  BY  SIZE
                                INTO        WRK-REC
                        END-STRING
                        COMPUTE WRK-REC-LENGTH    =   WRK-REC-LENGTH   +
                                                      IDZ                  
-                       MOVE    10                TO  IDW
+                       MOVE    10                TO  IDW2
                    END-IF
                END-PERFORM
            END-IF    
