@@ -23,11 +23,11 @@
               04  R04-TSTDATA-G    OCCURS  25.
                 05  R04-TSTDATA-STATE   PIC S9(09) BINARY.
                 05  R04-TSTDATA.
-                  06  R04-VALUE   PIC X(101).
+                  06  R04-VALUE   PIC X(100).
               04  R04-TEDDATA-G    OCCURS  25.
                 05  R04-TEDDATA-STATE   PIC S9(09) BINARY.
                 05  R04-TEDDATA.
-                  06  R04-VALUE   PIC X(101).
+                  06  R04-VALUE   PIC X(100).
               04  R04-TPAGE-G      OCCURS  25.
                 05  R04-TPAGE.
                   06  R04-VALUE   PIC 9(4).
@@ -38,18 +38,18 @@
                 05  R04-TCHK.
                   06  R04-TCHK-STATE   PIC S9(09) BINARY.
                   06  R04-TCHK-VALUE   PIC X.
-                  06  R04-TCHK-LABEL   PIC X(41).
+                  06  R04-TCHK-LABEL   PIC X(40).
               04  R04-FILEKBN.
-                05  R04-VALUE     PIC X(35).
+                05  R04-VALUE     PIC X(40).
               04  R04-CREYMD.
-                05  R04-VALUE     PIC X(23).
+                05  R04-VALUE     PIC X(22).
               04  R04-KENSU.
                 05  R04-VALUE   PIC 9(4).
               04  R04-PAGE.
                 05  R04-VALUE   PIC 9(4).
               04  R04-PREFKBN-COMBO.
                 05  R04-PREFKBN.
-                  06  R04-VALUE   PIC X(7).
+                  06  R04-VALUE   PIC X(6).
                 05  R04-PREFKBN-COUNT   PIC S9(9)   BINARY.
                 05  R04-PREFKBNLST  PIC X(6)   OCCURS  3 TIMES.
               04  R04-PRTJYUN-COMBO.

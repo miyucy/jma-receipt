@@ -8,203 +8,203 @@ R04	{
 		};
 		STDATA01	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA02	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA03	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA04	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA05	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA06	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA07	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA08	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA09	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA10	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA11	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA12	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA13	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA14	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA15	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA16	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA17	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA18	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA19	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA20	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA21	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA22	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA23	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA24	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		STDATA25	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA01	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA02	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA03	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA04	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA05	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA06	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA07	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA08	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA09	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA10	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA11	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA12	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA13	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA14	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA15	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA16	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA17	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA18	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA19	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA20	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA21	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA22	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA23	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA24	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		EDDATA25	{
 	           	state	int;
-			value	varchar(101);
+			value	varchar(100);
 		};
 		PAGE1	{
 			value	number(4);
@@ -359,133 +359,133 @@ R04	{
 		CHK01	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK02	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK03	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK04	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK05	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK06	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK07	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK08	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK09	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK10	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK11	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK12	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK13	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK14	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK15	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK16	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK17	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK18	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK19	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK20	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK21	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK22	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK23	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK24	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		CHK25	{
 	           	state	int;
 			value	bool;
-			label	varchar(41);
+			label	varchar(40);
 		};
 		FILEKBN	{
-			value	varchar(35);
+			value	varchar(40);
 		};
 		CREYMD	{
-			value	varchar(23);
+			value	varchar(22);
 		};
 		KENSU	{
 			value	number(4);
@@ -495,7 +495,7 @@ R04	{
 		};
 		PREFKBN_COMBO	{
 			PREFKBN	{
-				value	varchar(7);
+				value	varchar(6);
 			};
 			count	int;
 			item	varchar(6)[3];
