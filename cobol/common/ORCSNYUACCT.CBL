@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/12/19  食堂加算追加
       * 01.00.02     NACL-多々納  02/12/26  転科時、会計削除の中止
+      * 01.00.03     NACL-多々納  02/12/26  年齢チェック追加
       *****************************************************************
       *
       *
@@ -56,6 +57,8 @@
            03  FLG-SYORI           PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-ARI             PIC 9(01).
+           03  FLG-SYORI-END       PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
       *    取消
            03  FLG-DELETE              PIC 9(01).
            03  FLG-DELETE-OK           PIC 9(01).
@@ -74,6 +77,8 @@
            03  IDX1                PIC 9(02).
            03  IDX2                PIC 9(02).
            03  IDX-D               PIC 9(02).
+      *
+           03  IDX-TBL             PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -104,6 +109,12 @@
            03  WRK-NISUU-KEI               PIC 9(03).
            03  WRK-ZOGEN                   PIC S9(03).
            03  WRK-KAGEN-SRYCD             PIC X(09).
+      *    会計情報ワーク
+           03  WRK-ACT-STYMD-HZN           PIC X(08).
+           03  WRK-ACT-EDYMD-HZN           PIC X(08).
+           03  WRK-STYMD-OK                PIC X(08).
+           03  WRK-EDYMD-OK                PIC X(08).
+           03  WRK-EDYMD-HZN               PIC X(08).
       *    会計情報
            03  WRK-ACT-STYMD               PIC X(08).
            03  WRK-ACT-EDYMD               PIC X(08).
@@ -132,12 +143,35 @@
            03  WRK-RENNUM              PIC 9(02).
       *    診療科
            03  WRK-SRYKA               PIC X(02).
+      *    下限到達日
+           03  WRK-KGN-YMD.
+               05  WRK-KGN-YY          PIC 9(04).
+               05  WRK-KGN-MM          PIC 9(02).
+               05  WRK-KGN-DD          PIC 9(02).
+      *    上限到達日
+           03  WRK-JGN-YMD.
+               05  WRK-JGN-YY          PIC 9(04).
+               05  WRK-JGN-MM          PIC 9(02).
+               05  WRK-JGN-DD          PIC 9(02).
+           03  WRK-YY                  PIC 9(03).
+      *
+           03  WRK-SRYKBN              PIC X(03).
       *
        01  TBL-NYUIN-AREA.
            03  TBL-NYUIN-OCC           OCCURS   10.
                05  TBL-SRYCD           PIC X(09).
                05  TBL-TENSU           PIC S9(07)V9(03).
                05  TBL-TENSIKIBETU     PIC 9(01).
+               05  TBL-KGN-YMD         PIC X(08).
+               05  TBL-JGN-YMD         PIC X(08).
+      *
+       01  HZN-NYUIN-AREA.
+           03  HZN-NYUIN-OCC           OCCURS   10.
+               05  HZN-SRYCD           PIC X(09).
+               05  HZN-TENSU           PIC S9(07)V9(03).
+               05  HZN-TENSIKIBETU     PIC 9(01).
+               05  HZN-KGN-YMD         PIC X(08).
+               05  HZN-JGN-YMD         PIC X(08).
       *
       *    診療行為内容比較用テーブル
        01  TBL-AREA.
@@ -208,6 +242,13 @@
            INITIALIZE                  WRK-AREA
            MOVE    ZERO                TO  LNK-SCNYUACCT-RC
       *
+      *    患者マスター検索
+           INITIALIZE                      PTINF-REC
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    SPA-PTID            TO  PTINF-PTID
+           PERFORM 940-PTINF-READ-SEC
+      *
+      *
       *    処理区分判定
            EVALUATE    LNK-SCNYUACCT-SYORI-KBN
       *        入院
@@ -243,19 +284,24 @@
        100-SINKI-SYORI-SEC            SECTION.
       *
       *TEST
-      *    DISPLAY "STSRYYMD:"  LNK-SCNYUACCT-STSRYYMD 
-      *    DISPLAY "NYUKHN-SRYCD 1:"  LNK-SCNYUACCT-NYUKHN-SRYCD (1)
-      *    DISPLAY "NYUKHN-SRYCD 2:"  LNK-SCNYUACCT-NYUKHN-SRYCD (2)
-      *    DISPLAY "NYUKHN-SRYCD 3:"  LNK-SCNYUACCT-NYUKHN-SRYCD (3)
-      *    DISPLAY "NYUKHN-SRYCD 4:"  LNK-SCNYUACCT-NYUKHN-SRYCD (4)
-      *    DISPLAY "KAGEN-SRYCD 1:"  LNK-SCNYUACCT-KAGEN-SRYCD (1)
-      *    DISPLAY "KAGEN-STYUKYMD 1:"  LNK-SCNYUACCT-KAGEN-STYUKYMD (1)
-      *    DISPLAY "KAGEN-EDYUKYMD 1:"  LNK-SCNYUACCT-KAGEN-EDYUKYMD (1)
-      **    DISPLAY "NYUKHN-SRYCD:"  LNK-SCNYUACCT-NYUKHNKSN-SRYCD(1)
-      **   DISPLAY "GAIHAKU-SRYCD:"  LNK-SCNYUACCT-GAIHAKU-SRYCD
-      *    DISPLAY "SAGAKU-SRYCD:"  LNK-SCNYUACCT-SAGAKU-SRYCD
-      *    DISPLAY "SHOKUJI-SRYCD:"  LNK-SCNYUACCT-SHOKUJI-SRYCD
-      *    DISPLAY "HKNCOMBINUM-SRYCD:"  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD
+           DISPLAY "STSRYYMD:"  LNK-SCNYUACCT-STSRYYMD 
+           DISPLAY "NYUKHN-SRYCD 1:"  LNK-SCNYUACCT-NYUKHN-SRYCD (1)
+           DISPLAY "NYUKHN-SRYCD 2:"  LNK-SCNYUACCT-NYUKHN-SRYCD (2)
+           DISPLAY "NYUKHN-SRYCD 3:"  LNK-SCNYUACCT-NYUKHN-SRYCD (3)
+           DISPLAY "NYUKHN-SRYCD 4:"  LNK-SCNYUACCT-NYUKHN-SRYCD (4)
+           DISPLAY "KAGEN-SRYCD 1:"  LNK-SCNYUACCT-KAGEN-SRYCD (1)
+           DISPLAY "KAGEN-SRYCD 2:"  LNK-SCNYUACCT-KAGEN-SRYCD (2)
+           DISPLAY "KAGEN-SRYCD 3:"  LNK-SCNYUACCT-KAGEN-SRYCD (3)
+           DISPLAY "KAGEN-SRYCD 4:"  LNK-SCNYUACCT-KAGEN-SRYCD (4)
+           DISPLAY "KAGEN-SRYCD 5:"  LNK-SCNYUACCT-KAGEN-SRYCD (5)
+           DISPLAY "KAGEN-STYUKYMD 1:"  LNK-SCNYUACCT-KAGEN-STYUKYMD (1)
+           DISPLAY "KAGEN-EDYUKYMD 1:"  LNK-SCNYUACCT-KAGEN-EDYUKYMD (1)
+            DISPLAY "NYUKHN-SRYCD1:"  LNK-SCNYUACCT-NYUKHNKSN-SRYCD(1)
+            DISPLAY "NYUKHN-SRYCD2:"  LNK-SCNYUACCT-NYUKHNKSN-SRYCD(2)
+           DISPLAY "GAIHAKU-SRYCD:"  LNK-SCNYUACCT-GAIHAKU-SRYCD
+           DISPLAY "SAGAKU-SRYCD:"  LNK-SCNYUACCT-SAGAKU-SRYCD
+           DISPLAY "SHOKUJI-SRYCD:"  LNK-SCNYUACCT-SHOKUJI-SRYCD
+           DISPLAY "HKNCOMBINUM-SRYCD:"  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD
       *TEST
       *
       *    チェック
@@ -586,17 +632,276 @@
       *****************************************************************
        400-NYUACT-SYORI-SEC            SECTION.
       *
-           INITIALIZE                  WRK-SRYACCT-AREA
-           MOVE    ZERO                TO  IDX-ATO
       *    点数算定
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   10  )  OR
                               (TBL-SRYCD (IDX) =   SPACE )
       *        点数マスタより計算
                PERFORM 4001-TENSU-KEI-SEC
+           END-PERFORM
+      *
+           IF      WRK-KHN-STYMD(1:6)  =   WRK-KHN-EDYMD(1:6)
+      *        開始と終了が同じ月の時
+               MOVE    WRK-KHN-STYMD       TO  WRK-ACT-STYMD
+               MOVE    WRK-KHN-EDYMD       TO  WRK-ACT-EDYMD
+               PERFORM 4001-NYUACT-TBL-SEC
+           ELSE
+      *        開始と終了が違う月の時
+               MOVE    WRK-KHN-STYMD       TO  WRK-ACT-STYMD
+      *        月末算定
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY7-AREA
+               MOVE    "71"                TO  LNK-DAY7-IRAI
+               MOVE    WRK-ACT-STYMD(1:6)  TO  LNK-DAY7-YM
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY7-AREA
+               IF      STS-DAY-RC1         =   ZERO
+                   MOVE    LNK-DAY7-KOYOMI     TO  WRK-ACT-EDYMD
+               END-IF
+               PERFORM 4001-NYUACT-TBL-SEC
+      *        終了日まで
+               MOVE    WRK-KHN-EDYMD       TO  WRK-ACT-STYMD
+               MOVE    "01"                TO  WRK-ACT-STYMD(7:2)
+               MOVE    WRK-KHN-EDYMD       TO  WRK-ACT-EDYMD
+               PERFORM 4001-NYUACT-TBL-SEC
+           END-IF
+      *
+      *
+           .
+       400-NYUACT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数計算処理
+      *****************************************************************
+       4001-TENSU-KEI-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  WRK-TENSU
+           MOVE    SPACE               TO  TNS-TENSU-REC
+           MOVE    TBL-SRYCD (IDX)     TO  TNS-SRYCD
+           MOVE    WRK-KHN-STYMD       TO  WRK-YMD
+           PERFORM 910-TENSU-READ-SEC
+           IF      FLG-TENSU       NOT =   ZERO
+               DISPLAY "ORCSNYUACCT TENSU INV:" TBL-SRYCD (IDX)
+               MOVE    2               TO  LNK-SCNYUACCT-RC
+           END-IF
+      *    対象年齢チェック
+           PERFORM 40011-NENREI-CHK-SEC
+      *
+           MOVE    TNS-TENSIKIBETU     TO  TBL-TENSIKIBETU (IDX)
+           MOVE    TNS-TEN             TO  TBL-TENSU       (IDX)
+      *
+      *    労災のコード
+           IF      TNS-SRYCD           =   "101"
+      *        金額を点数へ置換える
+               IF      TNS-TENSIKIBETU     =   1
+                   COMPUTE TBL-TENSU  (IDX)    =   TNS-TEN
+                                               /   10
+               END-IF
+           END-IF
+      *
+           .
+       4001-TENSU-KEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    対象年齢チェック処理
+      *****************************************************************
+       40011-NENREI-CHK-SEC            SECTION.
+      *
+      *    対象年月日計算
+           MOVE    SPACE               TO  WRK-KGN-YMD
+           MOVE    SPACE               TO  WRK-JGN-YMD
+      *
+      *    下限年齢チェック
+           IF      TNS-KGNAGE          =   SPACE  OR  ZERO
+               CONTINUE
+           ELSE
+               MOVE    TNS-KGNAGE          TO  WRK-YY
+               MOVE    PTINF-BIRTHDAY      TO  WRK-KGN-YMD
+               COMPUTE WRK-KGN-YY          =   WRK-KGN-YY
+                                           +   WRK-YY
+           END-IF
+      *
+      *    上限年齢チェック
+           IF      TNS-JGNAGE          =   SPACE  OR  ZERO
+               CONTINUE
+           ELSE
+               IF      TNS-JGNAGE          =   "AA"
+                   MOVE    PTINF-BIRTHDAY      TO  WRK-INYMD
+                   MOVE    28                  TO  WRK-ZOGEN
+                   PERFORM 800-HIZUKE-KEI-SEC
+                   MOVE    WRK-OTYMD           TO  WRK-JGN-YMD
+               ELSE
+                   MOVE    TNS-JGNAGE          TO  WRK-YY
+                   MOVE    PTINF-BIRTHDAY      TO  WRK-JGN-YMD
+                   COMPUTE WRK-JGN-YY          =   WRK-JGN-YY
+                                               +   WRK-YY
+               END-IF
+      *        到達日の前日
+               MOVE    WRK-JGN-YMD         TO  WRK-INYMD
+               MOVE    -1                  TO  WRK-ZOGEN
+               PERFORM 800-HIZUKE-KEI-SEC
+      *TEST
+               DISPLAY "WRK-JGN-YMD:" WRK-JGN-YMD
+                       ",WRK-OTYMD:" WRK-OTYMD
+                       ",TNS-JGNAGE:" TNS-JGNAGE
+      *TEST
+               MOVE    WRK-OTYMD           TO  WRK-JGN-YMD
+           END-IF
+      *    対象年月日計算
+           MOVE    WRK-KGN-YMD         TO  TBL-KGN-YMD (IDX)
+           MOVE    WRK-JGN-YMD         TO  TBL-JGN-YMD (IDX)
+           .
+       40011-NENREI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    対象テーブル年齢チェック処理
+      *****************************************************************
+       4001-NYUACT-TBL-SEC            SECTION.
+      *
+           INITIALIZE                  HZN-NYUIN-AREA
+           MOVE    TBL-NYUIN-AREA      TO  HZN-NYUIN-AREA
+      *    開始終了期間内で剤を作成する
+           MOVE    ZERO                TO  FLG-SYORI-END
+           MOVE    WRK-ACT-STYMD       TO  WRK-ACT-STYMD-HZN
+           MOVE    WRK-ACT-EDYMD       TO  WRK-ACT-EDYMD-HZN
+           MOVE    WRK-ACT-STYMD-HZN   TO  WRK-STYMD-OK
+           MOVE    WRK-ACT-EDYMD-HZN   TO  WRK-EDYMD-OK
+           PERFORM
+               UNTIL   FLG-SYORI-END       =   1
+      *        入院会計照会・診療行為作成処理
+               PERFORM 40009-TBL-NYUIN-SYORI-SEC
+               MOVE    WRK-STYMD-OK        TO  WRK-ACT-STYMD
+               MOVE    WRK-EDYMD-OK        TO  WRK-ACT-EDYMD
+      *TEST
+             DISPLAY "CNYUIN WRK-ACT-STYMD:" WRK-ACT-STYMD
+                     ",WRK-ACT-EDYMD:" WRK-ACT-EDYMD
+                     ",WRK-ACT-STYMD-HZN:" WRK-ACT-STYMD-HZN
+                     ",WRK-ACT-EDYMD-HZN:" WRK-ACT-EDYMD-HZN
+             DISPLAY "1 TBL-SRYCD:" TBL-SRYCD (01)
+             DISPLAY "2 TBL-SRYCD:" TBL-SRYCD (02)
+             DISPLAY "3 TBL-SRYCD:" TBL-SRYCD (03)
+             DISPLAY "4 TBL-SRYCD:" TBL-SRYCD (04)
+             DISPLAY "5 TBL-SRYCD:" TBL-SRYCD (05)
+             DISPLAY "6 TBL-SRYCD:" TBL-SRYCD (06)
+             DISPLAY "7 TBL-SRYCD:" TBL-SRYCD (07)
+      *TEST
+      *        入院作成処理
+               PERFORM 4009-NYUIN-HENSYORI-SEC
+      *TEST
+             DISPLAY "CNYUIN WRK-EDYMD-OK:" WRK-EDYMD-OK
+                     ",WRK-ACT-EDYMD-HZN:" WRK-ACT-EDYMD-HZN
+      *
+               IF      WRK-EDYMD-OK        =   WRK-ACT-EDYMD-HZN
+                   MOVE    1               TO  FLG-SYORI-END
+               ELSE
+      *            前回終了日の翌日から終了日まで
+                   MOVE    WRK-EDYMD-OK        TO  WRK-INYMD
+                   MOVE    1                   TO  WRK-ZOGEN
+                   PERFORM 800-HIZUKE-KEI-SEC
+                   MOVE    WRK-OTYMD           TO  WRK-STYMD-OK
+                   MOVE    WRK-ACT-EDYMD-HZN   TO  WRK-EDYMD-OK
+                   MOVE    WRK-STYMD-OK        TO  WRK-ACT-STYMD
+                   MOVE    WRK-EDYMD-OK        TO  WRK-ACT-EDYMD
+               END-IF
+           END-PERFORM
+           .
+       4001-NYUACT-TBL-EXT.
+           EXIT.
+      *****************************************************************
+      *    対象年齢チェック処理
+      *****************************************************************
+       40009-TBL-NYUIN-SYORI-SEC            SECTION.
+      *
+           INITIALIZE                  TBL-NYUIN-AREA
+           MOVE    ZERO                TO  IDX-TBL
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   10  )  OR
+                              (HZN-SRYCD (IDX) =   SPACE )
+               MOVE    ZERO            TO  FLG-CHK
+               MOVE    SPACE           TO  WRK-EDYMD-HZN
+      *
+               IF      HZN-KGN-YMD (IDX)   NOT =   SPACE
+      *            下限日が終了日以降は対象外
+                   IF      HZN-KGN-YMD (IDX)   >   WRK-ACT-EDYMD
+                       MOVE    1               TO  FLG-CHK
+                   ELSE
+      *            下限日が開始日以降は対象外
+                       IF      HZN-KGN-YMD(IDX)    >   WRK-ACT-STYMD
+                           MOVE    1               TO  FLG-CHK
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               IF      HZN-JGN-YMD (IDX)   NOT =   SPACE
+      *            上限日が開始日以前は対象外
+                   IF      HZN-JGN-YMD (IDX)   <   WRK-ACT-STYMD
+                       MOVE    1               TO  FLG-CHK
+                   ELSE
+      *            上限日が終了日以前は対象外
+                       IF      HZN-JGN-YMD(IDX)    <   WRK-ACT-EDYMD
+                           MOVE    HZN-JGN-YMD(IDX)    TO  WRK-EDYMD-HZN
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               IF      FLG-CHK             =   ZERO
+                   ADD     1               TO  IDX-TBL
+                   MOVE    HZN-NYUIN-OCC (IDX) TO  TBL-NYUIN-OCC
+                                                       (IDX-TBL)
+                   IF      WRK-EDYMD-HZN   NOT =   SPACE
+                       IF      WRK-EDYMD-HZN   <   WRK-EDYMD-OK
+                           MOVE    WRK-EDYMD-HZN   TO  WRK-EDYMD-OK
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       40009-TBL-NYUIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院会計照会・診療行為作成処理
+      *****************************************************************
+       4009-NYUIN-HENSYORI-SEC         SECTION.
+      *
+      *    点数計算
+           PERFORM 40091-NYUACT-KEISAN-SEC
+           IF      WRK-MEISAISU        =   ZERO
+               GO      TO      4009-NYUIN-HENSYORI-EXT
+           END-IF
+      *
+      *    対象の会計照会のチェック
+           PERFORM 4002-NYUSRYACCT-SYORI-SEC
+      *    診療行為追加
+           IF      FLG-SINKI           =   1
+               PERFORM 4003-NYUSYRACT-SYORI-SEC
+           END-IF
+      *
+           .
+       4009-NYUIN-HENSYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数計算処理
+      *****************************************************************
+       40091-NYUACT-KEISAN-SEC            SECTION.
+      *
+           INITIALIZE                  WRK-SRYACCT-AREA
+           MOVE    ZERO                TO  IDX-ATO
+      *    点数算定
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   10  )  OR
+                              (TBL-SRYCD (IDX) =   SPACE )
       *        点数集計
-               COMPUTE WRK-ZAITEN          =   WRK-ZAITEN
-                                           +   WRK-TENSU
+               IF      TBL-TENSIKIBETU (IDX)   =   5  OR  6
+                   CONTINUE
+               ELSE
+                   COMPUTE WRK-ZAITEN          =   WRK-ZAITEN
+                                               +   TBL-TENSU (IDX)
+               END-IF
       *        各集計
                MOVE    TBL-SRYCD (IDX)     TO  WRK-SRYCD-9
                COMPUTE WRK-SRYCDTOTAL      =   WRK-SRYCDTOTAL
@@ -638,90 +943,8 @@
                                        +   WRK-KASAN-ALL
                                        -   WRK-GENZAN-ALL
       *
-           IF      WRK-MEISAISU        =   ZERO
-               GO      TO      400-NYUACT-SYORI-EXT
-           END-IF
-      *
-           IF      WRK-KHN-STYMD(1:6)  =   WRK-KHN-EDYMD(1:6)
-      *        開始と終了が同じ月の時
-               MOVE    WRK-KHN-STYMD       TO  WRK-ACT-STYMD
-               MOVE    WRK-KHN-EDYMD       TO  WRK-ACT-EDYMD
-               PERFORM 4009-NYUIN-HENSYORI-SEC
-           ELSE
-      *        開始と終了が違う月の時
-               MOVE    WRK-KHN-STYMD       TO  WRK-ACT-STYMD
-      *        月末算定
-               INITIALIZE                      STS-AREA-DAY
-               INITIALIZE                      LNK-DAY7-AREA
-               MOVE    "71"                TO  LNK-DAY7-IRAI
-               MOVE    WRK-ACT-STYMD(1:6)  TO  LNK-DAY7-YM
-               CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                   LNK-DAY7-AREA
-               IF      STS-DAY-RC1         =   ZERO
-                   MOVE    LNK-DAY7-KOYOMI     TO  WRK-ACT-EDYMD
-               END-IF
-               PERFORM 4009-NYUIN-HENSYORI-SEC
-      *        終了日まで
-               MOVE    WRK-KHN-EDYMD       TO  WRK-ACT-STYMD
-               MOVE    "01"                TO  WRK-ACT-STYMD(7:2)
-               MOVE    WRK-KHN-EDYMD       TO  WRK-ACT-EDYMD
-               PERFORM 4009-NYUIN-HENSYORI-SEC
-           END-IF
-      *
-      *
            .
-       400-NYUACT-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入院会計照会・診療行為作成処理
-      *****************************************************************
-       4009-NYUIN-HENSYORI-SEC            SECTION.
-      *
-      *    対象の会計照会のチェック
-           PERFORM 4002-NYUSRYACCT-SYORI-SEC
-      *    診療行為追加
-           IF      FLG-SINKI           =   1
-               PERFORM 4003-NYUSYRACT-SYORI-SEC
-           END-IF
-      *
-           .
-       4009-NYUIN-HENSYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    点数計算処理
-      *****************************************************************
-       4001-TENSU-KEI-SEC            SECTION.
-      *
-           MOVE    ZERO                TO  WRK-TENSU
-           MOVE    SPACE               TO  TNS-TENSU-REC
-           MOVE    TBL-SRYCD (IDX)     TO  TNS-SRYCD
-           MOVE    WRK-KHN-STYMD       TO  WRK-YMD
-           PERFORM 910-TENSU-READ-SEC
-           IF      FLG-TENSU       NOT =   ZERO
-               DISPLAY "ORCSNYUACCT TENSU INV:" TBL-SRYCD (IDX)
-               MOVE    2               TO  LNK-SCNYUACCT-RC
-           END-IF
-           MOVE    TNS-TENSIKIBETU     TO  TBL-TENSIKIBETU (IDX)
-           MOVE    TNS-TEN             TO  TBL-TENSU       (IDX)
-      *
-      *    労災のコード
-           IF      TNS-SRYCD           =   "101"
-      *        金額を点数へ置換える
-               IF      TNS-TENSIKIBETU     =   1
-                   COMPUTE TBL-TENSU  (IDX)    =   TNS-TEN
-                                               /   10
-               END-IF
-           END-IF
-           IF      TNS-TENSIKIBETU     =   5  OR  6
-               MOVE    ZERO                TO  WRK-TENSU
-           ELSE
-               MOVE    TBL-TENSU  (IDX)    TO  WRK-TENSU
-           END-IF
-      *
-           .
-       4001-TENSU-KEI-EXT.
+       40091-NYUACT-KEISAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -738,7 +961,12 @@
            MOVE    SPA-PTID            TO  NACCT-PTID
            MOVE    SPA-SRYKA           TO  NACCT-SRYKA
            MOVE    WRK-ACT-STYMD(1:6)  TO  NACCT-SRYYM
-           MOVE    "90"                TO  NACCT-SRYKBN
+           IF      TBL-SRYCD (01)(2:2) =   "97"
+               MOVE    "97"                TO  NACCT-SRYKBN
+           ELSE
+               MOVE    "90"                TO  NACCT-SRYKBN
+           END-IF
+           MOVE    NACCT-SRYKBN        TO  WRK-SRYKBN
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -814,7 +1042,7 @@
            MOVE    SPA-PTID            TO  NACCT-PTID
            MOVE    SPA-SRYKA           TO  NACCT-SRYKA
            MOVE    WRK-ACT-STYMD(1:6)  TO  NACCT-SRYYM
-           MOVE    "90"                TO  NACCT-SRYKBN
+           MOVE    WRK-SRYKBN          TO  NACCT-SRYKBN
            MOVE    WRK-ZAINUM          TO  NACCT-ZAINUM
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
@@ -1008,7 +1236,7 @@
            MOVE    SPA-PTID            TO  NACCT-PTID
            MOVE    SPA-SRYKA           TO  NACCT-SRYKA
            MOVE    WRK-ACT-STYMD(1:6)  TO  NACCT-SRYYM
-           MOVE    "90"                TO  NACCT-SRYKBN
+           MOVE    WRK-SRYKBN          TO  NACCT-SRYKBN
            MOVE    WRK-ZAINUM          TO  NACCT-ZAINUM
            MOVE    ZERO                TO  NACCT-HKNCOMBI
       *    剤識別区分
@@ -1108,8 +1336,13 @@
            MOVE    WRK-ZAINUM          TO  NSRY-ZAINUM
       *    連番号
            MOVE    WRK-RENNUM          TO  NSRY-RENNUM
-           MOVE    "900"               TO  NSRY-SRYSYUKBN
-           MOVE    "90"                TO  NSRY-SRYKBN
+           IF      TBL-SRYCD (01)(2:2) =   "97"
+               MOVE    "970"               TO  NSRY-SRYSYUKBN
+               MOVE    "97"                TO  NSRY-SRYKBN
+           ELSE
+               MOVE    "900"               TO  NSRY-SRYSYUKBN
+               MOVE    "90"                TO  NSRY-SRYKBN
+           END-IF
       *
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1174,10 +1407,12 @@
                GO      TO      200-TAIIN-SYORI-EXT
            END-IF
       *
-      *    診療会計をすべて削除する
+      *    診療会計をすべて削除する・退院日を最終受診日とする
            INITIALIZE                  ORCSCNYUINAREA
            MOVE    "2"                 TO  ORCSCNYUIN-KBN
            MOVE    WRK-RRK-YMD         TO  ORCSCNYUIN-YMD
+           MOVE    LNK-SCNYUACCT-EDSRYYMD
+                                       TO  ORCSCNYUIN-TAIINYMD
            CALL    "ORCSCNYUIN"        USING
                                        SPA-AREA
                                        ORCSCNYUINAREA
@@ -1198,17 +1433,18 @@
            MOVE    SPA-PTID            TO  NACCT-PTID
            MOVE    SPA-SRYKA           TO  NACCT-SRYKA
            MOVE    WRK-STYMD(1:6)      TO  NACCT-SRYYM
-           MOVE    "90"                TO  NACCT-SRYKBN
+      *****MOVE    "90"                TO  NACCT-SRYKBN
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY3"    TO  ORC-DBPATH
+      **** MOVE    "NYUINACCT-KEY3"    TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "NYUINACCT-KEY3"    TO  ORC-DBPATH
+               MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
                PERFORM 930-NYUINACCT-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-NYUINACCT
@@ -1245,11 +1481,11 @@
                    END-IF
                END-IF
       *
-               MOVE    "NYUINACCT-KEY3"    TO  ORC-DBPATH
+               MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
                PERFORM 930-NYUINACCT-READ-SEC
            END-PERFORM
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY3"    TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -1401,17 +1637,17 @@
            MOVE    SPA-PTID            TO  NACCT-PTID
            MOVE    SPA-SRYKA           TO  NACCT-SRYKA
            MOVE    WRK-STYMD(1:6)      TO  NACCT-SRYYM
-           MOVE    "90"                TO  NACCT-SRYKBN
+      **** MOVE    WRK-SRYKBN          TO  NACCT-SRYKBN
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY3"    TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "NYUINACCT-KEY3"    TO  ORC-DBPATH
+               MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
                PERFORM 930-NYUINACCT-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-NYUINACCT
@@ -1465,11 +1701,11 @@
                    END-IF
                END-IF
       *
-               MOVE    "NYUINACCT-KEY3"    TO  ORC-DBPATH
+               MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
                PERFORM 930-NYUINACCT-READ-SEC
            END-PERFORM
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY3"    TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
