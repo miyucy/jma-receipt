@@ -41,6 +41,7 @@
       *  02.00.04    NACL-多々納  02/10/03  労災加算なしの追加
       *  02.00.05    NACL-多々納  02/10/18  入院回数追加
       *  02.00.06    NACL-多々納  02/10/21  慢性疼痛管理料の改正追加
+      *  02.00.07    NACL-多々納  02/11/28  慢性疼痛管理料の改正修正
       *****************************************************************
       *
       *
@@ -119,6 +120,8 @@
            03  WRK-YMD.
                05  WRK-YYMM            PIC X(06).
                05  WRK-DD              PIC 9(02).
+      *
+           03  WRK-CHK-CD               PIC X(09).
       *
       *    コメントの入力値用
        01  WRK-INPUT-SET-AREA.
@@ -900,6 +903,9 @@
                    PERFORM 20051-CHK-SANTEI-SEC
       *            入力値とのチェック
                    PERFORM 20052-CHK-INPUT-SEC
+                   IF      LNK-SC92-ERRCD6 NOT =   SPACE
+                       MOVE    CHK-CD (IDX-C)  TO  WRK-CHK-CD
+                   END-IF
                END-PERFORM
       *
                MOVE    "CHK-KEY3"          TO  ORC-DBPATH
@@ -916,7 +922,17 @@
            IF     (LNK-SC92-ERRCD6 NOT =   SPACE      )  AND
                   (LNK-SC92-SRYCD      =   "113006510")  AND
                   (SPA-SRYYMD          >=  "20021017" )
-               PERFORM 20053-MANSEI-CHK-SEC
+      *        理学療法４、消炎鎮痛等処置の時チェック
+               IF      WRK-CHK-CD      =   "180707410"
+                                       OR  "180022810"
+                                       OR  "180707510"
+                                       OR  "140029610"
+                                       OR  "140040310"
+                                       OR  "140002210"
+                                       OR  "140002310"
+                                       OR  "140047670"
+                   PERFORM 20053-MANSEI-CHK-SEC
+               END-IF
            END-IF
       *
            .
