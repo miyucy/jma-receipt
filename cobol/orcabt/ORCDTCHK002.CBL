@@ -2549,6 +2549,8 @@
            PERFORM VARYING IDX4    FROM    1   BY  1
                    UNTIL ( IDX4    >   TSRYKA-MAX )
       *
+               INITIALIZE              FLG-PTBYO-DAY-G
+      *
       *        患者病名情報チェック処理
                PERFORM 200112-PTBYOMEI-CHK-SEC
       *
@@ -2607,8 +2609,6 @@
                MOVE    1               TO  FLG-CHKEND (9)
            END-IF
       *
-           INITIALIZE                      FLG-PTBYO-DAY-G
-      *
       *    疑い病名開始日チェック用年月
            MOVE    SPACE               TO  WRK-UTAIGAI-CHK-YM
            MOVE    WRK-KJNYMD          TO  WRK-SYMD
@@ -2666,7 +2666,7 @@
                        PERFORM 2001121-PTBYO-CHK-SEC
                    END-IF
       *
-      *            患者病名チェック
+      *            疑い病名チェック
                    IF    ( FLG-CHKEND (7)  =   ZERO )
                        PERFORM 2001121-PTBYO-UTAGAI-CHK-SEC
                    END-IF
