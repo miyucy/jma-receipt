@@ -1,156 +1,184 @@
 W12	{
-	fixed1	{
+	fi1	{
 		YUKOSTYMD	{
 			value	varchar(9);
 		};
 		YUKOEDYMD	{
 			value	varchar(9);
 		};
-		BYOMEIHENKBN_COMBO	{
-			BYOMEIHENKBN	{
-				value	varchar(20);
+		note3	{
+			pageno	int;
+			fi23	{
+				RECEDENOUT	{
+					value	varchar(30);
+				};
+				PREFPRGID	{
+					value	varchar(15);
+				};
+				PREFPRGID1	{
+					state	int;
+					value	varchar(15);
+				};
+				SYAPRTNM	{
+					value	varchar(16);
+				};
+				SYAPRTNM_NEXT	{
+					value	varchar(16);
+				};
+				KKHPRTNM	{
+					value	varchar(16);
+				};
+				KKHPRTNM_NEXT	{
+					value	varchar(16);
+				};
+				SYUBYOHENFLG_COMBO	{
+					SYUBYOHENFLG	{
+						value	varchar(46);
+					};
+					count	int;
+					item	varchar(46)[4];
+				};
+				SYAPRTNM_N	{
+					value	varchar(16);
+				};
+				SYAPRTNM_NEXT_N	{
+					value	varchar(16);
+				};
+				KKHPRTNM_N	{
+					value	varchar(16);
+				};
+				KKHPRTNM_NEXT_N	{
+					value	varchar(16);
+				};
+				NEXTPRTKBN1_COMBO	{
+					NEXTPRTKBN_1	{
+						value	varchar(16);
+					};
+					count	int;
+					item	varchar(16)[4];
+				};
+				NEXTPRTKBN_COMBO	{
+					NEXTPRTKBN	{
+						value	varchar(16);
+					};
+					count	int;
+					item	varchar(16)[3];
+				};
+				JIHITEKKSIKBN_COMBO	{
+					JIHITEKKSIKBN	{
+						value	varchar(10);
+					};
+					count	int;
+					item	varchar(10)[2];
+				};
+				RECECOMKBN_COMBO	{
+					RECECOMKBN	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[2];
+				};
+				BYOMEIHENKBN_COMBO	{
+					BYOMEIHENKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
+				BYOMEIHENKBN1_COMBO	{
+					BYOMEIHENKBN1	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[2];
+				};
+				TENKIHENKBN_COMBO	{
+					TENKIHENKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
+				SYARECEKBN_COMBO	{
+					SYARECEKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
+				KKHRECEKBN_COMBO	{
+					KKHRECEKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
+				SYAOCRKBN_COMBO	{
+					SYAOCRKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
+				KKHOCRKBN_COMBO	{
+					KKHOCRKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
+				RJNGNBKKBN_COMBO	{
+					RJNGNBKKBN	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[4];
+				};
+				RENNUMHENKBN_COMBO	{
+					RENNUMHENKBN	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[3];
+				};
+				PRTJYUNKBN2_COMBO	{
+					PRTJYUNKBN2	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[5];
+				};
+				PRTJYUNKBN1_COMBO	{
+					PRTJYUNKBN1	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[4];
+				};
+				AUTODSPKBN_COMBO	{
+					AUTODSPKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
+				SRYKAHENKBN_COMBO	{
+					SRYKAHENKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
 			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		BYOMEIHENKBN1_COMBO	{
-			BYOMEIHENKBN1	{
-				value	varchar(22);
+			fi24	{
+				KKHPRTKBN_COMBO	{
+					KKHPRTKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
 			};
-			count	int;
-			item	varchar(22)[2];
-		};
-		SYUBYOHENFLG_COMBO	{
-			SYUBYOHENFLG	{
-				value	varchar(46);
-			};
-			count	int;
-			item	varchar(46)[4];
-		};
-		TENKIHENKBN_COMBO	{
-			TENKIHENKBN	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		KKHRECEKBN_COMBO	{
-			KKHRECEKBN	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		SYARECEKBN_COMBO	{
-			SYARECEKBN	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		RECEDENOUT	{
-			value	varchar(30);
-		};
-		RECECOMKBN_COMBO	{
-			RECECOMKBN	{
-				value	varchar(26);
-			};
-			count	int;
-			item	varchar(26)[2];
-		};
-		SYAOCRKBN_COMBO	{
-			SYAOCRKBN	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		KKHOCRKBN_COMBO	{
-			KKHOCRKBN	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		PREFPRGID	{
-			value	varchar(15);
-		};
-		PREFPRGID1	{
-	    	state	int;
-			value	varchar(15);
-		};
-		SYAPRTNM	{
-			value	varchar(16);
-		};
-		SYAPRTNM_NEXT	{
-			value	varchar(16);
-		};
-		KKHPRTNM	{
-			value	varchar(16);
-		};
-		KKHPRTNM_NEXT	{
-			value	varchar(16);
-		};
-		SYAPRTNM_N	{
-			value	varchar(16);
-		};
-		SYAPRTNM_NEXT_N	{
-			value	varchar(16);
-		};
-		KKHPRTNM_N	{
-			value	varchar(16);
-		};
-		KKHPRTNM_NEXT_N	{
-			value	varchar(16);
-		};
-		RENNUMHENKBN_COMBO	{
-			RENNUMHENKBN	{
-				value	varchar(22);
-			};
-			count	int;
-			item	varchar(22)[3];
-		};
-		NEXTPRTKBN_COMBO	{
-			NEXTPRTKBN	{
-				value	varchar(16);
-			};
-			count	int;
-			item	varchar(16)[3];
-		};
-		NEXTPRTKBN1_COMBO	{
-			NEXTPRTKBN_1	{
-				value	varchar(16);
-			};
-			count	int;
-			item	varchar(16)[4];
-		};
-		RJNGNBKKBN_COMBO	{
-			RJNGNBKKBN	{
-				value	varchar(24);
-			};
-			count	int;
-			item	varchar(24)[4];
-		};
-		JIHITEKKSIKBN_COMBO	{
-			JIHITEKKSIKBN	{
-				value	varchar(10);
-			};
-			count	int;
-			item	varchar(10)[2];
-		};
-		SRYKAHENKBN_COMBO	{
-			SRYKAHENKBN	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
-		KKHPRTKBN_COMBO	{
-			KKHPRTKBN	{
-				value	varchar(20);
-			};
-			count	int;
-			item	varchar(20)[2];
 		};
 	};
 };
