@@ -1854,6 +1854,12 @@
                    MOVE    IDX-Z               TO  IDX-S
                    MOVE    ZERO                TO  FLG-KASAN
                    PERFORM 2001-JIDOTUIKA-SEC
+                   IF      FLG-ARI             =   1
+                       MOVE    "2"             TO  WRK-COM-AUTOKBN
+                                                              (IDX-T)
+                       MOVE    "1"             TO  WRK-COM-IN  (IDX-T)
+                       MOVE    "2"             TO  WRK-COM-IN2 (IDX-T)
+                   END-IF
                END-IF
            END-IF
       *

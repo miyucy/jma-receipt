@@ -66,6 +66,8 @@
            03  IDH1                PIC 9(04).
            03  IDH2                PIC 9(04).
       *
+           03  IDX-1               PIC 9(04).
+      *
            03  IDX-ZAI             PIC 9(02).
            03  IDX-D1              PIC 9(02).
            03  IDX-D2              PIC 9(02).
@@ -1031,7 +1033,6 @@
            MOVE    ZERO                TO  WRK-CD-MCNT
            PERFORM VARYING     IDX     FROM    WRK-IDX-FT   BY  1
                    UNTIL       IDX         >   22
-      *
       ****     MOVE    LNK-SC97-INPUTCD(IDX:1)
       *****                                TO  WRK-MOJI
                EVALUATE    LNK-SC97-INPUTCD(IDX:1)
@@ -1039,6 +1040,14 @@
                        MOVE    1               TO  FLG-AST
                    WHEN    SPACE
                        ADD     1               TO  FLG-SP
+      *                空白は１つとする
+                       IF     (IDX             >   1   )
+                           COMPUTE IDX-1       =   IDX     -  1
+                           IF      LNK-SC97-INPUTCD(IDX-1:1) =   SPACE
+                               COMPUTE FLG-SP      =   FLG-SP    -  1
+                           END-IF
+                       END-IF
+      *
                    WHEN    OTHER
       *---             診療行為コード編集
                        IF     (FLG-SP          =   ZERO )  AND
@@ -1163,8 +1172,8 @@
       *
       *    フィルムの時、分画数
            MOVE    ZERO                TO  WRK-BUNGSU
-           IF     (WRK-MCNT2           >   ZERO  )  AND
-                  (SPA-COM-INPUTCD(GMN-IDX)(1:1)    NOT =   "8")
+           IF     (WRK-MCNT2           >   ZERO  ) AND
+                  (SPA-COM-INPUTCD(GMN-IDX)(1:1)   =   "7") 
       *
                MOVE    ZERO                TO  WRK-BUNGSU
                INITIALIZE                      ORCSNUMAREA

@@ -2644,6 +2644,10 @@
                    MOVE    ZERO                TO  FLG-NENREI
                    PERFORM 1003-JIDOU-CHK-SEC
                    PERFORM 1002-JIDOUSET-SEC
+                   IF      FLG-ADD             =   1
+                       MOVE    "1"             TO  WRK-COM-IN  (IDX-S)
+                       MOVE    "2"             TO  WRK-COM-IN2 (IDX-S)
+                   END-IF
                END-IF
            END-IF
       *
