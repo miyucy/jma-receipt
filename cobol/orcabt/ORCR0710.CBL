@@ -41,6 +41,8 @@
       *  01.00.10    NACL-藤原    03/04/15  診療区分の表示の修正
       *  01.00.11    NACL-藤原    03/04/17  出力件数をジョブ管理ＤＢへ更新
       *  01.00.12    NACL-門脇    03/04/18  食事療養”３月超”の記載廃止
+      *  01.00.13    NACL-藤原    03/04/21  地方公費データのとき主保険が無い
+      *                                     ときは不明分としてレセプトを作成する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -640,6 +642,9 @@
                                    PIC X(08).
                    07  FILLER          PIC X(28)   VALUE
                    "は適用年月日外となっています". 
+      *
+           03  WRK-ERR-MSG-5           PIC X(48)  VALUE
+               "地方公費のみ選択されています。主保険がありません".
       *
       *    患者情報（ワーク）
        01  WRK-PTINF-REC.
@@ -1249,8 +1254,56 @@
       *
            PERFORM 990-RECE62X-READ-SEC
       *
-           PERFORM                     UNTIL   FLG-RECE62X =   1
-                                       OR      FLG-ERR     =   1
+           PERFORM             UNTIL   FLG-RECE62X =   1
+                               OR      FLG-ERR     =   1
+      *
+               IF      RECE62X-RECESYUBETU     =   ZERO
+                   IF      RECE62X-HKNNUM      NOT =   SPACE 
+                       CONTINUE
+                   ELSE
+                       PERFORM 20021-KOHSKY-FUMEI-HENSYU-SEC
+                   END-IF
+               ELSE
+                   PERFORM 20022-KOHSKY-WRITE-SEC
+               END-IF 
+      *
+               PERFORM 990-RECE62X-READ-SEC
+           END-PERFORM
+      *
+           .
+       2002-KOHSKY-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費請求書不明分レセプト出力処理
+      *****************************************************************
+       20021-KOHSKY-FUMEI-HENSYU-SEC           SECTION.
+      *
+           MOVE    RECE62X-REC         TO  RECE62-REC 
+      *
+           MOVE    1                   TO  CNT-PAGE
+           MOVE    1                   TO  FLG-RECE67
+      *
+           MOVE    SPACE               TO  WRK-3SYU-KBN
+           MOVE    ZERO                TO  SEIHIDX
+           MOVE    ZERO                TO  KAKKIDX
+           MOVE    ZERO                TO  SESNIDX
+      *
+      *    帳票編集<ヘッダー部>処理
+           PERFORM 310-HCN06-HEAD-HEN-SEC
+      *
+      *    帳票印刷処理
+           PERFORM 390-PRINT-OUT-SEC
+      *
+           .
+       20021-KOHSKY-FUMEI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費請求書編集処理
+      *****************************************************************
+       20022-KOHSKY-WRITE-SEC          SECTION.
+      *
                MOVE    SPACE               TO  KOHSKY-REC
                INITIALIZE                      KOHSKY-REC
                MOVE    RECE62X-HOSPID      TO  KOHSKY-HOSPID
@@ -1289,15 +1342,15 @@
                IF      FLG-SEIKYU          =   ZERO
                    MOVE    MCPDATA-REC         TO  RECE10-REC
                    MOVE    RECE10-RECESYUBETU  TO  KOHSKY-RECESYUBETU
-               ELSE
-                   STRING  "レセプト種別が設定不能 PTNUM="
-                                               DELIMITED  BY  SIZE
-                           RECE62X-PTNUM       DELIMITED  BY  SIZE 
-                                               INTO  WRK-RECEERR
-                   END-STRING
-                   PERFORM 500-ERR-HENSYU-SEC
-                   MOVE    1                  TO  FLG-ERR
-                   GO  TO  2002-KOHSKY-WRITE-EXT
+      *********ELSE
+      *            STRING  "レセプト種別が設定不能 PTNUM="
+      *                                     DELIMITED  BY  SIZE
+      *                    RECE62X-PTNUM       DELIMITED  BY  SIZE 
+      *                                        INTO  WRK-RECEERR
+      *            END-STRING
+      *            PERFORM 500-ERR-HENSYU-SEC
+      *            MOVE    1                  TO  FLG-ERR
+      *************GO  TO  2002-KOHSKY-WRITE-EXT
                END-IF
       *
                PERFORM 900-KOHSKY-INV-SEC
@@ -1391,7 +1444,7 @@
                                             MCPDATA-REC      
       *
                IF      MCP-RC     =   ZERO
-                   PERFORM 990-RECE62X-READ-SEC
+                   CONTINUE
                ELSE
                    DISPLAY "ORCR0710 KOHSKY MCP-RC= "  MCP-RC   
                    IF      FLG-KOHSKY          =   1    
@@ -1404,7 +1457,6 @@
                    PERFORM 500-ERR-HENSYU-SEC
                    MOVE    1                  TO  FLG-ERR
                END-IF
-           END-PERFORM
       *
            .
        2002-KOHSKY-WRITE-EXT.
@@ -1720,6 +1772,8 @@
                                            TO  WRK-ERR-HKNCOMBINUM-4
                    END-IF
                    MOVE    WRK-ERR-MSG-4   TO   HC06-HEAD1-G
+               WHEN    7
+                   MOVE    WRK-ERR-MSG-5   TO   HC06-HEAD1-G
            END-EVALUATE        
            INSPECT HC06-HEAD1-G  REPLACING ALL "  "    BY  "　"
       *
@@ -4672,17 +4726,17 @@
                NOT AT  END
       *            テスト患者・レセプト種別不明のとき読み飛ばす
                    IF    ( RECE62X-TSTPTNUMKBN     =   "1"    )
-                   OR    ( RECE62X-RECESYUBETU     =   "0000" )
+      *************OR    ( RECE62X-RECESYUBETU     =   "0000" )
                        GO  TO  990-RECE62X-READ-SEC
                    END-IF
       *            点数が全てゼロのとき読み飛ばす
-                   IF      RECE62X-TOTALTEN (1) =   ZERO
-                   AND     RECE62X-TOTALTEN (2) =   ZERO 
-                   AND     RECE62X-TOTALTEN (3) =   ZERO 
-                   AND     RECE62X-TOTALTEN (4) =   ZERO
-                   AND     RECE62X-TOTALTEN (5) =   ZERO
-                       GO  TO  990-RECE62X-READ-SEC
-                   END-IF
+      *************IF      RECE62X-TOTALTEN (1) =   ZERO
+      *             AND     RECE62X-TOTALTEN (2) =   ZERO 
+      *             AND     RECE62X-TOTALTEN (3) =   ZERO 
+      *             AND     RECE62X-TOTALTEN (4) =   ZERO
+      *             AND     RECE62X-TOTALTEN (5) =   ZERO
+      *                 GO  TO  990-RECE62X-READ-SEC
+      *************END-IF
                    MOVE    ZERO                TO  FLG-RECE62X
                    ADD     1                   TO  CNT-RECE62X
            END-READ

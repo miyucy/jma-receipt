@@ -30,6 +30,8 @@
       *  01.00.01    NACL-藤原    03.03.03  診療科数１０から２０へ変更
       *  01.00.02    NACL-藤原    03/03/11  種別不明の情報を編集
       *  01.00.03    NACL-藤原    03/03/15  入院会計からの診療科の編集の修正
+      *  01.01.04    NACL-藤原    03/04/21  レセのとき地方公費のみの場合は
+      *                                     出力しない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -882,9 +884,9 @@
                                            IDZ    
       *
       *        公費単独のとき全てレセプトに出力
-           IF      COMB-HKNNUM         =   SPACE
-               MOVE    COMB-KOHI-AREA      TO  WRK-SEIKYU-TBL (1)
-           ELSE        
+      *****IF      COMB-HKNNUM         =   SPACE
+      *****     MOVE    COMB-KOHI-AREA      TO  WRK-SEIKYU-TBL (1)
+      *****ELSE        
       *    地方公費のときレセプト請求区分を取得して判別
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       4
@@ -933,7 +935,7 @@
                        MOVE    1                      TO  FLG-KOH 
                    END-IF  
                END-PERFORM
-           END-IF           
+      ****END-IF           
       *
       *    レセプト明細書
            MOVE    "1"                 TO  WRK-SYOKBN
@@ -1183,9 +1185,9 @@
                                            IDZ    
       *
       *        公費単独のとき全てレセプトに出力
-           IF      COMB-HKNNUM         =   SPACE
-               MOVE    COMB-KOHI-AREA      TO  WRK-SEIKYU-TBL (1)
-           ELSE        
+      *****IF      COMB-HKNNUM         =   SPACE
+      *****    MOVE    COMB-KOHI-AREA      TO  WRK-SEIKYU-TBL (1)
+      *****ELSE        
       *    地方公費のときレセプト請求区分を取得して判別
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       4
@@ -1234,7 +1236,7 @@
                        MOVE    1                      TO  FLG-KOH 
                    END-IF  
                END-PERFORM
-           END-IF           
+      ****END-IF           
       *
       *    レセプト明細書
            MOVE    "1"                 TO  WRK-SYOKBN
@@ -1363,6 +1365,15 @@
                    END-IF
            END-EVALUATE             
            MOVE    SPACE               TO WRK-RECE61-RECEKA
+      *
+      *    レセのとき地方公費のみの場合は出力しない
+           IF      WRK-SYOKBN             =   "1"        
+               IF      WRK-RECE61-HKNNUM      =   SPACE
+               AND     WRK-RECE61-KOHID       =   ZERO
+               AND     WRK-SEIKYU-KOHID (1 1) =   ZERO
+                   GO  TO  20011-FILE-HENSYU-EXT
+               END-IF
+           END-IF 
       *   
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
@@ -1983,7 +1994,8 @@
            CLOSE   RECE61-FILE
            CLOSE   RECE61X-FILE
       *
-           IF      CNT-OUT1            =   ZERO 
+           IF      CNT-OUT1            =   ZERO
+           AND     CNT-OUT2            =   ZERO
                MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC

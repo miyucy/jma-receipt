@@ -57,6 +57,8 @@
       *  01.01.11    NACL-藤原    03/01/27  公費請求書ＤＢを追加
       *                                     最新のレセプトのみＤＢに残す
       *  01.01.12    NACL-藤原    03/03/11  種別不明の情報を編集
+      *  01.01.13    NACL-藤原    03/04/21  レセのとき地方公費のみの場合は
+      *                                     出力しない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -852,10 +854,10 @@
            MOVE    ZERO                TO  IDY
                                            IDZ    
       *
-      *        公費単独のとき全てレセプトに出力
-           IF      COMB-HKNNUM         =   SPACE
-               MOVE    COMB-KOHI-AREA      TO  WRK-SEIKYU-TBL (1)
-           ELSE        
+      *****公費単独のとき全てレセプトに出力
+      *****IF      COMB-HKNNUM         =   SPACE
+      *****    MOVE    COMB-KOHI-AREA      TO  WRK-SEIKYU-TBL (1)
+      *****ELSE        
       *    地方公費のときレセプト請求区分を取得して判別
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       4
@@ -904,7 +906,7 @@
                        MOVE    1                      TO  FLG-KOH 
                    END-IF  
                END-PERFORM
-           END-IF           
+      *****END-IF           
       *
       *    レセプト明細書
            MOVE    "1"                 TO  WRK-SYOKBN
@@ -1035,6 +1037,15 @@
                        MOVE    PTHKN-HOJOKBN   TO  WRK-RECE01-HOJOKBN
                    END-IF
            END-EVALUATE             
+      *
+      *    レセのとき地方公費のみの場合は出力しない
+           IF      WRK-SYOKBN             =   "1"        
+               IF      WRK-RECE01-HKNNUM      =   SPACE
+               AND     WRK-RECE01-KOHID       =   ZERO
+               AND     WRK-SEIKYU-KOHID (1 1) =   ZERO
+                   GO  TO  20011-FILE-HENSYU-EXT
+               END-IF
+           END-IF 
       *   
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
@@ -1077,6 +1088,7 @@
        20011-RECE01-WRITE-SEC              SECTION.
       *
            PERFORM 20012-KOHID-HENSYU-SEC
+      *
            MOVE    COMB-HKNCOMBINUM   TO  WRK-RECE01-HKNCOMBI-O (1)
            MOVE    ACCT-SRYKA         TO  WRK-RECE01-SRYKA (1)
       *****IF      COMB-HKNID          NOT =   ZERO
@@ -1554,7 +1566,8 @@
            CLOSE   RECE01-FILE
            CLOSE   RECE01X-FILE
       *
-           IF      CNT-OUT1            =   ZERO 
+           IF      CNT-OUT1            =   ZERO
+           AND     CNT-OUT2            =   ZERO  
                MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC

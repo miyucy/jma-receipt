@@ -34,6 +34,8 @@
       *  01.00.05    NACL-藤原    03/04/14  不明分の保険履歴情報は作成しない
       *  01.00.06    NACL-門脇    03/04/16  船員保険（被保険者）＋通勤災害
       *                                     フラグセット
+      *  01.00.07    NACL-藤原    03/04/21  地方公費データのとき主保険が
+      *                                     無い場合は不明分とする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1194,6 +1196,13 @@
                GO  TO  RECESYUBETU-SET-EXT
            END-IF
       *
+      *    地方公費データのとき主保険が無かったら不明分とする
+           IF      IDZ                  =   2
+           AND     RECE62-HKNNUM        =   SPACE
+               MOVE    7                    TO  RECE62-ERR-ERRKBN
+               GO  TO  RECESYUBETU-SET-EXT
+           END-IF
+      *
       *    自費のときのレセプト種別を編集
            IF     (RECE62-HKNNUM        NOT =   SPACE)   AND
                   (WRK-JIHI-FLG         =   "1"      ) 
@@ -2325,6 +2334,7 @@
        300-TERM-SEC                SECTION.
       *
            IF      CNT-OUT (1)          =   ZERO 
+           AND     CNT-OUT (2)          =   ZERO
                MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC

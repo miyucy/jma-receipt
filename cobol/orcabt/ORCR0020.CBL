@@ -79,6 +79,8 @@
       *  01.00.27    NACL-門脇    03/03/18  在総診フラグセットの修正
       *  01.00.28    NACL-門脇    03/04/16  船員保険（被保険者）＋通勤災害
       *                                     フラグセット
+      *  01.00.29    NACL-藤原    03/04/21  地方公費データのとき主保険が
+      *                                     無い場合は不明分とする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -638,11 +640,9 @@
                    END-IF
                ELSE
                    DISPLAY  "PTINF FETCH ERR " RECE01-PTID  " " 
-      *             ACCEPT  WRK-IN FROM CONSOLE 
                END-IF
            ELSE
                DISPLAY   "PTINF SELECT ERR" 
-      *         ACCEPT  WRK-IN FROM CONSOLE 
            END-IF
            MOVE   "PTINF-KEY"      TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
@@ -714,6 +714,8 @@
                                 END-IF
                             END-IF
                         END-IF
+                        MOVE   "HKNNUM-KEY2"       TO  WK-PATH
+                        PERFORM   CSR-CLOSE-SEC
                         MOVE   PTHKN-HKNJANUM   TO  RECE02-HKNJANUM
                         MOVE   PTHKN-HONKZKKBN  TO  RECE02-HONKZKKBN
                                                     WK-HONKZKKBN
@@ -725,17 +727,13 @@
                    ELSE
                         DISPLAY  "PTHKNINF FETCH ERR "
                                  RECE01-PTID " " RECE01-HKNID "##"
-      *                  ACCEPT  WRK-IN FROM CONSOLE 
                    END-IF
                ELSE
                    DISPLAY   "PTHKNINF SELECT ERR" 
-      *             ACCEPT  WRK-IN FROM CONSOLE 
                END-IF
+               MOVE   "PTHKNINF-KEY3"     TO  WK-PATH
+               PERFORM   CSR-CLOSE-SEC
            END-IF
-           MOVE   "PTHKNINF-KEY3"     TO  WK-PATH
-           PERFORM   CSR-CLOSE-SEC
-           MOVE   "HKNNUM-KEY2"       TO  WK-PATH
-           PERFORM   CSR-CLOSE-SEC
       *    患者公費情報テーブルから老人保険情報の取得
            IF  RECE01-KOHHKNNUM-O(1)        =       "027"
            OR  RECE01-KOHID                 >       ZERO
@@ -797,11 +795,9 @@
       *----(01.00.14) LINE ADD END   --------------------------
                    ELSE
                         DISPLAY  "PTKOHINF FETCH ERR" 
-      *                  ACCEPT    WRK-IN FROM CONSOLE 
                    END-IF
                ELSE
                    DISPLAY   "PTKOHINF SELECT ERR" 
-      *             ACCEPT     WRK-IN FROM CONSOLE 
                END-IF
            END-IF
            MOVE   "PTKOHINF-KEY"      TO  WK-PATH
@@ -1120,6 +1116,13 @@
                GO  TO  RECESYUBETU-SET-EXT
            END-IF
       *
+      *    地方公費データのとき主保険が無かったら不明分とする
+           IF      IDZ                  =   2
+           AND     RECE02-HKNNUM        =   SPACE
+               MOVE    6                    TO  RECE02-ERR-ERRKBN
+               GO  TO  RECESYUBETU-SET-EXT
+           END-IF
+      *     
       *    自費のときのレセプト種別を編集
            IF     (RECE02-HKNNUM        NOT =   SPACE)   AND
                   (WRK-JIHI-FLG         =   "1"      ) 
@@ -2355,7 +2358,8 @@
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
-           IF      CNT-OUT (1)          =   ZERO 
+           IF      CNT-OUT (1)          =   ZERO
+           AND     CNT-OUT (2)          =   ZERO
                MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
