@@ -703,7 +703,7 @@
                                                          (SPA-GMN-IDX)
                                            *   SPA-COM-SURYO
                                                          (WRK-GMN-IDX)
-                   MOVE    SPA-COM-SURYO (WRK-GMN-IDX)
+                   MOVE    SPA-COM-SURYO (SPA-GMN-IDX)
                                                TO  SPA-COM-SURYO2
                                                          (SPA-GMN-IDX)
       *            回数変更

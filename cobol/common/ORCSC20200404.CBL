@@ -611,9 +611,11 @@
                    WHEN    "0"
                    WHEN    "8"
                    WHEN    "."
-                   WHEN    "S"
                    WHEN    "*"
                        CONTINUE
+                   WHEN    "S"
+      *                編集チェックへ
+                       PERFORM 10023-SETHEN-SEC
       *
                    WHEN    OTHER
       *                編集チェックへ
@@ -735,6 +737,22 @@
            .
        10021-KEISAN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    約束セット回数処理
+      *****************************************************************
+       10023-SETHEN-SEC                SECTION.
+      *
+      *    外用薬時、回数は１回とする（数量＊回数を数量とする）
+           IF      WRK-COM-SRYKBN (IDX-Z)  =   "23"
+               COMPUTE WRK-COM-SURYO (IDX-Z)   =   WRK-COM-SURYO2(IDX-Z)
+                                               *   LNK-ORCSC-KAISU
+           END-IF
+      *
+           .
+       10023-SETHEN-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    全診療行為チェック処理
