@@ -2199,7 +2199,7 @@
       *    ¸©Ã±ÍÑ¹àÌÜ
            IF      FLG-RECE67          =   ZERO
            AND     RECE67-KYURATE      >   ZERO
-               COMPUTE WRK-KYURATE-9   =   (100 -   RECE62-KYURATE)
+               COMPUTE WRK-KYURATE-9   =   (100 -   RECE67-KYURATE)
                                            / 10 
                IF      WRK-KYURATE-9       >   ZERO
                    MOVE   "µë³ä"           TO  HC06-KYURATE
