@@ -33,6 +33,7 @@
       *
       *  ２００２．１０改正対応 
       *  01.02.01    NACL-藤原    02/10/10  レセプト種別の出力の修正
+      *  01.02.02    NACL-藤原    02/12/10  エラーメッセージの修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -289,7 +290,7 @@
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
                                                SPA-1009-TBL
            IF      SPTID-RC        NOT =   ZERO
-               MOVE    "0003"          TO  SPA-ERRCD
+               MOVE    "0004"          TO  SPA-ERRCD
            ELSE
                IF      SPTID-PTID          =   SPA-H99NAI-PTID
                    CONTINUE
@@ -344,7 +345,7 @@
            IF      SGDAY-RC            =   ZERO
                MOVE    SGDAY-OTDAY(1:6)    TO  SPA-H99GMN-SRYYM
                MOVE    SGDAY-SDAY (1:6)    TO  SPA-H99NAI-SRYYM
-               MOVE    2                 TO  SPA-H01GMN-CUR
+               MOVE    2                 TO  SPA-H99GMN-CUR
            ELSE
                INITIALIZE                  SPA-H99GMN-TBL
                                            SPA-H99NAI-TBL
@@ -870,6 +871,9 @@
                    MOVE    "年月の入力エラーです"
                                              TO  SPA-ERRMSG
                WHEN    "0003"
+                   MOVE    "対象のレセプトは存在しません"
+                                             TO  SPA-ERRMSG
+               WHEN    "0004"
                    MOVE    "ＩＤ取得サブでエラー" 
                                                TO  SPA-ERRMSG
            END-EVALUATE
