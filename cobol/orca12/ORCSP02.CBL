@@ -34,6 +34,8 @@
       * 02.00.02     NACL-Â¿¡¹Ç¼  02/09/09  Ê¿À®£±£´Ç¯£±£°·î²þÀµÂÐ±þ
       * 02.00.03     NACL-Â¿¡¹Ç¼  02/11/26  ¿ÇÎÅ²Ê¡¦¥É¥¯¥¿¡¼·ï¿ô½¤Àµ
       * 02.00.04     NACL-Â¿¡¹Ç¼  03/01/08  ¸øÈñ¤ÎºÇÂç·ï¿ô£±£°£°·ï¤Ø
+      * 02.00.05     NACL-Â¿¡¹Ç¼  03/03/19  £È£±£µÇ¯£´·î²þÀµÂÐ±þÄÉ²Ã
+      * 02.00.06     NACL-Â¿¡¹Ç¼  03/03/24  ¸øÈñÉéÃ´³ÛÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -107,6 +109,7 @@
       *
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
+           03  FLG-PTKOHFTN        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
       *
@@ -121,16 +124,19 @@
            03  WRK-PTID            PIC 9(10).
            03  WRK-PTNUM           PIC X(20).
       *
-           03  WRK-MEISAI1         PIC 9(06).
-           03  WRK-MEISAI2         PIC 9(06).
-           03  WRK-MEISAI3         PIC 9(06).
-           03  WRK-YMD             PIC X(08).
-           03  WRK-RENNUMZ         PIC ZZZZ.
+           03  WRK-MEISAI1             PIC 9(06).
+           03  WRK-MEISAI2             PIC 9(06).
+           03  WRK-MEISAI3             PIC 9(06).
+           03  WRK-YMD                 PIC X(08).
+           03  WRK-RENNUMZ             PIC ZZZZ.
+           03  WRK-RENNUMZ3            PIC ZZZ.
            03  WRK-HST                 PIC 9(04).
            03  WRK-HED                 PIC 9(04).
            03  WRK-KST                 PIC 9(04).
            03  WRK-KED                 PIC 9(04).
            03  WRK-KBNCD               PIC X(02).
+      *
+           03  WRK-Z7                  PIC Z,ZZZ,ZZZ.
       *
            03  WRK-RATE-AREA.
                05  WRK-RATE-KBN        PIC X(02).
@@ -319,6 +325,10 @@
       *    ¥Ñ¥é¥á¥¿¥Æ¡¼¥Ö¥ë
        01  PARA-REC.
            COPY    "CPPARA.INC".
+      *
+      *    ´µ¼Ô¸øÈñÉéÃ´
+       01  PTKOHFTN-REC.
+           COPY    "CPPTKOHFTN.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -1833,6 +1843,9 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
+      *    ¸øÈñÉéÃ´£Ô£Â£Ì¤«¤éÊÔ½¸
+           PERFORM 100229-KOHFT-TBL-SPA-SEC
+      *
       *    ´µ¼ÔÈÖ¹æ´ÉÍý(ÊÑ´¹)¥Þ¥¹¥¿ÊÔ½¸
            PERFORM 970-PTNUM-READ-SEC
       *
@@ -1855,6 +1868,57 @@
       *
            .
        10022-PARA-SET-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    ¸øÈñÉéÃ´£Ô£Â£Ì¤«¤éÊÔ½¸½èÍý
+      *****************************************************************
+       100229-KOHFT-TBL-SPA-SEC           SECTION.
+      *
+      *    ¸øÈñÉéÃ´¤è¤ê
+           INITIALIZE                      PTKOHFTN-REC
+           MOVE    SPA-HOSPID          TO  PTKOHFTN-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
+      *
+           MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTKOHFTN-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTKOHFTN-KEY2"     TO  ORC-DBPATH
+               PERFORM 991-PTKOHFTN-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTKOHFTN
+           END-IF
+           MOVE    ZERO                TO  IDX
+      *
+           PERFORM
+               UNTIL    FLG-PTKOHFTN       =   1
+               ADD     1                   TO  IDX
+               MOVE    SPACE               TO  PARA-REC
+               INITIALIZE                      PARA-REC
+               MOVE    "PTKOHFTN"          TO  PARA-FILEMEI
+               MOVE    IDX                 TO  PARA-EDANUM
+               MOVE    PTKOHFTN-REC        TO  PARA-DATA-REC
+               PERFORM 400-PARA-INSERT-SEC
+      *
+               MOVE    "PTKOHFTN-KEY2"     TO  ORC-DBPATH
+               PERFORM 991-PTKOHFTN-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTKOHFTN-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       100229-KOHFT-TBL-SPA-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2037,7 +2101,8 @@
            MOVE    WRK-HKNNUM          TO  HKN-HKNNUM
            MOVE    WRK-PAYKBN          TO  HKN-PAYKBN
            MOVE    WRK-TEKSTYMD        TO  HKN-TEKSTYMD
-           MOVE    WRK-TEKEDYMD        TO  HKN-TEKEDYMD
+      *****MOVE    WRK-TEKEDYMD        TO  HKN-TEKEDYMD
+           MOVE    WRK-TEKSTYMD        TO  HKN-TEKEDYMD
       *
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -2061,6 +2126,11 @@
            IF      FLG-HKNNUM          =   ZERO
                IF     (WRK-TEKSTYMD        >=  HKN-TEKSTYMD )  AND
                       (WRK-TEKEDYMD        <=  HKN-TEKEDYMD )
+                   MOVE    HKN-HKNKOHSBTKBN    TO  WRK-HKNKOHSBTKBN
+                   MOVE    HKN-TANSEIDONAME    TO  WRK-TANSEIDONAME
+               END-IF
+      *        ÂÐ¾Ý¤ò³«»ÏÆü¤Î¤ß¤È¤¹¤ë
+               IF      WRK-TEKSTYMD        >=  HKN-TEKSTYMD
                    MOVE    HKN-HKNKOHSBTKBN    TO  WRK-HKNKOHSBTKBN
                    MOVE    HKN-TANSEIDONAME    TO  WRK-TANSEIDONAME
                END-IF
@@ -2912,6 +2982,15 @@
                END-IF
            END-PERFORM
       *
+      *    Æþ±¡¡¦³°Íè
+           IF    SPA-GMN27-NYUGAIKBN       =   "1"
+               MOVE    "T"                 TO  P02-P027-NYUGAIKBN-VALUE
+               MOVE    "Æþ±¡"              TO  P02-P027-NYUGAIKBN-LABEL
+           ELSE
+               MOVE    "F"                 TO  P02-P027-NYUGAIKBN-VALUE
+               MOVE    "³°Íè"              TO  P02-P027-NYUGAIKBN-LABEL
+           END-IF
+      *
            .
        2001-P027-SET-EXT.
            EXIT.
@@ -2933,8 +3012,8 @@
                     OR       ( IDY     >=  10          )
              IF  SPA-GMN24-TNKDELKBN(IDX)  =   SPACE
                  ADD     1                 TO  IDY
-                 MOVE    IDY               TO  WRK-RENNUMZ
-                 MOVE    WRK-RENNUMZ(2:)   TO  P02-P024-TNKLNUM  (IDY)
+                 MOVE    IDY               TO  WRK-RENNUMZ3
+                 MOVE    WRK-RENNUMZ3      TO  P02-P024-TNKLNUM  (IDY)
                  MOVE    SPA-GMN24-TNKDPSTYMDW (IDX)
                                            TO  P02-P024-TNKLSTYMD(IDY)
                  MOVE    SPA-GMN24-TNKDPEDYMDW (IDX)
@@ -2960,8 +3039,8 @@
                     OR       ( IDY     >=  20          )
              IF  SPA-GMN24-TSYDELKBN(IDX)  =   SPACE
                  ADD     1                 TO  IDY
-                 MOVE    IDY               TO  WRK-RENNUMZ
-                 MOVE    WRK-RENNUMZ(2:)   TO  P02-P024-TSYLNUM  (IDY)
+                 MOVE    IDY               TO  WRK-RENNUMZ3
+                 MOVE    WRK-RENNUMZ3      TO  P02-P024-TSYLNUM  (IDY)
                  MOVE    SPA-GMN24-TSYDPSTYMDW (IDX)
                                            TO  P02-P024-TSYLSTYMD(IDY)
                  MOVE    SPA-GMN24-TSYDPEDYMDW (IDX)
@@ -2986,6 +3065,82 @@
            MOVE    SPA-GMN24-TSYSKJGNSTYMDW
                                        TO  P02-P024-TSYSKJGNSTYMD
       *
+      *    ¸øÈñÉéÃ´
+           MOVE    ZERO                TO  IDY
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                    UNTIL      IDX     >   SPA-FTN1-MAX
+               MOVE    ZERO                TO  SPA-GMN24-TGMNNUM (IDX)
+               IF      SPA-NAI24-FTNDELKBN (IDX)   =   SPACE
+                   ADD     1                   TO  IDY
+                   MOVE    IDY                 TO  WRK-RENNUMZ3
+                   MOVE    WRK-RENNUMZ3        TO  P02-P024-TFTNNUM(IDY)
+                   MOVE    SPA-GMN24-TFTNKOHMEI (IDX)
+                                               TO  P02-P024-TFTNKOH(IDY)
+                   MOVE    SPA-GMN24-TKOHSTYMD (IDX)
+                                               TO  P02-P024-TKOHSTYMD
+                                                                  (IDY)
+                   MOVE    SPA-GMN24-TKOHEDYMD (IDX)
+                                               TO  P02-P024-TKOHEDYMD
+                                                                  (IDY)
+                   MOVE    IDY                 TO  SPA-GMN24-TGMNNUM
+                                                                  (IDY)
+                   IF      IDY                 =   SPA-GMN24-FTNSELNUM
+                       MOVE    "T"         TO  P02-P024-HFTNLST-SELECT
+                                                                 (IDY)
+                   ELSE
+                       MOVE    "F"         TO  P02-P024-HFTNLST-SELECT
+                                                                 (IDY)
+                   END-IF
+               END-IF
+           END-PERFORM
+           MOVE    IDY                 TO  P02-P024-HFTNLST-COUNT
+      *
+           MOVE    ZERO                TO  IDY
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                    UNTIL      IDX     >   SPA-FTN2-MAX
+               MOVE    ZERO                TO  SPA-GMN24-TGMNNUM2(IDX)
+               IF      SPA-NAI24-FTNDELKBN2 (IDX)  =   SPACE
+                   ADD     1                   TO  IDY
+                   MOVE    IDY                 TO  WRK-RENNUMZ3
+                   MOVE    WRK-RENNUMZ3        TO  P02-P024-TFTNNUM2
+                                                                  (IDY)
+                   MOVE    SPA-GMN24-TFTNSTYMD (IDX)
+                                               TO  P02-P024-TFTNSTYMD
+                                                                  (IDY)
+                   MOVE    SPA-GMN24-TFTNEDYMD (IDX)
+                                               TO  P02-P024-TFTNEDYMD
+                                                                  (IDY)
+                   MOVE    SPA-GMN24-TGAIJGNGAK (IDX)
+                                               TO  WRK-Z7
+                   MOVE    WRK-Z7              TO  P02-P024-TGAIJGNGAK
+                                                                  (IDY)
+                   MOVE    SPA-GMN24-TNYUJGNGAK (IDX)
+                                               TO  WRK-Z7
+                   MOVE    WRK-Z7              TO  P02-P024-TNYUJGNGAK
+                                                                  (IDY)
+                   MOVE    IDY                 TO  SPA-GMN24-TGMNNUM2
+                                                                  (IDY)
+                   IF      IDY                 =   SPA-GMN24-FTNSELNUM2
+                       MOVE    "T"         TO  P02-P024-HFTNLST2-SELECT
+                                                                 (IDY)
+                   ELSE
+                       MOVE    "F"         TO  P02-P024-HFTNLST2-SELECT
+                                                                 (IDY)
+                   END-IF
+               END-IF
+           END-PERFORM
+           MOVE    IDY                 TO  P02-P024-HFTNLST2-COUNT
+      *
+           MOVE    SPA-GMN24-FTNSELNUM TO  P02-P024-FTNSELNUM
+      *
+           MOVE    SPA-GMN24-FTNSELNUM2
+                                       TO  P02-P024-FTNSELNUM2
+      *
+           MOVE    SPA-GMN24-FTNSTYMD  TO  P02-P024-FTNTEKSTYMD
+           MOVE    SPA-GMN24-FTNEDYMD  TO  P02-P024-FTNTEKEDYMD
+           MOVE    SPA-GMN24-GAIJGNGAK TO  P02-P024-GAIJGNGAK
+           MOVE    SPA-GMN24-NYUJGNGAK TO  P02-P024-NYUJGNGAK
+      *
            .
        2001-P024-SET-EXT.
            EXIT.
@@ -3001,8 +3156,8 @@
                      OR         (IDX       >   SPA-NAI25-KYU-MAX)
              IF  SPA-GMN25-KYU-DELKBN (IDX)    =   SPACE
                ADD     1               TO  IDY 
-               MOVE    IDY             TO  WRK-RENNUMZ
-               MOVE    WRK-RENNUMZ(2:)  TO  P02-P025-NUM1    (IDY)
+               MOVE    IDY             TO  WRK-RENNUMZ3
+               MOVE    WRK-RENNUMZ3    TO  P02-P025-NUM1    (IDY)
                MOVE    SPA-GMN25-KYU-CHGYMDW (IDX)
                                        TO  P02-P025-HENKOYMD(IDY)
                MOVE    SPA-GMN25-KYU-KANANAME(IDX)
@@ -3030,8 +3185,8 @@
            PERFORM   VARYING     IDX     FROM   1   BY  1
                      UNTIL      (IDX         >   30)
                      OR         (IDX         >   SPA-NAI25-SRY-MAX)
-               MOVE    IDX             TO  WRK-RENNUMZ
-               MOVE    WRK-RENNUMZ(2:)  TO  P02-P025-NUM2    (IDX)
+               MOVE    IDX             TO  WRK-RENNUMZ3
+               MOVE    WRK-RENNUMZ3     TO  P02-P025-NUM2    (IDX)
                MOVE    SPA-GMN25-SRY-SRYKA (IDX)
                                        TO  P02-P025-SRYKA1    (IDX)
                MOVE    SPA-GMN25-SRY-SYOSINYMD(IDX)
@@ -3237,6 +3392,27 @@
       *
            .
        950-KYUSEI-NEXT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¸øÈñÉéÃ´¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       991-PTKOHFTN-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHFTN-REC
+               MOVE    ZERO            TO  FLG-PTKOHFTN
+           ELSE
+               INITIALIZE                  PTKOHFTN-REC
+               MOVE    1               TO  FLG-PTKOHFTN
+           END-IF
+      *
+           .
+       991-PTKOHFTN-READ-EXT.
            EXIT.
       *
       *****************************************************************

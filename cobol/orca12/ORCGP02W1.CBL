@@ -51,6 +51,8 @@
       *  02.00.05    NACL-¬ø°π«º  02/11/06   ›∏±°¶∏¯»Ò§Œ≥Œ«ß∆¸Ω§¿µ
       *  02.00.06    NACL-¬ø°π«º  02/11/14  ¡•∞˜ ›∏±§Œ —ππΩÈ¥¸…Ωº®Ω§¿µ
       *  02.00.07    NACL-¬ø°π«º  02/11/21  ∂¶∫—≤º¡•£≥∑Óƒ…≤√
+      *  02.00.08    NACL-¬ø°π«º  03/03/24  £»£±£µ«Ø£¥∑Ó≤˛¿µ¬–±˛ƒ…≤√
+      *                                     ∏¯»Ò…È√¥≥€ƒ…≤√
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -412,8 +414,10 @@
                05  WRK-KEI-REC-G.
                    07  FILLER          PIC X(06) VALUE "1 ∑—¬≥".
                    07  FILLER          PIC X(06) VALUE "2 «§∑—".
+                   07  FILLER          PIC X(06) VALUE "3 ∆√ Ã".
                05  WRK-KEI-REC-R       REDEFINES   WRK-KEI-REC-G.
-                   07  WRK-KEI-REC     PIC X(06) OCCURS  2.
+                   07  WRK-KEI-REC     PIC X(06) OCCURS  3.
+               05  WRK-CONT-MAX        PIC 9(04).
       *
            03  WRK-HENYMD.
                05  WRK-HGO             PIC X(01).
@@ -783,6 +787,26 @@
                                                        SPA-P02SCRAREA
                                                        SPA-P02KYOUTU
                    END-IF
+      *         ›∏±Ω™ŒªΩËÕ˝
+               WHEN    "0201"
+               WHEN    "0203"
+                   CALL    "ORCSP03A"          USING   SPA-AREA
+                                                       SPA-P02SCRAREA
+                                                       SPA-P02KYOUTU
+               WHEN    "0202"
+               WHEN    "0204"
+      *             ›∏±¿⁄§Í¬ÿ§®ΩËÕ˝
+                   IF      SPA-HKN-IDX1        =   ZERO
+      *                ø∑µ¨§Œª˛°¢£±π‘≥´§±§Î
+                       PERFORM 410311-HKNTBL-INS-SEC
+                       MOVE    1                   TO  IDX
+                   ELSE
+                       MOVE    SPA-HKN-IDX1        TO  IDX
+                   END-IF
+                   PERFORM 410312-HKN-SPATBL-SET-SEC
+                   CALL    "ORCSP03A"          USING   SPA-AREA
+                                                       SPA-P02SCRAREA
+                                                       SPA-P02KYOUTU
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-PIDCD
@@ -819,6 +843,7 @@
       *     ›∏±¡»πÁ§ª…Ωº®° ∏Ω∫ﬂ¬–æ› ¨§Œ§ﬂ°À
            PERFORM 3103-HKNCOMB-PARA-SEC
       *
+      *
            .
        31O-SPASET-EXT.
            EXIT.
@@ -843,8 +868,13 @@
                END-PERFORM
       *
       *        ∑—¬≥∂Ë ¨
+               IF      SPA-PTHKN-HKNNUM (IDX)  =   "003"
+                   MOVE    3                   TO  WRK-CONT-MAX
+               ELSE
+                   MOVE    2                   TO  WRK-CONT-MAX
+               END-IF
                PERFORM VARYING IDT     FROM    1  BY  1
-                       UNTIL   IDT     >   2
+                       UNTIL   IDT     >   WRK-CONT-MAX
                    IF      WRK-KEI-REC (IDT)(1:1)
                                            =   SPA-PTHKN-CONTKBN (IDX)
                        MOVE    WRK-KEI-REC (IDT)(3:)
@@ -1040,6 +1070,8 @@
            MOVE    SPA-PTHKN-KIGO    (IDX) TO  SPA-GMN-KIGO
            MOVE    SPA-PTHKN-NUM     (IDX) TO  SPA-GMN-NUM
       *
+           MOVE    SPA-PTHKN-HKN-SBTKBN(IDX)
+                                           TO  SPA-NAI-PTHKN-SBTKBN
            MOVE    SPA-PTHKN-SAKJOKBN(IDX) TO  SPA-NAI-SAKJOKBN
            MOVE    SPA-PTHKN-SKKGETYMD  (IDX)
                                            TO  SPA-NAI-SKKGETYMD
@@ -1108,8 +1140,10 @@
            MOVE    SPA-NAI-HTEKEDYMD   TO  WRK-TEKEDYMD
            MOVE    ZERO                TO  WRK-PAYKBN
            PERFORM 31012-HKNNUM-SET-SEC
-           MOVE    WRK-TANSEIDONAME    TO  SPA-GMN-HKNNUMMEI
-           MOVE    WRK-HKNKOHSBTKBN    TO  SPA-NAI-PTHKN-SBTKBN
+           IF      WRK-HKNKOHSBTKBN    NOT =   SPACE
+               MOVE    WRK-TANSEIDONAME    TO  SPA-GMN-HKNNUMMEI
+               MOVE    WRK-HKNKOHSBTKBN    TO  SPA-NAI-PTHKN-SBTKBN
+           END-IF
       *****PERFORM VARYING     IDX     FROM    1   BY  1
       *            UNTIL       IDX     >   SPA-GMN-HKNMAX
       *        IF      SPA-GMN-HKNNUML (IDX)   =   SPA-GMN-HKNNUM
@@ -1206,8 +1240,13 @@
       *    ∑—¬≥∂Ë ¨
            IF    ( SPA-NAI-PTHKN-SBTKBN    =   "1"  ) AND
                  ( SPA-GMN-HKNNUM      NOT =   "060"  AND "067" )
+               IF      SPA-GMN-HKNNUM      =   "002"
+                   MOVE    3               TO  WRK-CONT-MAX
+               ELSE
+                   MOVE    2               TO  WRK-CONT-MAX
+               END-IF
                PERFORM VARYING IDT     FROM    1  BY  1
-                       UNTIL   IDT     >   2
+                       UNTIL   IDT     >   WRK-CONT-MAX
                    MOVE    WRK-KEI-REC (IDT)
                                            TO  SPA-GMN-CONTKBNL (IDT)
                    IF      WRK-KEI-REC (IDT)(1:1)
@@ -4152,7 +4191,7 @@
            MOVE    SPA-GMN2A-MAX       TO  P02A-DUALLIST-COUNT
            IF      SPA-GMN2A-MAX       >   ZERO
                IF      FLG-P02A-SYORI      =   1
-                   MOVE    "∆±¿´∆±Ãæº‘•Í•π•»"  TO  P02A-MIDASI
+                   MOVE    "∆±¿´∆±Ãæº‘•Í•π•»"      TO  P02A-MIDASI
                ELSE
                    MOVE    "∆ÛΩ≈≈–œøº‘µø§§•Í•π•»"  TO  P02A-MIDASI
                END-IF
@@ -4182,21 +4221,24 @@
            END-IF
       *
       *    ≈–œø§Œª˛°¢ø∑µ¨¥µº‘§Œª˛§π§Ÿ§∆§Œ ›∏±°¶∏¯»Ò§Ú•¡•ß•√•Ø§π§Î
-           IF    ( SPA-P02-SYORI       =   1     )  AND
-                 ( FLG-TOUROKU2    NOT =   ZERO  )
+      *    £»£±£µ°•£¥≤˛¿µ¬–±˛§Œ§ø§·°¢ÀË≤Û°¢§π§Ÿ§∆§Œ•¡•ß•√•Ø§Úπ‘§¶
+      *!   IF    ( SPA-P02-SYORI       =   1     )  AND
+      *!         ( FLG-TOUROKU2    NOT =   ZERO  )
                PERFORM 4501-ALLHKN-CHK-SEC
                IF     (SPA-ERRCD       NOT =   SPACE )  OR
                       (SPA-PIDCD       NOT =   SPACE )  OR
                       (SPA-FLG-END     NOT =   ZERO  )
                    GO      TO      450-HKNCOMBI-EXT
                END-IF
-           END-IF
+      *!   END-IF
       *
       *
       *     ›∏±£‘£¬£Ã§´§È£–£¡£“£¡•’•°•§•Î§ÿ ‘Ω∏
            PERFORM 4501-PTHKNINF-LNK-SEC
       *    ∏¯»Ò£‘£¬£Ã§´§È£–£¡£“£¡•’•°•§•Î§ÿ ‘Ω∏
            PERFORM 4502-PTKOHINF-LNK-SEC
+      *    ∏¯»Ò£‘£¬£Ã§´§È∏¯»Ò…È√¥§ÿ ‘Ω∏
+           PERFORM 4504-PTKOHFTN-HEN-SEC
       *
       *     ›∏±¡»πÁ§ª∫Ó¿Æ
            PERFORM 4503-HKNCOMBI-SYORI-SEC
@@ -4220,6 +4262,7 @@
            IF      SPA-PTHKN-MAX       >   ZERO
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL      (IDX         >   SPA-PTHKN-MAX )  OR
+                              (SPA-PIDCD   NOT =   SPACE )  OR
                               (SPA-ERRCD   NOT =   SPACE )
                    INITIALIZE                  SPA-GMN-HKN-AREA
                    IF      SPA-PTHKN-SAKJOKBN (IDX)    =   SPACE
@@ -4231,7 +4274,8 @@
                                                    SPA-P02KYOUTU
                    END-IF
                END-PERFORM
-               IF      SPA-ERRCD       NOT =   SPACE
+               IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                      (SPA-PIDCD       NOT =   SPACE )
                    GO      TO      4501-ALLHKN-CHK-EXT
                END-IF
                MOVE    WRK-NAI-HKNSTR      TO  SPA-NAI-HKNSTR
@@ -4248,9 +4292,13 @@
            MOVE    SPA-NAI-KOHSTR      TO  WRK-NAI-KOHSTR
            MOVE    ZERO                TO  IDY
            MOVE    SPA-GMN-KOH-AREA    TO  WRK-GMN-KOH-AREA
+           IF      WRK-NAI-KOHSTR      =   ZERO
+               MOVE    1                   TO  WRK-NAI-KOHSTR
+           END-IF
       *
            PERFORM VARYING     IDX     FROM    WRK-NAI-KOHSTR BY  1
                    UNTIL      (IDX         >   SPA-PTKOH-MAX )  OR
+                              (SPA-PIDCD   NOT =   SPACE )  OR
                               (SPA-ERRCD   NOT =   SPACE )
                IF      IDY                 =   ZERO
                    INITIALIZE                  SPA-GMN-KOH-AREA
@@ -4439,6 +4487,71 @@
       *
            .
        45021-KOH-SPA-PARA-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ∏¯»Ò£‘£¬£Ã§´§È∏¯»Ò…È√¥§ÿ ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       4504-PTKOHFTN-HEN-SEC          SECTION.
+      *
+      *    §π§Ÿ§∆§Ú∫ÔΩ¸§»§∑§∆§™§Ø
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-FTN1-MAX
+               MOVE    "1"             TO  SPA-NAI24-FTNDELKBN (IDX)
+           END-PERFORM
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-PTKOH-MAX
+      *        ππ¿µ°¢∞È¿Æ
+               IF      SPA-PTKOH-KOHNUM(IDX)   =   "015"
+                                               OR  "016"
+                                               OR  "017"
+                   MOVE    ZERO                TO  IDY
+                   PERFORM VARYING     IDX2    FROM    1   BY  1
+                           UNTIL       IDX2    >   SPA-FTN1-MAX
+                       IF      SPA-PTKOH-KOHID(IDX)
+                                               =   SPA-NAI24-KOHID(IDX2)
+                           MOVE    IDX2            TO  IDY
+                           MOVE    SPA-FTN1-MAX    TO  IDX2
+                       END-IF
+                   END-PERFORM
+                   IF      IDY             =   ZERO
+                       COMPUTE IDY         =   SPA-FTN1-MAX     +  1
+                       MOVE    IDY         TO  SPA-FTN1-MAX
+                       INITIALIZE              SPA-GMN24-FTNTBLO (IDY)
+                   END-IF
+      *
+                   PERFORM 45041-PTKOHFTN-TBLHEN-SEC
+               END-IF
+           END-PERFORM
+      *
+           .
+       4504-PTKOHFTN-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ∏¯»Ò…È√¥§ÿ ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       45041-PTKOHFTN-TBLHEN-SEC          SECTION.
+      *
+           MOVE    SPA-PTKOH-KOHID     (IDX)   TO  SPA-NAI24-KOHID (IDY)
+           MOVE    SPA-PTKOH-KOHNUM    (IDX)   TO  SPA-NAI24-KOHNUM(IDY)
+           MOVE    SPA-PTKOH-PAYKBN    (IDX)   TO  SPA-NAI24-PAYKBN(IDY)
+           MOVE    SPA-PTKOH-TEKSTYMD  (IDX)   TO  SPA-NAI24-TKOHSTYMD
+                                                                   (IDY)
+           MOVE    SPA-PTKOH-TEKEDYMD  (IDX)   TO  SPA-NAI24-TKOHEDYMD
+                                                                   (IDY)
+           MOVE    SPA-PTKOH-SAKJOKBN  (IDX)   TO  SPA-NAI24-FTNDELKBN
+                                                                   (IDY)
+      *
+           MOVE    SPA-PTKOH-KOHNUM-MEI(IDX)   TO  SPA-GMN24-TFTNKOHMEI
+                                                                   (IDY)
+           MOVE    SPA-PTKOH-TEKSTYMDW (IDX)   TO  SPA-GMN24-TKOHSTYMD
+                                                                   (IDY)
+           MOVE    SPA-PTKOH-TEKEDYMDW (IDX)   TO  SPA-GMN24-TKOHEDYMD
+                                                                   (IDY)
+           .
+       45041-PTKOHFTN-TBLHEN-EXT.
            EXIT.
       *
       *****************************************************************

@@ -93,6 +93,12 @@
            03  WRK-HKNHBTNUM-1         PIC X(02).
            03  WRK-HKNHBTNUM-2         PIC X(02).
       *
+           03  WRK-MAE-TEKEDYMD        PIC X(08).
+           03  WRK-ATO-TEKSTYMD        PIC X(08).
+      *
+           03  WRK-TEKEDYMD            PIC X(08).
+           03  WRK-TEKEDYMDW           PIC X(09).
+      *
            03  WRK-IDX             PIC 9(04).
       *
       *    半角全角変換
@@ -170,10 +176,12 @@
       *
            03  WRK-KEI-TBL.
                05  WRK-KEI-REC-G.
-                   07  FILLER        PIC X(06) VALUE "1 継続".
-                   07  FILLER        PIC X(06) VALUE "2 任継".
-               05  WRK-KEI-REC-R     REDEFINES   WRK-KEI-REC-G.
-                   07  WRK-KEI-REC   PIC X(06) OCCURS  2.
+                   07  FILLER          PIC X(06) VALUE "1 継続".
+                   07  FILLER          PIC X(06) VALUE "2 任継".
+                   07  FILLER          PIC X(06) VALUE "3 特別".
+               05  WRK-KEI-REC-R       REDEFINES   WRK-KEI-REC-G.
+                   07  WRK-KEI-REC     PIC X(06) OCCURS  3.
+               05  WRK-CONT-MAX        PIC 9(04).
       *
            03  WRK-KEI1            PIC X(06)   VALUE  "（継）".
            03  WRK-KEI2            PIC X(06)   VALUE  "（任）".
@@ -250,6 +258,14 @@
       *        保険重複期間処理
                WHEN    "0105"
                    PERFORM 300-HKNKIKAN-SYORI-SEC
+                   MOVE    SPACE           TO  SPA-PIDCD
+                   GO      TO      000-PROC-EXT
+      *        保険自動切り替え処理
+               WHEN    "0201"
+               WHEN    "0202"
+               WHEN    "0203"
+               WHEN    "0204"
+                   PERFORM 320-HKNCHANGE-SYORI-SEC
                    MOVE    SPACE           TO  SPA-PIDCD
                    GO      TO      000-PROC-EXT
            END-EVALUATE
@@ -677,8 +693,13 @@
            INITIALIZE                      SPA-GMN-CONTKBN-LIST
            IF    ( SPA-NAI-PTHKN-SBTKBN    =   "1"  ) AND
                  ( SPA-GMN-HKNNUM      NOT =   "060"  AND "067" )
+               IF      SPA-GMN-HKNNUM      =   "003"
+                   MOVE    3               TO  WRK-CONT-MAX
+               ELSE
+                   MOVE    2               TO  WRK-CONT-MAX
+               END-IF
                PERFORM VARYING IDT     FROM    1  BY  1
-                       UNTIL   IDT     >   2
+                       UNTIL   IDT     >   WRK-CONT-MAX
                    MOVE    WRK-KEI-REC (IDT)
                                            TO  SPA-GMN-CONTKBNL (IDT)
                    IF      WRK-KEI-REC (IDT)(1:1)
@@ -728,7 +749,8 @@
                                            TO  SPA-GMN-HOJOKBNL
                                                     (SPA-GMN-HOJO-MAX)
                    END-PERFORM
-                   IF      SPA-GMN-HOJOKBN     =   SPACE
+                   IF     (SPA-GMN-HOJOKBN     =   SPACE      )  AND
+                          (SPA-NAI-BIRTHDAY    >=  "19321001" )
       *                Ｈ１４．１０以降、老人は１割を初期とする
                        IF    ((SPA-NAI-HTEKSTYMD   >=  "20021001" ) AND
                               (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70)) OR
@@ -787,7 +809,8 @@
                                            TO  SPA-GMN-HOJOKBNL
                                                     (SPA-GMN-HOJO-MAX)
                    END-PERFORM
-                   IF      SPA-GMN-HOJOKBN     =   SPACE
+                   IF     (SPA-GMN-HOJOKBN     =   SPACE      )  AND
+                          (SPA-NAI-BIRTHDAY    >=  "19321001" )
       *                Ｈ１４．１０以降、老人は１割を初期とする
                        IF    ((SPA-NAI-HTEKSTYMD   >=  "20021001" ) AND
                               (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70)) OR
@@ -845,6 +868,12 @@
       *****************************************************************
        310111-HKNTBL-RJNHEN-SEC            SECTION.
       *
+      *    Ｈ１４．１０時点で７０歳以上の時補助区分は空白でも可とする
+           IF      (SPA-NAI-BIRTHDAY   <    "19321001" )  AND
+                   (SPA-GMN-HOJOKBN    =   SPACE       )
+               GO      TO      310111-HKNTBL-RJNHEN-EXT
+           END-IF
+      *
       *    適用開始日が７０歳以上で、労災・治験・自費以外
            IF     ((SPA-NAI-HTEKSTYMD  >=  SPA-BYMD-70)  OR
                    (SPA-NAI-HTEKSTYMD  =   SPACE    AND
@@ -859,7 +888,7 @@
                END-PERFORM
       *        初期値は１割とする
                IF      SPA-GMN-HOJOKBN     =   SPACE
-                   MOVE    "9"             TO SPA-GMN-HOJOKBN
+                   MOVE    "9"             TO  SPA-GMN-HOJOKBN
                END-IF
            END-IF
            .
@@ -893,7 +922,8 @@
            IF      (SPA-GMN-HKNNUM     =   "002")  AND
                    (SPA-GMN-HOJO-MAX   =   08    )  AND
                    (SPA-GMN-HOJOKBN    =   SPACE)  AND
-                   (SPA-GMN-HONKZKKBN   =   "2" )
+                   (SPA-GMN-HONKZKKBN  =   "2" )
+              AND  (SPA-NAI-BIRTHDAY   >=  "19321001" )
                IF     (SPA-NAI-HKNSTR      =   ZERO      ) OR
                       (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
                                            =   "1"    )
@@ -1037,6 +1067,17 @@
                END-IF
            END-IF
       *
+      *    特別は日雇特例の時のみとする
+           IF      SPA-GMN-CONTKBN     =   "3"
+               IF      SPA-GMN-HKNNUM      =   "003"
+                   CONTINUE
+               ELSE
+                   MOVE    "1048"          TO  SPA-ERRCD
+                   MOVE    12              TO  SPA-GMN-CUR
+                   GO      TO      1001-CONTKBN-CHK-EXT
+               END-IF
+           END-IF
+      *
            .
        1001-CONTKBN-CHK-EXT.
            EXIT.
@@ -1143,6 +1184,15 @@
                    (SPA-NAI-HTEKSTYMD  >=  SPA-BYMD-70)
                PERFORM 310110-HOJKBN-HENSYU-SEC
            END-IF
+      *
+      *    継続が特別の時、Ｈ１５．４以降であること
+           IF      (SPA-NAI-HTEKSTYMD  NOT =   SPACE )  AND
+                   (SPA-GMN-CONTKBN    =   "3"       )
+               IF      SPA-NAI-HTEKSTYMD   <   "20030401"
+                   MOVE    "1049"              TO  SPA-ERRCD
+                   MOVE    16                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF
            .
       *
        1001-HTEKSTYMD-CHK-EXT.
@@ -1167,6 +1217,7 @@
            IF      SPA-GMN-HTEKEDYMD   =   SPACE
       *        継続の時、自動で発生する
                IF      SPA-GMN-CONTKBN     =   "1"  OR  "2"
+                                                    OR  "3"
                    PERFORM 41010-KEIKBN-TEKEDYMD-SEC
                    GO      TO      1001-HTEKEDYMD-CHK-EXT
                END-IF
@@ -1178,6 +1229,7 @@
                MOVE    ALL "9"             TO  SPA-NAI-HTEKEDYMD
       *        継続の時、エラーとする
                IF      SPA-GMN-CONTKBN     =   "1"  OR  "2"
+                                                    OR  "3"
                    MOVE    "0053"              TO  SPA-ERRCD
                    MOVE    17                  TO  SPA-GMN-CUR
                    GO      TO      1001-HTEKEDYMD-CHK-EXT
@@ -1210,6 +1262,38 @@
                    MOVE    5               TO  WRK-DAY-ZOGEN
                END-IF
                MOVE    "3"                 TO  WRK-DAY-PTN
+               PERFORM 41010-DAY-ZOGEN-GET-SEC
+               IF     (WRK-SYMD        NOT =   SPACE  )  AND
+                      (SPA-NAI-HTEKEDYMD   >=  WRK-SYMD)
+                   MOVE    "0053"          TO  SPA-ERRCD
+                   MOVE    17              TO  SPA-GMN-CUR
+                   GO      TO      1001-HTEKEDYMD-CHK-EXT
+               END-IF
+           END-IF
+      *
+      *    継続の時、Ｈ１５．３までとする
+      *??  IF       SPA-GMN-CONTKBN    =   "1"
+      *        IF     (SPA-GMN-HKNNUM      =   "002" )  AND
+      *               (SPA-GMN-HOJOKBN     =   "2"   )
+      *            CONTINUE
+      *        ELSE
+      *            船員以外
+      *            IF      SPA-NAI-HTEKEDYMD   >=  "20030401"
+      *                MOVE    "1050"              TO  SPA-ERRCD
+      *                MOVE    17                  TO  SPA-GMN-CUR
+      *            END-IF
+      *        END-IF
+      *****END-IF
+      *    Ｈ１５．４から
+           IF     (SPA-GMN-CONTKBN     =   "2"   OR  "3" )  AND
+                  (SPA-NAI-HTEKSTYMD   >=  "20030401"    )
+               IF      SPA-GMN-CONTKBN    =   "2"
+                   MOVE    2                   TO  WRK-DAY-ZOGEN
+                   MOVE    "3"                 TO  WRK-DAY-PTN
+               ELSE
+                   MOVE    6                   TO  WRK-DAY-ZOGEN
+                   MOVE    "2"                 TO  WRK-DAY-PTN
+               END-IF
                PERFORM 41010-DAY-ZOGEN-GET-SEC
                IF     (WRK-SYMD        NOT =   SPACE  )  AND
                       (SPA-NAI-HTEKEDYMD   >=  WRK-SYMD)
@@ -1425,6 +1509,8 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-CHK
+           MOVE    SPACE               TO  WRK-MAE-TEKEDYMD
+           MOVE    SPACE               TO  WRK-ATO-TEKSTYMD
            PERFORM
                UNTIL   FLG-HKNNUM      =   1
                IF     (SPA-NAI-HTEKSTYMD   >=  HKN-TEKSTYMD )  AND
@@ -1432,10 +1518,62 @@
                    MOVE    1               TO  FLG-CHK
                    MOVE    1               TO  FLG-HKNNUM
                ELSE
+                   IF      SPA-NAI-HTEKSTYMD   >=  HKN-TEKSTYMD
+                       MOVE    HKN-TEKEDYMD    TO  WRK-MAE-TEKEDYMD
+                   ELSE
+                       MOVE    HKN-TEKSTYMD    TO  WRK-ATO-TEKSTYMD
+                   END-IF
+               END-IF
+               IF      FLG-HKNNUM          =   ZERO
                    MOVE    "HKNNUM-KEY2"   TO  ORC-DBPATH
                    PERFORM 921-HKNMST-NEXT-SEC
                END-IF
            END-PERFORM
+      *    対象があった時
+           IF      FLG-CHK             =   1
+               GO      TO      2002-HNKKIKAN-CHK-EXT
+           END-IF
+      *    保険の終了時
+           IF     (WRK-MAE-TEKEDYMD    NOT =   SPACE )  AND
+                  (WRK-ATO-TEKSTYMD    =   SPACE )
+               MOVE    WRK-MAE-TEKEDYMD    TO  SPA-END-TEKEDYMD
+               MOVE    WRK-ATO-TEKSTYMD    TO  SPA-STR-TEKSTYMD
+               MOVE    "0201"              TO  SPA-PIDCD
+               MOVE    16                  TO  SPA-GMN-CUR
+               MOVE    SPA-NAI-HKNSTR      TO  SPA-HKN-IDX1
+               GO      TO      2002-HNKKIKAN-CHK-EXT
+           END-IF
+      *    Ｈ１５．４改正対応
+      *    保険の期間変更時
+           IF     (WRK-MAE-TEKEDYMD    =   "20030331" )  AND
+                  (WRK-ATO-TEKSTYMD    =   "20030401" )
+               IF      SPA-GMN-CONTKBN     =   SPACE
+                   MOVE    WRK-MAE-TEKEDYMD    TO  SPA-END-TEKEDYMD
+                   MOVE    WRK-ATO-TEKSTYMD    TO  SPA-STR-TEKSTYMD
+                   MOVE    "0202"              TO  SPA-PIDCD
+                   MOVE    16                  TO  SPA-GMN-CUR
+                   MOVE    SPA-NAI-HKNSTR      TO  SPA-HKN-IDX1
+                   GO      TO      2002-HNKKIKAN-CHK-EXT
+               END-IF
+      *        継続はＨ１５．３．３１までとする
+               IF      SPA-GMN-CONTKBN     =   "1"
+                   MOVE    WRK-MAE-TEKEDYMD    TO  SPA-END-TEKEDYMD
+                   MOVE    SPACE               TO  SPA-STR-TEKSTYMD
+                   MOVE    "0203"              TO  SPA-PIDCD
+                   MOVE    16                  TO  SPA-GMN-CUR
+                   MOVE    SPA-NAI-HKNSTR      TO  SPA-HKN-IDX1
+                   GO      TO      2002-HNKKIKAN-CHK-EXT
+               END-IF
+      *        任継
+               IF      SPA-GMN-CONTKBN     =   "2"
+                   MOVE    WRK-MAE-TEKEDYMD    TO  SPA-END-TEKEDYMD
+                   MOVE    WRK-ATO-TEKSTYMD    TO  SPA-STR-TEKSTYMD
+                   MOVE    "0204"              TO  SPA-PIDCD
+                   MOVE    16                  TO  SPA-GMN-CUR
+                   MOVE    SPA-NAI-HKNSTR      TO  SPA-HKN-IDX1
+                   GO      TO      2002-HNKKIKAN-CHK-EXT
+               END-IF
+           END-IF
            IF      FLG-CHK             =   ZERO
       *        マスタの範囲エラー
                MOVE    "0063"          TO  SPA-ERRCD
@@ -1474,6 +1612,7 @@
       *    ７０歳以上は必須
            IF     (SPA-NAI-HTEKSTYMD   >=  "20021001" )  AND
                   (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70)  AND
+                  (SPA-NAI-BIRTHDAY    >=  "19321001" )  AND
                   (SPA-BYMD-70         >   ZERO      )   AND
                   (SPA-GMN-HKNNUM(1:1) NOT =   "9"    )
                IF      SPA-GMN-HOJOKBN     =   SPACE
@@ -1819,6 +1958,10 @@
       *
       *    置換え前の保険を終了させる
            MOVE    SPA-HKN-IDX1        TO  IDX
+           MOVE    SPA-PTHKN-TEKEDYMD(IDX)
+                                       TO  WRK-TEKEDYMD
+           MOVE    SPA-PTHKN-TEKEDYMDW(IDX)
+                                       TO  WRK-TEKEDYMDW
       *
       *    ７０歳を迎える月−１日
            MOVE    SPACE               TO  STS-AREA-DAY
@@ -1864,7 +2007,8 @@
            MOVE    SPA-PTHKN-SKKGETYMD  (IDX)
                                        TO  SPA-NAI-SKKGETYMD
            MOVE    SPA-BYMD-70         TO  SPA-NAI-HTEKSTYMD
-           MOVE    ALL "9"             TO  SPA-NAI-HTEKEDYMD
+           MOVE    WRK-TEKEDYMD        TO  SPA-NAI-HTEKEDYMD
+      *****MOVE    ALL "9"             TO  SPA-NAI-HTEKEDYMD
            MOVE    SPA-SYSYMD          TO  SPA-NAI-HKAKUNINYMD
       *
            MOVE    SPA-PTHKN-SKKGETYMDW (IDX)
@@ -1872,7 +2016,8 @@
            MOVE    SPA-BYMD-70         TO  WRK-SYMD
            PERFORM 410112-SEIYMDHEN-SEC
            MOVE    WRK-HENYMD          TO  SPA-GMN-HTEKSTYMD
-           MOVE    "9999999"           TO  SPA-GMN-HTEKEDYMD
+      *****MOVE    "9999999"           TO  SPA-GMN-HTEKEDYMD
+           MOVE    WRK-TEKEDYMDW       TO  SPA-GMN-HTEKEDYMD
            MOVE    SPA-SYSYMDWH        TO  SPA-GMN-HKAKUNINYMD
       *
       *    保険情報
@@ -1947,6 +2092,60 @@
       *
            .
        310-RJNHENKAN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険自動切り替え処理
+      *****************************************************************
+       320-HKNCHANGE-SYORI-SEC         SECTION.
+      *
+      *    置換え前の保険を終了させる
+           IF      SPA-HKN-IDX1        =   ZERO
+               MOVE    1                   TO  IDX
+           ELSE
+               MOVE    SPA-HKN-IDX1        TO  IDX
+           END-IF
+      *
+           MOVE    SPA-END-TEKEDYMD    TO  SPA-PTHKN-TEKEDYMD(IDX)
+           MOVE    SPA-END-TEKEDYMD    TO  WRK-SYMD
+           PERFORM 410112-SEIYMDHEN-SEC
+           MOVE    WRK-HENYMD          TO  SPA-PTHKN-TEKEDYMDW(IDX)
+           MOVE    SPA-SYSYMD          TO  SPA-PTHKN-KAKUNINYMD (IDX)
+           MOVE    SPA-SYSYMDWH        TO  SPA-PTHKN-KAKUNINYMDW(IDX)
+      *    終了日変更のみ画面編集
+           IF     (SPA-STR-TEKSTYMD    =   SPACE  ) OR
+                  (SPA-PIDCD           =   "0201" OR
+                                           "0203" )
+               MOVE    SPA-PTHKN-TEKEDYMDW(IDX)
+                                           TO  SPA-GMN-HTEKEDYMD
+               MOVE    SPA-PTHKN-TEKEDYMD (IDX)
+                                           TO  SPA-NAI-HTEKEDYMD
+               MOVE    SPA-SYSYMDWH        TO  SPA-GMN-HKAKUNINYMD
+               MOVE    SPA-SYSYMDW         TO  SPA-NAI-HKAKUNINYMD
+               GO      TO      320-HKNCHANGE-SYORI-EXT
+           END-IF
+      *
+      *    新規で保険を追加する
+           MOVE    ZERO                TO  SPA-NAI-HKNSTR
+      *    開始日
+           MOVE    SPA-STR-TEKSTYMD    TO  SPA-NAI-HTEKSTYMD
+           MOVE    SPA-STR-TEKSTYMD    TO  WRK-SYMD
+           PERFORM 410112-SEIYMDHEN-SEC
+           MOVE    WRK-HENYMD          TO  SPA-GMN-HTEKSTYMD
+      *    確認日
+           MOVE    SPA-SYSYMDWH        TO  SPA-GMN-HKAKUNINYMD
+           MOVE    SPA-SYSYMD          TO  SPA-NAI-HKAKUNINYMD
+      *    終了日
+      *    継続区分なしの時、そのまま
+           EVALUATE    SPA-GMN-CONTKBN
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    "2"
+                   CONTINUE
+           END-EVALUATE
+      *
+           .
+       320-HKNCHANGE-SYORI-EXT.
            EXIT.
       *
       *****************************************************************

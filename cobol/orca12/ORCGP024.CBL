@@ -33,6 +33,7 @@
       *  01.00.05    MCC-Â¿¡¹Ç¼   01/07/02  ÆüÉÕÆþÎÏ¥Á¥§¥Ã¥¯¥µ¥ÖÄÉ²Ã
       *  02.00.00    NACL-Â¿¡¹Ç¼  02/07/30  ¥¤¥ó¥¿¡¼¥Õ¥§¡¼¥¹ÊÑ¹¹
       *  02.00.01    NACL-Â¿¡¹Ç¼  03/02/13  ¿©»öÉ¸½àÉéÃ´¸º³ÛÆüÄÉ²Ã
+      *  02.00.02    NACL-Â¿¡¹Ç¼  03/03/24  ¸øÈñÉéÃ´³ÛÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -83,6 +84,7 @@
            03  FLG-PARA            PIC 9(01).
            03  FLG-END             PIC 9(01).
       *
+           03  FLG-OK              PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
            03  FLG-IN-TNKSELNUM    PIC 9(01).
            03  FLG-IN-TSYSELNUM    PIC 9(01).
@@ -91,6 +93,10 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDX2                PIC 9(04).
+     *
+           03  IDP-1               PIC 9(04).
+           03  IDP-2               PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -120,6 +126,13 @@
       *    ÆþÎÏ¹àÌÜÌ¾
            03  WRK-MCP-WIDGET          PIC X(64).
       *
+           03  WRK-Z7                  PIC Z,ZZZ,ZZZ.
+      *
+           03  WRK-IDX                 PIC 9(04).
+           03  WRK-KOHID               PIC 9(10).
+           03  WRK-PARA-EDANUM         PIC 9(03).
+           03  WRK-FTN1-IDX            PIC 9(04).
+      *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
                05  WRK-HGO         PIC X(01).
@@ -142,6 +155,10 @@
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
+       01  HZN-PARA-REC.
+           COPY    "CPPARA.INC"
+                              REPLACING  //PARA-// BY //HZN-PARA-//.
+      *
       *   Äã½êÆÀ¼ÔÍúÎò
       *
        01  LNK-TSY-AREA.
@@ -155,6 +172,21 @@
            02  LNK-TNK-REC           OCCURS  10.
            COPY    "CPTNKRRK.INC"
                               REPLACING  //TNKRRK-// BY //LNK-TNK-//.
+      *
+      *    ¸øÈñÉéÃ´ÊÝÂ¸
+       01  LNK-PTKOHFTN-AREA.
+           02  LNK-PTKOHFTN-REC           OCCURS  50.
+           COPY    "CPPTKOHFTN.INC"
+                       REPLACING  //PTKOHFTN-// BY //LNK-PTKOHFTN-//.
+      *    ¸øÈñÉéÃ´
+       01  PTKOHFTN-REC.
+           COPY    "CPPTKOHFTN.INC".
+      *
+      *    ¸øÈñÉéÃ´¹¹¿·ÊÝÂ¸
+       01  HZN-PTKOHFTN-AREA.
+           03  HZN-PTKOHFTN-OCC           OCCURS  10.
+               05  HZN-PTKOHFTN-OCC2          OCCURS  50.
+                   07  HZN-PTKOHFTN-REC       PIC X(200).
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -444,7 +476,6 @@
            IF     (SPA-ERRCD           =   SPACE)  AND
                   (SPA-GMN24-CUR       =   ZERO )
                PERFORM 50011-INPUT-CUR-SEC
-               ADD     1               TO  SPA-GMN24-CUR
            END-IF
       *
            EVALUATE    SPA-GMN24-CUR
@@ -470,6 +501,21 @@
                    MOVE    "BN1"                TO  MCP-WIDGET
                WHEN    10
                    MOVE    "BN2"                TO  MCP-WIDGET
+      *        ¸øÈñÉéÃ´
+               WHEN    30
+                   MOVE    "P024_FTNSELNUM"     TO  MCP-WIDGET
+               WHEN    31
+                   MOVE    "P024_FTNSELNUM2"    TO  MCP-WIDGET
+               WHEN    32
+                   MOVE    "P024_FTNTEKSTYMD"   TO  MCP-WIDGET
+               WHEN    33
+                   MOVE    "P024_FTNTEKEDYMD"   TO  MCP-WIDGET
+               WHEN    34
+                   MOVE    "P024_GAIJGNGAK"     TO  MCP-WIDGET
+               WHEN    35
+                   MOVE    "P024_NYUJGNGAK"     TO  MCP-WIDGET
+               WHEN    36
+                   MOVE    "BF1"                TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -484,24 +530,38 @@
       *
            EVALUATE    WRK-MCP-WIDGET
                WHEN    "P024_TSYLIST"
-                   MOVE    1           TO  SPA-GMN24-CUR
-               WHEN    "P024_TSRSELNUM"
-                   MOVE    1           TO  SPA-GMN24-CUR
-               WHEN    "P024_TSYSTYMD"
                    MOVE    2           TO  SPA-GMN24-CUR
+               WHEN    "P024_TSRSELNUM"
+                   MOVE    2           TO  SPA-GMN24-CUR
+               WHEN    "P024_TSYSTYMD"
+                   MOVE    3           TO  SPA-GMN24-CUR
                WHEN    "P024_TSYEDYMD"
-                   MOVE    11          TO  SPA-GMN24-CUR
+                   MOVE    12          TO  SPA-GMN24-CUR
                WHEN    "P024_TSYSKJGNSTYMD"
-                   MOVE    3            TO  SPA-GMN24-CUR
+                   MOVE    4            TO  SPA-GMN24-CUR
       *
                WHEN    "P024_TNKLIST"
-                   MOVE    6           TO  SPA-GMN24-CUR
-               WHEN    "P024_TNKSELNUM"
-                   MOVE    6           TO  SPA-GMN24-CUR
-               WHEN    "P024_TNKSTYMD"
                    MOVE    7           TO  SPA-GMN24-CUR
-               WHEN    "P024_TNKEDYMD"
+               WHEN    "P024_TNKSELNUM"
+                   MOVE    7           TO  SPA-GMN24-CUR
+               WHEN    "P024_TNKSTYMD"
                    MOVE    8           TO  SPA-GMN24-CUR
+               WHEN    "P024_TNKEDYMD"
+                   MOVE    9           TO  SPA-GMN24-CUR
+      *        ¸øÈñÉéÃ´
+               WHEN    "P024_FTNSELNUM"
+                   MOVE    31          TO  SPA-GMN24-CUR
+               WHEN    "P024_FTNSELNUM2"
+                   MOVE    32          TO  SPA-GMN24-CUR
+               WHEN    "P024_FTNTEKSTYMD"
+                   MOVE    33          TO  SPA-GMN24-CUR
+               WHEN    "P024_FTNTEKEDYMD"
+                   MOVE    34          TO  SPA-GMN24-CUR
+               WHEN    "P024_GAIJGNGAK"
+                   MOVE    35          TO  SPA-GMN24-CUR
+               WHEN    "P024_NYUJGNGAK"
+                   MOVE    36          TO  SPA-GMN24-CUR
+      *
            END-EVALUATE
       *
            .
@@ -530,6 +590,12 @@
       *    Ç¯¶âºï½ü
                WHEN    "CLICKED"       ALSO    "BN2"
                    PERFORM 414-TNKRRK-DELETE-SEC
+      *    ¸øÈñÉéÃ´ÅÐÏ¿
+               WHEN    "CLICKED"       ALSO    "BF1"
+                   PERFORM 415-KOHFTN-KOUSIN-SEC
+      *    ¸øÈñÉéÃ´ºï½ü
+               WHEN    "CLICKED"       ALSO    "BF2"
+                   PERFORM 416-KOHFTN-DELETE-SEC
       *
       *     °Ê³°¤Ï¥¨¥é¡¼
                WHEN    "CLICKED"       ALSO     ANY
@@ -686,6 +752,60 @@
            EXIT.
       *
       *****************************************************************
+      *    ¸øÈñÉéÃ´¹¹¿·½èÍý
+      *****************************************************************
+       415-KOHFTN-KOUSIN-SEC           SECTION.
+      *
+           MOVE    3                   TO  FLG-TOUROKU
+      *    ÆþÎÏ¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO              415-KOHFTN-KOUSIN-EXT
+           END-IF
+      *
+           IF      SPA-NAI24-FTNSELNUM2    =   ZERO
+      *        ÄÉ²Ã
+               ADD     1                       TO  SPA-FTN2-MAX
+               MOVE    SPA-FTN2-MAX            TO  IDX
+           ELSE
+               MOVE    SPA-NAI24-FTNSELNUM2    TO  IDX
+           END-IF
+           MOVE    SPA-GMN24-FTNSTYMD  TO  SPA-GMN24-TFTNSTYMD (IDX)
+           MOVE    SPA-GMN24-FTNEDYMD  TO  SPA-GMN24-TFTNEDYMD (IDX)
+           MOVE    SPA-NAI24-GAIJGNGAK TO  SPA-GMN24-TGAIJGNGAK (IDX)
+           MOVE    SPA-NAI24-NYUJGNGAK TO  SPA-GMN24-TNYUJGNGAK (IDX)
+           MOVE    SPA-NAI24-FTNSTYMD  TO  SPA-NAI24-TFTNSTYMD (IDX)
+           MOVE    SPA-NAI24-FTNEDYMD  TO  SPA-NAI24-TFTNEDYMD (IDX)
+      *
+      *
+           INITIALIZE                  SPA-GMN24-FTN-AREA2
+      *
+           MOVE    31                  TO  SPA-GMN24-CUR
+           .
+       415-KOHFTN-KOUSIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸øÈñÉéÃ´¡¿ºï½ü
+      *****************************************************************
+       416-KOHFTN-DELETE-SEC          SECTION.
+      *
+           IF   SPA-NAI24-FTNSELNUM2   =   ZERO
+                GO      TO             416-KOHFTN-DELETE-EXT
+           END-IF
+      *
+           MOVE    "1"                 TO  SPA-NAI24-FTNDELKBN2
+                                                (SPA-NAI24-FTNSELNUM2)
+      *
+           INITIALIZE                  SPA-GMN24-FTN-AREA2
+      *
+           MOVE    31                  TO  SPA-GMN24-CUR
+      *
+           .
+       416-KOHFTN-DELETE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ÅÐÏ¿½èÍý
       *****************************************************************
        490-TOUROKU-SEC             SECTION.
@@ -706,6 +826,8 @@
       *    ²èÌÌÆâÍÆ¤ò¥Ñ¥é¥á¥¿½ÐÎÏ½èÍý
            PERFORM 500-SPA-PARA-TSYRRK-SEC
            PERFORM 500-SPA-PARA-TNKRRK-SEC
+      *    ¸øÈñÉéÃ´
+           PERFORM 410131-KOHFTN-PARA-SEC
       *
            .
        490-TOUROKU-EXT.
@@ -976,6 +1098,31 @@
       *    ÆþÎÏ¸Ä½ê¤Î¥»¥Ã¥È
            PERFORM 400-GMN-INPUT-SEC
       *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *    Äã½êÆÀ¡¡ÁªÂòÈÖ¹æÁªÂò
+               WHEN    ANY             ALSO    "P024_TSYLIST"
+                   PERFORM 41012-TSYLIST-SEC
+      *    ÄãÇ¯¶â¡¡ÁªÂòÈÖ¹æÁªÂò
+               WHEN    ANY             ALSO    "P024_TNKLIST"
+                   PERFORM 41012-TNKLIST-SEC
+      *    ¸øÈñÉéÃ´³ÛÈÖ¹æÁªÂò
+               WHEN    "ACTIVATE"      ALSO    "P024_FTNSELNUM"
+                   PERFORM 41013-FTNSELNUM-SEC
+                   GO      TO      200-ENTRY-EXT
+      *    ¸øÈñÉéÃ´³ÛÈÖ¹æÁªÂò
+               WHEN    "ACTIVATE"      ALSO    "P024_FTNSELNUM2"
+                   PERFORM 41014-FTNSELNUM2-SEC
+                   GO      TO      200-ENTRY-EXT
+      *    ¸øÈñÉéÃ´³ÛÈÖ¹æÁªÂò
+               WHEN    ANY             ALSO    "P024_PTKOHFTN"
+                   PERFORM 41015-KOHFTNLIST-SEC
+                   GO      TO      200-ENTRY-EXT
+      *    ¸øÈñÉéÃ´³ÛÈÖ¹æÁªÂò
+               WHEN    ANY             ALSO    "P024_PTKOHFTN2"
+                   PERFORM 41016-KOHFTNLIST2-SEC
+                   GO      TO      200-ENTRY-EXT
+           END-EVALUATE
+      *
            MOVE    ZERO                TO  FLG-TOUROKU
       *    ÆþÎÏ¥Á¥§¥Ã¥¯½èÍý
            PERFORM 410-INPUT-CHK-SEC
@@ -992,15 +1139,6 @@
       *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
            MOVE    ZERO                TO  SPA-GMN24-CUR
-      *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    Äã½êÆÀ¡¡ÁªÂòÈÖ¹æÁªÂò
-               WHEN    ANY             ALSO    "P024_TSYLIST"
-                   PERFORM 41012-TSYLIST-SEC
-      *    ÄãÇ¯¶â¡¡ÁªÂòÈÖ¹æÁªÂò
-               WHEN    ANY             ALSO    "P024_TNKLIST"
-                   PERFORM 41012-TNKLIST-SEC
-           END-EVALUATE
            .
       *
        400-GMN-INPUT-EXT.
@@ -1073,6 +1211,408 @@
        41012-TNKLIST-EXT.
            EXIT.
       *****************************************************************
+      *    ¸øÈñÉéÃ´¡¿¸øÈñÁªÂòÈÖ¹æÁªÂò
+      *****************************************************************
+       41015-KOHFTNLIST-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  WRK-SELNUM
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX       >   SPA-FTN1-MAX
+               IF      P02-P024-HFTNLST-SELECT (IDX)  =   "T"
+                   IF      IDX           =   SPA-GMN24-FTNSELNUM
+                       CONTINUE
+                   ELSE
+                       MOVE    IDX               TO  WRK-SELNUM
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-SELNUM      NOT =   ZERO
+               MOVE    WRK-SELNUM          TO  SPA-GMN24-FTNSELNUM
+           END-IF
+      *
+           IF      SPA-GMN24-FTNSELNUM     NOT =   ZERO
+               MOVE    SPA-GMN24-FTNSELNUM     TO  P02-P024-FTNSELNUM
+               PERFORM 41013-FTNSELNUM-SEC
+           END-IF
+      *
+           .
+       41015-KOHFTNLIST-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¸øÈñÉéÃ´¡¿¸øÈñÁªÂòÈÖ¹æÁªÂò
+      *****************************************************************
+       41013-FTNSELNUM-SEC           SECTION.
+      *
+           MOVE    P02-P024-FTNSELNUM  TO  SPA-GMN24-FTNSELNUM
+      *    ÊÑ¹¹¤¬¤¢¤ë»þ¡¢¸½ºß¤Î¹¹¿·Ê¬¤ò¥Ñ¥é¥á¥¿¤Ø
+           IF      SPA-GMN24-FTNSELNUM NOT =   SPA-MAE24-FTNSELNUM
+               PERFORM 410131-KOHFTN-PARA-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      41013-FTNSELNUM-EXT
+               END-IF
+           END-IF
+      *
+           INITIALIZE                  SPA-GMN24-KOHFTNTBL2
+           INITIALIZE                  SPA-GMN24-FTN-AREA2
+      *
+           MOVE    ZERO                TO  WRK-FTN1-IDX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-FTN1-MAX
+               IF      SPA-GMN24-FTNSELNUM =   SPA-GMN24-TGMNNUM (IDX)
+                   MOVE    IDX             TO  WRK-FTN1-IDX
+                   MOVE    IDX             TO  SPA-NAI24-FTNSELNUM
+                   MOVE    SPA-FTN1-MAX    TO  IDX
+               END-IF
+           END-PERFORM
+           IF      WRK-FTN1-IDX        =   ZERO
+               MOVE    "2430"              TO  SPA-ERRCD
+               MOVE    30                  TO  SPA-GMN24-CUR
+               GO      TO                  41013-FTNSELNUM-EXT
+           END-IF
+           MOVE    SPA-GMN24-FTNSELNUM TO  SPA-MAE24-FTNSELNUM
+      *
+      *    ÂÐ¾Ý¤Î¥Ç¡¼¥¿¤ò¥Ñ¥é¥á¥¿¥Õ¥¡¥¤¥ë¤è¤êÊÔ½¸¤¹¤ë
+           INITIALIZE                      PARA-REC
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "PTKOHFTN"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  WRK-PARA-EDANUM
+           MOVE    SPACE               TO  LNK-PTKOHFTN-AREA
+           PERFORM
+               UNTIL   FLG-PARA            =   1
+               MOVE    PARA-DATA-REC           TO  PTKOHFTN-REC
+      *        ¸øÈñ£É£Ä¤ÎÆ±¤¸¤â¤Î¤òÂÐ¾Ý¤È¤¹¤ë
+               IF      PTKOHFTN-KOHID      =   SPA-NAI24-KOHID
+                                                        (WRK-FTN1-IDX)
+                   ADD     1                   TO  IDX
+                   IF      IDX                 <=  50
+                       MOVE    PARA-DATA-REC   TO  LNK-PTKOHFTN-REC
+                                                             (IDX)
+                       MOVE    IDX             TO  SPA-FTN2-MAX
+                   END-IF
+               END-IF
+      *
+               MOVE    PARA-EDANUM         TO  WRK-PARA-EDANUM
+      *
+               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+               PERFORM 990-PARA-READ-SEC
+           END-PERFORM
+      *    ²èÌÌ¥Æ¡¼¥Ö¥ë¤ØÊÔ½¸¤¹¤ë
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-FTN2-MAX
+               MOVE    LNK-PTKOHFTN-REC (IDX)  TO  PTKOHFTN-REC
+      *
+               MOVE    PTKOHFTN-RENNUM     TO  SPA-NAI24-TRENNUM  (IDX)
+               MOVE    PTKOHFTN-TEKSTYMD   TO  SPA-NAI24-TFTNSTYMD(IDX)
+               MOVE    PTKOHFTN-TEKEDYMD   TO  SPA-NAI24-TFTNEDYMD (IDX)
+               MOVE    PTKOHFTN-GAIJGNGAK  TO  SPA-GMN24-TGAIJGNGAK(IDX)
+               MOVE    PTKOHFTN-NYUJGNGAK  TO  SPA-GMN24-TNYUJGNGAK(IDX)
+      *
+               MOVE    PTKOHFTN-TEKSTYMD   TO  WRK-SYMD
+               PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
+               MOVE    WRK-HENYMD          TO  SPA-GMN24-TFTNSTYMD(IDX)
+               MOVE    PTKOHFTN-TEKEDYMD   TO  WRK-SYMD
+               PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
+               MOVE    WRK-HENYMD          TO  SPA-GMN24-TFTNEDYMD(IDX)
+      *
+           END-PERFORM
+      *    £±·ï¤â¤Ê¤¤¤È¤­¡¢¸øÈñ¤ÎÆâÍÆ¤ò½é´üÉ½¼¨
+           IF      SPA-FTN2-MAX        =   ZERO
+               MOVE    SPA-GMN24-TKOHSTYMD (WRK-FTN1-IDX)
+                                          TO  SPA-GMN24-FTNSTYMD
+               MOVE    SPA-NAI24-TKOHSTYMD (WRK-FTN1-IDX)
+                                          TO  SPA-NAI24-FTNSTYMD
+               MOVE    SPA-GMN24-TKOHEDYMD (WRK-FTN1-IDX)
+                                          TO  SPA-GMN24-FTNEDYMD
+               MOVE    SPA-NAI24-TKOHEDYMD (WRK-FTN1-IDX)
+                                          TO  SPA-NAI24-FTNEDYMD
+               MOVE    ZERO               TO  SPA-NAI24-GAIJGNGAK
+               MOVE    ZERO               TO  SPA-NAI24-NYUJGNGAK
+               MOVE    SPACE              TO  SPA-GMN24-GAIJGNGAK
+               MOVE    SPACE              TO  SPA-GMN24-NYUJGNGAK
+               MOVE    32                 TO  SPA-GMN24-CUR
+           ELSE
+               MOVE    31                 TO  SPA-GMN24-CUR
+           END-IF
+           .
+       41013-FTNSELNUM-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¸øÈñÉéÃ´¥Ñ¥é¥á¥¿ÊÑ¹¹½èÍý
+      *****************************************************************
+       410131-KOHFTN-PARA-SEC           SECTION.
+      *
+      *    ¸øÈñÉéÃ´¹¹¿·ÊÝÂ¸
+           INITIALIZE                  HZN-PTKOHFTN-AREA
+           MOVE    ZERO                TO  IDP-1
+           MOVE    ZERO                TO  IDP-2
+      *
+      *    ÂÐ¾Ý¤Î¥Ç¡¼¥¿¤ò¥Ñ¥é¥á¥¿¥Õ¥¡¥¤¥ë¤è¤êÊÔ½¸¤¹¤ë
+           INITIALIZE                      PARA-REC
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "PTKOHFTN"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  WRK-PARA-EDANUM
+           MOVE    ZERO                TO  WRK-KOHID
+           MOVE    ZERO                TO  WRK-IDX
+           PERFORM
+               UNTIL   FLG-PARA            =   1
+               MOVE    PARA-DATA-REC           TO  PTKOHFTN-REC
+      *        ¸øÈñ£É£Ä¤¬¥Æ¡¼¥Ö¥ë¤Ë¤¢¤ë¤³¤È¡Ê¤Ê¤¤¤â¤Î¤Ïºï½ü¤È¤¹¤ë¡Ë
+               MOVE    ZERO            TO  FLG-OK
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL       IDX2    >   SPA-FTN1-MAX
+                   IF      PTKOHFTN-KOHID      =   SPA-NAI24-KOHID(IDX2)
+                       IF      SPA-NAI24-FTNDELKBN (IDX2)  =   SPACE
+                           MOVE    1               TO  FLG-OK
+                       ELSE
+                           MOVE    ZERO            TO  FLG-OK
+                       END-IF
+                       MOVE    SPA-FTN1-MAX        TO  IDX2
+                   END-IF
+               END-PERFORM
+      *
+               IF      FLG-OK              =   1
+      *
+      *        ¸øÈñ£É£ÄËè¤Ë¥Æ¡¼¥Ö¥ëÊÝÂ¸
+               IF      PTKOHFTN-KOHID  NOT =   WRK-KOHID
+                   ADD     1                   TO  IDP-1
+                   IF      IDP-1               >   10
+                       MOVE    10              TO  IDP-1
+                   END-IF
+                   MOVE    PTKOHFTN-KOHID      TO  WRK-KOHID
+                   MOVE    ZERO                TO  IDP-2
+               END-IF
+               IF     (SPA-NAI24-FTNSELNUM >   ZERO   )  AND
+                      (PTKOHFTN-KOHID      =   SPA-NAI24-KOHID
+                                                 (SPA-NAI24-FTNSELNUM))
+                   CONTINUE
+               ELSE
+                   ADD     1                   TO  IDP-2
+                   IF      IDP-2               <=  50
+                       MOVE    PARA-DATA-REC   TO  HZN-PTKOHFTN-REC
+                                                        (IDP-1 IDP-2)
+                   END-IF
+               END-IF
+               END-IF
+      *
+               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+               PERFORM 990-PARA-READ-SEC
+           END-PERFORM
+      *
+      *    ¸½ºß¤Î¹¹¿·Ê¬¤ò¥Ñ¥é¥á¥¿¤Ø
+           IF      SPA-FTN2-MAX        =   ZERO
+      *        ¥Ñ¥é¥á¥¿¹¹¿·
+               PERFORM 410132-KOHFTN-PARA-INS-SEC
+               GO      TO      410131-KOHFTN-PARA-EXT
+           END-IF
+      *
+           ADD     1                   TO  IDP-1
+           MOVE    ZERO                TO  IDP-2
+           IF      IDP-1               >   10
+               DISPLAY "GP024 KOHFTN PARA 10 OVER"
+               MOVE    "9900"          TO  SPA-ERRCD
+               GO      TO      410131-KOHFTN-PARA-EXT
+           END-IF
+      *
+           PERFORM VARYING IDX         FROM    1   BY  1
+                   UNTIL   IDX         >   SPA-FTN2-MAX
+      *
+               IF      SPA-NAI24-FTNDELKBN2 (IDX)  =   SPACE
+                   PERFORM 410131-KOHFTN-TBL-INS-SEC
+               END-IF
+           END-PERFORM
+      *
+      *    ¥Ñ¥é¥á¥¿ÄÉ²Ã
+           PERFORM 410132-KOHFTN-PARA-INS-SEC
+           .
+       410131-KOHFTN-PARA-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¸øÈñÉéÃ´¥Æ¡¼¥Ö¥ëÄÉ²Ã½èÍý
+      *****************************************************************
+       410131-KOHFTN-TBL-INS-SEC           SECTION.
+      *
+      *    ¸øÈñÉéÃ´ÊÔ½¸
+           INITIALIZE                      PTKOHFTN-REC
+           MOVE    SPA-HOSPID          TO  PTKOHFTN-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
+           MOVE    SPA-NAI24-KOHID  (SPA-NAI24-FTNSELNUM)
+                                       TO  PTKOHFTN-KOHID
+      *    Ï¢ÈÖ¤òºÆÈÖ
+           ADD     1                   TO  IDP-2
+           MOVE    IDP-2               TO  PTKOHFTN-RENNUM
+      *    Å¬ÍÑ³«»ÏÇ¯·îÆü
+           MOVE    SPA-NAI24-TFTNSTYMD(IDX)
+                                       TO  PTKOHFTN-TEKSTYMD
+           MOVE    SPA-NAI24-TFTNEDYMD(IDX)
+                                       TO  PTKOHFTN-TEKEDYMD
+           MOVE    SPA-NAI24-KOHNUM  (SPA-NAI24-FTNSELNUM)
+                                       TO  PTKOHFTN-KOHNUM
+           MOVE    SPA-NAI24-PAYKBN  (SPA-NAI24-FTNSELNUM)
+                                       TO  PTKOHFTN-PAYKBN
+           MOVE    SPA-GMN24-TGAIJGNGAK(IDX)
+                                       TO  PTKOHFTN-GAIJGNGAK
+           MOVE    SPA-GMN24-TNYUJGNGAK(IDX)
+                                       TO  PTKOHFTN-NYUJGNGAK
+      *
+           MOVE    PTKOHFTN-REC        TO  HZN-PTKOHFTN-REC
+                                                        (IDP-1 IDP-2)
+           .
+       410131-KOHFTN-TBL-INS-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¸øÈñÉéÃ´¥Ñ¥é¥á¥¿ÄÉ²Ã½èÍý
+      *****************************************************************
+       410132-KOHFTN-PARA-INS-SEC           SECTION.
+      *
+      *    ºï½ü¤¹¤ë
+           INITIALIZE                      PARA-REC
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "PTKOHFTN"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           MOVE    ZERO                TO  WRK-PARA-EDANUM
+      *
+           PERFORM VARYING IDX         FROM    1   BY  1
+                   UNTIL   IDX         >   IDP-1
+               PERFORM VARYING IDY         FROM    1   BY  1
+                       UNTIL   IDY         >   IDP-2
+                   ADD     1                   TO  WRK-PARA-EDANUM
+                   MOVE    SPACE               TO  PARA-REC
+                   INITIALIZE                      PARA-REC
+                   MOVE    "P02"               TO  PARA-GYOUMUID
+                   MOVE    SPA-TERMID          TO  PARA-TERMID
+                   MOVE    "PTKOHFTN"          TO  PARA-FILEMEI
+                   MOVE    WRK-PARA-EDANUM     TO  PARA-EDANUM
+                   MOVE    HZN-PTKOHFTN-REC(IDX IDY)
+                                               TO  PARA-DATA-REC
+                   PERFORM 400-PARA-INSERT-SEC
+               END-PERFORM
+           END-PERFORM
+      *
+           .
+       410132-KOHFTN-PARA-INS-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¸øÈñÉéÃ´¡¿¸øÈñÁªÂòÈÖ¹æÁªÂò£²
+      *****************************************************************
+       41016-KOHFTNLIST2-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  WRK-SELNUM
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX       >   SPA-FTN2-MAX
+               IF      P02-P024-HFTNLST2-SELECT (IDX)  =   "T"
+                   IF      IDX           =   SPA-GMN24-FTNSELNUM2
+                       CONTINUE
+                   ELSE
+                       MOVE    IDX               TO  WRK-SELNUM
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-SELNUM      NOT =   ZERO
+               MOVE    WRK-SELNUM          TO  SPA-GMN24-FTNSELNUM2
+           END-IF
+      *
+           IF      SPA-GMN24-FTNSELNUM2    NOT =   ZERO
+               PERFORM 41014-FTNSELNUM2-SEC
+               MOVE    31                  TO  SPA-GMN24-CUR
+           END-IF
+      *
+           .
+      41016-KOHFTNLIST2-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¸øÈñÉéÃ´¡¿¸øÈñÁªÂòÈÖ¹æÁªÂò
+      *****************************************************************
+       41014-FTNSELNUM2-SEC           SECTION.
+      *
+           IF      SPA-GMN24-FTNSELNUM2    =   ZERO
+               GO     TO      41014-FTNSELNUM2-EXT
+           END-IF
+      *
+           MOVE    ZERO                TO  WRK-FTN1-IDX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-FTN2-MAX
+               IF      SPA-GMN24-FTNSELNUM2    =   SPA-GMN24-TGMNNUM2
+                                                                (IDX)
+                   MOVE    IDX             TO  WRK-FTN1-IDX
+                   MOVE    IDX             TO  SPA-NAI24-FTNSELNUM2
+                   MOVE    SPA-FTN2-MAX    TO  IDX
+               END-IF
+           END-PERFORM
+           IF      WRK-FTN1-IDX        =   ZERO
+               MOVE    "2431"              TO  SPA-ERRCD
+               MOVE    31                  TO  SPA-GMN24-CUR
+               GO      TO                  41014-FTNSELNUM2-EXT
+           END-IF
+      *
+      *    ÂÐ¾Ý¤Î¥Ç¡¼¥¿¤òÊÔ½¸¤¹¤ë
+           MOVE    WRK-FTN1-IDX        TO  IDX
+           MOVE    SPA-NAI24-TFTNSTYMD(IDX)    TO  SPA-NAI24-FTNSTYMD
+           MOVE    SPA-NAI24-TFTNEDYMD(IDX)    TO  SPA-NAI24-FTNEDYMD
+           MOVE    SPA-GMN24-TGAIJGNGAK(IDX)   TO  SPA-NAI24-GAIJGNGAK
+           MOVE    SPA-GMN24-TNYUJGNGAK(IDX)   TO  SPA-NAI24-NYUJGNGAK
+      *
+           MOVE    SPA-GMN24-TFTNSTYMD(IDX)    TO  SPA-GMN24-FTNSTYMD
+           MOVE    SPA-GMN24-TFTNEDYMD(IDX)    TO  SPA-GMN24-FTNEDYMD
+           MOVE    SPA-NAI24-GAIJGNGAK         TO  WRK-Z7
+           MOVE    WRK-Z7                      TO  SPA-GMN24-GAIJGNGAK
+           MOVE    SPA-NAI24-NYUJGNGAK         TO  WRK-Z7
+           MOVE    WRK-Z7                      TO  SPA-GMN24-NYUJGNGAK
+      *
+           MOVE    32                  TO  SPA-GMN24-CUR
+           .
+       41014-FTNSELNUM2-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ÆþÎÏ¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        410-INPUT-CHK-SEC          SECTION.
@@ -1123,6 +1663,13 @@
            MOVE    P02-P024-TNKSELNUM  TO  SPA-GMN24-TNKSELNUM
            MOVE    P02-P024-TNKSTYMD   TO  SPA-GMN24-TNKSTYMDW
            MOVE    P02-P024-TNKEDYMD   TO  SPA-GMN24-TNKEDYMDW
+      *
+      *    ¸øÈñÉéÃ´¶â¡¡ÁªÂòÈÖ¹æ
+           MOVE    P02-P024-FTNSELNUM2 TO  SPA-GMN24-FTNSELNUM2
+           MOVE    P02-P024-FTNTEKSTYMD    TO  SPA-GMN24-FTNSTYMD
+           MOVE    P02-P024-FTNTEKEDYMD    TO  SPA-GMN24-FTNEDYMD
+           MOVE    P02-P024-GAIJGNGAK  TO  SPA-GMN24-GAIJGNGAK
+           MOVE    P02-P024-NYUJGNGAK  TO  SPA-GMN24-NYUJGNGAK
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -1165,6 +1712,27 @@
            END-IF
       *    ÄãÇ¯¶â½ªÎ»Ç¯·îÆü
            PERFORM 41012-TNKEDYMD-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    ¸øÈñÉéÃ´ ³«»ÏÆü
+           PERFORM 41031-FTNSTYMD-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    ¸øÈñÉéÃ´ ½ªÎ»Æü
+           PERFORM 41031-FTNEDYMD-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    ¸øÈñÉéÃ´ ³°Íè¾å¸Â³Û
+           PERFORM 41031-GAIJGNGAK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    ¸øÈñÉéÃ´ Æþ±¡¾å¸Â³Û
+           PERFORM 41032-NYUJGNGAK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1471,6 +2039,156 @@
        41012-TNKEDYMD-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ¸øÈñÉéÃ´¡¿³«»ÏÇ¯·îÆü
+      *****************************************************************
+       41031-FTNSTYMD-SEC           SECTION.
+      *
+           IF      SPA-GMN24-FTNSTYMD  =   SPACE
+               MOVE    SPACE               TO  SPA-GMN24-FTNSTYMD
+               MOVE    SPACE               TO  SPA-NAI24-FTNSTYMD
+               GO      TO      41031-FTNSTYMD-EXT
+           END-IF
+      *
+      *    ÆüÉÕ²èÌÌ¥Á¥§¥Ã¥¯¥µ¥Ö
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    SPA-GMN24-FTNSTYMD  TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                       ORCSGDAYAREA
+           IF      SGDAY-RC            =   ZERO
+               MOVE    SGDAY-OTDAY         TO  SPA-GMN24-FTNSTYMD
+               MOVE    SGDAY-SDAY          TO  SPA-NAI24-FTNSTYMD
+           ELSE
+               MOVE    "2432"              TO  SPA-ERRCD
+               MOVE    32                  TO  SPA-GMN24-CUR
+           END-IF
+      *    ÂÐ¾Ý¸øÈñ¤Î´ü´Ö¤Ç¤¢¤ë¤³¤È
+           IF      SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
+                                           >   SPA-NAI24-FTNSTYMD
+               MOVE    "2432"              TO  SPA-ERRCD
+               MOVE    32                  TO  SPA-GMN24-CUR
+               GO      TO      41031-FTNEDYMD-EXT
+           END-IF
+           .
+       41031-FTNSTYMD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸øÈñÉéÃ´¡¿½ªÎ»Ç¯·î
+      *****************************************************************
+       41031-FTNEDYMD-SEC           SECTION.
+      *
+           IF    ( SPA-GMN24-FTNSTYMD  =   SPACE )  AND
+                 ( SPA-GMN24-FTNEDYMD  =   SPACE )
+               MOVE    SPACE           TO  SPA-GMN24-FTNEDYMD
+               MOVE    SPACE           TO  SPA-NAI24-FTNEDYMD
+               GO      TO      41031-FTNEDYMD-EXT
+           END-IF
+      *
+           IF    ( SPA-GMN24-FTNEDYMD  =   SPACE )  AND
+                 ((FLG-TOUROKU     NOT =   ZERO  )  OR
+                  (WRK-MCP-WIDGET      =   "P024_FTNTEKEDYMD"))
+      *        ¸øÈñ¤Î½ªÎ»Æü
+               MOVE    SPA-GMN24-TKOHEDYMD (SPA-NAI24-FTNSELNUM)
+                                           TO  SPA-GMN24-FTNEDYMD
+               MOVE    SPA-NAI24-TKOHEDYMD (SPA-NAI24-FTNSELNUM)
+                                           TO  SPA-NAI24-FTNEDYMD
+           END-IF
+      *
+           IF      SPA-GMN24-FTNEDYMD  =   SPACE
+               GO      TO      41031-FTNEDYMD-EXT
+           END-IF
+      *
+           IF      SPA-GMN24-FTNEDYMD(1:7) =   ALL "9"
+               MOVE    SPACE               TO  SPA-GMN24-FTNEDYMD
+               MOVE    ALL "9"             TO  SPA-GMN24-FTNEDYMD(1:7)
+               MOVE    ALL "9"             TO  SPA-NAI24-FTNEDYMD
+               GO      TO      41031-FTNEDYMD-EXT
+      *    ÆüÉÕ²èÌÌ¥Á¥§¥Ã¥¯¥µ¥Ö
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    SPA-GMN24-FTNEDYMD  TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                       ORCSGDAYAREA
+           IF      SGDAY-RC            =   ZERO
+               MOVE    SGDAY-OTDAY         TO  SPA-GMN24-FTNEDYMD
+               MOVE    SGDAY-SDAY          TO  SPA-NAI24-FTNEDYMD
+           ELSE
+               MOVE    "2433"              TO  SPA-ERRCD
+               MOVE    33                  TO  SPA-GMN24-CUR
+               GO      TO      41031-FTNEDYMD-EXT
+           END-IF
+      *    ÂÐ¾Ý¸øÈñ¤Î´ü´Ö¤Ç¤¢¤ë¤³¤È
+           IF      SPA-NAI24-TKOHEDYMD (SPA-NAI24-FTNSELNUM)
+                                           <   SPA-NAI24-FTNEDYMD
+               MOVE    "2433"              TO  SPA-ERRCD
+               MOVE    33                  TO  SPA-GMN24-CUR
+               GO      TO      41031-FTNEDYMD-EXT
+           END-IF
+      *
+           IF      SPA-GMN24-FTNSTYMD  <  SPA-GMN24-FTNEDYMD
+               CONTINUE
+           ELSE
+               MOVE    "2434"              TO  SPA-ERRCD
+               MOVE    33                  TO  SPA-GMN24-CUR
+           END-IF
+      *
+           .
+       41031-FTNEDYMD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸øÈñÉéÃ´ ³°Íè¾å¸Â³Û
+      *****************************************************************
+       41031-GAIJGNGAK-SEC           SECTION.
+      *
+           INITIALIZE                       ORCSNUMAREA
+           MOVE    SPA-GMN24-GAIJGNGAK TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC          NOT =   ZERO  )   OR
+                  (SNUM-MINKBN      NOT =   SPACE )   OR
+                  (SNUM-SYOKBN      NOT =   SPACE )   OR
+                  (SNUM-SEISUU          >   7     )
+               MOVE    "2435"           TO  SPA-ERRCD
+               MOVE    34               TO  SPA-GMN24-CUR
+               GO      TO               41031-GAIJGNGAK-EXT
+           ELSE
+               MOVE    SNUM-OUTNUM      TO  SPA-NAI24-GAIJGNGAK
+               MOVE    SNUM-OUTNUM      TO  WRK-Z7
+               MOVE    WRK-Z7           TO  SPA-GMN24-GAIJGNGAK
+           END-IF
+      *
+      *
+           .
+       41031-GAIJGNGAK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸øÈñÉéÃ´ Æþ±¡¾å¸Â³Û
+      *****************************************************************
+       41032-NYUJGNGAK-SEC           SECTION.
+      *
+           INITIALIZE                       ORCSNUMAREA
+           MOVE    SPA-GMN24-NYUJGNGAK TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC          NOT =   ZERO  )   OR
+                  (SNUM-MINKBN      NOT =   SPACE )   OR
+                  (SNUM-SYOKBN      NOT =   SPACE )   OR
+                  (SNUM-SEISUU          >   7     )
+               MOVE    "2436"           TO  SPA-ERRCD
+               MOVE    35               TO  SPA-GMN24-CUR
+               GO      TO               41032-NYUJGNGAK-EXT
+           ELSE
+               MOVE    SNUM-OUTNUM      TO  SPA-NAI24-NYUJGNGAK
+               MOVE    SNUM-OUTNUM      TO  WRK-Z7
+               MOVE    WRK-Z7           TO  SPA-GMN24-NYUJGNGAK
+           END-IF
+      *
+           .
+       41032-NYUJGNGAK-EXT.
+           EXIT.
+      *
       ****************************************************************
       **    ÅÐÏ¿Á°´ØÏ¢¥Á¥§¥Ã¥¯½èÍý
       ****************************************************************
@@ -1485,6 +2203,13 @@
       *    Ï·Ç¯Ê¡»ãÇ¯¶âÍúÎòÅÐÏ¿
            IF      FLG-TOUROKU         =   2
                PERFORM 41092-RFUKUSI-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      4109-TOUROKU-CHK-EXT
+               END-IF
+           END-IF
+      *    ¸øÈñÉéÃ´³ÛÅÐÏ¿
+           IF      FLG-TOUROKU         =   3
+               PERFORM 41093-KOHFTN-CHK-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    GO      TO      4109-TOUROKU-CHK-EXT
                END-IF
@@ -1615,9 +2340,47 @@
            EXIT.
       *
       *****************************************************************
+      *    ¸øÈñÉéÃ´¹¹¿·Á°¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       41093-KOHFTN-CHK-SEC             SECTION.
+      *
+           IF     (SPA-NAI24-FTNSTYMD  =   SPACE )  OR
+                  (SPA-NAI24-FTNEDYMD  =   SPACE )
+               MOVE    "2437"          TO  SPA-ERRCD
+               MOVE    32              TO  SPA-GMN24-CUR
+               GO      TO      41093-KOHFTN-CHK-EXT
+           END-IF
+      *
+      *    ´ü´Ö¤¬½ÅÊ£¤·¤Ê¤¤¤³¤È
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL      (IDX     >   SPA-FTN2-MAX )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF     (SPA-NAI24-FTNSELNUM2    NOT =   IDX )  AND
+                      (SPA-NAI24-FTNDELKBN2(IDX)   =   SPACE )
+                   IF     (SPA-NAI24-FTNSTYMD  <   SPA-NAI24-TFTNSTYMD
+                                                              (IDX)) OR
+                          (SPA-NAI24-FTNEDYMD  >   SPA-NAI24-TFTNEDYMD
+                                                              (IDX))
+                       CONTINUE
+                   ELSE
+                       MOVE    "2434"          TO  SPA-ERRCD
+                       MOVE    32              TO  SPA-GMN24-CUR
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       41093-KOHFTN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    À¾Îñ¢ªÏÂÎñFORMATÆüÉÕÊÔ½¸
       *****************************************************************
        410112-SE-WAFORMAT-YMDEDIT-SEC             SECTION.
+      *
+           IF      WRK-SYMD            =   ALL "9"
+               MOVE    WRK-SYMD            TO  WRK-HENYMD
+               GO      TO      410112-SE-WAFORMAT-YMDEDIT-EXT
+           END-IF
       *
            MOVE    SPACE               TO  STS-AREA-DAY
            INITIALIZE                      STS-AREA-DAY
@@ -1675,6 +2438,68 @@
            END-IF
            .
        410114-WA-SE-YMDEDIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥Ñ¥é¥á¥¿¥Õ¥¡¥¤¥ëºîÀ®½èÍý
+      *****************************************************************
+       400-PARA-INSERT-SEC           SECTION.
+      *
+      *    ¥Ñ¥é¥á¥¿ÅÐÏ¿
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    PARA-REC            TO  HZN-PARA-REC
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PARA-KEY"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PARA-KEY"          TO  ORC-DBPATH
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "PARA-KEY"          TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+           MOVE    HZN-PARA-REC        TO  PARA-REC
+           IF      FLG-PARA            =   1
+               MOVE    PARA-REC            TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "PARA-KEY"          TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *!       IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "P02 PARA INSERT ERR:"  MCP-RC
+                           ",KEY2:" PARA-KEY
+                           ",EDANUM:" PARA-EDANUM
+      *!       END-IF
+           ELSE
+               MOVE    PARA-REC            TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "PARA-KEY"          TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *!       IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "P02 PARA UPDATE ERR:"  MCP-RC
+                           ",KEY2:" PARA-KEY
+                           ",EDANUM:" PARA-EDANUM
+      *!       END-IF
+           END-IF
+      *
+           .
+       400-PARA-INSERT-EXT.
            EXIT.
       *
       *****************************************************************

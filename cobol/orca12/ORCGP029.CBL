@@ -35,6 +35,7 @@
       *  02.00.00    MCC-多々納   02/06/25  患者情報・旧姓履歴・患者番号
       *                                     をパラメタからＳＰＡで更新へ
       *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
+      *  02.00.02    NACL-多々納  03/03/24  公費負担額追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -101,6 +102,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-MONTHLYNUM      PIC 9(01).
+           03  FLG-PTKOHFTN        PIC 9(01).
       *
            03  FLG-SYORI           PIC X(01).
            03  FLG-SYORI2          PIC X(01).
@@ -228,6 +230,10 @@
        01  MONTHLYNUM-REC.
            COPY    "CPMONTHLYNUM.INC".
       *
+      *    患者公費負担
+       01  PTKOHFTN-REC.
+           COPY    "CPPTKOHFTN.INC".
+      *
       *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
@@ -307,7 +313,19 @@
       *    患者番号情報更新
            PERFORM 280-PTNUM-SYORI-SEC
       *
+      *    公費負担額
+           INITIALIZE                      PTKOHFTN-REC
+           MOVE    SPA-HOSPID          TO  PTKOHFTN-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
+           MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "PTKOHFTN-DEL1"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
+      *    パラメタファイルより
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -357,12 +375,15 @@
                    WHEN    "PTRSIINF"
       *                患者労災保険情報
                        PERFORM 292-PTRSIINF-SYORI-SEC
+      *
+                   WHEN    "PTKOHFTN"
+      *                公費負担情報更新
+                       PERFORM 300-PTKOHFTN-SYORI-SEC
                END-EVALUATE
       *
                MOVE    "PARA-KEY3"         TO  ORC-DBPATH
                PERFORM 990-PARA-READ-SEC
            END-PERFORM
-      *
       *
       *    カルテ／処方箋発行処理
            PERFORM 2100-HC01-SYORI-SEC
@@ -1142,6 +1163,63 @@
            EXIT.
       *
       *****************************************************************
+      *    公費負担情報更新処理
+      *****************************************************************
+       300-PTKOHFTN-SYORI-SEC         SECTION.
+      *
+           MOVE    PARA-DATA-REC       TO  PTKOHFTN-REC
+      *    公費負担読込み
+           MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTKOHFTN-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTKOHFTN-KEY"      TO  ORC-DBPATH
+               PERFORM 991-PTKOHFTN-READ-SEC
+           ELSE 
+               MOVE    1               TO  FLG-PTKOHFTN
+           END-IF
+      *
+           IF      FLG-PTKOHFTN        =   1
+               MOVE    PARA-DATA-REC       TO  PTKOHFTN-REC
+      *        新規
+               MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "PTKOHFTN-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *!       IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "P029 PTKOHFTN INS ERR:" MCP-RC
+                                   ",KEY:" PTKOHFTN-KEY
+      *!           MOVE    "9000"              TO  SPA-ERRCD
+      *!       END-IF
+           ELSE
+               MOVE    PARA-DATA-REC       TO  PTKOHFTN-REC
+      *        更新
+               MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "PTKOHFTN-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *!       IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "P029 PTKOHFTN UPD ERR:" MCP-RC
+                                   ",KEY:" PTKOHFTN-KEY
+      *!           MOVE    "9000"              TO  SPA-ERRCD
+      *!       END-IF
+           END-IF
+           .
+       300-PTKOHFTN-SYORI-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    カルテ　出力へ
       *****************************************************************
        2100-HC01-SYORI-SEC         SECTION.
@@ -1630,6 +1708,28 @@
            .
        940-HKNCOMBI-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    公費負担マスター読み込み
+      *****************************************************************
+       991-PTKOHFTN-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHFTN-REC
+               MOVE    ZERO            TO  FLG-PTKOHFTN
+           ELSE
+               INITIALIZE                  PTKOHFTN-REC
+               MOVE    1               TO  FLG-PTKOHFTN
+           END-IF
+      *
+           .
+       991-PTKOHFTN-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    システム管理マスタ読込
       *****************************************************************

@@ -48,6 +48,7 @@
       *  02.00.05    NACL-多々納  02/11/21  共済下船３月追加
       *  02.00.06    NACL-多々納  03/01/28  一括削除に患者定期請求追加
       *  02.00.07    NACL-多々納  03/03/05  排他制御処理追加
+      *  02.00.08    NACL-多々納  03/03/24  公費負担額追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -337,6 +338,10 @@
       *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
+      *
+      *    公費負担額
+       01  PTKOHFTN-REC.
+           COPY    "CPPTKOHFTN.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -664,6 +669,11 @@
                WHEN    "0104"
                WHEN    "0106"
                WHEN    "0107"
+      *        保険変換確認
+               WHEN    "0201"
+               WHEN    "0202"
+               WHEN    "0203"
+               WHEN    "0204"
                    IF      SPA-PID1-FLG        =   "OK"
                        MOVE    "P02 "          TO  SPA-P02-GAMEN
                        PERFORM 3002-GMNSET-SEC
@@ -2133,6 +2143,18 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
+      *    公費負担額
+           INITIALIZE                      PTKOHFTN-REC
+           MOVE    SPA-HOSPID          TO  PTKOHFTN-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
+           MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "PTKOHFTN-DEL1"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
            .
        49911-DB-DELETE-EXT.
            EXIT.
@@ -2989,6 +3011,15 @@
                WHEN    "1047"
                    MOVE    "下船３月の時継続区分は選択できません。"
                                                TO  SPA-ERRMSG
+               WHEN    "1048"
+                   MOVE    "特別は日雇特例のみ選択できます。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1049"
+                   MOVE    "特別はＨ１５年４月からの選択です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1050"
+                   MOVE    "継続はＨ１５年３月３１日までの有効です。"
+                                               TO  SPA-ERRMSG
       *    公費エラー
                WHEN    "0070"
                    MOVE    "負担者番号・受給者番号が入力されています"
@@ -3278,6 +3309,31 @@
                                                TO  SPA-ERRMSG
                    MOVE    "範囲内で入力して下さい"
                                                TO  SPA-ERRMSG(31:)
+      *
+               WHEN    "2430"
+                   MOVE    "公費負担選択番号入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2431"
+                   MOVE    "公費負担選択番号２入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2432"
+                   MOVE    "公費負担適用開始日入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2433"
+                   MOVE    "公費負担適用終了日入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2434"
+                   MOVE    "公費負担適用期間が重複しています。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2435"
+                   MOVE    "公費負担の外来上減額入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2436"
+                   MOVE    "公費負担の入院上減額入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2437"
+                   MOVE    "公費負担適用期間を入力して下さい"
+                                               TO  SPA-ERRMSG
       *        入力履歴
                WHEN    "2502"
                    MOVE    "選択番号入力エラー"    TO  SPA-ERRMSG
@@ -3302,6 +3358,10 @@
                    MOVE    "全角で入力して下さい"    TO  SPA-ERRMSG
                WHEN    "2517"
                    MOVE    "変更年月日が重複しています"  TO  SPA-ERRMSG
+      *
+               WHEN    "9000"
+                   MOVE    "ＤＢ更新エラー"
+                                               TO  SPA-ERRMSG
       *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
@@ -3381,6 +3441,32 @@
                                        TO  WRK-PIDMSG(47:)
                WHEN    "0107"
                    MOVE    SPA-PIDMSG      TO  WRK-PIDMSG
+      *        Ｈ１５．４改正から
+               WHEN    "0201"
+                   MOVE
+                   "保険が終了しています。終了日を変更します。"
+                                       TO  WRK-PIDMSG
+                   MOVE
+                        "よろしいですか？"
+                                       TO  WRK-PIDMSG(43:)
+               WHEN    "0202"
+                   MOVE
+                   "保険を切り替えます。よろしいですか？"
+                                       TO  WRK-PIDMSG
+               WHEN    "0203"
+                   MOVE
+                   "継続は平成１５年３月末で終了しています。"
+                                       TO  WRK-PIDMSG
+                   MOVE
+                        "終了日を変更します。よろしいですか？"
+                                       TO  WRK-PIDMSG(41:)
+               WHEN    "0203"
+                   MOVE
+                   "任継を切り替えます。切り替え後の終了日を"
+                                       TO  WRK-PIDMSG
+                   MOVE
+                        "確認して下さい。"
+                                       TO  WRK-PIDMSG(41:)
                WHEN    OTHER
                    MOVE    SPA-PIDCD
                                        TO  WRK-PIDMSG
