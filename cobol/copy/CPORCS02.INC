@@ -46,6 +46,8 @@
            03  LNK-S02-SKYEDYMD            PIC  X(08).
       *定期請求区分
            03  LNK-S02-TEIKI-KBN           PIC  X(01).
+      *システム日付
+           03  LNK-S02-SYSYMD              PIC  X(08).
       *復帰コード
            03  LNK-S02-RC                  PIC S9(9)   BINARY.
       *
