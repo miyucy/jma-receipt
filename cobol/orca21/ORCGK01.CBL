@@ -3072,7 +3072,7 @@
                    MOVE    "未入力があります" 
                                                TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "ＩＤ取得サブでエラー" 
+                   MOVE    "患者番号がありません。" 
                                                TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE

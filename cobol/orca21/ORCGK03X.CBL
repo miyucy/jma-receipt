@@ -59,7 +59,6 @@
       *
        01  WRK-AREA.
            03  WRK-MCP-WIDGET          PIC X(64).
-           03  WRK-GMN-SELNUM          PIC 9(02).
       *
       *    送信コード
        01  WRK-SOUSIN-AREA.
@@ -236,12 +235,11 @@
                    UNTIL       (IDX            >   10   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC           TO  SYS-9001-REC
-               MOVE    SYS-9001-KBNCD (1:2)  TO  WRK-GMN-SELNUM     
-               MOVE    WRK-GMN-SELNUM        TO  SPA-K03X-GMN-SELNOL
+               MOVE    SYS-9001-KBNCD (1:2)  TO  SPA-K03X-GMN-SELNOL
                                                                  (IDX)
                MOVE    SYS-9001-ADDRESS      TO  SPA-K03X-GMN-ADRL
                                                                  (IDX)
-               MOVE    SYS-9001-PORT2        TO  SPA-K03X-GMN-PORTL
+               MOVE    SYS-9001-PORT1        TO  SPA-K03X-GMN-PORTL
                                                                   (IDX)
                MOVE    SYS-9001-MEMO         TO  SPA-K03X-GMN-MEMOL
                                                                   (IDX)
@@ -371,7 +369,7 @@
        201-SCODE-SEC                SECTION.
       *
       *
-           MOVE    ZERO                TO  FLG-OK
+           MOVE    SPACE               TO  FLG-OK
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       WRK-COMBO-SCODE-MAX
                IF      SPA-GMN-SCODE-G(1:1)

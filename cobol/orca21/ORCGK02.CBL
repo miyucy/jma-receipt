@@ -62,6 +62,7 @@
       *  03.00.14    NACL-多々納  03/04/07  入院日のチェック追加
       *  03.00.15    NACL-多々納  03/05/26  最終退院日編集追加
       *  03.00.16    NACL-多々納  03/06/27  カスタマイズ帳票名取得サブ追加
+      *  03.00.17    NACL-多々納  03/07/17  入力修正他
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -899,6 +900,7 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+      *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
@@ -950,6 +952,7 @@
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-K02         TO  SPA-FREE
+      *
       *
            .
            EXIT    PROGRAM
@@ -4070,6 +4073,7 @@
            MOVE    SPTID-PTID          TO  SPA-PTID
            MOVE    SPTID-PTID          TO  SPA-GMN-PTID
            MOVE    SPTID-PTNUM         TO  SPA-PTNUM
+           MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
       *
       *    患者マスター存在チェック
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
@@ -4119,7 +4123,6 @@
       ***  IF      SPA-ERRCD       NOT =   SPACE
       *         GO      TO      41010-PTNUM-SYORI-EXT
       **** END-IF
-      *
       *
       *    スパ共通編集処理
            PERFORM                 310-SPA-SET-SEC
@@ -4230,7 +4233,6 @@
       *    診療日確定後、編集処理
       *****************************************************************
        410171-SRYYMD-OK-SEC         SECTION.
-      *
       *
       *    初期ＳＰＡ編集処理
            INITIALIZE                  ORCSC95AREA
@@ -4980,6 +4982,7 @@
       *
            INITIALIZE                  ORCSC97AREA
            MOVE    SPA-GMN-IDX         TO  LNK-SC97-GMN-IDX
+           MOVE    "1"                 TO  LNK-SC97-KBN
       *    時間外特例区分
            MOVE    SPA-JIKANTOKU       TO  LNK-SC97-JIKANTOKU
            MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
@@ -5515,6 +5518,9 @@
       *****************************************************************
        4101113-INPUTCD-CHK-SEC       SECTION.
       *
+      *    入力コード変更ありの時
+           IF      LNK-SC97-NYURYOKU   =   1
+      *
       *    診療行為コードをもとに点数マスター検索
            MOVE    ZERO                TO  FLG-TENSU
            MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
@@ -5524,6 +5530,8 @@
            IF      FLG-TENSU           =   1
                MOVE    "0001"              TO  SPA-ERRCD
                GO      TO      4101113-INPUTCD-CHK-EXT
+           END-IF
+      *
            END-IF
       *
            MOVE    SPACE               TO  SPA-COM-IN3 (SPA-GMN-IDX)
@@ -5593,6 +5601,12 @@
       *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA
            MOVE    SPACE               TO  LNK-SC92-KBN
+      *    入力コード変更ありの時
+           IF      LNK-SC97-NYURYOKU   =   1
+               MOVE    SPACE               TO  LNK-SC92-KBN
+           ELSE
+               MOVE    "5"                 TO  LNK-SC92-KBN
+           END-IF
            MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
            MOVE    "K02"               TO  LNK-SC92-PG
            MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX

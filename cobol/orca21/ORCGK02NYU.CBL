@@ -4307,6 +4307,7 @@
            INITIALIZE                  ORCSC97AREA
       *    ＰＧ名
            MOVE    "K02N"              TO  LNK-SC97-PG
+           MOVE    "1"                 TO  LNK-SC97-KBN
            MOVE    SPA-GMN-IDX         TO  LNK-SC97-GMN-IDX
       *    時間外特例区分
            MOVE    SPA-JIKANTOKU       TO  LNK-SC97-JIKANTOKU
@@ -4841,6 +4842,8 @@
       *****************************************************************
        4101113-INPUTCD-CHK-SEC       SECTION.
       *
+      *    入力コード変更ありの時
+           IF      LNK-SC97-NYURYOKU   =   1
       *    診療行為コードをもとに点数マスター検索
            MOVE    ZERO                TO  FLG-TENSU
            MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
@@ -4850,6 +4853,8 @@
            IF      FLG-TENSU           =   1
                MOVE    "0001"              TO  SPA-ERRCD
                GO      TO      4101113-INPUTCD-CHK-EXT
+           END-IF
+      *
            END-IF
       *
            MOVE    SPACE               TO  SPA-COM-IN3 (SPA-GMN-IDX)
@@ -4908,6 +4913,12 @@
       *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA
            MOVE    SPACE               TO  LNK-SC92-KBN
+      *    入力コード変更ありの時
+           IF      LNK-SC97-NYURYOKU   =   1
+               MOVE    SPACE               TO  LNK-SC92-KBN
+           ELSE
+               MOVE    "5"                 TO  LNK-SC92-KBN
+           END-IF
            MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
            MOVE    "K02"               TO  LNK-SC92-PG
            MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
