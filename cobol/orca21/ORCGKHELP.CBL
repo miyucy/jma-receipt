@@ -650,6 +650,11 @@
       *
            IF     SPA-KHELP-GMN-INPUT  =   SPACE
                CONTINUE
+               MOVE    1                   TO  FLG-GMN-INIT
+               INITIALIZE                  TBL-HELP-AREA
+               INITIALIZE                  SPA-KHELP-TBL-AREA
+               MOVE    ZERO                TO  SPA-KHELP-TBLMAX
+               MOVE    2                   TO  SPA-KHELP-CUR
            ELSE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
@@ -922,6 +927,7 @@
       *
            MOVE    1                   TO  SPA-KHELP-CUR
       *
+           MOVE    SPACE               TO  SPA-KHELP-GMN-INPUT
            MOVE    1                   TO  SPA-KHELP-SYORIFLG
            MOVE    ZERO                TO  SPA-KHELP-HELPKBN
            MOVE    ZERO                TO  SPA-KHELP-MENUNUM1
@@ -940,6 +946,7 @@
       *
            MOVE    1                   TO  SPA-KHELP-CUR
       *
+           MOVE    SPACE               TO  SPA-KHELP-GMN-INPUT
            MOVE    1                   TO  SPA-KHELP-SYORIFLG
            MOVE    "1"                 TO  SPA-KHELP-HELPKBN
            MOVE    ZERO                TO  SPA-KHELP-MENUNUM1
