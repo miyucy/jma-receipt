@@ -114,6 +114,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-LDMAP           PIC 9(01).
+           03  FLG-READ-SKIP       PIC 9(01).
       *
       *    カウント領域
       *
@@ -1241,16 +1242,30 @@
       *****************************************************************
        900-TBL-LDMAP-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-LDMAP
-           ELSE
-               MOVE    1                   TO  FLG-LDMAP
-           END-IF
+           MOVE    1                   TO  FLG-READ-SKIP
+      *
+           PERFORM UNTIL     ( FLG-READ-SKIP   =   ZERO )
+                   OR        ( FLG-LDMAP   NOT =   ZERO )
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    PATH-TBL-LDMAP-KEY3 TO  MCP-PATH
+               CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
+               IF    ( MCP-RC              =   ZERO )
+                     MOVE    ZERO          TO  FLG-LDMAP
+                     MOVE    MCPDATA-REC   TO  TBL-LDMAP
+      *
+      *            無床診療所の場合、入院情報は読み飛ばす
+                   IF    ( SPA-BEDSU       <=  ZERO )
+                     AND ( LDMAP-GROUPNUM   =  2 )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO        TO  FLG-READ-SKIP
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-LDMAP
+               END-IF
+           END-PERFORM
       *
            .
        900-TBL-LDMAP-READ-EXT.
