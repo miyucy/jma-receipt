@@ -746,14 +746,18 @@
            IF    ( SPA-GMN-PARA (IDXA IDXB)    =   SPACE )
                IF    ( SPA-NAI-HISSU-KBN (IDXA IDXB)
                                                =   "1" )
-                AND  ( WRK-MCP-WIDGET (1:4)    =   "PARA" )
-                AND  ( IDXC            =   WRK-PARA-NUM1 )
-                AND  ( IDXB            =   WRK-PARA-NUM2 )
-                   PERFORM 41011-PARA-KIHON-SET-SEC
-                   IF    ( SPA-ERRCD       NOT =   SPACE )
-                       MOVE    WRK-ERR-CUR     TO  SPA-GMN-CUR
-                       GO  TO  4101-PARA-CHK-EXT
+                   IF    ( WRK-MCP-WIDGET (1:4)    =   "PARA" )
+                    AND  ( IDXC            =   WRK-PARA-NUM1 )
+                    AND  ( IDXB            =   WRK-PARA-NUM2 )
+                       PERFORM 41011-PARA-KIHON-SET-SEC
+                       IF    ( SPA-ERRCD       NOT =   SPACE )
+                           MOVE    WRK-ERR-CUR     TO  SPA-GMN-CUR
+                           GO  TO  4101-PARA-CHK-EXT
+                       END-IF
                    END-IF
+               ELSE
+                   MOVE    SPACE           TO  SPA-NAI-HENPARA
+                                                       (IDXA IDXB)
                END-IF
            ELSE
                PERFORM 41012-PARA-NAIYO-CHK-SEC
@@ -762,7 +766,6 @@
                    GO  TO  4101-PARA-CHK-EXT
                END-IF
            END-IF
-      *
       *
            .
        4101-PARA-CHK-EXT.
