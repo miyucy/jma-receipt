@@ -4,24 +4,24 @@ V02	{
 	           	state	int;
 	        };
 		STYUKYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		EDYUKYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		notebook3	{
 			pageno	int;
 			fixed23	{
 				GAIYKZFTNKBN1_CMB	{
 					GAIYKZFTNKBN1	{
-						value	varchar(27);
+						value	varchar(26);
 					};
 					count	int;
 					item	varchar(26)[4];
 				};
 				GAIFTNKBN1_CMB	{
 					GAIFTNKBN1	{
-						value	varchar(23);
+						value	varchar(22);
 					};
 					count	int;
 					item	varchar(22)[4];
@@ -52,7 +52,7 @@ V02	{
 				};
 				NYUFTNKBN1_CMB	{
 					NYUFTNKBN1	{
-						value	varchar(23);
+						value	varchar(22);
 					};
 					count	int;
 					item	varchar(22)[4];
@@ -80,7 +80,7 @@ V02	{
 				};
 				NYUSKJRYYKBN1_CMB	{
 					NYUSKJRYYKBN1	{
-						value	varchar(29);
+						value	varchar(28);
 					};
 					count	int;
 					item	varchar(28)[5];
@@ -89,14 +89,14 @@ V02	{
 			fixed31	{
 				GAIYKZFTNKBN2_CMB	{
 					GAIYKZFTNKBN2	{
-						value	varchar(27);
+						value	varchar(26);
 					};
 					count	int;
 					item	varchar(26)[4];
 				};
 				GAIFTNKBN2_CMB	{
 					GAIFTNKBN2	{
-						value	varchar(23);
+						value	varchar(22);
 					};
 					count	int;
 					item	varchar(22)[4];
@@ -127,7 +127,7 @@ V02	{
 				};
 				NYUFTNKBN2_CMB	{
 					NYUFTNKBN2	{
-						value	varchar(23);
+						value	varchar(22);
 					};
 					count	int;
 					item	varchar(22)[4];
@@ -155,7 +155,7 @@ V02	{
 				};
 				NYUSKJRYYKBN2_CMB	{
 					NYUSKJRYYKBN2	{
-						value	varchar(29);
+						value	varchar(28);
 					};
 					count	int;
 					item	varchar(28)[5];
@@ -164,14 +164,14 @@ V02	{
 			fixed30	{
 				GAIYKZFTNKBN3_CMB	{
 					GAIYKZFTNKBN3	{
-						value	varchar(27);
+						value	varchar(26);
 					};
 					count	int;
 					item	varchar(26)[4];
 				};
 				GAIFTNKBN3_CMB	{
 					GAIFTNKBN3	{
-						value	varchar(23);
+						value	varchar(22);
 					};
 					count	int;
 					item	varchar(22)[4];
@@ -202,7 +202,7 @@ V02	{
 				};
 				NYUFTNKBN3_CMB	{
 					NYUFTNKBN3	{
-						value	varchar(23);
+						value	varchar(22);
 					};
 					count	int;
 					item	varchar(22)[4];
@@ -230,7 +230,7 @@ V02	{
 				};
 				NYUSKJRYYKBN3_CMB	{
 					NYUSKJRYYKBN3	{
-						value	varchar(29);
+						value	varchar(28);
 					};
 					count	int;
 					item	varchar(28)[5];
@@ -239,14 +239,14 @@ V02	{
 			fixed29	{
 				GAIYKZFTNKBN4_CMB	{
 					GAIYKZFTNKBN4	{
-						value	varchar(27);
+						value	varchar(26);
 					};
 					count	int;
 					item	varchar(26)[4];
 				};
 				GAIFTNKBN4_CMB	{
 					GAIFTNKBN4	{
-						value	varchar(23);
+						value	varchar(22);
 					};
 					count	int;
 					item	varchar(22)[4];
@@ -277,7 +277,7 @@ V02	{
 				};
 				NYUFTNKBN4_CMB	{
 					NYUFTNKBN4	{
-						value	varchar(23);
+						value	varchar(22);
 					};
 					count	int;
 					item	varchar(22)[4];
@@ -305,7 +305,7 @@ V02	{
 				};
 				NYUSKJRYYKBN4_CMB	{
 					NYUSKJRYYKBN4	{
-						value	varchar(29);
+						value	varchar(28);
 					};
 					count	int;
 					item	varchar(28)[5];
@@ -313,56 +313,28 @@ V02	{
 			};
 		};
 		HKNNUM	{
-			value	varchar(4);
+			value	varchar(3);
 		};
 		PAYKBN	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		HBTNUM	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SEIDONAME	{
-			value	varchar(101);
+			value	varchar(100);
 		};
 		TANSEIDONAME	{
-			value	varchar(11);
-		};
-		HKNKOHSBTKBN_CMB	{
-			HKNKOHSBTKBN	{
-				value	varchar(21);
-			};
-			count	int;
-			item	varchar(20)[9];
-		};
-		KENSNUMCHKKBN_CMB	{
-			KENSNUMCHKKBN	{
-				value	varchar(17);
-			};
-			count	int;
-			item	varchar(16)[2];
-		};
-		JKYSKENSNUMCHKKBN_CMB	{
-			JKYSKENSNUMCHKKBN	{
-				value	varchar(17);
-			};
-			count	int;
-			item	varchar(16)[2];
-		};
-		HKNKOHKBN_CMB	{
-			HKNKOHKBN	{
-				value	varchar(11);
-			};
-			count	int;
-			item	varchar(10)[3];
+			value	varchar(10);
 		};
 		GENHKNNUM1	{
-			value	varchar(4);
+			value	varchar(3);
 		};
 		GENHKNNUM2	{
-			value	varchar(4);
+			value	varchar(3);
 		};
 		GENHKNNUM3	{
-			value	varchar(4);
+			value	varchar(3);
 		};
 		JOKENSTYEAR	{
 			value	number(3);
@@ -373,12 +345,19 @@ V02	{
 		TENTNK	{
 			value	number(3);
 		};
-		RECESKYKBN_CMB	{
-			RECESKYKBN	{
-				value	varchar(25);
+		HKNKOHKBN_CMB	{
+			HKNKOHKBN	{
+				value	varchar(10);
 			};
 			count	int;
-			item	varchar(24)[4];
+			item	varchar(10)[3];
+		};
+		HKNKOHSBTKBN_CMB	{
+			HKNKOHSBTKBN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[9];
 		};
 		RECEFTNDSPKBN_CMB	{
 			RECEFTNDSPKBN	{
@@ -386,6 +365,34 @@ V02	{
 			};
 			count	int;
 			item	varchar(30)[2];
+		};
+		JKYSKENSNUMCHKKBN_CMB	{
+			JKYSKENSNUMCHKKBN	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[2];
+		};
+		RECESKYKBN_CMB	{
+			RECESKYKBN	{
+				value	varchar(24);
+			};
+			count	int;
+			item	varchar(24)[4];
+		};
+		HBTNUMCHKKBN_CMB	{
+			HBTNUMCHKKBN	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[2];
+		};
+		KENSNUMCHKKBN_CMB	{
+			KENSNUMCHKKBN	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[2];
 		};
 	};
 };
