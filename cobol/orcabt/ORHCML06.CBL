@@ -32,6 +32,7 @@
       *
       *  01.01.01    NACL-藤原    02/10/10  サイト区分追加
       *  01.01.02    NACL-森脇    03/03/10  TERMIDの領域指定なし
+      *  01.01.03    NACL-太田    03/09/12  処理件数の編集を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -485,6 +486,7 @@
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    SUM-PAGE        TO  JOB-UPDCNT
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
