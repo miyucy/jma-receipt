@@ -1,0 +1,59 @@
+T02	{
+	fixed6	{
+		SELNUM1	{
+			value	number(3);
+		};
+		SYORIFLGCOMBO	{
+			SYORIFLG	{
+				value	varchar(14);
+			};
+			count	int;
+			item	varchar(14)[3];
+		};
+		SELNUM2	{
+			state   int;
+			value	number(3);
+		};
+		PARA	{
+			state   int;
+			value	varchar(20);
+		};
+		scrolledwindow29	{
+			PARALST	{
+				LABEL1	{
+					value	varchar(10);
+				};
+				LABEL3	{
+					value	varchar(8);
+				};
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(20);
+					value2	varchar(50);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		scrolledwindow28	{
+			SHELLIDLST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(2);
+					value2	varchar(40);
+					value3	varchar(10);
+				}	[25];
+				select	bool[25];
+			};
+		};
+		NAME	{
+			value	varchar(50);
+		};
+		SHORIMSG	{
+			value	varchar(40);
+		};
+	};
+};

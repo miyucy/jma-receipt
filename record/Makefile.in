@@ -176,6 +176,7 @@ RECORD_files = \
 	SERR.rec \
 	SID1.rec \
 	T01.rec \
+	T02.rec \
 	T99.rec \
 	TERR.rec \
 	TID1.rec \
