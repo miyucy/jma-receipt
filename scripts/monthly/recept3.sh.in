@@ -25,6 +25,10 @@ RENNUM=0
 #        ${19} 処理年月
 #        ${20} 入外区分
 #        ${21} 個別指定の保険者番号（国保）
+#        ${22} 社保:処理対象区分
+#           0:全体  1:当月・月遅れ分  2:返戻分
+#        ${23} 国保:処理対象区分
+#           0:全体  1:当月・月遅れ分  2:返戻分
 #-------------------------------------------#
 #
 ##      エラーファイル削除
@@ -41,12 +45,22 @@ RENNUM=0
            if  [ -e ${18} ]; then
                exit
            fi
-           
            if  [ $5 -ge '200210' ]; then
-               RENNUM=$(expr $RENNUM + 1) 
-               $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20}
-               if  [ -e ${18} ]; then
-                   exit
+##             返戻分
+               if  [ ${22} -eq '0' ] || [ ${22} -eq '2' ]; then
+                   RENNUM=$(expr $RENNUM + 1) 
+                   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},2
+                   if  [ -e ${18} ]; then
+                      exit
+                   fi
+               fi
+##             当月・月遅れ分
+               if  [ ${22} -eq '0' ] || [ ${22} -eq '1' ]; then
+                   RENNUM=$(expr $RENNUM + 1) 
+                   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM022 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},1
+                   if  [ -e ${18} ]; then
+                      exit
+                   fi
                fi
            fi    
         fi
@@ -77,15 +91,15 @@ RENNUM=0
 
             
             if  [ $5 -ge '200304' ]; then
-               RENNUM=$(expr $RENNUM + 1) 
-               if  [ ${15} = 1 ]; then
-                   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21}
-               else
-                   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21}
-               fi	
-               if  [ -e ${18} ]; then
-                   exit
-               fi
+                RENNUM=$(expr $RENNUM + 1) 
+                if  [ ${15} = 1 ]; then
+                    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM030 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},${23}
+                else
+                    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM029 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${14},${16},${17},${20},${21},${23}
+                fi
+                if  [ -e ${18} ]; then
+                    exit
+                fi
             fi    
        fi
        
