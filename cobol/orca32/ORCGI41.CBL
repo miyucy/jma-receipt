@@ -4914,6 +4914,14 @@
                                    TO  SYOKIKSN-IN-SANTEISTYMD(1:6)
            MOVE    "01"            TO  SYOKIKSN-IN-SANTEISTYMD(7:2)
       *
+      *    特定集中治療室管理料の場合は最長１４日間の算定の為、
+      *    次月の会計作成時は無条件に一般の入院料算定とする
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN   =  "09"  OR  "16"
+                   MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+               END-IF
+           END-IF
+      *    
            IF      WRK-TOKUTEI-NYUIN          NOT =   SPACE
                PERFORM   410191-TOKTEI-NYUIN-SET-SEC
            ELSE
