@@ -46,15 +46,15 @@
         <embed object="string" type="X" length="30"/>
       </appinfo>
     </element>
-    <element name="NENNUM" occurs="9">
-      <element name="NENNUM-S" occurs="1">
+    <element name="NENNUM" occurs="1">
+      <element name="NENNUM-S" occurs="9">
         <appinfo>
           <embed object="string" type="X" length="1"/>
         </appinfo>
       </element>
     </element>
-    <element name="HKNNUM" occurs="14">
-      <element name="HKNNUM-S" occurs="1">
+    <element name="HKNNUM" occurs="1">
+      <element name="HKNNUM-S" occurs="14">
         <appinfo>
           <embed object="string" type="X" length="1"/>
         </appinfo>
@@ -366,7 +366,7 @@
         <rectangle val="10.625,3.32832;10.928,3.82832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#NENNUM[0].NENNUM-S#</string>
+        <string>#NENNUM.NENNUM-S[0]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -408,7 +408,7 @@
         <rectangle val="11.1344,3.32832;11.4374,3.82832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#NENNUM[1].NENNUM-S#</string>
+        <string>#NENNUM.NENNUM-S[1]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -450,7 +450,7 @@
         <rectangle val="11.6438,3.32832;11.9468,3.82832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#NENNUM[2].NENNUM-S#</string>
+        <string>#NENNUM.NENNUM-S[2]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -492,7 +492,7 @@
         <rectangle val="12.1531,3.32832;12.4561,3.82832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#NENNUM[3].NENNUM-S#</string>
+        <string>#NENNUM.NENNUM-S[3]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -534,7 +534,7 @@
         <rectangle val="12.6625,3.32832;12.9655,3.82832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#NENNUM[4].NENNUM-S#</string>
+        <string>#NENNUM.NENNUM-S[4]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -576,7 +576,7 @@
         <rectangle val="13.1719,3.32832;13.4749,3.82832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#NENNUM[5].NENNUM-S#</string>
+        <string>#NENNUM.NENNUM-S[5]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -618,7 +618,7 @@
         <rectangle val="13.6812,3.32832;13.9842,3.82832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#NENNUM[6].NENNUM-S#</string>
+        <string>#NENNUM.NENNUM-S[6]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -660,7 +660,7 @@
         <rectangle val="14.1906,3.32832;14.4936,3.82832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#NENNUM[7].NENNUM-S#</string>
+        <string>#NENNUM.NENNUM-S[7]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -702,7 +702,7 @@
         <rectangle val="14.7,3.32832;15.003,3.82832"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#NENNUM[8].NENNUM-S#</string>
+        <string>#NENNUM.NENNUM-S[8]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -744,7 +744,7 @@
         <rectangle val="1.95,3.30332;2.253,3.80332"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNNUM[0].HKNNUM-S#</string>
+        <string>#HKNNUM.HKNNUM-S[0]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -786,7 +786,7 @@
         <rectangle val="2.45938,3.30332;2.76238,3.80332"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNNUM[1].HKNNUM-S#</string>
+        <string>#HKNNUM.HKNNUM-S[1]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -828,7 +828,7 @@
         <rectangle val="2.96875,3.30332;3.27175,3.80332"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNNUM[2].HKNNUM-S#</string>
+        <string>#HKNNUM.HKNNUM-S[2]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -870,7 +870,7 @@
         <rectangle val="3.47812,3.30332;3.78112,3.80332"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNNUM[3].HKNNUM-S#</string>
+        <string>#HKNNUM.HKNNUM-S[3]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -912,7 +912,7 @@
         <rectangle val="3.9875,3.30332;4.2905,3.80332"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNNUM[4].HKNNUM-S#</string>
+        <string>#HKNNUM.HKNNUM-S[4]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -954,7 +954,7 @@
         <rectangle val="4.49687,3.30332;4.79987,3.80332"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNNUM[5].HKNNUM-S#</string>
+        <string>#HKNNUM.HKNNUM-S[5]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -996,7 +996,7 @@
         <rectangle val="5.00625,3.30332;5.30925,3.80332"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNNUM[6].HKNNUM-S#</string>
+        <string>#HKNNUM.HKNNUM-S[6]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -1038,7 +1038,7 @@
         <rectangle val="5.51562,3.30332;5.81862,3.80332"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNNUM[7].HKNNUM-S#</string>
+        <string>#HKNNUM.HKNNUM-S[7]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -1080,7 +1080,7 @@
         <rectangle val="6.025,3.30332;6.328,3.80332"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNNUM[8].HKNNUM-S#</string>
+        <string>#HKNNUM.HKNNUM-S[8]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -1122,7 +1122,7 @@
         <rectangle val="6.53438,3.30332;6.83738,3.80332"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNNUM[9].HKNNUM-S#</string>
+        <string>#HKNNUM.HKNNUM-S[9]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -1164,7 +1164,7 @@
         <rectangle val="7.04375,3.30332;7.34675,3.80332"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNNUM[10].HKNNUM-S#</string>
+        <string>#HKNNUM.HKNNUM-S[10]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -1206,7 +1206,7 @@
         <rectangle val="7.55312,3.30332;7.85612,3.80332"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNNUM[11].HKNNUM-S#</string>
+        <string>#HKNNUM.HKNNUM-S[11]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -1248,7 +1248,7 @@
         <rectangle val="8.0625,3.30332;8.3655,3.80332"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNNUM[12].HKNNUM-S#</string>
+        <string>#HKNNUM.HKNNUM-S[12]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
@@ -1290,7 +1290,7 @@
         <rectangle val="8.57187,3.30332;8.87487,3.80332"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#HKNNUM[13].HKNNUM-S#</string>
+        <string>#HKNNUM.HKNNUM-S[13]#</string>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="1"/>
