@@ -37,7 +37,8 @@
       *  01.00.06    MCC-Æ£¸¶     02/05/09  ÊÇ¿ô¤Î¥¸¥ç¥Ö´ÉÍý£Ä£Â¤Ø¤Î¹¹¿·
       *  01.00.07    MCC-Æ£¸¶     02/05/22  ¥Æ¥¹¥È´µ¼Ô¤Ï½èÍý¤·¤Ê¤¤     
       *  £²£°£°£²Ç¯£±£°·î²þÀµÂÐ±þ
-      *  01.01.01    NACL-Æ£¸¶    02/10/09  £²£°£°£²Ç¯£¹·î°ÊÁ°¤Î¤ß½¸·×    
+      *  01.01.01    NACL-Æ£¸¶    02/10/09  £²£°£°£²Ç¯£¹·î°ÊÁ°¤Î¤ß½¸·×
+      *                                     Á¥°÷ÊÝ¸±¤Î½¸·×ÊýË¡¤Î½¤Àµ 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -159,7 +160,8 @@
       *
       *    ½¸·×ÎÎ°è
        01  SUM-AREA.
-           03  SUM-TBL             OCCURS  23.
+      *****03  SUM-TBL             OCCURS  23.
+           03  SUM-TBL             OCCURS  24.
                05  SUM-KENSU          PIC  9(06).
                05  SUM-NISSU          PIC  9(06).
                05  SUM-TOTALTEN       PIC  9(10).
@@ -321,7 +323,11 @@
                            WHEN    "001"
                                MOVE    4               TO  IDX
                            WHEN    "002"
-                               MOVE    5               TO  IDX
+                               IF      RECE10-HOJOKBN  =   SPACE
+                                   MOVE    6               TO  IDX
+                               ELSE
+                                   MOVE    5               TO  IDX
+                               END-IF        
                            WHEN    "003"
       ******                   MOVE    6               TO  IDX
                                MOVE    7               TO  IDX
