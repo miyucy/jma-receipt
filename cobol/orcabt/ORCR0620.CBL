@@ -50,6 +50,15 @@
       *                                     のある方の高齢者フラグ編集修正
       *  01.00.16    NACL-門脇    04/06/02  月途中に老保の変更があった場合
       *                                     のＫＥＹの編集の修正
+      *  01.00.17    NACL-藤原    04/06/08  同一開始日の複数自費レセプトが
+      *                                     別々に作成されるように修正
+      *                                     診療科情報が未編集のとき
+      *                                     最終入院科を編集する
+      *  01.00.18    NACL-藤原    04/06/08  適用終了日の追加
+      *  01.00.41    NACL-藤原    04/06/15  印刷順の追加（個別作成時のみ）
+      *  01.00.42    NACL-藤原    04/07/12  生保の受給者番号を月代わり受給者DBに
+      *                                     無い場合は公費DBより編集する
+      *                                     保険組合せの公費ＩＤを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -140,7 +149,7 @@
        01  RECE67-REC. 
            COPY    "CPRCF067.INC".
       *     
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -225,6 +234,7 @@
            03  IDX3                                    PIC 9(02).
            03  IDX4                                    PIC 9(02).
            03  IDX5                                    PIC 9(02).
+           03  IDXX                                    PIC 9(02).
            03  IDZ                                     PIC 9(02).
            03  TOKKI-IDX                               PIC 9(02).
            03  SYSKAN-IDX                              PIC 9(03).
@@ -735,13 +745,37 @@
            MOVE    RECE61-NYUGAIKBN     TO  RECE62-NYUGAIKBN
            MOVE    RECE61-PTID          TO  RECE62-PTID
            MOVE    RECE61-RECEKA        TO  RECE62-RECEKA
-           MOVE    RECE61-HKNJANUM      TO  RECE62-HKNJANUM-KEY
+           IF      RECE61-HKNNUM (1:2)  =   "98"
+               MOVE    RECE61-HKNNUM        TO  RECE62-HKNJANUM-KEY
+           ELSE  
+               MOVE    RECE61-HKNJANUM      TO  RECE62-HKNJANUM-KEY
+           END-IF
            MOVE    RECE61-HOJOKBN       TO  RECE62-HOJOKBN-KEY
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
                    OR      RECE61-TEKSTYMDX (IDX)  =   SPACE
-               MOVE    RECE61-TEKSTYMDX (IDX)  TO  RECE62-TEKSTYMD
-           END-PERFORM        
+               IF      RECE62-TEKSTYMD     =   SPACE 
+                   MOVE    RECE61-TEKSTYMDX (IDX)  TO  RECE62-TEKSTYMD
+               ELSE
+                   IF      RECE62-TEKSTYMD <   RECE61-TEKSTYMDX (IDX)
+                       MOVE    RECE61-TEKSTYMDX (IDX)  
+                                               TO  RECE62-TEKSTYMD
+                   END-IF
+               END-IF
+               IF      RECE62-TEKSTYMD-X   =   SPACE 
+                   MOVE    RECE61-TEKSTYMDX (IDX)  TO  RECE62-TEKSTYMD-X
+                   MOVE    RECE61-TEKEDYMDX (IDX)  TO  RECE62-TEKEDYMD-X
+               ELSE
+                   IF      RECE62-TEKSTYMD-X >   RECE61-TEKSTYMDX (IDX)
+                       MOVE    RECE61-TEKSTYMDX (IDX)  
+                                               TO  RECE62-TEKSTYMD-X
+                   END-IF
+                   IF      RECE62-TEKEDYMD-X <   RECE61-TEKEDYMDX (IDX)
+                       MOVE    RECE61-TEKEDYMDX (IDX)  
+                                               TO  RECE62-TEKEDYMD-X
+                   END-IF
+               END-IF
+           END-PERFORM
       *    患者番号変換
            INITIALIZE                       ORCSPTIDAREA
            MOVE    RECE61-HOSPID        TO  SPTID-HOSPID
@@ -834,14 +868,16 @@
                MOVE    RECE61-PTID          TO      PTHKN-PTID
                MOVE    RECE61-HKNID         TO      PTHKN-HKNID
                MOVE    PTHKNINF-REC         TO      MCPDATA-REC
-               MOVE    RECE62-TEKSTYMD      TO      ORC-DBYMD
+      *********MOVE    RECE62-TEKSTYMD      TO      ORC-DBYMD
                MOVE    "DBSELECT"           TO      MCP-FUNC
-               MOVE    "PTHKNINF-KEY3"      TO      ORC-DBPATH
+      *********MOVE    "PTHKNINF-KEY3"      TO      ORC-DBPATH
+               MOVE    "PTHKNINF-KEY"       TO      ORC-DBPATH
                CALL    "ORCMCPSUB"           USING   MCPAREA
                                                      ORCMCPAREA
                                                      MCPDATA-REC
                IF      MCP-RC               =       ZERO
-                   MOVE    "PTHKNINF-KEY3"  TO      ORC-DBPATH
+      *********    MOVE    "PTHKNINF-KEY3"      TO      ORC-DBPATH
+                   MOVE    "PTHKNINF-KEY"       TO      ORC-DBPATH
                    PERFORM  PTHKNINF-READ-SEC
                    IF       FLG-PTHKNINF        =   ZERO
                         MOVE   PTHKN-HKNID      TO  RECE62-HKNID
@@ -890,7 +926,8 @@
                    END-IF
                END-IF
       *         
-               MOVE   "PTHKNINF-KEY3"     TO  WK-PATH
+      *********MOVE    "PTHKNINF-KEY3"      TO      WK-PATH
+               MOVE    "PTHKNINF-KEY"       TO      WK-PATH
                PERFORM   CSR-CLOSE-SEC
            END-IF
       *    患者公費情報テーブルから老人保険情報の取得
@@ -1188,8 +1225,14 @@
                MOVE    RECE61-ERR-TEKEDYMD   TO  RECE62-ERR-TEKEDYMD
            END-IF 
       *
+      *    入退院履歴より情報取得
            IF      IDZ             =   1               
                PERFORM 240-PTNYUINRRK-SYORI-SEC
+           END-IF
+      *
+      *    印刷順
+           IF      IDZ                 =   1
+               MOVE    RECE61-PRTSEQ       TO  RECE62-PRTSEQ
            END-IF
       *
            PERFORM     220-DATA-WRITE-SEC
@@ -1252,9 +1295,7 @@
                    MOVE   SPACE           TO RECE62-KOHNINIKYUKBN(IDX2)
       *             
       *            生保のとき月代わり受給者番号マスタより受給者番号をセット 
-                   IF    ( PTKOH-KOHNUM    =   WRK-CONS-SEIHO-HKNNUM )
-      *************AND   ( SYS-1017-SEIHO-JKYSNUM
-      *************                        =   ZERO                  )
+                   IF      PTKOH-KOHNUM    =   WRK-CONS-SEIHO-HKNNUM
                        MOVE    RECE62-HOSPID   TO  MONTHLYNUM-HOSPID
                        MOVE    RECE62-PTID     TO  MONTHLYNUM-PTID
                        MOVE    WRK-CONS-SEIHO-HKNNUM
@@ -1264,8 +1305,12 @@
                                                TO  MONTHLYNUM-NYUGAIKBN
                        MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                        PERFORM 910-MONTHLYNUM-READ-SEC
-                       IF      FLG-MONTHLYNUM  =   ZERO
+                       IF    ( FLG-MONTHLYNUM          =   ZERO  )
+                       AND   ( MONTHLYNUM-JKYSNUM  NOT =   SPACE )
                            MOVE    MONTHLYNUM-JKYSNUM 
+                                           TO  RECE62-KOHJKYSNUM (IDX2)
+                       ELSE                       
+                           MOVE   PTKOH-JKYSNUM
                                            TO  RECE62-KOHJKYSNUM (IDX2)
                        END-IF
                    ELSE                       
@@ -2005,18 +2050,24 @@
                          IF      FLG-CHK         =   1
                              MOVE COMB-KOH2HKNNUM
                                              TO RECE62-KOHNUMHC(IDX 1)
+                             MOVE COMB-KOH2ID
+                                             TO RECE62-KOHIDHC (IDX 1)
                          END-IF
                          MOVE COMB-KOH3HKNNUM TO WRK-HKNNUM
                          PERFORM KOHNUM-CHECK-SEC
                          IF      FLG-CHK         =   1
                              MOVE COMB-KOH3HKNNUM
                                              TO RECE62-KOHNUMHC(IDX 2)
+                             MOVE COMB-KOH3ID
+                                             TO RECE62-KOHIDHC (IDX 2)
                          END-IF
                          MOVE COMB-KOH4HKNNUM TO WRK-HKNNUM
                          PERFORM KOHNUM-CHECK-SEC
                          IF      FLG-CHK         =   1
                              MOVE COMB-KOH4HKNNUM
                                              TO RECE62-KOHNUMHC(IDX 3)
+                             MOVE COMB-KOH4ID
+                                             TO RECE62-KOHIDHC (IDX 3)
                          END-IF
                        ELSE
                          MOVE COMB-KOH1HKNNUM TO WRK-HKNNUM
@@ -2024,24 +2075,32 @@
                          IF      FLG-CHK         =   1
                              MOVE COMB-KOH1HKNNUM
                                               TO RECE62-KOHNUMHC(IDX 1)
+                             MOVE COMB-KOH1ID
+                                              TO RECE62-KOHIDHC (IDX 1)
                          END-IF
                          MOVE COMB-KOH2HKNNUM TO WRK-HKNNUM
                          PERFORM KOHNUM-CHECK-SEC
                          IF      FLG-CHK         =   1
                              MOVE COMB-KOH2HKNNUM
                                               TO RECE62-KOHNUMHC(IDX 2)
+                             MOVE COMB-KOH2ID
+                                              TO RECE62-KOHIDHC (IDX 2)
                          END-IF
                          MOVE COMB-KOH3HKNNUM TO WRK-HKNNUM
                          PERFORM KOHNUM-CHECK-SEC
                          IF      FLG-CHK         =   1
                              MOVE COMB-KOH3HKNNUM
                                               TO RECE62-KOHNUMHC(IDX 3)
+                             MOVE COMB-KOH3ID
+                                              TO RECE62-KOHIDHC (IDX 3)
                          END-IF
                          MOVE COMB-KOH4HKNNUM TO WRK-HKNNUM
                          PERFORM KOHNUM-CHECK-SEC
                          IF      FLG-CHK         =   1
                              MOVE COMB-KOH4HKNNUM
                                               TO RECE62-KOHNUMHC(IDX 4)
+                             MOVE COMB-KOH4ID
+                                              TO RECE62-KOHIDHC (IDX 4)
                          END-IF 
                        END-IF
                    END-IF
@@ -2139,7 +2198,11 @@
                    IF      MCP-RC               =   ZERO
                        MOVE    "PTHKNINF-KEY4"  TO  ORC-DBPATH
                        PERFORM PTHKNINF-READ-SEC
-                       IF      FLG-PTHKNINF     =   ZERO
+                   ELSE
+                       MOVE    1                TO  FLG-PTHKNINF  
+                   END-IF
+                   PERFORM              UNTIL   FLG-PTHKNINF     =   1
+                       IF      PTHKN-SAKJOKBN   =   SPACE
                            MOVE   PTHKN-HKNID      TO  RECE69-HKNID
                            MOVE   PTHKN-HKNNUM     TO  RECE69-HKNNUM
                            MOVE   PTHKN-HKNJANUM   TO  RECE69-HKNJANUM
@@ -2176,8 +2239,12 @@
                            END-IF
                            MOVE   "HKNNUM-KEY5"       TO  WK-PATH
                            PERFORM   CSR-CLOSE-SEC
+                           MOVE    1                TO  FLG-PTHKNINF
+                       ELSE
+                           MOVE    "PTHKNINF-KEY4"  TO  ORC-DBPATH
+                           PERFORM PTHKNINF-READ-SEC
                        END-IF
-                   END-IF    
+                   END-PERFORM
                    MOVE   "PTHKNINF-KEY4"     TO  WK-PATH
                    PERFORM   CSR-CLOSE-SEC
       *
@@ -2217,6 +2284,10 @@
                MOVE    1                   TO  FLG-PTNYUINRRK23
            END-IF
            PERFORM                 UNTIL   FLG-PTNYUINRRK23    =   1
+             IF    ( PTNYUINRRK-TENNYUYMD  >   RECE62-TEKEDYMD-X )
+             AND   ( RECE62-TEKEDYMD-X NOT =   SPACE             )
+                 CONTINUE
+             ELSE
                IF      PTNYUINRRK-NYUINYMD (1:6)
                                                <   RECE62-SRYYM
                    MOVE    1                   TO  IDX4
@@ -2249,9 +2320,10 @@
                            END-IF
                        END-PERFORM
                    END-PERFORM
-               END-IF        
+               END-IF
+             END-IF          
       *                 
-               PERFORM 900-PTNYUINRRK-KEY23-READ-SEC
+             PERFORM 900-PTNYUINRRK-KEY23-READ-SEC
            END-PERFORM        
       *                 
            MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
@@ -2259,6 +2331,11 @@
            CALL    "ORCMCPSUB"         USING   MCPAREA
                                                ORCMCPAREA
                                                MCPDATA-REC
+      *
+      *    診療科情報が未編集のとき
+           IF      RECE62-SRYKA (1)    =   SPACE
+               MOVE    RECE62-LASTSRYKA    TO  RECE62-SRYKA (1)
+           END-IF
       *                                                                
       *    病棟区分並替え
       *                                                                
@@ -2301,15 +2378,15 @@
                    OR      PTNYUINRRK-NYUINKA
                                            =   RECE62-SRYKA (IDW)
                IF      RECE62-SRYKA (IDW)  =   SPACE  
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       10
-                           OR      RECE62-HKNCOMBI (IDX)
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >       10
+                           OR      RECE62-HKNCOMBI (IDXX)
                                                    =   ZERO
-                       IF      RECE62-HKNCOMBI (IDX)   =
+                       IF      RECE62-HKNCOMBI (IDXX)   =
                                                PTNYUINRRK-HKNCOMBINUM
                            MOVE    PTNYUINRRK-NYUINKA  
                                                TO  RECE62-SRYKA (IDW)
-                           MOVE    10  TO  IDX
+                           MOVE    10  TO  IDXX
                        END-IF
                    END-PERFORM
                    MOVE    20          TO  IDW
@@ -3044,7 +3121,6 @@
            .
        900-RECE68-READ-EXT.
            EXIT.
-      *
       *      
       *****************************************************************
       *    ＤＢ　オープン処理
@@ -3082,7 +3158,6 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC.
-      *
            .
        900-DBDISCONNECT-EXT.
            EXIT.

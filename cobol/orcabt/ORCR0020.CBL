@@ -100,6 +100,10 @@
       *  01.00.39    NACL-藤原    04/05/27  同一開始日の複数自費レセプトが
       *                                     別々に作成されるように修正
       *  01.00.40    NACL-藤原    04/06/08  適用終了日の追加
+      *  01.00.41    NACL-藤原    04/06/15  印刷順の追加（個別作成時のみ）
+      *  01.00.42    NACL-藤原    04/07/12  生保の受給者番号を月代わり受給者DBに
+      *                                     無い場合は公費DBより編集する
+      *                                     保険組合せの公費ＩＤを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1084,6 +1088,11 @@
                MOVE    RECE01-ERR-TEKEDYMD   TO  RECE02-ERR-TEKEDYMD
            END-IF 
       *
+      *    印刷順
+           IF      IDZ                 =   1
+               MOVE    RECE01-PRTSEQ       TO  RECE02-PRTSEQ
+           END-IF
+      * 
            PERFORM     220-DATA-WRITE-SEC
            .
        210-HENSYU-EXT.
@@ -1140,9 +1149,7 @@
                    MOVE   SPACE           TO RECE02-KOHNINIKYUKBN(IDX2)
       *             
       *            生保のとき月代わり受給者番号マスタより受給者番号をセット 
-                   IF    ( PTKOH-KOHNUM    =   WRK-CONS-SEIHO-HKNNUM )
-      *************AND   ( SYS-1017-SEIHO-JKYSNUM
-      *************                        =   ZERO                  )
+                   IF      PTKOH-KOHNUM    =   WRK-CONS-SEIHO-HKNNUM
                        MOVE    RECE02-HOSPID   TO  MONTHLYNUM-HOSPID
                        MOVE    RECE02-PTID     TO  MONTHLYNUM-PTID
                        MOVE    WRK-CONS-SEIHO-HKNNUM
@@ -1152,8 +1159,12 @@
                                                TO  MONTHLYNUM-NYUGAIKBN
                        MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                        PERFORM 910-MONTHLYNUM-READ-SEC
-                       IF      FLG-MONTHLYNUM  =   ZERO
+                       IF    ( FLG-MONTHLYNUM          =   ZERO  )
+                       AND   ( MONTHLYNUM-JKYSNUM  NOT =   SPACE )
                            MOVE    MONTHLYNUM-JKYSNUM 
+                                           TO  RECE02-KOHJKYSNUM (IDX2)
+                       ELSE                       
+                           MOVE   PTKOH-JKYSNUM
                                            TO  RECE02-KOHJKYSNUM (IDX2)
                        END-IF
                    ELSE                       
@@ -1162,11 +1173,9 @@
                    END-IF    
                ELSE
                    DISPLAY  "PTKOHINF FETCH ERR"  
-      *             ACCEPT    WRK-IN FROM CONSOLE 
                END-IF
            ELSE
                DISPLAY   "PTKOHINF SELECT ERR" 
-      *         ACCEPT     WRK-IN FROM CONSOLE
            END-IF
            MOVE   "PTKOHINF-KEY"      TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
@@ -2150,18 +2159,24 @@
                          IF      FLG-CHK         =   1
                              MOVE COMB-KOH2HKNNUM
                                              TO RECE02-KOHNUMHC(IDX 1)
+                             MOVE COMB-KOH2ID
+                                             TO RECE02-KOHIDHC (IDX 1)
                          END-IF
                          MOVE COMB-KOH3HKNNUM TO WRK-HKNNUM
                          PERFORM KOHNUM-CHECK-SEC
                          IF      FLG-CHK         =   1
                              MOVE COMB-KOH3HKNNUM
                                              TO RECE02-KOHNUMHC(IDX 2)
+                             MOVE COMB-KOH3ID
+                                             TO RECE02-KOHIDHC (IDX 2)
                          END-IF
                          MOVE COMB-KOH4HKNNUM TO WRK-HKNNUM
                          PERFORM KOHNUM-CHECK-SEC
                          IF      FLG-CHK         =   1
                              MOVE COMB-KOH4HKNNUM
                                              TO RECE02-KOHNUMHC(IDX 3)
+                             MOVE COMB-KOH4ID
+                                             TO RECE02-KOHIDHC (IDX 3)
                          END-IF
                        ELSE
                          MOVE COMB-KOH1HKNNUM TO WRK-HKNNUM
@@ -2169,33 +2184,39 @@
                          IF      FLG-CHK         =   1
                              MOVE COMB-KOH1HKNNUM
                                               TO RECE02-KOHNUMHC(IDX 1)
+                             MOVE COMB-KOH1ID
+                                              TO RECE02-KOHIDHC (IDX 1)
                          END-IF
                          MOVE COMB-KOH2HKNNUM TO WRK-HKNNUM
                          PERFORM KOHNUM-CHECK-SEC
                          IF      FLG-CHK         =   1
                              MOVE COMB-KOH2HKNNUM
                                               TO RECE02-KOHNUMHC(IDX 2)
+                             MOVE COMB-KOH2ID
+                                              TO RECE02-KOHIDHC (IDX 2)
                          END-IF
                          MOVE COMB-KOH3HKNNUM TO WRK-HKNNUM
                          PERFORM KOHNUM-CHECK-SEC
                          IF      FLG-CHK         =   1
                              MOVE COMB-KOH3HKNNUM
                                               TO RECE02-KOHNUMHC(IDX 3)
+                             MOVE COMB-KOH3ID
+                                              TO RECE02-KOHIDHC (IDX 3)
                          END-IF
                          MOVE COMB-KOH4HKNNUM TO WRK-HKNNUM
                          PERFORM KOHNUM-CHECK-SEC
                          IF      FLG-CHK         =   1
                              MOVE COMB-KOH4HKNNUM
                                               TO RECE02-KOHNUMHC(IDX 4)
+                             MOVE COMB-KOH4ID
+                                              TO RECE02-KOHIDHC (IDX 4)
                          END-IF 
                        END-IF
                    ELSE
                        DISPLAY  "HKNCOMBI FETCH ERR" 
-      *                 ACCEPT    WRK-IN FROM CONSOLE 
                    END-IF
                ELSE
                    DISPLAY   "HKNCOMBI SELECT ERR" 
-      *             ACCEPT     WRK-IN FROM CONSOLE
                END-IF
                MOVE   "HKNCOMBI-KEY"     TO    WK-PATH
                PERFORM   CSR-CLOSE-SEC
