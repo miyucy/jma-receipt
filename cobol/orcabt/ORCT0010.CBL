@@ -1253,6 +1253,7 @@
        800-ERRMSG-EDIT-SEC             SECTION.
       *
            MOVE    SPACE               TO  ERR-HEN-ERRMSG
+	                                   ERR-PTNUM
       *
       *    患者番号を取得
            INITIALIZE                      ORCSPTIDAREA
