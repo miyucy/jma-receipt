@@ -8,4 +8,4 @@
                   04  R98-JKYSNUM        PIC X(21).
               03  R98-SRYYMH.
                   04  R98-SRYYMH-STYLE   PIC X(20).
-                  04  R98-SRYYMH-VALUE   PIC X(25).
+                  04  R98-SRYYMH-VALUE   PIC X(27).

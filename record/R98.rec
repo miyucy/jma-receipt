@@ -308,7 +308,7 @@ R98	{
 		};
 		SRYYMH	{
 		    style   varchar(20);
-			value	varchar(25);
+			value	varchar(27);
 		};
 	};
 };
