@@ -421,6 +421,8 @@
                                    PIC X(09) VALUE "799990070".
       *    ª¿¡« ‰¿µŒ®
            03  CONS-SANSO          PIC X(09) VALUE "770020070".
+      *    π‚µ§∞µª¿¡«≤√ªª
+           03  CONS-SANSO2         PIC X(09) VALUE "770030070".
       *
       *
       *****ª¿¡« 
@@ -3090,7 +3092,8 @@
                          ( TNS-DATAKBN              =   "3"  ))
                    OR   (  SRY-SRYCD (IDX2)         =
                                     CONS-FILM-YOUJI-KASAN  OR  
-                                    CONS-SANSO                )
+                                    CONS-SANSO             OR
+                                    CONS-SANSO2               )
                        CONTINUE
                    ELSE
       *********        SET     TBL-SANSO           TO  1
@@ -3102,6 +3105,9 @@
       *                         MOVE    1               TO  FLG-SANSO-OK
       *                END-SEARCH
       *********        IF      FLG-SANSO-OK        =   "1"
+                     IF      TNS-TEN         =   ZERO
+                       CONTINUE
+                     ELSE
                        PERFORM RECE65-TENSOU-TANKA-HEN-SEC
                        COMPUTE IDW =   RECE65-YUKOKETA(IDX4)  *  2 
                                                    +   3                    
@@ -3113,6 +3119,7 @@
                                                    +   1   
                                                    +
                                                   (WRK-CHAR-N-CNT  /  2)
+                     END-IF
                    END-IF
                END-IF
               END-IF
@@ -3132,9 +3139,9 @@
       *****************************************************************
        RECE65-TENSOU-TANKA-HEN-SEC     SECTION.
       *
-           IF      TNS-TEN         =   ZERO
-               GO  TO  RECE65-TENSOU-TANKA-HEN-EXT  
-           END-IF
+      ***  IF      TNS-TEN         =   ZERO
+      ***      GO  TO  RECE65-TENSOU-TANKA-HEN-EXT  
+      ***  END-IF
       *
            MOVE    SPACE           TO  WRK-TANKA-X
       * 
