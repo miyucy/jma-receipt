@@ -2005,7 +2005,7 @@
                            MOVE    CONST-TNACCT-HKNCOMBI-MAX
                                        TO  TNACCT-HKNCOMBI-MAX
                        ELSE
-                           MOVE    NACCT-DAY (IDX14)
+                           MOVE    NACCT-DAY (IDX15)
                                    TO  TNACCT-HKNCOMBI-HKNCOMBI
                                                   (TNACCT-HKNCOMBI-MAX)
                            MOVE    "99999999"
