@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.01.01    NACL-森脇    03/03/10  TERMIDの領域指定なし
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -233,7 +234,7 @@
            MOVE    WRK-LNKYMD       TO  WRK-MSTYMDH
       *     
            MOVE    "TENSUERR"       TO  TENSUERR-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID(1:16)
+           MOVE    LNK-PRTKANRI-TERMID
                                     TO  TENSUERR-TERMID
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC

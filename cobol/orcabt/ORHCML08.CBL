@@ -31,6 +31,7 @@
       *  01.00.02    MCC-藤原     02/05/10  頁数のジョブ管理ＤＢへの更新
       *
       *  01.01.01    NACL-藤原    02/10/10  サイト区分追加
+      *  01.01.02    NACL-森脇    03/03/10  TERMIDの領域指定なし
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -229,7 +230,7 @@
            MOVE    WRK-LNKYMD       TO  WRK-MSTYMDH
       *     
            MOVE    "TENSUERR"       TO  TENSUERR-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID(1:16)
+           MOVE    LNK-PRTKANRI-TERMID
                                     TO  TENSUERR-TERMID
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
