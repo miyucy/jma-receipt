@@ -657,10 +657,10 @@
                    UNTIL   IDX >       20
                IF      WRK-RECE40-SRYKA    (IDX)       =   SPACE
                    MOVE    ACCT-SRYKA      TO  WRK-RECE40-SRYKA (IDX)
-                   MOVE    10              TO  IDX
+                   MOVE    20              TO  IDX
                ELSE
                    IF      WRK-RECE40-SRYKA    (IDX)   =   ACCT-SRYKA
-                       MOVE    10                  TO  IDX
+                       MOVE    20                  TO  IDX
                    END-IF
                END-IF    
            END-PERFORM
