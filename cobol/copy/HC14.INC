@@ -15,7 +15,7 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      01  HC14.
+       01  HC14.
               03  HC14-SRYYMD    PIC  X(22).
               03  HC14-TITLE    PIC  X(16).
               03  HC14-PAGE    PIC  X(3).
