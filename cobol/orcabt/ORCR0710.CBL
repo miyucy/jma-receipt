@@ -38,6 +38,7 @@
       *  01.00.08    NACL-藤原    03/04/07  適用欄の編集を剤別に改頁する
       *                                     のを止める
       *  01.00.09    NACL-藤原    03/04/09  続紙区分（入院）の追加
+      *  01.00.10    NACL-藤原    03/04/15  診療区分の表示の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -221,7 +222,8 @@
       *
            03  FLG-KOHSKY          PIC 9(01).
            03  FLG-RECE62X         PIC 9(01).
-           03  FLG-TENKI           PIC 9(01).     
+           03  FLG-TENKI           PIC 9(01).
+           03  FLG-SRYKBNPRT       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -387,6 +389,8 @@
                05  WRK-CONTINUE                PIC 9(01).
       *    適用欄最大行数
            03  WRK-TEKIYOU-LINE                PIC 9(03).
+      *    適用欄行数
+           03  WRK-TEKIYOU-LINE-GYO            PIC 9(03).
       *    傷病名編集
            03  WRK-BYOMEI                      PIC X(150).
            03  WRK-BYOMEIW                     PIC X(150).
@@ -483,10 +487,16 @@
            03  WRK-BYOMEI-LINE     PIC 9(02)   VALUE   5.
       *    適用欄最大行数
            03  WRK-TEKIYOU1-LINE   PIC 9(02)   VALUE   35.
-      *    適用欄（続紙）最大行数
+      *    適用欄（続紙）最大行数（横タイプ）
            03  WRK-TEKIYOU2-LINE   PIC 9(03)   VALUE   140.
-      *    適用欄（続紙）最大行数
+      *    適用欄（続紙）最大行数（縦タイプ）
            03  WRK-TEKIYOU3-LINE   PIC 9(03)   VALUE   110.
+      *    適用欄（続紙）の行別行数（横タイプ）
+           03  WRK-TEKIYOU2-LINE-GYO
+                                   PIC 9(03)   VALUE   35.
+      *    適用欄（続紙）行別行数（縦タイプ）
+           03  WRK-TEKIYOU3-LINE-GYO
+                                   PIC 9(03)   VALUE   55.
       *
       *   特記事項
        01  TBL-TOKKI-AREA.
@@ -3501,9 +3511,34 @@
            IF  WRK-LINETEK          >=   WRK-TEKIYOU-LINE
                    PERFORM 34120-PAGE-SEC
            END-IF
+      *              
            ADD     1                 TO  WRK-LINETEK
+      *
+           MOVE    ZERO                  TO  FLG-SRYKBNPRT
+           IF      CNT-PAGE          >   1 
+               IF      SYS-2005-NEXTPRTKBN =   ZERO
+                   IF      WRK-LINETEK     =   36  OR  71  OR  106
+                       MOVE    1               TO  FLG-SRYKBNPRT
+                   END-IF
+               ELSE
+                   IF      WRK-LINETEK     =   56
+                       MOVE    1               TO  FLG-SRYKBNPRT
+                   END-IF
+               END-IF
+           END-IF
+      *
            IF    ( FLG-KUGIRI        =   1 )
            OR    ( WRK-LINETEK       =   1 )
+           OR    ( CNT-RECE661       =   1 )
+           OR    ( FLG-SRYKBNPRT     =   1 ) 
+                    IF      SYS-2005-NEXTPRTKBN =   "0"   
+                       MOVE    RECE661-SRYKBN  TO  HC061-SRYKBN
+                                                       (WRK-LINETEK)
+                   ELSE
+                       MOVE    RECE661-SRYKBN  TO  HC062-SRYKBN
+                                                       (WRK-LINETEK)
+                   END-IF
+                     
                IF      CNT-PAGE        =   1   
                    MOVE    RECE661-SRYKBN  TO  HC06-SRYKBN
                                                        (WRK-LINETEK)
