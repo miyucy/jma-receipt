@@ -2192,6 +2192,11 @@
                      MOVE  "190097010"      TO   WRK-GAIHAKU-SRYCD
                WHEN  "190813270"
                      MOVE  "190805710"      TO   WRK-GAIHAKU-SRYCD
+      *
+               WHEN  "190117670"
+                     MOVE  "190097010"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190813870"
+                     MOVE  "190805710"      TO   WRK-GAIHAKU-SRYCD
            END-EVALUATE
       *
            IF    WRK-GAIHAKU-SRYCD    NOT =   SPACE
@@ -2270,12 +2275,11 @@
                                  WHEN   ZERO
                                      COMPUTE  NYUIN-TGMONEY =
                                               NYUIN-TGMONEY +
-                                             (WRK-KHNTEN  -  
+                                            ((WRK-KHNTEN  -  
                                               WRK-SENTEI-KHNTEN) * 
-                                              SYS-5000-SENTEI-TANKA
+                                              SYS-5000-SENTEI-TANKA)
       *                          ≥∞«Ò° £±£µ°Û§»¡™ƒÍ≥∞«Ò§Œ∫π≥€°À
                                  WHEN   3
-                                 WHEN   4
                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
                                      COMPUTE  WRK-SENTEI-GAIHAKU1 =
@@ -2286,37 +2290,51 @@
                                                                  + 0.5
                                      COMPUTE  NYUIN-TGMONEY  =
                                               NYUIN-TGMONEY  +
-                                             (WRK-SENTEI-GAIHAKU1 -
+                                            ((WRK-SENTEI-GAIHAKU1 -
                                               WRK-SENTEI-GAIHAKU2)
-                                              *  SYS-5000-SENTEI-TANKA
+                                              *  SYS-5000-SENTEI-TANKA)
+                                 WHEN   4
+                                     IF  SYU-SRYYMD(1:6) >= "200404"
+                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
+                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
+                                      COMPUTE  WRK-SENTEI-GAIHAKU1 =
+                                              (WRK-KHNTEN * 0.30) + 0.5
+                                      COMPUTE  WRK-SENTEI-GAIHAKU2 =
+                                              (WRK-KHNTEN * 
+                                               WRK-SENTEI-GAIHAKU-KEISU)
+                                                                  + 0.5
+                                      COMPUTE  NYUIN-TGMONEY  =
+                                               NYUIN-TGMONEY  +
+                                             ((WRK-SENTEI-GAIHAKU1 -
+                                               WRK-SENTEI-GAIHAKU2)
+                                               *  SYS-5000-SENTEI-TANKA)
+                                     ELSE
+                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
+                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
+                                      COMPUTE  WRK-SENTEI-GAIHAKU1 =
+                                              (WRK-KHNTEN * 0.15) + 0.5
+                                      COMPUTE  WRK-SENTEI-GAIHAKU2 =
+                                              (WRK-KHNTEN * 
+                                               WRK-SENTEI-GAIHAKU-KEISU)
+                                                                  + 0.5
+                                      COMPUTE  NYUIN-TGMONEY  =
+                                               NYUIN-TGMONEY  +
+                                             ((WRK-SENTEI-GAIHAKU1 -
+                                               WRK-SENTEI-GAIHAKU2)
+                                               *  SYS-5000-SENTEI-TANKA)
+                                     END-IF
                                END-EVALUATE
       *                   æ√»Ò¿«§¢§Í
                            WHEN   "1"
                                EVALUATE   TBL-GAIHAKU(SYU-IDX)
                                  WHEN   ZERO
-      **                           IF    WRK-TAX1001-KBN  =  "1"
-      **                             COMPUTE  NYUIN-TGMONEY =
-      **                                      NYUIN-TGMONEY +
-      **                                    ((WRK-KHNTEN  -  
-      **                                      WRK-SENTEI-KHNTEN) * 
-      **                                      SYS-5000-SENTEI-TANKA *
-      **                                      1.05)  +  0.5
                                      COMPUTE  NYUIN-TGMONEY-TAX =
                                               NYUIN-TGMONEY-TAX +
                                             ((WRK-KHNTEN  -  
                                               WRK-SENTEI-KHNTEN) * 
                                               SYS-5000-SENTEI-TANKA)
-      **                           ELSE
-      **                             COMPUTE  NYUIN-TGMONEY =
-      **                                      NYUIN-TGMONEY +
-      **                                     (WRK-KHNTEN  -  
-      **                                      WRK-SENTEI-KHNTEN) * 
-      **                                      SYS-5000-SENTEI-TANKA *
-      **                                      1.05
-      **                           END-IF
       *                          ≥∞«Ò° £±£µ°Û§»¡™ƒÍ≥∞«Ò§Œ∫π≥€°À
                                  WHEN   3
-                                 WHEN   4
                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
                                      COMPUTE  WRK-SENTEI-GAIHAKU1 =
@@ -2325,26 +2343,41 @@
                                              (WRK-KHNTEN * 
                                               WRK-SENTEI-GAIHAKU-KEISU)
                                                                  + 0.5
-      **                             IF    WRK-TAX1001-KBN  =  "1"
-      **                               COMPUTE  NYUIN-TGMONEY  =
-      **                                        NYUIN-TGMONEY  +
-      **                                    ((WRK-SENTEI-GAIHAKU1 -
-      **                                      WRK-SENTEI-GAIHAKU2)
-      **                                      *  SYS-5000-SENTEI-TANKA
-      **                                      *  1.05)  +  0.5
-                                       COMPUTE  NYUIN-TGMONEY-TAX  =
-                                                NYUIN-TGMONEY-TAX  +
+                                     COMPUTE  NYUIN-TGMONEY-TAX  =
+                                              NYUIN-TGMONEY-TAX  +
                                             ((WRK-SENTEI-GAIHAKU1 -
                                               WRK-SENTEI-GAIHAKU2)
                                               *  SYS-5000-SENTEI-TANKA)
-      **                             ELSE
-      **                               COMPUTE  NYUIN-TGMONEY  =
-      **                                        NYUIN-TGMONEY  +
-      **                                     (WRK-SENTEI-GAIHAKU1 -
-      **                                      WRK-SENTEI-GAIHAKU2)
-      **                                      *  SYS-5000-SENTEI-TANKA
-      **                                      *  1.05
-      **                             END-IF
+                                 WHEN   4
+                                     IF  SYU-SRYYMD(1:6) >= "200404"
+                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
+                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
+                                      COMPUTE  WRK-SENTEI-GAIHAKU1 =
+                                              (WRK-KHNTEN * 0.30) + 0.5
+                                      COMPUTE  WRK-SENTEI-GAIHAKU2 =
+                                              (WRK-KHNTEN * 
+                                               WRK-SENTEI-GAIHAKU-KEISU)
+                                                                  + 0.5
+                                      COMPUTE  NYUIN-TGMONEY-TAX  =
+                                               NYUIN-TGMONEY-TAX  +
+                                             ((WRK-SENTEI-GAIHAKU1 -
+                                               WRK-SENTEI-GAIHAKU2)
+                                               *  SYS-5000-SENTEI-TANKA)
+                                     ELSE
+                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
+                                      MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
+                                      COMPUTE  WRK-SENTEI-GAIHAKU1 =
+                                              (WRK-KHNTEN * 0.15) + 0.5
+                                      COMPUTE  WRK-SENTEI-GAIHAKU2 =
+                                              (WRK-KHNTEN * 
+                                               WRK-SENTEI-GAIHAKU-KEISU)
+                                                                  + 0.5
+                                      COMPUTE  NYUIN-TGMONEY-TAX  =
+                                               NYUIN-TGMONEY-TAX  +
+                                             ((WRK-SENTEI-GAIHAKU1 -
+                                               WRK-SENTEI-GAIHAKU2)
+                                               *  SYS-5000-SENTEI-TANKA)
+                                     END-IF
                                END-EVALUATE
                        END-EVALUATE
       *            ∞ÂŒ≈µ°¥ÿƒÍ≥€¿ﬂƒÍ
@@ -2370,20 +2403,9 @@
                                  WHEN   ZERO
                                  WHEN   3
                                  WHEN   4
-      **                           IF    WRK-TAX1001-KBN  =  "1"
-      **                             COMPUTE  NYUIN-TGMONEY =
-      **                                      NYUIN-TGMONEY +
-      **                                     (SYS-5000-SENTEI-KINGAKU *
-      **                                      1.05)  +  0.5
                                      COMPUTE  NYUIN-TGMONEY-TAX =
                                               NYUIN-TGMONEY-TAX +
                                               SYS-5000-SENTEI-KINGAKU
-      **                           ELSE
-      **                             COMPUTE  NYUIN-TGMONEY =
-      **                                      NYUIN-TGMONEY +
-      **                                     (SYS-5000-SENTEI-KINGAKU *
-      **                                      1.05)
-      **                           END-IF
                                END-EVALUATE
                        END-EVALUATE
       *            …¬≈Ô¿ﬂƒÍ
@@ -2411,12 +2433,11 @@
                              WHEN   ZERO
                                    COMPUTE  NYUIN-TGMONEY =
                                             NYUIN-TGMONEY +
-                                           (WRK-KHNTEN  -  
+                                          ((WRK-KHNTEN  -  
                                             WRK-SENTEI-KHNTEN) * 
-                                         SBTUSENTEI-DAY-TANKA(SYU-IDX)
+                                         SBTUSENTEI-DAY-TANKA(SYU-IDX))
       *                      ≥∞«Ò° £±£µ°Û§»¡™ƒÍ≥∞«Ò§Œ∫π≥€°À
                              WHEN   3
-                             WHEN   4
                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
                                  COMPUTE  WRK-SENTEI-GAIHAKU1 =
@@ -2427,37 +2448,51 @@
                                                              + 0.5
                                  COMPUTE  NYUIN-TGMONEY  =
                                           NYUIN-TGMONEY  +
-                                         (WRK-SENTEI-GAIHAKU1 -
+                                        ((WRK-SENTEI-GAIHAKU1 -
                                           WRK-SENTEI-GAIHAKU2)  *
-                                         SBTUSENTEI-DAY-TANKA(SYU-IDX)
+                                         SBTUSENTEI-DAY-TANKA(SYU-IDX))
+                             WHEN   4
+                                 IF  SYU-SRYYMD(1:6) >= "200404"
+                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
+                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
+                                  COMPUTE  WRK-SENTEI-GAIHAKU1 =
+                                          (WRK-KHNTEN * 0.30) + 0.5
+                                  COMPUTE  WRK-SENTEI-GAIHAKU2 =
+                                          (WRK-KHNTEN * 
+                                           WRK-SENTEI-GAIHAKU-KEISU)
+                                                              + 0.5
+                                  COMPUTE  NYUIN-TGMONEY  =
+                                           NYUIN-TGMONEY  +
+                                         ((WRK-SENTEI-GAIHAKU1 -
+                                           WRK-SENTEI-GAIHAKU2)  *
+                                          SBTUSENTEI-DAY-TANKA(SYU-IDX))
+                                 ELSE
+                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
+                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
+                                  COMPUTE  WRK-SENTEI-GAIHAKU1 =
+                                          (WRK-KHNTEN * 0.15) + 0.5
+                                  COMPUTE  WRK-SENTEI-GAIHAKU2 =
+                                          (WRK-KHNTEN * 
+                                           WRK-SENTEI-GAIHAKU-KEISU)
+                                                              + 0.5
+                                  COMPUTE  NYUIN-TGMONEY  =
+                                           NYUIN-TGMONEY  +
+                                         ((WRK-SENTEI-GAIHAKU1 -
+                                           WRK-SENTEI-GAIHAKU2)  *
+                                          SBTUSENTEI-DAY-TANKA(SYU-IDX))
+                                 END-IF
                            END-EVALUATE
       *               æ√»Ò¿«§¢§Í
                        WHEN   "1"
                            EVALUATE   TBL-GAIHAKU(SYU-IDX)
                              WHEN   ZERO
-      **                       IF    WRK-TAX1001-KBN  =  "1"
-      **                         COMPUTE  NYUIN-TGMONEY =
-      **                                  NYUIN-TGMONEY +
-      **                                ((WRK-KHNTEN  -  
-      **                                  WRK-SENTEI-KHNTEN) * 
-      **                               SBTUSENTEI-DAY-TANKA(SYU-IDX) *
-      **                                  1.05)  +  0.5
                                  COMPUTE  NYUIN-TGMONEY-TAX =
                                           NYUIN-TGMONEY-TAX +
                                         ((WRK-KHNTEN  -  
                                           WRK-SENTEI-KHNTEN) * 
                                        SBTUSENTEI-DAY-TANKA(SYU-IDX))
-      **                       ELSE
-      **                         COMPUTE  NYUIN-TGMONEY =
-      **                                  NYUIN-TGMONEY +
-      **                                 (WRK-KHNTEN  -  
-      **                                  WRK-SENTEI-KHNTEN) * 
-      **                               SBTUSENTEI-DAY-TANKA(SYU-IDX) *
-      **                                  1.05
-      **                       END-IF
       *                      ≥∞«Ò° £±£µ°Û§»¡™ƒÍ≥∞«Ò§Œ∫π≥€°À
                              WHEN   3
-                             WHEN   4
                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
                                  COMPUTE  WRK-SENTEI-GAIHAKU1 =
@@ -2466,26 +2501,41 @@
                                          (WRK-KHNTEN * 
                                           WRK-SENTEI-GAIHAKU-KEISU)
                                                              + 0.5
-      **                         IF    WRK-TAX1001-KBN  =  "1"
-      **                           COMPUTE  NYUIN-TGMONEY  =
-      **                                    NYUIN-TGMONEY  +
-      **                                ((WRK-SENTEI-GAIHAKU1 -
-      **                                  WRK-SENTEI-GAIHAKU2)
-      **                              *  SBTUSENTEI-DAY-TANKA(SYU-IDX)
-      **                              *  1.05)  +  0.5
-                                   COMPUTE  NYUIN-TGMONEY-TAX  =
-                                            NYUIN-TGMONEY-TAX  +
+                                 COMPUTE  NYUIN-TGMONEY-TAX  =
+                                          NYUIN-TGMONEY-TAX  +
                                         ((WRK-SENTEI-GAIHAKU1 -
                                           WRK-SENTEI-GAIHAKU2)
                                       *  SBTUSENTEI-DAY-TANKA(SYU-IDX))
-      **                         ELSE
-      **                           COMPUTE  NYUIN-TGMONEY  =
-      **                                    NYUIN-TGMONEY  +
-      **                                 (WRK-SENTEI-GAIHAKU1 -
-      **                                  WRK-SENTEI-GAIHAKU2)
-      **                              *  SBTUSENTEI-DAY-TANKA(SYU-IDX)
-      **                              *  1.05
-      **                         END-IF
+                             WHEN   4
+                                 IF  SYU-SRYYMD(1:6) >= "200404"
+                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
+                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
+                                  COMPUTE  WRK-SENTEI-GAIHAKU1 =
+                                          (WRK-KHNTEN * 0.30) + 0.5
+                                  COMPUTE  WRK-SENTEI-GAIHAKU2 =
+                                          (WRK-KHNTEN * 
+                                           WRK-SENTEI-GAIHAKU-KEISU)
+                                                              + 0.5
+                                  COMPUTE  NYUIN-TGMONEY-TAX  =
+                                           NYUIN-TGMONEY-TAX  +
+                                         ((WRK-SENTEI-GAIHAKU1 -
+                                           WRK-SENTEI-GAIHAKU2)
+                                       *  SBTUSENTEI-DAY-TANKA(SYU-IDX))
+                                 ELSE
+                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU1
+                                  MOVE  ZERO TO WRK-SENTEI-GAIHAKU2
+                                  COMPUTE  WRK-SENTEI-GAIHAKU1 =
+                                          (WRK-KHNTEN * 0.15) + 0.5
+                                  COMPUTE  WRK-SENTEI-GAIHAKU2 =
+                                          (WRK-KHNTEN * 
+                                           WRK-SENTEI-GAIHAKU-KEISU)
+                                                              + 0.5
+                                  COMPUTE  NYUIN-TGMONEY-TAX  =
+                                           NYUIN-TGMONEY-TAX  +
+                                         ((WRK-SENTEI-GAIHAKU1 -
+                                           WRK-SENTEI-GAIHAKU2)
+                                       *  SBTUSENTEI-DAY-TANKA(SYU-IDX))
+                                 END-IF
                            END-EVALUATE
                    END-EVALUATE
       *        …¬≈ÔƒÍ≥€¿ﬂƒÍ
@@ -2508,20 +2558,9 @@
                              WHEN   ZERO
                              WHEN   3
                              WHEN   4
-      **                       IF    WRK-TAX1001-KBN  =  "1"
-      **                         COMPUTE  NYUIN-TGMONEY =
-      **                                  NYUIN-TGMONEY +
-      **                            (SBTUSENTEI-DAY-KINGAKU(SYU-IDX) *
-      **                                  1.05)  +  0.5
                                  COMPUTE  NYUIN-TGMONEY-TAX =
                                           NYUIN-TGMONEY-TAX +
-                                     SBTUSENTEI-DAY-KINGAKU(SYU-IDX)
-      **                       ELSE
-      **                         COMPUTE  NYUIN-TGMONEY =
-      **                                  NYUIN-TGMONEY +
-      **                            (SBTUSENTEI-DAY-KINGAKU(SYU-IDX) *
-      **                                  1.05)
-      **                       END-IF
+                                       SBTUSENTEI-DAY-KINGAKU(SYU-IDX)
                            END-EVALUATE
                    END-EVALUATE
            END-EVALUATE

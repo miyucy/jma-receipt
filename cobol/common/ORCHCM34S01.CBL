@@ -1164,9 +1164,11 @@
       *
            WHEN  "190109670"
            WHEN  "190117070"
+           WHEN  "190117670"
                MOVE  "190097010"       TO  WRK-GAIHAKU-SRYCD
            WHEN  "190808870"
            WHEN  "190813270"
+           WHEN  "190813870"
                MOVE  "190805710"       TO  WRK-GAIHAKU-SRYCD
            END-EVALUATE
       *
