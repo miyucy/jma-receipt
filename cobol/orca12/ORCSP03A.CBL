@@ -1093,7 +1093,7 @@
                MOVE    SPA-GMN-HIHKNJANAME TO  WRK-MAE-INPUT
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-HIHKNJANAME
-               IF      FLG-ERR             =   1
+               IF      FLG-ERR         NOT =   ZERO
                    MOVE    "0055"              TO  SPA-ERRCD
                    MOVE    18                  TO  SPA-GMN-CUR
                END-IF
@@ -1777,7 +1777,7 @@
                MOVE    LNK-DAY6-KEISAN  TO  WRK-SYMD
            ELSE
                MOVE    SPACE            TO  WRK-SYMD
-               MOVE    "0021"           TO  SPA-ERRCD
+               MOVE    "0069"           TO  SPA-ERRCD
            END-IF
       *
            .

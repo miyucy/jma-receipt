@@ -341,7 +341,7 @@
                                            TO  SPA-GMN21-KISEI-POST
                        MOVE    SPA-GMN982-TOWNNAME
                                            TO  SPA-GMN21-KISEI-ADRS
-                       MOVE    21          TO  SPA-GMN21-CUR
+                       MOVE    20          TO  SPA-GMN21-CUR
                    END-IF
            END-EVALUATE
       *
@@ -991,6 +991,7 @@
       *    郵便番号より、住所一覧を表示する
            INITIALIZE                  SPA-P982-AREA
            MOVE    WRK-MAE-POST        TO  SPA-GMN982-POST
+           MOVE    "P02"               TO  SPA-GMN982-MOTOPG
       *
            MOVE    SPA-P02KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
@@ -1144,6 +1145,7 @@
                                        P99
                                        SPA-SYSYMD
       *
+           MOVE    "P02"               TO  SPA-GMN98-MOTOPG
            MOVE    SPA-P02KYOUTU       TO  SPA-WORK
            MOVE    SPA-P02SCRAREA      TO  SPA-FREE
            MOVE    SPA-AREA            TO  SPA-COMMON
@@ -1151,7 +1153,6 @@
            MOVE    "SELNUM"            TO  MCP-WIDGET
            MOVE    "P98"               TO  SPA-SAKIPG
            MOVE    "P02"               TO  SPA-MOTOPG
-           MOVE    "P02"               TO  SPA-HZN-MOTOPG
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE
            MOVE    "P98"               TO  MCP-WINDOW

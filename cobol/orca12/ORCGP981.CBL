@@ -517,6 +517,7 @@
            MOVE    SPA-GMN981-LPUBCD   TO  SPA-GMN982-LPUBCD
            MOVE    SPA-GMN981-POST     TO  SPA-GMN982-POST
            MOVE    SPA-GMN981-RENNUM   TO  SPA-GMN982-RENNUM
+           MOVE    "P981"              TO  SPA-GMN982-MOTOPG
       *
            MOVE    SPA-P02KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON

@@ -447,7 +447,8 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+      *****MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           MOVE    SPA-GMN982-MOTOPG   TO  SPA-SAKIPG
            MOVE    "P982"              TO  SPA-MOTOPG
       *
            MOVE    SPACE               TO  LINKAREA

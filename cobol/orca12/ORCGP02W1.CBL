@@ -2621,7 +2621,7 @@
       *    郵便番号より、住所一覧を表示する
            INITIALIZE                  SPA-P982-AREA
            MOVE    SPA-GMN-POST        TO  SPA-GMN982-POST
-           MOVE    "P02"               TO  SPA-MOTOPG
+           MOVE    "P02"               TO  SPA-GMN982-MOTOPG
       *
            MOVE    SPA-P02KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
@@ -4428,6 +4428,7 @@
                                                  P98
                                                  P99
                                                  SPA-SYSYMD
+           MOVE    "P02"                         TO  SPA-GMN98-MOTOPG
       *
            MOVE    SPA-P02KYOUTU                 TO  SPA-WORK
            MOVE    SPA-P02SCRAREA                TO  SPA-FREE
@@ -4435,7 +4436,6 @@
       *
            MOVE  "P98"                           TO  SPA-SAKIPG
            MOVE  "P02"                           TO  SPA-MOTOPG
-           MOVE  "P02"                           TO  SPA-HZN-MOTOPG
            MOVE  "NEW"                           TO  MCP-PUTTYPE
            MOVE  "SELNUM"                        TO  MCP-WIDGET
            MOVE  SPA-SAKIPG                      TO  MCP-WINDOW

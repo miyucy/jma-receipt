@@ -2544,6 +2544,9 @@
                                                TO  SPA-ERRMSG
                    MOVE    "新しい保険を入力して下さい。"
                                                TO  SPA-ERRMSG(33:)
+               WHEN    "0069"
+                   MOVE    "５年（２年）後日付取得エラー"
+                                               TO  SPA-ERRMSG
       *    公費エラー
                WHEN    "0070"
                    MOVE    "負担者番号・受給者番号が入力されています"

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  02/09/03  住所一覧を５０件へ変更
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -60,9 +61,17 @@
       *
       *    添字領域
        01  IDX-AREA.
-           03  IDXX                              PIC 9(02).
-           03  IDXY                              PIC 9(02).
-           03  IDXZ                              PIC 9(02).
+           03  IDXX                              PIC 9(03).
+           03  IDXY                              PIC 9(03).
+           03  IDXZ                              PIC 9(03).
+           03  IDX                               PIC 9(03).
+      *
+           03  IDX1                              PIC 9(01).
+           03  IDX2                              PIC 9(02).
+      *
+        01 WRK-AREA.
+           03  WRK-IDX3                          PIC 9(03).
+      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -233,7 +242,8 @@
                                               ORCMCPAREA
                                               MCPDATA-REC
       *
-           COMPUTE SPA-GMN98-MAX =   (IDXX   -   1)  /   25  +   1    
+      *****COMPUTE SPA-GMN98-MAX =   (IDXX   -   1)  /   25  +   1    
+           COMPUTE SPA-GMN98-MAX =   (IDXX   -   1)  /   50  +   1    
       *
            IF      IDXX                      >   ZERO
                MOVE    1                         TO  SPA-GMN98-PAGE
@@ -272,6 +282,9 @@
       *        確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM  450-KAKUTEI-SEC
+      *        住所一覧
+               WHEN    "CLICKED"       ALSO    ANY
+                   PERFORM  490-ADRS-CHK-SEC
            END-EVALUATE.
       *
        200-GMNSENI-EXT.
@@ -297,10 +310,10 @@
       *
            MOVE    SPACE               TO  P98
       *
-           COMPUTE IDXY    =  (SPA-GMN98-PAGE  -   1)  *   25
+           COMPUTE IDXY    =  (SPA-GMN98-PAGE  -   1)  *   50
       *
            PERFORM VARYING     IDXX    FROM    1   BY  1
-                   UNTIL       IDXX    >       25
+                   UNTIL       IDXX    >       50
                COMPUTE IDXZ    =       IDXY    +   IDXX
                MOVE  SPA-GMN98-KBNCD(IDXZ) TO  P98-TADRS(IDXX)(1:3)
                MOVE  SPA-GMN98-TADRS(IDXZ) TO  P98-TADRS(IDXX)(5:)
@@ -312,7 +325,7 @@
       *
            PERFORM 5001-MAPCUR-SEC
            .
-       31O-GMNHEN-EXT.
+       500-GMNHEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -406,7 +419,7 @@
       *
       *    共通ＳＰＡ編集
       *
-           MOVE  SPA-HZN-MOTOPG              TO  SPA-SAKIPG.
+           MOVE  SPA-GMN98-MOTOPG            TO  SPA-SAKIPG.
       *
            MOVE  "P98"                       TO  SPA-MOTOPG.
       *
@@ -436,6 +449,7 @@
            MOVE    "KBNCD"             TO  MCP-WIDGET
       *
            INITIALIZE                  SPA-GMN981-AREA
+           MOVE    "P98"               TO  SPA-GMN981-MOTOPG
            MOVE    SPACE               TO  P981
       *
            MOVE   "NEW"                TO  MCP-PUTTYPE.
@@ -489,7 +503,7 @@
       *
       *    共通ＳＰＡ編集
       *
-           MOVE  SPA-HZN-MOTOPG        TO  SPA-SAKIPG.
+           MOVE    SPA-GMN98-MOTOPG    TO  SPA-SAKIPG
       *
            MOVE  "P98"                 TO  SPA-MOTOPG.
       *
@@ -510,6 +524,36 @@
            EXIT.
       *
       *****************************************************************
+      *    住所選択処理
+      *****************************************************************
+       490-ADRS-CHK-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  WRK-IDX3
+           IF      MCP-WIDGET(1:9)     =   "CHK_TADRS"
+               IF      MCP-WIDGET(10:3)    NUMERIC
+                   MOVE    MCP-WIDGET(10:3)    TO  WRK-IDX3
+               END-IF
+           END-IF
+           IF      WRK-IDX3            =   ZERO
+               GO      TO      490-ADRS-CHK-EXT
+           END-IF
+      *
+           MOVE    WRK-IDX3(1:2)       TO  IDX2
+           MOVE    WRK-IDX3(3:1)       TO  IDX1
+           COMPUTE IDXZ                =   ((IDX2   -   1  )  *  5 )
+                                       +   IDX1
+      *
+           IF     (IDXZ                >   ZERO  AND  <=   50  )  AND
+                  (SPA-GMN98-KBNCD(IDXZ)   NOT =   SPACE )
+               MOVE    SPA-GMN98-KBNCD(IDXZ)   TO  SPA-GMN98-SELNUM
+               PERFORM 5101-ADRS-HENSYU-SEC
+           END-IF
+           .
+      *
+       490-ADRS-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *  　選択番号チェック
       *****************************************************************
        510-SELNUM-CHK-SEC                        SECTION.
@@ -521,12 +565,12 @@
       *
            MOVE  P98-SELNUM              TO  SPA-GMN98-SELNUM
       *
-           COMPUTE IDXY    =  (SPA-GMN98-PAGE  -   1)  *   25
+           COMPUTE IDXY    =  (SPA-GMN98-PAGE  -   1)  *   50
            PERFORM VARYING     IDXX    FROM    1   BY  1
-                   UNTIL       IDXX    >       25
+                   UNTIL       IDXX    >       50
                COMPUTE IDXZ    =       IDXY    +   IDXX
                IF      SPA-GMN98-KBNCD(IDXZ)       =   SPACE
-                   MOVE    25                          TO  IDXX
+                   MOVE    50                          TO  IDXX
                ELSE
                    IF      SPA-GMN98-KBNCD(IDXZ)   =   SPA-GMN98-SELNUM
                        PERFORM 5101-ADRS-HENSYU-SEC
