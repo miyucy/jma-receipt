@@ -1207,13 +1207,7 @@
                    ((ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
                     (ACCT-PTID     NOT =   W1-SRY-PTID)    OR
                     (ACCT-SRYKA    NOT =   W1-SRY-SRYKA))
-                   IF  (FLG-TENKIYMD-ER     =      1)          AND
-                       (T-ERR-08            =  SPACE)          AND
-                       (T-ERR-09            =  SPACE)
-                       PERFORM T-530-RECECHEK-CHK8-2-SEC
-                   END-IF
                    INITIALIZE                W-TABLE-S4
-                   MOVE    ZERO              TO  FLG-TENKIYMD-ER
                    MOVE    SPACE             TO  T-ERR-08
                    MOVE    SPACE             TO  T-ERR-09
                END-IF
@@ -3359,6 +3353,7 @@
            ELSE
                MOVE    ZERO                    TO  FLG-END
                MOVE    ZERO                    TO  FLG-TBL
+               MOVE    ZERO                    TO  FLG-TENKIYMD-ER
                PERFORM T-530-RECECHEK-READ2-SEC
                IF  IDY5   NOT =   ZERO
                    MOVE    SRY-SRYCD (IDX3)        TO  W-SRYCD-61 (IDY5)
@@ -3397,20 +3392,18 @@
                            (CHK-CD (IDY2)       =   ZERO)
                            MOVE    20                   TO  IDY2
                        END-IF
-                       IF  FLG-TBL             =   2
+                       IF  (FLG-TBL             =   2) OR
+                           (FLG-TENKIYMD-ER     =   1)
                            MOVE    1                    TO  FLG-END
                            MOVE    20                   TO  IDY2
-                       END-IF
-                       IF  FLG-TENKIYMD-ER   =   1
-                           MOVE    ZERO                 TO  FLG-END
-                           MOVE    ZERO                 TO  FLG-TBL
                        END-IF
                    END-PERFORM
                    IF  FLG-END   =   ZERO
                        PERFORM T-530-RECECHEK-READ2-SEC
                    END-IF
                END-PERFORM
-               IF  FLG-TBL   =   1
+               IF  (FLG-TBL             =   1) OR
+                   (FLG-TENKIYMD-ER     =   1)
                    PERFORM T-530-RECECHEK-CHK8-1-SEC
                END-IF
            END-IF.
@@ -3464,6 +3457,7 @@
            ELSE
                MOVE    ZERO                    TO  FLG-END
                MOVE    ZERO                    TO  FLG-TBL
+               MOVE    ZERO                    TO  FLG-TENKIYMD-ER
                PERFORM T-530-RECECHEK-READ2-SEC
                IF  IDY5   NOT =   ZERO
                    MOVE    SRY-SRYCD (IDX3)        TO  W-SRYCD-71 (IDY5)
@@ -3502,20 +3496,18 @@
                            (CHK-CD (IDY2)       =   ZERO)
                            MOVE    20                   TO  IDY2
                        END-IF
-                       IF  FLG-TBL             =   2
+                       IF  (FLG-TBL             =   2) OR
+                           (FLG-TENKIYMD-ER     =   1)
                            MOVE    1                    TO  FLG-END
                            MOVE    20                   TO  IDY2
-                       END-IF
-                       IF  FLG-TENKIYMD-ER   =   1
-                           MOVE    ZERO                 TO  FLG-END
-                           MOVE    ZERO                 TO  FLG-TBL
                        END-IF
                    END-PERFORM
                    IF  FLG-END   =   ZERO
                        PERFORM T-530-RECECHEK-READ2-SEC
                    END-IF
                END-PERFORM
-               IF  FLG-TBL   =   1
+               IF  (FLG-TBL             =   1) OR
+                   (FLG-TENKIYMD-ER     =   1)
                    PERFORM T-530-RECECHEK-CHK9-1-SEC
                END-IF
            END-IF.
@@ -3542,31 +3534,16 @@
            MOVE    ACCT-PTID           TO  DID2-REC(26:10).
            MOVE    "-"                 TO  DID2-REC(36:1).
            MOVE    SRY-SRYCD (IDX3)    TO  DID2-REC(37:9).
-           MOVE    T-MESSAGE-530-04    TO  DID2-REC(71:90).
+           IF  FLG-TENKIYMD-ER     =   1
+               MOVE    T-MESSAGE-530-09    TO  DID2-REC(71:90)
+           ELSE
+               MOVE    T-MESSAGE-530-04    TO  DID2-REC(71:90)
+           END-IF.
            WRITE   DID2-REC.
            MOVE    "*"                 TO  T-ERR-09.
       *
        T-530-RECECHEK-CHK8-1-EXT.
            EXIT.
-      *½¤Àµ/*³«»Ï*03.06.20*********************************************
-      *
-      *******************
-      *
-       T-530-RECECHEK-CHK8-2-SEC         SECTION.
-      *
-           COMPUTE T-CNT-OUT = T-CNT-OUT + 1.
-           MOVE    SPACE               TO  DID2-REC.
-           MOVE    W1-SRY-HOSPID       TO  DID2-REC(1:24).
-           MOVE    "-"                 TO  DID2-REC(25:1).
-           MOVE    W1-SRY-PTID         TO  DID2-REC(26:10).
-           MOVE    T-MESSAGE-530-09    TO  DID2-REC(71:90).
-           WRITE   DID2-REC.
-           MOVE    "*"                 TO  T-ERR-08.
-           MOVE    "*"                 TO  T-ERR-09.
-      *
-       T-530-RECECHEK-CHK8-2-EXT.
-           EXIT.
-      *½¤Àµ/*½ªÎ»*03.06.20*********************************************
       *
       *******************
       *
@@ -3579,7 +3556,11 @@
            MOVE    ACCT-PTID           TO  DID2-REC(26:10).
            MOVE    "-"                 TO  DID2-REC(36:1).
            MOVE    SRY-SRYCD (IDX3)    TO  DID2-REC(37:9).
-           MOVE    T-MESSAGE-530-03    TO  DID2-REC(71:90).
+           IF  FLG-TENKIYMD-ER     =   1
+               MOVE    T-MESSAGE-530-09    TO  DID2-REC(71:90)
+           ELSE
+               MOVE    T-MESSAGE-530-03    TO  DID2-REC(71:90)
+           END-IF.
            WRITE   DID2-REC.
            MOVE    "*"                 TO  T-ERR-08.
       *
