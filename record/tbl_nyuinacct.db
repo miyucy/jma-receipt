@@ -459,3 +459,17 @@ path	all2	{
 		;
 	};
 };
+
+#HOSPID,PTIDのみ取得
+path	key20 	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key20_csr CURSOR FOR
+		SELECT HOSPID,PTID
+		FROM tbl_nyuinacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   SRYYM       =   :SRYYM
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			GROUP  BY  HOSPID,PTID
+		;
+	};
+};

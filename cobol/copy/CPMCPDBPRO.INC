@@ -291,6 +291,8 @@
       *                                     PTKOHINF-KEY6追加 
       *  01.01.111   NACL-太田  　03/11/19  PTNYUINRRK-KEY27,KEY28追加
       *  01.01.112   NACL-森脇  　03/11/27  SRYACCT-KEY26追加
+      *  01.01.113   NACL-太田  　03/12/10  SRYACCT-KEY27,KEY28追加
+      *  01.01.114   NACL-太田  　03/12/10  NYUINACCT-KEY20追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1003,6 +1005,7 @@
                WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY17"
                WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY18"
                WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY19"
+               WHEN    "DBUPDATE"      ALSO   "NYUINACCT-KEY20"
                    MOVE    PATH-TBL-NYUINACCT-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "NYUINACCT-DEL1"
@@ -1652,6 +1655,12 @@
                    MOVE    PATH-TBL-SRYACCT-KEY26
                                        TO  WRK-PATH
       *----(01.01.112)-ADD-END-----
+               WHEN    ANY             ALSO   "SRYACCT-KEY27"
+                   MOVE    PATH-TBL-SRYACCT-KEY26
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY28"
+                   MOVE    PATH-TBL-SRYACCT-KEY27
+                                       TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-ALL"
                    MOVE    PATH-TBL-SRYACCT-ALL
                                        TO  WRK-PATH
@@ -2744,6 +2753,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "NYUINACCT-KEY19"
                    MOVE    PATH-TBL-NYUINACCT-KEY19
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "NYUINACCT-KEY20"
+                   MOVE    PATH-TBL-NYUINACCT-KEY20
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "NYUINACCT-ALL"
                    MOVE    PATH-TBL-NYUINACCT-ALL

@@ -616,3 +616,33 @@ path	key26 	{
 	};
 };
 
+#HOSPID,PTIDのみ取得
+path	key27 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key27_csr CURSOR FOR
+		SELECT HOSPID,PTID
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   SRYYM       =   :SRYYM
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   ZAITEN     <> 0
+			AND   ZAIKAISU   <> 0
+			GROUP BY HOSPID,PTID
+		;
+	};
+};
+
+path	key28 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key28_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE HOSPID      =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+			ORDER  BY  HKNCOMBI,SRYKA,ZAINUM
+		;
+	};
+};
+
