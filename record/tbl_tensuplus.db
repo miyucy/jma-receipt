@@ -65,3 +65,14 @@ path	all	{
  		;
 	};
 };
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_tensuplus_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensuplus
+			WHERE   SRYCD    =   :SRYCD
+			ORDER   BY  YUKOSTYMD
+		;
+	};
+};
