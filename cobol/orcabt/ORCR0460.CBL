@@ -1616,8 +1616,8 @@
            MOVE    ZERO          TO  FLG-NOPRT
       *
       *    服用方法でないこと
-           IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)
-                                 =   "001"
+           IF  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3) =   "001")
+           OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1) =   "S"  )
                MOVE    1             TO  FLG-NOPRT
            END-IF
       *    診療行為テーブルに存在した場合、印字しないこと
