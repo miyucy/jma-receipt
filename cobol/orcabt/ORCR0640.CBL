@@ -291,8 +291,9 @@
            03  WRK-NYUTENTTLKBN                        PIC 9(03).
            03  WRK-SHOKUJIRYOYO                        PIC 9(01).
            03  WRK-TOKUKANRIKASAN                      PIC 9(01).
-           03  WRK-MIJISI-OCC                          OCCURS  4.
-               05  WRK-MIJISI                          PIC 9(01).
+           03  WRK-SYS-MIJISI-T.
+             04  WRK-SYS-MIJISI-OCC                    OCCURS  4.
+               05  WRK-SYS-MIJISI                      PIC 9(01).
       *
       *    ¿ô»úÈ¾³ÑÁ´³ÑÊÑ´¹ÍÑ     
            03  WRK-CHAR-IDX                    PIC 9(02).
@@ -502,7 +503,7 @@
            MOVE     ZERO               TO  WRK-SHOKUJIRYOYO
                                            WRK-TOKUKANRIKASAN
       *
-           INITIALIZE                      WRK-MIJISI-OCC
+           INITIALIZE                      WRK-SYS-MIJISI-T
       *
            MOVE    SPACE               TO  SYSKANRI-REC
            INITIALIZE                      SYSKANRI-REC
@@ -516,7 +517,7 @@
                PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
                         UNTIL     GENSAN-IDX   >   4
                     IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"    
-                        MOVE   1   TO   WRK-MIJISI(GENSAN-IDX)
+                        MOVE   1   TO   WRK-SYS-MIJISI(GENSAN-IDX)
                     END-IF
                END-PERFORM
       *
@@ -884,7 +885,7 @@
                             PERFORM VARYING SYUKEI-IDX3 FROM 1 BY 1
                                UNTIL  SYUKEI-IDX3           > 4
       *
-                             IF    WRK-MIJISI(SYUKEI-IDX3) = 1
+                             IF    WRK-SYS-MIJISI(SYUKEI-IDX3) = 1
                                PERFORM  VARYING  IDY  FROM  1  BY  1
                                       UNTIL   IDY     >       31
                                 IF   WRK-DAY21(IDY)  NOT =  ZERO

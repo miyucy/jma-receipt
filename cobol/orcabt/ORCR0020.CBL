@@ -732,10 +732,10 @@
                             PERFORM  HKNNUM-READ-SEC
                             PERFORM  UNTIL
                                  (FLG-HKNNUM     =    1)      OR
-                                 (HKN-TEKSTYMD(1:6) <=
+                                ((HKN-TEKSTYMD(1:6) <=
                                                    RECE01-SRYYM) AND
                                  (RECE01-SRYYM      <=
-                                                   HKN-TEKEDYMD(1:6))
+                                                   HKN-TEKEDYMD(1:6)))
                                 MOVE   "HKNNUM-KEY2"  TO  ORC-DBPATH
                                 PERFORM   HKNNUM-READ-SEC
                             END-PERFORM
@@ -998,8 +998,8 @@
                        PERFORM  HKNNUM-READ-SEC
                        PERFORM  UNTIL
                            (FLG-HKNNUM         =    1)          OR
-                           (HKN-TEKSTYMD(1:6) <=  RECE01-SRYYM) AND
-                           (RECE01-SRYYM      <=  HKN-TEKEDYMD(1:6))
+                          ((HKN-TEKSTYMD(1:6) <=  RECE01-SRYYM) AND
+                           (RECE01-SRYYM      <=  HKN-TEKEDYMD(1:6)))
                           MOVE   "HKNNUM-KEY2"  TO  ORC-DBPATH
                           PERFORM   HKNNUM-READ-SEC
                        END-PERFORM
@@ -1803,8 +1803,8 @@
                PERFORM  HKNNUM-READ-SEC
                PERFORM  UNTIL
                  (FLG-HKNNUM     =    1)                       OR
-                 (HKN-TEKSTYMD(1:6)   <=  RECE01-SRYYM)        AND
-                 (RECE01-SRYYM        <=  HKN-TEKEDYMD(1:6))
+                ((HKN-TEKSTYMD(1:6)   <=  RECE01-SRYYM)        AND
+                 (RECE01-SRYYM        <=  HKN-TEKEDYMD(1:6)))
                    PERFORM   HKNNUM-READ-SEC
                END-PERFORM
            END-IF

@@ -634,8 +634,8 @@
                PERFORM  TNKRRK-READ-SEC
                PERFORM  UNTIL
                           (FLG-TNKRRK     =    1)    OR
-                          (TNKRRK-STYMD     <=   LNK-SYU-SKYSTYMD)  AND
-                          (LNK-SYU-SKYSTYMD <=   TNKRRK-EDYMD)
+                         ((TNKRRK-STYMD     <=   LNK-SYU-SKYSTYMD)  AND
+                          (LNK-SYU-SKYSTYMD <=   TNKRRK-EDYMD))
                    PERFORM   TNKRRK-READ-SEC
                END-PERFORM
            ELSE
@@ -663,8 +663,8 @@
                PERFORM  TSYRRK-READ-SEC
                PERFORM  UNTIL
                        (FLG-TSYRRK      =    1)    OR
-                       (TSYRRK-NINSTYMD   <=   LNK-SYU-SKYSTYMD)  AND
-                       (LNK-SYU-SKYSTYMD  <=   TSYRRK-NINEDYMD)
+                      ((TSYRRK-NINSTYMD   <=   LNK-SYU-SKYSTYMD)  AND
+                       (LNK-SYU-SKYSTYMD  <=   TSYRRK-NINEDYMD))
                    PERFORM   TSYRRK-READ-SEC
                END-PERFORM
            ELSE
@@ -809,9 +809,9 @@
                  PERFORM  HKNNUM-READ-SEC
                  PERFORM  UNTIL
                    (FLG-HKNNUM     =    1)                       OR
-                   (HKN-TEKSTYMD(1:6)     <=  LNK-SYU-SKYSTYMD(1:6)) AND
+                  ((HKN-TEKSTYMD(1:6)     <=  LNK-SYU-SKYSTYMD(1:6)) AND
                    (LNK-SYU-SKYSTYMD(1:6) <=  HKN-TEKEDYMD(1:6))     AND
-                   (WK-PAYKBN            =  HKN-PAYKBN)
+                   (WK-PAYKBN            =  HKN-PAYKBN))
                      PERFORM   HKNNUM-READ-SEC
                  END-PERFORM
                  IF     FLG-HKNNUM         =       0
@@ -845,9 +845,9 @@
                  PERFORM  HKNNUM-READ-SEC
                  PERFORM  UNTIL
                    (FLG-HKNNUM     =    1)                      OR
-                   (HKN-TEKSTYMD(1:6)     <= LNK-SYU-SKYSTYMD(1:6)) AND
+                  ((HKN-TEKSTYMD(1:6)     <= LNK-SYU-SKYSTYMD(1:6)) AND
                    (LNK-SYU-SKYSTYMD(1:6) <= HKN-TEKEDYMD(1:6))     AND
-                   (WK-PAYKBN            = HKN-PAYKBN)
+                   (WK-PAYKBN            = HKN-PAYKBN))
                      PERFORM   HKNNUM-READ-SEC
                  END-PERFORM
                  IF     FLG-HKNNUM         =       0
@@ -881,9 +881,9 @@
                  PERFORM  HKNNUM-READ-SEC
                  PERFORM  UNTIL
                    (FLG-HKNNUM     =    1)                      OR
-                   (HKN-TEKSTYMD(1:6)     <= LNK-SYU-SKYSTYMD(1:6)) AND
+                  ((HKN-TEKSTYMD(1:6)     <= LNK-SYU-SKYSTYMD(1:6)) AND
                    (LNK-SYU-SKYSTYMD(1:6) <= HKN-TEKEDYMD(1:6))     AND
-                   (WK-PAYKBN            = HKN-PAYKBN)
+                   (WK-PAYKBN            = HKN-PAYKBN))
                      PERFORM   HKNNUM-READ-SEC
                  END-PERFORM
                  IF     FLG-HKNNUM         =       0
@@ -917,9 +917,9 @@
                  PERFORM  HKNNUM-READ-SEC
                  PERFORM  UNTIL
                    (FLG-HKNNUM     =    1)                       OR
-                   (HKN-TEKSTYMD(1:6)     <= LNK-SYU-SKYSTYMD(1:6)) AND
+                  ((HKN-TEKSTYMD(1:6)     <= LNK-SYU-SKYSTYMD(1:6)) AND
                    (LNK-SYU-SKYSTYMD(1:6) <= HKN-TEKEDYMD(1:6))     AND
-                   (WK-PAYKBN            = HKN-PAYKBN)
+                   (WK-PAYKBN            = HKN-PAYKBN))
                      PERFORM   HKNNUM-READ-SEC
                  END-PERFORM
                  IF     FLG-HKNNUM         =       0
@@ -2008,9 +2008,9 @@
                PERFORM  HKNNUM-READ-SEC
                PERFORM  UNTIL
                  (FLG-HKNNUM     =    1)                       OR
-                 (HKN-TEKSTYMD(1:6)     <=  LNK-SYU-SKYSTYMD(1:6)) AND
+                ((HKN-TEKSTYMD(1:6)     <=  LNK-SYU-SKYSTYMD(1:6)) AND
                  (LNK-SYU-SKYSTYMD(1:6) <=  HKN-TEKEDYMD(1:6))     AND
-                 (WK-PAYKBN            =  HKN-PAYKBN)
+                 (WK-PAYKBN            =  HKN-PAYKBN))
                    PERFORM   HKNNUM-READ-SEC
                END-PERFORM
            END-IF.
@@ -2476,9 +2476,9 @@
                PERFORM  HKNNUM-READ-SEC
                PERFORM  UNTIL
                  (FLG-HKNNUM     =    1)                       OR
-                 (HKN-TEKSTYMD(1:6)     <=  LNK-SYU-SKYSTYMD(1:6)) AND
+                ((HKN-TEKSTYMD(1:6)     <=  LNK-SYU-SKYSTYMD(1:6)) AND
                  (LNK-SYU-SKYSTYMD(1:6) <=  HKN-TEKEDYMD(1:6))     AND
-                 (WK-PAYKBN            =  HKN-PAYKBN)
+                 (WK-PAYKBN            =  HKN-PAYKBN))
                    PERFORM   HKNNUM-READ-SEC
                END-PERFORM
            END-IF.
