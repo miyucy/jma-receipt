@@ -74,6 +74,7 @@
        01  SCRAREA.
            COPY    "M00.INC".
            COPY    "M01.INC".
+           COPY    "M01N.INC".
            COPY    "M02.INC". 
            COPY    "M95.INC".
            COPY    "M96.INC".

@@ -43,6 +43,7 @@
       *  01.02.04    MCC-多々納   02/02/21  マスタ更新の追加
       *  01.02.05    MCC-藤原     02/03/11  月次統計の追加
       *  01.02.06    ひさなが     02/04/05  管理情報画面の追加
+      *  01.02.07    NACL-森脇    02/11/11  病床数チェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -181,6 +182,7 @@
        01  SCRAREA.
            COPY    "M00.INC".
            COPY    "M01.INC".
+           COPY    "M01N.INC".
            COPY    "M02.INC". 
            COPY    "M95.INC".
            COPY    "M96.INC".
@@ -246,6 +248,11 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
+      *----(01.02.07)--ADD-START---
+               IF      FLG-END             =   1
+                   GO      TO      100-INIT-EXT
+               END-IF
+      *----(01.02.07)--ADD-END-----
       *        画面編集
                PERFORM 500-GMNHEN-SEC
                PERFORM 510-GSRAUTH-SEC
@@ -282,6 +289,15 @@
                    PERFORM 3001-MID1-SYORI-SEC
                    GO      TO      3OO-SCREEN-EXT
            END-EVALUATE
+      *
+      *----(01.02.07)--ADD-START---
+      *test
+           DISPLAY "SPA-BEDSU:" SPA-BEDSU
+           IF        SPA-BEDSU     >   ZERO
+               PERFORM 450-M01N-SYORI-SEC
+               GO  TO  3OO-SCREEN-EXT
+           END-IF
+      *----(01.02.07)--ADD-END-----
       *
            PERFORM 320-SYS-1010-SPASET-SEC
            PERFORM 310-SPASET-SEC
@@ -790,6 +806,31 @@
        210-BACK-EXT.
            EXIT.
       *
+      *----(01.02.07)--ADD-START---
+      *****************************************************************
+      *    Ｍ０１Ｎ処理へ
+      *****************************************************************
+       450-M01N-SYORI-SEC                   SECTION.
+      *
+           MOVE    "M01N"              TO  SPA-SAKIPG
+           MOVE    "M01"               TO  SPA-MOTOPG
+      *
+           MOVE    SPA-M00KYOUTU       TO  SPA-WORK
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    "M01N"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       450-M01N-SYORI-EXT.
+           EXIT.
+      *
+      *----(01.02.07)--ADD-END-----
       *****************************************************************
       *    予約登録へ
       *****************************************************************

@@ -40,7 +40,8 @@
       *  01.02.01    MCC-藤原     01/11/21  ORCMCPSUBへ変更  
       *  01.02.02    MCC-多々納   01/12/11  拡張構成の追加
       *  01.02.03    MCC-多々納   02/02/13  デモ用項目の削除
-      *  01.02.02    MCC-多々納   02/02/22  MID1の追加
+      *  01.02.04    MCC-多々納   02/02/22  MID1の追加
+      *  01.02.05    NACL-多々納  02/10/22  病床数追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -153,6 +154,7 @@
        01  SCRAREA.
            COPY    "M00.INC".
            COPY    "M01.INC".
+           COPY    "M01N.INC".
            COPY    "M02.INC". 
            COPY    "M95.INC".
            COPY    "M96.INC".
@@ -338,6 +340,8 @@
                MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
                MOVE    SYS-1001-SYOHOKBN   TO  SPA-SYOHOKBN
                MOVE    SYS-1001-SKYPRTFLG  TO  SPA-SKYPRTFLG
+      *        病床数
+               MOVE    SYS-1001-BEDSU      TO  SPA-BEDSU
            ELSE
                MOVE    "1002"              TO  SPA-ERRCD
                GO  TO  310-SPASET-EXT
