@@ -220,9 +220,11 @@
                05  WRK-KOHI-TBL        OCCURS  4.
                    07  WRK-KOHID-O     PIC  9(10).
                    07  WRK-KOHHKNNUM-O PIC  X(03).
+                   07  WRK-KOHPAYKBN-O PIC  X(02).
            03  WRK-KOHI.
                05  WRK-KOHID           PIC  9(10).
                05  WRK-KOHHKNNUM       PIC  X(03).
+               05  WRK-KOHPAYKBN       PIC  X(02).
       *
       *    請求区分別公費情報（１：レセプト　２：請求書）
            03  WRK-SEIKYUKBN-KOHI-AREA.
@@ -230,6 +232,7 @@
                    07  WRK-SEIKYU-OCC    OCCURS  4.
                        09  WRK-SEIKYU-KOHID      PIC  9(10).
                        09  WRK-SEIKYU-KOHHKNNUM  PIC  X(03).
+                       09  WRK-SEIKYU-KOHPAYKBN  PIC  X(02).
       *
        01  WRK-SRT-AREA.
            03  WRK-SRT-TABLE.
@@ -1065,7 +1068,9 @@
       *    公費の追加 
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
-                   OR      WRK-SEIKYU-KOHID (IDX1 IDX)    =   ZERO
+             IF      WRK-SEIKYU-KOHID (IDX1 IDX)    =   ZERO
+               MOVE    4                   TO  IDX
+             ELSE    
                IF      WRK-RECE01-KOHID    NOT =   ZERO
                AND     WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)  
                                                =   "019"
@@ -1087,7 +1092,8 @@
                            END-IF
                        END-IF
                    END-PERFORM
-               END-IF    
+               END-IF
+             END-IF      
            END-PERFORM
       *
       *    公費を追加しなかったとき
