@@ -50,5 +50,13 @@ T01	{
 		HKNJAMEI	{
 			value	varchar(40);
 		};
+		DATA_COMBO	{
+			 state   int;
+			DATA	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[3];
+		};
 	};
 };
