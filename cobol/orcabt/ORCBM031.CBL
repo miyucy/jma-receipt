@@ -570,7 +570,7 @@
            PERFORM 20022-BODY-HEN-SEC
       *
       *    帳票印刷処理
-           IF          CNT-LINE       =   29
+           IF          CNT-LINE       =   23
                PERFORM 20024-PRINT-OUT-SEC
                MOVE    ZERO                TO  CNT-LINE
            END-IF
@@ -759,7 +759,7 @@
       *****************************************************************
        20023-GOKEI-HEN-SEC         SECTION.
       *
-           MOVE    29              TO  CNT-LINE
+           MOVE    23              TO  CNT-LINE
       *
            MOVE    "　合　計"      TO  HCM2Q-HKNJANUM(CNT-LINE)
            MOVE    "　合　計"      TO  HCM2R-HKNJANUM(CNT-LINE)
