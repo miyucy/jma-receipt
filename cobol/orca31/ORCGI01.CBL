@@ -63,6 +63,9 @@
       *  01.00.24    NACL-太田    03.07.01  出力先プリンタサブ追加
       *  01.00.25    NACL-小豆沢  03.07.08  特定集中治療室管理料の退院取消対応
       *  01.00.26    NACL-小豆沢  03.07.09  特定集中治療室管理料の異動取消対応
+      *  01.00.27    NACL-小豆沢  03.07.10  退院取消時に診療録管理体制加算を
+      *                                     算定しない
+      *  01.00.28    NACL-小豆沢  03.07.10  退院取消時の通算日数算定を修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -7803,7 +7806,7 @@
            EVALUATE   WRK-NYUKHNKSN-SRYCD(IDX8)
       *        診療録管理体制加算
                WHEN   "190100370"
-                   IF   SPA-GMN-I01-SYORIKBN-CD   =  "08"
+                   IF   SPA-GMN-I01-SYORIKBN-CD   =  "07" OR "08"
                         MOVE   1        TO     FLG-NYUKSN
                    END-IF
       *            自院での継続入院チェック
@@ -8016,6 +8019,21 @@
                                             SPA-NAI-I01-IDOYMD
 
                END-IF
+           ELSE
+               IF  PTNYUINRRK-TOKUTEI-KBN   =   SPACE
+                   INITIALIZE                  STS-AREA-DAY
+                   INITIALIZE                  LNK-DAY6-AREA
+                   MOVE    "61"                TO  LNK-DAY6-IRAI
+                   MOVE    SPA-NAI-I01-TAIINYMD
+                                               TO  LNK-DAY6-KIJUN
+                   MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+                   MOVE     1                  TO  LNK-DAY6-ZOGEN
+                   CALL  "ORCSDAY"             USING   STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                   MOVE    LNK-DAY6-KEISAN     TO  PTNYUINRRK-TENNYUYMD
+      *             MOVE   SPA-NAI-I01-TAIINYMD
+      *                                 TO   PTNYUINRRK-TENNYUYMD
+               END-IF
            END-IF
       *
       *    退院取消前の会計元データ作成
@@ -8116,7 +8134,6 @@
       *    入院会計作成サブの呼出し
            INITIALIZE                      ORCSNYUACCT-AREA
            MOVE     "7"                TO  LNK-SCNYUACCT-SYORI-KBN
-      **     MOVE     "8"                TO  LNK-SCNYUACCT-SYORI-KBN
            MOVE     "1"                TO  SPA-NYUGAIKBN
            MOVE     PTNYUINRRK-PTID    TO  SPA-PTID
            MOVE     PTNYUINRRK-NYUINKA TO  SPA-SRYKA
