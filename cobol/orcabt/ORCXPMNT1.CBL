@@ -101,7 +101,7 @@
       *****************************************************************
        LINKAGE                     SECTION.
        01  PARA-REC.
-           03  PARA-DBFILE             PIC X(13).
+           03  PARA-DBFILE             PIC X(256).
       *
        PROCEDURE                   DIVISION
            USING
@@ -142,7 +142,7 @@
            ADD     2000            TO  WRK-SYY
       *
       *    ファイル情報
-           PERFORM 101-ASSIN-GET-SEC
+           MOVE    PARA-DBFILE     TO  ASS-IN
       *
       *    入力　初期処理
            OPEN    INPUT           IN-FILE
@@ -157,23 +157,6 @@
       *
            .
        100-INIT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ファイル情報取得
-      *****************************************************************
-       101-ASSIN-GET-SEC           SECTION.
-      *
-      *    入力ファイル
-           MOVE    SPACE           TO  ASS-IN
-           STRING  "/home/orca/"       DELIMITED  BY  SIZE
-                   PARA-DBFILE         DELIMITED  BY  SPACE
-                   "/ORCAPGC.DAT"      DELIMITED  BY  SIZE
-                                       INTO    ASS-IN
-           END-STRING
-      *
-           .
-       101-ASSIN-GET-EXT.
            EXIT.
       *
       *****************************************************************

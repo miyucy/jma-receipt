@@ -19,8 +19,8 @@
        PROGRAM-ID.                 ORCXPMNT2.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : マスタ更新処理
-      *  コンポーネント名  : 更新ファイル作成処理
+      *  サブシステム名    : プログラム更新処理
+      *  コンポーネント名  : ダウンロードファイル作成処理
       *                    : 
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -90,7 +90,7 @@
       *****************************************************************
        LINKAGE                     SECTION.
        01  PARA-REC.
-           03  PARA-DBFILE             PIC X(13).
+           03  PARA-DBFILE             PIC X(256).
       *
        PROCEDURE                   DIVISION
            USING
@@ -127,7 +127,7 @@
            END-IF
       *
       *    ファイル情報
-           PERFORM 101-ASSIN-GET-SEC
+           MOVE    PARA-DBFILE     TO  ASS-OUT
       *
       *    出力ファイル　初期処理
            OPEN    OUTPUT          OUT-FILE
@@ -137,23 +137,6 @@
       *
            .
        100-INIT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ファイル情報取得
-      *****************************************************************
-       101-ASSIN-GET-SEC           SECTION.
-      *
-      *    出力ーファイル
-           MOVE    SPACE           TO  ASS-OUT
-           STRING  "/home/orca/"       DELIMITED  BY  SIZE
-                   PARA-DBFILE         DELIMITED  BY  SPACE
-                   "/ORCADBR.OUT"      DELIMITED  BY  SIZE
-                                       INTO    ASS-OUT
-           END-STRING
-      *
-           .
-       101-ASSIN-GET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -177,17 +160,17 @@
            END-IF
       *
            PERFORM UNTIL       FLG-PGKANRI =   1
-               MOVE    SPACE           TO  WRK-NAIYO
-               STRING  PGKANRI-DEBIANVERSION   DELIMITED  BY  SPACE
-                       "/"                     DELIMITED  BY  SIZE
-                       PGKANRI-SYSTEMVERSION   DELIMITED  BY  SPACE
-                       "/"                     DELIMITED  BY  SIZE
-                       PGKANRI-PGNAME          DELIMITED  BY  SPACE
-                                       INTO    WRK-NAIYO
-               END-STRING
+      *        MOVE    SPACE           TO  WRK-NAIYO
+      *        STRING  PGKANRI-DEBIANVERSION   DELIMITED  BY  SPACE
+      *                "/"                     DELIMITED  BY  SIZE
+      *                PGKANRI-SYSTEMVERSION   DELIMITED  BY  SPACE
+      *                "/"                     DELIMITED  BY  SIZE
+      *                PGKANRI-PGNAME          DELIMITED  BY  SPACE
+      *                                INTO    WRK-NAIYO
+      *        END-STRING
       *
                INITIALIZE                  OUT-REC
-               MOVE    WRK-NAIYO       TO  OUT-NAIYO
+               MOVE    PGKANRI-PGNAME  TO  OUT-NAIYO
                WRITE                       OUT-REC
                ADD     1               TO  CNT-OUT
       *
