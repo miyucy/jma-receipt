@@ -2,7 +2,7 @@
             02  HCM2A-PRTYM PIC X(16).
             02  HCM2A-SEIYMD    PIC X(22).
             02  HCM2A-HOSPCD    PIC X(20).
-            02  HCM2A-ADRS  PIC X(50).
+            02  HCM2A-ADRS  PIC X(100).
             02  HCM2A-HOSPNAME  PIC X(100).
             02  HCM2A-KAISETUNAME   PIC X(30).
             02  HCM2A-IHO-TBL1          OCCURS  11 TIMES.

@@ -11,6 +11,12 @@
                   05  HCM2B-ROU-SYONISSU  PIC X(6).
                   05  HCM2B-ROU-SYOKINGAK PIC X(9).
                   05  HCM2B-ROU-SYOFTNGAK PIC X(9).
+              03  HCM2B-ROU-GOK-NISSU PIC X(6).
+              03  HCM2B-ROU-GOK-TENSU PIC X(10).
+              03  HCM2B-ROU-GOK-ITBFTN    PIC X(9).
+              03  HCM2B-ROU-GOK-SYONISSU  PIC X(6).
+              03  HCM2B-ROU-GOK-SYOKINGAK PIC X(9).
+              03  HCM2B-ROU-GOK-SYOFTNGAK PIC X(9).
             02  HCM2B-KOH-TBL.
               03  HCM2B-KOH-TBL1          OCCURS  3 TIMES.
                 04  HCM2B-KOH-G     OCCURS  6 TIMES.
