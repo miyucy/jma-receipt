@@ -993,66 +993,7 @@
                CONTINUE
            ELSE
                MOVE    "0001"               TO  SPA-ERRCD
-               GO  TO  4105-NYUGAIKBN-CHK-EXT
            END-IF 
-      *
-      *    診療会計チェック
-           MOVE    ZERO                TO  FLG-CHK
-                                           FLG-ERR
-                                           FLG-ZAISKBKBN
-      *     
-           INITIALIZE                  SRYACCT-REC
-           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
-           MOVE    SPA-NAI-PTID        TO  ACCT-PTID
-           MOVE    SPA-NAI-SRYYM       TO  ACCT-SRYYM
-           MOVE    SPA-GMN-NYUGAIKBN   TO  ACCT-NYUGAIKBN
-           MOVE    SRYACCT-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
-               PERFORM 900-SRYACCT-READ-SEC
-           ELSE
-               INITIALIZE                  SRYACCT-REC
-               MOVE    1                   TO  FLG-SRYACCT
-           END-IF
-      *
-           PERFORM             UNTIL   FLG-SRYACCT     =   1
-                               OR      FLG-CHK         =   1
-                               OR      FLG-ERR         =   1
-               PERFORM 41051-SRYACCT-CHK-SEC
-           END-PERFORM
-      *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-      *    入院のとき診療会計に存在しないとき入院会計をチェック
-           IF      FLG-ERR             =   ZERO
-               IF      SPA-R01-NYUGAIKBN   =   "1"
-                   PERFORM 41052-NYUINACCT-CHK-SEC
-               END-IF
-           END-IF
-      *          
-           IF      FLG-ERR             =   1
-               MOVE    "0008"              TO  SPA-ERRCD
-           ELSE 
-               IF      FLG-CHK             =   ZERO
-                   MOVE    "0006"              TO  SPA-ERRCD
-               ELSE 
-                   IF    ( SPA-R01-NYUGAIKBN   =   "1"  )
-                   AND   ( FLG-ZAISKBKBN       =   ZERO )
-                       MOVE    "0014"              TO  SPA-ERRCD
-                   END-IF
-               END-IF
-           END-IF    
       *
       *    更新処理
            IF      SPA-ERRCD           =   SPACE
@@ -1488,9 +1429,68 @@
            MOVE    SPA-GMN-CUR          TO  WRK-GMN-CUR
       * 
            PERFORM 4103-PTNUM-CHK-SEC
-      **** IF      SPA-ERRCD            =   SPACE
-      ****     PERFORM 4104-SRYYM-CHK-SEC
-      **** END-IF
+      *
+           IF      SPA-GMN-NYUGAIKBN    =   SPACE
+               MOVE    SPA-R01-NYUGAIKBN    TO  SPA-GMN-NYUGAIKBN
+           END-IF
+      *
+      *    診療会計チェック
+           MOVE    ZERO                TO  FLG-CHK
+                                           FLG-ERR
+                                           FLG-ZAISKBKBN
+      *     
+           INITIALIZE                  SRYACCT-REC
+           MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+           MOVE    SPA-NAI-PTID        TO  ACCT-PTID
+           MOVE    SPA-NAI-SRYYM       TO  ACCT-SRYYM
+           MOVE    SPA-GMN-NYUGAIKBN   TO  ACCT-NYUGAIKBN
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+               PERFORM 900-SRYACCT-READ-SEC
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+      *
+           PERFORM             UNTIL   FLG-SRYACCT     =   1
+                               OR      FLG-CHK         =   1
+                               OR      FLG-ERR         =   1
+               PERFORM 41051-SRYACCT-CHK-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    入院のとき診療会計に存在しないとき入院会計をチェック
+           IF      FLG-ERR             =   ZERO
+               IF      SPA-R01-NYUGAIKBN   =   "1"
+                   PERFORM 41052-NYUINACCT-CHK-SEC
+               END-IF
+           END-IF
+      *          
+           IF      FLG-ERR             =   1
+               MOVE    "0008"              TO  SPA-ERRCD
+           ELSE 
+               IF      FLG-CHK             =   ZERO
+                   MOVE    "0006"              TO  SPA-ERRCD
+               ELSE 
+                   IF    ( SPA-R01-NYUGAIKBN   =   "1"  )
+                   AND   ( FLG-ZAISKBKBN       =   ZERO )
+                       MOVE    "0014"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
       *
            IF      SPA-ERRCD            =   SPACE
                MOVE    WRK-GMN-CUR          TO  SPA-GMN-CUR
