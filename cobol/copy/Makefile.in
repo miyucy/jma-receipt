@@ -804,6 +804,8 @@ COPYS = \
         CPTCF001.INC \
         CPTCF002.INC \
         CPTCF003.INC \
+        HCM2LV01.INC \
+        HCM2JV01.INC \
 
 DBPATH = \
 	ORCA-DBPATH
