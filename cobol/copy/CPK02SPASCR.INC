@@ -136,6 +136,8 @@
                            11  SPA-COM-RSIFLG2       PIC X(01).
       *                    ·Ù¹ðºÑ¥Õ¥é¥°
                            11  SPA-COM-KZMFLG        PIC X(01).
+      *                    ·Ù¹ðºÑ¥Õ¥é¥°£²
+                           11  SPA-COM-KZMFLG2       PIC X(01).
       *                    Ê»ÍÑ»»ÄêºÑ¥Õ¥é¥°
       *********************11  SPA-COM-SDOFLG        PIC X(01).
       *                    ´ðËÜ¥Á¥§¥Ã¥¯ºÑ¥Õ¥é¥°
