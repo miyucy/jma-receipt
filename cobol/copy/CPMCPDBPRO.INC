@@ -1831,6 +1831,7 @@
                WHEN    ANY             ALSO   "TENSU-KEY15"
                    MOVE    PATH-TBL-TENSU-KEY15
                                        TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
                WHEN    ANY             ALSO   "TENSU-KEY20"
                    MOVE    PATH-TBL-TENSU-KEY20
                                        TO  WRK-PATH
