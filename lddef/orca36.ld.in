@@ -6,6 +6,8 @@ textsize	400;
 bind	""		"OpenCOBOL"	"ORCGI20";
 bind	"I20"		"OpenCOBOL"	"ORCGI20";
 bind	"I21"		"OpenCOBOL"	"ORCGI21";
+bind	"I22"		"OpenCOBOL"	"ORCGI22";
+bind	"I23"		"OpenCOBOL"	"ORCGI23";
 bind	"I2ERR"		"OpenCOBOL"	"ORCGI2ERR";
 bind	"I2ID1"		"OpenCOBOL"	"ORCGI2ID1";
 
@@ -17,6 +19,8 @@ data	{
 	window	{
 		I20;
 		I21;
+		I22;
+		I23;
 		I2ERR;
                 I2ID1;
 	};

@@ -1,0 +1,26 @@
+I22	{
+	fixed1	{
+		ID1CODE	{
+			value	varchar(10);
+		};
+		ID1MSG	{
+			value	varchar(80);
+		};
+		LBLFILENAME	{
+			value	varchar(14);
+		};
+		FILENAME	{
+			value	varchar(100);
+			state	int;
+		};
+		LBLNUMSEL	{
+			value	varchar(10);
+		};
+		STNUM	{
+			value	number(9);
+		};
+		EDNUM	{
+			value	number(9);
+		};
+	};
+};

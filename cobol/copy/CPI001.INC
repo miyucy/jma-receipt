@@ -24,6 +24,8 @@
            03  I001-SEX                    PIC  X(01).
       *栏钳奉泣
            03  I001-BIRTHDAY               PIC  X(08).
+      *极吗≥凸守戎规
+           03  I001-HOME-POST              PIC  X(07).
       *极吗≥交疥
            03  I001-HOME-ADRS              PIC  X(200).
       *极吗≥戎孟数今

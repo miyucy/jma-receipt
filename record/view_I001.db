@@ -8,6 +8,7 @@ view_I001 {
 	NAME 				varchar(100);
 	SEX        			char(1);
 	BIRTHDAY 			char(8);
+	HOME_POST			varchar(7);
 	HOME_ADRS			varchar(200);
 	HOME_BANTI 			varchar(200);
 	BTUNUM			char(2);

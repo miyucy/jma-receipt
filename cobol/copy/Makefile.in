@@ -799,6 +799,10 @@ COPYS = \
         HCM38.INC \
         HCM39.INC \
         CPBD003.INC \
+        CPBI201.INC \
+	I22.INC \
+	I23.INC \
+	I2SCR-SPA \
 
 DBPATH = \
 	ORCA-DBPATH

@@ -17,6 +17,10 @@
       *****************************************************************
             02  I20.
               03  I20-B04-STATE PIC S9(9)   BINARY.
+              03  I20-B06-STATE PIC S9(9)   BINARY.
+              03  I20-B07-STATE PIC S9(9)   BINARY.
+              03  I20-B10-STATE PIC S9(9)   BINARY.
+              03  I20-B11-STATE PIC S9(9)   BINARY.
               03  I20-PTNUM.
                 04  I20-VALUE   PIC X(20).
               03  I20-STNYUINYMD.
@@ -59,11 +63,13 @@
                     06  I20-TPTNUM     PIC X(20).
                     06  I20-TNAME      PIC X(30).
                     06  I20-TSEX       PIC X(2).
+                    06  I20-TBTUNAME   PIC X(20).
                     06  I20-TBRMNUM    PIC X(8).
                     06  I20-TNYUINYMD  PIC X(9).
                     06  I20-TTAIINYMD  PIC X(9).
                     06  I20-TSRYKA     PIC X(20).
                     06  I20-TGAIHAKU   PIC X(6).
                     06  I20-TCOMMENT   PIC X(6).
+                    06  I20-TPOST      PIC X(08).
                     06  I20-TADRS      PIC X(50).
                   05  I20-SELECT  PIC X       OCCURS  200 TIMES.
