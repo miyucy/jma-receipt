@@ -2565,6 +2565,8 @@
            IF      SPA-PREFNUM         =   40
                INITIALIZE           ORCSSYU40AREA
                MOVE    "2"             TO  ORCS40-KBN
+               MOVE    SPA-GMN-PTID    TO  SPA-PTID
+               MOVE    "2"             TO  SPA-NYUGAIKBN
                MOVE    SPA-GMN-TDENPNUM (SPA-GMN-SELBAN)
                                        TO  ORCS40-DENPNUM
                CALL    "ORCSSYU40"     USING   SPA-AREA
