@@ -31,11 +31,15 @@
            05  SPA-V01-EDYUKYMD            PIC 9(08).
            05  SPA-V01-STYUKYMDH           PIC X(09).
            05  SPA-V01-EDYUKYMDH           PIC X(09).
+      *有効期間（前）
+           05  SPA-OLD-STYUKYMD            PIC X(08).
+           05  SPA-OLD-EDYUKYMD            PIC X(08).
+           05  SPA-V01-SYORI               PIC 9(01).
       *
            05  SPA-V01-HKNNUM              PIC X(03).
            05  SPA-V01-PAYKBN              PIC X(02).
       *
-           05  SPA-V01-SELNUM              PIC 9(03).      
+           05  SPA-V01-SELNUM              PIC 9(03).
       *
       *警告メッセージ
            05  SPA-VIDCD                   PIC X(04).
