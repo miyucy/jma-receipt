@@ -228,7 +228,7 @@
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCBZ002"          TO  JOB-PGID
-           MOVE    "カルテ３号紙一括印刷"
+           MOVE    "カルテ３号紙（外来）一括印刷"
                                        TO  JOB-SHELLMSG
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
@@ -352,6 +352,10 @@
       *    全患者を対象とする
            INITIALIZE                      PTINF-REC
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    WRK-PARA-SRYYM      TO  PTINF-UPYMD(1:6)
+           MOVE    "01"                TO  PTINF-UPYMD(7:2)
+           MOVE    WRK-PARA-SRYYM-END  TO  PTINF-CREYMD(1:6)
+           MOVE    "31"                TO  PTINF-CREYMD(7:2)
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
