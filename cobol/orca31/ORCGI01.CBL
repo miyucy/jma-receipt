@@ -80,6 +80,7 @@
       *                                     ÄÉ²Ã
       *  01.00.37    NACL-¾®Æ¦Âô  03.10.03  Ï·¿ÍÀ­ÃÔÊò¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ¤Î»»Äê
       *                                     ÂÐ±þÄÉ²Ã
+      *  01.00.38    NACL-ÂÀÅÄ    03.10.09  Æþ±¡ÆüÊÑ¹¹»þ¤Ë¼¼ÎÁº¹³Û¤ò½é´ü²½¤·¤Ê¤¤
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3677,20 +3678,34 @@
            END-EVALUATE
       *
       *    ¼¼ÎÁº¹³Û¤Î½é´üÃÍ¤òÀßÄê
-           MOVE    WRK-BRM-SAGAKU-CD   TO  WRK-CMB-CD
-           PERFORM 4103-CMB-SAGAKU-SRH-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-I01-SAGAKU
+           IF    ( SPA-GMN-I01-SAGAKU  NOT =   SPACE )
+               MOVE    SPA-GMN-I01-SAGAKU-CD
+                                           TO  WRK-CMB-CD
+               PERFORM 4103-CMB-SAGAKU-SRH-SEC
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-I01-SAGAKU
+           ELSE
+               MOVE    WRK-BRM-SAGAKU-CD   TO  WRK-CMB-CD
+               PERFORM 4103-CMB-SAGAKU-SRH-SEC
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-I01-SAGAKU
+           END-IF
       *
       *    ¿ÇÎÅ²Ê¤Î½é´üÃÍ¤òÀßÄê
-           IF    ( WRK-BRM-KA-CD   NOT =   SPACE )
-               MOVE    WRK-BRM-KA-CD   TO  WRK-CMB-CD
+           IF    ( SPA-GMN-I01-NYUINKA-CD  NOT =   SPACE )
+               MOVE    SPA-GMN-I01-NYUINKA-CD
+                                           TO  WRK-CMB-CD
                PERFORM 4103-CMB-NYUINKA-SRH-SEC
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-NYUINKA
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-I01-NYUINKA
            ELSE
-               IF    ( WRK-BTU-KA-CD   NOT =   SPACE )
-                   MOVE    WRK-BTU-KA-CD   TO  WRK-CMB-CD
+               IF    ( WRK-BRM-KA-CD       NOT =   SPACE )
+                   MOVE    WRK-BRM-KA-CD   TO  WRK-CMB-CD
                    PERFORM 4103-CMB-NYUINKA-SRH-SEC
-                   MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-NYUINKA
+                   MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-NYUINKA
+               ELSE
+                   IF    ( WRK-BTU-KA-CD   NOT =   SPACE )
+                       MOVE    WRK-BTU-KA-CD   TO  WRK-CMB-CD
+                       PERFORM 4103-CMB-NYUINKA-SRH-SEC
+                       MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-NYUINKA
+                   END-IF
                END-IF
            END-IF
       *
