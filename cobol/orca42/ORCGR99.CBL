@@ -30,6 +30,8 @@
       *  01.00.01    NACL-藤原    02.08.30  タイマー機能の追加
       *
       *  01.01.01    NACL-藤原    02/09/24  ２００２．１０改正対応
+      *　入院機能追加　
+      *  01.02.01    NACL-藤原    02/12/13  入外区分追加 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -329,12 +331,17 @@
            IF      SPA-R01-FILEKBN         =   "1"
                MOVE    SPA-R01-SRYYM       TO  RECE07-SRYYM
                MOVE    "1"                 TO  RECE07-SYOKBN
-               MOVE    "2"                 TO  RECE07-NYUGAIKBN
+      *********MOVE    "2"                 TO  RECE07-NYUGAIKBN
+               MOVE    SPA-R01-RECE07-NYUGAIKBN
+                                           TO  RECE07-NYUGAIKBN
                MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
            ELSE
-      *****    MOVE    ZERO                TO  RECE07-SRYYM
+      *********MOVE    ZERO                TO  RECE07-SRYYM
                MOVE    "2"                 TO  RECE07-SYOKBN
-               MOVE    "RECEKANRI-KEY2"    TO  WRK-PATH
+               MOVE    SPA-R01-RECE07-NYUGAIKBN
+                                           TO  RECE07-NYUGAIKBN
+      *********MOVE    "RECEKANRI-KEY2"    TO  WRK-PATH
+               MOVE    "RECEKANRI-KEY5"    TO  WRK-PATH
            END-IF
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
