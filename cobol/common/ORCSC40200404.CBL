@@ -1389,6 +1389,13 @@
                MOVE    "0013"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
            END-IF
+      *
+      *    人工腎臓導入期加算の時間外区分をはずす
+           IF      (WRK-COM-INPUTCD (IDX-Z)   =   "140008170") AND
+                   (WRK-COM-DATAKBN (IDX-Z)   =   "2"        )
+               MOVE    ZERO                TO  WRK-COM-TIMEKSNKBN(IDX-Z)
+           END-IF
+      *
       *    時間加算かの判定
            IF      (WRK-COM-TIMEFLG (IDX-Z)   =   ZERO  ) AND
                    (WRK-COM-AUTOKBN (IDX-Z)   =   SPACE ) AND
