@@ -2423,8 +2423,8 @@
       *
            IF      SPA-RID1-FLG    =   "PV"
                MOVE    "F12:プレビュー"    TO  R99-B12-LABEL
-           ELSE
-               MOVE    "F12:印    刷"      TO  R99-B12-LABEL
+      *****ELSE
+      *****    MOVE    "F12:印    刷"      TO  R99-B12-LABEL
            END-IF
       *
       *    ジョブ管理チェック処理

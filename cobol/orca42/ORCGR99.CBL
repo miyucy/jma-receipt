@@ -309,8 +309,10 @@
                          
            MOVE    ZERO                TO  R99-COUNT
       *
-           IF      SPA-RID1-FLG    =   "PV"
-               MOVE    "F12:プレビュー"    TO  R99-B12-LABEL
+           IF      SPA-R01-GMNKBN  =   "R02"  OR  "R04"
+               IF      SPA-RID1-FLG    =   "PV"
+                   MOVE    "F12:プレビュー"    TO  R99-B12-LABEL
+               END-IF
            ELSE
                MOVE    "F12:印    刷"      TO  R99-B12-LABEL
            END-IF

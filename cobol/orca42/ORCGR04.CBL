@@ -42,6 +42,8 @@
       *  01.04.02    NACL-藤原    03/08/05  ヴで始まるカナ氏名のレセプト
       *                                     を対象とするように修正
       *  01.05.03    NACL-藤原    04/07/12  指定印刷時の選択項目の色指定
+      *  中止処理追加
+      *  01.06.01    NACL-藤原    04/09/28 中止ボタンを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1625,6 +1627,7 @@
            END-IF
       *
            MOVE    WIDGET-INSENSITIVE   TO  R99-B12-STATE
+           MOVE    WIDGET-INSENSITIVE   TO  R99-B21-STATE
            IF      R99-MSG              =   SPACE
                MOVE    "B01"                TO  MCP-WIDGET
                IF      R99-COUNT            >   ZERO    
@@ -1647,6 +1650,9 @@
                                                 TO  R99-MSG
                END-IF                                 
            ELSE                                        
+      *********IF      JOB-STOPFLG          =   ZERO
+      *********    MOVE    WIDGET-NORMAL        TO  R99-B21-STATE
+      *********END-IF
                MOVE    "B11"                TO  MCP-WIDGET
            END-IF
       *
