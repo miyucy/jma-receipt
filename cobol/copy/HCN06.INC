@@ -7,7 +7,7 @@
             02  HCN06-HOSPCDN   PIC X(20).
             02  HCN06-SRYKBN    PIC X(2)        OCCURS  35 TIMES.
             02  HCN06-TEKIYO    PIC X(52)       OCCURS  35 TIMES.
-            02  HCN06-KOUTEN    PIC X(7)        OCCURS  35 TIMES.
+            02  HCN06-KOHTEN    PIC X(7)        OCCURS  22 TIMES.
             02  HCN06-TOTALTEN  PIC X(7)        OCCURS  3 TIMES.
             02  HCN06-FTNMONEY  PIC X(8)        OCCURS  3 TIMES.
             02  HCN06-RJNFTNJANUM   PIC X(8).
@@ -42,9 +42,9 @@
             02  HCN06-JINISSU   PIC X(2).
             02  HCN06-JINISSU1  PIC X(2).
             02  HCN06-JINISSU2  PIC X(2).
-            02  HCN06-TENSU PIC X(7)    OCCURS  32 TIMES.
-            02  HCN06-KAISU PIC X(3)    OCCURS  32 TIMES.
-            02  HCN06-KHNTEN    PIC X(7)        OCCURS  9 TIMES.
+            02  HCN06-TENSU PIC X(7)    OCCURS  22 TIMES.
+            02  HCN06-KAISU PIC X(3)    OCCURS  22 TIMES.
+            02  HCN06-NYUKHNTEN PIC X(7)        OCCURS  10 TIMES.
             02  HCN06-HOSPNAME  PIC X(80).
             02  HCN06-HOSPADRS  PIC X(50).
             02  HCN06-NAME  PIC X(50).
@@ -67,10 +67,10 @@
               03  HCN06-NYUINYY   PIC X(2).
               03  HCN06-NYUINMM   PIC X(2).
               03  HCN06-NYUINDD   PIC X(2).
-            02  HCN06-NYUINHOSPKBN  PIC X(2).
-            02  HCN06-NYUINNAIYO    PIC X(12)   OCCURS  11 TIMES.
-            02  HCN06-KAKERU    PIC X(2)        OCCURS  4 TIMES.
-            02  HCN06-NICHI PIC X(2)    OCCURS  4 TIMES.
+            02  HCN06-HOSPSBT   PIC X(2).
+            02  HCN06-NYUSYUBETU    PIC X(12)   OCCURS  11 TIMES.
+            02  HCN06-KAKERU    PIC X(2)        OCCURS  5 TIMES.
+            02  HCN06-NICHI PIC X(2)    OCCURS  5 TIMES.
             02  HCN06-SYOKJN    PIC X(4)        OCCURS  3 TIMES.
             02  HCN06-SYOKBN    PIC X(2)        OCCURS  4 TIMES.
             02  HCN06-SYOGAK    PIC X(4)        OCCURS  4 TIMES.
@@ -80,6 +80,9 @@
             02  HCN06-SYOTOTALTEN   PIC X(7)    OCCURS  3 TIMES.
             02  HCN06-SYOFTNMONEY   PIC X(8)    OCCURS  3 TIMES.
             02  HCN06-SYOFTNMONEYSAI    PIC X(11).
-            02  HCN06-TENSUN    PIC X(14)       OCCURS  10 TIMES.
-            02  HCN06-KOHTENN   PIC X(14)       OCCURS  10 TIMES.
-            02  HCN06-KHNTENN   PIC X(14)       OCCURS  9 TIMES.
+            02  HCN06-NYUTENSUN PIC X(7)        OCCURS  10 TIMES.
+            02  HCN06-NYUKOHTENN    PIC X(14)   OCCURS  10 TIMES.
+            02  HCN06-NYUKHNTENN    PIC X(14)   OCCURS  10 TIMES.
+            02  HCN06-NYUKAISU  PIC X(3)        OCCURS  10 TIMES.
+            02  HCN06-NYUTENSU  PIC X(7)        OCCURS  10 TIMES.
+            02  HCN06-NYUKOHTEN PIC X(7)        OCCURS  10 TIMES.
