@@ -1328,7 +1328,8 @@
            END-IF
       *
       *    醒恟﹋泔管﹜湛箋及午五﹌
-           IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7"
+           IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7" )
+             OR   (LNK-WKSRY-SRYCD (IDX IDZ)(1:3)   =   "059"    )
                MOVE    LNK-WKSRY-SRYSURYO (IDX IDZ)  TO  WRK-SURYO
                PERFORM 310121-SURYO-HEN-SEC
                MOVE    WRK-SURYO-J         TO  SPA-GMN-TSURYOU (IDG)
@@ -1402,7 +1403,8 @@
       *
            MOVE    ZERO                TO  FLG-KAISUU
       *    醒恟﹋泔管﹜湛箋及午五﹌
-           IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7"
+           IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7" )
+             OR   (LNK-WKSRY-SRYCD (IDX IDZ)(1:3)   =   "059"    )
                MOVE    LNK-WKSRY-SRYSURYO (IDX IDZ)  TO  WRK-SURYO
                PERFORM 310121-SURYO-HEN-SEC
                MOVE    WRK-SURYO-J         TO  SPA-GMN-TSURYOU3 (IDG)
