@@ -2895,6 +2895,10 @@
       *
            END-PERFORM
       *
+           IF    IDX4   =   ZERO
+               MOVE    1     TO    FLG-TENTEKI
+           END-IF
+      *
            .
        RECE65-TENSOU-EXT.
            EXIT.
