@@ -41,6 +41,7 @@
       *  01.01.04    NACL-森脇    03/07/14  出力先プリンタサブ追加
       *  02.01.01    NACL-森脇    03/11/19  患者氏名２追加
       *  02.01.02    NACL-森脇    04/01/26  患者氏名敬称編集
+      *  02.01.03    NACL-多々納  04.03.04  用法複数編集他
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -109,7 +110,7 @@
        01  CNT-AREA.
            03  CNT-PAGE                PIC 9(03).
            03  CNT-LINE                PIC 9(01).
-           03  CNT-PARA                PIC 9(02).
+           03  CNT-PARA                PIC 9(04).
            03  CNT-KAISU               PIC 9(01).
       *
       *    インデックス領域
@@ -120,6 +121,12 @@
            03  STR-KET                 PIC 9(03).
            03  END-KET                 PIC 9(03).
            03  NUM-KET                 PIC 9(03).
+      *
+           03  IDX-STR                 PIC 9(04).
+           03  IDX-KET                 PIC 9(04).
+           03  IDX-MAX                 PIC 9(04).
+           03  IDX2                    PIC 9(04).
+           03  IDX2-MAX                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -160,6 +167,14 @@
       *
            03  WRK-ZZ9                 PIC ZZ9.
            03  WRK-Z9                  PIC Z9.
+      *
+      *    全角を行毎に編集
+       01  WRK-HENSYU-AREA.
+           03  WRK-HENSYU-OCC          OCCURS   10.
+               05  WRK-HENSYU          PIC X(40).
+           03  WRK-NAIYOU              PIC X(600).
+           03  GYO-MAX                 PIC 9(04).
+           03  KOU-MAX                 PIC 9(04).
       *
        01  WRK-YKJ-AREA.
            03  WRK-YKJ-SYORIBI       PIC  X(22).
@@ -268,6 +283,9 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                    SECTION.
+      *TEST
+              DISPLAY "ORCHC30 START" 
+      *TEST
       *
            INITIALIZE                  SYS-AREA
            INITIALIZE                  STS-AREA
@@ -309,9 +327,10 @@
       *
            INITIALIZE                  WRK-YKJ-AREA
       *
-           MOVE    ZERO                TO  CNT-PARA
+           MOVE    ZERO               TO  CNT-PARA
       *
-           PERFORM UNTIL   CNT-PARA    =   ORCHC30-MAX
+           PERFORM
+                   UNTIL       CNT-PARA    =   ORCHC30-MAX
       *    帳票明細処理
                PERFORM 210-PRT-LINE-SEC
            END-PERFORM
@@ -396,33 +415,18 @@
       *****************************************************************
        221-HENEFFECT-SET-SEC           SECTION.
       *
-           MOVE    1                   TO  IDX
-           MOVE    1                   TO  STR-KET
-           MOVE    1                   TO  END-KET
-           MOVE    ZERO                TO  NUM-KET
+           INITIALIZE                  WRK-HENSYU-AREA
+           MOVE    WRK-HENKONOKOKA     TO  WRK-NAIYOU
+      *    行
+           MOVE    6                   TO  GYO-MAX
+      *    文字数
+           MOVE    30                  TO  KOU-MAX
+           PERFORM 290-HENSYU-SYORI-SEC
       *
-           PERFORM UNTIL   (WRK-HENKONOKOKA(END-KET:)  =   SPACE)
-                   OR      (IDX    >   6)
-      *
-               PERFORM UNTIL   (WRK-HENKONOKOKA(END-KET:)  =   SPACE)
-                       OR      (WRK-HENKONOKOKA(END-KET:1) =   X"0A")
-                       OR      (NUM-KET    =   30)
-                   COMPUTE END-KET     =   END-KET     +   2
-                   COMPUTE NUM-KET     =   NUM-KET     +   2
-               END-PERFORM
-      *
-               MOVE    WRK-HENKONOKOKA(STR-KET:NUM-KET)
-                                   TO  WRK-YKJ-KONOKOKA(CNT-LINE IDX)
-      *
-               IF          WRK-HENKONOKOKA(END-KET:1)  =   X"0A"
-                   COMPUTE END-KET     =   END-KET     +   1
-               END-IF
-      *
-               MOVE    ZERO                TO  NUM-KET
-               MOVE    END-KET             TO  STR-KET
-      *
-               COMPUTE IDX     =   IDX     +   1
-      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   GYO-MAX
+               MOVE    WRK-HENSYU(IDX)     TO  WRK-YKJ-KONOKOKA
+                                                         (CNT-LINE IDX)
            END-PERFORM
       *
            .
@@ -430,38 +434,66 @@
            EXIT.
       *
       *****************************************************************
+      *   帳票全角編集処理
+      *****************************************************************
+       290-HENSYU-SYORI-SEC           SECTION.
+      *
+           MOVE    1                   TO  IDX
+           MOVE    1                   TO  IDX-STR
+           MOVE    1                   TO  IDX-KET
+      *
+           PERFORM UNTIL       (IDX-STR       >   600 )  OR
+                               (IDX           >   GYO-MAX )  OR
+                               (WRK-NAIYOU(IDX-STR:)  =   SPACE)
+      *        改行は対象外
+               IF      (WRK-NAIYOU(IDX-STR:1)  =   X"0A")
+                   MOVE    KOU-MAX             TO  IDX-KET
+                   ADD     1                   TO  IDX-STR
+               ELSE
+                   IF      WRK-NAIYOU(IDX-STR:1)
+                                               >=  X"A1"
+                       MOVE    WRK-NAIYOU(IDX-STR:2)
+                                               TO  WRK-HENSYU (IDX)
+                                                         (IDX-KET:2)
+                       ADD     2                   TO  IDX-STR
+                       ADD     2                   TO  IDX-KET
+                   ELSE
+                       ADD     1                   TO  IDX-STR
+                   END-IF
+               END-IF
+      *
+      *        改行、最大文字で改行
+               IF      (IDX-KET                >=  KOU-MAX  )
+                   ADD     1                   TO  IDX
+                   MOVE    1                   TO  IDX-KET
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       290-HENSYU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *   帳票注意事項データ編集処理
       *****************************************************************
        222-HENCAUTION-SET-SEC           SECTION.
       *
-           MOVE    1                   TO  IDX
-           MOVE    1                   TO  STR-KET
-           MOVE    1                   TO  END-KET
-           MOVE    ZERO                TO  NUM-KET
       *
-           PERFORM UNTIL   (WRK-HENCYUJKO(END-KET:)    =   SPACE)
-                   OR      (IDX    >   10)
+           INITIALIZE                  WRK-HENSYU-AREA
+           MOVE    WRK-HENCYUJKO       TO  WRK-NAIYOU
+      *    行
+           MOVE    10                  TO  GYO-MAX
+      *    文字数
+           MOVE    40                  TO  KOU-MAX
+           PERFORM 290-HENSYU-SYORI-SEC
       *
-               PERFORM UNTIL   (WRK-HENCYUJKO(END-KET:)    =   SPACE)
-                       OR      (WRK-HENCYUJKO(END-KET:1)   =   X"0A")
-                       OR      (NUM-KET    =   40)
-                   COMPUTE END-KET     =   END-KET     +   2
-                   COMPUTE NUM-KET     =   NUM-KET     +   2
-               END-PERFORM
-      *
-               MOVE    WRK-HENCYUJKO(STR-KET:NUM-KET)
-                                       TO  WRK-YKJ-CYUJKO(CNT-LINE IDX)
-      *
-               IF          WRK-HENCYUJKO(END-KET:1)    =   X"0A"
-                   COMPUTE END-KET     =   END-KET     +   1
-               END-IF
-      *
-               MOVE    ZERO                TO  NUM-KET
-               MOVE    END-KET             TO  STR-KET
-      *
-               COMPUTE IDX     =   IDX     +   1
-      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   GYO-MAX
+               MOVE    WRK-HENSYU(IDX)     TO  WRK-YKJ-CYUJKO
+                                                         (CNT-LINE IDX)
            END-PERFORM
+      *
       *
            .
        222-HENCAUTION-SET-EXT.
@@ -472,33 +504,19 @@
       *****************************************************************
        223-HENYKZNAME-SET-SEC           SECTION.
       *
-           MOVE    1                   TO  IDX
-           MOVE    1                   TO  STR-KET
-           MOVE    1                   TO  END-KET
-           MOVE    ZERO                TO  NUM-KET
       *
-           PERFORM UNTIL   (WRK-HENYKZNAME(END-KET:)   =   SPACE)
-                   OR      (IDX    >   3)
+           INITIALIZE                  WRK-HENSYU-AREA
+           MOVE    WRK-HENYKZNAME      TO  WRK-NAIYOU
+      *    行
+           MOVE    3                   TO  GYO-MAX
+      *    文字数
+           MOVE    26                  TO  KOU-MAX
+           PERFORM 290-HENSYU-SYORI-SEC
       *
-               PERFORM UNTIL   (WRK-HENYKZNAME(END-KET:)   =   SPACE)
-                       OR      (WRK-HENYKZNAME(END-KET:1)  =   X"0A")
-                       OR      (NUM-KET    =   26)
-                   COMPUTE END-KET     =   END-KET     +   2
-                   COMPUTE NUM-KET     =   NUM-KET     +   2
-               END-PERFORM
-      *
-               MOVE    WRK-HENYKZNAME(STR-KET:NUM-KET)
-                                       TO  WRK-YKJ-YKZNAME(CNT-LINE IDX)
-      *
-               IF          WRK-HENYKZNAME(END-KET:1)   =   X"0A"
-                   COMPUTE END-KET     =   END-KET     +   1
-               END-IF
-      *
-               MOVE    ZERO                TO  NUM-KET
-               MOVE    END-KET             TO  STR-KET
-      *
-               COMPUTE IDX     =   IDX     +   1
-      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   GYO-MAX
+               MOVE    WRK-HENSYU(IDX)     TO  WRK-YKJ-YKZNAME
+                                                         (CNT-LINE IDX)
            END-PERFORM
       *
            .
@@ -515,6 +533,7 @@
            MOVE    2                   TO  IDY
            MOVE    16                  TO  IDZ
       *----(00.01.07)--ADD-END------
+           MOVE    1                   TO  IDX2-MAX
       *
       *    色編集
            MOVE    YAKUJYO-COLOR       TO  WRK-HENKEIJYO
@@ -553,33 +572,35 @@
       *****************************************************************
        231-HENKEIJYO-SET-SEC           SECTION.
       *
-           MOVE    1                   TO  STR-KET
-           MOVE    1                   TO  END-KET
-           MOVE    ZERO                TO  NUM-KET
+           MOVE    1                   TO  IDX-STR
+           MOVE    1                   TO  IDX-KET
       *
-           PERFORM UNTIL   (WRK-HENKEIJYO(END-KET:)    =   SPACE)
-                   OR      (IDX    >   10)
-      *
-      *----(00.01.07)--UPD-START----
-               PERFORM UNTIL   (WRK-HENKEIJYO(END-KET:)    =   SPACE)
-                       OR      (WRK-HENKEIJYO(END-KET:1)   =   X"0A")
-                       OR      (NUM-KET    =   IDZ)
-                   COMPUTE END-KET     =   END-KET     +   IDY
-                   COMPUTE NUM-KET     =   NUM-KET     +   IDY
-               END-PERFORM
-      *----(00.01.07)--UPD-END------
-      *
-               MOVE    WRK-HENKEIJYO(STR-KET:NUM-KET)
-                                       TO  WRK-YKJ-KEIJYO(CNT-LINE IDX)
-      *
-               IF          WRK-HENKEIJYO(END-KET:1)   =   X"0A"
-                   COMPUTE END-KET     =   END-KET    +   1
+           PERFORM UNTIL       (IDX-STR       >   180 )  OR
+                               (IDX           >   10  )  OR
+                               (WRK-HENKEIJYO(IDX-STR:)  =   SPACE)
+      *        改行は対象外
+               IF      (WRK-HENKEIJYO(IDX-STR:1)  =   X"0A")
+                   MOVE    16                  TO  IDX-KET
+                   ADD     1                   TO  IDX-STR
+               ELSE
+                   IF      WRK-HENKEIJYO(IDX-STR:1)
+                                               >=  X"A1"
+                       MOVE    WRK-HENKEIJYO(IDX-STR:2)
+                                               TO  WRK-YKJ-KEIJYO
+                                                         (CNT-LINE IDX)
+                                                         (IDX-KET:2)
+                       ADD     2                   TO  IDX-STR
+                       ADD     2                   TO  IDX-KET
+                   ELSE
+                       ADD     1                   TO  IDX-STR
+                   END-IF
                END-IF
       *
-               MOVE    ZERO                TO  NUM-KET
-               MOVE    END-KET             TO  STR-KET
-      *
-               COMPUTE IDX     =   IDX     +   1
+      *        改行、最大文字で改行
+               IF      (IDX-KET                >=  16  )
+                   ADD     1                   TO  IDX
+                   MOVE    1                   TO  IDX-KET
+               END-IF
       *
            END-PERFORM
       *
@@ -605,7 +626,7 @@
       *
       *----(00.01.01)--UPD-START----
       *    日数編集
-           IF          ORCHC30-ZAIKBN(CNT-PARA)    NOT =   3
+           IF      ORCHC30-ZAIKBN(CNT-PARA)    NOT =   3
                PERFORM 242-HENNAIYO-NISSU-SET-SEC
                PERFORM 241-HENNAIYO-SET-SEC
            END-IF
@@ -629,7 +650,11 @@
            MOVE    ORCHC30-SRYCD(CNT-PARA)     TO  WRK-SRYCD
            PERFORM 900-TENSU-READ-SEC
       *
-           IF  CNT-KAISU   =   ZERO
+           IF      CNT-KAISU           =   ZERO
+      *        その他の用法
+               IF      ORCHC30-YOHOU-G(CNT-PARA)   NOT =   SPACE
+                   PERFORM 249-YOUHOU-HEN-SEC
+               END-IF
                GO  TO  240-NAIYO-SET-EXT
            END-IF
       *
@@ -642,6 +667,7 @@
       *     PERFORM 900-TENSU-READ-SEC
       *----(00.01.05)--UPD-END------
       *
+           MOVE    IDX                 TO  IDX-MAX
       *    数量編集
            IF          TNS-TANICD  =   "015"
                OR      TNS-TANICD  =   "016"
@@ -651,6 +677,13 @@
                PERFORM 241-HENNAIYO-SET-SEC
            END-IF
       *----(00.01.04)--UPD-END------
+      *
+      *    その他の用法
+           IF      ORCHC30-YOHOU-G(CNT-PARA)   NOT =   SPACE
+               MOVE    IDX-MAX         TO  IDX
+               PERFORM 249-YOUHOU-HEN-SEC
+           END-IF
+      *
       *
       *    区分編集
            PERFORM 243-HENKBN-SET-SEC
@@ -668,11 +701,13 @@
            MOVE    1                   TO  END-KET
            MOVE    ZERO                TO  NUM-KET
       *
-           PERFORM UNTIL   (WRK-HENNAIYO(END-KET:)  =   SPACE)
+           PERFORM UNTIL   (END-KET    >   128  )
+                   OR      (WRK-HENNAIYO(END-KET:)  =   SPACE)
                    OR      (IDX     >   8)
       *
-               PERFORM UNTIL   (WRK-HENNAIYO(END-KET:)  =   SPACE)
+               PERFORM UNTIL   (END-KET    >   128  )
                        OR      (NUM-KET    =   16)
+                       OR      (WRK-HENNAIYO(END-KET:)  =   SPACE)
                    COMPUTE END-KET     =   END-KET     +   1
                    COMPUTE NUM-KET     =   NUM-KET     +   1
                END-PERFORM
@@ -839,6 +874,29 @@
            EXIT.
       *
       *****************************************************************
+      *   その他の用法処理
+      *****************************************************************
+       249-YOUHOU-HEN-SEC      SECTION.
+      *
+           PERFORM VARYING IDZ FROM    1   BY  1
+                   UNTIL  (IDZ     >   5   )  OR
+                          (IDX     >=  8   )  OR
+                          (ORCHC30-YOHOU (CNT-PARA IDZ)  =   SPACE )
+      *        点数マスタ検索
+               MOVE    ORCHC30-YOHOU (CNT-PARA IDZ)
+                                           TO  WRK-SRYCD
+               PERFORM 900-TENSU-READ-SEC
+               IF      FLG-TENSU           =   ZERO
+                   MOVE    TNS-NAME            TO  WRK-HENNAIYO
+                   PERFORM 241-HENNAIYO-SET-SEC
+               END-IF
+           END-PERFORM
+           .
+      *
+       249-YOUHOU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *   帳票Ｚ編集処理
       *****************************************************************
        250-ZHEN-SURYO-SET-SEC      SECTION.
@@ -948,8 +1006,8 @@
            MOVE    ZERO                TO  NUM-KET
       *
            PERFORM VARYING END-KET     FROM    1   BY  1
-                   UNTIL   SPA-NAME(END-KET:)      =   SPACE
-                   OR      END-KET     =  50
+                   UNTIL  (END-KET     =  50       )
+                      OR  (SPA-NAME(END-KET:)      =   SPACE)
                COMPUTE NUM-KET    =    NUM-KET     +   1
            END-PERFORM
       *
