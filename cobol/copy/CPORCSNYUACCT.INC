@@ -55,6 +55,10 @@
            03  LNK-SCNYUACCT-SHOKUJI-SRYCD           PIC  X(09).
       *食事区分
            03  LNK-SCNYUACCT-SHOKUJIKBN              PIC  9(01).
+      *食堂加算
+           03  LNK-SCNYUACCT-SHOKUDO                 PIC  X(09).
+      *食堂加算区分
+           03  LNK-SCNYUACCT-SHOKUDO-KBN             PIC  9(01).
       *保険組合コード
            03  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD       PIC  X(09).
       *保険組合せ
