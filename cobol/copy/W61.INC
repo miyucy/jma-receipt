@@ -19,15 +19,15 @@
               03  W61-HKNJANAME.
                 04  W61-VALUE   PIC X(100).
               03  W61-ZAITAKU-COMBO.
-                04  W61-ZAITAKU         PIC X(12).
+                04  W61-ZAITAKU         PIC X(44).
                 04  W61-ZAITAKU-COUNT   PIC S9(9)   BINARY.
                 04  W61-ZAITAKU-ITEM
-                        PIC X(12)   OCCURS  2 TIMES.
+                        PIC X(44)   OCCURS  2 TIMES.
               03  W61-RJNKBN-COMBO.
-                04  W61-RJNKBN         PIC X(12).
+                04  W61-RJNKBN         PIC X(52).
                 04  W61-RJNKBN-COUNT   PIC S9(9)   BINARY.
                 04  W61-RJNKBN-ITEM
-                        PIC X(12)   OCCURS  2 TIMES.
+                        PIC X(52)   OCCURS  2 TIMES.
               03  W61-TOKKI.
                 04  W61-VALUE   PIC X(12).
               03  W61-KYURATE.

@@ -30,17 +30,17 @@ W61	{
 		};
 		ZAITAKU_COMBO	{
 			ZAITAKU	{
-				value	varchar(12);
+				value	varchar(44);
 			};
 			count	int;
-			item	varchar(12)[2];
+			item	varchar(44)[2];
 		};
 		RJNKBN_COMBO	{
 			RJNKBN	{
-				value	varchar(12);
+				value	varchar(52);
 			};
 			count	int;
-			item	varchar(12)[2];
+			item	varchar(52)[2];
 		};
 		TOKKI	{
 			value	varchar(12);

@@ -64,13 +64,13 @@
                    07  SPA-GMN-ZAITAKULST          OCCURS  2.
                        09  SPA-GMN-ZAITAKUL        PIC X(01).
                        09  SPA-GMN-F1L             PIC X(01).
-                       09  SPA-GMN-ZAITAKUMEIL     PIC X(10).
+                       09  SPA-GMN-ZAITAKUMEIL     PIC X(42).
                    07  SPA-GMN-ZAITAKU-MAX         PIC 9(01).
       *
                    07  SPA-GMN-RJNKBNLST           OCCURS  2.
                        09  SPA-GMN-RJNKBNL         PIC X(01).
                        09  SPA-GMN-F1L             PIC X(01).
-                       09  SPA-GMN-RJNKBNMEIL      PIC X(10).
+                       09  SPA-GMN-RJNKBNMEIL      PIC X(50).
                    07  SPA-GMN-RJNKBN-MAX          PIC 9(01).
       *
                    07  SPA-GMN-FTNJANUMKBNLST      OCCURS  5.
@@ -125,12 +125,12 @@
                                                    PIC X(01).
                                13  SPA-GMN-F1      PIC X(01).
                                13  SPA-GMN-ZAITAKUMEI
-                                                   PIC X(10).
+                                                   PIC X(42).
                            11  SPA-GMN-RJNKBN-G.
                                13  SPA-GMN-RJNKBN  PIC X(01).
                                13  SPA-GMN-F1      PIC X(01).
                                13  SPA-GMN-RJNKBNMEI
-                                                   PIC X(10).
+                                                   PIC X(50).
                            11  SPA-GMN-FTNJANUMKBN-G.
                                13  SPA-GMN-FTNJANUMKBN
                                                    PIC X(02).
@@ -234,7 +234,7 @@
                05  WRK-KBN.
                    07  WRK-KBN1                    PIC X(01).
                    07  WRK-KBN2                    PIC X(01).
-               05  WRK-KBNMEI                      PIC X(22).
+               05  WRK-KBNMEI                      PIC X(50).
       *  
       *    入力項目名
            03  WRK-MCP-WIDGET                      PIC X(64).
@@ -454,7 +454,8 @@
            MOVE    2               TO  SPA-GMN-TEISYUTUSAKI-MAX
       *
            MOVE    "1"             TO  SPA-GMN-ZAITAKUL          (1)
-           MOVE    "対象とする"    TO  SPA-GMN-ZAITAKUMEIL       (1)
+           MOVE    "在宅総合診療料を算定している場合のみ対象"
+                                   TO  SPA-GMN-ZAITAKUMEIL       (1)
            MOVE    1               TO  SPA-GMN-ZAITAKU-MAX
       *
            MOVE    "01"            TO  SPA-GMN-FTNJANUMKBNL      (1)
@@ -472,7 +473,8 @@
            MOVE    2               TO  SPA-GMN-JKYSNUMKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-RJNKBNL           (1)
-           MOVE    "対象とする"    TO  SPA-GMN-RJNKBNMEIL        (1)
+           MOVE    "老人医療（法別番号２７）を受給している場合のみ対象"
+                                   TO  SPA-GMN-RJNKBNMEIL        (1)
            MOVE    1               TO  SPA-GMN-RJNKBN-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-RECEDEN-KORECKBNL (1)

@@ -2141,13 +2141,37 @@
            END-IF
       *
       *    £œ£√£“
-           IF  CNT-PAGE                =   1
-      *        •´•π•ø•ﬁ•§•∫π‡Ã‹§¨§¢§Î§»§≠£œ£√£“§À»ø±«§µ§ª§Î 
-               IF      FLG-RECE67          =   ZERO
-                   IF ( ( RECE62-TEISYUTUSAKI   =   1           ) AND
-                        ( SYS-2005-SYAOCRKBN    =   "2"         )     ) 
-                   OR ( ( RECE62-TEISYUTUSAKI   =   2           ) AND
-                        ( SYS-2005-KKHOCRKBN    =   "2" OR  "3" )     ) 
+           IF      CNT-PAGE                =   1
+               IF ( ( RECE62-TEISYUTUSAKI   =   1           ) AND
+                    ( SYS-2005-SYAOCRKBN    =   "2"         )     ) 
+               OR ( ( RECE62-TEISYUTUSAKI   =   2           ) AND
+                    ( SYS-2005-KKHOCRKBN    =   "2" OR  "3" )     ) 
+      *            •Ï•ª•◊•»∆√µ≠ªˆπ‡ ‘Ω∏æ Û§À≥∫≈ˆπ‡Ã‹§¨§¢§Î§»§≠
+      *            £œ£√£“§À»ø±«§µ§ª§Î 
+                   IF    ( RECE62-2006-FTNJANUMKBN (1)
+                                           NOT =   SPACE )
+                   OR    ( RECE62-2006-FTNJANUMKBN (2)
+                                           NOT =   SPACE )
+                   OR    ( RECE62-2006-FTNJANUMKBN (3)
+                                           NOT =   SPACE )
+                   OR    ( RECE62-2006-FTNJANUMKBN (4)
+                                           NOT =   SPACE )
+                   OR    ( RECE62-2006-JKYSNUMKBN  (1)
+                                           NOT =   SPACE )
+                   OR    ( RECE62-2006-JKYSNUMKBN  (2)
+                                           NOT =   SPACE )
+                   OR    ( RECE62-2006-JKYSNUMKBN  (3)
+                                           NOT =   SPACE )
+                   OR    ( RECE62-2006-JKYSNUMKBN  (4)
+                                           NOT =   SPACE )
+                       MOVE    RECE62-OCR1            TO  OCR1-AREA
+                       MOVE    RECE62-OCR2            TO  OCR2-AREA
+                       MOVE    RECE62-OCR3            TO  OCR3-AREA
+                       PERFORM 3302-OCR-HENSYU-SEC
+                   END-IF
+      *
+      *            •´•π•ø•ﬁ•§•∫π‡Ã‹§¨§¢§Î§»§≠£œ£√£“§À»ø±«§µ§ª§Î 
+                   IF      FLG-RECE67          =   ZERO
                        MOVE    RECE62-OCR1            TO  OCR1-AREA
                        MOVE    RECE62-OCR2            TO  OCR2-AREA
                        MOVE    RECE62-OCR3            TO  OCR3-AREA
@@ -3329,9 +3353,9 @@
                END-IF
            END-IF
       *
-           PERFORM 3301-OCR1-HENSYU-SEC
-           PERFORM 3302-OCR2-HENSYU-SEC
-           PERFORM 3303-OCR3-HENSYU-SEC
+           PERFORM 33011-OCR1-HENSYU-SEC
+           PERFORM 33012-OCR2-HENSYU-SEC
+           PERFORM 33013-OCR3-HENSYU-SEC
            .
        3301-OCR-HENSYU-EXT.
            EXIT.
@@ -3339,7 +3363,7 @@
       *****************************************************************
       *    •Ï•ª•◊•»£œ£√£“ŒŒ∞Ë§Œ•ª•√•»£±° £∆£∞£∞£≤°À
       *****************************************************************
-       3301-OCR1-HENSYU-SEC                   SECTION.
+       33011-OCR1-HENSYU-SEC                   SECTION.
       *
       *•¡•ß•√•Ø•«•£•∏•√•»£±
            INITIALIZE                           LNK-CHKDGT-AREA
@@ -3385,13 +3409,13 @@
            MOVE    OCR1-AREA            TO      RECE62-OCR1           
       *
            .
-       3301-OCR1-HENSYU-EXT.
+       33011-OCR1-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
       *    •Ï•ª•◊•»£œ£√£“ŒŒ∞Ë§Œ•ª•√•»£≤° £∆£∞£∞£≤°À
       *****************************************************************
-       3302-OCR2-HENSYU-SEC                   SECTION.
+       33012-OCR2-HENSYU-SEC                   SECTION.
       *
       *•¡•ß•√•Ø•«•£•∏•√•»£≤
            INITIALIZE                           LNK-CHKDGT-AREA
@@ -3460,16 +3484,16 @@
            MOVE    OCR2-AREA            TO      RECE62-OCR2
       *
            .
-       3302-OCR2-HENSYU-EXT.
+       33012-OCR2-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
       *    •Ï•ª•◊•»£œ£√£“ŒŒ∞Ë§Œ•ª•√•»£≥° £∆£∞£∞£≤°À
       *****************************************************************
-       3303-OCR3-HENSYU-SEC                   SECTION.
+       33013-OCR3-HENSYU-SEC                   SECTION.
       *
            IF      OCR3-AREA-X          =   SPACE
-               GO  TO  3303-OCR3-HENSYU-EXT
+               GO  TO  33013-OCR3-HENSYU-EXT
            END-IF
       *
            INSPECT OCR3-AREA-X
@@ -3523,7 +3547,94 @@
            END-IF
       *
            .
-       3303-OCR3-HENSYU-EXT.
+       33013-OCR3-HENSYU-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *     ‘Ω∏ΩËÕ˝° •Ï•ª•◊•»∆√µ≠ªˆπ‡ ‘Ω∏æ Û§´§È ‘Ω∏°À
+      *****************************************************************
+       3302-OCR-HENSYU-SEC              SECTION.
+      *
+      *    ∏¯»Ò£±…È√¥º‘»÷πÊ
+           EVALUATE    RECE62-2006-FTNJANUMKBN  (IDA)
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    "01"
+                   MOVE  ZERO               TO  OCR2-FTNJANUM
+               WHEN    OTHER
+                   INITIALIZE                   ORCSNUMAREA
+                   MOVE    RECE62-2006-FTNJANUM (IDA)
+                                            TO  SNUM-INX
+                   CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                   IF      SNUM-RC          =   ZERO
+                       MOVE   SNUM-OUTNUM
+                                            TO  OCR2-FTNJANUM
+                   ELSE
+                       MOVE   ZERO          TO  OCR2-FTNJANUM
+                   END-IF
+           END-EVALUATE
+      *
+      *    ∏¯»Ò£±ºıµÎº‘»÷πÊ
+           EVALUATE    RECE62-2006-JKYSNUMKBN  (IDA)
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    "01"
+                   MOVE  ZERO               TO      OCR2-JKYSNUM
+               WHEN    OTHER
+                   INITIALIZE                       ORCSNUMAREA
+                   MOVE    RECE62-2006-JKYSNUM (IDA)
+                                            TO      SNUM-INX
+                   CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                   IF      SNUM-RC          =       ZERO
+                       MOVE   SNUM-OUTNUM
+                                        TO      OCR2-JKYSNUM
+                   ELSE
+                       MOVE   ZERO      TO      OCR2-JKYSNUM
+                   END-IF
+           END-EVALUATE
+      *
+      *    ∏¯»Ò£≤…È√¥º‘»÷πÊ
+           EVALUATE    RECE62-2006-FTNJANUMKBN  (IDB)
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    "01"
+                   MOVE  ZERO               TO      OCR3-FTNJANUM
+               WHEN    OTHER
+                   INITIALIZE                       ORCSNUMAREA
+                   MOVE    RECE62-2006-FTNJANUM (IDB)
+                                            TO      SNUM-INX
+                   CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                   IF      SNUM-RC          =       ZERO
+                       MOVE   SNUM-OUTNUM
+                                        TO      OCR3-FTNJANUM
+                   ELSE
+                       MOVE   ZERO      TO      OCR3-FTNJANUM
+                   END-IF
+           END-EVALUATE
+      *    ∏¯»Ò£≤ºıµÎº‘»÷πÊ
+           EVALUATE    RECE62-2006-JKYSNUMKBN  (IDB)
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    "01"
+                   MOVE  ZERO               TO      OCR3-JKYSNUM
+               WHEN    OTHER
+                   INITIALIZE                       ORCSNUMAREA
+                   MOVE    RECE62-2006-JKYSNUM (IDB)
+                                            TO      SNUM-INX
+                   CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                   IF      SNUM-RC          =       ZERO
+                       MOVE   SNUM-OUTNUM
+                                        TO      OCR3-JKYSNUM
+                   ELSE
+                       MOVE   ZERO      TO      OCR3-JKYSNUM
+                   END-IF
+           END-EVALUATE
+      *
+           PERFORM 33011-OCR1-HENSYU-SEC
+           PERFORM 33012-OCR2-HENSYU-SEC
+           PERFORM 33013-OCR3-HENSYU-SEC
+           .
+       3302-OCR-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
