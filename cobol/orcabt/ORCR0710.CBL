@@ -72,6 +72,7 @@
       *                                     °¶ø«Œ≈≤ Ãæ§Úƒ…≤√
       *  01.01.04    NACL-∆£∏∂    04/04/09  ø«Œ≈≤  ‘Ω∏∂Ë ¨§À§Ë§Îø«Œ≈≤ §Œ
       *                                     µ≠∫‹
+      *  01.01.05    NACL-∆£∏∂    04/05/06  …‘Ã¿ ¨§Ú…¨§∫Ω–Œœ§π§Î§Ë§¶§ÀΩ§¿µ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5306,22 +5307,23 @@
                    MOVE    HIGH-VALUE          TO  KEY-NEW
                NOT AT  END
                    MOVE    ZERO                TO  FLG-RECE62
-                   IF      RECE62-TOTALTEN (1) =   ZERO
-                   AND     RECE62-TOTALTEN (2) =   ZERO 
-                   AND     RECE62-TOTALTEN (3) =   ZERO 
-                   AND     RECE62-TOTALTEN (4) =   ZERO
-                   AND     RECE62-TOTALTEN (5) =   ZERO
-                   AND     RECE62-SHOKUJIRYOYOHI (1)
-                                               =   ZERO
-                   AND     RECE62-SHOKUJIRYOYOHI (2)
-                                               =   ZERO
-                   AND     RECE62-SHOKUJIRYOYOHI (3)
-                                               =   ZERO
-                   AND     RECE62-SHOKUJIRYOYOHI (4)
-                                               =   ZERO
-                   AND     RECE62-SHOKUJIRYOYOHI (5)
-                                               =   ZERO
-                   AND     RECE62-RECESYUBETU  NOT =  8888
+                   IF    ( RECE62-TOTALTEN (1) =   ZERO            )
+                   AND   ( RECE62-TOTALTEN (2) =   ZERO            )
+                   AND   ( RECE62-TOTALTEN (3) =   ZERO            )
+                   AND   ( RECE62-TOTALTEN (4) =   ZERO            )
+                   AND   ( RECE62-TOTALTEN (5) =   ZERO            )
+                   AND   ( RECE62-SHOKUJIRYOYOHI (1)
+                                               =   ZERO            )
+                   AND   ( RECE62-SHOKUJIRYOYOHI (2)
+                                               =   ZERO            )
+                   AND   ( RECE62-SHOKUJIRYOYOHI (3)
+                                               =   ZERO            )
+                   AND   ( RECE62-SHOKUJIRYOYOHI (4)
+                                               =   ZERO            )
+                   AND   ( RECE62-SHOKUJIRYOYOHI (5)
+                                               =   ZERO            )
+                   AND   ( RECE62-RECESYUBETU
+                                           NOT =  8888    AND ZERO )
                        GO  TO  900-RECE62-READ-SEC
                    ELSE
                      IF      RECE62-TOTALTEN (1) =   ZERO

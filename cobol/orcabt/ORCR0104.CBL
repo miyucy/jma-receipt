@@ -65,6 +65,7 @@
       *                                     続紙のタイトル表示
       *  01.01.03    NACL-藤原    04/04/07  カスタマイズ項目にコメント欄
       *                                     ・診療科名を追加
+      *  01.01.04    NACL-藤原    04/05/06  不明分を必ず出力するように修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5013,21 +5014,21 @@
                    MOVE    HIGH-VALUE          TO  KEY-NEW
                NOT AT  END
                    MOVE    ZERO                TO  FLG-RECE02
-                   IF      RECE02-TOTALTEN (1) =   ZERO
-                   AND     RECE02-TOTALTEN (2) =   ZERO 
-                   AND     RECE02-TOTALTEN (3) =   ZERO 
-                   AND     RECE02-TOTALTEN (4) =   ZERO
-                   AND     RECE02-TOTALTEN (5) =   ZERO
-                   AND     RECE02-RECESYUBETU  NOT =  8888
+                   IF    ( RECE02-TOTALTEN (1) =   ZERO                )
+                   AND   ( RECE02-TOTALTEN (2) =   ZERO                )
+                   AND   ( RECE02-TOTALTEN (3) =   ZERO                )
+                   AND   ( RECE02-TOTALTEN (4) =   ZERO                )
+                   AND   ( RECE02-TOTALTEN (5) =   ZERO                )
+                   AND   ( RECE02-RECESYUBETU  NOT =  8888    AND ZERO )
                        GO  TO  990-RECE02-READ-SEC
                    ELSE
-                     IF      RECE02-TOTALTEN (1) =   ZERO
-                     AND     RECE02-TOTALTEN (2) =   ZERO 
-                     AND     RECE02-TOTALTEN (3) =   ZERO 
-                     AND     RECE02-TOTALTEN (4) =   ZERO
-                     AND     RECE02-TOTALTEN (5) =   ZERO
-                     AND     RECE02-RECESYUBETU  =   8888
-                     AND     RECE02-JIHTEKFLG    =   SPACE
+                     IF    ( RECE02-TOTALTEN (1) =   ZERO  ) 
+                     AND   ( RECE02-TOTALTEN (2) =   ZERO  )
+                     AND   ( RECE02-TOTALTEN (3) =   ZERO  )
+                     AND   ( RECE02-TOTALTEN (4) =   ZERO  )
+                     AND   ( RECE02-TOTALTEN (5) =   ZERO  )
+                     AND   ( RECE02-RECESYUBETU  =   8888  )
+                     AND   ( RECE02-JIHTEKFLG    =   SPACE )
                        GO  TO  990-RECE02-READ-SEC
                      ELSE
                        IF      RECE02-SRYYM        <   WRK-CONS-SRYYM
