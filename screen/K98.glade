@@ -13,7 +13,7 @@
 <widget>
   <class>GtkWindow</class>
   <name>K98</name>
-  <x>320</x>
+  <x>260</x>
   <y>180</y>
   <width>754</width>
   <height>560</height>
