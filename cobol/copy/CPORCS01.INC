@@ -37,6 +37,8 @@
            03  LNK-S01-KAGRPFLG            PIC  X(01).
       *介壳瘟换年フラグ∈孟数给锐脱∷
            03  LNK-S01-SYOSINFLG           PIC  X(01).
+      *壳弧瘟换年フラグ∈孟数给锐脱∷
+           03  LNK-S01-SINSATUFLG          PIC  X(01).
       *
            03  LNK-S01-SINKOUI.
       *壳闻乖百柒推 
