@@ -176,3 +176,15 @@ path	key9	{
 		;
 	};
 };
+path	key10	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key10_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_ptinf a,tbl_ptnum b
+			WHERE  a.HOSPID    =   :HOSPID
+                        AND    a.HOSPID    =   b.HOSPID
+                        AND    a.PTID      =   b.PTID
+			ORDER BY   b.PTNUM
+		;
+	};
+};
