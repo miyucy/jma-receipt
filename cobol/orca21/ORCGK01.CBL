@@ -1637,7 +1637,8 @@
            PERFORM
                UNTIL   FLG-UKETUKE        =   1
       *        会計のまだの最初の受付を対象とする
-               IF      UKE-KAIKEITIME      =   ZERO
+               IF     (UKE-KAIKEITIME      =   ZERO )  AND
+                      (UKE-UKEID       NOT =   ZERO )
       *        診療科
                    MOVE    UKE-SRYKA           TO  SPA-GMN-SRYKA
                    MOVE    UKE-SRYKA           TO  SPA-SRYKA

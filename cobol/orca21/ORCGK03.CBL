@@ -4852,7 +4852,8 @@
            END-IF
            PERFORM
                    UNTIL       FLG-UKETUKE     =    1
-               IF       SPA-SRYKA          =   UKE-SRYKA
+               IF      (SPA-SRYKA          =   UKE-SRYKA) AND
+                       (UKE-UKEID      NOT =   ZERO     )
                    IF      UKE-KAIKEITIME      =   ZERO
                        MOVE    WRK-TIME22          TO  UKE-KAIKEITIME
                        MOVE    UKETUKE-REC         TO  MCPDATA-REC
