@@ -344,6 +344,7 @@
       *  01.01.154   NACL-多々納  04/10/12  WKSRYACT-KEY6,KEY7追加
       *  01.01.155   NACL-藤原    04/11/10  KOHSKY-KEY7追加
       *  01.01.156   NACL-多々納  04/11/19  PTBYOMEI-KEY24追加
+      *  01.01.157   NACL-門脇    04/11/30  SYUNOU-KEY33追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2030,6 +2031,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY30"
                    MOVE    PATH-TBL-SYUNOU-KEY30
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY33"
+                   MOVE    PATH-TBL-SYUNOU-KEY33
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"

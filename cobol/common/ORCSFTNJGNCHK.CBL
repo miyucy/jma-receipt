@@ -27,6 +27,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    04/11/15  公費月上限額取得修正
+      *  01.00.02    NACL-門脇    04/11/30  入院対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -222,12 +223,16 @@
            END-IF
       *
            IF   FLG-HKNNUM     =    ZERO
+             IF    LNK-FTNJGNCHK-NYUGAIKBN     =   "1"
+                   MOVE   HKN-HON-NYUMJGNGAK     TO  WRK-HKNMST-JGNGAK
+             ELSE
                IF    HKN-HON-GAIMNAIJGNGAK   NOT =    ZERO
                    MOVE   HKN-HON-GAIMNAIJGNGAK  TO  WRK-HKNMST-JGNGAK
                END-IF
                IF    HKN-HON-GAIMGAIJGNGAK   NOT =    ZERO
                    MOVE   HKN-HON-GAIMGAIJGNGAK  TO  WRK-HKNMST-JGNGAK
                END-IF
+             END-IF
            END-IF
       *
       *    保険番号クローズ
@@ -267,8 +272,13 @@
                                           LNK-ORCSJGNGET-REC
       *
                 IF    LNK-ORCSJGNGET-RC   =   ZERO
+                 IF    LNK-FTNJGNCHK-NYUGAIKBN     =   "1"
+                   MOVE    LNK-ORCSJGNGET-NYUJGNGAK
+                                          TO  WRK-HKNMST-JGNGAK
+                 ELSE
                    MOVE    LNK-ORCSJGNGET-GAIJGNGAK
                                           TO  WRK-HKNMST-JGNGAK
+                 END-IF
                 END-IF
       *
            END-IF
@@ -332,13 +342,21 @@
            MOVE    LNK-FTNJGNCHK-KOHNUM    TO  SYU-KOH-HKNNUM(2)
            MOVE    LNK-FTNJGNCHK-KOHNUM    TO  SYU-KOH-HKNNUM(3)
            MOVE    LNK-FTNJGNCHK-KOHNUM    TO  SYU-KOH-HKNNUM(4)
-           MOVE    "SYUNOU-KEY25"          TO  ORC-DBPATH
+           IF      LNK-FTNJGNCHK-NYUGAIKBN  =  "1"
+              MOVE    "SYUNOU-KEY33"       TO  ORC-DBPATH
+           ELSE
+              MOVE    "SYUNOU-KEY25"       TO  ORC-DBPATH
+           END-IF
            PERFORM 910-SYUNOU-SELECT-SEC
            IF      FLG-SYUNOU              NOT =   ZERO
                MOVE    01                  TO  LNK-FTNJGNCHK-RC
                GO  TO  2101-SYUKEI-EXT
            ELSE
-               MOVE    "SYUNOU-KEY25"      TO  ORC-DBPATH
+               IF      LNK-FTNJGNCHK-NYUGAIKBN  =  "1"
+                  MOVE    "SYUNOU-KEY33"   TO  ORC-DBPATH
+               ELSE
+                  MOVE    "SYUNOU-KEY25"   TO  ORC-DBPATH
+               END-IF
                PERFORM 910-SYUNOU-READ-SEC
                IF   FLG-SYUNOU             =   ZERO
       *            患者負担金の集計
@@ -367,7 +385,11 @@
                              END-EVALUATE
                           END-IF
                        END-PERFORM
-                       MOVE    "SYUNOU-KEY25"   TO  ORC-DBPATH
+                       IF      LNK-FTNJGNCHK-NYUGAIKBN  =  "1"
+                          MOVE  "SYUNOU-KEY33"  TO  ORC-DBPATH
+                       ELSE
+                          MOVE  "SYUNOU-KEY25"  TO  ORC-DBPATH
+                       END-IF
                        PERFORM  910-SYUNOU-READ-SEC
                    END-PERFORM
                    IF   WRK-HKNMST-JGNGAK       >   WRK-KOHFTN
@@ -376,7 +398,11 @@
                END-IF
            END-IF
       *    収納クローズ
-           MOVE    "SYUNOU-KEY25"           TO  ORC-DBPATH
+           IF      LNK-FTNJGNCHK-NYUGAIKBN  =  "1"
+               MOVE  "SYUNOU-KEY33"  TO  ORC-DBPATH
+           ELSE
+               MOVE  "SYUNOU-KEY25"  TO  ORC-DBPATH
+           END-IF
            PERFORM   910-DB-CLOSE-SEC
       *
            .
