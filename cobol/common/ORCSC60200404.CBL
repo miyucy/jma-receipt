@@ -474,7 +474,6 @@
            03  WRK-JYU-KEN             PIC 9(01).
            03  WRK-JYU-FLG             PIC X(01).
       *
-      *
       *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
       *
@@ -1885,15 +1884,27 @@
        200-ALL-SYORI-SEC                SECTION.
       *
       *    包括まとめ入力は以下対象外
-          IF      SPA-HKNCOMBINUM     =   "9999"
-               GO      TO      200-ALL-SYORI-EXT
+           IF      SPA-HKNCOMBINUM     =   "9999"
+               CONTINUE
+           ELSE
+               IF      SPA-NYUGAIKBN       =   "1"
+      *        入院時のチェック
+                   PERFORM 210-NYUIN-SYORI-SEC
+               ELSE
+      *        外来時のチェック
+                   PERFORM 200-GAIRAI-SYORI-SEC
+               END-IF
            END-IF
       *
-           IF      SPA-NYUGAIKBN       =   "1"
-      *        入院時のチェック
-               PERFORM 210-NYUIN-SYORI-SEC
-               GO      TO      200-ALL-SYORI-EXT
-           END-IF
+           .
+       200-ALL-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     逓減加算算定チェック処理
+      *****************************************************************
+       200-GAIRAI-SYORI-SEC           SECTION.
+      *
       *
       *    同一検査をエラーとする
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
@@ -1915,6 +1926,9 @@
                        IF     (IDX-Z2      NOT =   IDX-Z )  AND
                               (WRK-COM-SRYSYUKBN   (IDX-Z2)
                                            NOT =   "610"  )  AND
+      *                        労災の検査は対象外
+                              (WRK-COM-INPUTCD(IDX-Z2)(1:3)
+                                           NOT =   "101" )  AND
                               (WRK-COM-INPUTCD(IDX-Z)
                                                =   WRK-COM-INPUTCD
                                                         (IDX-Z2))
@@ -2017,7 +2031,7 @@
                    MOVE    "2"                 TO  WRK-COM-CUR (IDX-Z)
                    MOVE    "1"                 TO  WRK-COM-KZMFLG
                                                                (IDX-Z)
-                   GO      TO      200-ALL-SYORI-EXT
+                   GO      TO      200-GAIRAI-SYORI-EXT
                END-IF
       *        時間入力追加
                MOVE    "840000044"         TO  WRK-SRYCD
@@ -2037,7 +2051,7 @@
            END-IF
       *
            .
-       200-ALL-SYORI-EXT.
+       200-GAIRAI-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
