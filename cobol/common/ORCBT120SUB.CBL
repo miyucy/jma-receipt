@@ -318,7 +318,7 @@
            MOVE    LNK-ORCBT120SUB-SANTEIYMD TO LNK-DAY6-KIJUN
            MOVE    "1"                      TO  LNK-DAY6-ZOGENPTN
            MOVE    -1                       TO  LNK-DAY6-ZOGEN
-           CALL    "ORSCDAY"                USING  STS-AREA-DAY
+           CALL    "ORCSDAY"                USING  STS-AREA-DAY
                                                    LNK-DAY6-AREA
            MOVE    LNK-DAY6-KEISAN          TO  WRK-MAE-SANTEIYMD
       *    Æþ±¡ÍúÎò¤Î¸¡º÷
