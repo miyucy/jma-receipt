@@ -68,6 +68,10 @@
       *
       *    一時領域
        01  WRK-AREA.
+           03  WRK-MCP-PATH.
+               05  WRK-MCP-BLOCKS          PIC S9(9)   BINARY.
+               05  WRK-MCP-RNAME           PIC S9(9)   BINARY.
+               05  WRK-MCP-PNAME           PIC S9(9)   BINARY.
            03  WRK-YMD                     PIC X(10). 
            03  WRK-HENYMDG                 PIC X(09).
            03  WRK-SYMD.
@@ -298,21 +302,42 @@
       *    基準日に入院中の歴を取得する
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
-           INITIALIZE                      PTNYUINRRK-REC
-           MOVE    STUSAN-HOSPID       TO  PTNYUINRRK-HOSPID
-           MOVE    STUSAN-PTID         TO  PTNYUINRRK-PTID
-           MOVE    STUSAN-KJNYMD       TO  PTNYUINRRK-NYUINYMD
-           MOVE    PATH-TBL-PTNYUINRRK-KEY17   TO  MCP-PATH
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
-           ELSE
-               MOVE    1               TO  FLG-PTNYUINRRK
-           END-IF
+           IF    ( STUSAN-RRKNUMKBN    =   "1" )
       *
-           MOVE    PATH-TBL-PTNYUINRRK-KEY17   TO  MCP-PATH
-           PERFORM 910-DBCLOSE-SEC
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    STUSAN-HOSPID   TO  PTNYUINRRK-HOSPID
+               MOVE    STUSAN-PTID     TO  PTNYUINRRK-PTID
+               MOVE    STUSAN-RRKNUM   TO  PTNYUINRRK-RRKNUM
+               MOVE    1               TO  PTNYUINRRK-RRKEDANUM
+               MOVE    PATH-TBL-PTNYUINRRK-KEY     TO  MCP-PATH
+               MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
+               ELSE
+                   MOVE    1           TO  FLG-PTNYUINRRK
+               END-IF
+      *
+               MOVE    PATH-TBL-PTNYUINRRK-KEY     TO  MCP-PATH
+               PERFORM 910-DBCLOSE-SEC
+           ELSE
+      *
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    STUSAN-HOSPID   TO  PTNYUINRRK-HOSPID
+               MOVE    STUSAN-PTID     TO  PTNYUINRRK-PTID
+               MOVE    STUSAN-KJNYMD   TO  PTNYUINRRK-NYUINYMD
+               MOVE    PATH-TBL-PTNYUINRRK-KEY17   TO  MCP-PATH
+               MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
+               ELSE
+                   MOVE    1           TO  FLG-PTNYUINRRK
+               END-IF
+      *
+               MOVE    PATH-TBL-PTNYUINRRK-KEY17   TO  MCP-PATH
+               PERFORM 910-DBCLOSE-SEC
+           END-IF
       *
            IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
                MOVE    03              TO  STUSAN-RC
@@ -648,7 +673,7 @@
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
-           MOVE    PATH-TBL-PTNYUINRRK-KEY16
+           MOVE    PATH-TBL-PTNYUINRRK-KEY38
                                        TO  MCP-PATH
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            PERFORM 910-DBSELECT-SEC
@@ -674,7 +699,7 @@
       *        入院履歴データ設定処理
                PERFORM 2100-RRK-DATA-SET-SEC
       *
-               MOVE    PATH-TBL-PTNYUINRRK-KEY16
+               MOVE    PATH-TBL-PTNYUINRRK-KEY38
                                        TO  MCP-PATH
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   1 )
@@ -682,7 +707,7 @@
                END-IF
            END-PERFORM
       *
-           MOVE    PATH-TBL-PTNYUINRRK-KEY16
+           MOVE    PATH-TBL-PTNYUINRRK-KEY38
                                        TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
       *
@@ -805,6 +830,8 @@
                         STUSAN-RRK-TAIINYMD (IDX1)
                DISPLAY "STUSAN-RRK-NISSU (" IDX1 ")= "
                         STUSAN-RRK-NISSU (IDX1)
+               DISPLAY "STUSAN-RRK-DJKBN (" IDX1 ")= "
+                        STUSAN-RRK-DJKBN (IDX1)
            END-PERFORM
       *
            .

@@ -32,6 +32,10 @@
       *    特定入院料コード（設定は任意）
            03  STUSAN-TOKUTEI-SRYCD        PIC X(09)
                                            OCCURS 10.
+      *    履歴番号設定区分（設定は任意）
+           03  STUSAN-RRKNUMKBN            PIC X(01).
+      *    履歴番号（履歴番号設定区分が"1"の場合に設定）
+           03  STUSAN-RRKNUM               PIC 9(03).
       *
       *  出力領域
       *    通算日数
