@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-太田    03/04/25  病棟・病室名の編集を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -34,18 +35,68 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       * 
+      *    収納明細処理ファイル（初期化／読込用）
+           SELECT  BD00501-FILE   ASSIGN   ORCBD005PARA
+                                  ORGANIZATION    IS  INDEXED
+                                  ACCESS  MODE    IS  SEQUENTIAL
+                                  RECORD  KEY     IS  BD00501-ISAM-KEY
+                                  FILE    STATUS  IS  STS-BD00501.
+      *
+      *    収納明細ファイル（書込用）
+           SELECT  BD00502-FILE   ASSIGN   ORCBD005PARA
+                                  ORGANIZATION    IS  INDEXED
+                                  ACCESS  MODE    IS  DYNAMIC
+                                  RECORD  KEY     IS  BD00502-ISAM-KEY
+                                  FILE    STATUS  IS  STS-BD00502.
+      * 
 006900*    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
-       FILE                        SECTION.
+       FILE                            SECTION.
+006900*    
+       FD  BD00501-FILE.
+       01  BD00501-REC.
+           02  BD00501-ISAM-KEY.
+               03  BD00501-ISAM-KEY-BTUNUM     PIC X(02).
+               03  BD00501-ISAM-KEY-BRMNUM     PIC X(08).
+               03  BD00501-ISAM-KEY-SRYKA      PIC X(02).
+               03  BD00501-ISAM-KEY-PTNUM      PIC X(20).
+               03  BD00501-ISAM-KEY-DENPNUM    PIC 9(07).
+               03  BD00501-ISAM-KEY-DENPEDANUM PIC 9(02).
+           02  BD00501-SYU-DATA-AREA.
+               03  BD00501-SYU-CREATEKBN       PIC X(01).
+           02  BD00501-SMEI-DATA-AREA.
+           COPY    "CPSYUMEI.INC"  REPLACING   //SMEI//
+                                   BY          //BD00501-SMEI//.
+      *
+       FD  BD00502-FILE.
+       01  BD00502-REC.
+           02  BD00502-ISAM-KEY.
+               03  BD00502-ISAM-KEY-BTUNUM     PIC X(02).
+               03  BD00502-ISAM-KEY-BRMNUM     PIC X(08).
+               03  BD00502-ISAM-KEY-SRYKA      PIC X(02).
+               03  BD00502-ISAM-KEY-PTNUM      PIC X(20).
+               03  BD00502-ISAM-KEY-DENPNUM    PIC 9(07).
+               03  BD00502-ISAM-KEY-DENPEDANUM PIC 9(02).
+           02  BD00502-SYU-DATA-AREA.
+               03  BD00502-SYU-CREATEKBN       PIC X(01).
+           02  BD00502-SMEI-DATA-AREA.
+           COPY    "CPSYUMEI.INC"  REPLACING   //SMEI//
+                                   BY          //BD00502-SMEI//.
       *
 006900*    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
+      *
+      *    収納明細処理ファイル
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING   //RECE01//
+                                   BY          //ORCBD005//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
@@ -58,6 +109,8 @@
       *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
+           03  STS-BD00501         PIC X(02).
+           03  STS-BD00502         PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -68,6 +121,7 @@
            03  FLG-SMEI2           PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-PTNUM           PIC 9(01).
+           03  FLG-NEXTPAGE        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -109,6 +163,7 @@
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
            03  WRK-HENYMDG         PIC X(22).
+           03  WRK-HYYMMDD         PIC X(09).
       *
            03  WRK-Z9              PIC --------9.
       *
@@ -119,6 +174,8 @@
       *
            03  WRK-NAI-TBL.
                05  WRK-NAI-G       OCCURS  30.
+                 07  WRK-BTUNAME   PIC X(10).
+                 07  WRK-BRMNUM    PIC X(06).
                  07  WRK-SRYKA     PIC X(08).
                  07  WRK-PTNUM     PIC X(20).
                  07  WRK-NAME      PIC X(36).
@@ -134,20 +191,27 @@
                05  WRK-GSEIKYU     PIC S9(08).
                05  WRK-GRYOSYU     PIC S9(08).
                05  WRK-GMISYU      PIC S9(08).
+           03  WRK-SPTID-PTNUM     PIC X(20).
+           03  WRK-SPTID-PTID      PIC 9(10).
+           03  WRK-BRM-NUM-IN                      PIC X(06).
+           03  WRK-BRM-NUM-EDT                     PIC X(06).
+           03  WRK-STR1                            PIC X(20).
+           03  WRK-STR2                            PIC X(20).
+           03  WRK-IDX1                            PIC 9(05).
+           03  WRK-IDX2                            PIC 9(05).
       *
        01  KEY-AREA.
-           03  KEY-NEW-TBL.
-               05  KEY-N-SRYKA     PIC X(02).
-               05  KEY-N-PTID      PIC 9(10).
-               05  KEY-N-DENPNUM   PIC 9(07).
-           03  KEY-OLD-TBL.
-               05  KEY-O-SRYKA     PIC X(02).
-               05  KEY-O-PTID      PIC 9(10).
-               05  KEY-O-DENPNUM   PIC 9(07).
+           03  KEY-BTUNUM          PIC X(02).
+           03  KEY-BRMNUM          PIC X(08).
+           03  KEY-SRYKA           PIC X(02).
+           03  KEY-PTID            PIC 9(10).
+           03  KEY-DENPNUM         PIC 9(07).
       *
            COPY    "CPSHELLTBL.INC".
       *
            COPY    "ORCA-DBPATH".
+      *
+           COPY    "COMMON-SPA".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -159,11 +223,17 @@
       *    医療機関情報情報
            COPY    "CPSK1001.INC".
       *
+      *    患者番号構成情報
+           COPY    "CPSK1009.INC".
+      *
       *    診療科目情報情報
            COPY    "CPSK1005.INC".
       *
       *    出力先プリンタ名割り当て情報
            COPY    "CPSK1031.INC".
+      *
+      *    病棟情報
+           COPY    "CPSK5001.INC".
       *
       *    収納マスタ
        01  SYU-REC.
@@ -200,6 +270,9 @@
       *    サブプロ用　領域
       *****************************************************************
       *
+      *    患者番号変換サブ
+           COPY    "CPORCSPTID.INC".
+      *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
@@ -209,6 +282,9 @@
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -250,6 +326,7 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  KEY-AREA
+           INITIALIZE                  SPA-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -287,8 +364,16 @@
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  RECEERR-TERMID
       *
+      *    収納明細処理ファイル名
+           MOVE    "BD00501"       TO  ORCBD005PARA-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID
+                                   TO  ORCBD005PARA-TERMID
+      *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
+      *
+      *    対象収納明細ファイル出力処理
+           PERFORM 110-SMEI-OUT-SEC
            .
        100-INIT-EXT.
            EXIT.
@@ -323,23 +408,136 @@
                MOVE    "医療機関ＩＤが取得できませんでした。"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  100-INIT-EXT
            END-IF
+      *
+      *    患者番号構成管理情報編集
+           INITIALIZE                  SYS-1009-REC
+           MOVE    "1009"              TO  SYS-1009-KANRICD
+           MOVE    "*"                 TO  SYS-1009-KBNCD
+           MOVE    SYS-1009-REC        TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1009-REC
+               MOVE    SYS-1009-PTNUMKSIKBN
+                                           TO  SPA-1009-PTNUMKSIKBN
+               MOVE    SYS-1009-HJNKSIKBN  TO  SPA-1009-HJNKSIKBN
+               MOVE    SYS-1009-HJNKSINENKBN 
+                                           TO  SPA-1009-HJNKSINENKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKBN
+                                           TO  SPA-1009-HJNKSIRENNUMKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKETA
+                                           TO  SPA-1009-HJNKSIRENNUMKETA
+           ELSE
+               MOVE    "患者番号構成管理情報が取得できませんでした"
+                                       TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  100-INIT-EXT
+           END-IF
+      *
            .
        110-PARA-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
+      *    ファイル出力処理
+      *****************************************************************
+       110-SMEI-OUT-SEC            SECTION.
+      *
+      *    定期請求収納ファイル初期化
+           OPEN    OUTPUT              BD00501-FILE
+           CLOSE   BD00501-FILE
+      *
+           OPEN    OUTPUT              BD00502-FILE
+      *
+      *    収納明細をソートする為、一度ファイルに退避する
+           MOVE    ZERO            TO  FLG-SMEI
+           PERFORM 900-DBSELECT-SEC
+      *
+           PERFORM UNTIL ( FLG-SMEI    =   1 )
+      *
+      *        収納データ取得
+               PERFORM 1101-SYUNOU-GET-SEC
+               MOVE    SYU-BYOTONUM    TO  BD00502-ISAM-KEY-BTUNUM
+               MOVE    SYU-ROOMNUM     TO  BD00502-ISAM-KEY-BRMNUM
+               MOVE    SYU-SRYKA       TO  BD00502-ISAM-KEY-SRYKA
+      *
+               MOVE    SMEI-PTID       TO  WRK-SPTID-PTID
+               PERFORM 1101-PTNUM-GET-SEC
+               MOVE    WRK-SPTID-PTNUM TO  BD00502-ISAM-KEY-PTNUM
+      *
+               MOVE    SMEI-DENPNUM    TO  BD00502-ISAM-KEY-DENPNUM
+               MOVE    SMEI-DENPEDANUM TO  BD00502-ISAM-KEY-DENPEDANUM
+      *
+               MOVE    SYU-CREATEKBN   TO  BD00502-SYU-CREATEKBN
+               MOVE    SMEI-REC        TO  BD00502-SMEI-DATA-AREA
+      *
+               WRITE   BD00502-REC
+      *
+               PERFORM 900-DBFETCH-SEC
+      *
+           END-PERFORM
+      *
+           PERFORM 900-DBCLOSE-SEC
+      *
+           CLOSE   BD00502-FILE
+      *
+           .
+       110-SMEI-OUT-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納データ取得処理
+      *****************************************************************
+       1101-SYUNOU-GET-SEC             SECTION.
+      *
+      *    収納読み込み
+           INITIALIZE                  SYU-REC
+           MOVE    SMEI-HOSPID     TO  SYU-HOSPID
+           MOVE    SMEI-NYUGAIKBN  TO  SYU-NYUGAIKBN
+           MOVE    SMEI-PTID       TO  SYU-PTID
+           MOVE    SMEI-DENPNUM    TO  SYU-DENPNUM
+           PERFORM 900-SYU-READ-SEC
+      *
+           .
+       1101-SYUNOU-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者番号取得処理
+      *****************************************************************
+       1101-PTNUM-GET-SEC              SECTION.
+      *
+           MOVE    SPACE           TO  WRK-SPTID-PTNUM
+      *
+      *    患者番号を取得
+           INITIALIZE                  ORCSPTIDAREA
+           MOVE    WRK-PARA-HOSPID TO  SPTID-HOSPID
+           MOVE    WRK-SPTID-PTID  TO  SPTID-PTID
+           CALL    "ORCSPTID"      USING   ORCSPTIDAREA
+                                           SPA-1009-TBL
+           IF    ( SPTID-RC            =   ZERO )
+               MOVE    SPTID-PTNUM TO  WRK-SPTID-PTNUM
+           END-IF
+      *
+           .
+       1101-PTNUM-GET-EXT.
+           EXIT.
+      *****************************************************************
       *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    帳票印刷開始処理
-           PERFORM 900-DBSELECT-SEC
+           MOVE    LOW-VALUE       TO  KEY-BTUNUM
+                                       KEY-BRMNUM
+                                       KEY-SRYKA
+                                       KEY-PTID
+                                       KEY-DENPNUM
       *
-      *    キーセット
-           MOVE    SMEI-SRYKA      TO  KEY-N-SRYKA
-           MOVE    SMEI-PTID       TO  KEY-N-PTID
-           MOVE    SMEI-DENPNUM    TO  KEY-N-DENPNUM
+           MOVE    ZERO            TO  FLG-NEXTPAGE
+      *
+           OPEN    INPUT           BD00501-FILE
+      *
+           MOVE    ZERO            TO  FLG-SMEI
+           PERFORM 900-BD00501-READ-SEC
       *
            PERFORM UNTIL   FLG-END     =   1
       *        帳票編集<見出し>処理
@@ -352,8 +550,18 @@
                PERFORM 390-PRINT-OUT-SEC
            END-PERFORM
       *
-           PERFORM 900-DBCLOSE-SEC
+           CLOSE   BD00501-FILE
+      *
+      
+      *    ファイル削除
+           MOVE    ZERO        TO  IF-RESULT
+           MOVE    ORCBD005PARA
+	                       TO  IF-FILENAME
+           CALL    "orcfiledel"    USING
+                                       ORCSFDELAREA
+      *
            .
+      *
        200-MAIN-EXT.
            EXIT.
       *
@@ -383,8 +591,10 @@
        320-BODY-HEN-SEC            SECTION.
       *
            PERFORM UNTIL ( FLG-END         =   1 )
-                   OR    ( CNT-LINE        =   30 )
-               PERFORM 3200-BODY-SRYKA-HEN-SEC
+                   OR    ( CNT-LINE       >=   30 )
+      *
+               PERFORM 3202-BODY-MAIN-HEN-SEC
+      *
            END-PERFORM
       *
            .
@@ -394,14 +604,241 @@
       *****************************************************************
       *    帳票編集<明細行>処理
       *****************************************************************
-       3200-BODY-SRYKA-HEN-SEC      SECTION.
+       3202-BODY-MAIN-HEN-SEC          SECTION.
       *
-           MOVE    KEY-N-SRYKA     TO  KEY-O-SRYKA
+           IF    ( CNT-LINE        =   ZERO )
+            OR   ( KEY-BTUNUM  NOT =   BD00501-ISAM-KEY-BTUNUM )
+               PERFORM 3200-BODY-BTUNAME-HEN-SEC
+           END-IF
+      *
+           IF    ( CNT-LINE        =   ZERO )
+            OR   ( KEY-BTUNUM  NOT =   BD00501-ISAM-KEY-BTUNUM )
+            OR   ( KEY-BRMNUM  NOT =   BD00501-ISAM-KEY-BRMNUM )
+               PERFORM 3200-BODY-BRMNUM-HEN-SEC
+           END-IF
+      *
+           IF    ( CNT-LINE        =   ZERO )
+            OR   ( KEY-BTUNUM  NOT =   BD00501-ISAM-KEY-BTUNUM )
+            OR   ( KEY-BRMNUM  NOT =   BD00501-ISAM-KEY-BRMNUM )
+            OR   ( KEY-SRYKA   NOT =   BD00501-ISAM-KEY-SRYKA )
+               PERFORM 3200-BODY-SRYKA-HEN-SEC
+           END-IF
+      *
+           IF    ( CNT-LINE        =   ZERO )
+            OR   ( KEY-BTUNUM  NOT =   BD00501-ISAM-KEY-BTUNUM )
+            OR   ( KEY-BRMNUM  NOT =   BD00501-ISAM-KEY-BRMNUM )
+            OR   ( KEY-SRYKA   NOT =   BD00501-ISAM-KEY-SRYKA )
+            OR   ( KEY-PTID    NOT =   SMEI-PTID )
+               PERFORM 3201-BODY-PTID-HEN-SEC
+           END-IF
+      *
+           IF    ( FLG-NEXTPAGE    =   1 )
+               PERFORM 3203-BODY-NAIYO-SET-SEC
+               MOVE    ZERO            TO  FLG-NEXTPAGE
+           END-IF
+      *
+           MOVE    ZERO                TO  CNT-DENP
+           INITIALIZE                      WRK-SUM-TBL(4)
+      *
+      *    伝票履歴チェック
+           MOVE    ZERO                TO  FLG-SMEI2
+           PERFORM 900-SMEI2-SELECT-SEC
+           PERFORM UNTIL    FLG-SMEI2  =   1
+               COMPUTE WRK-GSEIKYU(4)  =   WRK-GSEIKYU(4)
+                                       +   SMEI2-SKYMONEY
+               COMPUTE WRK-GRYOSYU(4)  =   WRK-GRYOSYU(4)
+                                       +   SMEI2-NYUHEN-MONEY
+               PERFORM 900-SMEI2-FETCH-SEC
+           END-PERFORM
+           PERFORM 900-SMEI2-CLOSE-SEC
+      *
+      *    キーを設定
+           MOVE    BD00501-ISAM-KEY-BTUNUM
+                                       TO  KEY-BTUNUM
+           MOVE    BD00501-ISAM-KEY-BRMNUM
+                                       TO  KEY-BRMNUM
+           MOVE    BD00501-ISAM-KEY-SRYKA
+                                       TO  KEY-SRYKA
+           MOVE    SMEI-PTID           TO  KEY-PTID
+           MOVE    BD00501-ISAM-KEY-DENPNUM
+                                       TO  KEY-DENPNUM
+      *
+           PERFORM
+               UNTIL ( FLG-SMEI        =   1 )
+               OR    ( KEY-BTUNUM  NOT =   BD00501-ISAM-KEY-BTUNUM )
+               OR    ( KEY-BRMNUM  NOT =   BD00501-ISAM-KEY-BRMNUM )
+               OR    ( KEY-SRYKA   NOT =   BD00501-ISAM-KEY-SRYKA )
+               OR    ( KEY-PTID    NOT =   SMEI-PTID )
+               OR    ( KEY-DENPNUM NOT =   BD00501-ISAM-KEY-DENPNUM )
+               OR    ( CNT-DENP           >=   30 )
+      *
+               ADD     1               TO  CNT-DENP
+      *
+      *        伝票番号
+               MOVE    SMEI-DENPNUM    TO  WRK-DENPNUM(CNT-DENP)
+      *
+      *        処理区分
+               EVALUATE    SMEI-JOUTAIKBN
+               WHEN    SPACE
+                   MOVE    "請求なし"  TO  WRK-HJYOTAI
+                   MOVE    9           TO  WRK-MAX
+               WHEN    "1"
+                   MOVE    "請求・入金"
+                                       TO  WRK-HJYOTAI
+                   MOVE    11          TO  WRK-MAX
+               WHEN    "2"
+                   MOVE    "入金"      TO  WRK-HJYOTAI
+                   MOVE    5           TO  WRK-MAX
+               WHEN    "3"
+                   MOVE    "再計算"    TO  WRK-HJYOTAI
+                   MOVE    7           TO  WRK-MAX
+               WHEN    "4"
+                   MOVE    "返金"      TO  WRK-HJYOTAI
+                   MOVE    5           TO  WRK-MAX
+               WHEN    "5"
+                   MOVE    "請求取消"  TO  WRK-HJYOTAI
+                   MOVE    9           TO  WRK-MAX
+               WHEN    "6"
+                   MOVE    "入金取消"  TO  WRK-HJYOTAI
+                   MOVE    9           TO  WRK-MAX
+               WHEN    "8"
+                   MOVE    "診療訂正"  TO  WRK-HJYOTAI
+                   MOVE    9           TO  WRK-MAX
+               WHEN    "9"
+                   MOVE    "請求"      TO  WRK-HJYOTAI
+                   MOVE    5           TO  WRK-MAX
+               WHEN    OTHER
+                   MOVE    SPACE       TO  WRK-HJYOTAI
+                   MOVE    1           TO  WRK-MAX
+               END-EVALUATE
+      *
+               EVALUATE    BD00501-SYU-CREATEKBN
+               WHEN    "1"
+                   MOVE    "（退）"    TO  WRK-HJYOTAI(WRK-MAX:6)
+               WHEN    "2"
+                   MOVE    "（定）"    TO  WRK-HJYOTAI(WRK-MAX:6)
+               END-EVALUATE
+      *
+               MOVE    WRK-HJYOTAI     TO  WRK-JYOTAI(CNT-DENP)
+      *
+               ADD     SMEI-SKYMONEY       TO  WRK-GSEIKYU(4)
+      *
+               ADD     SMEI-NYUHEN-MONEY   TO  WRK-GRYOSYU(4)
+      *
+               COMPUTE WRK-GMISYU(4)       =   WRK-GSEIKYU(4)
+                                           -   WRK-GRYOSYU(4)
+      *        請求金額
+               MOVE    SMEI-SKYMONEY       TO  WRK-SEIKYU(CNT-DENP)
+      *
+      *        領収金額
+               MOVE    SMEI-NYUHEN-MONEY   TO  WRK-RYOSYU(CNT-DENP)
+      *
+      *        未収金額
+               MOVE    WRK-GMISYU(4)       TO  WRK-MISYU(CNT-DENP)
+      *
+               PERFORM 900-BD00501-READ-SEC
+           END-PERFORM
+      *
+           COMPUTE IDY         =   30  -   CNT-LINE
+           IF        ( CNT-DENP    >  IDY )
+               MOVE    30          TO  CNT-LINE
+               MOVE    1           TO  FLG-NEXTPAGE
+           ELSE
+               PERFORM 3203-BODY-NAIYO-SET-SEC
+           END-IF
+      *
+           .
+       3202-BODY-MAIN-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病棟名称編集処理
+      *****************************************************************
+       3200-BODY-BTUNAME-HEN-SEC      SECTION.
+      *
+      *    病棟情報
+           INITIALIZE                  SYS-5001-REC
+           MOVE    "5001"          TO  SYS-5001-KANRICD
+           MOVE    BD00501-ISAM-KEY-BTUNUM
+                                   TO  SYS-5001-KBNCD
+           MOVE    SYS-5001-REC    TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-5001-REC
+               MOVE    SYS-5001-BTU-TANNAME
+                                       TO  WRK-BTUNAME(1)
+           END-IF
+      *
+           .
+       3200-BODY-BTUNAME-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    病室名称編集処理
+      *****************************************************************
+       3200-BODY-BRMNUM-HEN-SEC        SECTION.
+      *
+           MOVE   BD00501-ISAM-KEY-BRMNUM ( 3 : )
+                                       TO  WRK-BRM-NUM-IN
+           IF    ( WRK-BRM-NUM-IN (1 : 1)  =   SPACE )
+               MOVE    SPACE           TO  WRK-STR1
+               MOVE    1               TO  WRK-IDX1
+               UNSTRING    WRK-BRM-NUM-IN
+                   DELIMITED   BY  ALL SPACE
+                   INTO    WRK-STR1
+                   WITH    POINTER WRK-IDX1
+               END-UNSTRING
+               MOVE    WRK-BRM-NUM-IN (WRK-IDX1 : )
+                                       TO  WRK-BRM-NUM-EDT
+           ELSE
+               MOVE    WRK-BRM-NUM-IN  TO  WRK-BRM-NUM-EDT
+           END-IF
+      *
+           PERFORM VARYING WRK-IDX1    FROM    6   BY  -1
+               UNTIL     ( WRK-IDX1    <   1 )
+                 OR      ( WRK-BRM-NUM-EDT (WRK-IDX1 : 1)
+                                   NOT =   SPACE )
+               CONTINUE
+           END-PERFORM
+      *
+           IF    ( WRK-IDX1    <   1 )
+               MOVE    WRK-BRM-NUM-EDT TO  WRK-BRMNUM (1)
+               GO  TO  3200-BODY-BRMNUM-HEN-EXT
+           END-IF
+      *
+      *    病室番号が数字の場合前ゼロをとる
+           IF    ( WRK-BRM-NUM-EDT ( 1 : WRK-IDX1 )
+                                       IS  NUMERIC )
+               IF    ( WRK-BRM-NUM-EDT ( 1 : 1 )
+                                       =   ZERO )
+                   MOVE    1               TO  WRK-IDX2
+                   MOVE    SPACE           TO  WRK-STR1
+                   UNSTRING    WRK-BRM-NUM-EDT
+                       DELIMITED BY  ALL ZERO
+                   INTO    WRK-STR1
+                   WITH    POINTER WRK-IDX2
+                   END-UNSTRING
+                   MOVE    WRK-BRM-NUM-EDT (WRK-IDX2 : )
+                                           TO  WRK-BRMNUM (1)
+               ELSE
+                   MOVE    WRK-BRM-NUM-EDT TO  WRK-BRMNUM (1)
+               END-IF
+           ELSE
+                   MOVE    WRK-BRM-NUM-EDT TO  WRK-BRMNUM (1)
+           END-IF
+      *
+           .
+       3200-BODY-BRMNUM-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療科編集処理
+      *****************************************************************
+       3200-BODY-SRYKA-HEN-SEC      SECTION.
       *
       *    診療科情報
            INITIALIZE                  SYS-1005-REC
            MOVE    "1005"          TO  SYS-1005-KANRICD
-           MOVE    KEY-N-SRYKA     TO  SYS-1005-KBNCD
+           MOVE    BD00501-ISAM-KEY-SRYKA
+                                   TO  SYS-1005-KBNCD
            MOVE    SYS-1005-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -410,37 +847,25 @@
                                        TO  WRK-SRYKA(1)
            END-IF
       *
-           PERFORM UNTIL ( FLG-END         =   1 )
-                   OR    ( KEY-N-SRYKA NOT =   KEY-O-SRYKA )
-                   OR    ( CNT-LINE        =   30 )
-               PERFORM 3201-BODY-PTID-HEN-SEC
-           END-PERFORM
-      *
            .
        3200-BODY-SRYKA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    帳票編集<明細行>処理
+      *    患者情報編集処理
       *****************************************************************
        3201-BODY-PTID-HEN-SEC      SECTION.
-      *
-           MOVE    KEY-N-PTID      TO  KEY-O-PTID
       *
       *    患者情報読み込み
            INITIALIZE                  PTINF-REC
            MOVE    SMEI-HOSPID     TO  PTINF-HOSPID
-           MOVE    KEY-N-PTID      TO  PTINF-PTID
+           MOVE    SMEI-PTID
+                                   TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
       *
-      *    患者番号変換情報読み込み
-           INITIALIZE                  PTNUM-REC
-           MOVE    SMEI-HOSPID     TO  PTNUM-HOSPID
-           MOVE    KEY-N-PTID      TO  PTNUM-PTID
-           PERFORM 900-PTNUM-READ-SEC
-      *
       *    患者番号
-           MOVE    PTNUM-PTNUM     TO  WRK-PTNUM(1)
+           MOVE    BD00501-ISAM-KEY-PTNUM
+                                   TO  WRK-PTNUM(1)
       *
       *    氏名
            MOVE    PTINF-NAME      TO  WRK-NAME(1)
@@ -456,139 +881,10 @@
       *    生年月日
            MOVE    PTINF-BIRTHDAY  TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG     TO  WRK-BIRTHDAY(1)
-      *
-           PERFORM UNTIL ( FLG-END         =   1 )
-                   OR    ( KEY-N-SRYKA NOT =   KEY-O-SRYKA )
-                   OR    ( KEY-N-PTID  NOT =   KEY-O-PTID )
-                   OR    ( CNT-LINE        =   30 )
-                PERFORM 3202-BODY-DENPNUM-HEN-SEC
-           END-PERFORM
+           MOVE    WRK-HYYMMDD     TO  WRK-BIRTHDAY(1)
       *
            .
        3201-BODY-PTID-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    帳票編集<明細行>処理
-      *****************************************************************
-       3202-BODY-DENPNUM-HEN-SEC   SECTION.
-      *
-           PERFORM UNTIL ( FLG-END             =   1 )
-                   OR    ( KEY-N-SRYKA     NOT =   KEY-O-SRYKA )
-                   OR    ( KEY-N-PTID      NOT =   KEY-O-PTID )
-                   OR    ( KEY-N-DENPNUM   NOT =   SMEI-DENPNUM )
-      *
-               MOVE    ZERO                TO  CNT-DENP
-               INITIALIZE                      WRK-SUM-TBL(4)
-      *
-      *        収納読み込み
-               INITIALIZE                  SYU-REC
-               MOVE    SMEI-HOSPID     TO  SYU-HOSPID
-               MOVE    SMEI-NYUGAIKBN  TO  SYU-NYUGAIKBN
-               MOVE    KEY-N-PTID      TO  SYU-PTID
-               MOVE    KEY-N-DENPNUM   TO  SYU-DENPNUM
-               PERFORM 900-SYU-READ-SEC
-      *
-      *        伝票履歴チェック
-               PERFORM 900-SMEI2-SELECT-SEC
-               PERFORM UNTIL    FLG-SMEI2  =   1
-                   COMPUTE WRK-GSEIKYU(4)  =   WRK-GSEIKYU(4)
-                                           +   SMEI2-SKYMONEY
-                   COMPUTE WRK-GRYOSYU(4)  =   WRK-GRYOSYU(4)
-                                           +   SMEI2-NYUHEN-MONEY
-                   PERFORM 900-SMEI2-FETCH-SEC
-               END-PERFORM
-               PERFORM 900-SMEI2-CLOSE-SEC
-      *
-               PERFORM UNTIL ( FLG-END             =   1 )
-                       OR    ( KEY-N-SRYKA     NOT =   KEY-O-SRYKA )
-                       OR    ( KEY-N-PTID      NOT =   KEY-O-PTID )
-                       OR    ( KEY-N-DENPNUM   NOT =   SMEI-DENPNUM )
-                       OR    ( CNT-DENP            =   30 )
-      *
-                   ADD     1                   TO  CNT-DENP
-      *
-      *            伝票番号
-                   MOVE    SMEI-DENPNUM        TO  WRK-DENPNUM(CNT-DENP)
-      *
-      *            処理区分
-                   EVALUATE    SMEI-JOUTAIKBN
-                       WHEN    SPACE
-                           MOVE    "請求なし"  TO  WRK-HJYOTAI
-                           MOVE    9           TO  WRK-MAX
-                       WHEN    "1"
-                           MOVE    "請求・入金"
-                                               TO  WRK-HJYOTAI
-                           MOVE    11          TO  WRK-MAX
-                       WHEN    "2"
-                           MOVE    "入金"      TO  WRK-HJYOTAI
-                           MOVE    5           TO  WRK-MAX
-                       WHEN    "3"
-                           MOVE    "再計算"    TO  WRK-HJYOTAI
-                           MOVE    7           TO  WRK-MAX
-                       WHEN    "4"
-                           MOVE    "返金"      TO  WRK-HJYOTAI
-                           MOVE    5           TO  WRK-MAX
-                       WHEN    "5"
-                           MOVE    "請求取消"  TO  WRK-HJYOTAI
-                           MOVE    9           TO  WRK-MAX
-                       WHEN    "6"
-                           MOVE    "入金取消"  TO  WRK-HJYOTAI
-                           MOVE    9           TO  WRK-MAX
-                       WHEN    "8"
-                           MOVE    "診療訂正"  TO  WRK-HJYOTAI
-                           MOVE    9           TO  WRK-MAX
-                       WHEN    "9"
-                           MOVE    "請求"      TO  WRK-HJYOTAI
-                           MOVE    5           TO  WRK-MAX
-                       WHEN    OTHER
-                           MOVE    SPACE       TO  WRK-HJYOTAI
-                           MOVE    1           TO  WRK-MAX
-                   END-EVALUATE
-      *
-                   EVALUATE    SYU-CREATEKBN
-                       WHEN    "1"
-                           MOVE    "（退）"  TO  WRK-HJYOTAI(WRK-MAX:6)
-                       WHEN    "2"
-                           MOVE    "（定）"  TO  WRK-HJYOTAI(WRK-MAX:6)
-                   END-EVALUATE
-      *
-                   MOVE    WRK-HJYOTAI         TO  WRK-JYOTAI(CNT-DENP)
-      *
-                   ADD     SMEI-SKYMONEY       TO  WRK-GSEIKYU(1)
-                                                   WRK-GSEIKYU(3)
-                                                   WRK-GSEIKYU(4)
-      *
-                   ADD     SMEI-NYUHEN-MONEY   TO  WRK-GRYOSYU(1)
-                                                   WRK-GRYOSYU(3)
-                                                   WRK-GRYOSYU(4)
-      *
-                   COMPUTE WRK-GMISYU(4)       =   WRK-GSEIKYU(4)
-                                               -   WRK-GRYOSYU(4)
-      *            請求金額
-                   MOVE    SMEI-SKYMONEY       TO  WRK-SEIKYU(CNT-DENP)
-      *
-      *            領収金額
-                   MOVE    SMEI-NYUHEN-MONEY   TO  WRK-RYOSYU(CNT-DENP)
-      *
-      *            未収金額
-                   MOVE    WRK-GMISYU(4)       TO  WRK-MISYU(CNT-DENP)
-      *
-                   PERFORM 900-DBFETCH-SEC
-               END-PERFORM
-           END-PERFORM
-      *
-           COMPUTE IDY         =   30  -   CNT-LINE
-      *
-           IF        ( CNT-DENP    >  IDY )
-               MOVE    30          TO  CNT-LINE
-           ELSE
-               PERFORM 3203-BODY-NAIYO-SET-SEC
-           END-IF
-      *
-           .
-       3202-BODY-DENPNUM-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -601,6 +897,8 @@
            PERFORM UNTIL   IDZ     =   CNT-DENP
                ADD     1                   TO  IDZ
                ADD     1                   TO  CNT-LINE
+               MOVE    WRK-BTUNAME (IDZ)   TO  HCM08-BTUNAME (CNT-LINE)
+               MOVE    WRK-BRMNUM  (IDZ)   TO  HCM08-BRMNUM  (CNT-LINE)
                MOVE    WRK-SRYKA(IDZ)      TO  HCM08-SRYKA(CNT-LINE)
                MOVE    WRK-PTNUM(IDZ)      TO  HCM08-PTNUM(CNT-LINE)
                MOVE    WRK-NAME(IDZ)       TO  HCM08-NAME(CNT-LINE)
@@ -614,22 +912,25 @@
                MOVE    WRK-MISYU(IDZ)      TO  WRK-Z9
                MOVE    WRK-Z9              TO  HCM08-MISYU(CNT-LINE)
                MOVE    WRK-JYOTAI(IDZ)     TO  HCM08-JYOTAI(CNT-LINE)
+      *
+               COMPUTE WRK-GSEIKYU (1)
+                   =   WRK-GSEIKYU (1)     +   WRK-SEIKYU(IDZ)
+               COMPUTE WRK-GSEIKYU (3)
+                   =   WRK-GSEIKYU (3)     +   WRK-SEIKYU(IDZ)
+               COMPUTE WRK-GRYOSYU (1)
+                   =   WRK-GRYOSYU (1)     +   WRK-RYOSYU(IDZ)
+               COMPUTE WRK-GRYOSYU (3)
+                   =   WRK-GRYOSYU (3)     +   WRK-RYOSYU(IDZ)
            END-PERFORM
       *
-           ADD     WRK-GMISYU(4)   TO  WRK-GMISYU(1)
-                                       WRK-GMISYU(2)
-                                       WRK-GMISYU(3)
-      *
-           MOVE    SMEI-SRYKA      TO  KEY-N-SRYKA
-           MOVE    SMEI-PTID       TO  KEY-N-PTID
-           MOVE    SMEI-DENPNUM    TO  KEY-N-DENPNUM
+           COMPUTE WRK-GMISYU (1)
+               =   WRK-GMISYU (1)      +   WRK-GMISYU(4)
+           COMPUTE WRK-GMISYU (3)
+               =   WRK-GMISYU (3)      +   WRK-GMISYU(4)
       *
            MOVE    ZERO            TO  CNT-DENP
            INITIALIZE                  WRK-NAI-TBL
       *
-           IF      FLG-SMEI        =   1
-               MOVE    1           TO  FLG-END
-           END-IF
            .
        3203-BODY-NAIYO-SET-EXT.
            EXIT.
@@ -729,6 +1030,8 @@
            MOVE    WRK-SYMD        TO  LNK-DAY2-YMD
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY2-AREA
+           MOVE    LNK-DAY2-EDTYMD1
+                                   TO  WRK-HYYMMDD
            MOVE    LNK-DAY2-EDTYMD3
                                    TO  WRK-HENYMDG
            INSPECT WRK-HENYMDG     REPLACING  ALL "  "  BY  "　"
@@ -791,7 +1094,7 @@
            EXIT.
       *
       *****************************************************************
-      *    終了　　処理
+      *    収納明細検索処理
       *****************************************************************
        900-DBSELECT-SEC            SECTION.
       *
@@ -813,15 +1116,12 @@
                MOVE    1               TO  FLG-SMEI
            END-IF
       *
-           IF      FLG-SMEI            =   1
-               MOVE    1               TO  FLG-END
-           END-IF
            .
        900-DBSELECT-EXT.
            EXIT.
       *
       *****************************************************************
-      *     収納を検索処理
+      *    収納明細読込処理
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
       *
@@ -843,7 +1143,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ＤＢ　クローズ処理
+      *    収納明細クローズ処理
       *****************************************************************
        900-DBCLOSE-SEC             SECTION.
       *
@@ -858,12 +1158,29 @@
            EXIT.
       *
       *****************************************************************
+      *    収納明細処理ファイル読込処理
+      *****************************************************************
+       900-BD00501-READ-SEC            SECTION.
+      *
+           READ    BD00501-FILE NEXT
+           AT END
+               MOVE    1               TO FLG-SMEI
+               MOVE    1               TO FLG-END
+           NOT AT  END
+               MOVE    BD00501-SMEI-DATA-AREA
+                                       TO SMEI-REC
+           END-READ
+      *
+       900-BD00501-READ-EXT.
+           EXIT.
+      *****************************************************************
       *    収納明細マスター読込処理
       *****************************************************************
        900-SMEI2-SELECT-SEC        SECTION.
       *
            INITIALIZE                  SMEI2-REC
            MOVE    SMEI-HOSPID     TO  SMEI2-HOSPID
+           MOVE    SMEI-NYUGAIKBN  TO  SMEI2-NYUGAIKBN
            MOVE    SMEI-DENPNUM    TO  SMEI2-DENPNUM
            MOVE    SMEI-DENPEDANUM TO  SMEI2-DENPEDANUM
            MOVE    SMEI2-REC       TO  MCPDATA-REC

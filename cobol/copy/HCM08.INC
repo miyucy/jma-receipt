@@ -2,9 +2,12 @@
             02  HCM08-SYORIYMD  PIC X(24).
             02  HCM08-PAGE  PIC X(3).
             02  HCM08-NAIYO-TBL         OCCURS  30 TIMES.
+              03  HCM08-BTUNAME   PIC X(10).
+              03  HCM08-BRMNUM    PIC X(6).
               03  HCM08-SRYKA PIC X(8).
-              03  HCM08-PTNUM PIC X(20).
-              03  HCM08-NAME  PIC X(34).
+              03  HCM08-PTNUM PIC X(10).
+              03  HCM08-PTNUM2    PIC X(20).
+              03  HCM08-NAME  PIC X(30).
               03  HCM08-SEX   PIC X(2).
               03  HCM08-BIRTHDAY  PIC X(22).
               03  HCM08-DENPNUM   PIC X(7).
