@@ -19,7 +19,7 @@
               03  XA01-SELNUM.
                 04  XA01-VALUE  PIC S9(3).
               03  XA01-TBL-GROUP.
-                04  XA01-VALUE  PIC X(15).
+                04  XA01-VALUE  PIC X(14).
               03  XA01-RENNUM.
                 04  XA01-VALUE  PIC S9(4).
               03  XA01-SHORI-RENNUM.
