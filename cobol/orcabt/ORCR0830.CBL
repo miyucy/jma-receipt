@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト入院（労災・自賠責）
-      *  コンポーネント名  : 診療実日数編集
+      *  コンポーネント名  : 診療実日数編集（労災・自賠責）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  03/06/17    NaCl−門脇    新規作成
@@ -372,10 +372,20 @@
                                              MCPDATA-REC
              IF      MCP-RC              =   ZERO
                  MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-                 PERFORM  SYSKANRI-READ-SEC
-      *
-                 PERFORM  110-SYSKAN-HENSYU-SEC
-      *
+                 PERFORM  900-SYSKANRI-READ-SEC
+                 IF      FLG-SYSKANRI        =   ZERO
+                   PERFORM  110-SYSKAN-HENSYU-SEC
+                 ELSE
+                   MOVE "医療機関情報−入院基本が取得できませんでした。"
+                                         TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    1             TO  FLG-END
+                 END-IF
+             ELSE
+                  MOVE "医療機関情報−入院基本が取得できませんでした。"
+                                         TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+                  MOVE    1              TO  FLG-END
              END-IF
       *
              MOVE    "DBCLOSE"               TO  MCP-FUNC
@@ -403,17 +413,21 @@
                                              MCPDATA-REC
              IF      MCP-RC              =   ZERO
                  MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
-                 PERFORM  SYSKANRI-READ-SEC
+                 PERFORM  900-SYSKANRI-READ-SEC
                  PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
       *
                    ADD     1            TO  SYSKAN-IDX
                    MOVE   SYS-5000-REC  TO  TBL-SYS5000(SYSKAN-IDX)
       *
                    MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
-                   PERFORM  SYSKANRI-READ-SEC
+                   PERFORM  900-SYSKANRI-READ-SEC
       *
                  END-PERFORM
-      *
+             ELSE
+                 MOVE "医療機関情報−入院基本が取得できませんでした。"
+                                        TO  WRK-RECEERR
+                 PERFORM 500-ERR-HENSYU-SEC
+                 MOVE    1              TO  FLG-END
              END-IF
       *
              MOVE    "DBCLOSE"               TO  MCP-FUNC
@@ -442,7 +456,7 @@
                                               MCPDATA-REC
               IF      MCP-RC              =   ZERO
                   MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-                  PERFORM  SYSKANRI-READ-SEC
+                  PERFORM  900-SYSKANRI-READ-SEC
                   IF      FLG-SYSKANRI        =   ZERO
                      MOVE     SYS-1001-TAX-HASU-KBN
                                              TO  WRK-TAX1001-KBN
@@ -482,14 +496,14 @@
                                               MCPDATA-REC
               IF      MCP-RC              =   ZERO
                   MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
-                  PERFORM  SYSKANRI-READ-SEC
+                  PERFORM  900-SYSKANRI-READ-SEC
                   PERFORM  UNTIL   FLG-SYSKANRI  =    1
       *
                     ADD     1             TO  SYSKAN-IDX
                     MOVE    SYS-1001-REC  TO  TBL-SYS1001(SYSKAN-IDX)
       *
                     MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
-                    PERFORM  SYSKANRI-READ-SEC
+                    PERFORM  900-SYSKANRI-READ-SEC
       *
                   END-PERFORM
               ELSE
@@ -523,7 +537,7 @@
                                                  MCPDATA-REC
               IF      MCP-RC              =   ZERO
                   MOVE    "SYSKANRI-KEY"   TO    ORC-DBPATH
-                  PERFORM  SYSKANRI-READ-SEC
+                  PERFORM  900-SYSKANRI-READ-SEC
                   IF      FLG-SYSKANRI        =   ZERO
                      EVALUATE  SYS-4001-TENKBN
                          WHEN  "1"
@@ -570,14 +584,14 @@
                                               MCPDATA-REC
               IF      MCP-RC              =   ZERO
                   MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
-                  PERFORM SYSKANRI-READ-SEC
+                  PERFORM 900-SYSKANRI-READ-SEC
                   PERFORM  UNTIL   FLG-SYSKANRI  =    1
       *
                     ADD     1             TO  SYSKAN-IDX
                     MOVE    SYS-4001-REC  TO  TBL-SYS4001(SYSKAN-IDX)
       *
                     MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
-                    PERFORM SYSKANRI-READ-SEC
+                    PERFORM 900-SYSKANRI-READ-SEC
       *
                   END-PERFORM
               ELSE
@@ -598,7 +612,7 @@
       *
            OPEN    I-O                 RECE82-FILE
       *
-           PERFORM    RECE82-READ-SEC
+           PERFORM    900-RECE82-READ-SEC
       *
           .
        100-INIT-EXT.
@@ -631,7 +645,7 @@
       *
            PERFORM    210-HENSYU-SEC
       *
-           PERFORM    RECE82-READ-SEC
+           PERFORM    900-RECE82-READ-SEC
       *
            .
        200-MAIN-EXT.
@@ -668,7 +682,7 @@
       *
            PERFORM     270-JNISSU-SET-SEC
       *
-           PERFORM     RECE82-REWRITE-SEC
+           PERFORM     280-RECE82-REWRITE-SEC
            .
        210-HENSYU-EXT.
            EXIT.
@@ -692,7 +706,7 @@
            IF      MCP-RC             =       ZERO
       *
                MOVE    "NYUINACCT-KEY7"  TO      ORC-DBPATH
-               PERFORM  NYUINACCT-READ-SEC
+               PERFORM  900-NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
                  IF     NACCT-ZAISKBKBN    =    "1"  OR  "2"  OR
@@ -701,7 +715,7 @@
                  END-IF
       *
                  MOVE          "NYUINACCT-KEY7"  TO   ORC-DBPATH
-                 PERFORM        NYUINACCT-READ-SEC
+                 PERFORM        900-NYUINACCT-READ-SEC
                END-PERFORM
       *
            END-IF
@@ -742,7 +756,7 @@
                                                 MCPDATA-REC
            IF      MCP-RC               =       ZERO
                MOVE    "SRYACCT-KEY22"  TO      ORC-DBPATH
-               PERFORM  SRYACCT-READ-SEC
+               PERFORM  900-SRYACCT-READ-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
@@ -768,7 +782,7 @@
                         PERFORM   2201-RECE82-TENSOU12-SEC
                    END-IF
                    MOVE     "SRYACCT-KEY22"  TO   ORC-DBPATH
-                   PERFORM   SRYACCT-READ-SEC
+                   PERFORM   900-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -856,7 +870,7 @@
                                                 MCPDATA-REC
            IF      MCP-RC               =       ZERO
                MOVE    "SRYACT-KEY9"    TO      ORC-DBPATH
-               PERFORM  SRYACT-READ-SEC
+               PERFORM  900-SRYACT-READ-SEC
                PERFORM  UNTIL  FLG-SRYACT    =    1
                    PERFORM   VARYING   SRYACT-IDX  FROM  1   BY   1
                              UNTIL    (SRYACT-IDX    >   5)  OR
@@ -868,7 +882,7 @@
                        MOVE    SRY-SRYCD(SRYACT-IDX) TO   TNS-SRYCD
                        MOVE    ACCT-SRYYM         TO  ORC-DBYMD(1:6)
                        MOVE    "01"               TO  ORC-DBYMD(7:2)
-                       PERFORM  TENSU-READ-SEC
+                       PERFORM  900-TENSU-READ-SEC
                        IF       FLG-TENSU      =    ZERO
                          IF ( (TNS-JITUDAY    =     2)    AND
                               (TNS-DAYCNT     =     1   OR   2) ) OR
@@ -887,7 +901,7 @@
                                                   MCPDATA-REC
                    END-PERFORM
                    MOVE     "SRYACT-KEY9"    TO   ORC-DBPATH
-                   PERFORM   SRYACT-READ-SEC
+                   PERFORM   900-SRYACT-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -923,7 +937,7 @@
                                                  MCPDATA-REC
            IF      MCP-RC               =       ZERO
                MOVE    "SRYACT-KEY9"    TO      ORC-DBPATH
-               PERFORM  SRYACT-READ-SEC
+               PERFORM  900-SRYACT-READ-SEC
                PERFORM  UNTIL  FLG-SRYACT    =    1
       *
                    PERFORM   VARYING   SRYACT-IDX  FROM  1   BY   1
@@ -937,7 +951,7 @@
                    END-PERFORM
       *
                    MOVE     "SRYACT-KEY9"    TO   ORC-DBPATH
-                   PERFORM   SRYACT-READ-SEC
+                   PERFORM   900-SRYACT-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -1214,7 +1228,7 @@
            MOVE    WRK-SRYCD      TO   NYURYAKUSHO-SRYCD
            MOVE    RECE82-SRYYM   TO   ORC-DBYMD(1:6)
            MOVE    "01"           TO   ORC-DBYMD(7:2)
-           PERFORM  NYURYAKUSHO-READ-SEC
+           PERFORM  900-NYURYAKUSHO-READ-SEC
            IF       FLG-NYURYAKUSHO    =    ZERO
                 MOVE     ZERO     TO    FLG-ARI
                 PERFORM  VARYING  ID1    FROM    1   BY  1
@@ -1267,7 +1281,7 @@
                                                  MCPDATA-REC
            IF      MCP-RC               =       ZERO
                MOVE    "SRYACCT-KEY22"  TO      ORC-DBPATH
-               PERFORM  SRYACCT-READ-SEC
+               PERFORM  900-SRYACCT-READ-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
@@ -1304,7 +1318,7 @@
                        PERFORM   2601-RECE82-TENSOU9-SEC
                    END-IF
                    MOVE     "SRYACCT-KEY22"  TO   ORC-DBPATH
-                   PERFORM   SRYACCT-READ-SEC
+                   PERFORM   900-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -1400,7 +1414,7 @@
                                                  MCPDATA-REC
            IF      MCP-RC               =       ZERO
                MOVE    "SRYACT-KEY9"    TO      ORC-DBPATH
-               PERFORM  SRYACT-READ-SEC
+               PERFORM  900-SRYACT-READ-SEC
                PERFORM  UNTIL  FLG-SRYACT    =    1
       *
                  PERFORM   VARYING   SRYACT-IDX  FROM  1   BY   1
@@ -1413,7 +1427,7 @@
                    MOVE    SRY-SRYCD(SRYACT-IDX) TO   TNS-SRYCD
                    MOVE    ACCT-SRYYM         TO  ORC-DBYMD(1:6)
                    MOVE    "01"               TO  ORC-DBYMD(7:2)
-                   PERFORM  TENSU-READ-SEC
+                   PERFORM  900-TENSU-READ-SEC
                    IF       FLG-TENSU      =    ZERO
       *
                      IF    RECE82-HKNKBN   =   "4"
@@ -1498,7 +1512,7 @@
                  END-PERFORM
       *
                  MOVE     "SRYACT-KEY9"    TO   ORC-DBPATH
-                 PERFORM   SRYACT-READ-SEC
+                 PERFORM   900-SRYACT-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -1533,7 +1547,7 @@
                                                  MCPDATA-REC
            IF      MCP-RC               =       ZERO
                MOVE    "SRYACT-KEY9"    TO      ORC-DBPATH
-               PERFORM  SRYACT-READ-SEC
+               PERFORM  900-SRYACT-READ-SEC
                PERFORM  UNTIL  FLG-SRYACT    =    1
       *
                    PERFORM   VARYING   SRYACT-IDX  FROM  1   BY   1
@@ -1546,7 +1560,7 @@
                      MOVE    SRY-SRYCD(SRYACT-IDX) TO   TNS-SRYCD
                      MOVE    ACCT-SRYYM         TO  ORC-DBYMD(1:6)
                      MOVE    "01"               TO  ORC-DBYMD(7:2)
-                     PERFORM  TENSU-READ-SEC
+                     PERFORM  900-TENSU-READ-SEC
                      IF       FLG-TENSU      =    ZERO
       *
                         IF   SRY-SRYCD(SRYACT-IDX)(1:5) =  "09591"
@@ -1580,7 +1594,7 @@
                    END-PERFORM
       *
                    MOVE     "SRYACT-KEY9"    TO   ORC-DBPATH
-                   PERFORM   SRYACT-READ-SEC
+                   PERFORM   900-SRYACT-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -1615,7 +1629,7 @@
                                                  MCPDATA-REC
            IF      MCP-RC               =       ZERO
                MOVE    "SRYACT-KEY9"    TO      ORC-DBPATH
-               PERFORM  SRYACT-READ-SEC
+               PERFORM  900-SRYACT-READ-SEC
                PERFORM  UNTIL  FLG-SRYACT    =    1
       *
                  IF    SRY-RENNUM     =     1
@@ -1684,7 +1698,7 @@
                      MOVE    SRY-SRYCD(SRYACT-IDX) TO   TNS-SRYCD
                      MOVE    ACCT-SRYYM         TO  ORC-DBYMD(1:6)
                      MOVE    "01"               TO  ORC-DBYMD(7:2)
-                     PERFORM  TENSU-READ-SEC
+                     PERFORM  900-TENSU-READ-SEC
                      IF       FLG-TENSU      =    ZERO
       *
                        IF   SRY-SRYCD(SRYACT-IDX) =  CONS-ROUSAI1  OR
@@ -1753,7 +1767,7 @@
                  END-PERFORM
       *
                  MOVE     "SRYACT-KEY9"    TO   ORC-DBPATH
-                 PERFORM   SRYACT-READ-SEC
+                 PERFORM   900-SRYACT-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -1849,7 +1863,7 @@
                                            MCPDATA-REC
            IF      MCP-RC             =    ZERO
                  MOVE    "SRYACT-KEY9"    TO   ORC-DBPATH
-                 PERFORM  SRYACT-READ-SEC
+                 PERFORM  900-SRYACT-READ-SEC
            ELSE
                  MOVE    1                TO   FLG-SRYACT
            END-IF
@@ -2027,14 +2041,14 @@
       *****************************************************************
       *    データ更新処理（Ｆ００２）
       *****************************************************************
-       RECE82-REWRITE-SEC                SECTION.
+       280-RECE82-REWRITE-SEC                SECTION.
       *
            REWRITE   RECE82-REC
       *
            ADD     1                   TO  CNT-MOD
       *
            .
-       RECE82-WRITE-EXT.
+       280-RECE82-REWRITE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2098,9 +2112,140 @@
            EXIT.
       *
       *****************************************************************
+      *    中間ファイルＲＥＡＤ処理
+      *****************************************************************
+       900-RECE82-READ-SEC            SECTION.
+      *
+           READ    RECE82-FILE   NEXT
+               AT  END
+                   MOVE    1     TO    FLG-END
+               NOT  AT  END
+                   ADD     1     TO    CNT-IN
+      *
+                   DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
+      *
+                   PERFORM 910-SYSKANRI-HENSYU-SEC
+      *
+           END-READ
+           .
+       900-RECE82-READ-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    診療年月の対象となるシス管理を取得（個別処理のみ
+      ****************************************************************
+       910-SYSKANRI-HENSYU-SEC         SECTION.
+      *
+           IF   WRK-PARA-SRYYM    NOT =  ZERO
+                CONTINUE
+           ELSE
+      *         医療機関ＩＤ編集
+                MOVE  ZERO           TO  FLG-SET
+                MOVE  RECE82-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
+                MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
+                PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                      UNTIL  ( SYSKAN-IDX              >  10   )
+                       OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                       OR    ( FLG-SET                 =   1   )
+      *
+                  MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
+                  IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                  AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
+                     MOVE     1       TO    FLG-SET
+                     MOVE    SYS-1001-TAX-HASU-KBN
+                                      TO    WRK-TAX1001-KBN
+                  END-IF
+      *
+                END-PERFORM
+                IF     FLG-SET  =  ZERO
+                  STRING
+                  "医療機関情報が取得できませんでした。診療年月＝"
+                                               DELIMITED  BY  SIZE 
+                       RECE82-SRYYM            DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+                  END-STRING
+                  PERFORM 500-ERR-HENSYU-SEC
+                  MOVE    1               TO  FLG-END
+                  GO  TO  910-SYSKANRI-HENSYU-EXT
+                END-IF
+      *
+      *         労災自賠医療機関情報
+                MOVE  ZERO           TO  FLG-SET
+                MOVE  RECE82-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
+                MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
+                PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                      UNTIL  ( SYSKAN-IDX              >  10   )
+                       OR    ( TBL-SYS4001(SYSKAN-IDX) = SPACE )
+                       OR    ( FLG-SET                 =   1   )
+      *
+                  MOVE  TBL-SYS4001(SYSKAN-IDX)  TO  SYS-4001-REC
+                  IF   ( SYS-4001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                  AND  ( WRK-SYS-SRYYMD     <=  SYS-4001-EDYUKYMD )
+                     MOVE     1       TO    FLG-SET
+                     EVALUATE  SYS-4001-TENKBN
+                       WHEN  "1"
+                          MOVE     11.5       TO    WRK-TANKA
+                       WHEN  "2"
+                          MOVE     12.0       TO    WRK-TANKA
+                     END-EVALUATE
+                     MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN
+                  END-IF
+      *
+                END-PERFORM
+                IF     FLG-SET  =  ZERO
+                  STRING
+               "労災自賠医療機関情報が取得できませんでした。診療年月＝"
+                                           DELIMITED  BY  SIZE 
+                        RECE82-SRYYM       DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+                  END-STRING
+                  PERFORM 500-ERR-HENSYU-SEC
+                  MOVE    1               TO  FLG-END
+                  GO  TO  910-SYSKANRI-HENSYU-EXT
+                END-IF
+      *
+      *         医療機関減算の取得（システム管理テーブルより）
+                MOVE     ZERO      TO  WRK-SHOKUJIRYOYO
+                                       WRK-TOKUKANRIKASAN
+      *
+                MOVE  ZERO         TO  FLG-SET
+                MOVE  RECE82-SRYYM TO  WRK-SYS-SRYYMD(1:6)
+                MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
+                PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                     UNTIL  ( SYSKAN-IDX              >  10   )
+                      OR    ( TBL-SYS5000(SYSKAN-IDX) = SPACE )
+                      OR    ( FLG-SET                 =   1   )
+      *
+                   MOVE  TBL-SYS5000(SYSKAN-IDX)  TO  SYS-5000-REC
+                   IF   ( SYS-5000-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                   AND  ( WRK-SYS-SRYYMD     <=  SYS-5000-EDYUKYMD )
+                      MOVE     1       TO    FLG-SET
+                      PERFORM  110-SYSKAN-HENSYU-SEC
+                   END-IF
+      *
+                END-PERFORM
+                IF     FLG-SET  =  ZERO
+                  STRING
+             "医療機関情報−入院基本が取得できませんでした。診療年月＝"
+                                           DELIMITED  BY  SIZE 
+                        RECE82-SRYYM       DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+                  END-STRING
+                  PERFORM 500-ERR-HENSYU-SEC
+                  MOVE    1               TO  FLG-END
+                  GO  TO  910-SYSKANRI-HENSYU-EXT
+                END-IF
+           END-IF
+      *
+           .
+      *
+       910-SYSKANRI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    入院会計マスター読込
       *****************************************************************
-       NYUINACCT-READ-SEC         SECTION.
+       900-NYUINACCT-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -2116,13 +2261,13 @@
            END-IF
       *
            .
-       NYUINACCT-READ-EXT.
+       900-NYUINACCT-READ-EXT.
            EXIT.
       *
       *****************************************************************
       *    診療会計読込
       *****************************************************************
-       SRYACCT-READ-SEC           SECTION.
+       900-SRYACCT-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -2138,13 +2283,13 @@
            END-IF
       *
            .
-       SRYACCT-READ-EXT.
+       900-SRYACCT-READ-EXT.
            EXIT.
       *
       *****************************************************************
       *    診療行為読込
       *****************************************************************
-       SRYACT-READ-SEC           SECTION.
+       900-SRYACT-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -2160,13 +2305,13 @@
            END-IF
       *
            .
-       SRYACT-READ-EXT.
+       900-SRYACT-READ-EXT.
            EXIT.
       *     
       *****************************************************************
       *    点数マスター読込（主キー）
       *****************************************************************
-       TENSU-READ-SEC         SECTION.
+       900-TENSU-READ-SEC         SECTION.
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -2195,13 +2340,13 @@
            END-IF
       *
            .
-       TENSU-READ-EXT.
+       900-TENSU-READ-EXT.
            EXIT.
       *     
       *****************************************************************
       *    入院略称マスター読込（主キー）
       *****************************************************************
-       NYURYAKUSHO-READ-SEC        SECTION.
+       900-NYURYAKUSHO-READ-SEC        SECTION.
       *
            MOVE    NYURYAKUSHO-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -2230,13 +2375,13 @@
            END-IF
       *
            .
-       NYURYAKUSHO-READ-EXT.
+       900-NYURYAKUSHO-READ-EXT.
            EXIT.
       *
       **************************************************************
       *    システム管理マスタ読み込み処理
       **************************************************************
-       SYSKANRI-READ-SEC         SECTION.
+       900-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -2258,7 +2403,7 @@
            END-IF
       *
            .
-       SYSKANRI-READ-EXT.
+       900-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2300,112 +2445,5 @@
       *
            .
        900-DBDISCONNECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    中間ファイルＲＥＡＤ処理
-      *****************************************************************
-       RECE82-READ-SEC            SECTION.
-      *
-           READ    RECE82-FILE   NEXT
-               AT  END
-                   MOVE    1     TO    FLG-END
-               NOT  AT  END
-                   ADD     1     TO    CNT-IN
-      *
-                   DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
-      *
-                   IF   WRK-PARA-SRYYM    NOT =  ZERO
-                     CONTINUE
-                   ELSE
-      *              医療機関ＩＤ編集
-                     MOVE  ZERO           TO  FLG-SET
-                     MOVE  RECE82-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
-                     MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
-                     PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                           UNTIL  ( SYSKAN-IDX              >  10   )
-                            OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
-                            OR    ( FLG-SET                 =   1   )
-      *
-                       MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
-                       IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
-                       AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
-                          MOVE     1       TO    FLG-SET
-                          MOVE    SYS-1001-TAX-HASU-KBN
-                                           TO    WRK-TAX1001-KBN
-                       END-IF
-      *
-                     END-PERFORM
-                     IF     FLG-SET  =  ZERO
-               STRING  "医療機関情報が取得できませんでした。診療年月＝"
-                                               DELIMITED  BY  SIZE 
-                       RECE82-SRYYM            DELIMITED  BY  SIZE
-                                       INTO    WRK-RECEERR
-               END-STRING
-                         PERFORM 500-ERR-HENSYU-SEC
-                         MOVE    1               TO  FLG-END
-                     END-IF
-      *              労災自賠医療機関情報
-                     MOVE  ZERO           TO  FLG-SET
-                     MOVE  RECE82-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
-                     MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
-                     PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                           UNTIL  ( SYSKAN-IDX              >  10   )
-                            OR    ( TBL-SYS4001(SYSKAN-IDX) = SPACE )
-                            OR    ( FLG-SET                 =   1   )
-      *
-                       MOVE  TBL-SYS4001(SYSKAN-IDX)  TO  SYS-4001-REC
-                       IF   ( SYS-4001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
-                       AND  ( WRK-SYS-SRYYMD     <=  SYS-4001-EDYUKYMD )
-                          MOVE     1       TO    FLG-SET
-                          EVALUATE  SYS-4001-TENKBN
-                            WHEN  "1"
-                               MOVE     11.5       TO    WRK-TANKA
-                            WHEN  "2"
-                               MOVE     12.0       TO    WRK-TANKA
-                          END-EVALUATE
-                          MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN
-                       END-IF
-      *
-                     END-PERFORM
-                     IF     FLG-SET  =  ZERO
-             STRING
-               "労災自賠医療機関情報が取得できませんでした。診療年月＝"
-                                           DELIMITED  BY  SIZE 
-                        RECE82-SRYYM       DELIMITED  BY  SIZE
-                                       INTO    WRK-RECEERR
-             END-STRING
-                         PERFORM 500-ERR-HENSYU-SEC
-                         MOVE    1               TO  FLG-END
-                     END-IF
-                   END-IF
-      *
-                   IF   WRK-PARA-SRYYM    NOT =  ZERO
-                      CONTINUE
-                   ELSE
-      *               医療機関減算の取得（システム管理テーブルより）
-                      MOVE     ZERO      TO  WRK-SHOKUJIRYOYO
-                                             WRK-TOKUKANRIKASAN
-      *
-                      MOVE  ZERO         TO  FLG-SET
-                      MOVE  RECE82-SRYYM TO  WRK-SYS-SRYYMD(1:6)
-                      MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
-                      PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                           UNTIL  ( SYSKAN-IDX              >  10   )
-                            OR    ( TBL-SYS5000(SYSKAN-IDX) = SPACE )
-                            OR    ( FLG-SET                 =   1   )
-      *
-                       MOVE  TBL-SYS5000(SYSKAN-IDX)  TO  SYS-5000-REC
-                       IF   ( SYS-5000-STYUKYMD  <=  WRK-SYS-SRYYMD    )
-                       AND  ( WRK-SYS-SRYYMD     <=  SYS-5000-EDYUKYMD )
-                          MOVE     1       TO    FLG-SET
-                          PERFORM  110-SYSKAN-HENSYU-SEC
-                       END-IF
-      *
-                      END-PERFORM
-                   END-IF
-           END-READ
-           .
-       RECE82-READ-EXT.
            EXIT.
       *

@@ -947,21 +947,28 @@
                                              MCPDATA-REC
              IF      MCP-RC              =   ZERO
                  MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-                 PERFORM 960-KANRIMST-READ-SEC
-                 MOVE    MCPDATA-REC     TO  SYS-5000-REC
-      *
-                 PERFORM  SYSKAN-HENSYU-SEC
-      *
+                 PERFORM  960-KANRIMST-READ-SEC
+                 IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-5000-REC
+                   PERFORM  SYSKAN-HENSYU-SEC
+                   IF        WRK-SYS5000-COUNT    =     ZERO
+                      CONTINUE
+                   ELSE
+                      PERFORM  SYS-5000-GET-SEC
+                   END-IF
+                 ELSE
+                   MOVE "医療機関情報−入院基本が取得できませんでした。"
+                                         TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                 END-IF
+             ELSE
+                  MOVE "医療機関情報−入院基本が取得できませんでした。"
+                                         TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
              END-IF
       *
              MOVE   "SYSKANRI-KEY"       TO  WK-PATH
              PERFORM   CSR-CLOSE-SEC
-      *
-             IF        WRK-SYS5000-COUNT    =     ZERO
-                 CONTINUE
-             ELSE
-                 PERFORM  SYS-5000-GET-SEC
-             END-IF
       *
            ELSE
       *
@@ -992,7 +999,10 @@
                    PERFORM 960-KANRIMST-READ-SEC
       *
                  END-PERFORM
-      *
+             ELSE
+                  MOVE "医療機関情報−入院基本が取得できませんでした。"
+                                         TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
              END-IF
       *
              MOVE   "SYSKANRI-KEY8"     TO  WK-PATH
@@ -8005,73 +8015,95 @@
       *
                    DISPLAY "RECE62 " IDZ " PTNUM=" RECE62-PTNUM     
       *
-                   IF   WRK-PARA-SRYYM    NOT =  ZERO
-                     CONTINUE
-                   ELSE
-      *              医療機関ＩＤ編集
-                     MOVE  ZERO           TO  FLG-SET
-                     MOVE  RECE62-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
-                     MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
-                     PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                           UNTIL  ( SYSKAN-IDX              >  10   )
-                            OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
-                            OR    ( FLG-SET                 =   1   )
+                   PERFORM 910-SYSKANRI-HENSYU-SEC
       *
-                       MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
-                       IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
-                       AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
-                          MOVE     1               TO    FLG-SET
-                          MOVE   SYS-1001-PREFNUM  TO    WRK-PREFNUM
-                       END-IF
+           END-READ
+           .
+       RECE62-READ-EXT.
+           EXIT.
       *
-                     END-PERFORM
-                     IF     FLG-SET  =  ZERO
-               STRING  "医療機関情報が取得できませんでした。診療年月＝"
+      ****************************************************************
+      *    診療年月の対象となるシス管理を取得（個別処理のみ
+      ****************************************************************
+       910-SYSKANRI-HENSYU-SEC         SECTION.
+      *
+           IF   WRK-PARA-SRYYM    NOT =  ZERO
+               CONTINUE
+           ELSE
+      *        医療機関ＩＤ編集
+               MOVE  ZERO           TO  FLG-SET
+               MOVE  RECE62-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
+               MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
+               PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                     UNTIL  ( SYSKAN-IDX              >  10   )
+                      OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                      OR    ( FLG-SET                 =   1   )
+      *
+                 MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
+                 IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                 AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
+                    MOVE     1               TO    FLG-SET
+                    MOVE   SYS-1001-PREFNUM  TO    WRK-PREFNUM
+                 END-IF
+      *
+               END-PERFORM
+               IF     FLG-SET  =  ZERO
+                  STRING
+                     "医療機関情報が取得できませんでした。診療年月＝"
                                                DELIMITED  BY  SIZE 
                        RECE62-SRYYM            DELIMITED  BY  SIZE
                                        INTO    WRK-RECEERR
-               END-STRING
-                        PERFORM 500-ERR-HENSYU-SEC
-                        MOVE    1              TO  FLG-RECE62
-                     END-IF
-                   END-IF
+                  END-STRING
+                  PERFORM 500-ERR-HENSYU-SEC
+                  MOVE    1              TO  FLG-RECE62
+                  GO  TO  910-SYSKANRI-HENSYU-EXT
+               END-IF
       *
-                   IF   WRK-PARA-SRYYM    NOT =  ZERO
-                      CONTINUE
-                   ELSE
-                      MOVE      RECE62-SRYYM   TO  WRK-SRYYM-5000
-                      PERFORM   SYS-5000-CHK-SEC
-      *               食事・未実施減算情報（システム管理テーブルより）
-                      MOVE     ZERO      TO  WRK-SHOKUJIRYOYO
-                                             WRK-TOKUKANRIKASAN
+               MOVE      RECE62-SRYYM   TO  WRK-SRYYM-5000
+               PERFORM   SYS-5000-CHK-SEC
+      *        食事・未実施減算情報（システム管理テーブルより）
+               MOVE     ZERO      TO  WRK-SHOKUJIRYOYO
+                                      WRK-TOKUKANRIKASAN
       *
-                      INITIALIZE             WRK-SYS-MIJISI-T
+               INITIALIZE             WRK-SYS-MIJISI-T
       *
-                      MOVE  ZERO         TO  FLG-SET
-                      MOVE  RECE62-SRYYM TO  WRK-SYS-SRYYMD(1:6)
-                      MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
-                      PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                           UNTIL  ( SYSKAN-IDX              >  10   )
-                            OR    ( TBL-SYS5000(SYSKAN-IDX) = SPACE )
-                            OR    ( FLG-SET                 =   1   )
+               MOVE  ZERO         TO  FLG-SET
+               MOVE  RECE62-SRYYM TO  WRK-SYS-SRYYMD(1:6)
+               MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
+               PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                    UNTIL  ( SYSKAN-IDX              >  10   )
+                     OR    ( TBL-SYS5000(SYSKAN-IDX) = SPACE )
+                     OR    ( FLG-SET                 =   1   )
       *
-                       MOVE  TBL-SYS5000(SYSKAN-IDX)  TO  SYS-5000-REC
-                       IF   ( SYS-5000-STYUKYMD  <=  WRK-SYS-SRYYMD    )
-                       AND  ( WRK-SYS-SRYYMD     <=  SYS-5000-EDYUKYMD )
-                          MOVE     1       TO    FLG-SET
-                          PERFORM  SYSKAN-HENSYU-SEC
-                       END-IF
-      *
-                      END-PERFORM
+                  MOVE  TBL-SYS5000(SYSKAN-IDX)  TO  SYS-5000-REC
+                  IF   ( SYS-5000-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                  AND  ( WRK-SYS-SRYYMD     <=  SYS-5000-EDYUKYMD )
+                      MOVE     1       TO    FLG-SET
+                      PERFORM  SYSKAN-HENSYU-SEC
                       IF        WRK-SYS5000-COUNT    =     ZERO
                           CONTINUE
                       ELSE
                           PERFORM  SYS-5000-GET-SEC
                       END-IF
-                   END-IF
-           END-READ
+                  END-IF
+      *
+               END-PERFORM
+               IF     FLG-SET  =  ZERO
+                  STRING
+              "医療機関情報−入院基本が取得できませんでした。診療年月＝"
+                                               DELIMITED  BY  SIZE 
+                       RECE62-SRYYM            DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+                  END-STRING
+                  PERFORM 500-ERR-HENSYU-SEC
+                  MOVE    1              TO  FLG-RECE62
+                  GO  TO  910-SYSKANRI-HENSYU-EXT
+               END-IF
+           END-IF
+      *
            .
-       RECE62-READ-EXT.
+      *
+       910-SYSKANRI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

@@ -21,7 +21,7 @@
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト入院（労災・自賠責）
       *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
-      *                      （点数摘要欄並び替え）
+      *                      摘要欄並び替え（労災・自賠責）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  03/06/01    NACL−門脇    新規作成
@@ -202,7 +202,7 @@
            OPEN    INPUT               RECE86-FILE
            OPEN    I-O                 RECE87-FILE
       *
-           PERFORM    RECE86-READ-SEC
+           PERFORM    900-RECE86-READ-SEC
       *
           .
        100-INIT-EXT.
@@ -215,7 +215,7 @@
       *
            PERFORM     210-HENSYU-SEC
       *
-           PERFORM     RECE86-READ-SEC
+           PERFORM     900-RECE86-READ-SEC
            .
        200-MAIN-EXT.
            EXIT.
@@ -292,7 +292,7 @@
                MOVE   RECE86-KOUHYOJUNNUM  TO  RECE87-KOUHYOJUNNUM
            END-IF
            IF     RECE86-SRYKBN  NOT =  "95" AND "96"
-               PERFORM     RECE87-WRITE-SEC
+               PERFORM     2101-RECE87-WRITE-SEC
            END-IF
            .
        210-HENSYU-EXT.
@@ -301,14 +301,14 @@
       *****************************************************************
       *    データ更新処理（Ｆ００６１）
       *****************************************************************
-       RECE87-WRITE-SEC                SECTION.
+       2101-RECE87-WRITE-SEC                SECTION.
       *
            WRITE   RECE87-REC
       *
            ADD     1                   TO  CNT-OUT
       *
            .
-       RECE87-WRITE-EXT.
+       2101-RECE87-WRITE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -375,7 +375,7 @@
       *****************************************************************
       *    中間ファイルＲＥＡＤ処理
       *****************************************************************
-       RECE86-READ-SEC            SECTION.
+       900-RECE86-READ-SEC            SECTION.
       *
            READ    RECE86-FILE   NEXT
                AT  END
@@ -387,7 +387,7 @@
       *
            END-READ
            .
-       RECE86-READ-EXT.
+       900-RECE86-READ-EXT.
            EXIT.
       *
       *      

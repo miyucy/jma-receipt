@@ -99,22 +99,6 @@
            03  TBL-SYS1001-OCC                         OCCURS  10.
                05  TBL-SYS1001                         PIC X(610).
       *
-      *    システム領域
-       01  SYS-AREA.
-           03  SYS-TIME.
-               05  SYS-THH                             PIC 9(02).
-               05  SYS-TMM                             PIC 9(02).
-               05  SYS-TSS                             PIC 9(02).
-               05  SYS-TDD                             PIC 9(02).
-           03  SYS-YMD.
-               05  SYS-YY                              PIC 9(04).
-               05  SYS-MM                              PIC 9(02).
-               05  SYS-DD                              PIC 9(02).
-           03  SYS-WKYMD.
-               05  SYS-WKYY                            PIC 9(02).
-               05  SYS-WKMM                            PIC 9(02).
-               05  SYS-WKDD                            PIC 9(02).
-      *
       *    パラメタ領域
        01  WRK-PARA.
            03  WRK-PARA-SRYYM                          PIC X(06).
@@ -224,6 +208,8 @@
            COPY    "CPORCSJOBKANRI.INC".
       *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *    定期請求用収納作成サブ
        01  LNK-ORCS02-REC.
@@ -269,13 +255,6 @@
       *
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
-      *
-           ACCEPT  SYS-TIME    FROM    TIME
-      *
-           ACCEPT  SYS-WKYMD   FROM    DATE
-           COMPUTE SYS-YY  =   SYS-WKYY    +   2000
-           COMPUTE SYS-MM  =   SYS-WKMM
-           COMPUTE SYS-DD  =   SYS-WKDD
       *
            MOVE    COMMAND-PARAM       TO  WRK-PARA
       *
@@ -917,12 +896,16 @@
            MOVE    WRK-PARA-TERMID     TO  SYU-TERMID
                                            SDAY-TERMID
       *
-           MOVE    SYS-YMD             TO  SYU-CREYMD
-                                           SYU-UPYMD
-           MOVE    SYS-YMD             TO  SDAY-CREYMD
-                                           SDAY-UPYMD
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
       *
-           MOVE    SYS-TIME            TO  SYU-UPHMS
+           MOVE    SMCNDATE-YMD        TO  SYU-CREYMD
+                                           SDAY-CREYMD
+           MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+                                           SDAY-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
                                            SDAY-UPHMS
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC

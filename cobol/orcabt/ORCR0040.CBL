@@ -788,7 +788,7 @@
                                                  MCPDATA-REC
              IF      MCP-RC              =   ZERO
                MOVE    "SYSKANRI-KEY2"  TO  ORC-DBPATH 
-               PERFORM   SYSKANRI-READ-SEC
+               PERFORM   900-SYSKANRI-READ-SEC
                PERFORM   VARYING   IDX    FROM   1   BY   1
                           UNTIL   (IDX             >      50)
                             OR    (FLG-SYSKANRI    =       1)
@@ -799,7 +799,7 @@
                    PERFORM   2001-JUSHIN-KENSAKU-SEC
       *
                    MOVE    "SYSKANRI-KEY2"  TO  ORC-DBPATH 
-                   PERFORM   SYSKANRI-READ-SEC
+                   PERFORM   900-SYSKANRI-READ-SEC
                END-PERFORM
              END-IF
       *
@@ -910,7 +910,7 @@
                         PERFORM    2001-RYOYO-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM    2001-RECE04-TENSOU-SEC
+                        PERFORM    2099-RECE04-TENSOU-SEC
                       END-IF
                    WHEN      "14"
                       MOVE   ZERO   TO  FLG-COMMENT
@@ -924,7 +924,7 @@
                         PERFORM    2001-HINKAI-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
-                        PERFORM    2001-RECE04-TENSOU-SEC
+                        PERFORM    2099-RECE04-TENSOU-SEC
                       END-IF
                    WHEN      "33"
       *            ° ∫ﬂ¬¥µº‘À¨Ã‰≈¿≈©√ÌºÕ¥…Õ˝ªÿ∆≥Œ¡ªªƒÍª˛§Œ≈¿≈©√ÌºÕ§Œ
@@ -952,10 +952,10 @@
                       IF  FLG-ARI  =  1
                           PERFORM   2001-RIHA-COMMENT-SEC
                       ELSE
-                          PERFORM   2001-RECE04-TENSOU-SEC
+                          PERFORM   2099-RECE04-TENSOU-SEC
                       END-IF
                    WHEN   OTHER
-                      PERFORM    2001-RECE04-TENSOU-SEC
+                      PERFORM    2099-RECE04-TENSOU-SEC
                END-EVALUATE
       *
                PERFORM 990-RECE04-NEXT-SEC
@@ -1005,7 +1005,7 @@
                                                MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "JYURRK-KEY24"  TO  ORC-DBPATH 
-               PERFORM   JYURRK-READ-SEC
+               PERFORM   900-JYURRK-READ-SEC
                PERFORM   UNTIL   FLG-JYURRK   =    1
                    IF    JYURRK-HKNKBN    =       "0"
                       MOVE   JYURRK-HKNCOMBINUM
@@ -1033,7 +1033,7 @@
                    END-IF
       *
                    MOVE    "JYURRK-KEY24"  TO  ORC-DBPATH 
-                   PERFORM   JYURRK-READ-SEC
+                   PERFORM   900-JYURRK-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -1116,7 +1116,7 @@
                  ELSE
                     IF  IDY     <  10 
                        IF    WK-FREE-YUKOKETA(IDZ)  =  25
-                          PERFORM  2001-FREE-COMMENT-KAIGYO-SEC
+                          PERFORM  20011-FREE-COMMENT-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    "°¢"
@@ -1130,7 +1130,7 @@
                        END-IF
       *
                        IF    WK-FREE-YUKOKETA(IDZ)  =  24 OR 25
-                          PERFORM  2001-FREE-COMMENT-KAIGYO-SEC
+                          PERFORM  20011-FREE-COMMENT-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    TBL-DAY(IDY)(3:2)     
@@ -1153,7 +1153,7 @@
                        END-IF
                     ELSE
                        IF    WK-FREE-YUKOKETA(IDZ)  =  25
-                          PERFORM  2001-FREE-COMMENT-KAIGYO-SEC
+                          PERFORM  20011-FREE-COMMENT-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    "°¢"
@@ -1166,7 +1166,7 @@
                        END-IF
       *
                        IF    WK-FREE-YUKOKETA(IDZ)  =  23 OR 24 OR 25
-                          PERFORM  2001-FREE-COMMENT-KAIGYO-SEC
+                          PERFORM  20011-FREE-COMMENT-KAIGYO-SEC
                           ADD   2  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    TBL-DAY(IDY)     
@@ -1199,7 +1199,7 @@
       *****************************************************************
       *     £øÙø«Œ≈≤ ºıø«§Œ≤ °¶∆¸…’§Œ ‘Ω∏° ≤˛π‘°À
       *****************************************************************
-       2001-FREE-COMMENT-KAIGYO-SEC          SECTION.
+       20011-FREE-COMMENT-KAIGYO-SEC          SECTION.
       *
            ADD      1              TO  IDZ
       *
@@ -1208,7 +1208,7 @@
            MOVE    ALL "°°"        TO  WK-FREE-NAME(IDZ)(1:WRK-KETA)
       *
            .
-       2001-FREE-COMMENT-KAIGYO-EXT.
+       20011-FREE-COMMENT-KAIGYO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1700,7 +1700,7 @@
               END-PERFORM
       *
               IF      CNT-JINZOU        NOT =      ZERO
-                  PERFORM    2001-JINZOU-COMMENT-SEC
+                  PERFORM    20011-JINZOU-COMMENT-SEC
               END-IF
       *
            END-PERFORM
@@ -1712,7 +1712,7 @@
       *****************************************************************
       *    øÕπ©ø’¬°§Œ•≥•·•Û•» ‘Ω∏
       *****************************************************************
-       2001-JINZOU-COMMENT-SEC          SECTION.
+       20011-JINZOU-COMMENT-SEC          SECTION.
       *
            INITIALIZE                      RECE041-REC
            MOVE    RECE02-HOSPID       TO  RECE041-HOSPID
@@ -1771,7 +1771,7 @@
            ADD     1                    TO  CNT-RECE05
       *
            .
-       2001-JINZOU-COMMENT-EXT.
+       20011-JINZOU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1868,7 +1868,7 @@
       *
            MOVE       5          TO   FLG-COMMENT
       *
-           PERFORM  2001-FREE-COMMENT2-SEC
+           PERFORM  20011-FREE-COMMENT2-SEC
       *
       *    £“£≈£√£≈£∞£µ•’•°•§•Î§Œ∆‚Õ∆§Ú•∆°º•÷•Î§À¬‡»Ú
            MOVE    ZERO                TO  IDX-RECE05
@@ -1979,7 +1979,7 @@
            IF      MCP-RC              =   ZERO
       *
                 MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
-                PERFORM        SANTEI-READ-SEC
+                PERFORM        900-SANTEI-READ-SEC
       *
                 PERFORM   UNTIL  ( FLG-SANTEI         =   1 ) OR
                                  ( FLG-KYUSEI-COMMENT =   1 )
@@ -2015,7 +2015,7 @@
                    END-PERFORM
       *
                    MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
-                   PERFORM        SANTEI-READ-SEC
+                   PERFORM        900-SANTEI-READ-SEC
       *
                 END-PERFORM
       *
@@ -2029,7 +2029,7 @@
                                        MCPDATA-REC
       *
            IF      FLG-KYUSEI-COMMENT    =      1
-               PERFORM    2001-KYUSEIHASSYO-COMMENT-SEC
+               PERFORM    20011-KYUSEIHASSYO-COMMENT-SEC
            END-IF
       *
            .
@@ -2039,7 +2039,7 @@
       *****************************************************************
       *    «æ∑Ï¥…º¿¥µµﬁ¿≠»Øæ…∆¸§Œ•≥•·•Û•» ‘Ω∏
       *****************************************************************
-       2001-KYUSEIHASSYO-COMMENT-SEC          SECTION.
+       20011-KYUSEIHASSYO-COMMENT-SEC          SECTION.
       *
            INITIALIZE                      RECE041-REC
            MOVE    RECE02-HOSPID       TO  RECE041-HOSPID
@@ -2093,7 +2093,7 @@
            ADD     1                    TO  CNT-RECE05
       *
            .
-       2001-KYUSEIHASSYO-COMMENT-EXT.
+       20011-KYUSEIHASSYO-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2123,7 +2123,7 @@
                                          MCPDATA-REC
              IF      MCP-RC              =   ZERO
                     MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-                    PERFORM        SANTEI-READ-SEC
+                    PERFORM        900-SANTEI-READ-SEC
                     PERFORM   UNTIL   FLG-SANTEI  =   1
       *
                        IF     SANTEI-FSANTEIYMD(1:6)  =  RECE04-SRYYM   
@@ -2131,7 +2131,7 @@
                        END-IF
       * 
                        MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-                       PERFORM        SANTEI-READ-SEC
+                       PERFORM        900-SANTEI-READ-SEC
                     END-PERFORM
              END-IF
       *
@@ -2144,7 +2144,7 @@
       *
              IF      FLG-SHIDOU-COMMENT    =      1
                  MOVE       99      TO     FLG-COMMENT
-                 PERFORM    2001-SHIDOU-COMMENT-SEC
+                 PERFORM    20011-SHIDOU-COMMENT-SEC
              END-IF         
       *
            END-IF
@@ -2156,9 +2156,9 @@
       *****************************************************************
       *    À˝¿≠·÷ƒÀº¿¥µ¥…Õ˝Œ¡§Œ•≥•·•Û•» ‘Ω∏
       *****************************************************************
-       2001-SHIDOU-COMMENT-SEC          SECTION.
+       20011-SHIDOU-COMMENT-SEC          SECTION.
       *
-           PERFORM   2001-SANTEI-DAY-SEC
+           PERFORM   200111-SANTEI-DAY-SEC
       *
            MOVE       RECE04-REC    TO   RECE041-REC
            ADD     1                TO   RECE041-MEISAISU
@@ -2204,7 +2204,7 @@
            ADD      1                    TO  CNT-RECE05
       *
            .
-       2001-SHIDOU-COMMENT-EXT.
+       20011-SHIDOU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2214,7 +2214,7 @@
       *
            IF      RECE04-FLG-SYOBYO-COMMENT   =    "1"
                 MOVE       4       TO     FLG-COMMENT
-                PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
+                PERFORM    20011-SHUJUTSU-ETC2-COMMENT-SEC
            END-IF
       *
            .
@@ -2228,7 +2228,7 @@
       *
            IF      RECE04-FLG-RYOYO-COMMENT    =    "1"
                 MOVE       4       TO     FLG-COMMENT
-                PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
+                PERFORM    20011-SHUJUTSU-ETC2-COMMENT-SEC
            END-IF
       *
            .
@@ -2242,7 +2242,7 @@
       *
            IF     RECE04-FLG-HOUSIJI-COMMENT   =    "1"
                MOVE       3       TO     FLG-COMMENT
-               PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
+               PERFORM    20011-SHUJUTSU-ETC2-COMMENT-SEC
            END-IF
       *
            .
@@ -2286,7 +2286,7 @@
                                          MCPDATA-REC
              IF      MCP-RC              =   ZERO
                     MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
-                    PERFORM        SANTEI-READ-SEC
+                    PERFORM        900-SANTEI-READ-SEC
                     PERFORM   UNTIL  ( FLG-SANTEI         =   1 ) OR
                                      ( FLG-HINKAI-COMMENT =   1 )
       *
@@ -2314,7 +2314,7 @@
                        END-IF
       * 
                        MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
-                       PERFORM        SANTEI-READ-SEC
+                       PERFORM        900-SANTEI-READ-SEC
                     END-PERFORM
              END-IF
       *
@@ -2327,7 +2327,7 @@
       *
              IF      FLG-HINKAI-COMMENT    =      1
                  MOVE       99      TO     FLG-COMMENT
-                 PERFORM    2001-HINKAI-COMMENT-SEC
+                 PERFORM    20011-HINKAI-COMMENT-SEC
              END-IF
       *
            END-IF
@@ -2339,9 +2339,9 @@
       *****************************************************************
       *    ∫ﬂ¬∑Ï±’∆©¿œ…—≤Ûªÿ∆≥¥…Õ˝Œ¡§Œ•≥•·•Û•» ‘Ω∏
       *****************************************************************
-       2001-HINKAI-COMMENT-SEC          SECTION.
+       20011-HINKAI-COMMENT-SEC          SECTION.
       *
-             PERFORM    2001-RECE05-TAIHI-SEC
+             PERFORM    200111-RECE05-TAIHI-SEC
       *
       *      £“£≈£√£≈£∞£µ•’•°•§•Î§Œ∆‚Õ∆§Ú•∆°º•÷•Î§À¬‡»Ú
              MOVE    ZERO                 TO  IDX-RECE05
@@ -2363,10 +2363,10 @@
              MOVE    TBL-DAY(DAY-IDX2)
                             TO  WRK-RECE05XX-NAME(MAX-MEISAISU 1)(27:4)
       *
-             PERFORM    2001-SRYACTINF-HENSYU-SEC
+             PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
            .
-       2001-HINKAI-COMMENT-EXT.
+       20011-HINKAI-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2375,9 +2375,9 @@
        2001-HOUTEN-HANTEI-SEC          SECTION.
       *
            IF     RECE04-FLG-HOUTEN-COMMENT   =    "1"
-               PERFORM    2001-HOUTEN-COMMENT-SEC
+               PERFORM    20011-HOUTEN-COMMENT-SEC
            ELSE
-               PERFORM    2001-RECE04-TENSOU-SEC
+               PERFORM    2099-RECE04-TENSOU-SEC
            END-IF
       *
            .
@@ -2387,9 +2387,9 @@
       *****************************************************************
       *    ∫ﬂ¬¥µº‘À¨Ã‰≈¿≈©√ÌºÕ¥…Õ˝ªÿ∆≥Œ¡ªªƒÍª˛§Œ≈¿≈©√ÌºÕ§Œ•≥•·•Û•» ‘Ω∏
       *****************************************************************
-       2001-HOUTEN-COMMENT-SEC          SECTION.
+       20011-HOUTEN-COMMENT-SEC          SECTION.
       *
-             PERFORM    2001-RECE05-TAIHI-SEC
+             PERFORM    200111-RECE05-TAIHI-SEC
       *
       *      £“£≈£√£≈£∞£µ•’•°•§•Î§Œ∆‚Õ∆§Ú•∆°º•÷•Î§À¬‡»Ú
              MOVE    ZERO                 TO  IDX-RECE05
@@ -2405,10 +2405,10 @@
              MOVE    "° À¨≈¿°À"
                             TO  WRK-RECE05XX-NAME(IDX-RECE05 1)
       *
-             PERFORM    2001-SRYACTINF-HENSYU-SEC
+             PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
            .
-       2001-HOUTEN-COMMENT-EXT.
+       20011-HOUTEN-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2418,9 +2418,9 @@
       *
            IF     RECE04-FLG-SHUJUTU-COMMENT   =    SPACE
                MOVE       1       TO     FLG-COMMENT
-               PERFORM    2001-SHUJUTSU-ETC-COMMENT-SEC
+               PERFORM    20011-SHUJUTSU-ETC-COMMENT-SEC
            ELSE
-               PERFORM    2001-RECE04-TENSOU-SEC
+               PERFORM    2099-RECE04-TENSOU-SEC
            END-IF
       *
            .
@@ -2434,9 +2434,9 @@
       *
            IF      RECE04-FLG-CTMRI-COMMENT   =    "1"
                 MOVE       2       TO     FLG-COMMENT
-                PERFORM    2001-SHUJUTSU-ETC-COMMENT-SEC
+                PERFORM    20011-SHUJUTSU-ETC-COMMENT-SEC
            ELSE
-                PERFORM    2001-RECE04-TENSOU-SEC
+                PERFORM    2099-RECE04-TENSOU-SEC
            END-IF
       *
            .
@@ -2446,16 +2446,16 @@
       *****************************************************************
       *    ºÍΩ—∆¸≈˘§Œ•≥•·•Û•» ‘Ω∏° ∫ππ˛°ßæÂ°À
       *****************************************************************
-       2001-SHUJUTSU-ETC-COMMENT-SEC          SECTION.
+       20011-SHUJUTSU-ETC-COMMENT-SEC          SECTION.
       *
-           PERFORM   2001-SANTEI-DAY-SEC
+           PERFORM   200111-SANTEI-DAY-SEC
       *
            MOVE       ZERO       TO   IDZ                               
            INITIALIZE            WRK-FREE-AREA2                         
       *
-           PERFORM  2001-FREE-COMMENT2-SEC                              
+           PERFORM  20011-FREE-COMMENT2-SEC                              
       *
-           PERFORM  2001-RECE05-TAIHI-SEC
+           PERFORM  200111-RECE05-TAIHI-SEC
       *
       *    £“£≈£√£≈£∞£µ•’•°•§•Î§Œ∆‚Õ∆§Ú•∆°º•÷•Î§À¬‡»Ú
            MOVE    ZERO                 TO  IDX-RECE05
@@ -2475,25 +2475,25 @@
                               TO  WRK-RECE05XX-NAME(IDX-RECE05 1)
            END-PERFORM 
       *
-           PERFORM    2001-SRYACTINF-HENSYU-SEC
+           PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
            .
-       2001-SHUJUTSU-ETC-COMMENT-EXT.
+       20011-SHUJUTSU-ETC-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
       *    ºÍΩ—∆¸≈˘§Œ•≥•·•Û•» ‘Ω∏£≤° ∫ππ˛°ß≤º°À
       *****************************************************************
-       2001-SHUJUTSU-ETC2-COMMENT-SEC          SECTION.
+       20011-SHUJUTSU-ETC2-COMMENT-SEC          SECTION.
       *
-           PERFORM   2001-SANTEI-DAY-SEC
+           PERFORM   200111-SANTEI-DAY-SEC
       *
            MOVE       ZERO       TO   IDZ                               
            INITIALIZE            WRK-FREE-AREA2                         
       *
-           PERFORM  2001-FREE-COMMENT2-SEC                              
+           PERFORM  20011-FREE-COMMENT2-SEC                              
       *
-           PERFORM  2001-RECE05-TAIHI-SEC
+           PERFORM  200111-RECE05-TAIHI-SEC
       *
       *    £“£≈£√£≈£∞£µ•’•°•§•Î§Œ∆‚Õ∆§Ú•∆°º•÷•Î§À¬‡»Ú
            MOVE    ZERO                 TO  IDX-RECE05
@@ -2515,16 +2515,16 @@
                              TO  WRK-RECE05XX-NAME(MAX-MEISAISU 1)
            END-PERFORM
       *
-           PERFORM    2001-SRYACTINF-HENSYU-SEC
+           PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
            .
-       2001-SHUJUTSU-ETC2-COMMENT-EXT.
+       20011-SHUJUTSU-ETC2-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
       *    ªªƒÍ∆¸§Œ≥ŒƒÍ
       *****************************************************************
-       2001-SANTEI-DAY-SEC          SECTION.
+       200111-SANTEI-DAY-SEC          SECTION.
       *
            INITIALIZE                TBL-SANTEI-DAY
       *
@@ -2539,13 +2539,13 @@
            END-PERFORM
       *
            .
-       2001-SANTEI-DAY-EXT.
+       200111-SANTEI-DAY-EXT.
            EXIT.
       *
       *****************************************************************
       *    ºÍΩ—∆¸≈˘§Œ∆¸…’§Œ ‘Ω∏
       *****************************************************************
-       2001-FREE-COMMENT2-SEC          SECTION.                         
+       20011-FREE-COMMENT2-SEC          SECTION.                         
       *
            ADD      1          TO    IDZ
       *
@@ -2633,7 +2633,7 @@
                        MOVE   TB-SANTEI-DAY(IDX)  TO  IDY
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  25
-                          PERFORM  2001-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  200111-FREE-COMMENT2-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    "°¢"
@@ -2647,7 +2647,7 @@
                        END-IF
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  24 OR 25
-                          PERFORM  2001-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  200111-FREE-COMMENT2-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    TBL-DAY(IDY)(3:2)     
@@ -2673,7 +2673,7 @@
                        MOVE   TB-SANTEI-DAY(IDX)  TO  IDY
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  25
-                          PERFORM  2001-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  200111-FREE-COMMENT2-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    "°¢"
@@ -2686,7 +2686,7 @@
                        END-IF
       *
                        IF    WK-FREE-YUKOKETA2(IDZ)  =  23 OR 24 OR 25
-                          PERFORM  2001-FREE-COMMENT2-KAIGYO-SEC
+                          PERFORM  200111-FREE-COMMENT2-KAIGYO-SEC
                           ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                           MOVE    TBL-DAY(IDY)     
@@ -2712,13 +2712,13 @@
       *
            END-PERFORM
            .
-       2001-FREE-COMMENT2-EXT.
+       20011-FREE-COMMENT2-EXT.
            EXIT.
       *
       *****************************************************************
       *    ºÍΩ—∆¸≈˘§Œ∆¸…’§Œ ‘Ω∏° ≤˛π‘°À
       *****************************************************************
-       2001-FREE-COMMENT2-KAIGYO-SEC          SECTION.                  
+       200111-FREE-COMMENT2-KAIGYO-SEC          SECTION.                  
       *
            ADD      1              TO  IDZ
       *
@@ -2727,7 +2727,7 @@
            MOVE    ALL "°°"        TO  WK-FREE-NAME2(IDZ)(1:WRK-KETA)
       *
            .
-       2001-FREE-COMMENT2-KAIGYO-EXT.
+       200111-FREE-COMMENT2-KAIGYO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2735,7 +2735,7 @@
       *****************************************************************
        2001-RIHA-COMMENT-SEC          SECTION.
       *
-             PERFORM  2001-RECE05-TAIHI-SEC
+             PERFORM  200111-RECE05-TAIHI-SEC
       *
       *      £“£≈£√£≈£∞£µ•’•°•§•Î§Œ∆‚Õ∆§Ú•∆°º•÷•Î§À¬‡»Ú
              MOVE    ZERO                 TO  IDX-RECE05
@@ -2905,7 +2905,7 @@
                            TO  WRK-RECE05XX-NAME(MAX-MEISAISU 1)(9:4)
              END-IF
       *
-             PERFORM    2001-SRYACTINF-HENSYU-SEC
+             PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
            .
        2001-RIHA-COMMENT-EXT.
@@ -2914,21 +2914,21 @@
       *****************************************************************
       *    •Ï•ª•◊•»£∞£¥≈æ¡˜ΩËÕ˝
       *****************************************************************
-       2001-RECE04-TENSOU-SEC     SECTION.
+       2099-RECE04-TENSOU-SEC     SECTION.
       *
            MOVE       RECE04-REC    TO   RECE041-REC
            WRITE      RECE041-REC
            ADD        1             TO   CNT-RECE04
-           PERFORM    2001-RECE05-TENSOU-SEC
+           PERFORM    20991-RECE05-TENSOU-SEC
       *
            .
-       2001-RECE04-TENSOU-EXT.
+       2099-RECE04-TENSOU-EXT.
            EXIT.
       *
       *****************************************************************
       *    •Ï•ª•◊•»£∞£µ≈æ¡˜ΩËÕ˝
       *****************************************************************
-       2001-RECE05-TENSOU-SEC     SECTION.
+       20991-RECE05-TENSOU-SEC     SECTION.
       *
            INITIALIZE                      RECE05-REC
            MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
@@ -2975,13 +2975,13 @@
            END-PERFORM
       *
            .
-       2001-RECE05-TENSOU-EXT.
+       20991-RECE05-TENSOU-EXT.
            EXIT.
       *
       *****************************************************************
       *    £∞£µ°°¬‡»ÚΩËÕ˝
       *****************************************************************
-       2001-RECE05-TAIHI-SEC     SECTION.
+       200111-RECE05-TAIHI-SEC     SECTION.
       *
            INITIALIZE                      RECE05-REC
            MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
@@ -3005,13 +3005,13 @@
            END-START
       *
            .
-       2001-RECE05-TAIHI-EXT.
+       200111-RECE05-TAIHI-EXT.
            EXIT.
       *
       *****************************************************************
       *    £∞£µ°°£”£“£Ÿ£¡£√£‘£…£Œ£∆ ‘Ω∏ΩËÕ˝
       *****************************************************************
-       2001-SRYACTINF-HENSYU-SEC     SECTION.
+       200111-SRYACTINF-HENSYU-SEC     SECTION.
       *
            PERFORM
                UNTIL  ( FLG-RECE05           =   1                   )
@@ -3079,7 +3079,7 @@
            ADD     1                 TO      CNT-RECE04
       *
            .
-       2001-SRYACTINF-HENSYU-EXT.
+       200111-SRYACTINF-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3267,7 +3267,7 @@
       *****************************************************************
       *    ªªƒÍŒÚ•ﬁ•π•ø∆…§ﬂπ˛§ﬂ
       *****************************************************************
-       SANTEI-READ-SEC         SECTION.
+       900-SANTEI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"         USING
@@ -3283,13 +3283,13 @@
            END-IF
       *
            .
-       SANTEI-READ-EXT.
+       900-SANTEI-READ-EXT.
            EXIT.
       *
       *****************************************************************
       *    •∑•π•∆•‡¥…Õ˝•ﬁ•π•ø°º∆…π˛
       *****************************************************************
-       SYSKANRI-READ-SEC         SECTION.
+       900-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -3305,13 +3305,13 @@
            END-IF
       *
            .
-       SYSKANRI-READ-EXT.
+       900-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
       *    ºıø«Õ˙ŒÚ∆…π˛
       *****************************************************************
-       JYURRK-READ-SEC         SECTION.
+       900-JYURRK-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -3327,7 +3327,7 @@
            END-IF
       *
            .
-       JYURRK-READ-EXT.
+       900-JYURRK-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3363,7 +3363,7 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
            .
-       100-DBOPEN-EXT.
+       120-DBOPEN-EXT.
            EXIT.
       *
       *****************************************************************
