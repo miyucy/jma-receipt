@@ -336,15 +336,19 @@
                    MOVE    PTNYUINRRK-TAIINYMD TO  WRK-SRYYMD
                    MOVE    WRK-SRYDD           TO  IDX5
                END-IF
-      *        保険組合せのチェック
-               PERFORM VARYING IDX FROM    IDX4    BY  1
-                       UNTIL   IDX >       IDX5
-                   IF      RECE82-DAY (IDX)
+      *        保険組合せのチェック（会計に対象の組合せがないときは全て）
+               IF      RECE82-DAY-AREA     =   ALL "0"
+                   PERFORM 21011-PTNYUINRRK-HENSYU-SEC
+               ELSE
+                   PERFORM VARYING IDX FROM    IDX4    BY  1
+                           UNTIL   IDX >       IDX5
+                       IF      RECE82-DAY (IDX)
                                            =   RECE82-HKNCOMBI
-                       PERFORM 21011-PTNYUINRRK-HENSYU-SEC
-                       MOVE   IDX5                 TO  IDX
-                   END-IF
-               END-PERFORM        
+                           PERFORM 21011-PTNYUINRRK-HENSYU-SEC
+                           MOVE   IDX5                 TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-IF        
       *                 
                MOVE    "PTNYUINRRK-KEY23"  TO  ORC-DBPATH
                PERFORM 900-PTNYUINRRK-KEY23-READ-SEC
