@@ -306,8 +306,9 @@
                OR     ( RECE41-TEKSTYMD  NOT =   RECE44-TEKSTYMD     )
       *
       *        Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç¤Ç¤Ê¤¤¤È¤­
-               IF      RECE41-SRYKA (2)    =   SPACE
-               OR      RECE44-COMCDFLG     =   "1"
+      ***      IF      RECE41-SRYKA (2)    =   SPACE
+      ***      OR      RECE44-COMCDFLG     =   "1"
+               IF      RECE44-COMCDFLG     =   "2"
                    MOVE    SPACE               TO  RECE443-REC
                    INITIALIZE                      RECE443-REC
                    MOVE    RECE44-HOSPID       TO  RECE443-HOSPID
@@ -320,7 +321,7 @@
                    MOVE    RECE44-SRYCDTOTAL   TO  RECE443-SRYCDTOTAL
                    MOVE    RECE44-SURYOUTOTAL  TO  RECE443-SURYOUTOTAL
                    MOVE    RECE44-MEISAISU     TO  RECE443-MEISAISU 
-                   IF   RECE44-COMCDFLG     =   "1"
+                   IF   RECE44-COMCDFLG     =   "2"
                         ADD       1            TO  WRK-COMRENNUM
                         MOVE    WRK-COMRENNUM  TO  RECE443-COMRENNUM
                    END-IF

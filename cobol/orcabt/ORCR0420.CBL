@@ -262,7 +262,10 @@
            03  WRK-TEN                                 PIC 9(09).
            03  WRK-TANKA                               PIC 9(02)V99.
            03  WRK-MEISAI-CNT                          PIC 9(04).
-           03  WRK-KSNRATE                             PIC 9V99.        
+           03  WRK-SRYCDTOTAL                          PIC 9(14).
+           03  WRK-SURYOUTOTAL                         PIC 9(07)V9(03).
+           03  WRK-KSNRATE                             PIC 9V99.    
+           03  WRK-SRYCD                               PIC 9(09).   
       *
            03  WRK-DAY                                 PIC 9(02).
       *
@@ -342,18 +345,18 @@
       *    ºÆ¿Ç¡Ê£³·îÄ¶¡Ë¡Ê£µ²óÄ¶¡Ë¤Ê¤É
       *    ¡Ê£´£¶£µ¤Ë´Ø·¸¤¢¤ê¡Ë
            03  CONS-SAISHIN-A1     PIC X(09) VALUE "101120060".
-           03  CONS-SAISHIN-A2     PIC X(09) VALUE "112001210".
-           03  CONS-SAISHIN-A3     PIC X(09) VALUE "112701110".
-           03  CONS-SAISHIN-A4     PIC X(09) VALUE "112000970".
-           03  CONS-SAISHIN-A5     PIC X(09) VALUE "112001070".
-           03  CONS-SAISHIN-A6     PIC X(09) VALUE "112006970".
-           03  CONS-SAISHIN-A7     PIC X(09) VALUE "112007070".
-           03  CONS-SAISHIN-A8     PIC X(09) VALUE "112001310".
-           03  CONS-SAISHIN-A9     PIC X(09) VALUE "112701210".
-           03  CONS-SAISHIN-A10    PIC X(09) VALUE "112001110".
-           03  CONS-SAISHIN-A11    PIC X(09) VALUE "112701010".
-           03  CONS-SAISHIN-A12    PIC X(09) VALUE "112001410".
-           03  CONS-SAISHIN-A13    PIC X(09) VALUE "112701310".
+      **   03  CONS-SAISHIN-A2     PIC X(09) VALUE "112001210".
+      **   03  CONS-SAISHIN-A3     PIC X(09) VALUE "112701110".
+      **   03  CONS-SAISHIN-A4     PIC X(09) VALUE "112000970".
+      **   03  CONS-SAISHIN-A5     PIC X(09) VALUE "112001070".
+      **   03  CONS-SAISHIN-A6     PIC X(09) VALUE "112006970".
+      **   03  CONS-SAISHIN-A7     PIC X(09) VALUE "112007070".
+      **   03  CONS-SAISHIN-A8     PIC X(09) VALUE "112001310".
+      **   03  CONS-SAISHIN-A9     PIC X(09) VALUE "112701210".
+      **   03  CONS-SAISHIN-A10    PIC X(09) VALUE "112001110".
+      **   03  CONS-SAISHIN-A11    PIC X(09) VALUE "112701010".
+      **   03  CONS-SAISHIN-A12    PIC X(09) VALUE "112001410".
+      **   03  CONS-SAISHIN-A13    PIC X(09) VALUE "112701310".
       *    ³°Íè´ÉÍý²Ã»»¡Ê£³·îÄ¶¡Ë¡Ê£µ²óÄ¶¡Ë
       *    ¡Ê£´£¶£°¤Ë´Ø·¸¤¢¤ê¡Ë
            03  CONS-GAIRAI         PIC X(09) VALUE "101120090".
@@ -645,6 +648,8 @@
                              (ACCT-ZAIKAISU  NOT =    ZERO)
                                MOVE    ZERO    TO      WRK-TEN
                                                        WRK-MEISAI-CNT
+                                                       WRK-SRYCDTOTAL
+                                                       WRK-SURYOUTOTAL
                                PERFORM   RECE44-TENSOU-SEC
                                PERFORM   RECE45-HENSYU-SEC
                                PERFORM   RECE44-WRITE-SEC
@@ -666,6 +671,8 @@
                                  ELSE
                                       MOVE  ZERO  TO  WRK-TEN
                                                       WRK-MEISAI-CNT
+                                                      WRK-SRYCDTOTAL
+                                                      WRK-SURYOUTOTAL
                                       PERFORM   RECE44-TENSOU-SEC
                                       PERFORM   RECE45-HENSYU-SEC
                                       PERFORM   RECE44-WRITE-SEC
@@ -724,6 +731,8 @@
                                                TO    WRK-ZAIKAISU-XXX
                                MOVE    ZERO    TO    WRK-TEN
                                                      WRK-MEISAI-CNT
+                                                     WRK-SRYCDTOTAL
+                                                     WRK-SURYOUTOTAL
                                PERFORM   RECE44-TENSOU-SEC
                                PERFORM   RECE45-HENSYU-SEC
                                PERFORM   RECE44-WRITE-SEC
@@ -747,6 +756,8 @@
                                                   TO  WRK-ZAIKAISU-XXX
                                       MOVE  ZERO  TO  WRK-TEN
                                                       WRK-MEISAI-CNT
+                                                      WRK-SRYCDTOTAL
+                                                      WRK-SURYOUTOTAL
                                       PERFORM   RECE44-TENSOU-SEC
                                       PERFORM   RECE45-HENSYU-SEC
                                       PERFORM   RECE44-WRITE-SEC
@@ -911,19 +922,19 @@
                                                 CONS-KEIZOKU2
                         MOVE   "1"      TO    RECE41-KEIZOKU-PRTKBN
                    END-IF
-                   IF   SRY-SRYCD(IDX2)   =     CONS-SAISHIN-A1   OR
-                                                CONS-SAISHIN-A2   OR
-                                                CONS-SAISHIN-A3   OR
-                                                CONS-SAISHIN-A4   OR
-                                                CONS-SAISHIN-A5   OR
-                                                CONS-SAISHIN-A6   OR
-                                                CONS-SAISHIN-A7   OR
-                                                CONS-SAISHIN-A8   OR
-                                                CONS-SAISHIN-A9   OR
-                                                CONS-SAISHIN-A10  OR
-                                                CONS-SAISHIN-A11  OR
-                                                CONS-SAISHIN-A12  OR
-                                                CONS-SAISHIN-A13    
+                   IF   SRY-SRYCD(IDX2)   =     CONS-SAISHIN-A1   
+      **                                  OR    CONS-SAISHIN-A2   
+      **                                  OR    CONS-SAISHIN-A3   
+      **                                  OR    CONS-SAISHIN-A4   
+      **                                  OR    CONS-SAISHIN-A5   
+      **                                  OR    CONS-SAISHIN-A6   
+      **                                  OR    CONS-SAISHIN-A7   
+      **                                  OR    CONS-SAISHIN-A8   
+      **                                  OR    CONS-SAISHIN-A9   
+      **                                  OR    CONS-SAISHIN-A10  
+      **                                  OR    CONS-SAISHIN-A11  
+      **                                  OR    CONS-SAISHIN-A12  
+      **                                  OR    CONS-SAISHIN-A13  
                         MOVE   "1"      TO    RECE41-SAISHIN-PRTKBN2
                    END-IF
                    IF   SRY-SRYCD(IDX2)   =     CONS-GAIRAI 
@@ -1034,6 +1045,11 @@
                      ADD      1          TO  WRK-MEISAI-CNT
                      COMPUTE  WRK-TEN    =   WRK-TEN   +
                                            ( TNS-TEN   /  10 ) 
+      *
+                     ADD      1          TO  WRK-SURYOUTOTAL
+                     MOVE  SRY-SRYCD(IDX2) 
+                                         TO  WRK-SRYCD
+                     ADD   WRK-SRYCD     TO  WRK-SRYCDTOTAL
       *           END-IF
       *
                   MOVE     "2"     TO    RECE45-SIKFLG(IDX4)
@@ -1044,8 +1060,22 @@
                                               CONS-ROUCOM2      )
                       OR  ( SRY-SRYCD(1)    = CONS-ROUSAI2  OR
                                               CONS-ROUSAI3      )
+                      OR (( SRY-SRYCD(1)    = CONS-ROUSAI5  OR
+                                              CONS-ROUSAI6  OR
+                                              CONS-ROUSAI7      ) AND
+                          ( SRY-SRYCD(IDX2)(1:1)     =   "8"    ))
                          ADD    1      TO    WRK-MEISAI-CNT             
                          MOVE  "2"     TO    RECE45-SIKFLG(IDX4)
+      *
+                         ADD    1      TO    WRK-SURYOUTOTAL
+                         MOVE  SRY-SRYCD(IDX2) 
+                                       TO    WRK-SRYCD
+                         ADD   WRK-SRYCD 
+                                       TO    WRK-SRYCDTOTAL
+                         IF    RECE44-COMCDFLG       =   "1" 
+                         AND   SRY-SRYCD(IDX2)(1:1)  =   "8" 
+                            MOVE  "2"  TO    RECE44-COMCDFLG
+                         END-IF
                       ELSE
                          MOVE  "1"     TO    RECE45-SIKFLG(IDX4)
                       END-IF
@@ -2694,16 +2724,22 @@
       *
            MOVE    RECE44-REC          TO  RECE4A-REC
       *
-           COMPUTE  RECE44-ZAITEN    =  RECE44-ZAITEN     -  
-                                        WRK-TEN
-           COMPUTE  RECE44-MEISAISU  =  RECE44-MEISAISU   -
-                                        WRK-MEISAI-CNT
-           COMPUTE  RECE44-SYUTEN1   =  RECE44-SYUTEN1    -
-                                        WRK-TEN
+           COMPUTE  RECE44-ZAITEN      =  RECE44-ZAITEN     -  
+                                          WRK-TEN
+           COMPUTE  RECE44-MEISAISU    =  RECE44-MEISAISU   -
+                                          WRK-MEISAI-CNT
+           COMPUTE  RECE44-SYUTEN1     =  RECE44-SYUTEN1    -
+                                          WRK-TEN
+           COMPUTE  RECE44-SRYCDTOTAL  =  RECE44-SRYCDTOTAL -
+                                          WRK-SRYCDTOTAL
+           COMPUTE  RECE44-SURYOUTOTAL =  RECE44-SURYOUTOTAL -
+                                          WRK-SURYOUTOTAL     
       *
            MOVE     WRK-TEN         TO  RECE4A-ZAITEN
            MOVE     WRK-MEISAI-CNT  TO  RECE4A-MEISAISU
            MOVE     WRK-TEN         TO  RECE4A-SYUTEN1  
+           MOVE     WRK-SRYCDTOTAL  TO  RECE4A-SRYCDTOTAL
+           MOVE     WRK-SURYOUTOTAL TO  RECE4A-SURYOUTOTAL
       *
            WRITE   RECE44-REC
            ADD     1                TO  CNT-OUT1
