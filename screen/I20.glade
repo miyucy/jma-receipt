@@ -2956,7 +2956,7 @@
       <class>GtkButton</class>
       <name>BSP</name>
       <x>955</x>
-      <y>205</y>
+      <y>200</y>
       <width>50</width>
       <height>40</height>
       <can_focus>True</can_focus>
@@ -2974,7 +2974,7 @@
       <class>GtkButton</class>
       <name>BSH</name>
       <x>955</x>
-      <y>245</y>
+      <y>240</y>
       <width>50</width>
       <height>40</height>
       <can_focus>True</can_focus>
@@ -2992,7 +2992,7 @@
       <class>GtkButton</class>
       <name>BAK</name>
       <x>955</x>
-      <y>285</y>
+      <y>280</y>
       <width>50</width>
       <height>40</height>
       <can_focus>True</can_focus>
