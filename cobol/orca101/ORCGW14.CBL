@@ -323,9 +323,7 @@
            MOVE    "保険者番号"        TO  SPA-GMN-PARAKBNMEIL (1)  
            MOVE    "2"                 TO  SPA-GMN-PARAKBNL    (2)
            MOVE    "患者番号"          TO  SPA-GMN-PARAKBNMEIL (2)
-           MOVE    "3"                 TO  SPA-GMN-PARAKBNL    (3)
-           MOVE    "患者・保険者"      TO  SPA-GMN-PARAKBNMEIL (3)
-           MOVE    3                   TO  SPA-GMN-PARAKBN-MAX  
+           MOVE    2                   TO  SPA-GMN-PARAKBN-MAX  
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-CONS-LINE-MAX
