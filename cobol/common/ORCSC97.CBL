@@ -94,7 +94,7 @@
       *
        01  WRK-NYUMOJI-AREA.
            03  WRK-HI              PIC 9(02).
-           03  WRK-NISUU           PIC X(20).
+           03  WRK-NISUU           PIC X(22).
            03  WRK-MAE-CD          PIC X(01).
       *
        01  WRK-MOJI-AREA.
@@ -110,8 +110,8 @@
            03  WRK-MCNT3           PIC 9(02).
            03  WRK-MCNT4           PIC 9(02).
            03  WRK-CD              PIC X(22).
-           03  WRK-KAI             PIC X(20).
-           03  WRK-SUR             PIC X(20).
+           03  WRK-KAI             PIC X(22).
+           03  WRK-SUR             PIC X(22).
            03  WRK-MOJI1           PIC X(10).
            03  WRK-MOJI2           PIC X(10).
            03  WRK-MOJI3           PIC X(10).

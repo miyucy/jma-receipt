@@ -2080,18 +2080,18 @@
       *    自動算定処理
       *****************************************************************
        300-AUTO-SYORI-SEC                SECTION.
-     *
+      *
            MOVE    ZERO                TO  IDXS
-     *
+      *
            MOVE    ZERO                TO  FLG-BV
            MOVE    ZERO                TO  FLG-BA
            MOVE    ZERO                TO  FLG-BC
            MOVE    ZERO                TO  FLG-FUKA
-     *
+      *
            MOVE    ZERO                TO  FLG-BV-ARI
            MOVE    ZERO                TO  FLG-BA-ARI
            MOVE    ZERO                TO  FLG-BC-ARI
-     *
+      *
            MOVE    ZERO                TO  WRK-KENIDX
            INITIALIZE                  WRK-KENSA-AREA
            INITIALIZE                  WRK-NYUINDAY-AREA
@@ -2310,6 +2310,9 @@
                        PERFORM 30051-NENREI-SET-SEC
       *                併用チェック用
                        ADD     1               TO  WRK-GMN-MAX
+                       IF      WRK-GMN-MAX     >   200
+                           MOVE    200             TO  WRK-GMN-MAX
+                       END-IF
                        MOVE    WRK-KEN-SRYCD (IDX) TO  WRK-COM-INPUTCD
                                                       (WRK-GMN-MAX)
                    END-IF
@@ -2532,6 +2535,9 @@
                END-IF
       *        併用チェック用
                ADD     1               TO  WRK-GMN-MAX
+               IF      WRK-GMN-MAX     >   200
+                    MOVE    200             TO  WRK-GMN-MAX
+               END-IF
                MOVE    WRK-SRYCD       TO  WRK-COM-INPUTCD
                                               (WRK-GMN-MAX)
       *        乳幼児加算セット

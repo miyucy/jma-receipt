@@ -288,36 +288,6 @@
                PERFORM 300-KOUSIN-SYORI-SEC
            END-IF
       *
-      *TEST
-           PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL      (IDX     >   50  )   OR
-                              (ORCSTEN-KIZ-ZAITEN (IDX) =  ZERO)
-               DISPLAY "ORCSTEN-KIZ-ZAITEN:" ORCSTEN-KIZ-ZAITEN (IDX)
-               DISPLAY "ORCSTEN-KIZ-SRYCD1:" ORCSTEN-KIZ-SRYCD (IDX 1)
-                                  ",SURYO1:" ORCSTEN-KIZ-SURYO (IDX 1)
-               DISPLAY "ORCSTEN-KIZ-SRYCD2:" ORCSTEN-KIZ-SRYCD (IDX 2)
-                                  ",SURYO2:" ORCSTEN-KIZ-SURYO (IDX 2)
-               DISPLAY "ORCSTEN-KIZ-DAY:" ORCSTEN-KIZ-DAY(IDX 1) 
-                       "," ORCSTEN-KIZ-DAY(IDX 2) 
-                       "," ORCSTEN-KIZ-DAY(IDX 3) 
-                       "," ORCSTEN-KIZ-DAY(IDX 4) 
-                       "," ORCSTEN-KIZ-DAY(IDX 5) 
-           END-PERFORM
-           PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL      (IDX     >   31  )
-             IF      (ORCSTEN-ZAITEN (IDX) NOT = ZERO)
-               DISPLAY "ORCSTEN-ZAITEN:" ORCSTEN-ZAITEN (IDX)
-               PERFORM VARYING     IDX2    FROM   1   BY  1
-                       UNTIL      (IDX2    >   50  )   OR 
-                                  (ORCSTEN-SRYCD (IDX IDX2) =  SPACE)
-               DISPLAY "ORCSTEN-SRYCD:" ORCSTEN-SRYCD (IDX IDX2)
-                              ",SURYO:" ORCSTEN-SURYO (IDX IDX2)
-               DISPLAY "ORCSTEN-HAIK:" ORCSTEN-HAIK-SRYCD (IDX IDX2)
-                              ",SURYO:" ORCSTEN-HAIK-SURYO (IDX IDX2)
-             END-PERFORM
-            END-IF
-           END-PERFORM
-      *TEST
            .
        000-PROC-EXT.
       *
@@ -364,8 +334,8 @@
                    END-IF
                END-PERFORM
       *        保険チェック
-               IF     (ORCSTEN-KBN         =   "2"  OR   "4"   )  AND
-                      (ORCSTEN-HKNCOMBI    NOT =   SPACE       )  AND
+               IF     (ORCSTEN-KBN         =   "2"    )  AND
+                      (ORCSTEN-HKNCOMBI    NOT =   SPACE )  AND
                       (ACCT-HKNCOMBI   NOT =   ORCSTEN-HKNCOMBI)
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
