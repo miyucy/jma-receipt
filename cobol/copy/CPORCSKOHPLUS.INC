@@ -37,8 +37,6 @@
            03  LNK-SKOHPLUS-HOSPID                  PIC  X(24).
       *県番号
            03  LNK-SKOHPLUS-PREFNUM                 PIC  X(02).
-      *算定年月
-           03  LNK-SKOHPLUS-SANTEIYM                PIC  X(06).
       *患者ＩＤ
            03  LNK-SKOHPLUS-PTID                    PIC  9(10).
       *保険組合せ
