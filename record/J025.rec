@@ -17,5 +17,9 @@ J025	{
 				select	bool[100];
 			};
 		};
+		ERRMSG	{
+		    style   varchar(20);
+			value	varchar(100);
+		};
 	};
 };

@@ -228,6 +228,22 @@
 	</widget>
       </widget>
     </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>ERRMSG</name>
+      <x>110</x>
+      <y>432</y>
+      <width>625</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
   </widget>
 </widget>
 
