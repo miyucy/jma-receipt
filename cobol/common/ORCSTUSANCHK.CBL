@@ -256,8 +256,13 @@
                        MOVE    STUSAN-RRK-NYUINYMD (IDX1)
                                                TO  LNK-DAY6-KIJUN
                        MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-                       COMPUTE LNK-DAY6-ZOGEN
-                           =   91   -          WRK-TUSAN
+                       IF    ( STUSAN-RRK-DJFLG    (IDX1)  =   ZERO )
+                           COMPUTE LNK-DAY6-ZOGEN
+                               =   91   -          WRK-TUSAN
+                       ELSE
+                           COMPUTE LNK-DAY6-ZOGEN
+                               =   92   -          WRK-TUSAN
+                       END-IF
                        CALL    "ORCSDAY"   USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
                        MOVE    LNK-DAY6-KOYOMI TO  STUSANCHK-DAY-91
@@ -300,8 +305,13 @@
                    MOVE    STUSAN-RRK-NYUINYMD (IDX1)
                                            TO  LNK-DAY6-KIJUN
                    MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-                   COMPUTE LNK-DAY6-ZOGEN
-                       =   180   -         WRK-TUSAN
+                   IF    ( STUSAN-RRK-DJFLG    (IDX1)  =   ZERO )
+                       COMPUTE LNK-DAY6-ZOGEN
+                           =   180   -         WRK-TUSAN
+                   ELSE
+                       COMPUTE LNK-DAY6-ZOGEN
+                           =   181   -         WRK-TUSAN
+                   END-IF
                    CALL    "ORCSDAY"   USING   STS-AREA-DAY
                                                LNK-DAY6-AREA
                    MOVE    LNK-DAY6-KOYOMI TO  STUSANCHK-DAY-180
