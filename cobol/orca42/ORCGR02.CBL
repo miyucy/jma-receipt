@@ -61,6 +61,9 @@
       *  01.04.04    NACL-藤原    03/02/25  プリンタ名をオンラインより渡す
       *  01.04.05    NACL-藤原    03/03/03  再印刷機能追加
       *  01.04.06    NACL-藤原    03/05/23  レセ電のボタンを削除
+      *  01.04.07    NACL-藤原    03/08/05  ヴで始まるカナ氏名のレセプト
+      *                                     を対象とするように修正
+      *                                     レセ電のボタンを復活
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1215,7 +1218,7 @@
                                            TO  SPA-GMN-TSTDATA (IDW IDX)
                            IF      SPA-GMN-TSTDATA (IDW IDX)(1:2)
                                                   >=  "ア"    AND
-                                                  <=  "ン"
+                                                  <=  "ヵ"
                                CONTINUE
                            ELSE
                                MOVE    "0001"         TO  SPA-ERRCD
@@ -1288,7 +1291,7 @@
                                            TO  SPA-GMN-TEDDATA (IDW IDX)
                            IF      SPA-GMN-TEDDATA (IDW IDX)(1:2)
                                                   >=  "ア"    AND
-                                                  <=  "ン"
+                                                  <=  "ヵ"
                                CONTINUE
                            ELSE
                                MOVE    "0001"         TO  SPA-ERRCD
@@ -1851,7 +1854,7 @@
            END-IF
            IF      WRK-RECE09-EDDATA       =   SPACE
                IF      SPA-GMN-PRTJYUN     =   "01"  OR  "03"
-                   MOVE    "ン"            TO  WRK-RECE09-EDDATA (1:2)
+                   MOVE    "ヵ"            TO  WRK-RECE09-EDDATA (1:2)
                ELSE
                    MOVE    "Z"             TO  WRK-RECE09-EDDATA (1:1)
                END-IF
@@ -2361,9 +2364,6 @@
                    MOVE    WIDGET-NORMAL           TO  R02-B09-STATE
                END-IF    
            END-IF 
-      *    レセ電作成のボタンは押せない
-           MOVE    WIDGET-INSENSITIVE      TO  R02-B10-STATE
-                                               R02-B09-STATE
       *
       *
            PERFORM 5001-MAPCUR-SEC

@@ -39,6 +39,8 @@
       *  01.01.06    NACL-藤原    03/03/03  再印刷機能追加
       *　入院機能追加　
       *  01.04.01    NACL-藤原    03/06/05  労災・自賠責の入院処理追加
+      *  01.04.02    NACL-藤原    03/08/05  ヴで始まるカナ氏名のレセプト
+      *                                     を対象とするように修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -890,7 +892,7 @@
                                            TO  SPA-GMN-TSTDATA (IDX)
                            IF      SPA-GMN-TSTDATA (IDX)(1:2)
                                                   >=  "ア"    AND
-                                                  <=  "ン"
+                                                  <=  "ヵ"
                                CONTINUE
                            ELSE
                                MOVE    "0001"         TO  SPA-ERRCD
@@ -955,7 +957,7 @@
                                            TO  SPA-GMN-TEDDATA (IDX)
                            IF      SPA-GMN-TEDDATA (IDX)(1:2)
                                                   >=  "ア"    AND
-                                                  <=  "ン"
+                                                  <=  "ヵ"
                                CONTINUE
                            ELSE
                                MOVE    "0001"         TO  SPA-ERRCD
@@ -1488,7 +1490,7 @@
            END-IF
            IF      WRK-RECE09-EDDATA       =   SPACE
                IF      SPA-GMN-PRTJYUN     =   "03"
-                   MOVE    "ン"            TO  WRK-RECE09-EDDATA (1:2)
+                   MOVE    "ヵ"            TO  WRK-RECE09-EDDATA (1:2)
                ELSE
                    MOVE    "Z"             TO  WRK-RECE09-EDDATA (1:1)
                END-IF
