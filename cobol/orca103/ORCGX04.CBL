@@ -731,10 +731,13 @@
       *
            IF    ( SPA-X01-CHKKBN  =   "1" )
       *
-               MOVE    4           TO  SPA-GMN-SRCBYOKBN-MAX
+               PERFORM 900-MEDYAKKO-KEY-SEL-SEC
+               IF    ( FLG-MEDYAKKO    =   ZERO )
+                   MOVE    4       TO  SPA-GMN-SRCBYOKBN-MAX
       *
-               MOVE    "M"         TO  SPA-GMN-SRCBYOKBNL    (4)
-               MOVE    "薬効"      TO  SPA-GMN-SRCBYOKBNMEIL (4)
+                   MOVE    "M"     TO  SPA-GMN-SRCBYOKBNL    (4)
+                   MOVE    "薬効"  TO  SPA-GMN-SRCBYOKBNMEIL (4)
+               END-IF
            END-IF
       *
            . 
@@ -3883,6 +3886,36 @@
            .
       *
        900-USERBYOMEI-KEY10-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬効マスタ検索処理(KEY)
+      *****************************************************************
+       900-MEDYAKKO-KEY-SEL-SEC    SECTION.
+      *
+           MOVE    ZERO            TO  FLG-MEDYAKKO
+      *
+           INITIALIZE              MEDYAKKO-REC
+           MOVE    SPA-X01-SRYCD   TO  MYAK-IYAKUHINCD
+           MOVE    1               TO  MYAK-RENNUM
+      *
+           MOVE    MEDYAKKO-REC    TO  MCPDATA-REC
+           MOVE    PATH-TBL-MEDYAKKO-KEY
+                                   TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC    =     ZERO )
+               MOVE    MCPDATA-REC TO  MEDYAKKO-REC
+           ELSE
+               INITIALIZE              MEDYAKKO-REC
+               MOVE    1           TO  FLG-MEDYAKKO
+           END-IF
+      *
+           MOVE    PATH-TBL-MEDYAKKO-KEY
+                                   TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+      *
+           .
+      *
+       900-MEDYAKKO-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    薬効マスタ検索処理(KEY3)
