@@ -3102,10 +3102,10 @@
            PERFORM 4511-PRINT-PG-EDIT-SEC
       *
            INITIALIZE      ORCHCN03AREA
-           MOVE    SPA-HOSPID          TO  ORCHCN03-HEAD-HOSPID
-           MOVE    SPA-STAFFCD         TO  ORCHCN03-STAFFCD
-           MOVE    SPA-SYSYMD          TO  ORCHCN03-SYSYMD
-           MOVE    SPA-TERMID          TO  ORCHCN03-TERMID
+           MOVE    WRK-SPA-HOSPID  TO  ORCHCN03-HEAD-HOSPID
+           MOVE    WRK-SPA-STAFFCD TO  ORCHCN03-STAFFCD
+           MOVE    WRK-SPA-SYSYMD  TO  ORCHCN03-SYSYMD
+           MOVE    WRK-SPA-TERMID  TO  ORCHCN03-TERMID
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1        >   SPA-I0-SYUNOU-CNT )
@@ -3117,10 +3117,13 @@
                    MOVE    ORCHCN03-CNT
                                        TO  IDX2
       *
-                   MOVE    SPA-HOSPID TO ORCHCN03-HOSPID (IDX2)
-                   MOVE    SPA-PTID   TO ORCHCN03-PTID   (IDX2)
-                   MOVE    SPA-PTNUM  TO ORCHCN03-PTNUM  (IDX2)
-                   MOVE    "1"        TO ORCHCN03-NYUGAIKBN (IDX2)
+                   MOVE    WRK-SPA-HOSPID
+                                       TO ORCHCN03-HOSPID (IDX2)
+                   MOVE    WRK-SPA-PTID
+                                       TO ORCHCN03-PTID   (IDX2)
+                   MOVE    WRK-SPA-PTNUM
+                                       TO ORCHCN03-PTNUM  (IDX2)
+                   MOVE    "1"         TO ORCHCN03-NYUGAIKBN (IDX2)
       *
                    MOVE    SPA-I0-SYUNOU-DAT (IDX1)
                                        TO  WKSYUNOU-REC
