@@ -17,7 +17,7 @@
       ********************************************************************
        01  I0SUB01-LNK.
            03  I0SUB01-KBN             PIC X(01).
-           03  I0SUB01-TERMID          PIC X(32).
+           03  I0SUB01-TERMID          PIC X(64).
            03  I0SUB01-SCRSPA-AREA.
                05  I0SUB01-SCRSPA-OCC  OCCURS  10.
                    07  I0SUB01-SCRSPA  PIC X(30000).
