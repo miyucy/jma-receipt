@@ -23,27 +23,28 @@ S02	{
 			value	varchar(2);
 		};
 		SELNUM	{
-			value	varchar(4);
+			value	number(4);
 		};
 		SRYYM	{
 			value	varchar(7);
 		};
 		scrolledwindow1	{
-			THLIST	{
+			SYULIST	{
 				count	int;
 				item	{
 					value0	varchar(5);
 					value1	varchar(9);
-					value2	varchar(4);
-					value3	varchar(30);
-					value4	varchar(5);
-					value5	varchar(11);
-					value6	varchar(15);
-					value7	varchar(11);
+					value2	varchar(6);
+					value3	varchar(4);
+					value4	varchar(30);
+					value5	varchar(5);
+					value6	varchar(11);
+					value7	varchar(15);
 					value8	varchar(11);
-					value9	varchar(16);
-				}	[60];
-				select	bool[60];
+					value9	varchar(11);
+					value10	varchar(16);
+				}	[200];
+				select	bool[200];
 			};
 		};
 		SRYKACOMBO	{

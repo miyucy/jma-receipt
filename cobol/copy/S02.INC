@@ -31,25 +31,26 @@
                 04  S02-VALUE   PIC X(9).
               03  S02-SEX.
                 04  S02-VALUE   PIC X(2).
-              03  S02-SELNUM.
-                04  S02-VALUE   PIC X(4).
+              03  S02-SELNUM    PIC S9(4).
               03  S02-SRYYM.
                 04  S02-VALUE   PIC X(7).
               03  S02-SCROLLEDWINDOW1.
-                04  S02-THLIST.
-                  05  S02-COUNT   PIC S9(9)   BINARY.
-                  05  S02-ITEM        OCCURS  60 TIMES.
-                  06  S02-NUM        PIC X(5).
-                  06  S02-DENPNUM    PIC X(9).
-                  06  S02-NYUGAI     PIC X(4).
-                  06  S02-HKN        PIC X(30).
-                  06  S02-FTNRATE    PIC X(5).
-                  06  S02-SKYSTYMD   PIC X(11).
-                  06  S02-SRYYMD2    PIC X(15).
-                  06  S02-SKYMONEY   PIC X(11).
-                  06  S02-MISYUMONEY PIC X(11).
-                  06  S02-DENPJTI    PIC X(16).
-                  05  S02-SELECT  PIC X       OCCURS  60 TIMES.
+                04  S02-SYULIST.
+                  05  S02-SYULIST-COUNT    PIC S9(9)   BINARY.
+                  05  S02-SYULIST-ITEM     OCCURS  200 TIMES.
+                    06  S02-TNUM        PIC X(5).
+                    06  S02-TDENPNUM    PIC X(9).
+                    06  S02-TSRYKA      PIC X(6).
+                    06  S02-TNYUGAI     PIC X(4).
+                    06  S02-THKN        PIC X(30).
+                    06  S02-TFTNRATE    PIC X(5).
+                    06  S02-TSKYSTYMD   PIC X(11).
+                    06  S02-TSRYYMD     PIC X(15).
+                    06  S02-TSKYMONEY   PIC X(11).
+                    06  S02-TMISYUMONEY PIC X(11).
+                    06  S02-TDENPJTI    PIC X(16).
+                  05  S02-SYULIST-SELECT   PIC X
+                                           OCCURS  200 TIMES.
               03  S02-SRYKACOMBO.
                 04  S02-SRYKA         PIC X(21).
                 04  S02-SRYKA-COUNT   PIC S9(9)   BINARY.

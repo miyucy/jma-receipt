@@ -598,6 +598,7 @@
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY11"
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY12"
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY13"
+               WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY14"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY2"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY3"
@@ -611,6 +612,7 @@
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY11"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY12"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY13"
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY14"
                    MOVE    PATH-TBL-SYUNOU-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL1"
@@ -1567,6 +1569,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY13"
                    MOVE    PATH-TBL-SYUNOU-KEY13
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY14"
+                   MOVE    PATH-TBL-SYUNOU-KEY14
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"
