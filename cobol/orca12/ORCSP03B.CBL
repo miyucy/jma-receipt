@@ -1012,8 +1012,10 @@
            MOVE    SPA-GMN-KOHNUM(IDX-K)
                                        TO  HKN-HKNNUM
            IF     (SPA-GMN-KOHNUM(IDX-K)   =   "027"  )  AND
-                  (SPA-NAI-PTKOH-PAYKBN (IDX-K)
-                                           =   ZERO  OR  SPACE )
+                 ((SPA-NAI-PTKOH-PAYKBN (IDX-K)
+                                           =   ZERO  OR  SPACE ) OR
+                  (SPA-NAI-KTEKSTYMD (IDX-K)
+                                           <   "20021001"))
                MOVE    SPA-HOSPSBT         TO  HKN-PAYKBN(1:1)
                MOVE    SPA-ROUPAYKBN       TO  HKN-PAYKBN(2:1)
            ELSE
