@@ -605,8 +605,8 @@
       *
       *    ¿ÇÎÅ¥³¡¼¥É·×
            MOVE    TNS-SRYCD          TO  WRK-SRYCD-X
-           COMPUTE LNK-SROUNYUIN-SRYCDTOTAL  =
-                   LNK-SROUNYUIN-SRYCDTOTAL  +   WRK-SRYCD-9
+           COMPUTE LNK-SROUNYUIN-SRYCDTOTAL(IDX)  =
+                   LNK-SROUNYUIN-SRYCDTOTAL(IDX)  +   WRK-SRYCD-9
       *
       *
            .
