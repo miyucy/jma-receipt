@@ -1088,7 +1088,7 @@
            MOVE    SPA-GMN-UKEBUTTON (1)  TO  W99-UKEBUTTON1          
            MOVE    SPA-GMN-UKEBUTTON (2)  TO  W99-UKEBUTTON2         
            MOVE    SPA-GMN-KANBUTTON (1)  TO  W99-KANBUTTON1          
-           MOVE    SPA-GMN-KANBUTTON (1)  TO  W99-KANBUTTON1          
+           MOVE    SPA-GMN-KANBUTTON (2)  TO  W99-KANBUTTON2          
            MOVE    SPA-GMN-SYNBUTTON (2)  TO  W99-SYNBUTTON2         
            MOVE    SPA-GMN-SYNBUTTON (2)  TO  W99-SYNBUTTON2         
       *
