@@ -3,7 +3,8 @@ X04	{
 		B03	{
 			state	int;
 		};
-		B06	{
+		B05	{
+			label	varchar(10);
 			state	int;
 		};
 		B09	{

@@ -1,7 +1,9 @@
         02  X04.
       *     02  X04-FIXED2.
               03  X04-B03-STATE PIC S9(9)   BINARY.
-              03  X04-B06-STATE PIC S9(9)   BINARY.
+              03  X04-B05-G.
+                  05  X04-B05-LABEL PIC X(10).
+                  05  X04-B05-STATE PIC S9(9)   BINARY.
               03  X04-B09-STATE PIC S9(9)   BINARY.
               03  X04-B10-STATE PIC S9(9)   BINARY.
               03  X04-CHKKBN.

@@ -842,7 +842,7 @@
            WHEN    "CLICKED"       ALSO    "B03"
                PERFORM 403-DEL-SEC
       *    病名登録
-           WHEN    "CLICKED"       ALSO    "B06"
+           WHEN    "CLICKED"       ALSO    "B05"
                PERFORM 4101-BYOTRK-SEC
       *    病名削除
            WHEN    "CLICKED"       ALSO    "B07"
@@ -3062,8 +3062,14 @@
       *
            END-PERFORM
       *
+           IF    ( SPA-NAI-INPUT-MODE  =   ZERO )
+               MOVE    "病名追加"      TO  X04-B05-LABEL
+           ELSE
+               MOVE    "病名変更"      TO  X04-B05-LABEL
+           END-IF
+      *
            MOVE    WIDGET-NORMAL       TO  X04-B03-STATE
-                                           X04-B06-STATE
+                                           X04-B05-STATE
                                            X04-B09-STATE
                                            X04-B10-STATE
       *
@@ -3082,7 +3088,7 @@
            MOVE    WIDGET-NORMAL       TO  X04-BYOMEI-STATE
       *
            IF    ( SPA-GMN-BYOLST-MAX  >=  CONST-BYOLST-MAX )
-               MOVE    WIDGET-INSENSITIVE  TO  X04-B06-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  X04-B05-STATE
            END-IF
       *
            IF    ( SPA-GMN-SRCBYOLST-PAGE  <=  1 )
@@ -3164,8 +3170,8 @@
                MOVE    "SRCJYKNKBN"    TO  MCP-WIDGET
            WHEN    14
                MOVE    "NYUGAIKBN"     TO  MCP-WIDGET
-           WHEN    106
-               MOVE    "B06"           TO  MCP-WIDGET
+           WHEN    105
+               MOVE    "B05"           TO  MCP-WIDGET
            WHEN    112
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -3197,7 +3203,7 @@
            WHEN    "BYOMEI"
                MOVE    09              TO  SPA-GMN-CUR
            WHEN    "JYKNKBN"
-               MOVE    106             TO  SPA-GMN-CUR
+               MOVE    105             TO  SPA-GMN-CUR
            WHEN    "SEL_BYOMEI"
                MOVE    10              TO  SPA-GMN-CUR
            WHEN    "SRCBYOKBN"
@@ -3208,8 +3214,8 @@
                MOVE    10              TO  SPA-GMN-CUR
            WHEN    "NYUGAIKBN"
                MOVE    1               TO  SPA-GMN-CUR
-           WHEN    "B06"
-               MOVE    106             TO  SPA-GMN-CUR
+           WHEN    "B05"
+               MOVE    105             TO  SPA-GMN-CUR
            WHEN    "B12"
                MOVE    112             TO  SPA-GMN-CUR
            END-EVALUATE
