@@ -48,6 +48,7 @@
       *  01.00.09    NACL-Æ£¸¶    03/09/03  ¸øÈñ¤ÎÉéÃ´¼ÔÈÖ¹æ¡¦¼õµë¼ÔÈÖ¹æ
       *                                     ¤ÎÁ´³Ñ¥Á¥§¥Ã¥¯ÄÉ²Ã
       *  01.00.10    NACL-Æ£¸¶    03/09/22  ºÆ¿Ç¤Î¤È¤­¤Î»þ´Ö³°¤ÎÊÔ½¸
+      *  01.00.11    NACL-Æ£¸¶    03/09/30  »ÀÁÇ¤ÎÃ±²Á¤ÎÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -454,6 +455,22 @@
            03  WRK-CONS-NIGHT-SAISIN  PIC X(09)   VALUE   "112001310".
            03  WRK-CONS-NIGHT-SAISIN-TEN
                                       PIC 9(07)   VALUE   420.
+      *    ±ÕÂÎ»ÀÁÇ¡¦²ÄÈÂ¼°±ÕÂÎ»ÀÁÇÍÆ´ï¡Ê£Ì£Ç£Ã¡Ë
+           03  WRK-CONS-SANSO1        PIC X(09)   VALUE   "739210000".
+      *    ±ÕÂÎ»ÀÁÇ¡¦²ÄÈÂ¼°±ÕÂÎ»ÀÁÇÍÆ´ï¡Ê£Ì£Ç£Ã¡Ë¡ÊÎ¥Åç¡Ë
+           03  WRK-CONS-SANSO2        PIC X(09)   VALUE   "739250000".
+      *    ±ÕÂÎ»ÀÁÇ¡¦ÄêÃÖ¼°±ÕÂÎ»ÀÁÇÃùÁå¡Ê£Ã£Å¡Ë
+           03  WRK-CONS-SANSO3        PIC X(09)   VALUE   "739200000".
+      *    ±ÕÂÎ»ÀÁÇ¡¦ÄêÃÖ¼°±ÕÂÎ»ÀÁÇÃùÁå¡Ê£Ã£Å¡Ë¡ÊÎ¥Åç¡Ë
+           03  WRK-CONS-SANSO4        PIC X(09)   VALUE   "739240000".
+      *    »ÀÁÇ¥Ü¥ó¥Ù¡¦Âç·¿
+           03  WRK-CONS-SANSO5        PIC X(09)   VALUE   "739220000".
+      *    »ÀÁÇ¥Ü¥ó¥Ù¡¦Âç·¿¡ÊÎ¥Åç¡Ë
+           03  WRK-CONS-SANSO6        PIC X(09)   VALUE   "739260000".
+      *    »ÀÁÇ¥Ü¥ó¥Ù¡¦¾®·¿
+           03  WRK-CONS-SANSO7        PIC X(09)   VALUE   "739230000".
+      *    »ÀÁÇ¥Ü¥ó¥Ù¡¦¾®·¿¡ÊÎ¥Åç¡Ë
+           03  WRK-CONS-SANSO8        PIC X(09)   VALUE   "739270000".
       *
       *    ²þ¹Ô¥³¡¼¥É
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
@@ -2274,8 +2291,17 @@
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
       *    Ã±²Á
-           IF      TBL-ZAIW-TENSIKIBETU (IDX)  =   2
-           OR      TBL-ZAIW-SRYCD       (IDX)  =   "777770000"
+           IF    ( TBL-ZAIW-TENSIKIBETU (IDX)  =   2               )
+           OR    ( TBL-ZAIW-SRYCD       (IDX)  =   "777770000"     )
+           OR    ( TBL-ZAIW-SRYCD       (IDX)  =   WRK-CONS-SANSO1
+                                               OR  WRK-CONS-SANSO2
+                                               OR  WRK-CONS-SANSO3
+                                               OR  WRK-CONS-SANSO4
+                                               OR  WRK-CONS-SANSO5
+                                               OR  WRK-CONS-SANSO6
+                                               OR  WRK-CONS-SANSO7
+                                               OR  WRK-CONS-SANSO8 )
+          
                IF      TBL-ZAIW-TEN (IDX)  >   ZERO
                    MOVE    TBL-ZAIW-TEN (IDX)  TO  WRK-TANKA
                    MOVE    WRK-TANKA           TO  WRK-NUM
