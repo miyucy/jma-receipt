@@ -305,6 +305,7 @@
       *  01.01.123   NACL-森脇    04/02/05  PGKANRI-KEY,KEY2,ALL追加
       *  01.01.124   NACL-小豆沢  04/02/07  SYUNOU-KEY25追加
       *  01.01.125   NACL-藤原    04/02/24  PTBYOMEI-KEY20追加
+      *  01.01.126   NACL-多々納　04/02/24  TENSYU-KEY90,KEY91,KEY92追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2077,6 +2078,18 @@
                    PERFORM 2001-SEL-TENSU-REC
                WHEN    ANY             ALSO   "TENSU-KEY23K"
                    MOVE    PATH-TBL-TENSU-KEY23K
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY90"
+                   MOVE    PATH-TBL-TENSU-KEY90
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY91"
+                   MOVE    PATH-TBL-TENSU-KEY91
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-TENSU-REC
+               WHEN    ANY             ALSO   "TENSU-KEY92"
+                   MOVE    PATH-TBL-TENSU-KEY92
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-TENSU-REC
       *----(01.01.94)--ADD-END-----

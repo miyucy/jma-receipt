@@ -144,8 +144,8 @@
                            11  SPA-COM-CHKFLG        PIC X(01).
       *                    時間加算フラグ
                            11  SPA-COM-TIMEFLG       PIC 9(01).
-      *                    自動発生済フラグ
-                           11  SPA-COM-AUTOFLG       PIC X(01).
+      *                自動発生済フラグ
+                       09  SPA-COM-AUTOFLG           PIC X(01).
       *                計算チェック済フラグ（毎回クリア）
                        09  SPA-COM-SANFLG        PIC 9(01).
       *                逓減検査対象有無（１：逓減有り）
@@ -172,6 +172,8 @@
                        09  SPA-COM-TNSSRYSYUKBN  PIC X(03).
       *                データ区分
                        09  SPA-COM-DATAKBN       PIC X(01).
+      *                点数マスタ名称（包括検査用）
+                       09  SPA-COM-NAME          PIC X(80).
       *                点数マスタ　薬剤内容
                        09  SPA-COM-MADOKUKBN     PIC 9(01).
                        09  SPA-COM-SINKEIKBN     PIC 9(01).
