@@ -192,7 +192,8 @@
       *
            03  FLG-TEIGEN              PIC 9(01).
            03  FLG-YKZ20               PIC 9(01).
-           03  FLG-TOTALTEN            PIC 9(01).      
+           03  FLG-TOTALTEN            PIC 9(01).
+           03  FLG-KOKUJISKBKBN1       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -394,7 +395,7 @@
                    07  TBL-KOUI-TEN             PIC  9(09)V9(02).
       *----(01.00.04) LINE ADD END ------------------------------------
       *    並び替え用ワーク
-       01  TBL-KOUI-SORT                        PIC X(100).
+       01  TBL-KOUI-SORT                        PIC X(200).
       *  
        01  WRK-CONS-AREA.
       *    コンマ
@@ -1523,6 +1524,7 @@
                                            WRK-TBLMAX8
                                            FLG-TEIGEN
                                            FLG-YKZ20
+                                           FLG-KOKUJISKBKBN1
       *                                     
            MOVE    RECE041-SRYKBN      TO  WRK-SRYKBN
       *
@@ -1713,6 +1715,10 @@
                    MOVE    TNS-TEN             TO
                                    TBL-KOUI-TEN          (WRK-TBLMAX1)
       *----(01.00.04) LINE ADD END ------------------------------------
+      *
+                   IF      TNS-KOKUJISKBKBN1   NOT =   "1"
+                       MOVE    1                   TO  FLG-KOKUJISKBKBN1
+                   END-IF    
                END-IF
            END-IF
            .
@@ -1889,19 +1895,16 @@
                MOVE    3                   TO  WRK-REC-LENGTH
       *        診療識別
       *----(01.00.04) LINE ADD START ----------------------------------
-               IF      RECE041-SRYKBN            =   "13"  OR  "14"
-                   IF      IDX                   >   1
-                       IF      TBL-KOUI-KOKUJISKBKBN1 (IDX)
-                                                 =   1
-                         MOVE    RECE041-SRYKBN  TO  WRK-DATA
-                         MOVE    2               TO  WRK-NAGASA
-                         MOVE    SPACE           TO  WRK-SRYKBN
-                       END-IF
-                   END-IF
+               IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
+               AND   ( IDX                 >   1              )
+               AND   ( FLG-KOKUJISKBKBN1   =   ZERO           )
+                    MOVE    RECE041-SRYKBN  TO  WRK-DATA
+                    MOVE    2               TO  WRK-NAGASA
+                    MOVE    SPACE           TO  WRK-SRYKBN
                END-IF
       *----(01.00.04) LINE ADD END ------------------------------------
-               IF      IDX                 =   1
-               AND     WRK-SRYKBN      NOT =   SPACE
+               IF    ( IDX                 =   1     )
+               AND   ( WRK-SRYKBN      NOT =   SPACE )
                    MOVE    WRK-SRYKBN          TO  WRK-DATA
                    MOVE    2                   TO  WRK-NAGASA
                    MOVE    SPACE               TO  WRK-SRYKBN
@@ -1933,10 +1936,7 @@
       *----(01.00.04) LINE ADD START ----------------------------------
                IF      RECE041-SRYKBN            =   "13"  OR  "14"
                    IF      IDX                   <   WRK-TBLMAX1
-                       IF      TBL-KOUI-KOKUJISKBKBN1 (IDX)
-                                                 =   1
-                       AND     TBL-KOUI-KOKUJISKBKBN2 (IDX)
-                                                 =   7
+                       IF      FLG-KOKUJISKBKBN1 =   ZERO
                            MOVE    TBL-KOUI-TEN (IDX)
                                                  TO  WRK-TENSU
                            MOVE    WRK-TENSU     TO  WRK-NUM
@@ -1965,10 +1965,7 @@
       *----(01.00.04) LINE ADD START ----------------------------------
                IF      RECE041-SRYKBN            =   "13"  OR  "14"
                    IF      IDX                   <   WRK-TBLMAX1
-                       IF      TBL-KOUI-KOKUJISKBKBN1 (IDX)
-                                                 =   1
-                       AND     TBL-KOUI-KOKUJISKBKBN2 (IDX)
-                                                 =   7
+                       IF      FLG-KOKUJISKBKBN1 =   ZERO
                            IF      RECE041-ZAIKAISU  >   ZERO
                                MOVE    1             TO  WRK-KAISU
                                MOVE    WRK-KAISU     TO  WRK-NUM
@@ -2837,10 +2834,10 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *????
-           IF      FLG-HKNCOMBI        =   1
-               DISPLAY "HKNCOMBI INV " COMB-HOSPID " " COMB-PTID " "
-                                       COMB-HKNCOMBINUM " "    
-           END-IF
+      *     IF      FLG-HKNCOMBI        =   1
+      *         DISPLAY "HKNCOMBI INV " COMB-HOSPID " " COMB-PTID " "
+      *                                 COMB-HKNCOMBINUM " "    
+      *     END-IF
       *???? 
       *
            .
