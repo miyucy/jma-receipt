@@ -40,6 +40,9 @@
       *                                     により行なう
       *  01.00.06   NACL-門脇     04.01.14  診療行為の包括分は除く
       *                                     SRYACCT9→30
+      *  01.00.07   NACL-藤原     04.07.12  負担者番号・カナ氏名順の表示にする
+      *                                     該当月の保険組合せの主保険の
+      *                                     チェックを追加する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -113,6 +116,7 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
+           03  IDXX                PIC 9(04).
       *
            03  IDX1                PIC 9(04). 
            03  IDX2                PIC 9(04).     
@@ -168,6 +172,14 @@
       *    生活保護保険番号 
            03  WRK-CONS-SEIHO-HKNNUM
                                    PIC X(03)   VALUE   "012". 
+      *
+      *    労災保険番号 
+           03  WRK-CONS-ROUSAI-HKNNUM
+                                   PIC X(03)   VALUE   "971". 
+      *
+      *    自賠責保険番号 
+           03  WRK-CONS-JIBAISEKI-HKNNUM
+                                   PIC X(03)   VALUE   "973". 
       *    ジョブ管理ＤＢのキー値  
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "RECEPT1".
@@ -445,16 +457,17 @@
            MOVE    1               TO  LNK-DAY6-ZOGEN
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY6-AREA
-           MOVE    LNK-DAY6-KEISAN TO  PTKOH-TEKSTYMD                        
+           MOVE    LNK-DAY6-KEISAN TO  PTKOH-TEKSTYMD  
+                      
            MOVE    PTKOHINF-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "PTKOHINF-KEY5" TO  ORC-DBPATH
+           MOVE    "PTKOHINF-KEY7" TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC           =   ZERO
-               MOVE    "PTKOHINF-KEY5"  TO  WRK-PATH
+               MOVE    "PTKOHINF-KEY7"  TO  WRK-PATH
                PERFORM 910-PTKOHINF-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-PTKOHINF
@@ -462,12 +475,14 @@
       *
       *    今月に生保対象の診療行為があるか
            PERFORM UNTIL       FLG-PTKOHINF    =   1
-      *        診療会計読み込み（患者ＩＤ、保険組合せ、診療科順）
+      *
+               MOVE    ZERO                TO  FLG-SEIHO
+      *
+      *        診療会計読み込み
                INITIALIZE                  SRYACCT-REC
                MOVE    SPA-HOSPID      TO  ACCT-HOSPID
                MOVE    SPA-NAI-SRYYM   TO  ACCT-SRYYM
                MOVE    PTKOH-PTID      TO  ACCT-PTID
-      *********MOVE    "2"             TO  ACCT-NYUGAIKBN
                MOVE    SPA-R01-NYUGAIKBN
                                        TO  ACCT-NYUGAIKBN
                MOVE    SRYACCT-REC     TO  MCPDATA-REC
@@ -485,10 +500,7 @@
                    MOVE    1               TO  FLG-SRYACCT
                END-IF
       *
-               MOVE    ZERO                TO  FLG-SEIHO
-      *        診療会計より検索
                PERFORM UNTIL       FLG-SRYACCT     =   1
-                   MOVE    ZERO                TO  FLG-SEIHO       
       *            保険組合せ読込み
                    INITIALIZE                  HKNCOMBI-REC
                    MOVE    SPA-HOSPID          TO  COMB-HOSPID
@@ -497,24 +509,27 @@
                    MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                    PERFORM 910-HKNCOMBI-READ-SEC
                    IF      FLG-HKNCOMBI        =   ZERO
-                       PERFORM VARYING IDX     FROM    1   BY  1
-                               UNTIL   IDX     >       4
-                               OR      COMB-KOHHKNNUM (IDX)
-                                                   =   SPACE
-                               OR      FLG-SEIHO   =   1                       
-                           IF      COMB-KOHHKNNUM (IDX)    =
+                       IF    ( COMB-HKNNUM     =
+                                           WRK-CONS-ROUSAI-HKNNUM    )
+                       OR    ( COMB-HKNNUM     =
+                                           WRK-CONS-JIBAISEKI-HKNNUM )
+                           CONTINUE
+                       ELSE    
+                           PERFORM VARYING IDX     FROM    1   BY  1
+                                   UNTIL   IDX     >       4
+                                   OR      COMB-KOHHKNNUM (IDX)
+                                                       =   SPACE
+                                   OR      FLG-SEIHO   =   1                       
+                               IF      COMB-KOHHKNNUM (IDX)    =
                                                WRK-CONS-SEIHO-HKNNUM
-                               MOVE    1               TO  FLG-SEIHO
-                               MOVE    IDX             TO  WRK-KOH-IDX
-                           END-IF
-                       END-PERFORM
+                                   MOVE    1               TO  FLG-SEIHO
+                               END-IF
+                           END-PERFORM
+                       END-IF
                    END-IF    
       *
                    IF      FLG-SEIHO           =   1
                        PERFORM 31011-SEH-GMN-HENSYU-SEC
-                   END-IF      
-      *             
-                   IF      FLG-SEIHO           =   1
                        MOVE    1                   TO  FLG-SRYACCT 
                    ELSE
                        MOVE    KEY-NEW             TO  KEY-OLD
@@ -553,6 +568,54 @@
                    ELSE
                        MOVE    1                   TO  FLG-NYUINACCT    
                    END-IF
+      *
+                   PERFORM             UNTIL    FLG-NYUINACCT  =   1
+                                       OR       FLG-SEIHO      =   1
+      *                保険組合せ読込み
+                       IF      NACCT-ZAISKBKBN     =   "5"
+                           PERFORM VARYING IDXX    FROM    1   BY  1
+                                   UNTIL   IDXX        >   31
+                                   OR      FLG-SEIHO   =   1
+                             IF      NACCT-DAY (IDXX)    >   ZERO    
+                               INITIALIZE                  HKNCOMBI-REC
+                               MOVE    NACCT-HOSPID    TO  COMB-HOSPID
+                               MOVE    NACCT-PTID      TO  COMB-PTID
+                               MOVE    NACCT-DAY (IDXX)
+                                                       TO
+                                                       COMB-HKNCOMBINUM 
+                               MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
+                               PERFORM  910-HKNCOMBI-READ-SEC
+      *
+                               IF      FLG-HKNCOMBI        =   ZERO
+                                   IF    ( COMB-HKNNUM =
+                                             WRK-CONS-ROUSAI-HKNNUM    )
+                                   OR    ( COMB-HKNNUM =
+                                             WRK-CONS-JIBAISEKI-HKNNUM )
+                                       CONTINUE
+                                   ELSE    
+                                       PERFORM VARYING IDX FROM  1 BY  1
+                                               UNTIL   IDX >     4
+                                               OR  COMB-KOHHKNNUM (IDX)
+                                                       =   SPACE
+                                               OR  FLG-SEIHO   =   1                       
+                                           IF      COMB-KOHHKNNUM (IDX)
+                                               =   WRK-CONS-SEIHO-HKNNUM
+                                               MOVE    1   TO  FLG-SEIHO
+                                           END-IF
+                                       END-PERFORM
+                                   END-IF
+                               END-IF
+                             END-IF
+                           END-PERFORM
+                       END-IF
+      *    
+                       IF      FLG-SEIHO           =   1
+                           PERFORM 31011-SEH-GMN-HENSYU-SEC
+                       ELSE
+                           MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
+                           PERFORM  900-NYUINACCT-READ-SEC
+                       END-IF
+                   END-PERFORM    
       *            カーソルクロース
                    MOVE    "DBCLOSE"           TO  MCP-FUNC
                    MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
@@ -560,19 +623,14 @@
                                                 MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC
-      *
-                   IF      FLG-NYUINACCT       =   ZERO
-                       MOVE    1                   TO  FLG-SEIHO
-                       PERFORM 31011-SEH-GMN-HENSYU-SEC
-                   END-IF      
                END-IF
       *                                      
-               MOVE    "PTKOHINF-KEY5"  TO  WRK-PATH
+               MOVE    "PTKOHINF-KEY7"  TO  WRK-PATH
                PERFORM 910-PTKOHINF-NEXT-SEC
            END-PERFORM                                 
       *    カーソルクロース
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "PTKOHINF-KEY5"     TO  ORC-DBPATH
+           MOVE    "PTKOHINF-KEY7"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -612,13 +670,13 @@
            COMPUTE IDX2    =
                          ( SPA-GMN-MAX +   WRK-LINE-MAX )
                                        -   IDX1  *   WRK-LINE-MAX
-           MOVE    PTKOH-PTID      TO      SPA-NAI-TPTID (IDX1 IDX2)
+           MOVE    PTKOH-PTID      TO  SPA-NAI-TPTID (IDX1 IDX2)
            INITIALIZE                  ORCSPTIDAREA
            MOVE    SPA-HOSPID      TO  SPTID-HOSPID
            MOVE    PTKOH-PTID      TO  SPTID-PTID
            CALL    "ORCSPTID"      USING   ORCSPTIDAREA
                                            SPA-1009-TBL
-           MOVE    SPTID-PTNUM     TO    SPA-GMN-TPTNUM (IDX1 IDX2)
+           MOVE    SPTID-PTNUM     TO  SPA-GMN-TPTNUM (IDX1 IDX2)
            MOVE    SPA-HOSPID      TO  PTINF-HOSPID
            MOVE    PTKOH-PTID      TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
@@ -626,6 +684,7 @@
       *****MOVE    SPA-GMN-SRYYM   TO  SPA-GMN-TSRYYM(IDX1 IDX2)
       *****MOVE    SPA-NAI-SRYYM   TO  SPA-NAI-TSRYYM(IDX1 IDX2)
            MOVE    PTKOH-FTNJANUM  TO  SPA-GMN-TFTNJANUM (IDX1 IDX2)
+           MOVE    PTKOH-JKYSNUM   TO  SPA-GMN-TJKYSNUM  (IDX1 IDX2)
            MOVE    SPA-HOSPID      TO  MONTHLYNUM-HOSPID
            MOVE    PTKOH-PTID      TO  MONTHLYNUM-PTID
            MOVE    WRK-CONS-SEIHO-HKNNUM
@@ -638,7 +697,7 @@
            IF      FLG-MONTHLYNUM  =   ZERO
                MOVE    MONTHLYNUM-JKYSNUM  
                                        TO  SPA-GMN-TJKYSNUM (IDX1 IDX2)
-           END-IF                    
+           END-IF
       *
            .
        31011-SEH-GMN-HENSYU-EXT.
@@ -742,25 +801,21 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェック
            PERFORM 4102-KIHON-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE 
-               GO  TO  410-INPUT-CHK-EXT
-           END-IF
-      *     
-      *    関連チェック
-      *****PERFORM 4103-KANREN-CHK-SEC
-      *    IF      SPA-ERRCD       NOT =   SPACE 
-      *        GO  TO  410-INPUT-CHK-EXT
-      *****END-IF
+           IF      SPA-ERRCD       =   SPACE 
+      *        関連チェック
+      *****    PERFORM 4103-KANREN-CHK-SEC
+      *        IF      SPA-ERRCD       NOT =   SPACE 
+      *            GO  TO  410-INPUT-CHK-EXT
+      *****    END-IF
       *
-      *    登録時、必須入力チェック
-           IF      FLG-TOUROKU         =   1
-      *****    PERFORM 4109-TOUROKU-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO  TO  410-INPUT-CHK-EXT
+      *        登録時、必須入力チェック
+               IF      FLG-TOUROKU         =   1
+      *****        PERFORM 4109-TOUROKU-CHK-SEC
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    ZERO            TO  SPA-GMN-CUR
+                   END-IF
                END-IF
-           END-IF
-      *
-           MOVE    ZERO            TO  SPA-GMN-CUR
+           END-IF    
            .
       *
        410-INPUT-CHK-EXT.
@@ -821,37 +876,37 @@
            MOVE    SPACE               TO  SPA-GMN-TNAME (IDX1 IDX)
            MOVE    ZERO                TO  SPA-NAI-TPTID (IDX1 IDX)
       *
-           IF      SPA-GMN-TPTNUM (IDX1 IDX)   =   SPACE
-               GO  TO  41021-PTNUM-CHK-EXT
+           IF      SPA-GMN-TPTNUM (IDX1 IDX)
+                                       =   SPACE
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN-TNAME (IDX1 IDX)
+               MOVE    ZERO                TO  SPA-NAI-TPTID (IDX1 IDX)
+      *
+               INITIALIZE                      ORCSPTIDAREA
+               MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+               MOVE    SPA-GMN-TPTNUM (IDX1 IDX)
+                                           TO  SPTID-PTNUM
+               CALL    "ORCSPTID"          USING   ORCSPTIDAREA
+                                                   SPA-1009-TBL
+               IF      SPTID-RC        NOT =   ZERO
+                   MOVE    "0003"          TO  SPA-ERRCD
+               ELSE
+                   MOVE    SPTID-PTNUM     TO  SPA-GMN-TPTNUM (IDX1 IDX)
+                   MOVE    SPTID-PTID      TO  SPA-NAI-TPTID  (IDX1 IDX)
+      *
+      *            患者マスター存在チェック
+                   MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+                   MOVE    SPA-NAI-TPTID (IDX1 IDX)
+                                           TO  PTINF-PTID
+                   PERFORM 900-PTINF-READ-SEC
+                   IF      FLG-PTINF   NOT =   ZERO
+                       MOVE    "0001"      TO  SPA-ERRCD
+                   ELSE
+                       MOVE    PTINF-NAME  TO  SPA-GMN-TNAME (IDX1 IDX)
+                   END-IF
+               END-IF
            END-IF
-      *
-           MOVE    SPACE               TO  SPA-GMN-TNAME (IDX1 IDX)
-           MOVE    ZERO                TO  SPA-NAI-TPTID (IDX1 IDX)
-      *
-           INITIALIZE                  ORCSPTIDAREA
-           MOVE    SPA-HOSPID          TO  SPTID-HOSPID
-           MOVE    SPA-GMN-TPTNUM (IDX1 IDX)
-                                       TO  SPTID-PTNUM
-           CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                               SPA-1009-TBL
-           IF      SPTID-RC        NOT =   ZERO
-               MOVE    "0003"          TO  SPA-ERRCD
-               GO  TO                  41021-PTNUM-CHK-EXT
-           END-IF
-           MOVE    SPTID-PTNUM         TO  SPA-GMN-TPTNUM (IDX1 IDX)
-           MOVE    SPTID-PTID          TO  SPA-NAI-TPTID  (IDX1 IDX)
-      *
-      *    患者マスター存在チェック
-           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
-           MOVE    SPA-NAI-TPTID (IDX1 IDX)
-                                       TO  PTINF-PTID
-           PERFORM 900-PTINF-READ-SEC
-           IF      FLG-PTINF           NOT =   ZERO
-               MOVE    "0001"              TO  SPA-ERRCD
-               GO      TO      41021-PTNUM-CHK-EXT
-           END-IF
-      *
-           MOVE    PTINF-NAME        TO  SPA-GMN-TNAME (IDX1 IDX)
            .
        41021-PTNUM-CHK-EXT.
            EXIT.
