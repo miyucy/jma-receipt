@@ -54,6 +54,7 @@
       * 02.00.18     NACL-多々納  03/08/29  Ｈ１５．９から
       *                                     労災・自賠責逓減制の廃止
       *                                     （レセ電コードの変更なし）
+      * 02.00.19     NACL-多々納  03/12/02  ％減算追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -192,6 +193,7 @@
            03  WRK-TENSUKEI        PIC 9(08)V99.
            03  WRK-TENSUKEI-9      PIC 9(08).
            03  WRK-TENSUKEI-G      PIC 9(08).
+           03  WRK-TENSUKEI-GEN    PIC 9(08).
       *    往診時、所定点数加算分
            03  WRK-TENSU-O1        PIC 9(08).
       *    往診時、所定点数加算外
@@ -2445,6 +2447,7 @@
        1006-KASAN-SET-SEC              SECTION.
       *
            MOVE    ZERO                TO  WRK-TENSUKEI-G
+           MOVE    ZERO                TO  WRK-TENSUKEI-GEN
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE )
@@ -2458,10 +2461,20 @@
                    MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
                    ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
                END-IF
+               IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
+                      (WRK-COM-TENSIKIBETU(IDX)    =   6   )
+                   MOVE    ZERO                TO  WRK-TENSUKEI
+                   COMPUTE WRK-TENSUKEI        =   LNK-SC90-TENSUKEI
+                                               *   WRK-COM-KISOTEN(IDX)
+                                               /   100
+                   MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
+                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-GEN
+               END-IF
            END-PERFORM
       *
            COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
                                        +   WRK-TENSUKEI-G
+                                       -   WRK-TENSUKEI-GEN
       *
            .
        1006-KASAN-SET-EXT.
@@ -3540,13 +3553,13 @@
                             OR     WRK-COM-ZAIEND (IDX-Z)     =  "1"
                            ADD     1               TO  IDX-Z
                        END-PERFORM
-                   END-IF
-      *            外来管理加算コード追加処理
-                   PERFORM 2001-GAIKASAN-SEC
-      *            労災読み替え加算分
-                   IF      FLG-ADD         =   1
-                       MOVE    "1"             TO  WRK-COM-RSIFLG2
+      *                外来管理加算コード追加処理
+                       PERFORM 2001-GAIKASAN-SEC
+      *                労災読み替え加算分
+                       IF      FLG-ADD         =   1
+                           MOVE    "1"             TO  WRK-COM-RSIFLG2
                                                                (IDX-S)
+                       END-IF
                    END-IF
                ELSE
       *            外来管理加算が算定できる時
