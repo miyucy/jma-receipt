@@ -78,6 +78,8 @@
       *  01.00.28    ひさなが     03/08/12  禁忌チェックに外来、入院に
       *                                     またがるチェックを追加
       *  01.00.29    ひさなが     03/08/19  患者病名作業のクリアを修正
+      *  01.00.30    ひさなが     03/08/20  院外処方の指示追加
+      *                                     実日数チェックの修正
       *
       *****************************************************************
       *
@@ -326,11 +328,11 @@
                    07  W-SRYCD-72      PIC X(01).
                    07  W-SRYCD-81      PIC X(09).
                    07  W-SRYCD-82      PIC X(01).
-           03  W-TABLE-S4.
-               05  W-SRYCD-S4-TABLE    OCCURS  1000.
-                   07  W-SRYCD-91      PIC X(09).
+      *     03  W-TABLE-S4.
+      *         05  W-SRYCD-S4-TABLE    OCCURS  1000.
+      *             07  W-SRYCD-91      PIC X(09).
       *             07  W-SRYCD-91-N    PIC X(09).
-                   07  W-SRYCD-92      PIC X(09).
+      *             07  W-SRYCD-92      PIC X(09).
       *             07  W-SRYCD-92-N    PIC X(09).
            03  W-CHK-KUBUN.
                05  W-CHK-ST1-KBN       PIC X(01).
@@ -1092,16 +1094,27 @@
                PERFORM UNTIL      MCP-RC   NOT  =  ZERO
                    MOVE    MCPDATA-REC               TO    SRYACCT-REC
                    COMPUTE T-CNT-IN    =   T-CNT-IN    +   1
-      *修正/*開始*03.08.19*********************************************
+      *修正/*開始*03.08.20*********************************************
       *             IF  ACCT-ZAIKAISU   NOT =  ZERO
       *                 PERFORM T-100-RECECHEK-HANTI-SEC
       *             END-IF
-                   PERFORM T-100-RECECHEK-HANTI-SEC
-      *修正/*終了*03.08.19*********************************************
+      ***             DISPLAY " ***ACCT-PTID     " ACCT-PTID
+      ***             DISPLAY "    ACCT-ZAITEN   " ACCT-ZAITEN
+      ***             DISPLAY "    ACCT-ZAIKAISU " ACCT-ZAIKAISU
+      ***             DISPLAY "    SPA-GMN-TBLG2 " SPA-GMN-TBLG2
+                   IF  (SPA-GMN-CNV (20)   =   SPACE)  OR
+                       ((SPA-GMN-CNV (20)   =   "1")  AND
+                        (ACCT-ZAITEN   NOT =   ZERO))  OR
+                       ((SPA-GMN-CNV (20)   =   "2")  AND
+                        (ACCT-ZAITEN       =   ZERO))
+      ***             DISPLAY "                  ========"
+                       PERFORM T-100-RECECHEK-HANTI-SEC
+                   END-IF
+      *修正/*終了*03.08.20*********************************************
                    PERFORM T-100-RECECHEK-READ-SEC
                END-PERFORM
       *修正/*開始*03.08.06*********************************************
-               INITIALIZE                W-TABLE-S4
+      *         INITIALIZE                W-TABLE-S4
                MOVE    SPACE             TO  T-ERR-08
                MOVE    SPACE             TO  T-ERR-09
                IF  W-PTBYO-MAX2   NOT =  ZERO
@@ -1211,7 +1224,7 @@
                INITIALIZE                WK-JITUDAY2
                INITIALIZE                W-TABLE-S1
                INITIALIZE                W-TABLE-S2
-               INITIALIZE                W-TABLE-S4
+      *         INITIALIZE                W-TABLE-S4
                INITIALIZE                WK-NYUINACCT-K
                INITIALIZE                W-KOH-AREA
                INITIALIZE                W-J-SRYCD-AREA
@@ -1271,7 +1284,7 @@
       ****修正/*開始*03.08.19*********************************************
       *              (ACCT-SRYKA    NOT =   W1-SRY-SRYKA))
       ****修正/*終了*03.08.19*********************************************
-                   INITIALIZE                W-TABLE-S4
+      *             INITIALIZE                W-TABLE-S4
                    MOVE    SPACE             TO  T-ERR-08
                    MOVE    SPACE             TO  T-ERR-09
                    IF  W-PTBYO-MAX2   NOT =  ZERO
@@ -3139,7 +3152,11 @@
                        (ACCT-SRYKBN      NOT <  "10")   AND
                        (ACCT-SRYKBN      NOT >  "80")   AND
                        ((SRY-SRYKBN           =  "11")   OR
-                        (SRY-SRYKBN           =  "12"))
+                        (SRY-SRYKBN           =  "12")   OR
+      *修正/*開始*03.08.20*********************************************
+                        (SRY-SRYKBN           =  "13")   OR
+                        (SRY-SRYKBN           =  "14"))
+      *修正/*終了*03.08.20*********************************************
                        MOVE    ZERO                 TO  W-JITU-DAY4
                        PERFORM VARYING  IDX6  FROM  1  BY  1
                                UNTIL    IDX6  >    31
@@ -3162,6 +3179,10 @@
                            (ACCT-SRYKBN       NOT >  "80")   AND
                            (SRY-SRYKBN        NOT =  "11")   AND
                            (SRY-SRYKBN        NOT =  "12")   AND
+      *修正/*開始*03.08.20*********************************************
+                           (SRY-SRYKBN        NOT =  "13")   AND
+                           (SRY-SRYKBN        NOT =  "14")   AND
+      *修正/*終了*03.08.20*********************************************
                            (SRY-SRYCD (IDX3)(1:1) =   "1")
       *修正/*開始*03.08.19*********************************************
       *                     (W-JITU-DAY5       NOT >  ACCT-ZAIKAISU)
@@ -3941,9 +3962,7 @@
                        MOVE    IDW4           TO  W-PTBYO-MAX1
                        MOVE    200            TO  IDW4
                    ELSE
-                       IF  (W-PTBYO-SRYCD1 (IDW4)
-                                                =  SRY-SRYCD (IDX3)) OR
-                           (W-PTBYO-KB1 (IDW4)  =  "2" OR "3" OR "4")
+                       IF  W-PTBYO-SRYCD1 (IDW4) = SRY-SRYCD (IDX3)
                            MOVE    200        TO  IDW4
                        END-IF
                    END-IF
@@ -3964,9 +3983,7 @@
                            MOVE    IDW4        TO  W-PTBYO-MAX1
                            MOVE    200         TO  IDW4
                        ELSE
-                           IF  (W-PTBYO-SRYCD1 (IDW4)
-                                                 =  SRY-SRYCD (IDX3)) OR
-                               (W-PTBYO-KB1 (IDW4)  = "2" OR "3" OR "4")
+                           IF  W-PTBYO-SRYCD1 (IDW4) = SRY-SRYCD (IDX3)
                                MOVE    200        TO  IDW4
                            END-IF
                        END-IF
@@ -4133,9 +4150,7 @@
                        MOVE    IDW4           TO  W-PTBYO-MAX2
                        MOVE    200            TO  IDW4
                    ELSE
-                       IF  (W-PTBYO-SRYCD2 (IDW4)
-                                                =  SRY-SRYCD (IDX3)) OR
-                           (W-PTBYO-KB2 (IDW4)  =  "2" OR "3" OR "4")
+                       IF  W-PTBYO-SRYCD2 (IDW4) = SRY-SRYCD (IDX3)
                            MOVE    200        TO  IDW4
                        END-IF
                    END-IF
@@ -4156,9 +4171,7 @@
                            MOVE    IDW4        TO  W-PTBYO-MAX2
                            MOVE    200         TO  IDW4
                        ELSE
-                           IF  (W-PTBYO-SRYCD2 (IDW4)
-                                                 =  SRY-SRYCD (IDX3)) OR
-                               (W-PTBYO-KB2 (IDW4)  = "2" OR "3" OR "4")
+                           IF  W-PTBYO-SRYCD2 (IDW4) = SRY-SRYCD (IDX3)
                                MOVE    200        TO  IDW4
                            END-IF
                        END-IF
@@ -4354,22 +4367,22 @@
                    MOVE    MCPDATA-REC         TO  CHK-REC
                    PERFORM VARYING IDY2  FROM  1  BY 1
                            UNTIL   IDY2  >    10
-                       PERFORM VARYING IDY1  FROM  1  BY 1
-                               UNTIL   IDY1  >  1000
-                           IF  W-SRYCD-91 (IDY1)   =   SPACE
-                               MOVE    CHK-CD (IDY2)
-                                                  TO  W-SRYCD-91 (IDY1)
+      *                 PERFORM VARYING IDY1  FROM  1  BY 1
+      *                         UNTIL   IDY1  >  1000
+      *                     IF  W-SRYCD-91 (IDY1)   =   SPACE
+      *                         MOVE    CHK-CD (IDY2)
+      *                                            TO  W-SRYCD-91 (IDY1)
                                IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
                                    (CHK-CD (IDY2)   NOT =   ZERO)
                                    PERFORM T-530-RECECHEK-CHK5-2-SEC
                                END-IF
-                               MOVE    2000               TO  IDY1
-                           ELSE
-                               IF  W-SRYCD-91 (IDY1)  =  CHK-CD (IDY2)
-                                   MOVE    2000     TO  IDY1
-                               END-IF
-                           END-IF
-                       END-PERFORM
+      *                         MOVE    2000               TO  IDY1
+      *                     ELSE
+      *                         IF  W-SRYCD-91 (IDY1)  =  CHK-CD (IDY2)
+      *                             MOVE    2000     TO  IDY1
+      *                         END-IF
+      *                     END-IF
+      *                 END-PERFORM
                        IF  (CHK-CD (IDY2)       =   SPACE) OR
                            (CHK-CD (IDY2)       =   ZERO)
                            MOVE    20                   TO  IDY2
@@ -4447,22 +4460,22 @@
                    MOVE    MCPDATA-REC         TO  CHK-REC
                    PERFORM VARYING IDY2  FROM  1  BY 1
                            UNTIL   IDY2  >    10
-                       PERFORM VARYING IDY1  FROM  1  BY 1
-                               UNTIL   IDY1  >  1000
-                           IF  W-SRYCD-92 (IDY1)   =   SPACE
-                               MOVE    CHK-CD (IDY2)
-                                                  TO  W-SRYCD-92 (IDY1)
+      *                 PERFORM VARYING IDY1  FROM  1  BY 1
+      *                         UNTIL   IDY1  >  1000
+      *                     IF  W-SRYCD-92 (IDY1)   =   SPACE
+      *                         MOVE    CHK-CD (IDY2)
+      *                                            TO  W-SRYCD-92 (IDY1)
                                IF  (CHK-CD (IDY2)   NOT =   SPACE) AND
                                    (CHK-CD (IDY2)   NOT =   ZERO)
                                    PERFORM T-530-RECECHEK-CHK5-1-SEC
                                END-IF
-                               MOVE    2000               TO  IDY1
-                           ELSE
-                               IF  W-SRYCD-92 (IDY1)  =  CHK-CD (IDY2)
-                                   MOVE    2000     TO  IDY1
-                               END-IF
-                           END-IF
-                       END-PERFORM
+      *                         MOVE    2000               TO  IDY1
+      *                     ELSE
+      *                         IF  W-SRYCD-92 (IDY1)  =  CHK-CD (IDY2)
+      *                             MOVE    2000     TO  IDY1
+      *                         END-IF
+      *                     END-IF
+      *                 END-PERFORM
                        IF  (CHK-CD (IDY2)       =   SPACE) OR
                            (CHK-CD (IDY2)       =   ZERO)
                            MOVE    20                   TO  IDY2
@@ -4503,7 +4516,7 @@
            END-IF.
            PERFORM VARYING IDW4  FROM  1  BY 1
                    UNTIL   IDW4  >  W-PTBYO-MAX2
-               MOVE     W-PTBYO-CHKCD2 (IDW4)  TO   DID2-REC(37:9)
+               MOVE     W-PTBYO-SRYCD2 (IDW4)  TO   DID2-REC(37:9)
                EVALUATE    W-PTBYO-KB2 (IDW4)
                    WHEN    "1"
                        MOVE    W-PTBYO-SRYKA2 (IDW4) TO  DID2-REC(191:2)
@@ -4587,7 +4600,7 @@
            END-IF.
            PERFORM VARYING IDW4  FROM  1  BY 1
                    UNTIL   IDW4  >  W-PTBYO-MAX1
-               MOVE     W-PTBYO-CHKCD1 (IDW4)  TO   DID2-REC(37:9)
+               MOVE     W-PTBYO-SRYCD1 (IDW4)  TO   DID2-REC(37:9)
                EVALUATE    W-PTBYO-KB1 (IDW4)
                    WHEN    "1"
                        MOVE    W-PTBYO-SRYKA1 (IDW4) TO  DID2-REC(191:2)
