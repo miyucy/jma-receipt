@@ -30,6 +30,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03/11/10  公費分点欄の診療区分の表示をする
+      *  01.00.02    NACL-藤原    04/01/07  その他の点数欄表示
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -446,7 +447,7 @@
       *    傷病名欄最大行数
            03  WRK-BYOMEI-LINE     PIC 9(02)   VALUE   5.
       *    適用欄最大行数
-           03  WRK-TEKIYOU1-LINE   PIC 9(02)   VALUE   33.
+           03  WRK-TEKIYOU1-LINE   PIC 9(02)   VALUE   35.
       *    適用欄（続紙）最大行数（横タイプ）
            03  WRK-TEKIYOU2-LINE   PIC 9(03)   VALUE   140.
       *    適用欄（続紙）最大行数（縦タイプ）
@@ -3132,7 +3133,7 @@
 
       *            
            PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL     IDX       >   WRK-TEKIYOU-LINE
+                     UNTIL     IDX       >   35
       *        <単価>
                EVALUATE    IDX
       *        再診
