@@ -4,9 +4,9 @@ name	orca;
 
 base	"/usr/local/orca";
 
-lddir	"=/lddef";
-bddir	"=/lddef";
-record	"=/record";
+lddir	"=/lddef:=/site-lib/lddef";
+bddir	"=/lddef:=/site-lib/lddef";
+record	"=/record:=/site-lib/record";
 
 multiplex_level	id;
 

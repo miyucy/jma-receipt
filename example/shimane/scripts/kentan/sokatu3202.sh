@@ -25,11 +25,9 @@ RENNUM=0
 
 ##      決定通知書（国保）
         RENNUM=$(expr $RENNUM + 1) 
-        $DBSTUB -host $DBHOST -record $SITERECORDDIR -dir $LDDEFDIR/directory -bddir $SITELDDEFDIR -db orca  -bd shimane SYUKEI002 -parameter  $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${15}
+        $DBSTUB -dir $LDDEFDIR/directory -bd shimane SYUKEI002 -parameter  $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${15}
         if  [ -e ${16} ]; then
              exit
         fi
         
-	$DBSTUB  -host $DBHOST -record $SITERECORDDIR -dir $LDDEFDIR/directory -bddir $SITELDDEFDIR -db orca  -bd orcabt ORCBJOB -parameter JBE${12}${13}
-
-
+	$DBSTUB -dir $LDDEFDIR/directory -bd orcabt ORCBJOB -parameter JBE${12}${13}

@@ -15,21 +15,22 @@
         fi
         
 ##      讫湍基板闻懒滇今
-        $DBSTUB -host $DBHOST -record $SITERECORDDIR -dir $LDDEFDIR/directory -bddir $SITELDDEFDIR -db orca  -bd shimane ORCBS321 -parameter $1
+        $DBSTUB -dir $LDDEFDIR/directory -bd shimane ORCBS321 -parameter $1
         if  [ -e $2 ]; then
             exit
         fi
   
 ##      省汇板闻懒滇今
-        $DBSTUB -host $DBHOST -record $SITERECORDDIR -dir $LDDEFDIR/directory -bddir $SITELDDEFDIR -db orca  -bd shimane ORCBS323 -parameter $1
+        $DBSTUB -dir $LDDEFDIR/directory -bd shimane ORCBS323 -parameter $1
         if  [ -e $2 ]; then
             exit
         fi  
  
 ##      省汇戏客板闻懒滇今
-        $DBSTUB -host $DBHOST -record $SITERECORDDIR -dir $LDDEFDIR/directory -bddir $SITELDDEFDIR -db orca  -bd shimane ORCBS325 -parameter $1
+        $DBSTUB -dir $LDDEFDIR/directory -bd shimane ORCBS325 -parameter $1
         if  [ -e $2 ]; then
             exit
         fi  
 
         exit 
+

@@ -18,7 +18,6 @@ echo SITERECORDDIR=$SITERECORDDIR
 echo SITELDDEFDIR=$SITELDDEFDIR
 
 echo DBSTUB = $DBSTUB
-echo DBHOST = $DBHOST
 
 # example
 echo $DBSTUB -record $RECORDDIR -dir $LDDERDIR/directory -bddir $LDDEFDIR -db orca -bd orcabt ORCBQ01 -parameter
