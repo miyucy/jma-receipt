@@ -41,6 +41,7 @@
       * 02.00.02     NACL-太田    02/11/05  入院オンライン帳票を個別
       *                                     設定できるよう修正
       * 02.00.03     NACL-森脇    03/07/04  画面変更
+      * 02.00.04     NACL-多々納  03/08/12  画面変更に伴う修正
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -72,7 +73,9 @@
                05  SPA-GMN-AREA.
                    07  SPA-GMN-STYUKYMD    PIC X(09).
                    07  SPA-GMN-EDYUKYMD    PIC X(09).
+      *
                    07  SPA-GMN-PAGENO      PIC 9(01).
+      *            出力先プリンタ割り当て情報
                    07  SPA-GMN-1031-AREA.
       *----(02.00.03)--ADD-START---
                        09  SPA-GMN-USERKBN-G.
@@ -85,7 +88,7 @@
                            11  SPA-GMN-U1L         PIC X(01).
                            11  SPA-GMN-USERKBNMEIL PIC X(18).
                        09  SPA-GMN-USERKBN-MAX     PIC 9(01).
-      *
+      *                有効判定
                        09  SPA-GMN-YUKOKBN-G.
                            11  SPA-GMN-YUKOKBN     PIC X(01).
                            11  SPA-GMN-Y1          PIC X(01).
@@ -110,12 +113,12 @@
                        09  SPA-GMN-TBL.
       *----(01.00.03) LINE UPD START --------------------------
       *----(01.00.05) LINE UPD START --------------------------
-      *                    11  SPA-GMN-TBLO        OCCURS  10.
-                           11  SPA-GMN-TBL01       OCCURS  10.
+      *                    外来・プリンタ名
+                           11  SPA-GMN-TBL01       OCCURS  20.
                                13  SPA-GMN-TNAME   PIC X(30).
                                13  SPA-GMN-TPRTNM  PIC X(16).
       *----(02.00.03)--UPD-START---
-      *                     11  SPA-GMN-TBL02       OCCURS  4.
+      *                    外来・プログラム名
                            11  SPA-GMN-TBL02       OCCURS  5.
                                13  SPA-GMN-TORGPGNM
                                                    PIC X(20).
@@ -125,22 +128,28 @@
                                                    PIC X(20).
                                13  SPA-GMN-TCSTPGCHK
                                                    PIC X(01).
+                           11  SPA-GPGNM-MAX      PIC 9(04).
       *----(02.00.03)--UPD-END-----
       *----(01.00.05) LINE UPD END   --------------------------
       *----(01.00.03) LINE UPD END   --------------------------
       *                    入院帳票
-                           11  SPA-GMN-TBL01-N     OCCURS  10.
-                               13  SPA-GMN-TNAME-N   PIC X(30).
-                               13  SPA-GMN-TPRTNM-N  PIC X(16).
-                           11  SPA-GMN-TBL02-N     OCCURS  3.
+      *                    入院・プリンタ名
+                           11  SPA-GMN-TBL01-N         OCCURS  20.
+                               13  SPA-GMN-TNAME-N     PIC X(30).
+                               13  SPA-GMN-TPRTNM-N    PIC X(16).
+      *                    入院・プログラム名
+                           11  SPA-GMN-TBL02-N         OCCURS  3.
                                13  SPA-GMN-TORGPGNM-N
-                                                   PIC X(20).
+                                                       PIC X(20).
                                13  SPA-GMN-TORGPGCHK-N
-                                                   PIC X(01).
+                                                       PIC X(01).
                                13  SPA-GMN-TCSTPGNM-N
-                                                   PIC X(20).
+                                                       PIC X(20).
                                13  SPA-GMN-TCSTPGCHK-N
-                                                   PIC X(01).
+                                                       PIC X(01).
+                           11  SPA-NPGNM-MAX           PIC 9(04).
+      *
+      *            帳票編集区分情報
                    07  SPA-GMN-1030-AREA.
                        09  SPA-GMN-SYOHOGEPRTFLG-G.
                            11  SPA-GMN-SYOHOGEPRTFLG
@@ -160,8 +169,15 @@
       *
                        09  SPA-GMN-SYOHODSPNAME   PIC X(10).
       *----(02.00.03)--ADD-START---
+      *
                05  SPA-NAIB-AREA.
-                   07  SPA-NAI-TBL01           OCCURS  10.
+                   07  SPA-NAI-TBL.
+                       09  SPA-NAI-TBLO           OCCURS  100.
+                           11  SPA-NAI-USERCD     PIC 9(5).
+      *
+      *        出力先プリンタ割り当て 標準情報
+               05  SPA-HYOJUN-AREA.
+                   07  SPA-NAI-TBL01           OCCURS  20.
                        09  SPA-NAI-TNAME       PIC X(30).
                        09  SPA-NAI-TPRTNM      PIC X(16).
       *
@@ -171,7 +187,7 @@
                        09  SPA-NAI-TCSTPGNM    PIC X(20).
                        09  SPA-NAI-TCSTPGCHK   PIC X(01).
       *
-                   07  SPA-NAI-TBL01-N         OCCURS  10.
+                   07  SPA-NAI-TBL01-N         OCCURS  20.
                        09  SPA-NAI-TNAME-N     PIC X(30).
                        09  SPA-NAI-TPRTNM-N    PIC X(16).
       *
@@ -180,11 +196,6 @@
                        09  SPA-NAI-TORGPGCHK-N PIC X(01).
                        09  SPA-NAI-TCSTPGNM-N  PIC X(20).
                        09  SPA-NAI-TCSTPGCHK-N PIC X(01).
-      *
-                   07  SPA-NAI-TBL.
-                       09  SPA-NAI-TBLO           OCCURS  100.
-                           11  SPA-NAI-USERCD     PIC 9(5).
-                       09  SPA-NAI-SELNUM         PIC 9(03).
       *----(02.00.03)--ADD-END-----
       *
       *    フラグエリア
@@ -193,6 +204,8 @@
            03  FLG-SYSKANRI                        PIC 9(01).
            03  FLG-ENTRYCHK                        PIC 9(01).
            03  FLG-SAI                             PIC 9(01).
+      *
+           03  FLG-CHK                             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -205,8 +218,9 @@
       *----(01.00.03) LINE ADD END   --------------------------
            03  IDX1                              PIC 9(04).
       *----(02.00.03)--ADD-START---
-           03  IDX2                              PIC 9(03).
+           03  IDX3                              PIC 9(03).
       *----(02.00.03)--ADD-END-----
+           03  IDX2                              PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -219,8 +233,8 @@
                05  WRK-KBNCD1           PIC 9(05).
                05  WRK-KBNCD2           PIC 9(03).
       *
-           03  WRK-DBPATH                        PIC X(20).
-           03  WRK-SELNO           PIC 9(03).
+           03  WRK-DBPATH              PIC X(20).
+           03  WRK-SELNO               PIC 9(03).
       *----(02.00.03)--UPD-END-----
       *----(01.00.03) LINE UPD END   --------------------------
            03  WRK-MAX-X.
@@ -244,7 +258,7 @@
       *     03  WRK-ORCACSTCHK-G  OCCURS   4.
            03  WRK-ORCACSTCHK-G  OCCURS   5.
                05  WRK-ORCACSTCHK  PIC X(01).
-           03  WRK-HENFLG          PIC 9(01).
+           03  FLG-HENFLG          PIC 9(01).
       *----(02.00.03)--UPD-END-----
       *----(01.00.05) LINE UPD END   --------------------------
       *----(01.00.03) LINE ADD END   --------------------------
@@ -363,6 +377,10 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU
            MOVE    SPA-FREE        TO  SPA-W11
@@ -422,8 +440,8 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    SPACE                TO  MCP-PUTTYPE
-           MOVE    "W11    "           TO  MCP-WINDOW.
+           MOVE    SPACE               TO  MCP-PUTTYPE
+           MOVE    "W11    "           TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW.
       *
@@ -480,7 +498,8 @@
                PERFORM 3101-SYS1031-SYOKI-SEC
       *        標準情報セット
                PERFORM 3102-HYOUJYUN-SET-SEC
-               MOVE    81                  TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-GMN-PAGENO
+               MOVE    101                 TO  SPA-GMN-CUR
       *----(02.00.03)--UPD-END-----
            END-EVALUATE
       *
@@ -528,86 +547,11 @@
                                        TO  SPA-GMN-SYOHOGEPRTFLG
            END-IF
       *
-           MOVE    101                 TO  SPA-GMN-CUR
+           MOVE    301                 TO  SPA-GMN-CUR
       *
            .
        3101-SYS1030-SYOKI-EXT.
            EXIT.
-      *****************************************************************
-      *    出力先プリンタ割り当て情報
-      *****************************************************************
-       3101-SYS1031-SYOKI-SEC          SECTION.
-      *
-      *    帳票名初期処理
-           PERFORM 3101-PRTNAME-SYOKI-SEC
-      *
-           MOVE    SPACE               TO  SYSKANRI-REC
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "1031"              TO  SYS-KANRICD
-      *----(02.00.03)--UPD-START---
-      *     MOVE    "*"                 TO  SYS-KBNCD
-           IF      WRK-KBNCD1          =   ZERO
-               MOVE    "*"                 TO  SYS-KBNCD
-           ELSE
-               MOVE    WRK-KBNCD1          TO  SYS-KBNCD
-           END-IF
-      *----(02.00.03)--UPD-END-----
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1031-REC
-               PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL  IDX  >       10
-                   MOVE    SYS-1031-PRTNM (IDX)
-                                       TO  SPA-GMN-TPRTNM (IDX)
-               END-PERFORM
-      *
-           END-IF
-      *
-           PERFORM 3103-PRGNAME-SYOKI-SEC
-      *
-           IF    ( SPA-BEDSU   >   ZERO )
-               CONTINUE
-           ELSE
-               GO  TO  3101-SYS1031-SYOKI-EXT
-           END-IF
-      *
-      *    -- 入院帳票 --
-      *
-      *    帳票名初期処理
-           PERFORM 3101-NYU-PRTNAME-SYOKI-SEC
-      *
-           MOVE    SPACE               TO  SYSKANRI-REC
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "1034"              TO  SYS-KANRICD
-      *----(02.00.03)--UPD-START---
-      *     MOVE    "*"                 TO  SYS-KBNCD
-           IF      WRK-KBNCD1          =   ZERO
-               MOVE    "*"                 TO  SYS-KBNCD
-           ELSE
-               MOVE    WRK-KBNCD1          TO  SYS-KBNCD
-           END-IF
-      *----(02.00.03)--UPD-END-----
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1034-REC
-               PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL  IDX  >       10
-                   MOVE    SYS-1034-PRTNM (IDX)
-                                       TO  SPA-GMN-TPRTNM-N (IDX)
-               END-PERFORM
-      *
-           END-IF
-      *
-           PERFORM 3103-NYU-PRGNAME-SYOKI-SEC
-      *
-           .
-       3101-SYS1031-SYOKI-EXT.
-           EXIT.
-      *
       *----(02.00.03)--ADD-START---
       *****************************************************************
       *    端末区分初期処理
@@ -650,7 +594,81 @@
            .
        3101-USERKBN-SYOKI-EXT.
            EXIT.
-      *----(02.00.03)--ADD-EN-----
+      *****************************************************************
+      *    出力先プリンタ割り当て情報
+      *****************************************************************
+       3101-SYS1031-SYOKI-SEC          SECTION.
+      *
+      *    帳票名初期処理
+           PERFORM 3101-PRTNAME-SYOKI-SEC
+      *
+           MOVE    SPACE               TO  SYSKANRI-REC
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "1031"              TO  SYS-KANRICD
+      *----(02.00.03)--UPD-START---
+      *     MOVE    "*"                 TO  SYS-KBNCD
+           IF      WRK-KBNCD1          =   ZERO
+               MOVE    "*"                 TO  SYS-KBNCD
+           ELSE
+               MOVE    WRK-KBNCD1          TO  SYS-KBNCD(1:5)
+           END-IF
+      *----(02.00.03)--UPD-END-----
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI            =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1031-REC
+               PERFORM VARYING IDX         FROM    1   BY  1
+                       UNTIL   IDX         >       20
+                   MOVE    SYS-1031-PRTNM (IDX)
+                                               TO  SPA-GMN-TPRTNM (IDX)
+               END-PERFORM
+           END-IF
+      *
+      *    外来プログラム名編集
+           PERFORM 3103-PRGNAME-SYOKI-SEC
+      *
+           IF    ( SPA-BEDSU           >   ZERO )
+               CONTINUE
+           ELSE
+               GO  TO  3101-SYS1031-SYOKI-EXT
+           END-IF
+      *
+      *    -- 入院帳票 --
+      *
+      *    帳票名初期処理
+           PERFORM 3101-NYU-PRTNAME-SYOKI-SEC
+      *
+           MOVE    SPACE               TO  SYSKANRI-REC
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "1034"              TO  SYS-KANRICD
+      *----(02.00.03)--UPD-START---
+      *     MOVE    "*"                 TO  SYS-KBNCD
+           IF      WRK-KBNCD1          =   ZERO
+               MOVE    "*"                 TO  SYS-KBNCD
+           ELSE
+               MOVE    WRK-KBNCD1          TO  SYS-KBNCD
+           END-IF
+      *----(02.00.03)--UPD-END-----
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI            =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1034-REC
+               PERFORM VARYING IDX         FROM    1   BY  1
+                       UNTIL   IDX         >       20
+                   MOVE    SYS-1034-PRTNM (IDX)
+                                           TO  SPA-GMN-TPRTNM-N (IDX)
+               END-PERFORM
+           END-IF
+      *
+      *    入院プログラム名編集
+           PERFORM 3103-NYU-PRGNAME-SYOKI-SEC
+      *
+           .
+       3101-SYS1031-SYOKI-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    帳票名初期処理
       *****************************************************************
@@ -696,23 +714,28 @@
       *****************************************************************
        3103-PRGNAME-SYOKI-SEC          SECTION.
       *
+      *    カルテ１号紙
            MOVE    "ORCHC01"       TO  SPA-GMN-TORGPGNM (1)
-           MOVE    "ORCHC19"       TO  SPA-GMN-TORGPGNM (2)
-           MOVE    "ORCHC03"       TO  SPA-GMN-TORGPGNM (3)
-           MOVE    "ORCHC30"       TO  SPA-GMN-TORGPGNM (4)
            MOVE    "T"             TO  SPA-GMN-TORGPGCHK(1)
-           MOVE    "T"             TO  SPA-GMN-TORGPGCHK(2)
-           MOVE    "T"             TO  SPA-GMN-TORGPGCHK(3)
-           MOVE    "T"             TO  SPA-GMN-TORGPGCHK(4)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(1)
+      *    処方せん
+           MOVE    "ORCHC19"       TO  SPA-GMN-TORGPGNM (2)
+           MOVE    "T"             TO  SPA-GMN-TORGPGCHK(2)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(2)
+      *    請求書兼領収書
+           MOVE    "ORCHC03"       TO  SPA-GMN-TORGPGNM (3)
+           MOVE    "T"             TO  SPA-GMN-TORGPGCHK(3)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(3)
+      *    薬剤情報提供書
+           MOVE    "ORCHC30"       TO  SPA-GMN-TORGPGNM (4)
+           MOVE    "T"             TO  SPA-GMN-TORGPGCHK(4)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(4)
-      *----(02.00.03)--ADD-START---
+      *    カルテ３号紙
            MOVE    "ORCHC33"       TO  SPA-GMN-TORGPGNM (5)
            MOVE    "T"             TO  SPA-GMN-TORGPGCHK(5)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(5)
-      *----(02.00.03)--ADD-END-----
+      *    カスタマイズ帳票最大
+           MOVE    5                   TO  SPA-GPGNM-MAX
       *
       *    帳票プログラム選択情報
            MOVE    SPACE               TO  SYSKANRI-REC
@@ -720,25 +743,25 @@
            MOVE    "1032"              TO  SYS-KANRICD
       *----(02.00.03)--UPD-START---
       *     MOVE    "*"                 TO  SYS-KBNCD
-           MOVE    WRK-KBNCD1          TO  SYS-KBNCD
+      *    コードが５桁までゼロのものを対象とする
+           MOVE    WRK-KBNCD1          TO  SYS-KBNCD(1:5)
+      *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
       *----(02.00.03)--UPD-END-----
            PERFORM 900-SYSKANRI-SELECT-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+      *        システム管理マスタ読込
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-IF
       *
-      *    システム管理マスタ読込
-           PERFORM 900-SYSKANRI-READ-SEC
-      *
-      *----(02.00.03)--UPD-START---
-           PERFORM VARYING IDZ2    FROM    1   BY  1
-      *             UNTIL ( IDZ2    >   4   )
-                   UNTIL ( IDZ2    >   5   )
-                      OR ( FLG-SYSKANRI  NOT =   ZERO )
+           PERFORM VARYING IDZ2        FROM    1   BY  1
+                   UNTIL ( IDZ2        >   SPA-GPGNM-MAX)
+                      OR ( FLG-SYSKANRI    NOT =   ZERO )
       *
                MOVE    MCPDATA-REC     TO  SYS-1032-REC
                MOVE    IDZ2            TO  WRK-KBNCD2
-      *
                IF      SYS-1032-KBNCD      =   WRK-KBNCD-G
                    MOVE    SYS-1032-ORCAORGNM
                                        TO  SPA-GMN-TORGPGNM  (IDZ2)
@@ -766,15 +789,20 @@
       *****************************************************************
        3103-NYU-PRGNAME-SYOKI-SEC      SECTION.
       *
-           MOVE    "ORCHCN01"      TO  SPA-GMN-TORGPGNM-N (1)
-           MOVE    "ORCHCN02"      TO  SPA-GMN-TORGPGNM-N (2)
-           MOVE    "ORCHCN03"      TO  SPA-GMN-TORGPGNM-N (3)
-           MOVE    "T"             TO  SPA-GMN-TORGPGCHK-N(1)
-           MOVE    "T"             TO  SPA-GMN-TORGPGCHK-N(2)
-           MOVE    "T"             TO  SPA-GMN-TORGPGCHK-N(3)
-           MOVE    "F"             TO  SPA-GMN-TCSTPGCHK-N(1)
-           MOVE    "F"             TO  SPA-GMN-TCSTPGCHK-N(2)
-           MOVE    "F"             TO  SPA-GMN-TCSTPGCHK-N(3)
+      *    カルテ１号紙
+           MOVE    "ORCHCN01"          TO  SPA-GMN-TORGPGNM-N (1)
+           MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(1)
+           MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(1)
+      *    退院証明書
+           MOVE    "ORCHCN02"          TO  SPA-GMN-TORGPGNM-N (2)
+           MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(2)
+           MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(2)
+      *    請求書兼領収書
+           MOVE    "ORCHCN03"          TO  SPA-GMN-TORGPGNM-N (3)
+           MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(3)
+           MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(3)
+      *    入院帳票
+           MOVE    3                   TO  SPA-NPGNM-MAX
       *
       *    帳票プログラム選択情報
            MOVE    SPACE               TO  SYSKANRI-REC
@@ -782,20 +810,22 @@
            MOVE    "1035"              TO  SYS-KANRICD
       *----(02.00.03)--UPD-START---
       *     MOVE    "*"                 TO  SYS-KBNCD
-           MOVE    WRK-KBNCD1          TO  SYS-KBNCD
+      *    コードが５桁までゼロのものを対象とする
+           MOVE    WRK-KBNCD1          TO  SYS-KBNCD(1:5)
+      *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
-      *----(02.00.03)--UPD-END-----
            PERFORM 900-SYSKANRI-SELECT-SEC
-      *
-      *    システム管理マスタ読込
-           PERFORM 900-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+      *        システム管理マスタ読込
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-IF
       *
       *----(02.00.03)--UPD-START---
-           PERFORM VARYING IDZ2    FROM    1   BY  1
-                   UNTIL ( IDZ2    >   3   )
-                      OR ( FLG-SYSKANRI  NOT =   ZERO )
+           PERFORM VARYING IDZ2        FROM    1   BY  1
+                   UNTIL ( IDZ2        >   SPA-NPGNM-MAX   )
+                      OR ( FLG-SYSKANRI    NOT =   ZERO )
       *
                MOVE    MCPDATA-REC     TO  SYS-1035-REC
                MOVE    IDZ2            TO  WRK-KBNCD2
@@ -830,46 +860,46 @@
       *****************************************************************
        3102-HYOUJYUN-SET-SEC          SECTION.
       *
-            INITIALIZE                  SPA-NAIB-AREA
-      *
-            PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       10
+            INITIALIZE                 SPA-HYOJUN-AREA
+      *     外来
+            PERFORM VARYING IDX        FROM    1   BY  1
+                    UNTIL   IDX        >   20
                 MOVE    SPA-GMN-TNAME(IDX)
-                                    TO  SPA-NAI-TNAME(IDX)
+                                           TO  SPA-NAI-TNAME(IDX)
                 MOVE    SPA-GMN-TPRTNM(IDX)
-                                    TO  SPA-NAI-TPRTNM(IDX)
+                                           TO  SPA-NAI-TPRTNM(IDX)
             END-PERFORM
       *
-            PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       5
+            PERFORM VARYING IDX        FROM    1   BY  1
+                    UNTIL   IDX        >   SPA-GPGNM-MAX
                 MOVE    SPA-GMN-TORGPGNM(IDX)
-                                    TO  SPA-NAI-TORGPGNM(IDX)
+                                           TO  SPA-NAI-TORGPGNM(IDX)
                 MOVE    SPA-GMN-TORGPGCHK(IDX)
-                                    TO  SPA-NAI-TORGPGCHK(IDX)
+                                           TO  SPA-NAI-TORGPGCHK(IDX)
                 MOVE    SPA-GMN-TCSTPGNM(IDX)
-                                    TO  SPA-NAI-TCSTPGNM(IDX)
+                                           TO  SPA-NAI-TCSTPGNM(IDX)
                 MOVE    SPA-GMN-TCSTPGCHK(IDX)
-                                    TO  SPA-NAI-TCSTPGCHK(IDX)
+                                           TO  SPA-NAI-TCSTPGCHK(IDX)
             END-PERFORM
-      *
-            PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       10
+      *     入院
+            PERFORM VARYING IDX        FROM    1   BY  1
+                    UNTIL   IDX        >   20
                 MOVE    SPA-GMN-TNAME-N(IDX)
-                                    TO  SPA-NAI-TNAME-N(IDX)
+                                           TO  SPA-NAI-TNAME-N(IDX)
                 MOVE    SPA-GMN-TPRTNM-N(IDX)
-                                    TO  SPA-NAI-TPRTNM-N(IDX)
+                                           TO  SPA-NAI-TPRTNM-N(IDX)
             END-PERFORM
       *
-            PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       3
+            PERFORM VARYING IDX        FROM    1   BY  1
+                    UNTIL   IDX        >   SPA-NPGNM-MAX
                 MOVE    SPA-GMN-TORGPGNM-N(IDX)
-                                    TO  SPA-NAI-TORGPGNM-N(IDX)
+                                           TO  SPA-NAI-TORGPGNM-N(IDX)
                 MOVE    SPA-GMN-TORGPGCHK-N(IDX)
-                                    TO  SPA-NAI-TORGPGCHK-N(IDX)
+                                           TO  SPA-NAI-TORGPGCHK-N(IDX)
                 MOVE    SPA-GMN-TCSTPGNM-N(IDX)
-                                    TO  SPA-NAI-TCSTPGNM-N(IDX)
+                                           TO  SPA-NAI-TCSTPGNM-N(IDX)
                 MOVE    SPA-GMN-TCSTPGCHK-N(IDX)
-                                    TO  SPA-NAI-TCSTPGCHK-N(IDX)
+                                           TO  SPA-NAI-TCSTPGCHK-N(IDX)
             END-PERFORM
       *
             .
@@ -884,7 +914,7 @@
             MOVE    ZERO                TO  FLG-SAI
       *
             PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       10
+                    UNTIL   IDX >       20
                 IF      SPA-NAI-TPRTNM(IDX)
                                     NOT =   SPA-GMN-TPRTNM(IDX)
                     MOVE    1           TO  FLG-SAI
@@ -892,23 +922,21 @@
             END-PERFORM
       *
             PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       5
-                IF      SPA-NAI-TORGPGCHK(IDX)
-                                    NOT =   SPA-GMN-TORGPGCHK(IDX)
-                    MOVE    1           TO  FLG-SAI
-                END-IF
-                IF      SPA-NAI-TCSTPGNM(IDX)
-                                    NOT =   SPA-GMN-TCSTPGNM(IDX)
-                    MOVE    1           TO  FLG-SAI
-                END-IF
-                IF      SPA-NAI-TCSTPGCHK(IDX)
-                                    NOT =   SPA-GMN-TCSTPGCHK(IDX)
+                    UNTIL   IDX >       SPA-GPGNM-MAX
+                IF     (SPA-NAI-TORGPGCHK(IDX)
+                                        =   SPA-GMN-TORGPGCHK(IDX)) AND
+                       (SPA-NAI-TCSTPGNM(IDX)
+                                        =   SPA-GMN-TCSTPGNM (IDX)) AND
+                       (SPA-NAI-TCSTPGCHK(IDX)
+                                        =   SPA-GMN-TCSTPGCHK(IDX))
+                    CONTINUE
+                ELSE
                     MOVE    1           TO  FLG-SAI
                 END-IF
             END-PERFORM
       *
             PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       10
+                    UNTIL   IDX >       20
                 IF      SPA-NAI-TPRTNM-N(IDX)
                                     NOT =   SPA-GMN-TPRTNM-N(IDX)
                     MOVE    1           TO  FLG-SAI
@@ -916,19 +944,17 @@
             END-PERFORM
       *
             PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       3
-                IF      SPA-NAI-TORGPGCHK-N(IDX)
-                                    NOT =   SPA-GMN-TORGPGCHK-N(IDX)
-                    MOVE    1           TO  FLG-SAI
-                END-IF
-                IF      SPA-NAI-TCSTPGNM-N(IDX)
-                                    NOT =   SPA-GMN-TCSTPGNM-N(IDX)
-                    MOVE    1           TO  FLG-SAI
-                END-IF
-                IF      SPA-NAI-TCSTPGCHK-N(IDX)
-                                    NOT =   SPA-GMN-TCSTPGCHK-N(IDX)
-                    MOVE    1           TO  FLG-SAI
-                END-IF
+                    UNTIL   IDX >       SPA-NPGNM-MAX
+               IF      (SPA-NAI-TORGPGCHK-N(IDX)
+                                        =   SPA-GMN-TORGPGCHK-N(IDX))
+                  AND  (SPA-NAI-TCSTPGNM-N(IDX)
+                                        =   SPA-GMN-TCSTPGNM-N(IDX) )
+                  AND  (SPA-NAI-TCSTPGCHK-N(IDX)
+                                        =   SPA-GMN-TCSTPGCHK-N(IDX))
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SAI
+               END-IF
             END-PERFORM
       *
             .
@@ -941,7 +967,7 @@
        3102-HYOUJYUN-GMN-SET-SEC          SECTION.
       *
             PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       10
+                    UNTIL   IDX >       20
                 MOVE    SPA-NAI-TNAME(IDX)
                                     TO  SPA-GMN-TNAME(IDX)
                 MOVE    SPA-NAI-TPRTNM(IDX)
@@ -949,7 +975,7 @@
             END-PERFORM
       *
             PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       5
+                    UNTIL   IDX >       SPA-GPGNM-MAX
                 MOVE    SPA-NAI-TORGPGNM(IDX)
                                     TO  SPA-GMN-TORGPGNM(IDX)
                 MOVE    SPA-NAI-TORGPGCHK(IDX)
@@ -961,7 +987,7 @@
             END-PERFORM
       *
             PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       10
+                    UNTIL   IDX >       20
                 MOVE    SPA-NAI-TNAME-N(IDX)
                                     TO  SPA-GMN-TNAME-N(IDX)
                 MOVE    SPA-NAI-TPRTNM-N(IDX)
@@ -969,7 +995,7 @@
             END-PERFORM
       *
             PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       3
+                    UNTIL   IDX >       SPA-NPGNM-MAX
                 MOVE    SPA-NAI-TORGPGNM-N(IDX)
                                     TO  SPA-GMN-TORGPGNM-N(IDX)
                 MOVE    SPA-NAI-TORGPGCHK-N(IDX)
@@ -989,43 +1015,47 @@
       *****************************************************************
        3103-USERID-SYOKI-SEC          SECTION.
       *
-      *    端末名初期値セット
+      *    端末名初期値セット（職員情報）
            MOVE    SPACE               TO  SYSKANRI-REC
            INITIALIZE                      SYSKANRI-REC
            MOVE    "1010"              TO  SYS-KANRICD
            MOVE    SPA-GMN-USERKBN     TO  SYS-KBNCD
+      *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
            MOVE    "SYSKANRI-KEY4"     TO  WRK-DBPATH
            PERFORM 900-SYSKANRI-SELECT-SEC
+           IF      FLG-SYSKANRI        =   ZERO 
+      *        システム管理マスタ読込
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-IF
       *
-      *    システム管理マスタ読込
-           PERFORM 900-SYSKANRI-READ-SEC
+           MOVE    ZERO                 TO  IDX3
       *
-           MOVE    ZERO                 TO  IDX2
-      *
-           PERFORM UNTIL ( IDX2         >=  100   )
+           PERFORM UNTIL ( IDX3            >=  100   )
                       OR ( FLG-SYSKANRI    NOT =   ZERO )
                EVALUATE    SPA-GMN-YUKOKBN
                WHEN    "1"
                    MOVE    MCPDATA-REC     TO  SYS-1010-REC
                    IF          SYS-1010-STYUKYMD   <=  SPA-W01-STYUKYMD
                        AND     SYS-1010-EDYUKYMD   >=  SPA-W01-EDYUKYMD
-                       ADD     1               TO  IDX2
-                       MOVE    IDX2            TO  SPA-GMN-UNUM(IDX2)
+                       ADD     1               TO  IDX3
+                       MOVE    IDX3            TO  SPA-GMN-UNUM(IDX3)
                        MOVE    SYS-1010-USERID
-                               TO  SPA-GMN-USERMEIL(IDX2)
-                       MOVE    SYS-1010-KBNCD  TO  SPA-NAI-USERCD(IDX2)
+                                               TO  SPA-GMN-USERMEIL
+                                                                 (IDX3)
+                       MOVE    SYS-1010-KBNCD  TO  SPA-NAI-USERCD(IDX3)
                    END-IF
                WHEN    "2"
                    MOVE    MCPDATA-REC     TO  SYS-1010-REC
                    IF          SYS-1010-STYUKYMD   >   SPA-W01-STYUKYMD
                        OR      SYS-1010-EDYUKYMD   <   SPA-W01-EDYUKYMD
-                       ADD     1               TO  IDX2
-                       MOVE    IDX2            TO  SPA-GMN-UNUM(IDX2)
+                       ADD     1               TO  IDX3
+                       MOVE    IDX3            TO  SPA-GMN-UNUM(IDX3)
                        MOVE    SYS-1010-USERID
-                               TO  SPA-GMN-USERMEIL(IDX2)
-                       MOVE    SYS-1010-KBNCD  TO  SPA-NAI-USERCD(IDX2)
+                                               TO  SPA-GMN-USERMEIL
+                                                                 (IDX3)
+                       MOVE    SYS-1010-KBNCD  TO  SPA-NAI-USERCD(IDX3)
                    END-IF
                END-EVALUATE
       *
@@ -1036,59 +1066,58 @@
       *
            PERFORM 900-SYSKANRI-CLOSE-SEC
       *
-           MOVE    IDX2                TO  SPA-GMN-USERLST-MAX
-           DISPLAY "SPA-GMN-USERLST-MAX=" SPA-GMN-USERLST-MAX
+           MOVE    IDX3                TO  SPA-GMN-USERLST-MAX
       *
-           PERFORM VARYING IDX2    FROM    1   BY  1
-                   UNTIL   IDX2    >   SPA-GMN-USERLST-MAX
+           PERFORM VARYING IDX3    FROM    1   BY  1
+                   UNTIL   IDX3    >   SPA-GMN-USERLST-MAX
                MOVE    SPACE               TO  SYSKANRI-REC
                INITIALIZE                      SYSKANRI-REC
                MOVE    "1031"              TO  SYS-KANRICD
-               MOVE    SPA-NAI-USERCD(IDX2)
+               MOVE    SPA-NAI-USERCD(IDX3)
                                            TO  SYS-KBNCD
                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
                PERFORM 900-SYSKANRI-INV-SEC
                IF      FLG-SYSKANRI            =   ZERO
-                   MOVE    "*"         TO  SPA-GMN-UMARK(IDX2)
+                   MOVE    "*"         TO  SPA-GMN-UMARK(IDX3)
                ELSE
                    MOVE    SPACE               TO  SYSKANRI-REC
                    INITIALIZE                      SYSKANRI-REC
                    MOVE    "1032"              TO  SYS-KANRICD
-                   MOVE    SPA-NAI-USERCD(IDX2)
+                   MOVE    SPA-NAI-USERCD(IDX3)
                                                TO  SYS-KBNCD
                    MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                    MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
                    PERFORM 900-SYSKANRI-INV-SEC
                    IF      FLG-SYSKANRI            =   ZERO
-                       MOVE    "*"         TO  SPA-GMN-UMARK(IDX2)
+                       MOVE    "*"         TO  SPA-GMN-UMARK(IDX3)
                    END-IF
                END-IF
       *
                IF        ( SPA-BEDSU   >   ZERO )
-                   AND   ( SPA-GMN-UMARK(IDX2)     NOT =   "*")
+                   AND   ( SPA-GMN-UMARK(IDX3)     NOT =   "*")
       *
                    MOVE    SPACE               TO  SYSKANRI-REC
                    INITIALIZE                      SYSKANRI-REC
                    MOVE    "1034"              TO  SYS-KANRICD
-                   MOVE    SPA-NAI-USERCD(IDX2)
+                   MOVE    SPA-NAI-USERCD(IDX3)
                                                TO  SYS-KBNCD
                    MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                    MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
                    PERFORM 900-SYSKANRI-INV-SEC
                    IF      FLG-SYSKANRI            =   ZERO
-                       MOVE    "*"         TO  SPA-GMN-UMARK(IDX2)
+                       MOVE    "*"         TO  SPA-GMN-UMARK(IDX3)
                    ELSE
                        MOVE    SPACE               TO  SYSKANRI-REC
                        INITIALIZE                      SYSKANRI-REC
                        MOVE    "1035"              TO  SYS-KANRICD
-                       MOVE    SPA-NAI-USERCD(IDX2)
+                       MOVE    SPA-NAI-USERCD(IDX3)
                                                    TO  SYS-KBNCD
                        MOVE    SYSKANRI-REC        TO  MCPDATA-REC
                        MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
                        PERFORM 900-SYSKANRI-INV-SEC
                        IF      FLG-SYSKANRI            =   ZERO
-                           MOVE    "*"         TO  SPA-GMN-UMARK(IDX2)
+                           MOVE    "*"         TO  SPA-GMN-UMARK(IDX3)
                        END-IF
                    END-IF
                END-IF
@@ -1115,9 +1144,9 @@
            ELSE
                EVALUATE    SPA-W01-KANRICD
                    WHEN    "1031"
-                       MOVE    81                  TO  SPA-GMN-CUR
+                       MOVE    101                  TO  SPA-GMN-CUR
                    WHEN    "1030"
-                       MOVE    101                 TO  SPA-GMN-CUR
+                       MOVE    301                 TO  SPA-GMN-CUR
                END-EVALUATE
            END-IF
       *----(02.00.03)--UPD-END-----
@@ -1144,6 +1173,7 @@
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK02"
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK03"
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK04"
+           WHEN    "CLICKED"       ALSO    "ORCAORGCHK05"
                MOVE    MCP-WIDGET  TO      WRK-WIDGET
                PERFORM  4101-ORCAORGCHK-CHK-SEC
       *    カスタマイズプログラム選択時
@@ -1151,6 +1181,7 @@
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK02"
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK03"
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK04"
+           WHEN    "CLICKED"       ALSO    "ORCACSTCHK05"
                MOVE    MCP-WIDGET  TO      WRK-WIDGET
                PERFORM  4101-ORCACSTCHK-CHK-SEC
       *    標準プログラム選択時 ＝ 入院 ＝
@@ -1173,6 +1204,12 @@
            WHEN    "CLICKED"       ALSO    "B03"
                PERFORM  410-SAKUJYO-SEC
       *----(02.00.03)--ADD-END-----
+      *
+      *    タグ切替え
+           WHEN    "CLICKED"       ALSO    "N0101"
+           WHEN    "CLICKED"       ALSO    "N0102"
+               PERFORM 460-TAGUCHG-SEC
+      *
            END-EVALUATE
            .
       *
@@ -1185,10 +1222,6 @@
       *
            MOVE    MCP-WIDGET           TO  WRK-MCP-WIDGET
            MOVE    ZERO                 TO  SPA-GMN-CUR
-      *
-      *----(02.00.03)--ADD-START---
-      *    入力チェック処理
-           PERFORM 410-INPUT-CHK-SEC
       *
            EVALUATE    MCP-EVENT        ALSO    MCP-WIDGET
       *        端末区分
@@ -1203,6 +1236,10 @@
       *        行選択
                WHEN    ANY              ALSO    "USERLST"
                    PERFORM  4105-USERLST-SEC
+      *        一括入力チェック
+               WHEN    OTHER
+      *            入力チェック処理
+                   PERFORM 410-INPUT-CHK-SEC
            END-EVALUATE
       *----(02.00.03)--ADD-END-----
       *
@@ -1236,25 +1273,22 @@
       *
       *    出力先プリンタ割り当て
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
+                   UNTIL       IDX     >   20
                MOVE    W11-PRTNM (IDX)     TO  SPA-GMN-TPRTNM (IDX)
            END-PERFORM
-      *----(02.00.03)--UPD-START---
            PERFORM VARYING     IDX     FROM    1   BY  1
-      *             UNTIL       IDX     >   4
-                   UNTIL       IDX     >   5
+                   UNTIL       IDX     >   SPA-GPGNM-MAX
                MOVE    W11-ORCACSTNM (IDX)
                                            TO  SPA-GMN-TCSTPGNM (IDX)
            END-PERFORM
-      *----(02.00.03)--UPD-END-----
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
+                   UNTIL       IDX     >   20
                MOVE    W11-PRTNM-N (IDX)   TO  SPA-GMN-TPRTNM-N (IDX)
            END-PERFORM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   3
+                   UNTIL       IDX     >   SPA-NPGNM-MAX
                MOVE    W11-ORCACSTNM-N (IDX)
                                            TO  SPA-GMN-TCSTPGNM-N (IDX)
            END-PERFORM
@@ -1274,6 +1308,11 @@
       *
            EVALUATE    SPA-W01-KANRICD
                WHEN    "1031"
+      *            標準以外の時、選択があること
+                   PERFORM 4100-HYOJUN-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO      TO      4102-KIHON-CHK-EXT
+                   END-IF
       *            出力先プリンタ割り当て
                    PERFORM 4101-PRTNM-CHK-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
@@ -1306,6 +1345,24 @@
            .
        4102-KIHON-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    選択チェック処理
+      *****************************************************************
+       4100-HYOJUN-CHK-SEC        SECTION.
+      *
+      *    標準以外の時、選択があること
+           IF      SPA-GMN-USERKBN     =   "*"
+               CONTINUE
+           ELSE
+               IF      SPA-GMN-SELNUM      =   ZERO
+                   MOVE    "0007"              TO  SPA-ERRCD
+                   MOVE    103                 TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4100-HYOJUN-CHK-EXT.
+           EXIT.
       *
       *----(02.00.03)--ADD-START---
       *****************************************************************
@@ -1313,29 +1370,32 @@
       *****************************************************************
        4103-USERKBN-CHK-SEC        SECTION.
       *
-           MOVE    81              TO  SPA-GMN-CUR
-      *
            MOVE    W11-USERKBN     TO  SPA-GMN-USERKBN-G
       *
-           IF      SPA-GMN-USERKBN =   SPACE
+           IF      SPA-GMN-USERKBN     =   SPACE
+               MOVE    101             TO  SPA-GMN-CUR
                MOVE    "0011"          TO  SPA-ERRCD
                GO  TO  4103-USERKBN-CHK-EXT
-           ELSE
-               MOVE    ZERO               TO  WRK-HENFLG
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       SPA-GMN-USERKBN-MAX
-                       OR      WRK-HENFLG  =   1
-                   IF      SPA-GMN-USERKBN =   SPA-GMN-USERKBNL (IDY)
-                       MOVE    SPA-GMN-USERKBNLST (IDY)
-                                           TO  SPA-GMN-USERKBN-G
-                       MOVE    1           TO  WRK-HENFLG
-                   END-IF
-               END-PERFORM
-               IF      WRK-HENFLG         =   ZERO
-                   MOVE    "0011"                  TO  SPA-ERRCD
-                   GO  TO  4103-USERKBN-CHK-EXT
-               END-IF
            END-IF
+      *
+           MOVE    ZERO                TO  FLG-HENFLG
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL  (IDY         >   SPA-GMN-USERKBN-MAX )  OR
+                          (FLG-HENFLG  =   1    )
+               IF      SPA-GMN-USERKBN     =   SPA-GMN-USERKBNL (IDY)
+                   MOVE    SPA-GMN-USERKBNLST (IDY)
+                                           TO  SPA-GMN-USERKBN-G
+                   MOVE    1               TO  FLG-HENFLG
+               END-IF
+           END-PERFORM
+           IF      FLG-HENFLG          =   ZERO
+               MOVE    "0011"              TO  SPA-ERRCD
+               MOVE    101                 TO  SPA-GMN-CUR
+               GO  TO  4103-USERKBN-CHK-EXT
+           END-IF
+      *
+      *    外来を表示する
+           MOVE    1                   TO  SPA-GMN-PAGENO
       *
            EVALUATE    SPA-GMN-USERKBN
            WHEN    "*"
@@ -1353,7 +1413,7 @@
                INITIALIZE                      SPA-NAI-TBL
                MOVE    ZERO                TO  SPA-GMN-USERLST-MAX
                MOVE    ZERO                TO  SPA-GMN-SELNUM
-               MOVE    84                  TO  SPA-GMN-CUR
+               MOVE    103                 TO  SPA-GMN-CUR
                PERFORM 3103-USERID-SYOKI-SEC
            END-EVALUATE
       *
@@ -1366,35 +1426,38 @@
       *****************************************************************
        4104-YUKOKBN-CHK-SEC        SECTION.
       *
-           MOVE    82                  TO  SPA-GMN-CUR
       *
            MOVE    W11-YUKOKBN     TO  SPA-GMN-YUKOKBN-G
       *
-           IF      SPA-GMN-YUKOKBN =   SPACE
-               MOVE    "0011"          TO  SPA-ERRCD
+           IF      SPA-GMN-YUKOKBN     =   SPACE
+               MOVE    "0011"              TO  SPA-ERRCD
+               MOVE    102                 TO  SPA-GMN-CUR
                GO  TO  4104-YUKOKBN-CHK-EXT
            ELSE
-               MOVE    ZERO               TO  WRK-HENFLG
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       SPA-GMN-YUKOKBN-MAX
-                       OR      WRK-HENFLG  =   1
+               MOVE    ZERO               TO  FLG-HENFLG
+               PERFORM VARYING IDY         FROM    1   BY  1
+                       UNTIL  (IDY         >   SPA-GMN-YUKOKBN-MAX )
+                       OR     (FLG-HENFLG  =   1    )
                    IF      SPA-GMN-YUKOKBN =   SPA-GMN-YUKOKBNL (IDY)
                        MOVE    SPA-GMN-YUKOKBNLST (IDY)
-                                           TO  SPA-GMN-YUKOKBN-G
-                       MOVE    1           TO  WRK-HENFLG
+                                               TO  SPA-GMN-YUKOKBN-G
+                       MOVE    1               TO  FLG-HENFLG
                    END-IF
                END-PERFORM
-               IF      WRK-HENFLG         =   ZERO
+               IF      FLG-HENFLG         =   ZERO
                    MOVE    "0011"                  TO  SPA-ERRCD
+                   MOVE    102                 TO  SPA-GMN-CUR
                    GO  TO  4104-YUKOKBN-CHK-EXT
                END-IF
            END-IF
+      *    外来を表示する
+           MOVE    1                   TO  SPA-GMN-PAGENO
       *
            INITIALIZE                      SPA-GMN-USERLSTSCROLLE
            INITIALIZE                      SPA-NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-USERLST-MAX
            MOVE    ZERO                TO  SPA-GMN-SELNUM
-           MOVE    84                  TO  SPA-GMN-CUR
+           MOVE    103                 TO  SPA-GMN-CUR
            PERFORM 3103-USERID-SYOKI-SEC
            .
        4104-YUKOKBN-CHK-EXT.
@@ -1405,31 +1468,31 @@
       *****************************************************************
        4101-SELNUM-CHK-SEC       SECTION.
       *
-           MOVE    84              TO  SPA-GMN-CUR
-      *  
-           MOVE    ZERO            TO  SPA-NAI-SELNUM
-      *
-           MOVE    W11-SELNUM             TO  SPA-GMN-SELNUM
+           MOVE    W11-SELNUM          TO  SPA-GMN-SELNUM
       *
       *    選択番号チェック
            IF      SPA-GMN-SELNUM      =   ZERO
+               MOVE    103                 TO  SPA-GMN-CUR
                GO  TO  4101-SELNUM-CHK-EXT 
            ELSE
-               IF      SPA-GMN-SELNUM      >=  1
-               AND     SPA-GMN-SELNUM      <=  SPA-GMN-USERLST-MAX
+               IF     (SPA-GMN-SELNUM      >=  1    )
+               AND    (SPA-GMN-SELNUM      <=  SPA-GMN-USERLST-MAX)
                    CONTINUE 
                ELSE
-                   MOVE    "0012"                  TO  SPA-ERRCD
+                   MOVE    "0012"              TO  SPA-ERRCD
+                   MOVE    103                 TO  SPA-GMN-CUR
                    GO  TO  4101-SELNUM-CHK-EXT 
                END-IF
            END-IF   
-      *
-           MOVE    SPA-GMN-SELNUM      TO  SPA-NAI-SELNUM
+      *    外来を表示する
+           MOVE    1                   TO  SPA-GMN-PAGENO
       *
            PERFORM 3102-HYOUJYUN-GMN-SET-SEC
       *
            IF      SPA-GMN-UMARK(SPA-GMN-SELNUM)   =   "*"
-               MOVE    SPA-NAI-USERCD(SPA-GMN-SELNUM)   TO  WRK-KBNCD1
+               MOVE    ZERO                TO  WRK-KBNCD-G
+               MOVE    SPA-NAI-USERCD(SPA-GMN-SELNUM)
+                                           TO  WRK-KBNCD1
                PERFORM 3101-SYS1031-SYOKI-SEC
            END-IF
       *
@@ -1443,29 +1506,27 @@
       *****************************************************************
        4105-USERLST-SEC        SECTION.
       *
-           MOVE    83              TO  SPA-GMN-CUR
-      *
       *    行選択
            MOVE    ZERO                TO  WRK-SELNO
       *
-           PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL       IDX2    >       100
-               IF      W11-USERLST-SELECT(IDX2)    =   "T"
-                   IF      IDX2            =   SPA-NAI-SELNUM
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-USERLST-MAX
+               IF      W11-USERLST-SELECT(IDX) =   "T"
+                   IF      IDX                 =   SPA-GMN-SELNUM
                        CONTINUE
                    ELSE
-                       MOVE    IDX2            TO  WRK-SELNO
-                       MOVE    100             TO  IDX2
+                       MOVE    IDX             TO  WRK-SELNO
+                       MOVE    SPA-GMN-USERLST-MAX TO  IDX
                    END-IF
                END-IF
            END-PERFORM
       *
            IF      WRK-SELNO           >   ZERO
-               MOVE    WRK-SELNO           TO  SPA-NAI-SELNUM 
+               MOVE    WRK-SELNO           TO  SPA-GMN-SELNUM 
            END-IF
       *
-           MOVE    SPA-NAI-SELNUM      TO  SPA-GMN-SELNUM 
-      *
+      *    外来を表示する
+           MOVE    1                   TO  SPA-GMN-PAGENO
            PERFORM 3102-HYOUJYUN-GMN-SET-SEC
       *
            IF      SPA-GMN-UMARK(SPA-GMN-SELNUM)  =   "*"
@@ -1516,7 +1577,7 @@
       *
            IF      SPA-GMN-SYOHOGEPRTFLGMEI    =   SPACE
                MOVE    "0001"              TO  SPA-ERRCD
-               MOVE    101                 TO  SPA-GMN-CUR
+               MOVE    301                 TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -1537,7 +1598,7 @@
                   (KANACHK-SYUBETU     =   1     )
       *        全角以外エラー
                MOVE    "0005"              TO  SPA-ERRCD
-               MOVE    102                 TO  SPA-GMN-CUR
+               MOVE    302                 TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -1551,7 +1612,7 @@
       *
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   10  )
+                   UNTIL      (IDX     >   20  )
       *
                IF    ( SPA-GMN-TNAME (IDX)     =   SPACE )
                AND   ( SPA-GMN-TPRTNM(IDX) NOT =   SPACE )
@@ -1560,9 +1621,9 @@
       *
                MOVE    SPA-GMN-TPRTNM(IDX)
                                        TO  WRK-KANACHK-MAE-INPUT
-               PERFORM     800-ENRTRY-CHK-SEC
-               IF  ( FLG-ENTRYCHK      NOT =   1 )
-                   COMPUTE SPA-GMN-CUR =   IDX
+               PERFORM 800-ENRTRY-CHK-SEC
+               IF      FLG-ENTRYCHK    NOT =   1
+                   MOVE    IDX             TO  SPA-GMN-CUR
                    MOVE    "0006"          TO  SPA-ERRCD
                    GO  TO  4101-PRTNM-CHK-EXT
                END-IF
@@ -1588,17 +1649,17 @@
        4101-NYU-PRTNM-CHK-SEC          SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   10  )
-               IF      SPA-GMN-TNAME-N (IDX)      =   SPACE
-               AND     SPA-GMN-TPRTNM-N (IDX) NOT =   SPACE
+                   UNTIL      (IDX     >   20  )
+               IF     (SPA-GMN-TNAME-N (IDX)      =   SPACE )
+               AND    (SPA-GMN-TPRTNM-N (IDX) NOT =   SPACE )
                    MOVE    SPACE       TO SPA-GMN-TPRTNM-N (IDX)
                END-IF
       *
                MOVE    SPA-GMN-TPRTNM-N(IDX)
                                        TO  WRK-KANACHK-MAE-INPUT
-               PERFORM     800-ENRTRY-CHK-SEC
-               IF  ( FLG-ENTRYCHK      NOT =   1 )
-                   COMPUTE SPA-GMN-CUR =   IDX     +   50
+               PERFORM 800-ENRTRY-CHK-SEC
+               IF      FLG-ENTRYCHK    NOT =   1
+                   COMPUTE SPA-GMN-CUR     =   IDX     +   50
                    MOVE    "0006"          TO  SPA-ERRCD
                    GO  TO  4101-NYU-PRTNM-CHK-EXT
                END-IF
@@ -1700,6 +1761,32 @@
        4101-NYU-ORCACSTCHK-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    タグ切替え処理
+      *****************************************************************
+       460-TAGUCHG-SEC           SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      460-TAGUCHG-EXT
+           END-IF
+      *
+           IF      WRK-MCP-WIDGET      =   "N0101"
+      *        外来画面へ
+               MOVE    01                  TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-GMN-PAGENO
+           ELSE
+      *        入院画面へ
+               MOVE    51                  TO  SPA-GMN-CUR
+               MOVE    2                   TO  SPA-GMN-PAGENO
+           END-IF
+      *
+           .
+       460-TAGUCHG-EXT.
+           EXIT.
+      *****************************************************************
       *    確定
       *****************************************************************
        410-KAKUTEI-SEC           SECTION.
@@ -1716,29 +1803,6 @@
                GO  TO  410-KAKUTEI-EXT
            END-IF
       *
-      *----(02.00.03)--ADD-START---
-           IF      SPA-GMN-USERKBN      =   SPACE
-               OR  SPA-GMN-YUKOKBN      =   SPACE
-               MOVE    "0003"              TO  SPA-ERRCD
-               GO  TO  410-KAKUTEI-EXT
-           END-IF
-      *
-           IF      SPA-GMN-USERKBN      NOT =   "*"
-               IF      SPA-NAI-SELNUM   =    ZERO
-                   MOVE    "0007"              TO  SPA-ERRCD
-                   GO  TO  410-KAKUTEI-EXT
-               END-IF
-      *
-               PERFORM 3102-HYOUJYUN-SAI-SET-SEC
-               IF      FLG-SAI          =    ZERO
-                   IF      SPA-GMN-UMARK(SPA-NAI-SELNUM)   NOT =   "*"
-                       MOVE    "0008"              TO  SPA-ERRCD
-                       GO  TO  410-KAKUTEI-EXT
-                   END-IF
-               END-IF
-           END-IF
-      *----(02.00.03)--ADD-END-----
-      *
            IF      SPA-ERRCD        =   SPACE
                MOVE    "1001"           TO  SPA-WIDCD
            END-IF
@@ -1752,8 +1816,8 @@
       *****************************************************************
        410-SAKUJYO-SEC             SECTION.
       *
-           IF      SPA-GMN-USERKBN      =   SPACE
-               OR  SPA-GMN-YUKOKBN      =   SPACE
+           IF     (SPA-GMN-USERKBN      =   SPACE )
+               OR (SPA-GMN-YUKOKBN      =   SPACE )
                MOVE    "0003"              TO  SPA-ERRCD
                GO  TO  410-SAKUJYO-EXT
            END-IF
@@ -1762,11 +1826,11 @@
                MOVE    "0009"              TO  SPA-ERRCD
                GO  TO  410-SAKUJYO-EXT
            ELSE
-               IF      SPA-NAI-SELNUM       =   ZERO
+               IF      SPA-GMN-SELNUM       =   ZERO
                    MOVE    "0007"              TO  SPA-ERRCD
                    GO  TO  410-SAKUJYO-EXT
                END-IF
-               IF      SPA-GMN-UMARK(SPA-NAI-SELNUM)   NOT =   "*"
+               IF      SPA-GMN-UMARK(SPA-GMN-SELNUM)   NOT =   "*"
                    MOVE    "0010"              TO  SPA-ERRCD
                    GO  TO  410-SAKUJYO-EXT
                END-IF
@@ -1789,168 +1853,29 @@
            WHEN    "1031"
       *----(02.00.03)--UPD-START---
                IF      SPA-GMN-USERKBN    =   "*"
-                   MOVE    ZERO           TO  WRK-KBNCD1
-                   PERFORM 490-SYS-1031-KOUSHIN-SEC
-                   IF    ( SPA-ERRCD   NOT =   SPACE )
-                       GO  TO  490-KOUSHIN-EXT
-                   END-IF
-      *
-                   PERFORM VARYING IDZ2    FROM    1   BY  1
-                           UNTIL   ( IDZ2  >   5 )
-                       PERFORM 490-SYS-1032-KOUSHIN-SEC
-                       IF    ( SPA-ERRCD   NOT =   SPACE )
-                           GO  TO  490-KOUSHIN-EXT
-                       END-IF
-                   END-PERFORM
-      *
-                   IF    ( SPA-BEDSU       >   ZERO )
-                       PERFORM 490-SYS-1034-KOUSHIN-SEC
-                       IF    ( SPA-ERRCD   NOT =   SPACE )
-                           GO  TO  490-KOUSHIN-EXT
-                       END-IF
-      *
-                       PERFORM VARYING IDZ2    FROM    1   BY  1
-                               UNTIL   ( IDZ2  >   3 )
-                           PERFORM 490-SYS-1035-KOUSHIN-SEC
-                           IF    ( SPA-ERRCD   NOT =   SPACE )
-                               GO  TO  490-KOUSHIN-EXT
-                           END-IF
-                       END-PERFORM
-                   ELSE
-                       PERFORM 490-SYS-1034-SAKUJYO-SEC
-                       IF    ( SPA-ERRCD   NOT =   SPACE )
-                           GO  TO  490-KOUSHIN-EXT
-                       END-IF
-      *
-                       PERFORM VARYING IDZ2    FROM    1   BY  1
-                               UNTIL   ( IDZ2  >   3 )
-                           PERFORM 490-SYS-1035-SAKUJYO-SEC
-                           IF    ( SPA-ERRCD   NOT =   SPACE )
-                               GO  TO  490-KOUSHIN-EXT
-                           END-IF
-                       END-PERFORM
-                   END-IF
+      *            標準登録
+                   PERFORM 4901-SYS1031-HYOJUN-SEC
                ELSE
-                   MOVE    SPA-NAI-USERCD(SPA-NAI-SELNUM)
-                                          TO  WRK-KBNCD1
-                   IF       ( SPA-NAI-TPRTNM(1)
-                                    =   SPA-GMN-TPRTNM(1) )
-                       AND  ( SPA-NAI-TPRTNM(2)
-                                    =   SPA-GMN-TPRTNM(2) )
-                       AND  ( SPA-NAI-TPRTNM(3)
-                                    =   SPA-GMN-TPRTNM(3) )
-                       AND  ( SPA-NAI-TPRTNM(4)
-                                    =   SPA-GMN-TPRTNM(4) )
-                       AND  ( SPA-NAI-TPRTNM(5)
-                                    =   SPA-GMN-TPRTNM(5) )
-                       AND  ( SPA-NAI-TPRTNM(6)
-                                    =   SPA-GMN-TPRTNM(6) )
-                       AND  ( SPA-NAI-TPRTNM(7)
-                                    =   SPA-GMN-TPRTNM(7) )
-                       AND  ( SPA-NAI-TPRTNM(8)
-                                    =   SPA-GMN-TPRTNM(8) )
-                       AND  ( SPA-NAI-TPRTNM(9)
-                                    =   SPA-GMN-TPRTNM(9) )
-                       AND  ( SPA-NAI-TPRTNM(10)
-                                    =   SPA-GMN-TPRTNM(10) )
-                       PERFORM 490-SYS-1031-SAKUJYO-SEC
-                       IF    ( SPA-ERRCD   NOT =   SPACE )
-                           GO  TO  490-KOUSHIN-EXT
-                       END-IF
-                   ELSE
-                       PERFORM 490-SYS-1031-KOUSHIN-SEC
-                       IF    ( SPA-ERRCD   NOT =   SPACE )
-                           GO  TO  490-KOUSHIN-EXT
-                       END-IF
-                   END-IF
-      *
-                   PERFORM VARYING IDZ2    FROM    1   BY  1
-                           UNTIL   ( IDZ2  >   5 )
-                       IF        ( SPA-NAI-TORGPGCHK(IDZ2)
-                                        =   SPA-GMN-TORGPGCHK(IDZ2) )
-                           AND   ( SPA-NAI-TCSTPGNM(IDZ2)
-                                        =   SPA-GMN-TCSTPGNM(IDZ2) )
-                           AND   ( SPA-NAI-TCSTPGCHK(IDZ2)
-                                        =   SPA-GMN-TCSTPGCHK(IDZ2) )
-                           PERFORM 490-SYS-1032-SAKUJYO-SEC
-                           IF    ( SPA-ERRCD   NOT =   SPACE )
-                               GO  TO  490-KOUSHIN-EXT
-                           END-IF
-                       ELSE
-                           PERFORM 490-SYS-1032-KOUSHIN-SEC
-                           IF    ( SPA-ERRCD   NOT =   SPACE )
-                               GO  TO  490-KOUSHIN-EXT
-                           END-IF
-                       END-IF
-                   END-PERFORM
-      *
-                   IF    ( SPA-BEDSU       >   ZERO )
-      *
-                       IF       ( SPA-NAI-TPRTNM-N(1)
-                                        =   SPA-GMN-TPRTNM-N(1) )
-                           AND  ( SPA-NAI-TPRTNM-N(2)
-                                        =   SPA-GMN-TPRTNM-N(2) )
-                           AND  ( SPA-NAI-TPRTNM-N(3)
-                                        =   SPA-GMN-TPRTNM-N(3) )
-                           AND  ( SPA-NAI-TPRTNM-N(4)
-                                        =   SPA-GMN-TPRTNM-N(4) )
-                           AND  ( SPA-NAI-TPRTNM-N(5)
-                                        =   SPA-GMN-TPRTNM-N(5) )
-                           AND  ( SPA-NAI-TPRTNM-N(6)
-                                        =   SPA-GMN-TPRTNM-N(6) )
-                           AND  ( SPA-NAI-TPRTNM-N(7)
-                                        =   SPA-GMN-TPRTNM-N(7) )
-                           AND  ( SPA-NAI-TPRTNM-N(8)
-                                        =   SPA-GMN-TPRTNM-N(8) )
-                           AND  ( SPA-NAI-TPRTNM-N(9)
-                                        =   SPA-GMN-TPRTNM-N(9) )
-                           AND  ( SPA-NAI-TPRTNM-N(10)
-                                        =   SPA-GMN-TPRTNM-N(10) )
-                           PERFORM 490-SYS-1034-SAKUJYO-SEC
-                           IF    ( SPA-ERRCD   NOT =   SPACE )
-                               GO  TO  490-KOUSHIN-EXT
-                           END-IF
-                       ELSE
-                           PERFORM 490-SYS-1034-KOUSHIN-SEC
-                           IF    ( SPA-ERRCD   NOT =   SPACE )
-                               GO  TO  490-KOUSHIN-EXT
-                           END-IF
-                       END-IF
-      *
-                       PERFORM VARYING IDZ2    FROM    1   BY  1
-                               UNTIL   ( IDZ2  >   3 )
-                           IF        ( SPA-NAI-TORGPGCHK-N(IDZ2)
-                                    =   SPA-GMN-TORGPGCHK-N(IDZ2) )
-                               AND   ( SPA-NAI-TCSTPGNM-N(IDZ2)
-                                    =   SPA-GMN-TCSTPGNM-N(IDZ2) )
-                               AND   ( SPA-NAI-TCSTPGCHK-N(IDZ2)
-                                    =   SPA-GMN-TCSTPGCHK-N(IDZ2) )
-                               PERFORM 490-SYS-1035-SAKUJYO-SEC
-                               IF    ( SPA-ERRCD   NOT =   SPACE )
-                                   GO  TO  490-KOUSHIN-EXT
-                               END-IF
-                           ELSE
-                               PERFORM 490-SYS-1035-KOUSHIN-SEC
-                               IF    ( SPA-ERRCD   NOT =   SPACE )
-                                   GO  TO  490-KOUSHIN-EXT
-                               END-IF
-                           END-IF
-                       END-PERFORM
-                   END-IF
+      *            職員毎登録
+                   PERFORM 4902-SYS1031-SYOUIN-SEC
                END-IF
-      *----(02.00.03)--UPD-END-----
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO  TO  490-KOUSHIN-EXT
+               END-IF
+      *
+      *        初期画面へ
+               PERFORM 310-SPASET-SEC
+      *
            WHEN    "1030"
                PERFORM 490-SYS-1030-KOUSHIN-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
                    GO  TO  490-KOUSHIN-EXT
                END-IF
+      *        選択へ
+               MOVE   "JOIN"               TO  MCP-PUTTYPE
+               PERFORM 210-BACK
            END-EVALUATE
       *
-      *----(02.00.03)--UPD-START---
-      *     MOVE   "JOIN"               TO  MCP-PUTTYPE
-      *     PERFORM 210-BACK
-            PERFORM 310-SPASET-SEC
-      *----(02.00.03)--UPD-END-----
            .
        490-KOUSHIN-EXT.
            EXIT.
@@ -1966,7 +1891,7 @@
                IF      SPA-GMN-USERKBN    =   "*"
                    MOVE    ZERO           TO  WRK-KBNCD1
                ELSE
-                   MOVE    SPA-NAI-USERCD(SPA-NAI-SELNUM)
+                   MOVE    SPA-NAI-USERCD(SPA-GMN-SELNUM)
                                           TO  WRK-KBNCD1
                END-IF
       *
@@ -1998,18 +1923,175 @@
                        END-IF
                    END-PERFORM
                END-IF
+      *
+      *        初期画面へ
+               PERFORM 310-SPASET-SEC
            END-EVALUATE
       *
       *----(02.00.03)--UPD-START---
       *     MOVE   "JOIN"               TO  MCP-PUTTYPE
       *     PERFORM 210-BACK
-            PERFORM 310-SPASET-SEC
+      ***** PERFORM 310-SPASET-SEC
       *----(02.00.03)--UPD-END-----
            .
        490-SAKUJYO-EXT.
            EXIT.
-      *
       *----(02.00.03)--ADD-END-----
+      *
+      *****************************************************************
+      *       出力先プリンタ割り当て情報・標準登録
+      *****************************************************************
+       4901-SYS1031-HYOJUN-SEC    SECTION.
+      *
+           MOVE    ZERO                TO  WRK-KBNCD1
+      *    出力先プリンタ割り当て情報
+           PERFORM 490-SYS-1031-KOUSHIN-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO      TO      4901-SYS1031-HYOJUN-EXT
+           END-IF
+      *    外来・帳票プログラム
+           PERFORM VARYING IDZ2        FROM    1   BY  1
+                   UNTIL  (IDZ2        >   SPA-GPGNM-MAX )  OR
+                          (SPA-ERRCD   NOT =   SPACE )
+               PERFORM 490-SYS-1032-KOUSHIN-SEC
+           END-PERFORM
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO      TO      4901-SYS1031-HYOJUN-EXT
+           END-IF
+      *
+      *    入院
+           IF      SPA-BEDSU           >   ZERO
+      *
+               PERFORM 490-SYS-1034-KOUSHIN-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   GO      TO      4901-SYS1031-HYOJUN-EXT
+               END-IF
+      *        入院・帳票プログラム
+               PERFORM VARYING IDZ2        FROM    1   BY  1
+                       UNTIL  (IDZ2        >   SPA-NPGNM-MAX )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+                      PERFORM 490-SYS-1035-KOUSHIN-SEC
+               END-PERFORM
+           ELSE
+      *        外来の時、入院情報を削除する
+               PERFORM 490-SYS-1034-SAKUJYO-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   GO      TO      4901-SYS1031-HYOJUN-EXT
+               END-IF
+      *
+               PERFORM VARYING IDZ2        FROM    1   BY  1
+                       UNTIL   (IDZ2       >   SPA-NPGNM-MAX )  OR
+                               (SPA-ERRCD  NOT =   SPACE )
+                   PERFORM 490-SYS-1035-SAKUJYO-SEC
+               END-PERFORM
+           END-IF
+      *
+           .
+       4901-SYS1031-HYOJUN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *       出力先プリンタ割り当て情報・職員毎登録
+      *****************************************************************
+       4902-SYS1031-SYOUIN-SEC    SECTION.
+      *
+      *    標準と１ヶ所でも違う場合に登録する
+           MOVE    SPA-NAI-USERCD(SPA-GMN-SELNUM)
+                                       TO  WRK-KBNCD1
+      *    外来出力先プリンタ割り当て
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   20
+               IF       SPA-NAI-TPRTNM (IDX)   =   SPA-GMN-TPRTNM(IDX)
+                   CONTINUE
+               ELSE
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+      *        標準と同じ時、削除
+               PERFORM 490-SYS-1031-SAKUJYO-SEC
+           ELSE
+      *        登録
+               PERFORM 490-SYS-1031-KOUSHIN-SEC
+           END-IF
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO      TO      4902-SYS1031-SYOUIN-EXT
+           END-IF
+      *    外来・帳票プログラム
+           PERFORM VARYING IDZ2        FROM    1   BY  1
+                   UNTIL  (IDZ2        >   SPA-GPGNM-MAX )  OR
+                          (SPA-ERRCD   NOT =   SPACE     )
+               IF     (SPA-NAI-TORGPGCHK(IDZ2)
+                                           =   SPA-GMN-TORGPGCHK(IDZ2))
+                 AND  (SPA-NAI-TCSTPGNM(IDZ2)
+                                           =   SPA-GMN-TCSTPGNM (IDZ2))
+                 AND  (SPA-NAI-TCSTPGCHK(IDZ2)
+                                           =   SPA-GMN-TCSTPGCHK(IDZ2))
+      *            変更なし
+                   PERFORM 490-SYS-1032-SAKUJYO-SEC
+               ELSE
+      *            変更あり
+                   PERFORM 490-SYS-1032-KOUSHIN-SEC
+               END-IF
+           END-PERFORM
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO      TO      4902-SYS1031-SYOUIN-EXT
+           END-IF
+      *
+      *    以下外来のみ
+           IF    ( SPA-BEDSU       >   ZERO )
+               CONTINUE
+           ELSE
+               GO      TO      4902-SYS1031-SYOUIN-EXT
+           END-IF
+      *    入院出力先プリンタ割り当て
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   20
+               IF       SPA-NAI-TPRTNM-N(IDX)  =   SPA-GMN-TPRTNM-N(IDX)
+                   CONTINUE
+               ELSE
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-CHK             =   ZERO
+      *        標準と同じ時、削除
+               PERFORM 490-SYS-1034-SAKUJYO-SEC
+           ELSE
+      *        登録
+               PERFORM 490-SYS-1034-KOUSHIN-SEC
+           END-IF
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO      TO      4902-SYS1031-SYOUIN-EXT
+           END-IF
+      *
+      *    入院・帳票プログラム
+           PERFORM VARYING IDZ2        FROM    1   BY  1
+                   UNTIL  (IDZ2        >   SPA-NPGNM-MAX )  OR
+                          (SPA-ERRCD   NOT =   SPACE     )
+               IF     (SPA-NAI-TORGPGCHK-N(IDZ2)
+                                       =   SPA-GMN-TORGPGCHK-N(IDZ2))
+                 AND  (SPA-NAI-TCSTPGNM-N(IDZ2)
+                                       =   SPA-GMN-TCSTPGNM-N (IDZ2))
+                 AND  (SPA-NAI-TCSTPGCHK-N(IDZ2)
+                                       =   SPA-GMN-TCSTPGCHK-N(IDZ2))
+      *            変更なし
+                   PERFORM 490-SYS-1035-SAKUJYO-SEC
+               ELSE
+      *            変更あり
+                   PERFORM 490-SYS-1035-KOUSHIN-SEC
+               END-IF
+           END-PERFORM
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO      TO      4902-SYS1031-SYOUIN-EXT
+           END-IF
+      *
+           .
+       4902-SYS1031-SYOUIN-EXT.
+           EXIT.
+      *
       *****************************************************************
       *       出力先プリンタ割り当て情報
       *****************************************************************
@@ -2030,7 +2112,7 @@
            MOVE    SPA-W01-EDYUKYMD    TO  SYS-1031-EDYUKYMD
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL ( IDX >       10 )
+                   UNTIL ( IDX >       20 )
                MOVE    SPA-GMN-TPRTNM (IDX)
                                        TO  SYS-1031-PRTNM (IDX)
            END-PERFORM
@@ -2106,7 +2188,7 @@
            MOVE    SPA-W01-EDYUKYMD    TO  SYS-1034-EDYUKYMD
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL ( IDX >       10 )
+                   UNTIL ( IDX >       20 )
                MOVE    SPA-GMN-TPRTNM-N (IDX)
                                        TO  SYS-1034-PRTNM (IDX)
            END-PERFORM
@@ -2317,17 +2399,31 @@
                MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
                MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
                MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYSUP-EDYUKYMD
+               MOVE    SYSKANRI-REC            TO  MCPDATA-REC
+      *
                MOVE    "SYSKANRI-UPD1"         TO  ORC-DBPATH
                MOVE    "DBUPDATE"              TO  MCP-FUNC
+               CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "W11 SYSKANRI UPD ERR:" MCP-RC
+                           ",KEY:"    SYS-KEY
+               END-IF
            ELSE
                MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
                MOVE    "DBINSERT"              TO  MCP-FUNC
+               MOVE    SYSKANRI-REC            TO  MCPDATA-REC
+               CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "W11 SYSKANRI INS ERR:" MCP-RC
+                           ",KEY:"    SYS-KEY
+               END-IF
            END-IF
-           MOVE    SYSKANRI-REC            TO  MCPDATA-REC
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
            .
       *
        490-SYSKANRI-KOUSHIN-EXT.
@@ -2341,12 +2437,16 @@
       *
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBDELETE"              TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "W11 SYSKANRI DEL ERR:" MCP-RC
+                           ",KEY:"    SYS-KEY
+           END-IF
            .
       *
        490-SYSKANRI-SAKUJYO-EXT.
@@ -2360,51 +2460,84 @@
            MOVE    SPACE                TO  SPA-ERRCD
       *
       *----(01.00.03) LINE ADD START --------------------------
-      *    独自開発プログラム名チェック処理
-           IF  ( SPA-W01-KANRICD   =   "1031" )
-               PERFORM     4901-CSTPGNM-CHK-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
+      *    出力先プリンタ割り当て情報チェック
+           IF      SPA-W01-KANRICD     =   "1031"
+      *        必須入力チェック
+               PERFORM 4902-SYS1031-KANREN-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
                    GO  TO  4901-KANRENCHK-EXT
                END-IF
-      *
+      *        独自開発プログラム名チェック
+               PERFORM 4901-CSTPGNM-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO  TO  4901-KANRENCHK-EXT
+               END-IF
            END-IF
+      *----(02.00.03)--ADD-END-----
       *----(01.00.03) LINE ADD END   --------------------------
            .
        4901-KANRENCHK-EXT.
            EXIT.
       *
-      *----(01.00.03) LINE ADD START --------------------------
-      *----(01.00.05) LINE UPD START --------------------------
+      *****************************************************************
+      *    必須入力チェック処理
+      *****************************************************************
+       4902-SYS1031-KANREN-CHK-SEC        SECTION.
+      *
+           IF     (SPA-GMN-USERKBN     =   SPACE )  OR
+                  (SPA-GMN-YUKOKBN     =   SPACE )
+               MOVE    "0003"              TO  SPA-ERRCD
+               GO  TO  4902-SYS1031-KANREN-CHK-EXT
+           END-IF
+      *
+           IF      SPA-GMN-USERKBN NOT =   "*"
+               IF      SPA-GMN-SELNUM      =    ZERO
+                   MOVE    "0007"              TO  SPA-ERRCD
+                   GO  TO  4902-SYS1031-KANREN-CHK-EXT
+               END-IF
+      *
+               PERFORM 3102-HYOUJYUN-SAI-SET-SEC
+               IF      FLG-SAI          =    ZERO
+                   IF      SPA-GMN-UMARK(SPA-GMN-SELNUM)   NOT =   "*"
+                       MOVE    "0008"              TO  SPA-ERRCD
+                       GO  TO  4902-SYS1031-KANREN-CHK-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       4902-SYS1031-KANREN-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    独自開発プログラム名チェック処理
       *****************************************************************
        4901-CSTPGNM-CHK-SEC        SECTION.
       *
            PERFORM VARYING IDZ2    FROM    1   BY  1
-                   UNTIL   ( IDZ2  >   4 )
+                   UNTIL  (IDZ2    >   SPA-GPGNM-MAX )
       *
                IF  ( SPA-GMN-TCSTPGNM  (IDZ2)     =   SPACE )
                    IF  ( W11-ORCACSTCHK (IDZ2)    =   "F" )
                        CONTINUE
                    ELSE
-                       MOVE    "0004"  TO  SPA-ERRCD
-                       COMPUTE SPA-GMN-CUR =   IDZ2    +   10
-                       MOVE    4       TO  IDZ2
+                       MOVE    "0004"          TO  SPA-ERRCD
+                       COMPUTE SPA-GMN-CUR     =   IDZ2    +   10
+                       MOVE    SPA-GPGNM-MAX   TO  IDZ2
                    END-IF
                END-IF
       *
            END-PERFORM
       *
            PERFORM VARYING IDZ2    FROM    1   BY  1
-                   UNTIL   ( IDZ2  >   3 )
+                   UNTIL   ( IDZ2  >   SPA-NPGNM-MAX )
       *
                IF  ( SPA-GMN-TCSTPGNM-N  (IDZ2)    =   SPACE )
                    IF  ( W11-ORCACSTCHK-N (IDZ2)   =   "F" )
                        CONTINUE
                    ELSE
-                       MOVE    "0004"  TO  SPA-ERRCD
+                       MOVE    "0004"          TO  SPA-ERRCD
                        COMPUTE SPA-GMN-CUR =   IDZ2    +   60
-                       MOVE    4       TO  IDZ2
+                       MOVE    SPA-GPGNM-MAX   TO  IDZ2
                    END-IF
                END-IF
       *
@@ -2517,7 +2650,6 @@
       *
            MOVE    SPACE               TO  W11
       *
-      *----(02.00.03)--ADD-START---
            MOVE    SPA-GMN-USERKBN-G   TO  W11-USERKBN
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
@@ -2540,7 +2672,7 @@
                    UNTIL       IDX2    >       SPA-GMN-USERLST-MAX
                MOVE    SPA-GMN-USERNUML(IDX2)  TO  W11-USERNUM(IDX2)
                MOVE    SPA-GMN-USERMEIL(IDX2)  TO  W11-USERNAME(IDX2)
-               IF      IDX2            =   SPA-NAI-SELNUM
+               IF      IDX2            =   SPA-GMN-SELNUM
                    MOVE    "T"             TO  W11-USERLST-SELECT(IDX2)
                ELSE
                    MOVE    "F"             TO  W11-USERLST-SELECT(IDX2)
@@ -2552,15 +2684,14 @@
       *----(02.00.03)--ADD-END-----
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       10
+                   UNTIL       IDX     >       20
                MOVE    SPA-GMN-TPRTNM  (IDX)   TO  W11-PRTNM  (IDX)
                MOVE    SPA-GMN-TNAME   (IDX)   TO  W11-DSPNAME(IDX)
            END-PERFORM
       *
       *----(02.00.03)--UPD-START---
            PERFORM VARYING     IDZ2     FROM    1   BY  1
-      *             UNTIL       IDZ2     >       4
-                   UNTIL       IDZ2     >       5
+                   UNTIL       IDZ2     >       SPA-GPGNM-MAX
                MOVE    SPA-GMN-TORGPGNM  (IDZ2)
                                         TO  W11-ORCAORGNM  (IDZ2)
                MOVE    SPA-GMN-TCSTPGNM  (IDZ2)
@@ -2572,16 +2703,16 @@
                MOVE    SPA-GMN-TCSTPGCHK (IDZ2)
                                         TO  W11-ORCACSTCHK (IDZ2)
            END-PERFORM
-      *----(02.00.03)--UPD-END-----
       *
+      *    入院
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       10
+                   UNTIL       IDX     >       20
                MOVE    SPA-GMN-TPRTNM-N  (IDX) TO  W11-PRTNM-N  (IDX)
                MOVE    SPA-GMN-TNAME-N   (IDX) TO  W11-DSPNAME-N(IDX)
            END-PERFORM
       *
            PERFORM VARYING     IDZ2     FROM    1   BY  1
-                   UNTIL       IDZ2     >       3
+                   UNTIL       IDZ2     >       SPA-NPGNM-MAX
                MOVE    SPA-GMN-TORGPGNM-N  (IDZ2)
                                         TO  W11-ORCAORGNM-N  (IDZ2)
                MOVE    SPA-GMN-TCSTPGNM-N  (IDZ2)
@@ -2641,95 +2772,53 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-          IF      SPA-GMN-CUR          =   ZERO
+           IF      SPA-GMN-CUR          =   ZERO
                PERFORM 50011-CUR-SET-SEC
-          END-IF
+           END-IF
       *
+           MOVE    SPACE               TO  MCP-WIDGET
            EVALUATE    SPA-GMN-CUR
-                WHEN   1
-                    MOVE  "PRTNM01"    TO  MCP-WIDGET
-                WHEN   2
-                    MOVE  "PRTNM02"    TO  MCP-WIDGET
-                WHEN   3
-                    MOVE  "PRTNM03"    TO  MCP-WIDGET
-                WHEN   4
-                    MOVE  "PRTNM04"    TO  MCP-WIDGET
-                WHEN   5
-                    MOVE  "PRTNM05"    TO  MCP-WIDGET
-                WHEN   6
-                    MOVE  "PRTNM06"    TO  MCP-WIDGET
-                WHEN   7
-                    MOVE  "PRTNM07"    TO  MCP-WIDGET
-                WHEN   8
-                    MOVE  "PRTNM08"    TO  MCP-WIDGET
-                WHEN   9
-                    MOVE  "PRTNM09"    TO  MCP-WIDGET
-                WHEN   10
-                    MOVE  "PRTNM10"    TO  MCP-WIDGET
-                WHEN   11
-                    MOVE  "ORCACSTNM01"
-                                       TO  MCP-WIDGET
-                WHEN   12
-                    MOVE  "ORCACSTNM02"
-                                       TO  MCP-WIDGET
-                WHEN   13
-                    MOVE  "ORCACSTNM03"
-                                       TO  MCP-WIDGET
-                WHEN   14
-                    MOVE  "ORCACSTNM04"
-                                       TO  MCP-WIDGET
+               WHEN    1       THRU   20
+                   MOVE    SPA-GMN-CUR     TO  IDX2
+                   MOVE    "PRTNM"         TO  MCP-WIDGET
+                   MOVE    IDX2            TO  MCP-WIDGET(6:2)
+                   MOVE    1               TO  SPA-GMN-PAGENO
+               WHEN    21      THRU   30
+                   MOVE    SPA-GMN-CUR     TO  IDX2
+                   COMPUTE IDX2            =   IDX2    -   20
+                   MOVE    "ORCACSTNM"     TO  MCP-WIDGET
+                   MOVE    IDX2            TO  MCP-WIDGET(10:2)
+                   MOVE    1               TO  SPA-GMN-PAGENO
+      *        入院
+               WHEN    51      THRU   70
+                   MOVE    SPA-GMN-CUR     TO  IDX2
+                   COMPUTE IDX2            =   IDX2    -   50
+                   MOVE    "PRTNM"         TO  MCP-WIDGET
+                   MOVE    IDX2            TO  MCP-WIDGET(6:2)
+                   MOVE    "N"             TO  MCP-WIDGET(8:1)
+                   MOVE    2               TO  SPA-GMN-PAGENO
+               WHEN    71      THRU   80
+                   MOVE    SPA-GMN-CUR     TO  IDX2
+                   COMPUTE IDX2            =   IDX2    -   70
+                   MOVE    "ORCACSTNM"     TO  MCP-WIDGET
+                   MOVE    IDX2            TO  MCP-WIDGET(10:2)
+                   MOVE    "N"             TO  MCP-WIDGET(12:1)
+                   MOVE    2               TO  SPA-GMN-PAGENO
       *----(02.00.03)--ADD-START---
-                WHEN   15
-                    MOVE  "ORCACSTNM05"
-                                       TO  MCP-WIDGET
-      *----(02.00.03)--ADD-END-----
-                WHEN   51
-                    MOVE  "PRTNM01N"   TO  MCP-WIDGET
-                WHEN   52
-                    MOVE  "PRTNM02N"   TO  MCP-WIDGET
-                WHEN   53
-                    MOVE  "PRTNM03N"   TO  MCP-WIDGET
-                WHEN   54
-                    MOVE  "PRTNM04N"   TO  MCP-WIDGET
-                WHEN   55
-                    MOVE  "PRTNM05N"   TO  MCP-WIDGET
-                WHEN   56
-                    MOVE  "PRTNM06N"   TO  MCP-WIDGET
-                WHEN   57
-                    MOVE  "PRTNM07N"   TO  MCP-WIDGET
-                WHEN   58
-                    MOVE  "PRTNM08N"   TO  MCP-WIDGET
-                WHEN   59
-                    MOVE  "PRTNM09N"   TO  MCP-WIDGET
-                WHEN   60
-                    MOVE  "PRTNM10N"   TO  MCP-WIDGET
-                WHEN   61
-                    MOVE  "ORCACSTNM01N"
-                                       TO  MCP-WIDGET
-                WHEN   62
-                    MOVE  "ORCACSTNM02N"
-                                       TO  MCP-WIDGET
-                WHEN   63
-                    MOVE  "ORCACSTNM03N"
-                                       TO  MCP-WIDGET
-      *----(02.00.03)--ADD-START---
-                WHEN   81
+                WHEN   101
                     MOVE  "USERKBN"
                                        TO  MCP-WIDGET
-                WHEN   82
+                WHEN   102
                     MOVE  "YUKOKBN"
                                        TO  MCP-WIDGET
-                WHEN   83
-                    MOVE  "USERLST"
-                                       TO  MCP-WIDGET
-                WHEN   84
+                WHEN   103
                     MOVE  "SELNUM"
                                        TO  MCP-WIDGET
       *----(02.00.03)--ADD-END-----
-                WHEN   101
+                WHEN   301
                     MOVE  "SYOHOGEPRTFLG"
                                        TO  MCP-WIDGET
-                WHEN   102
+                WHEN   302
                     MOVE  "SYOHODSPNAME"
                                        TO  MCP-WIDGET
                  WHEN   999
@@ -2738,7 +2827,14 @@
       *
             EVALUATE    SPA-W01-KANRICD
             WHEN    "1031"
-                    MOVE    0                TO  W11-PAGENO
+                MOVE    0                TO  W11-PAGENO
+                IF      SPA-GMN-PAGENO       =   1
+      *             外来
+                    MOVE    0                TO  W11-NOTE4-PAGENO
+                ELSE
+      *             入院
+                    MOVE    1                TO  W11-NOTE4-PAGENO
+                END-IF
             WHEN    "1030"
                     MOVE    1                TO  W11-PAGENO
             END-EVALUATE
@@ -2754,99 +2850,130 @@
       *
            EVALUATE    WRK-MCP-WIDGET
                WHEN    "PRTNM01"
-                   MOVE    1           TO  SPA-GMN-CUR
-               WHEN    "PRTNM02"
                    MOVE    2           TO  SPA-GMN-CUR
-               WHEN    "PRTNM03"
+               WHEN    "PRTNM02"
                    MOVE    3           TO  SPA-GMN-CUR
-               WHEN    "PRTNM04"
+               WHEN    "PRTNM03"
                    MOVE    4           TO  SPA-GMN-CUR
-               WHEN    "PRTNM05"
+               WHEN    "PRTNM04"
                    MOVE    5           TO  SPA-GMN-CUR
-               WHEN    "PRTNM06"
+               WHEN    "PRTNM05"
                    MOVE    6           TO  SPA-GMN-CUR
-               WHEN    "PRTNM07"
+               WHEN    "PRTNM06"
                    MOVE    7           TO  SPA-GMN-CUR
-               WHEN    "PRTNM08"
+               WHEN    "PRTNM07"
                    MOVE    8           TO  SPA-GMN-CUR
-               WHEN    "PRTNM09"
+               WHEN    "PRTNM08"
                    MOVE    9           TO  SPA-GMN-CUR
-               WHEN    "PRTNM10"
+               WHEN    "PRTNM09"
                    MOVE    10          TO  SPA-GMN-CUR
-               WHEN    "ORCACSTNM01"
+               WHEN    "PRTNM10"
                    MOVE    11          TO  SPA-GMN-CUR
-               WHEN    "ORCACSTNM02"
+               WHEN    "PRTNM11"
                    MOVE    12          TO  SPA-GMN-CUR
-               WHEN    "ORCACSTNM03"
+               WHEN    "PRTNM12"
                    MOVE    13          TO  SPA-GMN-CUR
-               WHEN    "ORCACSTNM04"
+               WHEN    "PRTNM13"
                    MOVE    14          TO  SPA-GMN-CUR
+               WHEN    "PRTNM14"
+                   MOVE    15          TO  SPA-GMN-CUR
+               WHEN    "PRTNM15"
+                   MOVE    16          TO  SPA-GMN-CUR
+               WHEN    "PRTNM16"
+                   MOVE    17          TO  SPA-GMN-CUR
+               WHEN    "PRTNM17"
+                   MOVE    18          TO  SPA-GMN-CUR
+               WHEN    "PRTNM18"
+                   MOVE    19          TO  SPA-GMN-CUR
+               WHEN    "PRTNM19"
+                   MOVE    20          TO  SPA-GMN-CUR
+               WHEN    "PRTNM20"
+                   MOVE    21          TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM01"
+                   MOVE    22          TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM02"
+                   MOVE    23          TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM03"
+                   MOVE    24          TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM04"
+                   MOVE    25          TO  SPA-GMN-CUR
       *----(02.00.03)--ADD-START---
                WHEN    "ORCACSTNM05"
-                   MOVE    15          TO  SPA-GMN-CUR
+      *            外来最終
+                   IF    ( SPA-BEDSU       >   ZERO )
+                       MOVE    51          TO  SPA-GMN-CUR
+                       MOVE    2           TO  SPA-GMN-PAGENO
+                    ELSE
+                       MOVE    999         TO  SPA-GMN-CUR
+                   END-IF
       *----(02.00.03)--ADD-END-----
       *
                WHEN    "PRTNM01N"
-                   MOVE    51           TO  SPA-GMN-CUR
-               WHEN    "PRTNM02N"
                    MOVE    52           TO  SPA-GMN-CUR
-               WHEN    "PRTNM03N"
+               WHEN    "PRTNM02N"
                    MOVE    53           TO  SPA-GMN-CUR
-               WHEN    "PRTNM04N"
+               WHEN    "PRTNM03N"
                    MOVE    54           TO  SPA-GMN-CUR
-               WHEN    "PRTNM05N"
+               WHEN    "PRTNM04N"
                    MOVE    55           TO  SPA-GMN-CUR
-               WHEN    "PRTNM06N"
+               WHEN    "PRTNM05N"
                    MOVE    56           TO  SPA-GMN-CUR
-               WHEN    "PRTNM07N"
+               WHEN    "PRTNM06N"
                    MOVE    57           TO  SPA-GMN-CUR
-               WHEN    "PRTNM08N"
+               WHEN    "PRTNM07N"
                    MOVE    58           TO  SPA-GMN-CUR
-               WHEN    "PRTNM09N"
+               WHEN    "PRTNM08N"
                    MOVE    59           TO  SPA-GMN-CUR
-               WHEN    "PRTNM10N"
+               WHEN    "PRTNM09N"
                    MOVE    60           TO  SPA-GMN-CUR
-               WHEN    "ORCACSTNM01N"
+               WHEN    "PRTNM10N"
                    MOVE    61           TO  SPA-GMN-CUR
-               WHEN    "ORCACSTNM02N"
+               WHEN    "PRTNM11N"
                    MOVE    62           TO  SPA-GMN-CUR
-               WHEN    "ORCACSTNM03N"
+               WHEN    "PRTNM12N"
                    MOVE    63           TO  SPA-GMN-CUR
+               WHEN    "PRTNM13N"
+                   MOVE    64           TO  SPA-GMN-CUR
+               WHEN    "PRTNM14N"
+                   MOVE    65           TO  SPA-GMN-CUR
+               WHEN    "PRTNM15N"
+                   MOVE    66           TO  SPA-GMN-CUR
+               WHEN    "PRTNM16N"
+                   MOVE    67           TO  SPA-GMN-CUR
+               WHEN    "PRTNM17N"
+                   MOVE    68           TO  SPA-GMN-CUR
+               WHEN    "PRTNM18N"
+                   MOVE    69           TO  SPA-GMN-CUR
+               WHEN    "PRTNM19N"
+                   MOVE    70           TO  SPA-GMN-CUR
+               WHEN    "PRTNM20N"
+                   MOVE    71           TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM01N"
+                   MOVE    72           TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM02N"
+                   MOVE    73           TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM03N"
+      *            入院最終、確定へ
+                   MOVE    999          TO  SPA-GMN-CUR
       *
       *----(02.00.03)--ADD-START---
                WHEN    "USERKBN"
-                   MOVE    81           TO  SPA-GMN-CUR
+                   MOVE    103          TO  SPA-GMN-CUR
                WHEN    "YUKOKBN"
-                   MOVE    82           TO  SPA-GMN-CUR
+                   MOVE    103          TO  SPA-GMN-CUR
                WHEN    "SELNUM"
-                   MOVE    83           TO  SPA-GMN-CUR
+                   MOVE    01           TO  SPA-GMN-CUR
                WHEN    "USERLST"
-                   MOVE    84           TO  SPA-GMN-CUR
+                   MOVE    01           TO  SPA-GMN-CUR
       *----(02.00.03)--ADD-END-----
       *
+      *        帳票編集区分情報
                WHEN    "SYOHOGEPRTFLG"
-                   MOVE    101         TO  SPA-GMN-CUR
+                   MOVE    302         TO  SPA-GMN-CUR
                WHEN    "SYOHODSPNAME"
-                   MOVE    102         TO  SPA-GMN-CUR
+                   MOVE    999         TO  SPA-GMN-CUR
            END-EVALUATE
       *
-           EVALUATE    WRK-MCP-WIDGET
-      *----(02.00.03)--UPD-START---
-      *     WHEN    "ORCACSTNM04"
-           WHEN    "ORCACSTNM05"
-      *----(02.00.03)--UPD-END-----
-               IF    ( SPA-BEDSU       >   ZERO )
-                   MOVE    51          TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    999         TO  SPA-GMN-CUR
-               END-IF
-           WHEN    "ORCACSTNM03N"
-               MOVE    "999"           TO  SPA-GMN-CUR
-           WHEN    "SYOHODSPNAME"
-               MOVE    "999"           TO  SPA-GMN-CUR
-           WHEN    OTHER
-               COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR +   1
-           END-EVALUATE
       *
            .
        50011-CUR-SET-EXT.
@@ -2864,6 +2991,8 @@
            EVALUATE    SPA-W01-KANRICD
                WHEN    "1031"
                    MOVE    WIDGET-NORMAL      TO  W11-N01-STATE
+                   MOVE    WIDGET-NORMAL      TO  W11-N0101-STATE
+                   MOVE    WIDGET-NORMAL      TO  W11-N0102-STATE
                WHEN    "1030"
                    MOVE    WIDGET-NORMAL      TO  W11-N02-STATE
            END-EVALUATE
