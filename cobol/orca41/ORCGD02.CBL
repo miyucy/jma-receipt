@@ -1683,12 +1683,10 @@
                    MOVE    "*"                    TO  T-HANNTEI5
       *½¤Àµ/*³«»Ï*03.08.26*********************************************
                    IF  ((SPA-GMN-CNV (19)  =   SPACE)  AND
-                        (COMB-HKNNUM   NOT =   W-HKNNUM1   AND
-                                               W-HKNNUM2   AND
+                        (COMB-HKNNUM   NOT =   W-HKNNUM2   AND
                                                W-HKNNUM3   AND
                                                W-HKNNUM4))    OR
-                       ((SPA-GMN-CNV (19)  =   "1")    AND
-                        (COMB-HKNNUM   NOT =   W-HKNNUM1))    OR
+                       (SPA-GMN-CNV (19)  =   "1")            OR
                        ((SPA-GMN-CNV (19)  =   "2")    AND
                         (COMB-HKNNUM       =   W-HKNNUM2   OR
                                                W-HKNNUM3   OR
@@ -1779,7 +1777,11 @@
                      (COMB-HKNID    NOT =   ZERO))        OR
                     ((ACCT-PTID         =   PTHKN-PTID)  AND
                      (COMB-HKNID    NOT =   PTHKN-HKNID) AND
-                     (COMB-HKNID    NOT =   ZERO)))
+                     (COMB-HKNID    NOT =   ZERO)))      AND
+                   (COMB-HKNNUM   NOT =   W-HKNNUM1      AND
+                                          W-HKNNUM2      AND
+                                          W-HKNNUM3      AND
+                                          W-HKNNUM4)
                    PERFORM T-300-RECECHEK-SEC
                END-IF
                IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
@@ -3902,9 +3904,9 @@
                    MOVE    "-"                     TO  DID2-REC(180:1)
                    MOVE    SRY-ZAINUM              TO  DID2-REC(181:9)
                    MOVE    "-"                     TO  DID2-REC(190:1)
-                   MOVE    ACCT-SRYKA              TO  DID2-REC(191:2)
+                   MOVE    SRY-SRYKA               TO  DID2-REC(191:2)
                    MOVE    "-"                     TO  DID2-REC(193:1)
-                   MOVE    ACCT-NYUGAIKBN          TO  DID2-REC(194:1)
+                   MOVE    SRY-NYUGAIKBN           TO  DID2-REC(194:1)
                    WRITE   DID2-REC
                    IF  SPA-GMN-CNV (11)  =  "1"
                        MOVE    "*"                     TO  T-ERR-11
@@ -3950,9 +3952,9 @@
                    MOVE    "-"                     TO  DID2-REC(180:1)
                    MOVE    SRY-ZAINUM              TO  DID2-REC(181:9)
                    MOVE    "-"                     TO  DID2-REC(190:1)
-                   MOVE    ACCT-SRYKA              TO  DID2-REC(191:2)
+                   MOVE    SRY-SRYKA               TO  DID2-REC(191:2)
                    MOVE    "-"                     TO  DID2-REC(193:1)
-                   MOVE    ACCT-NYUGAIKBN          TO  DID2-REC(194:1)
+                   MOVE    SRY-NYUGAIKBN           TO  DID2-REC(194:1)
                    WRITE   DID2-REC
                    IF  SPA-GMN-CNV (11)  =  "1"
                        MOVE    "*"                     TO  T-ERR-11-2
@@ -4073,9 +4075,9 @@
                    MOVE    "-"                 TO  DID2-REC(180:1)
                    MOVE    SRY-ZAINUM          TO  DID2-REC(181:9)
                    MOVE    "-"                 TO  DID2-REC(190:1)
-                   MOVE    ACCT-SRYKA          TO  DID2-REC(191:2)
+                   MOVE    SRY-SRYKA           TO  DID2-REC(191:2)
                    MOVE    "-"                 TO  DID2-REC(193:1)
-                   MOVE    ACCT-NYUGAIKBN      TO  DID2-REC(194:1)
+                   MOVE    SRY-NYUGAIKBN       TO  DID2-REC(194:1)
                    WRITE   DID2-REC
                    IF  SPA-GMN-CNV (10)  =  "1"
                        MOVE    "*"                 TO  T-ERR-10
