@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  03/04/11  履歴に科表示追加
+      * 01.00.02     NACL-多々納  04/01/23  回数変更追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -141,6 +142,7 @@
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBLREC            OCCURS   400.
                            11  SPA-NAI-ZAINUM        PIC  9(08).
+                           11  SPA-NAI-SRYKBN        PIC  X(02).
                        09  SPA-SEL-IDX               PIC  9(02).
                        09  SPA-SEL-RENNUM            PIC  9(01).
       *
@@ -173,6 +175,8 @@
            03  FLG-YAKUSOKU        PIC 9(01).
            03  FLG-CHK             PIC 9(01).
       *
+           03  FLG-KAI             PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -200,6 +204,7 @@
            03  IDX-S                   PIC 9(04).
            03  IDX-D1                  PIC 9(04).
            03  IDX-D2                  PIC 9(04).
+           03  IDX-D3                  PIC 9(04).
            03  IDX-Z                   PIC 9(04).
            03  IDX-ZAI                 PIC 9(04).
       *
@@ -231,15 +236,21 @@
                05  WRK-DOSEL-OCC   OCCURS   100.
                    07  WRK-DO          PIC X(03).
                    07  WRK-DONUM       PIC 9(03).
+                   07  WRK-KAI         PIC X(03).
+                   07  WRK-KAINUM      PIC 9(03).
                    07  WRK-SEL         PIC X(01).
       *
            03  WRK-DOZAINUM-AREA.
                05  WRK-DOZAINUM-OCC    OCCURS   100.
                    07  WRK-DOZAINUM    PIC 9(08).
+                   07  WRK-DOKAI       PIC 9(03).
       *
            03  HZN-DOZAINUM-AREA.
                05  HZN-DOZAINUM-OCC    OCCURS   100.
                    07  HZN-DOZAINUM    PIC 9(08).
+                   07  HZN-DOKAI       PIC 9(03).
+      *
+           03  WRK-DOKAISU             PIC 9(03).
       *
            03  WRK-ZAINUM          PIC 9(08).
            03  WRK-ZAIKAISU        PIC 9(08).
@@ -905,7 +916,9 @@
            MOVE    K09-DOSEL           TO  SPA-GMN-DOSEL
       *
            INITIALIZE                      WRK-DOSEL
+           MOVE    ZERO                TO  FLG-KAI
            MOVE    ZERO                TO  IDX-D1
+           MOVE    ZERO                TO  IDX-D3
            MOVE    1                   TO  IDX-D2
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   40  )   OR
@@ -916,18 +929,30 @@
                        IF      IDX-D1          >   ZERO
                            ADD     1               TO  IDX-D2
                            MOVE    ZERO            TO  IDX-D1
+                           MOVE    ZERO            TO  IDX-D3
+                           MOVE    ZERO            TO  FLG-KAI
                        END-IF
                    WHEN    "*"
-                       ADD     1               TO  IDX-D1
-                       IF     (IDX-D1          >   1   )  OR
-                              (IDX-D2          >   1   )
-                           MOVE    "0003"          TO  SPA-ERRCD
-                       ELSE
+      *                １桁目の＊は全体
+                       IF     (IDX-D2          =   1  ) AND
+                              (IDX-D1          =   ZERO)
+                           ADD     1               TO  IDX-D1
                            MOVE    SPA-GMN-DOSEL(IDX:1)
                                                TO  WRK-DO(IDX-D2)
                                                             (IDX-D1:1)
+                       ELSE
+                           IF     (IDX-D1      =   ZERO) OR
+                                  (FLG-KAI     =   1   )
+      *                        １桁目の＊はエラー
+                               MOVE    "0003"          TO  SPA-ERRCD
+                           ELSE
+      *                        回数
+                               MOVE    1               TO  FLG-KAI
+                           END-IF
                        END-IF
                    WHEN    "0"  THRU  "9" 
+                     IF      FLG-KAI         =   ZERO
+      *
                        ADD     1               TO  IDX-D1
                        IF      IDX-D1          >   3
                            MOVE    "0002"          TO  SPA-ERRCD
@@ -936,11 +961,25 @@
                                                TO  WRK-DO(IDX-D2)
                                                             (IDX-D1:1)
                        END-IF
+      *
+                     ELSE
+      *
+                       ADD     1               TO  IDX-D3
+                       IF      IDX-D3         >   3
+                           MOVE    "0002"          TO  SPA-ERRCD
+                       ELSE
+                           MOVE    SPA-GMN-DOSEL(IDX:1)
+                                               TO  WRK-KAI(IDX-D2)
+                                                            (IDX-D3:1)
+                       END-IF
+                     END-IF
                    WHEN    "-"
                        MOVE    "-"             TO  WRK-SEL(IDX-D2)
                        IF      IDX-D1          >   ZERO
                            ADD     1               TO  IDX-D2
                            MOVE    ZERO            TO  IDX-D1
+                           MOVE    ZERO            TO  IDX-D3
+                           MOVE    ZERO            TO  FLG-KAI
                        END-IF
                    WHEN    SPACE
                        CONTINUE
@@ -986,6 +1025,23 @@
                        END-IF
                    END-IF
                END-IF
+      *        回数
+               IF     WRK-KAI(IDX-D2)      =   SPACE
+                   MOVE    ZERO            TO  WRK-KAINUM(IDX-D2)
+               ELSE
+                   INITIALIZE                      ORCSNUMAREA
+                   MOVE    WRK-KAI(IDX-D2)     TO  SNUM-INX
+                   CALL    "ORCSNUM"           USING
+                                               ORCSNUMAREA
+                   IF     (SNUM-RC         NOT =   ZERO  )   OR
+                          (SNUM-MINKBN     NOT =   SPACE )   OR
+                          (SNUM-SYOKBN     NOT =   SPACE )
+                       MOVE    "0002"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    SNUM-OUTNUM     TO  WRK-KAINUM(IDX-D2)
+                   END-IF
+               END-IF
+      *
            END-PERFORM
       *
            IF      SPA-ERRCD       NOT =   SPACE
@@ -1008,13 +1064,40 @@
                        ADD     1                   TO  IDX
                        MOVE    SPA-NAI-ZAINUM (IDX-ZAI)
                                                TO  WRK-DOZAINUM (IDX)
+                       MOVE    WRK-KAINUM(IDX-D2)  TO  WRK-DOKAI (IDX)
+      *                投薬以外の回数はエラー
+                       IF     (WRK-KAINUM(IDX-D2)  >   1  )  AND
+                              (SPA-NAI-SRYKBN(IDX-ZAI) NOT =   "21"
+                                                           AND "22"
+                                                           AND "23")
+                           MOVE    "0004"              TO  SPA-ERRCD
+                       END-IF
                    END-PERFORM
                END-IF
                MOVE    WRK-DONUM(IDX-D2)       TO  IDX-ZAI
                ADD     1                       TO  IDX
                MOVE    SPA-NAI-ZAINUM (IDX-ZAI)
                                                TO  WRK-DOZAINUM (IDX)
+               MOVE    WRK-KAINUM(IDX-D2)      TO  WRK-DOKAI (IDX)
+      *        '-'があり、回数が無い時後の回数
+               IF     (WRK-SEL  (IDX-D2)       =   "-" )  AND
+                      (WRK-KAINUM(IDX-D2)      =   ZERO)
+                   MOVE    WRK-KAINUM(IDX-D2 + 1)  TO  WRK-DOKAI (IDX)
+               END-IF
+      *
+      *        投薬以外の回数はエラー
+               IF     (WRK-KAINUM(IDX-D2)      >   1  )  AND
+                      (SPA-NAI-SRYKBN(IDX-ZAI) NOT =   "21"
+                                                   AND "22"
+                                                   AND "23")
+                   MOVE    "0004"              TO  SPA-ERRCD
+               END-IF
            END-PERFORM
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      420-DOSEL-CHK-EXT
+           END-IF
+      *
       *
       *    同一剤を削除
            INITIALIZE                      HZN-DOZAINUM-AREA
@@ -1036,7 +1119,8 @@
                    END-PERFORM
                    IF      FLG-CHK             =   ZERO
                        ADD     1               TO  IDX-H
-                       MOVE    HZN-DOZAINUM (IDX1) TO  WRK-DOZAINUM
+                       MOVE    HZN-DOZAINUM-OCC (IDX1)
+                                               TO  WRK-DOZAINUM-OCC
                                                                 (IDX-H)
                    END-IF
                END-IF
@@ -1175,6 +1259,7 @@
                IF      SRY-SRYKBN          =   "11"  OR  "12"
                    CONTINUE
                ELSE
+                   MOVE    ZERO                TO  WRK-DOKAISU
       *            診療会計検索編集
                    PERFORM 41012-SRYACT-HEN-SEC
       *
@@ -1263,6 +1348,11 @@
            MOVE    SRY-JIHIMONEYTOTAL  TO  WKSRY-JIHIMONEYTOTAL
       *剤回数計
            MOVE    WRK-ZAIKAISU        TO  WKSRY-ZAIKAIKEI
+      *
+           IF     (SRY-SRYKBN          =   "21"  OR  "22"  OR  "23") AND
+                  (WRK-DOKAISU     NOT =   ZERO                    )
+               MOVE    WRK-DOKAISU     TO  WKSRY-ZAIKAIKEI
+           END-IF
       *    剤点数計
            MOVE    ACCT-ZAITEN         TO  WKSRY-ZAITENKEI
       *保険組合
@@ -1346,6 +1436,10 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   IDX-KOUI
+      *
+      *        診療種別
+               MOVE    LNK-WKSRY-SRYKBN   (IDX)    TO  SPA-NAI-SRYKBN
+                                                        (SPA-NAI-MAX2)
       *
       *        剤点数計
                MOVE    LNK-WKSRY-ZAITENKEI(IDX)    TO  WRK-ZAITEN
@@ -1966,6 +2060,8 @@
                IF      SRY-SRYKBN          =   "11"  OR  "12"
                    CONTINUE
                ELSE
+      *
+                   MOVE    WRK-DOKAI (IDX-R)   TO  WRK-DOKAISU
       *            診療会計検索編集
                    PERFORM 41012-SRYACT-HEN-SEC
       *
@@ -2182,9 +2278,8 @@
                        MOVE    SPA-GMN-TBANGO (IDX)    TO  WRK-ZZ
                        MOVE    WRK-ZZ                  TO  K09-MNO (IDX)
                    END-IF
-               MOVE    SPA-GMN-TMEISYO (IDX)   TO  K09-MEISAI (IDX)
+                   MOVE    SPA-GMN-TMEISYO (IDX)   TO  K09-MEISAI (IDX)
                END-IF
-      **       MOVE    SPA-GMN-TMEISYO (IDX)   TO  K09-MEISAI (IDX)
            END-PERFORM
            MOVE    SPA-GMN-MAX2        TO  K09-MEILIST-COUNT
       *
@@ -2229,6 +2324,11 @@
                WHEN    "0003"
                    MOVE    "＊は１文字だけです"
                                        TO  SPA-ERRMSG
+               WHEN    "0004"
+                   MOVE    "回数変更は投薬のみ可能です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "投薬以外に回数変更があります。"
+                                       TO  SPA-ERRMSG(29:)
            END-EVALUATE
       *
            MOVE    SPACE               TO  KERR
