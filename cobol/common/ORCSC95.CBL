@@ -2362,9 +2362,9 @@
       *****************************************************************
        500-NYUIN-SPASET-SEC              SECTION.
       *
-           MOVE    SPACE               TO  SPA-HKNCOMBINUM
-           MOVE    ZERO                TO  SPA-FTNRATE
-           MOVE    SPACE               TO  SPA-FTNRATEMEI
+      *?   MOVE    SPACE               TO  SPA-HKNCOMBINUM
+      *?   MOVE    ZERO                TO  SPA-FTNRATE
+      *?   MOVE    SPACE               TO  SPA-FTNRATEMEI
       *
       *    前回患者保存
            MOVE    SPA-PTID            TO  SPA-LAST-PTID
