@@ -373,7 +373,7 @@
            MOVE    SPA-GMN-LDNAME-LDC(1)   TO  SPA-GMN-LDNAME-LD
            MOVE    SPA-GMN-LDNAME-ITEM(1)  TO  SPA-GMN-LDNAME
       *??
-           MOVE    SPA-GMN-HELPKBN-ITEM(1) TO  SPA-GMN-HELPKBN-G
+      **   MOVE    SPA-GMN-HELPKBN-ITEM(1) TO  SPA-GMN-HELPKBN-G
       *??
            MOVE    SPA-GMN-HELPKBN-ITEM(2) TO  SPA-GMN-HELPKBN-G
       *
@@ -1402,7 +1402,7 @@
       *    標準は対象外
            MOVE    2                   TO  IDY
       *??
-           MOVE    1                   TO  IDY
+      **** MOVE    1                   TO  IDY
       *??
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    IDY   BY  1
@@ -1816,7 +1816,7 @@
                MOVE    1                   TO  SPA-COPYFLG
                MOVE    12                  TO  SPA-GMN-CUR
       *??
-               MOVE    10                  TO  SPA-GMN-CUR
+      ***      MOVE    10                  TO  SPA-GMN-CUR
       *??
            END-IF
       *
@@ -2491,7 +2491,7 @@
       *        標準は対象外（開始を２）
                MOVE    1                   TO  IDY
       *??
-               MOVE    ZERO                TO  IDY
+      ***      MOVE    ZERO                TO  IDY
       *??
                MOVE    ZERO                TO  N41-HELPKBN-CP-COUNT
                PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2533,8 +2533,8 @@
                MOVE    WIDGET-INSENSITIVE  TO  N41-B12-STATE
                MOVE    WIDGET-INSENSITIVE  TO  N41-B03-STATE
       *??
-               MOVE    WIDGET-NORMAL       TO  N41-B12-STATE
-               MOVE    WIDGET-NORMAL       TO  N41-B03-STATE
+      *        MOVE    WIDGET-NORMAL       TO  N41-B12-STATE
+      *        MOVE    WIDGET-NORMAL       TO  N41-B03-STATE
       *??
            ELSE
                MOVE    WIDGET-NORMAL       TO  N41-B12-STATE
