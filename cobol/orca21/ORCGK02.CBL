@@ -2240,6 +2240,7 @@
       *
       *        科変更時、中途終了あり
                WHEN    "0122"
+               WHEN    "0124"
                    MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
       *                内容置換え
@@ -5598,6 +5599,10 @@
       *    再表示編集処理
            IF      LNK-SC95-WKSRYACT   =   1
                MOVE    "0122"          TO  SPA-KIDCD
+               GO      TO      41013-SRYKA-CHANGE-EXT
+           END-IF
+           IF      LNK-SC95-WKSRYACT   =   2
+               MOVE    "0124"          TO  SPA-KIDCD
                GO      TO      41013-SRYKA-CHANGE-EXT
            END-IF
            MOVE    1               TO  SPA-GMN-PAGE
@@ -14488,6 +14493,9 @@
                                        TO  WRK-KIDMSG
                    MOVE    "ＯＫで中途終了内容へ置換えます。"
                                        TO  WRK-KIDMSG(41:)
+               WHEN    "0124"
+                   MOVE    "この科の前回内容へＯＫで置換えます。"
+                                       TO  WRK-KIDMSG
                WHEN    "0160"
                    MOVE    "包括検査で同じ検査があります。"
                                        TO  WRK-KIDMSG
@@ -14532,6 +14540,7 @@
                WHEN    "0119"
                WHEN    "0107"
                WHEN    "0122"
+               WHEN    "0124"
                WHEN    "0180"
                WHEN    "0190"
                WHEN    "2001"
