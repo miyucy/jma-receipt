@@ -1232,6 +1232,12 @@
                MOVE    "0013"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
            END-IF
+      *    時間加算かの判定
+           IF      (WRK-COM-TIMEFLG (IDX-Z)   =   ZERO  ) AND
+                   (WRK-COM-AUTOKBN (IDX-Z)   =   SPACE ) AND
+                   (WRK-COM-TIMEKSNKBN(IDX-Z) NOT =   ZERO)
+               MOVE    1                TO  WRK-COM-SANFLG (IDX-Z)
+           END-IF
       *
            .
        1005-KASAN-CHK-EXT.
