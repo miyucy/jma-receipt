@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03/09/01    NACL−藤原   メモ欄の全角チェック追加
+      *  03/10/27    NACL−藤原   前頁追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -143,12 +144,9 @@
       *                     
                05  SPA-WRK-TBL-KEY                 PIC X(08).            
       *                 
-      *****03  SPA-XC01-MOTOPG                     PIC X(08).    
-      *
       *   
            COPY    "ENUM-VALUE".
       *
-      *   
            COPY    "CMJOBNAME.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
@@ -759,7 +757,7 @@
       *
       *
       *****************************************************************
-      *    戻る　処理
+      *    訂正処理
       *****************************************************************
        440-MAKE-UPD-SEC            SECTION.
       *
@@ -773,7 +771,12 @@
                MOVE    1               TO  SPA-GMN-CUR
                GO  TO  440-MAKE-UPD-EXT
            END-IF
-           
+      *
+           MOVE    SPA-NAI-SELNUM      TO  IDX
+           PERFORM 2013-PREVIEW-CHECK-SEC
+           IF      SPA-GMN-ERRMSG  NOT =   SPACE                
+               GO  TO  440-MAKE-UPD-EXT
+           END-IF
       *
            IF      XC01-SELECT (SPA-NAI-SELNUM)   =   "T"
               IF   SPA-GMN-TUPDFLG (SPA-NAI-SELNUM)   =   "○"
@@ -937,21 +940,19 @@
        480-BEFORELINE-SEC                SECTION.
       *
       *     
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-MAX
-               IF      XC01-SELECT (IDX)   =   "T"
-                   IF      IDX             =   SPA-NAI-SELNUM
-                       CONTINUE
-                   ELSE        
-                       MOVE    IDX         TO  SPA-NAI-SELNUM
-                       MOVE    SPA-GMN-MAX TO  IDX
-                   END-IF
-               END-IF    
-           END-PERFORM
+      ***     PERFORM VARYING     IDX     FROM    1   BY  1
+      *             UNTIL       IDX     >   SPA-GMN-MAX
+      *         IF      XC01-SELECT (IDX)   =   "T"
+      *             IF      IDX             =   SPA-NAI-SELNUM
+      *                 CONTINUE
+      *             ELSE        
+      *                 MOVE    IDX         TO  SPA-NAI-SELNUM
+      *                 MOVE    SPA-GMN-MAX TO  IDX
+      *             END-IF
+      *         END-IF    
+      ***     END-PERFORM
       *
       *    行選択
-      *    MOVE    ZERO                TO  WRK-SELNUM
-      *    IF     (SPA-GMN-MAX         <=  SPA-NAI-SELNUM) 
            IF     (SPA-NAI-SELNUM      =   1)
                    GO                  TO  480-BEFORELINE-EXT
            END-IF
@@ -976,23 +977,8 @@
       *****************************************************************
        470-NEXTLINE-SEC                SECTION.
       *
-      *     
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-MAX
-               IF      XC01-SELECT (IDX)   =   "T"
-                   IF      IDX             =   SPA-NAI-SELNUM
-                       CONTINUE
-                   ELSE        
-                       MOVE    IDX         TO  SPA-NAI-SELNUM
-                       MOVE    SPA-GMN-MAX TO  IDX
-                   END-IF
-               END-IF    
-           END-PERFORM
-      *
       *    行選択
-      *    MOVE    ZERO                TO  WRK-SELNUM
            IF     (SPA-GMN-MAX         <=  SPA-NAI-SELNUM) 
-      *    OR     (SPA-NAI-SELNUM      =   1)
                    GO                  TO  470-NEXTLINE-EXT
            END-IF
       *     
