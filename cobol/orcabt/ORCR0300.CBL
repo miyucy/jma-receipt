@@ -386,6 +386,8 @@
                    07  TBL-KOUI-SRYCD           PIC  X(09).
       *            数量
                    07  TBL-KOUI-SRYSURYO        PIC  9(05)V9(03).
+      *            告示等識別区分
+                   07  TBL-KOUI-KOKUJISKBKBN2   PIC  9(01).
       *----(01.00.04) LINE ADD START ----------------------------------
       *            点数識別区分/点数
                    07  TBL-KOUI-TENSIKIBETU     PIC  9(01).
@@ -718,7 +720,11 @@
            MOVE    5                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    氏名
-           MOVE    RECE02-NAME         TO  WRK-DATA
+           IF      RECE02-NAME (1:2)   =   "　"
+               MOVE    RECE02-KANANAME     TO  WRK-DATA
+           ELSE
+               MOVE    RECE02-NAME         TO  WRK-DATA
+           END-IF
            MOVE    40                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    性別
@@ -1685,6 +1691,8 @@
                IF      FLG-TENSU           =   ZERO
                    MOVE    TNS-KOKUJISKBKBN1   TO
                                    TBL-KOUI-KOKUJISKBKBN1(WRK-TBLMAX1)
+                   MOVE    TNS-KOKUJISKBKBN2   TO
+                                   TBL-KOUI-KOKUJISKBKBN2(WRK-TBLMAX1)
                    MOVE    TNS-CDKBN-SYO       TO
                                    TBL-KOUI-CDKBN-SYO    (WRK-TBLMAX1)
                    MOVE    TNS-CDKBN-BU        TO
@@ -1773,6 +1781,20 @@
                                    TBL-ZAIW-DATAKBN    (WRK-ZAIWMAX)
                MOVE    RECE05-NAMEINF   (IDX)  TO
                                    TBL-ZAIW-NAMEINF    (WRK-ZAIWMAX)
+      *
+               EVALUATE    TBL-ZAIW-SRYCD (WRK-ZAIWMAX) (1:1)
+                   WHEN    "7"
+                       INITIALIZE                  TNS-TENSU-REC
+                       MOVE   TBL-ZAIW-SRYCD (WRK-ZAIWMAX)
+                                                   TO  TNS-SRYCD
+                       PERFORM 900-TENSU-READ-SEC
+                       IF      FLG-TENSU           =   ZERO
+                           MOVE    TNS-TENSIKIBETU     TO
+                                   TBL-ZAIW-TENSIKIBETU  (WRK-ZAIWMAX)
+                           MOVE    TNS-TEN             TO
+                                   TBL-ZAIW-TEN          (WRK-ZAIWMAX)
+                       END-IF
+               END-EVALUATE
            END-IF
       *
            EVALUATE    TBL-ZAIW-SRYCD (WRK-ZAIWMAX) (1:1)
@@ -1913,6 +1935,8 @@
                    IF      IDX                   <   WRK-TBLMAX1
                        IF      TBL-KOUI-KOKUJISKBKBN1 (IDX)
                                                  =   1
+                       AND     TBL-KOUI-KOKUJISKBKBN2 (IDX)
+                                                 =   7
                            MOVE    TBL-KOUI-TEN (IDX)
                                                  TO  WRK-TENSU
                            MOVE    WRK-TENSU     TO  WRK-NUM
@@ -1941,10 +1965,15 @@
       *----(01.00.04) LINE ADD START ----------------------------------
                IF      RECE041-SRYKBN            =   "13"  OR  "14"
                    IF      IDX                   <   WRK-TBLMAX1
-                       IF      RECE041-ZAIKAISU  >   ZERO
-                           MOVE    1             TO  WRK-KAISU
-                           MOVE    WRK-KAISU     TO  WRK-NUM
-                           MOVE    3             TO  WRK-NAGASA
+                       IF      TBL-KOUI-KOKUJISKBKBN1 (IDX)
+                                                 =   1
+                       AND     TBL-KOUI-KOKUJISKBKBN2 (IDX)
+                                                 =   7
+                           IF      RECE041-ZAIKAISU  >   ZERO
+                               MOVE    1             TO  WRK-KAISU
+                               MOVE    WRK-KAISU     TO  WRK-NUM
+                               MOVE    3             TO  WRK-NAGASA
+                           END-IF
                        END-IF
                    END-IF
                END-IF
@@ -2121,9 +2150,10 @@
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
       *    単価
-           IF      TBL-ZAIW-TENSIKIBETU (IDX)  =   1       
+           IF      TBL-ZAIW-TENSIKIBETU (IDX)  =   2
+           OR      TBL-ZAIW-SRYCD       (IDX)  =   "777770000"
                IF      TBL-ZAIW-TEN (IDX)  >   ZERO
-                   MOVE    TBL-ZAIW-TEN(IDX)   TO  WRK-TANKA
+                   MOVE    TBL-ZAIW-TEN (IDX)  TO  WRK-TANKA
                    MOVE    WRK-TANKA           TO  WRK-NUM
                    MOVE    10                  TO  WRK-NAGASA
                    MOVE    2                   TO  WRK-SYOSUU
