@@ -920,13 +920,13 @@
            MOVE    ZERO                TO  WRK-SELNO
       *     
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       100
+                   UNTIL       IDX     >       SPA-GMN-MAX
                IF      X01-SELECT (IDX)    =   "T"
                    IF      IDX             =   SPA-NAI-SELNO 
                        CONTINUE
                    ELSE        
                        MOVE    IDX             TO  WRK-SELNO
-                       MOVE    100             TO  IDX
+                       MOVE    SPA-GMN-MAX      TO  IDX
                    END-IF
                END-IF    
            END-PERFORM
@@ -1246,6 +1246,8 @@
                    MOVE    "F"             TO  X01-SELECT (IDX)
                END-IF
            END-PERFORM   
+           MOVE    SPA-GMN-MAX         TO  X01-COUNT
+      *
            MOVE    SPA-GMN-SRYCD       TO  X01-SRYCD
            MOVE    SPA-GMN-NAME        TO  X01-NAME
            MOVE    SPA-GMN-SELNUM      TO  X01-SELNUM

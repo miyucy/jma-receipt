@@ -33,6 +33,7 @@
       *  01.02.01    MCC-藤原     02/02/01  入力エラーの時の確定のチェック     
       *  01.02.02    MCC-藤原     02/02/21  支払区分の初期値のセット     
       *  01.02.03    MCC-藤原     02/03/22  選択番号未入力のときの遷移修正     
+      *  01.02.04    NACL-多々納  02/12/19  リスト選択修正
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -593,13 +594,13 @@
            MOVE    ZERO                TO  WRK-SELNO
       *     
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       100
+                   UNTIL       IDX     >       SPA-GMN-MAX
                IF      V01-SELECT (IDX)    =   "T"
                    IF      IDX             =   SPA-NAI-SELNO 
                        CONTINUE
                    ELSE        
                        MOVE    IDX             TO  WRK-SELNO
-                       MOVE    100             TO  IDX
+                       MOVE    SPA-GMN-MAX     TO  IDX
                    END-IF
                END-IF    
            END-PERFORM
@@ -796,6 +797,7 @@
       *
            MOVE    SPACE               TO  V01
       *
+           MOVE    ZERO                TO  V01-COUNT
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-GMN-MAX
                MOVE    SPA-GMN-TBANGO     (IDX)
