@@ -1894,7 +1894,7 @@
            INITIALIZE                      ORCSRECEUPDAREA
            MOVE    "1"                 TO  LNK-UPD-SYORI
            MOVE    SPA-HOSPID          TO  LNK-UPD-HOSPID
-           MOVE    SPA-NAI-C02-PTID    TO  LNK-UPD-PTID
+           MOVE    SPA-NAI-C11-PTID    TO  LNK-UPD-PTID
            MOVE    SPA-TERMID          TO  LNK-UPD-TERMID
            MOVE    SPA-OPID            TO  LNK-UPD-OPID
            CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA
@@ -2035,6 +2035,8 @@
                MOVE    "1002"                  TO  SPA-ERRCD
                DISPLAY "OPECOM-KEY =>" OPECOM-KEY 
                GO  TO  480-SAKUJYO-EXT
+           ELSE
+               PERFORM 41211-RECEUPD-UPDATE-SEC
            END-IF
       *
            COMPUTE C11-COM-ROW =   SPA-NAI-C11-SELNUM2 -   1    
