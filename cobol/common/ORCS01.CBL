@@ -969,11 +969,10 @@
                                             LNK-SYU-JIHI-TOTAL-TAX  +
                                             LNK-SYU-JIHI-TAX
       *
-           COMPUTE    LNK-SYU-RSI-TOTAL =   LNK-SYU-RSISHOSHIN-MONEY +  
-                                            LNK-SYU-RSISAISHIN-MONEY +  
-                                            LNK-SYU-RSISDO-MONEY     +  
-                                            LNK-SYU-RSIETC-MONEY     +  
-                                            LNK-SYU-RSI-TAX-SAI         
+      **   COMPUTE    LNK-SYU-RSI-TOTAL =   LNK-SYU-RSISHOSHIN-MONEY +  
+      **                                    LNK-SYU-RSISAISHIN-MONEY +  
+      **                                    LNK-SYU-RSISDO-MONEY     +  
+      **                                    LNK-SYU-RSIETC-MONEY        
            END-IF.
       *
       *    ¡ãÈóÏ«ºÒ»ØÄê¡Ê£±£°£°¡ó¡Ë¡ä                                   
@@ -990,8 +989,7 @@
                                             LNK-SYU-RSISHOSHIN-MONEY +  
                                             LNK-SYU-RSISAISHIN-MONEY +  
                                             LNK-SYU-RSISDO-MONEY     +  
-                                            LNK-SYU-RSIETC-MONEY     +  
-                                            LNK-SYU-RSI-TAX-SAI         
+                                            LNK-SYU-RSIETC-MONEY        
            END-IF.                                                      
       *
       *    ¼«ÇåÀÕÊÝ¸±¤Î¾ì¹ç¡¢Ï«ºÒ±ß·ú¤Æ¹àÌÜ¤Ø¤Î²Ã»»Î¨·×»»ÄÉ²Ã
@@ -1048,8 +1046,7 @@
                                             LNK-SYU-RSISHOSHIN-MONEY +  
                                             LNK-SYU-RSISAISHIN-MONEY +  
                                             LNK-SYU-RSISDO-MONEY     +  
-                                            LNK-SYU-RSIETC-MONEY     +  
-                                            LNK-SYU-RSI-TAX-SAI         
+                                            LNK-SYU-RSIETC-MONEY        
       *
                  COMPUTE    LNK-SYU-SKYMONEY-TAX-SAI  =
                             LNK-SYU-SKYMONEY-TAX-SAI  +
@@ -1069,12 +1066,12 @@
       *                   LNK-SYU-RSISDO-MONEY      *  WK-KSNRATE
                  IF   WK-TAXKBN   =   "2"                               
                    IF    WK-TAX1001-KBN  =  "1"
-                     COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-                              LNK-SYU-RSI-TAX-SAI       +               
-                            ((LNK-S01-SINDAN  *  0.05)  +  0.5)         
-                     COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-                              LNK-SYU-RSI-TAX-SAI       +               
-                            ((LNK-S01-MEISAI  *  0.05)  +  0.5)         
+      **             COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
+      **                      LNK-SYU-RSI-TAX-SAI       +               
+      **                    ((LNK-S01-SINDAN  *  0.05)  +  0.5)         
+      **             COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
+      **                      LNK-SYU-RSI-TAX-SAI       +               
+      **                    ((LNK-S01-MEISAI  *  0.05)  +  0.5)         
       *
                      COMPUTE  LNK-SYU-RSIETC-MONEY      =               
                               LNK-SYU-RSIETC-MONEY      +               
@@ -1083,12 +1080,12 @@
                               LNK-SYU-RSIETC-MONEY      +               
                             ((LNK-S01-MEISAI  *  0.05)  +  0.5)         
                    ELSE
-                     COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-                              LNK-SYU-RSI-TAX-SAI       +               
-                             (LNK-S01-SINDAN  *  0.05)                  
-                     COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-                              LNK-SYU-RSI-TAX-SAI       +               
-                             (LNK-S01-MEISAI  *  0.05)                  
+      **             COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
+      **                      LNK-SYU-RSI-TAX-SAI       +               
+      **                     (LNK-S01-SINDAN  *  0.05)                  
+      **             COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
+      **                      LNK-SYU-RSI-TAX-SAI       +               
+      **                     (LNK-S01-MEISAI  *  0.05)                  
       *
                      COMPUTE  LNK-SYU-RSIETC-MONEY      =               
                               LNK-SYU-RSIETC-MONEY      +               
@@ -1106,11 +1103,10 @@
                                             LNK-SYU-JIHI-TOTAL-TAX  +
                                             LNK-SYU-JIHI-TAX
       *
-           COMPUTE    LNK-SYU-RSI-TOTAL =   LNK-SYU-RSISHOSHIN-MONEY +  
-                                            LNK-SYU-RSISAISHIN-MONEY +  
-                                            LNK-SYU-RSISDO-MONEY     +  
-                                            LNK-SYU-RSIETC-MONEY     +  
-                                            LNK-SYU-RSI-TAX-SAI         
+      **   COMPUTE    LNK-SYU-RSI-TOTAL =   LNK-SYU-RSISHOSHIN-MONEY +  
+      **                                    LNK-SYU-RSISAISHIN-MONEY +  
+      **                                    LNK-SYU-RSISDO-MONEY     +  
+      **                                    LNK-SYU-RSIETC-MONEY        
            END-IF.
       *
       *    ´µ¼ÔÉéÃ´¶â¡¡ÆÈ¼«·×»»ÂÐ±þ
