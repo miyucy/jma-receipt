@@ -10275,7 +10275,7 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>SKYKBN_COMBO</name>
-      <x>624</x>
+      <x>680</x>
       <y>50</y>
       <width>130</width>
       <height>20</height>
@@ -10313,7 +10313,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SKYYM</name>
-      <x>320</x>
+      <x>420</x>
       <y>50</y>
       <width>60</width>
       <height>20</height>
@@ -10341,7 +10341,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>HENREIYM</name>
-      <x>472</x>
+      <x>550</x>
       <y>50</y>
       <width>60</width>
       <height>20</height>
@@ -10369,7 +10369,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label560</name>
-      <x>256</x>
+      <x>360</x>
       <y>52</y>
       <width>54</width>
       <height>18</height>
@@ -10385,7 +10385,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label570</name>
-      <x>50</x>
+      <x>10</x>
       <y>52</y>
       <width>54</width>
       <height>18</height>
@@ -10401,7 +10401,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label561</name>
-      <x>140</x>
+      <x>100</x>
       <y>52</y>
       <width>54</width>
       <height>18</height>
@@ -10417,7 +10417,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label561</name>
-      <x>408</x>
+      <x>490</x>
       <y>52</y>
       <width>54</width>
       <height>18</height>
@@ -10433,7 +10433,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label561</name>
-      <x>776</x>
+      <x>820</x>
       <y>52</y>
       <width>54</width>
       <height>18</height>
@@ -10449,7 +10449,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label558</name>
-      <x>560</x>
+      <x>620</x>
       <y>52</y>
       <width>54</width>
       <height>18</height>
@@ -10515,7 +10515,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>TEISEIKBNNM</name>
-      <x>835</x>
+      <x>880</x>
       <y>52</y>
       <width>120</width>
       <height>18</height>
@@ -10691,7 +10691,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>AGE</name>
-      <x>100</x>
+      <x>60</x>
       <y>50</y>
       <width>30</width>
       <height>20</height>
@@ -10715,7 +10715,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>KYURATE</name>
-      <x>200</x>
+      <x>160</x>
       <y>50</y>
       <width>30</width>
       <height>20</height>
@@ -10734,6 +10734,22 @@
       </signal>
       <editable>False</editable>
       <format>ZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>ZAITAKU</name>
+      <x>210</x>
+      <y>50</y>
+      <width>120</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
     
   </widget>

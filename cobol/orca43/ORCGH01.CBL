@@ -40,6 +40,7 @@
       *  01.02.01    NACL-藤原    02/10/7   県内県外区分・県番号・
       *                                     年齢・給付割合の追加
       *  01.02.02    NACL-藤原    02/10/10  レセプト種別の出力の修正
+      *                                     在宅寝たきり等の表示の追加       
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -978,7 +979,11 @@
            END-PERFORM
       *
            MOVE    RECE10-AGE      TO  SPA-H01GMN-AGE
-           MOVE    RECE10-KYURATE  TO  SPA-H01GMN-KYURATE             
+           MOVE    RECE10-KYURATE  TO  SPA-H01GMN-KYURATE         
+      *
+           IF      RECE10-ZAITAKU  =   "1"
+               MOVE    "在宅寝たきり等"    TO  SPA-H01GMN-ZAITAKU
+           END-IF             
       *
            MOVE    "1"                 TO  SPA-HENFLG
       *         
@@ -1143,7 +1148,7 @@
        41021-H99-HENSYU-EXT.
            EXIT.
       *
-      ******************************************************
+      *****************************************************************
       *    診療科入力処理
       *****************************************************************
        4103-SRYKA-CHK-SEC             SECTION.
@@ -1774,6 +1779,7 @@
       *
            MOVE    SPA-H01GMN-AGE     TO  H01-AGE
            MOVE    SPA-H01GMN-KYURATE TO  H01-KYURATE     
+           MOVE    SPA-H01GMN-ZAITAKU TO  H01-ZAITAKU 
       *
            PERFORM 5001-MAPCUR-SEC
       *

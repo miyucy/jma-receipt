@@ -101,3 +101,5 @@
                 04  H01-VALUE   PIC 9(3).
               03  H01-KYURATE.
                 04  H01-VALUE   PIC 9(3).
+              03  H01-ZAITAKU.
+                04  H01-VALUE   PIC X(14).
