@@ -47,6 +47,7 @@
       *                                     の基本料取得対応等
       *  01.00.14    NACL-門脇    04/04/23  選定入院時の他医療機関受診の
       *                                     算定修正
+      *  01.00.15    NACL-門脇    04/08/04  同一保険番号対応
       *****************************************************************
       *
       *
@@ -1064,15 +1065,19 @@
                IF     RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
       *
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(1)
                       MOVE    2          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(2)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(2)
                       MOVE    3          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(3)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(3)
                       MOVE    4          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(4)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(4)
                       MOVE    5          TO        KH-IDX
                  END-IF
       *
@@ -1188,15 +1193,19 @@
                IF     RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
       *
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(1)
                       MOVE    2          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(2)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(2)
                       MOVE    3          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(3)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(3)
                       MOVE    4          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(4)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(4)
                       MOVE    5          TO        KH-IDX
                  END-IF
       *
@@ -1543,15 +1552,19 @@
                IF     RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
       *
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(1)
                       MOVE    2          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(2)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(2)
                       MOVE    3          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(3)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(3)
                       MOVE    4          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(4)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(4)
                       MOVE    5          TO        KH-IDX
                  END-IF
       *
@@ -1584,15 +1597,19 @@
                IF     RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
       *
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(1)
                       MOVE    2          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(2)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(2)
                       MOVE    3          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(3)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(3)
                       MOVE    4          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(4)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(4)
                       MOVE    5          TO        KH-IDX
                  END-IF
       *
@@ -2282,15 +2299,19 @@
                IF     RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
       *
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(1)
                       MOVE    2          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(2)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(2)
                       MOVE    3          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(3)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(3)
                       MOVE    4          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(4)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(4)
                       MOVE    5          TO        KH-IDX
                  END-IF
       *
@@ -3041,15 +3062,19 @@
                MOVE       ZERO           TO        KH-IDX
                IF     RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(1)
                       MOVE    2          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(2)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(2)
                       MOVE    3          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(3)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(3)
                       MOVE    4          TO        KH-IDX
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(4)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(4)
                       MOVE    5          TO        KH-IDX
                  END-IF
       *

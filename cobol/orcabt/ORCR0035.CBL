@@ -35,6 +35,7 @@
       *  01.00.05    NACL-門脇    04.03.17  ＜愛媛県地方公費対応＞
       *                                     合計点数情報（ぶん点・公費分離
       *                                     区分編集用）を使用するよう修正
+      *  01.00.06    NACL-門脇    04.08.04  同一保険番号対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -342,10 +343,14 @@
            END-PERFORM          
       *
            MOVE       ZERO              TO   KH-IDX
-           IF  (RECE02-KOHNUMHC(HC-IDX 1) =  RECE02-KOHNUM(BUN-IDX)) OR
-               (RECE02-KOHNUMHC(HC-IDX 2) =  RECE02-KOHNUM(BUN-IDX)) OR
-               (RECE02-KOHNUMHC(HC-IDX 3) =  RECE02-KOHNUM(BUN-IDX)) OR
-               (RECE02-KOHNUMHC(HC-IDX 4) =  RECE02-KOHNUM(BUN-IDX))
+           IF ((RECE02-KOHNUMHC(HC-IDX 1) = RECE02-KOHNUM(BUN-IDX)) AND
+               (RECE02-KOHIDHC(HC-IDX 1)  = RECE02-KOHID(BUN-IDX) ))
+           OR ((RECE02-KOHNUMHC(HC-IDX 2) = RECE02-KOHNUM(BUN-IDX)) AND
+               (RECE02-KOHIDHC(HC-IDX 2)  = RECE02-KOHID(BUN-IDX) ))
+           OR ((RECE02-KOHNUMHC(HC-IDX 3) = RECE02-KOHNUM(BUN-IDX)) AND
+               (RECE02-KOHIDHC(HC-IDX 3)  = RECE02-KOHID(BUN-IDX) ))
+           OR ((RECE02-KOHNUMHC(HC-IDX 4) = RECE02-KOHNUM(BUN-IDX)) AND
+               (RECE02-KOHIDHC(HC-IDX 4)  = RECE02-KOHID(BUN-IDX) ))
                 MOVE    BUN-IDX     TO        KH-IDX
            END-IF
       **     DISPLAY   "RECE04-PTID     : " RECE04-PTID

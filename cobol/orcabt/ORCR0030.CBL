@@ -174,6 +174,7 @@
       *                                     ¤¬Ìµ¤¤¤Î¾ì¹ç¤ÎÅ¦Í×Íóµ­ºÜÂÐ±þ
       *  01.04.05   NACL-ÌçÏÆ     04/06/21  À¸³èÊÝ¸î¤ÎÉéÃ´¶â³Ûµ­ºÜ½¤Àµ
       *  01.04.06   NACL-ÌçÏÆ     04/07/28  ÅêÌôÎÁ¤Î´ïºàÅÀ¤Î½¸·×½¤Àµ
+      *  01.04.07   NACL-ÌçÏÆ     04/08/04  Æ±°ìÊÝ¸±ÈÖ¹æÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1330,15 +1331,19 @@
                MOVE   ZERO               TO        KH-IDX
                IF     RECE02-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
                  IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(1)
+                 AND  RECE02-KOHIDHC(HC-IDX IDX2)  =  RECE02-KOHID(1)
                       MOVE    2          TO        KH-IDX
                  END-IF
                  IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(2)
+                 AND  RECE02-KOHIDHC(HC-IDX IDX2)  =  RECE02-KOHID(2)
                       MOVE    3          TO        KH-IDX
                  END-IF
                  IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(3)
+                 AND  RECE02-KOHIDHC(HC-IDX IDX2)  =  RECE02-KOHID(3)
                       MOVE    4          TO        KH-IDX
                  END-IF
                  IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(4)
+                 AND  RECE02-KOHIDHC(HC-IDX IDX2)  =  RECE02-KOHID(4)
                       MOVE    5          TO        KH-IDX
                  END-IF
       *
@@ -2298,6 +2303,8 @@
                      IF    RECE02-KOHNUMHC(HC-IDX IDX2) NOT =  SPACE
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(1)
+                      AND  RECE02-KOHIDHC(HC-IDX IDX2)  =
+                                                   RECE02-KOHID(1)
                            MOVE      2       TO     BUN-IDX2
                            IF   FLG-SHOSAISIN      =    1               
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1     
@@ -2325,6 +2332,8 @@
                      IF    RECE02-KOHNUMHC(HC-IDX IDX2) NOT =  SPACE
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(2)
+                      AND  RECE02-KOHIDHC(HC-IDX IDX2)  =
+                                                   RECE02-KOHID(2)
                            MOVE      3       TO     BUN-IDX3
                            IF   FLG-SHOSAISIN      =    1               
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1     
@@ -2352,6 +2361,8 @@
                      IF    RECE02-KOHNUMHC(HC-IDX IDX2) NOT =  SPACE
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(3)
+                      AND  RECE02-KOHIDHC(HC-IDX IDX2)  =
+                                                   RECE02-KOHID(3)
                            MOVE      4       TO     BUN-IDX4
                            IF   FLG-SHOSAISIN      =    1               
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1     
@@ -2379,6 +2390,8 @@
                      IF    RECE02-KOHNUMHC(HC-IDX IDX2) NOT =  SPACE
                       IF   RECE02-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE02-KOHNUM(4)
+                      AND  RECE02-KOHIDHC(HC-IDX IDX2)  =
+                                                   RECE02-KOHID(4)
                            MOVE      5       TO     BUN-IDX5
                            IF   FLG-SHOSAISIN      =    1               
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1     
@@ -3967,6 +3980,7 @@
              UNTIL    IDX2      >       4
               IF      RECE02-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
                  IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(1)
+                 AND  RECE02-KOHIDHC(HC-IDX IDX2)  =  RECE02-KOHID(1)
                       MOVE    2          TO        KH-IDX
                       EVALUATE  TRUE
                           WHEN  RECE02-KOHNUM(1)  =  SYU-KOH-HKNNUM(1)
@@ -4009,6 +4023,7 @@
                       END-IF 
                  END-IF
                  IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(2)
+                 AND  RECE02-KOHIDHC(HC-IDX IDX2)  =  RECE02-KOHID(2)
                       MOVE    3          TO        KH-IDX
                       EVALUATE  TRUE
                           WHEN  RECE02-KOHNUM(2)  =  SYU-KOH-HKNNUM(1)
@@ -4051,6 +4066,7 @@
                       END-IF 
                  END-IF
                  IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(3)
+                 AND  RECE02-KOHIDHC(HC-IDX IDX2)  =  RECE02-KOHID(3)
                       MOVE    4          TO        KH-IDX
                       EVALUATE  TRUE
                           WHEN  RECE02-KOHNUM(3)  =  SYU-KOH-HKNNUM(1)
@@ -4093,6 +4109,7 @@
                       END-IF 
                  END-IF
                  IF   RECE02-KOHNUMHC(HC-IDX IDX2) =  RECE02-KOHNUM(4)
+                 AND  RECE02-KOHIDHC(HC-IDX IDX2)  =  RECE02-KOHID(4)
                       MOVE    5          TO        KH-IDX
                       EVALUATE  TRUE
                           WHEN  RECE02-KOHNUM(4)  =  SYU-KOH-HKNNUM(1)

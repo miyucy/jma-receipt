@@ -93,6 +93,7 @@
       *  01.01.10    NACL-ÌçÏÆ    04/06/21  À¸³èÊÝ¸î¤ÎÉéÃ´¶â³Ûµ­ºÜ½¤Àµ
       *  01.01.11    NACL-ÌçÏÆ    04/07/27  ¸¶Çú¿©»öÎÅÍÜµ­ºÜ½¤Àµ
       *  01.01.12    NACL-ÌçÏÆ    04/07/28  ÅêÌôÎÁ¤Î´ïºàÅÀ¤Î½¸·×½¤Àµ
+      *  01.01.13    NACL-ÌçÏÆ    04/08/04  Æ±°ìÊÝ¸±ÈÖ¹æÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4729,6 +4730,8 @@
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
                       IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE62-KOHNUM(1)
+                      AND  RECE62-KOHIDHC(HC-IDX IDX2)  =
+                                                   RECE62-KOHID(1)
                            MOVE      2       TO     BUN-IDX2
                       END-IF
                    END-PERFORM
@@ -4747,6 +4750,8 @@
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
                       IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE62-KOHNUM(2)
+                      AND  RECE62-KOHIDHC(HC-IDX IDX2)  =
+                                                   RECE62-KOHID(2)
                            MOVE      3       TO     BUN-IDX3
                       END-IF
                    END-PERFORM
@@ -4765,6 +4770,8 @@
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
                       IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE62-KOHNUM(3)
+                      AND  RECE62-KOHIDHC(HC-IDX IDX2)  =
+                                                   RECE62-KOHID(3)
                            MOVE      4       TO     BUN-IDX4
                       END-IF
                    END-PERFORM
@@ -4848,6 +4855,8 @@
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
                       IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE62-KOHNUM(1)
+                      AND  RECE62-KOHIDHC(HC-IDX IDX2)  =
+                                                   RECE62-KOHID(1)
                            MOVE      2       TO     BUN-IDX2
                       END-IF
                    END-PERFORM
@@ -4866,6 +4875,8 @@
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
                       IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE62-KOHNUM(2)
+                      AND  RECE62-KOHIDHC(HC-IDX IDX2)  =
+                                                   RECE62-KOHID(2)
                            MOVE      3       TO     BUN-IDX3
                       END-IF
                    END-PERFORM
@@ -4884,6 +4895,8 @@
                               (RECE62-KOHNUMHC(HC-IDX IDX2)  =  SPACE)
                       IF   RECE62-KOHNUMHC(HC-IDX IDX2) =
                                                    RECE62-KOHNUM(3)
+                      AND  RECE62-KOHIDHC(HC-IDX IDX2)  =
+                                                   RECE62-KOHID(3)
                            MOVE      4       TO     BUN-IDX4
                       END-IF
                    END-PERFORM
@@ -5841,6 +5854,7 @@
              UNTIL    IDX2      >       4
               IF      RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(1)
                       MOVE    2          TO        KH-IDX
                       EVALUATE  TRUE
                           WHEN  RECE62-KOHNUM(1)  =  SYU-KOH-HKNNUM(1)
@@ -5912,6 +5926,7 @@
                       END-IF 
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(2)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(2)
                       MOVE    3          TO        KH-IDX
                       EVALUATE  TRUE
                           WHEN  RECE62-KOHNUM(2)  =  SYU-KOH-HKNNUM(1)
@@ -5983,6 +5998,7 @@
                       END-IF 
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(3)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(3)
                       MOVE    4          TO        KH-IDX
                       EVALUATE  TRUE
                           WHEN  RECE62-KOHNUM(3)  =  SYU-KOH-HKNNUM(1)
@@ -6054,6 +6070,7 @@
                       END-IF 
                  END-IF
                  IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(4)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(4)
                       MOVE    5          TO        KH-IDX
                       EVALUATE  TRUE
                           WHEN  RECE62-KOHNUM(4)  =  SYU-KOH-HKNNUM(1)
