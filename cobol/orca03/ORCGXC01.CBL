@@ -23,11 +23,10 @@
       *  コンポーネント名  : 印刷プレビュー指定（ＸＣ０１）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  03/01/20    MCC−藤原　   新規作成
+      *  03/01/20    NACL−藤原    新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-XXXX    YY/MM/DD  
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -35,12 +34,12 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-006900*    入力ＰＳファイル
+      *    入力ＰＳファイル
            SELECT  PREVIEW-FILE    ASSIGN  
                                          "/etc/jma-receipt/preview.env"
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PREVIEW.
-006900*    出力ＰＳファイル
+      *    出力ＰＳファイル
       *    SELECT  OTPREVIEW-FILE    ASSIGN  OTPREVIEW
       *                            ORGANIZATION    IS  LINE SEQUENTIAL
       *                            FILE    STATUS  IS  STS-OTPREVIEW.
@@ -48,11 +47,11 @@
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-006900*    入力ＰＳファイル
+      *    入力ＰＳファイル
        FD  PREVIEW-FILE.
        01  PREVIEW-RECORD. 
            03  PREVIEW-ENV      PIC X(200). 
-006900*    出力ＰＳファイル
+      *    出力ＰＳファイル
       *FD  OTPREVIEW-FILE.
       *01  OTPREVIEW-RECORD. 
       *    03  OTPREVIEW-FIL    PIC X(1000). 
@@ -121,10 +120,11 @@
                            11  SPA-GMN-EDPAGE      PIC 9(05).
       *                 
                05  SPA-NAI-AREA.
-                   07  SPA-NAI-SELNUM              PIC 9(03).      
-                   07  SPA-NAI-MEMO-FLG            PIC 9(01).      
                    07  SPA-NAI-ENV-FLG             PIC 9(01).      
-                   07  SPA-NAI-ENV                 PIC X(200).      
+                   07  SPA-NAI-ENV                 PIC X(200).
+                   07  SPA-NAI-BODY.      
+                       09  SPA-NAI-SELNUM          PIC 9(03).      
+                       09  SPA-NAI-MEMO-FLG        PIC 9(01).      
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-OCC             OCCURS  100.
                            11  SPA-NAI-TBL-KEY     PIC X(08).
@@ -208,6 +208,10 @@
            03  WRK-MOTOPG          PIC X(08).
            03  WRK-SELNUM          PIC 9(03). 
            03  WRK-STR             PIC 9(05).
+           03  WRK-MCP-PATH.
+               04  WRK-MCP-BLOCKS  PIC S9(9)   BINARY.
+               04  WRK-MCP-RNAME   PIC S9(9)   BINARY.
+               04  WRK-MCP-PNAME   PIC S9(9)   BINARY.
       *
            03  WRK-ZZ              PIC ZZ9.
       *
@@ -493,8 +497,8 @@
            END-EVALUATE
       *
       *    プレビューDB検索処理
-           PERFORM 2011-PRVKANRI-HEN-SEC
            MOVE    1                      TO  SPA-GMN-PAGE
+           PERFORM 2011-PRVKANRI-HEN-SEC
            MOVE    1                      TO  SPA-GMN-CUR
       *
            .
@@ -546,6 +550,7 @@
       *     前行
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 480-BEFORELINE-SEC
+      *     次頁
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 440-ATOGMN-SEC
       *     次行
@@ -707,7 +712,7 @@
            PERFORM 460-FILE-HENSYU-SEC
            MOVE    SPA-NAI-SELNUM      TO  IDX
            PERFORM 2013-PREVIEW-CHECK-SEC
-           MOVE    SPA-NAI-FILENAME (IDX)   TO  SPA-GMN-FILENAME 
+           MOVE    SPA-NAI-FILENAME (IDX)   TO  SPA-GMN-FILENAME
       *
            IF      SPA-NAI-UPDFLG(IDX)      =   1
                    MOVE    SPA-NAI-MEMO (IDY)
@@ -970,8 +975,16 @@
            END-IF
       *
            ADD     1                   TO  SPA-GMN-PAGE
+      *
+           INITIALIZE                  SPA-GMN-TBL
+                                       SPA-GMN-BODY
+                                       SPA-GMN-FILENAME
+           INITIALIZE                  SPA-NAI-BODY
+                                       SPA-NAI-TBL
+           MOVE    ZERO                TO  SPA-GMN-MAX
+           MOVE    ZERO                TO  IDX
       *    検索処理
-           PERFORM 2011-PREVIEW-HEN-SEC
+           PERFORM 2011-PRVKANRI-HEN-SEC
       *
            .
        440-ATOGMN-EXT.
@@ -1334,16 +1347,27 @@
            INITIALIZE                  PRVKANRI-REC
            MOVE    SPA-PRTKANRI-TBL-KEY
                                        TO  PRVKANRI-TBL-KEY
-           MOVE    LNK-XC01-RENNUM     TO  PRVKANRI-RENNUM
            MOVE    LNK-XC01-TBL-GROUP  TO  PRVKANRI-TBL-GROUP
            MOVE    LNK-XC01-SHORI-RENNUM
                                        TO  PRVKANRI-SHORI-RENNUM
+           MOVE    LNK-XC01-RENNUM     TO  PRVKANRI-RENNUM
            MOVE    LNK-XC01-ST-PAGE    TO  PRVKANRIXX-STPAGE
            MOVE    LNK-XC01-ED-PAGE    TO  PRVKANRIXX-EDPAGE
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY3
-                                       TO  MCP-PATH
+           IF      LNK-XC01-SHORI-RENNUM   NOT =   ZERO
+               MOVE    PATH-TBL-PRVKANRI-KEY3
+                                           TO  WRK-MCP-PATH
+           ELSE
+               IF     LNK-XC01-RENNUM    NOT =   ZERO
+                   MOVE    PATH-TBL-PRVKANRI-KEY7
+                                               TO  WRK-MCP-PATH
+               ELSE
+                   MOVE    PATH-TBL-PRVKANRI-KEY6
+                                               TO  WRK-MCP-PATH
+               END-IF
+           END-IF
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
            CALL    "MCPSUB"            USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -1376,8 +1400,7 @@
            END-PERFORM
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY3
-                                       TO  MCP-PATH
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
            CALL    "MCPSUB"            USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -1388,11 +1411,16 @@
       *    END-IF
       *
            IF     (IDX             >   100  )  AND
-                  (FLG-PREVIEW       =   ZERO )
+                  (FLG-PRVKANRI     =   ZERO )
                MOVE    1               TO  SPA-GMN-NEXT
            ELSE
                MOVE    ZERO            TO  SPA-GMN-NEXT
            END-IF
+      *
+           MOVE    SPA-NAI-FILENAME (1)
+                                       TO  SPA-GMN-FILENAME
+           MOVE    1                   TO  SPA-GMN-SELNUM
+                                           SPA-NAI-SELNUM
       *
            .
        2011-PRVKANRI-HEN-EXT.
@@ -1505,8 +1533,6 @@
                END-IF
            END-IF
       *
-      *  10        20        30        40        50        60
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
       *    未処理のときプレビューＤＢより編集
            IF      IDX                 <=  100
              IF      SPA-NAI-MAKEOK-FLG (IDX)    =   ZERO
@@ -1529,8 +1555,7 @@
       *    プレビューpsファイル編集処理
       *****************************************************************
        20122-PSFILE-EXIST-SEC      SECTION.
-      *  10        20        30        40        50        60
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
+      *
       *    MOVE   PRVKANRI-FILENAME    TO  WRK-PSFILE-AREA
       *
            MOVE   SPA-NAI-TBL-KEY (IDX)    TO  WRK-PSFILE-TBL-KEY
@@ -1540,8 +1565,6 @@
                                            TO  WRK-PSFILE-SRENNUM
            MOVE   SPA-NAI-PAGE (IDX)       TO  WRK-PSFILE-PAGE
       *
-      *  10        20        30        40        50        60
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
            MOVE    SPACE               TO  ORCF-FILE-NAME
            STRING  SPA-NAI-ENV         DELIMITED  BY  SPACE
                    WRK-PSFILE-TBL-KEY  DELIMITED  BY  SPACE
@@ -1560,7 +1583,6 @@
                                         SPA-GMN-TPRFLG     (IDX)
                    GO        TO  20122-PSFILE-EXIST-EXT
            END-IF
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
            MOVE   SPACE                TO  ORCF-FILE-NAME
            STRING  "/var/tmp/" DELIMITED  BY  SPACE
                   WRK-PSFILE-TBL-KEY   DELIMITED  BY  SPACE
@@ -1659,7 +1681,7 @@
                                DISPLAY "file del start "
                                              IF-FILENAME
                            ELSE
-                               DISPLAY "take preview insert err "
+                               DISPLAY "preview insert err "
                                    PRVKANRI-PAGE
                            END-IF
                       END-IF
@@ -2051,8 +2073,6 @@
                                            XC01-MEMO-STATE
            END-EVALUATE
       *
-      *  10        20        30        40        50        60
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
            MOVE    SPA-GMN-TITLE       TO  XC01-TITLE
            MOVE    "blue"              TO  XC01-TITLE-STYLE
            MOVE    SPA-GMN-ERRMSG      TO  XC01-ERRMSG
@@ -2061,12 +2081,12 @@
       *     
            MOVE    SPA-GMN-SELNUM      TO  XC01-SELNUM
            MOVE    SPA-GMN-FILENAME    TO  XC01-PSAREA
-           IF      XC01-PSAREA         =   SPACE
-                   MOVE  SPA-NAI-FILENAME(1)
-                                       TO  XC01-PSAREA
-                   MOVE    "T"         TO  XC01-SELECT (1)
-      *            MOVE  1             TO  SPA-NAI-SELNUM
-           END-IF
+      *****IF      XC01-PSAREA         =   SPACE
+      *            MOVE  SPA-NAI-FILENAME(1)
+      *                                TO  XC01-PSAREA
+      *            MOVE    "T"         TO  XC01-SELECT (1)
+      **           MOVE  1             TO  SPA-NAI-SELNUM
+      *****END-IF
       *
            MOVE    SPACE               TO  WRK-TITLE
            MOVE    SPACE               TO  WRK-PTNUM
@@ -2333,8 +2353,7 @@
        900-PRVKANRI-FET-SEC            SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-           MOVE    PATH-TBL-PRVKANRI-KEY3
-                                       TO  MCP-PATH
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
            CALL    "MCPSUB"            USING
                                        MCPAREA
                                        MCPDATA-REC
