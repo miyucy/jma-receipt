@@ -847,10 +847,10 @@
            PERFORM             UNTIL   FLG-SYSKANRI   =   1
                                OR      IDX            >=  100
                MOVE    MCPDATA-REC        TO  SYSKANRI-REC
-               IF (    SYS-KBNCD (1:1)        =   "*" OR  "1" 
-                   AND SYS-KANRICD        NOT =   "3004"      )      
-               OR (    SYS-KBNCD (1:4)        =   "0001" 
-                   AND SYS-KANRICD            =   "3004"      )      
+               IF (   (SYS-KBNCD (1:1)        =   "*" OR  "1" )
+                  AND (SYS-KANRICD        NOT =   "3004"      ))      
+               OR (   (SYS-KBNCD (1:4)        =   "0001"  )
+                  AND (SYS-KANRICD            =   "3004"      ))      
                    ADD     1              TO  IDX
                    MOVE    IDX            TO  SPA-GMN-TBANGO    (IDX)
                    MOVE    SYS-STYUKYMD   TO  SPA-NAI-TSTYUKYMD (IDX)

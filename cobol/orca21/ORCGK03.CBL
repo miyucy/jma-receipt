@@ -3629,9 +3629,9 @@
                       (ACCT-MEISAISU        =   WRK-MEISAISU   )
       *            数量計をゼロで作成していたものがあったので、
       *            ゼロを１で判定する
-                 IF     (ACCT-SURYOUTOTAL     =   WRK-SRYSURYOKEI)  OR
-                        (WRK-SRYSURYOKEI      =   1     AND
-                         ACCT-SURYOUTOTAL     =   ZERO OR 1 )
+                 IF     ( ACCT-SURYOUTOTAL     =   WRK-SRYSURYOKEI)  OR
+                        ((WRK-SRYSURYOKEI      =   1    ) AND
+                         (ACCT-SURYOUTOTAL     =   ZERO  OR  1 ))
                    MOVE    ACCT-ZAINUM      TO  WRK-H-ZAINUM
       *            診療行為内容の比較処理
                    PERFORM 45012-SRYACCT-CHK-SEC

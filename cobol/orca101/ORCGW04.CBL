@@ -871,8 +871,8 @@
       *****************************************************************
        4901-TAG1-CHK-SEC           SECTION.
       *
-           IF      SPA-GMN-JIYKSIKETA       >   ZERO     AND
-                   SPA-GMN-JIYKSIKBN        =   "0" OR  "1" OR  "2"
+           IF     (SPA-GMN-JIYKSIKETA       >   ZERO   )  AND
+                  (SPA-GMN-JIYKSIKBN        =   "0" OR  "1" OR  "2")
                CONTINUE
            ELSE        
                MOVE    "0001"               TO  SPA-ERRCD
