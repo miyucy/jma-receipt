@@ -4,6 +4,7 @@ COBOL = @COBC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 CC = @CC@
+HOSP = @HOSP@
 
 COBCOPYS = -I$(srcdir)/../../cobol/copy
 

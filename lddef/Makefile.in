@@ -4,6 +4,8 @@ include $(top_srcdir)/Makefile.directories
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 
+HOSP = @HOSP@
+
 CPP = @CPP@
 # dummy flags
 LDFILEFLAGS = -x c
@@ -23,11 +25,6 @@ LDFILE_sources = \
 	orca22.ld.in \
 	orca23.ld.in \
 	orca24.ld.in \
-	orca31.ld.in \
-	orca32.ld.in \
-	orca33.ld.in \
-	orca34.ld.in \
-	orca36.ld.in \
 	orca41.ld.in \
 	orca42.ld.in \
 	orca43.ld.in \
@@ -43,6 +40,17 @@ LDFILE_sources = \
 	orca105.ld.in \
 	orca106.ld.in \
 	orca107.ld.in
+
+hosp_LDFILE_sources = \
+	orca31.ld.in \
+	orca32.ld.in \
+	orca33.ld.in \
+	orca34.ld.in \
+	orca36.ld.in 
+
+ifeq ($(HOSP), hosp)
+  LDFILE_sources += $(hosp_LDFILE_sources)
+endif
 
 BDFILE_sources = \
 	orcabt.bd.in 

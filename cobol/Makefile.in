@@ -19,11 +19,6 @@ SUBDIRS = \
 	orca22 \
 	orca23 \
 	orca24 \
-	orca31 \
-	orca32 \
-	orca33 \
-	orca34 \
-	orca36 \
 	orca41 \
 	orca42 \
 	orca43 \
@@ -41,6 +36,17 @@ SUBDIRS = \
 	orca107 \
 	orcabt \
 	claim
+
+hosp_SUBDIRS = \
+	orca31 \
+	orca32 \
+	orca33 \
+	orca34 \
+	orca36 
+
+ifeq ($(HOSP), hosp)
+  SUBDIRS += $(hosp_SUBDIRS)
+endif
 
 COPYDIRS = copy
 
