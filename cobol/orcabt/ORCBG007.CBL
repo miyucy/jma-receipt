@@ -1376,11 +1376,13 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    LOW-VALUE           TO  MCP-PATH
            MOVE    "DBOPEN"            TO  MCP-FUNC.
            CALL    "MCPSUB"            USING
                                        MCPAREA
                                        MCPDATA-REC
       *
+           MOVE    LOW-VALUE           TO  MCP-PATH
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "MCPSUB"            USING
                                        MCPAREA
@@ -1394,11 +1396,13 @@
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
+           MOVE    LOW-VALUE           TO  MCP-PATH
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
            CALL    "MCPSUB"            USING
                                        MCPAREA
                                        MCPDATA-REC
       *
+           MOVE    LOW-VALUE           TO  MCP-PATH
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
            CALL    "MCPSUB"            USING
                                        MCPAREA
@@ -1411,6 +1415,7 @@
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
+           MOVE    LOW-VALUE           TO  MCP-PATH
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
            CALL    "MCPSUB"            USING
                                        MCPAREA
@@ -1425,6 +1430,7 @@
       *****************************************************************
        900-DBSTART-SEC                SECTION.
       *
+           MOVE    LOW-VALUE           TO  MCP-PATH
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "MCPSUB"            USING
                                        MCPAREA
