@@ -55,6 +55,7 @@
       *  03.00.07    NACL¡ÝÂ¿¡¹Ç¼ 02/10/31  ³°Íè´ÉÍý²Ã»»¼«Æ°»»Äê¤Ê¤·¤ÎÄÉ²Ã
       *  03.00.08    NACL-Â¿¡¹Ç¼  02/11/11  £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁÄÉ²Ã
       *  03.00.09    NACL-Â¿¡¹Ç¼  02/11/20  ¼«ÇåÀÕ´ïºàÄÉ²Ã
+      *  03.00.10    NACL-Â¿¡¹Ç¼  02/11/28  ÃæÅÓ½ªÎ»ºÆÉ½¼¨½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -178,7 +179,7 @@
       *
            03  FLG-SYOSIN          PIC 9(01).
       *    ¿Ç»¡ÎÁ»»ÄêºÑ¤ß
-           03  FLG-SINSATU          PIC 9(01).
+      **** 03  FLG-SINSATU          PIC 9(01).
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê»»Äê
            03  FLG-SYONIKA         PIC 9(01).
       *    »»ÄêÍúÎòÍ­Ìµ
@@ -2565,7 +2566,7 @@
            END-IF
       *
       *    ¿Ç»¡ÎÁÊÔ½¸¤Ê¤·
-           MOVE    ZERO                TO  FLG-SINSATU
+      *****MOVE    ZERO                TO  FLG-SINSATU
       *    Æþ±¡Ãæ¤Î»þ¡¢Æþ±¡³«»ÏÆü¤Î»þ¤Î¤ß½é¿ÇÎÁ¤Î¼«Æ°È¯À¸¤ò¹Ô¤¦
            PERFORM 3109-NYUIN-CHK-SEC
       *
@@ -2590,10 +2591,10 @@
                    MOVE    SPACE               TO  SPA-ERRCD
                    MOVE    SPACE               TO  SPA-KIDCD
                END-IF
-               IF     (LNK-WKSRY-TERMID (01)   =   "WKSRYACT")
-               AND    (FLG-NYUIN       =   ZERO  )
-                   PERFORM 3104-WKSRYACT-HEN-SEC
-               END-IF
+      *******  IF     (LNK-WKSRY-TERMID (01)   =   "WKSRYACT")
+      *        AND    (FLG-NYUIN       =   ZERO  )
+      *            PERFORM 3104-WKSRYACT-HEN-SEC
+      ******   END-IF
            ELSE
                MOVE    1               TO  FLG-SYOSIN
                IF      FLG-NYUIN       =   ZERO
@@ -2623,6 +2624,11 @@
                                                SPA-K02
                    MOVE    SPA-WORK            TO  SPA-K01KYOUTU
                END-IF
+      *
+               IF     (LNK-WKSRY-TERMID (01)   =   "WKSRYACT")
+               AND    (FLG-NYUIN       =   ZERO  )
+                   PERFORM 3104-WKSRYACT-HEN-SEC
+               END-IF
            END-IF
       *
       *    ÆþÎÏ¥³¡¼¥É¡¦Ì¾¾Î¥Á¥§¥Ã¥¯½èÍý
@@ -2643,6 +2649,20 @@
       *****************************************************************
        3104-WKSRYACT-HEN-SEC           SECTION.
       *
+      *    MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *    INITIALIZE                      ORCSC10SAREA
+      *    MOVE    "W"                 TO  LNK-SC10S-SYORI
+      *    CALL    "ORCSC10S"          USING
+      *                                ORCSC10SAREA
+      *                                SPA-AREA
+      *                                SPA-SCR-REC
+      *                                SPA-K02
+      *    MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *    MOVE    LNK-SC10S-IDX2      TO  IDX2
+      *    MOVE    ZERO                TO  FLG-SYOSIN
+      *    ¿Ç»¡ÎÁÊÔ½¸¤Ê¤·(1:¿Ç»¡ÎÁ»»ÄêºÑ¤ß¡Ë
+      *****MOVE    LNK-SC10S-SINSATU   TO  FLG-SINSATU
+      *    ¿Ç»¡ÎÁ¤Î¤ßÊÑ´¹¤¹¤ë
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            INITIALIZE                      ORCSC10SAREA
            MOVE    "W"                 TO  LNK-SC10S-SYORI
@@ -2652,10 +2672,6 @@
                                        SPA-SCR-REC
                                        SPA-K02
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-           MOVE    LNK-SC10S-IDX2      TO  IDX2
-           MOVE    ZERO                TO  FLG-SYOSIN
-      *    ¿Ç»¡ÎÁÊÔ½¸¤Ê¤·(1:¿Ç»¡ÎÁ»»ÄêºÑ¤ß¡Ë
-           MOVE    LNK-SC10S-SINSATU   TO  FLG-SINSATU
       *
            .
        3104-WKSRYACT-HEN-EXT.
@@ -2673,8 +2689,8 @@
                        UNTIL     IDX   >   LNK-WKSRYACT-MAX
       *
       *        ¥ï¡¼¥¯¿ÇÎÅ¹Ô°Ù¤«¤é¤Î»þ¤Ï¡¢ÄûÀµ¤ÈÆ±ÍÍ¤ËÊÔ½¸¤¹¤ë
-               IF     (LNK-WKSRY-TERMID (IDX)    =   "WKSRYACT" ) AND
-                      (FLG-SINSATU         =   ZERO             )
+               IF     (LNK-WKSRY-TERMID (IDX)    =   "WKSRYACT" )
+      **********  AND (FLG-SINSATU         =   ZERO             )
                    MOVE    1               TO  WRK-SYORIFLG
                ELSE
                    MOVE    SPA-SYORIFLG    TO  WRK-SYORIFLG
@@ -2879,19 +2895,19 @@
        31011-SPA-HEN-SEC              SECTION.
       *
       *    ´û¤Ë¿Ç»¡ÎÁ¤ò»»ÄêºÑ¤ß¤Î»þ¡¢ÂÐ¾Ý¤Î¿Ç»¡ÎÁ¤ò¤Ï¤º¤¹
-           IF      FLG-SINSATU         =   1
-               IF      LNK-WKSRY-SRYKBN (IDX)  =   "11"  OR "12" OR
-                                                   "13"  OR  "14"
-                   IF      LNK-WKSRY-ZAINUM (IDX)
-                                               =   LNK-SC10S-ZAINUM (1)
-                                               OR  LNK-SC10S-ZAINUM (2)
-                                               OR  LNK-SC10S-ZAINUM (3)
-                                               OR  LNK-SC10S-ZAINUM (4)
-                                               OR  LNK-SC10S-ZAINUM (5)
-                       GO      TO      31011-SPA-HEN-EXT
-                   END-IF
-               END-IF
-           END-IF
+      *    IF      FLG-SINSATU         =   1
+      *        IF      LNK-WKSRY-SRYKBN (IDX)  =   "11"  OR "12" OR
+      *                                            "13"  OR  "14"
+      *            IF      LNK-WKSRY-ZAINUM (IDX)
+      *                                        =   LNK-SC10S-ZAINUM (1)
+      *                                        OR  LNK-SC10S-ZAINUM (2)
+      *                                        OR  LNK-SC10S-ZAINUM (3)
+      *                                        OR  LNK-SC10S-ZAINUM (4)
+      *                                        OR  LNK-SC10S-ZAINUM (5)
+      *                GO      TO      31011-SPA-HEN-EXT
+      **           END-IF
+      *        END-IF
+      *****END-IF
       *
       *    ¿ÇÎÅ¼ïÊÌ¥»¥Ã¥È
            IF     (IDXS                    =   ZERO)  AND
@@ -9321,6 +9337,11 @@
        41001-KIHON-CHK-SEC             SECTION.
       *
       *    ´µ¼Ô¥Þ¥¹¥¿¡¼Â¸ºß¥Á¥§¥Ã¥¯
+           IF      SPA-PTNUM           =   SPACE
+               MOVE    "1003"              TO  SPA-ERRCD
+               MOVE    00                  TO  SPA-GMN-CUR
+               GO      TO      41001-KIHON-CHK-EXT
+           END-IF
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPA-PTID            TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC

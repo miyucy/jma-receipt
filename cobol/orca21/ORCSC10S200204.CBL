@@ -34,6 +34,7 @@
       * 01.00.03     MCC-Â¿¡¹Ç¼   02/04/**  Ï«ºÒÍÑÄÉ²Ã
       * 01.00.04     NACL-Â¿¡¹Ç¼  02/08/06  ¥¢¥Õ¥¿¡¼¥±¥¢¤Î»þ¼«Æ°»»ÄêÊÑ¹¹
       * 01.00.05     NACL-Â¿¡¹Ç¼  02/11/11  £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁÄÉ²Ã
+      * 01.00.06     NACL-Â¿¡¹Ç¼  02/11/28  ÃæÅÓ½ªÎ»ºÆÉ½¼¨½¤Àµ
       *****************************************************************
       *
       *
@@ -642,7 +643,8 @@
                    PERFORM 900-SYOSIN-CHK-SEC
       *        ÃæÅÓ½ªÎ»ÁªÂò»þ¥Á¥§¥Ã¥¯½èÍý
                WHEN    "W"
-                   PERFORM 1000-WKSRYACT-HEN-SEC
+      *******      PERFORM 1000-WKSRYACT-HEN-SEC
+                   PERFORM 1010-SINSATU-HEN-SEC
       *        ¿Ç»¡ÎÁ¤Î¤ß¤ÎÊÑ¹¹½èÍý
                WHEN    "S"
                    PERFORM 1010-SINSATU-HEN-SEC
@@ -3780,229 +3782,251 @@
       *****************************************************************
       *    ÃæÅÓ½ªÎ»ÁªÂò»þÊÔ½¸½èÍý
       *****************************************************************
-       1000-WKSRYACT-HEN-SEC           SECTION.
+      *1000-WKSRYACT-HEN-SEC           SECTION.
       *
-           MOVE    ZERO                TO  FLG-JIKAN
+      *    MOVE    ZERO                TO  FLG-JIKAN
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID2
-           OPEN    INPUT              PARA-FILE
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID2
+      *    OPEN    INPUT              PARA-FILE
       *
-           IF      STS-PARA           =  ZERO
-               PERFORM 980-PARA-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-PARA 
-           END-IF
-           MOVE    ZERO                TO  FLG-SINSATU-OK
-           MOVE    ZERO                TO  LNK-SC10S-ZAINUM-AREA
-           MOVE    ZERO                TO  IDX-WK
-           PERFORM
-               UNTIL   FLG-PARA            =   1
-               IF      PARA-FILEMEI        =   "WKSRYACT"
-                   MOVE    PARA-DATA-REC       TO  WKSRYACT-REC
-                   PERFORM 10001-SRYCD-CHK-SEC
-               END-IF
+      *    IF      STS-PARA           =  ZERO
+      *        PERFORM 980-PARA-READ-SEC
+      *    ELSE
+      *        MOVE    1               TO  FLG-PARA 
+      *    END-IF
+      *    MOVE    ZERO                TO  FLG-SINSATU-OK
+      *    MOVE    ZERO                TO  LNK-SC10S-ZAINUM-AREA
+      *    MOVE    ZERO                TO  IDX-WK
+      *    PERFORM
+      *        UNTIL   FLG-PARA            =   1
+      *        IF      PARA-FILEMEI        =   "WKSRYACT"
+      *            MOVE    PARA-DATA-REC       TO  WKSRYACT-REC
+      *            PERFORM 10001-SRYCD-CHK-SEC
+      *        END-IF
       *
-               PERFORM 980-PARA-READ-SEC
-           END-PERFORM
+      *        PERFORM 980-PARA-READ-SEC
+      *    END-PERFORM
       *
-           CLOSE                       PARA-FILE
+      *    CLOSE                       PARA-FILE
       *
-           PERFORM 100-SANTEI-CHK-SEC
+      *    PERFORM 100-SANTEI-CHK-SEC
       *    ¿Ç»¡ÎÁ¼«Æ°È¯À¸¤¢¤ê
-           IF      FLG-SINSATU-OK      =   1
-               PERFORM 200-SYOSIN-SET-SEC
-               IF      FLG-JIKAN       NOT =   ZERO
-                   MOVE    SPA-GMN-INPUTCD(01) TO  WRK-INPUTCD
-                   MOVE    SPACE               TO  SPA-GMN-INPUTCD(01)
-                   MOVE    FLG-JIKAN           TO  SPA-GMN-INPUTCD(01)
-                                                                (1:1)
-                   MOVE    WRK-INPUTCD         TO  SPA-GMN-INPUTCD(01)
-                                                                (3:1)
-               END-IF
+      *    IF      FLG-SINSATU-OK      =   1
+      *        PERFORM 200-SYOSIN-SET-SEC
+      *        IF      FLG-JIKAN       NOT =   ZERO
+      *            MOVE    SPA-GMN-INPUTCD(01) TO  WRK-INPUTCD
+      *            MOVE    SPACE               TO  SPA-GMN-INPUTCD(01)
+      *            MOVE    FLG-JIKAN           TO  SPA-GMN-INPUTCD(01)
+      *                                                         (1:1)
+      *            MOVE    WRK-INPUTCD         TO  SPA-GMN-INPUTCD(01)
+      *                                                         (3:1)
+      *        END-IF
       *        ¿Ç»¡ÎÁ»»ÄêºÑ¤ß
-               MOVE    1               TO  LNK-SC10S-SINSATU
-           END-IF
+      *        MOVE    1               TO  LNK-SC10S-SINSATU
+      *    END-IF
       *
-           .
-       1000-WKSRYACT-HEN-EXT.
-           EXIT.
+      *    .
+      *1000-WKSRYACT-HEN-EXT.
+      *    EXIT.
       *****************************************************************
       *    ¿ÇÎÅ¥³¡¼¥É¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
-       10001-SRYCD-CHK-SEC             SECTION.
+      *10001-SRYCD-CHK-SEC             SECTION.
       *
-           MOVE    ZERO                TO  FLG-CHK
-           MOVE    ZERO                TO  FLG-ARI
-           MOVE    ZERO                TO  FLG-DUMMY
+      *    MOVE    ZERO                TO  FLG-CHK
+      *    MOVE    ZERO                TO  FLG-ARI
+      *    MOVE    ZERO                TO  FLG-DUMMY
       *    ¿ÇÎÅ¶èÊ¬
-           IF      WKSRY-SRYKBN        =   "11"  OR  "12"  OR
-                                           "13"  OR  "14"
-               CONTINUE
-           ELSE
-               GO      TO      10001-SRYCD-CHK-EXT
-           END-IF
+      *    IF      WKSRY-SRYKBN        =   "11"  OR  "12"  OR
+      *                                    "13"  OR  "14"
+      *        CONTINUE
+      *    ELSE
+      *        GO      TO      10001-SRYCD-CHK-EXT
+      *    END-IF
       *
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY         >   5   )   OR
-                              (FLG-ARI     =   1   )   OR
-                              (WKSRY-SRYCD (IDY)   =   SPACE )
+      *    PERFORM VARYING     IDY     FROM    1   BY  1
+      *            UNTIL      (IDY         >   5   )   OR
+      *                       (FLG-ARI     =   1   )   OR
+      *                       (WKSRY-SRYCD (IDY)   =   SPACE )
       *
       *        ¿Ç»¡ÎÁ¸¡º÷
-               SET     TBL-IDX             TO  1
-               SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
-                   AT   END
-                       MOVE    ZERO                TO  FLG-ARI
-                       MOVE    SPACE               TO  WRK-KBN
-                       MOVE    SPACE               TO  WRK-KBN2
-                   WHEN   WKSRY-SRYCD (IDY)    =   TBL-SRYCD (TBL-IDX)
-                       MOVE    1                   TO  FLG-ARI
-                       MOVE    TBL-KBN  (TBL-IDX)  TO  WRK-KBN
-                       MOVE    TBL-KBN2 (TBL-IDX)  TO  WRK-KBN2
-               END-SEARCH
+      *        SET     TBL-IDX             TO  1
+      *        SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
+      *            AT   END
+      *                MOVE    ZERO                TO  FLG-ARI
+      *                MOVE    SPACE               TO  WRK-KBN
+      *                MOVE    SPACE               TO  WRK-KBN2
+      *            WHEN   WKSRY-SRYCD (IDY)    =   TBL-SRYCD (TBL-IDX)
+      *                MOVE    1                   TO  FLG-ARI
+      *                MOVE    TBL-KBN  (TBL-IDX)  TO  WRK-KBN
+      *                MOVE    TBL-KBN2 (TBL-IDX)  TO  WRK-KBN2
+      *        END-SEARCH
       *
-               IF      FLG-ARI         =   ZERO
+      *        IF      FLG-ARI         =   ZERO
       *            Ï«ºÒ¥³¡¼¥É¥Á¥§¥Ã¥¯¡Ê½é¿Ç¡Ë
-                   SET     TBL-RSI              TO  1
-                   SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
-                       AT  END
-                           MOVE    ZERO               TO  FLG-ARI
-                           MOVE    SPACE              TO  WRK-KBN
-                       WHEN    WKSRY-SRYCD (IDY)
-                                              =   TBLR-SRYCD (TBL-RSI)
-                           MOVE    1                  TO  FLG-ARI
-                           MOVE    TBLR-KBN (TBL-RSI) TO  WRK-KBN
-                   END-SEARCH
-                   IF      WRK-KBN             =   "S"  OR  "F"
-                       MOVE    1               TO  FLG-ARI
-                   ELSE
-                       MOVE    ZERO            TO  FLG-ARI
-                   END-IF
-               END-IF
+      *            SET     TBL-RSI              TO  1
+      *            SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
+      *                AT  END
+      *                    MOVE    ZERO               TO  FLG-ARI
+      *                    MOVE    SPACE              TO  WRK-KBN
+      *                WHEN    WKSRY-SRYCD (IDY)
+      *                                       =   TBLR-SRYCD (TBL-RSI)
+      *                    MOVE    1                  TO  FLG-ARI
+      *                    MOVE    TBLR-KBN (TBL-RSI) TO  WRK-KBN
+      *            END-SEARCH
+      *            IF      WRK-KBN             =   "S"  OR  "F"
+      *                MOVE    1               TO  FLG-ARI
+      *            ELSE
+      *                MOVE    ZERO            TO  FLG-ARI
+      *            END-IF
+      *        END-IF
       *        ¤½¤ÎÂ¾¤Î¼«Æ°È¯À¸Ê¬
-               IF      FLG-ARI         =   ZERO
-                   IF     WKSRY-SRYCD (IDY)    =   "830000020"   OR
-                                                   "830000021"   OR
-                                                   "112007170"   OR
-                                                   "112702270"   OR
-                                                   "113701010"   OR
-                                                   "113701110"   OR
-                                                   "113701510"   OR
-                                                   "114701210"   OR
-                                                   "114701710"   OR
-                                                   "113700710"   OR
-                                                   "113700810"   OR
-                                                   "113700610"   OR
-                                                   "113001910"   OR
-                                                   "113002010"   OR
-                                                   "113001810"
-                                               OR  "113000910"
-                                               OR  "113002310"
-                       MOVE    1               TO  FLG-ARI
-                       MOVE    SPACE           TO  WRK-KBN
-                   END-IF
+      *        IF      FLG-ARI         =   ZERO
+      *            IF     WKSRY-SRYCD (IDY)    =   "830000020"   OR
+      *                                            "830000021"   OR
+      *                                            "112007170"   OR
+      *                                            "112702270"   OR
+      *                                            "113701010"   OR
+      *                                            "113701110"   OR
+      *                                            "113701510"   OR
+      *                                            "114701210"   OR
+      *                                            "114701710"
+      *                MOVE    1               TO  FLG-ARI
+      *                MOVE    SPACE           TO  WRK-KBN
+      *            END-IF
       *
-               END-IF
+      *        END-IF
       *        ÆÃÄê¤Î¿ÇÎÅ¹Ô°ÙÈ½Äê
-               EVALUATE    WKSRY-SRYCD (IDY)
+      *        EVALUATE    WKSRY-SRYCD (IDY)
       *            ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅ²Ê¡Ê±¡³°½èÊýäµ¤¢¤ê¡Ë
-                   WHEN    "114701210"
-                       MOVE    "1"             TO  SPA-INGAIKBN
+      *            WHEN    "114701210"
+      *                MOVE    "1"             TO  SPA-INGAIKBN
       *            ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅ²Ê¡Ê±¡³°½èÊýäµ¤Ê¤·¡Ë
-                   WHEN    "114701710"
-                       MOVE    "0"             TO  SPA-INGAIKBN
+      *            WHEN    "114701710"
+      *                MOVE    "0"             TO  SPA-INGAIKBN
       *            Ï·¿ÍËýÀ­¼ÀÉÂ³°ÍèÁí¹ç¿ÇÎÅ²Ê¡Ê±¡³°½èÊý¤¢¤ê¡Ë
-                   WHEN    "113701010"
-                       MOVE    "1"             TO  SPA-INGAIKBN
+      *            WHEN    "113701010"
+      *                MOVE    "1"             TO  SPA-INGAIKBN
       *            Ï·¿ÍËýÀ­¼ÀÉÂ³°ÍèÁí¹ç¿ÇÎÅ²Ê¡Ê±¡³°½èÊý¤Ê¤·¡Ë
-                   WHEN    "113701110"
-                   WHEN    "113701510"
-                       MOVE    "0"             TO  SPA-INGAIKBN
+      *            WHEN    "113701110"
+      *            WHEN    "113701510"
+      *                MOVE    "0"             TO  SPA-INGAIKBN
       *
       *            ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê»»Äê
-                   WHEN    "113003510"
-                   WHEN    "113003610"
-                       MOVE    "1"             TO  SPA-INGAIKBN
-                   WHEN    "113003710"
-                   WHEN    "113003810"
-                       MOVE    "0"             TO  SPA-INGAIKBN
+      *            WHEN    "113003510"
+      *            WHEN    "113003610"
+      *                MOVE    "1"             TO  SPA-INGAIKBN
+      *            WHEN    "113003710"
+      *            WHEN    "113003810"
+      *                MOVE    "0"             TO  SPA-INGAIKBN
       *            £Ä£Õ£Í£Í£Ù¿ÇÎÅ²Ê
-                   WHEN    "099110001"
-                   WHEN    "099120001"
-                       MOVE    1               TO  FLG-DUMMY
-               END-EVALUATE
+      *            WHEN    "099110001"
+      *            WHEN    "099120001"
+      *                MOVE    1               TO  FLG-DUMMY
+      *        END-EVALUATE
       *
-               IF      FLG-ARI         =   1
+      *        IF      FLG-ARI         =   1
       *             ½é¿ÇÎÁ°Ê³°¤Î»þ¡¢¼«Æ°È¯À¸¤¢¤ê
       *             ½é¿ÇÎÁ»»Äê¤Ç¡¢´û¤ËÅöÆü¼õ¿Ç¤¬¤¢¤ë»þ¤ÏÂÐ¾Ý
-                   IF    ((WRK-KBN             =   "F"   )  AND
-                          (SPA-SRYYMD          =   SPA-LSTYMD))  OR
-                         ( WRK-KBN         NOT =   "F"  )
-                       MOVE    1           TO  FLG-CHK
-                       MOVE    1           TO  FLG-SINSATU-OK
-                       IF     (WKSRY-INPUTCD(IDY)(1:1) NUMERIC  )  AND
-                              (WKSRY-INPUTCD(IDY)(2:1) =   SPACE)
-                           MOVE    WKSRY-INPUTCD(IDY)(1:1) TO  FLG-JIKAN
-                       END-IF
-                   END-IF
-               END-IF
-           END-PERFORM
+      *            IF    ((WRK-KBN             =   "F"   )  AND
+      *                   (SPA-SRYYMD          =   SPA-LSTYMD))  OR
+      *                  ( WRK-KBN         NOT =   "F"  )
+      *                MOVE    1           TO  FLG-CHK
+      *                MOVE    1           TO  FLG-SINSATU-OK
+      *                IF     (WKSRY-INPUTCD(IDY)(1:1) NUMERIC  )  AND
+      *                       (WKSRY-INPUTCD(IDY)(2:1) =   SPACE)
+      *                    MOVE    WKSRY-INPUTCD(IDY)(1:1) TO  FLG-JIKAN
+      *                END-IF
+      *            END-IF
+      *        END-IF
+      *    END-PERFORM
       *
-           IF      FLG-SINSATU-OK      =   1
-               IF     (WKSRY-SRYKBN    NOT =   "11" )  OR
-                      (FLG-CHK             =   1    )
-                   IF       (WKSRY-SRYKBN        =   "14" OR "13")  AND
-                            (FLG-ARI             =   ZERO )
-                       CONTINUE
-                   ELSE
-                       ADD     1               TO  IDX-WK
-                       MOVE    WKSRY-ZAINUM    TO  LNK-SC10S-ZAINUM
-                                                          (IDX-WK)
-                   END-IF
-               END-IF
-           END-IF
+      *    IF      FLG-SINSATU-OK      =   1
+      *        IF     (WKSRY-SRYKBN    NOT =   "11" )  OR
+      *               (FLG-CHK             =   1    )
+      *            IF       (WKSRY-SRYKBN        =   "14" OR "13")  AND
+      *                     (FLG-ARI             =   ZERO )
+      *                CONTINUE
+      *            ELSE
+      *                ADD     1               TO  IDX-WK
+      *                MOVE    WKSRY-ZAINUM    TO  LNK-SC10S-ZAINUM
+      *                                                   (IDX-WK)
+      *            END-IF
+      *        END-IF
+      *    END-IF
       *
       *    DUMMY¿Ç»¡ÎÁ¤¬¤¢¤ë»þ¼«Æ°È¯À¸¤Ï¤·¤Ê¤¤
-           IF      FLG-DUMMY           =   1
-               MOVE    ZERO            TO  FLG-SINSATU-OK
-           END-IF
+      *    IF      FLG-DUMMY           =   1
+      *        MOVE    ZERO            TO  FLG-SINSATU-OK
+      *    END-IF
       *
-           .
-       10001-SRYCD-CHK-EXT.
-           EXIT.
+      *    .
+      *10001-SRYCD-CHK-EXT.
+      *    EXIT.
       *****************************************************************
       *    ¿Ç»¡ÎÁ¤Î¤ß¤ÎÊÑ¹¹½èÍý
       *****************************************************************
        1010-SINSATU-HEN-SEC              SECTION.
+      *
            MOVE    ZERO               TO  FLG-GAI
            MOVE    ZERO               TO  FLG-DUMMY
+           MOVE    ZERO               TO  FLG-SINSATU-ARI
       *    ÄûÀµ¤Î»þ¡¢½é¿ÇÎÁ¤ò»»ÄêÃæ¤«¤ÎÈ½Äê
-           IF      SPA-SYORIFLG        =   1
+           IF     (SPA-SYORIFLG        =   1    )  OR
+                  (LNK-SC10S-SYORI     =   "W"  )
                PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200    )  OR
                               (SPA-COM-INPUTCD(IDX) =   SPACE  AND
                                SPA-GMN-INPUTCD(IDX) =   SPACE )
+      *            ¿Ç»¡ÎÁ¸¡º÷
+                   SET     TBL-IDX             TO  1
+                   SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
+                       AT   END
+                           MOVE    ZERO                TO  FLG-ARI
+                           MOVE    SPACE               TO  WRK-KBN
+                           MOVE    SPACE               TO  WRK-KBN2
+                       WHEN   SPA-COM-INPUTCD (IDX) =
+                                             TBL-SRYCD (TBL-IDX)
+                           MOVE    1                   TO  FLG-ARI
+                           MOVE    TBL-KBN  (TBL-IDX)  TO  WRK-KBN
+                           MOVE    TBL-KBN2 (TBL-IDX)  TO  WRK-KBN2
+                           MOVE    1               TO  FLG-SINSATU-ARI
+                   END-SEARCH
+      *
+                   IF      FLG-ARI         =   ZERO
+      *            Ï«ºÒ¥³¡¼¥É¥Á¥§¥Ã¥¯¡Ê½é¿Ç¡Ë
+                       SET     TBL-RSI              TO  1
+                       SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
+                           AT  END
+                               MOVE    ZERO               TO  FLG-ARI
+                               MOVE    SPACE              TO  WRK-KBN
+                           WHEN    SPA-COM-INPUTCD (IDX)
+                                              =   TBLR-SRYCD (TBL-RSI)
+                               MOVE    1                  TO  FLG-ARI
+                               MOVE    TBLR-KBN (TBL-RSI) TO  WRK-KBN
+                               IF      WRK-KBN     NOT =   "G"
+                                   MOVE    1           TO
+                                                       FLG-SINSATU-ARI
+                               END-IF
+                       END-SEARCH
+                   END-IF
+                   IF      FLG-ARI             =   1
+      *                ½é¿Ç
+                       IF      WRK-KBN             =   "F"
+                           MOVE    1               TO  SPA-SYOSIN
+                       END-IF
+      *                ³°Íè´ÉÍý²Ã»»
+                       IF      WRK-KBN             =   "G"
+                           MOVE    1            TO  FLG-GAI
+                       END-IF
+                   END-IF
                    EVALUATE    SPA-COM-INPUTCD (IDX)
-                           WHEN    "111700110"
-                           WHEN    "111700210"
-                           WHEN    "111000110"
-                           WHEN    "111003610"
-                           WHEN    "113003510"
-                           WHEN    "113003710"
-                               MOVE    1              TO  SPA-SYOSIN
-      *                    Ï«ºÒÊ¬
-                           WHEN    "101110010"
-                               MOVE    1              TO  SPA-SYOSIN
-      *                    Ï«ºÒÊ¬³°Íè´ÉÍý²Ã»»
-                           WHEN    "101120070"
-                           WHEN    "101120080"
-                           WHEN    "101120090"
-                               MOVE    1              TO  FLG-GAI
       *                    £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁ
-                           WHEN    "099110001"
-                           WHEN    "099120001"
-                               MOVE    1              TO  FLG-DUMMY
+                       WHEN    "099110001"
+                       WHEN    "099120001"
+                           MOVE    1              TO  FLG-DUMMY
                    END-EVALUATE
-      *          ³°Íè´ÉÍý²Ã»»
+      *            ³°Íè´ÉÍý²Ã»»
                    SET     TBLG-IDX             TO  1
                    SEARCH  TBL-GAIRAI-OCC       VARYING   TBLG-IDX
                        AT  END
@@ -4012,6 +4036,11 @@
                            MOVE    1            TO  FLG-GAI
                    END-SEARCH
                END-PERFORM
+           END-IF
+      *    ÃæÅÓ½ªÎ»¤Ç¿Ç»¡ÎÁ¤¬¤Ê¤¤»þ
+           IF      LNK-SC10S-SYORI     =   "W"
+               PERFORM 100-SANTEI-CHK-SEC
+               PERFORM 600-SANTEI-CNT-SEC
            END-IF
       *    Æ±»þÂ¾²Ê¼õ¿Ç¤¬¤¢¤Ã¤¿»þ¤Ï¡¢¿Ç»¡ÎÁ¤ÎÊÑ¹¹¤ò¤ª¤³¤Ê¤ï¤Ê¤¤
            IF      SPA-LSTYMD          =   SPA-SRYYMD  OR
@@ -4023,6 +4052,19 @@
       *    £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁ¤ÎÊÑ¹¹¤ò¤ª¤³¤Ê¤ï¤Ê¤¤
            IF      FLG-DUMMY           =   1
                GO      TO      1010-SINSATU-HEN-EXT
+           END-IF
+      *    ÃæÅÓ½ªÎ»¤Ç¿Ç»¡ÎÁ¤¬¤Ê¤¤»þ
+           IF     (LNK-SC10S-SYORI     =   "W"  )  AND
+                  (FLG-SINSATU-ARI     =   ZERO )
+               GO      TO      1010-SINSATU-HEN-EXT
+           END-IF
+      *    ½é¿ÇÎÁ»»Äê¤Ç¡¢´û¤ËÅöÆü¼õ¿Ç¤¬¤¢¤ë»þ¤ÏÂÐ¾Ý
+           IF     (LNK-SC10S-SYORI     =   "W"  )  AND
+                  (SPA-SYOSIN          =   1    )
+      *             ½é¿ÇÎÁ°Ê³°¤Î»þ¡¢¼«Æ°È¯À¸¤¢¤ê
+               IF      SPA-SRYYMD      NOT =   SPA-LSTYMD
+                   GO      TO      1010-SINSATU-HEN-EXT
+               END-IF
            END-IF
       *
            MOVE    SPA-SCR-REC         TO  HZN-SCR-REC
