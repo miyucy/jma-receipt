@@ -389,12 +389,13 @@
            MOVE    WRK-PARA-HOSPID          TO  PTNYUINRRK-HOSPID
            MOVE    WRK-PARA-SRYYMD          TO  PTNYUINRRK-TENNYUYMD
                                                 PTNYUINRRK-TENSTUYMD
+           MOVE    PTNYUINRRK-REC           TO  MCPDATA-REC
            MOVE    PATH-TBL-PTNYUINRRK-KEY40
-                                            TO  ORC-DBPATH
+                                            TO  MCP-PATH
            PERFORM 900-PTNYUINRRK-SELECT-SEC
            IF      FLG-PTNYUINRRK            =   ZERO
                MOVE      PATH-TBL-PTNYUINRRK-KEY40
-                                            TO  ORC-DBPATH
+                                            TO  MCP-PATH
                PERFORM   900-PTNYUINRRK-READ-SEC
                MOVE      PTNYUINRRK-PTID    TO  WRK-NEW-PTID
                PERFORM   UNTIL   FLG-PTNYUINRRK    =   1
@@ -403,7 +404,7 @@
                        PERFORM   2001-HENSYU-SEC
                    END-IF
                    MOVE      PATH-TBL-PTNYUINRRK-KEY40
-                                                TO  ORC-DBPATH
+                                                TO  MCP-PATH
                    PERFORM   900-PTNYUINRRK-READ-SEC
                    MOVE      PTNYUINRRK-PTID    TO  WRK-NEW-PTID
                END-PERFORM
@@ -442,7 +443,6 @@
                   MOVE    "00"       TO  LNK-ORCBT120SUB-SRYKA
                   CALL    "ORCBT120SUB"  USING
                                          ORCBT120SUB-AREA
-                  DISPLAY  "LNK-ORCBT120SUBRC = " LNK-ORCBT120SUB-RC
                   PERFORM   VARYING   IDX   FROM  1  BY  1
                    UNTIL    (IDX   >  10)   OR
                             (LNK-ORCBT120SUB-HKNCOMBINUM(IDX) = ZERO)
@@ -547,7 +547,7 @@
                                        TO  TOUKEI04-MAE-BRMNUM
       *º˝«ºæ Û
       *    ≈¡…º»÷πÊ
-           MOVE    LNK-ORCBT120SUB-DENPNUM(IDX1)
+           MOVE    LNK-ORCBT120SUB-DENPNUM(IDX)
                                        TO  TOUKEI04-DENPNUM
       *    ≈¡…ºæı¬÷∂Ë ¨
            MOVE    LNK-ORCBT120SUB-DENPJTIKBN(IDX)
@@ -696,7 +696,7 @@
            PERFORM 900-DBDISCONNECT-SEC
       *     
            DISPLAY "TOUKEI04  CNT-TOUKEI04:" CNT-TOUKEI04
-           DISPLAY "*** ORCBT110 END ***"
+           DISPLAY "*** ORCBT120 END ***"
            .
        300-TERM-EXT.
            EXIT.
@@ -849,7 +849,7 @@
        900-PTNYUINRRK-SELECT-SEC         SECTION.
       *
            MOVE    "DBSELECT"       TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
+           CALL    "MCPSUB"             USING
                                         MCPAREA
                                         MCPDATA-REC
            IF      MCP-RC           =   ZERO

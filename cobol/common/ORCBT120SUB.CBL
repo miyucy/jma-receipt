@@ -185,7 +185,6 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           DISPLAY   "ORCBT120SUB PROC-SEC"
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
@@ -503,15 +502,11 @@
            MOVE    LNK-ORCBT120SUB-PTID     TO  SYU-PTID
            MOVE    "SYUNOU-KEY2"            TO  ORC-DBPATH
            PERFORM 910-SYUNOU-SELECT-SEC
-           DISPLAY  "SYUNOU-SEL RC= " FLG-SYUNOU
            IF      FLG-SYUNOU                =  ZERO
                MOVE     "SYUNOU-KEY2"       TO  ORC-DBPATH
                PERFORM   910-SYUNOU-READ-SEC
-               DISPLAY  "SYUNOU-FET RC= " FLG-SYUNOU
                PERFORM   UNTIL   (FLG-SYUNOU    =   1)   OR
                                  (SYU-IDX       >=  10)
-                   DISPLAY "SYU-DENPJTIKBN = " SYU-DENPJTIKBN
-                   DISPLAY "SYU-DENPPRTYMD = " SYU-DENPPRTYMD
                    IF   SYU-DENPJTIKBN    =    "3"
                        CONTINUE
                    ELSE
@@ -521,7 +516,6 @@
                    END-IF
                    MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
                    PERFORM 910-SYUNOU-READ-SEC
-                   DISPLAY  "SYUNOU-FET RC= " FLG-SYUNOU
                END-PERFORM
            END-IF
       *    º˝«º•Ø•Ì°º•∫
@@ -616,7 +610,6 @@
       *****************************************************************
        210-SYUNOU-SET-SEC         SECTION.
       *
-           DISPLAY  "210-SYUNOU-SET-SEC"
            ADD    1     TO   SYU-IDX
       *    ≈¡…º»÷πÊ
            MOVE    SYU-DENPNUM         TO  LNK-ORCBT120SUB-DENPNUM
