@@ -558,6 +558,23 @@ clean:
 distclean: clean
 	-rm -f Makefile
 
+
+filecheck:
+	@(for i in $(COPYS) $(COPYS_sources) ;do echo "make	$${i}"; done ;\
+	find . \
+	-name "." -o \
+	-name "CVS" -prune -o \
+	-name "Makefile*" -o \
+	-name ".cvsignore" -o \
+	-name "*.bak" -o \
+	-name "CPHOMEDIR.INC" -o \
+	-name "CPCOMMONSHELL.INC" -o \
+	-name "CPCOMMONSHELL1.INC" -o \
+	-name "CPCOMMONSHELL4.INC" -o \
+	-name "CPCOMMONSHELLMST.INC" -o \
+	-printf "file\t%f\n") \
+	|sort +1 |uniq -u -f1 
+
 install: 
 
 installdirs:
