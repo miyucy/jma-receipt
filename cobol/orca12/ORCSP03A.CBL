@@ -1055,8 +1055,16 @@
                   (SPA-GMN-HKNNUM          =   "060"     )  AND
                  ((SPA-NAI-HKNSTR          =   ZERO  ) OR
                   (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
-                                           =   "1"    )) 
-               PERFORM 3101101-HOJO-KYURATE-SEC
+                                           =   "1"    ))
+      *        前期高齢者以外
+               IF    ((SPA-NAI-HTEKSTYMD   >=  "20021001" ) AND
+                      (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70)) OR
+                     ((SPA-SYSYMD          >=  "20021001" ) AND
+                      (SPA-SYSYMD          >=  SPA-BYMD-70))
+                   CONTINUE
+                ELSE
+                   PERFORM 3101101-HOJO-KYURATE-SEC
+               END-IF
            END-IF
            MOVE    SPA-GMN-HONKZKKBN   TO  SPA-MAE-HONKZKKBN
       *
@@ -1434,7 +1442,6 @@
                       (SPA-NAI-HTEKEDYMD   >=  WRK-SYMD)
                    MOVE    "0053"          TO  SPA-ERRCD
                    MOVE    17              TO  SPA-GMN-CUR
-                   GO      TO      1001-HTEKEDYMD-CHK-EXT
                END-IF
            END-IF
            .
@@ -1937,14 +1944,11 @@
                END-IF
            END-PERFORM
       *
-           IF      WRK-IDX             =   ZERO
-               GO      TO          2004-KANREN-HKN-CHECK-EXT
-           END-IF
-      *
       *    新規入力分で、開始日付と終了日付が重複している時、自動変換
-           IF     (SPA-NAI-HKNSTR      =   ZERO      ) OR
+           IF    ( WRK-IDX             >   ZERO     )  AND
+                 ((SPA-NAI-HKNSTR      =   ZERO      ) OR
                   (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
-                                       =   "1"      )
+                                       =   "1"      ) )
                IF      (SPA-PTHKN-TEKEDYMD (WRK-IDX)
                                            >=  SPA-NAI-HTEKSTYMD)  AND
                        (SPA-PTHKN-TEKSTYMD (WRK-IDX)
@@ -1953,7 +1957,6 @@
                                            TO  SPA-PIDMSG
                    MOVE    "0105"          TO  SPA-PIDCD
                    MOVE    SPACE           TO  SPA-ERRCD
-                   GO      TO          2004-KANREN-HKN-CHECK-EXT
                END-IF
            END-IF
       *
