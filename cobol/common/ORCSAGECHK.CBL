@@ -38,7 +38,9 @@
       * 01.00.07     NACL-多々納  03/05/12  自賠責割合変更追加
       * 01.00.08     NACL-多々納  03/09/03  公費期限チェック追加
       * 01.00.09     NACL-多々納  03/11/13  老人区分追加
-      * 01.00.11     NACL-多々納  04/01/06  包括まとめ入力追加
+      * 01.00.10     NACL-多々納  04/01/06  包括まとめ入力追加
+      * 01.00.11     NACL-多々納  04/04/21  老人区分２、保険区分追加
+      *                                     実年齢追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -86,6 +88,7 @@
                05  WRK-BDD             PIC 9(02).
            03  WRK-NENREI-YY           PIC 9(03).
            03  WRK-NENREI-MM           PIC 9(02).
+           03  WRK-NENREI-DD           PIC 9(02).
       *
            03  WRK-HKNNUM              PIC X(03).
            03  WRK-PAYKBN              PIC X(02).
@@ -97,6 +100,10 @@
            03  WRK-BIRTHDAY            PIC X(08).
            03  WRK-ROU-NEN             PIC 9(03).
       *
+      *
+      *   日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -202,6 +209,40 @@
                MOVE    AGECHK-BIRTHDAY     TO  WRK-BIRTHDAY
            END-IF
       *
+      *    当日の年齢を計算する
+           MOVE    AGECHK-SRYYMD       TO  WRK-SYMD
+           COMPUTE WRK-NENREI-YY       =   WRK-SYY
+                                       -   WRK-BYY
+           IF      WRK-BYMD(5:4)       >   WRK-SYMD(5:4)
+               COMPUTE WRK-NENREI-YY       =   WRK-NENREI-YY
+                                           -   1
+               COMPUTE WRK-NENREI-MM       =  (WRK-SMM   +  12 )
+                                           -   WRK-BMM
+           ELSE
+               COMPUTE WRK-NENREI-MM       =   WRK-SMM
+                                           -   WRK-BMM
+           END-IF
+           IF      WRK-BDD             >   WRK-SDD
+               COMPUTE WRK-NENREI-MM   =   WRK-NENREI-MM
+                                       -   1
+           END-IF
+      *    年齢期間算定
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY5-AREA
+           MOVE    "51"                TO  LNK-DAY5-IRAI
+           MOVE    WRK-BIRTHDAY        TO  LNK-DAY5-START
+           MOVE    AGECHK-SRYYMD       TO  LNK-DAY5-END
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY5-AREA
+           IF      LNK-DAY5-NISSU2     <=  31
+               MOVE    LNK-DAY5-NISSU2     TO  WRK-NENREI-DD
+               MOVE    ZERO                TO  WRK-NENREI-MM
+           END-IF
+           MOVE    WRK-NENREI-YY       TO  AGECHK-NENREI2-YY
+           MOVE    WRK-NENREI-MM       TO  AGECHK-NENREI2-MM
+           MOVE    WRK-NENREI-DD       TO  AGECHK-NENREI2-DD
+      *
+      *保険年齢計算
       *    １日以外の誕生日の時は、翌月１日を基準とする
            IF      WRK-BDD             >   01
                COMPUTE WRK-BMM         =   WRK-BMM     +   1
@@ -212,7 +253,7 @@
                MOVE    01              TO  WRK-BDD
            END-IF
       *
-      *    年齢を計算する
+      *    保険年齢を計算する
            MOVE    AGECHK-SRYYMD       TO  WRK-SYMD
            COMPUTE WRK-NENREI-YY       =   WRK-SYY
                                        -   WRK-BYY
@@ -240,6 +281,16 @@
       *    保険年齢計算判定
            IF      AGECHK-NENREI       >=  WRK-ROU-NEN
                MOVE    1               TO  AGECHK-ROUJIN
+           END-IF
+      *    ６５歳以上の時、老人公費をもっているかの判定
+           IF      AGECHK-NENREI       >=  65
+               IF      AGECHK-ROUJIN       =   ZERO
+                   IF      AGECHK-ROUJIN2      =   ZERO
+                       PERFORM 20010-ROUJIN-CHK2-SEC
+                   END-IF
+               ELSE
+                   MOVE    AGECHK-ROUJIN       TO  AGECHK-ROUJIN2
+               END-IF
            END-IF
       *
            .
@@ -285,14 +336,18 @@
                GO      TO      200-FTNRATE-EXT
            END-IF
       *
+           MOVE    ZERO               TO  AGECHK-HKNKBN
+      *
       *    労災の時、割合の変更
            IF      COMB-HKNNUM         =   "971"
                PERFORM 2001-RSI-FTNRATE-SEC
+               MOVE    1               TO  AGECHK-HKNKBN
            END-IF
       *
       *    自賠責の時、割合の変更
            IF      COMB-HKNNUM         =   "973"
                PERFORM 2002-JIBAI-FTNRATE-SEC
+               MOVE    2               TO  AGECHK-HKNKBN
            END-IF
       *
            MOVE    COMB-GAI-KFTNRATE   TO  AGECHK-FTNRATE
@@ -315,6 +370,10 @@
                IF     (HKN-HKNKOHSBTKBN    =   "8"  OR  "9" )  OR
                       (COMB-HKNNUM         =   "971"  OR  "973")
                    CONTINUE
+      *            自費
+                   IF      HKN-HKNKOHSBTKBN    =   "8"
+                       MOVE    3               TO  AGECHK-HKNKBN
+                   END-IF
                ELSE
                    IF      COMB-GAI-KFTNRATE   >   20
                        MOVE    20                  TO  AGECHK-FTNRATE
@@ -618,6 +677,7 @@
       *****************************************************************
        2009-ROUJIN-HANTEI-SEC         SECTION.
       *
+           MOVE    ZERO                TO  AGECHK-ROUJIN2
       *    生活保護で、６５歳以上で老人公費を持っている場合、老人
            IF     (COMB-HKNNUM         =   SPACE )  AND
                  ((COMB-KOH1HKNNUM     =   "012" )  OR
@@ -635,6 +695,16 @@
                       (COMB-KOH3HKNNUM     =   "027" )  OR
                       (COMB-KOH4HKNNUM     =   "027" )
                    MOVE    1               TO  AGECHK-ROUJIN
+               END-IF
+           END-IF
+      *    ６５歳以上の時、老人公費をもっているかの判定
+           IF      AGECHK-NENREI       >=  65
+               IF      AGECHK-ROUJIN       =   ZERO
+                   IF      AGECHK-ROUJIN2      =   ZERO
+                       PERFORM 20010-ROUJIN-CHK2-SEC
+                   END-IF
+               ELSE
+                   MOVE    AGECHK-ROUJIN       TO  AGECHK-ROUJIN2
                END-IF
            END-IF
       *
@@ -683,11 +753,54 @@
       *
            IF      FLG-PTKOHINF        =   ZERO
                MOVE    1                   TO  AGECHK-ROUJIN
+               MOVE    1                   TO  AGECHK-ROUJIN2
            END-IF
       *
            .
       *
        2009-ROUJIN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    老人公費判定処理
+      *****************************************************************
+       20010-ROUJIN-CHK2-SEC         SECTION.
+      *
+      *    公費編集
+           INITIALIZE                  PTKOHINF-REC
+           MOVE    AGECHK-HOSPID       TO  PTKOH-HOSPID
+           MOVE    AGECHK-PTID         TO  PTKOH-PTID
+           MOVE    "027"               TO  PTKOH-KOHNUM
+           MOVE    AGECHK-SRYYMD       TO  PTKOH-TEKSTYMD
+           MOVE    AGECHK-SRYYMD       TO  PTKOH-TEKEDYMD
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY6"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTKOHINF-KEY6"     TO  ORC-DBPATH
+               PERFORM 920-PTKOHINF-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTKOHINF-KEY6"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           IF      FLG-PTKOHINF        =   ZERO
+               MOVE    1                   TO  AGECHK-ROUJIN2
+           END-IF
+      *
+           .
+      *
+       20010-ROUJIN-CHK2-EXT.
            EXIT.
       *
       *
