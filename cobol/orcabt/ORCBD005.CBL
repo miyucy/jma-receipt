@@ -1174,6 +1174,7 @@
                MOVE    BD00501-SMEI-DATA-AREA
                                        TO SMEI-REC
            END-READ
+           .
       *
        900-BD00501-READ-EXT.
            EXIT.
