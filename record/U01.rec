@@ -20,7 +20,7 @@ U01	{
 					value5	varchar(6);
 					value6	varchar(6);
 					value7	varchar(8);
-					value8	varchar(12);
+					value8	varchar(20);
 					value9	varchar(8);
 					value10	varchar(8);
 				}	[100];
@@ -38,7 +38,7 @@ U01	{
 					value5	varchar(6);
 					value6	varchar(6);
 					value7	varchar(8);
-					value8	varchar(12);
+					value8	varchar(20);
 					value9	varchar(8);
 					value10	varchar(8);
 				}	[100];

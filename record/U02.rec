@@ -99,7 +99,7 @@ U02	{
 					value3	varchar(20);
 					value4	varchar(50);
 					value5	varchar(10);
-					value6	varchar(20);
+					value6	varchar(27);
 					value7	varchar(20);
 					value8	varchar(10);
 				}	[100];
