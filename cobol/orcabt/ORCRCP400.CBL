@@ -47,6 +47,7 @@
       *  01.01.04    NACL-門脇    04/05/13  初診時に時間外・深夜・休日が
       *                                     ２つ以上あった場合の記載対応
       *  01.01.05    NACL-小豆沢  04/05/19  ＤＢ書き込み時のコミット追加
+      *  01.01.06    NACL-藤原    04/07/12  給付割合の編集条件を変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2689,15 +2690,16 @@
            MOVE   SPACE              TO  HC06-KYURATE
       *          
       *    国保OR退職者のみ印字
-           IF  ((RECE02-TEISYUTUSAKI =   "2"  )       AND
-                (RECE02-RJNHKNNUM    =   SPACE)           )  OR
+      *****IF  ((RECE02-TEISYUTUSAKI =   "2"  )       AND
+      ********* (RECE02-RJNHKNNUM    =   SPACE)           )  OR
+           IF  ( RECE02-TEISYUTUSAKI =   "2"              )  OR
                ( RECE02-HKNNUM       =   WRK-RETIRE1  OR
                                          WRK-RETIRE2  OR
                                          WRK-RETIRE3  OR
                                          WRK-RETIRE4  OR
                                          WRK-RETIRE5  OR
                                          WRK-RETIRE6      )
-               IF      RECE02-AGE        <   70                          
+      *********IF      RECE02-AGE        <   70                          
                    COMPUTE WRK-KYURATE-9   =   (100 -   RECE02-KYURATE)
                                                / 10 
                    IF      WRK-KYURATE-9       >   ZERO
@@ -2713,7 +2715,7 @@
                                                TO  HC06-KYURATE(5:)
                        END-IF    
                    END-IF
-               END-IF    
+      *********END-IF    
            END-IF
       *
       *    県単用項目
