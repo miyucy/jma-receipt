@@ -7545,6 +7545,9 @@
            MOVE    "1"                 TO  ORCHC33-KBN
            MOVE    SPA-GMN-PTNUM       TO  ORCHC33-PTNUM
            MOVE    SPA-GMN-PTID        TO  ORCHC33-PTID
+           MOVE    SPA-GMN-NAME        TO  ORCHC33-NAME
+           MOVE    SPA-GMN-BIRTHDAY    TO  ORCHC33-BIRTHDAY
+           MOVE    SPA-GMN-SEX         TO  ORCHC33-SEX
            MOVE    SPA-NAI-SRYYM       TO  ORCHC33-SRYYM
            MOVE    SPACE               TO  ORCHC33-SRYYM-END
            MOVE    SPA-GMN-NYUGAIKBN   TO  ORCHC33-NYUGAIKBN
