@@ -781,6 +781,14 @@
                END-IF 
            END-IF.
       *
+           IF   WK-HKNKBN  =   "1"
+              IF     LNK-SYU-YKZ-FTN    NOT =    ZERO
+                   COMPUTE  LNK-SYU-RSIJIBAI-SKYMONEY =
+                            LNK-SYU-RSIJIBAI-SKYMONEY +
+                            LNK-SYU-YKZ-FTN
+              END-IF
+           END-IF.
+      *
       *    ¼çÊÝ¸±¡¦Ï·¿Í¡¦¸øÈñ¤ÎÈ½ÊÌ
       *      ¡Ê¼çÊÝ¸±¡Ë
            IF     (LNK-SYU-SYUHKNNUM     NOT =   SPACE)    AND
@@ -897,6 +905,16 @@
                                             LNK-SYU-JIHI-TOTAL-TAX  +
                                             LNK-SYU-JIHI-TAX.
       *
+           IF   WK-HKNKBN  =   "1"
+                  COMPUTE    LNK-SYU-RSIJIBAI-SKYMONEY  =   
+                             LNK-SYU-RSIJIBAI-SKYMONEY  +
+                             LNK-SYU-TGMONEY(12)        +
+                             LNK-SYU-TGMONEY-TAX(12)    +
+                             LNK-SYU-JIHI-TOTAL         +
+                             LNK-SYU-JIHI-TOTAL-TAX     +
+                             LNK-SYU-JIHI-TAX
+           END-IF.
+      *
       *    ¼«ÈñÊÝ¸±¤ÎÊä½õ¶èÊ¬¤¬²ÝÀÇ¤Î¾ì¹ç¡¢¾ÃÈñÀÇ·×»»¤ò¹Ô¤¦
            IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" ) AND
                ( COMB-HOJOKBN           =  "1" )
@@ -992,6 +1010,16 @@
                                             LNK-SYU-RSIETC-MONEY        
            END-IF.                                                      
       *
+           IF   (WK-HKNKBN               =    "1"  ) AND                
+                (LNK-SYU-SYUHKNNUM       =    "971")                    
+                   COMPUTE    LNK-SYU-RSIJIBAI-SKYMONEY  =  
+                              LNK-SYU-RSIJIBAI-SKYMONEY  +  
+                              LNK-SYU-RSISHOSHIN-MONEY   +  
+                              LNK-SYU-RSISAISHIN-MONEY   +  
+                              LNK-SYU-RSISDO-MONEY       +  
+                              LNK-SYU-RSIETC-MONEY          
+           END-IF.
+      *
       *    ¼«ÇåÀÕÊÝ¸±¤Î¾ì¹ç¡¢Ï«ºÒ±ß·ú¤Æ¹àÌÜ¤Ø¤Î²Ã»»Î¨·×»»ÄÉ²Ã
       *    ¡ã´µ¼ÔÀÁµá¤¹¤ë¡Ê£±£°£°¡ó¡Ë¤Î¾ì¹ç¡ä
            IF   (WK-HKNKBN               =    "1")   AND
@@ -1066,12 +1094,12 @@
       *                   LNK-SYU-RSISDO-MONEY      *  WK-KSNRATE
                  IF   WK-TAXKBN   =   "2"                               
                    IF    WK-TAX1001-KBN  =  "1"
-      **             COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      **                      LNK-SYU-RSI-TAX-SAI       +               
-      **                    ((LNK-S01-SINDAN  *  0.05)  +  0.5)         
-      **             COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      **                      LNK-SYU-RSI-TAX-SAI       +               
-      **                    ((LNK-S01-MEISAI  *  0.05)  +  0.5)         
+                     COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
+                              LNK-SYU-RSI-TAX-SAI       +               
+                            ((LNK-S01-SINDAN  *  0.05)  +  0.5)         
+                     COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
+                              LNK-SYU-RSI-TAX-SAI       +               
+                            ((LNK-S01-MEISAI  *  0.05)  +  0.5)         
       *
                      COMPUTE  LNK-SYU-RSIETC-MONEY      =               
                               LNK-SYU-RSIETC-MONEY      +               
@@ -1080,12 +1108,12 @@
                               LNK-SYU-RSIETC-MONEY      +               
                             ((LNK-S01-MEISAI  *  0.05)  +  0.5)         
                    ELSE
-      **             COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      **                      LNK-SYU-RSI-TAX-SAI       +               
-      **                     (LNK-S01-SINDAN  *  0.05)                  
-      **             COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
-      **                      LNK-SYU-RSI-TAX-SAI       +               
-      **                     (LNK-S01-MEISAI  *  0.05)                  
+                     COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
+                              LNK-SYU-RSI-TAX-SAI       +               
+                             (LNK-S01-SINDAN  *  0.05)                  
+                     COMPUTE  LNK-SYU-RSI-TAX-SAI       =               
+                              LNK-SYU-RSI-TAX-SAI       +               
+                             (LNK-S01-MEISAI  *  0.05)                  
       *
                      COMPUTE  LNK-SYU-RSIETC-MONEY      =               
                               LNK-SYU-RSIETC-MONEY      +               
@@ -1107,6 +1135,16 @@
       **                                    LNK-SYU-RSISAISHIN-MONEY +  
       **                                    LNK-SYU-RSISDO-MONEY     +  
       **                                    LNK-SYU-RSIETC-MONEY        
+           END-IF.
+      *
+           IF   (WK-HKNKBN               =    "1"  ) AND                
+                (LNK-SYU-SYUHKNNUM       =    "973")                    
+                   COMPUTE    LNK-SYU-RSIJIBAI-SKYMONEY  =  
+                              LNK-SYU-RSIJIBAI-SKYMONEY  +  
+                              LNK-SYU-RSISHOSHIN-MONEY   +  
+                              LNK-SYU-RSISAISHIN-MONEY   +  
+                              LNK-SYU-RSISDO-MONEY       +  
+                              LNK-SYU-RSIETC-MONEY          
            END-IF.
       *
       *    ´µ¼ÔÉéÃ´¶â¡¡ÆÈ¼«·×»»ÂÐ±þ
@@ -5356,6 +5394,8 @@
                                              MCPAREA
                                              ORCMCPAREA
                                              MCPDATA-REC
+      *
+               MOVE      WK-ZENGAKU    TO    LNK-SYU-RSIJIBAI-SKYMONEY
       *
                COMPUTE   WK-FUTANWARI  =
                          HKN-HON-GAIKFTNRATE  /  100
