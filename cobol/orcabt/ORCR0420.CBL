@@ -1961,7 +1961,7 @@
                              RECE41-TENSU(16)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
+                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(17)
                        COMPUTE   RECE41-TENSU(17)  =
                                  RECE41-TENSU(17)  +
@@ -2262,7 +2262,7 @@
                              RECE41-TENSU(9)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
+                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(10)
                        COMPUTE   RECE41-TENSU(10)  =
                                  RECE41-TENSU(10)  +
@@ -2624,7 +2624,7 @@
                              RECE41-TENSU-YAK(11)  +
                             (WK-ZAITEN   *   WK-ZAIKAISU)
                WHEN    "23"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
+                   IF     SRY-SRYCD(IDX3) (1:1)   =  "6" OR "S" OR "8"
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(12)
                        COMPUTE   RECE41-TENSU-YAK(12)  =
                                  RECE41-TENSU-YAK(12)  +
