@@ -56,6 +56,7 @@
       *
       *  01.02.01    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *  01.02.02    NACL-藤原    02/09/24  ２００２．１０改正対応
+      *  01.02.03    NACL-藤原    02/11/06  前回作成のときの年月のチェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1348,6 +1349,16 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
+      *
+      *    １行目のとき
+           IF      SPA-GMN-MAX      >   ZERO 
+               IF      SPA-NAI-TSRYYM (1)
+                                        <   200210
+                   MOVE    "1"              TO  SPA-NAI-SYOKBN
+               ELSE
+                   MOVE    "2"              TO  SPA-NAI-SYOKBN
+               END-IF
+           END-IF
       *
            MOVE    3                   TO  SPA-GMN-CUR 
       *
