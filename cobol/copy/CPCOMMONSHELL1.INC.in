@@ -17,40 +17,35 @@
       ********************************************************************
       *****************************************************************
       *
-      *    シェル用領域          CPCOMMONSHELL.INC
+      *    レセプト明細作成用シェル用領域    CPCOMMONSHELL1.INC
       *            
+      *      $1 SRYYM TERID SYSYMD
+      *      $2 SYOKBN
+      *         1:一括作成  2:個別作成
+      *      $3 RECEKBN
+      *         0:全体  1:社保　2:国保
+      *      $4 エラーファイル名
+      * 
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    MCC-藤原     01/10/01  出力先プリンタ名の追加      
-      *  01.00.02    MCC-藤原     02/03/18  各ファイル名の長さを変更      
+      *  01.00.01    MCC-藤原     01/06/29  PRTKBNを削除
+      *                                     SYSYMDを追加 
+      *  01.00.02    MCC-藤原     02/02/28  SHELL-SHELLの長さ変更
       *****************************************************************
        01  SHELL-AREA.
+      *★    03  FILLER             PIC  X(03) VALUE "sh ".
            03  SHELL-NAME.
-      *      05  FILLER             PIC  X(20) VALUE
-      *                                      "../../scripts/daily/".
-             05  FILLER             PIC  X(30) VALUE
-                    "/usr/local/orca/scripts/daily/".
-             05  SHELL-ID           PIC  X(10).
+             05  FILLER             PIC  X(@monthlyscripts_len@) VALUE
+                     "@monthlyscripts@".
+             05  SHELL-SHELL        PIC  X(30).
            03  SHELL-ARG1.
-             05  FILLER             PIC  X(43) VALUE 
-                    "/usr/local/orca/scripts/daily/print-data.rb".
-             05  FILLER             PIC  X(01) VALUE SPACE.
+             05  SHELL-SRYYM        PIC  X(06).
+             05  SHELL-TERMID       PIC  X(16).
+             05  SHELL-SYSYMD       PIC  X(08).  
            03  SHELL-ARG2.
-             05  FILLER             PIC  X(21) VALUE 
-                    "/usr/local/orca/form/".
-      *******05  SHELL-DIA          PIC  X(10).
-             05  SHELL-DIA          PIC  X(50).
-             05  FILLER             PIC  X(01) VALUE SPACE.
+             05  SHELL-SYOKBN       PIC  X(01) VALUE SPACE.
            03  SHELL-ARG3.
-             05  FILLER             PIC  X(23) VALUE 
-                    "/usr/local/orca/record/".
-      *******05  SHELL-DEF          PIC  X(10).
-             05  SHELL-DEF          PIC  X(50).
-             05  FILLER             PIC  X(01) VALUE SPACE.
+             05  SHELL-RECEKBN      PIC  X(01) VALUE SPACE.
            03  SHELL-ARG4.
-      *******05  SHELL-DAT          PIC  X(50).
-             05  SHELL-DAT          PIC  X(90).
-             05  FILLER             PIC  X(01) VALUE SPACE.
-           03  SHELL-ARG5.
-             05  SHELL-PRTNM        PIC  X(16) VALUE SPACE.
+             05  SHELL-ERRFILE      PIC  X(50) VALUE SPACE.

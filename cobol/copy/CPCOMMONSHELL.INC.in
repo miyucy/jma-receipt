@@ -17,35 +17,40 @@
       ********************************************************************
       *****************************************************************
       *
-      *    シェル用領域          CPCOMMONSHELL4.INC
+      *    シェル用領域          CPCOMMONSHELL.INC
       *            
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     01/10/01  出力先プリンタ名の追加      
+      *  01.00.02    MCC-藤原     02/03/18  各ファイル名の長さを変更      
       *****************************************************************
        01  SHELL-AREA.
            03  SHELL-NAME.
-               05  FILLER             PIC  X(30) VALUE
-                       "/usr/local/orca/scripts/daily/".
-               05  SHELL-ID           PIC  X(10).
-               05  FILLER             PIC  X(60) VALUE SPACE.
+      *      05  FILLER             PIC  X(20) VALUE
+      *                                      "../../scripts/daily/".
+             05  FILLER             PIC  X(@dailyscripts_len@) VALUE
+                    "@dailyscripts@".
+             05  SHELL-ID           PIC  X(10).
            03  SHELL-ARG1.
-               05  FILLER             PIC  X(43) VALUE 
-                       "/usr/local/orca/scripts/daily/print-data.rb".
-               05  FILLER             PIC  X(57) VALUE SPACE.
+             05  FILLER             PIC  X(@printscripts_len@) VALUE 
+                    "@printscripts@".
+             05  FILLER             PIC  X(01) VALUE SPACE.
            03  SHELL-ARG2.
-               05  FILLER             PIC  X(21) VALUE
-                       "/usr/local/orca/form/".
-               05  SHELL-DIA          PIC  X(50).
-               05  FILLER             PIC  X(29) VALUE SPACE.
+             05  FILLER             PIC  X(@formdir_len@) VALUE 
+                    "@formdir@".
+      *******05  SHELL-DIA          PIC  X(10).
+             05  SHELL-DIA          PIC  X(50).
+             05  FILLER             PIC  X(01) VALUE SPACE.
            03  SHELL-ARG3.
-               05  FILLER             PIC  X(23) VALUE
-                       "/usr/local/orca/record/".
-               05  SHELL-DEF          PIC  X(50).
-               05  FILLER             PIC  X(27) VALUE SPACE.
+             05  FILLER             PIC  X(@recorddir_len@) VALUE 
+                    "@recorddir@".
+      *******05  SHELL-DEF          PIC  X(10).
+             05  SHELL-DEF          PIC  X(50).
+             05  FILLER             PIC  X(01) VALUE SPACE.
            03  SHELL-ARG4.
-               05  SHELL-DAT          PIC  X(90).
-               05  FILLER             PIC  X(10) VALUE SPACE.
+      *******05  SHELL-DAT          PIC  X(50).
+             05  SHELL-DAT          PIC  X(90).
+             05  FILLER             PIC  X(01) VALUE SPACE.
            03  SHELL-ARG5.
-               05  SHELL-PRTNM        PIC  X(16).
-               05  FILLER             PIC  X(84) VALUE SPACE.
+             05  SHELL-PRTNM        PIC  X(16) VALUE SPACE.

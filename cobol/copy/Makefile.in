@@ -1,5 +1,9 @@
 COPYS_sources = \
-	CPHOMEDIR.INC.in
+	CPHOMEDIR.INC.in \
+	CPCOMMONSHELL.INC.in \
+	CPCOMMONSHELL1.INC.in \
+	CPCOMMONSHELL4.INC.in \
+	CPCOMMONSHELLMST.INC.in
 
 COPYS = \
 	C01COMMON-SPA \
@@ -32,14 +36,10 @@ COPYS = \
 	CPCOMMONDAT2.INC \
 	CPCOMMONDAT3.INC \
 	CPCOMMONDAT4.INC \
+	CPCOMMONSHELL5.INC.in \
+	CPCOMMONSHELLUP.INC.in \
 	CPCOMMONPRT.INC \
 	CPCOMMONPRT1.INC \
-	CPCOMMONSHELL.INC \
-	CPCOMMONSHELL1.INC \
-	CPCOMMONSHELL4.INC \
-	CPCOMMONSHELL5.INC \
-	CPCOMMONSHELLMST.INC \
-	CPCOMMONSHELLUP.INC \
 	CPDAYSTS.INC \
 	CPDBKANRI.INC \
 	CPEXAMPLE.INC \
@@ -507,6 +507,11 @@ SITERECORDDIR = ${SITEDIR}/record
 SITESCREENDIR = ${SITEDIR}/screen
 SITESCRIPTSDIR = ${SITEDIR}/scripts
 
+allwaysscripts = ${scriptsdir}/allways
+dailyscripts = ${scriptsdir}/daily
+monthlyscripts = ${scriptsdir}/monthly
+printscripts = ${scriptsdir}/daily/print-data.rb
+
 srcdir = @srcdir@
 
 COBOL = @COBC@
@@ -522,10 +527,33 @@ COPYS_inc = $(COPYS_sources:.INC.in=.INC)
 all: $(COPYS_inc)
 
 .INC.in.INC: 
-	configure=`sed -n '7s,^# [^ ]*configure *,,p' $(top_builddir)/config.status` && \
+	formdir_len=`echo -n "$(formdir)/"|wc -c|sed -e "s/ //g"` &&\
+	recorddir_len=`echo -n "$(recorddir)/"|wc -c|sed -e "s/ //g"` &&\
+	scriptsdir_len=`echo -n "$(scriptsdir)/"|wc -c|sed -e "s/ //g"` &&\
+	allwaysscripts_len=`echo -n "$(allwaysscripts)/"|wc -c|sed -e "s/ //g"` &&\
+	dailyscripts_len=`echo -n "$(dailyscripts)/"|wc -c|sed -e "s/ //g"` &&\
+	monthlyscripts_len=`echo -n "$(monthlyscripts)/"|wc -c|sed -e "s/ //g"` &&\
+	printscripts_len=`echo -n $(printscripts)|wc -c|sed -e "s/ //g"` &&\
 	sed -e 's,\@prefix\@,$(prefix),g' \
 	    -e 's,\@sitedir\@,$(SITEDIR),g' \
+	    -e 's,\@formdir\@,$(formdir)/,g' \
+	    -e 's,\@recorddir\@,$(recorddir)/,g' \
+	    -e 's,\@scriptsdir\@,$(scriptsdir)/,g' \
+	    -e 's,\@allwaysscripts\@,$(allwaysscripts)/,g' \
+	    -e 's,\@dailyscripts\@,$(dailyscripts)/,g' \
+	    -e 's,\@monthlyscripts\@,$(monthlyscripts)/,g' \
+	    -e 's,\@printscripts\@,$(printscripts),g' \
+	    -e "s,\@formdir_len\@,$$formdir_len,g" \
+	    -e "s,\@recorddir_len\@,$$recorddir_len,g" \
+	    -e "s,\@scriptsdir_len\@,$$scriptsdir_len,g" \
+	    -e "s,\@allwaysscripts_len\@,$$allwaysscripts_len,g" \
+	    -e "s,\@dailyscripts_len\@,$$dailyscripts_len,g" \
+	    -e "s,\@monthlyscripts_len\@,$$monthlyscripts_len,g" \
+	    -e "s,\@printscripts_len\@,$$printscripts_len,g" \
 	  $< > $@
+test:
+	formdir_len=`echo $(formdir)|wc -c` \
+	@echo $$formdir_len
 
 clean: 
 	-rm $(COPYS_inc)

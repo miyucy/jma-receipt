@@ -35,10 +35,6 @@
       *****************************************************************
        01  SHELL-AREA.
            03  SHELL-NAME.
-      *         05  FILLER             PIC  X(32) VALUE
-      *                   "/usr/local/orca/scripts/allways/".
-      *         05  SHELL-SHELL        PIC  X(11).
-      *         05  FILLER             PIC  X(57) VALUE SPACE.
                05  SHELL-SHELL        PIC  X(43).
                05  FILLER             PIC  X(57) VALUE SPACE.
            03  SHELL-ARG1.
