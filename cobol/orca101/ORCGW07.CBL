@@ -659,14 +659,15 @@
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(5)
            MOVE    5                   TO  SPA-GMN-SRYNYKNKNRKBN-MAX
       *
-      *
-           MOVE    "1 診療科・保険組合せ毎"
+           MOVE    "1 診療科・保険組合せ別に発行"
                                        TO  SPA-GMN-HAKHOUFLG-LST(1)
-           MOVE    "2 保険組合せ毎（複数科まとめ）"
+           MOVE    "2 保険組合せ別に発行"
                                        TO  SPA-GMN-HAKHOUFLG-LST(2)
-           MOVE    "3 全体"
+           MOVE    "3 診療科別に発行"
                                        TO  SPA-GMN-HAKHOUFLG-LST(3)
-           MOVE    3                   TO  SPA-GMN-HAKHOUFLG-MAX
+           MOVE    "4 全体をまとめて発行"
+                                       TO  SPA-GMN-HAKHOUFLG-LST(4)
+           MOVE    4                   TO  SPA-GMN-HAKHOUFLG-MAX
       *
            MOVE    "1 伝票の古い未収順に入金"
                                        TO  SPA-GMN-SYUNYKNKNRKBNLST(1)
