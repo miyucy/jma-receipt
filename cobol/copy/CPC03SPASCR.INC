@@ -61,9 +61,10 @@
                                13  SPA-GMN-TDSPSEQ     PIC 9(02).
       *                 
                        09  SPA-GMN-KOUMOKU.
+                         10  SPA-GMN-BUNRUICD          PIC 9(03).
+                         10  SPA-GMN-BUNRUIMEI         PIC X(30).
+                         10  SPA-GMN-KOUMOKU1.
                            11  SPA-GMN-BANGO           PIC 9(05).
-                           11  SPA-GMN-BUNRUICD        PIC 9(03).
-                           11  SPA-GMN-BUNRUIMEI       PIC X(30).
                            11  SPA-GMN-BYOMEIINPUTCD   PIC X(10).
                            11  SPA-GMN-BYOMEICD-G.
                                13  SPA-GMN-BYOMEICD    OCCURS  21
