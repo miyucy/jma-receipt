@@ -146,6 +146,8 @@
                            11  SPA-COM-TIMEFLG       PIC 9(01).
       *                自動発生済フラグ
                        09  SPA-COM-AUTOFLG           PIC X(01).
+      *                残量廃棄自動発生済フラグ
+                       09  SPA-COM-AUTOFLG2           PIC X(01).
       *                計算チェック済フラグ（毎回クリア）
                        09  SPA-COM-SANFLG        PIC 9(01).
       *                逓減検査対象有無（１：逓減有り）

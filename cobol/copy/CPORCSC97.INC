@@ -86,4 +86,6 @@
                05  LNK-SC97-NYUIN-KAISU.
                    07  LNK-SC97-NYU-DAY    PIC 9(02)
                                            OCCURS   31.
+      *        »ÄÎÌÇÑ´þ
+               05  LNK-SC97-AUTOFLG2        PIC X(01).
       *
