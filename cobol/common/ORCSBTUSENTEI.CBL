@@ -28,6 +28,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-小豆沢  05/01/14  選定自己負担定額時に一般と
+      *                                     老人患者の算定額を取得可能に変更
       *****************************************************************
       *
        ENVIRONMENT                         DIVISION.
@@ -107,6 +109,8 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
            COPY    "CPORCSGDAY.INC".
+      *    保険算定用年齢・割合計算サブ
+           COPY    "CPORCSAGECHK.INC".
       *
       *    共通領域
            COPY    "ORCA-DBPATH".
@@ -190,6 +194,18 @@
            PERFORM 2100-GETUMATU-GET-SEC
            MOVE    WRK-YMD             TO  WRK-MMEDYMD
       *
+      *    入院患者の老人判定
+           INITIALIZE   ORCSAGECHKAREA
+           MOVE    SBTUSENTEI-HOSPID   TO  AGECHK-HOSPID
+           MOVE    SBTUSENTEI-PTID     TO  AGECHK-PTID
+           MOVE    WRK-MMSTYMD         TO  AGECHK-SRYYMD
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+           IF      ( AGECHK-RC    =    ZERO )
+               CONTINUE
+           ELSE
+               INITIALIZE    ORCSAGECHKAREA
+           END-IF
       *    病棟情報取得
            PERFORM 2100-SYS-5001-GET-SEC
            IF    ( SBTUSENTEI-RC       NOT =   ZERO )
@@ -278,8 +294,19 @@
                    MOVE    ZERO            TO  SRH-5001-TANKA  (IDX1)
                    MOVE    SYS-5001-SENTEI-TAXKBN
                                            TO  SRH-5001-TAXKBN (IDX1)
-                   MOVE    SYS-5001-SENTEI-KINGAKU
+                   IF   (SYS-5001-SENTEI-KINGAKU-X NOT = SPACE) AND
+                        (SYS-5001-SENTEI-KINGAKU NOT = ZERO)
+                       MOVE    SYS-5001-SENTEI-KINGAKU
                                            TO  SRH-5001-KINGAKU(IDX1)
+                   ELSE
+                       IF   AGECHK-ROUJIN2    =   0
+                           MOVE    SYS-5001-SENTEI-IPN-KINGAKU
+                                           TO  SRH-5001-KINGAKU(IDX1)
+                       ELSE
+                           MOVE    SYS-5001-SENTEI-RJN-KINGAKU
+                                           TO  SRH-5001-KINGAKU(IDX1)
+                       END-IF
+                   END-IF
                WHEN    OTHER
                    MOVE    "1"             TO  SRH-5001-FTNKBN (IDX1)
                    MOVE     10             TO  SRH-5001-TANKA  (IDX1)
