@@ -330,7 +330,9 @@ path	key21		{
 			WHERE	HOSPID      =   :HOSPID 
 			AND	    PTID        =   :PTID
 			AND	    NYUINYMD    <=	:NYUINYMD
-			AND	    JTIKBN      <>	'5'
+			AND	(   (JTIKBN     =   '1'            )
+                 OR (JTIKBN     =   '2'            )
+                 OR (JTIKBN     =   '6'            ) ) 
             AND	(   (NYUINYMD   <=	:NYUINYMD  AND
                      NYUINYMD   >=	:TAIINYMD      )
                 OR  (TAIINYMD   >=  :TAIINYMD      ) )
@@ -349,8 +351,9 @@ path	key22		{
 			AND	    PTID        =   :PTID
 			AND	    NYUINYMD    <=	:NYUINYMD
 			AND	    SHONUM      =	:SHONUM
-			AND	    JTIKBN      <>	'5'
-            AND     HKNCOMBINUM =   :HKNCOMBINUM
+			AND	(   (JTIKBN     =   '1'            )
+                 OR (JTIKBN     =   '2'            )
+                 OR (JTIKBN     =   '6'            ) ) 
 			ORDER BY NYUINYMD,TAIINYMD,RRKNUM,RRKEDANUM
 		;
 	};
@@ -364,11 +367,13 @@ path	key23		{
 			WHERE	HOSPID      =   :HOSPID 
 			AND		PTID        =   :PTID
 			AND		NYUINYMD	<=	:NYUINYMD
-			AND		JTIKBN		<>	'5'
+			AND	(   (JTIKBN     =   '1'            )
+                 OR (JTIKBN     =   '2'            )
+                 OR (JTIKBN     =   '6'            ) ) 
             AND	(   (NYUINYMD	<=	:NYUINYMD  AND
                      NYUINYMD	>=	:TAIINYMD      )
                  OR (TAIINYMD   >=  :TAIINYMD      ) )
-            ORDER BY NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC,RRKEDANUM DESC
+            ORDER BY NYUINYMD DESC,TAIINYMD DESC,TENNYUYMD DESC,TENSTUYMD DESC,RRKNUM DESC,RRKEDANUM DESC
 		;
 	};
 };
