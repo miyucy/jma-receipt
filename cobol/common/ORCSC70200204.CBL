@@ -1064,8 +1064,12 @@
                               (WRK-COM-AUTOKBN(IDX-Z)  =   "K"   )
       *
                MOVE    IDX-Z               TO  IDX-MAX
-      *        明細計算
-               PERFORM 100013-XSEN-KEI-SEC
+               IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "*"
+                   CONTINUE
+               ELSE
+      *            明細計算
+                   PERFORM 100013-XSEN-KEI-SEC
+               END-IF
       *
                IF      WRK-COM-INPUTCD (IDX-Z)(1:1)    =   "1"
                    IF      WRK-COM-DATAKBN (IDX-Z)     =   "1"
@@ -1574,9 +1578,10 @@
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL      (IDX1        >   200     )   OR
                               (FLG-ARI                 =   1    ) OR
-                              (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
-               IF      (WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD ) OR
-                       (WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD-2)
+                              (WRK-GMN-INPUTCD (IDX1)  =   SPACE ) OR
+                              (WRK-GMN-INPUTCD(IDX1)(1:1)  =   "*")
+              IF      (WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD ) OR
+                      (WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD-2)
                     MOVE    IDX1           TO  IDX-T
                     MOVE    1              TO  FLG-ARI
                END-IF
@@ -1751,8 +1756,12 @@
                               (WRK-GMN-INPUTCD(IDX-Z)  =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
-      *        明細計算
-               PERFORM 100013-XSEN-KEI-SEC
+               IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "*"
+                   CONTINUE
+               ELSE
+      *            明細計算
+                   PERFORM 100013-XSEN-KEI-SEC
+               END-IF
       *
                IF      WRK-COM-INPUTCD (IDX-Z)(1:1)    =   "1"
                    IF      WRK-COM-DATAKBN (IDX-Z)     =   "1"
@@ -1825,8 +1834,12 @@
                               (WRK-GMN-INPUTCD(IDX-Z)  =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
-      *        明細計算
-               PERFORM 100013-XSEN-KEI-SEC
+               IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "*"
+                   CONTINUE
+               ELSE
+      *            明細計算
+                   PERFORM 100013-XSEN-KEI-SEC
+               END-IF
       *
                IF      WRK-COM-INPUTCD (IDX-Z)(1:1)   =   "1"
                    IF      WRK-COM-DATAKBN (IDX-Z)    =   "1"
@@ -1912,8 +1925,12 @@
                               (WRK-GMN-INPUTCD(IDX-Z)  =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
-      *        明細計算
-               PERFORM 100013-XSEN-KEI-SEC
+               IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "*"
+                   CONTINUE
+               ELSE
+      *            明細計算
+                   PERFORM 100013-XSEN-KEI-SEC
+               END-IF
       *
                IF      WRK-COM-INPUTCD (IDX-Z)(1:1)    =   "1"
                    IF      WRK-COM-DATAKBN (IDX-Z)     =   "1"
