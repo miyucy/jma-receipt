@@ -4547,6 +4547,10 @@
       *****************************************************************
        410112-KOUI-SPACHK-SEC               SECTION.
       *
+           IF      WRK-STR             =   ZERO
+               MOVE    1               TO  WRK-STR
+           END-IF
+      *
       *    変換・削除処理
            MOVE    WRK-STR             TO  SPA-GMN-IDX
            MOVE    ZERO                TO  WRK-IDX2
@@ -5022,6 +5026,9 @@
                MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
            ELSE
                MOVE    WRK-IN-IDX          TO  SPA-GMN-IDX
+           END-IF
+           IF      SPA-GMN-IDX         =   ZERO
+               GO      TO      410119-SAIINPUT-EXT
            END-IF
       *
       *    数量・回数入力なし
@@ -6859,6 +6866,10 @@
                                            WRK-SCR-REC
                                            SPA-AREA
       *************PERFORM 510212-SRYKBN-95-SEC
+      *            食事
+               WHEN    "97"
+                   MOVE    "9020"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (01)
            END-EVALUATE
       *
       *****MOVE    LNK-ORCSC-GMN-IDX   TO  SPA-GMN-IDX

@@ -33,6 +33,7 @@
       *  01.00.04    NACL-多々納  02/09/18  内服薬粉砕の追加
       *  01.00.05    NACL-多々納  02/10/18  入院の追加
       *  01.00.06    NACL-多々納  02/11/20  自賠責器材追加
+      *  01.00.07    NACL-多々納  02/12/02  食事の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2026,6 +2027,10 @@
                            ADD     SPA-NAI-HKNTEN(IDX-NAI)
                                                TO  SPA-GMN-HKNTEN (09)
                        WHEN    "8"
+                           ADD     SPA-NAI-HKNTEN(IDX-NAI)
+                                               TO  SPA-GMN-HKNTEN (10)
+      *                食事
+                       WHEN    "9"
                            ADD     SPA-NAI-HKNTEN(IDX-NAI)
                                                TO  SPA-GMN-HKNTEN (10)
                    END-EVALUATE
