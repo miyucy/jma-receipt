@@ -6509,13 +6509,13 @@
       *Ê¿À®£±£´Ç¯£±£°·î²þÀµÂÐ±þ
       *¹âÎð¼Ô¤ÎºßÂðÁí¹ç¡¦ºßÂðËö´ü»»Äê´µ¼Ô
       *
-           IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1")
-           OR  (FLG-SYUHEN                   =   "1")
-               MOVE    "DBFETCH"           TO  MCP-FUNC
+      **>  IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1")
+      **>  OR  (FLG-SYUHEN                   =   "1")
+               MOVE    "DBFETCH"           TO  MCP-FUNC.
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
-                                            MCPDATA-REC
+                                            MCPDATA-REC.
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC     TO  SYU-SYUNOU-REC
                    IF     (LNK-S01-SAIKEISAN-KBN    =   "1")    AND
@@ -6527,26 +6527,26 @@
                ELSE
                    INITIALIZE                  SYU-SYUNOU-REC
                    MOVE    1               TO  FLG-SYUNOU
-               END-IF
-           ELSE
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYU-SYUNOU-REC
-                   IF     (LNK-S01-SAIKEISAN-KBN    =   "1")    AND
-                          (LNK-S01-SAIKEISAN-DENPYO <=   SYU-DENPNUM)
-                           GO    TO    SYUNOU-READ-100
-                   ELSE
-                           MOVE    ZERO    TO  FLG-SYUNOU
-                   END-IF
-               ELSE
-                   INITIALIZE                  SYU-SYUNOU-REC
-                   MOVE    1               TO  FLG-SYUNOU
-               END-IF
-           END-IF.
+               END-IF.
+      **>  ELSE
+      **>      MOVE    "DBFETCH"           TO  MCP-FUNC
+      **>      CALL    "ORCMCPSUB"          USING
+      **>                                   MCPAREA
+      **>                                   ORCMCPAREA
+      **>                                   MCPDATA-REC
+      **>      IF      MCP-RC              =   ZERO
+      **>          MOVE    MCPDATA-REC     TO  SYU-SYUNOU-REC
+      **>          IF     (LNK-S01-SAIKEISAN-KBN    =   "1")    AND
+      **>                 (LNK-S01-SAIKEISAN-DENPYO <=   SYU-DENPNUM)
+      **>                  GO    TO    SYUNOU-READ-100
+      **>          ELSE
+      **>                  MOVE    ZERO    TO  FLG-SYUNOU
+      **>          END-IF
+      **>      ELSE
+      **>          INITIALIZE                  SYU-SYUNOU-REC
+      **>          MOVE    1               TO  FLG-SYUNOU
+      **>      END-IF
+      **>  END-IF.
       *----(01.00.23) LINE MOD END   --------------------------
       *
        SYUNOU-READ-EXT.
