@@ -730,10 +730,7 @@
       *                 (ACCT-ZAITEN     NOT =  ZERO)
       *                 PERFORM T-100-RECECHEK-HANTI-SEC
       *             END-IF
-                   IF  ((ACCT-ZAIKAISU   NOT =  ZERO)  AND
-                        (ACCT-ZAITEN     NOT =  ZERO))  OR
-                       ((ACCT-ZAIKAISU       =   1)    AND
-                        (ACCT-ZAITEN         =  ZERO))
+                   IF  ACCT-ZAIKAISU   NOT =  ZERO
                        PERFORM T-100-RECECHEK-HANTI-SEC
                    END-IF
       *½¤Àµ/*½ªÎ»*02.12.18*********************************************
