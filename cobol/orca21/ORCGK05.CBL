@@ -135,10 +135,7 @@
       *
            03  FLG-SST             PIC 9(01).
       *
-           03  FLG-NAIYAK          PIC X(01).
-           03  FLG-TONPUK          PIC X(01).
-           03  FLG-GAIYAK          PIC X(01).
-           03  FLG-ARI             PIC X(01).
+           03  FLG-ARI             PIC 9(01).
       *    時間外加算用
            03  FLG-DELFLG          PIC 9(01).
            03  FLG-ZAIEND          PIC 9(01).

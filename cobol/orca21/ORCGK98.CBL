@@ -1111,21 +1111,21 @@
                    MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
                    MOVE    "600000000"          TO  TNS-SRYCD
                    MOVE    "699999999"          TO  TNSUP-SRYCD
-                   MOVE    "1"                  TO  TNS-YKZKBN
+                   MOVE    1                    TO  TNS-YKZKBN
                    MOVE    "1"                  TO  SPA-K98-GMN-ALL
                WHEN    "J2"
       *            憤情’陸迕
                    MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
                    MOVE    "600000000"          TO  TNS-SRYCD
                    MOVE    "699999999"          TO  TNSUP-SRYCD
-                   MOVE    "6"                  TO  TNS-YKZKBN
+                   MOVE    6                    TO  TNS-YKZKBN
                    MOVE    "1"                  TO  SPA-K98-GMN-ALL
                WHEN    "J3"
       *            憤情’鏜槨
                    MOVE    "TENSU-KEY11M1"      TO  WRK-PATH
                    MOVE    "600000000"          TO  TNS-SRYCD
                    MOVE    "699999999"          TO  TNSUP-SRYCD
-                   MOVE    "4"                  TO  TNS-YKZKBN
+                   MOVE    4                    TO  TNS-YKZKBN
                    MOVE    "1"                  TO  SPA-K98-GMN-ALL
                WHEN    "J4"
       *            憤情’質譆
