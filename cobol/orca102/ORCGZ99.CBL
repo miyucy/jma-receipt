@@ -363,16 +363,38 @@
            END-IF
       *
       *    登録時、必須入力チェック
-      *    IF      FLG-TOUROKU         =   1
-      *        PERFORM 4109-TOUROKU-CHK-SEC
-      *        IF      SPA-ERRCD       NOT =   SPACE
-      *            GO      TO      410-INPUT-CHK-EXT
-      *        END-IF
-      *    END-IF
+           IF      FLG-TOUROKU         =   1
+               PERFORM 4109-TOUROKU-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      410-INPUT-CHK-EXT
+               END-IF
+           END-IF
       *
            .
       *
        410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    登録時力チェック処理
+      *****************************************************************
+       4109-TOUROKU-CHK-SEC          SECTION.
+      *
+           IF     (SPA-Z99GMN-INPUTCD(1)   NOT =   SPACE )  AND
+                  (SPA-Z99GMN-INPUTCD(1)(3:)   =   SPACE )  AND
+                  (SPA-Z99NAI-CDSYU  (1)       =   "J"   )
+      *        表示のキーが全角１文字数字はエラー
+               IF      SPA-Z99GMN-INPUTCD(1)(1:2)  >=  "０"  AND
+                                                   <=  "９"
+                   MOVE    "0011"          TO  SPA-ERRCD
+                   MOVE    1               TO  SPA-Z99GMN-CUR
+                   MOVE    01              TO  SPA-Z99GMN-IDX
+               END-IF
+           END-IF
+      *
+           .
+      *
+       4109-TOUROKU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -954,6 +976,10 @@
                WHEN    "0010"
                    MOVE
                    "入力コードには使用できない記号があります。"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0011"
+                   MOVE
+                   "表示入力コードに全角１文字の数字は使用できません"
                                                  TO  SPA-ERRMSG
            END-EVALUATE.
       *

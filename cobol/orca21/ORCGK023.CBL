@@ -1230,8 +1230,39 @@
            PERFORM 2002-GMNSPA-SET-SEC
       *    入力チェック処理
            PERFORM 220-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41001-KIHON-CHK-EXT
+           END-IF
+      *    全体チェック
+           PERFORM 230-INPUT-ALL-SEC
            .
        41001-KIHON-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    全体チェック処理
+      *****************************************************************
+       230-INPUT-ALL-SEC         SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   SPA-K023-MAX )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+      *        画面表示コードが全角１文字数字をエラーとする
+               IF     (SPA-K023-INPUTCD (IDX 1)  NOT =   SPACE)  AND
+                      (SPA-K023-CDSYU   (IDX 1)  =   "J"  )  AND
+                      (SPA-K023-INPUTCD (IDX 1)(3:)
+                                                  =   SPACE )
+                   IF      SPA-K023-INPUTCD (IDX 1)(1:2)
+                                                   >=  "０"   AND
+                                                   <= "９"
+                       MOVE    "0009"              TO  SPA-ERRCD
+                       MOVE    1                   TO  SPA-K023-CUR
+                       MOVE    IDX                 TO  SPA-K023-MAP
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       230-INPUT-ALL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1447,6 +1478,10 @@
                WHEN    "0008"
                    MOVE
                    "入力コードには使用できない記号があります。"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0009"
+                   MOVE
+                   "表示入力コードに全角１文字の数字は使用できません"
                                                  TO  SPA-ERRMSG
            END-EVALUATE
       *
