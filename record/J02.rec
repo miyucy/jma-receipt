@@ -31,97 +31,97 @@ J02	{
 			value	varchar(2);
 		};
 		DAY01	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY02	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY03	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY04	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY05	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY06	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY07	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY08	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY09	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY10	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY11	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY12	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY13	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY14	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY15	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY16	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY17	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY18	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY19	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY20	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY21	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY22	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY23	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY24	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY25	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY26	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY27	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY28	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY29	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY30	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		DAY31	{
-			value	varchar(2);
+			value	varchar(3);
 		};
 		RRKSELNUM	{
 			value	varchar(3);
