@@ -638,10 +638,10 @@
            MOVE    "RECE651"           TO  RECE651PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE651PARA-TERMID
       *
-           MOVE    "RECE649"           TO  RECE649PARA-FILE-ID
+           MOVE    "RECE64Y"           TO  RECE649PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE649PARA-TERMID
       *
-           MOVE    "RECE659"           TO  RECE659PARA-FILE-ID
+           MOVE    "RECE65Y"           TO  RECE659PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE659PARA-TERMID
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
