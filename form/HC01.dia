@@ -7153,262 +7153,258 @@
         </composite>
       </attribute>
     </object>
-    <group>
-      <object type="ORCA - Text" version="0" id="O261">
-        <attribute name="obj_pos">
-          <point val="5.2,4.9"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="5.2,4.37965;10.149,5.07965"/>
-        </attribute>
-        <attribute name="orca_id">
-          <string>#JKYSNO1#</string>
-        </attribute>
-        <attribute name="orca_type">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="orca_size">
-          <int val="14"/>
-        </attribute>
-        <attribute name="orca_hankaku">
-          <boolean val="false"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#163;&#177;&#163;&#178;&#163;&#179;&#163;&#180;&#163;&#181;&#163;&#182;&#163;&#183;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.7"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="5.2,4.9"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="ORCA - Text" version="0" id="O262">
-        <attribute name="obj_pos">
-          <point val="5.2,25.4"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="5.2,24.8796;10.149,25.5796"/>
-        </attribute>
-        <attribute name="orca_id">
-          <string>#JKYSNO2#</string>
-        </attribute>
-        <attribute name="orca_type">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="orca_size">
-          <int val="14"/>
-        </attribute>
-        <attribute name="orca_hankaku">
-          <boolean val="false"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#163;&#177;&#163;&#178;&#163;&#179;&#163;&#180;&#163;&#181;&#163;&#182;&#163;&#183;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.7"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="5.2,25.4"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="ORCA - Text" version="0" id="O263">
-        <attribute name="obj_pos">
-          <point val="14.2,25.4"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="14.2,24.8796;19.149,25.5796"/>
-        </attribute>
-        <attribute name="orca_id">
-          <string>#JKYSNO3#</string>
-        </attribute>
-        <attribute name="orca_type">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="orca_size">
-          <int val="14"/>
-        </attribute>
-        <attribute name="orca_hankaku">
-          <boolean val="false"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#163;&#177;&#163;&#178;&#163;&#179;&#163;&#180;&#163;&#181;&#163;&#182;&#163;&#183;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.7"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="14.2,25.4"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-    </group>
-    <group>
-      <object type="ORCA - Text" version="0" id="O264">
-        <attribute name="obj_pos">
-          <point val="5.2,4"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="5.2,3.47965;10.856,4.17965"/>
-        </attribute>
-        <attribute name="orca_id">
-          <string>#FTNSNO1#</string>
-        </attribute>
-        <attribute name="orca_type">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="orca_size">
-          <int val="16"/>
-        </attribute>
-        <attribute name="orca_hankaku">
-          <boolean val="false"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#163;&#177;&#163;&#178;&#163;&#179;&#163;&#180;&#163;&#181;&#163;&#182;&#163;&#183;&#163;&#184;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.7"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="5.2,4"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="ORCA - Text" version="0" id="O265">
-        <attribute name="obj_pos">
-          <point val="5.2,24.5"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="5.2,23.9796;10.856,24.6796"/>
-        </attribute>
-        <attribute name="orca_id">
-          <string>#FTNSNO2#</string>
-        </attribute>
-        <attribute name="orca_type">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="orca_size">
-          <int val="16"/>
-        </attribute>
-        <attribute name="orca_hankaku">
-          <boolean val="false"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#163;&#177;&#163;&#178;&#163;&#179;&#163;&#180;&#163;&#181;&#163;&#182;&#163;&#183;&#163;&#184;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.7"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="5.2,24.5"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-      <object type="ORCA - Text" version="0" id="O266">
-        <attribute name="obj_pos">
-          <point val="14.2,24.5"/>
-        </attribute>
-        <attribute name="obj_bb">
-          <rectangle val="14.2,23.9796;19.856,24.6796"/>
-        </attribute>
-        <attribute name="orca_id">
-          <string>#FTNSNO3#</string>
-        </attribute>
-        <attribute name="orca_type">
-          <enum val="0"/>
-        </attribute>
-        <attribute name="orca_size">
-          <int val="16"/>
-        </attribute>
-        <attribute name="orca_hankaku">
-          <boolean val="false"/>
-        </attribute>
-        <attribute name="text">
-          <composite type="text">
-            <attribute name="string">
-              <string>#&#163;&#177;&#163;&#178;&#163;&#179;&#163;&#180;&#163;&#181;&#163;&#182;&#163;&#183;&#163;&#184;#</string>
-            </attribute>
-            <attribute name="font">
-              <font name="Courier"/>
-            </attribute>
-            <attribute name="height">
-              <real val="0.7"/>
-            </attribute>
-            <attribute name="pos">
-              <point val="14.2,24.5"/>
-            </attribute>
-            <attribute name="color">
-              <color val="#000000"/>
-            </attribute>
-            <attribute name="alignment">
-              <enum val="0"/>
-            </attribute>
-          </composite>
-        </attribute>
-      </object>
-    </group>
+    <object type="ORCA - Text" version="0" id="O261">
+      <attribute name="obj_pos">
+        <point val="5.2,4.9"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="5.2,4.37965;10.149,5.07965"/>
+      </attribute>
+      <attribute name="orca_id">
+        <string>#JKYSNO1#</string>
+      </attribute>
+      <attribute name="orca_type">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="orca_size">
+        <int val="14"/>
+      </attribute>
+      <attribute name="orca_hankaku">
+        <boolean val="false"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#163;&#177;&#163;&#178;&#163;&#179;&#163;&#180;&#163;&#181;&#163;&#182;&#163;&#183;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.7"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="5.2,4.9"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="ORCA - Text" version="0" id="O262">
+      <attribute name="obj_pos">
+        <point val="5.2,25.4"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="5.2,24.8796;10.149,25.5796"/>
+      </attribute>
+      <attribute name="orca_id">
+        <string>#JKYSNO2#</string>
+      </attribute>
+      <attribute name="orca_type">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="orca_size">
+        <int val="14"/>
+      </attribute>
+      <attribute name="orca_hankaku">
+        <boolean val="false"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#163;&#177;&#163;&#178;&#163;&#179;&#163;&#180;&#163;&#181;&#163;&#182;&#163;&#183;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.7"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="5.2,25.4"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="ORCA - Text" version="0" id="O263">
+      <attribute name="obj_pos">
+        <point val="14.2,25.4"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="14.2,24.8796;19.149,25.5796"/>
+      </attribute>
+      <attribute name="orca_id">
+        <string>#JKYSNO3#</string>
+      </attribute>
+      <attribute name="orca_type">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="orca_size">
+        <int val="14"/>
+      </attribute>
+      <attribute name="orca_hankaku">
+        <boolean val="false"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#163;&#177;&#163;&#178;&#163;&#179;&#163;&#180;&#163;&#181;&#163;&#182;&#163;&#183;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.7"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="14.2,25.4"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="ORCA - Text" version="0" id="O264">
+      <attribute name="obj_pos">
+        <point val="5.2,4"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="5.2,3.47965;10.856,4.17965"/>
+      </attribute>
+      <attribute name="orca_id">
+        <string>#FTNSNO1#</string>
+      </attribute>
+      <attribute name="orca_type">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="orca_size">
+        <int val="16"/>
+      </attribute>
+      <attribute name="orca_hankaku">
+        <boolean val="false"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#163;&#177;&#163;&#178;&#163;&#179;&#163;&#180;&#163;&#181;&#163;&#182;&#163;&#183;&#163;&#184;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.7"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="5.2,4"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="ORCA - Text" version="0" id="O265">
+      <attribute name="obj_pos">
+        <point val="5.2,24.5"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="5.2,23.9796;10.856,24.6796"/>
+      </attribute>
+      <attribute name="orca_id">
+        <string>#FTNSNO2#</string>
+      </attribute>
+      <attribute name="orca_type">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="orca_size">
+        <int val="16"/>
+      </attribute>
+      <attribute name="orca_hankaku">
+        <boolean val="false"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#163;&#177;&#163;&#178;&#163;&#179;&#163;&#180;&#163;&#181;&#163;&#182;&#163;&#183;&#163;&#184;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.7"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="5.2,24.5"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="ORCA - Text" version="0" id="O266">
+      <attribute name="obj_pos">
+        <point val="14.2,24.5"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="14.2,23.9796;19.856,24.6796"/>
+      </attribute>
+      <attribute name="orca_id">
+        <string>#FTNSNO3#</string>
+      </attribute>
+      <attribute name="orca_type">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="orca_size">
+        <int val="16"/>
+      </attribute>
+      <attribute name="orca_hankaku">
+        <boolean val="false"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#163;&#177;&#163;&#178;&#163;&#179;&#163;&#180;&#163;&#181;&#163;&#182;&#163;&#183;&#163;&#184;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.7"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="14.2,24.5"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
     <group>
       <object type="ORCA - Text" version="0" id="O267">
         <attribute name="obj_pos">
@@ -11793,5 +11789,257 @@
         </attribute>
       </object>
     </group>
+    <object type="ORCA - Text" version="0" id="O369">
+      <attribute name="obj_pos">
+        <point val="5.3,4.8"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="5.3,4.46549;9.845,4.91549"/>
+      </attribute>
+      <attribute name="orca_id">
+        <string>#JKYSNON1#</string>
+      </attribute>
+      <attribute name="orca_type">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="orca_size">
+        <int val="20"/>
+      </attribute>
+      <attribute name="orca_hankaku">
+        <boolean val="false"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.45"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="5.3,4.8"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="ORCA - Text" version="0" id="O370">
+      <attribute name="obj_pos">
+        <point val="5.3,25.3"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="5.3,24.9655;9.845,25.4155"/>
+      </attribute>
+      <attribute name="orca_id">
+        <string>#JKYSNON2#</string>
+      </attribute>
+      <attribute name="orca_type">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="orca_size">
+        <int val="20"/>
+      </attribute>
+      <attribute name="orca_hankaku">
+        <boolean val="false"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.45"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="5.3,25.3"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="ORCA - Text" version="0" id="O371">
+      <attribute name="obj_pos">
+        <point val="14.3,25.3"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="14.3,24.9655;18.845,25.4155"/>
+      </attribute>
+      <attribute name="orca_id">
+        <string>#JKYSNON3#</string>
+      </attribute>
+      <attribute name="orca_type">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="orca_size">
+        <int val="20"/>
+      </attribute>
+      <attribute name="orca_hankaku">
+        <boolean val="false"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.45"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="14.3,25.3"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="ORCA - Text" version="0" id="O372">
+      <attribute name="obj_pos">
+        <point val="5.3,3.9"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="5.3,3.56549;9.845,4.01549"/>
+      </attribute>
+      <attribute name="orca_id">
+        <string>#FTNSNON1#</string>
+      </attribute>
+      <attribute name="orca_type">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="orca_size">
+        <int val="20"/>
+      </attribute>
+      <attribute name="orca_hankaku">
+        <boolean val="false"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.45"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="5.3,3.9"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="ORCA - Text" version="0" id="O373">
+      <attribute name="obj_pos">
+        <point val="5.3,24.4"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="5.3,24.0655;9.845,24.5155"/>
+      </attribute>
+      <attribute name="orca_id">
+        <string>#FTNSNON2#</string>
+      </attribute>
+      <attribute name="orca_type">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="orca_size">
+        <int val="20"/>
+      </attribute>
+      <attribute name="orca_hankaku">
+        <boolean val="false"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.45"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="5.3,24.4"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="ORCA - Text" version="0" id="O374">
+      <attribute name="obj_pos">
+        <point val="14.3,24.4"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="14.3,24.0655;18.845,24.5155"/>
+      </attribute>
+      <attribute name="orca_id">
+        <string>#FTNSNON3#</string>
+      </attribute>
+      <attribute name="orca_type">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="orca_size">
+        <int val="20"/>
+      </attribute>
+      <attribute name="orca_hankaku">
+        <boolean val="false"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.45"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="14.3,24.4"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
   </layer>
 </diagram>

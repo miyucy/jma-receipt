@@ -39,6 +39,7 @@
       *  01.00.10    MCC-多々納   02/05/07  全角変換の追加
       *  01.00.11    MCC-多々納   02/05/23  労災の追加
       *  01.00.12    NACL-多々納  02/09/13  自賠責・印刷サプの追加
+      *  01.00.13    NACL-多々納  02/11/01  受給者番号の全角８文字以上対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -185,7 +186,8 @@
       *---- (01.00.01) LINE ADD END   ----------------------------                          
            03  WRK-HPTNUM          PIC X(08). 
            03  WRK-FTNSNO          PIC X(16).
-           03  WRK-JKYSNO          PIC X(16).
+      *****03  WRK-JKYSNO          PIC X(16).
+           03  WRK-JKYSNO          PIC X(20).
            03  WRK-TEKSTYMD        PIC X(22).
            03  WRK-TEKEDYMD        PIC X(22).
       *
@@ -841,7 +843,12 @@
                IF      FLG-PTKOHINF          =   ZERO
                    PERFORM 3102-PTKOHINF-HEN-SEC
                    MOVE    WRK-FTNSNO      TO  HC01-FTNSNO (IDY)
-                   MOVE    WRK-JKYSNO      TO  HC01-JKYSNO (IDY)
+      *************MOVE    WRK-JKYSNO      TO  HC01-JKYSNO (IDY)
+                   IF      WRK-JKYSNO(15:)     =   SPACE
+                       MOVE    WRK-JKYSNO      TO  HC01-JKYSNO (IDY)
+                   ELSE
+                       MOVE    WRK-JKYSNO      TO  HC01-JKYSNON(IDY)
+                   END-IF
                ELSE
                    MOVE    "平成　　年　　月　　日"
                                            TO  WRK-TEKSTYMD
@@ -1004,13 +1011,16 @@
            MOVE    PTKOH-JKYSNUM       TO  WRK-MAE-INPUT
            MOVE    14                  TO  WRK-MOJISU
            PERFORM 2009-HENKAN-SEC
-           IF      KANACHK-MAX         >   14
-               COMPUTE WRK-MOJISU      =   KANACHK-MAX   -   14
-                                       +   1
-               MOVE    WRK-OUT-INPUT(WRK-MOJISU:14) TO  WRK-JKYSNO
-           ELSE
-               MOVE    WRK-OUT-INPUT(1:14)        TO  WRK-JKYSNO
-           END-IF
+      **** IF      KANACHK-MAX         >   14
+      *        COMPUTE WRK-MOJISU      =   KANACHK-MAX   -   14
+      *                                +   1
+      *        MOVE    WRK-OUT-INPUT(WRK-MOJISU:14) TO  WRK-JKYSNO
+      *    ELSE
+      *        MOVE    WRK-OUT-INPUT(1:14)        TO  WRK-JKYSNO
+      *****END-IF
+           MOVE    SPACE               TO  WRK-JKYSNO
+           MOVE    WRK-OUT-INPUT(1:KANACHK-MAX)
+                                       TO  WRK-JKYSNO
       *
       *    適用開始年月日
            MOVE    PTKOH-TEKSTYMD      TO  WRK-SYMD

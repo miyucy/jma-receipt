@@ -11,9 +11,19 @@
         <embed object="string" type="X" length="16"/>
       </appinfo>
     </element>
+    <element name="FTNJAN" occurs="1">
+      <appinfo>
+        <embed object="string" type="X" length="20"/>
+      </appinfo>
+    </element>
     <element name="JKYSNUM" occurs="1">
       <appinfo>
         <embed object="string" type="X" length="14"/>
+      </appinfo>
+    </element>
+    <element name="JKYSNUMN" occurs="1">
+      <appinfo>
+        <embed object="string" type="X" length="20"/>
       </appinfo>
     </element>
     <element name="HKNJA" occurs="1">
@@ -91,9 +101,19 @@
         <embed object="string" type="X" length="16"/>
       </appinfo>
     </element>
+    <element name="FTNJA2N" occurs="1">
+      <appinfo>
+        <embed object="string" type="X" length="20"/>
+      </appinfo>
+    </element>
     <element name="JKYSNUM2" occurs="1">
       <appinfo>
         <embed object="string" type="X" length="14"/>
+      </appinfo>
+    </element>
+    <element name="JKYSNUM2N" occurs="1">
+      <appinfo>
+        <embed object="string" type="X" length="20"/>
       </appinfo>
     </element>
     <element name="NAIYO" occurs="20">
@@ -9098,6 +9118,174 @@
           </attribute>
           <attribute name="multi">
             <real val="0.1414"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O285">
+      <attribute name="obj_pos">
+        <point val="2.725,2.9"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="2.725,2.63982;6.26,2.98982"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#FTNJAN#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.35"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="2.725,2.9"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O286">
+      <attribute name="obj_pos">
+        <point val="2.725,3.4"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="2.725,3.13982;6.26,3.48982"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#JKYSNUMN#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.35"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="2.725,3.4"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O287">
+      <attribute name="obj_pos">
+        <point val="10.025,19"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="10.025,18.7398;13.56,19.0898"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#FTNJA2N#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.35"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="10.025,19"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O288">
+      <attribute name="obj_pos">
+        <point val="10.025,19.5"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="10.025,19.2398;13.56,19.5898"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#JKYSNUM2N#</string>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.35"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="10.025,19.5"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>

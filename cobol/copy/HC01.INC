@@ -72,3 +72,7 @@
               03  HC01-BYOMEI-TBL   OCCURS  8.
                   05  HC01-BYOMEIG.
                       07 HC01-BYOMEI       PIC  X(112).
+              03  HC01-JKOHN-TBL       OCCURS  3.
+                  05  HC01-JKYSNON     PIC  X(20).
+              03  HC01-FKOHN-TBL       OCCURS  3.
+                  05  HC01-FTNSNON     PIC  X(20).

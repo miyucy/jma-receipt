@@ -30,6 +30,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/10/07  在宅薬剤・器材の院外用追加
+      * 01.00.02     NACL-多々納  02/10/25  入院対応
+      * 01.00.03     NACL-多々納  02/11/01  受給者番号の全角８文字以上対応
       *****************************************************************
       *
       *
@@ -147,11 +149,14 @@
            03  WRK-HKNJA-G         PIC X(16).
       *
            03  WRK-FTNSNO          PIC X(16).
-           03  WRK-JKYSNO          PIC X(14).
+      *****03  WRK-JKYSNO          PIC X(14).
+           03  WRK-JKYSNO          PIC X(20).
            03  WRK-FTNJA1          PIC X(16).
-           03  WRK-JKYSNUM1        PIC X(14).
+      **** 03  WRK-JKYSNUM1        PIC X(14).
+           03  WRK-JKYSNUM1        PIC X(20).
            03  WRK-FTNJA2          PIC X(16).
-           03  WRK-JKYSNUM2        PIC X(14).
+      **** 03  WRK-JKYSNUM2        PIC X(14).
+           03  WRK-JKYSNUM2        PIC X(20).
       *
            03  WRK-SURYO           PIC 9(05)V9(03).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
@@ -848,13 +853,16 @@
       *    受給者番号
            MOVE    PTKOH-JKYSNUM       TO  WRK-MOJI
            PERFORM 2009-HENKAN-SEC
-           IF      KANACHK-MAX         >   14
-               COMPUTE WRK-MOJISU      =   KANACHK-MAX   -   14
-                                       +   1
-               MOVE    WRK-ZENKAKU-G(WRK-MOJISU:14) TO  WRK-JKYSNO
-           ELSE
-               MOVE    WRK-ZENKAKU-G(1:14)        TO  WRK-JKYSNO
-           END-IF
+      *****IF      KANACHK-MAX         >   14
+      *        COMPUTE WRK-MOJISU      =   KANACHK-MAX   -   14
+      *                                +   1
+      *        MOVE    WRK-ZENKAKU-G(WRK-MOJISU:14) TO  WRK-JKYSNO
+      *    ELSE
+      *        MOVE    WRK-ZENKAKU-G(1:14)        TO  WRK-JKYSNO
+      *****END-IF
+           MOVE    SPACE               TO  WRK-JKYSNO
+           MOVE    WRK-ZENKAKU-G(1:KANACHK-MAX)
+                                       TO  WRK-JKYSNO
       *
            .
        3102-PTKOHINF-HEN-EXT.
@@ -923,6 +931,7 @@
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+      **** MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    WRK-SRYYMD          TO  JYURRK-SRYYMD
            MOVE    WRK-RENNUM          TO  JYURRK-RENNUM
       *
@@ -1016,6 +1025,7 @@
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+     ****  MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1145,10 +1155,22 @@
       *
       *    公費負担者番号
            MOVE    WRK-FTNJA1          TO  HCM19-FTNJA
-           MOVE    WRK-JKYSNUM1        TO  HCM19-JKYSNUM
+      *****MOVE    WRK-JKYSNUM1        TO  HCM19-JKYSNUM
+      *    ７文字以上判定
+           IF      WRK-JKYSNUM1(15:)   =   SPACE
+               MOVE    WRK-JKYSNUM1        TO  HCM19-JKYSNUM
+           ELSE
+               MOVE    WRK-JKYSNUM1        TO  HCM19-JKYSNUMN
+           END-IF
       *
            MOVE    WRK-FTNJA2          TO  HCM19-FTNJA2
-           MOVE    WRK-JKYSNUM2        TO  HCM19-JKYSNUM2
+      **** MOVE    WRK-JKYSNUM2        TO  HCM19-JKYSNUM2
+      *    ７文字以上判定
+           IF      WRK-JKYSNUM2(15:)   =   SPACE
+               MOVE    WRK-JKYSNUM2        TO  HCM19-JKYSNUM2
+           ELSE
+               MOVE    WRK-JKYSNUM2        TO  HCM19-JKYSNUM2N
+           END-IF
       *
       *    処方内容
            PERFORM VARYING     IDX2    FROM    1   BY  1
