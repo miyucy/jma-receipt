@@ -17,26 +17,26 @@
       ********************************************************************
         01  SHELLTBL.
             02  SHELLTBL-NAME   PIC X(200).
-            02  SHELLTBL-ARG1   PIC X(100).
-            02  SHELLTBL-ARG2   PIC X(100).
-            02  SHELLTBL-ARG3   PIC X(100).
-            02  SHELLTBL-ARG4   PIC X(100).
-            02  SHELLTBL-ARG5   PIC X(100).
-            02  SHELLTBL-ARG6   PIC X(100).
-            02  SHELLTBL-ARG7   PIC X(100).
-            02  SHELLTBL-ARG8   PIC X(100).
-            02  SHELLTBL-ARG9   PIC X(100).
-            02  SHELLTBL-ARG10  PIC X(100).
-            02  SHELLTBL-ARG11  PIC X(100).
-            02  SHELLTBL-ARG12  PIC X(100).
-            02  SHELLTBL-ARG13  PIC X(100).
-            02  SHELLTBL-ARG14  PIC X(100).
-            02  SHELLTBL-ARG15  PIC X(100).
-            02  SHELLTBL-ARG16  PIC X(100).
-            02  SHELLTBL-ARG17  PIC X(100).
-            02  SHELLTBL-ARG18  PIC X(100).
-            02  SHELLTBL-ARG19  PIC X(100).
-            02  SHELLTBL-ARG20  PIC X(100).
+            02  SHELLTBL-ARG1   PIC X(150).
+            02  SHELLTBL-ARG2   PIC X(150).
+            02  SHELLTBL-ARG3   PIC X(150).
+            02  SHELLTBL-ARG4   PIC X(150).
+            02  SHELLTBL-ARG5   PIC X(150).
+            02  SHELLTBL-ARG6   PIC X(150).
+            02  SHELLTBL-ARG7   PIC X(150).
+            02  SHELLTBL-ARG8   PIC X(150).
+            02  SHELLTBL-ARG9   PIC X(150).
+            02  SHELLTBL-ARG10  PIC X(150).
+            02  SHELLTBL-ARG11  PIC X(150).
+            02  SHELLTBL-ARG12  PIC X(150).
+            02  SHELLTBL-ARG13  PIC X(150).
+            02  SHELLTBL-ARG14  PIC X(150).
+            02  SHELLTBL-ARG15  PIC X(150).
+            02  SHELLTBL-ARG16  PIC X(150).
+            02  SHELLTBL-ARG17  PIC X(150).
+            02  SHELLTBL-ARG18  PIC X(150).
+            02  SHELLTBL-ARG19  PIC X(150).
+            02  SHELLTBL-ARG20  PIC X(150).
             02  SHELLTBL-ARG21  PIC X(100).
             02  SHELLTBL-ARG22  PIC X(100).
             02  SHELLTBL-ARG23  PIC X(100).
