@@ -27,6 +27,7 @@
       *
       *  01.01.01    NACL-藤原    02/08/20  新傷病名マスタ対応
       *  01.01.02    NACL-藤原    03/12/17  新患者病名マスタ対応
+      *  01.01.03    NACL-藤原    04/07/12  検索用病名の追加
       *****************************************************************
       *
       *01  SPA-SCR-REC.
@@ -67,6 +68,7 @@
                                13  SPA-NAI-THAISIYMDH  PIC X(22).
                                13  SPA-NAI-THAISIYMD   PIC X(08).
                                13  SPA-NAI-TIKOSAKICD  PIC X(07).
+                       09  SPA-NAI-BYOKEN              PIC X(40).
       *                病名コード移行用領域
                        09  SPA-C05-IKOSAKI-BYOMEICD
                                                        PIC X(07).
