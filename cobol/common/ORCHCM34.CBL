@@ -3113,7 +3113,8 @@
            END-IF
       *
       *    コメントの時、内容設定
-           IF    ( SRY-SRYCD  (IDX9)(1:1)  =   "8"  )
+           IF   (( SRY-SRYCD  (IDX9)(1:1)  =   "8"  )
+             OR  ( SRY-SRYCD  (IDX9)(1:3)  =   "008"  ))
             AND  ( SRY-INPUTNUM(IDX9)  NOT =   ZERO )
                PERFORM 2001111-PTCOM-SET-SEC
            END-IF
@@ -3225,37 +3226,45 @@
            MOVE    TNS-NAME                TO  WRK-SRYACT-STR
       *
       *    コメントの時、内容設定
-           IF    ( SRY-SRYCD  (IDX9)(1:1)  =   "8"  )
+           IF   (( SRY-SRYCD  (IDX9)(1:1)  =   "8"  )
+             OR  ( SRY-SRYCD  (IDX9)(1:3)  =   "008"  ))
             AND  ( SRY-INPUTNUM(IDX9)  NOT =   ZERO )
                PERFORM 2001111-PTCOM-SET-SEC
            END-IF
       *
            PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
       *
-      *    計
-           MOVE    1               TO  WRK-PNT
-           MOVE    SPACE           TO  WRK-TENSUKAISU
-           MOVE    SRY-JIHIMONEY (IDX9)
-                                   TO  WRK-STR-LEFT-ZX99
+      *    コメント時、金額回数の編集は行わない
+           IF   (( SRY-SRYCD  (IDX9)(1:1)  =   "8"  )
+             OR  ( SRY-SRYCD  (IDX9)(1:3)  =   "008"  ))
+             CONTINUE
+           ELSE
       *
-           PERFORM 800-STR-HIDARIZUME-HEN-SEC
-           STRING  WRK-STR-LEFT        DELIMITED   BY  SPACE
-                   "円"                DELIMITED   BY  SIZE
-           INTO    WRK-TENSUKAISU
-           WITH    POINTER WRK-PNT
-           END-STRING
+      *        計
+               MOVE    1               TO  WRK-PNT
+               MOVE    SPACE           TO  WRK-TENSUKAISU
+               MOVE    SRY-JIHIMONEY (IDX9)
+                                       TO  WRK-STR-LEFT-ZX99
       *
-           MOVE    ACCT-ZAIKAISU   TO  WRK-ZZ9
-           STRING  "×"                DELIMITED   BY  SIZE
-                   WRK-ZZ9             DELIMITED   BY  SIZE
-           INTO    WRK-TENSUKAISU
-           WITH    POINTER WRK-PNT
-           END-STRING
+               PERFORM 800-STR-HIDARIZUME-HEN-SEC
+               STRING  WRK-STR-LEFT        DELIMITED   BY  SPACE
+                       "円"                DELIMITED   BY  SIZE
+               INTO    WRK-TENSUKAISU
+               WITH    POINTER WRK-PNT
+               END-STRING
       *
-           MOVE    WRK-TENSUKAISU  TO  WRK-MAE-INPUT
-           PERFORM 800-ZENKAKU-HEN-SEC
-           MOVE    WRK-OUT-INPUT   TO  WRK-SRYACT-STR
-           PERFORM 210-WRK-SRYACT-TBL-HEN3-SEC
+               MOVE    ACCT-ZAIKAISU   TO  WRK-ZZ9
+               STRING  "×"                DELIMITED   BY  SIZE
+                       WRK-ZZ9             DELIMITED   BY  SIZE
+               INTO    WRK-TENSUKAISU
+               WITH    POINTER WRK-PNT
+               END-STRING
+      *
+               MOVE    WRK-TENSUKAISU  TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT   TO  WRK-SRYACT-STR
+               PERFORM 210-WRK-SRYACT-TBL-HEN3-SEC
+           END-IF
       *
            COMPUTE WRK-TTL-JIHI    =   WRK-TTL-JIHI
                                    + ( SRY-JIHIMONEY (IDX9)
