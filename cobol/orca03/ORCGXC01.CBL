@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  03/09/01    NACL−藤原   メモ欄の全角チェック追加
       *  03/10/27    NACL−藤原   前頁追加
+      *  04/02/13    NACL−太田   コラムリスト位置修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -167,6 +168,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-IN              PIC 9(01).
            03  FLG-CHK             PIC 9(01).
+           03  FLG-GMN-INIT        PIC 9(01).
       *
       *    システム領域
        01  SYS-AREA.
@@ -214,6 +216,9 @@
                04  WRK-MCP-PNAME   PIC S9(9)   BINARY.
       *
            03  WRK-ZZ              PIC ZZZZ9.
+      *
+       01  WRK-ROW-AREA.
+           03  WRK-ROW             PIC S9(9)   BINARY.
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -266,7 +271,7 @@
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
       *
       *
-           03  WRK-CONS-LINE-MAX   PIC 9(03)   VALUE   100.
+           03  WRK-CONS-LINE-MAX   PIC 9(03)   VALUE   50.
       *     
       *    プレビュー用情報
            COPY    "CPXC01LNK.INC".
@@ -359,6 +364,9 @@
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-XC01
            MOVE    SPA-WORK        TO  SPA-XC01KYOUTU 
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -1488,6 +1496,8 @@
       *****************************************************************
        2012-PRVKANRI-HENSYU-SEC        SECTION.
       *
+           MOVE    1                   TO  FLG-GMN-INIT
+      *
       *    既にＳＰＡに存在するかチェック
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING IDZ FROM    1   BY  1
@@ -2119,7 +2129,18 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
+           MOVE    XC01-ROW            TO  WRK-ROW
+      *
            MOVE    SPACE               TO  XC01
+      *
+           IF    ( FLG-GMN-INIT        =   1 )
+               MOVE    ZERO            TO  XC01-ROW 
+               MOVE    ZERO            TO  XC01-ROWATTR
+           ELSE
+               MOVE    WRK-ROW         TO  XC01-ROW
+               MOVE    ZERO            TO  XC01-ROWATTR
+           END-IF
+      *
            EVALUATE    SPA-PRTKANRI-TBL-KEY
                WHEN    "RECEPT2"
                    MOVE    WIDGET-NORMAL
