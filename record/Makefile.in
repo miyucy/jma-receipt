@@ -385,13 +385,13 @@ DB_files = \
 	tbl_ptkohftn.db \
 	tbl_receden.db \
 	tbl_kohplus.db \
+	tbl_prvkanri.db \
+	tbl_preview.db \
 	view_I001.db \
 	view_Q001.db \
 	view_Q002.db \
 	view_bd001.db \
 	view_bd002.db \ 
-	tbl_prvkanri.db \ 
-	tbl_preview.db 
 
 all:   
 
