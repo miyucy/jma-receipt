@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  02/09/09  平成１４年１０月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -54,6 +55,8 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-OK2             PIC 9(01).
            03  FLG-KAKUTEI         PIC 9(01).
+      *
+           03  FLG-AUTO            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -128,8 +131,21 @@
       *
            03  WRK-IDX-AREA.
                05  WRK-IDX         PIC 9(04)  OCCURS   3.
+               05  WRK-IDX1        PIC 9(04).
+               05  WRK-IDX2        PIC 9(04).
+               05  WRK-IDX-SIN1    PIC 9(04).
+               05  WRK-IDX-SIN2    PIC 9(04).
       *
            03  WRK-MAE-KOHNUM      PIC X(03).
+           03  WRK-MAE-KOHKBN      PIC X(01).
+      *
+           03  WRK-HBTNUM-1         PIC X(02).
+           03  WRK-HBTNUM-2         PIC X(02).
+      *    保険適用期間チェック
+           03  WRK-HKN-TEKSTYMD        PIC X(08).
+           03  WRK-HKN-TEKEDYMD        PIC X(08).
+      *
+           03  WRK-CUR                 PIC 9(02).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -211,31 +227,61 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
       *
+      *    老人公費追加（Ｈ１４．１０改正分）
+           IF      SPA-KOH-ADD         =   1
+               MOVE    1                   TO  IDX-K
+               PERFORM 3101-RJN-KOHADD-SEC
+           END-IF
+      *
+           MOVE    ZERO                TO  SPA-KOH-ADD
+           EVALUATE    SPA-PIDCD
+      *        公費重複期間処理
+               WHEN    "0106"
+                   PERFORM 300-KOHKIKAN-SYORI-SEC
+                   MOVE    SPACE           TO  SPA-PIDCD
+      *        公費終了期間処理
+               WHEN    "0107"
+                   PERFORM 310-KOHEDYMD-SYORI-SEC
+                   MOVE    SPACE           TO  SPA-PIDCD
+           END-EVALUATE
+      *
            PERFORM VARYING     IDX-K   FROM    1   BY  1
                    UNTIL      (IDX-K       >   3   )  OR
-                              (SPA-ERRCD   NOT =   SPACE )
+                              (SPA-ERRCD   NOT =   SPACE )  OR
+                              (SPA-PIDCD   NOT =   SPACE )
       *        基本チェック
                PERFORM 100-KIHON-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
+               IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                      (SPA-PIDCD       NOT =   SPACE )
                    COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR
                                            +  ((IDX-K  -   1  )  *  6 )
                END-IF
            END-PERFORM
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )
                GO      TO      000-PROC-EXT
            END-IF
       *
       *    確定処理の時、関連チェックを行う
            PERFORM VARYING     IDX-K   FROM    1   BY  1
                    UNTIL      (IDX-K       >   3   )  OR
-                              (SPA-ERRCD   NOT =   SPACE )
+                              (SPA-ERRCD   NOT =   SPACE )  OR
+                              (SPA-PIDCD   NOT =   SPACE )
                PERFORM 200-KANREN-CHK-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR
                                            +  ((IDX-K  -   1  )  *  6 )
                END-IF
            END-PERFORM
-           IF      SPA-ERRCD       NOT =   SPACE
+      *
+      *    自動振替えの時、警告は表示しない
+           IF     (FLG-AUTO            =   1     )  AND
+                  (SPA-ERRCD(1:1)      =   "K"   )
+               MOVE    SPACE               TO  SPA-ERRCD
+               MOVE    WRK-CUR             TO  SPA-GMN-CUR
+           END-IF
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )
                GO      TO      000-PROC-EXT
            END-IF
       *
@@ -387,11 +433,23 @@
                   (SPA-MAE-KOHNUM (IDX-K)
                                        NOT =   SPACE    )
                IF      WRK-MAE-KOHNUM  NOT =   SPA-MAE-KOHNUM(IDX-K)
-                   MOVE    "0074"          TO  SPA-ERRCD
-                   MOVE    20              TO  SPA-GMN-CUR
+                   PERFORM 10011-HKNNUM-HENCHK-SEC
+      *********    IF      SPA-GMN-FTNJANUM (IDX-K)
+      *                                NOT =   SPA-MAE-FTNJANUM(IDX-K)
+      *                MOVE    "0074"          TO  SPA-ERRCD
+      *                MOVE    20              TO  SPA-GMN-CUR
+      ************ END-IF
                END-IF
            ELSE
-               MOVE    WRK-MAE-KOHNUM      TO  SPA-GMN-KOHNUM(IDX-K)
+               IF      SPA-GMN-KOHNUM(IDX-K)   =   SPACE
+                   MOVE    WRK-MAE-KOHNUM      TO  SPA-GMN-KOHNUM(IDX-K)
+                   MOVE    SPACE               TO  SPA-GMN-KOHKBN(IDX-K)
+      *            Ｈ１４．１０以降、老人の初期値は０１とする
+                   IF      (SPA-SYSYMD         >=  "20021001" )  AND
+                           (WRK-MAE-KOHNUM     =   "027"      )
+                       MOVE    "1"             TO  SPA-GMN-KOHKBN(IDX-K)
+                   END-IF
+               END-IF
            END-IF
       *
            .
@@ -442,7 +500,33 @@
            .
        10011-HKNNUM-SET-EXT.
            EXIT.
+      ****************************************************************
+      *    変更時保険の種類チェック処理
+      ****************************************************************
+       10011-HKNNUM-HENCHK-SEC     SECTION.
       *
+           MOVE    SPACE               TO  WRK-HBTNUM-1
+           MOVE    SPACE               TO  WRK-HBTNUM-2
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-KOHMAX
+               IF      WRK-MAE-KOHNUM
+                                      =    SPA-GMN-KOHNUML (IDX)
+                    MOVE    SPA-NAI-HBTNUM (IDX)
+                                             TO  WRK-HBTNUM-1
+               END-IF
+               IF      SPA-GMN-KOHNUML(IDX)  =   SPA-MAE-KOHNUM(IDX-K)
+                    MOVE    SPA-NAI-HBTNUM (IDX)
+                                             TO  WRK-HBTNUM-2
+               END-IF
+           END-PERFORM
+           IF      WRK-HBTNUM-1    NOT =   WRK-HBTNUM-2
+               MOVE    "0074"          TO  SPA-ERRCD
+               MOVE    20              TO  SPA-GMN-CUR
+           END-IF
+      *
+          .
+       10011-HKNNUM-HENCHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    公費の種類チェック処理
@@ -451,12 +535,22 @@
       *
       *    更新の時、保険区分変更時、エラーとする
            MOVE    SPA-NAI-PTKOH-EDANUM (IDX-K)    TO  IDX-K2
-           IF     (IDX-K2                  >   ZERO      ) AND
+           MOVE    ZERO                TO  FLG-CHK
+           IF     (IDX-K2              >   ZERO      ) AND
                   (SPA-PTKOH-SINKIKBN (IDX-K2)
-                                           =    SPACE    ) AND
+                                       =    SPACE    ) AND
                   (SPA-MAE-KOHNUM (IDX-K)  NOT =   SPACE )
                IF      SPA-GMN-KOHNUM(IDX-K)
-                                       NOT =   SPA-MAE-KOHNUM(IDX-K)
+                                           =   SPA-MAE-KOHNUM(IDX-K)
+                   IF     (SPA-MAE-KOHKBN (IDX-K)  NOT =   SPACE) AND
+                          (SPA-GMN-KOHKBN(IDX-K)   NOT =
+                                               SPA-MAE-KOHKBN(IDX-K))
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+               IF      FLG-CHK             =   1
       *            前の公費へ戻す
                    MOVE    SPA-MAE-KOHNUM-G (IDX-K)
                                            TO  SPA-GMN-KOHNUM-G(IDX-K)
@@ -491,18 +585,35 @@
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-KOHMAX
-               IF      SPA-GMN-KOHNUM(IDX-K)
-                                      =    SPA-GMN-KOHNUML (IDX)
+               IF     (SPA-GMN-KOHNUM(IDX-K)
+                                      =    SPA-GMN-KOHNUML (IDX)) AND
+                      (SPA-GMN-KOHKBN(IDX-K)
+                                      =    SPA-GMN-KOHKBNL (IDX))
+      *            法別番号が同じこと
+                   IF      SPA-GMN-FTNJANUM(IDX-K) NOT =   SPACE
+                       IF      SPA-GMN-FTNJANUM(IDX-K) (1:2)
+                                           NOT =  SPA-NAI-HBTNUM
+                                                              (IDX)
+                           MOVE    "0092"              TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+      *
                    MOVE    SPA-GMN-KOHNUMLST (IDX)
                                            TO  SPA-GMN-KOHNUM-G(IDX-K)
       *
                    MOVE    SPA-NAI-KOHSBTKBN (IDX)
                                            TO  SPA-NAI-PTKOH-SBTKBN
                                                               (IDX-K)
+                   MOVE    SPA-NAI-KOHPAYKBN (IDX)
+                                           TO  SPA-NAI-PTKOH-PAYKBN
+                                                              (IDX-K)
                    MOVE    SPA-GMN-KOHMAX      TO  IDX
                    MOVE    1                   TO  FLG-OK
                END-IF
            END-PERFORM
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41011-HKNNUM-SYORI-EXT
+           END-IF
            IF      FLG-OK              =   ZERO
                MOVE    "0072"              TO  SPA-ERRCD
            END-IF
@@ -522,21 +633,36 @@
       *****************************************************************
        410111-RJN-SYSYMD-CHK-SEC       SECTION.
       *
+           IF     (SPA-NAI-KTEKSTYMD(IDX-K) >=   "20021001" )  OR
+                  (SPA-NAI-KTEKSTYMD(IDX-K) =   SPACE   AND
+                   SPA-SYSYMD               >=  "20021001"  )
+      *        Ｈ１４．１０以降
+               PERFORM 4101112-RJN-SYSYMDCHK-10-SEC
+           ELSE
+      *        Ｈ１４．１０まで
+               PERFORM 4101111-RJN-SYSYMDCHK-09-SEC
+           END-IF
+      *
+           .
+       410111-RJN-SYSYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    老人年齢チェック（システム日付）処理(Ｈ１４．１０まで)
+      *****************************************************************
+       4101111-RJN-SYSYMDCHK-09-SEC    SECTION.
+      *
       *    生年月日から基準日を求める
       *    １日ならば生年月日、１日以外ならば生年月日の翌月１日
            MOVE    SPA-NAI-BIRTHDAY     TO  WRK-BASEYMD
            IF      SPA-NAI-BIRTHDAY (7:2)   NOT =   "01"
                PERFORM 4910-BIRTH-AFTER1MON-GET-SEC
                IF      SPA-ERRCD        NOT =   SPACE
-                   GO  TO               410111-RJN-SYSYMD-CHK-EXT
+                   GO  TO               4101111-RJN-SYSYMDCHK-09-EXT
                END-IF
            END-IF
       *    ６５歳を迎える日
            MOVE    WRK-BASEYMD         TO  WRK-YMD65
            COMPUTE WRK-B65YY           =   WRK-B65YY   +   65
-      *    ７０歳を迎える日
-           MOVE    WRK-BASEYMD         TO  WRK-YMD70
-           COMPUTE WRK-B70YY           =   WRK-B70YY   +   70
       *    ６５歳を迎える日−１月を対象とする
            COMPUTE WRK-B65MM           =   WRK-B65MM   -   1
            IF      WRK-B65MM           =   ZERO
@@ -552,7 +678,41 @@
            END-EVALUATE
       *
            .
-       410111-RJN-SYSYMD-CHK-EXT.
+       4101111-RJN-SYSYMDCHK-09-EXT.
+           EXIT.
+      *****************************************************************
+      *    老人年齢チェック（システム日付）処理(Ｈ１４．１０以降)
+      *****************************************************************
+       4101112-RJN-SYSYMDCHK-10-SEC     SECTION.
+      *
+      *    生年月日から基準日を求める
+      *    １日ならば生年月日、１日以外ならば生年月日の翌月１日
+           MOVE    SPA-NAI-BIRTHDAY     TO  WRK-BASEYMD
+           IF      SPA-NAI-BIRTHDAY (7:2)   NOT =   "01"
+               PERFORM 4910-BIRTH-AFTER1MON-GET-SEC
+               IF      SPA-ERRCD        NOT =   SPACE
+                   GO  TO               4101112-RJN-SYSYMDCHK-10-EXT
+               END-IF
+           END-IF
+      *    ６５歳を迎える日
+           MOVE    WRK-BASEYMD         TO  WRK-YMD65
+           COMPUTE WRK-B65YY           =   WRK-B65YY   +   65
+      *    ６５歳を迎える日−１月を対象とする
+           COMPUTE WRK-B65MM           =   WRK-B65MM   -   1
+           IF      WRK-B65MM           =   ZERO
+               COMPUTE WRK-B65YY           =   WRK-B65YY   -   1
+               MOVE    12                  TO  WRK-B65MM
+           END-IF
+      *
+           EVALUATE    TRUE
+      *    エラー
+               WHEN    ( SPA-SYSYMD  <   WRK-YMD65 )
+                   MOVE    "0087"           TO  SPA-ERRCD
+                   MOVE    21               TO  SPA-GMN-CUR
+           END-EVALUATE
+      *
+           .
+       4101112-RJN-SYSYMDCHK-10-EXT.
            EXIT.
       *****************************************************************
       *    受給者番号入力　処理
@@ -625,6 +785,24 @@
            IF     (SPA-GMN-KTEKSTYMD(IDX-K)    =   SPACE ) AND
                   (SPA-GMN-KTEKEDYMD(IDX-K)    =   SPACE )
                GO      TO      1001-KTEKEDYMD-CHK-EXT
+           END-IF
+      *    空白で入力でない時、処理をしない
+           IF     (SPA-HKNKOH-FLG      =   ZERO     )   AND
+                  (SPA-GMN-KTEKEDYMD(IDX-K)    =   SPACE)
+               EVALUATE    IDX-K
+                   WHEN    1
+                       IF      SPA-MCP-WIDGET  NOT =   "P02_KTEKEDYMD1"
+                           GO      TO      1001-KTEKEDYMD-CHK-EXT
+                       END-IF
+                   WHEN    2
+                       IF      SPA-MCP-WIDGET  NOT =   "P02_KTEKEDYMD2"
+                           GO      TO      1001-KTEKEDYMD-CHK-EXT
+                       END-IF
+                   WHEN    3
+                       IF      SPA-MCP-WIDGET  NOT =   "P02_KTEKEDYMD3"
+                           GO      TO      1001-KTEKEDYMD-CHK-EXT
+                       END-IF
+               END-EVALUATE
            END-IF
       *
            IF     (SPA-GMN-KTEKEDYMD(IDX-K)    =   SPACE) OR
@@ -738,7 +916,8 @@
       *    保険を確認
            IF      SPA-GMN-KOHNUM(IDX-K)   NOT =   SPACE
                PERFORM 2002-KOHKIKAN-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
+               IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                      (SPA-PIDCD       NOT =   SPACE )
                    GO      TO      200-KANREN-CHK-EXT
                END-IF
            END-IF
@@ -759,7 +938,7 @@
            IF      SPA-NAI-BIRTHDAY    =   SPACE
                GO      TO      200-KANREN-CHK-EXT
            END-IF
-           IF      HKN-HKNKOHSBTKBN    =   "3"
+           IF      SPA-NAI-PTKOH-SBTKBN(IDX-K) =   "3"
       *        老人保険年齢チェック
                PERFORM 2004-RJN-TAISYOAGE-CHECK-SEC
            ELSE
@@ -791,6 +970,13 @@
                MOVE    23              TO  SPA-GMN-CUR
                GO      TO      2001-HISSU-CHK-EXT
            END-IF
+      *
+      *    適用終了日
+           IF      SPA-GMN-KTEKEDYMD (IDX-K)   =   SPACE
+               MOVE    "0078"          TO  SPA-ERRCD
+               MOVE    24              TO  SPA-GMN-CUR
+               GO      TO      2001-HISSU-CHK-EXT
+           END-IF
            .
        2001-HISSU-CHK-EXT.
            EXIT.
@@ -798,25 +984,36 @@
       *****************************************************************
       *    保険確認チェック処理
       *****************************************************************
-       2002-KOHKIKAN-CHK-SEC           SECTION.
+       2002-KOHKIKAN-CHK-SEC      SECTION.
       *
            MOVE    ZERO                TO  WRK-STYEAR
            MOVE    ZERO                TO  WRK-EDYEAR
+           MOVE    SPACE               TO  WRK-HKN-TEKSTYMD
+           MOVE    SPACE               TO  WRK-HKN-TEKEDYMD
       *
            MOVE    SPACE               TO  HKNNUM-REC
            MOVE    SPA-HOSPID          TO  HKN-HOSPID
            MOVE    SPA-GMN-KOHNUM(IDX-K)
                                        TO  HKN-HKNNUM
+           IF     (SPA-GMN-KOHNUM(IDX-K)   =   "027"  )  AND
+                  (SPA-NAI-PTKOH-PAYKBN (IDX-K)
+                                           =   ZERO  OR  SPACE )
+               MOVE    SPA-HOSPSBT         TO  HKN-PAYKBN(1:1)
+               MOVE    SPA-ROUPAYKBN       TO  HKN-PAYKBN(2:1)
+           ELSE
+               MOVE    SPA-NAI-PTKOH-PAYKBN (IDX-K)
+                                           TO  HKN-PAYKBN
+           END-IF
       *
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "HKNNUM-KEY2"   TO  ORC-DBPATH
+               MOVE    "HKNNUM-KEY7"   TO  ORC-DBPATH
                PERFORM 921-HKNMST-NEXT-SEC
            ELSE
                INITIALIZE              HKNNUM-REC
@@ -831,26 +1028,18 @@
                                             >=  HKN-TEKSTYMD )  AND
                       (SPA-NAI-KTEKEDYMD (IDX-K)
                                             <=  HKN-TEKEDYMD )
-                   IF      HKN-HKNKOHSBTKBN    =   "3"
-      *            老人の時、支払区分のチェック
-                       MOVE    1               TO  FLG-RJN
-                       IF      (HKN-PAYKBN (1:1)   =   SPA-HOSPSBT)  AND
-                               (HKN-PAYKBN (2:1)   =   SPA-ROUPAYKBN)
-                           MOVE    HKN-JOKEN-STYEAR    TO  WRK-STYEAR
-                           MOVE    HKN-JOKEN-EDYEAR    TO  WRK-EDYEAR
-                           MOVE    1                   TO  FLG-HKNNUM
-                           MOVE    1                   TO  FLG-CHK
-                       END-IF
-                   ELSE
-                       MOVE    HKN-JOKEN-STYEAR    TO  WRK-STYEAR
-                       MOVE    HKN-JOKEN-EDYEAR    TO  WRK-EDYEAR
-                       MOVE    1                   TO  FLG-CHK
-                       MOVE    1                   TO  FLG-HKNNUM
-                   END-IF
+                   MOVE    HKN-JOKEN-STYEAR    TO  WRK-STYEAR
+                   MOVE    HKN-JOKEN-EDYEAR    TO  WRK-EDYEAR
+                   MOVE    1                   TO  FLG-HKNNUM
+                   MOVE    1                   TO  FLG-CHK
+               END-IF
+               IF      FLG-CHK         NOT =   1
+                   MOVE    HKN-TEKSTYMD    TO  WRK-HKN-TEKSTYMD
+                   MOVE    HKN-TEKEDYMD    TO  WRK-HKN-TEKEDYMD
                END-IF
       *
                IF      FLG-HKNNUM          =   ZERO
-                   MOVE    "HKNNUM-KEY2"   TO  ORC-DBPATH
+                   MOVE    "HKNNUM-KEY7"   TO  ORC-DBPATH
                    PERFORM 921-HKNMST-NEXT-SEC
                END-IF
            END-PERFORM
@@ -858,17 +1047,55 @@
       *        マスタなし
                MOVE    "0072"          TO  SPA-ERRCD
                MOVE    21              TO  SPA-GMN-CUR
+               GO      TO      2002-KOHKIKAN-CHK-EXT
            END-IF
-           IF      FLG-CHK             =   2
-      *        適応期間エラー
-               MOVE    "0091"          TO  SPA-ERRCD
-               MOVE    23              TO  SPA-GMN-CUR
+      *    対象あり
+           IF      FLG-CHK             =   1
+               GO      TO      2002-KOHKIKAN-CHK-EXT
+           END-IF
+      *
+      *    適応期間エラー
+      *    保険期間の終了日が変更された時、終了日を自動変更する
+           IF     (SPA-NAI-KTEKSTYMD(IDX-K) >=  WRK-HKN-TEKSTYMD) AND
+                  (SPA-NAI-KTEKEDYMD(IDX-K) >   WRK-HKN-TEKEDYMD)  AND
+                  (SPA-NAI-KTEKSTYMD(IDX-K) <   WRK-HKN-TEKEDYMD) AND
+                  (WRK-HKN-TEKEDYMD    NOT =   ALL "9"          )
+               MOVE    IDX-K                TO  SPA-KOH-IDX1
+               MOVE    WRK-HKN-TEKEDYMD     TO  SPA-HKN-TEKEDYMD
+               MOVE    SPACE                TO  SPA-PIDMSG
+      *
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    WRK-HKN-TEKEDYMD    TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+      *
+               STRING  SPA-GMN-KOHNUM (IDX-K)  DELIMITED  BY  SIZE
+                       SPA-GMN-KOHKBN (IDX-K)  DELIMITED  BY  SIZE
+                       SPA-GMN-KOHNUMMEI(IDX-K)
+                                               DELIMITED  BY  SPACE
+                       "の期限を"              DELIMITED  BY  SIZE
+                       LNK-DAY2-EDTYMD3        DELIMITED  BY  SIZE
+                       "に変更します。"        DELIMITED  BY  SIZE
+                       "よろしいですか。"      DELIMITED  BY  SIZE
+                       INTO                    SPA-PIDMSG
+               END-STRING
+               MOVE    "0107"              TO  SPA-PIDCD
+               MOVE    21                  TO  SPA-GMN-CUR
+           ELSE
+      *        適用期間開始のエラー
+               IF      SPA-NAI-KTEKSTYMD(IDX-K) >   WRK-HKN-TEKEDYMD
+                   MOVE    "0093"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    "0094"              TO  SPA-ERRCD
+               END-IF
+               MOVE    21                  TO  SPA-GMN-CUR
            END-IF
       *
            .
        2002-KOHKIKAN-CHK-EXT.
            EXIT.
-      *
       *****************************************************************
       *    負担者番号・受給者番号チェック処理
       *****************************************************************
@@ -965,8 +1192,10 @@
       *****************************************************************
        2003-NENREI-CHECK-SEC          SECTION.
       *    年齢チェックなし
-           IF      (WRK-STYEAR         =   ZERO    )  AND
-                   (WRK-EDYEAR         =   ALL "9" )
+           IF     ((WRK-STYEAR         =   ZERO    )  AND
+                   (WRK-EDYEAR         =   ALL "9" ))  OR
+                  ((WRK-STYEAR         =   ZERO    )  AND
+                   (WRK-EDYEAR         =   ZERO    ))
                GO      TO      2003-NENREI-CHECK-EXT
            END-IF
            IF      SPA-NAI-KTEKEDYMD (IDX-K)   =   ALL "9"
@@ -1018,13 +1247,32 @@
       *****************************************************************
        2004-RJN-TAISYOAGE-CHECK-SEC     SECTION.
       *
+           IF     (SPA-NAI-KTEKSTYMD(IDX-K) >=   "20021001"  )  OR
+                  (SPA-NAI-KTEKSTYMD(IDX-K) =   SPACE   AND
+                   SPA-SYSYMD               >=  "20021001"  )
+      *        Ｈ１４．１０以降
+               PERFORM 20042-RJN-TAISYOAGE-10-SEC
+           ELSE
+      *        Ｈ１４．１０まで
+               PERFORM 20041-RJN-TAISYOAGE-09-SEC
+           END-IF
+      *
+           .
+       2004-RJN-TAISYOAGE-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    老人保険年齢チェック処理(Ｈ１４．１０まで)
+      *****************************************************************
+       20041-RJN-TAISYOAGE-09-SEC    SECTION.
+      *
       *    生年月日から基準日を求める
       *      １日ならば生年月日、１日以外ならば生年月日の翌月１日
            MOVE    SPA-NAI-BIRTHDAY     TO  WRK-BASEYMD
            IF      SPA-NAI-BIRTHDAY (7:2)   NOT =   "01"
                PERFORM 4910-BIRTH-AFTER1MON-GET-SEC
                IF      SPA-ERRCD        NOT =   SPACE
-                   GO  TO               2004-RJN-TAISYOAGE-CHECK-EXT
+                   GO  TO               20041-RJN-TAISYOAGE-09-EXT
                END-IF
            END-IF
       *    ６５歳を迎える日
@@ -1049,11 +1297,51 @@
            WHEN    ( SPA-NAI-KTEKSTYMD(IDX-K)  <   WRK-YMD65 )
                MOVE    "0087"           TO  SPA-ERRCD
                MOVE    23               TO  SPA-GMN-CUR
-               GO      TO               2004-RJN-TAISYOAGE-CHECK-EXT
+               GO      TO               20041-RJN-TAISYOAGE-09-EXT
            END-EVALUATE
       *
            .
-       2004-RJN-TAISYOAGE-CHECK-EXT.
+       20041-RJN-TAISYOAGE-09-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    老人保険年齢チェック処理(Ｈ１４．１０から)
+      *****************************************************************
+       20042-RJN-TAISYOAGE-10-SEC    SECTION.
+      *
+      *    生年月日から基準日を求める
+      *      １日ならば生年月日、１日以外ならば生年月日の翌月１日
+           MOVE    SPA-NAI-BIRTHDAY     TO  WRK-BASEYMD
+           IF      SPA-NAI-BIRTHDAY (7:2)   NOT =   "01"
+               PERFORM 4910-BIRTH-AFTER1MON-GET-SEC
+               IF      SPA-ERRCD        NOT =   SPACE
+                   GO  TO               20042-RJN-TAISYOAGE-10-EXT
+               END-IF
+           END-IF
+      *    ６５歳を迎える日
+           MOVE      WRK-BASEYMD        TO  WRK-YMD65
+           COMPUTE   WRK-B65YY          =   WRK-B65YY   +   65
+      *
+           EVALUATE    TRUE
+           WHEN    ( SPA-NAI-KTEKSTYMD(IDX-K)  >=  SPA-BYMD-70)
+               CONTINUE
+      *    警告（６５歳から７０歳未満）
+           WHEN    ( SPA-NAI-KTEKSTYMD(IDX-K)  <   SPA-BYMD-70) AND
+                   ( SPA-NAI-KTEKSTYMD(IDX-K)  >=  WRK-YMD65 )
+               IF      SPA-NAI-AGE65 (IDX-K)   =   ZERO
+                   MOVE    "K002"           TO  SPA-ERRCD
+                   MOVE    23               TO  SPA-GMN-CUR
+                   MOVE    1                TO  SPA-NAI-AGE65 (IDX-K)
+               END-IF
+      *    エラー
+           WHEN    ( SPA-NAI-KTEKSTYMD(IDX-K)  <   WRK-YMD65 )
+               MOVE    "0087"           TO  SPA-ERRCD
+               MOVE    23               TO  SPA-GMN-CUR
+               GO      TO               20042-RJN-TAISYOAGE-10-EXT
+           END-EVALUATE
+      *
+           .
+       20042-RJN-TAISYOAGE-10-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1061,11 +1349,14 @@
       *****************************************************************
        300-KANREN-KOH-CHECK-SEC    SECTION.
       *
-           MOVE    ZERO                 TO  WRK-IDX-AREA
+           MOVE    ZERO                TO  WRK-IDX-AREA
+           INITIALIZE                  SPA-KOH-KENKAN-AREA
+      *
       *    今回入力分でチェックする
            PERFORM VARYING     IDX-K    FROM    1   BY  1
                    UNTIL      (IDX-K        >   3   )  OR
-                              (SPA-ERRCD   NOT =   SPACE )
+                              (SPA-ERRCD   NOT =   SPACE )  OR
+                              (SPA-PIDCD   NOT =   SPACE )
                IF      SPA-GMN-KOHNUM(IDX-K)   NOT =   SPACE
                    MOVE    SPA-NAI-PTKOH-EDANUM (IDX-K)
                                                TO  WRK-IDX (IDX-K)
@@ -1077,10 +1368,16 @@
                END-IF
            END-PERFORM
       *
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )
+               GO      TO      300-KANREN-KOH-CHECK-EXT
+           END-IF
+      *
       *    ＴＢＬでチェックする
            PERFORM VARYING     IDX-K    FROM    1   BY  1
                    UNTIL      (IDX-K        >   3   )  OR
-                              (SPA-ERRCD   NOT =   SPACE )
+                              (SPA-ERRCD   NOT =   SPACE )  OR
+                              (SPA-PIDCD   NOT =   SPACE )
                IF      SPA-GMN-KOHNUM(IDX-K)   NOT =   SPACE
                    PERFORM 3002-TBL-KOH-CHK-SEC
                END-IF
@@ -1114,16 +1411,69 @@
                                            =   SPA-GMN-KOHNUM(IDK2)
                            MOVE    "0088"      TO  SPA-ERRCD
                            MOVE    23          TO  SPA-GMN-CUR
+                           MOVE    IDX-K       TO  WRK-IDX1
+                           MOVE    IDK2        TO  WRK-IDX2
                        END-IF
                        IF      (SPA-NAI-PTKOH-SBTKBN (IDX-K) =  "3") AND
                                (SPA-NAI-PTKOH-SBTKBN (IDK2)  =  "3")
                            MOVE    "0088"      TO  SPA-ERRCD
                            MOVE    23          TO  SPA-GMN-CUR
+                           MOVE    IDX-K       TO  WRK-IDX1
+                           MOVE    IDK2        TO  WRK-IDX2
                        END-IF
                    END-IF
                END-IF
            END-PERFORM
       *
+           IF      SPA-ERRCD           =   SPACE
+               GO      TO      3001-INPUT-KOH-CHK-EXT
+           END-IF
+      *
+      *    新規のチェック
+           MOVE    ZERO                TO  WRK-IDX-SIN1
+           MOVE    ZERO                TO  WRK-IDX-SIN2
+           MOVE    SPA-NAI-PTKOH-EDANUM (IDX-K)
+                                       TO  IDX-K2
+           IF     (IDX-K2                  =   ZERO      ) OR
+                  (SPA-PTKOH-SINKIKBN (IDX-K2)
+                                           =   "1"      )
+               MOVE    IDX-K               TO  WRK-IDX-SIN1
+           END-IF
+           MOVE    SPA-NAI-PTKOH-EDANUM (WRK-IDX2) TO  IDX-K2
+           IF     (IDX-K2                  =   ZERO      ) OR
+                  (SPA-PTKOH-SINKIKBN (IDX-K2)
+                                           =   "1"      )
+               MOVE    WRK-IDX2            TO  WRK-IDX-SIN2
+           END-IF
+      *    ともに新規の時、エラーとする
+           IF     (WRK-IDX-SIN1    NOT =   ZERO )  AND
+                  (WRK-IDX-SIN2    NOT =   ZERO )
+               GO      TO      3001-INPUT-KOH-CHK-EXT
+           END-IF
+      *
+           IF      WRK-IDX-SIN1    NOT =   ZERO
+               IF      (SPA-NAI-KTEKSTYMD (WRK-IDX-SIN1)
+                                       <=  SPA-NAI-KTEKEDYMD(WRK-IDX2))
+                   AND (SPA-NAI-KTEKSTYMD (WRK-IDX-SIN1)
+                                       >   SPA-NAI-KTEKSTYMD(WRK-IDX2))
+                   MOVE    WRK-IDX-SIN1    TO  SPA-KOH-IDX1
+                   MOVE    WRK-IDX2        TO  SPA-KOH-IDX2
+                   MOVE    "0106"          TO  SPA-PIDCD
+                   MOVE    SPACE           TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF      WRK-IDX-SIN2    NOT =   ZERO
+               IF      (SPA-NAI-KTEKSTYMD (WRK-IDX-SIN2)
+                                       <=  SPA-NAI-KTEKEDYMD(WRK-IDX1))
+                   AND (SPA-NAI-KTEKSTYMD (WRK-IDX-SIN2)
+                                       >   SPA-NAI-KTEKSTYMD(WRK-IDX1))
+                   MOVE    WRK-IDX-SIN2    TO  SPA-KOH-IDX1
+                   MOVE    WRK-IDX1        TO  SPA-KOH-IDX2
+                   MOVE    "0106"          TO  SPA-PIDCD
+                   MOVE    SPACE           TO  SPA-ERRCD
+               END-IF
+           END-IF
            .
        3001-INPUT-KOH-CHK-EXT.
            EXIT.
@@ -1133,6 +1483,7 @@
       *****************************************************************
        3002-TBL-KOH-CHK-SEC    SECTION.
       *
+           MOVE    ZERO                TO  WRK-IDX1
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX             >   SPA-PTKOH-MAX )  OR
                               (SPA-ERRCD   NOT =   SPACE )
@@ -1163,14 +1514,371 @@
                           (SPA-PTKOH-HKN-SBTKBN (IDX)   =   "3"))
                        MOVE    "0088"      TO  SPA-ERRCD
                        MOVE    23          TO  SPA-GMN-CUR
+                       MOVE    IDX         TO  WRK-IDX1
                    END-IF
                END-IF
            END-PERFORM
+      *
+           IF      (WRK-IDX1           >   ZERO  )  AND
+                   (SPA-PTKOH-TEKEDYMD (WRK-IDX1)
+                                       >=  SPA-NAI-KTEKSTYMD(IDX-K)) AND
+                   (SPA-PTKOH-TEKSTYMD (WRK-IDX1)
+                                       <   SPA-NAI-KTEKSTYMD(IDX-K))
+               MOVE    IDX-K           TO  SPA-KOH-IDX1
+               MOVE    WRK-IDX1        TO  SPA-KOH-IDX2
+               MOVE    1               TO  SPA-KOH-FLG
+               MOVE    "0106"          TO  SPA-PIDCD
+               MOVE    SPACE           TO  SPA-ERRCD
+           END-IF
       *
            .
        3002-TBL-KOH-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    公費重複期間処理
+      *****************************************************************
+       300-KOHKIKAN-SYORI-SEC         SECTION.
+      *
+           IF      SPA-KOH-IDX1        =   ZERO   OR
+                   SPA-KOH-IDX2        =   ZERO
+               GO     TO     300-KOHKIKAN-SYORI-EXT
+           END-IF
+           IF       SPA-KOH-FLG        =   ZERO
+               IF  (SPA-NAI-KTEKSTYMD (SPA-KOH-IDX1)
+                                       <=  SPA-NAI-KTEKEDYMD
+                                                    (SPA-KOH-IDX2)) AND
+                   (SPA-NAI-KTEKSTYMD (SPA-KOH-IDX1)
+                                       >   SPA-NAI-KTEKSTYMD
+                                                     (SPA-KOH-IDX2))
+                   CONTINUE
+               ELSE
+                   GO     TO     300-KOHKIKAN-SYORI-EXT
+               END-IF
+           ELSE
+               IF  (SPA-NAI-KTEKSTYMD (SPA-KOH-IDX1)
+                                       <=  SPA-PTKOH-TEKEDYMD
+                                                    (SPA-KOH-IDX2)) AND
+                   (SPA-NAI-KTEKSTYMD (SPA-KOH-IDX1)
+                                       >   SPA-PTKOH-TEKSTYMD
+                                                     (SPA-KOH-IDX2))
+                   CONTINUE
+                ELSE
+                   GO     TO     300-KOHKIKAN-SYORI-EXT
+               END-IF
+           END-IF
+      *
+      *    現在表示分の開始日付−１日
+           MOVE    SPACE               TO  STS-AREA-DAY
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    SPA-NAI-KTEKSTYMD (SPA-KOH-IDX1)
+                                       TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    -1                  TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING
+                                           STS-AREA-DAY
+                                           LNK-DAY6-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    LNK-DAY6-KEISAN     TO  WRK-SYMD
+           ELSE
+               GO      TO      300-KOHKIKAN-SYORI-EXT
+           END-IF
+      *
+           PERFORM 410112-SEIYMDHEN-SEC
+      *    期間変更
+           IF      SPA-KOH-FLG         =   ZERO
+               MOVE    WRK-SYMD        TO  SPA-NAI-KTEKEDYMD
+                                                     (SPA-KOH-IDX2)
+               MOVE    WRK-HENYMD      TO  SPA-GMN-KTEKEDYMD
+                                                     (SPA-KOH-IDX2)
+           ELSE
+               MOVE    WRK-SYMD        TO  SPA-PTKOH-TEKEDYMD
+                                                     (SPA-KOH-IDX2)
+               MOVE    WRK-HENYMD      TO  SPA-PTKOH-TEKEDYMDW
+                                                     (SPA-KOH-IDX2)
+           END-IF
+           EVALUATE    SPA-KOH-IDX1
+               WHEN    1
+                   MOVE    26              TO  SPA-GMN-CUR
+               WHEN    2
+                   MOVE    32              TO  SPA-GMN-CUR
+               WHEN    3
+                   MOVE    40              TO  SPA-GMN-CUR
+           END-EVALUATE
+      *
+           .
+       300-KOHKIKAN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費終了期間処理
+      *****************************************************************
+       310-KOHEDYMD-SYORI-SEC         SECTION.
+      *
+           IF      SPA-KOH-IDX1        =   ZERO   OR
+                   SPA-HKN-TEKEDYMD    =   SPACE
+               GO     TO     310-KOHEDYMD-SYORI-EXT
+           END-IF
+      *
+           MOVE    SPA-HKN-TEKEDYMD    TO  WRK-SYMD
+           PERFORM 410112-SEIYMDHEN-SEC
+      *    期間変更
+           MOVE    WRK-SYMD        TO  SPA-NAI-KTEKEDYMD (SPA-KOH-IDX1)
+           MOVE    WRK-HENYMD      TO  SPA-GMN-KTEKEDYMD (SPA-KOH-IDX1)
+           MOVE    SPA-SYSYMD      TO  SPA-NAI-KKAKUNINYMD(SPA-KOH-IDX1)
+           MOVE    SPA-SYSYMDWH    TO  SPA-GMN-KKAKUNINYMD(SPA-KOH-IDX1)
+      *
+      *    老人公費の時、新規公費を追加する
+      *    Ｈ１４．１０改正分のみ
+           IF     (SPA-GMN-KOHNUM (SPA-KOH-IDX1)   =   "027" )  AND
+                  (SPA-NAI-PTKOH-PAYKBN (SPA-KOH-IDX1)
+                                                   =   ZERO  )
+               MOVE    1                   TO  SPA-KOH-ADD
+               IF     (SPA-KOH-MAX         =   3 )  OR
+                      (SPA-KOH-IDX1        =   3 )
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  SPA-KOH-MAX
+                   MOVE    SPA-KOH-MAX     TO  IDX-K
+                   IF      SPA-KOH-IDX1    =   IDX-K
+                       ADD     1               TO  IDX-K
+                   END-IF
+                   PERFORM 3101-RJN-KOHADD2-SEC
+                   GO      TO      310-KOHEDYMD-SYORI-EXT
+               END-IF
+           ELSE
+               MOVE    ZERO                TO  SPA-KOH-ADD
+           END-IF
+           MOVE    1                   TO  FLG-AUTO
+           EVALUATE    SPA-KOH-IDX1
+               WHEN    1
+                   MOVE    26              TO  SPA-GMN-CUR
+               WHEN    2
+                   MOVE    32              TO  SPA-GMN-CUR
+               WHEN    3
+                   MOVE    40              TO  SPA-GMN-CUR
+           END-EVALUATE
+           MOVE    SPA-GMN-CUR         TO  WRK-CUR
+      *
+           .
+       310-KOHEDYMD-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    老人公費の時、新規公費編集処理
+      *****************************************************************
+       3101-RJN-KOHADD-SEC           SECTION.
+      *
+      *
+           INITIALIZE                  SPA-GMN-KOH-TBL (IDX-K)
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-PTKOH-MAX
+               IF     (SPA-PTKOH-KOHNUM (IDX)  =   "027" )  AND
+                      (SPA-PTKOH-PAYKBN (IDX)  =   ZERO  )  AND
+                      (SPA-PTKOH-SAKJOKBN(IDX) =   SPACE )
+                   PERFORM 31011-RJN-KOHHEN-SEC
+                   MOVE    SPA-PTKOH-MAX       TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           MOVE    ZERO                TO  SPA-KOH-ADD
+           EVALUATE    IDX-K
+               WHEN    1
+                   MOVE    20              TO  SPA-GMN-CUR
+               WHEN    2
+                   MOVE    26              TO  SPA-GMN-CUR
+               WHEN    3
+                   MOVE    32              TO  SPA-GMN-CUR
+           END-EVALUATE
+           MOVE    1                   TO  FLG-AUTO
+           MOVE    SPA-GMN-CUR         TO  WRK-CUR
+      *
+           .
+       3101-RJN-KOHADD-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    老人公費追加編集処理
+      *****************************************************************
+       31011-RJN-KOHHEN-SEC           SECTION.
+      *
+           MOVE    SPA-PTKOH-KOHNUM (IDX)
+                                       TO  SPA-GMN-KOHNUM (IDX-K)
+           MOVE    "1"                 TO  SPA-GMN-KOHKBN (IDX-K)
+      *    支払区分（１割）
+           MOVE    "01"                TO  SPA-NAI-PTKOH-PAYKBN(IDX-K)
+           MOVE    SPA-PTKOH-FTNJANUM (IDX)
+                                       TO  SPA-GMN-FTNJANUM (IDX-K)
+           MOVE    SPA-PTKOH-JKYSNUM (IDX)
+                                       TO  SPA-GMN-JKYSNUM (IDX-K)
+           MOVE    "H14.10.01"         TO  SPA-GMN-KTEKSTYMD (IDX-K)
+           MOVE    "20021001"          TO  SPA-NAI-KTEKSTYMD (IDX-K)
+           MOVE    "9999999"           TO  SPA-GMN-KTEKEDYMD (IDX-K)
+           MOVE    ALL "9"             TO  SPA-NAI-KTEKEDYMD (IDX-K)
+           MOVE    SPA-SYSYMD          TO  SPA-NAI-KKAKUNINYMD
+                                                              (IDX-K)
+           MOVE    SPA-SYSYMDWH        TO  SPA-GMN-KKAKUNINYMD
+                                                              (IDX-K)
+      *
+            MOVE    SPA-PTKOH-HKN-SBTKBN (IDX)
+                                       TO  SPA-NAI-PTKOH-SBTKBN(IDX-K)
+      *
+      *    開始日セット
+           MOVE    SPACE               TO  HKNNUM-REC
+           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-GMN-KOHNUM(IDX-K)
+                                       TO  HKN-HKNNUM
+           MOVE    SPA-NAI-PTKOH-PAYKBN (IDX-K)
+                                       TO  HKN-PAYKBN
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNNUM-KEY7"   TO  ORC-DBPATH
+               PERFORM 921-HKNMST-NEXT-SEC
+           ELSE
+               INITIALIZE              HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+      *
+           IF      FLG-HKNNUM          =   ZERO
+      *        開始日
+               MOVE    HKN-TEKSTYMD        TO  WRK-SYMD
+               PERFORM 410112-SEIYMDHEN-SEC
+               MOVE    HKN-TEKSTYMD        TO  SPA-NAI-KTEKSTYMD (IDX-K)
+               MOVE    WRK-HENYMD          TO  SPA-GMN-KTEKSTYMD (IDX-K)
+      *        終了日
+               IF      HKN-TEKEDYMD        =   ALL "9"
+                   MOVE    "9999999"           TO  SPA-GMN-KTEKEDYMD
+                                                                 (IDX-K)
+               ELSE
+                   MOVE    HKN-TEKEDYMD        TO  WRK-SYMD
+                   PERFORM 410112-SEIYMDHEN-SEC
+                   MOVE    WRK-HENYMD          TO  SPA-GMN-KTEKEDYMD
+                                                                (IDX-K)
+               END-IF
+               MOVE    HKN-TEKEDYMD        TO  SPA-NAI-KTEKEDYMD (IDX-K)
+           END-IF
+           .
+       31011-RJN-KOHHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    老人公費の時、新規公費編集処理（画面内）
+      *****************************************************************
+       3101-RJN-KOHADD2-SEC           SECTION.
+      *
+      *
+           INITIALIZE                  SPA-GMN-KOH-TBL (IDX-K)
+           MOVE    SPA-GMN-KOHNUM (SPA-KOH-IDX1)
+                                       TO  SPA-GMN-KOHNUM (IDX-K)
+           MOVE    "1"                 TO  SPA-GMN-KOHKBN (IDX-K)
+      *    支払区分（１割）
+           MOVE    "01"                TO  SPA-NAI-PTKOH-PAYKBN(IDX-K)
+           MOVE    SPA-GMN-FTNJANUM (SPA-KOH-IDX1)
+                                       TO  SPA-GMN-FTNJANUM (IDX-K)
+           MOVE    SPA-GMN-JKYSNUM  (SPA-KOH-IDX1)
+                                       TO  SPA-GMN-JKYSNUM (IDX-K)
+           MOVE    "H14.10.01"         TO  SPA-GMN-KTEKSTYMD (IDX-K)
+           MOVE    "20021001"          TO  SPA-NAI-KTEKSTYMD (IDX-K)
+           MOVE    "9999999"           TO  SPA-GMN-KTEKEDYMD (IDX-K)
+           MOVE    ALL "9"             TO  SPA-NAI-KTEKEDYMD (IDX-K)
+           MOVE    SPA-SYSYMD          TO  SPA-NAI-KKAKUNINYMD
+                                                              (IDX-K)
+           MOVE    SPA-SYSYMDWH        TO  SPA-GMN-KKAKUNINYMD
+                                                              (IDX-K)
+      *
+            MOVE    SPA-NAI-PTKOH-SBTKBN (SPA-KOH-IDX1)
+                                       TO  SPA-NAI-PTKOH-SBTKBN(IDX-K)
+      *
+      *    開始日セット
+           MOVE    SPACE               TO  HKNNUM-REC
+           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-GMN-KOHNUM(IDX-K)
+                                       TO  HKN-HKNNUM
+           MOVE    SPA-NAI-PTKOH-PAYKBN (IDX-K)
+                                       TO  HKN-PAYKBN
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNNUM-KEY7"   TO  ORC-DBPATH
+               PERFORM 921-HKNMST-NEXT-SEC
+           ELSE
+               INITIALIZE              HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+      *
+           IF      FLG-HKNNUM          =   ZERO
+      *        開始日
+               MOVE    HKN-TEKSTYMD        TO  WRK-SYMD
+               PERFORM 410112-SEIYMDHEN-SEC
+               MOVE    HKN-TEKSTYMD        TO  SPA-NAI-KTEKSTYMD (IDX-K)
+               MOVE    WRK-HENYMD          TO  SPA-GMN-KTEKSTYMD (IDX-K)
+      *        終了日
+               IF      HKN-TEKEDYMD        =   ALL "9"
+                   MOVE    "9999999"           TO  SPA-GMN-KTEKEDYMD
+                                                                 (IDX-K)
+               ELSE
+                   MOVE    HKN-TEKEDYMD        TO  WRK-SYMD
+                   PERFORM 410112-SEIYMDHEN-SEC
+                   MOVE    WRK-HENYMD          TO  SPA-GMN-KTEKEDYMD
+                                                                (IDX-K)
+               END-IF
+               MOVE    HKN-TEKEDYMD        TO  SPA-NAI-KTEKEDYMD (IDX-K)
+           END-IF
+      *
+           MOVE    ZERO                TO  SPA-KOH-ADD
+           EVALUATE    IDX-K
+               WHEN    1
+                   MOVE    20              TO  SPA-GMN-CUR
+               WHEN    2
+                   MOVE    26              TO  SPA-GMN-CUR
+               WHEN    3
+                   MOVE    32              TO  SPA-GMN-CUR
+           END-EVALUATE
+           MOVE    1                   TO  FLG-AUTO
+           MOVE    SPA-GMN-CUR         TO  WRK-CUR
+      *
+           .
+       3101-RJN-KOHADD2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    西暦→和暦FORMAT日付編集
+      *****************************************************************
+       410112-SEIYMDHEN-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  STS-AREA-DAY
+           INITIALIZE                      STS-AREA-DAY
+           MOVE    SPACE               TO  LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY2-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMD
+           ELSE
+               MOVE    SPACE               TO  WRK-HENYMD
+           END-IF
+           .
+      *
+       410112-SEIYMDHEN-EXT.
+           EXIT.
       *****************************************************************
       *    誕生日の翌月取得処理
       *****************************************************************

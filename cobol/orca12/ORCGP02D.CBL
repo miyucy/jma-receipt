@@ -30,6 +30,7 @@
       *  01.00.01    MCC-多々納   02/06/18  災害区分追加
       *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
       *  02.00.02    NACL-多々納  02/08/21  アフターケアの療養期間追加
+      *  02.00.03    NACL-多々納  02/09/10  自賠責の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -286,6 +287,7 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
+      *
            IF      SPA-GMN-HKNNUM      =   SPACE
       *        [新規入力]
       *        保険情報
@@ -294,7 +296,7 @@
                MOVE    SPACE               TO  SPA-P02D-AREA
                INITIALIZE                      SPA-P02D-AREA
       *        保険番号
-               MOVE    "971"               TO  SPA-NAI2D-HKNNUM
+      *******  MOVE    "971"               TO  SPA-NAI2D-HKNNUM
                MOVE    ZERO                TO  SPA-NAI2D-GMNIDX
                MOVE    SPA-GMN-NAME        TO  SPA-GMN2D-HIHKNJANAME
            ELSE
@@ -432,10 +434,18 @@
        3002-COMBBOX-HEX-SEC             SECTION.
       *
       *    労災保険区分
-           MOVE    "1 短期給付"        TO  SPA-GMN2D-HKNKBN-LST (01)
-           MOVE    "2 傷病年金"        TO  SPA-GMN2D-HKNKBN-LST (02)
-           MOVE    "3 アフターケア"    TO  SPA-GMN2D-HKNKBN-LST (03)
-           MOVE    3                   TO  SPA-GMN2D-HKNKBN-MAX
+           MOVE    ZERO                TO  SPA-GMN2D-HKNKBN-MAX
+           IF      SPA-ROSAI-FLG       =   1
+               MOVE    "1 短期給付"        TO  SPA-GMN2D-HKNKBN-LST (01)
+               MOVE    "2 傷病年金"        TO  SPA-GMN2D-HKNKBN-LST (02)
+               MOVE    "3 アフターケア"    TO  SPA-GMN2D-HKNKBN-LST (03)
+               MOVE    3                   TO  SPA-GMN2D-HKNKBN-MAX
+           END-IF
+           IF      SPA-JIBAI-FLG       =   1
+               ADD     1                   TO  SPA-GMN2D-HKNKBN-MAX
+               MOVE    "4 自賠責保険"      TO  SPA-GMN2D-HKNKBN-LST
+                                                 (SPA-GMN2D-HKNKBN-MAX)
+           END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN2D-HKNKBN-MAX
                IF      SPA-GMN2D-HKNKBN-LST(IDX) (1:1)
@@ -836,6 +846,8 @@
                            MOVE    4               TO  SPA-GMN2D-CUR
                        WHEN    "3"
                            MOVE    16              TO  SPA-GMN2D-CUR
+                       WHEN    "4"
+                           MOVE    6               TO  SPA-GMN2D-CUR
                    END-EVALUATE
                WHEN    "KOHNUM1"
                    MOVE    21              TO  SPA-GMN2D-CUR
@@ -1170,7 +1182,7 @@
                                WHEN    26
                                WHEN    27
                                    MOVE    3       TO  IDX
-                               WHEN    26
+                               WHEN    OTHER
                                    MOVE    4       TO  IDX
                            END-EVALUATE
                            MOVE    SPA-GMN2D-PREFKBN-LST (IDX)
@@ -1191,6 +1203,22 @@
                        MOVE    SPA-GMN2D-SONSHOUKBN-LST (01)
                                            TO  SPA-GMN2D-SONSHOUKBN-G
                    END-IF
+               WHEN    "4"
+      *            自賠責
+                   PERFORM 41012-SINKEI-SET-SEC
+                   MOVE    SPACE           TO  SPA-GMN2D-SINKEI-G
+      *            転帰
+                   IF      SPA-GMN2D-TENKI     =   SPACE
+                       MOVE    SPA-GMN2D-TENKI-LST (02)
+                                               TO  SPA-GMN2D-TENKI-G
+                   END-IF
+      *
+                   IF      SPA-GMN2D-SISIKBN   =   SPACE
+                       MOVE    SPA-GMN2D-SISIKBN-LST (01)
+                                               TO  SPA-GMN2D-SISIKBN-G
+                   END-IF
+      *            災害区分
+                   MOVE   SPACE                TO  SPA-GMN2D-SAIGAI-G
            END-EVALUATE
       *
           .
@@ -1216,6 +1244,7 @@
                    MOVE    "7 再発"        TO  SPA-GMN2D-SINKEI-LST (03)
                    MOVE    3               TO  SPA-GMN2D-SINKEI-MAX
                WHEN    OTHER
+                   INITIALIZE                  SPA-GMN2D-SINKEI-COMB
                    MOVE    ZERO            TO  SPA-GMN2D-SINKEI-MAX
            END-EVALUATE
       *
@@ -1273,9 +1302,9 @@
                GO      TO      4101-KOFUNUM-CHK-EXT
            END-IF
       *
-           IF      KANACHK-MAX         =   11
-               MOVE    ZERO            TO  SPA-GMN2D-KOHNUM1(12:)
-           END-IF
+      ***  IF      KANACHK-MAX         =   11
+      *        MOVE    ZERO            TO  SPA-GMN2D-KOHNUM1(12:)
+      **** END-IF
       *
            .
        4101-KOFUNUM-CHK-EXT.
@@ -1667,9 +1696,9 @@
                GO      TO      4101-KOHNUM3-CHK-EXT
            END-IF
       *
-           IF      KANACHK-MAX         =   10
-               MOVE    ZERO            TO  SPA-GMN2D-KOHNUM3(11:)
-           END-IF
+      **** IF      KANACHK-MAX         =   10
+      *        MOVE    ZERO            TO  SPA-GMN2D-KOHNUM3(11:)
+      *****END-IF
       *
       *
            .
@@ -1909,6 +1938,7 @@
                        MOVE    9                   TO  SPA-GMN2D-CUR
                        GO      TO      4109-TOUROKU-CHK-EXT
                    END-IF
+      *        傷病
                WHEN    "2"
                    IF      SPA-GMN2D-KOHNUM2   =   SPACE
                        MOVE    "0023"              TO  SPA-ERRCD
@@ -1925,6 +1955,11 @@
                        MOVE    8                   TO  SPA-GMN2D-CUR
                        GO      TO      4109-TOUROKU-CHK-EXT
                    END-IF
+                   IF      SPA-GMN2D-RYOSTYMD      =   SPACE
+                       MOVE    "0012"              TO  SPA-ERRCD
+                       MOVE    9                   TO  SPA-GMN2D-CUR
+                       GO      TO      4109-TOUROKU-CHK-EXT
+                   END-IF
                WHEN    "3"
                    IF      SPA-GMN2D-KOHNUM3   =   SPACE
                        MOVE    "0024"              TO  SPA-ERRCD
@@ -1934,6 +1969,18 @@
                    IF      SPA-GMN2D-SINSATUYMD    =   SPACE
                        MOVE    "0019"              TO  SPA-ERRCD
                        MOVE    18                  TO  SPA-GMN2D-CUR
+                   END-IF
+      *        自賠責
+               WHEN    "4"
+                   IF      SPA-GMN2D-SHOBYOYMD     =   SPACE
+                       MOVE    "0025"              TO  SPA-ERRCD
+                       MOVE    8                   TO  SPA-GMN2D-CUR
+                       GO      TO      4109-TOUROKU-CHK-EXT
+                   END-IF
+                   IF      SPA-GMN2D-RYOSTYMD      =   SPACE
+                       MOVE    "0012"              TO  SPA-ERRCD
+                       MOVE    9                   TO  SPA-GMN2D-CUR
+                       GO      TO      4109-TOUROKU-CHK-EXT
                    END-IF
            END-EVALUATE
       *
@@ -1965,7 +2012,17 @@
                MOVE    SPA-PTNUM-HKNID     TO  SPA-NAI-HKNID
            END-IF
       *
-           MOVE    "971"               TO  SPA-GMN-HKNNUM
+           EVALUATE    SPA-GMN2D-HKNKBN
+               WHEN    "1"
+               WHEN    "2"
+               WHEN    "3"
+                   MOVE    "971"               TO  SPA-GMN-HKNNUM
+                   MOVE    "971"               TO  SPA-NAI2D-HKNNUM
+               WHEN    "4"
+                   MOVE    "973"               TO  SPA-GMN-HKNNUM
+                   MOVE    "973"               TO  SPA-NAI2D-HKNNUM
+           END-EVALUATE
+      *
       *    適用期間
            IF      SPA-GMN2D-HKNKBN    =   "3" 
       *        アフターケア
@@ -2039,30 +2096,50 @@
            MOVE    SPA-GMN2D-HIHKNJANAME
                                        TO  PTRSI-HIHKNJANAME
            MOVE    SPA-GMN2D-COMMENT   TO  PTRSI-COMMENT
-           MOVE    SPA-GMN2D-JIGYOUNAME
-                                       TO  PTRSI-JIGYOUNAME
-           MOVE    SPA-GMN2D-PREFNAME  TO  PTRSI-PREFNAME
-      *    災害区分
-           MOVE    SPA-GMN2D-SAIGAI    TO  PTRSI-SAIGAIKBN
+           EVALUATE    SPA-GMN2D-HKNKBN
+               WHEN    "1"
+      *        短期のみ
+      *            事業所名称
+                   MOVE    SPA-GMN2D-JIGYOUNAME
+                                               TO  PTRSI-JIGYOUNAME
+                   MOVE    SPA-GMN2D-PREFNAME  TO  PTRSI-PREFNAME
+                   MOVE    SPA-GMN2D-PREFKBN   TO  PTRSI-PREFKBN
+                   MOVE    SPA-GMN2D-CITYNAME  TO  PTRSI-CITYNAME
+                   MOVE    SPA-GMN2D-CITYKBN   TO  PTRSI-CITYKBN
+           END-EVALUATE
+           EVALUATE    SPA-GMN2D-HKNKBN
+               WHEN    "1"
+               WHEN    "2"
+      *        短期・傷病
+                   MOVE    SPA-GMN2D-SINKEI    TO  PTRSI-SINKEI
+      *            災害区分
+                   MOVE    SPA-GMN2D-SAIGAI    TO  PTRSI-SAIGAIKBN
       *
-           MOVE    SPA-GMN2D-PREFKBN   TO  PTRSI-PREFKBN
-           MOVE    SPA-GMN2D-CITYNAME  TO  PTRSI-CITYNAME
-           MOVE    SPA-GMN2D-CITYKBN   TO  PTRSI-CITYKBN
-           MOVE    SPA-GMN2D-SINKEI    TO  PTRSI-SINKEI
-           MOVE    SPA-GMN2D-TENKI     TO  PTRSI-TENKI
-           MOVE    SPA-NAI2D-SHOBYOYMD TO  PTRSI-SHOBYOYMD
-           MOVE    SPA-GMN2D-SISIKBN   TO  PTRSI-SISIKBN
-           MOVE    SPA-NAI2D-RYOSTYMD  TO  PTRSI-RYOSTYMD
-           MOVE    SPA-NAI2D-RYOEDYMD  TO  PTRSI-RYOEDYMD
-           MOVE    SPA-GMN2D-SONSHOUKBN
-                                       TO  PTRSI-SONSHOUKBN
-           MOVE    SPA-GMN2D-SONSHOUKBNEDA
-                                       TO  PTRSI-SONSHOUKBN-EDANUM
-           MOVE    SPA-NAI2D-SINSATUYMD
-                                       TO  PTRSI-SINSATUYMD
-           MOVE    SPA-NAI2D-SINSATUEND
-                                       TO  PTRSI-SINSATUEND
-      *****MOVE    SPA-NAI2D-KENSAYMD  TO  PTRSI-KENSAYMD
+           END-EVALUATE
+           EVALUATE    SPA-GMN2D-HKNKBN
+               WHEN    "1"
+               WHEN    "2"
+               WHEN    "4"
+      *        短期・傷病・自賠責
+                   MOVE    SPA-GMN2D-TENKI     TO  PTRSI-TENKI
+                   MOVE    SPA-NAI2D-SHOBYOYMD TO  PTRSI-SHOBYOYMD
+                   MOVE    SPA-GMN2D-SISIKBN   TO  PTRSI-SISIKBN
+                   MOVE    SPA-NAI2D-RYOSTYMD  TO  PTRSI-RYOSTYMD
+                   MOVE    SPA-NAI2D-RYOEDYMD  TO  PTRSI-RYOEDYMD
+           END-EVALUATE
+           EVALUATE    SPA-GMN2D-HKNKBN
+      *        アフターケア
+               WHEN    "3"
+                   MOVE    SPA-GMN2D-SONSHOUKBN
+                                               TO  PTRSI-SONSHOUKBN
+                   MOVE    SPA-GMN2D-SONSHOUKBNEDA
+                                           TO  PTRSI-SONSHOUKBN-EDANUM
+                   MOVE    SPA-NAI2D-SINSATUYMD
+                                               TO  PTRSI-SINSATUYMD
+                   MOVE    SPA-NAI2D-SINSATUEND
+                                               TO  PTRSI-SINSATUEND
+           END-EVALUATE
+      *    確認年月日
            MOVE    SPA-NAI2D-KAKUNINYMD
                                        TO  PTRSI-KAKUNINYMD
       *
@@ -2219,7 +2296,7 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "労災保険区分が違います。"
+                   MOVE    "労災自賠保険区分が違います。"
                                                TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "被保険者名入力エラー"

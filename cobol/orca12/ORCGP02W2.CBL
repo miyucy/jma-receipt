@@ -197,6 +197,8 @@
            03  WRK-LCOMB-MAX-O     PIC 9(04).
       *    1:ÄÌ¾ï / 2:À¸ÊÝ¤Ä¤±¤Ê¤¤ / 3:¸µ¤Ë¤¿¤¤¤·¤ÆÀ¸ÊÝ¤Ä¤±¤Ê¤¤
            03  WRK-FTN-FLG         PIC X(01).
+      *    ÉéÃ´³ä¹ç
+           03  WRK-GAIKFTNRATE     PIC 9(03).
       *
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -235,11 +237,14 @@
                05  WRK-COMB-TBLKBN     PIC X(01).
       *        ¸¡º÷ÂÐ¾Ý¤È¤Ê¤ëÊÝ¸±ÈÖ¹æ/¸øÈñÈÖ¹æ
                05  WRK-COMB-HKNNUM      PIC X(03).
+      *        ¸¡º÷ÂÐ¾Ý¤È¤Ê¤ë»ÙÊ§¶èÊ¬
+               05  WRK-COMB-PAYKBN      PIC X(02).
       *        ¸¡º÷ÂÐ¾Ý¤È¤Ê¤ëÅ¬ÍÑ³«»ÏÇ¯·îÆü
                05  WRK-COMB-TEKSTYMD   PIC X(08).
       *
            03  WRK-KENSAKU-AREA.
                05  WRK-KEN-HKNNUM      PIC X(03).
+               05  WRK-KEN-PAYKBN      PIC X(02).
       *----(01.00.01) LINE MOD START ---------------------------------
       *         05  WRK-KEN-TEKYMD      PIC X(08).
                05  WRK-KEN-TEKSTYMD    PIC X(08).
@@ -268,6 +273,7 @@
                05  WRK-KOUHI-REC       OCCURS   100.
                    07  WRK-KOH-KOHID       PIC 9(10).
                    07  WRK-KOH-HKNNUM      PIC X(03).
+                   07  WRK-KOH-PAYKBN      PIC X(02).
                    07  WRK-KOH-TEKSTYMD    PIC 9(08).
                    07  WRK-KOH-TEKEDYMD    PIC 9(08).
                    07  WRK-KOH-SAKJOKBN    PIC X(01).
@@ -348,10 +354,14 @@
        000-PROC-SEC                SECTION.
       *
            PERFORM 100-INIT-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      000-PROC-EXT
+           END-IF
       *
            PERFORM 5701-COMB-HEN-SEC
       *
            .
+       000-PROC-EXT.
            EXIT    PROGRAM
            .
       *****************************************************************
@@ -451,6 +461,10 @@
                UNTIL  (FLG-PARA    NOT =   ZERO      )
       *
                MOVE    PARA-DATA-REC       TO  PTKOHINF-REC
+      *TEST
+                DISPLAY "P02W2 HOKNUM:" PTKOH-KOHNUM
+                       "," PTKOH-PAYKBN
+      *TEST
                IF      PTKOH-SAKJOKBN      =   SPACE
                    ADD     1               TO  CNT-KOH
                    IF  CNT-KOH             >   100
@@ -491,6 +505,7 @@
       *****IF  PTHKN-SBT                =   SPACE
                INITIALIZE                   WRK-KENSAKU-AREA
                MOVE    PTHKN-HKNNUM     TO  WRK-KEN-HKNNUM
+               MOVE    ZERO             TO  WRK-KEN-PAYKBN
       *----(01.00.01) LINE MOD START ---------------------------------
       *         MOVE    PTHKN-TEKSTYMD   TO  WRK-KEN-TEKYMD
                MOVE    PTHKN-TEKSTYMD   TO  WRK-KEN-TEKSTYMD
@@ -541,6 +556,9 @@
       *
            MOVE    PTKOH-KOHID          TO  WRK-KOH-KOHID     (CNT-KOH)
            MOVE    PTKOH-KOHNUM         TO  WRK-KOH-HKNNUM    (CNT-KOH)
+      *
+           MOVE    PTKOH-PAYKBN         TO  WRK-KOH-PAYKBN    (CNT-KOH)
+      *
            MOVE    PTKOH-TEKSTYMD       TO  WRK-KOH-TEKSTYMD  (CNT-KOH)
            MOVE    PTKOH-TEKEDYMD       TO  WRK-KOH-TEKEDYMD  (CNT-KOH)
            MOVE    PTKOH-SAKJOKBN       TO  WRK-KOH-SAKJOKBN  (CNT-KOH)
@@ -550,6 +568,7 @@
       *****IF  PTKOH-SBT                =   SPACE
                INITIALIZE                   WRK-KENSAKU-AREA
                MOVE    PTKOH-KOHNUM     TO  WRK-KEN-HKNNUM
+               MOVE    PTKOH-PAYKBN     TO  WRK-KEN-PAYKBN
       *----(01.00.01) LINE MOD START ---------------------------------
       *         MOVE    PTKOH-TEKSTYMD   TO  WRK-KEN-TEKYMD
                MOVE    PTKOH-TEKSTYMD   TO  WRK-KEN-TEKSTYMD
@@ -1062,6 +1081,8 @@
                                     TO  WRK-RCOMB-KOH1ID      (IDX1)
               MOVE    WRK-KOH-HKNNUM         (WRK-COMB-IDX)
                                     TO  WRK-RCOMB-KOH1HKNNUM   (IDX1)
+              MOVE    WRK-KOH-PAYKBN         (WRK-COMB-IDX)
+                                    TO  WRK-RCOMB-KOH1PAYKBN   (IDX1)
               MOVE    WRK-KOH-SEIDO     (WRK-COMB-IDX)
                                   TO  WRK-RCOMB-KOH1-TANSEIDONAME(IDX1)
               MOVE    WRK-KOH-SBT       (WRK-COMB-IDX)
@@ -1072,6 +1093,8 @@
                                   TO  WRK-RCOMB-KOH2ID      (IDX1)
                   MOVE    WRK-KOH-HKNNUM     (WRK-COMB-IDX)
                                   TO  WRK-RCOMB-KOH2HKNNUM   (IDX1)
+                  MOVE    WRK-KOH-PAYKBN     (WRK-COMB-IDX)
+                                  TO  WRK-RCOMB-KOH2PAYKBN   (IDX1)
                   MOVE    WRK-KOH-SEIDO (WRK-COMB-IDX)
                                   TO  WRK-RCOMB-KOH2-TANSEIDONAME(IDX1)
                   MOVE    WRK-KOH-SBT   (WRK-COMB-IDX)
@@ -1082,6 +1105,8 @@
                                     TO  WRK-RCOMB-KOH3ID      (IDX1)
                       MOVE    WRK-KOH-HKNNUM     (WRK-COMB-IDX)
                                     TO  WRK-RCOMB-KOH3HKNNUM   (IDX1)
+                      MOVE    WRK-KOH-PAYKBN     (WRK-COMB-IDX)
+                                    TO  WRK-RCOMB-KOH3PAYKBN   (IDX1)
                       MOVE    WRK-KOH-SEIDO (WRK-COMB-IDX)
                                   TO  WRK-RCOMB-KOH3-TANSEIDONAME(IDX1)
                       MOVE    WRK-KOH-SBT   (WRK-COMB-IDX)
@@ -1091,6 +1116,8 @@
                                     TO  WRK-RCOMB-KOH4ID      (IDX1)
                       MOVE    WRK-KOH-HKNNUM     (WRK-COMB-IDX)
                                     TO  WRK-RCOMB-KOH4HKNNUM   (IDX1)
+                      MOVE    WRK-KOH-PAYKBN     (WRK-COMB-IDX)
+                                    TO  WRK-RCOMB-KOH4PAYKBN   (IDX1)
                       MOVE    WRK-KOH-SEIDO (WRK-COMB-IDX)
                                   TO  WRK-RCOMB-KOH4-TANSEIDONAME(IDX1)
                       MOVE    WRK-KOH-SBT   (WRK-COMB-IDX)
@@ -1478,6 +1505,7 @@
                     MOVE  "3" TO  WRK-LCOMB-TNK-GAIYKZFTNKBN(IDX2)
                   ELSE
                     MOVE  WRK-LCOMB-KOH1HKNNUM(IDX2) TO  WRK-KEN-HKNNUM
+                    MOVE  WRK-LCOMB-KOH1PAYKBN(IDX2) TO  WRK-KEN-PAYKBN
       *----(01.00.01) LINE MOD START ---------------------------------
       *              MOVE  WRK-LCOMB-TEKSTYMD(IDX2)  TO  WRK-KEN-TEKYMD
                     MOVE  WRK-LCOMB-TEKSTYMD(IDX2)  TO WRK-KEN-TEKSTYMD
@@ -1488,6 +1516,7 @@
                   END-IF
                 ELSE
                   MOVE  WRK-LCOMB-KOH1HKNNUM(IDX2)   TO  WRK-KEN-HKNNUM
+                  MOVE  WRK-LCOMB-KOH1PAYKBN(IDX2)   TO  WRK-KEN-PAYKBN
       *----(01.00.01) LINE MOD START ---------------------------------
       *            MOVE  WRK-LCOMB-TEKSTYMD  (IDX2)  TO  WRK-KEN-TEKYMD
                   MOVE  WRK-LCOMB-TEKSTYMD (IDX2)  TO  WRK-KEN-TEKSTYMD
@@ -1501,6 +1530,7 @@
             WHEN    3
               IF  WRK-LCOMB-KOH2HKNNUM(IDX2)     NOT =   SPACE
                   MOVE    WRK-LCOMB-KOH2HKNNUM(IDX2) TO  WRK-KEN-HKNNUM
+                  MOVE    WRK-LCOMB-KOH2PAYKBN(IDX2) TO  WRK-KEN-PAYKBN
       *----(01.00.01) LINE MOD START ---------------------------------
       *            MOVE    WRK-LCOMB-TEKSTYMD (IDX2) TO  WRK-KEN-TEKYMD
                   MOVE    WRK-LCOMB-TEKSTYMD (IDX2) TO WRK-KEN-TEKSTYMD
@@ -1513,6 +1543,7 @@
             WHEN    4
               IF  WRK-LCOMB-KOH3HKNNUM(IDX2)     NOT =   SPACE
                   MOVE    WRK-LCOMB-KOH3HKNNUM(IDX2) TO  WRK-KEN-HKNNUM
+                  MOVE    WRK-LCOMB-KOH3PAYKBN(IDX2) TO  WRK-KEN-PAYKBN
       *----(01.00.01) LINE MOD START ---------------------------------
       *            MOVE    WRK-LCOMB-TEKSTYMD (IDX2) TO  WRK-KEN-TEKYMD
                   MOVE    WRK-LCOMB-TEKSTYMD (IDX2) TO WRK-KEN-TEKSTYMD
@@ -1525,6 +1556,7 @@
             WHEN    5
               IF  WRK-LCOMB-KOH4HKNNUM(IDX2)     NOT =   SPACE
                   MOVE    WRK-LCOMB-KOH4HKNNUM(IDX2) TO  WRK-KEN-HKNNUM
+                  MOVE    WRK-LCOMB-KOH4PAYKBN(IDX2) TO  WRK-KEN-PAYKBN
       *----(01.00.01) LINE MOD START ---------------------------------
       *            MOVE    WRK-LCOMB-TEKSTYMD (IDX2) TO  WRK-KEN-TEKYMD
                   MOVE    WRK-LCOMB-TEKSTYMD (IDX2) TO WRK-KEN-TEKSTYMD
@@ -1586,6 +1618,9 @@
                             MOVE    WRK-DISCOUNTRATEC
                                 TO   WRK-LCOMB-TNK-NYUKFTNRATE(IDX2)
                           END-IF
+                      ELSE
+      *                   Ï·¿Í¤ÎÉéÃ´³ä¹çÊÔ½¸
+                          PERFORM 570129-RJN-FUTAN-SET-SEC
                       END-IF
                   ELSE
       *               ËÜ¿Í
@@ -1675,6 +1710,34 @@
            EXIT.
       *
       *****************************************************************
+      *    Ï·¿Í¤ÎÉéÃ´³ä¹çÊÔ½¸½èÍý
+      *****************************************************************
+       570129-RJN-FUTAN-SET-SEC        SECTION.
+      *    £È£±£´¡¥£±£°²þÀµ Ï·¿Í¤Î»þµëÉÕ³ä¹ç¤¬Êä½õ¶èÊ¬¤Ë¤¢¤ë
+           IF      WRK-LCOMB-TEKSTYMD (IDX2)     >=   "20021001"
+               EVALUATE    WRK-LCOMB-HOJOKBN (IDX2)
+                   WHEN    "8"
+      *                £²³äÉéÃ´
+                       MOVE    20                TO  WRK-GAIKFTNRATE
+                   WHEN    "9"
+      *                £±³äÉéÃ´
+                       MOVE    10                TO  WRK-GAIKFTNRATE
+                   WHEN    OTHER
+      *                ¤½¤ÎÂ¾
+                       MOVE    HKN-HON-GAIKFTNRATE
+                                                   TO  WRK-GAIKFTNRATE
+               END-EVALUATE
+               MOVE    WRK-GAIKFTNRATE     TO  WRK-LCOMB-GAI-KFTNRATE
+                                                              (IDX2)
+               MOVE    WRK-GAIKFTNRATE     TO  WRK-LCOMB-NYU-KFTNRATE
+                                                              (IDX2)
+           END-IF
+      *
+           .
+       570129-RJN-FUTAN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ³°ÍèÉéÃ´ÆâÍÆÆþ¤ìÂØ¤¨½èÍý
       *         ÉéÃ´¶èÊ¬¡á£° OR £²¤Î¾ì¹ç¡¢³ÆÆâÍÆ¤ò½é´ü²½
       *****************************************************************
@@ -1722,16 +1785,45 @@
                INITIALIZE           WRK-LCOMB-GAI-NAIYO (IDX2)
            ELSE
       *   <²ó¡ÝÉéÃ´³ä¹ç>
+      *      £È£±£´¡¥£±£°²þÀµ Ï·¿Í¤Î»þµëÉÕ³ä¹ç¤¬Êä½õ¶èÊ¬¤Ë¤¢¤ë
+             IF      WRK-LCOMB-TEKSTYMD (IDX2)     >=   "20021001"
+                 EVALUATE    WRK-LCOMB-HOJOKBN (IDX2)
+                     WHEN    "8"
+      *                  £²³äÉéÃ´
+                         MOVE    20                TO  WRK-GAIKFTNRATE
+                     WHEN    "9"
+      *                  £±³äÉéÃ´
+                         MOVE    10                TO  WRK-GAIKFTNRATE
+                     WHEN    OTHER
+      *                  ¤½¤ÎÂ¾
+                         MOVE    HKN-HON-GAIKFTNRATE
+                                                   TO  WRK-GAIKFTNRATE
+                 END-EVALUATE
+             ELSE
+                MOVE    HKN-HON-GAIKFTNRATE    TO  WRK-GAIKFTNRATE
+             END-IF
+      *
+      ****** IF  WRK-LCOMB-GAI-KFTNRATE(IDX2)      =   ZERO
+      *         MOVE    HKN-HON-GAIKFTNRATE
+      *                 TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
+      *      ELSE
+      *         IF  (HKN-HON-GAIKFTNRATE     >   ZERO )    AND
+      *             (HKN-HON-GAIKFTNRATE
+      *                  <   WRK-LCOMB-GAI-KFTNRATE(IDX2))
+      *           MOVE  HKN-HON-GAIKFTNRATE
+      *                  TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
+      *         END-IF
+      *******END-IF
              IF  WRK-LCOMB-GAI-KFTNRATE(IDX2)      =   ZERO
-                MOVE    HKN-HON-GAIKFTNRATE
+                MOVE    WRK-GAIKFTNRATE
                         TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
              ELSE
-                IF  (HKN-HON-GAIKFTNRATE     >   ZERO )    AND
-                    (HKN-HON-GAIKFTNRATE
-                         <   WRK-LCOMB-GAI-KFTNRATE(IDX2))
-                  MOVE  HKN-HON-GAIKFTNRATE
-                         TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
-                END-IF
+                 IF  (WRK-GAIKFTNRATE     >   ZERO )    AND
+                     (WRK-GAIKFTNRATE     <   WRK-LCOMB-GAI-KFTNRATE
+                                                            (IDX2))
+                     MOVE  WRK-GAIKFTNRATE
+                                   TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
+                 END-IF
              END-IF
       *   <²ó¡Ý¸ÇÄê³Û>
              IF  WRK-LCOMB-GAI-KKOTGAK(IDX2)    =   ZERO
@@ -1818,14 +1910,41 @@
                INITIALIZE            WRK-LCOMB-NYU-NAIYO (IDX2)
            ELSE
       *   <²ó¡ÝÉéÃ´³ä¹ç>
+      *      £È£±£´¡¥£±£°²þÀµ Ï·¿Í¤Î»þµëÉÕ³ä¹ç¤¬Êä½õ¶èÊ¬¤Ë¤¢¤ë
+             IF      WRK-LCOMB-TEKSTYMD (IDX2)     >=   "20021001"
+                 EVALUATE    WRK-LCOMB-HOJOKBN (IDX2)
+                     WHEN    "8"
+      *                  £²³äÉéÃ´
+                         MOVE    20                TO  WRK-GAIKFTNRATE
+                     WHEN    "9"
+      *                  £±³äÉéÃ´
+                         MOVE    10                TO  WRK-GAIKFTNRATE
+                     WHEN    OTHER
+      *                  ¤½¤ÎÂ¾
+                         MOVE    HKN-HON-NYUKFTNRATE
+                                                   TO  WRK-GAIKFTNRATE
+                 END-EVALUATE
+             ELSE
+                MOVE    HKN-HON-NYUKFTNRATE    TO  WRK-GAIKFTNRATE
+             END-IF
+      *******IF  WRK-LCOMB-NYU-KFTNRATE(IDX2)      =   ZERO
+      *         MOVE    HKN-HON-NYUKFTNRATE
+      *              TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
+      *      ELSE
+      *        IF  (HKN-HON-NYUKFTNRATE     >   ZERO )    AND
+      *           (HKN-HON-NYUKFTNRATE < WRK-LCOMB-NYU-KFTNRATE(IDX2))
+      *          MOVE  HKN-HON-NYUKFTNRATE
+      *             TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
+      *        END-IF
+      ****** END-IF
              IF  WRK-LCOMB-NYU-KFTNRATE(IDX2)      =   ZERO
-                MOVE    HKN-HON-NYUKFTNRATE
+                MOVE    WRK-GAIKFTNRATE
                      TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
              ELSE
-               IF  (HKN-HON-NYUKFTNRATE     >   ZERO )    AND
-                  (HKN-HON-NYUKFTNRATE < WRK-LCOMB-NYU-KFTNRATE(IDX2))
-                 MOVE  HKN-HON-NYUKFTNRATE
-                    TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
+               IF  (WRK-GAIKFTNRATE    >   ZERO )    AND
+                   (WRK-GAIKFTNRATE    <   WRK-LCOMB-NYU-KFTNRATE
+                                                            (IDX2))
+                 MOVE  WRK-GAIKFTNRATE TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
                END-IF
              END-IF
       *   <²ó¡Ý¸ÇÄê³Û>
@@ -2547,6 +2666,8 @@
                                        TO  WRK-KCOMB-KOH1ID      (IDX2)
                  MOVE    WRK-KOH-HKNNUM(IDX)
                                        TO  WRK-KCOMB-KOH1HKNNUM  (IDX2)
+                 MOVE    WRK-KOH-PAYKBN(IDX)
+                                       TO  WRK-KCOMB-KOH1PAYKBN  (IDX2)
                  MOVE    WRK-KOH-TEKSTYMD (IDX)
                                        TO  WRK-KCOMB-TEKSTYMD    (IDX2)
                  MOVE    WRK-KOH-TEKEDYMD (IDX)
@@ -2635,6 +2756,8 @@
                                         TO  WRK-LCOMB-KOH1ID (IDX2)
                MOVE    WRK-KOH-HKNNUM(IDX)
                                         TO  WRK-LCOMB-KOH1HKNNUM(IDX2)
+               MOVE    WRK-KOH-PAYKBN(IDX)
+                                        TO  WRK-LCOMB-KOH1PAYKBN(IDX2)
                MOVE    WRK-KOH-TEKSTYMD(IDX)
                                         TO  WRK-LCOMB-TEKSTYMD   (IDX2)
                MOVE    WRK-KOH-TEKEDYMD(IDX)
@@ -2738,6 +2861,8 @@
                                      TO  WRK-KCOMB-KOH1ID      (IDX2)
                MOVE    WRK-KOH-HKNNUM  (IDX)
                                      TO  WRK-KCOMB-KOH1HKNNUM  (IDX2)
+               MOVE    WRK-KOH-PAYKBN (IDX)
+                                     TO  WRK-KCOMB-KOH1PAYKBN  (IDX2)
                MOVE    WRK-KOH-SEIDO   (IDX)
                                 TO  WRK-KCOMB-KOH1-TANSEIDONAME(IDX2)
                MOVE    WRK-KOH-SBT     (IDX)
@@ -2820,6 +2945,8 @@
                                      TO  WRK-KCOMB-KOH1ID      (IDX2)
            MOVE    WRK-KOH-HKNNUM      (IDX)
                                      TO  WRK-KCOMB-KOH1HKNNUM   (IDX2)
+           MOVE    WRK-KOH-PAYKBN      (IDX)
+                                     TO  WRK-KCOMB-KOH1PAYKBN   (IDX2)
            MOVE    WRK-KOH-SEIDO  (IDX)
                                   TO  WRK-KCOMB-KOH1-TANSEIDONAME(IDX2)
       *    ------------------------------------
@@ -3226,6 +3353,8 @@
                                     TO  WRK-RCOMB-KOH1ID      (IDX1)
               MOVE    WRK-KOH-HKNNUM         (WRK-COMB-HJOIDX)
                                     TO  WRK-RCOMB-KOH1HKNNUM   (IDX1)
+              MOVE    WRK-KOH-PAYKBN         (WRK-COMB-HJOIDX)
+                                    TO  WRK-RCOMB-KOH1PAYKBN   (IDX1)
               MOVE    WRK-KOH-SEIDO     (WRK-COMB-HJOIDX)
                                   TO  WRK-RCOMB-KOH1-TANSEIDONAME(IDX1)
       *       ------------------------------------
@@ -3237,6 +3366,8 @@
                                     TO  WRK-RCOMB-KOH2ID      (IDX1)
                   MOVE    WRK-KOH-HKNNUM     (WRK-COMB-HJOIDX)
                                     TO  WRK-RCOMB-KOH2HKNNUM   (IDX1)
+                  MOVE    WRK-KOH-PAYKBN     (WRK-COMB-HJOIDX)
+                                    TO  WRK-RCOMB-KOH2PAYKBN   (IDX1)
                   MOVE    WRK-KOH-SEIDO (WRK-COMB-HJOIDX)
                                   TO  WRK-RCOMB-KOH2-TANSEIDONAME(IDX1)
       *           ------------------------------------
@@ -3248,6 +3379,8 @@
                                     TO  WRK-RCOMB-KOH3ID      (IDX1)
                       MOVE    WRK-KOH-HKNNUM     (WRK-COMB-HJOIDX)
                                     TO  WRK-RCOMB-KOH3HKNNUM   (IDX1)
+                      MOVE    WRK-KOH-PAYKBN     (WRK-COMB-HJOIDX)
+                                    TO  WRK-RCOMB-KOH3PAYKBN   (IDX1)
                       MOVE    WRK-KOH-SEIDO (WRK-COMB-HJOIDX)
                                   TO  WRK-RCOMB-KOH3-TANSEIDONAME(IDX1)
       *               ------------------------------------
@@ -3258,6 +3391,8 @@
                                     TO  WRK-RCOMB-KOH4ID      (IDX1)
                       MOVE    WRK-KOH-HKNNUM     (WRK-COMB-HJOIDX)
                                     TO  WRK-RCOMB-KOH4HKNNUM   (IDX1)
+                      MOVE    WRK-KOH-PAYKBN     (WRK-COMB-HJOIDX)
+                                    TO  WRK-RCOMB-KOH4PAYKBN   (IDX1)
                       MOVE    WRK-KOH-SEIDO (WRK-COMB-HJOIDX)
                                   TO  WRK-RCOMB-KOH4-TANSEIDONAME(IDX1)
       *               ------------------------------------
@@ -3886,6 +4021,8 @@
                                   TO  WRK-RCOMB-KOH2ID      (IDX1)
                MOVE    WRK-RCOMB-KOH1HKNNUM   (IDX1)
                                   TO  WRK-RCOMB-KOH2HKNNUM   (IDX1)
+               MOVE    WRK-RCOMB-KOH1PAYKBN   (IDX1)
+                                  TO  WRK-RCOMB-KOH2PAYKBN   (IDX1)
                MOVE    WRK-RCOMB-KOH1-TANSEIDONAME(IDX1)
                                   TO  WRK-RCOMB-KOH2-TANSEIDONAME(IDX1)
                MOVE    WRK-RCOMB-KOH1-HKNKOHSBTKBN(IDX1)
@@ -3894,6 +4031,8 @@
                                   TO  WRK-RCOMB-KOH1ID      (IDX1)
                MOVE    WRK-KOH-HKNNUM         (WRK-COMB-RJNIDX)
                                   TO  WRK-RCOMB-KOH1HKNNUM   (IDX1)
+               MOVE    WRK-KOH-PAYKBN         (WRK-COMB-RJNIDX)
+                                  TO  WRK-RCOMB-KOH1PAYKBN   (IDX1)
                MOVE    WRK-KOH-SEIDO     (WRK-COMB-RJNIDX)
                                   TO  WRK-RCOMB-KOH1-TANSEIDONAME(IDX1)
       *        ------------------------------------
@@ -3932,6 +4071,8 @@
                                     TO  WRK-RCOMB-KOH2ID      (IDX1)
                MOVE    WRK-RCOMB-KOH1HKNNUM   (IDX1)
                                     TO  WRK-RCOMB-KOH2HKNNUM   (IDX1)
+               MOVE    WRK-RCOMB-KOH1PAYKBN   (IDX1)
+                                    TO  WRK-RCOMB-KOH2PAYKBN   (IDX1)
                MOVE    WRK-RCOMB-KOH1-TANSEIDONAME(IDX1)
                                   TO  WRK-RCOMB-KOH2-TANSEIDONAME(IDX1)
                MOVE    WRK-RCOMB-KOH1-HKNKOHSBTKBN(IDX1)
@@ -3940,6 +4081,8 @@
                                   TO  WRK-RCOMB-KOH1ID      (IDX1)
                MOVE    WRK-KOH-HKNNUM         (WRK-COMB-RJNIDX)
                                   TO  WRK-RCOMB-KOH1HKNNUM   (IDX1)
+               MOVE    WRK-KOH-PAYKBN         (WRK-COMB-RJNIDX)
+                                  TO  WRK-RCOMB-KOH1PAYKBN   (IDX1)
                MOVE    WRK-KOH-SEIDO     (WRK-COMB-RJNIDX)
                                   TO  WRK-RCOMB-KOH1-TANSEIDONAME(IDX1)
       *        ------------------------------------
@@ -4054,30 +4197,30 @@
       *
            MOVE    ZERO                   TO  FLG-RJN
            PERFORM   UNTIL   FLG-HKNNUM   =   1
-             IF  ( WRK-KEN-TEKSTYMD       >=  HKN-TEKSTYMD ) AND
-                 ( WRK-KEN-TEKEDYMD       <=  HKN-TEKEDYMD )
-               IF  HKN-HKNKOHSBTKBN       =   "3"
-                   MOVE    1              TO  FLG-RJN
-                   IF  (HKN-PAYKBN (1:1)  =   SPA-HOSPSBT)  AND
-                       (HKN-PAYKBN (2:1)  =   SPA-ROUPAYKBN)
-                     MOVE    SPACE        TO  WRK-KEN-ERFLG
-                     MOVE    1            TO  FLG-HKNNUM
+               IF    ( WRK-KEN-TEKSTYMD       >=  HKN-TEKSTYMD ) AND
+                     ( WRK-KEN-TEKEDYMD       <=  HKN-TEKEDYMD )
+                   IF      WRK-KEN-TEKSTYMD   >=  "20021001"
+      *                £È£±£´¡¥£±£° °Ê¹ß
+                       PERFORM 44102-HKNKOH-KAKUNIN-10-SEC
                    ELSE
-                     PERFORM 921-HKNNUM-NEXT-SEC
+      *                £È£±£´¡¥£±£° °ÊÁ°
+                       PERFORM 44101-HKNKOH-KAKUNIN-09-SEC
                    END-IF
-               ELSE
-                   MOVE    SPACE          TO  WRK-KEN-ERFLG
-                   MOVE    1            TO  FLG-HKNNUM
                END-IF
-             ELSE
-               PERFORM 921-HKNNUM-NEXT-SEC
-             END-IF
+               IF      FLG-HKNNUM          =   ZERO
+                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+                   PERFORM 921-HKNNUM-NEXT-SEC
+               END-IF
            END-PERFORM
+      *
            MOVE    "DBCLOSE"          TO  MCP-FUNC
            MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"     USING   MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
+      *
+      *----  H14.10  °Ê²¼ºï½ü
+           GO      TO      4410-HKNKOH-KAKUNIN-EXT
       *
       *    ÂÐ¾Ý»ÙÊ§¶èÊ¬¤ÎÏ·¿Í¤¬Â¸ºß¤·¤Ê¤¤¾ì¹ç
            IF  (WRK-KEN-ERFLG         =   "1")  AND
@@ -4200,9 +4343,59 @@
       *                                        MCPDATA-REC
       *     END-IF
       *----(01.00.01) LINE MOD START ---------------------------------
+          .
+       4410-HKNKOH-KAKUNIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÊÝ¸±¸øÈñ³ÎÇ§½èÍý¡Ê£È£±£´¡¥£±£° °ÊÁ°¡Ë
+      *****************************************************************
+       44101-HKNKOH-KAKUNIN-09-SEC        SECTION.
+      *
+      *    Ï·¿Í¤¢¤ê
+           IF      HKN-HKNKOHSBTKBN    =   "3"
+               MOVE    1                   TO  FLG-RJN
+           END-IF
+      *    Ï·¿Í¤Ç£È£±£´¡¥£±£°°ÊÁ°¤Î»þ¤Ï¡¢¥·¥¹¥Æ¥à´ÉÍý¤è¤ê»ÙÊ§¶èÊ¬¤ò·èÄê
+      *    »ÙÊ§¶èÊ¬¤ÏÏ·¿Í¡Ê£°£²£·¡Ë¤Î¤ß
+           IF      WRK-KEN-HKNNUM      =   "027"
+               MOVE    1                   TO  FLG-RJN
+               IF     (HKN-PAYKBN (1:1)    =   SPA-HOSPSBT)  AND
+                      (HKN-PAYKBN (2:1)    =   SPA-ROUPAYKBN)
+                   MOVE    1               TO  FLG-HKNNUM
+                   MOVE    SPACE           TO  WRK-KEN-ERFLG
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-HKNNUM
+               MOVE    SPACE           TO  WRK-KEN-ERFLG
+           END-IF
+          .
+       44101-HKNKOH-KAKUNIN-09-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÊÝ¸±¸øÈñ³ÎÇ§½èÍý¡Ê£È£±£´¡¥£±£° °Ê¹ß¡Ë
+      *****************************************************************
+       44102-HKNKOH-KAKUNIN-10-SEC        SECTION.
+      *
+      *    Ï·¿Í¤¢¤ê
+           IF      HKN-HKNKOHSBTKBN    =   "3"
+               MOVE    1                   TO  FLG-RJN
+           END-IF
+      *
+      *    »ÙÊ§¶èÊ¬¤¬Æ±¤¸¤³¤È
+           IF      WRK-KEN-PAYKBN      =   SPACE  OR  ZERO
+               MOVE    SPACE           TO  WRK-KEN-ERFLG
+               MOVE    1               TO  FLG-HKNNUM
+           ELSE
+               IF      WRK-KEN-PAYKBN      =  HKN-PAYKBN
+                   MOVE    SPACE           TO  WRK-KEN-ERFLG
+                   MOVE    1               TO  FLG-HKNNUM
+               END-IF
+           END-IF
       *
            .
-       4410-HKNKOH-KAKUNIN-EXT.
+       44102-HKNKOH-KAKUNIN-10-EXT.
            EXIT.
       *
       *****************************************************************

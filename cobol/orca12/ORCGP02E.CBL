@@ -130,6 +130,7 @@
                    07  WRK-RATE-EDITR  PIC X(11).
       *     ›∏±∏¯»ÒºÔ Ã
            03  WRK-HKNNUM              PIC X(03).
+           03  WRK-PAYKBN              PIC X(02).
            03  WRK-HKNKOHSBTKBN        PIC X(01).
            03  WRK-TANSEIDONAME        PIC X(20).
            03  WRK-TEKSTYMD            PIC X(08).
@@ -1172,6 +1173,7 @@
       *
       *     ›∏±∏¯»Ò∂Ë ¨ ‘Ω∏
            MOVE    PTHKN-HKNNUM        TO  WRK-HKNNUM
+           MOVE    ZERO                TO  WRK-PAYKBN
            MOVE    PTHKN-TEKSTYMD      TO  WRK-TEKSTYMD
            MOVE    PTHKN-TEKEDYMD      TO  WRK-TEKEDYMD
            PERFORM 1002211-HKNNUM-SET-SEC
@@ -1212,11 +1214,24 @@
            PERFORM 4001-SEIWA-YMDEDIT-SEC
            MOVE    WRK-HENYMD          TO  SPA-PTKOH-KAKUNINYMDW (IDX)
       *
+      *    ªŸ ß∂Ë ¨
+           MOVE    PTKOH-PAYKBN        TO  SPA-PTKOH-PAYKBN     (IDX)
+      *
       *     ›∏±∏¯»Ò∂Ë ¨ ‘Ω∏
            MOVE    PTKOH-KOHNUM        TO  WRK-HKNNUM
            MOVE    PTKOH-TEKSTYMD      TO  WRK-TEKSTYMD
            MOVE    PTKOH-TEKEDYMD      TO  WRK-TEKEDYMD
+           MOVE    PTKOH-PAYKBN        TO  WRK-PAYKBN
+           IF     (WRK-HKNNUM          =   "027"  )  AND
+                  (WRK-PAYKBN          =   ZERO  OR  SPACE )
+               MOVE    SPA-HOSPSBT         TO  WRK-PAYKBN(1:1)
+               MOVE    SPA-ROUPAYKBN       TO  WRK-PAYKBN(2:1)
+           END-IF
            PERFORM 1002211-HKNNUM-SET-SEC
+           IF     (PTKOH-KOHNUM        =   "027" )  AND
+                  (PTKOH-PAYKBN        =   ZERO  )
+               MOVE    "œ∑øÕ ›∑Ú"          TO  WRK-TANSEIDONAME
+           END-IF
            MOVE    WRK-HKNKOHSBTKBN    TO  SPA-PTKOH-HKN-SBTKBN (IDX)
            MOVE    WRK-TANSEIDONAME    TO  SPA-PTKOH-KOHNUM-MEI (IDX)
       *    ø∑µ¨ ¨
@@ -1236,16 +1251,23 @@
            INITIALIZE                  HKNNUM-REC
            MOVE    SPA-HOSPID          TO  HKN-HOSPID
            MOVE    WRK-HKNNUM          TO  HKN-HKNNUM
+           IF      WRK-PAYKBN          =   SPACE
+               MOVE    ZERO                TO  HKN-PAYKBN
+           ELSE
+               MOVE    WRK-PAYKBN          TO  HKN-PAYKBN
+           END-IF
+           MOVE    WRK-TEKSTYMD        TO  HKN-TEKSTYMD
+           MOVE    WRK-TEKEDYMD        TO  HKN-TEKEDYMD
       *
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+           MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "HKNNUM-KEY2"   TO  ORC-DBPATH
+               MOVE    "HKNNUM-KEY"    TO  ORC-DBPATH
                PERFORM 921-HKNMST-NEXT-SEC
            ELSE
                INITIALIZE              HKNNUM-REC
@@ -1262,7 +1284,7 @@
                    MOVE    HKN-TANSEIDONAME    TO  WRK-TANSEIDONAME
                    MOVE    1                   TO  FLG-HKNNUM
                ELSE
-                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+                   MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
                    PERFORM 921-HKNMST-NEXT-SEC
                END-IF
            END-PERFORM

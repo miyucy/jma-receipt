@@ -31,6 +31,7 @@
       * 01.00.02     MCC-多々納   02/04/05  労災保険の追加
       * 02.00.00     MCC-多々納   02/06/25  レイアウト変更
       * 02.00.01     NACL-多々納  02/07/31  パラメタファイルをＤＢへ
+      * 02.00.02     NACL-多々納  02/09/09  平成１４年１０月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -140,10 +141,16 @@
       *
       *    保険公費種別
            03  WRK-HKNNUM              PIC X(03).
+           03  WRK-PAYKBN              PIC X(02).
            03  WRK-HKNKOHSBTKBN        PIC X(01).
            03  WRK-TANSEIDONAME        PIC X(20).
            03  WRK-TEKSTYMD            PIC X(08).
            03  WRK-TEKEDYMD            PIC X(08).
+      *
+           03  WRK-YMD-01.
+               05  WRK-YY-01       PIC 9(04).
+               05  WRK-MM-01       PIC 9(02).
+               05  WRK-DD-01       PIC 9(02).
       *
       *   年齢表示
        01  WRK-NENREI-AREA.
@@ -823,22 +830,28 @@
       *
            MOVE    SPACE               TO  SPA-HKN-HOK-AREA
            INITIALIZE                      SPA-HKN-HOK-AREA
+      *    システム日付＋１月
+           MOVE    SPA-SYSYMD          TO  WRK-YMD-01
+           COMPUTE WRK-MM-01           =   WRK-MM-01    +   1
+           IF      WRK-MM-01           >   12
+               COMPUTE WRK-YY-01       =   WRK-YY-01    +   1
+               MOVE    01                  TO  WRK-MM-01
+           END-IF
       *
       *    保険番号　全件編集（適用範囲分）
            INITIALIZE                  HKNNUM-REC
            MOVE    SPA-HOSPID          TO  HKN-HOSPID
-           MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
-           MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
+      *
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    SPA-SYSYMD          TO  ORC-DBYMD
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY3"       TO  ORC-DBPATH
+           MOVE    "HKNNUM-KEY6"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "HKNNUM-KEY3"       TO  ORC-DBPATH
+               MOVE    "HKNNUM-KEY6"       TO  ORC-DBPATH
                PERFORM 921-HKNMST-NEXT-SEC
            ELSE
                INITIALIZE                  HKNNUM-REC
@@ -847,46 +860,50 @@
       *
            PERFORM UNTIL       FLG-HKNNUM  =   1
                MOVE    ZERO                TO  FLG-OK
-               IF      HKN-HKNKOHSBTKBN    =   "1"  OR  "4"
-                                           OR  "8"  OR  "9"
-      *            保険
-                   IF      SPA-GMN-HKNMAX      >   ZERO
-                       IF      HKN-HKNNUM      =   SPA-GMN-HKNNUML
-                                                    (SPA-GMN-HKNMAX)
+      *        システム日付から＋１までを範囲とする
+               IF     (HKN-TEKSTYMD    <=  SPA-SYSYMD   AND
+                       HKN-TEKEDYMD    >=  SPA-SYSYMD   )  OR
+                      (HKN-TEKSTYMD    <=  WRK-YMD-01   AND
+                       HKN-TEKEDYMD    >=  WRK-YMD-01   )
+                   IF      HKN-HKNKOHSBTKBN    =   "1"  OR  "4"
+                                               OR  "8"  OR  "9"
+      *            保険（同じ種類のときは１つとする）
+                       IF     (SPA-GMN-HKNMAX      >   ZERO )  AND
+                              (HKN-HKNNUM          =   SPA-GMN-HKNNUML
+                                                    (SPA-GMN-HKNMAX))
                            CONTINUE
                        ELSE
                            MOVE    1               TO  FLG-OK
                        END-IF
+      *
+                       IF      FLG-OK              =   1
+      *                    保険情報編集
+                           PERFORM 10041-HKNHEN-SEC
+                       END-IF
                    ELSE
-                       MOVE    1               TO  FLG-OK
-                   END-IF
-      **           労災を対象外とする
-      *            IF      HKN-HKNNUM          =   "971"
-      *                MOVE    ZERO            TO  FLG-OK
-      ***          END-IF
-                   IF      FLG-OK              =   1
-      *                保険情報編集
-                       PERFORM 10041-HKNHEN-SEC
-                   END-IF
-               ELSE
-      *            公費
-                   IF      SPA-GMN-KOHMAX      >   ZERO
-                       IF      HKN-HKNNUM      =   SPA-GMN-KOHNUML
-                                                    (SPA-GMN-KOHMAX)
-                           CONTINUE
+      *                公費
+                       IF     (SPA-GMN-KOHMAX      >   ZERO  )  AND
+                              (HKN-HKNNUM          =   SPA-GMN-KOHNUML
+                                                      (SPA-GMN-KOHMAX))
+      *                    老人の時
+                           IF     (HKN-HKNNUM      =   "027"  )  AND
+                                  (HKN-PAYKBN      =   "01"  OR
+                                                       "02"   )  AND
+                                  (HKN-PAYKBN  NOT =   SPA-NAI-KOHPAYKBN
+                                                     (SPA-GMN-KOHMAX))
+                               MOVE    1               TO  FLG-OK
+                           END-IF
                        ELSE
                            MOVE    1               TO  FLG-OK
                        END-IF
-                   ELSE
-                       MOVE    1               TO  FLG-OK
-                   END-IF
-                   IF      FLG-OK              =   1
-      *                公費情報編集
-                       PERFORM 10042-KOHHEN-SEC
+                       IF      FLG-OK              =   1
+      *                    公費情報編集
+                           PERFORM 10042-KOHHEN-SEC
+                       END-IF
                    END-IF
                END-IF
       *
-               MOVE    "HKNNUM-KEY3"       TO  ORC-DBPATH
+               MOVE    "HKNNUM-KEY6"       TO  ORC-DBPATH
                PERFORM 921-HKNMST-NEXT-SEC
            END-PERFORM
       *
@@ -906,6 +923,12 @@
                                                     (SPA-GMN-HKNMAX)
            MOVE    HKN-HKNKOHSBTKBN    TO  SPA-NAI-HKNSBTKBN
                                                     (SPA-GMN-HKNMAX)
+      *    保険法別番号
+           MOVE    HKN-HBTNUM          TO  SPA-NAI-HKNHBTNUM
+                                                    (SPA-GMN-HKNMAX)
+      *    支払区分
+           MOVE    HKN-PAYKBN          TO  SPA-NAI-HKNPAYKBN
+                                                    (SPA-GMN-HKNMAX)
       *
            .
        10041-HKNHEN-EXT.
@@ -919,13 +942,25 @@
            ADD     1                   TO  SPA-GMN-KOHMAX
            MOVE    HKN-HKNNUM          TO  SPA-GMN-KOHNUML
                                                     (SPA-GMN-KOHMAX)
-           IF      HKN-HKNNUM          =   "027"
+           IF    ( HKN-HKNNUM          =   "027"  )  AND
+                 ( HKN-PAYKBN      NOT =   "01"  AND "02"  )
                MOVE    "老人保健"          TO  SPA-GMN-KOHNUMMEIL
                                                     (SPA-GMN-KOHMAX)
            ELSE
                MOVE    HKN-TANSEIDONAME    TO  SPA-GMN-KOHNUMMEIL
                                                     (SPA-GMN-KOHMAX)
            END-IF
+      *
+      *    老人で負担割合別の時、１，２を編集する
+           IF     (HKN-HKNNUM          =   "027"  ) AND
+                  (HKN-PAYKBN          =   "01"  OR  "02"  )
+               MOVE    HKN-PAYKBN(2:1)     TO  SPA-GMN-KOHKBNL
+                                                    (SPA-GMN-KOHMAX)
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN-KOHKBNL
+                                                    (SPA-GMN-KOHMAX)
+           END-IF
+      *
            MOVE    HKN-HKNKOHSBTKBN    TO  SPA-NAI-KOHSBTKBN
                                                     (SPA-GMN-KOHMAX)
            MOVE    HKN-JKYSKENSNUMCHKKBN
@@ -933,6 +968,19 @@
                                                     (SPA-GMN-KOHMAX)
            MOVE    HKN-KENSNUMCHKKBN   TO  SPA-NAI-KENSNUMCHKKBN
                                                     (SPA-GMN-KOHMAX)
+      *    保険法別番号
+           MOVE    HKN-HBTNUM          TO  SPA-NAI-HBTNUM
+                                                    (SPA-GMN-KOHMAX)
+      *    支払区分
+      *    老人で負担割合別の時、１，２を編集する
+           IF     (HKN-HKNNUM          =   "027"  ) AND
+                  (HKN-PAYKBN      NOT =   "01"  AND "02"  )
+               MOVE    ZERO                TO  SPA-NAI-KOHPAYKBN
+                                                    (SPA-GMN-KOHMAX)
+           ELSE
+               MOVE    HKN-PAYKBN          TO  SPA-NAI-KOHPAYKBN
+                                                    (SPA-GMN-KOHMAX)
+           END-IF
            .
        10042-KOHHEN-EXT.
            EXIT.
@@ -1868,6 +1916,7 @@
       *
       *    保険公費区分編集
            MOVE    PTHKN-HKNNUM        TO  WRK-HKNNUM
+           MOVE    ZERO                TO  WRK-PAYKBN
            MOVE    PTHKN-TEKSTYMD      TO  WRK-TEKSTYMD
            MOVE    PTHKN-TEKEDYMD      TO  WRK-TEKEDYMD
            PERFORM 1002211-HKNNUM-SET-SEC
@@ -1891,6 +1940,7 @@
       *
            MOVE    PTKOH-KOHID         TO  SPA-PTKOH-KOHID      (IDX)
            MOVE    PTKOH-KOHNUM        TO  SPA-PTKOH-KOHNUM     (IDX)
+           MOVE    PTKOH-PAYKBN        TO  SPA-PTKOH-PAYKBN     (IDX)
            MOVE    PTKOH-FTNJANUM      TO  SPA-PTKOH-FTNJANUM   (IDX)
            MOVE    PTKOH-JKYSNUM       TO  SPA-PTKOH-JKYSNUM    (IDX)
            MOVE    PTKOH-TEKSTYMD      TO  SPA-PTKOH-TEKSTYMD   (IDX)
@@ -1912,9 +1962,19 @@
       *
       *    保険公費区分編集
            MOVE    PTKOH-KOHNUM        TO  WRK-HKNNUM
+           MOVE    PTKOH-PAYKBN        TO  WRK-PAYKBN
            MOVE    PTKOH-TEKSTYMD      TO  WRK-TEKSTYMD
            MOVE    PTKOH-TEKEDYMD      TO  WRK-TEKEDYMD
+           IF     (WRK-HKNNUM          =   "027") AND
+                  (WRK-PAYKBN          =   ZERO OR SPACE)
+               MOVE    SPA-HOSPSBT         TO  WRK-PAYKBN(1:1)
+               MOVE    SPA-ROUPAYKBN       TO  WRK-PAYKBN(2:1)
+           END-IF
            PERFORM 1002211-HKNNUM-SET-SEC
+           IF     (PTKOH-KOHNUM        =   "027" )  AND
+                  (PTKOH-PAYKBN        =   ZERO  )
+               MOVE    "老人保健"          TO  WRK-TANSEIDONAME
+           END-IF
            MOVE    WRK-HKNKOHSBTKBN    TO  SPA-PTKOH-HKN-SBTKBN (IDX)
            MOVE    WRK-TANSEIDONAME    TO  SPA-PTKOH-KOHNUM-MEI (IDX)
       *    確認年月日保存
@@ -1936,16 +1996,21 @@
            INITIALIZE                  HKNNUM-REC
            MOVE    SPA-HOSPID          TO  HKN-HOSPID
            MOVE    WRK-HKNNUM          TO  HKN-HKNNUM
+           MOVE    WRK-PAYKBN          TO  HKN-PAYKBN
+           MOVE    WRK-TEKSTYMD        TO  HKN-TEKSTYMD
+           MOVE    WRK-TEKEDYMD        TO  HKN-TEKEDYMD
       *
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+      *****MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+           MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "HKNNUM-KEY2"   TO  ORC-DBPATH
+      *********MOVE    "HKNNUM-KEY2"   TO  ORC-DBPATH
+               MOVE    "HKNNUM-KEY"    TO  ORC-DBPATH
                PERFORM 921-HKNMST-NEXT-SEC
            ELSE
                INITIALIZE              HKNNUM-REC
@@ -1954,18 +2019,25 @@
       *
            MOVE    SPACE               TO  WRK-HKNKOHSBTKBN
            MOVE    SPACE               TO  WRK-TANSEIDONAME
-           PERFORM
-               UNTIL   FLG-HKNNUM      =   1
+           IF      FLG-HKNNUM          =   ZERO
                IF     (WRK-TEKSTYMD        >=  HKN-TEKSTYMD )  AND
                       (WRK-TEKEDYMD        <=  HKN-TEKEDYMD )
                    MOVE    HKN-HKNKOHSBTKBN    TO  WRK-HKNKOHSBTKBN
                    MOVE    HKN-TANSEIDONAME    TO  WRK-TANSEIDONAME
-                   MOVE    1                   TO  FLG-HKNNUM
-               ELSE
-                   MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
-                   PERFORM 921-HKNMST-NEXT-SEC
                END-IF
-           END-PERFORM
+           END-IF
+      *****PERFORM
+      *        UNTIL   FLG-HKNNUM      =   1
+      *        IF     (WRK-TEKSTYMD        >=  HKN-TEKSTYMD )  AND
+      *               (WRK-TEKEDYMD        <=  HKN-TEKEDYMD )
+      *            MOVE    HKN-HKNKOHSBTKBN    TO  WRK-HKNKOHSBTKBN
+      *            MOVE    HKN-TANSEIDONAME    TO  WRK-TANSEIDONAME
+      *            MOVE    1                   TO  FLG-HKNNUM
+      *        ELSE
+      *            MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+      *            PERFORM 921-HKNMST-NEXT-SEC
+      *        END-IF
+      *****END-PERFORM
       *
            .
        1002211-HKNNUM-SET-EXT.
