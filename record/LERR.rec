@@ -1,4 +1,4 @@
-CERR	{
+LERR	{
 	fixed1	{
 		ERRCODE	{
 			value	varchar(10);
