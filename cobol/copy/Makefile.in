@@ -784,6 +784,14 @@ COPYS = \
 	CPXC01LNK.INC \
         HCM2Q.INC \
         HCM2R.INC \
+        CPPREVIEW.INC \
+        CPPRVKANRI.INC \
+        CPXC01lnk.INC \
+        XC01.INC \
+        XC01COMMON-SPA \
+        XC99.INC \
+        XCERR.INC \
+        XCID1.INC 
 
 DBPATH = \
 	ORCA-DBPATH

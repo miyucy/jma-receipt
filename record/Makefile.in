@@ -226,6 +226,10 @@ RECORD_files = \
 	XBID.rec \
 	XERR.rec \
 	XID1.rec \
+	XC01.rec \
+	XC99.rec \
+	XCERR.rec \
+	XCID1.rec \
 	Y01.rec \
 	Y03.rec \
 	Y04.rec \
@@ -385,7 +389,9 @@ DB_files = \
 	view_Q001.db \
 	view_Q002.db \
 	view_bd001.db \
-	view_bd002.db 
+	view_bd002.db \ 
+	tbl_prvkanri.db \ 
+	tbl_preview.db 
 
 all:   
 
