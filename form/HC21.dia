@@ -9,6 +9,12 @@
         <attribute name="name">
           <string>#A4#</string>
         </attribute>
+        <attribute name="pswidth">
+          <real val="21"/>
+        </attribute>
+        <attribute name="psheight">
+          <real val="29.7"/>
+        </attribute>
         <attribute name="tmargin">
           <real val="0"/>
         </attribute>
@@ -41,7 +47,7 @@
         <point val="3.1,10.1373"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.1,9.85484;3.4535,10.2048"/>
+        <rectangle val="3.1,9.86829;3.4535,10.2183"/>
       </attribute>
       <attribute name="orca_id">
         <string>#TANJYOG1#</string>
@@ -75,6 +81,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.088375"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -83,7 +95,7 @@
         <point val="3.6,10.1373"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.6,9.85484;3.9535,10.2048"/>
+        <rectangle val="3.6,9.86829;3.9535,10.2183"/>
       </attribute>
       <attribute name="orca_id">
         <string>#TANJYOG2#</string>
@@ -117,6 +129,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.088375"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -125,7 +143,7 @@
         <point val="4.125,10.1373"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="4.125,9.85484;4.4785,10.2048"/>
+        <rectangle val="4.125,9.86829;4.4785,10.2183"/>
       </attribute>
       <attribute name="orca_id">
         <string>#TANJYOG3#</string>
@@ -159,6 +177,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.088375"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -167,7 +191,7 @@
         <point val="9.775,9.74962"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.1387,9.48944;9.775,9.83944"/>
+        <rectangle val="9.1387,9.47598;9.775,9.82598"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI#</string>
@@ -201,6 +225,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -209,7 +239,7 @@
         <point val="3.01331,9.26067"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.01331,9.01856;7.25531,9.31856"/>
+        <rectangle val="3.01331,9.03009;5.13431,9.33009"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KANANAME#</string>
@@ -226,7 +256,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#165;&#166;&#165;&#168;&#165;&#207;&#165;&#233;&#161;&#161;&#165;&#191;&#165;&#171;&#165;&#179;&#165;&#200;&#165;&#226;&#165;&#166;&#165;&#183;&#165;&#222;&#165;&#185;#</string>
+            <string>#&#165;&#203;&#165;&#193;&#165;&#164;&#161;&#161;&#165;&#191;&#165;&#237;&#165;&#166;#</string>
           </attribute>
           <attribute name="font">
             <font name="Times-Roman"/>
@@ -243,6 +273,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.07575"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.1515"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -251,7 +287,7 @@
         <point val="2.99563,9.71007"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2.99563,9.34691;4.92725,9.79691"/>
+        <rectangle val="2.99563,9.3642;5.26813,9.8142"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME#</string>
@@ -268,7 +304,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#193;&#176;&#197;&#196; &#189;&#164;&#184;&#227;#</string>
+            <string>#&#198;&#252;&#176;&#229;&#161;&#161;&#194;&#192;&#207;&#186;#</string>
           </attribute>
           <attribute name="font">
             <font name="Times-Roman"/>
@@ -285,6 +321,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.113625"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.22725"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -293,7 +335,7 @@
         <point val="3.00022,10.6953"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.00022,10.4128;9.71672,10.7628"/>
+        <rectangle val="3.00022,10.4263;9.71672,10.7763"/>
       </attribute>
       <attribute name="orca_id">
         <string>#SYOBYOMEI1#</string>
@@ -327,6 +369,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.088375"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -335,7 +383,7 @@
         <point val="3.0011,11.0851"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.0011,10.8026;9.7176,11.1526"/>
+        <rectangle val="3.0011,10.8161;9.7176,11.1661"/>
       </attribute>
       <attribute name="orca_id">
         <string>#SYOBYOMEI2#</string>
@@ -369,6 +417,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.088375"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -377,7 +431,7 @@
         <point val="3.0011,11.4741"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.0011,11.1916;9.7176,11.5416"/>
+        <rectangle val="3.0011,11.2051;9.7176,11.5551"/>
       </attribute>
       <attribute name="orca_id">
         <string>#SYOBYOMEI3#</string>
@@ -411,6 +465,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.088375"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -419,7 +479,7 @@
         <point val="3.01878,11.8454"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.01878,11.5629;9.73528,11.9129"/>
+        <rectangle val="3.01878,11.5764;9.73528,11.9264"/>
       </attribute>
       <attribute name="orca_id">
         <string>#SYOBYOMEI4#</string>
@@ -453,6 +513,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.088375"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -461,7 +527,7 @@
         <point val="3.01878,12.2167"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.01878,11.9342;9.73528,12.2842"/>
+        <rectangle val="3.01878,11.9477;9.73528,12.2977"/>
       </attribute>
       <attribute name="orca_id">
         <string>#SYOBYOMEI5#</string>
@@ -495,6 +561,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.088375"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -504,7 +576,7 @@
           <point val="10.8983,9.65055"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.8983,9.36809;20.4428,9.71809"/>
+          <rectangle val="10.8983,9.38154;20.4428,9.73154"/>
         </attribute>
         <attribute name="orca_id">
           <string>#KEIKA1#</string>
@@ -538,6 +610,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.088375"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -546,7 +624,7 @@
           <point val="10.901,10.0243"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.901,9.74184;20.4455,10.0918"/>
+          <rectangle val="10.901,9.75529;20.4455,10.1053"/>
         </attribute>
         <attribute name="orca_id">
           <string>#KEIKA2#</string>
@@ -580,6 +658,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.088375"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -588,7 +672,7 @@
           <point val="10.901,10.3956"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.901,10.1131;20.4455,10.4631"/>
+          <rectangle val="10.901,10.1266;20.4455,10.4766"/>
         </attribute>
         <attribute name="orca_id">
           <string>#KEIKA3#</string>
@@ -622,6 +706,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.088375"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -630,7 +720,7 @@
           <point val="10.9038,10.7516"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9038,10.4691;20.4483,10.8191"/>
+          <rectangle val="10.9038,10.4826;20.4483,10.8326"/>
         </attribute>
         <attribute name="orca_id">
           <string>#KEIKA4#</string>
@@ -664,6 +754,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.088375"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -672,7 +768,7 @@
           <point val="10.901,11.1558"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.901,10.8733;20.4455,11.2233"/>
+          <rectangle val="10.901,10.8868;20.4455,11.2368"/>
         </attribute>
         <attribute name="orca_id">
           <string>#KEIKA5#</string>
@@ -706,6 +802,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.088375"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -714,7 +816,7 @@
           <point val="10.9038,11.5296"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9038,11.2471;20.4483,11.5971"/>
+          <rectangle val="10.9038,11.2606;20.4483,11.6106"/>
         </attribute>
         <attribute name="orca_id">
           <string>#KEIKA6#</string>
@@ -748,6 +850,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.088375"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -756,7 +864,7 @@
           <point val="10.9038,11.9009"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9038,11.6184;20.4483,11.9684"/>
+          <rectangle val="10.9038,11.6319;20.4483,11.9819"/>
         </attribute>
         <attribute name="orca_id">
           <string>#KEIKA7#</string>
@@ -790,6 +898,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.088375"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -798,7 +912,7 @@
           <point val="10.9065,12.2746"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9065,11.9921;20.451,12.3421"/>
+          <rectangle val="10.9065,12.0056;20.451,12.3556"/>
         </attribute>
         <attribute name="orca_id">
           <string>#KEIKA8#</string>
@@ -832,6 +946,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.088375"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -842,7 +962,7 @@
           <point val="15.8987,13.1058"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="15.8987,12.8476;20.4235,13.1676"/>
+          <rectangle val="15.8987,12.8598;20.4235,13.1798"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO11#</string>
@@ -876,6 +996,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -884,7 +1010,7 @@
           <point val="15.9014,13.4796"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="15.9014,13.2214;20.4262,13.5414"/>
+          <rectangle val="15.9014,13.2336;20.4262,13.5536"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO12#</string>
@@ -918,6 +1044,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -926,7 +1058,7 @@
           <point val="15.9014,13.8508"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="15.9014,13.5926;20.4262,13.9126"/>
+          <rectangle val="15.9014,13.6048;20.4262,13.9248"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO13#</string>
@@ -960,6 +1092,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -968,7 +1106,7 @@
           <point val="15.9041,14.2069"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="15.9041,13.9487;20.4289,14.2687"/>
+          <rectangle val="15.9041,13.9609;20.4289,14.2809"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO14#</string>
@@ -1002,6 +1140,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1010,7 +1154,7 @@
           <point val="15.9014,14.6111"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="15.9014,14.3529;20.4262,14.6729"/>
+          <rectangle val="15.9014,14.3651;20.4262,14.6851"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO15#</string>
@@ -1044,6 +1188,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1052,7 +1202,7 @@
           <point val="15.9041,14.9848"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="15.9041,14.7266;20.4289,15.0466"/>
+          <rectangle val="15.9041,14.7388;20.4289,15.0588"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO16#</string>
@@ -1086,6 +1236,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1094,7 +1250,7 @@
           <point val="15.9041,15.3385"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="15.9041,15.0803;20.4289,15.4003"/>
+          <rectangle val="15.9041,15.0925;20.4289,15.4125"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO17#</string>
@@ -1128,6 +1284,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1136,7 +1298,7 @@
           <point val="15.9069,15.7122"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="15.9069,15.454;20.4317,15.774"/>
+          <rectangle val="15.9069,15.4662;20.4317,15.7862"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO18#</string>
@@ -1170,6 +1332,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1178,7 +1346,7 @@
           <point val="15.9163,16.0408"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="15.9163,15.7826;20.4411,16.1026"/>
+          <rectangle val="15.9163,15.7948;20.4411,16.1148"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO19#</string>
@@ -1212,6 +1380,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1222,7 +1396,7 @@
           <point val="10.9675,16.9897"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,16.7315;11.6139,17.0515"/>
+          <rectangle val="10.9675,16.7437;11.6139,17.0637"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN1#</string>
@@ -1256,6 +1430,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1264,7 +1444,7 @@
           <point val="10.9675,17.3889"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,17.1307;11.6139,17.4507"/>
+          <rectangle val="10.9675,17.1429;11.6139,17.4629"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN2#</string>
@@ -1298,6 +1478,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1306,7 +1492,7 @@
           <point val="10.9675,17.7881"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,17.5299;11.6139,17.8499"/>
+          <rectangle val="10.9675,17.5421;11.6139,17.8621"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN3#</string>
@@ -1340,6 +1526,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1348,7 +1540,7 @@
           <point val="10.9675,18.1872"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,17.929;11.6139,18.249"/>
+          <rectangle val="10.9675,17.9412;11.6139,18.2612"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN4#</string>
@@ -1382,6 +1574,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1390,7 +1588,7 @@
           <point val="10.9675,18.5864"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,18.3282;11.6139,18.6482"/>
+          <rectangle val="10.9675,18.3404;11.6139,18.6604"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN5#</string>
@@ -1424,6 +1622,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1432,7 +1636,7 @@
           <point val="10.9675,18.9856"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,18.7274;11.6139,19.0474"/>
+          <rectangle val="10.9675,18.7396;11.6139,19.0596"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN6#</string>
@@ -1466,6 +1670,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1474,7 +1684,7 @@
           <point val="10.9675,19.3847"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,19.1265;11.6139,19.4465"/>
+          <rectangle val="10.9675,19.1387;11.6139,19.4587"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN7#</string>
@@ -1508,6 +1718,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1516,7 +1732,7 @@
           <point val="10.9675,19.7839"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,19.5257;11.6139,19.8457"/>
+          <rectangle val="10.9675,19.5379;11.6139,19.8579"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN8#</string>
@@ -1550,6 +1766,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1558,7 +1780,7 @@
           <point val="10.9675,20.183"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,19.9248;11.6139,20.2448"/>
+          <rectangle val="10.9675,19.937;11.6139,20.257"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN9#</string>
@@ -1592,6 +1814,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1600,7 +1828,7 @@
           <point val="10.9675,20.5822"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,20.324;11.6139,20.644"/>
+          <rectangle val="10.9675,20.3362;11.6139,20.6562"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN10#</string>
@@ -1634,6 +1862,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1642,7 +1876,7 @@
           <point val="10.9675,20.9814"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,20.7232;11.6139,21.0432"/>
+          <rectangle val="10.9675,20.7354;11.6139,21.0554"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN11#</string>
@@ -1676,6 +1910,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1684,7 +1924,7 @@
           <point val="10.9675,21.3805"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,21.1223;11.6139,21.4423"/>
+          <rectangle val="10.9675,21.1345;11.6139,21.4545"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN12#</string>
@@ -1718,6 +1958,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1726,7 +1972,7 @@
           <point val="10.9675,21.7797"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,21.5215;11.6139,21.8415"/>
+          <rectangle val="10.9675,21.5337;11.6139,21.8537"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN13#</string>
@@ -1760,6 +2006,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1768,7 +2020,7 @@
           <point val="10.9675,22.1789"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,21.9207;11.6139,22.2407"/>
+          <rectangle val="10.9675,21.9329;11.6139,22.2529"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN14#</string>
@@ -1802,6 +2054,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1810,7 +2068,7 @@
           <point val="10.9675,22.578"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,22.3198;11.6139,22.6398"/>
+          <rectangle val="10.9675,22.332;11.6139,22.652"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN15#</string>
@@ -1844,6 +2102,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1852,7 +2116,7 @@
           <point val="10.9675,22.9772"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,22.719;11.6139,23.039"/>
+          <rectangle val="10.9675,22.7312;11.6139,23.0512"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN16#</string>
@@ -1886,6 +2150,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1894,7 +2164,7 @@
           <point val="10.9675,23.3763"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,23.1181;11.6139,23.4381"/>
+          <rectangle val="10.9675,23.1303;11.6139,23.4503"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN17#</string>
@@ -1928,6 +2198,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1936,7 +2212,7 @@
           <point val="10.9675,23.7755"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,23.5173;11.6139,23.8373"/>
+          <rectangle val="10.9675,23.5295;11.6139,23.8495"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN18#</string>
@@ -1970,6 +2246,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -1978,7 +2260,7 @@
           <point val="10.9675,24.1747"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,23.9165;11.6139,24.2365"/>
+          <rectangle val="10.9675,23.9287;11.6139,24.2487"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN19#</string>
@@ -2012,6 +2294,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2020,7 +2308,7 @@
           <point val="10.9675,24.5738"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,24.3156;11.6139,24.6356"/>
+          <rectangle val="10.9675,24.3278;11.6139,24.6478"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN20#</string>
@@ -2054,6 +2342,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2062,7 +2356,7 @@
           <point val="10.9675,24.973"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,24.7148;11.6139,25.0348"/>
+          <rectangle val="10.9675,24.727;11.6139,25.047"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN21#</string>
@@ -2096,6 +2390,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2104,7 +2404,7 @@
           <point val="10.9675,25.3722"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,25.114;11.6139,25.434"/>
+          <rectangle val="10.9675,25.1262;11.6139,25.4462"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN22#</string>
@@ -2138,6 +2438,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2146,7 +2452,7 @@
           <point val="10.9675,25.7713"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,25.5131;11.6139,25.8331"/>
+          <rectangle val="10.9675,25.5253;11.6139,25.8453"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN23#</string>
@@ -2180,6 +2486,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2188,7 +2500,7 @@
           <point val="10.9675,26.1705"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,25.9123;11.6139,26.2323"/>
+          <rectangle val="10.9675,25.9245;11.6139,26.2445"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN24#</string>
@@ -2222,6 +2534,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2230,7 +2548,7 @@
           <point val="10.9675,26.5696"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,26.3114;11.6139,26.6314"/>
+          <rectangle val="10.9675,26.3236;11.6139,26.6436"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN25#</string>
@@ -2264,6 +2582,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2272,7 +2596,7 @@
           <point val="10.9675,26.9688"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,26.7106;11.6139,27.0306"/>
+          <rectangle val="10.9675,26.7228;11.6139,27.0428"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN26#</string>
@@ -2306,6 +2630,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2314,7 +2644,7 @@
           <point val="10.9675,27.368"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,27.1098;11.6139,27.4298"/>
+          <rectangle val="10.9675,27.122;11.6139,27.442"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN27#</string>
@@ -2348,6 +2678,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2356,7 +2692,7 @@
           <point val="10.9675,27.7671"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,27.5089;11.6139,27.8289"/>
+          <rectangle val="10.9675,27.5211;11.6139,27.8411"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN28#</string>
@@ -2390,6 +2726,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2398,7 +2740,7 @@
           <point val="10.9675,28.1663"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,27.9081;11.6139,28.2281"/>
+          <rectangle val="10.9675,27.9203;11.6139,28.2403"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN29#</string>
@@ -2432,6 +2774,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2440,7 +2788,7 @@
           <point val="10.9675,28.5654"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9675,28.3072;11.6139,28.6272"/>
+          <rectangle val="10.9675,28.3194;11.6139,28.6394"/>
         </attribute>
         <attribute name="orca_id">
           <string>#SRYKBN30#</string>
@@ -2474,6 +2822,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2484,7 +2838,7 @@
           <point val="11.8122,17.0044"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,16.7462;20.2154,17.0662"/>
+          <rectangle val="11.8122,16.7584;20.2154,17.0784"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO21#</string>
@@ -2518,6 +2872,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2526,7 +2886,7 @@
           <point val="11.8122,17.4021"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,17.1439;20.2154,17.4639"/>
+          <rectangle val="11.8122,17.1561;20.2154,17.4761"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO22#</string>
@@ -2560,6 +2920,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2568,7 +2934,7 @@
           <point val="11.8122,17.7997"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,17.5415;20.2154,17.8615"/>
+          <rectangle val="11.8122,17.5537;20.2154,17.8737"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO23#</string>
@@ -2602,6 +2968,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2610,7 +2982,7 @@
           <point val="11.8122,18.1973"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,17.9391;20.2154,18.2591"/>
+          <rectangle val="11.8122,17.9513;20.2154,18.2713"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO24#</string>
@@ -2644,6 +3016,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2652,7 +3030,7 @@
           <point val="11.8122,18.5949"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,18.3367;20.2154,18.6567"/>
+          <rectangle val="11.8122,18.3489;20.2154,18.6689"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO25#</string>
@@ -2686,6 +3064,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2694,7 +3078,7 @@
           <point val="11.8122,18.9925"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,18.7343;20.2154,19.0543"/>
+          <rectangle val="11.8122,18.7465;20.2154,19.0665"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO26#</string>
@@ -2728,6 +3112,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2736,7 +3126,7 @@
           <point val="11.8122,19.3901"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,19.1319;20.2154,19.4519"/>
+          <rectangle val="11.8122,19.1441;20.2154,19.4641"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO27#</string>
@@ -2770,6 +3160,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2778,7 +3174,7 @@
           <point val="11.8122,19.7878"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,19.5296;20.2154,19.8496"/>
+          <rectangle val="11.8122,19.5418;20.2154,19.8618"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO28#</string>
@@ -2812,6 +3208,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2820,7 +3222,7 @@
           <point val="11.8122,20.1854"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,19.9272;20.2154,20.2472"/>
+          <rectangle val="11.8122,19.9394;20.2154,20.2594"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO29#</string>
@@ -2854,6 +3256,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2862,7 +3270,7 @@
           <point val="11.8122,20.583"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,20.3248;20.2154,20.6448"/>
+          <rectangle val="11.8122,20.337;20.2154,20.657"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO210#</string>
@@ -2896,6 +3304,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2904,7 +3318,7 @@
           <point val="11.8122,20.9806"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,20.7224;20.2154,21.0424"/>
+          <rectangle val="11.8122,20.7346;20.2154,21.0546"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO211#</string>
@@ -2938,6 +3352,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2946,7 +3366,7 @@
           <point val="11.8122,21.3782"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,21.12;20.2154,21.44"/>
+          <rectangle val="11.8122,21.1322;20.2154,21.4522"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO212#</string>
@@ -2980,6 +3400,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -2988,7 +3414,7 @@
           <point val="11.8122,21.7758"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,21.5176;20.2154,21.8376"/>
+          <rectangle val="11.8122,21.5298;20.2154,21.8498"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO213#</string>
@@ -3022,6 +3448,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3030,7 +3462,7 @@
           <point val="11.8122,22.1735"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,21.9153;20.2154,22.2353"/>
+          <rectangle val="11.8122,21.9275;20.2154,22.2475"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO214#</string>
@@ -3064,6 +3496,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3072,7 +3510,7 @@
           <point val="11.8122,22.5711"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,22.3129;20.2154,22.6329"/>
+          <rectangle val="11.8122,22.3251;20.2154,22.6451"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO215#</string>
@@ -3106,6 +3544,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3114,7 +3558,7 @@
           <point val="11.8122,22.9687"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,22.7105;20.2154,23.0305"/>
+          <rectangle val="11.8122,22.7227;20.2154,23.0427"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO216#</string>
@@ -3148,6 +3592,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3156,7 +3606,7 @@
           <point val="11.8122,23.3663"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,23.1081;20.2154,23.4281"/>
+          <rectangle val="11.8122,23.1203;20.2154,23.4403"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO217#</string>
@@ -3190,6 +3640,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3198,7 +3654,7 @@
           <point val="11.8122,23.7639"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,23.5057;20.2154,23.8257"/>
+          <rectangle val="11.8122,23.5179;20.2154,23.8379"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO218#</string>
@@ -3232,6 +3688,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3240,7 +3702,7 @@
           <point val="11.8122,24.1615"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,23.9033;20.2154,24.2233"/>
+          <rectangle val="11.8122,23.9155;20.2154,24.2355"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO219#</string>
@@ -3274,6 +3736,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3282,7 +3750,7 @@
           <point val="11.8122,24.5592"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,24.301;20.2154,24.621"/>
+          <rectangle val="11.8122,24.3132;20.2154,24.6332"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO220#</string>
@@ -3316,6 +3784,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3324,7 +3798,7 @@
           <point val="11.8122,24.9568"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,24.6986;20.2154,25.0186"/>
+          <rectangle val="11.8122,24.7108;20.2154,25.0308"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO221#</string>
@@ -3358,6 +3832,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3366,7 +3846,7 @@
           <point val="11.8122,25.3544"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,25.0962;20.2154,25.4162"/>
+          <rectangle val="11.8122,25.1084;20.2154,25.4284"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO222#</string>
@@ -3400,6 +3880,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3408,7 +3894,7 @@
           <point val="11.8122,25.752"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,25.4938;20.2154,25.8138"/>
+          <rectangle val="11.8122,25.506;20.2154,25.826"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO223#</string>
@@ -3442,6 +3928,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3450,7 +3942,7 @@
           <point val="11.8122,26.1496"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,25.8914;20.2154,26.2114"/>
+          <rectangle val="11.8122,25.9036;20.2154,26.2236"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO224#</string>
@@ -3484,6 +3976,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3492,7 +3990,7 @@
           <point val="11.8122,26.5473"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,26.2891;20.2154,26.6091"/>
+          <rectangle val="11.8122,26.3013;20.2154,26.6213"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO225#</string>
@@ -3526,6 +4024,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3534,7 +4038,7 @@
           <point val="11.8122,26.9449"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,26.6867;20.2154,27.0067"/>
+          <rectangle val="11.8122,26.6989;20.2154,27.0189"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO226#</string>
@@ -3568,6 +4072,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3576,7 +4086,7 @@
           <point val="11.8122,27.3425"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,27.0843;20.2154,27.4043"/>
+          <rectangle val="11.8122,27.0965;20.2154,27.4165"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO227#</string>
@@ -3610,6 +4120,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3618,7 +4134,7 @@
           <point val="11.8122,27.7401"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,27.4819;20.2154,27.8019"/>
+          <rectangle val="11.8122,27.4941;20.2154,27.8141"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO228#</string>
@@ -3652,6 +4168,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3660,7 +4182,7 @@
           <point val="11.8122,28.1377"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,27.8795;20.2154,28.1995"/>
+          <rectangle val="11.8122,27.8917;20.2154,28.2117"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO229#</string>
@@ -3694,6 +4216,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3702,7 +4230,7 @@
           <point val="11.8122,28.5353"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.8122,28.2771;20.2154,28.5971"/>
+          <rectangle val="11.8122,28.2893;20.2154,28.6093"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TEKIYO230#</string>
@@ -3736,6 +4264,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.0808"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.1616"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -3745,7 +4279,7 @@
         <point val="4.475,28.376"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.2024,28.1158;4.475,28.4658"/>
+        <rectangle val="3.2024,28.1024;4.475,28.4524"/>
       </attribute>
       <attribute name="orca_id">
         <string>#TOTALTEN#</string>
@@ -3779,6 +4313,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -3787,7 +4327,7 @@
         <point val="9.8,28.376"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.77,28.0043;9.8,28.5043"/>
+        <rectangle val="6.77,27.9851;9.8,28.4851"/>
       </attribute>
       <attribute name="orca_id">
         <string>#TOTALMONEY#</string>
@@ -3821,6 +4361,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.303"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.2525"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -3829,7 +4375,7 @@
         <point val="15.1871,15.6745"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.7024,15.4143;15.1871,15.7643"/>
+        <rectangle val="13.7024,15.4009;15.1871,15.7509"/>
       </attribute>
       <attribute name="orca_id">
         <string>#SYOKEI#</string>
@@ -3863,6 +4409,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -3871,7 +4423,7 @@
         <point val="12.6883,13.5339"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.052,13.2737;12.6883,13.6237"/>
+        <rectangle val="12.052,13.2603;12.6883,13.6103"/>
       </attribute>
       <attribute name="orca_id">
         <string>#SAISINKAISU#</string>
@@ -3905,6 +4457,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -3913,7 +4471,7 @@
         <point val="12.6996,13.962"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.0633,13.7018;12.6996,14.0518"/>
+        <rectangle val="12.0633,13.6884;12.6996,14.0384"/>
       </attribute>
       <attribute name="orca_id">
         <string>#SHIDOKAISU#</string>
@@ -3947,6 +4505,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -3955,7 +4519,7 @@
         <point val="10.3133,13.1196"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.8286,12.8594;10.3133,13.2094"/>
+        <rectangle val="8.8286,12.846;10.3133,13.196"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN1#</string>
@@ -3989,6 +4553,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -3997,7 +4567,7 @@
         <point val="10.3133,13.5696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,13.3094;10.3133,13.6594"/>
+        <rectangle val="9.677,13.296;10.3133,13.646"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN2#</string>
@@ -4031,6 +4601,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4039,7 +4615,7 @@
         <point val="10.3133,13.9821"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,13.7219;10.3133,14.0719"/>
+        <rectangle val="9.677,13.7085;10.3133,14.0585"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN3#</string>
@@ -4073,6 +4649,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4081,7 +4663,7 @@
         <point val="10.3133,14.3946"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.8286,14.1344;10.3133,14.4844"/>
+        <rectangle val="8.8286,14.121;10.3133,14.471"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN4#</string>
@@ -4115,6 +4697,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4123,7 +4711,7 @@
         <point val="10.3133,14.8071"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,14.5469;10.3133,14.8969"/>
+        <rectangle val="9.677,14.5335;10.3133,14.8835"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN5#</string>
@@ -4157,6 +4745,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4165,7 +4759,7 @@
         <point val="10.3133,15.2196"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,14.9594;10.3133,15.3094"/>
+        <rectangle val="9.677,14.946;10.3133,15.296"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN6#</string>
@@ -4199,6 +4793,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4207,7 +4807,7 @@
         <point val="10.3258,15.6696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.6895,15.4094;10.3258,15.7594"/>
+        <rectangle val="9.6895,15.396;10.3258,15.746"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN7#</string>
@@ -4241,6 +4841,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4249,7 +4855,7 @@
         <point val="10.3258,16.1196"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.6895,15.8594;10.3258,16.2094"/>
+        <rectangle val="9.6895,15.846;10.3258,16.196"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN8#</string>
@@ -4283,6 +4889,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4291,7 +4903,7 @@
         <point val="10.3133,16.5321"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,16.2719;10.3133,16.6219"/>
+        <rectangle val="9.677,16.2585;10.3133,16.6085"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN9#</string>
@@ -4325,6 +4937,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4333,7 +4951,7 @@
         <point val="10.3133,16.9446"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,16.6844;10.3133,17.0344"/>
+        <rectangle val="9.677,16.671;10.3133,17.021"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN10#</string>
@@ -4367,6 +4985,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4375,7 +4999,7 @@
         <point val="10.3133,17.3571"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,17.0969;10.3133,17.4469"/>
+        <rectangle val="9.677,17.0835;10.3133,17.4335"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN11#</string>
@@ -4409,6 +5033,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4417,7 +5047,7 @@
         <point val="10.3133,17.7696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,17.5094;10.3133,17.8594"/>
+        <rectangle val="9.677,17.496;10.3133,17.846"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN12#</string>
@@ -4451,6 +5081,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4459,7 +5095,7 @@
         <point val="10.3133,18.1821"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,17.9219;10.3133,18.2719"/>
+        <rectangle val="9.677,17.9085;10.3133,18.2585"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN13#</string>
@@ -4493,6 +5129,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4501,7 +5143,7 @@
         <point val="10.3133,18.6321"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,18.3719;10.3133,18.7219"/>
+        <rectangle val="9.677,18.3585;10.3133,18.7085"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN14#</string>
@@ -4535,6 +5177,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4543,7 +5191,7 @@
         <point val="10.3133,19.0446"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,18.7844;10.3133,19.1344"/>
+        <rectangle val="9.677,18.771;10.3133,19.121"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN15#</string>
@@ -4577,6 +5225,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4585,7 +5239,7 @@
         <point val="10.3133,19.4571"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,19.1969;10.3133,19.5469"/>
+        <rectangle val="9.677,19.1835;10.3133,19.5335"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN16#</string>
@@ -4619,6 +5273,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4627,7 +5287,7 @@
         <point val="10.3258,19.8696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.6895,19.6094;10.3258,19.9594"/>
+        <rectangle val="9.6895,19.596;10.3258,19.946"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN17#</string>
@@ -4661,6 +5321,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4669,7 +5335,7 @@
         <point val="10.3133,20.2821"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,20.0219;10.3133,20.3719"/>
+        <rectangle val="9.677,20.0085;10.3133,20.3585"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN18#</string>
@@ -4703,6 +5369,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4711,7 +5383,7 @@
         <point val="10.3133,20.6946"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,20.4344;10.3133,20.7844"/>
+        <rectangle val="9.677,20.421;10.3133,20.771"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN19#</string>
@@ -4745,6 +5417,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4753,7 +5431,7 @@
         <point val="10.3133,21.1071"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,20.8469;10.3133,21.1969"/>
+        <rectangle val="9.677,20.8335;10.3133,21.1835"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN20#</string>
@@ -4787,6 +5465,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4795,7 +5479,7 @@
         <point val="10.3133,21.5196"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,21.2594;10.3133,21.6094"/>
+        <rectangle val="9.677,21.246;10.3133,21.596"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN21#</string>
@@ -4829,6 +5513,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4837,7 +5527,7 @@
         <point val="10.3133,21.9696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,21.7094;10.3133,22.0594"/>
+        <rectangle val="9.677,21.696;10.3133,22.046"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN22#</string>
@@ -4871,6 +5561,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4879,7 +5575,7 @@
         <point val="10.3133,22.3821"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,22.1219;10.3133,22.4719"/>
+        <rectangle val="9.677,22.1085;10.3133,22.4585"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN23#</string>
@@ -4913,6 +5609,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4921,7 +5623,7 @@
         <point val="10.3153,22.7946"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.679,22.5344;10.3153,22.8844"/>
+        <rectangle val="9.679,22.521;10.3153,22.871"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN24#</string>
@@ -4955,6 +5657,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -4963,7 +5671,7 @@
         <point val="10.3133,23.2446"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,22.9844;10.3133,23.3344"/>
+        <rectangle val="9.677,22.971;10.3133,23.321"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN25#</string>
@@ -4997,6 +5705,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5005,7 +5719,7 @@
         <point val="10.3133,23.6696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.677,23.4094;10.3133,23.7594"/>
+        <rectangle val="9.677,23.396;10.3133,23.746"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN26#</string>
@@ -5039,6 +5753,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5047,7 +5767,7 @@
         <point val="10.3008,24.1071"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.6645,23.8469;10.3008,24.1969"/>
+        <rectangle val="9.6645,23.8335;10.3008,24.1835"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN27#</string>
@@ -5081,6 +5801,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5089,7 +5815,7 @@
         <point val="10.3008,24.5196"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.6645,24.2594;10.3008,24.6094"/>
+        <rectangle val="9.6645,24.246;10.3008,24.596"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN28#</string>
@@ -5123,6 +5849,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5131,7 +5863,7 @@
         <point val="10.3008,24.9696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.6645,24.7094;10.3008,25.0594"/>
+        <rectangle val="9.6645,24.696;10.3008,25.046"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN29#</string>
@@ -5165,6 +5897,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5173,7 +5911,7 @@
         <point val="10.3008,25.3821"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.6645,25.1219;10.3008,25.4719"/>
+        <rectangle val="9.6645,25.1085;10.3008,25.4585"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN30#</string>
@@ -5207,6 +5945,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5215,7 +5959,7 @@
         <point val="10.3008,25.8321"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.6645,25.5719;10.3008,25.9219"/>
+        <rectangle val="9.6645,25.5585;10.3008,25.9085"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN31#</string>
@@ -5249,6 +5993,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5257,7 +6007,7 @@
         <point val="10.3008,26.2446"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.6645,25.9844;10.3008,26.3344"/>
+        <rectangle val="9.6645,25.971;10.3008,26.321"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN32#</string>
@@ -5291,6 +6041,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5299,7 +6055,7 @@
         <point val="10.3008,26.6946"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.6645,26.4344;10.3008,26.7844"/>
+        <rectangle val="9.6645,26.421;10.3008,26.771"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN33#</string>
@@ -5333,6 +6089,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5341,7 +6103,7 @@
         <point val="10.3008,27.1071"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.6645,26.8469;10.3008,27.1969"/>
+        <rectangle val="9.6645,26.8335;10.3008,27.1835"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN34#</string>
@@ -5375,6 +6137,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5383,7 +6151,7 @@
         <point val="10.3008,27.5196"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.6645,27.2594;10.3008,27.6094"/>
+        <rectangle val="9.6645,27.246;10.3008,27.596"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KOUTEN35#</string>
@@ -5417,6 +6185,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5425,7 +6199,7 @@
         <point val="7.81334,13.1196"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,12.8594;7.81334,13.2094"/>
+        <rectangle val="7.17704,12.846;7.81334,13.196"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU1#</string>
@@ -5459,6 +6233,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5467,7 +6247,7 @@
         <point val="7.81334,13.5696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,13.3094;7.81334,13.6594"/>
+        <rectangle val="7.17704,13.296;7.81334,13.646"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU2#</string>
@@ -5501,6 +6281,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5509,7 +6295,7 @@
         <point val="7.81334,13.9821"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,13.7219;7.81334,14.0719"/>
+        <rectangle val="7.17704,13.7085;7.81334,14.0585"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU3#</string>
@@ -5543,6 +6329,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5551,7 +6343,7 @@
         <point val="7.81334,14.3946"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,14.1344;7.81334,14.4844"/>
+        <rectangle val="7.17704,14.121;7.81334,14.471"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU4#</string>
@@ -5585,6 +6377,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5593,7 +6391,7 @@
         <point val="7.81334,14.8071"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,14.5469;7.81334,14.8969"/>
+        <rectangle val="7.17704,14.5335;7.81334,14.8835"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU5#</string>
@@ -5627,6 +6425,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5635,7 +6439,7 @@
         <point val="7.81334,15.2196"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,14.9594;7.81334,15.3094"/>
+        <rectangle val="7.17704,14.946;7.81334,15.296"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU6#</string>
@@ -5669,6 +6473,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5677,7 +6487,7 @@
         <point val="7.81334,15.6696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,15.4094;7.81334,15.7594"/>
+        <rectangle val="7.17704,15.396;7.81334,15.746"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU7#</string>
@@ -5711,6 +6521,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5719,7 +6535,7 @@
         <point val="7.81334,16.1196"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,15.8594;7.81334,16.2094"/>
+        <rectangle val="7.17704,15.846;7.81334,16.196"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU8#</string>
@@ -5753,6 +6569,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5761,7 +6583,7 @@
         <point val="7.81717,16.5321"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.18087,16.2719;7.81717,16.6219"/>
+        <rectangle val="7.18087,16.2585;7.81717,16.6085"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU9#</string>
@@ -5795,6 +6617,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5803,7 +6631,7 @@
         <point val="7.81926,16.9446"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.18296,16.6844;7.81926,17.0344"/>
+        <rectangle val="7.18296,16.671;7.81926,17.021"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU10#</string>
@@ -5837,6 +6665,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5845,7 +6679,7 @@
         <point val="7.81334,17.3571"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,17.0969;7.81334,17.4469"/>
+        <rectangle val="7.17704,17.0835;7.81334,17.4335"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU11#</string>
@@ -5879,6 +6713,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5887,7 +6727,7 @@
         <point val="7.81334,17.7696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,17.5094;7.81334,17.8594"/>
+        <rectangle val="7.17704,17.496;7.81334,17.846"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU12#</string>
@@ -5921,6 +6761,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5929,7 +6775,7 @@
         <point val="7.81334,18.1821"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,17.9219;7.81334,18.2719"/>
+        <rectangle val="7.17704,17.9085;7.81334,18.2585"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU13#</string>
@@ -5963,6 +6809,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -5971,7 +6823,7 @@
         <point val="7.81334,18.6321"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,18.3719;7.81334,18.7219"/>
+        <rectangle val="7.17704,18.3585;7.81334,18.7085"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU14#</string>
@@ -6005,6 +6857,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6013,7 +6871,7 @@
         <point val="7.81334,19.0446"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,18.7844;7.81334,19.1344"/>
+        <rectangle val="7.17704,18.771;7.81334,19.121"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU15#</string>
@@ -6047,6 +6905,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6055,7 +6919,7 @@
         <point val="7.81334,19.4571"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,19.1969;7.81334,19.5469"/>
+        <rectangle val="7.17704,19.1835;7.81334,19.5335"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU16#</string>
@@ -6089,6 +6953,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6097,7 +6967,7 @@
         <point val="7.81334,19.8696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,19.6094;7.81334,19.9594"/>
+        <rectangle val="7.17704,19.596;7.81334,19.946"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU17#</string>
@@ -6131,6 +7001,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6139,7 +7015,7 @@
         <point val="7.81334,20.2821"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,20.0219;7.81334,20.3719"/>
+        <rectangle val="7.17704,20.0085;7.81334,20.3585"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU18#</string>
@@ -6173,6 +7049,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6181,7 +7063,7 @@
         <point val="7.81334,20.6946"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,20.4344;7.81334,20.7844"/>
+        <rectangle val="7.17704,20.421;7.81334,20.771"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU19#</string>
@@ -6215,6 +7097,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6223,7 +7111,7 @@
         <point val="7.81334,21.1071"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,20.8469;7.81334,21.1969"/>
+        <rectangle val="7.17704,20.8335;7.81334,21.1835"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU20#</string>
@@ -6257,6 +7145,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6265,7 +7159,7 @@
         <point val="7.81334,21.5196"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,21.2594;7.81334,21.6094"/>
+        <rectangle val="7.17704,21.246;7.81334,21.596"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU21#</string>
@@ -6299,6 +7193,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6307,7 +7207,7 @@
         <point val="7.81334,21.9696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,21.7094;7.81334,22.0594"/>
+        <rectangle val="7.17704,21.696;7.81334,22.046"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU22#</string>
@@ -6341,6 +7241,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6349,7 +7255,7 @@
         <point val="7.81334,22.3821"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,22.1219;7.81334,22.4719"/>
+        <rectangle val="7.17704,22.1085;7.81334,22.4585"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU23#</string>
@@ -6383,6 +7289,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6391,7 +7303,7 @@
         <point val="7.81334,22.7946"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,22.5344;7.81334,22.8844"/>
+        <rectangle val="7.17704,22.521;7.81334,22.871"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU24#</string>
@@ -6425,6 +7337,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6433,7 +7351,7 @@
         <point val="7.81334,23.2446"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,22.9844;7.81334,23.3344"/>
+        <rectangle val="7.17704,22.971;7.81334,23.321"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU25#</string>
@@ -6467,6 +7385,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6475,7 +7399,7 @@
         <point val="7.81334,23.6696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,23.4094;7.81334,23.7594"/>
+        <rectangle val="7.17704,23.396;7.81334,23.746"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU26#</string>
@@ -6509,6 +7433,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6517,7 +7447,7 @@
         <point val="7.81334,24.1071"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,23.8469;7.81334,24.1969"/>
+        <rectangle val="7.17704,23.8335;7.81334,24.1835"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU27#</string>
@@ -6551,6 +7481,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6559,7 +7495,7 @@
         <point val="7.81334,24.5196"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,24.2594;7.81334,24.6094"/>
+        <rectangle val="7.17704,24.246;7.81334,24.596"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU28#</string>
@@ -6593,6 +7529,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6601,7 +7543,7 @@
         <point val="7.81334,24.9696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,24.7094;7.81334,25.0594"/>
+        <rectangle val="7.17704,24.696;7.81334,25.046"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU29#</string>
@@ -6635,6 +7577,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6643,7 +7591,7 @@
         <point val="7.81334,25.3821"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,25.1219;7.81334,25.4719"/>
+        <rectangle val="7.17704,25.1085;7.81334,25.4585"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU30#</string>
@@ -6677,6 +7625,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6685,7 +7639,7 @@
         <point val="7.81334,25.8321"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,25.5719;7.81334,25.9219"/>
+        <rectangle val="7.17704,25.5585;7.81334,25.9085"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU31#</string>
@@ -6719,6 +7673,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6727,7 +7687,7 @@
         <point val="7.81334,26.2446"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,25.9844;7.81334,26.3344"/>
+        <rectangle val="7.17704,25.971;7.81334,26.321"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU32#</string>
@@ -6761,6 +7721,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6769,7 +7735,7 @@
         <point val="7.81334,26.6946"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,26.4344;7.81334,26.7844"/>
+        <rectangle val="7.17704,26.421;7.81334,26.771"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU33#</string>
@@ -6803,6 +7769,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6811,7 +7783,7 @@
         <point val="7.81334,27.1071"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,26.8469;7.81334,27.1969"/>
+        <rectangle val="7.17704,26.8335;7.81334,27.1835"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU34#</string>
@@ -6845,6 +7817,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6853,7 +7831,7 @@
         <point val="7.81334,27.5196"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.17704,27.2594;7.81334,27.6094"/>
+        <rectangle val="7.17704,27.246;7.81334,27.596"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KAISU35#</string>
@@ -6887,6 +7865,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6895,7 +7879,7 @@
         <point val="6.43834,13.1196"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,12.8594;6.43834,13.2094"/>
+        <rectangle val="5.80204,12.846;6.43834,13.196"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN1#</string>
@@ -6929,6 +7913,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6937,7 +7927,7 @@
         <point val="6.43834,13.5696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,13.3094;6.43834,13.6594"/>
+        <rectangle val="5.80204,13.296;6.43834,13.646"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN2#</string>
@@ -6971,6 +7961,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -6979,7 +7975,7 @@
         <point val="6.43834,13.9821"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,13.7219;6.43834,14.0719"/>
+        <rectangle val="5.80204,13.7085;6.43834,14.0585"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN3#</string>
@@ -7013,6 +8009,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7021,7 +8023,7 @@
         <point val="6.43834,14.3946"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,14.1344;6.43834,14.4844"/>
+        <rectangle val="5.80204,14.121;6.43834,14.471"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN4#</string>
@@ -7055,6 +8057,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7063,7 +8071,7 @@
         <point val="6.43834,14.8071"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,14.5469;6.43834,14.8969"/>
+        <rectangle val="5.80204,14.5335;6.43834,14.8835"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN5#</string>
@@ -7097,6 +8105,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7105,7 +8119,7 @@
         <point val="6.43834,15.2196"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,14.9594;6.43834,15.3094"/>
+        <rectangle val="5.80204,14.946;6.43834,15.296"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN6#</string>
@@ -7139,6 +8153,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7147,7 +8167,7 @@
         <point val="6.43834,15.6696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,15.4094;6.43834,15.7594"/>
+        <rectangle val="5.80204,15.396;6.43834,15.746"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN7#</string>
@@ -7181,6 +8201,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7189,7 +8215,7 @@
         <point val="6.44426,16.1196"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80796,15.8594;6.44426,16.2094"/>
+        <rectangle val="5.80796,15.846;6.44426,16.196"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN8#</string>
@@ -7223,6 +8249,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7231,7 +8263,7 @@
         <point val="6.44426,16.5321"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80796,16.2719;6.44426,16.6219"/>
+        <rectangle val="5.80796,16.2585;6.44426,16.6085"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN9#</string>
@@ -7265,6 +8297,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7273,7 +8311,7 @@
         <point val="6.44426,16.9446"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80796,16.6844;6.44426,17.0344"/>
+        <rectangle val="5.80796,16.671;6.44426,17.021"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN10#</string>
@@ -7307,6 +8345,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7315,7 +8359,7 @@
         <point val="6.43834,17.3571"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,17.0969;6.43834,17.4469"/>
+        <rectangle val="5.80204,17.0835;6.43834,17.4335"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN11#</string>
@@ -7349,6 +8393,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7357,7 +8407,7 @@
         <point val="6.43834,17.7696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,17.5094;6.43834,17.8594"/>
+        <rectangle val="5.80204,17.496;6.43834,17.846"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN12#</string>
@@ -7391,6 +8441,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7399,7 +8455,7 @@
         <point val="6.43834,18.1821"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,17.9219;6.43834,18.2719"/>
+        <rectangle val="5.80204,17.9085;6.43834,18.2585"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN13#</string>
@@ -7433,6 +8489,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7441,7 +8503,7 @@
         <point val="6.43834,18.6321"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,18.3719;6.43834,18.7219"/>
+        <rectangle val="5.80204,18.3585;6.43834,18.7085"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN14#</string>
@@ -7475,6 +8537,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7483,7 +8551,7 @@
         <point val="6.43834,19.0446"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,18.7844;6.43834,19.1344"/>
+        <rectangle val="5.80204,18.771;6.43834,19.121"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN15#</string>
@@ -7517,6 +8585,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7525,7 +8599,7 @@
         <point val="6.43834,19.4571"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,19.1969;6.43834,19.5469"/>
+        <rectangle val="5.80204,19.1835;6.43834,19.5335"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN16#</string>
@@ -7559,6 +8633,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7567,7 +8647,7 @@
         <point val="6.43834,19.8696"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,19.6094;6.43834,19.9594"/>
+        <rectangle val="5.80204,19.596;6.43834,19.946"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN17#</string>
@@ -7601,6 +8681,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7609,7 +8695,7 @@
         <point val="6.43834,20.2821"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,20.0219;6.43834,20.3719"/>
+        <rectangle val="5.80204,20.0085;6.43834,20.3585"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN18#</string>
@@ -7643,6 +8729,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7651,7 +8743,7 @@
         <point val="6.43834,20.6946"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.80204,20.4344;6.43834,20.7844"/>
+        <rectangle val="5.80204,20.421;6.43834,20.771"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KHNTEN19#</string>
@@ -7685,6 +8777,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.2121"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7693,7 +8791,7 @@
         <point val="9.23159,0.925"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.23159,0.682895;13.7766,0.982895"/>
+        <rectangle val="9.23159,0.694421;13.7766,0.994421"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RSIIRYOCD#</string>
@@ -7727,6 +8825,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.07575"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.1515"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7735,7 +8839,7 @@
         <point val="15.5768,0.941938"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.5768,0.707903;19.9703,0.997903"/>
+        <rectangle val="15.5768,0.719045;19.9703,1.00905"/>
       </attribute>
       <attribute name="orca_id">
         <string>#HOSPNAME#</string>
@@ -7769,6 +8873,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.073225"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.14645"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7777,7 +8887,7 @@
         <point val="0.758248,0.824889"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.758248,0.542433;2.17225,0.892433"/>
+        <rectangle val="0.758248,0.555881;2.17225,0.905881"/>
       </attribute>
       <attribute name="orca_id">
         <string>#SAIGAIKBN#</string>
@@ -7811,6 +8921,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.088375"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7820,7 +8936,7 @@
           <point val="5.9362,10.1422"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="5.512,9.88202;5.9362,10.232"/>
+          <rectangle val="5.512,9.86856;5.9362,10.2186"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TANJYOY#</string>
@@ -7854,6 +8970,12 @@
             <attribute name="alignment">
               <enum val="2"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.2121"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -7862,7 +8984,7 @@
           <point val="6.97934,10.1422"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="6.55514,9.88202;6.97934,10.232"/>
+          <rectangle val="6.55514,9.86856;6.97934,10.2186"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TANJYOM#</string>
@@ -7896,6 +9018,12 @@
             <attribute name="alignment">
               <enum val="2"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.2121"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -7904,7 +9032,7 @@
           <point val="7.95184,10.1422"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="7.52764,9.88202;7.95184,10.232"/>
+          <rectangle val="7.52764,9.86856;7.95184,10.2186"/>
         </attribute>
         <attribute name="orca_id">
           <string>#TANJYOD#</string>
@@ -7938,6 +9066,12 @@
             <attribute name="alignment">
               <enum val="2"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.2121"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -7947,7 +9081,7 @@
         <point val="2.4833,13.15"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2.4833,12.8675;2.8368,13.2175"/>
+        <rectangle val="2.4833,12.881;2.8368,13.231"/>
       </attribute>
       <attribute name="orca_id">
         <string>#SYOSHIN1#</string>
@@ -7981,6 +9115,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.088375"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -7989,7 +9129,7 @@
         <point val="3.3333,13.15"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.3333,12.8675;3.6868,13.2175"/>
+        <rectangle val="3.3333,12.881;3.6868,13.231"/>
       </attribute>
       <attribute name="orca_id">
         <string>#SYOSHIN2#</string>
@@ -8023,6 +9163,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.088375"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -8031,7 +9177,7 @@
         <point val="4.0583,13.15"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="4.0583,12.8675;4.4118,13.2175"/>
+        <rectangle val="4.0583,12.881;4.4118,13.231"/>
       </attribute>
       <attribute name="orca_id">
         <string>#SYOSHIN3#</string>
@@ -8065,6 +9211,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.088375"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.17675"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -8073,7 +9225,7 @@
         <point val="1.8083,13.475"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.8083,13.249;4.0707,13.529"/>
+        <rectangle val="1.8083,13.2598;4.0707,13.5398"/>
       </attribute>
       <attribute name="orca_id">
         <string>#KEIZOKUKANRI#</string>
@@ -8107,6 +9259,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.0707"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.1414"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -8116,7 +9274,7 @@
           <point val="15.1969,13.1037"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13.7122,12.8435;15.1969,13.1935"/>
+          <rectangle val="13.7122,12.8301;15.1969,13.1801"/>
         </attribute>
         <attribute name="orca_id">
           <string>#KINGAKU1#</string>
@@ -8150,6 +9308,12 @@
             <attribute name="alignment">
               <enum val="2"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.2121"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -8158,7 +9322,7 @@
           <point val="15.1969,13.5376"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13.7122,13.2774;15.1969,13.6274"/>
+          <rectangle val="13.7122,13.264;15.1969,13.614"/>
         </attribute>
         <attribute name="orca_id">
           <string>#KINGAKU2#</string>
@@ -8192,6 +9356,12 @@
             <attribute name="alignment">
               <enum val="2"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.2121"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -8200,7 +9370,7 @@
           <point val="15.1871,13.9622"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13.7024,13.702;15.1871,14.052"/>
+          <rectangle val="13.7024,13.6886;15.1871,14.0386"/>
         </attribute>
         <attribute name="orca_id">
           <string>#KINGAKU3#</string>
@@ -8234,6 +9404,12 @@
             <attribute name="alignment">
               <enum val="2"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.2121"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -8242,7 +9418,7 @@
           <point val="15.1871,14.3961"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13.7024,14.1359;15.1871,14.4859"/>
+          <rectangle val="13.7024,14.1225;15.1871,14.4725"/>
         </attribute>
         <attribute name="orca_id">
           <string>#KINGAKU4#</string>
@@ -8276,6 +9452,12 @@
             <attribute name="alignment">
               <enum val="2"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.2121"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -8284,7 +9466,7 @@
           <point val="15.1871,14.787"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13.7024,14.5268;15.1871,14.8768"/>
+          <rectangle val="13.7024,14.5134;15.1871,14.8634"/>
         </attribute>
         <attribute name="orca_id">
           <string>#KINGAKU5#</string>
@@ -8318,6 +9500,12 @@
             <attribute name="alignment">
               <enum val="2"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.2121"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -8326,7 +9514,7 @@
           <point val="15.1871,15.187"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="13.7024,14.9268;15.1871,15.2768"/>
+          <rectangle val="13.7024,14.9134;15.1871,15.2634"/>
         </attribute>
         <attribute name="orca_id">
           <string>#KINGAKU6#</string>
@@ -8359,6 +9547,12 @@
             </attribute>
             <attribute name="alignment">
               <enum val="2"/>
+            </attribute>
+            <attribute name="single">
+              <real val="0.2121"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.17675"/>
             </attribute>
           </composite>
         </attribute>
@@ -8403,6 +9597,12 @@
           <attribute name="alignment">
             <enum val="0"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.33835"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.33835"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -8445,6 +9645,12 @@
           <attribute name="alignment">
             <enum val="2"/>
           </attribute>
+          <attribute name="single">
+            <real val="0.33835"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.33835"/>
+          </attribute>
         </composite>
       </attribute>
     </object>
@@ -8453,7 +9659,7 @@
         <point val="1.25,1.59661"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.25,1.32157;5.7344,1.69157"/>
+        <rectangle val="1.25,1.30734;5.7344,1.67734"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTNUM#</string>
@@ -8486,6 +9692,12 @@
           </attribute>
           <attribute name="alignment">
             <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.22422"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.18685"/>
           </attribute>
         </composite>
       </attribute>
@@ -8530,6 +9742,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -8571,6 +9789,12 @@
             </attribute>
             <attribute name="alignment">
               <enum val="0"/>
+            </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
             </attribute>
           </composite>
         </attribute>
@@ -8614,6 +9838,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -8655,6 +9885,12 @@
             </attribute>
             <attribute name="alignment">
               <enum val="0"/>
+            </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
             </attribute>
           </composite>
         </attribute>
@@ -8698,6 +9934,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -8739,6 +9981,12 @@
             </attribute>
             <attribute name="alignment">
               <enum val="0"/>
+            </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
             </attribute>
           </composite>
         </attribute>
@@ -8782,6 +10030,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -8824,6 +10078,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -8865,6 +10125,12 @@
             </attribute>
             <attribute name="alignment">
               <enum val="0"/>
+            </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
             </attribute>
           </composite>
         </attribute>
@@ -8910,6 +10176,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -8951,6 +10223,12 @@
             </attribute>
             <attribute name="alignment">
               <enum val="0"/>
+            </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
             </attribute>
           </composite>
         </attribute>
@@ -8994,6 +10272,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -9035,6 +10319,12 @@
             </attribute>
             <attribute name="alignment">
               <enum val="0"/>
+            </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
             </attribute>
           </composite>
         </attribute>
@@ -9078,6 +10368,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -9119,6 +10415,12 @@
             </attribute>
             <attribute name="alignment">
               <enum val="0"/>
+            </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
             </attribute>
           </composite>
         </attribute>
@@ -9164,6 +10466,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -9205,6 +10513,12 @@
             </attribute>
             <attribute name="alignment">
               <enum val="0"/>
+            </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
             </attribute>
           </composite>
         </attribute>
@@ -9248,6 +10562,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -9289,6 +10609,12 @@
             </attribute>
             <attribute name="alignment">
               <enum val="0"/>
+            </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
             </attribute>
           </composite>
         </attribute>
@@ -9332,6 +10658,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -9373,6 +10705,12 @@
             </attribute>
             <attribute name="alignment">
               <enum val="0"/>
+            </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
             </attribute>
           </composite>
         </attribute>
@@ -9418,6 +10756,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -9460,6 +10804,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -9501,6 +10851,12 @@
             </attribute>
             <attribute name="alignment">
               <enum val="0"/>
+            </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
             </attribute>
           </composite>
         </attribute>
@@ -9546,6 +10902,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -9587,6 +10949,12 @@
             </attribute>
             <attribute name="alignment">
               <enum val="0"/>
+            </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
             </attribute>
           </composite>
         </attribute>
@@ -9630,6 +10998,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -9671,6 +11045,12 @@
             </attribute>
             <attribute name="alignment">
               <enum val="0"/>
+            </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
             </attribute>
           </composite>
         </attribute>
@@ -9714,6 +11094,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -9756,6 +11142,12 @@
             <attribute name="alignment">
               <enum val="0"/>
             </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
+            </attribute>
           </composite>
         </attribute>
       </object>
@@ -9797,6 +11189,12 @@
             </attribute>
             <attribute name="alignment">
               <enum val="0"/>
+            </attribute>
+            <attribute name="single">
+              <real val="0.33835"/>
+            </attribute>
+            <attribute name="multi">
+              <real val="0.33835"/>
             </attribute>
           </composite>
         </attribute>

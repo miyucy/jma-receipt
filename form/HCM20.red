@@ -3,71 +3,71 @@
   <dictionarydata>
     <element name="KANANAME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="30"/>
+        <embed object="string" length="30"/>
       </appinfo>
     </element>
     <element name="NAME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="26"/>
+        <embed object="string" length="26"/>
       </appinfo>
     </element>
     <element name="HOSPNAME" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="30"/>
+        <embed object="string" length="30"/>
       </appinfo>
     </element>
     <element name="RISIRYOCD" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="30"/>
+        <embed object="string" length="30"/>
       </appinfo>
     </element>
     <element name="KOFUNUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="13"/>
+        <embed object="string" length="13"/>
       </appinfo>
     </element>
     <element name="SRYYMDY" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="SRYYMDM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="SRYYMDD" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="SRYYMDH" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="2"/>
+        <embed object="string" length="2"/>
       </appinfo>
     </element>
     <element name="SRYKBN-G" occurs="100">
       <element name="SRYKBN" occurs="1">
         <appinfo>
-          <embed object="string" type="X" length="4"/>
+          <embed object="string" length="4"/>
         </appinfo>
       </element>
     </element>
     <element name="TEKIYO-G" occurs="100">
       <element name="TEKIYO" occurs="1">
         <appinfo>
-          <embed object="string" type="X" length="52"/>
+          <embed object="string" length="52"/>
         </appinfo>
       </element>
     </element>
     <element name="PTNUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="20"/>
+        <embed object="string" length="20"/>
       </appinfo>
     </element>
     <element name="RENNUM" occurs="1">
       <appinfo>
-        <embed object="string" type="X" length="7"/>
+        <embed object="string" length="7"/>
       </appinfo>
     </element>
   </dictionarydata>
@@ -79,6 +79,12 @@
       <composite type="paper">
         <attribute name="name">
           <string>#A4#</string>
+        </attribute>
+        <attribute name="pswidth">
+          <real val="21"/>
+        </attribute>
+        <attribute name="psheight">
+          <real val="29.7"/>
         </attribute>
         <attribute name="tmargin">
           <real val="0"/>
@@ -112,7 +118,7 @@
         <point val="13.364,3.8152"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.364,3.59219;17.606,3.89219"/>
+        <rectangle val="13.364,3.58065;15.485,3.88065"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#KANANAME#</string>
@@ -123,7 +129,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#165;&#166;&#165;&#168;&#165;&#207;&#165;&#233;&#161;&#161;&#165;&#191;&#165;&#171;&#165;&#179;&#165;&#200;&#165;&#226;&#165;&#166;&#165;&#183;&#165;&#222;&#165;&#185;#</string>
+            <string>#&#165;&#203;&#165;&#193;&#165;&#164;&#161;&#161;&#165;&#191;&#165;&#237;&#165;&#166;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -154,7 +160,7 @@
         <point val="13.3463,4.2646"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.3463,3.93009;15.437,4.38009"/>
+        <rectangle val="13.3463,3.91278;15.6188,4.36278"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NAME#</string>
@@ -165,7 +171,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#193;&#176;&#197;&#196; &#189;&#164;&#184;&#227;#</string>
+            <string>#&#198;&#252;&#176;&#229;&#161;&#161;&#194;&#192;&#207;&#186;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -196,7 +202,7 @@
         <point val="11.6725,2.3841"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.6725,2.04959;18.49,2.49959"/>
+        <rectangle val="11.6725,2.03228;18.49,2.48228"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HOSPNAME#</string>
@@ -238,7 +244,7 @@
         <point val="3.67214,2.47125"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.67214,2.21107;8.97464,2.56107"/>
+        <rectangle val="3.67214,2.19761;8.97464,2.54761"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#RISIRYOCD#</string>
@@ -280,7 +286,7 @@
         <point val="4.1,4.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="4.1,3.75398;8.8268,4.35398"/>
+        <rectangle val="4.1,3.73091;8.8268,4.33091"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#KOFUNUM#</string>
@@ -322,7 +328,7 @@
         <point val="5.22552,5.9972"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="4.49832,5.55118;5.22552,6.15118"/>
+        <rectangle val="4.49832,5.52811;5.22552,6.12811"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SRYYMDY#</string>
@@ -364,7 +370,7 @@
         <point val="7.5083,6.0222"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.7811,5.57618;7.5083,6.17618"/>
+        <rectangle val="6.7811,5.55311;7.5083,6.15311"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SRYYMDM#</string>
@@ -406,7 +412,7 @@
         <point val="9.7058,5.9972"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.9786,5.55118;9.7058,6.15118"/>
+        <rectangle val="8.9786,5.52811;9.7058,6.12811"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SRYYMDD#</string>
@@ -448,7 +454,7 @@
         <point val="4.29149,5.99506"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.56429,5.54904;4.29149,6.14904"/>
+        <rectangle val="3.56429,5.52597;4.29149,6.12597"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SRYYMDH#</string>
@@ -491,7 +497,7 @@
           <point val="1.4675,8.6397"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,8.40182;2.1139,8.72182"/>
+          <rectangle val="1.4675,8.38952;2.1139,8.70952"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[0].SRYKBN#</string>
@@ -533,7 +539,7 @@
           <point val="1.4675,9.0389"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,8.80102;2.1139,9.12102"/>
+          <rectangle val="1.4675,8.78872;2.1139,9.10872"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[1].SRYKBN#</string>
@@ -575,7 +581,7 @@
           <point val="1.4675,9.4381"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,9.20022;2.1139,9.52022"/>
+          <rectangle val="1.4675,9.18792;2.1139,9.50792"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[2].SRYKBN#</string>
@@ -617,7 +623,7 @@
           <point val="1.4675,9.8372"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,9.59932;2.1139,9.91932"/>
+          <rectangle val="1.4675,9.58702;2.1139,9.90702"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[3].SRYKBN#</string>
@@ -659,7 +665,7 @@
           <point val="1.4675,10.2364"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,9.99852;2.1139,10.3185"/>
+          <rectangle val="1.4675,9.98622;2.1139,10.3062"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[4].SRYKBN#</string>
@@ -701,7 +707,7 @@
           <point val="1.4675,10.6356"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,10.3977;2.1139,10.7177"/>
+          <rectangle val="1.4675,10.3854;2.1139,10.7054"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[5].SRYKBN#</string>
@@ -743,7 +749,7 @@
           <point val="1.4675,11.0347"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,10.7968;2.1139,11.1168"/>
+          <rectangle val="1.4675,10.7845;2.1139,11.1045"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[6].SRYKBN#</string>
@@ -785,7 +791,7 @@
           <point val="1.4675,11.4339"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,11.196;2.1139,11.516"/>
+          <rectangle val="1.4675,11.1837;2.1139,11.5037"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[7].SRYKBN#</string>
@@ -827,7 +833,7 @@
           <point val="1.4675,11.833"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,11.5951;2.1139,11.9151"/>
+          <rectangle val="1.4675,11.5828;2.1139,11.9028"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[8].SRYKBN#</string>
@@ -869,7 +875,7 @@
           <point val="1.4675,12.2322"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,11.9943;2.1139,12.3143"/>
+          <rectangle val="1.4675,11.982;2.1139,12.302"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[9].SRYKBN#</string>
@@ -911,7 +917,7 @@
           <point val="1.4675,12.6314"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,12.3935;2.1139,12.7135"/>
+          <rectangle val="1.4675,12.3812;2.1139,12.7012"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[10].SRYKBN#</string>
@@ -953,7 +959,7 @@
           <point val="1.4675,13.0305"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,12.7926;2.1139,13.1126"/>
+          <rectangle val="1.4675,12.7803;2.1139,13.1003"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[11].SRYKBN#</string>
@@ -995,7 +1001,7 @@
           <point val="1.4675,13.4297"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,13.1918;2.1139,13.5118"/>
+          <rectangle val="1.4675,13.1795;2.1139,13.4995"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[12].SRYKBN#</string>
@@ -1037,7 +1043,7 @@
           <point val="1.4675,13.8289"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,13.591;2.1139,13.911"/>
+          <rectangle val="1.4675,13.5787;2.1139,13.8987"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[13].SRYKBN#</string>
@@ -1079,7 +1085,7 @@
           <point val="1.4675,14.228"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,13.9901;2.1139,14.3101"/>
+          <rectangle val="1.4675,13.9778;2.1139,14.2978"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[14].SRYKBN#</string>
@@ -1121,7 +1127,7 @@
           <point val="1.4675,14.6272"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,14.3893;2.1139,14.7093"/>
+          <rectangle val="1.4675,14.377;2.1139,14.697"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[15].SRYKBN#</string>
@@ -1163,7 +1169,7 @@
           <point val="1.4675,15.0263"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,14.7884;2.1139,15.1084"/>
+          <rectangle val="1.4675,14.7761;2.1139,15.0961"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[16].SRYKBN#</string>
@@ -1205,7 +1211,7 @@
           <point val="1.4675,15.4255"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,15.1876;2.1139,15.5076"/>
+          <rectangle val="1.4675,15.1753;2.1139,15.4953"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[17].SRYKBN#</string>
@@ -1247,7 +1253,7 @@
           <point val="1.4675,15.8247"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,15.5868;2.1139,15.9068"/>
+          <rectangle val="1.4675,15.5745;2.1139,15.8945"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[18].SRYKBN#</string>
@@ -1289,7 +1295,7 @@
           <point val="1.4675,16.2238"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,15.9859;2.1139,16.3059"/>
+          <rectangle val="1.4675,15.9736;2.1139,16.2936"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[19].SRYKBN#</string>
@@ -1331,7 +1337,7 @@
           <point val="1.4675,16.623"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,16.3851;2.1139,16.7051"/>
+          <rectangle val="1.4675,16.3728;2.1139,16.6928"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[20].SRYKBN#</string>
@@ -1373,7 +1379,7 @@
           <point val="1.4675,17.0222"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,16.7843;2.1139,17.1043"/>
+          <rectangle val="1.4675,16.772;2.1139,17.092"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[21].SRYKBN#</string>
@@ -1415,7 +1421,7 @@
           <point val="1.4675,17.4213"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,17.1834;2.1139,17.5034"/>
+          <rectangle val="1.4675,17.1711;2.1139,17.4911"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[22].SRYKBN#</string>
@@ -1457,7 +1463,7 @@
           <point val="1.4675,17.8205"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,17.5826;2.1139,17.9026"/>
+          <rectangle val="1.4675,17.5703;2.1139,17.8903"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[23].SRYKBN#</string>
@@ -1499,7 +1505,7 @@
           <point val="1.4675,18.2196"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,17.9817;2.1139,18.3017"/>
+          <rectangle val="1.4675,17.9694;2.1139,18.2894"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[24].SRYKBN#</string>
@@ -1541,7 +1547,7 @@
           <point val="1.4675,18.6188"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,18.3809;2.1139,18.7009"/>
+          <rectangle val="1.4675,18.3686;2.1139,18.6886"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[25].SRYKBN#</string>
@@ -1583,7 +1589,7 @@
           <point val="1.4675,19.018"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,18.7801;2.1139,19.1001"/>
+          <rectangle val="1.4675,18.7678;2.1139,19.0878"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[26].SRYKBN#</string>
@@ -1625,7 +1631,7 @@
           <point val="1.4675,19.4171"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,19.1792;2.1139,19.4992"/>
+          <rectangle val="1.4675,19.1669;2.1139,19.4869"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[27].SRYKBN#</string>
@@ -1667,7 +1673,7 @@
           <point val="1.4675,19.8163"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,19.5784;2.1139,19.8984"/>
+          <rectangle val="1.4675,19.5661;2.1139,19.8861"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[28].SRYKBN#</string>
@@ -1709,7 +1715,7 @@
           <point val="1.4675,20.2154"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.4675,19.9775;2.1139,20.2975"/>
+          <rectangle val="1.4675,19.9652;2.1139,20.2852"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[29].SRYKBN#</string>
@@ -1751,7 +1757,7 @@
           <point val="1.46899,20.6076"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,20.3697;2.11539,20.6897"/>
+          <rectangle val="1.46899,20.3574;2.11539,20.6774"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[30].SRYKBN#</string>
@@ -1793,7 +1799,7 @@
           <point val="1.46899,21.0068"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,20.7689;2.11539,21.0889"/>
+          <rectangle val="1.46899,20.7566;2.11539,21.0766"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[31].SRYKBN#</string>
@@ -1835,7 +1841,7 @@
           <point val="1.46899,21.406"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,21.1681;2.11539,21.4881"/>
+          <rectangle val="1.46899,21.1558;2.11539,21.4758"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[32].SRYKBN#</string>
@@ -1877,7 +1883,7 @@
           <point val="1.46899,21.8051"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,21.5672;2.11539,21.8872"/>
+          <rectangle val="1.46899,21.5549;2.11539,21.8749"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[33].SRYKBN#</string>
@@ -1919,7 +1925,7 @@
           <point val="1.46899,22.2043"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,21.9664;2.11539,22.2864"/>
+          <rectangle val="1.46899,21.9541;2.11539,22.2741"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[34].SRYKBN#</string>
@@ -1961,7 +1967,7 @@
           <point val="1.46899,22.6035"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,22.3656;2.11539,22.6856"/>
+          <rectangle val="1.46899,22.3533;2.11539,22.6733"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[35].SRYKBN#</string>
@@ -2003,7 +2009,7 @@
           <point val="1.46899,23.0026"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,22.7647;2.11539,23.0847"/>
+          <rectangle val="1.46899,22.7524;2.11539,23.0724"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[36].SRYKBN#</string>
@@ -2045,7 +2051,7 @@
           <point val="1.46899,23.4018"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,23.1639;2.11539,23.4839"/>
+          <rectangle val="1.46899,23.1516;2.11539,23.4716"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[37].SRYKBN#</string>
@@ -2087,7 +2093,7 @@
           <point val="1.46899,23.8009"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,23.563;2.11539,23.883"/>
+          <rectangle val="1.46899,23.5507;2.11539,23.8707"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[38].SRYKBN#</string>
@@ -2129,7 +2135,7 @@
           <point val="1.46899,24.2001"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,23.9622;2.11539,24.2822"/>
+          <rectangle val="1.46899,23.9499;2.11539,24.2699"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[39].SRYKBN#</string>
@@ -2171,7 +2177,7 @@
           <point val="1.46899,24.5993"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,24.3614;2.11539,24.6814"/>
+          <rectangle val="1.46899,24.3491;2.11539,24.6691"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[40].SRYKBN#</string>
@@ -2213,7 +2219,7 @@
           <point val="1.46899,24.9984"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,24.7605;2.11539,25.0805"/>
+          <rectangle val="1.46899,24.7482;2.11539,25.0682"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[41].SRYKBN#</string>
@@ -2255,7 +2261,7 @@
           <point val="1.46899,25.3976"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,25.1597;2.11539,25.4797"/>
+          <rectangle val="1.46899,25.1474;2.11539,25.4674"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[42].SRYKBN#</string>
@@ -2297,7 +2303,7 @@
           <point val="1.46899,25.7968"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,25.5589;2.11539,25.8789"/>
+          <rectangle val="1.46899,25.5466;2.11539,25.8666"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[43].SRYKBN#</string>
@@ -2339,7 +2345,7 @@
           <point val="1.46899,26.1959"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,25.958;2.11539,26.278"/>
+          <rectangle val="1.46899,25.9457;2.11539,26.2657"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[44].SRYKBN#</string>
@@ -2381,7 +2387,7 @@
           <point val="1.46899,26.5951"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,26.3572;2.11539,26.6772"/>
+          <rectangle val="1.46899,26.3449;2.11539,26.6649"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[45].SRYKBN#</string>
@@ -2423,7 +2429,7 @@
           <point val="1.46899,26.9942"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,26.7563;2.11539,27.0763"/>
+          <rectangle val="1.46899,26.744;2.11539,27.064"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[46].SRYKBN#</string>
@@ -2465,7 +2471,7 @@
           <point val="1.46899,27.3934"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,27.1555;2.11539,27.4755"/>
+          <rectangle val="1.46899,27.1432;2.11539,27.4632"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[47].SRYKBN#</string>
@@ -2507,7 +2513,7 @@
           <point val="1.46899,27.7926"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,27.5547;2.11539,27.8747"/>
+          <rectangle val="1.46899,27.5424;2.11539,27.8624"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[48].SRYKBN#</string>
@@ -2549,7 +2555,7 @@
           <point val="1.46899,28.1917"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="1.46899,27.9538;2.11539,28.2738"/>
+          <rectangle val="1.46899,27.9415;2.11539,28.2615"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[49].SRYKBN#</string>
@@ -2591,7 +2597,7 @@
           <point val="10.949,8.64697"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,8.40909;11.5954,8.72909"/>
+          <rectangle val="10.949,8.39679;11.5954,8.71679"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[50].SRYKBN#</string>
@@ -2633,7 +2639,7 @@
           <point val="10.949,9.04617"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,8.80829;11.5954,9.12829"/>
+          <rectangle val="10.949,8.79599;11.5954,9.11599"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[51].SRYKBN#</string>
@@ -2675,7 +2681,7 @@
           <point val="10.949,9.44537"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,9.20749;11.5954,9.52749"/>
+          <rectangle val="10.949,9.19519;11.5954,9.51519"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[52].SRYKBN#</string>
@@ -2717,7 +2723,7 @@
           <point val="10.949,9.84447"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,9.60659;11.5954,9.92659"/>
+          <rectangle val="10.949,9.59429;11.5954,9.91429"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[53].SRYKBN#</string>
@@ -2759,7 +2765,7 @@
           <point val="10.949,10.2437"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,10.0058;11.5954,10.3258"/>
+          <rectangle val="10.949,9.99352;11.5954,10.3135"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[54].SRYKBN#</string>
@@ -2801,7 +2807,7 @@
           <point val="10.949,10.6429"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,10.405;11.5954,10.725"/>
+          <rectangle val="10.949,10.3927;11.5954,10.7127"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[55].SRYKBN#</string>
@@ -2843,7 +2849,7 @@
           <point val="10.949,11.042"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,10.8041;11.5954,11.1241"/>
+          <rectangle val="10.949,10.7918;11.5954,11.1118"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[56].SRYKBN#</string>
@@ -2885,7 +2891,7 @@
           <point val="10.949,11.4412"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,11.2033;11.5954,11.5233"/>
+          <rectangle val="10.949,11.191;11.5954,11.511"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[57].SRYKBN#</string>
@@ -2927,7 +2933,7 @@
           <point val="10.949,11.8403"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,11.6024;11.5954,11.9224"/>
+          <rectangle val="10.949,11.5901;11.5954,11.9101"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[58].SRYKBN#</string>
@@ -2969,7 +2975,7 @@
           <point val="10.949,12.2395"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,12.0016;11.5954,12.3216"/>
+          <rectangle val="10.949,11.9893;11.5954,12.3093"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[59].SRYKBN#</string>
@@ -3011,7 +3017,7 @@
           <point val="10.949,12.6387"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,12.4008;11.5954,12.7208"/>
+          <rectangle val="10.949,12.3885;11.5954,12.7085"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[60].SRYKBN#</string>
@@ -3053,7 +3059,7 @@
           <point val="10.949,13.0378"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,12.7999;11.5954,13.1199"/>
+          <rectangle val="10.949,12.7876;11.5954,13.1076"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[61].SRYKBN#</string>
@@ -3095,7 +3101,7 @@
           <point val="10.949,13.437"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,13.1991;11.5954,13.5191"/>
+          <rectangle val="10.949,13.1868;11.5954,13.5068"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[62].SRYKBN#</string>
@@ -3137,7 +3143,7 @@
           <point val="10.949,13.8362"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,13.5983;11.5954,13.9183"/>
+          <rectangle val="10.949,13.586;11.5954,13.906"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[63].SRYKBN#</string>
@@ -3179,7 +3185,7 @@
           <point val="10.949,14.2353"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,13.9974;11.5954,14.3174"/>
+          <rectangle val="10.949,13.9851;11.5954,14.3051"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[64].SRYKBN#</string>
@@ -3221,7 +3227,7 @@
           <point val="10.949,14.6345"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,14.3966;11.5954,14.7166"/>
+          <rectangle val="10.949,14.3843;11.5954,14.7043"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[65].SRYKBN#</string>
@@ -3263,7 +3269,7 @@
           <point val="10.949,15.0336"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,14.7957;11.5954,15.1157"/>
+          <rectangle val="10.949,14.7834;11.5954,15.1034"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[66].SRYKBN#</string>
@@ -3305,7 +3311,7 @@
           <point val="10.949,15.4328"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,15.1949;11.5954,15.5149"/>
+          <rectangle val="10.949,15.1826;11.5954,15.5026"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[67].SRYKBN#</string>
@@ -3347,7 +3353,7 @@
           <point val="10.949,15.832"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,15.5941;11.5954,15.9141"/>
+          <rectangle val="10.949,15.5818;11.5954,15.9018"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[68].SRYKBN#</string>
@@ -3389,7 +3395,7 @@
           <point val="10.949,16.2311"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,15.9932;11.5954,16.3132"/>
+          <rectangle val="10.949,15.9809;11.5954,16.3009"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[69].SRYKBN#</string>
@@ -3431,7 +3437,7 @@
           <point val="10.949,16.6303"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,16.3924;11.5954,16.7124"/>
+          <rectangle val="10.949,16.3801;11.5954,16.7001"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[70].SRYKBN#</string>
@@ -3473,7 +3479,7 @@
           <point val="10.949,17.0295"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,16.7916;11.5954,17.1116"/>
+          <rectangle val="10.949,16.7793;11.5954,17.0993"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[71].SRYKBN#</string>
@@ -3515,7 +3521,7 @@
           <point val="10.949,17.4286"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,17.1907;11.5954,17.5107"/>
+          <rectangle val="10.949,17.1784;11.5954,17.4984"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[72].SRYKBN#</string>
@@ -3557,7 +3563,7 @@
           <point val="10.949,17.8278"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,17.5899;11.5954,17.9099"/>
+          <rectangle val="10.949,17.5776;11.5954,17.8976"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[73].SRYKBN#</string>
@@ -3599,7 +3605,7 @@
           <point val="10.949,18.2269"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,17.989;11.5954,18.309"/>
+          <rectangle val="10.949,17.9767;11.5954,18.2967"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[74].SRYKBN#</string>
@@ -3641,7 +3647,7 @@
           <point val="10.949,18.6261"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,18.3882;11.5954,18.7082"/>
+          <rectangle val="10.949,18.3759;11.5954,18.6959"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[75].SRYKBN#</string>
@@ -3683,7 +3689,7 @@
           <point val="10.949,19.0253"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,18.7874;11.5954,19.1074"/>
+          <rectangle val="10.949,18.7751;11.5954,19.0951"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[76].SRYKBN#</string>
@@ -3725,7 +3731,7 @@
           <point val="10.949,19.4244"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,19.1865;11.5954,19.5065"/>
+          <rectangle val="10.949,19.1742;11.5954,19.4942"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[77].SRYKBN#</string>
@@ -3767,7 +3773,7 @@
           <point val="10.949,19.8236"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,19.5857;11.5954,19.9057"/>
+          <rectangle val="10.949,19.5734;11.5954,19.8934"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[78].SRYKBN#</string>
@@ -3809,7 +3815,7 @@
           <point val="10.949,20.2227"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.949,19.9848;11.5954,20.3048"/>
+          <rectangle val="10.949,19.9725;11.5954,20.2925"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[79].SRYKBN#</string>
@@ -3851,7 +3857,7 @@
           <point val="10.9505,20.6148"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,20.3769;11.5969,20.6969"/>
+          <rectangle val="10.9505,20.3646;11.5969,20.6846"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[80].SRYKBN#</string>
@@ -3893,7 +3899,7 @@
           <point val="10.9505,21.014"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,20.7761;11.5969,21.0961"/>
+          <rectangle val="10.9505,20.7638;11.5969,21.0838"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[81].SRYKBN#</string>
@@ -3935,7 +3941,7 @@
           <point val="10.9505,21.4132"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,21.1753;11.5969,21.4953"/>
+          <rectangle val="10.9505,21.163;11.5969,21.483"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[82].SRYKBN#</string>
@@ -3977,7 +3983,7 @@
           <point val="10.9505,21.8123"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,21.5744;11.5969,21.8944"/>
+          <rectangle val="10.9505,21.5621;11.5969,21.8821"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[83].SRYKBN#</string>
@@ -4019,7 +4025,7 @@
           <point val="10.9505,22.2115"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,21.9736;11.5969,22.2936"/>
+          <rectangle val="10.9505,21.9613;11.5969,22.2813"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[84].SRYKBN#</string>
@@ -4061,7 +4067,7 @@
           <point val="10.9505,22.6107"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,22.3728;11.5969,22.6928"/>
+          <rectangle val="10.9505,22.3605;11.5969,22.6805"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[85].SRYKBN#</string>
@@ -4103,7 +4109,7 @@
           <point val="10.9505,23.0098"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,22.7719;11.5969,23.0919"/>
+          <rectangle val="10.9505,22.7596;11.5969,23.0796"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[86].SRYKBN#</string>
@@ -4145,7 +4151,7 @@
           <point val="10.9505,23.409"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,23.1711;11.5969,23.4911"/>
+          <rectangle val="10.9505,23.1588;11.5969,23.4788"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[87].SRYKBN#</string>
@@ -4187,7 +4193,7 @@
           <point val="10.9505,23.8081"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,23.5702;11.5969,23.8902"/>
+          <rectangle val="10.9505,23.5579;11.5969,23.8779"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[88].SRYKBN#</string>
@@ -4229,7 +4235,7 @@
           <point val="10.9505,24.2073"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,23.9694;11.5969,24.2894"/>
+          <rectangle val="10.9505,23.9571;11.5969,24.2771"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[89].SRYKBN#</string>
@@ -4271,7 +4277,7 @@
           <point val="10.9505,24.6065"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,24.3686;11.5969,24.6886"/>
+          <rectangle val="10.9505,24.3563;11.5969,24.6763"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[90].SRYKBN#</string>
@@ -4313,7 +4319,7 @@
           <point val="10.9505,25.0056"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,24.7677;11.5969,25.0877"/>
+          <rectangle val="10.9505,24.7554;11.5969,25.0754"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[91].SRYKBN#</string>
@@ -4355,7 +4361,7 @@
           <point val="10.9505,25.4048"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,25.1669;11.5969,25.4869"/>
+          <rectangle val="10.9505,25.1546;11.5969,25.4746"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[92].SRYKBN#</string>
@@ -4397,7 +4403,7 @@
           <point val="10.9505,25.804"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,25.5661;11.5969,25.8861"/>
+          <rectangle val="10.9505,25.5538;11.5969,25.8738"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[93].SRYKBN#</string>
@@ -4439,7 +4445,7 @@
           <point val="10.9505,26.2031"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,25.9652;11.5969,26.2852"/>
+          <rectangle val="10.9505,25.9529;11.5969,26.2729"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[94].SRYKBN#</string>
@@ -4481,7 +4487,7 @@
           <point val="10.9505,26.6023"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,26.3644;11.5969,26.6844"/>
+          <rectangle val="10.9505,26.3521;11.5969,26.6721"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[95].SRYKBN#</string>
@@ -4523,7 +4529,7 @@
           <point val="10.9505,27.0014"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,26.7635;11.5969,27.0835"/>
+          <rectangle val="10.9505,26.7512;11.5969,27.0712"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[96].SRYKBN#</string>
@@ -4565,7 +4571,7 @@
           <point val="10.9505,27.4006"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,27.1627;11.5969,27.4827"/>
+          <rectangle val="10.9505,27.1504;11.5969,27.4704"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[97].SRYKBN#</string>
@@ -4607,7 +4613,7 @@
           <point val="10.9505,27.7998"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,27.5619;11.5969,27.8819"/>
+          <rectangle val="10.9505,27.5496;11.5969,27.8696"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[98].SRYKBN#</string>
@@ -4649,7 +4655,7 @@
           <point val="10.9505,28.1989"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="10.9505,27.961;11.5969,28.281"/>
+          <rectangle val="10.9505,27.9487;11.5969,28.2687"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#SRYKBN-G[99].SRYKBN#</string>
@@ -4693,7 +4699,7 @@
           <point val="2.3122,8.6544"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,8.41652;10.7154,8.73652"/>
+          <rectangle val="2.3122,8.40422;10.7154,8.72422"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[0].TEKIYO#</string>
@@ -4735,7 +4741,7 @@
           <point val="2.3122,9.0521"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,8.81422;10.7154,9.13422"/>
+          <rectangle val="2.3122,8.80192;10.7154,9.12192"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[1].TEKIYO#</string>
@@ -4777,7 +4783,7 @@
           <point val="2.3122,9.4497"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,9.21182;10.7154,9.53182"/>
+          <rectangle val="2.3122,9.19952;10.7154,9.51952"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[2].TEKIYO#</string>
@@ -4819,7 +4825,7 @@
           <point val="2.3122,9.8473"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,9.60942;10.7154,9.92942"/>
+          <rectangle val="2.3122,9.59712;10.7154,9.91712"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[3].TEKIYO#</string>
@@ -4861,7 +4867,7 @@
           <point val="2.3122,10.2449"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,10.007;10.7154,10.327"/>
+          <rectangle val="2.3122,9.99472;10.7154,10.3147"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[4].TEKIYO#</string>
@@ -4903,7 +4909,7 @@
           <point val="2.3122,10.6425"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,10.4046;10.7154,10.7246"/>
+          <rectangle val="2.3122,10.3923;10.7154,10.7123"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[5].TEKIYO#</string>
@@ -4945,7 +4951,7 @@
           <point val="2.3122,11.0401"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,10.8022;10.7154,11.1222"/>
+          <rectangle val="2.3122,10.7899;10.7154,11.1099"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[6].TEKIYO#</string>
@@ -4987,7 +4993,7 @@
           <point val="2.3122,11.4378"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,11.1999;10.7154,11.5199"/>
+          <rectangle val="2.3122,11.1876;10.7154,11.5076"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[7].TEKIYO#</string>
@@ -5029,7 +5035,7 @@
           <point val="2.3122,11.8354"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,11.5975;10.7154,11.9175"/>
+          <rectangle val="2.3122,11.5852;10.7154,11.9052"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[8].TEKIYO#</string>
@@ -5071,7 +5077,7 @@
           <point val="2.3122,12.233"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,11.9951;10.7154,12.3151"/>
+          <rectangle val="2.3122,11.9828;10.7154,12.3028"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[9].TEKIYO#</string>
@@ -5113,7 +5119,7 @@
           <point val="2.3122,12.6306"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,12.3927;10.7154,12.7127"/>
+          <rectangle val="2.3122,12.3804;10.7154,12.7004"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[10].TEKIYO#</string>
@@ -5155,7 +5161,7 @@
           <point val="2.3122,13.0282"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,12.7903;10.7154,13.1103"/>
+          <rectangle val="2.3122,12.778;10.7154,13.098"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[11].TEKIYO#</string>
@@ -5197,7 +5203,7 @@
           <point val="2.3122,13.4258"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,13.1879;10.7154,13.5079"/>
+          <rectangle val="2.3122,13.1756;10.7154,13.4956"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[12].TEKIYO#</string>
@@ -5239,7 +5245,7 @@
           <point val="2.2872,13.8235"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.2872,13.5856;10.6904,13.9056"/>
+          <rectangle val="2.2872,13.5733;10.6904,13.8933"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[13].TEKIYO#</string>
@@ -5281,7 +5287,7 @@
           <point val="2.3122,14.2211"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,13.9832;10.7154,14.3032"/>
+          <rectangle val="2.3122,13.9709;10.7154,14.2909"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[14].TEKIYO#</string>
@@ -5323,7 +5329,7 @@
           <point val="2.3122,14.6187"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,14.3808;10.7154,14.7008"/>
+          <rectangle val="2.3122,14.3685;10.7154,14.6885"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[15].TEKIYO#</string>
@@ -5365,7 +5371,7 @@
           <point val="2.3122,15.0163"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,14.7784;10.7154,15.0984"/>
+          <rectangle val="2.3122,14.7661;10.7154,15.0861"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[16].TEKIYO#</string>
@@ -5407,7 +5413,7 @@
           <point val="2.3122,15.4139"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,15.176;10.7154,15.496"/>
+          <rectangle val="2.3122,15.1637;10.7154,15.4837"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[17].TEKIYO#</string>
@@ -5449,7 +5455,7 @@
           <point val="2.3122,15.8115"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,15.5736;10.7154,15.8936"/>
+          <rectangle val="2.3122,15.5613;10.7154,15.8813"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[18].TEKIYO#</string>
@@ -5491,7 +5497,7 @@
           <point val="2.3122,16.2092"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,15.9713;10.7154,16.2913"/>
+          <rectangle val="2.3122,15.959;10.7154,16.279"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[19].TEKIYO#</string>
@@ -5533,7 +5539,7 @@
           <point val="2.3122,16.6068"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,16.3689;10.7154,16.6889"/>
+          <rectangle val="2.3122,16.3566;10.7154,16.6766"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[20].TEKIYO#</string>
@@ -5575,7 +5581,7 @@
           <point val="2.3122,17.0044"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,16.7665;10.7154,17.0865"/>
+          <rectangle val="2.3122,16.7542;10.7154,17.0742"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[21].TEKIYO#</string>
@@ -5617,7 +5623,7 @@
           <point val="2.3122,17.402"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,17.1641;10.7154,17.4841"/>
+          <rectangle val="2.3122,17.1518;10.7154,17.4718"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[22].TEKIYO#</string>
@@ -5659,7 +5665,7 @@
           <point val="2.3122,17.7996"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,17.5617;10.7154,17.8817"/>
+          <rectangle val="2.3122,17.5494;10.7154,17.8694"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[23].TEKIYO#</string>
@@ -5701,7 +5707,7 @@
           <point val="2.3122,18.1973"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,17.9594;10.7154,18.2794"/>
+          <rectangle val="2.3122,17.9471;10.7154,18.2671"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[24].TEKIYO#</string>
@@ -5743,7 +5749,7 @@
           <point val="2.3122,18.5949"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,18.357;10.7154,18.677"/>
+          <rectangle val="2.3122,18.3447;10.7154,18.6647"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[25].TEKIYO#</string>
@@ -5785,7 +5791,7 @@
           <point val="2.3122,18.9925"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,18.7546;10.7154,19.0746"/>
+          <rectangle val="2.3122,18.7423;10.7154,19.0623"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[26].TEKIYO#</string>
@@ -5827,7 +5833,7 @@
           <point val="2.3122,19.3901"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,19.1522;10.7154,19.4722"/>
+          <rectangle val="2.3122,19.1399;10.7154,19.4599"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[27].TEKIYO#</string>
@@ -5869,7 +5875,7 @@
           <point val="2.3122,19.7877"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,19.5498;10.7154,19.8698"/>
+          <rectangle val="2.3122,19.5375;10.7154,19.8575"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[28].TEKIYO#</string>
@@ -5911,7 +5917,7 @@
           <point val="2.3122,20.2103"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.3122,19.9724;10.7154,20.2924"/>
+          <rectangle val="2.3122,19.9601;10.7154,20.2801"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[29].TEKIYO#</string>
@@ -5953,7 +5959,7 @@
           <point val="2.30119,20.6223"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.30119,20.3844;10.7044,20.7044"/>
+          <rectangle val="2.30119,20.3721;10.7044,20.6921"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[30].TEKIYO#</string>
@@ -5995,7 +6001,7 @@
           <point val="2.27619,21.02"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,20.7821;10.6794,21.1021"/>
+          <rectangle val="2.27619,20.7698;10.6794,21.0898"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[31].TEKIYO#</string>
@@ -6037,7 +6043,7 @@
           <point val="2.27619,21.4176"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,21.1797;10.6794,21.4997"/>
+          <rectangle val="2.27619,21.1674;10.6794,21.4874"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[32].TEKIYO#</string>
@@ -6079,7 +6085,7 @@
           <point val="2.27619,21.8152"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,21.5773;10.6794,21.8973"/>
+          <rectangle val="2.27619,21.565;10.6794,21.885"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[33].TEKIYO#</string>
@@ -6121,7 +6127,7 @@
           <point val="2.27619,22.2128"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,21.9749;10.6794,22.2949"/>
+          <rectangle val="2.27619,21.9626;10.6794,22.2826"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[34].TEKIYO#</string>
@@ -6163,7 +6169,7 @@
           <point val="2.27619,22.6104"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,22.3725;10.6794,22.6925"/>
+          <rectangle val="2.27619,22.3602;10.6794,22.6802"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[35].TEKIYO#</string>
@@ -6205,7 +6211,7 @@
           <point val="2.27619,23.008"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,22.7701;10.6794,23.0901"/>
+          <rectangle val="2.27619,22.7578;10.6794,23.0778"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[36].TEKIYO#</string>
@@ -6247,7 +6253,7 @@
           <point val="2.27619,23.4057"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,23.1678;10.6794,23.4878"/>
+          <rectangle val="2.27619,23.1555;10.6794,23.4755"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[37].TEKIYO#</string>
@@ -6289,7 +6295,7 @@
           <point val="2.27619,23.8033"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,23.5654;10.6794,23.8854"/>
+          <rectangle val="2.27619,23.5531;10.6794,23.8731"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[38].TEKIYO#</string>
@@ -6331,7 +6337,7 @@
           <point val="2.27619,24.2009"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,23.963;10.6794,24.283"/>
+          <rectangle val="2.27619,23.9507;10.6794,24.2707"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[39].TEKIYO#</string>
@@ -6373,7 +6379,7 @@
           <point val="2.27619,24.5985"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,24.3606;10.6794,24.6806"/>
+          <rectangle val="2.27619,24.3483;10.6794,24.6683"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[40].TEKIYO#</string>
@@ -6415,7 +6421,7 @@
           <point val="2.27619,24.9961"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,24.7582;10.6794,25.0782"/>
+          <rectangle val="2.27619,24.7459;10.6794,25.0659"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[41].TEKIYO#</string>
@@ -6457,7 +6463,7 @@
           <point val="2.27619,25.3937"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,25.1558;10.6794,25.4758"/>
+          <rectangle val="2.27619,25.1435;10.6794,25.4635"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[42].TEKIYO#</string>
@@ -6499,7 +6505,7 @@
           <point val="2.27619,25.7914"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,25.5535;10.6794,25.8735"/>
+          <rectangle val="2.27619,25.5412;10.6794,25.8612"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[43].TEKIYO#</string>
@@ -6541,7 +6547,7 @@
           <point val="2.27619,26.189"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,25.9511;10.6794,26.2711"/>
+          <rectangle val="2.27619,25.9388;10.6794,26.2588"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[44].TEKIYO#</string>
@@ -6583,7 +6589,7 @@
           <point val="2.27619,26.5866"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,26.3487;10.6794,26.6687"/>
+          <rectangle val="2.27619,26.3364;10.6794,26.6564"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[45].TEKIYO#</string>
@@ -6625,7 +6631,7 @@
           <point val="2.27619,26.9842"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,26.7463;10.6794,27.0663"/>
+          <rectangle val="2.27619,26.734;10.6794,27.054"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[46].TEKIYO#</string>
@@ -6667,7 +6673,7 @@
           <point val="2.27619,27.3818"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,27.1439;10.6794,27.4639"/>
+          <rectangle val="2.27619,27.1316;10.6794,27.4516"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[47].TEKIYO#</string>
@@ -6709,7 +6715,7 @@
           <point val="2.27619,27.7794"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,27.5415;10.6794,27.8615"/>
+          <rectangle val="2.27619,27.5292;10.6794,27.8492"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[48].TEKIYO#</string>
@@ -6751,7 +6757,7 @@
           <point val="2.27619,28.1771"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="2.27619,27.9392;10.6794,28.2592"/>
+          <rectangle val="2.27619,27.9269;10.6794,28.2469"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[49].TEKIYO#</string>
@@ -6793,7 +6799,7 @@
           <point val="11.7687,8.66167"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,8.42379;20.1719,8.74379"/>
+          <rectangle val="11.7687,8.41149;20.1719,8.73149"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[50].TEKIYO#</string>
@@ -6835,7 +6841,7 @@
           <point val="11.7687,9.05937"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,8.82149;20.1719,9.14149"/>
+          <rectangle val="11.7687,8.80919;20.1719,9.12919"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[51].TEKIYO#</string>
@@ -6877,7 +6883,7 @@
           <point val="11.7687,9.45697"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,9.21909;20.1719,9.53909"/>
+          <rectangle val="11.7687,9.20679;20.1719,9.52679"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[52].TEKIYO#</string>
@@ -6919,7 +6925,7 @@
           <point val="11.7687,9.85457"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,9.61669;20.1719,9.93669"/>
+          <rectangle val="11.7687,9.60439;20.1719,9.92439"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[53].TEKIYO#</string>
@@ -6961,7 +6967,7 @@
           <point val="11.7687,10.2522"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,10.0143;20.1719,10.3343"/>
+          <rectangle val="11.7687,10.002;20.1719,10.322"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[54].TEKIYO#</string>
@@ -7003,7 +7009,7 @@
           <point val="11.7687,10.6498"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,10.4119;20.1719,10.7319"/>
+          <rectangle val="11.7687,10.3996;20.1719,10.7196"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[55].TEKIYO#</string>
@@ -7045,7 +7051,7 @@
           <point val="11.7687,11.0474"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,10.8095;20.1719,11.1295"/>
+          <rectangle val="11.7687,10.7972;20.1719,11.1172"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[56].TEKIYO#</string>
@@ -7087,7 +7093,7 @@
           <point val="11.7687,11.4451"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,11.2072;20.1719,11.5272"/>
+          <rectangle val="11.7687,11.1949;20.1719,11.5149"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[57].TEKIYO#</string>
@@ -7129,7 +7135,7 @@
           <point val="11.7687,11.8427"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,11.6048;20.1719,11.9248"/>
+          <rectangle val="11.7687,11.5925;20.1719,11.9125"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[58].TEKIYO#</string>
@@ -7171,7 +7177,7 @@
           <point val="11.7687,12.2403"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,12.0024;20.1719,12.3224"/>
+          <rectangle val="11.7687,11.9901;20.1719,12.3101"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[59].TEKIYO#</string>
@@ -7213,7 +7219,7 @@
           <point val="11.7687,12.6379"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,12.4;20.1719,12.72"/>
+          <rectangle val="11.7687,12.3877;20.1719,12.7077"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[60].TEKIYO#</string>
@@ -7255,7 +7261,7 @@
           <point val="11.7687,13.0355"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,12.7976;20.1719,13.1176"/>
+          <rectangle val="11.7687,12.7853;20.1719,13.1053"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[61].TEKIYO#</string>
@@ -7297,7 +7303,7 @@
           <point val="11.7687,13.4331"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,13.1952;20.1719,13.5152"/>
+          <rectangle val="11.7687,13.1829;20.1719,13.5029"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[62].TEKIYO#</string>
@@ -7339,7 +7345,7 @@
           <point val="11.7687,13.8308"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,13.5929;20.1719,13.9129"/>
+          <rectangle val="11.7687,13.5806;20.1719,13.9006"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[63].TEKIYO#</string>
@@ -7381,7 +7387,7 @@
           <point val="11.7687,14.2284"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,13.9905;20.1719,14.3105"/>
+          <rectangle val="11.7687,13.9782;20.1719,14.2982"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[64].TEKIYO#</string>
@@ -7423,7 +7429,7 @@
           <point val="11.7687,14.626"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,14.3881;20.1719,14.7081"/>
+          <rectangle val="11.7687,14.3758;20.1719,14.6958"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[65].TEKIYO#</string>
@@ -7465,7 +7471,7 @@
           <point val="11.7687,15.0236"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,14.7857;20.1719,15.1057"/>
+          <rectangle val="11.7687,14.7734;20.1719,15.0934"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[66].TEKIYO#</string>
@@ -7507,7 +7513,7 @@
           <point val="11.7687,15.4212"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,15.1833;20.1719,15.5033"/>
+          <rectangle val="11.7687,15.171;20.1719,15.491"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[67].TEKIYO#</string>
@@ -7549,7 +7555,7 @@
           <point val="11.7687,15.8188"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,15.5809;20.1719,15.9009"/>
+          <rectangle val="11.7687,15.5686;20.1719,15.8886"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[68].TEKIYO#</string>
@@ -7591,7 +7597,7 @@
           <point val="11.7687,16.2165"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,15.9786;20.1719,16.2986"/>
+          <rectangle val="11.7687,15.9663;20.1719,16.2863"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[69].TEKIYO#</string>
@@ -7633,7 +7639,7 @@
           <point val="11.7687,16.6141"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,16.3762;20.1719,16.6962"/>
+          <rectangle val="11.7687,16.3639;20.1719,16.6839"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[70].TEKIYO#</string>
@@ -7675,7 +7681,7 @@
           <point val="11.7687,17.0117"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,16.7738;20.1719,17.0938"/>
+          <rectangle val="11.7687,16.7615;20.1719,17.0815"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[71].TEKIYO#</string>
@@ -7717,7 +7723,7 @@
           <point val="11.7687,17.4093"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,17.1714;20.1719,17.4914"/>
+          <rectangle val="11.7687,17.1591;20.1719,17.4791"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[72].TEKIYO#</string>
@@ -7759,7 +7765,7 @@
           <point val="11.7687,17.8069"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,17.569;20.1719,17.889"/>
+          <rectangle val="11.7687,17.5567;20.1719,17.8767"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[73].TEKIYO#</string>
@@ -7801,7 +7807,7 @@
           <point val="11.7687,18.2046"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,17.9667;20.1719,18.2867"/>
+          <rectangle val="11.7687,17.9544;20.1719,18.2744"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[74].TEKIYO#</string>
@@ -7843,7 +7849,7 @@
           <point val="11.7687,18.6022"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,18.3643;20.1719,18.6843"/>
+          <rectangle val="11.7687,18.352;20.1719,18.672"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[75].TEKIYO#</string>
@@ -7885,7 +7891,7 @@
           <point val="11.7687,18.9998"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,18.7619;20.1719,19.0819"/>
+          <rectangle val="11.7687,18.7496;20.1719,19.0696"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[76].TEKIYO#</string>
@@ -7927,7 +7933,7 @@
           <point val="11.7687,19.3974"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,19.1595;20.1719,19.4795"/>
+          <rectangle val="11.7687,19.1472;20.1719,19.4672"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[77].TEKIYO#</string>
@@ -7969,7 +7975,7 @@
           <point val="11.7687,19.795"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,19.5571;20.1719,19.8771"/>
+          <rectangle val="11.7687,19.5448;20.1719,19.8648"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[78].TEKIYO#</string>
@@ -8011,7 +8017,7 @@
           <point val="11.7687,20.2176"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7687,19.9797;20.1719,20.2997"/>
+          <rectangle val="11.7687,19.9674;20.1719,20.2874"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[79].TEKIYO#</string>
@@ -8053,7 +8059,7 @@
           <point val="11.7577,20.6295"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,20.3916;20.1609,20.7116"/>
+          <rectangle val="11.7577,20.3793;20.1609,20.6993"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[80].TEKIYO#</string>
@@ -8095,7 +8101,7 @@
           <point val="11.7577,21.0272"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,20.7893;20.1609,21.1093"/>
+          <rectangle val="11.7577,20.777;20.1609,21.097"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[81].TEKIYO#</string>
@@ -8137,7 +8143,7 @@
           <point val="11.7577,21.4248"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,21.1869;20.1609,21.5069"/>
+          <rectangle val="11.7577,21.1746;20.1609,21.4946"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[82].TEKIYO#</string>
@@ -8179,7 +8185,7 @@
           <point val="11.7577,21.8224"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,21.5845;20.1609,21.9045"/>
+          <rectangle val="11.7577,21.5722;20.1609,21.8922"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[83].TEKIYO#</string>
@@ -8221,7 +8227,7 @@
           <point val="11.7577,22.22"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,21.9821;20.1609,22.3021"/>
+          <rectangle val="11.7577,21.9698;20.1609,22.2898"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[84].TEKIYO#</string>
@@ -8263,7 +8269,7 @@
           <point val="11.7577,22.6426"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,22.4047;20.1609,22.7247"/>
+          <rectangle val="11.7577,22.3924;20.1609,22.7124"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[85].TEKIYO#</string>
@@ -8305,7 +8311,7 @@
           <point val="11.7577,23.0152"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,22.7773;20.1609,23.0973"/>
+          <rectangle val="11.7577,22.765;20.1609,23.085"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[86].TEKIYO#</string>
@@ -8347,7 +8353,7 @@
           <point val="11.7577,23.4129"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,23.175;20.1609,23.495"/>
+          <rectangle val="11.7577,23.1627;20.1609,23.4827"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[87].TEKIYO#</string>
@@ -8389,7 +8395,7 @@
           <point val="11.7577,23.8105"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,23.5726;20.1609,23.8926"/>
+          <rectangle val="11.7577,23.5603;20.1609,23.8803"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[88].TEKIYO#</string>
@@ -8431,7 +8437,7 @@
           <point val="11.7577,24.2081"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,23.9702;20.1609,24.2902"/>
+          <rectangle val="11.7577,23.9579;20.1609,24.2779"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[89].TEKIYO#</string>
@@ -8473,7 +8479,7 @@
           <point val="11.7577,24.6057"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,24.3678;20.1609,24.6878"/>
+          <rectangle val="11.7577,24.3555;20.1609,24.6755"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[90].TEKIYO#</string>
@@ -8515,7 +8521,7 @@
           <point val="11.7577,25.0033"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,24.7654;20.1609,25.0854"/>
+          <rectangle val="11.7577,24.7531;20.1609,25.0731"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[91].TEKIYO#</string>
@@ -8557,7 +8563,7 @@
           <point val="11.7577,25.4009"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,25.163;20.1609,25.483"/>
+          <rectangle val="11.7577,25.1507;20.1609,25.4707"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[92].TEKIYO#</string>
@@ -8599,7 +8605,7 @@
           <point val="11.7577,25.7986"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,25.5607;20.1609,25.8807"/>
+          <rectangle val="11.7577,25.5484;20.1609,25.8684"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[93].TEKIYO#</string>
@@ -8641,7 +8647,7 @@
           <point val="11.7577,26.1962"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,25.9583;20.1609,26.2783"/>
+          <rectangle val="11.7577,25.946;20.1609,26.266"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[94].TEKIYO#</string>
@@ -8683,7 +8689,7 @@
           <point val="11.7577,26.5938"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,26.3559;20.1609,26.6759"/>
+          <rectangle val="11.7577,26.3436;20.1609,26.6636"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[95].TEKIYO#</string>
@@ -8725,7 +8731,7 @@
           <point val="11.7577,26.9914"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,26.7535;20.1609,27.0735"/>
+          <rectangle val="11.7577,26.7412;20.1609,27.0612"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[96].TEKIYO#</string>
@@ -8767,7 +8773,7 @@
           <point val="11.7577,27.389"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,27.1511;20.1609,27.4711"/>
+          <rectangle val="11.7577,27.1388;20.1609,27.4588"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[97].TEKIYO#</string>
@@ -8809,7 +8815,7 @@
           <point val="11.7577,27.7866"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,27.5487;20.1609,27.8687"/>
+          <rectangle val="11.7577,27.5364;20.1609,27.8564"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[98].TEKIYO#</string>
@@ -8851,7 +8857,7 @@
           <point val="11.7577,28.1843"/>
         </attribute>
         <attribute name="obj_bb">
-          <rectangle val="11.7577,27.9464;20.1609,28.2664"/>
+          <rectangle val="11.7577,27.9341;20.1609,28.2541"/>
         </attribute>
         <attribute name="dnode_path">
           <string>#TEKIYO-G[99].TEKIYO#</string>
@@ -8894,7 +8900,7 @@
         <point val="2.7,1.17207"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2.7,0.911893;6.942,1.26189"/>
+        <rectangle val="2.7,0.898434;6.942,1.24843"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#PTNUM#</string>
@@ -8936,7 +8942,7 @@
         <point val="20.1,1.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.6153,0.839823;20.1,1.18982"/>
+        <rectangle val="18.6153,0.826364;20.1,1.17636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#RENNUM#</string>
