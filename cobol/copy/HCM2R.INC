@@ -1,10 +1,13 @@
         01  HCM2R.
             02  HCM2R-HOSPCD    PIC X(20).
-            02  HCM2R-MEI-TBL           OCCURS  29 TIMES.
+            02  HCM2R-MEI-TBL           OCCURS  23 TIMES.
               03  HCM2R-HKNJANUM  PIC X(8).
-              03  HCM2R-TAI-KENSU PIC X(4)        OCCURS  5 TIMES.
-              03  HCM2R-TAI-TENSU PIC X(8)        OCCURS  5 TIMES.
-              03  HCM2R-TAI-ITBFTN    PIC X(8)    OCCURS  4 TIMES.
+              03  HCM2R-TAI-KENSU
+                      PIC X(4)    OCCURS  5 TIMES.
+              03  HCM2R-TAI-TENSU
+                      PIC X(8)    OCCURS  5 TIMES.
+              03  HCM2R-TAI-ITBFTN
+                      PIC X(8)    OCCURS  4 TIMES.
               03  HCM2R-KOU-KENSU PIC X(4).
               03  HCM2R-KOU-TENSU PIC X(8).
               03  HCM2R-KOU-ITBFTN    PIC X(8).
