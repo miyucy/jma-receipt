@@ -1,0 +1,71 @@
+#!/bin/sh
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+#-------------------------------------------#
+#    月次統計データ作成
+#        $1  TERMID 
+#        $2  HOSPID
+#        $3  HPSPCD   
+#        $4  県番号
+#        $5  SRYYM 
+#        $6  NYUGAIKBN 
+#        $7  FILENM1
+#        $8  FILENM2 
+#        $9  DATAKBN
+#        ${10}  HOUKATUKBN
+#        ${11} KOJINKBN
+#        ${12}  CDKBN
+#        ${13} JOBID
+#        ${14} SHELLID
+#        ${15} ERRFILENM
+#-------------------------------------------#
+##      エラーファイル削除
+	echo $#
+	echo "echo " ${15}
+        if  [ -e ${15} ]; then
+            rm  ${15}
+        fi
+        
+        rm  /var/tmp/TOKEI*
+        
+	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBT010 -parameter $1,$2,$4,$5,$6,$9,${10},${13},${14},${15}
+        
+        if  [ -e ${15} ]; then
+            exit 
+        else
+	        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBT020 -parameter $3,$5,$1,${11},${13},${14},${15}
+	    fi
+
+        if  [ -e ${15} ]; then
+            exit 
+        else
+	        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${13}${14} 
+	    fi
+
+#       漢字コード変換（ＥＵＣからシフトＪＩＳ）
+
+        if  [ ${12} -eq '2' ]; then
+            if   [ ${9} != '2' ]; then
+                nkf -s /var/tmp/toukei01.dat > $7
+            fi 
+            if   [ ${9} != '1' ]; then
+                nkf -s /var/tmp/toukei02.dat > $8
+            fi 
+        else
+            if   [ ${9} != '2' ]; then
+                cp  /var/tmp/toukei01.dat $7
+            fi 
+            if   [ ${9} != '1' ]; then
+                cp  /var/tmp/toukei02.dat $8
+            fi
+        fi
+	
+        exit 
