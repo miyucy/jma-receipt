@@ -17,7 +17,7 @@
       ********************************************************************
         02  OID2.
       *     02  OID2-FIXED1.
-              03  OID2-ID2CODE.
+              03  OID2-ID1CODE.
                 04  OID2-VALUE  PIC X(10).
-              03  OID2-ID2MSG.
+              03  OID2-ID1MSG.
                 04  OID2-VALUE  PIC X(70).
