@@ -150,6 +150,7 @@
            03  FLG-SYONIKA-CHK     PIC 9(01).
       *
            03  FLG-TAIIN           PIC 9(01).
+           03  FLG-FUKU            PIC 9(01).
       *
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
@@ -4157,16 +4158,18 @@
            MOVE    ZERO                TO  IDX3
            MOVE    ZERO                TO  FLG-CHK-ALL
            MOVE    ZERO                TO  FLG-ARI2
+           MOVE    ZERO                TO  FLG-FUKU
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
                              ((HZN-COM-INPUTCD (IDX)   =   SPACE ) AND
                               (HZN-GMN-INPUTCD (IDX)   =   SPACE ))
       *
                MOVE    ZERO                    TO  FLG-ARI
-               IF     (HZN-COM-SRYKBN(IDX)     =   "11"  OR  "12"
-                                               OR  "13"  OR  "14" ) OR
+               IF      FLG-FUKU                =   ZERO
+                 IF     (HZN-COM-SRYKBN(IDX)     =   "11"  OR  "12"
+                                                 OR  "13"  OR  "14" ) OR
       *                Œ≈Õ‹√¥≈ˆºÍ≈ˆ
-                     ( HZN-COM-INPUTCD(IDX)     =   "199000610" )
+                     ( HZN-COM-INPUTCD(IDX)     =   "199000610" ) 
                    MOVE    HZN-COM-INPUTCD(IDX) TO  WRK-SRYCD
                    IF      HZN-COM-INPUTCD(IDX) NOT =   SPACE
                        PERFORM 10101-SINSATU-CHK-SEC
@@ -4180,6 +4183,10 @@
                        END-IF
                        MOVE    1               TO  FLG-CHK
                    END-IF
+                 END-IF
+               END-IF
+               IF      HZN-GMN-INPUTCD(IDX)(1:1)   =   "$"
+                   MOVE    1                   TO  FLG-FUKU
                END-IF
                IF      FLG-ARI                 =   ZERO
                    IF      FLG-CHK             =   ZERO

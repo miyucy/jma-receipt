@@ -264,6 +264,7 @@
       *
            03  FLG-SRYKBN            PIC 9(01).
            03  FLG-FUKU-END          PIC 9(01).
+           03  FLG-FUKU              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -2693,6 +2694,7 @@
       *****************************************************************
        3014-K97-SET-SEC                  SECTION.
       *
+           MOVE    ZERO                TO  FLG-FUKU
            IF      SPA-K97-SYU-DRCD    NOT =   SPACE
                 MOVE    SPA-K97-SYU-DRCD       TO  SPA-DRCD
                 MOVE    SPA-K97-SYU-DRNAME     TO  SPA-DRCD-NAME
@@ -2819,6 +2821,10 @@
                    PERFORM 410113-GMN-HKNCOMBI-SEC
                END-IF
                MOVE    SPACE               TO  SPA-K97-HKNCOMBI
+           END-IF
+           IF     (FLG-FUKU            =   1 )  AND
+                  (FLG-END             =   ZERO)
+               PERFORM 410112-KOUI-SPACHK-SEC
            END-IF
            IF      SPA-ERRCD           =   SPACE
                MOVE    01                  TO  SPA-GMN-CUR
@@ -3210,6 +3216,7 @@
                    UNTIL   (IDX        >   200 )  OR
                           ((SPA-GMN-INPUTCD(IDX)   =   SPACE ) AND
                            (SPA-COM-INPUTCD(IDX)   =   SPACE ))
+      *
                IF      SPA-COM-CUR (IDX)   =   SPACE
                    MOVE    SPA-GMN-INPUTCD(IDX)
                                            TO  SPA-MAE-INPUTCD(IDX)
@@ -3493,6 +3500,7 @@
                END-IF
       *        訂正の展開時はすべて自動発生済みとする
                IF      FLG-TEISEI          =   1
+                   MOVE    IDX-1           TO  IDX
                    MOVE    "1"             TO  SPA-COM-AUTOFLG (IDX)
       *            寝たきり老人在宅総合診療科判定
                    IF     (SPA-COM-INPUTCD(IDX)    =   "114701210" OR
@@ -3531,10 +3539,9 @@
                    PERFORM 3101110-SRYKA-MEI-SEC
                END-IF
       *
-               IF      SPA-COM-ZAIEND (IDX)    =   "1"
+               IF      SPA-COM-ZAIEND (IDX-1)  =   "1"
                    MOVE    ZERO                TO  IDX-TEI
                END-IF
-      *
            END-PERFORM
       *
            MOVE    ZERO              TO  FLG-FIRUMU
@@ -5732,8 +5739,12 @@
                PERFORM 410119-SAIINPUT-SEC
            ELSE
       *        入力コード・名称チェック処理
+               MOVE    ZERO                TO  FLG-FUKU
                PERFORM 410112-KOUI-SPACHK-SEC
-      *
+               IF     (FLG-FUKU            =   1 )  AND
+                      (FLG-END             =   ZERO)
+                   PERFORM 410112-KOUI-SPACHK-SEC
+               END-IF
            END-IF
       *
            .
@@ -6169,7 +6180,6 @@
                GO      TO                 41011-KOUI-HEN2-EXT
            END-IF
       *!
-      *
       *    診療種別入力
            IF      (SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:1)  =   ".") AND
                    (SPA-GMN-INPUTCD(SPA-GMN-IDX)(2:3)  NUMERIC)
@@ -6362,17 +6372,19 @@
                    IF      SPA-GMN-IDX     <   200
                        ADD     1               TO  SPA-GMN-IDX
                        PERFORM 41014-GYOINSN-SEC
-                   IF      SPA-ERRCD       =   SPACE
-                       MOVE    "099999902"     TO  SPA-GMN-INPUTCD
+                       IF      SPA-ERRCD       =   SPACE
+                           MOVE    "099999902"     TO  SPA-GMN-INPUTCD
                                                        (SPA-GMN-IDX)
-                       MOVE    "1"             TO  SPA-COM-IN
+                           MOVE    "099999902"     TO  SPA-COM-INPUTCD
                                                        (SPA-GMN-IDX)
-                       MOVE    "1"             TO  SPA-COM-IN2
+                           MOVE    "1"             TO  SPA-COM-IN
                                                        (SPA-GMN-IDX)
-                       MOVE    1               TO  WRK-STR
-      *                入力コード・名称チェック処理
-                       PERFORM 410112-KOUI-SPACHK-SEC
-                   END-IF
+                           MOVE    "1"             TO  SPA-COM-IN2
+                                                       (SPA-GMN-IDX)
+                           MOVE    1               TO  WRK-STR
+      *                    入力コード・名称チェック処理
+                           MOVE    1               TO  FLG-FUKU
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -6485,7 +6497,6 @@
       *
            MOVE    1                   TO  FLG-END
       *
-           
            .
        4101131-K97-SYORI-EXT.
            EXIT.
@@ -6693,7 +6704,7 @@
                                                        (SPA-GMN-IDX)
                    MOVE    "1"             TO  SPA-COM-IN2
                                                        (SPA-GMN-IDX)
-                   MOVE    1               TO  WRK-STR
+                   MOVE    1               TO  FLG-FUKU
                END-IF
       *
                IF      FLG-SRYKBN          =   1
@@ -6706,11 +6717,17 @@
                    ADD     1               TO  SPA-GMN-IDX
                    PERFORM 41014-GYOINSN-SEC
                    IF      SPA-ERRCD       =   SPACE
+                       INITIALIZE                  SPA-GMN-TBLREC
+                                                        (SPA-GMN-IDX)
+                       INITIALIZE                  SPA-COM-TBLREC
+                                                        (SPA-GMN-IDX)
                        MOVE    WRK-SRYCD       TO  SPA-GMN-INPUTCD
                                                        (SPA-GMN-IDX)
                        MOVE    SPA-SRYKA       TO  SPA-GMN-INPUTCD
                                                        (SPA-GMN-IDX)
                                                        (11:2)
+                       MOVE    WRK-SRYCD       TO  SPA-COM-INPUTCD
+                                                       (SPA-GMN-IDX)
                        MOVE    SPA-SRYKA       TO  SPA-COM-ATAI1
                                                        (SPA-GMN-IDX)
                        MOVE    "1"             TO  SPA-COM-IN
@@ -6719,7 +6736,7 @@
                                                        (SPA-GMN-IDX)
                        MOVE    1               TO  WRK-STR
       *                入力コード・名称チェック処理
-                       PERFORM 410112-KOUI-SPACHK-SEC
+                       MOVE    1               TO  FLG-FUKU
                    END-IF
                END-IF
            END-IF
@@ -9026,6 +9043,8 @@
                                                          "0084")
                IF     (LNK-SC97-NYURYOKU   =   ZERO )  AND
                       (FLG-IN-ATAI         =   ZERO )  AND
+                      (SPA-COM-ATAI1 (SPA-GMN-IDX)
+                                           =   SPACE)  AND
                      ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
                                            =   "83"   )  OR
                       (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
