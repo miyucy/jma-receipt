@@ -613,8 +613,10 @@
       *********                (FLG-SYSKANRI   =   1    )
            PERFORM    UNTIL   FLG-SYSKANRI    =   1
                MOVE    MCPDATA-REC   TO  SYS-2003-REC
-               IF    ( SYS-2003-TEISYUTUSAKI   =   "1" OR  "2" ) 
-               AND   ( SYS-2003-NYUGAIKBN      =   "2"         )
+               IF    ( SYS-2003-TEISYUTUSAKI   =   "1" OR  "2"    ) 
+      *********AND   ( SYS-2003-NYUGAIKBN      =   "2"            )
+               AND   ( SYS-2003-NYUGAIKBN      =
+                                         SPA-R01-RECE07-NYUGAIKBN )
                    EVALUATE    SYS-2003-TEISYUTUSAKI
                        WHEN    "1"
                            MOVE    1               TO  IDY
@@ -1679,7 +1681,9 @@
                                        TO  WRK-RECE09-RECESYUBETU
            MOVE    WRK-TEISYUTUSAKI    TO  WRK-RECE09-TEISYUTUSAKI
            MOVE    WRK-PREFKBN         TO  WRK-RECE09-PREFKBN
-           MOVE    "2"                 TO  WRK-RECE09-NYUGAIKBN
+      *****MOVE    "2"                 TO  WRK-RECE09-NYUGAIKBN
+           MOVE    SPA-R01-RECE07-NYUGAIKBN
+                                       TO  WRK-RECE09-NYUGAIKBN
            MOVE    SPA-GMN-PRTJYUN     TO  WRK-RECE09-PRTJYUN
            MOVE    SPA-GMN-TSTDATA (IDW IDX)
                                        TO  WRK-RECE09-STDATA
