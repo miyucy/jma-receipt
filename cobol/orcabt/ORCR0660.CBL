@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-ÌçÏÆ    03.03.31  ÌôºÞ´ÉÍý»ØÆ³ÎÁ¤Î¼Â»ÜÆüÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -168,6 +169,7 @@
            03  FLG-RECE62          PIC 9(01).
            03  FLG-RECE64          PIC 9(01).
            03  FLG-RECE65          PIC 9(01).
+           03  FLG-YAKUKAN-COMMENT PIC 9(01).
            03  FLG-SHUJUTU-COMMENT PIC 9(01).
            03  FLG-CTMRI-COMMENT   PIC 9(01).
            03  FLG-KAKURI-COMMENT  PIC 9(01).
@@ -366,6 +368,8 @@
       *
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
+      *    ÌôºÞ´ÉÍý»ØÆ³ÎÁ
+           03  CONS-YAKUKAN-COMMENT PIC X(09) VALUE "120001610".
       *    ¼ê½ÑÆü¥³¥á¥ó¥È
            03  CONS-SHUJUTU-COMMENT PIC X(09) VALUE "840000042".
       *    ½é¿ÇÎÁ»»Äê²Ê¡§
@@ -776,6 +780,9 @@
                OR     ( RECE62-TEKSTYMD  NOT =   RECE64-TEKSTYMD     )
       *
                EVALUATE      RECE64-SRYKBN
+                   WHEN      "13"
+      *            ¡ÊÌôºÞ´ÉÍý»ØÆ³ÎÁ¼Â»ÜÆü¤Î¥»¥Ã¥È¡Ë
+                      PERFORM    2001-YAKUKANSIDO-HANTEI-SEC
                    WHEN      "50"
       *            ¡Ê¼ê½ÑÆü¤Î¥»¥Ã¥È¡Ë
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
@@ -1328,6 +1335,69 @@
       *
            .
        2001-RIHA-COUNT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÌôºÞ´ÉÍý»ØÆ³ÎÁ¤Î¥³¥á¥ó¥È¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-YAKUKANSIDO-HANTEI-SEC          SECTION.
+      *
+           MOVE      ZERO              TO      FLG-YAKUKAN-COMMENT
+      *
+           INITIALIZE                        SRYACT-REC
+           MOVE    RECE64-HOSPID     TO      SRY-HOSPID
+           MOVE    RECE64-NYUGAIKBN  TO      SRY-NYUGAIKBN
+           MOVE    RECE64-PTID       TO      SRY-PTID
+           MOVE    RECE64-SRYYM      TO      SRY-SRYYM
+           MOVE    RECE64-ZAINUM     TO      SRY-ZAINUM
+           MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (1)
+           MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (2)
+           MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (3)
+           MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (4)
+           MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (5)
+      *
+           MOVE    SRYACT-REC        TO      MCPDATA-REC
+           MOVE    "DBSELECT"        TO      MCP-FUNC
+           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"       USING
+                                     MCPAREA
+                                     ORCMCPAREA
+                                     MCPDATA-REC
+      *
+           IF  MCP-RC                NOT  =  ZERO
+               CONTINUE
+           ELSE
+               MOVE    "DBFETCH"     TO      MCP-FUNC
+               MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+               IF      MCP-RC        =       ZERO
+                   MOVE    1         TO      FLG-YAKUKAN-COMMENT
+               END-IF
+           END-IF
+      *
+           INITIALIZE                        MCPAREA
+           MOVE    "DBCLOSE"         TO      MCP-FUNC
+           MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"       USING
+                                     MCPAREA
+                                     ORCMCPAREA
+                                     MCPDATA-REC
+      *
+           IF      FLG-YAKUKAN-COMMENT   =      1
+                MOVE       2       TO     FLG-COMMENT
+                PERFORM    2001-SHUJUTSU-ETC-COMMENT-SEC
+           ELSE
+                MOVE       RECE64-REC    TO   RECE641-REC
+                WRITE      RECE641-REC
+                ADD     1          TO      CNT-RECE64
+                PERFORM    2002-RECE65-TENSOU-SEC
+           END-IF
+      *
+           .
+       2001-YAKUKANSIDO-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
