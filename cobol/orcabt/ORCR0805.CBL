@@ -861,7 +861,7 @@
            MOVE    WRK-PARA-SYSYMD TO  LNK-S02-SYSYMD
            MOVE    "2"             TO  LNK-S02-SYORI-KBN
       *
-           CALL    "ORCSTEIKI"     USING
+           CALL    "ORCSNYUFTN"    USING
                                    SPA-AREA
                                    LNK-ORCS02-REC
                                    LNK-SYUNOU-REC-T
