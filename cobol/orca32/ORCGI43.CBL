@@ -593,7 +593,6 @@
                            UNTIL       IDX1    >   31
                        MOVE    ZERO                TO  WRK-HKNCOMBI
                        MOVE    NACCT-DAY (IDX1)    TO  WRK-HKNCOMBI
-      *
                        PERFORM VARYING     IDX     FROM    1   BY  1
                                UNTIL       IDX     >   WRK-I43-HKNMAX
                            IF      WRK-I43-THKNCOMBINUM(IDX)
@@ -605,7 +604,7 @@
       *                当月の入院保険保存
                        PERFORM VARYING     IDX     FROM    1   BY  1
                                UNTIL       IDX     >   30
-                           IF      SPA-I43-HKNCOMBI-NYU(IDX)   =   SPACE
+                           IF      SPA-I43-HKNCOMBI-NYU(IDX)   =   ZERO
                                MOVE    WRK-HKNCOMBI    TO
                                                SPA-I43-HKNCOMBI-NYU(IDX)
                            END-IF
