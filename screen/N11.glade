@@ -29,11 +29,6 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 22 Dec 2000 05:08:28 GMT</last_modification_time>
   </signal>
-  <signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
   <title>(N11)人名辞書マスタ設定</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
@@ -465,12 +460,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	  <child_name>CList:title</child_name>
 	  <name>label443</name>
 	  <label>No</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -483,12 +473,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	  <child_name>CList:title</child_name>
 	  <name>label444</name>
 	  <label>選択候補</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>

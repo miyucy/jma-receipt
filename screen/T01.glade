@@ -29,11 +29,6 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 05 Jan 2001 11:20:35 GMT</last_modification_time>
   </signal>
-  <signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
   <title>(T01)総括表・公費請求書作成</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
@@ -348,6 +343,31 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label506</name>
+      <x>365</x>
+      <y>265</y>
+      <width>70</width>
+      <height>18</height>
+      <label>対象データ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator6</name>
+      <x>442</x>
+      <y>264</y>
+      <width>215</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
       <class>GtkRadioButton</class>
       <name>DATAKBN1</name>
       <x>370</x>
@@ -470,6 +490,24 @@
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>DATAKBN</group>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator5</name>
+      <x>330</x>
+      <y>496</y>
+      <width>330</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator2</name>
+      <x>650</x>
+      <y>273</y>
+      <width>16</width>
+      <height>230</height>
     </widget>
 
     <widget>
@@ -638,174 +676,6 @@
       </signal>
       <label>処理結果</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label506</name>
-      <x>365</x>
-      <y>265</y>
-      <width>70</width>
-      <height>18</height>
-      <label>対象データ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator2</name>
-      <x>568</x>
-      <y>272</y>
-      <width>16</width>
-      <height>230</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator5</name>
-      <x>330</x>
-      <y>496</y>
-      <width>246</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator3</name>
-      <x>776</x>
-      <y>272</y>
-      <width>16</width>
-      <height>128</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator4</name>
-      <x>592</x>
-      <y>272</y>
-      <width>16</width>
-      <height>128</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator6</name>
-      <x>442</x>
-      <y>264</y>
-      <width>134</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator11</name>
-      <x>600</x>
-      <y>392</y>
-      <width>184</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator10</name>
-      <x>760</x>
-      <y>264</y>
-      <width>24</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator12</name>
-      <x>600</x>
-      <y>264</y>
-      <width>24</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label601</name>
-      <x>624</x>
-      <y>264</y>
-      <width>130</width>
-      <height>18</height>
-      <label>標準総括表印刷指示</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label603</name>
-      <x>608</x>
-      <y>312</y>
-      <width>72</width>
-      <height>16</height>
-      <label>社保</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label602</name>
-      <x>608</x>
-      <y>352</y>
-      <width>72</width>
-      <height>16</height>
-      <label>国保</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>PRTKBN2</name>
-      <x>672</x>
-      <y>352</y>
-      <width>72</width>
-      <height>16</height>
-      <label>無</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>PRTKBN1</name>
-      <x>672</x>
-      <y>312</y>
-      <width>72</width>
-      <height>16</height>
-      <label>有</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

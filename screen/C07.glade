@@ -28,11 +28,6 @@
     <handler>set_focus</handler>
     <last_modification_time>Thu, 21 Dec 2000 08:12:31 GMT</last_modification_time>
   </signal>
-  <signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
   <title>(C07)患者病名−コメント入力</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
@@ -142,9 +137,9 @@
     <widget>
       <class>GtkButton</class>
       <name>B08</name>
-      <x>467</x>
+      <x>472</x>
       <y>620</y>
-      <width>100</width>
+      <width>88</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -252,9 +247,9 @@
     <widget>
       <class>GtkButton</class>
       <name>B07</name>
-      <x>370</x>
+      <x>384</x>
       <y>620</y>
-      <width>98</width>
+      <width>88</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -518,12 +513,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	  <child_name>CList:title</child_name>
 	  <name>label5</name>
 	  <label>番号</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -536,12 +526,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	  <child_name>CList:title</child_name>
 	  <name>label6</name>
 	  <label>診療年月</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -554,12 +539,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	  <child_name>CList:title</child_name>
 	  <name>label7</name>
 	  <label>診療科</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -572,12 +552,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	  <child_name>CList:title</child_name>
 	  <name>label8</name>
 	  <label>保険組合せ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -590,12 +565,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	  <child_name>CList:title</child_name>
 	  <name>label9</name>
 	  <label>診療日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -608,12 +578,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	  <child_name>CList:title</child_name>
 	  <name>label13</name>
 	  <label>コメント</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -625,7 +590,6 @@
 	</widget>
       </widget>
     </widget>
-
     <widget>
       <class>GtkHSeparator</class>
       <name>hseparator1</name>
@@ -638,9 +602,9 @@
     <widget>
       <class>GtkButton</class>
       <name>B07S</name>
-      <x>370</x>
+      <x>384</x>
       <y>598</y>
-      <width>98</width>
+      <width>88</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -654,16 +618,16 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 08:23:49 GMT</last_modification_time>
       </signal>
-      <label>Shift+F7 前月</label>
+      <label>F7+S 前　月</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>B08S</name>
-      <x>467</x>
+      <x>472</x>
       <y>598</y>
-      <width>100</width>
+      <width>88</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -677,7 +641,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 08:23:49 GMT</last_modification_time>
       </signal>
-      <label>Shift+F8 次月</label>
+      <label>F8+S 次　月</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -723,12 +687,7 @@
 
       <widget>
 	<class>GtkLabel</class>
-	<child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	<child_name>CList:title</child_name>
 	<name>label11</name>
 	<label>番号</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
@@ -741,12 +700,7 @@
 
       <widget>
 	<class>GtkLabel</class>
-	<child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	<child_name>CList:title</child_name>
 	<name>label12</name>
 	<label>診療日</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>

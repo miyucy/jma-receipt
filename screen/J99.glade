@@ -28,11 +28,6 @@
     <handler>set_focus</handler>
     <last_modification_time>Mon, 25 Dec 2000 10:33:33 GMT</last_modification_time>
   </signal>
-  <signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
   <title>(J99)£ð¥«ÆþÎÏ</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>

@@ -29,11 +29,6 @@
     <handler>set_focus</handler>
     <last_modification_time>Wed, 20 Dec 2000 10:16:14 GMT</last_modification_time>
   </signal>
-  <signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
   <title>(Q01)患者照会  -  検索条件入力</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
@@ -4126,12 +4121,7 @@
 
 	    <widget>
 	      <class>GtkLabel</class>
-	      <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	      <child_name>CList:title</child_name>
 	      <name>label459</name>
 	      <label>病名コード</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
@@ -4144,12 +4134,7 @@
 
 	    <widget>
 	      <class>GtkLabel</class>
-	      <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	      <child_name>CList:title</child_name>
 	      <name>label460</name>
 	      <label>病名</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
@@ -4660,12 +4645,7 @@
 
 	    <widget>
 	      <class>GtkLabel</class>
-	      <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	      <child_name>CList:title</child_name>
 	      <name>label457</name>
 	      <label>行為コード</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
@@ -4678,12 +4658,7 @@
 
 	    <widget>
 	      <class>GtkLabel</class>
-	      <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	      <child_name>CList:title</child_name>
 	      <name>label458</name>
 	      <label>行為名</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>

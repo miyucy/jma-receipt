@@ -28,11 +28,6 @@
     <handler>set_focus</handler>
     <last_modification_time>Tue, 26 Dec 2000 00:33:39 GMT</last_modification_time>
   </signal>
-  <signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
   <title>(S03)¼ýÇ¼ÅÐÏ¿¡ÝÀÁµá³ÎÇ§</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
@@ -1318,12 +1313,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	  <child_name>CList:title</child_name>
 	  <name>label579</name>
 	  <label>»ÞÈÖ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -1336,12 +1326,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	  <child_name>CList:title</child_name>
 	  <name>label580</name>
 	  <label>ÀÁµá¶â³Û</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -1354,12 +1339,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	  <child_name>CList:title</child_name>
 	  <name>label581</name>
 	  <label>Æþ¶â³Û</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -1372,12 +1352,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	  <child_name>CList:title</child_name>
 	  <name>label582</name>
 	  <label>½èÍýÆü</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
@@ -1390,12 +1365,7 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <child_name>CList:signal>    
-    <name>delete_event</name>
-    <handler>gtk_true</handler>
-    <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
-  </signal>
-  <title></child_name>
+	  <child_name>CList:title</child_name>
 	  <name>label583</name>
 	  <label>¾õÂÖ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
