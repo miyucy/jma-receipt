@@ -8253,7 +8253,7 @@
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     WRK-TSUSAN      <=  14
+                 IF     WRK-TSUSAN      <  14
                      ADD    1           TO  TN-IDX
                      MOVE   "190774110" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
@@ -8557,7 +8557,7 @@
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     WRK-TSUSAN      <=  14
+                 IF     WRK-TSUSAN      <  14
                      ADD    1           TO  TN-IDX
                      MOVE   "190774110" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
