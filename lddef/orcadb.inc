@@ -78,6 +78,7 @@ db	{
 	view_bd003;
         tbl_syuday;
         tbl_pgkanri;
+        tbl_opecom;
 };
 db	"shell"	{
 	shell;
