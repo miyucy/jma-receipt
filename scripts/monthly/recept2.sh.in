@@ -26,6 +26,8 @@ fi
 #        $8 端末ＩＤX(32)  （ＯＲＣＲ０１０２のとき）
 #        $9 印刷終了
 #        $10 帳票識別番号
+#        $11 社保プリンタ名
+#        $12 国保プリンタ名
 #-------------------------------------------#
 ##      エラーファイル削除
 	echo $#
@@ -37,7 +39,7 @@ fi
         if [ $4 =  0 ]; then
 	   $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0101 -parameter $1,$2,$3,$7,$8,$9,${10},
         else 
-	   $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0102 -parameter $1,$2,$3,$7,$8,$5
+	   $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0102 -parameter $1,$2,$3,$7,$8,$5,${11},${12}
            if  [ -e $6 ]; then
                exit 
            else
