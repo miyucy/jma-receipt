@@ -314,6 +314,7 @@
       *  01.01.132   NACL-太田    04/03/05  NYUINACCT-KEY21追加
       *  01.01.133   NACL-藤原    04/03/11  SRYACCT-KEY34,KEY35追加
       *                                     tbl_opecom.db 追加
+      *  01.01.134   NACL-藤原    04/03/26  OPECOM-KEY4,KEY5追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -3153,6 +3154,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "OPECOM-KEY3"
                    MOVE    PATH-TBL-OPECOM-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "OPECOM-KEY4"
+                   MOVE    PATH-TBL-OPECOM-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "OPECOM-KEY5"
+                   MOVE    PATH-TBL-OPECOM-KEY5
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "OPECOM-ALL"
                    MOVE    PATH-TBL-OPECOM-ALL
