@@ -4234,8 +4234,6 @@
                   (COMB-KOHHKNNUM(KOH-IDX)(1:1)  >= "1")    AND
                   (COMB-KOHHKNNUM(KOH-IDX)(1:1)  <= "8")
                PERFORM     2302-KOHPLUS-FUKUOKA-SEC
-      *
-               MOVE   WK-KOH-FTNRATE  TO  WK-GAIKFTNRATE
            END-IF.
       *
            IF   FLG-CHIHOU(KOH-IDX)  =  "1"
@@ -4263,8 +4261,7 @@
                                        ORCSKOHPLUS-AREA
            IF      LNK-SKOHPLUS-RC =   ZERO
                MOVE   LNK-SKOHPLUS-FTNKBN    TO   WK-KOH-FTNKBN
-           ELSE
-               MOVE   "2"                    TO   WK-KOH-FTNKBN
+               MOVE   WK-KOH-FTNRATE         TO   WK-GAIKFTNRATE
            END-IF
       *
            .
