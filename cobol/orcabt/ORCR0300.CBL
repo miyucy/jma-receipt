@@ -72,6 +72,7 @@
       *  01.00.26    NACL-藤原    04/02/01  病名コード２１に変更
       *  01.00.27    NACL-藤原    04/02/05  特記事項のカスタマイズ項目
       *                                     の編集
+      *  01.00.28    NACL-藤原    04/03/02  出力対象のコメントを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -600,6 +601,17 @@
       *    間接撮影の５０％逓減
            03  WRK-CONS-SRYKBN70-TEIGEN
                                       PIC X(09)   VALUE   "170020570".
+      *
+      *    出力対象のコメント
+           03  WRK-CONS-COMMENT-G.
+      *        複数診療科受診
+               05  WRK-CONS-COMMENT1  PIC X(09)   VALUE   "099999901".
+      *        他保険にて診察料算定済
+               05  WRK-CONS-COMMENT2  PIC X(09)   VALUE   "099999902".
+      *********（粉砕）
+      *********05  WRK-CONS-COMMENT3  PIC X(09)   VALUE   "099209901".
+      *********（残量廃棄）
+      *********05  WRK-CONS-COMMENT4  PIC X(09)   VALUE   "099309901".
       *
       *    改行コード
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
@@ -1966,7 +1978,11 @@
       *
       *    診療行為コード＝'０'のとき対象外出力しない
            IF      RECE05-SRYCD (IDX) (1:1) =   "0"
-               IF      RECE05-SRYCD (IDX)(1:3)  =   "002"
+               IF    ( RECE05-SRYCD (IDX)(1:3)  =   "002"             )
+               OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT1 ) 
+               OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT2 ) 
+      *********OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT3 ) 
+      *********OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT4 ) 
                    CONTINUE
                ELSE
                    GO  TO  200711-COMMENT-TAIHI-EXT
@@ -2057,7 +2073,11 @@
       *
       *    診療行為コード＝'０'のとき対象外出力しない
            IF      RECE05-SRYCD (IDX) (1:1) =   "0"
-               IF      RECE05-SRYCD (IDX)(1:3)  =   "002"
+               IF    ( RECE05-SRYCD (IDX)(1:3)  =   "002"             )
+               OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT1 ) 
+               OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT2 ) 
+      *********OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT3 ) 
+      *********OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT4 ) 
                    CONTINUE
                ELSE
                    GO  TO  200711-SRYKBN13-COMMENT-TAIHI-EXT
