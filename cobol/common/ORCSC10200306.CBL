@@ -51,6 +51,8 @@
       * 02.00.14     NACL-Â¿¡¹Ç¼  03/05/06  £±·î¸å¤ÎÈ½Äê½¤Àµ
       * 02.00.16     NACL-Â¿¡¹Ç¼  03/06/17  ¿ÇÎÅ¾ðÊóÄó¶¡ÎÁ½ÅÊ££Ï£Ë
       * 02.00.17     NACL-Â¿¡¹Ç¼  03/07/17  »»ÄêÍúÎò¸¡º÷½¤ÀµÂ¾
+      * 02.00.18     NACL-Â¿¡¹Ç¼  03/08/26  £È£±£µ¡¥£¹¤«¤é
+      *                                     Ï«ºÒ¡¦¼«ÇåÀÕÄþ¸ºÀ©¤ÎÇÑ»ß
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3021,6 +3023,11 @@
                MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
                MOVE    IDX-Z           TO  IDX-SINSATU
       *
+      *        Ê¿À®£±£µÇ¯£¹·î£±Æü¤«¤éÄþ¸ºÇÑ»ß¤È¤¹¤ë
+               IF      SPA-SRYYMD          >=  "20030901"
+                   CONTINUE
+               ELSE
+      *
       *        È¯À¸Æü£³·î°Ê¹ß¤Î²ó¿ô¥Á¥§¥Ã¥¯
                IF      SPA-SRYYMD      >=  SPA-RSI-HASSYOYMD3
                    IF      LNK-ORCSC-SINSATU-CNT   >=  5
@@ -3034,6 +3041,8 @@
                            MOVE    IDX-Z           TO  WRK-KEICD-IDX
                        END-IF
                    END-IF
+               END-IF
+      *
                END-IF
       *
            END-IF
@@ -3122,6 +3131,13 @@
                    MOVE    "G"                 TO  WRK-KBN
                END-IF
            END-IF
+      *
+      *    Ê¿À®£±£µÇ¯£¹·î£±Æü¤«¤éÄþ¸ºÇÑ»ß¤È¤¹¤ë
+           IF      SPA-SRYYMD          >=  "20030901"
+               MOVE    ZERO                TO  WRK-KAISU
+               MOVE    "G"                 TO  WRK-KBN
+           END-IF
+      *
       *
       *    ¿Ç»¡ÎÁ¸¡º÷
            SET     TBL-RSI              TO  1

@@ -41,6 +41,8 @@
       * 01.00.10     NACL-Â¿¡¹Ç¼  03/03/28  ¼«ÇåÀÕ¤ÎÄþ¸º¤ò£¶¥ö·î°Ê¹ß¤È¤¹¤ë
       * 01.00.11     NACL-Â¿¡¹Ç¼  03/04/07  Æþ±¡Æü¤Î¥Á¥§¥Ã¥¯ÄÉ²Ã
       * 02.00.00     NACL-Â¿¡¹Ç¼  03/07/01  Ï«ºÒ¡¦¼«ÇåÀÕ°Ê³°¿Ç»¡²ó¿ô¤ò¤ä¤á¤ë
+      * 02.00.01     NACL-Â¿¡¹Ç¼  03/08/26  £È£±£µ¡¥£¹¤«¤é
+      *                                     Ï«ºÒ¡¦¼«ÇåÀÕÄþ¸ºÀ©¤ÎÇÑ»ß
       *****************************************************************
       *
       *
@@ -675,6 +677,11 @@
       *        Ï«ºÒ¡¦¼«ÇåÀÕ¤Î»þ¡¢¿ÇÎÅ·î£±Æü¤«¤é¿ÇÎÅÆü¤Þ¤Ç¤ÎÈÏ°Ï
                MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
                MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
+      *!
+      *        Ê¿À®£±£µÇ¯£¹·î£±Æü¤«¤éÄþ¸ºÇÑ»ß¤È¤¹¤ë
+               IF      SPA-SRYYMD          >=  "20030901"
+                   MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
+               END-IF
            ELSE
       *        °Ê³°¤Î»þ¡¢¿ÇÎÅÆü¤Î¤ß
                MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
@@ -1810,10 +1817,6 @@
                    PERFORM 2001-SRYCD-TBL-SEC
                END-IF
            END-IF
-      *TEST
-           DISPLAY "WRK-SRYKBN:"  WRK-SRYKBN
-                  ",WRK-SRYCD:" WRK-SRYCD
-      *TEST
       *
       *    ½é¿ÇÎÁ¼«Æ°ÄÉ²Ã½èÍý
            PERFORM 3301-SYOSIN-SYORI-SEC
@@ -2957,6 +2960,13 @@
                            MOVE    "S"                 TO  WRK-KBN
                        END-IF
                    END-IF
+      *
+      *            Ê¿À®£±£µÇ¯£¹·î£±Æü¤«¤éÄþ¸ºÇÑ»ß¤È¤¹¤ë
+                   IF      SPA-SRYYMD          >=  "20030901"
+                       MOVE    ZERO                TO  WRK-KAISU
+                       MOVE    "S"                 TO  WRK-KBN
+                   END-IF
+      *
                    PERFORM 20091-RSI-SINSATU-SEC
                END-IF
            END-IF
@@ -3051,6 +3061,13 @@
                    MOVE    "G"                 TO  WRK-KBN
                END-IF
            END-IF
+      *
+      *    Ê¿À®£±£µÇ¯£¹·î£±Æü¤«¤éÄþ¸ºÇÑ»ß¤È¤¹¤ë
+           IF      SPA-SRYYMD          >=  "20030901"
+               MOVE    ZERO                TO  WRK-KAISU
+               MOVE    "G"                 TO  WRK-KBN
+           END-IF
+      *
       *    ¥Æ¡¼¥Ö¥ë¸¡º÷
            PERFORM 20091-RSI-SINSATU-SEC
            PERFORM 3301-SYOSIN-HEN-SEC
