@@ -85,7 +85,7 @@
               03  U02-SCROLLEDWINDOW4.
                 04  U02-UKETUKE-LIST.
                   05  U02-UKETUKE-COUNT   PIC S9(9)   BINARY.
-                  05  U02-ITEM        OCCURS  100 TIMES.
+                  05  U02-ITEM        OCCURS  200 TIMES.
                     07  U02-ULNUM         PIC X(4).
                     07  U02-ULYYKTIME     PIC X(6).
                     07  U02-ULUKETUKETIME PIC X(6).
@@ -95,7 +95,7 @@
                     07  U02-ULDRNAME      PIC X(29).
                     07  U02-ULSRYNAIYO    PIC X(20).
                     07  U02-ULRRKYMD      PIC X(10).
-                  05  U02-UKETUKE-SELECT  PIC X       OCCURS  100 TIMES.
+                  05  U02-UKETUKE-SELECT  PIC X       OCCURS  200 TIMES.
               03  U02-MIKAKUNINN-LIST.
                 04  U02-MIKAKUNINN-COUNT   PIC S9(9)   BINARY.
                 04  U02-ITEM        OCCURS  5 TIMES.

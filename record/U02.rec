@@ -102,8 +102,8 @@ U02	{
 					value6	varchar(29);
 					value7	varchar(20);
 					value8	varchar(10);
-				}	[100];
-				select	bool[100];
+				}	[200];
+				select	bool[200];
 			};
 		};
 		MIKAKUNINN_LIST	{

@@ -23,8 +23,8 @@ U01	{
 					value8	varchar(24);
 					value9	varchar(8);
 					value10	varchar(8);
-				}	[100];
-				select	bool[100];
+				}	[200];
+				select	bool[200];
 			};
 		};
 		scrolledwindow2	{
@@ -41,8 +41,8 @@ U01	{
 					value8	varchar(24);
 					value9	varchar(8);
 					value10	varchar(8);
-				}	[100];
-				select	bool[100];
+				}	[200];
+				select	bool[200];
 			};
 		};
 	};
