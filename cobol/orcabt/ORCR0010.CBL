@@ -993,6 +993,15 @@
       *****MOVE    PTHKN-TEKSTYMD      TO  WRK-RECE01-TEKSTYMD
            MOVE    ZERO                TO  WRK-RECE01-TEKSTYMD 
            MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE01-HONKZKKBN 
+           EVALUATE    PTHKN-HKNNUM
+               WHEN    "002"
+               WHEN    "031"   THRU    "034"
+                   IF      PTHKN-HOJOKBN   =   SPACE
+                       CONTINUE
+                   ELSE    
+                       MOVE    PTHKN-HOJOKBN   TO  WRK-RECE01-HOJOKBN
+                   END-IF
+           END-EVALUATE             
       *   
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
