@@ -12,6 +12,7 @@ SRCS = ORCGJ02.CBL \
        ORCGJ023.CBL \
        ORCGJ024.CBL \
        ORCGJ025.CBL \
+       ORCGJ026.CBL \
        ORCGJID2.CBL \
 
 top_builddir = ../..

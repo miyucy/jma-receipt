@@ -689,6 +689,7 @@
            COPY    "J023.INC".
            COPY    "J024.INC".
            COPY    "J025.INC".
+           COPY    "J026.INC".
            COPY    "J03.INC".
            COPY    "J04.INC".
            COPY    "J041.INC".
@@ -9083,6 +9084,9 @@
                WHEN    12
       *            診療日追加後
                    PERFORM 41016219-INSSYORI-END-SEC
+               WHEN    13
+      *            カルテ３号紙印刷開始へ
+                   PERFORM 41201-PRINT-SYORI-SEC
                WHEN    OTHER
       *            登録
       *            患者が選択されてきた時は、元の画面へ
@@ -9803,16 +9807,21 @@
       *****************************************************************
        4120-PRINT-SEC            SECTION.
       *
+           IF     SPA-GMN-PTID        =   ZERO
+               MOVE    "0019"             TO  SPA-ERRCD
+           END-IF
       *    番号選択中でないこと
            IF      SPA-GMN-BANGO   NOT =   ZERO
                MOVE    "0009"          TO  SPA-ERRCD
-               GO      TO      4120-PRINT-EXT
            END-IF
       *
-           IF      SPA-UPDFLG          =   "1"
-               MOVE    "0116"              TO  SPA-JIDCD
-           ELSE
-               MOVE    "0117"              TO  SPA-JIDCD
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-UPDFLG          =   "1"
+                   MOVE    "0116"              TO  SPA-JIDCD
+               ELSE
+      ******** MOVE    "0117"              TO  SPA-JIDCD
+                   PERFORM 41201-PRINT-SYORI-SEC
+               END-IF
            END-IF
       *
            .
@@ -9823,45 +9832,82 @@
       *****************************************************************
        41201-PRINT-SYORI-SEC            SECTION.
       *
+           MOVE    ZERO                TO  SPA-J025-SYORI
            IF      SPA-UPDFLG          =   "1"
       *        診療会計マスター更新
                PERFORM 4901-SRYACCT-UPD-SEC
                IF     (SPA-ERRCD       NOT =   SPACE ) OR
                       (FLG-END             =   1     )
+                   MOVE    13              TO  SPA-J025-SYORI
                    GO      TO       41201-PRINT-SYORI-EXT
                END-IF
            END-IF
       *
-      *    カルテ３号紙
-           INITIALIZE                      ORCSPRTNMAREA
-           MOVE    "1"                 TO  ORCSPRTNM-KBN
-           MOVE    "00000005"          TO  ORCSPRTNM-KBNCD
-           MOVE    SPA-NAI-SRYYM       TO  ORCSPRTNM-SRYYMD(1:6)
-           MOVE    "01"                TO  ORCSPRTNM-SRYYMD(7:2)
-           CALL    "ORCSPRTNM"         USING
-                                           ORCSPRTNMAREA
-                                           SPA-AREA
-                                           SYSKANRI-REC
-           IF      ORCSPRTNM-RC        =   ZERO
-               MOVE    ORCSPRTNM-PRTPG     TO  WRK-PRINT-PG
-           ELSE
-               MOVE    "ORCHC33"           TO  WRK-PRINT-PG
-           END-IF
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPA-J01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-J02             TO  SPA-FREE
       *
-           INITIALIZE                  ORCHC33AREA
-           MOVE    "1"                 TO  ORCHC33-KBN
-           MOVE    SPA-GMN-PTNUM       TO  ORCHC33-PTNUM
-           MOVE    SPA-GMN-PTID        TO  ORCHC33-PTID
-           MOVE    SPA-GMN-NAME        TO  ORCHC33-NAME
-           MOVE    SPA-GMN-BIRTHDAY    TO  ORCHC33-BIRTHDAY
-           MOVE    SPA-GMN-SEX         TO  ORCHC33-SEX
-           MOVE    SPA-NAI-SRYYM       TO  ORCHC33-SRYYM
-           MOVE    SPACE               TO  ORCHC33-SRYYM-END
-           MOVE    SPA-GMN-NYUGAIKBN   TO  ORCHC33-NYUGAIKBN
-           MOVE    SPA-J01-SRYKA       TO  ORCHC33-SRYKA
-           CALL    WRK-PRINT-PG        USING
-                                       SPA-AREA
-                                       ORCHC33AREA
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGJ026"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-J02
+           MOVE    SPA-WORK        TO  SPA-J01KYOUTU
+      *
+      *    画面カーソルセット処理
+           MOVE    "STRDD"             TO  MCP-WIDGET
+      *
+           MOVE    SPA-J01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    "J026"              TO  SPA-SAKIPG
+           MOVE    "J02"               TO  SPA-MOTOPG
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "J026"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+      *!1
+      *    カルテ３号紙
+      *    INITIALIZE                      ORCSPRTNMAREA
+      *    MOVE    "1"                 TO  ORCSPRTNM-KBN
+      *    MOVE    "00000005"          TO  ORCSPRTNM-KBNCD
+      *    MOVE    SPA-NAI-SRYYM       TO  ORCSPRTNM-SRYYMD(1:6)
+      *    MOVE    "01"                TO  ORCSPRTNM-SRYYMD(7:2)
+      *    CALL    "ORCSPRTNM"         USING
+      *                                    ORCSPRTNMAREA
+      *                                    SPA-AREA
+      *                                    SYSKANRI-REC
+      *    IF      ORCSPRTNM-RC        =   ZERO
+      *        MOVE    ORCSPRTNM-PRTPG     TO  WRK-PRINT-PG
+      *    ELSE
+      *        MOVE    "ORCHC33"           TO  WRK-PRINT-PG
+      *    END-IF
+      *
+      *    INITIALIZE                  ORCHC33AREA
+      *    MOVE    "1"                 TO  ORCHC33-KBN
+      *    MOVE    SPA-GMN-PTNUM       TO  ORCHC33-PTNUM
+      *    MOVE    SPA-GMN-PTID        TO  ORCHC33-PTID
+      *    MOVE    SPA-GMN-NAME        TO  ORCHC33-NAME
+      *    MOVE    SPA-GMN-BIRTHDAY    TO  ORCHC33-BIRTHDAY
+      *    MOVE    SPA-GMN-SEX         TO  ORCHC33-SEX
+      *    MOVE    SPA-NAI-SRYYM       TO  ORCHC33-SRYYM
+      *    MOVE    SPACE               TO  ORCHC33-SRYYM-END
+      *    MOVE    SPA-GMN-NYUGAIKBN   TO  ORCHC33-NYUGAIKBN
+      *    MOVE    SPA-J01-SRYKA       TO  ORCHC33-SRYKA
+      *    CALL    WRK-PRINT-PG        USING
+      *                                SPA-AREA
+      *!!                              ORCHC33AREA
       *
            .
        41201-PRINT-SYORI-EXT.
