@@ -61,6 +61,8 @@
                        09  ORCSHKN-NAI-HKNID           PIC  9(10).
       *                ÊÝ¸±¼ïÊÌ
                        09  ORCSHKN-NAI-HKNNUM          PIC  X(03).
+      *                ÊÝ¸±¶èÊ¬
+                       09  ORCSHKN-NAI-HKNKBN          PIC  9(01).
       *                Ï«ºÒ¡¦»Í»è¶èÊ¬
                        09  ORCSHKN-NAI-RSI-SISIKBN     PIC  X(01).
       *                Ï«ºÒ¡¦½ýÉÂÇ¯·îÆü
