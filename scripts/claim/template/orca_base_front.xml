@@ -5135,10 +5135,6 @@ ID関連は、チェックディジットの属性は省略可能であるため、はずしています。
 							<!-- 医事請求名称 -->
 							<claim:name>%C_E4%</claim:name>
 						</claim:item>
-							<!-- 受付メモ -->
-						<claim:memo>
-							%C_F1%
-						</claim:memo>
 					</claim:bundle>
 				</claim:ClaimModule>
 			</content>

@@ -389,5 +389,3 @@
            03  LF01-ID                PIC  X(20).
       * 医事請求名称
            03  LF01-HOSPSBT           PIC  X(40).
-      * 受付メモ
-           03  LF01-UKE-MEMO          PIC  X(1000).

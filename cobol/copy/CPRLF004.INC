@@ -6,11 +6,6 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    03/09/30  診断履歴モジュールの変更
-      *  02.05.00    NACL-竹田    04/10/20  ドクターコード追加
-      *  04.07.00    NACL-多々納  11/10/XX  UID追加
-      *  04.07.00    NACL-多々納  11/11/02  同日再入院区分追加
-      *  04.07.00    NACL-多々納  13/08/XX  API病名補足コメント追加
-      *  04.08.00    NACL-多々納  17/03/XX  API内服１種類区分追加
       ************************************************************
       *01  LF04-REC.
       *
@@ -384,7 +379,7 @@
       * 使用時間帯などのメモ
                05  LF04-JGYSYAPHONE-MEMO    PIC X(100).
       * <公費負担医療情報>
-               05  LF04-KOHINF       OCCURS  6.
+               05  LF04-KOHINF       OCCURS  3.
       * 複数公費の優先順位 (mmlHi:priority)
                    07  LF04-HKNKOH-PRIORITY     PIC  X(01).
       * 公費負担名称
@@ -404,7 +399,7 @@
       *
       *
       * [診断履歴モジュール]
-           03  LF04-SNDRRKTBL           OCCURS  50.
+           03  LF04-SNDRRKTBL           OCCURS  20.
       * 文書ユニークID
                05  LF04-UID3                PIC X(36).
       * カルテ電子保存の確定日
@@ -443,8 +438,6 @@
                05  LF04-SND-SKNSHOSHINDATE  PIC X(10).
       * 疾患な関する保険の健康保険モジュールのUID (単独タグ) (mmlRd:uid)
                05  LF04-SND-SKNHLTUID       PIC X(36).
-      * 入外区分 (mmlRd:InOutPatient)
-               05  LF04-SND-NYUGAIKBN       PIC X(20).
       *
       *
       * [予約請求(Claim)モジュール]
@@ -452,8 +445,6 @@
            03  LF04-UID8                PIC X(36).
       * カルテ電子保存の確定日
            03  LF04-CONFIRMDATE8        PIC X(10).
-      * ドクターコード
-           03  LF04-DOCCD               PIC X(10).
       * 予約請求モジュールの状態 (claim:status)
            03  LF04-STATUS              PIC X(07).
       * オーダー発行日時 (claim:orderTime)
@@ -523,8 +514,7 @@
       * チェックディジット方式 (mmlCm:checkDigitSchema)
            03  LF04-SNRBT-CDSCHEMA      PIC X(03).
       * <診療括り 1>
-           03  LF04-SRYTBL-G.
-             04  LF04-SRYTBL             OCCURS  40.
+           03  LF04-SRYTBL             OCCURS  20.
       * 診療行為区分コード (claim:classCode)
                05  LF04-SRYCD          PIC  X(03).
       * 診療行為区分コードのテーブル名 (claim:classCodeId) (Claim002)
@@ -541,9 +531,9 @@
       * 用法コメント
                05  LF04-ADMMEMO        PIC  X(100).
       * 回数もしくは日数(Z編集)
-               05  LF04-KAISU          PIC  X(50).
+               05  LF04-KAISU          PIC  X(16).
       * <明細テーブル(診療項目 1)>
-               05  LF04-SRYTBL1       OCCURS  40.
+               05  LF04-SRYTBL       OCCURS  20.
       * 診療種別区分コード(0:手技、1:材料,2:薬剤) (claim:subclassCode)
                    07  LF04-SRYSYUBETSU
                                        PIC  X(01).
@@ -559,10 +549,9 @@
       * 第２医事請求コードのテーブル名 (claim:aliasTableId)
                    07  LF04-ALSTBLID   PIC  X(20).
       * 医事請求名称
-                   07  LF04-ALSNAME    PIC  X(80).
+                   07  LF04-ALSNAME    PIC  X(40).
       * 数量(Z編集)
-      *****        07  LF04-SURYO      PIC  X(12).
-                   07  LF04-SURYO      PIC  X(40).
+                   07  LF04-SURYO      PIC  X(12).
       * 数量コード (claim:numberCode)
                    07  LF04-SURYOCD    PIC  X(02).
       * 数量コードのテーブル名 (claim:numberCodeId) (Claim004)
@@ -599,26 +588,3 @@
       * <診療括り 2>
       * 診療括りメモ
                05  LF04-MEMO           PIC  X(100).
-      *AIP用
-      *UID
-           03  LF04-MEDICAL-UID       PIC X(36).
-      *同日再入院区分
-           03  LF04-DOUJITSUKBN       PIC X(01).
-      *ver.4.7
-      *病名補足コメント
-           03  LF04-BYOMEI-TBL        OCCURS   50.
-      *        補足コメントコード
-               05  LF04-HOSOKUCD-G.
-                   07  LF04-HOSOKUCD      PIC X(10)
-                                          OCCURS   3.
-      *        補足コメント
-               05  LF04-HOSOKU-COMMENT    PIC X(40).
-      *ver.4.8
-      *API 診療行為
-           03  LF04-SRYACCT-TBL1       OCCURS   40.
-               05  LF04-SRYACCT-TBL2       OCCURS   40.
-      *            継続コメント指示区分
-                   07  LF04-CONTKBN        PIC X(01).
-      *            内服１種類区分
-                   07  LF04-NAIFKBN        PIC X(01).
-      *
