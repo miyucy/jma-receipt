@@ -6,6 +6,7 @@
 -- 項目の追加                         --
 --   まとめ入力伝票番号 GRP_DENPNUM   --
 --   まとめ入力連番     GRP_RENNUM    --
+--   収納更新区分       SYU_UPDKBN    --
 --                                    --
 -- Create Date : 2004/07/04           --
 --                                    --
@@ -58,7 +59,7 @@ OPID    			varchar(16),
 CREYMD  			char(8),
 UPYMD    			char(8),
 UPHMS				char(6),
-constraint TBL_JYURRKWK_primary_key primary key (HOSPID,PTID,SRYKA,
+constraint TBL_JYURRKWK_primary_key primary key (HOSPID,PTID,NYUGAIKBN,SRYKA,
 SRYYMD,RENNUM,DOUJI_RENNUM,KAIKEI_RENNUM,EDANUM));
 
 
@@ -116,7 +117,7 @@ OPID    			varchar(16),
 CREYMD  			char(8),
 UPYMD    			char(8),
 UPHMS				char(6),
-constraint TBL_JYURRKWK2_primary_key primary key (HOSPID,PTID,SRYKA,
+constraint TBL_JYURRKWK2_primary_key primary key (HOSPID,PTID,NYUGAIKBN,SRYKA,
 SRYYMD,RENNUM,DOUJI_RENNUM,KAIKEI_RENNUM,EDANUM));
 
 -- TBL_JYURRK から最終区分'0'を削除 --
@@ -150,6 +151,7 @@ HKNKBN                          char(01),
 DENPNUM                         numeric(07),
 GRP_DENPNUM                     numeric(07)  default 0,
 GRP_RENNUM                      numeric(02)  default 0,
+SYU_UPDKBN                      char(01)  default ' ',
 SRYKBN1                         char(02),
 SRYKBN2                         char(02),
 SRYKBN3                         char(02),
@@ -203,6 +205,7 @@ HKNKBN,
 DENPNUM,
 --GRP_DENPNUM--
 --GRP_RENNUM--
+--SYU_UPDKBN--
 SRYKBN1,
 SRYKBN2,
 SRYKBN3,
