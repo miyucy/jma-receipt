@@ -66,6 +66,8 @@
       *  01.01.03    NACL-藤原    04/04/07  カスタマイズ項目にコメント欄
       *                                     ・診療科名を追加
       *  01.01.04    NACL-藤原    04/05/06  不明分を必ず出力するように修正
+      *  01.01.05    NACL-門脇    04/05/13  初診時に時間外・深夜・休日が
+      *                                     ２つ以上あった場合の記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1705,7 +1707,7 @@
       *
       *    診療年月（診療年月日として退避）
            MOVE    RECE02-SRYYM        TO  WRK-SYMD
-           MOVE    "01"                TO  WRK-SDD
+           MOVE    1                   TO  WRK-SDD
            MOVE    WRK-SYMD            TO  WRK-SRYYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    LNK-DAY2-EDTYMD1-Y  TO  HC06-SRYY 
@@ -3215,6 +3217,14 @@
                      MOVE  "（深夜）"     TO  HC06-SHOSHINTIME
                WHEN  "3"
                      MOVE  "（休日）"     TO  HC06-SHOSHINTIME
+               WHEN  "4"
+                     MOVE  "時外・深夜"   TO  HC06-SHOSHINTIME
+               WHEN  "5"
+                     MOVE  "時外・休日"   TO  HC06-SHOSHINTIME
+               WHEN  "6"
+                     MOVE  "休日・深夜"   TO  HC06-SHOSHINTIME
+               WHEN  "7"
+                     MOVE  "外・休・深"   TO  HC06-SHOSHINTIME
            END-EVALUATE
       *     
            IF      RECE02-HKNNUM      =   SPACE

@@ -159,6 +159,8 @@
       *                                     算定時の点滴注射のコメント対応
       *  01.03.06   NACL-門脇     04/04/26  ユーザーコメント追加対応
       *  01.03.07   NACL-太田     04/05/06  点数マスタ検索ロジック修正
+      *  01.03.08   NACL-門脇     04/05/13  初診時に時間外・深夜・休日が
+      *                                     ２つ以上あった場合の記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2420,17 +2422,85 @@
                    IF   WRK-TNS-CHUKSNTUBAN(IDX3)   =   "0"
                         ADD   WK-ZAIKAISU  TO   RECE02-KAISU(1)
                    END-IF
+      *
+      ***          IF   WRK-TNS-DATAKBN(IDX3)  =   2
+      ***            EVALUATE    WRK-TNS-TIMEKSNKBN(IDX3)
+      ***                WHEN    1
+      ***                WHEN    5
+      ***                    MOVE  "1"     TO   RECE02-SHOSHINTIME
+      ***                WHEN    4
+      ***                    MOVE  "2"     TO   RECE02-SHOSHINTIME
+      ***                WHEN    3
+      ***                    MOVE  "3"     TO   RECE02-SHOSHINTIME
+      ***            END-EVALUATE
+      ***          END-IF
+      *
+      *************１：時間外　２：深夜　３：休日　４：時間外・深夜
+      *************５：時間外・休日　６：休日・深夜
+      *************７：時間外・休日・深夜
                    IF   WRK-TNS-DATAKBN(IDX3)  =   2
                      EVALUATE    WRK-TNS-TIMEKSNKBN(IDX3)
                          WHEN    1
                          WHEN    5
-                             MOVE  "1"     TO   RECE02-SHOSHINTIME
+                             EVALUATE   RECE02-SHOSHINTIME
+                               WHEN   SPACE
+                                  MOVE  "1"     TO   RECE02-SHOSHINTIME
+                               WHEN   "1"
+                                  CONTINUE
+                               WHEN   "2"
+                                  MOVE  "4"     TO   RECE02-SHOSHINTIME
+                               WHEN   "3"
+                                  MOVE  "5"     TO   RECE02-SHOSHINTIME
+                               WHEN   "4"
+                                  CONTINUE
+                               WHEN   "5"
+                                  CONTINUE
+                               WHEN   "6"
+                                  MOVE  "7"     TO   RECE02-SHOSHINTIME
+                               WHEN   "7"
+                                  CONTINUE
+                             END-EVALUATE
                          WHEN    4
-                             MOVE  "2"     TO   RECE02-SHOSHINTIME
+                             EVALUATE   RECE02-SHOSHINTIME
+                               WHEN   SPACE
+                                  MOVE  "2"     TO   RECE02-SHOSHINTIME
+                               WHEN   "1"
+                                  MOVE  "4"     TO   RECE02-SHOSHINTIME
+                               WHEN   "2"
+                                  CONTINUE
+                               WHEN   "3"
+                                  MOVE  "6"     TO   RECE02-SHOSHINTIME
+                               WHEN   "4"
+                                  CONTINUE
+                               WHEN   "5"
+                                  MOVE  "7"     TO   RECE02-SHOSHINTIME
+                               WHEN   "6"
+                                  CONTINUE
+                               WHEN   "7"
+                                  CONTINUE
+                             END-EVALUATE
                          WHEN    3
-                             MOVE  "3"     TO   RECE02-SHOSHINTIME
+                             EVALUATE   RECE02-SHOSHINTIME
+                               WHEN   SPACE
+                                  MOVE  "3"     TO   RECE02-SHOSHINTIME
+                               WHEN   "1"
+                                  MOVE  "5"     TO   RECE02-SHOSHINTIME
+                               WHEN   "2"
+                                  MOVE  "6"     TO   RECE02-SHOSHINTIME
+                               WHEN   "3"
+                                  CONTINUE
+                               WHEN   "4"
+                                  MOVE  "7"     TO   RECE02-SHOSHINTIME
+                               WHEN   "5"
+                                  CONTINUE
+                               WHEN   "6"
+                                  CONTINUE
+                               WHEN   "7"
+                                  CONTINUE
+                             END-EVALUATE
                      END-EVALUATE
                    END-IF
+      *
                    IF    BUN-IDX        =   1
                        COMPUTE    RECE02-TENSU(1 BUN-IDX)  =
                                   RECE02-TENSU(1 BUN-IDX)  +

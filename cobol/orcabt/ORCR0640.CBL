@@ -84,6 +84,8 @@
       *                                     コメント対応
       *  01.01.04    NACL-門脇    04/04/26  ユーザーコメント追加対応
       *  01.01.05    NACL-門脇    04/05/11  老人入院料摘要欄対応
+      *  01.01.06    NACL-門脇    04/05/13  初診時に時間外・深夜・休日が
+      *                                     ２つ以上あった場合の記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4899,15 +4901,80 @@
                    IF   TNS-CHUKSNTUBAN   =   "0"
                         ADD   WK-ZAIKAISU  TO   RECE62-KAISU(1)
                    END-IF
+      ***          IF   TNS-DATAKBN  =   2
+      ***            EVALUATE    TNS-TIMEKSNKBN
+      ***                WHEN    1
+      ***                WHEN    5
+      ***                    MOVE  "1"     TO   RECE62-SHOSHINTIME
+      ***                WHEN    4
+      ***                    MOVE  "2"     TO   RECE62-SHOSHINTIME
+      ***                WHEN    3
+      ***                    MOVE  "3"     TO   RECE62-SHOSHINTIME
+      ***            END-EVALUATE
+      ***          END-IF
+      *************１：時間外　２：深夜　３：休日　４：時間外・深夜
+      *************５：時間外・休日　６：休日・深夜
+      *************７：時間外・休日・深夜
                    IF   TNS-DATAKBN  =   2
                      EVALUATE    TNS-TIMEKSNKBN
                          WHEN    1
                          WHEN    5
-                             MOVE  "1"     TO   RECE62-SHOSHINTIME
+                             EVALUATE   RECE62-SHOSHINTIME
+                               WHEN   SPACE
+                                  MOVE  "1"     TO   RECE62-SHOSHINTIME
+                               WHEN   "1"
+                                  CONTINUE
+                               WHEN   "2"
+                                  MOVE  "4"     TO   RECE62-SHOSHINTIME
+                               WHEN   "3"
+                                  MOVE  "5"     TO   RECE62-SHOSHINTIME
+                               WHEN   "4"
+                                  CONTINUE
+                               WHEN   "5"
+                                  CONTINUE
+                               WHEN   "6"
+                                  MOVE  "7"     TO   RECE62-SHOSHINTIME
+                               WHEN   "7"
+                                  CONTINUE
+                             END-EVALUATE
                          WHEN    4
-                             MOVE  "2"     TO   RECE62-SHOSHINTIME
+                             EVALUATE   RECE62-SHOSHINTIME
+                               WHEN   SPACE
+                                  MOVE  "2"     TO   RECE62-SHOSHINTIME
+                               WHEN   "1"
+                                  MOVE  "4"     TO   RECE62-SHOSHINTIME
+                               WHEN   "2"
+                                  CONTINUE
+                               WHEN   "3"
+                                  MOVE  "6"     TO   RECE62-SHOSHINTIME
+                               WHEN   "4"
+                                  CONTINUE
+                               WHEN   "5"
+                                  MOVE  "7"     TO   RECE62-SHOSHINTIME
+                               WHEN   "6"
+                                  CONTINUE
+                               WHEN   "7"
+                                  CONTINUE
+                             END-EVALUATE
                          WHEN    3
-                             MOVE  "3"     TO   RECE62-SHOSHINTIME
+                             EVALUATE   RECE62-SHOSHINTIME
+                               WHEN   SPACE
+                                  MOVE  "3"     TO   RECE62-SHOSHINTIME
+                               WHEN   "1"
+                                  MOVE  "5"     TO   RECE62-SHOSHINTIME
+                               WHEN   "2"
+                                  MOVE  "6"     TO   RECE62-SHOSHINTIME
+                               WHEN   "3"
+                                  CONTINUE
+                               WHEN   "4"
+                                  MOVE  "7"     TO   RECE62-SHOSHINTIME
+                               WHEN   "5"
+                                  CONTINUE
+                               WHEN   "6"
+                                  CONTINUE
+                               WHEN   "7"
+                                  CONTINUE
+                             END-EVALUATE
                      END-EVALUATE
                    END-IF
                    IF    BUN-IDX        =   1
