@@ -29,7 +29,7 @@
                 04  J023-SRYKA.
                   05  J023-VALUE  PIC X(21).
                 04  J023-SRYKA-COUNT  PIC S9(9)   BINARY.
-                04  J023-SRYKA-ITEM   PIC X(21)   OCCURS  10 TIMES.
+                04  J023-SRYKA-ITEM   PIC X(21)   OCCURS  41 TIMES.
               03  J023-MIDASI-G.
                 04  J023-MIDASI-STYLE  PIC X(20).
                 04  J023-MIDASI       PIC X(20).

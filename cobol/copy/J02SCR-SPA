@@ -140,6 +140,24 @@
                05  SPA-MAE-BANGO             PIC 9(03).
                05  SPA-MAE-SRYKBN            PIC X(02).
       *
+      *    初期のみ
+        03  SPA-J02-SYOKI.
+      *        入外区分
+               05  SPA-GMN-NYUGAIKBN-COMB.
+                   07  SPA-GMN-NYUGAIKBN-LST     PIC X(10)
+                                                     OCCURS  2.
+               05  SPA-NYUGAI-MAX                PIC 9(04).
+      *        診療種別区分
+               05  SPA-GMN-SRYKBN-COMB.
+                   07  SPA-GMN-SRYKBN-LST        PIC X(19)
+                                                     OCCURS   20.
+               05  SPA-SRYKBN-MAX                PIC 9(04).
+      *
+      *入院点滴算定エラーメッセージ
+               05  SPA-GMN-NYUIN-AREA.
+                   07  SPA-GMN-NYUINMSG1         PIC X(50).
+                   07  SPA-GMN-NYUINMSG2         PIC X(50).
+      *
       *    保険組合せ一覧画面用
            03  SPA-J021-AREA.
                05  SPA-J021-CUR                PIC 9(02).
@@ -223,7 +241,7 @@
                    07  SPA-J023-SRYKAH        PIC X(01).
                    07  SPA-J023-SRYKAMEI      PIC X(12).
                05  SPA-J023-SRYKA-AREA.
-                   07  SPA-J023-SRYKA-LIST      OCCURS  10.
+                   07  SPA-J023-SRYKA-LIST      OCCURS  41.
                        09  SPA-J023-SRYKAL      PIC X(02).
                        09  SPA-J023-F1L         PIC X(01).
                        09  SPA-J023-SRYKAMEIL   PIC X(12).

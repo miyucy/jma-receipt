@@ -73,7 +73,7 @@
                 04  J02-SRYKA.
                   05  J02-VALUE   PIC X(16).
                 04  J02-SRYKA-COUNT   PIC S9(9)   BINARY.
-                04  J02-SRYKA-ITEM    PIC X(16)   OCCURS  10 TIMES.
+                04  J02-SRYKA-ITEM    PIC X(16)   OCCURS  41 TIMES.
               03  J02-NYUGAIKBNCOMB.
                 04  J02-NYUGAIKBN.
                   05  J02-VALUE   PIC X(10).

@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
         02  J03.
-      ****   02  J03-FIXED19.
+      ***  02  J03-FIXED19.
               03  J03-PTNUM.
                 04  J03-VALUE   PIC X(20).
               03  J03-KANANAME.
@@ -24,18 +24,9 @@
               03  J03-NAME.
                 04  J03-VALUE   PIC X(30).
               03  J03-BIRTHDAY.
-                04  J03-VALUE   PIC X(09).
+                04  J03-VALUE   PIC X(9).
               03  J03-SEX.
                 04  J03-VALUE   PIC X(2).
-              03  J03-SRYKA.
-                04  J03-VALUE   PIC X(10).
-              03  J03-SCROLLEDWINDOW1.
-                04  J03-SRYACTYMD.
-                  05  J03-SRYACTYMD-COUNT   PIC S9(9)   BINARY.
-                  05  J03-SRYACTYMD-ITEM        OCCURS  100 TIMES.
-                    06  J03-SRYACTYMD-YMD  PIC X(10).
-                    06  J03-SRYACTYMD-NAME  PIC X(40).
-                  05  J03-SRYACTYMD-SELECT  PIC X   OCCURS  100 TIMES.
               03  J03-SCROLLEDWINDOW2.
                 04  J03-SRYACTCNT.
                   05  J03-SRYACTCNT-COUNT   PIC S9(9)   BINARY.
@@ -44,3 +35,23 @@
                     06  J03-SRYACTCNT-NAME  PIC X(40).
                     06  J03-SRYACTCNT-CNT    PIC X(5).
                   05  J03-SRYACTCNT-SELECT  PIC X    OCCURS  100 TIMES.
+              03  J03-SCROLLEDWINDOW1.
+                04  J03-SRYACTYMD.
+                  05  J03-SRYACTYMD-COUNT   PIC S9(9)   BINARY.
+                  05  J03-SRYACTYMD-ITEM        OCCURS  100 TIMES.
+                    06  J03-SRYACTYMD-YMD  PIC X(10).
+                    06  J03-SRYACTYMD-NAME  PIC X(40).
+                  05  J03-SRYACTYMD-SELECT  PIC X   OCCURS  100 TIMES.
+              03  J03-NYUGAIKBN-COMB.
+                04  J03-NYUGAIKBN.
+                  05  J03-VALUE   PIC X(10).
+                04  J03-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.
+                04  J03-NYUGAIKBN-ITEM    PIC X(10)   OCCURS  2 TIMES.
+              03  J03-SRYKA-COMB.
+                04  J03-SRYKA.
+                  05  J03-VALUE   PIC X(20).
+                04  J03-SRYKA-COUNT   PIC S9(9)   BINARY.
+                04  J03-SRYKA-ITEM    PIC X(20)   OCCURS  41 TIMES.
+              03  J03-MIDASI.
+                04  J03-MIDASI-STYLE   PIC X(20).
+                04  J03-MIDASI-VALUE   PIC X(20).
