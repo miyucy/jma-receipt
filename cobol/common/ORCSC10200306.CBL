@@ -2437,6 +2437,16 @@
                            ADD     1               TO  IDX-ZAI2
                            MOVE   IDX-Z            TO  IDX-SYU2
                        END-IF
+                   ELSE
+      *                Â¾²Ê¤Ë¤Æ¼õ¿ÇºÑ¤ß¤â¿Ç»¡ÎÁ¤È¤¹¤ë
+                       IF     (WRK-COM-INPUTCD(IDX-Z)  =  "830000021")
+                         AND  (WRK-COM-SRYKBN (IDX-Z)  =   "12"      )
+                           ADD     1               TO  IDX-ZAI2
+                       END-IF
+                       IF     (WRK-COM-INPUTCD(IDX-Z)  =  "830000020")
+                         AND  (WRK-COM-SRYKBN (IDX-Z)  =   "11"      )
+                           ADD     1               TO  IDX-ZAI1
+                       END-IF
                    END-IF
                END-IF
       *
