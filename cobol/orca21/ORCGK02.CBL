@@ -4514,6 +4514,8 @@
                IF      SGDAY-SDAY          >   SPA-SYSYMD
                    MOVE    "0111"              TO  SPA-KIDCD
                    MOVE    SGDAY-SDAY          TO  SPA-NAI-SRYYMD
+                   MOVE    ZERO                TO  SPA-HKN-ERR
+                   MOVE    ZERO                TO  SPA-RJN-ERR
                    GO      TO      41017-SRYYMD-SYORI-EXT
                END-IF
       *        変更のない時、以降の処理はそのまま

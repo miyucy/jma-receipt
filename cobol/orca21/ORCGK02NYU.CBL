@@ -3731,28 +3731,33 @@
                END-IF
       *        誕生日以前の時、エラー
                IF      SGDAY-SDAY          <   SPA-BIRTHDAY
-                    MOVE    "1011"          TO  SPA-ERRCD
-                    GO      TO      41017-SRYYMD-SYORI-EXT
+                    MOVE    "1011"         TO  SPA-ERRCD
                END-IF
       *        未来日は確認メッセージ
-               IF      SGDAY-SDAY          >   SPA-SYSYMD
+               IF     (SGDAY-SDAY          >   SPA-SYSYMD    )
+                 AND  (SPA-ERRCD           =   SPACE         )
                    MOVE    "0111"              TO  SPA-KIDCD
                    MOVE    SGDAY-SDAY          TO  SPA-NAI-SRYYMD
-                   GO      TO      41017-SRYYMD-SYORI-EXT
+                   MOVE    ZERO                TO  SPA-HKN-ERR
+                   MOVE    ZERO                TO  SPA-RJN-ERR
                END-IF
       *        変更のない時、以降の処理はそのまま
-               IF      SGDAY-SDAY          =   SPA-NAI-SRYYMD
+               IF     (SGDAY-SDAY          =   SPA-NAI-SRYYMD)
+                 AND  (SPA-ERRCD           =   SPACE         )
+                 AND  (SPA-KIDCD           =   SPACE         )
                     MOVE    1                  TO  SPA-GMN-CUR
                     GO      TO      41017-SRYYMD-SYORI-EXT
                END-IF
                MOVE    SGDAY-SDAY          TO  SPA-NAI-SRYYMD
            ELSE
                MOVE    "1010"          TO  SPA-ERRCD
-               GO      TO      41017-SRYYMD-SYORI-EXT
            END-IF
       *
       *    診療日確定後、編集
-           PERFORM 410171-SRYYMD-OK-SEC
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-KIDCD           =   SPACE )
+               PERFORM 410171-SRYYMD-OK-SEC
+           END-IF
       *
            .
        41017-SRYYMD-SYORI-EXT.
