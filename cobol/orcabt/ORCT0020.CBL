@@ -28,7 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.03.13  入院請求書複数枚一括印刷対応
-      *  01.01.02    NACL-太田    03.03.18  入院カスタマイズ帳票対応
+      *  01.00.02    NACL-太田    03.03.18  入院カスタマイズ帳票対応
+      *  01.00.03    NACL-太田    03.07.01  出力先プリンタサブ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -95,6 +96,8 @@
                05  WRK-PARA-TERMID             PIC X(64).
                05  WRK-PARA-JOBID              PIC 9(07).
                05  WRK-PARA-SHELLID            PIC X(08).
+               05  WRK-PARA-HOSPID             PIC X(24).
+               05  WRK-PARA-STAFFCD            PIC X(05).
       *
            03  WRK-TEIKIERR            PIC X(200).
       *
@@ -105,6 +108,8 @@
            03  WRK-PRINT-PG            PIC X(20).
       *
            COPY    "MCPAREA".
+      *
+           COPY    "COMMON-SPA".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -128,9 +133,6 @@
        01  TEIKIPRT-REC.
            COPY    "CPTEIKIPRT.INC".
       *
-      *    帳票サブ < 請求書兼領収書 >
-           COPY    "CPORCHCN03.INC".
-      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -148,6 +150,12 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+      *    帳票サブ < 請求書兼領収書 >
+           COPY    "CPORCHCN03.INC".
+      *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -190,14 +198,9 @@
                                                WRK-PARA-TERMID
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
+                                               WRK-PARA-HOSPID
+                                               WRK-PARA-STAFFCD
       *
-           DISPLAY "WRK-PARA-PRTJYUN     = " WRK-PARA-PRTJYUN     
-           DISPLAY "WRK-PARA-BTUNUM-MAX  = " WRK-PARA-BTUNUM-MAX  
-           DISPLAY "WRK-PARA-BTUNUM-TBL  = " WRK-PARA-BTUNUM-TBL  
-           DISPLAY "WRK-PARA-SYSYMD      = " WRK-PARA-SYSYMD      
-           DISPLAY "WRK-PARA-TERMID      = " WRK-PARA-TERMID      
-           DISPLAY "WRK-PARA-JOBID       = " WRK-PARA-JOBID       
-           DISPLAY "WRK-PARA-SHELLID     = " WRK-PARA-SHELLID     
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -262,10 +265,9 @@
                MOVE    1               TO  FLG-TEIKIPRT
            END-IF
       *
-      *    帳票プログラム名取得
-           PERFORM 20011-PRINT-PG-EDIT-SEC
-      *
-           INITIALIZE    ORCHCN03AREA
+           INITIALIZE  ORCHCN03AREA
+           MOVE    WRK-PARA-HOSPID     TO  ORCHCN03-HEAD-HOSPID
+           MOVE    WRK-PARA-STAFFCD    TO  ORCHCN03-STAFFCD
            MOVE    WRK-PARA-SYSYMD     TO  ORCHCN03-SYSYMD
            MOVE    WRK-PARA-TERMID     TO  ORCHCN03-TERMID
       *
@@ -282,6 +284,9 @@
            END-PERFORM
       *
            MOVE     CNT-OUT1           TO  ORCHCN03-CNT
+      *
+      *    帳票プログラム名取得
+           PERFORM 20011-PRINT-PG-EDIT-SEC
       *
       *    入院請求書印刷
            CALL    WRK-PRINT-PG    USING   ORCHCN03AREA
@@ -306,24 +311,23 @@
       *
            INITIALIZE                      WRK-PRINT-PG
       *
-           INITIALIZE                      SYS-1035-REC
-           MOVE    "1035"              TO  SYS-1035-KANRICD
-           MOVE    "00000003"          TO  SYS-1035-KBNCD
-           MOVE    SYS-1035-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    WRK-PARA-SYSYMD     TO  ORC-DBYMD
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF    ( FLG-SYSKANRI        =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-1035-REC
-               IF    ( SYS-1035-ORCACSTCHK     =   "T" )
-                   MOVE    SYS-1035-ORCACSTNM  TO  WRK-PRINT-PG
-               ELSE
-                   MOVE    SYS-1035-ORCAORGNM  TO  WRK-PRINT-PG
-               END-IF
-           END-IF
+           INITIALIZE  SPA-AREA
+           MOVE    WRK-PARA-HOSPID     TO  SPA-HOSPID
+           MOVE    WRK-PARA-STAFFCD    TO  SPA-STAFFCD
       *
-           IF    ( WRK-PRINT-PG        =   SPACE )
-               MOVE    "ORCHCN03"      TO  WRK-PRINT-PG
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000003"          TO  ORCSPRTNM-KBNCD
+           MOVE    WRK-PARA-SYSYMD     TO  ORCSPRTNM-SRYYMD
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1035-REC
+           IF    ( ORCSPRTNM-RC        =   ZERO )
+              MOVE    ORCSPRTNM-PRTPG     TO  WRK-PRINT-PG
+           ELSE
+              MOVE    "ORCHCN03"          TO  WRK-PRINT-PG
            END-IF
       *
            .

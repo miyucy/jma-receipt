@@ -34,6 +34,7 @@
       *  01.00.05    NACL-太田    03.03.07  帳票発行コンボの初期表示修正
       *  01.00.06    NACL-太田    03.03.13  入院請求書複数枚一括印刷対応
       *  01.00.07    NACL-太田    03.03.18  入院カスタマイズ帳票対応
+      *  01.00.08    NACL-太田    03.07.01  出力先プリンタサブ追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -355,6 +356,9 @@
            COPY    "CPPTNYUINRRK.INC"
                REPLACING   //PTNYUINRRK-//
                BY          //LNK-PTNYUINRRK-//.
+      *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -3056,20 +3060,22 @@
       *****************************************************************
        451-PRTOUT-SEC              SECTION.
       *
-           MOVE    "1"             TO  SPA-NYUGAIKBN
+           MOVE    SPA-AREA        TO  WRK-SPA-AREA
       *
-           MOVE    WKPTINF-PTID    TO  SPA-PTID
+           MOVE    "1"             TO  WRK-SPA-NYUGAIKBN
+      *
+           MOVE    WKPTINF-PTID    TO  WRK-SPA-PTID
            MOVE    SPA-GMN-I04-PTNUM
-                                   TO  SPA-PTNUM
+                                   TO  WRK-SPA-PTNUM
            MOVE    WKPTINF-KANANAME
-                                   TO  SPA-KANANAME
-           MOVE    WKPTINF-NAME    TO  SPA-NAME
-           MOVE    WKPTINF-SEX     TO  SPA-SEX
+                                   TO  WRK-SPA-KANANAME
+           MOVE    WKPTINF-NAME    TO  WRK-SPA-NAME
+           MOVE    WKPTINF-SEX     TO  WRK-SPA-SEX
            MOVE    WKPTINF-BIRTHDAY
                                    TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
-           MOVE    WRK-HENYMDG     TO  SPA-BIRTHDAYW
-           MOVE    WRK-SYMD        TO  SPA-BIRTHDAY
+           MOVE    WRK-HENYMDG     TO  WRK-SPA-BIRTHDAYW
+           MOVE    WRK-SYMD        TO  WRK-SPA-BIRTHDAY
       *
       *    請求書兼領収書
            IF    ( SPA-GMN-I04-SKYPRTOUT-CD
@@ -3096,6 +3102,8 @@
            PERFORM 4511-PRINT-PG-EDIT-SEC
       *
            INITIALIZE      ORCHCN03AREA
+           MOVE    SPA-HOSPID          TO  ORCHCN03-HEAD-HOSPID
+           MOVE    SPA-STAFFCD         TO  ORCHCN03-STAFFCD
            MOVE    SPA-SYSYMD          TO  ORCHCN03-SYSYMD
            MOVE    SPA-TERMID          TO  ORCHCN03-TERMID
       *
@@ -3152,7 +3160,7 @@
                                    TO  LNK-PTNYUINRRK
            END-IF
       *
-           CALL    WRK-PRINT-PG    USING   SPA-AREA
+           CALL    WRK-PRINT-PG    USING   WRK-SPA-AREA
                                            LNK-PTNYUINRRK
       *
            .
@@ -3165,24 +3173,19 @@
       *
            INITIALIZE                      WRK-PRINT-PG
       *
-           INITIALIZE                      SYS-1035-REC
-           MOVE    "1035"              TO  SYS-1035-KANRICD
-           MOVE    WRK-KBNCD           TO  SYS-1035-KBNCD
-           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           MOVE    SYS-1035-REC        TO  MCPDATA-REC
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC            =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-1035-REC
-               IF    ( SYS-1035-ORCACSTCHK     =   "T" )
-                   MOVE    SYS-1035-ORCACSTNM  TO  WRK-PRINT-PG
-               ELSE
-                   MOVE    SYS-1035-ORCAORGNM  TO  WRK-PRINT-PG
-               END-IF
-           END-IF
-      *
-           IF    ( WRK-PRINT-PG        =   SPACE )
-               MOVE    WRK-ORG-PRINT-PG        TO  WRK-PRINT-PG
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    WRK-KBNCD           TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           WRK-SPA-AREA
+                                           SYS-1035-REC
+           IF    ( ORCSPRTNM-RC        =   ZERO )
+              MOVE    ORCSPRTNM-PRTPG     TO  WRK-PRINT-PG
+           ELSE
+              MOVE    WRK-ORG-PRINT-PG    TO  WRK-PRINT-PG
            END-IF
       *
            .

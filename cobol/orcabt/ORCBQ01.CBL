@@ -31,6 +31,7 @@
       *                                   +-出力項目に年齢追加
       *  01.00.03    NACL-太田    02/09/13  ディレクトリをサブプロへ
       *  01.00.04    NACL-太田    02/10/21  印刷用ファイルにサイト区分を追加
+      *  01.00.05    NACL-太田    03/07/01  出力先プリンタサブ追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -329,9 +330,7 @@
            MOVE    WRK-PARA-STAFFCD    TO  SPA-STAFFCD
       *
       *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-      *
+           INITIALIZE                      ORCSPRTNMAREA
            MOVE    "2"                 TO  ORCSPRTNM-KBN
            MOVE    WRK-PARA-SYSYMD     TO  ORCSPRTNM-SRYYMD
            MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN

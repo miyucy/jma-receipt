@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    03.07.01  出力先プリンタサブ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1036,8 +1037,10 @@
                                    TO  SHELLTBL-ARG6
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG7
+           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG8
+           MOVE    SPA-STAFFCD     TO  SHELLTBL-ARG9
            MOVE    TEIKIERR
-                                   TO  SHELLTBL-ARG8
+                                   TO  SHELLTBL-ARG10
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC

@@ -60,6 +60,7 @@
       *  01.00.22    NACL-小豆沢  03.06.24  診療所老人医療管理料（３０日
       *                                     以内再入院）の考慮を追加
       *  01.00.23    NACL-小豆沢  03.06.24  特定集中治療室管理料の正式対応
+      *  01.00.24    NACL-太田    03.07.01  出力先プリンタサブ追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -526,6 +527,9 @@
       *
       *    保険組合せ編集サブ
            COPY    "CPORCSHKNSET.INC".
+      *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -5303,9 +5307,6 @@
       *****************************************************************
        4801-ORCHCN01-CALL-SEC          SECTION.
       *
-      *    帳票プログラム名取得
-           PERFORM 4801-PRINT-PG-EDIT-SEC
-      *
            MOVE    SPA-AREA            TO  WRK-SPA-AREA
            INITIALIZE                      WRK-SPA-KYOTUKEY
                                            WRK-SPA-KYOTU-SET
@@ -5355,6 +5356,9 @@
       *    DISPLAY "ORCHCN01-DR (2)    = " ORCHCN01-DR (2)
       *    DISPLAY "ORCHCN01-DR (3)    = " ORCHCN01-DR (3)
       *    DISPLAY "ORCHCN01-NYUINYMD  = " ORCHCN01-NYUINYMD
+      *
+      *    帳票プログラム名取得
+           PERFORM 4801-PRINT-PG-EDIT-SEC
       *
            CALL    WRK-PRINT-PG    USING   WRK-SPA-AREA
                                            ORCHCN01AREA
@@ -5473,25 +5477,21 @@
       *
            INITIALIZE                      WRK-PRINT-PG
       *
-           INITIALIZE                      SYS-1035-REC
-           MOVE    "1035"              TO  SYS-1035-KANRICD
-           MOVE    "00000001"          TO  SYS-1035-KBNCD
-           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           MOVE    SYS-1035-REC        TO  MCPDATA-REC
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC            =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-1035-REC
-               IF    ( SYS-1035-ORCACSTCHK     =   "T" )
-                   MOVE    SYS-1035-ORCACSTNM  TO  WRK-PRINT-PG
-               ELSE
-                   MOVE    SYS-1035-ORCAORGNM  TO  WRK-PRINT-PG
-               END-IF
-           END-IF
-      *
-           IF    ( WRK-PRINT-PG        =   SPACE )
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000001"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           WRK-SPA-AREA
+                                           SYS-1035-REC
+           IF    ( ORCSPRTNM-RC        =   ZERO )
+              MOVE    ORCSPRTNM-PRTPG  TO  WRK-PRINT-PG
+           ELSE
                MOVE    "ORCHCN01"      TO  WRK-PRINT-PG
            END-IF
+      *
       *
            .
        4801-PRINT-PG-EDIT-EXT.

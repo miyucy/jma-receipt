@@ -30,6 +30,7 @@
       *  01.00.01    NACL-太田    03.03.13  入院請求書複数枚一括印刷対応
       *  01.00.02    NACL-太田    03.04.28  自費分負担金額に消費税が
       *                                     落ちていたのを修正
+      *  01.00.03    NACL-太田    03.07.01  出力先プリンタサブ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -165,6 +166,8 @@
            COPY    "CPSYUNOU.INC"      REPLACING   //SYU-//
                                        BY          //MISYU-//.
       *
+           COPY    "COMMON-SPA".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -240,6 +243,9 @@
       *
            COPY    "MCPAREA".
       *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -247,7 +253,6 @@
       *
       *    請求書兼領収書共通パラメタ
            COPY    "CPORCHCN03.INC".
-      *
        PROCEDURE                   DIVISION    USING
            ORCHCN03AREA
            .
@@ -353,34 +358,22 @@
                                         MCPDATA-REC
       *
       *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1034-REC
-           INITIALIZE                  SYS-1034-REC
-           MOVE    "1034"              TO  SYS-1034-KANRICD
-           MOVE    "*"                 TO  SYS-1034-KBNCD
-           MOVE    SYS-1034-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           MOVE    ORCHCN03-SYSYMD     TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               PERFORM 900-KANRIMST-READ-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-1034-REC
-               END-IF
-           ELSE
-               INITIALIZE                  SYS-1034-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    SPACE               TO  SPA-AREA
+           INITIALIZE                      SPA-AREA
+      *
+           MOVE    ORCHCN03-HEAD-HOSPID
+                                       TO  SPA-HOSPID
+           MOVE    ORCHCN03-STAFFCD    TO  SPA-STAFFCD
+      *
+      *    出力先プリンタ名割り当て情報編集
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    ORCHCN03-SYSYMD     TO  ORCSPRTNM-SRYYMD
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1034-REC
       *
            MOVE    SYS-1034-PRTNM(3)
                                        TO  WRK-PRTNM

@@ -86,6 +86,7 @@
       *                                     支払証明書が出力できるよう修正
       *  01.01.28    NACL-門脇    03.05.14  自賠責：腰部固定帯対応
       *  01.01.29    NACL-門脇    03.05.20  自賠責：療養担当手当て対応
+      *  01.00.30    NACL-太田    03.07.01  出力先プリンタサブ追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -482,6 +483,9 @@
                                                    //WK-JYURRK-//.
       *
            COPY "CPORCS01.INC" REPLACING  //LNK-// BY //WK-//.
+      *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
       *
       **************************************************************
       *    連絡　領域
@@ -1956,13 +1960,6 @@
                IF    ( SYU-DENPJTIKBN      =   "3" )
                    MOVE    "0010"      TO  SPA-ERRCD
                ELSE
-      *            帳票プログラム取得
-                   IF    ( SYU-NYUGAIKBN   =   1 )
-                       PERFORM 4201-NYU-PRINT-PG-SEC
-                   ELSE
-                       PERFORM 4201-PRINT-PG-SEC
-                   END-IF
-      *
                    MOVE   SPA-AREA         TO  WRK-SPA-AREA
                    MOVE   SYU-SRYYMD       TO  WRK-SPA-SRYYMD
                    MOVE   SYU-NYUGAIKBN    TO  WRK-SPA-NYUGAIKBN
@@ -1972,9 +1969,19 @@
       *            MOVE   SPA-GMN-SRYKA    TO  WRK-SPA-SRYKA
       *            MOVE   SPA-GMN-SRYKAMEI TO  WRK-SPA-SRYKAMEI
       *
+      *            帳票プログラム取得
+                   IF    ( SYU-NYUGAIKBN   =   1 )
+                       PERFORM 4201-NYU-PRINT-PG-SEC
+                   ELSE
+                       PERFORM 4201-PRINT-PG-SEC
+                   END-IF
+      *
+      *
                    IF    ( SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN) =   "1" )
                        INITIALIZE      ORCHCN03AREA
       *
+                       MOVE    WRK-SPA-HOSPID  TO  ORCHCN03-HEAD-HOSPID
+                       MOVE    WRK-SPA-STAFFCD TO  ORCHCN03-STAFFCD
                        MOVE    WRK-SPA-SYSYMD  TO  ORCHCN03-SYSYMD
                        MOVE    WRK-SPA-TERMID  TO  ORCHCN03-TERMID
                        MOVE    1               TO  ORCHCN03-CNT
@@ -1994,7 +2001,7 @@
                                            TO  ORCHCN03-NYUKIN  (1)
       *
                        CALL    WRK-SEIKYU-PG
-                                           USING  ORCHCN03AREA
+                                           USING   ORCHCN03AREA
       *
                    ELSE
                        INITIALIZE      ORCHC03AREA
@@ -2037,43 +2044,19 @@
       *    請求書
            MOVE    SPACE               TO  WRK-SEIKYU-PG
       *
-           MOVE    ZERO                TO  FLG-SYSKANRI
-           MOVE    SPACE               TO  SYS-1032-REC
-           INITIALIZE                      SYS-1032-REC
-           MOVE    "1032"              TO  SYS-1032-KANRICD
-           MOVE    "00000003"          TO  SYS-1032-KBNCD
-           EVALUATE    SYU-NYUGAIKBN
-           WHEN    "1"
-               MOVE    SYU-SKYSTYMD    TO  ORC-DBYMD
-           WHEN    "2"
-               MOVE    SYU-SRYYMD      TO  ORC-DBYMD
-           END-EVALUATE
-      *
-           MOVE    SYS-1032-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF  (   FLG-DBRC            =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-1032-REC
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000003"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           WRK-SPA-AREA
+                                           SYS-1032-REC
+           IF    ( ORCSPRTNM-RC        =   ZERO )
+              MOVE    ORCSPRTNM-PRTPG     TO  WRK-SEIKYU-PG
            ELSE
-               INITIALIZE                  SYS-1032-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
-      *
-           IF    ( FLG-SYSKANRI        =   ZERO )
-      *
-      *        独自開発分
-               IF    ( SYS-1032-ORCACSTCHK     =   "T" )
-                   MOVE    SYS-1032-ORCACSTNM  TO  WRK-SEIKYU-PG
-               ELSE
-      *        ＯＲＣＡ標準分
-                   MOVE    SYS-1032-ORCAORGNM  TO  WRK-SEIKYU-PG
-               END-IF
-           END-IF
-           IF    ( WRK-SEIKYU-PG       =   SPACE )
-               MOVE    "ORCHC03"           TO  WRK-SEIKYU-PG
+              MOVE    "ORCHC03"           TO  WRK-SEIKYU-PG
            END-IF
       *
            .
@@ -2089,38 +2072,19 @@
       *    請求書
            MOVE    SPACE               TO  WRK-SEIKYU-PG
       *
-           MOVE    ZERO                TO  FLG-SYSKANRI
-           MOVE    SPACE               TO  SYS-1035-REC
-           INITIALIZE                      SYS-1035-REC
-           MOVE    "1035"              TO  SYS-1035-KANRICD
-           MOVE    "00000003"          TO  SYS-1035-KBNCD
-           MOVE    SYU-SKYSTYMD        TO  ORC-DBYMD
-      *
-           MOVE    SYS-1035-REC        TO  MCPDATA-REC
-           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF  (   FLG-DBRC            =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-1035-REC
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000003"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           WRK-SPA-AREA
+                                           SYS-1035-REC
+           IF    ( ORCSPRTNM-RC        =   ZERO )
+              MOVE    ORCSPRTNM-PRTPG     TO  WRK-SEIKYU-PG
            ELSE
-               INITIALIZE                  SYS-1035-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
-      *
-           IF    ( FLG-SYSKANRI        =   ZERO )
-      *        独自開発分
-               IF    ( SYS-1035-ORCACSTCHK     =   "T" )
-                   MOVE    SYS-1035-ORCACSTNM  TO  WRK-SEIKYU-PG
-               ELSE
-      *        ＯＲＣＡ標準分
-                   MOVE    SYS-1035-ORCAORGNM  TO  WRK-SEIKYU-PG
-               END-IF
-           END-IF
-      *
-           IF    ( WRK-SEIKYU-PG       =   SPACE )
-               MOVE    "ORCHCN03"          TO  WRK-SEIKYU-PG
+              MOVE    "ORCHCN03"          TO  WRK-SEIKYU-PG
            END-IF
       *
            .

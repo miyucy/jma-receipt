@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.05.16  病名編集をコメント化
+      *  01.00.02    NACL-太田    03.07.01  出力先プリンタサブ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -215,6 +216,9 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -281,17 +285,14 @@
        110-PARA-HENSYU-SEC                   SECTION.
       *
       *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1034-REC
-           INITIALIZE                  SYS-1034-REC
-           MOVE    "1034"              TO  SYS-1034-KANRICD
-           MOVE    "*"                 TO  SYS-1034-KBNCD
-           MOVE    SYS-1034-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1034-REC
-           ELSE
-               MOVE    1                   TO  FLG-END
-           END-IF
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1034-REC
            .
        110-PARA-HENSYU-EXT.
            EXIT.
