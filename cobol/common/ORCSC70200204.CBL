@@ -37,6 +37,7 @@
       * 01.00.07     NACL−多々納 02/11/22  点滴注射同時重複エラー追加
       * 01.00.08     NACL−多々納 02/12/24  フィルム料を手技料へ加算
       * 01.00.09     NACL-多々納  03/01/16  撮影量回数訂正時修正
+      * 01.00.11     NACL-多々納  03/02/18  フィルム料を手技料２へ
       *****************************************************************
       *
       *
@@ -1704,6 +1705,9 @@
            COMPUTE WRK-COM-KIZAITEN(IDX-MAX)
                                        =   LNK-SC90-KIZTEN
       *******************************  +   WRK-FIRTEN-KEI
+      *    フィルム料を手技料２へ
+           MOVE    WRK-FIRTEN-KEI      TO  WRK-COM-SYUTEN2
+                                                         (IDX-MAX)
       *
       *    点数計　計算
            COMPUTE WRK-COM-TENSU (IDX-MAX) =   LNK-SC90-TENSUKEI
