@@ -255,6 +255,7 @@
       *                                     PTNUM-KEY3 追加
       *  01.01.81    NACL-多々納　03/07/10  PTINF-KEY10 追加
       *  01.01.82    NACL-多々納　03/07/15  YYK-KEY7   追加 
+      *  01.01.83    NACL-多々納　03/07/17  PTBYOMEI-KEY9,KEY10 追加 
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1327,6 +1328,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTBYOMEI-KEY8"
                    MOVE    PATH-TBL-PTBYOMEI-KEY8 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY9"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY9 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY10"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY10 
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTBYOMEI-ALL"
                    MOVE    PATH-TBL-PTBYOMEI-ALL
