@@ -436,6 +436,7 @@
            IF      SPA-SYORIFLG        =   ZERO
                PERFORM 45003-UKETUKE-SEC
            END-IF
+           .
       *
        100-SAKUSEI-SYORI-EXT.
            EXIT.
@@ -555,11 +556,6 @@
       *
       *    伝票番号を編集する
            MOVE    WRK-DENPNUM         TO  ORCSCGAIRAI-DENPNUM
-      *TEST
-           DISPLAY "SPA-DENPNUM:" SPA-DENPNUM
-                  ",WRK-DENPNUM:" WRK-DENPNUM
-                  ",SYU-DENPNUM:" SYU-DENPNUM
-      *TEST
       *
       *    包括保険の場合、伝票番号のみ取得
            IF      SPA-HKNCOMBINUM     =   "9999"
