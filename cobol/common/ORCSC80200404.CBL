@@ -35,9 +35,6 @@
       * 01.00.05     NACL-多々納  03/09/22  家族通院精神療法算定追加
       * 01.00.06     NACL-多々納  03/10/10  リハビリチェック変更
       * 01.00.07     NACL-多々納  04/03/17  Ｈ１６年４月改正追加
-      * 01.00.08     NACL-多々納  05/01/27  酸素追加
-      * 01.00.09     NACL-多々納  05/11/22  MONFUNC 対応 他
-      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -178,14 +175,7 @@
            03  WRK-RIGAKU-KBN      PIC X(01).
            03  WRK-RIGAKU-RYO      PIC X(01).
            03  WRK-RIGAK-CNTALL    PIC 9(03).
-      *!
-      *    酸素計算用
-           03  WRK-SANSO               PIC 9(08).
-           03  WRK-SANSOKIN            PIC 9(08)V99.
-           03  WRK-SANKEI              PIC 9(08).
-           03  WRK-SANTEN              PIC 9(08).
-           03  WRK-SANSOKIN-SUM        PIC 9(08)V99.
-           03  IDX-SANSO               PIC 9(04).
+      *
       *
       *    理学最大単位
            03  WRK-RIGAK-MAX       PIC 9(03).
@@ -207,8 +197,6 @@
       *
       *    リハビリ回数集計
         01  WRK-RIGAKU-NCNT-AREA.
-            03  WRK-RIGAKU-INT              PIC X(01).
-            03  WRK-ORCSC-RIGAKU-TBL.
       *        １:理学、２：作業、３：言語
                05  WRK-DCNT-TBL        OCCURS  3.
       *        集団
@@ -224,12 +212,8 @@
                    07  WRK-TCNT-K          PIC 9(03).
                    07  WRK-TCNT-KN         PIC 9(03).
       *        早期リハ等加算（逓減対象外）
-           03  WRK-GAICNT-G.
+               05  WRK-GAICNT-G.
                    07  WRK-GCNT            PIC 9(01)   OCCURS  31.
-      *    早期リハ等加算（今回入力分）
-           03  WRK-ORCSC-GAI-FLG-G.
-               05  WRK-ORCSC-GAI-FLG           PIC 9(01)   OCCURS  31.
-      **** 03  WRK-RIGAKU-INT              PIC X(01).
       *
       *    保存用
        01  HOZ-SCR-REC.
@@ -242,9 +226,6 @@
       *    リハビリの早期リハ加算テーブル
            COPY   "CMRIHAKSNTBL.INC".
       *
-      *    酸素コードテーブル
-           COPY     "CMSANSOTBL.INC".
-      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -255,15 +236,15 @@
       *
       *    点数マスタ−
       *01  TENSU-REC.
-      *    COPY    "CPTENSU.INC".
+           COPY    "CPTENSU.INC".
       *
       *    算定履歴
-      *01  SANTEI-REC.
-      *    COPY    "CPSANTEI.INC".
+       01  SANTEI-REC.
+           COPY    "CPSANTEI.INC".
       *
       *    チェックマスタ−
-      *01  CHK-REC.
-      *    COPY    "CPCHK.INC".
+       01  CHK-REC.
+           COPY    "CPCHK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -284,15 +265,9 @@
       *    診療行為点数編集・基本チェック
            COPY    "CPORCSC92.INC".
       *
-      *    リハビリ当月算定カウントパラメタ
-           COPY    "CPORCSC80CNT.INC".
-      *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-      *****COPY    "CPORCMCP.INC".
-      *
-      *    診療行為用共通パラメタ
-           COPY    "K01COMMON-SPA".
+           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -326,29 +301,7 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
-           MOVE    LNK-RIGAKU-NCNT-AREA    TO  WRK-RIGAKU-NCNT-AREA
-      *
-           IF      LNK-ORCSC-PG        =   "K02"
-               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-           END-IF
-      *    初回に当月分編集
-           IF      LNK-ORCSC-PG        =   "K02"
-               IF      WRK-RIGAKU-INT      =   SPACE
-                   INITIALIZE                  WRK-RIGAKU-NCNT-AREA
-      *            リハビリの回数編集
-                   INITIALIZE                  ORCSC80CNTAREA
-                   MOVE    LNK-ORCSC-SYORIFLG  TO  ORCSC80CNT-SYORIFLG
-                   CALL    "ORCSC80CNT"        USING
-                                               SPA-AREA
-                                               ORCSC00AREA
-                                               ORCSC80CNTAREA
-                   MOVE    ORCSC80CNT-RIGAKU-AREA
-                                           TO  WRK-ORCSC-RIGAKU-TBL
-                   MOVE    "1"             TO  WRK-RIGAKU-INT
-               END-IF
-           ELSE
-               INITIALIZE              WRK-RIGAKU-NCNT-AREA
-           END-IF
+           MOVE    LNK-ORCSC-RIGAKU-TBL    TO  WRK-RIGAKU-NCNT-AREA
       *
            EVALUATE    LNK-ORCSC-KBN
       *        剤別　チェック、編集、自動算定
@@ -363,7 +316,7 @@
                WHEN    OTHER
                    MOVE    "1001"          TO  SPA-ERRCD
            END-EVALUATE
-           MOVE    WRK-RIGAKU-NCNT-AREA    TO  LNK-RIGAKU-NCNT-AREA
+           MOVE    WRK-RIGAKU-NCNT-AREA    TO  LNK-ORCSC-RIGAKU-TBL
       *
            .
            EXIT    PROGRAM
@@ -402,7 +355,7 @@
            INITIALIZE                  WRK-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
+                   UNTIL      (IDX-Z       >   200     )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
@@ -423,7 +376,6 @@
       *
                EVALUATE    WRK-MOJI
                    WHEN    "0"
-                       PERFORM 10012-CHK2-SEC
                    WHEN    "8"
                    WHEN    "."
                    WHEN    "S"
@@ -435,12 +387,6 @@
                        PERFORM 10011-CHK-SEC
                END-EVALUATE
            END-PERFORM
-      *
-      *    酸素の補正率を自動発生する
-           IF     (WRK-ERRCD           =   SPACE)   AND
-                  (IDX-SANSO           >   ZERO )
-               PERFORM 10011-SANSO-ADD-SEC
-           END-IF
       *
            MOVE    WRK-ERRCD          TO  SPA-ERRCD
       *
@@ -487,142 +433,15 @@
                    END-IF
       *        器材
                WHEN    "7"
-      ***********  IF      WRK-COM-DATAKBN (IDX-Z) =   "3"
+                   IF      WRK-COM-DATAKBN (IDX-Z) =   "3"
       *                フィルムの時エラー
-      *                MOVE    "0047"          TO  WRK-ERRCD
-      *                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-      ************ END-IF
-      *            酸素区分判定
-                   IF      WRK-COM-SANSOKBN (IDX-Z)    =   1
-      *                酸素の時、酸素補正率を自動加算
-                       MOVE    WRK-COM-INPUTCD (IDX-Z) TO  WRK-SRYCD
-                       PERFORM 100115-SANSO-CHK-SEC
-                       IF      FLG-SANSO-OK        =   1
-                           MOVE    IDX-Z       TO  IDX-SANSO
-                       ELSE
-                           IF      IDX-SANSO        =   ZERO
-                               MOVE    "0038"       TO  WRK-ERRCD
-                               MOVE    "1"          TO  WRK-COM-CUR
-                                                              (IDX-Z)
-                           END-IF
-                       END-IF
+                       MOVE    "0047"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                    END-IF
            END-EVALUATE
       *
            .
        10011-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    酸素判定処理
-      *****************************************************************
-       100115-SANSO-CHK-SEC           SECTION.
-      *
-      *
-           SET     TBL-SANSO           TO  1
-           SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
-                   AT  END
-                       MOVE    ZERO            TO  FLG-SANSO-OK
-                   WHEN    WRK-SRYCD       =   TBL-SANSO-SRYCD
-                                                           (TBL-SANSO)
-                       MOVE    1               TO  FLG-SANSO-OK
-           END-SEARCH 
-      *
-           .
-       100115-SANSO-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    酸素補正率自動加算処理
-      *****************************************************************
-       10011-SANSO-ADD-SEC                  SECTION.
-      *
-           MOVE    "770020070"         TO  WRK-SRYCD
-           MOVE    ZERO                TO  FLG-ARI
-           PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1    >   SPA-MAX-LINE  )  OR
-                              (WRK-COM-INPUTCD(IDX1)   =   SPACE AND
-                               WRK-GMN-INPUTCD(IDX1)   =   SPACE )
-               IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
-                   MOVE    IDX1                TO  IDX-T
-                   MOVE    1                   TO  FLG-ARI
-               END-IF
-           END-PERFORM
-           IF      FLG-ARI             =   ZERO
-               MOVE    IDX-SANSO           TO  IDX-S
-           END-IF
-      *    酸素補正率自動加算
-           PERFORM 1002-KASAN-SET-SEC
-      *
-           .
-       10011-SANSO-ADD-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    急性発生日チェック処理
-      *****************************************************************
-       10012-CHK2-SEC                  SECTION.
-      *
-      *    急性発生終了
-           IF      WRK-COM-INPUTCD(IDX-Z)  =   "099800102"
-               IF      SPA-HKNKBN          =   1
-                   MOVE    "8025"              TO  WRK-ERRCD
-                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
-               END-IF
-           END-IF
-      *
-      *    診療行為のみでチェック
-           IF     (WRK-ERRCD           =   SPACE  )  AND
-                  (LNK-ORCSC-PG        =   "K02"  )
-               PERFORM 100121-KYSEI-CHK-SEC
-           END-IF
-      *
-      *    自賠責明細料・診断料の時、数量は１であること
-           IF     (WRK-COM-INPUTCD(IDX-Z)(1:5) =   "09591"  OR
-                                                   "09592"  OR
-                                                   "09593"  OR
-                                                   "09594"  )  AND
-                  (WRK-COM-KISOTEN (IDX-Z)     >   ZERO     )
-               IF      WRK-COM-SURYO(IDX-Z)    >   1
-                   MOVE    "1002"             TO  WRK-ERRCD
-                   MOVE    "1"                TO  WRK-COM-CUR (IDX-Z)
-               END-IF
-           END-IF
-      *
-           .
-       10012-CHK2-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    急性発生日チェック処理
-      *****************************************************************
-       100121-KYSEI-CHK-SEC                  SECTION.
-      *
-      *    急性発生日
-           IF      WRK-COM-INPUTCD(IDX-Z)  =   "099800101"
-               IF      SPA-KYUSEI-END      =   SPA-SRYYMD
-                   MOVE    "8023"             TO  WRK-ERRCD
-                   MOVE    "1"                TO  WRK-COM-CUR (IDX-Z)
-               END-IF
-           END-IF
-      *    急性発生終了
-           IF      WRK-COM-INPUTCD(IDX-Z)  =   "099800102"
-               IF     (SPA-KYUSEI-FLG      =   1    )  OR
-                      (SPA-KYUSEI-YMD      =   SPA-SRYYMD)
-                   MOVE    "8023"             TO  WRK-ERRCD
-                   MOVE    "1"                TO  WRK-COM-CUR (IDX-Z)
-               ELSE
-                   IF     (SPA-KYUSEI-YMD  NOT =   SPACE )  AND
-                          (SPA-KYUSEI-END      =   SPACE )
-                       CONTINUE
-                   ELSE
-                       MOVE    "8024"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-                   END-IF
-               END-IF
-           END-IF
-      *
-           .
-       100121-KYSEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -702,24 +521,23 @@
            MOVE    SPACE               TO  SYS-1006-REC
            MOVE    "1006"              TO  SYS-1006-KANRICD
            MOVE    "1"                 TO  SYS-1006-KBNCD
-           MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
+           MOVE    ZERO                TO  SYS-1006-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-1006-EDYUKYMD
       *    システム管理検索
-           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
                PERFORM 900-KANRIMST-READ-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
            ELSE
@@ -808,16 +626,10 @@
                GO     TO      100113-SEISIN-CHK-EXT
            END-IF
       *
-           IF      LNK-ORCSC-SYORIFLG      =   1
-      *        訂正時点の初診算定日
-               MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
-           ELSE
-               MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
-           END-IF
       *    初診算定日から６月以内
-           IF     (WRK-SYOYMD          =   SPACE  )  OR
+           IF     (LNK-ORCSC-SYOYMD    =   SPACE  )  OR
                   (LNK-ORCSC-SYOSIN2   =   1      )
-               MOVE    SPA-SRYYMD          TO  WRK-SYOYMD
+               MOVE    SPA-SRYYMD          TO  LNK-ORCSC-SYOYMD
            END-IF
       **** MOVE    LNK-ORCSC-SYOYMD    TO  WRK-SYOYMD
       *    COMPUTE WRK-SYO-MM          =   WRK-SYO-MM    +   6
@@ -829,8 +641,7 @@
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY6-AREA
            MOVE    "61"                TO  LNK-DAY6-IRAI
-      *****MOVE    LNK-ORCSC-SYOYMD    TO  LNK-DAY6-KIJUN
-           MOVE    WRK-SYOYMD          TO  LNK-DAY6-KIJUN
+           MOVE    LNK-ORCSC-SYOYMD    TO  LNK-DAY6-KIJUN
            MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
            MOVE    6                   TO  LNK-DAY6-ZOGEN
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
@@ -905,10 +716,6 @@
            IF      FLG-SOUKI           =   1
                GO      TO      100113-RSIHKN-SYORI-EXT
            END-IF
-      *    リハビリテーション総合計画評価料は対象外
-           IF      WRK-COM-INPUTCD (IDX-Z) =   "180024710"
-               GO      TO      100113-RSIHKN-SYORI-EXT
-           END-IF
       *
       *    労災の時、加算なし
            IF      WRK-COM-INPUTCD(IDX-Z)(1:3) =   "101"
@@ -957,7 +764,7 @@
            MOVE    ZERO                TO  FLG-ROU-ARI
            COMPUTE IDX-Z2              =   IDX-Z     +   1
            PERFORM VARYING     IDX1    FROM    IDX-Z2    BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE   )   OR
+                   UNTIL      (IDX1        >   200     )   OR
                               (FLG-ROU-ARI             =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   "101800010"  OR
@@ -968,7 +775,7 @@
                END-IF
                IF     (WRK-COM-INPUTCD (IDX1)(1:1) =  "1" ) AND
                       (WRK-COM-DATAKBN (IDX1)      =  "1" )
-                  MOVE    SPA-MAX-LINE             TO  IDX1
+                  MOVE    200              TO  IDX1
                END-IF
            END-PERFORM
            IF      FLG-ROU-ARI         =   1
@@ -987,7 +794,7 @@
            MOVE    ZERO                TO  IDX-T
            COMPUTE IDX-Z2              =   IDX-Z     +   1
            PERFORM VARYING     IDX1    FROM    IDX-Z2    BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE   )   OR
+                   UNTIL      (IDX1        >   200     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -1000,7 +807,7 @@
                    END-IF
                    IF     (WRK-COM-INPUTCD (IDX1)(1:1) =  "1" ) AND
                           (WRK-COM-DATAKBN (IDX1)      =  "1" )
-                      MOVE    SPA-MAX-LINE             TO  IDX1
+                      MOVE    200              TO  IDX1
                    END-IF
                END-IF
            END-PERFORM
@@ -1082,7 +889,7 @@
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE   )   OR
+                   UNTIL      (IDX1        >   200     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
@@ -1116,7 +923,6 @@
                MOVE    SPACE               TO  WRK-COM-CHKFLG (IDX-S)
            END-IF
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
-           MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
            MOVE    IDX-S               TO  LNK-SC92-GMN-IDX
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
            MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
@@ -1171,7 +977,7 @@
            INITIALIZE                  ORCSC90AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   SPA-MAX-LINE )   OR
+                   UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD       NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
       *
@@ -1217,8 +1023,6 @@
                                        ORCSC90AREA
                                        WRK-SCR-REC
       *
-      *    材料再計算編集
-           PERFORM 1007-KIZAI-TEN-SEC
       *    割合加算
       *****PERFORM 1006-KASAN-SET-SEC
       *    手技料の計算
@@ -1312,37 +1116,8 @@
       *        MOVE    IDX-Z               TO  IDX-SYU
       *****END-IF
       *
-      *    各チェック処理
-           EVALUATE    WRK-MOJI
-      *        器材
-               WHEN    "7"
-      *            酸素計算
-                   IF      WRK-COM-SANSOKBN (IDX-Z)    =   1
-                       PERFORM 100211-SANSO-KEI-SEC
-                   END-IF
-           END-EVALUATE
-      *
            .
        10021-KEISAN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    酸素計算処理
-      *****************************************************************
-       100211-SANSO-KEI-SEC            SECTION.
-      *
-      *    酸素判定
-           MOVE    WRK-COM-INPUTCD (IDX-Z) TO  WRK-SRYCD
-           PERFORM 100115-SANSO-CHK-SEC
-           IF      FLG-SANSO-OK        =   1
-      *        酸素金額計算
-               COMPUTE WRK-SANSOKIN    =   WRK-COM-KISOTEN (IDX-Z)
-                                       *   WRK-COM-SURYO (IDX-Z)
-               ADD     WRK-SANSOKIN    TO  WRK-SANSOKIN-SUM
-           END-IF
-      *
-           .
-       100211-SANSO-KEI-EXT.
            EXIT.
       *****************************************************************
       *    手技料の計算処理
@@ -1356,12 +1131,10 @@
       *
       *    労災の外来管理加算読み替え処理
            IF      SPA-HKNKBN          =   1
-      *!       回数を掛けた点数で判定する
-      *!         （２単位以上の時、読み替えはないはず）
-      *!       COMPUTE WRK-SYOKEI      =   WRK-COM-SYUTEN2 (IDX-SYU)
-      *!                               *   LNK-ORCSC-KAISU
-               MOVE    WRK-COM-SYUTEN2 (IDX-SYU)
-                                       TO  WRK-SYOKEI
+      *        回数を掛けた点数で判定する
+      *          （２単位以上の時、読み替えはないはず）
+               COMPUTE WRK-SYOKEI      =   WRK-COM-SYUTEN2 (IDX-SYU)
+                                       *   LNK-ORCSC-KAISU
                IF     (WRK-COM-RSIGIRI (IDX-SYU)
                                            =   1  )  AND
                       (WRK-SYOKEI          <   LNK-ORCSC-GAIRAI-TEN)
@@ -1369,6 +1142,7 @@
                                            TO  LNK-SC90-TENSUKEI
                END-IF
            END-IF
+      *
       *
            ADD     LNK-SC90-TENSUKEI   TO  WRK-GOK-TENSUKEI
            ADD     LNK-SC90-TENGAKEI   TO  WRK-GOK-TENGAKEI
@@ -1511,13 +1285,6 @@
                PERFORM 20023-KAISU-HEN-SEC
                GO      TO      2002-GAIRAI-ALL-CHK-EXT
            END-IF
-      *    労災の時、理学療法の逓減は傷病発生６ヶ月日以降とする
-           IF     (SPA-HKNKBN          =   1        )  AND
-                  (SPA-SRYYMD(1:6)     =   SPA-RSI-SHOBYOYMD3(1:6))
-               MOVE    SPA-RSI-SHOBYOYMD3(7:2) TO  IDX-STR
-           ELSE
-               MOVE    1                       TO  IDX-STR
-           END-IF
       *
       *    急性発生１８０日以内の時、上限回数変更
            IF      (LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
@@ -1526,6 +1293,11 @@
            ELSE
                MOVE    8                   TO  WRK-MAX-CNT
            END-IF
+      *TEST
+           DISPLAY "C80 WRK-MAX-CNT:" WRK-MAX-CNT
+                 ",LNK-ORCSC-KYUSEI-180:" LNK-ORCSC-KYUSEI-180
+                 ",WRK-RIGAKU-RYO:" WRK-RIGAKU-RYO
+      *TEST
       *    急性発生９０日以内の時、逓減なし
            IF      (LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
                    (LNK-ORCSC-KYUSEI-90    >   WRK-SRYYMD)
@@ -1537,12 +1309,16 @@
       *        集団
                WHEN    "S"
                    MOVE    ZERO                TO  WRK-TUKI-CNT
-                   PERFORM VARYING     IDY     FROM    IDX-STR BY  1
+                   PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   IDD
                        COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
                                                +   WRK-DCNT-SN
                                                           (IDX-R1 IDY)
                    END-PERFORM
+      *TEST
+           DISPLAY "C80 WRK-TUKI-CNT:" WRK-TUKI-CNT
+                 ",WRK-KAISU:" WRK-KAISU
+      *TEST
       *            １月８単位、１２単位まで
                    IF     (WRK-TUKI-CNT    +   WRK-KAISU)
                                            >   WRK-MAX-CNT
@@ -1573,17 +1349,17 @@
       *            逓減対象外分を引く
       *            当月の算定回数
                    MOVE    ZERO                TO  WRK-TUKI-CNT
-      *!           IF      LNK-ORCSC-KYUSEI-90(1:6)
-      *!                                       =   WRK-SRYYMD(1:6)
-      *!               MOVE    LNK-ORCSC-KYUSEI-90(7:2)
-      *!                                       TO  IDX-STR
-      *!           ELSE
-      *!               MOVE    1               TO  IDX-STR
-      *!           END-IF
+                   IF      LNK-ORCSC-KYUSEI-90(1:6)
+                                               =   WRK-SRYYMD(1:6)
+                       MOVE    LNK-ORCSC-KYUSEI-90(7:2)
+                                               TO  IDX-STR
+                   ELSE
+                       MOVE    1               TO  IDX-STR
+                   END-IF
                    PERFORM VARYING     IDY     FROM    IDX-STR  BY  1
                            UNTIL       IDY     >   IDD
                        IF     (WRK-GCNT (IDY)      =   ZERO    )  AND
-                              (WRK-ORCSC-GAI-FLG (IDY) =   ZERO)
+                              (LNK-ORCSC-GAI-FLG (IDY) =   ZERO)
                            COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
                                                    +   WRK-DCNT-KN
                                                           (IDX-R1 IDY)
@@ -1691,7 +1467,7 @@
       *    当日に早期リハ加算等がある時、早期リハありとする
            IF     (FLG-SOUKI-ARI       =   1    )
                OR (WRK-GCNT (IDD)      >   ZERO )
-               OR (WRK-ORCSC-GAI-FLG(IDD)  >   ZERO )
+               OR (LNK-ORCSC-GAI-FLG(IDD)  >   ZERO )
       *        急性発生９０日以内の時、上限回数変更
            OR     ((LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
                    (LNK-ORCSC-KYUSEI-90    >   WRK-SRYYMD))
@@ -1741,7 +1517,7 @@
            END-EVALUATE
       *    早期リハビリ他
            IF      FLG-SOUKI-ARI       =   1
-               ADD     1                   TO  WRK-ORCSC-GAI-FLG (IDD)
+               ADD     1                   TO  LNK-ORCSC-GAI-FLG (IDD)
            END-IF
       *
            .
@@ -1757,7 +1533,7 @@
            MOVE    ZERO                TO  IDX-KSN
       *
            PERFORM VARYING     IDX-R   FROM    1   BY  1
-                   UNTIL      (IDX-R       >   SPA-MAX-LINE )   OR
+                   UNTIL      (IDX-R       >   200     )   OR
                               (FLG-SOUKI-ARI   =   1   )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE   AND
                                WRK-COM-INPUTCD (IDX-Z) =   SPACE )
@@ -1905,7 +1681,7 @@
                    MOVE    WRK-COM-KAISU(IDX-Z)   TO  WRK-KAISU
       *            当日に早期リハ加算がある時、ありとする
                    IF     (WRK-GCNT (IDD)          >   ZERO) OR
-                          (WRK-ORCSC-GAI-FLG (IDD) >   ZERO )
+                          (LNK-ORCSC-GAI-FLG (IDD) >   ZERO )
                        MOVE    1                   TO  FLG-SOUKI-ARI2
                    ELSE
                        MOVE    ZERO                TO  FLG-SOUKI-ARI2
@@ -1942,6 +1718,11 @@
            ELSE
                MOVE    8                   TO  WRK-MAX-CNT
            END-IF
+      *TEST
+           DISPLAY "C80 WRK-MAX-CNT:" WRK-MAX-CNT
+                 ",LNK-ORCSC-SYOEN-CNT:" LNK-ORCSC-SYOEN-CNT
+                 ",LNK-ORCSC-KYUSEI-180:" LNK-ORCSC-KYUSEI-180
+      *TEST
       *    急性発生９０日以内の時、逓減なし
            IF      (LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
                    (LNK-ORCSC-KYUSEI-90    >   WRK-SRYYMD)
@@ -1955,20 +1736,13 @@
                PERFORM 20023-KAISU-HEN-SEC
                GO      TO      20012-NTUKIMAX-CHK-EXT
            END-IF
-      *    労災の時、理学療法の逓減は傷病発生６ヶ月日以降とする
-           IF     (SPA-HKNKBN          =   1        )  AND
-                  (SPA-SRYYMD(1:6)     =   SPA-RSI-SHOBYOYMD3(1:6))
-               MOVE    SPA-RSI-SHOBYOYMD3(7:2) TO  IDX-STR
-           ELSE
-               MOVE    1                       TO  IDX-STR
-           END-IF
       *
       *    月上限判定
            EVALUATE    WRK-RIGAKU-RYO
       *        集団
                WHEN    "S"
                    MOVE    ZERO                TO  WRK-TUKI-CNT
-                   PERFORM VARYING     IDY     FROM    IDX-STR  BY  1
+                   PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   IDD
                        COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
                                                +   WRK-DCNT-SN
@@ -2007,17 +1781,17 @@
       *            逓減対象外分を引く
       *            当月の算定回数
                    MOVE    ZERO                TO  WRK-TUKI-CNT
-      ******       IF      LNK-ORCSC-KYUSEI-90(1:6)
-      *                                        =   WRK-SRYYMD(1:6)
-      *                MOVE    LNK-ORCSC-KYUSEI-90(7:2)
-      *                                        TO  IDX-STR
-      *!           ELSE
-      *!               MOVE    1               TO  IDX-STR
-      *!           END-IF
+                   IF      LNK-ORCSC-KYUSEI-90(1:6)
+                                               =   WRK-SRYYMD(1:6)
+                       MOVE    LNK-ORCSC-KYUSEI-90(7:2)
+                                               TO  IDX-STR
+                   ELSE
+                       MOVE    1               TO  IDX-STR
+                   END-IF
                    PERFORM VARYING     IDY     FROM    IDX-STR   BY  1
                            UNTIL       IDY     >   IDD
                        IF     (WRK-GCNT (IDY)      =   ZERO) AND
-                              (WRK-ORCSC-GAI-FLG (IDY)
+                              (LNK-ORCSC-GAI-FLG (IDY)
                                                    =   ZERO)
                            COMPUTE WRK-TUKI-CNT    =   WRK-TUKI-CNT
                                                    +   WRK-DCNT-KN
@@ -2064,7 +1838,7 @@
                GO      TO      200121-NYUTUKI-HEN-EXT
            END-IF
       *
-           MOVE    IDX-Z               TO  LNK-ORCSC-KEI-IDX
+           MOVE    IDX                 TO  LNK-ORCSC-KEI-IDX
            MOVE    "1"                 TO  WRK-COM-KZMFLG (IDX-Z)
            MOVE    "K081"              TO  SPA-ERRCD
            MOVE    SPACE               TO  LNK-ORCSC-ERRMSG
@@ -2114,69 +1888,6 @@
            EXIT.
       *
       *****************************************************************
-      *    材料再計算編集処理
-      *****************************************************************
-       1007-KIZAI-TEN-SEC                SECTION.
-      *
-      *    酸素の点数数計算
-           IF      WRK-SANSOKIN-SUM    NOT =   ZERO
-               PERFORM 10071-SANSO-KEISAN-SEC
-           END-IF
-      *
-           .
-       1007-KIZAI-TEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *     酸素の点数数計算処理
-      *****************************************************************
-       10071-SANSO-KEISAN-SEC                SECTION.
-      *
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   IDX-MAX
-               EVALUATE    WRK-COM-INPUTCD (IDX)
-      *            酸素補正率自動加算
-                   WHEN    "770020070"
-      *                酸素金額＋（酸素金額×補正率／１００）　四捨五入
-                       COMPUTE WRK-SYOKEIS     =   WRK-SANSOKIN-SUM
-                                               *   WRK-COM-KISOTEN (IDX)
-                                               /   100
-                       COMPUTE WRK-SANSOKIN    =   WRK-SANSOKIN-SUM
-                                               +   WRK-SYOKEIS
-               END-EVALUATE
-           END-PERFORM
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   IDX-MAX
-               EVALUATE    WRK-COM-INPUTCD (IDX)
-      *            高気圧酸素計算
-                   WHEN    "770030070"
-      *                酸素金額＋（酸素金額×補正率／１００）
-      *                                           ×気圧数　四捨五入
-                       COMPUTE WRK-SYOKEIS     =   WRK-SANSOKIN
-                                               *   WRK-COM-SURYO (IDX)
-                       MOVE    WRK-SYOKEIS     TO  WRK-SANSOKIN
-               END-EVALUATE
-           END-PERFORM
-      *    酸素の点数数計算
-      *    金額計　四捨五入
-           COMPUTE WRK-SYOKEI          =   WRK-SANSOKIN
-                                       +   0.5
-      *    金額計÷１０　四捨五入
-           COMPUTE WRK-SYOKEIS2        =   WRK-SYOKEI
-                                       /   10
-                                       +   0.5
-           MOVE    WRK-SYOKEIS2        TO  WRK-SANTEN
-      *    酸素の点数を器材点数に加算
-           ADD     WRK-SANTEN          TO  LNK-SC90-KIZTEN
-      *
-           .
-       10071-SANSO-KEISAN-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
       *    全診療行為チェック処理
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
@@ -2195,11 +1906,61 @@
            EXIT.
       *
       *****************************************************************
+      *    点数マスター読込
+      *****************************************************************
+       910-TENSU-READ-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  TNS-YUKOSTYMD
+           MOVE    ALL "9"             TO  TNS-YUKOEDYMD
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+                   MOVE    ZERO                TO  FLG-TENSU
+               ELSE
+                   INITIALIZE                  TNS-TENSU-REC
+                   MOVE    1                   TO  FLG-TENSU
+               END-IF
+           ELSE
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       910-TENSU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    システム管理マスタ読み込み処理
       *****************************************************************
        900-KANRIMST-READ-SEC         SECTION.
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
@@ -2211,44 +1972,25 @@
            EXIT.
       *
       *****************************************************************
-      *    テーブル検索処理
+      *    算定歴マスタ読み込み
       *****************************************************************
-       910-DBSELECT-SEC                SECTION.
+       920-SANTEI-READ-SEC         SECTION.
       *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SANTEI-REC
+               MOVE    ZERO                TO  FLG-SANTEI
+           ELSE
+               INITIALIZE                      SANTEI-REC
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
       *
            .
-       910-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ読み込み処理
-      *****************************************************************
-       920-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       920-DBFETCH-EXT.
+       920-SANTEI-READ-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    ＤＢクロース処理
-      *****************************************************************
-       990-DBCLOSE-SEC           SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-       990-DBCLOSE-EXT.
-           EXIT.
       *
