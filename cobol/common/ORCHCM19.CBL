@@ -33,6 +33,7 @@
       * 01.00.02     NACL-多々納  02/10/25  入院対応
       * 01.00.03     NACL-多々納  02/11/01  受給者番号の全角８文字以上対応
       * 01.00.04     NACL-多々納  02/12/29  高８、高９編集修正
+      * 01.00.05     NACL-多々納  03/01/20  その他器材の編集追加
       *****************************************************************
       *
       *
@@ -1403,8 +1404,9 @@
                    PERFORM VARYING     IDXA    FROM    1   BY  1
                            UNTIL      (IDXA    >   5   )   OR
                                       (SRY-SRYCD (IDXA)    =   SPACE)
-                       IF      SRY-SRYCD (IDXA)(1:1)       =   "6"  OR
-                                                               "7"
+                       IF     (SRY-SRYCD (IDXA)(1:1)       =   "6"  OR
+                                                               "7" )  OR
+                              (SRY-SRYCD (IDXA)(1:3)       =   "059" )
       ******************** MOVE    1               TO  FLG-ZAITAKU
                            MOVE    1               TO  FLG-ZAITAKU-ARI
                        END-IF
@@ -1716,7 +1718,8 @@
       *
            INSPECT WRK-MEISYOU1 (IDX-S)    REPLACING  ALL "  "  BY  "　"
       *
-           IF      SRY-SRYCD (IDXA)(1:1)   =   "6"  OR  "7"
+           IF     (SRY-SRYCD (IDXA)(1:1)   =   "6"  OR  "7" )  OR
+                  (SRY-SRYCD (IDXA)(1:3)   =   "059"        )
       *        数量
                MOVE    SRY-SRYSURYO (IDXA)     TO  WRK-SURYO
                PERFORM 10011-SURYO-HEN-SEC
@@ -1751,7 +1754,8 @@
            MOVE    WRK-TNS-NAME        TO  WRK-MEISYOU1   (IDX-S)
            IF      WRK-TNS-NAME(45:)   NOT =   SPACE
                MOVE    WRK-TNS-NAME        TO  WRK-MEISYOU3   (IDX-S)
-               IF      SRY-SRYCD (IDXA)(1:1)   =   "6"  OR  "7"
+               IF     (SRY-SRYCD (IDXA)(1:1)   =   "6"  OR  "7" )  OR
+                      (SRY-SRYCD (IDXA)(1:3)   =   "059"  )
                    ADD     1                   TO  IDX-S
                    MOVE    ALL "　"            TO  WRK-NO     (IDX-S)
                    MOVE    ALL "　"            TO  WRK-K2     (IDX-S)
@@ -1759,7 +1763,8 @@
            END-IF
            IF      WRK-TNS-NAME(81:)   NOT =   SPACE
                MOVE    WRK-TNS-NAME(81:)   TO  WRK-MEISYOU3 (IDX-S)
-               IF      SRY-SRYCD (IDXA)(1:1)   =   "6"  OR  "7"
+               IF     (SRY-SRYCD (IDXA)(1:1)   =   "6"  OR  "7" )  OR
+                      (SRY-SRYCD (IDXA)(1:3)   =   "059"  )
                    ADD     1                   TO  IDX-S
                    MOVE    ALL "　"            TO  WRK-NO     (IDX-S)
                    MOVE    ALL "　"            TO  WRK-K2     (IDX-S)
@@ -2065,10 +2070,11 @@
            PERFORM VARYING     IDXA    FROM    1   BY  1
                    UNTIL      (IDXA    >   5   )  OR
                               (WKSRY-SRYCD (IDXA) =   SPACE)
-               IF     (WKSRY-SRYCD (IDXA)(1:1) =   "6"  OR
+               IF    ((WKSRY-SRYCD (IDXA)(1:1) =   "6"  OR
                                                    "7"  OR
                                                    "0"  OR
-                                                   "8") AND
+                                                   "8") OR
+                      (WKSRY-SRYCD (IDXA)(1:3) =   "059"))   AND
                       (WKSRY-SRYCD (IDXA)  NOT =  "630010002")
                    MOVE    WKSRY-SRYCD (IDXA)  TO  SRY-SRYCD (IDXA)
       *            数量
