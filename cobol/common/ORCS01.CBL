@@ -2041,9 +2041,11 @@
                     MOVE    "PTKOHFTN-KEY4"  TO      ORC-DBPATH
                     PERFORM  PTKOHFTN-READ-SEC
                     PERFORM  UNTIL
-                        (FLG-PTKOHFTN       =   1)    OR
-                       ((PTKOHFTN-TEKSTYMD <=   LNK-SYU-SRYYMD   )  AND
-                        (LNK-SYU-SRYYMD    <=   PTKOHFTN-TEKEDYMD))
+                       ( FLG-PTKOHFTN                 =   1   )   OR
+                       ((PTKOHFTN-TEKSTYMD(1:6)
+                                  <=   LNK-SYU-SRYYMD   (1:6)) AND
+                        (LNK-SYU-SRYYMD(1:6)
+                                  <=   PTKOHFTN-TEKEDYMD(1:6)))
                       PERFORM   PTKOHFTN-READ-SEC
                     END-PERFORM
                 ELSE
