@@ -1941,7 +1941,7 @@
       *    ¿ÇÎÅ¹Ô°Ù
            INITIALIZE                      SRYACT-REC
            MOVE    SPA-HOSPID          TO  SRY-HOSPID
-           MOVE    SPA-GMN-PTID            TO  SRY-PTID
+           MOVE    SPA-GMN-PTID        TO  SRY-PTID
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "SRYACT-DEL1"       TO  ORC-DBPATH
@@ -1953,7 +1953,7 @@
       *    ¼ýÇ¼
            INITIALIZE                      SYUNOU-REC
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
-           MOVE    SPA-GMN-PTID            TO  SYU-PTID
+           MOVE    SPA-GMN-PTID        TO  SYU-PTID
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "SYUNOU-DEL1"       TO  ORC-DBPATH
@@ -1965,7 +1965,7 @@
       *    ¼ýÇ¼
            INITIALIZE                      SYUMEI-REC
            MOVE    SPA-HOSPID          TO  SMEI-HOSPID
-           MOVE    SPA-GMN-PTID            TO  SMEI-PTID
+           MOVE    SPA-GMN-PTID        TO  SMEI-PTID
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "SYUMEI-DEL1"       TO  ORC-DBPATH
@@ -2281,6 +2281,7 @@
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-P02KYOUTU
+           MOVE    SPA-FREE        TO  SPA-P02SCRAREA
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4902-KOUSIN-SYORI-EXT
            END-IF
