@@ -945,23 +945,10 @@
 	  <last_modification_time>Tue, 25 Sep 2001 00:49:44 GMT</last_modification_time>
 	</signal>
 	<signal>
-	  <name>unselect_row</name>
-	  <handler>clist_send_event</handler>
-	  <after>True</after>
-	  <data>SELECT</data>
-	  <last_modification_time>Tue, 25 Sep 2001 00:50:06 GMT</last_modification_time>
-	</signal>
-	<signal>
 	  <name>select_row</name>
 	  <handler>selection_changed</handler>
 	  <data>SELECT</data>
 	  <last_modification_time>Tue, 25 Sep 2001 00:50:12 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>unselect_row</name>
-	  <handler>selection_changed</handler>
-	  <data>SELECT</data>
-	  <last_modification_time>Tue, 25 Sep 2001 00:50:16 GMT</last_modification_time>
 	</signal>
 	<columns>6</columns>
 	<column_widths>35,80,83,84,87,80</column_widths>
@@ -1269,23 +1256,10 @@
 	  <last_modification_time>Wed, 28 Nov 2001 06:14:26 GMT</last_modification_time>
 	</signal>
 	<signal>
-	  <name>unselect_row</name>
-	  <handler>clist_send_event</handler>
-	  <after>True</after>
-	  <data>SELECT</data>
-	  <last_modification_time>Wed, 28 Nov 2001 06:14:53 GMT</last_modification_time>
-	</signal>
-	<signal>
 	  <name>select_row</name>
 	  <handler>selection_changed</handler>
 	  <data>SELECT</data>
 	  <last_modification_time>Wed, 28 Nov 2001 06:15:33 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>unselect_row</name>
-	  <handler>selection_changed</handler>
-	  <data>SELECT</data>
-	  <last_modification_time>Wed, 28 Nov 2001 06:15:57 GMT</last_modification_time>
 	</signal>
 	<columns>9</columns>
 	<column_widths>33,54,59,131,160,90,122,92,60</column_widths>
