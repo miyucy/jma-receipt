@@ -1,133 +1,133 @@
 J02	{
 	fixed1	{
 		PTNUM	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SRYYM	{
-			value	varchar(7);
+			value	varchar(6);
 		};
 		KANANAME	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		NAME	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		BIRTHDAY	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		MEISYO	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		NUM	{
-			value	varchar(4);
+			value	varchar(3);
 		};
 		HKNCOMBI	{
-			value	varchar(5);
-		};
-		HKNCOMBIMEI	{
-			value	varchar(61);
-		};
-		SEX	{
-			value	varchar(3);
-		};
-		DAY01	{
-			value	varchar(3);
-		};
-		DAY02	{
-			value	varchar(3);
-		};
-		DAY03	{
-			value	varchar(3);
-		};
-		DAY04	{
-			value	varchar(3);
-		};
-		DAY05	{
-			value	varchar(3);
-		};
-		DAY06	{
-			value	varchar(3);
-		};
-		DAY07	{
-			value	varchar(3);
-		};
-		DAY08	{
-			value	varchar(3);
-		};
-		DAY09	{
-			value	varchar(3);
-		};
-		DAY10	{
-			value	varchar(3);
-		};
-		DAY11	{
-			value	varchar(3);
-		};
-		DAY12	{
-			value	varchar(3);
-		};
-		DAY13	{
-			value	varchar(3);
-		};
-		DAY14	{
-			value	varchar(3);
-		};
-		DAY15	{
-			value	varchar(3);
-		};
-		DAY16	{
-			value	varchar(3);
-		};
-		DAY17	{
-			value	varchar(3);
-		};
-		DAY18	{
-			value	varchar(3);
-		};
-		DAY19	{
-			value	varchar(3);
-		};
-		DAY20	{
-			value	varchar(3);
-		};
-		DAY21	{
-			value	varchar(3);
-		};
-		DAY22	{
-			value	varchar(3);
-		};
-		DAY23	{
-			value	varchar(3);
-		};
-		DAY24	{
-			value	varchar(3);
-		};
-		DAY25	{
-			value	varchar(3);
-		};
-		DAY26	{
-			value	varchar(3);
-		};
-		DAY27	{
-			value	varchar(3);
-		};
-		DAY28	{
-			value	varchar(3);
-		};
-		DAY29	{
-			value	varchar(3);
-		};
-		DAY30	{
-			value	varchar(3);
-		};
-		DAY31	{
-			value	varchar(3);
-		};
-		RRKSELNUM	{
 			value	varchar(4);
 		};
+		HKNCOMBIMEI	{
+			value	varchar(60);
+		};
+		SEX	{
+			value	varchar(2);
+		};
+		DAY01	{
+			value	varchar(2);
+		};
+		DAY02	{
+			value	varchar(2);
+		};
+		DAY03	{
+			value	varchar(2);
+		};
+		DAY04	{
+			value	varchar(2);
+		};
+		DAY05	{
+			value	varchar(2);
+		};
+		DAY06	{
+			value	varchar(2);
+		};
+		DAY07	{
+			value	varchar(2);
+		};
+		DAY08	{
+			value	varchar(2);
+		};
+		DAY09	{
+			value	varchar(2);
+		};
+		DAY10	{
+			value	varchar(2);
+		};
+		DAY11	{
+			value	varchar(2);
+		};
+		DAY12	{
+			value	varchar(2);
+		};
+		DAY13	{
+			value	varchar(2);
+		};
+		DAY14	{
+			value	varchar(2);
+		};
+		DAY15	{
+			value	varchar(2);
+		};
+		DAY16	{
+			value	varchar(2);
+		};
+		DAY17	{
+			value	varchar(2);
+		};
+		DAY18	{
+			value	varchar(2);
+		};
+		DAY19	{
+			value	varchar(2);
+		};
+		DAY20	{
+			value	varchar(2);
+		};
+		DAY21	{
+			value	varchar(2);
+		};
+		DAY22	{
+			value	varchar(2);
+		};
+		DAY23	{
+			value	varchar(2);
+		};
+		DAY24	{
+			value	varchar(2);
+		};
+		DAY25	{
+			value	varchar(2);
+		};
+		DAY26	{
+			value	varchar(2);
+		};
+		DAY27	{
+			value	varchar(2);
+		};
+		DAY28	{
+			value	varchar(2);
+		};
+		DAY29	{
+			value	varchar(2);
+		};
+		DAY30	{
+			value	varchar(2);
+		};
+		DAY31	{
+			value	varchar(2);
+		};
+		RRKSELNUM	{
+			value	varchar(3);
+		};
 		HENSRYYMD	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		scrolledwindow1	{
 			DATALIST	{
@@ -175,7 +175,7 @@ J02	{
 		};
 		SRYKACOMB	{
 			SRYKA	{
-				value	varchar(17);
+				value	varchar(16);
 			};
 			count	int;
 			item	varchar(16)[10];

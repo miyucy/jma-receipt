@@ -10,19 +10,20 @@ K09	{
 			RRKLIST	{
 				count	int;
 				item	{
-					value1	varchar(3);
-					value2	varchar(16);
+					value0	varchar(3);
+					value1	varchar(16);
 				}	[100];
 				select	bool[100];
 			};
 		};
-		scrolledwindow1	{
-			viewport1	{
-				list1	{
-					count	int;
-					item	varchar(90)[200];
-					select	bool[200];
-				};
+		scrolledwindow3	{
+			MEILIST	{
+				count	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(90);
+				}	[400];
+				select	bool[400];
 			};
 		};
 	};
