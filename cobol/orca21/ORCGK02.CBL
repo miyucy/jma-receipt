@@ -3598,6 +3598,10 @@
                ELSE
       *            コメント変更
                    MOVE    "A"                 TO  LNK-SC10S-SYORI
+      *            訂正の展開時
+                   IF      SPA-SYORIFLG        =   1
+                       MOVE    "B"             TO  LNK-SC10S-SYORI
+                   END-IF
                END-IF
                CALL    "ORCSC10S"          USING
                                            ORCSC10SAREA
@@ -5650,11 +5654,6 @@
                MOVE    "K"                 TO  LNK-SC10S-SYORI
            END-IF
       *
-      *TEST
-           DISPLAY "K02 HENKAN SPA-HKNKBN:" SPA-HKNKBN
-                 ",LNK-SC10S-SYORI:" LNK-SC10S-SYORI
-                 ",SRYCD;" SPA-COM-INPUTCD (1)
-      *TEST
            CALL    "ORCSC10S"          USING
                                        ORCSC10SAREA
                                        SPA-AREA
@@ -5662,10 +5661,6 @@
                                        SPA-K02
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            MOVE    ZERO                TO  SPA-TAHOKEN-FLG
-      *TEST
-           DISPLAY "K02 SRYCD;" SPA-COM-INPUTCD (1)
-                 ",SPA-HKNKBN:" SPA-HKNKBN
-      *TEST
            IF      SPA-TAHOKEN-FLG     =   2
                CONTINUE
            ELSE

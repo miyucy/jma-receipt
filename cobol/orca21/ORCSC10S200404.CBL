@@ -159,6 +159,8 @@
            03  FLG-SRYKBN           PIC 9(01).
            03  FLG-TOKUTEI          PIC 9(02).
       *
+           03  FLG-FUKU-ARI         PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -2823,6 +2825,31 @@
       *****************************************************************
        3301211-SIDOU-ADD-SEC           SECTION.
       *
+           EVALUATE    LNK-SC10S-SYORI
+      *        中途終了展開
+               WHEN    "W"
+      *        診察料のみの変更処理
+               WHEN    "S"
+      *        診察料のみの変更処理（他保険受診ありで同日再診へ）
+               WHEN    "J"
+      *        診察料算定後、診察料のみの変更処理
+               WHEN    "K"
+                   PERFORM 33012111-SIDOU-CHUTO-SEC
+               WHEN    "A"
+      *            複数科入力
+                   PERFORM 33012112-SIDOU-FUKU-SEC
+               WHEN    OTHER
+                   PERFORM 33012113-SIDOU-INS-SEC
+           END-EVALUATE
+      *
+           .
+       3301211-SIDOU-ADD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    指導料編集・チェック処理
+      *****************************************************************
+       33012113-SIDOU-INS-SEC               SECTION.
       *    点数マスタ編集・基本チェック
            COMPUTE SPA-GMN-IDX         =   SPA-GMN-IDX   +   1
            INITIALIZE                  ORCSC92AREA
@@ -2869,7 +2896,81 @@
            MOVE    SPA-GMN-IDX         TO  IDX2
       *
            .
-       330121-TOKUTEI-SIDOU-EXT.
+       33012113-SIDOU-INS-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    中途終了展開指導料編集・チェック処理
+      *****************************************************************
+       33012111-SIDOU-CHUTO-SEC        SECTION.
+      *
+           MOVE    HZN-SCR-REC         TO  WRK-SCR-REC
+      *    展開時の内容で判断する
+           COMPUTE WRK-GMN-MAX         =   WRK-GMN-MAX   +   1
+           IF      WRK-GMN-MAX         >   200
+               MOVE    200                TO  WRK-GMN-MAX
+           END-IF
+           INITIALIZE                      WRK-GMN-TBL (WRK-GMN-MAX)
+           MOVE    WRK-SRYCD           TO  WRK-COM-INPUTCD(WRK-GMN-MAX)
+      *
+           INITIALIZE                  ORCSC92AREA
+           MOVE    "3"                 TO  LNK-SC92-KBN
+           MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
+           MOVE    "K02"               TO  LNK-SC92-PG
+           MOVE    WRK-GMN-MAX         TO  LNK-SC92-GMN-IDX
+           MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
+           MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
+           MOVE    SPA-15MIMAN-ARI     TO  LNK-SC92-15MIMAN-ARI
+           MOVE    SPA-NAI-ROUJIN      TO  LNK-SC92-ROUJIN
+           MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
+           MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
+           MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
+           CALL    "ORCSC92"           USING
+                                       MCPAREA
+                                       ORCSC92AREA
+                                       WRK-SCR-REC
+                                       SPA-AREA
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   200                )  OR
+                              (SPA-ERRCD       NOT  =   SPACE )  OR
+                             ((HZN-COM-INPUTCD(IDX) =   SPACE ) AND
+                              (HZN-GMN-INPUTCD(IDX) =   SPACE ))
+               IF      HZN-COM-INPUTCD (IDX)   =   WRK-SRYCD
+                   MOVE    "0134"              TO  SPA-ERRCD
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPACE               TO  WRK-SCR-REC
+           INITIALIZE                  WRK-SCR-REC
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (LNK-SC92-ERRAREA    =   SPACE )
+      *        エラーがない時、自動発生する
+               PERFORM 33012113-SIDOU-INS-SEC
+           ELSE
+               MOVE    SPACE           TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       33012111-SIDOU-CHUTO-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療科入力時指導料編集・チェック処理
+      *****************************************************************
+       33012112-SIDOU-FUKU-SEC        SECTION.
+      *
+      *    既に入力済みかどうかの判断
+           PERFORM 330122-JYUFUKU-CHK-SEC
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
+      *        エラーがない時、自動発生する
+               PERFORM 33012113-SIDOU-INS-SEC
+           ELSE
+               MOVE    SPACE               TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       33012112-SIDOU-FUKU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4605,8 +4706,24 @@
       *****************************************************************
        1014-SINSATU-HENKAN-SEC              SECTION.
       *
+      *    複数科がある時、再編集
+           MOVE    ZERO                TO  FLG-FUKU-ARI
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   200    )  OR
+                             ((SPA-COM-INPUTCD(IDX) =   SPACE ) AND
+                              (SPA-GMN-INPUTCD(IDX) =   SPACE ))
+               IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "$"
+                   MOVE    SPACE           TO  SPA-MAE-INPUTCD(IDX)
+                   MOVE    1               TO  FLG-FUKU-ARI
+               END-IF
+           END-PERFORM
+      *
            PERFORM 1010-SINSATU-HEN-SEC
       *
+           IF      FLG-FUKU-ARI        =   1
+      *        複数料（＄）、保険組合せ（＃）対応
+               PERFORM 1015-FUKU-SYORI-SEC
+           END-IF
            .
        1014-SINSATU-HENKAN-EXT.
            EXIT.
@@ -4830,9 +4947,6 @@
            ELSE
                MOVE    ".120"              TO  WRK-SRYCD
            END-IF
-           IF     (IDX-KA              =   ZERO  )  OR
-                  (SPA-GMN-INPUTCD(IDX-KA - 1)
-                                   NOT =   WRK-SRYCD )
                IF      IDX-KA              =   ZERO
                    ADD     1               TO  IDX-A
                    PERFORM 1015119-GYOINSN-SEC
@@ -4888,7 +5002,6 @@
       *            特定疾患療養指導料の発生
                    PERFORM 10151122-TOKUTEI-HENSYU-SEC
                END-IF
-           END-IF
            .
        1015112-TAKA-HEN-EXT.
            EXIT.
@@ -4936,13 +5049,21 @@
            END-PERFORM
       *    特定慢性疾患指導料
            IF      FLG-TOKUTEI         =   05
-               MOVE    IDX-A           TO  SPA-GMN-IDX
+               IF      IDX-HKN         >   IDX-A
+                   MOVE    IDX-HKN         TO  SPA-GMN-IDX
+               ELSE
+                   MOVE    IDX-A           TO  SPA-GMN-IDX
+               END-IF
                PERFORM 330121-TOKUTEI-SIDOU-SEC
            END-IF
       *
       *    皮膚科特定疾患
            IF      FLG-TOKUTEI         =   03  OR  04
-               MOVE    IDX-A           TO  SPA-GMN-IDX
+               IF      IDX-HKN         >   IDX-A
+                   MOVE    IDX-HKN         TO  SPA-GMN-IDX
+               ELSE
+                   MOVE    IDX-A           TO  SPA-GMN-IDX
+               END-IF
                PERFORM 330122-HIFUKA-SIDOU-SEC
            END-IF
       *
