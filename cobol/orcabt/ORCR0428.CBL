@@ -140,6 +140,8 @@
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
       *
+           03  WRK-COMRENNUM           PIC 9(05).
+      *
            03  WRK-RECEERR             PIC X(200). 
       *
        01  WRK-RECE443-REC.
@@ -274,6 +276,8 @@
       *****************************************************************
        210-RECE443-WRITE-SEC                SECTION.
       *
+           MOVE    ZERO                TO  WRK-COMRENNUM
+      *
            INITIALIZE                      RECE44-REC
            MOVE    RECE41-HOSPID       TO  RECE44-HOSPID
            MOVE    RECE41-SRYYM        TO  RECE44-SRYYM
@@ -316,6 +320,10 @@
                    MOVE    RECE44-SRYCDTOTAL   TO  RECE443-SRYCDTOTAL
                    MOVE    RECE44-SURYOUTOTAL  TO  RECE443-SURYOUTOTAL
                    MOVE    RECE44-MEISAISU     TO  RECE443-MEISAISU 
+                   IF   RECE44-COMCDFLG     =   "1"
+                        ADD       1            TO  WRK-COMRENNUM
+                        MOVE    WRK-COMRENNUM  TO  RECE443-COMRENNUM
+                   END-IF
                    MOVE    RECE44-ZAIKAISU     TO  RECE443-ZAIKAISU
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       4

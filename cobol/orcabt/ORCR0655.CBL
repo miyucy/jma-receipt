@@ -139,6 +139,8 @@
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
       *
+           03  WRK-COMRENNUM           PIC 9(05).
+      *
            03  WRK-RECEERR             PIC X(200). 
       *
        01  WRK-RECE642-REC.
@@ -273,6 +275,8 @@
       *****************************************************************
        210-RECE642-WRITE-SEC                SECTION.
       *
+           MOVE    ZERO                TO  WRK-COMRENNUM
+      *
            INITIALIZE                      RECE64-REC
            MOVE    RECE62-HOSPID       TO  RECE64-HOSPID
            MOVE    RECE62-SRYYM        TO  RECE64-SRYYM
@@ -328,6 +332,10 @@
                    MOVE    RECE64-SRYCDTOTAL   TO  RECE642-SRYCDTOTAL
                    MOVE    RECE64-SURYOUTOTAL  TO  RECE642-SURYOUTOTAL
                    MOVE    RECE64-MEISAISU     TO  RECE642-MEISAISU 
+                   IF   RECE64-COMCDFLG     =   "1"
+                        ADD       1            TO  WRK-COMRENNUM
+                        MOVE    WRK-COMRENNUM  TO  RECE642-COMRENNUM
+                   END-IF
                    MOVE    RECE64-ZAIKAISU     TO  RECE642-ZAIKAISU
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       4

@@ -51,6 +51,8 @@
                05  RECE042-SURYOUTOTAL     PIC  9(07)V9(03).
       *明細数
                05  RECE042-MEISAISU        PIC  9(04).
+      *コメント剤連番
+               05  RECE042-COMRENNUM       PIC  9(05).
       *剤回数
            03  RECE042-ZAIKAISU            PIC  9(04).
       *日数回数テーブル
