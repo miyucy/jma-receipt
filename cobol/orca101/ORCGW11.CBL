@@ -1916,25 +1916,26 @@
                            END-IF
                        END-IF
       *
-                   PERFORM VARYING IDZ2    FROM    1   BY  1
-                           UNTIL   ( IDZ2  >   3 )
-                       IF        ( SPA-NAI-TORGPGCHK-N(IDZ2)
+                       PERFORM VARYING IDZ2    FROM    1   BY  1
+                               UNTIL   ( IDZ2  >   3 )
+                           IF        ( SPA-NAI-TORGPGCHK-N(IDZ2)
                                     =   SPA-GMN-TORGPGCHK-N(IDZ2) )
-                           AND   ( SPA-NAI-TCSTPGNM-N(IDZ2)
+                               AND   ( SPA-NAI-TCSTPGNM-N(IDZ2)
                                     =   SPA-GMN-TCSTPGNM-N(IDZ2) )
-                           AND   ( SPA-NAI-TCSTPGCHK-N(IDZ2)
+                               AND   ( SPA-NAI-TCSTPGCHK-N(IDZ2)
                                     =   SPA-GMN-TCSTPGCHK-N(IDZ2) )
-                           PERFORM 490-SYS-1035-SAKUJYO-SEC
-                           IF    ( SPA-ERRCD   NOT =   SPACE )
-                               GO  TO  490-KOUSHIN-EXT
+                               PERFORM 490-SYS-1035-SAKUJYO-SEC
+                               IF    ( SPA-ERRCD   NOT =   SPACE )
+                                   GO  TO  490-KOUSHIN-EXT
+                               END-IF
+                           ELSE
+                               PERFORM 490-SYS-1035-KOUSHIN-SEC
+                               IF    ( SPA-ERRCD   NOT =   SPACE )
+                                   GO  TO  490-KOUSHIN-EXT
+                               END-IF
                            END-IF
-                       ELSE
-                           PERFORM 490-SYS-1035-KOUSHIN-SEC
-                           IF    ( SPA-ERRCD   NOT =   SPACE )
-                               GO  TO  490-KOUSHIN-EXT
-                           END-IF
-                       END-IF
-                   END-PERFORM
+                       END-PERFORM
+                   END-IF
                END-IF
       *----(02.00.03)--UPD-END-----
            WHEN    "1030"

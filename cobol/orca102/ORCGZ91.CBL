@@ -1150,6 +1150,7 @@
                MOVE  1                     TO  SHELL-TOKCHK
            ELSE
                MOVE  ZERO                  TO  SHELL-TOKCHK 
+           END-IF
       *
       *    自費チェックセット
            IF      SPA-GMN-JIHCHK      =   "T"
