@@ -28,11 +28,11 @@
                   05  HC17V02-GKENSU  PIC  X(8).
               03  HC17V02-RENNUM-G    OCCURS  30.
                   05  HC17V02-RENNUM  PIC  X(3).
-              03  HC17V02-PTNUM       OCCURS  30.
+              03  HC17V02-PTNUM-G     OCCURS  30.
                   05  HC17V02-PTNUM   PIC  X(20).
-              03  HC17V02-NAME        OCCURS  30.
+              03  HC17V02-NAME-G      OCCURS  30.
                   05  HC17V02-NAME    PIC  X(26).
-              03  HC17V02-HKNTEN      OCCURS  30.
+              03  HC17V02-HKNTEN-G    OCCURS  30.
                   05  HC17V02-HKNTEN  PIC  X(8).
               03  HC17V02-MONEY-G     OCCURS  9.
                   05  HC17V02-MONEY-OCC    OCCURS  30.
