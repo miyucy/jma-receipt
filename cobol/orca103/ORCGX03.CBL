@@ -1283,6 +1283,7 @@
                                =   SPA-X03-NAI-TLCHK-SRYCD (IDX6) )
                                MOVE    1   TO  FLG-HIT
                            END-IF
+                       END-IF
       *
                    END-PERFORM
       *
@@ -1405,6 +1406,7 @@
                                =   SPA-X03-NAI-TLCHK-SRYCD (IDX6) )
                                MOVE    1   TO  FLG-HIT
                            END-IF
+                       END-IF
       *
                    END-PERFORM
       *

@@ -401,7 +401,7 @@
                MOVE    1               TO  XSUB01-O-RECECD-MAX
                MOVE    CONST-MICODE    TO  XSUB01-O-RECECD    (1)
                MOVE    WRK-BYOMEI      TO  XSUB01-O-RECECDMEI (1)
-               MOVE    1               TO  XSUB01-O-BYOSTATUS
+               MOVE    "1"             TO  XSUB01-O-BYOSTATUS
                IF    ( FLG-OVER        =   1 )
                    MOVE    2           TO  XSUB01-O-RC
                    MOVE    1           TO  XSUB01-O-ERRIDX
