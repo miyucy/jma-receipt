@@ -57,6 +57,8 @@
       *                                     告示等識別区分１
       *                                     きざみ値計算識別
       *                                     注加算コードの追加
+      *  01.05.04    NACL-藤原    04.08.30  剤で記載する項目がないときは
+      *                                     点数・回数の編集を行わない 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2235,38 +2237,42 @@
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF     
       *---- (01.00.05) LINE ADD END   --------------------------------
-      *         
-           MOVE    WRK-TNSKAI-ST     TO  IDA
-           COMPUTE   IDA             =   IDA     -   2
-           MOVE    WRK-TNSKAI-KETA   TO  IDB
-      *****MOVE    WRK-TBLMAX       TO  IDY
       *
-      *    最終明細に点数・回数を印字するスペース有り
-           MOVE    TBL-ZAI (IDY)(3:)     TO  WRK-ZAI-NAME
-           IF  WRK-ZAI-NAME (IDA:)       =   SPACE
-               COMPUTE   WRK-TNSKAI-ST   =   22
-                                         -   WRK-TNSKAI-KETA
-               ADD     1                 TO  WRK-TNSKAI-ST
-               MOVE    WRK-TNSKAI (WRK-TNSKAI-ST:IDB)
-                                         TO  WRK-ZAI-TNSKAI
+           IF      IDY               >   ZERO         
+               MOVE    WRK-TNSKAI-ST     TO  IDA
+               COMPUTE   IDA             =   IDA     -   2
+               MOVE    WRK-TNSKAI-KETA   TO  IDB
+      *****    MOVE    WRK-TBLMAX       TO  IDY
+      *
+      *        最終明細に点数・回数を印字するスペース有り
+               MOVE    TBL-ZAI (IDY)(3:)     TO  WRK-ZAI-NAME
+               IF  WRK-ZAI-NAME (IDA:)       =   SPACE
+                   COMPUTE   WRK-TNSKAI-ST   =   22
+                                             -   WRK-TNSKAI-KETA
+                   ADD     1                 TO  WRK-TNSKAI-ST
+                   MOVE    WRK-TNSKAI (WRK-TNSKAI-ST:IDB)
+                                             TO  WRK-ZAI-TNSKAI
                                                     (WRK-TNSKAI-ST:)
-               MOVE    WRK-ZAI-NAME      TO  TBL-ZAI (IDY)(3:)
-           ELSE
-      *    最終明細に点数・回数を印字するスペース無し
-               ADD     1                 TO  IDY
-               IF  IDY                   >   100
-                   DISPLAY "*** ORCR0690 TBL-ZAI INDEX[100] OVER  ***"
-               END-IF
-               MOVE    SPACE             TO  WRK-ZAI
-               MOVE    WRK-TNSKAI        TO  WRK-ZAI-TNSKAI
-               MOVE    WRK-ZAI           TO  TBL-ZAI (IDY)
-               IF      RECE64-SRYKBN      =  "33"
-                  MOVE    TBL-ZAI-IDX(WRK-TBLMAX)
-                                         TO  TBL-ZAI-IDX(IDY)
-                  MOVE    TBL-ZAI-SRYCD(WRK-TBLMAX)
-                                         TO  TBL-ZAI-SRYCD(IDY)
-               END-IF
-               MOVE    SPACE             TO  WRK-ZAI
+                   MOVE    WRK-ZAI-NAME      TO  TBL-ZAI (IDY)(3:)
+               ELSE
+      *        最終明細に点数・回数を印字するスペース無し
+                   ADD     1                 TO  IDY
+                   IF  IDY                   >   100
+                       DISPLAY
+                           "*** ORCR0690 TBL-ZAI INDEX[100] OVER  ***"
+                   ELSE
+                       MOVE    SPACE             TO  WRK-ZAI
+                       MOVE    WRK-TNSKAI        TO  WRK-ZAI-TNSKAI
+                       MOVE    WRK-ZAI           TO  TBL-ZAI (IDY)
+                       IF      RECE64-SRYKBN      =  "33"
+                           MOVE    TBL-ZAI-IDX(WRK-TBLMAX)
+                                                 TO  TBL-ZAI-IDX(IDY)
+                           MOVE    TBL-ZAI-SRYCD(WRK-TBLMAX)
+                                                 TO  TBL-ZAI-SRYCD(IDY)
+                       END-IF
+                       MOVE    SPACE             TO  WRK-ZAI
+                   END-IF
+               END-IF        
            END-IF
       *
            .
