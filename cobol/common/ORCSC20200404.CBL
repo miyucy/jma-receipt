@@ -953,19 +953,43 @@
       *
       *    長期投薬処方箋料がある時、処方箋料があること
            IF      FLG-CHOKIKA1        =   1
-               IF     (FLG-SYOHOSENN       =   ZERO )  OR
-                      (FLG-CHOUKI          =   ZERO )
+               IF      FLG-SYOHOSENN       =   ZERO
                    MOVE    "1037"              TO  SPA-ERRCD
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-T1)
+               ELSE
+      *            長期投薬があること
+                  IF      FLG-CHOUKI          =   ZERO
+                      IF     (WRK-COM-KZMFLG (IDX-T1)  =   SPACE) AND
+                             (LNK-ORCSC-KEI-IDX        =   ZERO )
+                           MOVE    "K021"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                              (IDX-T1)
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                              (IDX-T1)
+                           MOVE    IDX-T1          TO  LNK-ORCSC-KEI-IDX
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *
       *    特定疾患処方管理加算処方料がある時の、処方料があること
            IF      FLG-CHOKIKA2        =   1
-               IF     (FLG-SYOHORYO        =   ZERO )  OR
-                      (FLG-CHOUKI          =   ZERO )
+               IF      FLG-SYOHORYO        =   ZERO
                    MOVE    "1037"              TO  SPA-ERRCD
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-T2)
+               ELSE
+      *            長期投薬があること
+                  IF      FLG-CHOUKI          =   ZERO
+                      IF     (WRK-COM-KZMFLG (IDX-T2)  =   SPACE) AND
+                             (LNK-ORCSC-KEI-IDX        =   ZERO )
+                           MOVE    "K021"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                              (IDX-T2)
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                              (IDX-T2)
+                           MOVE    IDX-T2          TO  LNK-ORCSC-KEI-IDX
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *
@@ -1090,7 +1114,7 @@
            IF      (WRK-COM-INPUTCD(IDX)(1:1) =   "6"  )  AND
                    (WRK-CHK-SRYSYUKBN (1:1)   =   "2"  )  AND
                    (WRK-COM-KAISU (IDX)       >=  28   )
-               MOVE    1                   TO  FLG-CHOUKI 
+               MOVE    1                   TO  FLG-CHOUKI
            END-IF
       *
       *

@@ -1068,6 +1068,9 @@
                                        TO  SPA-ERRMSG
                    MOVE  "長期投薬加算を算定する場合は削除して下さい。"
                                        TO  SPA-ERRMSG(35:)
+               WHEN    "K021"
+                   MOVE    "警告！２８日以上の投薬がありません。"
+                                       TO  SPA-ERRMSG
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG
