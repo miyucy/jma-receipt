@@ -49,6 +49,8 @@
       *                                    |外せるようにする
       *                                    +診療行為で、
       *                                    |老人の場合は［老］を付加
+      * 01.00.03     NACL-太田    02/10/14 +コンパイルエラーチェック
+      *                                    |強化対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -4379,7 +4381,8 @@
                                                            (IDX1)
       *
                PERFORM VARYING IDX2    FROM    1   BY  1
-                   UNTIL     ( IDX2        >   Q01-CNB-HKNNUM-COUNT )
+                   UNTIL     ( IDX2        >   Q01-CNB-HKNNUM-COUNT
+                                                            (IDX1) )
       *
                    MOVE    SPA-GMN-Q01-CNB-HKNNUM-ITEM (IDX1 IDX2)
                                TO  Q01-CNB-HKNNUM-ITEM (IDX1 IDX2)
