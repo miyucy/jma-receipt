@@ -608,9 +608,7 @@
            PERFORM UNTIL       FLG-SANTEI          =   1
       *        ½ªÎ»È½Äê
                IF      SANTEI-MSANTEICNT   >   ZERO
-                   IF      SANTEI-SRYYM    <   WRK-YMD(1:6)
-                       MOVE    1                   TO  FLG-SANTEI
-                   ELSE
+                   IF      SANTEI-SRYYM    <=  WRK-SRYYM
                        PERFORM VARYING     IDX-Y2  FROM    1  BY  1
                                UNTIL       IDX-Y2      >   31
                            IF      SANTEI-DAY (IDX-Y2) >   ZERO
@@ -618,6 +616,7 @@
                            END-IF
                        END-PERFORM
                        MOVE    SANTEI-SRYYM        TO  WRK-YMD(1:6)
+                       MOVE    1                   TO  FLG-SANTEI
                    END-IF
                END-IF
       *

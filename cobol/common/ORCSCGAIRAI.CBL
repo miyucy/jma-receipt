@@ -2515,7 +2515,8 @@
       *    ½é¿ÇÎÁ»»ÄêÆü
       *    ÄûÀµ¤Î»þ
            IF      SPA-SYORIFLG        =   1
-               MOVE    SPA-SYOYMD-OLD      TO  SSANTEI-SYOYMD
+      ******** MOVE    SPA-SYOYMD-OLD      TO  SSANTEI-SYOYMD
+               MOVE    SPACE               TO  SSANTEI-SYOYMD
            ELSE
                IF      KARRK-SYOSINYMD2    =   SPACE
                    MOVE    KARRK-SYOSINYMD1    TO  SSANTEI-SYOYMD
