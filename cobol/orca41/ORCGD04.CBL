@@ -42,6 +42,7 @@
       *  01.00.08    ひさなが     03/07/29  チェック内容全件印刷追加
       *                                     科情報の印刷
       *                                     入外区分の印刷
+      *  01.00.09    ひさなが     03/09/11  出力先プリンタ番号を個別指定
       *
       *****************************************************************
       *
@@ -414,7 +415,6 @@
        T-000-CNV-YM-EXT.
            EXIT.
       *
-      *修正/*開始*03.07.29*********************************************
       *****************************************************************
       *    入外区分 編集処理
       *****************************************************************
@@ -426,7 +426,6 @@
       *
        T-000-CNV-NYUGAIKBN-EXT.
            EXIT.
-      *修正/*終了*03.07.29*********************************************
       *
       *****************************************************************
       *    管理マスタ読み込み
@@ -552,10 +551,7 @@
            MOVE    DID5-NAME(1:30)       TO    W-HC401-NAME (IDX1).
            MOVE    DID5-NENREI           TO    W-HEN03-C.
            MOVE    W-HEN03-X             TO    W-HC401-NENREI (IDX1).
-      *修正/*開始*03.07.29*********************************************
-      *     MOVE    DID5-MESG(77:90)      TO    W-HC401-MESG (IDX1).
            MOVE    DID5-MESG(1:90)       TO    W-HC401-MESG (IDX1).
-      *修正/*終了*03.07.29*********************************************
            COMPUTE     IDX1     =     IDX1     +     1.
       *
        T-100-CHEKWEITE-EXT.
@@ -607,10 +603,7 @@
            MOVE    DID7-NAME(1:30)       TO    W-HC401-NAME (IDX1).
            MOVE    DID7-NENREI           TO    W-HEN03-C.
            MOVE    W-HEN03-X             TO    W-HC401-NENREI (IDX1).
-      *修正/*開始*03.07.29*********************************************
-      *     MOVE    DID7-MESG(77:90)      TO    W-HC401-MESG (IDX1).
            MOVE    DID7-MESG(1:90)       TO    W-HC401-MESG (IDX1).
-      *修正/*終了*03.07.29*********************************************
            COMPUTE     IDX1     =     IDX1     +     1.
       *
        T-150-CHEKWEITE-EXT.
@@ -662,10 +655,7 @@
            MOVE    DID6-NAME(1:30)       TO    W-HC401-NAME (IDX1).
            MOVE    DID6-NENREI           TO    W-HEN03-C.
            MOVE    W-HEN03-X             TO    W-HC401-NENREI (IDX1).
-      *修正/*開始*03.07.29*********************************************
-      *     MOVE    DID6-MESG(77:90)      TO    W-HC401-MESG (IDX1).
            MOVE    DID6-MESG(1:90)       TO    W-HC401-MESG (IDX1).
-      *修正/*終了*03.07.29*********************************************
            COMPUTE     IDX1     =     IDX1     +     1.
       *
        T-200-CHEKWEITE-EXT.
@@ -717,10 +707,7 @@
            MOVE    DID9-NAME(1:30)       TO    W-HC401-NAME (IDX1).
            MOVE    DID9-NENREI           TO    W-HEN03-C.
            MOVE    W-HEN03-X             TO    W-HC401-NENREI (IDX1).
-      *修正/*開始*03.07.29*********************************************
-      *     MOVE    DID9-MESG(77:90)      TO    W-HC401-MESG (IDX1).
            MOVE    DID9-MESG(1:90)       TO    W-HC401-MESG (IDX1).
-      *修正/*終了*03.07.29*********************************************
            COMPUTE     IDX1     =     IDX1     +     1.
       *
        T-400-CHEKWEITE-EXT.
@@ -736,9 +723,7 @@
            MOVE    T-SINRYOU-G         TO  W-HC401-SINRYOU-G.
            MOVE    T-SINRYOU-Y         TO  W-HC401-SINRYOU-Y.
            MOVE    T-SINRYOU-M         TO  W-HC401-SINRYOU-M.
-      *修正/*開始*03.07.29*********************************************
            MOVE    T-NYUGAIKBN-AREA    TO  W-HC401-NYUGAIKBN.
-      *修正/*終了*03.07.29*********************************************
            MOVE    W-PAGE              TO  W-HEN03-C.
            MOVE    W-HEN03-X           TO  W-HC401-PAGE.
       *
@@ -757,13 +742,14 @@
            MOVE    "HC401"             TO  SPRT-PRTID.
            MOVE    LNK-DAY2-EDTYMD3(1:16)  TO  SPRT-TITLE.
            MOVE    "分チェックリスト"  TO  SPRT-TITLE(17:16).
-      *修正/*開始*03.07.29*********************************************
            MOVE    T-NYUGAIKBN-AREA    TO  SPRT-TITLE(33:8).
-      *修正/*終了*03.07.29*********************************************
            MOVE    W-HC401             TO  SPRT-PRTDATA.
            MOVE    WRK-PARA-TERMID     TO  SPRT-TERMID.
            MOVE    WRK-PARA-OPID       TO  SPRT-OPID.
-           MOVE    SYS-1031-PRTNM (5)  TO  SPRT-PRTNM.
+      *修正/*開始*03.09.11*********************************************
+      *     MOVE    SYS-1031-PRTNM (5)  TO  SPRT-PRTNM.
+           MOVE    SYS-1031-PRTNM (11) TO  SPRT-PRTNM.
+      *修正/*終了*03.09.11*********************************************
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA.
       *
@@ -846,7 +832,10 @@
            MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY.
            MOVE    WRK-PARA-TERMID     TO  LNK-PRTKANRI-TERMID.
            MOVE    WRK-PARA-OPID       TO  LNK-PRTKANRI-OPID.
-           MOVE    SYS-1031-PRTNM (5)  TO  LNK-PRTKANRI-PRTNM.
+      *修正/*開始*03.09.11*********************************************
+      *     MOVE    SYS-1031-PRTNM (5)  TO  LNK-PRTKANRI-PRTNM.
+           MOVE    SYS-1031-PRTNM (11) TO  SPRT-PRTNM.
+      *修正/*終了*03.09.11*********************************************
       *
            MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1.
            MOVE    LNK-PRTKANRI-TBL-KEY
