@@ -8140,7 +8140,12 @@
            DISPLAY "STUSAN-NISSU02 =   "  STUSAN-NISSU02
            DISPLAY "STUSAN-NISSU03 =   "  STUSAN-NISSU03
            DISPLAY "STUSAN-NISSU04 =   "  STUSAN-NISSU04
-           COMPUTE WRK-ZOGEN       =   180 - ( STUSAN-NISSU04  -   1 )
+           IF    ( SPA-GMN-I01-SYORIKBN-CD =   "01" )
+               COMPUTE WRK-ZOGEN   =   180 -   STUSAN-NISSU04
+           ELSE
+               COMPUTE WRK-ZOGEN   =   180 - ( STUSAN-NISSU04  -   1 )
+           END-IF
+      *
            PERFORM 5002-CALENDAR-SEC
            MOVE    WRK-KEISANYMD   TO  WRK-SENTEI-STYMD
       *
