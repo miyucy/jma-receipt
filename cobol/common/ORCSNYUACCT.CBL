@@ -1559,25 +1559,17 @@
                      ((NACCT-ZAISKBKBN     =   "2"  )  AND
                       (NACCT-ZAIKAISU      =   ZERO )  AND
                       (WRK-STDD            =   01   ))
-      *            診療会計削除
-                   PERFORM 20012-NYUINACCT-DELETE-SEC
+      *            退院月の時は削除しない
+                   IF      NACCT-SRYYM(1:6)    =   WRK-RRK-YMD(1:6)
+      *                 診療会計更新
+                       PERFORM 20013-NYUINACCT-UPDATE-SEC
+                   ELSE
+      *                診療会計削除
+                       PERFORM 20012-NYUINACCT-DELETE-SEC
+                   END-IF
                ELSE
       *            診療会計更新
-                   MOVE    SMCNDATE-YMD        TO  NACCT-UPYMD
-                   MOVE    SMCNDATE-HMS        TO  NACCT-UPHMS
-      *
-                   MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-                   MOVE    "DBUPDATE"          TO  MCP-FUNC
-                   MOVE    "NYUINACCT-KEY"     TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"         USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
-                   IF      MCP-RC          NOT =   ZERO
-                       DISPLAY "ORCSNYUACCT NYUINACCT UP  ERR:"
-                               NACCT-KEY 
-                              ",MCP-RC:" MCP-RC ":" 
-                   END-IF
+                   PERFORM 20013-NYUINACCT-UPDATE-SEC
                END-IF
       *
                MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
@@ -1618,7 +1610,31 @@
            EXIT.
       *
       *****************************************************************
-      *   診療会計マスター編集処理
+      *   診療会計更新処理
+      *****************************************************************
+       20013-NYUINACCT-UPDATE-SEC          SECTION.
+      *
+           MOVE    SMCNDATE-YMD        TO  NACCT-UPYMD
+           MOVE    SMCNDATE-HMS        TO  NACCT-UPHMS
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ORCSNYUACCT NYUINACCT UP  ERR:" NACCT-KEY 
+                                       ",MCP-RC:" MCP-RC ":" 
+           END-IF
+           .
+      *
+       20013-NYUINACCT-UPDATE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   診療会計マスター削除処理
       *****************************************************************
        20012-NYUINACCT-DELETE-SEC          SECTION.
       *
