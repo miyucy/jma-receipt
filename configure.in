@@ -89,7 +89,7 @@ AC_ARG_WITH(panda-dir,
 if test x$panda_dir != x; then
   dir=$panda_dir
 else
-  dir="/usr/local/"
+  dir="/usr/local"
 fi
 
 for d in $dir /usr /usr/local/panda /usr/lib/panda /usr/local
