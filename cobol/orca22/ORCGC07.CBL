@@ -32,6 +32,7 @@
       * 01.00.03     NACL-藤原    03/02/28  診療科４０に変更
       * 01.00.04     NACL-藤原    03/10/27  入退院歴より入外区分を編集
       * 01.00.05     NACL-藤原    04/04/26  更新日編集
+      * 01.00.06     NACL-藤原    04/05/06  アフターケア日の表示修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -854,6 +855,7 @@
                                        TO  JYURRK-HKNCOMBINUM
       *****MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN                            
            MOVE    SPA-C07-NYUGAIKBN   TO  JYURRK-NYUGAIKBN                            
+           MOVE    SPA-C07-SRYKA       TO  JYURRK-SRYKA
            IF      SPA-C07-SRYKA      =   "00"
                MOVE    "JYURRK-KEY17"      TO  WRK-DBPATH
            ELSE
@@ -1373,7 +1375,20 @@
            IF      FLG-OK              =   ZERO
                MOVE    "0001"              TO  SPA-ERRCD
            ELSE
-               MOVE    3                   TO  SPA-C07-CUR
+      *        労災保険区分がアフターケアの時、履歴日を表示する
+               IF      SPA-C07-RSI-HKNKBN =   "3"
+                   PERFORM 31401-AFTER-JYURRK-SEC
+                   IF      SPA-C07-RRKMAX     =   ZERO
+                       MOVE    "0012"              TO  SPA-ERRCD
+                       GO      TO      400-SRYKA-EXT
+                   END-IF
+                   MOVE    9                   TO  SPA-C07-CUR
+               ELSE
+                   INITIALIZE                  SPA-C07-JYURRK-LIST
+                   MOVE    ZERO                TO  SPA-C07-RRKMAX
+                   MOVE    ZERO                TO  SPA-C07-JYURRKNUM
+                   MOVE    3                   TO  SPA-C07-CUR
+               END-IF
            END-IF
       *
            .
