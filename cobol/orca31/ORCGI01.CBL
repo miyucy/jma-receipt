@@ -6917,6 +6917,17 @@
                        ELSE
                            MOVE    SPA-NAI-I01-NYUINYMD
                                            TO  WRK-NOW-SKYSTYMD
+      *
+                           IF    ( SPA-NAI-I01-DJKBN   =   "1" )
+                               MOVE    SPA-NAI-I01-NYUINYMD
+                                               TO  WRK-YMD
+                               MOVE    "1"     TO  WRK-ZOGENPTN
+                               MOVE    1       TO  WRK-ZOGEN
+                               PERFORM 5002-CALENDAR-SEC
+                               MOVE    WRK-KEISANYMD
+                                       TO  WRK-NOW-SKYSTYMD
+                           END-IF
+      *
                        END-IF
                    END-IF
                END-IF
@@ -7642,26 +7653,21 @@
       *
            MOVE    SPACE               TO  WRK-MAE-SKYEDYMD
       *
-           INITIALIZE  PTTEIKIRRK-REC
-      *
+           INITIALIZE                      PTTEIKIRRK-REC
            MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    SPA-NAI-I01-PTID    TO  PTTEIKIRRK-PTID
+           MOVE    SPA-NAI-I01-PTRRKNUM
+                                       TO  PTTEIKIRRK-RRKNUM
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
-           MOVE    "PTTEIKIRRK-KEY3"   TO  WRK-DBPATH
+           MOVE    "PTTEIKIRRK-KEY7"   TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC            =   ZERO )
                MOVE    MCPDATA-REC     TO  PTTEIKIRRK-REC
-      *        現在入院分の定期請求データかチェック
-               IF    ( SPA-NAI-I01-NYUINYMD
-                                      <=   PTTEIKIRRK-SKYEDYMD )
-                AND  ( SPA-NAI-I01-PTRRKNUM
-                                       =   PTTEIKIRRK-RRKNUM )
-                   MOVE    PTTEIKIRRK-SKYEDYMD
+               MOVE    PTTEIKIRRK-SKYEDYMD
                                        TO  WRK-MAE-SKYEDYMD
-               END-IF
            END-IF
       *
-           MOVE    "PTTEIKIRRK-KEY3"   TO  WRK-DBPATH
+           MOVE    "PTTEIKIRRK-KEY7"   TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
            .
