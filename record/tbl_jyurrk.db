@@ -578,7 +578,7 @@ path	key23	{
 };
 path	key24	{
 	DBSELECT	{
-		DECLARE tbl_jyurrk_key12_csr CURSOR FOR
+		DECLARE tbl_jyurrk_key24_csr CURSOR FOR
 		SELECT *
 		FROM tbl_jyurrk
 			WHERE   HOSPID    =   :HOSPID
