@@ -339,6 +339,7 @@
       *                                     SYUNOU-KEY26,KEY27,KEY28追加
       *  01.01.150   NACL-多々納  04/09/07  PTNYUINRRK-KEY33,KEY34追加
       *  01.01.151   NACL-森脇    04/09/08  ADRS-KEY6,KEY7追加
+      *  01.01.152   NACL-門脇    04/09/08  SYUNOU-KEY29,KEY30追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2013,6 +2014,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY28"
                    MOVE    PATH-TBL-SYUNOU-KEY28
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY29"
+                   MOVE    PATH-TBL-SYUNOU-KEY29
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY30"
+                   MOVE    PATH-TBL-SYUNOU-KEY30
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"

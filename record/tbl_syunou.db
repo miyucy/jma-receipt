@@ -725,3 +725,36 @@ path	key28 	{
 	};
 };
 
+path	key29 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key29_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYYMD      LIKE :SRYYMD
+			AND   CREATEKBN   <>  '3'
+			ORDER   BY          NYUGAIKBN,DENPNUM
+		;
+	};
+};
+
+path	key30 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key30_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYYMD      LIKE :SRYYMD
+			AND   CREATEKBN   <>  '3'
+			ORDER   BY    NYUGAIKBN,
+                                      GRP_DENPNUM,
+                                      GRP_RENNUM,
+                                      FUKU_DENPNUM,
+                                      DOUJI_DENPNUM,
+                                      DENPNUM
+		;
+	};
+};
+
