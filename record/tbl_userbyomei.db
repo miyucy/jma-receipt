@@ -187,3 +187,18 @@ path	all	{
 		;
 	};
 };
+
+path	key10	{ 	
+	DBSELECT	{
+		DECLARE tbl_userbyomei_key10_csr CURSOR FOR
+		SELECT *
+		FROM tbl_userbyomei
+			WHERE HOSPID          =   :HOSPID
+			AND   BYOMEI       LIKE   :BYOMEI
+			AND   CDSYU           <>  'C'
+			AND   BUNRUICD     LIKE   :BUNRUICD
+			ORDER  BY  BYOMEIINPUTCD
+		;
+	};
+};
+
