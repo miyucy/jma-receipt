@@ -569,7 +569,8 @@ COPYS = \
 	CPSK9001.INC \
 	P02X.INC \
 	U02COMMON-SPA \
-	U02X.INC
+	U02X.INC \
+	W15.INC
 
 
 prefix = @prefix@
