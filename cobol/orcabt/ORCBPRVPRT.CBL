@@ -23,7 +23,7 @@
       *  コンポーネント名  : プレビューDBからの印刷
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  03/08/01    NACL-藤原   新規作成
+      *  03/08/01    NACL-竹田     新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -78,21 +78,11 @@
       *
       *    カウント領域
        01  CNT-AREA.
-           03  CNT-PTHKNINF            PIC 9(06).
-           03  CNT-UPD                 PIC 9(06).
            03  CNT-IN                  PIC 9(06).
-           03  CNT-IN-SEL              PIC 9(06).
-           03  CNT-COMMIT              PIC 9(06).
-           03  CNT-HEN                 PIC 9(06).
-      *
-           03  CNT-OUT                 PIC 9(06).
-           03  CNT-ERR                 PIC 9(06).
-           03  CNT-ERR2                PIC 9(06).
-           03  CNT-OK                  PIC 9(06).
-           03  CNT-PTINF               PIC 9(06).
       *
            03  CNT-LCNT1               PIC 9(02).
            03  CNT-LCNT2               PIC 9(02).
+           03  CNT-PAGE                PIC 9(02).
       *
       *    システム領域
        01  SYS-AREA.
@@ -227,6 +217,9 @@
       *    システム管理（医療機関情報基本情報）
            COPY    "CPSK1001.INC".
       *
+      *    患者番号構成管理情報
+           COPY  "CPSK1009.INC".
+      *
       *    患者番号変換マスタ
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
@@ -251,6 +244,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    患者番号変換サブ
+           COPY    "CPORCSPTID.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -291,9 +287,6 @@
       *
            PERFORM 100-INIT-SEC
       *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  WRK-AREA
-           INITIALIZE                  CNT-AREA
            PERFORM 200-MAIN-SEC
                    UNTIL       FLG-END     =   1
       *
@@ -328,6 +321,7 @@
                                        WRK-PARA-SHELLID
                                        WRK-PARA-HOSPID
                                        WRK-PARA-LSTYMD
+           END-UNSTRING
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -341,8 +335,6 @@
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
-      *    パラメタ編集処理
-           PERFORM 110-PARA-HENSYU-SEC
       *
            INITIALIZE                  SPA-AREA
       *
@@ -362,184 +354,89 @@
            MOVE    WRK-SMM         TO  MEISAI-HEAD-MM
            MOVE    WRK-SDD         TO  MEISAI-HEAD-DD
       *
-      *    システム管理情報　検索処理
-           PERFORM 2200-CP1001-KENSAKU-SEC
-      *
       *    端末ＩＤ固定
            MOVE    "ORCATERM"          TO  SPA-TERMID
       *
            MOVE    WRK-PARA-HOSPID     TO  SPA-HOSPID
       *
-      *    置換対象テーブル保存
-           PERFORM 900-PRVKANRI-INV-SEC
-           IF      FLG-END             =   1
-      *        対象データなし
-               MOVE    "処理対象のデータがありませんでした"
+      *    患者番号構成管理情報編集
+           INITIALIZE                  SYS-1009-REC
+           MOVE    "1009"              TO  SYS-1009-KANRICD
+           MOVE    "*"                 TO  SYS-1009-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1009-REC        TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1009-REC
+               MOVE    SYS-1009-PTNUMKSIKBN
+                                           TO  SPA-1009-PTNUMKSIKBN
+               MOVE    SYS-1009-HJNKSIKBN  TO  SPA-1009-HJNKSIKBN
+               MOVE    SYS-1009-HJNKSINENKBN 
+                                           TO  SPA-1009-HJNKSINENKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKBN
+                                           TO  SPA-1009-HJNKSIRENNUMKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKETA
+                                           TO  SPA-1009-HJNKSIRENNUMKETA
+           ELSE
+               MOVE    "患者番号構成管理情報が取得できませんでした"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1                   TO  FLG-END
-               GO  TO              100-INIT-EXT
            END-IF
+      *
+           PERFORM 900-PRVKANRI-INV-SEC
       *
            .
        100-INIT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    パラメタ編集処理
-      *****************************************************************
-       110-PARA-HENSYU-SEC         SECTION.
-      *
-      *
-           .
-       110-PARA-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    主　　処理
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    患者保険情報検索
-      *    INITIALIZE                  PRVKANRI-REC
-           PERFORM 2101-PRV-SYORI-SEC                
-           PERFORM 900-PRVKANRI-FETCH-SEC
-      *    IF      FLG-ERR         NOT =   ZERO
-      *        MOVE    "ＤＢ更新でエラーがありました。"
-      *                                    TO  WRK-RECEERR
-      *        PERFORM 500-ERR-HENSYU-SEC
-      *    END-IF
+           ADD     1                   TO  CNT-IN
+           MOVE    1                   TO  CNT-LCNT1
       *
+           INITIALIZE                  HCMSL80
+           MOVE    MEISAI-HEAD         TO  HCMSL80-MOJI (CNT-LCNT1)
+           ADD     1                   TO  CNT-LCNT1
+           MOVE    MEISAI-HEAD2        TO  HCMSL80-MOJI (CNT-LCNT1)
+      *
+           PERFORM             UNTIL   FLG-END     =   1
+                               OR      CNT-LCNT1   >=  80
+      *
+               ADD     1                   TO  CNT-LCNT1
+      *
+               MOVE    SPACE               TO  MEISAI-BODY1
+      *
+               INITIALIZE                      ORCSPTIDAREA
+               MOVE    SPA-HOSPID          TO  SPTID-HOSPID
+               MOVE    PRVKANRI-PTID       TO  SPTID-PTID
+               CALL    "ORCSPTID"          USING   ORCSPTIDAREA
+                                                   SPA-1009-TBL
+               MOVE    SPTID-PTNUM         TO  MEISAI-PTNUM
+      *
+               MOVE    PRVKANRI-SRYYM      TO  MEISAI-SRYYM
+               MOVE    PRVKANRI-MEMO       TO  MEISAI-MSG  
+      *
+               MOVE    MEISAI-BODY1        TO  HCMSL80-MOJI (CNT-LCNT1)
+      *
+               PERFORM 900-PRVKANRI-FETCH-SEC
+           END-PERFORM 
+      *
+      *    帳票印刷処理
+           PERFORM 400-PRINT-OUT-SEC
            .
        200-MAIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    システム管理情報　検索処理
-      *****************************************************************
-       2200-CP1001-KENSAKU-SEC          SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SYSKANRI
-           MOVE    SPACE               TO  SYS-1001-REC
-           MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           MOVE    WRK-SYMD            TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-      *
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-               PERFORM 900-SYSTEM-NEXT-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
-           END-IF
-           IF  FLG-SYSKANRI            =   1
-               MOVE    1                   TO  FLG-END
-           ELSE
-               MOVE    MCPDATA-REC         TO  SYS-1001-REC
-               MOVE    SYS-1001-HOSPID     TO  SPA-HOSPID
-               MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
-               MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
-           END-IF
-      *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"      USING   MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-      *
-           .
-       2200-CP1001-KENSAKU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    任継続中一覧帳票出力　初期処理
-      *****************************************************************
-       2101-PRV-SYORI-SEC                SECTION.
-      *
-           ADD     1                   TO  CNT-IN
-           ADD     1                   TO  CNT-LCNT1
-           IF      CNT-LCNT1           >   80
-      *        帳票印刷処理
-               PERFORM 400-PRINT-OUT-SEC
-               MOVE    1                   TO  CNT-LCNT1
-           END-IF
-      *
-           IF      CNT-LCNT1           =   1
-               INITIALIZE                  HCMSL80
-               MOVE    MEISAI-HEAD         TO  HCMSL80-MOJI (CNT-LCNT1)
-               ADD     1                   TO  CNT-LCNT1
-               MOVE    MEISAI-HEAD2        TO  HCMSL80-MOJI (CNT-LCNT1)
-               ADD     1                   TO  CNT-LCNT1
-               ADD     1                   TO  CNT-LCNT1
-           END-IF
-           MOVE    SPACE               TO  MEISAI-BODY1
-           PERFORM 220-PTNUM-KEN-SEC
-           MOVE    PTNUM-PTNUM         TO  MEISAI-PTNUM
-           MOVE    PRVKANRI-SRYYM      TO  MEISAI-SRYYM
-           MOVE    PRVKANRI-MEMO       TO  MEISAI-MSG  
-      *
-           MOVE    MEISAI-BODY1        TO  HCMSL80-MOJI (CNT-LCNT1)
-      *
-           .
-       2101-PRV-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *     患者番号取得処理
-      *****************************************************************
-       220-PTNUM-KEN-SEC            SECTION.
-      *
-      *    患者番号変換
-           MOVE    SPACE               TO  PTNUM-REC
-           INITIALIZE                      PTNUM-REC
-           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
-           MOVE    PRVKANRI-PTID       TO  PTNUM-PTID
-      *
-           MOVE    PTNUM-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  PTNUM-REC
-                   MOVE    ZERO                TO  FLG-PTNUM
-               ELSE
-                   MOVE    1                   TO  FLG-PTNUM
-                   INITIALIZE                  PTNUM-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-PTNUM
-               INITIALIZE                  PTNUM-REC
-           END-IF
-      *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "PTNUM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-           .
-       220-PTNUM-KEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    帳票印刷処理
       *****************************************************************
        400-PRINT-OUT-SEC                SECTION.
+      *
+           ADD     1                   TO  CNT-PAGE
       *
            INITIALIZE                  ORCSPRTAREA
            MOVE    "INS"               TO  SPRT-MODE
@@ -580,11 +477,6 @@
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-           IF      CNT-LCNT1           >   ZERO
-      *        帳票印刷処理
-               PERFORM 400-PRINT-OUT-SEC
-           END-IF
-      *
            DISPLAY "*** ORCBPRVPRT PRVKANRI:"       CNT-IN
            DISPLAY "*** ORCBPRVPRT END ***"
       *
@@ -594,14 +486,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           IF      CNT-COMMIT      =   ZERO
-               MOVE    CNT-UPD         TO  CNT-HEN
-           ELSE
-               COMPUTE CNT-HEN         =   CNT-UPD
-                                       -  (CNT-COMMIT   *   50 )
-           END-IF
-      *****MOVE    CNT-UPD         TO  JOB-UPDCNT
-           MOVE    CNT-IN          TO  JOB-UPDCNT
+           MOVE    CNT-PAGE        TO  JOB-UPDCNT
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
@@ -645,23 +530,44 @@
            EXIT.
       *
       *****************************************************************
-      *    システム管理マスタＦＥＴＣＨ処理
+      *    管理マスタ読み込み
       *****************************************************************
-       900-SYSTEM-NEXT-SEC         SECTION.
+       800-SYSKANRI-READ-SEC           SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-SYSKANRI
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+               ELSE
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
            ELSE
+               INITIALIZE                  SYSKANRI-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
            .
-       900-SYSTEM-NEXT-EXT.
+       800-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -678,21 +584,7 @@
                                        MCPDATA-REC
       *
            IF      MCP-RC             =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    PATH-TBL-PRVKANRI-KEY5
-                                           TO  MCP-PATH
-               CALL    "MCPSUB"            USING
-                                               MCPAREA
-                                               MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  PRVKANRI-REC
-             DISPLAY "take fetch ok"
-                   MOVE    ZERO            TO  FLG-END
-               ELSE  
-             DISPLAY "take fetch ng"
-                   MOVE    SPACE           TO  PRVKANRI-REC
-                   MOVE    1               TO  FLG-END
-               END-IF 
+               PERFORM 900-PRVKANRI-FETCH-SEC 
            ELSE 
                    MOVE    1               TO  FLG-END
            END-IF
@@ -713,10 +605,8 @@
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC     TO  PRVKANRI-REC
-             DISPLAY "take fetch ok"
                    MOVE    ZERO            TO  FLG-END
            ELSE  
-             DISPLAY "take fetch ng"
                    MOVE    SPACE           TO  PRVKANRI-REC
                    MOVE    1               TO  FLG-END
            END-IF 

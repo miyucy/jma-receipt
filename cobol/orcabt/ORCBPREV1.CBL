@@ -24,7 +24,7 @@
       *  コンポーネント名  : プレビュー管理ＤＢの更新
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  02/04/16    MCC-藤原      新規作成
+      *  03/08/16    NACL-藤原      新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -35,7 +35,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -47,11 +47,11 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
-006900*    入力ＰＳ環境ファイル
+      *    入力ＰＳ環境ファイル
        FD  PREVIEW-FILE.
        01  PREVIEW-RECORD.
            03  PREVIEW-ENV      PIC X(200).
@@ -83,8 +83,6 @@
                                    REPLACING  //RECE01PARA//
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
-      *    シェル用領域
-      *****COPY    "CPCOMMONSHELL.INC".
       *
       *    システム領域
        01  SYS-AREA.
@@ -106,21 +104,17 @@
            03  FLG-PREVIEW         PIC 9(01).
            03  FLG-IN              PIC 9(01).
       *
-      *  01.01.02  ADD START 
       *    添字領域
        01  SOEJI-AREA.
            03  IDX                 PIC 9(05).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
-      *  01.01.02  ADD END   
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN              PIC 9(05).
            03  CNT-OUT             PIC 9(10).
-      *  01.01.02  ADD START 
            03  CNT-KETA            PIC 9(05).
            03  WRK-MOJISU          PIC 9(05).
-      *  01.01.02  ADD END   
       *
       *    一時領域
        01  WRK-AREA.
@@ -130,11 +124,9 @@
       *
            03  WRK-PATH            PIC X(64). 
       *
-      *  01.01.02  ADD START 
            03  WRK-FILENAME        PIC X(200). 
            03  WRK-FILENAME1       PIC X(200). 
            03  SPA-NAI-ENV         PIC X(200). 
-      *  01.01.02  ADD END   
       *
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
@@ -145,17 +137,10 @@
            03  WRK-PARA-PRTFLG     PIC X(01).
            03  WRK-PARA-SYOKBN     PIC X(01).
       *
-           03  WRK-IN              PIC X(01).
-      *
        01  WRK-TBL-GROUP.
            03  WK-TBL-G           PIC  X(14) OCCURS 5.
       *    印刷用コンスタント領域 
            COPY    "CPPRTCONST.INC".          
-      *
-      *    ファイルデイレクトリ位置指定サブ
-           COPY  "CPMKPASS.INC".
-      *
-           COPY    "CPSHELLTBL.INC".
       *     
            COPY    "ORCA-DBPATH".         
       *
@@ -258,12 +243,11 @@
                                                WRK-PARA-EDPAGE
                                                WRK-PARA-PRTFLG     
                                                WRK-PARA-SYOKBN
+           END-UNSTRING
       *
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
-      *  10        20        30        40        50        60
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
@@ -275,9 +259,6 @@
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
-      *
-      *    出力先プリンタ名割り当て情報処理
-      *****PERFORM 110-SYSKANRI-HENSYU-SEC
       *
       *    印刷管理ＤＢ読み込み処理
            PERFORM 900-PRTKANRI-SELECT-SEC
@@ -308,8 +289,7 @@
       *****************************************************************
       *    プレビューDB履歴更新処理
       *****************************************************************
-      *  10        20        30        40        50        60
-----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
+      *
        120-PRVKANRI-RRKUPD-SEC                   SECTION.
       *    TBLキーセット
            MOVE    LNK-PRTKANRI-TBL-KEY
@@ -336,7 +316,6 @@
                                                MCPAREA
                                                MCPDATA-REC
                IF      MCP-RC              =   ZERO
-             DISPLAY "take group fetch ok"
                    MOVE    ZERO            TO  FLG-PREVIEW
                    MOVE    MCPDATA-REC     TO  PRVKANRI-REC
                    MOVE    PRVKANRI-T-G    TO  WRK-TBL-GROUP
@@ -352,29 +331,7 @@
            EXIT.
       *
       *****************************************************************
-      *    出力先プリンタ名割り当て情報処理
-      *****************************************************************
-       110-SYSKANRI-HENSYU-SEC                   SECTION.
-      *
-      *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"              TO  SYS-1031-KANRICD
-           MOVE    "*"                 TO  SYS-1031-KBNCD
-           MOVE    SYS-1031-REC        TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1031-REC
-           ELSE    
-               INITIALIZE                  SYS-1031-REC
-           END-IF                                     
-           .
-       110-PARA-HENSYU-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
-      *    主　　処理
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *

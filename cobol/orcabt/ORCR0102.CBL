@@ -57,6 +57,8 @@
       *  01.02.03    NACL-藤原    03/04/17  山形レセHCRCP060.redを追加
       *  01.02.04    NACL-藤原    03/08/28  入院外の続紙の対応
       *                                     出力内容指定の処理の追加
+      *　プレビュー機能追加
+      *  01.03.01    NACL-藤原    03/07/07  プレビュー機能追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -83,6 +85,13 @@
            03  PRT-PRTID           PIC X(30).
            03  PRT-PRTNM           PIC X(20).
            03  PRT-SITEKBN         PIC X(01).
+           03  PRT-PRTKBN          PIC X(01).
+           03  PRT-OUT             PIC X(165).
+           03  PRT-TBL-KEY         PIC X(08).
+           03  PRT-RENNUM          PIC 9(04).
+           03  PRT-TBL-GROUP       PIC X(14).
+           03  PRT-SHORI-RENNUM    PIC 9(04).
+           03  PRT-PAGE            PIC 9(05).
            03  PRT-PRTDATA         PIC X(10000).
       *
       *    エラーファイル
@@ -116,6 +125,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-RECEPRT         PIC 9(01).
+           03  FLG-PRTKANRI        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -168,6 +178,7 @@
                05  WRK-PARA-KKHPRTNM             PIC X(16). 
                05  WRK-PARA-SYAPRTNM-NEXT        PIC X(16).
                05  WRK-PARA-KKHPRTNM-NEXT        PIC X(16). 
+               05  WRK-PARA-PRTKBN               PIC X(01). 
       *
            COPY    "CPORCSPRTLNK.INC".
       *
@@ -278,7 +289,6 @@
                                              WRK-PARA-SHELLID
                                              WRK-PARA1
                                              WRK-PARA-RECE09-KEY
-                                             WRK-PARA-TERMID64
                                              WRK-PARA-SYOKBN
                                              WRK-PARA-SYAPRTNM
                                              WRK-PARA-KKHPRTNM
@@ -295,6 +305,7 @@
                                              LNK-PRTKANRI-PRTNM
                                              WRK-PARA-SYAPRTNM-NEXT
                                              WRK-PARA-KKHPRTNM-NEXT
+                                             WRK-PARA-PRTKBN
            END-UNSTRING                                  
       *
            PERFORM 100-DBOPEN-SEC
@@ -430,7 +441,8 @@
                MOVE    SPACE           TO  SHELLTBL
       *        ファイルデイレクトリ位置指定
                INITIALIZE              ORCSMKPASSAREA
-               MOVE    "scripts/daily/HCALL2.sh"
+      *********MOVE    "scripts/daily/HCALL2.sh"
+               MOVE    "scripts/daily/HCALL_prv.sh"
                                        TO  MKPASS-IN-01
                CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
                MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
@@ -444,6 +456,8 @@
                                            MCPAREA
                                            MCPDATA-REC
       *
+      *        最新以外の帳票ＤＢを削除
+               PERFORM 2003-PRTDATA-DEL-SEC
       *        最新以外の帳票管理ＤＢを削除
                MOVE    SPACE           TO  PRTKANRI-REC
                INITIALIZE                  PRTKANRI-REC
@@ -458,26 +472,6 @@
                                            TO  MCP-PATH
                ELSE
                    MOVE    PATH-TBL-PRTKANRI-DEL13
-                                           TO  MCP-PATH
-               END-IF
-               CALL    "MCPSUB"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
-      *
-      *        最新以外の帳票ＤＢを削除
-               MOVE    SPACE           TO  PRTDATA-REC
-               INITIALIZE                  PRTDATA-REC
-               MOVE    LNK-PRTKANRI-PRIORITY
-                                       TO  PRTDATA-PRIORITY
-               MOVE    LNK-PRTKANRI-TBL-GROUP
-                                       TO  PRTDATA-TBL-GROUP
-               MOVE    PRTDATA-REC     TO  MCPDATA-REC
-               MOVE    "DBDELETE"      TO  MCP-FUNC
-               IF      WRK-PARA-SYOKBN     =   "1"
-                   MOVE    PATH-TBL-PRTDATA-DEL12
-                                           TO  MCP-PATH
-               ELSE
-                   MOVE    PATH-TBL-PRTDATA-DEL13
                                            TO  MCP-PATH
                END-IF
                CALL    "MCPSUB"            USING
@@ -513,10 +507,22 @@
                    MOVE    WRK-PARA-KKHPRTNM-NEXT
                                                TO  PRT-PRTNM
            END-EVALUATE
+           MOVE    "1"                 TO  PRT-SITEKBN
+           MOVE    WRK-PARA-PRTKBN     TO  PRT-PRTKBN
+           MOVE    "/var/tmp/"          TO  PRT-OUT
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                       TO  PRT-TBL-KEY
+           MOVE    LNK-PRTKANRI-RENNUM TO  PRT-RENNUM
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                       TO  PRT-TBL-GROUP
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                       TO  PRT-SHORI-RENNUM
+           ADD     1                   TO  WRK-RENNUM
+           MOVE    WRK-RENNUM          TO  PRT-PAGE
       *
       *    通し番号印刷のときのみ編集
            IF      SYS-2005-RENNUMHENKBN   =   "1"
-               ADD     1                   TO  WRK-RENNUM
+      *********ADD     1                   TO  WRK-RENNUM
                IF      WRK-PARA-SYOKBN     =   "1"
                    MOVE    WRK-RENNUM          TO  WRK-HEN-RENNUM1
                ELSE
@@ -584,18 +590,21 @@
                                        TO  SPRT-TBL-KEY
            MOVE    LNK-PRTKANRI-TBL-GROUP
                                        TO  SPRT-TBL-GROUP
-           IF      WRK-PARA-SYOKBN     =   "1"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SPRT-SRYYM
-           ELSE
-               MOVE    ZERO                TO  SPRT-SRYYM
-           END-IF
+           MOVE    RECE08-SRYYM        TO  SPRT-SRYYM
            MOVE    LNK-PRTKANRI-SKYYMD TO  SPRT-SKYYMD
            MOVE    LNK-PRTKANRI-SHELLID 
                                        TO  SPRT-SHELLID
            MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                        TO  SPRT-SHORI-RENNUM
-           MOVE    LNK-PRTKANRI-PRIORITY
-                                       TO  SPRT-PRIORITY
+           COMPUTE  SPRT-PRIORITY      =   LNK-PRTKANRI-PRIORITY
+                                       *   10
+           IF      WRK-PARA-SYOKBN     =   "1"
+               COMPUTE  SPRT-PRIORITY      =   SPRT-PRIORITY      
+                                           +   1
+           ELSE
+               COMPUTE  SPRT-PRIORITY      =   SPRT-PRIORITY      
+                                           +   2
+           END-IF
            MOVE    RECE08-FORMID       TO  SPRT-PRTID
            MOVE    RECE08-PRTDATA      TO  SPRT-PRTDATA
       *         
@@ -686,10 +695,62 @@
                PERFORM 500-ERR-HENSYU-SEC
           END-IF    
            .
-       2001-RECEPRT-CLEAR-EXT.
+       2002-RECEPRT-CLEAR-EXT.
            EXIT.
       *
-057400*
+      *****************************************************************
+      *    帳票ＤＢクリア処理
+      *****************************************************************
+       2003-PRTDATA-DEL-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  PRTKANRI-REC
+           INITIALIZE                     PRTKANRI-REC
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                       TO  PRTKANRI-PRIORITY
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                       TO  PRTKANRI-TBL-GROUP
+           MOVE    PRTKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           IF      WRK-PARA-SYOKBN     =   "1"
+                   MOVE    PATH-TBL-PRTKANRI-KEY4
+                                           TO  MCP-PATH
+           ELSE
+                   MOVE    PATH-TBL-PRTKANRI-KEY5
+                                           TO  MCP-PATH
+           END-IF
+      *
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC         NOT  =   ZERO
+               MOVE    1               TO  FLG-PRTKANRI
+           ELSE
+               PERFORM 900-PRTKANRI-FET-SEC
+           END-IF
+      *
+           PERFORM UNTIL   (FLG-PRTKANRI  =   1         )
+      *        最新以外の帳票ＤＢを削除
+               MOVE    SPACE           TO  PRTDATA-REC
+               INITIALIZE                  PRTDATA-REC
+               MOVE    PRTKANRI-TBL-KEY
+                                       TO  PRTDATA-TBL-KEY
+               MOVE    PRTKANRI-TBL-GROUP
+                                       TO  PRTDATA-TBL-GROUP
+               MOVE    PRTDATA-REC     TO  MCPDATA-REC
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               MOVE    PATH-TBL-PRTDATA-DEL11
+                                           TO  MCP-PATH
+               CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
+      *
+               PERFORM 900-PRTKANRI-FET-SEC
+      *
+           END-PERFORM
+           .
+       2003-PRTDATA-DEL-EXT.
+           EXIT.
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
@@ -744,8 +805,7 @@
       *
            DISPLAY "*** ORCR0102 IN  "  CNT-IN
            DISPLAY "*** ORCR0102 OUT "  CNT-OUT
-      **** DISPLAY "*** ORCR0102 END ***"
-      *****ACCEPT WRK-IN
+           DISPLAY "*** ORCR0102 END ***"
            .
        300-END-EXT.
            EXIT.
@@ -820,6 +880,33 @@
                                         MCPDATA-REC
            .
        900-RECEPRT-CLS-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     印刷管理ＤＢ読み込み
+      *****************************************************************
+       900-PRTKANRI-FET-SEC            SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           IF      WRK-PARA-SYOKBN     =   "1"
+                   MOVE    PATH-TBL-PRTKANRI-KEY4
+                                           TO  MCP-PATH
+           ELSE
+                   MOVE    PATH-TBL-PRTKANRI-KEY5
+                                           TO  MCP-PATH
+           END-IF
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  PRTKANRI-REC
+               MOVE    ZERO                TO  FLG-PRTKANRI
+           ELSE
+               MOVE    1                   TO  FLG-PRTKANRI
+           END-IF
+           .
+       900-PRTKANRI-FET-EXT.
            EXIT.
       *
       *****************************************************************

@@ -205,7 +205,6 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           DISPLAY "bprt1 start"
            PERFORM 100-INIT-SEC
       *
            PERFORM 200-MAIN-SEC
@@ -267,7 +266,9 @@
            PERFORM 900-PRTKANRI-SELECT-SEC
       *
       *    プレビュー用前処理
-           DISPLAY "bprt1 CNT-OUT = [" CNT-OUT "]"
+           DISPLAY "bprt1 WRK-PARA-PRTFLG  = [" WRK-PARA-PRTFLG  "]"
+           DISPLAY "bprt1 WRK-PARA-STPAGE   = [" WRK-PARA-STPAGE "]"
+           DISPLAY "bprt1  WRK-PARA-EDPAGE  = [" WRK-PARA-EDPAGE "]"
            MOVE    ZERO            TO  WRK-MOJISU
            IF      WRK-PARA-PRTFLG     =   "3"
              IF    WRK-PARA-STPAGE     NOT =   ZERO   AND
@@ -332,7 +333,6 @@
       *     
       *   印刷用スクリプト処理
       *
-           DISPLAY "bprt1 CNT-OUT = [" CNT-OUT "]"
            IF      CNT-OUT             >   ZERO
            AND     FLG-ERR             =   ZERO 
       *
@@ -364,6 +364,14 @@
       *    帳票印刷処理
       *****************************************************************
        2001-PRTDATA-PRINT-SEC          SECTION.
+      *
+      * プレビュー処理の場合管理DBがあれば以降スキップ
+           IF      WRK-PARA-PRTFLG        =    "3"
+                   PERFORM 900-PRVKANRI-INV-SEC
+             IF    FLG-PRVKANRI           =    ZERO
+                   GO      TO          2001-PRTDATA-PRINT-EXT
+             END-IF
+           END-IF
       *
            MOVE    SPACE               TO  PRT-REC 
            MOVE    PRTDATA-PRTID       TO  PRT-PRTID
@@ -599,6 +607,37 @@
       *****************************************************************
       *     プレビュー管理ＤＢ読み込み
       *****************************************************************
+       900-PRVKANRI-INV-SEC             SECTION.
+      *
+           MOVE    LNK-PRTKANRI-TBL-KEY        TO  PRVKANRI-TBL-KEY
+           MOVE    PRTDATA-RENNUM              TO  PRVKANRI-RENNUM
+           MOVE    LNK-PRTKANRI-TBL-GROUP      TO  PRVKANRI-TBL-GROUP 
+           MOVE    PRTDATA-SHORI-RENNUM        TO  PRVKANRI-SHORI-RENNUM
+           MOVE    PRTDATA-PAGE                TO  PRVKANRI-PAGE  
+           MOVE    PRVKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    PATH-TBL-PRVKANRI-KEY
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC             =   ZERO
+               PERFORM 900-PRVKANRI-FET1-SEC
+           ELSE 
+               MOVE    1                   TO  FLG-PRVKANRI
+                                               FLG-END
+               DISPLAY "ORCBPRT1 SYSTEM ERR!!"
+               GO      TO             900-PRVKANRI-EXT
+           END-IF
+           .
+       900-PRVKANRI-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *     プレビュー管理ＤＢ読み込み
+      *****************************************************************
        900-PRVKANRI-SELECT1-SEC         SECTION.
       *
            INITIALIZE                      PRVKANRI-REC
@@ -631,6 +670,7 @@
            IF  MCP-RC            NOT  =   ZERO
                GO      TO             900-PRVKANRI-SELECT1-EXT
            END-IF
+               DISPLAY "ORCBPRT1 start hit ok!!"
       *
            INITIALIZE                      PRVKANRI-REC
            MOVE    LNK-PRTKANRI-TBL-KEY
@@ -660,7 +700,9 @@
            END-IF
       *
            IF  MCP-RC                 =   ZERO
-            IF PRVKANRI-SHORI-MOD-FLG NOT =    "4"
+               DISPLAY "ORCBPRT1 next hit ok!!"
+      *    プレビュー以外の時
+            IF WRK-PARA-PRTFLG        =    "3"
                MOVE    1                   TO  FLG-END
             END-IF
            END-IF
