@@ -116,6 +116,9 @@
                WHEN    "0003"
                    MOVE    "医薬品は必ず数量を入力してください"
                                        TO  SPA-ERRMSG
+               WHEN    "0004"
+                   MOVE    "きざみ値の数量は整数で入力して下さい。"
+                                       TO  SPA-ERRMSG
                WHEN    "0005"
                    MOVE    "入力コードの文字エラー"
                                        TO  SPA-ERRMSG

@@ -48,6 +48,7 @@
       *  02.00.11    NACL-多々納  03/07/02  入院の消炎鎮痛処理と
       *                                     在宅寝たきり処置チェック変更
       *  02.00.12    NACL-多々納  04/11/30  きざみ値上限判定修正他
+      *                                     コメントコード判定追加
       *****************************************************************
       *
       *
@@ -2012,15 +2013,11 @@
                END-IF
            END-PERFORM
       *
-      *    数字入力エラー時、エラー表示へ
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      3002-INPUT-MEISYO-EXT
-           END-IF
-      *
       *    漢字変換後、名称へ
            PERFORM VARYING IDX-SST     FROM    1   BY  1
                    UNTIL  (IDX-SST         >   4     )   OR
                           (WRK-INPUT-KETA (IDX-SST)  =   ZERO)
+                      OR  (SPA-ERRCD             NOT =   SPACE)
                IF      SPA-COM-ATAI(IDX-T IDX-SST)   =   SPACE
                    CONTINUE
                ELSE
@@ -2302,6 +2299,12 @@
                        COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN  +  0.5
                    END-IF
            END-EVALUATE
+      *
+      *    数量は整数であること
+           MOVE    SPA-COM-SURYO (IDX-T)   TO  WRK-SURYO
+           IF      WRK-SURYO-S2        >   ZERO
+               MOVE    "0004"              TO  SPA-ERRCD
+           END-IF
       *
            IF    ((SPA-ERRCD           =   SPACE )  OR
                   (SPA-ERRCD(1:1)      =   "K"   )) AND

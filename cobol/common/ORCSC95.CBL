@@ -608,7 +608,13 @@
                ELSE
                    MOVE    ZERO            TO  SPA-JIKANCHK-TIME-G
                END-IF
-      *
+      *        患者取消確認チェック
+               IF      SYS-1008-CLEARCHK-FLG   =   SPACE
+                   MOVE    ZERO            TO  SPA-CLEARCHK-FLG
+               ELSE
+                   MOVE    SYS-1008-CLEARCHK-FLG
+                                           TO  SPA-CLEARCHK-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
@@ -624,6 +630,7 @@
                MOVE    ZERO                TO  SPA-LAST-KIKAN
                MOVE    ZERO                TO  SPA-JIKANCHK-TIME-G
                MOVE    ZERO                TO  SPA-JIKANTOKU-CHK
+               MOVE    ZERO                TO  SPA-CLEARCHK-FLG
            END-IF
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -951,6 +958,13 @@
                    MOVE    SYS-1008-GAZOUKSN1-FLG
                                            TO  SPA-GAZOUKSN1
                END-IF
+      *        患者取消確認チェック
+               IF      SYS-1008-CLEARCHK-FLG   =   SPACE
+                   MOVE    ZERO            TO  SPA-CLEARCHK-FLG
+               ELSE
+                   MOVE    SYS-1008-CLEARCHK-FLG
+                                           TO  SPA-CLEARCHK-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
       *
@@ -962,6 +976,7 @@
                MOVE    ZERO                TO  SPA-CHOKICHK-FLG
                MOVE    ZERO                TO  SPA-JIKANTOKU-NYU
                MOVE    "1"                 TO  SPA-GAZOUKSN1
+               MOVE    ZERO                TO  SPA-CLEARCHK-FLG
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
