@@ -24,16 +24,17 @@
                   05  M96-STEPENDTIME    PIC X(8).
                 04  M96-SELECT
                         PIC X       OCCURS  2 TIMES.
-              03  M96-LIST3.
-                04  M96-LIST3-COUNT   PIC S9(9)   BINARY.
-                04  M96-LIST3-ROW PIC S9(9)   BINARY.
-                04  M96-LIST3-ROWATTR PIC S9(9)   BINARY.
-                04  M96-ITEM        OCCURS  99 TIMES.
-                  05  M96-MASTNAME     PIC X(30).
-                  05  M96-DBRVERSION1  PIC X(64).
-                  05  M96-DBRVERSION2  PIC X(64).
-                04  M96-SELECT
-                        PIC X       OCCURS  99 TIMES.
+              03  M96-SCROLLEDWINDOW1.
+                04  M96-LIST3.
+                  05  M96-LIST3-COUNT   PIC S9(9)   BINARY.
+                  05  M96-LIST3-ROW PIC S9(9)   BINARY.
+                  05  M96-LIST3-ROWATTR PIC S9(9)   BINARY.
+                  05  M96-ITEM        OCCURS  99 TIMES.
+                    06  M96-MASTNAME  PIC X(30).
+                    06  M96-DBRVERSION1  PIC X(64).
+                    06  M96-DBRVERSION2  PIC X(64).
+                  05  M96-SELECT
+                          PIC X       OCCURS  99 TIMES.
             03  M96-MSG1.
               04  M96-MSG1-STYLE PIC X(20).
               04  M96-MSG1-VALUE     PIC X(62).
