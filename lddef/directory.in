@@ -1,7 +1,5 @@
 name	orca;
 
-#linksize	64512;
-
 base	"@ORCA_DIR@";
 
 lddir	"@sitelddefdir@:@lddefdir@";
