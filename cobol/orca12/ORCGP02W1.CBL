@@ -4517,7 +4517,6 @@
       *        更正、育成
                IF      SPA-PTKOH-KOHNUM(IDX)   =   "015"
                                                OR  "016"
-                                               OR  "017"
                    MOVE    ZERO                TO  IDY
                    PERFORM VARYING     IDX2    FROM    1   BY  1
                            UNTIL       IDX2    >   SPA-FTN1-MAX
