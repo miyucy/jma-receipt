@@ -20,7 +20,7 @@
       *****************************************************************
       *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
       *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ·î¼¡Ä¢É¼
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¹ñÊÝ¡¦Áí³çÉ½¡Ê°å²Ê¡¦»õ²Ê¡Ë
+      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¹ñÊÝ¡¦¥ì¥»ÅÅÁí³çÉ½¡Ê°å²Ê¡¦»õ²Ê¡Ë
       *                      £È£Ã£Í£²£Ñ¡¢£È£Ã£Í£²£Ò
       *  ´ÉÍý¼Ô            : 
       *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
@@ -31,12 +31,19 @@
       *  01.01.01    NACL-¿¹ÏÆ    04/10/07  ÌôºÞÉéÃ´¶âÍó¤òºï½ü
       *                           04/10/12  ¸©ÊÌ¤Ë½¸·×
       *                           04/10/13  ¸©Æâ¡¢¸©³°ÊÌ¤Ë½ÐÎÏ
+      *  01.01.02    NACL-¾®Æ¦Âô  04/10/20  ÀÁµá£Ä£Â¹¹¿·½èÍýÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
+      *
+      *    ÀÁµá£Ä£Â¹¹¿·ÍÑ¥Õ¥¡¥¤¥ë
+           SELECT  UPD-FILE        ASSIGN  RECEUPD
+                                   ORGANIZATION    IS  LINE
+                                                       SEQUENTIAL 
+                                   FILE    STATUS  IS  STS-RECEUPD.
       *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
@@ -45,11 +52,22 @@
        DATA                    DIVISION.
        FILE                        SECTION.
       *
+      *    ÀÁµá£Ä£Â¹¹¿·ÍÑ¥Õ¥¡¥¤¥ë
+       FD  UPD-FILE.
+           COPY    "CPRCF010.INC"  REPLACING  //RECE10//
+                                   BY         //RECE10X//.
+      *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
+      *
+      *    ÀÁµá£Ä£Â¹¹¿·ÍÑ¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01PARA//
+                                   BY         //RECEUPD//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONDAT2.INC"
@@ -62,7 +80,9 @@
       *
       *    ¥¹¥ÑÎÎ°è
        01  STS-AREA.
+           03  STS-RECE10          PIC X(02). 
            03  STS-RECEERR         PIC X(02).
+           03  STS-RECEUPD         PIC X(02).
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -77,6 +97,8 @@
       *----(01.01.01)--ADD-START---
            03  FLG-KBN             PIC 9(01).
       *----(01.01.01)--ADD-START---
+           03  FLG-UPDFILE         PIC 9(01).
+           03  FLG-SEIKYU          PIC 9(01). 
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -119,6 +141,7 @@
            03  CNT-PAGE            PIC 9(04).
            03  CNT-RECE10          PIC 9(06).
            03  CNT-LINE            PIC 9(02).
+           03  CNT-UPDFILE           PIC 9(06).
       *
       *    ½¸·×ÎÎ°è
        01  SUM-AREA.
@@ -295,6 +318,10 @@
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
       *
+           MOVE    "RECEUPD"       TO  RECEUPD-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID
+                                   TO  RECEUPD-TERMID
+      *
            MOVE    "RECEERR"       TO  RECEERR-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  RECEERR-TERMID
@@ -358,6 +385,7 @@
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
+           OPEN    OUTPUT  UPD-FILE
            .
        100-INIT-EXT.
            EXIT.
@@ -485,6 +513,8 @@
       *
       *    ½¸·×¤ÎÂÐ¾Ý¤Ë¤Ê¤é¤Ê¤«¤Ã¤¿¤È¤­
            IF          FLG-UPD     =   1
+               PERFORM 20013-UPD-FILE-HENSYU-SEC
+      *
                MOVE    WRK-PATH       TO  ORC-DBPATH
                PERFORM 900-SEIKYU-READ-SEC
            ELSE
@@ -584,6 +614,18 @@
            END-PERFORM
            .
        20012-KOH-SYUKEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÀÁµá£Ä£Â¹¹¿·ÍÑ¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
+      *****************************************************************
+       20013-UPD-FILE-HENSYU-SEC         SECTION.
+      *
+           MOVE    RECE10-REC          TO  RECE10X-REC
+           WRITE   RECE10X-REC
+           ADD     1                   TO  CNT-UPDFILE
+           .
+       20013-UPD-FILE-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1024,6 +1066,20 @@
       *****************************************************************
        300-END-SEC                 SECTION.
       *
+           CLOSE   UPD-FILE
+      *
+      *
+           IF      CNT-RECE10            =   ZERO 
+               CONTINUE
+           ELSE
+              IF      FLG-UPD        =   1
+              AND     FLG-ERR        =   ZERO 
+                   IF      CNT-UPDFILE    >   ZERO
+                       PERFORM 310-SEIKYU-UPD-SEC
+                   END-IF
+               END-IF     
+           END-IF
+      *
            DISPLAY "*** ORCBM031 IN  "  CNT-RECE10
            DISPLAY "*** ORCBM031 END ***"
       *     
@@ -1041,6 +1097,56 @@
            PERFORM 900-DBDISCONNECT-SEC
            .
        300-END-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   ÀÁµá´ÉÍý£Ä£Â¹¹¿·½èÍý
+      *****************************************************************
+       310-SEIKYU-UPD-SEC              SECTION.
+      *
+           OPEN    INPUT    UPD-FILE
+      *
+           PERFORM 900-UPD-FILE-READ-SEC
+           PERFORM             UNTIL   FLG-UPDFILE    =   1
+               MOVE    RECE10X-KEY         TO  RECE10-KEY
+               MOVE    RECE10-REC          TO  MCPDATA-REC
+               PERFORM 910-SEIKYU-INV-SEC
+               IF      FLG-SEIKYU          =   ZERO
+                   MOVE    "2"             TO  RECE10-SKYKBN
+                   MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
+                   MOVE    LNK-PRTKANRI-SKYYMD TO  RECE10-UPDYMD  
+                   MOVE    RECE10-REC      TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"      TO  MCP-FUNC
+                   MOVE    "SEIKYU-KEY"    TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"      USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                   IF      MCP-RC          =   ZERO
+                       PERFORM 900-UPD-FILE-READ-SEC
+                   ELSE
+                       STRING "ÀÁµá´ÉÍý£Ä£Â¡¡¹¹¿·¥¨¥é¡¼¡¡"
+                                               DELIMITED  BY  SIZE
+                               RECE10-KEY      DELIMITED  BY  SIZE
+                                               INTO    WRK-RECEERR
+                       END-STRING                                
+                       PERFORM 500-ERR-HENSYU-SEC
+                       MOVE    1           TO  FLG-UPDFILE
+                   END-IF
+               ELSE
+                   STRING "ÀÁµá´ÉÍý£Ä£Â¡¡ÆÉ¹þ¤ß¹¹¿·¥¨¥é¡¼¡¡"
+                                               DELIMITED  BY  SIZE
+                           RECE10X-KEY         DELIMITED  BY  SIZE
+                                               INTO    WRK-RECEERR
+                   END-STRING                                
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    1               TO  FLG-UPDFILE
+               END-IF
+           END-PERFORM  
+      *
+           CLOSE   UPD-FILE
+           .
+       310-SEIKYU-UPD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1181,6 +1287,21 @@
            EXIT.
       *
       *****************************************************************
+      *    ÀÁµá´ÉÍý£Ä£Â¹¹¿·ÍÑ¥Õ¥¡¥¤¥ëÆÉ¹þ
+      *****************************************************************
+       900-UPD-FILE-READ-SEC             SECTION.
+      *
+           READ    UPD-FILE
+               AT  END
+                   MOVE    1           TO  FLG-UPDFILE
+               NOT AT  END
+                   MOVE    ZERO        TO  FLG-UPDFILE
+           END-READ
+           .
+       900-UPD-FILE-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿ÆÉ¹þ
       *****************************************************************
        910-SYSKANRI-INV-SEC        SECTION.
@@ -1218,6 +1339,44 @@
       *
            .
        910-SYSKANRI-INV-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÀÁµá´ÉÍý¥Þ¥¹¥¿ÆÉ¹þ
+      *****************************************************************
+       910-SEIKYU-INV-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-SEIKYU
+                   MOVE    MCPDATA-REC         TO  RECE10-REC
+               ELSE
+                   MOVE    1                   TO  FLG-SEIKYU
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SEIKYU
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       910-SEIKYU-INV-EXT.
            EXIT.
       *
       *****************************************************************
