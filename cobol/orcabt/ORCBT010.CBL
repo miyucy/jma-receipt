@@ -871,8 +871,11 @@
                MOVE    PTKOHINF-REC    TO  MCPDATA-REC
                PERFORM 900-PTKOHINF-READ-SEC
                IF       FLG-PTKOHINF       =   ZERO
-                   MOVE   PTKOH-FTNJANUM   TO  TOUKEI01-RJNFTNJANUM
-                   MOVE   PTKOH-JKYSNUM    TO  TOUKEI01-RJNJKYSNUM
+                   MOVE    PTKOH-PAYKBN        TO  TOUKEI01-RJNPAYKBN
+                   MOVE    PTKOH-FTNJANUM      TO  TOUKEI01-RJNFTNJANUM
+                   MOVE    PTKOH-JKYSNUM       TO  TOUKEI01-RJNJKYSNUM
+                   MOVE    PTKOH-TEKSTYMD      TO  TOUKEI01-RJNTEKSTYMD
+                   MOVE    PTKOH-TEKEDYMD      TO  TOUKEI01-RJNTEKEDYMD
       *            法別番号のセット
                    INITIALIZE                  HKNNUM-REC
                    MOVE    WRK-PARA-HOSPID TO  HKN-HOSPID
@@ -1079,6 +1082,8 @@
            PERFORM 900-PTKOHINF-READ-SEC
            IF       FLG-PTKOHINF       =   ZERO
                MOVE   PTKOH-FTNJANUM   TO  TOUKEI01-TKOHFTNJANUM (IDY)
+               MOVE   PTKOH-TEKSTYMD   TO  TOUKEI01-TKOHTEKSTYMD (IDY)
+               MOVE   PTKOH-TEKEDYMD   TO  TOUKEI01-TKOHTEKEDYMD (IDY)
       *             
       *        生保のとき月代わり受給者番号マスタより受給者番号をセット 
                IF      PTKOH-KOHNUM        =   WRK-CONS-SEIHO-HKNNUM
@@ -1423,6 +1428,7 @@
                                MOVE   "8"   TO   WK-RJN
                        END-EVALUATE
                    END-IF
+               END-IF
            END-IF
       *
       *      DISPLAY "HONKZKKBN : " WK-HONKZKKBN 

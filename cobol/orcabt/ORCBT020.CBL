@@ -172,6 +172,7 @@
                05  WRK-SDD             PIC 9(02).
       *
            03  WRK-SYOKBN              PIC X(01).
+           03  WRK-KOH-MAX             PIC 9(03).
       *
       *     ±¦¤º¤áÊÔ½¸ÍÑ     
            03  WRK-HENKAN              PIC X(20).
@@ -628,7 +629,8 @@
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
       *    Êä½õ¶èÊ¬
-           MOVE    TOUKEI02-HOJOKBN    TO  WRK-DATA
+           MOVE    TOUKEI01-HKN-HOJOKBN
+                                       TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
@@ -685,9 +687,26 @@
            PERFORM 5004-MOJI-HENSYU-SEC
       *    
       *¸øÈñ¾ðÊó
-      *  
+      *
+           MOVE    ZERO                TO  WRK-KOH-MAX
+      *
+           IF      TOUKEI01-KOHID      >   ZERO
+               MOVE    TOUKEI01-RJNHKNNUM  TO  WRK-KOHHKNNUM
+               MOVE    TOUKEI01-KOHID      TO  WRK-KOHID
+               MOVE    TOUKEI01-RJNPAYKBN  TO  WRK-KOHPAYKBN
+               MOVE    TOUKEI01-RJNFTNJANUM
+                                           TO  WRK-KOHFTNJANUM
+               MOVE    TOUKEI01-RJNJKYSNUM TO  WRK-KOHJKYSNUM
+               MOVE    TOUKEI01-RJNTEKSTYMD
+                                           TO  WRK-KOHTEKSTYMD
+               MOVE    TOUKEI01-RJNTEKEDYMD
+                                           TO  WRK-KOHTEKEDYMD
+               PERFORM 20011-KOH-HENSYU-SEC
+           END-IF
+      *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       4
+                   OR      WRK-KOH-MAX     =   4 
                INITIALIZE                  WRK-KOHI-AREA
                IF      TOUKEI02-TKOHID (IDX1)  >   ZERO
                    PERFORM VARYING IDX2    FROM    1   BY  1
@@ -697,40 +716,18 @@
                                                TOUKEI01-TKOHID (IDX2)
                            MOVE    TOUKEI01-KOHI-TBL (IDX2)
                                                        TO  WRK-KOHI-AREA
+                           PERFORM 20011-KOH-HENSYU-SEC
                            MOVE    10                  TO  IDX2
                        END-IF
                    END-PERFORM
-               END-IF  
-      *        ¸øÈñÊÝ¸±ÈÖ¹æ     
-               MOVE    WRK-KOHHKNNUM       TO  WRK-DATA
-               MOVE    3                   TO  WRK-NAGASA
-               PERFORM 5004-MOJI-HENSYU-SEC
-      *        ¸øÈñ£É£Ä
-               MOVE    WRK-KOHID           TO  WRK-NUM
-               MOVE    10                  TO  WRK-NAGASA
-               PERFORM 5005-NUM-HENSYU-SEC
-      *        »ÙÊ§¶èÊ¬
-               MOVE    WRK-KOHPAYKBN       TO  WRK-DATA
-               MOVE    2                   TO  WRK-NAGASA
-               PERFORM 5004-MOJI-HENSYU-SEC
-      *        ÉéÃ´¼ÔÈÖ¹æ
-               MOVE    WRK-KOHFTNJANUM     TO  WRK-DATA
-               MOVE    8                   TO  WRK-NAGASA
-               PERFORM 5004-MOJI-HENSYU-SEC
-      *        ¼õµë¼ÔÈÖ¹æ
-               IF      WRK-PARA-KOJINKBN   =   "1"
-                   MOVE    WRK-KOHJKYSNUM      TO  WRK-DATA
-                   MOVE    20                  TO  WRK-NAGASA
                END-IF
-               PERFORM 5004-MOJI-HENSYU-SEC
-      *        Å¦Í×³«»ÏÆü
-               MOVE    WRK-KOHTEKSTYMD     TO  WRK-NUM
-               MOVE    8                   TO  WRK-NAGASA
-               PERFORM 5005-NUM-HENSYU-SEC
-      *        Å¦Í×½ªÎ»Æü
-               MOVE    WRK-KOHTEKEDYMD     TO  WRK-NUM
-               MOVE    8                   TO  WRK-NAGASA
-               PERFORM 5005-NUM-HENSYU-SEC
+           END-PERFORM
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       4
+                   OR      WRK-KOH-MAX     =   4 
+               INITIALIZE                  WRK-KOHI-AREA
+               PERFORM 20011-KOH-HENSYU-SEC
            END-PERFORM
       *
       *Ï«ºÒ¾ðÊó
@@ -828,6 +825,48 @@
            PERFORM 5001-FILE-WRITE-SEC
            .
        2001-FILE-SYORI-EXT.
+           EXIT. 
+      *            
+      *
+      *****************************************************************
+      *    £Ã£Ó£Ö¥Õ¥¡¥¤¥ë¡Ê´ðËÜ¥Ç¡¼¥¿¡Ë¸øÈñ¾ðÊóÊÔ½¸½èÍý
+      *****************************************************************
+       20011-KOH-HENSYU-SEC        SECTION.
+      *
+      *    ¸øÈñÊÝ¸±ÈÖ¹æ     
+           MOVE    WRK-KOHHKNNUM       TO  WRK-DATA
+           MOVE    3                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    ¸øÈñ£É£Ä
+           MOVE    WRK-KOHID           TO  WRK-NUM
+           MOVE    10                  TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    »ÙÊ§¶èÊ¬
+           MOVE    WRK-KOHPAYKBN       TO  WRK-DATA
+           MOVE    2                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    ÉéÃ´¼ÔÈÖ¹æ
+           MOVE    WRK-KOHFTNJANUM     TO  WRK-DATA
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    ¼õµë¼ÔÈÖ¹æ
+           IF      WRK-PARA-KOJINKBN   =   "1"
+               MOVE    WRK-KOHJKYSNUM      TO  WRK-DATA
+               MOVE    20                  TO  WRK-NAGASA
+           END-IF
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    Å¦Í×³«»ÏÆü
+           MOVE    WRK-KOHTEKSTYMD     TO  WRK-NUM
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    Å¦Í×½ªÎ»Æü
+           MOVE    WRK-KOHTEKEDYMD     TO  WRK-NUM
+           MOVE    8                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *
+           ADD     1                   TO  WRK-KOH-MAX
+           .
+       20011-KOH-HENSYU-EXT.
            EXIT. 
       *            
       *
