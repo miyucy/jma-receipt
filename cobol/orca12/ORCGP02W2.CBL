@@ -134,11 +134,11 @@
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDA                 PIC 9(04).
-           03  IDX1                PIC 9(02).
-           03  IDX2                PIC 9(02).
-           03  IDX3                PIC 9(02).
-           03  IDX6                PIC 9(02).
-           03  IDY2                PIC 9(02).
+           03  IDX1                PIC 9(04).
+           03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
+           03  IDX6                PIC 9(04).
+           03  IDY2                PIC 9(04).
       *
        01  WRK-KCOMB-AREA.
       *      組合せ退避用
