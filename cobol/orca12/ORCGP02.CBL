@@ -2678,7 +2678,7 @@
            ELSE
                MOVE    MCPDATA-REC         TO  SYS-9000-REC
       *TEST!!!
-               MOVE    SPACE               TO  SYS-9000-PT-FLG
+      *        MOVE    SPACE               TO  SYS-9000-PT-FLG
       *TEST!!!
                MOVE    SYS-9000-CODE       TO  SPA-GMN-SCODE
                MOVE    1                   TO  SPA-P02X-GMN-SEL
