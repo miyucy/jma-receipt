@@ -391,7 +391,7 @@
                GO      TO      100-HKNJANUM-CHK-EXT
            END-IF
            IF      KANACHK-MAX         =   4  OR  6  OR  8
-               CONTINUE
+               MOVE    KANACHK-MAX         TO  WRK-MOJ-MAX
            ELSE
                MOVE    "0041"              TO  SPA-ERRCD
                MOVE    8                   TO  SPA-GMN-CUR
@@ -461,36 +461,7 @@
                        MOVE    "060"           TO  WRK-HKNJA-HKNNUM
                    WHEN    8
       *            その他
-                       INITIALIZE                  HKNNUM-REC
-                       MOVE    SPA-HOSPID          TO  HKN-HOSPID
-                       MOVE    SPA-GMN-HKNJANUM(1:2)
-                                                   TO  HKN-HBTNUM
-                       MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
-                       MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
-                       MOVE    HKNNUM-REC          TO  MCPDATA-REC
-                       MOVE    "HKNNUM-KEY4"       TO  ORC-DBPATH
-                       MOVE    "DBSELECT"          TO  MCP-FUNC
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
-                       IF      MCP-RC              =   ZERO
-                           MOVE    "HKNNUM-KEY4"       TO  ORC-DBPATH
-                           PERFORM 921-HKNMST-NEXT-SEC
-                       ELSE
-                           INITIALIZE                  HKNNUM-REC
-                           MOVE    1               TO  FLG-HKNNUM
-                       END-IF
-                       MOVE    "HKNNUM-KEY4"       TO  ORC-DBPATH
-                       MOVE    "DBCLOSE"           TO  MCP-FUNC
-                       CALL    "ORCMCPSUB"          USING
-                                                    MCPAREA
-                                                    ORCMCPAREA
-                                                    MCPDATA-REC
-                       IF      FLG-HKNNUM          =   ZERO
-                           MOVE    HKN-HKNNUM      TO
-                                                   WRK-HKNJA-HKNNUM
-                       END-IF
+                       PERFORM 1003-HKNNUM-HBTNUM-SEC
                END-EVALUATE
            END-IF
       *
@@ -546,6 +517,52 @@
       *
           .
        1001-HKNNUM-CHECK-EXT.
+           EXIT.
+      ****************************************************************
+      *    法別番号から保険種類編集処理
+      ****************************************************************
+       1003-HKNNUM-HBTNUM-SEC     SECTION.
+      *
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPID          TO  HKN-HOSPID
+           MOVE    SPA-GMN-HKNJANUM(1:2)
+                                       TO  HKN-HBTNUM
+           MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
+           MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "HKNNUM-KEY4"       TO  ORC-DBPATH
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNNUM-KEY4"       TO  ORC-DBPATH
+               PERFORM 921-HKNMST-NEXT-SEC
+           ELSE
+               INITIALIZE                  HKNNUM-REC
+                MOVE    1                  TO  FLG-HKNNUM
+           END-IF
+           PERFORM UNTIL    FLG-HKNNUM     =  1
+               IF      HKN-HKNKOHSBTKBN    =   "1"  OR  "4"
+                                           OR  "8"  OR  "9"
+                   MOVE    HKN-HKNNUM      TO  WRK-HKNJA-HKNNUM
+                   MOVE    1               TO  FLG-HKNNUM
+               END-IF
+               IF      FLG-HKNNUM          =   ZERO
+                    MOVE    "HKNNUM-KEY4"       TO  ORC-DBPATH
+                   PERFORM 921-HKNMST-NEXT-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "HKNNUM-KEY4"       TO  ORC-DBPATH
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+          .
+       1003-HKNNUM-HBTNUM-EXT.
            EXIT.
       ****************************************************************
       *    変更時保険の種類チェック処理

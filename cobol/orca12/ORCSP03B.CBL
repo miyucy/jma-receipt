@@ -581,6 +581,11 @@
            END-IF
            MOVE    ZERO                TO  FLG-OK
            PERFORM UNTIL     FLG-HKNNUM    =   1
+             IF      HKN-HKNKOHSBTKBN    =   "1"  OR  "4"
+                                         OR  "8"  OR  "9"
+                 CONTINUE
+             ELSE
+      *
                IF      SPA-MAE-KOHNUM (IDX-K)  NOT =   SPACE
                    IF      HKN-HKNNUM      =   SPA-MAE-KOHNUM (IDX-K)
                        MOVE    1               TO  FLG-OK
@@ -592,6 +597,7 @@
                    MOVE    HKN-HKNNUM      TO  WRK-MAE-KOHNUM
                    MOVE    1               TO  FLG-HKNNUM
                END-IF
+             END-IF
       *
                IF      FLG-HKNNUM          =   ZERO
                    MOVE    "HKNNUM-KEY4"       TO  ORC-DBPATH
