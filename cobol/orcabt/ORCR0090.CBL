@@ -97,6 +97,8 @@
       *  01.00.11    NACL-門脇    03.03.12  先頭の診療行為コードの判定修正
       *  01.00.12    NACL-門脇    03.05.08  先頭の診療行為コードの判定修正
       *  01.00.13    NACL-藤原    03.05.27  検査の適用欄の編集の修正
+      *  01.00.14    NACL-門脇    03.05.30  平成１５年６月改正に関わる
+      *                                     再診料関係の摘要欄編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -493,32 +495,54 @@
            03  FILLER          PIC X(09)   VALUE   "111700110".
       *    初診（診療所）
            03  FILLER          PIC X(09)   VALUE   "111700210".
+      *    再診（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112009210".
+      *    同日再診（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112010150".
+      *    電話等再診（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112009750".
+      *    同日電話等再診（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112010650".
+      *    老人再診（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112703710".
+      *    老人同日再診（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112704450".
+      *    老人電話等再診（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112704150".
+      *    老人同日電話等再診（１回目）
+           03  FILLER          PIC X(09)   VALUE   "112704850".
+      *    外来管理加算（３回目まで）
+           03  FILLER          PIC X(09)   VALUE   "112011010".
+      *    老人外来管理加算（３回目まで）
+           03  FILLER          PIC X(09)   VALUE   "112705310".
       *    再診（乳幼児）加算
-      ***     03  FILLER          PIC X(09)   VALUE   "112000970".
-      *    再診（幼児）加算
-      ***     03  FILLER          PIC X(09)   VALUE   "112001070".
-      *    時間外（再診）
-      ***     03  FILLER          PIC X(09)   VALUE   "112001110".
-      *    休診（再診）
-      ***     03  FILLER          PIC X(09)   VALUE   "112001210".
-      *    深夜（再診）
-      ***     03  FILLER          PIC X(09)   VALUE   "112001310".
-      *    外来管理加算
-      ***     03  FILLER          PIC X(09)   VALUE   "112005610".
+           03  FILLER          PIC X(09)   VALUE   "112000970".
       *    再診（乳幼児）（時間外等）加算
-      ***     03  FILLER          PIC X(09)   VALUE   "112006970".
+           03  FILLER          PIC X(09)   VALUE   "112006970".
+      *    再診（幼児）加算
+           03  FILLER          PIC X(09)   VALUE   "112001070".
       *    再診（幼児）（時間外等）加算
-      ***     03  FILLER          PIC X(09)   VALUE   "112007070".
-      *    継続管理加算
-      **** 03  FILLER          PIC X(09)   VALUE   "112007170".
+           03  FILLER          PIC X(09)   VALUE   "112007070".
       *    時間外（再診）
-      ***     03  FILLER          PIC X(09)   VALUE   "112701010".
+           03  FILLER          PIC X(09)   VALUE   "112001110".
+      *    時間外特例（再診）
+           03  FILLER          PIC X(09)   VALUE   "112001410".
+      *    時間外（再診）
+           03  FILLER          PIC X(09)   VALUE   "112701010".
+      *    時間外特例（再診）
+           03  FILLER          PIC X(09)   VALUE   "112701310".
+      *    休診（再診）
+           03  FILLER          PIC X(09)   VALUE   "112001210".
       *    休日（再診）
-      ***     03  FILLER          PIC X(09)   VALUE   "112701110".
+           03  FILLER          PIC X(09)   VALUE   "112701110".
       *    深夜（再診）
-      ***     03  FILLER          PIC X(09)   VALUE   "112701210".
+           03  FILLER          PIC X(09)   VALUE   "112001310".
+      *    深夜（再診）
+           03  FILLER          PIC X(09)   VALUE   "112701210".
       *    継続管理加算
-      *    03  FILLER          PIC X(09)   VALUE   "112702270".
+      ***  03  FILLER          PIC X(09)   VALUE   "112007170".
+      *    継続管理加算
+      ***  03  FILLER          PIC X(09)   VALUE   "112702270".
       *    処方料（７種類以上）
            03  FILLER          PIC X(09)   VALUE   "120002610".
       *    処方料（その他）
@@ -541,26 +565,6 @@
            03  FILLER          PIC X(09)   VALUE   "120000410".
       *    調剤料（麻・向・覚・毒）（入院外）
            03  FILLER          PIC X(09)   VALUE   "120000110".
-      *    再診（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112009210".
-      *    同日再診（１回目）
-      ***     03  FILLER          PIC X(09)   VALUE   "112010150".
-      *    電話等再診（１回目）
-      ***     03  FILLER          PIC X(09)   VALUE   "112009750".
-      *    同日電話等再診（１回目）
-      ***     03  FILLER          PIC X(09)   VALUE   "112010650".
-      *    老人再診（１回目）
-           03  FILLER          PIC X(09)   VALUE   "112703710".
-      *    老人同日再診（１回目）
-      ***     03  FILLER          PIC X(09)   VALUE   "112704450".
-      *    老人電話等再診（１回目）
-      ***     03  FILLER          PIC X(09)   VALUE   "112704150".
-      *    老人同日電話等再診（１回目）
-      ***     03  FILLER          PIC X(09)   VALUE   "112704850".
-      *    外来管理加算（３回目まで）
-           03  FILLER          PIC X(09)   VALUE   "112011010".
-      *    老人外来管理加算（３回目まで）
-           03  FILLER          PIC X(09)   VALUE   "112705310".
       *    実日数算定
            03  FILLER          PIC X(09)   VALUE   "099409901".
       *    初診料ダミー
@@ -572,9 +576,9 @@
       *    再診料算定科：
            03  FILLER          PIC X(09)   VALUE   "830000021".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   24.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   42.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   24.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   42.         
       *
       *    固定値
        01  CONST-AREA.
@@ -1419,9 +1423,27 @@
            PERFORM   VARYING   IDY   FROM    1   BY  1
                      UNTIL   ( IDY           >   TBL-NOSRYCD-MAX )
                      OR      ( FLG-NOPRT     =    1              )
+      *
                IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2) 
                                          =   TBL-NOSRYCD (IDY)
-                   MOVE    1                 TO  FLG-NOPRT
+      *
+                 IF  ( RECE02-SRYYM   <  "200306"                  )
+                 AND ( TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
+                              =   "112000970"  OR  "112001070"  OR
+                                  "112001110"  OR  "112001210"  OR
+                                  "112001310"  OR  "112006970"  OR
+                                  "112007070"  OR  "112701010"  OR
+                                  "112701110"  OR  "112701210"  OR
+                                  "112010150"  OR  "112009750"  OR
+                                  "112010650"  OR  "112704450"  OR
+                                  "112704150"  OR  "112704850"  OR
+                                  "112001410"  OR  "112701310"     )
+                       MOVE    ZERO          TO  FLG-NOPRT
+                 ELSE
+                       MOVE    1             TO  FLG-NOPRT
+                 END-IF
+      *
+                 IF    RECE02-SRYYM   <  "200306"
       *            ＊再診の場合
                    IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
                                          =   "112009210"  OR
@@ -1444,7 +1466,7 @@
                          MOVE    ZERO          TO  FLG-NOPRT
                      END-IF
                    END-IF
-      *            一つの剤に他の明細も存在する場合
+      *            ＊一つの剤に他の明細も存在する場合
                    IF  RECE04-MEISAISU       >   1
                        MOVE    ZERO          TO  FLG-NOPRT
                    END-IF
@@ -1452,8 +1474,12 @@
                    IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)           
                                          =   "099120001"              
                        MOVE    1             TO  FLG-NOPRT            
-                   END-IF                                             
+                   END-IF
+      *
+                 END-IF
+      *                                             
                END-IF
+      *
            END-PERFORM
       *
            IF  FLG-NOPRT             =   ZERO

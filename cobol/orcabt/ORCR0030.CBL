@@ -116,6 +116,8 @@
       *  01.02.22   NACL-ÌçÏÆ     03/05/13  ½èÊý¤»¤ó²ó¿ô¤Î¥»¥Ã¥È½¤Àµ
       *  01.02.23   NACL-ÌçÏÆ     03/05/22  »ÄÎÌÇÑ´þ¤Î¿ôÎÌ¥»¥Ã¥È
       *  01.02.24   NACL-ÌçÏÆ     03/05/23  °ìÉôÉéÃ´¶âµ­ºÜ½¤Àµ
+      *  01.02.25   NACL-ÌçÏÆ     03/05/30  Ê¿À®£±£µÇ¯£¶·î²þÀµ¤Ë´Ø¤ï¤ë
+      *                                     ºÆ¿ÇÎÁ´Ø·¸¤ÎÅ¦Í×ÍóÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -233,6 +235,13 @@
            03  FLG-KHNTEN15                            PIC 9(01).
            03  FLG-KHNTEN18                            PIC 9(01).
            03  FLG-KHNTEN19                            PIC 9(01).
+      *
+      *    ºÆ¿ÇÎÁ´ðËÜÅÀ¿ô²Ã»»¥Õ¥é¥°
+       01  FLG-SAISIN-AREA.
+           03  FLG-NYUYOJI                             PIC 9(01).
+           03  FLG-YOJI                                PIC 9(01).
+           03  FLG-YOJI-ARI                            PIC 9(01).
+           03  FLG-SAISIN-ARI                          PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -473,6 +482,16 @@
            03  CONS-TOKKI10        PIC X(14) VALUE "00000099990110".
            03  CONS-TOKKI11        PIC X(14) VALUE "00000099990111".
            03  CONS-TOKKI12        PIC X(14) VALUE "00000099990112".
+      *
+      *    ºÆ¿Ç¡ÊÆýÍÄ»ù¡Ë²Ã»»
+           03  CONS-NYUYOJI        PIC X(09) VALUE "112000970".
+      *    ºÆ¿Ç¡ÊÆýÍÄ»ù¡Ë¡Ê»þ´Ö³°Åù¡Ë²Ã»»
+           03  CONS-NYUYOJI-JIKAN  PIC X(09) VALUE "112006970".
+      *    ºÆ¿Ç¡ÊÍÄ»ù¡Ë²Ã»»
+           03  CONS-YOJI           PIC X(09) VALUE "112001070".
+      *    ºÆ¿Ç¡ÊÍÄ»ù¡Ë¡Ê»þ´Ö³°Åù¡Ë²Ã»»
+           03  CONS-YOJI-JIKAN     PIC X(09) VALUE "112007070".
+      *
       *    ¥Õ¥£¥ë¥àÎÁ¡ÊÆýÍÄ»ù¡Ë²Ã»»
            03  CONS-FILM-YOUJI-KASAN  
                                    PIC X(09) VALUE "799990070".
@@ -740,6 +759,7 @@
            INITIALIZE          WRK-AREA-SAIKEI
       *
            INITIALIZE                   FLG-KHNTEN-AREA
+           INITIALIZE                   FLG-SAISIN-AREA
            PERFORM    VARYING    IDX    FROM   1   BY   1
                       UNTIL     (IDX      >   20)  OR
                                 (RECE02-SRYKA(IDX)   =   SPACE)
@@ -1697,68 +1717,128 @@
                  EVALUATE  TNS-GAITENTTLKBN
       *      ¡Ê´ðËÜ¼êµ»¡Ë
                    WHEN  120
-                     IF (SRY-SRYCD(IDX3)      =   CONS-KEIZOKU1  OR
-                                                  CONS-KEIZOKU2) OR
-                        (TNS-CHUKSNTUBAN      NOT =       "0")
-                                                  
-                        IF    RECE02-KHNTEN(2)   =   ZERO
+                     IF   RECE02-SRYYM  < "200306"
+                       IF ( SRY-SRYCD(IDX3)      =   CONS-KEIZOKU1  OR
+                                                     CONS-KEIZOKU2 )
+                       OR ( TNS-CHUKSNTUBAN  NOT =       "0"       )
+                           CONTINUE
+                       ELSE
+                           ADD   WK-ZAIKAISU    TO   RECE02-KAISU(2)
+                       END-IF
+                       IF    RECE02-KHNTEN(2)   =   ZERO
                             MOVE  TNS-TEN    TO    RECE02-KHNTEN(2)
-                        ELSE
+                       ELSE
                             IF   RECE02-KHNTEN(2)  NOT =  TNS-TEN
                                  MOVE   ZERO    TO   RECE02-KHNTEN(2)
                                  MOVE   1       TO   FLG-KHNTEN2
                             END-IF
-                        END-IF
-                        IF    BUN-IDX        =   1
+                       END-IF
+                       IF    BUN-IDX        =   1
                             COMPUTE    RECE02-TENSU(2 BUN-IDX)  =
                                        RECE02-TENSU(2 BUN-IDX)  +
                                       (TNS-TEN   *   ACCT-ZAIKAISU)
-                        END-IF
-                        IF    BUN-IDX2       =   2
+                       END-IF
+                       IF    BUN-IDX2       =   2
                             COMPUTE    RECE02-TENSU(2 BUN-IDX2)  =
                                        RECE02-TENSU(2 BUN-IDX2)  +
                                       (TNS-TEN   *   ACCT-ZAIKAISU)
-                        END-IF
-                        IF    BUN-IDX3       =   3
+                       END-IF
+                       IF    BUN-IDX3       =   3
                             COMPUTE    RECE02-TENSU(2 BUN-IDX3)  =
                                        RECE02-TENSU(2 BUN-IDX3)  +
                                       (TNS-TEN   *   ACCT-ZAIKAISU)
-                        END-IF
-                        IF    BUN-IDX4       =   4
+                       END-IF
+                       IF    BUN-IDX4       =   4
                             COMPUTE    RECE02-TENSU(2 BUN-IDX4)  =
                                        RECE02-TENSU(2 BUN-IDX4)  +
                                       (TNS-TEN   *   ACCT-ZAIKAISU)
-                        END-IF
+                       END-IF
                      ELSE
-                        IF    RECE02-KHNTEN(2)   =   ZERO
-                            MOVE  TNS-TEN    TO    RECE02-KHNTEN(2)
-                        ELSE
-                            IF   RECE02-KHNTEN(2)  NOT =  TNS-TEN
-                                 MOVE   ZERO    TO   RECE02-KHNTEN(2)
-                                 MOVE   1       TO   FLG-KHNTEN2
+                       IF ( SRY-SRYCD(IDX3)      =   CONS-KEIZOKU1  OR
+                                                     CONS-KEIZOKU2 )
+                       OR ( TNS-CHUKSNTUBAN  NOT =       "0"       )
+                           CONTINUE
+                       ELSE
+                           ADD   WK-ZAIKAISU    TO   RECE02-KAISU(2)
+                       END-IF
+      **
+                       IF   FLG-NYUYOJI          =   ZERO
+                       AND  SRY-SRYCD(IDX3)      =   CONS-NYUYOJI
+                            MOVE     1       TO    FLG-NYUYOJI
+                       END-IF
+                       IF   FLG-NYUYOJI          =   2
+                       AND  SRY-SRYCD(IDX3)      =   CONS-NYUYOJI
+                            MOVE     9       TO    FLG-NYUYOJI
+                       END-IF
+                       IF   FLG-NYUYOJI          =   ZERO
+                       AND  SRY-SRYCD(IDX3)      =   CONS-NYUYOJI-JIKAN
+                            MOVE     2       TO    FLG-NYUYOJI
+                       END-IF
+                       IF   FLG-NYUYOJI          =   1
+                       AND  SRY-SRYCD(IDX3)      =   CONS-NYUYOJI-JIKAN
+                            MOVE     9       TO    FLG-NYUYOJI
+                       END-IF
+      *
+                       IF   FLG-YOJI          =   ZERO
+                       AND  SRY-SRYCD(IDX3)      =   CONS-YOJI
+                            MOVE     1       TO    FLG-YOJI
+                       END-IF
+                       IF   FLG-YOJI          =   2
+                       AND  SRY-SRYCD(IDX3)      =   CONS-YOJI
+                            MOVE     9       TO    FLG-YOJI
+                       END-IF
+                       IF   FLG-YOJI          =   ZERO
+                       AND  SRY-SRYCD(IDX3)      =   CONS-YOJI-JIKAN
+                            MOVE     2       TO    FLG-YOJI
+                       END-IF
+                       IF   FLG-YOJI          =   1
+                       AND  SRY-SRYCD(IDX3)      =   CONS-YOJI-JIKAN
+                            MOVE     9       TO    FLG-YOJI
+                       END-IF
+      **
+                       IF ( SRY-SRYCD(IDX3)      =   CONS-KEIZOKU1  OR
+                                                     CONS-KEIZOKU2 )
+                       OR ( FLG-NYUYOJI          =   9             )
+                       OR ( FLG-YOJI             =   9             )
+                            MOVE   ZERO       TO    RECE02-KHNTEN(2)
+                            MOVE   1          TO    FLG-KHNTEN2
+                       ELSE
+                         IF  SRY-SRYCD(IDX3)  =  CONS-NYUYOJI       OR
+                                                 CONS-NYUYOJI-JIKAN OR
+                                                 CONS-YOJI          OR
+                                                 CONS-YOJI-JIKAN
+                            IF   FLG-YOJI-ARI  =  ZERO
+                              ADD   TNS-TEN    TO    RECE02-KHNTEN(2)
+                              MOVE     1       TO    FLG-YOJI-ARI
                             END-IF
-                        END-IF
-                        ADD   WK-ZAIKAISU      TO   RECE02-KAISU(2)
-                        IF    BUN-IDX        =   1
+                         ELSE
+                            IF   FLG-SAISIN-ARI   =  ZERO
+                              ADD   TNS-TEN    TO    RECE02-KHNTEN(2)
+                              MOVE     1       TO    FLG-SAISIN-ARI
+                            END-IF
+                         END-IF
+                       END-IF
+      **
+                       IF    BUN-IDX        =   1
                             COMPUTE    RECE02-TENSU(2 BUN-IDX)  =
                                        RECE02-TENSU(2 BUN-IDX)  +
                                       (TNS-TEN   *   ACCT-ZAIKAISU)
-                        END-IF
-                        IF    BUN-IDX2       =   2
+                       END-IF
+                       IF    BUN-IDX2       =   2
                             COMPUTE    RECE02-TENSU(2 BUN-IDX2)  =
                                        RECE02-TENSU(2 BUN-IDX2)  +
                                       (TNS-TEN   *   ACCT-ZAIKAISU)
-                        END-IF
-                        IF    BUN-IDX3       =   3
+                       END-IF
+                       IF    BUN-IDX3       =   3
                             COMPUTE    RECE02-TENSU(2 BUN-IDX3)  =
                                        RECE02-TENSU(2 BUN-IDX3)  +
                                       (TNS-TEN   *   ACCT-ZAIKAISU)
-                        END-IF
-                        IF    BUN-IDX4       =   4
+                       END-IF
+                       IF    BUN-IDX4       =   4
                             COMPUTE    RECE02-TENSU(2 BUN-IDX4)  =
                                        RECE02-TENSU(2 BUN-IDX4)  +
                                       (TNS-TEN   *   ACCT-ZAIKAISU)
-                        END-IF
+                       END-IF
                      END-IF
       *      ¡Ê³°Íè´ÉÍý²Ã»»¡Ë
                    WHEN  122
