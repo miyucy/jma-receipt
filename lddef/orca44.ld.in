@@ -8,6 +8,7 @@ bind	"T01"		"OpenCOBOL"	"ORCGT01";
 bind	"T99"		"OpenCOBOL"	"ORCGT99";
 bind	"TERR"		"OpenCOBOL"	"ORCGTERR";
 bind	"TID1"		"OpenCOBOL"	"ORCGTID1";
+bind	"TID2"		"OpenCOBOL"	"ORCGTID2";
 
 multiplex_group	orca44;
 
@@ -19,6 +20,7 @@ data	{
 		T99;
 		TERR;
                 TID1;
+                TID2;
 	};
 };
 
