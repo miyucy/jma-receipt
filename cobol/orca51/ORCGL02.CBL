@@ -898,7 +898,7 @@
                MOVE   SPACE        TO  SYS-1001-REC
            END-IF
       *    ファイルデイレクトリ位置指定
-           MOVE    "toukei1.sh"    TO  WRK-SHELL-SHELL
+           MOVE    "toukei2.sh"    TO  WRK-SHELL-SHELL
            INITIALIZE              ORCSMKPASSAREA
            MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
            CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
