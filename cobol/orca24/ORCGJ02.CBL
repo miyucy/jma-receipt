@@ -174,6 +174,8 @@
            03  FLG-IKKATUFLG       PIC 9(01).
       *
            03  FLG-SYUNOU-KOUSIN   PIC 9(01).
+           03  FLG-HEN             PIC 9(01).
+           03  FLG-HEN2            PIC 9(01).
       *
       *    市它件玄恄啗
        01  CNT-AREA.
@@ -1895,14 +1897,28 @@
       *    褲說ゥ及瘋彸螂
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-RRK-MAX
-               IF     (SPA-RRK-RENNUM (IDX)    =   1  )  AND
-                      (IDX                     <   SPA-RRK-MAX )  AND
-                      (SPA-RRK-RRKYMD (IDX)
-                                           NOT =   SPA-RRK-RRKYMD
-                                                       (IDX + 1))  AND
-                      (SPA-RRK-DOUJI-RENNUM (IDX)  =   ZERO  )
-                   CONTINUE
-               ELSE
+               MOVE    ZERO            TO  FLG-HEN
+               IF     (IDX                 <   SPA-RRK-MAX )  AND
+                      (SPA-RRK-RRKYMD(IDX)
+                                           =   SPA-RRK-RRKYMD
+                                                       (IDX + 1)) AND
+                      (SPA-RRK-SRYKA(IDX)  =   SPA-RRK-SRYKA
+                                                       (IDX + 1))
+                   MOVE    1                   TO  FLG-HEN
+               END-IF
+               IF     (IDX                 >   1           )  AND
+                      (SPA-RRK-RRKYMD(IDX)
+                                           =   SPA-RRK-RRKYMD
+                                                       (IDX - 1)) AND
+                      (SPA-RRK-SRYKA(IDX)  =   SPA-RRK-SRYKA
+                                                       (IDX - 1))
+                   MOVE    1                   TO  FLG-HEN
+               END-IF
+               IF     (SPA-RRK-RENNUM (IDX)    >   1 ) OR
+                      (SPA-RRK-DOUJI-RENNUM (IDX)  >  ZERO )
+                   MOVE    1                   TO  FLG-HEN
+               END-IF
+               IF      FLG-HEN             =   1
                    MOVE    "("                 TO  SPA-GMN-RRKYMD (IDX)
                                                                (10:1)
                    MOVE    SPA-RRK-RENNUM (IDX) 
