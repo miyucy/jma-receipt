@@ -33,6 +33,8 @@
       *                                     出力の対象とする
       *
       *  01.01.01    NACL-藤原    02.09.17  印刷サブの追加
+      *  01.01.02    NACL-藤原    03.05.09  入院対応
+      *                                     dia→monpeに変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -51,11 +53,12 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-006900*    印刷用データ
+      *    印刷用データ
        FD  PRT-FILE.
-           COPY    "HC05.INC".
+           COPY    "HCM05.INC"     REPLACING  //HCM05//
+                                   BY         //HC05//.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -110,8 +113,6 @@
       *
       *    一時領域
        01  WRK-AREA.
-      *****03  WRK-IN              PIC X(01).
-      *
            03  WRK-PARA.
                05  WRK-PARA1.
                    07  WRK-PARA-SKYYM   PIC  X(06).
@@ -152,8 +153,10 @@
       *    キー領域
        01  KEY-AREA                               VALUE   LOW-VALUE.
            03  KEY-NEW.
+               05  KEY-N-NYUGAIKBN       PIC 9(01).
                05  KEY-N-TEISYUTUSAKI    PIC 9(01).
            03  KEY-OLD.
+               05  KEY-O-NYUGAIKBN       PIC 9(01).
                05  KEY-O-TEISYUTUSAKI    PIC 9(01).
       *
       *****************************************************************
@@ -314,11 +317,16 @@
            MOVE    CNT-PAGE            TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC05-PAGE
       *
-           EVALUATE    KEY-N-TEISYUTUSAKI
-               WHEN    1
-                   MOVE    "社保分"    TO  HC05-TEISYUTUNAME
-               WHEN    2    
-                   MOVE    "国保分"    TO  HC05-TEISYUTUNAME
+           EVALUATE    KEY-N-TEISYUTUSAKI  ALSO
+                                       KEY-N-NYUGAIKBN
+               WHEN    1   ALSO    1 
+                   MOVE    "社保・入院"    TO  HC05-TEISYUTUNAME
+               WHEN    2   ALSO    1    
+                   MOVE    "国保・入院"    TO  HC05-TEISYUTUNAME
+               WHEN    1   ALSO    2 
+                   MOVE    "社保・入院外"  TO  HC05-TEISYUTUNAME
+               WHEN    2   ALSO    2    
+                   MOVE    "国保・入院外"  TO  HC05-TEISYUTUNAME
            END-EVALUATE
       *
            .
@@ -462,42 +470,17 @@
            WRITE   HC05
            CLOSE                       PRT-FILE
       * 
-      *****MOVE   "HC05.dia"           TO  SHELL-DIA
-      *    MOVE   "HC05.def"           TO  SHELL-DEF
-      *    MOVE   "HC01.sh"            TO  SHELL-ID
-      *    MOVE   HC01PARA             TO  SHELL-DAT
-      *****MOVE   SYS-1031-PRTNM(5)    TO  SHELL-PRTNM 
-      *
             INITIALIZE                 ORCSMKPRTAREA
             MOVE   "HC01.sh"           TO  MKPRT-ID
-            MOVE   "HC05.dia"          TO  MKPRT-DIA
-            MOVE   "HC05.def"          TO  MKPRT-DEF
+            MOVE   "HCM05.red"         TO  MKPRT-DIA
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(5)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
-      *****
-      *    印刷用スクリプト処理
-      *
-      *    MOVE    SPACE           TO  SHELLTBL
-      *    MOVE    SHELL-NAME      TO  SHELLTBL-NAME
-      *    MOVE    SHELL-ARG1      TO  SHELLTBL-ARG1
-      *    MOVE    SHELL-ARG2      TO  SHELLTBL-ARG2
-      *    MOVE    SHELL-ARG3      TO  SHELLTBL-ARG3
-      *    MOVE    SHELL-ARG4      TO  SHELLTBL-ARG4
-      *    MOVE    SHELL-ARG5      TO  SHELLTBL-ARG5
-      *
-      *    MOVE    SHELLTBL        TO  MCPDATA-REC
-      *    MOVE    "SHELL"         TO  MCP-FUNC
-      *    MOVE    PATH-SHELL-SHELL
-      *                            TO  MCP-PATH
-      *    CALL    "MCPSUB"        USING
-      *                                MCPAREA
-      *****                            MCPDATA-REC                         
            .
        390-PRINT-OUT-EXT.
            EXIT.
-057400*
+      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
@@ -699,8 +682,9 @@
                AND     PTINF-TSTPTNUMKBN   =   "1"
                    GO  TO  900-SEIKYU-FETCH-SEC
                END-IF
-      *         
+      *
                MOVE    RECE10-TEISYUTUSAKI TO  KEY-N-TEISYUTUSAKI
+               MOVE    RECE10-NYUGAIKBN    TO  KEY-N-NYUGAIKBN
                ADD     1                   TO  CNT-IN
            ELSE
                MOVE    1                   TO  FLG-END 
