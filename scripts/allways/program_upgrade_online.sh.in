@@ -1,0 +1,134 @@
+#!/bin/sh
+
+if test -z "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+HOME=/home/orca
+PRGDIR=orca-prg@VERSION@
+PRGCFILE=ORCAPGC.DAT
+UPDFILE=/home/orca/$PRGDIR/ORCAPGC.OUT
+RSTFILE=/home/orca/$PRGDIR/RESTART
+
+FTP=$PGUPGRADEPATH/@VERSION@
+
+function orcawget () {
+#受信ファイル削除
+	if [	-e	$1	]
+	then
+#	echo "rm start" $1
+		rm $1;
+	fi
+	wget -q --passive-ftp ftp://$FTP/$1
+#接続確認
+	if [ $? -eq 0 ]	;	then 
+#	echo "wget end OK"
+		return 0;
+	else
+		return 1;
+	fi
+#ファイルサイズチェック
+	if [	-s	$1	]
+	then
+		return 0;
+	else
+		return 1;
+	fi
+}
+
+if ! [	-d	$HOME/$PRGDIR	];	then 
+	cd $HOME
+	mkdir $PRGDIR
+fi
+cd $HOME/$PRGDIR
+rm -f *.*
+
+#プログラム更新情報取得
+#センタからのプログラム更新情報ダウンロード
+if	orcawget $PRGCFILE ;	then
+	echo "センタからのプログラム更新情報のダウンロードが終了しました"
+else
+	echo "センタからのプログラム更新情報のダウンロードに失敗しました"
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
+        exit 99
+fi
+
+#プログラム管理テーブル更新
+	$DBSTUB  -dir "$LDDEFDIR"/directory -bd orcabt ORCXPMNT1 -parameter $HOME/$PRGDIR/$PRGCFILE
+	if [ $? -ne 0 ]	;	then 
+		echo "プログラム管理テーブルの更新に失敗しました"
+		$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
+		exit 99
+	fi
+
+#情報取得のみの場合終了
+if [ $1 = "1" ];	then
+	rm -r $HOME/$PRGDIR
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT00
+	exit
+fi
+
+#ダウンロードファイル生成
+	$DBSTUB  -dir "$LDDEFDIR"/directory -bd orcabt ORCXPMNT2 -parameter $UPDFILE
+	if [ $? -ne 0 ]	;	then 
+		echo "ダウロードファイル生成に失敗しました"
+		$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
+		exit 99
+	fi
+
+#ダウンロードファイルよりプログラムを受信
+#ファイルサイズチェック
+	if [	-s	$UPDFILE	]
+	then
+		echo "ダウンロードファイルの作成が終了しました"
+	else
+		echo "ダウンロードファイルの作成に失敗しました"
+		$DBSTUB  -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01
+		exit 99
+	fi
+
+UPDLIST=`awk '{gsub(/\t| |;/,""); print} ' $UPDFILE`
+
+###
+# 0件の場合は処理をスキップを考慮しなければならない
+###
+
+for UPD in $UPDLIST
+do
+	echo $UPD
+	if	orcawget $UPD ;	then
+		echo $UPD "ダウンロードが終了しました"
+	else
+		echo $UPD "ダウンロードに失敗しました"
+		$DBSTUB  -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
+	        exit 99
+	fi
+done
+
+#プログラム更新処理
+	$DBSTUB  -dir "$LDDEFDIR"/directory -bd orcabt ORCXPMNT3 -parameter $RSTFILE
+	echo $?
+	if [ $? -ne 0 ]	;	then 
+		$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
+		exit 99
+	fi
+
+#システム再起動
+if test -f "$RSTFILE"; then
+	echo "go monitor -HUP"
+	sh $SCRIPTSDIR/allways/program_upgrade_restart.sh
+fi
+
+echo  "全ての処理が完了しました"
+
+###
+# テストが終了したらコメントを外す
+###
+
+#rm -r $HOME/$PRGDIR
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT00

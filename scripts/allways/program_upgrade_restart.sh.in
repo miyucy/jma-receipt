@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if test -z "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+#monitor�Ƶ�ư�ʣӣɣǣȣգС�
+echo `cat /var/run/jma-receipt/monitor.pid`
+	kill -HUP `cat /var/run/jma-receipt/monitor.pid`
+#
+exit
