@@ -28,7 +28,7 @@
                 04  Y01-PTNUM   PIC X(20).
               03  Y01-YYKNAME-G.
                 04  Y01-YYKNAME-STATE   PIC S9(9)   BINARY.
-                04  Y01-YYKNAME   PIC X(30).
+                04  Y01-YYKNAME   PIC X(50).
               03  Y01-VIEWPORT1.
                 04  Y01-FIXED2.
                   05  Y01-KENSUU01.
@@ -467,9 +467,9 @@
                 04  Y01-VALUE   PIC X(5).
               03  Y01-DRNAME-COMBO.
                 04  Y01-DRNAME.
-                  05  Y01-VALUE   PIC X(27).
+                  05  Y01-VALUE   PIC X(29).
                 04  Y01-DRNAME-COUNT   PIC S9(9)   BINARY.
-                04  Y01-DRNAME-LST     PIC X(27)   OCCURS  10 TIMES.
+                04  Y01-DRNAME-LST     PIC X(29)   OCCURS  50 TIMES.
               03  Y01-SRYNAIYO-COMBO.
                 04  Y01-SRYNAIYO.
                   05  Y01-VALUE   PIC X(21).
@@ -487,9 +487,9 @@
                   05  Y01-PTLIST-SELECT  PIC X       OCCURS  50 TIMES.
               03  Y01-SRYKA-COMB.
                 04  Y01-SRYKA.
-                  05  Y01-VALUE   PIC X(17).
+                  05  Y01-VALUE   PIC X(21).
                 04  Y01-SRYKA-COUNT   PIC S9(9)   BINARY.
-                04  Y01-SRYKA-LST    PIC X(17)   OCCURS  10 TIMES.
+                04  Y01-SRYKA-LST    PIC X(21)   OCCURS  40 TIMES.
               03  Y01-KAKREN-COMB.
                 04  Y01-KAKREN.
                   05  Y01-VALUE   PIC X(23).
