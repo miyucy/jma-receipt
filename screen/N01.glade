@@ -29,7 +29,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 05 Jan 2001 11:20:35 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -346,7 +346,7 @@
       <text_visible>True</text_visible>
       <text_max_length>8</text_max_length>
       <text>12345678</text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -374,7 +374,7 @@
       <text_visible>True</text_visible>
       <text_max_length>100</text_max_length>
       <text></text>
-      <use_xim>True</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
 
@@ -402,7 +402,7 @@
       <text_visible>True</text_visible>
       <text_max_length>50</text_max_length>
       <text>１２３４５６７８９０１２３４５６７８９０１２３４５</text>
-      <use_xim>True</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
 
@@ -430,7 +430,7 @@
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
       <text>１２３４５６７８９０</text>
-      <use_xim>True</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
 
@@ -458,7 +458,7 @@
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
       <text></text>
-      <use_xim>True</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
 
@@ -486,7 +486,7 @@
       <text_visible>True</text_visible>
       <text_max_length>7</text_max_length>
       <text>1234567</text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -514,7 +514,7 @@
       <text_visible>True</text_visible>
       <text_max_length>100</text_max_length>
       <text></text>
-      <use_xim>True</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
 
@@ -542,7 +542,7 @@
       <text_visible>True</text_visible>
       <text_max_length>100</text_max_length>
       <text>１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９あ</text>
-      <use_xim>True</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
 
@@ -570,7 +570,7 @@
       <text_visible>True</text_visible>
       <text_max_length>15</text_max_length>
       <text>123456789012345</text>
-      <use_xim>False</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -598,184 +598,8 @@
       <text_visible>True</text_visible>
       <text_max_length>40</text_max_length>
       <text>１２３４５６７８９０１２３４５６７８９０</text>
-      <use_xim>True</use_xim>
+      <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label476</name>
-      <x>80</x>
-      <y>40</y>
-      <width>80</width>
-      <height>18</height>
-      <label>瘦副荚戎规  </label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label526</name>
-      <x>72</x>
-      <y>176</y>
-      <width>140</width>
-      <height>18</height>
-      <label>瘦副荚叹疚∈没教１∷</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label502</name>
-      <x>72</x>
-      <y>120</y>
-      <width>140</width>
-      <height>16</height>
-      <label>瘦副荚叹疚        </label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label534</name>
-      <x>72</x>
-      <y>570</y>
-      <width>140</width>
-      <height>18</height>
-      <label>淡规                </label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label533</name>
-      <x>72</x>
-      <y>520</y>
-      <width>140</width>
-      <height>18</height>
-      <label>排厦戎规            </label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label532</name>
-      <x>72</x>
-      <y>470</y>
-      <width>140</width>
-      <height>18</height>
-      <label>戎孟数今            </label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label531</name>
-      <x>72</x>
-      <y>420</y>
-      <width>140</width>
-      <height>18</height>
-      <label>交疥                </label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label477</name>
-      <x>72</x>
-      <y>370</y>
-      <width>140</width>
-      <height>18</height>
-      <label>凸守戎规            </label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label527</name>
-      <x>72</x>
-      <y>320</y>
-      <width>140</width>
-      <height>18</height>
-      <label>瘦副戎规            </label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label528</name>
-      <x>72</x>
-      <y>270</y>
-      <width>140</width>
-      <height>18</height>
-      <label>瘦副荚叹疚∈没教３∷</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label529</name>
-      <x>72</x>
-      <y>220</y>
-      <width>140</width>
-      <height>18</height>
-      <label>瘦副荚叹疚∈没教２∷</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -813,7 +637,185 @@
 	<text_visible>True</text_visible>
 	<text_max_length>30</text_max_length>
 	<text></text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label526</name>
+      <x>72</x>
+      <y>176</y>
+      <width>140</width>
+      <height>18</height>
+      <label>瘦副荚叹疚∈没教１∷</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label529</name>
+      <x>72</x>
+      <y>220</y>
+      <width>140</width>
+      <height>18</height>
+      <label>瘦副荚叹疚∈没教２∷</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label528</name>
+      <x>72</x>
+      <y>270</y>
+      <width>140</width>
+      <height>18</height>
+      <label>瘦副荚叹疚∈没教３∷</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label476</name>
+      <x>80</x>
+      <y>40</y>
+      <width>80</width>
+      <height>18</height>
+      <label>瘦副荚戎规</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label502</name>
+      <x>72</x>
+      <y>120</y>
+      <width>140</width>
+      <height>16</height>
+      <label>瘦副荚叹疚</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label534</name>
+      <x>72</x>
+      <y>570</y>
+      <width>140</width>
+      <height>18</height>
+      <label>淡规</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label533</name>
+      <x>72</x>
+      <y>520</y>
+      <width>140</width>
+      <height>18</height>
+      <label>排厦戎规</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label532</name>
+      <x>72</x>
+      <y>470</y>
+      <width>140</width>
+      <height>18</height>
+      <label>戎孟数今</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label531</name>
+      <x>72</x>
+      <y>420</y>
+      <width>140</width>
+      <height>18</height>
+      <label>交疥</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label477</name>
+      <x>72</x>
+      <y>370</y>
+      <width>140</width>
+      <height>18</height>
+      <label>凸守戎规</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label527</name>
+      <x>72</x>
+      <y>320</y>
+      <width>140</width>
+      <height>18</height>
+      <label>瘦副戎规</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
