@@ -337,9 +337,9 @@
     <widget>
       <class>GtkButton</class>
       <name>B21</name>
-      <x>690</x>
+      <x>696</x>
       <y>696</y>
-      <width>86</width>
+      <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -353,7 +353,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 08:28:20 GMT</last_modification_time>
       </signal>
-      <label>∏¯»Ò∏ƒ ÃªÿƒÍ</label>
+      <label>∏¯»Ò∏ƒ Ã</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -400,81 +400,6 @@
 	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
       </signal>
       <label>¡Ì≥Á…Ω°¶∏¯»Ò¿¡µ·ΩÒ</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-      <group>DATAKBN</group>
-    </widget>
-
-    <widget>
-      <class>GtkRadioButton</class>
-      <name>DATAKBN2</name>
-      <x>250</x>
-      <y>340</y>
-      <width>104</width>
-      <height>26</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 11 Jan 2002 02:34:48 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
-      </signal>
-      <label>¡Ì≥Á…Ω°¶¡¥…Ù</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-      <group>DATAKBN</group>
-    </widget>
-
-    <widget>
-      <class>GtkRadioButton</class>
-      <name>DATAKBN4</name>
-      <x>250</x>
-      <y>380</y>
-      <width>104</width>
-      <height>26</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 11 Jan 2002 02:34:48 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
-      </signal>
-      <label>¡Ì≥Á…Ω°¶º“ ›</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-      <group>DATAKBN</group>
-    </widget>
-
-    <widget>
-      <class>GtkRadioButton</class>
-      <name>DATAKBN5</name>
-      <x>250</x>
-      <y>420</y>
-      <width>104</width>
-      <height>26</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 11 Jan 2002 02:34:48 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
-      </signal>
-      <label>¡Ì≥Á…Ω°¶πÒ ›</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>DATAKBN</group>
@@ -1060,6 +985,81 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>DATAKBN2</name>
+      <x>250</x>
+      <y>340</y>
+      <width>110</width>
+      <height>26</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Fri, 11 Jan 2002 02:34:48 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
+      </signal>
+      <label>¡Ì≥Á…Ω°¶¡¥…Ù</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>DATAKBN</group>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>DATAKBN4</name>
+      <x>250</x>
+      <y>380</y>
+      <width>110</width>
+      <height>26</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Fri, 11 Jan 2002 02:34:48 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
+      </signal>
+      <label>¡Ì≥Á…Ω°¶º“ ›</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>DATAKBN</group>
+    </widget>
+
+    <widget>
+      <class>GtkRadioButton</class>
+      <name>DATAKBN5</name>
+      <x>250</x>
+      <y>420</y>
+      <width>110</width>
+      <height>26</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Fri, 11 Jan 2002 02:34:48 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
+      </signal>
+      <label>¡Ì≥Á…Ω°¶πÒ ›</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+      <group>DATAKBN</group>
     </widget>
   </widget>
 </widget>
