@@ -238,9 +238,10 @@
            MOVE    RECE66-KOHBUNRI      TO      RECE661-KOHBUNRI
            MOVE    RECE66-ZAINUM        TO      RECE661-ZAINUM
            IF      RECE66-ZAINUM(1:7)  =  "9999998"
+           AND     RECE66-ZAINUM   NOT =   99999980
                  MOVE     ZERO          TO      RECE661-ZAINUM
            END-IF
-           IF      RECE66-ZAINUM       =  99999999
+           IF      RECE66-ZAINUM       =   99999999
                  MOVE     ZERO          TO      RECE661-ZAINUM
            END-IF
            IF      RECE66-SRYKBN        =       "60"

@@ -242,10 +242,11 @@
            MOVE    RECE46-HKNID         TO      RECE47-HKNID
            MOVE    RECE46-TEKSTYMD      TO      RECE47-TEKSTYMD
            MOVE    RECE46-ZAINUM        TO      RECE47-ZAINUM
-           IF      RECE46-ZAINUM(1:7)  =  9999998
+           IF      RECE46-ZAINUM(1:7)  =  "9999998"
+           AND     RECE46-ZAINUM   NOT =   99999980
                  MOVE     ZERO          TO      RECE47-ZAINUM
            END-IF
-           IF      RECE46-ZAINUM       =  99999999
+           IF      RECE46-ZAINUM       =   99999999
                  MOVE     ZERO          TO      RECE47-ZAINUM
            END-IF
            IF      RECE46-SRYKBN        =       "60"
