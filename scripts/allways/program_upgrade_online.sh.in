@@ -54,7 +54,7 @@ if	orcawget $PRGCFILE ;	then
 	echo "センタからのプログラム更新情報のダウンロードが終了しました"
 else
 	echo "センタからのプログラム更新情報のダウンロードに失敗しました"
-	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01
         exit 99
 fi
 
