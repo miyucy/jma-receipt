@@ -1342,15 +1342,17 @@
       *
       *    全科の時、単独科の保険を集計
            IF      SPA-GMN-SRYKA       =   ZERO
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   15  )  OR
-                                  (SPA-TBL-HKNCOMBI (IDX)  =   SPACE )
-                   IF      SPA-TBL-SRYKA (IDX 2)   =   SPACE
-                       IF     (SPA-GMN-HKNCOMBI    =   "0000" ) OR
-                              (SPA-GMN-HKNCOMBI    =   SPA-TBL-HKNCOMBI
-                                                             (IDX) )
-                           MOVE    SPA-TBL-HKNCOMBI(IDX)
+               PERFORM VARYING     IDX4    FROM    1   BY  1
+                       UNTIL      (IDX4    >   15  )  OR
+                                  (SPA-TBL-HKNCOMBI (IDX4)  =   SPACE )
+                   IF     (SPA-GMN-HKNCOMBI    =   "0000" ) OR
+                          (SPA-GMN-HKNCOMBI    =   SPA-TBL-HKNCOMBI
+                                                            (IDX4))
+                       IF      SPA-TBL-SRYKA (IDX4 2)   =   SPACE
+                           MOVE    SPA-TBL-HKNCOMBI(IDX4)
                                                    TO  WRK-HKNCOMBI
+                           MOVE    SPA-TBL-SRYKA (IDX4 1)
+                                                   TO  WRK-SRYKA
                            PERFORM 31001-ZENNKA-HEN-SEC
                        END-IF
                    END-IF
@@ -1389,10 +1391,11 @@
       *****************************************************************
        31001-ZENNKA-HEN-SEC             SECTION.
       *
-           PERFORM VARYING     IDX4    FROM    1   BY  1
-                   UNTIL       IDX4    >   SPA-SYUNOU-MAX
-               MOVE    SPA-SYUNOU-REC(IDX4)    TO  WRK-SYUNOU-REC
-               IF      WRK-HKNCOMBI        =   WRK-SYU-HKNCOMBINUM
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SYUNOU-MAX
+               MOVE    SPA-SYUNOU-REC(IDX)     TO  WRK-SYUNOU-REC
+               IF     (WRK-HKNCOMBI        =   WRK-SYU-HKNCOMBINUM) AND
+                      (WRK-SRYKA           =   WRK-SYU-SRYKA      )
                    PERFORM 31000-SYUNOU-ADD-SEC
                    MOVE    1               TO  FLG-FUKU
                END-IF
