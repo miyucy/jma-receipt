@@ -43,7 +43,7 @@
                   06  R02-TCHK-VALUE   PIC X.
                   06  R02-TCHK-LABEL   PIC X(41).
               04  R02-FILEKBN.
-                05  R02-VALUE     PIC X(35).
+                05  R02-VALUE     PIC X(41).
               04  R02-CREYMD.
                 05  R02-VALUE     PIC X(23).
               04  R02-KENSU.
