@@ -27,6 +27,8 @@ clean:
 distclean: 
 	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i distclean; done
 	-rm -f Makefile
+	-rm -f config.cache config.log config.status
+
 
 install installdirs:
 	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done
