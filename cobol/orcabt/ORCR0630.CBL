@@ -31,6 +31,7 @@
       *  01.00.02    NACL-ÌçÏÆ    03.03.10  ¿©»ö¶èÊ¬¡É£´¡É¤ÎÂÐ±þÄÉ²Ã
       *  01.00.03    NACL-ÌçÏÆ    03.03.12  ÁªÄêÆþ±¡ÎÁÂÐ±þ
       *  01.00.04    NACL-ÌçÏÆ    03.03.20  Æþ±¡ÎÁÆü¿ô·×»»½¤Àµ
+      *  01.00.05    NACL-ÌçÏÆ    03.04.08  ´Ç¸îÇÛÃÖÅ¬¹ç¤ÎÎ¬¾ÎÄÉ²ÃÂÐ±þ
       *****************************************************************
       *
       *
@@ -2177,6 +2178,25 @@
                      MOVE   NYURYAKUSHO-RYAKUSHO
                                TO   RECE62-NYUSYUBETU(ID1)
               END-IF
+      *
+              IF   WRK-SRYCD  =  "190109670"  OR  "190808870"
+      *
+                 MOVE     ZERO     TO    FLG-ARI
+                 PERFORM  VARYING  ID1    FROM    1   BY  1
+                       UNTIL   ID1                   > 20
+                         OR    RECE62-NYUSYUBETU(ID1) = SPACE
+                         OR    FLG-ARI                = 1 
+                    IF  RECE62-NYUSYUBETU(ID1)(1:4)   =   "Í­´Ç"
+                        MOVE  1   TO   FLG-ARI
+                    END-IF
+                 END-PERFORM  
+                 IF  FLG-ARI  =  ZERO  
+                        MOVE   "Í­´Ç"
+                                  TO   RECE62-NYUSYUBETU(ID1)(1:4)
+                 END-IF
+      *
+              END-IF
+      *
            END-IF                  
       *
            .
