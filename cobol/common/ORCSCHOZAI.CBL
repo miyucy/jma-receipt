@@ -56,6 +56,10 @@
       *
            03  FLG-OK              PIC 9(01).
       *
+           03  FLG-TOU-NASI        PIC 9(01).
+           03  FLG-MAD-NASI        PIC 9(01).
+           03  FLG-SYORI           PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -102,6 +106,8 @@
                05  TBL-TOUYAKU-OCC         OCCURS   31.
                    07  TBL-TOU-DAY         PIC 9(01).
                    07  TBL-DOK-DAY         PIC 9(01).
+                   07  TBL-TOU-SRYKA       PIC X(02).
+                   07  TBL-TOU-HKNCOMBI    PIC X(04).
       *    調剤料
        01  TBL-CHOZAI-AREA.
            03  TBL-CHOZAI-OCC         OCCURS   10.
@@ -132,6 +138,8 @@
        01  TBL-NYUIN-AREA.
            03  TBL-NYUIN-OCC         OCCURS   31.
                05  TBL-NYU-DAY         PIC 9(01).
+               05  TBL-NYU-SRYKA       PIC X(02).
+               05  TBL-NYU-HKNCOMBI    PIC X(04).
       *
       *
       *****************************************************************
@@ -347,6 +355,10 @@
                            END-IF
                            MOVE    1               TO  TBL-TOU-DAY
                                                             (IDX1 IDX3)
+                           MOVE    ACCT-SRYKA      TO  TBL-TOU-SRYKA
+                                                            (IDX1 IDX3)
+                           MOVE    ACCT-HKNCOMBI   TO  TBL-TOU-HKNCOMBI
+                                                            (IDX1 IDX3)
                            IF      FLG-MADOKU      =   1
                                MOVE    1               TO  TBL-DOK-DAY
                                                             (IDX1 IDX3)
@@ -417,6 +429,13 @@
                        IF      ACCT-DAY (1 IDY2)   >   ZERO
                            MOVE    1               TO  TBL-TOU-DAY
                                                             (2  IDX3)
+                           IF      TBL-TOU-SRYKA(IDX1 IDX3) =   SPACE
+                               MOVE    ACCT-SRYKA      TO  TBL-TOU-SRYKA
+                                                            (IDX1 IDX3)
+                               MOVE    ACCT-HKNCOMBI   TO
+                                                       TBL-TOU-HKNCOMBI
+                                                            (IDX1 IDX3)
+                           END-IF
                            IF      FLG-MADOKU      =   1
                                MOVE    1               TO  TBL-DOK-DAY
                                                             (2  IDX3)
@@ -549,7 +568,7 @@
            MOVE    ORCSCHO-SRYYM       TO  PTNYUINRRK-NYUINYMD(1:6)
            MOVE    "01"                TO  PTNYUINRRK-NYUINYMD(7:2)
            MOVE    ORCSCHO-SRYYM       TO  PTNYUINRRK-TAIINYMD(1:6)
-           MOVE    "31"                TO  PTNYUINRRK-TAIINYMD(7:2)
+           MOVE    "01"                TO  PTNYUINRRK-TAIINYMD(7:2)
       *
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -590,13 +609,14 @@
                END-IF
       *
       *        入院中の時
-               IF     (PTNYUINRRK-NYUINYMD(1:6)  <   ORCSCHO-SRYYM) AND
-                      (PTNYUINRRK-TAIINYMD(1:6)  >   ORCSCHO-SRYYM)
-                   MOVE    ALL "1"         TO  TBL-NYUIN-AREA
-                   MOVE    1               TO  FLG-OK
-               END-IF
                MOVE    ZERO                TO  IDX-S
                MOVE    ZERO                TO  IDX-E
+               IF     (PTNYUINRRK-NYUINYMD(1:6)  <   ORCSCHO-SRYYM) AND
+                      (PTNYUINRRK-TAIINYMD(1:6)  >   ORCSCHO-SRYYM)
+                   MOVE    1               TO  IDX-S
+                   MOVE    31              TO  IDX-E
+                   MOVE    1               TO  FLG-OK
+               END-IF
       *        入院日
                IF      PTNYUINRRK-NYUINYMD(1:6)  =   ORCSCHO-SRYYM
                    MOVE    PTNYUINRRK-TAIINYMD(7:2)  TO  IDX-S
@@ -617,6 +637,12 @@
                    PERFORM VARYING     IDX     FROM    IDX-S  BY  1
                            UNTIL       IDX     >   IDX-E
                        MOVE    1                   TO  TBL-NYU-DAY(IDX)
+      *                入院の科と保険
+                       MOVE    PTNYUINRRK-NYUINKA  TO  TBL-NYU-SRYKA
+                                                                  (IDX)
+                       MOVE    PTNYUINRRK-HKNCOMBINUM
+                                                   TO  TBL-NYU-HKNCOMBI
+                                                                  (IDX)
                    END-PERFORM
                END-IF
       *
@@ -804,10 +830,28 @@
                    MOVE    1               TO  FLG-ARI
                END-IF
            END-PERFORM
+           IF     FLG-ARI              =   1
+               GO      TO      4002-TOU-ADD-SYORI-EXT
+           END-IF
+      *    当日調剤料指定がない時、最初の剤へ
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2    >   10  )  OR
+                              (TBL-CHO-ZAINUM(IDX2)    =   ZERO )
+               IF     (TBL-CHO-SRYKA(IDX2)     =   TBL-TOU-SRYKA
+                                                         (2 IDX)) AND
+                      (TBL-CHO-HKNCOMBI(IDX2)  =   TBL-TOU-HKNCOMBI
+                                                         (2 IDX))
+                   MOVE    1               TO  TBL-CHO-DAY (IDX2 1 IDX)
+                   MOVE    1               TO  TBL-CHO-DAY (IDX2 2 IDX)
+                   MOVE    1               TO  FLG-ARI
+               END-IF
+           END-PERFORM
+      *
       *    当日調剤料指定がない時、最初の剤へ
            IF     FLG-ARI              =   ZERO
                IF      TBL-CHO-ZAINUM(1)   =   ZERO
                    MOVE    1               TO  ORCSCHO-ERRCD
+                   MOVE    1               TO  FLG-TOU-NASI
                END-IF
                MOVE    1               TO  TBL-CHO-DAY (1 1 IDX)
                MOVE    1               TO  TBL-CHO-DAY (1 2 IDX)
@@ -849,10 +893,27 @@
                    MOVE    1               TO  FLG-ARI
                END-IF
            END-PERFORM
+           IF     FLG-ARI              =   1
+               GO      TO      4004-MAD-ADD-SYORI-EXT
+           END-IF
+      *    当日調剤料指定がない時、最初の剤へ
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2    >   10  )  OR
+                              (TBL-MAD-ZAINUM(IDX2)    =   ZERO )
+               IF     (TBL-MAD-SRYKA(IDX2)     =   TBL-TOU-SRYKA
+                                                         (2 IDX)) AND
+                      (TBL-MAD-HKNCOMBI(IDX2)  =   TBL-TOU-HKNCOMBI
+                                                         (2 IDX))
+                   MOVE    1               TO  TBL-MAD-DAY (IDX2 1 IDX)
+                   MOVE    1               TO  TBL-MAD-DAY (IDX2 2 IDX)
+                   MOVE    1               TO  FLG-ARI
+               END-IF
+           END-PERFORM
       *    当日調剤料指定がない時、最初の剤へ
            IF     FLG-ARI              =   ZERO
                IF      TBL-MAD-ZAINUM(1)   =   ZERO
                    MOVE    2               TO  ORCSCHO-ERRCD
+                   MOVE    1               TO  FLG-MAD-NASI
                END-IF
                MOVE    1               TO  TBL-MAD-DAY (1 1 IDX)
                MOVE    1               TO  TBL-MAD-DAY (1 2 IDX)
@@ -915,13 +976,19 @@
                    DISPLAY "ORCSCHOZAII SRYACCT READ ERR:" ACCT-KEY
                END-IF
       *
-      *        MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *        MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
-      *        CALL    "ORCMCPSUB"          USING
-      *                                     MCPAREA
-      *                                     ORCMCPAREA
-      *                                     MCPDATA-REC
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
            END-PERFORM
+      *
+      *    当月入院調剤料の剤がない時、作成する
+           IF      FLG-TOU-NASI        =   1
+               MOVE    1               TO  FLG-SYORI
+               PERFORM 40052-CHOUZAI-INS-SEC
+           END-IF
       *
            .
        4005-CHOU-UPDATE-EXT.
@@ -1007,8 +1074,24 @@
       *                                     MCPDATA-REC
            END-PERFORM
       *
+      *    当月入院調剤料の剤がない時、作成する
+           IF      FLG-MAD-NASI        =   1
+               MOVE    2               TO  FLG-SYORI
+               PERFORM 40052-CHOUZAI-INS-SEC
+           END-IF
+      *
            .
        4006-MADO-UPDATE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療会計作成処理
+      *****************************************************************
+       40052-CHOUZAI-INS-SEC         SECTION.
+      *
+      *
+           .
+       40052-CHOUZAI-INS-EXT.
            EXIT.
       *
       *****************************************************************

@@ -285,6 +285,9 @@
       *   診療科算定履歴更新サブ
            COPY    "CPORCSKARRK.INC".
       *
+      *    入院調剤料更新サブ（退院時）
+           COPY    "CPORCSCHOZAI.INC".
+      *
       *    ＳＰＡパラメタ（ORCSC97.CBL 用のDAMMY)
        01  SPA-SCR-REC.
            COPY    "CPK02SPASCR.INC".
@@ -522,10 +525,10 @@
                GO      TO      1001-KAISUU-SYORI-EXT
            END-IF
       *TEST
-           DISPLAY "CNYU LNK-WKSRY-INPUTCD:" LNK-WKSRY-INPUTCD(IDX IDY)
-                  ",SRYCDU:" LNK-WKSRY-SRYCD  (IDX IDY)
-                  ",LNK-SC97-KAISU:" LNK-SC97-KAISU
-                  ",AUTO:" LNK-WKSRY-AUTOKBN (01 01)
+      *    DISPLAY "CNYU LNK-WKSRY-INPUTCD:" LNK-WKSRY-INPUTCD(IDX IDY)
+      *           ",SRYCDU:" LNK-WKSRY-SRYCD  (IDX IDY)
+      *           ",LNK-SC97-KAISU:" LNK-SC97-KAISU
+      *           ",AUTO:" LNK-WKSRY-AUTOKBN (01 01)
       *TEST
       *    自動発生で、回数が１以上の時、入院調剤料とする
            IF     (LNK-WKSRY-AUTOKBN (01 01)   =   "3" ) AND
@@ -2275,6 +2278,16 @@
       *        退院の時、最終受診日を編集する
                PERFORM 500-SRYKARRK-UPD-SEC
            END-IF
+      *
+      *    入院調剤料の自動削除
+           INITIALIZE                  ORCSCHOZAIAREA
+           MOVE    "1"                 TO  ORCSCHO-KBN
+           MOVE    SPA-PTID            TO  ORCSCHO-PTID
+           MOVE    ORCSCNYUIN-YMD(1:6) TO  ORCSCHO-SRYYM
+           CALL    "ORCSCHOZAI"        USING
+                                       SPA-AREA
+                                       ORCSCHOZAIAREA
+      *
       *
            .
        200-TAIIN-SYORI-EXT.
