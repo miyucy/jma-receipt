@@ -819,6 +819,7 @@
            MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
+           MOVE    NACCT-ZAISKBKBN      TO      RECE64-ZAISKBKBN
            MOVE    NACCT-ZAINUM         TO      RECE64-ZAINUM
            MOVE    CNT-ZAIREN           TO      RECE64-ZAIREN
            MOVE    RECE62-PTNUM         TO      RECE64-PTNUM
