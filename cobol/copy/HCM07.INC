@@ -9,15 +9,15 @@
               03  HCM07-BIRTHDAY  PIC X(22).
               03  HCM07-DENPNUM   PIC X(7).
               03  HCM07-SRYMD PIC X(12).
-              03  HCM07-SEIKYU    PIC X(9).
-              03  HCM07-RYOSYU    PIC X(9).
-              03  HCM07-MISYU PIC X(9).
+              03  HCM07-SEIKYU    PIC X(11).
+              03  HCM07-RYOSYU    PIC X(11).
+              03  HCM07-MISYU PIC X(11).
               03  HCM07-JYOTAI    PIC X(10).
             02  HCM07-TTL-TBL           OCCURS  3 TIMES.
               03  HCM07-TTLMSG    PIC X(10).
-              03  HCM07-SEIKYUTTL PIC X(9).
-              03  HCM07-RYOSYUTTL PIC X(9).
-              03  HCM07-MISYUTTL  PIC X(9).
+              03  HCM07-SEIKYUTTL PIC X(11).
+              03  HCM07-RYOSYUTTL PIC X(11).
+              03  HCM07-MISYUTTL  PIC X(11).
             02  HCM07-SEIKYUTTLMSG  PIC X(10).
             02  HCM07-RYOSYUTTLMSG  PIC X(10).
             02  HCM07-MISYUTTLMSG   PIC X(10).
