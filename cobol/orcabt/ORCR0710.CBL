@@ -1674,6 +1674,7 @@
       *
            PERFORM             UNTIL   FLG-RECE62X =   1
                                OR      FLG-ERR     =   1
+                               OR      SPA-STS     =   2
       *
                IF      RECE62X-RECESYUBETU     =   ZERO
                    IF      RECE62X-HKNNUM      NOT =   SPACE 
@@ -1729,148 +1730,149 @@
       *****************************************************************
        20022-KOHSKY-WRITE-SEC          SECTION.
       *
-               MOVE    SPACE               TO  KOHSKY-REC
-               INITIALIZE                      KOHSKY-REC
-               MOVE    RECE62X-HOSPID      TO  KOHSKY-HOSPID
-               MOVE    RECE62X-SRYYM       TO  KOHSKY-SRYYM
-               MOVE    RECE62X-NYUGAIKBN   TO  KOHSKY-NYUGAIKBN
-               MOVE    RECE62X-PTID        TO  KOHSKY-PTID
-               IF      RECE62X-RECEKA      =   SPACE
-                   MOVE    ZERO                TO  KOHSKY-RECEKA
-               ELSE
-                   MOVE    RECE62X-RECEKA      TO  KOHSKY-RECEKA
-               END-IF
-               MOVE    RECE62X-TEISYUTUSAKI    TO  KOHSKY-TEISYUTUSAKI
-               IF      RECE62X-HKNJANUM-KEY    =   SPACE
-                   MOVE    ZERO            TO  KOHSKY-HKNJANUM-KEY
-               ELSE
-                   MOVE    RECE62X-HKNJANUM-KEY
-                                           TO  KOHSKY-HKNJANUM-KEY
-               END-IF
-               IF      RECE62X-HOJOKBN-KEY    =   SPACE
-                   MOVE    ZERO            TO  KOHSKY-HOJOKBN-KEY
-               ELSE
-                   MOVE    RECE62X-HOJOKBN-KEY
-                                           TO  KOHSKY-HOJOKBN-KEY
-               END-IF
-               IF      RECE62X-TEKSTYMD    =   SPACE
-                   MOVE    ZERO                TO  KOHSKY-TEKSTYMD
-               ELSE
-                   MOVE    RECE62X-TEKSTYMD    TO  KOHSKY-TEKSTYMD
-               END-IF
+           MOVE    SPACE               TO  KOHSKY-REC
+           INITIALIZE                      KOHSKY-REC
+           MOVE    RECE62X-HOSPID      TO  KOHSKY-HOSPID
+           MOVE    RECE62X-SRYYM       TO  KOHSKY-SRYYM
+           MOVE    RECE62X-NYUGAIKBN   TO  KOHSKY-NYUGAIKBN
+           MOVE    RECE62X-PTID        TO  KOHSKY-PTID
+           IF      RECE62X-RECEKA      =   SPACE
+               MOVE    ZERO                TO  KOHSKY-RECEKA
+           ELSE
+               MOVE    RECE62X-RECEKA      TO  KOHSKY-RECEKA
+           END-IF
+           MOVE    RECE62X-TEISYUTUSAKI    TO  KOHSKY-TEISYUTUSAKI
+           IF      RECE62X-HKNJANUM-KEY    =   SPACE
+               MOVE    ZERO            TO  KOHSKY-HKNJANUM-KEY
+           ELSE
+               MOVE    RECE62X-HKNJANUM-KEY
+                                       TO  KOHSKY-HKNJANUM-KEY
+           END-IF
+           IF      RECE62X-HOJOKBN-KEY    =   SPACE
+               MOVE    ZERO            TO  KOHSKY-HOJOKBN-KEY
+           ELSE
+               MOVE    RECE62X-HOJOKBN-KEY
+                                       TO  KOHSKY-HOJOKBN-KEY
+           END-IF
+           IF      RECE62X-TEKSTYMD    =   SPACE
+               MOVE    ZERO                TO  KOHSKY-TEKSTYMD
+           ELSE
+               MOVE    RECE62X-TEKSTYMD    TO  KOHSKY-TEKSTYMD
+           END-IF
       *
-      *        レセプト種別を請求管理より編集
-               INITIALIZE                      RECE10-REC
-               MOVE    KOHSKY-KEY          TO  RECE10-KEY
-               MOVE    "SEIKYU-KEY15"      TO  WRK-PATH
-               PERFORM 900-SEIKYU-INV-SEC
-               IF      FLG-SEIKYU          =   ZERO
-                   MOVE    MCPDATA-REC         TO  RECE10-REC
-                   MOVE    RECE10-RECESYUBETU  TO  KOHSKY-RECESYUBETU
-      *********ELSE
-      *            STRING  "レセプト種別が設定不能 PTNUM="
-      *                                     DELIMITED  BY  SIZE
-      *                    RECE62X-PTNUM       DELIMITED  BY  SIZE 
-      *                                        INTO  WRK-RECEERR
-      *            END-STRING
-      *            PERFORM 500-ERR-HENSYU-SEC
-      *            MOVE    1                  TO  FLG-ERR
-      *************GO  TO  2002-KOHSKY-WRITE-EXT
-               END-IF
+      *    レセプト種別を請求管理より編集
+           INITIALIZE                      RECE10-REC
+           MOVE    KOHSKY-KEY          TO  RECE10-KEY
+           MOVE    "SEIKYU-KEY15"      TO  WRK-PATH
+           PERFORM 900-SEIKYU-INV-SEC
+           IF      FLG-SEIKYU          =   ZERO
+               MOVE    MCPDATA-REC         TO  RECE10-REC
+               MOVE    RECE10-RECESYUBETU  TO  KOHSKY-RECESYUBETU
+           ELSE
+               GO  TO  2002-KOHSKY-WRITE-EXT
+      *        STRING  "レセプト種別が設定不能 PTNUM="
+      *                                 DELIMITED  BY  SIZE
+      *                 RECE62X-PTNUM       DELIMITED  BY  SIZE 
+      *                                    INTO  WRK-RECEERR
+      *        END-STRING
+      *        PERFORM 500-ERR-HENSYU-SEC
+      *        MOVE    1                  TO  FLG-ERR
+      *********GO  TO  2002-KOHSKY-WRITE-EXT
+           END-IF
       *
-               PERFORM 900-KOHSKY-INV-SEC
-               IF      FLG-KOHSKY          =   ZERO
-                   MOVE    MCPDATA-REC         TO  KOHSKY-REC
-                   MOVE    WRK-PARA-SYSYMD     TO  KOHSKY-UPDYMD
-                   IF      KOHSKY-SKYKBN       =   "2"
-                       MOVE    "1"                 TO  KOHSKY-SKYKBN
-                   END-IF 
-                   MOVE    "2"                 TO  KOHSKY-TEISEIKBN
-               ELSE
+           PERFORM 900-KOHSKY-INV-SEC
+           IF      FLG-KOHSKY          =   ZERO
+               MOVE    MCPDATA-REC         TO  KOHSKY-REC
+               MOVE    WRK-PARA-SYSYMD     TO  KOHSKY-UPDYMD
+               IF      KOHSKY-SKYKBN       =   "2"
                    MOVE    "1"                 TO  KOHSKY-SKYKBN
-                   MOVE    WRK-PARA-SYSYMD     TO  KOHSKY-CREYMD
-                   MOVE    ZERO                TO  KOHSKY-UPDYMD
-                   MOVE    ZERO                TO  KOHSKY-SKYYM
-                                                   KOHSKY-HENREIYM
-                                                   KOHSKY-TEISEIKBN
-               END-IF
-               MOVE    RECE62X-PTNUM       TO  KOHSKY-PTNUM
-               MOVE    RECE62X-KANANAME    TO  KOHSKY-KANANAME
-               MOVE    RECE62X-NAME        TO  KOHSKY-NAME
-               MOVE    RECE62X-SEX         TO  KOHSKY-SEX
-               MOVE    RECE62X-BIRTHDAY    TO  KOHSKY-BIRTHDAY
-               MOVE    RECE62X-AGE         TO  KOHSKY-AGE  
-               MOVE    RECE62X-DEATHKBN    TO  KOHSKY-DEATHKBN
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       20
-                   MOVE    RECE62X-SRYKA   (IDX)
-                                           TO  KOHSKY-SRYKA (IDX)
-               END-PERFORM
-               MOVE    RECE62X-HKN         TO  KOHSKY-HKN
-               MOVE    RECE62X-KYURATE     TO  KOHSKY-KYURATE
-               MOVE    RECE62X-RJNHKN      TO  KOHSKY-RJNHKN
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       4
-                   MOVE    RECE62X-KOHID       (IDX) 
-                                       TO  KOHSKY-KOHID      (IDX)
-                   MOVE    RECE62X-KOHNUM      (IDX)
-                                       TO  KOHSKY-KOHNUM     (IDX)
-                   MOVE    RECE62X-KOHHBTNUM   (IDX)
-                                       TO  KOHSKY-KOHHBTNUM  (IDX)
-                   MOVE    RECE62X-KOHFTNJANUM (IDX)
-                                       TO  KOHSKY-KOHFTNJANUM(IDX)
-                   MOVE    RECE62X-KOHJKYSNUM  (IDX)
-                                       TO  KOHSKY-KOHJKYSNUM (IDX)
-               END-PERFORM
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       10
-                   MOVE    RECE62X-HKNCOMBIINF (IDX)
-                                           TO KOHSKY-HKNCOMBIINF (IDX)
-               END-PERFORM
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       30
-                   MOVE    RECE62X-SRYKBNINF (IDX)
-                                           TO  KOHSKY-SRYKBNINF (IDX)
-               END-PERFORM
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       5
-                   MOVE    RECE62X-JNISSUINF (IDX)
-                                           TO  KOHSKY-JNISSUINF (IDX)
-                   MOVE    RECE62X-TOTALTENINF (IDX)
-                                           TO  KOHSKY-TOTALTENINF (IDX)
-                   MOVE    RECE62X-FTNMONEYINF(IDX)
-                                           TO  KOHSKY-FTNMONEYINF (IDX)
-                   MOVE    RECE62X-SHOKUJIINF (IDX)
-                                           TO  KOHSKY-SHOKUJIINF (IDX)
-               END-PERFORM
-               MOVE    RECE62X-SHOSHINTIME TO  KOHSKY-SHOSHINTIME
-      *
-               MOVE    KOHSKY-REC          TO  MCPDATA-REC
-               MOVE    "KOHSKY-KEY"        TO  ORC-DBPATH
-               IF      FLG-KOHSKY          =   1    
-                   MOVE    "DBINSERT"          TO  MCP-FUNC
-               ELSE
-                   MOVE    "DBUPDATE"          TO  MCP-FUNC
                END-IF 
-               CALL    "ORCMCPSUB"              USING
+               MOVE    "2"                 TO  KOHSKY-TEISEIKBN
+           ELSE
+               MOVE    "1"                 TO  KOHSKY-SKYKBN
+               MOVE    WRK-PARA-SYSYMD     TO  KOHSKY-CREYMD
+               MOVE    ZERO                TO  KOHSKY-UPDYMD
+               MOVE    ZERO                TO  KOHSKY-SKYYM
+                                               KOHSKY-HENREIYM
+                                               KOHSKY-TEISEIKBN
+           END-IF
+           MOVE    RECE62X-PTNUM       TO  KOHSKY-PTNUM
+           MOVE    RECE62X-KANANAME    TO  KOHSKY-KANANAME
+           MOVE    RECE62X-NAME        TO  KOHSKY-NAME
+           MOVE    RECE62X-SEX         TO  KOHSKY-SEX
+           MOVE    RECE62X-BIRTHDAY    TO  KOHSKY-BIRTHDAY
+           MOVE    RECE62X-AGE         TO  KOHSKY-AGE  
+           MOVE    RECE62X-DEATHKBN    TO  KOHSKY-DEATHKBN
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       20
+               MOVE    RECE62X-SRYKA   (IDX)
+                                       TO  KOHSKY-SRYKA (IDX)
+           END-PERFORM
+           MOVE    RECE62X-HKN         TO  KOHSKY-HKN
+           MOVE    RECE62X-KYURATE     TO  KOHSKY-KYURATE
+           MOVE    RECE62X-RJNHKN      TO  KOHSKY-RJNHKN
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       4
+               MOVE    RECE62X-KOHID       (IDX) 
+                                       TO  KOHSKY-KOHID      (IDX)
+               MOVE    RECE62X-KOHNUM      (IDX)
+                                       TO  KOHSKY-KOHNUM     (IDX)
+               MOVE    RECE62X-KOHHBTNUM   (IDX)
+                                       TO  KOHSKY-KOHHBTNUM  (IDX)
+               MOVE    RECE62X-KOHFTNJANUM (IDX)
+                                       TO  KOHSKY-KOHFTNJANUM(IDX)
+               MOVE    RECE62X-KOHJKYSNUM  (IDX)
+                                       TO  KOHSKY-KOHJKYSNUM (IDX)
+           END-PERFORM
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       10
+               MOVE    RECE62X-HKNCOMBIINF (IDX)
+                                       TO KOHSKY-HKNCOMBIINF (IDX)
+           END-PERFORM
+           PERFORM VARYING IDX FROM    1   BY  1
+                    UNTIL   IDX >       30
+               MOVE    RECE62X-SRYKBNINF (IDX)
+                                       TO  KOHSKY-SRYKBNINF (IDX)
+           END-PERFORM
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       5
+               MOVE    RECE62X-JNISSUINF (IDX)
+                                       TO  KOHSKY-JNISSUINF (IDX)
+               MOVE    RECE62X-TOTALTENINF (IDX)
+                                       TO  KOHSKY-TOTALTENINF (IDX)
+               MOVE    RECE62X-FTNMONEYINF(IDX)
+                                       TO  KOHSKY-FTNMONEYINF (IDX)
+               MOVE    RECE62X-SHOKUJIINF (IDX)
+                                       TO  KOHSKY-SHOKUJIINF (IDX)
+           END-PERFORM
+           MOVE    RECE62X-SHOSHINTIME TO  KOHSKY-SHOSHINTIME
+      *
+           MOVE    KOHSKY-REC          TO  MCPDATA-REC
+           MOVE    "KOHSKY-KEY"        TO  ORC-DBPATH
+           IF      FLG-KOHSKY          =   1    
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+           ELSE
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+           END-IF 
+           CALL    "ORCMCPSUB"              USING
                                             MCPAREA
                                             ORCMCPAREA
-                                            MCPDATA-REC      
+                                           MCPDATA-REC      
       *
-               IF      MCP-RC     =   ZERO
-                   CONTINUE
+           IF      MCP-RC     =   ZERO
+               CONTINUE
+           ELSE
+               DISPLAY "ORCR0710 KOHSKY MCP-RC= "  MCP-RC   
+               IF      FLG-KOHSKY          =   1    
+                   MOVE    "公費請求ＤＢに追加できませんでした"
+                                           TO  WRK-RECEERR
                ELSE
-                   DISPLAY "ORCR0710 KOHSKY MCP-RC= "  MCP-RC   
-                   IF      FLG-KOHSKY          =   1    
-                       MOVE    "公費請求ＤＢに追加できませんでした"
-                                               TO  WRK-RECEERR
-                   ELSE
-                       MOVE    "公費請求ＤＢに更新できませんでした"
-                                               TO  WRK-RECEERR
-                   END-IF 
-                   PERFORM 500-ERR-HENSYU-SEC
-                   MOVE    1                  TO  FLG-ERR
-               END-IF
+                   MOVE    "公費請求ＤＢに更新できませんでした"
+                                           TO  WRK-RECEERR
+               END-IF 
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1                  TO  FLG-ERR
+           END-IF
       *
            .
        2002-KOHSKY-WRITE-EXT.
