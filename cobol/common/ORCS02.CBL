@@ -2944,7 +2944,8 @@
            END-IF.
       *
       *ø©ªˆŒ≈Õ‹»Ò»Ê≥”
-           IF    COMB-KOH1HKNNUM          =   "027" 
+           IF  ( COMB-KOH1HKNNUM          =   "027" )  OR
+               ( COMB-HKNNUM              =   SPACE ) 
              MOVE        LNK-SYU-KOH1SKJ-RYOYOHI TO  WK-RYOYOHI-SKJ 
              IF   LNK-SYU-KOH2HKNNUM   NOT =  SPACE
                IF  LNK-SYU-KOH2SKJ-RYOYOHI <  WK-RYOYOHI-SKJ
@@ -3009,7 +3010,8 @@
            END-IF.
       *
       *ø©ªˆ…È√¥≥€»Ê≥”
-           IF    COMB-KOH1HKNNUM          =   "027" 
+           IF  ( COMB-KOH1HKNNUM          =   "027" )  OR
+               ( COMB-HKNNUM              =   SPACE ) 
              MOVE        LNK-SYU-KOH1SKJ-FTN TO  WK-KNJFTNKIN-SKJ 
              IF   LNK-SYU-KOH2HKNNUM   NOT =  SPACE
                IF  LNK-SYU-KOH2SKJ-FTN <  WK-KNJFTNKIN-SKJ
@@ -3074,7 +3076,8 @@
            END-IF.
       *
       *ø©ªˆ∆¸øÙ»Ê≥”
-      *    IF    COMB-KOH1HKNNUM          =   "027" 
+      *    IF  ( COMB-KOH1HKNNUM          =   "027" )  OR
+      *        ( COMB-HKNNUM              =   SPACE ) 
       *      MOVE        LNK-SYU-KOH1SKJ-NISSU TO  WK-NISSU-SKJ 
       *      IF   LNK-SYU-KOH2HKNNUM   NOT =  SPACE
       *        IF  LNK-SYU-KOH2SKJ-NISSU <  WK-NISSU-SKJ
