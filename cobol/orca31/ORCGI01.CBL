@@ -5987,6 +5987,7 @@
       *
            INITIALIZE  PTTEIKIRRK-REC
       *
+           MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    SPA-NAI-I01-PTID    TO  PTTEIKIRRK-PTID
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "PTTEIKIRRK-KEY3"   TO  WRK-DBPATH
@@ -6112,6 +6113,7 @@
            MOVE    ZERO                TO  FLG-PTTEIKIRRK
       *
            INITIALIZE  PTTEIKIRRK-REC
+           MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    SPA-NAI-I01-PTID    TO  PTTEIKIRRK-PTID
            MOVE    WRK-SKYSTYMD        TO  PTTEIKIRRK-SKYSTYMD
            MOVE    WRK-SKYEDYMD        TO  PTTEIKIRRK-SKYEDYMD
@@ -6142,6 +6144,7 @@
       *
       *    ¥µº‘¿¡µ·Õ˙ŒÚ∫ÔΩ¸
            INITIALIZE  PTTEIKIRRK-REC
+           MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    SPA-NAI-I01-PTID    TO  PTTEIKIRRK-PTID
            MOVE    WRK-SKYSTYMD        TO  PTTEIKIRRK-SKYSTYMD
            MOVE    WRK-SKYEDYMD        TO  PTTEIKIRRK-SKYEDYMD

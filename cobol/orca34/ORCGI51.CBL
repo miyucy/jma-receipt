@@ -1271,6 +1271,7 @@
       *
            INITIALIZE  PTTEIKIRRK-REC
       *
+           MOVE    SPA-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    PTNYUINRRK-PTID     TO  PTTEIKIRRK-PTID
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "PTTEIKIRRK-KEY3"   TO  WRK-DBPATH

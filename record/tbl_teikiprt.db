@@ -1,6 +1,7 @@
 tbl_teikiprt	{
         BTUNUM              char(2);
         DENPNUM             number(7);
+        HOSPID              char(24);
         PTID                number(10);
         PTNUM               char(20);
         NAME                char(100);

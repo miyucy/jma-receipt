@@ -25,6 +25,8 @@
       *01  PTTEIKIRRK-REC.
       *診療年月
            03  PTTEIKIRRK-SRYYM            PIC  X(06).
+      *医療機関ＩＤ
+           03  PTTEIKIRRK-HOSPID           PIC  X(24).
       *患者ＩＤ
            03  PTTEIKIRRK-PTID             PIC  9(10).
       *作成区分（処理期）

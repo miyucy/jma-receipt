@@ -400,6 +400,7 @@
            INITIALIZE   PTTEIKIRRK-REC
            MOVE    TEIKI03-SKYSTYMD (1 : 6)
                                        TO  PTTEIKIRRK-SRYYM
+           MOVE    TEIKI03-HOSPID      TO  PTTEIKIRRK-HOSPID
            MOVE    TEIKI03-PTID        TO  PTTEIKIRRK-PTID
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "PTTEIKIRRK-KEY2"   TO  ORC-DBPATH

@@ -115,8 +115,6 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    医療機関情報
-           COPY    "CPSK1001.INC".
       *
       *    収納マスター
        01  SYUNOU-REC.
@@ -218,22 +216,6 @@
            MOVE    "TEIKIERR"          TO  TEIKIERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  TEIKIERR-TERMID
       *
-      *
-      *    医療機関ＩＤ編集
-           INITIALIZE                  SYS-1001-REC
-           MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    ZERO                TO  ORC-DBYMD
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1001-REC
-           ELSE
-               MOVE    "医療機関情報が取得できませんでした。"
-                                           TO  WRK-TEIKIERR
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
-      *
            .
        100-INIT-EXT.
            EXIT.
@@ -327,7 +309,7 @@
       *
       *    収納データを検索する
            INITIALIZE  SYUNOU-REC
-           MOVE    SYS-1001-HOSPID     TO  SYU-HOSPID
+           MOVE    TEIKIPRT-HOSPID     TO  SYU-HOSPID
            MOVE    "1"                 TO  SYU-NYUGAIKBN
            MOVE    TEIKIPRT-PTID       TO  SYU-PTID
            MOVE    TEIKIPRT-DENPNUM    TO  SYU-DENPNUM
@@ -344,7 +326,7 @@
       *    請求書サブ呼び出し
            INITIALIZE                  SPA-AREA
                                        ORCHCN03AREA
-           MOVE    SYS-1001-HOSPID     TO  SPA-HOSPID
+           MOVE    TEIKIPRT-HOSPID     TO  SPA-HOSPID
            MOVE    TEIKIPRT-PTID       TO  SPA-PTID
            MOVE    TEIKIPRT-PTNUM      TO  SPA-PTNUM
            MOVE    TEIKIPRT-NAME       TO  SPA-NAME

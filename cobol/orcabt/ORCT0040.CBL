@@ -1133,6 +1133,7 @@
       *
            INITIALIZE  TEIKIPRT-REC
            MOVE    PTNYUINRRK-BTUNUM       TO  TEIKIPRT-BTUNUM
+           MOVE    PTINF-HOSPID            TO  TEIKIPRT-HOSPID
            MOVE    PTINF-PTID              TO  TEIKIPRT-PTID
       *
       *    患者番号を取得

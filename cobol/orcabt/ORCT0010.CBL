@@ -735,6 +735,7 @@
            INITIALIZE                  PTTEIKIRRK-REC
       *
            MOVE    SYU-SRYYMD (1 : 6)  TO  PTTEIKIRRK-SRYYM
+           MOVE    SYU-HOSPID          TO  PTTEIKIRRK-HOSPID
            MOVE    SYU-PTID            TO  PTTEIKIRRK-PTID
            MOVE    WRK-SAKKBN          TO  PTTEIKIRRK-SAKKBN
            MOVE    SYU-HKNCOMBINUM     TO  PTTEIKIRRK-HKNCOMBINUM
@@ -1275,8 +1276,8 @@
            INITIALIZE                  PTTEIKIRRK-REC
       *
            MOVE    WRK-PARA-SRYYM      TO  PTTEIKIRRK-SRYYM
-           MOVE    PTNYUINRRK-PTID
-                                       TO  PTTEIKIRRK-PTID
+           MOVE    PTNYUINRRK-HOSPID   TO  PTTEIKIRRK-HOSPID
+           MOVE    PTNYUINRRK-PTID     TO  PTTEIKIRRK-PTID
            MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "PTTEIKIRRK-KEY2"   TO  ORC-DBPATH

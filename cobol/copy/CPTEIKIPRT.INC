@@ -27,6 +27,8 @@
            03  TEIKIPRT-BTUNUM         PIC  X(02).
       *≈¡…º»÷πÊ
            03  TEIKIPRT-DENPNUM        PIC  9(07).
+      *∞ÂŒ≈µ°¥ÿ£…£ƒ
+           03  TEIKIPRT-HOSPID         PIC  X(24).
       *¥µº‘£…£ƒ
            03  TEIKIPRT-PTID           PIC  9(10).
       *¥µº‘»÷πÊ
