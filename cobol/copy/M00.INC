@@ -32,3 +32,6 @@
                 05  M00-STATE-O     PIC S9(09) BINARY  OCCURS  3.
               04  M00-SELNUM.
                 05  M00-VALUE   PIC 9(2).
+              04  M00-LBLMSG-G.
+                05  M00-LBLMSG-STYLE   PIC X(20).
+                05  M00-LBLMSG         PIC X(60).

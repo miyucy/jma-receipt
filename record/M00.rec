@@ -1,16 +1,20 @@
 M00	{
 	fixed1	{
-	        G01	{
-	           	state	int;
-	        };
-                G03	{
-	            state	int;
-                };
-	        G04	{
-		  	state	int;
-	        };
+		G01	{
+			state	int;
+		};
+		G03	{
+			state	int;
+		};
+		G04	{
+	  		state	int;
+		};
 		SELNUM	{
 			value	number(2);
+		};
+		LBLMSG	{
+			style   varchar(20);
+			value	varchar(60);
 		};
 	};
 };

@@ -48,6 +48,7 @@
       *  01.02.09    NACL-伊藤    03/03/10  端末ＩＤ６４バイトへ拡張
       *  01.02.10    NACL-多々納  03/06/27  職員コード追加
       *  01.02.11    NACL-多々納  03/08/25  県番号追加
+      *  01.02.13    NACL-太田    04/01/13  職員情報取得失敗時の処理修正
       *****************************************************************
       *
       *
@@ -231,14 +232,20 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
+      *
+               IF      SPA-ERRCD       NOT =   SPACE
+                   PERFORM 5101-ERRSET-SEC
+                   MOVE    SPA-ERRMSG      TO  SPA-GMN-LBLMSG
+               END-IF
+      *
       *        画面編集
                PERFORM 500-GMNHEN-SEC
                PERFORM 510-GSRAUTH-SEC
       *
-               IF      SPA-ERRCD       NOT =   SPACE
-                   PERFORM 510-ERRSET-SEC
-                   GO  TO  100-INIT-EXT
-               END-IF
+      *        IF      SPA-ERRCD       NOT =   SPACE
+      *            PERFORM 510-ERRSET-SEC
+      *            GO  TO  100-INIT-EXT
+      *        END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -585,24 +592,24 @@
           EVALUATE    WRK-GNO
       *        医事業務
                WHEN    "01"
-                   IF      SYS-1010-GSRAUTH(1:1)    =  "0"
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   ELSE
+                   IF      SYS-1010-GSRAUTH(1:1)    =  "1"
                        MOVE    "M01"           TO  SPA-SAKIPG
+                   ELSE
+                       MOVE    "0002"          TO  SPA-ERRCD
                    END-IF 
       *        プログラム更新処理
                WHEN    "03"
-                   IF      SYS-1010-GSRAUTH(3:1)    =  "0"
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   ELSE
+                   IF      SYS-1010-GSRAUTH(3:1)    =  "1"
                        MOVE    "???"           TO  SPA-SAKIPG
+                   ELSE
+                       MOVE    "0002"          TO  SPA-ERRCD
                    END-IF 
       *        点数改正処理
                WHEN    "04"
-                   IF      SYS-1010-GSRAUTH(4:1)    =  "0"
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   ELSE
+                   IF      SYS-1010-GSRAUTH(4:1)    =  "1"
                        MOVE    "???"           TO  SPA-SAKIPG
+                   ELSE
+                       MOVE    "0002"          TO  SPA-ERRCD
                    END-IF
                WHEN    OTHER
                    MOVE    "0001"          TO  SPA-ERRCD
@@ -749,6 +756,13 @@
            INITIALIZE                  M00
       *
            MOVE    SPA-GMN-GSEL        TO  M00-SELNUM
+           MOVE    SPA-GMN-LBLMSG      TO  M00-LBLMSG
+      *
+           IF    ( M00-LBLMSG          =   SPACE )
+               MOVE    SPACE           TO  M00-LBLMSG-STYLE
+           ELSE
+               MOVE    "red"           TO  M00-LBLMSG-STYLE
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -803,39 +817,8 @@
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
-           MOVE    SPACE               TO  SPA-ERRMSG
       *
-           EVALUATE    SPA-ERRCD
-               WHEN    "0001"
-                   MOVE    "入力エラー"        TO  SPA-ERRMSG
-               WHEN    "0002"
-                   MOVE    "この業務は選択できません"
-                                               TO  SPA-ERRMSG
-               WHEN    "1001"
-                   MOVE
-                   "職員情報が取得できませんので、処理を終了します。"
-                                               TO  SPA-ERRMSG
-               WHEN    "1002"
-                   MOVE
-                 "医療機関情報が取得できませんので、処理を終了します。"
-                                               TO  SPA-ERRMSG
-               WHEN    "1003"
-                   MOVE
-                 "システム日付が取得できませんので、処理を終了します。"
-                                               TO  SPA-ERRMSG
-      *---- (01.00.01) LINE ADD START --------------------------------
-               WHEN    "1004"
-                   MOVE
-               "自動算定情報が取得できませんので、処理を終了します。"
-                                               TO  SPA-ERRMSG
-      *---- (01.00.01) LINE ADD END   --------------------------------
-      *---- (01.00.02) LINE ADD START --------------------------------
-               WHEN    "1005"
-                   MOVE
-            "患者番号構成情報が取得できませんので、処理を終了します。"
-                                               TO  SPA-ERRMSG
-      *---- (01.00.02) LINE ADD END   --------------------------------
-           END-EVALUATE
+           PERFORM 5101-ERRSET-SEC
       *
            MOVE    SPA-ERRCD            TO  SPA-GMN-ERRCD  
       *
@@ -857,6 +840,53 @@
            .
        510-ERRSET-EXT.
            EXIT.
+      *****************************************************************
+      *    エラーメッセージ表示理
+      *****************************************************************
+       5101-ERRSET-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  SPA-ERRMSG
+      *
+           EVALUATE    SPA-ERRCD
+               WHEN    "0001"
+                   MOVE    "入力エラー"        TO  SPA-ERRMSG
+               WHEN    "0002"
+                   MOVE    "この業務は選択できません"
+                                               TO  SPA-ERRMSG
+               WHEN    "1001"
+                   MOVE    "職員情報が取得できませんでした。処理を終"
+                                               TO  SPA-ERRMSG (1:40)
+                   MOVE    "了してください。"
+                                               TO  SPA-ERRMSG (41:)
+               WHEN    "1002"
+                   MOVE    "医療機関情報が取得できませんでした。処理"
+                                               TO  SPA-ERRMSG (1:40)
+                   MOVE    "を終了してください。"
+                                               TO  SPA-ERRMSG (41:)
+               WHEN    "1003"
+                   MOVE    "システム日付が取得できませんでした。処理"
+                                               TO  SPA-ERRMSG (1:40)
+                   MOVE    "を終了してください。"
+                                               TO  SPA-ERRMSG (41:)
+      *---- (01.00.01) LINE ADD START --------------------------------
+               WHEN    "1004"
+                   MOVE    "自動算定情報が取得できませんでした。処理"
+                                               TO  SPA-ERRMSG (1:40)
+                   MOVE    "を終了してください。"
+                                               TO  SPA-ERRMSG (41:)
+      *---- (01.00.01) LINE ADD END   --------------------------------
+      *---- (01.00.02) LINE ADD START --------------------------------
+               WHEN    "1005"
+                   MOVE    "患者番号構成情報が取得できませんでした。"
+                                               TO  SPA-ERRMSG (1:40)
+                   MOVE    "処理を終了してください。"
+                                               TO  SPA-ERRMSG (41:)
+      *---- (01.00.02) LINE ADD END   --------------------------------
+           END-EVALUATE
+      *
+       5101-ERRSET-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    管理マスタ読み込み
       *****************************************************************
