@@ -11,9 +11,11 @@
             02  HCN062-RJNFTNJANUM.
               03  HCN062-RJNFTNJANUMS PIC X(1)    OCCURS  8 TIMES.
             02  HCN062-KOHFTNJANUM1.
-              03  HCN062-KOHFTNJANUM1S    PIC X(1)        OCCURS  8 TIMES.
+              03  HCN062-KOHFTNJANUM1S    PIC X(1)
+                                                  OCCURS  8 TIMES.
             02  HCN062-KOHFTNJANUM2.
-              03  HCN062-KOHFTNJANUM2S    PIC X(1)        OCCURS  8 TIMES.
+              03  HCN062-KOHFTNJANUM2S    PIC X(1)
+                                                  OCCURS  8 TIMES.
             02  HCN062-KOHFTNJANUM1N    PIC X(20).
             02  HCN062-KOHFTNJANUM2N    PIC X(20).
             02  HCN062-HKNJANUM.
