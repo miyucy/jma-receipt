@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  02/10/07  船員老人補助区分チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -807,6 +808,19 @@
                MOVE    10              TO  SPA-GMN-CUR
            END-IF
       *
+      *    船員で老人家族の時、１割を対象とする
+           IF      (SPA-GMN-HKNNUM     =   "002")  AND
+                   (SPA-GMN-HOJO-MAX   =   5    )  AND
+                   (SPA-GMN-HOJOKBN    =   SPACE)  AND
+                   (SPA-GMN-HONKZKKBN   =   "2" )
+               IF     (SPA-NAI-HKNSTR      =   ZERO      ) OR
+                      (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
+                                           =   "1"    )
+                   MOVE    "9"             TO  SPA-GMN-HOJOKBN
+                   PERFORM 1001-HOJOKBN-CHK-SEC
+               END-IF
+           END-IF
+      *
            .
        1001-HONKZKKBN-CHK-EXT.
            EXIT.
@@ -841,6 +855,26 @@
                IF     (SPA-SYSYMD      >=   "20021001" )  AND
                       (SPA-SYSYMD      >=   SPA-BYMD-70 )
                    MOVE    "0068"          TO  SPA-ERRCD
+                   MOVE    11              TO  SPA-GMN-CUR
+                   GO      TO      1001-HOJOKBN-CHK-EXT
+               END-IF
+           END-IF
+      *
+      *    船員家族で老人以外時、補助区分は入力できない
+           IF     (SPA-GMN-HONKZKKBN   =   "2"       ) AND
+                  (SPA-GMN-HKNNUM      =   "002"     )
+               IF      (SPA-GMN-HOJO-MAX    =   3       ) AND
+                       (SPA-GMN-HOJOKBN     NOT  =   SPACE   )
+                   MOVE    "1065"          TO  SPA-ERRCD
+                   MOVE    11              TO  SPA-GMN-CUR
+                   GO      TO      1001-HOJOKBN-CHK-EXT
+               END-IF
+      *        老人
+               IF      (SPA-GMN-HOJO-MAX    =   5     )  AND
+                       (SPA-GMN-HOJOKBN     =   "1"   OR
+                                                "2"   OR
+                                                "3"   )
+                   MOVE    "1066"          TO  SPA-ERRCD
                    MOVE    11              TO  SPA-GMN-CUR
                    GO      TO      1001-HOJOKBN-CHK-EXT
                END-IF
@@ -1342,10 +1376,20 @@
       *
       *    本人のみ入力可能チェック
            IF     ( SPA-NAI-PTHKN-SBTKBN   =   "4" OR "8" OR "9")  OR
-                  ((SPA-GMN-HKNNUM         =   "002"  )  AND
-                   (SPA-GMN-HOJOKBN    NOT =   SPACE  )    )  OR
+      *********** ((SPA-GMN-HKNNUM         =   "002"  )  AND
+      ************ (SPA-GMN-HOJOKBN    NOT =   SPACE  )    )  OR
                   ( SPA-GMN-HKNNUM         =   "007"       )
                IF      SPA-GMN-HONKZKKBN   NOT =   "1"
+                   MOVE    "0066"          TO  SPA-ERRCD
+                   MOVE    10              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+      *    船員入力可能チェック
+           IF      (SPA-GMN-HKNNUM         =   "002"  )  AND
+                   (SPA-GMN-HOJOKBN    NOT =   SPACE  )
+               IF     (SPA-GMN-HONKZKKBN   NOT =   "1" )  AND
+                      (SPA-GMN-HOJO-MAX        =    3  )
                    MOVE    "0066"          TO  SPA-ERRCD
                    MOVE    10              TO  SPA-GMN-CUR
                END-IF
@@ -1717,6 +1761,8 @@
       *    半角空白を全角空白へ変換処理
       *****************************************************************
        890-HALF-ZEN-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ERR
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI

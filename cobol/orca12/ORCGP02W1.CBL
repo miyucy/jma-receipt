@@ -46,6 +46,7 @@
       *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
       *  02.00.02    NACL-多々納  02/09/09  平成１４年１０月改正対応
       *                                     自賠責保険の追加
+      *  02.00.03    NACL-多々納  02/10/07  船員の老人補助区分の初期表示修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1160,8 +1161,14 @@
            EVALUATE    SPA-GMN-HKNNUM
       *        船員
                WHEN    "002"
+                   IF     (SPA-NAI-HTEKSTYMD       >=  "20021001") AND
+                          (SPA-NAI-HTEKSTYMD       >=  SPA-BYMD-70)
+                       MOVE    5               TO  WRK-HJO-MAX
+                   ELSE
+                       MOVE    3               TO  WRK-HJO-MAX
+                   END-IF
                    PERFORM VARYING     IDT     FROM    1  BY  1
-                           UNTIL       IDT     >   3
+                           UNTIL       IDT     >   WRK-HJO-MAX
                        MOVE    WRK-HJO-REC1 (IDT)
                                            TO  SPA-GMN-HOJOKBNL (IDT)
                        MOVE    IDT         TO  SPA-GMN-HOJO-MAX
@@ -3409,6 +3416,11 @@
                        IF      SPA-PTHKN-HOJOKBN (IDX) =   "8"  OR  "9"
                            MOVE    1                   TO  FLG-RJNCHK
                        END-IF
+                   END-IF
+      *            船員で補助区分あり
+                   IF     (SPA-PTHKN-HKNNUM(IDX)       =   "002" )  AND
+                          (SPA-PTHKN-HOJOKBN (IDX) NOT =   SPACE )
+                       MOVE    1                   TO  FLG-RJNCHK
                    END-IF
                END-IF
       *        保険が存在すること
