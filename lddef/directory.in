@@ -4,9 +4,9 @@ name	orca;
 
 base	"@ORCA_DIR@";
 
-lddir	"@lddefdir@:@sitelddefdir@";
-bddir	"@lddefdir@:@sitelddefdir@";
-record	"@recorddir@:@siterecorddir@";
+lddir	"@sitelddefdir@:@lddefdir@";
+bddir	"@sitelddefdir@:@lddefdir@";
+record	"@siterecorddir@:@recorddir@";
 
 multiplex_level	id;
 
