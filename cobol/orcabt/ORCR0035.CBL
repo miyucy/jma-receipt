@@ -344,7 +344,9 @@
       **     DISPLAY   "RECE04-HKNCOMNI : " RECE04-HKNCOMBI
       **     DISPLAY   "KH-IDX          : " KH-IDX
       *
-           MOVE    KH-IDX          TO        RECE04-KOHBUNRI
+           IF    RECE04-KOHBUNRI     =      ZERO
+               MOVE    KH-IDX          TO        RECE04-KOHBUNRI
+           END-IF
       *     ACCEPT  WRK-IN FROM CONSOLE 
            .
        KOHBUNRI-SET-EXT.
