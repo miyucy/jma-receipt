@@ -512,6 +512,7 @@
       *
            03  WRK-ERRCD           PIC X(04).
            03  WRK-KIDCD           PIC X(04).
+           03  WRK-KIDCD2          PIC X(04).
       *    パス名
            03  WRK-PATH            PIC X(64).
       *
@@ -5083,7 +5084,7 @@
                                        SPA-SCR-REC
                                        SPA-K02
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-           MOVE    SPA-KIDCD       TO  WRK-KIDCD
+           MOVE    SPA-KIDCD           TO  WRK-KIDCD2
       *
       *    診療行為、計計算処理、編集
            MOVE    SPACE           TO  FLG-TOROKU
@@ -5095,7 +5096,7 @@
            MOVE    1               TO  SPA-GMN-PAGE
            MOVE    1               TO  SPA-GMN-CUR
            MOVE    1               TO  SPA-MAP-IDX
-           MOVE    WRK-KIDCD       TO  SPA-KIDCD
+           MOVE    WRK-KIDCD2      TO  SPA-KIDCD
            .
        41013-SRYKA-CHANGE-EXT.
            EXIT.
