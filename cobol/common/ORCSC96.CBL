@@ -345,6 +345,9 @@
                WHEN    "0070"
                    MOVE    "同時併施分です。入力できません"
                                        TO  SPA-ERRMSG
+               WHEN    "K070"
+                   MOVE    "警告！同時併施のコードです。"
+                                       TO  SPA-ERRMSG
                WHEN    "0071"
       ************ MOVE    "撮影料が違います。"
       ***********                      TO  SPA-ERRMSG
@@ -769,6 +772,25 @@
                                                 TO  SPA-ERRMSG
                    MOVE    "注射料は算定できません。"
                                                 TO  SPA-ERRMSG(31:)
+      *
+               WHEN    "K130"
+                   MOVE    "警告！特定薬剤治療管理料が３月目以内です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "算定できません。"
+                                       TO  SPA-ERRMSG(37:)
+               WHEN    "K131"
+                   MOVE    "この特定薬剤治療管理料は算定済みです。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "算定できません。"
+                                       TO  SPA-ERRMSG(37:)
+               WHEN    "K132"
+                   MOVE    "既に特定薬剤治療管理料は当月算定済です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "初回算定できません。"
+                                       TO  SPA-ERRMSG(41:)
+               WHEN    "K133"
+                   MOVE    "初回算定日には診療年月を入力して下さい。"
+                                       TO  SPA-ERRMSG
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.
@@ -1046,6 +1068,12 @@
                                        TO  SPA-ERRMSG
                WHEN    "5012"
                    MOVE    "修正時のみ複写ができます。"
+                                       TO  SPA-ERRMSG
+               WHEN    "5020"
+                   MOVE    "入外区分がありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "5021"
+                   MOVE    "老人一般区分がありません。"
                                        TO  SPA-ERRMSG
                WHEN    OTHER
                    MOVE    SPA-ERRCD

@@ -1223,7 +1223,9 @@
       *    ¼ê½Ñ¤¬¤¢¤ë»þ¡¢Ãí¼Í¤Î¼êµ»ÎÁ¤Ï·Ù¹ð¤È¤¹¤ë
            IF     (FLG-SYUJUTU         =   1  )  AND
                   (IDX-CHU             >   ZERO )
-               IF      WRK-COM-KZMFLG (IDX-CHU)    =   SPACE
+               IF     (WRK-COM-KZMFLG (IDX-CHU)    =   SPACE )
+                  AND (LNK-ORCSC-KEI-IDX           =   ZERO )
+                   MOVE    IDX-CHU         TO  LNK-ORCSC-KEI-IDX
                    MOVE    "K140"          TO  SPA-ERRCD
                    MOVE    "1"             TO  WRK-COM-KZMFLG
                                                            (IDX-CHU)

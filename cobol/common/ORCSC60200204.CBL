@@ -82,6 +82,10 @@
       *    施設基準不適合
            03  FLG-KIJUNN          PIC 9(01).
       *
+           03  FLG-KASAN           PIC 9(01).
+           03  FLG-KSN-END         PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -111,6 +115,9 @@
       *
            03  IDX-TEIGEN          PIC 9(04).
            03  IDX-TEIGEN2         PIC 9(04).
+      *
+           03  IDT                 PIC 9(04).
+           03  IDK                 PIC 9(04).
       *
       *
       *    一時領域
@@ -166,7 +173,10 @@
            03  WRK-JGNAGE          PIC 9(03).
       *
            03  WRK-KEN-HOU         PIC X(02).
+      *
            03  WRK-SANTEI-CNT      PIC 9(04).
+           03  WRK-TODAY-CNT       PIC 9(03).
+           03  WRK-TODAY-CNTG      PIC 9(03).
       *
       *    包括名称編集用
            03  WRK-Z9              PIC Z9.
@@ -176,6 +186,8 @@
       *    検体検査管理加算
            03  FLG-KENTAI              PIC 9(01).
            03  WRK-KENTAI-DAY          PIC 9(02).
+      *
+           03  WRK-TEI-CNT             PIC 9(03).
       *
       *    検査　判断グループ
        01  WRK-KENSA-AREA.
@@ -415,6 +427,10 @@
            03  WRK-JYU-KEN             PIC 9(01).
            03  WRK-JYU-FLG             PIC X(01).
       *
+      *
+      *    診療行為用共通パラメタ
+           COPY    "K01COMMON-SPA".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -483,6 +499,13 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
+      *
+      *    診療行為時、ＳＰＡを編集
+           IF      LNK-ORCSC-PG        =   "K02"
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           ELSE
+               INITIALIZE                  SPA-K01KYOUTU
+           END-IF
       *
            EVALUATE    LNK-ORCSC-KBN
       *        剤別　チェック、編集、自動算定
@@ -659,6 +682,7 @@
                    IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
                        CONTINUE
                    ELSE
+                       MOVE    ZERO            TO  FLG-KASAN
                        PERFORM 2001-JIDOTUIKA-SEC
                   END-IF
               END-IF
@@ -762,6 +786,7 @@
       *        新生児加算（生体検査）
                MOVE    "160155290"         TO  WRK-SRYCD
                MOVE    IDX-Z               TO  IDX-S
+               MOVE    1                   TO  FLG-KASAN
                PERFORM 2001-JIDOTUIKA-SEC
                IF      FLG-ARI             =   1
                    MOVE    "2"                 TO  WRK-COM-AUTOKBN
@@ -771,6 +796,7 @@
       *            乳幼児加算（生体検査）
                    MOVE    "160155390"         TO  WRK-SRYCD
                    MOVE    IDX-Z               TO  IDX-S
+                   MOVE    1                   TO  FLG-KASAN
                    PERFORM 2001-JIDOTUIKA-SEC
                    IF      FLG-ARI             =   1
                        MOVE    "2"                 TO  WRK-COM-AUTOKBN
@@ -790,6 +816,7 @@
                IF      IDX-S               =   ZERO
                    MOVE    IDX-Z               TO  IDX-S
                END-IF
+               MOVE    ZERO                TO  FLG-KASAN
                PERFORM 2001-JIDOTUIKA-SEC
                IF      FLG-ARI             =   1
                    MOVE    "2"                 TO  WRK-COM-AUTOKBN
@@ -809,16 +836,13 @@
        1008-TEIGEN-SYORI-SEC           SECTION.
       *
       *    逓減加算算定チェック
-           IF     (WRK-COM-TEIGEN-FLG(IDX-TEIGEN)  =   ZERO )  AND
-                  (WRK-COM-TEIGEN-CHK(IDX-TEIGEN)  =   ZERO )
-               MOVE    1           TO  WRK-COM-TEIGEN-CHK(IDX-TEIGEN)
-               PERFORM 100812-TEIGEN-CHK-SEC
-           END-IF
+           PERFORM 100812-TEIGEN-CHK-SEC
       *
       *    逓減加算自動追加
-           IF      WRK-COM-TEIGEN-FLG(IDX-TEIGEN)  =   1
+           IF      WRK-COM-TEIGEN-FLG(IDX-TEIGEN)  =   1 OR 2
                MOVE    "160000190"         TO  WRK-SRYCD
                MOVE    IDX-TEIGEN2         TO  IDX-S
+               MOVE    2                   TO  FLG-KASAN
                PERFORM 2001-JIDOTUIKA-SEC
                MOVE    "2"                 TO  WRK-COM-AUTOKBN
                                                            (IDX-T)
@@ -835,16 +859,26 @@
       *****************************************************************
        100812-TEIGEN-CHK-SEC           SECTION.
       *
-      *    算定歴チェック
-           MOVE    WRK-COM-INPUTCD (IDX-TEIGEN) TO  WRK-SRYCD
-           PERFORM 108121-SANTEI-CHK-SEC
-      *    逓減加算自動追加あり
-           IF      WRK-SANTEI-CNT      >   ZERO
-               MOVE    1           TO  WRK-COM-TEIGEN-FLG(IDX-TEIGEN)
-               GO      TO      100812-TEIGEN-CHK-EXT
-           END-IF
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      100812-TEIGEN-CHK-EXT
+           MOVE    ZERO                TO  WRK-TODAY-CNT
+           MOVE    ZERO                TO  WRK-TODAY-CNTG
+           MOVE    ZERO                TO  FLG-CHK
+      *
+           IF      WRK-COM-TEIGEN-CHK(IDX-TEIGEN)   =   ZERO
+      *        算定歴チェック
+               MOVE    WRK-COM-INPUTCD (IDX-TEIGEN) TO  WRK-SRYCD
+               PERFORM 108121-SANTEI-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      100812-TEIGEN-CHK-EXT
+               END-IF
+      *        逓減加算自動追加あり
+               MOVE    1                   TO  WRK-COM-TEIGEN-CHK
+                                                       (IDX-TEIGEN)
+               IF      WRK-SANTEI-CNT      >   ZERO
+                   MOVE    1           TO  WRK-COM-TEIGEN-FLG
+                                                    (IDX-TEIGEN)
+               END-IF
+               ADD     WRK-TODAY-CNTG      TO  WRK-TODAY-CNT
+               MOVE    1                   TO  FLG-CHK
            END-IF
       *
       *    同一検査算定有無の判定
@@ -858,21 +892,98 @@
                        MOVE    TBL-KEN-HOU  (KEN-IDX)
                                                 TO  WRK-KEN-HOU
            END-SEARCH
+      *    検査毎にテーブル編集をする
+           MOVE    ZERO            TO  IDX-TEI
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   20  )  OR
+                              (IDX-TEI     >   ZERO)
+               IF      WRK-KEN-HOU         =   SPACE
+                   IF     (LNK-ORCSC-TEIGEN-SRYCD(IDX)  =   SPACE )  AND
+                          (LNK-ORCSC-TEIGEN-HOU  (IDX)  =   SPACE )
+                       MOVE    WRK-COM-INPUTCD (IDX-TEIGEN)
+                                           TO  LNK-ORCSC-TEIGEN-SRYCD
+                                                                (IDX)
+                   END-IF
+                   IF      LNK-ORCSC-TEIGEN-SRYCD(IDX)  =
+                                               WRK-COM-INPUTCD
+                                                      (IDX-TEIGEN)
+                       MOVE    IDX             TO  IDX-TEI
+                   END-IF
+               ELSE
+                   IF     (LNK-ORCSC-TEIGEN-SRYCD(IDX)  =   SPACE )  AND
+                          (LNK-ORCSC-TEIGEN-HOU  (IDX)  =   SPACE )
+                       MOVE    WRK-KEN-HOU     TO  LNK-ORCSC-TEIGEN-HOU
+                                                          (IDX)
+                   END-IF
+                   IF      LNK-ORCSC-TEIGEN-HOU(IDX)  =   WRK-KEN-HOU
+                       MOVE    IDX             TO  IDX-TEI
+                   END-IF
+               END-IF
+           END-PERFORM
       *
+           IF      WRK-KEN-HOU         =   SPACE
+               ADD     WRK-SANTEI-CNT      TO  LNK-ORCSC-TEIGEN-SANTEI
+                                                         (IDX-TEI)
+           ELSE
+               IF      LNK-ORCSC-TEIGEN-CNT (IDX-TEI) =   ZERO
+                   ADD     WRK-SANTEI-CNT  TO  LNK-ORCSC-TEIGEN-SANTEI
+                                                           (IDX-TEI)
+               END-IF
+           END-IF
+      *    今回入力分
+           IF      SPA-NYUGAIKBN       =   "1"
+              ADD      WRK-COM-NYU-KAI(IDX-TEIGEN)
+                                           TO  LNK-ORCSC-TEIGEN-CNT
+                                                              (IDX-TEI)
+           ELSE
+               ADD     LNK-ORCSC-KAISU     TO  LNK-ORCSC-TEIGEN-CNT
+                                                             (IDX-TEI)
+           END-IF
+      *
+      *    同一算定検査がある時、すべての検査回数を算定する
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   KEN-IDX-MAX)  OR
                               (WRK-KEN-HOU     =   SPACE  )  OR
+                              (FLG-CHK         =   ZERO   )  OR
                               (SPA-ERRCD   NOT =   SPACE  )  OR
                               (WRK-SANTEI-CNT  >   ZERO   )
-               SET      KEN-IDX           TO  IDX
-               IF      TBL-KEN-HOU  (KEN-IDX)  =   WRK-KEN-HOU
+               SET     KEN-IDX             TO  IDX
+               IF      TBL-KEN-HOU (KEN-IDX)   =   WRK-KEN-HOU
                    MOVE    TBL-KEN-SRYCD (KEN-IDX) TO  WRK-SRYCD
                    PERFORM 108121-SANTEI-CHK-SEC
+                   ADD     WRK-SANTEI-CNT      TO
+                                               LNK-ORCSC-TEIGEN-SANTEI
+                                                       (IDX-TEI)
+                   ADD     WRK-TODAY-CNTG      TO  WRK-TODAY-CNT
                END-IF
            END-PERFORM
-           IF      WRK-SANTEI-CNT      >   ZERO
+      *    当月最初で、２回以上はエラーとする
+           IF     (LNK-ORCSC-TEIGEN-SANTEI(IDX-TEI)    =   ZERO )  AND
+                  (LNK-ORCSC-TEIGEN-CNT   (IDX-TEI)    =   ZERO )  AND
+                  (LNK-ORCSC-KAISU                 >   1     OR
+                   WRK-COM-NYU-KAI(IDX-TEIGEN)     >   1    )
+               MOVE    "0096"              TO  WRK-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-TEIGEN)
+               GO      TO      100812-TEIGEN-CHK-EXT
+           END-IF
+      *
+           IF      LNK-ORCSC-TEIGEN-SANTEI(IDX-TEI) >   ZERO
                MOVE    1           TO  WRK-COM-TEIGEN-FLG(IDX-TEIGEN)
                GO      TO      100812-TEIGEN-CHK-EXT
+           END-IF
+           IF      WRK-COM-TEIGEN-FLG(IDX-TEIGEN)  =   1
+               IF     (WRK-TODAY-CNT               =   ZERO )  AND
+                      (FLG-CHK                     =   1    )
+                   MOVE    ZERO    TO  WRK-COM-TEIGEN-FLG(IDX-TEIGEN)
+               ELSE
+                   GO      TO      100812-TEIGEN-CHK-EXT
+               END-IF
+           END-IF
+      *
+           IF      LNK-ORCSC-TEIGEN-CNT(IDX-TEI)    >   1
+               MOVE    2           TO  WRK-COM-TEIGEN-FLG(IDX-TEIGEN)
+           ELSE
+               MOVE    ZERO        TO  WRK-COM-TEIGEN-FLG(IDX-TEIGEN)
            END-IF
            .
       *
@@ -952,6 +1063,25 @@
                        UNTIL       IDX-Y3      >=  IDX-Y2
                    ADD     SANTEI-DAY (IDX-Y3) TO  WRK-SANTEI-CNT
                END-PERFORM
+      *        当日加算分
+               MOVE    SANTEI-DAY (IDX-Y2) TO  WRK-TODAY-CNTG
+      *        前回分集計
+               MOVE    ZERO                TO  WRK-TEI-CNT
+               PERFORM VARYING     IDT     FROM    1   BY  1
+                       UNTIL      (IDT     >   100 )  OR
+                                  (LNK-ORCSC-TEI-SRYCD(IDT)
+                                           =   SPACE )
+                   IF      WRK-SRYCD       =   LNK-ORCSC-TEI-SRYCD(IDT)
+                       ADD     LNK-ORCSC-TEI-KAISU(IDT)
+                                           TO  WRK-TEI-CNT
+                   END-IF
+               END-PERFORM
+               IF      WRK-TODAY-CNTG      >   WRK-TEI-CNT
+                   COMPUTE WRK-TODAY-CNTG      =   WRK-TODAY-CNTG
+                                               -   WRK-TEI-CNT
+               ELSE
+                   MOVE    ZERO                TO  WRK-TODAY-CNTG
+               END-IF
            END-IF
            .
        108121-SANTEI-CHK-EXT.
@@ -1669,14 +1799,17 @@
       *!           MOVE    IDX-Z               TO  IDX-TEIGEN2
       ****     END-IF
       *        逓減加算算定チェック
-               IF     (WRK-COM-SRYKBN    (IDX-Z)   =   "60" )  AND
-                      (WRK-COM-TEIGENKBN (IDX-Z)   =   1    )  AND
-                      (WRK-COM-DATAKBN   (IDX-Z)   =  "1"   )
+      *        IF     (WRK-COM-SRYKBN    (IDX-Z)   =   "60" )  AND
+      *               (WRK-COM-TEIGENKBN (IDX-Z)   =   1    )  AND
+      *               (WRK-COM-DATAKBN   (IDX-Z)   =  "1"   )
       *            回数を入院回数へ編集する
-                   MOVE    WRK-COM-KAISU (IDX-Z)   TO  WRK-COM-NYU-KAI
-                                                              (IDX-Z)
-                   PERFORM 20018-TEIGEN-INSYORI-SEC
-               END-IF
+      *            MOVE    WRK-COM-KAISU (IDX-Z)   TO  WRK-COM-NYU-KAI
+      *                                                       (IDX-Z)
+      *            IF      WRK-COM-TEIGEN-FLG(IDX-Z)   =  2
+      *                MOVE    ZERO        TO  WRK-COM-TEIGEN-FLG(IDX-Z)
+      *            END-IF
+      *            PERFORM 20018-TEIGEN-INSYORI-SEC
+      *****    END-IF
       *
       *        重複算定不可チェック
                IF     (WRK-COM-SRYKBN    (IDX-Z)   =   "60"  )  AND
@@ -1707,7 +1840,8 @@
                IF      WRK-COM-INPUTCD(IDX-Z + 1)  =   WRK-SRYCD
                    CONTINUE
                ELSE
-                   MOVE    IDX-Z           TO  IDX-S
+                   MOVE    IDX-Z               TO  IDX-S
+                   MOVE    ZERO                TO  FLG-KASAN
                    PERFORM 2001-JIDOTUIKA-SEC
                END-IF
            END-IF
@@ -1771,10 +1905,12 @@
       *****************************************************************
        2009-TEIGEN-TUIKA-SEC                  SECTION.
       *
-           MOVE    1                   TO  WRK-COM-TEIGEN-FLG
+      **** MOVE    1                   TO  WRK-COM-TEIGEN-FLG
+           MOVE    2                   TO  WRK-COM-TEIGEN-FLG
                                                         (IDX-TEIGEN)
            MOVE    "160000190"         TO  WRK-SRYCD
            MOVE    IDX-TEIGEN2         TO  IDX-S
+           MOVE    2                   TO  FLG-KASAN
            PERFORM 2001-JIDOTUIKA-SEC
            MOVE    "2"                 TO  WRK-COM-AUTOKBN(IDX-T)
       *
@@ -1788,6 +1924,7 @@
        20081-SANTEI-TBLCHK-SEC                  SECTION.
       *
            MOVE    ZERO                TO  WRK-SANTEI-CNT
+      *
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2        >=  IDX-Z      )  OR
                               (WRK-SANTEI-CNT  >   ZERO   )
@@ -2049,9 +2186,51 @@
            IF      FLG-ARI             =   1
                MOVE    IDX-T               TO  WRK-IDX
            ELSE
+               EVALUATE    FLG-KASAN
+      *            生体乳幼児加算（最後）
+                   WHEN    1
+                       MOVE    ZERO            TO  FLG-KSN-END
+                       PERFORM VARYING     IDK      FROM   IDX-S   BY  1
+                               UNTIL      (IDK      >   200 )  OR
+                                          (FLG-KSN-END  =  1  )
+                         IF     ((WRK-COM-INPUTCD (IDK) =   SPACE ) AND
+                                 (WRK-GMN-INPUTCD (IDK) =   SPACE ))  OR
+                                ( WRK-COM-INPUTCD (IDK)(1:1)
+                                                    NOT =   "1"    )
+                            MOVE    1               TO  FLG-KSN-END
+                            MOVE    IDK             TO  IDX-T
+                         END-IF
+                       END-PERFORM
+      *            逓減（乳幼児の前）
+                   WHEN    2
+                       MOVE    ZERO            TO  FLG-KSN-END
+                       PERFORM VARYING     IDK      FROM   IDX-S   BY  1
+                               UNTIL      (IDK      >   200 )  OR
+                                          (FLG-KSN-END  =  1  )
+      *                  逓減対象の次ぎとする
+                         IF      (WRK-COM-INPUTCD (IDK)(1:1)
+                                                          =  "1" ) AND
+                                 (WRK-COM-TEIGENKBN(IDK)  =  "1" )
+                            MOVE    IDK             TO  IDX-T
+                         END-IF
+                         IF     ((WRK-COM-INPUTCD (IDK) =   SPACE ) AND
+                                 (WRK-GMN-INPUTCD (IDK) =   SPACE ))  OR
+                                ( WRK-COM-INPUTCD (IDK)(1:1)
+                                                    NOT =   "1"    )
+                            MOVE    1               TO  FLG-KSN-END
+                            IF      IDX-T           =   ZERO
+                                MOVE    IDK             TO  IDX-T
+                            ELSE
+                                ADD     1               TO  IDX-T
+                            END-IF
+                         END-IF
+                       END-PERFORM
       *
-      *        手技料の次に追加する
-               COMPUTE IDX-T               =   IDX-S   +  1
+                   WHEN    OTHER
+      *                手技料の次に追加する
+                       COMPUTE IDX-T               =   IDX-S   +  1
+                       MOVE    ZERO                TO  WRK-IDX
+               END-EVALUATE
                MOVE    ZERO                TO  WRK-IDX
            END-IF
       *
@@ -2096,6 +2275,8 @@
            MOVE    WRK-COM-SRYSYUKBN (IDX-T - 1)
                                        TO  WRK-COM-SRYSYUKBN(IDX-T)
       *
+           MOVE    SPACE               TO  WRK-COM-ZAIEND (IDX-T - 1)
+      *
            MOVE    "1"                 TO  WRK-COM-AUTOKBN (IDX-T)
       *
            ADD     1                   TO  WRK-GMN-MAX
@@ -2133,12 +2314,12 @@
                IF      WRK-COM-INPUTCD (IDX-Z) =   "160062310"
                    PERFORM 1007-KENSA-CHK-SEC
                END-IF
-      *        逓減加算算定チェック
-               IF     (WRK-COM-SRYKBN    (IDX-Z)   =   "60" )  AND
-                      (WRK-COM-TEIGENKBN (IDX-Z)   =   1    )  AND
-                      (WRK-COM-DATAKBN   (IDX-Z)   =  "1"   )
-                   PERFORM 20018-TEIGEN-INSYORI-SEC
-               END-IF
+      ****     逓減加算算定チェック
+      *        IF     (WRK-COM-SRYKBN    (IDX-Z)   =   "60" )  AND
+      *               (WRK-COM-TEIGENKBN (IDX-Z)   =   1    )  AND
+      *               (WRK-COM-DATAKBN   (IDX-Z)   =  "1"   )
+      *            PERFORM 20018-TEIGEN-INSYORI-SEC
+      *****    END-IF
            END-PERFORM
       *
       *    時間外緊急院内画像診断加算有り
@@ -2149,6 +2330,7 @@
                    CONTINUE
                ELSE
                    MOVE    IDX-JIKAN       TO  IDX-S
+                   MOVE    ZERO                TO  FLG-KASAN
                    PERFORM 2001-JIDOTUIKA-SEC
                END-IF
            END-IF

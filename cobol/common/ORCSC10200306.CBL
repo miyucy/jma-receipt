@@ -54,7 +54,6 @@
       * 02.00.18     NACL-Â¿¡¹Ç¼  03/08/29  £È£±£µ¡¥£¹¤«¤é
       *                                     Ï«ºÒ¡¦¼«ÇåÀÕÄþ¸ºÀ©¤ÎÇÑ»ß
       *                                     ¡Ê¥ì¥»ÅÅ¥³¡¼¥É¤ÎÊÑ¹¹¤Ê¤·¡Ë
-      * 02.00.19     NACL-Â¿¡¹Ç¼  03/12/02  ¡ó¸º»»ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1611,47 +1610,63 @@
       *****************************************************************
        1009-NETAKIRI-HEN-SEC           SECTION.
       *
+      *    ´û¤Ë¼«Æ°È¯À¸¤·¤¿¾ì¹ç¡¢¼«Æ°²Ã»»¤·¤Ê¤¤
+           IF      WRK-COM-AUTOFLG (IDX-Z)     =   "1"
+               GO      TO      1009-NETAKIRI-HEN-EXT
+           END-IF
+           MOVE    "1"                 TO  WRK-COM-AUTOFLG (IDX-Z)
+      *    ½é²ó°Ê³°¼«Æ°²Ã»»¤·¤Ê¤¤
+           IF      LNK-ORCSC-NETAKIRI-ARI3 =   1
+               GO      TO      1009-NETAKIRI-HEN-EXT
+           END-IF
+      *
       *    ´û¤ËÆþÎÏ¤Î¤¢¤ë»þ¡¢¼«Æ°²Ã»»¤·¤Ê¤¤
-      *     £²£´»þ´ÖÏ¢·ÈÂÎÀ©²Ã»»¡Ê£±)
+      *    £²£´»þ´ÖÏ¢·ÈÂÎÀ©²Ã»»¡Ê£±)
            MOVE    "114701870"         TO  WRK-SRYCD
            PERFORM 1110-KASAN-CHK-SEC
            IF      FLG-ARI             =   1
                GO      TO      1009-NETAKIRI-HEN-EXT
            END-IF
-      *     £²£´»þ´ÖÏ¢·ÈÂÎÀ©²Ã»»¡Ê£²)
+      *    £²£´»þ´ÖÏ¢·ÈÂÎÀ©²Ã»»¡Ê£²)
            MOVE    "114703970"         TO  WRK-SRYCD
            PERFORM 1110-KASAN-CHK-SEC
            IF      FLG-ARI             =   1
                GO      TO      1009-NETAKIRI-HEN-EXT
            END-IF
-      *     £²£´»þ´ÖÏ¢·ÈÂÎÀ©²Ã»»¡Ê£³)
+      *    £²£´»þ´ÖÏ¢·ÈÂÎÀ©²Ã»»¡Ê£³)
            MOVE    "114703770"         TO  WRK-SRYCD
            PERFORM 1110-KASAN-CHK-SEC
            IF      FLG-ARI             =   1
                GO      TO      1009-NETAKIRI-HEN-EXT
            END-IF
       *
-      *     £²£´»þ´ÖÏ¢·ÈÂÎÀ©²Ã»»¡Ê£±)
+      *    £²£´»þ´ÖÏ¢·ÈÂÎÀ©²Ã»»¡Ê£±)
            MOVE    "114701870"         TO  WRK-SRYCD
            MOVE    IDX-Z               TO  IDX-S
            PERFORM 1100-KASAN-SET-SEC
            IF      FLG-ADD             =   1
+      *        ¼«Æ°ÄÉ²ÃÊ¬¤ò»ß¤á¤ë
+               MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
                GO      TO      1009-NETAKIRI-HEN-EXT
            END-IF
       *
-      *     £²£´»þ´ÖÏ¢·ÈÂÎÀ©²Ã»»¡Ê£²)
+      *    £²£´»þ´ÖÏ¢·ÈÂÎÀ©²Ã»»¡Ê£²)
            MOVE    "114703970"         TO  WRK-SRYCD
            MOVE    IDX-Z               TO  IDX-S
            PERFORM 1100-KASAN-SET-SEC
            IF      FLG-ADD             =   1
+      *        ¼«Æ°ÄÉ²ÃÊ¬¤ò»ß¤á¤ë
+               MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
                GO      TO      1009-NETAKIRI-HEN-EXT
            END-IF
       *
-      *     £²£´»þ´ÖÏ¢·ÈÂÎÀ©²Ã»»¡Ê£³)
+      *    £²£´»þ´ÖÏ¢·ÈÂÎÀ©²Ã»»¡Ê£³)
            MOVE    "114703770"         TO  WRK-SRYCD
            MOVE    IDX-Z               TO  IDX-S
            PERFORM 1100-KASAN-SET-SEC
            IF      FLG-ADD             =   1
+      *        ¼«Æ°ÄÉ²ÃÊ¬¤ò»ß¤á¤ë
+               MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
                GO      TO      1009-NETAKIRI-HEN-EXT
            END-IF
       *
@@ -1803,8 +1818,18 @@
                                SPA-SRYYMD(7:2)     =   SANTEI-MSANTEID)
                            MOVE    SPACE           TO  WRK-SYOKAI-YMD
                        ELSE
-                           MOVE    "0132"      TO  WRK-ERRCD
-                           MOVE    "1"         TO  WRK-COM-CUR (IDX-Z)
+      *!                   MOVE    "0132"      TO  WRK-ERRCD
+      *!                   MOVE    "1"         TO  WRK-COM-CUR (IDX-Z)
+                           IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE )
+                              AND (LNK-ORCSC-KEI-IDX       =   ZERO  )
+                               MOVE    IDX-Z            TO
+                                                    LNK-ORCSC-KEI-IDX
+                               MOVE    "K132"           TO  WRK-ERRCD
+                               MOVE    "1"              TO  WRK-COM-CUR
+                                                              (IDX-Z)
+                               MOVE    "1"          TO  WRK-COM-KZMFLG
+                                                              (IDX-Z)
+                           END-IF
                        END-IF
                END-EVALUATE
            END-PERFORM
@@ -1847,9 +1872,25 @@
                        PERFORM 100112-COMMT1-SEC
       *            ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍýÎÁ¡Ê£´·îÌÜ°Ê¾å¡Ë¤Ï¥¨¥é¡¼
                    WHEN    "113000510"
-                       MOVE    "0130"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-                       GO      TO      10011-TOKUYAKU-EXT
+      *!               MOVE    "0130"          TO  WRK-ERRCD
+      *!               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+      *                ·Ù¹ð¤Ø
+                       IF     ( WRK-COM-KZMFLG (IDX-Z) =   SPACE )
+                          AND (LNK-ORCSC-KEI-IDX       =   ZERO  )
+                           MOVE    IDX-Z            TO
+                                                    LNK-ORCSC-KEI-IDX
+                           MOVE    "K130"           TO  WRK-ERRCD
+                           MOVE    "1"              TO  WRK-COM-CUR
+                                                          (IDX-Z)
+                           MOVE    "1"          TO  WRK-COM-KZMFLG
+                                                          (IDX-Z)
+                           GO      TO      10011-TOKUYAKU-EXT
+                       ELSE
+      *                    ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍýÎÁ½é²ó»»ÄêÄÉ²Ã
+                           MOVE    IDX-Z               TO  IDX-S
+                           MOVE    "840000038"         TO  WRK-SRYCD
+                           PERFORM 100112-COMMT1-SEC
+                       END-IF
                END-EVALUATE
       *
            END-IF
@@ -1881,14 +1922,14 @@
       *                   PERFORM 1100-KASAN-SET-SEC
       *                   MOVE    SPACE            TO  WRK-COM-AUTOKBN
       *****                                                (IDX-Z)
-                          IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE)
-                            AND  (LNK-ORCSC-KEI-IDX        =   ZERO )
-                              MOVE    IDX-Z            TO
-                                                       LNK-ORCSC-KEI-IDX
-                              MOVE    "K007"           TO  WRK-ERRCD
-                              MOVE    "1"              TO  WRK-COM-CUR
-                                                          (IDX-Z)
-                              MOVE    "1"          TO  WRK-COM-KZMFLG
+                          IF      WRK-COM-KZMFLG (IDX-Z)   =   SPACE
+                              AND (LNK-ORCSC-KEI-IDX       =   ZERO  )
+                               MOVE    IDX-Z            TO
+                                                   LNK-ORCSC-KEI-IDX
+                               MOVE    "K007"           TO  WRK-ERRCD
+                               MOVE    "1"              TO  WRK-COM-CUR
+                                                           (IDX-Z)
+                               MOVE    "1"         TO  WRK-COM-KZMFLG
                                                           (IDX-Z)
                            END-IF
                        END-IF
@@ -1899,10 +1940,21 @@
                                                                (1:6)
                            CONTINUE
                        ELSE
-                           MOVE    "0130"          TO  WRK-ERRCD
-                           MOVE    "1"             TO  WRK-COM-CUR
-                                                              (IDX-Z)
-                           GO      TO      10011-TOKUYAKU-EXT
+      *!                   MOVE    "0130"          TO  WRK-ERRCD
+      *!                   MOVE    "1"             TO  WRK-COM-CUR
+      *!                                                      (IDX-Z)
+      *                   ·Ù¹ð¤Ø
+                          IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE )
+                             AND (LNK-ORCSC-KEI-IDX        =   ZERO  )
+                              MOVE    IDX-Z            TO
+                                                    LNK-ORCSC-KEI-IDX
+                              MOVE    "K130"           TO  WRK-ERRCD
+                              MOVE    "1"              TO  WRK-COM-CUR
+                                                          (IDX-Z)
+                              MOVE    "1"          TO  WRK-COM-KZMFLG
+                                                          (IDX-Z)
+                              GO      TO      10011-TOKUYAKU-EXT
+                           END-IF
                        END-IF
                END-EVALUATE
       *
@@ -2149,8 +2201,21 @@
                    IF      WRK-WYM         =   LNK-DAY1-WYMD(2:4)
                        MOVE    SPA-SRYYMD      TO  LNK-ORCSC-TOKTEI-YMD
                    ELSE
-                       MOVE    "0133"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+      *!               MOVE    "0133"          TO  WRK-ERRCD
+      *!               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+      *                ·Ù¹ð¤È¤¹¤ë
+                       IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE )
+                          AND (LNK-ORCSC-KEI-IDX       =   ZERO  )
+                           MOVE    IDX-Z            TO
+                                                    LNK-ORCSC-KEI-IDX
+                           MOVE    "K133"           TO  WRK-ERRCD
+                           MOVE    "1"              TO  WRK-COM-CUR
+                                                          (IDX-Z)
+                           MOVE    "1"          TO  WRK-COM-KZMFLG
+                                                          (IDX-Z)
+                       ELSE
+                           MOVE    SPACE        TO  LNK-ORCSC-TOKTEI-YMD
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -2464,6 +2529,7 @@
                    MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
                    ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-G
                END-IF
+      *
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   6   )
                    MOVE    ZERO                TO  WRK-TENSUKEI
@@ -2836,7 +2902,9 @@
       *
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (WRK-KEICD       NOT =   SPACE )
-               IF      WRK-COM-KZMFLG (WRK-KEICD-IDX)  =   SPACE
+               IF      (WRK-COM-KZMFLG (WRK-KEICD-IDX)  =   SPACE)
+                 AND   (LNK-ORCSC-KEI-IDX       =   ZERO  )
+                   MOVE    WRK-KEICD-IDX   TO  LNK-ORCSC-KEI-IDX
                    MOVE    "1"             TO  WRK-COM-KZMFLG
                                                        (WRK-KEICD-IDX)
                    MOVE    "1"             TO  WRK-COM-CUR
@@ -2938,8 +3006,10 @@
                            MOVE    IDX-Z           TO  IDX-KEI
                        END-IF
                        IF      IDX-KEI             >   ZERO
-                           IF      WRK-COM-KZMFLG (IDX-KEI)
-                                                   =   SPACE
+                           IF     (WRK-COM-KZMFLG (IDX-KEI)
+                                                   =   SPACE )  AND
+                                  (LNK-ORCSC-KEI-IDX   =   ZERO )
+                               MOVE    IDX-KEI     TO  LNK-ORCSC-KEI-IDX
                                MOVE    "K016"      TO  SPA-ERRCD
                                MOVE    "1"         TO  WRK-COM-CUR
                                                              (IDX-KEI)
@@ -3291,7 +3361,9 @@
                        MOVE    "0034"          TO  SPA-ERRCD
                    ELSE
                        IF      WRK-KEIYMDZEN   =   SPA-SRYYMD
-                           IF      WRK-COM-KZMFLG (IDX-Z)  =   SPACE
+                           IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
+                             AND  (LNK-ORCSC-KEI-IDX       =   ZERO )
+                               MOVE    IDX-Z       TO  LNK-ORCSC-KEI-IDX
                                MOVE    "1"         TO  WRK-COM-KZMFLG
                                                                 (IDX-Z)
                                MOVE    "K002"          TO  SPA-ERRCD
