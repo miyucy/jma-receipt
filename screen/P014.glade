@@ -136,14 +136,14 @@
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
     <widget>
       <class>GtkPandaEntry</class>
       <name>PTNUM2</name>
-      <x>260</x>
+      <x>264</x>
       <y>36</y>
       <width>150</width>
       <height>24</height>
@@ -164,7 +164,7 @@
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
@@ -192,7 +192,7 @@
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 

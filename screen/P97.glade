@@ -2,8 +2,8 @@
 <GTK-Interface>
 
 <project>
-  <name>P97N</name>
-  <program_name>P97N</program_name>
+  <name>P97</name>
+  <program_name>P97</program_name>
   <directory></directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <gnome_support>True</gnome_support>
@@ -145,7 +145,7 @@
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
+      <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
 
