@@ -535,9 +535,11 @@
            MOVE    PRFNAME-TERMID  TO  SHELLTBL-ARG4
            MOVE    PRFNAME-SYSYMD  TO  SHELLTBL-ARG5
            MOVE    PRFNAME-SYSTIME TO  SHELLTBL-ARG6
-           MOVE    CONST-JOBID     TO  SHELLTBL-ARG7
+           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG7
+           MOVE    SPA-STAFFCD     TO  SHELLTBL-ARG8
+           MOVE    CONST-JOBID     TO  SHELLTBL-ARG9
            MOVE    CONST-JOB-SHELLID
-                                   TO  SHELLTBL-ARG8
+                                   TO  SHELLTBL-ARG10
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC

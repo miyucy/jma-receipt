@@ -11,17 +11,19 @@ fi
 
 #-------------------------------------------#
 #    患者一覧出力
-#        $1 処理区分
-#        $2 CSVファイル名
-#        $3 パラメータファイル名
-#        $4 TERMID
-#        $5 SYSYMD
-#        $6 SYSDATE
-#        $7 ジョブＩＤ
-#        $8 シェルＩＤ
+#        $1  処理区分
+#        $2  CSVファイル名
+#        $3  パラメータファイル名
+#        $4  TERMID
+#        $5  SYSYMD
+#        $6  SYSDATE
+#        $7  HOSPID
+#        $8  STAFFCD
+#        $9  ジョブＩＤ
+#        $10 シェルＩＤ
 #
 #-------------------------------------------#
-        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBQ01 -parameter $3,$4,$5,$6
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBQ01 -parameter $3,$4,$5,$6,$7,$8
 
 ##      ＣＳＶファイル作成
         if  [ $1 -eq "0" ]; then
@@ -47,6 +49,6 @@ fi
             rm  $3
         fi
 
-       $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$7$8
+       $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$9${10}
 
         exit

@@ -135,6 +135,8 @@
                05  WRK-PARA-TERMID     PIC X(64).
                05  WRK-PARA-SYSYMD     PIC X(08).
                05  WRK-PARA-SYSTIME    PIC X(08).
+               05  WRK-PARA-HOSPID     PIC X(24).
+               05  WRK-PARA-STAFFCD    PIC X(05).
            03  WRK-PROC-KNS            PIC 9(09).
            03  WRK-ZZZZ9               PIC ZZZZ9.
            03  WRK-ZZZZ9C              PIC ZZ,ZZ9.
@@ -219,6 +221,9 @@
            COPY    "CPORCSJOBKANRI.INC".
       *----(01.00.02) LINE ADD END   ----------------------------------
       *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
+      *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
       *****************************************************************
@@ -262,6 +267,8 @@
                                                WRK-PARA-TERMID
                                                WRK-PARA-SYSYMD
                                                WRK-PARA-SYSTIME
+                                               WRK-PARA-HOSPID
+                                               WRK-PARA-STAFFCD
       *
       *    ＤＢオープン
            PERFORM 120-DBOPEN-SEC
@@ -315,18 +322,35 @@
       *****************************************************************
        110-PRTNUM-GET-SEC                  SECTION.
       *
+           MOVE    SPACE               TO  SPA-AREA
+           INITIALIZE                      SPA-AREA
+      *
+           MOVE    WRK-PARA-HOSPID     TO  SPA-HOSPID
+           MOVE    WRK-PARA-STAFFCD    TO  SPA-STAFFCD
+      *
       *    出力先プリンタ名割り当て情報編集
            MOVE    SPACE               TO  SYS-1031-REC
            INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"              TO  SYS-1031-KANRICD
-           MOVE    "*"                 TO  SYS-1031-KBNCD
-           MOVE    SYS-1031-REC        TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1031-REC
-           ELSE
-               INITIALIZE                  SYS-1031-REC
-           END-IF
+      *
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    WRK-PARA-SYSYMD     TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1031-REC
+      *
+      *    MOVE    SPACE               TO  SYS-1031-REC
+      *    INITIALIZE                  SYS-1031-REC
+      *    MOVE    "1031"              TO  SYS-1031-KANRICD
+      *    MOVE    "*"                 TO  SYS-1031-KBNCD
+      *    MOVE    SYS-1031-REC        TO  MCPDATA-REC
+      *    PERFORM 800-SYSKANRI-READ-SEC
+      *    IF      FLG-SYSKANRI        =   ZERO
+      *        MOVE    MCPDATA-REC         TO  SYS-1031-REC
+      *    ELSE
+      *        INITIALIZE                  SYS-1031-REC
+      *    END-IF
            .
       *
        110-PRTNUM-GET-EXT.
