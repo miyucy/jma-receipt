@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  02/12/17  診療種別の判定追加
+      *  01.00.02    NACL-多々納  03/04/01  翌月調剤料の算定修正
       *****************************************************************
       *
       *
@@ -78,6 +79,7 @@
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-SRYKARRK        PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
+           03  FLG-HKNCOMBI        PIC 9(01).
       *
            03  FLG-SINKI           PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
@@ -89,6 +91,8 @@
       *
            03  FLG-CHK-OK          PIC 9(01).
            03  FLG-DAY             PIC 9(01).
+      *
+           03  FLG-CHOZAI          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -214,6 +218,11 @@
            COPY    "CPSK0041.INC".
       *
            COPY    "CPSK1013.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
+      *
       *
       *    患者マスタ−
        01  PTINF-REC.
@@ -409,6 +418,9 @@
                PERFORM 100-SRYACT-KOU-SEC
                PERFORM 200-JYURRK-SYORI-SEC
            END-IF
+      *    来月の調剤料を算定しなおす
+           PERFORM 600-NEXT-CHOZAI-SEC
+      *
       *
       *    診療科履歴変更
            INITIALIZE                  ORCSKARRKAREA
@@ -427,8 +439,59 @@
       *    ワーク診療行為マスタ−が存在した時、削除する
            PERFORM 400-WKSRYACT-DEL-SEC
       *
+      *
            .
        100-SAKUSEI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    来月の調剤料算定処理
+      *****************************************************************
+       600-NEXT-CHOZAI-SEC            SECTION.
+      *
+           MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
+           COMPUTE WRK-SRYMM           =   WRK-SRYMM   +   1
+           IF      WRK-SRYMM           >   12
+               COMPUTE WRK-SRYYY           =   WRK-SRYYY   +   1
+               MOVE    1                   TO  WRK-SRYMM
+           END-IF
+      *    保険が来月も対象であること
+           MOVE    SPACE               TO  HKNCOMBI-REC
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-PTID            TO  COMB-PTID
+           MOVE    SPA-HKNCOMBINUM     TO  COMB-HKNCOMBINUM
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+               PERFORM 910-HKNCOMBI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+               INITIALIZE                  HKNCOMBI-REC
+           END-IF
+      *    対象なし
+           IF     (FLG-HKNCOMBI        =   1  )  OR
+                  (COMB-TEKEDYMD(1:6)  <   WRK-SRYYMD (1:6))
+               GO      TO      600-NEXT-CHOZAI-EXT
+           END-IF
+      *
+           INITIALIZE                  ORCSCHOZAIAREA
+           MOVE    "1"                 TO  ORCSCHO-KBN
+           MOVE    SPA-PTID            TO  ORCSCHO-PTID
+           MOVE    WRK-SRYYMD(1:6)     TO  ORCSCHO-SRYYM
+           CALL    "ORCSCHOZAI"        USING
+                                       SPA-AREA
+                                       ORCSCHOZAIAREA
+      *
+           .
+       600-NEXT-CHOZAI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -534,6 +597,7 @@
       *    自動発生で、回数が１以上の時、入院調剤料とする
            IF     (LNK-WKSRY-AUTOKBN (01 01)   =   "3" ) AND
                   (LNK-WKSRY-SRYKBN  (01)      =   "24" OR "26")
+               MOVE    1                   TO  FLG-CHOZAI
                PERFORM 10011-NISUU-SYORI-SEC
                GO      TO      1001-KAISUU-SYORI-EXT
            END-IF
@@ -2548,6 +2612,29 @@
            .
        975-SRYKARRK-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    保険組合せマスター読込
+      *****************************************************************
+       910-HKNCOMBI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+               MOVE    ZERO            TO  FLG-HKNCOMBI
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       910-HKNCOMBI-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    算定歴マスタ読み込み
       *****************************************************************
