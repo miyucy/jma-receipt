@@ -185,32 +185,8 @@
       *****************************************************************
        2001-GAIRAI-CHK-SEC              SECTION.
       *
-           MOVE    SPACE               TO  WRK-LASTYMD
-      *
-      *    ¿ÇÎÅ²ÊÎò¤ò¸¡º÷
-           INITIALIZE                      SRYKARRK-REC
-           MOVE    QSUB03-HOSPID       TO  KARRK-HOSPID
-           MOVE    QSUB03-PTID         TO  KARRK-PTID
-      *
-           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
-           MOVE    "SRYKARRK-KEY3"     TO  ORC-DBPATH
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-      *
-               MOVE    MCPDATA-REC     TO  SRYKARRK-REC
-      *
-               MOVE    KARRK-LASTYMD   TO  WRK-LASTYMD
-               MOVE    KARRK-SRYKA     TO  WRK-SRYKA
-           END-IF
-      *
-           MOVE    "SRYKARRK-KEY3"     TO  ORC-DBPATH
-           PERFORM 910-DBCLOSE-SEC
-      *
-           IF    ( WRK-LASTYMD     NOT =   SPACE )
-      *
-      *        ÊÝ¸±¤ÎÈ½Äê
-               PERFORM 20011-JYURRK-HKN-HEN-SEC
-           END-IF
+      *    ÊÝ¸±¤ÎÈ½Äê
+           PERFORM 20011-JYURRK-HKN-HEN-SEC
       *
            .
        2001-GAIRAI-CHK-EXT.
@@ -226,11 +202,10 @@
            MOVE    QSUB03-HOSPID       TO  JYURRK-HOSPID
            MOVE    "2"                 TO  JYURRK-NYUGAIKBN
            MOVE    QSUB03-PTID         TO  JYURRK-PTID
-           MOVE    WRK-LASTYMD         TO  JYURRK-SRYYMD
-           MOVE    WRK-SRYKA           TO  JYURRK-SRYKA
+           MOVE    QSUB03-KJNYMD       TO  JYURRK-SRYYMD
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
-           MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
+           MOVE    "JYURRK-KEY10"      TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  JYURRK-REC
@@ -239,25 +214,12 @@
                MOVE    1               TO  FLG-JYURRK
            END-IF
       *
-           PERFORM UNTIL ( FLG-JYURRK  =   1 )
+           IF ( FLG-JYURRK             =   ZERO )
+               MOVE    JYURRK-HKNCOMBINUM
+                                       TO  WRK-HKNCOMBI
+           END-IF
       *
-               IF    ( JYURRK-HKNCOMBINUM  NOT =   "9999" )
-                   MOVE    JYURRK-HKNCOMBINUM
-                                           TO  WRK-HKNCOMBI
-                   MOVE    1               TO  FLG-JYURRK
-               ELSE
-                   MOVE    "JYURRK-KEY4"   TO  ORC-DBPATH
-                   PERFORM 910-DBFETCH-SEC 
-                   IF    ( MCP-RC          =   ZERO )
-                       MOVE    MCPDATA-REC TO  JYURRK-REC
-                   ELSE
-                       INITIALIZE              JYURRK-REC
-                       MOVE    1           TO  FLG-JYURRK
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-           MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
+           MOVE    "JYURRK-KEY10"      TO  ORC-DBPATH
            PERFORM 910-DBCLOSE-SEC
       *
            .
