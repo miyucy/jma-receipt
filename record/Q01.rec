@@ -339,6 +339,13 @@ Q01	{
 				};
 			};
 			fixed18	{
+				CMB_UTAGAIKBN	{
+					UTAGAIKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[3];
+				};
 				CMB_BYOBUN	{
 					BYOBUN	{
 						value	varchar(24);

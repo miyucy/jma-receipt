@@ -201,6 +201,12 @@
       *
       *                病名　診療行為
                        09  SPA-GMN-Q01-BYOMEI-AREA.
+      *                    疑い病名
+                           11  SPA-GMN-Q01-UTAGAIKBN-G.
+                               13  SPA-GMN-Q01-UTAGAIKBN   PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-Q01-UTAGAIKBNMEI
+                                                           PIC X(18).
       *                    病名分類区分名称
                            11  SPA-GMN-Q01-UBYOMEI-G.
                                13  SPA-GMN-Q01-UBYOMEI PIC X(03).
@@ -388,6 +394,12 @@
                                13  SPA-GMN-Q01-KOHNUML     PIC X(03).
                                13  SPA-GMN-Q01-PAYKBNL     PIC X(01).
                                13  SPA-GMN-Q01-KOHNUMMEIL  PIC X(16).
+                       09  SPA-GMN-Q01-UTAGAIKBNLST-G.
+                           11  SPA-GMN-Q01-UTAGAIKBNLST-MAX PIC 9(05).
+                           11  SPA-GMN-Q01-UTAGAIKBNLST    OCCURS 3.
+                               13  SPA-GMN-Q01-UTAGAIKBNL  PIC X(1).
+                               13                          PIC X(1).
+                               13  SPA-GMN-Q01-UTAGAIKBNMEIL PIC X(18).
                        09  SPA-GMN-Q01-UBYOMEILST-G.
                            11  SPA-GMN-Q01-UBYOMEILST-MAX  PIC 9(05).
                            11  SPA-GMN-Q01-UBYOMEILST      OCCURS 100.
@@ -686,6 +698,7 @@
       *            病名　診療行為
                    07  SPA-Q01-BYOMEI-AREA.
       *
+                       09  SPA-Q01-UTAGAIKBN           PIC X(01).
                        09  SPA-Q01-BYOMEI-JKN          PIC X(01).
       *
                        09  SPA-Q01-BYOMEI-G.

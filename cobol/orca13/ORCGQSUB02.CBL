@@ -678,6 +678,10 @@
                PERFORM 10011-SRYKA-SQL-EDIT-SEC
            END-IF
       *
+           IF    ( SPA-Q01-UTAGAIKBN   NOT =   SPACE )
+               PERFORM 10011-UTAGAIFLG-SQL-EDIT-SEC
+           END-IF
+      *
            MOVE    ZERO    TO      CNT-JYOKEN
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL   (   IDX1    >   5 )
@@ -768,6 +772,10 @@
       *
                    IF    ( SPA-Q01-SRYKA   NOT =   SPACE )
                        PERFORM 10011-SRYKA-SQL-EDIT-SEC
+                   END-IF
+      *
+                   IF    ( SPA-Q01-UTAGAIKBN   NOT =   SPACE )
+                       PERFORM 10011-UTAGAIFLG-SQL-EDIT-SEC
                    END-IF
       *
                    MOVE    1               TO  CNT-JYOKEN
@@ -2122,6 +2130,36 @@
       *
            .
        10011-NYUGAIKBN-SQL-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    病名疑いフラグ編集処理
+      *****************************************************************
+       10011-UTAGAIFLG-SQL-EDIT-SEC    SECTION.
+      *
+           MOVE    1                   TO  CNT-JYOKEN
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+           IF    ( SPA-Q01-UTAGAIKBN   =   "2" )
+               STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                       ".UTAGAIFLG IN ('1','3')"
+                                           DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+           ELSE
+               STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                       ".UTAGAIFLG NOT IN ('1','3')"
+                                           DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+           END-IF
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+           .
+       10011-UTAGAIFLG-SQL-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    並べ替え順編集処理

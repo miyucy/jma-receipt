@@ -564,6 +564,9 @@
       *    保険の種類・公費の種類コンボ初期処理
            PERFORM 3101-HKNKOH-CMB-SYOKI-SEC
       *
+      *    疑い病名区分コンボ初期処理
+           PERFORM 3101-UTAGAIKBN-CMB-SYOKI-SEC
+      *
       *    病名検索コンボ初期処理
            PERFORM 3101-BYOMEI-CMB-SYOKI-SEC
       *
@@ -1054,6 +1057,24 @@
        31011-KOHHEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    疑い病名コンボ初期処理
+      *****************************************************************
+       3101-UTAGAIKBN-CMB-SYOKI-SEC    SECTION.
+      *
+           INITIALIZE                      SPA-GMN-Q01-UTAGAIKBNLST-G
+      *
+           MOVE    2                   TO  SPA-GMN-Q01-UTAGAIKBNLST-MAX
+      *
+           MOVE    "1"                 TO  SPA-GMN-Q01-UTAGAIKBNL (1)
+           MOVE    "含まない"          TO  SPA-GMN-Q01-UTAGAIKBNMEIL (1)
+      *
+           MOVE    "2"                 TO  SPA-GMN-Q01-UTAGAIKBNL (2)
+           MOVE    "疑い病名のみ"      TO  SPA-GMN-Q01-UTAGAIKBNMEIL (2)
+      *
+           .
+       3101-UTAGAIKBN-CMB-SYOKI-EXT.
+           EXIT.
       *****************************************************************
       *    病名検索コンボ初期処理
       *****************************************************************
@@ -1564,6 +1585,19 @@
       *
            END-PERFORM
       *
+      *    疑い病名区分
+           MOVE    Q01-UTAGAIKBN       TO  SPA-GMN-Q01-UTAGAIKBN-G
+      *
+           MOVE    SPA-GMN-Q01-UTAGAIKBNLST-MAX
+                                       TO  Q01-CMB-UTAGAIKBN-COUNT
+           PERFORM VARYING IDXB    FROM    1   BY  1
+                   UNTIL ( IDXB    >       SPA-GMN-Q01-UTAGAIKBNLST-MAX)
+      *
+               MOVE    SPA-GMN-Q01-UTAGAIKBNLST (IDXB)
+                                   TO   Q01-CMB-UTAGAIKBN-ITEM (IDXB)
+      *
+           END-PERFORM
+      *
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL   IDXB    >       5
       *        病名コード
@@ -1837,6 +1871,12 @@
       *    病名　診療行為タブ入力チェック処理
       *****************************************************************
        4101-BYOSRY-INPUT-CHK-SEC       SECTION.
+      *
+      *    疑い病名チェック
+           PERFORM 4119-UTAGAIKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4101-BYOSRY-INPUT-CHK-EXT
+           END-IF
       *
       *    病名コードチェック処理
            PERFORM VARYING IDXA    FROM    1   BY  1
@@ -2940,13 +2980,11 @@
       *    画面ＳＰＡ編集処理
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-           MOVE    301                 TO  SPA-GMN-Q01-CUR
+           MOVE    ZERO                TO  SPA-GMN-Q01-CUR
       *
            MOVE    Q01-BYOBUN          TO  SPA-GMN-Q01-UBYOMEI-G
       *
            IF  ( SPA-GMN-Q01-UBYOMEI   =   SPACE )
-               COMPUTE SPA-GMN-Q01-CUR =   SPA-GMN-Q01-CUR
-                                       +   1
                GO  TO  4118-BYOBUN-CHK-EXT
            END-IF
       *
@@ -2965,9 +3003,6 @@
             AND    ( FLG-USERBYOMEI    =   ZERO )
                MOVE    "0003"          TO  SPA-ERRCD
            END-IF
-      *
-           COMPUTE SPA-GMN-Q01-CUR     =   SPA-GMN-Q01-CUR
-                                       +   1
            .
        4118-BYOBUN-CHK-EXT.
            EXIT.
@@ -2979,7 +3014,7 @@
       *    画面ＳＰＡ編集処理
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-           MOVE   302                  TO  SPA-GMN-Q01-CUR
+           MOVE    ZERO                TO  SPA-GMN-Q01-CUR
       *
            MOVE    Q01-BYOMEISEL       TO  SPA-GMN-Q01-BYOMEISEL
       *
@@ -2988,8 +3023,6 @@
            MOVE    WRK-KANACHK-OUT-INPUT   TO  SPA-GMN-Q01-BYOMEISEL
       *
            IF  ( SPA-GMN-Q01-BYOMEISEL =   SPACE )
-               COMPUTE SPA-GMN-Q01-CUR =   SPA-GMN-Q01-CUR
-                                       +   1
                GO  TO  4118-BYOMEISEL-CHK-EXT
            END-IF
       *
@@ -3021,10 +3054,6 @@
                    GO  TO  4118-BYOMEISEL-CHK-EXT
                END-IF
            END-IF
-      *
-      *
-           COMPUTE SPA-GMN-Q01-CUR     =   SPA-GMN-Q01-CUR
-                                       +   1
       *
            .
        4118-BYOMEISEL-CHK-EXT.
@@ -3164,6 +3193,37 @@
        41181-BYOMEI-HENSYU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    疑い病名区分チェック処理
+      *****************************************************************
+       4119-UTAGAIKBN-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-Q01-UTAGAIKBN-G =   SPACE )
+               GO  TO  4119-UTAGAIKBN-CHK-EXT
+           END-IF
+      *
+           MOVE    ZERO            TO  FLG-CHK
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   SPA-GMN-Q01-UTAGAIKBNLST-MAX )
+      *
+               IF    ( SPA-GMN-Q01-UTAGAIKBN
+                                   =   SPA-GMN-Q01-UTAGAIKBNL (IDX0))
+                   MOVE    SPA-GMN-Q01-UTAGAIKBNLST (IDX0)
+                                       TO  SPA-GMN-Q01-UTAGAIKBN-G
+                   MOVE    1           TO  FLG-CHK
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF  ( FLG-CHK           =   ZERO )
+               MOVE    "0119"          TO  SPA-ERRCD
+               MOVE    319             TO  SPA-GMN-Q01-CUR
+           END-IF
+      *
+           .
+       4119-UTAGAIKBN-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    病名コードチェック処理
       *****************************************************************
@@ -4654,6 +4714,8 @@
            END-PERFORM
       *
       *    病名　診療行為
+           MOVE    SPA-GMN-Q01-UTAGAIKBN   TO  SPA-Q01-UTAGAIKBN
+      *
            IF    ( SPA-GMN-Q01-RDBYOMEI-AND    =   "T" )
                MOVE    "1"                 TO  SPA-Q01-BYOMEI-JKN
            ELSE
@@ -4883,6 +4945,7 @@
       *
       *    該当（４）
            IF  ( SPA-Q01-BYOMEI-G          NOT =   SPACE )
+            OR ( SPA-Q01-UTAGAIKBN         NOT =   SPACE )
       *
                MOVE    "1"                 TO  SPA-Q01-GTBL(4)
       *
@@ -5260,6 +5323,9 @@
                                                                (IDX1)
            END-PERFORM
       *
+      *    疑い病名
+           MOVE    SPA-GMN-Q01-UTAGAIKBN-G TO  Q01-UTAGAIKBN
+      *
       *    病名検索
            MOVE    SPA-GMN-Q01-BYOMEISEL   TO  Q01-BYOMEISEL
       *
@@ -5364,6 +5430,8 @@
            END-IF
       *
            PERFORM 5012-CUR-SKIP-SEC
+      *
+           DISPLAY "BF SPA-GMN-Q01-CUR = " SPA-GMN-Q01-CUR
       *
            EVALUATE    SPA-GMN-Q01-CUR
       *
@@ -5564,6 +5632,8 @@
                MOVE  "SRYCD4"      TO  MCP-WIDGET
            WHEN   318
                MOVE  "SRYCD5"      TO  MCP-WIDGET
+           WHEN   319
+               MOVE  "UTAGAIKBN"   TO  MCP-WIDGET
       *
       *    並び順タブ
            WHEN   401
@@ -5573,6 +5643,9 @@
            WHEN   403
                MOVE  "KMK3"        TO  MCP-WIDGET
            END-EVALUATE
+      *
+           DISPLAY "SPA-GMN-Q01-CUR = " SPA-GMN-Q01-CUR
+           DISPLAY "MCP-WIDGET      = " MCP-WIDGET
       *
            .
        5001-MAPCUR-EXT.
@@ -5758,6 +5831,8 @@
            WHEN   "BYOBUN"
                MOVE  302           TO  SPA-GMN-Q01-CUR
            WHEN   "BYOMEISEL"
+               MOVE  319           TO  SPA-GMN-Q01-CUR
+           WHEN   "UTAGAIKBN"
                MOVE  303           TO  SPA-GMN-Q01-CUR
            WHEN   "BYOMEICD1"
                MOVE  304           TO  SPA-GMN-Q01-CUR
@@ -5908,6 +5983,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "0118"
                MOVE    "入外区分入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0119"
+               MOVE    "疑い病名区分入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "開始診療年月日＞終了診療年月日となっています"
