@@ -1008,6 +1008,7 @@ COPYS = \
         HC502.INC \
         HC503.INC \
         KHELPSCR-SPA \
+        HCPOM.INC \
 
 DBPATH = \
 	ORCA-DBPATH
