@@ -1006,6 +1006,7 @@
                    MOVE  TNS-GAITENTTLKBN TO    RECE65-TENTTLKBN(IDX4)
                END-IF
                MOVE    TNS-YUKOKETA       TO    RECE65-YUKOKETA(IDX4)
+               MOVE    TNS-DATAKBN        TO    RECE65-DATAKBN (IDX4)
                IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
                AND     SRY-INPUTNUM (IDX2)      NOT =   ZERO
                    MOVE    SRY-HOSPID           TO  PTCOM-HOSPID
