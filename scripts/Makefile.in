@@ -36,6 +36,7 @@ shell_sources = \
 	monthly/recept6.sh.in \
 	monthly/recept7.sh.in \
 	monthly/recept8.sh.in \
+	monthly/recept9.sh.in \
 	monthly/sokatsu.sh.in \
 	monthly/teikiseikyu.sh.in \
 	claim/HL01.sh.in \
