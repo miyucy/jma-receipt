@@ -923,7 +923,14 @@
                MOVE    ACCT-SRYKA         TO  WRK-RECE82-SRYKA (1)
            END-IF
            IF      WRK-DBKBN          =   "2"
-               MOVE    WRK-DAY-TBL (2)    TO  WRK-RECE82-DAY-AREA
+      ***      MOVE    WRK-DAY-TBL (2)    TO  WRK-RECE82-DAY-AREA
+               PERFORM   VARYING   IDX3    FROM    1   BY  1
+                           UNTIL   IDX3    >      31
+                 IF      WRK-DAY (1 IDX3)     >   ZERO    AND
+                         WRK-DAY (2 IDX3)     >   ZERO
+                    MOVE   WRK-DAY(2 IDX3)  TO  WRK-RECE82-DAY(IDX3)
+                 END-IF
+               END-PERFORM
            END-IF
       *
       *    患者番号取得
@@ -1050,7 +1057,14 @@
            END-IF
       *
            IF      WRK-DBKBN          =   "2"
-               MOVE    WRK-DAY-TBL (2)    TO  WRK-RECE82-DAY-AREA
+      ***      MOVE    WRK-DAY-TBL (2)    TO  WRK-RECE82-DAY-AREA
+               PERFORM   VARYING   IDX3    FROM    1   BY  1
+                           UNTIL   IDX3    >      31
+                 IF      WRK-DAY (1 IDX3)     >   ZERO    AND
+                         WRK-DAY (2 IDX3)     >   ZERO
+                    MOVE   WRK-DAY(2 IDX3)  TO  WRK-RECE82-DAY(IDX3)
+                 END-IF
+               END-PERFORM
            END-IF
       *
            IF      WRK-TEISEIKBN           =   "1"

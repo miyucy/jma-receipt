@@ -150,6 +150,7 @@
            03  IDX                                     PIC 9(03). 
            03  IDX1                                    PIC 9(03). 
            03  IDX2                                    PIC 9(03). 
+           03  IDX3                                    PIC 9(03). 
            03  IDY                                     PIC 9(03). 
            03  IDZ                                     PIC 9(03).
            03  TBL-MAX                                 PIC 9(03).
@@ -1413,7 +1414,14 @@
                MOVE    ACCT-SRYKA     TO  WRK-RECE61-SRYKA      (1)
            END-IF
            IF      WRK-DBKBN          =   "2"
-               MOVE    WRK-DAY-TBL (2)    TO  WRK-RECE61-DAY-AREA
+      ***      MOVE    WRK-DAY-TBL (2)    TO  WRK-RECE61-DAY-AREA
+               PERFORM   VARYING   IDX3    FROM    1   BY  1
+                           UNTIL   IDX3    >      31
+                 IF      WRK-DAY (1 IDX3)     >   ZERO    AND
+                         WRK-DAY (2 IDX3)     >   ZERO
+                    MOVE   WRK-DAY(2 IDX3)  TO  WRK-RECE61-DAY(IDX3)
+                 END-IF
+               END-PERFORM
            END-IF
            MOVE    PTHKN-TEKSTYMD     TO  WRK-RECE61-TEKSTYMDX  (1)
            MOVE    PTHKN-TEKEDYMD     TO  WRK-RECE61-TEKEDYMDX  (1)
@@ -1496,7 +1504,14 @@
            END-PERFORM
       *
            IF      WRK-DBKBN          =   "2"
-               MOVE    WRK-DAY-TBL (2)    TO  WRK-RECE61-DAY-AREA
+      ***      MOVE    WRK-DAY-TBL (2)    TO  WRK-RECE61-DAY-AREA
+               PERFORM   VARYING   IDX3    FROM    1   BY  1
+                           UNTIL   IDX3    >      31
+                 IF      WRK-DAY (1 IDX3)     >   ZERO    AND
+                         WRK-DAY (2 IDX3)     >   ZERO
+                    MOVE   WRK-DAY(2 IDX3)  TO  WRK-RECE61-DAY(IDX3)
+                 END-IF
+               END-PERFORM
            END-IF
       *
            IF      WRK-TEISEIKBN           =   "1"
