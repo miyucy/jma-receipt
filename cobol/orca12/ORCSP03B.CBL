@@ -416,6 +416,7 @@
                                MOVE    "051"      TO  WRK-MAE-KOHNUM
                            WHEN    OTHER
                                MOVE    "0083"     TO  SPA-ERRCD
+                               MOVE    20         TO  SPA-GMN-CUR
                                GO      TO      1001-FTNJANUM-CHK-EXT
                        END-EVALUATE
       *            ¤½¤ÎÂ¾

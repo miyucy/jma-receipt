@@ -2584,7 +2584,7 @@
                END-IF
            END-PERFORM
            IF      FLG-CHK             =   ZERO
-               MOVE    "0031"              TO  SPA-ERRCD
+               MOVE    "0029"              TO  SPA-ERRCD
                MOVE    6                   TO  SPA-GMN-CUR
            END-IF
       *
