@@ -128,6 +128,8 @@
                05  SPA-GMN-AREA.
                    07  SPA-GMN-SYOKBN              PIC X(20).
                    07  SPA-GMN-LABEL               PIC X(10).
+                   07  SPA-GMN-LABEL1              PIC X(12).
+                   07  SPA-GMN-LABEL2              PIC X(14).
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-TBL-G           OCCURS   100.
                            11  SPA-GMN-TRENNUM     PIC 9(03).
@@ -679,15 +681,28 @@
                    END-EVALUATE
            END-EVALUATE
       *
-           MOVE    SPA-GMN-SYORI-G TO  SPA-GMN-SYORI-OLD-G 
+           IF      SPA-GMN-SYORI   =   "2"
+               MOVE    SPACE           TO  SPA-GMN-TEISEIYM
+               PERFORM 4110-TEISEIYM-SEC
+               IF      SPA-ERRCD       =   SPACE
+                   MOVE    "訂正日"        TO  SPA-GMN-LABEL
+                   MOVE    "対象診療年月"  TO  SPA-GMN-LABEL1
+                   MOVE    "一括作成年月日"
+                                           TO  SPA-GMN-LABEL2
+                   MOVE    11              TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    SPACE           TO  SPA-ERRCD
+                   MOVE    8               TO  SPA-GMN-CUR
+           ELSE
+               EVALUATE    SPA-R01-NYUGAIKBN
+                   WHEN    "1"
+                       MOVE    4               TO  SPA-GMN-CUR
+                   WHEN    "2"
+                       MOVE    8               TO  SPA-GMN-CUR
+               END-EVALUATE
+           END-IF    
       *                 
            MOVE    1               TO  SPA-GMN-PAGE
-           EVALUATE    SPA-R01-NYUGAIKBN
-               WHEN    "1"
-                   MOVE    4               TO  SPA-GMN-CUR
-               WHEN    "2"
-                   MOVE    8               TO  SPA-GMN-CUR
-           END-EVALUATE
       *
            .
        310-SPASET-EXT.
@@ -716,32 +731,13 @@
                    WHEN    "1005"
                        PERFORM 460-CLEAR-SEC
                        MOVE    SPA-GMN-SYORI-G TO  SPA-GMN-SYORI-OLD-G
-                       EVALUATE    SPA-GMN-SYORI
-                           WHEN    "1"
-                               MOVE    4               TO  SPA-GMN-CUR
-                               MOVE    SPACE           TO  SPA-GMN-LABEL
-                           WHEN    "2"
-                               MOVE    11              TO  SPA-GMN-CUR
-                               MOVE    "訂正日"        TO  SPA-GMN-LABEL
-                           WHEN    "3"
-                               MOVE    9               TO  SPA-GMN-CUR
-                               MOVE    "受診日"        TO  SPA-GMN-LABEL
-                       END-EVALUATE                
                    WHEN    OTHER
-                          PERFORM 480-ZENKAI-HYOUJI-SEC
+                       PERFORM 480-ZENKAI-HYOUJI-SEC
                END-EVALUATE
            ELSE
                EVALUATE    SPA-RIDCD
                    WHEN    "1005"
                        MOVE    SPA-GMN-SYORI-OLD-G TO  SPA-GMN-SYORI-G
-                       EVALUATE    SPA-GMN-SYORI
-                           WHEN    "1"
-                               MOVE    SPACE           TO  SPA-GMN-LABEL
-                           WHEN    "2"
-                               MOVE    "訂正日"        TO  SPA-GMN-LABEL
-                           WHEN    "3"
-                               MOVE    "受診日"        TO  SPA-GMN-LABEL
-                       END-EVALUATE                
                        MOVE    8                   TO  SPA-GMN-CUR
                END-EVALUATE
            END-IF    
@@ -961,18 +957,8 @@
                AND   ( SPA-GMN-SYORI-OLD   NOT =   SPACE         )
                    MOVE    "1005"              TO  SPA-RIDCD
                ELSE
-                   MOVE    SPA-GMN-SYORI-G     TO  SPA-GMN-SYORI-OLD-G
-                   EVALUATE    SPA-GMN-SYORI
-                       WHEN    "1"
-                           MOVE    4               TO  SPA-GMN-CUR
-                           MOVE    SPACE           TO  SPA-GMN-LABEL
-                       WHEN    "2"
-                           MOVE    11              TO  SPA-GMN-CUR
-                       MOVE    "訂正日"            TO  SPA-GMN-LABEL
-                       WHEN    "3"
-                           MOVE    9               TO  SPA-GMN-CUR
-                       MOVE    "受診日"            TO  SPA-GMN-LABEL
-                   END-EVALUATE                
+                   MOVE    SPA-GMN-SYORI-G TO  SPA-GMN-SYORI-OLD-G
+                   PERFORM 460-CLEAR-SEC
                END-IF
            ELSE
                MOVE   SPACE                    TO  SPA-GMN-SYORI-OLD-G
@@ -1653,12 +1639,19 @@
        4110-TEISEIYM-SEC               SECTION.
       *
            MOVE    SPACE               TO  SPA-GMN-CREYMD
+                                           SPA-GMN-STJYUSINYMD
+                                           SPA-GMN-EDJYUSINYMD
            MOVE    ZERO                TO  SPA-NAI-STJYUSINYMD
                                            SPA-NAI-EDJYUSINYMD
+                                           SPA-NAI-TEISEIYM
       *
-           IF      SPA-GMN-TEISEIYM =   SPACE
-               MOVE    SPA-NAI-HYO-SRYYM   TO  SPA-NAI-TEISEIYM
-               MOVE    SPA-NAI-HYO-SRYYMH  TO  SPA-GMN-TEISEIYM
+           IF      SPA-GMN-TEISEIYM =  SPACE
+               IF      FLG-TOUROKU     =   1
+                   MOVE    "0024"          TO  SPA-ERRCD
+               ELSE
+                   MOVE    SPA-NAI-HYO-SRYYM   TO  SPA-NAI-TEISEIYM
+                   MOVE    SPA-NAI-HYO-SRYYMH  TO  SPA-GMN-TEISEIYM
+               END-IF 
            ELSE
       *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
@@ -1861,19 +1854,32 @@
       *****************************************************************
        460-CLEAR-SEC             SECTION.
       *
-           MOVE    ZERO                TO  SPA-GMN-MAX
-           INITIALIZE                      SPA-GMN-TBL
-                                           SPA-NAI-TBL
-                                           SPA-GMN-KOUMOKU
-                                           SPA-NAI-KOUMOKU
-           MOVE    ZERO                TO  SPA-NAI-SELNO                              
+           MOVE    ZERO            TO  SPA-GMN-MAX
+           INITIALIZE                  SPA-GMN-TBL
+                                       SPA-NAI-TBL
+                                       SPA-GMN-KOUMOKU
+                                       SPA-NAI-KOUMOKU
+                                       SPA-GMN-LABEL
+                                       SPA-GMN-LABEL1
+                                       SPA-GMN-LABEL2
+           MOVE    ZERO            TO  SPA-NAI-SELNO
       *
            EVALUATE    SPA-GMN-SYORI
                WHEN    "1"
                    MOVE    4               TO  SPA-GMN-CUR
                WHEN    "2"
-                   MOVE    9               TO  SPA-GMN-CUR
+                   MOVE    "訂正日"        TO  SPA-GMN-LABEL
+                   MOVE    "対象診療年月"  TO  SPA-GMN-LABEL1
+                   MOVE    "一括作成年月日"
+                                           TO  SPA-GMN-LABEL2
+                   MOVE    SPACE           TO  SPA-GMN-TEISEIYM
+                   PERFORM 4110-TEISEIYM-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       MOVE    SPACE           TO  SPA-ERRCD
+                   END-IF
+                   MOVE    11              TO  SPA-GMN-CUR
                WHEN    "3"
+                   MOVE    "受診日"        TO  SPA-GMN-LABEL
                    MOVE    9               TO  SPA-GMN-CUR
            END-EVALUATE                
       *
@@ -2872,6 +2878,8 @@
            END-PERFORM
       *
            MOVE    SPA-GMN-LABEL          TO  R01-LABEL
+           MOVE    SPA-GMN-LABEL1         TO  R01-LABEL1
+           MOVE    SPA-GMN-LABEL2         TO  R01-LABEL2
       *
            IF      SPA-R01-NYUGAIKBN   =   "1"
                MOVE    WIDGET-INSENSITIVE  TO  R01-SYORI-STATE
@@ -3054,10 +3062,9 @@
                WHEN    "0023"
                    MOVE    "選択番号入力エラー"        TO  SPA-ERRMSG
                WHEN    "0024"
-                   MOVE    "訂正日対象診療年月入力エラー" 
-                                                       TO  SPA-ERRMSG
+                   MOVE    "対象診療年月入力エラー"    TO  SPA-ERRMSG
                WHEN    "0025"
-                   MOVE    "対象の診療年月の一括作成が行われていません"
+                   MOVE    "対象診療年月の一括作成が行われていません"
                                                        TO  SPA-ERRMSG
                WHEN    "0026"
                    MOVE    "訂正日に該当する患者がありません"
