@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  03/05/12  自賠責割合変更追加
+      * 01.00.02     NACL-多々納  03/07/29  労災割合変更追加
       *****************************************************************
       *
       *
@@ -106,6 +107,9 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
+      *
+      *    労災医療機関情報
+           COPY    "CPSK4001.INC".
       *
       *    保険組み合わせ
        01  HKNCOMBI-REC.
@@ -224,6 +228,9 @@
       *
            INITIALIZE                  ORCSHKN-OUT-AREA
            MOVE    ZERO                TO  FLG-HKNCOMBICHK
+      *
+      *    システム管理（労災情報）検索
+           PERFORM 1002-RSI-SYSKANRI-SEC
       *
       *    年齢計算処理
            PERFORM 1001-NENREI-SEC
@@ -363,6 +370,17 @@
                        MOVE    ZERO            TO  ORCSHKN-NAI-FTNRATE
                                                                (IDX)
                END-EVALUATE
+           END-IF
+      *
+      *    労災の時、割合の変更
+           IF      COMB-HKNNUM         =   "971"
+               IF      SYS-4001-RSIIRYOKBN     =   "1"
+                   MOVE    ZERO            TO  ORCSHKN-NAI-FTNRATE
+                                                               (IDX)
+               ELSE
+                   MOVE    100             TO  ORCSHKN-NAI-FTNRATE
+                                                               (IDX)
+               END-IF
            END-IF
       *
            IF      ORCSHKN-NAI-FTNRATE (IDX)   =   ZERO
@@ -653,6 +671,44 @@
            EXIT.
       *
       *****************************************************************
+      *    システム管理（労災情報）検索処理
+      *****************************************************************
+       1002-RSI-SYSKANRI-SEC             SECTION.
+      *
+      *    システム管理検索（労災情報）
+           MOVE    SPACE               TO  SYS-4001-REC
+           INITIALIZE                  SYS-4001-REC
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-4001-REC
+               INITIALIZE                  SYS-4001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-4001-REC
+           ELSE
+               INITIALIZE                  SYS-4001-REC
+           END-IF
+      *
+      *
+           .
+       1002-RSI-SYSKANRI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    西暦和暦編集処理
       *****************************************************************
        800-SEIWA-HEN-SEC             SECTION.
@@ -674,6 +730,25 @@
            END-IF
            .
        800-SEIWA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理マスタ読み込み処理
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
