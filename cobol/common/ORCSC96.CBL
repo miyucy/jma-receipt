@@ -482,7 +482,7 @@
                    MOVE    "２００行までを対象とします。"
                                        TO  SPA-ERRMSG(27:)
                WHEN    "7006"
-                   MOVE    "剤の明細数は３０明細までです。"
+                   MOVE    "剤の明細数は５０明細までです。"
                                        TO  SPA-ERRMSG
                    MOVE    "剤を分けて下さい。"
                                        TO  SPA-ERRMSG(31:)

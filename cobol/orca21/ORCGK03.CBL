@@ -49,6 +49,7 @@
       *  02.00.14    NACL-多々納  03/03/04  複数診療科まとめ追加
       *                                     収納明細削除追加
       *  02.00.15    NACL-多々納  03/03/05  排他制御処理追加
+      *  02.00.16    NACL-多々納  03/08/27  剤明細５０へ変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -389,7 +390,7 @@
       *
       *    診療行為マスタワーク
        01  LNK-WKSRYACT-AREA.
-           02  LNK-WKSRYACT-REC      OCCURS   30.
+           02  LNK-WKSRYACT-REC      OCCURS   50.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK-WKSRY-//.
        01  LNK-WKSRYACT-MAX           PIC 9(04).
@@ -4240,7 +4241,7 @@
                    UNTIL       IDX1        >   IDX-KOUI
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2        >   5          )  OR
-                                  (IDX-ATO     >=  30         )  OR
+                                  (IDX-ATO     >=  50         )  OR
                                   (LNK-WKSRY-SRYCD(IDX1 IDX2) =  SPACE)
                    ADD     1                   TO  IDX-ATO
                    MOVE    LNK-WKSRY-SRYCD (IDX1 IDX2)
@@ -4357,7 +4358,7 @@
            PERFORM 940-PTINF-READ-SEC
            IF      FLG-PTINF           =   1
                MOVE    "0002"          TO  SPA-ERRCD
-               DISPLAY "K03 ZAINUM-SET ERR:" SPA-ERRCD
+               DISPLAY "K03 ZAINUM-SET ERR:" SPA-PTID
                GO      TO      45013-ZAINUM-SET-EXT
            END-IF
       *

@@ -50,7 +50,7 @@
                05  ORCSCZAICHK-ZAIKAISU            PIC  9(07).
       *        明細内容
                05  ORCSCZAICHK-MEISAI-TBL.
-                   07  ORCSCZAICHK-MEISAI-OCC      OCCURS   30.
+                   07  ORCSCZAICHK-MEISAI-OCC      OCCURS   50.
                        09  ORCSCZAICHK-SRYCD       PIC  X(09).
                        09  ORCSCZAICHK-SRYSURYO    PIC  9(05)V9(03).
                        09  ORCSCZAICHK-SRYKAISU    PIC  9(03).

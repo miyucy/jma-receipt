@@ -75,7 +75,7 @@
       *    ¿ÇÎÅ¹Ô°ÙÆâÍÆÈæ³ÓÍÑ¥Æ¡¼¥Ö¥ë
        01  TBL-AREA.
            03  TBL-MAE-AREA.
-               05  TBL-MAE-REC     OCCURS   30.
+               05  TBL-MAE-REC     OCCURS   50.
                    07  TBL-MAE-SRYCD       PIC  X(09).
                    07  TBL-MAE-SRYSURYO    PIC  9(05)V9(03).
                    07  TBL-MAE-SRYKAISU    PIC  9(03).
@@ -83,7 +83,7 @@
                    07  TBL-MAE-ATAI-G.
                        09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  3.
            03  TBL-ATO-AREA.
-               05  TBL-ATO-REC     OCCURS   30.
+               05  TBL-ATO-REC     OCCURS   50.
                    07  TBL-ATO-SRYCD       PIC  X(09).
                    07  TBL-ATO-SRYSURYO    PIC  9(05)V9(03).
                    07  TBL-ATO-SRYKAISU    PIC  9(03).
@@ -299,7 +299,7 @@
                    PERFORM VARYING     IDX2    FROM    1   BY  1
                            UNTIL  (IDX2        >   5   )  OR
                                   (SRY-SRYCD(IDX2)     =   SPACE ) OR
-                                  (IDX-SIN     >=  30 )
+                                  (IDX-SIN     >=  50 )
                        ADD     1                   TO  IDX-SIN
                        MOVE    SRY-SRYCD   (IDX2)  TO  TBL-MAE-SRYCD
                                                              (IDX-SIN)
@@ -323,6 +323,9 @@
                                                             (IDX-SIN)
                            END-IF
                        END-IF
+      *TEST
+               DISPLAY "TBL-MAE-REC:" TBL-MAE-REC (IDX-SIN)
+      *TEST
                    END-PERFORM
       *
                END-IF
@@ -340,7 +343,7 @@
            MOVE    ZERO                TO  IDX-ATO
            INITIALIZE                      TBL-ATO-AREA 
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1        >   30   )  OR
+                   UNTIL      (IDX1        >   50   )  OR
                               (ORCSCZAICHK-SRYCD (IDX1)  =   SPACE )
                ADD     1                   TO  IDX-ATO
                MOVE    ORCSCZAICHK-SRYCD (IDX1)
@@ -356,6 +359,9 @@
                MOVE    ORCSCZAICHK-INPUTCHI-G (IDX1)
                                            TO  TBL-ATO-ATAI-G
                                                               (IDX-ATO)
+      *TEST
+               DISPLAY "TBL-ATO-REC:" TBL-ATO-REC (IDX-ATO)
+      *TEST
            END-PERFORM
       *
       *    ¿ÇÎÅ¹Ô°Ù¿ô¤¬°ã¤¦

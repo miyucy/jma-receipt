@@ -1054,6 +1054,9 @@
                IF     (WRK-SUR-MCNT        >   ZERO  )  AND
                       (LNK-SC97-SURYO      =   ZERO  )
                    MOVE    " "             TO  LNK-SC97-INPUTCD
+                   MOVE    ZERO            TO  LNK-SC97-SURYOCNT
+                   MOVE    ZERO            TO  LNK-SC97-SURYO
+                   MOVE    ZERO            TO  LNK-SC97-SURYOFLG
                END-IF
            END-IF
       *

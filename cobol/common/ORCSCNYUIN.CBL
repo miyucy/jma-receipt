@@ -175,7 +175,7 @@
       *    ¿ÇÎÅ¹Ô°ÙÆâÍÆÈæ³ÓÍÑ¥Æ¡¼¥Ö¥ë
        01  TBL-AREA.
            03  TBL-MAE-AREA.
-               05  TBL-MAE-REC     OCCURS   30.
+               05  TBL-MAE-REC     OCCURS   50.
                    07  TBL-MAE-SRYCD       PIC  X(09).
                    07  TBL-MAE-SRYSURYO    PIC  9(05)V9(03).
                    07  TBL-MAE-SRYKAISU    PIC  9(03).
@@ -183,7 +183,7 @@
                    07  TBL-MAE-ATAI-G.
                        09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  3.
            03  TBL-ATO-AREA.
-               05  TBL-ATO-REC     OCCURS   30.
+               05  TBL-ATO-REC     OCCURS   50.
                    07  TBL-ATO-SRYCD       PIC  X(09).
                    07  TBL-ATO-SRYSURYO    PIC  9(05)V9(03).
                    07  TBL-ATO-SRYKAISU    PIC  9(03).
@@ -558,7 +558,7 @@
            PERFORM VARYING     IDX-KAI1    FROM    1   BY  1
                    UNTIL       IDX-KAI1    >   10
                PERFORM VARYING     IDX-KAI2    FROM    1   BY  1
-                       UNTIL       IDX-KAI2    >   30
+                       UNTIL       IDX-KAI2    >   31
                    IF      TBL-DAY (IDX-KAI1 IDX-KAI2) >   ZERO
                        COMPUTE IDX         =   IDX-KAI1    +  1
                        PERFORM VARYING     IDY    FROM   IDX  BY  1 
@@ -888,7 +888,7 @@
                    UNTIL       IDX1        >   IDX-KOUI
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2        >   5          )  OR
-                                  (IDX-ATO     >=  30         )  OR
+                                  (IDX-ATO     >=  50         )  OR
                                   (LNK-WKSRY-SRYCD(IDX1 IDX2) =  SPACE)
                    ADD     1                   TO  IDX-ATO
                    MOVE    LNK-WKSRY-SRYCD (IDX1 IDX2)

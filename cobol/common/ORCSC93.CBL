@@ -252,8 +252,8 @@
                MOVE    WRK-H-SRYKBN        TO  SPA-COM-SRYKBN (IDX)
                MOVE    WRK-ZAINUM          TO  SPA-COM-ZAINUM (IDX)
                ADD     1                   TO  WRK-ZAI-CNT
-               IF      WRK-ZAI-CNT         >   30
-                   MOVE    "7006"         TO  SPA-ERRCD
+               IF      WRK-ZAI-CNT         >   50
+                   MOVE    "7006"          TO  SPA-ERRCD
                    MOVE    "1"             TO  SPA-COM-CUR(IDX)
                END-IF
       *
