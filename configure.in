@@ -7,7 +7,38 @@ dnl Checks for programs.
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
-AC_PATH_PROG(COBC, cobc)
+
+AC_ARG_WITH(open-cobol-prefix,[--with-open-cobol-prefix=<direcotry> Prefix open-cobol is installed(optional)], 
+  open_cobol_prefix="$withval", open_cobol_prefix="")
+
+AC_ARG_WITH(open-cobol-exec-prefix,[--with-open-cobol-exec-prefix=<direcotry> Prefix open-cobol is installed(optional)], 
+  open_cobol_exec_prefix="$withval", open_cobol_exec_prefix="")
+
+  if test x$open_cobol_exec_prefix != x ; then
+    if test x${COBC+set} != xset; then
+      COBC=$open_cobol_exec_prefix/cobc
+    fi
+  fi
+  if test x$open_cobol_prefix != x ; then
+    if test x${COBC+set} != xset; then
+      COBC=$open_cobol_prefix/bin/cobc
+    fi
+  fi
+
+  AC_PATH_PROG(COBC, cobc, no)
+
+  AC_MSG_CHECKING(OpenCOBOL compiler)
+  if test "$COBC" = "no" ; then
+    no_cobc=yes
+  else
+    if test -x $COBC ; then
+      AC_MSG_RESULT(yes)
+    else
+      AC_MSG_RESULT(no)
+      AC_MSG_ERROR(OpenCOBOL compiler not found.)
+    fi
+  fi
+
 AC_SUBST(COBC)
 
 dnl Checks for libraries.
