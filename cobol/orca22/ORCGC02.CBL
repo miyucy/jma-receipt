@@ -890,6 +890,13 @@
                                    SPA-GMN-C02-TBL
                                    SPA-NAI-C02-TBL
                                    SPA-PTBYOMEI-REC
+                                   WRK-PTBYOMEI-REC (1)
+                                   WRK-PTBYOMEI-REC (2)
+                                   WRK-PTBYOMEI-REC (3)
+                                   WRK-PTBYOMEI-REC (4)
+                                   WRK-PTBYOMEI-REC (5)
+                                   WRK-PTBYOMEI-REC (6)
+                                   WRK-HAISIYMD-OCC
       *
            MOVE    "1"             TO  SPA-GMN-C02-TENKIKBNL        (1)
            MOVE    "╝гдц"          TO  SPA-GMN-C02-TENKIKBNMEIL     (1)
@@ -5937,6 +5944,14 @@
                                        SPA-NAI-C02-TBL
                                        SPA-NAI-C02-SELNO
                                        SPA-PTBYOMEI-REC
+      *
+           INITIALIZE                  WRK-PTBYOMEI-REC (1)
+                                       WRK-PTBYOMEI-REC (2)
+                                       WRK-PTBYOMEI-REC (3)
+                                       WRK-PTBYOMEI-REC (4)
+                                       WRK-PTBYOMEI-REC (5)
+                                       WRK-PTBYOMEI-REC (6)
+                                       WRK-HAISIYMD-OCC
       *
            IF      SPA-GMN-C02-SRYKA   NOT =   ZERO
                MOVE    SPA-GMN-C02-SRYKA-G TO  SPA-GMN-C02-BSRYKA-G
