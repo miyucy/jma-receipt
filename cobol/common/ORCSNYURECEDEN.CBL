@@ -760,7 +760,7 @@
                      END-IF
                    END-IF
                  END-IF
-                 MOVE     "SRYACCT-KEY22"    TO   ORC-DBPATH
+                 MOVE     "SRYACCT-KEY30"    TO   ORC-DBPATH
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
