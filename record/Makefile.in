@@ -431,6 +431,7 @@ DB_files = \
 	tbl_syutotal.db \
 	blob.db \
 	tbl_toukeimemo.db \
+	tbl_btpara.db \
 
 all:   
 

@@ -81,6 +81,7 @@ db	{
         tbl_opecom;
         tbl_syutotal;
         tbl_toukeimemo;
+	tbl_btpara;
 };
 db	"shell"	{
 	shell;
