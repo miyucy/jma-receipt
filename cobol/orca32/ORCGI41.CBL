@@ -1924,15 +1924,27 @@
                                                  TO  I41-TTENSU (IDX)
                    PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
-                       IF     SPA-WRK-CHK-KBN (IDY)   NOT =  ALL SPACE
+                       IF  SPA-GMN-SRYKA-I-41      =   "00"
                            MOVE    SPA-GMN-TDAY-41 (IDX IDY)(1:2)
                                                  TO  I41-TDAY (IDX IDY)
-                           IF    (SPA-GMN-TZAISKBKBN-41 (IDX)
+                           IF (SPA-GMN-TZAISKBKBN-41 (IDX)
                                                             = "1")  AND
-                                 (SPA-GMN-TDAY-41 (IDX IDY)
+                              (SPA-GMN-TDAY-41 (IDX IDY)
                                                         NOT = SPACE)
                                MOVE    SPA-GMN-TDAY-41 (IDX IDY)
                                                  TO  WRK-CHK-DAY (IDY)
+                           END-IF
+                       ELSE
+                           IF  SPA-WRK-CHK-KBN (IDY)   NOT =  ALL SPACE
+                               MOVE    SPA-GMN-TDAY-41 (IDX IDY)(1:2)
+                                                 TO  I41-TDAY (IDX IDY)
+                               IF (SPA-GMN-TZAISKBKBN-41 (IDX)
+                                                            = "1")  AND
+                                  (SPA-GMN-TDAY-41 (IDX IDY)
+                                                        NOT = SPACE)
+                                   MOVE    SPA-GMN-TDAY-41 (IDX IDY)
+                                                 TO  WRK-CHK-DAY (IDY)
+                               END-IF
                            END-IF
                        END-IF
                    END-PERFORM
@@ -1987,9 +1999,15 @@
                                                  TO  I41-TTENSU (IDX)
                        PERFORM VARYING     IDY     FROM    1   BY  1
                                UNTIL       IDY     >   31
-                           IF  SPA-WRK-CHK-KBN (IDY)   NOT =  ALL SPACE
-                               MOVE    SPA-GMN-TDAY-41 (IDX IDY)(1:2)
+                       IF  SPA-GMN-SRYKA-I-41      =   "00"
+                               MOVE  SPA-GMN-TDAY-41 (IDX IDY)(1:2)
                                                  TO  I41-TDAY (IDX IDY)
+                           ELSE
+                               IF  SPA-WRK-CHK-KBN (IDY)   NOT
+                                                           =  ALL SPACE
+                                   MOVE  SPA-GMN-TDAY-41 (IDX IDY)(1:2)
+                                                 TO  I41-TDAY (IDX IDY)
+                               END-IF
                            END-IF
                        END-PERFORM
                    END-IF
@@ -2008,9 +2026,14 @@
       *
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   31
-               IF      SPA-WRK-CHK-KBN (IDX)   NOT =   ALL SPACE
+               IF  SPA-GMN-SRYKA-I-41      =   "00"
                    MOVE    SPA-GMN-DAY-41 (IDX)    TO  WRK-ZZ
                    MOVE    WRK-ZZ-X             TO  I41-DAY (IDX)
+               ELSE
+                   IF      SPA-WRK-CHK-KBN (IDX)   NOT =   ALL SPACE
+                       MOVE    SPA-GMN-DAY-41 (IDX)    TO  WRK-ZZ
+                       MOVE    WRK-ZZ-X             TO  I41-DAY (IDX)
+                   END-IF
                END-IF
            END-PERFORM.
       *
