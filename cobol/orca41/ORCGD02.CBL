@@ -24,7 +24,7 @@
       *  コンポーネント名  : チェック条件によりデータ抽出
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  01.07.13    ひさなが 　   新規作成
+      *  01.07.13    ひさなが      新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -42,6 +42,8 @@
       *  01.00.10    ひさなが     02/11/28  保険番号記号チェックの修正
       *  01.00.11    ひさなが     02/12/06  ５００ー０３メッセージ修正
       *  01.00.12    ひさなが     02/12/18  院外処方のチェック追加
+      *  01.00.13    ひさなが     03/01/31  テスト患者を処理対象外に
+      *                                     老人保健の条件修正
       *
       *****************************************************************
       *
@@ -742,6 +744,9 @@
                    PERFORM T-500-RECECHEK-SEC
                END-IF
                IF  (SPA-GMN-CNV (12)   =  "1")          AND
+      *修正/*開始*03.01.31*********************************************
+                   (PTINF-TSTPTNUMKBN  =  "0")          AND
+      *修正/*終了*03.01.31*********************************************
                    (T-ERR-12           =  SPACE)        AND
                    (W-JITU-DAY4    NOT =  ZERO)         AND
                    (W-JITU-DAY4        <  W-JITU-DAY5)
@@ -819,6 +824,9 @@
                    PERFORM T-500-RECECHEK-SEC
                END-IF
                IF  (SPA-GMN-CNV (12)   =  "1")          AND
+      *修正/*開始*03.01.31*********************************************
+                   (PTINF-TSTPTNUMKBN  =  "0")          AND
+      *修正/*終了*03.01.31*********************************************
                    (T-ERR-12           =  SPACE)        AND
                    (W-JITU-DAY4    NOT =  ZERO)         AND
                    (W-JITU-DAY4        <  W-JITU-DAY5)
@@ -851,35 +859,39 @@
                MOVE    SPACE             TO  T-ERR-13
                MOVE    SPACE             TO  T-ERR-13-2
            END-IF.
-           IF  (ACCT-HOSPID     NOT =   COMB-HOSPID)  OR
-               (ACCT-PTID       NOT =   COMB-PTID)  OR
-               (ACCT-HKNCOMBI   NOT =   COMB-HKNCOMBINUM)
-               PERFORM T-200-RECECHEK-SEC
-           END-IF.
-           IF  T-HANNTEI5   =   "*"
-               PERFORM T-200-RECECHEK-CHK1-SEC
-           END-IF.
-           IF  COMB-HKNNUM   =   "971"
-               MOVE    "971"             TO  WK1-HKNNUM-S
-           ELSE
-               MOVE    SPACE             TO  WK1-HKNNUM-S
-           END-IF.
+      *修正/*開始*03.01.31*********************************************
+           IF  PTINF-TSTPTNUMKBN  =  "0"
+      *修正/*終了*03.01.31*********************************************
+               IF  (ACCT-HOSPID     NOT =   COMB-HOSPID)  OR
+                   (ACCT-PTID       NOT =   COMB-PTID)  OR
+                   (ACCT-HKNCOMBI   NOT =   COMB-HKNCOMBINUM)
+                   PERFORM T-200-RECECHEK-SEC
+               END-IF
+               IF  T-HANNTEI5   =   "*"
+                   PERFORM T-200-RECECHEK-CHK1-SEC
+               END-IF
+               IF  COMB-HKNNUM   =   "971"
+                   MOVE    "971"             TO  WK1-HKNNUM-S
+               ELSE
+                   MOVE    SPACE             TO  WK1-HKNNUM-S
+               END-IF
       *
-           PERFORM T-530-RECECHEK-CHK1-SEC.
-           PERFORM T-510-RECECHEK-SEC.
-           IF  (SPA-GMN-CNV (5)   =   "1")    AND
-               (T-ERR-05          =  SPACE)   AND
-               (T-HANNTEI6        =   "OK")   AND
-               ((T-HANNTEI7        =  "ER")    OR
-                (T-HANNTEI8        =  "ER"))
-               COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-               MOVE    SPACE             TO  DID2-REC
-               MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
-               MOVE    "-"               TO  DID2-REC(25:1)
-               MOVE    ACCT-PTID         TO  DID2-REC(26:10)
-               MOVE    T-MESSAGE-510-05  TO  DID2-REC(71:90)
-               WRITE   DID2-REC
-               MOVE    "*"               TO  T-ERR-05
+               PERFORM T-530-RECECHEK-CHK1-SEC
+               PERFORM T-510-RECECHEK-SEC
+               IF  (SPA-GMN-CNV (5)   =   "1")    AND
+                   (T-ERR-05          =  SPACE)   AND
+                   (T-HANNTEI6        =   "OK")   AND
+                   ((T-HANNTEI7        =  "ER")    OR
+                    (T-HANNTEI8        =  "ER"))
+                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                   MOVE    SPACE             TO  DID2-REC
+                   MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
+                   MOVE    "-"               TO  DID2-REC(25:1)
+                   MOVE    ACCT-PTID         TO  DID2-REC(26:10)
+                   MOVE    T-MESSAGE-510-05  TO  DID2-REC(71:90)
+                   WRITE   DID2-REC
+                   MOVE    "*"               TO  T-ERR-05
+               END-IF
            END-IF.
       *
            MOVE    ACCT-HOSPID  TO  W1-SRY-HOSPID.
@@ -1083,7 +1095,6 @@
                        WRITE   DID2-REC
                        MOVE    "*"               TO  T-ERR-02
                    END-IF
-      *修正/*開始*02.11.28*********************************************
                    IF  (T-ERR-02           =   SPACE)  AND
                        (PTHKN-KIGO     NOT =   SPACE)  AND
                        (SPA-GMN-CNV (2)    =   "1")
@@ -1130,7 +1141,6 @@
                            END-IF
                        END-PERFORM
                    END-IF
-      *修正/*終了*02.11.28*********************************************
                    IF  (T-ERR-13-2         =   SPACE)  AND
                        (SPA-GMN-CNV (13)   =   "1")
                        INITIALIZE                ORCSKANACHKAREA
@@ -1555,7 +1565,14 @@
                        MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM3
                        COMPUTE W-YY1 = W-YY1 + 15
                        COMPUTE W-YY2 = W-YY2 + 65
-                       COMPUTE W-YY3 = W-YY3 + 70
+      *修正/*開始*03.01.31*********************************************
+      *                 COMPUTE W-YY3 = W-YY3 + 70
+                       IF   PTINF-BIRTHDAY   <=   19320929
+                            COMPUTE W-YY3 = W-YY3 + 70
+                       ELSE
+                            COMPUTE W-YY3 = W-YY3 + 75
+                       END-IF
+      *修正/*終了*03.01.31*********************************************
                        IF  (W-COMB-HANNTEI2   =   "1")    AND
                            (T-SINRYOU-AREA    <   W-YM1)
                            COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
