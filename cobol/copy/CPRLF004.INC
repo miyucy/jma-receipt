@@ -380,7 +380,7 @@
       * 蝗脱箕粗掠などのメモ
                05  LF04-JGYSYAPHONE-MEMO    PIC X(100).
       * <给锐砷么板闻攫鼠>
-               05  LF04-KOHINF       OCCURS  3.
+               05  LF04-KOHINF       OCCURS  6.
       * 剩眶给锐の庭黎界疤 (mmlHi:priority)
                    07  LF04-HKNKOH-PRIORITY     PIC  X(01).
       * 给锐砷么叹疚
