@@ -53,6 +53,8 @@
       *  ２００３．４改正対応
       *  01.02.01    NACL-藤原    03/04/17  改正対応の外来レセ
       *                                     HCM09.redを追加
+      *  01.02.02    NACL-藤原    03/05/16  印刷ＤＢに患者ＩＤも編集する
+      *  01.02.03    NACL-藤原    03/04/17  山形レセHCRCP060.redを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -118,6 +120,9 @@
            03  CNT-IN              PIC 9(04).
            03  CNT-OUT             PIC 9(04).
       *
+       01  INDEX-AREA.
+           03  IDX                     PIC 9(03). 
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR             PIC X(200). 
@@ -169,6 +174,7 @@
            COPY    "HCN061.INC".
            COPY    "HCN062.INC".
            COPY    "HCM09.INC".
+           COPY    "HCRCP060.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -177,6 +183,8 @@
       *     
            COPY    "ORCA-DBPATH".         
       *
+           COPY    "COMMON-SPA".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -184,6 +192,12 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    医療機関情報
+           COPY  "CPSK1001.INC".
+      *
+      *    患者番号構成管理情報
+           COPY  "CPSK1009.INC".
       *     
       *    レセプト印刷情報
            COPY    "CPSK2005.INC".
@@ -215,6 +229,9 @@
       *
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+      *    患者番号変換サブ
+           COPY    "CPORCSPTID.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -316,6 +333,45 @@
                MOVE    MCPDATA-REC         TO  SYS-2005-REC
            ELSE    
                INITIALIZE                  SYS-2005-REC
+           END-IF
+      *
+      *    医療機関ＩＤ編集
+           INITIALIZE                  SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+           ELSE
+               MOVE    "医療機関情報が取得できませんでした。"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+      *    患者番号構成管理情報編集
+           MOVE    SPACE               TO  SYS-1009-REC
+           INITIALIZE                  SYS-1009-REC
+           MOVE    "1009"              TO  SYS-1009-KANRICD
+           MOVE    "*"                 TO  SYS-1009-KBNCD
+           MOVE    SYS-1009-REC        TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1009-REC
+               MOVE    SYS-1009-PTNUMKSIKBN
+                                           TO  SPA-1009-PTNUMKSIKBN
+               MOVE    SYS-1009-HJNKSIKBN  TO  SPA-1009-HJNKSIKBN
+               MOVE    SYS-1009-HJNKSINENKBN 
+                                           TO  SPA-1009-HJNKSINENKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKBN
+                                           TO  SPA-1009-HJNKSIRENNUMKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKETA
+                                           TO  SPA-1009-HJNKSIRENNUMKETA
+           ELSE
+               MOVE    "患者番号構成管理情報が取得できませんでした"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1                   TO  FLG-END
            END-IF
            .
        110-PARA-HENSYU-EXT.
@@ -486,6 +542,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCM09
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM09-RENNUM
                        MOVE    HCM09               TO  RECE08-PRTDATA
+                   WHEN    "HCRCP060.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCRCP060
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCRCP060-RENNUM
+                       MOVE    HCRCP060            TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
       *             
@@ -551,6 +611,23 @@
            END-EVALUATE
            MOVE    "1"                 TO  SPRT-SITEKBN
            MOVE    "1"                 TO  SPRT-PRTFLG
+      *    
+           INITIALIZE                       ORCSPTIDAREA
+           MOVE    SYS-1001-HOSPID     TO  SPTID-HOSPID
+           PERFORM VARYING IDX FROM    20  BY  -1
+                   UNTIL   IDX <       1
+               IF      RECE08-PTNUM (IDX:1)
+                                       NOT =   "Z"
+                   MOVE    RECE08-PTNUM (1:IDX)    TO  SPTID-PTNUM
+                   CALL    "ORCSPTID"           USING   ORCSPTIDAREA
+                                                        SPA-1009-TBL
+                   IF      SPTID-RC            =   ZERO
+                       MOVE    SPTID-PTID          TO   SPRT-PTID
+                   END-IF
+                   MOVE    1                       TO  IDX
+               END-IF
+           END-PERFORM    
+      *
            CALL    "ORCSPRT"           USING
                                        ORCSPRTAREA
            IF      SPRT-RETURN         =   ZERO
