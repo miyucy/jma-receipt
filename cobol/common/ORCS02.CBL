@@ -1597,53 +1597,53 @@
                           ADD       1    TO   WK-SHOKUJI-NISSU
                                               LNK-SYU-SHOKUJI1-NISSU
                           ADD    1920    TO   WK-SHOKUJI-RYOYOHI
-                                              LNK-SYU-SHOKUJI1
+                          MOVE   1920    TO   LNK-SYU-SHOKUJI1
                           IF    WK-TOKUKANRIKASAN  =  1
                             ADD   200    TO   WK-SHOKUJI-RYOYOHI
-                                              LNK-SYU-SHOKUJI1
+                            MOVE  200    TO   LNK-SYU-SHOKUJI1
                           END-IF
                           IF    WK-SHOKUDOKASAN    =  1
                             ADD    50    TO   WK-SHOKUJI-RYOYOHI
-                                              LNK-SYU-SHOKUJI1
+                            MOVE   50    TO   LNK-SYU-SHOKUJI1
                           END-IF
                         WHEN  2
                           ADD       1    TO   WK-SHOKUJI-NISSU
                                               LNK-SYU-SHOKUJI1-NISSU
                           ADD    1520    TO   WK-SHOKUJI-RYOYOHI
-                                              LNK-SYU-SHOKUJI1
+                          MOVE   1520    TO   LNK-SYU-SHOKUJI1
                       END-EVALUATE
                   WHEN  2
                           ADD       1    TO   WK-SHOKUJI-NISSU
                                               LNK-SYU-SHOKUJI1-NISSU
                                               LNK-SYU-SHOKUJI2-NISSU
                           ADD    1920    TO   WK-SHOKUJI-RYOYOHI
-                                              LNK-SYU-SHOKUJI1
+                          MOVE   1920    TO   LNK-SYU-SHOKUJI1
                           IF    WK-TOKUKANRIKASAN  =  1
                             ADD   200    TO   WK-SHOKUJI-RYOYOHI
-                                              LNK-SYU-SHOKUJI1
+                            MOVE  200    TO   LNK-SYU-SHOKUJI1
                           END-IF
                           IF    WK-SHOKUDOKASAN    =  1
                             ADD    50    TO   WK-SHOKUJI-RYOYOHI
-                                              LNK-SYU-SHOKUJI1
+                            MOVE   50    TO   LNK-SYU-SHOKUJI1
                           END-IF
                           ADD     350    TO   WK-SHOKUJI-RYOYOHI
-                                              LNK-SYU-SHOKUJI2
+                          MOVE    350    TO   LNK-SYU-SHOKUJI2
                   WHEN  3
                           ADD       1    TO   WK-SHOKUJI-NISSU
                                               LNK-SYU-SHOKUJI1-NISSU
                                               LNK-SYU-SHOKUJI3-NISSU
                           ADD    1920    TO   WK-SHOKUJI-RYOYOHI
-                                              LNK-SYU-SHOKUJI1
+                          MOVE   1920    TO   LNK-SYU-SHOKUJI1
                           IF    WK-TOKUKANRIKASAN  =  1
                             ADD   200    TO   WK-SHOKUJI-RYOYOHI
-                                              LNK-SYU-SHOKUJI1
+                            MOVE  200    TO   LNK-SYU-SHOKUJI1
                           END-IF
                           IF    WK-SHOKUDOKASAN    =  1
                             ADD    50    TO   WK-SHOKUJI-RYOYOHI
-                                              LNK-SYU-SHOKUJI1
+                            MOVE   50    TO   LNK-SYU-SHOKUJI1
                           END-IF
                           ADD      50    TO   WK-SHOKUJI-RYOYOHI
-                                              LNK-SYU-SHOKUJI3
+                          MOVE     50    TO   LNK-SYU-SHOKUJI3
                 END-EVALUATE
       *
                 EVALUATE   FLG-SKJ
