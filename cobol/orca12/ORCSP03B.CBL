@@ -996,7 +996,8 @@
            END-IF
       *    適応期間範囲チェック
            IF      SPA-NAI-KTEKSTYMD(IDX-K)
-                                       >=  SPA-NAI-KTEKEDYMD(IDX-K)
+      ******************************** >=  SPA-NAI-KTEKEDYMD(IDX-K)
+                                       >   SPA-NAI-KTEKEDYMD(IDX-K)
                MOVE    "0081"          TO  SPA-ERRCD
                MOVE    23              TO  SPA-GMN-CUR
                GO      TO      200-KANREN-CHK-EXT
