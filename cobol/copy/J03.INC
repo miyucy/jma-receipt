@@ -72,3 +72,7 @@
                 04  J03-VALUE   PIC X(10).
               03  J03-SRYYM.
                 04  J03-VALUE   PIC X(6).
+              03  J03-NYUTENSU.
+                04  J03-VALUE   PIC X(10).
+              03  J03-MIDASIN.
+                04  J03-VALUE   PIC X(10).

@@ -18,9 +18,3 @@
                     06  I48-KISOTEN PIC X(10).
                   05  I48-SELECT
                           PIC X       OCCURS  200 TIMES.
-              03  I48-USERCOB.
-                04  I48-USER.
-                  05  I48-VALUE   PIC X(10).
-                04  I48-USER-COUNT   PIC S9(9)   BINARY.
-                04  I48-USER-ITEM
-                        PIC X(10)   OCCURS  10 TIMES.
