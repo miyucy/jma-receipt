@@ -35,16 +35,14 @@
       *  01.01.01    NACL-藤原    02.09.17  印刷サブの追加
       *  01.01.02    NACL-藤原    03.05.09  入院対応
       *                                     dia→monpeに変更
+      *  01.01.03    NACL-藤原    04.02.27  実日数の追加
+      *                                     プレビュー・再印刷処理に対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
-      *
-      *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  HC01PARA
-                                   FILE    STATUS  IS  STS-PARA.
       *
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
@@ -53,30 +51,20 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    印刷用データ
-       FD  PRT-FILE.
-           COPY    "HCM05.INC"     REPLACING  //HCM05//
-                                   BY         //HC05//.
-      *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
-      *    印刷用データ 名称領域 
-           COPY    "CPCOMMONPRT.INC".
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
-      *     
-      *    シェル用領域
-           COPY    "CPCOMMONSHELL.INC".
-           COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
       *
+           COPY    "HCM05.INC"     REPLACING  //HCM05//
+                                   BY         //HC05//.
       *    スパ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
@@ -107,27 +95,18 @@
            03  CNT-OUT             PIC 9(05).
            03  CNT-RENNUM          PIC 9(05). 
       *
-      *    システム領域
-       01  SYS-AREA.
-           03  SYS-TIME            PIC 9(08).    
+      *    パラメタ領域
+       01  WRK-PARA.
+           COPY    "CPORCSPRTLNK.INC".
+           03  WRK-PARA-HOSPID     PIC X(24).
+           03  WRK-PARA-JOBID      PIC 9(07).
+           03  WRK-PARA-SHELLID    PIC X(08).
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-PARA.
-               05  WRK-PARA1.
-                   07  WRK-PARA-SKYYM   PIC  X(06).
-                   07  WRK-PARA-TERMID  PIC  X(16).
-                   07  WRK-PARA-SYSYMD  PIC  X(08).
-               05  WRK-PARA-HOSPID      PIC  X(24).
-               05  WRK-PARA-TEISYUTUSAKI
-                                        PIC  X(01).
-               05  WRK-PARA-TERMID64    PIC  X(64).
-      * 
            03  WRK-RECEERR           PIC X(200).        
       *
            03  WRK-SYSYMDWH          PIC X(22).
-      *  
-           03  WRK-HC01PARA-CNT      PIC  9(03).
       *
            03  WRK-MSG               PIC X(10). 
       *
@@ -142,12 +121,14 @@
            03  WRK-PAGE              PIC ZZ9.
            03  WRK-RENNUM            PIC ZZZZ9.
            03  WRK-TEN               PIC ZZZ,ZZZ,ZZ9.
+           03  WRK-JNISSU            PIC ZZZZZZZ9.
       *
       *    集計領域
        01  SUM-AREA                               VALUE   ZERO.
            03  SUM-GHKNTEN           PIC 9(08).
            03  SUM-GMONEY1           PIC 9(08).
            03  SUM-GMONEY2           PIC 9(08).
+           03  SUM-GJNISSU           PIC 9(08).
            03  SUM-RENNUM            PIC 9(05).
       *
       *    キー領域
@@ -158,6 +139,10 @@
            03  KEY-OLD.
                05  KEY-O-NYUGAIKBN       PIC 9(01).
                05  KEY-O-TEISYUTUSAKI    PIC 9(01).
+      *
+           COPY    "CPSHELLTBL.INC".
+      *     
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -179,13 +164,20 @@
            COPY    "CPSK1031.INC".
       *
            COPY    "CPRCF010.INC".
+      *
+      *    ジョブ管理マスタ
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
+      *
+       01  PRTKANRI-REC.
+           COPY    "CPPRTKANRI.INC".
+      *
+       01  PRTDATA-REC.
+           COPY    "CPPRTDATA.INC".          
       * 
       ******************************************************************
       *    サブプロ用　領域
       *****************************************************************
-      *
-      *    印刷パラメタ
-           COPY    "CPORCSMKPRT.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -193,6 +185,9 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+      *    印刷ＤＢ更新サブ
+           COPY    "CPORCSPRT.INC".          
       *
       *    共通パラメタ
            COPY    "MCPAREA".
@@ -233,41 +228,51 @@
                                        SUM-AREA
                                        CNT-AREA
       *
-           ACCEPT  SYS-TIME            FROM    TIME     
-      *
-           UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
-                                       INTO  WRK-PARA1
-                                             WRK-PARA-HOSPID
-                                             WRK-PARA-TEISYUTUSAKI
-                                             WRK-PARA-TERMID64 
-      *
            PERFORM 100-DBOPEN-SEC
       *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+           UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
+                                       INTO    LNK-PRTKANRI-RENNUM
+                                               LNK-PRTKANRI-TBL-KEY
+                                               LNK-PRTKANRI-TBL-GROUP
+                                               LNK-PRTKANRI-SHORI-RENNUM
+                                               LNK-PRTKANRI-SRYYM
+                                               LNK-PRTKANRI-SKYYMD
+                                               LNK-PRTKANRI-SHELLID
+                                               LNK-PRTKANRI-PRIORITY
+                                               LNK-PRTKANRI-TERMID
+                                               LNK-PRTKANRI-OPID    
+                                               LNK-PRTKANRI-PRTNM    
+                                               WRK-PARA-HOSPID
+                                               WRK-PARA-JOBID
+                                               WRK-PARA-SHELLID
+                                               RECEERR
+           END-UNSTRING
+      *
+      *    ステップ管理開始処理
+           MOVE    "STS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    "ORCBM005"      TO  JOB-PGID
+           MOVE    "総括チェックリスト"
+                                   TO  JOB-SHELLMSG
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *
+      *****MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+      *****MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
       *
       *    システム日付の編集
-           MOVE    WRK-PARA-SYSYMD     TO  WRK-SYMD
+           MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-SYSYMDWH   
       *
-           MOVE    WRK-PARA-SKYYM      TO  WRK-SYMD(1:6)
+           MOVE    LNK-PRTKANRI-SRYYM  TO  WRK-SYMD(1:6)
            MOVE    "01"                TO  WRK-SYMD(7:2)
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)   TO  WRK-SRYYM
-      *                  
-      *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"              TO  SYS-1031-KANRICD
-           MOVE    "*"                 TO  SYS-1031-KBNCD
-           MOVE    SYS-1031-REC        TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1031-REC
-           ELSE    
-               INITIALIZE                  SYS-1031-REC
-           END-IF                                     
       *
            PERFORM 900-SEIKYU-SELECT-SEC
       *
@@ -386,6 +391,8 @@
            MOVE    WRK-TEN             TO  HC05-MONEY1(CNT-LINE)
            MOVE    RECE10-TOTALTEN(3)  TO  WRK-TEN
            MOVE    WRK-TEN             TO  HC05-MONEY2(CNT-LINE)
+           MOVE    RECE10-JNISSU  (1)  TO  WRK-JNISSU
+           MOVE    WRK-JNISSU          TO  HC05-JNISSU(CNT-LINE)
       *
            EVALUATE    RECE10-SKYKBN
                WHEN    "0"
@@ -399,35 +406,34 @@
            IF      RECE10-SKYKBN       =   "1"
                MOVE    "未"                TO  HC05-MSG (CNT-LINE)
            END-IF
-           IF      RECE10-SRYYM    NOT =   WRK-PARA-SKYYM
+           IF      RECE10-SRYYM    NOT =   LNK-PRTKANRI-SRYYM
                MOVE    "他"                TO  HC05-MSG (CNT-LINE) (3:)
            END-IF
       *
-           IF    ( RECE10-SKYKBN   NOT =   ZERO                     )
-               IF    ( RECE10-SRYYM    =   WRK-PARA-SKYYM           )
-               AND   ( RECE10-SKYYM    =   WRK-PARA-SKYYM  OR  ZERO )
-                   MOVE    "※"                TO
-                                               HC05-TAISYO(CNT-LINE)
+           IF    ( RECE10-SKYKBN   NOT =   ZERO                        )
+               IF    ( RECE10-SRYYM    =   LNK-PRTKANRI-SRYYM          )
+               AND   ( RECE10-SKYYM    =   LNK-PRTKANRI-SRYYM  OR  ZERO)
+                   MOVE    "※"                TO  HC05-TAISYO(CNT-LINE)
                    ADD     1                   TO  SUM-RENNUM
                    ADD     RECE10-TOTALTEN(1)  TO  SUM-GHKNTEN
                    ADD     RECE10-TOTALTEN(2)  TO  SUM-GMONEY1
                    ADD     RECE10-TOTALTEN(3)  TO  SUM-GMONEY2
+                   ADD     RECE10-JNISSU  (1)  TO  SUM-GJNISSU
                ELSE
-                   IF    ( RECE10-SKYKBN   NOT =   ZERO            )
-                   AND   ( RECE10-SKYYM        =   WRK-PARA-SKYYM  )
+                   IF    ( RECE10-SKYKBN   NOT =   ZERO               )
+                   AND   ( RECE10-SKYYM        =   LNK-PRTKANRI-SRYYM )
                        MOVE    "※"                TO 
-                                               HC05-TAISYO(CNT-LINE)
+                                                   HC05-TAISYO(CNT-LINE)
                        ADD     1                   TO  SUM-RENNUM
                        ADD     RECE10-TOTALTEN(1)  TO  SUM-GHKNTEN
                        ADD     RECE10-TOTALTEN(2)  TO  SUM-GMONEY1
                        ADD     RECE10-TOTALTEN(3)  TO  SUM-GMONEY2
+                       ADD     RECE10-JNISSU  (1)  TO  SUM-GJNISSU
                    END-IF
                END-IF
            END-IF        
       *
            ADD     1                   TO  CNT-OUT
-      *         
-      *    合計集計処理
       *
            PERFORM 900-SEIKYU-FETCH-SEC         
       *
@@ -448,6 +454,8 @@
            MOVE    WRK-TEN           TO  HC05-GMONEY1
            MOVE    SUM-GMONEY2       TO  WRK-TEN
            MOVE    WRK-TEN           TO  HC05-GMONEY2
+           MOVE    SUM-GJNISSU       TO  WRK-JNISSU
+           MOVE    WRK-JNISSU        TO  HC05-GJNISSU
       *
            .
        330-SUM-HEN-EXT.
@@ -458,25 +466,37 @@
       *****************************************************************
        390-PRINT-OUT-SEC                SECTION.
       *
-      *　　印刷用データ出力
-      *
-           ADD     1                   TO  WRK-HC01PARA-CNT 
-           MOVE    "HC05"              TO  HC01PARA-FORM-ID
-           MOVE    WRK-PARA-TERMID64   TO  HC01PARA-TERMID
-           MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
-           MOVE    WRK-HC01PARA-CNT    TO  HC01PARA-CNT
-      *
-           OPEN    OUTPUT  PRT-FILE
-           WRITE   HC05
-           CLOSE                       PRT-FILE
-      * 
-            INITIALIZE                 ORCSMKPRTAREA
-            MOVE   "HC01.sh"           TO  MKPRT-ID
-            MOVE   "HCM05.red"         TO  MKPRT-DIA
-            MOVE   HC01PARA            TO  MKPRT-DAT
-            MOVE   SYS-1031-PRTNM(5)   TO  MKPRT-PRTNM
-            CALL   "ORCSMKPRT"         USING
-                                       ORCSMKPRTAREA
+           INITIALIZE                  ORCSPRTAREA
+           MOVE    "INS"               TO  SPRT-MODE
+           MOVE    LNK-PRTKANRI-RENNUM TO  SPRT-RENNUM
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                       TO  SPRT-TBL-KEY
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                       TO  SPRT-TBL-GROUP
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SPRT-SRYYM
+           MOVE    LNK-PRTKANRI-SKYYMD TO  SPRT-SKYYMD
+           MOVE    LNK-PRTKANRI-SHELLID 
+                                       TO  SPRT-SHELLID
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                       TO  SPRT-SHORI-RENNUM
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                       TO  SPRT-PRIORITY
+           MOVE    "HCM05.red"         TO  SPRT-PRTID
+           MOVE    "総括チェックリスト"TO  SPRT-TITLE
+           MOVE    HC05                TO  SPRT-PRTDATA
+           MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
+           MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
+           MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
+           MOVE    "1"                 TO  SPRT-SITEKBN
+           CALL    "ORCSPRT"           USING
+                                       ORCSPRTAREA
+           IF      SPRT-RETURN         =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "印刷ＤＢに更新できませんでした"
+                                          TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC                           
+           END-IF                                                              
            .
        390-PRINT-OUT-EXT.
            EXIT.
@@ -486,18 +506,30 @@
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
-      *
            OPEN    INPUT   RECEERR-FILE
            IF      STS-RECEERR         =   ZERO
-               CONTINUE
+               CLOSE   RECEERR-FILE
            ELSE
                OPEN    OUTPUT              RECEERR-FILE
       *
                MOVE    WRK-RECEERR         TO  RECEERR-REC
                WRITE   RECEERR-REC
+               CLOSE   RECEERR-FILE
+      *         
+      *        ジョブ管理開始処理
+               MOVE    "JBE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               MOVE    WRK-RECEERR     TO  JOB-YOBI
+               MOVE    "9999"          TO  JOB-ERRCD
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
            END-IF
       *
-           CLOSE   RECEERR-FILE
+           MOVE    1                   TO  FLG-END     
       *
            .
        500-ERR-HENSYU-EXT.
@@ -508,8 +540,18 @@
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *
            PERFORM 900-SEIKYU-CLOSE-SEC
+      *     
+      *    ステップ管理終了処理
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    CNT-PAGE        TO  JOB-UPDCNT                        
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -587,7 +629,7 @@
       *****************************************************************
        800-SYSKANRI-READ-SEC         SECTION.
       *
-           MOVE    WRK-PARA-SYSYMD     TO  ORC-DBYMD
+           MOVE    LNK-PRTKANRI-SKYYMD TO  ORC-DBYMD
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
@@ -628,7 +670,7 @@
       *
            MOVE    SPACE                TO  RECE10-REC  
            MOVE    WRK-PARA-HOSPID      TO  RECE10-HOSPID
-           MOVE    WRK-PARA-SKYYM       TO  RECE10-SKYYM
+           MOVE    LNK-PRTKANRI-SRYYM   TO  RECE10-SKYYM
            MOVE    RECE10-REC           TO  MCPDATA-REC
            MOVE    "DBSELECT"           TO  MCP-FUNC
            MOVE    "SEIKYU-KEY5"        TO  ORC-DBPATH
@@ -660,16 +702,16 @@
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-END
                MOVE    MCPDATA-REC         TO  RECE10-REC
-               EVALUATE    WRK-PARA-TEISYUTUSAKI
-                   WHEN    ZERO
-                       CONTINUE
-                   WHEN    1
-                   WHEN    2
-                       IF      RECE10-TEISYUTUSAKI NOT =
-                                               WRK-PARA-TEISYUTUSAKI
-                           GO  TO  900-SEIKYU-FETCH-SEC
-                       END-IF
-               END-EVALUATE                                        
+      *********EVALUATE    WRK-PARA-TEISYUTUSAKI
+      *********    WHEN    ZERO
+      *********        CONTINUE
+      *********    WHEN    1
+      *********    WHEN    2
+      *********        IF      RECE10-TEISYUTUSAKI NOT =
+      *********                                WRK-PARA-TEISYUTUSAKI
+      *********            GO  TO  900-SEIKYU-FETCH-SEC
+      *********        END-IF
+      *********END-EVALUATE                                        
       *
       *        テスト患者のときは読み飛ばす
                MOVE    SPACE               TO  PTINF-REC
