@@ -1813,6 +1813,12 @@
                         MOVE    SPACE              TO  FLG-TOROKU
                         PERFORM 510-TBLHEN-SEC
                         MOVE    SPACE              TO  FLG-TOROKU
+                   ELSE
+                        MOVE    ZERO               TO  FLG-RIHTEI
+      *                 診療行為、計計算処理、編集
+                        MOVE    SPACE              TO  FLG-TOROKU
+                        PERFORM 510-TBLHEN-SEC
+                        MOVE    SPACE              TO  FLG-TOROKU
                    END-IF
                    MOVE    SPACE               TO  SPA-KIDCD
       *
@@ -4079,6 +4085,17 @@
       *    保険区分変換処理
       *****************************************************************
        410121-HKNCOMBI-SAI-SEC         SECTION.
+      *
+      *    受診回数編集処理
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           INITIALIZE                      ORCSC10SAREA
+           MOVE    "3"                 TO  LNK-SC10S-SYORI
+           CALL    "ORCSC10S"          USING
+                                       ORCSC10SAREA
+                                       SPA-AREA
+                                       SPA-SCR-REC
+                                       SPA-K02
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *
            MOVE    SPA-WKSRY-HKNCOMBI  TO  WRK-WKSRY-HKNCOMBI
       *    初期ＳＰＡ編集処理
@@ -6606,21 +6623,6 @@
                    MOVE    ZERO                TO  IDX-Z
                    MOVE    ZERO                TO  WRK-KAISU
                END-IF
-      *        エラーコードを保存する
-               IF      SPA-ERRCD       NOT =   SPACE
-                   IF      SPA-ERRCD(1:1)      =   "K"
-                       MOVE    SPA-ERRCD       TO  WRK-KEI-ERRCD
-                       MOVE    SPA-ERRMSG2     TO  WRK-KEI-ERRMSG2
-                   ELSE
-                       IF      WRK-ERR-ERRCD       =   SPACE
-                           MOVE    SPA-ERRCD       TO  WRK-ERR-ERRCD
-                           MOVE    SPA-ERRMSG2     TO  WRK-ERR-ERRMSG2
-                       END-IF
-                   END-IF
-                   MOVE    SPACE           TO  SPA-ERRCD
-               END-IF
-      *
-               MOVE    SPA-KIDCD           TO  WRK-KIDCD
            END-PERFORM
       *
       *    エラーの再セットを行う
@@ -6635,7 +6637,9 @@
                MOVE    WRK-KEI-ERRMSG2     TO  SPA-ERRMSG2
            END-IF
       *
-           MOVE    WRK-KIDCD           TO  SPA-KIDCD
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    WRK-KIDCD           TO  SPA-KIDCD
+           END-IF
       *
       *    スパ領域へ戻す
            MOVE    ZERO                TO  SPA-GMN-MAX
@@ -7087,6 +7091,38 @@
            MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
            MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
            MOVE    LNK-ORCSC-ERRMSG    TO  SPA-ERRMSG2
+      *
+      *    エラーコードを保存する
+           IF      SPA-ERRCD       NOT =   SPACE
+               IF      SPA-ERRCD(1:1)      =   "K"
+      *            既にエラーがある時、フラグをクリアする
+                   IF     (WRK-ERR-ERRCD   NOT =   SPACE )  OR
+                          (WRK-KEI-ERRCD   NOT =   SPACE )  OR
+                          (WRK-KIDCD       NOT =   SPACE )
+                       MOVE    SPACE           TO  WRK-COM-KZMFLG
+                                                    (LNK-ORCSC-KEI-IDX)
+                   ELSE
+                       MOVE    SPA-ERRCD       TO  WRK-KEI-ERRCD
+                       MOVE    SPA-ERRMSG2     TO  WRK-KEI-ERRMSG2
+                   END-IF
+               ELSE
+                   IF      WRK-ERR-ERRCD       =   SPACE
+                       MOVE    SPA-ERRCD       TO  WRK-ERR-ERRCD
+                       MOVE    SPA-ERRMSG2     TO  WRK-ERR-ERRMSG2
+                   END-IF
+               END-IF
+               MOVE    SPACE           TO  SPA-ERRCD
+           END-IF
+      *
+      *    既にエラーがある時、フラグをクリアする
+           IF    ( SPA-KIDCD       NOT =   SPACE )  AND
+                 ((WRK-ERR-ERRCD   NOT =   SPACE )  OR
+                  (WRK-KEI-ERRCD   NOT =   SPACE )  OR
+                  (WRK-KIDCD       NOT =   SPACE ))
+               MOVE    SPACE           TO  WRK-COM-KZMFLG
+                                                    (LNK-ORCSC-KEI-IDX)
+           END-IF
+           MOVE    SPA-KIDCD           TO  WRK-KIDCD
       *
            MOVE    ZERO                TO  WRK-MAX
       *!   INITIALIZE                  WRK-HZN-GMN-AREA
@@ -12068,6 +12104,7 @@
                WHEN    "0118"
                WHEN    "0119"
                WHEN    "0107"
+               WHEN    "0180"
                    MOVE    "ＮＯ"            TO  KID1-B01
            END-EVALUATE
       *
