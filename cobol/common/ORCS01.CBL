@@ -2550,6 +2550,9 @@
                             IF    MAX-KIN-KOHI1-M    >  12000
                               MOVE    12000    TO   MAX-KIN-KOHI1-M
                             END-IF
+                            IF    FLG-CHIHOU(1)      =  "1"
+                               MOVE   SPACE    TO   FLG-CHIHOU(1)
+                            END-IF
                           END-IF
                         END-IF
                       WHEN  2
@@ -2564,6 +2567,9 @@
                           ELSE
                             IF    MAX-KIN-KOHI2-M    >  12000
                               MOVE    12000    TO   MAX-KIN-KOHI2-M
+                            END-IF
+                            IF    FLG-CHIHOU(2)      =  "1"
+                               MOVE   SPACE    TO   FLG-CHIHOU(2)
                             END-IF
                           END-IF
                         END-IF
@@ -2580,6 +2586,9 @@
                             IF    MAX-KIN-KOHI3-M    >  12000
                               MOVE    12000    TO   MAX-KIN-KOHI3-M
                             END-IF
+                            IF    FLG-CHIHOU(3)      =  "1"
+                               MOVE   SPACE    TO   FLG-CHIHOU(3)
+                            END-IF
                           END-IF
                         END-IF
                       WHEN  4
@@ -2594,6 +2603,9 @@
                           ELSE
                             IF    MAX-KIN-KOHI4-M    >  12000
                               MOVE    12000    TO   MAX-KIN-KOHI4-M
+                            END-IF
+                            IF    FLG-CHIHOU(4)      =  "1"
+                               MOVE   SPACE    TO   FLG-CHIHOU(4)
                             END-IF
                           END-IF
                         END-IF
