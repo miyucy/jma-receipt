@@ -348,6 +348,8 @@ DB_files = \
 	tbl_syskanri.db \
 	tbl_syumei.db \
 	tbl_syunou.db \
+	tbl_teikirrk.db \
+	tbl_ptteikirrk.db \
 	tbl_teikikanri.db \
 	tbl_teikiprt.db \
 	tbl_tensu.db \

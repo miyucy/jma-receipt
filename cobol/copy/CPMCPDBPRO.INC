@@ -183,6 +183,8 @@
       *  01.01.27    NACL-藤原    02/12/24  NYUINACCT-KEY13,KEY14追加
       *  01.01.28    NACL-森脇    03/01/06  SYUNOU-KEY9追加
       *  01.01.29    NACL-多々納  03/01/08  SRYACCT-KEY14 追加
+      *  01.01.30    NACL-太田    03/01/17  TEIKIRRK-KEY,ALL追加        
+      *                                     PTTEIKIRRK-KEY〜KEY3,ALL追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2277,6 +2279,24 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "TEIKIPRT-ALL"
                    MOVE    PATH-TBL-TEIKIPRT-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TEIKIRRK-KEY"
+                   MOVE    PATH-TBL-TEIKIRRK-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "TEIKIRRK-ALL"
+                   MOVE    PATH-TBL-TEIKIRRK-ALL
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTTEIKIRRK-KEY"
+                   MOVE    PATH-TBL-PTTEIKIRRK-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTTEIKIRRK-KEY2"
+                   MOVE    PATH-TBL-PTTEIKIRRK-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTTEIKIRRK-KEY3"
+                   MOVE    PATH-TBL-PTTEIKIRRK-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTTEIKIRRK-ALL"
+                   MOVE    PATH-TBL-PTTEIKIRRK-ALL
                                        TO  WRK-PATH
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC

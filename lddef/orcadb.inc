@@ -63,6 +63,8 @@ db	{
 	tbl_nyuinryakusho;
 	tbl_teikikanri;
 	tbl_teikiprt;
+	tbl_teikirrk;
+	tbl_ptteikirrk;
 };
 db	"shell"	{
 	shell;

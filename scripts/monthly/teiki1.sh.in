@@ -30,16 +30,32 @@ fi
         if  [ -e $8 ]; then
             rm  $8
         fi
-        
+    
         rm  /var/tmp/TEIKI*
 
 ##   -- ORCT0010 START --  
-	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0010 -parameter $1,$2,$3,$4,$5,$6,$7,
+            $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0010 -parameter $1,$2,$3,$4,$5,$6,$7,
+
         if  [ -e $8 ]; then
             exit  
+        else
+##   -- ORCT0030 START --  
+            $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0030 -parameter $1,$2,$3,$4,$5,$6,$7,
         fi 
 
-	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$6$7
-	
+        if  [ -e $8 ]; then
+            exit  
+        else
+##   -- ORCT0040 START --  
+            $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0040 -parameter $1,$2,$3,$4,$5,$6,$7,
+        fi 
+
+        if  [ -e $8 ]; then
+            exit  
+        else
+            $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$6$7
+        fi 
+
         exit
+
 

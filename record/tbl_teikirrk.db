@@ -1,0 +1,37 @@
+tbl_teikirrk {
+       SRYYM           char(6);
+       SAKKBN          char(1);
+       SKYSTYMD        char(8);
+       SKYEDYMD        char(8);
+       SKYTEN          number(9);
+       SKYMONEY        number(9);
+       SAISKYKBN       char(1);
+       TERMID          varchar(16);
+       OPID            varchar(16);
+       CREYMD          varchar(8);
+       UPYMD           varchar(8);
+       UPHMS           varchar(6);
+};
+primary	{
+	SRYYM,SAKKBN;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_teikirrk_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_teikirrk
+        WHERE  SRYYM   =   :SRYYM
+        AND    SAKKBN  =   :SAKKBN
+		;
+	};
+};
+
+path	all		{ 	
+	DBSELECT	{
+		DECLARE tbl_teikirrk_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_teikirrk
+		;
+	};
+};

@@ -625,6 +625,9 @@ COPYS = \
         HCM2H.INC \
         CPTEIKIKANRI.INC \
         CPTEIKIPRT.INC \
+        CPTEIKIRRK.INC \
+        CPPTTEIKIRRK.INC \
+        CPTEIKI03.INC \
         CPORCGI4A.INC \
         CPORCGI4B.INC \
         CPORCGI4C.INC \
