@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    02.12.10  収納明細作成処理追加
+      *  01.01.02    NACL-太田    03.01.23  食事の計算方法修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -825,9 +826,13 @@
       *    自費消費税
            MOVE    WKSYU-JIHI-TAX          TO  SPA-GMN-I04-JIHIZEI
       *    食事負担額
-           MOVE    WKSYU-SKYMONEY-SKJ      TO  SPA-GMN-I04-SKYMONEY-SKJ
+           COMPUTE SPA-GMN-I04-SKYMONEY-SKJ
+               =   WKSYU-SKYMONEY-SKJ-KEI
+               +   WKSYU-SKYMONEY-SKJ-JIHI-KEI
       *    食事療養費
-           MOVE    WKSYU-RYOYOHI-SKJ       TO  SPA-GMN-I04-RYOYOHI-SKJ
+           COMPUTE SPA-GMN-I04-RYOYOHI-SKJ
+               =   WKSYU-RYOYOHI-SKJ
+               +   WKSYU-RYOYOHI-SKJ-JIHI
       *
       *    一部負担金
            COMPUTE SPA-GMN-I04-ICHIFTN =   SPA-GMN-I04-ROUFTN

@@ -30,6 +30,7 @@
       *  01.01.01    NACL-太田    02.12.16  コラムリストの金額欄を
       *                                     カンマ編集するよう修正
       *  01.01.02    NACL-森脇    03.01.06  S04の追加
+      *  01.01.03    NACL-太田    03.01.23  食事の計算方法修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -620,9 +621,14 @@
            MOVE    SYU-RSIETC-MONEY     TO SPA-GMN-RSIETC.
       *
       *    食事療養費
-           MOVE    SYU-RYOYOHI-SKJ     TO  SPA-GMN-SKJRYOYO
+           COMPUTE SPA-GMN-SKJRYOYO
+               =   SYU-RYOYOHI-SKJ
+               +   SYU-RYOYOHI-SKJ-JIHI
+      *
       *    食事負担額
-           MOVE    SYU-SKYMONEY-SKJ    TO  SPA-GMN-SKJFTN
+           COMPUTE SPA-GMN-SKJFTN
+               =   SYU-SKYMONEY-SKJ-KEI
+               +   SYU-SKYMONEY-SKJ-JIHI-KEI
       *
       *    薬剤一部負担  
            MOVE    SYU-YKZ-FTN         TO  SPA-GMN-YAKFTN.
