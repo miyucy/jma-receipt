@@ -5846,6 +5846,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>PRTFLG18</name>
+      <x>5</x>
       <y>359</y>
       <width>20</width>
       <height>17</height>
