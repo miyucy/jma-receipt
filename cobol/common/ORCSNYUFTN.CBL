@@ -830,7 +830,7 @@
                              UNTIL    SYU-IDX  >   31
                        IF  (SYU-DAY(SYU-IDX)       =   "1")    AND
                            (NACCT-DAY(SYU-IDX) NOT =  ZERO)
-                           MOVE   NACCT-DAY(SYU-DAY)
+                           MOVE   NACCT-DAY(SYU-IDX)
                                       TO  TBL-GAIHAKU (SYU-IDX)
                        END-IF
                    END-PERFORM
