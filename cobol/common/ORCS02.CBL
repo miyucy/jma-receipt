@@ -53,6 +53,7 @@
       *  01.00.15    NACL-ÌçÏÆ    04/01/15  ¾ÃÈñÀÇ¹àÌÜÅùÄÉ²Ã¹àÌÜÊÔ½¸
       *  01.00.16    NACL-ÌçÏÆ    04/02/06  ¼«ÇåÀÕ¤Î¿©»öÎÅÍÜÈñ¤òÏ«ºÒ
       *                                     ¤Î£±¡¥£²ÇÜ¤Ç·×»»¤¹¤ë
+      *  01.00.17    NACL-ÌçÏÆ    04/02/10  ¿©»öÉéÃ´³Û½õÀ®ÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -88,6 +89,8 @@
            03  WK-FUTANWARI            PIC 9V99.
            03  WK-SEIKYUGK             PIC 9(10).
            03  WK-NYUKFTNRATE          PIC 9(03).
+           03  WK-NYUSKJJYOGAK         PIC 9(06).
+           03  WK-NYUSKJJYOGAK2        PIC 9(09).
            03  WK-TOKUTEI-COMPFTN      PIC 9(08).
            03  WK-TOKUTEI-COMPFTN2     PIC 9(08).
            03  WK-TOKUTEI-COMPFTN3     PIC 9(08).
@@ -4818,10 +4821,12 @@
       *
            MOVE       ZERO                TO   WK-NYUKFTNRATE.
            MOVE       SPACE               TO   WK-NYUSKJRYYKBN.
+           MOVE       ZERO                TO   WK-NYUSKJJYOGAK.
            EVALUATE   FLG-SANSHOU2
                WHEN   "1"
                    MOVE    HKN-HON-NYUKFTNRATE  TO   WK-NYUKFTNRATE
                    MOVE    HKN-HON-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
+                   MOVE    HKN-HON-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
                    IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
@@ -4843,6 +4848,7 @@
                WHEN   "2"
                    MOVE    HKN-TSY-NYUKFTNRATE  TO   WK-NYUKFTNRATE
                    MOVE    HKN-TSY-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
+                   MOVE    HKN-TSY-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
                    IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
@@ -4864,6 +4870,7 @@
                WHEN   "3"
                    MOVE    HKN-TNK-NYUKFTNRATE  TO   WK-NYUKFTNRATE
                    MOVE    HKN-TNK-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
+                   MOVE    HKN-TNK-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
                    IF  (LNK-SYU-SRYYMD(1:6)      >=  "200304"      )
                    AND (COMB-KOHHKNNUM(KOH-IDX)   =  "015" OR "016")
                        MOVE    "2"              TO   WK-NYUSKJRYYKBN
@@ -4887,6 +4894,7 @@
            IF   COMB-KOHHKNNUM(KOH-IDX)  =  "027"
                    MOVE    HKN-HON-NYUKFTNRATE  TO   WK-NYUKFTNRATE
                    MOVE    HKN-HON-NYUSKJRYYKBN TO   WK-NYUSKJRYYKBN
+                   MOVE    HKN-HON-NYUSKJJYOGAK TO   WK-NYUSKJJYOGAK
            END-IF.
       *
        2302-KOH-HKNREAD-EXT.
@@ -4998,6 +5006,28 @@
                        MOVE  WK-SHOKUJI-FTN
                                       TO   LNK-SYU-SKJ-FTN(KOH-IDX)
                                            LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                       IF   WK-NYUSKJJYOGAK  NOT =  ZERO
+                          COMPUTE   WK-NYUSKJJYOGAK2  =
+                                    WK-NYUSKJJYOGAK * WK-SHOKUJI-NISSU
+                          IF   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                              >   WK-NYUSKJJYOGAK2
+                             COMPUTE   LNK-SYU-SKJ-FTN(KOH-IDX) =
+                                       LNK-SYU-SKJ-FTN(KOH-IDX) -
+                                       WK-NYUSKJJYOGAK2
+                          ELSE
+                             MOVE   ZERO   TO  
+                                      LNK-SYU-SKJ-FTN(KOH-IDX) 
+                          END-IF
+                          IF   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                                              >   WK-NYUSKJJYOGAK2
+                             COMPUTE   LNK-SYU-SKJ-FTN-RECE(KOH-IDX) =
+                                       LNK-SYU-SKJ-FTN-RECE(KOH-IDX) -
+                                       WK-NYUSKJJYOGAK2
+                          ELSE
+                             MOVE   ZERO   TO
+                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                          END-IF
+                       END-IF
                        IF   LNK-SYU-SKJ-FTNKBN(KOH-IDX)  =  "2"
                          IF    LNK-SYU-SKJ-FTN(KOH-IDX)   >
                                               ZAN-KOHI-T(KOH-IDX)
@@ -5014,6 +5044,19 @@
                    WHEN   "3"
                        MOVE  WK-SHOKUJI-FTN
                                       TO   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                       IF   WK-NYUSKJJYOGAK  NOT =  ZERO
+                          COMPUTE   WK-NYUSKJJYOGAK2  =
+                                    WK-NYUSKJJYOGAK * WK-SHOKUJI-NISSU
+                          IF   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                                              >   WK-NYUSKJJYOGAK2
+                             COMPUTE   LNK-SYU-SKJ-FTN-RECE(KOH-IDX) =
+                                       LNK-SYU-SKJ-FTN-RECE(KOH-IDX) -
+                                       WK-NYUSKJJYOGAK2
+                          ELSE
+                             MOVE   ZERO   TO
+                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                          END-IF
+                       END-IF
                END-EVALUATE
            ELSE
                IF      ( LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051" ) OR
@@ -5291,6 +5334,28 @@
                        MOVE  WK-SHOKUJI-FTN
                                       TO   LNK-SYU-SKJ-FTN(KOH-IDX)
                                            LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                       IF   WK-NYUSKJJYOGAK  NOT =  ZERO
+                          COMPUTE   WK-NYUSKJJYOGAK2  =
+                                    WK-NYUSKJJYOGAK * WK-SHOKUJI-NISSU
+                          IF   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                              >   WK-NYUSKJJYOGAK2
+                             COMPUTE   LNK-SYU-SKJ-FTN(KOH-IDX) =
+                                       LNK-SYU-SKJ-FTN(KOH-IDX) -
+                                       WK-NYUSKJJYOGAK2
+                          ELSE
+                             MOVE   ZERO   TO  
+                                      LNK-SYU-SKJ-FTN(KOH-IDX) 
+                          END-IF
+                          IF   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                                              >   WK-NYUSKJJYOGAK2
+                             COMPUTE   LNK-SYU-SKJ-FTN-RECE(KOH-IDX) =
+                                       LNK-SYU-SKJ-FTN-RECE(KOH-IDX) -
+                                       WK-NYUSKJJYOGAK2
+                          ELSE
+                             MOVE   ZERO   TO
+                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                          END-IF
+                       END-IF
                        IF   LNK-SYU-SKJ-FTNKBN(KOH-IDX)  =  "2"
                          IF    LNK-SYU-SKJ-FTN(KOH-IDX)   >
                                               ZAN-KOHI-T(KOH-IDX)
@@ -5307,6 +5372,19 @@
                    WHEN   "3"
                        MOVE  WK-SHOKUJI-FTN
                                       TO   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                       IF   WK-NYUSKJJYOGAK  NOT =  ZERO
+                          COMPUTE   WK-NYUSKJJYOGAK2  =
+                                    WK-NYUSKJJYOGAK * WK-SHOKUJI-NISSU
+                          IF   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                                              >   WK-NYUSKJJYOGAK2
+                             COMPUTE   LNK-SYU-SKJ-FTN-RECE(KOH-IDX) =
+                                       LNK-SYU-SKJ-FTN-RECE(KOH-IDX) -
+                                       WK-NYUSKJJYOGAK2
+                          ELSE
+                             MOVE   ZERO   TO
+                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                          END-IF
+                       END-IF
                END-EVALUATE
            END-IF.
       *
@@ -5373,6 +5451,28 @@
                        MOVE  WK-SHOKUJI-FTN
                                       TO   LNK-SYU-SKJ-FTN(KOH-IDX)
                                            LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                       IF   WK-NYUSKJJYOGAK  NOT =  ZERO
+                          COMPUTE   WK-NYUSKJJYOGAK2  =
+                                    WK-NYUSKJJYOGAK * WK-SHOKUJI-NISSU
+                          IF   LNK-SYU-SKJ-FTN(KOH-IDX)
+                                              >   WK-NYUSKJJYOGAK2
+                             COMPUTE   LNK-SYU-SKJ-FTN(KOH-IDX) =
+                                       LNK-SYU-SKJ-FTN(KOH-IDX) -
+                                       WK-NYUSKJJYOGAK2
+                          ELSE
+                             MOVE   ZERO   TO  
+                                      LNK-SYU-SKJ-FTN(KOH-IDX) 
+                          END-IF
+                          IF   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                                              >   WK-NYUSKJJYOGAK2
+                             COMPUTE   LNK-SYU-SKJ-FTN-RECE(KOH-IDX) =
+                                       LNK-SYU-SKJ-FTN-RECE(KOH-IDX) -
+                                       WK-NYUSKJJYOGAK2
+                          ELSE
+                             MOVE   ZERO   TO
+                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                          END-IF
+                       END-IF
                        IF   LNK-SYU-SKJ-FTNKBN(KOH-IDX)  =  "2"
                          IF    LNK-SYU-SKJ-FTN(KOH-IDX)   >
                                               ZAN-KOHI-T(KOH-IDX)
@@ -5388,6 +5488,19 @@
                    WHEN   "3"
                        MOVE  WK-SHOKUJI-FTN
                                       TO   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                       IF   WK-NYUSKJJYOGAK  NOT =  ZERO
+                          COMPUTE   WK-NYUSKJJYOGAK2  =
+                                    WK-NYUSKJJYOGAK * WK-SHOKUJI-NISSU
+                          IF   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                                              >   WK-NYUSKJJYOGAK2
+                             COMPUTE   LNK-SYU-SKJ-FTN-RECE(KOH-IDX) =
+                                       LNK-SYU-SKJ-FTN-RECE(KOH-IDX) -
+                                       WK-NYUSKJJYOGAK2
+                          ELSE
+                             MOVE   ZERO   TO
+                                      LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                          END-IF
+                       END-IF
            END-EVALUATE.
       *     
        2304-KOH-KEISAN-EXT.
@@ -5703,8 +5816,19 @@
                      WHEN   "4"
                          MOVE  WK-DAY-SKJFTN(IDX2)
                                   TO   LNK-SDAY-SKJFTN(IDX2 KOH-IDX)
+                         IF   WK-NYUSKJJYOGAK  NOT =  ZERO
+                            IF   WK-DAY-SKJFTN(IDX2)
+                                              >   WK-NYUSKJJYOGAK
+                               COMPUTE   LNK-SDAY-SKJFTN(IDX2 KOH-IDX) =
+                                         LNK-SDAY-SKJFTN(IDX2 KOH-IDX) -
+                                         WK-NYUSKJJYOGAK
+                            ELSE
+                               MOVE   ZERO   TO   
+                                         LNK-SDAY-SKJFTN(IDX2 KOH-IDX)
+                            END-IF
+                         END-IF
       *                  ¼ýÇ¼¹àÌÜ
-                         ADD   WK-DAY-SKJFTN(IDX2)
+                         ADD   LNK-SDAY-SKJFTN(IDX2 KOH-IDX)
                                   TO   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
                          IF   WK-NYUSKJRYYKBN  =  "2"
                            IF    LNK-SDAY-SKJFTN(IDX2 KOH-IDX)
@@ -5723,8 +5847,18 @@
                                   TO   LNK-SYU-SKJ-FTN(KOH-IDX)
                      WHEN   "3"
       *                  ¼ýÇ¼¹àÌÜ
-                         ADD   WK-DAY-SKJFTN(IDX2)
+                         IF   WK-NYUSKJJYOGAK  NOT =  ZERO
+                            IF   WK-DAY-SKJFTN(IDX2)
+                                              >   WK-NYUSKJJYOGAK
+                               COMPUTE   LNK-SYU-SKJ-FTN-RECE(KOH-IDX) =
+                                         LNK-SYU-SKJ-FTN-RECE(KOH-IDX) +
+                                        (WK-DAY-SKJFTN(IDX2)  -
+                                                      WK-NYUSKJJYOGAK)
+                            END-IF
+                         ELSE
+                            ADD   WK-DAY-SKJFTN(IDX2)
                                   TO   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                         END-IF
                END-EVALUATE
       *
            END-PERFORM.
