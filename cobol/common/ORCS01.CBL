@@ -139,6 +139,7 @@
       *  01.01.06    NACL-門脇    04/09/08  生保単独の限度額修正
       *  01.01.07    NACL-門脇    04/09/09  山形県地方公費対応
       *  01.01.08    NACL-門脇    04/09/10  熊本県地方公費対応
+      *  01.01.09    NACL-門脇    04/09/24  請求額端数処理対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -239,7 +240,7 @@
       *    病院割引額計算時の割引率用ワーク
            03  WK-RATE                 PIC 9(1)V9(2).
       *
-      *    減免端数区分
+      *    請求額金額端数区分
            03  WK-HASU1001-KBN         PIC X(1).
       *
       *    消費税端数区分
@@ -1061,11 +1062,13 @@
       *
            END-IF.     
       *
-      *    病院減免の計算（労災・自賠責を除く）
+      *    減免計算・請求額端数計算（労災・自賠責を除く）
            IF     LNK-SYU-SKYMONEY         NOT  =   ZERO
               IF   LNK-SYU-SYUHKNNUM         =    "971" OR "973"
                    CONTINUE
               ELSE
+      *
+      *            減免計算
                    INITIALIZE                           PTINF-REC
                    MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
                    MOVE    LNK-SYU-PTID         TO      PTINF-PTID
@@ -1093,6 +1096,9 @@
                                                  MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC
+      *
+      *            請求額端数計算
+                   PERFORM   400-SEIKYU-HASUU-KEISAN-SEC
               END-IF
            END-IF.
       *
@@ -1320,8 +1326,9 @@
        MAIN-EXT.
            EXIT PROGRAM
            STOP RUN.
+      *
       ******************************************************************
-      *        病院減免計算処理                                    *
+      *        減免計算処理                                            *
       ******************************************************************
        300-GENMEN-KEISAN-SEC          SECTION.
       *
@@ -1374,35 +1381,37 @@
                                COMPUTE  WK-RATE  =  
                                         (100 - SYS-1027-DISCOUNT-RATE)
                                         /  100
-                               EVALUATE   WK-HASU1001-KBN
-                                  WHEN  " "
-                                  WHEN  "1"
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                         (LNK-SYU-SKYMONEY * WK-RATE)
-                                                           + 5
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                               LNK-SYU-SKYMONEY  / 10
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                               LNK-SYU-SKYMONEY  * 10
-                                  WHEN  "2"
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                          LNK-SYU-SKYMONEY * WK-RATE
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                               LNK-SYU-SKYMONEY  / 10
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                               LNK-SYU-SKYMONEY  * 10
-                                  WHEN  "3"
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                         (LNK-SYU-SKYMONEY * WK-RATE)
-                                                           + 9
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                               LNK-SYU-SKYMONEY  / 10
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                               LNK-SYU-SKYMONEY  * 10
-                                  WHEN  "4"
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                          LNK-SYU-SKYMONEY * WK-RATE
-                               END-EVALUATE
+      ***                      EVALUATE   WK-HASU1001-KBN
+      ***                         WHEN  " "
+      ***                         WHEN  "1"
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                (LNK-SYU-SKYMONEY * WK-RATE)
+      ***                                                  + 5
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                      LNK-SYU-SKYMONEY  / 10
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                      LNK-SYU-SKYMONEY  * 10
+      ***                         WHEN  "2"
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                 LNK-SYU-SKYMONEY * WK-RATE
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                      LNK-SYU-SKYMONEY  / 10
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                      LNK-SYU-SKYMONEY  * 10
+      ***                         WHEN  "3"
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                (LNK-SYU-SKYMONEY * WK-RATE)
+      ***                                                  + 9
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                      LNK-SYU-SKYMONEY  / 10
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                      LNK-SYU-SKYMONEY  * 10
+      ***                         WHEN  "4"
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                 LNK-SYU-SKYMONEY * WK-RATE
+      ***                      END-EVALUATE
+                               COMPUTE    LNK-SYU-SKYMONEY  =
+                                          LNK-SYU-SKYMONEY  *  WK-RATE
                            WHEN  "2"
                                IF   SYS-1027-DISCOUNT-RATE >= 
                                                      LNK-SYU-SKYMONEY
@@ -1432,6 +1441,34 @@
       *
        300-GENMEN-KEISAN-EXT.
            EXIT.
+      *
+      ******************************************************************
+      *        請求額端数計算処理                                      *
+      ******************************************************************
+       400-SEIKYU-HASUU-KEISAN-SEC          SECTION.
+      *
+           EVALUATE   WK-HASU1001-KBN
+                WHEN  "1"
+                   COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   5
+                   COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                   COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+                WHEN  "2"
+                   COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                   COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+                WHEN  "3"
+                   COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   9
+                   COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                   COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+                WHEN  " "
+                WHEN  "4"
+                        CONTINUE
+           END-EVALUATE
+      *
+           .
+      *
+       400-SEIKYU-HASUU-KEISAN-EXT.
+           EXIT.
+      *
       ******************************************************************
       *        保険参照部分確定処理                                    *
       ******************************************************************
@@ -2172,7 +2209,7 @@
       **>  END-IF.
       *
            PERFORM    SYS1001-READ-SEC.
-      *    減免端数区分・消費税端数区分の取り込み
+      *    請求金額端数区分、消費税端数区分の取り込み
            MOVE   SYS-1001-DISCOUNT-HASU-KBN  TO   WK-HASU1001-KBN.
            MOVE   SYS-1001-TAX-HASU-KBN       TO   WK-TAX1001-KBN.
            MOVE   SYS-1001-PREFNUM            TO   WK-1001-PREFNUM.

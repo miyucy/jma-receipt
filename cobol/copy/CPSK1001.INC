@@ -79,7 +79,7 @@
                05  SYS-1001-YAKUJYOPRTFLG    PIC  X(01).
       *病床数（一般）
                05  SYS-1001-BEDSUIPN    PIC  9(04).
-      *減免端数設定
+      *請求金額端数設定
                05  SYS-1001-DISCOUNT-HASU-KBN
                                         PIC  X(01).
       *消費税端数設定

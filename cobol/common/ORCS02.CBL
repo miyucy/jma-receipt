@@ -66,6 +66,7 @@
       *  01.00.26    NACL-ÌçÏÆ    04/09/07  ËÌ³¤Æ»ÃÏÊý¸øÈñÂÐ±þ
       *  01.00.27    NACL-ÌçÏÆ    04/09/08  À¸ÊÝÃ±ÆÈ¤Î¸ÂÅÙ³Û½¤Àµ
       *  01.00.28    NACL-ÌçÏÆ    04/09/10  ·§ËÜ¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  01.00.29    NACL-ÌçÏÆ    04/09/24  ÀÁµá³ÛÃ¼¿ô½èÍýÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -161,7 +162,7 @@
       *    ÉÂ±¡³ä°ú³Û·×»»»þ¤Î³ä°úÎ¨ÍÑ¥ï¡¼¥¯
            03  WK-RATE                 PIC 9(1)V9(2).
       *
-      *    ¸ºÌÈÃ¼¿ô¶èÊ¬
+      *    ÀÁµá¶â³ÛÃ¼¿ô¶èÊ¬
            03  WK-HASU1001-KBN         PIC X(1).
       *
       *    ¾ÃÈñÀÇÃ¼¿ô¶èÊ¬
@@ -626,7 +627,7 @@
            END-PERFORM.
            MOVE    SPACE           TO  LNK-SYU-DAYINFFLG.
       *
-      *    ¸ºÌÈÃ¼¿ô¶èÊ¬¡¦¾ÃÈñÀÇÃ¼¿ô¶èÊ¬¤Î¼è¤ê¹þ¤ß
+      *    ÀÁµá¶â³ÛÃ¼¿ô¶èÊ¬¡¢¾ÃÈñÀÇÃ¼¿ô¶èÊ¬¤Î¼è¤ê¹þ¤ß
            INITIALIZE                         SYS-1001-REC.
            MOVE    "1001"               TO    SYS-1001-KANRICD.
            MOVE    "*"                  TO    SYS-1001-KBNCD.
@@ -919,11 +920,13 @@
       *
            END-IF.     
       *
-      *    ÉÂ±¡¸ºÌÈ¤Î·×»»¡ÊÏ«ºÒ¡¦¼«ÇåÀÕ¤ò½ü¤¯¡Ë
+      *    ¸ºÌÈ·×»»¡¦ÀÁµá³ÛÃ¼¿ô·×»»¡ÊÏ«ºÒ¡¦¼«ÇåÀÕ¤ò½ü¤¯¡Ë
            IF     LNK-SYU-SKYMONEY         NOT  =   ZERO
               IF   LNK-SYU-SYUHKNNUM         =    "971" OR "973"
                    CONTINUE
               ELSE
+      *
+      *            ¸ºÌÈ·×»»
                    INITIALIZE                           PTINF-REC
                    MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
                    MOVE    LNK-SYU-PTID         TO      PTINF-PTID
@@ -951,6 +954,9 @@
                                                  MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC
+      *
+      *            ÀÁµá³ÛÃ¼¿ô·×»»
+                   PERFORM   400-SEIKYU-HASUU-KEISAN-SEC
               END-IF
            END-IF.
       *
@@ -1181,7 +1187,7 @@
            STOP RUN.
       *
       ******************************************************************
-      *        ÉÂ±¡¸ºÌÈ·×»»½èÍý                                    *
+      *        ¸ºÌÈ·×»»½èÍý                                            *
       ******************************************************************
        300-GENMEN-KEISAN-SEC          SECTION.
       *
@@ -1234,35 +1240,37 @@
                                COMPUTE  WK-RATE  =  
                                         (100 - SYS-1027-DISCOUNT-RATE)
                                         /  100
-                               EVALUATE   WK-HASU1001-KBN
-                                  WHEN  " "
-                                  WHEN  "1"
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                         (LNK-SYU-SKYMONEY * WK-RATE)
-                                                           + 5
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                               LNK-SYU-SKYMONEY  / 10
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                               LNK-SYU-SKYMONEY  * 10
-                                  WHEN  "2"
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                          LNK-SYU-SKYMONEY * WK-RATE
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                               LNK-SYU-SKYMONEY  / 10
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                               LNK-SYU-SKYMONEY  * 10
-                                  WHEN  "3"
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                         (LNK-SYU-SKYMONEY * WK-RATE)
-                                                           + 9
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                               LNK-SYU-SKYMONEY  / 10
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                               LNK-SYU-SKYMONEY  * 10
-                                  WHEN  "4"
-                                    COMPUTE    LNK-SYU-SKYMONEY  =
-                                          LNK-SYU-SKYMONEY * WK-RATE
-                               END-EVALUATE
+      ***                      EVALUATE   WK-HASU1001-KBN
+      ***                         WHEN  " "
+      ***                         WHEN  "1"
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                (LNK-SYU-SKYMONEY * WK-RATE)
+      ***                                                  + 5
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                      LNK-SYU-SKYMONEY  / 10
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                      LNK-SYU-SKYMONEY  * 10
+      ***                         WHEN  "2"
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                 LNK-SYU-SKYMONEY * WK-RATE
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                      LNK-SYU-SKYMONEY  / 10
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                      LNK-SYU-SKYMONEY  * 10
+      ***                         WHEN  "3"
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                (LNK-SYU-SKYMONEY * WK-RATE)
+      ***                                                  + 9
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                      LNK-SYU-SKYMONEY  / 10
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                      LNK-SYU-SKYMONEY  * 10
+      ***                         WHEN  "4"
+      ***                           COMPUTE    LNK-SYU-SKYMONEY  =
+      ***                                 LNK-SYU-SKYMONEY * WK-RATE
+      ***                      END-EVALUATE
+                               COMPUTE    LNK-SYU-SKYMONEY  =
+                                          LNK-SYU-SKYMONEY  *  WK-RATE
                            WHEN  "2"
                                IF   SYS-1027-DISCOUNT-RATE >= 
                                                      LNK-SYU-SKYMONEY
@@ -1292,6 +1300,34 @@
       *
        300-GENMEN-KEISAN-EXT.
            EXIT.
+      *
+      ******************************************************************
+      *        ÀÁµá³ÛÃ¼¿ô·×»»½èÍý                                      *
+      ******************************************************************
+       400-SEIKYU-HASUU-KEISAN-SEC          SECTION.
+      *
+           EVALUATE   WK-HASU1001-KBN
+                WHEN  "1"
+                   COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   5
+                   COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                   COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+                WHEN  "2"
+                   COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                   COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+                WHEN  "3"
+                   COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   9
+                   COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                   COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+                WHEN  " "
+                WHEN  "4"
+                        CONTINUE
+           END-EVALUATE
+      *
+           .
+      *
+       400-SEIKYU-HASUU-KEISAN-EXT.
+           EXIT.
+      *
       ******************************************************************
       *        ÊÝ¸±»²¾ÈÉôÊ¬³ÎÄê½èÍý                                    *
       ******************************************************************
