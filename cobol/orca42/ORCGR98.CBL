@@ -31,6 +31,9 @@
       *                                     修正
       *　入院機能追加　
       *  01.00.01    NACL-藤原    02/12/11  入外区分追加 
+      *  01.00.02    NACL-藤原    03/01/14  入院会計の読込追加
+      *                                     入外区分の表示追加 
+      *  01.00.03   NACL-藤原     03.01.20  月代り受給者番号に入外区分を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -60,7 +63,7 @@
                05  SPA-GMN-MAX-PAGE                PIC 9(02). 
                05  SPA-GMN-CUR                     PIC 9(02).
                05  SPA-GMN-AREA.
-                   07  SPA-GMN-SRYYMH              PIC X(25).
+                   07  SPA-GMN-SRYYMH              PIC X(26).
                    07  SPA-GMN-SRYYM               PIC X(06).
                    07  SPA-GMN-TABLE.
                        09  SPA-GMN-TBL             OCCURS   40.
@@ -90,6 +93,7 @@
            03  FLG-HKNCOMBI        PIC 9(01). 
            03  FLG-PTKOHINF        PIC 9(01).
            03  FLG-MONTHLYNUM      PIC 9(01).
+           03  FLG-NYUINACCT       PIC 9(01).
       *     
            03  FLG-CHK             PIC 9(01).
            03  FLG-SEIHO           PIC 9(01). 
@@ -191,6 +195,10 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    入院会計
+       01  NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -387,6 +395,13 @@
            MOVE    "分"            TO  SPA-GMN-SRYYMH (17:2)
            MOVE    WRK-HENYMDG1 (1:6)
                                    TO  SPA-GMN-SRYYM
+      *    入外区分
+           EVALUATE    SPA-R01-NYUGAIKBN
+               WHEN    "1"
+                   MOVE    "入院"      TO  SPA-GMN-SRYYMH (21:)
+               WHEN    "2"
+                   MOVE    "入院外"    TO  SPA-GMN-SRYYMH (21:)
+           END-EVALUATE
       *
       *    診療年月に生保が有効な患者
            INITIALIZE                  PTKOHINF-REC                            
@@ -443,6 +458,8 @@
                    MOVE    1               TO  FLG-SRYACCT
                END-IF
       *
+               MOVE    ZERO                TO  FLG-SEIHO
+      *        診療会計より検索
                PERFORM UNTIL       FLG-SRYACCT     =   1
                    MOVE    ZERO                TO  FLG-SEIHO       
       *            保険組合せ読込み
@@ -466,46 +483,8 @@
                        END-PERFORM
                    END-IF    
       *
-      *            
                    IF      FLG-SEIHO           =   1
-                       ADD     1               TO  SPA-GMN-MAX
-                       COMPUTE IDX1    =
-                               ( SPA-GMN-MAX +   WRK-LINE-MAX  -   1 )
-                                             /   WRK-LINE-MAX
-                       COMPUTE IDX2    =
-                               ( SPA-GMN-MAX +   WRK-LINE-MAX )
-                                             -   IDX1  *   WRK-LINE-MAX
-                       MOVE    KEY-N-PTID      TO
-                                           SPA-NAI-TPTID (IDX1 IDX2)
-                       INITIALIZE                  ORCSPTIDAREA
-                       MOVE    SPA-HOSPID      TO  SPTID-HOSPID
-                       MOVE    PTKOH-PTID      TO  SPTID-PTID
-                       CALL    "ORCSPTID"      USING   ORCSPTIDAREA
-                                                       SPA-1009-TBL
-                       MOVE    SPTID-PTNUM     TO
-                                           SPA-GMN-TPTNUM (IDX1 IDX2)
-                       MOVE    SPA-HOSPID      TO  PTINF-HOSPID
-                       MOVE    KEY-N-PTID      TO  PTINF-PTID
-                       PERFORM 900-PTINF-READ-SEC
-                       MOVE    PTINF-NAME      TO
-                                           SPA-GMN-TNAME (IDX1 IDX2)
-      *****************MOVE    SPA-GMN-SRYYM   TO
-      *                                    SPA-GMN-TSRYYM(IDX1 IDX2)
-      *****************MOVE    SPA-NAI-SRYYM   TO
-      *                                    SPA-NAI-TSRYYM(IDX1 IDX2)
-                       MOVE    PTKOH-FTNJANUM  TO
-                                           SPA-GMN-TFTNJANUM (IDX1 IDX2)
-                       MOVE    SPA-HOSPID      TO  MONTHLYNUM-HOSPID
-                       MOVE    KEY-N-PTID      TO  MONTHLYNUM-PTID
-                       MOVE    WRK-CONS-SEIHO-HKNNUM
-                                               TO  MONTHLYNUM-KOHNUM
-                       MOVE    SPA-NAI-SRYYM   TO  MONTHLYNUM-SRYYM
-                       MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
-                       PERFORM 910-MONTHLYNUM-READ-SEC
-                       IF      FLG-MONTHLYNUM  =   ZERO
-                           MOVE    MONTHLYNUM-JKYSNUM  TO 
-                                           SPA-GMN-TJKYSNUM (IDX1 IDX2)
-                       END-IF                    
+                       PERFORM 31011-SEH-GMN-HENSYU-SEC
                    END-IF      
       *             
                    IF      FLG-SEIHO           =   1
@@ -526,6 +505,40 @@
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
+      *
+      *        入院会計読み込み（基本）
+               IF      SPA-R01-NYUGAIKBN    =   "1"
+               AND     FLG-SEIHO            =   ZERO
+                   INITIALIZE                  NYUINACCT-REC
+                   MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+                   MOVE    PTKOH-PTID          TO  NACCT-PTID
+                   MOVE    SPA-NAI-SRYYM       TO  NACCT-SRYYM
+                   MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+                   MOVE    "DBSELECT"          TO  MCP-FUNC
+                   MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"         USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+                   IF      MCP-RC              =   ZERO
+                       MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
+                       PERFORM  900-NYUINACCT-READ-SEC
+                   ELSE
+                       MOVE    1                   TO  FLG-NYUINACCT    
+                   END-IF
+      *            カーソルクロース
+                   MOVE    "DBCLOSE"           TO  MCP-FUNC
+                   MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+      *
+                   IF      FLG-NYUINACCT       =   ZERO
+                       MOVE    "1"                 TO  FLG-SEIHO
+                       PERFORM 31011-SEH-GMN-HENSYU-SEC
+                   END-IF      
+               END-IF
       *                                      
                MOVE    "PTKOHINF-KEY5"  TO  WRK-PATH
                PERFORM 910-PTKOHINF-NEXT-SEC
@@ -558,6 +571,50 @@
       *
            .
        3101-SEH-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者情報画面編集処理
+      *****************************************************************
+       31011-SEH-GMN-HENSYU-SEC         SECTION.
+      *
+           ADD     1               TO  SPA-GMN-MAX
+           COMPUTE IDX1    =
+                         ( SPA-GMN-MAX +   WRK-LINE-MAX  -   1 )
+                                       /   WRK-LINE-MAX
+           COMPUTE IDX2    =
+                         ( SPA-GMN-MAX +   WRK-LINE-MAX )
+                                       -   IDX1  *   WRK-LINE-MAX
+           MOVE    PTKOH-PTID      TO      SPA-NAI-TPTID (IDX1 IDX2)
+           INITIALIZE                  ORCSPTIDAREA
+           MOVE    SPA-HOSPID      TO  SPTID-HOSPID
+           MOVE    PTKOH-PTID      TO  SPTID-PTID
+           CALL    "ORCSPTID"      USING   ORCSPTIDAREA
+                                           SPA-1009-TBL
+           MOVE    SPTID-PTNUM     TO    SPA-GMN-TPTNUM (IDX1 IDX2)
+           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+           MOVE    PTKOH-PTID      TO  PTINF-PTID
+           PERFORM 900-PTINF-READ-SEC
+           MOVE    PTINF-NAME      TO  SPA-GMN-TNAME (IDX1 IDX2)
+      *****MOVE    SPA-GMN-SRYYM   TO  SPA-GMN-TSRYYM(IDX1 IDX2)
+      *****MOVE    SPA-NAI-SRYYM   TO  SPA-NAI-TSRYYM(IDX1 IDX2)
+           MOVE    PTKOH-FTNJANUM  TO  SPA-GMN-TFTNJANUM (IDX1 IDX2)
+           MOVE    SPA-HOSPID      TO  MONTHLYNUM-HOSPID
+           MOVE    PTKOH-PTID      TO  MONTHLYNUM-PTID
+           MOVE    WRK-CONS-SEIHO-HKNNUM
+                                   TO  MONTHLYNUM-KOHNUM
+           MOVE    SPA-NAI-SRYYM   TO  MONTHLYNUM-SRYYM
+           MOVE    SPA-R01-NYUGAIKBN
+                                   TO  MONTHLYNUM-NYUGAIKBN
+           MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+           PERFORM 910-MONTHLYNUM-READ-SEC
+           IF      FLG-MONTHLYNUM  =   ZERO
+               MOVE    MONTHLYNUM-JKYSNUM  
+                                       TO  SPA-GMN-TJKYSNUM (IDX1 IDX2)
+           END-IF                    
+      *
+           .
+       31011-SEH-GMN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -915,6 +972,8 @@
                    MOVE    WRK-CONS-SEIHO-HKNNUM
                                            TO  MONTHLYNUM-KOHNUM
                    MOVE    SPA-NAI-SRYYM   TO  MONTHLYNUM-SRYYM
+                   MOVE    SPA-R01-NYUGAIKBN
+                                           TO  MONTHLYNUM-NYUGAIKBN
                    MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                    PERFORM 910-MONTHLYNUM-READ-SEC
                    IF      FLG-MONTHLYNUM  =   ZERO 
@@ -1193,6 +1252,8 @@
                        MOVE    WRK-CONS-SEIHO-HKNNUM
                                                TO  MONTHLYNUM-KOHNUM
                        MOVE    SPA-NAI-SRYYM   TO  MONTHLYNUM-SRYYM
+                       MOVE    SPA-R01-NYUGAIKBN
+                                               TO  MONTHLYNUM-NYUGAIKBN
                        MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                        PERFORM 910-MONTHLYNUM-READ-SEC
       *
@@ -1770,6 +1831,26 @@
       *
            .
        910-MONTHLYNUM-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院会計マスタ　ＲＥＡＤ
+      *****************************************************************
+       900-NYUINACCT-READ-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-NYUINACCT
+               MOVE    MCPDATA-REC         TO  NYUINACCT-REC
+           ELSE
+               MOVE    1               TO  FLG-NYUINACCT
+           END-IF
+           .
+       900-NYUINACCT-READ-EXT.
            EXIT.
       *
       *****************************************************************
