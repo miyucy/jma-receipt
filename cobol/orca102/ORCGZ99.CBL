@@ -427,6 +427,8 @@
       *    入力コード
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   10  )   OR
+                              (SPA-Z99GMN-INPUTCD(IDX)
+                                               =   SPACE )  OR
                               (SPA-ERRCD   NOT =   SPACE )
                PERFORM 41011-INPUTCD-HEN-SEC
            END-PERFORM
@@ -449,7 +451,7 @@
       *****************************************************************
        41011-INPUTCD-HEN-SEC           SECTION.
       *
-            MOVE    IDX                 TO  SPA-Z99GMN-IDX
+           MOVE    IDX                 TO  SPA-Z99GMN-IDX
       *    入力コードチェック
            PERFORM 410111-INPUTCD-CHK-SEC
       *
@@ -585,7 +587,7 @@
                MOVE    "J"                 TO  ICD-CDSYU
            ELSE
       *        全桁数字は、コード種別を桁数で決定
-               IF      SPA-Z99GMN-INPUTCD(SPA-Z99GMN-IDX)(1:1)
+               IF      SPA-Z99GMN-INPUTCD(SPA-Z99GMN-IDX)(1:CNT-STRING)
                                            NUMERIC
                    EVALUATE    CNT-STRING
                        WHEN    4
