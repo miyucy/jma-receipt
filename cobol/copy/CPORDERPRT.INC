@@ -49,7 +49,7 @@
                05  ORDERPRT-ORDERNUM      PIC 9(02).
       *  枝番（剤毎に１からの連番）
                05  ORDERPRT-RENNUM        PIC 9(02).
-      *枝番＝０１の時設定
+      *同一番号はすべて同一内容
       *  ドクターコード
            03  ORDERPRT-DRCD              PIC X(05).
       *  診療区分
@@ -58,6 +58,7 @@
            03  ORDERPRT-SRYSYUKBN         PIC X(03).
       *  診療日付
            03  ORDERPRT-SRYYMD            PIC X(08).
+      *枝番＝０１の時設定
       *  回数
            03  ORDERPRT-DAY-G.
                05  ORDERPRT-DAY           PIC 9(03)
