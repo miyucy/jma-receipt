@@ -278,6 +278,7 @@
            IF    ( SDNTCHK-STYMD       =   ZERO )
                INITIALIZE              WRK-NISSU-G
                PERFORM 2100-RRK-DATA-SET-SEC
+               GO  TO  2100-KONKAI-NYUIN-TUSAN-EXT
            END-IF
       *
            IF    ( PTNYUINRRK-NYUINYMD <=  STUSAN-KJNYMD )
