@@ -2946,6 +2946,9 @@
                                            TO  P02-P024-TSYLSTYMD(IDY)
                  MOVE    SPA-GMN24-TSYDPEDYMDW (IDX)
                                            TO  P02-P024-TSYLEDYMD(IDY)
+                 MOVE    SPA-GMN24-TSYLSKJGNSTYMDW (IDX)
+                                           TO  P02-P024-TSYLSKJGNSTYMD
+                                                           (IDY)
       *
                  IF      IDX           =   SPA-NAI24-TSYSELNUM
                      MOVE    "T"           TO  P02-P024-TSYLIST-SELECT
@@ -2960,6 +2963,8 @@
            MOVE    SPA-GMN24-TSYSELNUM TO  P02-P024-TSRSELNUM
            MOVE    SPA-GMN24-TSYSTYMDW TO  P02-P024-TSYSTYMD
            MOVE    SPA-GMN24-TSYEDYMDW TO  P02-P024-TSYEDYMD
+           MOVE    SPA-GMN24-TSYSKJGNSTYMDW
+                                       TO  P02-P024-TSYSKJGNSTYMD
       *
            .
        2001-P024-SET-EXT.

@@ -32,6 +32,7 @@
       *  01.00.04    MCC-太田     01/05/10  日付変換後ゼロ表示変更
       *  01.00.05    MCC-多々納   01/07/02  日付入力チェックサブ追加
       *  02.00.00    NACL-多々納  02/07/30  インターフェース変更
+      *  02.00.01    NACL-多々納  03/02/13  食事標準負担減額日追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -384,12 +385,25 @@
                    PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
                    MOVE    WRK-HENYMD    TO  SPA-GMN24-TSYDPEDYMDW(IDX)
                END-IF
+      *
+               MOVE    LNK-TSY-SKJGNSTYMD (IDX)
+                                         TO  SPA-GMN24-TSYLSKJGNSTYMD
+                                                              (IDX)
+               MOVE    LNK-TSY-SKJGNSTYMD (IDX)  TO  WRK-SYMD
+               IF      WRK-SYMD            =   SPACE
+                   MOVE    SPACE       TO  SPA-GMN24-TSYLSKJGNSTYMDW
+                                                           (IDX)(1:7)
+               ELSE
+                   PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
+                   MOVE    WRK-HENYMD    TO  SPA-GMN24-TSYLSKJGNSTYMDW
+                                                                (IDX)
+               END-IF
            END-PERFORM
       *
       *    年金編集
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL     ( IDX     >   20 )
+                   UNTIL     ( IDX     >   10 )
                    OR        ( IDX     >   SPA-TNK-MAX )
       *
                MOVE    LNK-TNK-STYMD (IDX)
@@ -440,6 +454,8 @@
                    MOVE    "P024_TSYSTYMD"      TO  MCP-WIDGET
                WHEN    03
                    MOVE    "P024_TSYEDYMD"      TO  MCP-WIDGET
+               WHEN   12
+                   MOVE    "P024_TSYSKJGNSTYMD"      TO  MCP-WIDGET
                WHEN    04
                    MOVE    "BT1"                TO  MCP-WIDGET
                WHEN    05
@@ -474,7 +490,9 @@
                WHEN    "P024_TSYSTYMD"
                    MOVE    2           TO  SPA-GMN24-CUR
                WHEN    "P024_TSYEDYMD"
-                   MOVE    3           TO  SPA-GMN24-CUR
+                   MOVE    11          TO  SPA-GMN24-CUR
+               WHEN    "P024_TSYSKJGNSTYMD"
+                   MOVE    3            TO  SPA-GMN24-CUR
       *
                WHEN    "P024_TNKLIST"
                    MOVE    6           TO  SPA-GMN24-CUR
@@ -554,6 +572,12 @@
            MOVE    SPA-GMN24-TSYEDYMDW TO  SPA-GMN24-TSYDPEDYMDW(IDX)
            MOVE    SPA-GMN24-TSYSTYMD  TO  SPA-GMN24-TSYDPSTYMD (IDX)
            MOVE    SPA-GMN24-TSYEDYMD  TO  SPA-GMN24-TSYDPEDYMD (IDX)
+           MOVE    SPA-GMN24-TSYSKJGNSTYMDW
+                                       TO  SPA-GMN24-TSYLSKJGNSTYMDW
+                                                                (IDX)
+           MOVE    SPA-GMN24-TSYSKJGNSTYMD
+                                       TO  SPA-GMN24-TSYLSKJGNSTYMD
+                                                                (IDX)
       *
            INITIALIZE                  SPA-GMN24-TSYS-AREA
       *
@@ -713,12 +737,16 @@
                        IF  ( SPA-GMN24-TSYDPSTYMD(IDX)
                                    NOT =   LNK-TSY-NINSTYMD(IDX)) OR
                            ( SPA-GMN24-TSYDPEDYMD(IDX)
-                                   NOT =   LNK-TSY-NINEDYMD(IDX))
+                                   NOT =   LNK-TSY-NINEDYMD(IDX)) OR
+                           ( SPA-GMN24-TSYLSKJGNSTYMD(IDX)
+                                   NOT =   LNK-TSY-SKJGNSTYMD(IDX))
                            MOVE    SPA-SYSYMD  TO  LNK-TSY-UPYMD  (IDX)
                            MOVE    SPA-GMN24-TSYDPSTYMD (IDX)
                                            TO  LNK-TSY-NINSTYMD   (IDX)
                            MOVE    SPA-GMN24-TSYDPEDYMD (IDX)
                                            TO  LNK-TSY-NINEDYMD   (IDX)
+                           MOVE    SPA-GMN24-TSYLSKJGNSTYMD (IDX)
+                                           TO  LNK-TSY-SKJGNSTYMD (IDX)
                        END-IF
                    END-IF
                    MOVE    IDX             TO  IDY
@@ -735,6 +763,9 @@
                                            TO  LNK-TSY-NINSTYMD   (IDY)
                        MOVE    SPA-GMN24-TSYDPEDYMD (IDX)
                                            TO  LNK-TSY-NINEDYMD   (IDY)
+                       MOVE    SPA-GMN24-TSYLSKJGNSTYMD (IDX)
+                                           TO  LNK-TSY-SKJGNSTYMD
+                                                                 (IDY)
                        MOVE    SPA-TERMID      TO  LNK-TSY-TERMID (IDY)
                        MOVE    SPA-SYSYMD      TO  LNK-TSY-CREYMD (IDY)
                        PERFORM 510-PARA-TSYRRK-OUT-SEC
@@ -1081,6 +1112,7 @@
            MOVE    P02-P024-TSRSELNUM  TO  SPA-GMN24-TSYSELNUM
            MOVE    P02-P024-TSYSTYMD   TO  SPA-GMN24-TSYSTYMDW
            MOVE    P02-P024-TSYEDYMD   TO  SPA-GMN24-TSYEDYMDW
+           MOVE    P02-P024-TSYSKJGNSTYMD  TO  SPA-GMN24-TSYSKJGNSTYMDW
       *
       *    低年金　選択番号
            IF      P02-P024-TNKSELNUM  =   SPA-MAE24-TNKSELNUM
@@ -1113,6 +1145,11 @@
            END-IF
       *    低所得終了年月日
            PERFORM 41012-TSYEDYMD-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    食事標準負担減額開始日
+           PERFORM 41012-TSYSKJGNSTYMD-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1179,6 +1216,8 @@
                MOVE    SPACE            TO  SPA-GMN24-TSYSTYMD
                MOVE    SPACE            TO  SPA-GMN24-TSYEDYMDW
                MOVE    SPACE            TO  SPA-GMN24-TSYEDYMD
+               MOVE    SPACE            TO  SPA-GMN24-TSYSKJGNSTYMDW
+               MOVE    SPACE            TO  SPA-GMN24-TSYSKJGNSTYMD
            ELSE
                MOVE  SPA-GMN24-TSYDPSTYMDW (WRK-N-IDX)
                                         TO  SPA-GMN24-TSYSTYMDW
@@ -1188,6 +1227,10 @@
                                         TO  SPA-GMN24-TSYSTYMD
                MOVE  SPA-GMN24-TSYDPEDYMD  (WRK-N-IDX)
                                         TO  SPA-GMN24-TSYEDYMD
+               MOVE  SPA-GMN24-TSYLSKJGNSTYMDW (WRK-N-IDX)
+                                        TO  SPA-GMN24-TSYSKJGNSTYMDW
+               MOVE  SPA-GMN24-TSYLSKJGNSTYMD (WRK-N-IDX)
+                                        TO  SPA-GMN24-TSYSKJGNSTYMD
            END-IF
            .
        41012-TSYSELNUM-EXT.
@@ -1262,6 +1305,43 @@
       *
            .
        41012-TSYEDYMD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    低所得者／食事標準負担減額開始日
+      *****************************************************************
+       41012-TSYSKJGNSTYMD-SEC           SECTION.
+      *
+           IF      SPA-GMN24-TSYSKJGNSTYMDW    =   SPACE
+               MOVE    SPACE               TO  SPA-GMN24-TSYSKJGNSTYMD
+               GO      TO      41012-TSYSKJGNSTYMD-EXT
+           END-IF
+      *
+      *    日付画面チェックサブ
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    SPA-GMN24-TSYSKJGNSTYMDW
+                                       TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                       ORCSGDAYAREA
+           IF      SGDAY-RC            =   ZERO
+               MOVE    SGDAY-OTDAY         TO  SPA-GMN24-TSYSKJGNSTYMDW
+               MOVE    SGDAY-SDAY          TO  SPA-GMN24-TSYSKJGNSTYMD
+           ELSE
+               MOVE    "2413"              TO  SPA-ERRCD
+               MOVE    12                  TO  SPA-GMN24-CUR
+               GO  TO                   41012-TSYSKJGNSTYMD-EXT
+           END-IF
+      *
+           IF     (SPA-GMN24-TSYSTYMD  <=  SPA-GMN24-TSYSKJGNSTYMD) AND
+                  (SPA-GMN24-TSYEDYMD  >=  SPA-GMN24-TSYSKJGNSTYMD)
+               CONTINUE
+           ELSE
+               MOVE    "2414"              TO  SPA-ERRCD
+               MOVE    12                  TO  SPA-GMN24-CUR
+           END-IF
+      *
+           .
+       41012-TSYSKJGNSTYMD-EXT.
            EXIT.
       *****************************************************************
       *    年金／選択番号 

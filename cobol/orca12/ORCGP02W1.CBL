@@ -291,6 +291,8 @@
            03  WRK-TEKSTYMD            PIC X(08).
            03  WRK-TEKEDYMD            PIC X(08).
       *
+           03  WRK-NAI-HKNSTR       PIC 9(04).
+           03  WRK-NAI-KOHSTR       PIC 9(04).
       *
       *    公費ＳＯＲＴ用（ＳＰＡと同じ領域）
        01  WRK-KOUHI-AREA.
@@ -4141,6 +4143,18 @@
                END-IF
            END-IF
       *
+      *    登録の時、新規患者の時すべての保険・公費をチェックする
+           IF    ( SPA-P02-SYORI       =   1     )  AND
+                 ( FLG-TOUROKU2    NOT =   ZERO  )
+               PERFORM 4501-ALLHKN-CHK-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                      (SPA-PIDCD       NOT =   SPACE )  OR
+                      (SPA-FLG-END     NOT =   ZERO  )
+                   GO      TO      450-HKNCOMBI-EXT
+               END-IF
+           END-IF
+      *
+      *
       *    保険ＴＢＬからＰＡＲＡファイルへ編集
            PERFORM 4501-PTHKNINF-LNK-SEC
       *    公費ＴＢＬからＰＡＲＡファイルへ編集
@@ -4155,6 +4169,75 @@
       *
            .
        450-HKNCOMBI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険・公費チェック処理
+      *****************************************************************
+       4501-ALLHKN-CHK-SEC          SECTION.
+      *
+      *    エラーがない時は、元へもどす
+           MOVE    ZERO                TO  FLG-CHK
+           MOVE    SPA-NAI-HKNSTR      TO  WRK-NAI-HKNSTR
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   SPA-PTHKN-MAX )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               INITIALIZE                  SPA-GMN-HKN-AREA
+               IF      SPA-PTHKN-SAKJOKBN (IDX)    =   SPACE
+                   MOVE    IDX             TO  SPA-NAI-HKNSTR
+                   PERFORM 3101-HOKEN-HEN-SEC
+      *            保険情報チェックサブ
+                   CALL    "ORCSP03A"          USING   SPA-AREA
+                                                       SPA-P02SCRAREA
+                                                       SPA-P02KYOUTU
+               END-IF
+           END-PERFORM
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4501-ALLHKN-CHK-EXT
+           END-IF
+           MOVE    WRK-NAI-HKNSTR      TO  SPA-NAI-HKNSTR
+           MOVE    SPA-NAI-HKNSTR      TO  IDX
+           PERFORM 3101-HOKEN-HEN-SEC
+      *
+      *    公費は３件以上の時行う
+      *
+           MOVE    SPA-NAI-KOHSTR      TO  WRK-NAI-KOHSTR
+           MOVE    ZERO                TO  IDY
+           PERFORM VARYING     IDX     FROM    WRK-NAI-KOHSTR BY  1
+                   UNTIL      (IDX         >   SPA-PTKOH-MAX )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF      IDY                 =   ZERO
+                   INITIALIZE                  SPA-GMN-KOH-AREA
+                   MOVE    ZERO                TO  SPA-NAI-KOHEND
+               END-IF
+               IF      SPA-PTKOH-SAKJOKBN (IDX)    =   SPACE
+                   IF      IDY             =   ZERO
+                       MOVE    IDX             TO  SPA-NAI-KOHSTR
+                   END-IF
+                   MOVE    IDX                 TO  SPA-NAI-KOHEND
+                   ADD     1                   TO  IDY
+                   MOVE    1                   TO  FLG-CHK
+                   PERFORM 3102-KOUHI-HEN-SEC
+               END-IF
+               IF      IDY                 >=  3
+      *            公費情報チェックサブ
+                   CALL    "ORCSP03B"          USING   SPA-AREA
+                                               SPA-P02SCRAREA
+                                               SPA-P02KYOUTU
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    ZERO                TO  IDY
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      IDY                 >   ZERO
+      *        公費情報チェックサブ
+               CALL    "ORCSP03B"          USING   SPA-AREA
+                                               SPA-P02SCRAREA
+                                               SPA-P02KYOUTU
+           END-IF
+           .
+       4501-ALLHKN-CHK-EXT.
            EXIT.
       *
       *****************************************************************

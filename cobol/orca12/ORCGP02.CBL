@@ -3204,6 +3204,14 @@
       ************ MOVE    "低所得者２の認定日を入力して下さい"
                    MOVE    "低所得者１の認定日を入力して下さい"
                                                TO  SPA-ERRMSG
+               WHEN    "2413"
+                   MOVE    "食事標準負担減額開始日入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2414"
+                   MOVE    "食事標準負担減額開始日は"
+                                               TO  SPA-ERRMSG
+                   MOVE    "低所得２の範囲内で入力して下さい"
+                                               TO  SPA-ERRMSG(25:)
       *        入力履歴
                WHEN    "2502"
                    MOVE    "選択番号入力エラー"    TO  SPA-ERRMSG
