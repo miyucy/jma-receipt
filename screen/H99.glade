@@ -5,13 +5,9 @@
   <name>H99</name>
   <program_name>H99</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -113,7 +109,7 @@
 	<data>CHANGED</data>
 	<last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
       <text>12345678901234567890</text>
@@ -141,7 +137,7 @@
 	<data>CHANGED</data>
 	<last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>8</text_max_length>
       <text>H13.11</text>
@@ -169,7 +165,7 @@
 	<data>CHANGED</data>
 	<last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>2</text_max_length>
       <text></text>
