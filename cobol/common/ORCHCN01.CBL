@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    03.05.16  病名編集をコメント化
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -561,14 +562,16 @@
       *    保険項目編集
            PERFORM 3001-HCN01-ALLHENSYU-SEC
       *
-           IF      SPA-SRYKA      NOT =   SPACE
-      *        病名を印刷する
-               PERFORM 3002-BYOMEI-PRT-SEC
-           ELSE
-      *        カルテ印刷
-               PERFORM 2003-HCN01-PRINT-SEC
-           END-IF
+      *-   IF      SPA-SRYKA      NOT =   SPACE
+      *-       病名を印刷する
+      *-       PERFORM 3002-BYOMEI-PRT-SEC
+      *-   ELSE
+      *-       カルテ印刷
+      *-       PERFORM 2003-HCN01-PRINT-SEC
+      *-   END-IF
       *
+      *    カルテ印刷
+           PERFORM 2003-HCN01-PRINT-SEC
            .
        300-ALL-PRT-EXT.
            EXIT.

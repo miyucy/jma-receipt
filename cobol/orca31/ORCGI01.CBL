@@ -49,6 +49,7 @@
       *  01.00.15    NACL-太田    03.04.09  保険組合せの取得方法修正
       *  01.00.16    NACL-太田    03.05.08  入院歴表示の自院歴退院日の
       *                                     編集を修正（入院中対応）
+      *  01.00.17    NACL-太田    03.05.16  入院カルテに保険を編集する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -106,6 +107,7 @@
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACCTARI            PIC 9(01).
            03  FLG-WKPTTEIKIRRK            PIC 9(01).
+           03  FLG-HKNCOMBIGET             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -124,6 +126,7 @@
            03  IDX13                       PIC 9(05).
            03  IDX14                       PIC 9(05).
            03  IDX15                       PIC 9(05).
+           03  IDX16                       PIC 9(05).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -309,6 +312,10 @@
            03  IDX-SHOKUJI9   REDEFINES    IDX-SHOKUJIX
                                            PIC 9(02).
            03  WRK-NYUINCHU-TAIINYMD       PIC X(08).
+           03  WRK-ORCHCN01-HKNCOMBINUM    PIC 9(04).
+           03  WRK-STIDX                   PIC 9(02).
+           03  WRK-EDIDX                   PIC 9(02).
+           03  WRK-MIN-YMD                 PIC X(08).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -5224,7 +5231,7 @@
                GO  TO  480-KARUTE-PRT-EXT
            END-IF
       *
-           MOVE    "1"                 TO  WRK-ORCHCN01-SYORIKBN
+           MOVE    "2"                 TO  WRK-ORCHCN01-SYORIKBN
            MOVE    "1"                 TO  WRK-ORCHCN01-PRTKBN
       *
       *    入院カルテ編集サブ呼出
@@ -5260,20 +5267,29 @@
       *    帳票プログラム名取得
            PERFORM 4801-PRINT-PG-EDIT-SEC
       *
-           INITIALIZE                      SPA-KYOTUKEY
-                                           SPA-KYOTU-SET
+           MOVE    SPA-AREA            TO  WRK-SPA-AREA
+           INITIALIZE                      WRK-SPA-KYOTUKEY
+                                           WRK-SPA-KYOTU-SET
                                            ORCHCN01AREA
       *
            MOVE    WRK-ORCHCN01-SYORIKBN
                                        TO  ORCHCN01-SYORIKBN
            MOVE    WRK-ORCHCN01-PRTKBN
                                        TO  ORCHCN01-PRTKBN
-           MOVE    SPA-NAI-I01-PTID    TO  SPA-PTID
-           MOVE    SPA-GMN-I01-PTNUM   TO  SPA-PTNUM
+           MOVE    SPA-NAI-I01-PTID    TO  WRK-SPA-PTID
+           MOVE    SPA-GMN-I01-PTNUM   TO  WRK-SPA-PTNUM
            MOVE    SPA-GMN-I01-NYUINKA-CD
-                                       TO  SPA-SRYKA
-           MOVE    SPA-GMN-I01-HKNCOMBI-CD
-                                       TO  SPA-HKNCOMBINUM
+                                       TO  WRK-SPA-SRYKA
+      *    カルテ編集用保険組合せ決定処理
+           PERFORM 4801-HKNCOMBI-KETTEI-SEC
+      *    MOVE    SPA-GMN-I01-HKNCOMBI-CD
+      *                                TO  WRK-SPA-HKNCOMBINUM
+           IF    ( WRK-ORCHCN01-HKNCOMBINUM    =   ZERO )
+               MOVE    SPACE           TO  WRK-SPA-HKNCOMBINUM
+           ELSE
+               MOVE    WRK-ORCHCN01-HKNCOMBINUM
+                                       TO  WRK-SPA-HKNCOMBINUM
+           END-IF
       *
            MOVE    ZERO                TO  IDX2
            PERFORM VARYING IDX1    FROM    1   BY  1
@@ -5301,11 +5317,115 @@
       *    DISPLAY "ORCHCN01-DR (3)    = " ORCHCN01-DR (3)
       *    DISPLAY "ORCHCN01-NYUINYMD  = " ORCHCN01-NYUINYMD
       *
-           CALL    WRK-PRINT-PG    USING   SPA-AREA
+           CALL    WRK-PRINT-PG    USING   WRK-SPA-AREA
                                            ORCHCN01AREA
       *
            .
        4801-ORCHCN01-CALL-EXT.
+           EXIT.
+      *****************************************************************
+      *   カルテ編集用保険組合せ決定処理
+      *****************************************************************
+       4801-HKNCOMBI-KETTEI-SEC        SECTION.
+      *
+           MOVE    SPACE           TO  WRK-ORCHCN01-HKNCOMBINUM
+      *
+           EVALUATE    SPA-GMN-I01-SYORIKBN-CD
+           WHEN    "01"
+               MOVE    SPA-GMN-I01-HKNCOMBI-CD
+                                   TO  WRK-ORCHCN01-HKNCOMBINUM
+           WHEN    "08"
+               IF    ( SPA-GMN-I01-HKNCOMBI-CD
+                               NOT =   SPA-NAI-I01-HKNCOMBI-MOT )
+                   MOVE    SPA-GMN-I01-HKNCOMBI-CD
+                                   TO  WRK-ORCHCN01-HKNCOMBINUM
+               ELSE
+                   PERFORM 4801-NYUACCT-HKNCOMBI-GET-SEC
+               END-IF
+           WHEN    OTHER
+                   PERFORM 4801-NYUACCT-HKNCOMBI-GET-SEC
+           END-EVALUATE
+      *
+           .
+       4801-HKNCOMBI-KETTEI-EXT.
+           EXIT.
+      *****************************************************************
+      *   入院会計より保険組合せ取得処理
+      *****************************************************************
+       4801-NYUACCT-HKNCOMBI-GET-SEC   SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYUINACCT
+           MOVE    ZERO                TO  FLG-HKNCOMBIGET
+      *
+           IF    ( SPA-NAI-I01-NYUINYMD    <   SPA-SYSYMD )
+               MOVE    SPA-SYSYMD      TO  WRK-MIN-YMD
+           ELSE
+               MOVE    SPA-NAI-I01-NYUINYMD
+                                       TO  WRK-MIN-YMD
+           END-IF
+      *
+           INITIALIZE  NYUINACCT-REC
+           MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+           MOVE    "1"                 TO  NACCT-NYUGAIKBN
+           MOVE    SPA-NAI-I01-PTID    TO  NACCT-PTID
+           MOVE    WRK-MIN-YMD (1:6)   TO  NACCT-SRYYM
+           MOVE    "5"                 TO  NACCT-ZAISKBKBN
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "NYUINACCT-KEY19"   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    1               TO  FLG-NYUINACCT
+           ELSE
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-NYUINACCT   =   1 )
+                   OR    ( FLG-HKNCOMBIGET =   1 )
+                   OR    ( NACCT-SRYYM <   SPA-NAI-I01-NYUINYMD (1 : 6))
+      *
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY7-AREA
+               MOVE    "71"                TO  LNK-DAY7-IRAI
+               MOVE    SPA-SYSYMD (1 : 6)  TO  LNK-DAY7-YM
+               CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                               LNK-DAY7-AREA
+               MOVE    LNK-DAY7-KOYOMI(7:2)
+                                           TO  WRK-STIDX
+      *
+               MOVE    1                   TO  WRK-EDIDX
+      *
+               PERFORM VARYING IDX16   FROM    WRK-STIDX   BY  -1
+                   UNTIL ( IDX16           <   WRK-EDIDX )
+                    OR   ( FLG-HKNCOMBIGET =   1 )
+      *
+                   IF    ( WRK-MIN-YMD (1 : 6)  =   NACCT-SRYYM )
+                       IF    ( WRK-MIN-YMD (7 : 2)    >=  IDX16 (4 : 2))
+                        AND  ( NACCT-DAY (IDX16)   NOT =   ZERO )
+                           MOVE    NACCT-DAY (IDX16)
+                                           TO  WRK-ORCHCN01-HKNCOMBINUM
+                           MOVE    1       TO  FLG-HKNCOMBIGET
+                       END-IF
+                   ELSE
+                       IF    ( SPA-NAI-I01-NYUINYMD (1:6)
+                                           =   NACCT-SRYYM )
+                        AND  ( SPA-NAI-I01-NYUINYMD (7:2)
+                                          >=   IDX16(4 : 2))
+                           MOVE    ZERO    TO  IDX16
+                       ELSE
+                           IF    ( NACCT-DAY (IDX16)   NOT =   ZERO )
+                               MOVE    NACCT-DAY (IDX16)
+                                           TO  WRK-ORCHCN01-HKNCOMBINUM
+                               MOVE    1   TO  FLG-HKNCOMBIGET
+                           END-IF
+                       END-IF
+                   END-IF
+      *
+               END-PERFORM
+      *
+           END-PERFORM
+      *
+           .
+       4801-NYUACCT-HKNCOMBI-GET-EXT.
            EXIT.
       *****************************************************************
       *   帳票プログラム名編集処理
