@@ -28,7 +28,7 @@
       *    ´µ¼Ô£É£Ä
            03  RSITUSAN-PTID               PIC  9(10).
       *    ÊÝ¸±ÁÈ¹ç¤»
-           03  RSITUSAN-HKNCOMBI           PIC  X(04).
+           03  RSITUSAN-HKNCOMBI           PIC  9(04).
       *    ¿ÇÎÅÇ¯·î
            03  RSITUSAN-SRYYM              PIC  X(06).
       *
