@@ -769,6 +769,11 @@
                MOVE    SPA-NAI-HYO-SRYYMH  TO  SPA-GMN-SRYYM
            END-IF
       *
+           IF    ( SPA-ERRCD         =   SPACE )
+               PERFORM 4150-SAKKBN-SET-SEC
+               MOVE    SPACE         TO  SPA-ERRCD
+           END-IF
+      *
            MOVE    5                 TO  SPA-GMN-CUR
            .
        4103-PTNUM-CHK-EXT.
