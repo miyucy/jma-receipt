@@ -155,7 +155,7 @@ path	key9		{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYYMD      <   :SRYYMD
-			AND  (TENKIKBN    =   :TENKIKBN )
+			AND  ((TENKIKBN    =   :TENKIKBN )
                           OR (TENKIYMD    =
                            (SELECT MAX(TENKIYMD)
                                    FROM tbl_ptbyomei 
@@ -171,7 +171,7 @@ path	key9		{
 		        	AND   PTID        =   :PTID
                                 AND   SRYYMD      <   :SRYYMD
                                 AND   TENKIKBN    =   '3'
-                                AND   TENKIYMD    <   :TENKIYMD )) 
+                                AND   TENKIYMD    <   :TENKIYMD ))) 
 			ORDER  BY  TENKIKBN DESC,
                                    SRYYMD
 		;
