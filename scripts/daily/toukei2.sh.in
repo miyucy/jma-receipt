@@ -13,7 +13,7 @@ fi
 #    日次統計データ作成
 #        $1  TERMID 
 #        $2  HOSPID
-#        $3  HPSPCD   
+#        $3  HOSPCD   
 #        $4  県番号
 #        $5  SRYYM 
 #        $6  NYUGAIKBN 
@@ -43,33 +43,22 @@ fi
         if  [ -e ${15} ]; then
             exit 
         else
-	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT130 -parameter $3,$5,$1,$9,${11},${13},${14},${15} >> /home/orca/toukei2.log
-	fi
+	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBT130 -parameter $1,${11},${13},${14},${15} >> /home/orca/toukei2.log
+	    fi
 
         if  [ -e ${15} ]; then
             exit 
-	fi
+        fi
 
 #       漢字コード変換（ＥＵＣからシフトＪＩＳ）
 
         if  [ ${12} -eq '2' ]; then
-            if   [ ${9} != '2' ]; then
-                nkf -s /var/tmp/toukei11.dat > /tmp/$7
-            fi 
-            if   [ ${9} != '1' ]; then
-                nkf -s /var/tmp/toukei12.dat > /tmp/$8
-            fi 
+            nkf -s /var/tmp/toukei11.dat > /tmp/$7
         else
-            if   [ ${9} != '2' ]; then
-                cp  /var/tmp/toukei11.dat /tmp/$7
-            fi 
-            if   [ ${9} != '1' ]; then
-                cp  /var/tmp/toukei12.dat /tmp/$8
-            fi
+            cp  /var/tmp/toukei11.dat /tmp/$7 
         fi
 #
-        if   [ ${9} != '2' ]; then
-             case ${16} in
+         case ${16} in
                   1) 	$FDW -host ${18} -command fd-write.sh /tmp/$7 $7
 			RC=$?
                         ;;
@@ -85,37 +74,12 @@ fi
                   5) 	$FDW -host ${18} -command user3-write.sh /tmp/$7 $7
 			RC=$?
                         ;;
-             esac
+         esac
 	     if  [ $RC -ne '0' ]; then
 		ERRCD='0000'$RC
         	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4} >> /home/orca/toukei2.log
-		exit
+		    exit
 	     fi
-        fi         
-        if   [ ${9} != '1' ]; then
-             case ${17} in
-                  1) 	$FDW -host ${18} -command fd-write.sh /tmp/$8 $8
-			RC=$?
-                        ;;
-                  2) 	$FDW -host ${18} -command mo-write.sh /tmp/$8 $8
-			RC=$?
-                        ;;
-                  3) 	$FDW -host ${18} -command user1-write.sh /tmp/$8 $8
-			RC=$?
-                        ;;
-                  4) 	$FDW -host ${18} -command user2-write.sh /tmp/$8 $8
-			RC=$?
-                        ;;
-                  5) 	$FDW -host ${18} -command user3-write.sh /tmp/$8 $8
-			RC=$?
-                        ;;
-             esac
-	     if  [ $RC -ne '0' ]; then
-		ERRCD='0000'$RC
-        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4} >> /home/orca/toukei2.log
-		exit
-	     fi
-        fi         
 
         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14} >> /home/orca/toukei2.log
 
