@@ -261,7 +261,9 @@
            03  RECE02-JNISSUTBLINF        OCCURS 31.
       *実日数テーブル
                05  RECE02-JNISSUTBL       PIC  X(01).
+      *乳幼児・幼児のコメントフラグ
+           03  RECE02-NYUYOJIFLG          PIC  X(01).
       *
       *予備
-           03  RECE02-FILLER              PIC  X(32).
+           03  RECE02-FILLER              PIC  X(31).
       *

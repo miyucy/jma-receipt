@@ -123,6 +123,8 @@
       *  01.02.26   NACL-ÌçÏÆ     03/06/03  ³°Íè¿ÇÎÅÎÁÂÐ±þ
       *                                     ¡ÊÊ¿À®£±£µÇ¯£¶·î°Ê¹ß¡Ë
       *  01.02.27   NACL-Æ£¸¶     03/06/30  »°¼ï¸øÈñ¤Î¤È¤­¤Î£Ï£Ã£Ò¤Î½¤Àµ
+      *  01.02.28   NACL-ÌçÏÆ     03/07/15  ÆýÍÄ»ù¡¦ÍÄ»ù¤Î¥³¥á¥ó¥È¥Õ¥é¥°
+      *                                     ¥»¥Ã¥È
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -247,6 +249,10 @@
            03  FLG-YOJI                                PIC 9(01).
            03  FLG-YOJI-ARI                            PIC 9(01).
            03  FLG-SAISIN-ARI                          PIC 9(01).
+      *    ÆýÍÄ»ù²Ã»»¥«¥¦¥ó¥È
+       01  CNT-SAISIN-AREA.
+           03  CNT-NYUYOJI                             PIC 9(02).
+           03  CNT-YOJI                                PIC 9(02).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -797,6 +803,7 @@
       *
            INITIALIZE                   FLG-KHNTEN-AREA
            INITIALIZE                   FLG-SAISIN-AREA
+           INITIALIZE                   CNT-SAISIN-AREA
            PERFORM    VARYING    IDX    FROM   1   BY   1
                       UNTIL     (IDX      >   20)  OR
                                 (RECE02-SRYKA(IDX)   =   SPACE)
@@ -805,6 +812,7 @@
            END-PERFORM
            PERFORM     KHNTEN-CLEAR-SEC
            PERFORM     SAIKEI-KEISAN-SEC
+           PERFORM     NYUYOJI-COMENTFLG-SET-SEC
       *
            IF      IDZ                  =   1
                IF   RECE02-TEISYUTUSAKI     =     1
@@ -1961,10 +1969,25 @@
                             MOVE     9       TO    FLG-YOJI
                        END-IF
       **
+                       IF  SRY-SRYCD(IDX3)  =    CONS-NYUYOJI        OR
+                                                 CONS-NYUYOJI-JIKAN  OR
+                                                 CONS-GNYUYOJI       OR
+                                                 CONS-GNYUYOJI-JIKAN 
+                            ADD      1       TO    CNT-NYUYOJI
+                       END-IF
+                       IF  SRY-SRYCD(IDX3)  =    CONS-YOJI           OR
+                                                 CONS-YOJI-JIKAN     OR
+                                                 CONS-GYOJI          OR
+                                                 CONS-GYOJI-JIKAN    
+                            ADD      1       TO    CNT-YOJI
+                       END-IF
+      **
                        IF ( SRY-SRYCD(IDX3)      =   CONS-KEIZOKU1  OR
                                                      CONS-KEIZOKU2 )
                        OR ( FLG-NYUYOJI          =   9             )
                        OR ( FLG-YOJI             =   9             )
+                       OR ( FLG-NYUYOJI      NOT =   ZERO           AND
+                            FLG-YOJI         NOT =   ZERO          )
                             MOVE   ZERO       TO    RECE02-KHNTEN(2)
                             MOVE   1          TO    FLG-KHNTEN2
                        ELSE
@@ -3545,6 +3568,31 @@
       *
            .
        SAIKEI-KEISAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÆýÍÄ»ù¡¦ÍÄ»ù¤Î¥³¥á¥ó¥È¥Õ¥é¥°¥»¥Ã¥È
+      *****************************************************************
+       NYUYOJI-COMENTFLG-SET-SEC               SECTION.
+      *
+           IF     RECE02-NYUYOJIFLG      =  SPACE
+             IF     CNT-NYUYOJI      NOT =  ZERO
+               IF   RECE02-KAISU(2)  NOT =  CNT-NYUYOJI
+                   MOVE     "1"        TO   RECE02-NYUYOJIFLG
+               END-IF
+             END-IF
+           END-IF
+      *
+           IF     RECE02-NYUYOJIFLG      =  SPACE
+             IF     CNT-YOJI         NOT =  ZERO
+               IF   RECE02-KAISU(2)  NOT =  CNT-YOJI
+                   MOVE     "2"        TO   RECE02-NYUYOJIFLG
+               END-IF
+             END-IF
+           END-IF
+      *
+           .
+       NYUYOJI-COMENTFLG-SET-EXT.
            EXIT.
       *
       *****************************************************************

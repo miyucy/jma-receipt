@@ -42,6 +42,7 @@
       *  01.00.09    NACL-ÌçÏÆ    03.04.24  Í¢·ì¤Ï¥³¥á¥ó¥ÈÊÔ½¸ÂÐ¾Ý³°¤È¤¹¤ë
       *  01.00.10    NACL-ÌçÏÆ    03.05.28  ¼õ¿ÇÍúÎò¥­¡¼¤ÎÊÑ¹¹
       *  01.00.11    NACL-ÌçÏÆ    03.06.19  Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç¤ÎÊÔ½¸½¤Àµ
+      *  01.00.12    NACL-ÌçÏÆ    03.07.15  ÆýÍÄ»ù¡¦ÍÄ»ù¤Î¥³¥á¥ó¥ÈÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -211,6 +212,7 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  DAY-IDX             PIC 9(04).
+           03  DAY-IDX2            PIC 9(02).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDX-RECE05          PIC 9(04).
@@ -928,6 +930,14 @@
                PERFORM 990-RECE04-NEXT-SEC
       *
              END-PERFORM
+      *
+           END-IF
+      *
+      *    ÆýÍÄ»ù¡¦ÍÄ»ù¤Î¥³¥á¥ó¥È
+      *
+           IF   RECE02-NYUYOJIFLG   NOT =   SPACE
+      *
+              PERFORM   2002-NYUYOJI-COMMENT-SEC
       *
            END-IF
       *
@@ -2141,6 +2151,76 @@
       *
            .
        2002-JINZOU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÆýÍÄ»ù¡¦ÍÄ»ù¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       2002-NYUYOJI-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE041-REC
+           MOVE    RECE02-HOSPID       TO  RECE041-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE041-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE041-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE041-PTID
+           MOVE    RECE02-RECEKA       TO  RECE041-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE041-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE041-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
+           MOVE    99999990            TO  RECE041-ZAINUM
+           MOVE    "99"                TO  RECE041-SRYKBN
+      *
+           MOVE    1                   TO  RECE041-MEISAISU
+      *
+           WRITE   RECE041-REC
+           ADD     1                   TO  CNT-RECE04
+      *
+           INITIALIZE                      RECE051-REC
+           MOVE    RECE02-HOSPID       TO  RECE051-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE051-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE051-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE051-PTID
+           MOVE    RECE02-RECEKA       TO  RECE051-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE051-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE051-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE051-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE051-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE051-TEKSTYMD
+           MOVE    99999990            TO  RECE051-ZAINUM
+           MOVE    "99"                TO  RECE051-SRYKBN
+      *    ¥³¥á¥ó¥È¤ÎÁÞÆþ
+           MOVE    SPACE                TO  COM-RECE05-REC
+           INITIALIZE                       COM-RECE05-REC
+           EVALUATE  RECE02-NYUYOJIFLG
+              WHEN   "1"
+                 MOVE    "840000003"    TO  COM-SRYCD(1)
+                 MOVE     ZERO          TO  COM-SRYSURYO(1)
+                 MOVE     11            TO  COM-YUKOKETA(1)
+                 MOVE    "¡¡¡¡·î¡¡¡¡Æü¤Þ¤ÇÆýÍÄ»ù" 
+                                        TO  COM-NAME(1)
+              WHEN   "2"
+                 MOVE    "840000004"    TO  COM-SRYCD(1)
+                 MOVE     ZERO          TO  COM-SRYSURYO(1)
+                 MOVE     10            TO  COM-YUKOKETA(1)
+                 MOVE    "¡¡¡¡·î¡¡¡¡Æü¤Þ¤ÇÍÄ»ù" 
+                                        TO  COM-NAME(1)
+           END-EVALUATE
+      *
+           MOVE    RECE02-BIRTHDAY(5:2) TO  DAY-IDX2
+           MOVE    TBL-DAY(DAY-IDX2)    TO  COM-NAME(1)(1:4)
+           MOVE    RECE02-BIRTHDAY(7:2) TO  DAY-IDX2
+           COMPUTE    DAY-IDX2   =   DAY-IDX2  -   1
+           MOVE    TBL-DAY(DAY-IDX2)    TO  COM-NAME(1)(7:4)
+      *
+           MOVE    COM-SRYACTINF(1)     TO  RECE051-SRYACTINF(1)
+           MOVE    COM-NAMEINF(1)       TO  RECE051-NAMEINF(1)
+           WRITE   RECE051-REC
+           ADD     1                    TO  CNT-RECE05
+      *
+           .
+       2002-NYUYOJI-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
