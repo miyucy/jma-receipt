@@ -91,6 +91,7 @@
            03  FLG-SRYACT-HEN5                     PIC 9(01).
            03  FLG-COMMENT-CHK                     PIC 9(01).
            03  FLG-PTCOM                           PIC 9(01).
+           03  FLG-YAKUSOKU                        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -153,6 +154,9 @@
            03  IDX-S                               PIC 9(05).
            03  IDX-RRK                             PIC 9(05).
            03  IDX-RJ                              PIC 9(05).
+      *
+      *    同一セクション内のみ使用
+           03  IDX0                                PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -2022,8 +2026,15 @@
       *
            MOVE    ZERO                TO  WKSRYACCT-MAX
            INITIALIZE                      WKSRYACCT-REC
-           PERFORM UNTIL ( FLG-SRYACCT     =    1 )
+           PERFORM UNTIL ( FLG-SRYACCT     =   1 )
                     OR   ( WKSRYACCT-MAX  >=   CONST-SRYACCT-MAX )
+      *
+      *        約束処方チェック処理
+               PERFORM 20011-YAKUSOKU-CHK-SEC
+               IF    ( FLG-YAKUSOKU        =   1 )
+                   COMPUTE ACCT-MEISAISU
+                       =   ACCT-MEISAISU   -   1
+               END-IF
       *
                PERFORM 20011-SRYACT-MATOME-SEC
       *
@@ -2063,6 +2074,51 @@
       *
            .
        2001-SRYACT-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    約束処方チェック処理
+      *****************************************************************
+       20011-YAKUSOKU-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-YAKUSOKU
+      *
+           MOVE    ZERO                TO  FLG-SRYACT
+           INITIALIZE                      SRYACT-REC
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  SRY-PTID
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+           MOVE    1                   TO  SRY-RENNUM
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "SRYACT-KEY"        TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC            NOT =   ZERO )
+               MOVE    1               TO  FLG-SRYACT
+           ELSE
+               MOVE    MCPDATA-REC     TO  SRYACT-REC
+           END-IF
+      *
+           MOVE    "SRYACT-KEY"        TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( FLG-SRYACT      NOT =   ZERO )
+               GO  TO  20011-YAKUSOKU-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0                >   5    )
+                    OR   ( FLG-YAKUSOKU    NOT =   ZERO )
+      *
+               IF    ( SRY-SRYCD (IDX0) (1:1)  =   "S" )
+                   MOVE    1           TO  FLG-YAKUSOKU
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       20011-YAKUSOKU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    同一剤まとめ編集処理
