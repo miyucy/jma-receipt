@@ -3130,21 +3130,53 @@
                           MOVE    "1"    TO   FLG-SYUHEN
                       END-IF
                    ELSE
+                    IF   ( COMB-KOH2HKNNUM   =   "012" )
+                    OR   ( COMB-KOH3HKNNUM   =   "012" )
+                    OR   ( COMB-KOH4HKNNUM   =   "012" )
+                       MOVE    "1"    TO   FLG-SYUHEN
+                       IF  LNK-S01-KOUREI-ZAITAKU-KBN   =  "1" 
+                          IF   MAX-KIN-KOHI1-M   >  8000
+                            MOVE   8000    TO   MAX-KIN-KOHI1-D
+                                                MAX-KIN-KOHI1-M
+                          END-IF
+                       ELSE
+                            MOVE    "1"    TO   COMB-KOH1-GAIJGNKBN
+                            MOVE   8000    TO   MAX-KIN-KOHI1-D
+                                                MAX-KIN-KOHI1-M
+                       END-IF
+                    ELSE
+                     IF   ( COMB-KOH2HKNNUM  =   "972" )
+                     OR   ( COMB-KOH3HKNNUM  =   "972" )
+                     OR   ( COMB-KOH4HKNNUM  =   "972" )
+                       MOVE    "1"    TO   FLG-SYUHEN
+                       IF  LNK-S01-KOUREI-ZAITAKU-KBN   =  "1" 
+                          IF   MAX-KIN-KOHI1-M   >  10000
+                            MOVE   10000   TO   MAX-KIN-KOHI1-D
+                                                MAX-KIN-KOHI1-M
+                          END-IF
+                       ELSE
+                            MOVE    "1"    TO   COMB-KOH1-GAIJGNKBN
+                            MOVE   10000   TO   MAX-KIN-KOHI1-D
+                                                MAX-KIN-KOHI1-M
+                       END-IF
+                     ELSE
                       IF  (COMB-KOH2HKNNUM  NOT = SPACE)
                       OR  (COMB-KOH3HKNNUM  NOT = SPACE)
                       OR  (COMB-KOH4HKNNUM  NOT = SPACE)
-                        MOVE    "1"    TO   FLG-SYUHEN
-                        IF  LNK-S01-KOUREI-ZAITAKU-KBN   =  "1" 
+                       MOVE    "1"    TO   FLG-SYUHEN
+                       IF  LNK-S01-KOUREI-ZAITAKU-KBN   =  "1" 
                           IF   MAX-KIN-KOHI1-M   >  12000
                             MOVE   12000   TO   MAX-KIN-KOHI1-D
                                                 MAX-KIN-KOHI1-M
                           END-IF
-                        ELSE
+                       ELSE
                             MOVE    "1"    TO   COMB-KOH1-GAIJGNKBN
                             MOVE   12000   TO   MAX-KIN-KOHI1-D
                                                 MAX-KIN-KOHI1-M
-                        END-IF
+                       END-IF
                       END-IF
+                     END-IF
+                    END-IF
                    END-IF
                 ELSE
                    IF  ( COMB-KOH1HKNNUM(1:1)  >=     "1" )
@@ -3156,6 +3188,32 @@
                           MOVE    "1"    TO   FLG-SYUHEN
                       END-IF
                    ELSE
+                    IF   ( COMB-KOH1HKNNUM   =   "012" )
+                    OR   ( COMB-KOH2HKNNUM   =   "012" )
+                    OR   ( COMB-KOH3HKNNUM   =   "012" )
+                    OR   ( COMB-KOH4HKNNUM   =   "012" )
+                        MOVE    "1"    TO   FLG-SYUHEN
+                        IF  LNK-S01-KOUREI-ZAITAKU-KBN   =  "1" 
+                          IF   MAX-KIN-SYU-M   >  8000
+                            MOVE   8000    TO   MAX-KIN-SYU-M
+                          END-IF
+                        ELSE
+                            MOVE   8000    TO   MAX-KIN-SYU-M
+                        END-IF
+                    ELSE
+                     IF   ( COMB-KOH1HKNNUM  =   "972" )
+                     OR   ( COMB-KOH2HKNNUM  =   "972" )
+                     OR   ( COMB-KOH3HKNNUM  =   "972" )
+                     OR   ( COMB-KOH4HKNNUM  =   "972" )
+                        MOVE    "1"    TO   FLG-SYUHEN
+                        IF  LNK-S01-KOUREI-ZAITAKU-KBN   =  "1" 
+                          IF   MAX-KIN-SYU-M   >  10000
+                            MOVE   10000   TO   MAX-KIN-SYU-M
+                          END-IF
+                        ELSE
+                            MOVE   10000   TO   MAX-KIN-SYU-M
+                        END-IF
+                     ELSE
                       IF  (COMB-KOH1HKNNUM  NOT = SPACE)
                       OR  (COMB-KOH2HKNNUM  NOT = SPACE)
                       OR  (COMB-KOH3HKNNUM  NOT = SPACE)
@@ -3169,6 +3227,8 @@
                             MOVE   12000   TO   MAX-KIN-SYU-M
                         END-IF
                       END-IF
+                     END-IF
+                    END-IF
                    END-IF
                 END-IF
       *
