@@ -325,7 +325,6 @@
       *
       *    検索項目入力(確定)
            PERFORM 201-SCODE-SEC
-           DISPLAY "2102-KIHON-CHK SPA-ERRCD = " SPA-ERRCD
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      2102-KIHON-CHK-EXT
            END-IF
