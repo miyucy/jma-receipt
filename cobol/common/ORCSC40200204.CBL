@@ -575,12 +575,6 @@
            IF      SPA-HKNKBN          =   1
                GO      TO      100112-SYOEN-CHK-EXT
            END-IF
-      *TEST
-           DISPLAY "C40 INPUTCD:" WRK-COM-INPUTCD(IDX-Z)
-                  ",WRK-SYOCHI-KBN:" WRK-SYOCHI-KBN
-                  ",LNK-ORCSC-SYOEN-CNT:" LNK-ORCSC-SYOEN-CNT
-                  ",NYU-KAI:" WRK-COM-NYU-KAI (IDX-Z)
-      *TEST
       *
       *    当月に５回以上の時、逓減（マッサージ等は対象外）
            IF     (WRK-SYOCHI-KBN      =   "01")
@@ -624,9 +618,6 @@
                   (LNK-ORCSC-SYOEN-CNT <   4   )
                GO      TO      100112-SYOEN-CHK-EXT
            END-IF
-      *TEST
-           DISPLAY "LNK-ORCSC-SYOEN-CNT:" LNK-ORCSC-SYOEN-CNT
-      *TEST
       *
       *    消炎鎮痛逓減
            MOVE    IDX-Z               TO  IDX-S
@@ -705,7 +696,7 @@
                                            TO  WRK-TEI-CNT
                END-IF
            END-PERFORM
-           IF      WRK-TEI-CNT         <   WRK-DAY-CNT
+           IF      WRK-TEI-CNT         <=  WRK-DAY-CNT
                COMPUTE WRK-DAY-CNT     =   WRK-DAY-CNT
                                        -   WRK-TEI-CNT
            END-IF

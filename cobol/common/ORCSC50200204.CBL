@@ -515,6 +515,9 @@
       *****************************************************************
        100113-RSIHKN-SYORI-SEC        SECTION.
       *
+           IF      IDX-ZS              =   ZERO
+               GO      TO      100113-RSIHKN-SYORI-EXT
+           END-IF
            IF      WRK-COM-INPUTCD (IDX-ZS)(1:3)   =   "101"
       *        労災のコードは加算なし
                GO      TO      100113-RSIHKN-SYORI-EXT
