@@ -11092,17 +11092,17 @@
                                        TO  I01-DISPKBN-ITM-STT
       *業務処理権限設定
       *    入院会計照会
-      *     IF      SPA-GSRAUTH-32      =   "1"
-      *         MOVE    WIDGET-NORMAL       TO  I01-B21-STATE
-      *     ELSE
-      *         MOVE    WIDGET-INSENSITIVE  TO  I01-B21-STATE
-      *     END-IF
+            IF      SPA-GSRAUTH-32      =   "1"
+                MOVE    WIDGET-NORMAL       TO  I01-B21-STATE
+            ELSE
+                MOVE    WIDGET-INSENSITIVE  TO  I01-B21-STATE
+            END-IF
       *    患者登録
-      *     IF      SPA-GSRAUTH-12      =   "1"
-      *         MOVE    WIDGET-NORMAL       TO  I01-B05-STATE
-      *     ELSE
-      *         MOVE    WIDGET-INSENSITIVE  TO  I01-B05-STATE
-      *     END-IF
+            IF      SPA-GSRAUTH-12      =   "1"
+                MOVE    WIDGET-NORMAL       TO  I01-B05-STATE
+            ELSE
+                MOVE    WIDGET-INSENSITIVE  TO  I01-B05-STATE
+            END-IF
       *
            .
        500-GMNHEN-STATE-EDIT-EXT.
