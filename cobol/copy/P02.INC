@@ -64,12 +64,12 @@
                     06  P02-P020-SRYKA.
                       07  P02-VALUE   PIC X(21).
                     06  P02-P020-SRYKA-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P020-SRYKA-ITEM    PIC X(21)   OCCURS  10.
+                    06  P02-P020-SRYKA-ITEM    PIC X(21)   OCCURS  99.
                   05  P02-P020-DRNAME-COMBO.
                     06  P02-P020-DRNAME.
                       07  P02-VALUE   PIC X(27).
                     06  P02-P020-DRNAME-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P020-DRNAME-ITEM    PIC X(27)   OCCURS  10.
+                    06  P02-P020-DRNAME-ITEM    PIC X(27)   OCCURS  50.
                   05  P02-P020-SRYNAIYO-COMBO.
                     06  P02-P020-SRYNAIYO.
                       07  P02-VALUE   PIC X(21).
@@ -224,7 +224,7 @@
                     06  P02-P02-SRYKA.
                       07  P02-VALUE   PIC X(20).
                     06  P02-SRYKA-COUNT   PIC S9(9)   BINARY.
-                    06  P02-SRYKA-ITEM    PIC X(20)   OCCURS  10.
+                    06  P02-SRYKA-ITEM    PIC X(20)   OCCURS  99.
                   05  P02-P02-POST.
                     06  P02-VALUE   PIC X(7).
                   05  P02-P02-ADRS.

@@ -52,14 +52,14 @@ P02	{
 						value	varchar(21);
 					};
 					count	int;
-					item	varchar(21)[10];
+					item	varchar(21)[99];
 				};
 				P020_DRNAME_COMBO	{
 					P020_DRNAME	{
 						value	varchar(27);
 					};
 					count	int;
-					item	varchar(27)[10];
+					item	varchar(27)[50];
 				};
 				P020_SRYNAIYO_COMBO	{
 					P020_SRYNAIYO	{
@@ -281,7 +281,7 @@ P02	{
 						value	varchar(20);
 					};
 					count	int;
-					item	varchar(20)[10];
+					item	varchar(20)[99];
 				};
 				P02_POST	{
 					value	varchar(7);

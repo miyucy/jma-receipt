@@ -32,6 +32,7 @@
       *  01.00.03    MCC-多々納   01/06/13  登録後、診療行為遷移を追加
       *  02.00.00    MCC-多々納   02/07/04  インタフェース変更
       *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
+      *  02.00.02    NACL-多々納  02/11/26  診療科・ドクター件数修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1025,7 +1026,7 @@
       *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING   IDX       FROM    1   BY  1
-                   UNTIL    (IDX           >   10 )  OR
+                   UNTIL    (IDX           >   SPA-DRCD-MAX )  OR
                             (SPA-GMN20-DRCDLST(IDX) 
                                            =   SPACE  )
                IF      SPA-GMN20-DRCDCD    =   SPA-GMN20-DRCDLST (IDX)

@@ -50,6 +50,7 @@
       *                                     ¥¤¥ó¥¿¡¼¥Õ¥§¡¼¥¹¤ÎÊÑ¹¹
       *  02.00.01    NACL-Â¿¡¹Ç¼  02/10/09  Ì¤³ÎÇ§¤Ëµ­¹æÈÖ¹æÄÉ²Ã
       *  02.00.02    NACL-Â¿¡¹Ç¼  02/11/20  £Ã£Ì£Á£É£Í½èÍýÄÉ²Ã
+      *  02.00.03    NACL-Â¿¡¹Ç¼  02/11/26  ¿ÇÎÅ²Ê¡¢¥É¥¯¥¿¡¼·ï¿ôÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -487,6 +488,7 @@
            INITIALIZE                  SPA-U02
       *
            MOVE    2                   TO  SPA-GMN-CUR
+           MOVE    1                   TO  SPA-GMN-PAGE
       *
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY2-AREA
@@ -528,13 +530,14 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   10   )  OR
+                   UNTIL       (IDX            >   99   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC           TO  SYS-1005-REC
                MOVE    SYS-1005-KBNCD (1:2)  TO  SPA-GMN-SRYKA
                MOVE    SPACE                 TO  SPA-GMN-SRYKA1 
                MOVE    SYS-1005-SRYKANAME1   TO  SPA-GMN-SRYKANAME
                MOVE    SPA-GMN-SRYKA-G       TO  SPA-GMN-SRYKALST (IDX)
+               MOVE    IDX                   TO  SPA-SRYKA-MAX
       *
                MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
@@ -573,7 +576,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            MOVE    ZERO                TO  IDX
-           PERFORM UNTIL       (IDX            =   10   )  OR
+           PERFORM UNTIL       (IDX            =   50   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
                IF      SYS-1010-KBNCD (1:1)      =   "1"
@@ -583,6 +586,7 @@
                    MOVE    SPACE           TO  SPA-GMN-DRCD1
                    MOVE    SYS-1010-NAME   TO  SPA-GMN-DRNAME
                    MOVE    SPA-GMN-DRCD-G  TO  SPA-GMN-DRCDLST (IDX)
+                   MOVE    IDX             TO  SPA-DRCD-MAX
                END-IF
       *
                MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
@@ -852,24 +856,22 @@
 078300*
       *        ¿ÇÎÅ²Ê¾ðÊó¤ò£Ó£Ð£Á¤Ë¥»¥Ã¥È
 078400         PERFORM VARYING     IDY     FROM    1   BY  1
-078500                 UNTIL       IDY     >       10
-                       OR          SPA-GMN-SRYKALST (IDY)  =   SPACE
+078500                 UNTIL       IDY     >       SPA-SRYKA-MAX
                    IF      SPA-GMN-TSRYKA (IDX)
                                        =  SPA-GMN-SRYKALST(IDY)(1:2)
                        MOVE    SPA-GMN-SRYKALST (IDY) (4:)
                                            TO  SPA-GMN-TSRYKANAME(IDX)
-                       MOVE    10              TO  IDY
+                       MOVE    SPA-SRYKA-MAX       TO  IDY
                    END-IF
 078700         END-PERFORM
       *       ¿¦°÷¾ðÊó¤ò£Ó£Ð£Á¤Ë¥»¥Ã¥È
 078400         PERFORM VARYING     IDY     FROM    1   BY  1
-078500                 UNTIL       IDY     >       10
-                       OR          SPA-GMN-DRCDLST (IDY)  =   SPACE
+078500                 UNTIL       IDY     >       SPA-DRCD-MAX
                    IF      SPA-GMN-TDRCD (IDX)
                                        =  SPA-GMN-DRCDLST(IDY)(1:4)
                        MOVE    SPA-GMN-DRCDLST (IDY) (6:)
                                                TO  SPA-GMN-TDRNAME(IDX)
-                       MOVE    10              TO  IDY
+                       MOVE    SPA-DRCD-MAX        TO  IDY
                    END-IF
 078700         END-PERFORM
       *        ¿ÇÎÅÆâÍÆ¤ò£Ó£Ð£Á¤Ë¥»¥Ã¥È
@@ -1457,7 +1459,7 @@
            ELSE
                MOVE    ZERO                TO  FLG-HENFLG
                PERFORM VARYING IDY         FROM   1   BY  1
-                       UNTIL  (IDY         >   10 )
+                       UNTIL  (IDY         >   SPA-SRYKA-MAX )
                        OR     (FLG-HENFLG  =   1  )
                    IF      SPA-GMN-SRYKA   =   SPA-GMN-SRYKALST
                                                        (IDY)(1:2) 
@@ -3449,20 +3451,18 @@
            MOVE    SPA-GMN-BIRTHDAY             TO  U02-BIRTHDAY
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >       10  )
-                   OR         (SPA-GMN-SRYKALST (IDX)  =   SPACE )
-               MOVE    SPA-GMN-SRYKALST(IDX)    TO  U02-SRYKA-ITEM (IDX)
-               MOVE    IDX                      TO  U02-SRYKA-COUNT
+                   UNTIL       IDX     >       SPA-SRYKA-MAX
+               MOVE    SPA-GMN-SRYKALST(IDX)  TO  U02-SRYKA-ITEM (IDX)
            END-PERFORM
-           MOVE    SPA-GMN-SRYKA-G              TO  U02-SRYKA
+           MOVE    SPA-SRYKA-MAX       TO  U02-SRYKA-COUNT
+           MOVE    SPA-GMN-SRYKA-G     TO  U02-SRYKA
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       10
-                   OR          SPA-GMN-DRCDLST(IDX)    =   SPACE
-               MOVE    IDX                      TO  U02-DRNAME-COUNT
-               MOVE    SPA-GMN-DRCDLST(IDX)     TO  U02-DRNAME-ITEM(IDX)
+                   UNTIL       IDX     >       SPA-DRCD-MAX
+               MOVE    SPA-GMN-DRCDLST(IDX)    TO  U02-DRNAME-ITEM(IDX)
            END-PERFORM
-           MOVE   SPA-GMN-DRCD-G                TO  U02-DRNAME
+           MOVE    SPA-DRCD-MAX        TO  U02-DRNAME-COUNT
+           MOVE    SPA-GMN-DRCD-G      TO  U02-DRNAME
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       10
@@ -3519,6 +3519,7 @@
            END-PERFORM
            MOVE    SPA-COMBI-MAX        TO  U02-HKNCOMBI-COUNT
       *
+           MOVE    ZERO                TO  U02-MIKAKUNINN-COUNT
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       5
                COMPUTE IDY             =   (SPA-GMN-PAGE  -   1  )

@@ -32,6 +32,7 @@
       * 02.00.00     MCC-多々納   02/06/25  レイアウト変更
       * 02.00.01     NACL-多々納  02/07/31  パラメタファイルをＤＢへ
       * 02.00.02     NACL-多々納  02/09/09  平成１４年１０月改正対応
+      * 02.00.03     NACL-多々納  02/11/26  診療科・ドクター件数修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -751,7 +752,7 @@
       ******                  (FLG-SYSKANRI    =   1     ) 
            MOVE    ZERO                TO  IDX
            PERFORM     UNTIL  (FLG-SYSKANRI    =   1     )    OR
-                              (IDX             >=  10    )
+                              (IDX             >=  50    )
                MOVE    MCPDATA-REC             TO  SYS-1010-REC
                IF      SYS-1010-KBNCD (1:1)  =   "1"
                    ADD     1                   TO  IDX
@@ -760,6 +761,7 @@
                    MOVE    SYS-1010-NAME       TO  SPA-GMN20-DRCDMEI
                    MOVE    SPA-GMN20-DRCD      TO  SPA-GMN20-DRCDLST
                                                                  (IDX)
+                   MOVE    IDX                 TO  SPA-DRCD-MAX
                END-IF
                MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
                PERFORM 900-SYSTEM-READ-SEC
@@ -803,7 +805,7 @@
            END-IF
            PERFORM VARYING IDX
                    FROM    1       BY  1
-                   UNTIL      (IDX             >   10    )   OR
+                   UNTIL      (IDX             >   99    )   OR
                               (FLG-SYSKANRI    =   1     )
                MOVE    MCPDATA-REC             TO  SYS-1005-REC
                MOVE    SYS-1005-KBNCD (1:2)    TO  SPA-GMN-SRYKA-LST
@@ -1154,8 +1156,7 @@
       *    担当ドクター編集
            IF  SPA-NAI20-DRCD (IDX)    NOT =   SPACE
                PERFORM     VARYING   IDY   FROM    1   BY  1
-                           UNTIL    (IDY               >   10)
-                           OR       (SPA-GMN20-DRCDLST(IDY) =   SPACE)
+                           UNTIL     IDY           >   SPA-DRCD-MAX
                    IF  SPA-NAI20-DRCD (IDX)   =   SPA-GMN20-DRCDLST(IDY)
                                                         (1:4)
                        MOVE    SPA-GMN20-DRCDLST (IDY)(6:)
@@ -2233,7 +2234,7 @@
       *
            MOVE    ZERO         TO  P02-P020-DRNAME-COUNT
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL     ( IDX     >   10  )
+                   UNTIL     ( IDX     >   SPA-DRCD-MAX  )
                    OR        ( SPA-GMN20-DRCDLST (IDX)  =   SPACE )
                MOVE    SPA-GMN20-DRCDLST(IDX)
                                        TO  P02-P020-DRNAME-ITEM (IDX)

@@ -42,14 +42,16 @@
                        09  SPA-GMN-SRYKA1             PIC X(01).
                        09  SPA-GMN-SRYKANAME          PIC X(17).
                    07  SPA-GMN-SRYKALST               PIC X(20)
-                                                      OCCURS  10.
+                                                      OCCURS  99.
+                   07  SPA-SRYKA-MAX                  PIC 9(04).
       *
                    07  SPA-GMN-DRCD-G.
                        09  SPA-GMN-DRCD               PIC X(04).
                        09  SPA-GMN-DRCD1              PIC X(01).
                        09  SPA-GMN-DRNAME             PIC X(22).
                    07  SPA-GMN-DRCDLST                PIC X(27)
-                                                      OCCURS  10.
+                                                      OCCURS  50.
+                   07  SPA-DRCD-MAX                   PIC 9(04).
       *
                    07  SPA-GMN-SRYNAIYOCD-G.
                        09  SPA-GMN-SRYNAIYOCD         PIC X(02).
