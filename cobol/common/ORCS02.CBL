@@ -2849,7 +2849,7 @@
       *      COMPUTE  WK-SEIKYUKIKAN-NISSU  =  WK-SEIKYUKIKAN-NISSU 
       *                                     +  1
       *
-             MOVE     ZERO     TO      WK-SHOKUJI-JIHI
+      **>    MOVE     ZERO     TO      WK-SHOKUJI-JIHI
       *
              IF       ( NACCT-DAY(IDY)   NOT =  ZERO )
              AND      ( LNK-SYU-DAY(IDY)     =  "1"  )
@@ -3239,7 +3239,8 @@
              END-IF
       *
              IF       ( WK-ROSAITOKU95(IDY)  NOT =  ZERO       )
-             AND      ( LNK-SYU-DAY(IDY)         =  "1" OR "2" )
+      **>    AND      ( LNK-SYU-DAY(IDY)         =  "1" OR "2" )
+             AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
       *
       *         É¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
                 MOVE  "197001210"    TO   WK-SRYCD
@@ -3252,7 +3253,8 @@
              END-IF
       *
              IF       ( WK-ROSAITOKU96(IDY)  NOT =  ZERO       )
-             AND      ( LNK-SYU-DAY(IDY)         =  "1" OR "2" )
+      **>    AND      ( LNK-SYU-DAY(IDY)         =  "1" OR "2" )
+             AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
       *
       *         É¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
                 MOVE  "197001210"    TO   WK-SRYCD
@@ -3264,10 +3266,11 @@
       *
              END-IF
       *
-             MOVE     ZERO     TO      WK-SHOKUJI-JIHI
+      **>    MOVE     ZERO     TO      WK-SHOKUJI-JIHI
       *
              IF       ( WK-ROSAITOKU97(IDY)  NOT =  ZERO       )
-             AND      ( LNK-SYU-DAY(IDY)         =  "1" OR "2" )
+      **>    AND      ( LNK-SYU-DAY(IDY)         =  "1" OR "2" )
+             AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
       *
                 ADD       1    TO   WK-SHOKUJI-NISSU
                                     LNK-SYU-SHOKUJI3-NISSU
@@ -3280,9 +3283,9 @@
                    MOVE    TNS-TEN   TO   LNK-SYU-SHOKUJI3
                 END-IF
       *
-                IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
+      **>       IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
                   ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
-                END-IF
+      **>       END-IF
       *
              END-IF
       *
