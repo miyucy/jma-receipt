@@ -35,6 +35,7 @@
       *  01.00.04    NACL-藤原    04/01/19  老人再掲集計エリアを追加
       *                                     公費欄の保険番号の表示を法別番号
       *                                     に修正
+      *  01.00.05    NACL-藤原    04/09/14  開設者氏名の文字数変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -63,7 +64,8 @@
       *
       *****COPY    "HCM2C.INC".
       *****COPY    "HCM2CV01.INC"  REPLACING  //HCM2CV01//
-           COPY    "HCM2CV02.INC"  REPLACING  //HCM2CV02//
+      *****COPY    "HCM2CV02.INC"  REPLACING  //HCM2CV02//
+           COPY    "HCM2CV03.INC"  REPLACING  //HCM2CV03//
                                    BY         //HCM2C//.
       *****COPY    "HCM2D.INC".
            COPY    "HCM2DV01.INC"  REPLACING  //HCM2DV01//
@@ -825,7 +827,8 @@
            IF      FLG-PRTKBN          =   ZERO                            
       *********MOVE    "HCM2C.red"         TO  SPRT-PRTID
       *********MOVE    "HCM2CV01.red"      TO  SPRT-PRTID
-               MOVE    "HCM2CV02.red"      TO  SPRT-PRTID
+      *********MOVE    "HCM2CV02.red"      TO  SPRT-PRTID
+               MOVE    "HCM2CV03.red"      TO  SPRT-PRTID
                MOVE    HCM2C               TO  SPRT-PRTDATA
            ELSE                          
       *********MOVE    "HCM2D.red"         TO  SPRT-PRTID

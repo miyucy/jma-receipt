@@ -34,6 +34,7 @@
       *  01.00.03    NACL-藤原    03/10/30  備考欄に老人再掲を追加
       *  01.00.04    NACL-藤原    04/01/19  公費欄の保険番号の表示を法別番号
       *                                     に修正
+      *  01.00.05    NACL-藤原    04/09/14  開設者氏名の文字数変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -60,7 +61,9 @@
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-           COPY    "HCM2K.INC".
+      *****COPY    "HCM2K.INC".
+           COPY    "HCM2KV01.INC"  REPLACING  //HCM2KV01//
+                                   BY         //HCM2K//.
       *****COPY    "HCM2L.INC".
            COPY    "HCM2LV01.INC"  REPLACING  //HCM2LV01//
                                    BY         //HCM2L//.
@@ -801,7 +804,8 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            IF      FLG-PRTKBN          =   ZERO                            
-               MOVE    "HCM2K.red"         TO  SPRT-PRTID
+      *********MOVE    "HCM2K.red"         TO  SPRT-PRTID
+               MOVE    "HCM2KV01.red"      TO  SPRT-PRTID
                MOVE    HCM2K               TO  SPRT-PRTDATA
            ELSE                          
       *********MOVE    "HCM2L.red"         TO  SPRT-PRTID
