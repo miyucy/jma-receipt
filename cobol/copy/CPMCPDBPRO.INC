@@ -312,6 +312,8 @@
       *  01.01.130   NACL-太田    04/03/02  TENSU-KEY24追加
       *  01.01.131   NACL-多々納　04/03/02  TENSUPLUS-KEY2追加
       *  01.01.132   NACL-太田    04/03/05  NYUINACCT-KEY21追加
+      *  01.01.133   NACL-藤原    04/03/11  SRYACCT-KEY34,KEY35追加
+      *                                     tbl_opecom.db 追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1105,6 +1107,15 @@
                    MOVE    PATH-TBL-SYUDAY-DEL1
                                        TO  WRK-PATH
       *
+               WHEN    "DBUPDATE"      ALSO   "OPECOM-KEY"
+               WHEN    "DBDELETE"      ALSO   "OPECOM-KEY"
+                   MOVE    PATH-TBL-OPECOM-KEY
+                                       TO  WRK-PATH
+      *
+               WHEN    "DBDELETE"      ALSO   "OPECOM-DEL1"
+                   MOVE    PATH-TBL-OPECOM-DEL1
+                                       TO  WRK-PATH
+      *
       *---- (NYUIN.08) LINE ADD END      ------------------------------
                WHEN    ANY             ALSO   "SYSKANRI-KEY"
                    MOVE    PATH-TBL-SYSKANRI-KEY
@@ -1749,6 +1760,12 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-KEY33"
                    MOVE    PATH-TBL-SRYACCT-KEY33
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY34"
+                   MOVE    PATH-TBL-SRYACCT-KEY34
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACCT-KEY35"
+                   MOVE    PATH-TBL-SRYACCT-KEY35
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACCT-ALL"
                    MOVE    PATH-TBL-SRYACCT-ALL
@@ -3127,6 +3144,19 @@
                    MOVE    PATH-TBL-PGKANRI-ALL
                                        TO  WRK-PATH
       *----(01.01.123)-ADD-END-----
+      *
+               WHEN    ANY             ALSO   "OPECOM-KEY"
+                   MOVE    PATH-TBL-OPECOM-KEY
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "OPECOM-KEY2"
+                   MOVE    PATH-TBL-OPECOM-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "OPECOM-KEY3"
+                   MOVE    PATH-TBL-OPECOM-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "OPECOM-ALL"
+                   MOVE    PATH-TBL-OPECOM-ALL
+                                       TO  WRK-PATH
       *
                WHEN    OTHER
                    MOVE    -9          TO  MCP-RC
