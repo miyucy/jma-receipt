@@ -65,6 +65,8 @@
              04  LNK-S01-RYOYO             PIC  9(07).
       *船員保険（被保険者）＋通勤災害＋初診時
              04  LNK-S01-SENINFLG          PIC  X(01).
+      *初診料算定フラグ（地方公費用）
+             04  LNK-S01-SYOSINFLG         PIC  X(01).
       *
       *使用インデックス
            03  LNK-S01-IDX                 PIC  9(02).
