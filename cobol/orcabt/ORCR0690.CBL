@@ -1531,30 +1531,6 @@
            EXIT.
       *
       *****************************************************************
-      *    診療区分（その他）　例外処理
-      *****************************************************************
-       20042-SRYKBNELSE-REIGAI-SEC        SECTION.
-      *
-           MOVE    SPACE               TO  WRK-ZAI
-           MOVE    "＊"                TO  WRK-ZAI-MK
-           INITIALIZE                    TBL-ZAI-AREA
-           MOVE    ZERO              TO  WRK-TBLMAX
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       5  
-               PERFORM VARYING IDX2    FROM    1   BY  1
-                       UNTIL   IDX2    >   WRK-ZAIWMAX (IDX1)  
-                   MOVE    IDX1          TO  WRK-WIDX1
-                   MOVE    IDX2          TO  WRK-WIDX2
-      *            レセプト０５剤編集処理
-                   PERFORM 430-TBLZAI-HEN-SEC
-               END-PERFORM    
-           END-PERFORM
-      *
-           .
-       20042-SRYKBNELSE-REIGAI-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    検査チェック処理
       *****************************************************************
        2006-SRYKBN60-CHECK-SEC         SECTION.
