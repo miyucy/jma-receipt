@@ -1565,16 +1565,16 @@
                                          NOT =   RECE041-HOJOKBN      )
                OR     ( RECE02-TEKSTYMD  NOT =   RECE041-TEKSTYMD     )
       *
-      *        再診の時間外を別剤とする
-               IF      WRK-RECE041-SRYKBN     =   SPACE
-               AND     RECE041-SRYKBN         =   "12"
-                   MOVE    RECE041-SRYKBN        TO  WRK-RECE041-SRYKBN
-               END-IF
-               IF      WRK-RECE041-SRYKBN     =   "12"
-               AND     RECE041-SRYKBN         >   "12"
-                   PERFORM 20079-SRYKBN12-JIKANGAI-HENSYU-SEC
-                   MOVE    SPACE                  TO  WRK-RECE041-SRYKBN
-               END-IF 
+      ***        再診の時間外を別剤とする
+      ***         IF      WRK-RECE041-SRYKBN     =   SPACE
+      ***         AND     RECE041-SRYKBN         =   "12"
+      ***             MOVE    RECE041-SRYKBN        TO  WRK-RECE041-SRYKBN
+      ***         END-IF
+      ***         IF      WRK-RECE041-SRYKBN     =   "12"
+      ***         AND     RECE041-SRYKBN         >   "12"
+      ***             PERFORM 20079-SRYKBN12-JIKANGAI-HENSYU-SEC
+      ***             MOVE    SPACE                  TO  WRK-RECE041-SRYKBN
+      ***         END-IF 
       *        負担区分編集処理
                PERFORM 20070-FTNKBN-HENSYU-SEC        
       *        明細テーブル退避処理
@@ -1583,15 +1583,21 @@
                IF      FLG-END           =   ZERO
       *****        PERFORM 20074-ZAI-KOUI-SORT-SEC
                    PERFORM 20072-ZAI-HENSYU-SEC
+      *
+      *            再診の時間外を別剤とする
+                   IF      FLG-GAITENTTLKBN        >   ZERO
+                       PERFORM 20079-SRYKBN12-JIKANGAI-HENSYU-SEC
+                   END-IF
+      * 
                    PERFORM 990-RECE041-NEXT-SEC
                END-IF     
            END-PERFORM
       *
-      *    再診のみのとき
-           IF      WRK-RECE041-SRYKBN     =   "12"
-               PERFORM 20079-SRYKBN12-JIKANGAI-HENSYU-SEC 
-               MOVE    SPACE                  TO  WRK-RECE041-SRYKBN
-           END-IF 
+      ***    再診のみのとき
+      ***     IF      WRK-RECE041-SRYKBN     =   "12"
+      ***         PERFORM 20079-SRYKBN12-JIKANGAI-HENSYU-SEC 
+      ***         MOVE    SPACE                  TO  WRK-RECE041-SRYKBN
+      ***     END-IF 
            .
        2007-HENSYU-EXT.
            EXIT. 
@@ -1742,6 +1748,7 @@
       *
            INITIALIZE                      TBL-ZAIW-AREA
                                            TBL-KOUI-AREA
+                                           TBL-KOUI-SRYKBN12-AREA
            INITIALIZE                      WRK-RECE05-REC
                                            WRK-KASAN-RECE05-REC
                                            WRK-TEIGEN-RECE05-REC
