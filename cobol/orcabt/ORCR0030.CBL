@@ -416,7 +416,7 @@
            03  TBL-JNISSU-HKN                          OCCURS   5.
                05  TBL-JNISSU-DAY                      PIC X(01)
                                                        OCCURS   31.
-      *    シスカン（１００１）退避用領域
+      *    医療機関（基本情報）退避用領域
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC                         OCCURS  10.
                05  TBL-SYS1001                         PIC X(610).
@@ -780,7 +780,6 @@
                   MOVE    "医療機関情報が取得できませんでした。"
                                        TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
-                  GO  TO  100-INIT-EXT
               END-IF    
            ELSE
               MOVE     ZERO               TO  SYSKAN-IDX
@@ -814,7 +813,6 @@
                   MOVE    "医療機関情報が取得できませんでした。"
                                        TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
-                  GO  TO  100-INIT-EXT
               END-IF
       *
               MOVE    "DBCLOSE"           TO  MCP-FUNC
@@ -5081,8 +5079,11 @@
       *
                      END-PERFORM
                      IF     FLG-SET  =  ZERO
-                        MOVE    "医療機関情報が取得できませんでした。"
-                                               TO  WRK-RECEERR
+               STRING  "医療機関情報が取得できませんでした。診療年月＝"
+                                               DELIMITED  BY  SIZE 
+                       RECE02-SRYYM            DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
                         PERFORM 500-ERR-HENSYU-SEC
                         MOVE    1              TO  FLG-RECE02
                      END-IF

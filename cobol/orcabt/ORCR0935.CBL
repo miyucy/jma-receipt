@@ -718,6 +718,9 @@
                NOT AT  END
                    ADD     1           TO  CNT-RECE82
                    MOVE    ZERO        TO  FLG-END
+      *
+                   DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
+      *
            END-READ
       *
            .

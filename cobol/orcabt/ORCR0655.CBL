@@ -495,6 +495,9 @@
                    MOVE    1           TO  FLG-RECE62
                NOT AT  END
                    MOVE    ZERO        TO  FLG-RECE62
+      *
+                   DISPLAY "RECE62  PTNUM=" RECE62-PTNUM
+      *
            END-READ
            .
        900-RECE62-READ-EXT.

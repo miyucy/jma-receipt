@@ -4457,6 +4457,9 @@
                NOT  AT  END
                    ADD     1     TO    CNT-IN
                    ADD     1     TO    CNT-IN-COMMIT
+      *
+                   DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
+      *
                    IF   WRK-PARA-SRYYM    NOT =  ZERO
                       CONTINUE
                    ELSE

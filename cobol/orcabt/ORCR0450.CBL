@@ -382,6 +382,9 @@
                NOT AT  END
                    ADD     1           TO  CNT-IN
                    MOVE    ZERO        TO  FLG-END
+      *
+                   DISPLAY "RECE42  PTNUM=" RECE42-PTNUM
+      *
                    MOVE    RECE42-HOSPID       TO  KEY-N-HOSPID
                    MOVE    RECE42-SRYYM        TO  KEY-N-SRYYM
                    MOVE    RECE42-NYUGAIKBN    TO  KEY-N-NYUGAIKBN

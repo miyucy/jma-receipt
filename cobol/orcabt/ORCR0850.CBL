@@ -471,6 +471,9 @@
                    MOVE    1           TO  FLG-RECE82
                NOT AT  END
                    ADD     ZERO        TO  FLG-RECE82
+      *
+                   DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
+      *
            END-READ
            .
        900-RECE82-READ-EXT.

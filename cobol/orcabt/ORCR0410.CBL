@@ -203,10 +203,14 @@
            03  TBL-TENSU-JI                            OCCURS   31.
               05  TBL-SYUTEN-JI                        PIC  9(09).
               05  TBL-YKZTEN-JI                        PIC  9(09).  
-      *    シスカン（１００１）退避用領域
+      *    医療機関（基本情報）退避用領域
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC                         OCCURS  10.
                05  TBL-SYS1001                         PIC X(610).
+      *    労災自賠医療機関退避用領域
+       01  TBL-SYS4001-T.
+           03  TBL-SYS4001-OCC                         OCCURS  10.
+               05  TBL-SYS4001                         PIC X(610).
       *
       *    実日数カウント用領域
        01  TBL-JNISSU.
@@ -478,35 +482,78 @@
                MOVE    1                   TO  FLG-END
            END-IF
       *
-      *    システム管理マスタ（４００１）から点数単価の取得
-           INITIALIZE                         SYS-4001-REC
-           MOVE    "4001"               TO    SYS-4001-KANRICD
-           MOVE    "*"                  TO    SYS-4001-KBNCD
-           MOVE    WRK-PARA-SRYYM       TO    ORC-DBYMD (1:6)
-           MOVE    "01"                 TO    ORC-DBYMD (7:2)
-           MOVE    SYS-4001-REC         TO    MCPDATA-REC
-           MOVE    "SYSKANRI-KEY"       TO    WRK-PATH
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC     TO  SYS-4001-REC
-               EVALUATE  SYS-4001-TENKBN
-                   WHEN  "1"
-                       MOVE     11.5    TO    WRK-TANKA
-                   WHEN  "2"
-                       MOVE     12.0    TO    WRK-TANKA
-               END-EVALUATE
-               IF      SYS-4001-KSNRATE(1:2)  =  SPACE                  
-                   MOVE   100           TO    WRK-KSNRATE               
-               ELSE                                                     
-                   COMPUTE WRK-KSNRATE  =  SYS-4001-KSNRATE             
-                                        +  100                          
-               END-IF                                                   
-               MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN                
+           IF   WRK-PARA-SRYYM    NOT =  ZERO
+      *       システム管理マスタ（４００１）から点数単価の取得
+              INITIALIZE                         SYS-4001-REC
+              MOVE    "4001"               TO    SYS-4001-KANRICD
+              MOVE    "*"                  TO    SYS-4001-KBNCD
+              MOVE    WRK-PARA-SRYYM       TO    ORC-DBYMD (1:6)
+              MOVE    "01"                 TO    ORC-DBYMD (7:2)
+              MOVE    SYS-4001-REC         TO    MCPDATA-REC
+              MOVE    "SYSKANRI-KEY"       TO    WRK-PATH
+              PERFORM 800-SYSKANRI-READ-SEC
+              IF      FLG-SYSKANRI        =   ZERO
+                  MOVE    SYSKANRI-REC     TO  SYS-4001-REC
+                  EVALUATE  SYS-4001-TENKBN
+                      WHEN  "1"
+                          MOVE     11.5    TO    WRK-TANKA
+                      WHEN  "2"
+                          MOVE     12.0    TO    WRK-TANKA
+                  END-EVALUATE
+                  IF      SYS-4001-KSNRATE(1:2)  =  SPACE                  
+                      MOVE   100           TO    WRK-KSNRATE               
+                  ELSE                                                     
+                      COMPUTE WRK-KSNRATE  =  SYS-4001-KSNRATE             
+                                           +  100                          
+                  END-IF                                                   
+                  MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN                
+              ELSE
+                  MOVE    "労災自賠医療機関情報が取得できませんでした"     
+                                              TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+                  MOVE    1                   TO  FLG-END
+              END-IF
            ELSE
-               MOVE    "労災自賠医療機関情報が取得できませんでした"     
-                                           TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               MOVE    1                   TO  FLG-END
+              MOVE     ZERO               TO  SYSKAN-IDX
+              MOVE     SPACE              TO  TBL-SYS4001-T
+              INITIALIZE                      TBL-SYS4001-T
+      *
+              INITIALIZE                      SYS-4001-REC
+              MOVE    "4001"              TO  SYS-4001-KANRICD
+              MOVE    "*"                 TO  SYS-4001-KBNCD
+              MOVE    SYS-4001-REC        TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                  PERFORM 810-SYSKANRI-READ-SEC
+                  PERFORM  UNTIL   FLG-SYSKANRI  =    1
+      *
+                    MOVE    SYSKANRI-REC  TO  SYS-4001-REC
+                    ADD     1             TO  SYSKAN-IDX
+                    MOVE    SYS-4001-REC  TO  TBL-SYS4001(SYSKAN-IDX)
+      *
+                    MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                    PERFORM 810-SYSKANRI-READ-SEC
+      *
+                  END-PERFORM
+              ELSE
+                  MOVE    "労災自賠医療機関情報が取得できませんでした"     
+                                              TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+                  MOVE    1                   TO  FLG-END
+              END-IF
+      *
+              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
            END-IF
       *
       *
@@ -2272,6 +2319,8 @@
                NOT  AT  END
                    ADD     1     TO    CNT-IN
       *
+                   DISPLAY "RECE40  PTID=" RECE40-PTID
+      *
                    IF   WRK-PARA-SRYYM    NOT =  ZERO
                      CONTINUE
                    ELSE
@@ -2294,8 +2343,50 @@
       *
                      END-PERFORM
                      IF     FLG-SET  =  ZERO
-                         MOVE    "医療機関情報が取得できませんでした。"
-                                                 TO  WRK-RECEERR
+             STRING   "医療機関情報が取得できませんでした。診療年月＝"
+                                           DELIMITED  BY  SIZE 
+                        RECE40-SRYYM       DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+             END-STRING
+                         PERFORM 500-ERR-HENSYU-SEC
+                         MOVE    1               TO  FLG-END
+                     END-IF
+      *              労災自賠医療機関情報
+                     MOVE  ZERO           TO  FLG-SET
+                     MOVE  RECE40-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
+                     MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
+                     PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                           UNTIL  ( SYSKAN-IDX              >  10   )
+                            OR    ( TBL-SYS4001(SYSKAN-IDX) = SPACE )
+                            OR    ( FLG-SET                 =   1   )
+      *
+                       MOVE  TBL-SYS4001(SYSKAN-IDX)  TO  SYS-4001-REC
+                       IF   ( SYS-4001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                       AND  ( WRK-SYS-SRYYMD     <=  SYS-4001-EDYUKYMD )
+                          MOVE     1       TO    FLG-SET
+                          EVALUATE  SYS-4001-TENKBN
+                              WHEN  "1"
+                                  MOVE     11.5    TO    WRK-TANKA
+                              WHEN  "2"
+                                  MOVE     12.0    TO    WRK-TANKA
+                          END-EVALUATE
+                          IF      SYS-4001-KSNRATE(1:2)  =  SPACE
+                              MOVE   100           TO    WRK-KSNRATE
+                          ELSE
+                              COMPUTE WRK-KSNRATE  =  SYS-4001-KSNRATE
+                                                   +  100
+                          END-IF
+                          MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN
+                       END-IF
+      *
+                     END-PERFORM
+                     IF     FLG-SET  =  ZERO
+             STRING
+               "労災自賠医療機関情報が取得できませんでした。診療年月＝"
+                                           DELIMITED  BY  SIZE 
+                        RECE40-SRYYM       DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+             END-STRING
                          PERFORM 500-ERR-HENSYU-SEC
                          MOVE    1               TO  FLG-END
                      END-IF

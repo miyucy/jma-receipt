@@ -477,6 +477,9 @@
                    MOVE    1           TO  FLG-RECE41
                NOT AT  END
                    ADD     ZERO        TO  FLG-RECE41
+      *
+                   DISPLAY "RECE41  PTNUM=" RECE41-PTNUM
+      *
            END-READ
            .
        900-RECE41-READ-EXT.

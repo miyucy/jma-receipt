@@ -3103,6 +3103,9 @@
                    MOVE    1     TO    FLG-RECE62
                NOT  AT  END
                    ADD     1     TO    CNT-IN (IDZ)
+      *
+                   DISPLAY "RECE62 " IDZ " PTNUM=" RECE62-PTNUM     
+      *
                    IF   WRK-PARA-SRYYM    NOT =  ZERO
                       CONTINUE
                    ELSE

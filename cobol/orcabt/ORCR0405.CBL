@@ -124,7 +124,7 @@
                05  KEY-O-HKNCOMBI                      PIC 9(04).
                05  KEY-O-SRYKA                         PIC X(02).
       *
-      *    シスカン（１００１）退避用領域
+      *    医療機関（基本情報）退避用領域
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC                         OCCURS  10.
                05  TBL-SYS1001                         PIC X(610).
@@ -481,6 +481,10 @@
            MOVE    SYS-1001-HOSPID         TO  PTINF-HOSPID
            MOVE    KEY-N-PTID              TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
+      *
+           DISPLAY "SRYACCT PTID=" KEY-N-PTID 
+                   " TSTPTNUMKBN=" PTINF-TSTPTNUMKBN
+      *
            IF      FLG-PTINF           =   ZERO
            AND     PTINF-TSTPTNUMKBN   =   "1"
                MOVE    KEY-NEW             TO  KEY-OLD
@@ -799,6 +803,8 @@
       *
            MOVE    MCPDATA-REC         TO  SYS-2002-REC
       *
+           DISPLAY "SYS PTID=" SYS-2002-PTID 
+      *
       *    医療機関ＩＤ編集
            MOVE  ZERO           TO  FLG-SET
            MOVE  SYS-2002-SRYYM TO  WRK-SYS-SRYYMD(1:6)
@@ -816,8 +822,11 @@
       *
            END-PERFORM
            IF     FLG-SET  =  ZERO
-               MOVE    "医療機関情報が取得できませんでした。"
-                                       TO  WRK-RECEERR
+               STRING   "医療機関情報が取得できませんでした。診療年月＝"
+                                           DELIMITED  BY  SIZE 
+                        SYS-2002-SRYYM     DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
                PERFORM 500-ERR-HENSYU-SEC
                GO       TO      20021-KOBETU-HENSYU-EXT
            END-IF

@@ -367,9 +367,9 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-      ***     DISPLAY "RECE66-IN   :" CNT-IN   UPON CONSOLE 
-      ***     DISPLAY "RECE661-OUT :" CNT-OUT  UPON CONSOLE 
-      ***     DISPLAY "*** ORCR0700 END ***"
+           DISPLAY "RECE66-IN   :" CNT-IN
+           DISPLAY "RECE661-OUT :" CNT-OUT
+           DISPLAY "*** ORCR0700 END ***"
            .
        300-TERM-EXT.
            EXIT.
@@ -384,6 +384,9 @@
                    MOVE    1     TO    FLG-END
                NOT  AT  END
                    ADD     1     TO    CNT-IN
+      *
+                   DISPLAY "RECE66  PTNUM=" RECE66-PTNUM
+      *
            END-READ
            .
        RECE66-READ-EXT.

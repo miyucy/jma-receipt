@@ -188,7 +188,15 @@
       *
            03  WRK-RECEERR                             PIC X(200).
       *
-      *    シスカン（５０００）退避用領域
+      *    医療機関（基本情報）退避用領域
+       01  TBL-SYS1001-T.
+           03  TBL-SYS1001-OCC     OCCURS  10.
+               05  TBL-SYS1001                         PIC X(610).
+      *    労災自賠医療機関退避用領域
+       01  TBL-SYS4001-T.
+           03  TBL-SYS4001-OCC     OCCURS  10.
+               05  TBL-SYS4001                         PIC X(610).
+      *    医療機関（入院基本）退避用領域
        01  TBL-SYS5000-T.
            03  TBL-SYS5000-OCC     OCCURS  10.
                05  TBL-SYS5000                         PIC X(610).
@@ -419,64 +427,176 @@
       *
            END-IF
       *
-      *    医療機関情報−基本
-           INITIALIZE                      SYS-1001-REC
-           MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
-           MOVE    "01"                TO  ORC-DBYMD (7:2)
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-               PERFORM  SYSKANRI-READ-SEC
-               MOVE     SYS-1001-TAX-HASU-KBN
-                                       TO  WRK-TAX1001-KBN
-           END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-      *
-      *    システム管理マスタ（４００１）から点数単価の取得
-           INITIALIZE                         SYS-4001-REC
-           MOVE    "4001"               TO    SYS-4001-KANRICD
-           MOVE    "*"                  TO    SYS-4001-KBNCD
-           MOVE    WRK-PARA-SRYYM       TO    ORC-DBYMD (1:6)
-           MOVE    "01"                 TO    ORC-DBYMD (7:2)
-           MOVE    SYS-4001-REC         TO    MCPDATA-REC
-           MOVE    "DBSELECT"           TO    MCP-FUNC
-           MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
-           CALL    "ORCMCPSUB"                USING
+           IF   WRK-PARA-SRYYM    NOT =  ZERO
+      *       医療機関情報−基本
+              INITIALIZE                      SYS-1001-REC
+              MOVE    "1001"              TO  SYS-1001-KANRICD
+              MOVE    "*"                 TO  SYS-1001-KBNCD
+              MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+              MOVE    "01"                TO  ORC-DBYMD (7:2)
+              MOVE    SYS-1001-REC        TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"             USING
                                               MCPAREA
                                               ORCMCPAREA
                                               MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY"   TO    ORC-DBPATH
-               PERFORM  SYSKANRI-READ-SEC
-               EVALUATE  SYS-4001-TENKBN
-                   WHEN  "1"
-                       MOVE     11.5    TO    WRK-TANKA
-                   WHEN  "2"
-                       MOVE     12.0    TO    WRK-TANKA
-               END-EVALUATE
-               MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN                
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+                  PERFORM  SYSKANRI-READ-SEC
+                  IF      FLG-SYSKANRI        =   ZERO
+                     MOVE     SYS-1001-TAX-HASU-KBN
+                                             TO  WRK-TAX1001-KBN
+                  ELSE
+                     MOVE    "医療機関情報が取得できませんでした。"
+                                             TO  WRK-RECEERR
+                     PERFORM 500-ERR-HENSYU-SEC
+                     MOVE    1               TO  FLG-END
+                  END-IF
+              ELSE
+                  MOVE    "医療機関情報が取得できませんでした。"
+                                             TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+                  MOVE    1                  TO  FLG-END
+              END-IF
+      *
+              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+           ELSE
+              MOVE     ZERO               TO  SYSKAN-IDX
+              MOVE     SPACE              TO  TBL-SYS1001-T
+              INITIALIZE                      TBL-SYS1001-T
+      *
+              INITIALIZE                      SYS-1001-REC
+              MOVE    "1001"              TO  SYS-1001-KANRICD
+              MOVE    "*"                 TO  SYS-1001-KBNCD
+              MOVE    SYS-1001-REC        TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                  PERFORM  SYSKANRI-READ-SEC
+                  PERFORM  UNTIL   FLG-SYSKANRI  =    1
+      *
+                    ADD     1             TO  SYSKAN-IDX
+                    MOVE    SYS-1001-REC  TO  TBL-SYS1001(SYSKAN-IDX)
+      *
+                    MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                    PERFORM  SYSKANRI-READ-SEC
+      *
+                  END-PERFORM
+              ELSE
+                  MOVE    "医療機関情報が取得できませんでした。"
+                                          TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+                  MOVE    1               TO  FLG-END
+              END-IF
+      *
+              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
            END-IF
       *
-           MOVE    "DBCLOSE"            TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"              USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+           IF   WRK-PARA-SRYYM    NOT =  ZERO
+      *       システム管理マスタ（４００１）から点数単価の取得
+              INITIALIZE                         SYS-4001-REC
+              MOVE    "4001"               TO    SYS-4001-KANRICD
+              MOVE    "*"                  TO    SYS-4001-KBNCD
+              MOVE    WRK-PARA-SRYYM       TO    ORC-DBYMD (1:6)
+              MOVE    "01"                 TO    ORC-DBYMD (7:2)
+              MOVE    SYS-4001-REC         TO    MCPDATA-REC
+              MOVE    "DBSELECT"           TO    MCP-FUNC
+              MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
+              CALL    "ORCMCPSUB"                USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY"   TO    ORC-DBPATH
+                  PERFORM  SYSKANRI-READ-SEC
+                  IF      FLG-SYSKANRI        =   ZERO
+                     EVALUATE  SYS-4001-TENKBN
+                         WHEN  "1"
+                             MOVE     11.5    TO    WRK-TANKA
+                         WHEN  "2"
+                             MOVE     12.0    TO    WRK-TANKA
+                     END-EVALUATE
+                     MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN
+                  ELSE
+                     MOVE
+                       "労災自賠医療機関情報が取得できませんでした"     
+                                              TO  WRK-RECEERR
+                     PERFORM 500-ERR-HENSYU-SEC
+                     MOVE    1                TO  FLG-END
+                  END-IF
+              ELSE
+                     MOVE
+                       "労災自賠医療機関情報が取得できませんでした"     
+                                              TO  WRK-RECEERR
+                     PERFORM 500-ERR-HENSYU-SEC
+                     MOVE    1                TO  FLG-END
+              END-IF
+      *
+              MOVE    "DBCLOSE"            TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"              USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+           ELSE
+              MOVE     ZERO               TO  SYSKAN-IDX
+              MOVE     SPACE              TO  TBL-SYS4001-T
+              INITIALIZE                      TBL-SYS4001-T
+      *
+              INITIALIZE                      SYS-4001-REC
+              MOVE    "4001"              TO  SYS-4001-KANRICD
+              MOVE    "*"                 TO  SYS-4001-KBNCD
+              MOVE    SYS-4001-REC        TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                  PERFORM SYSKANRI-READ-SEC
+                  PERFORM  UNTIL   FLG-SYSKANRI  =    1
+      *
+                    ADD     1             TO  SYSKAN-IDX
+                    MOVE    SYS-4001-REC  TO  TBL-SYS4001(SYSKAN-IDX)
+      *
+                    MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                    PERFORM SYSKANRI-READ-SEC
+      *
+                  END-PERFORM
+              ELSE
+                  MOVE    "労災自賠医療機関情報が取得できませんでした"     
+                                              TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+                  MOVE    1                   TO  FLG-END
+              END-IF
+      *
+              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           END-IF
+      *
       *
            OPEN    I-O                 RECE82-FILE
       *
@@ -2212,6 +2332,74 @@
                    MOVE    1     TO    FLG-END
                NOT  AT  END
                    ADD     1     TO    CNT-IN
+      *
+                   DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
+      *
+                   IF   WRK-PARA-SRYYM    NOT =  ZERO
+                     CONTINUE
+                   ELSE
+      *              医療機関ＩＤ編集
+                     MOVE  ZERO           TO  FLG-SET
+                     MOVE  RECE82-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
+                     MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
+                     PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                           UNTIL  ( SYSKAN-IDX              >  10   )
+                            OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                            OR    ( FLG-SET                 =   1   )
+      *
+                       MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
+                       IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                       AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
+                          MOVE     1       TO    FLG-SET
+                          MOVE    SYS-1001-TAX-HASU-KBN
+                                           TO    WRK-TAX1001-KBN
+                       END-IF
+      *
+                     END-PERFORM
+                     IF     FLG-SET  =  ZERO
+               STRING  "医療機関情報が取得できませんでした。診療年月＝"
+                                               DELIMITED  BY  SIZE 
+                       RECE82-SRYYM            DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
+                         PERFORM 500-ERR-HENSYU-SEC
+                         MOVE    1               TO  FLG-END
+                     END-IF
+      *              労災自賠医療機関情報
+                     MOVE  ZERO           TO  FLG-SET
+                     MOVE  RECE82-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
+                     MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
+                     PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                           UNTIL  ( SYSKAN-IDX              >  10   )
+                            OR    ( TBL-SYS4001(SYSKAN-IDX) = SPACE )
+                            OR    ( FLG-SET                 =   1   )
+      *
+                       MOVE  TBL-SYS4001(SYSKAN-IDX)  TO  SYS-4001-REC
+                       IF   ( SYS-4001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                       AND  ( WRK-SYS-SRYYMD     <=  SYS-4001-EDYUKYMD )
+                          MOVE     1       TO    FLG-SET
+                          EVALUATE  SYS-4001-TENKBN
+                            WHEN  "1"
+                               MOVE     11.5       TO    WRK-TANKA
+                            WHEN  "2"
+                               MOVE     12.0       TO    WRK-TANKA
+                          END-EVALUATE
+                          MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN
+                       END-IF
+      *
+                     END-PERFORM
+                     IF     FLG-SET  =  ZERO
+             STRING
+               "労災自賠医療機関情報が取得できませんでした。診療年月＝"
+                                           DELIMITED  BY  SIZE 
+                        RECE82-SRYYM       DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+             END-STRING
+                         PERFORM 500-ERR-HENSYU-SEC
+                         MOVE    1               TO  FLG-END
+                     END-IF
+                   END-IF
+      *
                    IF   WRK-PARA-SRYYM    NOT =  ZERO
                       CONTINUE
                    ELSE

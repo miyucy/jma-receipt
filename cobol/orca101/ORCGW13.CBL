@@ -474,13 +474,13 @@
            MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
            MOVE    SYS-4002-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                INITIALIZE                  SYSKANRI-REC
@@ -506,12 +506,12 @@
                                       TO  SPA-GMN-TSONSHOUKBN2  (IDX)
                END-IF   
       *
-               MOVE    "SYSKANRI-KEY5"    TO  ORC-DBPATH
+               MOVE    "SYSKANRI-KEY2"    TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
       *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -1049,7 +1049,8 @@
       *    Ï«ºÒÊÝ¸±Â»½ý¶èÊ¬Ì¾¾Îºï½ü½èÍý
            INITIALIZE                  SYS-4002-REC
            MOVE    "4002"              TO  SYS-4002-KANRICD
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+      *    MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SPA-W01-STYUKYMD    TO  ORC-DBYMD
            MOVE    SYS-4002-REC        TO  MCPDATA-REC
            MOVE    "SYSKANRI-KEY2"     TO  WRK-PATH 
            PERFORM 900-SYSKANRI-INV-SEC
@@ -1057,7 +1058,8 @@
                INITIALIZE                      SYS-4002-REC
                MOVE    "4002"                  TO  SYS-4002-KANRICD
                MOVE    SYS-4002-REC            TO  MCPDATA-REC
-               MOVE    SPA-SYSYMD              TO  ORC-DBYMD
+      *        MOVE    SPA-SYSYMD              TO  ORC-DBYMD
+               MOVE    SPA-W01-STYUKYMD        TO  ORC-DBYMD
                MOVE    "DBDELETE"              TO  MCP-FUNC
                MOVE    "SYSKANRI-KEY2"         TO  ORC-DBPATH
                CALL    "ORCMCPSUB"              USING

@@ -107,8 +107,9 @@
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
-           03  CNT-RECE82              PIC 9(06).
-           03  CNT-RECE88              PIC 9(06). 
+           03  CNT-IN                  PIC 9(06).
+           03  CNT-RECE88              PIC 9(06).
+           03  CNT-OUT                 PIC 9(06). 
       *
        01  INDEX-AREA.
            03  IDW                     PIC 9(03). 
@@ -293,6 +294,7 @@
            PERFORM 2101-RECE88-HENSYU-SEC
       *
            REWRITE RECE82-REC
+           ADD     1     TO    CNT-OUT
            .
        210-HENSYU-EXT.
            EXIT.
@@ -568,7 +570,9 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-           DISPLAY "RECE82  CNT-RECE82  :" CNT-RECE82 
+           DISPLAY "RECE82  CNT-IN  :" CNT-IN
+           DISPLAY "RECE88  CNT-OUT :" CNT-RECE88
+           DISPLAY "RECE82  CNT-OUT :" CNT-OUT
            DISPLAY "*** ORCR0820 END ***"
            .
        300-TERM-EXT.
@@ -583,7 +587,10 @@
                AT  END
                    MOVE    1     TO    FLG-END
                NOT  AT  END
-                   ADD     1     TO    CNT-RECE82
+                   ADD     1     TO    CNT-IN
+      *
+                   DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
+      *
            END-READ
            .
        900-RECE82-READ-EXT.

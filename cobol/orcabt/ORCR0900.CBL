@@ -322,6 +322,9 @@
                NOT AT  END
                    ADD     1           TO  CNT-IN
                    MOVE    ZERO        TO  FLG-END
+      *
+                   DISPLAY "RECE83  PTID=" RECE83-PTID
+      *
            END-READ
            .
        900-RECE83-READ-EXT.

@@ -621,6 +621,9 @@
                NOT AT  END
                    ADD     1           TO  CNT-IN
                    MOVE    ZERO        TO  FLG-END
+      *
+                   DISPLAY "RECE41  PTNUM=" RECE41-PTNUM
+      *
            END-READ
            .
        900-RECE41-READ-EXT.

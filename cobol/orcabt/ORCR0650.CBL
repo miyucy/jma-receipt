@@ -490,6 +490,9 @@
                    MOVE    1     TO    FLG-END
                NOT  AT  END
                    ADD     1     TO    CNT-IN
+      *
+                   DISPLAY "RECE62  PTNUM=" RECE62-PTNUM
+      *
            END-READ
            .
        RECE62-READ-EXT.

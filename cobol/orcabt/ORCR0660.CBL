@@ -2849,6 +2849,9 @@
                    ADD     1           TO  CNT-RECE62
                    ADD     1           TO  CNT-IN-COMMIT
                    MOVE    ZERO        TO  FLG-END
+      *
+                   DISPLAY "RECE62  PTNUM=" RECE62-PTNUM
+      *
            END-READ
       *
            .
