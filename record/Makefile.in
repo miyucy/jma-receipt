@@ -237,7 +237,7 @@ RECORD_files = \
 	mcpspa.rec \
 	orcalink.rec \
 	orcaspa.rec \
-        S04.rec \ 
+        S04.rec \
 
 DEF_files = \
 	HC01.def \
