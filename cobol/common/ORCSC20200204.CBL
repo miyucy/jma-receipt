@@ -1013,7 +1013,8 @@
                IF      WRK-COM-NYUINDAY (IDX IDN1) >   ZERO
                    MOVE    IDN1                TO  IDN4
                    PERFORM VARYING     IDN3    FROM    1   BY  1
-                           UNTIL       IDN3    >   WRK-KAISU
+                           UNTIL      (IDN3    >   WRK-KAISU )  OR
+                                      (IDN4    >   31        )
                        IF      FLG-MADOKU-ARI      =   1
                            MOVE    2               TO  TBL-NYUINDAY
                                                               (IDN4)
