@@ -40,4 +40,7 @@
                05  ORCHC30-KAISU       PIC 9(03).
       *        （１：内服、２：頓服、３：外用、）
                05  ORCHC30-ZAIKBN      PIC X(01).
+      *        用法コード２（表示のみ）
+               05  ORCHC30-YOHOU-G.
+                   07  ORCHC30-YOHOU       PIC X(09)   OCCURS  5.
       *
