@@ -796,7 +796,7 @@
            END-IF
       *
            PERFORM VARYING     IDXX    FROM    1  BY  1
-                   UNTIL      (IDXX    >   23  )  OR
+                   UNTIL      (IDXX    >   10  )  OR
                               (FLG-INPUTCD     =   1)
                IF      IDXX                =   1
                    MOVE    "¡ý"        TO  SPA-Z99-HYOUJI (IDXX)
