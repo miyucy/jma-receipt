@@ -35,6 +35,11 @@
        FILE-CONTROL.
       *
       *    出力更新ファイル
+           SELECT  PTHKN-FILE      ASSIGN
+                                   ASS-PTHKN
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-PTHKN.
+      *    出力更新ファイル
            SELECT  OUT-FILE        ASSIGN
                                    ASS-OUT
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -48,6 +53,9 @@
        FILE                        SECTION.
       *
       *    出力更新ファイル
+       FD  PTHKN-FILE.
+       01  PTHKN-REC                   PIC X(500).
+      *    出力更新ファイル
        FD  OUT-FILE.
        01  OUT-REC                     PIC X(250).
       *
@@ -57,6 +65,9 @@
       *
        WORKING-STORAGE             SECTION.
       *    ファイル指定領域
+       01  ASS-PTHKN.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(30)   VALUE   "ORCPTHKN.TXT".
        01  ASS-OUT.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(30)   VALUE   "ORCBMHKN.TXT".
@@ -74,6 +85,7 @@
       *    フラグ領域
        01  STS-AREA.
            03  STS-OUT                 PIC X(02).
+           03  STS-PTHKN               PIC X(02).
            03  STS-ERR                 PIC X(02).
            03  STS-RECLST              PIC X(02).
            03  STS-RECEERR             PIC X(02).
@@ -86,6 +98,7 @@
            03  FLG-PTINF               PIC 9(01).
            03  FLG-HKNNUM              PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
+           03  FLG-SRYKARRK            PIC 9(01).
       *
            03  FLG-SYORI               PIC 9(01).
            03  FLG-KOUSIN              PIC 9(01).
@@ -93,6 +106,7 @@
            03  FLG-ERR                 PIC 9(01).
            03  FLG-ERR3                PIC 9(01).
            03  FLG-HOJOKBN             PIC 9(01).
+           03  FLG-OK                  PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -130,6 +144,7 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPID         PIC X(24).
+           03  WRK-PARA-LSTYMD         PIC X(08).
       *
       *    一時領域
        01  WRK-AREA.
@@ -154,6 +169,8 @@
            03  WRK-HKNNUM              PIC X(03).
       *
            03  WRK-Z3                  PIC ZZ9.
+      *
+           03  WRK-LSTYMD              PIC X(08).
       *
            03  WRK-BYMD-70.
                05  WRK-BYY             PIC 9(04).
@@ -317,6 +334,9 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *    診療科履歴
+       01  SRYKARRK-REC.
+           COPY    "CPSRYKARRK.INC".
       *
       *    印刷管理
        01  PRTKANRI-REC.
@@ -375,6 +395,14 @@
            PERFORM 100-INIT-SEC
       *
            IF      FLG-END             =   ZERO
+               PERFORM 200-MAIN-SEC-PRE
+           END-IF
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  CNT-AREA
+           OPEN    INPUT               PTHKN-FILE
+           IF      FLG-END             =   ZERO
                PERFORM 200-MAIN-SEC
            END-IF
       *
@@ -408,6 +436,7 @@
                                        WRK-PARA-JOBID
                                        WRK-PARA-SHELLID
                                        WRK-PARA-HOSPID
+                                       WRK-PARA-LSTYMD
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -463,6 +492,7 @@
            END-IF
       *
       *    帳票出力　初期処理
+           OPEN    OUTPUT              PTHKN-FILE
            PERFORM 2710-OUTLST-INIT-SEC
            IF      FLG-END             =   1
                GO  TO              100-INIT-EXT
@@ -553,7 +583,7 @@
       *****************************************************************
       *    主　　処理
       *****************************************************************
-       200-MAIN-SEC                SECTION.
+       200-MAIN-SEC-PRE                SECTION.
       *
       *    患者保険情報検索
            INITIALIZE                  PTHKNINF-REC
@@ -581,18 +611,58 @@
                UNTIL  (FLG-PTHKNINF    =   1   )
                OR     (FLG-ERR         =   1   )
       *
+               MOVE    PTHKNINF-REC        TO  PTHKN-REC
+               WRITE   PTHKN-REC
+               MOVE    "PTHKNINF-KEY5"   TO  ORC-DBPATH
+               PERFORM 900-PTHKNINF-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTHKNINF-KEY5"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+      *
+           CLOSE                       PTHKN-FILE
+      *
+           .
+       200-MAIN-PRE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主　　処理
+      *****************************************************************
+       200-MAIN-SEC                SECTION.
+      *
+      *    患者保険情報検索
+           INITIALIZE                  PTHKNINF-REC
+           PERFORM 900-PTHKN-READ-SEC
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  WRK-PTID
+           MOVE    ZERO                TO  FLG-KOUSIN
+           PERFORM
+               UNTIL  (FLG-PTHKNINF    =   1   )
+               OR     (FLG-ERR         =   1   )
+      *
                ADD     1               TO  CNT-IN
                IF      CNT-IN (4:3)         =   ZERO
                    DISPLAY "***(ORCBMHKN)*** CNT-IN [" CNT-IN "]"
                END-IF
       *
                IF     (WRK-PTID    NOT =   ZERO )  AND
-                      (PTHKN-PTID  NOT =   WRK-PTID)
+                      (PTHKN-PTID  NOT =   WRK-PTID)  AND
+                      (FLG-OK          =   1      )
                    IF      FLG-KOUSIN      =   1
       *                 保険組み合わせ更新処理
                         PERFORM 2201-HKNCOMBI-UPD-SEC
                    END-IF
                    MOVE    ZERO            TO  FLG-KOUSIN
+               END-IF
+      *
+               IF     (WRK-PTID        =   ZERO )  OR
+                      (PTHKN-PTID  NOT =   WRK-PTID)
+                   PERFORM 2200-SRYKARRK-CHK-SEC
                END-IF
       *
       *        国保、労災、自賠責、自費以外
@@ -604,6 +674,7 @@
               OR      (PTHKN-PTID              =   ZERO  )
               OR      (PTHKN-TEKSTYMD          >=  "20030401")
               OR      (PTHKN-TEKEDYMD          <   "20030401")
+              OR      (FLG-OK                  =   ZERO )
                    CONTINUE
                ELSE
       *            保険置換対象チェック
@@ -616,7 +687,7 @@
                MOVE    PTHKN-PTID          TO  WRK-PTID
       *
                MOVE    "PTHKNINF-KEY5"   TO  ORC-DBPATH
-               PERFORM 900-PTHKNINF-READ-SEC
+               PERFORM 900-PTHKN-READ-SEC
            END-PERFORM
       *
            IF      FLG-KOUSIN          =   1
@@ -642,6 +713,54 @@
            .
        200-MAIN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    診療科履歴チェック処理
+      *****************************************************************
+       2200-SRYKARRK-CHK-SEC          SECTION.
+      *
+      *    最終受診日判定
+           MOVE    SPACE               TO  SRYKARRK-REC
+           INITIALIZE                  SRYKARRK-REC
+           MOVE    PTHKN-HOSPID        TO  KARRK-HOSPID
+           MOVE    PTHKN-PTID          TO  KARRK-PTID
+      *
+           MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
+               PERFORM 975-SRYKARRK-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYKARRK
+               MOVE    SPACE               TO  SRYKARRK-REC
+               INITIALIZE                  SRYKARRK-REC
+           END-IF
+           MOVE    SPACE               TO  WRK-LSTYMD
+           PERFORM UNTIL       FLG-SRYKARRK    =   1
+      *        最終受診日
+               IF      KARRK-LASTYMD       >   WRK-LSTYMD
+                   MOVE    KARRK-LASTYMD       TO  WRK-LSTYMD
+               END-IF
+      *
+               MOVE    "SRYKARRK-KEY2"     TO  ORC-DBPATH
+               PERFORM 975-SRYKARRK-READ-SEC
+           END-PERFORM
+      *
+           IF      WRK-LSTYMD          >=  WRK-PARA-LSTYMD
+               MOVE    1               TO  FLG-OK
+           ELSE
+               MOVE    ZERO            TO  FLG-OK
+           END-IF
+      *
+           .
+       2200-SRYKARRK-CHKN-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    保険情報チェック処理
@@ -1262,6 +1381,24 @@
       *****************************************************************
       *    保険情報読み込み
       *****************************************************************
+       900-PTHKN-READ-SEC         SECTION.
+      *
+           READ    PTHKN-FILE
+	     AT    END
+               INITIALIZE                  PTHKNINF-REC
+               MOVE    1               TO  FLG-PTHKNINF
+	     NOT AT END
+               MOVE    PTHKN-REC     TO  PTHKNINF-REC
+               MOVE    ZERO            TO  FLG-PTHKNINF
+           END-READ
+      *
+           .
+       900-PTHKN-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険情報読み込み
+      *****************************************************************
        900-PTHKNINF-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
@@ -1362,6 +1499,28 @@
       *
            .
        900-PTINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科歴データ主キー検索
+      *****************************************************************
+       975-SRYKARRK-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SRYKARRK-REC
+               MOVE    ZERO                TO  FLG-SRYKARRK
+           ELSE
+               MOVE    1                   TO  FLG-SRYKARRK
+               INITIALIZE                  SRYKARRK-REC
+           END-IF
+      *
+           .
+       975-SRYKARRK-READ-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ　オープン処理
