@@ -60,6 +60,8 @@
            03  RECE66-SRYKBN              PIC  X(02).
       *剤識別区分
            03  RECE66-ZAISKBKBN           PIC  X(01).
+      *剤識別内番号
+           03  RECE66-ZAISKBBAN           PIC  9(05).
       *適要欄情報
            03  RECE66-TEKIYO-INF.
       *剤区切（＊）
