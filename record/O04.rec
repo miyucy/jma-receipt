@@ -222,6 +222,9 @@ O04	{
 		GOKMISYU	{
 			value	number(8);
 		};
+		BTNSKY	{
+			state	int;
+		};
 		CHOSEIIN	{
 			state	int;
 			value	number(8);

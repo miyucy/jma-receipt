@@ -102,6 +102,7 @@
               03  O04-ZENMISYU-GAI  PIC S9(8).
               03  O04-ZENMISYU-NYU  PIC S9(8).
               03  O04-GOKMISYU  PIC S9(8).
+              03  O04-BTNSKY-STATE PIC S9(9)   BINARY.
               03  O04-CHOSEIIN-G.
                 04  O04-CHOSEIIN-STATE PIC S9(9)   BINARY.
                 04  O04-CHOSEIIN       PIC S9(8).

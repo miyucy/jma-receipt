@@ -1386,20 +1386,23 @@
                MOVE    "£³´ü"          TO  O04-LBLSKY3RD
            END-IF
       *
-           MOVE    WIDGET-NORMAL       TO  O04-CHOSEIIN-STATE
+           MOVE    WIDGET-NORMAL       TO  O04-BTNSKY-STATE
+                                           O04-CHOSEIIN-STATE
                                            O04-NYUKINHOUHOU-STATE
                                            O04-NYUKINHOUHOULST-STATE
       *
-         IF    ( SPA-GMN-O04-SYORIKBN      =   CONST-PROC-RRKSYU )
-          AND  ( SPA-NAI-O04-DENPJTIKBN    =   "2"  )
-             MOVE    WIDGET-INSENSITIVE
-                                       TO  O04-CHOSEIIN-STATE
-         END-IF
+           IF    ( SPA-GMN-O04-SYORIKBN      =   CONST-PROC-RRKSYU )
+            AND  ( SPA-NAI-O04-PROC-FLG      =   3  )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  O04-BTNSKY-STATE
+                                           O04-CHOSEIIN-STATE
+           END-IF
       *
-         IF    ( SPA-GMN-O04-SYORIKBN      =   CONST-PROC-NYUKIN )
-             MOVE    WIDGET-INSENSITIVE
-                                       TO  O04-CHOSEIIN-STATE
-         END-IF
+           IF    ( SPA-GMN-O04-SYORIKBN      =   CONST-PROC-NYUKIN )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  O04-BTNSKY-STATE
+                                           O04-CHOSEIIN-STATE
+           END-IF
       *
            EVALUATE    FLG-SMEILIST1-ROW
            WHEN    1
@@ -1542,6 +1545,9 @@
       *    »áÌ¾¸¡º÷
            WHEN    "CLICKED"           ALSO    "B09"
                PERFORM 410-P97-SENI-SEC
+      *    º¹³Û¼è¹þ
+           WHEN    "CLICKED"           ALSO    "BTNSKY"
+               PERFORM 4101-BTNSKY-CHK-SEC
            END-EVALUATE
            .
        200-GMNSENI-EXT.
@@ -1970,11 +1976,12 @@
       *        ÀÁµá´ü´Ö¥³¥é¥à¥ê¥¹¥ÈÊÔ½¸
                PERFORM 4101-SKYLIST-HEN-SEC
       *
+               MOVE    9               TO  SPA-GMN-O04-CUR
+      *
            ELSE
                MOVE    "0002"          TO  SPA-ERRCD
                MOVE    1               TO  SPA-GMN-O04-CUR
            END-IF
-      *
       *
            .
        4100-PTNUM-CHK-EXT.
@@ -2526,6 +2533,25 @@
       *
            .
        4101-SKYPRT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    º¹³Û¥Ü¥¿¥ó¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4101-BTNSKY-CHK-SEC             SECTION.
+      *
+           IF    ( SPA-NAI-O04-PROC-FLG    =   1 OR 2 )
+               IF    ( SPA-NAI-O04-SKYMONEY-MOTO
+                                       >=   SPA-GMN-O04-SKYSGK * -1 )
+                   COMPUTE    SPA-GMN-O04-CHOSEIIN
+                       =      SPA-NAI-O04-SKYMONEY-MOTO
+                       +      SPA-GMN-O04-SKYSGK
+               ELSE
+                   MOVE    ZERO        TO  SPA-GMN-O04-CHOSEIIN
+               END-IF
+           END-IF
+      *
+           .
+       4101-BTNSKY-CHK-EXT.
            EXIT.
       *************************************************************
       *    °õºþ½èÍý
