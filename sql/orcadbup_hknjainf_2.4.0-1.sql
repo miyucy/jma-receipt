@@ -2,8 +2,11 @@
 -- 保険者情報テーブルの変更           --
 --                                    --
 -- 項目の追加                         --
---   給付割合（組合員） KYURATE1      --
---   給付割合（家族）   KYURATE2      --
+--   給付割合                         --
+--    組合員 外来 HON-GAIKYURATE      --
+--    組合員 入院 HON-NYUKYURATE      --
+--    家族   外来 KZK-GAIKYURATE      --
+--    家族   入院 KZK-NYUKYURATE      --
 --                                    --
 -- Create Date : 2004/07/07           --
 --                                    --
@@ -51,8 +54,10 @@ HKNJANAME_TAN1			varchar(100),
 HKNJANAME_TAN2			varchar(40),
 HKNJANAME_TAN3			varchar(40),
 HKNNUM  			char(3),
-KYURATE1			numeric(3)	default 0,
-KYURATE2			numeric(3)	default 0,
+HON_GAIKYURATE			numeric(3)	default 0,
+HON_NYUKYURATE			numeric(3)	default 0,
+KZK_GAIKYURATE			numeric(3)	default 0,
+KZK_NYUKYURATE			numeric(3)	default 0,
 POST    			varchar(7),
 ADRS				varchar(200),
 BANTI				varchar(200),
@@ -77,8 +82,10 @@ HKNJANAME_TAN1,
 HKNJANAME_TAN2,
 HKNJANAME_TAN3,
 HKNNUM,
--- KYURATE1 --
--- KYURATE2 --
+-- HON_GAIKYURATE --
+-- HON_NYUKYURATE --
+-- KZK_GAIKYURATE --
+-- KZK_NYUKYURATE --
 POST,
 ADRS,
 BANTI,

@@ -37,10 +37,14 @@
            03  HKNJA-HKNJANAME-TAN3          PIC  X(40).
       *保険番号
            03  HKNJA-HKNNUM                  PIC  X(03).
-      *給付割合１
-           03  HKNJA-KYURATE1                PIC  9(03).
-      *給付割合２
-           03  HKNJA-KYURATE2                PIC  9(03).
+      *給付割合（本人・外来）
+           03  HKNJA-HON-GAIKYURATE          PIC  9(03).
+      *給付割合（本人・入院）
+           03  HKNJA-HON-NYUKYURATE          PIC  9(03).
+      *給付割合（家族・外来）
+           03  HKNJA-KZK-GAIKYURATE          PIC  9(03).
+      *給付割合（家族・入院）
+           03  HKNJA-KZK-NYUKYURATE          PIC  9(03).
       *郵便番号
            03  HKNJA-POST                    PIC  X(07).
       *住所
