@@ -4918,8 +4918,12 @@
       *
       *    特定集中治療室管理料の場合は最長１４日間の算定の為、
       *    次月の会計作成時は無条件に一般の入院料算定とする
+      *    以下の特定入院料も同様
+      *    救命救急入院料
            IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
-               IF   PTNYUINRRK-TOKUTEI-NYUIN   =  "09"  OR  "16"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN = "03" OR "04" OR "05" OR
+                                               "06" OR "07" OR "08" OR
+                                               "09" OR "16"
                    MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
                END-IF
            END-IF
