@@ -870,7 +870,12 @@
                        EVALUATE    RECE65-SRYCD (IDX) (1:1)
                            WHEN    "0"
                              IF      RECE65-SRYCD (IDX) (1:3) = "059"
-                                 MOVE   4              TO  IDY
+                                 IF      RECE65-DATAKBN (IDX)
+                                                              =   "3"
+                                     MOVE    3             TO  IDY
+                                 ELSE
+                                     MOVE    4             TO  IDY
+                                 END-IF
                              ELSE
                                  IF      IDY           =   ZERO
                                      MOVE    1             TO  IDY
