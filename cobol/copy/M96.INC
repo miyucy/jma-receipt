@@ -4,13 +4,13 @@
                 04  M96-LIST1-COUNT   PIC S9(9)   BINARY.
                 04  M96-LIST1-ROW PIC S9(9)   BINARY.
                 04  M96-LIST1-ROWATTR PIC S9(9)   BINARY.
-                04  M96-ITEM        OCCURS  2 TIMES.
+                04  M96-ITEM        OCCURS  1 TIMES.
                   05  M96-VERSION      PIC X(64).
                   05  M96-DBSVERSION1  PIC X(64).
                   05  M96-DBSVERSION2  PIC X(64).
                   05  M96-CREYMD       PIC X(9).
                 04  M96-SELECT
-                        PIC X       OCCURS  2 TIMES.
+                        PIC X       OCCURS  1 TIMES.
               03  M96-LIST2.
                 04  M96-LIST2-COUNT   PIC S9(9)   BINARY.
                 04  M96-LIST2-ROW PIC S9(9)   BINARY.

@@ -9,8 +9,8 @@ M96	{
 				value1	varchar(64);
 				value2	varchar(64);
 				value3	varchar(9);
-			}	[2];
-			select	bool[2];
+			}	[1];
+			select	bool[1];
 		};
 		LIST2	{
 			count	int;

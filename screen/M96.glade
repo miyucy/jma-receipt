@@ -14,7 +14,7 @@
   <class>GtkWindow</class>
   <name>M96</name>
   <width>700</width>
-  <height>600</height>
+  <height>584</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -49,7 +49,7 @@
       <class>GtkButton</class>
       <name>B02</name>
       <x>96</x>
-      <y>568</y>
+      <y>552</y>
       <width>90</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -72,7 +72,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>12</x>
-      <y>568</y>
+      <y>552</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -95,7 +95,7 @@
       <class>GtkButton</class>
       <name>B11</name>
       <x>520</x>
-      <y>568</y>
+      <y>552</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -118,7 +118,7 @@
       <class>GtkButton</class>
       <name>B12</name>
       <x>604</x>
-      <y>568</y>
+      <y>552</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -142,8 +142,8 @@
       <name>LIST1</name>
       <x>40</x>
       <y>44</y>
-      <width>588</width>
-      <height>72</height>
+      <width>584</width>
+      <height>56</height>
       <can_focus>True</can_focus>
       <columns>4</columns>
       <column_widths>84,190,185,73</column_widths>
@@ -208,9 +208,9 @@
       <class>GtkPandaCList</class>
       <name>LIST2</name>
       <x>40</x>
-      <y>448</y>
+      <y>440</y>
       <width>460</width>
-      <height>70</height>
+      <height>68</height>
       <can_focus>True</can_focus>
       <columns>6</columns>
       <column_widths>74,64,73,66,67,66</column_widths>
@@ -299,54 +299,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>MSG1</name>
-      <x>156</x>
-      <y>540</y>
-      <width>500</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label67</name>
-      <x>28</x>
-      <y>424</y>
-      <width>170</width>
-      <height>20</height>
-      <label>マスタ更新ＪＯＢ管理情報</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label127</name>
-      <x>24</x>
-      <y>128</y>
-      <width>138</width>
-      <height>20</height>
-      <label>マスタ更新管理情報</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label66</name>
       <x>24</x>
       <y>20</y>
@@ -363,28 +315,12 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label121</name>
-      <x>4</x>
-      <y>96</y>
-      <width>30</width>
+      <name>label127</name>
+      <x>24</x>
+      <y>112</y>
+      <width>138</width>
       <height>20</height>
-      <label>最新</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label122</name>
-      <x>8</x>
-      <y>496</y>
-      <width>30</width>
-      <height>20</height>
-      <label>最新</label>
+      <label>マスタ更新管理情報</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -397,7 +333,7 @@
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow1</name>
       <x>40</x>
-      <y>148</y>
+      <y>136</y>
       <width>584</width>
       <height>260</height>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
@@ -456,6 +392,54 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label67</name>
+      <x>28</x>
+      <y>416</y>
+      <width>170</width>
+      <height>20</height>
+      <label>マスタ更新ＪＯＢ管理情報</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label122</name>
+      <x>8</x>
+      <y>488</y>
+      <width>30</width>
+      <height>20</height>
+      <label>最新</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MSG1</name>
+      <x>156</x>
+      <y>520</y>
+      <width>500</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
