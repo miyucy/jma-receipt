@@ -446,7 +446,7 @@
            ELSE
                MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
            END-IF
-           MOVE    WRK-SYMD            TO  JYURRK-UPSRYYMD
+           MOVE    ALL "9"             TO  JYURRK-UPSRYYMD
       *
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
@@ -533,9 +533,12 @@
            INITIALIZE                  JYURRK-KEY
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    "2"                 TO  JYURRK-NYUGAIKBN
-           MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
-           MOVE    WRK-SYMD            TO  JYURRK-UPSRYYMD
-      *
+           IF      SPA-SRYYMD          =   SPACE
+               MOVE    ZERO            TO  JYURRK-SRYYMD
+           ELSE
+               MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
+           END-IF
+           MOVE    ALL "9"             TO  JYURRK-UPSRYYMD
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
