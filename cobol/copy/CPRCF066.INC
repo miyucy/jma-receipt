@@ -58,6 +58,8 @@
            03  RECE66-SRYKA               PIC  X(02).
       *診療区分
            03  RECE66-SRYKBN              PIC  X(02).
+      *剤識別区分
+           03  RECE66-ZAISKBKBN           PIC  X(01).
       *適要欄情報
            03  RECE66-TEKIYO-INF.
       *剤区切（＊）
