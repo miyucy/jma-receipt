@@ -640,6 +640,8 @@
       *                ェ恘犯□正ェ情咺昳靼�砦�
                        11  SPA-NAI-I04-PTRRKEDANUM   PIC 9(03).
                    09  SPA-NAI-I04-INPUT-AREA.
+      *                ェ情祭
+                       11  SPA-NAI-I04-NYUINKA       PIC X(02).
       *                ェ情ゥ
                        11  SPA-NAI-I04-NYUINYMD      PIC X(08).
       *                轉情ゥ

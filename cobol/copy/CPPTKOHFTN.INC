@@ -31,14 +31,14 @@
                05  PTKOHFTN-PTID           PIC  9(10).
       *公費ＩＤ
                05  PTKOHFTN-KOHID          PIC  9(10).
+      *適用開始年月日
+               05  PTKOHFTN-TEKSTYMD       PIC  X(08).
+      *適用終了年月日
+           03  PTKOHFTN-TEKEDYMD           PIC  X(08).
       *保険番号（公費）
            03  PTKOHFTN-KOHNUM             PIC  X(03).
       *支払区分
            03  PTKOH-PAYKBN                PIC  X(02).
-      *適用開始年月日
-           03  PTKOHFTN-TEKSTYMD           PIC  X(08).
-      *適用終了年月日
-           03  PTKOHFTN-TEKEDYMD           PIC  X(08).
       *外来上限額
            03  PTKOHFTN-GAIJGNGAK          PIC  9(07).
       *入院上限額
