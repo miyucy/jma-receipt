@@ -867,15 +867,6 @@
                                            WRK-LF01-CRE301-DPERTID
                MOVE    "I"                 TO  WRK-LF01-SRYREP
            END-IF
-      *    ドクター
-           IF      LNK-DRCD            =   "@@@@@"
-               MOVE    SPACE           TO  WRK-LF01-CRE301-FULLNAME
-               MOVE    SPACE           TO  WRK-LF01-CRE301-PERSONALID
-           ELSE
-               PERFORM 2001-DRCD-NAME-SEC
-               MOVE    SYS-1010-NAME   TO  WRK-LF01-CRE301-FULLNAME
-               MOVE    LNK-DRCD        TO  WRK-LF01-CRE301-PERSONALID
-           END-IF
       *
            MOVE    SPACE               TO  WRK-C-UID
       *
@@ -1288,6 +1279,14 @@
                END-PERFORM
            END-IF     
       *
+      *    ドクター
+           IF      LNK-DRCD            =   "@@@@@"
+               CONTINUE
+           ELSE
+               PERFORM 2001-DRCD-NAME-SEC
+               MOVE    SYS-1010-NAME   TO  WRK-LF01-CRE301-FULLNAME
+               MOVE    LNK-DRCD        TO  WRK-LF01-CRE301-PERSONALID
+           END-IF
       *    診察料コードを決定する
            PERFORM 2020-SRYCD-SET-SEC
       *
