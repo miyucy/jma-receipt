@@ -406,6 +406,7 @@
                                        ZOUSYU-BYOTONUM
                                        ZOUSYU-NYUKIN-TOTAL
                                        ZOUSYU-NYUKIN-KAISU
+                                       ZOUSYU-NYUIN-RRKNUM
                                        ZOUSYU-TERMID
                                        ZOUSYU-OPID
                                        ZOUSYU-CREYMD
@@ -421,6 +422,7 @@
                                        GENSYU-BYOTONUM
                                        GENSYU-NYUKIN-TOTAL
                                        GENSYU-NYUKIN-KAISU
+                                       GENSYU-NYUIN-RRKNUM
                                        GENSYU-TERMID
                                        GENSYU-OPID
                                        GENSYU-CREYMD

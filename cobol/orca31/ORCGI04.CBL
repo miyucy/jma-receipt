@@ -2773,6 +2773,9 @@
                END-IF
            END-IF
       *
+           MOVE    SPA-NAI-I04-PTRRKNUM
+                                   TO  SYU-NYUIN-RRKNUM
+      *
            MOVE    SYUNOU-REC      TO  WKSYUNOU-REC
       *
       *    更新前チェック（既に重複するデータがある場合はエラー）

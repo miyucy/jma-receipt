@@ -863,6 +863,8 @@
                END-IF
            END-IF
       *
+           MOVE    PTNYUINRRK-RRKNUM   TO  SYU-NYUIN-RRKNUM
+      *
            MOVE    WRK-PARA-TERMID     TO  SYU-TERMID
       *
            MOVE    SYUNOU-REC          TO  TEIKI01-SYU-DAT
