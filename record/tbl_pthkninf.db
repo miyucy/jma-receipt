@@ -96,6 +96,18 @@ path	key5 	{
 	};
 };
 
+path	key6 	{
+	DBSELECT	{
+		DECLARE tbl_pthkninf_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pthkninf
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			ORDER   BY    HKNID
+		;
+	};
+};
+
 path	all 	{
 	DBSELECT	{
 		DECLARE tbl_pthkninf_all_csr CURSOR FOR

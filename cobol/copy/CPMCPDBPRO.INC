@@ -273,6 +273,7 @@
       *  01.01.94    NACL-森脇    03/08/25  TENSU-KEY23S,KEY23M,KEY23K
       *  01.01.95    NACL-太田    03/08/26  PTNYUINRRK-KEY24追加
       *  01.01.96    NACL-太田    03/08/26  PTNYUINRRK-KEY25追加
+      *  01.01.97    NACL-小豆沢　03/08/29  PTHKNINF-KEY6追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -568,11 +569,13 @@
                WHEN    "DBUPDATE"      ALSO   "PTHKNINF-KEY3"
                WHEN    "DBUPDATE"      ALSO   "PTHKNINF-KEY4"
                WHEN    "DBUPDATE"      ALSO   "PTHKNINF-KEY5"
+               WHEN    "DBUPDATE"      ALSO   "PTHKNINF-KEY6"
                WHEN    "DBDELETE"      ALSO   "PTHKNINF-KEY"
                WHEN    "DBDELETE"      ALSO   "PTHKNINF-KEY2"
                WHEN    "DBDELETE"      ALSO   "PTHKNINF-KEY3"
                WHEN    "DBDELETE"      ALSO   "PTHKNINF-KEY4"
                WHEN    "DBDELETE"      ALSO   "PTHKNINF-KEY5"
+               WHEN    "DBDELETE"      ALSO   "PTHKNINF-KEY6"
                    MOVE    PATH-TBL-PTHKNINF-KEY 
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "PTHKNINF-DEL1"
@@ -1419,6 +1422,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTHKNINF-KEY5"
                    MOVE    PATH-TBL-PTHKNINF-KEY5
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTHKNINF-KEY6"
+                   MOVE    PATH-TBL-PTHKNINF-KEY6
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "PTHKNINF-ALL"

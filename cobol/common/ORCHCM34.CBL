@@ -1184,7 +1184,7 @@
            MOVE    PTINF-PTID          TO  PTHKN-PTID
       *
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
-           MOVE    "PTHKNINF-KEY2"     TO  WRK-DBPATH
+           MOVE    "PTHKNINF-KEY6"     TO  WRK-DBPATH
       *
            PERFORM 900-TBL-SELECT-SEC
            IF ( FLG-DBRC           NOT =   ZERO )
@@ -1213,7 +1213,7 @@
                    END-IF
                END-IF
       *
-               MOVE    "PTHKNINF-KEY2"     TO  WRK-DBPATH
+               MOVE    "PTHKNINF-KEY6"     TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
                IF ( FLG-DBRC           NOT =   ZERO )
                    MOVE    1           TO  FLG-PTHKNINF
@@ -1222,7 +1222,7 @@
                END-IF
            END-PERFORM
       *
-           MOVE    "PTHKNINF-KEY2"     TO  WRK-DBPATH
+           MOVE    "PTHKNINF-KEY6"     TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
            .
