@@ -14,7 +14,7 @@
   <class>GtkWindow</class>
   <name>J021</name>
   <width>650</width>
-  <height>460</height>
+  <height>496</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -47,7 +47,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>16</x>
-      <y>432</y>
+      <y>464</y>
       <width>62</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -97,8 +97,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B12</name>
-      <x>552</x>
-      <y>432</y>
+      <x>560</x>
+      <y>464</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -210,26 +210,10 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label497</name>
-      <x>248</x>
-      <y>360</y>
-      <width>56</width>
-      <height>24</height>
-      <label>↓</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkButton</class>
       <name>B02</name>
-      <x>128</x>
-      <y>432</y>
+      <x>124</x>
+      <y>464</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -246,22 +230,6 @@
       </signal>
       <label>F2 クリア</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label491</name>
-      <x>16</x>
-      <y>364</y>
-      <width>128</width>
-      <height>24</height>
-      <label>変更後保険組合せ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -389,6 +357,118 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label491</name>
+      <x>16</x>
+      <y>364</y>
+      <width>128</width>
+      <height>24</height>
+      <label>変更後保険組合せ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label497</name>
+      <x>248</x>
+      <y>360</y>
+      <width>56</width>
+      <height>24</height>
+      <label>↓</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label499</name>
+      <x>132</x>
+      <y>424</y>
+      <width>40</width>
+      <height>24</height>
+      <label>〜</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label498</name>
+      <x>16</x>
+      <y>424</y>
+      <width>68</width>
+      <height>24</height>
+      <label>変更期間</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>DAY1</name>
+      <x>92</x>
+      <y>424</y>
+      <width>44</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Mon, 18 Oct 2004 02:15:48 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Mon, 18 Oct 2004 02:16:47 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>DAY2</name>
+      <x>168</x>
+      <y>424</y>
+      <width>44</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Mon, 18 Oct 2004 02:15:48 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Mon, 18 Oct 2004 02:16:47 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZ</format>
     </widget>
   </widget>
 </widget>

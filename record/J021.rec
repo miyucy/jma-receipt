@@ -33,5 +33,11 @@ J021	{
 				select	bool[40];
 			};
 		};
+		DAY1	{
+			value	number(2);
+		};
+		DAY2	{
+			value	number(2);
+		};
 	};
 };
