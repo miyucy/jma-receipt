@@ -79,6 +79,8 @@
       *                                     またがるチェックを追加
       *  01.00.29    ひさなが     03/08/19  患者病名作業のクリアを修正
       *  01.00.30    ひさなが     03/08/21  実日数チェックの修正
+      *  01.00.31    ひさなが     03/08/26  院外処方、自費の指示追加
+      *                                     診療開始日チェックの修正
       *
       *****************************************************************
       *
@@ -169,6 +171,7 @@
            03  T-HANNTEI5          PIC X(01).
            03  T-HANNTEI6          PIC X(02).
            03  T-HANNTEI7          PIC X(02).
+           03  T-HANNTEI8          PIC X(01).
            03  T-ERR-01            PIC X(01).
            03  T-ERR-02            PIC X(01).
            03  T-ERR-03            PIC X(01).
@@ -327,12 +330,15 @@
                    07  W-SRYCD-72      PIC X(01).
                    07  W-SRYCD-81      PIC X(09).
                    07  W-SRYCD-82      PIC X(01).
-      *     03  W-TABLE-S4.
-      *         05  W-SRYCD-S4-TABLE    OCCURS  1000.
-      *             07  W-SRYCD-91      PIC X(09).
-      *             07  W-SRYCD-91-N    PIC X(09).
-      *             07  W-SRYCD-92      PIC X(09).
-      *             07  W-SRYCD-92-N    PIC X(09).
+           03  W-TABLE-S4.
+               05  W-S-KBN             PIC X(01).
+               05  W-S-MAX             PIC 9(03).
+               05  W-SRYCD-S4-TABLE    OCCURS  100.
+                   07  W-S-HOSPID      PIC X(24).
+                   07  W-S-PTID        PIC 9(10).
+                   07  W-S-SRYKA       PIC X(02).
+                   07  W-S-SRYYMD      PIC X(08).
+                   07  W-S-BYOMEI      PIC X(40).
            03  W-CHK-KUBUN.
                05  W-CHK-ST1-KBN       PIC X(01).
                05  W-CHK-ST2-KBN       PIC X(01).
@@ -358,10 +364,6 @@
            03  W-HANNTEI-KOH-LIST             OCCURS  100.
                05  W-HANNTEI-KOH       PIC 9(10).
                05  W-HANNTEI-KOHN      PIC X(03).
-      *    患者病名の診療開始日作業
-       01  W-PTBYO-AREA.
-           03  W-HANNTEI-PTBYO-LIST           OCCURS  100.
-               05  W-HANNTEI-PTBYO     PIC X(07).
       *    患者病名作業
        01  W-PTBYO-BYOMEI-AREA1.
            03  W-PTBYO-MAX1            PIC 9(03).
@@ -509,8 +511,8 @@
                "520-02該当患者は診療科コードが診療科履歴情報に未登録です
       -        "                                  ".
            03  T-MESSAGE-520-03    PIC X(90)   VALUE
-               "520-03病名の開始日に初診日より古い日付がセットされていま
-      -        "す                                ".
+               "520-03病名の開始日は初診日との関係誤り                  
+      -        "                                  ".
            03  T-MESSAGE-530-01    PIC X(90)   VALUE
                "530-01チェック情報テーブル異常                          
       -        "                                  ".
@@ -603,6 +605,8 @@
            03  W-HKNNUM1           PIC X(03)   VALUE   "971".
       *    自費
            03  W-HKNNUM2           PIC X(03)   VALUE   "980".
+           03  W-HKNNUM3           PIC X(03)   VALUE   "960".
+           03  W-HKNNUM4           PIC X(03)   VALUE   "950".
        01  WRK-BIRTHDAY.
       *    老人
            03  W-BIRTHDAY1         PIC X(08)   VALUE   "19320929".
@@ -738,6 +742,7 @@
            INITIALIZE                      PTHKNINF-REC.
            INITIALIZE                      PTKOHINF-REC.
            INITIALIZE                      W-TABLE-S3.
+           INITIALIZE                      W-TABLE-S4.
            INITIALIZE                      W-PTBYO-BYOMEI-AREA1.
            INITIALIZE                      W-PTBYO-BYOMEI-AREA2.
            MOVE    ZERO                    TO  W-JITU-DAY3.
@@ -890,9 +895,6 @@
                                        MCPDATA-REC.
       *
        T-000-RECECHEK-READ-EXT.
-           EXIT.
-      *
-       T-000-KANRIMST-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1093,34 +1095,42 @@
                    COMPUTE T-CNT-IN    =   T-CNT-IN    +   1
       *修正/*開始*03.08.26*********************************************
       *             IF  ACCT-ZAIKAISU   NOT =  ZERO
-      *                 PERFORM T-100-RECECHEK-HANTI-SEC
+      *                 PERFORM T-100-RECECHEK-HANTEI-1-SEC
       *             END-IF
-      ***             DISPLAY " ***ACCT-PTID     " ACCT-PTID
-      ***             DISPLAY "    ACCT-ZAITEN   " ACCT-ZAITEN
-      ***             DISPLAY "    ACCT-ZAIKAISU " ACCT-ZAIKAISU
-      ***             DISPLAY "    SPA-GMN-TBLG2 " SPA-GMN-TBLG2
-                   IF  (SPA-GMN-CNV (20)   =   SPACE)  OR
-                       ((SPA-GMN-CNV (20)   =   "1")  AND
-                        (ACCT-ZAITEN   NOT =   ZERO))  OR
-                       ((SPA-GMN-CNV (20)   =   "2")  AND
-                        (ACCT-ZAITEN       =   ZERO))
-      ***             DISPLAY "                  ========"
-                       PERFORM T-100-RECECHEK-HANTI-SEC
+                   IF  ((SPA-GMN-CNV (20)   =   SPACE)         AND
+                        (ACCT-ZAITEN   NOT =   ZERO))             OR
+                       ((SPA-GMN-CNV (20)   =   SPACE)         AND
+                        (ACCT-SRYKBN        =  "99")           AND
+                        (ACCT-SRYCDTOTAL(6:9) =  "099409901"))    OR
+                       (SPA-GMN-CNV (20)   =   "1")               OR
+                       ((SPA-GMN-CNV (20)   =   "2")           AND
+                        (ACCT-ZAITEN        =  ZERO)           AND
+                        (ACCT-SRYKBN    NOT =  "99")           AND
+                        (ACCT-SRYCDTOTAL(6:9) NOT =  "099409901"))
+                       PERFORM T-100-RECECHEK-HANTEI-1-SEC
                    END-IF
       *修正/*終了*03.08.26*********************************************
                    PERFORM T-100-RECECHEK-READ-SEC
                END-PERFORM
       *修正/*開始*03.08.06*********************************************
-      *         INITIALIZE                W-TABLE-S4
                MOVE    SPACE             TO  T-ERR-08
                MOVE    SPACE             TO  T-ERR-09
+               IF  T-HANNTEI8   =   SPACE
+                   MOVE    ZERO              TO  W-PTBYO-MAX1
+                   MOVE    ZERO              TO  W-PTBYO-MAX2
+               END-IF
                IF  W-PTBYO-MAX2   NOT =  ZERO
                    PERFORM T-530-RECECHEK-CHK8-1-SEC
                END-IF
                IF  W-PTBYO-MAX1   NOT =  ZERO
                    PERFORM T-530-RECECHEK-CHK9-1-SEC
                END-IF
+               INITIALIZE                W-PTBYO-BYOMEI-AREA1
+               INITIALIZE                W-PTBYO-BYOMEI-AREA2
       *修正/*終了*03.08.06*********************************************
+               IF  W-S-KBN   =   "*"
+                   PERFORM T-520-RECECHEK-SEC
+               END-IF
                IF  (SPA-GMN-CNV (12) NOT =  SPACE)        AND
                    (T-ERR-12             =  SPACE)        AND
                    (W-JITU-DAY4      NOT =  ZERO)         AND
@@ -1201,7 +1211,7 @@
       *
       *******************
       *
-       T-100-RECECHEK-HANTI-SEC          SECTION.
+       T-100-RECECHEK-HANTEI-1-SEC       SECTION.
       *
            IF  (ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
                (ACCT-PTID     NOT =   W1-SRY-PTID)
@@ -1221,7 +1231,6 @@
                INITIALIZE                WK-JITUDAY2
                INITIALIZE                W-TABLE-S1
                INITIALIZE                W-TABLE-S2
-      *         INITIALIZE                W-TABLE-S4
                INITIALIZE                WK-NYUINACCT-K
                INITIALIZE                W-KOH-AREA
                INITIALIZE                W-J-SRYCD-AREA
@@ -1273,139 +1282,12 @@
                    MOVE    SPACE             TO  WK1-HKNNUM-S
                END-IF
                MOVE    SPACE             TO  WK-SRYSYUKBN
-      *
-      *修正/*開始*03.08.05*********************************************
-               IF  (W1-SRY-HOSPID   NOT =  ALL "*")        AND
-                   ((ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
-                    (ACCT-PTID     NOT =   W1-SRY-PTID))
-      ****修正/*開始*03.08.19*********************************************
-      *              (ACCT-SRYKA    NOT =   W1-SRY-SRYKA))
-      ****修正/*終了*03.08.19*********************************************
-      *             INITIALIZE                W-TABLE-S4
-                   MOVE    SPACE             TO  T-ERR-08
-                   MOVE    SPACE             TO  T-ERR-09
-                   IF  W-PTBYO-MAX2   NOT =  ZERO
-                       PERFORM T-530-RECECHEK-CHK8-1-SEC
-                   END-IF
-                   IF  W-PTBYO-MAX1   NOT =  ZERO
-                       PERFORM T-530-RECECHEK-CHK9-1-SEC
-                   END-IF
+      *修正/*開始*03.08.26*********************************************
+      *         PERFORM T-100-RECECHEK-HANTEI-CHK1-SEC
+               IF  T-HANNTEI8   =   "*"
+                   PERFORM T-100-RECECHEK-HANTEI-CHK1-SEC
                END-IF
-      *修正/*終了*03.08.05*********************************************
-               IF  (ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
-                   (ACCT-PTID     NOT =   W1-SRY-PTID)    OR
-                   (ACCT-SRYKA    NOT =   W1-SRY-SRYKA)
-                   INITIALIZE                W-PTBYO-AREA
-                   INITIALIZE                W-PTBYO-BYOMEI-AREA1
-                   INITIALIZE                W-PTBYO-BYOMEI-AREA2
-                   MOVE    SPACE             TO  T-ERR-05
-                   MOVE    SPACE             TO  T-ERR-06
-                   MOVE    SPACE             TO  T-ERR-07
-                   MOVE    SPACE             TO  T-ERR-13-3
-                   MOVE    SPACE             TO  T-ERR-15
-                   MOVE    "*"               TO  T-HANNTEI3
-      *修正/*開始*03.08.12*********************************************
-                   PERFORM T-100-RECECHEK-HANTEI-SEC
-      *修正/*終了*03.08.12*********************************************
-                   PERFORM VARYING  IDX5  FROM  1  BY 1
-                           UNTIL    IDX5  >   100
-                       IF  W-HANNTEI-ACCTSRYKA (IDX5)  =  ACCT-SRYKA
-                           MOVE    200               TO  IDX5
-                           MOVE    SPACE             TO  T-HANNTEI3
-                           MOVE    "ED"              TO  T-HANNTEI6
-                       ELSE
-                           IF  W-HANNTEI-ACCTSRYKA (IDX5)  =  SPACE
-                               PERFORM T-510-RECECHEK-SEC
-                               MOVE    ACCT-SRYKA
-                                         TO  W-HANNTEI-ACCTSRYKA (IDX5)
-                               MOVE    200             TO  IDX5
-                           END-IF
-                       END-IF
-                   END-PERFORM
-               ELSE
-                   MOVE    SPACE             TO  T-HANNTEI3
-               END-IF
-               PERFORM T-530-RECECHEK-CHK1-SEC
-      *
-               IF  (SPA-GMN-CNV (5) NOT =  SPACE)  AND
-                   (T-ERR-05            =  SPACE)  AND
-                   (T-HANNTEI6          =  "CH")   AND
-                   (T-HANNTEI7          =  "ER")
-                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                   MOVE    SPACE             TO  DID2-REC
-                   MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
-                   MOVE    "-"               TO  DID2-REC(25:1)
-                   MOVE    ACCT-PTID         TO  DID2-REC(26:10)
-                   MOVE    T-MESSAGE-510-05  TO  DID2-REC(71:90)
-                   MOVE    ACCT-SRYKA        TO  DID2-REC(191:2)
-                   WRITE   DID2-REC
-                   MOVE    SPACE             TO  T-HANNTEI3
-                   IF  SPA-GMN-CNV (5)  =  "1"
-                       MOVE    "*"               TO  T-ERR-05
-                   END-IF
-               END-IF
-      *
-               IF  (SPA-GMN-CNV (5) NOT = SPACE)  AND
-                   (T-ERR-05            = SPACE)  AND
-                   (T-HANNTEI3          = "*")
-                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                   MOVE    SPACE             TO  DID2-REC
-                   MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
-                   MOVE    "-"               TO  DID2-REC(25:1)
-                   MOVE    ACCT-PTID         TO  DID2-REC(26:10)
-                   MOVE    T-MESSAGE-510-08  TO  DID2-REC(71:90)
-                   EVALUATE    ACCT-NYUGAIKBN
-                       WHEN    "1"
-                          MOVE    "入院"            TO  DID2-REC(119:4)
-                          MOVE    T-MESSAGE-510-08(49:24)
-                                                    TO  DID2-REC(123:24)
-                       WHEN    "2"
-                          MOVE    "外来"            TO  DID2-REC(119:4)
-                          MOVE    T-MESSAGE-510-08(49:24)
-                                                    TO  DID2-REC(123:24)
-                   END-EVALUATE
-                   MOVE    ACCT-SRYKA        TO  DID2-REC(191:2)
-                   WRITE   DID2-REC
-                   IF  SPA-GMN-CNV (5)  =  "1"
-                       MOVE    "*"               TO  T-ERR-05
-                   END-IF
-               END-IF
-      *
-               IF  (SPA-GMN-CNV (12)  NOT =   SPACE)  AND
-                   (W-NACCT-DAY-K-ERR     =   ZERO)   AND
-                   (T-NYUGAIKBN-AREA      =   "1")
-                   PERFORM VARYING  IDY3  FROM  1  BY  1
-                           UNTIL    IDY3  >    31
-                       IF  (ACCT-DAY (1,IDY3)    NOT =  ZERO)  AND
-                           (W-NACCT-K-DAY (IDY3)     =  ZERO)
-                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                           MOVE    SPACE             TO  DID2-REC
-                           MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
-                           MOVE    "-"               TO  DID2-REC(25:1)
-                           MOVE    ACCT-PTID         TO  DID2-REC(26:10)
-                           MOVE    T-MESSAGE-540-07  TO  DID2-REC(71:90)
-                           MOVE    ACCT-SRYKA        TO  DID2-REC(191:2)
-                           WRITE   DID2-REC
-                           MOVE    1               TO  W-NACCT-DAY-K-ERR
-                           MOVE    40              TO  IDY3
-                       END-IF
-      *
-                       IF  (WK-SRYSYUKBN             =  "1")   AND
-                           (ACCT-DAY (1,IDY3)    NOT =  ZERO)  AND
-                           (W-NACCT-K-DAY (IDY3)     =  2)
-                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                           MOVE    SPACE             TO  DID2-REC
-                           MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
-                           MOVE    "-"               TO  DID2-REC(25:1)
-                           MOVE    ACCT-PTID         TO  DID2-REC(26:10)
-                           MOVE    T-MESSAGE-540-08  TO  DID2-REC(71:90)
-                           MOVE    ACCT-SRYKA        TO  DID2-REC(191:2)
-                           WRITE   DID2-REC
-                           MOVE    1               TO  W-NACCT-DAY-K-ERR
-                           MOVE    40              TO  IDY3
-                       END-IF
-                   END-PERFORM
-               END-IF
+      *修正/*終了*03.08.26*********************************************
            END-IF.
       *
            MOVE    ACCT-HOSPID  TO  W1-SRY-HOSPID.
@@ -1414,14 +1296,155 @@
            MOVE    COMB-HKNNUM  TO  W-COMB-HKNNUM.
            MOVE    "ED"         TO  T-HANNTEI6.
       *
-       T-100-RECECHEK-HANTI-EXT.
+       T-100-RECECHEK-HANTEI-1-EXT.
+           EXIT.
+      *
+      *******************
+      *
+       T-100-RECECHEK-HANTEI-CHK1-SEC    SECTION.
+      *
+      *修正/*開始*03.08.05*********************************************
+           MOVE    SPACE             TO  T-ERR-08.
+           MOVE    SPACE             TO  T-ERR-09.
+           IF  T-HANNTEI8   =   SPACE
+               MOVE    ZERO              TO  W-PTBYO-MAX1
+               MOVE    ZERO              TO  W-PTBYO-MAX2
+           END-IF.
+           IF  W-PTBYO-MAX2   NOT =  ZERO
+               PERFORM T-530-RECECHEK-CHK8-1-SEC
+           END-IF.
+           IF  W-PTBYO-MAX1   NOT =  ZERO
+               PERFORM T-530-RECECHEK-CHK9-1-SEC
+           END-IF.
+           INITIALIZE                W-PTBYO-BYOMEI-AREA1.
+           INITIALIZE                W-PTBYO-BYOMEI-AREA2.
+      *修正/*終了*03.08.05*********************************************
+           IF  (ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
+               (ACCT-PTID     NOT =   W1-SRY-PTID)    OR
+               (ACCT-SRYKA    NOT =   W1-SRY-SRYKA)
+               INITIALIZE                W-PTBYO-BYOMEI-AREA1
+               INITIALIZE                W-PTBYO-BYOMEI-AREA2
+               MOVE    SPACE             TO  T-ERR-05
+               MOVE    SPACE             TO  T-ERR-06
+               MOVE    SPACE             TO  T-ERR-07
+               MOVE    SPACE             TO  T-ERR-13-3
+               MOVE    SPACE             TO  T-ERR-15
+               MOVE    "*"               TO  T-HANNTEI3
+      *修正/*開始*03.08.12*********************************************
+               PERFORM T-100-RECECHEK-HANTEI-2-SEC
+      *修正/*終了*03.08.12*********************************************
+               PERFORM VARYING  IDX5  FROM  1  BY 1
+                       UNTIL    IDX5  >   100
+                   IF  W-HANNTEI-ACCTSRYKA (IDX5)  =  ACCT-SRYKA
+                       MOVE    200               TO  IDX5
+                       MOVE    SPACE             TO  T-HANNTEI3
+                       MOVE    "ED"              TO  T-HANNTEI6
+                   ELSE
+                       IF  W-HANNTEI-ACCTSRYKA (IDX5)  =  SPACE
+                           IF  W-S-KBN   =   "*"
+                               PERFORM T-520-RECECHEK-SEC
+                           END-IF
+                           INITIALIZE                      W-TABLE-S4
+                           PERFORM T-510-RECECHEK-SEC
+                           MOVE    ACCT-SRYKA
+                                         TO  W-HANNTEI-ACCTSRYKA (IDX5)
+                           MOVE    200             TO  IDX5
+                       END-IF
+                   END-IF
+               END-PERFORM
+           ELSE
+               MOVE    SPACE             TO  T-HANNTEI3
+           END-IF.
+           PERFORM T-530-RECECHEK-CHK1-SEC
+      *
+           IF  (SPA-GMN-CNV (5) NOT =  SPACE)  AND
+               (T-ERR-05            =  SPACE)  AND
+               (T-HANNTEI6          =  "CH")   AND
+               (T-HANNTEI7          =  "ER")
+               COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+               MOVE    SPACE             TO  DID2-REC
+               MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
+               MOVE    "-"               TO  DID2-REC(25:1)
+               MOVE    ACCT-PTID         TO  DID2-REC(26:10)
+               MOVE    T-MESSAGE-510-05  TO  DID2-REC(71:90)
+               MOVE    ACCT-SRYKA        TO  DID2-REC(191:2)
+               WRITE   DID2-REC
+               MOVE    SPACE             TO  T-HANNTEI3
+               IF  SPA-GMN-CNV (5)  =  "1"
+                   MOVE    "*"               TO  T-ERR-05
+               END-IF
+           END-IF.
+      *
+           IF  (SPA-GMN-CNV (5) NOT = SPACE)  AND
+               (T-ERR-05            = SPACE)  AND
+               (T-HANNTEI3          = "*")
+               COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+               MOVE    SPACE             TO  DID2-REC
+               MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
+               MOVE    "-"               TO  DID2-REC(25:1)
+               MOVE    ACCT-PTID         TO  DID2-REC(26:10)
+               MOVE    T-MESSAGE-510-08  TO  DID2-REC(71:90)
+               EVALUATE    ACCT-NYUGAIKBN
+                   WHEN    "1"
+                      MOVE    "入院"            TO  DID2-REC(119:4)
+                      MOVE    T-MESSAGE-510-08(49:24)
+                                                TO  DID2-REC(123:24)
+                   WHEN    "2"
+                      MOVE    "外来"            TO  DID2-REC(119:4)
+                      MOVE    T-MESSAGE-510-08(49:24)
+                                                TO  DID2-REC(123:24)
+               END-EVALUATE
+               MOVE    ACCT-SRYKA        TO  DID2-REC(191:2)
+               WRITE   DID2-REC
+               IF  SPA-GMN-CNV (5)  =  "1"
+                   MOVE    "*"               TO  T-ERR-05
+               END-IF
+           END-IF.
+      *
+           IF  (SPA-GMN-CNV (12)  NOT =   SPACE)  AND
+               (W-NACCT-DAY-K-ERR     =   ZERO)   AND
+               (T-NYUGAIKBN-AREA      =   "1")
+               PERFORM VARYING  IDY3  FROM  1  BY  1
+                       UNTIL    IDY3  >    31
+                   IF  (ACCT-DAY (1,IDY3)    NOT =  ZERO)  AND
+                       (W-NACCT-K-DAY (IDY3)     =  ZERO)
+                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                       MOVE    SPACE             TO  DID2-REC
+                       MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
+                       MOVE    "-"               TO  DID2-REC(25:1)
+                       MOVE    ACCT-PTID         TO  DID2-REC(26:10)
+                       MOVE    T-MESSAGE-540-07  TO  DID2-REC(71:90)
+                       MOVE    ACCT-SRYKA        TO  DID2-REC(191:2)
+                       WRITE   DID2-REC
+                       MOVE    1               TO  W-NACCT-DAY-K-ERR
+                       MOVE    40              TO  IDY3
+                   END-IF
+      *
+                   IF  (WK-SRYSYUKBN             =  "1")   AND
+                       (ACCT-DAY (1,IDY3)    NOT =  ZERO)  AND
+                       (W-NACCT-K-DAY (IDY3)     =  2)
+                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                       MOVE    SPACE             TO  DID2-REC
+                       MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
+                       MOVE    "-"               TO  DID2-REC(25:1)
+                       MOVE    ACCT-PTID         TO  DID2-REC(26:10)
+                       MOVE    T-MESSAGE-540-08  TO  DID2-REC(71:90)
+                       MOVE    ACCT-SRYKA        TO  DID2-REC(191:2)
+                       WRITE   DID2-REC
+                       MOVE    1               TO  W-NACCT-DAY-K-ERR
+                       MOVE    40              TO  IDY3
+                   END-IF
+               END-PERFORM
+           END-IF.
+      *
+       T-100-RECECHEK-HANTEI-CHK1-EXT.
            EXIT.
       *
       *修正/*開始*03.08.12*********************************************
       *****************************************************************
       *    診療行為情報テーブルを指示入力された入外区分以外 参照処理
       *****************************************************************
-       T-100-RECECHEK-HANTEI-SEC         SECTION.
+       T-100-RECECHEK-HANTEI-2-SEC       SECTION.
       *
            INITIALIZE                  SRYACT-REC.
            MOVE    ACCT-HOSPID         TO  SRY-HOSPID.
@@ -1562,7 +1585,7 @@
                                        ORCMCPAREA
                                        MCPDATA-REC.
       *
-       T-100-RECECHEK-HANTEI-EXT.
+       T-100-RECECHEK-HANTEI-2-EXT.
            EXIT.
       *
       *******************
@@ -1664,45 +1687,105 @@
       *
        T-200-RECECHEK-CHK1-SEC           SECTION.
       *
-           IF  ((T-ERR-01          =   SPACE)         OR
-                (T-ERR-02          =   SPACE)         OR
-                (T-ERR-13-2        =   SPACE))       AND
-               (((ACCT-PTID     NOT =   PTHKN-PTID)  AND
-                 (COMB-HKNID    NOT =   ZERO))        OR
-                ((ACCT-PTID         =   PTHKN-PTID)  AND
-                 (COMB-HKNID    NOT =   PTHKN-HKNID) AND
-                 (COMB-HKNID    NOT =   ZERO)))      AND
-               (COMB-HKNNUM   NOT =   W-HKNNUM1  AND  W-HKNNUM2)
-               PERFORM T-300-RECECHEK-SEC
+      *修正/*開始*03.08.26*********************************************
+      *     IF  ((T-ERR-01          =   SPACE)         OR
+      *          (T-ERR-02          =   SPACE)         OR
+      *          (T-ERR-13-2        =   SPACE))       AND
+      *         (((ACCT-PTID     NOT =   PTHKN-PTID)  AND
+      *           (COMB-HKNID    NOT =   ZERO))        OR
+      *          ((ACCT-PTID         =   PTHKN-PTID)  AND
+      *           (COMB-HKNID    NOT =   PTHKN-HKNID) AND
+      *           (COMB-HKNID    NOT =   ZERO)))      AND
+      *         (COMB-HKNNUM   NOT =   W-HKNNUM1  AND  W-HKNNUM2)
+      *         PERFORM T-300-RECECHEK-SEC
+      *     END-IF.
+      *     IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
+      *          (COMB-KOH1ID    NOT =   ZERO))        OR
+      *         ((ACCT-PTID          =   PTKOH-PTID)  AND
+      *          (COMB-KOH1ID    NOT =   PTKOH-KOHID) AND
+      *          (COMB-KOH1ID    NOT =   ZERO))
+      *         PERFORM T-401-RECECHEK-SEC
+      *     END-IF.
+      *     IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
+      *          (COMB-KOH2ID    NOT =   ZERO))        OR
+      *         ((ACCT-PTID          =   PTKOH-PTID)  AND
+      *          (COMB-KOH2ID    NOT =   PTKOH-KOHID) AND
+      *          (COMB-KOH2ID    NOT =   ZERO))
+      *         PERFORM T-402-RECECHEK-SEC
+      *     END-IF.
+      *     IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
+      *          (COMB-KOH3ID    NOT =   ZERO))        OR
+      *         ((ACCT-PTID          =   PTKOH-PTID)  AND
+      *          (COMB-KOH3ID    NOT =   PTKOH-KOHID) AND
+      *          (COMB-KOH3ID    NOT =   ZERO))
+      *         PERFORM T-403-RECECHEK-SEC
+      *     END-IF.
+      *     IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
+      *          (COMB-KOH4ID    NOT =   ZERO))        OR
+      *         ((ACCT-PTID          =   PTKOH-PTID)  AND
+      *          (COMB-KOH4ID    NOT =   PTKOH-KOHID) AND
+      *          (COMB-KOH4ID    NOT =   ZERO))
+      *         PERFORM T-404-RECECHEK-SEC
+      *     END-IF.
+           MOVE    SPACE             TO  T-HANNTEI8.
+           IF  ((SPA-GMN-CNV (19)  =   SPACE)  AND
+                (COMB-HKNNUM   NOT =   W-HKNNUM1   AND
+                                       W-HKNNUM2   AND
+                                       W-HKNNUM3   AND
+                                       W-HKNNUM4))    OR
+               ((SPA-GMN-CNV (19)  =   "1")    AND
+                (COMB-HKNNUM   NOT =   W-HKNNUM1))    OR
+               ((SPA-GMN-CNV (19)  =   "2")    AND
+                (COMB-HKNNUM       =   W-HKNNUM2   OR
+                                       W-HKNNUM3   OR
+                                       W-HKNNUM4))
+               MOVE    "*"               TO  T-HANNTEI8
            END-IF.
-           IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
-                (COMB-KOH1ID    NOT =   ZERO))        OR
-               ((ACCT-PTID          =   PTKOH-PTID)  AND
-                (COMB-KOH1ID    NOT =   PTKOH-KOHID) AND
-                (COMB-KOH1ID    NOT =   ZERO))
-               PERFORM T-401-RECECHEK-SEC
+           IF  T-HANNTEI8         =   "*"
+               IF  ((T-ERR-01          =   SPACE)         OR
+                    (T-ERR-02          =   SPACE)         OR
+                    (T-ERR-13-2        =   SPACE))       AND
+                   (((ACCT-PTID     NOT =   PTHKN-PTID)  AND
+                     (COMB-HKNID    NOT =   ZERO))        OR
+                    ((ACCT-PTID         =   PTHKN-PTID)  AND
+                     (COMB-HKNID    NOT =   PTHKN-HKNID) AND
+                     (COMB-HKNID    NOT =   ZERO)))      AND
+                   (COMB-HKNNUM   NOT =   W-HKNNUM1  AND
+                                          W-HKNNUM2  AND
+                                          W-HKNNUM3  AND
+                                          W-HKNNUM4)
+                   PERFORM T-300-RECECHEK-SEC
+               END-IF
+               IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
+                    (COMB-KOH1ID    NOT =   ZERO))        OR
+                   ((ACCT-PTID          =   PTKOH-PTID)  AND
+                    (COMB-KOH1ID    NOT =   PTKOH-KOHID) AND
+                    (COMB-KOH1ID    NOT =   ZERO))
+                   PERFORM T-401-RECECHEK-SEC
+               END-IF
+               IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
+                    (COMB-KOH2ID    NOT =   ZERO))        OR
+                   ((ACCT-PTID          =   PTKOH-PTID)  AND
+                    (COMB-KOH2ID    NOT =   PTKOH-KOHID) AND
+                    (COMB-KOH2ID    NOT =   ZERO))
+                   PERFORM T-402-RECECHEK-SEC
+               END-IF
+               IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
+                    (COMB-KOH3ID    NOT =   ZERO))        OR
+                   ((ACCT-PTID          =   PTKOH-PTID)  AND
+                    (COMB-KOH3ID    NOT =   PTKOH-KOHID) AND
+                    (COMB-KOH3ID    NOT =   ZERO))
+                   PERFORM T-403-RECECHEK-SEC
+               END-IF
+               IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
+                    (COMB-KOH4ID    NOT =   ZERO))        OR
+                   ((ACCT-PTID          =   PTKOH-PTID)  AND
+                    (COMB-KOH4ID    NOT =   PTKOH-KOHID) AND
+                    (COMB-KOH4ID    NOT =   ZERO))
+                   PERFORM T-404-RECECHEK-SEC
+               END-IF
            END-IF.
-           IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
-                (COMB-KOH2ID    NOT =   ZERO))        OR
-               ((ACCT-PTID          =   PTKOH-PTID)  AND
-                (COMB-KOH2ID    NOT =   PTKOH-KOHID) AND
-                (COMB-KOH2ID    NOT =   ZERO))
-               PERFORM T-402-RECECHEK-SEC
-           END-IF.
-           IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
-                (COMB-KOH3ID    NOT =   ZERO))        OR
-               ((ACCT-PTID          =   PTKOH-PTID)  AND
-                (COMB-KOH3ID    NOT =   PTKOH-KOHID) AND
-                (COMB-KOH3ID    NOT =   ZERO))
-               PERFORM T-403-RECECHEK-SEC
-           END-IF.
-           IF  ((ACCT-PTID      NOT =   PTKOH-PTID)  AND
-                (COMB-KOH4ID    NOT =   ZERO))        OR
-               ((ACCT-PTID          =   PTKOH-PTID)  AND
-                (COMB-KOH4ID    NOT =   PTKOH-KOHID) AND
-                (COMB-KOH4ID    NOT =   ZERO))
-               PERFORM T-404-RECECHEK-SEC
-           END-IF.
+      *修正/*終了*03.08.26*********************************************
       *
        T-200-RECECHEK-CHK1-EXT.
            EXIT.
@@ -2914,7 +2997,35 @@
                                    END-IF
                                END-PERFORM
                                IF  PTBYO-SRYYMD    >   W-YMD5
-                                   PERFORM T-520-RECECHEK-SEC
+                                   IF  W-S-KBN    =   SPACE
+                                       MOVE    "*"       TO  W-S-KBN
+                                   END-IF
+                                   PERFORM VARYING  IDX5  FROM  1  BY 1
+                                           UNTIL    IDX5  >   100
+                                       IF  W-S-BYOMEI (IDX5) = SPACE
+                                           MOVE    ACCT-HOSPID
+                                                   TO  W-S-HOSPID (IDX5)
+                                           MOVE    ACCT-PTID
+                                                   TO  W-S-PTID (IDX5)
+                                           MOVE    PTBYO-SRYKA
+                                                   TO  W-S-SRYKA (IDX5)
+                                           MOVE    PTBYO-SRYYMD
+                                                   TO  W-S-SRYYMD (IDX5)
+                                           MOVE    PTBYO-BYOMEI(1:40)
+                                                   TO  W-S-BYOMEI (IDX5)
+                                           MOVE    IDX5      TO  W-S-MAX
+                                           MOVE    200       TO  IDX5
+                                       ELSE
+                                           IF  W-S-BYOMEI (IDX5)
+                                                   =  PTBYO-BYOMEI(1:40)
+                                               MOVE    200     TO  IDX5
+                                           END-IF
+                                       END-IF
+                                   END-PERFORM
+                               ELSE
+                                   IF  PTBYO-TENKIKBN   =   SPACE
+                                       MOVE    "+"       TO  W-S-KBN
+                                   END-IF
                                END-IF
                            END-IF
                            IF  (SPA-GMN-CNV (15) NOT = SPACE)  AND
@@ -2927,10 +3038,10 @@
                                (PTBYO-BYOMEICD (5)   = SPACE)  AND
                                (PTBYO-BYOMEICD (6)   = SPACE)
                                COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-                               MOVE SPACE            TO  DID2-REC
-                               MOVE ACCT-HOSPID      TO  DID2-REC(1:24)
-                               MOVE "-"              TO  DID2-REC(25:1)
-                               MOVE ACCT-PTID        TO  DID2-REC(26:10)
+                               MOVE    SPACE         TO  DID2-REC
+                               MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
+                               MOVE    "-"           TO  DID2-REC(25:1)
+                               MOVE    ACCT-PTID     TO  DID2-REC(26:10)
                                MOVE    ACCT-SRYKA    TO  DID2-REC(191:2)
                                STRING  T-MESSAGE-510-06
                                                      DELIMITED BY SPACE
@@ -2980,111 +3091,83 @@
       *****************************************************************
        T-520-RECECHEK-SEC                SECTION.
       *
-           INITIALIZE                  SRYKARRK-REC.
-           MOVE    ACCT-HOSPID         TO  KARRK-HOSPID.
-           MOVE    ACCT-PTID           TO  KARRK-PTID.
-           MOVE    PTBYO-SRYKA         TO  KARRK-SRYKA.
+           IF  SPA-GMN-CNV (6)  =  "1"
+               MOVE    1                   TO  W-S-MAX
+           END-IF.
       *
-           MOVE    SRYKARRK-REC        TO  MCPDATA-REC.
-           MOVE    "DBSELECT"          TO  MCP-FUNC.
-           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+           PERFORM VARYING IDW4  FROM  1  BY 1
+                   UNTIL   IDW4  >  W-S-MAX
+               INITIALIZE                  SRYKARRK-REC
+               MOVE    W-S-HOSPID (IDW4)   TO  KARRK-HOSPID
+               MOVE    W-S-PTID (IDW4)     TO  KARRK-PTID
+               MOVE    W-S-SRYKA (IDW4)    TO  KARRK-SRYKA
       *
-           IF  MCP-RC   NOT =   ZERO
-               IF  FLG-ERR-TBL   =   ZERO
-                   MOVE    1                       TO  FLG-ERR-TBL
-                   MOVE    SPACE                   TO  DID2-REC
-                   MOVE    ACCT-HOSPID             TO  DID2-REC(1:24)
-                   MOVE    "-"                     TO  DID2-REC(25:1)
-                   MOVE    ACCT-PTID               TO  DID2-REC(26:10)
-                   MOVE    T-MESSAGE-520-01        TO  DID2-REC(71:90)
-                   WRITE   DID2-REC
-               END-IF
-               MOVE    SPACE                   TO  DID3-REC
-               MOVE    T-MESSAGE-520-01(1:60)  TO  DID3-REC(1:60)
-               WRITE   DID3-REC
-           ELSE
-               PERFORM T-520-RECECHEK-READ-SEC
-               IF  MCP-RC    NOT  =   ZERO
-                   MOVE    SPACE                 TO  DID2-REC
-                   MOVE    ACCT-HOSPID           TO  DID2-REC(1:24)
-                   MOVE    "-"                   TO  DID2-REC(25:1)
-                   MOVE    ACCT-PTID             TO  DID2-REC(26:10)
-                   MOVE    "-"                   TO  DID2-REC(36:1)
-                   MOVE    PTBYO-SRYKA           TO  DID2-REC(37:2)
-                   MOVE    T-MESSAGE-520-02      TO  DID2-REC(71:90)
-                   MOVE    PTBYO-SRYKA           TO  DID2-REC(191:2)
-                   IF  SPA-GMN-CNV (6)  =  "1"
+               MOVE    SRYKARRK-REC        TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *
+               IF  MCP-RC   NOT =   ZERO
+                   IF  FLG-ERR-TBL   =   ZERO
+                       MOVE    1                   TO  FLG-ERR-TBL
+                       MOVE    SPACE               TO  DID2-REC
+                       MOVE    W-S-HOSPID (IDW4)   TO  DID2-REC(1:24)
+                       MOVE    "-"                 TO  DID2-REC(25:1)
+                       MOVE    W-S-PTID (IDW4)     TO  DID2-REC(26:10)
+                       MOVE    T-MESSAGE-520-01    TO  DID2-REC(71:90)
+                       WRITE   DID2-REC
+                   END-IF
+                   MOVE    SPACE                   TO  DID3-REC
+                   MOVE    T-MESSAGE-520-01(1:60)  TO  DID3-REC(1:60)
+                   WRITE   DID3-REC
+               ELSE
+                   PERFORM T-520-RECECHEK-READ-SEC
+                   IF  MCP-RC    NOT  =   ZERO
+                       MOVE    SPACE             TO  DID2-REC
+                       MOVE    W-S-HOSPID (IDW4) TO  DID2-REC(1:24)
+                       MOVE    "-"               TO  DID2-REC(25:1)
+                       MOVE    W-S-PTID (IDW4)   TO  DID2-REC(26:10)
+                       MOVE    "-"               TO  DID2-REC(36:1)
+                       MOVE    W-S-SRYKA (IDW4)  TO  DID2-REC(37:2)
+                       MOVE    T-MESSAGE-520-02  TO  DID2-REC(71:90)
+                       MOVE    W-S-SRYKA (IDW4)  TO  DID2-REC(191:2)
                        WRITE   DID2-REC
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                    ELSE
-                       PERFORM VARYING  IDX5  FROM  1  BY 1
-                               UNTIL    IDX5  >   100
-                           IF  W-HANNTEI-PTBYO (IDX5)
-                                                   =  PTBYO-BYOMEICD (1)
-                               MOVE    200               TO  IDX5
-                           ELSE
-                               IF  W-HANNTEI-PTBYO (IDX5)  =  SPACE
-                                   WRITE   DID2-REC
-                                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                                   MOVE    PTBYO-BYOMEICD (1)
-                                           TO  W-HANNTEI-PTBYO (IDX5)
-                                   MOVE    200             TO  IDX5
-                               END-IF
-                           END-IF
-                       END-PERFORM
-                   END-IF
-                   IF  SPA-GMN-CNV (6)  =  "1"
-                       MOVE    "*"                   TO  T-ERR-06
-                   END-IF
-               ELSE
-                   MOVE    MCPDATA-REC           TO  SRYKARRK-REC
-                   IF  PTBYO-SRYYMD(1:6)   <   KARRK-SYOSINYMD1(1:6)
-                       MOVE    SPACE                 TO  DID2-REC
-                       MOVE    ACCT-HOSPID           TO  DID2-REC(1:24)
-                       MOVE    "-"                   TO  DID2-REC(25:1)
-                       MOVE    ACCT-PTID             TO  DID2-REC(26:10)
-                       MOVE    "-"                   TO  DID2-REC(36:1)
-                       MOVE    PTBYO-SRYKA           TO  DID2-REC(37:2)
-                       MOVE    T-MESSAGE-520-03      TO  DID2-REC(71:90)
-                       MOVE    PTBYO-SRYKA           TO  DID2-REC(191:2)
-                       IF  SPA-GMN-CNV (6)  =  "1"
+                       MOVE    MCPDATA-REC       TO  SRYKARRK-REC
+      *修正/*開始*03.08.26*********************************************
+      *                 IF  PTBYO-SRYYMD(1:6)   <   KARRK-SYOSINYMD1(1:6)
+                       IF  W-S-SRYYMD (IDW4)    NOT =  KARRK-SYOSINYMD1
+      *修正/*終了*03.08.26*********************************************
+                           MOVE    SPACE             TO  DID2-REC
+                           MOVE    W-S-HOSPID (IDW4) TO  DID2-REC(1:24)
+                           MOVE    "-"               TO  DID2-REC(25:1)
+                           MOVE    W-S-PTID (IDW4)   TO  DID2-REC(26:10)
+                           MOVE    "-"               TO  DID2-REC(36:1)
+                           MOVE    W-S-SRYKA (IDW4)  TO  DID2-REC(37:2)
+                           STRING  T-MESSAGE-520-03  DELIMITED BY SPACE
+                                   "、"              DELIMITED BY SIZE
+                                   W-S-BYOMEI (IDW4) DELIMITED BY SPACE
+                                        INTO         DID2-REC(71:90)
+                           END-STRING
+                           MOVE    W-S-SRYKA (IDW4)  TO  DID2-REC(191:2)
                            WRITE   DID2-REC
                            COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                       ELSE
-                           PERFORM VARYING  IDX5  FROM  1  BY 1
-                                   UNTIL    IDX5  >   100
-                               IF  W-HANNTEI-PTBYO (IDX5)
-                                                   =  PTBYO-BYOMEICD (1)
-                                   MOVE    200               TO  IDX5
-                               ELSE
-                                   IF  W-HANNTEI-PTBYO (IDX5)  =  SPACE
-                                       WRITE   DID2-REC
-                                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                                       MOVE    PTBYO-BYOMEICD (1)
-                                             TO  W-HANNTEI-PTBYO (IDX5)
-                                       MOVE    200             TO  IDX5
-                                   END-IF
-                               END-IF
-                           END-PERFORM
-                       END-IF
-                       IF  SPA-GMN-CNV (6)  =  "1"
-                           MOVE    "*"                   TO  T-ERR-06
                        END-IF
                    END-IF
                END-IF
-           END-IF.
       *
-           INITIALIZE                  MCPAREA.
-           MOVE    "DBCLOSE"           TO  MCP-FUNC.
-           MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH.
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC.
+               INITIALIZE                  MCPAREA
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           END-PERFORM.
       *
        T-520-RECECHEK-EXT.
            EXIT.
