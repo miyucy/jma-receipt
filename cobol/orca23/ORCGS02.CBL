@@ -75,6 +75,7 @@
       *                                     カンマ編集するよう修正
       *  01.01.19    NACL-森脇    02/12/19  支払証明書印刷追加
       *  01.01.20    NACL-太田    03/02/18  入院請求は取消可能とする
+      *  01.01.21    NACL-太田    03/03/07  排他制御機能追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -446,6 +447,10 @@
       *
       *    帳票サブ < 請求書兼領収書 >
            COPY    "CPORCHCN03.INC".
+      *
+      *    排他制御サブパラメタ
+           COPY    "CPORCSLOCK.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -609,6 +614,9 @@
                    IF      SPA-PTNUM       NOT =   SPACE
                        MOVE    SPA-PTNUM       TO  S02-PTNUM
                        PERFORM 4102-PTNUM-CHK-SEC
+                       IF    ( SPA-ERRCD   NOT =   SPACE )
+                           GO  TO  300-SCREEN-EXT
+                       END-IF
       *                収納編集
                        MOVE    SPA-SRYKAMEI    TO  SPA-GMN-SRYKAMEI
                        MOVE    SPA-SRYKA       TO  SPA-GMN-SRYKA
@@ -623,6 +631,9 @@
                    IF      SPA-PTNUM       NOT =   SPACE
                        MOVE    SPA-PTNUM       TO  S02-PTNUM
                        PERFORM 4102-PTNUM-CHK-SEC
+                       IF    ( SPA-ERRCD   NOT =   SPACE )
+                           GO  TO  300-SCREEN-EXT
+                       END-IF
       *                収納編集
                        MOVE    SPA-SRYKAMEI    TO  SPA-GMN-SRYKAMEI
                        MOVE    SPA-SRYKA       TO  SPA-GMN-SRYKA
@@ -690,6 +701,9 @@
       *            初期表示へ
                    MOVE    WRK-SPA-PTNUM   TO  S02-PTNUM
                    PERFORM 4102-PTNUM-CHK-SEC
+                   IF    ( SPA-ERRCD   NOT =   SPACE )
+                       GO  TO  3101-P97SPASET-EXT
+                   END-IF
                END-IF
            END-IF
       *
@@ -1468,13 +1482,15 @@
       *
            MOVE    2                   TO  SPA-GMN-CUR
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
            INITIALIZE                  SPA-GMN-HEAD
                                        SPA-GMN-TBL
                                        SPA-GMN-INPUT
                                        SPA-NAI-TBL
                                        SPA-GMN-MAX
                                        SPA-NAI-SELNO
-      *
            MOVE    S02-PTNUM           TO  SPA-GMN-PTNUM
       *
       *****INITIALIZE                      ORCSPTIDAREA
@@ -1536,6 +1552,12 @@
                MOVE    SPACE               TO  SPA-GMN-NAME
                MOVE    "0031"              TO  SPA-ERRCD
                GO      TO      4102-PTNUM-CHK-EXT
+           END-IF
+      *
+      *    排他制御処理
+           PERFORM 990-LOCK-IN-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO      4102-PTNUM-CHK-EXT
            END-IF
       *
            MOVE    PTINF-NAME        TO  SPA-GMN-NAME
@@ -1769,6 +1791,9 @@
       *    戻る　処理
       **************************************************************
        210-BACK                    SECTION.
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
       *
       *    診療行為より遷移時、診療行為へ
            MOVE    SPACE               TO  LINKAREA
@@ -4153,6 +4178,9 @@
       *****************************************************************
        420-CLEA-SEC        SECTION.
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
            INITIALIZE                  SPA-S02-AREA
            IF      SPA-SRYYMD          =   SPACE
                MOVE    SPA-SYSYMDWH(1:6)   TO  SPA-GMN-SRYYM
@@ -4181,6 +4209,9 @@
       *
            MOVE    SPA-LAST-PTNUM      TO  S02-PTNUM
            PERFORM 4102-PTNUM-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  430-MAEKPTNUM-EXT
+           END-IF
       *
            .
        430-MAEKPTNUM-EXT.
@@ -4404,6 +4435,10 @@
                WHEN    "1005"
                    MOVE "定期請求情報の更新処理でエラーになりました"
                                                TO  SPA-ERRMSG
+               WHEN    "9999"
+                   MOVE    "他端末で使用中です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
            END-EVALUATE
       *
            MOVE    SPACE                TO  SERR
@@ -4824,6 +4859,40 @@
       *
            .
        980-SYUNOU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御処理
+      *****************************************************************
+       990-LOCK-IN-SEC         SECTION.
+      *
+      *    排他制御処理
+           MOVE    1                   TO  SLOCK-MODE
+           MOVE    SPA-GMN-PTID        TO  SLOCK-PTID
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           IF    ( SLOCK-RETURN    NOT =   ZERO )
+               MOVE    "9999"          TO  SPA-ERRCD
+           END-IF
+           .
+       990-LOCK-IN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御解除処理
+      *****************************************************************
+       990-LOCK-OUT-SEC         SECTION.
+      *
+      *    排他制御解除処理
+           MOVE    2                   TO  SLOCK-MODE
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           .
+       990-LOCK-OUT-EXT.
            EXIT.
       *
       *
