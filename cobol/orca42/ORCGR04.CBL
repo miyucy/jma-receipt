@@ -191,7 +191,7 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
            03  WRK-RECEERR         PIC X(200).
-           03  WRK-RECEKBN         PIC X(06).
+           03  WRK-RECEKBN         PIC X(08).
            03  WRK-PREFKBN         PIC X(01).
            03  WRK-TEISYUTUSAKI    PIC X(01).
            03  WRK-HENFLG          PIC 9(01).
