@@ -1231,7 +1231,8 @@
       *****************************************************************
        290-TSYRRK-SYORI-SEC            SECTION.
       *
-           MOVE    PARA-DATA-REC        TO  TSYRRK-REC
+           MOVE    PARA-DATA-REC       TO  TSYRRK-REC
+           MOVE    SPA-GMN-PTID        TO  TSYRRK-PTID
       *
       *
            EVALUATE    TRUE
@@ -1294,7 +1295,8 @@
       *****************************************************************
        291-TNKRRK-SYORI-SEC             SECTION.
       *
-           MOVE    PARA-DATA-REC        TO  TNKRRK-REC
+           MOVE    PARA-DATA-REC       TO  TNKRRK-REC
+           MOVE    SPA-GMN-PTID        TO  TNKRRK-PTID
       *
            EVALUATE    TRUE
       *    ºï½ü
@@ -2020,7 +2022,7 @@
                                             ORCMCPAREA
                                             MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1009-REC
+      ******   MOVE    MCPDATA-REC         TO  SYS-1009-REC
                MOVE    ZERO                TO  FLG-SYSKANRI
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI
