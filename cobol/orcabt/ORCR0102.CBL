@@ -594,6 +594,7 @@
                WHEN    "HCM06V01.red"                  
                WHEN    "HCM06V02.red"                  
                WHEN    "HCM09.red"                  
+               WHEN    "HCRCP060.red"                  
                    MOVE    "医科レセプト（入院外）"    TO  SPRT-TITLE
                WHEN    "HCN06.red"                  
                WHEN    "HCN061.red"                  

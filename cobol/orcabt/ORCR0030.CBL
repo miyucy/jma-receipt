@@ -116,10 +116,13 @@
       *  01.02.22   NACL-ÃÁœ∆     03/05/13  ΩË ˝§ª§Û≤ÛøÙ§Œ•ª•√•»Ω§¿µ
       *  01.02.23   NACL-ÃÁœ∆     03/05/22  ªƒŒÃ«—¥˛§ŒøÙŒÃ•ª•√•»
       *  01.02.24   NACL-ÃÁœ∆     03/05/23  ∞Ï…Ù…È√¥∂‚µ≠∫‹Ω§¿µ
+      *
+      *  £≤£∞£∞£≥«Ø£∂∑Ó≤˛¿µ¬–±˛
       *  01.02.25   NACL-ÃÁœ∆     03/05/30   ø¿Æ£±£µ«Ø£∂∑Ó≤˛¿µ§À¥ÿ§Ô§Î
       *                                     ∫∆ø«Œ¡¥ÿ∑∏§Œ≈¶Õ◊ÕÛ ‘Ω∏Ω§¿µ
       *  01.02.26   NACL-ÃÁœ∆     03/06/03  ≥∞ÕËø«Œ≈Œ¡¬–±˛
       *                                     °  ø¿Æ£±£µ«Ø£∂∑Ó∞ πﬂ°À
+      *  01.02.27   NACL-∆£∏∂     03/06/30  ª∞ºÔ∏¯»Ò§Œ§»§≠§Œ£œ£√£“§ŒΩ§¿µ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -271,6 +274,12 @@
            03  BUN-IDX2                                PIC 9(03).
            03  BUN-IDX3                                PIC 9(03).
            03  BUN-IDX4                                PIC 9(03).
+      *     
+           03  IDA                 PIC 9(04).
+           03  IDB                 PIC 9(04).
+           03  SEIHIDX             PIC 9(02).
+           03  KAKKIDX             PIC 9(02).
+           03  SESNIDX             PIC 9(02).
       *
       *    £œ£√£“ ‘Ω∏ŒŒ∞Ë
        01  OCR1-AREA.
@@ -393,6 +402,10 @@
            03  WRK-SRYSURYO2                           PIC 9(05).
            03  WRK-SRYSURYO3                           PIC 9(05).
            03  WRK-RENNUM                              PIC 9(02).
+      *
+      *    1∑ÂÃ‹:¿∏ › 2∑ÂÃ‹:∑Î≥À 3∑ÂÃ‹:¿∫ø¿
+           03  WRK-3SYU-KBN.
+               05  WRK-3SYU        PIC X(03).
       *
       *    øÙª˙»æ≥—¡¥≥— —¥πÕ—     
            03  WRK-CHAR-IDX                    PIC 9(02).
@@ -587,7 +600,7 @@
       *****************************************************************
       *
       *    »æ≥—•¡•ß•√•Ø•µ•÷
-      **** COPY    "CPORCSKANACHK.INC".
+           COPY    "CPORCSKANACHK.INC".
       *
       *   ∆¸…’ —¥π•µ•÷
            COPY    "CPORCSDAY.INC".
@@ -790,13 +803,63 @@
            PERFORM     KHNTEN-CLEAR-SEC
            PERFORM     SAIKEI-KEISAN-SEC
       *
-           IF   RECE02-TEISYUTUSAKI     =     1
-           OR  (RECE02-TEISYUTUSAKI     =     2   AND
-                SYS-2005-KKHOCRKBN      =     "1"     )   
+           IF      IDZ                  =   1
+               IF   RECE02-TEISYUTUSAKI     =     1
+               OR  (RECE02-TEISYUTUSAKI     =     2   AND
+                    SYS-2005-KKHOCRKBN      =     "1"     )   
+      *
+      *            ∞ÂŒ≈ ›∏±°¶∏¯»Ò§Œ•’•È•∞
+                   MOVE    SPACE              TO  WRK-3SYU-KBN
+                   MOVE    ZERO               TO  SEIHIDX
+                   MOVE    ZERO               TO  KAKKIDX
+                   MOVE    ZERO               TO  SESNIDX
+                   PERFORM   VARYING   IDX  FROM    1   BY  1
+                         UNTIL   ( IDX                >    4    )
+                         OR      ( RECE02-KOHID(IDX)  =   SPACE )
+      *            ¿∏ ›
+                   IF  RECE02-KOHNUM (IDX)  =   "012"
+                       MOVE    "1"          TO  WRK-3SYU (1:1)
+                       MOVE     IDX         TO  SEIHIDX
+                   END-IF
+      *            ∑Î≥À
+                   IF  RECE02-KOHNUM (IDX)  =   "010"  OR  "011"
+                       MOVE    "1"          TO  WRK-3SYU (2:1)
+                       MOVE     IDX         TO  KAKKIDX
+                   END-IF
+      *            ¿∫ø¿
+                   IF  RECE02-KOHNUM (IDX)  =   "020"  OR  "021"
+                       MOVE    "1"          TO  WRK-3SYU (3:1)
+                       MOVE     IDX         TO  SESNIDX
+                   END-IF
+               END-PERFORM
+      *    
+               IF      WRK-3SYU-KBN           =   ALL "1" AND 
+                       RECE02-HKNNUM          =   SPACE            
+      *            £≥ºÔ§ŒæÏπÁ
+                   IF  KAKKIDX         >   SESNIDX
+                       MOVE    SESNIDX     TO  IDA
+                       MOVE    KAKKIDX     TO  IDB
+                   ELSE
+                       MOVE    KAKKIDX     TO  IDA
+                       MOVE    SESNIDX     TO  IDB
+                   END-IF
+                   COMPUTE IDX1     =   SEIHIDX    +   1
+                   COMPUTE IDX2     =   IDA        +   1
+                   COMPUTE IDX3     =   IDB        +   1
+               ELSE    
+      *            £≥ºÔ∞ ≥∞§ŒæÏπÁ
+                   MOVE    1               TO  IDA
+                   MOVE    2               TO  IDB
+                   MOVE    1               TO  IDX1
+                   MOVE    2               TO  IDX2
+                   MOVE    3               TO  IDX3
+               END-IF
+      *
                PERFORM     OCR1-HENSYU-SEC
                PERFORM     OCR2-HENSYU-SEC
                PERFORM     OCR3-HENSYU-SEC
            END-IF
+      *
            PERFORM     RECE02-REWRITE-SEC
            .
        210-HENSYU-EXT.
@@ -3482,25 +3545,40 @@
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•◊•»£œ£√£“ŒŒ∞Ë§Œ•ª•√•»£±° £∆£∞£∞£≤°À
+      *    •Ï•ª•◊•»£œ£√£“ŒŒ∞Ë§Œ•ª•√•»£±
       *****************************************************************
        OCR1-HENSYU-SEC                   SECTION.
       *
            INITIALIZE                           OCR1-AREA
       *
       * ›∏±º‘»÷πÊ
-           INITIALIZE                           ORCSNUMAREA
-           MOVE    RECE02-HKNJANUM      TO      SNUM-INX
-           CALL    "ORCSNUM"            USING   ORCSNUMAREA
-           IF      SNUM-RC              =       ZERO
-                   MOVE   SNUM-OUTNUM   TO      OCR1-HKNJANUM
+           IF      WRK-3SYU-KBN           =   ALL "1" AND 
+                   RECE02-HKNNUM          =   SPACE            
+      *        £≥ºÔ§ŒæÏπÁ
+               INITIALIZE                           ORCSNUMAREA
+               MOVE    RECE02-KOHFTNJANUM(SEIHIDX)
+                                            TO      SNUM-INX
+               CALL    "ORCSNUM"            USING   ORCSNUMAREA
+               IF      SNUM-RC              =       ZERO
+                       MOVE   SNUM-OUTNUM   TO      OCR1-HKNJANUM
+               ELSE
+                       MOVE   ZERO          TO      OCR1-HKNJANUM
+               END-IF
            ELSE
-                   MOVE   ZERO          TO      OCR1-HKNJANUM
+               INITIALIZE                           ORCSNUMAREA
+               MOVE    RECE02-HKNJANUM      TO      SNUM-INX
+               CALL    "ORCSNUM"            USING   ORCSNUMAREA
+               IF      SNUM-RC              =       ZERO
+                       MOVE   SNUM-OUTNUM   TO      OCR1-HKNJANUM
+               ELSE
+                       MOVE   ZERO          TO      OCR1-HKNJANUM
+               END-IF
            END-IF
       *∞ÂŒ≈µ°¥ÿ•≥°º•…
            MOVE   SYS-1001-HOSPCD       TO      OCR1-HOSPCD
       *¿¡µ·≈¿øÙ
-           MOVE    RECE02-TOTALTEN(1)   TO      OCR1-SKYTENSU
+           MOVE    RECE02-TOTALTEN(IDX1)
+                                        TO      OCR1-SKYTENSU
       *•¡•ß•√•Ø•«•£•∏•√•»£±
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
@@ -3512,7 +3590,7 @@
                    MOVE  ZERO           TO      OCR1-CHKDGT1
            END-IF
       *ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚
-           MOVE    RECE02-YKZFTN(1)     TO      OCR1-YKZFTN
+           MOVE    RECE02-YKZFTN(IDX1)  TO      OCR1-YKZFTN
       *•¡•ß•√•Ø•«•£•∏•√•»£≤
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
@@ -3524,7 +3602,8 @@
                    MOVE  ZERO           TO      OCR1-CHKDGT2
            END-IF
       *∞Ï…Ù…È√¥∂‚
-           MOVE    RECE02-FTNMONEY(1)   TO      OCR1-FTNMONEY
+           MOVE    RECE02-FTNMONEY(IDX1)
+                                        TO      OCR1-FTNMONEY
       *•¡•ß•√•Ø•«•£•∏•√•»£≥
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
@@ -3546,7 +3625,7 @@
                    MOVE  ZERO           TO      OCR1-CHKDGT4
            END-IF
       *ø«Œ≈º¬∆¸øÙ
-           MOVE    RECE02-JNISSU(1)     TO      OCR1-JNISSU
+           MOVE    RECE02-JNISSU(IDX1)  TO      OCR1-JNISSU
       *ø«Œ≈«Ø∑Ó° œ¬ŒÒ°À
            INITIALIZE                           LNK-DAY1-AREA
            INITIALIZE                           STS-AREA-DAY
@@ -3679,14 +3758,34 @@
            ELSE
                    MOVE  ZERO           TO      OCR2-CHKDGT1
            END-IF
-      *µ≠πÊ
-           MOVE    RECE02-KIGO         TO  WRK-ZENKAKU
-           PERFORM 800-NUM-ZENKAKU-HENKAN-SEC
-           MOVE    WRK-NUM (1:IDY)     TO  OCR2-KIGO
-      *»÷πÊ
-           MOVE    RECE02-NUM          TO  WRK-ZENKAKU
-           PERFORM 800-NUM-ZENKAKU-HENKAN-SEC
-           MOVE    WRK-NUM (1:IDY)     TO  OCR2-NUM
+      *µ≠πÊ°¶»÷πÊ
+           IF      WRK-3SYU-KBN           =   ALL "1" AND 
+                   RECE02-HKNNUM          =   SPACE
+      *        £≥ºÔ§ŒæÏπÁ° £∏∑Â°À
+               IF      RECE02-KOHJKYSNUM(SEIHIDX) =       SPACE
+                   MOVE  ZERO               TO      OCR2-KIGO
+               ELSE
+                   INITIALIZE                       ORCSNUMAREA
+                   MOVE    RECE02-KOHJKYSNUM(SEIHIDX)
+                                            TO      SNUM-INX
+                   CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                   IF      SNUM-RC          =       ZERO
+                       MOVE   SNUM-OUTNUM
+                                        TO      OCR2-KIGO
+                   ELSE
+                       MOVE   ZERO      TO      OCR2-KIGO
+                   END-IF
+               END-IF
+               MOVE    ZERO                TO  OCR2-NUM
+           ELSE
+               MOVE    RECE02-KIGO         TO  WRK-ZENKAKU
+               PERFORM 800-NUM-ZENKAKU-HENKAN-SEC
+               MOVE    WRK-NUM (1:IDY)     TO  OCR2-KIGO
+      *
+               MOVE    RECE02-NUM          TO  WRK-ZENKAKU
+               PERFORM 800-NUM-ZENKAKU-HENKAN-SEC
+               MOVE    WRK-NUM (1:IDY)     TO  OCR2-NUM
+           END-IF
       *•¡•ß•√•Ø•«•£•∏•√•»£≤
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
@@ -3698,11 +3797,11 @@
                    MOVE  ZERO           TO      OCR2-CHKDGT2
            END-IF
       *∏¯»Ò£±…È√¥º‘»÷πÊ
-           IF      RECE02-KOHFTNJANUM(1) =      SPACE
+           IF      RECE02-KOHFTNJANUM(IDA) =      SPACE
                MOVE  ZERO               TO      OCR2-FTNJANUM
            ELSE
                INITIALIZE                       ORCSNUMAREA
-               MOVE    RECE02-KOHFTNJANUM(1)
+               MOVE    RECE02-KOHFTNJANUM(IDA)
                                         TO      SNUM-INX
                CALL    "ORCSNUM"        USING   ORCSNUMAREA
                IF      SNUM-RC          =       ZERO
@@ -3713,11 +3812,11 @@
                END-IF
            END-IF
       *∏¯»Ò£±ºıµÎº‘»÷πÊ
-           IF      RECE02-KOHJKYSNUM(1) =       SPACE
+           IF      RECE02-KOHJKYSNUM(IDA) =       SPACE
                MOVE  ZERO               TO      OCR2-JKYSNUM
            ELSE
                INITIALIZE                       ORCSNUMAREA
-               MOVE    RECE02-KOHJKYSNUM(1)
+               MOVE    RECE02-KOHJKYSNUM(IDA)
                                         TO      SNUM-INX
                CALL    "ORCSNUM"        USING   ORCSNUMAREA
                IF      SNUM-RC          =       ZERO
@@ -3738,13 +3837,13 @@
                    MOVE  ZERO           TO      OCR2-CHKDGT3
            END-IF
       *∏¯»Ò£±ø«Œ≈º¬∆¸øÙ°¶¿¡µ·≈¿øÙ
-           IF      RECE02-JNISSU   (1)  =   RECE02-JNISSU   (2)
-           AND     RECE02-TOTALTEN (1)  =   RECE02-TOTALTEN (2)
+           IF      RECE02-JNISSU   (IDX1)  =   RECE02-JNISSU   (IDX2)
+           AND     RECE02-TOTALTEN (IDX1)  =   RECE02-TOTALTEN (IDX2)
                MOVE    ZERO                 TO  OCR2-JNISSU
                                                 OCR2-TENSU   
            ELSE    
-               MOVE    RECE02-JNISSU(2)     TO  OCR2-JNISSU
-               MOVE    RECE02-TOTALTEN(2)   TO  OCR2-TENSU
+               MOVE    RECE02-JNISSU  (IDX2)   TO  OCR2-JNISSU
+               MOVE    RECE02-TOTALTEN(IDX2)   TO  OCR2-TENSU
            END-IF
       *•¡•ß•√•Ø•«•£•∏•√•»£¥
            INITIALIZE                           LNK-CHKDGT-AREA
@@ -3757,7 +3856,7 @@
                    MOVE  ZERO           TO      OCR2-CHKDGT4
            END-IF
       *∏¯»Ò£±ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚
-           MOVE    RECE02-YKZFTN(2)     TO      OCR2-YKZFTN
+           MOVE    RECE02-YKZFTN(IDX2)  TO      OCR2-YKZFTN
       *•¡•ß•√•Ø•«•£•∏•√•»£µ
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
@@ -3769,7 +3868,8 @@
                    MOVE  ZERO           TO      OCR2-CHKDGT5
            END-IF
       *∏¯»Ò£±¥µº‘…È√¥≥€
-           MOVE    RECE02-FTNMONEY(2)   TO      OCR2-FTNMONEY
+           MOVE    RECE02-FTNMONEY(IDX2)
+                                        TO      OCR2-FTNMONEY
       *•¡•ß•√•Ø•«•£•∏•√•»£∂
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
@@ -3810,11 +3910,11 @@
            INITIALIZE                           OCR3-AREA
       *
       *∏¯»Ò£≤…È√¥º‘»÷πÊ
-           IF      RECE02-KOHFTNJANUM(2) =      SPACE
+           IF      RECE02-KOHFTNJANUM(IDB) =      SPACE
                MOVE  ZERO               TO      OCR3-FTNJANUM
            ELSE
                INITIALIZE                       ORCSNUMAREA
-               MOVE    RECE02-KOHFTNJANUM(2)
+               MOVE    RECE02-KOHFTNJANUM(IDB)
                                         TO      SNUM-INX
                CALL    "ORCSNUM"        USING   ORCSNUMAREA
                IF      SNUM-RC          =       ZERO
@@ -3825,11 +3925,11 @@
                END-IF
            END-IF
       *∏¯»Ò£≤ºıµÎº‘»÷πÊ
-           IF      RECE02-KOHJKYSNUM(2) =       SPACE
+           IF      RECE02-KOHJKYSNUM(IDB) =       SPACE
                MOVE  ZERO               TO      OCR3-JKYSNUM
            ELSE
                INITIALIZE                       ORCSNUMAREA
-               MOVE    RECE02-KOHJKYSNUM(2)
+               MOVE    RECE02-KOHJKYSNUM(IDB)
                                         TO      SNUM-INX
                CALL    "ORCSNUM"        USING   ORCSNUMAREA
                IF      SNUM-RC          =       ZERO
@@ -3850,13 +3950,13 @@
                    MOVE  ZERO           TO      OCR3-CHKDGT1
            END-IF
       *∏¯»Ò£≤ø«Œ≈º¬∆¸øÙ°¶¿¡µ·≈¿øÙ
-           IF      RECE02-JNISSU   (1)  =   RECE02-JNISSU   (3)
-           AND     RECE02-TOTALTEN (1)  =   RECE02-TOTALTEN (3)
+           IF      RECE02-JNISSU   (IDX1)  =   RECE02-JNISSU   (IDX3)
+           AND     RECE02-TOTALTEN (IDX1)  =   RECE02-TOTALTEN (IDX3)
                MOVE    ZERO                 TO  OCR3-JNISSU
                                                 OCR3-TENSU   
            ELSE    
-               MOVE    RECE02-JNISSU  (3)   TO  OCR3-JNISSU
-               MOVE    RECE02-TOTALTEN(3)   TO  OCR3-TENSU
+               MOVE    RECE02-JNISSU  (IDX3)   TO  OCR3-JNISSU
+               MOVE    RECE02-TOTALTEN(IDX3)   TO  OCR3-TENSU
            END-IF
       *•¡•ß•√•Ø•«•£•∏•√•»£≤
            INITIALIZE                           LNK-CHKDGT-AREA
@@ -3869,7 +3969,7 @@
                    MOVE  ZERO           TO      OCR3-CHKDGT2
            END-IF
       *∏¯»Ò£≤ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚
-           MOVE    RECE02-YKZFTN(3)     TO      OCR3-YKZFTN
+           MOVE    RECE02-YKZFTN(IDX3)  TO      OCR3-YKZFTN
       *•¡•ß•√•Ø•«•£•∏•√•»£≥
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
@@ -3881,7 +3981,8 @@
                    MOVE  ZERO           TO      OCR3-CHKDGT3
            END-IF
       *∏¯»Ò£≤¥µº‘…È√¥≥€
-           MOVE    RECE02-FTNMONEY(3)   TO      OCR3-FTNMONEY
+           MOVE    RECE02-FTNMONEY(IDX3)
+                                        TO      OCR3-FTNMONEY
       *•¡•ß•√•Ø•«•£•∏•√•»£¥
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
