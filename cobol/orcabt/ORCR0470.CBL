@@ -31,6 +31,7 @@
       *  01.00.01    NACL-藤原    02.09.20  検査のときは表用番号を編集しない
       *                                     検査のときZAITENを編集する
       *  01.00.02    NACL-門脇    02.11.26  検診コードの診療区分編集
+      *  01.00.03    NACL-門脇    03.03.03  剤番号桁修正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -240,10 +241,10 @@
            MOVE    RECE46-HKNID         TO      RECE47-HKNID
            MOVE    RECE46-TEKSTYMD      TO      RECE47-TEKSTYMD
            MOVE    RECE46-ZAINUM        TO      RECE47-ZAINUM
-           IF      RECE46-ZAINUM(1:4)  =  9998
+           IF      RECE46-ZAINUM(1:7)  =  9999998
                  MOVE     ZERO          TO      RECE47-ZAINUM
            END-IF
-           IF      RECE46-ZAINUM       =  99999
+           IF      RECE46-ZAINUM       =  99999999
                  MOVE     ZERO          TO      RECE47-ZAINUM
            END-IF
            IF      RECE46-SRYKBN        =       "60"

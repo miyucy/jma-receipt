@@ -34,6 +34,7 @@
       *  01.00.03    NACL-門脇    03.02.04  剤まとめ対応等
       *  01.00.04    NACL-門脇    03.02.06  コメントカウントフラグでの
       *                                     判定追加
+      *  01.00.05    NACL-門脇    03.03.03  剤番号桁修正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -269,25 +270,25 @@
       *
       *理学療法剤番号退避領域
        01  WRK-TAIHI-ZAINUM.
-           03  WRK-RIGA1-SHU-ZAINUM          PIC  9(05).   
-           03  WRK-RIGA1-KO-ZAINUM           PIC  9(05).   
-           03  WRK-RIGA2-SHU-ZAINUM          PIC  9(05).   
-           03  WRK-RIGA2-KO-ZAINUM           PIC  9(05).   
-           03  WRK-RIGA3-SHU-ZAINUM          PIC  9(05).   
-           03  WRK-RIGA3-KO-ZAINUM           PIC  9(05).   
-           03  WRK-RIGA4-SHU-ZAINUM          PIC  9(05).   
-           03  WRK-RIGA4-KO-ZAINUM           PIC  9(05).   
-           03  WRK-SAGYO1-SHU-ZAINUM         PIC  9(05).   
-           03  WRK-SAGYO2-SHU-ZAINUM         PIC  9(05).   
-           03  WRK-SAGYO1-KO-ZAINUM          PIC  9(05).   
-           03  WRK-SAGYO2-KO-ZAINUM          PIC  9(05).   
-           03  WRK-GENGO1-SHU-ZAINUM         PIC  9(05).   
-           03  WRK-GENGO1-KO-ZAINUM          PIC  9(05).   
-           03  WRK-GENGO2-SHU-ZAINUM         PIC  9(05).   
-           03  WRK-GENGO2-KO-ZAINUM          PIC  9(05).   
+           03  WRK-RIGA1-SHU-ZAINUM          PIC  9(08).   
+           03  WRK-RIGA1-KO-ZAINUM           PIC  9(08).   
+           03  WRK-RIGA2-SHU-ZAINUM          PIC  9(08).   
+           03  WRK-RIGA2-KO-ZAINUM           PIC  9(08).   
+           03  WRK-RIGA3-SHU-ZAINUM          PIC  9(08).   
+           03  WRK-RIGA3-KO-ZAINUM           PIC  9(08).   
+           03  WRK-RIGA4-SHU-ZAINUM          PIC  9(08).   
+           03  WRK-RIGA4-KO-ZAINUM           PIC  9(08).   
+           03  WRK-SAGYO1-SHU-ZAINUM         PIC  9(08).   
+           03  WRK-SAGYO2-SHU-ZAINUM         PIC  9(08).   
+           03  WRK-SAGYO1-KO-ZAINUM          PIC  9(08).   
+           03  WRK-SAGYO2-KO-ZAINUM          PIC  9(08).   
+           03  WRK-GENGO1-SHU-ZAINUM         PIC  9(08).   
+           03  WRK-GENGO1-KO-ZAINUM          PIC  9(08).   
+           03  WRK-GENGO2-SHU-ZAINUM         PIC  9(08).   
+           03  WRK-GENGO2-KO-ZAINUM          PIC  9(08).   
       *
        01  WRK-TAIHI-ZAINUM-R     REDEFINES   WRK-TAIHI-ZAINUM.
-            03  WRK-RIHA-ZAINUM   PIC 9(05)   OCCURS   16.       
+            03  WRK-RIHA-ZAINUM   PIC 9(08)   OCCURS   16.       
       *
       *
       *人工腎臓実施カレンダー
@@ -1203,7 +1204,7 @@
                 MOVE    RECE41-HKNID        TO  RECE451-HKNID
                 MOVE    RECE41-TEKSTYMD     TO  RECE451-TEKSTYMD
       *         MOVE    ZERO                TO  RECE451-ZAINUM
-                MOVE    99999               TO  RECE451-ZAINUM
+                MOVE    99999999            TO  RECE451-ZAINUM
                 MOVE    "99"                TO  RECE451-SRYKBN
                 ADD     1                   TO  WRK-RENNUM
                 MOVE    WRK-RENNUM          TO  RECE451-RENNUM
@@ -1237,7 +1238,7 @@
            MOVE    RECE41-HKNID        TO  RECE441-HKNID
            MOVE    RECE41-TEKSTYMD     TO  RECE441-TEKSTYMD
       *    MOVE    ZERO                TO  RECE441-ZAINUM
-           MOVE    99999               TO  RECE441-ZAINUM
+           MOVE    99999999            TO  RECE441-ZAINUM
            MOVE    "99"                TO  RECE441-SRYKBN
       *
            MOVE    WRK-CNT-MEISAI      TO  RECE441-MEISAISU
@@ -1539,7 +1540,7 @@
            MOVE    RECE41-RECEKA       TO  RECE441-RECEKA
            MOVE    RECE41-HKNID        TO  RECE441-HKNID
            MOVE    RECE41-TEKSTYMD     TO  RECE441-TEKSTYMD
-           MOVE    99980               TO  RECE441-ZAINUM
+           MOVE    99999980            TO  RECE441-ZAINUM
            MOVE    WRK-RECE44-SRYKBN   TO  RECE441-SRYKBN
       *
            MOVE       1                TO  RECE441-MEISAISU
@@ -1555,7 +1556,7 @@
            MOVE    RECE41-RECEKA       TO  RECE451-RECEKA
            MOVE    RECE41-HKNID        TO  RECE451-HKNID
            MOVE    RECE41-TEKSTYMD     TO  RECE451-TEKSTYMD
-           MOVE    99980               TO  RECE451-ZAINUM
+           MOVE    99999980            TO  RECE451-ZAINUM
            MOVE    WRK-RECE44-SRYKBN   TO  RECE451-SRYKBN
       *    人工腎臓コメントの挿入
            ADD     1                    TO  IDX-RECE45
