@@ -6,7 +6,6 @@ exec_prefix= @exec_prefix@
 docdir = ${prefix}/doc
 
 EXTRA_DIST = \
-        copyright \
         license.html \
         orcarc \
         version \
