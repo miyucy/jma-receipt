@@ -78,6 +78,6 @@
                                        VALUE   "HCM2F.red " .
       *                                 
            03  PRTCONST-R  REDEFINES   PRTCONST-T.
-               05  PRTCONST-TX         OCCURS  22
-                                       INDEXED BY  TBL-IDX. 
+               05  PRTCONST-TX         OCCURS    22
+                                       INDEXED   PRTCONST-IDX.
                    07  PRTCONST-PRTID  PIC  X(20).
