@@ -32,6 +32,7 @@
       * 01.00.02     MCC-多々納   02/06/12  時間外特例追加
       * 01.00.04     MCC-多々納   02/07/09  労災加算の入力を可能とする
       * 01.00.05     NACL-多々納  02/10/03  労災加算なしの追加
+      * 01.00.06     NACL-多々納  02/11/22  労災の機能回復指導加算の修正
       *****************************************************************
       *
       *
@@ -111,6 +112,13 @@
       *
            03  WRK-GOK-TENSUKEI        PIC S9(10).
            03  WRK-GOK-TENGAKEI        PIC S9(10).
+           03  WRK-GRSI-TENSUKEI       PIC S9(10).
+      *    点数計
+           03  WRK-SUM-TENSUKEI        PIC 9(08)V99.
+      *    点数計（通則加算対象外計）
+           03  WRK-SUM-TENGAKEI        PIC 9(08)V99.
+      *    労災点数
+           03  WRK-RSI-TENSUKEI        PIC 9(08)V99.
       *
       *****03  WRK-SANSO           PIC 9(08).
            03  WRK-SANSOKIN        PIC 9(08)V99.
@@ -263,6 +271,7 @@
                ADD     1                   TO  IDX-MAX
       *
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "."
+                                                        OR "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
                ELSE
                    MOVE    WRK-COM-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -279,6 +288,7 @@
                    WHEN    "0"
                    WHEN    "8"
                    WHEN    "."
+                   WHEN    "*"
                        CONTINUE
       *
                    WHEN    OTHER
@@ -910,6 +920,7 @@
       *
       *
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "."
+                                                                OR "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
                ELSE
                    MOVE    WRK-COM-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -922,6 +933,7 @@
                    WHEN    "0"
                    WHEN    "8"
                    WHEN    "."
+                   WHEN    "*"
                        CONTINUE
       *
                    WHEN    OTHER
@@ -951,6 +963,7 @@
       *
            COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
                                        +   LNK-SC90-TENGAKEI
+                                       +   WRK-GRSI-TENSUKEI
       *    各点数編集
            MOVE    LNK-SC90-TENSUKEI   TO  WRK-COM-SYUTEN1 (IDX-MAX)
            COMPUTE WRK-COM-YKZTEN (IDX-MAX)
@@ -997,6 +1010,10 @@
            CALL    "ORCSC90"           USING
                                        ORCSC90AREA
                                        WRK-SCR-REC
+      *    手技料集計
+           IF       WRK-MOJI                   =   "1"
+               PERFORM 100212-SYUGI-KEI-SEC
+           END-IF
       *
       *****手技料判定
       *    IF      (WRK-MOJI                   =   "1"  )  AND
@@ -1011,6 +1028,32 @@
       *
            .
        10021-KEISAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    手技料計算処理
+      *****************************************************************
+       100212-SYUGI-KEI-SEC            SECTION.
+      *    点数
+      *        ％加算・減算は集計しない
+           IF      WRK-COM-TENSIKIBETU (IDX-Z)   =   5
+                                                 OR  6
+               GO      TO      100212-SYUGI-KEI-EXT
+           END-IF
+      *    労災の手技の時、
+           IF      WRK-COM-INPUTCD(IDX-Z)(1:3) =   "101"
+               ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-RSI-TENSUKEI
+           ELSE
+      *        通則加算対象外区分判定
+               IF      WRK-COM-TUSOKUGAIKBN (IDX-Z)  =   "1"
+                   ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-SUM-TENGAKEI
+               ELSE
+                   ADD     WRK-COM-KISOTEN(IDX-Z)  TO  WRK-SUM-TENSUKEI
+               END-IF
+           END-IF
+      *
+           .
+       100212-SYUGI-KEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1059,6 +1102,10 @@
       *****************************************************************
        100212-TENSUKEI-SEC             SECTION.
       *
+      *    集計済点数編集
+           MOVE    WRK-SUM-TENGAKEI    TO  LNK-SC90-TENGAKEI
+           MOVE    WRK-SUM-TENSUKEI    TO  LNK-SC90-TENSUKEI
+      *
            MOVE    IDX-Z               TO  HZN-IDX
            PERFORM 1006-KASAN-SET-SEC
       *    手技料の合計を編集する
@@ -1077,8 +1124,13 @@
       *
            ADD     LNK-SC90-TENSUKEI   TO  WRK-GOK-TENSUKEI
            ADD     LNK-SC90-TENGAKEI   TO  WRK-GOK-TENGAKEI
+           ADD     WRK-RSI-TENSUKEI    TO  WRK-GRSI-TENSUKEI
+      *
            MOVE    ZERO                TO  LNK-SC90-TENSUKEI
            MOVE    ZERO                TO  LNK-SC90-TENGAKEI
+           MOVE    ZERO                TO  WRK-SUM-TENSUKEI
+           MOVE    ZERO                TO  WRK-SUM-TENGAKEI
+           MOVE    ZERO                TO  WRK-RSI-TENSUKEI
       *
       *    最後の手技料時に、以下の計算を行う
            IF      FLG-SYUGI           =   2

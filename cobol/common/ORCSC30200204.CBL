@@ -262,6 +262,7 @@
                ADD     1                   TO  IDX-MAX
       *
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "." OR "S"
+                                                               OR "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
                ELSE
                    MOVE    WRK-COM-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -279,6 +280,7 @@
                    WHEN    "8"
                    WHEN    "."
                    WHEN    "S"
+                   WHEN    "*"
                        CONTINUE
       *
                    WHEN    OTHER
@@ -761,6 +763,7 @@
       *
       *
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "."  OR  "S"
+                                                                OR  "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
                ELSE
                    MOVE    WRK-COM-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -773,6 +776,7 @@
                    WHEN    "0"
                    WHEN    "8"
                    WHEN    "."
+                   WHEN    "*"
                    WHEN    "S"
                        CONTINUE
       *
@@ -968,14 +972,26 @@
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
       *        点滴は１回のみとする
-               IF     (WRK-GMN-INPUTCD (IDX)(1:1)   =   "."  )  AND
-                      (WRK-COM-SRYSYUKBN (IDX)      =   "330")
+               IF     (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
+                                                       "960") AND
+                      (WRK-COM-INPUTCD  (IDX)      =   "130009310" OR
+                                                       "130003710" OR
+                                                       "130003810")
                    IF      FLG-TENTEKI         =   1
                        MOVE    "0057"              TO  SPA-ERRCD
                        MOVE    "1"                 TO  WRK-COM-CUR(IDX)
                    END-IF
                    MOVE    1               TO  FLG-TENTEKI
                END-IF
+      *****    点滴は１回のみとする
+      *        IF     (WRK-GMN-INPUTCD (IDX)(1:1)   =   "."  )  AND
+      *               (WRK-COM-SRYSYUKBN (IDX)      =   "330")
+      *            IF      FLG-TENTEKI         =   1
+      *                MOVE    "0057"              TO  SPA-ERRCD
+      *                MOVE    "1"                 TO  WRK-COM-CUR(IDX)
+      *            END-IF
+      **           MOVE    1               TO  FLG-TENTEKI
+      ******   END-IF
            END-PERFORM
       *----(01.00.01) LINE ADD START ----------------------------------
       *

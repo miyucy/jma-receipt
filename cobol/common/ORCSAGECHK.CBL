@@ -31,6 +31,7 @@
       * 01.00.01     NACL-多々納  02/10/01  生活保護追加
       * 01.00.02     NACL-多々納  02/10/07  船員本人追加
       *                                     ７５歳以上の老人公費有無追加
+      * 01.00.03     NACL-多々納  02/11/21  共済下船３月追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -307,6 +308,14 @@
       *            船員で補助区分のある時ＯＫとする
                    IF     (COMB-HKNNUM         =   "002" ) AND
                           (PTHKN-HOJOKBN   NOT =   SPACE )
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+      *            共済で老人区分のある時ＯＫとする
+                   IF     (COMB-HKNNUM         =   "031"  OR
+                                                   "032"  OR
+                                                   "033"  OR
+                                                   "034" ) AND
+                          (PTHKN-HOJOKBN       =   "B"  OR  "E")
                        MOVE    1               TO  FLG-OK
                    END-IF
                END-IF

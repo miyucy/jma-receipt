@@ -278,6 +278,7 @@
                ADD     1                   TO  IDX-MAX
       *
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "." OR "S"
+                                                                OR "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
                ELSE
                    MOVE    WRK-COM-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -295,6 +296,7 @@
                    WHEN    "8"
                    WHEN    "."
                    WHEN    "S"
+                   WHEN    "*"
                        CONTINUE
       *
                    WHEN    OTHER
@@ -871,6 +873,8 @@
            IF      (LNK-ORCSC-TIMEFLG          NOT =   ZERO   OR
                     WRK-COM-TIMEFLG (IDX-ZS)   NOT =   ZERO )  AND
                    (WRK-COM-TIMEKSNKBN(IDX-ZS) NOT =   ZERO )
+      *    外来の時のみ
+               AND (SPA-NYUGAIKBN      =   "2"  )
                PERFORM 10012-JIKANKASAN-SET-SEC
            END-IF
       *
@@ -1113,6 +1117,7 @@
       *
       *
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "."  OR  "S"
+                                                                OR "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
                ELSE
                    MOVE    WRK-COM-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -1126,6 +1131,7 @@
                    WHEN    "8"
                    WHEN    "."
                    WHEN    "S"
+                   WHEN    "*"
                        CONTINUE
       *
                    WHEN    OTHER

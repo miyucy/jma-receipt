@@ -258,7 +258,13 @@
       *****************************************************************
        300-SCREEN-SEC             SECTION.
       *
-      ***     INITIALIZE                  SPA-X98GMN-AREA
+           IF      SPA-X98-INPUTCD     =   SPACE
+               MOVE    ZERO            TO  SPA-X98-GMN-MAX
+               GO      TO      300-SCREEN-EXT
+           END-IF
+      *
+           MOVE    SPA-X98-INPUTCD     TO  SPA-X98-GMN-INPUT
+           PERFORM 310-SPA-SET-SEC
       *
            MOVE    ZERO                TO  SPA-X98-RC
       *

@@ -33,6 +33,7 @@
       *  01.00.03    MCC-多々納   02/04/26  印刷の追加      
       *  01.00.04    NACL-伊藤    02/10/24  薬剤と病名の時明細表示頁に      
       *                                     よる添字のバグ修正
+      *  01.00.05    NACL-多々納  02/11/18  一括入力変更
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -76,6 +77,10 @@
                        09  SPA-GMN-TBLO    OCCURS  100.
                            11  SPA-GMN-TTEKCD     PIC X(09).
                            11  SPA-GMN-TNAME      PIC X(100).
+                           11  SPA-MAE-TTEKCD     PIC X(09).
+                   07  SPA-NAI-TBL.
+                       09  SPA-NAI-TBLO    OCCURS  100.
+                           11  SPA-NAI-ERR        PIC X(01).
       *
            COPY    "ENUM-VALUE".
       *     
@@ -89,12 +94,15 @@
            03  FLG-TENSU                          PIC 9(01).
            03  FLG-BYOMEI                         PIC 9(01).
       *
+           03  FLG-OK                             PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                               PIC 9(03).
            03  IDY                               PIC 9(03).
            03  IDZ                               PIC 9(03).
            03  IDZ1                              PIC 9(03).
+           03  IDX2                              PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -113,6 +121,19 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+      *    入力項目名
+           03  WRK-MCP-WIDGET          PIC X(64).
+      *    最終行
+           03  WRK-MAX                 PIC 9(04).
+      *
+           03  WRK-NAME                PIC X(200).
+      *
+       01  TBL-AREA.
+           03  TBL-GMN-AREA.
+               05  TBL-GMN-TBLO    OCCURS  100.
+                   07  TBL-GMN-TTEKCD     PIC X(09).
+                   07  TBL-GMN-TNAME      PIC X(100).
+                   07  TBL-MAE-TTEKCD     PIC X(09).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -329,6 +350,8 @@
                        OR      CHK-CD (IDY)    =   SPACE 
                    ADD     1               TO  IDX 
                    MOVE    CHK-CD (IDY)    TO  SPA-GMN-TTEKCD (IDX)
+                   MOVE    SPA-GMN-TTEKCD (IDX)
+                                           TO  SPA-MAE-TTEKCD (IDX)
                    EVALUATE    SPA-GMN-CHKKBN
                        WHEN    "1"
                        WHEN    "2"  
@@ -347,18 +370,8 @@
                        WHEN    "4"
                        WHEN    "5"  
       *                点数マスタ読み込み
-                           INITIALIZE               TNS-TENSU-REC
-                           MOVE    CHK-CD (IDY)     TO  TNS-SRYCD
-      *********************MOVE    SPA-X01-STYUKYMD TO  ORC-DBYMD
-                           MOVE    SPA-X01-EDYUKYMD TO  ORC-DBYMD
-                           MOVE    TNS-TENSU-REC    TO  MCPDATA-REC 
-                           PERFORM 900-TENSU-INV-SEC
-                           IF      FLG-TENSU        =   ZERO
-                               MOVE    MCPDATA-REC  TO  TNS-TENSU-REC
-                               MOVE    TNS-NAME     TO  SPA-GMN-TNAME
-                                                               (IDX)
-                           END-IF
-               END-PERFORM  
+                           PERFORM 3101-TENNAME-SEC
+               END-PERFORM
       *
                MOVE    "CHK-KEY2"              TO  ORC-DBPATH
                PERFORM 900-CHK-READ-SEC
@@ -384,12 +397,72 @@
       *****************************************************************
       *    診療行為コードセット処理
       *****************************************************************
+       3101-TENNAME-SEC          SECTION.
+      *
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    CHK-CD (IDY)        TO  TNS-SRYCD
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TENSU-KEY4"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "TENSU-KEY4"        TO  ORC-DBPATH
+               PERFORM 900-TENSU-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+           MOVE    ZERO                TO  FLG-OK
+           MOVE    SPACE               TO  WRK-NAME
+           PERFORM
+               UNTIL     FLG-TENSU     =   1
+      *
+               IF      (SPA-X01-STYUKYMD   >=  TNS-YUKOSTYMD )  AND
+                       (SPA-X01-EDYUKYMD   <=  TNS-YUKOEDYMD )
+                   MOVE    TNS-NAME        TO  SPA-GMN-TNAME (IDX)
+                   MOVE    1               TO  FLG-TENSU
+                   MOVE    1               TO  FLG-OK
+               ELSE
+                   MOVE    TNS-NAME        TO  WRK-NAME
+               END-IF
+      *
+               IF      FLG-TENSU           =   ZERO
+                   MOVE    "TENSU-KEY4"        TO  ORC-DBPATH
+                   PERFORM 900-TENSU-READ-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "TENSU-KEY4"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           IF     (FLG-OK              =   ZERO ) AND
+                  (WRK-NAME        NOT =   SPACE)
+               MOVE    SPACE               TO  SPA-GMN-TNAME (IDX)
+               STRING      "★削除済★"    DELIMITED   BY  SIZE
+                           WRK-NAME        DELIMITED   BY  SIZE
+                                           INTO    SPA-GMN-TNAME (IDX)
+               END-STRING
+           END-IF
+      *
+           .
+       3101-TENNAME-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療行為コードセット処理
+      *****************************************************************
        320-X98SPASET-SEC          SECTION.
       *
            IF      SPA-X98-SRYCD   NOT =   SPACE
                MOVE    SPA-X98-SRYCD       TO  X02-TEKCD(SPA-GMN-CUR)
-               PERFORM 5001-MAPCUR-SEC
-               PERFORM 4101-TEKCD-CHK-SEC
+      *        入力チェック処理
+               PERFORM 410-INPUT-CHK-SEC
            END-IF
            .
        320-X98SPASET-EXT.
@@ -400,8 +473,8 @@
       *****************************************************************
        330-XID1-SET-SEC            SECTION.
       *
-           IF      SPA-XID1-FLG    =   "OK"
-               IF      SPA-XIDCD            =   "1002"
+           IF      SPA-XID1-FLG        =   "OK"
+               IF      SPA-XIDCD           =   "1002"
                    PERFORM 4031-DEL-SEC
                ELSE
                    PERFORM 490-KOUSHIN-SEC
@@ -409,7 +482,7 @@
            END-IF
       *
            MOVE    SPACE           TO  SPA-XID1-FLG
-           MOVE    SPACE           TO  SPA-XIDCD      
+           MOVE    SPACE           TO  SPA-XIDCD
            .
        330-XID1-SET-EXT.
            EXIT.
@@ -452,33 +525,70 @@
       *****************************************************************
        200-ENTRY                             SECTION.
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        診療コード
-               WHEN    "ACTIVATE"       ALSO    "TEKCD01"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD02"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD03"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD04"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD05"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD06"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD07"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD08"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD09"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD10"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD11"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD12"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD13"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD14"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD15"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD16"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD17"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD18"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD19"
-               WHEN    "ACTIVATE"       ALSO    "TEKCD20"
-                   PERFORM  4101-TEKCD-CHK-SEC
-           END-EVALUATE
+      *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
+      *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
            .
       *
        200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   20
+               COMPUTE IDZ             =   IDX
+                                       +  (SPA-GMN-PAGE - 1 ) * 20
+               EVALUATE    SPA-GMN-CHKKBN
+                   WHEN    "1"
+                   WHEN    "2" 
+                       MOVE  X02-TEKCD (IDX)(1:7)
+                                              TO  SPA-GMN-TTEKCD (IDZ)
+                   WHEN    OTHER
+                       MOVE  X02-TEKCD (IDX)  TO  SPA-GMN-TTEKCD (IDZ)
+               END-EVALUATE
+           END-PERFORM
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+      *    チェック区分
+           PERFORM 4101-TEKCD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           .
+       4102-KIHON-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -504,136 +614,181 @@
       *****************************************************************
        4101-TEKCD-CHK-SEC                         SECTION.
       *
-           MOVE    MCP-WIDGET         TO  WRK-WIDGET
-           MOVE    WRK-WIDGET2        TO  IDX
+      *    空白をつめる
+           PERFORM 41011-KUHAKU-SYORI-SEC
       *
-           MOVE    IDX                TO  SPA-GMN-CUR
-           COMPUTE IDZ           =   IDX  +   (SPA-GMN-PAGE - 1 ) * 20
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-MAX   )  OR
+                              (SPA-ERRCD   NOT =   SPACE )  OR
+                              (FLG-END     NOT =   ZERO  )
       *
-           MOVE    SPACE     TO  SPA-GMN-TNAME (IDZ)
-      *     
-           EVALUATE    SPA-GMN-CHKKBN
-               WHEN    "1"
-               WHEN    "2"    
-      ********     MOVE  X02-TEKCD (IDX)(1:5) TO  SPA-GMN-TTEKCD (IDZ)
-                   MOVE  X02-TEKCD (IDX)(1:7) TO  SPA-GMN-TTEKCD (IDZ)
-               WHEN    OTHER    
-                   MOVE  X02-TEKCD (IDX)      TO  SPA-GMN-TTEKCD (IDZ)
-           END-EVALUATE
-      *
-      *    空白のとき詰める 
-           IF      SPA-GMN-TTEKCD (IDZ)   =  SPACE
-               MOVE    SPACE     TO  SPA-GMN-TNAME (IDZ)
-               COMPUTE IDZ1    =   IDZ    +   1
-               PERFORM VARYING IDY FROM    IDZ1   BY  1
-                           UNTIL   IDY >       WRK-CONS-MAX
-                   MOVE    SPA-GMN-TTEKCD  (IDY)  TO  SPA-GMN-TTEKCD
-                                                                  (IDZ)
-                   MOVE    SPA-GMN-TNAME   (IDY)  TO  SPA-GMN-TNAME
-                                                                  (IDZ)
-                   MOVE    SPACE                  TO  SPA-GMN-TTEKCD
-                                                                  (IDY)
-                                                      SPA-GMN-TNAME
-                                                                  (IDY)
-                   ADD     1                      TO  IDZ
-               END-PERFORM
-           ELSE
-      *
-               EVALUATE    SPA-GMN-CHKKBN
-                   WHEN    "1"
-                   WHEN    "2"    
-      *            病名マスタ読み込み
-                       INITIALIZE               BYOMEI-REC
-                       MOVE    SPA-GMN-TTEKCD (IDZ) TO  BYO-BYOMEICD
-                       MOVE    BYOMEI-REC           TO  MCPDATA-REC 
-                       PERFORM 900-BYOMEI-READ-SEC
-                       IF      FLG-BYOMEI           =   1
-                           MOVE    "0002"           TO  SPA-ERRCD
-                           GO      TO  4101-TEKCD-CHK-EXT
-                       ELSE
-                           MOVE    MCPDATA-REC      TO  BYOMEI-REC
-                           IF      BYO-BYOMEICD (1:1)   =   "Z"
-                               MOVE    "0010"       TO  SPA-ERRCD
-                           ELSE    
-                               MOVE    BYO-BYOMEI   TO  SPA-GMN-TNAME
-                                                             (IDZ)
-                           END-IF                                  
-                       END-IF
-                   WHEN    "3"
-                       CONTINUE
-                   WHEN    "4"
-                   WHEN    "5"     
-      *           点数マスタ読み込み
-                       INITIALIZE                      TNS-TENSU-REC
-                       MOVE    SPA-GMN-TTEKCD (IDZ)    TO  TNS-SRYCD
-      **************   MOVE    SPA-X01-STYUKYMD        TO  ORC-DBYMD
-                       MOVE    SPA-X01-EDYUKYMD        TO  ORC-DBYMD
-                       MOVE    TNS-TENSU-REC           TO MCPDATA-REC
-                       PERFORM 900-TENSU-INV-SEC
-                       IF      FLG-TENSU           =   1
-                           MOVE    "0002"          TO  SPA-ERRCD
-                           GO       TO  4101-TEKCD-CHK-EXT
-                       ELSE
-                           MOVE    TNS-NAME        TO  SPA-GMN-TNAME
-                                                              (IDZ)
-                       END-IF
-               END-EVALUATE
-      *
-      *        診療行為コードのチェック
-               EVALUATE    SPA-GMN-CHKKBN
-                   WHEN    "4"
-                       IF      SPA-GMN-TTEKCD (IDZ) (1:1) NOT =   "6"
-                           MOVE    "0008"              TO  SPA-ERRCD
-                           GO  TO  4101-TEKCD-CHK-EXT
-                       END-IF
-                   WHEN    "5"
-                       IF      SPA-GMN-TTEKCD (IDZ) (1:1)  =   "6" OR
-                                                               "7"
-                           MOVE    "0008"              TO  SPA-ERRCD
-                           GO  TO  4101-TEKCD-CHK-EXT
-                       END-IF
-               END-EVALUATE
-      *
-      *        同一コードチェック    
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       WRK-CONS-MAX
-                       OR      SPA-GMN-TTEKCD (IDY)    =  SPACE
-                       OR      SPA-ERRCD           NOT =   SPACE
-                   IF      IDZ             =   IDY
-                       CONTINUE
-                   ELSE
-                       IF      SPA-GMN-TTEKCD (IDY)    =   SPACE
-                           CONTINUE
-                       ELSE
-                           IF      SPA-GMN-TTEKCD (IDY)    =
-                                                   SPA-GMN-TTEKCD (IDZ)
-                               MOVE    "0005"          TO  SPA-ERRCD
-                               GO  TO  4101-TEKCD-CHK-EXT
-                           END-IF
-                       END-IF
+               IF     SPA-GMN-TTEKCD(IDX)(1:1) =   "/"
+                   COMPUTE SPA-GMN-CUR         =   IDX
+                                               -  ((SPA-GMN-PAGE  -  1)
+                                               *   20 )
+                   PERFORM  409-KENSAKU-SEC
+               ELSE
+      *            変更のあった時チェック
+                   IF      SPA-GMN-TTEKCD(IDX) NOT =
+                                               SPA-MAE-TTEKCD(IDX)
+                       EVALUATE    SPA-GMN-CHKKBN
+                           WHEN    "1"
+                           WHEN    "2" 
+                               PERFORM 41012-BYOMEI-CHK-SEC
+                           WHEN    OTHER
+                               PERFORM 41013-TENSU-CHK-SEC
+                       END-EVALUATE
                    END-IF
-               END-PERFORM              
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4101-TEKCD-CHK-EXT
            END-IF
       *
-           IF      SPA-GMN-CUR             <   20
-               ADD     1                   TO  SPA-GMN-CUR
-           ELSE
-               MOVE    99                  TO  SPA-GMN-CUR
-           END-IF
+      *    同一コードチェック
+           PERFORM 41014-JYUFUKU-CHK-SEC
+      *
            .
        4101-TEKCD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    空白削除処理
+      *****************************************************************
+       41011-KUHAKU-SYORI-SEC             SECTION.
+      *
+           INITIALIZE                      SPA-NAI-TBL
+      *
+           MOVE    SPACE               TO  TBL-AREA
+           INITIALIZE                      TBL-AREA
+           MOVE    SPA-GMN-TBL         TO  TBL-GMN-AREA
+           INITIALIZE                      SPA-GMN-TBL
+           MOVE    ZERO                TO  SPA-GMN-MAX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   100
+               IF      TBL-GMN-TTEKCD (IDX)    NOT =   SPACE
+                   ADD     1               TO  SPA-GMN-MAX
+                   MOVE    TBL-GMN-TBLO (IDX)
+                                           TO  SPA-GMN-TBLO(SPA-GMN-MAX)
+               END-IF
+           END-PERFORM
+           .
+       41011-KUHAKU-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    病名マスタチェック処理
+      *****************************************************************
+       41012-BYOMEI-CHK-SEC            SECTION.
+      *
+      *    病名マスタ読み込み
+           INITIALIZE                      BYOMEI-REC
+           MOVE    SPA-GMN-TTEKCD (IDX)   TO  BYO-BYOMEICD
+           MOVE    BYOMEI-REC             TO  MCPDATA-REC 
+           PERFORM 900-BYOMEI-READ-SEC
+           IF      FLG-BYOMEI          =   1
+               MOVE    "0002"          TO  SPA-ERRCD
+               MOVE    "1"             TO  SPA-NAI-ERR (IDX)
+           ELSE
+               MOVE    MCPDATA-REC         TO  BYOMEI-REC
+               IF      BYO-BYOMEICD (1:1)  =   "Z"
+                   MOVE    "0010"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  SPA-NAI-ERR (IDX)
+               ELSE
+                   MOVE    BYO-BYOMEI      TO  SPA-GMN-TNAME  (IDX)
+                   MOVE    SPA-GMN-TTEKCD(IDX)
+                                           TO  SPA-MAE-TTEKCD(IDX)
+               END-IF 
+           END-IF
+           .
+       41012-BYOMEI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタチェック処理
+      *****************************************************************
+       41013-TENSU-CHK-SEC            SECTION.
+      *
+      *    点数マスタ読み込み
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    SPA-GMN-TTEKCD (IDX)    TO  TNS-SRYCD
+           MOVE    SPA-X01-EDYUKYMD        TO  ORC-DBYMD
+           MOVE    TNS-TENSU-REC           TO MCPDATA-REC
+           PERFORM 900-TENSU-INV-SEC
+           IF      FLG-TENSU           =   1
+               MOVE    "0001"          TO  SPA-ERRCD
+               MOVE    "1"             TO  SPA-NAI-ERR (IDX)
+               GO       TO  41013-TENSU-CHK-EXT
+           ELSE
+               MOVE    TNS-NAME        TO  SPA-GMN-TNAME (IDX)
+           END-IF
+      *
+      *    診療行為コードのチェック
+           EVALUATE    SPA-GMN-CHKKBN
+               WHEN    "4"
+                   IF      SPA-GMN-TTEKCD (IDX) (1:1) NOT =   "6"
+                       MOVE    "0008"              TO  SPA-ERRCD
+                       MOVE    "1"             TO  SPA-NAI-ERR (IDX)
+                   END-IF
+               WHEN    "5"
+                   IF      SPA-GMN-TTEKCD (IDX) (1:1)  =   "6" OR
+                                                           "7"
+                       MOVE    "0008"              TO  SPA-ERRCD
+                       MOVE    "1"             TO  SPA-NAI-ERR (IDX)
+                   END-IF
+           END-EVALUATE
+      *
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    SPA-GMN-TTEKCD (IDX)
+                                          TO  SPA-MAE-TTEKCD (IDX)
+           END-IF
+           .
+       41013-TENSU-CHK-EXT.
+           EXIT.
+           .
+      *****************************************************************
+      *    同一コードチェック処理
+      *****************************************************************
+       41014-JYUFUKU-CHK-SEC            SECTION.
+      *
+      *    同一コードチェック    
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-MAX  )  OR
+                              (SPA-ERRCD   NOT =   SPACE)
+               PERFORM VARYING     IDY     FROM    1   BY  1
+                       UNTIL      (IDY     >   SPA-GMN-MAX  )  OR
+                                  (SPA-ERRCD   NOT =   SPACE)
+                   IF      IDX             =   IDY
+                       CONTINUE
+                   ELSE
+                       IF      SPA-GMN-TTEKCD (IDX)    =
+                                                   SPA-GMN-TTEKCD (IDY)
+                           MOVE    "0005"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  SPA-NAI-ERR (IDX)
+                           MOVE    "1"             TO  SPA-NAI-ERR (IDY)
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+           .
+       41014-JYUFUKU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    前頁　処理
       *****************************************************************
        430-MAEGMN-SEC             SECTION.
       *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      430-MAEGMN-EXT
+           END-IF
+      *
            IF      SPA-GMN-PAGE       =   1
                MOVE    "0006"             TO  SPA-ERRCD
                GO  TO  430-MAEGMN-EXT
            END-IF
            COMPUTE SPA-GMN-PAGE   =   SPA-GMN-PAGE    -   1
-           MOVE    1                  TO  SPA-GMN-CUR        
+           MOVE    1                  TO  SPA-GMN-CUR
            .
        430-MAEGMN-EXT.
            EXIT.
@@ -643,18 +798,24 @@
       *****************************************************************
        440-ATOGMN-SEC             SECTION.
       *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      440-ATOGMN-EXT
+           END-IF
+      *
            IF      SPA-GMN-PAGE       =   WRK-CONS-PAGE
                MOVE    "0007"             TO  SPA-ERRCD
                GO  TO  440-ATOGMN-EXT
            ELSE
-               COMPUTE IDX     =   SPA-GMN-PAGE   *   20   
+               COMPUTE IDX     =   SPA-GMN-PAGE   *   20
                IF      SPA-GMN-TTEKCD (IDX)   =   SPACE
                    MOVE    "0007"             TO  SPA-ERRCD
                    GO  TO  440-ATOGMN-EXT
                END-IF
            END-IF
-           COMPUTE SPA-GMN-PAGE   =   SPA-GMN-PAGE    +   1       
-           MOVE    1                  TO  SPA-GMN-CUR        
+           COMPUTE SPA-GMN-PAGE   =   SPA-GMN-PAGE    +   1
+           MOVE    1                  TO  SPA-GMN-CUR
            .
        440-ATOGMN-EXT.
            EXIT.
@@ -767,6 +928,12 @@
       *    確定
       *****************************************************************
        410-KAKUTEI-SEC           SECTION.
+      *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-KAKUTEI-EXT
+           END-IF
       *
            PERFORM 4901-KANRENCHK-SEC
            IF      SPA-ERRCD        =   SPACE
@@ -913,12 +1080,20 @@
            COMPUTE IDZ     =   IDY             -   19
       *
            MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  WRK-MAX
            PERFORM VARYING     IDZ1     FROM    IDZ   BY  1
                    UNTIL       IDZ1     >       IDY
                ADD     1                        TO  IDX
                MOVE    SPA-GMN-TTEKCD  (IDZ1)    TO  X02-TEKCD (IDX)
                MOVE    SPA-GMN-TNAME   (IDZ1)    TO  X02-DSPNAME  (IDX)
-           END-PERFORM   
+               IF      SPA-GMN-TTEKCD  (IDZ1)  NOT =   SPACE
+                   MOVE    IDX                 TO  WRK-MAX
+               END-IF
+      *        エラー位置
+               IF      SPA-NAI-ERR (IDZ1)  =   "1"
+                   MOVE    IDX             TO  SPA-GMN-CUR
+               END-IF
+           END-PERFORM
            MOVE    SPA-GMN-CHKKBN-G    TO  X02-CHKKBN
            MOVE    SPA-GMN-SRYCD       TO  X02-SRYCD
            MOVE    SPA-GMN-NAME        TO  X02-NAME
@@ -949,6 +1124,20 @@
       *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
+      *
+           IF      SPA-GMN-CUR         =   ZERO
+               IF      WRK-MCP-WIDGET(1:5)     =   "TEKCD"
+                   MOVE    WRK-MCP-WIDGET(6:2)     TO  IDX2
+                   MOVE    IDX2                    TO  SPA-GMN-CUR
+                   ADD     1                       TO  SPA-GMN-CUR
+                   IF      SPA-GMN-CUR             >   20
+                       MOVE    99                  TO  SPA-GMN-CUR
+                   END-IF
+               ELSE
+                   COMPUTE SPA-GMN-CUR         =   WRK-MAX
+                                               +   1
+               END-IF
+           END-IF
       *
            EVALUATE    SPA-GMN-CUR
                 WHEN   1
@@ -1007,8 +1196,10 @@
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
+               WHEN    "0001"
+                   MOVE    "点数マスタにありません"   TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "入力エラー"               TO  SPA-ERRMSG
+                   MOVE    "病名マスタにありません"   TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE    "項目に入力がありません"   TO  SPA-ERRMSG
                WHEN    "0004"
@@ -1051,7 +1242,7 @@
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                    TO  FLG-END              
+           MOVE    1                    TO  FLG-END 
       *
            .
        510-ERRSET-EXT.
@@ -1172,6 +1363,28 @@
       *
            .
        900-TENSU-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数マスター読込（キー）
+      *****************************************************************
+       900-TENSU-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+               MOVE    ZERO                TO  FLG-TENSU
+           ELSE
+               INITIALIZE                      TNS-TENSU-REC
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+      *
+           .
+       900-TENSU-READ-EXT.
            EXIT.
       *
       *****************************************************************

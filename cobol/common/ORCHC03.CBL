@@ -31,6 +31,7 @@
       *  01.00.01    MCC-藤原     02/03/18  帳票ファイル名の変更
       *  01.00.02    MCC-多々納   02/05/01  マイナス表示を行うようにした
       *  01.00.03    NACL-多々納  02/09/13  自賠責・印刷サプの追加
+      *  01.00.04    NACL-多々納  02/11/15  自費消費税対応修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -659,12 +660,14 @@
       *
       *    保険適用外分
            MOVE    ZERO                TO  WRK-GOKTEN
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
-               COMPUTE WRK-GOKTEN      =   WRK-GOKTEN
-                                       +  (SYU-TGMONEY (IDX)
-                                       +   SYU-TGMONEY-TAX  (IDX) )
-           END-PERFORM
+      **** PERFORM VARYING     IDX     FROM    1   BY  1
+      *            UNTIL       IDX     >   10
+      *        COMPUTE WRK-GOKTEN      =   WRK-GOKTEN
+      *                                +  (SYU-TGMONEY (IDX)
+      *                                +   SYU-TGMONEY-TAX  (IDX) )
+      *****END-PERFORM
+           COMPUTE WRK-GOKTEN          =   SYU-TGMONEY (12)
+                                       +   SYU-TGMONEY-TAX  (12)
       *****MOVE    SYU-TOTAL-TGMONEY   TO  WRK-Z72
            MOVE    WRK-GOKTEN          TO  WRK-Z72
            PERFORM 800-HENKAN-SEC

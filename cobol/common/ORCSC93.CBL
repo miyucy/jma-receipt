@@ -30,6 +30,9 @@
       * 01.00.01     NACL-多々納  02/08/23  注射に外用薬を入力可能とする
       * 01.00.02     NACL-多々納  02/09/12  自賠責の追加（09591〜09592)
       * 01.00.03     NACL-多々納  02/10/03  労災加算なしの追加
+      * 01.00.04     NACL-多々納  02/10/18  入院追加
+      * 01.00.05     NACL-多々納  02/11/11  ＤＵＭＭＹ診察料追加
+      * 01.00.06     NACL-多々納  02/11/20  自賠責器材追加
       *****************************************************************
       *
       *
@@ -246,6 +249,22 @@
                               (SPA-ERRCD        NOT =   SPACE )   OR
                               (SPA-GMN-INPUTCD(IDX) =   SPACE  AND
                                SPA-COM-INPUTCD(IDX) =   SPACE )
+      *        入院回数のチェック
+               IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "*"
+      *            入院以外エラー
+                   IF      LNK-SC93-PG         =   "K02N"
+                       IF     (IDX             =   1  )  OR
+                              (SPA-GMN-INPUTCD(IDX - 1)  =   ".")
+                           MOVE    "9005"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
+                       END-IF
+                   ELSE
+                       MOVE    "9004"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  SPA-COM-CUR(IDX)
+                   END-IF
+               END-IF
+               IF      SPA-ERRCD           =   SPACE
+      *
       *        剤分離
                PERFORM 5101-SYRKBN-SET-SEC
       *        各処理のチェック
@@ -260,6 +279,8 @@
                            MOVE    "1"             TO  SPA-COM-CUR(IDX)
                        END-IF
                END-EVALUATE
+      *
+               END-IF
            END-PERFORM
            .
       *
@@ -404,9 +425,16 @@
                        MOVE    SPA-COM-INPUTCD(IDX)(4:2)
                                                TO  WRK-SRYKBN
                    END-IF
+      *            画像診断の点滴チェック
+                   IF     (IDX                 >   1   )  AND
+                          (SPA-COM-SRYSYUKBN (IDX - 1) =   "731") AND
+                          (SPA-COM-ZAIEND    (IDX - 1) =   SPACE)
+                       PERFORM 51013-731-CHKSYORI-SEC
+                   ELSE
       *            点数マスタの診療種別より診療区を判定する
-                   IF      SPA-COM-TNSSRYSYUKBN(IDX) NOT =   SPACE
-                       PERFORM 51011-SRYSYUKBN-KBN-SEC
+                       IF      SPA-COM-TNSSRYSYUKBN(IDX) NOT =   SPACE
+                           PERFORM 51011-SRYSYUKBN-KBN-SEC
+                       END-IF
                    END-IF
       *            加算行為については、前の剤とする（労災以外）
                    IF     (SPA-COM-DATAKBN (IDX)   =   "2"   )  AND
@@ -489,7 +517,8 @@
       *                    自賠責の時、８０とする
                            IF     (SPA-RSI-HKNKBN            =  "4") AND
                                   (SPA-COM-INPUTCD(IDX)(1:5) =  "09591"
-                                                            OR  "09592")
+                                                            OR  "09592"
+                                                            OR  "09593")
                                MOVE    "80"      TO  SPA-COM-SRYKBN
                                                                (IDX)
                                MOVE    "800"     TO  SPA-COM-SRYSYUKBN
@@ -571,6 +600,35 @@
                                                              (IDX - 1)
                                ELSE
                                    MOVE    "8020"          TO  SPA-ERRCD
+                               END-IF
+      *                    ＤＵＭＭＹ診察料
+                             WHEN    "099110001"
+                               MOVE    "11"      TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                               MOVE    "110"     TO  SPA-COM-SRYSYUKBN
+                                                               (IDX)
+      *                        診察料の時剤を分ける
+                               IF     (IDX       >   1  )  AND
+                                      (SPA-COM-SRYKBN(IDX - 1)
+                                                 =   "11" )  AND
+                                      (SPA-COM-DATAKBN(IDX - 1)
+                                                 =   "1"   )
+                                   MOVE    "1"       TO  SPA-COM-ZAIEND
+                                                             (IDX - 1)
+                               END-IF
+                             WHEN    "099120001"
+                               MOVE    "12"      TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                               MOVE    "120"     TO  SPA-COM-SRYSYUKBN
+                                                               (IDX)
+      *                        診察料の時剤を分ける
+                               IF     (IDX       >   1  )  AND
+                                      (SPA-COM-SRYKBN(IDX - 1)
+                                                 =   "12" )  AND
+                                      (SPA-COM-DATAKBN(IDX - 1)
+                                                 =   "1"   )
+                                   MOVE    "1"       TO  SPA-COM-ZAIEND
+                                                             (IDX - 1)
                                END-IF
                              WHEN    OTHER
                                MOVE    "99"          TO  SPA-COM-SRYKBN
@@ -853,6 +911,17 @@
                MOVE    "1"             TO  SPA-COM-ZAIEND (IDX - 1)
            END-IF
       *
+      *    入院回数入力時、終了とする
+           IF     (IDX                 >   1         )  AND
+                  (SPA-GMN-INPUTCD(IDX)(1:1)   =   "*" )
+               MOVE    SPACE           TO  SPA-COM-ZAIEND (IDX - 1)
+               MOVE    "1"             TO  SPA-COM-ZAIEND (IDX)
+               MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
+                                       TO  SPA-COM-SRYSYUKBN (IDX)
+               MOVE    SPA-COM-SRYKBN   (IDX - 1)
+                                       TO  SPA-COM-SRYKBN (IDX)
+           END-IF
+      *
       *    最終行を剤終了とする
            IF      IDX                 =   SPA-GMN-MAX
                MOVE    "1"             TO  SPA-COM-ZAIEND (IDX)
@@ -878,6 +947,23 @@
       *
            .
        51011-SRYSYUKBN-KBN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   画像診断の点滴チェックク処理
+      *****************************************************************
+       51013-731-CHKSYORI-SEC           SECTION.
+      *
+      *    画像診断の点滴チェック
+           MOVE    SPA-COM-SRYKBN    (IDX - 1)
+                                       TO  SPA-COM-SRYKBN    (IDX)
+           MOVE    SPA-COM-SRYSYUKBN (IDX - 1)
+                                       TO  SPA-COM-SRYSYUKBN (IDX)
+           MOVE    SPA-COM-SRYKBN    (IDX)
+                                       TO  WRK-SRYKBN
+      *
+           .
+       51013-731-CHKSYORI-EXT.
            EXIT.
       *
       *****************************************************************

@@ -320,13 +320,16 @@
                UNTIL      (FLG-JYURRK      =   1   )  OR
                           (WRK-LST-SRYYMD  NOT =   SPACE  AND
                            WRK-LST-SRYYMD2 NOT =   SPACE  )
-               IF      SPA-SRYKA       =   JYURRK-SRYKA
-                   IF      WRK-LST-SRYYMD      =   SPACE
-                       MOVE    JYURRK-SRYYMD       TO  WRK-LST-SRYYMD
-                   END-IF
-               ELSE
-                   IF      WRK-LST-SRYYMD2     =   SPACE
-                       MOVE    JYURRK-SRYYMD       TO  WRK-LST-SRYYMD2
+      *        ø«Œ≈≤ Õ˙ŒÚ§œ≥∞ÕË§Œ§ﬂ§«∫Ó¿Æ§π§Î
+               IF      JYURRK-NYUGAIKBN    =   "2"
+                   IF      SPA-SRYKA       =   JYURRK-SRYKA
+                       IF      WRK-LST-SRYYMD      =   SPACE
+                           MOVE    JYURRK-SRYYMD   TO  WRK-LST-SRYYMD
+                       END-IF
+                    ELSE
+                       IF      WRK-LST-SRYYMD2     =   SPACE
+                           MOVE    JYURRK-SRYYMD   TO  WRK-LST-SRYYMD2
+                       END-IF
                    END-IF
                END-IF
                MOVE    "JYURRK-KEY8"       TO  ORC-DBPATH

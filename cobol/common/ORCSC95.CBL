@@ -31,6 +31,7 @@
       *  01.00.02    NACL-多々納  02/08/06  アフターケア用追加
       *  01.00.03    NACL-多々納  02/09/11  自賠責追加
       *  01.00.04    NACL−多々納 02/10/10  外来管理加算チェックの有無
+      *  01.00.05    NACL−多々納 02/10/18  入院追加
       *****************************************************************
       *
       *
@@ -137,7 +138,7 @@
            03  WRK-EDABAN          PIC 9(02).
       *剤番号
            03  WRK-ZAINUM-TBL.
-               05  WRK-ZAINUM-G        OCCURS   10.
+               05  WRK-ZAINUM-G        OCCURS   50.
                    07  WRK-TZAINUM         PIC  9(08)
                                             OCCURS 15.
            03  WRK-RRK-SRYYMD          PIC  X(08).
@@ -318,12 +319,15 @@
            INITIALIZE                  WRK-AREA
       *
            EVALUATE    LNK-SC95-KBN
-      *        共通ＳＰＡ編集
+      *        共通ＳＰＡ編集（外来）
                WHEN    "1"
                    PERFORM 100-K01KYOUTU-SEC
+      *        共通ＳＰＡ編集（入院）
+               WHEN    "9"
+                   PERFORM 900-K01KYOUTU-SEC
       *        共通ＳＰＡ編集、ワーク診療行為作成
                WHEN    "2"
-               WHEN    "5"
+      *********WHEN    "5"
                WHEN    "8"
                    IF      LNK-SC95-PG     =   "K02"
       *                患者の確定している時、患者情報のセット
@@ -331,6 +335,9 @@
                    END-IF
                    PERFORM 110-K02SYOSIN-SEC
                    PERFORM 200-WKSRYACT-SYORI-SEC
+      *        入院のＳＰＡ編集、ワーク診療行為作成
+               WHEN    "5"
+                   PERFORM 500-NYUIN-SPASET-SEC
       *        ワーク診療行為作成
                WHEN    "3"
                    PERFORM 200-WKSRYACT-SYORI-SEC
@@ -397,8 +404,8 @@
                MOVE    SYS-1001-ZENSYOHOFLG    TO  SPA-ZENSYOHOFLG
       *        処方区分
                MOVE    SYS-1001-SYOHOKBN       TO  SPA-SYOHOKBN
-      *        病床数
-               MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
+      ******** 病床数
+      *********MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
       *        薬剤情報発行フラグ
                MOVE    SYS-1001-YAKUJYOPRTFLG  TO  SPA-YAKJYOPRTFLG
                IF      SYS-1001-YAKUJYOPRTFLG  =   SPACE
@@ -583,6 +590,235 @@
            EXIT.
       *
       *****************************************************************
+      *    共通ＳＰＡ編集処理（入院）
+      *****************************************************************
+       900-K01KYOUTU-SEC            SECTION.
+      *
+           INITIALIZE                  SPA-K01KYOUTU
+      *
+      *    診療日
+           MOVE    LNK-SC95-SRYYMDG    TO  SPA-SRYYMDW
+           MOVE    LNK-SC95-SRYYMD     TO  SPA-SRYYMD
+      *
+      *    システム管理検索（医療機関情報）
+           MOVE    SPACE               TO  SYS-1001-REC
+           INITIALIZE                  SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1001-REC
+               INITIALIZE                  SYS-1001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+      *
+      *        院外処方せん発行フラグ
+               MOVE    SYS-1001-SYOHOPRTFLG    TO  SPA-SYOHOPRTFLG
+      *        前回処方表示フラグ（しないとする）
+      *********MOVE    SYS-1001-ZENSYOHOFLG    TO  SPA-ZENSYOHOFLG
+               MOVE    "1"                     TO  SPA-ZENSYOHOFLG
+      *        処方区分（すべて院内とする）
+      *********MOVE    SYS-1001-SYOHOKBN       TO  SPA-SYOHOKBN
+               MOVE    "0"                     TO  SPA-SYOHOKBN
+      *        病床数
+      *********MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
+      *        薬剤情報発行フラグ
+               MOVE    SYS-1001-YAKUJYOPRTFLG  TO  SPA-YAKJYOPRTFLG
+               IF      SYS-1001-YAKUJYOPRTFLG  =   SPACE
+                   MOVE    ZERO                TO  SPA-YAKJYOPRTFLG
+               END-IF
+           END-IF
+      *
+      *
+      *    システム管理検索（チェック機能制御情報）
+           MOVE    SPACE               TO  SYS-1008-REC
+           INITIALIZE                  SYS-1008-REC
+           MOVE    "1008"              TO  SYS-1008-KANRICD
+           MOVE    "*"                 TO  SYS-1008-KBNCD
+           MOVE    SYS-1008-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1008-REC
+               INITIALIZE                  SYS-1008-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1008-REC
+      *
+      *        相互作用チェック期間
+               MOVE    SYS-1008-INTERACT-KIKAN TO  SPA-INTERACT-KIKAN
+      *
+      *        外来管理加算チェック
+               MOVE    SYS-1008-GAIKANRIKBN-CHK
+                                           TO  SPA-GAIKANRIKBN-CHK
+      *        初期は、チェックありとする
+               IF      SYS-1008-GAIKANRIKBN-CHK    =   SPACE
+                   MOVE    "1"             TO  SPA-GAIKANRIKBN-CHK
+               END-IF
+           ELSE
+               MOVE    ZERO                    TO  SPA-INTERACT-KIKAN
+           END-IF
+      *
+      *    診療科
+           MOVE    SPACE               TO  SYS-KEY
+           MOVE    SPACE               TO  SYS-1005-REC
+           INITIALIZE                  SYS-1005-REC
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    ZERO                TO  SYS-1005-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-1005-EDYUKYMD
+      *    システム管理検索
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1005-REC
+               INITIALIZE                  SYS-1005-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       (IDX            >   10   )  OR
+                               (FLG-SYSKANRI   =   1    )
+               MOVE    MCPDATA-REC           TO  SYS-1005-REC
+               MOVE    SYS-1005-KBNCD (1:2)  TO  SPA-GMN-SRYKAL   (IDX)
+               MOVE    SYS-1005-SRYKANAME1   TO  SPA-GMN-SRYKAMEIL(IDX)
+               MOVE    IDX                   TO  SPA-SRYKA-MAX
+      *
+               MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+      *    CALL    "MCPDBSUB"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+      *
+      *    入外区分
+           MOVE    "1"                 TO  SPA-NYUGAIKBN
+      *    分散
+           MOVE    "0"                 TO  SPA-BUNSAN
+      *    院外処方区分
+           MOVE    SPA-SYOHOKBN        TO  SPA-INGAIKBN
+      *
+      *    小児科外来診療科編集
+           MOVE    SPACE               TO  SYS-1006-REC
+           INITIALIZE                      SYS-1006-REC
+           MOVE    "1006"              TO  SYS-1006-KANRICD
+           MOVE    "1"                 TO  SYS-1006-KBNCD
+           MOVE    ZERO                TO  SYS-1006-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-1006-EDYUKYMD
+      *    システム管理検索（施設基準）
+           MOVE    SYS-1006-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1006-REC
+               INITIALIZE                  SYS-1006-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1006-REC
+               IF      SYS-1006-SSTKIJUN (121) =   1
+                   MOVE    1               TO  SPA-SYONIKA
+               END-IF
+      *
+               IF      SYS-1006-SSTKIJUN (128) =   1
+                   MOVE    1               TO  SPA-ROUMANSEI
+               END-IF
+      *        時間外特例医療機関
+               IF      SYS-1006-SSTKIJUN (011) =   1
+                   MOVE    1               TO  SPA-JIKANTOKU
+               END-IF
+      *
+           END-IF
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *    CALL    "MCPDBSUB"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+      *
+      *    システム管理検索（施設基準）
+           MOVE    SPACE               TO  SYS-1007-REC
+           INITIALIZE                  SYS-1007-REC
+           MOVE    "1007"              TO  SYS-1007-KANRICD
+           MOVE    "*"                 TO  SYS-1007-KBNCD
+           MOVE    SYS-1007-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1007-REC
+               INITIALIZE                  SYS-1007-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1007-REC
+      *
+               MOVE    SYS-1007-SANTEI (1:1)   TO  SPA-CHOKI-FLG
+               MOVE    SYS-1007-SANTEI (2:1)   TO  SPA-YAKJYO-1
+               MOVE    SYS-1007-SANTEI (3:1)   TO  SPA-YAKJYO-2
+               MOVE    SYS-1007-SANTEI (4:1)   TO  SPA-YAKJYO-3
+           END-IF
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+      *    CALL    "MCPDBSUB"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+      *
+      *
+           .
+       900-K01KYOUTU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    患者の受診履歴編集処理
       *****************************************************************
        1001-SPA-JYUSIN-SEC              SECTION.
@@ -686,6 +922,7 @@
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
            MOVE    SPACE               TO  JYURRK-SRYKA
       *
@@ -1735,6 +1972,7 @@
            INITIALIZE                  JYURRK-KEY
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-GMN-HKNCOMBINUM TO  JYURRK-HKNCOMBINUM
       *
            MOVE    "JYURRK-KEY15"      TO  WRK-PATH
@@ -1954,6 +2192,31 @@
       *    EXIT.
       *
       *****************************************************************
+      *    入院ＳＰＡ編集、ワーク診療行為作成処理
+      *****************************************************************
+       500-NYUIN-SPASET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SPA-HKNCOMBIMEI
+           MOVE    SPACE               TO  SPA-FTNRATEMEI
+      *
+      *    診療科、ドクター名称編集
+           PERFORM 10012-SYSKAN-SEC
+      *
+      *    保険組合せ名称編集
+           PERFORM 10013-HKNCOMBI-SEC
+      *
+      *    前回患者保存
+           MOVE    SPA-PTID            TO  SPA-LAST-PTID
+           MOVE    SPA-PTNUM           TO  SPA-LAST-PTNUM
+      *
+           PERFORM 110-K02SYOSIN-SEC
+      *
+           PERFORM 200-WKSRYACT-SYORI-SEC
+           .
+       500-NYUIN-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ワーク診療行為作成処理
       *****************************************************************
        200-WKSRYACT-SYORI-SEC              SECTION.
@@ -2062,7 +2325,6 @@
       *****************************************************************
        4901-PARA-OUT-SEC               SECTION.
       *
-      *
            IF     (LNK-SC95-RRKYMD     =   SPACE)  OR
                   (LNK-SC95-RENNUM     =   ZERO )
                PERFORM 4901-RRKNASI-SET-SEC
@@ -2090,6 +2352,7 @@
            INITIALIZE                  JYURRK-KEY
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
            MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
       *
@@ -2125,11 +2388,15 @@
                        INITIALIZE                  WRK-ZAINUM-TBL
                        MOVE    1                   TO  IDX-JYU
                    END-IF
-                   MOVE    JYURRK-SRYYMD       TO  WRK-RRK-SRYYMD
-                   MOVE    JYURRK-DENPNUM      TO  WRK-RRK-DENPNUM
-                   MOVE    JYURRK-ZAINUM-G     TO  WRK-ZAINUM-G
+                   IF      IDX-JYU                 >   50
+                       CONTINUE
+                   ELSE
+                       MOVE    JYURRK-SRYYMD       TO  WRK-RRK-SRYYMD
+                       MOVE    JYURRK-DENPNUM      TO  WRK-RRK-DENPNUM
+                       MOVE    JYURRK-ZAINUM-G     TO  WRK-ZAINUM-G
                                                           (IDX-JYU)
-                   MOVE    1                   TO  FLG-SYORI
+                       MOVE    1                   TO  FLG-SYORI
+                   END-IF
                END-IF
                IF      JYURRK-SRYYMD       >   SPA-SRYYMD
                    MOVE    1                   TO  FLG-JYURRK
@@ -2160,6 +2427,7 @@
            INITIALIZE                  JYURRK-KEY
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
            MOVE    LNK-SC95-RRKYMD     TO  JYURRK-SRYYMD
            MOVE    LNK-SC95-RENNUM     TO  JYURRK-RENNUM
@@ -2199,9 +2467,13 @@
       *
                IF      FLG-NO              =   ZERO
                    ADD     1                   TO  IDX-JYU
-                   MOVE    JYURRK-ZAINUM-G     TO  WRK-ZAINUM-G
+                   IF      IDX-JYU                 >   50
+                       CONTINUE
+                   ELSE
+                       MOVE    JYURRK-ZAINUM-G     TO  WRK-ZAINUM-G
                                                             (IDX-JYU)
-                   MOVE    1                   TO  FLG-SYORI
+                       MOVE    1                   TO  FLG-SYORI
+                   END-IF
       *        訂正処理時、ドクター、保険組合せ、伝票番号を取得する
                    IF      LNK-SC95-KBN        =   "4"
                        MOVE    JYURRK-DRCD         TO  SPA-DRCD
@@ -2235,7 +2507,7 @@
            MOVE    ZERO                TO  FLG-JIKAN
       *
            PERFORM VARYING     IDX-JYU     FROM    1   BY  1
-                   UNTIL      (IDX-JYU     >   3   )   OR
+                   UNTIL      (IDX-JYU     >   50   )   OR
                               (WRK-ZAINUM-G (IDX-JYU)
                                            =   ZERO  )
       *

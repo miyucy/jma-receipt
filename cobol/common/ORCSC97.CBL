@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL−多々納 02/10/18  入院追加
       *****************************************************************
       *
       *
@@ -50,14 +51,22 @@
            03  FLG-KANJI           PIC 9(01).
            03  FLG-KANA            PIC 9(01).
            03  FLG-SUJI            PIC 9(01).
+           03  FLG-KAI             PIC 9(01).
+           03  FLG-HI              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDH1                PIC 9(04).
            03  IDH2                PIC 9(04).
+      *
+           03  IDX-ZAI             PIC 9(02).
+           03  IDX-D1              PIC 9(02).
+           03  IDX-D2              PIC 9(02).
+           03  IDX-Z               PIC 9(02).
       *
            03  MAP-IDX             PIC 9(04).
            03  GMN-IDX             PIC 9(04).
@@ -73,9 +82,19 @@
            03  WRK-STR             PIC 9(02).
            03  WRK-END             PIC 9(02).
       *
+           03  WRK-SRYYMD.
+               05  WRK-SRYYY       PIC 9(04).
+               05  WRK-SRYMM       PIC 9(02).
+               05  WRK-SRYDD       PIC 9(02).
+      *
            03  WRK-ICD-CDSYU       PIC X(01).
       *    パス名
            03  WRK-PATH            PIC X(64).
+      *
+       01  WRK-NYUMOJI-AREA.
+           03  WRK-HI              PIC 9(02).
+           03  WRK-NISUU           PIC X(20).
+           03  WRK-MAE-CD          PIC X(01).
       *
        01  WRK-MOJI-AREA.
            03  FLG-SP              PIC 9(02).
@@ -106,6 +125,11 @@
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(07).
                05  WRK-SURYO-S2    PIC 9(03).
+      *    入院期間
+       01  TBL-NYUIN-KAISU-AREA.
+           03  TBL-NYUIN-OCC           OCCURS   10.
+               05  TBL-HI              PIC 9(02).
+               05  TBL-SEL             PIC X(01).
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -188,6 +212,16 @@
                MOVE    WRK-INPUTCD         TO  LNK-SC97-INPUTCD
                GO      TO          100-INPUTCD-SYORI-EXT
            END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO          100-INPUTCD-SYORI-EXT
+           END-IF
+      *
+      *    入院の回数
+           IF      (LNK-SC97-PG        =   "K02N" )  AND
+                   (LNK-SC97-INPUTCD(1:1)  =   "*"    )
+               PERFORM 1002-NYUINKAISU-SEC
+               GO      TO          100-INPUTCD-SYORI-EXT
+           END-IF
       *
       *    入力コードの判定
            PERFORM 200-INPUTCD-CHK-SEC
@@ -258,7 +292,11 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX    >   22
                IF      WRK-INPUTCD2(IDX:1)     =   "+"  OR  "-"
-                   IF      WRK-CHK-FLG         =   SPACE
+                   COMPUTE IDX3                =   IDX  +  1
+                   IF     (WRK-CHK-FLG         =   SPACE)  AND
+                          (IDX2                =   ZERO   OR
+                           IDX                 =   22     OR
+                           WRK-INPUTCD2(IDX3:) =   SPACE )
                        MOVE    WRK-INPUTCD2(IDX:1) TO  WRK-CHK-FLG
                    END-IF
                ELSE
@@ -268,13 +306,24 @@
       *            １，２桁目以外の '/'は、空白とする
                    IF     (WRK-INPUTCD2(IDX:1)     =   "/" )  AND
                           (IDX                 NOT =   1  AND   2)
-                       MOVE    SPACE           TO  WRK-INPUTCD2(IDX:1)
-                       MOVE    SPACE           TO  WRK-INPUTCD3(IDX2:1)
+                       IF      WRK-INPUTCD2(1:1)   =   "*"
+                           CONTINUE
+                       ELSE
+                           MOVE    SPACE       TO  WRK-INPUTCD2(IDX:1)
+                           MOVE    SPACE       TO  WRK-INPUTCD3(IDX2:1)
+                       END-IF
                    END-IF
                END-IF
            END-PERFORM
       *
            MOVE    WRK-INPUTCD2        TO  LNK-SC97-INPUTCD
+      *
+      *    − 入力エラー
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    LNK-SC97-INPUTCD
+                                       TO  WRK-INPUTCD
+               GO      TO      100-MAE-HANKAKU-EXT
+           END-IF
       *
       *    １桁目へ−，＋編集
            IF      WRK-CHK-FLG     NOT =   SPACE
@@ -300,6 +349,188 @@
        100-MAE-HANKAKU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入院の回数の判定処理
+      *****************************************************************
+       1002-NYUINKAISU-SEC    SECTION.
+      *
+           MOVE    ZERO                TO  LNK-SC97-NYUIN-KAISU
+           MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
+      *    全角半角変換
+           MOVE    LNK-SC97-INPUTCD    TO  WRK-HENKAN-MAE
+           MOVE    1                   TO  WRK-STR
+           MOVE    22                  TO  WRK-END
+           PERFORM 2010-MOJI-HENKAN-SEC
+           MOVE    WRK-HENKAN-ATO      TO  LNK-SC97-INPUTCD
+      *
+      *    回数
+           INITIALIZE                      WRK-NYUMOJI-AREA
+           MOVE    SPACE               TO  WRK-KAI
+           MOVE    SPACE               TO  WRK-NISUU
+           MOVE    ZERO                TO  WRK-ACCT-MCNT
+           MOVE    ZERO                TO  WRK-MCNT1
+           MOVE    ZERO                TO  FLG-AST
+           MOVE    ZERO                TO  FLG-KAI
+           MOVE    ZERO                TO  FLG-HI
+           MOVE    ZERO                TO  IDX-D1
+           MOVE    ZERO                TO  IDX-D2
+           INITIALIZE                  TBL-NYUIN-KAISU-AREA
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX         >   22
+      *
+               EVALUATE    LNK-SC97-INPUTCD(IDX:1)
+                   WHEN    "*"
+                       MOVE    1               TO  FLG-AST
+                   WHEN    "/"
+                       ADD     1               TO  FLG-KAI
+                   WHEN    "."
+                   WHEN    ","
+                   WHEN    "-"
+      *                数字チェック
+                       MOVE    LNK-SC97-INPUTCD(IDX:1)
+                                               TO  WRK-MAE-CD
+                       PERFORM 2001-NISUUSNUM-CHK-SEC
+                       MOVE    SPACE           TO  WRK-NISUU
+                       MOVE    ZERO            TO  WRK-MCNT1
+                       MOVE    1               TO  FLG-HI
+                   WHEN    OTHER
+      *                回数
+                       IF      (FLG-AST        =   1   )  AND
+                               (FLG-KAI        =   ZERO)
+                           ADD     1               TO  WRK-ACCT-MCNT
+                           MOVE    LNK-SC97-INPUTCD (IDX:1)
+                                                   TO  WRK-KAI
+                                                      (WRK-ACCT-MCNT:1)
+                       END-IF
+      *                日数・回数の数値チェック
+                       IF      (FLG-AST        =   1   )  AND
+                               (FLG-KAI        =   1   )
+                           ADD     1               TO  WRK-MCNT1
+                           MOVE    LNK-SC97-INPUTCD (IDX:1)
+                                                   TO  WRK-NISUU
+                                                      (WRK-MCNT1:1)
+                       END-IF
+                   END-EVALUATE
+           END-PERFORM
+      *
+           IF     (FLG-KAI             =   ZERO   AND
+                   FLG-HI              =   1    )
+               MOVE    "9009"              TO  SPA-ERRCD
+           END-IF
+           IF      FLG-KAI             >   1
+               MOVE    "9010"              TO  SPA-ERRCD
+           END-IF
+      *
+      *    数字チェック
+           IF      WRK-NISUU       NOT =   SPACE
+                MOVE    SPACE              TO  WRK-MAE-CD
+                PERFORM 2001-NISUUSNUM-CHK-SEC
+           END-IF
+      *
+      *    回数
+           MOVE    WRK-ACCT-MCNT       TO  LNK-SC97-KAISUCNT
+      *    回数　数字変換
+           MOVE    ZERO                TO  LNK-SC97-KAISU
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    WRK-KAI             TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-MINKBN         =   "1"   )   OR
+                  (SNUM-SEISUU         >   4     )   OR
+                  (SNUM-SYOSUU         >   ZERO  )
+               MOVE    "0012"              TO  SPA-ERRCD
+           ELSE
+               MOVE    SNUM-OUTNUM         TO  LNK-SC97-KAISU
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      1002-NYUINKAISU-EXT
+           END-IF
+      *
+      *    期間編集
+           INITIALIZE                      LNK-SC97-NYUIN-KAISU
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING     IDX-D2      FROM    1   BY  1
+                   UNTIL      (IDX-D2      >   10       )  OR
+                              (TBL-HI(IDX-D2)  =   ZERO )
+               IF     (IDX-D2                  >   1   )  AND
+                      (TBL-SEL (IDX-D2 - 1)    =   "-" )  AND
+                      (TBL-HI  (IDX-D2 - 1)    <   TBL-HI (IDX-D2))
+                   COMPUTE IDX-Z           =   TBL-HI (IDX-D2 - 1)
+                                           +   1
+                   PERFORM VARYING     IDX2    FROM    IDX-Z  BY  1
+                           UNTIL       IDX2    >=  TBL-HI (IDX-D2)
+                       MOVE    IDX2            TO  IDX-ZAI
+                       MOVE    IDX-ZAI         TO  LNK-SC97-NYU-DAY
+                                                           (IDX-ZAI)
+                   END-PERFORM
+               END-IF
+               MOVE    TBL-HI (IDX-D2)     TO  IDX-ZAI
+               MOVE    TBL-HI (IDX-D2)     TO  LNK-SC97-NYU-DAY
+                                                          (IDX-ZAI)
+           END-PERFORM
+      *
+           .
+       1002-NYUINKAISU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    数字チェック処理
+      *****************************************************************
+       2001-NISUUSNUM-CHK-SEC    SECTION.
+      *
+      *    回数　数字変換
+           IF      WRK-NISUU           =   SPACE
+               MOVE    ZERO            TO  WRK-HI
+           ELSE
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    WRK-NISUU           TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN         =   "1"   )   OR
+                      (SNUM-SEISUU         >   2     )   OR
+                      (SNUM-SYOSUU         >   ZERO  )
+                   MOVE    "9012"              TO  SPA-ERRCD
+                   GO      TO      2001-NISUUSNUM-CHK-EXT
+               ELSE
+                   MOVE    SNUM-OUTNUM         TO  WRK-HI
+               END-IF
+           END-IF
+      *
+           IF      WRK-HI              >   31
+               MOVE    "9006"              TO  SPA-ERRCD
+               GO      TO      2001-NISUUSNUM-CHK-EXT
+           END-IF
+      *
+           EVALUATE    WRK-MAE-CD
+               WHEN    SPACE
+               WHEN    "."
+               WHEN    ","
+                   IF      WRK-HI          =   ZERO
+                      MOVE    WRK-SRYDD        TO  WRK-HI
+                   END-IF
+                   IF      IDX-D1              >   ZERO
+                       IF     (TBL-SEL(IDX-D1) =   "-"  ) AND
+                              (WRK-HI          <   TBL-HI (IDX-D1))
+                           MOVE    "9013"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+                   ADD     1                   TO  IDX-D1
+                   MOVE    WRK-HI              TO  TBL-HI (IDX-D1)
+               WHEN    "-"
+                   IF      WRK-HI          =   ZERO
+                      MOVE    WRK-SRYDD        TO  WRK-HI
+                   END-IF
+                   ADD     1                   TO  IDX-D1
+                   MOVE    WRK-HI              TO  TBL-HI (IDX-D1)
+                   MOVE    "-"                 TO  TBL-SEL(IDX-D1)
+           END-EVALUATE
+      *
+           .
+       2001-NISUUSNUM-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    入力コードの判定処理
       *****************************************************************
@@ -651,7 +882,6 @@
            .
        300-SURYOU-SYORI-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    入力文字を数字変換処理

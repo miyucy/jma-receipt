@@ -31,6 +31,7 @@
       *  01.01.01    MCC-藤原     01/09/21  JOINの修正      
       *  01.01.03    MCC-多々納   02/04/26  印刷の追加      
       *  01.01.04    NACL-多々納  02/10/02  添え字を数字へ修正
+      *  01.01.05    NACL-多々納  02/11/18  一括入力・診療コード入力修正
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -96,6 +97,7 @@
                            11  SPA-NAI-TSTYUKYMD  PIC 9(08).
                            11  SPA-NAI-TEDYUKYMD  PIC 9(08). 
                            11  SPA-NAI-NAME       PIC X(100).
+                   07  SPA-MAE-SRYCD              PIC X(09). 
       *
               05  SPA-NAI-SELNO                   PIC 9(03).
       *
@@ -106,6 +108,7 @@
            03  FLG-TENSU                          PIC 9(01).
       *
            03  FLG-OK                             PIC 9(01).
+           03  FLG-TOUROKU                        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -126,6 +129,13 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+      *    入力項目名
+           03  WRK-MCP-WIDGET          PIC X(64).
+      *
+           03  WRK-INPUTCD             PIC X(09).
+           03  WRK-CD-MCNT             PIC 9(02).
+           03  FLG-KANJI               PIC 9(01).
+           03  FLG-KENSAKU             PIC 9(01).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -167,6 +177,9 @@
       *    一覧印刷変換領域
            COPY    "CPORCHXLST.INC".
       *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -200,6 +213,10 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-X01KYOUTU 
            MOVE    SPA-FREE        TO  SPA-X01FREE
@@ -227,7 +244,7 @@
            MOVE    SPA-X01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-X01         TO  SPA-X01SONOTA
-           MOVE    SPA-X01FREE     TO  SPA-FREE    
+           MOVE    SPA-X01FREE     TO  SPA-FREE
       *
            .
            EXIT    PROGRAM
@@ -323,8 +340,9 @@
        320-X98SPASET-SEC          SECTION.
       *
            IF      SPA-X98-SRYCD   NOT =   SPACE    
-               MOVE    SPA-X98-SRYCD       TO  X01-SRYCD
-              PERFORM 4104-SRYCD-CHK-SEC
+      ******** MOVE    SPA-X98-SRYCD       TO  X01-SRYCD
+               MOVE    SPA-X98-SRYCD       TO  SPA-GMN-SRYCD
+               PERFORM 4104-SRYCD-CHK-SEC
            END-IF  
            .
        320-X98SPASET-EXT.
@@ -344,6 +362,7 @@
                    PERFORM 493-CLEAR-SEC
       *        検索
                WHEN    "CLICKED"       ALSO    "B09"
+                   MOVE    SPACE               TO  WRK-INPUTCD
                    PERFORM  409-KENSAKU-SEC
       *        確定
                WHEN    "CLICKED"       ALSO    "B12"
@@ -361,22 +380,14 @@
       *****************************************************************
        200-ENTRY                             SECTION.
       *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        選択番号
                WHEN    "ACTIVATE"       ALSO    "SELNUM"
                    PERFORM  4101-SELNUM-CHK-SEC
-      *        有効開始年月日
-               WHEN    "ACTIVATE"       ALSO    "STYUKYMD"
-                   PERFORM  4102-STYUKYMD-CHK-SEC
-      *        有効終了年月日
-               WHEN    "ACTIVATE"       ALSO    "EDYUKYMD"
-                   PERFORM  4103-EDYUKYMD-CHK-SEC
-      *        診療行為コード
-               WHEN    "ACTIVATE"       ALSO    "SRYCD"
-                   PERFORM  4104-SRYCD-CHK-SEC
-      *        診療行為コード
-               WHEN    "ACTIVATE"       ALSO    "CHKKBN"
-                   PERFORM  4105-CHKKBN-CHK-SEC
+      *        一括入力分
+               WHEN    "ACTIVATE"       ALSO    ANY
+                   PERFORM 400-ENTRY-SYORI-SEC
       *        行選択
                WHEN    ANY             ALSO    "TENSU_LIST"
                    PERFORM 41015-LIST1SEL-SEC
@@ -410,19 +421,18 @@
        210-BACK-EXT.
            EXIT.
       *
+      *
       *****************************************************************
       *    番号選択　入力処理
       *****************************************************************
        4101-SELNUM-CHK-SEC       SECTION.
       *
-           MOVE    3               TO  SPA-GMN-CUR
-      *
            INITIALIZE                  SPA-GMN-KOUMOKU1
                                        SPA-NAI-KOUMOKU1
-           MOVE    ZERO            TO  SPA-NAI-SELNO
-      *                                        
-           MOVE    X01-SELNUM      TO  SPA-GMN-SELNUM
-      * 
+           MOVE    ZERO                TO  SPA-NAI-SELNO
+      *
+           MOVE    X01-SELNUM          TO  SPA-GMN-SELNUM
+      *
            INITIALIZE                     ORCSNUMAREA
            MOVE    SPA-GMN-SELNUM      TO  SNUM-INX
            CALL    "ORCSNUM"           USING
@@ -430,29 +440,31 @@
            IF     (SNUM-RC         NOT =   ZERO  )   OR
                   (SNUM-MINKBN     NOT =   SPACE )   OR
                   (SNUM-SYOKBN     NOT =   SPACE )
-               MOVE    "0001"                  TO  SPA-ERRCD
+               MOVE    3                   TO  SPA-GMN-CUR
+               MOVE    "0001"              TO  SPA-ERRCD
                GO      TO      4101-SELNUM-CHK-EXT
            ELSE
                MOVE    SNUM-OUTNUM     TO  SPA-NAI-SELNUM
-           END-IF
+            END-IF
       *
            IF      SPA-NAI-SELNUM      =   ZERO
-               CONTINUE
-           ELSE  
-      *    選択番号チェック
+               MOVE    SPA-GMN-MAX         TO  SPA-NAI-SELNUM
+               MOVE    SPA-NAI-SELNUM      TO  SPA-GMN-SELNUM
+           ELSE
+      *        選択番号チェック
                IF      SPA-NAI-SELNUM      >=  1
                AND     SPA-NAI-SELNUM      <=  SPA-GMN-MAX   
                    CONTINUE
-                      
                ELSE
-                   MOVE    "0001"                  TO  SPA-ERRCD
+                   MOVE    3                   TO  SPA-GMN-CUR
+                   MOVE    "0001"              TO  SPA-ERRCD
                    GO  TO  4101-SELNUM-CHK-EXT 
                END-IF
            END-IF
       *
-           MOVE    SPA-GMN-SELNUM      TO  SPA-NAI-SELNO
+           MOVE    SPA-NAI-SELNUM      TO  SPA-NAI-SELNO
       *
-           PERFORM 41011-SELNUM-HENSYU-SEC               
+           PERFORM 41011-SELNUM-HENSYU-SEC
            .
        4101-SELNUM-CHK-EXT.
            EXIT.
@@ -474,9 +486,135 @@
            MOVE    SPA-NAI-NAME   (SPA-NAI-SELNO)
                                        TO  SPA-GMN-NAME
      *
-           MOVE    4                   TO  SPA-GMN-CUR 
+           MOVE    4                   TO  SPA-GMN-CUR
            .
        41011-SELNUM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一括分　入力処理
+      *****************************************************************
+       400-ENTRY-SYORI-SEC       SECTION.
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        チェック区分
+               WHEN    "ACTIVATE"       ALSO    "CHKKBN"
+                   INITIALIZE                  SPA-GMN-KOUMOKU
+                   INITIALIZE                  SPA-NAI-SELNO
+           END-EVALUATE
+      *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
+      *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           .
+       400-ENTRY-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
+           MOVE    X01-CHKKBN          TO  SPA-GMN-CHKKBN-G
+           MOVE    X01-SRYCD           TO  SPA-GMN-SRYCD
+      *
+           MOVE    X01-STYUKYMD        TO  SPA-GMN-STYUKYMD
+           MOVE    X01-EDYUKYMD        TO  SPA-GMN-EDYUKYMD
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+      *    チェック区分
+           PERFORM  4105-CHKKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    診療行為コード
+           PERFORM  4104-SRYCD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    有効開始年月日
+           PERFORM  4102-STYUKYMD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    有効終了年月日
+           PERFORM 4103-EDYUKYMD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           .
+       4102-KIHON-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *  　チェック区分チェック
+      *****************************************************************
+       4105-CHKKBN-CHK-SEC             SECTION.
+      *
+           IF      SPA-GMN-CHKKBN      =   SPA-NAI-CHKKBN
+               GO      TO      4105-CHKKBN-CHK-EXT
+           END-IF
+      *
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   9
+               IF      SPA-GMN-CHKKBN      =   SPA-GMN-CHKKBNLIST(IDX)
+                                                                (1:1)
+                   MOVE    SPA-GMN-CHKKBNLIST(IDX)
+                                           TO  SPA-GMN-CHKKBN-G
+                   MOVE    9               TO  IDX
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0006"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+               GO      TO      4105-CHKKBN-CHK-EXT
+           END-IF
+           IF      SPA-GMN-CHKKBN      =   "3"
+               MOVE    "0010"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+               GO      TO      4105-CHKKBN-CHK-EXT
+           END-IF
+      *
+           INITIALIZE                  SPA-GMN-TBL
+           INITIALIZE                  SPA-NAIB-AREA
+           MOVE    ZERO                TO  SPA-GMN-MAX
+      *
+           MOVE    SPA-GMN-CHKKBN      TO  SPA-NAI-CHKKBN 
+      *
+           .
+       4105-CHKKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -484,15 +622,17 @@
       *****************************************************************
        4102-STYUKYMD-CHK-SEC          SECTION.
       *
-           MOVE    4                  TO  SPA-GMN-CUR
       *
-           MOVE   X01-STYUKYMD        TO  SPA-GMN-STYUKYMD
-      *
-           MOVE    ZERO               TO  SPA-NAI-STYUKYMD     
-      *
-           IF      SPA-GMN-STYUKYMD   =   SPACE
-               MOVE    ZERO               TO  SPA-GMN-STYUKYMD
-           END-IF 
+           IF      SPA-GMN-STYUKYMD    =   SPACE
+               MOVE    ZERO                TO  SPA-NAI-EDYUKYMD
+               IF     (SPA-GMN-EDYUKYMD    NOT =   SPACE      ) OR
+                      (WRK-MCP-WIDGET      =   "STYUKYMD" ) OR
+                      (WRK-MCP-WIDGET      =   "EDYUKYMD" ) OR
+                      (FLG-TOUROKU         =   1          )
+                   MOVE    "00000000"         TO  SPA-GMN-STYUKYMD
+               END-IF
+               GO      TO      4102-STYUKYMD-CHK-EXT
+           END-IF
       *
            MOVE    SPA-GMN-STYUKYMD   TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
@@ -500,10 +640,10 @@
                MOVE    WRK-SYMD             TO  SPA-NAI-STYUKYMD 
                MOVE    WRK-HENYMDG          TO  SPA-GMN-STYUKYMD
            ELSE
+               MOVE    4                  TO  SPA-GMN-CUR
+               MOVE    ZERO               TO  SPA-NAI-STYUKYMD
                GO  TO  4102-STYUKYMD-CHK-EXT
            END-IF
-      *
-           MOVE    5                   TO  SPA-GMN-CUR
       *
            .
        4102-STYUKYMD-CHK-EXT.
@@ -514,26 +654,26 @@
       *****************************************************************
        4103-EDYUKYMD-CHK-SEC          SECTION.
       *
-           MOVE    5                  TO  SPA-GMN-CUR
       *
-           MOVE   X01-EDYUKYMD        TO  SPA-GMN-EDYUKYMD
-      *
-           MOVE    ZERO               TO  SPA-NAI-EDYUKYMD     
-      *
-           IF      SPA-GMN-EDYUKYMD   =   SPACE
-               MOVE    "99999999"         TO  SPA-GMN-EDYUKYMD
-           END-IF 
-      *
-           MOVE    SPA-GMN-EDYUKYMD   TO  WRK-YMD
-           PERFORM 5002-HIZUKE-CHK-SEC
-           IF      SPA-ERRCD            =   SPACE
-               MOVE    WRK-SYMD             TO  SPA-NAI-EDYUKYMD 
-               MOVE    WRK-HENYMDG          TO  SPA-GMN-EDYUKYMD
-           ELSE    
-               GO  TO  4103-EDYUKYMD-CHK-EXT
+           IF      SPA-GMN-EDYUKYMD    =   SPACE
+               MOVE    ZERO                TO  SPA-NAI-EDYUKYMD
+               IF     (WRK-MCP-WIDGET      =   "EDYUKYMD" ) OR
+                      (FLG-TOUROKU         =   1          )
+                   MOVE    "99999999"         TO  SPA-GMN-EDYUKYMD
+                   MOVE    ALL "9"            TO  SPA-NAI-EDYUKYMD
+               END-IF
+               GO      TO      4103-EDYUKYMD-CHK-EXT
            END-IF
       *
-           MOVE    12                 TO  SPA-GMN-CUR
+           MOVE    SPA-GMN-EDYUKYMD    TO  WRK-YMD
+           PERFORM 5002-HIZUKE-CHK-SEC
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    WRK-SYMD            TO  SPA-NAI-EDYUKYMD 
+               MOVE    WRK-HENYMDG         TO  SPA-GMN-EDYUKYMD
+           ELSE
+               MOVE    5                  TO  SPA-GMN-CUR
+               GO  TO  4103-EDYUKYMD-CHK-EXT
+           END-IF
       *
            .
        4103-EDYUKYMD-CHK-EXT.
@@ -544,7 +684,24 @@
       *****************************************************************
        4104-SRYCD-CHK-SEC                         SECTION.
       *
-           MOVE    2                  TO  SPA-GMN-CUR
+      *
+      *    検索へ
+           IF      SPA-GMN-SRYCD(1:1)  =   "/"
+               MOVE    SPACE               TO  WRK-INPUTCD
+               PERFORM 409-KENSAKU-SEC
+               GO                TO  4104-SRYCD-CHK-EXT
+           END-IF
+      *
+           IF     (SPA-GMN-SRYCD       =   SPACE   )  AND
+                  (WRK-MCP-WIDGET      =   "SRYCD" )
+               MOVE    "0005"          TO  SPA-ERRCD
+               MOVE    2               TO  SPA-GMN-CUR
+               GO      TO      4104-SRYCD-CHK-EXT
+           END-IF
+      *
+           IF      SPA-GMN-SRYCD       =   SPA-MAE-SRYCD
+               GO      TO      4104-SRYCD-CHK-EXT
+           END-IF
       *
            INITIALIZE                  SPA-GMN-KOUMOKU1
                                        SPA-GMN-TBL
@@ -553,18 +710,14 @@
                                        SPA-GMN-NAME
            MOVE    ZERO            TO  SPA-NAI-SELNO
                                        SPA-GMN-MAX
-      *
-      *    検索へ
-           IF      X01-SRYCD(1:1)     =   "/"
-               PERFORM  409-KENSAKU-SEC
-               GO                TO  4104-SRYCD-CHK-EXT
+           IF      SPA-GMN-SRYCD       =   SPACE
+               GO      TO      4104-SRYCD-CHK-EXT
            END-IF
       *
-           MOVE  X01-SRYCD            TO  SPA-GMN-SRYCD
-      * 
-           IF      SPA-GMN-SRYCD             =  SPACE
-               MOVE    "0001"    TO  SPA-ERRCD
-               GO                TO  4104-SRYCD-CHK-EXT
+      *    入力コードチェック
+           PERFORM 4010-SRYCD-CHK-SEC
+           IF      FLG-KENSAKU         =   1
+               GO      TO      4104-SRYCD-CHK-EXT
            END-IF
       *
       *    点数マスタ読み込み
@@ -585,8 +738,9 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
            IF      FLG-TENSU           =   1
-               MOVE    "0002"    TO  SPA-ERRCD
-               GO                TO  4104-SRYCD-CHK-EXT
+               MOVE    "0005"          TO  SPA-ERRCD
+               MOVE    2               TO  SPA-GMN-CUR
+               GO      TO      4104-SRYCD-CHK-EXT
            ELSE
       *        最終履歴の名称をセットする
                PERFORM UNTIL       FLG-TENSU       =   1
@@ -603,18 +757,21 @@
                WHEN    "4"
                    IF      SPA-GMN-SRYCD (1:1) NOT =   "6"
                        MOVE    "0008"              TO  SPA-ERRCD
+                       MOVE    2               TO  SPA-GMN-CUR
                        GO                TO  4104-SRYCD-CHK-EXT
                    END-IF
                WHEN    "2"
                WHEN    "5"
                    IF      SPA-GMN-SRYCD (1:1)     =   "6" OR  "7"
                        MOVE    "0008"              TO  SPA-ERRCD
+                       MOVE    2               TO  SPA-GMN-CUR
                        GO                TO  4104-SRYCD-CHK-EXT
                    END-IF
            END-EVALUATE
       *
            MOVE    SPA-GMN-SRYCD       TO  SPA-NAI-SRYCD
-      *     
+           MOVE    SPA-GMN-SRYCD       TO  SPA-MAE-SRYCD
+      *
       *    チェックマスタ読み込み 
            INITIALIZE                  CHK-REC
            MOVE    SPA-GMN-CHKKBN      TO  CHK-CHKKBN
@@ -699,62 +856,61 @@
                    MOVE    SPA-NAI-TSTYUKYMD (1)   TO  SPA-NAI-STYUKYMD
                    MOVE    SPA-GMN-TEDYUKYMD (1)   TO  SPA-GMN-EDYUKYMD
                    MOVE    SPA-NAI-TEDYUKYMD (1)   TO  SPA-NAI-EDYUKYMD
-                   MOVE    "1"                     TO  SPA-GMN-SELNUM
+                   MOVE    "001"                   TO  SPA-GMN-SELNUM
                    MOVE    1                       TO  SPA-NAI-SELNUM
                    MOVE    1                       TO  SPA-NAI-SELNO
                    MOVE    12                      TO  SPA-GMN-CUR
                WHEN    OTHER
                    MOVE    3                       TO  SPA-GMN-CUR
-           END-EVALUATE           
+           END-EVALUATE
            .
        4104-SRYCD-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *  　チェック区分チェック
+      *  　入力コードチェック処理
       *****************************************************************
-       4105-CHKKBN-CHK-SEC                         SECTION.
+       4010-SRYCD-CHK-SEC                        SECTION.
       *
-           MOVE    1                  TO  SPA-GMN-CUR
+           MOVE    ZERO               TO  FLG-KENSAKU
       *
-           INITIALIZE                  SPA-GMN-KOUMOKU
-                                       SPA-GMN-TBL
-                                       SPA-NAIB-AREA
-                                       SPA-NAI-SELNO 
-           MOVE    ZERO           TO  SPA-GMN-MAX
+           MOVE    ZERO               TO  WRK-CD-MCNT
+           MOVE    ZERO               TO  FLG-KANJI
       *
-           MOVE  X01-CHKKBN           TO  SPA-GMN-CHKKBN-G
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   9
-               IF      SPA-GMN-CHKKBN      =   SPA-GMN-CHKKBNLIST(IDX)
-                                                                (1:1)
-                   MOVE    SPA-GMN-CHKKBNLIST(IDX)
-                                           TO  SPA-GMN-CHKKBN-G
-                   MOVE    9               TO  IDX
-                   MOVE    1               TO  FLG-OK
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-SRYCD       TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF      KANACHK-RC      NOT =   ZERO
+      *        全角半角混在エラー
+               MOVE    "0007"              TO  SPA-ERRCD
+               GO      TO    4010-SRYCD-CHK-EXT
+           ELSE
+               MOVE    KANACHK-MAX         TO  WRK-CD-MCNT
+      *        全角
+               IF      KANACHK-SYUBETU     =   2
+                   MOVE    1               TO  FLG-KANJI
+               ELSE
+                   MOVE    ZERO            TO  FLG-KANJI
                END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    "0001"    TO  SPA-ERRCD
-               GO                TO  4105-CHKKBN-CHK-EXT
            END-IF
       *
-           MOVE    SPA-GMN-CHKKBN    TO  SPA-NAI-CHKKBN     
+      *    半角で９文字の時、点数マスタチェックへ
+           IF     (WRK-CD-MCNT         =   9  )  AND
+                  (FLG-KANJI           =   ZERO )  AND
+                  (SPA-GMN-SRYCD       NUMERIC  )
+               GO      TO    4010-SRYCD-CHK-EXT
+           END-IF
       *
-      *    EVALUATE    SPA-GMN-CHKKBN
-      *        WHEN    "1" THRU "5"
-      *            CONTINUE
-      *        WHEN    OTHER
-      *            MOVE    "0001"    TO  SPA-ERRCD
-      *            GO                TO  4105-CHKKBN-CHK-EXT
-      *    END-EVALUATE
+           MOVE    1                   TO  FLG-KENSAKU
+           MOVE    SPA-GMN-SRYCD       TO  WRK-INPUTCD
+           PERFORM 409-KENSAKU-SEC
       *
-           MOVE    2                 TO  SPA-GMN-CUR
            .
-       4105-CHKKBN-CHK-EXT.
+       4010-SRYCD-CHK-EXT.
            EXIT.
+      *
       *
       *****************************************************************
       *    行選択処理
@@ -812,39 +968,99 @@
       *****************************************************************
        409-KENSAKU-SEC             SECTION.
       *
-      * 
-           MOVE    "X01"               TO  SPA-MOTOPG
-           MOVE    "X98"               TO  SPA-SAKIPG
-           MOVE    "X01"               TO  SPA-X98-MOTOPG
-      *
-           MOVE    "INPUT"             TO  MCP-WIDGET 
-      *
       *    共通ＳＰＡ編集
            INITIALIZE                  SPA-X98-AREA
            MOVE    "2"                 TO  SPA-X98-TYPE
       *
            INITIALIZE                  SPA-X98GMN-AREA
-           EVALUATE    SPA-GMN-CHKKBN
-               WHEN    "1"
-               WHEN    "3"
-               WHEN    "4"
-                   MOVE    "4"             TO  SPA-X98-GMN-SYORI
-               WHEN    "2"
-               WHEN    "5"
-                   MOVE    "8"             TO  SPA-X98-GMN-SYORI
-           END-EVALUATE
-           MOVE    "2"                 TO  SPA-X98-GMN-KBN
-           MOVE    SPACE               TO  X98
+           IF      WRK-INPUTCD         NOT =   SPACE
+               EVALUATE    SPA-GMN-CHKKBN
+                   WHEN    "1"
+                   WHEN    "3"
+                   WHEN    "4"
+      *                薬剤
+                       MOVE    "4"             TO  SPA-X98-GMN-SYORI
+                   WHEN    "2"
+                   WHEN    "5"
+      *                診療行為
+                       MOVE    "8"             TO  SPA-X98-GMN-SYORI
+               END-EVALUATE
+               MOVE    WRK-INPUTCD         TO  SPA-X98-INPUTCD
+               MOVE    "1"                 TO  SPA-X98-TYPE
+               IF      FLG-KANJI           =   1
+                   MOVE    "J"             TO  SPA-X98-CDSYUBETU
+               ELSE
+                   IF      WRK-INPUTCD(1:1)    NUMERIC
+                       EVALUATE    WRK-CD-MCNT
+                           WHEN    3
+                           WHEN    6
+                               MOVE    "6"     TO  SPA-X98-CDSYUBETU
+                           WHEN    4
+                               MOVE    "4"     TO  SPA-X98-CDSYUBETU
+                           WHEN    5
+                               MOVE    "5"     TO  SPA-X98-CDSYUBETU
+                       END-EVALUATE
+                   ELSE
+                       MOVE    "A"             TO  SPA-X98-CDSYUBETU
+                   END-IF
+               END-IF
+               MOVE    "2"                 TO  SPA-X98-GMN-KBN
+      *        画面編集
+               PERFORM 41011-X98-SET-SEC
+           ELSE
+      *        画面編集
+               MOVE    "2"                 TO  SPA-X98-GMN-KBN
+               PERFORM 41011-X98-SET-SEC
+           END-IF
       *
-           MOVE   "NEW"                TO  MCP-PUTTYPE.
-           MOVE   "X98    "            TO  MCP-WINDOW.
+           MOVE    "X01"               TO  SPA-MOTOPG
+           MOVE    "X98"               TO  SPA-SAKIPG
+           MOVE    "X01"               TO  SPA-X98-MOTOPG
       *
-           PERFORM 900-PUT-WINDOW.
+           IF      SPA-X98-GMN-MAX     =   ZERO
+               MOVE    "INPUT"             TO  MCP-WIDGET
+           ELSE
+               MOVE    "SELNUM"            TO  MCP-WIDGET
+           END-IF
+      *
+           MOVE   "NEW"                TO  MCP-PUTTYPE
+           MOVE   "X98    "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
       *
            .
        409-KENSAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    検索画面編集処理
+      *****************************************************************
+       41011-X98-SET-SEC                           SECTION.
+      *
+      *
+           MOVE    SPA-X01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-X01         TO  SPA-X01SONOTA
+           MOVE    SPA-X01FREE     TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGX98"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-X01KYOUTU 
+           MOVE    SPA-FREE        TO  SPA-X01FREE
+           MOVE    SPA-X01SONOTA   TO  SPA-X01 
+      *
+           .
+       41011-X98-SET-EXT.
            EXIT.
       *****************************************************************
       *    項目クリア
@@ -863,6 +1079,13 @@
       *****************************************************************
        410-KAKUTEI-SEC           SECTION.
       *
+           MOVE    1                   TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  410-KAKUTEI-EXT
+           END-IF
+      *
            IF      SPA-NAI-STYUKYMD        =   ZERO
                IF      SPA-GMN-STYUKYMD(1:8)   =   ALL "0"
                    CONTINUE
@@ -872,9 +1095,9 @@
                    GO  TO  410-KAKUTEI-EXT
                END-IF    
            END-IF
-           IF      SPA-NAI-EDYUKYMD    =   ZERO
-           OR      SPA-NAI-CHKKBN      =   SPACE
-           OR      SPA-NAI-SRYCD       =   SPACE  
+           IF     (SPA-NAI-EDYUKYMD    =   ZERO   )
+           OR     (SPA-NAI-CHKKBN      =   SPACE  )
+           OR     (SPA-NAI-SRYCD       =   SPACE  )
                MOVE    2                   TO  SPA-GMN-CUR
                MOVE    "0003"              TO  SPA-ERRCD
                GO  TO  410-KAKUTEI-EXT
@@ -1047,6 +1270,10 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+           IF      SPA-GMN-CUR         =   ZERO
+               PERFORM 50011-CUR-SET-SEC
+           END-IF
+      *
            EVALUATE    SPA-GMN-CUR
                 WHEN   1
                     MOVE  "CHKKBN"     TO  MCP-WIDGET
@@ -1067,6 +1294,28 @@
            EXIT.
       *
       *****************************************************************
+      *    画面カーソルセット処理
+      *****************************************************************
+       50011-CUR-SET-SEC             SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "CHKKBN"
+                   MOVE    2               TO  SPA-GMN-CUR
+               WHEN    "SRYCD"
+                   MOVE    3               TO  SPA-GMN-CUR
+               WHEN    "SELNUM"
+                   MOVE    4               TO  SPA-GMN-CUR
+               WHEN    "STYUKYMD"
+                   MOVE    5               TO  SPA-GMN-CUR
+               WHEN    "EDYUKYMD"
+                   MOVE    12              TO  SPA-GMN-CUR
+           END-EVALUATE
+      *
+           .
+       50011-CUR-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
@@ -1077,16 +1326,25 @@
                WHEN    "0001"
                    MOVE    "選択番号が有りません"     TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "入力エラー"               TO  SPA-ERRMSG
+                   MOVE    "日付入力エラー"           TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE    "エラーの項目があります"   TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE    "有効期間が重複します"     TO  SPA-ERRMSG
+               WHEN    "0005"
+                   MOVE    "点数マスタがありません"   TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE    "チェク区分がありません"   TO  SPA-ERRMSG
+               WHEN    "0007"
+                   MOVE    "診療コード入力エラー"     TO  SPA-ERRMSG
                WHEN    "0008"
                    MOVE    "チェック区分に対して入力できないコードです"
                                                       TO  SPA-ERRMSG
                WHEN    "0009"
                    MOVE    "チェック区分を入力してから印刷して下さい"
+                                                      TO  SPA-ERRMSG
+               WHEN    "0010"
+                   MOVE    "薬剤と禁忌のチェックコードは使用できません"
                                                       TO  SPA-ERRMSG
            END-EVALUATE
       *

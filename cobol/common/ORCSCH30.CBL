@@ -30,6 +30,7 @@
       * 01.00.01     NACL-多々納  02/09/04  種別区分の追加
       * 01.00.02     NACL-多々納  02/09/17  処方のみの時院内処方とする
       * 01.00.03     NACL-多々納  02/10/04  逓減を対象外とする
+      * 01.00.04     NACL-多々納  02/10/25  入院対応
       *****************************************************************
       *
       *
@@ -290,6 +291,7 @@
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -346,6 +348,7 @@
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    WRK-SRYYMD          TO  JYURRK-SRYYMD
            MOVE    WRK-RENNUM          TO  JYURRK-RENNUM
       *

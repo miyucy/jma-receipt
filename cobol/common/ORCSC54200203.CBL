@@ -466,7 +466,7 @@
                IF      FLG-ARI             =   1
                    MOVE    "0040"          TO  SPA-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR(IDX-T)
-                   GO      TO      10011-YOUJIKASAN-SET-EXT
+                   GO      TO      10013-YOUJIKASAN-CHK-EXT
                END-IF
       *
       *        ÆýÍÄ»ù¤Î²Ã»»
@@ -475,7 +475,7 @@
                IF      FLG-ARI             =   1
                    MOVE    "0040"          TO  SPA-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR(IDX-T)
-                   GO      TO      10011-YOUJIKASAN-SET-EXT
+                   GO      TO      10013-YOUJIKASAN-CHK-EXT
                END-IF
            END-IF
       *

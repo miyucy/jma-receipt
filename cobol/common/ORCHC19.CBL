@@ -38,6 +38,7 @@
       *  01.00.09    NACL-Â¿¡¹Ç¼  02.09.05  ÃæÅÓ½ªÎ»¤Î½¤Àµ
       *  01.00.10    NACL-Â¿¡¹Ç¼  02.09.13  °õºþ¥µ¥×¤ÎÄÉ²Ã
       *  01.00.11    NACL-Â¿¡¹Ç¼  02.09.17  £È£±£´¡¥£±£°²þÀµÊ¬ÄÉ²Ã
+      *  01.00.12    NACL-Â¿¡¹Ç¼  02/10/25  Æþ±¡ÂÐ±þ
       *****************************************************************
       *
       *
@@ -941,6 +942,7 @@
            INITIALIZE                      JYURRK-REC
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
            MOVE    WRK-SRYYMD          TO  JYURRK-SRYYMD
            MOVE    WRK-RENNUM          TO  JYURRK-RENNUM
@@ -1035,6 +1037,7 @@
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC

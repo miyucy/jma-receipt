@@ -30,6 +30,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       * 01.00.01     MCC-Â¿¡¹Ç¼   02/04/16  Ï«ºÒÍÑÄÉ²Ã
       * 01.00.02     NACL-Â¿¡¹Ç¼  02/10/03  Ï«ºÒ²Ã»»¤Ê¤·¤ÎÄÉ²Ã
+      * 01.00.03     NACL-Â¿¡¹Ç¼  02/11/20  ¼«ÇåÀÕ´ïºàÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -370,6 +371,7 @@
                ADD     1                   TO  IDX-MAX
       *
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "." OR "S"
+                                                               OR "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
                ELSE
                    MOVE    WRK-COM-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -387,6 +389,7 @@
                    WHEN    "8"
                    WHEN    "."
                    WHEN    "S"
+                   WHEN    "*"
                        CONTINUE
       *
                    WHEN    OTHER
@@ -1125,6 +1128,7 @@
       *
       *
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "."  OR  "S"
+                                                               OR "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
                ELSE
                    MOVE    WRK-COM-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -1140,6 +1144,7 @@
                    WHEN    "8"
                    WHEN    "."
                    WHEN    "S"
+                   WHEN    "*"
                        CONTINUE
       *
                    WHEN    OTHER
@@ -1198,7 +1203,8 @@
        10021-JIHI-KEI-SEC                  SECTION.
       *
            IF      WRK-COM-INPUTCD(IDX-Z)(1:5) =   "09591"  OR
-                                                   "09592"
+                                                   "09592"  OR
+                                                   "09593"
                CONTINUE
            ELSE
                GO      TO      10021-JIHI-KEI-EXT

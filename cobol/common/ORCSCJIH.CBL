@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  02/11/20  自賠責器材追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -176,6 +177,7 @@
                ADD     1                   TO  IDX-MAX
       *
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "." OR "S"
+                                                               OR "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
                ELSE
                    MOVE    WRK-COM-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -187,6 +189,7 @@
                EVALUATE    WRK-MOJI
                    WHEN    "8"
                    WHEN    "."
+                   WHEN    "*"
                        CONTINUE
                    WHEN    "S"
       *                セットは入力不可とする
@@ -233,7 +236,7 @@
                            MOVE    "0055"          TO  WRK-ERRCD
                            MOVE    "1"             TO  WRK-COM-CUR
                                                           (IDX-Z)
-               END-EVALUATE
+                   END-EVALUATE
            END-EVALUATE
       *
            .
@@ -265,6 +268,7 @@
       *
       *
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "."  OR  "S"
+                                                                OR "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
                ELSE
                    MOVE    WRK-COM-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -280,6 +284,7 @@
                    WHEN    "8"
                    WHEN    "."
                    WHEN    "S"
+                   WHEN    "*"
                        CONTINUE
       *
                    WHEN    OTHER
@@ -329,7 +334,8 @@
        10021-KEISAN-SEC                  SECTION.
       *
            IF     (WRK-COM-INPUTCD(IDX-Z)(1:5) =   "09591" OR
-                                                   "09592" ) AND
+                                                   "09592" OR
+                                                   "09593" ) AND
                   (WRK-COM-KISOTEN(IDX-Z)  NOT =   WRK-COM-TEN(IDX-Z))
                MOVE    WRK-COM-TEN(IDX-Z)  TO  WRK-COM-KISOTEN(IDX-Z)
            END-IF

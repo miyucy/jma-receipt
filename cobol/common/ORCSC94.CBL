@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL−多々納 02/10/18  入院追加
       *****************************************************************
       *
       *
@@ -50,6 +51,7 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
            03  IDM                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDS1                PIC 9(04).
@@ -107,6 +109,12 @@
       *
            03  WRK-MAISU           PIC 9(05).
       *
+           03  WRK-IDX             PIC 9(04).
+           03  WRK-MEISYO-X        PIC X(22).
+      *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
       *
       *****************************************************************
       *    連絡　領域
@@ -117,10 +125,14 @@
       *
        01  SPA-SCR-REC.
            COPY    "CPK02SPASCR.INC".
+      *    スパ領域
+           COPY    "COMMON-SPA".
+      *
       *
        PROCEDURE                   DIVISION    USING
            ORCSC94AREA
            SPA-SCR-REC
+           SPA-AREA
            .
       *
       *****************************************************************
@@ -139,6 +151,7 @@
       *    診療行為コードより、処理を決定
       *
            IF      SPA-GMN-INPUTCD(IDX)(1:1)       =   "." OR "S"
+                                                           OR  "*"
                MOVE    SPA-GMN-INPUTCD(IDX)(1:1)   TO  WRK-MOJI
            ELSE
                MOVE    SPA-COM-INPUTCD(IDX)(1:1)   TO  WRK-MOJI
@@ -150,6 +163,12 @@
            IF      WRK-MOJI            =   "."
                GO     TO      000-PROC-EXT
            END-IF
+      *    入院回数
+           IF      WRK-MOJI            =   "*"
+               PERFORM 300-NYUIN-GMN-SEC
+               GO     TO      000-PROC-EXT
+           END-IF
+      *
       *    自費の時、０とする
            IF      SPA-COM-SRYKBN (IDX)    =   "95"  OR  "96"
                IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "6" OR "7"
@@ -352,8 +371,6 @@
            MOVE    IDX-ICD             TO  SPA-GMN-INCNT (IDX)
       *    入力コード表示済み
            MOVE    "1"                 TO  SPA-COM-GMNFLG (IDX)
-      *    前へ編集
-           MOVE    SPA-GMN-INPUTCD (IDX)   TO  SPA-MAE-INPUTCD (IDX)
       *
            .
        100-COM-GMNINPUT-EXT.
@@ -379,6 +396,7 @@
       *
       *    剤終了行のみの編集（約束セットの時は入力行）
            IF     (SPA-COM-ZAIEND (IDX)    =   "1" )  OR
+                  (SPA-COM-KAIFLG (IDX)    =   "1" )  OR
                   (WRK-MOJI                =   "S" )  OR
                   (SPA-COM-SRYSYUKBN(IDX)  =   "950"  OR "960" )
       *        点数
@@ -504,5 +522,131 @@
       *
            .
        2002-INPUTCD-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院回数画面編集用処理
+      *****************************************************************
+       300-NYUIN-GMN-SEC            SECTION.
+      *
+           EVALUATE    LNK-SC94-KBN
+      *        画面入力項目編集用へ（画面入力以外の再編集）
+               WHEN    "1"
+                   PERFORM 3001-COM-GMNINPUT-SEC
+      *
+      *            入力値を画面編集用へ
+               WHEN    "2"
+                   PERFORM 3001-GMNINPUT-GMN-SEC
+           END-EVALUATE
+           .
+       300-NYUIN-GMN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院回数画面編集用処理
+      *****************************************************************
+       3001-COM-GMNINPUT-SEC            SECTION.
+      *
+           MOVE    "1"                     TO  SPA-COM-KAIFLG (IDX)
+           MOVE    SPA-COM-KAISU  (IDX)    TO  WRK-KAISU-Z
+      *
+           MOVE    ZERO                TO  IDK2
+           MOVE    SPACE               TO  WRK-KAISU-H 
+           PERFORM VARYING     IDK1    FROM    1   BY  1
+                   UNTIL       IDK1    >   4
+               IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
+                   ADD     1           TO  IDK2
+                   MOVE    WRK-KAISU-X (IDK1:1)
+                                       TO  WRK-KAISU-H (IDK2:1)
+               END-IF
+           END-PERFORM
+           MOVE    SPACE               TO  SPA-GMN-INPUTCD(IDX)
+      *
+           IF      LNK-SC94-SYORIFLG  =   1
+      *        訂正の時
+               STRING  "*"                 DELIMITED   BY  SPACE
+                       WRK-KAISU-H         DELIMITED   BY  SPACE
+                       INTO                   SPA-GMN-INPUTCD(IDX)
+               END-STRING
+           ELSE
+      *        訂正の時
+               STRING  "*"                 DELIMITED   BY  SPACE
+                       WRK-KAISU-H         DELIMITED   BY  SPACE
+                       "/"                 DELIMITED   BY  SIZE
+                       INTO                   SPA-GMN-INPUTCD(IDX)
+               END-STRING
+           END-IF
+      *    名称へ日のセット
+           PERFORM 3003-NYUIN-MEISYO-SEC
+           .
+       3001-COM-GMNINPUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    名称へ日の編集用処理
+      *****************************************************************
+       3003-NYUIN-MEISYO-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO-X
+           MOVE    ZERO                TO  WRK-IDX
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL       IDX2        >   22
+               EVALUATE    SPA-GMN-INPUTCD(IDX)(IDX2:1)
+                   WHEN    "/"
+                       MOVE    IDX2            TO  WRK-IDX
+               END-EVALUATE
+           END-PERFORM
+           IF     WRK-IDX              =   ZERO
+      *        日指定なし
+               MOVE    SPA-SRYYMD(7:2)     TO  WRK-MEISYO-X
+           ELSE
+               ADD     1                   TO  WRK-IDX
+               IF      SPA-GMN-INPUTCD(IDX)(WRK-IDX:1)
+                                           =   "."  OR  ","  OR "-"
+      *            開始日指定なし
+                   MOVE    SPA-SRYYMD(7:2)     TO  WRK-MEISYO-X
+                   MOVE    SPA-GMN-INPUTCD(IDX)(WRK-IDX:)
+                                               TO  WRK-MEISYO-X(3:)
+               ELSE
+                   MOVE    SPA-GMN-INPUTCD(IDX)(WRK-IDX:)
+                                               TO  WRK-MEISYO-X
+               END-IF
+           END-IF
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-MEISYO-X        TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF      KANACHK-RC      NOT =   ZERO
+               MOVE    WRK-MEISYO-X        TO  SPA-GMN-MEISYO (IDX)
+           ELSE
+               COMPUTE IDX3            =   KANACHK-MAX     +   1
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO (IDX)
+               MOVE    "日分"              TO  SPA-GMN-MEISYO (IDX)
+                                                              (IDX3:)
+           END-IF
+           .
+       3003-NYUIN-MEISYO-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院回数画面編集用処理
+      *****************************************************************
+       3001-GMNINPUT-GMN-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  SPA-GMN-SURYO (IDX)
+      *
+      *    点数・回数編集
+           MOVE    SPA-COM-TENSU(IDX)      TO  WRK-TENSU-Z
+           MOVE    WRK-TENSU-X             TO  SPA-GMN-TENSU(IDX)
+      *    回数
+           MOVE    SPA-COM-KAISU (IDX)     TO  WRK-KAISU-Z
+           MOVE    WRK-KAISU-Z             TO  SPA-GMN-KAISU(IDX)
+      *    計
+           MOVE    SPA-COM-KEI   (IDX)     TO  SPA-GMN-KEI  (IDX)
+      *    名称へ日のセット
+           PERFORM 3003-NYUIN-MEISYO-SEC
+           .
+       3001-COM-GMNINPUT-EXT.
            EXIT.
       *

@@ -30,6 +30,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.00     MCC-多々納   02/03/20  Ｈ１４．４改正対応済み
       * 01.00.01     NACL-多々納  02/10/03  労災加算なしの追加
+      * 01.00.02     NACL-多々納  02/10/18  入院追加
+      * 01.00.03     NACL−多々納 02/11/11  ＤＵＭＭＹ診察料追加
       *****************************************************************
       *
       *
@@ -427,6 +429,24 @@
                WHEN    "0135"
                    MOVE    "初回算定日は診療年月以前を入力して下さい。"
                                        TO  SPA-ERRMSG
+               WHEN    "0136"
+                   MOVE    "診察料のＤＵＭＭＹ算定用です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "初診と再診の診療コードを設定して下さい。"
+                                       TO  SPA-ERRMSG(31:)
+               WHEN    "0137"
+                   MOVE    "診察料のＤＵＭＭＹが既に入力されています。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0138"
+                   MOVE    "既に当日算定済です。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "再診料を入力して下さい。"
+                                       TO  SPA-ERRMSG(21:)
+               WHEN    "0139"
+                   MOVE    "初診料が算定されていません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "初診料を入力して下さい。"
+                                       TO  SPA-ERRMSG(29:)
                WHEN    "8000"
                    MOVE    "労災保険の診療コードです。入力できません。"
                                        TO  SPA-ERRMSG
@@ -530,6 +550,49 @@
                                        TO  SPA-ERRMSG
                    MOVE    "約束セットを修正して下さい。"
                                        TO  SPA-ERRMSG(43:)
+               WHEN    "9001"
+                   MOVE    "診療日付では入院は存在しません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "診療日付を変更して下さい。"
+                                       TO  SPA-ERRMSG(33:)
+               WHEN    "9002"
+                   MOVE    "時間外区分がありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9003"
+                   MOVE    "入院の日付は行を変えて入力して下さい。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9004"
+                   MOVE    "回数の行は入院の時のみできます。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9005"
+                   MOVE    "回数は剤の最後に入力して下さい。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9006"
+                   MOVE    "日付は３１までです。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9007"
+                   MOVE    "入院中の日ではありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9008"
+                   MOVE    "訂正の時は訂正日のみの入力です。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9009"
+                   MOVE    "入院回数の／を入力して下さい。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9010"
+                   MOVE    "入院回数の／は１回のみです。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9012"
+                   MOVE    "日付は２桁までです。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9013"
+                   MOVE    "日付−日付の期間が違います。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9100"
+                   MOVE    "診療内容が２００行を超えます。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "会計照会で訂正して下さい。"
+                                       TO  SPA-ERRMSG(31:)
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.

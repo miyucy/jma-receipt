@@ -33,6 +33,7 @@
       * 01.00.03     MCC-Â¿¡¹Ç¼   02/04/25  »£±ÆÎÁ¤Ë²ó¿ôÆþÎÏÄÉ²Ã
       * 01.00.04     MCC-Â¿¡¹Ç¼   02/04/**  Ï«ºÒÍÑÄÉ²Ã
       * 01.00.05     NACL-Â¿¡¹Ç¼  02/09/27  ¿ÇÃÇ¼«Æ°È¯À¸ÄÉ²Ã
+      * 01.00.06     NACL-Â¿¡¹Ç¼  02/10/29  Æþ±¡ÂÐ±þ
       *****************************************************************
       *
       *
@@ -85,6 +86,8 @@
            03  FLG-ENK1            PIC 9(01).
            03  FLG-ENK2            PIC 9(01).
            03  FLG-ENK3            PIC 9(01).
+      *    ÅÀÅ©¤Î¥Á¥§¥Ã¥¯
+           03  FLG-TENTEKI         PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -195,6 +198,19 @@
            03  WRK-KIDCD           PIC X(04).
       *
            03  WRK-ERRCD           PIC X(04).
+      *
+      *    Æþ±¡Æü
+       01  WRK-NYUINDAY-AREA.
+           03  WRK-XSEN-DAY            PIC 9(02).
+           03  WRK-CTMRI-DAY           PIC 9(02).
+           03  WRK-KAKUI-DAY           PIC 9(02).
+           03  WRK-NYU-DAY             PIC 9(02).
+           03  IDN1                    PIC 9(02).
+           03  IDN2                    PIC 9(02).
+           03  FLG-XSEN-ARI            PIC 9(01).
+           03  FLG-CTMRI-ARI           PIC 9(01).
+           03  FLG-KAKUI-ARI           PIC 9(01).
+      *
       *    ÊÝÂ¸ÍÑ
        01  HOZ-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
@@ -385,6 +401,7 @@
                ADD     1                   TO  IDX-MAX
       *
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "." OR "S"
+                                                       OR  "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
                ELSE
                    MOVE    WRK-COM-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -397,6 +414,7 @@
                    WHEN    "8"
                    WHEN    "."
                    WHEN    "S"
+                   WHEN    "*"
                        CONTINUE
       *
                    WHEN    OTHER
@@ -2035,6 +2053,8 @@
            MOVE    ZERO                TO  IDX-GAI
            MOVE    ZERO                TO  IDX-CT
       *
+           MOVE    ZERO                TO  FLG-TENTEKI
+      *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
@@ -2056,6 +2076,19 @@
                IF      WRK-COM-KNSJISGRPKBN (IDX-Z)    =  32
                    PERFORM 2001-CTMRI-CHK-SEC
                END-IF
+      *        ÅÀÅ©¤Ï£±²ó¤Î¤ß¤È¤¹¤ë
+               IF     (WRK-COM-SRYSYUKBN(IDX-Z) NOT =  "950"  AND
+                                                       "960") AND
+                      (WRK-COM-INPUTCD  (IDX-Z)    =   "130009310" OR
+                                                       "130003710" OR
+                                                       "130003810")
+                   IF      FLG-TENTEKI         =   1
+                       MOVE    "0057"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
+                   END-IF
+                   MOVE    1               TO  FLG-TENTEKI
+               END-IF
+      *
            END-PERFORM
       *
            IF      SPA-ERRCD       NOT =   SPACE
@@ -2198,6 +2231,10 @@
            MOVE    ZERO                TO  FLG-ENK1
            MOVE    ZERO                TO  FLG-ENK2
            MOVE    ZERO                TO  FLG-ENK3
+           MOVE    ZERO                TO  FLG-XSEN-ARI
+           MOVE    ZERO                TO  FLG-CTMRI-ARI
+           MOVE    ZERO                TO  FLG-KAKUI-ARI
+           INITIALIZE                  WRK-NYUINDAY-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
@@ -2212,6 +2249,7 @@
       *                £ØÀþÍ­¤ê
                        WHEN    "721"
                            MOVE    1                   TO  FLG-XSEN
+                           MOVE    1                   TO  FLG-XSEN-ARI
                    END-EVALUATE
       *
       *            ¸¡ººÅù¼Â»ÜÈ½Äê¥°¥ë¡¼¥×
@@ -2219,9 +2257,11 @@
       *                ³Ë°å³Ø
                        WHEN    31
                            MOVE    1                   TO  FLG-KAKUI
+                           MOVE    1                   TO  FLG-KAKUI-ARI
       *                ¥³¥ó¥Ô¥å¡¼¥¿
                        WHEN    32
                            MOVE    1                   TO  FLG-CTMRI
+                           MOVE    1                   TO  FLG-CTMRI-ARI
                    END-EVALUATE
       *
       *            ±ó³Ö²èÁü¿ÇÃÇ´ÉÍý²Ã»»¥Á¥§¥Ã¥¯
@@ -2242,6 +2282,19 @@
                            MOVE    1                   TO  FLG-ENK3
                    END-EVALUATE
                END-IF
+      *
+      *        ²èÁü¿ÇÃÇ¤ÇÆþ±¡²ó¿ô¤Î»þ¡¢²ó¿ô½¸·×
+               IF     (SPA-NYUGAIKBN               =   "1" )  AND
+                      (WRK-COM-SRYKBN (IDX-Z)(1:1) =   "7" )  AND
+                      (WRK-GMN-INPUTCD(IDX-Z)(1:1) =   "*"   OR
+                       WRK-COM-KAIFLG (IDX-Z)      =   "1" )
+                   PERFORM 3009-NYUINKAISU-SEC
+               END-IF
+               IF      WRK-COM-ZAIEND (IDX-Z)  =   "1"
+                   MOVE    ZERO                TO  FLG-XSEN-ARI
+                   MOVE    ZERO                TO  FLG-CTMRI-ARI
+                   MOVE    ZERO                TO  FLG-KAKUI-ARI
+               END-IF
            END-PERFORM
       *
            MOVE    ZERO                TO  IDXS
@@ -2253,6 +2306,7 @@
       *        ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±
                MOVE    "170025210"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD-2
+               MOVE    WRK-XSEN-DAY        TO  WRK-NYU-DAY
                PERFORM 3002-KASAN-SYORI-SEC
            END-IF
       *
@@ -2261,6 +2315,7 @@
       *        ³Ë°å³Ø¿ÇÃÇÎÁ²Ã»»
                MOVE    "170015310"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD-2
+               MOVE    WRK-KAKUI-DAY       TO  WRK-NYU-DAY
                PERFORM 3002-KASAN-SYORI-SEC
                IF     (FLG-ERR             =   ZERO )  AND
                       (FLG-ENKALL          =   ZERO )  AND
@@ -2268,6 +2323,7 @@
       *            ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£²¡Ê³Ë°å³Ø¡Ë
                    MOVE    "170025610"         TO  WRK-SRYCD
                    MOVE    SPACE               TO  WRK-SRYCD-2
+                   MOVE    WRK-KAKUI-DAY       TO  WRK-NYU-DAY
                    PERFORM 3002-KASAN-SYORI-SEC
                    IF      FLG-ERR             =   ZERO
                        CONTINUE
@@ -2276,6 +2332,7 @@
                        IF      FLG-ARI         =   ZERO
                            MOVE    "170025410"         TO  WRK-SRYCD
                            MOVE    SPACE               TO  WRK-SRYCD-2
+                           MOVE    WRK-KAKUI-DAY       TO  WRK-NYU-DAY
                            PERFORM 3002-KASAN-SYORI-SEC
                        END-IF
                    END-IF
@@ -2287,6 +2344,7 @@
       *        ¥³¥ó¥Ô¥å¡¼¥¿ÃÇÁØ¿ÇÃÇ
                MOVE    "170015410"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD-2
+               MOVE    WRK-CTMRI-DAY       TO  WRK-NYU-DAY
                PERFORM 3002-KASAN-SYORI-SEC
                IF     (FLG-ERR             =   ZERO )  AND
                       (FLG-ENKALL          =   ZERO )  AND
@@ -2294,6 +2352,7 @@
       *            ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£²¡Ê¥³¥ó¥Ô¥å¡¼¥¿ÃÇÁØ¿ÇÃÇ¡Ë
                    MOVE    "170025710"         TO  WRK-SRYCD
                    MOVE    SPACE               TO  WRK-SRYCD-2
+                   MOVE    WRK-CTMRI-DAY       TO  WRK-NYU-DAY
                    PERFORM 3002-KASAN-SYORI-SEC
                    IF      FLG-ERR             =   ZERO
                        CONTINUE
@@ -2302,6 +2361,7 @@
                        IF      FLG-ARI         =   ZERO
                            MOVE    "170025510"         TO  WRK-SRYCD
                            MOVE    SPACE               TO  WRK-SRYCD-2
+                           MOVE    WRK-CTMRI-DAY       TO  WRK-NYU-DAY
                            PERFORM 3002-KASAN-SYORI-SEC
                        END-IF
                    END-IF
@@ -2311,6 +2371,49 @@
            .
       *
        300-AUTO-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡Æü½èÍý
+      *****************************************************************
+       3009-NYUINKAISU-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  IDN1
+           IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)  NOT =   "*"
+               MOVE    SPA-SRYYMD (7:2)    TO  IDN1
+           ELSE
+               PERFORM VARYING     IDN2    FROM    1   BY  1
+                       UNTIL       IDN2    >   31
+                   IF      WRK-COM-NYUINDAY (IDX-Z IDN2) >   ZERO
+                       MOVE    IDN2            TO  IDN1
+                       MOVE    31              TO  IDN2
+                   END-IF
+               END-PERFORM
+           END-IF
+      *    £ØÀþ
+           IF      FLG-XSEN-ARI        =   1
+      *        Æþ±¡»þ¤Î½éÆü
+               IF      WRK-XSEN-DAY    <   IDN1
+                   MOVE    IDN1            TO  WRK-XSEN-DAY
+               END-IF
+           END-IF
+      *    ³Ë°å³Ø
+           IF      FLG-KAKUI-ARI       =   1
+      *        Æþ±¡»þ¤Î½éÆü
+               IF      WRK-KAKUI-DAY   <   IDN1
+                   MOVE    IDN1            TO  WRK-KAKUI-DAY
+               END-IF
+           END-IF
+      *    ¥³¥ó¥Ô¥å¡¼¥¿
+           IF      FLG-CTMRI-ARI       =   1
+      *        Æþ±¡»þ¤Î½éÆü
+               IF      WRK-CTMRI-DAY   <   IDN1
+                   MOVE    IDN1            TO  WRK-CTMRI-DAY
+               END-IF
+           END-IF
+      *
+           .
+       3009-NYUINKAISU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2348,6 +2451,13 @@
                                                         (08 IDXS)
                MOVE    "70"            TO  LNK-ORCSC-SRYKBN
                                                         (08 IDXS)
+      *        Æþ±¡²ó¿ô
+               IF      WRK-NYU-DAY     >   ZERO
+                    MOVE    "*/"           TO  LNK-ORCSC-INPUTCD
+                                                    (08 IDXS 01)
+                    MOVE    WRK-NYU-DAY    TO  LNK-ORCSC-INPUTCD
+                                                    (08 IDXS 01)(3:2)
+               END-IF
            END-IF
       *
            .

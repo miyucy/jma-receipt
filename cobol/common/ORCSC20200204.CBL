@@ -34,6 +34,7 @@
       *  02.00.00    多々納       02/03/20  改正対応
       *  02.00.01    多々納       02/03/29  臨時投薬１４日以上の組み込み
       *  02.00.02    多々納       02/04/19  生活習慣病指導算定時の追加
+      *  02.00.03    NACL-多々納  02/09/04  臨時投薬の１４日以内を修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -66,6 +67,7 @@
            03  FLG-TONPUK          PIC 9(01).
            03  FLG-GAIYAK          PIC 9(01).
            03  FLG-MADOKU          PIC 9(01).
+           03  FLG-MADOKU-ARI      PIC 9(01).
            03  FLG-ZAI             PIC 9(01).
            03  FLG-NAIYAK2         PIC 9(01).
            03  FLG-TONPUK2         PIC 9(01).
@@ -104,6 +106,8 @@
            03  IDX-Y3              PIC 9(02).
            03  IDX-T1              PIC 9(04).
            03  IDX-T2              PIC 9(04).
+      *
+           03  IDN1                PIC 9(02).
       *
            03  IDX-SYOHOU          PIC 9(04).
       *
@@ -155,6 +159,15 @@
       *    年齢判定用
            03  WRK-KGNAGE          PIC 9(03).
            03  WRK-JGNAGE          PIC 9(03).
+      *    入院の回数
+           03  WRK-NISUU-AREA.
+               05  WRK-NISUU-TBL           OCCURS   31.
+                   07  WRK-DAY             PIC 9(02).
+                   07  WRK-SEL             PIC X(01).
+           03  IDN2                    PIC 9(04).
+           03  IDN3                    PIC 9(04).
+           03  IDN4                    PIC 9(04).
+           03  FLG-DAY                 PIC 9(01).
       *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
@@ -163,6 +176,11 @@
            03  WRK-IDX-Y               PIC 9(04).
            03  IDX-TBL                 PIC 9(04).
            03  FLG-CNTCHK              PIC 9(01).
+      *
+      *    入院日
+       01  TBL-NYUINDAY-AREA.
+           03  TBL-NYUINDAY-OCC        OCCURS   31.
+               05  TBL-NYUINDAY        PIC 9(01).
       *
       *    保存用
        01  HOZ-SCR-REC.
@@ -300,6 +318,7 @@
                ADD     1                   TO  IDX-MAX
       *
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "." OR "S"
+                                                               OR "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
                ELSE
                    MOVE    WRK-COM-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -316,6 +335,7 @@
                    WHEN    "0"
                    WHEN    "8"
                    WHEN    "S"
+                   WHEN    "*"
                        CONTINUE
                    WHEN    "."
                        PERFORM 10010-SRYKBN-CHK-SEC
@@ -525,6 +545,7 @@
       *
       *
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "."  OR  "S"
+                                                                OR "*"
                    MOVE    WRK-GMN-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
                ELSE
                    MOVE    WRK-COM-INPUTCD(IDX-Z)(1:1) TO  WRK-MOJI
@@ -538,6 +559,7 @@
                    WHEN    "8"
                    WHEN    "."
                    WHEN    "S"
+                   WHEN    "*"
                        CONTINUE
       *
                    WHEN    OTHER
@@ -680,6 +702,8 @@
       *
       *    継続の時、算定分の編集
            IF      LNK-ORCSC-CONTKBN    =   "1"  OR  "2"
+      *        入院の時
+               OR  SPA-NYUGAIKBN        =   "1"
                PERFORM 30010-JYURRK-SYORI-SEC
            END-IF
       *
@@ -694,8 +718,10 @@
            MOVE    ZERO                TO  FLG-TOKUSYO2
            MOVE    ZERO                TO  FLG-KOUHATU
            MOVE    ZERO                TO  IDX-SYOHOU
+           MOVE    ZERO                TO  FLG-MADOKU-ARI
       *
            INITIALIZE                  WRK-ZAIKEI-AREA
+           INITIALIZE                  TBL-NYUINDAY-AREA
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
@@ -776,7 +802,8 @@
       *********************IF      WRK-COM-MADOKUKBN (IDX)     =   1
                            IF      WRK-COM-MADOKUKBN (IDX) NOT =   ZERO
       *----(01.00.01) LINE UPD END   ----------------------------------
-                               MOVE   1                TO  FLG-MADOKU
+                               MOVE    1           TO  FLG-MADOKU
+                               MOVE    1           TO  FLG-MADOKU-ARI
                            END-IF
                        END-IF
                END-EVALUATE
@@ -785,7 +812,8 @@
       *          臨時で１４日以内の時は対象外
                IF      (WRK-CHK-SRYSYUKBN (1:2)   =   "21" ) OR
                        (WRK-CHK-SRYSYUKBN (1:2)   =   "29" AND
-                        WRK-COM-KAISU (IDX)       >=  14    )
+      ****************  WRK-COM-KAISU (IDX)       >=  14    )
+                        WRK-COM-KAISU (IDX)       >   14    )
                    MOVE    1                   TO  FLG-NAIFUKU
                ELSE
                    MOVE    ZERO                TO  FLG-NAIFUKU
@@ -889,6 +917,17 @@
                    MOVE    1                   TO  FLG-TOKUSYO2
                    MOVE    IDX                 TO  IDX-T2
                END-IF
+      *
+      *        投薬で入院回数の時、回数集計
+               IF     (SPA-NYUGAIKBN               =   "1" )  AND
+                      (WRK-COM-SRYKBN (IDX)(1:1)   =   "2" )  AND
+                      (WRK-GMN-INPUTCD(IDX)(1:1)   =   "*"   OR
+                       WRK-COM-KAIFLG (IDX)        =   "1" )
+                   PERFORM 3009-NYUINKAISU-SEC
+               END-IF
+               IF      WRK-COM-ZAIEND (IDX)    =   "1"
+                   MOVE    ZERO                TO  FLG-MADOKU-ARI
+               END-IF
            END-PERFORM
       *
            MOVE    ZERO                TO  IDXS
@@ -931,6 +970,53 @@
       *
            .
        300-AUTO-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    院外　算定処理
+      *****************************************************************
+       3009-NYUINKAISU-SEC              SECTION.
+      *    入院回数以外
+           IF       WRK-GMN-INPUTCD(IDX)(1:1)  NOT =   "*"
+               MOVE    SPA-SRYYMD (7:2)    TO  IDN1
+               IF      FLG-MADOKU-ARI      =   1
+                   MOVE    2               TO  TBL-NYUINDAY (IDN1)
+               ELSE
+                   IF      TBL-NYUINDAY (IDN1) =   ZERO
+                       MOVE    1           TO  TBL-NYUINDAY (IDN1)
+                   END-IF
+               END-IF
+      *TEST
+           DISPLAY "3009-NYUINKAISU-SEC:" SPA-SRYYMD
+                   ",INPUTCD:" WRK-GMN-INPUTCD(IDX)
+                   ",FLG-MADOKU-ARI:" FLG-MADOKU-ARI
+                   ",IDN1:" IDN1
+                   ",NYUINDAY:" TBL-NYUINDAY (IDN1)
+      *TEST
+               GO      TO      3009-NYUINKAISU-EXT
+           END-IF
+      *
+      *TEST
+           DISPLAY "3009-NYUINKAISU-SEC:" 
+                   ",NYUINDAY:" WRK-COM-NYUIN-AREA (IDX)
+                  "," TBL-NYUINDAY-AREA
+      *TEST
+      *    投薬で入院回数の時、回数集計
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL       IDN1    >   31
+               IF      WRK-COM-NYUINDAY (IDX IDN1) >   ZERO
+                   IF      FLG-MADOKU-ARI      =   1
+                       MOVE    2               TO  TBL-NYUINDAY (IDN1)
+                   ELSE
+                       IF      TBL-NYUINDAY (IDN1) =   ZERO
+                           MOVE    1           TO  TBL-NYUINDAY (IDN1)
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       3009-NYUINKAISU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1049,6 +1135,12 @@
       *****************************************************************
        3002-INNAI-SYORI-SEC            SECTION.
       *
+      *    入院
+           IF      SPA-NYUGAIKBN       =   "1"
+               PERFORM 30021-NYUIN-INNAI-SYORI-SEC
+               GO      TO      3002-INNAI-SYORI-EXT
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-SYOHORYO
       *
            IF      WRK-ZAICNT          >=  7
@@ -1081,6 +1173,7 @@
                GO      TO      3002-INNAI-SYORI-EXT
            END-IF
       *
+      *    外来
       *    内服調剤料加算
            IF     (FLG-NAIYAK          =   1    )  OR
                   (FLG-TONPUK          =   1    )
@@ -1297,7 +1390,8 @@
                                                OR  "211" )  OR
                       ((WRK-CHK-SRYSYUKBN      =   "290"
                                                OR  "291" )  AND
-                       (WRK-COM-KAISU (IDX)    >=  14 ))
+      **************** (WRK-COM-KAISU (IDX)    >=  14 ))
+                       (WRK-COM-KAISU (IDX)    >   14 ))
                    MOVE    1                   TO  FLG-NAIFUKU
                ELSE
                    MOVE    ZERO                TO  FLG-NAIFUKU
@@ -1395,6 +1489,188 @@
            MOVE    "3"                 TO  WRK-COM-AUTOKBN (IDX-S)
            .
        30011-GENTUIKA-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院の自動算定処理
+      *****************************************************************
+       30021-NYUIN-INNAI-SYORI-SEC         SECTION.
+      *
+      *    調剤料（入院）加算
+           IF     (FLG-NAIYAK          =   1    )  OR
+                  (FLG-TONPUK          =   1    )  OR
+                  (FLG-GAIYAK          =   1    )
+               MOVE    "120001110"         TO  WRK-SRYCD
+               MOVE    SPACE               TO  WRK-SRYCD2
+               PERFORM 300211-NYUKASAN-SYORI-SEC
+               IF      FLG-ERR             =   ZERO
+                   MOVE    ZERO            TO  FLG-DAY
+                   PERFORM 300212-NISUU-SET-SEC
+                   MOVE    "240"           TO  LNK-ORCSC-SRYSYUKBN
+                                                         (02 IDXS)
+                   MOVE    "24"            TO  LNK-ORCSC-SRYKBN
+                                                         (02 IDXS)
+               END-IF
+           END-IF
+      *    麻毒加算料
+           IF      FLG-MADOKU          =   1
+      *        麻毒調剤料
+               MOVE    "120000410"         TO  WRK-SRYCD
+               MOVE    SPACE               TO  WRK-SRYCD2
+               PERFORM 300211-NYUKASAN-SYORI-SEC
+               IF      FLG-ERR             =   ZERO
+                   MOVE    1               TO  FLG-DAY
+                   PERFORM 300212-NISUU-SET-SEC
+                   MOVE    "260"           TO  LNK-ORCSC-SRYSYUKBN
+                                                         (02 IDXS)
+                   MOVE    "26"            TO  LNK-ORCSC-SRYKBN
+                                                         (02 IDXS)
+               END-IF
+           END-IF
+      *
+      *    調剤技術基本料（入院）
+           IF     (FLG-NAIYAK          =   1    )  OR
+                  (FLG-TONPUK          =   1    )  OR
+                  (FLG-GAIYAK          =   1    )
+      *           調基が１であること
+               IF      LNK-ORCSC-CHOKI-FLG   =   1
+                   IF      SPA-HOSPSBT         =   1
+      *                病院
+                       MOVE    "120001710"         TO  WRK-SRYCD
+                   ELSE
+      *                診療所
+                       MOVE    "120001810"         TO  WRK-SRYCD
+                   END-IF
+                   MOVE    SPACE               TO  WRK-SRYCD2
+                   PERFORM 3002-KASAN-SYORI-SEC
+                   IF      FLG-ERR             =   ZERO
+                       MOVE    3               TO  FLG-DAY
+                       PERFORM 300212-NISUU-SET-SEC
+                       MOVE    "270"           TO  LNK-ORCSC-SRYSYUKBN
+                                                         (02 IDXS)
+                       MOVE    "27"            TO  LNK-ORCSC-SRYKBN
+                                                         (02 IDXS)
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       30021-NYUIN-INNAI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院の日数自動算定処理
+      *****************************************************************
+       300212-NISUU-SET-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  IDN1
+           MOVE    1                   TO  IDN2
+      *
+           INITIALIZE                      WRK-NISUU-AREA
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL       IDN1    >   31
+               IF    ((FLG-DAY                 =   ZERO OR  3 )  AND
+                      (TBL-NYUINDAY (IDN1) NOT =   ZERO   ))  OR
+                     ((FLG-DAY                 =   1    )  AND
+                      (TBL-NYUINDAY (IDN1)     =   2    ) )
+      *TEST
+                DISPLAY "IDN2:" IDN2 ",IDN1:" IDN1
+                       ",WRK-DAY:" WRK-DAY (IDN2)
+                       ",WRK-SEL:" WRK-SEL (IDN2)
+                   IF     (IDN2            =   1   OR 2 )   OR
+                          (WRK-DAY (IDN2 - 1)  NOT =   (IDN1  -  1 ) )
+                       MOVE    IDN1            TO  WRK-DAY (IDN2)
+                       IF      (IDN2               =   2     )  AND
+                               (WRK-DAY (IDN2 - 1) =   (IDN1  -  1))
+                           MOVE    "-"         TO  WRK-SEL (IDN2 - 1)
+                       END-IF
+                       ADD     1               TO  IDN2
+                   ELSE
+                       MOVE    IDN1            TO  WRK-DAY (IDN2 - 1)
+                       MOVE    "."             TO  WRK-SEL (IDN2 - 1)
+                   END-IF
+      *            調基は最初の日とする
+                   IF      FLG-DAY         =   3
+                       MOVE    31              TO  IDN1
+                   END-IF
+               END-IF
+           END-PERFORM
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL       IDN1    >   31
+               IF    WRK-SEL (IDN1)    =   SPACE
+                   IF      WRK-DAY (IDN1 + 1 )     NOT =   ZERO
+                       MOVE    ","          TO  WRK-SEL (IDN1)
+                   END-IF
+               ELSE
+                   IF      WRK-DAY (IDN1 + 1 )     =   ZERO
+                       MOVE    SPACE        TO  WRK-SEL (IDN1)
+                   END-IF
+               END-IF
+           END-PERFORM
+      *TEST
+           DISPLAY "WRK-NISUU-AREA:" WRK-NISUU-AREA
+      *TEST
+           INITIALIZE                      LNK-ORCSC-INPUTCD-G (02 IDXS)
+           MOVE    1                   TO  IDN2
+           MOVE    1                   TO  IDN3
+           PERFORM VARYING     IDN1    FROM    1   BY  1
+                   UNTIL      (IDN1    >   31  )  OR
+                              (IDN2            >=  5  )  OR
+                              (WRK-DAY (IDN1)  =   ZERO )
+               IF      IDN3                >   19
+                   ADD     1               TO  IDN2
+               END-IF
+               IF      LNK-ORCSC-INPUTCD(02 IDXS IDN2)   =   SPACE
+                   MOVE    "*/"            TO  LNK-ORCSC-INPUTCD
+                                                   (02 IDXS IDN2) (1:2)
+                   ADD     2               TO  IDN3
+               END-IF
+               IF      WRK-SEL (IDN1)      =   SPACE
+                   MOVE    ","             TO  WRK-SEL (IDN1)
+               END-IF
+               MOVE    WRK-NISUU-TBL(IDN1) TO  LNK-ORCSC-INPUTCD
+                                                  (02 IDXS IDN2)(IDN3:3)
+               ADD     3                   TO  IDN3
+           END-PERFORM
+      *
+      *TEST
+           DISPLAY "C20 WRK-SRYCD:" WRK-SRYCD
+                  ",LNK-ORCSC-INPUTCD:" LNK-ORCSC-INPUTCD (02 IDXS 1)
+      *TEST
+           .
+       300212-NISUU-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    加算料算定処理(入院）
+      *****************************************************************
+       300211-NYUKASAN-SYORI-SEC         SECTION.
+      *
+           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+           PERFORM 910-TENSU-READ-SEC
+           IF      FLG-TENSU       NOT =   ZERO
+               MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    1                   TO  FLG-ERR
+               GO      TO      300211-NYUKASAN-SYORI-EXT
+           END-IF
+      *
+      *        算定履歴チェック処理
+           IF      TNS-SANTEIRRKKBN    NOT =   ZERO
+               PERFORM 3001-SANTEI-CHK-SEC
+           END-IF
+           IF      FLG-ERR             =   ZERO
+               ADD     1               TO  IDXS
+               MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
+                                                   (02 IDXS)
+               MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
+                                                   (02 IDXS)
+      *
+      *        年齢加算処理
+               PERFORM 3002-NENREI-KASAN-SEC
+           END-IF
+      *
+           .
+       300211-NYUKASAN-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1694,9 +1970,14 @@
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
            MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
-           MOVE    LNK-ORCSC-DOUJI-RENNUM  TO  JYURRK-RENNUM
+           IF      SPA-NYUGAIKBN       =   "1"
+               MOVE    1                   TO  JYURRK-RENNUM
+           ELSE
+               MOVE    LNK-ORCSC-DOUJI-RENNUM  TO  JYURRK-RENNUM
+           END-IF
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
