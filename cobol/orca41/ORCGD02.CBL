@@ -3288,6 +3288,11 @@
                    ELSE
                        MOVE    2                    TO  FLG-TENKIYMD-ER
                    END-IF
+                   IF  (PTBYO-SRYYMD   NOT  =   SPACE)      AND
+                       (PTBYO-SRYYMD   NOT  =   ZERO)       AND
+                       (PTBYO-SRYYMD(1:6)   >   T-SINRYOU-AREA)
+                       MOVE    1                    TO  FLG-TBL
+                   END-IF
                END-IF
            END-IF.
       *
