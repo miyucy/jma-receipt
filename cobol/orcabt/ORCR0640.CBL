@@ -4136,22 +4136,22 @@
                    IF    BUN-IDX        =   1
                        COMPUTE    RECE62-TENSU(3 BUN-IDX)  =
                                   RECE62-TENSU(3 BUN-IDX)  +
-                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                                 (ACCT-ZAITEN   *   ACCT-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
                        COMPUTE    RECE62-TENSU(3 BUN-IDX2)  =
                                   RECE62-TENSU(3 BUN-IDX2)  +
-                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                                 (ACCT-ZAITEN   *   ACCT-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
                        COMPUTE    RECE62-TENSU(3 BUN-IDX3)  =
                                   RECE62-TENSU(3 BUN-IDX3)  +
-                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                                 (ACCT-ZAITEN   *   ACCT-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
                        COMPUTE    RECE62-TENSU(3 BUN-IDX4)  =
                                   RECE62-TENSU(3 BUN-IDX4)  +
-                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                                 (ACCT-ZAITEN   *   ACCT-ZAIKAISU)
                    END-IF
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "21"
