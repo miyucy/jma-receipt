@@ -65,6 +65,7 @@
       *  01.05.16    NACL-多々納  03/11/25  期間変更修正
       *  01.05.17    NACL-太田    04/01/17  診療行為機能情報追加
       *  01.05.18    NACL-太田    04/01/23  収納機能情報追加
+      *  01.05.19    NACL-藤原    04/09/03  医療機関編集情報を追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -256,6 +257,8 @@
            03  FILLER              PIC X(35)   VALUE
                "1041 入金方法情報".
            03  FILLER              PIC X(35)   VALUE
+               "1901 医療機関編集情報".
+           03  FILLER              PIC X(35)   VALUE
                "2003 レセプト作成指示（印刷順）情報".
            03  FILLER              PIC X(35)   VALUE
                "2005 レセプト・総括印刷情報".
@@ -269,11 +272,11 @@
                "4001 労災自賠医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   30.
+           03  TBL-KANRICD-TBL         OCCURS   31.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   30.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   31.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -406,6 +409,7 @@
            COPY    "W15.INC".
            COPY    "W16.INC".
            COPY    "W17.INC".
+           COPY    "W18.INC".
            COPY    "W20.INC".
            COPY    "W21.INC".
            COPY    "W22.INC".
@@ -1038,19 +1042,26 @@
                WHEN    OTHER
                    MOVE    SPACE           TO  SPA-GMN-KBNCD 
            END-EVALUATE         
-      
       *    システム管理読み込み
            MOVE    SPACE               TO  SYS-KEY
            MOVE    SPA-GMN-KANRICD     TO  SYS-KANRICD
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           IF      SPA-GMN-KANRICD     =   "1901"
+               MOVE    "SYSKANRI-KEY12"    TO  ORC-DBPATH
+           ELSE
+               MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           END-IF
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+               IF      SPA-GMN-KANRICD     =   "1901"
+                   MOVE    "SYSKANRI-KEY12"    TO  ORC-DBPATH
+               ELSE
+                   MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+               END-IF
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                INITIALIZE                  SYSKANRI-REC
@@ -1065,6 +1076,7 @@
                   AND (SYS-KANRICD        NOT =   "3004"      ))      
                OR (   (SYS-KBNCD (1:4)        =   "0001"  )
                   AND (SYS-KANRICD            =   "3004"      ))      
+               OR (   (SYS-KANRICD            =   "1901"  )    )      
                    ADD     1              TO  IDX
                    MOVE    IDX            TO  SPA-GMN-TBANGO    (IDX)
                    MOVE    SYS-STYUKYMD   TO  SPA-NAI-TSTYUKYMD (IDX)
@@ -1078,12 +1090,20 @@
                    MOVE    IDX            TO  SPA-GMN-MAX
                END-IF   
       *
-               MOVE    "SYSKANRI-KEY5"    TO  ORC-DBPATH
+               IF      SPA-GMN-KANRICD     =   "1901"
+                   MOVE    "SYSKANRI-KEY12"    TO  ORC-DBPATH
+               ELSE
+                   MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+               END-IF
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
       *    カーソルクロース
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           IF      SPA-GMN-KANRICD     =   "1901"
+               MOVE    "SYSKANRI-KEY12"    TO  ORC-DBPATH
+           ELSE
+               MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+           END-IF
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -1624,6 +1644,8 @@
                    MOVE    "W17"               TO  SPA-SAKIPG
                WHEN    "1041" 
                    MOVE    "W02"               TO  SPA-SAKIPG
+               WHEN    "1901" 
+                   MOVE    "W18"               TO  SPA-SAKIPG
                WHEN    "5000"
                    MOVE    "W24"               TO  SPA-SAKIPG
                WHEN    "5001"
