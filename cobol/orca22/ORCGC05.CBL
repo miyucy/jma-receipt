@@ -36,6 +36,9 @@
       *  01.02.03    MCC-藤原     02/05/08  半角チェック追加
       *
       *  01.03.01    NACL-藤原    02/08/20  新傷病名マスタ対応
+      *  01.03.02    NACL-藤原    02/11/25  複数端末での戻り先の修正
+      *                                     ＳＰＡパラメタファイルの
+      *                                     端末ＩＤ変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -63,7 +66,8 @@
        01  FILE-NAME1.
            03  FILLE               PIC X(18)   VALUE
                                                "/var/tmp/C05SPASCR".
-           03  FILE-TERMID         PIC X(16)   VALUE   SPACE.
+      *****03  FILE-TERMID         PIC X(16)   VALUE   SPACE.
+           03  FILE-TERMID         PIC X(32)   VALUE   SPACE.
            03  FILLER              PIC X(04)   VALUE   ".TXT".
       *
        01  WRK-DATA-REC.
@@ -215,7 +219,8 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           MOVE    SPA-COMMON      TO  SPA-AREA.
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-C01KYOUTU
            MOVE    SPA-FREE        TO  SPA-C02FREE
       *
       *    画面ＳＰＡ読み込み
@@ -243,6 +248,7 @@
       *    画面ＳＰＡ書込み
            PERFORM 1003-C05SPA-OUT-SEC
       *
+           MOVE    SPA-C01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-C02FREE     TO  SPA-FREE
            .
@@ -362,7 +368,7 @@
       *
            INITIALIZE              SPA-C05
       *
-           MOVE    SPA-WORK        TO  SPA-C01KYOUTU
+      *****MOVE    SPA-WORK        TO  SPA-C01KYOUTU
       *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       6
@@ -498,11 +504,13 @@
            MOVE    "C05"               TO  SPA-MOTOPG
       *
            INITIALIZE                  SPA-C01KYOUTU 
+      *****INITIALIZE                  SPA-C01-BYOMEI-TBL
+      *****                            SPA-C01-BYOMEI
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       6
                MOVE    SPA-GMN-BYOCD   (IDX) TO  SPA-C01-TBYOMEICD (IDX) 
            END-PERFORM
-           MOVE    SPA-C01KYOUTU       TO  SPA-WORK
+      *****MOVE    SPA-C01KYOUTU       TO  SPA-WORK
       *
            MOVE   "CHANGE"             TO  MCP-PUTTYPE.
            MOVE   SPA-SAKIPG           TO  MCP-WINDOW.

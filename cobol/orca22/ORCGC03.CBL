@@ -45,6 +45,8 @@
       *
       *  01.01.01    NACL-藤原    02/08/20  新傷病名マスタ対応
       *  01.01.02    NACL-藤原    02/09/12  ディレクトリをサブプロへ
+      *  01.01.03    NACL-藤原    02/11/25  ＳＰＡパラメタファイルの
+      *                                     端末ＩＤ変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -72,7 +74,8 @@
        01  FILE-NAME1.
            03  FILLE               PIC X(18)   VALUE
                                                "/var/tmp/C03SPASCR".
-           03  FILE-TERMID         PIC X(16)   VALUE   SPACE.
+      *****03  FILE-TERMID         PIC X(16)   VALUE   SPACE.
+           03  FILE-TERMID         PIC X(32)   VALUE   SPACE.
            03  FILLER              PIC X(04)   VALUE   ".TXT".
       *
        01  WRK-DATA-REC.

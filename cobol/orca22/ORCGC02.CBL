@@ -91,6 +91,8 @@
       *  01.07.05    NACL-藤原    02/11/19  編集病名のときの接頭語のチェック
       *                                     の修正
       *                                     病名の長さチェックの修正
+      *  01.07.06    NACL-藤原    02/11/25  ＳＰＡパラメタファイルの
+      *                                     端末ＩＤ変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -118,7 +120,8 @@
        01  FILE-NAME1.
            03  FILLE               PIC X(18)   VALUE
                                                "/var/tmp/C02SPASCR".
-           03  FILE-TERMID         PIC X(16)   VALUE   SPACE.
+      *****03  FILE-TERMID         PIC X(16)   VALUE   SPACE.
+           03  FILE-TERMID         PIC X(32)   VALUE   SPACE.
            03  FILLER              PIC X(04)   VALUE   ".TXT".
       *
        01  WRK-DATA-REC.
@@ -1368,9 +1371,6 @@
            END-PERFORM
       *
            PERFORM 41021-BYOMEI-HENSYU-SEC
-      *???
-           DISPLAY "ERRCD=" SPA-ERRCD "##"
-      *???         
       *
       *   入力病名コード数カウント
            PERFORM 410111-BYOMEICDSU-HENSYU-SEC
