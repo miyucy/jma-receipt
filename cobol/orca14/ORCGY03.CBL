@@ -453,7 +453,6 @@
                            PERFORM 900-SYSKANRIT-READ-SEC
                            MOVE    MCPDATA-REC        TO  SYS-1005-REC
                     ELSE
-                           INITIALIZE                  MCPDATA-REC
                            MOVE    1               TO  FLG-SYSKANRI
                     END-IF
       *

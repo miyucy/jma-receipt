@@ -599,7 +599,6 @@
                MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
                PERFORM 900-SYSKANRIT-READ-SEC
            ELSE
-               INITIALIZE                  MCPDATA-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            IF      FLG-SYSKANRI        =   ZERO
