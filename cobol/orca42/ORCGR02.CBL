@@ -65,6 +65,7 @@
       *                                     を対象とするように修正
       *  01.04.08    NACL-藤原    03/08/05  レセ電のボタンを削除
       *  01.04.09    NACL-藤原    03/08/19  件数印刷の処理を追加
+      *  01.04.10    NACL-藤原    03/08/29  出力帳票の指定を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -144,6 +145,14 @@
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-PREFKBNMEIL     PIC X(04).
       *----(01.00.01) LINE ADD END   --------------------------------
+                   07  SPA-GMN-PRTKBN-G.
+                       09  SPA-GMN-PRTKBN          PIC X(01).
+                       09  SPA-GMN-F1              PIC X(01).
+                       09  SPA-GMN-PRTKBNMEI       PIC X(12).
+                   07  SPA-GMN-PRTKBNLST           OCCURS  3.
+                       09  SPA-GMN-PRTKBNL         PIC X(01).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-PRTKBNMEIL      PIC X(12).
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-TBL-OCC         OCCURS   2.
                            11  SPA-GMN-TBL-G       OCCURS   36.
@@ -166,6 +175,8 @@
                    07  SPA-NAI-WIDGET              PIC X(08). 
                    07  SPA-NAI-2005-SYAPRTNM       PIC X(16).
                    07  SPA-NAI-2005-KKHPRTNM       PIC X(16).
+                   07  SPA-NAI-2005-SYAPRTNM-NEXT  PIC X(16).
+                   07  SPA-NAI-2005-KKHPRTNM-NEXT  PIC X(16).
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBL-OCC         OCCURS  2.
                            11  SPA-NAI-TBL-G       OCCURS  36.
@@ -564,6 +575,15 @@
       *
            MOVE    SPA-GMN-PREFKBNLST(01)
                                          TO  SPA-GMN-PREFKBN-G
+      *    出力内容
+           MOVE    "1"                   TO  SPA-GMN-PRTKBNL    (1)
+           MOVE    "標準"                TO  SPA-GMN-PRTKBNMEIL (1)
+           MOVE    "2"                   TO  SPA-GMN-PRTKBNL    (2)
+           MOVE    "一号用紙のみ"        TO  SPA-GMN-PRTKBNMEIL (2)
+           MOVE    "3"                   TO  SPA-GMN-PRTKBNL    (3)
+           MOVE    "続紙のみ"            TO  SPA-GMN-PRTKBNMEIL (3)
+      *
+           MOVE    SPA-GMN-PRTKBNLST(01) TO  SPA-GMN-PRTKBN-G
       *     
       *    レセプト編集区分情報
            MOVE    SPACE            TO  SYS-2005-REC
@@ -580,6 +600,10 @@
            END-IF    
            MOVE    SYS-2005-SYAPRTNM    TO  SPA-NAI-2005-SYAPRTNM
            MOVE    SYS-2005-KKHPRTNM    TO  SPA-NAI-2005-KKHPRTNM
+           MOVE    SYS-2005-SYAPRTNM-NEXT
+                                        TO  SPA-NAI-2005-SYAPRTNM-NEXT
+           MOVE    SYS-2005-KKHPRTNM-NEXT
+                                        TO  SPA-NAI-2005-KKHPRTNM-NEXT
       *
       *    出力先プリンタ名割り当て情報編集
            MOVE    SPACE               TO  SYS-1031-REC
@@ -600,6 +624,26 @@
       *
            IF      SYS-2005-KKHPRTNM   =   SPACE
                MOVE    SYS-1031-PRTNM (4)  TO  SPA-NAI-2005-KKHPRTNM
+           END-IF                                              
+      *
+           IF      SYS-2005-SYAPRTNM-NEXT  =   SPACE
+               IF      SYS-2005-SYAPRTNM       =   SPACE
+                   MOVE    SYS-1031-PRTNM (4)  TO
+                                           SPA-NAI-2005-SYAPRTNM-NEXT
+               ELSE                                              
+                   MOVE    SYS-2005-SYAPRTNM   TO
+                                           SPA-NAI-2005-SYAPRTNM-NEXT
+               END-IF
+           END-IF                                              
+      *
+           IF      SYS-2005-KKHPRTNM-NEXT  =   SPACE
+               IF      SYS-2005-KKHPRTNM       =   SPACE
+                   MOVE    SYS-1031-PRTNM (4)  TO
+                                           SPA-NAI-2005-KKHPRTNM-NEXT
+               ELSE                                              
+                   MOVE    SYS-1031-PRTNM (4)  TO
+                                           SPA-NAI-2005-KKHPRTNM-NEXT
+               END-IF
            END-IF                                              
       *
       *
@@ -623,6 +667,9 @@
       *
            MOVE    SPA-GMN-PREFKBNLST(01)
                                        TO  SPA-GMN-PREFKBN-G
+      *
+           MOVE    SPA-GMN-PRTKBNLST(01)
+                                       TO  SPA-GMN-PRTKBN-G
       * 
       *    処理区分
            MOVE    "T"                 TO  SPA-GMN-SYOKBN
@@ -813,6 +860,9 @@
       *
            MOVE    SPA-GMN-PREFKBNLST(01)
                                        TO  SPA-GMN-PREFKBN-G
+      *
+           MOVE    SPA-GMN-PRTKBNLST(01)
+                                       TO  SPA-GMN-PRTKBN-G
       * 
       *    処理区分
            MOVE    "T"                 TO  SPA-GMN-SYOKBN
@@ -1158,6 +1208,8 @@
                    PERFORM 4105-PRTJYUN-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "PREFKBN"
                    PERFORM 4106-PREFKBN-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "PRTKBN"
+                   PERFORM 4107-PRTKBN-CHK-SEC
            END-EVALUATE
       *
            .
@@ -1335,10 +1387,10 @@
                        MOVE    5                   TO  IDX
                    END-IF
                END-PERFORM
+               IF      WRK-HENFLG          =   ZERO     
+                   MOVE    "0001"              TO  SPA-ERRCD
+               END-IF    
            END-IF
-           IF      WRK-HENFLG          =   ZERO     
-               MOVE    "0001"              TO  SPA-ERRCD
-           END-IF    
       * 
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-GMN-PRTJYUN     =   "01"    OR  "02"
@@ -1360,25 +1412,57 @@
       *
            MOVE    R02-PREFKBN         TO  SPA-GMN-PREFKBN-G
       *
-           IF      SPA-GMN-PREFKBNMEI  =   SPACE
+           IF      SPA-GMN-PREFKBNMEI   =   SPACE
                MOVE    "0001"               TO  SPA-ERRCD
            ELSE    
-               MOVE    1                   TO  SPA-GMN-CUR
-           END-IF    
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       3
-                   OR      SPA-GMN-PREFKBNLST  (IDX)   =   SPACE
-               IF      SPA-GMN-PREFKBN NOT =   SPA-GMN-PREFKBNL (IDX)
-                   MOVE    1                   TO  SPA-GMN-CUR
-                   GO  TO  4106-PREFKBN-CHK-EXT
+               MOVE    ZERO                 TO  WRK-HENFLG
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       3
+                       OR      SPA-GMN-PREFKBNLST  (IDX)   =   SPACE
+                   IF      SPA-GMN-PREFKBN =   SPA-GMN-PREFKBNL (IDX)
+                       MOVE    1                   TO  WRK-HENFLG
+                       MOVE    3                   TO  IDX
+                   END-IF
+               END-PERFORM
+               IF      WRK-HENFLG          =   ZERO     
+                   MOVE    "0001"              TO  SPA-ERRCD
                END-IF
-           END-PERFORM    
-      * 
-           MOVE    "0001"              TO  SPA-ERRCD
+           END-IF    
            .
        4106-PREFKBN-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    出力内容入力処理
+      *****************************************************************
+       4107-PRTKBN-CHK-SEC             SECTION.
+      *
+           MOVE    200                TO  SPA-GMN-CUR
+      *???
+           DISPLAY "SPA=" SPA-GMN-PRTKBN-G "#" R02-PRTKBN "#"
+      *???  
+      *
+           MOVE    R02-PRTKBN         TO  SPA-GMN-PRTKBN-G
+      *
+           IF      SPA-GMN-PRTKBNMEI   =   SPACE
+               MOVE    "0001"               TO  SPA-ERRCD
+           ELSE    
+               MOVE    ZERO                 TO  WRK-HENFLG
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       3
+                       OR      SPA-GMN-PRTKBNLST  (IDX)   =   SPACE
+                   IF      SPA-GMN-PRTKBN =   SPA-GMN-PRTKBNL (IDX)
+                       MOVE    1                   TO  WRK-HENFLG
+                       MOVE    3                   TO  IDX
+                   END-IF
+               END-PERFORM
+               IF      WRK-HENFLG          =   ZERO     
+                   MOVE    "0001"              TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       4107-PRTKBN-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    戻る前処理
@@ -1787,6 +1871,11 @@
                                    TO  SHELLTBL-ARG22      
            MOVE    LNK-PRTKANRI-PRTNM
                                    TO  SHELLTBL-ARG23
+           MOVE    SPA-GMN-PRTKBN  TO  SHELLTBL-ARG24
+           MOVE    SPA-NAI-2005-SYAPRTNM-NEXT
+                                   TO  SHELLTBL-ARG25
+           MOVE    SPA-NAI-2005-KKHPRTNM-NEXT
+                                   TO  SHELLTBL-ARG26
       *     
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -1943,6 +2032,7 @@
            MOVE    WRK-RECE09-STDATA   TO  SHELLTBL-ARG8
            MOVE    WRK-RECE09-EDDATA   TO  SHELLTBL-ARG9
            MOVE    WRK-RECE08-PRTJYUN  TO  SHELLTBL-ARG10
+           MOVE    SPA-GMN-PRTKBN  TO  SHELLTBL-ARG24
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
@@ -2213,6 +2303,13 @@
                MOVE    IDX                     TO  R02-PREFKBN-COUNT
            END-PERFORM
       *
+           MOVE    SPA-GMN-PRTKBN-G   TO  R02-PRTKBN
+           PERFORM VARYING IDX FROM    1       BY  1
+                   UNTIL       IDX             >   3
+                   OR          SPA-GMN-PRTKBNL    (IDX)   =   SPACE 
+               MOVE    SPA-GMN-PRTKBNLST(IDX) TO  R02-PRTKBNLST (IDX)
+               MOVE    IDX                     TO  R02-PRTKBN-COUNT
+           END-PERFORM
       *
            MOVE    SPA-GMN-PAGE        TO  IDW
       *
@@ -2261,24 +2358,26 @@
                     MOVE  "PREFKBN"    TO  MCP-WIDGET
              WHEN    3
                     MOVE  "PRTJYUNI"   TO  MCP-WIDGET
+             WHEN   200
+                    MOVE  "PRTKBN"     TO  MCP-WIDGET
              WHEN    5
-                    MOVE  "STDATA01"     TO  MCP-WIDGET
+                    MOVE  "STDATA01"   TO  MCP-WIDGET
              WHEN    6
-                    MOVE  "EDDATA01"     TO  MCP-WIDGET
+                    MOVE  "EDDATA01"   TO  MCP-WIDGET
              WHEN    4
-                    MOVE  "CHK01"       TO  MCP-WIDGET
+                    MOVE  "CHK01"      TO  MCP-WIDGET
              WHEN    8
-                    MOVE  "STDATA02"     TO  MCP-WIDGET
+                    MOVE  "STDATA02"   TO  MCP-WIDGET
              WHEN    9
-                    MOVE  "EDDATA02"     TO  MCP-WIDGET
+                    MOVE  "EDDATA02"   TO  MCP-WIDGET
              WHEN    7
-                    MOVE  "CHK02"       TO  MCP-WIDGET
+                    MOVE  "CHK02"      TO  MCP-WIDGET
              WHEN    11
-                    MOVE  "STDATA03"     TO  MCP-WIDGET
+                    MOVE  "STDATA03"   TO  MCP-WIDGET
              WHEN    12
-                    MOVE  "EDDATA03"     TO  MCP-WIDGET
+                    MOVE  "EDDATA03"   TO  MCP-WIDGET
              WHEN    10
-                    MOVE  "CHK03"       TO  MCP-WIDGET
+                    MOVE  "CHK03"      TO  MCP-WIDGET
              WHEN    14
                     MOVE  "STDATA04"     TO  MCP-WIDGET
              WHEN    15
