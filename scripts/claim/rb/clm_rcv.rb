@@ -2,7 +2,6 @@
 
 # claim test Rcv server script
 #   args  0:[port]
-#         1:[directory of save file]
 # 
 # version 1.3.0
 #                  '01-10-30 by Ymmt
@@ -12,13 +11,21 @@
 #               後ろに、受信の度にカウントアップされる番号を付加している
 #                  '03-10-15 by hiki
 
+Dir.chdir(File.dirname(__FILE__))
+
 require 'socket'
 require 'xml_valid.rb'
 
-$port, $file_path = ARGV
-$file_path.chomp!('/')
+$default_port = "8210"
 
-$dtdfl = "/usr/local/orca/scripts/claim/dtd/MML1014_euc.dtd"
+if ARGV.length == 0
+  $port = $default_port
+else
+  $port = ARGV[0]
+end
+
+$dtdfl = "../../../scripts/claim/dtd/MML1014_euc.dtd"
+$file_path = "/var/tmp"
 $logfl = "/tmp/claim_rcv.log"
 
 $sh_path_name = "../../../scripts/claim/HL03.sh"
