@@ -1441,6 +1441,7 @@
                    MOVE    WRK-NUM-05  TO  SPA-W22-MEISYOU
                END-IF
           END-IF
+	  .
       *
        T-000-MEISYOU-EXT.
            EXIT.
