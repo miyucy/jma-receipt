@@ -34,14 +34,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -89,6 +89,7 @@
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPID         PIC X(24).
            03  WRK-PARA-PTNUM          PIC X(20).
+           03  WRK-PARA-PTNUM-END      PIC X(20).
       *
       *    一時領域
        01  WRK-AREA.
@@ -219,6 +220,7 @@
                                        WRK-PARA-SHELLID
                                        WRK-PARA-HOSPID
                                        WRK-PARA-PTNUM
+                                       WRK-PARA-PTNUM-END
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -477,6 +479,10 @@
                MOVE    1               TO  ORCBZ001S-MAX-CNT
            END-IF
       *
+           IF      WRK-PARA-PTNUM-END  NOT =   SPACE
+               MOVE    WRK-PARA-PTNUM-END  TO  ORCBZ001S-LST-PTNUM
+           END-IF
+      *
            INITIALIZE                  HCMZ001
            MOVE    ZERO            TO  CNT-LINE
       *
@@ -487,12 +493,10 @@
                                            SPA-AREA
                                            ORCBZ001SAREA
                                            SYS-1009-REC
-      *        ACCEPT  WRK-IN
                IF          ORCBZ001S-MAX-CNT   >   ZERO
       *            明細編集処理
                    PERFORM 210-BODY-EDIT-SEC
                END-IF
-               DISPLAY "ORCBZ001S-ENDFLG=" ORCBZ001S-ENDFLG
            END-PERFORM
       *
            IF          CNT-LINE    >   ZERO
