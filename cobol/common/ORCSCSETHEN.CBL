@@ -403,6 +403,13 @@
                END-IF
            ELSE
                MOVE    ISET-SURYO1     TO  SPA-COM-SURYO (SPA-GMN-IDX)
+      *        １以上の時、数量入力とする
+               IF     (ISET-INPUTCD(1:1)   =   "1"
+                                           OR  "6"
+                                           OR  "7" )   AND
+                      (ISET-SURYO1         >   1   )
+                   MOVE    "1"         TO  SPA-COM-SURFLG(SPA-GMN-IDX)
+               END-IF
            END-IF
            MOVE    SPA-COM-SURYO (SPA-GMN-IDX)
                                        TO  SPA-COM-SURYO2(SPA-GMN-IDX)
