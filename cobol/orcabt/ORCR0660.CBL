@@ -174,6 +174,7 @@
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-FIRST           PIC 9(01).
            03  FLG-ARI             PIC 9(01).
+           03  FLG-GAI-RENZOKU     PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -215,6 +216,12 @@
       *
            03  TBL-SHUJUTSU-DAY.
                05  TB-SHUJUTSU-DAY PIC 9(02)   OCCURS  10.
+      *
+           03  TBL-GAIHAKU-DAY.
+               05  TBL-GAIHAKU-DAY-OCC         OCCURS  31.
+                 07  TBL-GAIHAKU-DAY-ST  PIC 9(02).
+                 07  TBL-GAIHAKU-DAY-ED  PIC 9(02).
+                 07  TBL-GAIHAKU-DAY-CD  PIC X(09).
       *
            03  WRK-HKNCOMBINUMX      PIC X(04).
            03  WRK-HKNCOMBINUM9      REDEFINES  WRK-HKNCOMBINUMX
@@ -357,6 +364,9 @@
            03  CONS-SHUJUTU-COMMENT PIC X(09) VALUE "840000042".
       *    初診料算定科：
            03  CONS-SYOSINSANTEIKA  PIC X(09) VALUE "830000020".
+      *    外泊日コメント
+           03  CONS-GAIHAKU-COMMENT1  PIC X(09) VALUE "840000058".
+           03  CONS-GAIHAKU-COMMENT2  PIC X(09) VALUE "840000065".
       *
       *
       *   リハビリ診療行為テーブル
@@ -739,6 +749,16 @@
                           ADD     1          TO      CNT-RECE64
                           PERFORM    2002-RECE65-TENSOU-SEC
                       END-IF
+                   WHEN      "90"                                       
+                   WHEN      "92"                                       
+                      IF  RECE64-ZAISKBKBN   =   "2"                    
+                          PERFORM   2001-GAIHAKU-COMMENT-SEC            
+                      ELSE                                              
+                          MOVE       RECE64-REC    TO   RECE641-REC     
+                          WRITE      RECE641-REC                        
+                          ADD     1          TO      CNT-RECE64         
+                          PERFORM    2002-RECE65-TENSOU-SEC             
+                      END-IF                                            
                    WHEN   OTHER
                       MOVE       RECE64-REC    TO   RECE641-REC
                       WRITE      RECE641-REC
@@ -1463,6 +1483,194 @@
       *
            .
        2001-SHUJUTSU-DAY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外泊日のコメント編集
+      *****************************************************************
+       2001-GAIHAKU-COMMENT-SEC          SECTION.
+      *
+           PERFORM   2001-GAIHAKU-DAY-SEC
+      *    ※明細が５以上の場合
+           INITIALIZE                      RECE65-REC
+           MOVE    RECE64-HOSPID       TO  RECE65-HOSPID
+           MOVE    RECE64-SRYYM        TO  RECE65-SRYYM
+           MOVE    RECE64-NYUGAIKBN    TO  RECE65-NYUGAIKBN
+           MOVE    RECE64-PTID         TO  RECE65-PTID
+           MOVE    RECE64-RECEKA       TO  RECE65-RECEKA
+           MOVE    RECE64-TEISYUTUSAKI TO  RECE65-TEISYUTUSAKI
+           MOVE    RECE64-RECESYUBETU  TO  RECE65-RECESYUBETU
+           MOVE    RECE64-HKNJANUM     TO  RECE65-HKNJANUM
+           MOVE    RECE64-HOJOKBN      TO  RECE65-HOJOKBN
+           MOVE    RECE64-TEKSTYMD     TO  RECE65-TEKSTYMD
+           MOVE    RECE64-ZAINUM       TO  RECE65-ZAINUM
+           MOVE    RECE64-ZAIREN       TO  RECE65-ZAIREN
+           START   RECE65-FILE
+                 KEY IS    >=   RECE65-KEY
+                 INVALID
+                     MOVE    1           TO  FLG-RECE65
+                 NOT INVALID
+                     PERFORM 990-RECE65-NEXT-SEC
+                     MOVE    RECE65-REC  TO  WRK-RECE65-REC
+           END-START
+      *
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
+           MOVE    ZERO                 TO  IDX-RECE65
+           MOVE    SPACE                TO  WRK-SRYACTINF-AREA
+           INITIALIZE                       WRK-SRYACTINF-AREA
+           MOVE    SPACE                TO  WRK-NAMEINF-AREA
+           INITIALIZE                       WRK-NAMEINF-AREA
+      *
+           MOVE    RECE64-MEISAISU      TO  MAX-MEISAISU
+      *
+      *    外泊日コメントの挿入
+           PERFORM  VARYING      IDX    FROM  1   BY   1
+                    UNTIL       (IDX    >     31)      OR
+                                (TBL-GAIHAKU-DAY-ST(IDX)  =  ZERO)
+      *        ADD     1                    TO  IDX-RECE65
+               COMPUTE  MAX-MEISAISU        =   MAX-MEISAISU  +  1
+               MOVE    SPACE                TO  COM-RECE65-REC
+               INITIALIZE                       COM-RECE65-REC
+               MOVE    TBL-GAIHAKU-DAY-CD(IDX)
+                                            TO  COM-SRYCD(1)
+               MOVE    ZERO                 TO  COM-SRYSURYO(1)
+               IF  TBL-GAIHAKU-DAY-CD(IDX) = CONS-GAIHAKU-COMMENT1
+                 MOVE    4                  TO  COM-YUKOKETA(1)
+                 MOVE    "　　　日"         TO  COM-NAME(1)
+                 MOVE    TBL-GAIHAKU-DAY-ST(IDX) 
+                                            TO  DAY-IDX
+                 MOVE    TBL-DAY(DAY-IDX)   TO  COM-NAME(1)(3:4)
+               ELSE
+                 MOVE    8                  TO  COM-YUKOKETA(1)
+                 MOVE    "　　　日〜　　日" TO  COM-NAME(1)
+                 MOVE    TBL-GAIHAKU-DAY-ST(IDX) 
+                                            TO  DAY-IDX
+                 MOVE    TBL-DAY(DAY-IDX)   TO  COM-NAME(1)(3:4)
+                 MOVE    TBL-GAIHAKU-DAY-ED(IDX) 
+                                            TO  DAY-IDX
+                 MOVE    TBL-DAY(DAY-IDX)   TO  COM-NAME(1)(11:4)
+               END-IF
+               MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
+                                                     (MAX-MEISAISU)
+               MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
+                                                     (MAX-MEISAISU)
+           END-PERFORM
+      *
+           PERFORM
+             UNTIL  ( FLG-RECE65           =   1                   )
+             OR     ( RECE64-HOSPID    NOT =   RECE65-HOSPID       )
+             OR     ( RECE64-SRYYM     NOT =   RECE65-SRYYM        )
+             OR     ( RECE64-NYUGAIKBN NOT =   RECE65-NYUGAIKBN    )
+             OR     ( RECE64-PTID      NOT =   RECE65-PTID         )
+             OR     ( RECE64-RECEKA    NOT =   RECE65-RECEKA       )
+             OR     ( RECE64-TEISYUTUSAKI
+                                       NOT =   RECE65-TEISYUTUSAKI )
+             OR     ( RECE64-RECESYUBETU
+                                       NOT =   RECE65-RECESYUBETU  )
+             OR     ( RECE64-HKNJANUM  NOT =   RECE65-HKNJANUM     )
+             OR     ( RECE64-HOJOKBN   NOT =   RECE65-HOJOKBN      )
+             OR     ( RECE64-TEKSTYMD  NOT =   RECE65-TEKSTYMD     )
+             OR     ( RECE64-ZAINUM    NOT =   RECE65-ZAINUM       )
+             OR     ( RECE64-ZAIREN    NOT =   RECE65-ZAIREN       )
+      *
+             PERFORM   VARYING   IDX   FROM    1   BY  1
+                       UNTIL   ( IDX               >   5     )
+                       OR      ( RECE65-SRYCD(IDX) =   SPACE )
+                  ADD    1             TO      IDX-RECE65
+                  MOVE   RECE65-SRYACTINF(IDX) TO
+                                           WRK-SRYACTINF(IDX-RECE65)
+                  MOVE   RECE65-NAMEINF(IDX)   TO
+                                           WRK-NAMEINF(IDX-RECE65)     
+             END-PERFORM 
+      *
+             PERFORM 990-RECE65-NEXT-SEC
+      *
+           END-PERFORM
+      *
+      *    外泊日コメントを含んだ内容で中間ファイルの再作成
+           MOVE       ZERO             TO      FLG-WRKRECE65
+           MOVE       ZERO             TO      IDX
+           MOVE       ZERO             TO      IDX-RECE65
+           MOVE       ZERO             TO      WRK-RENNUM
+           MOVE       ZERO             TO      WRK-CNT-MEISAI
+           PERFORM    UNTIL     FLG-WRKRECE65  =    1
+                  INITIALIZE                        RECE651-REC
+                  MOVE    WRK-RECE65-KEY       TO   RECE651-KEY
+                  ADD     1                    TO   WRK-RENNUM
+                  MOVE    WRK-RENNUM           TO   RECE651-RENNUM
+                  MOVE    WRK-RECE65-KOHBUNRI  TO   RECE651-KOHBUNRI
+                  MOVE    WRK-RECE65-PTNUM     TO   RECE651-PTNUM
+                  MOVE    WRK-RECE65-SRYKA     TO   RECE651-SRYKA
+                  MOVE    WRK-RECE65-SRYKBN    TO   RECE651-SRYKBN
+                  MOVE    WRK-RECE65-SRYSYUKBN TO   RECE651-SRYSYUKBN
+                  MOVE    WRK-RECE65-JIHIMONEY TO   RECE651-JIHIMONEY
+                  PERFORM  VARYING   IDX   FROM   1   BY   1
+                           UNTIL   (IDX       >    5)   OR
+                                   (FLG-WRKRECE65   =   1)
+                     ADD         1             TO    IDX-RECE65
+                     IF  WK-RECE65-SRYCD(IDX-RECE65) = SPACE
+                         MOVE    1             TO    FLG-WRKRECE65
+                     ELSE
+                         MOVE  WRK-SRYACTINF(IDX-RECE65)
+                                          TO   RECE651-SRYACTINF(IDX)  
+                         MOVE  WRK-NAMEINF(IDX-RECE65)
+                                          TO   RECE651-NAMEINF(IDX)
+                         ADD   1          TO   WRK-CNT-MEISAI
+                     END-IF  
+                  END-PERFORM
+                  WRITE   RECE651-REC
+                  ADD     1                    TO  CNT-RECE65
+           END-PERFORM     
+      *
+           MOVE    RECE64-REC        TO      RECE641-REC
+           MOVE    WRK-CNT-MEISAI    TO      RECE641-MEISAISU
+           WRITE   RECE641-REC
+           ADD     1                 TO      CNT-RECE64
+      *
+           .
+       2001-GAIHAKU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外泊日の確定
+      *****************************************************************
+       2001-GAIHAKU-DAY-SEC          SECTION.
+      *
+           INITIALIZE                TBL-GAIHAKU-DAY
+      *
+           MOVE    ZERO          TO  DAY-IDX
+           MOVE    ZERO          TO  FLG-GAI-RENZOKU
+      *
+           PERFORM    VARYING    IDX  FROM   1   BY   1
+                      UNTIL     (IDX      >   31)  OR
+                                (DAY-IDX  >   31)
+                IF    RECE64-KAISU(1 IDX)   =  ZERO
+                      MOVE  ZERO  TO  FLG-GAI-RENZOKU
+                ELSE
+                      IF    FLG-GAI-RENZOKU  =  ZERO
+                         ADD   1     TO  DAY-IDX
+                         MOVE  IDX   TO  TBL-GAIHAKU-DAY-ST(DAY-IDX)
+                      END-IF
+                      MOVE  IDX      TO  TBL-GAIHAKU-DAY-ED(DAY-IDX)
+                      MOVE  1        TO  FLG-GAI-RENZOKU
+                END-IF
+           END-PERFORM
+      *
+           PERFORM    VARYING    DAY-IDX  FROM   1   BY   1
+                      UNTIL  (DAY-IDX                      >   31)  OR
+                             (TBL-GAIHAKU-DAY-ST(DAY-IDX)  = ZERO)
+                IF    TBL-GAIHAKU-DAY-ST(DAY-IDX) 
+                                    =   TBL-GAIHAKU-DAY-ED(DAY-IDX)
+                      MOVE  CONS-GAIHAKU-COMMENT1
+                                    TO  TBL-GAIHAKU-DAY-CD(DAY-IDX)
+                ELSE
+                      MOVE  CONS-GAIHAKU-COMMENT2
+                                    TO  TBL-GAIHAKU-DAY-CD(DAY-IDX)
+                END-IF
+           END-PERFORM
+      *
+           .
+       2001-GAIHAKU-DAY-EXT.
            EXIT.
       *
       *****************************************************************

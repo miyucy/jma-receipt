@@ -138,6 +138,7 @@
            03  FLG-NYUKHN                              PIC 9(01).
            03  FLG-MIJISI                              PIC 9(01).
            03  FLG-MIJISI2                             PIC 9(01).
+           03  FLG-TOKUTEI                             PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -174,6 +175,7 @@
            03  SYUKEI-IDX                              PIC 9(03).
            03  SYUKEI-IDX2                             PIC 9(03).
            03  SYUKEI-IDX3                             PIC 9(03).
+           03  SYUKEI-IDX4                             PIC 9(03).
            03  GENSAN-IDX                              PIC 9(03).
       *
       *    ¥Ñ¥¹Ì¾ÎÎ°è
@@ -201,12 +203,14 @@
            03  FTN-KOH-YYY                             PIC 9(09).       
            03  FLG-KOH                                 PIC 9(01).
            03  WRK-FTNKEI                              PIC 9(09).
+           03  WRK-FTNKEI2                             PIC 9(09).
       *
        01  WRK-DAY-TABLE.
            03  WRK-DAY-T                               OCCURS   31.
                05  WRK-DAY1                            PIC 9(04).
                05  WRK-DAY1-NYUTENTTLKBN               PIC 9(03).
                05  WRK-DAY1-KHNTEN                     PIC 9(08).
+               05  WRK-DAY1-NYUKHNKSNKBN               PIC 9(03).
                05  WRK-DAY2                            PIC 9(04).
                05  WRK-DAY4                            PIC 9(04).
                05  WRK-DAY5                            PIC 9(04).
@@ -217,6 +221,7 @@
                05  WRK-DAY22                           PIC 9(04).
                05  WRK-DAY22-NYUTENTTLKBN              PIC 9(03).
                05  WRK-DAY22-NYUKHNRYO                 PIC 9(08).
+               05  WRK-DAY22-NYUKHNKSNKBN              PIC 9(03).
                05  WRK-DAY24                           PIC 9(04).
       *
        01  WRK-GAI-TABLE.
@@ -225,6 +230,9 @@
                05  WRK-GAI-DAY                         PIC 9(02).
                05  WRK-GAI-ZAITEN                      PIC 9(08).
                05  WRK-GAI-ZAIKAISU                    PIC 9(04).
+               05  WRK-GAI-KAISU-T.
+                06  WRK-GAI-KAISU-OCC                  OCCURS   31.
+                 07  WRK-GAI-KAISU                     PIC 9(01).
       *
        01  WRK-GAI-TABLE2.
            03  WRK-GAI-T2                              OCCURS   20.
@@ -233,8 +241,11 @@
                05  WRK-GAI2-ZAITEN                     PIC 9(08).
                05  WRK-GAI2-ZAIKAISU                   PIC 9(04).
                05  WRK-GAI2-SRYKBNFLG                  PIC 9(01).
+               05  WRK-GAI2-KAISU-T.
+                06  WRK-GAI2-KAISU-OCC                 OCCURS   31.
+                 07  WRK-GAI2-KAISU                    PIC 9(01).
       *
-       01  WRK-GAI-DATA                                PIC X(24).
+       01  WRK-GAI-DATA                                PIC X(55).
       *
        01  WRK-SKJ-TABLE.
            03  WRK-SKJ-T                               OCCURS   31.
@@ -253,6 +264,9 @@
                05  WRK-SKJ2-SRYCD-T.
                 06  WRK-SKJ2-SRYCD-OCC                 OCCURS    5.
                  07  WRK-SKJ2-SRYCD                    PIC 9(09).
+               05  WRK-SKJ2-KAISU-T.
+                06  WRK-SKJ2-KAISU-OCC                 OCCURS   31.
+                 07  WRK-SKJ2-KAISU                    PIC 9(01).
       *
        01  WRK-MIJ-TABLE.
            03  WRK-MIJ-T                               OCCURS   10.
@@ -288,7 +302,7 @@
            03  TOKKI-IDX                               PIC 9(02). 
       *
            03  WRK-KHNTEN                              PIC 9(08).
-           03  WRK-NYUTENTTLKBN                        PIC 9(03).
+           03  WRK-NYUKHNKSNKBN                        PIC 9(03).
            03  WRK-SHOKUJIRYOYO                        PIC 9(01).
            03  WRK-TOKUKANRIKASAN                      PIC 9(01).
            03  WRK-SYS-MIJISI-T.
@@ -737,15 +751,20 @@
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
                  IF     NACCT-ZAISKBKBN    =    "1"  
+                   PERFORM      NYUINKHN-GET-SEC                        
                    PERFORM    VARYING   IDY   FROM   1   BY   1
                                     UNTIL    IDY    >    31
                      IF   NACCT-DAY(IDY)   NOT =  ZERO 
-                             MOVE   NACCT-DAY(IDY)  TO   WRK-DAY1(IDY) 
-                             PERFORM      NYUINKHN-GET-SEC
-                             MOVE   WRK-NYUTENTTLKBN
-                                        TO  WRK-DAY1-NYUTENTTLKBN(IDY) 
-                             MOVE   WRK-KHNTEN
-                                        TO  WRK-DAY1-KHNTEN(IDY) 
+                           MOVE   NACCT-DAY(IDY)  TO   WRK-DAY1(IDY) 
+                           IF  NACCT-SRYKBN  =  "90"                    
+                              MOVE  903  TO  WRK-DAY1-NYUTENTTLKBN(IDY) 
+                           ELSE                                         
+                              MOVE  920  TO  WRK-DAY1-NYUTENTTLKBN(IDY) 
+                           END-IF                                       
+                           MOVE   WRK-KHNTEN
+                                      TO  WRK-DAY1-KHNTEN(IDY) 
+                           MOVE   WRK-NYUKHNKSNKBN                      
+                                      TO  WRK-DAY1-NYUKHNKSNKBN(IDY)    
                      END-IF
                    END-PERFORM
                  END-IF
@@ -858,6 +877,8 @@
                                             TO   WRK-DAY22(IDY) 
                                MOVE   WRK-DAY1-NYUTENTTLKBN(IDY)
                                         TO  WRK-DAY22-NYUTENTTLKBN(IDY)
+                               MOVE   WRK-DAY1-NYUKHNKSNKBN(IDY)        
+                                        TO  WRK-DAY22-NYUKHNKSNKBN(IDY) 
                                PERFORM      NYUINACCT-GET-SEC
                                ADD    1     TO   CNT-DAY22
                                MOVE   1     TO   FLG-DAY22
@@ -1078,7 +1099,7 @@
        NYUINKHN-GET-SEC           SECTION.
       *
            MOVE    ZERO               TO   WRK-KHNTEN
-                                           WRK-NYUTENTTLKBN
+                                           WRK-NYUKHNKSNKBN             
       *
            INITIALIZE                      NYUINACT-REC
            MOVE    NACCT-HOSPID       TO   NSRY-HOSPID
@@ -1109,9 +1130,9 @@
                      MOVE    NSRY-SRYCD(IDX2)    TO  WRK-SRYCD
                      PERFORM    TENSU-TBL2-SEC
                      IF   TNS-DATAKBN    =    1
-                          MOVE   TNS-NYUTENTTLKBN
-                                           TO   WRK-NYUTENTTLKBN
                           MOVE   TNS-TEN   TO   WRK-KHNTEN
+                          MOVE   TNS-NYUKHNKSNKBN                       
+                                           TO   WRK-NYUKHNKSNKBN        
                           MOVE   1         TO   FLG-NYUKHN
                      END-IF                  
                END-PERFORM
@@ -1199,6 +1220,8 @@
               IF  WRK-GAI-ZAITEN(SYUKEI-IDX SYUKEI-IDX2)
                                             =  WRK-DAY22-NYUKHNRYO(IDY)
                  ADD   1  TO   WRK-GAI-ZAIKAISU(SYUKEI-IDX SYUKEI-IDX2)
+                 MOVE  1  TO                                            
+                           WRK-GAI-KAISU   (SYUKEI-IDX SYUKEI-IDX2 IDY) 
                  MOVE  1  TO   FLG-ARI
               END-IF
            END-PERFORM  
@@ -1208,6 +1231,8 @@
                  MOVE  WRK-DAY22-NYUKHNRYO(IDY)
                           TO   WRK-GAI-ZAITEN  (SYUKEI-IDX SYUKEI-IDX2) 
                  ADD   1  TO   WRK-GAI-ZAIKAISU(SYUKEI-IDX SYUKEI-IDX2)
+                 MOVE  1  TO                                            
+                           WRK-GAI-KAISU   (SYUKEI-IDX SYUKEI-IDX2 IDY) 
            END-IF
       *
            .
@@ -1241,13 +1266,13 @@
                   WHEN     3
                      MOVE   "190111590" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                   WHEN     4
-                     MOVE   "XXXXXXXXX" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
+                     PERFORM  NYUINACCT-HEN-TAKIKAN-SEC
                   WHEN     5
                      MOVE   "190107490" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                   WHEN     6
                      MOVE   "190107590" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                   WHEN     7
-                     MOVE   "XXXXXXXXX" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
+                     PERFORM  NYUINACCT-HEN-TAKIKAN-SEC
                END-EVALUATE
                MOVE   WRK-GAI-ZAITEN(SYUKEI-IDX SYUKEI-IDX2)
                                     TO   WRK-GAI2-ZAITEN  (SYUKEI-IDX3)
@@ -1264,6 +1289,8 @@
                   WHEN     7
                      MOVE    2      TO   WRK-GAI2-SRYKBNFLG(SYUKEI-IDX3)
                END-EVALUATE
+               MOVE  WRK-GAI-KAISU-T(SYUKEI-IDX SYUKEI-IDX2)            
+                                    TO   WRK-GAI2-KAISU-T(SYUKEI-IDX3)  
       *
              END-PERFORM
       *
@@ -1297,6 +1324,34 @@
            .
       *
        NYUINACCT-HEN-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    Â¾°åÎÅµ¡´Ø¼õ¿Ç»þ¤Î¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ
+      **************************************************************
+       NYUINACCT-HEN-TAKIKAN-SEC           SECTION.
+      *
+           MOVE   WRK-GAI2-DAY(SYUKEI-IDX3)   TO   SYUKEI-IDX4
+      *
+           EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
+               WHEN   099  THRU  100 
+               WHEN   201  THRU  219
+               WHEN   221  THRU  222
+               WHEN   224
+               WHEN   227  THRU  228
+                  MOVE   "190108790" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
+               WHEN   013  THRU  021
+               WHEN   101  THRU  109
+                  MOVE   "190108890" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
+               WHEN   075  THRU  080
+                  MOVE   "190108990" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
+               WHEN   085  THRU  086
+               WHEN   132  THRU  133
+                  MOVE   "190109090" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
+           END-EVALUATE
+           .
+      *
+       NYUINACCT-HEN-TAKIKAN-EXT.
            EXIT.
       *
       **************************************************************
@@ -1379,6 +1434,7 @@
                                      =  WRK-SKJ-SRYCD-T  (SYUKEI-IDX) )
                      ADD   WRK-SKJ-ZAIKAISU(SYUKEI-IDX)  TO  
                                        WRK-SKJ2-ZAIKAISU (SYUKEI-IDX2)
+                     MOVE  1  TO  WRK-SKJ2-KAISU(SYUKEI-IDX2 SYUKEI-IDX)
                      MOVE  1  TO   FLG-ARI
                   END-IF
                END-PERFORM  
@@ -1398,6 +1454,7 @@
                                     TO  WRK-SKJ2-SRYCDTOTAL(SYUKEI-IDX2)
                         END-IF
                      END-PERFORM
+                     MOVE  1  TO  WRK-SKJ2-KAISU(SYUKEI-IDX2 SYUKEI-IDX)
                END-IF
       *
              END-IF
@@ -1582,10 +1639,11 @@
            MOVE        ZERO             TO      WK-TAIHI-FLG
            PERFORM     VARYING   IDX2   FROM    1    BY   1
                            UNTIL     IDX2   >       31
-                   MOVE    WRK-DAY22(IDX2)  TO
-                                            RECE64-KAISU (1 IDX2)
-                   IF     (WK-TAIHI-FLG           =   ZERO)   AND
-                          (WRK-DAY22(IDX2)    NOT =   ZERO)
+                   MOVE    WRK-GAI2-KAISU(SYUKEI-IDX3 IDX2)             
+                                        TO    RECE64-KAISU (1 IDX2)
+                   IF     (WK-TAIHI-FLG           =   ZERO)  
+                   AND    (WRK-GAI2-KAISU(SYUKEI-IDX3 IDX2)             
+                                                      NOT =   ZERO)
                        MOVE     IDX2    TO      WK-TAIHI-DAY
                        MOVE     1       TO      WK-TAIHI-FLG
                    END-IF    
@@ -1644,10 +1702,11 @@
            MOVE        ZERO             TO      WK-TAIHI-FLG
            PERFORM     VARYING   IDX2   FROM    1    BY   1
                            UNTIL     IDX2   >       31
-                   MOVE    WRK-DAY24(IDX2)  TO
-                                            RECE64-KAISU (1 IDX2)
-                   IF     (WK-TAIHI-FLG           =   ZERO)   AND
-                          (WRK-DAY24(IDX2)    NOT =   ZERO)
+                   MOVE    WRK-SKJ2-KAISU(SYUKEI-IDX3 IDX2)             
+                                        TO   RECE64-KAISU (1 IDX2)
+                   IF     (WK-TAIHI-FLG           =   ZERO)
+                   AND    (WRK-SKJ2-KAISU(SYUKEI-IDX3 IDX2)             
+                                                     NOT =   ZERO)
                        MOVE     IDX2    TO      WK-TAIHI-DAY
                        MOVE     1       TO      WK-TAIHI-FLG
                    END-IF    
@@ -3385,6 +3444,8 @@
       *****************************************************************
        RECE62-HENSYU-SEC3               SECTION.
       *
+           MOVE     ZERO     TO    FLG-TOKUTEI                          
+      *
            PERFORM  VARYING  ID1    FROM    1   BY  1
                          UNTIL   ID1   >   2
       *
@@ -3522,6 +3583,35 @@
                         END-IF                                            
                       END-IF
                     ELSE
+                      IF   ( SYU-KOH-HKNNUM(1)   =   "051" )            
+                      OR   ( SYU-KOH-HKNNUM(2)   =   "051" )            
+                      OR   ( SYU-KOH-HKNNUM(3)   =   "051" )            
+                      OR   ( SYU-KOH-HKNNUM(4)   =   "051" )            
+                        IF  SYU-KOH-HKNNUM(1)   =   "051"               
+                           COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
+                                                 +  SYU-SKJ-FTN(1)      
+                        END-IF                                          
+                        IF  SYU-KOH-HKNNUM(2)   =   "051"               
+                           COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
+                                                 +  SYU-SKJ-FTN(2)      
+                        END-IF                                          
+                        IF  SYU-KOH-HKNNUM(3)   =   "051"               
+                           COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
+                                                 +  SYU-SKJ-FTN(3)      
+                        END-IF                                          
+                        IF  SYU-KOH-HKNNUM(4)   =   "051"               
+                           COMPUTE  WRK-FTNKEI2  =  WRK-FTNKEI          
+                                                 +  SYU-SKJ-FTN(4)      
+                        END-IF                                          
+                        IF  WRK-FTNKEI   =  14000                       
+                            MOVE  1            TO  FLG-TOKUTEI          
+                        END-IF                                          
+                        IF  WRK-FTNKEI   <  14000                       
+                        AND WRK-FTNKEI2  =  14000                       
+                            MOVE  WRK-FTNKEI2  TO  WRK-FTNKEI           
+                            MOVE  2            TO  FLG-TOKUTEI          
+                        END-IF                                          
+                      END-IF                                            
                       IF  FTN-KOH-XXX  >  40200
                          MOVE   40200   TO   FTN-KOH-XXX
                       END-IF
@@ -3589,6 +3679,19 @@
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
+                            IF   RECE62-KOHNUM(1) =  "051"              
+                            AND  FLG-TOKUTEI  NOT =  ZERO               
+                               IF  FLG-TOKUTEI  =  2                    
+                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
+                                        RECE62-FTNMONEY(KH-IDX)         
+                               END-IF                                   
+                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
+                                        RECE62-FTNMONEY(KH-IDX) +  5    
+                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
+                                        RECE62-FTNMONEY(KH-IDX) / 10    
+                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
+                                        RECE62-FTNMONEY(KH-IDX) * 10    
+                            END-IF                                      
       *               END-IF
       *
                       ADD   SYU-SKJ-NISSU(IDX3)    TO
@@ -3622,6 +3725,19 @@
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
+                            IF   RECE62-KOHNUM(2) =  "051"              
+                            AND  FLG-TOKUTEI  NOT =  ZERO               
+                               IF  FLG-TOKUTEI  =  2                    
+                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
+                                        RECE62-FTNMONEY(KH-IDX)         
+                               END-IF                                   
+                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
+                                        RECE62-FTNMONEY(KH-IDX) +  5    
+                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
+                                        RECE62-FTNMONEY(KH-IDX) / 10    
+                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
+                                        RECE62-FTNMONEY(KH-IDX) * 10    
+                            END-IF                                      
       *               END-IF
       *
                       ADD   SYU-SKJ-NISSU(IDX3)    TO
@@ -3655,6 +3771,19 @@
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
+                            IF   RECE62-KOHNUM(3) =  "051"              
+                            AND  FLG-TOKUTEI  NOT =  ZERO               
+                               IF  FLG-TOKUTEI  =  2                    
+                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
+                                        RECE62-FTNMONEY(KH-IDX)         
+                               END-IF                                   
+                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
+                                        RECE62-FTNMONEY(KH-IDX) +  5    
+                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
+                                        RECE62-FTNMONEY(KH-IDX) / 10    
+                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
+                                        RECE62-FTNMONEY(KH-IDX) * 10    
+                            END-IF                                      
       *               END-IF
       *
                       ADD   SYU-SKJ-NISSU(IDX3)    TO
@@ -3688,6 +3817,19 @@
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
+                            IF   RECE62-KOHNUM(4) =  "051"              
+                            AND  FLG-TOKUTEI  NOT =  ZERO               
+                               IF  FLG-TOKUTEI  =  2                    
+                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
+                                        RECE62-FTNMONEY(KH-IDX)         
+                               END-IF                                   
+                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
+                                        RECE62-FTNMONEY(KH-IDX) +  5    
+                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
+                                        RECE62-FTNMONEY(KH-IDX) / 10    
+                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
+                                        RECE62-FTNMONEY(KH-IDX) * 10    
+                            END-IF                                      
       *               END-IF
       *
                       ADD   SYU-SKJ-NISSU(IDX3)    TO

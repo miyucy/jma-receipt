@@ -551,9 +551,11 @@
       *
                IF     NACCT-ZAISKBKBN    =    "1"  
                     MOVE   NACCT-DAY(IDY)   TO  WRK-DAY1(IDY) 
-                    PERFORM      NYUINKHN-GET-SEC
-                    MOVE   WRK-NYUTENTTLKBN TO  WRK-DAY1-NYUTENTTLKBN
-                                                                (IDY) 
+                    IF  NACCT-SRYKBN  =  "90"                           
+                       MOVE   903  TO  WRK-DAY1-NYUTENTTLKBN(IDY)       
+                    ELSE                                                
+                       MOVE   920  TO  WRK-DAY1-NYUTENTTLKBN(IDY)       
+                    END-IF                                              
                END-IF 
       *
                IF     NACCT-ZAISKBKBN    =    "2"  
@@ -574,8 +576,16 @@
       *
                IF     NACCT-ZAISKBKBN    =    "6"  
                     MOVE   NACCT-DAY(IDY)   TO  WRK-DAY6(IDY) 
-                    PERFORM      NYUINKHN-GET2-SEC
-                    IF  WRK-NYUTENTTLKBN   NOT =  ZERO
+                    IF  NACCT-SRYCDTOTAL  =  190080470   OR             
+                                             190799670   OR             
+                                             190080570   OR             
+                                             190799770   OR             
+                                             190111690   OR             
+                                             190809090   OR             
+                                             190111790   OR             
+                                             190809190                  
+                      CONTINUE                                          
+                    ELSE                                                
                       ADD    NACCT-ZAITEN   TO  WRK-DAY6-ZAITEN(IDY)
                     END-IF
                END-IF 
@@ -839,9 +849,6 @@
                  END-IF
       *
                  IF     NACCT-ZAISKBKBN    =    "6"  
-      *
-      *            入院基本料加減算点数の取得
-                   PERFORM   NYUINKHN-GET2-SEC
       *
                    PERFORM  VARYING  IDY    FROM    1   BY  1
                                   UNTIL   IDY     >       31
@@ -1172,7 +1179,16 @@
       **************************************************************
        NYUINACCT-GET2-SEC           SECTION.
       *
-           IF  WRK-NYUTENTTLKBN   NOT =  ZERO
+           IF  NACCT-SRYCDTOTAL       =  190080470   OR                 
+                                         190799670   OR                 
+                                         190080570   OR                 
+                                         190799770   OR                 
+                                         190111690   OR                 
+                                         190809090   OR                 
+                                         190111790   OR                 
+                                         190809190                      
+              CONTINUE                                                  
+           ELSE                                                         
       *
               EVALUATE   WRK-DAY1-NYUTENTTLKBN(IDY)
                  WHEN   903
@@ -1191,8 +1207,13 @@
       **************************************************************
        NYUINKHN-GET-SEC           SECTION.
       *
+           IF   NACCT-SRYKBN  =  "90"                                   
+                 MOVE   903   TO  WRK-NYUTENTTLKBN                      
+           ELSE                                                         
+                 MOVE   920   TO  WRK-NYUTENTTLKBN                      
+           END-IF                                                       
+      *
            MOVE    ZERO               TO   WRK-KHNTEN
-                                           WRK-NYUTENTTLKBN
            MOVE    SPACE              TO   WRK-RYAKUSHO
            MOVE    ZERO               TO   NYUINACT-IDX2
       *
@@ -1230,8 +1251,6 @@
                      PERFORM  TENSU-READ-SEC
                      IF       FLG-TENSU      =    ZERO
                          IF   TNS-DATAKBN    =    1
-                              MOVE   TNS-NYUTENTTLKBN
-                                               TO   WRK-NYUTENTTLKBN
                               MOVE   TNS-TEN   TO   WRK-KHNTEN
                               MOVE   NYUINACT-IDX
                                                TO   NYUINACT-IDX2
@@ -1287,83 +1306,6 @@
       *
            .
        NYUINKHN-GET-EXT.
-           EXIT.
-      *
-      **************************************************************
-      *    入院基本料加減算点数の取得
-      **************************************************************
-       NYUINKHN-GET2-SEC           SECTION.
-      *
-           MOVE    ZERO               TO   WRK-NYUTENTTLKBN
-      *
-           INITIALIZE                      NYUINACT-REC
-           MOVE    NACCT-HOSPID       TO   NSRY-HOSPID
-           MOVE    NACCT-NYUGAIKBN    TO   NSRY-NYUGAIKBN
-           MOVE    NACCT-PTID         TO   NSRY-PTID
-      ***  MOVE    NACCT-SRYKA        TO   NSRY-SRYKA
-           MOVE    NACCT-SRYYM        TO   NSRY-SRYYM
-           MOVE    NACCT-ZAINUM       TO   NSRY-ZAINUM
-           MOVE    NYUINACT-REC       TO   MCPDATA-REC
-           MOVE    "DBSELECT"         TO   MCP-FUNC
-           MOVE    "NYUINACT-KEY9"    TO   ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-           IF      MCP-RC             =    ZERO
-               MOVE    "NYUINACT-KEY9"     TO   ORC-DBPATH
-               PERFORM NYUINACT-READ-SEC
-           ELSE
-               MOVE    1              TO   FLG-NYUINACT
-           END-IF
-           IF      FLG-NYUINACT        =   ZERO
-               MOVE      ZERO          TO  FLG-NYUKHN  
-               PERFORM   VARYING  NYUINACT-IDX  FROM 1  BY  1
-                 UNTIL  (FLG-NYUKHN         =   1)    OR
-                        (NYUINACT-IDX       >   5)    OR
-                        (NSRY-SRYCD(NYUINACT-IDX)  =  SPACE)
-                   IF    NSRY-SRYCD(NYUINACT-IDX)  =  "190080470"
-                                                  OR  "190799670"
-                                                  OR  "190080570"
-                                                  OR  "190799770"
-                                                  OR  "190111690"
-                                                  OR  "190809090"
-                                                  OR  "190111790"
-                                                  OR  "190809190"
-                     CONTINUE
-                   ELSE
-                     MOVE    SPACE         TO   TNS-TENSU-REC
-                     INITIALIZE                 TNS-TENSU-REC
-                     MOVE    NSRY-SRYCD(NYUINACT-IDX) TO   TNS-SRYCD
-                     MOVE    NACCT-SRYYM        TO  ORC-DBYMD(1:6)
-                     MOVE    "01"               TO  ORC-DBYMD(7:2)
-                     PERFORM  TENSU-READ-SEC
-                     IF       FLG-TENSU      =    ZERO
-                         IF   TNS-DATAKBN    =    2
-                           MOVE   TNS-NYUTENTTLKBN
-                                            TO   WRK-NYUTENTTLKBN
-                           MOVE   1         TO   FLG-NYUKHN
-                         END-IF
-                     END-IF                  
-                     MOVE    "DBCLOSE"               TO  MCP-FUNC
-                     MOVE    "TENSU-KEY"             TO  ORC-DBPATH
-                     CALL    "ORCMCPSUB"             USING
-                                                     MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                   END-IF
-               END-PERFORM
-           END-IF
-      *
-           MOVE    "DBCLOSE"               TO  MCP-FUNC
-           MOVE    "NYUINACT-KEY9"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-      *
-           .
-       NYUINKHN-GET2-EXT.
            EXIT.
       *
       *****************************************************************
