@@ -189,10 +189,10 @@
       *        ¥«¡¼¥½¥ë¤Î¥¯¥ê¥¢
                MOVE    SPACE           TO  SPA-COM-CUR    (IDX)
       *        ¿ÇÎÅ¶èÊ¬¡¢¼ïÊÌ¤Î¥¯¥ê¥¢
-               IF      SPA-COM-INPUTCD(IDX)(1:1)   NOT =   "1"
+      *!       IF      SPA-COM-INPUTCD(IDX)(1:1)   NOT =   "1"
                    MOVE    SPACE           TO  SPA-COM-SRYKBN    (IDX)
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN (IDX)
-               END-IF
+      *!       END-IF
       *
                IF      (SPA-GMN-INPUTCD(IDX) =   SPACE )   AND
                        (SPA-COM-INPUTCD(IDX) =   SPACE )
@@ -899,8 +899,15 @@
                 ELSE
                     COMPUTE IDX-1          =   IDX    -   1
                 END-IF
+      *    Êñ³çÂÐ¾Ý³°¤ÏÂÐ¾Ý¤È¤·¤Ê¤¤
+               IF     SPA-COM-SRYSYUKBN(IDX)  =   "610"
+                   CONTINUE
+               ELSE
+      *
       *         Êñ³çÂÐ¾Ý¸¡ºº·ï¿ô¥Á¥§¥Ã¥¯
                 PERFORM 51013-KENSA-ZAI-CHK-SEC
+      *
+               END-IF
       *
                IF     (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "." )  OR
                       (SPA-COM-SRYKBN (IDX-1)   NOT =  SPA-COM-SRYKBN
@@ -918,6 +925,12 @@
                                                              (IDX-1)
                            MOVE    2                    TO  FLG-SYORI
                        END-IF
+                   END-IF
+      *            Êñ³çÂÐ¾Ý³°¤ÎºÞ½ªÎ»»þ¡¢¿ÇÎÅ¼ïÊÌ¤ò¸¡ºº¤Ë¤¹¤ë
+                   IF    (SPA-COM-SRYSYUKBN(IDX)  =   "610" ) AND
+                         (FLG-SYORI               =   2     )
+                       MOVE    SPA-COM-TNSSRYSYUKBN (IDX)
+                                            TO  SPA-COM-SRYSYUKBN (IDX)
                    END-IF
                END-IF
            END-IF
@@ -1014,6 +1027,16 @@
                MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN   (IDX)
                GO      TO      51011-SRYSYUKBN-KBN-EXT
            END-IF
+      *
+      *    ¸¡ººÊñ³ç¤Ê¤·¤Î»þ¡¢¿ÇÎÅ¼ïÊÌ¤òÊÔ½¸¤¹¤ë
+           IF     (WRK-SRYSYUKBN           =   "610" )  AND
+                  (SPA-COM-TNSSRYKBN (IDX) =   "60"  )
+               MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN (IDX)
+               MOVE    SPA-COM-TNSSRYKBN (IDX) TO  WRK-SRYKBN
+               MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN   (IDX)
+               GO      TO      51011-SRYSYUKBN-KBN-EXT
+           END-IF
+      *
       *    Èé²¼¶ÚÆùÃí¼Í¤Î¿¶ÂØ¤¨¤Ê¤·¤Î»þ¡¢¤½¤Î¤Þ¤Þ
            IF     (IDX                     >   1     )  AND
                   (SPA-GMN-INPUTCD(IDX - 1)(1:4)   =   ".312" ) AND
@@ -1317,6 +1340,7 @@
                ELSE
                    IF     (WRK-COM-SRYKBN (IDX)    =   "60" ) AND
                           (WRK-COM-HOUKNSKBN(IDX)  NOT =  ZERO)
+                   AND    (WRK-COM-SRYSYUKBN(IDX)  NOT =  "610")
                        IF     (IDX                 >   1          )  AND
                               (WRK-GMN-INPUTCD (IDX - 1)(1:4)
                                                        =   ".600" OR
@@ -1365,6 +1389,7 @@
                         WRK-COM-ZAIEND  (IDX-2 - 1) =  "1"   )  AND
                        (WRK-COM-KAISU   (IDX-2)    >  1 ) AND
                        (WRK-COM-KAIFLG  (IDX-2)    =  "1"))
+                  OR   (WRK-COM-SRYSYUKBN (IDX-2) =   "610" )
                    CONTINUE
                ELSE
                    IF     (WRK-COM-SRYKBN (IDX-2)    =   "60" )  AND

@@ -37,6 +37,8 @@
       *  01.00.07    NACL-多々納  02/12/03  包括数修正
       *  01.00.08    NACL-多々納  03/01/24  通則年齢から年齢加算を追加
       *  01.00.09    NACL-多々納  03/07/11  検体検査管理加算を追加
+      *  01.00.10    NACL-多々納  03/09/11  外来逓減検査同時入力追加
+      *                                     外来包括なし（610)追加
       *****************************************************************
       *
       *
@@ -554,9 +556,11 @@
                EVALUATE    WRK-MOJI
                    WHEN    "0"
                    WHEN    "8"
-                   WHEN    "."
+      *************WHEN    "."
                    WHEN    "*"
                        CONTINUE
+                   WHEN    "."
+                       PERFORM 10010-SRYKBN-CHK-SEC
       *
                    WHEN    OTHER
       *                編集チェックへ
@@ -574,6 +578,23 @@
       *
            .
        1001-NAI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    投薬の処方のみチェック処理
+      *****************************************************************
+       10010-SRYKBN-CHK-SEC             SECTION.
+      *
+           EVALUATE    WRK-GMN-INPUTCD(IDX-Z)(2:3)
+               WHEN    "610"
+                   IF      SPA-NYUGAIKBN   =   "1"
+                       MOVE    "9028"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR
+                                                             (IDX-Z)
+                   END-IF
+           END-EVALUATE
+           .
+       10010-SRYKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1094,7 +1115,11 @@
                CONTINUE
            ELSE
                EVALUATE    WRK-COM-HOUKNSKBN(IDX-Z)
+      *?                               ALSO  WRK-COM-SRYSYUKBN (IDX-Z)
                    WHEN    01   THRU   08
+      *?                               ALSO  SPACE
+      *?           WHEN    01   THRU   08
+      *?                               ALSO  "600"
                        MOVE    WRK-COM-HOUKNSKBN(IDX-Z)    TO  IDX
                        ADD     1               TO  WRK-HOUKNS-CNT (IDX)
                        ADD     WRK-COM-KISOTEN(IDX-Z)
@@ -1565,17 +1590,31 @@
                IF     (WRK-COM-SRYKBN (IDX-Z)  =   "60"  )  AND
                       (WRK-COM-INPUTCD(IDX-Z)(1:1)  =   "1" )  AND
                       (WRK-COM-DATAKBN(IDX-Z)  =   "1"   )
+      *        逓減以外
+               AND    (WRK-COM-TEIGENKBN (IDX-Z)   NOT =   1    )
+      *        包括対象以外
+               AND    (WRK-COM-SRYSYUKBN (IDX-Z)   NOT =   "610")
                    PERFORM VARYING     IDX-Z2  FROM    1   BY  1
                            UNTIL      (IDX-Z2      >   200     )   OR
                                       (SPA-ERRCD   NOT =   SPACE )  OR
                                   (WRK-GMN-INPUTCD (IDX-Z2) =   SPACE )
                        IF     (IDX-Z2      NOT =   IDX-Z )  AND
+                              (WRK-COM-SRYSYUKBN   (IDX-Z2)
+                                           NOT =   "610"  )  AND
                               (WRK-COM-INPUTCD(IDX-Z)
                                                =   WRK-COM-INPUTCD
                                                         (IDX-Z2))
-                           MOVE    "0064"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  WRK-COM-CUR
-                                                         (IDX-Z2)
+                           IF      WRK-COM-HOUKNSKBN(IDX-Z)  =   ZERO
+                               MOVE    "0064"          TO  SPA-ERRCD
+                               MOVE    "1"             TO  WRK-COM-CUR
+                                                             (IDX-Z2)
+                           ELSE
+      *                        包括の時、削除確認メッセージ
+                               MOVE    "0160"      TO  LNK-ORCSC-KIDCD
+                               MOVE    "0064"          TO  SPA-ERRCD
+                               MOVE    "1"             TO  WRK-COM-CUR
+                                                             (IDX-Z2)
+                           END-IF
                        END-IF
                    END-PERFORM
                END-IF
@@ -1585,6 +1624,7 @@
            MOVE    ZERO                TO  IDX-JIKAN
            MOVE    ZERO                TO  IDX-TEIGEN
            MOVE    ZERO                TO  IDX-TEIGEN2
+           INITIALIZE                      TBL-TEIGEN-AREA
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
@@ -1618,15 +1658,24 @@
                        MOVE    1               TO  FLG-JIKASAN
                    END-IF
                END-IF
+      ***      逓減加算算定チェック
+      *!       IF     (WRK-COM-TEIGENKBN (IDX-Z)   =   1    )  AND
+      *!              (WRK-COM-DATAKBN   (IDX-Z)   =  "1"   )  AND
+      *!              (WRK-COM-TEIGEN-FLG(IDX-Z)   =   ZERO )
+      *!           PERFORM 2008-TEIGEN-INSYORI-SEC
+      *!       END-IF
+      *!       IF     (WRK-COM-TEIGENKBN (IDX-Z)   =   1    )  AND
+      *!              (WRK-COM-DATAKBN   (IDX-Z)   =  "1"   )
+      *!           MOVE    IDX-Z               TO  IDX-TEIGEN2
+      ****     END-IF
       *        逓減加算算定チェック
-               IF     (WRK-COM-TEIGENKBN (IDX-Z)   =   1    )  AND
-                      (WRK-COM-DATAKBN   (IDX-Z)   =  "1"   )  AND
-                      (WRK-COM-TEIGEN-FLG(IDX-Z)   =   ZERO )
-                   PERFORM 2008-TEIGEN-INSYORI-SEC
-               END-IF
-               IF     (WRK-COM-TEIGENKBN (IDX-Z)   =   1    )  AND
+               IF     (WRK-COM-SRYKBN    (IDX-Z)   =   "60" )  AND
+                      (WRK-COM-TEIGENKBN (IDX-Z)   =   1    )  AND
                       (WRK-COM-DATAKBN   (IDX-Z)   =  "1"   )
-                   MOVE    IDX-Z               TO  IDX-TEIGEN2
+      *            回数を入院回数へ編集する
+                   MOVE    WRK-COM-KAISU (IDX-Z)   TO  WRK-COM-NYU-KAI
+                                                              (IDX-Z)
+                   PERFORM 20018-TEIGEN-INSYORI-SEC
                END-IF
       *
       *        重複算定不可チェック
@@ -1638,9 +1687,9 @@
            END-PERFORM
       *
       *    逓減加算算定あり
-           IF      IDX-TEIGEN          >   ZERO
-               PERFORM 2009-TEIGEN-TUIKA-SEC
-           END-IF
+      *!   IF      IDX-TEIGEN          >   ZERO
+      *!       PERFORM 2009-TEIGEN-TUIKA-SEC
+      *!   END-IF
       *
       *    時間外緊急院内画像診断加算有り
            IF      IDX-JIKAN           >   ZERO
