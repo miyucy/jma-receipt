@@ -62,10 +62,10 @@ C11	{
 		};
 		HKNNUM_COMBO	{
 			HKNNUM	{
-				value	varchar(14);
+				value	varchar(18);
 			};
 			count	int;
-			item	varchar(14)[5];
+			item	varchar(18)[5];
 		};
 		BSRYKA_COMBO	{
 			BSRYKA	{
@@ -100,7 +100,7 @@ C11	{
 					value2	varchar(50);
 					value3	varchar(9);
 					value4	varchar(6);
-					value5	varchar(10);
+					value5	varchar(14);
 					value6	varchar(16);
 				}	[100];
 				select	bool[100];

@@ -1098,7 +1098,7 @@
       <name>HKNNUM_COMBO</name>
       <x>632</x>
       <y>390</y>
-      <width>130</width>
+      <width>140</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1126,7 +1126,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>14</text_max_length>
+	<text_max_length>18</text_max_length>
 	<text></text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>

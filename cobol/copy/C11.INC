@@ -38,10 +38,10 @@
                 04  C11-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.
                 04  C11-NYUGAIKBN-ITEM    PIC X(8)    OCCURS  2 TIMES.
               03  C11-HKNNUM-COMBO.
-                04  C11-HKNNUM  PIC X(14).
+                04  C11-HKNNUM  PIC X(18).
                 04  C11-HKNNUM-COUNT   PIC S9(9)   BINARY.
                 04  C11-HKNNUM-ITEM
-                        PIC X(14)   OCCURS  5 TIMES.
+                        PIC X(18)   OCCURS  5 TIMES.
               03  C11-BSRYKA-COMBO.
                 04  C11-BSRYKA   PIC X(23).
                 04  C11-BSRYKA-COUNT   PIC S9(9)   BINARY.
@@ -71,7 +71,7 @@
                     06  C11-COM-TOPENAME   PIC X(50).
                     06  C11-COM-TSRYYMD    PIC X(9).
                     06  C11-COM-TNYUGAIKBN PIC X(6).
-                    06  C11-COM-THKNNUM    PIC X(10).
+                    06  C11-COM-THKNNUM    PIC X(14).
                     06  C11-COM-TYUKYM     PIC X(16).
                   05  C11-COM-SELECT
                           PIC X       OCCURS  100 TIMES.
