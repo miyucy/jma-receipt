@@ -472,11 +472,19 @@
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-W10-STYUKYMDH
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-W10-EDYUKYMDH
       *
-           MOVE    SPA-W01-SELNUM      TO SPA-W10-SELNUM
-           MOVE    SPA-W01-SEL-STYUKYMD
-                                       TO SPA-W10-SEL-STYUKYMD
-           MOVE    SPA-W01-SEL-EDYUKYMD
-                                       TO SPA-W10-SEL-EDYUKYMD
+           MOVE    SPA-W01-SELNUM      TO  SPA-W10-SELNUM
+      *
+           IF    ( SPA-W10-SELNUM      >   ZERO )
+               MOVE    SPA-W01-SEL-STYUKYMD
+                                       TO  SPA-W10-SEL-STYUKYMD
+               MOVE    SPA-W01-SEL-EDYUKYMD
+                                       TO  SPA-W10-SEL-EDYUKYMD
+           ELSE
+               MOVE    SPA-W01-STYUKYMD
+                                       TO  SPA-W10-SEL-STYUKYMD
+               MOVE    SPA-W01-EDYUKYMD
+                                       TO  SPA-W10-SEL-EDYUKYMD
+           END-IF
       *
            MOVE    SPA-W01-KANRICD     TO SPA-W10-KANRICD
            MOVE    SPA-W01-KBNCD       TO SPA-W10-KBNCD
