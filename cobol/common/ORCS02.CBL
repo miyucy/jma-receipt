@@ -37,6 +37,7 @@
       *                                     ¤òÊÝ¸±ÈÖ¹æ¥Þ¥¹¥¿¤ÎÀßÄê¤Ç¹Ô¤¦¡£
       *  01.00.06    NACL-ÌçÏÆ    03/05/08  Á¥°÷ÊÝ¸±¡Ê¿¦Ì³¾å¡Ë¤Î¿©»öÉéÃ´Ìµ¤·
       *                                     ¤Ë½¤Àµ
+      *  01.00.07    NACL-ÌçÏÆ    03/05/21  ¸ºÌÈ¤ÎÃ¼¿ôÀßÄêÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -106,6 +107,9 @@
       *
       *    ÉÂ±¡³ä°ú³Û·×»»»þ¤Î³ä°úÎ¨ÍÑ¥ï¡¼¥¯
            03  WK-RATE                 PIC 9(1)V9(2).
+      *
+      *    ¸ºÌÈÃ¼¿ô¶èÊ¬
+           03  WK-HASU-KBN             PIC X(1).
       *
       *    ¸øÈñ¤Î´µ¼ÔÉéÃ´¾å¸Â¶â³Û¤ÎÂàÈòÍÑ¥¨¥ê¥¢
        01  HOKEN-MAX-AREA.
@@ -474,27 +478,14 @@
       *    ÀÁµá¶â³Û¤Î·×»»¡ÊÄ´À°¶â´Þ¤Þ¤º¡Ë
            COMPUTE    LNK-SYU-SKYMONEY  =   
                                  LNK-SYU-SKYMONEY              +
-                                 LNK-SYU-RMSAGAKU              +
-                                 LNK-SYU-SKYMONEY-SKJ-KEI      +
-                                 LNK-SYU-SKYMONEY-SKJ-JIHI-KEI +
-                                 LNK-SYU-TGMONEY(12)           +
-                                 LNK-SYU-TGMONEY-TAX(12)       +
-                                 LNK-SYU-JIHI-TOTAL            +
-                                 LNK-SYU-JIHI-TOTAL-TAX        +
-                                 LNK-SYU-JIHI-TAX.
+                                 LNK-SYU-SKYMONEY-SKJ-KEI.
       *
-      *    ¼«ÈñÊÝ¸±¤ÎÊä½õ¶èÊ¬¤¬²ÝÀÇ¤Î¾ì¹ç¡¢¾ÃÈñÀÇ·×»»¤ò¹Ô¤¦
-           IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" ) AND
-               ( COMB-HOJOKBN           =  "1" )
-      *
-              COMPUTE  LNK-SYU-SKYMONEY   =  LNK-SYU-SKYMONEY
-                                          *  1.05
-      *
-           END-IF.     
-      *
-      *    ÉÂ±¡¸ºÌÈ¤Î·×»»¡Ê¼«Èñ¤ò½ü¤¯¡Ë
+      *    ÉÂ±¡¸ºÌÈ¤Î·×»»¡Ê¼«Èñ¡¦Ï«ºÒ¡¦¼«ÇåÀÕ¤ò½ü¤¯¡Ë
            IF     LNK-SYU-SKYMONEY         NOT  =   ZERO
-           AND    COMB-SYU-HKNKOHSBTKBN    NOT  =   "8"
+              IF   (COMB-SYU-HKNKOHSBTKBN     =    "8"           )
+              OR   (LNK-SYU-SYUHKNNUM         =    "971" OR "973")
+                   CONTINUE
+              ELSE
                    INITIALIZE                           PTINF-REC
                    MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
                    MOVE    LNK-SYU-PTID         TO      PTINF-PTID
@@ -522,7 +513,29 @@
                                                  MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC
+              END-IF
            END-IF.
+      *
+      *    ÀÁµá¶â³Û¤Î·×»»¡ÊÄ´À°¶â´Þ¤Þ¤º¡Ë
+           COMPUTE    LNK-SYU-SKYMONEY  =   
+                                 LNK-SYU-SKYMONEY              +
+                                 LNK-SYU-RMSAGAKU              +
+      ***                        LNK-SYU-SKYMONEY-SKJ-KEI      +
+                                 LNK-SYU-SKYMONEY-SKJ-JIHI-KEI +
+                                 LNK-SYU-TGMONEY(12)           +
+                                 LNK-SYU-TGMONEY-TAX(12)       +
+                                 LNK-SYU-JIHI-TOTAL            +
+                                 LNK-SYU-JIHI-TOTAL-TAX        +
+                                 LNK-SYU-JIHI-TAX.
+      *
+      *    ¼«ÈñÊÝ¸±¤ÎÊä½õ¶èÊ¬¤¬²ÝÀÇ¤Î¾ì¹ç¡¢¾ÃÈñÀÇ·×»»¤ò¹Ô¤¦
+           IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" ) AND
+               ( COMB-HOJOKBN           =  "1" )
+      *
+              COMPUTE  LNK-SYU-SKYMONEY   =  LNK-SYU-SKYMONEY
+                                          *  1.05
+      *
+           END-IF.     
       *
       *    ÀÁµá¶â³Û¤Î·×»»¡ÊÏ«ºÒÊÝ¸±Å¬ÍÑ»þ¤Î±ß·ú¤Æ¹àÌÜ²Ã»»¡Ë
            IF   (WK-HKNKBN               =    "1")   AND
@@ -566,6 +579,31 @@
        GENMEN-KEISAN-SEC          SECTION.
       *
            IF   PTINF-DISCOUNT  NOT =   SPACE  AND  "00"
+      *
+               INITIALIZE                         SYS-1001-REC
+               MOVE    "1001"               TO    SYS-1001-KANRICD
+               MOVE    "*"                  TO    SYS-1001-KBNCD
+               MOVE    LNK-SYU-SRYYMD       TO    ORC-DBYMD
+               MOVE    SYS-1001-REC         TO    MCPDATA-REC
+               MOVE    "DBSELECT"           TO    MCP-FUNC
+               MOVE    "SYSKANRI-KEY"       TO    ORC-DBPATH
+               CALL    "ORCMCPSUB"    USING        MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+               IF      MCP-RC               =     ZERO
+                   MOVE     "SYSKANRI-KEY"  TO    ORC-DBPATH
+                   PERFORM   SYSKANRI-READ-SEC
+                   MOVE      SYS-1001-DISCOUNT-HASU-KBN  
+                                            TO    WK-HASU-KBN
+               END-IF
+      *
+               MOVE    "DBCLOSE"            TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY"       TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+      *
                INITIALIZE                         SYS-1026-REC
                MOVE    "1026"               TO    SYS-1026-KANRICD
                MOVE    PTINF-DISCOUNT-KBN   TO    SYS-1026-KBNCD
@@ -613,15 +651,35 @@
                                COMPUTE  WK-RATE  =  
                                         (100 - SYS-1027-DISCOUNT-RATE)
                                         /  100
-                               COMPUTE    LNK-SYU-SKYMONEY  =
-                                          LNK-SYU-SKYMONEY  *
-                                          WK-RATE
-                               COMPUTE    LNK-SYU-SKYMONEY  =
-                                          LNK-SYU-SKYMONEY  +  5
-                               COMPUTE    LNK-SYU-SKYMONEY  =
-                                          LNK-SYU-SKYMONEY  / 10
-                               COMPUTE    LNK-SYU-SKYMONEY  =
-                                          LNK-SYU-SKYMONEY  * 10
+                               EVALUATE   WK-HASU-KBN
+                                  WHEN  " "
+                                  WHEN  "1"
+                                    COMPUTE    LNK-SYU-SKYMONEY  =
+                                         (LNK-SYU-SKYMONEY * WK-RATE)
+                                                           + 5
+                                    COMPUTE    LNK-SYU-SKYMONEY  =
+                                               LNK-SYU-SKYMONEY  / 10
+                                    COMPUTE    LNK-SYU-SKYMONEY  =
+                                               LNK-SYU-SKYMONEY  * 10
+                                  WHEN  "2"
+                                    COMPUTE    LNK-SYU-SKYMONEY  =
+                                          LNK-SYU-SKYMONEY * WK-RATE
+                                    COMPUTE    LNK-SYU-SKYMONEY  =
+                                               LNK-SYU-SKYMONEY  / 10
+                                    COMPUTE    LNK-SYU-SKYMONEY  =
+                                               LNK-SYU-SKYMONEY  * 10
+                                  WHEN  "3"
+                                    COMPUTE    LNK-SYU-SKYMONEY  =
+                                         (LNK-SYU-SKYMONEY * WK-RATE)
+                                                           + 9
+                                    COMPUTE    LNK-SYU-SKYMONEY  =
+                                               LNK-SYU-SKYMONEY  / 10
+                                    COMPUTE    LNK-SYU-SKYMONEY  =
+                                               LNK-SYU-SKYMONEY  * 10
+                                  WHEN  "4"
+                                    COMPUTE    LNK-SYU-SKYMONEY  =
+                                          LNK-SYU-SKYMONEY * WK-RATE
+                               END-EVALUATE
                            WHEN  "2"
                                IF   SYS-1027-DISCOUNT-RATE >= 
                                                      LNK-SYU-SKYMONEY
@@ -636,7 +694,7 @@
                                                LNK-SYU-DISCOUNT-RATEKBN
                        MOVE   SYS-1027-TEIRITU TO
                                                LNK-SYU-DISCOUNT-TEIRITU
-                       MOVE  SYS-1027-DISCOUNT-RATE  TO
+                       MOVE   SYS-1027-DISCOUNT-RATE  TO
                                                LNK-SYU-DISCOUNT-RATE
                    END-IF
                END-IF
