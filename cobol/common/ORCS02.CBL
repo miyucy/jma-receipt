@@ -821,7 +821,7 @@
                IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
                    MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
                END-IF
-               IF  COMB-HKNNUM  =  SPACE  
+               IF  COMB-HKNNUM  =  SPACE  OR  "971"  OR  "973"
                    MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
                END-IF
            END-IF.                                               

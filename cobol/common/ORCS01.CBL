@@ -1441,7 +1441,7 @@
                IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
                    MOVE  SPACE       TO  LNK-S01-KOUREI-ZAITAKU-KBN
                END-IF
-               IF  COMB-HKNNUM  =  SPACE  
+               IF  COMB-HKNNUM  =  SPACE  OR  "971"  OR  "973"
                    MOVE  SPACE       TO  LNK-S01-KOUREI-ZAITAKU-KBN
                END-IF
            END-IF.
@@ -1495,7 +1495,7 @@
                IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
                    MOVE  SPACE       TO  FLG-KOUREI-KBN
                END-IF
-               IF  COMB-HKNNUM  =  SPACE  
+               IF  COMB-HKNNUM  =  SPACE  OR  "971"  OR  "973"
                    MOVE  SPACE       TO  FLG-KOUREI-KBN
                END-IF
            END-IF.   
