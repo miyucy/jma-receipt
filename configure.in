@@ -145,10 +145,12 @@ do
   if test -f $d/sbin/dbstub; then
     dbstub_command=$d/sbin/dbstub
     copygen_command=$d/bin/copygen
+    fdw_command=$d/bin/fdw
     break
   elif test -f $d/bin/dbstub; then
     dbstub_command=$d/bin/dbstub
     copygen_command=$d/bin/copygen
+    fdw_command=$d/bin/fdw
     break
   fi
 done
@@ -157,6 +159,7 @@ if test x$dbstub_command != x; then
   AC_MSG_RESULT(yes)
   DBSTUB=$dbstub_command
   COPYGEN=$copygen_command
+  FDW=$fdw_command
 else
   AC_MSG_RESULT(no)
   AC_MSG_ERROR(MONTSUQI(panda) not found.)
@@ -164,6 +167,7 @@ fi
 
 AC_SUBST(DBSTUB)
 AC_SUBST(COPYGEN)
+AC_SUBST(FDW)
 
 dnl Checks for libraries.
 
