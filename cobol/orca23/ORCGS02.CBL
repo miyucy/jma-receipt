@@ -4621,6 +4621,7 @@
            PERFORM 300-SYUNOU-HENSYU-SEC
       *
            INITIALIZE              SPA-GMN-INPUT
+                                   SPA-GMN-TBL-SEL
       *
            .
        490-ZENGETU-EXT.
@@ -4679,6 +4680,7 @@
       *
            PERFORM 300-SYUNOU-HENSYU-SEC
            INITIALIZE              SPA-GMN-INPUT
+                                   SPA-GMN-TBL-SEL
       *
            .
        490-JIGETU-EXT.
