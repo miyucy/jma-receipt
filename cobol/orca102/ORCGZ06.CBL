@@ -656,7 +656,7 @@
            ELSE
                MOVE    "0002"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-GMNZ6-CUR
-               GO      TO      501-YUKOSTYMDCHK-EXT
+               GO      TO      502-YUKOEDYMDCHK-EXT
            END-IF
       *
            .
