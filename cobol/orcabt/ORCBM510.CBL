@@ -68,6 +68,7 @@
            03  FLG-RECE10              PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
            03  FLG-PTKOH               PIC 9(01).
+           03  FLG-MONTHLYNUM          PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -75,7 +76,6 @@
            03  CNT-LINE                PIC 9(02).
            03  CNT-RECEDEN             PIC 9(06).
            03  CNT-RECE10              PIC 9(06).
-           03  FLG-MONTHLYNUM          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -687,7 +687,7 @@
        900-SEIKYU-SELECT-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-END
-      *     
+      *
       *    ÀÁµá´ÉÍý£Ä£Â¸¡º÷
            MOVE    SPACE               TO  RECE10-REC
            INITIALIZE                  RECE10-REC
@@ -724,9 +724,9 @@
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-END
                MOVE    MCPDATA-REC         TO  RECE10-REC
-               IF      RECE10-NYUGAIKBN    =   "1"
-                   GO  TO  900-SEIKYU-READ-SEC
-               END-IF
+      *         IF      RECE10-NYUGAIKBN    =   "1"
+      *             GO  TO  900-SEIKYU-READ-SEC
+      *         END-IF
                ADD     1                   TO  CNT-RECE10
            ELSE
                MOVE    1                   TO  FLG-END
