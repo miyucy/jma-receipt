@@ -3752,6 +3752,8 @@
                 END-IF                                                  
                END-IF                                                   
                MOVE  WK-GAIYKZFTNKBN TO  LNK-SYU-KOH-YKZFTNKBN(KOH-IDX)
+           ELSE
+               MOVE  HKN-HON-GAIKKOTGAK TO LNK-SYU-KOH-COMPFTN(KOH-IDX)
            END-IF.
            PERFORM    KOHHI-HIKAKU-SEC.
            EVALUATE   WK-GAIYKZFTNKBN
