@@ -114,6 +114,12 @@
       *    サブプロ用領域
       *****************************************************************
       *
+      *    同日再入院チェックサブ
+           COPY    "CPORCSDNTCHK.INC".
+      *
+       01  LNKNRRK-REC.
+           COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-// 
+                                       BY         //LNKNRRK-//.
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -535,14 +541,21 @@
       *****************************************************************
        2110-NISSU-HEN-SEC              SECTION.
       *
-           MOVE    PTNYUINRRK-NYUINYMD TO  WRK-STYMD
-           IF    ( PTNYUINRRK-TAIINYMD >   WRK-GETUMATUYMD )
-               MOVE    WRK-GETUMATUYMD     TO  WRK-EDYMD
-           ELSE
-               MOVE    PTNYUINRRK-TAIINYMD TO  WRK-EDYMD
-           END-IF
+           INITIALIZE                  SDNTCHK-AREA
+           MOVE    PTNYUINRRK-REC      TO      LNKNRRK-REC
+           CALL    "ORCSDNTCHK"        USING   SDNTCHK-AREA
+                                               LNKNRRK-REC
       *
-           PERFORM 2120-NYUINKIKAN-SEL-SEC
+           IF    ( SDNTCHK-STYMD   NOT =   ZERO )
+               MOVE    SDNTCHK-STYMD    TO  WRK-STYMD
+               IF    ( PTNYUINRRK-TAIINYMD >   WRK-GETUMATUYMD )
+                   MOVE    WRK-GETUMATUYMD     TO  WRK-EDYMD
+               ELSE
+                   MOVE    PTNYUINRRK-TAIINYMD TO  WRK-EDYMD
+               END-IF
+      *
+               PERFORM 2120-NYUINKIKAN-SEL-SEC
+           END-IF
       *
            .
        2110-NISSU-HEN-EXT.
