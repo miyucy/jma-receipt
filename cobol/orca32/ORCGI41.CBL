@@ -5180,14 +5180,14 @@
                        MOVE   "190075510"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "15"
                        MOVE   "190788810"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "16"
+                       MOVE   "190116310"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "20"
                        MOVE   "190076710"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "21"
                        MOVE   "190076810"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "22"
                        MOVE   "190799410"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "23"
-                       MOVE   "190116310"   TO  SYOKIKSN-IN-KHNSRYCD
              END-EVALUATE
            END-IF
       *
