@@ -2566,6 +2566,8 @@
                    IF     (LNK-WKSRY-SRYKBN(IDX)       =   "80")  AND
                           (LNK-WKSRY-SRYCD (IDX IDS)   =   "199000610")
                        ADD     TNS-TEN         TO  WRK-SYUTEN1
+      *                极清勒闻蛙么碰缄碰爬眶
+                       ADD     TNS-TEN         TO  LNK-S01-RYOYO
                    END-IF
       *
                END-PERFORM
