@@ -243,5 +243,15 @@ K03	{
 		FUKUMDS	{
 			value	varchar(20);
 		};
+		NYUKINKBN_COMB	{
+			NYUKINKBN	{
+				value	varchar(40);
+			};
+			count	int;
+			item	varchar(40)[9];
+		};
+		CHOUKAKIN	{
+			value	varchar(10);
+		};
 	};
 };
