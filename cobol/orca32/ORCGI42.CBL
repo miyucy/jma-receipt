@@ -1976,7 +1976,7 @@
                                        OR  "21"
                                        OR  "90"  OR  "92"
                                        OR  "97"
-               CONTINE
+               CONTINUE
            ELSE
       *
       *        労災の点数集計
