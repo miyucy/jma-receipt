@@ -2355,8 +2355,7 @@
        410112-INPUTCD-HENKAN-SEC      SECTION.
       *
       *    セット入力処理へ
-           IF      SPA-GMN-INPUTCD(SPA-GMN-IDX4)(1:1)
-                                           =   "S"  OR  "P"
+           IF      SPA-GMN-INPUTCD(SPA-GMN-IDX4)(1:1)   =   "S"
                PERFORM 410119-INPSET-SEC
                GO      TO      410112-INPUTCD-HENKAN-EXT
            END-IF.
@@ -2610,15 +2609,6 @@
       *****************************************************************
        410119-INPSET-SEC           SECTION.
       *
-      *    約束セット以外をエラーとする
-           IF      SPA-GMN-INPUTCD(SPA-GMN-IDX4)(1:1)   =   "S"
-               CONTINUE
-           ELSE
-               MOVE    "0005"              TO  SPA-ERRCD
-               MOVE    "1"                 TO  SPA-COM-CUR(SPA-GMN-IDX4)
-               GO      TO      410119-INPSET-EXT
-           END-IF.
-      *
       *    時間外がないこと
            IF      FLG-JKNKSN      NOT =   ZERO
                MOVE    "0010"              TO  SPA-ERRCD
@@ -2628,14 +2618,11 @@
            MOVE    1                   TO  FLG-SETSYORI.
       *
       *    約束の時、１行前に診療種別があること
-           IF      SPA-GMN-INPUTCD(SPA-GMN-IDX4)(1:1)   =   "S"
-               IF     (SPA-GMN-IDX4        =   1)   OR
-                      (SPA-GMN-INPUTCD(SPA-GMN-IDX4 - 1)(1:1)
-                                       NOT = ".")
-                   MOVE    "0048"              TO  SPA-ERRCD
-                   MOVE    "1"                 TO  SPA-COM-CUR
-                                                         (SPA-GMN-IDX4)
-               END-IF
+           IF     (SPA-GMN-IDX4        =   1)   OR
+                  (SPA-GMN-INPUTCD(SPA-GMN-IDX4 - 1)(1:1)   NOT = ".")
+               MOVE    "0048"              TO  SPA-ERRCD
+               MOVE    "1"                 TO  SPA-COM-CUR
+                                                        (SPA-GMN-IDX4)
            END-IF.
       *
       *    行オーバーの為、ＳＰＡを保存する
@@ -3741,7 +3728,7 @@
       *
            IF      WRK-INPUTCD     NOT =   SPACE
                MOVE    WRK-INPUTCD         TO  WRK-HENKAN
-               GO      TO          4101-KOUI-INPUTCD-SYORI-EXT
+               GO      TO          41011-KOUI-INPUTCD-SYORI-EXT
            END-IF.
       *
       *    入力コードの判定
@@ -3770,14 +3757,14 @@
            END-IF.
       *    診療種別
            IF      WRK-HENKAN(1:1)   =   "."
-               GO      TO      4101-KOUI-INPUTCD-SYORI-EXT
+               GO      TO      41011-KOUI-INPUTCD-SYORI-EXT
            END-IF.
       *
       *    入力コード文字列調査処理
            PERFORM 4101-KOUI-INPUTCD-CHOSA-SEC.
            MOVE    WRK-INPUTCD         TO  WRK-HENKAN.
            IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4101-KOUI-INPUTCD-SYORI-EXT
+               GO      TO      41011-KOUI-INPUTCD-SYORI-EXT
            END-IF.
       *
       *    入力コード変更時、点数マスタの決定
@@ -3785,7 +3772,7 @@
                PERFORM 4101-KOUI-INPUTCD-KENSAKU-SEC
            END-IF.
       *
-       4101-KOUI-INPUTCD-SYORI-EXT.
+       41011-KOUI-INPUTCD-SYORI-EXT.
            EXIT.
       *
       *****************************************************************

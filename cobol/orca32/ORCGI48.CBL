@@ -314,7 +314,12 @@
            MOVE    SPACE               TO  WRK-WIDGET-SW.
       *
            IF       SPA-I48-TYPE         =   "1"
-               PERFORM 3101-INPUTCD-SET-SEC
+               IF      SPA-I48-GMN-INPUT(1:1)  =   "P"  OR  "S"
+                   MOVE    1                   TO  SPA-GMN-CUR4
+                   MOVE    "0001"              TO  SPA-ERRCD
+               ELSE
+                   PERFORM 3101-INPUTCD-SET-SEC
+               END-IF
            END-IF.
            IF     (SPA-I48-GMN-MAX     =   ZERO  )  AND
                   ((SPA-I48-CDSYUBETU   =   "J"   )  OR
@@ -350,10 +355,6 @@
        3101-INPUTCD-SET-SEC            SECTION.
       *
            MOVE    ZERO                TO  WRK-CNT-ENT.
-      *    セットの時、種別コードは６とする
-           IF      SPA-I48-GMN-INPUT(1:1)  =   "P"  OR  "S"
-               MOVE    "6"                 TO  SPA-I48-CDSYUBETU
-           END-IF.
       *
       *    入力コードの桁数計算
            MOVE    ZERO                TO  WRK-KETA.
@@ -390,23 +391,14 @@
            END-IF.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-               UNTIL      (IDX             >   200 )   OR
-                          (FLG-INPUTCD     =   1   )
+                   UNTIL      (IDX             >   200 )   OR
+                              (FLG-INPUTCD     =   1   )
       *
                PERFORM 31011-INPUTCD-CHK-SEC
                IF      FLG-OK              =   1
-                   IF     (ICD-DSPNAME     NOT =   SPACE )  AND
-                          (ICD-SRYCD(1:1)      =   "S"  OR  "P")
-      *
-                       ADD     1               TO  WRK-CNT-ENT
-                       MOVE    IDX             TO  SPA-I48-GMN-NO
-                                                                  (IDX)
-                       MOVE    ICD-INPUTCD     TO  SPA-I48-GMN-INPUTCD
-                                                                  (IDX)
-                       MOVE    ICD-SRYCD       TO  SPA-I48-GMN-SRYCD
-                                                                  (IDX)
-                       MOVE    ICD-DSPNAME     TO  SPA-I48-GMN-NAME
-                                                                  (IDX)
+                   IF      ICD-SRYCD(1:1)      =   "S"  OR  "P"
+                       MOVE    "0001"          TO  SPA-ERRCD
+                       MOVE    1               TO  FLG-INPUTCD
                    ELSE
       *                点数マスタより編集
                        INITIALIZE              TNS-TENSU-REC
@@ -534,7 +526,7 @@
       *        自院分のみ
                    MOVE    "TENSU-KEY7J"        TO  WRK-PATH
                ELSE
-                   MOVE    "TENSU-KEY7"        TO  WRK-PATH
+                   MOVE    "TENSU-KEY7"         TO  WRK-PATH
                END-IF
            END-IF.
       *
@@ -551,6 +543,14 @@
                    MOVE    ZERO                TO  SPA-I48-GMN-MAX
                    GO      TO      3102-TENSU-SET-EXT
                END-IF
+           END-IF.
+      *
+           IF      WRK-INPUTCD(1:2)   =   "//"
+               MOVE    "TENSU-KEY10M"       TO  WRK-PATH
+               MOVE    "100000000"          TO  TNS-SRYCD
+               MOVE    "899999999"          TO  TNSUP-SRYCD
+               MOVE    "90"                 TO  TNSXX-STSRYKBN
+               MOVE    "99"                 TO  TNSXX-EDSRYKBN
            END-IF.
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC.
@@ -819,9 +819,6 @@
            IF     (SPA-I48-TYPE        =   "1" )  AND
                   (SPA-I48-CDSYUBETU   =   "6" )
                MOVE    SPACE               TO  SPA-I48-GMN-SYORI
-               IF      SPA-I48-GMN-INPUT(1:1)  =   "P"  OR  "S"
-                   MOVE    "P"                 TO  SPA-I48-GMN-SYORI
-               END-IF
            END-IF.
            IF     (SPA-I48-TYPE        =   "1" )  AND
                   (SPA-I48-CDSYUBETU   =   "A" )
@@ -838,9 +835,6 @@
                        MOVE    "診療行為（全体）" 
                                                TO  I48-SENTAKU
                    END-IF
-      *        セット
-               WHEN    "P"
-                   MOVE    "セット"            TO  I48-SENTAKU
       *        ユーザー登録
                WHEN    "U"
                    EVALUATE    SPA-I48-GMN-SYORI3
@@ -886,21 +880,9 @@
                END-IF
       *
                MOVE    SPA-I48-GMN-NAME (IDX)  TO  I48-NAME (IDX)
-               IF    ((SPA-I48-GMN-KISOTEN(IDX)    =   ZERO  )  AND
-                      (SPA-I48-GMN-SRYCD(IDX)(1:1) =   "S" OR "P")) OR
-                     ((SPA-I48-GMN-SYORI           =   "9"   )  AND
-                      (SPA-I48-GMN-SYORI2          =   SPACE ))
-      *            セット一覧の時、セットコードを単価へ
-                   IF      SPA-I48-GMN-SRYCD (IDX)(1:1)
-                                                   =   "P" OR "S"
-                        MOVE    SPA-I48-GMN-SRYCD (IDX)
-                                               TO  I48-KISOTEN (IDX)
-                   END-IF
-               ELSE
-                   MOVE    SPA-I48-GMN-KISOTEN(IDX)
+               MOVE    SPA-I48-GMN-KISOTEN(IDX)
                                                TO  WRK-TENSUS
-                   MOVE    WRK-TENSUS          TO  I48-KISOTEN (IDX)
-               END-IF
+               MOVE    WRK-TENSUS              TO  I48-KISOTEN (IDX)
       *
                MOVE    SPA-I48-GMN-TANI (IDX)  TO  I48-TANI (IDX)
            END-PERFORM.
@@ -1063,10 +1045,9 @@
                MOVE    SPACE               TO  SPA-I48-GMN-ALL
       *        半角入力（入力セットマスタより）
                MOVE    "1"                 TO  SPA-I48-TYPE
-      *       全桁数字、”Ｐ、Ｓ”で始まるものは、コード種別を桁数で決定
+      *
                MOVE    SPACE               TO  SPA-I48-GMN-SYORI
-               IF     (SPA-I48-GMN-INPUT(1:WRK-MOJI)   NUMERIC)  OR
-                      (SPA-I48-GMN-INPUT(1:1) =   "P"  OR "S")
+               IF     SPA-I48-GMN-INPUT(1:WRK-MOJI)   NUMERIC
                    EVALUATE    WRK-MOJI
                        WHEN    4
                            MOVE    "4"         TO  SPA-I48-CDSYUBETU
