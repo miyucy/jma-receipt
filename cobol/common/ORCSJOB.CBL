@@ -513,6 +513,7 @@
        900-DBCOMMIT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           MOVE    LOW-VALUE           TO  MCP-PATH.
            CALL    "MCPSUB"          USING
                                         MCPAREA
                                         MCPDATA-REC.
@@ -527,6 +528,7 @@
        900-DBSTART-SEC                SECTION.
       *
            MOVE    "DBSTART"           TO  MCP-FUNC.
+           MOVE    LOW-VALUE           TO  MCP-PATH.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -540,11 +542,13 @@
        900-DBRECONNECT-SEC             SECTION.
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           MOVE    LOW-VALUE           TO  MCP-PATH.
            CALL    "MCPSUB"            USING
                                        MCPAREA
                                        MCPDATA-REC.
       *
            MOVE    "DBSTART"           TO  MCP-FUNC.
+           MOVE    LOW-VALUE           TO  MCP-PATH.
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA

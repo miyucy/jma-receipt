@@ -187,6 +187,7 @@
       *
            DISPLAY "START"
            MOVE    "DBSTART"           TO  MCP-FUNC.
+           MOVE    LOW-VALUE           TO  MCP-PATH.
            CALL    "MCPSUB"            USING
                                         MCPAREA
                                         MCPDATA-REC.
@@ -200,6 +201,7 @@
        900-DBDISCONNECT-SEC            SECTION.
       *
            MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           MOVE    LOW-VALUE           TO  MCP-PATH.
            CALL    "MCPSUB"             USING
                                         MCPAREA
                                         MCPDATA-REC.
