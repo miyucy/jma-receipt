@@ -410,6 +410,12 @@
                PERFORM 940-WKSINKOUI-READ-SEC
            END-PERFORM
       *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        310-SPA-SET-EXT.
@@ -483,6 +489,12 @@
                MOVE    1               TO  FLG-HKNCOMBI
                INITIALIZE                  HKNCOMBI-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF      FLG-HKNCOMBI        =   1
                MOVE    WKSRY-HKNCOMBI     TO  SPA-K10-GMN-HKNCOMBI
@@ -563,6 +575,12 @@
                INITIALIZE                  SYS-1010-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
                MOVE    SYS-1010-NAME       TO  SPA-K10-GMN-DRCD-NAME
@@ -967,6 +985,12 @@
                MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
                PERFORM 940-WKSINKOUI-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "WKSRYACT-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    
            MOVE    SPA-K10-SELNUM      TO  IDY
@@ -1252,11 +1276,12 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        900-PTINF-READ-EXT.

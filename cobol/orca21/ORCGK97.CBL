@@ -731,6 +731,12 @@
                    PERFORM 900-UKETUKE-READ-SEC
                END-IF
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            MOVE    SPACE               TO  SPA-K97-SELNUM3
            IF      WRK-DRCD            =   SPACE

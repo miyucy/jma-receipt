@@ -486,6 +486,12 @@
            ELSE
                MOVE    1                   TO  FLG-INPUTSET
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "INPUTSET-KEY4"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      FLG-INPUTSET        =   1
       *        ÂÐ¾Ý¤Ê¤·
                MOVE    "0003"              TO  SPA-ERRCD

@@ -681,11 +681,13 @@
                PERFORM                     910-TENSU-READ-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    WRK-PATH            TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            MOVE    WRK-CNT-ENT         TO  SPA-K98-GMN-MAX
       *
@@ -1078,11 +1080,12 @@
                PERFORM                     910-TENSU-READ-SEC
            END-PERFORM
       *
-      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    WRK-PATH            TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            MOVE    WRK-CNT-ENT         TO  SPA-K98-GMN-MAX
       *
@@ -1264,6 +1267,12 @@
                    MOVE    WRK-PATH            TO  ORC-DBPATH
                    PERFORM                     910-TENSU-READ-SEC
                END-PERFORM
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    WRK-PATH            TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
            END-PERFORM
       *
            MOVE    WRK-CNT-ENT         TO  SPA-K98-GMN-MAX

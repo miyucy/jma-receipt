@@ -583,6 +583,12 @@
                MOVE    1               TO  FLG-HKNCOMBI
                INITIALIZE                  HKNCOMBI-REC
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            MOVE    SPACE               TO  WRK-HKNCOMBIMEI
            STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
@@ -630,6 +636,12 @@
                    INITIALIZE                      PTRSIINF-REC
                    MOVE    1                   TO  FLG-PTRSIINF
                END-IF
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                MOVE    SPACE               TO  WRK-HKNKBN-MEI
                EVALUATE    PTRSI-HKNKBN
                    WHEN    "1"
