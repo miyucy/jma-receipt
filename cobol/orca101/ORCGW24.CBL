@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  00.00.01    NACL-太田    03.01.24  入院診療計画未実施減算を
       *                                     画面から削除
+      *  00.00.02    NACL-太田    03.03.05  入院歴表示区分を追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -407,6 +408,9 @@
       *    地域加算コンボ
            PERFORM 310-CMB-CHIIKIKSN-SET-SEC
       *
+      *    入院歴表示コンボ
+           PERFORM 310-CMB-REKI-DISPKBN-SET-SEC
+      *
            .
        310-CMB-SYOKI-EXT.
            EXIT.
@@ -540,6 +544,22 @@
        310-CMB-CHIIKIKSN-SET-EXT.
            EXIT.
       *****************************************************************
+      *    入院歴表示コンボ
+      *****************************************************************
+       310-CMB-REKI-DISPKBN-SET-SEC    SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-REKI-DISPKBN-CNT
+      *
+           MOVE    "1 入院時の歴を表示" 
+                                   TO  SPA-GMN-W24-REKI-DISPKBN-ITM (1)
+      *
+           MOVE    "2 最新の歴を表示"
+                                   TO  SPA-GMN-W24-REKI-DISPKBN-ITM (2)
+      *
+           .
+       310-CMB-REKI-DISPKBN-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    入力情報編集処理
       *****************************************************************
        310-INPUT-AREA-EDIT-SEC     SECTION.
@@ -633,6 +653,17 @@
                END-IF
       *
            END-PERFORM
+      *
+      *    入院歴表示区分
+           MOVE    SYS-5000-REKI-DISPKBN   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-REKI-DISPKBN-SRH-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-W24-REKI-DISPKBN
+           ELSE
+               MOVE    SPA-GMN-W24-REKI-DISPKBN-ITM (1)
+                                           TO  SPA-GMN-W24-REKI-DISPKBN
+           END-IF
+      *
       *
            .
        310-INPUT-AREA-EDIT-EXT.
@@ -839,6 +870,9 @@
       *    地域加算
            MOVE    W24-CHIIKIKSN       TO  SPA-GMN-W24-CHIIKIKSN
       *
+      *    入院歴表示区分
+           MOVE    W24-REKI-DISPKBN    TO  SPA-GMN-W24-REKI-DISPKBN
+      *
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -921,6 +955,12 @@
                    GO  TO  4102-KIHON-CHK-EXT
                END-IF
            END-PERFORM
+      *
+      *    入院歴表示区分チェック処理
+           PERFORM 4100-REKI-DISPKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
       *
            .
       *
@@ -1219,6 +1259,10 @@
                MOVE    SPA-GMN-W24-SRYCD (IDX1)
                                    TO  SYS-5000-DSPCD (IDX1)
            END-PERFORM
+      *
+      *    入院歴表示区分
+           MOVE    SPA-GMN-W24-REKI-DISPKBN-CD
+                                   TO  SYS-5000-REKI-DISPKBN
       *
            .
       *
@@ -1821,6 +1865,30 @@
        4010-SRYCD-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    入院歴表示チェック処理
+      *****************************************************************
+       4100-REKI-DISPKBN-CHK-SEC       SECTION.
+      *
+           IF    ( SPA-GMN-W24-REKI-DISPKBN =   SPACE )
+               GO  TO  4100-REKI-DISPKBN-CHK-EXT
+           END-IF
+      *
+      *    該当コードのデータが存在するかチェック
+           MOVE    SPA-GMN-W24-REKI-DISPKBN-CD
+                                       TO  WRK-CMB-CD
+           PERFORM 4103-CMB-REKI-DISPKBN-SRH-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-REKI-DISPKBN
+           ELSE
+               MOVE    SPA-GMN-W24-REKI-DISPKBN-ITM (1)
+                                       TO  SPA-GMN-W24-REKI-DISPKBN
+           END-IF
+      *
+           .
+      *
+       4100-REKI-DISPKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入院時食事療養サーチ処理
       *****************************************************************
        4103-CMB-SK-NYUSYOKU-SRH-SEC    SECTION.
@@ -2029,6 +2097,32 @@
        4103-CMB-CHIIKIKSN-SRH-EXT.
            EXIT.
       *****************************************************************
+      *    入院歴表示区分サーチ処理
+      *****************************************************************
+       4103-CMB-REKI-DISPKBN-SRH-SEC   SECTION.
+      *
+           SET     CMB-IDX09       TO  1
+           SEARCH  SPA-GMN-W24-REKI-DISPKBN-ITM
+                   VARYING CMB-IDX09
+           AT  END
+               INITIALIZE          WRK-CMB-ITM
+                                   WRK-CMB-IDX
+           WHEN    SPA-GMN-W24-REKI-DISPKBN-ITM (CMB-IDX09) (1 : 1)
+                                   =   WRK-CMB-CD
+               SET WRK-CMB-IDX     TO  CMB-IDX09
+               MOVE    SPA-GMN-W24-REKI-DISPKBN-ITM (CMB-IDX09)
+                                   TO  WRK-CMB-ITM
+           WHEN    SPA-GMN-W24-REKI-DISPKBN-ITM (CMB-IDX09)
+                                   =   SPACE
+               INITIALIZE          WRK-CMB-ITM
+                                   WRK-CMB-IDX
+           END-SEARCH
+      *
+           .
+      *
+       4103-CMB-REKI-DISPKBN-SRH-EXT.
+           EXIT.
+      *****************************************************************
       *    入力情報領域初期化処理
       *****************************************************************
        4201-INPUT-AREA-CLEAR-SEC       SECTION.
@@ -2211,10 +2305,10 @@
       *
       *    重複して診療行為コードが設定されていないこと
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   19 )
+                   UNTIL ( IDX1    >   9 )
                IF    ( SPA-GMN-W24-SRYCD (IDX1)    NOT =   SPACE )
                    COMPUTE IDX3    =   IDX1    +   1
-                   PERFORM VARYING IDX2    FROM    20      BY  -1
+                   PERFORM VARYING IDX2    FROM    10      BY  -1
                            UNTIL ( IDX2    <   IDX3 )
                        IF    ( SPA-GMN-W24-SRYCD (IDX1)
                                            = SPA-GMN-W24-SRYCD (IDX2))
@@ -2390,6 +2484,19 @@
       *
            END-PERFORM
       *
+      *    入院歴表示区分
+           MOVE    SPA-GMN-W24-REKI-DISPKBN
+                                   TO  W24-REKI-DISPKBN
+           MOVE    SPA-GMN-W24-REKI-DISPKBN-CNT
+                                   TO  W24-REKI-DISPKBN-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   W24-REKI-DISPKBN-CNT )
+      *
+               MOVE    SPA-GMN-W24-REKI-DISPKBN-ITM (IDX1)
+                                   TO  W24-REKI-DISPKBN-ITM (IDX1)
+      *
+           END-PERFORM
+      *
       *    項目状態編集
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
       *
@@ -2556,6 +2663,8 @@
                MOVE    "SRYCD09"       TO  MCP-WIDGET
            WHEN    038
                MOVE    "SRYCD10"       TO  MCP-WIDGET
+           WHEN    039
+               MOVE    "REKI_DISPKBN"  TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -2646,13 +2755,15 @@
                MOVE    037             TO  SPA-GMN-W24-CUR
            WHEN    "SRYCD10"
                MOVE    038             TO  SPA-GMN-W24-CUR
+           WHEN    "REKI_DISPKBN"
+               MOVE    039             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *
       *    次カーソル位置を設定
            EVALUATE    MCP-WIDGET
            WHEN    "SK_SYOKUDO"
                MOVE    005             TO  SPA-GMN-W24-CUR
-           WHEN    "SRYCD10"
+           WHEN    "REKI_DISPKBN"
                MOVE    212             TO  SPA-GMN-W24-CUR
            WHEN    OTHER
                COMPUTE SPA-GMN-W24-CUR =   SPA-GMN-W24-CUR
