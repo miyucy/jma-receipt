@@ -513,9 +513,6 @@
       *
            CLOSE   RECE30-FILE
       *
-      *???
-           DISPLAY "CNT=" CNT-RECEDEN "#"
-      *???
            IF      CNT-RECEDEN         =   ZERO
                MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-RECEERR
