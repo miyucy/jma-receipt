@@ -70,6 +70,8 @@
       *  01.00.24    NACL-藤原    04/01/19  病床数の記載の修正
       *  01.00.25    NACL-藤原    04/01/20  老人減免区分コードの修正
       *  01.00.26    NACL-藤原    04/02/01  病名コード２１に変更
+      *  01.00.27    NACL-藤原    04/02/05  特記事項のカスタマイズ項目
+      *                                     の編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -108,6 +110,12 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE09-KEY
                                    FILE    STATUS  IS  STS-RECE09.
+      *    レセプト（県単用項目）データ
+           SELECT  RECE11-FILE     ASSIGN  RECE11PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE11-KEY
+                                   FILE    STATUS  IS  STS-RECE11.
       *    レセプト電算ファイル  
            SELECT  RECE30-FILE     ASSIGN  "/var/tmp/RECE300.dat"
                                    ORGANIZATION    IS  LINE
@@ -146,6 +154,11 @@
        01  RECE09-REC. 
            COPY    "CPRCF009.INC".
       *
+      *    レセプト（県単用項目）データ
+       FD  RECE11-FILE.
+       01  RECE11-REC. 
+           COPY    "CPRCF011.INC".
+      *
       *    レセプト電算ファイル  
        FD  RECE30-FILE.
        01  RECE30-R         PIC X(200).
@@ -178,6 +191,10 @@
                                    REPLACING  //RECE01//
                                    BY         //RECE09//.
       *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE11//.
+      *
       *     レセプト電算ファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01//
@@ -198,6 +215,7 @@
            03  STS-RECE04              PIC X(02).
            03  STS-RECE05              PIC X(02).
            03  STS-RECE09              PIC X(02).
+           03  STS-RECE11              PIC X(02).
            03  STS-RECEERR             PIC X(02).
       *
        01  FLG-AREA.
@@ -215,6 +233,7 @@
            03  FLG-RECE04              PIC 9(01).
            03  FLG-RECE05              PIC 9(01).
            03  FLG-RECE09              PIC 9(01).
+           03  FLG-RECE11              PIC 9(01).
       *
            03  FLG-TEIGEN              PIC 9(01).
            03  FLG-YKZ20               PIC 9(01).
@@ -707,6 +726,9 @@
            MOVE    "RECE090"           TO  RECE09PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE09PARA-TERMID
       *
+           MOVE    "RECE110"           TO  RECE11PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE11PARA-TERMID
+      *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
@@ -721,6 +743,8 @@
            OPEN    I-O                RECE05-FILE  
       *
            OPEN    INPUT               RECE09-FILE
+      *
+           OPEN    INPUT               RECE11-FILE
       * 
            IF      FLG-END             =   ZERO
       *
@@ -841,6 +865,9 @@
            MOVE    KEY-NEW         TO  KEY-OLD
            PERFORM                 UNTIL   FLG-END     =   1
                                    OR      KEY-NEW NOT =   KEY-OLD
+      *
+      *        県単用項目ファイル読込処理
+               PERFORM 301-RECE11-HENSYU-SEC
       *
                MOVE    ZERO               TO  WRK-RENNUM
       *
@@ -967,7 +994,25 @@
       *    一部負担金・食事療養費標準負担額区分
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    特記事項
-               MOVE    1               TO  IDZ                  
+           IF      FLG-RECE11          =   ZERO
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       5
+                   IF      RECE11-TOKKI (IDX)  NOT =   SPACE
+                       PERFORM VARYING IDZ FROM    1   BY  1
+                               UNTIL   IDZ >       5
+                           IF      RECE02-TOKKI (IDZ)  =   SPACE
+                               MOVE    RECE11-TOKKI (IDX)
+                                               TO  RECE02-TOKKI (IDZ)
+                           END-IF
+                           IF      RECE11-TOKKI (IDX)
+                                               =   RECE02-TOKKI (IDZ)      
+                               MOVE    5       TO  IDZ
+                           END-IF
+                       END-PERFORM
+                   END-IF
+               END-PERFORM
+           END-IF 
+           MOVE    1               TO  IDZ                  
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       5
                MOVE    RECE02-TOKKI (IDX)  TO  WRK-DATA (IDZ:2)
@@ -2787,6 +2832,18 @@
            EXIT.
       *
       *****************************************************************
+      *    県単用項目ファイル読込処理
+      *****************************************************************
+       301-RECE11-HENSYU-SEC           SECTION.
+      *       
+           INITIALIZE                      RECE11-REC
+           MOVE    RECE02-KEY          TO  RECE11-KEY
+           PERFORM 990-RECE11-READ-SEC
+           .
+       301-RECE11-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    患者番号別保険履歴情報編集処理
       *****************************************************************
        2001-RIREKI-HEN-SEC      SECTION.
@@ -3147,6 +3204,7 @@
                    RECE041-FILE
                    RECE05-FILE
                    RECE09-FILE
+                   RECE11-FILE
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -3808,6 +3866,22 @@
       *
            .
        990-RECE09-NEXT-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    レセプト１１データ読み
+      ****************************************************************
+       990-RECE11-READ-SEC           SECTION.
+      *
+           READ    RECE11-FILE
+               INVALID
+                   MOVE    1           TO  FLG-RECE11
+               NOT INVALID
+                   MOVE    ZERO        TO  FLG-RECE11
+           END-READ
+      *
+           .
+       990-RECE11-READ-EXT.
            EXIT.
       *      
       *****************************************************************
