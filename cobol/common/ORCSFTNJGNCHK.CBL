@@ -87,13 +87,9 @@
        LINKAGE                     SECTION.
       *
            COPY    "CPORCSFTNJGNCHK.INC".
-      *    スパ領域
-           COPY    "COMMON-SPA".
-      *
       *
        PROCEDURE                    DIVISION    USING
-           ORCSFTNJGNCHKAREA
-           SPA-AREA.
+           ORCSFTNJGNCHKAREA.
       *
       *****************************************************************
       *    主　　処理
