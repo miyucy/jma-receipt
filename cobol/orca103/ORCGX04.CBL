@@ -1648,8 +1648,12 @@
       *
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   CONST-MKCD-MAX )
+                        OR   ( USBYO-BYOMEICD (IDX0)   =   "9999999" )
+                        OR   ( USBYO-BYOMEICD (IDX0)   =   SPACE )
+      *
                    MOVE    USBYO-BYOMEICD (IDX0)
-                           TO  SPA-NAI-TSRCBYOCD(IDX1 IDX0)
+                                   TO  SPA-NAI-TSRCBYOCD(IDX1 IDX0)
+      *
                END-PERFORM
       *
                PERFORM 900-USERBYOMEI-KEY10-FET-SEC

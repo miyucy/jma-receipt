@@ -523,9 +523,10 @@
                MOVE    USBYO-BYOMEI    TO  WRK-USBYOMEI
                PERFORM VARYING IDX4    FROM    1   BY  1
                        UNTIL ( IDX4    >   CONST-MKCD-MAX )
+                        OR   ( USBYO-BYOMEICD (IDX4)  =   "9999999" )
                         OR   ( USBYO-BYOMEICD (IDX4)  =  SPACE )
                    IF    ( USBYO-BYOMEICD (IDX4)  =   CONST-MICODE )
-                       MOVE    1       TO  FLG-HENSYU
+                       MOVE    1   TO  FLG-HENSYU
                    ELSE
                        MOVE    USBYO-BYOMEICD (IDX4)
                                        TO  WRK-RECECD
