@@ -12,7 +12,7 @@ clean:
 
 distclean: 
 	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i distclean; done
-	-rm -f Makefile
+	-rm -f Makefile Makefile.directories
 	-rm -f config.cache config.log config.status
 
 VERSION=@VERSION@
