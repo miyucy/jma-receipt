@@ -7224,8 +7224,13 @@
                                        TO   LNK-SCNYUACCT-EDSRYYMD
            MOVE    SYOKIKSN-IN-KHNSRYCD
                             TO   LNK-SCNYUACCT-NYUKHN-SRYCD(1)
-           MOVE    SYOKIKSN-IN-SANTEISTYMD
-                            TO   LNK-SCNYUACCT-STSRYYMD
+      *退院日からの会計再作成に変更 ---------------------------------
+      **     MOVE    SYOKIKSN-IN-SANTEISTYMD
+      **                      TO   LNK-SCNYUACCT-STSRYYMD
+           MOVE     SPA-NAI-I01-TAIINYMD
+                                       TO   LNK-SCNYUACCT-STSRYYMD
+      *--------------------------------------------------------------
+      *
            PERFORM   VARYING   IDX6   FROM   1   BY   1
                UNTIL (SYOKIKSN-OT-KGNSRYCD(IDX6)  =  SPACE) OR
                      (IDX6   >     7)
