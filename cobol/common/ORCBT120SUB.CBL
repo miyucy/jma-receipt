@@ -652,9 +652,22 @@
            COMPUTE  LNK-ORCBT120SUB-SKJ-TAX (SYU-IDX)
                                        =   SYU-SKYMONEY-SKJ-TAX
                                        +   SYU-SKYMONEY-SKJ-JIHI-TAX
+      *    ººŒ¡∫π≥€
+           COMPUTE  LNK-ORCBT120SUB-RMSAGAKU (SYU-IDX)
+                                       =   SYU-RMSAGAKU
+                                       -   SYU-RMSAGAKU-TAX-SAI
+      *    ººŒ¡∫π≥€¿«≥€
+           MOVE     SYU-RMSAGAKU-TAX-SAI   TO  
+                                LNK-ORCBT120SUB-RMSAGAKU-TAX (SYU-IDX)
       *    ¿¡µ·∂‚≥€
            MOVE    SYU-SKYMONEY        TO  LNK-ORCBT120SUB-SKYMONEY
                                                            (SYU-IDX)
+      *    œ´∫“°øº´«Â¿’§¨§¢§ÎæÏπÁ§Œ¿¡µ·≥€
+           IF      SYU-RSIJIBAI-SKYMONEY   NOT =  ZERO
+               MOVE   SYU-RSIJIBAI-SKYMONEY
+                                       TO  LNK-ORCBT120SUB-SKYMONEY
+                                                           (SYU-IDX)
+           END-IF
       *
       *     ›∏±¡»πÁ§ª»÷πÊ
            MOVE    SYU-HKNCOMBINUM     TO  WRK-HKNCOMBINUM-X

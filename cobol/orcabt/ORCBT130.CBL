@@ -428,6 +428,15 @@
            MOVE    TOUKEI04-SKJ-TAX    TO  WRK-NUM
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
+      *    ººŒ¡∫π≥€
+           MOVE    TOUKEI04-RMSAGAKU   TO  WRK-NUM
+           MOVE    7                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
+      *    ººŒ¡∫π≥€¿«≥€
+           MOVE    TOUKEI04-RMSAGAKU-TAX
+                                       TO  WRK-NUM
+           MOVE    7                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC    
       *    ¿¡µ·∂‚≥€
            MOVE    TOUKEI04-SKYMONEY   TO  WRK-NUM
            MOVE    7                   TO  WRK-NAGASA

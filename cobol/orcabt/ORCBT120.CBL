@@ -579,6 +579,12 @@
       *    æ√»Ò¿«≥€
            MOVE    LNK-ORCBT120SUB-SKJ-TAX(IDX)
                                        TO  TOUKEI04-SKJ-TAX
+      *    ººŒ¡∫π≥€
+           MOVE    LNK-ORCBT120SUB-RMSAGAKU(IDX)
+                                       TO  TOUKEI04-RMSAGAKU
+      *    ººŒ¡∫π≥€¿«≥€
+           MOVE    LNK-ORCBT120SUB-RMSAGAKU-TAX(IDX)
+                                       TO  TOUKEI04-RMSAGAKU-TAX
       *    ¿¡µ·∂‚≥€
            MOVE    LNK-ORCBT120SUB-SKYMONEY(IDX)
                                        TO  TOUKEI04-SKYMONEY

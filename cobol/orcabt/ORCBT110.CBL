@@ -1189,6 +1189,10 @@
            MOVE    SYU-JIHI-TAX        TO  TOUKEI04-JIHI-TAX
       *    ÀÁµá¶â³Û
            MOVE    SYU-SKYMONEY        TO  TOUKEI04-SKYMONEY
+      *    Ï«ºÒ¡¿¼«ÇåÀÕ¤¬¤¢¤ë¾ì¹ç¤ÎÀÁµá³Û
+           IF      SYU-RSIJIBAI-SKYMONEY   NOT =  ZERO
+               MOVE   SYU-RSIJIBAI-SKYMONEY  TO  TOUKEI04-SKYMONEY
+           END-IF
            .
        20026-SYUNOU-HENSYU-EXT.
            EXIT.
