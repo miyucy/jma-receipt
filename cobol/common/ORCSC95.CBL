@@ -2952,10 +2952,16 @@
            IF      WRK-ZAINUM      NOT =   SRY-ZAINUM
                MOVE    ZERO                TO  IDX-KAI
       *
-      *        対象分の合計点数計算
-               COMPUTE WRK-GOK-TENSU       =   WRK-GOK-TENSU
-                                           +  (ACCT-ZAITEN
-                                           *   WRK-ZAIKAISU )
+               IF     (ACCT-ZAITEN         =   ZERO )  OR
+                      (WRK-ZAIKAISU        =   ZERO )  OR
+                      (ACCT-SRYKBN         =   "95" OR "96")
+                   CONTINUE
+               ELSE
+      *            対象分の合計点数計算
+                   COMPUTE WRK-GOK-TENSU       =   WRK-GOK-TENSU
+                                               +  (ACCT-ZAITEN
+                                               *   WRK-ZAIKAISU )
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  WKSRYACT-REC
