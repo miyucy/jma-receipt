@@ -36,6 +36,7 @@
       *                                     コードを検索するように修正
       *  01.00.06    MCC−多々納  02/04/11  労災追加
       *  01.00.07    NACL−多々納 02/08/20  検査グループ変更
+      *  01.00.08    NACL−多々納 02/11/05  一括入力へ変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -73,6 +74,8 @@
       *
            03  FLG-SYURYOU         PIC 9(01).
            03  FLG-MAX             PIC 9(01).
+      *
+           03  FLG-HENSYU          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -1484,7 +1487,8 @@
                WHEN    "ACTIVATE"      ALSO    "SELNUM4"
                WHEN    "ACTIVATE"      ALSO    "SELNUM5"
                    MOVE    MCP-WIDGET(7:1)     TO  IDX-1
-                   PERFORM 41011-SELNUM-CHK-SEC
+      ************ PERFORM 41011-SELNUM-CHK-SEC
+                   PERFORM 41011-SELNUM-ALLCHK-SEC
       *        行選択
                WHEN    ANY             ALSO    "LIST"
                    PERFORM 41012-LISTSEL-SEC
@@ -1615,6 +1619,23 @@
            EXIT.
       *
       *****************************************************************
+      *    番号選択　処理（全体）
+      *****************************************************************
+       41011-SELNUM-ALLCHK-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HENSYU
+           PERFORM VARYING     IDX-1   FROM   1   BY   1
+                   UNTIL      (IDX-1       >   5  )  OR
+                              (FLG-HENSYU  =   1  )
+               PERFORM 41011-SELNUM-CHK-SEC
+           END-PERFORM
+      *
+           .
+       41011-SELNUM-ALLCHK-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    番号選択　処理
       *****************************************************************
        41011-SELNUM-CHK-SEC                SECTION.
@@ -1642,6 +1663,7 @@
                        MOVE    ZERO                TO  SPA-J98-NEXT
                        PERFORM                     310-SPA-SET-SEC
                    END-IF
+                   MOVE    1               TO  FLG-HENSYU
                    GO      TO      41011-SELNUM-CHK-EXT
                END-IF
            END-IF
@@ -1675,8 +1697,8 @@
       *********IF      SPA-J98-NAI-NO (IDX)    =   SPA-J98-NAI-SELNUM
                IF      SPA-J98-NAI-NO (IDX)    =   SPA-J98-NAI-SELNUM
                                                             (IDX-1)
-                   MOVE    IDX             TO  WRK-SELNO
-                   MOVE    200             TO  IDX
+                   MOVE    IDX                 TO  WRK-SELNO
+                   MOVE    SPA-J98-GMN-MAX     TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1684,6 +1706,7 @@
            IF      SPA-J98-GMN-SYORI   =   "9"
                IF      SPA-J98-GMN-SYORI2  =   SPACE
                    PERFORM 41013-KENSA-GRP-SEC
+                   MOVE    1               TO  FLG-HENSYU
                ELSE
                    PERFORM 41014-KENSA-SEL-SEC
                END-IF
