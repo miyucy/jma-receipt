@@ -20,8 +20,8 @@
        PROGRAM-ID.             ORCR0500.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : 月次帳票（労災・自賠責）
-      *  コンポーネント名  : 労災・自賠責レセプト帳票ＤＢの印刷
+      *  サブシステム名    : 月次帳票
+      *  コンポーネント名  : 労災レセプト帳票ＤＢの印刷
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC-藤原      新規作成
@@ -307,29 +307,30 @@
        2001-RECEPRT-PRINT-SEC          SECTION.
       * 
            MOVE    SPACE               TO  PRT-REC 
-           EVALUATE    RECE08-RECESYUBETU
+           EVALUATE    RECE08-RECESYUBETU  ALSO    RECE08-PRTID  
       *        短期給付             
-               WHEN    "7071"
-               WHEN    "7072"
-               WHEN    "0000"
+               WHEN    "7071"              ALSO    "HC21"
+               WHEN    "7072"              ALSO    "HC21"
+               WHEN    "0000"              ALSO    "HC21"
                    MOVE    "HC22"          TO  PRT-PRTID   
-               WHEN    "7073"
+               WHEN    "7073"              ALSO    "HC21" 
                    MOVE    "HC24"          TO  PRT-PRTID   
       *        傷病年金             
-               WHEN    "7091"
-               WHEN    "7092"
+               WHEN    "7091"              ALSO    "HC21"
+               WHEN    "7092"              ALSO    "HC21"
                    MOVE    "HC21"          TO  PRT-PRTID   
-               WHEN    "7093"
+               WHEN    "7093"              ALSO    "HC21"
                    MOVE    "HC24"          TO  PRT-PRTID
       *        アフターケア             
-               WHEN    "7021"
+               WHEN    "7021"              ALSO    "HC21"
                    MOVE    "HC18"          TO  PRT-PRTID   
-               WHEN    "7023"
+               WHEN    "7023"              ALSO    "HC21"
                    MOVE    "HC20"          TO  PRT-PRTID   
       *        自賠責             
-               WHEN    "7001"
+               WHEN    "7001"              ALSO    "HC23"
+               WHEN    "0000"              ALSO    "HC23"
                    MOVE    "HC23"          TO  PRT-PRTID   
-               WHEN    "7002"
+               WHEN    "7002"              ALSO    "HC23"
                    MOVE    "HC29"          TO  PRT-PRTID   
            END-EVALUATE
            MOVE    SYS-1031-PRTNM(4)   TO  PRT-PRTNM 
