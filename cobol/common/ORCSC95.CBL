@@ -487,6 +487,9 @@
       *        外来カーソル移動
                MOVE    SYS-1008-GAI-CURSOR-SET-1
                                            TO  SPA-GAI-CURSOR-SET
+      *        入院初診料自動発生
+               MOVE    SYS-1008-NYU-SYOSIN
+                                           TO  SPA-NYU-SYOSIN
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
@@ -494,6 +497,7 @@
                MOVE    ZERO                TO  SPA-IKUJIEIYO-FLG
                MOVE    SPACE               TO  SPA-IKUJIEIYO-SRYKA
                MOVE    ZERO                TO  SPA-GAI-CURSOR-SET
+               MOVE    ZERO                TO  SPA-NYU-SYOSIN
            END-IF
       *
       *    診療科
@@ -739,12 +743,16 @@
       *        外来カーソル移動
                MOVE    SYS-1008-GAI-CURSOR-SET-1
                                            TO  SPA-GAI-CURSOR-SET
+      *        入院初診料自動発生
+               MOVE    SYS-1008-NYU-SYOSIN
+                                           TO  SPA-NYU-SYOSIN
            ELSE
-               MOVE    ZERO                    TO  SPA-INTERACT-KIKAN
+               MOVE    ZERO                TO  SPA-INTERACT-KIKAN
       *
                MOVE    ZERO                TO  SPA-IKUJIEIYO-FLG
                MOVE    SPACE               TO  SPA-IKUJIEIYO-SRYKA
                MOVE    ZERO                TO  SPA-GAI-CURSOR-SET
+               MOVE    ZERO                TO  SPA-NYU-SYOSIN
            END-IF
       *
       *    診療科
@@ -2325,6 +2333,13 @@
                MOVE    SPA-RRK-LSTSRYKA    TO  SPA-LSTSRYKA
            END-IF
       *
+      *    入院時
+           IF      SPA-NYUGAIKBN       =   "1"
+               PERFORM 11011-NYU-SYOYMD-SET-SEC
+               GO      TO      1101-HKN-SYOYMD-SET-EXT
+           END-IF
+      *
+      *    外来
            MOVE    SPACE               TO  WRK-TENKIYMD
            MOVE    ZERO                TO  FLG-TENKI
            MOVE    ZERO                TO  FLG-CHIYU
@@ -2452,6 +2467,120 @@
            .
        1101-HKN-SYOYMD-SET-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    入院時初診日、最終診察日編集処理
+      *****************************************************************
+       11011-NYU-SYOYMD-SET-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  WRK-TENKIYMD
+           MOVE    ZERO                TO  FLG-TENKI
+           MOVE    ZERO                TO  FLG-CHIYU
+           MOVE    SPACE               TO  WRK-CHIYUYMD
+      *
+      *    患者病名検索
+           MOVE    SPACE               TO  PTBYOMEI-REC
+           INITIALIZE                  PTBYOMEI-REC
+           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    SPA-PTID            TO  PTBYO-PTID
+           MOVE    SPA-K02N-NYUINYMD   TO  PTBYO-SRYYMD
+           MOVE    SPA-K02N-NYUINYMD   TO  PTBYO-TENKIYMD
+      *
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTBYOMEI-KEY9"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTBYOMEI-KEY9"     TO  ORC-DBPATH
+               PERFORM 980-PTBYOMEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTBYOMEI
+               MOVE    SPACE               TO  PTBYOMEI-REC
+               INITIALIZE                  PTBYOMEI-REC
+           END-IF
+           PERFORM UNTIL       FLG-PTBYOMEI    =   1
+      *       入院日より前の開始であること
+              IF      PTBYO-SRYYMD        <   SPA-K02N-NYUINYMD
+                   EVALUATE    PTBYO-TENKIKBN
+      *                治癒
+                       WHEN    "1"
+      *                    治癒日が入院日前
+                           IF      PTBYO-TENKIYMD  <   SPA-K02N-NYUINYMD
+                               MOVE    1               TO  FLG-CHIYU
+                               IF      PTBYO-TENKIYMD  >=  WRK-CHIYUYMD
+                                   MOVE    PTBYO-TENKIYMD
+                                                       TO  WRK-CHIYUYMD
+                               END-IF
+                           END-IF
+      *                継続
+                       WHEN    " "
+                           MOVE    1               TO  FLG-TENKI
+      *                中止
+                       WHEN    "3"
+                           IF      PTBYO-TENKIYMD  <   SPA-K02N-NYUINYMD
+                               IF      PTBYO-TENKIYMD  >=  WRK-TENKIYMD
+                                   MOVE    PTBYO-TENKIYMD  TO
+                                                           WRK-TENKIYMD
+                               END-IF
+                           END-IF
+                   END-EVALUATE
+               END-IF
+               MOVE    "PTBYOMEI-KEY9"     TO  ORC-DBPATH
+               PERFORM 980-PTBYOMEI-READ-SEC
+           END-PERFORM
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "PTBYOMEI-KEY9"     TO  ORC-DBPATH
+      *    CALL    "MCPDBSUB"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+      *
+      *    最終転帰日のチェック
+           IF      WRK-TENKIYMD    NOT =   SPACE
+      *        １月後算定
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY6-AREA
+               MOVE    "61"                TO  LNK-DAY6-IRAI
+               MOVE    WRK-TENKIYMD        TO  LNK-DAY6-KIJUN
+               MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
+               MOVE    1                   TO  LNK-DAY6-ZOGEN
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+               IF      STS-DAY-RC1         =   ZERO
+      *            1ヶ月以内なら継続中
+                   IF      LNK-DAY6-KOYOMI     >=  SPA-K02N-NYUINYMD
+                       MOVE    1               TO  FLG-TENKI
+                       MOVE    ZERO            TO  FLG-CHIYU
+                   ELSE
+                       IF      WRK-CHIYUYMD        <   WRK-TENKIYMD
+                           MOVE    1               TO  FLG-CHIYU
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    初診料算定有無
+           IF      SPA-SYOYMD          =   SPACE
+      *            初診算定
+               MOVE    1               TO  SPA-SYOSIN
+           ELSE
+               IF     (FLG-CHIYU       =   1   )  AND
+                      (FLG-TENKI       =   ZERO)
+      *            初診算定
+                   MOVE    1                   TO  SPA-SYOSIN
+               ELSE
+      *            初診算定なし
+                   MOVE    ZERO                TO  SPA-SYOSIN
+               END-IF
+           END-IF
+      *
+           .
+       11011-NYU-SYOYMD-SET-EXT.
+           EXIT.
+      *    
       *
       *****************************************************************
       *    労災保険 初診日、最終診察日編集処理
