@@ -7,7 +7,7 @@ for f in `ls ${SITESRCDIR}/cobol`; do
   if test "x`echo -n $f | grep 'CBL$'`" != "x"; then
     m=`echo $f | sed 's/CBL$/so/'`
     echo -n "Building ${m}..."
-    cobc -m -o ${SITELIBDIR}/lib/${m} \
+    cobc -m -o ${SITELIBDIR}/${m} \
          -I ${COPYDIR} \
          -I ${SITESRCDIR}/cobol/copy \
         ${SITESRCDIR}/cobol/${f}
@@ -19,10 +19,10 @@ done
 echo -n "Copying scripts files..."
 for d in scripts/daily scripts/kaisei scripts/monthly scripts/kentan; do
   if test -d "${SITESRCDIR}/${d}"; then
-    mkdir -p "${SITELIBDIR}/${d}"
+    mkdir -p "${SITEDIR}/${d}"
     for f in `ls ${SITESRCDIR}/${d}`; do 
-      sed -e 's,\@sysconfdir\@,$(sysconfdir),g' \
-      < "${SITESRCDIR}/${d}/${f}" > "${SITELIBDIR}/${d}/${f}"
+      sed -e 's,\@sysconfdir\@,@sysconfdir@,g' \
+      < "${SITESRCDIR}/${d}/${f}" > "${SITEDIR}/${d}/${f}"
     done
   fi
 done
@@ -32,10 +32,10 @@ echo "done"
 echo -n "Copying data files..."
 for d in data doc etc form init lddef record screen scripts/allways ; do
   if test -d "${SITESRCDIR}/${d}"; then
-    mkdir -p "${SITELIBDIR}/${d}"
-    chown orca.orca "${SITELIBDIR}/${d}"
+    mkdir -p "${SITEDIR}/${d}"
+    chown orca.orca "${SITEDIR}/${d}"
     for f in `ls ${SITESRCDIR}/${d}`; do 
-      cp "${SITESRCDIR}/${d}/${f}" "${SITELIBDIR}/${d}"
+      cp "${SITESRCDIR}/${d}/${f}" "${SITEDIR}/${d}"
     done
   fi
 done
