@@ -582,7 +582,12 @@
            END-EVALUATE
       *     
            MOVE    1               TO  SPA-GMN-CUR
+      *     
            MOVE    SPACE           TO  SPA-CIDCD
+                                       SPA-CIDCD2
+                                       SPA-CIDCD3
+                                       SPA-CIDCD4
+                                       SPA-CID1-AREA  
            .
        330-CID1-SET-EXT.
            EXIT.
@@ -640,7 +645,11 @@
                    MOVE    12                  TO  SPA-GMN-CUR
            END-EVALUATE
       *     
-           MOVE    SPACE           TO  SPA-CIDCD2
+           MOVE    SPACE           TO  SPA-CIDCD
+                                       SPA-CIDCD2
+                                       SPA-CIDCD3
+                                       SPA-CIDCD4
+                                       SPA-CID1-AREA  
            .
        340-CID2-SET-EXT.
            EXIT.
@@ -728,9 +737,12 @@
       *
                    MOVE    1               TO  SPA-GMN-CUR
            END-EVALUATE
-      *  
-           MOVE    SPACE           TO  SPA-CIDCD3
-                                       SPA-CID3-FLG
+      *     
+           MOVE    SPACE           TO  SPA-CIDCD
+                                       SPA-CIDCD2
+                                       SPA-CIDCD3
+                                       SPA-CIDCD4
+                                       SPA-CID1-AREA  
            .
        350-CID3-SET-EXT.
            EXIT.
