@@ -261,6 +261,9 @@
                                        17  SPA-NAI-C02-BYOMEI-O
                                                            PIC X(80)
                                                            OCCURS  21.
+                                       17  SPA-NAI-C02-TANDOKUKBN-O 
+                                                           PIC 9(02)
+                                                           OCCURS  21.
       ***                  11  SPA-NAI-C02-BYOMEICDSU      PIC 9(01).
                            11  SPA-NAI-C02-BYOMEICD-MAX    PIC 9(01).
       *       
