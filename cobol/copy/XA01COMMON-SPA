@@ -33,6 +33,7 @@
                07  SPA-XAID1-FLG            PIC  X(02).
                07  SPA-XA99-FLG             PIC  X(02).
       *
+           03  SPA-XA01-MOTOPG             PIC X(8).
            03  SPA-XA01-LN-AREA.
             05  SPA-XA01-LN-KEY.
                 07  SPA-XA01-LN-TBL-KEY    PIC X(8).

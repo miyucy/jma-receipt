@@ -34,6 +34,7 @@
       *  01.00.05    NACL-藤原    03/05/19  未印刷のときのダイアログを止める
       *　プレビュー機能追加
       *  01.01.01    NACL-藤原    03/07/07  プレビュー機能追加
+      *  01.01.02    NACL-太田    04/06/06  情報削除画面遷移追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -112,8 +113,6 @@
       *
       *                     
                05  SPA-WRK-TBL-KEY                 PIC X(08).            
-      *                 
-           03  SPA-XA01-MOTOPG                     PIC X(08).    
       *
       *   
            COPY    "ENUM-VALUE".
@@ -170,6 +169,7 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-PAGE            PIC ZZZZZZZZZ9.   
            03  WRK-MOTOPG          PIC X(08).
+           03  WRK-XA01-MOTOPG     PIC X(08).
            03  WRK-SELNUM          PIC 9(03). 
       *
            03  WRK-ZZ              PIC ZZ9.
@@ -367,6 +367,8 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
+           MOVE    SPACE           TO  WRK-MOTOPG
+      *
            EVALUATE    SPA-MOTOPG
       *    作表処理
                WHEN    "XA99" 
@@ -386,22 +388,32 @@
                MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
       *
       *        元の画面へ戻す
-               IF      WRK-MOTOPG      =   "XC01"
+               EVALUATE    WRK-MOTOPG
+               WHEN    "XB01"
+                   MOVE    SPA-WORK        TO   SPA-XA01KYOUTU
+                   MOVE    SPA-XA01-MOTOPG TO   WRK-XA01-MOTOPG
+                   INITIALIZE                   SPA-XA01-AREA
+                                                SPA-XA01KYOUTU
+                   MOVE    WRK-XA01-MOTOPG TO   SPA-XA01-MOTOPG
+                   PERFORM 310-SPASET-SEC
+                   GO  TO  300-SCREEN-EXT
+      *
+               WHEN    "XC01"
                    INITIALIZE              SPA-XA01-AREA
                                            SPA-XA01KYOUTU
                    MOVE    SPA-WORK        TO  LNK-XC01-AREA
-                   MOVE    LNK-XC01-MOTOPG TO  SPA-XA01-MOTOPG  
+                   MOVE    LNK-XC01-MOTOPG TO  SPA-XA01-MOTOPG
                    PERFORM 310-SPASET-SEC
                    GO  TO  300-SCREEN-EXT
-               END-IF
-      *
-               MOVE    WRK-MOTOPG          TO  SPA-XA01-MOTOPG
+               END-EVALUATE
            END-IF
       *
       *
            INITIALIZE              SPA-XA01-AREA
                                    SPA-XA01KYOUTU
            PERFORM 310-SPASET-SEC
+      *
+           MOVE    WRK-MOTOPG              TO  SPA-XA01-MOTOPG
       *
            .
        300-SCREEN-EXT.
@@ -630,12 +642,15 @@
       *     削除
                WHEN    "CLICKED"       ALSO    "B03"
                    PERFORM 430-DELETE-GID-SEC
+      *     情報削除
+               WHEN    "CLICKED"       ALSO    "B11"
+                   PERFORM 490-JYOUHOU-DEL-SEC
       *     印刷
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-PRINT-GID-SEC
       *     プレビュー
-               WHEN    "CLICKED"       ALSO    "B11"
-                   PERFORM 450-PRINT-GID-SEC
+      *        WHEN    "CLICKED"       ALSO    "B11"
+      *            PERFORM 450-PRINT-GID-SEC
       *     処理確認
                WHEN    "CLICKED"       ALSO    "B13"
                    PERFORM 490-KAKUNIN-SEC
@@ -1117,6 +1132,35 @@
        430-DELETE-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    情報削除画面へ
+      *****************************************************************
+       490-JYOUHOU-DEL-SEC             SECTION.
+      *
+      *    MOVE    SPACE               TO  LINKAREA
+      *    MOVE    SPA-KYOUTU          TO  LNK-COMMON
+      *    MOVE    SPA-XA01            TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "XA01"              TO  SPA-MOTOPG
+           MOVE    "XB01"              TO  SPA-SAKIPG
+      *
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SPA-JOB-SHELLID
+      *
+           MOVE    SPA-XA01KYOUTU      TO  SPA-WORK
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "XB01   "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       490-JYOUHOU-DEL-EXT.
+           EXIT.
       *****************************************************************
       *    作表処理
       *****************************************************************
