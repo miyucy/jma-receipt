@@ -273,7 +273,9 @@
            03  WRK-TMISYU-W        PIC --,---,---.
            03  WRK-SELBAN-W        PIC ZZZZ.  
       *    ÀÁµá½ñ£Ð£ÇÌ¾
-           03  WRK-SEIKYU-PG           PIC X(20).
+           03  WRK-SEIKYU-PG       PIC X(20).
+           03  WRK-TAIHI-SRYKA         PIC X(02).
+           03  WRK-TAIHI-NYUGAIKBN     PIC X(01).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
@@ -3563,9 +3565,7 @@
       **************************************************************
        490-ZENGETU-SEC                 SECTION.
       *
-           IF      SPA-GMN-PTID        =   ZERO
-           OR      SPA-GMN-SRYKA       =   SPACE
-           OR      SPA-NAI-SRYYM       =   ZERO
+           IF      SPA-NAI-SRYYM       =   ZERO
                GO  TO  490-ZENGETU-EXT
            END-IF    
       *
@@ -3590,6 +3590,32 @@
                MOVE    LNK-DAY2-EDTYMD1        TO  SPA-SRYYMDW
            END-IF
       *
+           IF    ( SPA-GMN-PTID        =   ZERO )
+               GO  TO  490-ZENGETU-EXT
+           END-IF
+      *
+           IF    ( SPA-GMN-SRYKA       =   SPACE )
+            OR   ( SPA-GMN-NYUGAIKBN   =   SPACE )
+               MOVE    SPA-GMN-SRYKA       TO  WRK-TAIHI-SRYKA
+               MOVE    SPA-GMN-NYUGAIKBN   TO  WRK-TAIHI-NYUGAIKBN
+               PERFORM 3103-SYUNOU-CHK-SEC
+               IF    ( WRK-TAIHI-SRYKA NOT =   SPACE )
+                   MOVE    WRK-TAIHI-SRYKA
+                                           TO  SPA-GMN-SRYKA
+               END-IF
+               IF    ( WRK-TAIHI-NYUGAIKBN NOT =   SPACE )
+                   MOVE    WRK-TAIHI-NYUGAIKBN
+                                           TO  SPA-GMN-NYUGAIKBN
+               ELSE
+                   IF    ( SPA-BEDSU       >   ZERO )
+                       MOVE    "0"         TO  SPA-GMN-NYUGAIKBN
+                   END-IF
+               END-IF
+      *
+               PERFORM 3101-COMBO-SYOKI-SET-SEC
+      *
+           END-IF
+      *
            PERFORM 300-SYUNOU-HENSYU-SEC
            INITIALIZE              SPA-GMN-INPUT
       *
@@ -3605,9 +3631,7 @@
       **************************************************************
        490-JIGETU-SEC                 SECTION.
       *
-           IF      SPA-GMN-PTID        =   ZERO
-           OR      SPA-GMN-SRYKA       =   SPACE
-           OR      SPA-NAI-SRYYM       =   ZERO
+           IF      SPA-NAI-SRYYM       =   ZERO
                GO  TO  490-JIGETU-EXT
            END-IF    
       *
@@ -3630,6 +3654,32 @@
            IF      STS-DAY-RC1         =   ZERO
                MOVE    LNK-DAY2-EDTYMD1(1:6)   TO  SPA-GMN-SRYYM
                MOVE    LNK-DAY2-EDTYMD1        TO  SPA-SRYYMDW
+           END-IF
+      *
+           IF    ( SPA-GMN-PTID        =   ZERO )
+               GO  TO  490-JIGETU-EXT
+           END-IF    
+      *
+           IF    ( SPA-GMN-SRYKA       =   SPACE )
+            OR   ( SPA-GMN-NYUGAIKBN   =   SPACE )
+               MOVE    SPA-GMN-SRYKA       TO  WRK-TAIHI-SRYKA
+               MOVE    SPA-GMN-NYUGAIKBN   TO  WRK-TAIHI-NYUGAIKBN
+               PERFORM 3103-SYUNOU-CHK-SEC
+               IF    ( WRK-TAIHI-SRYKA NOT =   SPACE )
+                   MOVE    WRK-TAIHI-SRYKA
+                                           TO  SPA-GMN-SRYKA
+               END-IF
+               IF    ( WRK-TAIHI-NYUGAIKBN NOT =   SPACE )
+                   MOVE    WRK-TAIHI-NYUGAIKBN
+                                           TO  SPA-GMN-NYUGAIKBN
+               ELSE
+                   IF    ( SPA-BEDSU       >   ZERO )
+                       MOVE    "0"         TO  SPA-GMN-NYUGAIKBN
+                   END-IF
+               END-IF
+      *
+               PERFORM 3101-COMBO-SYOKI-SET-SEC
+      *
            END-IF
       *
            PERFORM 300-SYUNOU-HENSYU-SEC
