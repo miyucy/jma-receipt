@@ -1843,46 +1843,42 @@
       *           
                    IF    ( LNK-SKOHPLUS-RC     =   ZERO )
                    AND   ( LNK-SKOHPLUS-FTNKBN =   "1"  )
-                       PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       20
-                               OR      RECE62-SRYKA (IDX)  =   SPACE
+                       IF   RECE62-SRYKA (1)  NOT =  SPACE
                            INITIALIZE                  SYUNOU-REC
                            MOVE    RECE62-HOSPID   TO  SYU-HOSPID
                            MOVE    RECE62-NYUGAIKBN
                                                    TO  SYU-NYUGAIKBN
                            MOVE    RECE62-PTID     TO  SYU-PTID
-                           MOVE    RECE62-SRYKA(IDX)
-                                                   TO  SYU-SRYKA
                            MOVE    RECE62-SRYYM    TO  SYU-SRYYMD(1:6)
                            MOVE    "__"            TO  SYU-SRYYMD(7:2)
                            MOVE    RECE62-HKNCOMBI (IDX1)
                                                    TO  SYU-HKNCOMBINUM
                            MOVE    SYUNOU-REC      TO  MCPDATA-REC
                            MOVE    "DBSELECT"      TO  MCP-FUNC
-                           MOVE    "SYUNOU-KEY21"  TO  ORC-DBPATH
+                           MOVE    "SYUNOU-KEY19"  TO  ORC-DBPATH
                            CALL    "ORCMCPSUB"     USING
                                                    MCPAREA
                                                    ORCMCPAREA
                                                    MCPDATA-REC
                            IF      MCP-RC          =   ZERO
-                               MOVE    "SYUNOU-KEY21"  TO  ORC-DBPATH
+                               MOVE    "SYUNOU-KEY19"  TO  ORC-DBPATH
                                PERFORM 900-SYUNOU-READ-SEC
                                PERFORM UNTIL   FLG-SYUNOU  =    1
                                    ADD     SYU-KYUFUGAI-GOKEI-TEN
                                                    TO  WRK-KYUFUGAITEN
-                                   MOVE    "SYUNOU-KEY21"
+                                   MOVE    "SYUNOU-KEY19"
                                                    TO  ORC-DBPATH
                                    PERFORM 900-SYUNOU-READ-SEC
                                END-PERFORM          
                            END-IF
       *
                            MOVE    "DBCLOSE"       TO  MCP-FUNC
-                           MOVE    "SYUNOU-KEY21"  TO  ORC-DBPATH
+                           MOVE    "SYUNOU-KEY19"  TO  ORC-DBPATH
                            CALL    "ORCMCPSUB"     USING
                                                    MCPAREA
                                                    ORCMCPAREA
                                                    MCPDATA-REC
-                       END-PERFORM
+                       END-IF
                    END-IF
                END-IF
            END-PERFORM
