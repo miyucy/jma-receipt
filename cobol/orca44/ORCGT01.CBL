@@ -61,6 +61,7 @@
       *  01.05.04    NACL-藤原    04.02.17  レセ電ファイルの出力先指定
       *  01.00.05    NACL-伊藤    04.02.17  レセ電ファイルの転送エラー
       *                                     メッセージの追加
+      *  01.05.06    NACL-藤原    04.03.18  レセ電時の印刷指示による処理の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -649,6 +650,7 @@
            MOVE    1               TO  SPA-GMN-CUR
       *
            MOVE    SPACE           TO  SPA-TID1-FLG
+                                       SPA-RECEDEN-FLG
            MOVE    SPACE           TO  SPA-TIDCD
            .
        330-TID1-SET-EXT.
@@ -663,6 +665,7 @@
                EVALUATE    SPA-TIDCD
                    WHEN    "1010"
                    WHEN    "1014"
+                       MOVE    SPA-TID1-FLG        TO  SPA-RECEDEN-FLG 
                        IF      SPA-GMN-DATAKBN     =   "1" OR  "2"
                            MOVE    SPACE           TO  SPA-TID1-FLG
                            MOVE    "2001"          TO  SPA-TIDCD
@@ -680,6 +683,7 @@
            MOVE    1               TO  SPA-GMN-CUR
       *
            MOVE    SPACE           TO  SPA-TID1-FLG
+                                       SPA-RECEDEN-FLG
            MOVE    SPACE           TO  SPA-TIDCD
            .
        340-TID2-SET-EXT.
@@ -2086,7 +2090,7 @@
                                    MCPDATA-REC
       *
       *    印刷処理
-           IF      SPA-TID1-FLG        =   "OK"
+           IF      SPA-RECEDEN-FLG     =   "OK"
                PERFORM 45011-JOBKANRI-HENSYU-SEC
                PERFORM 45013-PRINT-SYORI-SEC
            END-IF       
