@@ -8114,8 +8114,8 @@
       *
       *    入院会計作成サブの呼出し
            INITIALIZE                      ORCSNYUACCT-AREA
-      **     MOVE     "7"                TO  LNK-SCNYUACCT-SYORI-KBN
-           MOVE     "8"                TO  LNK-SCNYUACCT-SYORI-KBN
+           MOVE     "7"                TO  LNK-SCNYUACCT-SYORI-KBN
+      **     MOVE     "8"                TO  LNK-SCNYUACCT-SYORI-KBN
            MOVE     "1"                TO  SPA-NYUGAIKBN
            MOVE     PTNYUINRRK-PTID    TO  SPA-PTID
            MOVE     PTNYUINRRK-NYUINKA TO  SPA-SRYKA
