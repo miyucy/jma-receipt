@@ -3621,6 +3621,14 @@
                                MOVE    "1"             TO  SPA-COM-CUR
                                                                 (IDX)
                            END-IF
+      *                    特定の診療行為であること
+                           EVALUATE    SPA-COM-INPUTCD (IDX)
+      *                        開放型病院共同指導料（１）
+                               WHEN    "180010510"
+                                   MOVE    SPACE       TO  SPA-ERRCD
+                                   MOVE    SPACE       TO  SPA-COM-CUR
+                                                                (IDX)
+                           END-EVALUATE
                    END-EVALUATE
                ELSE
       *        小児科外来診療科以外の時、小児科外来診療科でないこと
