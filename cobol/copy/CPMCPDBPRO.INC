@@ -354,6 +354,8 @@
       *  01.01.163   NACL-門脇    05/01/29  SYUNOU-DEL4,5追加
       *                                     SYUNOU-KEY39追加
       *                                     SYUDAY-DEL3,4追加
+      *  01.01.164   NACL-門脇    05/02/09  SYUNOU-KEY40追加
+      *                                     SYUDAY-DEL5追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1178,6 +1180,9 @@
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SYUDAY-DEL4"
                    MOVE    PATH-TBL-SYUDAY-DEL4
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "SYUDAY-DEL5"
+                   MOVE    PATH-TBL-SYUDAY-DEL5
                                        TO  WRK-PATH
       *
                WHEN    "DBUPDATE"      ALSO   "OPECOM-KEY"
@@ -2078,6 +2083,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY39"
                    MOVE    PATH-TBL-SYUNOU-KEY39
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY40"
+                   MOVE    PATH-TBL-SYUNOU-KEY40
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"

@@ -945,11 +945,24 @@ path	del5 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syunou
-			WHERE   HOSPID       =   :HOSPID
-			AND     NYUGAIKBN    =   '1'
+			WHERE   NYUGAIKBN    =   '1'
 			AND     DENPNUM      >=   9000000
 			AND     DENPNUM      <    9100000
 			AND     CREATEKBN    =   '3'
+		;
+	};
+};
+
+path	key40 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key40_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   SRYYMD     LIKE :SRYYMD
+			AND   CREATEKBN   =   '3'
+			ORDER   BY          DENPNUM
 		;
 	};
 };

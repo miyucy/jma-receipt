@@ -719,11 +719,23 @@ path	del4 	{
 	DBDELETE	{
 		DELETE
 		FROM tbl_syuday
-			WHERE   HOSPID       =   :HOSPID
-			AND     NYUGAIKBN    =   '1'
+			WHERE   NYUGAIKBN    =   '1'
 			AND     DENPNUM      >=   9000000
 			AND     DENPNUM      <    9100000
 			AND     CREATEKBN    =   '3'
 		;
 	};
 };
+
+path	del5 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syuday
+			WHERE   HOSPID       =   :HOSPID
+			AND     NYUGAIKBN    =   :NYUGAIKBN
+			AND     PTID         =   :PTID
+			AND     DENPNUM      =   :DENPNUM
+		;
+	};
+};
+
