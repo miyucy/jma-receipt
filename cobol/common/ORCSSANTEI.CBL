@@ -179,6 +179,10 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
+           IF      SSANTEI-HKNKBN      =   SPACE
+               MOVE    SPA-HKNKBN      TO  SSANTEI-HKNKBN
+           END-IF
+      *
            EVALUATE    SSANTEI-SYORI
       *        新規、変更
                WHEN    "1"

@@ -146,9 +146,9 @@
            03  IDX-DOJI1           PIC 9(04).
            03  IDX-DOJI2           PIC 9(04).
       *
-           03  IDX-XSEN             PIC 9(01).
-           03  IDX-KAKUI            PIC 9(01).
-           03  IDX-CTMRI            PIC 9(01).
+           03  IDX-XSEN             PIC 9(04).
+           03  IDX-KAKUI            PIC 9(04).
+           03  IDX-CTMRI            PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -3113,7 +3113,7 @@
            IF      FLG-XSEN-ARI        =   1
       *        入院時の初日
                IF     (WRK-XSEN-DAY    =   ZERO )  OR
-                      (WRK-XSEN-DAY    <   IDN1 )
+                      (WRK-XSEN-DAY    >   IDN1 )
                    MOVE    IDN1            TO  WRK-XSEN-DAY
                END-IF
            END-IF
@@ -3121,7 +3121,7 @@
            IF      FLG-KAKUI-ARI       =   1
       *        入院時の初日
                IF     (WRK-KAKUI-DAY   =   ZERO )  OR
-                      (WRK-KAKUI-DAY   <   IDN1 )
+                      (WRK-KAKUI-DAY   >   IDN1 )
                    MOVE    IDN1            TO  WRK-KAKUI-DAY
                END-IF
            END-IF
@@ -3129,7 +3129,7 @@
            IF      FLG-CTMRI-ARI       =   1
       *        入院時の初日
                IF     (WRK-CTMRI-DAY   =   ZERO )  OR
-                      (WRK-CTMRI-DAY   <   IDN1 )
+                      (WRK-CTMRI-DAY   >   IDN1 )
                    MOVE    IDN1            TO  WRK-CTMRI-DAY
                END-IF
            END-IF
@@ -3176,6 +3176,8 @@
                MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
                                                        (08 IDXS)
                MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
+                                                       (08 IDXS)
+               MOVE    WRK-SRYKA       TO  LNK-ORCSC-SRYKA
                                                        (08 IDXS)
                MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                        (08 IDXS)
