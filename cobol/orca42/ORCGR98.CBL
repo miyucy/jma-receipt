@@ -48,6 +48,10 @@
       *                                     SRYACCT30→37
       *                                     会計を残して入院取消を行った
       *                                     ままの入院会計は対象としない
+      *  01.00.09   NACL-藤原     04/08/20  連番の追加
+      *                                     レセプトに空白で受給者番号が
+      *                                     記載される患者だけ表示できる
+      *                                     ようにボタンを追加 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -82,6 +86,7 @@
                    07  SPA-GMN-TABLE.
                        09  SPA-GMN-TBL             OCCURS   40.
                            11  SPA-GMN-TBL-G       OCCURS   25.
+                               13  SPA-GMN-TRENNUM PIC 9(05).
                                13  SPA-GMN-TPTNUM  PIC X(20).
                                13  SPA-GMN-TNAME   PIC X(30).
                                13  SPA-GMN-TFTNJANUM
@@ -96,6 +101,9 @@
                            11  SPA-NAI-TBL-G       OCCURS  25.
                                13  SPA-NAI-TPTID   PIC 9(10).
                                13  SPA-NAI-TSRYYM  PIC 9(06).
+      *            表示フラグ(1:全体、2:未入力分)
+                   07  SPA-NAI-HYOUJIFLG           PIC 9(01).
+
       *           受給者検証番号チェック区分
                    07  SPA-NAI-JKYSKENSNUMCHKKBN   PIC  X(01).
       *        入力項目名
@@ -400,6 +408,8 @@
                MOVE    LNK-DAY6-KEISAN(1:6)   TO  SPA-NAI-SRYYM
            END-IF
       *
+           MOVE    1                   TO  SPA-NAI-HYOUJIFLG
+      *
            PERFORM 3101-SEH-HENSYU-SEC     
       *
            .
@@ -676,28 +686,7 @@
       *****************************************************************
        31011-SEH-GMN-HENSYU-SEC         SECTION.
       *
-           ADD     1               TO  SPA-GMN-MAX
-           COMPUTE IDX1    =
-                         ( SPA-GMN-MAX +   WRK-LINE-MAX  -   1 )
-                                       /   WRK-LINE-MAX
-           COMPUTE IDX2    =
-                         ( SPA-GMN-MAX +   WRK-LINE-MAX )
-                                       -   IDX1  *   WRK-LINE-MAX
-           MOVE    PTKOH-PTID      TO  SPA-NAI-TPTID (IDX1 IDX2)
-           INITIALIZE                  ORCSPTIDAREA
-           MOVE    SPA-HOSPID      TO  SPTID-HOSPID
-           MOVE    PTKOH-PTID      TO  SPTID-PTID
-           CALL    "ORCSPTID"      USING   ORCSPTIDAREA
-                                           SPA-1009-TBL
-           MOVE    SPTID-PTNUM     TO  SPA-GMN-TPTNUM (IDX1 IDX2)
-           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
-           MOVE    PTKOH-PTID      TO  PTINF-PTID
-           PERFORM 900-PTINF-READ-SEC
-           MOVE    PTINF-NAME      TO  SPA-GMN-TNAME (IDX1 IDX2)
-      *****MOVE    SPA-GMN-SRYYM   TO  SPA-GMN-TSRYYM(IDX1 IDX2)
-      *****MOVE    SPA-NAI-SRYYM   TO  SPA-NAI-TSRYYM(IDX1 IDX2)
-           MOVE    PTKOH-FTNJANUM  TO  SPA-GMN-TFTNJANUM (IDX1 IDX2)
-           MOVE    PTKOH-JKYSNUM   TO  SPA-GMN-TJKYSNUM  (IDX1 IDX2)
+           INITIALIZE                  MONTHLYNUM-REC
            MOVE    SPA-HOSPID      TO  MONTHLYNUM-HOSPID
            MOVE    PTKOH-PTID      TO  MONTHLYNUM-PTID
            MOVE    WRK-CONS-SEIHO-HKNNUM
@@ -707,9 +696,54 @@
                                    TO  MONTHLYNUM-NYUGAIKBN
            MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
            PERFORM 910-MONTHLYNUM-READ-SEC
-           IF      FLG-MONTHLYNUM  =   ZERO
-               MOVE    MONTHLYNUM-JKYSNUM  
+      *
+           MOVE    ZERO            TO  FLG-CHK
+           IF      SPA-NAI-HYOUJIFLG   =   2
+               IF      MONTHLYNUM-JKYSNUM  NOT =   SPACE
+                   CONTINUE
+               ELSE
+                   IF      PTKOH-JKYSNUM       =   SPACE
+                       MOVE    1                   TO  FLG-CHK
+                   ELSE
+                       IF      FLG-MONTHLYNUM      =   1
+                           CONTINUE
+                       ELSE
+                           MOVE    1                   TO  FLG-CHK
+                       END-IF
+                   END-IF
+               END-IF
+           ELSE 
+               MOVE    1               TO  FLG-CHK
+           END-IF    
+      *
+           IF      FLG-CHK         =   1
+               ADD     1               TO  SPA-GMN-MAX
+               COMPUTE IDX1    =
+                         ( SPA-GMN-MAX +   WRK-LINE-MAX  -   1 )
+                                       /   WRK-LINE-MAX
+               COMPUTE IDX2    =
+                         ( SPA-GMN-MAX +   WRK-LINE-MAX )
+                                       -   IDX1  *   WRK-LINE-MAX
+               MOVE    SPA-GMN-MAX     TO  SPA-GMN-TRENNUM(IDX1 IDX2)
+               MOVE    PTKOH-PTID      TO  SPA-NAI-TPTID  (IDX1 IDX2)
+               INITIALIZE                  ORCSPTIDAREA
+               MOVE    SPA-HOSPID      TO  SPTID-HOSPID
+               MOVE    PTKOH-PTID      TO  SPTID-PTID
+               CALL    "ORCSPTID"      USING   ORCSPTIDAREA
+                                               SPA-1009-TBL
+               MOVE    SPTID-PTNUM     TO  SPA-GMN-TPTNUM (IDX1 IDX2)
+               MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+               MOVE    PTKOH-PTID      TO  PTINF-PTID
+               PERFORM 900-PTINF-READ-SEC
+               MOVE    PTINF-NAME      TO  SPA-GMN-TNAME (IDX1 IDX2)
+      *****    MOVE    SPA-GMN-SRYYM   TO  SPA-GMN-TSRYYM(IDX1 IDX2)
+      *****    MOVE    SPA-NAI-SRYYM   TO  SPA-NAI-TSRYYM(IDX1 IDX2)
+               MOVE    PTKOH-FTNJANUM  TO  SPA-GMN-TFTNJANUM (IDX1 IDX2)
+               MOVE    PTKOH-JKYSNUM   TO  SPA-GMN-TJKYSNUM  (IDX1 IDX2)
+               IF      FLG-MONTHLYNUM  =   ZERO
+                   MOVE    MONTHLYNUM-JKYSNUM  
                                        TO  SPA-GMN-TJKYSNUM (IDX1 IDX2)
+               END-IF
            END-IF
       *
            .
@@ -768,6 +802,9 @@
       *        次月分 
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 480-NEXT-MONTH-MAE-SEC
+      *        表示切替 
+               WHEN    "CLICKED"       ALSO    "B09"
+                   PERFORM 490-HYOUJI-CHANGE-SEC
       *        登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-TOUROKU-MAE-SEC
@@ -1287,6 +1324,23 @@
            EXIT.
       *
       *****************************************************************
+      *    表示切替処理
+      *****************************************************************
+       490-HYOUJI-CHANGE-SEC               SECTION.
+      * 
+           IF    SPA-NAI-HYOUJIFLG     =   1
+               MOVE    2                    TO  SPA-NAI-HYOUJIFLG
+           ELSE 
+               MOVE    1                    TO  SPA-NAI-HYOUJIFLG
+           END-IF 
+      *     
+           PERFORM 3101-SEH-HENSYU-SEC
+           .
+      *
+       490-HYOUJI-CHANGE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -1484,11 +1538,14 @@
       *
            MOVE    SPA-GMN-SRYYMH      TO  R98-SRYYMH-VALUE
            MOVE    "blue"              TO  R98-SRYYMH-STYLE
+                                           R98-HYOUJIKBN-STYLE
       *
            MOVE    SPA-GMN-PAGE        TO  IDX1
       *          
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   25
+               MOVE    SPA-GMN-TRENNUM    (IDX1 IDX)
+                                           TO  R98-RENNUM   (IDX)
                MOVE    SPA-GMN-TPTNUM     (IDX1 IDX)
                                            TO  R98-PTNUM    (IDX)
                MOVE    SPA-GMN-TNAME      (IDX1 IDX)
@@ -1508,7 +1565,22 @@
                MOVE    WIDGET-INSENSITIVE  TO  R98-B07-STATE
            ELSE
                MOVE    WIDGET-NORMAL       TO  R98-B07-STATE
-           END-IF    
+           END-IF
+           IF    ( SPA-GMN-MAX         =   ZERO )
+           AND   ( SPA-NAI-HYOUJIFLG   =   1    )
+               MOVE    WIDGET-INSENSITIVE  TO  R98-B09-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  R98-B09-STATE
+           END-IF
+      * 
+           EVALUATE    SPA-NAI-HYOUJIFLG
+               WHEN    1
+                   MOVE    "全    体"      TO  R98-B09-LABEL
+                                               R98-HYOUJIKBN-VALUE
+               WHEN    2
+                   MOVE    "未入力分"      TO  R98-B09-LABEL
+                                               R98-HYOUJIKBN-VALUE
+           END-EVALUATE
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1915,9 +1987,11 @@
                    MOVE    MCPDATA-REC          TO  MONTHLYNUM-REC
                ELSE
                    MOVE    1                   TO  FLG-MONTHLYNUM
+                   INITIALIZE                  MONTHLYNUM-REC
                END-IF
            ELSE
                MOVE    1                   TO  FLG-MONTHLYNUM
+               INITIALIZE                  MONTHLYNUM-REC
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
