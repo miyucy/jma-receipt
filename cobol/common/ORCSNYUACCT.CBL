@@ -267,6 +267,8 @@
                    PERFORM 100-SINKI-SYORI-SEC
       *        轉情
                WHEN    "2"
+      *        轉情﹋ェ情莘煌及心﹌
+               WHEN    "4"
       *            轉情ゥ≒ㄠゥ毛覆擂午允月
                    MOVE    1                   TO  WRK-ZOGEN
                    PERFORM 200-TAIIN-SYORI-SEC
@@ -1461,6 +1463,11 @@
       *
       *    鱉請及凜﹜綽輪毛仄卅中
            IF      LNK-SCNYUACCT-SYORI-KBN     =   "8"
+               GO      TO      200-TAIIN-SYORI-EXT
+           END-IF
+      *
+      *    轉情﹋ェ情莘煌及心﹌及凜﹜綽輪毛仄卅中
+           IF      LNK-SCNYUACCT-SYORI-KBN     =   "4"
                GO      TO      200-TAIIN-SYORI-EXT
            END-IF
       *
