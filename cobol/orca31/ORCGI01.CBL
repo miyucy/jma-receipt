@@ -51,6 +51,8 @@
       *                                     編集を修正（入院中対応）
       *  01.00.17    NACL-太田    03.05.16  入院カルテに保険を編集する
       *  01.00.18    NACL-太田    03.05.19  退院時診療行為チェック追加
+      *  01.00.19    NACL-太田    03.06.05  入院歴の修正を日付項目以外は
+      *                                     いつでも変更可とする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -109,6 +111,7 @@
            03  FLG-NYUINACCTARI            PIC 9(01).
            03  FLG-WKPTTEIKIRRK            PIC 9(01).
            03  FLG-HKNCOMBIGET             PIC 9(01).
+           03  FLG-RRKCHK                  PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1282,25 +1285,30 @@
       *    最新の入院歴を取得する
            PERFORM 4101-PTNYUINRRK-SEL1-SEC
       *
+           IF  (   SPA-I01-I03-SYORIKBN        =   "2" OR  "3" )
+               IF    (   FLG-PTNYUINRRK        =   ZERO )
+                   IF    ( PTNYUINRRK-JTIKBN   NOT =   "5" AND "6" )
+                    AND  ( PTNYUINRRK-TAIINYMD =   "99999999" )
+                       MOVE    1       TO  SPA-GMN-I01-NYUREKILST-SEL
+                                           SPA-GMN-I01-SELNUM
+                       GO  TO  330-I03-SET-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
            IF  (   SPA-I01-I03-SYORIKBN-CD     =   "01" )
       *        入院歴なし（初入院）
                IF  (   FLG-PTNYUINRRK  NOT =   ZERO )
-      *            MOVE    WIDGET-INSENSITIVE
-      *                                TO  SPA-GMN-I01-B08-STT
                    PERFORM 310-CMB-SYORIKBN-SET2-SEC
                    MOVE    SPA-GMN-I01-SYORIKBN-ITM (01)
                                        TO  SPA-GMN-I01-SYORIKBN
                ELSE
       *            歴作成データ有り
                    IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
-      *                MOVE    WIDGET-NORMAL
-      *                                TO  SPA-GMN-I01-B08-STT
                        PERFORM 310-CMB-SYORIKBN-SET5-SEC
                        MOVE    SPA-GMN-I01-SYORIKBN-ITM (01)
                                        TO  SPA-GMN-I01-SYORIKBN
                    ELSE
-      *                MOVE    WIDGET-INSENSITIVE
-      *                                TO  SPA-GMN-I01-B08-STT
                        PERFORM 310-CMB-SYORIKBN-SET4-SEC
                        MOVE    SPA-GMN-I01-SYORIKBN-ITM (01)
                                        TO  SPA-GMN-I01-SYORIKBN
@@ -1312,8 +1320,6 @@
                    MOVE    SPA-SYSYMD  TO  WRK-KJNYMD
                    PERFORM 310-CMB-SYOKI-SEC
                    PERFORM 4201-INPUT-AREA-CLEAR-SEC
-      *            MOVE    WIDGET-INSENSITIVE
-      *                                TO  SPA-GMN-I01-B08-STT
                    PERFORM 310-CMB-SYORIKBN-SET2-SEC
                    MOVE    SPACE       TO  SPA-GMN-I01-SYORIKBN
                ELSE
@@ -1321,16 +1327,12 @@
                    IF    ( PTNYUINRRK-JTIKBN   =   "5" OR "6" )
                        PERFORM 4101-INPUT-AREA-EDIT2-SEC
                        PERFORM 4201-WIDGET-INSENSITIVE-SEC
-      *                MOVE    WIDGET-NORMAL
-      *                                TO  SPA-GMN-I01-B08-STT
                        PERFORM 310-CMB-SYORIKBN-SET5-SEC
                        MOVE    SPA-GMN-I01-SYORIKBN-ITM (02)
                                        TO  SPA-GMN-I01-SYORIKBN
                    ELSE
                        PERFORM 4101-INPUT-AREA-EDIT-SEC
                        PERFORM 4201-WIDGET-INSENSITIVE-SEC
-      *                MOVE    WIDGET-INSENSITIVE
-      *                                TO  SPA-GMN-I01-B08-STT
                        PERFORM 310-CMB-SYORIKBN-SET4-SEC
                        MOVE    SPA-GMN-I01-SYORIKBN-ITM (02)
                                        TO  SPA-GMN-I01-SYORIKBN
@@ -3258,7 +3260,7 @@
            MOVE    WIDGET-INSENSITIVE
                                    TO
                                        SPA-GMN-I01-B07-STT
-                                       SPA-GMN-I01-B08-STT
+      *                                SPA-GMN-I01-B08-STT
                                        SPA-GMN-I01-IDOYMD-STT
                                        SPA-GMN-I01-BRMNUM-STT
                                        SPA-GMN-I01-BTUNAME-STT
@@ -3300,7 +3302,7 @@
       *
            MOVE    WIDGET-INSENSITIVE
                                    TO  SPA-GMN-I01-B07-STT
-                                       SPA-GMN-I01-B08-STT
+      *                                SPA-GMN-I01-B08-STT
                                        SPA-GMN-I01-IDOYMD-STT
                                        SPA-GMN-I01-BRMNUM-STT
                                        SPA-GMN-I01-BTUNAME-STT
@@ -3333,7 +3335,7 @@
            MOVE    WIDGET-INSENSITIVE
                                    TO
                                        SPA-GMN-I01-B07-STT
-                                       SPA-GMN-I01-B08-STT
+      *                                SPA-GMN-I01-B08-STT
                                        SPA-GMN-I01-NYUINYMD-STT
                                        SPA-GMN-I01-SHOKAI-STT
                                        SPA-GMN-I01-SHOKAI-ITM-STT
@@ -5126,22 +5128,24 @@
            END-IF
       *
       *    歴作成データが最新であること
+           MOVE    ZERO                TO  FLG-RRKCHK
            COMPUTE IDX3    =   IDX1    -   1
            PERFORM VARYING IDX2    FROM    IDX3    BY  -1
                    UNTIL ( IDX2    <   1 )
-                   OR    ( SPA-ERRCD       NOT =   SPACE )
+                   OR    ( FLG-RRKCHK      NOT =   ZERO )
                IF    ( SPA-GMN-I01-TSHONUM (IDX1)
                                    =   SPA-GMN-I01-TSHONUM (IDX2) )
-                   MOVE    "1024"  TO  SPA-ERRCD
-                   MOVE    ZERO    TO  IDX2
+                   MOVE    1       TO  FLG-RRKCHK
+                   MOVE    1       TO  IDX2
                END-IF
            END-PERFORM
       *
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  480-NYUINRRK-SYUSEI-EXT
+           IF    ( FLG-RRKCHK       =   ZERO )
+               MOVE    "2"             TO  SPA-I01-I03-SYORIKBN
+           ELSE
+               MOVE    "3"             TO  SPA-I01-I03-SYORIKBN
            END-IF
       *
-           MOVE    "2"             TO  SPA-I01-I03-SYORIKBN
            MOVE    SPA-NAI-I01-PTID
                                    TO  SPA-I01-I03-PTID
            MOVE    SPA-NAI-I01-TRRKNUM (IDX1)
@@ -10540,10 +10544,10 @@
                                        TO  SPA-ERRMSG (1 : 40)
                MOVE    "ください"
                                        TO  SPA-ERRMSG (41 : )
-           WHEN    "1024"
-               MOVE    "選択歴より新しい歴が存在するため修正でき"
-                                       TO  SPA-ERRMSG (1 : 40)
-               MOVE    "ません"        TO  SPA-ERRMSG (41 : )
+      *    WHEN    "1024"
+      *        MOVE    "選択歴より新しい歴が存在するため修正でき"
+      *                                TO  SPA-ERRMSG (1 : 40)
+      *        MOVE    "ません"        TO  SPA-ERRMSG (41 : )
            WHEN    "1025"
                MOVE    "定期請求が行われていないため、負担金計算"
                                        TO  SPA-ERRMSG (1 : 40)

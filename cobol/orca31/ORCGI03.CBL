@@ -30,6 +30,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.02.05  自院歴作成機能追加
       *  01.00.02    NACL-太田    03.05.08  入院中区分追加
+      *  01.00.03    NACL-太田    03.06.05  日付以外の修正を可とする
+      *                                     区分追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -109,15 +111,14 @@
                    07  WRK-TAINFUKA-NAIYO  PIC X(80).
            03  WRK-CREYMD                  PIC X(08).
            03  WRK-SHONUM                  PIC 9(03).
+           03  WRK-DAY6-KEISAN             PIC X(08).
       *
        01  WRK-BAK-AREA.
            03  WRK-BAK-SHOKAI.
                05  WRK-BAK-SHOKAI-CD       PIC X(01).
                05                          PIC X(01).
                05  WRK-BAK-SHOKAI-NM       PIC X(06).
-           03  WRK-BAK-SHOKAI-STT          PIC S9(9)   BINARY.
            03  WRK-BAK-SHONUM              PIC S9(3).
-           03  WRK-BAK-SHONUM-STT          PIC S9(9)   BINARY.
       *
        01  CONST-AREA.
            03  CONST-ZIIN-LBL              PIC X(06)
@@ -304,17 +305,9 @@
       *    画面初期化
            PERFORM 420-CLEAR-SEC
       *
-           IF    ( SPA-I01-I03-SYORIKBN    =   "2" )
+           IF    ( SPA-I01-I03-SYORIKBN    =   "2" OR "3" )
                PERFORM 4101-INPUT-AREA-EDIT-SEC
-               MOVE    WIDGET-INSENSITIVE
-                                   TO    SPA-GMN-I03-SHOKAI-STT
-                                         SPA-GMN-I03-SHOKAI-ITM-STT
-                                         SPA-GMN-I03-SHONUM-STT
            ELSE
-               MOVE    WIDGET-NORMAL
-                                   TO    SPA-GMN-I03-SHOKAI-STT
-                                         SPA-GMN-I03-SHOKAI-ITM-STT
-                                         SPA-GMN-I03-SHONUM-STT
                IF    ( SPA-I01-I03-SHONUM  NOT =   ZERO )
                    MOVE    SPA-GMN-I03-SHOKAI-ITM (02)
                                    TO    SPA-GMN-I03-SHOKAI
@@ -332,9 +325,6 @@
       *                            TO    SPA-GMN-I03-NYUINCHUKBN
                MOVE    SPACE
                                    TO    SPA-GMN-I03-NYUINCHUKBN
-               MOVE    WIDGET-INSENSITIVE
-                                   TO    SPA-GMN-I03-NYUINCHUKBN-STT
-                                         SPA-GMN-I03-NYUINCHUKBN-ITM-STT
       *
            END-IF
       *
@@ -686,9 +676,6 @@
       *                            TO    SPA-GMN-I03-NYUINCHUKBN
                MOVE    SPACE
                                    TO    SPA-GMN-I03-NYUINCHUKBN
-               MOVE    WIDGET-INSENSITIVE
-                                   TO    SPA-GMN-I03-NYUINCHUKBN-STT
-                                         SPA-GMN-I03-NYUINCHUKBN-ITM-STT
            ELSE
                MOVE    SPA-GMN-I03-RRKKBN-ITM (01)
                                    TO    SPA-GMN-I03-RRKKBN
@@ -701,9 +688,6 @@
                                    TO    SPA-GMN-I03-NYUINCHUKBN
                END-IF
       *
-               MOVE    WIDGET-NORMAL
-                                   TO    SPA-GMN-I03-NYUINCHUKBN-STT
-                                         SPA-GMN-I03-NYUINCHUKBN-ITM-STT
            END-IF
       *
       *    初回継続区分
@@ -999,18 +983,12 @@
                                    TO  SPA-GMN-I03-RRKKBN
                MOVE    SPA-GMN-I03-NYUINCHUKBN-ITM (1)
                                    TO  SPA-GMN-I03-NYUINCHUKBN
-               MOVE    WIDGET-NORMAL
-                                   TO  SPA-GMN-I03-NYUINCHUKBN-STT
-                                       SPA-GMN-I03-NYUINCHUKBN-ITM-STT
            ELSE
                MOVE    SPA-GMN-I03-RRKKBN-ITM (2)
                                    TO  SPA-GMN-I03-RRKKBN
       *        MOVE    SPA-GMN-I03-NYUINCHUKBN-ITM (1)
       *                            TO  SPA-GMN-I03-NYUINCHUKBN
                MOVE    SPACE       TO  SPA-GMN-I03-NYUINCHUKBN
-               MOVE    WIDGET-INSENSITIVE
-                                   TO  SPA-GMN-I03-NYUINCHUKBN-STT
-                                       SPA-GMN-I03-NYUINCHUKBN-ITM-STT
            END-IF
       *
            .
@@ -1028,17 +1006,11 @@
       *        MOVE    SPA-GMN-I03-NYUINCHUKBN-ITM (1)
       *                            TO  SPA-GMN-I03-NYUINCHUKBN
                MOVE    SPACE       TO  SPA-GMN-I03-NYUINCHUKBN
-               MOVE    WIDGET-INSENSITIVE
-                                   TO  SPA-GMN-I03-NYUINCHUKBN-STT
-                                       SPA-GMN-I03-NYUINCHUKBN-ITM-STT
            ELSE
                MOVE    SPA-GMN-I03-RRKKBN-ITM (1)
                                    TO  SPA-GMN-I03-RRKKBN
                MOVE    SPA-GMN-I03-NYUINCHUKBN-ITM (1)
                                    TO  SPA-GMN-I03-NYUINCHUKBN
-               MOVE    WIDGET-NORMAL
-                                   TO  SPA-GMN-I03-NYUINCHUKBN-STT
-                                       SPA-GMN-I03-NYUINCHUKBN-ITM-STT
            END-IF
       *
            .
@@ -1174,31 +1146,13 @@
       *
       *
            MOVE    SPA-GMN-I03-SHOKAI  TO  WRK-BAK-SHOKAI
-           MOVE    SPA-GMN-I03-SHOKAI-STT
-                                       TO  WRK-BAK-SHOKAI-STT
            MOVE    SPA-GMN-I03-SHONUM
                                        TO  WRK-BAK-SHONUM
-           MOVE    SPA-GMN-I03-SHONUM-STT
-                                       TO  WRK-BAK-SHONUM-STT
       *
            PERFORM 4201-INPUT-AREA-CLEAR-SEC
       *
            MOVE    WRK-BAK-SHOKAI      TO  SPA-GMN-I03-SHOKAI
-           MOVE    WRK-BAK-SHOKAI-STT
-                                       TO  SPA-GMN-I03-SHOKAI-STT
-           MOVE    WRK-BAK-SHONUM
-                                       TO  SPA-GMN-I03-SHONUM
-           MOVE    WRK-BAK-SHONUM-STT
-                                       TO  SPA-GMN-I03-SHONUM-STT
-      *
-      *
-           IF    ( SPA-I01-I03-SYORIKBN
-                                       =   "2" )
-               MOVE    WIDGET-NORMAL   TO  SPA-GMN-I03-B04-STT
-           ELSE
-               MOVE    WIDGET-INSENSITIVE
-                                       TO  SPA-GMN-I03-B04-STT
-           END-IF
+           MOVE    WRK-BAK-SHONUM      TO  SPA-GMN-I03-SHONUM
       *
            MOVE    LOW-VALUE           TO  SPA-NAI-I03-NYUINYMD-MAE
                                            SPA-NAI-I03-TAIINYMD-MAE
@@ -1225,9 +1179,6 @@
       *                                TO  SPA-GMN-I03-NYUINCHUKBN
            MOVE    SPACE
                                        TO  SPA-GMN-I03-NYUINCHUKBN
-           MOVE    WIDGET-INSENSITIVE  
-                                   TO  SPA-GMN-I03-NYUINCHUKBN-STT
-                                       SPA-GMN-I03-NYUINCHUKBN-ITM-STT
       *
            .
       *
@@ -1290,7 +1241,7 @@
                                    TO  WRK-CREYMD
                MOVE    "UPD"       TO  WRK-UPDKBN
            ELSE
-               IF    ( SPA-I01-I03-SYORIKBN    =   "2" )
+               IF    ( SPA-I01-I03-SYORIKBN    =   "2" OR "3" )
                    MOVE    "2001"  TO  SPA-ERRCD
                    GO  TO  480-TOUROKU-EXT
                END-IF
@@ -1699,8 +1650,21 @@
       *    継続の場合、
       *    継続元が自院歴で、「入院中」でないこと
            IF    ( SPA-GMN-I03-SHOKAI-CD   =   "2" )
-               PERFORM 4801-ZIIN-NYUINCHU-CHK
-               IF    ( SPA-ERRCD       NOT =   ZERO )
+      *
+               PERFORM 4801-ZIIN-NYUINCHU-CHK-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   GO  TO  4801-KANREN-CHK-EXT
+               END-IF
+           END-IF
+      *
+      *    「入院中」を選択した場合、
+      *    既に継続先のデータが存在する場合は、
+      *    継続先のデータが入院登録で作成したデータで、
+      *    退院日の翌日が入院日となっていること
+           IF      ( SPA-GMN-I03-NYUINCHUKBN-CD    =   "1" )
+               PERFORM 4801-KEIZOKU-NYUIN-CHK-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   MOVE    6       TO  SPA-GMN-I03-CUR
                    GO  TO  4801-KANREN-CHK-EXT
                END-IF
            END-IF
@@ -1749,7 +1713,7 @@
       *****************************************************************
       *    自院入院中チェック
       *****************************************************************
-       4801-ZIIN-NYUINCHU-CHK          SECTION.
+       4801-ZIIN-NYUINCHU-CHK-SEC          SECTION.
       *
            INITIALIZE  PTNYUINRRK-REC
       *    入院履歴マスタ検索
@@ -1786,6 +1750,68 @@
            .
        4801-ZIIN-NYUINCHU-EXT.
            EXIT.
+      *****************************************************************
+      *    継続入院チェック処理
+      *****************************************************************
+       4801-KEIZOKU-NYUIN-CHK-SEC  SECTION.
+      *
+           INITIALIZE  PTNYUINRRK-REC
+      *    入院履歴マスタ検索
+           MOVE    ZERO                TO  FLG-PTNYUINRRK
+           INITIALIZE  PTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-I01-I03-PTID
+                                       TO  PTNYUINRRK-PTID
+           MOVE    SPA-NAI-I03-TAIINYMD
+                                       TO  PTNYUINRRK-NYUINYMD
+           MOVE    SPA-GMN-I03-SHONUM  TO  PTNYUINRRK-SHONUM
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "PTNYUINRRK-KEY20"  TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO  )
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           MOVE    "PTNYUINRRK-KEY20"  TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( FLG-PTNYUINRRK  NOT =   ZERO )
+               GO  TO  4801-KEIZOKU-NYUIN-CHK-EXT
+           END-IF
+      *
+
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    SPA-NAI-I03-TAIINYMD
+                                       TO  LNK-DAY6-KIJUN
+           DISPLAY "SPA-NAI-I03-TAIINYMD = " SPA-NAI-I03-TAIINYMD
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    1                   TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"   USING   STS-AREA-DAY
+                                           LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  WRK-DAY6-KEISAN
+      *
+           EVALUATE PTNYUINRRK-JTIKBN
+           WHEN    "5" 
+               MOVE    "1013"      TO  SPA-ERRCD
+               GO  TO  4801-KEIZOKU-NYUIN-CHK-EXT
+           WHEN    "6"
+               MOVE    "1014"      TO  SPA-ERRCD
+               GO  TO  4801-KEIZOKU-NYUIN-CHK-EXT
+           WHEN    OTHER
+               IF    ( PTNYUINRRK-NYUINYMD NOT =   WRK-DAY6-KEISAN )
+                   MOVE    "1012"      TO  SPA-ERRCD
+                   GO  TO  4801-KEIZOKU-NYUIN-CHK-EXT
+               END-IF
+           END-EVALUATE
+      *
+           .
+       4801-KEIZOKU-NYUIN-CHK-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    自画面編集処理
       *****************************************************************
@@ -1890,18 +1916,53 @@
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
-           MOVE    SPA-GMN-I03-B04-STT
-                                   TO  I03-B04-STT
-           MOVE    SPA-GMN-I03-SHOKAI-STT
-                                   TO  I03-SHOKAI-STT
-           MOVE    SPA-GMN-I03-SHOKAI-ITM-STT
-                                   TO  I03-SHOKAI-ITM-STT
-           MOVE    SPA-GMN-I03-SHONUM-STT
-                                   TO  I03-SHONUM-STT
-           MOVE    SPA-GMN-I03-NYUINCHUKBN-STT
-                                   TO  I03-NYUINCHUKBN-STT
-           MOVE    SPA-GMN-I03-NYUINCHUKBN-ITM-STT
-                                   TO  I03-NYUINCHUKBN-ITM-STT
+           MOVE    WIDGET-NORMAL           TO  I03-B02-STT
+                                               I03-B03-STT
+                                               I03-B04-STT
+                                               I03-SHOKAI-STT
+                                               I03-SHOKAI-ITM-STT
+                                               I03-SHONUM-STT
+                                               I03-NYUINYMD-STT
+                                               I03-TAIINYMD-STT
+                                               I03-TAISYONISSU-STT
+                                               I03-RRKKBN-STT
+                                               I03-RRKKBN-ITM-STT
+                                               I03-NYUINCHUKBN-STT
+                                               I03-NYUINCHUKBN-ITM-STT
+      *
+           EVALUATE    SPA-I01-I03-SYORIKBN
+      *    入院歴作成
+           WHEN    "1"
+               MOVE    WIDGET-INSENSITIVE  TO  I03-B04-STT
+      *
+      *    入院歴修正
+           WHEN    "2"
+               MOVE    WIDGET-INSENSITIVE  TO  I03-SHOKAI-STT
+                                               I03-SHOKAI-ITM-STT
+                                               I03-SHONUM-STT
+      *
+      *    入院歴修正（日付項目変更不可）
+           WHEN    "3"
+               MOVE    WIDGET-INSENSITIVE  TO  I03-B02-STT
+                                               I03-B03-STT
+                                               I03-B04-STT
+                                               I03-SHOKAI-STT
+                                               I03-SHOKAI-ITM-STT
+                                               I03-SHONUM-STT
+                                               I03-NYUINYMD-STT
+                                               I03-TAIINYMD-STT
+                                               I03-TAISYONISSU-STT
+                                               I03-RRKKBN-STT
+                                               I03-RRKKBN-ITM-STT
+           END-EVALUATE
+      *
+           IF    ( SPA-GMN-I03-RRKKBN-CD   =   "1" )
+               MOVE    WIDGET-NORMAL       TO  I03-NYUINCHUKBN-STT
+                                               I03-NYUINCHUKBN-ITM-STT
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  I03-NYUINCHUKBN-STT
+                                               I03-NYUINCHUKBN-ITM-STT
+           END-IF
       *
            .
        500-GMNHEN-STATE-EDIT-EXT.
@@ -1916,86 +1977,38 @@
                PERFORM 5011-INPUT-CUR-SEC
            END-IF
       *
-           IF    ( SPA-GMN-I03-CUR =   1   )
-               IF    ( SPA-GMN-I03-SHOKAI-STT  =   WIDGET-NORMAL )
-                   MOVE    "SHOKAI"    TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
-               ELSE
-                   COMPUTE SPA-GMN-I03-CUR =   SPA-GMN-I03-CUR +   1
-               END-IF
-           END-IF
+           PERFORM 5012-CUR-SKIP-SEC
       *
-           IF    ( SPA-GMN-I03-CUR =   2   )
-                   MOVE    "COMMENT"   TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
-           END-IF
-      *
-           IF    ( SPA-GMN-I03-CUR =   3   )
-                   MOVE    "NYUINYMD"  TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
-           END-IF
-      *
-           IF    ( SPA-GMN-I03-CUR =   4   )
-                   MOVE    "TAIINYMD"  TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
-           END-IF
-      *
-           IF    ( SPA-GMN-I03-CUR =   5   )
-                   MOVE    "TAISYONISSU"
-                                       TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
-           END-IF
-      *
-           IF    ( SPA-GMN-I03-CUR =   6  )
-               IF    ( SPA-GMN-I03-NYUINCHUKBN-STT =   WIDGET-NORMAL )
-                   MOVE    "NYUINCHUKBN"
-                                       TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
-               ELSE
-                   COMPUTE SPA-GMN-I03-CUR =   SPA-GMN-I03-CUR +   1
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-I03-CUR =   7   )
-                   MOVE    "BYOMEI1"   TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
-           END-IF
-      *
-           IF    ( SPA-GMN-I03-CUR =   8  )
-                   MOVE    "BYOMEI2"   TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
-           END-IF
-      *
-           IF    ( SPA-GMN-I03-CUR =   9   )
-                   MOVE    "BYOMEI3"   TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
-           END-IF
-      *
-           IF    ( SPA-GMN-I03-CUR =   10  )
-                   MOVE    "BYOMEI4"   TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
-           END-IF
-      *
-           IF    ( SPA-GMN-I03-CUR =   11  )
-                   MOVE    "BYOMEI5"   TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
-           END-IF
-      *
-           IF    ( SPA-GMN-I03-CUR =   12  )
-                   MOVE    "KHNRYO"    TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
-           END-IF
-      *
-           IF    ( SPA-GMN-I03-CUR =   99 )
-                   MOVE    "RRKKBN"    TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
-           END-IF
-      *
-           IF    ( SPA-GMN-I03-CUR =   212 )
-                   MOVE    "B12"       TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
-           END-IF
-      *
+           EVALUATE SPA-GMN-I03-CUR
+           WHEN    1
+               MOVE    "SHOKAI"        TO  MCP-WIDGET
+           WHEN    2
+               MOVE    "COMMENT"       TO  MCP-WIDGET
+           WHEN    3   
+               MOVE    "NYUINYMD"      TO  MCP-WIDGET
+           WHEN    4
+               MOVE    "TAIINYMD"      TO  MCP-WIDGET
+           WHEN    5
+               MOVE    "TAISYONISSU"   TO  MCP-WIDGET
+           WHEN    6
+               MOVE    "NYUINCHUKBN"   TO  MCP-WIDGET
+           WHEN    7
+               MOVE    "BYOMEI1"       TO  MCP-WIDGET
+           WHEN    8
+               MOVE    "BYOMEI2"       TO  MCP-WIDGET
+           WHEN    9
+               MOVE    "BYOMEI3"       TO  MCP-WIDGET
+           WHEN    10
+               MOVE    "BYOMEI4"       TO  MCP-WIDGET
+           WHEN    11
+               MOVE    "BYOMEI5"       TO  MCP-WIDGET
+           WHEN    12
+               MOVE    "KHNRYO"        TO  MCP-WIDGET
+           WHEN    99
+               MOVE    "RRKKBN"        TO  MCP-WIDGET
+           WHEN    212
+               MOVE    "B12"           TO  MCP-WIDGET
+           END-EVALUATE
       *
            .
       *
@@ -2048,6 +2061,45 @@
            EXIT.
       *
       *****************************************************************
+      *    カーソルスキップ処理
+      *****************************************************************
+       5012-CUR-SKIP-SEC           SECTION.
+      *
+           IF    ( SPA-GMN-I03-CUR =   1   )
+               IF    ( I03-SHOKAI-STT      =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I03-CUR =   SPA-GMN-I03-CUR +   1
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-I03-CUR =   3   )
+               IF    ( I03-NYUINYMD-STT    =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I03-CUR =   SPA-GMN-I03-CUR +   1
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-I03-CUR =   4   )
+               IF    ( I03-TAIINYMD-STT    =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I03-CUR =   SPA-GMN-I03-CUR +   1
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-I03-CUR =   5   )
+               IF    ( I03-TAISYONISSU-STT =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I03-CUR =   SPA-GMN-I03-CUR +   1
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-I03-CUR =   6  )
+               IF    ( I03-NYUINCHUKBN-STT =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I03-CUR =   SPA-GMN-I03-CUR +   1
+               END-IF
+           END-IF
+      *
+           .
+      *
+       5012-CUR-SKIP-EXT.
+           EXIT.
+      *****************************************************************
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
@@ -2094,6 +2146,21 @@
                MOVE    "継続元の歴が「自院歴−入院中」の場合は、"
                                        TO  SPA-ERRMSG (1:40)
                MOVE    "登録処理は行えません。"
+                                       TO  SPA-ERRMSG (41:)
+           WHEN    "1012"
+               MOVE    "継続先の入院と歴日がつながっていないため"
+                                       TO  SPA-ERRMSG (1:40)
+               MOVE    "、「退院済」として登録してください"
+                                       TO  SPA-ERRMSG (41:)
+           WHEN    "1013"
+               MOVE    "直後の継続入院の歴が他院歴の場合は、「入"
+                                       TO  SPA-ERRMSG (1:40)
+               MOVE    "院中」として登録できません"
+                                       TO  SPA-ERRMSG (41:)
+           WHEN    "1014"
+               MOVE    "直後の継続入院の歴が自院歴の場合は、「入"
+                                       TO  SPA-ERRMSG (1:40)
+               MOVE    "院中」として登録できません"
                                        TO  SPA-ERRMSG (41:)
            WHEN    "2001"
                MOVE    "更新処理に失敗しました"

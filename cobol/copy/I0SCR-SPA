@@ -442,15 +442,12 @@
       *
       *        画面入力部領域
                09  SPA-GMN-I03-INPUT-AREA.
-                 11  SPA-GMN-I03-B04-STT           PIC S9(9)   BINARY.
       *          初回
                  11  SPA-GMN-I03-SHOKAI.
                      13  SPA-GMN-I03-SHOKAI-CD     PIC X(01).
                      13                            PIC X(01).
                      13  SPA-GMN-I03-SHOKAI-NM     PIC X(06).
-                 11  SPA-GMN-I03-SHOKAI-STT        PIC S9(9)   BINARY.
                  11  SPA-GMN-I03-SHONUM            PIC S9(3).
-                 11  SPA-GMN-I03-SHONUM-STT        PIC S9(9)   BINARY.
       *          コメント
                  11  SPA-GMN-I03-COMMENT           PIC X(20).
       *          入院日
@@ -460,7 +457,8 @@
       *          通算対象日数
                  11  SPA-GMN-I03-TAISYONISSU       PIC S9(4).
       *          病名
-                 11  SPA-GMN-I03-BYOMEI            PIC X(50)
+                 11  SPA-GMN-I03-BYOMEI-G.
+                     15  SPA-GMN-I03-BYOMEI        PIC X(50)
                                                    OCCURS  5.
       *          入院基本料
                  11  SPA-GMN-I03-KHNRYO            PIC X(50).
@@ -477,7 +475,6 @@
                      13                            PIC X(01).
                      13  SPA-GMN-I03-NYUINCHUKBN-NM
                                                    PIC X(08).
-                 11  SPA-GMN-I03-NYUINCHUKBN-STT   PIC S9(9)   BINARY.
       *
       *        画面入力部領域
                09  SPA-NAI-I03-INPUT-AREA.
@@ -498,7 +495,6 @@
                    13  SPA-GMN-I03-SHOKAI-ITM PIC X(8)
                                            OCCURS  2
                                            INDEXED BY  CMB-IDX11.
-                 11  SPA-GMN-I03-SHOKAI-ITM-STT    PIC S9(9)   BINARY.
                  11  SPA-GMN-I03-CMB-RRKKBN.
                    13  SPA-GMN-I03-RRKKBN-CNT      PIC S9(9)
                                                    BINARY.
@@ -509,8 +505,6 @@
                                                    BINARY.
                    13  SPA-GMN-I03-NYUINCHUKBN-ITM PIC X(10)
                                            OCCURS  2.
-                 11  SPA-GMN-I03-NYUINCHUKBN-ITM-STT
-                                                   PIC S9(9)   BINARY.
       *
       *    画面スパ領域
          03  SPA-I04.

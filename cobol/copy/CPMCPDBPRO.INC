@@ -248,6 +248,7 @@
       *                                     KEY14,KEY21,KEY22のとき保険者番号
       *                                     に初期値を編集
       *  01.01.76    NACL-小豆沢　03/05/28  JYURRK-KEY24追加
+      *  01.01.77    NACL-太田    03/06/05  PTNYUINRRK-KEY20追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2420,6 +2421,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-KEY19"
                    MOVE    PATH-TBL-PTNYUINRRK-KEY19
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY20"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY20
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-ALL"
                    MOVE    PATH-TBL-PTNYUINRRK-ALL

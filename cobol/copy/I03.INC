@@ -17,6 +17,8 @@
       ********************************************************************
         02  I03.
             03  I03-FIXED4.
+              04  I03-B02-STT              PIC S9(9)   BINARY.
+              04  I03-B03-STT              PIC S9(9)   BINARY.
               04  I03-B04-STT              PIC S9(9)   BINARY.
               04  I03-CMB-SHOKAI.
                 05  I03-SHOKAI             PIC X(8).
@@ -30,17 +32,22 @@
               04  I03-SHONUM-STT           PIC S9(9)   BINARY.
               04  I03-COMMENT              PIC X(20).
               04  I03-NYUINYMD             PIC X(10).
+              04  I03-NYUINYMD-STT         PIC S9(9)   BINARY.
               04  I03-TAIINYMD             PIC X(10).
+              04  I03-TAIINYMD-STT         PIC S9(9)   BINARY.
               04  I03-TAISYONISSU          PIC S9(4).
+              04  I03-TAISYONISSU-STT      PIC S9(9)   BINARY.
               04  I03-BYOMEI               PIC X(50)
                                            OCCURS  5.
               04  I03-KHNRYO               PIC X(50).
               04  I03-CMB-RRKKBN.
                 05  I03-RRKKBN             PIC X(10).
+                05  I03-RRKKBN-STT         PIC S9(9)   BINARY.
                 05  I03-RRKKBN-CNT         PIC S9(9)
                                            BINARY.
                 05  I03-RRKKBN-ITM         PIC X(10)
                                            OCCURS  2.
+                05  I03-RRKKBN-ITM-STT     PIC S9(9)   BINARY.
               04  I03-CMB-NYUINCHUKBN.
                 05  I03-NYUINCHUKBN        PIC X(10).
                 05  I03-NYUINCHUKBN-STT    PIC S9(9)   BINARY.

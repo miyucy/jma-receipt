@@ -1,5 +1,11 @@
 I03	{
 	fixed4	{
+		B02	{
+			state	int;
+		};
+		B03	{
+			state	int;
+		};
 		B04	{
 			state	int;
 		};
@@ -21,12 +27,15 @@ I03	{
 		};
 		NYUINYMD	{
 			value	varchar(10);
+			state	int;
 		};
 		TAIINYMD	{
 			value	varchar(10);
+			state	int;
 		};
 		TAISYONISSU	{
 			value	number(4);
+			state	int;
 		};
 		BYOMEI1	{
 			value	varchar(50);
@@ -49,9 +58,11 @@ I03	{
 		CMB_RRKKBN	{
 			RRKKBN	{
 				value	varchar(10);
+				state	int;
 			};
 			count	int;
 			item	varchar(10)[02];
+			state	int;
 		};
 		CMB_NYUINCHUKBN	{
 			NYUINCHUKBN	{

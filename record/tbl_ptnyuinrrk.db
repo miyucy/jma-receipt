@@ -307,6 +307,21 @@ path	key19		{
 	};
 };
 
+path	key20		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key20_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID
+			AND		PTID        =   :PTID
+			AND		RRKEDANUM	=	1
+			AND		NYUINYMD	>	:NYUINYMD
+			AND		SHONUM  	=	:SHONUM
+			ORDER BY NYUINYMD ,TAIINYMD, RRKNUM ,RRKEDANUM 
+		;
+	};
+};
+
 path	all	{
 	DBSELECT	{
 		DECLARE tbl_ptnyuinrrk_all_csr CURSOR FOR
