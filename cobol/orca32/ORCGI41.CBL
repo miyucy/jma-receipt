@@ -673,6 +673,7 @@
       *
       *        Æþ±¡ÅÐÏ¿¤è¤ê
                WHEN    "I01"
+               WHEN    "K02N"
                    INITIALIZE                 SPA-I4KYOUTU
                    MOVE    SPA-MOTOPG         TO  SPA-MOTOPG2
                    MOVE    SPA-MOTOPG         TO  SPA-I40-MOTOPG
