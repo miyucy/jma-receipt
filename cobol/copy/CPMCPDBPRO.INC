@@ -158,6 +158,10 @@
       *              NACL-太田    02/11/01  SYUNOU-DEL2追加
       *  01.01.15    NACL-太田    02/11/18  NYUKSNCHK-KEY追加
       *  01.01.16    NACL-太田    02/11/27  TENSU-KEY15追加
+      *  01.01.17    NACL-太田    02/12/10  SYUNOU-DEL2削除
+      *                                     SYUNOU-KEY5追加
+      *                                     SYUMEI-KEY3追加
+      *                                     PTNYUINRRK-KEY10追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -505,24 +509,23 @@
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY2"
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY3"
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY4"
+               WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY5"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY2"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY3"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY4"
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY5"
                    MOVE    PATH-TBL-SYUNOU-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL1"
                    MOVE    PATH-TBL-SYUNOU-DEL1
                                        TO  WRK-PATH
-      *---- (NYUIN) LINE ADD START    --------------------------------
-               WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL2"
-                   MOVE    PATH-TBL-SYUNOU-DEL2
-                                       TO  WRK-PATH
-      *---- (NYUIN) LINE ADD END      --------------------------------
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY"
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY3"
                WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY"
                WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY2"
+               WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY3"
                    MOVE    PATH-TBL-SYUMEI-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SYUMEI-DEL1"
@@ -1286,6 +1289,9 @@
                WHEN    ANY             ALSO   "SYUMEI-KEY2"
                    MOVE    PATH-TBL-SYUMEI-KEY2
                                        TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUMEI-KEY3"
+                   MOVE    PATH-TBL-SYUMEI-KEY3
+                                       TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUMEI-ALL"
                    MOVE    PATH-TBL-SYUMEI-ALL
@@ -1302,6 +1308,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY4"
                    MOVE    PATH-TBL-SYUNOU-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY5"
+                   MOVE    PATH-TBL-SYUNOU-KEY5
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"
@@ -2020,6 +2029,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTNYUINRRK-KEY9"
                    MOVE    PATH-TBL-PTNYUINRRK-KEY9
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTNYUINRRK-KEY10"
+                   MOVE    PATH-TBL-PTNYUINRRK-KEY10
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTTAINFUKA-KEY"
                    MOVE    PATH-TBL-PTTAINFUKA-KEY

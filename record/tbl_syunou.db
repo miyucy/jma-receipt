@@ -261,6 +261,20 @@ path	key4 	{
 		;
 	};
 };
+
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SKYSTYMD    >=  :SKYSTYMD
+			AND   SKYEDYMD    <=  :SKYEDYMD
+		;
+	};
+};
+
 path	all 	{
 	DBSELECT	{
 		DECLARE tbl_syunou_all_csr CURSOR FOR
@@ -276,18 +290,6 @@ path	del1 	{
 		FROM tbl_syunou
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
-		;
-	};
-};
-
-path	del2 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_syunou
-			WHERE   HOSPID    =   :HOSPID
-			AND   PTID        =   :PTID
-			AND   SKYSTYMD    >=  :SKYSTYMD
-			AND   SKYEDYMD    <=  :SKYEDYMD
 		;
 	};
 };
