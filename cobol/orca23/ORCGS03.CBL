@@ -40,6 +40,7 @@
       *  01.01.09    MCC-藤原     02/02/27  未収理由の削除、自費消費税
       *                                     なしの追加
       *  01.01.10    NACL-藤原    02/11/05  入外区分追加
+      *  01.01.11    NACL-太田    02/12/12  前回未収額表示の不具合を修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -145,6 +146,7 @@
                05  SPA-NYUKINGK                  PIC S9(10).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-CHOSEI            PIC X(01).
+                   07  SPA-NAI-SRYKA             PIC X(02).
                05  SPA-GMN-MISYU-MAX             PIC 9(02).
       *    フラグ領域
        01  STS-AREA.
@@ -495,13 +497,14 @@
            MOVE    SPA-S01-BIRTHDAYW   TO  SPA-GMN-BIRTHDAY
            MOVE    SPA-S01-HKNCOMBIMEI TO  SPA-GMN-KUMI
       *****MOVE    SPA-S01-FTNRATEMEI  TO  SPA-GMN-RITU
+           MOVE    SPA-S01-SRYKA       TO  SPA-NAI-SRYKA
            MOVE    SPA-S01-SRYKAMEI    TO  SPA-GMN-SRYKA
       *****MOVE    SPA-S01-SRYYMW      TO  SPA-GMN-SRYYMD 
            EVALUATE    SPA-S01-NYUGAIKBN
                WHEN    "1"
                    MOVE    "入院"          TO  SPA-GMN-NYUGAIKBN      
                WHEN    "2"
-                   MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBN      
+                   MOVE    "外来"          TO  SPA-GMN-NYUGAIKBN      
            END-EVALUATE    
       *
       *    処理内容
@@ -839,8 +842,8 @@
            END-IF
            PERFORM     UNTIL      (FLG-SYUNOU      =   1  )
                MOVE    ZERO               TO  FLG-SYORI
-               IF     (SPA-GMN-SRYKA       NOT =   SPACE    )  AND
-                      (SPA-GMN-SRYKA       NOT =   SYU-SRYKA)
+               IF     (SPA-NAI-SRYKA       NOT =   SPACE    )  AND
+                      (SPA-NAI-SRYKA       NOT =   SYU-SRYKA)
                    MOVE    1                 TO  FLG-SYORI
                END-IF
       *
