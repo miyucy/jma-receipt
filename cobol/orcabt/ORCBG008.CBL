@@ -832,7 +832,7 @@
       *****************************************************************
        320-BODY-HEN-SEC            SECTION.
       *
-           PERFORM UNTIL ( CNT-LINE        >   31 )
+           PERFORM UNTIL ( CNT-LINE        >=  31 )
                    OR    ( FLG-TOKEI       =   1 )
                    OR    ( KEY-PTID    NOT =   TOKEI-PTID )
                    OR    ( KEY-SYUBETU NOT =   TOKEI-SYUBETU )
