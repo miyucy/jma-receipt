@@ -280,6 +280,11 @@
                05  WK-FREE-YUKOKETA          PIC  9(02).
                05  WK-FREE-NAME              PIC  X(200).
       *
+       01  WRK-FREE-AREA2.                                              0304
+           03  WRK-FREEINF2                    OCCURS 50.               0304
+               05  WK-FREE-YUKOKETA2         PIC  9(02).                0304
+               05  WK-FREE-NAME2             PIC  X(200).               0304
+      *
       *理学療法剤番号退避領域
        01  WRK-TAIHI-ZAINUM.
            03  WRK-TAIHI-ZAINUM-T              OCCURS  5.
@@ -2182,27 +2187,6 @@
            EXIT.
       *
       *****************************************************************
-      *    算定日の確定
-      *****************************************************************
-       2001-SANTEI-DAY-SEC          SECTION.
-      *
-           INITIALIZE                TBL-SANTEI-DAY
-      *
-           MOVE    ZERO          TO  DAY-IDX
-           PERFORM    VARYING    IDX  FROM   1   BY   1
-                      UNTIL     (IDX      >   31)  OR
-                                (DAY-IDX  >   31)
-                IF   RECE04-KAISU(1 IDX)  NOT = ZERO
-                      ADD   1     TO   DAY-IDX
-                      MOVE  IDX   TO   TB-SANTEI-DAY(DAY-IDX)
-                END-IF
-           END-PERFORM
-      *
-           .
-       2001-SANTEI-DAY-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    手術日のコメントがあるか判定
       *****************************************************************
        2001-SHUJUTSU-HANTEI-SEC          SECTION.
@@ -2270,11 +2254,86 @@
            EXIT.
       *
       *****************************************************************
+      *    ＣＴ・ＭＲＩのコメントがあるか判定
+      *****************************************************************
+       2001-CTMRI-HANTEI-SEC          SECTION.
+      *
+           MOVE      ZERO              TO      FLG-CTMRI-COMMENT
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL   ( IDX           >   TBL-CTMRI-MAX )
+                      OR     ( FLG-CTMRI-COMMENT  =   1        )
+      *
+             INITIALIZE                        SRYACT-REC
+             MOVE    RECE04-HOSPID     TO      SRY-HOSPID
+             MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
+             MOVE    RECE04-PTID       TO      SRY-PTID
+             MOVE    RECE04-SRYYM      TO      SRY-SRYYM
+             MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
+             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (1)
+             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (2)
+             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (3)
+             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (4)
+             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (5)
+      *
+             MOVE    SRYACT-REC        TO      MCPDATA-REC
+             MOVE    "DBSELECT"        TO      MCP-FUNC
+             MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+             CALL    "ORCMCPSUB"       USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+             IF  MCP-RC                NOT  =  ZERO
+                 CONTINUE
+             ELSE
+                 MOVE    "DBFETCH"     TO      MCP-FUNC
+                 MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
+                 CALL    "ORCMCPSUB"           USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+                 IF      MCP-RC        =       ZERO
+                     MOVE    1         TO      FLG-CTMRI-COMMENT
+                 END-IF
+             END-IF
+      *
+             INITIALIZE                        MCPAREA
+             MOVE    "DBCLOSE"         TO      MCP-FUNC
+             MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+             CALL    "ORCMCPSUB"       USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           END-PERFORM
+      *
+           IF      FLG-CTMRI-COMMENT   =      1
+                MOVE       2       TO     FLG-COMMENT
+                PERFORM    2001-SHUJUTSU-ETC-COMMENT-SEC
+           ELSE
+                MOVE       RECE04-REC    TO   RECE041-REC
+                WRITE      RECE041-REC
+                ADD     1          TO      CNT-RECE04
+                PERFORM    2002-RECE05-TENSOU-SEC
+           END-IF
+      *
+           .
+       2001-CTMRI-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    手術日等のコメント編集
       *****************************************************************
        2001-SHUJUTSU-ETC-COMMENT-SEC          SECTION.
       *
            PERFORM   2001-SANTEI-DAY-SEC
+      *
+           MOVE       ZERO       TO   IDZ                               0304
+           INITIALIZE            WRK-FREE-AREA2                         0304
+      *
+           PERFORM  2002-FREE-COMMENT2-SEC                              0304
+      *
       *    ※明細が５以上の場合
            INITIALIZE                      RECE05-REC
            MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
@@ -2306,37 +2365,51 @@
            MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
            INITIALIZE                       WRK-DATAKBNINF-AREA
       *    手術日コメントの挿入
-           PERFORM  VARYING      IDX    FROM  1   BY   1
-                    UNTIL       (IDX    >     31)      OR
-                                (TB-SANTEI-DAY(IDX)  =  ZERO)
-               ADD     1                    TO  IDX-RECE05
-               MOVE    SPACE                TO  COM-RECE05-REC
-               INITIALIZE                       COM-RECE05-REC
-               EVALUATE   FLG-COMMENT
-                  WHEN    1
-                    MOVE    CONS-SHUJUTU-COMMENT TO  COM-SRYCD(1)
-                    MOVE    ZERO                 TO  COM-SRYSURYO(1)
-                    MOVE    6                    TO  COM-YUKOKETA(1)
-                    MOVE    "手術　　　日"       TO  COM-NAME(1)
-                    MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
-                    MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
-                    MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-                                                     (IDX-RECE05)
-                    MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-                                                     (IDX-RECE05)
-                  WHEN    2
-                    MOVE    "810000001"          TO  COM-SRYCD(1)
-                    MOVE    ZERO                 TO  COM-SRYSURYO(1)
-                    MOVE    6                    TO  COM-YUKOKETA(1)
-                    MOVE    "実施　　　日"       TO  COM-NAME(1)
-                    MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
-                    MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
-                    MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-                                                     (IDX-RECE05)
-                    MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-                                                     (IDX-RECE05)
-               END-EVALUATE
-           END-PERFORM
+      *     PERFORM  VARYING      IDX    FROM  1   BY   1
+      *              UNTIL       (IDX    >     31)      OR
+      *                          (TB-SANTEI-DAY(IDX)  =  ZERO)
+      *         ADD     1                    TO  IDX-RECE05
+      *         MOVE    SPACE                TO  COM-RECE05-REC
+      *         INITIALIZE                       COM-RECE05-REC
+      *         EVALUATE   FLG-COMMENT
+      *            WHEN    1
+      *              MOVE    CONS-SHUJUTU-COMMENT TO  COM-SRYCD(1)
+      *              MOVE    ZERO                 TO  COM-SRYSURYO(1)
+      *              MOVE    6                    TO  COM-YUKOKETA(1)
+      *              MOVE    "手術　　　日"       TO  COM-NAME(1)
+      *              MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
+      *              MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
+      *              MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
+      *                                               (IDX-RECE05)
+      *              MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
+      *                                               (IDX-RECE05)
+      *            WHEN    2
+      *              MOVE    "810000001"          TO  COM-SRYCD(1)
+      *              MOVE    ZERO                 TO  COM-SRYSURYO(1)
+      *              MOVE    6                    TO  COM-YUKOKETA(1)
+      *              MOVE    "実施　　　日"       TO  COM-NAME(1)
+      *              MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
+      *              MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
+      *              MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
+      *                                               (IDX-RECE05)
+      *              MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
+      *                                               (IDX-RECE05)
+      *         END-EVALUATE
+      *     END-PERFORM
+      *
+      *
+           MOVE    SPACE               TO  COM-RECE05-REC
+           INITIALIZE                      COM-RECE05-REC
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   50    )
+                         OR      ( WK-FREE-NAME2(IDX) =   SPACE )
+                ADD    1                  TO  IDX-RECE05
+                MOVE   "810000001"        TO  COM-SRYCD(1)
+                MOVE   ZERO               TO  COM-SRYSURYO(1)
+                MOVE   COM-SRYACTINF(1)   TO  WRK-SRYACTINF(IDX-RECE05)
+                MOVE   WRK-FREEINF2(IDX)  TO  WRK-NAMEINF(IDX-RECE05)
+           END-PERFORM 
       *
            PERFORM
              UNTIL  ( FLG-RECE05           =   1                   )
@@ -2417,72 +2490,194 @@
            EXIT.
       *
       *****************************************************************
-      *    ＣＴ・ＭＲＩのコメントがあるか判定
+      *    算定日の確定
       *****************************************************************
-       2001-CTMRI-HANTEI-SEC          SECTION.
+       2001-SANTEI-DAY-SEC          SECTION.
       *
-           MOVE      ZERO              TO      FLG-CTMRI-COMMENT
+           INITIALIZE                TBL-SANTEI-DAY
       *
-           PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL   ( IDX           >   TBL-CTMRI-MAX )
-                      OR     ( FLG-CTMRI-COMMENT  =   1        )
-      *
-             INITIALIZE                        SRYACT-REC
-             MOVE    RECE04-HOSPID     TO      SRY-HOSPID
-             MOVE    RECE04-NYUGAIKBN  TO      SRY-NYUGAIKBN
-             MOVE    RECE04-PTID       TO      SRY-PTID
-             MOVE    RECE04-SRYYM      TO      SRY-SRYYM
-             MOVE    RECE04-ZAINUM     TO      SRY-ZAINUM
-             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (1)
-             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (2)
-             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (3)
-             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (4)
-             MOVE    TBL-CTMRI(IDX)    TO      SRY-SRYCD (5)
-      *
-             MOVE    SRYACT-REC        TO      MCPDATA-REC
-             MOVE    "DBSELECT"        TO      MCP-FUNC
-             MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-             CALL    "ORCMCPSUB"       USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
-             IF  MCP-RC                NOT  =  ZERO
-                 CONTINUE
-             ELSE
-                 MOVE    "DBFETCH"     TO      MCP-FUNC
-                 MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
-                 CALL    "ORCMCPSUB"           USING
-                                               MCPAREA
-                                               ORCMCPAREA
-                                               MCPDATA-REC
-                 IF      MCP-RC        =       ZERO
-                     MOVE    1         TO      FLG-CTMRI-COMMENT
-                 END-IF
-             END-IF
-      *
-             INITIALIZE                        MCPAREA
-             MOVE    "DBCLOSE"         TO      MCP-FUNC
-             MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
-             CALL    "ORCMCPSUB"       USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *
+           MOVE    ZERO          TO  DAY-IDX
+           PERFORM    VARYING    IDX  FROM   1   BY   1
+                      UNTIL     (IDX      >   31)  OR
+                                (DAY-IDX  >   31)
+                IF   RECE04-KAISU(1 IDX)  NOT = ZERO
+                      ADD   1     TO   DAY-IDX
+                      MOVE  IDX   TO   TB-SANTEI-DAY(DAY-IDX)
+                END-IF
            END-PERFORM
       *
-           IF      FLG-CTMRI-COMMENT   =      1
-                MOVE       2       TO     FLG-COMMENT
-                PERFORM    2001-SHUJUTSU-ETC-COMMENT-SEC
-           ELSE
-                MOVE       RECE04-REC    TO   RECE041-REC
-                WRITE      RECE041-REC
-                ADD     1          TO      CNT-RECE04
-                PERFORM    2002-RECE05-TENSOU-SEC
-           END-IF
+           .
+       2001-SANTEI-DAY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    手術日等の日付の編集
+      *****************************************************************
+       2002-FREE-COMMENT2-SEC          SECTION.                         0304
+      *
+           ADD      1          TO    IDZ
+      *
+           EVALUATE   FLG-COMMENT
+              WHEN    1
+                 MOVE     4          TO    WRK-KETA
+                                           WRK-KETA-TAIHI
+                 MOVE     2          TO    WRK-KETA2
+                 MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
+                 MOVE    "手術"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
+              WHEN    2
+                 MOVE     4          TO    WRK-KETA
+                                           WRK-KETA-TAIHI
+                 MOVE     2          TO    WRK-KETA2
+                 MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
+                 MOVE    "実施"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
+           END-EVALUATE
+      *
+           MOVE      ZERO          TO  FLG-FIRST
+      *
+           PERFORM   VARYING   IDX    FROM   1   BY   1
+                          UNTIL   (IDX                 >    31)
+                           OR     (TB-SANTEI-DAY(IDX)  =  ZERO)
+      *
+                 IF  FLG-FIRST  =  ZERO
+                    IF  TB-SANTEI-DAY(IDX)     <  10 
+      *
+                       MOVE   TB-SANTEI-DAY(IDX)  TO  IDY
+      *
+                       ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                       COMPUTE  WRK-KETA   =  WRK-KETA   +  1
+                       MOVE    "　"
+                           TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+      *
+                       ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                       COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                       MOVE    TBL-DAY(IDY)(3:2)     
+                           TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+      *
+                       ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                       COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                       MOVE    "日"
+                           TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                    ELSE
+      *
+                       MOVE   TB-SANTEI-DAY(IDX)  TO  IDY
+      *
+                       ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                       COMPUTE  WRK-KETA   =  WRK-KETA   +  1
+                       MOVE    "　"
+                           TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+      *
+                       ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
+                       COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                       MOVE    TBL-DAY(IDY)     
+                           TO  WK-FREE-NAME2(IDZ)(WRK-KETA:4)
+      *
+                       ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                       COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                       MOVE    "日"
+                           TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                    END-IF
+                    MOVE      1              TO  FLG-FIRST
+                 ELSE
+                    IF  TB-SANTEI-DAY(IDX)     <  10 
+      *
+                       MOVE   TB-SANTEI-DAY(IDX)  TO  IDY
+      *
+                       IF    WK-FREE-YUKOKETA2(IDZ)  =  25
+                          PERFORM  2002-FREE-COMMENT2-KAIGYO-SEC
+                          ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  1
+                          MOVE    "、"
+                                    TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                       ELSE
+                          ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    "、"
+                                    TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+      *
+                       END-IF
+      *
+                       IF    WK-FREE-YUKOKETA2(IDZ)  =  24 OR 25
+                          PERFORM  2002-FREE-COMMENT2-KAIGYO-SEC
+                          ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  1
+                          MOVE    TBL-DAY(IDY)(3:2)     
+                                    TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+      *
+                          ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    "日"
+                                   TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2) 
+                       ELSE
+                          ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    TBL-DAY(IDY)(3:2)     
+                                    TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+      *
+                          ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    "日"
+                                   TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2) 
+                       END-IF
+                    ELSE
+      *
+                       MOVE   TB-SANTEI-DAY(IDX)  TO  IDY
+      *
+                       IF    WK-FREE-YUKOKETA2(IDZ)  =  25
+                          PERFORM  2002-FREE-COMMENT2-KAIGYO-SEC
+                          ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  1
+                          MOVE    "、"
+                                   TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                       ELSE
+                          ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    "、"
+                                   TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                       END-IF
+      *
+                       IF    WK-FREE-YUKOKETA2(IDZ)  =  23 OR 24 OR 25
+                          PERFORM  2002-FREE-COMMENT2-KAIGYO-SEC
+                          ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  1
+                          MOVE    TBL-DAY(IDY)     
+                                   TO  WK-FREE-NAME2(IDZ)(WRK-KETA:4)
+      *
+                          ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                          MOVE    "日"
+                                   TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                       ELSE
+                          ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    TBL-DAY(IDY)     
+                                   TO  WK-FREE-NAME2(IDZ)(WRK-KETA:4)
+      *
+                          ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                          MOVE    "日"
+                                   TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                       END-IF
+                    END-IF
+                 END-IF
+      *
+           END-PERFORM
+           .
+       2002-FREE-COMMENT2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    手術日等の日付の編集（改行）
+      *****************************************************************
+       2002-FREE-COMMENT2-KAIGYO-SEC          SECTION.                  0304
+      *
+           ADD      1              TO  IDZ
+      *
+           MOVE    WRK-KETA-TAIHI  TO  WRK-KETA
+           MOVE    WRK-KETA2       TO  WK-FREE-YUKOKETA2(IDZ)
+           MOVE    ALL "　"        TO  WK-FREE-NAME2(IDZ)(1:WRK-KETA)
       *
            .
-       2001-CTMRI-HANTEI-EXT.
+       2002-FREE-COMMENT2-KAIGYO-EXT.
            EXIT.
       *
       *****************************************************************
