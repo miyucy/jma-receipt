@@ -37,6 +37,7 @@
       *  01.00.06    MCC−多々納  02/04/11  労災追加
       *  01.00.07    NACL−多々納 02/08/20  検査グループ変更
       *  01.00.08    NACL−多々納 02/11/05  一括入力へ変更
+      *  01.00.09    NACL−多々納 02/12/11  期限外の空白表示修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -544,8 +545,9 @@
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-               UNTIL      (IDX         >   200 )   OR
+           MOVE    ZERO                TO  IDX
+           PERFORM
+               UNTIL      (IDX             >=  200 )   OR
                           (FLG-INPUTCD     =   1   )
       *
                PERFORM 31011-INPUTCD-CHK-SEC
@@ -589,47 +591,9 @@
                                                     MCPDATA-REC
       *
                        IF      FLG-TENSU           =   ZERO
-      *
-                           ADD     1               TO  WRK-CNT-ENT
-                           MOVE    IDX             TO  SPA-J98-GMN-NO
-                                                                (IDX)
-                           MOVE    ICD-INPUTCD     TO
-                                                   SPA-J98-GMN-INPUTCD
-                                                                (IDX)
-                           MOVE    ICD-SRYCD       TO  SPA-J98-GMN-SRYCD
-                                                                (IDX)
                            PERFORM 31021-TENSU-CHK-SEC
                            IF      FLG-CHK         =   ZERO
-                               MOVE    TNS-NAME
-                                               TO  SPA-J98-GMN-NAME
-                                                                (IDX)
-                               MOVE    TNS-TEN
-                                               TO  SPA-J98-GMN-KISOTEN
-                                                                (IDX)
-      *                         薬剤・器材の時単位
-                               IF      TNS-SRYCD (1:1) =   "6"  OR  "7"
-                                   MOVE    TNS-TANINAME    TO
-                                               SPA-J98-GMN-TANI(IDX)
-                               END-IF
-      *
-      *----(01.00.01) LINE ADD START ----------------------------------
-      *                診療行為で老人の時、再編集
-                               IF     (TNS-SRYCD(1:1)      =   "1") AND
-                                      (TNS-ROUTEKKBN       =   2  )
-                                   MOVE    SPACE   TO  SPA-J98-GMN-NAME
-                                                                (IDX)
-                                   STRING  "［老］"
-                                     TNS-NAME      DELIMITED   BY  SIZE
-                                     INTO        SPA-J98-GMN-NAME(IDX)
-                                   END-STRING
-                               END-IF
-                           ELSE
-                               INITIALIZE          SPA-J98-GMN-TBLREC
-                                                                (IDX)
-                               COMPUTE IDX             =   IDX    -   1
-                               COMPUTE WRK-CNT-ENT     =   WRK-CNT-ENT
-                                                       -   1
-      *----(01.00.01) LINE ADD START ----------------------------------
+                               PERFORM 31012-INPUTCD-HEN-SEC
                            END-IF
                        END-IF
                    END-IF
@@ -651,6 +615,38 @@
       *
            .
        3101-INPUTCD-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   入力コードより編集処理
+      *****************************************************************
+       31012-INPUTCD-HEN-SEC                 SECTION.
+      *
+           ADD     1                   TO  IDX
+           ADD     1                   TO  WRK-CNT-ENT
+           MOVE    IDX                 TO  SPA-J98-GMN-NO     (IDX)
+           MOVE    ICD-INPUTCD         TO  SPA-J98-GMN-INPUTCD (IDX)
+           MOVE    ICD-SRYCD           TO  SPA-J98-GMN-SRYCD   (IDX)
+           MOVE    TNS-NAME            TO  SPA-J98-GMN-NAME    (IDX)
+           MOVE    TNS-TEN             TO  SPA-J98-GMN-KISOTEN (IDX)
+      *    薬剤・器材の時単位
+           IF      TNS-SRYCD (1:1) =   "6"  OR  "7"
+                MOVE    TNS-TANINAME       TO  SPA-J98-GMN-TANI(IDX)
+           END-IF
+      *
+      *----(01.00.01) LINE ADD START ----------------------------------
+      *    診療行為で老人の時、再編集
+           IF     (TNS-SRYCD(1:1)      =   "1") AND
+                  (TNS-ROUTEKKBN       =   2  )
+                MOVE    SPACE              TO  SPA-J98-GMN-NAME (IDX)
+                STRING  "［老］"
+                        TNS-NAME      DELIMITED   BY  SIZE
+                               INTO        SPA-J98-GMN-NAME(IDX)
+                END-STRING
+           END-IF
+      *
+           .
+       31012-INPUTCD-HEN-EXT.
            EXIT.
       *
       *****************************************************************
