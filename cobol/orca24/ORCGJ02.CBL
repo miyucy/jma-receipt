@@ -3066,7 +3066,6 @@
                GO      TO      41010-PTNUM-SYORI-EXT
            END-IF
       *
-      *
       *    前回患者
            MOVE    SPA-GMN-PTNUM       TO  SPA-LAST-PTNUM
            MOVE    SPA-GMN-PTID        TO  SPA-LAST-PTID
@@ -3219,10 +3218,17 @@
                        ELSE
                            MOVE    1                   TO  WRK-STDD
                        END-IF
-                       PERFORM VARYING IDX-D   FROM    WRK-STDD BY  1
-                               UNTIL   IDX-D   >   WRK-EDDD
-                           MOVE    1           TO  SPA-NAI-NYUIN (IDX-D)
-                       END-PERFORM
+      *                他院の時、入院中としない
+                       IF      PTNYUINRRK-JTIKBN   =   "5"
+                                                   OR  "6"
+                           CONTINUE
+                       ELSE
+                           PERFORM VARYING IDX-D   FROM  WRK-STDD BY  1
+                                   UNTIL   IDX-D   >   WRK-EDDD
+                               MOVE    1           TO  SPA-NAI-NYUIN
+                                                         (IDX-D)
+                           END-PERFORM
+                       END-IF
                    END-IF
                END-IF
       *
