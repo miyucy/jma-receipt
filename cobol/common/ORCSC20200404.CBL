@@ -845,7 +845,8 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)
-               IF      WRK-COM-SRYKBN(IDX)(1:1)    =   "2"
+               IF     (WRK-COM-SRYKBN(IDX)(1:1)    =   "2" )  OR
+                      (WRK-COM-SRYSYUKBN(IDX)      =   "820")
                    IF      WRK-COM-SRYKA (IDX)     =   SPACE
                        MOVE    SPA-SRYKA      TO  WRK-COM-SRYKA(IDX)
                    END-IF
@@ -1438,7 +1439,8 @@
                END-IF
            ELSE
       *        処方箋料を算定しない場合の処方箋料の有無
-               IF      IDX-SYOHOU      NOT =   ZERO
+               IF     (FLG-SYOHO-CHK       =   1   )  AND
+                      (IDX-SYOHOU      NOT =   ZERO)
                    MOVE    1               TO  FLG-SYOHOSENN
                END-IF
            END-IF
