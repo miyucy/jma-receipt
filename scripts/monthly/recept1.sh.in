@@ -40,7 +40,8 @@ fi
             rm  $4
         fi
         
-        rm  /var/tmp/RECE*
+        rm  /var/tmp/RECE0*
+        rm  /var/tmp/RECE11*
         
 	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCR0010 -parameter $1$2$3$5$6 > /home/orca/recept1.log
 	
