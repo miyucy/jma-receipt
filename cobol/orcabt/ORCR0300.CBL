@@ -65,6 +65,8 @@
       *                                     在宅（１４）のときコメントは
       *                                     最後に記載する
       *  01.00.22    NACL-藤原    03/12/17  特定器材の単位コード編集
+      *  01.00.23    NACL-藤原    03/12/19  病床数を一般病床数から編集
+      *                                     山形の地方公費対応（国保）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -971,8 +973,8 @@
            MOVE    10                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    病床数
-           IF      SYS-1001-BEDSU      >   ZERO
-               MOVE    SYS-1001-BEDSU      TO  WRK-NUM
+           IF      SYS-1001-BEDSUIPN   >=  200
+               MOVE    SYS-1001-BEDSUIPN   TO  WRK-NUM
                MOVE    3                   TO  WRK-NAGASA
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC         
@@ -3672,7 +3674,19 @@
                    OR    ( RECE02-TSTPTNUMKBN
                                            =   "1"                   )
                            GO  TO  900-RECE02-READ-SEC
-                   END-IF                       
+                   END-IF
+      *
+      *            山形地方公費対応（国保）
+                   IF    ( SYS-1001-PREFNUM    =   "06" )
+                   AND   ( RECE02-TEISYUTUSAKI =   "2"  ) 
+                       IF    ( RECE02-KOHNUM (1) (1:1) =   "1" OR  "2" )
+                       OR    ( RECE02-KOHNUM (2) (1:1) =   "1" OR  "2" )
+                       OR    ( RECE02-KOHNUM (3) (1:1) =   "1" OR  "2" )
+                       OR    ( RECE02-KOHNUM (4) (1:1) =   "1" OR  "2" )
+                           GO  TO  900-RECE02-READ-SEC
+                       END-IF
+                   END-IF
+      *
                    ADD     1           TO  CNT-IN
                    MOVE    RECE02-RECEKA 
                                        TO  KEY-N-SRYKA
