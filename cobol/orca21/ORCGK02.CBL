@@ -163,7 +163,6 @@
            03  FLG-KANA            PIC 9(01).
            03  FLG-SUJI            PIC 9(01).
            03  FLG-TOROKU          PIC X(01).
-           03  FLG-TOROKU2         PIC 9(01).
            03  FLG-SYORI           PIC X(01).
       *
            03  FLG-SST             PIC 9(01).
@@ -1069,7 +1068,6 @@
       *    内部画面より
            EVALUATE    SPA-MOTOPG
                WHEN    "K99"
-                   MOVE    ZERO                TO  FLG-TOROKU2
                    IF      SPA-K99-DATA    NOT =   SPACE
                         MOVE    SPA-COM-GYOU(SPA-GMN-IDX)
                                                    TO  WRK-IN-MAP-IDX
@@ -1629,7 +1627,6 @@
                END-IF
            END-PERFORM
       *
-           MOVE    ZERO                TO  FLG-TOROKU2
       *    入力コード・名称チェック処理
            PERFORM 410112-KOUI-SPACHK-SEC
       *
@@ -2649,23 +2646,22 @@
            END-IF
       *
       *    入力コード・名称チェック処理
-           MOVE    ZERO                TO  WRK-IN-MAP-IDX
-           MOVE    1                   TO  WRK-STR
-           MOVE    1                   TO  FLG-TOROKU2
-           PERFORM 410112-KOUI-SPACHK-SEC
-      *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   (IDX        >   200 )  OR
                           ((SPA-GMN-INPUTCD(IDX)   =   SPACE ) AND
                            (SPA-COM-INPUTCD(IDX)   =   SPACE ))
-               MOVE    SPACE           TO  SPA-COM-KZMFLG  (IDX)
+               IF      SPA-COM-CUR (IDX)   =   SPACE
+                   MOVE    SPA-GMN-INPUTCD(IDX)
+                                           TO  SPA-MAE-INPUTCD(IDX)
+               END-IF
            END-PERFORM
+      *    診療行為、計計算処理、編集
+           MOVE    SPACE           TO  FLG-TOROKU
+           PERFORM 510-TBLHEN-SEC
+           MOVE    SPACE           TO  FLG-TOROKU
+      *
            MOVE    SPACE               TO  SPA-ERRCD
            MOVE    SPACE               TO  SPA-KIDCD
-      *??  診療行為、計計算処理、編集
-      *    MOVE    SPACE           TO  FLG-TOROKU
-      *    PERFORM 510-TBLHEN-SEC
-      *??  MOVE    SPACE           TO  FLG-TOROKU
       *
            .
        310-SPA-GMNSET-EXT.
@@ -2836,8 +2832,10 @@
                                                ORCSC92AREA
                                                SPA-SCR-REC
                                                SPA-AREA
-                  IF      SPA-ERRCD       NOT =   SPACE
-                      MOVE    SPACE           TO  SPA-ERRCD
+                   IF     (SPA-ERRCD           NOT =   SPACE )  OR
+                          (LNK-SC92-ERRAREA    NOT =   SPACE )
+                       MOVE    SPACE           TO  SPA-ERRCD
+                       MOVE    "1"             TO  SPA-COM-CUR (IDX-1)
                    END-IF
       *
       *            回数の入力
@@ -2872,7 +2870,12 @@
                    INITIALIZE                  WRK-MOJI-AREA
                    MOVE    IDX-1               TO  IDX
                    PERFORM 3101-INPUTCD-HEN-SEC
+                   IF      SPA-COM-CUR (IDX)   =   SPACE
+                       MOVE    SPA-GMN-INPUTCD(IDX)
+                                          TO  SPA-MAE-INPUTCD (IDX)
+                   ELSE
                    MOVE    SPACE           TO  SPA-MAE-INPUTCD (IDX)
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -4465,7 +4468,6 @@
            PERFORM 410110-INPUT-GMNSET-SEC
       *
       *    入力コード・名称チェック処理
-           MOVE    ZERO                TO  FLG-TOROKU2
            PERFORM 410112-KOUI-SPACHK-SEC
       *
            .
@@ -4488,7 +4490,7 @@
       *    カーソル位置のクリア等
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   200
-      *********MOVE    SPACE               TO  SPA-COM-CUR (IDX)
+               MOVE    SPACE               TO  SPA-COM-CUR (IDX)
                MOVE    SPACE               TO  SPA-COM-IN  (IDX)
                MOVE    SPACE               TO  SPA-COM-IN2 (IDX)
            END-PERFORM
@@ -4585,7 +4587,6 @@
                IF     (SPA-MAE-INPUTCD (SPA-GMN-IDX)  NOT =
                                        SPA-GMN-INPUTCD (SPA-GMN-IDX)) OR
                       (SPA-COM-IN2 (SPA-GMN-IDX)   =   "1"  )
-               OR     (SPA-COM-CUR (SPA-GMN-IDX)   NOT =   SPACE)
                    PERFORM 41011-KOUI-HENDEL-SEC
                END-IF
            END-PERFORM
@@ -4594,8 +4595,7 @@
                PERFORM 420-SYOKYO-SEC
            END-IF
       *
-           IF     (FLG-TOROKU2         =   ZERO   )  AND
-                  (WRK-ERRCD       NOT =   SPACE  )
+           IF      WRK-ERRCD       NOT =   SPACE
                MOVE    WRK-ERRCD           TO  SPA-ERRCD
                GO      TO      410112-KOUI-SPACHK-EXT
            END-IF
@@ -4610,12 +4610,7 @@
                IF     (SPA-MAE-INPUTCD (SPA-GMN-IDX)  NOT =
                                        SPA-GMN-INPUTCD (SPA-GMN-IDX)) OR
                       (SPA-COM-IN2 (SPA-GMN-IDX)   =   "1"  )
-               OR     (SPA-COM-CUR (SPA-GMN-IDX)   NOT =   SPACE)
                    PERFORM 41011-KOUI-HEN2-SEC
-               END-IF
-               IF      FLG-TOROKU2         =   1
-                   MOVE    SPACE           TO  SPA-ERRCD
-                   MOVE    SPACE           TO  SPA-KIDCD
                END-IF
       *        フリーコメントの名称の全角チェックはすべて行う
                IF     (SPA-ERRCD           =   SPACE )  AND
@@ -4624,10 +4619,6 @@
                       (SPA-GMN-MEISYO-G(SPA-GMN-IDX) 
                                        NOT =   SPACE  )
                    PERFORM 401131-MEISYO-HENKAN-SEC
-               END-IF
-               IF      FLG-TOROKU2         =   1
-                   MOVE    SPACE           TO  SPA-ERRCD
-                   MOVE    SPACE           TO  SPA-KIDCD
                END-IF
                IF     (SPA-ERRCD       =   SPACE )  AND
                       (FLG-END         =   ZERO  )
@@ -11751,7 +11742,9 @@
                    MOVE    IDX             TO  SPA-COM-GYOU(WRK-IDX)
       *
       *************IF      SPA-ERRCD       =   SPACE
-                   IF      SPA-COM-CUR (WRK-IDX)   NOT =   "1"
+                   IF      SPA-COM-CUR (WRK-IDX)   =   "1"
+                       MOVE    SPACE       TO  SPA-MAE-INPUTCD(WRK-IDX)
+                   ELSE
                        MOVE    SPACE       TO  SPA-COM-CUR (WRK-IDX)
                    END-IF
                END-IF

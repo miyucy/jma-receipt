@@ -2202,9 +2202,24 @@
            END-PERFORM
       *
       *    入力コード・名称チェック処理
-           MOVE    ZERO                TO  WRK-IN-MAP-IDX
-           MOVE    1                   TO  WRK-STR
-           PERFORM 410112-KOUI-SPACHK-SEC
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   (IDX        >   200 )  OR
+                          ((SPA-GMN-INPUTCD(IDX)   =   SPACE ) AND
+                           (SPA-COM-INPUTCD(IDX)   =   SPACE ))
+               IF      SPA-COM-CUR (IDX)   =   SPACE
+                   MOVE    SPA-GMN-INPUTCD (IDX)
+                                           TO  SPA-MAE-INPUTCD (IDX)
+               ELSE
+                   MOVE    SPACE           TO  SPA-MAE-INPUTCD (IDX)
+               END-IF
+           END-PERFORM
+      *    診療行為、計計算処理、編集
+           MOVE    SPACE           TO  FLG-TOROKU
+           PERFORM 510-TBLHEN-SEC
+           MOVE    SPACE           TO  FLG-TOROKU
+      *
+           MOVE    SPACE               TO  SPA-ERRCD
+           MOVE    SPACE               TO  SPA-KIDCD
       *
            IF      WRK-ERRCD1      NOT =   SPACE
                MOVE    WRK-ERRCD1          TO  SPA-ERRCD
@@ -2359,9 +2374,11 @@
                                                ORCSC92AREA
                                                SPA-SCR-REC
                                                SPA-AREA
-                   IF      SPA-ERRCD       NOT =   SPACE
+                   IF     (SPA-ERRCD           NOT =   SPACE )  OR
+                          (LNK-SC92-ERRAREA    NOT =   SPACE )
                        MOVE    SPACE           TO  SPA-ERRCD
-                   END-IF
+                       MOVE    "1"             TO  SPA-COM-CUR (IDX-1)
+                    END-IF
       *
       *            入力コードの画面用再編集
                    INITIALIZE                  WRK-MOJI-AREA
@@ -4170,7 +4187,7 @@
                MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(2:)
                                        TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                PERFORM 41014-GYOINSN-SEC
-               MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
+               MOVE    "3"             TO  SPA-COM-CUR (SPA-GMN-IDX)
                ADD     1               TO  SPA-GMN-IDX
                MOVE    1               TO  FLG-INS
                GO  TO                  41011-KOUI-HEN2-EXT
@@ -4220,7 +4237,7 @@
                MOVE    LNK-SC97-INCD       TO  SPA-K98-INPUTCD
                MOVE    "1"                 TO  SPA-K98-TYPE
                MOVE    LNK-SC97-CDSYU      TO  SPA-K98-CDSYUBETU
-               MOVE    "1"                 TO  SPA-COM-CUR (SPA-GMN-IDX)
+               MOVE    "3"                 TO  SPA-COM-CUR (SPA-GMN-IDX)
       *
       *        診療行為一覧へ
                PERFORM 410-K98-SYORI-SEC
@@ -4357,7 +4374,8 @@
                END-IF
            END-IF
       *
-      *
+      *    エラークリア
+           MOVE    SPACE               TO  SPA-ERRCD
       *    画面カーソルセット処理
            IF      SPA-K98-GMN-MAX     =   ZERO
                MOVE    "INPUT"             TO  MCP-WIDGET
@@ -4468,7 +4486,7 @@
                   (WRK-IN-IDX2                   =   ZERO  )
                MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
                                             TO  WRK-INPUTCD
-               MOVE    "1"                  TO  SPA-COM-CUR
+               MOVE    "3"                  TO  SPA-COM-CUR
                                                        (SPA-GMN-IDX)
                IF      SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)  =   "001"
       ************ 投薬の時のみ、回数入力へ
@@ -4537,7 +4555,7 @@
                    END-IF
                END-IF
       *        空白行入力時、最終行へ
-               MOVE    "1"                 TO  SPA-COM-CUR
+               MOVE    "3"                 TO  SPA-COM-CUR
                                                      (SPA-GMN-IDX)
            END-IF
       *
@@ -10099,7 +10117,7 @@
                    MOVE    ZERO            TO  FLG-KINKI-ARI
                    PERFORM 510222-KNKYAK-CHK-SEC
                    IF      FLG-KINKI-ARI2      =   1
-                       MOVE    "1"             TO  SPA-COM-CUR (IDX-Z)
+                       MOVE    "3"             TO  SPA-COM-CUR (IDX-Z)
                    END-IF
                END-IF
            END-PERFORM
@@ -10407,7 +10425,7 @@
                        MOVE    IDX             TO  WRK-MAP-MAX
                        MOVE    WRK-PAGE        TO  WRK-MAP-MAXPAGE
       *                エラー位置
-                       IF      SPA-COM-CUR (WRK-IDX)   =   "1"
+                       IF      SPA-COM-CUR (WRK-IDX)   =   "1"  OR "3"
                            IF      WRK-MAP-CUR         =   ZERO
                                MOVE    IDX            TO  WRK-MAP-CUR
                               MOVE    WRK-PAGE        TO  WRK-MAP-PAGE
@@ -10431,7 +10449,10 @@
                    MOVE    WRK-PAGE        TO  SPA-COM-PAGE(WRK-IDX)
                    MOVE    IDX             TO  SPA-COM-GYOU(WRK-IDX)
       *
-                   IF      SPA-ERRCD       =   SPACE
+      *************IF      SPA-ERRCD       =   SPACE
+                   IF      SPA-COM-CUR (WRK-IDX)   =   "1"
+                       MOVE    SPACE       TO  SPA-MAE-INPUTCD(WRK-IDX)
+                   ELSE
                        MOVE    SPACE       TO  SPA-COM-CUR (WRK-IDX)
                    END-IF
                END-IF

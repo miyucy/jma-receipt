@@ -34,6 +34,7 @@
       *  01.00.05    NACL-多々納  02/10/18  入院の追加
       *  01.00.06    NACL-多々納  02/11/20  自賠責器材追加
       *  01.00.07    NACL-多々納  02/12/02  食事の追加
+      *  01.00.08    NACL-多々納  02/12/13  継続区分再編集追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -329,10 +330,11 @@
                05  FLG-FUNSAI          PIC 9(01).
                05  WRK-FUNSAI-CNT      PIC 9(04).
       *
+           03  WRK-SYU-CONTKBN         PIC X(01).
+      *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
            03  WRK-IDX-Y               PIC 9(04).
-      *
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -2352,10 +2354,16 @@
                END-IF
            END-IF
       *
+      *    継続区分
+           MOVE    SYU-CONTKBN         TO  WRK-SYU-CONTKBN
+           MOVE    SPA-CONTKBN         TO  SYU-CONTKBN
+      *
       *****CALL    "ORCS01NEW"         USING   MCPAREA
            CALL    "ORCS01"            USING   MCPAREA
                                                LNK-ORCS01-REC
                                                SYUNOU-REC
+      *    継続区分
+           MOVE    WRK-SYU-CONTKBN     TO  SYU-CONTKBN
       *
            .
        4505-YAKFTN-KEI-EXT.
