@@ -1861,6 +1861,7 @@
            MOVE    SYU-PTID            TO  ORCSTEN-PTID
            MOVE    SYU-SRYYMD(1:6)     TO  ORCSTEN-SRYYM
            MOVE    SYU-HKNCOMBINUM     TO  ORCSTEN-HKNCOMBI
+           MOVE    SYU-HOSPID          TO  SPA-HOSPID
            CALL    "ORCSTENTEK"        USING
                                        SPA-AREA
                                        ORCSTENTEKAREA
