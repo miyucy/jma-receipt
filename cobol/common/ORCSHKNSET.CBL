@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  03/05/12  自賠責割合変更追加
       *****************************************************************
       *
       *
@@ -81,6 +82,9 @@
       *
            03  WRK-HKNCOMBINUM         PIC X(04).
            03  WRK-HKNKBN-MEI          PIC X(02).
+      *
+           03  WRK-JIBAISEKIKBN        PIC X(01).
+      *
       *    表示用保険
            03  WRK-IDXH                PIC 9(04).
            03  WRK-CNT-HKN             PIC 9(04).
@@ -349,6 +353,18 @@
                    END-IF
                END-IF
            END-IF
+      *    自賠責の時、請求区分より割合を決定する
+           IF      ORCSHKN-NAI-RSI-HKNKBN(IDX) =   "4"
+               EVALUATE    WRK-JIBAISEKIKBN
+                   WHEN    "1"
+                       MOVE    100             TO  ORCSHKN-NAI-FTNRATE
+                                                               (IDX)
+                   WHEN    "2"
+                       MOVE    ZERO            TO  ORCSHKN-NAI-FTNRATE
+                                                               (IDX)
+               END-EVALUATE
+           END-IF
+      *
            IF      ORCSHKN-NAI-FTNRATE (IDX)   =   ZERO
                MOVE    SPACE               TO  ORCSHKN-GMN-FTNRATEMEI
                                                                (IDX)
@@ -465,6 +481,10 @@
       *        労災区分
                MOVE    PTRSI-HKNKBN        TO  ORCSHKN-NAI-RSI-HKNKBN
                                                                   (IDX)
+      *        自賠責患者請求区分
+               IF      PTRSI-HKNKBN        =   "4"
+                   MOVE    PTRSI-JIBAISEIKBN   TO  WRK-JIBAISEKIKBN
+               END-IF
            END-IF
            .
        1101-HKNCOMBIMEI-HEN-EXT.

@@ -35,6 +35,7 @@
       * 01.00.04     NACL-多々納  03/02/05  原爆単独老人判定をしない
       * 01.00.05     NACL-多々納  03/03/06  ３歳未満判定に自費・地験をはずす
       * 01.00.06     NACL-多々納  03/04/14  労災の割合変更追加
+      * 01.00.07     NACL-多々納  03/05/12  自賠責割合変更追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -58,6 +59,7 @@
            03  FLG-HKNNUM          PIC 9(01).
            03  FLG-HKNNUM-OK       PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-PTRSIINF        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-OK2             PIC 9(01).
@@ -118,6 +120,10 @@
       *    保険情報
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
+      *
+      *    患者労災保険情報
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
       *
       *
            COPY    "MCPDATA.INC".
@@ -252,6 +258,11 @@
       *    労災の時、割合の変更
            IF      COMB-HKNNUM         =   "971"
                PERFORM 2001-RSI-FTNRATE-SEC
+           END-IF
+      *
+      *    自賠責の時、割合の変更
+           IF      COMB-HKNNUM         =   "973"
+               PERFORM 2002-JIBAI-FTNRATE-SEC
            END-IF
       *
            MOVE    COMB-GAI-KFTNRATE   TO  AGECHK-FTNRATE
@@ -483,7 +494,7 @@
       *****************************************************************
        2001-RSI-FTNRATE-SEC         SECTION.
       *
-      *    システム管理検索（医療機関情報）
+      *    システム管理検索（労災情報）
            MOVE    SPACE               TO  SYS-4001-REC
            INITIALIZE                  SYS-4001-REC
            MOVE    "4001"              TO  SYS-4001-KANRICD
@@ -505,25 +516,62 @@
                INITIALIZE                  SYS-4001-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-      *TEST
-             DISPLAY "FLG-SYSKANRI:" FLG-SYSKANRI
-      *TEST
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-4001-REC
       *
                IF      SYS-4001-RSIIRYOKBN     =   "1"
                    MOVE    ZERO                TO  COMB-GAI-KFTNRATE
+                   MOVE    ZERO                TO  COMB-NYU-KFTNRATE
                ELSE
                    MOVE    100                 TO  COMB-GAI-KFTNRATE
+                   MOVE    100                 TO  COMB-NYU-KFTNRATE
                END-IF
            END-IF
-      *TEST
-             DISPLAY "COMB-GAI-KFTNRATE:" COMB-GAI-KFTNRATE
-                 ",SYS-4001-RSIIRYOKBN:" SYS-4001-RSIIRYOKBN
-      *TEST
       *
            .
        2001-RSI-FTNRATE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自賠責割合の変更処理
+      *****************************************************************
+       2002-JIBAI-FTNRATE-SEC         SECTION.
+      *
+      *    患者保険情報検索
+           INITIALIZE                      PTRSIINF-REC
+           MOVE    COMB-HOSPID         TO  PTRSI-HOSPID
+           MOVE    COMB-PTID           TO  PTRSI-PTID
+           MOVE    COMB-HKNID          TO  PTRSI-HKNID
+      *
+           MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTRSIINF-KEY"     TO  ORC-DBPATH
+               PERFORM 993-PTRSIINF-NEXT-SEC
+           ELSE
+               INITIALIZE                      PTRSIINF-REC
+               MOVE    1                   TO  FLG-PTRSIINF
+           END-IF
+      *        自賠責患者請求区分
+           IF     (FLG-PTRSIINF        =   ZERO )  AND
+                  (PTRSI-HKNKBN        =   "4"  )
+               EVALUATE    PTRSI-JIBAISEIKBN
+                   WHEN    "1"
+                       MOVE    100             TO  COMB-GAI-KFTNRATE
+                       MOVE    100             TO  COMB-NYU-KFTNRATE
+                   WHEN    "2"
+                       MOVE    ZERO            TO  COMB-GAI-KFTNRATE
+                       MOVE    ZERO            TO  COMB-NYU-KFTNRATE
+               END-EVALUATE
+           END-IF
+           .
+      *
+       2002-JIBAI-FTNRATE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -733,6 +781,26 @@
            .
        900-SYSKANRI-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    患者労災保険情報読み込み
+      *****************************************************************
+       993-PTRSIINF-NEXT-SEC        SECTION.
       *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTRSIINF-REC
+               MOVE    ZERO            TO  FLG-PTRSIINF
+           ELSE
+               INITIALIZE                  PTRSIINF-REC
+               MOVE    1               TO  FLG-PTRSIINF
+           END-IF
+      *
+           .
+       993-PTRSIINF-NEXT-EXT.
+           EXIT.
       *
       *
