@@ -4254,6 +4254,13 @@
       *****************************************************************
        410121-HKNCOMBI-SAI-SEC         SECTION.
       *
+      *    複数科まとめチェック
+           IF      SPA-SYORIFLG        =   ZERO
+               IF      SPA-HKNCOMBINUM     =   SPA-FUKU-HKNCOMBI
+                   MOVE    SPA-FUKU-MATKBN     TO  SPA-FUKU-SYORI
+               END-IF
+           END-IF
+      *
            MOVE    SPA-WKSRY-HKNCOMBI  TO  WRK-WKSRY-HKNCOMBI
       *    初期ＳＰＡ編集処理
            INITIALIZE                  ORCSC95AREA
@@ -4476,6 +4483,13 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-K02
+      *
+      *    複数科まとめチェック
+           IF      SPA-SYORIFLG        =   ZERO
+               IF      SPA-HKNCOMBINUM     =   SPA-FUKU-HKNCOMBI
+                   MOVE    SPA-FUKU-MATKBN     TO  SPA-FUKU-SYORI
+               END-IF
+           END-IF
       *
            MOVE    WRK-SCR-REC         TO  SPA-SCR-REC
       *
@@ -12250,6 +12264,14 @@
            EVALUATE    SPA-CONTKBN
                WHEN    SPACE
                    MOVE    SPACE           TO  K02-CONTKBN-VALUE
+                   IF      SPA-FUKU-SYORI      =   "1"
+                       MOVE    "red"       TO  K02-CONTKBN-STYLE
+                       MOVE    "［複］"    TO  K02-CONTKBN-VALUE
+                   END-IF
+                   IF      SPA-FUKU-SYORI      =   "F"
+                       MOVE    "black"     TO  K02-CONTKBN-STYLE
+                       MOVE    "［複］"    TO  K02-CONTKBN-VALUE
+                   END-IF
                WHEN    "1"
                    MOVE    "red"           TO  K02-CONTKBN-STYLE
                    MOVE    "［継］"        TO  K02-CONTKBN-VALUE

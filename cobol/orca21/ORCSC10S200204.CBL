@@ -1681,6 +1681,7 @@
       *
       *    労災の初診料算定
            IF      SPA-HKNKBN          =   1
+               MOVE    SPACE               TO  WRK-KBN
                PERFORM 2009-RSIHKN-SET-SEC
                IF      SPA-GMN-IDX         >   ZERO
       *            療養担当手当発生
@@ -2902,7 +2903,6 @@
       *****************************************************************
        2009-RSIHKN-SET-SEC         SECTION.
       *
-      *
       *    初診料算定
            IF      SPA-SYOSIN          =   1
                MOVE    ZERO                TO  WRK-KAISU
@@ -2912,6 +2912,7 @@
       *        再診料
                IF     (SPA-LSTYMD          =   SPA-SRYYMD  ) AND
                       (SPA-TAKA-SRYKA-R    NOT =   SPACE   )
+               AND    (WRK-KBN             =   SPACE   )
       *            同日再診・他科受診あり
                    PERFORM 3301-DOUSAISIN-SEC
                ELSE
@@ -3051,15 +3052,20 @@
            MOVE    ZERO                TO  SPA-GMN-IDX
            MOVE    ZERO                TO  SPA-FUKU-SRYKA
       *
-      *    同日再診料へ置換え
-           MOVE    "12"                TO  WRK-SRYKBN
-           MOVE    "D"                 TO  WRK-KBN
-           MOVE    ZERO                TO  FLG-SAISIN-CHK
-      *    診察コードをテーブルより決定
-           PERFORM 2001-SRYCD-TBL-SEC
-      *
-      *    初診料自動追加
-           PERFORM 3301-SYOSIN-SYORI-SEC
+           IF      SPA-HKNKBN          =   1
+      *        労災の同日再診料算定
+               MOVE    "D"                 TO  WRK-KBN
+               PERFORM 2009-RSIHKN-SET-SEC
+           ELSE
+      *        同日再診料へ置換え
+               MOVE    "12"                TO  WRK-SRYKBN
+               MOVE    "D"                 TO  WRK-KBN
+               MOVE    ZERO                TO  FLG-SAISIN-CHK
+      *        診察コードをテーブルより決定
+               PERFORM 2001-SRYCD-TBL-SEC
+      *        初診料自動追加
+               PERFORM 3301-SYOSIN-SYORI-SEC
+           END-IF
       *    診療行為内容の編集
            PERFORM 10102-SINSATU-CHENGE-SEC
            .
@@ -4366,12 +4372,6 @@
                        END-IF
                        MOVE    1               TO  FLG-CHK
                    END-IF
-      *TEST
-               DISPLAY "C10 S FLG-CHK:" FLG-CHK
-                       ",FLG-ARI;" FLG-ARI
-                       ",AUTO:" HZN-COM-AUTOKBN (IDX)
-                       ",INPU:" HZN-COM-INPUTCD (IDX)
-      *TEST
                END-IF
       *
                IF     (FLG-CHK         =   ZERO  )  OR

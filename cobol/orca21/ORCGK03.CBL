@@ -3220,8 +3220,16 @@
                    MOVE    JYURRK-KAIKEI-RENNUM
                                                TO  WRK-KAIKEI-RENNUM
       *
+      ********     MOVE    JYURRK-REC          TO  MCPDATA-REC
+      *            MOVE    "DBUPDATE"          TO  MCP-FUNC
+      *            MOVE    "JYURRK-KEY"        TO  ORC-DBPATH
+      *            CALL    "ORCMCPSUB"          USING
+      *                                         MCPAREA
+      *                                         ORCMCPAREA
+      *******                                   MCPDATA-REC
+      *            ÄûÀµ¤Î»þ¼õ¿ÇÍúÎò¤òºï½ü¤¹¤ë
                    MOVE    JYURRK-REC          TO  MCPDATA-REC
-                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "JYURRK-KEY"        TO  ORC-DBPATH
                    CALL    "ORCMCPSUB"          USING
                                                 MCPAREA
