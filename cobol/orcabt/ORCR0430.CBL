@@ -36,6 +36,8 @@
       *                                     判定追加
       *  01.00.05    NACL-門脇    03.03.03  剤番号桁修正対応
       *  01.00.06    NACL-門脇    03.03.12  ＣＴ・ＭＲＩの実施日追加
+      *  01.00.07    NACL-門脇    03.04.04  傷病手当金意見書交付料の交付日編集
+      *                                     療養費同意書交付料の交付日編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -168,10 +170,12 @@
            03  FLG-RECE44          PIC 9(01).
            03  FLG-RECE45          PIC 9(01).
            03  FLG-SHUJUTU-COMMENT PIC 9(01).
+           03  FLG-SYOBYO-COMMENT  PIC 9(01).
+           03  FLG-RYOYO-COMMENT   PIC 9(01).
            03  FLG-WRKRECE45       PIC 9(01).
            03  FLG-SHIDOU-COMMENT  PIC 9(01).
            03  FLG-CTMRI-COMMENT   PIC 9(01).
-           03  FLG-COMMENT         PIC 9(01).
+           03  FLG-COMMENT         PIC 9(02).
            03  FLG-ARI             PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -375,6 +379,10 @@
       *
       *    固定値
        01  CONST-AREA.
+      *    傷病手当金意見書交付料
+           03  CONS-SYOBYO-COMMENT  PIC X(09) VALUE "180000710".
+      *    療養費同意書交付料
+           03  CONS-RYOYO-COMMENT   PIC X(09) VALUE "113004310".
       *    手術日コメント
            03  CONS-SHUJUTU-COMMENT PIC X(09) VALUE "840000042".
       *    慢性とう痛疾患
@@ -829,7 +837,25 @@
                IF   RECE41-HKNKBN    NOT  =  "4"                        
                  EVALUATE      RECE44-SRYKBN                   
                    WHEN      "13"
-                      PERFORM    2001-SHIDOU-HANTEI-SEC
+                      MOVE   ZERO   TO  FLG-COMMENT
+      *            （慢性疼痛疾患管理料算定日のセット）
+                      IF   FLG-COMMENT  =  ZERO
+                         PERFORM    2001-SHIDOU-HANTEI-SEC
+                      END-IF
+      *            （傷病手当金意見書交付料交付日のセット）
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SYOBYO-HANTEI-SEC
+                      END-IF
+      *            （療養費同意書交付料交付日のセット）
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-RYOYO-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                         MOVE       RECE44-REC    TO   RECE441-REC
+                         WRITE      RECE441-REC
+                         ADD     1          TO      CNT-RECE44
+                         PERFORM    2002-RECE45-TENSOU-SEC
+                      END-IF
                    WHEN      "50"
       *            （手術日のセット）
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
@@ -863,7 +889,25 @@
                ELSE                                                     
                  EVALUATE      RECE44-SRYKBN                            
                    WHEN      "13"                                       
-                      PERFORM    2001-SHIDOU-HANTEI-SEC                 
+                      MOVE   ZERO   TO  FLG-COMMENT
+      *            （慢性疼痛疾患管理料算定日のセット）
+                      IF   FLG-COMMENT  =  ZERO
+                         PERFORM    2001-SHIDOU-HANTEI-SEC
+                      END-IF
+      *            （傷病手当金意見書交付料交付日のセット）
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SYOBYO-HANTEI-SEC
+                      END-IF
+      *            （療養費同意書交付料交付日のセット）
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-RYOYO-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                         MOVE       RECE44-REC    TO   RECE441-REC
+                         WRITE      RECE441-REC
+                         ADD     1          TO      CNT-RECE44
+                         PERFORM    2002-RECE45-TENSOU-SEC
+                      END-IF
                    WHEN      "50"                                       
       *            （手術日のセット）                                   
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC               
@@ -1827,12 +1871,8 @@
       *
       *
            IF      FLG-SHIDOU-COMMENT    =      1
+               MOVE       99      TO     FLG-COMMENT
                PERFORM    2001-SHIDOU-COMMENT-SEC
-           ELSE
-               MOVE       RECE44-REC    TO   RECE441-REC
-               WRITE      RECE441-REC
-               ADD     1          TO      CNT-RECE44
-               PERFORM    2002-RECE45-TENSOU-SEC
            END-IF         
       *
            .
@@ -1904,6 +1944,242 @@
       *
            .
        2001-SHIDOU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    傷病手当金意見書交付料のコメントがあるか判定
+      *****************************************************************
+       2001-SYOBYO-HANTEI-SEC          SECTION.
+      *
+           IF      RECE41-HKNKBN   NOT  =   "3"
+      *
+             MOVE      ZERO            TO      FLG-SYOBYO-COMMENT
+      *
+             INITIALIZE                        SRYACT-REC
+             MOVE    RECE44-HOSPID     TO      SRY-HOSPID
+             MOVE    RECE44-NYUGAIKBN  TO      SRY-NYUGAIKBN
+             MOVE    RECE44-PTID       TO      SRY-PTID
+             MOVE    RECE44-SRYYM      TO      SRY-SRYYM
+             MOVE    RECE44-ZAINUM     TO      SRY-ZAINUM
+             MOVE    CONS-SYOBYO-COMMENT   TO  SRY-SRYCD (1)
+             MOVE    CONS-SYOBYO-COMMENT   TO  SRY-SRYCD (2)
+             MOVE    CONS-SYOBYO-COMMENT   TO  SRY-SRYCD (3)
+             MOVE    CONS-SYOBYO-COMMENT   TO  SRY-SRYCD (4)
+             MOVE    CONS-SYOBYO-COMMENT   TO  SRY-SRYCD (5)
+      *
+             MOVE    SRYACT-REC        TO      MCPDATA-REC
+             MOVE    "DBSELECT"        TO      MCP-FUNC
+             MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+             CALL    "ORCMCPSUB"       USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+             IF  MCP-RC                NOT  =  ZERO
+                 CONTINUE
+             ELSE
+                 MOVE    "DBFETCH"     TO      MCP-FUNC
+                 MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
+                 CALL    "ORCMCPSUB"           USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+                 IF      MCP-RC        =       ZERO
+                     MOVE    1         TO      FLG-SYOBYO-COMMENT
+                 END-IF
+             END-IF
+      *
+             INITIALIZE                        MCPAREA
+             MOVE    "DBCLOSE"         TO      MCP-FUNC
+             MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+             CALL    "ORCMCPSUB"       USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           ELSE
+      *
+             MOVE      ZERO              TO      FLG-SYOBYO-COMMENT
+             MOVE      ZERO              TO      FLG-ARI   
+      *
+             MOVE  RECE41-TEKSTYMD(7:2)  TO  WRK-DAY
+             IF   RECE44-KAISU(1 WRK-DAY)  NOT = ZERO
+                MOVE    1    TO    FLG-ARI
+             END-IF
+      *
+             IF         FLG-ARI       =     1 
+      *
+               INITIALIZE                        SRYACT-REC
+               MOVE    RECE44-HOSPID     TO      SRY-HOSPID
+               MOVE    RECE44-NYUGAIKBN  TO      SRY-NYUGAIKBN
+               MOVE    RECE44-PTID       TO      SRY-PTID
+               MOVE    RECE44-SRYYM      TO      SRY-SRYYM
+               MOVE    RECE44-ZAINUM     TO      SRY-ZAINUM
+               MOVE    CONS-SYOBYO-COMMENT   TO  SRY-SRYCD (1)
+               MOVE    CONS-SYOBYO-COMMENT   TO  SRY-SRYCD (2)
+               MOVE    CONS-SYOBYO-COMMENT   TO  SRY-SRYCD (3)
+               MOVE    CONS-SYOBYO-COMMENT   TO  SRY-SRYCD (4)
+               MOVE    CONS-SYOBYO-COMMENT   TO  SRY-SRYCD (5)
+      *
+               MOVE    SRYACT-REC        TO      MCPDATA-REC
+               MOVE    "DBSELECT"        TO      MCP-FUNC
+               MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"       USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
+      *
+               IF  MCP-RC                NOT  =  ZERO
+                   CONTINUE
+               ELSE
+                   MOVE    "DBFETCH"     TO      MCP-FUNC
+                   MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
+                   CALL    "ORCMCPSUB"           USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+                   IF      MCP-RC        =       ZERO
+                       MOVE    1         TO      FLG-SYOBYO-COMMENT
+                   END-IF
+               END-IF
+      *
+               INITIALIZE                        MCPAREA
+               MOVE    "DBCLOSE"         TO      MCP-FUNC
+               MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"       USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
+      *
+             END-IF
+      *
+           END-IF
+      *
+           IF      FLG-SYOBYO-COMMENT   =      1
+                MOVE       4       TO     FLG-COMMENT
+                PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
+           END-IF
+      *
+           .
+       2001-SYOBYO-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    療養費同意書交付料のコメントがあるか判定
+      *****************************************************************
+       2001-RYOYO-HANTEI-SEC          SECTION.
+      *
+           IF      RECE41-HKNKBN   NOT  =   "3"
+      *
+             MOVE      ZERO            TO      FLG-RYOYO-COMMENT
+      *
+             INITIALIZE                        SRYACT-REC
+             MOVE    RECE44-HOSPID     TO      SRY-HOSPID
+             MOVE    RECE44-NYUGAIKBN  TO      SRY-NYUGAIKBN
+             MOVE    RECE44-PTID       TO      SRY-PTID
+             MOVE    RECE44-SRYYM      TO      SRY-SRYYM
+             MOVE    RECE44-ZAINUM     TO      SRY-ZAINUM
+             MOVE    CONS-RYOYO-COMMENT    TO  SRY-SRYCD (1)
+             MOVE    CONS-RYOYO-COMMENT    TO  SRY-SRYCD (2)
+             MOVE    CONS-RYOYO-COMMENT    TO  SRY-SRYCD (3)
+             MOVE    CONS-RYOYO-COMMENT    TO  SRY-SRYCD (4)
+             MOVE    CONS-RYOYO-COMMENT    TO  SRY-SRYCD (5)
+      *
+             MOVE    SRYACT-REC        TO      MCPDATA-REC
+             MOVE    "DBSELECT"        TO      MCP-FUNC
+             MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+             CALL    "ORCMCPSUB"       USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+             IF  MCP-RC                NOT  =  ZERO
+                 CONTINUE
+             ELSE
+                 MOVE    "DBFETCH"     TO      MCP-FUNC
+                 MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
+                 CALL    "ORCMCPSUB"           USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+                 IF      MCP-RC        =       ZERO
+                     MOVE    1         TO      FLG-RYOYO-COMMENT
+                 END-IF
+             END-IF
+      *
+             INITIALIZE                        MCPAREA
+             MOVE    "DBCLOSE"         TO      MCP-FUNC
+             MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+             CALL    "ORCMCPSUB"       USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           ELSE
+      *
+             MOVE      ZERO              TO      FLG-RYOYO-COMMENT
+             MOVE      ZERO              TO      FLG-ARI   
+      *
+             MOVE  RECE41-TEKSTYMD(7:2)  TO  WRK-DAY
+             IF   RECE44-KAISU(1 WRK-DAY)  NOT = ZERO
+                MOVE    1    TO    FLG-ARI
+             END-IF
+      *
+             IF         FLG-ARI       =     1 
+      *
+               INITIALIZE                        SRYACT-REC
+               MOVE    RECE44-HOSPID     TO      SRY-HOSPID
+               MOVE    RECE44-NYUGAIKBN  TO      SRY-NYUGAIKBN
+               MOVE    RECE44-PTID       TO      SRY-PTID
+               MOVE    RECE44-SRYYM      TO      SRY-SRYYM
+               MOVE    RECE44-ZAINUM     TO      SRY-ZAINUM
+               MOVE    CONS-RYOYO-COMMENT    TO  SRY-SRYCD (1)
+               MOVE    CONS-RYOYO-COMMENT    TO  SRY-SRYCD (2)
+               MOVE    CONS-RYOYO-COMMENT    TO  SRY-SRYCD (3)
+               MOVE    CONS-RYOYO-COMMENT    TO  SRY-SRYCD (4)
+               MOVE    CONS-RYOYO-COMMENT    TO  SRY-SRYCD (5)
+      *
+               MOVE    SRYACT-REC        TO      MCPDATA-REC
+               MOVE    "DBSELECT"        TO      MCP-FUNC
+               MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"       USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
+      *
+               IF  MCP-RC                NOT  =  ZERO
+                   CONTINUE
+               ELSE
+                   MOVE    "DBFETCH"     TO      MCP-FUNC
+                   MOVE    "SRYACT-KEY8" TO      ORC-DBPATH
+                   CALL    "ORCMCPSUB"           USING
+                                                 MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+                   IF      MCP-RC        =       ZERO
+                       MOVE    1         TO      FLG-RYOYO-COMMENT
+                   END-IF
+               END-IF
+      *
+               INITIALIZE                        MCPAREA
+               MOVE    "DBCLOSE"         TO      MCP-FUNC
+               MOVE    "SRYACT-KEY8"     TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"       USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
+      *
+             END-IF
+      *
+           END-IF
+      *
+           IF      FLG-RYOYO-COMMENT   =      1
+                MOVE       4       TO     FLG-COMMENT
+                PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
+           END-IF
+      *
+           .
+       2001-RYOYO-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2181,7 +2457,7 @@
            INITIALIZE            WRK-FREE-AREA2                         
       *
            PERFORM  2002-FREE-COMMENT2-SEC                              
-      
+      *
       *    ※明細が５以上の場合
            INITIALIZE                      RECE45-REC
            MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
@@ -2212,43 +2488,43 @@
            MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
            INITIALIZE                       WRK-DATAKBNINF-AREA
       *    手術日コメントの挿入
-      *    PERFORM  VARYING      IDX    FROM  1   BY   1
-      *             UNTIL       (IDX    >     31)      OR
-      *                         (TB-SANTEI-DAY(IDX)  =  ZERO)
-      *        ADD     1                    TO  IDX-RECE45
-      *        MOVE    SPACE                TO  COM-RECE45-REC
-      *        INITIALIZE                       COM-RECE45-REC
-      *        EVALUATE   FLG-COMMENT
-      *           WHEN    1
-      *             MOVE    CONS-SHUJUTU-COMMENT TO  COM-SRYCD(1)
-      *             MOVE    ZERO                 TO  COM-SRYSURYO(1)
-      *             MOVE    6                    TO  COM-YUKOKETA(1)
-      *             MOVE    "手術　　　日"       TO  COM-NAME(1)
-      *             MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
-      *             MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
-      *             MOVE    "1"                  TO  COM-SIKFLG(1)
-      *             MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-      *                                              (IDX-RECE45)
-      *             MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-      *                                              (IDX-RECE45)
-      *             MOVE    COM-SIKFLGINF(1)     TO  WRK-SIKFLGINF
-      *                                              (IDX-RECE45)
-      *           WHEN    2
-      *             MOVE    "810000001"          TO  COM-SRYCD(1)
-      *             MOVE    ZERO                 TO  COM-SRYSURYO(1)
-      *             MOVE    6                    TO  COM-YUKOKETA(1)
-      *             MOVE    "実施　　　日"       TO  COM-NAME(1)
-      *             MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
-      *             MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
-      *             MOVE    "1"                  TO  COM-SIKFLG(1)
-      *             MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
-      *                                              (IDX-RECE45)
-      *             MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
-      *                                              (IDX-RECE45)
-      *             MOVE    COM-SIKFLGINF(1)     TO  WRK-SIKFLGINF
-      *                                              (IDX-RECE45)
-      *        END-EVALUATE
-      *    END-PERFORM
+      **** PERFORM  VARYING      IDX    FROM  1   BY   1
+      ****          UNTIL       (IDX    >     31)      OR
+      ****                      (TB-SANTEI-DAY(IDX)  =  ZERO)
+      ****     ADD     1                    TO  IDX-RECE45
+      ****     MOVE    SPACE                TO  COM-RECE45-REC
+      ****     INITIALIZE                       COM-RECE45-REC
+      ****     EVALUATE   FLG-COMMENT
+      ****        WHEN    1
+      ****          MOVE    CONS-SHUJUTU-COMMENT TO  COM-SRYCD(1)
+      ****          MOVE    ZERO                 TO  COM-SRYSURYO(1)
+      ****          MOVE    6                    TO  COM-YUKOKETA(1)
+      ****          MOVE    "手術　　　日"       TO  COM-NAME(1)
+      ****          MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
+      ****          MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
+      ****          MOVE    "1"                  TO  COM-SIKFLG(1)
+      ****          MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
+      ****                                           (IDX-RECE45)
+      ****          MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
+      ****                                           (IDX-RECE45)
+      ****          MOVE    COM-SIKFLGINF(1)     TO  WRK-SIKFLGINF
+      ****                                           (IDX-RECE45)
+      ****        WHEN    2
+      ****          MOVE    "810000001"          TO  COM-SRYCD(1)
+      ****          MOVE    ZERO                 TO  COM-SRYSURYO(1)
+      ****          MOVE    6                    TO  COM-YUKOKETA(1)
+      ****          MOVE    "実施　　　日"       TO  COM-NAME(1)
+      ****          MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
+      ****          MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
+      ****          MOVE    "1"                  TO  COM-SIKFLG(1)
+      ****          MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
+      ****                                           (IDX-RECE45)
+      ****          MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
+      ****                                           (IDX-RECE45)
+      ****          MOVE    COM-SIKFLGINF(1)     TO  WRK-SIKFLGINF
+      ****                                           (IDX-RECE45)
+      ****     END-EVALUATE
+      **** END-PERFORM
       *
            MOVE    SPACE               TO  COM-RECE45-REC
            INITIALIZE                      COM-RECE45-REC
@@ -2347,6 +2623,187 @@
            EXIT.
       *
       *****************************************************************
+      *    手術日等のコメント編集２
+      *****************************************************************
+       2001-SHUJUTSU-ETC2-COMMENT-SEC          SECTION.
+      *
+           PERFORM   2001-SANTEI-DAY-SEC
+      *
+           MOVE       ZERO       TO   IDZ                               
+           INITIALIZE            WRK-FREE-AREA2                         
+      *
+           PERFORM  2002-FREE-COMMENT2-SEC                              
+      *
+      *    ※明細が５以上の場合
+           INITIALIZE                      RECE45-REC
+           MOVE    RECE44-HOSPID       TO  RECE45-HOSPID
+           MOVE    RECE44-SRYYM        TO  RECE45-SRYYM
+           MOVE    RECE44-NYUGAIKBN    TO  RECE45-NYUGAIKBN
+           MOVE    RECE44-PTID         TO  RECE45-PTID
+           MOVE    RECE44-RECEKA       TO  RECE45-RECEKA
+           MOVE    RECE44-HKNID        TO  RECE45-HKNID
+           MOVE    RECE44-TEKSTYMD     TO  RECE45-TEKSTYMD
+           MOVE    RECE44-ZAINUM       TO  RECE45-ZAINUM
+           START   RECE45-FILE
+                 KEY IS    >=   RECE45-KEY
+                 INVALID
+                     MOVE    1           TO  FLG-RECE45
+                 NOT INVALID
+                     PERFORM 990-RECE45-NEXT-SEC
+                     MOVE    RECE45-REC  TO  WRK-RECE45-REC
+           END-START
+      *
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
+           MOVE    ZERO                 TO  IDX-RECE45
+           MOVE    SPACE                TO  WRK-SRYACTINF-AREA
+           INITIALIZE                       WRK-SRYACTINF-AREA
+           MOVE    SPACE                TO  WRK-NAMEINF-AREA
+           INITIALIZE                       WRK-NAMEINF-AREA
+           MOVE    SPACE                TO  WRK-SIKFLGINF-AREA
+           INITIALIZE                       WRK-SIKFLGINF-AREA
+           MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
+           INITIALIZE                       WRK-DATAKBNINF-AREA
+      *
+           MOVE    RECE44-MEISAISU      TO  MAX-MEISAISU
+      *
+      *    手術日コメントの挿入
+      **** PERFORM  VARYING      IDX    FROM  1   BY   1
+      ****          UNTIL       (IDX    >     31)      OR
+      ****                      (TB-SANTEI-DAY(IDX)  =  ZERO)
+      ****     ADD     1                    TO  IDX-RECE45
+      ****     MOVE    SPACE                TO  COM-RECE45-REC
+      ****     INITIALIZE                       COM-RECE45-REC
+      ****     EVALUATE   FLG-COMMENT
+      ****        WHEN    1
+      ****          MOVE    CONS-SHUJUTU-COMMENT TO  COM-SRYCD(1)
+      ****          MOVE    ZERO                 TO  COM-SRYSURYO(1)
+      ****          MOVE    6                    TO  COM-YUKOKETA(1)
+      ****          MOVE    "手術　　　日"       TO  COM-NAME(1)
+      ****          MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
+      ****          MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
+      ****          MOVE    "1"                  TO  COM-SIKFLG(1)
+      ****          MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
+      ****                                           (IDX-RECE45)
+      ****          MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
+      ****                                           (IDX-RECE45)
+      ****          MOVE    COM-SIKFLGINF(1)     TO  WRK-SIKFLGINF
+      ****                                           (IDX-RECE45)
+      ****        WHEN    2
+      ****          MOVE    "810000001"          TO  COM-SRYCD(1)
+      ****          MOVE    ZERO                 TO  COM-SRYSURYO(1)
+      ****          MOVE    6                    TO  COM-YUKOKETA(1)
+      ****          MOVE    "実施　　　日"       TO  COM-NAME(1)
+      ****          MOVE    TB-SANTEI-DAY(IDX)   TO  DAY-IDX
+      ****          MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(7:4)
+      ****          MOVE    "1"                  TO  COM-SIKFLG(1)
+      ****          MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
+      ****                                           (IDX-RECE45)
+      ****          MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
+      ****                                           (IDX-RECE45)
+      ****          MOVE    COM-SIKFLGINF(1)     TO  WRK-SIKFLGINF
+      ****                                           (IDX-RECE45)
+      ****     END-EVALUATE
+      **** END-PERFORM
+      *
+           MOVE    SPACE               TO  COM-RECE45-REC
+           INITIALIZE                      COM-RECE45-REC
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   50    )
+                         OR      ( WK-FREE-NAME2(IDX) =   SPACE )
+                COMPUTE  MAX-MEISAISU        =   MAX-MEISAISU  +  1
+                MOVE   "810000001"        TO  COM-SRYCD(1)
+                MOVE   ZERO               TO  COM-SRYSURYO(1)
+                MOVE    "1"               TO  COM-SIKFLG(1)
+                MOVE   COM-SRYACTINF(1)   TO  WRK-SRYACTINF
+                                                         (MAX-MEISAISU)
+                MOVE   WRK-FREEINF2(IDX)  TO  WRK-NAMEINF(MAX-MEISAISU)
+                MOVE   COM-SIKFLGINF(1)   TO  WRK-SIKFLGINF
+                                                         (MAX-MEISAISU)
+           END-PERFORM 
+      *
+           PERFORM
+             UNTIL  ( FLG-RECE45           =   1                   )
+             OR     ( RECE44-HOSPID    NOT =   RECE45-HOSPID       )
+             OR     ( RECE44-SRYYM     NOT =   RECE45-SRYYM        )
+             OR     ( RECE44-NYUGAIKBN NOT =   RECE45-NYUGAIKBN    )
+             OR     ( RECE44-PTID      NOT =   RECE45-PTID         )
+             OR     ( RECE44-RECEKA    NOT =   RECE45-RECEKA       )
+             OR     ( RECE44-HKNID     NOT =   RECE45-HKNID        )
+             OR     ( RECE44-TEKSTYMD  NOT =   RECE45-TEKSTYMD     )
+             OR     ( RECE44-ZAINUM    NOT =   RECE45-ZAINUM       )
+      *
+             PERFORM   VARYING   IDX   FROM    1   BY  1
+                       UNTIL   ( IDX               >   5     )
+                       OR      ( RECE45-SRYCD(IDX) =   SPACE )
+                  ADD    1             TO      IDX-RECE45
+                  MOVE   RECE45-SRYACTINF(IDX) TO
+                                           WRK-SRYACTINF(IDX-RECE45)
+                  MOVE   RECE45-NAMEINF(IDX)   TO
+                                           WRK-NAMEINF(IDX-RECE45)
+                  MOVE   RECE45-SIKFLGINF(IDX)   TO
+                                           WRK-SIKFLGINF(IDX-RECE45)     
+                  MOVE   RECE45-DATAKBNINF(IDX) TO
+                                           WRK-DATAKBNINF(IDX-RECE45)
+             END-PERFORM 
+      *
+             PERFORM 990-RECE45-NEXT-SEC
+      *
+           END-PERFORM
+      *
+      *    手術日コメントを含んだ内容で中間ファイルの再作成
+           MOVE       ZERO             TO      FLG-WRKRECE45
+           MOVE       ZERO             TO      IDX
+           MOVE       ZERO             TO      IDX-RECE45
+           MOVE       ZERO             TO      WRK-RENNUM
+           MOVE       ZERO             TO      WRK-CNT-MEISAI
+           PERFORM    UNTIL     FLG-WRKRECE45  =    1
+      *
+                  INITIALIZE                        RECE451-REC
+                  MOVE    WRK-RECE45-KEY       TO   RECE451-KEY
+                  ADD     1                    TO   WRK-RENNUM
+                  MOVE    WRK-RENNUM           TO   RECE451-RENNUM
+                  MOVE    WRK-RECE45-PTNUM     TO   RECE451-PTNUM
+                  MOVE    WRK-RECE45-SRYKA     TO   RECE451-SRYKA
+                  MOVE    WRK-RECE45-SRYKBN    TO   RECE451-SRYKBN
+                  MOVE    WRK-RECE45-SRYSYUKBN TO   RECE451-SRYSYUKBN
+                  MOVE    WRK-RECE45-JIHIMONEY TO   RECE451-JIHIMONEY
+                  PERFORM  VARYING   IDX   FROM   1   BY   1
+                           UNTIL   (IDX       >    5)   OR
+                                   (FLG-WRKRECE45   =   1)
+                     ADD         1             TO    IDX-RECE45
+                     IF  WK-RECE45-SRYCD(IDX-RECE45) = SPACE
+                         MOVE    1             TO    FLG-WRKRECE45
+                     ELSE
+                         MOVE  WRK-SRYACTINF(IDX-RECE45)
+                                          TO   RECE451-SRYACTINF(IDX)  
+                         MOVE  WRK-NAMEINF(IDX-RECE45)
+                                          TO   RECE451-NAMEINF(IDX)
+                         MOVE  WRK-SIKFLGINF(IDX-RECE45)
+                                          TO   RECE451-SIKFLGINF(IDX)
+                         MOVE  WRK-DATAKBNINF(IDX-RECE45)
+                                          TO   RECE451-DATAKBNINF(IDX)
+      *
+                         IF    WRK-SIKFLGINF(IDX-RECE45)  =  "1"
+                              ADD    1    TO   WRK-CNT-MEISAI
+                         END-IF    
+      *
+                     END-IF  
+                  END-PERFORM
+                  WRITE   RECE451-REC
+                  ADD     1                    TO  CNT-RECE45
+           END-PERFORM     
+      *
+           MOVE    RECE44-REC        TO      RECE441-REC
+           MOVE    WRK-CNT-MEISAI    TO      RECE441-MEISAISU
+           WRITE   RECE441-REC
+           ADD     1                 TO      CNT-RECE44
+      *
+           .
+       2001-SHUJUTSU-ETC2-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    算定日の確定
       *****************************************************************
        2001-SANTEI-DAY-SEC          SECTION.
@@ -2394,6 +2851,12 @@
                  MOVE     2          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
                  MOVE    "実施"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
+              WHEN    4
+                 MOVE     4          TO    WRK-KETA
+                                           WRK-KETA-TAIHI
+                 MOVE     2          TO    WRK-KETA2
+                 MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
+                 MOVE    "交付"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
            END-EVALUATE
       *
            MOVE      ZERO          TO  FLG-FIRST
