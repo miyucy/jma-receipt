@@ -1219,7 +1219,8 @@
            PERFORM UNTIL  (FLG-UKETUKE     =   1  )
       **********   OR     (SPA-DRCD    NOT =   SPACE )
       *        会計のまだの最初の受付を対象とする
-               IF      UKE-KAIKEITIME      =   ZERO
+               IF     (UKE-KAIKEITIME      =   ZERO )  AND
+                      (UKE-UKEID       NOT =   ZERO )
                    IF     (SPA-GMN-SRYKA   NOT =   SPACE  )  AND
                           (SPA-GMN-SRYKA       =   UKE-SRYKA )
                        MOVE    UKE-SRYKA           TO  SPA-SRYKA
