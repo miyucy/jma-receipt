@@ -80,4 +80,6 @@
                        09  SPA-NAI-RENNUM          PIC  9(02).
       *                老人適用区分
                        09  SPA-NAI-ROUTEKKBN       PIC  9(01).
+      *                剤点数マイナス分
+                       09  SPA-NAI-ZAITENFLG       PIC  9(01).
       *
