@@ -52,6 +52,13 @@
       *´µ¼ÔÀ¸Ç¯·îÆü¡ÊÏÂÎñÊÔ½¸¡Ë
                05  SPA-GMN-BIRTHDAYW       PIC X(09).
       *
+      *³«»Ï¥Ñ¥é¥á¥¿ÈÖ¹æ
+               05  SPA-MAE-STRNUM          PIC 9(04).
+               05  SPA-STRNUM              PIC 9(04).
+               05  SPA-ENDNUM              PIC 9(04).
+      *
+               05  SPA-GMN-SRYKBN-MAE      PIC X(02).
+      *
       *ÁªÂòÂÐ¾ÝºÞÈÖ¹æ
       *¡¡¿ÇÎÅ¶èÊ¬
                05  SPA-SRYKBN          PIC  X(02).
@@ -78,6 +85,16 @@
                        09  SPA-NAI-NENREI-MM     PIC 9(02).
                        09  SPA-NAI-NENREI-DD     PIC 9(02).
       *
+      *            Æþ³°¶èÊ¬
+                   07  SPA-GMN-NYUGAIKBN-COMB.
+                       09  SPA-GMN-NYUGAIKBN-LST     PIC X(10)
+                                                     OCCURS  2.
+                   07  SPA-NYUGAI-MAX                PIC 9(04).
+      *            ¿ÇÎÅ¼ïÊÌ¶èÊ¬
+                   07  SPA-GMN-SRYKBN-COMB.
+                       09  SPA-GMN-SRYKBN-LST        PIC X(19)
+                                                     OCCURS   20.
+                   07  SPA-SRYKBN-MAX                PIC 9(04).
       *
       *Ï«ºÒÍÑ¡Ê£Ê£°£²¤Ç¥»¥Ã¥È¡Ë
                05  SPA-NAI-RSI-ARAE.
@@ -129,7 +146,6 @@
       *
       *¿ÇÎÅ²Ê°ìÍ÷
            03  SPA-J01SET-AREA.
-      *
                05  SPA-J01-SRYKA               PIC X(02).
                05  SPA-J01-SRYKAMEI            PIC X(12).
                05  SPA-GMN-SRYKA-AREA.
@@ -138,6 +154,7 @@
                        09  SPA-GMN-F1L         PIC X(01).
                        09  SPA-GMN-SRYKAMEIL   PIC X(12).
                    07  SPA-SRYKA-MAX           PIC 9(04).
+      *
       *¡¡  £Ê£°£´ÍÑÊÝÂ¸
            03  SPA-MAE-SRYYMD          PIC  X(08).
            03  SPA-MAE-PTID            PIC  9(10).

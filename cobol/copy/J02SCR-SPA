@@ -79,6 +79,7 @@
                    07  SPA-GMN-RRK-LIST          OCCURS  60.
                        09  SPA-GMN-RRKNO         PIC 9(03).
                        09  SPA-GMN-RRKYMD        PIC X(16).
+                       09  SPA-GMN-RRKSRYKA      PIC X(04).
                    07  SPA-RRK-MAX               PIC 9(03).
       *
                05  SPA-NAIGMN-AREA.
@@ -92,6 +93,8 @@
                    07  SPA-NAI-SISIKBN           PIC 9(01).
       *            Ï«ºÒÍÑ  ½ýÉÂÇ¯·îÆü
                    07  SPA-RSI-SHOBYOYMD         PIC X(08).
+      *            ¿ÇÎÅ²Ê
+                   07  SPA-NAIGMN-SRYKA          PIC X(02).
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SRYYM.
@@ -187,12 +190,12 @@
                05  SPA-J023-HKNCOMBI-G.
                    07  SPA-J023-HKNCOMBINUM     PIC X(04).
                    07  SPA-J023-HKNCOMBY1       PIC X(01).
-                   07  SPA-J023-HKNCOMBIMEI     PIC X(36).
+                   07  SPA-J023-HKNCOMBIMEI     PIC X(35).
                05  SPA-J023-HKNCOMB-COMB.
                    07  SPA-J023-HKN-LIST    OCCURS  10.
                        09  SPA-J023-THKNCOMBINUM    PIC X(04).
                        09  SPA-J023-THKNCOMBY1      PIC X(01).
-                       09  SPA-J023-THKNCOMBIMEI    PIC X(36).
+                       09  SPA-J023-THKNCOMBIMEI    PIC X(35).
                    07  SPA-J023-HKNMAX              PIC 9(04).
       *            Ï«ºÒÊÝ¸±¶èÊ¬
                    07  SPA-J023-RSI-THKNKBN-OCC  OCCURS  10.

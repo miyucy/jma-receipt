@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
         02  J02.
-      ****  02  J02-FIXED1.
+     **** 02  J02-FIXED1.
               03  J02-PTNUM.
                 04  J02-VALUE   PIC X(20).
               03  J02-SRYYM.
@@ -26,7 +26,7 @@
               03  J02-NAME.
                 04  J02-VALUE   PIC X(50).
               03  J02-BIRTHDAY.
-                04  J02-VALUE   PIC X(09).
+                04  J02-VALUE   PIC X(9).
               03  J02-MEISYO.
                 04  J02-VALUE   PIC X(50).
               03  J02-NUM.
@@ -55,15 +55,27 @@
                     06  J02-TDAY-G.
                         08  J02-TDAY    PIC X(3)  OCCURS  31.
                   05  J02-DATALIST-SELECT  PIC X   OCCURS  400 TIMES.
+              03  J02-SRYKAMEI.
+                04  J02-VALUE   PIC X(4).
+              03  J02-SCROLLEDWINDOW2.
+                04  J02-RRKLIST.
+                  05  J02-RRKLIST-COUNT   PIC S9(9)   BINARY.
+                  05  J02-ITEM        OCCURS  60 TIMES.
+                    06  J02-RRKNO     PIC X(3).
+                    06  J02-RRKYMD    PIC X(20).
+                  05  J02-RRKLIST-SELECT  PIC X       OCCURS  60 TIMES.
+              03  J02-SRYKBNCOMB.
+                04  J02-SRYKBN.
+                  05  J02-VALUE   PIC X(19).
+                04  J02-SRYKBN-COUNT   PIC S9(9)   BINARY.
+                04  J02-SRYKBN-ITEM    PIC X(19)    OCCURS  30 TIMES.
               03  J02-SRYKACOMB.
                 04  J02-SRYKA.
                   05  J02-VALUE   PIC X(16).
                 04  J02-SRYKA-COUNT   PIC S9(9)   BINARY.
                 04  J02-SRYKA-ITEM    PIC X(16)   OCCURS  10 TIMES.
-              03  J02-SCROLLEDWINDOW2.
-                04  J02-RRKLIST.
-                  05  J02-RRKLIST-COUNT   PIC S9(9)   BINARY.
-                  05  J02-ITEM        OCCURS  30 TIMES.
-                    06  J02-RRKNO     PIC X(3).
-                    06  J02-RRKYMD    PIC X(16).
-                  05  J02-RRKLIST-SELECT  PIC X      OCCURS  30 TIMES.
+              03  J02-NYUGAIKBNCOMB.
+                04  J02-NYUGAIKBN.
+                  05  J02-VALUE   PIC X(10).
+                04  J02-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.
+                04  J02-NYUGAIKBN-ITEM    PIC X(10)   OCCURS  2 TIMES.
