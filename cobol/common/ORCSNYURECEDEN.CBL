@@ -59,6 +59,7 @@
            03  FLG-SENTEICDCHG             PIC 9(01).
            03  FLG-TSYRRK                  PIC 9(01).
            03  FLG-TNKRRK                  PIC 9(01).
+           03  FLG-TENSUWRK                PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
@@ -98,6 +99,8 @@
       *    褥瘡患者管理加算
            03  CONS-JYOKU-KSN1             PIC X(09) VALUE "190116990".
            03  CONS-JYOKU-KSN2             PIC X(09) VALUE "190813390".
+      *    点数マスタ読み込みワーク用
+           03  TTNS-CONST-MAX              PIC 9(03) VALUE 200.
       *
       *    一時領域
        01  WRK-AREA.
@@ -227,6 +230,14 @@
                    07  WRK-SKJ3-HKNCOMBI-DAY   PIC 9(03).
                    07  WRK-SKJ3-TOKU-SHOKU     PIC X(09).
                    07  WRK-SKJ3-KAISU          PIC 9(02).
+      *
+      *    点数マスタ退避ワーク
+           03  WRK-TENSU-OCC                   OCCURS  200.
+               05  WRK-TENSU-SRYCD             PIC X(09).
+               05  WRK-TENSU-DATA              PIC X(2000).
+           03  WRK-TENSU-CD                    PIC X(09).
+           03  TTNS-IDX                        PIC 9(03).
+           03  TTNS-MAX                        PIC 9(03).
       *
       *    食事負担ワーク
            03  WRK-SKJFTN-TABLE.
@@ -1928,7 +1939,12 @@
            END-IF
            MOVE    LNK-NYURECEDEN-SANTEIYM  TO  ORC-DBYMD(1:6)
            MOVE    "01"                    TO  ORC-DBYMD(7:2)
-           PERFORM 910-TENSU-READ-SEC
+           MOVE    TNS-SRYCD    TO   WRK-TENSU-CD
+           PERFORM 910-TENSUWRK-CHK-SEC
+           IF      FLG-TENSUWRK   =    ZERO
+               PERFORM 910-TENSU-READ-SEC
+               PERFORM 910-TTNS-HEN-SEC
+           END-IF
       *
       *    点数算定
            EVALUATE    TNS-TENSIKIBETU
@@ -2254,6 +2270,44 @@
            .
       *
        210-SYS-5000-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ退避ワークチェック処理
+      *****************************************************************
+       910-TENSUWRK-CHK-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TENSUWRK
+      *
+           PERFORM VARYING TTNS-IDX      FROM    1   BY  1
+                   UNTIL ( TTNS-IDX      >   TTNS-MAX ) OR
+                         ( FLG-TENSUWRK    =   1 )      OR
+                         ( TTNS-IDX      >   200 )
+               IF    ( WRK-TENSU-SRYCD (TTNS-IDX)
+                                       =   WRK-TENSU-CD )
+                   MOVE    1           TO  FLG-TENSUWRK
+                   MOVE    WRK-TENSU-DATA (TTNS-IDX)
+                                       TO  TNS-TENSU-REC
+               END-IF
+           END-PERFORM
+      *
+           .
+       910-TENSUWRK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ退避ワーク編集処理
+      *****************************************************************
+       910-TTNS-HEN-SEC               SECTION.
+      *
+           IF    ( TTNS-CONST-MAX  >   TTNS-MAX )
+               COMPUTE TTNS-MAX    =   TTNS-MAX    +   1
+               MOVE    TNS-SRYCD       TO  WRK-TENSU-SRYCD
+                                                   (TTNS-MAX)
+               MOVE    TNS-TENSU-REC   TO  WRK-TENSU-DATA
+                                                   (TTNS-MAX)
+           END-IF
+      *
+           .
+       910-TTNS-HEN-EXT.
            EXIT.
       *
       *****************************************************************
