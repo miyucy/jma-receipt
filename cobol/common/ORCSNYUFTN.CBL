@@ -1777,7 +1777,11 @@
                  IF  (SYU-DAY(SYU-IDX)       =     "1"  OR  "2")   AND
                      (ACCT-DAY(1 SYU-IDX)    NOT =  ZERO)          AND
                      (SYU-HKNCOMBINUM        =    ACCT-HKNCOMBI)
+                   IF  ACCT-SRYKBN  =  "95" OR "96"
+                     ADD   1                      TO     SINRYO-COUNT
+                   ELSE
                      ADD   ACCT-DAY(1 SYU-IDX)    TO     SINRYO-COUNT
+                   END-IF
                  END-IF
            END-PERFORM          
       *
@@ -1933,23 +1937,28 @@
                                        WHEN    1
                                           COMPUTE  TBL-JIHI-TAXNASI(1)
                                                =   TBL-JIHI-TAXNASI(1)
-                                               +   SRY-JIHIMONEY(IDZ)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
                                        WHEN    2
                                           COMPUTE  TBL-JIHI-TAXNASI(2)
                                                =   TBL-JIHI-TAXNASI(2)
-                                               +   SRY-JIHIMONEY(IDZ)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
                                        WHEN    3
                                           COMPUTE  TBL-JIHI-TAXNASI(3)
                                                =   TBL-JIHI-TAXNASI(3)
-                                               +   SRY-JIHIMONEY(IDZ)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
                                        WHEN    4
                                           COMPUTE  TBL-JIHI-TAXNASI(4)
                                                =   TBL-JIHI-TAXNASI(4)
-                                               +   SRY-JIHIMONEY(IDZ)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
                                        WHEN    5
                                           COMPUTE  TBL-JIHI-TAXNASI(5)
                                                =   TBL-JIHI-TAXNASI(5)
-                                               +   SRY-JIHIMONEY(IDZ)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
                                    END-EVALUATE
                                END-IF
                            ELSE
@@ -2119,23 +2128,28 @@
                                        WHEN    1
                                           COMPUTE  TBL-JIHI-TAXARI(1)
                                                =   TBL-JIHI-TAXARI(1)
-                                               +   SRY-JIHIMONEY(IDZ)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
                                        WHEN    2
                                           COMPUTE  TBL-JIHI-TAXARI(2)
                                                =   TBL-JIHI-TAXARI(2)
-                                               +   SRY-JIHIMONEY(IDZ)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
                                        WHEN    3
                                           COMPUTE  TBL-JIHI-TAXARI(3)
                                                =   TBL-JIHI-TAXARI(3)
-                                               +   SRY-JIHIMONEY(IDZ)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
                                        WHEN    4
                                           COMPUTE  TBL-JIHI-TAXARI(4)
                                                =   TBL-JIHI-TAXARI(4)
-                                               +   SRY-JIHIMONEY(IDZ)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
                                        WHEN    5
                                           COMPUTE  TBL-JIHI-TAXARI(5)
                                                =   TBL-JIHI-TAXARI(5)
-                                               +   SRY-JIHIMONEY(IDZ)
+                                               +  (SRY-JIHIMONEY(IDZ)
+                                                   *  SINRYO-COUNT) 
                                    END-EVALUATE
                                END-IF
                            ELSE
