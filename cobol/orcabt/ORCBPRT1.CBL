@@ -105,6 +105,7 @@
            03  FLG-PRTDATA         PIC 9(01).
            03  FLG-PRTKANRI        PIC 9(01).
            03  FLG-PRVKANRI        PIC 9(01).
+           03  FLG-NODATA          PIC 9(01).
       *
       *  01.01.02  ADD START 
       *    添字領域
@@ -191,6 +192,13 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+      *   ファイル取得関数
+       01 ORCFILEGET-AREA.
+           03  ORCF-FILE-MODE   PIC X(1).
+           03  ORCF-FILE-NAME   PIC X(200).
+           03  ORCF-DATA        PIC X(100000).
+           03  ORCF-RET         PIC X(2).
+       01  ST                      PIC 9(2).
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
@@ -207,6 +215,8 @@
       *
            PERFORM 100-INIT-SEC
       *
+           DISPLAY "take flg-prtdata = " FLG-PRTDATA
+           DISPLAY "take flg-end     = " FLG-END
            PERFORM 200-MAIN-SEC
                    UNTIL       FLG-END     =   1
       *
@@ -366,9 +376,11 @@
        2001-PRTDATA-PRINT-SEC          SECTION.
       *
       * プレビュー処理の場合管理DBがあれば以降スキップ
+           DISPLAY "take 2001-prtdata st"
            IF      WRK-PARA-PRTFLG        =    "3"
                    PERFORM 900-PRVKANRI-INV-SEC
              IF    FLG-PRVKANRI           =    ZERO
+             AND   FLG-NODATA             =    ZERO
                    GO      TO          2001-PRTDATA-PRINT-EXT
              END-IF
            END-IF
@@ -397,7 +409,7 @@
       *  01.01.02  SATRT
            MOVE WRK-PARA-PRTFLG                TO  PRT-PRTKBN
            MOVE    ZERO                        TO  CNT-KETA
-           MOVE    "/var/tmp/"                 TO  PRT-PSFILE-FOLDER
+           MOVE    "/var/tmp/.orca_ps/"        TO  PRT-PSFILE-FOLDER
            MOVE    LNK-PRTKANRI-TBL-KEY        TO  PRT-PSFILE-TBL-KEY
            MOVE    PRTDATA-RENNUM              TO  PRT-PSFILE-RENNUM
            MOVE    LNK-PRTKANRI-TBL-GROUP      TO  PRT-PSFILE-GROUP 
@@ -703,7 +715,25 @@
                DISPLAY "ORCBPRT1 next hit ok!!"
       *    プレビュー以外の時
             IF WRK-PARA-PRTFLG        =    "3"
-               MOVE    1                   TO  FLG-END
+               MOVE    SPACE          TO  ORCF-FILE-NAME
+               STRING  "/var/tmp/.orca_ps/"
+                                       DELIMITED  BY  SPACE
+                   PRVKANRI-TBL-KEY    DELIMITED  BY  SPACE
+                   PRVKANRI-RENNUM     DELIMITED  BY  SPACE
+                   PRVKANRI-TBL-GROUP  DELIMITED  BY  SPACE
+                   PRVKANRI-SHORI-RENNUM
+                                       DELIMITED  BY  SPACE
+                   PRVKANRI-PAGE       DELIMITED  BY  SPACE
+                                       INTO   ORCF-FILE-NAME
+               END-STRING
+               MOVE    "r"             TO  ORCF-FILE-MODE
+               CALL    "orcfileio"     USING ST  ORCFILEGET-AREA
+               IF      ORCF-RET        =   ZERO
+                       MOVE    1       TO  FLG-END
+               ELSE
+                       MOVE    ZERO    TO  FLG-END
+                       MOVE    1       TO  FLG-NODATA
+               END-IF
             END-IF
            END-IF
            .

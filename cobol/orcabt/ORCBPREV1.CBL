@@ -454,7 +454,7 @@
       *  01.01.02  SATRT
            MOVE WRK-PARA-PRTFLG                TO  PRT-PRTKBN
            MOVE    ZERO                        TO  CNT-KETA
-           MOVE    "/var/tmp/"                 TO  PRT-PSFILE-FOLDER
+           MOVE    "/var/tmp/.orca_ps/"         TO  PRT-PSFILE-FOLDER
            MOVE    LNK-PRTKANRI-TBL-KEY        TO  PRT-PSFILE-TBL-KEY
            MOVE    PRTDATA-RENNUM              TO  PRT-PSFILE-RENNUM
            MOVE    LNK-PRTKANRI-TBL-GROUP      TO  PRT-PSFILE-GROUP 
@@ -677,76 +677,6 @@
       *     
       *  10        20        30        40        50        60
 ----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
-      *     
-           OPEN    INPUT      PREVIEW-FILE
-           IF      STS-PREVIEW         =   ZERO
-                   PERFORM 900-IN-READ-SEC
-                   CLOSE   PREVIEW-FILE
-           ELSE
-                   MOVE    1              TO  FLG-IN
-           END-IF
-           MOVE    SPACE               TO  SPA-NAI-ENV
-           IF      FLG-IN      =   ZERO
-                   STRING  PREVIEW-ENV         DELIMITED  BY  SPACE
-                           "/"                 DELIMITED  BY  SPACE
-                                       INTO    SPA-NAI-ENV
-                   END-STRING
-           ELSE
-                   MOVE "/tmp/"
-                               TO  SPA-NAI-ENV
-           END-IF
-           MOVE "/tmp/"                TO  SPA-NAI-ENV
-      *     
-           PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY     >       10
-             PERFORM VARYING   IDZ     FROM    1   BY  1
-                       UNTIL       IDZ     >        5
-              IF   WK-TBL-G(IDZ)       NOT  =  SPACE
-                   MOVE  SPACE         TO  WRK-FILENAME
-                   STRING
-                      "/var/tmp/"         DELIMITED  BY  SPACE
-                      LNK-PRTKANRI-TBL-KEY
-                                          DELIMITED  BY  SPACE
-                      IDY                 DELIMITED  BY  SPACE
-                      WK-TBL-G(IDZ)       DELIMITED  BY  SPACE
-                      "*"                 DELIMITED  BY  SPACE
-                                          INTO   WRK-FILENAME
-                   END-STRING
-                   MOVE    ZERO            TO  IF-RESULT
-                   MOVE    WRK-FILENAME
-                                           TO  IF-FILENAME
-      *            CALL    "orcfiledel"    USING
-      *                                    ORCSFDELAREA
-                   MOVE  SPACE         TO  WRK-FILENAME1
-                   STRING
-                      SPA-NAI-ENV         DELIMITED  BY  SPACE
-                      LNK-PRTKANRI-TBL-KEY
-                                          DELIMITED  BY  SPACE
-                      IDY                 DELIMITED  BY  SPACE
-                      WK-TBL-G(IDZ)       DELIMITED  BY  SPACE
-                      "*"                 DELIMITED  BY  SPACE
-                                          INTO   WRK-FILENAME1
-                   END-STRING
-               MOVE    SPACE           TO  SHELLTBL
-      *        ファイルデイレクトリ位置指定
-               INITIALIZE              ORCSMKPASSAREA
-               MOVE    "scripts/allways/orc_file_del.sh"
-                                       TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
-      *         
-               MOVE    WRK-FILENAME    TO  SHELLTBL-ARG1
-               MOVE    WRK-FILENAME1   TO  SHELLTBL-ARG2
-               MOVE    SHELLTBL        TO  MCPDATA-REC
-               MOVE    "SHELL"         TO  MCP-FUNC
-               MOVE    PATH-SHELL-SHELL
-                                       TO  MCP-PATH
-               CALL    "MCPSUB"        USING
-                                           MCPAREA
-                                           MCPDATA-REC
-              END-IF
-             END-PERFORM
-           END-PERFORM
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC

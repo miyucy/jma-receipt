@@ -30,6 +30,7 @@
       *  03/09/01    NACL−藤原   メモ欄の全角チェック追加
       *  03/10/27    NACL−藤原   前頁追加
       *  04/02/13    NACL−太田   コラムリスト位置修正
+      *  02/05/00    NACL−竹田   データ格納方法変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -95,6 +96,7 @@
                    07  SPA-GMN-TITLE2              PIC X(10).
                    07  SPA-GMN-ERRMSG              PIC X(40).
                    07  SPA-GMN-FILENAME            PIC X(200).
+                   07  SPA-GMN-OBJECT              PIC X(08).
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-OCC             OCCURS  100.
                            11  SPA-GMN-TNO         PIC 9(05).
@@ -142,6 +144,7 @@
                            11  SPA-NAI-PTID        PIC 9(10).
                            11  SPA-NAI-MAKEOK-FLG  PIC 9(01).
                            11  SPA-NAI-UPDFLG      PIC X(01).
+                           11  SPA-NAI-OBJECT      PIC X(08).
       *                     
                05  SPA-WRK-TBL-KEY                 PIC X(08).            
       *                 
@@ -491,7 +494,7 @@
                    MOVE "/tmp/"
                                TO  SPA-NAI-ENV
            END-IF
-           MOVE "/tmp/"                   TO  SPA-NAI-ENV
+           MOVE "/var/tmp/.orca_ps/"      TO  SPA-NAI-ENV
       *
            EVALUATE    SPA-PRTKANRI-TBL-KEY
                WHEN    "SOKATU"
@@ -688,9 +691,13 @@
       *****************************************************************
        2011-SELECT-HENSYU-SEC        SECTION.
       *
+      *    IF      WRK-BANGO           =   ZERO
+      *            MOVE  1             TO  WRK-BANGO
+      *    END-IF
            MOVE    WRK-BANGO                TO  IDY
       *     
            MOVE    SPA-NAI-FILENAME (IDY)   TO  SPA-GMN-FILENAME 
+           MOVE    SPA-NAI-OBJECT   (IDY)   TO  SPA-GMN-OBJECT
       **** MOVE    SPA-GMN-TSHORI-RENNUM (IDY) TO
       ****                                     SPA-NAI-SHORI-RENNUM
       *                                 
@@ -698,6 +705,7 @@
            MOVE    SPACE               TO  PREVIEW
            MOVE    SPA-NAI-FILENAME (IDY)
                                        TO  WRK-PSFILE-AREA
+           DISPLAY "take wrk-psfile-area = " WRK-PSFILE-AREA
            STRING  SPA-NAI-ENV         DELIMITED  BY  SPACE
                    WRK-PSFILE-TBL-KEY  DELIMITED  BY  SPACE
                    WRK-PSFILE-RENNUM   DELIMITED  BY  SPACE
@@ -706,12 +714,16 @@
                    WRK-PSFILE-PAGE     DELIMITED  BY  SPACE
                                        INTO   PREVIEW
            END-STRING
+           DISPLAY "take wrk-psfile-area = " WRK-PSFILE-AREA
+           DISPLAY "take preview = " PREVIEW
       *                                 
            PERFORM 460-FILE-HENSYU-SEC
            MOVE    SPA-NAI-SELNUM      TO  IDX
            PERFORM 2013-PREVIEW-CHECK-SEC
            MOVE    SPA-NAI-FILENAME (IDY)
                                        TO  SPA-GMN-FILENAME
+           MOVE    SPA-NAI-OBJECT (IDY)
+                                       TO  SPA-GMN-OBJECT
       *
            IF      SPA-NAI-UPDFLG(IDY)      =   "1"
                MOVE    SPA-NAI-MEMO (IDY)
@@ -1021,6 +1033,7 @@
            INITIALIZE                  SPA-GMN-TBL
                                        SPA-GMN-BODY
                                        SPA-GMN-FILENAME
+                                       SPA-GMN-OBJECT
            INITIALIZE                  SPA-NAI-BODY
                                        SPA-NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX
@@ -1046,6 +1059,7 @@
            INITIALIZE                  SPA-GMN-TBL
                                        SPA-GMN-BODY
                                        SPA-GMN-FILENAME
+                                       SPA-GMN-OBJECT
            INITIALIZE                  SPA-NAI-BODY
                                        SPA-NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX
@@ -1480,6 +1494,10 @@
                MOVE    ZERO            TO  SPA-GMN-NEXT
            END-IF
       *
+           IF      SPA-NAI-SELNUM  =   1
+                   MOVE  ZERO          TO  SPA-NAI-SELNUM
+           END-IF
+      *
            IF      SPA-NAI-SELNUM  =   ZERO    
                MOVE    1                   TO  SPA-NAI-SELNUM
                MOVE    SPA-GMN-TNO (SPA-NAI-SELNUM)
@@ -1500,6 +1518,9 @@
       *
            MOVE    1                   TO  FLG-GMN-INIT
       *
+      *     SPA-NAI-MAKEOK-FLG (IDX)
+           DISPLAY "take spa-gmn-max = "  SPA-GMN-MAX
+           DISPLAY "take filename(1) = "   SPA-NAI-FILENAME (1)
       *    既にＳＰＡに存在するかチェック
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING IDZ FROM    1   BY  1
@@ -1650,10 +1671,20 @@
                                        SPA-NAI-MAKEOK-FLG (IDX)
                    MOVE   "*"          TO
                                         SPA-GMN-TPRFLG     (IDX)
+                   MOVE   "BLOBIMPORT"         TO  MCP-FUNC
+                   MOVE    PATH-BLOB-PRIMARY   TO  MCP-PATH
+                   MOVE    ORCF-FILE-NAME      TO  ORCA-BLOB-FILE
+                   CALL   "MCPSUB"             USING
+                                               MCPAREA
+                                               ORCA-BLOB
+                   MOVE    ORCA-BLOB-OBJECT    TO  SPA-NAI-OBJECT(IDX)
                    GO        TO  20122-PSFILE-EXIST-EXT
            END-IF
+      *   rin st  ----------------------------------------------
+                   GO        TO  20122-PSFILE-EXIST-EXT
+      *   rin ed  ----------------------------------------------
            MOVE   SPACE                TO  ORCF-FILE-NAME
-           STRING  "/var/tmp/" DELIMITED  BY  SPACE
+           STRING  "/var/tmp/.orca_ps/" DELIMITED  BY  SPACE
                   WRK-PSFILE-TBL-KEY   DELIMITED  BY  SPACE
                   WRK-PSFILE-RENNUM    DELIMITED  BY  SPACE
                   WRK-PSFILE-GROUP     DELIMITED  BY  SPACE
@@ -1733,7 +1764,8 @@
                                            TO  WRK-PSFILE-PAGE
                              MOVE   SPACE  TO  ORCF-FILE-NAME
 ----+-*--+----+----+----+----+----+----+----+----+----+----+----+----+
-                             STRING  "/var/tmp/" DELIMITED  BY  SPACE
+                             STRING  "/var/tmp/.orca_ps/"
+                                                 DELIMITED  BY  SPACE
                                WRK-PSFILE-TBL-KEY
                                                  DELIMITED  BY  SPACE
                                WRK-PSFILE-RENNUM DELIMITED  BY  SPACE
@@ -1797,7 +1829,7 @@
                    MOVE   SPACE                TO  ORCF-FILE-NAME
                    MOVE   SPA-NAI-FILENAME (IDX)
                                                TO  ORCF-FILE-NAME
-                   MOVE    "w"                 TO  ORCF-FILE-MODE
+                   MOVE    "r"                 TO  ORCF-FILE-MODE
                    MOVE    PREVIEW-PRTDATA     TO  ORCF-DATA 
                    CALL    "orcfileio"     USING ST  ORCFILEGET-AREA
                    IF      ORCF-RET        NOT =   ZERO
@@ -1807,6 +1839,14 @@
                                                SPA-NAI-MAKEOK-FLG (IDX)
                      MOVE   "*"                TO
                                                SPA-GMN-TPRFLG     (IDX)
+                     MOVE   "BLOBIMPORT"       TO  MCP-FUNC
+                     MOVE    PATH-BLOB-PRIMARY TO  MCP-PATH
+                     MOVE   SPA-NAI-FILENAME (IDX)
+                                               TO  ORCA-BLOB-FILE
+                     CALL   "MCPSUB"           USING
+                                               MCPAREA
+                                               ORCA-BLOB
+                     MOVE    ORCA-BLOB-OBJECT    TO  SPA-NAI-OBJECT(IDX)
                    END-IF
             END-IF
            .
@@ -2162,14 +2202,16 @@
       *    MOVE    SPA-GMN-TITLE2      TO  XC01-HEAD2
       *     
            MOVE    SPA-GMN-SELNUM      TO  XC01-SELNUM
-      *    MOVE    SPA-GMN-FILENAME    TO  XC01-PSAREA
-           MOVE   "BLOBIMPORT"         TO  MCP-FUNC
-           MOVE    PATH-BLOB-PRIMARY   TO  MCP-PATH
-           MOVE    SPA-GMN-FILENAME    TO  ORCA-BLOB-FILE
-           CALL   "MCPSUB"             USING
-                                       MCPAREA
-                                       ORCA-BLOB
-           MOVE    ORCA-BLOB-OBJECT    TO  XC01-PSAREA
+           MOVE    SPA-GMN-OBJECT      TO  XC01-PSAREA
+           DISPLAY "take object = "  SPA-GMN-OBJECT 
+           DISPLAY "take filenm = "  SPA-GMN-FILENAME
+      *    MOVE   "BLOBIMPORT"         TO  MCP-FUNC
+      *    MOVE    PATH-BLOB-PRIMARY   TO  MCP-PATH
+      *    MOVE    SPA-GMN-FILENAME    TO  ORCA-BLOB-FILE
+      *    CALL   "MCPSUB"             USING
+      *                                MCPAREA
+      *                                ORCA-BLOB
+      *    MOVE    ORCA-BLOB-OBJECT    TO  XC01-PSAREA
       *****IF      XC01-PSAREA         =   SPACE
       *            MOVE  SPA-NAI-FILENAME(1)
       *                                TO  XC01-PSAREA

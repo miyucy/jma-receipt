@@ -495,7 +495,7 @@
               DISPLAY  "wk-tbl-g (1) " WK-TBL-G(IDZ) 
                    MOVE  SPACE         TO  WRK-FILENAME
                    STRING
-                      "/var/tmp/"         DELIMITED  BY  SPACE
+                      "/var/tmp/.orca_ps/" DELIMITED  BY  SPACE
                       WRK-PRT-TBL-KEY
                                           DELIMITED  BY  SPACE
                       IDY                 DELIMITED  BY  SPACE

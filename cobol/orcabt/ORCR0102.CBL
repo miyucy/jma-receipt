@@ -542,7 +542,8 @@
            END-EVALUATE
            MOVE    "1"                 TO  PRT-SITEKBN
            MOVE    WRK-PARA-PRTKBN     TO  PRT-PRTKBN
-           MOVE    "/var/tmp/"          TO  PRT-OUT
+           MOVE    "/var/tmp/.orca_ps/"
+                                       TO  PRT-OUT
            MOVE    LNK-PRTKANRI-TBL-KEY
                                        TO  PRT-TBL-KEY
            MOVE    LNK-PRTKANRI-RENNUM TO  PRT-RENNUM
