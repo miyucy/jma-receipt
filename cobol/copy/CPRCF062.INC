@@ -212,6 +212,12 @@
                05  RECE62-NYUKHNKEIINF    OCCURS  5.
       *合計金額
                    07  RECE62-NYUKHNKEI   PIC  9(09).
+      *入院基本料情報２
+           03  RECE62-NYUKHNINF2.
+      *合計金額情報２
+               05  RECE62-NYUKHNKEIINF2   OCCURS  5.
+      *合計金額２
+                   07  RECE62-NYUKHNKEI2  PIC S9(09).
       *
       *特定入院基本料情報
            03  RECE62-NYUTOKINF           OCCURS  10.
@@ -226,12 +232,10 @@
       *
       *特定入院基本料情報２
            03  RECE62-NYUTOKINF2.
-      *入院日数
-               05  RECE62-NYUTOKNISSU2    PIC  9(02).
-      *合計金額情報
+      *合計金額情報２
                05  RECE62-NYUTOKKEIINF2   OCCURS  5.
-      *合計金額
-                   07  RECE62-NYUTOKKEI2  PIC  9(09).
+      *合計金額２
+                   07  RECE62-NYUTOKKEI2  PIC S9(09).
       *
       *老人公費負担金額情報
            03  RECE62-RJNKOHFTNINF        OCCURS  3.
