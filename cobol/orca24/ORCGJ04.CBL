@@ -968,7 +968,6 @@
       *            確認画面より
                WHEN    "JID1"
                    PERFORM 3003-JID1-SET-SEC
-                   MOVE    SPACE           TO  SPA-JIDCD
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
            MOVE    SPACE           TO  SPA-JIDCD
@@ -1017,6 +1016,21 @@
                        MOVE    "JOIN"          TO  WRK-PUTTYPE
       *                更新処理
                        PERFORM 41002-KOUSIN-SYORI-SEC
+                   ELSE
+                       MOVE    1                   TO  SPA-GMN-CUR
+                   END-IF
+                   MOVE    SPACE           TO  SPA-JIDCD
+      *
+               WHEN    "0102"
+      *            外用の確認
+                   MOVE    SPACE           TO  SPA-JIDCD
+                   IF      SPA-JID1-FLG        =   "OK"
+      *                更新処理
+                       PERFORM 4100-TOROKU-SEC
+      *
+                       IF      SPA-JIDCD       NOT =   SPACE
+                           PERFORM 520-JIDSET-SEC
+                       END-IF
                    ELSE
                        MOVE    1                   TO  SPA-GMN-CUR
                    END-IF
@@ -1217,6 +1231,7 @@
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  FLG-YAKZAI
            MOVE    ZERO                TO  FLG-FIRUMU
+           MOVE    ZERO                TO  SPA-CHOKITOFLG
       *
            INITIALIZE                      SRYACT-REC
            MOVE    SPA-HOSPID          TO  SRY-HOSPID
@@ -1347,8 +1362,17 @@
       *    回数を編集
            MOVE    IDX2                TO  IDXS
       *
+           IF      SRY-SRYKBN          =   "70"
+      *        分画数を編集
+               MOVE    SRY-SRYKAISU (IDS)  TO  SPA-COM-BUNGSU (IDX2)
+           END-IF
       *    分画数を編集
-           MOVE    SRY-SRYKAISU (IDS)  TO  SPA-COM-BUNGSU (IDX2)
+           IF      SRY-SRYKBN          =   "23"
+      *********MOVE    SRY-SRYKAISU (IDS)  TO  SPA-COM-KAISU2 (IDX2)
+               IF      SRY-SRYKAISU (IDS)  >=  28
+                   MOVE    1               TO  SPA-CHOKITOFLG
+               END-IF
+           END-IF
       *
            MOVE    SPA-COM-INPUTCD (IDX2)  TO  SPA-GMN-INPUTCD  (IDX2)
            IF      SRY-AUTOKBN (IDS)   =   "A" OR "B" OR "C"  OR  "D"
@@ -3208,8 +3232,8 @@
       *            GO  TO                  4101192-INPSET-SET-EXT
       **** END-EVALUATE
       *
-           MOVE    LNK-SC97-CDSYU      TO  ICD-CDSYU
-      *    MOVE    WRK-CD(1:WRK-CD-MCNT)   TO  ICD-INPUTCD
+      **   MOVE    LNK-SC97-CDSYU      TO  ICD-CDSYU
+           MOVE    "6"                 TO  ICD-CDSYU
            MOVE    WRK-INPUTCD             TO  ICD-INPUTCD
       *
            PERFORM 930-INPUTCD-READ-SEC
@@ -4490,6 +4514,14 @@
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (FLG-END             =   1     )
                GO      TO      4100-TOROKU-EXT
+           END-IF
+      *
+      *    外用薬で回数が２８以上の時、警告表示
+           IF      SPA-CHOKITOFLG      =   1
+               IF      SPA-JID1-FLG        =   SPACE
+                   MOVE    "0102"          TO  SPA-JIDCD
+                   GO      TO      4100-TOROKU-EXT
+               END-IF
            END-IF
       *
       **** 更新前のチェック
@@ -6275,6 +6307,11 @@
                                        TO  WRK-JIDMSG(1:26)
                    MOVE
                    "回数も登録されますので取消ができなくなります"
+                                       TO  WRK-JIDMSG(27:)
+               WHEN    "0102"
+                   MOVE    "外用薬を総量で登録します。"
+                                       TO  WRK-JIDMSG
+                   MOVE    "診療行為訂正時では、回数が１回となります。"
                                        TO  WRK-JIDMSG(27:)
                WHEN    OTHER
                    MOVE    SPA-ERRCD
