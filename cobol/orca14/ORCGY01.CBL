@@ -904,7 +904,7 @@
                                                           (3:2)
       *            時間帯毎の予約を保存する
                    INITIALIZE                  YYK-REC
-                                               MCPAREA
+      *                                        MCPAREA
                                                MCPDATA-REC
                    MOVE    SPA-HOSPID          TO  YYK-HOSPID
                    MOVE    SPA-GMN-SRYNAIYOCD  TO  YYK-SRYNAIYO
@@ -1363,7 +1363,7 @@
                PERFORM 910-PTINF-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           INITIALIZE                  MCPAREA
+      *    INITIALIZE                  MCPAREA
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    "PTINF-KEY2"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
@@ -1401,7 +1401,7 @@
                END-PERFORM
             END-IF
       *    カーソルクロース
-           INITIALIZE                  MCPAREA
+      *    INITIALIZE                  MCPAREA
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    "PTINF-KEY3"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
