@@ -325,6 +325,7 @@
       *  01.01.138   NACL-太田    04/04/08  SYUMEI-KEY7追加
       *  01.01.139   NACL-太田    04/05/06  PTNYUINRRK-KEY30,KEY31追加
       *  01.01.140   NACL-太田    04/05/17  PTTEIKIRRK-KEY7追加
+      *  01.01.141   NACL-小豆沢  04/05/28  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -350,6 +351,8 @@
       *
            EVALUATE    MCP-FUNC
              WHEN     'DBCLOSE'
+             WHEN     'DBOPEN'
+             WHEN     'DBDISCONNECT'
                  CONTINUE
              WHEN      OTHER
                  CALL    "MCPSUB"    USING   MCPAREA
