@@ -328,13 +328,10 @@ path	key21		{
 		SELECT *
 		FROM tbl_ptnyuinrrk
 			WHERE	HOSPID      =   :HOSPID 
-			AND	    PTID        =   :PTID
-			AND	    NYUINYMD    <=	:NYUINYMD
-			AND	(   (JTIKBN     =   '1'            )
-                 OR (JTIKBN     =   '2'            )
-                 OR (JTIKBN     =   '3'            )
-                 OR (JTIKBN     =   '6'            ) ) 
-            AND	(   (NYUINYMD   <=	:NYUINYMD  AND
+			AND	PTID        =   :PTID
+			AND	NYUINYMD   <=	:NYUINYMD
+                        AND     JTIKBN	   <>	'5'
+	    AND	(   (NYUINYMD   <=	:NYUINYMD  AND
                      NYUINYMD   >=	:TAIINYMD      )
                 OR  (TAIINYMD   >=  :TAIINYMD      ) )
             AND     HKNCOMBINUM =   :HKNCOMBINUM
@@ -348,14 +345,11 @@ path	key22		{
 		DECLARE tbl_ptnyuinrrk_key22_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	    HOSPID      =   :HOSPID 
 			AND	    PTID        =   :PTID
-			AND	    NYUINYMD    <=	:NYUINYMD
-			AND	    SHONUM      =	:SHONUM
-			AND	(   (JTIKBN     =   '1'            )
-                 OR (JTIKBN     =   '2'            )
-                 OR (JTIKBN     =   '3'            )
-                 OR (JTIKBN     =   '6'            ) ) 
+			AND	    NYUINYMD   <=   :NYUINYMD
+			AND	    SHONUM      =   :SHONUM
+                        AND         JTIKBN     <>   '5'
 			ORDER BY NYUINYMD,TAIINYMD,RRKNUM,RRKEDANUM
 		;
 	};
@@ -366,13 +360,10 @@ path	key23		{
 		DECLARE tbl_ptnyuinrrk_key23_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptnyuinrrk
-			WHERE	HOSPID      =   :HOSPID 
+			WHERE	        HOSPID      =   :HOSPID 
 			AND		PTID        =   :PTID
-			AND		NYUINYMD	<=	:NYUINYMD
-			AND	(   (JTIKBN     =   '1'            )
-                 OR (JTIKBN     =   '2'            )
-                 OR (JTIKBN     =   '3'            )
-                 OR (JTIKBN     =   '6'            ) ) 
+			AND		NYUINYMD   <=	:NYUINYMD
+                        AND             JTIKBN	   <>	'5'
             AND	(   (NYUINYMD	<=	:NYUINYMD  AND
                      NYUINYMD	>=	:TAIINYMD      )
                  OR (TAIINYMD   >=  :TAIINYMD      ) )
