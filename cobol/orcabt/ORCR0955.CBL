@@ -34,6 +34,7 @@
       *  ２００４年４月改正
       *  01.01.01    NACL-藤原    04/03/29  請求点の桁数の変更
       *  01.01.02    NACL-藤原    04/03/30  手術歴の記載
+      *  01.01.03    NACL-藤原    04/05/13  傷病の経過の編集位置の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -773,9 +774,6 @@
       *    帳票編集<傷病名>処理
            PERFORM 20023-BYOMEI-HEN-SEC
       *
-      *    帳票編集<傷病の経過>処理
-           PERFORM 20024-COMMENT-HEN-SEC 
-      *
       *    帳票編集<入退院履歴・入院基本料種別の続き>処理
            PERFORM 380-HC101-NYUTAI-RIREKI-HEN-SEC
       *
@@ -784,6 +782,9 @@
       *
       *    帳票編集<適用（点数）>処理
            PERFORM 20025-ZAI-HEN-SEC
+      *
+      *    帳票編集<傷病の経過>処理
+           PERFORM 20024-COMMENT-HEN-SEC 
       *
       *    帳票編集<適用（金額）>処理
            PERFORM 20026-ZAI-HEN1-SEC
@@ -1782,18 +1783,11 @@
                        MOVE    1               TO  WRK-RECEHEN
                    END-IF
       *                                       
-                   IF      WRK-COMMENT-G   >   SPACE
-      *              傷病の経過欄へ編集   
-      **             PERFORM VARYING IDX FROM    1   BY  1
-      **                     UNTIL   IDX >       WRK-KEIKA-HC23-LINE
-      **                   OR      WRK-COMMENT (IDX)   =   SPACE
-      **               MOVE    WRK-COMMENT (IDX)
-      **                               TO  HC23-KEIKA (IDX)
-      **             END-PERFORM
-      *              摘要欄に１行あける
-                     COMPUTE IDY     =   WRK-KEIKA-HC23-LINE   +   1
-                     IF     WRK-COMMENT (IDY)   NOT =   SPACE
-                         IF      WRK-RECECOM         =   ZERO
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       8
+                           OR      WRK-COMMENT (IDX)   =   SPACE
+      *                摘要欄に１行あける
+                       IF      WRK-RECECOM         =   ZERO
                            MOVE    1               TO  WRK-RECECOM
                            IF  WRK-LINETEK         >   ZERO
                                IF      WRK-LINETEK >=  WRK-LINE-MAX
@@ -1811,24 +1805,19 @@
                            END-IF    
                        END-IF
       *                 
-                       PERFORM VARYING IDX FROM    IDY   BY  1
-                               UNTIL   IDX >       8
-                               OR      WRK-COMMENT (IDX)   =   SPACE
-                           IF      WRK-LINETEK      >=
+                       IF      WRK-LINETEK      >=
                                                 WRK-LINE-MAX
-                               PERFORM 34120-PAGE-SEC
-                           END-IF
-                           ADD     1               TO  WRK-LINETEK
-                           IF      CNT-PAGE    =   1 
-                               MOVE    WRK-COMMENT (IDX)
+                           PERFORM 34120-PAGE-SEC
+                       END-IF
+                       ADD     1               TO  WRK-LINETEK
+                       IF      CNT-PAGE    =   1 
+                           MOVE    WRK-COMMENT (IDX)
                                            TO  HC23-TEKIYO2(WRK-LINETEK)
-                           ELSE
+                       ELSE
                                MOVE    WRK-COMMENT (IDX)
                                            TO  HC29-TEKIYO (WRK-LINETEK)
-                           END-IF                
-                     END-PERFORM
-                   END-IF  
-                 END-IF
+                       END-IF                
+                   END-PERFORM
                END-IF  
                MOVE    WRK-COMM1       TO  WRK-COMM
            END-PERFORM   

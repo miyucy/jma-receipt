@@ -387,28 +387,19 @@
       *
        01  WRK-BYOMEI-AREA.     
       *    傷病名最大文字数（傷病名欄）
-      **   03  WRK-BYOMEI1-MAX     PIC 9(02)   VALUE   44.
            03  WRK-BYOMEI1-MAX     PIC 9(02)   VALUE   50.
       *    傷病名最大文字数（適用欄）
            03  WRK-BYOMEI2-MAX     PIC 9(02)   VALUE   52.
       *     
       *    適用欄最大行数（点数）
-      **   03  WRK-TEKIYOU-LINE    PIC 9(02)   VALUE   30.
            03  WRK-TEKIYOU-LINE    PIC 9(02)   VALUE   26.
       *    適用欄最大行数（金額）
-      **   03  WRK-TEKIYOU1-LINE   PIC 9(02)   VALUE   9.
            03  WRK-TEKIYOU1-LINE   PIC 9(02)   VALUE   6.
       *     
       *    傷病名欄最大行数
            03  WRK-BYOMEI-LINE     PIC 9(02)   VALUE   3.
       *     
-      *    傷病の経過欄最大行数
-      **   03  WRK-KEIKA-HC22-LINE PIC 9(02)   VALUE   4.
-           03  WRK-KEIKA-HC23-LINE PIC 9(02)   VALUE   0.
-      *     
       *    適用欄最大行数（続紙）
-      **   03  WRK-TEKIYOU-HC24-LINE
-      **                           PIC 9(03)   VALUE   118.
            03  WRK-TEKIYOU-HC29-LINE
                                    PIC 9(03)   VALUE   110.
       *
@@ -1657,18 +1648,11 @@
                        MOVE    1               TO  WRK-RECEHEN
                    END-IF
       *                                       
-                   IF      WRK-COMMENT-G   >   SPACE
-      *              傷病の経過欄へ編集   
-      **             PERFORM VARYING IDX FROM    1   BY  1
-      **                     UNTIL   IDX >       WRK-KEIKA-HC23-LINE
-      **                   OR      WRK-COMMENT (IDX)   =   SPACE
-      **               MOVE    WRK-COMMENT (IDX)
-      **                               TO  HC22-KEIKA (IDX)
-      **             END-PERFORM
-      *              摘要欄に１行あける
-                     COMPUTE IDY     =   WRK-KEIKA-HC23-LINE   +   1
-                     IF     WRK-COMMENT (IDY)   NOT =   SPACE
-                         IF      WRK-RECECOM         =   ZERO
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       8
+                           OR      WRK-COMMENT (IDX)   =   SPACE
+      *                摘要欄に１行あける
+                       IF      WRK-RECECOM         =   ZERO
                            MOVE    1               TO  WRK-RECECOM
                            IF  WRK-LINETEK         >   ZERO
                                IF      WRK-LINETEK >=  WRK-LINE-MAX
@@ -1679,24 +1663,19 @@
                            END-IF    
                        END-IF
       *                 
-                       PERFORM VARYING IDX FROM    IDY   BY  1
-                               UNTIL   IDX >       8
-                               OR      WRK-COMMENT (IDX)   =   SPACE
-                           IF      WRK-LINETEK      >=
+                       IF      WRK-LINETEK      >=
                                                 WRK-LINE-MAX
-                               PERFORM 34120-PAGE-SEC
-                           END-IF
-                           ADD     1               TO  WRK-LINETEK
-                           IF      CNT-PAGE    =   1 
-                               MOVE    WRK-COMMENT (IDX)
+                           PERFORM 34120-PAGE-SEC
+                       END-IF
+                       ADD     1               TO  WRK-LINETEK
+                       IF      CNT-PAGE    =   1 
+                           MOVE    WRK-COMMENT (IDX)
                                            TO  HC23-TEKIYO2(WRK-LINETEK)
-                           ELSE
-                               MOVE    WRK-COMMENT (IDX)
+                       ELSE
+                           MOVE    WRK-COMMENT (IDX)
                                            TO  HC29-TEKIYO (WRK-LINETEK)
-                           END-IF                
-                     END-PERFORM
-                   END-IF  
-                 END-IF
+                       END-IF                
+                   END-PERFORM
                END-IF  
                MOVE    WRK-COMM1       TO  WRK-COMM
            END-PERFORM   

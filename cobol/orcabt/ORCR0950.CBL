@@ -34,6 +34,7 @@
       *  £²£°£°£´Ç¯£´·î²þÀµ
       *  01.01.01    NACL-Æ£¸¶    04/03/29  ÀÁµáÅÀ¤Î·å¿ô¤ÎÊÑ¹¹
       *  01.01.02    NACL-Æ£¸¶    04/03/30  ¼ê½ÑÎò¤Îµ­ºÜ
+      *  01.01.03    NACL-Æ£¸¶    04/05/13  ½ýÉÂ¤Î·Ð²á¤ÎÊÔ½¸¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -314,6 +315,7 @@
                05  WRK-BIRTHDD     PIC 9(02). 
       *
            03  WRK-LINE-MAX        PIC 9(03).          
+           03  WRK-KEIKA-LINE      PIC 9(03).          
       *
            03  WRK-GOKEI           PIC 9(07).            
       *
@@ -1800,6 +1802,7 @@
        20024-COMMENT-HEN-SEC      SECTION.
       *
            MOVE    ZERO                TO  WRK-RECECOM
+                                           WRK-KEIKA-LINE
       *     
            INITIALIZE                      RECECOM-REC
            MOVE    RECE82-HOSPID       TO  RECECOM-HOSPID
@@ -1871,33 +1874,30 @@
                        MOVE    1               TO  WRK-RECEHEN
                    END-IF
       *                                       
-                   IF      WRK-COMMENT-G   >   SPACE
-      *              ½ýÉÂ¤Î·Ð²áÍó¤ØÊÔ½¸   
-                     PERFORM VARYING IDX FROM    1   BY  1
-                             UNTIL   IDX >       WRK-KEIKA-HC22-LINE
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       8
                            OR      WRK-COMMENT (IDX)   =   SPACE
-                       MOVE    WRK-COMMENT (IDX)
-                                       TO  HC22-KEIKA (IDX)
-                     END-PERFORM
-      *              Å¦Í×Íó¤Ë£±¹Ô¤¢¤±¤ë
-                     COMPUTE IDY     =   WRK-KEIKA-HC22-LINE   +   1
-                     IF     WRK-COMMENT (IDY)   NOT =   SPACE
-                         IF      WRK-RECECOM         =   ZERO
-                           MOVE    1               TO  WRK-RECECOM
-                           IF  WRK-LINETEK         >   ZERO
-                               IF      WRK-LINETEK >=  WRK-LINE-MAX
-                                   PERFORM 34120-PAGE-SEC
-                               ELSE
-                                   PERFORM 34110-KUGIRI-LINE-SEC
+                       IF      WRK-KEIKA-LINE  <   WRK-KEIKA-HC22-LINE
+      *                    ½ýÉÂ¤Î·Ð²áÍó¤ØÊÔ½¸
+                           ADD     1           TO  WRK-KEIKA-LINE       
+                           MOVE    WRK-COMMENT (IDX)
+                                               TO
+                                           HC22-KEIKA (WRK-KEIKA-LINE)
+                       ELSE
+      *                    Å¦Í×Íó¤ØÊÔ½¸
+                           IF      WRK-RECECOM         =   ZERO
+      *                        Å¦Í×Íó¤Ë£±¹Ô¤¢¤±¤ë
+                               MOVE    1               TO  WRK-RECECOM
+                               IF      WRK-LINETEK         >   ZERO
+                                   IF      WRK-LINETEK >=  WRK-LINE-MAX
+                                       PERFORM 34120-PAGE-SEC
+                                   ELSE
+                                       PERFORM 34110-KUGIRI-LINE-SEC
+                                   END-IF
                                END-IF
                            END-IF    
-                       END-IF
       *                 
-                       PERFORM VARYING IDX FROM    IDY   BY  1
-                               UNTIL   IDX >       8
-                               OR      WRK-COMMENT (IDX)   =   SPACE
-                           IF      WRK-LINETEK      >=
-                                                WRK-LINE-MAX
+                           IF      WRK-LINETEK      >=  WRK-LINE-MAX
                                PERFORM 34120-PAGE-SEC
                            END-IF
                            ADD     1               TO  WRK-LINETEK
@@ -1907,10 +1907,9 @@
                            ELSE
                                MOVE    WRK-COMMENT (IDX)
                                            TO  HC24-TEKIYO (WRK-LINETEK)
-                           END-IF                
-                     END-PERFORM
-                   END-IF  
-                 END-IF
+                           END-IF
+                       END-IF                    
+                   END-PERFORM
                END-IF  
                MOVE    WRK-COMM1       TO  WRK-COMM
            END-PERFORM   
