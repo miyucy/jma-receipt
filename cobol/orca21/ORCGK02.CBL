@@ -257,6 +257,8 @@
            03  FLG-INGAIKBN         PIC 9(01).
       *
            03  FLG-TEISEI           PIC 9(01).
+      *    泔管肣拑
+           03  FLG-YAKUZAI-ARI       PIC 9(01).
       *
       *    驕儂恄啗
        01  IDX-AREA.
@@ -11303,14 +11305,23 @@
       *
       *    質杅六氏�笆啎怤們�
            MOVE    ZERO                TO  FLG-SYOHOU-ARI
+           MOVE    ZERO                TO  FLG-YAKUZAI-ARI
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   SPA-GMN-MAX  )  OR
                               (FLG-SYOHOU-ARI  =   1     )
+      *        泔管民尼永弁
+               IF     (SPA-COM-SRYKBN(IDX)     =   "21"  OR  "22"  OR
+                                                   "23"   )  AND
+                      (SPA-COM-INPUTCD(IDX)(1:1)   =   "6" )
+                   MOVE    1                   TO  FLG-YAKUZAI-ARI
+               END-IF
+      *
       *        情陸質杅
                IF    ((SPA-COM-SRYKBN(IDX)     =   "21"  OR  "22"  OR
                                                    "23"   )  AND
                       (SPA-COM-ZAIEND(IDX)     =   "1"    )  AND
-                      (SPA-COM-TENSU (IDX)     =   ZERO   ))
+                      (SPA-COM-TENSU (IDX)     =   ZERO   )  AND
+                      (FLG-YAKUZAI-ARI         =   1      ))
       ************** ((SPA-COM-SRYKBN(IDX)     =   "14"   )  AND
       *************   (SPA-COM-YKZTEN(IDX)     >   ZERO   ))
       *            泔管及心及凜﹜情ま坌午允月
@@ -11322,6 +11333,13 @@
                        MOVE    1               TO  FLG-SYOHOU-ARI
                    END-IF
                END-IF
+      *        情陸及褲恓潘帎及凜﹜情陸午允月
+               IF      SPA-COM-SRYSYUKBN(IDX)  =  "212"  OR
+                                                  "222"  OR
+                                                  "232"  OR
+                                                  "292"
+                   MOVE    1               TO  FLG-SYOHOU-ARI
+               END-IF
       *        箕鎘鏜槨情陸質杅
                IF     (SPA-COM-SRYKBN(IDX)     =   "14"  )
       ******** AND   ((SPA-COM-YKZTEN(IDX)     >   ZERO  ) OR
@@ -11331,6 +11349,9 @@
       *                情陸坌
                        MOVE    1                   TO  FLG-SYOHOU-ARI
                    END-IF
+               END-IF
+               IF      SPA-COM-ZAIEND(IDX)     =   "1" 
+                   MOVE    ZERO            TO  FLG-YAKUZAI-ARI
                END-IF
            END-PERFORM
       *
