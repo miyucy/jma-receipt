@@ -110,3 +110,7 @@
                 04  V02-RECESKYKBN         PIC X(25).
                 04  V02-RECESKYKBN-COUNT   PIC S9(9) BINARY.
                 04  V02-RECESKYKBNLST      PIC X(24) OCCURS  4.
+              03  V02-RECEFTNDSPKBN-COMBO.
+                04  V02-RECEFTNDSPKBN      PIC X(30).
+                04  V02-RECEFTNDSPKBN-COUNT   PIC S9(9) BINARY.
+                04  V02-RECEFTNDSPKBNLST      PIC X(30) OCCURS  2.
