@@ -235,6 +235,13 @@
       *労災外来管理加算点数
                05  SPA-GAIRAI-TEN          PIC  9(08)V9(03).
       *
+      *他保険で算定済み
+               05  SPA-SYOHOU-ZUMI.
+                   07  SPA-SYOHO-KBN       PIC 9(01).
+                   07  SPA-SYOHO-HKN       PIC X(04).
+                   07  SPA-SYOHO-HKNMEI    PIC X(60).
+                   07  SPA-SYOHO-MEI       PIC X(30).
+      *
       *他保険受診有無
                05  SPA-TAHOKEN-FLG         PIC  9(01).
       *訂正初期表示

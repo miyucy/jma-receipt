@@ -80,3 +80,6 @@
                     06  K08-MEISAI  PIC X(150).
                   05  K08-SELECT  PIC X       OCCURS  500 TIMES.
                   05  K08-MEI-STYLE   PIC X(20).
+              03  K08-MSGDATA.
+                04  K08-MSGDATA-STYLE   PIC X(20).
+                04  K08-MSGDATA-VALUE   PIC X(60).
