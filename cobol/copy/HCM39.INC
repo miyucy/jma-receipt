@@ -23,3 +23,4 @@
             02  HCM39-MISYUG    PIC X(11).
             02  HCM39-NYUKING   PIC X(11).
             02  HCM39-GTTL  PIC X(10).
+            02  HCM39-DAI   PIC X(8).
