@@ -257,6 +257,7 @@
            03  IDK2                PIC 9(04).
            03  IDXS                PIC 9(04).
            03  IDX-Z               PIC 9(04).
+           03  IDX-Z2              PIC 9(04).
            03  IDX-T               PIC 9(04).
            03  IDX-SA              PIC 9(04).
       *
@@ -2016,6 +2017,14 @@
                        MOVE    1               TO  SPA-MAP-IDX
                    END-IF
       *
+      *TEST
+      *        同一検査削除へ
+               WHEN    "0160"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+                       PERFORM 30016-KENSA-DELETE-SEC
+                   END-IF
+      *TEST
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KID1-FLG
       *****MOVE    SPACE               TO  SPA-KIDCD
@@ -2231,6 +2240,51 @@
        300110-TAHOKEN-SYORI-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    同一検査削除処理
+      *****************************************************************
+       30016-KENSA-DELETE-SEC                  SECTION.
+      *
+           INITIALIZE                  WRK-SCR-REC
+           MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
+      *
+      *    同一検査をエラーとする
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   200     )   OR
+                              (SPA-GMN-INPUTCD (IDX-Z) =   SPACE  AND
+                               SPA-COM-INPUTCD (IDX-Z) =   SPACE )
+               IF     (SPA-COM-SRYKBN (IDX-Z)  =   "60"  )  AND
+                      (SPA-COM-INPUTCD(IDX-Z)(1:1)  =   "1" )  AND
+                      (SPA-COM-DATAKBN(IDX-Z)  =   "1"   )
+      *        逓減以外
+               AND    (SPA-COM-TEIGENKBN (IDX-Z)   NOT =   1    )
+      *        包括対象以外
+               AND    (SPA-COM-SRYSYUKBN (IDX-Z)   NOT =   "610")
+      *        包括分
+               AND     (SPA-COM-HOUKNSKBN(IDX-Z)   NOT =   ZERO )
+                   PERFORM VARYING     IDX-Z2  FROM    IDX-Z   BY  1
+                           UNTIL       IDX-Z2      >   200
+                       IF     (IDX-Z2      NOT =   IDX-Z )  AND
+                              (SPA-COM-SRYSYUKBN   (IDX-Z2)
+                                           NOT =   "610"  )  AND
+                              (SPA-COM-INPUTCD(IDX-Z)
+                                               =   SPA-COM-INPUTCD
+                                                        (IDX-Z2))
+                           MOVE    SPACE           TO  SPA-GMN-INPUTCD
+                                                        (IDX-Z2)
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *    診療行為、計計算処理、編集
+           MOVE    SPACE           TO  FLG-TOROKU
+           PERFORM 510-TBLHEN-SEC
+           MOVE    SPACE           TO  FLG-TOROKU
+      *
+           MOVE    SPACE               TO  SPA-KID1-FLG
+           .
+       30016-KENSA-DELETE-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ＤＯ選択（Ｋ０９）画面より処理
@@ -8452,6 +8506,11 @@
                                        SPA-AREA
                MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
+      *TEST
+               IF      LNK-ORCSC-KIDCD     NOT =   SPACE
+                   MOVE    SPACE           TO  SPA-ERRCD
+               END-IF
+      *TEST
            END-IF
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD       NOT =   SPACE )
@@ -13058,6 +13117,11 @@
                                        TO  WRK-KIDMSG
                    MOVE    "ＯＫで中途終了内容へ置換えます。"
                                        TO  WRK-KIDMSG(41:)
+               WHEN    "0160"
+                   MOVE    "包括検査で同じ検査があります。"
+                                       TO  WRK-KIDMSG
+                   MOVE    "ＯＫですべての同一検査を削除します。"
+                                       TO  WRK-KIDMSG(31:)
                WHEN    OTHER
                    MOVE    SPA-KIDCD
                                        TO  WRK-KIDMSG

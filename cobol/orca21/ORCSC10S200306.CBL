@@ -4442,8 +4442,9 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
                              ((HZN-COM-INPUTCD (IDX)   =   SPACE ) AND
-                              (HZN-GMN-INPUTCD (IDX)   =   SPACE ))  OR
-                             ( FLG-ARI2                =   1     )
+                              (HZN-GMN-INPUTCD (IDX)   =   SPACE ))
+      *!                      (HZN-GMN-INPUTCD (IDX)   =   SPACE ))  OR
+      *!                     ( FLG-ARI2                =   1     )
       *
                MOVE    ZERO                    TO  FLG-ARI
                IF     (HZN-COM-SRYKBN(IDX)     =   "11"  OR  "12"
@@ -4493,10 +4494,10 @@
            END-PERFORM
       *
       *    診察料に変更が無い時、そのまま
-           IF      FLG-ARI2            =   1
-               MOVE    HZN-SCR-REC         TO  SPA-SCR-REC
-               GO      TO      10102-SINSATU-CHENGE-EXT
-           END-IF
+      *!** IF      FLG-ARI2            =   1
+      *        MOVE    HZN-SCR-REC         TO  SPA-SCR-REC
+      *        GO      TO      10102-SINSATU-CHENGE-EXT
+      *!   END-IF
       *
       *    剤毎に対象を編集する
            IF      IDX3                >   ZERO
