@@ -92,6 +92,8 @@
            03  WRK-CD-MCNT                         PIC 9(02).
            03  WRK-TNS-SRYCD                       PIC X(09).
            03  WRK-TNS-NAME                        PIC X(100).
+           03  WRK-STYUKYMD                        PIC X(08).
+           03  WRK-EDYUKYMD                        PIC X(08).
       *
       *    ∏«ƒÍ√ÕŒŒ∞Ë
        01  CONST-AREA.
@@ -1089,9 +1091,20 @@
            MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
            IF    ( FLG-DBRC    =   ZERO )
+               MOVE    MCPDATA-REC TO  SYS-5000-REC
+               MOVE    SYS-5000-STYUKYMD
+                                   TO  WRK-STYUKYMD
+               MOVE    SYS-5000-EDYUKYMD
+                                   TO  WRK-EDYUKYMD
                PERFORM 4811-HOSP-NYUINKHN-EDIT-SEC
-               MOVE    SYS-5000-REC    TO  MCPDATA-REC
-               MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
+               MOVE    SYS-5000-REC    TO  SYSKANRI-REC
+               MOVE    SYS-5000-KANRICD
+                                       TO  SYSUP-KANRICD
+               MOVE    SYS-5000-KBNCD  TO  SYSUP-KBNCD
+               MOVE    WRK-STYUKYMD    TO  SYSUP-STYUKYMD
+               MOVE    WRK-EDYUKYMD    TO  SYSUP-EDYUKYMD
+               MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+               MOVE    "SYSKANRI-UPD1" TO  WRK-DBPATH
                PERFORM 900-TBL-UPDATE-SEC
            ELSE
                PERFORM 4811-HOSP-NYUINKHN-EDIT-SEC
