@@ -816,6 +816,7 @@
       *    診療種別テーブルセット処理
       *****************************************************************
        1001-SRYKBN-SET-SEC             SECTION.
+      *
       *    診療種別テーブルセット
            CALL    "ORCSSRYSYU"        USING
                                        MSYU-DATA-REC
@@ -1019,7 +1020,7 @@
       *****************************************************************
        310-SPA-SET-SEC                  SECTION.
       *
-      *****年齢計算（算定月の１日の年齢）
+      *    年齢計算（最初の対象日の年齢）
       *    MOVE    SPA-BIRTHDAY        TO  WRK-YMDS1
       *    MOVE    SPA-SRYYMD(1:6)     TO  WRK-YMDS2(1:6)
       *    MOVE    01                  TO  WRK-DDS2
@@ -1315,6 +1316,10 @@
            MOVE    SRY-SRYKAISU (IDS)  TO  SPA-COM-BUNGSU (IDX2)
       *
            MOVE    SPA-COM-INPUTCD (IDX2)  TO  SPA-GMN-INPUTCD  (IDX2)
+           IF      SRY-AUTOKBN (IDS)   =   "A" OR "B" OR "C"  OR  "D"
+               PERFORM 31011-JIKANKBN-SET-SEC
+               MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
+           END-IF
       *
       *    約束セットの時、以下処理なし
            IF      SRY-SRYCD(IDS)(1:1) =   "S"
@@ -1423,6 +1428,31 @@
       *
            .
        31011-SPA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   時間外区分の画面用再編集処理
+      *****************************************************************
+       31011-JIKANKBN-SET-SEC          SECTION.
+      *
+           EVALUATE    SRY-AUTOKBN (IDS)
+               WHEN    "A"
+                   MOVE    "1"             TO  WRK-TIMEFLG
+               WHEN    "B"
+                   MOVE    "2"             TO  WRK-TIMEFLG
+               WHEN    "C"
+                   MOVE    "3"             TO  WRK-TIMEFLG
+               WHEN    "D"
+                   MOVE    "4"             TO  WRK-TIMEFLG
+           END-EVALUATE
+           MOVE    SPACE               TO  SPA-GMN-INPUTCD (IDX2)
+           MOVE    WRK-TIMEFLG         TO  SPA-GMN-INPUTCD (IDX2)(1:1)
+           MOVE    SPA-COM-INPUTCD (IDX2)
+                                       TO  SPA-GMN-INPUTCD (IDX2)(3:)
+           MOVE    WRK-TIMEFLG         TO  SPA-COM-TIMEFLG (IDX2)
+      *
+           .
+       31011-JIKANKBN-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2700,15 +2730,20 @@
       *
       *    時間加算チェック
            IF     (SPA-ERRCD           =   SPACE   )  AND
-                  (FLG-JKNKSN          >   ZERO    )
+                  (LNK-SC97-JIKAN  NOT =   ZERO    )
+      *        時間加算区分
       *        診療で、手技料の時
-               IF     (FLG-JKNKSN          =   1   OR  2  OR  3)  AND
+               IF     (LNK-SC97-JIKAN      =   1   OR  2  OR  3
+                                                   OR  4       )  AND
                       (TNS-DATAKBN         =   "1"             )
-                  MOVE    FLG-JKNKSN      TO  SPA-COM-TIMEFLG
+                  MOVE    LNK-SC97-JIKAN       TO  SPA-COM-TIMEFLG
                                                           (SPA-GMN-IDX)
                ELSE
                    MOVE    "0030"          TO  SPA-ERRCD
                END-IF
+           ELSE
+               MOVE    LNK-SC97-JIKAN      TO  SPA-COM-TIMEFLG
+                                                          (SPA-GMN-IDX)
            END-IF
            .
        4101121-INPUTCD-CHECK-EXT.
@@ -3184,11 +3219,16 @@
       *DDDDDDDDIF      SPA-COM-AUTOKBN (IDX)    =   "2"
       *DD          CONTINUE
       *DD      ELSE
+               IF      (SPA-COM-SRYKBN (IDX)   =   "11"  OR  "12") AND
+                       (SPA-COM-AUTOKBN(IDX)   =   "2"   )
+                   CONTINUE
+               ELSE
                    ADD     1               TO  IDX-Z
                    MOVE    SPA-COM-TBLREC (IDX)
                                            TO  WRK-COM-TBLREC(IDX-Z)
                    MOVE    SPA-GMN-TBLREC (IDX)
                                            TO  WRK-GMN-TBLREC(IDX-Z)
+               END-IF
       *DDDDDDDDEND-IF
       *        回数編集
                IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "."
@@ -4658,7 +4698,7 @@
       *            入力コメント
                    IF      SPA-COM-MEIFLG (IDX1)    =   "1"
                        IF      SPA-COM-INPUTCD (IDX1)(1:2)
-                                                       =   "83"
+                                                       =   "83" OR "84"
                            MOVE    SPA-GMN-MEISYO   (IDX1)
                                            TO  ORCSCZAICHK-INPUTCOMENT
                                                              (IDX-ATO)
@@ -4669,9 +4709,9 @@
                        END-IF
                    ELSE
                        IF     (SPA-COM-INPUTCD (IDX1)(1:1)
-                                                       =   "8" )  AND
-                              (SPA-COM-INPUTCHI-G(IDX1)
-                                                   NOT =   SPACE)
+                                                       =   "8" )
+      **************   AND    (SPA-COM-INPUTCHI-G(IDX1)
+      **************                               NOT =   SPACE)
                            MOVE    SPA-GMN-MEISYO(IDX)
                                            TO  ORCSCZAICHK-INPUTCOMENT
                                                              (IDX-ATO)
@@ -4903,7 +4943,7 @@
       *    入力コメント番号
            IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "8"
                PERFORM 450111-KNJCOM-SYROI-SEC
-               MOVE    WRK-MEINUM          TO  SRY-INPUTNUM (IDS)
+      *******  MOVE    WRK-MEINUM          TO  SRY-INPUTNUM (IDS)
            END-IF
       *    自費
       *****IF      SPA-COM-SRYKBN (IDX)    =   "95" OR "96"
@@ -4977,7 +5017,6 @@
       *****************************************************************
        450111-KNJCOM-SYROI-SEC           SECTION.
       *
-           ADD     1                   TO  WRK-MEINUM
       *
            INITIALIZE                  PTCOM-REC
       *医療機関ＩＤ
@@ -4989,22 +5028,32 @@
            MOVE    WRK-ZAINUM          TO  PTCOM-ZAINUM
       *診療コード
            MOVE    SRY-SRYCD   (IDS)   TO  PTCOM-SRYCD
-      *コメント枝番番号
-           MOVE    WRK-MEINUM          TO  PTCOM-RENNUM
       *入力コメント
            IF      SPA-COM-MEIFLG (IDX)    =   "1"
-                MOVE    SPA-GMN-MEISYO-G (IDX)
+               IF      SPA-COM-INPUTCD(IDX)(1:2) =   "83"
+                                                 OR  "84"
+                   MOVE    SPA-GMN-MEISYO (IDX)
                                        TO  PTCOM-INPUTCOMENT
+               ELSE
+                   MOVE    SPA-GMN-MEISYO-G (IDX)
+                                       TO  PTCOM-INPUTCOMENT
+               END-IF
            ELSE
-               IF     (SPA-COM-INPUTCD(IDX)(1:1)       =   "8"  )  AND
-                      (SPA-COM-INPUTCHI-G (IDX)    NOT =   SPACE ) 
+               IF     (SPA-COM-INPUTCD(IDX)(1:1)       =   "8"  )
+      ********** AND  (SPA-COM-INPUTCHI-G (IDX)    NOT =   SPACE )
                     MOVE    SPA-GMN-MEISYO (IDX)
-                                       TO  PTCOM-INPUTCOMENT
+                                               TO  PTCOM-INPUTCOMENT
+               ELSE
+      *             作成しない
+                    GO      TO      450111-KNJCOM-SYROI-EXT
                END-IF
            END-IF
       *入力値
            MOVE    SPA-COM-INPUTCHI-G (IDX)
                                        TO  PTCOM-INPUTCHI-AREA
+      *コメント枝番番号
+           ADD     1                   TO  WRK-MEINUM
+           MOVE    WRK-MEINUM          TO  PTCOM-RENNUM
       *
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
@@ -5013,10 +5062,13 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
-           IF      MCP-RC          NOT =   ZERO
+      *!   IF      MCP-RC          NOT =   ZERO
                DISPLAY "J04 PTCOM INS ERR;"    MCP-RC
-               MOVE    "1029"              TO  SPA-ERRCD
-           END-IF
+                       ",KEY:" PTCOM-KEY
+      *!       MOVE    "1029"              TO  SPA-ERRCD
+      *!   END-IF
+      *
+           MOVE    WRK-MEINUM          TO  SRY-INPUTNUM (IDS)
       *
            .
        450111-KNJCOM-SYROI-EXT.

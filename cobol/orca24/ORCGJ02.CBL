@@ -377,6 +377,9 @@
            03  WRK-ERR-TBL.
                05  WRK-ERR-DAY         PIC 9(01)   OCCURS  31.
       *
+      *    カルテ３号紙プログラム名
+           03  WRK-PRINT-PG            PIC X(20).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -523,6 +526,12 @@
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
+      *
+      *    カルテ３号様式出力パラメタ
+           COPY    "CPORCHC33.INC".
+      *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -1041,6 +1050,15 @@
                        MOVE    SPACE           TO  SPA-GMN-HENSRYYMD
                    END-IF
       *
+               WHEN    "0116"
+               WHEN    "0117"
+      *            印刷確認
+                   IF      SPA-JID1-FLG        =   "OK"
+                       PERFORM 41201-PRINT-SYORI-SEC
+                   ELSE
+                       MOVE    1                  TO  SPA-GMN-CUR
+                   END-IF
+      *
            END-EVALUATE
            .
        3003-JID1-SET-EXT.
@@ -1195,20 +1213,9 @@
       *
       *----(01.00.01) LINE ADD START ----------------------------------
       *    年齢計算（算定月の１日の年齢）
-           MOVE    SPA-GMN-BIRTHDAY    TO  WRK-YMDS1
            MOVE    SPA-NAI-SRYYM       TO  WRK-YMDS2(1:6)
            MOVE    01                  TO  WRK-DDS2
-           COMPUTE SPA-NAI-NENREI-YY   =   WRK-YYS2
-                                       -   WRK-YYS1
-           IF      WRK-YMDS1(5:4)      >   WRK-YMDS2(5:4)
-               COMPUTE SPA-NAI-NENREI-YY   =   SPA-NAI-NENREI-YY
-                                           -   1
-               COMPUTE SPA-NAI-NENREI-MM   =  (WRK-MMS2  +  12 )
-                                           -   WRK-MMS1
-           ELSE
-               COMPUTE SPA-NAI-NENREI-MM   =   WRK-MMS2
-                                           -   WRK-MMS1
-           END-IF
+           PERFORM 30101-NENREI-SET-SEC
       *    該当月で６歳になる時、年齢フラグを立てる
            IF     (SPA-NAI-NENREI-YY   =   05  )  AND
                   (SPA-NAI-NENREI-MM   =   11  )  AND
@@ -1216,26 +1223,6 @@
                MOVE    1                   TO  SPA-FLG-NENREI
            END-IF
       *
-      *    乳幼児チェック
-           IF     (SPA-NAI-NENREI-YY       =   ZERO  )  AND
-                  (SPA-NAI-NENREI-MM       =   ZERO  OR  1 )
-      *        年齢期間算定
-               INITIALIZE                      STS-AREA-DAY
-               INITIALIZE                      LNK-DAY5-AREA
-               MOVE    "51"                TO  LNK-DAY5-IRAI
-               MOVE    SPA-GMN-BIRTHDAY    TO  LNK-DAY5-START
-               MOVE    SPA-NAI-SRYYM       TO  LNK-DAY5-END(1:6)
-               MOVE    SPA-SRYMATU         TO  LNK-DAY5-END(7:2)
-               CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                   LNK-DAY5-AREA
-               IF      LNK-DAY5-NISSU2     >   28
-                   MOVE    1                   TO  SPA-FLG-NENREI
-                   IF      LNK-DAY5-NISSU2     <=  31
-                       MOVE    LNK-DAY5-NISSU2 TO  SPA-NAI-NENREI-DD
-                       MOVE    ZERO            TO  SPA-NAI-NENREI-MM
-                   END-IF
-               END-IF
-           END-IF
       *
       *    Ｈ１４．１０時点で７０歳未満の時
            IF     (SPA-NAI-SRYYM       >=  "200210"   )  AND
@@ -1341,6 +1328,50 @@
       *
            .
        310-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    年齢計算処理
+      *****************************************************************
+       30101-NENREI-SET-SEC                  SECTION.
+      *
+           MOVE    SPA-GMN-BIRTHDAY    TO  WRK-YMDS1
+           COMPUTE SPA-NAI-NENREI-YY   =   WRK-YYS2
+                                       -   WRK-YYS1
+           IF      WRK-YMDS1(5:4)      >   WRK-YMDS2(5:4)
+               COMPUTE SPA-NAI-NENREI-YY   =   SPA-NAI-NENREI-YY
+                                           -   1
+               COMPUTE SPA-NAI-NENREI-MM   =  (WRK-MMS2  +  12 )
+                                           -   WRK-MMS1
+           ELSE
+               COMPUTE SPA-NAI-NENREI-MM   =   WRK-MMS2
+                                           -   WRK-MMS1
+           END-IF
+      *
+      *    乳幼児チェック
+           IF     (SPA-NAI-NENREI-YY       =   ZERO  )  AND
+                  (SPA-NAI-NENREI-MM       =   ZERO  OR  1 )
+      *        年齢期間算定
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY5-AREA
+               MOVE    "51"                TO  LNK-DAY5-IRAI
+               MOVE    SPA-GMN-BIRTHDAY    TO  LNK-DAY5-START
+               MOVE    SPA-NAI-SRYYM       TO  LNK-DAY5-END(1:6)
+               MOVE    SPA-SRYMATU         TO  LNK-DAY5-END(7:2)
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY5-AREA
+               IF      LNK-DAY5-NISSU2     >   28
+                   MOVE    1                   TO  SPA-FLG-NENREI
+                   IF      LNK-DAY5-NISSU2     <=  31
+                       MOVE    LNK-DAY5-NISSU2 TO  SPA-NAI-NENREI-DD
+                       MOVE    ZERO            TO  SPA-NAI-NENREI-MM
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *
+           .
+       30101-NENREI-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2657,6 +2688,9 @@
       *     入院調剤料変更
                WHEN    "CLICKED"       ALSO    "B11S"
                    PERFORM 4110-CHOZAI-SEC
+      *     印刷
+               WHEN    "CLICKED"       ALSO    "B12S"
+                   PERFORM 4120-PRINT-SEC
            END-EVALUATE
       *
            .
@@ -2956,7 +2990,12 @@
            END-PERFORM
       *
            IF      FLG-OK              =   1
-               MOVE    "1"             TO  SPA-NYUGAIKBN
+      *        入院中の場合入院とする
+               IF      (SPA-NAI-NYUINYMD   <   SPA-NAI-SRYYM )  AND
+                       (SPA-NAI-TAIINYMD   >   SPA-NAI-SRYYM )
+                   MOVE    "1"             TO  SPA-NYUGAIKBN
+                   GO      TO      410101-NYUINRRK-CHK-EXT
+               END-IF
            END-IF
       *
            .
@@ -4960,6 +4999,10 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO       420-ZAIHENKOU-SYORI-EXT
            END-IF
+      *
+      *    診療開始日時点の年齢計算
+           MOVE    SPA-SRYYMD          TO  WRK-YMDS2
+           PERFORM 30101-NENREI-SET-SEC
       *
       *    保存用パラメタ作成
            PERFORM 4201-SRYACCT-PARA-SEC
@@ -7449,6 +7492,70 @@
            .
        4110-CHOZAI-EXT.
            EXIT.
+      *****************************************************************
+      *    印刷処理
+      *****************************************************************
+       4120-PRINT-SEC            SECTION.
+      *
+      *    番号選択中でないこと
+           IF      SPA-GMN-BANGO   NOT =   ZERO
+               MOVE    "0009"          TO  SPA-ERRCD
+               GO      TO      4120-PRINT-EXT
+           END-IF
+      *
+           IF      SPA-UPDFLG          =   "1"
+               MOVE    "0116"              TO  SPA-JIDCD
+           ELSE
+               MOVE    "0117"              TO  SPA-JIDCD
+           END-IF
+      *
+           .
+       4120-PRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    カルテ３号印刷処理
+      *****************************************************************
+       41201-PRINT-SYORI-SEC            SECTION.
+      *
+           IF      SPA-UPDFLG          =   "1"
+      *        診療会計マスター更新
+               PERFORM 4901-SRYACCT-UPD-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO       41201-PRINT-SYORI-EXT
+               END-IF
+           END-IF
+      *
+      *    カルテ３号紙
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000005"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-NAI-SRYYM       TO  ORCSPRTNM-SRYYMD(1:6)
+           MOVE    "01"                TO  ORCSPRTNM-SRYYMD(7:2)
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYSKANRI-REC
+           IF      ORCSPRTNM-RC        =   ZERO
+               MOVE    ORCSPRTNM-PRTPG     TO  WRK-PRINT-PG
+           ELSE
+               MOVE    "ORCHC33"           TO  WRK-PRINT-PG
+           END-IF
+      *
+           INITIALIZE                  ORCHC33AREA
+           MOVE    "1"                 TO  ORCHC33-KBN
+           MOVE    SPA-GMN-PTNUM       TO  ORCHC33-PTNUM
+           MOVE    SPA-GMN-PTID        TO  ORCHC33-PTID
+           MOVE    SPA-NAI-SRYYM       TO  ORCHC33-SRYYM
+           MOVE    SPACE               TO  ORCHC33-SRYYM-END
+           MOVE    SPA-GMN-NYUGAIKBN   TO  ORCHC33-NYUGAIKBN
+           MOVE    SPA-J01-SRYKA       TO  ORCHC33-SRYKA
+           CALL    WRK-PRINT-PG        USING
+                                       SPA-AREA
+                                       ORCHC33AREA
+      *
+           .
+       41201-PRINT-SYORI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    自画面編集処理
@@ -7714,6 +7821,14 @@
                                        TO  WRK-JIDMSG
                    MOVE    "登録もしますので取消はできません。"
                                        TO  WRK-JIDMSG(39:)
+               WHEN    "0116"
+                   MOVE    "現在までの修正分を登録後、"
+                                       TO  WRK-JIDMSG
+                   MOVE    "カルテ３号紙を印刷します。"
+                                       TO  WRK-JIDMSG(27:)
+               WHEN    "0117"
+                   MOVE    "カルテ３号紙を印刷します。"
+                                       TO  WRK-JIDMSG
       *
                WHEN    OTHER
                    MOVE    SPA-JIDCD
