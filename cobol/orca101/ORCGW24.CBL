@@ -2359,6 +2359,8 @@
                                        TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO
+                                       SPA-GMN-W24-SRYCD (IDXZ)
            IF      KANACHK-RC      NOT =   ZERO
       *        Á´³ÑÈ¾³Ñº®ºß¥¨¥é¡¼
                MOVE    "0003"              TO  SPA-ERRCD

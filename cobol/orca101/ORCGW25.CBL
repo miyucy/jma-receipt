@@ -1704,6 +1704,7 @@
            MOVE    SPA-W25-GMN-INPUT   TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-W25-GMN-INPUT
            IF      KANACHK-RC      NOT =   ZERO
       *        Á´³ÑÈ¾³Ñº®ºß¥¨¥é¡¼
                MOVE    "0001"          TO  SPA-ERRCD
