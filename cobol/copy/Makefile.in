@@ -713,14 +713,14 @@ COPYS = \
         HCM2N.INC \
         HCM2O.INC \
         HCM2P.INC \
-        HCM2EV02.INC \
-        HCM2FV02.INC \
+        HCM2FV0.INC \
         HCM2GV02.INC \
         HCM2HV02.INC \
         HCM05.INC \
         CPORCSCZAICHK.INC \
         CPORCSTUSANCHK.INC \
         CPORCSBRMNUM.INC \
+        HCMG005.INC \
 
 DBPATH = \
 	ORCA-DBPATH
