@@ -2082,8 +2082,9 @@
       *
       **** MOVE    ZERO                TO  SPA-NAI-ROUSTR
       *****MOVE    ZERO                TO  SPA-NAI-ROUFLG
-      *    戏客冉年
-           PERFORM 3102-ROUJIN-SET-SEC
+      *戏客冉年は ORCSAGECHK へ
+      *****戏客冉年
+      *****PERFORM 3102-ROUJIN-SET-SEC
       *
       *    ＤＯ壳闻泣烧试礁
       *****PERFORM 3101-DORRKYMD-HEN-SEC
@@ -2218,8 +2219,8 @@
            ELSE
                MOVE    ZERO            TO  SPA-HKNKBN
           END-IF
-      *    戏客冉年
-           PERFORM 3102-ROUJIN-SET-SEC
+      *****戏客冉年
+      *****PERFORM 3102-ROUJIN-SET-SEC
       *
       *    瘦副换年钳勿チェック霹
            INITIALIZE                  ORCSAGECHKAREA
@@ -2263,6 +2264,9 @@
            ELSE
                MOVE    ZERO                TO  SPA-NAI-ROUFLG
            END-IF
+      *
+      *    戏客冉年
+           MOVE    AGECHK-ROUJIN       TO  SPA-NAI-ROUJIN
       *
            .
        3101-HKNCOMBI-HEN-EXT.

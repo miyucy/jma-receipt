@@ -2614,46 +2614,47 @@
       *
       **** MOVE    ZERO                TO  SPA-NAI-ROUSTR
       *****MOVE    ZERO                TO  SPA-NAI-ROUFLG
-           MOVE    ZERO                TO  SPA-NAI-ROUJIN
+      *****MOVE    ZERO                TO  SPA-NAI-ROUJIN
+      *Ï·¿ÍÈ½Äê¤Ï¡¤ORCSAGECHK ¤Ø
       *    Ï·¿ÍÈ½Äê
-           IF     (SPA-KOH1HKNNUM       =   "027"   )  OR
-                  (SPA-KOH2HKNNUM       =   "027"   )  OR
-                  (SPA-KOH3HKNNUM       =   "027"   )  OR
-                  (SPA-KOH4HKNNUM       =   "027"   )
-               MOVE    1                TO  SPA-NAI-ROUJIN
-           ELSE
+      *    IF     (SPA-KOH1HKNNUM       =   "027"   )  OR
+      *           (SPA-KOH2HKNNUM       =   "027"   )  OR
+      *           (SPA-KOH3HKNNUM       =   "027"   )  OR
+      *           (SPA-KOH4HKNNUM       =   "027"   )
+      *        MOVE    1                TO  SPA-NAI-ROUJIN
+      *    ELSE
       *        £È£±£´¡¥£±£°°Ê¹ß£·£°ºÐ¤ò£·£µºÐ¤È¤¹¤ë
       *        £È£±£´¡¥£±£°»þÅÀ¤Ç£·£°ºÐÌ¤Ëþ¤Î»þ
-               IF     (SPA-SRYYMD          >=   "20021001" )  AND
-                      (SPA-BIRTHDAY        >=   "19321001" )
-                   MOVE    75                   TO  WRK-ROU-NEN
-               ELSE
-                   MOVE    70                   TO  WRK-ROU-NEN
-               END-IF
+      *        IF     (SPA-SRYYMD          >=   "20021001" )  AND
+      *               (SPA-BIRTHDAY        >=   "19321001" )
+      *            MOVE    75                   TO  WRK-ROU-NEN
+      *        ELSE
+      *            MOVE    70                   TO  WRK-ROU-NEN
+      *        END-IF
       *        £·£°ºÐ°Ê¾å¤ÏÏ·¿Í¤È¤¹¤ë¡Ê³ºÅö·î£±Æü¤Ë£·£°ºÐ¡Ë
       *        Ç¯Îð·×»»¡Ê¿ÇÎÅ·î¤Î£±Æü¤ÎÇ¯Îð¡Ë
-               MOVE    SPA-BIRTHDAY        TO  WRK-YMDS1
-               MOVE    SPA-SRYYMD          TO  WRK-YMDS2
-               MOVE    01                  TO  WRK-DDS2
-               COMPUTE WRK-NENREI-YY       =   WRK-YYS2
-                                           -   WRK-YYS1
-               IF      WRK-YMDS1(5:4)      >   WRK-YMDS2(5:4)
-                   COMPUTE WRK-NENREI-YY   =   WRK-NENREI-YY
-                                           -   1
-                   COMPUTE WRK-NENREI-MM   =  (WRK-MMS2  +  12 )
-                                           -   WRK-MMS1
-               ELSE
-                   COMPUTE WRK-NENREI-MM   =   WRK-MMS2
-                                           -   WRK-MMS1
-               END-IF
-               IF      WRK-DDS1            >   WRK-DDS2
-                   COMPUTE WRK-NENREI-MM   =   WRK-NENREI-MM
-                                           -   1
-               END-IF
+      *        MOVE    SPA-BIRTHDAY        TO  WRK-YMDS1
+      *        MOVE    SPA-SRYYMD          TO  WRK-YMDS2
+      *        MOVE    01                  TO  WRK-DDS2
+      *        COMPUTE WRK-NENREI-YY       =   WRK-YYS2
+      *                                    -   WRK-YYS1
+      *        IF      WRK-YMDS1(5:4)      >   WRK-YMDS2(5:4)
+      *            COMPUTE WRK-NENREI-YY   =   WRK-NENREI-YY
+      *                                    -   1
+      *            COMPUTE WRK-NENREI-MM   =  (WRK-MMS2  +  12 )
+      *                                    -   WRK-MMS1
+      *        ELSE
+      *            COMPUTE WRK-NENREI-MM   =   WRK-MMS2
+      *                                    -   WRK-MMS1
+      *        END-IF
+      *        IF      WRK-DDS1            >   WRK-DDS2
+      *            COMPUTE WRK-NENREI-MM   =   WRK-NENREI-MM
+      *                                    -   1
+      *        END-IF
       *********IF      WRK-NENREI-YY       >=  70
-               IF      WRK-NENREI-YY       >=  WRK-ROU-NEN
-                   MOVE    1               TO  SPA-NAI-ROUJIN
-               END-IF
+      *        IF      WRK-NENREI-YY       >=  WRK-ROU-NEN
+      *            MOVE    1               TO  SPA-NAI-ROUJIN
+      *        END-IF
       ******** £·£°ºÐÅþÃ£·î¤ÎºÇ½é¤Î¿ÇÎÅÈ½Äê¡ÊÏ·¿ÍÊÝ¸±¤¬¤Ê¤¤»þ·Ù¹ð¡Ë
       *        MOVE    SPA-BIRTHDAY        TO  WRK-YMDS1
       ******** COMPUTE WRK-YYS1            =   WRK-YYS1   +  70
@@ -2664,11 +2665,11 @@
       *            MOVE    1               TO  SPA-NAI-ROUFLG
       *        END-IF
       ******** MOVE    ZERO                TO  SPA-NAI-ROUSTR
-           END-IF
+      *    END-IF
       *    Ï«ºÒ¡¦¼«ÇåÀÕ¤Î¾ì¹ç¡¢Ï·¿Í¤Ç¤â°ìÈÌ¤È¤¹¤ë
-           IF      SPA-HKNKBN          =   1
-               MOVE    ZERO                TO  SPA-NAI-ROUJIN
-           END-IF
+      *    IF      SPA-HKNKBN          =   1
+      *        MOVE    ZERO                TO  SPA-NAI-ROUJIN
+      *****END-IF
       *
       *    £Ä£Ï¿ÇÎÅÆüÉÕÊÔ½¸
       *****PERFORM 3101-DORRKYMD-HEN-SEC
@@ -2784,6 +2785,9 @@
            ELSE
                MOVE    ZERO                TO  SPA-NAI-ROUFLG
            END-IF
+      *
+      *    Ï·¿ÍÈ½Äê
+           MOVE    AGECHK-ROUJIN       TO  SPA-NAI-ROUJIN
       *
            .
        3101-HKNCOMBI-HEN-EXT.
