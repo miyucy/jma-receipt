@@ -47,6 +47,7 @@
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-HKN             PIC 9(01).
            03  FLG-RJNHKN          PIC 9(01).
+           03  FLG-PTKOHINF        PIC 9(01).
            03  FLG-KOHPLUS         PIC 9(01).
       *    添字領域
        01  IDX-AREA.
@@ -214,6 +215,19 @@
            END-PERFORM
       *
       *市町村番号の取得（公費負担者番号の５桁目から長さ３桁）
+           INITIALIZE                         PTKOHINF-REC
+           MOVE    LNK-SKOHPLUS-HOSPID    TO  PTKOH-HOSPID
+           MOVE    LNK-SKOHPLUS-PTID      TO  PTKOH-PTID
+           MOVE    COMB-KOHID(KOH-IDX)    TO  PTKOH-KOHID
+           MOVE    "PTKOHINF-KEY"         TO  ORC-DBPATH
+           PERFORM 910-PTKOHINF-SELECT-SEC
+           IF      FLG-PTKOHINF           =   ZERO
+               MOVE     "PTKOHINF-KEY"    TO  ORC-DBPATH
+               PERFORM   910-PTKOHINF-READ-SEC
+           END-IF
+      *    患者公費情報クローズ
+           MOVE    "PTKOHINF-KEY"         TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
       *
       *公費付加情報テーブルより情報取得
            INITIALIZE                         KOHPLUS-REC
@@ -289,6 +303,49 @@
       *
            .
        900-PTINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者公費情報検索
+      *****************************************************************
+       910-PTKOHINF-SELECT-SEC        SECTION.
+      *
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO               TO  FLG-PTKOHINF
+           ELSE
+               MOVE    1                  TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       910-PTKOHINF-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者公費情報読込
+      *****************************************************************
+       910-PTKOHINF-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"            TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC        TO  PTKOHINF-REC
+               MOVE    ZERO               TO  FLG-PTKOHINF
+           ELSE
+               INITIALIZE                     PTKOHINF-REC
+               MOVE    1                  TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       910-PTKOHINF-READ-EXT.
            EXIT.
       *
       *****************************************************************
