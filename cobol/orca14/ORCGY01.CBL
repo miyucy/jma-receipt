@@ -2949,7 +2949,7 @@
            MOVE    ZERO                TO  YYK-YYKID
            MOVE    ZERO                TO  YYK-PTID
            PERFORM 910-YOYAKU-INV-SEC
-           IF      FLG-YYK          =   ZERO
+           IF      FLG-YYK             =   ZERO
                ADD     1                   TO  YYK-YYKCNT
                MOVE    YYK-YYKCNT          TO  WRK-YYKID
       *
@@ -2963,6 +2963,7 @@
                IF      MCP-RC          NOT  =  ZERO
                    MOVE    "1010"      TO  SPA-ERRCD
                    DISPLAY "Y01 YYK-KEY UPD ERR:" MCP-RC "."
+                           ",KEY:" YYK-KEY
                    GO                  TO  4901-YYKADD-EXT
                END-IF
            ELSE
@@ -2989,6 +2990,7 @@
                IF      MCP-RC          NOT  =  ZERO
                    MOVE    "1010"  TO  SPA-ERRCD
                    DISPLAY "Y01 YYK-KEY INS ERR:" MCP-RC "."
+                           ",KEY:" YYK-KEY
                    GO              TO  4901-YYKADD-EXT
                END-IF
            END-IF
@@ -3001,7 +3003,39 @@
            MOVE    SPA-NAI-DRCD        TO  YYK-DRCD
            MOVE    SPA-NAI-YYKYMD      TO  YYK-YYKYMD
            MOVE    SPA-NAI-KYYKTIME    TO  YYK-KEYYYKTIME
+      *
+           MOVE    YYK-REC             TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "YYK-KEY7"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "YYK-KEY7"          TO  ORC-DBPATH
+               PERFORM 900-YOYAKU-READ-SEC
+           ELSE
+                MOVE    1              TO  FLG-YYK
+           END-IF
+           IF      FLG-YYK             =   ZERO
+               MOVE    YYK-YYKID           TO  WRK-YYKID
+               IF      WRK-YYKID           =   99
+                   MOVE    "1013"          TO  SPA-ERRCD
+                   GO      TO      4901-YYKADD-EXT
+               END-IF
+               ADD     1                   TO  WRK-YYKID
+           END-IF
+      *
+      *    明細レコード追加
+           MOVE    SPACE               TO  YYK-REC
+           INITIALIZE                      YYK-REC
+           MOVE    SPA-HOSPID          TO  YYK-HOSPID
+           MOVE    SPA-GMN-SRYNAIYOCD  TO  YYK-SRYNAIYO
+           MOVE    SPA-NAI-DRCD        TO  YYK-DRCD
+           MOVE    SPA-NAI-YYKYMD      TO  YYK-YYKYMD
+           MOVE    SPA-NAI-KYYKTIME    TO  YYK-KEYYYKTIME
            MOVE    WRK-YYKID           TO  YYK-YYKID
+      *
            MOVE    SPA-NAI-YYKTIME     TO  YYK-YYKTIME
            MOVE    SPA-GMN-PTID        TO  YYK-PTID
            IF      SPA-GMN-PTNUM       =   SPACE
@@ -3106,8 +3140,8 @@
            MOVE    SPA-Y01-YYKYMDS     TO  YYK-YYKYMD
            MOVE    SPA-Y01-YYKTIME     TO  YYK-KEYYYKTIME
            MOVE    SPA-Y01-YYKID       TO  YYK-YYKID
-      **   PERFORM 910-YOYAKU-INV-SEC
-      **   IF      FLG-YYK             =   ZERO
+           PERFORM 910-YOYAKU-INV-SEC
+           IF      FLG-YYK             =   ZERO
                MOVE    YYK-REC         TO  MCPDATA-REC
                MOVE    "DBDELETE"      TO  MCP-FUNC
                MOVE    "YYK-KEY"       TO  ORC-DBPATH
@@ -3118,9 +3152,13 @@
                IF      MCP-RC          NOT  =  ZERO
                    MOVE    "1012"      TO  SPA-ERRCD
                    DISPLAY "Y01 YYK MEI DEL ERR:" MCP-RC "."
+                           ",KEY:" YYK-KEY
                    GO                  TO  4903-YYKDEL-EXT
                END-IF
-      *****END-IF
+           ELSE
+               DISPLAY "Y01 YYK MEI DEL ??:" MCP-RC "."
+                       ",KEY:" YYK-KEY
+           END-IF
           .
        4903-YYKDEL-EXT.
            EXIT.
@@ -3697,6 +3735,11 @@
                WHEN    "1012"
                    MOVE    "予約明細データ削除エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "1013"
+                   MOVE    "予約時間の予約が合計で９９以上になります。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "予約時間の予約すべて削除して下さい。"
+                                               TO  SPA-ERRMSG(43:)
                WHEN    "K001"
                    MOVE    "注意！予約日が過去です。"
                                                TO  SPA-ERRMSG
