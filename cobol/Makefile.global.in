@@ -3,16 +3,18 @@ exec_prefix= @exec_prefix@
 
 sysconfdir = @sysconfdir@
 
-docdir = ${prefix}/doc
+ORCA_DIR = ${exec_prefix}
 
-datadir = ${exec_prefix}/data
-formdir = ${exec_prefix}/form
-initdir = ${exec_prefix}/init
-lddefdir = ${exec_prefix}/lddef
-recorddir = ${exec_prefix}/record
-screendir = ${exec_prefix}/screen
-scriptsdir = ${exec_prefix}/scripts
-copydir = ${exec_prefix}/cobol/copy
+docdir = ${ORCA_DIR}/doc
+datadir = ${ORCA_DIR}/data
+formdir = ${ORCA_DIR}/form
+initdir = ${ORCA_DIR}/init
+lddefdir = ${ORCA_DIR}/lddef
+recorddir = ${ORCA_DIR}/record
+screendir = ${ORCA_DIR}/screen
+scriptsdir = ${ORCA_DIR}/scripts
+copydir = ${ORCA_DIR}/cobol/copy
+
 libdir  = @libdir@
 
 srcdir = @srcdir@

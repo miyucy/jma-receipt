@@ -3,7 +3,8 @@ INSTALL_DATA = @INSTALL_DATA@
 
 prefix = @prefix@
 exec_prefix= @exec_prefix@
-lddefdir = ${exec_prefix}/lddef
+ORCA_DIR = ${exec_prefix}
+lddefdir = ${ORCA_DIR}/lddef
 libdir = @libdir@
 
 CPP = @CPP@
@@ -68,7 +69,7 @@ all: $(LDFILE) $(BDFILE) $(DIRECTORYFILE)
 $(LDFILE) $(BDFILE):  orcadb.inc orcahome.inc
 
 directory:
-	sed -e 's,\@exec_prefix\@,$(exec_prefix),g' \
+	sed -e 's,\@ORCA_DIR\@,$(ORCA_DIR),g' \
 	$(DIRECTORYFILE_in) > $(DIRECTORYFILE) 
 
 orcahome.inc:

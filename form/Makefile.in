@@ -3,7 +3,8 @@ INSTALL_DATA = @INSTALL_DATA@
 
 prefix = @prefix@
 exec_prefix= @exec_prefix@
-formdir = ${exec_prefix}/form
+ORCA_DIR = ${exec_prefix}
+formdir = ${ORCA_DIR}/form
 
 EXTRA_DIST = \
               HC01.dia \

@@ -3,7 +3,8 @@ INSTALL_DATA = @INSTALL_DATA@
 
 prefix = @prefix@
 exec_prefix= @exec_prefix@
-datadir = ${exec_prefix}/data
+ORCA_DIR = ${exec_prefix}
+datadir = ${ORCA_DIR}/data
 
 EXTRA_DIST = \
              SRYKBNNAME.TXT \

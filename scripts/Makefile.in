@@ -6,7 +6,8 @@ INSTALL_DATA = @INSTALL_DATA@
 prefix = @prefix@
 exec_prefix= @exec_prefix@
 sysconfdir= @sysconfdir@
-scriptsdir = ${exec_prefix}/scripts
+ORCA_DIR=${exec_prefix}
+scriptsdir = ${ORCA_DIR}/scripts
 
 noinst_shell_sources = \
 	sample.sh.in \
