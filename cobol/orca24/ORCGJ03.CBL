@@ -30,6 +30,7 @@
       *  01.00.00    NACL-Â¿¡¹Ç¼  02/09/12  ¥Ç¥£¥ì¥¯¥È¥ê¤ò¥µ¥Ö¥×¥í¤Ø
       *  01.00.01    NACL-Â¿¡¹Ç¼  03/02/21  Æþ±¡ÂÐ±þÂ¾
       *  01.00.02    NACL-Â¿¡¹Ç¼  03/08/12  ¹ç·×ÅÀ¿ô¡¢Ï«ºÒ¡¦¼«Èñ¶â³ÛÊÔ½¸
+      *  01.00.03    NACL-Â¿¡¹Ç¼  04/04/22  ¼ê½ÑÄÉ²ÃÂ¾
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -59,10 +60,6 @@
        WORKING-STORAGE             SECTION.
       *
       *    ¿ÇÎÅ¼ïÊÌ¥Õ¥¡¥¤¥ëÌ¾
-      *01  FILE-NAME.
-      *    03  FILLER          PIC X(16)   VALUE   "/usr/local/orca/".
-      *    03  FILLER          PIC X(05)   VALUE   "data/".
-      **** 03  FILLER          PIC X(16)   VALUE   "TENSUKBNNAME.TXT".
        01  FILE-NAME               PIC X(512).
       *
       *    ¥Õ¥¡¥¤¥ëÌ¾
@@ -98,12 +95,12 @@
       *
                05  SPA-GMN-AREA2.
                    07  SPA-GMN-TBL.
-                       09  SPA-GMN-TBLOCC      OCCURS  8.
+                       09  SPA-GMN-TBLOCC      OCCURS  9.
                            11  SPA-GMN-TBLREC1     OCCURS  100.
                                13  SPA-GMN-TSRYYMD     PIC X(09).
                                13  SPA-GMN-TNAIYOU1    PIC X(50).
                                13  SPA-GMN-TKAISU1     PIC 9(04).
-                       09  SPA-GMN-TBLOCC2     OCCURS  8.
+                       09  SPA-GMN-TBLOCC2     OCCURS  9.
                            11  SPA-GMN-TBLREC2     OCCURS  100.
                                13  SPA-GMN-TSRYYYMM    PIC X(06).
                                13  SPA-GMN-TNAIYOU2    PIC X(50).
@@ -111,6 +108,7 @@
                            11  SPA-GMN-TMAX            PIC 9(04).
       *
                    07  SPA-GMN-TENSU           PIC 9(07).
+                   07  SPA-GMN-NYUTENSU        PIC 9(07).
                    07  SPA-GMN-RSITENSU        PIC 9(07).
                    07  SPA-GMN-JIHIKIN         PIC 9(08).
       *
@@ -154,11 +152,11 @@
       *01  WRK-SPA-AREA.
 007900         05  SPA-J03NAI-AREA.
 008000             07  SPA-NAI-TBL.
-008100                 09  SPA-NAI-TBLOCC      OCCURS  8.
+008100                 09  SPA-NAI-TBLOCC      OCCURS  9.
 008200                     11  SPA-NAI-TBLREC1     OCCURS  100.
 008300                         13  SPA-NAI-SRYYMD     PIC X(08).
 008400                         13  SPA-NAI-SRYCD1     PIC X(09).
-008100                 09  SPA-NAI-TBLOCC2     OCCURS  8.
+008100                 09  SPA-NAI-TBLOCC2     OCCURS  9.
 008500                     11  SPA-NAI-TBLREC2     OCCURS  100.
 008600                         13  SPA-NAI-SRYYYMM    PIC X(06).
 008700                         13  SPA-NAI-SRYCD2     PIC X(09).
@@ -209,6 +207,8 @@
 014400     03  IDX-D               PIC 9(04).
            03  IDX-MAX             PIC 9(04).
            03  IDH                 PIC 9(04).
+           03  IDX-N               PIC 9(04).
+           03  IDX-N2              PIC 9(04).
 014500*
 014600*    °ì»þÎÎ°è
 014700 01  WRK-AREA.
@@ -236,13 +236,14 @@
            03  WRK-GOK-JIHIKIN     PIC 9(08).
            03  WRK-GOK-RSITENSU    PIC 9(08).
            03  WRK-GOK-TENSU       PIC S9(07).
-016100*
+           03  WRK-GOK-NYUTEN      PIC S9(07).
+      *
            03  WRK-ZZZ              PIC ZZZ.
            03  WRK-Z8               PIC ZZ,ZZZ,ZZZ.
-016300*    ¥Þ¥Ã¥×²èÌÌ¹Ô
-016400     03  WRK-MAP-INDEX        PIC 9(04).
-016500*
-016600     03  WRK-ERRMSG          PIC X(40).
+      *
+           03  WRK-ERRMSG          PIC X(40).
+      *
+           03  WRK-HKNCOMBI        PIC 9(04).
       *
       *    ÊÝ¸±¥Æ¡¼¥Ö¥ë
        01  TBL-HKNCOMBI-AREA.
@@ -250,14 +251,31 @@
                05  TBL-HKNCOMBI            PIC X(04).
                05  TBL-HKNKBN              PIC 9(01).
       *
-016700*
-016800*    ÊÔ½¸ÍÑ¥Æ¡¼¥Ö¥ë
-016900 01  WRK-TBL-AREA.
-017000     03  WRK-TBL-OCCURS          OCCURS  8.
-017100         05  WRK-TBL-OCC2        OCCURS  200.
-017200             07  WRK-TBL-SRYCD           PIC X(09).
-017300             07  WRK-TBL-SRYYYMM         PIC X(06).
-017400             07  WRK-TBL-MEISYO          PIC X(50).
+      *    Æþ±¡ÅÀ¿ô·×»»ÍÑ
+       01  TBL-NYUIN-TENSU-AREA.
+           03  TBL-NYUIN-TENSU-G.
+               05  TBL-NYUIN-TENSU-OCC     OCCURS   100.
+                   07  TBL-ZAITEN          PIC 9(07).
+                   07  TBL-DAY-G.
+                       09  TBL-DAY         PIC 9(03)
+                                               OCCURS   31.
+      *    ³°Çñ
+           03  TBL-GAIHAKU-G.
+               05  TBL-GAIHAKU             PIC 9(03)
+                                           OCCURS   31.
+      *    ÊÝ¸±ÁÈ¹ç¤»
+           03  TBL-HKNCOMBI-NYU-G.
+               05  TBL-HKNCOMBI-NYU        PIC 9(03)
+                                           OCCURS   31.
+      *
+      *
+      *    ÊÔ½¸ÍÑ¥Æ¡¼¥Ö¥ë
+       01  WRK-TBL-AREA.
+           03  WRK-TBL-OCCURS          OCCURS  9.
+               05  WRK-TBL-OCC2        OCCURS  200.
+                   07  WRK-TBL-SRYCD           PIC X(09).
+                   07  WRK-TBL-SRYYYMM         PIC X(06).
+                   07  WRK-TBL-MEISYO          PIC X(50).
                    07  WRK-TBL-NYUGAI          PIC X(01).
 017500*        ¥³¡¼¥ÉÉ½µ­ 
 017600             07  WRK-TBL-KNO.
@@ -272,14 +290,14 @@
 018400     03  TBL-IDX2                PIC 9(04).
 018500     03  TBL-IDX3                PIC 9(02).
 018500     03  TBL-IDX4                PIC 9(02).
-018600*
-018700*    ¥½¡¼¥ÈÊÔ½¸ÍÑ¥Æ¡¼¥Ö¥ë
-018800 01  WRK-STBL-AREA.
-018900     03  WRK-STBL-OCCURS          OCCURS  8.
-019000         05  WRK-STBL-OCC2        OCCURS  200.
-019100             07  WRK-STBL-SRYCD           PIC X(09).
-019200             07  WRK-STBL-SRYYYMM         PIC X(06).
-019300             07  WRK-STBL-MEISYO          PIC X(50).
+      *
+      *    ¥½¡¼¥ÈÊÔ½¸ÍÑ¥Æ¡¼¥Ö¥ë
+       01  WRK-STBL-AREA.
+           03  WRK-STBL-OCCURS          OCCURS  9.
+               05  WRK-STBL-OCC2        OCCURS  200.
+                   07  WRK-STBL-SRYCD           PIC X(09).
+                   07  WRK-STBL-SRYYYMM         PIC X(06).
+                   07  WRK-STBL-MEISYO          PIC X(50).
                    07  WRK-STBL-NYUGAI          PIC X(01).
 019400*            ¥³¡¼¥ÉÉ½µ­ 
 019500             07  WRK-STBL-KNO.
@@ -295,6 +313,7 @@
 020400     03  WRK-SRYCD               PIC X(09).
 020500     03  WRK-KNO                 PIC X(06).
 020600     03  WRK-SRYYMD              PIC X(08).
+           03  WRK-ZAISKBKBN           PIC X(01).
       *
            03  WRK-ORC-DBPATH          PIC X(64).
 020700*
@@ -323,7 +342,7 @@
 023900*    COPY    "CMKNOMEI.INC".
 024000*   ¥³¡¼¥ÉÉ½Ì¾¾Î¥Æ¡¼¥Ö¥ë
        01  MKNO-DATA-REC.
-           03  MKNO-TBL-OCC        OCCURS    350   INDEXED   MKNO-IDX.
+           03  MKNO-TBL-OCC        OCCURS    500   INDEXED   MKNO-IDX.
                05  MKNO-KNO.
                    07  MKNO-KNOKBN     PIC X(01).
                    07  MKNO-KNONO      PIC 9(03).
@@ -527,7 +546,7 @@
                        MOVE    1           TO  FLG-TENSUKBN
                    NOT AT  END
                       ADD     1           TO  IDX
-                      IF      IDX         >   350
+                      IF      IDX         >   500
                            CONTINUE
                        ELSE
                            MOVE    TENSUKBN-REC      TO  MKNO-TBL-OCC
@@ -686,8 +705,6 @@
        3008-HKNCOMBI-HEN-EXT.
            EXIT.
       *
-      *
-      *
       **************************************************************
       *    ²èÌÌÊÔ½¸ÍÑÆâÍÆÊÔ½¸½èÍý
       **************************************************************
@@ -722,7 +739,7 @@
       *
       *    ÊÔ½¸ÎÎ°è¤«¤é£Ó£Ð£Á¤Ø
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   8
+                   UNTIL       IDX     >   9
                PERFORM 31012-SPA-HEN-SEC
            END-PERFORM
       *
@@ -739,11 +756,11 @@
            PERFORM VARYING     IDX     FROM    1    BY  1
                    UNTIL      (IDX     >   100  )  OR
                               (IDX2    >=  100  )  OR
-                              (SPA-GMN-TNAIYOU2 (8 IDX)
+                              (SPA-GMN-TNAIYOU2 (9 IDX)
                                            =   SPACE  )
-               IF      SPA-GMN-TNAIYOU2 (8 IDX)    NOT =   SPACE
+               IF      SPA-GMN-TNAIYOU2 (9 IDX)    NOT =   SPACE
                    ADD     1               TO  IDX2
-                   MOVE    SPA-GMN-TBLREC2 (8 IDX)
+                   MOVE    SPA-GMN-TBLREC2 (9 IDX)
                                            TO  SPA-GMN-TBLREC2
                                                        (1 IDX2)
                END-IF
@@ -810,15 +827,19 @@
       *                ½èÃÖ
                    WHEN    "40"
                        MOVE    4               TO  IDX
+      *                ¼ê½Ñ¡¦Ëã¿ì
+                   WHEN    "50"
+                   WHEN    "54"
+                       MOVE    5               TO  IDX
       *                ¸¡ºº
                    WHEN    "60"
-                       MOVE    5               TO  IDX
+                       MOVE    6               TO  IDX
       *                £ØÀþ
                    WHEN    "70"
-                       MOVE    6               TO  IDX
+                       MOVE    7               TO  IDX
       *                ¥ê¥Ï¥Ó¥ê
                    WHEN    "80"
-                       MOVE    7               TO  IDX
+                       MOVE    8               TO  IDX
                END-EVALUATE
       *
                IF      SPA-GMN-HHKNCOMBI   =   ZERO
@@ -903,6 +924,7 @@
       *            ¥³¥á¥ó¥È¡¢ÌôºÞÅêÍ¿¡¢Ê´ºÕ¡¢¼«Æ°È¯À¸Ê¬¤ÏÂÐ¾Ý³°
                    IF     (SRY-SRYCD (IDZ)(1:1)    =   "8"  )  OR
                           (SRY-SRYCD (IDZ)(1:3)    =   "001")  OR
+                          (SRY-SRYCD (IDZ)(1:3)    =   "008")  OR
                           (SRY-SRYCD (IDZ)         =   "099209901") OR
                           (SRY-SRYCD (IDZ)         =   "099309901") OR
                           (SRY-AUTOKBN(IDZ)        =   "2"
@@ -943,6 +965,8 @@
 053400 31011-SINKOUI-SPA-SEC           SECTION.
 053500*
 053600     IF      IDX             =   1   OR  2  OR  3
+      *        ¼ê½ÑÄÉ²Ã
+                                   OR  5
 053700*        ¿ÇÎÅ¹Ô°ÙÊÌÊÔ½¸
 053800         PERFORM 310111-SINKOUI-01-SEC 
 053900     ELSE
@@ -959,6 +983,15 @@
 055000*****************************************************************
 055100 310111-SINKOUI-01-SEC           SECTION.
 055200*
+      *    ¼ê½Ñ¤Î»þ¼êµ»ÎÁ¤Î¤ß
+           IF      IDX                 =   5
+               IF     (TNS-SRYCD(1:1)      =   "1" )  AND
+                      (TNS-DATAKBN         =   "1" )
+                   CONTINUE
+               ELSE
+                   GO      TO      310111-SINKOUI-01-EXT
+               END-IF
+           END-IF
 055300     MOVE    ZERO                TO  TBL-IDX2
 055400*    ¿ÇÎÅ¹Ô°Ù¤è¤ê¡¢ÂÐ¾Ý¥Á¥§¥Ã¥¯
 055500     PERFORM VARYING     TBL-IDX1    FROM    1   BY  1
@@ -1027,6 +1060,10 @@
 061100            (TNS-CDKBN-KBNNUM-EDA    =   ZERO  )
 061200         GO      TO      310112-SINKOUI-02-EXT
 061300     END-IF
+      *    ¼êµ»ÎÁ¤Î¤ß
+           IF      SRY-SRYCD (IDZ)(1:1)    NOT =   "1"
+               GO      TO      310112-SINKOUI-02-EXT
+           END-IF
 061400*
 061500*    ¿ÇÎÅ¹Ô°Ù¤è¤ê¡¢ÂÐ¾Ý¥Á¥§¥Ã¥¯
 061600     PERFORM VARYING     TBL-IDX1    FROM    1   BY  1
@@ -1116,7 +1153,12 @@
            MOVE    SPA-HOSPID          TO  NACCT-HOSPID
            MOVE    SPA-GMN-NYUGAIKBN   TO  NACCT-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  NACCT-PTID
-           MOVE    SPA-GMN-SRYKA       TO  NACCT-SRYKA
+      *    ¿ÇÎÅ²Ê¡ÊÊÑ¹¹»þ¤Î¤ß¡Ë
+           IF      SPA-J01-SRYKA       =   SPA-GMN-SRYKA
+               MOVE    "00"                TO  NACCT-SRYKA
+           ELSE
+               MOVE    SPA-GMN-SRYKA       TO  NACCT-SRYKA
+           END-IF
            MOVE    WRK-SRYYM           TO  NACCT-SRYYM
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
@@ -1142,7 +1184,7 @@
                    WHEN    "90"
                    WHEN    "92"
                    WHEN    "97"
-                       MOVE    8               TO  IDX
+                       MOVE    9               TO  IDX
                END-EVALUATE
                IF      IDX             >   ZERO
                    PERFORM 31021-NYUINACCT-SPA-SEC
@@ -1231,52 +1273,53 @@
 055600             UNTIL       TBL-IDX1       >    200
 055700         EVALUATE    TRUE
 055800             WHEN    WRK-TBL-SRYCD (IDX TBL-IDX1)    =   SPACE
-055900                 MOVE    NSRY-SRYCD (IDZ)    TO  WRK-TBL-SRYCD
-056000                                                 (IDX TBL-IDX1)
-056100                 MOVE    NACCT-SRYYM         TO  WRK-TBL-SRYYYMM
-056200                                                  (IDX TBL-IDX1)
-056300                 MOVE    TNS-NAME            TO  WRK-TBL-MEISYO
-056400                                                  (IDX TBL-IDX1)
-056500                 MOVE    TNS-CDKBN-KBN       TO  WRK-TBL-KNOKBN
-056600                                                  (IDX TBL-IDX1)
-056700                 MOVE    TNS-CDKBN-KBNNUM    TO  WRK-TBL-KNONO
-056800                                                  (IDX TBL-IDX1)
-056900                 MOVE    TNS-CDKBN-KBNNUM-EDA  TO  WRK-TBL-KNONO2
-057000                                                  (IDX TBL-IDX1)
+                       MOVE    NSRY-SRYCD (IDZ)    TO  WRK-TBL-SRYCD
+                                                       (IDX TBL-IDX1)
+                       MOVE    NACCT-SRYYM         TO  WRK-TBL-SRYYYMM
+                                                        (IDX TBL-IDX1)
+                       MOVE    TNS-NAME            TO  WRK-TBL-MEISYO
+                                                        (IDX TBL-IDX1)
+      *                ºÞ¼±ÊÌÈÖ¹æ
+                       MOVE    NACCT-ZAISKBKBN     TO  WRK-TBL-KNOKBN
+                                                        (IDX TBL-IDX1)
+      *************    MOVE    TNS-CDKBN-KBNNUM    TO  WRK-TBL-KNONO
+      *                                                 (IDX TBL-IDX1)
+      *                MOVE    TNS-CDKBN-KBNNUM-EDA  TO  WRK-TBL-KNONO2
+      *************                                     (IDX TBL-IDX1)
       *                Æþ±¡ÎÁ
                        MOVE    "1"                 TO  WRK-TBL-NYUGAI
                                                         (IDX TBL-IDX1)
-057100                 MOVE    TBL-IDX1            TO  TBL-IDX2
-057200                 MOVE    200                 TO  TBL-IDX1
-057300             WHEN    (NSRY-SRYCD (IDZ)   =   WRK-TBL-SRYCD
-057400                                                 (IDX TBL-IDX1))
-057500                AND  (NACCT-SRYYM        =   WRK-TBL-SRYYYMM
-057600                                                 (IDX TBL-IDX1))
-057700                 MOVE    TBL-IDX1            TO  TBL-IDX2
-057800                 MOVE    200                 TO  TBL-IDX1
-057900         END-EVALUATE
-058000     END-PERFORM
-058100*
-058200     IF      TBL-IDX2            =   ZERO
-058300         MOVE    "9999"              TO  SPA-ERRCD
-058400         GO      TO      31011-NYUINACT-SPA-EXT
-058500     END-IF
-058600*
-058700*    ¿ÇÎÅ¹Ô°Ù²ó¿ô·×»»
-058800     PERFORM VARYING     TBL-IDX3    FROM    1   BY  1
-058900             UNTIL       TBL-IDX3    >   31
-059000*
-059100         IF      NACCT-DAY(TBL-IDX3)
+                       MOVE    TBL-IDX1            TO  TBL-IDX2
+                       MOVE    200                 TO  TBL-IDX1
+                   WHEN    (NSRY-SRYCD (IDZ)   =   WRK-TBL-SRYCD
+                                                       (IDX TBL-IDX1))
+                      AND  (NACCT-SRYYM        =   WRK-TBL-SRYYYMM
+                                                       (IDX TBL-IDX1))
+                       MOVE    TBL-IDX1            TO  TBL-IDX2
+                       MOVE    200                 TO  TBL-IDX1
+               END-EVALUATE
+           END-PERFORM
+      *
+           IF      TBL-IDX2            =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+               GO      TO      31011-NYUINACT-SPA-EXT
+           END-IF
+      *
+      *    ¿ÇÎÅ¹Ô°Ù²ó¿ô·×»»
+           PERFORM VARYING     TBL-IDX3    FROM    1   BY  1
+                   UNTIL       TBL-IDX3    >   31
+      *
+               IF      NACCT-DAY(TBL-IDX3)
                                           NOT =   ZERO
-059200                 ADD     1              TO  WRK-TBL-KAISU
-059300                                       (IDX TBL-IDX2 TBL-IDX3)
-059400         END-IF
-059500     END-PERFORM
-059600*
-059700     .
-059800 31011-NYUINACT-SPA-EXT.
-059900     EXIT.
-060000*
+                       ADD     1              TO  WRK-TBL-KAISU
+                                             (IDX TBL-IDX2 TBL-IDX3)
+               END-IF
+           END-PERFORM
+      *
+           .
+       31011-NYUINACT-SPA-EXT.
+           EXIT.
+      *
       *
 068800*****************************************************************
 068900*   ÊÔ½¸ÎÎ°è¤«¤é£Ó£Ð£Á¤Ø  ÊÔ½¸½èÍý
@@ -1356,34 +1399,39 @@
 074700*
 074800     .
 074900 31012-SPA-HEN-EXT.
-075000     EXIT.
-075100*
-075200*****************************************************************
-075300*   ¿ÇÎÅÇ¯·î¡¦¿ÇÎÅ¥³¡¼¥É½ç¤Ë£Ó£Ï£Ò£Ô  ÊÔ½¸½èÍý
-075400*****************************************************************
-075500 310121-SORT-01-SEC               SECTION.
-075600*
-075700*    ¿ÇÎÅÇ¯·î¡¦¿ÇÎÅ¥³¡¼¥É½ç¤Ë£Ó£Ï£Ò£Ô
-075800     INITIALIZE                      WRK-STBL-AREA
-075800     INITIALIZE                      WRK-STBL-AREA2
-075900     MOVE    WRK-TBL-AREA        TO  WRK-STBL-AREA
+           EXIT.
+      *
+      *****************************************************************
+      *   ¿ÇÎÅÇ¯·î¡¦¿ÇÎÅ¥³¡¼¥É½ç¤Ë£Ó£Ï£Ò£Ô  ÊÔ½¸½èÍý
+      *****************************************************************
+       310121-SORT-01-SEC               SECTION.
+      *
+      *    ¿ÇÎÅÇ¯·î¡¦¿ÇÎÅ¥³¡¼¥É½ç¤Ë£Ó£Ï£Ò£Ô
+           INITIALIZE                      WRK-STBL-AREA
+           INITIALIZE                      WRK-STBL-AREA2
+           MOVE    WRK-TBL-AREA        TO  WRK-STBL-AREA
            INITIALIZE                      WRK-TBL-AREA2
-076000     INITIALIZE                      WRK-TBL-AREA
-076100     PERFORM VARYING     IDX     FROM    1   BY  1
-076200             UNTIL       IDX     >   8
-076300*        ¿ÇÎÅ¹Ô°ÙÊÌ½¸·×£Ó£Ï£Ò£Ô
-076400         PERFORM 3101211-SORT-011-SEC 
-076500     END-PERFORM 
-076600*
-076700     .
-076800 310121-SORT-01-EXT.
-076900     EXIT.
-077000*
+           INITIALIZE                      WRK-TBL-AREA
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   9
+      *        ¿ÇÎÅ¹Ô°ÙÊÌ½¸·×£Ó£Ï£Ò£Ô
+               PERFORM 3101211-SORT-011-SEC 
+           END-PERFORM 
+      *
+           .
+       310121-SORT-01-EXT.
+           EXIT.
 077100*****************************************************************
 077200*   ¿ÇÎÅ¹Ô°ÙÊÌ½¸·×£Ó£Ï£Ò£Ô  ÊÔ½¸½èÍý
 077300*****************************************************************
 077400 3101211-SORT-011-SEC               SECTION.
-077500*
+      *
+           IF      IDX             =   9
+      *        Æþ±¡ÎÁ
+               PERFORM 31012110-NYUIN-SORT-SEC
+               GO      TO  3101211-SORT-011-EXT
+           END-IF
+      *
 077600     PERFORM VARYING     IDX1        FROM    1   BY  1
 077700             UNTIL       IDX1        >   200
 077800         MOVE    LOW-VALUE           TO  WRK-SRYYYMM
@@ -1426,6 +1474,71 @@
 081500     .
 081600 3101211-SORT-011-EXT.
 081700     EXIT.
+      *
+      *****************************************************************
+      *   Æþ±¡ÎÁ£Ó£Ï£Ò£Ô½èÍý
+      *****************************************************************
+       31012110-NYUIN-SORT-SEC               SECTION.
+      *
+      *
+           PERFORM VARYING     IDX1        FROM    1   BY  1
+                   UNTIL       IDX1        >   200
+               MOVE    LOW-VALUE           TO  WRK-SRYYYMM
+               MOVE    HIGH-VALUE          TO  WRK-ZAISKBKBN
+               MOVE    HIGH-VALUE          TO  WRK-SRYCD
+               MOVE    ZERO                TO  IDX3
+               PERFORM VARYING     IDX2        FROM    1   BY  1
+                       UNTIL       IDX2        >   200
+                   IF      WRK-STBL-SRYCD (IDX IDX2)    =   SPACE
+                       CONTINUE
+                   ELSE
+                       EVALUATE    TRUE
+                       WHEN    WRK-STBL-SRYYYMM(IDX IDX2)
+                                               >   WRK-SRYYYMM
+                           MOVE    WRK-STBL-SRYCD  (IDX IDX2)  
+                                                     TO  WRK-SRYCD
+                           MOVE    WRK-STBL-KNOKBN (IDX IDX2)  
+                                                     TO  WRK-ZAISKBKBN
+                           MOVE    WRK-STBL-SRYYYMM(IDX IDX2)  
+                                                     TO  WRK-SRYYYMM
+                           MOVE    IDX2             TO  IDX3
+                       WHEN   (WRK-STBL-SRYYYMM(IDX IDX2)
+                                               =   WRK-SRYYYMM) AND
+                              (WRK-STBL-KNOKBN(IDX IDX2)
+                                               <   WRK-ZAISKBKBN ) 
+                           MOVE    WRK-STBL-SRYCD  (IDX IDX2)  
+                                                    TO  WRK-SRYCD
+                           MOVE    WRK-STBL-KNOKBN (IDX IDX2)  
+                                                    TO  WRK-ZAISKBKBN
+                           MOVE    WRK-STBL-SRYYYMM(IDX IDX2)  
+                                                    TO  WRK-SRYYYMM
+                           MOVE    IDX2             TO  IDX3
+                       WHEN    (WRK-STBL-SRYYYMM(IDX IDX2)
+                                               =   WRK-SRYYYMM) AND
+                               (WRK-STBL-KNOKBN(IDX IDX2)
+                                               <   WRK-ZAISKBKBN )  AND
+                               (WRK-STBL-SRYCD(IDX IDX2)
+                                               <   WRK-SRYCD  )
+                           MOVE    WRK-STBL-SRYCD  (IDX IDX2)
+                                                     TO  WRK-SRYCD
+                           MOVE    WRK-STBL-KNOKBN (IDX IDX2)  
+                                                     TO  WRK-ZAISKBKBN
+                           MOVE    WRK-STBL-SRYYYMM(IDX IDX2)
+                                                     TO  WRK-SRYYYMM
+                           MOVE    IDX2              TO  IDX3
+                       END-EVALUATE
+                   END-IF
+               END-PERFORM
+      *
+               IF      IDX3                >   ZERO
+                   MOVE    WRK-STBL-OCC2 (IDX IDX3)
+                                          TO  WRK-TBL-OCC2 (IDX IDX1)
+                   MOVE    SPACE          TO  WRK-STBL-OCC2(IDX IDX3)
+               END-IF
+           END-PERFORM
+           .
+       31012110-NYUIN-SORT-EXT.
+           EXIT.
 081800*
 081900*****************************************************************
 082000*   ¿ÇÎÅÇ¯·îÆü¡¦¿ÇÎÅ¥³¡¼¥É½ç¤Ë£Ó£Ï£Ò£Ô½èÍý
@@ -1497,7 +1610,6 @@
 088200     .
 088300 310122-SORT-02-EXT.
 088400     EXIT.
-088500*
       *
       *****************************************************************
       *    Åö·îÅÀ¿ô¹ç·×·×»»½èÍý
@@ -1589,8 +1701,92 @@
            MOVE    WRK-GOK-RSITENSU    TO  SPA-GMN-RSITENSU
            MOVE    WRK-GOK-JIHIKIN     TO  SPA-GMN-JIHIKIN
       *
+      *    Æþ±¡¤Î»þ¡¢Æþ±¡ÎÁ¤ÎÅÀ¿ô¹ç·×
+           IF      SPA-GMN-NYUGAIKBN   =   "1"
+               PERFORM 31091-NYUACCT-TENSU-SEC
+           END-IF
+      *
            .
        3109-TENSU-KEISAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÎÁ¤ÎÅÀ¿ô¹ç·×½èÍý
+      *****************************************************************
+       31091-NYUACCT-TENSU-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  SPA-GMN-NYUTENSU
+           MOVE    ZERO                TO  WRK-GOK-NYUTEN
+           INITIALIZE                      TBL-NYUIN-TENSU-AREA
+      *
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+           MOVE    SPA-GMN-NYUGAIKBN   TO  NACCT-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  NACCT-PTID
+           MOVE    "00"                TO  NACCT-SRYKA
+           MOVE    WRK-SRYYM           TO  NACCT-SRYYM
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
+               PERFORM 930-NYUINACCT-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-NYUINACCT
+           END-IF
+           MOVE    ZERO                TO  IDX-N
+           PERFORM
+               UNTIL  (FLG-NYUINACCT       =   1  )  OR
+                      (IDX-N               >   100 )
+               EVALUATE    NACCT-ZAISKBKBN
+                   WHEN    "1"
+                       ADD     1               TO  IDX-N
+                       MOVE    NACCT-ZAITEN    TO  TBL-ZAITEN (IDX-N)
+                       MOVE    NACCT-DAY-AREA  TO  TBL-DAY-G  (IDX-N)
+                   WHEN    "2"
+      *            ³°Çñ
+                       MOVE    NACCT-DAY-AREA  TO  TBL-GAIHAKU-G
+                   WHEN    "5"
+      *            ÊÝ¸±
+                       MOVE    NACCT-DAY-AREA  TO  TBL-HKNCOMBI-NYU-G
+      *            °Ê³°
+                   WHEN    OTHER
+                       IF      NACCT-ZAITEN    >   ZERO
+                           ADD     1               TO  IDX-N
+                           MOVE    NACCT-ZAITEN    TO  TBL-ZAITEN(IDX-N)
+                           MOVE    NACCT-DAY-AREA  TO  TBL-DAY-G (IDX-N)
+                       END-IF
+               END-EVALUATE
+      *
+               MOVE    "NYUINACCT-KEY2"    TO  ORC-DBPATH
+               PERFORM 930-NYUINACCT-READ-SEC
+           END-PERFORM
+      *
+      *    ÊÝ¸±Ëè¤Î·×»»
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL       IDX-D   >   31
+               MOVE    TBL-HKNCOMBI-NYU (IDX-D)    TO  WRK-HKNCOMBI
+               IF     (SPA-GMN-HHKNCOMBI   =   ZERO  )  OR
+                      (SPA-GMN-HHKNCOMBI   =   WRK-HKNCOMBI)
+                   PERFORM VARYING     IDX-N2  FROM    1   BY  1
+                           UNTIL       IDX-N2  >   IDX-N
+                       IF      TBL-DAY (IDX-N2 IDX-D)  >   ZERO
+                           ADD     TBL-ZAITEN(IDX-N2)
+                                                   TO  WRK-GOK-NYUTEN
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+           MOVE    WRK-GOK-NYUTEN      TO  SPA-GMN-NYUTENSU
+      *
+           .
+       31091-NYUACCT-TENSU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1841,9 +2037,15 @@
            MOVE    SPA-GMN-JIHIKIN     TO  WRK-Z8
            MOVE    WRK-Z8              TO  J03-JIHIKIN
       *
+           IF      SPA-GMN-NYUGAIKBN   =   "1"
+               MOVE    "Æþ±¡ÅÀ¿ô"          TO  J03-MIDASIN
+           END-IF
+           MOVE    SPA-GMN-NYUTENSU    TO  WRK-Z8
+           MOVE    WRK-Z8              TO  J03-NYUTENSU
+      *
            EVALUATE    SPA-GMN-SYORI
                WHEN    1
-                   IF      SPA-GMN-TSRYYYMM(8 1)   =   SPACE
+                   IF      SPA-GMN-NYUGAIKBN   =   "2"
                        MOVE    "¡ã¿Ç»¡¡ä"           TO  J03-MIDASI-VALUE
                    ELSE
                        MOVE    "¡ã¿Ç»¡¡¦Æþ±¡ÎÁ¡ä"   TO  J03-MIDASI-VALUE
@@ -1855,10 +2057,12 @@
                WHEN    4
                    MOVE    "¡ã½èÃÖ¡ä"           TO  J03-MIDASI-VALUE
                WHEN    5
-                   MOVE    "¡ã¸¡ºº¡ä"           TO  J03-MIDASI-VALUE
+                   MOVE    "¡ã¼ê½Ñ¡¦Ëã¿ì¡ä"     TO  J03-MIDASI-VALUE
                WHEN    6
-                   MOVE    "¡ã£ØÀþ¡ä"           TO  J03-MIDASI-VALUE
+                   MOVE    "¡ã¸¡ºº¡ä"           TO  J03-MIDASI-VALUE
                WHEN    7
+                   MOVE    "¡ã£ØÀþ¡ä"           TO  J03-MIDASI-VALUE
+               WHEN    8
                    MOVE    "¡ã¥ê¥Ï¥Ó¥ê¡ä"       TO  J03-MIDASI-VALUE
            END-EVALUATE
            MOVE    "red"               TO  J03-MIDASI-STYLE
@@ -1925,15 +2129,15 @@
            .
        5001-MAPCUR-EXT.
            EXIT.
-095700*****************************************************************
-095800*    ²èÌÌÁ«°Ü½èÍý
-095900*****************************************************************
-096000 200-GMNSENI                   SECTION.
-096100*
-096200     EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-096300*        Ìá¤ë
-096400         WHEN    "CLICKED"       ALSO    "B01"
-096500             PERFORM 210-BACK
+      *****************************************************************
+      *    ²èÌÌÁ«°Ü½èÍý
+      *****************************************************************
+       200-GMNSENI                   SECTION.
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        Ìá¤ë
+               WHEN    "CLICKED"       ALSO    "B01"
+                   PERFORM 210-BACK
       *
       *    Á°·î
                WHEN    "CLICKED"       ALSO    "B06"
@@ -1947,31 +2151,34 @@
       *    ¢ª
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 470-ATO-SYORI-SEC
-096600*        ¡Ê¿Ç»¡¡Ë
-096700         WHEN    "CLICKED"       ALSO    "B001"
-096800             PERFORM 220-SINS
-096900*        ¡Ê½èÊý¡Ë
-097000         WHEN    "CLICKED"       ALSO    "B002"
-097100             PERFORM 230-SYOH
-096600*        ¡ÊÃí¼Í¡Ë
-096700         WHEN    "CLICKED"       ALSO    "B007"
-096800             PERFORM 220-CHUSHA-SEC
-097200*        ¡Ê½èÃÖ¡Ë
-097300         WHEN    "CLICKED"       ALSO    "B003"
-097400             PERFORM 240-SYOC
-097500*        ¡Ê¸¡ºº¡Ë
-097600         WHEN    "CLICKED"       ALSO    "B004"
-097700             PERFORM 250-KENS
-097800*        ¡Ê£ØÀþ¡Ë
-097900         WHEN    "CLICKED"       ALSO    "B005"
-098000             PERFORM 260-XSEN
-098100*        ¡Ê¥ê¥Ï¥Ó¥ê¡Ë
-098200         WHEN    "CLICKED"       ALSO    "B006"
-098300             PERFORM 270-RIHA
-098400     END-EVALUATE
-098500     .
-098600 200-GMNSENI-EXT.
-098700     EXIT.
+      *        ¡Ê¿Ç»¡¡Ë
+               WHEN    "CLICKED"       ALSO    "B001"
+                   PERFORM 220-SINS
+      *        ¡Ê½èÊý¡Ë
+               WHEN    "CLICKED"       ALSO    "B002"
+                   PERFORM 230-SYOH
+      *        ¡ÊÃí¼Í¡Ë
+               WHEN    "CLICKED"       ALSO    "B007"
+                   PERFORM 220-CHUSHA-SEC
+      *        ¡Ê½èÃÖ¡Ë
+               WHEN    "CLICKED"       ALSO    "B003"
+                   PERFORM 240-SYOC
+      *        ¡Ê¼ê½Ñ¡¦Ëã¿ì¡Ë
+               WHEN    "CLICKED"       ALSO    "B008"
+                   PERFORM 240-SYUJU-SEC
+      *        ¡Ê¸¡ºº¡Ë
+               WHEN    "CLICKED"       ALSO    "B004"
+                   PERFORM 250-KENS
+      *        ¡Ê£ØÀþ¡Ë
+               WHEN    "CLICKED"       ALSO    "B005"
+                   PERFORM 260-XSEN
+      *        ¡Ê¥ê¥Ï¥Ó¥ê¡Ë
+               WHEN    "CLICKED"       ALSO    "B006"
+                   PERFORM 270-RIHA
+           END-EVALUATE
+           .
+       200-GMNSENI-EXT.
+           EXIT.
       *****************************************************************
       *    ²ñÏÃ¡¡½èÍý
       *****************************************************************
@@ -2145,22 +2352,32 @@
 104100     .
 104200 230-SYOH-EXT.
 104300     EXIT.
-104400*****************************************************************
-104500*    ½èÃÖ¡¡½èÍý
-104600*****************************************************************
-104700 240-SYOC                    SECTION.
-104800*
-104900     MOVE    4             TO  SPA-GMN-SYORI
-105000*
-105900     .
-106000 240-SYOC-EXT.
-106100     EXIT.
+      *****************************************************************
+      *    ½èÃÖ¡¡½èÍý
+      *****************************************************************
+       240-SYOC                    SECTION.
+      *
+           MOVE    4             TO  SPA-GMN-SYORI
+      *
+           .
+       240-SYOC-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼ê½Ñ¡¦Ëã¿ì½èÍý
+      *****************************************************************
+       240-SYUJU-SEC                  SECTION.
+      *
+           MOVE    5             TO  SPA-GMN-SYORI
+      *
+           .
+       240-SYUJU-EXT.
+           EXIT.
 106200*****************************************************************
 106300*    ¸¡ºº¡¡½èÍý
 106400*****************************************************************
 106500 250-KENS                    SECTION.
 106600*
-106700     MOVE    5             TO  SPA-GMN-SYORI
+106700     MOVE    6             TO  SPA-GMN-SYORI
 106800*
 107700     .
 107800 250-KENS-EXT.
@@ -2170,7 +2387,7 @@
 108200*****************************************************************
 108300 260-XSEN                    SECTION.
 108400*
-108500     MOVE    6             TO  SPA-GMN-SYORI
+108500     MOVE    7             TO  SPA-GMN-SYORI
 108600*
 109500     .
 109600 260-XSEN-EXT.
@@ -2180,7 +2397,7 @@
 110000*****************************************************************
 110100 270-RIHA                    SECTION.
 110200*
-110300     MOVE    7             TO  SPA-GMN-SYORI
+110300     MOVE    8             TO  SPA-GMN-SYORI
 110400*
 111300     .
 111400 270-RIHA-EXT.
@@ -2238,7 +2455,7 @@
            COMPUTE SPA-GMN-SYORI       =   SPA-GMN-SYORI
                                        -   1
            IF      SPA-GMN-SYORI       =   ZERO
-               MOVE    7                   TO  SPA-GMN-SYORI
+               MOVE    8                   TO  SPA-GMN-SYORI
            END-IF
       *
            .
@@ -2251,7 +2468,7 @@
       *
            COMPUTE SPA-GMN-SYORI       =   SPA-GMN-SYORI
                                        +   1
-           IF      SPA-GMN-SYORI       >   7
+           IF      SPA-GMN-SYORI       >   8
                MOVE    1                   TO  SPA-GMN-SYORI
            END-IF
       *
