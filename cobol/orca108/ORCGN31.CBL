@@ -194,8 +194,6 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *    カタカナチェック
-           COPY    "CPORCSKANACNV.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -701,17 +699,6 @@
                GO  TO  4100-CITYKANA-CHK-EXT
            END-IF
       *
-      *    半角文字混在チェック
-           INITIALIZE                      KANACNV-LNK
-           MOVE    SPA-GMN-CITYKANA    TO  KANACNV-IN-STR
-           CALL    "ORCSKANACNV"       USING
-                                       KANACNV-LNK
-           IF     ( KANACNV-RC     NOT =   ZERO )  OR
-                  ( KANACNV-TYPE   NOT =   2    )
-               MOVE    "0004"          TO  SPA-ERRCD
-               MOVE    4               TO  SPA-GMN-CUR
-               GO  TO  4100-CITYKANA-CHK-EXT
-           END-IF
            .
       *
        4100-CITYKANA-CHK-EXT.
@@ -742,17 +729,6 @@
                GO  TO  4100-TOWNKANA-CHK-EXT
            END-IF
       *
-      *    半角文字混在チェック
-           INITIALIZE                      KANACNV-LNK
-           MOVE    SPA-GMN-TOWNKANA    TO  KANACNV-IN-STR
-           CALL    "ORCSKANACNV"       USING
-                                       KANACNV-LNK
-           IF     ( KANACNV-RC     NOT =   ZERO )  OR
-                  ( KANACNV-TYPE   NOT =   2    )
-               MOVE    "0005"          TO  SPA-ERRCD
-               MOVE    5               TO  SPA-GMN-CUR
-               GO  TO  4100-TOWNKANA-CHK-EXT
-           END-IF
            .
       *
        4100-TOWNKANA-CHK-EXT.
