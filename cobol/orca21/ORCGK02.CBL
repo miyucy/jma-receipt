@@ -1135,6 +1135,7 @@
                        MOVE    ZERO               TO  FLG-PARASET
                        PERFORM 3002-PARA-SET-SEC
                    ELSE
+                       MOVE    ZERO               TO  SPA-SAISIN-CHK
                        MOVE    2                  TO  FLG-PARASET
                        PERFORM 3002-PARA-SET-SEC
                        IF      SPA-SYORIFLG        =   ZERO
@@ -11569,10 +11570,10 @@
       *     ›∏±¡»πÁ§ª
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-HKN-MAX
-               MOVE    SPA-GMN-HKN-LIST (IDX)  TO  K02-HKNCOMBILST
+               MOVE    SPA-GMN-HKN-LIST (IDX)  TO  K02-HKNCOMBI-ITEM
                                                              (IDX)
            END-PERFORM
-           MOVE    SPA-HKN-MAX         TO  K02-HKNCOMBICOUNT1
+           MOVE    SPA-HKN-MAX         TO  K02-HKNCOMBI-COUNT
       *
       *    ø«Œ≈≤ 
            MOVE    SPA-GMN-SRYKA-G     TO  K02-SRYKA
