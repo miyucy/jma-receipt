@@ -334,19 +334,21 @@
                MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
                MOVE    SPA-PTID            TO  JYURRK-PTID
                MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-               MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
-               MOVE    SPA-NAI-RRKYMD(IDX) TO  JYURRK-SRYYMD
-               MOVE    SPA-NAI-RENNUM(IDX) TO  JYURRK-RENNUM
+      *********MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+      *        MOVE    SPA-NAI-RRKYMD(IDX) TO  JYURRK-SRYYMD
+      *********MOVE    SPA-NAI-RENNUM(IDX) TO  JYURRK-RENNUM
+               MOVE    SPA-NAI-RRK-DENPNUM(IDX)
+                                           TO  JYURRK-DENPNUM
       *
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+               MOVE    "JYURRK-KEY6"       TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+                   MOVE    "JYURRK-KEY6"       TO  ORC-DBPATH
                    PERFORM 900-JYURRK-NEXT-SEC
                ELSE
                    INITIALIZE                  JYURRK-REC
@@ -355,17 +357,17 @@
       *
                PERFORM
                        UNTIL       FLG-JYURRK          =   1
-                   IF      SPA-NAI-DOUJI-RENNUM(IDX)
-                                           =   JYURRK-DOUJI-RENNUM
+      ************ IF      SPA-NAI-DOUJI-RENNUM(IDX)
+      ***********                          =   JYURRK-DOUJI-RENNUM
       *                Ã¿∫Ÿπ‡Ã‹¬‡»Ú
                        PERFORM 3101-JYURRK-HEN-SEC
-                   END-IF
-                   MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+      ***********  END-IF
+                   MOVE    "JYURRK-KEY6"       TO  ORC-DBPATH
                    PERFORM 900-JYURRK-NEXT-SEC
                END-PERFORM
       *
                MOVE    "DBCLOSE"           TO  MCP-FUNC
-               MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
+               MOVE    "JYURRK-KEY6"       TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
