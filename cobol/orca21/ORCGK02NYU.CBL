@@ -9445,6 +9445,9 @@
                                                                 (IDX)
                MOVE    WRK-KSN-SRYCD(IDX)  TO  ORCSCWKSRY-KSN-SRYCD
                                                                 (IDX)
+               MOVE    WRK-KSN-INPUTCD(IDX)
+                                           TO  ORCSCWKSRY-KSN-INPUTCD
+                                                                (IDX)
                MOVE    WRK-KSN-ATAI-G (IDX)
                                            TO  ORCSCWKSRY-KSN-ATAI-G
                                                                 (IDX)

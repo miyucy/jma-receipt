@@ -2785,9 +2785,15 @@
                ADD     1                       TO  IDY
                MOVE    ORCSCWKSRY-KSN-SRYCD  (IDX)
                                                TO  WKSRY-SRYCD (IDY)
+               MOVE    ORCSCWKSRY-KSN-INPUTCD(IDX)
+                                               TO  WKSRY-INPUTCD (IDY)
                MOVE    1                       TO  WKSRY-SRYSURYO(IDY)
                MOVE    ZERO                    TO  WKSRY-ZAIKAISU(IDY)
-               MOVE    "3"                     TO  WKSRY-AUTOKBN (IDY)
+               MOVE    ORCSCWKSRY-KSN-AUTOKBN (IDX)
+                                               TO  WKSRY-AUTOKBN (IDY)
+               IF      ORCSCWKSRY-KSN-AUTOKBN(IDX) =   SPACE
+                    MOVE    "3"                TO  WKSRY-AUTOKBN (IDY)
+               END-IF
                IF      ORCSCWKSRY-KSN-AUTOKBN(IDX)    =   "1"
                     MOVE    SPACE              TO  WKSRY-AUTOKBN (IDY)
                END-IF
