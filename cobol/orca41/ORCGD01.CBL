@@ -523,7 +523,7 @@
            MOVE    2                   TO  SPA-GMN-D01-CHKKBN-MAX
       *
            MOVE    "1"                 TO  SPA-GMN-D01-CHKKBNL    (1)
-           MOVE    "確認"              TO  SPA-GMN-D01-CHKKBNMEIL (1)
+           MOVE    "確認　印刷"        TO  SPA-GMN-D01-CHKKBNMEIL (1)
            MOVE    "2"                 TO  SPA-GMN-D01-CHKKBNL    (2)
            MOVE    "確認　全印刷"      TO  SPA-GMN-D01-CHKKBNMEIL (2)
       *
