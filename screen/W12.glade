@@ -729,7 +729,36 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>PREFPRGID</name>
-      <x>250</x>
+      <x>300</x>
+      <y>446</y>
+      <width>130</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 27 Feb 2002 01:43:05 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 27 Feb 2002 01:43:21 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>15</text_max_length>
+      <text>123456789012345</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>PREFPRGID1</name>
+      <x>500</x>
       <y>446</y>
       <width>130</width>
       <height>24</height>
@@ -1015,6 +1044,38 @@
       <width>144</width>
       <height>16</height>
       <label>プログラム名</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>1.0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label300</name>
+      <x>245</x>
+      <y>450</y>
+      <width>45</width>
+      <height>16</height>
+      <label>入院外</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>1.0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label301</name>
+      <x>445</x>
+      <y>450</y>
+      <width>45</width>
+      <height>16</height>
+      <label>入　院</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>1.0</xalign>

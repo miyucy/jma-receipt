@@ -54,6 +54,10 @@ W12	{
 		PREFPRGID	{
 			value	varchar(15);
 		};
+		PREFPRGID1	{
+	           	state	int;
+			value	varchar(15);
+		};
 		SYAPRTNM	{
 			value	varchar(16);
 		};
