@@ -21,6 +21,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    04/02/01  病名コード２１に変更
+      *                                     病名コード数９（０２）に変更
       ************************************************************
       *01  TOUKEI03-REC.
            03  TOUKEI03-KEY.
@@ -43,7 +44,7 @@
       *レセ電診療科
            03  TOUKEI03-RECESRYKA      PIC  X(02).
       *病名コード数
-           03  TOUKEI03-BYOMEICDSU     PIC 9(01).
+           03  TOUKEI03-BYOMEICDSU     PIC 9(02).
       *病名コード
            03  TOUKEI03-BYOMEICD-G.
                05  TOUKEI03-BYOMEICD   PIC X(07)
