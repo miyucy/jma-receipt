@@ -138,7 +138,6 @@ path	key8		{
 		FROM tbl_ptnyuinrrk
 			WHERE	HOSPID      =   :HOSPID 
 			AND	PTID        =   :PTID
-                        AND     JTIKBN        <>  '5'
 			ORDER BY RRKNUM,
                                  RRKEDANUM
 		;
@@ -574,6 +573,20 @@ path	key33		{
                         AND             JTIKBN        <>  '5'
                         AND             JTIKBN        <>  '6'
 			ORDER BY NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC
+		;
+	};
+};
+
+path	key34		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key34_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPID      =   :HOSPID 
+			AND	PTID        =   :PTID
+                        AND     JTIKBN        <>  '5'
+			ORDER BY RRKNUM,
+                                 RRKEDANUM
 		;
 	};
 };
