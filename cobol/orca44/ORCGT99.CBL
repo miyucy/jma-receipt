@@ -53,11 +53,22 @@
                    07  SPA-GMN-SKYYM               PIC X(07).
                    07  SPA-GMN-SRYYM               PIC X(20).
                    07  SPA-GMN-SKYYMD              PIC X(10).
+                   07  SPA-GMN-PRTKBN1.
+                       09  SPA-GMN-PRTKBN1-STYLE   PIC X(20).
+                       09  SPA-GMN-PRTKBN1-VALUE   PIC X(04). 
+                   07  SPA-GMN-PRTKBN2.
+                       09  SPA-GMN-PRTKBN2-STYLE   PIC X(20).
+                       09  SPA-GMN-PRTKBN2-VALUE   PIC X(04). 
+                   07  SPA-GMN-HKNJANUM            PIC X(08).
+                   07  SPA-GMN-HKNJAMEI            PIC X(40). 
       *
                05  SPA-NAIB-T01-AREA.
                    07  SPA-NAI-SKYYM               PIC 9(06).
                    07  SPA-NAI-SRYYM               PIC 9(06).
                    07  SPA-NAI-SKYYMD              PIC 9(08).
+                   07  SPA-NAI-PRTKBN1             PIC X(01).
+                   07  SPA-NAI-PRTKBN2             PIC X(01). 
+                   07  SPA-NAI-HKNJANUM            PIC X(08). 
       *
                05  SPA-STATE.             
                    07  SPA-SRYYM-STATE             PIC S9(09)  BINARY.
@@ -144,6 +155,7 @@
            COPY    "T99.INC".
            COPY    "TERR.INC".
            COPY    "TID1.INC".
+           COPY    "TID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -168,7 +180,7 @@
            END-EVALUATE
       *
            MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-T01         TO  SPA-FREE
+      *****MOVE    SPA-T01         TO  SPA-FREE
       *
            .
            EXIT    PROGRAM

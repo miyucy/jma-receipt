@@ -15,38 +15,40 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-       IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGTERR.
+       IDENTIFICATION                            DIVISION.
+       PROGRAM-ID.                               ORCGTID2.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : セブと指示
-      *  コンポーネント名  : エラーメッセージ（ＥＲＲ）
+      *  サブシステム名    : レセプト作成指示
+      *  コンポーネント名  : 確認画面２（ＴＩＤ２）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  00/12/01    MCC−藤原　   新規作成
+      *  03/05/12    NACL−藤原　  新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.01.01    MCC-藤原     01/09/21  JOINの修正      
       *****************************************************************
       *
-       ENVIRONMENT                 DIVISION.
-       CONFIGURATION               SECTION.
-       INPUT-OUTPUT                SECTION.
+       ENVIRONMENT                               DIVISION.
+       CONFIGURATION                             SECTION.
+       INPUT-OUTPUT                              SECTION.
        FILE-CONTROL.
       *
-       DATA                        DIVISION.
-      *FILE                        SECTION.
+       DATA                                      DIVISION.
+      *FILE                                      SECTION.
       *
       *
-       WORKING-STORAGE             SECTION.
+       WORKING-STORAGE                           SECTION.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
       *
+      *    レセプト作成指示共通パラメタ
+           COPY    "T01COMMON-SPA".
+      *
       *    フラグ領域
        01  FLG-AREA.
-           03  FLG-END             PIC 9(01).
+           03  FLG-END                           PIC 9(01).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -64,7 +66,7 @@
       *****************************************************************
       *    連絡　領域
       *****************************************************************
-        LINKAGE                     SECTION.
+        LINKAGE                                  SECTION.
       *
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
@@ -77,73 +79,96 @@
            COPY    "TERR.INC".
            COPY    "TID1.INC".
            COPY    "TID2.INC".
+
       *
-       PROCEDURE                   DIVISION    USING
-           MCPAREA
-           SPAAREA
-           LINKAREA
-           SCRAREA.
+       PROCEDURE                                 DIVISION    USING
+                                                 MCPAREA
+                                                 SPAAREA
+                                                 LINKAREA
+                                                 SCRAREA.
       *
       *****************************************************************
       *    主　　処理
       *****************************************************************
-       000-PROC-SEC                SECTION.
+       000-PROC-SEC                              SECTION.
       *
-           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-COMMON                    TO  SPA-AREA
+           MOVE    SPA-WORK                      TO  SPA-T01KYOUTU
       * 
-           EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
-               WHEN    "LINK"          ALSO    ANY
+           EVALUATE    MCP-STATUS                ALSO    MCP-EVENT
+               WHEN    "LINK"                    ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN      OTHER
-                   PERFORM 210-BACK
+               WHEN     "PUTG"                   ALSO   "CLICKED"
+                   PERFORM 200-GMNSENI
            END-EVALUATE.
       *
-           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-T01KYOUTU                 TO  SPA-WORK
+           MOVE    SPA-AREA                      TO  SPA-COMMON
       *
-           .
-           EXIT    PROGRAM
-           .
+           EXIT    PROGRAM.
       *****************************************************************
       *    初期　処理
       *****************************************************************
-       100-INIT-SEC                SECTION.
+       100-INIT-SEC                              SECTION.
       *
            .
        100-INIT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    画面遷移処理
+      *****************************************************************
+       200-GMNSENI                               SECTION.
+      *
+           EVALUATE    MCP-EVENT                 ALSO    MCP-WIDGET
+      *        戻る
+               WHEN    "CLICKED"                 ALSO    "B01"
+                   MOVE    SPACE                 TO  SPA-TID1-FLG
+                   PERFORM 210-BACK
+      *     印刷しない
+               WHEN    "CLICKED"                 ALSO    "B11"
+                   MOVE    "NO"                  TO  SPA-TID1-FLG
+                   PERFORM 210-BACK
+      *     印刷する
+               WHEN    "CLICKED"                 ALSO    "B12"
+                   MOVE    "OK"                  TO  SPA-TID1-FLG
+                   PERFORM 210-BACK
+           END-EVALUATE
+      *
+           .
+       200-GMNSENI-EXT.
+           EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************
-       210-BACK                    SECTION.
+       210-BACK                                  SECTION.
       *
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "TERR"              TO  SPA-MOTOPG
+           MOVE    "TID2"              TO  SPA-MOTOPG
       *
-      ***  MOVE    "BACK"              TO  MCP-PUTTYPE
            MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END
-      *
+           MOVE    1                             TO  FLG-END
            .
+      *
        210-BACK-EXT.
            EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
-       900-PUT-WINDOW              SECTION.
+       900-PUT-WINDOW                            SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
+           CALL   "ORCMCPSUB"                     USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC.
       *
-           .
        900-PUT-WINDOW-EXT.
            EXIT.
       *

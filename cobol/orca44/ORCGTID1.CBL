@@ -79,6 +79,7 @@
            COPY    "T99.INC".
            COPY    "TERR.INC".
            COPY    "TID1.INC".
+           COPY    "TID2.INC".
 
       *
        PROCEDURE                                 DIVISION    USING

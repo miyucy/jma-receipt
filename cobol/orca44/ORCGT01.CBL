@@ -50,7 +50,10 @@
       *  01.04.01    NACL-藤原    03/03/05  入院対応
       *  01.04.02    NACL-藤原    03.05.06  地方公費ＤＢ対応済フラグ
       *                                     の追加
-      *                                     印刷開始・終了頁の編集の修正 
+      *                                     印刷開始・終了頁の編集の修正
+      *  01.04.03    NACL-藤原    03.05.14  印刷する・しないのボタン追加
+      *  01.04.04    NACL-藤原    03.05.19  国保総括に個別指定の
+      *                                     保険者番号を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -102,14 +105,17 @@
                        09  SPA-GMN-PRTKBN1-VALUE   PIC X(04). 
                    07  SPA-GMN-PRTKBN2.
                        09  SPA-GMN-PRTKBN2-STYLE   PIC X(20).
-                       09  SPA-GMN-PRTKBN2-VALUE   PIC X(04). 
+                       09  SPA-GMN-PRTKBN2-VALUE   PIC X(04).
+                   07  SPA-GMN-HKNJANUM            PIC X(08).
+                   07  SPA-GMN-HKNJAMEI            PIC X(40). 
       *
                05  SPA-NAIB-T01-AREA.
                    07  SPA-NAI-SKYYM               PIC 9(06).
                    07  SPA-NAI-SRYYM               PIC 9(06).
                    07  SPA-NAI-SKYYMD              PIC 9(08).
                    07  SPA-NAI-PRTKBN1             PIC X(01).
-                   07  SPA-NAI-PRTKBN2             PIC X(01). 
+                   07  SPA-NAI-PRTKBN2             PIC X(01).
+                   07  SPA-NAI-HKNJANUM            PIC X(08). 
       *
                05  SPA-STATE.             
                    07  SPA-SRYYM-STATE             PIC S9(09)  BINARY.
@@ -136,6 +142,7 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-HKNJAINF        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -289,6 +296,10 @@
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
+      *    保険者
+       01  HKNJAINF-REC.
+           COPY    "CPHKNJAINF.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -321,6 +332,7 @@
            COPY    "T99.INC".
            COPY    "TERR.INC".
            COPY    "TID1.INC".
+           COPY    "TID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -429,6 +441,9 @@
                WHEN    "TID1"
                    PERFORM 330-TID1-SET-SEC
                    GO      TO      300-SCREEN-EXT
+               WHEN    "TID2"
+                   PERFORM 340-TID2-SET-SEC
+                   GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC
@@ -534,6 +549,8 @@
                MOVE    "F"                TO  SPA-DATAKBN3-VALUE  
            END-IF
       *
+           MOVE    ZERO            TO  SPA-NAI-HKNJANUM
+      *
            MOVE    1               TO  SPA-GMN-PAGE
            MOVE    1               TO  SPA-GMN-CUR
       *
@@ -555,8 +572,6 @@
                    WHEN    "1012"
                    WHEN    "1013"
                        PERFORM 480-PRINT-SEC
-                   WHEN    OTHER
-                       PERFORM 450-PRINT-SEC
                END-EVALUATE        
            END-IF
       *
@@ -566,6 +581,23 @@
            MOVE    SPACE           TO  SPA-TIDCD
            .
        330-TID1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面（ＴＩＤ２）ＯＫ処理
+      *****************************************************************
+       340-TID2-SET-SEC            SECTION.
+      *
+           IF      SPA-TID1-FLG    =   "OK"    OR  "NO"
+               PERFORM 450-PRINT-SEC
+           END-IF
+      *
+           MOVE    1               TO  SPA-GMN-CUR
+      *
+           MOVE    SPACE           TO  SPA-TID1-FLG
+           MOVE    SPACE           TO  SPA-TIDCD
+           .
+       340-TID2-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -630,6 +662,8 @@
                    PERFORM 4101-SKYYM-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "SKYYMD"
                    PERFORM 4102-SKYYMD-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "HKNJANUM"
+                   PERFORM 4103-HKNJANUM-CHK-SEC
            END-EVALUATE
       *
            .
@@ -761,6 +795,43 @@
       *
            .
        4102-SKYYMD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険者番号チェック処理
+      *****************************************************************
+       4103-HKNJANUM-CHK-SEC           SECTION.
+      *
+           MOVE    3                TO  SPA-GMN-CUR
+      *
+           MOVE    T01-HKNJANUM     TO  SPA-GMN-HKNJANUM
+      *
+           MOVE    SPACE            TO  SPA-GMN-HKNJAMEI
+           MOVE    ZERO             TO  SPA-NAI-HKNJANUM 
+      *
+           IF      SPA-GMN-HKNJANUM =   SPACE
+               GO  TO  4103-HKNJANUM-CHK-EXT
+           ELSE 
+               MOVE    SPACE           TO  HKNJAINF-REC
+               INITIALIZE                  HKNJAINF-REC
+               MOVE    SPA-HOSPID      TO  HKNJA-HOSPID
+               MOVE    SPA-GMN-HKNJANUM
+                                       TO  HKNJA-HKNJANUM
+               MOVE    HKNJAINF-REC    TO  MCPDATA-REC
+               PERFORM 900-HKNJAINF-INV-SEC
+               IF      FLG-HKNJAINF        =   ZERO
+                   MOVE    HKNJA-HKNJANAME     TO SPA-GMN-HKNJAMEI
+                   MOVE    SPA-GMN-HKNJANUM    TO  SPA-NAI-HKNJANUM
+               ELSE
+                   MOVE    "0005"          TO  SPA-ERRCD
+                   GO  TO  4103-HKNJANUM-CHK-EXT
+               END-IF
+      *
+               MOVE    7                   TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4103-HKNJANUM-CHK-EXT.
            EXIT.
       *
       *
@@ -913,6 +984,15 @@
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-NAI-SKYYMD      =   ZERO
                    MOVE    "0002"              TO  SPA-ERRCD
+               END-IF    
+           END-IF    
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN-HKNJANUM    =   SPACE
+                   MOVE    ZERO                TO  SPA-NAI-HKNJANUM
+               ELSE
+                   IF      SPA-GMN-HKNJAMEI        =   SPACE    
+                   MOVE    "0005"              TO  SPA-ERRCD
                END-IF    
            END-IF    
       *
@@ -1210,6 +1290,7 @@
       *
       *    印刷処理
       *
+           IF      SPA-TID1-FLG        =   "OK"
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *                                   
       *****MOVE    RECEERR             TO  SHELL-ERRFILE
@@ -1233,7 +1314,7 @@
            MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
                                        TO  LNK-PRTKANRI-TBL-GROUP
            MOVE    ZERO                TO  LNK-PRTKANRI-RENNUM
-           MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM                             
+           MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
            MOVE    SPA-NAI-SKYYM       TO  LNK-PRTKANRI-SRYYM 
            MOVE    SPA-NAI-SKYYMD      TO  LNK-PRTKANRI-SKYYMD
            MOVE    "print.sh"          TO  LNK-PRTKANRI-SHELLID
@@ -1268,7 +1349,8 @@
            MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
            CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       MCPDATA-REC                         
+                                       MCPDATA-REC
+           END-IF       
       *
       *    ＪＯＢＩＤ更新処理
       *
@@ -1374,6 +1456,10 @@
            ELSE
                MOVE    "1"             TO  SHELLTBL-ARG20
            END-IF
+           IF      SPA-DATAKBN5-VALUE    =   "T" 
+               MOVE    SPA-NAI-HKNJANUM
+                                   TO  SHELLTBL-ARG21
+           END-IF
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
@@ -1465,6 +1551,12 @@
            MOVE    SPA-HOSPID      TO  SHELLTBL-ARG15
            MOVE    RECEERR         TO  SHELLTBL-ARG16
            MOVE    SPA-NAI-SKYYM   TO  SHELLTBL-ARG17
+           IF      SPA-DATAKBN5-VALUE  =   "T" 
+           AND     WRK-3004-CHKFLG (IDX 2)
+                                       =   "T"
+               MOVE    SPA-NAI-HKNJANUM
+                                   TO  SHELLTBL-ARG18
+           END-IF
            MOVE    SHELLTBL    TO  MCPDATA-REC
            MOVE    "SHELL"     TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
@@ -1847,8 +1939,18 @@
            END-IF
       *
            IF      SPA-TIDCD       NOT =   SPACE
-               PERFORM 520-TIDSET-SEC
-               GO  TO  500-SET-SCREEN-EXT
+               EVALUATE    SPA-TIDCD
+                   WHEN    "1001"
+                   WHEN    "1002"
+                   WHEN    "1003"  
+                   WHEN    "1004"
+                   WHEN    "1005"  
+                       PERFORM 530-TID2SET-SEC
+                       GO  TO  500-SET-SCREEN-EXT
+                   WHEN    OTHER
+                       PERFORM 520-TIDSET-SEC
+                       GO  TO  500-SET-SCREEN-EXT
+               END-EVALUATE
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -1871,6 +1973,8 @@
            MOVE    SPA-GMN-SKYYM       TO  T01-SKYYM
            MOVE    SPA-GMN-SRYYM       TO  T01-SRYYM-VALUE
            MOVE    SPA-GMN-SKYYMD      TO  T01-SKYYMD
+           MOVE    SPA-GMN-HKNJANUM    TO  T01-HKNJANUM
+           MOVE    SPA-GMN-HKNJAMEI    TO  T01-HKNJAMEI
       *
            MOVE    SPA-SRYYM-STATE     TO  T01-SRYYM-STATE
            MOVE    SPA-DATAKBN1-STATE  TO  T01-DATAKBN1-STATE
@@ -1909,6 +2013,8 @@
                     MOVE  "SKYYM"      TO  MCP-WIDGET   
              WHEN    2
                     MOVE  "SKYYMD"     TO  MCP-WIDGET   
+             WHEN    3
+                    MOVE  "HKNJANUM"   TO  MCP-WIDGET   
              WHEN    7
                     MOVE  "B12"        TO  MCP-WIDGET   
          END-EVALUATE
@@ -1935,6 +2041,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE    "請求年月日入力エラー" 
+                                               TO  SPA-ERRMSG
+               WHEN    "0005"
+                   MOVE    "保険者番号入力エラー" 
                                                TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "レセプトが作成されていません"
@@ -1981,21 +2090,6 @@
            MOVE    SPACE               TO  WRK-TIDMSG
       *
            EVALUATE    SPA-TIDCD
-               WHEN    "1001"
-                   MOVE    "総括表・請求書の印刷処理を行います"
-                                       TO  WRK-TIDMSG
-               WHEN    "1002"
-                   MOVE    "総括表の印刷処理を行います"
-                                       TO  WRK-TIDMSG
-               WHEN    "1003"
-                   MOVE    "請求書の印刷処理を行います"
-                                       TO  WRK-TIDMSG
-               WHEN    "1004"
-                   MOVE    "総括表（社保）の印刷処理を行います"
-                                       TO  WRK-TIDMSG
-               WHEN    "1005"
-                   MOVE    "総括表（国保）の印刷処理を行います" 
-                                       TO  WRK-TIDMSG
                WHEN    "1011"
                    MOVE    "チェックリストの印刷処理を行います"
                                        TO  WRK-TIDMSG
@@ -2030,6 +2124,51 @@
       *
            .
        520-TIDSET-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    エラーメッセージ表示理
+      *****************************************************************
+       530-TID2SET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-TIDMSG
+      *
+           EVALUATE    SPA-TIDCD
+               WHEN    "1001"
+                   MOVE    "総括表・請求書の印刷処理を行います"
+                                       TO  WRK-TIDMSG
+               WHEN    "1002"
+                   MOVE    "総括表の印刷処理を行います"
+                                       TO  WRK-TIDMSG
+               WHEN    "1003"
+                   MOVE    "請求書の印刷処理を行います"
+                                       TO  WRK-TIDMSG
+               WHEN    "1004"
+                   MOVE    "総括表（社保）の印刷処理を行います"
+                                       TO  WRK-TIDMSG
+               WHEN    "1005"
+                   MOVE    "総括表（国保）の印刷処理を行います" 
+                                       TO  WRK-TIDMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE                TO  TID2
+           MOVE    SPA-TIDCD            TO  TID2-ID1CODE
+           MOVE    WRK-TIDMSG           TO  TID2-ID1MSG
+           MOVE    "B12"                TO  MCP-WIDGET
+      *
+           MOVE    "T01"                TO  SPA-MOTOPG
+           MOVE    "TID2"               TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "TID2"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END              
+      *
+           .
+       530-TID2SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2087,6 +2226,45 @@
            END-IF
            .
        900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険者マスター読込（キー）
+      *****************************************************************
+       900-HKNJAINF-INV-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-HKNJAINF
+                   MOVE    MCPDATA-REC         TO  HKNJAINF-REC
+               ELSE
+                   MOVE    1                   TO  FLG-HKNJAINF
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-HKNJAINF
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       900-HKNJAINF-INV-EXT.
            EXIT.
       *
       *****************************************************************
