@@ -1339,7 +1339,8 @@
            IF      FLG-SEIKYU          =   ZERO
                MOVE    MCPDATA-REC         TO  RECE10-REC
                MOVE    RECE10-RECESYUBETU  TO  KOHSKY-RECESYUBETU
-      *****ELSE
+           ELSE
+                GO  TO  2002-KOHSKY-WRITE-EXT
       *         STRING  "レセプト種別が設定不能 PTNUM="
       *                                     DELIMITED  BY  SIZE
       *                 RECE02X-PTNUM       DELIMITED  BY  SIZE 
@@ -1347,7 +1348,6 @@
       *         END-STRING
       *         PERFORM 500-ERR-HENSYU-SEC
       *         MOVE    1                  TO  FLG-ERR
-      **********GO  TO  2002-KOHSKY-WRITE-EXT
            END-IF
       *
            PERFORM 900-KOHSKY-INV-SEC
