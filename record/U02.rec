@@ -40,7 +40,7 @@ U02	{
 				value	varchar(14);
 			};
 			count	int;
-			item	varchar(14)[2];
+			item	varchar(14)[3];
 		};
 		SYOHO_COMBO	{
 			SYOHO	{

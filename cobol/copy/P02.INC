@@ -79,12 +79,12 @@
                     06  P02-P020-KARUTE.
                       07  P02-VALUE   PIC X(16).
                     06  P02-P020-KARUTE-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P020-KARUTE-ITEM    PIC X(16)   OCCURS  2.
+                    06  P02-P020-KARUTE-ITEM    PIC X(16)   OCCURS  3.
                   05  P02-P020-SYOHOU-COB.
                     06  P02-P020-SYOHOU.
                       07  P02-VALUE   PIC X(16).
                     06  P02-P020-SYOHOU-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P020-SYOHOU-ITEM    PIC X(16)   OCCURS  2.
+                    06  P02-P020-SYOHOU-ITEM    PIC X(16)   OCCURS  3.
                   05  P02-P020-HKNKUMI.
                     06  P02-VALUE   PIC X(4).
                   05  P02-SCROLLEDWINDOW9.

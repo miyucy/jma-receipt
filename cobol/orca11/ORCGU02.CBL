@@ -54,6 +54,7 @@
       *  02.00.04    NACL-多々納  02/12/16  新規患者取消修正
       *  02.00.05    NACL-多々納  03/02/26  診療科・ドクター件数修正
       *  02.00.06    NACL-多々納  03/03/05  排他制御処理追加
+      *  02.00.07    NACL-多々納  03/03/26  カルテ続紙印刷追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -288,6 +289,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    カルテパラメタ
+           COPY    "CPORCHC01.INC".
       *
       *    処方箋印刷パラメタ
            COPY    "CPORCHC02.INC".
@@ -643,6 +647,7 @@
       *    カルテ
            MOVE    "0:発行なし"        TO  SPA-GMN-KARUTELST (1)
            MOVE    "1:発行あり"        TO  SPA-GMN-KARUTELST (2)
+           MOVE    "2 続紙頭書"        TO  SPA-GMN-KARUTELST (3)
            MOVE    SPA-GMN-KARUTELST (1)   TO  SPA-GMN-KARUTE-G
       *
       *    処方
@@ -1567,6 +1572,7 @@
       *
            EVALUATE    SPA-GMN-KARUTE
                WHEN    "0"
+               WHEN    "2"
                    CONTINUE
                WHEN    "1"
                    IF      SPA-COMBI-MAX       =   ZERO
@@ -2471,7 +2477,7 @@
            PERFORM 4901-PRINT-PG-SEC
       *
       *  カルテ印刷
-           IF      SPA-GMN-KARUTE          =   "1"
+           IF      SPA-GMN-KARUTE          =   "1"  OR  "2"
                IF     (SPA-GMN-PTID            =   ZERO  )  OR
                       (SPA-GMN-SRYKA           =   SPACE )
       ************OR *(SPA-GMN-COMBINUM        =   ZERO  )
@@ -2485,7 +2491,9 @@
                MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
                MOVE    SPA-GMN-COMBINUM    TO  SPA-HKNCOMBINUM   
       *********CALL    "ORCHC01"           USING  SPA-AREA 
-               CALL    WRK-KARUTE-PG       USING  SPA-AREA 
+               MOVE    SPA-GMN-KARUTE      TO  ORCHC01-SYORIKBN
+               CALL    WRK-KARUTE-PG       USING  SPA-AREA
+                                                  ORCHC01AREA
            END-IF
       *
       *    処方箋印刷
@@ -2637,14 +2645,14 @@
       *
            MOVE    SPA-KYOUTU          TO  WRK-SPA-KYOUTU
       *
-           IF     (SPA-GMN-KARUTE      =   "1" )  OR
+           IF     (SPA-GMN-KARUTE      =   "1"  OR "2")  OR
                   (SPA-GMN-SYOHO       =   "1" )
       *        帳票プログラム取得
                PERFORM 4901-PRINT-PG-SEC
            END-IF
       *
       *  カルテ印刷
-           IF      SPA-GMN-KARUTE          =   "1" 
+           IF      SPA-GMN-KARUTE          =   "1"   OR  "2"
       ************ SPA-GMN-COMBINUM    NOT =   ZERO
                MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
                MOVE    SPA-GMN-SRYKANAME   TO  SPA-SRYKAMEI
@@ -2652,7 +2660,9 @@
                MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
                MOVE    SPA-GMN-COMBINUM    TO  SPA-HKNCOMBINUM   
       *********CALL    "ORCHC01"           USING  SPA-AREA 
+               MOVE    SPA-GMN-KARUTE      TO  ORCHC01-SYORIKBN
                CALL    WRK-KARUTE-PG       USING  SPA-AREA
+                                                  ORCHC01AREA
            END-IF
       *
       *    処方箋印刷
@@ -3571,7 +3581,8 @@
       *    カルテ
            MOVE    SPA-GMN-KARUTELST (1)   TO  U02-KARUTE-ITEM (1)
            MOVE    SPA-GMN-KARUTELST (2)   TO  U02-KARUTE-ITEM (2)
-           MOVE    2                       TO  U02-KARUTE-COUNT
+           MOVE    SPA-GMN-KARUTELST (3)   TO  U02-KARUTE-ITEM (3)
+           MOVE    3                       TO  U02-KARUTE-COUNT
            IF      SPA-GMN-KARUTE-G        =   SPACE
                MOVE    SPA-GMN-KARUTELST (1)   TO  SPA-GMN-KARUTE-G
            END-IF

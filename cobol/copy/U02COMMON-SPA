@@ -67,7 +67,7 @@
                        09  SPA-GMN-KARUTE01           PIC X(01).
                        09  SPA-GMN-KARUTEMEI          PIC X(08).
                    07  SPA-GMN-KARUTELST              PIC X(14)
-                                                      OCCURS  2.
+                                                      OCCURS  3.
       *
                    07  SPA-GMN-SYOHO-G.
                        09  SPA-GMN-SYOHO             PIC X(01).

@@ -73,14 +73,14 @@ P02	{
 						value	varchar(16);
 					};
 					count	int;
-					item	varchar(16)[02];
+					item	varchar(16)[03];
 				};
 				P020_SYOHOU_COB	{
 					P020_SYOHOU	{
 						value	varchar(16);
 					};
 					count	int;
-					item	varchar(16)[02];
+					item	varchar(16)[03];
 				};
 				P020_HKNKUMI	{
 					value	varchar(4);

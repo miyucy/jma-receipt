@@ -46,7 +46,7 @@
                 04  U02-KARUTE.
                   05  U02-VALUE   PIC X(14).
                 04  U02-KARUTE-COUNT   PIC S9(9)   BINARY.
-                04  U02-KARUTE-ITEM    PIC X(14)   OCCURS  2 TIMES.
+                04  U02-KARUTE-ITEM    PIC X(14)   OCCURS  3 TIMES.
               03  U02-SYOHO-COMBO.
                 04  U02-SYOHO.
                   05  U02-VALUE   PIC X(14).
