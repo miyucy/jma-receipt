@@ -564,7 +564,7 @@
       *
       *    記号チェック
            INITIALIZE                  ORCSKANACHKAREA
-           MOVE    1                   TO  KANACHK-SYORI
+           MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    YAKUJYO-MARK        TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
       *
@@ -701,7 +701,7 @@
                    UNTIL       IDZ     >   4
                IF  TNS-SSTKIJUNCD(IDZ) =   1
                    COMPUTE CNT-KAISU   =   CNT-KAISU   +   1
-                   MOVE    1           TO  WRK-SSTKIJUNCD(IDZ:1)
+                   MOVE    "1"         TO  WRK-SSTKIJUNCD(IDZ:1)
                END-IF
            END-PERFORM
       *
@@ -924,7 +924,7 @@
       *    区分セット
            PERFORM VARYING IDZ FROM    1   BY  1
                    UNTIL   IDZ     >   4
-               IF          WRK-SSTKIJUNCD(IDZ:1)   =   1
+               IF          WRK-SSTKIJUNCD(IDZ:1)   =   "1"
                    MOVE    WRK-HENSURYO    TO  WRK-YKJ-KBN(CNT-LINE IDZ)
                END-IF
            END-PERFORM
