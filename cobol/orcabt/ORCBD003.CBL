@@ -497,7 +497,8 @@
                          AND  BD002-DISCOUNT-RATE     NOT =  ZERO
                            CONTINUE
                          ELSE
-                           EVALUATE   WRK-DISCOUNT-HASU-KBN
+                           IF   WRK-JIHI  NOT =  ZERO
+                             EVALUATE   WRK-DISCOUNT-HASU-KBN
                                WHEN  "1"
                                  COMPUTE  WRK-JIHI  = WRK-JIHI  +   5
                                  COMPUTE  WRK-JIHI2 = WRK-JIHI  /  10
@@ -512,7 +513,8 @@
                                WHEN  " "
                                WHEN  "4"
                                  CONTINUE
-                           END-EVALUATE
+                             END-EVALUATE
+                           END-IF
                          END-IF
                        END-IF
                    END-IF

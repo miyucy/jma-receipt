@@ -1311,7 +1311,8 @@
       ******************************************************************
        400-SEIKYU-HASUU-KEISAN-SEC          SECTION.
       *
-           EVALUATE   WK-HASU1001-KBN
+           IF     LNK-SYU-SKYMONEY         NOT  =   ZERO
+             EVALUATE   WK-HASU1001-KBN
                 WHEN  "1"
                    COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   5
                    COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
@@ -1326,7 +1327,8 @@
                 WHEN  " "
                 WHEN  "4"
                         CONTINUE
-           END-EVALUATE
+             END-EVALUATE
+           END-IF
       *
            .
       *
