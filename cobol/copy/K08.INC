@@ -79,3 +79,4 @@
                     06  K08-DELFLG  PIC X(2).
                     06  K08-MEISAI  PIC X(150).
                   05  K08-SELECT  PIC X       OCCURS  300 TIMES.
+                  05  K08-MEI-STYLE   PIC X(20).

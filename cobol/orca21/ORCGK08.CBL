@@ -2454,6 +2454,7 @@
       **** END-IF
       *
       *
+           MOVE     "user-font"           TO  K08-MEI-STYLE
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-GMN-MAX
       *********MOVE    SPA-GMN-TMEISYO (IDX)   TO  K08-ITEM(IDX)
