@@ -595,7 +595,8 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           MOVE    SPACE               TO  E02.
+      *     MOVE    SPACE               TO  E02.
+           INITIALIZE              E02.
       *
            MOVE    SPA-GMN-TBLNM       TO  E02-CHKMSG000.
            MOVE    SPA-GMN-SRYYM       TO  E02-SRYYM.
@@ -607,9 +608,10 @@
                                          TO  E02-VALUE1 (IDX7)(1:25)
                    MOVE    WK-TBL-BTN-A (IDX7)
                                          TO  E02-SELECT1 (IDX7)
-                   MOVE    IDX7          TO  E02-COUNT1
+      *             MOVE    IDX7          TO  E02-COUNT1
                END-PERFORM
            END-IF.
+           MOVE    SPA-GMN-MAX-A     TO  E02-COUNT1.
       *
            IF  SPA-GMN-MAX-B   NOT =   ZERO
                PERFORM VARYING IDX7  FROM  1  BY 1
@@ -618,9 +620,10 @@
                                          TO  E02-VALUE2 (IDX7)(1:25)
                    MOVE    WK-TBL-BTN-B (IDX7)
                                          TO  E02-SELECT2 (IDX7)
-                   MOVE    IDX7          TO  E02-COUNT2
+      *             MOVE    IDX7          TO  E02-COUNT2
                END-PERFORM
            END-IF.
+           MOVE    SPA-GMN-MAX-B      TO  E02-COUNT2.
       *
            PERFORM 5011-MAPCUR-SEC.
       *

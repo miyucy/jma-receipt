@@ -599,21 +599,24 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           MOVE    SPACE                 TO  E01.
+      *     MOVE    SPACE                 TO  E01.
+           INITIALIZE              E01.
       *
            PERFORM VARYING IDX1  FROM  1  BY 1
                    UNTIL   IDX1  >    SPA-GMN-MAX-A
                MOVE    SPA-GMN-MSG-A (IDX1)   TO  E01-VALUE1  (IDX1)
                MOVE    SPA-GMN-BTN-A (IDX1)   TO  E01-SELECT1 (IDX1)
-               MOVE    IDX1                   TO  E01-COUNT1
+      *         MOVE    IDX1                   TO  E01-COUNT1
            END-PERFORM.
+           MOVE    SPA-GMN-MAX-A          TO  E01-COUNT1.
       *
            PERFORM VARYING IDX1  FROM  1  BY 1
                    UNTIL   IDX1  >    SPA-GMN-MAX-B
                MOVE    SPA-GMN-MSG-B (IDX1)   TO  E01-VALUE2  (IDX1)
                MOVE    SPA-GMN-BTN-B (IDX1)   TO  E01-SELECT2 (IDX1)
-               MOVE    IDX1                   TO  E01-COUNT2
+      *         MOVE    IDX1                   TO  E01-COUNT2
            END-PERFORM.
+           MOVE    SPA-GMN-MAX-B          TO  E01-COUNT2.
       *
       *½¤Àµ/*³«»Ï*03.06.05*********************************************
            MOVE    T-MESSAGE-51           TO  E01-CHKMSG01.
