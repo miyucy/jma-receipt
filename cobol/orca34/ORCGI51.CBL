@@ -2266,7 +2266,7 @@
       *
       *    保険適用外
            COMPUTE SPA-GMN-I51-HKNGAI
-               +   WKSYU-TGMONEY (12)
+               =   WKSYU-TGMONEY (12)
                +   WKSYU-TGMONEY-TAX (12)
       *
       *    保険適用金額
