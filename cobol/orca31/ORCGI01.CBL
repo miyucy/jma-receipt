@@ -8448,13 +8448,16 @@
                                    TO  SYS-KBNCD
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
       *
-      *    システム管理マスタの医療機関情報より取得
+      *    システム管理マスタの病棟情報より取得
            MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
       *
            IF   FLG-DBRC           =    ZERO
                MOVE    MCPDATA-REC TO   SYS-5001-REC
            END-IF
+      *    システム管理クローズ
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
       *
            IF      PTNYUINRRK-TOKUTEI-NYUIN    NOT =   SPACE
                PERFORM   4801-TOKTEI-NYUIN-SET-SEC
