@@ -42,12 +42,18 @@ db	{
 	tbl_example;
 	tbl_dbkanri;
 	tbl_recekanri;
-	q_tbl_ptinf;
-	q_tbl_ptinf_cnt;
+	tbl_ptrsiinf;
+	tbl_prtkanri;
+	tbl_prtdata;
+	query_ptinf;
+	query_ptinf_cnt;
 	tbl_interact;
 	tbl_sskijyo;
+	tbl_jinmei;
+	tbl_monthlynum;
+	view_Q001;
+	tbl_yakujyo;
 };
 db	"shell"	{
 	shell;
 };
-
