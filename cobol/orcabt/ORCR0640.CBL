@@ -3368,9 +3368,9 @@
                 END-EVALUATE
              END-IF
       *
-             IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR  
-                                                  "6" OR  "7" OR
-                                                  "8"
+      ***>   IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR  
+      ***>                                        "6" OR  "7" OR
+      ***>                                        "8"
       *
               IF  (  SRY-SRYSYUKBN            = "330" OR "331"      
                                                       OR "350"     )
@@ -3534,7 +3534,7 @@
                    END-IF
                END-IF
               END-IF
-             END-IF  
+      ***>   END-IF  
            END-PERFORM
       *
            IF    IDX4   =   ZERO
@@ -5167,6 +5167,7 @@
                    DISPLAY   "TENSU FETCH ERR"  
                END-IF
            ELSE
+               INITIALIZE       TNS-TENSU-REC
                MOVE    1   TO   FLG-TENSU
                DISPLAY   "TENSU SELECT ERR" 
            END-IF
