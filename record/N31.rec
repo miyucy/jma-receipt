@@ -1,0 +1,55 @@
+N31	{
+	fixed6	{
+		B06	{
+			state   int;
+		};
+		B07	{
+			state   int;
+		};
+		POST	{
+			value	varchar(7);
+		};
+		scrolledwindow1	{
+			CYOIKILST	{
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(2);
+					value1	varchar(4);
+					value2	varchar(7);
+					value3	varchar(100);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		SELNUM	{
+			value	number(3);
+		};
+		PREFCDCOMBO	{
+			PREFCD	{
+				value	varchar(13);
+			};
+			count	int;
+			item	varchar(13)[47];
+		};
+		PREFNAME	{
+			value	varchar(10);
+		};
+		PREFKANA	{
+			value	varchar(20);
+		};
+		CITYKANA	{
+			value	varchar(100);
+		};
+		TOWNKANA	{
+			value	varchar(100);
+		};
+		CITYNAME	{
+			value	varchar(50);
+		};
+		TOWNNAME	{
+			value	varchar(50);
+		};
+	};
+};

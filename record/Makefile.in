@@ -273,6 +273,9 @@ RECORD_files = \
 	W17.rec \
 	K97.rec \
 	J025.rec \
+	N31.rec \
+	N31ERR.rec \
+	N31Id1.rec \
 
 DEF_files = \
 	HC01.def \

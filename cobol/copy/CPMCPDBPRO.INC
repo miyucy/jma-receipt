@@ -338,6 +338,7 @@
       *                                     SYUTOTAL-DEL1追加
       *                                     SYUNOU-KEY26,KEY27,KEY28追加
       *  01.01.150   NACL-多々納  04/09/07  PTNYUINRRK-KEY33,KEY34追加
+      *  01.01.151   NACL-森脇    04/09/08  ADRS-KEY6,KEY7追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -497,11 +498,19 @@
                WHEN    "DBUPDATE"      ALSO   "ADRS-KEY3"
                WHEN    "DBUPDATE"      ALSO   "ADRS-KEY4"
                WHEN    "DBUPDATE"      ALSO   "ADRS-KEY5"
+      *----(01.01.151)-ADD-START---
+               WHEN    "DBUPDATE"      ALSO   "ADRS-KEY6"
+               WHEN    "DBUPDATE"      ALSO   "ADRS-KEY7"
+      *----(01.01.151)-ADD-END-----
                WHEN    "DBDELETE"      ALSO   "ADRS-KEY"
                WHEN    "DBDELETE"      ALSO   "ADRS-KEY2"
                WHEN    "DBDELETE"      ALSO   "ADRS-KEY3"
                WHEN    "DBDELETE"      ALSO   "ADRS-KEY4"
                WHEN    "DBDELETE"      ALSO   "ADRS-KEY5"
+      *----(01.01.151)-ADD-START---
+               WHEN    "DBDELETE"      ALSO   "ADRS-KEY6"
+               WHEN    "DBDELETE"      ALSO   "ADRS-KEY7"
+      *----(01.01.151)-ADD-END-----
                    MOVE    PATH-TBL-ADRS-KEY
                                        TO  WRK-PATH
       *
@@ -1400,6 +1409,15 @@
                    MOVE    PATH-TBL-ADRS-KEY5
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-ADRS-SEC
+      *----(01.01.151)-ADD-START---
+               WHEN    ANY             ALSO   "ADRS-KEY6"
+                   MOVE    PATH-TBL-ADRS-KEY6
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-ADRS-SEC
+               WHEN    ANY             ALSO   "ADRS-KEY7"
+                   MOVE    PATH-TBL-ADRS-KEY7
+                                       TO  WRK-PATH
+      *----(01.01.151)-ADD-END-----
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "ADRS-ALL"
                    MOVE    PATH-TBL-ADRS-ALL
@@ -3757,6 +3775,9 @@
            MOVE    ZERO                TO  WRK-MOJISU
            IF      ORC-DBPATH          =   "ADRS-KEY3"   OR
                                            "ADRS-KEY4"   OR
+      *----(01.01.151)-ADD-START---
+                                           "ADRS-KEY6"   OR
+      *----(01.01.151)-ADD-END-----
                                            "ADRS-KEY5"
                IF      ADRS-LPUBCD     NOT =   SPACE
                    PERFORM VARYING     IDX     FROM    5   BY  -1
@@ -3778,6 +3799,9 @@
            MOVE    ZERO                TO  WRK-MOJISU
            IF      ORC-DBPATH          =   "ADRS-KEY3"   OR
                                            "ADRS-KEY4"   OR
+      *----(01.01.151)-ADD-START---
+                                           "ADRS-KEY6"   OR
+      *----(01.01.151)-ADD-END-----
                                            "ADRS-KEY5"
                IF      ADRS-POST     NOT =   SPACE
                    PERFORM VARYING     IDX     FROM    7   BY  -1

@@ -35,7 +35,7 @@
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
   <allow_shrink>False</allow_shrink>
-  <allow_grow>False</allow_grow>
+  <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
 
   <widget>
@@ -56,242 +56,6 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B01</name>
-      <x>8</x>
-      <y>720</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F1</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label>Ìá¤ë</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B02</name>
-      <x>88</x>
-      <y>720</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B03</name>
-      <x>168</x>
-      <y>720</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F3</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label>ºï½ü</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B04</name>
-      <x>248</x>
-      <y>720</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B05</name>
-      <x>344</x>
-      <y>720</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F5</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B06</name>
-      <x>424</x>
-      <y>720</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B07</name>
-      <x>504</x>
-      <y>720</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B08</name>
-      <x>584</x>
-      <y>720</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B09</name>
-      <x>680</x>
-      <y>720</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B10</name>
-      <x>760</x>
-      <y>720</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B11</name>
-      <x>840</x>
-      <y>720</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B12</name>
-      <x>920</x>
-      <y>720</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F12</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label>ÅÐÏ¿</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
@@ -1148,6 +912,30 @@
 
     <widget>
       <class>GtkCheckButton</class>
+      <name>CHK03</name>
+      <x>392</x>
+      <y>440</y>
+      <width>109</width>
+      <height>26</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Tue, 07 May 2002 10:24:27 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 07 May 2002 10:24:44 GMT</last_modification_time>
+      </signal>
+      <label>ÅÐÏ¿</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
       <name>CHK04</name>
       <x>528</x>
       <y>440</y>
@@ -1844,30 +1632,6 @@
 
     <widget>
       <class>GtkCheckButton</class>
-      <name>CHK03</name>
-      <x>392</x>
-      <y>440</y>
-      <width>109</width>
-      <height>26</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Tue, 07 May 2002 10:24:27 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 07 May 2002 10:24:44 GMT</last_modification_time>
-      </signal>
-      <label>ÅÐÏ¿</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
       <name>CHK33</name>
       <x>392</x>
       <y>416</y>
@@ -1886,6 +1650,30 @@
 	<last_modification_time>Tue, 07 May 2002 10:23:22 GMT</last_modification_time>
       </signal>
       <label>¥×¥í¥°¥é¥à¹¹¿·</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHK34</name>
+      <x>664</x>
+      <y>632</y>
+      <width>130</width>
+      <height>26</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Tue, 07 May 2002 10:35:27 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 07 May 2002 10:35:43 GMT</last_modification_time>
+      </signal>
+      <label>½»½ê¥Þ¥¹¥¿</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -1928,6 +1716,242 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B01</name>
+      <x>8</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F1</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label>Ìá¤ë</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B02</name>
+      <x>88</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B03</name>
+      <x>168</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F3</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label>ºï½ü</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B04</name>
+      <x>248</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B05</name>
+      <x>344</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F5</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B06</name>
+      <x>424</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B07</name>
+      <x>504</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B08</name>
+      <x>584</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B09</name>
+      <x>680</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B10</name>
+      <x>760</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B11</name>
+      <x>840</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B12</name>
+      <x>920</x>
+      <y>720</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F12</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label>ÅÐÏ¿</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>
 </widget>

@@ -169,6 +169,10 @@ W06	{
 			value	bool;
                         state   int;
 		};
+		CHK34	{
+			value	bool;
+                        state   int;
+		};
 		KANRIAUTHCOMBO	{
 			KANRIAUTHFLG	{
 				value	varchar(12);

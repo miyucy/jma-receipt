@@ -35,6 +35,7 @@ SUBDIRS = \
 	orca105 \
 	orca106 \
 	orca107 \
+	orca108 \
 	orcabt \
 	claim
 

@@ -53,6 +53,7 @@ ld	{
 	orca105	 1; 
 	orca106	 1; 
 	orca107	 1; 
+	orca108	 1; 
 };
 bd	{
         orcabt;

@@ -34,6 +34,7 @@
       *  01.02.03    MCC-太田     02/06/20  106 人名辞書マスタの追加
       *  01.02.04    NACL-森脇    02/07/30  107 薬剤情報マスタの追加
       *  01.02.05    NACL-伊藤    04/02/05  M97の追加
+      *  01.02.06    NACL-森脇    04/08/04  108 住所マスタの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -415,6 +416,15 @@
                        MOVE    "N21"           TO  SPA-SAKIPG
                    END-IF
       *----(01.02.04)----END-------------------
+      *----(01.02.06)----START-----------------
+      * 住所マスタ
+               WHEN    "108"
+                   IF      SYS-1010-GSRAUTH(68:1)    =  "0"
+                       MOVE    "0002"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    "N31"           TO  SPA-SAKIPG
+                   END-IF
+      *----(01.02.06)----END-------------------
               WHEN    OTHER
                    MOVE    "0001"          TO  SPA-ERRCD
            END-EVALUATE.
@@ -510,10 +520,12 @@
       *
       *****MOVE    SPA-WORK            TO  SYS-1010-REC
       *
+      *----(01.02.06)----START-----------------
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       7
+                   UNTIL   IDX >       8
                MOVE    WIDGET-INSENSITIVE      TO  M02-STATE-O (IDX)
            END-PERFORM           
+      *----(01.02.06)----END-------------------
       *
            IF      SYS-1010-GSRAUTH(1:1)    =  "0"
                CONTINUE
@@ -541,6 +553,11 @@
                    MOVE    WIDGET-NORMAL      TO  M02-G107-STATE
                END-IF
       *----(01.02.04)----END-------------------
+      *----(01.02.06)----START-----------------
+               IF      SYS-1010-GSRAUTH(68:1)   =  "1"
+                   MOVE    WIDGET-NORMAL      TO  M02-G108-STATE
+               END-IF
+      *----(01.02.06)----END-------------------
            END-IF
            .
        51O-GSRAUTH-EXT.

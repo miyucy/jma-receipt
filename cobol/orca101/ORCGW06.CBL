@@ -39,6 +39,7 @@
       * 01.01.07     NACL-森脇    02/11/08  入院対応
       * 01.01.08     NACL-多々納  02/11/13  一括入力 
       * 02.00.01     NACL-森脇    04/02/06  プログラム管理の追加
+      * 02.00.02     NACL-森脇    04/08/04  住所マスタの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -79,7 +80,9 @@
                        09  SPA-GMN-HKNDRNUMK  PIC X(12).
       *----(01.01.07)----START------------
       *----(02.00.01)--UPD-START---
-                       09  SPA-GMN-CHK        PIC X     OCCURS  33.
+      *----(02.00.02)--UPD-START---
+                       09  SPA-GMN-CHK        PIC X     OCCURS  34.
+      *----(02.00.02)--UPD-END-----
       *----(02.00.01)--UPD-END-----
       *----(01.01.07)----END--------------
       *
@@ -393,11 +396,13 @@
       * 
       *----(01.01.07)----START------------
       *----(02.00.01)--ADD-START---
+      *----(02.00.02)--ADD-START---
       *    業務処理権限
            PERFORM  VARYING IDX FROM    1   BY  1
-               UNTIL IDX  >   33
+               UNTIL IDX  >   34
                MOVE  "F"           TO  SPA-GMN-CHK (IDX)
            END-PERFORM
+      *----(02.00.02)--ADD-END-----
       *----(02.00.01)--ADD-END-----
       *----(01.01.07)----END--------------
       *
@@ -705,6 +710,14 @@
                MOVE  "F"  TO  SPA-GMN-CHK(33)
            END-IF
       *----(02.00.01)--ADD-END-----
+      *----(02.00.02)--ADD-START---
+      *住所マスタ
+           IF      SYS-1010-GSRAUTH(68:1)    =  "1"
+               MOVE  "T"  TO  SPA-GMN-CHK(34)
+           ELSE
+               MOVE  "F"  TO  SPA-GMN-CHK(34)
+           END-IF
+      *----(02.00.021)--ADD-END-----
            . 
        320-SPASET-GSRAUTH-EXT.
            EXIT.
@@ -764,6 +777,9 @@
       *----(02.00.01)--ADD-START---
                WHEN    "CLICKED"      ALSO    "CHK33"
       *----(02.00.01)--ADD-END-----
+      *----(02.00.02)--ADD-START---
+               WHEN    "CLICKED"      ALSO    "CHK34"
+      *----(02.00.02)--ADD-END-----
                    PERFORM 4119-GSRAUTH-CHK-SEC
            END-EVALUATE
       *
@@ -1510,6 +1526,14 @@
                MOVE     "0"    TO  SYS-1010-GSRAUTH(3:1)
            END-IF
       *----(02.00.01)--ADD-END-----
+      *----(02.00.02)--ADD-START---
+      *住所マスタ
+           IF  SPA-GMN-CHK(34)  =  "T"
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(68:1)
+           ELSE
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(68:1)
+           END-IF
+      *----(02.00.02)--ADD-END-----
           .
        4900-KOUSHIN-GSRAUTH-EXT.
            EXIT.
@@ -1660,6 +1684,9 @@
       *----(02.00.01)--ADD-START---
            MOVE  SPA-GMN-CHK(33)           TO  W06-CHK33
       *----(02.00.01)--ADD-END-----
+      *----(02.00.02)--ADD-START---
+           MOVE  SPA-GMN-CHK(34)           TO  W06-CHK34
+      *----(02.00.02)--ADD-END-----
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   5
@@ -1698,6 +1725,9 @@
       *----(02.00.01)--ADD-START---
            MOVE    WIDGET-INSENSITIVE      TO  W06-CHK33-STATE
       *----(02.00.01)--ADD-END-----
+      *----(02.00.02)--ADD-START---
+           MOVE    WIDGET-INSENSITIVE      TO  W06-CHK34-STATE
+      *----(02.00.02)--ADD-END-----
       *
            IF      SPA-W01-SELNUM          >   ZERO    
                MOVE    WIDGET-NORMAL      TO  W06-B03-STATE
@@ -1712,6 +1742,9 @@
       *----(02.00.01)--ADD-START---
                MOVE    WIDGET-NORMAL      TO  W06-CHK33-STATE
       *----(02.00.01)--ADD-END-----
+      *----(02.00.02)--ADD-START---
+               MOVE    WIDGET-NORMAL      TO  W06-CHK34-STATE
+      *----(02.00.02)--ADD-END-----
            END-IF
 
            .
@@ -1845,13 +1878,15 @@
                 WHEN    13
                     MOVE  "SEMONKACD5"  TO   MCP-WIDGET
       *----(02.00.01)--UPD-START---
-                WHEN    14   THRU  46
+      *----(02.00.02)--UPD-START---
+                WHEN    14   THRU  47
                     MOVE     SPA-GMN-CUR       TO  IDX2
                     MOVE    "CHK"              TO  MCP-WIDGET
                     COMPUTE IDX2               =   IDX2   -   13
                     MOVE    IDX2               TO  MCP-WIDGET(4:2)
-                WHEN    47
+                WHEN    48
                     MOVE  "KANRIAUTHFLG"   TO   MCP-WIDGET
+      *----(02.00.02)--UPD-END-----
       *----(02.00.01)--UPD-END-----
       *----(01.01.05)----END--------------
                 WHEN    99
@@ -1916,10 +1951,16 @@
                        IF      IDX2            =   32
                            MOVE    23          TO  SPA-GMN-CUR
                        END-IF
-      *                薬剤情報の後、管理者へ
+      *----(02.00.02)--UPD-START---
+      *                薬剤情報の後、住所マスタへ
                        IF      IDX2            =   26
                            MOVE    47          TO  SPA-GMN-CUR
                        END-IF
+      *                住所マスタの後、管理者へ
+                       IF      IDX2            =   47
+                           MOVE    48          TO  SPA-GMN-CUR
+                       END-IF
+      *----(02.00.02)--UPD-END-----
       *----(02.00.01)--UPD-END-----
                    END-IF
            END-EVALUATE
