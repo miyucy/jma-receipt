@@ -6982,9 +6982,9 @@
                END-IF
       *
       *        最終行を剤終了とする
-               IF      (IDX-Z              =   200 )  OR
-                       (WRK-COM-INPUTCD(IDX-Z + 1) =   SPACE  AND
-                        WRK-GMN-INPUTCD(IDX-Z + 1) =   SPACE )
+               IF     ( IDX-Z              =   200 )  OR
+                      ((WRK-COM-INPUTCD(IDX-Z + 1) =   SPACE )  AND
+                       (WRK-GMN-INPUTCD(IDX-Z + 1) =   SPACE ))
                    MOVE    "1"             TO  WRK-COM-ZAIEND(IDX-Z)
                ELSE
                    MOVE    SPACE           TO  WRK-COM-ZAIEND(IDX-Z)
@@ -8365,8 +8365,8 @@
        4124-SYOHOU-SYORI-SEC             SECTION.
       *
       *    患者の確定されてない時、処理をしない
-           IF      SPA-GMN-PTNUM       =   SPACE  OR
-                   SPA-PTID            =   ZERO
+           IF     (SPA-GMN-PTNUM       =   SPACE )  OR
+                  (SPA-PTID            =   ZERO  )
                GO      TO      4124-SYOHOU-SYORI-EXT
            END-IF
       *
@@ -10251,9 +10251,9 @@
                    END-IF
                END-IF
       *        在宅注射院外処方
-               IF     (SPA-COM-SRYKBN(IDX)     =   "14"   )  AND
-                      (SPA-COM-YKZTEN(IDX)     >   ZERO   OR
-                       SPA-COM-KIZAITEN(IDX)   >   ZERO   )
+               IF     (SPA-COM-SRYKBN(IDX)     =   "14"  )
+      ******** AND   ((SPA-COM-YKZTEN(IDX)     >   ZERO  ) OR
+      *********       (SPA-COM-KIZAITEN(IDX)   >   ZERO  ))
                    IF      SPA-COM-SRYSYUKBN(IDX)  =   "148"  OR
                                                        "149"
       *                院外分
@@ -12091,12 +12091,19 @@
            IF      SPA-GMN-KAISU (WRK-IDX) =   SPACE
                MOVE    SPACE               TO  WRK-KAKERU
            ELSE
-               IF     (SPA-GMN-KEI   (WRK-IDX) =   ZERO )  AND
-                      (SPA-COM-SRYKBN(WRK-IDX)
-                                           NOT =   "21"  AND "22"
-                                               AND "23" )
-                   MOVE    SPACE               TO  WRK-KAISU-H
-                   MOVE    SPACE               TO  WRK-KAKERU
+               IF     (SPA-GMN-KEI   (WRK-IDX) =   ZERO )
+      *            院外処方の時、回数表示
+                   IF     (SPA-COM-SRYKBN(WRK-IDX)
+                                               =   "21"  OR "22"
+                                               OR  "23" )   OR
+                          (SPA-COM-SRYSYUKBN(WRK-IDX)
+                                               =   "148"  OR
+                                                   "149"  )
+                       MOVE    " X "               TO  WRK-KAKERU
+                   ELSE
+                       MOVE    SPACE               TO  WRK-KAISU-H
+                       MOVE    SPACE               TO  WRK-KAKERU
+                   END-IF
                ELSE
                    MOVE    " X "               TO  WRK-KAKERU
                END-IF
