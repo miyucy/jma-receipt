@@ -1380,26 +1380,40 @@
       *****************************************************************
        900-JYURRK-READ-SEC         SECTION.
       *
+           MOVE    ZERO            TO  FLG-JYURRK
+      *
            INITIALIZE                  JYURRK-REC
            MOVE    PARA-HOSPID     TO  JYURRK-HOSPID
            MOVE    TOKEI-PTID      TO  JYURRK-PTID
            MOVE    "2"             TO  JYURRK-NYUGAIKBN
+           MOVE    WRK-YUKOENDYMD  TO  JYURRK-SRYYMD
            MOVE    JYURRK-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "JYURRK-KEY2"   TO  ORC-DBPATH
+           MOVE    "JYURRK-KEY25"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
-           IF          MCP-RC      =   ZERO
-               PERFORM 900-JYURRK-FETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "JYURRK-KEY25"  TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF        ( MCP-RC      =   ZERO )
+                   MOVE    MCPDATA-REC     TO  JYURRK-REC
+               ELSE
+                   INITIALIZE                  JYURRK-REC
+                   MOVE    1               TO  FLG-JYURRK
+               END-IF
            ELSE
                INITIALIZE                  JYURRK-REC
                MOVE    1               TO  FLG-JYURRK
            END-IF
       *
            MOVE    "DBCLOSE"       TO  MCP-FUNC
-           MOVE    "JYURRK-KEY2"   TO  ORC-DBPATH
+           MOVE    "JYURRK-KEY25"  TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -1407,32 +1421,6 @@
       *
            .
        900-JYURRK-READ-EXT.
-           EXIT.
-      *
-      ******************************************************************
-      *    ¼õ¿ÇÍúÎòÆÉ¹þ
-      *****************************************************************
-       900-JYURRK-FETCH-SEC        SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    "JYURRK-KEY2"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF          MCP-RC      =   ZERO
-               MOVE    MCPDATA-REC     TO  JYURRK-REC
-               IF      JYURRK-SRYYMD   >   WRK-SYSYMD
-                   GO  TO  900-JYURRK-FETCH-SEC
-               ELSE
-                   MOVE    ZERO            TO  FLG-JYURRK
-               END-IF
-           ELSE
-               INITIALIZE                  JYURRK-REC
-               MOVE    1               TO  FLG-JYURRK
-           END-IF
-           .
-       900-JYURRK-FETCH-EXT.
            EXIT.
       *
       *****************************************************************
