@@ -5,7 +5,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-       01  ENUM-VALUES.
+       01  CLAIM006-VALUES.
            02  CLAIM006-T.
              03  CLAIM006-G001.
                05  FILLER  PIC  X(4)   VALUE   "G001" .

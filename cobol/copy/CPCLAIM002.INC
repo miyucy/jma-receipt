@@ -5,7 +5,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-       01  ENUM-VALUES.
+       01  CLAIM002-VALUES.
            02  CLAIM002-T.
              03  CLAIM002-T11.
                05  CLAIM002-ORCA-T11   PIC  X(2)   VALUE   "11" .
