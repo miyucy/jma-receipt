@@ -2805,6 +2805,10 @@
            PERFORM 900-UKETUKE-READ-SEC
            IF      FLG-UKETUKE         =   ZERO
                ADD     1                   TO  UKE-PTID
+               IF      UKE-PTID            >   99999
+                   MOVE    "1007"              TO  SPA-ERRCD
+                   GO  TO  4901-UKEADD-EXT
+               END-IF
                MOVE    UKE-PTID            TO  WRK-UKEID
                MOVE    UKETUKE-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -2867,7 +2871,7 @@
            MOVE    UKETUKE-REC              TO  WRK-UKETUKE-REC
            PERFORM 900-UKETUKE-READ-SEC
            IF      FLG-UKETUKE         =   ZERO
-               MOVE    "1002"              TO  SPA-ERRCD
+               MOVE    "1006"              TO  SPA-ERRCD
                DISPLAY "U02 UKETUKE INS ERR KEY:"  UKE-KEY
                GO      TO      4901-UKEADD-EXT
            END-IF
@@ -3451,6 +3455,9 @@
            MOVE    SPA-GMN-SRYKANAME   TO  SPA-SRYKAMEI
       *    患者氏名
            MOVE    SPA-GMN-NAME        TO  SPA-NAME
+      *    ドクター
+           MOVE    "1"                 TO  SPA-DRCD (1:1) 
+           MOVE    SPA-GMN-DRCD        TO  SPA-DRCD (2:)
       *
            .
       *
@@ -4053,6 +4060,16 @@
                WHEN    "1005"
                    MOVE    "受付マスタの削除処理でエラーになりました"
                                                 TO  SPA-ERRMSG
+               WHEN    "1006"
+                   MOVE    "既に受付ＩＤが登録されています。"
+                                                TO  SPA-ERRMSG
+                   MOVE    "再度、受付登録をして下さい。"
+                                                TO  SPA-ERRMSG(33:)
+               WHEN    "1007"
+                   MOVE    "受付ＩＤが９９９９９を超えます。"
+                                                TO  SPA-ERRMSG
+                   MOVE    "これ以上受付はできません。"
+                                                TO  SPA-ERRMSG(33:)
       *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
