@@ -34,6 +34,8 @@
       *  01.00.02    NACL-藤原    03/01/14  入院会計の読込追加
       *                                     入外区分の表示追加 
       *  01.00.03   NACL-藤原     03.01.20  月代り受給者番号に入外区分を追加
+      *  01.00.04   NACL-藤原     03.07.07  公費の開始日が末日でも対象と
+      *                                     なるように修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -418,7 +420,7 @@
            MOVE    1               TO  LNK-DAY6-ZOGEN
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY6-AREA
-           MOVE    LNK-DAY6-KOYOMI TO  PTKOH-TEKSTYMD                        
+           MOVE    LNK-DAY6-KEISAN TO  PTKOH-TEKSTYMD                        
            MOVE    PTKOHINF-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "PTKOHINF-KEY5" TO  ORC-DBPATH
