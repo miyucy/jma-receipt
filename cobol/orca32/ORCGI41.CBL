@@ -109,6 +109,8 @@
            03  IDX5                PIC 9(04).
            03  IDX6                PIC 9(04).
            03  IDX7                PIC 9(04).
+           03  IDX8                PIC 9(03).
+           03  IDX9                PIC 9(03).
            03  IDY                 PIC 9(04).
            03  IDG                 PIC 9(04).
            03  IDH                 PIC 9(04).
@@ -168,10 +170,6 @@
            03  WRK-HKNCOMBINUM     PIC X(04).
            03  WRK-HKNCOMBINUM9   REDEFINES  WRK-HKNCOMBINUM
                                    PIC 9(04).
-           03  IDX6                PIC 9(03).
-           03  IDX7                PIC 9(03).
-           03  IDX8                PIC 9(03).
-           03  IDX9                PIC 9(03).
            03  WRK-TAIHI-SRYKA     PIC X(02).
            03  WRK-ZOGENPTN        PIC X(01).
            03  WRK-ZOGEN           PIC S9(05).
