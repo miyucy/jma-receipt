@@ -159,15 +159,11 @@
            03  FLG-MIJISI                              PIC 9(01).
            03  FLG-MIJISI-SENTEI                       PIC 9(01).       
            03  FLG-MIJISI2                             PIC 9(01).
-           03  FLG-TOKUTEI                             PIC 9(01).
-           03  FLG-KOSEI                               PIC 9(01).
-           03  FLG-IKUSEI                              PIC 9(01).
            03  FLG-TENTEKI                             PIC 9(01).
            03  FLG-WRITE65                             PIC 9(01).
            03  FLG-SIKIBETU                            PIC 9(01).
            03  FLG-SENTEICDCHG                         PIC 9(01).
            03  FLG-PTKOHFTN                            PIC 9(01).
-           03  FLG-HANTEI                              PIC 9(01).
            03  FLG-ZANHAIKI                            PIC 9(01).
            03  FLG-RECE65-ZAN                          PIC 9(01).
            03  FLG-REWRITE                             PIC 9(01).
@@ -218,7 +214,6 @@
            03  GENSAN-IDX                              PIC 9(03).
            03  NYUINACT-IDX                            PIC 9(03).
            03  KOHFTN-IDX                              PIC 9(03).
-           03  KOHFTN-IDX2                             PIC 9(03).
            03  SYSKAN-IDX                              PIC 9(03).
       *
       *    ¥Ñ¥¹Ì¾ÎÎ°è
@@ -396,6 +391,10 @@
              04  WRK-SYS-MIJISI-OCC                    OCCURS  4.
                05  WRK-SYS-MIJISI                      PIC 9(01).
                05  WRK-SYS-MIJISI-ZAITEN               PIC 9(08).
+      *
+           03  WRK-SKJ-FTN-T.
+             04  WRK-SKJ-FTN-OCC                       OCCURS  5.
+               05  WRK-SKJ-FTN                         PIC 9(07).
       *
       *    ¿ô»úÈ¾³ÑÁ´³ÑÊÑ´¹ÍÑ     
            03  WRK-CHAR-IDX                    PIC 9(02).
@@ -5003,6 +5002,8 @@
       *****************************************************************
        FTN-SET-SEC                SECTION.
       *
+           INITIALIZE                           WRK-SKJ-FTN-T
+      *
            INITIALIZE                           SYUNOU-REC
            MOVE    RECE62-HOSPID        TO      SYU-HOSPID
            MOVE    RECE62-NYUGAIKBN     TO      SYU-NYUGAIKBN
@@ -5043,6 +5044,10 @@
            MOVE   "SYUNOU-KEY17"     TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
+      *    ¿©»öÉéÃ´´Þ¤à¾å¸Â³Û¤Î¤¢¤ë¸øÈñ¤Î°ìÉôÉéÃ´¶â³ÛÊÔ½¸
+      *
+           PERFORM         KOH-FUTAN-SET-SEC
+      *
            .
        FTN-SET-EXT.
            EXIT.
@@ -5051,10 +5056,6 @@
       *    ¥ì¥»¥×¥ÈÃæ´Ö¥Õ¥¡¥¤¥ë¤Î¹àÌÜÅ¾Á÷¡ÝÉéÃ´¶â¡Ê£Æ£°£°£²¡Ë
       *****************************************************************
        RECE62-HENSYU-SEC3               SECTION.
-      *
-           MOVE     ZERO     TO    FLG-TOKUTEI                          
-                                   FLG-KOSEI
-                                   FLG-IKUSEI
       *
            MOVE     ZERO     TO    FLG-CHIHOU
       *
@@ -5125,9 +5126,6 @@
            END-IF
       *
       *++++
-      *
-           PERFORM         KOH-FLG-SET-SEC
-      *
       *
            IF      RECE62-SRYYM      >=  "200210"
              IF    RECE62-KOUREI  NOT =    SPACE
@@ -5249,45 +5247,8 @@
                       ELSE
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
-                            IF   RECE62-KOHNUM(1) =  "051"              
-                            AND  FLG-TOKUTEI  NOT =  ZERO               
-                               IF  FLG-TOKUTEI  =  2                    
-                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
-                                        RECE62-FTNMONEY(KH-IDX)         
-                               END-IF                                   
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) +  5    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) / 10    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) * 10    
-                            END-IF                                      
-                            IF   RECE62-KOHNUM(1) =  "015"              
-                            AND  FLG-KOSEI    NOT =  ZERO               
-                               IF  FLG-KOSEI      =  2                  
-                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
-                                        RECE62-FTNMONEY(KH-IDX)         
-                               END-IF                                   
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) +  5    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) / 10    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) * 10    
-                            END-IF                                  
-                            IF   RECE62-KOHNUM(1) =  "016"              
-                            AND  FLG-IKUSEI   NOT =  ZERO               
-                               IF  FLG-IKUSEI     =  2                  
-                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
-                                        RECE62-FTNMONEY(KH-IDX)         
-                               END-IF                                   
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) +  5    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) / 10    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) * 10    
-                            END-IF                 
+                            ADD   SYU-SKJ-FTN(IDX3)      TO
+                                         WRK-SKJ-FTN(KH-IDX)
                       END-IF
       *               END-IF
       *
@@ -5326,45 +5287,8 @@
                       ELSE
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
-                            IF   RECE62-KOHNUM(2) =  "051"              
-                            AND  FLG-TOKUTEI  NOT =  ZERO               
-                               IF  FLG-TOKUTEI  =  2                    
-                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
-                                        RECE62-FTNMONEY(KH-IDX)         
-                               END-IF                                   
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) +  5    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) / 10    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) * 10    
-                            END-IF                                      
-                            IF   RECE62-KOHNUM(2) =  "015"              
-                            AND  FLG-KOSEI    NOT =  ZERO               
-                               IF  FLG-KOSEI      =  2                  
-                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
-                                        RECE62-FTNMONEY(KH-IDX)         
-                               END-IF                                   
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) +  5    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) / 10    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) * 10    
-                            END-IF                                  
-                            IF   RECE62-KOHNUM(2) =  "016"              
-                            AND  FLG-IKUSEI   NOT =  ZERO               
-                               IF  FLG-IKUSEI     =  2                  
-                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
-                                        RECE62-FTNMONEY(KH-IDX)         
-                               END-IF                                   
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) +  5    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) / 10    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) * 10    
-                            END-IF                 
+                            ADD   SYU-SKJ-FTN(IDX3)      TO
+                                         WRK-SKJ-FTN(KH-IDX)
                       END-IF
       *               END-IF
       *
@@ -5403,45 +5327,8 @@
                       ELSE
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
-                            IF   RECE62-KOHNUM(3) =  "051"              
-                            AND  FLG-TOKUTEI  NOT =  ZERO               
-                               IF  FLG-TOKUTEI  =  2                    
-                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
-                                        RECE62-FTNMONEY(KH-IDX)         
-                               END-IF                                   
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) +  5    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) / 10    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) * 10    
-                            END-IF                                      
-                            IF   RECE62-KOHNUM(3) =  "015"              
-                            AND  FLG-KOSEI    NOT =  ZERO               
-                               IF  FLG-KOSEI      =  2                  
-                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
-                                        RECE62-FTNMONEY(KH-IDX)         
-                               END-IF                                   
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) +  5    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) / 10    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) * 10    
-                            END-IF                                  
-                            IF   RECE62-KOHNUM(3) =  "016"              
-                            AND  FLG-IKUSEI   NOT =  ZERO               
-                               IF  FLG-IKUSEI     =  2                  
-                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
-                                        RECE62-FTNMONEY(KH-IDX)         
-                               END-IF                                   
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) +  5    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) / 10    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) * 10    
-                            END-IF                 
+                            ADD   SYU-SKJ-FTN(IDX3)      TO
+                                         WRK-SKJ-FTN(KH-IDX)
                       END-IF
       *               END-IF
       *
@@ -5480,45 +5367,8 @@
                       ELSE
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
-                            IF   RECE62-KOHNUM(4) =  "051"              
-                            AND  FLG-TOKUTEI  NOT =  ZERO               
-                               IF  FLG-TOKUTEI  =  2                    
-                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
-                                        RECE62-FTNMONEY(KH-IDX)         
-                               END-IF                                   
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) +  5    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) / 10    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) * 10    
-                            END-IF                                      
-                            IF   RECE62-KOHNUM(4) =  "015"              
-                            AND  FLG-KOSEI    NOT =  ZERO               
-                               IF  FLG-KOSEI      =  2                  
-                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
-                                        RECE62-FTNMONEY(KH-IDX)         
-                               END-IF                                   
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) +  5    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) / 10    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) * 10    
-                            END-IF                                  
-                            IF   RECE62-KOHNUM(4) =  "016"              
-                            AND  FLG-IKUSEI   NOT =  ZERO               
-                               IF  FLG-IKUSEI     =  2                  
-                                 ADD  SYU-SKJ-FTN(IDX3)  TO             
-                                        RECE62-FTNMONEY(KH-IDX)         
-                               END-IF                                   
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) +  5    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) / 10    
-                               COMPUTE  RECE62-FTNMONEY(KH-IDX) =       
-                                        RECE62-FTNMONEY(KH-IDX) * 10    
-                            END-IF                 
+                            ADD   SYU-SKJ-FTN(IDX3)      TO
+                                         WRK-SKJ-FTN(KH-IDX)
                       END-IF
       *               END-IF
       *
@@ -5544,147 +5394,71 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿©»öÉéÃ´´Þ¤à¾å¸Â³Û¤Î¤¢¤ë¸øÈñ¤Î¥Õ¥é¥°ÊÔ½¸
+      *    ¿©»öÉéÃ´´Þ¤à¾å¸Â³Û¤Î¤¢¤ë¸øÈñ¤Î°ìÉôÉéÃ´¶â³ÛÊÔ½¸
       *****************************************************************
-       KOH-FLG-SET-SEC               SECTION.
+       KOH-FUTAN-SET-SEC               SECTION.
       *
-           IF   ( SYU-KOH-HKNNUM(1)   =   "051" )            
-           OR   ( SYU-KOH-HKNNUM(2)   =   "051" )            
-           OR   ( SYU-KOH-HKNNUM(3)   =   "051" )            
-           OR   ( SYU-KOH-HKNNUM(4)   =   "051" )            
-                IF  SYU-KOH-HKNNUM(1)   =   "051"               
-                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(1)  
-                                         +  SYU-SKJ-FTN(1)      
-                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(1)  
-                END-IF                                          
-                IF  SYU-KOH-HKNNUM(2)   =   "051"               
-                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(2)  
-                                         +  SYU-SKJ-FTN(2)      
-                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(2)  
-                END-IF                                          
-                IF  SYU-KOH-HKNNUM(3)   =   "051"               
-                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(3)  
-                                         +  SYU-SKJ-FTN(3)      
-                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(3)  
-                END-IF                                          
-                IF  SYU-KOH-HKNNUM(4)   =   "051"               
-                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(4)  
-                                         +  SYU-SKJ-FTN(4)      
-                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(4)  
-                END-IF                                          
+           PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
+                  UNTIL    KOHFTN-IDX    >    4
+      *
+             IF   RECE62-KOHNUM(KOHFTN-IDX) =  "051"
+      *
+                COMPUTE  WRK-FTNKEI2 = RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                                     + WRK-SKJ-FTN(KOHFTN-IDX + 1)
                 COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 +  5
                 COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 / 10
                 COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 * 10
+                MOVE     RECE62-FTNMONEY(KOHFTN-IDX + 1)  
+                                   TO  WRK-FTNKEI3
                 COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 +  5
                 COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 / 10
                 COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 * 10
-                IF  WRK-FTNKEI3  =  14000                       
-                    MOVE  1            TO  FLG-TOKUTEI          
-                END-IF                                          
-                IF  WRK-FTNKEI3  <  14000                       
-                AND WRK-FTNKEI2  =  14000                       
-                    MOVE  2            TO  FLG-TOKUTEI          
-                END-IF                                          
-           END-IF                                            
-           IF   ( SYU-KOH-HKNNUM(1)   =   "015" )            
-           OR   ( SYU-KOH-HKNNUM(2)   =   "015" )            
-           OR   ( SYU-KOH-HKNNUM(3)   =   "015" )            
-           OR   ( SYU-KOH-HKNNUM(4)   =   "015" )            
-                IF  SYU-KOH-HKNNUM(1)   =   "015"               
-                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(1)  
-                                         +  SYU-SKJ-FTN(1)      
-                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(1)
-                   MOVE     1     TO    FLG-HANTEI              
-                   PERFORM  KOHFTN-KINGAKU-SEC
-                END-IF                                          
-                IF  SYU-KOH-HKNNUM(2)   =   "015"               
-                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(2)  
-                                         +  SYU-SKJ-FTN(2)      
-                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(2)
-                   MOVE     1     TO    FLG-HANTEI
-                   PERFORM  KOHFTN-KINGAKU-SEC
-                END-IF                                          
-                IF  SYU-KOH-HKNNUM(3)   =   "015"               
-                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(3)  
-                                         +  SYU-SKJ-FTN(3)      
-                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(3)
-                   MOVE     1     TO    FLG-HANTEI
-                   PERFORM  KOHFTN-KINGAKU-SEC
-                END-IF                                          
-                IF  SYU-KOH-HKNNUM(4)   =   "015"               
-                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(4)  
-                                         +  SYU-SKJ-FTN(4)      
-                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(4)
-                   MOVE     1     TO    FLG-HANTEI
-                   PERFORM  KOHFTN-KINGAKU-SEC
+      *
+                IF  WRK-FTNKEI3  =  14000
+                    MOVE  WRK-FTNKEI3  
+                                   TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
                 END-IF
+                IF  WRK-FTNKEI3  <  14000
+                AND WRK-FTNKEI2  =  14000
+                    MOVE  WRK-FTNKEI2  
+                                   TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                END-IF
+      *
+             END-IF
+      *
+             IF   RECE62-KOHNUM(KOHFTN-IDX) =  "015" OR "016"
+      *
+                COMPUTE  WRK-FTNKEI2 = RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                                     + WRK-SKJ-FTN(KOHFTN-IDX + 1)
                 COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 +  5
                 COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 / 10
                 COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 * 10
+                MOVE     RECE62-FTNMONEY(KOHFTN-IDX + 1)  
+                                   TO  WRK-FTNKEI3
                 COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 +  5
                 COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 / 10
                 COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 * 10
-                IF  WRK-NYUJGNGAK  NOT =  ZERO                  
-                  IF  WRK-FTNKEI3  =  WRK-NYUJGNGAK             
-                    MOVE  1            TO  FLG-KOSEI            
-                  END-IF                                        
-                  IF  WRK-FTNKEI3  <  WRK-NYUJGNGAK             
-                  AND WRK-FTNKEI2  =  WRK-NYUJGNGAK             
-                    MOVE  2            TO  FLG-KOSEI            
+      *
+                PERFORM  KOHFTN-KINGAKU-SEC
+      *
+                IF  WRK-NYUJGNGAK  NOT =  ZERO
+                  IF  WRK-FTNKEI3  =  WRK-NYUJGNGAK
+                    MOVE  WRK-FTNKEI3  
+                                   TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
                   END-IF
-                END-IF                                          
-           END-IF                                            
-           IF   ( SYU-KOH-HKNNUM(1)   =   "016" )            
-           OR   ( SYU-KOH-HKNNUM(2)   =   "016" )            
-           OR   ( SYU-KOH-HKNNUM(3)   =   "016" )            
-           OR   ( SYU-KOH-HKNNUM(4)   =   "016" )            
-                IF  SYU-KOH-HKNNUM(1)   =   "016"               
-                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(1)  
-                                         +  SYU-SKJ-FTN(1)      
-                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(1)
-                   MOVE     2     TO    FLG-HANTEI
-                   PERFORM  KOHFTN-KINGAKU-SEC
-                END-IF                                          
-                IF  SYU-KOH-HKNNUM(2)   =   "016"               
-                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(2)  
-                                         +  SYU-SKJ-FTN(2)      
-                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(2)
-                   MOVE     2     TO    FLG-HANTEI
-                   PERFORM  KOHFTN-KINGAKU-SEC
-                END-IF                                          
-                IF  SYU-KOH-HKNNUM(3)   =   "016"               
-                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(3)  
-                                         +  SYU-SKJ-FTN(3)      
-                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(3)
-                   MOVE     2     TO    FLG-HANTEI
-                   PERFORM  KOHFTN-KINGAKU-SEC
-                END-IF                                          
-                IF  SYU-KOH-HKNNUM(4)   =   "016"               
-                   COMPUTE  WRK-FTNKEI2  =  SYU-KOH-COMPFTN(4)  
-                                         +  SYU-SKJ-FTN(4)      
-                   COMPUTE  WRK-FTNKEI3  =  SYU-KOH-COMPFTN(4)
-                   MOVE     2     TO    FLG-HANTEI
-                   PERFORM  KOHFTN-KINGAKU-SEC
-                END-IF                                          
-                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 +  5
-                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 / 10
-                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 * 10
-                COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 +  5
-                COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 / 10
-                COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 * 10
-                IF  WRK-NYUJGNGAK  NOT =  ZERO                  
-                  IF  WRK-FTNKEI3  =  WRK-NYUJGNGAK             
-                    MOVE  1            TO  FLG-IKUSEI           
-                  END-IF                                        
-                  IF  WRK-FTNKEI3  <  WRK-NYUJGNGAK             
-                  AND WRK-FTNKEI2  =  WRK-NYUJGNGAK             
-                    MOVE  2            TO  FLG-IKUSEI           
+                  IF  WRK-FTNKEI3  <  WRK-NYUJGNGAK
+                  AND WRK-FTNKEI2  =  WRK-NYUJGNGAK
+                    MOVE  WRK-FTNKEI2  
+                                   TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
                   END-IF
-                END-IF                                          
-           END-IF                                            
+                END-IF
+      *
+             END-IF
+      *
+           END-PERFORM
       *
            .
-       KOH-FLG-SET-EXT.
+       KOH-FUTAN-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5692,66 +5466,43 @@
       *****************************************************************
        KOHFTN-KINGAKU-SEC               SECTION.
       *
-           MOVE      ZERO       TO     KOHFTN-IDX2
-           MOVE      ZERO       TO     WRK-NYUJGNGAK
+           MOVE      ZERO                  TO      WRK-NYUJGNGAK
       *
-           IF   FLG-HANTEI  =  1  
-              PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
-                  UNTIL    (KOHFTN-IDX         >       4)   
-                    OR     (KOHFTN-IDX2   NOT  =    ZERO)
-                  IF  RECE62-KOHNUM(KOHFTN-IDX)  =  "015"
-                       MOVE   KOHFTN-IDX   TO  KOHFTN-IDX2
-                  END-IF
-              END-PERFORM
+           INITIALIZE                              PTKOHFTN-REC
+           MOVE    RECE62-HOSPID           TO      PTKOHFTN-HOSPID
+           MOVE    RECE62-PTID             TO      PTKOHFTN-PTID
+           MOVE    RECE62-KOHID(KOHFTN-IDX)   TO   PTKOHFTN-KOHID
+           MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
+           MOVE    "DBSELECT"              TO      MCP-FUNC
+           MOVE    "PTKOHFTN-KEY4"         TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+             MOVE    "PTKOHFTN-KEY4"     TO      ORC-DBPATH
+             PERFORM  PTKOHFTN-READ-SEC
+             PERFORM  UNTIL
+                 (FLG-PTKOHFTN       =   1)    OR
+                ((PTKOHFTN-TEKSTYMD(1:6) <=   RECE62-SRYYM   )  AND
+                 (RECE62-SRYYM           <=   PTKOHFTN-TEKEDYMD(1:6)))
+               PERFORM   PTKOHFTN-READ-SEC
+             END-PERFORM
            ELSE
-              PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
-                  UNTIL    (KOHFTN-IDX         >       4)   
-                    OR     (KOHFTN-IDX2   NOT  =    ZERO)
-                  IF  RECE62-KOHNUM(KOHFTN-IDX)  =  "016"
-                       MOVE   KOHFTN-IDX   TO  KOHFTN-IDX2
-                  END-IF
-              END-PERFORM
+             MOVE    1                   TO      FLG-PTKOHFTN
            END-IF
       *
-           IF     KOHFTN-IDX2    NOT =    ZERO
+           IF   FLG-PTKOHFTN  =  ZERO
       *
-             INITIALIZE                              PTKOHFTN-REC
-             MOVE    RECE62-HOSPID           TO      PTKOHFTN-HOSPID
-             MOVE    RECE62-PTID             TO      PTKOHFTN-PTID
-             MOVE    RECE62-KOHID(KOHFTN-IDX2)  TO   PTKOHFTN-KOHID
-             MOVE    PTKOHFTN-REC            TO      MCPDATA-REC
-             MOVE    "DBSELECT"              TO      MCP-FUNC
-             MOVE    "PTKOHFTN-KEY4"         TO      ORC-DBPATH
-             CALL    "ORCMCPSUB"             USING   MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-             IF      MCP-RC               =       ZERO
-               MOVE    "PTKOHFTN-KEY4"     TO      ORC-DBPATH
-               PERFORM  PTKOHFTN-READ-SEC
-               PERFORM  UNTIL
-                   (FLG-PTKOHFTN       =   1)    OR
-                  ((PTKOHFTN-TEKSTYMD(1:6) <=   RECE62-SRYYM   )  AND
-                   (RECE62-SRYYM           <=   PTKOHFTN-TEKEDYMD(1:6)))
-                 PERFORM   PTKOHFTN-READ-SEC
-               END-PERFORM
-             ELSE
-               MOVE    1                   TO      FLG-PTKOHFTN
-             END-IF
-      *
-             IF   FLG-PTKOHFTN  =  ZERO
-      *
-               MOVE   PTKOHFTN-NYUJGNGAK   TO      WRK-NYUJGNGAK
-      *
-             END-IF
-      *
-             MOVE    "DBCLOSE"             TO  MCP-FUNC
-             MOVE    "PTKOHFTN-KEY4"       TO  ORC-DBPATH
-             CALL    "ORCMCPSUB"           USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
+             MOVE   PTKOHFTN-NYUJGNGAK   TO      WRK-NYUJGNGAK
       *
            END-IF
+      *
+           MOVE    "DBCLOSE"             TO  MCP-FUNC
+           MOVE    "PTKOHFTN-KEY4"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"           USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
       *
            .
        KOHFTN-KINGAKU-EXT.
