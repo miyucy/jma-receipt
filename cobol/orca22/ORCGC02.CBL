@@ -138,6 +138,8 @@
       *                                     編集フラグのクリア
       *                                     種別が部位の自院コード入力のとき
       *                                     の病名編集フラグの設定を修正
+      *  01.08.10    NACL-藤原    04/04/20  ２１の修飾語コード＋病名コード
+      *                                     入力時の病名編集フラグの設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4219,6 +4221,10 @@
                            MOVE    SPA-NAI-C02-BYOMEICD-O (IDXX IDXY)
                                            TO  WRK-PTBYO-CHK-BYOMEICD 
                                               (WRK-PTBYO-CHK-BYOMEICDSU)
+                       ELSE
+                           MOVE    "1"     TO  SPA-NAI-C02-BYOMEIHENFLG
+                           MOVE    "病名編集"
+                                           TO  SPA-GMN-C02-BYOMEIHENFLG
                        END-IF
                    END-PERFORM
                END-PERFORM
@@ -6747,7 +6753,7 @@
                            MOVE    "1"     TO  WRK-PTBYO-CHK-RECEDENFLG
                        END-IF
                END-EVALUATE
-           END-IF    
+           END-IF
            .
        5001-RECEDENFLG-HENSYU-EXT.
            EXIT
