@@ -1166,6 +1166,7 @@
       *        最終受診日と科をが同じ時、保険組合せを決定する
                IF      (JYURRK-SRYYMD      =   SPA-LSTYMD )  AND
                        (JYURRK-SRYKA       =   SPA-LSTSRYKA) AND
+                       (JYURRK-SRYKA       =   SPA-SRYKA  ) AND
                        (SPA-HKNCOMBINUM    =   SPACE      )  AND
                        (JYURRK-HKNCOMBINUM NOT =   "9999"  )
                    MOVE    JYURRK-HKNCOMBINUM  TO  SPA-HKNCOMBINUM
