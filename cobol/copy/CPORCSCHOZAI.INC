@@ -27,7 +27,7 @@
       *
       *ェ恘
            03  ORCSCHO-IN-AREA.
-      *質咥嗉坌
+      *質咥嗉坌﹋ㄠ“騷橘﹜ㄡ“轉情﹋管綽輪﹌﹌
                05  ORCSCHO-KBN                 PIC  X(01).
       *斯樊�氿�
                05  ORCSCHO-PTID                PIC  9(10).
