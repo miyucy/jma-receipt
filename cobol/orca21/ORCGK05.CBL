@@ -5727,6 +5727,7 @@
            MOVE    WRK-ZAIKEI-H                TO  WRK-H-ZAIKEI
       *
            MOVE    WRK-SURYO-HENSYU    TO  K05-SURYO (IDX)
+           MOVE    "user-font"         TO  K05-SURYO-STYLE(IDX)
       *
            .
        5002-SURYO-HEN-EXT.

@@ -2034,7 +2034,8 @@
       *            ",ZAUTAKU:" LNK-S01-KOUREI-ZAITAKU-KBN
       *TEST
       *
-           CALL    "ORCS01NEW"         USING   MCPAREA
+      **** CALL    "ORCS01NEW"         USING   MCPAREA
+           CALL    "ORCS01"            USING   MCPAREA
                                                LNK-ORCS01-REC
                                                SYUNOU-REC
       *
