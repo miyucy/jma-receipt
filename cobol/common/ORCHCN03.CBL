@@ -638,25 +638,28 @@
            MOVE    WRK-ZHENSYU18           TO  HCN03-HOKENBUN
       *
       *    労災・自賠の時、点数表示なし
-           EVALUATE    TRUE
-           WHEN      ( COMB-HKNNUM             =    "971" )
-               AND   ( SYS-4001-RSIIRYOKBN NOT =   "1" )
+           IF    ( COMB-HKNNUM             =    "971"
+                                           OR   "973" )
+               EVALUATE    TRUE
+               WHEN      ( COMB-HKNNUM             =    "971" )
+                   AND   ( SYS-4001-RSIIRYOKBN NOT =   "1" )
       *
-           WHEN      ( COMB-HKNNUM             =    "973" )
-               AND   ( PTRSI-HKNKBN        =    "4" ) 
-               AND   ( SYU-PTFTNRATE   NOT =   ZERO  )
-                   COMPUTE WRK-GOKTEN      =    SYU-HKNTEKMONEY
+               WHEN      ( COMB-HKNNUM             =    "973" )
+                   AND   ( PTRSI-HKNKBN        =    "4" ) 
+                   AND   ( SYU-PTFTNRATE   NOT =   ZERO  )
+                       COMPUTE WRK-GOKTEN  =    SYU-HKNTEKMONEY
                                            +    SYU-RSISHOSHIN-MONEY
                                            +    SYU-RSISAISHIN-MONEY
                                            +    SYU-RSISDO-MONEY
                                            +    SYU-RSIETC-MONEY
-                   MOVE    WRK-GOKTEN      TO  WRK-Z7
-                   MOVE    WRK-Z7          TO  WRK-ZHENSYU9
-                   PERFORM 800-HENKAN-SEC
-                   MOVE    WRK-ZHENSYU18   TO  HCN03-HOKENBUN
-           WHEN    OTHER
-               MOVE    SPACE           TO  HCN03-HOKENBUN
-           END-EVALUATE
+                       MOVE    WRK-GOKTEN      TO  WRK-Z7
+                       MOVE    WRK-Z7          TO  WRK-ZHENSYU9
+                       PERFORM 800-HENKAN-SEC
+                       MOVE    WRK-ZHENSYU18   TO  HCN03-HOKENBUN
+               WHEN    OTHER
+                   MOVE    SPACE           TO  HCN03-HOKENBUN
+               END-EVALUATE
+           END-IF
       *
       *    保険適用外分
            COMPUTE WRK-GOKTEN
