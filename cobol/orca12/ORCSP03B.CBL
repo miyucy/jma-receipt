@@ -244,6 +244,9 @@
                    PERFORM 310-KOHEDYMD-SYORI-SEC
                    MOVE    SPACE           TO  SPA-PIDCD
            END-EVALUATE
+           IF      SPA-KOH-ADD         =   1
+               GO      TO      000-PROC-EXT
+           END-IF
       *
            PERFORM VARYING     IDX-K   FROM    1   BY  1
                    UNTIL      (IDX-K       >   3   )  OR

@@ -2346,7 +2346,7 @@
                    MOVE    "新規入力時、削除はできません"
                                                TO  SPA-ERRMSG
                WHEN    "0021"
-                   MOVE    "労災自賠保険区分は変更できません"
+                   MOVE    "労災保険区分は変更できません"
                                                TO  SPA-ERRMSG
                WHEN    "0022"
                    MOVE    "労働保険番号を入力して下さい"

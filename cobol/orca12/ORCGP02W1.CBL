@@ -748,6 +748,7 @@
       *            老人公費追加（Ｈ１４．１０改正対応）
                    IF       SPA-KOH-ADD        =   1
       *                最初の１行を追加する
+                       MOVE    ZERO            TO  SPA-HKNKOH-FLG
                        PERFORM 4104-KOH-ADD-SEC
       *                公費重複処理
                        CALL    "ORCSP03B"          USING   SPA-AREA
@@ -998,6 +999,8 @@
                                            TO  SPA-MAE-HKAKUNINYMD
            MOVE    SPA-PTHKN-MAEKAKUNINYMDW(IDX)
                                            TO  SPA-MAE-HKAKUNINYMDW
+           MOVE    SPA-PTHKN-KIGO    (IDX) TO  SPA-MAE-KIGO
+           MOVE    SPA-PTHKN-NUM     (IDX) TO  SPA-MAE-NUM
       *
       *    保険者番号　検索チェック
            INITIALIZE                    HKNJAINF-REC
@@ -1792,6 +1795,7 @@
       *    基本チェックと別画面処理
            PERFORM 4102-KIHON-CHK-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )  OR
                   (SPA-FLG-END     NOT =   ZERO  )
                GO      TO      410-INPUT-CHK-EXT
            END-IF
@@ -4018,6 +4022,7 @@
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )  OR
                   (SPA-FLG-END     NOT =   ZERO  )
                GO      TO      450-HKNCOMBI-EXT
            END-IF
@@ -4224,6 +4229,7 @@
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )  OR
                   (SPA-FLG-END     NOT =   ZERO  )
                GO      TO      460-HKN-TUIKA-EXT
            END-IF
@@ -4250,6 +4256,7 @@
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )  OR
                   (SPA-FLG-END     NOT =   ZERO  )
                GO      TO      470-KOH-TUIKA-EXT
            END-IF
@@ -4298,6 +4305,7 @@
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )  OR
                   (SPA-FLG-END     NOT =   ZERO  )
                GO      TO      440-ZEN-GMNHYOUJI-EXT
            END-IF
@@ -4361,6 +4369,7 @@
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )  OR
                   (SPA-FLG-END     NOT =   ZERO  )
                GO      TO      450-TUGI-GMNHYOUJI-EXT
            END-IF
@@ -4453,6 +4462,7 @@
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )  OR
                   (SPA-FLG-END     NOT =   ZERO  )
                GO      TO      481-ROUSAI-EXT
            END-IF

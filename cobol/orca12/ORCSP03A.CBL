@@ -907,6 +907,14 @@
                    MOVE    13                  TO  SPA-GMN-CUR
                    GO      TO      1001-KIGO-NUM-CHK-EXT
                END-IF
+      *        半角の時、変更はＯＫとする
+               IF      FLG-ERR             =   2
+                   IF      SPA-GMN-KIGO    NOT =   SPA-MAE-KIGO
+                       MOVE    "0048"              TO  SPA-ERRCD
+                       MOVE    13                  TO  SPA-GMN-CUR
+                       GO      TO      1001-KIGO-NUM-CHK-EXT
+                   END-IF
+               END-IF
            END-IF
       *
       *    番号全角チェック
@@ -918,6 +926,14 @@
                    MOVE    "0049"              TO  SPA-ERRCD
                    MOVE    14                  TO  SPA-GMN-CUR
                    GO      TO      1001-KIGO-NUM-CHK-EXT
+               END-IF
+      *        半角の時、変更はＯＫとする
+               IF      FLG-ERR             =   2
+                   IF      SPA-GMN-NUM     NOT =   SPA-MAE-NUM
+                       MOVE    "0049"              TO  SPA-ERRCD
+                       MOVE    14                  TO  SPA-GMN-CUR
+                       GO      TO      1001-KIGO-NUM-CHK-EXT
+                   END-IF
                END-IF
            END-IF
       *
@@ -1711,6 +1727,9 @@
                   (KANACHK-SYUBETU     =   1     )
                MOVE    1                   TO  FLG-ERR
                MOVE    WRK-MAE-INPUT       TO  WRK-ATO-INPUT
+               IF      KANACHK-SYUBETU     =   1
+                   MOVE    2                   TO  FLG-ERR
+               END-IF
            ELSE
                MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
            END-IF
