@@ -84,6 +84,7 @@ C06.glade	orca22	(C06)病名登録−行為関連病名検索
 SERR.glade	orca23	(SERR)エラー情報
 S02.glade	orca23	(S02)収納登録−請求一覧
 S03.glade	orca23	(S03)収納登録−請求確認
+S03N.glade	orca23	(S03N)収納登録−請求確認
 J99.glade	orca24	(J99)ｐカ入力
 JID1.glade	orca24	(JID1)確認画面
 JERR.glade	orca24	(JERR)エラー情報
