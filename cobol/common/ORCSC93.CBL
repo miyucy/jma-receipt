@@ -194,8 +194,10 @@
                    MOVE    SPACE           TO  SPA-COM-SRYKBN    (IDX)
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN (IDX)
                ELSE
-                   IF      SPA-COM-SRYSYUKBN (IDX)
-                                       NOT =   SPA-COM-TNSSRYSYUKBN(IDX)
+                   IF    ( SPA-COM-SRYSYUKBN (IDX)
+                                     NOT =   SPA-COM-TNSSRYSYUKBN(IDX))
+                     AND ( SPA-COM-SRYSYUKBN (IDX)
+                                     NOT =   "700" )
                        MOVE    SPACE       TO  SPA-COM-SRYKBN(IDX)
                        MOVE    SPACE       TO  SPA-COM-SRYSYUKBN (IDX)
                    END-IF
