@@ -7662,6 +7662,12 @@
                           (WRK-MAE-INPUTCD(IDX)        =   SPACE )
                        MOVE    ZERO            TO  FLG-ZAIEND
                    END-IF
+      *
+                   IF     (WRK-COM-ZAIEND (IDX)    =   "1" )  OR
+                         ((IDX                     <   200 )  AND
+                          (WRK-GMN-SRYKBN (IDX + 1)    NOT =   SPACE))
+                       MOVE    ZERO            TO  FLG-ZAIEND
+                   END-IF
                ELSE
                    IF      FLG-ZAIEND          =   1
                        IF      WRK-COM-AUTOKBN(IDX)    NOT =   SPACE
@@ -8936,7 +8942,6 @@
        4106S-NYUTAIIN-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    入退院登録へ
       *****************************************************************
@@ -8986,7 +8991,6 @@
           .
        4111S-NYUKAIKEI-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *   ワーク行為負担パラメタを作成　処理
