@@ -46,7 +46,8 @@
       *                                     ・続紙出力先の追加
       *  02.00.09    NACL-太田    03/11/18  老人と原爆区分の追加
       *  02.00.10    NACL-太田    04/01/15  自費レセプト摘要欄記載区分追加
-      *  01.00.11    NACL-藤原    02/02/18  社保ＯＣＲ区分の追加
+      *  02.00.11    NACL-藤原    04/02/18  社保ＯＣＲ区分の追加
+      *  02.00.12    NACL-藤原    04/03/05  主病名編集フラグに区分を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -94,7 +95,7 @@
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-SYUBYOHENFLGMEI
-                                              PIC X(30).
+                                              PIC X(44).
                        09  SPA-GMN-TENKIHENKBN-G.
                            11  SPA-GMN-TENKIHENKBN
                                               PIC X(01).
@@ -189,12 +190,12 @@
                    07  SPA-GMN-BYOMEIHENKBN1-MAX
                                               PIC 9(02).    
       *                                        
-                   07  SPA-GMN-SYUBYOHENFLGLST       OCCURS  3.
+                   07  SPA-GMN-SYUBYOHENFLGLST       OCCURS  4.
                        09  SPA-GMN-SYUBYOHENFLGL
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-SYUBYOHENFLGMEIL
-                                              PIC X(30).
+                                              PIC X(44).
                    07  SPA-GMN-SYUBYOHENFLG-MAX
                                               PIC 9(02).    
       *                                        
@@ -557,7 +558,10 @@
            MOVE    "2"                 TO  SPA-GMN-SYUBYOHENFLGL   (3)
            MOVE    "主病名の編集を行う（区切り無）"
                                        TO  SPA-GMN-SYUBYOHENFLGMEIL(3)
-           MOVE    3                   TO  SPA-GMN-SYUBYOHENFLG-MAX 
+           MOVE    "3"                 TO  SPA-GMN-SYUBYOHENFLGL   (4)
+           MOVE    "主病名の編集を行う（区切り有・主単）"
+                                       TO  SPA-GMN-SYUBYOHENFLGMEIL(4)
+           MOVE    4                   TO  SPA-GMN-SYUBYOHENFLG-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-TENKIHENKBNL     (1)
            MOVE    "転帰日を表示しない"
