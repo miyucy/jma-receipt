@@ -64,6 +64,7 @@
       *  01.00.21    NACL-藤原    03/12/11  診療識別が指導（１３）
       *                                     在宅（１４）のときコメントは
       *                                     最後に記載する
+      *  01.00.22    NACL-藤原    03/12/17  特定器材の単位コード編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2263,6 +2264,10 @@
                                    TBL-ZAIW-TENSIKIBETU  (2 WRK-TBLMAX7)
                    MOVE    TNS-TEN             TO
                                    TBL-ZAIW-TEN          (2 WRK-TBLMAX7)
+                   IF      RECE05-SRYCD (IDX)  =   "777770000"
+                       MOVE    TNS-TANICD          TO
+                                   TBL-ZAIW-TANICD       (2 WRK-TBLMAX7)
+                   END-IF
                END-IF
            END-IF
            .
