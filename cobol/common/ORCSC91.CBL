@@ -994,10 +994,13 @@
       *
            IF     (WRK-CNT             >   ZERO  )  OR
                   (WRK-DAYCNT          >   ZERO  )
-               MOVE    WRK-SRYCD           TO  WRK-CHK-SRYCD
-               MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYM
-               MOVE    SANTEI-MSANTEID     TO  WRK-CHK-SRYDD
-               MOVE    TNS-NAME            TO  WRK-CHK-NAME
+               IF     (SANTEI-MSANTEID     >   ZERO )  AND
+                      (SANTEI-SRYYM        >   ZERO )
+                   MOVE    WRK-SRYCD           TO  WRK-CHK-SRYCD
+                   MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYM
+                   MOVE    SANTEI-MSANTEID     TO  WRK-CHK-SRYDD
+                   MOVE    TNS-NAME            TO  WRK-CHK-NAME
+               END-IF
            END-IF
            .
        2001-DOJSANTEI-YMD-EXT.
