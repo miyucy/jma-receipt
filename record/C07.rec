@@ -35,7 +35,7 @@ C07	{
 				value	varchar(41);
 			};
 			count	int;
-			item	varchar(40)[10];
+			item	varchar(40)[30];
 		};
 		scrolledwindow1	{
 			RECELIST	{
@@ -60,8 +60,8 @@ C07	{
 			item	{
 				value1	varchar(2);
 				value2	varchar(10);
-			}	[5];
-			select	bool[5];
+			}	[10];
+			select	bool[10];
 		};
 		JYURRKNUM	{
 			value	number(2);
