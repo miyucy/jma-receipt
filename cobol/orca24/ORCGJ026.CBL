@@ -764,7 +764,7 @@
                    MOVE    "印刷開始日が違います。"
                                        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "最終印刷行は４０行以内にして下さい"
+                   MOVE    "最終印刷行は４０行未満にして下さい"
                                        TO  SPA-ERRMSG
                WHEN    "9000"
                    MOVE    "印刷エラーです。"
