@@ -89,6 +89,8 @@
       *                                     ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅÎÁ¤È
       *                                     ºßÂðËö´ü°åÎÅÁí¹ç¿ÇÎÅÎÁ¤Î»»Äê
       *                                     ¹âÎð¼Ô¤Ä¤¤¤ÆÉéÃ´³Û¤Î¾å¸Â¤òÀßÄê
+      *  01.00.24    NACL¡ÝÌçÏÆ   02/10/08  ¡ÊÊ¿À®£±£´Ç¯£±£°·î²þÀµÂÐ±þ¡Ë
+      *                                     ÄÉ²Ã½¤Àµ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -143,6 +145,7 @@
            03  FLG-SRYACT              PIC 9(01).
            03  FLG-SANSHOU             PIC X(01).
            03  FLG-SANSHOU2            PIC X(01).
+           03  FLG-SANSHOU3            PIC X(01).                       010024
            03  FLG-SANTEI1             PIC X(01).
            03  FLG-SANTEI2             PIC X(01).
            03  FLG-SANTEI3             PIC X(01).
@@ -916,6 +919,7 @@
        100-KAKUTEI-SEC          SECTION.
       *
            MOVE    SPACE                TO      FLG-SANSHOU.
+           MOVE    SPACE                TO      FLG-SANSHOU3.           010024
       *
            INITIALIZE                           TNKRRK-REC.
            MOVE    LNK-SYU-HOSPID       TO      TNKRRK-HOSPID.
@@ -987,6 +991,16 @@
       *
       *    ¸øÈñÉéÃ´ÉôÊ¬¸¡º÷ÍÑ¤Î»²¾ÈÉôÊ¬¥»¥Ã¥È¡ÊËÜ¿Í¤Ç¸ÇÄê¡Ë
            MOVE       "1"       TO    FLG-SANSHOU2.
+      *
+           EVALUATE    FLG-TSYRRK       ALSO     FLG-TNKRRK             010024
+               WHEN    1                ALSO     1                      010024 
+                       MOVE    SPACE    TO       FLG-SANSHOU3           010024
+               WHEN    0                ALSO     1                      010024
+                       MOVE     "2"     TO       FLG-SANSHOU3           010024
+               WHEN    0                ALSO     0                      010024
+               WHEN    1                ALSO     0                      010024
+                       MOVE     "1"     TO       FLG-SANSHOU3           010024
+           END-EVALUATE.                                                010024
       *
        100-KAKUTEI-EXT.
            EXIT.
@@ -1376,7 +1390,9 @@
                CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
                IF      AGECHK-RC       =   ZERO
-                   IF  AGECHK-NENREI   >=  70
+                   IF  ( AGECHK-NENREI   >=  70 ) OR
+                      (( AGECHK-NENREI   >=  65 AND                     010024
+                         COMB-KOH1HKNNUM  = "027"))                     010024
                        CONTINUE
                    ELSE
                        MOVE  SPACE   TO  LNK-S01-KOUREI-ZAITAKU-KBN
@@ -1595,7 +1611,7 @@
                    EVALUATE   COMB-KOH1PAYKBN
                        WHEN   "01"
                            MOVE  "1"          TO   COMB-KOH1-GAIJGNKBN
-                           IF  FLG-SANSHOU      =   "1"
+                           IF  FLG-SANSHOU3     =   SPACE               010024
                                MOVE   12000   TO   MAX-KIN-KOHI1-D
                                                    MAX-KIN-KOHI1-M
                            ELSE
@@ -1610,7 +1626,7 @@
                ELSE
                    EVALUATE   COMB-HOJOKBN
                        WHEN   "9"
-                           IF  FLG-SANSHOU      =   "1"
+                           IF  FLG-SANSHOU3      =   SPACE              010024
                                MOVE   12000   TO   MAX-KIN-SYU-M
                            ELSE
                                MOVE    8000   TO   MAX-KIN-SYU-M
@@ -1940,7 +1956,32 @@
       *
            IF  LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
                IF  LNK-SYU-SYUHKNNUM    =  SYU-SYUHKNNUM
-                   ADD   SYU-SYUCOMPFTN    TO   FTN-SYU-M
+      *
+                 IF COMB-KOH1HKNNUM      =    "027"                     010024
+                   IF SYU-KOH1HKNFTNMONEY  =     ZERO                   010024
+                      IF     LNK-SYU-SRYYMD(7:2)    =  SYU-SRYYMD(7:2)  010024
+                          IF  SYU-RJN-FTN  NOT =  ZERO                  010024
+                             ADD SYU-RJN-FTN      TO   FTN-KOHI1-D      010024
+                          ELSE                                          010024
+                             ADD SYU-KOH-FTN      TO   FTN-KOHI1-D      010024
+                          END-IF                                        010024
+      **>                 ADD   SYU-KOH1COMPFTN   TO   FTN-KOHI1-D      010024
+                      END-IF                                            010024
+                      IF  SYU-RJN-FTN  NOT =  ZERO                      010024
+                             ADD SYU-RJN-FTN      TO   FTN-KOHI1-D      010024
+                          ELSE                                          010024
+                             ADD SYU-KOH-FTN      TO   FTN-KOHI1-D      010024
+                      END-IF                                            010024
+      **>             ADD   SYU-KOH1COMPFTN       TO   FTN-KOHI1-M      010024
+                   END-IF                                               010024
+                 ELSE                                                   010024
+                   IF SYU-KOH-FTN   =   ZERO                            010024 
+                      ADD   SYU-SYUCOMPFTN        TO   FTN-SYU-M
+                   ELSE                                                 010024
+                      ADD   SYU-KOH-FTN           TO   FTN-SYU-M        010024
+                   END-IF                                               010024 
+                 END-IF                                                 010024
+      *
                END-IF
            END-IF.
       *----(01.00.23) LINE ADD END   --------------------------
