@@ -3,6 +3,7 @@ view_I001 {
 	PTID				number(10,0);
 	RRKNUM			number(3,0);
 	RRKEDANUM		number(3,0);
+	PTNUM			char(20);
 	KANANAME			varchar(100);
 	NAME 				varchar(100);
 	SEX        			char(1);

@@ -14,6 +14,8 @@
            03  I001-RRKNUM                 PIC  9(03).
       *掐薄旺悟晦戎规
            03  I001-RRKEDANUM              PIC  9(03).
+      *吹荚戎规
+           03  I001-PTNUM                  PIC  X(20).
       *カナ会叹
            03  I001-KANANAME               PIC  X(100).
       *戳机会叹
