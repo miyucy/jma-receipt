@@ -776,6 +776,7 @@
                    IF        SPA-GMN-FILENM1 (IDX:1)
                                                =   "/"
                        MOVE    "0005"              TO  SPA-ERRCD
+                       MOVE    4                   TO  SPA-GMN-CUR
                        MOVE    150                 TO  IDX
                    END-IF
                END-PERFORM        
@@ -799,6 +800,7 @@
                    IF        SPA-GMN-FILENM2 (IDX:1)
                                                =   "/"
                        MOVE    "0005"              TO  SPA-ERRCD
+                       MOVE    6                   TO  SPA-GMN-CUR
                        MOVE    150                 TO  IDX
                    END-IF
                END-PERFORM        
@@ -815,7 +817,7 @@
            IF    ( SPA-GMN-DATAKBN2-VALUE  =   "T" )
            OR    ( SPA-GMN-DATAKBN1-VALUE  =   "T" )
                IF      SPA-GMN-FILENM1         =   SPACE
-                   MOVE    3                   TO  SPA-GMN-CUR
+                   MOVE    4                   TO  SPA-GMN-CUR
                    MOVE    "0003"              TO  SPA-ERRCD
                    GO  TO  4101-KAKUTEI-CHK-EXT
                END-IF
@@ -824,7 +826,7 @@
            IF    ( SPA-GMN-DATAKBN3-VALUE  =   "T" )
            OR    ( SPA-GMN-DATAKBN1-VALUE  =   "T" )
                IF      SPA-GMN-FILENM2         =   SPACE
-                   MOVE    4                   TO  SPA-GMN-CUR
+                   MOVE    6                   TO  SPA-GMN-CUR
                    MOVE    "0004"              TO  SPA-ERRCD
                    GO  TO  4101-KAKUTEI-CHK-EXT
                END-IF
@@ -1334,8 +1336,12 @@
              WHEN    2
                     MOVE  "NYUGAIKBN"  TO  MCP-WIDGET
              WHEN    3
-                    MOVE  "FILENM1"    TO  MCP-WIDGET
+                    MOVE  "FILE1"      TO  MCP-WIDGET
              WHEN    4
+                    MOVE  "FILENM1"    TO  MCP-WIDGET
+             WHEN    5
+                    MOVE  "FILE2"      TO  MCP-WIDGET
+             WHEN    6
                     MOVE  "FILENM2"    TO  MCP-WIDGET
              WHEN    99
                     MOVE  "B12"        TO  MCP-WIDGET
@@ -1355,8 +1361,12 @@
                MOVE    1                   TO  SPA-GMN-CUR
            WHEN    "NYUGAIKBN"
                MOVE    2                   TO  SPA-GMN-CUR
-           WHEN    "FILENM1"
+           WHEN    "FILE1"
                MOVE    3                   TO  SPA-GMN-CUR
+           WHEN    "FILENM1"
+               MOVE    4                   TO  SPA-GMN-CUR
+           WHEN    "FILE2"
+               MOVE    5                   TO  SPA-GMN-CUR
            WHEN    "FILENM2"
                MOVE    99                  TO  SPA-GMN-CUR
            WHEN    "B12"
