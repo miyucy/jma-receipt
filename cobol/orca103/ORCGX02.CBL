@@ -34,6 +34,7 @@
       *  01.00.04    NACL-伊藤    02/10/24  薬剤と病名の時明細表示頁に      
       *                                     よる添字のバグ修正
       *  01.00.05    NACL-多々納  02/11/18  一括入力変更
+      *  01.00.06    NACL-太田    03/11/19  有効期間編集修正
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -329,7 +330,13 @@
            MOVE    SPA-X01-CHKKBN      TO  CHK-CHKKBN
            MOVE    SPA-X01-SRYCD       TO  CHK-SRYCD
            MOVE    CHK-REC             TO  MCPDATA-REC
-           MOVE    SPA-X01-STYUKYMD    TO  ORC-DBYMD
+           IF    ( SPA-X01-SEL-STYUKYMD    =    SPACE )
+               MOVE    SPA-X01-STYUKYMD
+                                       TO  ORC-DBYMD
+           ELSE
+               MOVE    SPA-X01-SEL-STYUKYMD
+                                       TO  ORC-DBYMD
+           END-IF
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "CHK-KEY2"          TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
@@ -871,8 +878,10 @@
            INITIALIZE                  CHK-REC
            MOVE    SPA-X01-CHKKBN      TO  CHK-CHKKBN
            MOVE    SPA-X01-SRYCD       TO  CHK-SRYCD
-           MOVE    SPA-X01-STYUKYMD    TO  CHK-YUKOSTYMD
-           MOVE    SPA-X01-EDYUKYMD    TO  CHK-YUKOEDYMD
+           MOVE    SPA-X01-SEL-STYUKYMD
+                                       TO  CHK-YUKOSTYMD
+           MOVE    SPA-X01-SEL-EDYUKYMD
+                                       TO  CHK-YUKOEDYMD
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "CHK-KEY4"          TO  ORC-DBPATH
@@ -983,8 +992,10 @@
            INITIALIZE                  CHK-REC
            MOVE    SPA-X01-CHKKBN      TO  CHK-CHKKBN
            MOVE    SPA-X01-SRYCD       TO  CHK-SRYCD
-           MOVE    SPA-X01-STYUKYMD    TO  CHK-YUKOSTYMD
-           MOVE    SPA-X01-EDYUKYMD    TO  CHK-YUKOEDYMD
+           MOVE    SPA-X01-SEL-STYUKYMD
+                                       TO  CHK-YUKOSTYMD
+           MOVE    SPA-X01-SEL-EDYUKYMD
+                                       TO  CHK-YUKOEDYMD
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "CHK-KEY4"          TO  ORC-DBPATH
