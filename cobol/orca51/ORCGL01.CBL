@@ -820,6 +820,17 @@
                ELSE
                    GO  TO  41012-PARA-NAIYO-CHK-EXT
                END-IF
+           WHEN    "KKNYM"
+               MOVE    SPA-GMN-PARA (IDXA IDXB)    TO  WRK-YMD
+               PERFORM 5003-NENGETSU-KKN-CHK-SEC
+               IF    ( SPA-ERRCD       =   SPACE )
+                   MOVE    WRK-SYMD(1:6)
+                                       TO  SPA-NAI-HENPARA (IDXA IDXB)
+                   MOVE    WRK-HENYMDG(1:6)
+                                       TO  SPA-GMN-PARA    (IDXA IDXB)
+               ELSE
+                   GO  TO  41012-PARA-NAIYO-CHK-EXT
+               END-IF
            WHEN    "YMD"
                MOVE    SPA-GMN-PARA (IDXA IDXB)    TO  WRK-YMD
                PERFORM 5002-HIZUKE-CHK-SEC
@@ -2374,6 +2385,28 @@
            END-IF
            .
        5003-NENGETSU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    年月（期間）チェック・編集処理
+      *****************************************************************
+       5003-NENGETSU-KKN-CHK-SEC       SECTION.
+      *
+           IF    ( WRK-YMD (1:6)     =     "000000" )
+               MOVE    "000000"       TO   WRK-HENYMDG
+                                           WRK-SYMD
+               GO  TO  5003-NENGETSU-KKN-CHK-EXT
+           END-IF
+      *
+           IF    ( WRK-YMD (1:6)     =     "999999" )
+               MOVE    "999999"       TO   WRK-HENYMDG
+                                           WRK-SYMD
+               GO  TO  5003-NENGETSU-KKN-CHK-EXT
+           END-IF
+      *
+           PERFORM 5003-NENGETSU-CHK-SEC
+      *
+           .
+       5003-NENGETSU-KKN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    管理マスター読込（キー）
