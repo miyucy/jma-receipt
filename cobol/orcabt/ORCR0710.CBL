@@ -1040,7 +1040,7 @@
            PERFORM 301-RECE67-HENSYU-SEC
       *
       *    Ä¢É¼ÊÔ½¸<¥Ø¥Ã¥À¡¼Éô>½èÍý
-           PERFORM 310-HC101-HEAD-HEN-SEC
+           PERFORM 310-HCN06-HEAD-HEN-SEC
       *
       *    Ä¢É¼ÊÔ½¸<ÅÀ¿ô>½èÍý
            PERFORM 330-HC101-TENSU-HEN-SEC
@@ -1095,7 +1095,7 @@
       *****************************************************************
       *    Ä¢É¼ÊÔ½¸<¥Ø¥Ã¥À¡¼Éô>½èÍý
       *****************************************************************
-       310-HC101-HEAD-HEN-SEC          SECTION.
+       310-HCN06-HEAD-HEN-SEC          SECTION.
       *
            INITIALIZE                      HC06
            MOVE    SPACE               TO  HC06
@@ -1244,13 +1244,13 @@
            END-IF
       *
            .
-       310-HC101-HEAD-HEN-EXT.
+       310-HCN06-HEAD-HEN-EXT.
            EXIT.
       *     
       *****************************************************************
       *    Ä¢É¼ÊÔ½¸<Â³»æ¥Ø¥Ã¥À¡¼Éô>½èÍý
       *****************************************************************
-       310-HC102-HEAD-HEN-SEC          SECTION.
+       310-HCN061-HEAD-HEN-SEC          SECTION.
       *
            INITIALIZE                      HC061
            MOVE    SPACE               TO  HC061
@@ -1319,7 +1319,7 @@
       *    »áÌ¾
            MOVE    HC06-NAME           TO  HC061-NAME
            .
-       310-HC102-HEAD-HEN-EXT.
+       310-HCN061-HEAD-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2158,29 +2158,109 @@
                IF      IDX2                      >   ZERO
                    MOVE    RECE62-TENSU(IDX IDX2)
                                                  TO  WRK-KOUTENZ
-                   MOVE    WRK-KOUTEN            TO  HC06-KOUTEN  (IDX)
+                   MOVE    WRK-KOUTEN            TO  HC06-KOHTEN  (IDX)
                END-IF
            END-PERFORM
       *
       *    £¹£°Æþ±¡            
-      **     PERFORM   VARYING   IDX   FROM    23   BY  1
-      **               UNTIL     IDX       >   32
-      *        <Ã±²Á>
-      **         MOVE    RECE62-KHNTEN (IDX)   TO  WRK-KHNTENZ
-      **         MOVE    WRK-KHNTEN            TO  HC06-KHNTEN  (IDX)
-      *        <²ó¿ô>
-      *         MOVE    RECE62-KAISU(IDX)     TO  WRK-KAISUZ
-      **         MOVE    WRK-KAISU             TO  HC06-KAISU   (IDX)
-      *        <ÅÀ¿ô¡¦¸øÈñÅÀ¿ô>
-      **         MOVE    RECE62-TENSU(IDX IDX1)
-      **                                       TO  WRK-TENSUZ
-      **         MOVE    WRK-TENSU             TO  HC06-TENSU   (IDX)
-      **         IF      IDX2                  >   ZERO
-      **             MOVE    RECE62-TENSU(IDX IDX2)
-      **                                       TO  WRK-KOUTENZ
-      **             MOVE    WRK-KOUTEN        TO  HC06-KOUTEN  (IDX)
-      **         END-IF
-      **     END-PERFORM
+      *        <Æþ±¡´ðËÜÎÁ>
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL     IDX       >   4
+      *        <´ðËÜÎÁ>
+               MOVE    RECE62-NYUKHNRYO (IDX)
+                                             TO  WRK-KHNTENZ
+               MOVE    WRK-KHNTEN            TO  HC06-NYUKHNTEN (IDX)
+      *        <Æü¿ô>
+               MOVE    RECE62-NYUKHNNISSU(IDX)
+                                             TO  WRK-KAISUZ
+               MOVE    WRK-KAISU             TO  HC06-NYUKAISU  (IDX)
+      *        <¶â³Û¡¦¸øÈñ¶â³Û>
+               MOVE    RECE62-NYUKHNKEI(IDX IDX1)
+                                             TO  WRK-TENSUZ
+               MOVE    WRK-TENSU             TO  HC06-NYUTENSU  (IDX)
+               IF      IDX2                  >   ZERO
+                   MOVE    RECE62-NYUKHNKEI(IDX IDX2)
+                                             TO  WRK-KOUTENZ
+                   MOVE    WRK-KOUTEN        TO  HC06-NYUKOHTEN (IDX)
+               END-IF
+           END-PERFORM
+      *        <Æþ±¡´ðËÜÎÁ¡¦²Ã»»>
+           IF      RECE62-NYUKHNKEI2 (1)     <   ZERO
+               MOVE    RECE62-NYUKHNKEI2 (1)     TO  WRK-TENSUZ
+               INITIALIZE              ORCSKANACHKAREA
+               MOVE    "2"             TO  KANACHK-SYORI 
+               MOVE    WRK-TENSUZ      TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               IF      KANACHK-RC      =   ZERO
+                   PERFORM VARYING IDZ FROM    13  BY  -2
+                           UNTIL   IDZ <       3
+                       IF      KANACHK-OUT-INPUT (IDZ:2)
+                                                   =   SPACE
+                               MOVE    "¢¤"        TO
+                                   KANACHK-OUT-INPUT (IDZ:2)
+                               MOVE    1           TO  IDZ
+                       END-IF
+                   END-PERFORM
+                   MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                             TO  HC06-NYUTENSUN (5)
+               END-IF        
+           ELSE
+               MOVE    RECE62-NYUKHNKEI2     TO  WRK-TENSUZ
+               MOVE    WRK-TENSU             TO  HC06-NYUTENSU  (5)
+           END-IF
+      *     
+      *        <ÆÃÄêÆþ±¡ÎÁ>
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                     UNTIL     IDX       >   4
+               IF      RECE62-NYUTOKRYO (IDX)    >   ZERO      
+                   COMPUTE IDY     =   IDX     +   5
+      *
+                   MOVE    "¡ß"              TO  HC06-KAKERU    (IDX)                    
+                   MOVE    "Æü"              TO  HC06-NICHI     (IDX)                    
+      *            <´ðËÜÎÁ>
+                   MOVE    RECE62-NYUTOKRYO (IDX)
+                                             TO  WRK-KHNTENZ
+                   MOVE    WRK-KHNTEN        TO  HC06-NYUKHNTEN (IDY)
+      *            <Æü¿ô>
+                   MOVE    RECE62-NYUTOKNISSU(IDX)
+                                             TO  WRK-KAISUZ
+                   MOVE    WRK-KAISU         TO  HC06-NYUKAISU  (IDY)
+      *            <¶â³Û¡¦¸øÈñ¶â³Û>
+                   MOVE    RECE62-NYUTOKKEI(IDX IDX1)
+                                             TO  WRK-TENSUZ
+                   MOVE    WRK-TENSU         TO  HC06-NYUTENSU  (IDY)
+                   IF      IDX2              >   ZERO
+                       MOVE    RECE62-NYUTOKKEI(IDX IDX2)
+                                             TO  WRK-KOUTENZ
+                       MOVE    WRK-KOUTEN    TO  HC06-NYUKOHTEN (IDY)
+                   END-IF
+               END-IF    
+           END-PERFORM
+      *        <ÆÃÄêÆþ±¡ÎÁ¡¦¤½¤ÎÂ¾>
+           IF      RECE62-NYUTOKKEI2  (2)     <   ZERO
+               MOVE    RECE62-NYUTOKKEI2  (2)
+                                       TO  WRK-TENSUZ
+               INITIALIZE              ORCSKANACHKAREA
+               MOVE    "2"             TO  KANACHK-SYORI 
+               MOVE    WRK-TENSUZ      TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               IF      KANACHK-RC      =   ZERO
+                   PERFORM VARYING IDZ FROM    13  BY  -2
+                           UNTIL   IDZ <       3
+                       IF      KANACHK-OUT-INPUT (IDZ:2)
+                                                   =   SPACE
+                               MOVE    "¢¤"        TO
+                                   KANACHK-OUT-INPUT (IDZ:2)
+                               MOVE    1           TO  IDZ
+                       END-IF
+                   END-PERFORM
+                   MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                             TO  HC06-NYUTENSUN (10)
+               END-IF        
+           ELSE
+               MOVE    RECE62-NYUKHNKEI2     TO  WRK-TENSUZ
+               MOVE    WRK-TENSU             TO  HC06-NYUTENSU  (10)
+           END-IF
       *
       *        <Æþ±¡Ç¯·îÆü>
            MOVE    RECE62-NYUINYMD     TO  WRK-SYMD
@@ -2192,9 +2272,9 @@
       *        <°åÎÅµ¡´Ø¼ïÊÌ>
            EVALUATE    RECE62-HOSPSBT
                WHEN    "1"
-                   MOVE    "ÉÂ"        TO  HC06-NYUINHOSPKBN
+                   MOVE    "ÉÂ"        TO  HC06-HOSPSBT
                WHEN    "2"
-                   MOVE    "¿Ç"        TO  HC06-NYUINHOSPKBN
+                   MOVE    "¿Ç"        TO  HC06-HOSPSBT
            END-EVALUATE        
       *
       *       <Æþ±¡´ðËÜÎÁ¼ïÊÌ>
@@ -2202,7 +2282,7 @@
                    UNTIL   IDX >       11
                    OR      RECE62-NYUSYUBETU (IDX) =   SPACE
                MOVE    RECE62-NYUSYUBETU (IDX)
-                                     TO  HC06-NYUINNAIYO (IDX)
+                                     TO  HC06-NYUSYUBETU (IDX)
            END-PERFORM
       *
       *    £¹£·¿©»ö            
@@ -2577,7 +2657,7 @@
       *     
       *    Ä¢É¼ÊÔ½¸<¥Ø¥Ã¥À¡¼Éô>½èÍý
            ADD     1             TO  CNT-PAGE
-           PERFORM 310-HC102-HEAD-HEN-SEC
+           PERFORM 310-HCN061-HEAD-HEN-SEC
            MOVE    ZERO          TO  WRK-LINETEK
       *
            .
