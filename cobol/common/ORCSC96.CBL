@@ -176,7 +176,7 @@
                    MOVE    "時間入力の診療コードを入力してください"
                                        TO  SPA-ERRMSG
                WHEN    "0026"
-                   MOVE    "検査を入力して下さい。"
+               MOVE    "病理判断料を算定できる検査を入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0027"
                    MOVE
@@ -716,6 +716,11 @@
                WHEN    "9029"
                    MOVE    "アフターケアは入院では選択できません。"
                                        TO  SPA-ERRMSG
+               WHEN    "9030"
+                   MOVE    "時間加算区分が選択中の時間加算区分と"
+                                       TO  SPA-ERRMSG
+                   MOVE    "違います。"
+                                       TO  SPA-ERRMSG(37:)
                WHEN    "9100"
                    MOVE    "診療内容が２００行を超えます。"
                                        TO  SPA-ERRMSG
