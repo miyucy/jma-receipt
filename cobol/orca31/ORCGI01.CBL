@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    02.12.10  収納明細削除処理追加
+      *  01.00.02    NACL-太田    02.12.26  入院科の初期表示を修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -132,6 +133,8 @@
                05  WRK-CMB-IDX             PIC 9(03).
                05  WRK-CMB-ITM             PIC X(100).
                05  WRK-CMB-ITM2            PIC X(100).
+               05  WRK-CMB-ITM3            PIC X(100).
+               05  WRK-CMB-ITM4            PIC X(100).
            03  WRK-CNT                     PIC 9(05).
            03  WRK-NUM-EDIT.
                05  WRK-99                  PIC 9(02).
@@ -155,7 +158,10 @@
                    07  WRK-BTUJY-BTUNUM    PIC X(02).
                    07  WRK-BTUJY-BRM-SAGAKU
                                            PIC X(02).
+                   07  WRK-BTUJY-BRM-KA    PIC X(02).
            03  WRK-BRM-SAGAKU-CD           PIC X(02).
+           03  WRK-BTU-KA-CD               PIC X(02).
+           03  WRK-BRM-KA-CD               PIC X(02).
            03  WRK-HKNCOMBI                PIC X(100).
            03  WRK-FTNRATE                 PIC X(05).
            03  WRK-HKNKBN-MEI              PIC X(02).
@@ -3192,6 +3198,10 @@
                                        TO  SPA-GMN-I01-BTUNAME
                MOVE    SPA-GMN-I01-BTUNAME-ITM2 (1)
                                        TO  WRK-BRM-SAGAKU-CD
+               MOVE    SPA-GMN-I01-BTUNAME-ITM3 (1)
+                                       TO  WRK-BTU-KA-CD
+               MOVE    SPA-GMN-I01-BTUNAME-ITM4 (1)
+                                       TO  WRK-BRM-KA-CD
                MOVE    6               TO  SPA-GMN-I01-CUR
       *    該当の病室が複数件存在した場合
            WHEN    OTHER
@@ -3200,6 +3210,10 @@
                                        TO  SPA-GMN-I01-BTUNAME
                    MOVE    SPA-GMN-I01-BTUNAME-ITM2 (1)
                                        TO  WRK-BRM-SAGAKU-CD
+                   MOVE    SPA-GMN-I01-BTUNAME-ITM3 (1)
+                                       TO  WRK-BTU-KA-CD
+                   MOVE    SPA-GMN-I01-BTUNAME-ITM4 (1)
+                                       TO  WRK-BRM-KA-CD
                ELSE
                    MOVE   SPA-GMN-I01-BTUNAME-CD
                                        TO  WRK-CMB-CD
@@ -3209,10 +3223,18 @@
                                        TO  SPA-GMN-I01-BTUNAME
                        MOVE    SPA-GMN-I01-BTUNAME-ITM2 (1)
                                        TO  WRK-BRM-SAGAKU-CD
+                       MOVE    SPA-GMN-I01-BTUNAME-ITM3 (1)
+                                       TO  WRK-BTU-KA-CD
+                       MOVE    SPA-GMN-I01-BTUNAME-ITM4 (1)
+                                       TO  WRK-BRM-KA-CD
                    ELSE
                       MOVE WRK-CMB-ITM TO  SPA-GMN-I01-BTUNAME
                       MOVE WRK-CMB-ITM2
                                        TO  WRK-BRM-SAGAKU-CD
+                      MOVE WRK-CMB-ITM3
+                                       TO  WRK-BTU-KA-CD
+                      MOVE WRK-CMB-ITM4
+                                       TO  WRK-BRM-KA-CD
                    END-IF
            END-EVALUATE
       *
@@ -3220,6 +3242,19 @@
            MOVE    WRK-BRM-SAGAKU-CD   TO  WRK-CMB-CD
            PERFORM 4103-CMB-SAGAKU-SRH-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-I01-SAGAKU
+      *
+      *    診療科の初期値を設定
+           IF    ( WRK-BRM-KA-CD   NOT =   SPACE )
+               MOVE    WRK-BRM-KA-CD   TO  WRK-CMB-CD
+               PERFORM 4103-CMB-NYUINKA-SRH-SEC
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-NYUINKA
+           ELSE
+               IF    ( WRK-BTU-KA-CD   NOT =   SPACE )
+                   MOVE    WRK-BTU-KA-CD   TO  WRK-CMB-CD
+                   PERFORM 4103-CMB-NYUINKA-SRH-SEC
+                   MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-NYUINKA
+               END-IF
+           END-IF
       *
       *    特定入院料コンボ設定処理
            PERFORM 4101-CMB-TOKNYUIN-SET-SEC
@@ -3262,6 +3297,9 @@
                                                    (WRK-BTUJYOHO-CNT)
                    MOVE    SYS-5002-BRM-SAGAKU
                                                TO  WRK-BTUJY-BRM-SAGAKU
+                                                   (WRK-BTUJYOHO-CNT)
+                   MOVE    SYS-5002-BRM-KA
+                                               TO  WRK-BTUJY-BRM-KA
                                                    (WRK-BTUJYOHO-CNT)
                END-IF
       *
@@ -3319,6 +3357,12 @@
                                     (SPA-GMN-I01-BTUNAME-CNT) (4 : )
                    MOVE    WRK-BTUJY-BRM-SAGAKU (WRK-BTUNUM-IDX)
                                TO  SPA-GMN-I01-BTUNAME-ITM2
+                                    (SPA-GMN-I01-BTUNAME-CNT)
+                   MOVE    SYS-5001-BTU-KA
+                               TO  SPA-GMN-I01-BTUNAME-ITM3
+                                    (SPA-GMN-I01-BTUNAME-CNT)
+                   MOVE    WRK-BTUJY-BRM-KA (WRK-BTUNUM-IDX)
+                               TO  SPA-GMN-I01-BTUNAME-ITM4
                                     (SPA-GMN-I01-BTUNAME-CNT)
                WHEN   WRK-BTUJY-BTUNUM (WRK-BTUNUM-IDX)
                                    =   SPACE
@@ -3525,6 +3569,19 @@
                                    TO  WRK-CMB-CD
                PERFORM 4103-CMB-SAGAKU-SRH-SEC
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SAGAKU
+      *
+      *        診療科の初期値を設定
+               IF    ( WRK-CMB-ITM4    NOT =   SPACE )
+                   MOVE    WRK-CMB-ITM4        TO  WRK-CMB-CD
+                   PERFORM 4103-CMB-NYUINKA-SRH-SEC
+                   MOVE    WRK-CMB-ITM         TO  SPA-GMN-I01-NYUINKA
+               ELSE
+                   IF    ( WRK-CMB-ITM3    NOT =   SPACE )
+                       MOVE    WRK-CMB-ITM3    TO  WRK-CMB-CD
+                       PERFORM 4103-CMB-NYUINKA-SRH-SEC
+                       MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-NYUINKA
+                   END-IF
+               END-IF
            ELSE
                MOVE    "0001"      TO  SPA-ERRCD
                MOVE    5           TO  SPA-GMN-I01-CUR
@@ -4024,6 +4081,8 @@
            AT  END
                INITIALIZE          WRK-CMB-ITM
                                    WRK-CMB-ITM2
+                                   WRK-CMB-ITM3
+                                   WRK-CMB-ITM4
                                    WRK-CMB-IDX
            WHEN    SPA-GMN-I01-BTUNAME-ITM (CMB-IDX02) (1 : 2)
                                    =   WRK-CMB-CD
@@ -4032,10 +4091,16 @@
                                    TO  WRK-CMB-ITM
                MOVE    SPA-GMN-I01-BTUNAME-ITM2 (CMB-IDX02)
                                    TO  WRK-CMB-ITM2
+               MOVE    SPA-GMN-I01-BTUNAME-ITM3 (CMB-IDX02)
+                                   TO  WRK-CMB-ITM3
+               MOVE    SPA-GMN-I01-BTUNAME-ITM4 (CMB-IDX02)
+                                   TO  WRK-CMB-ITM4
            WHEN    SPA-GMN-I01-BTUNAME-ITM (CMB-IDX02)
                                    =   SPACE
                INITIALIZE          WRK-CMB-ITM
                                    WRK-CMB-ITM2
+                                   WRK-CMB-ITM3
+                                   WRK-CMB-ITM4
                                    WRK-CMB-IDX
            END-SEARCH
       *
