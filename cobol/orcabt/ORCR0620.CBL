@@ -2465,8 +2465,10 @@
                IF      SYS-5001-RECEDSPKBN =  SPACE
                    CONTINUE
                ELSE
-                   IF      PTNYUINRRK-TENSTUYMD (1:6)
-                                               <   RECE62-SRYYM
+                   IF    ( PTNYUINRRK-TENSTUYMD (1:6)
+                                               <   RECE62-SRYYM )
+                   OR    ( PTNYUINRRK-TENNYUYMD (1:6)
+                                               >   RECE62-SRYYM )
                        CONTINUE
                    ELSE 
                        PERFORM VARYING IDX3    FROM    1   BY  1
