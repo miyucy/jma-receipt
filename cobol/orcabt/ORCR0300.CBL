@@ -47,6 +47,7 @@
       *  01.00.08    NACL-多々納  03/08/25  コメントの値を全角編集へ修正
       *  01.00.09    NACL-藤原    03/09/03  公費の負担者番号・受給者番号
       *                                     の全角チェック追加
+      *  01.00.10    NACL-藤原    03/09/22  再診のときの時間外の編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -196,6 +197,7 @@
            03  FLG-YKZ20               PIC 9(01).
            03  FLG-TOTALTEN            PIC 9(01).
            03  FLG-KOKUJISKBKBN1       PIC 9(01).
+           03  FLG-GAITENTTLKBN        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -272,6 +274,8 @@
            03  WRK-SRYYM               PIC 9(05).         
       *       
            03  WRK-RENNUM              PIC 9(04).
+      *
+           03  WRK-RECE041-SRYKBN      PIC X(02).
       *
       *    1桁目:生保 2桁目:結核 3桁目:精神
            03  WRK-3SYU-KBN.
@@ -398,6 +402,17 @@
       *----(01.00.04) LINE ADD END ------------------------------------
       *    並び替え用ワーク
        01  TBL-KOUI-SORT                        PIC X(200).
+      *
+      *    診療行為データ用テーブル（再診 時間外）
+       01  TBL-KOUI-SRYKBN12-AREA.
+           03  TBL-KOUI-SRYKBN12-REC                     OCCURS  3.
+               05  TBL-KOUI-SRYKBN12-SRYACTINF.
+      *            診療コード
+                   07  TBL-KOUI-SRYKBN12-SRYCD  PIC  X(09).
+      *            回数
+                   07  TBL-KOUI-SRYKBN12-KAISU  PIC  9(04).
+      *            点数
+                   07  TBL-KOUI-SRYKBN12-TEN    PIC  9(09)V9(02).
       *  
        01  WRK-CONS-AREA.
       *    コンマ
@@ -425,6 +440,20 @@
       *****03  WRK-CONS-CHU205        PIC X(09)   VALUE   "640010002".
       *    外服薬２０５円以下
       *****03  WRK-CONS-GAI205        PIC X(09)   VALUE   "660010002".
+      *    時間外（再診）
+           03  WRK-CONS-JIKANGAI-SAISIN
+                                      PIC X(09)   VALUE   "112001110".
+           03  WRK-CONS-JIKANGAI-SAISIN-TEN
+                                      PIC 9(07)   VALUE   65.
+      *    休日（再診）
+           03  WRK-CONS-HOLIDAY-SAISIN
+                                      PIC X(09)   VALUE   "112001210".
+           03  WRK-CONS-HOLIDAY-SAISIN-TEN
+                                      PIC 9(07)   VALUE   190.
+      *    深夜（再診）
+           03  WRK-CONS-NIGHT-SAISIN  PIC X(09)   VALUE   "112001310".
+           03  WRK-CONS-NIGHT-SAISIN-TEN
+                                      PIC 9(07)   VALUE   420.
       *
       *    改行コード
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
@@ -655,6 +684,9 @@
                                    OR      KEY-NEW NOT =   KEY-OLD
       *
                MOVE    ZERO               TO  WRK-RENNUM
+      *
+               INITIALIZE                     WRK-RECE041-SRYKBN
+                                              TBL-KOUI-SRYKBN12-AREA
       *
       *        保険履歴情報編集処理
                PERFORM     2001-RIREKI-HEN-SEC 
@@ -1376,6 +1408,17 @@
                OR     ( RECE02-HOJOKBN-KEY
                                          NOT =   RECE041-HOJOKBN      )
                OR     ( RECE02-TEKSTYMD  NOT =   RECE041-TEKSTYMD     )
+      *
+      *        再診の時間外を別剤とする
+               IF      WRK-RECE041-SRYKBN     =   SPACE
+               AND     RECE041-SRYKBN         =   "12"
+                   MOVE    RECE041-SRYKBN        TO  WRK-RECE041-SRYKBN
+               END-IF
+               IF      WRK-RECE041-SRYKBN     =   "12"
+               AND     RECE041-SRYKBN         >   "12"
+                   PERFORM 20079-SRYKBN12-JIKANGAI-HENSYU-SEC
+                   MOVE    SPACE                  TO  WRK-RECE041-SRYKBN
+               END-IF 
       *        負担区分編集処理
                PERFORM 20070-FTNKBN-HENSYU-SEC        
       *        明細テーブル退避処理
@@ -1387,6 +1430,12 @@
                    PERFORM 990-RECE041-NEXT-SEC
                END-IF     
            END-PERFORM
+      *
+      *    再診のみのとき
+           IF      WRK-RECE041-SRYKBN     =   "12"
+               PERFORM 20079-SRYKBN12-JIKANGAI-HENSYU-SEC 
+               MOVE    SPACE                  TO  WRK-RECE041-SRYKBN
+           END-IF 
            .
        2007-HENSYU-EXT.
            EXIT. 
@@ -1547,6 +1596,7 @@
                                            FLG-TEIGEN
                                            FLG-YKZ20
                                            FLG-KOKUJISKBKBN1
+                                           FLG-GAITENTTLKBN
       *                                     
            MOVE    RECE041-SRYKBN      TO  WRK-SRYKBN
       *
@@ -1697,18 +1747,33 @@
       *    摘要データ（診療行為／告示等識別区分による並びかえ）退避処理
       *****************************************************************
        200711-KOUI-TAIHI-SEC          SECTION.
-      *
-           ADD     1                   TO  WRK-TBLMAX1
+      *      
+           IF      RECE041-SRYKBN      =   "12"
+               IF      RECE05-SRYCD (IDX)  =   WRK-CONS-JIKANGAI-SAISIN
+                   MOVE    1           TO  FLG-GAITENTTLKBN
+                   GO  TO  200711-KOUI-TAIHI-EXT
+               END-IF
+               IF      RECE05-SRYCD (IDX)   =   WRK-CONS-HOLIDAY-SAISIN
+                   MOVE    2           TO  FLG-GAITENTTLKBN
+                   GO  TO  200711-KOUI-TAIHI-EXT
+               END-IF
+               IF      RECE05-SRYCD (IDX)   =   WRK-CONS-NIGHT-SAISIN
+                   MOVE    3           TO  FLG-GAITENTTLKBN
+                   GO  TO  200711-KOUI-TAIHI-EXT
+               END-IF
+           END-IF
       *     
-           IF      WRK-TBLMAX1         >   100
+           IF      WRK-TBLMAX1         >=  100
                MOVE    "*** ORCR0300 KOUI TABLE OVER  ***"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            ELSE
+               ADD     1                   TO  WRK-TBLMAX1
+      *
                MOVE    RECE05-SRYCD    (IDX)   TO
-                                   TBL-KOUI-SRYCD   (WRK-TBLMAX1)
+                                       TBL-KOUI-SRYCD   (WRK-TBLMAX1)
                MOVE    RECE05-SRYSURYO (IDX)   TO
-                                   TBL-KOUI-SRYSURYO(WRK-TBLMAX1)
+                                       TBL-KOUI-SRYSURYO(WRK-TBLMAX1)
                INITIALIZE                  TNS-TENSU-REC
                MOVE    RECE05-SRYCD (IDX)      TO  TNS-SRYCD
                PERFORM 900-TENSU-READ-SEC
@@ -1740,7 +1805,7 @@
       *
                    IF      TNS-KOKUJISKBKBN1   NOT =   "1"
                        MOVE    1                   TO  FLG-KOKUJISKBKBN1
-                   END-IF    
+                   END-IF
                END-IF
            END-IF
            .
@@ -1976,7 +2041,47 @@
                            COMPUTE WRK-TENSU =   RECE041-SYUTEN1   - 
                                                  RECE041-SYUTEN2
                        ELSE
-                           MOVE    RECE041-SYUTEN1   TO  WRK-TENSU
+                           EVALUATE    FLG-GAITENTTLKBN
+                               WHEN    ZERO
+                                   MOVE    RECE041-SYUTEN1
+                                                     TO  WRK-TENSU
+                               WHEN    1
+                                   COMPUTE WRK-TENSU =   
+                                           RECE041-SYUTEN1     -
+                                           WRK-CONS-JIKANGAI-SAISIN-TEN
+                                   ADD RECE041-ZAIKAISU    TO
+                                             TBL-KOUI-SRYKBN12-KAISU (1)
+                                   MOVE    WRK-CONS-JIKANGAI-SAISIN
+                                                           TO
+                                             TBL-KOUI-SRYKBN12-SRYCD (1)    
+                                   MOVE    WRK-CONS-JIKANGAI-SAISIN-TEN
+                                                           TO
+                                             TBL-KOUI-SRYKBN12-TEN   (1)    
+                               WHEN    2
+                                   COMPUTE WRK-TENSU =
+                                           RECE041-SYUTEN1     -
+                                           WRK-CONS-HOLIDAY-SAISIN-TEN
+                                   ADD RECE041-ZAIKAISU    TO
+                                             TBL-KOUI-SRYKBN12-KAISU (2)      
+                                   MOVE    WRK-CONS-HOLIDAY-SAISIN
+                                                           TO
+                                             TBL-KOUI-SRYKBN12-SRYCD (2)    
+                                   MOVE    WRK-CONS-HOLIDAY-SAISIN-TEN
+                                                           TO
+                                             TBL-KOUI-SRYKBN12-TEN   (2)    
+                               WHEN    3
+                                   COMPUTE WRK-TENSU =
+                                           RECE041-SYUTEN1     -
+                                           WRK-CONS-NIGHT-SAISIN-TEN
+                                   ADD RECE041-ZAIKAISU    TO
+                                             TBL-KOUI-SRYKBN12-KAISU (3)     
+                                   MOVE    WRK-CONS-NIGHT-SAISIN
+                                                           TO
+                                             TBL-KOUI-SRYKBN12-SRYCD (3)    
+                                   MOVE    WRK-CONS-NIGHT-SAISIN-TEN
+                                                           TO
+                                             TBL-KOUI-SRYKBN12-TEN   (3)    
+                           END-EVALUATE
                        END-IF
                        MOVE    WRK-TENSU         TO  WRK-NUM
                        MOVE    7                 TO  WRK-NAGASA
@@ -2190,6 +2295,56 @@
            PERFORM 5001-FILE-WRITE-SEC
            .
        200723-KIZAI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    再診のときの編集処理
+      *****************************************************************
+       20079-SRYKBN12-JIKANGAI-HENSYU-SEC   SECTION.
+      *
+      *    診療行為データの編集
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       3
+               IF      TBL-KOUI-SRYKBN12-KAISU (IDX)   >   ZERO
+                   MOVE    SPACE               TO  WRK-REC
+                   MOVE    ZERO                TO  WRK-REC-LENGTH
+      *          
+                   MOVE    "SI,"               TO  WRK-REC
+                   MOVE    3                   TO  WRK-REC-LENGTH
+      *            診療識別
+                   MOVE    "12"                TO  WRK-DATA
+                   MOVE    2                   TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            負担区分
+                   MOVE    WRK-FTNKBN          TO  WRK-DATA
+                   MOVE    1                   TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            診療行為コード
+                   MOVE    TBL-KOUI-SRYKBN12-SRYCD (IDX)
+                                                   TO  WRK-DATA
+                   MOVE    9                   TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            数量
+                   PERFORM 5005-NUM-HENSYU-SEC  
+      *            点数
+                   MOVE    TBL-KOUI-SRYKBN12-TEN (IDX)
+                                               TO  WRK-TENSU
+                   MOVE    WRK-TENSU           TO  WRK-NUM
+                   MOVE    7                   TO  WRK-NAGASA
+                   PERFORM 5005-NUM-HENSYU-SEC  
+      *            回数
+                   MOVE    TBL-KOUI-SRYKBN12-KAISU (IDX)
+                                               TO  WRK-KAISU
+                   MOVE    WRK-KAISU           TO  WRK-NUM
+                   MOVE    3                   TO  WRK-NAGASA
+                   MOVE    1                   TO  WRK-END 
+                   PERFORM 5005-NUM-HENSYU-SEC  
+      *
+                   PERFORM 5001-FILE-WRITE-SEC
+               END-IF
+           END-PERFORM
+           .
+       20079-SRYKBN12-JIKANGAI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
