@@ -31,6 +31,8 @@
       *  01.01.01    MCC-藤原     01/09/26  JOINの修正      
       *  01.01.02    MCC-藤原     01/11/26  項目をコンボボックスに変更
       *  01.02.04    MCC-多々納   02/07/18  服用方法画面追加
+      *  01.02.05    NACL-多々納  02/09/03  新規の時付加情報が存在した時更新とする
+      *  01.02.06    NACL-多々納  02/10/09  半角空白→全角空白追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -145,6 +147,7 @@
            03  WRK-OTYMD           PIC X(08).
       *
            03  WRK-MAE-INPUT       PIC X(400).
+           03  WRK-OUT-INPUT       PIC X(400).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -928,7 +931,7 @@
        4129-TENSUPLUS-UPD-SEC                       SECTION.
       *
       *    点数マスタ付加情報検索
-           IF      SPA-Z01-SYORIKBN    =   2  OR  3
+      *****IF      SPA-Z01-SYORIKBN    =   2  OR  3
                MOVE    SPACE               TO  TENSUPLUS-REC
                MOVE    SPA-Z01-SRYCD       TO  TNSP-SRYCD
                MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
@@ -955,7 +958,7 @@
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
-           END-IF
+      *****END-IF
       *
       *    有効期限更新
            IF      FLG-TENSUPLUS       =   ZERO
@@ -980,6 +983,8 @@
                            MOVE    "0016"          TO  SPA-ERRCD
                            GO      TO      4129-TENSUPLUS-UPD-EXT
                        END-IF
+      *
+                   WHEN    1
                    WHEN    2
       *                更新時処理
                        MOVE    SPA-NAI-YUKOSTYMD   TO  TNSP-YUKOSTYMD
@@ -1006,7 +1011,7 @@
            END-IF
       *
       *    新規追加
-           IF     (FLG-TENSUPLUS       =   1   )  OR
+           IF     (FLG-TENSUPLUS       =   1   )  AND
                   (SPA-Z01-SYORIKBN    =   3  OR  1 )
                INITIALIZE                      TENSUPLUS-REC
                MOVE    SPA-Z01-SRYCD       TO  TNSP-SRYCD
@@ -1048,6 +1053,7 @@
                    MOVE  Z02-KANANAME            TO  SPA-GMN-KANANAME
                    MOVE    SPA-GMN-KANANAME      TO  WRK-MAE-INPUT
                    PERFORM 400-ZENCHK-SEC
+                   MOVE    WRK-OUT-INPUT          TO  SPA-GMN-KANANAME
                    IF      SPA-ERRCD       NOT =   SPACE
                        MOVE  "KANANAME"            TO  SPA-GMN-CUR
                    END-IF
@@ -1057,6 +1063,7 @@
                    MOVE  Z02-NAME                TO  SPA-GMN-NAME
                    MOVE    SPA-GMN-NAME          TO  WRK-MAE-INPUT
                    PERFORM 400-ZENCHK-SEC
+                   MOVE    WRK-OUT-INPUT          TO  SPA-GMN-NAME
                    IF      SPA-ERRCD       NOT =   SPACE
                        MOVE  "NAME"                TO  SPA-GMN-CUR
                    END-IF
@@ -1066,6 +1073,7 @@
                    MOVE  Z02-FORMALNAME          TO  SPA-GMN-FORMALNAME
                    MOVE    SPA-GMN-FORMALNAME    TO  WRK-MAE-INPUT
                    PERFORM 400-ZENCHK-SEC
+                   MOVE    WRK-OUT-INPUT          TO  SPA-GMN-FORMALNAME
                    IF      SPA-ERRCD       NOT =   SPACE
                        MOVE  "FORMALNAME"          TO  SPA-GMN-CUR
                    END-IF
@@ -1236,6 +1244,9 @@
                   (KANACHK-SYUBETU     =   1     )
       *        全角半角混在エラー
                MOVE    "0017"              TO  SPA-ERRCD
+               MOVE    WRK-MAE-INPUT       TO  WRK-OUT-INPUT 
+           ELSE
+               MOVE    KANACHK-OUT-INPUT   TO  WRK-OUT-INPUT 
            END-IF
            .
       *

@@ -31,6 +31,7 @@
       *  01.00.02    MCC-多々納   01/07/18  正式名称等追加
       *  01.01.01    MCC-藤原     01/09/26  JOINの修正      
       *  01.01.02    MCC-多々納   02/07/18  服用方法画面追加
+      *  01.01.03    NACL-多々納  02/10/09  半角空白→全角空白追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -199,6 +200,7 @@
            03  WRK-OTYMD           PIC X(08).
       *
            03  WRK-MAE-INPUT       PIC X(400).
+           03  WRK-OUT-INPUT       PIC X(400).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -1234,6 +1236,7 @@
                    MOVE    Z05-KANANAME        TO  SPA-GMN-KANANAME
                    MOVE    SPA-GMN-KANANAME    TO  WRK-MAE-INPUT
                    PERFORM 400-ZENCHK-SEC
+                   MOVE    WRK-OUT-INPUT       TO  SPA-GMN-KANANAME
                    IF      SPA-ERRCD       NOT =   SPACE
                        MOVE    "KANANAME"          TO  SPA-GMN-CUR
                    END-IF
@@ -1244,6 +1247,7 @@
                    MOVE    Z05-NAME            TO  SPA-GMN-NAME
                    MOVE    SPA-GMN-NAME        TO  WRK-MAE-INPUT
                    PERFORM 400-ZENCHK-SEC
+                   MOVE    WRK-OUT-INPUT       TO  SPA-GMN-NAME
                    IF      SPA-ERRCD       NOT =   SPACE
                        MOVE    "NAME"          TO  SPA-GMN-CUR
                    END-IF
@@ -1253,6 +1257,7 @@
                    MOVE    Z05-FORMALNAME      TO  SPA-GMN-FORMALNAME
                    MOVE    SPA-GMN-FORMALNAME  TO  WRK-MAE-INPUT
                    PERFORM 400-ZENCHK-SEC
+                   MOVE    WRK-OUT-INPUT       TO  SPA-GMN-FORMALNAME
                    IF      SPA-ERRCD       NOT =   SPACE
                        MOVE    "FORMALNAME"        TO  SPA-GMN-CUR
                    END-IF
@@ -1347,6 +1352,9 @@
                   (KANACHK-SYUBETU     =   1     )
       *        全角半角混在エラー
                MOVE    "0017"              TO  SPA-ERRCD
+               MOVE    WRK-MAE-INPUT       TO  WRK-OUT-INPUT 
+           ELSE
+               MOVE    KANACHK-OUT-INPUT   TO  WRK-OUT-INPUT 
            END-IF
            .
       *

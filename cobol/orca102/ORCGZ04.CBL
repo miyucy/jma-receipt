@@ -34,6 +34,7 @@
       *                                     単位名称を削除      
       *  01.01.05    MCC-多々納   02/03/17  後発医薬品追加
       *  01.01.06    MCC-多々納   02/07/18  服用方法画面追加
+      *  01.01.07    NACL-多々納  02/10/09  半角空白→全角空白追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -219,6 +220,7 @@
            03  WRK-OTYMD           PIC X(08).
       *
            03  WRK-MAE-INPUT       PIC X(400).
+           03  WRK-OUT-INPUT       PIC X(400).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -1330,6 +1332,7 @@
                    MOVE    Z04-KANANAME        TO  SPA-GMN-KANANAME
                    MOVE    SPA-GMN-KANANAME    TO  WRK-MAE-INPUT
                    PERFORM 400-ZENCHK-SEC
+                   MOVE    WRK-OUT-INPUT       TO  SPA-GMN-KANANAME
                    IF      SPA-ERRCD       NOT =   SPACE
                        MOVE    "KANANAME"          TO  SPA-GMN-CUR
                    END-IF
@@ -1339,6 +1342,7 @@
                    MOVE    Z04-NAME            TO  SPA-GMN-NAME
                    MOVE    SPA-GMN-NAME        TO  WRK-MAE-INPUT
                    PERFORM 400-ZENCHK-SEC
+                   MOVE    WRK-OUT-INPUT       TO  SPA-GMN-NAME
                    IF      SPA-ERRCD       NOT =   SPACE
                        MOVE    "NAME"          TO  SPA-GMN-CUR
                    END-IF
@@ -1348,6 +1352,7 @@
                    MOVE    Z04-SHONAME         TO  SPA-GMN-SHONAME
                    MOVE    SPA-GMN-SHONAME     TO  WRK-MAE-INPUT
                    PERFORM 400-ZENCHK-SEC
+                   MOVE    WRK-OUT-INPUT       TO  SPA-GMN-SHONAME
                    IF      SPA-ERRCD       NOT =   SPACE
                        MOVE    "SHONAME"           TO  SPA-GMN-CUR
                    END-IF
@@ -1485,6 +1490,7 @@
                    MOVE  Z04-FORMALNAME         TO  SPA-GMN-FORMALNAME
                    MOVE    SPA-GMN-FORMALNAME   TO  WRK-MAE-INPUT
                    PERFORM 400-ZENCHK-SEC
+                   MOVE    WRK-OUT-INPUT       TO  SPA-GMN-FORMALNAME
                    IF      SPA-ERRCD       NOT =   SPACE
                        MOVE    "FORMALNAME"        TO  SPA-GMN-CUR
                    END-IF
@@ -1511,6 +1517,9 @@
                   (KANACHK-SYUBETU     =   1     )
       *        全角半角混在エラー
                MOVE    "0030"              TO  SPA-ERRCD
+               MOVE    WRK-MAE-INPUT       TO  WRK-OUT-INPUT 
+           ELSE
+               MOVE    KANACHK-OUT-INPUT   TO  WRK-OUT-INPUT 
            END-IF
            .
       *

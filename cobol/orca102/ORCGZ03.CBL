@@ -34,6 +34,8 @@
       *  01.01.02    MCC-Æ£¸¶     01/10/29  ºÎ·ìÎÁ¶èÊ¬¤Î½¤Àµ      
       *  01.01.03    MCC-Â¿¡¹Ç¼   02/03/17  »ÜÀß´ð½àÉÔÅ¬¹ç¤ÎÄÉ²Ã  
       *  01.01.04    MCC-Â¿¡¹Ç¼   02/07/18  ÉþÍÑÊýË¡²èÌÌÄÉ²Ã
+      *  01.01.05    NACL-Â¿¡¹Ç¼  02/10/09  ¿ÇÎÅ¼ïÊÌ¤ÎºÇÂç¿ô¤ò£±£°£°¤Ø
+      *                                     È¾³Ñ¶õÇò¢ªÁ´³Ñ¶õÇòÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -114,6 +116,7 @@
            03  WRK-OTYMD           PIC X(08).
       *
            03  WRK-MAE-INPUT       PIC X(400).
+           03  WRK-OUT-INPUT       PIC X(400).
       *
       *    ¿ÇÎÅ¼ïÊÌÌ¾¥Æ¡¼¥Ö¥ë
            COPY    "CPORCSSRYSYU.INC".
@@ -842,7 +845,7 @@
                                                              (IDX-2)
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   70  )   OR
+                   UNTIL      (IDX     >   100  )   OR
                               (MSYU-SRYKBN (IDX)   =   SPACE )
       *        ¿ÇÎÅ¶èÊ¬
                IF      (IDX-1          =   1    )  OR
@@ -929,19 +932,19 @@
            MOVE    "900 Æþ±¡"          TO  SPA-GMN-SRYSYUKBNCOB(IDX-2)
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   70
+                   UNTIL       IDX     >   100
                IF      SPA-GMN-SRYKBN      =   SPA-GMN-SRYKBN-L(IDX)
                    MOVE    SPA-GMN-SRYKBNCOB (IDX) TO  SPA-GMN-SRYKBN-G
-                   MOVE    70              TO  IDX
+                   MOVE    100             TO  IDX
                END-IF
            END-PERFORM
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   70
+                   UNTIL       IDX     >   100
                IF      SPA-GMN-SRYSYUKBN   =   SPA-GMN-SRYSYUKBNCOB
                                                          (IDX)(1:3)
                    MOVE    SPA-GMN-SRYSYUKBNCOB (IDX)
                                            TO  SPA-GMN-SRYSYUKBN-G
-                   MOVE    70              TO  IDX
+                   MOVE    100             TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1423,7 +1426,7 @@
       *    ¿ÇÎÅ¶èÊ¬
            MOVE    ZERO                TO  IDX-1
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   70
+                   UNTIL       IDX     >   100
                IF      SPA-GMN-SRYKBNCOB (IDX) NOT =   SPACE
                    ADD     1               TO  IDX-1
                    MOVE    SPA-GMN-SRYKBNCOB (IDX)
@@ -1433,7 +1436,7 @@
            END-PERFORM
            MOVE    ZERO                TO  IDX-1
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   70
+                   UNTIL       IDX     >   100
                IF      SPA-GMN-SRYSYUKBNCOB (IDX) NOT =   SPACE
                    ADD     1               TO  IDX-1
                    MOVE    SPA-GMN-SRYSYUKBNCOB (IDX)
@@ -2607,16 +2610,19 @@
                    MOVE  Z03-KANANAME            TO  SPA-GMN-KANANAME
                    MOVE    SPA-GMN-KANANAME      TO  WRK-MAE-INPUT
                    PERFORM 400-ZENCHK-SEC
+                   MOVE    WRK-OUT-INPUT         TO  SPA-GMN-KANANAME
       *        »áÌ¾¥Á¥§¥Ã¥¯
                WHEN    "NAME"
                    MOVE  Z03-NAME                TO  SPA-GMN-NAME
                    MOVE    SPA-GMN-NAME          TO  WRK-MAE-INPUT
                    PERFORM 400-ZENCHK-SEC
+                   MOVE    WRK-OUT-INPUT         TO  SPA-GMN-NAME
       *        Àµ¼°Ì¾
                WHEN    "FORMALNAME"
                    MOVE  Z03-FORMALNAME          TO  SPA-GMN-FORMALNAME
                    MOVE    SPA-GMN-FORMALNAME    TO  WRK-MAE-INPUT
                    PERFORM 400-ZENCHK-SEC
+                   MOVE    WRK-OUT-INPUT         TO  SPA-GMN-FORMALNAME
       *        ¶â³Û
                WHEN    "TEN"
                    MOVE   Z03-TEN                TO  SPA-GMN-TEN
@@ -2979,6 +2985,9 @@
                   (KANACHK-SYUBETU     =   1     )
       *        Á´³ÑÈ¾³Ñº®ºß¥¨¥é¡¼
                MOVE    "0017"              TO  SPA-ERRCD
+               MOVE    WRK-MAE-INPUT       TO  WRK-OUT-INPUT 
+           ELSE
+               MOVE    KANACHK-OUT-INPUT   TO  WRK-OUT-INPUT 
            END-IF
            .
       *
@@ -3075,7 +3084,13 @@
                                                            (MSYU-IDX)
                        CONTINUE
            END-SEARCH
-           .    
+      *
+      *    Æþ±¡¤Î¥Á¥§¥Ã¥¯
+           IF      SPA-GMN-SRYKBN      =   "90"
+               MOVE    SPACE           TO  SPA-ERRCD
+           END-IF
+      *
+           .
       *
        503-SRYKBN-CHK-EXT.
            EXIT.
@@ -3102,15 +3117,23 @@
                        MOVE    MSYU-SRYKBN (MSYU-IDX)    TO  WRK-SRYKBN
            END-SEARCH
       *
+      *    Æþ±¡¤Î¥Á¥§¥Ã¥¯
+           IF      WRK-SRYKBN          =   SPACE
+               IF      SPA-GMN-SRYSYUKBN   =   "900"
+                   MOVE    "90"                TO  WRK-SRYKBN
+                   MOVE    SPACE               TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
            IF      WRK-SRYKBN      NOT =   SPACE
                IF      WRK-SRYKBN      NOT =   SPA-GMN-SRYKBN
                    MOVE    WRK-SRYKBN          TO  SPA-GMN-SRYKBN
                    PERFORM VARYING     IDX     FROM    1   BY  1
-                           UNTIL       IDX     >   70
+                           UNTIL       IDX     >   100
                        IF      SPA-GMN-SRYKBN  =   SPA-GMN-SRYKBN-L(IDX)
                            MOVE    SPA-GMN-SRYKBNCOB (IDX)
                                                TO  SPA-GMN-SRYKBN-G
-                           MOVE    70              TO  IDX
+                           MOVE    100             TO  IDX
                        END-IF
                    END-PERFORM
                END-IF
