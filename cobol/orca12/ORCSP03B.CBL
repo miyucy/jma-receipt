@@ -32,6 +32,7 @@
       * 01.00.03     NACL-多々納  02/10/29  負担者番号の全角対応
       * 01.00.04     NACL-多々納  03/02/14  法別番号チェック区分追加
       * 01.00.05     NACL-多々納  03/04/03  公費変更チェック修正
+      * 01.00.06     NACL-多々納  03/07/08  保険者異動日チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -419,7 +420,11 @@
       *    保険者番号あり
            IF      FLG-HKNJAINF        =   ZERO
                MOVE    HKNJA-HKNNUM        TO  WRK-MAE-KOHNUM
+      *
+               MOVE    HKNJA-IDOYMD        TO  SPA-PTKOH-IDOYMD (IDX-K)
            ELSE
+               MOVE    SPACE               TO  SPA-NAI-PTKOH-KEIFLG
+                                                               (IDX-K)
                EVALUATE    SPA-GMN-FTNJANUM(IDX-K)(1:2)
       *            老人
                    WHEN    "27"
@@ -1019,6 +1024,16 @@
                GO      TO      200-KANREN-CHK-EXT
            END-IF
       *
+      *    保険者異動日チェック
+           IF      SPA-PTKOH-IDOYMD(IDX-K)     =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM 2005-IDOYMD-CHECK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      200-KANREN-CHK-EXT
+               END-IF
+           END-IF
+      *
            .
        200-KANREN-CHK-EXT.
            EXIT.
@@ -1433,6 +1448,33 @@
       *
            .
        20042-RJN-TAISYOAGE-10-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険者異動日チェック処理
+      *****************************************************************
+       2005-IDOYMD-CHECK-SEC         SECTION.
+      *
+           IF      SPA-NAI-PTKOH-KEIFLG (IDX-K)    =   "1"
+               GO      TO      2005-IDOYMD-CHECK-EXT
+           END-IF
+      *
+           IF      (SPA-PTKOH-IDOYMD (IDX-K)
+                                       <   SPA-NAI-KTEKSTYMD(IDX-K)) OR
+                   (SPA-PTKOH-IDOYMD (IDX-K)
+                                       <   SPA-NAI-KTEKEDYMD(IDX-K))
+               CONTINUE
+           ELSE
+               MOVE    SPACE           TO  SPA-NAI-PTKOH-KEIFLG (IDX-K)
+               GO      TO      2005-IDOYMD-CHECK-EXT
+           END-IF
+      *
+           MOVE    "K004"              TO  SPA-ERRCD
+           MOVE    "1"                 TO  SPA-NAI-PTKOH-KEIFLG (IDX-K)
+           MOVE    20                  TO  SPA-GMN-CUR
+      *
+           .
+       2005-IDOYMD-CHECK-EXT.
            EXIT.
       *
       *****************************************************************

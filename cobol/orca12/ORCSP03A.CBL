@@ -33,6 +33,7 @@
       * 01.00.04     NACL-多々納  02/11/21  共済下船３月追加
       * 01.00.05     NACL-多々納  03/02/14  法別番号チェック区分追加
       * 01.00.06     NACL-多々納  03/03/19  Ｈ１５年４月改正対応追加
+      * 01.00.07     NACL-多々納  03/07/08  保険者異動日チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -429,11 +430,16 @@
                    MOVE    HKNJA-KIGO          TO  SPA-GMN-KIGO
                END-IF
       *
+               MOVE    HKNJA-IDOYMD        TO  SPA-HKNJA-IDOYMD
            ELSE
                MOVE    SPACE               TO  SPA-HKNJA-HKNJANAME
                MOVE    SPACE               TO  SPA-HKNJA-ADRS
                MOVE    SPACE               TO  SPA-HKNJA-BANTI
                MOVE    SPACE               TO  SPA-HKNJA-TEL
+      *
+               MOVE    SPACE               TO  SPA-HKNJA-KEIFLG
+               MOVE    SPACE               TO  SPA-HKNJA-IDOYMD
+      *
                MOVE    SPACE               TO  WRK-HKNJA-HKNNUM
       *        保険者番号モジュラス10チェック
                IF      WRK-MOJ-MAX            >   4
@@ -1493,8 +1499,19 @@
       *
       *    保険期間重複チェック
            PERFORM 2004-KANREN-HKN-CHECK-SEC
-           IF      SPA-PIDCD         NOT =   SPACE
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )
                GO      TO      200-KANREN-CHK-EXT
+           END-IF
+      *
+      *    保険者異動日チェック
+           IF      SPA-HKNJA-IDOYMD    =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM 2005-IDOYMD-CHECK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      200-KANREN-CHK-EXT
+               END-IF
            END-IF
       *
            .
@@ -1900,6 +1917,31 @@
       *
            .
        41010-KEIKBN-TEKEDYMD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険者異動日チェック処理
+      *****************************************************************
+       2005-IDOYMD-CHECK-SEC         SECTION.
+      *
+           IF      SPA-HKNJA-KEIFLG    =   "1"
+               GO      TO      2005-IDOYMD-CHECK-EXT
+           END-IF
+      *
+           IF      (SPA-HKNJA-IDOYMD   <   SPA-NAI-HTEKSTYMD )  OR
+                   (SPA-HKNJA-IDOYMD   <   SPA-NAI-HTEKEDYMD )
+               CONTINUE
+           ELSE
+               MOVE    SPACE           TO  SPA-HKNJA-KEIFLG
+               GO      TO      2005-IDOYMD-CHECK-EXT
+           END-IF
+      *
+           MOVE    "K003"              TO  SPA-ERRCD
+           MOVE    "1"                 TO  SPA-HKNJA-KEIFLG
+           MOVE    8                   TO  SPA-GMN-CUR
+      *
+           .
+       2005-IDOYMD-CHECK-EXT.
            EXIT.
       *
       *****************************************************************

@@ -53,6 +53,7 @@
       *  02.00.07    NACL-多々納  02/11/21  共済下船３月追加
       *  02.00.08    NACL-多々納  03/03/24  Ｈ１５年４月改正対応追加
       *                                     公費負担額追加
+      *  02.00.09    NACL-多々納  03/07/08  保険者異動日チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1135,11 +1136,18 @@
                MOVE    HKNJA-ADRS          TO  SPA-HKNJA-ADRS
                MOVE    HKNJA-BANTI         TO  SPA-HKNJA-BANTI
                MOVE    HKNJA-TEL           TO  SPA-HKNJA-TEL
+      *
+               MOVE    HKNJA-IDOYMD        TO  SPA-HKNJA-IDOYMD
+               MOVE    SPA-PTHKN-KEIFLG(IDX)
+                                           TO  SPA-HKNJA-KEIFLG
            ELSE
                MOVE    SPACE               TO  SPA-HKNJA-HKNJANAME
                MOVE    SPACE               TO  SPA-HKNJA-ADRS
                MOVE    SPACE               TO  SPA-HKNJA-BANTI
                MOVE    SPACE               TO  SPA-HKNJA-TEL
+      *
+               MOVE    SPACE               TO  SPA-HKNJA-IDOYMD
+               MOVE    SPACE               TO  SPA-HKNJA-KEIFLG
            END-IF
       *
       *
@@ -1484,6 +1492,37 @@
            MOVE    WRK-TANSEIDONAME    TO  SPA-GMN-KOHNUMMEI(IDY)
            MOVE    WRK-TANSEIDONAME    TO  SPA-MAE-KOHNUMMEI(IDY)
            MOVE    WRK-HKNKOHSBTKBN    TO  SPA-NAI-PTKOH-SBTKBN(IDY)
+      *
+      *    保険者番号　検索チェック
+           INITIALIZE                    HKNJAINF-REC
+           MOVE    SPA-HOSPID            TO  HKNJA-HOSPID
+           MOVE    SPA-PTKOH-FTNJANUM(IDX)
+                                         TO  HKNJA-HKNJANUM
+      *
+           MOVE    HKNJAINF-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"            TO  MCP-FUNC
+           MOVE    "HKNJAINF-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
+               PERFORM 900-HKNJAINF-READ-SEC
+           ELSE
+               INITIALIZE                  HKNJAINF-REC
+               MOVE    1               TO  FLG-HKNJAINF
+           END-IF
+      *
+      *    保険者番号あり
+           IF      FLG-HKNJAINF        =   ZERO
+               MOVE    HKNJA-IDOYMD        TO  SPA-PTKOH-IDOYMD(IDY)
+               MOVE    SPA-PTKOH-KEIFLG(IDX)
+                                           TO  SPA-NAI-PTKOH-KEIFLG(IDY)
+           ELSE
+               MOVE    SPACE               TO  SPA-PTKOH-IDOYMD(IDY)
+               MOVE    SPACE               TO  SPA-NAI-PTKOH-KEIFLG(IDY)
+           END-IF
       *
       *
       **** PERFORM VARYING     IDX-K   FROM    1   BY  1
@@ -2061,6 +2100,10 @@
       *        労災の時、保険情報に入力がないこと
                PERFORM 41011-ROUSAI-CHK-SEC
            ELSE
+      *        保険者番号変更時に異動チェックをクリアする
+               IF      P02-P02-HKNJANUM    NOT =   SPA-GMN-HKNJANUM
+                   MOVE    SPACE               TO  SPA-HKNJA-KEIFLG
+               END-IF
                MOVE    P02-P02-HKNJANUM    TO  SPA-GMN-HKNJANUM
                MOVE    P02-P02-HKNNUM      TO  SPA-GMN-HKNNUM-G
                MOVE    P02-P02-HONKZKBN    TO  SPA-GMN-HONKZKKBN-G
@@ -2076,6 +2119,16 @@
       *
            END-IF
       *
+      *    保険者番号変更時に異動チェックをクリアする
+           IF      P02-P02-FTNJANUM1   NOT =   SPA-GMN-FTNJANUM (1)
+               MOVE    SPACE               TO  SPA-NAI-PTKOH-KEIFLG(1)
+           END-IF
+           IF      P02-P02-FTNJANUM2   NOT =   SPA-GMN-FTNJANUM (2)
+               MOVE    SPACE               TO  SPA-NAI-PTKOH-KEIFLG(2)
+           END-IF
+           IF      P02-P02-FTNJANUM3   NOT =   SPA-GMN-FTNJANUM (3)
+               MOVE    SPACE               TO  SPA-NAI-PTKOH-KEIFLG(3)
+           END-IF
       *    公費１
            MOVE    P02-P02-FTNJANUM1   TO  SPA-GMN-FTNJANUM (1)
            MOVE    P02-P02-KOHNUM1     TO  SPA-GMN-KOHNUM-G (1)
@@ -3388,6 +3441,8 @@
            MOVE    SPA-NAI-PTHKN-SBTKBN
                                        TO  SPA-PTHKN-HKN-SBTKBN(IDX)
       *
+           MOVE    SPA-HKNJA-KEIFLG    TO  SPA-PTHKN-KEIFLG  (IDX)
+      *
       *    新規の時保険ＩＤ取得（労災は労災画面で取得する）
            IF      SPA-NAI-HKNID       =   ZERO
                ADD     1                   TO  SPA-PTNUM-HKNID
@@ -3507,6 +3562,9 @@
            MOVE   SPA-GMN-KTEKSTYMD (IDX)  TO  SPA-PTKOH-TEKSTYMDW(IDY)
            MOVE   SPA-GMN-KTEKEDYMD (IDX)  TO  SPA-PTKOH-TEKEDYMDW(IDY)
            MOVE   SPA-GMN-KKAKUNINYMD(IDX) TO  SPA-PTKOH-KAKUNINYMDW
+                                                                  (IDY)
+      *
+           MOVE   SPA-NAI-PTKOH-KEIFLG(IDX)    TO  SPA-PTKOH-KEIFLG
                                                                   (IDY)
       *
            .

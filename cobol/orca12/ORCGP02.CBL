@@ -50,6 +50,7 @@
       *  02.00.07    NACL-多々納  03/03/05  排他制御処理追加
       *  02.00.08    NACL-多々納  03/03/24  公費負担額追加
       *  02.00.07    NACL-多々納  03/04/22  保険組合変更時メッセージ追加
+      *  02.00.08    NACL-多々納  03/07/08  保険者異動日チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -159,6 +160,8 @@
       *    受付時間
            03  WRK-UKETIME                PIC X(06).
            03  WRK-PTID                   PIC X(10).
+      *
+           03  WRK-IDOYMD-H            PIC X(22).
       *
       *
            03  WRK-GMN-SELNUM        PIC 9(02). 
@@ -381,12 +384,6 @@
            COPY    "ORCA-DBPATH".
       *===> For Claim End
       *
-      *!!!TEST
-      *    空き患者番号編集サブ
-           COPY    "CPORCBZ001S.INC".
-      *    システム管理（患者番号構成情報）
-           COPY    "CPSK1009.INC".
-      *!!!TEST
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -924,13 +921,6 @@
                    PERFORM 460-YOYAKU-SEC
       *    受付一覧へ
                WHEN    "CLICKED"       ALSO    "B11"
-      *!!TEST
-                   INITIALIZE              ORCBZ001SAREA
-                   CALL "ORCBZ001S"  USING 
-                                 SPA-AREA
-                                 ORCBZ001SAREA
-                                 SYS-1009-REC
-      *!!TEST
                    PERFORM 490-UKEICHI-SEC
       *    複写処理
                WHEN    "CLICKED"       ALSO    "B11S"
@@ -3195,6 +3185,13 @@
                    MOVE
                    "警告！適用開始日時点での年齢が７５歳未満です"
                                                TO  SPA-ERRMSG
+               WHEN    "K003"
+      *            保険者マスタ期限切れ
+                   MOVE    SPA-HKNJA-IDOYMD    TO  WRK-SYMD
+                   PERFORM 5101-IDOYMD-ERR-SEC
+               WHEN    "K004"
+      *            保険者マスタ期限切れ（公費）
+                   PERFORM 5102-IDOYMD-KOHERR-SEC
                WHEN    "0090"
                    MOVE    "公費の空いている行に追加して下さい。"
                                                TO  SPA-ERRMSG
@@ -3520,6 +3517,60 @@
            EXIT.
       *
       *----(01.00.03) LINE ADD START ----------------------------------
+      *****************************************************************
+      *    保険者マスタ期限切れメッセージ表示理
+      *****************************************************************
+       5101-IDOYMD-ERR-SEC              SECTION.
+      *
+      *    日本語変換
+           MOVE    SPACE               TO  STS-AREA-DAY
+           INITIALIZE                      STS-AREA-DAY
+           MOVE    SPACE               TO  LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY2-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    SPACE               TO  WRK-IDOYMD-H
+               STRING      LNK-DAY2-EDTYMD2-G  DELIMITED  BY  SIZE
+                           LNK-DAY2-EDTYMD2-Y  DELIMITED  BY  SIZE
+                           "年"                DELIMITED  BY  SIZE
+                           LNK-DAY2-EDTYMD2-M  DELIMITED  BY  SIZE
+                           "月"                DELIMITED  BY  SIZE
+                           LNK-DAY2-EDTYMD2-D  DELIMITED  BY  SIZE
+                           "日"                DELIMITED  BY  SIZE
+                                       INTO    WRK-IDOYMD-H
+               END-STRING
+           ELSE
+               MOVE    SPACE               TO  WRK-IDOYMD-H
+           END-IF
+           MOVE    SPACE               TO  SPA-ERRMSG
+           STRING  "この保険者は、"        DELIMITED  BY  SIZE
+                   WRK-IDOYMD-H            DELIMITED  BY  SIZE
+                   "に廃止となりました。"  DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+           END-STRING
+           .
+       5101-IDOYMD-ERR-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険者マスタ期限切れ（公費）メッセージ表示理
+      *****************************************************************
+       5102-IDOYMD-KOHERR-SEC              SECTION.
+      *
+           EVALUATE   SPA-GMN-CUR
+               WHEN   20
+                   MOVE    SPA-PTKOH-IDOYMD (1)    TO  WRK-SYMD
+               WHEN   26
+                   MOVE    SPA-PTKOH-IDOYMD (2)    TO  WRK-SYMD
+               WHEN   32
+                   MOVE    SPA-PTKOH-IDOYMD (3)    TO  WRK-SYMD
+           END-EVALUATE
+      *
+           PERFORM 5101-IDOYMD-ERR-SEC
+           .
+       5102-IDOYMD-KOHERR-EXT.
+           EXIT.
       *****************************************************************
       *    エラーメッセージ表示理
       *****************************************************************

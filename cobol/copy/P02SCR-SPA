@@ -207,6 +207,9 @@
                            11  SPA-HKNJA-ADRS          PIC X(100).
                            11  SPA-HKNJA-BANTI         PIC X(100).
                            11  SPA-HKNJA-TEL           PIC X(15).
+      *                    ÊÝ¸±¼Ô·Ù¹ðÉ½¼¨
+                           11  SPA-HKNJA-IDOYMD        PIC X(08).
+                       09  SPA-HKNJA-KEIFLG        PIC X(01).
       *
       *            ÂÐ¾Ý³«»ÏÈÖ¹æ
                    07  SPA-NAI-HKNSTR              PIC 9(04).
@@ -245,6 +248,9 @@
                            11  SPA-MAE-KKAKUNINYMDW        PIC X(09).
       *                    £¶£µºÐ°Ê¾å·Ù¹ð
                            11  SPA-NAI-AGE65               PIC 9(01).
+      *                    ÊÝ¸±¼Ô°ÛÆ°Æü·Ù¹ð
+                           11  SPA-PTKOH-IDOYMD            PIC X(08).
+                           11  SPA-NAI-PTKOH-KEIFLG        PIC X(01).
       *
                        09  SPA-KOH-MAX             PIC 9(04).
       *            ÂÐ¾Ý³«»Ï°ÌÃÖ
@@ -402,6 +408,8 @@
                        09  SPA-PTHKN-KAKUNINYMDW       PIC X(09).
                        09  SPA-PTHKN-MAEKAKUNINYMD     PIC X(08).
                        09  SPA-PTHKN-MAEKAKUNINYMDW    PIC X(09).
+      *                ÊÝ¸±¼Ô·Ù¹ðÉ½¼¨
+                       09  SPA-PTHKN-KEIFLG            PIC X(01).
       *
                    07  SPA-PTHKN-MAX               PIC 9(04).
       *
@@ -428,6 +436,8 @@
                        09  SPA-PTKOH-KAKUNINYMDW       PIC X(09).
                        09  SPA-PTKOH-MAEKAKUNINYMD     PIC X(08).
                        09  SPA-PTKOH-MAEKAKUNINYMDW    PIC X(09).
+      *                ÊÝ¸±¼Ô·Ù¹ðÉ½¼¨
+                       09  SPA-PTKOH-KEIFLG            PIC X(01).
       *
                    07  SPA-PTKOH-MAX               PIC 9(04).
       *
@@ -1085,6 +1095,21 @@
                        09  SPA-GMN2F-PTID          PIC 9(10).
                    07  SPA-GMN2F-MAX           PIC 9(04).
       *
+      *    P02K (´µ¼ÔÈÖ¹æ·çÈÖ°ìÍ÷²èÌÌ¡Ë
+           03  SPA-P02K-AREA.
+               05  SPA-GMN2K-MAX         PIC 9(02).
+               05  SPA-GMN2K-CUR         PIC 9(02).
+               05  SPA-GMN2K-AREA.
+                   07  SPA-GMN2K-TBL             OCCURS   20.
+                       09  SPA-GMN2K-NUM         PIC 9(04).
+                       09  SPA-GMN2K-TPTNUM      PIC X(20).
+               05  SPA-GMN2K-SELNUM          PIC 9(03).
+      *
+               05  SPA-GMN2K-STRPTNUM        PIC X(20).
+               05  SPA-GMN2K-ENDPTNUM        PIC X(20).
+               05  SPA-GMN2K-PTNUM           PIC X(20).
+      *
+               05  SPA-NAI2K-LSTPTNUM        PIC X(20).
       *
       *    £Ã£Ì£Á£É£Í²èÌÌ¡Ê£Ð£°£²£Ø¡Ë
            03  SPA-P02X-AREA.
