@@ -23,55 +23,11 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.01.01   NACL-門脇     03.02.06  コメントカウントフラグの追加
       *  01.01.02   NACL-門脇     03.06.19  実日数テーブルの追加
-      *  01.01.03   NACL-門脇     04.07.28  休業証明フラグ、休業期間終了
-      *                                     月日の追加
-      *  01.01.04   NACL-門脇     05.01.07  自賠責担当医コード、自賠責保
-      *                                     険会社名の追加
-      *  01.01.05   NACL-門脇     05.01.26  ４００１情報の追加
-      *  01.01.06   NACL-門脇     05.08.02  自賠責従来様式用項目追加
-      *  01.01.07   NACL-門脇     05.12.01  労災レセ回数記載：基準年月
-      *                                     労災レセ回数記載：回数
-      *                                     労災レセプト回数
-      *                                     労災レセ回数記載の追加
-      *
-      *  02.09.01    NACL-藤原    06/04/14  ２００６年４月改正対応
-      *                                     外来迅速検体検査加算フラグ追加
-      *  03.04.01    NACL-門脇    06/12/01  自賠責健保準拠対応
-      *  03.05.01    NACL-門脇    07/05/28  グループ診療対応
-      *
-      *  04.01.01    NACL-門脇    07/10/25  公務災害対応
-      *  04.02.01    NACL-門脇    08/02/26  請求区分追加
-      *
-      *  04.05.01    NACL-門脇    09/06/29  休業期間開始月日、
-      *                                     休業証明療養期間記載の追加
-      *  04.05.02    NACL-門脇    10/02/16  予備項目追加
-      *
-      *  04.06.01    NACL-門脇    10/07/02  小児特定疾患カウンセリング料
-      *                                     （１回目）算定フラグ追加
-      *
-      *  04.07.01    NACL-門脇    11/09/01  労災初回請求分フラグ追加
-      *                                     労災基準監督署コード追加
-      *                                     年齢追加
-      *                                     テスト患者番号区分追加
-      *  04.07.02    NACL-門脇    13/01/21  労災レセ電対応
-      *  04.07.03    NACL-門脇    13/04/16  労災レセ電対応
-      *                                     労災指定医療機関区分追加
-      *  04.07.04    NACL-門脇    13/08/20  ０９５９３で始まるコードの
-      *                                     有無区分追加
-      *  04.07.05    NACL-藤原    13/09/20  第三者行為対応
-      *  04.07.06    NACL-門脇    14/07/31  第三者行為に関するフラグ追加
-      *  04.07.07    NACL-門脇    14/10/15  入院フラグ追加
-      *  04.07.08    NACL-門脇    15/09/08  自賠責（新様式）（ＯＣＲ様式）
-      *                                     用の項目追加
-      *
-      *  04.08.01    NACL-門脇    15/08/27  自賠責・請求金額欄端数処理
-      *                                     区分追加
-      *  04.08.02    NACL-門脇    17/02/24  レセプト種別不明エラー情報追加
       ************************************************************
       *01  RECE41-REC.
            03  RECE41-KEY.
       *医療機関ＩＤ
-               05  RECE41-HOSPNUM         PIC  9(02).
+               05  RECE41-HOSPID          PIC  X(24).
       *診療年月
                05  RECE41-SRYYM           PIC  9(06).
       *入外区分
@@ -102,10 +58,6 @@
            03  RECE41-BIRTHDAY            PIC  9(08).
       *死亡区分
            03  RECE41-DEATHKBN            PIC  X(01).
-      *年齢
-           03  RECE41-AGE                 PIC  9(03).
-      *テスト患者番号区分
-           03  RECE41-TSTPTNUMKBN         PIC  X(01).
       *
       *主保険情報
            03  RECE41-HKN.
@@ -147,16 +99,6 @@
                05  RECE41-COMMENT         PIC  X(200).
       *主保険−災害区分
                05  RECE41-SAIGAIKBN       PIC  X(01).
-      *主保険−自賠責担当医コード
-               05  RECE41-DRCD            PIC  X(05).
-      *主保険−自賠責保険会社名
-               05  RECE41-HOKENNAME       PIC  X(80).
-      *主保険−労災レセ回数記載：基準年月
-               05  RECE41-KIJYUNYM-KSI    PIC  X(06).
-      *主保険−労災レセ回数記載：回数
-               05  RECE41-KAISU-KSI       PIC  9(03).
-      *主保険−請求区分
-               05  RECE41-SEIKYUKBN       PIC  X(01).
       *
       *保険組合せ番号
            03  RECE41-HKNCOMBI            PIC  9(04).
@@ -177,15 +119,10 @@
                05  RECE41-TENSU           PIC  9(08).
       *明細点数（薬剤等）
                05  RECE41-TENSU-YAK       PIC  9(08).
-      **明細金額（自賠責：従来様式用）
-               05  RECE41-KINGAKU-JYU     PIC  9(09).
       *合計点数
            03  RECE41-TOTALTEN            PIC  9(08).
       *合計点数（薬剤等）
            03  RECE41-TOTALTEN-YAK        PIC  9(08).
-      **合計金額（自賠責：従来様式用）
-           03  RECE41-TOTALKIN-JYU        PIC  9(09).
-      *
       *合計金額
            03  RECE41-TOTALKIN            PIC  9(09).
       *合計金額（薬剤等）
@@ -199,7 +136,6 @@
                05  RECE41-SYOSAIYMD2      PIC  X(08).
       *明細金額
                05  RECE41-KINGAKU2        PIC  9(09).
-      *
       *合計金額
            03  RECE41-TOTALKIN2           PIC  9(09).
       *合計金額（その他）
@@ -211,8 +147,6 @@
       *明細書料
            03  RECE41-MEISAI-TUU          PIC  9(02).
            03  RECE41-MEISAI-KIN          PIC  9(09).
-      **その他欄金額（自賠責：従来様式用）
-           03  RECE41-SONOTAKIN-JYU       PIC  9(09).
       *
       *食事療養費情報
            03  RECE41-SHOKUJIINF.
@@ -257,6 +191,8 @@
            03  RECE41-KENSAKBN            PIC  X(01).
       *前回検査年月日
            03  RECE41-KENSAYMD-ZEN        PIC  X(08).
+      *自賠責加算率
+           03  RECE41-KSNRATE             PIC  9(03).
       *通院日情報
            03  RECE41-TUUININF            OCCURS  31.
                05  RECE41-TUUIN-DAY       PIC  X(01).
@@ -268,14 +204,6 @@
                05  RECE41-YKZTEN-JI       PIC  9(09).
       *コメントカウントフラグ
            03  RECE41-COMCNTFLG           PIC  X(01).
-      *病床数編集フラグ（特定疾患療養指導料等）
-           03  RECE41-BEDSUFLG            PIC  X(01).
-      *外来迅速検体検査加算フラグ
-           03  RECE41-KENTAIKASANFLG      PIC  X(01).
-      *乳幼児・幼児のコメントフラグ
-           03  RECE41-NYUYOJIFLG          PIC  X(01).
-      *小児特定疾患カウンセリング料（１回目）算定フラグ
-           03  RECE41-SYOUNIFLG           PIC  X(01).
       *
       *実日数テーブル情報
            03  RECE41-JNISSUTBLINF        OCCURS 31.
@@ -286,126 +214,4 @@
            03  RECE41-NYUINBITBLINF       OCCURS 31.
       *入院日テーブル
                05  RECE41-NYUINBITBL      PIC  X(01).
-      *
-      *入院フラグ（同一保険組み合わせで入院が有るか）
-           03  RECE41-NYUINFLG            PIC  X(01).
-      *
-      *休業証明フラグ
-           03  RECE41-KYUGYOFLG           PIC  X(01).
-      *休業期間開始月日
-           03  RECE41-KYUGYO-STR          PIC  X(04).
-      *休業期間終了月日
-           03  RECE41-KYUGYO-END          PIC  X(04).
-      *
-      *労災レセプト回数
-           03  RECE41-RECEKAISU           PIC  9(03).
-      *
-      *公務災害−転記年月日
-           03  RECE41-TENKIYMD            PIC  X(08).
-      *
-      *労災初回請求分フラグ
-           03  RECE41-SYOKAIFLG           PIC  X(01).
-      *
-      *労災基準監督署コード
-           03  RECE41-SYOCD               PIC  X(05).
-      *
-      *４００１情報
-           03  RECE41-4001-INF.
-      *点数単価
-               05  RECE41-TANKA           PIC  9(02)V99.
-      *自賠責加算率
-               05  RECE41-KSNRATE         PIC  9(03).
-      *自賠責文書料消費税
-               05  RECE41-TAXKBN          PIC  X(01).
-      *自賠責特定器材等消費税
-               05  RECE41-TAXKBN-KZI      PIC  X(01).
-      *自賠責固定帯加算等取扱
-               05  RECE41-KOTEIKBN        PIC  X(01).
-      *労災レセ回数記載
-               05  RECE41-ROUKAISU        PIC  X(01).
-      *自賠責区分
-               05  RECE41-JIBAIKBN        PIC  X(01).
-      *技術点単価
-               05  RECE41-SYUTENTANKA     PIC  9(02).
-      *薬剤等点単価
-               05  RECE41-YKZTENTANKA     PIC  9(02).
-      *公務災害区分
-               05  RECE41-KOMUKBN         PIC  X(01).
-      *公務災害点単価
-               05  RECE41-KOMUTENTANKA    PIC  9(02).
-      *休業証明療養期間記載
-               05  RECE41-KYUGYO-PRTKBN   PIC  X(01).
-      *労災指定医療機関区分
-               05  RECE41-RSIIRYOKBN      PIC  X(01).
-      *
-      *０９５９３で始まるコードの有無区分
-           03  RECE41-ORIGINALCDKBN       PIC  9(01).
-      *
-      *第三者行為時の医保分主保険情報
-           03  RECE41-HKN-X.
-      *医保分主保険番号
-               05  RECE41-HKNNUM-X        PIC  X(03).
-      *医保分主保険ＩＤ
-               05  RECE41-HKNID-X         PIC  9(10).
-      *医保分保険者番号
-               05  RECE41-HKNJANUM        PIC  X(08).
-      *医保分保険者名
-               05  RECE41-HKNJANAME       PIC  X(200).
-      *医保分記号
-               05  RECE41-KIGO            PIC  X(80).
-      *医保分番号
-               05  RECE41-NUM             PIC  X(80).
-      *
-      *第三者行為（社会保険への請求額）
-           03  RECE41-SKYMONEY            PIC  9(09).
-      *第三者行為（患者負担）
-           03  RECE41-FTNMONEY            PIC  9(09).
-      *第三者行為（患者割合）
-           03  RECE41-FTNRATE             PIC  9(03).
-      *第三者行為レセプト現物給付該当フラグ
-           03  RECE41-DAISAN-GENBUTU-GAITO
-                                          PIC  9(01).
-      *第三者行為一部負担金金額置換フラグ
-           03  RECE41-DAISAN-CHIKAN       PIC  9(01).
-      *
-      *自賠責・請求金額欄端数処理区分
-           03  RECE41-JIBAI-HASUKBN       PIC  X(01).
-      *
-      *自賠責（新様式）（ＯＣＲ様式）用
-      *合計額
-           03  RECE41-JIBAI-GOKEI-BE      PIC  9(09).
-           03  RECE41-JIBAI-GOKEI-AF      PIC  9(09).
-      *請求額
-           03  RECE41-JIBAI-SKYKINFLG     PIC  9(01).
-           03  RECE41-JIBAI-SKYKIN        PIC  9(09).
-      *受領額・受領先
-           03  RECE41-JIBAI-JYUKINFLG     PIC  9(01).
-           03  RECE41-JIBAI-JYUKIN        PIC  9(09).
-           03  RECE41-JIBAI-JYUNAMEFLG    PIC  9(01).
-           03  RECE41-JIBAI-JYUNAME       PIC  X(80).
-      *自賠責受領金額欄置換入力分
-           03  RECE41-JIBAI-CHIKANKINFLG  PIC  9(01).
-           03  RECE41-JIBAI-CHIKANKIN     PIC  9(09).
-           03  RECE41-JIBAI-CHIKANNAMEFLG PIC  9(01).
-           03  RECE41-JIBAI-CHIKANNAME    PIC  X(80).
-      *
-      *湿布薬制限枚数解除及び院外湿布薬７０枚超理由コメント情報
-           03  RECE41-SIPPUCHKFLG         PIC  9(01).
-           03  RECE41-SIPPUCHKINF.
-             04  RECE41-SIPPUCHK-OCC      OCCURS  10.
-               05  RECE41-SIPPUCHK-OCC2   OCCURS  31.
-                   07  RECE41-SIPPUCHK    PIC  9(03).
-      *
-      *レセプト種別不明エラー情報
-           03  RECE41-ERR-AREA.
-               05  RECE41-ERR-ERRKBN      PIC  9(02).
-               05  RECE41-ERR-DAY         PIC  9(02).
-               05  RECE41-ERR-HKNCOMBINUM PIC  9(04).
-               05  RECE41-ERR-TEKSTYMD    PIC  9(08).
-               05  RECE41-ERR-TEKEDYMD    PIC  9(08).
-      *
-      *予備
-           03  RECE41-YOBIETC-AREA.
-               05  RECE41-YOBIETCINF           OCCURS  10.
-                   07  RECE41-YOBIETC     PIC  9(09).
       *
