@@ -4859,6 +4859,9 @@
              ELSE
                COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                   +   LNK-SYU-SKYMONEY-SKJ-KEI
+               COMPUTE   WK-FTN   =   WK-FTN     +   5
+               COMPUTE   WK-FTN   =   WK-FTN     /  10
+               COMPUTE   WK-FTN   =   WK-FTN     *  10
                IF        WK-FTN    >=  WK-NYUJGNGAK
                  COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
                                             +  LNK-SYU-SKYMONEY-SKJ-KEI
@@ -4878,6 +4881,9 @@
              OR  ( LNK-SYU-KOH4HKNNUM    =  "012" )
                COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                   +   LNK-SYU-SKYMONEY-SKJ-KEI
+               COMPUTE   WK-FTN   =   WK-FTN     +   5
+               COMPUTE   WK-FTN   =   WK-FTN     /  10
+               COMPUTE   WK-FTN   =   WK-FTN     *  10
                IF        WK-FTN    >=  WK-NYUJGNGAK
                  COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
                                             +  LNK-SYU-SKYMONEY-SKJ-KEI
@@ -4893,6 +4899,9 @@
              OR  ( LNK-SYU-KOH4HKNNUM    =  "015" )
                COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                   +   LNK-SYU-SKYMONEY-SKJ-KEI
+               COMPUTE   WK-FTN   =   WK-FTN     +   5
+               COMPUTE   WK-FTN   =   WK-FTN     /  10
+               COMPUTE   WK-FTN   =   WK-FTN     *  10
                IF        WK-FTN    >=  WK-NYUJGNGAK
                  COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
                                             +  LNK-SYU-SKYMONEY-SKJ-KEI
@@ -4908,6 +4917,9 @@
              OR  ( LNK-SYU-KOH4HKNNUM    =  "016" )
                COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                   +   LNK-SYU-SKYMONEY-SKJ-KEI
+               COMPUTE   WK-FTN   =   WK-FTN     +   5
+               COMPUTE   WK-FTN   =   WK-FTN     /  10
+               COMPUTE   WK-FTN   =   WK-FTN     *  10
                IF        WK-FTN    >=  WK-NYUJGNGAK
                  COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
                                             +  LNK-SYU-SKYMONEY-SKJ-KEI
@@ -4929,6 +4941,9 @@
                OR  ( LNK-SYU-KOH4HKNNUM    =  "151" OR "451" )
                 COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                    +   LNK-SYU-SKYMONEY-SKJ-KEI
+                COMPUTE   WK-FTN   =   WK-FTN     +   5
+                COMPUTE   WK-FTN   =   WK-FTN     /  10
+                COMPUTE   WK-FTN   =   WK-FTN     *  10
                 IF        WK-FTN    >=  WK-NYUJGNGAK
                   COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
                                              +  LNK-SYU-SKYMONEY-SKJ-KEI
