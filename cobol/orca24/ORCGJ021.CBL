@@ -79,6 +79,7 @@
            03  WRK-HKNCOMBI        PIC 9(04).
            03  WRK-HKNCOMBIMEI     PIC X(100).
            03  WRK-HKNKBN-MEI      PIC X(02).
+           03  WRK-DEL-MEI         PIC X(10).
       *
            03  WRK-SRYKA           PIC X(02).
            03  WRK-SRYKAMEI        PIC X(20).
@@ -352,14 +353,14 @@
       *
       *        対象の保険組合せのみ編集
                MOVE    ZERO                TO  FLG-HKNCOMBICHK
-               IF      COMB-DELKBN         =   "1"
-                   CONTINUE
-               ELSE
+      *****    IF      COMB-DELKBN         =   "1"
+      *            CONTINUE
+      *****    ELSE
                    IF      (SPA-NAI-SRYYM  >=  COMB-TEKSTYMD(1:6)) AND
                            (SPA-NAI-SRYYM  <=  COMB-TEKEDYMD(1:6))
                        MOVE    1                   TO  FLG-HKNCOMBICHK
                    END-IF
-               END-IF
+      *******  END-IF
       *        労災・自賠責は対象外
                IF      COMB-HKNNUM         =   "971"  OR
                                                "973"
@@ -436,6 +437,12 @@
       *****************************************************************
        31011-HKNCOMBI-HEN-SEC             SECTION.
       *
+           IF      COMB-DELKBN         =   "1"
+               MOVE    "（削除）"          TO  WRK-DEL-MEI
+           ELSE
+               MOVE    SPACE               TO  WRK-DEL-MEI
+           END-IF
+      *
            MOVE    SPACE               TO  WRK-HKNCOMBIMEI
       *
            STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
@@ -447,6 +454,8 @@
                    COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
                    " "                     DELIMITED  BY  SIZE
                    COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                   " "                     DELIMITED  BY  SIZE
+                   WRK-DEL-MEI             DELIMITED  BY  SPACE
                          INTO              WRK-HKNCOMBIMEI
            END-STRING
       *    主保険がない時
@@ -459,6 +468,8 @@
                        COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
                        " "                     DELIMITED  BY  SIZE
                        COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       WRK-DEL-MEI             DELIMITED  BY  SPACE
                          INTO              WRK-HKNCOMBIMEI
                END-STRING
            END-IF
