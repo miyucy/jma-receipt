@@ -18,7 +18,7 @@ fi
 	echo	`date`
 	echo	$1
 
-ruby "$SCRIPTSDIR"/daily/print_parent2.rb "/var/tmp/temp.tmp" "ruby /usr/local/orca/scripts/daily/print-data.rb " $1 
+ruby "$SCRIPTSDIR"/daily/print_parent2.rb "/var/tmp/temp.tmp" "ruby ${SCRIPTSDIR}/daily/print-data.rb " $1 
 
 	rm -f $1
 	echo	`date`
