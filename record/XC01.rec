@@ -1,0 +1,39 @@
+XC01	{
+	fixed32	{
+	        B04	{
+		       	state	int;
+	        };
+		SELNUM	{
+			value	number(3);
+		};
+                ERRMSG  {
+                    	style   varchar(20);
+                        value   varchar(40);
+                };
+                TITLE   {
+                    	style   varchar(20);
+                        value   varchar(40);
+                };
+		PSAREA	{
+			value	varchar(300);
+		};
+		scrolledwindow26	{
+			CLIST	{
+				count	int;
+				item	{
+					value1	varchar(3);
+					value2	varchar(10);
+					value3	varchar(20);
+					value4	varchar(10);
+					value5	varchar(01);
+					value6	varchar(02);
+				}	[100];
+				select	bool[100];
+			};
+		};
+                MEMO    {
+		       	state	int;
+                        value   varchar(100);
+		};
+	};
+};

@@ -1,0 +1,10 @@
+XCERR	{
+	fixed1	{
+		ERRCODE	{
+			value	varchar(10);
+		};
+		ERRMSG	{
+			value	varchar(60);
+		};
+	};
+};

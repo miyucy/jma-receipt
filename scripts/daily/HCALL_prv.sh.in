@@ -1,0 +1,25 @@
+#!/bin/sh
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+export HOME=/home/orca
+
+#----------------------------------------------------------------------#
+#       引数	
+#       1:DATAファイル名称
+#----------------------------------------------------------------------#
+
+	echo	`date`
+	echo	$1
+
+	ruby "$SCRIPTSDIR"/daily/print_parent_prv.rb "/var/tmp/temp.tmp" "ruby ${SCRIPTSDIR}/daily/print-data.rb " ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} $1 "ruby ${SCRIPTSDIR}/daily/print-data_prv.rb " "ruby ${SCRIPTSDIR}/daily/orcred2ps.rb "
+
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBPREV -parameter $1
+	rm -f $1
+	echo	`date`
