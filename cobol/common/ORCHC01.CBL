@@ -322,9 +322,6 @@
            IF      FLG-END             =   1
                GO      TO      000-PROC-EXT
            END-IF
-      *test
-           DISPLAY "HC01  ORCHC01-SYORIKBN:"  ORCHC01-SYORIKBN
-      *TEST
       *
            EVALUATE    ORCHC01-SYORIKBN
       *        ¥«¥ë¥Æ°õºþ
@@ -805,7 +802,7 @@
                    UNTIL   FLG-PTBYOMEI    NOT =   ZERO
                ADD     1               TO  IDX
                IF      WRK-PRT-CNT     =   1
-                   IF      IDX             >   10
+                   IF      IDX             >   8
       *                ¥«¥ë¥Æ°õºþ
                        PERFORM 20031-HC01-PRINT-SEC
       *                Â³»æ½é´üÊÔ½¸
@@ -838,7 +835,7 @@
            END-PERFORM
       *
            IF      WRK-PRT-CNT     =   1
-      *        ¥«¥ë¥Æ°õºþ
+      *            ¥«¥ë¥Æ°õºþ
                PERFORM 20031-HC01-PRINT-SEC
            ELSE
                IF      IDX             >   ZERO
