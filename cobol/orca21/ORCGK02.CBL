@@ -4163,6 +4163,10 @@
            INITIALIZE                  SPA-DENPNUM
            INITIALIZE                  SPA-CONTFLG
            INITIALIZE                  SPA-KYOTUKEY
+      *    受付一覧からの時、ドクターを編集する
+           IF      WRK-MOTOPG          =   "U01"
+               MOVE    WRK-SPA-DRCD    TO  SPA-DRCD
+           END-IF
            MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
            MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
       *

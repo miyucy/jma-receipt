@@ -3486,6 +3486,10 @@
            MOVE    SPACE               TO  SPA-SRYYMDW(10:)
            MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
            MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
+      *    受付一覧からの時、ドクターを編集する
+           IF      WRK-MOTOPG          =   "U01"
+               MOVE    WRK-SPA-DRCD    TO  SPA-DRCD
+           END-IF
       *
            MOVE    K02N-PTNUM          TO  SPA-GMN-PTNUM
       *
