@@ -81,6 +81,10 @@
       *                                     外す
       *  01.02.09    NACL-藤原    04/04/15  福岡県の地方公費対応（国保）
       *                                      ＤＢ更新エラー時の処理
+      *  01.02.10    NACL-小豆沢  04/05/06  診療会計テーブルの読み込みを
+      *                                     グループ化に変更
+      *                                     SRYACCT-KEY29 -> SRYACCT-KEY36
+      *                                     SRYACCT-KEY30 -> SRYACCT-KEY37
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -187,6 +191,7 @@
            03  FLG-CONTKBN                             PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
            03  FLG-KOHRECEDSP                          PIC 9(01).
+           03  FLG-LASTHKNID                           PIC 9(01). 
       *
       *    カウント領域
        01  CNT-AREA.
@@ -646,10 +651,6 @@
                MOVE    ZERO                TO  SYS-2005-RJNGNBKKBN
            END-IF
       *
-      *
-      *??
-           DISPLAY "ORCR0010 FILE OPEN START"
-      *??
            OPEN    OUTPUT              RECE011-FILE
            CLOSE                       RECE011-FILE
       *
@@ -659,9 +660,6 @@
            CLOSE                       RECE011X-FILE
       *
            OPEN    I-O                 RECE01X-FILE  
-      *??
-           DISPLAY "ORCR0010 FILE OPEN END"
-      *??
            .
        100-INIT-EXT.
            EXIT.
@@ -928,13 +926,13 @@
            MOVE    "2"                 TO  ACCT-NYUGAIKBN
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
                PERFORM 900-SRYACCT-READ-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
@@ -946,7 +944,7 @@
            END-PERFORM
       *    カーソルクロース
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -973,7 +971,7 @@
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
-                   MOVE    "SRYACCT-KEY29"         TO  ORC-DBPATH
+                   MOVE    "SRYACCT-KEY36"         TO  ORC-DBPATH
                    PERFORM 900-SRYACCT-READ-SEC
                END-PERFORM
            ELSE
@@ -1035,11 +1033,11 @@
                            MOVE    KEY-NEW             TO  KEY-OLD
                            PERFORM     UNTIL   FLG-SRYACCT =   1 
                                        OR      KEY-NEW NOT =   KEY-OLD
-                               MOVE    "SRYACCT-KEY29" TO  ORC-DBPATH
+                               MOVE    "SRYACCT-KEY36" TO  ORC-DBPATH
                                PERFORM 900-SRYACCT-READ-SEC
                            END-PERFORM
                        ELSE
-                           MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
+                           MOVE    "SRYACCT-KEY36"     TO  ORC-DBPATH
                            PERFORM 900-SRYACCT-READ-SEC
                        END-IF
                    END-PERFORM    
@@ -1650,6 +1648,7 @@
                    END-IF
                END-IF    
            END-PERFORM
+           MOVE    1                       TO  FLG-LASTHKNID
       *****IF      COMB-HKNID          NOT =   ZERO
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       10
@@ -1658,15 +1657,17 @@
                                           WRK-RECE01-TEKSTYMDX (IDX)
                        MOVE    PTHKN-TEKEDYMD TO
                                           WRK-RECE01-TEKEDYMDX (IDX)
-                       MOVE    PTHKN-HKNID    TO  WRK-RECE01-HKNID
                        MOVE    10              TO  IDX
                    ELSE
                        IF      WRK-RECE01-TEKSTYMDX(IDX)
-                                                >=  PTHKN-TEKSTYMD
-                           MOVE    10                  TO  IDX
+                                                   >=  PTHKN-TEKSTYMD
+                           MOVE    ZERO                TO  FLG-LASTHKNID
                        END-IF    
                    END-IF    
                END-PERFORM
+               IF      FLG-LASTHKNID       =   1
+                   MOVE    PTHKN-HKNID     TO  WRK-RECE01-HKNID
+               END-IF
       *****END-IF
       *
            IF      WRK-TEISEIKBN           =   "1"
@@ -2026,13 +2027,13 @@
            MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
                PERFORM 900-SRYACCT-READ-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
@@ -2044,7 +2045,7 @@
            END-PERFORM
       *    カーソルクロース
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
@@ -2119,11 +2120,11 @@
                        MOVE    KEY-NEW             TO  KEY-OLD
                        PERFORM     UNTIL   FLG-SRYACCT     =   1 
                                    OR      KEY-NEW     NOT =   KEY-OLD
-                           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+                           MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
                            PERFORM 900-SRYACCT-READ-SEC
                         END-PERFORM
                    ELSE
-                       MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+                       MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
                        PERFORM 900-SRYACCT-READ-SEC
                    END-IF
                END-PERFORM    
@@ -2662,5 +2663,5 @@
                                         MCPDATA-REC.
       *
            .
-       900-DBCLOSE-EXT.
+       900-DBDISCONNECT-EXT.
            EXIT.
