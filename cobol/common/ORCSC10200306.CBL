@@ -3380,10 +3380,17 @@
                GO      TO      230-SIDOU-SYOSIN-EXT
            END-IF
       *
+      *
+           IF      LNK-ORCSC-SYORIFLG      =   1
+      *        訂正時点の初診算定日
+               MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
+           ELSE
+               MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
+           END-IF
       *    最終退院日がある時、退院日
            IF     (LNK-ORCSC-TAIINYMD  =   SPACE )  OR
-                  (LNK-ORCSC-TAIINYMD  <=  LNK-ORCSC-SYOYMD)
-               MOVE    LNK-ORCSC-SYOYMD    TO  WRK-SYOYMD
+                  (LNK-ORCSC-TAIINYMD  <=  WRK-SYOYMD)
+               CONTINUE
            ELSE
                MOVE    LNK-ORCSC-TAIINYMD  TO  WRK-SYOYMD
            END-IF

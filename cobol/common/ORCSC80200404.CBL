@@ -626,10 +626,16 @@
                GO     TO      100113-SEISIN-CHK-EXT
            END-IF
       *
+           IF      LNK-ORCSC-SYORIFLG      =   1
+      *        訂正時点の初診算定日
+               MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
+           ELSE
+               MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
+           END-IF
       *    初診算定日から６月以内
-           IF     (LNK-ORCSC-SYOYMD    =   SPACE  )  OR
+           IF     (WRK-SYOYMD          =   SPACE  )  OR
                   (LNK-ORCSC-SYOSIN2   =   1      )
-               MOVE    SPA-SRYYMD          TO  LNK-ORCSC-SYOYMD
+               MOVE    SPA-SRYYMD          TO  WRK-SYOYMD
            END-IF
       **** MOVE    LNK-ORCSC-SYOYMD    TO  WRK-SYOYMD
       *    COMPUTE WRK-SYO-MM          =   WRK-SYO-MM    +   6
@@ -641,7 +647,8 @@
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY6-AREA
            MOVE    "61"                TO  LNK-DAY6-IRAI
-           MOVE    LNK-ORCSC-SYOYMD    TO  LNK-DAY6-KIJUN
+      *****MOVE    LNK-ORCSC-SYOYMD    TO  LNK-DAY6-KIJUN
+           MOVE    WRK-SYOYMD          TO  LNK-DAY6-KIJUN
            MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
            MOVE    6                   TO  LNK-DAY6-ZOGEN
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
