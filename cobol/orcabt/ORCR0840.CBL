@@ -343,7 +343,8 @@
       *
            03  WRK-HEYA-NINZU                          PIC 9(02).
       *
-           03  WRK-SRYCD                               PIC 9(09).
+           03  WRK-SRYCD-X.
+               05  WRK-SRYCD                           PIC 9(09).
            03  WRK-ZAINUM                              PIC 9(08).
            03  WRK-RENNUM                              PIC 9(02).
            03  WRK-TANICD                              PIC 9(03).
@@ -1406,7 +1407,7 @@
                      ADD    1             TO   IDY2
                      MOVE  "197000110"    TO   WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                     MOVE  "197000110"    TO   WRK-SRYCD
+                     MOVE  "197000110"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1420,7 +1421,7 @@
                         ADD    1             TO   IDY2
                         MOVE  "197000270"    TO  WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                        MOVE  "197000270"    TO   WRK-SRYCD
+                        MOVE  "197000270"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1435,7 +1436,7 @@
                         ADD    1             TO   IDY2
                         MOVE  "197000570"    TO  WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                        MOVE  "197000570"    TO   WRK-SRYCD
+                        MOVE  "197000570"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1451,7 +1452,7 @@
                      ADD    1             TO   IDY2
                      MOVE  "197000710"    TO   WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                     MOVE  "197000710"    TO   WRK-SRYCD
+                     MOVE  "197000710"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1467,7 +1468,7 @@
                      ADD    1             TO   IDY2
                      MOVE  "197000110"    TO   WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                     MOVE  "197000110"    TO   WRK-SRYCD
+                     MOVE  "197000110"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1481,7 +1482,7 @@
                         ADD    1             TO   IDY2
                         MOVE  "197000270"    TO  WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                        MOVE  "197000270"    TO   WRK-SRYCD
+                        MOVE  "197000270"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1495,7 +1496,7 @@
                      ADD    1             TO   IDY2
                      MOVE  "197000470"    TO   WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                     MOVE  "197000470"    TO   WRK-SRYCD
+                     MOVE  "197000470"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1509,7 +1510,7 @@
                         ADD    1             TO   IDY2
                         MOVE  "197000570"    TO  WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                        MOVE  "197000570"    TO   WRK-SRYCD
+                        MOVE  "197000570"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1525,7 +1526,7 @@
                      ADD    1             TO   IDY2
                      MOVE  "197000110"    TO   WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                     MOVE  "197000110"    TO   WRK-SRYCD
+                     MOVE  "197000110"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1539,7 +1540,7 @@
                         ADD    1             TO   IDY2
                         MOVE  "197000270"    TO  WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                        MOVE  "197000270"    TO   WRK-SRYCD
+                        MOVE  "197000270"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1554,7 +1555,7 @@
                         ADD    1             TO   IDY2
                         MOVE  "197000570"    TO  WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                        MOVE  "197000570"    TO   WRK-SRYCD
+                        MOVE  "197000570"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1568,7 +1569,7 @@
                      ADD    1             TO   IDY2
                      MOVE  "197000670"    TO   WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                     MOVE  "197000670"    TO   WRK-SRYCD
+                     MOVE  "197000670"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1583,7 +1584,7 @@
                      ADD    1             TO   IDY2
                      MOVE  "197000110"    TO   WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                     MOVE  "197000110"    TO   WRK-SRYCD
+                     MOVE  "197000110"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1597,7 +1598,7 @@
                         ADD    1             TO   IDY2
                         MOVE  "197000270"    TO  WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                        MOVE  "197000270"    TO   WRK-SRYCD
+                        MOVE  "197000270"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1611,7 +1612,7 @@
                      ADD    1             TO   IDY2
                      MOVE  "197000470"    TO   WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                     MOVE  "197000470"    TO   WRK-SRYCD
+                     MOVE  "197000470"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
@@ -1625,7 +1626,7 @@
                         ADD    1             TO   IDY2
                         MOVE  "197000570"    TO  WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                        MOVE  "197000570"    TO   WRK-SRYCD
+                        MOVE  "197000570"    TO   WRK-SRYCD-X
                         MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                         MOVE   "01"          TO   WK-TAIHI-SRYD
                         PERFORM    TENSU-TBL-SEC
@@ -1639,7 +1640,7 @@
                      ADD    1             TO   IDY2
                      MOVE  "197000670"    TO   WRK-SKJ-SRYCD-OCC
                                                              (IDY IDY2)
-                     MOVE  "197000670"    TO   WRK-SRYCD
+                     MOVE  "197000670"    TO   WRK-SRYCD-X
                      MOVE   RECE82-SRYYM  TO   WK-TAIHI-SRYYM
                      MOVE   "01"          TO   WK-TAIHI-SRYD
                      PERFORM    TENSU-TBL-SEC
