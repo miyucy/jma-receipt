@@ -329,6 +329,9 @@
            03  CONST-SKJ-FKSKONDATE            PIC X(09)
                                                    VALUE "197000670".
       *
+           COPY    "CPSK5000.INC"  REPLACING   //SYS-5000//
+                                   BY          //WKSYS-5000//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -585,6 +588,8 @@
            MOVE    ZERO                TO  FLG-SYSKANRI
            MOVE    ZERO                TO  CNT-SYS5000
       *
+           INITIALIZE                      WKSYS-5000-REC
+      *
            INITIALIZE                      SYS-5000-REC
            MOVE    "5000"              TO  SYS-5000-KANRICD
            MOVE    "*"                 TO  SYS-5000-KBNCD
@@ -604,6 +609,9 @@
       *
                    PERFORM 1501-SYS5000-HEN-SEC
       *
+                   MOVE    SYS-5000-REC
+                                       TO  WKSYS-5000-REC
+      *
                END-IF
       *
                MOVE    "SYSKANRI-KEY4" TO  WRK-DBPATH
@@ -618,6 +626,8 @@
       *
            MOVE    "SYSKANRI-KEY4"     TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
+      *
+           MOVE    WKSYS-5000-REC      TO  SYS-5000-REC
       *
            .
        1501-SYS5000-GET-EXT.
