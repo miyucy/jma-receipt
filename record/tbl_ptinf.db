@@ -179,11 +179,15 @@ path	key9	{
 path	key10	{
 	DBSELECT	{
 		DECLARE tbl_ptinf_key10_csr CURSOR FOR
-		SELECT a.*
-		FROM tbl_ptinf a,tbl_ptnum b
+		SELECT distinct a.*,b.ptnum
+		FROM tbl_ptinf a,tbl_ptnum b,tbl_jyurrk c
 			WHERE  a.HOSPID    =   :HOSPID
                         AND    a.HOSPID    =   b.HOSPID
                         AND    a.PTID      =   b.PTID
+                        AND    a.HOSPID    =   c.HOSPID
+                        AND    a.PTID      =   c.PTID
+                        AND    c.SRYYMD    >=  :UPYMD
+                        AND    c.SRYYMD    <=  :CREYMD
 			ORDER BY   b.PTNUM
 		;
 	};
