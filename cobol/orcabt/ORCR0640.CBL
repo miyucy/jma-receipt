@@ -1691,66 +1691,186 @@
               WHEN  1
                 EVALUATE   WRK-SHOKUJIRYOYO
                   WHEN  1
-                     ADD    1920          TO   WRK-SKJ-ZAITEN  (IDY) 
+      *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
-                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD   (IDY 1)
+                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY 1)
+                     MOVE  "197000110"    TO   WRK-SRYCD
+                     MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     PERFORM    TENSU-TBL-SEC
+                     IF       FLG-TENSU      =    ZERO
+                        ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                     END-IF
+      *              ÆÃÊÌ´ÉÍý²Ã»»
                      IF    WRK-TOKUKANRIKASAN  =  1
-                        ADD    200        TO   WRK-SKJ-ZAITEN  (IDY) 
-                        MOVE  "197000270" TO   WRK-SKJ-SRYCD   (IDY 2)
+                        MOVE  "197000270"    TO   WRK-SKJ-SRYCD(IDY 2)
+                        MOVE  "197000270"    TO   WRK-SRYCD
+                        MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        PERFORM    TENSU-TBL-SEC
+                        IF       FLG-TENSU      =    ZERO
+                           ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                        END-IF
                      END-IF
+      *              ¿©Æ²²Ã»»
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
-                        ADD    50         TO   WRK-SKJ-ZAITEN  (IDY)
-                        MOVE  "197000570" TO   WRK-SKJ-SRYCD   (IDY 4)
+                        MOVE  "197000570"    TO   WRK-SKJ-SRYCD(IDY 4)
+                        MOVE  "197000570"    TO   WRK-SRYCD
+                        MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        PERFORM    TENSU-TBL-SEC
+                        IF       FLG-TENSU      =    ZERO
+                           ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                        END-IF
                      END-IF
+      *
                   WHEN  2
-                     ADD    1520          TO   WRK-SKJ-ZAITEN  (IDY)
+      *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
-                     MOVE  "197000710"    TO   WRK-SKJ-SRYCD   (IDY 1)
+                     MOVE  "197000710"    TO   WRK-SKJ-SRYCD(IDY 1)
+                     MOVE  "197000710"    TO   WRK-SRYCD
+                     MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     PERFORM    TENSU-TBL-SEC
+                     IF       FLG-TENSU      =    ZERO
+                        ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                     END-IF
                 END-EVALUATE
               WHEN  2
-                     ADD    1920          TO   WRK-SKJ-ZAITEN  (IDY) 
+      *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
-                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD   (IDY 1)
-                     IF    WRK-TOKUKANRIKASAN  =  1
-                        ADD    200        TO   WRK-SKJ-ZAITEN  (IDY) 
-                        MOVE  "197000270" TO   WRK-SKJ-SRYCD   (IDY 2)
+                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY 1)
+                     MOVE  "197000110"    TO   WRK-SRYCD
+                     MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     PERFORM    TENSU-TBL-SEC
+                     IF       FLG-TENSU      =    ZERO
+                        ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
                      END-IF
-                     ADD    350           TO   WRK-SKJ-ZAITEN  (IDY) 
-                     MOVE  "197000470"    TO   WRK-SKJ-SRYCD   (IDY 3)
+      *              ÆÃÊÌ´ÉÍý²Ã»»
+                     IF    WRK-TOKUKANRIKASAN  =  1
+                        MOVE  "197000270"    TO   WRK-SKJ-SRYCD(IDY 2)
+                        MOVE  "197000270"    TO   WRK-SRYCD
+                        MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        PERFORM    TENSU-TBL-SEC
+                        IF       FLG-TENSU      =    ZERO
+                           ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                        END-IF
+                     END-IF
+      *              ÆÃÊÌ¿©²Ã»»
+                     MOVE  "197000470"    TO   WRK-SKJ-SRYCD(IDY 3)
+                     MOVE  "197000470"    TO   WRK-SRYCD
+                     MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     PERFORM    TENSU-TBL-SEC
+                     IF       FLG-TENSU      =    ZERO
+                        ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                     END-IF
+      *              ¿©Æ²²Ã»»
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
-                        ADD    50         TO   WRK-SKJ-ZAITEN  (IDY)
-                        MOVE  "197000570" TO   WRK-SKJ-SRYCD   (IDY 4)
+                        MOVE  "197000570"    TO   WRK-SKJ-SRYCD(IDY 4)
+                        MOVE  "197000570"    TO   WRK-SRYCD
+                        MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        PERFORM    TENSU-TBL-SEC
+                        IF       FLG-TENSU      =    ZERO
+                           ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                        END-IF
                      END-IF
               WHEN  3
-                     ADD    1920          TO   WRK-SKJ-ZAITEN  (IDY) 
+      *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
-                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD   (IDY 1)
+                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY 1)
+                     MOVE  "197000110"    TO   WRK-SRYCD
+                     MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     PERFORM    TENSU-TBL-SEC
+                     IF       FLG-TENSU      =    ZERO
+                        ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                     END-IF
+      *              ÆÃÊÌ´ÉÍý²Ã»»
                      IF    WRK-TOKUKANRIKASAN  =  1
-                        ADD    200        TO   WRK-SKJ-ZAITEN  (IDY) 
-                        MOVE  "197000270" TO   WRK-SKJ-SRYCD   (IDY 2)
+                        MOVE  "197000270"    TO   WRK-SKJ-SRYCD(IDY 2)
+                        MOVE  "197000270"    TO   WRK-SRYCD
+                        MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        PERFORM    TENSU-TBL-SEC
+                        IF       FLG-TENSU      =    ZERO
+                           ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                        END-IF
                      END-IF
+      *              ¿©Æ²²Ã»»
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
-                        ADD    50         TO   WRK-SKJ-ZAITEN  (IDY)
-                        MOVE  "197000570" TO   WRK-SKJ-SRYCD   (IDY 4)
+                        MOVE  "197000570"    TO   WRK-SKJ-SRYCD(IDY 4)
+                        MOVE  "197000570"    TO   WRK-SRYCD
+                        MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        PERFORM    TENSU-TBL-SEC
+                        IF       FLG-TENSU      =    ZERO
+                           ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                        END-IF
                      END-IF
-                     ADD    50            TO   WRK-SKJ-ZAITEN  (IDY) 
-                     MOVE  "197000670"    TO   WRK-SKJ-SRYCD   (IDY 5)
+      *              Ê£¿ô¸¥Î©²Ã»»
+                     MOVE  "197000670"    TO   WRK-SKJ-SRYCD(IDY 5)
+                     MOVE  "197000670"    TO   WRK-SRYCD
+                     MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     PERFORM    TENSU-TBL-SEC
+                     IF       FLG-TENSU      =    ZERO
+                        ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                     END-IF
               WHEN  4
-                     ADD    1920          TO   WRK-SKJ-ZAITEN  (IDY) 
+      *              Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
                      ADD    1             TO   WRK-SKJ-ZAIKAISU(IDY)
-                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD   (IDY 1)
+                     MOVE  "197000110"    TO   WRK-SKJ-SRYCD(IDY 1)
+                     MOVE  "197000110"    TO   WRK-SRYCD
+                     MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     PERFORM    TENSU-TBL-SEC
+                     IF       FLG-TENSU      =    ZERO
+                        ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                     END-IF
+      *              ÆÃÊÌ´ÉÍý²Ã»»
                      IF    WRK-TOKUKANRIKASAN  =  1
-                        ADD    200        TO   WRK-SKJ-ZAITEN  (IDY) 
-                        MOVE  "197000270" TO   WRK-SKJ-SRYCD   (IDY 2)
+                        MOVE  "197000270"    TO   WRK-SKJ-SRYCD(IDY 2)
+                        MOVE  "197000270"    TO   WRK-SRYCD
+                        MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        PERFORM    TENSU-TBL-SEC
+                        IF       FLG-TENSU      =    ZERO
+                           ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                        END-IF
                      END-IF
-                     ADD    350           TO   WRK-SKJ-ZAITEN  (IDY) 
-                     MOVE  "197000470"    TO   WRK-SKJ-SRYCD   (IDY 3)
+      *              ÆÃÊÌ¿©²Ã»»
+                     MOVE  "197000470"    TO   WRK-SKJ-SRYCD(IDY 3)
+                     MOVE  "197000470"    TO   WRK-SRYCD
+                     MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     PERFORM    TENSU-TBL-SEC
+                     IF       FLG-TENSU      =    ZERO
+                        ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                     END-IF
+      *              ¿©Æ²²Ã»»
                      IF    WRK-DAY4(IDY)  NOT =  ZERO
-                        ADD    50         TO   WRK-SKJ-ZAITEN  (IDY)
-                        MOVE  "197000570" TO   WRK-SKJ-SRYCD   (IDY 4)
+                        MOVE  "197000570"    TO   WRK-SKJ-SRYCD(IDY 4)
+                        MOVE  "197000570"    TO   WRK-SRYCD
+                        MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                        MOVE   "01"          TO   WK-TAIHI-SRYD
+                        PERFORM    TENSU-TBL-SEC
+                        IF       FLG-TENSU      =    ZERO
+                           ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                        END-IF
                      END-IF
-                     ADD    50            TO   WRK-SKJ-ZAITEN  (IDY) 
-                     MOVE  "197000670"    TO   WRK-SKJ-SRYCD   (IDY 5)
+      *              Ê£¿ô¸¥Î©²Ã»»
+                     MOVE  "197000670"    TO   WRK-SKJ-SRYCD(IDY 5)
+                     MOVE  "197000670"    TO   WRK-SRYCD
+                     MOVE   RECE62-SRYYM  TO   WK-TAIHI-SRYYM
+                     MOVE   "01"          TO   WK-TAIHI-SRYD
+                     PERFORM    TENSU-TBL-SEC
+                     IF       FLG-TENSU      =    ZERO
+                        ADD     TNS-TEN   TO   WRK-SKJ-ZAITEN(IDY)
+                     END-IF
            END-EVALUATE
       *
            .
