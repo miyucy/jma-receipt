@@ -48,12 +48,6 @@ ruby_scripts = \
 	daily/print_parent.rb
 
 claim_scripts = \
-	claim/def/orca_layout_accounting.def \
-	claim/def/orca_layout_decode.def \
-	claim/def/orca_layout_front.def \
-	claim/dtd/MML1014_euc.dtd \
-	claim/link/link_decode.def \
-	claim/rb/claim_empty_elem.list \
 	claim/rb/clm_rcv.rb \
 	claim/rb/clm_snd.rb \
 	claim/rb/decode_xml.rb \
@@ -66,8 +60,16 @@ claim_scripts = \
 	claim/rb/send_xml_main.rb \
 	claim/rb/xml_jcnv.rb \
 	claim/rb/xml_valid.rb \
+
+claim_data = \
+	claim/def/orca_layout_accounting.def \
+	claim/def/orca_layout_decode.def \
+	claim/def/orca_layout_front.def \
+	claim/dtd/MML1014_euc.dtd \
+	claim/link/link_decode.def \
+	claim/rb/claim_empty_elem.list \
 	claim/template/orca_base_accounting.xml \
-	claim/template/orca_base_front.xml \
+	claim/template/orca_base_front.xml 
 
 shell_scripts = $(shell_sources:.sh.in=.sh) 
 
@@ -84,7 +86,7 @@ all:   $(noinst_shell_scripts) $(shell_scripts)
 
 filecheck:
 	@(for i in $(noinst_shell_sources) \
-		  $(shell_sources) $(ruby_scripts) $(claim_scripts) \
+		  $(shell_sources) $(ruby_scripts) $(claim_scripts) $(claim_data) \
 			;do echo "make	`basename $${i}`"; done ; \
 	find . \
 	-name "." -o \
@@ -158,4 +160,8 @@ install: all
 	for file in $(shell_scripts) $(ruby_scripts) $(claim_scripts); do \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
 	  $(INSTALL) $$file $(scriptsdir)/$$dir; \
+	done
+	for file in $(claim_data); do \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  $(INSTALL_DATA) $$file $(scriptsdir)/$$dir; \
 	done
