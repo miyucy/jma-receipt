@@ -1148,16 +1148,8 @@
       *****************************************************************
        2020-SRYCD-SET-SEC        SECTION.
       *
-      *    Ｈ１５年６月よりすべて１回目とする
-           IF      LNK-SYSYMD          >=  "20030601"
-               MOVE    ZERO                TO  WRK-KAISU
-               MOVE    ZERO                TO  WRK-SINSATU-CNT
-               MOVE    ZERO                TO  FLG-15MIMAN
-               MOVE    ZERO                TO  WRK-15MIMAN-ARI
-           ELSE
-      *        受診履歴より診察回数を求める
-               PERFORM 1000-SINSATU-KAISU-SEC
-           END-IF
+      *    受診履歴より診察回数を求める
+           PERFORM 1000-SINSATU-KAISU-SEC
       *
       *    診察料コードを決定する
            IF      WRK-SYOSIN          =   1
@@ -1219,6 +1211,13 @@
       *    １５歳になる年月日を計算
            MOVE    PTINF-BIRTHDAY      TO  WRK-BIRTHDAY
            COMPUTE WRK-BIRTH-YY        =   WRK-BIRTH-YY    +  15
+      *
+      *
+      *    Ｈ１５年６月よりすべて１回目とする
+           IF      LNK-SYSYMD          >=  "20030601"
+               GO      TO      1000-SINSATU-KAISU-EXT
+           END-IF
+      *
       *
       *    受診履歴より受診回数を求める
       *    受診歴を検索する（診療月１日から診療日までの範囲）
