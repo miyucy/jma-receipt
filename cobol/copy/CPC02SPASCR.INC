@@ -28,6 +28,7 @@
       *  01.03.01    MCC-藤原     01/12/06  自院病名マスタの追加     
       *
       *  01.01.01    NACL-藤原    03/08/28  登録数の制限をなくす
+      *  01.01.01    NACL-藤原    04/02/24  入外区分の追加
       *****************************************************************
       *
       *01  SPA-SCR-REC.
@@ -55,4 +56,5 @@
                    07  SPA-NAI-C02-TSRYYMD     PIC X(08).
                    07  SPA-NAI-C02-TRENNUM     PIC 9(02).
                    07  SPA-NAI-C02-TSRYKA      PIC X(02).
+                   07  SPA-NAI-C02-TNYUGAIKBN  PIC X(01).
                    07  SPA-NAI-C02-TTENKIYMD   PIC X(08).
