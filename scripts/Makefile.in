@@ -23,5 +23,5 @@ install: all
 	$(INSTALL) -d $(scriptsdir)/monthly
 
 	for file in allways/*sh ;do $(INSTALL) $$file $(scriptsdir)/allways; done
-	for file in daily/*sh ;do $(INSTALL) $$file $(scriptsdir)/daily; done
+	for file in daily/*sh daily/*rb;do $(INSTALL) $$file $(scriptsdir)/daily; done
 	for file in monthly/*sh ;do $(INSTALL) $$file $(scriptsdir)/monthly; done
