@@ -3380,6 +3380,8 @@
                    (SPA-NAI-NENREI-YY  <   3   )
                MOVE    1                   TO  LNK-ORCSC-SYONIKA-ARI2
            END-IF
+      *    ２４時間連携体制加算は自動発生しない
+           MOVE    1                   TO  LNK-ORCSC-NETAKIRI-ARI3
       *
       *
            EVALUATE    WRK-COM-SRYKBN (01)
@@ -4130,6 +4132,8 @@
                    (SPA-NAI-NENREI-YY  <   3   )
                MOVE    1                   TO  LNK-ORCSC-SYONIKA-ARI2
            END-IF
+      *    ２４時間連携体制加算は自動発生しない
+           MOVE    1                   TO  LNK-ORCSC-NETAKIRI-ARI3
       *            診療
            IF      SPA-SRYKBN-CNT (01) >   ZERO
                CALL    "ORCSC10"       USING
