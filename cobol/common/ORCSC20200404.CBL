@@ -954,7 +954,7 @@
       *    長期投薬処方箋料がある時、処方箋料があること
            IF      FLG-CHOKIKA1        =   1
                IF      FLG-SYOHOSENN       =   ZERO
-                   MOVE    "1037"              TO  SPA-ERRCD
+                   MOVE    "1038"              TO  SPA-ERRCD
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-T1)
                ELSE
       *            長期投薬があること

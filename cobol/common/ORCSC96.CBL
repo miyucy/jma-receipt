@@ -983,10 +983,15 @@
                    MOVE    "訂正できません。"
                                        TO  SPA-ERRMSG(31:)
                WHEN    "1037"
-                   MOVE    "２８日以上の投薬がありません。"
-                                       TO  SPA-ERRMSG(1:)
-                   MOVE    "長期投薬加算は算定できません"
-                                       TO  SPA-ERRMSG(31:)
+                   MOVE    "処方料が算定されません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "長期投薬加算（処方料）は算定できません"
+                                       TO  SPA-ERRMSG(25:)
+               WHEN    "1038"
+                   MOVE    "処方せん料が算定されません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "長期投薬加算（処方せん料）は算定できません"
+                                       TO  SPA-ERRMSG(29:)
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"
                                        TO  SPA-ERRMSG
