@@ -182,6 +182,8 @@
            03  WRK-NYUYOJI         PIC 9(04).
            03  WRK-DAYCNT          PIC 9(04).
            03  WRK-DAYCNT-SUM      PIC 9(04).
+      *    訂正日の回数
+           03  WRK-TEI-KAISU       PIC 9(04).
       *
            03  WRK-KEIYMD          PIC X(08).
       *
@@ -1203,13 +1205,29 @@
       *
       *    訂正の時、訂正分はカウントしない
            IF      SPA-SYORIFLG        =   1
+      *        訂正の時、算定していた診療コードかのチェック
+               MOVE    ZERO                TO  WRK-TEI-KAISU
+               PERFORM VARYING     IDX-T   FROM    1   BY  1
+                       UNTIL      (IDX-T       >   100 )  OR
+                                  (SPA-K02-TEI-SRYCD(IDX-T)  =   SPACE)
+                   IF      SPA-K02-TEI-SRYCD(IDX-T)    =   SANTEI-SRYCD
+                       MOVE    SPA-K02-TEI-KAISU (IDX-T)
+                                                   TO  WRK-TEI-KAISU
+                       MOVE    100                 TO  IDX-T
+                   END-IF
+               END-PERFORM
                MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                IF     (SANTEI-DAY (IDX-Y2) >   ZERO )  AND
                       (SANTEI-MSANTEICNT   >   ZERO )
-                   COMPUTE SANTEI-MSANTEICNT
+                   IF      WRK-TEI-KAISU   =   ZERO
+                       CONTINUE
+                   ELSE
+                       COMPUTE SANTEI-MSANTEICNT
                                            =   SANTEI-MSANTEICNT
-                                           -   SANTEI-DAY (IDX-Y2)
-                   MOVE    ZERO                TO  WRK-DAYCNT
+      *************                        -   SANTEI-DAY (IDX-Y2)
+                                           -   WRK-TEI-KAISU
+                       MOVE    ZERO                TO  WRK-DAYCNT
+                   END-IF
                END-IF
            END-IF
       *
@@ -1234,15 +1252,19 @@
                WHEN    "113003810"
                    ADD     SANTEI-MSANTEICNT   TO  WRK-NYUYOJI
                    ADD     WRK-DAYCNT          TO  WRK-DAYCNT-SUM
-                   IF     (FLG-SYONIKA-TEI     =   ZERO) AND
-                          (SANTEI-DAY (IDX-Y2) >   ZERO)
-                       ADD    SANTEI-DAY (IDX-Y2)  TO  WRK-DAYCNT-SUM
-                   END-IF
-      *        寝たきり老人在宅総合診療科
+      *!           IF     (FLG-SYONIKA-TEI     =   ZERO) AND
+      *!                  (SANTEI-DAY (IDX-Y2) >   ZERO)
+      *!               ADD    SANTEI-DAY (IDX-Y2)  TO  WRK-DAYCNT-SUM
+      *!           END-IF
+      *        寝たきり老人在宅総合診療科（院外）
                WHEN    "114701210"
-               WHEN    "114701710"
                    IF      SANTEI-MSANTEICNT   >   ZERO
                        MOVE    1                   TO  SPA-NETAKIRI-ARI2
+                   END-IF
+      *        寝たきり老人在宅総合診療科（院内）
+               WHEN    "114701710"
+                   IF      SANTEI-MSANTEICNT   >   ZERO
+                       MOVE    2                   TO  SPA-NETAKIRI-ARI2
                    END-IF
       *        在宅末期医療総合診察料（院外処方）
                WHEN    "114007610"
@@ -1281,11 +1303,6 @@
                WHEN    "140048010"
                    ADD     WRK-SYOEN-CNT       TO  SPA-SYOEN-CNT
            END-EVALUATE
-      *TEST
-           DISPLAY "C10S SPA-SYOEN-CNT:" SPA-SYOEN-CNT
-                   ",SANTEI-SRYCD:" SANTEI-SRYCD
-                   ",WRK-SYOEN-CNT:" WRK-SYOEN-CNT
-      *TEST
       *
            .
        10011-TOUGETU-CHK-EXT.
