@@ -28,7 +28,8 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-Æ£¸¶    03.01.30  ¿©»öÉéÃ´³Û¤¬¥¼¥í¤Î¤È¤­½èÍý¤·¤Ê¤¤
-      *  01.00.10    NACL-Æ£¸¶    03/01/27  ¸øÈñÀÁµá½ñ£Ä£Â¤òÄÉ²Ã
+      *  01.00.02    NACL-Æ£¸¶    03.01.27  ¸øÈñÀÁµá½ñ£Ä£Â¤òÄÉ²Ã
+      *  01.00.03    NACL-Æ£¸¶    03.03.03  ¿ÇÎÅ²Ê¿ô£±£°¤«¤é£²£°¤ØÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1238,8 +1239,9 @@
                MOVE    RECE62X-AGE         TO  KOHSKY-AGE  
                MOVE    RECE62X-DEATHKBN    TO  KOHSKY-DEATHKBN
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       10
-                   MOVE    RECE62X-SRYKA        TO  KOHSKY-SRYKA
+                       UNTIL   IDX >       20
+                   MOVE    RECE62X-SRYKA   (IDX)
+                                           TO  KOHSKY-SRYKA (IDX)
                END-PERFORM
                MOVE    RECE62X-HKN         TO  KOHSKY-HKN
                IF      RECE62X-KYURATE  >  ZERO

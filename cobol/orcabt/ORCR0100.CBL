@@ -1261,7 +1261,8 @@
                MOVE    RECE02X-DEATHKBN    TO  KOHSKY-DEATHKBN
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       10
-                   MOVE    RECE02X-SRYKA        TO  KOHSKY-SRYKA
+                   MOVE    RECE02X-SRYKA   (IDX)
+                                           TO  KOHSKY-SRYKA (IDX)
                END-PERFORM
                MOVE    RECE02X-HKN         TO  KOHSKY-HKN
                IF      RECE02X-KYURATE  >  ZERO

@@ -155,7 +155,7 @@
                05  KEY-O-TEISYUTUSAKI  PIC 9(01).
                05  KEY-O-RECESYUBETU   PIC 9(04).
                05  KEY-O-HKNJANUM      PIC X(08).
-               05  KEY-N-HOJOKBN       PIC X(01).
+               05  KEY-O-HOJOKBN       PIC X(01).
                05  KEY-O-TEKSTYMD      PIC X(08). 
                05  KEY-O-SRYYMD        PIC X(08).
                05  KEY-O-TENKIKBN      PIC X(01).
