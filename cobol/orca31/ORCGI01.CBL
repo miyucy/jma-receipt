@@ -9018,7 +9018,7 @@
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
            WHEN    "2012"
-               MOVE    "会計情報の取得に失敗しました"
+               MOVE    "退院計算に必要な会計情報が作成されていません"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *

@@ -380,6 +380,10 @@
       *
       *        画面編集
                PERFORM 500-GMNHEN-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   PERFORM 510-ERRSET-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -1738,10 +1742,17 @@
                                    LNK-ORCS02-REC
                                    LNK-SYUNOU-REC-T
            DISPLAY "LNK-S02-RC = " LNK-S02-RC
-           IF    ( LNK-S02-RC      NOT =   ZERO )
-               MOVE    "2001"      TO  SPA-ERRCD
-               GO  TO  490-FTNKIN-CALC-EXT
+           IF    ( LNK-S02-RC      NOT = ZERO )
+               EVALUATE LNK-S02-RC
+               WHEN    13
+                   MOVE    "2002"      TO  SPA-ERRCD
+                   GO  TO  490-FTNKIN-CALC-EXT
+               WHEN    OTHER
+                   MOVE    "2001"      TO  SPA-ERRCD
+                   GO  TO  490-FTNKIN-CALC-EXT
+               END-EVALUATE
            END-IF
+
       *
       *    収納データ退避処理
            PERFORM 490-SYUNOU-TAIHI-SEC
@@ -2510,6 +2521,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "2001"
                MOVE    "負担金計算処理に失敗しました"
+                                       TO  SPA-ERRMSG
+           WHEN    "2002"
+               MOVE    "退院計算に必要な会計情報が作成されていません"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
