@@ -57,6 +57,7 @@
       *  01.05.09    NACL-多々納  03/06/10  無床診療所に排他制御追加
       *  01.05.10    NACL-太田    03/07/08  1027 割引率情報の区分コード表示を
       *                                     修正
+      *  01.05.11    NACL-多々納  03/07/11  出力先プリンタ割り当て修正
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -992,6 +993,11 @@
                    MOVE    SPACE           TO  SPA-GMN-KBNCD
                    MOVE    12              TO  SPA-GMN-CUR
                    GO  TO  4104-KANRICD-CHK-EXT
+      *        出力先プリンタ割り当て
+               WHEN    "1031"
+                   PERFORM 41041-1031-HEN-SEC
+                   MOVE    12                      TO  SPA-GMN-CUR
+                   GO  TO  4104-KANRICD-CHK-EXT
                WHEN    OTHER
                    MOVE    SPACE           TO  SPA-GMN-KBNCD 
            END-EVALUATE         
@@ -1062,6 +1068,75 @@
            END-EVALUATE
            .
        4104-KANRICD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    出力先プリンタ割り当て編集処理
+      *****************************************************************
+       41041-1031-HEN-SEC              SECTION.
+      *
+      *    システム管理読み込み
+           MOVE    SPACE               TO  SYS-KEY
+           MOVE    SPA-GMN-KANRICD     TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM             UNTIL   FLG-SYSKANRI   =   1
+                               OR      IDX            >=  100
+               MOVE    MCPDATA-REC        TO  SYSKANRI-REC
+               ADD     1                  TO  IDX
+               MOVE    IDX                TO  SPA-GMN-TBANGO    (IDX)  
+               MOVE    SYS-STYUKYMD       TO  SPA-NAI-TSTYUKYMD (IDX)
+               MOVE    SYS-STYUKYMD       TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG        TO  SPA-GMN-TSTYUKYMD (IDX)
+               MOVE    SYS-EDYUKYMD       TO  SPA-NAI-TEDYUKYMD (IDX)
+               MOVE    SYS-EDYUKYMD       TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG         TO  SPA-GMN-TEDYUKYMD (IDX)
+               MOVE    IDX                 TO  SPA-GMN-MAX
+      *
+               MOVE    "SYSKANRI-KEY4"       TO  ORC-DBPATH
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY4"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           EVALUATE    SPA-GMN-MAX
+               WHEN    ZERO
+                   MOVE    3                       TO  SPA-GMN-CUR
+               WHEN    1
+                   MOVE    SPA-GMN-TSTYUKYMD (1)   TO  SPA-GMN-STYUKYMD
+                   MOVE    SPA-NAI-TSTYUKYMD (1)   TO  SPA-NAI-STYUKYMD
+                   MOVE    SPA-GMN-TEDYUKYMD (1)   TO  SPA-GMN-EDYUKYMD
+                   MOVE    SPA-NAI-TEDYUKYMD (1)   TO  SPA-NAI-EDYUKYMD
+                   MOVE    1                       TO  SPA-GMN-SELNUM
+                                                       SPA-NAI-SELNO
+                   MOVE    12                      TO  SPA-GMN-CUR
+               WHEN    OTHER
+                   MOVE    2                       TO  SPA-GMN-CUR
+           END-EVALUATE           
+           .
+       41041-1031-HEN-EXT.
            EXIT.
       *
       *****************************************************************

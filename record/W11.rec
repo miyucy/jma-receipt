@@ -1,8 +1,40 @@
 W11	{
 	fixed2	{
+		B03	{
+			state	int;
+		};
 		note3	{
 			pageno	int;
 			fi23	{
+				USERKBNCOMBO	{
+					USERKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[5];
+				};
+				YUKOKBNCOMBO	{
+					YUKOKBN	{
+						value	varchar(20);
+					};
+					state   int;
+					count	int;
+					item	varchar(20)[2];
+				};
+				USERLSTSCROLLE	{
+					USERLST	{
+						count	int;
+						item	{
+							value0	varchar(4);
+							value1	varchar(16);
+						}	[100];
+						select	bool[100];
+					};
+				};
+				SELNUM	{
+					state   int;
+					value	number(3);
+				};
 				DSPNAME01	{
 					value	varchar(30);
 				};
@@ -75,6 +107,9 @@ W11	{
 				ORCAORGNM04	{
 					value	varchar(20);
 				};
+				ORCAORGNM05	{
+					value	varchar(20);
+				};
 				ORCAORGCHK01	{
 					value	bool;
 				};
@@ -85,6 +120,9 @@ W11	{
 					value	bool;
 				};
 				ORCAORGCHK04	{
+					value	bool;
+				};
+				ORCAORGCHK05	{
 					value	bool;
 				};
 				ORCACSTNM01	{
@@ -99,6 +137,9 @@ W11	{
 				ORCACSTNM04	{
 					value	varchar(20);
 				};
+				ORCACSTNM05	{
+					value	varchar(20);
+				};
 				ORCACSTCHK01	{
 					value	bool;
 				};
@@ -109,6 +150,9 @@ W11	{
 					value	bool;
 				};
 				ORCACSTCHK04	{
+					value	bool;
+				};
+				ORCACSTCHK05	{
 					value	bool;
 				};
 				DSPNAME01N	{
@@ -208,7 +252,7 @@ W11	{
 					value	bool;
 				};
 			};
-                        N01	{
+			            N01	{
 				state	int;
 			};
 			fi28	{
@@ -223,7 +267,7 @@ W11	{
 					item	varchar(12)[2];
 				};
 			};
-                        N02	{
+			            N02	{
 				state	int;
 			};
 		};

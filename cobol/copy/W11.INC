@@ -16,49 +16,66 @@
       * 113-8621, Japan.
       ********************************************************************
         02  W11.
-      *     02  W11-FIXED2.
+      *      02  W11-FIXED2.
+              03  W11-B03-STATE                 PIC S9(9)   BINARY.
               03  W11-NOTE3.
-                04  W11-PAGENO  PIC S9(9)   BINARY.
+                04  W11-PAGENO                  PIC S9(9)   BINARY.
                 04  W11-FI23.
-                  05  W11-DSPNAME-G     OCCURS  10.
-                    06  W11-DSPNAME     PIC X(30).
-                  05  W11-PRTNM-G       OCCURS  10.
-                    06  W11-PRTNM       PIC X(16).
-                  05  W11-ORCAORGNM-G   OCCURS   4.
-                    06  W11-ORCAORGNM   PIC X(20).
-                  05  W11-ORCAORGCHK-G  OCCURS   4.
-                    06  W11-ORCAORGCHK  PIC X.
-                  05  W11-ORCACSTNM-G   OCCURS   4.
-                    06  W11-ORCACSTNM   PIC X(20).
-                  05  W11-ORCACSTCHK-G  OCCURS   4.
-                    06  W11-ORCACSTCHK  PIC X.
-                  05  W11-DSPNAME-N-G   OCCURS  10.
-                    06  W11-DSPNAME-N   PIC X(30).
-                  05  W11-PRTNM-N-G     OCCURS  10.
-                    06  W11-PRTNM-N     PIC X(16).
-                  05  W11-ORCAORGNM-N-G OCCURS   3.
-                    06  W11-ORCAORGNM-N PIC X(20).
-                  05  W11-ORCAORGCHK-N-G
-                                        OCCURS   3.
-                    06  W11-ORCAORGCHK-N 
-                                        PIC X.
-                  05  W11-ORCACSTNM-N-G OCCURS   3.
-                    06  W11-ORCACSTNM-N PIC X(20).
-                  05  W11-ORCACSTCHK-N-G
-                                        OCCURS   3.
-                    06  W11-ORCACSTCHK-N
-                                        PIC X.
-                04  W11-N01-STATE       PIC S9(9)   BINARY.
-                04  W11-FIXED28.
+                  05  W11-USERKBNCOMBO.
+                    06  W11-USERKBN             PIC X(20).
+                    06  W11-USERKBN-COUNT       PIC S9(9)   BINARY.
+                    06  W11-USERKBNLST          PIC X(20)
+                                                OCCURS  5 TIMES.
+                  05  W11-YUKOKBNCOMBO.
+                    06  W11-YUKOKBN             PIC X(20).
+                    06  W11-YUKOKBN-STATE       PIC S9(9)   BINARY.
+                    06  W11-YUKOKBN-COUNT       PIC S9(9)   BINARY.
+                    06  W11-YUKOKBNLST          PIC X(20)
+                                                OCCURS  2 TIMES.
+                  05  W11-USERLSTSCROLLE.
+                    06  W11-USERLST.
+                      07  W11-USERLST-COUNT     PIC S9(9)   BINARY.
+                      07  W11-ITEM              OCCURS  100 TIMES.
+                        08  W11-USERNUM         PIC X(4).
+                        08  W11-USERNAME        PIC X(16).
+                      07  W11-USERLST-SELECT    PIC X
+                                                OCCURS  100 TIMES.
+                  05  W11-SELNUM-G.
+                    06  W11-SELNUM-STATE        PIC S9(9)   BINARY.
+                    06  W11-SELNUM              PIC S9(3).
+                  05  W11-DSPNAME-G             OCCURS  10.
+                    06  W11-DSPNAME             PIC X(30).
+                  05  W11-PRTNM-G               OCCURS  10.
+                    06  W11-PRTNM               PIC X(16).
+                  05  W11-ORCAORGNM-G           OCCURS   5.
+                    06  W11-ORCAORGNM           PIC X(20).
+                  05  W11-ORCAORGCHK-G          OCCURS   5.
+                    06  W11-ORCAORGCHK          PIC X.
+                  05  W11-ORCACSTNM-G           OCCURS   5.
+                    06  W11-ORCACSTNM           PIC X(20).
+                  05  W11-ORCACSTCHK-G          OCCURS   5.
+                    06  W11-ORCACSTCHK          PIC X.
+                  05  W11-DSPNAME-N-G           OCCURS  10.
+                    06  W11-DSPNAME-N           PIC X(30).
+                  05  W11-PRTNM-N-G             OCCURS  10.
+                    06  W11-PRTNM-N             PIC X(16).
+                  05  W11-ORCAORGNM-N-G         OCCURS   3.
+                    06  W11-ORCAORGNM-N         PIC X(20).
+                  05  W11-ORCAORGCHK-N-G        OCCURS   3.
+                    06  W11-ORCAORGCHK-N        PIC X.
+                  05  W11-ORCACSTNM-N-G         OCCURS   3.
+                    06  W11-ORCACSTNM-N         PIC X(20).
+                  05  W11-ORCACSTCHK-N-G        OCCURS   3.
+                    06  W11-ORCACSTCHK-N        PIC X.
+                04  W11-N01-STATE               PIC S9(9)   BINARY.
+                04  W11-FI28.
                   05  W11-SYOHODSPNAME.
-                    06  W11-VALUE   PIC X(10).
+                    06  W11-VALUE               PIC X(10).
                   05  W11-SYOHOGEPRTFLG-COMBO.
-                    06  W11-SYOHOGEPRTFLG
-                                        PIC X(12).
-                    06  W11-SYOHOGEPRTFLG-COUNT  
-                                        PIC S9(9)   BINARY.
-                    06  W11-SYOHOGEPRTFLGLST
-                                        PIC X(12)   OCCURS  2.
-                04  W11-N02-STATE       PIC S9(9)   BINARY.
-              03  W11-STYUKYMD          PIC X(9).
-              03  W11-EDYUKYMD          PIC X(9).
+                    06  W11-SYOHOGEPRTFLG       PIC X(12).
+                    06  W11-SYOHOGEPRTFLG-COUNT PIC S9(9)   BINARY.
+                    06  W11-SYOHOGEPRTFLGLST    PIC X(12)
+                                                OCCURS  2.
+                04  W11-N02-STATE               PIC S9(9)   BINARY.
+              03  W11-STYUKYMD                  PIC X(9).
+              03  W11-EDYUKYMD                  PIC X(9).
