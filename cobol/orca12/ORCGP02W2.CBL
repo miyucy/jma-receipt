@@ -35,6 +35,7 @@
       *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
       *  02.00.02    NACL-多々納  02/10/31  船員保険補助区分追加
       *  02.00.03    NACL-多々納  02/11/21  共済下船３月追加
+      *  02.00.04    NACL-多々納  04/07/15  国保補助区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1637,35 +1638,9 @@
                           MOVE    HKN-KZK  TO  WRK-LCOMB-TNK   (IDX2)
                       END-IF
                       IF  HKN-HKNNUM               =   "060"
-                          IF  WRK-LCOMB-HOJOKBN (IDX2)  =   "0"
-                              MOVE  "2" TO  WRK-LCOMB-GAI-FTNKBN (IDX2)
-                              MOVE  "2" TO  WRK-LCOMB-NYU-FTNKBN (IDX2)
-                              MOVE  "2"
-                                   TO  WRK-LCOMB-TSY-GAIFTNKBN(IDX2)
-                              MOVE  "2"
-                                   TO  WRK-LCOMB-TSY-NYUFTNKBN(IDX2)
-                              MOVE  "2"
-                                   TO  WRK-LCOMB-TNK-GAIFTNKBN(IDX2)
-                              MOVE  "2"
-                                   TO  WRK-LCOMB-TNK-NYUFTNKBN(IDX2)
-                          ELSE
-                            MOVE    WRK-LCOMB-HOJOKBN(IDX2)
-                                              TO  WRK-DISCOUNTRATEC
-                            COMPUTE   WRK-DISCOUNTRATEC
-                                  =   WRK-DISCOUNTRATEC *   10
-                            MOVE    WRK-DISCOUNTRATEC
-                                TO   WRK-LCOMB-GAI-KFTNRATE(IDX2)
-                            MOVE    WRK-DISCOUNTRATEC
-                                TO   WRK-LCOMB-NYU-KFTNRATE(IDX2)
-                            MOVE    WRK-DISCOUNTRATEC
-                                TO   WRK-LCOMB-TSY-GAIKFTNRATE(IDX2)
-                            MOVE    WRK-DISCOUNTRATEC
-                                TO   WRK-LCOMB-TSY-NYUKFTNRATE(IDX2)
-                            MOVE    WRK-DISCOUNTRATEC
-                                TO   WRK-LCOMB-TNK-GAIKFTNRATE(IDX2)
-                            MOVE    WRK-DISCOUNTRATEC
-                                TO   WRK-LCOMB-TNK-NYUKFTNRATE(IDX2)
-                          END-IF
+      *----(02.00.0) LINE UPD START -------------------------------
+      *                   国保の保険割合を補助区分より編集
+                          PERFORM 570120-KOKUHO-SET-SEC
       *                   国保の保険割合
                           IF      WRK-LCOMB-TEKSTYMD (IDX2)
                                                >=   "20021001"
@@ -1675,6 +1650,7 @@
                               MOVE    ZERO     TO  WRK-GAIKFTNRATE
                           END-IF
                       ELSE
+      *----(02.00.0) LINE UPD END   -------------------------------
       *                   老人の負担割合編集
                           PERFORM 570129-RJN-FUTAN-SET-SEC
                       END-IF
@@ -1764,6 +1740,72 @@
            .
        57012-FUTAN-SET-EXT.
            EXIT.
+      *
+      *----(02.00.0) LINE ADD START ---------------------------------
+      *****************************************************************
+      *    国保の保険割合を補助区分より編集処理
+      *****************************************************************
+       570120-KOKUHO-SET-SEC        SECTION.
+      *
+           EVALUATE    WRK-LCOMB-HOJOKBN (IDX2)
+               WHEN    "0"
+                   MOVE  "2"       TO  WRK-LCOMB-GAI-FTNKBN (IDX2)
+                   MOVE  "2"       TO  WRK-LCOMB-NYU-FTNKBN (IDX2)
+                   MOVE  "2"       TO  WRK-LCOMB-TSY-GAIFTNKBN(IDX2)
+                   MOVE  "2"       TO  WRK-LCOMB-TSY-NYUFTNKBN(IDX2)
+                   MOVE  "2"       TO  WRK-LCOMB-TNK-GAIFTNKBN(IDX2)
+                   MOVE  "2"       TO  WRK-LCOMB-TNK-NYUFTNKBN(IDX2)
+               WHEN    "1"
+               WHEN    "2"
+               WHEN    "3"
+                   MOVE    WRK-LCOMB-HOJOKBN(IDX2)
+                                              TO  WRK-DISCOUNTRATEC
+                   COMPUTE   WRK-DISCOUNTRATEC
+                                   =   WRK-DISCOUNTRATEC *   10
+                   MOVE    WRK-DISCOUNTRATEC
+                                   TO   WRK-LCOMB-GAI-KFTNRATE(IDX2)
+                   MOVE    WRK-DISCOUNTRATEC
+                                   TO   WRK-LCOMB-NYU-KFTNRATE(IDX2)
+                   MOVE    WRK-DISCOUNTRATEC
+                                   TO   WRK-LCOMB-TSY-GAIKFTNRATE(IDX2)
+                   MOVE    WRK-DISCOUNTRATEC
+                                   TO   WRK-LCOMB-TSY-NYUKFTNRATE(IDX2)
+                   MOVE    WRK-DISCOUNTRATEC
+                                   TO   WRK-LCOMB-TNK-GAIKFTNRATE(IDX2)
+                   MOVE    WRK-DISCOUNTRATEC
+                                   TO   WRK-LCOMB-TNK-NYUKFTNRATE(IDX2)
+               WHEN    "4"
+      *            外来１割、入院０割
+                   MOVE    10      TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
+                   MOVE    ZERO    TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
+                   MOVE    10      TO  WRK-LCOMB-TSY-GAIKFTNRATE(IDX2)
+                   MOVE    ZERO    TO  WRK-LCOMB-TSY-NYUKFTNRATE(IDX2)
+                   MOVE    10      TO  WRK-LCOMB-TNK-GAIKFTNRATE(IDX2)
+                   MOVE    ZERO    TO  WRK-LCOMB-TNK-NYUKFTNRATE(IDX2)
+                   MOVE    "2"     TO  WRK-LCOMB-NYU-FTNKBN (IDX2)
+                   MOVE    "2"     TO  WRK-LCOMB-TSY-NYUFTNKBN(IDX2)
+                   MOVE    "2"     TO  WRK-LCOMB-TNK-NYUFTNKBN(IDX2)
+               WHEN    "5"
+      *            外来２割、入院１割
+                   MOVE    20      TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
+                   MOVE    10      TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
+                   MOVE    20      TO  WRK-LCOMB-TSY-GAIKFTNRATE(IDX2)
+                   MOVE    10      TO  WRK-LCOMB-TSY-NYUKFTNRATE(IDX2)
+                   MOVE    20      TO  WRK-LCOMB-TNK-GAIKFTNRATE(IDX2)
+                   MOVE    10      TO  WRK-LCOMB-TNK-NYUKFTNRATE(IDX2)
+               WHEN    "6"
+      *            外来３割、入院２割
+                   MOVE    30      TO  WRK-LCOMB-GAI-KFTNRATE(IDX2)
+                   MOVE    20      TO  WRK-LCOMB-NYU-KFTNRATE(IDX2)
+                   MOVE    30      TO  WRK-LCOMB-TSY-GAIKFTNRATE(IDX2)
+                   MOVE    20      TO  WRK-LCOMB-TSY-NYUKFTNRATE(IDX2)
+                   MOVE    30      TO  WRK-LCOMB-TNK-GAIKFTNRATE(IDX2)
+                   MOVE    20      TO  WRK-LCOMB-TNK-NYUKFTNRATE(IDX2)
+           END-EVALUATE
+           .
+       570120-KOKUHO-SET-EXT.
+           EXIT.
+      *----(02.00.0) LINE ADD END ---------------------------------
       *
       *****************************************************************
       *    老人の負担割合編集処理

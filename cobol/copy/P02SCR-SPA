@@ -213,8 +213,10 @@
                            11  SPA-HKNJA-TEL           PIC X(15).
       *                    保険者警告表示
                            11  SPA-HKNJA-IDOYMD        PIC X(08).
-                           11  SPA-HKNJA-KYURATE1      PIC 9(03).
-                           11  SPA-HKNJA-KYURATE2      PIC 9(03).
+                           11  SPA-HKNJA-HON-GAIKYURATE    PIC 9(03).
+                           11  SPA-HKNJA-HON-NYUKYURATE    PIC 9(03).
+                           11  SPA-HKNJA-KZK-GAIKYURATE    PIC 9(03).
+                           11  SPA-HKNJA-KZK-NYUKYURATE    PIC 9(03).
                       09  SPA-HKNJA-KEIFLG        PIC X(01).
       *
       *            対象開始番号

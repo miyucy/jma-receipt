@@ -410,12 +410,15 @@
                05  WRK-HJO-REC-R1      REDEFINES   WRK-HJO-REC-G1.
                    07  WRK-HJO-REC1    PIC X(10) OCCURS  11.
                05  WRK-HJO-REC-G2.
-                   07  FILLER          PIC X(06) VALUE "0 Ãµ§∑".
-                   07  FILLER          PIC X(06) VALUE "1 £±≥‰".
-                   07  FILLER          PIC X(06) VALUE "2 £≤≥‰".
-                   07  FILLER          PIC X(06) VALUE "3 £≥≥‰".
+                   07  FILLER          PIC X(12) VALUE "0 Ãµ§∑".
+                   07  FILLER          PIC X(12) VALUE "1 £±≥‰".
+                   07  FILLER          PIC X(12) VALUE "2 £≤≥‰".
+                   07  FILLER          PIC X(12) VALUE "3 £≥≥‰".
+                   07  FILLER          PIC X(12) VALUE "4 ≥∞£±≥‰".
+                   07  FILLER          PIC X(12) VALUE "5 ≥∞£≤≥‰".
+                   07  FILLER          PIC X(12) VALUE "6 ≥∞£≥≥‰".
                05  WRK-HJO-REC-R2      REDEFINES   WRK-HJO-REC-G2.
-                   07  WRK-HJO-REC2    PIC X(06) OCCURS  4.
+                   07  WRK-HJO-REC2    PIC X(12) OCCURS  7.
                05  WRK-HJO-REC-G3.
                    07  FILLER          PIC X(06) VALUE "1 ≤›¿«".
                    07  FILLER          PIC X(06) VALUE "2 »Û≤›".
@@ -937,13 +940,13 @@
       *        πÒ ›
                WHEN    "060"
                    PERFORM VARYING     IDT     FROM    1  BY  1
-                           UNTIL       IDT     >   4
+                           UNTIL       IDT     >   7
                        IF      WRK-HJO-REC2 (IDT)(1:1)
                                            =   SPA-PTHKN-HOJOKBN(IDX)
                            MOVE    WRK-HJO-REC2 (IDT)(3:)
                                                TO  SPA-PTHKN-HOJOKBN-MEI
                                                                  (IDX)
-                           MOVE    4           TO  IDT
+                           MOVE    7           TO  IDT
                        END-IF
                    END-PERFORM
       *        ∂¶∫—
@@ -1329,7 +1332,7 @@
       *        πÒ ›
                WHEN    "060"
                    PERFORM VARYING   IDT     FROM    1  BY  1
-                         UNTIL       IDT     >   4
+                         UNTIL       IDT     >   7
                        MOVE    WRK-HJO-REC2 (IDT)
                                            TO  SPA-GMN-HOJOKBNL (IDT)
                        MOVE    IDT         TO  SPA-GMN-HOJO-MAX
@@ -3766,7 +3769,8 @@
                       (SPA-PTHKN-SAKJOKBN (IDX) NOT =  "1"        )
       *            πÒ ›
                    IF     (SPA-PTHKN-HKNNUM  (IDX) =   "060" )  AND
-                          (SPA-PTHKN-HOJOKBN (IDX) =   "1"  OR  "2")
+                          (SPA-PTHKN-HOJOKBN (IDX) =   "1"  OR  "2"
+                                                   OR  "4"  OR  "5")
                        MOVE    1                   TO  FLG-RJNCHK
                    END-IF
       *            πÒ ›∞ ≥∞

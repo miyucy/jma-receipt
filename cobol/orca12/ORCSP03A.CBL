@@ -106,8 +106,9 @@
            03  WRK-TEKEDYMD            PIC X(08).
            03  WRK-TEKEDYMDW           PIC X(09).
       *
-           03  WRK-IDX             PIC 9(04).
-           03  WRK-KYURATE             PIC 9(03).
+           03  WRK-IDX                 PIC 9(04).
+           03  WRK-KYURATE1            PIC 9(03).
+           03  WRK-KYURATE2            PIC 9(03).
       *
       *    半角全角変換
        01  WRK-HENKAN-AREA.
@@ -154,12 +155,15 @@
                05  WRK-HJO-REC-R1      REDEFINES   WRK-HJO-REC-G1.
                    07  WRK-HJO-REC1    PIC X(10) OCCURS  11.
                05  WRK-HJO-REC-G2.
-                   07  FILLER          PIC X(06) VALUE "0 無し".
-                   07  FILLER          PIC X(06) VALUE "1 １割".
-                   07  FILLER          PIC X(06) VALUE "2 ２割".
-                   07  FILLER          PIC X(06) VALUE "3 ３割".
+                   07  FILLER          PIC X(12) VALUE "0 無し".
+                   07  FILLER          PIC X(12) VALUE "1 １割".
+                   07  FILLER          PIC X(12) VALUE "2 ２割".
+                   07  FILLER          PIC X(12) VALUE "3 ３割".
+                   07  FILLER          PIC X(12) VALUE "4 外１割".
+                   07  FILLER          PIC X(12) VALUE "5 外２割".
+                   07  FILLER          PIC X(12) VALUE "6 外３割".
                05  WRK-HJO-REC-R2      REDEFINES   WRK-HJO-REC-G2.
-                   07  WRK-HJO-REC2    PIC X(06) OCCURS  4.
+                   07  WRK-HJO-REC2    PIC X(12) OCCURS  7.
                05  WRK-HJO-REC-G3.
                    07  FILLER          PIC X(06) VALUE "1 課税".
                    07  FILLER          PIC X(06) VALUE "2 非課".
@@ -434,10 +438,14 @@
                END-IF
       *
                MOVE    HKNJA-IDOYMD        TO  SPA-HKNJA-IDOYMD
-      *!       MOVE    HKNJA-KYURATE1      TO  SPA-HKNJA-KYURATE1
-      *!       MOVE    HKNJA-KYURATE2      TO  SPA-HKNJA-KYURATE2
-               MOVE    ZERO                TO  SPA-HKNJA-KYURATE1
-               MOVE    ZERO                TO  SPA-HKNJA-KYURATE2
+               MOVE    HKNJA-HON-GAIKYURATE
+                                           TO  SPA-HKNJA-HON-GAIKYURATE
+               MOVE    HKNJA-HON-NYUKYURATE
+                                           TO  SPA-HKNJA-HON-NYUKYURATE
+               MOVE    HKNJA-KZK-GAIKYURATE
+                                           TO  SPA-HKNJA-KZK-GAIKYURATE
+               MOVE    HKNJA-KZK-NYUKYURATE
+                                           TO  SPA-HKNJA-KZK-NYUKYURATE
            ELSE
                MOVE    SPACE               TO  SPA-HKNJA-HKNJANAME
                MOVE    SPACE               TO  SPA-HKNJA-ADRS
@@ -446,8 +454,10 @@
       *
                MOVE    SPACE               TO  SPA-HKNJA-KEIFLG
                MOVE    SPACE               TO  SPA-HKNJA-IDOYMD
-               MOVE    ZERO                TO  SPA-HKNJA-KYURATE1
-               MOVE    ZERO                TO  SPA-HKNJA-KYURATE2
+               MOVE    ZERO                TO  SPA-HKNJA-HON-GAIKYURATE
+               MOVE    ZERO                TO  SPA-HKNJA-HON-NYUKYURATE
+               MOVE    ZERO                TO  SPA-HKNJA-KZK-GAIKYURATE
+               MOVE    ZERO                TO  SPA-HKNJA-KZK-NYUKYURATE
       *
                MOVE    SPACE               TO  WRK-HKNJA-HKNNUM
       *        保険者番号モジュラス10チェック
@@ -804,15 +814,17 @@
       *        国保
                WHEN    "060"
                    PERFORM VARYING   IDT     FROM    1  BY  1
-                         UNTIL       IDT     >   4
+                         UNTIL       IDT     >   7
                        MOVE    WRK-HJO-REC2 (IDT)
                                            TO  SPA-GMN-HOJOKBNL (IDT)
                        MOVE    IDT         TO  SPA-GMN-HOJO-MAX
                    END-PERFORM
                    IF      SPA-GMN-HOJOKBN     =   SPACE
       *                給付割合から
-                       IF     (SPA-HKNJA-KYURATE1  NOT =   ZERO )  OR
-                              (SPA-HKNJA-KYURATE2  NOT =   ZERO )
+                       IF     (SPA-HKNJA-HON-GAIKYURATE  NOT =   ZERO)
+                          OR  (SPA-HKNJA-HON-NYUKYURATE  NOT =   ZERO)
+                          OR  (SPA-HKNJA-KZK-GAIKYURATE  NOT =   ZERO)
+                          OR  (SPA-HKNJA-KZK-NYUKYURATE  NOT =   ZERO)
                            PERFORM 3101101-HOJO-KYURATE-SEC
                        ELSE
                            MOVE    "3"             TO  SPA-GMN-HOJOKBN
@@ -923,19 +935,32 @@
        3101101-HOJO-KYURATE-SEC            SECTION.
       *
            IF      SPA-GMN-HONKZKKBN   =   "1"
-               MOVE    SPA-HKNJA-KYURATE1  TO  WRK-KYURATE
+      *        本人
+               MOVE    SPA-HKNJA-HON-GAIKYURATE  TO  WRK-KYURATE1
+               MOVE    SPA-HKNJA-HON-NYUKYURATE  TO  WRK-KYURATE2
            ELSE
-               MOVE    SPA-HKNJA-KYURATE2  TO  WRK-KYURATE
+      *        家族
+               MOVE    SPA-HKNJA-KZK-GAIKYURATE  TO  WRK-KYURATE1
+               MOVE    SPA-HKNJA-KZK-NYUKYURATE  TO  WRK-KYURATE2
            END-IF
-           EVALUATE    WRK-KYURATE
-               WHEN    000
+           EVALUATE    WRK-KYURATE1  ALSO  WRK-KYURATE2
+               WHEN    000           ALSO  000
                    MOVE    "3"             TO  SPA-GMN-HOJOKBN
-               WHEN    080
+               WHEN    080           ALSO  080
                    MOVE    "2"             TO  SPA-GMN-HOJOKBN
-               WHEN    090
+               WHEN    090           ALSO  090
                    MOVE    "1"             TO  SPA-GMN-HOJOKBN
-               WHEN    100
+               WHEN    100           ALSO  100
                    MOVE    "0"             TO  SPA-GMN-HOJOKBN
+      *
+               WHEN    090           ALSO  100
+                   MOVE    "4"             TO  SPA-GMN-HOJOKBN
+               WHEN    080           ALSO  090
+                   MOVE    "5"             TO  SPA-GMN-HOJOKBN
+               WHEN    000           ALSO  080
+                   MOVE    "6"             TO  SPA-GMN-HOJOKBN
+               WHEN    OTHER
+                   MOVE    "3"             TO  SPA-GMN-HOJOKBN
            END-EVALUATE
       *
            .
