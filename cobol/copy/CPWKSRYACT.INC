@@ -19,17 +19,10 @@
       *    ワーク診療行為マスタ    COPY (CPWKSRYACT.INC)
       *
       *-------------------------------------------------*
-      ************************************************************
-      *  コピー句修正履歴
-      * Maj/Min/Rev  修正者       日付      内容
-      *  04.05.00    NACL-多々納  09/10/02  入力区分、換算入力数量追加
-      *  04.05.00    NACL-多々納  10/01/07  剤識別区分追加
-      *  04.07.00    NACL-多々納  11/10/20  同日再入院区分追加
-      ************************************************************
       *01  WKSRYACT-REC.
            03  WKSRY-KEY.
       *医療機関ＩＤ
-               05  WKSRY-HOSPNUM         PIC 9(2).
+               05  WKSRY-HOSPID         PIC  X(24).
       *入外区分
                05  WKSRY-NYUGAIKBN      PIC  X(01).
       *患者ＩＤ
@@ -40,8 +33,6 @@
                05  WKSRY-SRYYMD         PIC  X(08).
       *保険組合せ
                05  WKSRY-HKNCOMBI       PIC  9(04).
-      *同日再入院分
-               05  WKSRY-DOUJITSUKBN    PIC  X(01).
       *剤番号
                05  WKSRY-ZAINUM         PIC  9(08).
       *連番号
@@ -58,7 +49,7 @@
            03  WKSRY-SINRYO-TBL-G.
              04    WKSRY-SINRYO-TBL      OCCURS   5.
                05  WKSRY-SRYCD           PIC  X(09).
-               05  WKSRY-SRYSURYO        PIC  9(05)V9(05).
+               05  WKSRY-SRYSURYO        PIC  9(05)V9(03).
                05  WKSRY-SRYKAISU        PIC  9(03).
                05  WKSRY-ZAIKAISU        PIC  9(08).
       **自動算定区分
@@ -69,17 +60,11 @@
                05  WKSRY-INPUTCOMENT    PIC  X(80).
       **入力値
                05  WKSRY-INPUTCHI-G.
-                   07  WKSRY-INPUTCHI   PIC  X(08)   OCCURS  5.
+                   07  WKSRY-INPUTCHI   PIC  X(08)   OCCURS  4.
       *入力コード
-               05  WKSRY-INPUTCD        PIC  X(54).
+               05  WKSRY-INPUTCD        PIC  X(22).
       *自費金額
                05  WKSRY-JIHIMONEY      PIC  9(07).
-      *
-      *入力区分（１：関係コメント指示、２：内服種類数指示）
-               05  WKSRY-INPUTKBN       PIC  X(01).
-      *換算入力数量
-               05  WKSRY-KANSURYO       PIC  9(05)V9(05).
-      *
       *剤点数計
            03  WKSRY-ZAITENKEI          PIC  9(08).
       *剤回数計
@@ -98,8 +83,6 @@
            03  WKSRY-DOUJI-RENNUM       PIC  9(01).
       *継続区分
            03  WKSRY-CONTKBN            PIC  X(01).
-      *剤識別区分（１：薬評、２：減点分）
-           03  WKSRY-ZAIKBN             PIC  9(03).
       *更新中フラグ
            03  WKSRY-MOD-FLG            PIC  9(01).
       *電子カルテフラグ
