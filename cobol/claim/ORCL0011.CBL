@@ -527,6 +527,8 @@
        01  LNK-TIME             PIC X(06).
        01  LNK-HOSPID           PIC X(24).
        01  LNK-SYSYMD           PIC 9(08).
+       01  LNK-DRCD             PIC X(05).
+       01  LNK-HKNCOMBI         PIC X(04).
       *
        01  WRK-LF01-REC. 
            COPY    "CPRLF001.INC"    REPLACING  //LF01//

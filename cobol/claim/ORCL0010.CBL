@@ -54,6 +54,9 @@
                05  WRK-PARA-SRYKA   PIC  X(02).
                05  WRK-PARA-TIME    PIC  X(06).
                05  WRK-PARA-HOSPID  PIC  X(24).
+               05  WRK-PARA-DRCD    PIC  X(05).
+               05  WRK-PARA-HKNCOMBI
+                                    PIC  X(04).
       *
            03  WRK-IN               PIC X(01).
       *
@@ -130,6 +133,8 @@
                                             WRK-PARA-SRYKA
                                             WRK-PARA-TIME
                                             WRK-PARA-HOSPID
+                                            WRK-PARA-DRCD
+                                            WRK-PARA-HKNCOMBI
       *
       *???
            DISPLAY "PARA " WRK-PARA "##"
@@ -152,6 +157,8 @@
                                                WRK-PARA-TIME
                                                SPA-HOSPID
                                                SPA-SYSYMD
+                                               WRK-PARA-DRCD
+                                               WRK-PARA-HKNCOMBI
                                                WRK-LF01-REC
       *
            MOVE    WRK-PARA-PTID       TO  FILE-PTID
