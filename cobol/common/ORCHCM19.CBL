@@ -43,6 +43,7 @@
       * 01.00.10     NACL-多々納  03/12/16  院内処方（213,223,233)を
       *                                     院内処方せんのみの印刷とする
       * 01.00.11     NACL-多々納  04/03/08  在宅の対象判定修正
+      * 01.00.12     NACL-多々納  04/05/27  ２０行目の余白に編集追加
       *****************************************************************
       *
       *
@@ -1124,6 +1125,11 @@
                MOVE    ZERO            TO  FLG-PRINT
            ELSE
       *        最終行のメッセージ編集
+               IF     (WRK-NAIYOU (WRK-PAGE-MAX IDX)   =   SPACE ) AND
+                      (IDX             =   20  )
+                   MOVE    "　　　　　　以下余白"
+                                       TO  WRK-NAIYOU (WRK-PAGE-MAX IDX)
+               END-IF
                ADD     1               TO  IDX
                IF      IDX             <=  20
                    MOVE    "　　　　　　以下余白"
@@ -2136,6 +2142,11 @@
                MOVE    ZERO                TO  FLG-PRINT
            ELSE
       *        最終行のメッセージ編集
+               IF     (WRK-NAIYOU (WRK-PAGE-MAX IDX)   =   SPACE ) AND
+                      (IDX             =   20  )
+                   MOVE    "　　　　　　以下余白"
+                                       TO  WRK-NAIYOU (WRK-PAGE-MAX IDX)
+               END-IF
                ADD     1               TO  IDX
                IF      IDX             <=  20
                    MOVE    "　　　　　　以下余白"
