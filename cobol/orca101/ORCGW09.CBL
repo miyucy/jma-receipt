@@ -30,6 +30,7 @@
       * 01.00.01     MCC-藤原     01/09/11  削除処理の修正 
       * 01.01.02     MCC-藤原     01/09/21  JOINの修正     
       * 01.01.03     MCC-藤原     02/07/03  提出先の追加     
+      * 01.01.04     NACL-藤原    02/09/20  自賠責の提出先の追加     
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -324,7 +325,9 @@
                                        TO  SPA-GMN-TEISYUTUSAKIMEIL(2)
            MOVE    "3"                 TO  SPA-GMN-TEISYUTUSAKIL   (3)
            MOVE    "労働基準監督署"    TO  SPA-GMN-TEISYUTUSAKIMEIL(3)
-           MOVE    3                   TO  SPA-GMN-TEISYUTUSAKI-MAX                              
+           MOVE    "4"                 TO  SPA-GMN-TEISYUTUSAKIL   (4)
+           MOVE    "保険会社"          TO  SPA-GMN-TEISYUTUSAKIMEIL(4)
+           MOVE    4                   TO  SPA-GMN-TEISYUTUSAKI-MAX                              
       *
            INITIALIZE                          SPA-GMN-KOUMOKU
       * 

@@ -30,8 +30,9 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02/08/29  レセプトが選択されていないとき
       *                                     エラーとする
-     * 
+      * 
       *  01.01.01    NACL-藤原    02/09/12  ディレクトリをサブプロへ
+      *  01.01.02    NACL-藤原    02/09/20  自賠責の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -91,7 +92,6 @@
                05  SPA-GMN-PAGE                    PIC 9(02).
                05  SPA-GMN-CUR                     PIC 9(02).
                05  SPA-GMN-AREA.
-                   07  SPA-GMN-SYOKBN              PIC X(01).
                    07  SPA-GMN-FILEKBN             PIC X(34).
                    07  SPA-GMN-CREYMD              PIC X(22).
                    07  SPA-GMN-PAGEH               PIC 9(04).
@@ -414,8 +414,6 @@
       *
       *
            INITIALIZE              SPA-R04-AREA
-      *    処理区分
-           MOVE    "T"             TO  SPA-GMN-SYOKBN
       *　　ファイル作成区分
            EVALUATE    SPA-R01-FILEKBN
                WHEN    "1"
@@ -425,7 +423,7 @@
                    EVALUATE    SPA-R01-RECE07-RECEKBN
                        WHEN    "3"
                            MOVE    "・労災"        TO  WRK-RECEKBN
-                       WHEN    "7"
+                       WHEN    "4"
                            MOVE    "・自賠責"    TO  WRK-RECEKBN
                    END-EVALUATE  
                    STRING  WRK-HENYMDG3(1:16) DELIMITED  BY  SIZE
@@ -436,7 +434,7 @@
                    EVALUATE    SPA-R01-RECE07-RECEKBN
                        WHEN    "3"
                            MOVE    "労災"     TO  WRK-RECEKBN
-                       WHEN    "7"
+                       WHEN    "4"
                            MOVE    "自賠責"   TO  WRK-RECEKBN
                    END-EVALUATE  
                    STRING  WRK-RECEKBN        DELIMITED  BY  SPACE 
@@ -488,9 +486,6 @@
       *
            MOVE    SPA-GMN-PREFKBNLST(01)
                                        TO  SPA-GMN-PREFKBN-G
-      * 
-      *    処理区分
-           MOVE    "F"                 TO  SPA-GMN-SYOKBN
       *
            INITIALIZE                  SPA-GMN-TBL
                                        SPA-GMN-TBL1
@@ -527,18 +522,34 @@
            PERFORM UNTIL       (IDX            =   24   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC       TO  SYS-2003-REC
-               IF      SYS-2003-TEISYUTUSAKI =   "3"
-                   ADD     1             TO  IDX  
-                   MOVE    SYS-2003-KBNCD (1:2)
+               EVALUATE    SPA-R01-RECE07-RECEKBN
+                   WHEN    "3"
+                       IF      SYS-2003-TEISYUTUSAKI =   "3"
+                           ADD     1             TO  IDX  
+                           MOVE    SYS-2003-KBNCD (1:2)
                                          TO  SPA-NAI-PRTJYUNI    (IDX)
-                   MOVE    SYS-2003-TEISYUTUSAKI
+                           MOVE    SYS-2003-TEISYUTUSAKI
                                          TO  SPA-NAI-TEISYUTUSAKI(IDX)
-                   MOVE    SYS-2003-SYUBETU-G
+                           MOVE    SYS-2003-SYUBETU-G
                                          TO  SPA-NAI-SYUBETU-G   (IDX)
-                   MOVE    SYS-2003-SYURUINAME
+                           MOVE    SYS-2003-SYURUINAME
                                          TO  SPA-GMN-TSYURUINAME (IDX)
-      *************MOVE    "T"   TO  SPA-GMN-TCHK-VALUE  (IDX)
-               END-IF
+      *************        MOVE    "T"   TO  SPA-GMN-TCHK-VALUE  (IDX)
+                       END-IF
+                   WHEN    "4"
+                       IF      SYS-2003-TEISYUTUSAKI =   "4"
+                           ADD     1             TO  IDX  
+                           MOVE    SYS-2003-KBNCD (1:2)
+                                         TO  SPA-NAI-PRTJYUNI    (IDX)
+                           MOVE    SYS-2003-TEISYUTUSAKI
+                                         TO  SPA-NAI-TEISYUTUSAKI(IDX)
+                           MOVE    SYS-2003-SYUBETU-G
+                                         TO  SPA-NAI-SYUBETU-G   (IDX)
+                           MOVE    SYS-2003-SYURUINAME
+                                         TO  SPA-GMN-TSYURUINAME (IDX)
+      *************        MOVE    "T"   TO  SPA-GMN-TCHK-VALUE  (IDX)
+                       END-IF
+               END-EVALUATE        
       *
                MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
                PERFORM 900-SYSKANRI-READ-SEC
@@ -569,7 +580,12 @@
       *
                INITIALIZE                  RECE07-REC
                MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
-               MOVE    "3"                 TO  RECE07-TEISYUTUSAKI
+               EVALUATE    SPA-R01-RECE07-RECEKBN
+                   WHEN    "3"
+                       MOVE    "3"             TO  RECE07-TEISYUTUSAKI
+                   WHEN    "4"
+                       MOVE    "4"             TO  RECE07-TEISYUTUSAKI
+               END-EVALUATE        
                MOVE    SPA-NAI-SYUBETU (IDX 1)
                                            TO  RECE07-RECESYUBETU
                MOVE    RECE07-REC          TO  MCPDATA-REC                             
@@ -587,7 +603,12 @@
       *    レセプト種別不明のレセプトのページ数     
            INITIALIZE                  RECE07-REC
            MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
-           MOVE    "3"                 TO  RECE07-TEISYUTUSAKI
+           EVALUATE    SPA-R01-RECE07-RECEKBN
+               WHEN    "3"
+                   MOVE    "3"             TO  RECE07-TEISYUTUSAKI
+               WHEN    "4"
+                   MOVE    "4"             TO  RECE07-TEISYUTUSAKI
+           END-EVALUATE        
            MOVE    "0000"              TO  RECE07-RECESYUBETU
            MOVE    RECE07-REC          TO  MCPDATA-REC                             
            PERFORM 900-RECE07-READ-SEC
@@ -635,11 +656,7 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    "CHANGE"            TO  MCP-PUTTYPE
                    PERFORM 210-BACK
-      *     処理区分
-      ***         WHEN    "CLICKED"       ALSO    "B08"
-      ***         WHEN    "CLICKED"       ALSO    "SYOKBN"
-      ***             PERFORM 410-SYOKBN-CHK-SEC
-      *     情報削除
+      *    情報削除
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-JYOUHOU-DEL-SEC
       *    印刷
@@ -995,41 +1012,6 @@
            EXIT.
       *
       *****************************************************************
-      *    処理区分  入力処理
-      *****************************************************************
-       410-SYOKBN-CHK-SEC                SECTION.
-      *   
-           MOVE    1                   TO  SPA-GMN-CUR
-      *
-           EVALUATE    SPA-GMN-SYOKBN
-      *            *指定印刷
-               WHEN    "T"
-                   MOVE    "F"             TO  SPA-GMN-SYOKBN
-                   MOVE    4               TO  SPA-GMN-CUR
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       25
-                           OR      SPA-NAI-PRTJYUNI (IDX)  =   SPACE
-                      MOVE    "F"          TO  SPA-GMN-TCHK-VALUE (IDX)
-                   END-PERFORM
-                   MOVE    "F"          TO  SPA-GMN-TCHK-VALUE (25)
-      *            *全件印刷
-               WHEN    "F"
-                   MOVE    "T"             TO  SPA-GMN-SYOKBN
-                   MOVE    99              TO  SPA-GMN-CUR
-                   INITIALIZE                  SPA-GMN-TBL
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       25
-                           OR      SPA-NAI-PRTJYUNI (IDX)  =   SPACE
-                      MOVE    "T"          TO  SPA-GMN-TCHK-VALUE (IDX)
-                   END-PERFORM
-                   MOVE    "T"          TO  SPA-GMN-TCHK-VALUE (25)
-           END-EVALUATE 
-      *
-           .
-       410-SYOKBN-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    個別出力  入力処理
       *****************************************************************
        420-CHK-CHK-SEC                SECTION.
@@ -1097,42 +1079,61 @@
                    UNTIL   IDX >       25
                    OR      FLG-ERR     =   1
                IF      SPA-GMN-TCHK-VALUE (IDX)    =   "T"
-                   EVALUATE    IDX
-                       WHEN    1
-                       WHEN    2
-                       WHEN    25
-                           IF      WRK-PRTKBN      =   ZERO   OR  1
-                               MOVE    1               TO  WRK-PRTKBN
-                           ELSE
-                               MOVE    1               TO  FLG-ERR
-                           END-IF         
-                       WHEN    3
-                       WHEN    6
-                           IF      WRK-PRTKBN      =   ZERO   OR  2
-                               MOVE    2               TO  WRK-PRTKBN
-                           ELSE
-                               MOVE    1               TO  FLG-ERR
-                           END-IF         
-                       WHEN    4
-                       WHEN    5
-                           IF      WRK-PRTKBN      =   ZERO   OR  3
-                               MOVE    3               TO  WRK-PRTKBN
-                           ELSE
-                               MOVE    1               TO  FLG-ERR
-                           END-IF         
-                       WHEN    7
-                           IF      WRK-PRTKBN      =   ZERO   OR  4
-                               MOVE    4               TO  WRK-PRTKBN
-                           ELSE
-                               MOVE    1               TO  FLG-ERR
-                           END-IF         
-                       WHEN    8
-                           IF      WRK-PRTKBN      =   ZERO   OR  5
-                               MOVE    5               TO  WRK-PRTKBN
-                           ELSE
-                               MOVE    1               TO  FLG-ERR
-                           END-IF         
-                   END-EVALUATE
+                   EVALUATE    SPA-R01-RECE07-RECEKBN
+                       WHEN    "3"
+                           EVALUATE    IDX
+                               WHEN    1
+                               WHEN    2
+                               WHEN    25
+                                   IF      WRK-PRTKBN  =   ZERO   OR  1
+                                       MOVE    1       TO  WRK-PRTKBN
+                                   ELSE
+                                       MOVE    1       TO  FLG-ERR
+                                   END-IF         
+                               WHEN    3
+                               WHEN    6
+                                   IF      WRK-PRTKBN  =   ZERO   OR  2
+                                       MOVE    2       TO  WRK-PRTKBN
+                                   ELSE
+                                       MOVE    1       TO  FLG-ERR
+                                   END-IF         
+                               WHEN    4
+                               WHEN    5
+                                   IF      WRK-PRTKBN  =   ZERO   OR  3
+                                       MOVE    3       TO  WRK-PRTKBN
+                                   ELSE
+                                      MOVE    1        TO  FLG-ERR
+                                   END-IF         
+                               WHEN    7
+                                   IF      WRK-PRTKBN  =   ZERO   OR  4
+                                       MOVE    4       TO  WRK-PRTKBN
+                                   ELSE
+                                       MOVE    1       TO  FLG-ERR
+                                   END-IF         
+                               WHEN    8
+                                   IF      WRK-PRTKBN  =   ZERO   OR  5
+                                       MOVE    5       TO  WRK-PRTKBN
+                                   ELSE
+                                       MOVE    1       TO  FLG-ERR
+                                   END-IF         
+                           END-EVALUATE
+                       WHEN    "4"
+                           EVALUATE    IDX
+                               WHEN    1
+                               WHEN    25
+                                   IF      WRK-PRTKBN  =   ZERO   OR  1
+                                       MOVE    1       TO  WRK-PRTKBN
+                                   ELSE
+                                       MOVE    1       TO  FLG-ERR
+                                   END-IF         
+                               WHEN    2
+                                   IF      WRK-PRTKBN  =   ZERO   OR  2
+                                       MOVE    2       TO  WRK-PRTKBN
+                                   ELSE
+                                       MOVE    1       TO  FLG-ERR
+                                   END-IF         
+                           END-EVALUATE
+                   END-EVALUATE        
                END-IF
            END-PERFORM
                                          
@@ -1177,7 +1178,12 @@
       *    帳票ファイル作成処理
            MOVE    ZERO             TO  WRK-RECE08-PRTJYUN  
       *
-           MOVE    "3"              TO  WRK-TEISYUTUSAKI
+           EVALUATE    SPA-R01-RECE07-RECEKBN
+               WHEN    "3"
+                   MOVE    "3"              TO  WRK-TEISYUTUSAKI
+               WHEN    "4"
+                   MOVE    "4"              TO  WRK-TEISYUTUSAKI
+           END-EVALUATE        
            MOVE    "0"              TO  WRK-PREFKBN
            PERFORM 4501-PRTJYUN-PRINT-SEC
       *
@@ -1185,7 +1191,12 @@
            IF      SPA-ERRCD        =   SPACE
                IF      SPA-GMN-TCHK-VALUE  (25)   =   "T"
                AND     SPA-GMN-TPAGE       (25)   >   ZERO
-                   MOVE    "3"             TO  WRK-TEISYUTUSAKI
+                   EVALUATE    SPA-R01-RECE07-RECEKBN
+                       WHEN    "3"
+                           MOVE    "3"     TO  WRK-TEISYUTUSAKI
+                       WHEN    "4"
+                           MOVE    "4"     TO  WRK-TEISYUTUSAKI
+                   END-EVALUATE        
                    MOVE    "0"             TO  WRK-PREFKBN
                    MOVE    25              TO  IDX
                    MOVE    1               TO  IDY
@@ -1488,14 +1499,6 @@
       *
            INITIALIZE     R04
       *
-           MOVE    SPA-GMN-SYOKBN         TO  R04-SYOKBN-VALUE
-           EVALUATE    SPA-GMN-SYOKBN
-               WHEN    "T"
-                   MOVE    "全件印刷"         TO  R04-SYOKBN-LABEL
-               WHEN    "F"
-                   MOVE    "指定印刷"         TO  R04-SYOKBN-LABEL
-           END-EVALUATE      
-      *
            MOVE    SPA-GMN-FILEKBN     TO  R04-FILEKBN
       *
            MOVE    SPA-GMN-CREYMD      TO  R04-CREYMD  
@@ -1553,8 +1556,6 @@
        5001-MAPCUR-SEC             SECTION.
       *
          EVALUATE    SPA-GMN-CUR
-             WHEN    1
-                    MOVE  "SYOKBN"     TO  MCP-WIDGET
              WHEN    2
                     MOVE  "PREFKBN"    TO  MCP-WIDGET
              WHEN    3

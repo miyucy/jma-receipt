@@ -553,14 +553,14 @@
                    MOVE    "T"             TO  SPA-DATAKBN3-VALUE
                WHEN    "1"             ALSO    "3"             
                    MOVE    "T"             TO  SPA-DATAKBN11-VALUE
-               WHEN    "1"             ALSO    "7"             
+               WHEN    "1"             ALSO    "4"             
                    MOVE    "T"             TO  SPA-DATAKBN31-VALUE
                WHEN    "2"             ALSO    " "             
                WHEN    "2"             ALSO    "0"             
                    MOVE    "T"             TO  SPA-DATAKBN21-VALUE
                WHEN    "2"             ALSO    "3"             
                    MOVE    "T"             TO  SPA-DATAKBN22-VALUE
-               WHEN    "2"             ALSO    "7"             
+               WHEN    "2"             ALSO    "4"             
                    MOVE    "T"             TO  SPA-DATAKBN23-VALUE
            END-EVALUATE
       *        
@@ -1107,29 +1107,45 @@
            END-EVALUATE
       *
       *    ガイドメッセージセット
-           IF      SPA-R01-RECEKBN       =   "3"
+           IF      SPA-R01-RECEKBN       =   "4"
                EVALUATE    SPA-GMN-SYOKBN    ALSO    SPA-R01-FILEKBN
                    WHEN    "T"               ALSO    "1" 
-                       MOVE    "1005"              TO  SPA-RIDCD
+                       MOVE    "1009"              TO  SPA-RIDCD
                    WHEN    "F"               ALSO    "1"
-                       MOVE    "1006"              TO  SPA-RIDCD
+                       MOVE    "1010"              TO  SPA-RIDCD
                    WHEN    "T"               ALSO    "2" 
-                       MOVE    "1007"              TO  SPA-RIDCD
+                       MOVE    "1011"              TO  SPA-RIDCD
                    WHEN    "F"               ALSO    "2"
-                       MOVE    "1008"              TO  SPA-RIDCD
+                       MOVE    "1012"              TO  SPA-RIDCD
                END-EVALUATE
            ELSE
-               EVALUATE    SPA-GMN-SYOKBN    ALSO    SPA-R01-FILEKBN
-                   WHEN    "T"               ALSO    "1" 
-                       MOVE    "1001"              TO  SPA-RIDCD
-                   WHEN    "F"               ALSO    "1"
-                       MOVE    "1002"              TO  SPA-RIDCD
-                   WHEN    "T"               ALSO    "2" 
-                       MOVE    "1003"              TO  SPA-RIDCD
-                   WHEN    "F"               ALSO    "2"
-                       MOVE    "1004"              TO  SPA-RIDCD
-               END-EVALUATE
+               IF      SPA-R01-RECEKBN       =   "3"
+                   EVALUATE    SPA-GMN-SYOKBN    ALSO    SPA-R01-FILEKBN
+                       WHEN    "T"               ALSO    "1" 
+                           MOVE    "1005"              TO  SPA-RIDCD
+                       WHEN    "F"               ALSO    "1"
+                           MOVE    "1006"              TO  SPA-RIDCD
+                       WHEN    "T"               ALSO    "2" 
+                           MOVE    "1007"              TO  SPA-RIDCD
+                       WHEN    "F"               ALSO    "2"
+                           MOVE    "1008"              TO  SPA-RIDCD
+                   END-EVALUATE
+               ELSE
+                   EVALUATE    SPA-GMN-SYOKBN    ALSO    SPA-R01-FILEKBN
+                       WHEN    "T"               ALSO    "1" 
+                           MOVE    "1001"              TO  SPA-RIDCD
+                       WHEN    "F"               ALSO    "1"
+                           MOVE    "1002"              TO  SPA-RIDCD
+                       WHEN    "T"               ALSO    "2" 
+                           MOVE    "1003"              TO  SPA-RIDCD
+                       WHEN    "F"               ALSO    "2"
+                           MOVE    "1004"              TO  SPA-RIDCD
+                   END-EVALUATE
+               END-IF    
            END-IF    
+      *???
+           DISPLAY "SPA=" SPA-R01-RECEKBN "##" SPA-RIDCD "##" 
+      *???     
            .
        450-TOUROKU-EXT.
            EXIT.
@@ -1150,9 +1166,9 @@
                IF      SPA-R01-RECEKBN     =   "3"
                    MOVE    "HC21"              TO  RECE07-PRTID
                END-IF
-      *???         IF      SPA-R01-RECEKBN     =   "7"
-      *???             MOVE    "HC18"              TO  RECE07-PRTID
-      *???         END-IF
+               IF      SPA-R01-RECEKBN     =   "4"
+                   MOVE    "HC23"              TO  RECE07-PRTID
+               END-IF
            END-IF            
            IF      SPA-R01-FILEKBN         =   "1"
                MOVE    SPA-R01-SRYYM       TO  RECE07-SRYYM
@@ -1243,11 +1259,8 @@
       *                WHEN    "2"
       *                    MOVE    "recept1.sh"    TO  SHELL-SHELL
       *                WHEN    "3"
-      *                WHEN    "4"
-      *                WHEN    "5"
-      *                WHEN    "6"
       *                    MOVE    "recept6.sh"    TO  SHELL-SHELL
-      *                WHEN    "7"
+      *                WHEN    "4"
       *                    MOVE    "recept8.sh"    TO  SHELL-SHELL
       *            END-EVALUATE        
       *            MOVE    SHELL-NAME          TO  SHELL-NAME
@@ -1297,11 +1310,8 @@
                        WHEN    "2"
                            MOVE    "recept1.sh"    TO  WRK-SHELL-SHELL
                        WHEN    "3"
-                       WHEN    "4"
-                       WHEN    "5"
-                       WHEN    "6"
                            MOVE    "recept6.sh"    TO  WRK-SHELL-SHELL
-                       WHEN    "7"
+                       WHEN    "4"
                            MOVE    "recept8.sh"    TO  WRK-SHELL-SHELL
                    END-EVALUATE        
       *            ファイルデイレクトリ位置指定
@@ -1403,13 +1413,13 @@
                WHEN    SPA-DATAKBN11-VALUE =   "T"
                    MOVE    "3"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN31-VALUE =   "T"
-                   MOVE    "7"                 TO  SPA-R01-RECEKBN
+                   MOVE    "4"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN21-VALUE  =   "T"
                    MOVE    "0"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN22-VALUE  =   "T"
                    MOVE    "3"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN23-VALUE  =   "T"
-                   MOVE    "7"                 TO  SPA-R01-RECEKBN
+                   MOVE    "4"                 TO  SPA-R01-RECEKBN
            END-EVALUATE
       *
            IF      SPA-GMN-IKKATU          =   "T"
@@ -1776,6 +1786,20 @@
                                             TO  WRK-RIDMSG
                WHEN    "1008"
                    MOVE    "個別作成分の再印刷処理（労災）を行います"
+                                            TO  WRK-RIDMSG
+               WHEN    "1009"
+                   MOVE    SPA-NAI-SRYYMH   TO  WRK-RIDMSG
+                   MOVE    "分新規作成処理（自賠責）を行います"
+                                            TO  WRK-RIDMSG (17:)
+               WHEN    "1010"
+                   MOVE    SPA-NAI-SRYYMH   TO  WRK-RIDMSG
+                   MOVE    "分再印刷処理（自賠責）を行います"
+                                            TO  WRK-RIDMSG (17:)
+               WHEN    "1011"
+                   MOVE  "個別作成分の新規作成処理（自賠責）を行います" 
+                                            TO  WRK-RIDMSG
+               WHEN    "1012"
+                   MOVE    "個別作成分の再印刷処理（自賠責）を行います"
                                             TO  WRK-RIDMSG
                WHEN    "6666"
                    MOVE    "レセプト作成処理中です"

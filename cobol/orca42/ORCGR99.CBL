@@ -312,9 +312,9 @@
                IF      SPA-R01-RECEKBN     =   "3"
                    MOVE    "HC21"              TO  RECE07-PRTID
                END-IF
-      *???         IF      SPA-R01-RECEKBN     =   "7"
-      *???             MOVE    "HC18"              TO  RECE07-PRTID
-      *???         END-IF
+               IF      SPA-R01-RECEKBN     =   "4"
+                   MOVE    "HC23"              TO  RECE07-PRTID
+               END-IF
            END-IF            
            IF      SPA-R01-FILEKBN         =   "1"
                MOVE    SPA-R01-SRYYM       TO  RECE07-SRYYM
