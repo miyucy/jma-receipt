@@ -77,9 +77,9 @@
       *                自費明細金額
                        09  SPA-COM-JIHIMONEY     PIC 9(07).
       *                点数
-                       09  SPA-COM-TEN           PIC 9(07)V99.
+                       09  SPA-COM-TEN           PIC 9(08)V99.
       *                点数（きざみ値計算後）
-                       09  SPA-COM-KISOTEN       PIC 9(07)V99.
+                       09  SPA-COM-KISOTEN       PIC 9(08)V99.
                        09  SPA-COM-KAISU         PIC 9(08).
                        09  SPA-COM-KEI           PIC 9(08).
       *                外用薬用入力用
@@ -173,7 +173,7 @@
       *                データ区分
                        09  SPA-COM-DATAKBN       PIC X(01).
       *                点数マスタ名称（包括検査用）
-                       09  SPA-COM-NAME          PIC X(80).
+                       09  SPA-COM-NAME          PIC X(78).
       *                点数マスタ　薬剤内容
                        09  SPA-COM-MADOKUKBN     PIC 9(01).
                        09  SPA-COM-SINKEIKBN     PIC 9(01).
