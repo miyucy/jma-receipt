@@ -39,6 +39,8 @@
       *  00.00.08    NACL-ÂÀÅÄ    04.01.15  ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬ÄÉ²Ã
       *  01.00.01    NACL-ÂÀÅÄ    04.03.04  Î×¾²¸¦½¤ÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»
       *                                     Î¥Åç²Ã»»ÄÉ²Ã
+      *  01.00.02    NACL-ÂÀÅÄ    04.08.23  Æþ±¡²ñ·×¼¼ÎÁº¹³Û¶èÊ¬ÄÉ²Ã
+      *                                     Æþ±¡²ñ·×¿©»ö¶èÊ¬ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -82,6 +84,7 @@
            03  IDXC                                PIC 9(05).
            03  IDXY                                PIC 9(05).
            03  IDXZ                                PIC 9(05).
+           03  IDX-CMB                             PIC 9(05).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -464,6 +467,12 @@
       *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬¥³¥ó¥Ü
            PERFORM 310-CMB-BRMSGK-TAX-SET-SEC
       *
+      *    Æþ±¡²ñ·×¼¼ÎÁº¹³Û¶èÊ¬¥³¥ó¥Ü
+           PERFORM 310-CMB-NACCT-BRMSGK-SET-SEC
+      *
+      *    Æþ±¡²ñ·×¿©»ö¶èÊ¬¥³¥ó¥Ü
+           PERFORM 310-CMB-NACCT-SKJ-SET-SEC
+      *
            .
        310-CMB-SYOKI-EXT.
            EXIT.
@@ -711,6 +720,34 @@
        310-CMB-BRMSGK-TAX-SET-EXT.
            EXIT.
       *****************************************************************
+      *    Æþ±¡²ñ·×¼¼ÎÁº¹³Û¶èÊ¬¥³¥ó¥Ü
+      *****************************************************************
+       310-CMB-NACCT-BRMSGK-SET-SEC   SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-NACCT-BRMSGK-CNT
+      *
+           MOVE    "1 »»Äê¤·¤Ê¤¤"  TO  SPA-GMN-W24-NACCT-BRMSGK-ITM (1)
+      *
+           MOVE    "2 »»Äê¤¹¤ë"    TO  SPA-GMN-W24-NACCT-BRMSGK-ITM (2)
+      *
+           .
+       310-CMB-NACCT-BRMSGK-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡²ñ·×¿©»ö¶èÊ¬¥³¥ó¥Ü
+      *****************************************************************
+       310-CMB-NACCT-SKJ-SET-SEC   SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-NACCT-SKJ-CNT
+      *
+           MOVE    "1 »»Äê¤·¤Ê¤¤"  TO  SPA-GMN-W24-NACCT-SKJ-ITM (1)
+      *
+           MOVE    "2 »»Äê¤¹¤ë"    TO  SPA-GMN-W24-NACCT-SKJ-ITM (2)
+      *
+           .
+       310-CMB-NACCT-SKJ-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    ÆþÎÏ¾ðÊóÊÔ½¸½èÍý
       *****************************************************************
        310-INPUT-AREA-EDIT-SEC     SECTION.
@@ -779,6 +816,26 @@
            ELSE
                MOVE    SPA-GMN-W24-BRMSGK-TAX-ITM (1)
                                            TO  SPA-GMN-W24-BRMSGK-TAX
+           END-IF
+      *
+      *    Æþ±¡²ñ·×¼¼ÎÁº¹³Û¶èÊ¬
+           MOVE    SYS-5000-NACCT-BRMSGKKBN  TO  WRK-CMB-CD
+           PERFORM 4103-CMB-NACCT-BRMSGK-SRH-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-W24-NACCT-BRMSGK
+           ELSE
+               MOVE    SPA-GMN-W24-NACCT-BRMSGK-ITM (1)
+                                           TO  SPA-GMN-W24-NACCT-BRMSGK
+           END-IF
+      *
+      *    Æþ±¡²ñ·×¿©»ö¶èÊ¬
+           MOVE    SYS-5000-NACCT-SKJKBN  TO  WRK-CMB-CD
+           PERFORM 4103-CMB-NACCT-SKJ-SRH-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-W24-NACCT-SKJ
+           ELSE
+               MOVE    SPA-GMN-W24-NACCT-SKJ-ITM (1)
+                                           TO  SPA-GMN-W24-NACCT-SKJ
            END-IF
       *
       *    Æþ±¡ÎÁ²Ã»»¾ðÊó
@@ -1134,8 +1191,12 @@
            MOVE    W24-GN-ANZEN        TO  SPA-GMN-W24-GN-ANZEN
       *    êóáìÂÐºöÌ¤¼Â»Ü¸º»»
            MOVE    W24-GN-JOKUSO       TO  SPA-GMN-W24-GN-JOKUSO
-      *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇÊ¬
+      *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
            MOVE    W24-BRMSGK-TAX      TO  SPA-GMN-W24-BRMSGK-TAX
+      *    Æþ±¡²ñ·×¼¼ÎÁº¹³Û¶èÊ¬
+           MOVE    W24-NACCT-BRMSGK    TO  SPA-GMN-W24-NACCT-BRMSGK
+      *    Æþ±¡²ñ·×¿©»ö¶èÊ¬
+           MOVE    W24-NACCT-SKJ       TO  SPA-GMN-W24-NACCT-SKJ
       *
       *    Æþ±¡²Ã»»¾ðÊó
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -1229,6 +1290,18 @@
       *
       *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
            PERFORM 4100-BRMSGK-TAX-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    Æþ±¡²ñ·×¼¼ÎÁº¹³Û¶èÊ¬
+           PERFORM 4100-NACCT-BRMSGK-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    Æþ±¡²ñ·×¿©»ö¶èÊ¬
+           PERFORM 4100-NACCT-SKJ-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1627,6 +1700,14 @@
            MOVE    SPA-GMN-W24-BRMSGK-TAX-CD
                                    TO  SYS-5000-BRMSGK-TAXKBN
       *
+      *    Æþ±¡²ñ·×¼¼ÎÁº¹³Û¶èÊ¬
+           MOVE    SPA-GMN-W24-NACCT-BRMSGK-CD
+                                   TO  SYS-5000-NACCT-BRMSGKKBN
+      *
+      *    Æþ±¡²ñ·×¿©»ö¶èÊ¬
+           MOVE    SPA-GMN-W24-NACCT-SKJ-CD
+                                   TO  SYS-5000-NACCT-SKJKBN
+      *
       *    Æþ±¡ÎÁ²Ã»»¾ðÊó
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >    20 )
@@ -1915,6 +1996,56 @@
       *
            .
        4100-BRMSGK-TAX-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡²ñ·×¼¼ÎÁº¹³Û¶èÊ¬
+      *****************************************************************
+       4100-NACCT-BRMSGK-CHK-SEC         SECTION.
+      *
+           IF    ( SPA-GMN-W24-NACCT-BRMSGK =   SPACE )
+               MOVE    SPA-GMN-W24-NACCT-BRMSGK-ITM (1)
+                                       TO  SPA-GMN-W24-NACCT-BRMSGK
+               GO  TO  4100-NACCT-BRMSGK-CHK-EXT
+           END-IF
+      *
+      *    ³ºÅö¥³¡¼¥É¤Î¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¤«¥Á¥§¥Ã¥¯
+           MOVE    SPA-GMN-W24-NACCT-BRMSGK-CD
+                                       TO  WRK-CMB-CD
+           PERFORM 4103-CMB-NACCT-BRMSGK-SRH-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-NACCT-BRMSGK
+           ELSE
+               MOVE    SPA-GMN-W24-NACCT-BRMSGK-ITM (1)
+                                       TO  SPA-GMN-W24-NACCT-BRMSGK
+           END-IF
+      *
+           .
+       4100-NACCT-BRMSGK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡²ñ·×¿©»ö¶èÊ¬
+      *****************************************************************
+       4100-NACCT-SKJ-CHK-SEC         SECTION.
+      *
+           IF    ( SPA-GMN-W24-NACCT-SKJ =   SPACE )
+               MOVE    SPA-GMN-W24-NACCT-SKJ-ITM (1)
+                                       TO  SPA-GMN-W24-NACCT-SKJ
+               GO  TO  4100-NACCT-SKJ-CHK-EXT
+           END-IF
+      *
+      *    ³ºÅö¥³¡¼¥É¤Î¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¤«¥Á¥§¥Ã¥¯
+           MOVE    SPA-GMN-W24-NACCT-SKJ-CD
+                                       TO  WRK-CMB-CD
+           PERFORM 4103-CMB-NACCT-SKJ-SRH-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-NACCT-SKJ
+           ELSE
+               MOVE    SPA-GMN-W24-NACCT-SKJ-ITM (1)
+                                       TO  SPA-GMN-W24-NACCT-SKJ
+           END-IF
+      *
+           .
+       4100-NACCT-SKJ-CHK-EXT.
            EXIT.
       *****************************************************************
       *    Æþ±¡²Ã»»¾ðÊó¥Á¥§¥Ã¥¯½èÍý
@@ -2891,6 +3022,58 @@
        4103-CMB-BRMSGK-TAX-SRH-EXT.
            EXIT.
       *****************************************************************
+      *    Æþ±¡²ñ·×¼¼ÎÁº¹³Û¥µ¡¼¥Á½èÍý
+      *****************************************************************
+       4103-CMB-NACCT-BRMSGK-SRH-SEC     SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM
+                                       WRK-CMB-IDX
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W24-NACCT-BRMSGK-CNT )
+                    OR   ( SPA-GMN-W24-NACCT-BRMSGK-ITM (IDX-CMB)
+                                                        (1 : 1)
+                                   =   WRK-CMB-CD )
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX-CMB     <=  SPA-GMN-W24-NACCT-BRMSGK-CNT )
+               MOVE    SPA-GMN-W24-NACCT-BRMSGK-ITM (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4103-CMB-NACCT-BRMSGK-SRH-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡²ñ·×¿©»ö¥µ¡¼¥Á½èÍý
+      *****************************************************************
+       4103-CMB-NACCT-SKJ-SRH-SEC      SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM
+                                       WRK-CMB-IDX
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W24-NACCT-SKJ-CNT )
+                    OR   ( SPA-GMN-W24-NACCT-SKJ-ITM (IDX-CMB)
+                                                        (1 : 1)
+                                   =   WRK-CMB-CD )
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX-CMB     <=  SPA-GMN-W24-NACCT-SKJ-CNT )
+               MOVE    SPA-GMN-W24-NACCT-SKJ-ITM (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4103-CMB-NACCT-SKJ-SRH-EXT.
+           EXIT.
+      *****************************************************************
       *    ÆþÎÏ¾ðÊóÎÎ°è½é´ü²½½èÍý
       *****************************************************************
        4201-INPUT-AREA-INIT-SEC        SECTION.
@@ -2936,6 +3119,12 @@
       *
            MOVE    SPA-GMN-W24-BRMSGK-TAX-ITM (1)
                                    TO  SPA-GMN-W24-BRMSGK-TAX
+      *
+           MOVE    SPA-GMN-W24-NACCT-BRMSGK-ITM (1)
+                                   TO  SPA-GMN-W24-NACCT-BRMSGK
+      *
+           MOVE    SPA-GMN-W24-NACCT-SKJ-ITM (1)
+                                   TO  SPA-GMN-W24-NACCT-SKJ
       *
            MOVE    SPA-GMN-W24-SENTEI-FTNKBN-ITM (1)
                                    TO  SPA-GMN-W24-SENTEI-FTNKBN
@@ -3289,6 +3478,32 @@
       *
            END-PERFORM
       *
+      *    Æþ±¡²ñ·×¼¼ÎÁº¹³Û¶èÊ¬
+           MOVE    SPA-GMN-W24-NACCT-BRMSGK
+                                   TO  W24-NACCT-BRMSGK
+           MOVE    SPA-GMN-W24-NACCT-BRMSGK-CNT
+                                   TO  W24-NACCT-BRMSGK-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   W24-NACCT-BRMSGK-CNT )
+      *
+               MOVE    SPA-GMN-W24-NACCT-BRMSGK-ITM (IDX1)
+                                   TO  W24-NACCT-BRMSGK-ITM (IDX1)
+      *
+           END-PERFORM
+      *
+      *    Æþ±¡²ñ·×¿©»ö¶èÊ¬
+           MOVE    SPA-GMN-W24-NACCT-SKJ
+                                   TO  W24-NACCT-SKJ
+           MOVE    SPA-GMN-W24-NACCT-SKJ-CNT
+                                   TO  W24-NACCT-SKJ-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   W24-NACCT-SKJ-CNT )
+      *
+               MOVE    SPA-GMN-W24-NACCT-SKJ-ITM (IDX1)
+                                   TO  W24-NACCT-SKJ-ITM (IDX1)
+      *
+           END-PERFORM
+      *
       *    Æþ±¡²Ã»»¾ðÊó
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   20 )
@@ -3599,6 +3814,10 @@
                MOVE    "TAIPRTKBN"     TO  MCP-WIDGET
            WHEN    046
                MOVE    "BRMSGK_TAX"    TO  MCP-WIDGET
+           WHEN    047
+               MOVE    "NACCT_BRMSGK"  TO  MCP-WIDGET
+           WHEN    048
+               MOVE    "NACCT_SKJ"     TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -3711,13 +3930,17 @@
                MOVE    045             TO  SPA-GMN-W24-CUR
            WHEN    "BRMSGK_TAX"
                MOVE    046             TO  SPA-GMN-W24-CUR
+           WHEN    "NACCT_BRMSGK"
+               MOVE    047             TO  SPA-GMN-W24-CUR
+           WHEN    "NACCT_SKJ"
+               MOVE    048             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *
       *    ¼¡¥«¡¼¥½¥ë°ÌÃÖ¤òÀßÄê
            EVALUATE    MCP-WIDGET
            WHEN    "GN_JOKUSO"
                MOVE    046             TO  SPA-GMN-W24-CUR
-           WHEN    "BRMSGK_TAX"
+           WHEN    "NACCT_SKJ"
                MOVE    008             TO  SPA-GMN-W24-CUR
            WHEN    "SK_SYOKUDO"
                MOVE    005             TO  SPA-GMN-W24-CUR

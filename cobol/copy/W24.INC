@@ -74,6 +74,18 @@
                                                BINARY.
                 05  W24-BRMSGK-TAX-ITM         PIC X(10)
                                                OCCURS  5.
+              04  W24-CMB-NACCT-BRMSGK.
+                05  W24-NACCT-BRMSGK           PIC X(16).
+                05  W24-NACCT-BRMSGK-CNT       PIC S9(9)
+                                               BINARY.
+                05  W24-NACCT-BRMSGK-ITM       PIC X(16)
+                                               OCCURS  5.
+              04  W24-CMB-NACCT-SKJ.
+                05  W24-NACCT-SKJ              PIC X(16).
+                05  W24-NACCT-SKJ-CNT          PIC S9(9)
+                                               BINARY.
+                05  W24-NACCT-SKJ-ITM          PIC X(16)
+                                               OCCURS  5.
               04  W24-FRAME3.
                 05  W24-FIXED9.
                   06  W24-CHK-NYUKSN.
