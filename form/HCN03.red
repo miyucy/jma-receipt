@@ -53,22 +53,22 @@
     </element>
     <element name="HKNRYO" occurs="12">
       <appinfo>
-        <embed object="string" length="18"/>
+        <embed object="string" length="24"/>
       </appinfo>
     </element>
     <element name="HOKENBUN" occurs="1">
       <appinfo>
-        <embed object="string" length="18"/>
+        <embed object="string" length="24"/>
       </appinfo>
     </element>
     <element name="HOKENGAI" occurs="1">
       <appinfo>
-        <embed object="string" length="18"/>
+        <embed object="string" length="24"/>
       </appinfo>
     </element>
     <element name="JIHI" occurs="8">
       <appinfo>
-        <embed object="string" length="18"/>
+        <embed object="string" length="24"/>
       </appinfo>
     </element>
     <element name="JIHIMSG" occurs="5">
@@ -78,37 +78,37 @@
     </element>
     <element name="SYOKUJI" occurs="1">
       <appinfo>
-        <embed object="string" length="18"/>
+        <embed object="string" length="24"/>
       </appinfo>
     </element>
     <element name="ROUJIN" occurs="1">
       <appinfo>
-        <embed object="string" length="18"/>
+        <embed object="string" length="24"/>
       </appinfo>
     </element>
     <element name="KOUHI" occurs="1">
       <appinfo>
-        <embed object="string" length="18"/>
+        <embed object="string" length="24"/>
       </appinfo>
     </element>
     <element name="RMSAGAKU" occurs="1">
       <appinfo>
-        <embed object="string" length="18"/>
+        <embed object="string" length="24"/>
       </appinfo>
     </element>
     <element name="CHOSEI" occurs="1">
       <appinfo>
-        <embed object="string" length="18"/>
+        <embed object="string" length="24"/>
       </appinfo>
     </element>
     <element name="KONSEIKYU" occurs="1">
       <appinfo>
-        <embed object="string" length="18"/>
+        <embed object="string" length="24"/>
       </appinfo>
     </element>
     <element name="KONNYUKIN" occurs="1">
       <appinfo>
-        <embed object="string" length="18"/>
+        <embed object="string" length="24"/>
       </appinfo>
     </element>
     <element name="IRYOADRS" occurs="1">
@@ -138,7 +138,7 @@
     </element>
     <element name="GAI_MISYUKIN" occurs="1">
       <appinfo>
-        <embed object="string" length="18"/>
+        <embed object="string" length="24"/>
       </appinfo>
     </element>
     <element name="LBL_N_MISYU" occurs="1">
@@ -153,7 +153,7 @@
     </element>
     <element name="NYU_MISYUKIN" occurs="1">
       <appinfo>
-        <embed object="string" length="18"/>
+        <embed object="string" length="24"/>
       </appinfo>
     </element>
   </dictionarydata>
@@ -1196,7 +1196,7 @@
         <point val="1.4,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.4,2.13;2.82814,2.48"/>
+        <rectangle val="1.4,2.12636;2.814,2.47636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1222,7 +1222,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1232,7 +1232,7 @@
         <point val="7.4,1.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.4,1.23884;14.7447,1.83884"/>
+        <rectangle val="7.4,1.23884;14.672,1.83884"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1258,7 +1258,7 @@
             <real val="0.1515"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.30603"/>
+            <real val="0.303"/>
           </attribute>
         </composite>
       </attribute>
@@ -1268,7 +1268,7 @@
         <point val="13.8,3.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.8,2.93;15.2281,3.28"/>
+        <rectangle val="13.8,2.92636;15.214,3.27636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1294,7 +1294,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1304,7 +1304,7 @@
         <point val="13.8,4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.8,3.73;15.2281,4.08"/>
+        <rectangle val="13.8,3.72636;15.214,4.07636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1330,7 +1330,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1340,7 +1340,7 @@
         <point val="16.7,4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16.7,3.73;17.057,4.08"/>
+        <rectangle val="16.7,3.72636;17.0535,4.07636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1366,7 +1366,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1376,7 +1376,7 @@
         <point val="1.4,3.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.4,2.83;2.11407,3.18"/>
+        <rectangle val="1.4,2.82636;2.107,3.17636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1402,7 +1402,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1412,7 +1412,7 @@
         <point val="8.2,3.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.2,2.75286;8.65904,3.20286"/>
+        <rectangle val="8.2,2.74818;8.6545,3.19818"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1438,7 +1438,7 @@
             <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.229523"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
@@ -1448,7 +1448,7 @@
         <point val="1.4,3.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.4,3.43;2.82814,3.78"/>
+        <rectangle val="1.4,3.42636;2.814,3.77636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1474,7 +1474,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1484,7 +1484,7 @@
         <point val="1.9,5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.9,4.73;4.39924,5.08"/>
+        <rectangle val="1.9,4.72636;4.3745,5.07636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1510,7 +1510,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1520,7 +1520,7 @@
         <point val="1.9,5.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.9,5.43;4.39924,5.78"/>
+        <rectangle val="1.9,5.42636;4.3745,5.77636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1546,7 +1546,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1556,7 +1556,7 @@
         <point val="1.9,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.9,6.13;4.39924,6.48"/>
+        <rectangle val="1.9,6.12636;4.3745,6.47636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1582,7 +1582,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1592,7 +1592,7 @@
         <point val="1.9,7.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.9,6.83;4.39924,7.18"/>
+        <rectangle val="1.9,6.82636;4.3745,7.17636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1618,7 +1618,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1628,7 +1628,7 @@
         <point val="1.9,7.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.9,7.53;4.39924,7.88"/>
+        <rectangle val="1.9,7.52636;4.3745,7.87636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1654,7 +1654,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1664,7 +1664,7 @@
         <point val="1.9,8.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.9,8.23;4.39924,8.58"/>
+        <rectangle val="1.9,8.22636;4.3745,8.57636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1690,7 +1690,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1700,7 +1700,7 @@
         <point val="1.9,9.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.9,8.93;4.39924,9.28"/>
+        <rectangle val="1.9,8.92636;4.3745,9.27636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1726,7 +1726,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1736,7 +1736,7 @@
         <point val="1.9,9.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.9,9.63;4.39924,9.98"/>
+        <rectangle val="1.9,9.62636;4.3745,9.97636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1762,7 +1762,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1772,7 +1772,7 @@
         <point val="1.9,10.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.9,10.33;4.39924,10.68"/>
+        <rectangle val="1.9,10.3264;4.3745,10.6764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1798,7 +1798,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1808,7 +1808,7 @@
         <point val="1.9,11.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.9,11.03;2.25704,11.38"/>
+        <rectangle val="1.9,11.0264;2.2535,11.3764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1834,7 +1834,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1844,7 +1844,7 @@
         <point val="1.9,12.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.9,12.43;4.39924,12.78"/>
+        <rectangle val="1.9,12.4264;4.3745,12.7764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1870,7 +1870,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1880,7 +1880,7 @@
         <point val="1.9,13.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.9,13.43;4.39924,13.78"/>
+        <rectangle val="1.9,13.4264;4.3745,13.7764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1906,7 +1906,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1916,7 +1916,7 @@
         <point val="1.9,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.9,14.13;4.39924,14.48"/>
+        <rectangle val="1.9,14.1264;4.3745,14.4764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1942,7 +1942,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -1952,7 +1952,7 @@
         <point val="9.7,5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.7,4.76857;10.006,5.06857"/>
+        <rectangle val="9.7,4.76545;10.003,5.06545"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -1978,7 +1978,7 @@
             <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -1988,7 +1988,7 @@
         <point val="11.5,8.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.5,8.23;13.9992,8.58"/>
+        <rectangle val="11.5,8.22636;13.9745,8.57636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2014,7 +2014,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2024,7 +2024,7 @@
         <point val="11.5,10.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.5,10.33;13.9992,10.68"/>
+        <rectangle val="11.5,10.3264;13.9745,10.6764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2050,7 +2050,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2060,7 +2060,7 @@
         <point val="11.5,12"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.5,11.73;11.857,12.08"/>
+        <rectangle val="11.5,11.7264;11.8535,12.0764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2086,7 +2086,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2096,7 +2096,7 @@
         <point val="11.5,12.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.5,12.43;13.9992,12.78"/>
+        <rectangle val="11.5,12.4264;13.9745,12.7764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2122,7 +2122,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2132,7 +2132,7 @@
         <point val="11.5,13.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.5,13.13;13.9992,13.48"/>
+        <rectangle val="11.5,13.1264;13.9745,13.4764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2158,7 +2158,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2168,7 +2168,7 @@
         <point val="11.5,15.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.5,14.83;13.9992,15.18"/>
+        <rectangle val="11.5,14.8264;13.9745,15.1764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2194,7 +2194,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2204,7 +2204,7 @@
         <point val="19.3,5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.3,4.73;19.657,5.08"/>
+        <rectangle val="19.3,4.72636;19.6535,5.07636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2230,7 +2230,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2240,7 +2240,7 @@
         <point val="11,16"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,15.73;14.2133,16.08"/>
+        <rectangle val="11,15.7264;14.1815,16.0764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2266,7 +2266,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2276,7 +2276,7 @@
         <point val="14.5,16.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="14.5,16.43;14.857,16.78"/>
+        <rectangle val="14.5,16.4264;14.8535,16.7764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2302,7 +2302,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2312,7 +2312,7 @@
         <point val="19.3,16.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.3,16.43;19.657,16.78"/>
+        <rectangle val="19.3,16.4264;19.6535,16.7764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2338,7 +2338,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2348,7 +2348,7 @@
         <point val="15.8,16"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8,15.73;19.0133,16.08"/>
+        <rectangle val="15.8,15.7264;18.9815,16.0764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2374,7 +2374,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2384,7 +2384,7 @@
         <point val="1.4,18.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.4,17.9686;10.2749,18.2686"/>
+        <rectangle val="1.4,17.9655;10.187,18.2655"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2410,7 +2410,7 @@
             <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -2420,7 +2420,7 @@
         <point val="1.4,18.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.4,18.2686;5.99045,18.5686"/>
+        <rectangle val="1.4,18.2655;5.945,18.5655"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2446,7 +2446,7 @@
             <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -2482,7 +2482,7 @@
             <real val="0.088375"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2492,7 +2492,7 @@
         <point val="17.2,19.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="17.2,18.93;18.9852,19.28"/>
+        <rectangle val="17.2,18.9264;18.9675,19.2764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2518,7 +2518,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2528,7 +2528,7 @@
         <point val="1.2,1.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.2,1.23;1.8363,1.58"/>
+        <rectangle val="1.2,1.22636;1.8363,1.57636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2554,7 +2554,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2564,7 +2564,7 @@
         <point val="14.4,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="14.4,2.13;15.4711,2.48"/>
+        <rectangle val="14.4,2.12636;15.4605,2.47636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2590,7 +2590,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2600,7 +2600,7 @@
         <point val="11.5,9.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.5,8.93;11.857,9.28"/>
+        <rectangle val="11.5,8.92636;11.8535,9.27636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2626,7 +2626,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2636,7 +2636,7 @@
         <point val="19.3,5.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.3,5.43;19.657,5.78"/>
+        <rectangle val="19.3,5.42636;19.6535,5.77636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2662,7 +2662,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2672,7 +2672,7 @@
         <point val="19.3,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.3,6.13;19.657,6.48"/>
+        <rectangle val="19.3,6.12636;19.6535,6.47636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2698,7 +2698,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2708,7 +2708,7 @@
         <point val="19.3,7.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.3,6.83;19.657,7.18"/>
+        <rectangle val="19.3,6.82636;19.6535,7.17636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2734,7 +2734,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2744,7 +2744,7 @@
         <point val="19.3,7.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.3,7.53;19.657,7.88"/>
+        <rectangle val="19.3,7.52636;19.6535,7.87636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2770,7 +2770,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2780,7 +2780,7 @@
         <point val="19.3,8.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.3,8.23;19.657,8.58"/>
+        <rectangle val="19.3,8.22636;19.6535,8.57636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2806,7 +2806,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2816,7 +2816,7 @@
         <point val="19.3,9.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.3,8.93;19.657,9.28"/>
+        <rectangle val="19.3,8.92636;19.6535,9.27636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2842,7 +2842,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2852,7 +2852,7 @@
         <point val="19.3,10.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.3,10.33;19.657,10.68"/>
+        <rectangle val="19.3,10.3264;19.6535,10.6764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2878,7 +2878,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2888,7 +2888,7 @@
         <point val="19.3,12"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.3,11.73;19.657,12.08"/>
+        <rectangle val="19.3,11.7264;19.6535,12.0764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2914,7 +2914,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2924,7 +2924,7 @@
         <point val="19.3,12.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.3,12.43;19.657,12.78"/>
+        <rectangle val="19.3,12.4264;19.6535,12.7764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2950,7 +2950,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2960,7 +2960,7 @@
         <point val="19.3,13.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.3,13.13;19.657,13.48"/>
+        <rectangle val="19.3,13.1264;19.6535,13.4764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -2986,7 +2986,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -2996,7 +2996,7 @@
         <point val="19.3,15.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.3,14.83;19.657,15.18"/>
+        <rectangle val="19.3,14.8264;19.6535,15.1764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3022,7 +3022,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3032,7 +3032,7 @@
         <point val="9.7,5.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.7,5.46857;10.006,5.76857"/>
+        <rectangle val="9.7,5.46545;10.003,5.76545"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3058,7 +3058,7 @@
             <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -3068,7 +3068,7 @@
         <point val="9.7,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.7,6.16857;10.006,6.46857"/>
+        <rectangle val="9.7,6.16545;10.003,6.46545"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3094,7 +3094,7 @@
             <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -3104,7 +3104,7 @@
         <point val="9.7,7.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.7,6.86857;10.006,7.16857"/>
+        <rectangle val="9.7,6.86545;10.003,7.16545"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3130,7 +3130,7 @@
             <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -3140,7 +3140,7 @@
         <point val="9.7,7.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.7,7.56857;10.006,7.86857"/>
+        <rectangle val="9.7,7.56545;10.003,7.86545"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3166,7 +3166,7 @@
             <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -3176,7 +3176,7 @@
         <point val="9.7,8.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.7,8.26857;10.006,8.56857"/>
+        <rectangle val="9.7,8.26545;10.003,8.56545"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3202,7 +3202,7 @@
             <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -3212,7 +3212,7 @@
         <point val="9.7,9.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.7,8.96857;10.006,9.26857"/>
+        <rectangle val="9.7,8.96545;10.003,9.26545"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3238,7 +3238,7 @@
             <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -3248,7 +3248,7 @@
         <point val="9.7,9.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.7,9.66857;10.006,9.96857"/>
+        <rectangle val="9.7,9.66545;10.003,9.96545"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3274,7 +3274,7 @@
             <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -3284,7 +3284,7 @@
         <point val="9.7,10.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.7,10.3686;10.006,10.6686"/>
+        <rectangle val="9.7,10.3655;10.003,10.6655"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3310,7 +3310,7 @@
             <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -3320,7 +3320,7 @@
         <point val="9.7,11.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.7,11.0686;10.006,11.3686"/>
+        <rectangle val="9.7,11.0655;10.003,11.3655"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3346,7 +3346,7 @@
             <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -3356,7 +3356,7 @@
         <point val="9.7,12.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.7,12.4686;10.006,12.7686"/>
+        <rectangle val="9.7,12.4655;10.003,12.7655"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3382,7 +3382,7 @@
             <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -3392,7 +3392,7 @@
         <point val="9.7,13.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.7,13.43;10.057,13.78"/>
+        <rectangle val="9.7,13.4264;10.0535,13.7764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3418,7 +3418,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3428,7 +3428,7 @@
         <point val="9.7,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.7,14.13;10.057,14.48"/>
+        <rectangle val="9.7,14.1264;10.0535,14.4764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3454,7 +3454,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3464,7 +3464,7 @@
         <point val="8.1,20.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.1,20.5686;8.71206,20.8686"/>
+        <rectangle val="8.1,20.5655;8.706,20.8655"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3490,7 +3490,7 @@
             <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -3500,7 +3500,7 @@
         <point val="6.9,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.9,2.13;7.25704,2.48"/>
+        <rectangle val="6.9,2.12636;7.2535,2.47636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3526,7 +3526,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3536,7 +3536,7 @@
         <point val="2.375,11.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2.375,11.03;2.73203,11.38"/>
+        <rectangle val="2.375,11.0264;2.7285,11.3764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3562,7 +3562,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3572,7 +3572,7 @@
         <point val="2.75,11.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2.75,11.03;3.10703,11.38"/>
+        <rectangle val="2.75,11.0264;3.1035,11.3764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3598,7 +3598,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3608,7 +3608,7 @@
         <point val="3.075,11.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.075,11.03;3.43203,11.38"/>
+        <rectangle val="3.075,11.0264;3.4285,11.3764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3634,7 +3634,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3644,7 +3644,7 @@
         <point val="3.525,11.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.525,11.03;3.88204,11.38"/>
+        <rectangle val="3.525,11.0264;3.8785,11.3764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3670,7 +3670,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3680,7 +3680,7 @@
         <point val="3.975,11.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3.975,11.03;4.33204,11.38"/>
+        <rectangle val="3.975,11.0264;4.3285,11.3764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3706,7 +3706,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3716,7 +3716,7 @@
         <point val="1.9,12"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.9,11.73;4.39924,12.08"/>
+        <rectangle val="1.9,11.7264;4.3745,12.0764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3742,7 +3742,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3752,7 +3752,7 @@
         <point val="13.5,12"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.5,11.73;13.857,12.08"/>
+        <rectangle val="13.5,11.7264;13.8535,12.0764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3778,7 +3778,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3788,7 +3788,7 @@
         <point val="13,12"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13,11.73;13.357,12.08"/>
+        <rectangle val="13,11.7264;13.3535,12.0764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3814,7 +3814,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3824,7 +3824,7 @@
         <point val="12.5,12"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.5,11.73;12.857,12.08"/>
+        <rectangle val="12.5,11.7264;12.8535,12.0764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3850,7 +3850,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3860,7 +3860,7 @@
         <point val="12,12"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12,11.73;12.357,12.08"/>
+        <rectangle val="12,11.7264;12.3535,12.0764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3886,7 +3886,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3896,7 +3896,7 @@
         <point val="9.7,12"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.7,11.7686;10.006,12.0686"/>
+        <rectangle val="9.7,11.7655;10.003,12.0655"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3922,7 +3922,7 @@
             <real val="0.1818"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.153015"/>
+            <real val="0.1515"/>
           </attribute>
         </composite>
       </attribute>
@@ -3932,7 +3932,7 @@
         <point val="12.025,9.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.025,8.93;12.382,9.28"/>
+        <rectangle val="12.025,8.92636;12.3785,9.27636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3958,7 +3958,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -3968,7 +3968,7 @@
         <point val="12.55,9.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.55,8.93;12.907,9.28"/>
+        <rectangle val="12.55,8.92636;12.9035,9.27636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -3994,7 +3994,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4004,7 +4004,7 @@
         <point val="13.075,9.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.075,8.93;13.432,9.28"/>
+        <rectangle val="13.075,8.92636;13.4285,9.27636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -4030,7 +4030,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4040,7 +4040,7 @@
         <point val="13.575,9.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="13.575,8.93;13.932,9.28"/>
+        <rectangle val="13.575,8.92636;13.9285,9.27636"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -4066,7 +4066,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4076,7 +4076,7 @@
         <point val="11.5,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.5,14.13;13.9992,14.48"/>
+        <rectangle val="11.5,14.1264;13.9745,14.4764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -4102,7 +4102,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4112,7 +4112,7 @@
         <point val="19.3,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.3,14.13;19.657,14.48"/>
+        <rectangle val="19.3,14.1264;19.6535,14.4764"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -4138,7 +4138,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4150,7 +4150,7 @@
         <point val="2,1.5125"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="2,1.2425;4.85628,1.5925"/>
+        <rectangle val="2,1.23886;4.828,1.58886"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NO#</string>
@@ -4182,7 +4182,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4192,7 +4192,7 @@
         <point val="3,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3,2.13;6.92738,2.48"/>
+        <rectangle val="3,2.12636;6.8885,2.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NYUINSTRYMD#</string>
@@ -4224,7 +4224,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4234,7 +4234,7 @@
         <point val="16,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="16,2.13;19.9274,2.48"/>
+        <rectangle val="16,2.12636;19.8885,2.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HAKYMD#</string>
@@ -4266,7 +4266,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4276,7 +4276,7 @@
         <point val="3,3.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3,2.75286;5.29523,3.20286"/>
+        <rectangle val="3,2.74818;5.2725,3.19818"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#KNJNAMW#</string>
@@ -4308,7 +4308,7 @@
             <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.229523"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
@@ -4318,7 +4318,7 @@
         <point val="3,3.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3,3.43;5.85628,3.78"/>
+        <rectangle val="3,3.42636;5.828,3.77636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#KNJNO#</string>
@@ -4350,7 +4350,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4360,7 +4360,7 @@
         <point val="15.4,3.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.4,2.85286;19.9905,3.30286"/>
+        <rectangle val="15.4,2.84818;19.945,3.29818"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HOKEN#</string>
@@ -4392,7 +4392,7 @@
             <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.229523"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
@@ -4402,7 +4402,7 @@
         <point val="16.5,4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.4289,3.73;16.5,4.08"/>
+        <rectangle val="15.4395,3.72636;16.5,4.07636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#FUTAN#</string>
@@ -4434,7 +4434,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4444,7 +4444,7 @@
         <point val="9.5,13.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.28669,13.43;9.5,13.78"/>
+        <rectangle val="5.258,13.4264;9.5,13.7764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HOKENBUN#</string>
@@ -4455,7 +4455,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -4476,7 +4476,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4486,7 +4486,7 @@
         <point val="9.5,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.28669,14.13;9.5,14.48"/>
+        <rectangle val="5.258,14.1264;9.5,14.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HOKENGAI#</string>
@@ -4497,7 +4497,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -4518,7 +4518,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4528,7 +4528,7 @@
         <point val="19.1,12"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8867,11.73;19.1,12.08"/>
+        <rectangle val="14.858,11.7264;19.1,12.0764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#SYOKUJI#</string>
@@ -4539,7 +4539,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -4560,7 +4560,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4570,7 +4570,7 @@
         <point val="19.1,12.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8867,12.43;19.1,12.78"/>
+        <rectangle val="14.858,12.4264;19.1,12.7764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#ROUJIN#</string>
@@ -4581,7 +4581,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -4602,7 +4602,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4612,7 +4612,7 @@
         <point val="19.1,13.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8867,13.13;19.1,13.48"/>
+        <rectangle val="14.858,13.1264;19.1,13.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#KOUHI#</string>
@@ -4623,7 +4623,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -4644,7 +4644,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4654,7 +4654,7 @@
         <point val="19.1,15.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8867,14.83;19.1,15.18"/>
+        <rectangle val="14.858,14.8264;19.1,15.1764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#CHOSEI#</string>
@@ -4665,7 +4665,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -4686,7 +4686,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4696,7 +4696,7 @@
         <point val="14.3,16.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.0867,16.43;14.3,16.78"/>
+        <rectangle val="10.058,16.4264;14.3,16.7764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#KONSEIKYU#</string>
@@ -4707,7 +4707,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -4728,7 +4728,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4738,7 +4738,7 @@
         <point val="19.1,16.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8867,16.43;19.1,16.78"/>
+        <rectangle val="14.858,16.4264;19.1,16.7764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#KONNYUKIN#</string>
@@ -4749,7 +4749,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -4770,7 +4770,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4780,7 +4780,7 @@
         <point val="5.5,19.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.5,19.23;16.2111,19.58"/>
+        <rectangle val="5.5,19.2264;16.105,19.5764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#IRYOADRS#</string>
@@ -4812,7 +4812,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4822,7 +4822,7 @@
         <point val="11.4,3.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.941,2.85286;11.859,3.30286"/>
+        <rectangle val="10.9455,2.84818;11.8545,3.29818"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#MIDASI#</string>
@@ -4854,7 +4854,7 @@
             <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.229523"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
@@ -4864,7 +4864,7 @@
         <point val="8.9,20.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.9,20.4914;12.536,20.8914"/>
+        <rectangle val="8.9,20.4873;12.536,20.8873"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#IRYOTEL#</string>
@@ -4896,7 +4896,7 @@
             <real val="0.2424"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.20402"/>
+            <real val="0.202"/>
           </attribute>
         </composite>
       </attribute>
@@ -4906,7 +4906,7 @@
         <point val="9.5,5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.28669,4.73;9.5,5.08"/>
+        <rectangle val="5.258,4.72636;9.5,5.07636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKNRYO[0]#</string>
@@ -4917,7 +4917,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -4938,7 +4938,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4948,7 +4948,7 @@
         <point val="19.1,5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8867,4.73;19.1,5.08"/>
+        <rectangle val="14.858,4.72636;19.1,5.07636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#JIHI[0]#</string>
@@ -4959,7 +4959,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -4980,7 +4980,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -4990,7 +4990,7 @@
         <point val="6.5,20.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.5,19.93;13.6407,20.28"/>
+        <rectangle val="6.5,19.9264;13.57,20.2764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#IRYOMEI#</string>
@@ -5022,7 +5022,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5032,7 +5032,7 @@
         <point val="11.5,5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.5,4.73099;15.0703,5.08099"/>
+        <rectangle val="11.5,4.73099;15.035,5.08099"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#JIHIMSG[0]#</string>
@@ -5064,7 +5064,7 @@
             <real val="0.088375"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5074,7 +5074,7 @@
         <point val="7.3,2.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.3,2.13;11.2274,2.48"/>
+        <rectangle val="7.3,2.12636;11.1885,2.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NYUINENDYMD#</string>
@@ -5106,7 +5106,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5116,7 +5116,7 @@
         <point val="9.5,5.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.28669,5.43;9.5,5.78"/>
+        <rectangle val="5.258,5.42636;9.5,5.77636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKNRYO[1]#</string>
@@ -5127,7 +5127,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5148,7 +5148,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5158,7 +5158,7 @@
         <point val="9.5,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.28669,6.13;9.5,6.48"/>
+        <rectangle val="5.258,6.12636;9.5,6.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKNRYO[2]#</string>
@@ -5169,7 +5169,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5190,7 +5190,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5200,7 +5200,7 @@
         <point val="9.5,7.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.28669,6.83;9.5,7.18"/>
+        <rectangle val="5.258,6.82636;9.5,7.17636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKNRYO[3]#</string>
@@ -5211,7 +5211,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5232,7 +5232,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5242,7 +5242,7 @@
         <point val="9.5,7.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.28669,7.53;9.5,7.88"/>
+        <rectangle val="5.258,7.52636;9.5,7.87636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKNRYO[4]#</string>
@@ -5253,7 +5253,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5274,7 +5274,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5284,7 +5284,7 @@
         <point val="9.5,8.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.28669,8.23;9.5,8.58"/>
+        <rectangle val="5.258,8.22636;9.5,8.57636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKNRYO[5]#</string>
@@ -5295,7 +5295,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5316,7 +5316,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5326,7 +5326,7 @@
         <point val="9.5,9.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.28669,8.93;9.5,9.28"/>
+        <rectangle val="5.258,8.92636;9.5,9.27636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKNRYO[6]#</string>
@@ -5337,7 +5337,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5358,7 +5358,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5368,7 +5368,7 @@
         <point val="9.5,9.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.28669,9.63;9.5,9.98"/>
+        <rectangle val="5.258,9.62636;9.5,9.97636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKNRYO[7]#</string>
@@ -5379,7 +5379,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5400,7 +5400,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5410,7 +5410,7 @@
         <point val="9.5,10.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.28669,10.33;9.5,10.68"/>
+        <rectangle val="5.258,10.3264;9.5,10.6764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKNRYO[8]#</string>
@@ -5421,7 +5421,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5442,7 +5442,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5452,7 +5452,7 @@
         <point val="9.5,11.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.28669,11.03;9.5,11.38"/>
+        <rectangle val="5.258,11.0264;9.5,11.3764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKNRYO[9]#</string>
@@ -5463,7 +5463,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5484,7 +5484,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5494,7 +5494,7 @@
         <point val="9.5,12"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.28669,11.73;9.5,12.08"/>
+        <rectangle val="5.258,11.7264;9.5,12.0764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKNRYO[10]#</string>
@@ -5505,7 +5505,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5526,7 +5526,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5536,7 +5536,7 @@
         <point val="19.1,5.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8867,5.43;19.1,5.78"/>
+        <rectangle val="14.858,5.42636;19.1,5.77636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#JIHI[1]#</string>
@@ -5547,7 +5547,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5568,7 +5568,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5578,7 +5578,7 @@
         <point val="19.1,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8867,6.13;19.1,6.48"/>
+        <rectangle val="14.858,6.12636;19.1,6.47636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#JIHI[2]#</string>
@@ -5589,7 +5589,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5610,7 +5610,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5620,7 +5620,7 @@
         <point val="19.1,7.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8867,6.83;19.1,7.18"/>
+        <rectangle val="14.858,6.82636;19.1,7.17636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#JIHI[3]#</string>
@@ -5631,7 +5631,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5652,7 +5652,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5662,7 +5662,7 @@
         <point val="19.1,7.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8867,7.53;19.1,7.88"/>
+        <rectangle val="14.858,7.52636;19.1,7.87636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#JIHI[4]#</string>
@@ -5673,7 +5673,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5694,7 +5694,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5704,7 +5704,7 @@
         <point val="19.1,8.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8867,8.23;19.1,8.58"/>
+        <rectangle val="14.858,8.22636;19.1,8.57636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#JIHI[5]#</string>
@@ -5715,7 +5715,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5736,7 +5736,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5746,7 +5746,7 @@
         <point val="19.1,9.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8867,8.93;19.1,9.28"/>
+        <rectangle val="14.858,8.92636;19.1,9.27636"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#JIHI[6]#</string>
@@ -5757,7 +5757,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5778,7 +5778,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5788,7 +5788,7 @@
         <point val="19.1,10.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8867,10.33;19.1,10.68"/>
+        <rectangle val="14.858,10.3264;19.1,10.6764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#JIHI[7]#</string>
@@ -5799,7 +5799,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5820,7 +5820,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5830,7 +5830,7 @@
         <point val="11.5,5.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.5,5.43099;15.0703,5.78099"/>
+        <rectangle val="11.5,5.43099;15.035,5.78099"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#JIHIMSG[1]#</string>
@@ -5862,7 +5862,7 @@
             <real val="0.088375"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5872,7 +5872,7 @@
         <point val="11.5,6.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.5,6.13099;15.0703,6.48099"/>
+        <rectangle val="11.5,6.13099;15.035,6.48099"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#JIHIMSG[2]#</string>
@@ -5904,7 +5904,7 @@
             <real val="0.088375"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5914,7 +5914,7 @@
         <point val="11.5,7.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.5,6.83099;15.0703,7.18099"/>
+        <rectangle val="11.5,6.83099;15.035,7.18099"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#JIHIMSG[3]#</string>
@@ -5946,7 +5946,7 @@
             <real val="0.088375"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5956,7 +5956,7 @@
         <point val="11.5,7.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.5,7.53099;15.0703,7.88099"/>
+        <rectangle val="11.5,7.53099;15.035,7.88099"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#JIHIMSG[4]#</string>
@@ -5988,7 +5988,7 @@
             <real val="0.088375"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -5998,7 +5998,7 @@
         <point val="9.5,12.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.28669,12.43;9.5,12.78"/>
+        <rectangle val="5.258,12.4264;9.5,12.7764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKNRYO[11]#</string>
@@ -6009,7 +6009,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -6030,7 +6030,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -6040,7 +6040,7 @@
         <point val="19.1,14.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8867,14.13;19.1,14.48"/>
+        <rectangle val="14.858,14.1264;19.1,14.4764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#RMSAGAKU#</string>
@@ -6051,7 +6051,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -6072,7 +6072,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -6082,7 +6082,7 @@
         <point val="1.4,4.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.4,4.05286;6.16316,4.50286"/>
+        <rectangle val="1.4,4.04818;6.1268,4.49818"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#ROOM#</string>
@@ -6114,7 +6114,7 @@
             <real val="0.2727"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.229523"/>
+            <real val="0.22725"/>
           </attribute>
         </composite>
       </attribute>
@@ -6124,7 +6124,7 @@
         <point val="15.8,17.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8,17.23;19.0133,17.58"/>
+        <rectangle val="15.8,17.2264;18.9815,17.5764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#LBL_N_MISYU#</string>
@@ -6156,7 +6156,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -6166,7 +6166,7 @@
         <point val="19.1,18.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="15.8867,17.93;19.1,18.28"/>
+        <rectangle val="14.858,17.9264;19.1,18.2764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#NYU_MISYUKIN#</string>
@@ -6177,7 +6177,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -6198,7 +6198,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -6208,7 +6208,7 @@
         <point val="19.3,18.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="19.3,17.93;19.657,18.28"/>
+        <rectangle val="19.3,17.9264;19.6535,18.2764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#LBL_N_MISYU_EN#</string>
@@ -6240,7 +6240,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -6250,7 +6250,7 @@
         <point val="11,17.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11,17.23;14.2133,17.58"/>
+        <rectangle val="11,17.2264;14.1815,17.5764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#LBL_G_MISYU#</string>
@@ -6282,7 +6282,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -6292,7 +6292,7 @@
         <point val="14.3,18.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.0867,17.93;14.3,18.28"/>
+        <rectangle val="10.058,17.9264;14.3,18.2764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#GAI_MISYUKIN#</string>
@@ -6303,7 +6303,7 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
+            <string>#&#161;&#221;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;&#161;&#164;&#163;&#185;&#163;&#185;&#163;&#185;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -6324,7 +6324,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
@@ -6334,7 +6334,7 @@
         <point val="14.5,18.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="14.5,17.93;14.857,18.28"/>
+        <rectangle val="14.5,17.9264;14.8535,18.2764"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#LBL_G_MISYU_EN#</string>
@@ -6366,7 +6366,7 @@
             <real val="0.2121"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.178517"/>
+            <real val="0.17675"/>
           </attribute>
         </composite>
       </attribute>
