@@ -2,13 +2,13 @@ tbl_ptkohftn {
 	HOSPID			char(24);
 	PTID			number(10);
 	KOHID			number(10);
+	RENNUM			number(3);
 	TEKSTYMD		char(8);
 	TEKEDYMD		char(8);
 	KOHNUM			char(3);
 	PAYKBN			char(2);
 	GAIJGNGAK		number(7);
 	NYUJGNGAK		number(7);
-	KAKUNINYMD		char(8);
 	TERMID			varchar(16);
 	OPID			varchar(16);
 	CREYMD			char(8);
@@ -22,7 +22,7 @@ tbl_ptkohftn {
 };
 
 primary	{
-	HOSPID,PTID,KOHID,TEKSTYMD;
+	HOSPID,PTID,KOHID,RENNUM;
 };
 
 path	key 	{
@@ -33,7 +33,7 @@ path	key 	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   KOHID       =   :KOHID
-			AND   TEKSTYMD    =   :TEKSTYMD
+			AND   RENNUM      =   :RENNUM 
 		;
 	};
 };
@@ -56,7 +56,7 @@ path	key3 	{
 		FROM tbl_ptkohftn
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
-			ORDER   BY        KOHNUM,TEKSTYMD DESC
+			ORDER   BY        KOHNUM,RENNUM DESC
 		;
 	};
 };
@@ -64,6 +64,19 @@ path	key3 	{
 path	key4 	{
 	DBSELECT	{
 		DECLARE tbl_ptkohftn_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptkohftn
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   KOHID       =   :KOHID
+			ORDER   BY        RENNUM DESC
+		;
+	};
+};
+
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_ptkohftn_key5_csr CURSOR FOR
 		SELECT *
 		FROM tbl_ptkohftn
 			WHERE   HOSPID    =   :HOSPID
@@ -80,34 +93,6 @@ path	del1 	{
 		FROM tbl_ptkohftn
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
-		;
-	};
-};
-
-
-path	upd1	{ 	
-	DBUPDATE	{
-		UPDATE	tbl_ptkohftn 
-				SET	
-                   HOSPID              = :HOSPID,
-                   PTID                = :PTID,
-                   KOHID               = :KOHID,
-                   TEKSTYMD            = :TEKSTYMD,
-                   TEKEDYMD            = :TEKEDYMD,
-                   KOHNUM              = :KOHNUM,
-                   PAYKBN              = :PAYKBN,
-                   GAIJGNGAK           = :GAIJGNGAK,
-                   NYUJGNGAK           = :NYUJGNGAK,
-                   KAKUNINYMD          = :KAKUNINYMD,
-                   TERMID              = :TERMID,
-                   OPID                = :OPID,
-                   CREYMD              = :CREYMD,
-                   UPYMD               = :UPYMD,
-                   UPHMS               = :UPHMS
-               WHERE   HOSPID      =   :UPHOSPID
-                 AND   PTID        =   :UPPTID
-                 AND   KOHID       =   :UPKOHID
-                 AND   TEKSTYMD    =   :UPTEKSTYMD
 		;
 	};
 };

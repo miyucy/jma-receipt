@@ -31,8 +31,10 @@
                05  PTKOHFTN-PTID           PIC  9(10).
       *公費ＩＤ
                05  PTKOHFTN-KOHID          PIC  9(10).
+      *連番
+               05  PTKOHFTN-RENNUM         PIC  9(03).
       *適用開始年月日
-               05  PTKOHFTN-TEKSTYMD       PIC  X(08).
+           03  PTKOHFTN-TEKSTYMD           PIC  X(08).
       *適用終了年月日
            03  PTKOHFTN-TEKEDYMD           PIC  X(08).
       *保険番号（公費）
@@ -43,8 +45,6 @@
            03  PTKOHFTN-GAIJGNGAK          PIC  9(07).
       *入院上限額
            03  PTKOHFTN-NYUJGNGAK          PIC  9(07).
-      *確認年月日
-           03  PTKOHFTN-KAKUNINYMD         PIC  X(08).
       *端末ＩＤ
            03  PTKOHFTN-TERMID             PIC  X(16).
       *オペーレータＩＤ

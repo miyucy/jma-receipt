@@ -219,6 +219,8 @@
       *                                     UPD1,ALL追加
       *  01.01.51    NACL-多々納　03/03/19  PTHKNINF-KEY5追加
       *  01.01.52    NACL-太田    03/03/20  PTKOHFTN-KEY4追加
+      *  01.01.53    NACL-太田    03/03/20  PTKOHFTN-KEY5追加
+      *                                     PTKOHFTN-UPD1削除
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -946,9 +948,6 @@
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "RECEPRT-DEL2"
                    MOVE    PATH-TBL-RECEPRT-DEL2
-                                       TO  WRK-PATH
-               WHEN    "DBUPDATE"      ALSO   "PTKOHFTN-UPD1"
-                   MOVE    PATH-TBL-PTKOHFTN-UPD1
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "PTKOHFTN-DEL1"
                    MOVE    PATH-TBL-PTKOHFTN-DEL1
@@ -2526,6 +2525,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTKOHFTN-KEY4"
                    MOVE    PATH-TBL-PTKOHFTN-KEY4
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTKOHFTN-KEY5"
+                   MOVE    PATH-TBL-PTKOHFTN-KEY5
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTKOHFTN-ALL"
                    MOVE    PATH-TBL-PTKOHFTN-ALL
