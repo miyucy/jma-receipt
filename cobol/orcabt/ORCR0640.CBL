@@ -1739,7 +1739,9 @@
                          PERFORM    NYUINACCT-SYU-SEC
                      WHEN   4
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-KHNTEN(IDY)  *  0.15)
+      ****                       (WRK-DAY1-KHNTEN(IDY)  *  0.15)
+                                 (WRK-DAY1-KHNTEN(IDY)  
+                                              *  WRK-SENTEI-KEISU)
                                                         +  0.5
                          MOVE    4     TO    SYUKEI-IDX
                          PERFORM    NYUINACCT-SYU-SEC
@@ -1785,7 +1787,9 @@
                          PERFORM    NYUINACCT-SYU-SEC
                      WHEN   4
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-KHNTEN(IDY)  *  0.15)
+      ****                       (WRK-DAY1-KHNTEN(IDY)  *  0.15)
+                                 (WRK-DAY1-KHNTEN(IDY)  
+                                              *  WRK-SENTEI-KEISU)
                                                         +  0.5
                          MOVE    8     TO    SYUKEI-IDX
                          PERFORM    NYUINACCT-SYU-SEC

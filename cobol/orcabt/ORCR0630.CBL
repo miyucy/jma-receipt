@@ -1234,8 +1234,10 @@
                                                      +  0.5
                        WHEN   4
                          COMPUTE  WRK-NYUKHNRYO =
-                                 (WRK-KHNTEN         *  0.15)
+      ****                       (WRK-KHNTEN         *  0.15)
+                                 (WRK-KHNTEN  *  WRK-SENTEI-KEISU)
                                                      +  0.5
+                         DISPLAY  "WRK-NYUKHNRYO=" WRK-NYUKHNRYO
                     END-EVALUATE
                   ELSE
                     EVALUATE   WRK-DAY2(IDY)
@@ -1304,7 +1306,8 @@
                          MOVE   1   TO   FLG-GAIHAKU
                        WHEN   4
                          COMPUTE  WRK-NYUTOKRYO =
-                                 (WRK-KHNTEN         *  0.15)
+      ****                       (WRK-KHNTEN         *  0.15)
+                                 (WRK-KHNTEN  *  WRK-SENTEI-KEISU)
                                                      +  0.5
                          MOVE   1   TO   FLG-GAIHAKU
                     END-EVALUATE
