@@ -2893,6 +2893,8 @@
                    MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
                    MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
                    MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
+      *            当月入院有無
+                   MOVE    SPA-K02N-NYUINFLG   TO  LNK-SC92-NYUINFLG
                    CALL    "ORCSC92"           USING
                                                MCPAREA
                                                ORCSC92AREA
@@ -3363,6 +3365,14 @@
       *        最終退院日
                IF      PTNYUINRRK-TAIINYMD     <=  SPA-NAI-SRYYMD
                    MOVE    PTNYUINRRK-TAIINYMD     TO  WRK-TAIINYMD
+               END-IF
+      *
+      *        入院中でなく当月の入院有無
+               IF     (PTNYUINRRK-NYUINYMD(1:6)    =   SPA-NAI-SRYYMD
+                                                              (1:6)) OR
+                      (PTNYUINRRK-TAIINYMD(1:6)    =   SPA-NAI-SRYYMD
+                                                              (1:6))
+                   MOVE    1                   TO  SPA-K02N-NYUINFLG
                END-IF
       *
                MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
@@ -5574,6 +5584,8 @@
            MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
            MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
+      *    当月入院有無
+           MOVE    SPA-K02N-NYUINFLG   TO  LNK-SC92-NYUINFLG
            CALL    "ORCSC92"           USING
                                        MCPAREA
                                        ORCSC92AREA
@@ -6207,6 +6219,8 @@
                    MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
                    MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
                    MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
+      *            当月入院有無
+                   MOVE    SPA-K02N-NYUINFLG   TO  LNK-SC92-NYUINFLG
                    CALL    "ORCSC92"           USING
                                                MCPAREA
                                                ORCSC92AREA
@@ -6451,6 +6465,8 @@
                    MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
                    MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
                    MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
+      *            当月入院有無
+                   MOVE    SPA-K02N-NYUINFLG   TO  LNK-SC92-NYUINFLG
                    CALL    "ORCSC92"           USING
                                                MCPAREA
                                                ORCSC92AREA
@@ -9889,6 +9905,8 @@
                    MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
                    MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
                    MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
+      *            当月入院有無
+                   MOVE    SPA-K02N-NYUINFLG   TO  LNK-SC92-NYUINFLG
                    CALL    "ORCSC92"           USING
                                                MCPAREA
                                                ORCSC92AREA
@@ -10524,6 +10542,8 @@
            MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
            MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
+      *    当月入院有無
+           MOVE    SPA-K02N-NYUINFLG   TO  LNK-SC92-NYUINFLG
            CALL    "ORCSC92"           USING
                                        MCPAREA
                                        ORCSC92AREA

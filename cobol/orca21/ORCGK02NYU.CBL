@@ -2735,7 +2735,6 @@
       *   入力コードの画面用再編集処理
       *****************************************************************
        3101-INPUTCD-HEN-SEC                  SECTION.
-      *
       *    画面再編集・基本チェック
            INITIALIZE                  ORCSC94AREA
            MOVE    "1"                 TO  LNK-SC94-KBN
@@ -6711,7 +6710,11 @@
                    END-IF
                END-IF
            END-PERFORM
+      *
       *    点数再セット
+      *    診察日を戻す
+           MOVE    WRK-SPA-SRYYMD      TO  SPA-SRYYMD
+      *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL       IDX-Z       >   WRK-MAX
       *
