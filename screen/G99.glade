@@ -124,6 +124,23 @@
     </widget>
 
     <widget>
+      <class>GtkPandaTimer</class>
+      <name>pandatimer1</name>
+      <x>704</x>
+      <y>168</y>
+      <width>21</width>
+      <height>21</height>
+      <signal>
+	<name>timeout</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 30 Aug 2002 06:40:07 GMT</last_modification_time>
+      </signal>
+      <duration>5</duration>
+    </widget>
+
+
+    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow28</name>
       <x>10</x>
