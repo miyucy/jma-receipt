@@ -698,7 +698,7 @@
                INITIALIZE                  RECEDEN-REC
                MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
                MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
-               MOVE    "1"                 TO  RECEDEN-TEISYUTUSAKI
+               MOVE    1                   TO  RECEDEN-TEISYUTUSAKI
                MOVE    "1"                 TO  RECEDEN-NYUGAIKBN
                MOVE    RECEDEN-REC         TO  MCPDATA-REC
                MOVE    "RECEDEN-DEL1"      TO  ORC-DBPATH
@@ -722,7 +722,7 @@
                INITIALIZE                  RECEDEN-REC
                MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
                MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
-               MOVE    "2"                 TO  RECEDEN-TEISYUTUSAKI
+               MOVE    2                   TO  RECEDEN-TEISYUTUSAKI
                MOVE    "1"                 TO  RECEDEN-NYUGAIKBN
                MOVE    RECEDEN-REC         TO  MCPDATA-REC
                MOVE    "RECEDEN-DEL1"      TO  ORC-DBPATH
