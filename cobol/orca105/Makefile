@@ -1,4 +1,6 @@
-OBJS = ORCGN01.so   ORCGNERR.so   ORCGNID1.so
+SRCS = ORCGN01.CBL \
+       ORCGNERR.CBL \
+       ORCGNID1.CBL
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global

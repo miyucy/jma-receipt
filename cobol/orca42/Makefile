@@ -1,5 +1,12 @@
-OBJS = ORCGR01.so   ORCGR02.so   ORCGR03.so   ORCGRERR.so   ORCGRID1.so \
-       ORCGRID2.so  ORCGR99.so   ORCGR04.so   ORCGR98.so
+SRCS = ORCGR01.CBL \
+       ORCGR02.CBL \
+       ORCGR03.CBL \
+       ORCGRERR.CBL \
+       ORCGRID1.CBL \
+       ORCGRID2.CBL \
+       ORCGR99.CBL \
+       ORCGR04.CBL \
+       ORCGR98.CBL
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global

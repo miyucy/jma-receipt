@@ -1,5 +1,7 @@
-# Generated automatically from Makefile.in by configure.
-OBJS = ORCGT01.so   ORCGTERR.so   ORCGTID1.so  ORCGT99.so
+SRCS = ORCGT01.CBL \
+       ORCGTERR.CBL \
+       ORCGTID1.CBL \
+       ORCGT99.CBL
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global

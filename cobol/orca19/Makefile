@@ -1,5 +1,5 @@
-# Generated automatically from Makefile.in by configure.
-OBJS = ORCGP97.so   ORCGP97ERR.so
+SRCS = ORCGP97.CBL \
+       ORCGP97ERR.CBL
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global

@@ -1,4 +1,5 @@
-OBJS = ORCGU01.so   ORCGU1ERR.so
+SRCS = ORCGU01.CBL \
+       ORCGU1ERR.CBL
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global
