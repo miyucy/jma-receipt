@@ -146,7 +146,7 @@
                    13  SPA-GMN-W27-TBRMNUM2            PIC X(06).
       *                ∆√ƒÍ∆˛±°Œ¡
                    13  SPA-GMN-W27-TTOKNYUIN-CD        PIC X(02).
-                   13  SPA-GMN-W27-TTOKNYUIN           PIC X(10).
+                   13  SPA-GMN-W27-TTOKNYUIN           PIC X(24).
       *                …¬ºººÔ Ã
                    13  SPA-GMN-W27-TBRMSBT             PIC X(20).
       *                ººŒ¡∫π≥€

@@ -544,12 +544,12 @@
                                                            PIC S9(9)
                                                            BINARY.
                                13  SPA-GMN-W21-BRM-TOKNYUIN-ITM-OCC
-                                                           OCCURS  15
+                                                           OCCURS 20 
                                                INDEXED BY  CMB-IDX23.
                                    15  SPA-GMN-W21-BRM-TOKNYUIN-ITM
                                                            PIC X(33).
                                    15  SPA-GMN-W21-BRM-TOKNYUIN-ITM2
-                                                           PIC X(20).
+                                                           PIC X(24).
       *                    ¼¼ÎÁº¹³Û¥³¥ó¥Ü
                            11  SPA-GMN-W21-CMB-BRM-SAGAKU.
       *                        ¼¼ÎÁº¹³Û¥³¥ó¥Ü¹àÌÜ¿ô
@@ -598,7 +598,7 @@
                                13  SPA-GMN-W21-TBRM-SBT    PIC X(20).
       *                        ÆÃÄêÆþ±¡ÎÁ
                                13  SPA-GMN-W21-TBRM-TOKNYUIN
-                                                           PIC X(10).
+                                                           PIC X(24).
       *                        ¼ýÍÆ¿Í¿ô
                                13  SPA-GMN-W21-TBRM-NINZU  PIC 9(10).
       *                        ¼¼ÎÁº¹³Û

@@ -649,7 +649,7 @@
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( FLG-SYSKANRI    =   1 )
                  OR      ( SPA-GMN-W21-BRM-TOKNYUIN-CNT
-                                           >   15 )
+                                           >   20 )
       *
                MOVE    SYSKANRI-REC
                                        TO  SYS-5111-REC

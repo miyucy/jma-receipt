@@ -30,7 +30,7 @@
                     07  W27-TYUKO          PIC X(4).
                     07  W27-TSELNUM        PIC X(4).
                     07  W27-TBRMNUM        PIC X(10).
-                    07  W27-TTOKNYUIN      PIC X(10).
+                    07  W27-TTOKNYUIN      PIC X(24).
                     07  W27-TBRMSBT        PIC X(20).
                     07  W27-TSAGAKU        PIC X(10).
                     07  W27-TSTYUKYMD      PIC X(9).

@@ -1022,7 +1022,7 @@
 	  <last_modification_time>Wed, 23 Jan 2002 07:13:08 GMT</last_modification_time>
 	</signal>
 	<columns>11</columns>
-	<column_widths>40,80,120,100,80,80,80,80,100,80,80</column_widths>
+	<column_widths>40,80,120,150,80,80,80,80,100,80,80</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
