@@ -2242,7 +2242,7 @@
       *
                 PERFORM 500-ERR-HENSYU-SEC
                 MOVE    1               TO  FLG-END
-                GO  TO  900-SYSKANRI-HENSYU-EXT
+                GO  TO  910-SYSKANRI-HENSYU-EXT
               END-IF
       *
       *       Ï«ºÒ¼«Çå°åÎÅµ¡´Ø¾ðÊó
@@ -2283,7 +2283,7 @@
                 END-STRING
                 PERFORM 500-ERR-HENSYU-SEC
                 MOVE    1               TO  FLG-END
-                GO  TO  900-SYSKANRI-HENSYU-EXT
+                GO  TO  910-SYSKANRI-HENSYU-EXT
               END-IF
            END-IF
       *
