@@ -397,8 +397,13 @@
                GO  TO  110-PARA-HENSYU-EXT
            END-IF 
       *
-           IF          PARA-NAIYO      =   SPACE
-               MOVE    "検索内容が入力されていません"
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"             TO  KANACHK-SYORI
+           MOVE    PARA-NAIYO      TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           IF        ( KANACHK-RC      NOT =   ZERO )
+               OR    ( KANACHK-SYUBETU     =   2 )
+               MOVE    "半角で入力してください"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1                   TO  FLG-END
