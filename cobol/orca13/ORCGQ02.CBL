@@ -1698,6 +1698,12 @@
                                                Q02-B12-STATE
            END-IF
       *
+           IF    ( SPA-GSRAUTH-12          =   "1" )
+               MOVE    WIDGET-NORMAL       TO  Q02-B05-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  Q02-B05-STATE
+           END-IF
+      *
       *    表題
            MOVE    SPA-GMN-Q02-HYODAI      TO  Q02-HYODAI
       *    条件上段
