@@ -451,7 +451,7 @@
       <y>560</y>
       <width>332</width>
       <height>24</height>
-      <label>「日医標準レセプトソフト  Version  0.9.38-1 」</label>
+      <label>「日医標準レセプトソフト  Version  0.9.40-1 」</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
