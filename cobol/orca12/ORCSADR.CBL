@@ -25,6 +25,10 @@
       *  作成日付    作業者        記述
       *  XX.XX.XX    ＮＮＮ        新規作成
       *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  02/09/03  住所一覧を５０件へ変更
+      *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
        CONFIGURATION                             SECTION.
@@ -180,7 +184,7 @@
                                               ORCMCPAREA
                                               MCPDATA-REC
       *
-           COMPUTE SPA-GMN98-MAX =   (IDXX   -   1)  /   25  +   1    
+           COMPUTE SPA-GMN98-MAX =   (IDXX   -   1)  /   50  +   1    
       *
            IF      IDXX                      >   ZERO
                MOVE    1                         TO  SPA-GMN98-PAGE
@@ -195,13 +199,13 @@
       *
            MOVE    SPACE               TO  P98
       *
-           COMPUTE IDXY    =  (SPA-GMN98-PAGE  -   1)  *   25
+           COMPUTE IDXY    =  (SPA-GMN98-PAGE  -   1)  *   50
       *
            PERFORM VARYING     IDXX    FROM    1   BY  1
-                   UNTIL       IDXX    >       25
+                   UNTIL       IDXX    >       50
                COMPUTE IDXZ    =       IDXY    +   IDXX
                MOVE  SPA-GMN98-KBNCD(IDXZ)     TO  P98-TADRS(IDXX)(1:3)
-               MOVE  SPA-GMN98-TADRS(IDXZ)     TO  P98-TADRS(IDXX)(5:)
+               MOVE  SPA-GMN98-TADRS(IDXZ)     TO  P98-TADRS(IDXX)(5:16)
 	   END-PERFORM
            .
       *

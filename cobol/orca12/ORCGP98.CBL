@@ -224,7 +224,7 @@
                                OR      IDXX           >=  100
                ADD     1                  TO  IDXX
                MOVE    MCPDATA-REC        TO  SYS-1015-REC
-               MOVE    SYS-1015-KBNCD     TO SPA-GMN98-KBNCD  (IDXX)
+               MOVE    SYS-1015-KBNCD     TO  SPA-GMN98-KBNCD  (IDXX)
                MOVE    SYS-1015-LPUBCD    TO  SPA-GMN98-TLPUBCD(IDXX)
                MOVE    SYS-1015-POST      TO  SPA-GMN98-TPOST (IDXX)
                MOVE    SYS-1015-RENNUM    TO  SPA-GMN98-TRENNUM(IDXX)
@@ -316,7 +316,8 @@
                    UNTIL       IDXX    >       50
                COMPUTE IDXZ    =       IDXY    +   IDXX
                MOVE  SPA-GMN98-KBNCD(IDXZ) TO  P98-TADRS(IDXX)(1:3)
-               MOVE  SPA-GMN98-TADRS(IDXZ) TO  P98-TADRS(IDXX)(5:)
+               MOVE  SPA-GMN98-TADRS(IDXZ)
+                                           TO  P98-TADRS(IDXX)(5:16)
 	   END-PERFORM
       *
            MOVE    SPA-GMN98-ADRS      TO  P98-ADRS 
