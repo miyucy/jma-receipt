@@ -149,5 +149,7 @@ bind	"ORCBPRT1"	"OpenCOBOL";
 bind	"ORCBPRVPRT"	"OpenCOBOL";
 bind	"ORCBM031"	"OpenCOBOL";
 bind	"ORCRCP400"	"OpenCOBOL";
+bind	"ORCBT010"	"OpenCOBOL";
+bind	"ORCBT020"	"OpenCOBOL";
 
 #include "orcadb.inc"
