@@ -184,9 +184,9 @@
                ADD     1                   TO  CNT-LINE
                MOVE    PARA-TSYURUINAME(1 IDX)
                                            TO  HCMC001-NAME(CNT-LINE)
-               MOVE    PARA-TPAGE(1 IDX)   TO  WRK-Z10
-               MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
                MOVE    PARA-TKENSU(1 IDX)  TO  WRK-Z10
+               MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+               MOVE    PARA-TPAGE(1 IDX)   TO  WRK-Z10
                MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
                ADD     PARA-TPAGE(1 IDX)   TO  CNT-TPAGE
                ADD     PARA-TKENSU(1 IDX)  TO  CNT-TKENSU
@@ -194,9 +194,9 @@
       *
            ADD     2                   TO  CNT-LINE
            MOVE    "社保　小計"        TO  HCMC001-NAME(CNT-LINE)
-           MOVE    CNT-TPAGE           TO  WRK-Z10
-           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
            MOVE    CNT-TKENSU          TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+           MOVE    CNT-TPAGE           TO  WRK-Z10
            MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
       *
            ADD     CNT-TPAGE           TO  CNT-GPAGE
@@ -218,9 +218,9 @@
                ADD     1                   TO  CNT-LINE
                MOVE    PARA-TSYURUINAME(2 IDX)
                                            TO  HCMC001-NAME(CNT-LINE)
-               MOVE    PARA-TPAGE(2 IDX)   TO  WRK-Z10
-               MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
                MOVE    PARA-TKENSU(2 IDX)  TO  WRK-Z10
+               MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+               MOVE    PARA-TPAGE(2 IDX)   TO  WRK-Z10
                MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
                ADD     PARA-TPAGE(2 IDX)   TO  CNT-TPAGE
                ADD     PARA-TKENSU(2 IDX)  TO  CNT-TKENSU
@@ -228,9 +228,9 @@
       *
            ADD     2                   TO  CNT-LINE
            MOVE    "国保　小計"        TO  HCMC001-NAME(CNT-LINE)
-           MOVE    CNT-TPAGE           TO  WRK-Z10
-           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
            MOVE    CNT-TKENSU          TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+           MOVE    CNT-TPAGE           TO  WRK-Z10
            MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
       *
            ADD     CNT-TPAGE           TO  CNT-GPAGE
@@ -240,9 +240,9 @@
            ADD     2                   TO  CNT-LINE
            MOVE    PARA-TSYURUINAME(1 35)
                                        TO  HCMC001-NAME(CNT-LINE)
-           MOVE    PARA-TPAGE(1 35)    TO  WRK-Z10
-           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
            MOVE    PARA-TKENSU(1 35)   TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+           MOVE    PARA-TPAGE(1 35)    TO  WRK-Z10
            MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
            ADD     PARA-TPAGE(1 35)    TO  CNT-GPAGE
            ADD     PARA-TKENSU(1 35)   TO  CNT-GKENSU
@@ -251,9 +251,9 @@
            ADD     1                   TO  CNT-LINE
            MOVE    PARA-TSYURUINAME(1 36)
                                        TO  HCMC001-NAME(CNT-LINE)
-           MOVE    PARA-TPAGE(1 36)    TO  WRK-Z10
-           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
            MOVE    PARA-TKENSU(1 36)   TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+           MOVE    PARA-TPAGE(1 36)    TO  WRK-Z10
            MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
            ADD     PARA-TPAGE(1 36)    TO  CNT-GPAGE
            ADD     PARA-TKENSU(1 36)   TO  CNT-GKENSU
@@ -261,9 +261,9 @@
       *    合計
            ADD     2                   TO  CNT-LINE
            MOVE    "合　　計"          TO  HCMC001-NAME(CNT-LINE)
-           MOVE    CNT-GPAGE           TO  WRK-Z10
-           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
            MOVE    CNT-GKENSU          TO  WRK-Z10
+           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+           MOVE    CNT-GPAGE           TO  WRK-Z10
            MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
       *
       *    印刷処理
