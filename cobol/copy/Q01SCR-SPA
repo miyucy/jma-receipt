@@ -150,6 +150,10 @@
                                13  SPA-GMN-Q01-FTNJANUM
                                                        PIC X(08)
                                                        OCCURS  5.
+      *                    ¸¡º÷¾ò·ïAND/ORÀÚ¤êÂØ¤¨ÍÑ¥é¥¸¥ª¥Ü¥¿¥ó
+                           11  SPA-GMN-Q01-RDKOHNUM-AND
+                                                       PIC X(01).
+                           11  SPA-GMN-Q01-RDKOHNUM-OR PIC X(01).
       *
       *                ÉÂÌ¾¡¡¿ÇÎÅ¹Ô°Ù
                        09  SPA-GMN-Q01-BYOMEI-AREA.
@@ -226,6 +230,13 @@
                                    15  SPA-GMN-Q01-TSRYACT
                                                        PIC X(80).
       *
+      *                    ¸¡º÷¾ò·ïAND/ORÀÚ¤êÂØ¤¨ÍÑ¥é¥¸¥ª¥Ü¥¿¥ó
+                           11  SPA-GMN-Q01-RDBYOMEI-AND
+                                                       PIC X(01).
+                           11  SPA-GMN-Q01-RDBYOMEI-OR PIC X(01).
+                           11  SPA-GMN-Q01-RDSRYACT-AND
+                                                       PIC X(01).
+                           11  SPA-GMN-Q01-RDSRYACT-OR PIC X(01).
       *                ÊÂ¤Ó½ç
                        09  SPA-GMN-Q01-NARABI-AREA.
                            11  SPA-GMN-Q01-KMKTBL.
@@ -487,6 +498,7 @@
                        09  SPA-Q01-HKNJANUM-G.
                            11  SPA-Q01-HKNJANUM        PIC X(08)
                                                        OCCURS 5.
+      *
                        09  SPA-Q01-HKNNUM-G.
                            11  SPA-Q01-HKNNUM          PIC X(03)
                                                        OCCURS 5.
@@ -496,6 +508,9 @@
                        09  SPA-Q01-NUM-G.
                            11  SPA-Q01-NUM             PIC X(40)
                                                        OCCURS  5.
+      *
+                       09  SPA-Q01-KOHNUM-JKN          PIC X(01).
+      *
                        09  SPA-Q01-KOHNUM-G.
                            11  SPA-Q01-KOHNUM          PIC X(04)
                                                        OCCURS  5.
@@ -508,9 +523,15 @@
       *
       *            ÉÂÌ¾¡¡¿ÇÎÅ¹Ô°Ù
                    07  SPA-Q01-BYOMEI-AREA.
-                       09  SPA-Q01-BYOMEICD-G.
+      *
+                       09  SPA-Q01-BYOMEI-JKN          PIC X(01).
+      *
+                       09  SPA-Q01-BYOMEI-G.
                            11  SPA-Q01-BYOMEI          PIC X(80)
                                                        OCCURS  5.
+      *
+      *
+                       09  SPA-Q01-SRYACT-JKN          PIC X(01).
       *
                        09  SPA-Q01-SRYCD-G.
                            11  SPA-Q01-SRYCD           PIC X(09)

@@ -72,24 +72,7 @@
       *
       *    £Ã£Ó£Ö¥Õ¥¡¥¤¥ë
        FD  CSV-FILE.
-       01  CSV-REC.
-           03  CSV-NO                  PIC Z(9)9.
-           03  FILLER                  PIC X(01)   VALUE ",".
-           03  CSV-PTNUM               PIC X(20).
-           03  FILLER                  PIC X(01)   VALUE ",".
-           03  CSV-NAME                PIC X(100).
-           03  FILLER                  PIC X(01)   VALUE ",".
-           03  CSV-SEX                 PIC X(2).
-           03  FILLER                  PIC X(01)   VALUE ",".
-           03  CSV-BIRTHDAY            PIC X(10).
-      *----(01.00.02) LINE ADD START ----------------------------------
-           03  FILLER                  PIC X(01)   VALUE ",".
-           03  CSV-AGENUM              PIC X(04).
-           03  FILLER                  PIC X(01)   VALUE ",".
-           03  CSV-AGETANI             PIC X(04).
-      *----(01.00.02) LINE ADD END   ----------------------------------
-           03  FILLER                  PIC X(01)   VALUE ",".
-           03  CSV-JYUSYO              PIC X(400).
+       01  CSV-REC                     PIC X(1000).
       *
        WORKING-STORAGE                 SECTION.
       *
@@ -174,7 +157,24 @@
                05  WRK-AGE-Z                       PIC ---9.
                05  WRK-AGE-MEI                     PIC X(04).
       *----(01.00.02) LINE ADD END   ----------------------------------
-      *
+      * 
+       01  CSV-EDIT-AREA.
+           03  CSV-NO                  PIC Z(9)9.
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-PTNUM               PIC X(20).
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-NAME                PIC X(100).
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-SEX                 PIC X(2).
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-BIRTHDAY            PIC X(10).
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-AGENUM              PIC X(04).
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-AGETANI             PIC X(04).
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-JYUSYO              PIC X(400).
+      * 
        01  CONST-AREA.
            03  CONST-LINE              PIC 9(05)   VALUE   30.
       *----(01.00.02) LINE ADD START ----------------------------------
@@ -464,6 +464,8 @@
            PERFORM 900-ADRS-EDIT-SEC
       *
            MOVE    WRK-ADRS        TO  CSV-JYUSYO
+      *
+           MOVE    CSV-EDIT-AREA   TO  CSV-REC
       *
            WRITE   CSV-REC
       *

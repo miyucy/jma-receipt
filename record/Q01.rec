@@ -247,6 +247,12 @@ Q01	{
 				FTNJANUM5	{
 					value	varchar(8);
 				};
+				RDKOHNUM_AND	{
+					value	bool;
+				};
+				RDKOHNUM_OR	{
+					value	bool;
+				};
 			};
 			fixed18	{
 				CMB_BYOBUN	{
@@ -351,6 +357,18 @@ Q01	{
 						}	[200];
 						select	bool[200];
 					};
+				};
+				RDBYOMEI_AND	{
+					value	bool;
+				};
+				RDBYOMEI_OR	{
+					value	bool;
+				};
+				RDSRYACT_AND	{
+					value	bool;
+				};
+				RDSRYACT_OR	{
+					value	bool;
 				};
 			};
 			fixed19	{

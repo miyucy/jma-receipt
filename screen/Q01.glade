@@ -5,13 +5,9 @@
   <name>Q01</name>
   <program_name>Q01</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -29,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Wed, 20 Dec 2000 10:16:14 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -640,6 +636,7 @@
 	  <input_mode>XIM</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
+
 	<widget>
 	  <class>GtkCheckButton</class>
 	  <name>CHKTSTPT</name>
@@ -2355,9 +2352,9 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>KIGO1</name>
-	  <x>355</x>
+	  <x>385</x>
 	  <y>96</y>
-	  <width>300</width>
+	  <width>285</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -2383,9 +2380,9 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>KIGO2</name>
-	  <x>355</x>
+	  <x>385</x>
 	  <y>124</y>
-	  <width>300</width>
+	  <width>285</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -2411,9 +2408,9 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>KIGO3</name>
-	  <x>355</x>
+	  <x>385</x>
 	  <y>152</y>
-	  <width>300</width>
+	  <width>285</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -2439,9 +2436,9 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>KIGO4</name>
-	  <x>355</x>
+	  <x>385</x>
 	  <y>180</y>
-	  <width>300</width>
+	  <width>285</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -2467,9 +2464,9 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>KIGO5</name>
-	  <x>355</x>
+	  <x>385</x>
 	  <y>208</y>
-	  <width>300</width>
+	  <width>285</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -2495,9 +2492,9 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>NUM1</name>
-	  <x>660</x>
+	  <x>675</x>
 	  <y>96</y>
-	  <width>300</width>
+	  <width>285</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -2523,9 +2520,9 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>NUM2</name>
-	  <x>660</x>
+	  <x>675</x>
 	  <y>124</y>
-	  <width>300</width>
+	  <width>285</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -2551,9 +2548,9 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>NUM3</name>
-	  <x>660</x>
+	  <x>675</x>
 	  <y>152</y>
-	  <width>300</width>
+	  <width>285</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -2579,9 +2576,9 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>NUM4</name>
-	  <x>660</x>
+	  <x>675</x>
 	  <y>180</y>
-	  <width>300</width>
+	  <width>285</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -2607,9 +2604,9 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>NUM5</name>
-	  <x>660</x>
+	  <x>675</x>
 	  <y>208</y>
-	  <width>300</width>
+	  <width>285</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3106,72 +3103,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label462</name>
-	  <x>56</x>
-	  <y>316</y>
-	  <width>72</width>
-	  <height>18</height>
-	  <label>∏¯»Ò§ŒºÔŒ‡</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label535</name>
-	  <x>335</x>
-	  <y>128</y>
-	  <width>15</width>
-	  <height>16</height>
-	  <label>£≤
-</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label536</name>
-	  <x>335</x>
-	  <y>156</y>
-	  <width>15</width>
-	  <height>16</height>
-	  <label>£≥
-</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label533</name>
-	  <x>170</x>
-	  <y>76</y>
-	  <width>72</width>
-	  <height>18</height>
-	  <label> ›∏±§ŒºÔŒ‡</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label531</name>
 	  <x>150</x>
 	  <y>128</y>
@@ -3272,15 +3203,6 @@
 	</widget>
 
 	<widget>
-	  <class>GtkHSeparator</class>
-	  <name>hseparator6</name>
-	  <x>328</x>
-	  <y>240</y>
-	  <width>632</width>
-	  <height>0</height>
-	</widget>
-
-	<widget>
 	  <class>GtkLabel</class>
 	  <name>label502</name>
 	  <x>250</x>
@@ -3330,61 +3252,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label463</name>
-	  <x>660</x>
-	  <y>76</y>
-	  <width>30</width>
-	  <height>16</height>
-	  <label>»÷πÊ</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label475</name>
-	  <x>355</x>
-	  <y>76</y>
-	  <width>36</width>
-	  <height>18</height>
-	  <label>µ≠πÊ</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label461</name>
 	  <x>270</x>
 	  <y>316</y>
 	  <width>75</width>
 	  <height>18</height>
 	  <label>…È√¥º‘»÷πÊ</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label534</name>
-	  <x>335</x>
-	  <y>100</y>
-	  <width>15</width>
-	  <height>16</height>
-	  <label>£±
-</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
@@ -3411,40 +3284,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label537</name>
-	  <x>335</x>
-	  <y>184</y>
-	  <width>15</width>
-	  <height>16</height>
-	  <label>£¥
-</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label538</name>
-	  <x>335</x>
-	  <y>212</y>
-	  <width>15</width>
-	  <height>16</height>
-	  <label>£µ
-</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label500</name>
 	  <x>250</x>
 	  <y>340</y>
@@ -3457,15 +3296,6 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkVSeparator</class>
-	  <name>vseparator1</name>
-	  <x>328</x>
-	  <y>70</y>
-	  <width>0</width>
-	  <height>170</height>
 	</widget>
 
 	<widget>
@@ -3580,6 +3410,223 @@
 	  <y>277</y>
 	  <width>987</width>
 	  <height>16</height>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label533</name>
+	  <x>170</x>
+	  <y>76</y>
+	  <width>72</width>
+	  <height>18</height>
+	  <label> ›∏±§ŒºÔŒ‡</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label463</name>
+	  <x>675</x>
+	  <y>76</y>
+	  <width>30</width>
+	  <height>16</height>
+	  <label>»÷πÊ</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label475</name>
+	  <x>385</x>
+	  <y>76</y>
+	  <width>36</width>
+	  <height>18</height>
+	  <label>µ≠πÊ</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label534</name>
+	  <x>365</x>
+	  <y>100</y>
+	  <width>15</width>
+	  <height>16</height>
+	  <label>£±
+</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label535</name>
+	  <x>365</x>
+	  <y>128</y>
+	  <width>15</width>
+	  <height>16</height>
+	  <label>£≤
+</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label536</name>
+	  <x>365</x>
+	  <y>156</y>
+	  <width>15</width>
+	  <height>16</height>
+	  <label>£≥
+</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label537</name>
+	  <x>365</x>
+	  <y>184</y>
+	  <width>15</width>
+	  <height>16</height>
+	  <label>£¥
+</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label538</name>
+	  <x>365</x>
+	  <y>212</y>
+	  <width>15</width>
+	  <height>16</height>
+	  <label>£µ
+</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator6</name>
+	  <x>358</x>
+	  <y>240</y>
+	  <width>602</width>
+	  <height>0</height>
+	</widget>
+
+	<widget>
+	  <class>GtkVSeparator</class>
+	  <name>vseparator1</name>
+	  <x>358</x>
+	  <y>70</y>
+	  <width>0</width>
+	  <height>170</height>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label462</name>
+	  <x>56</x>
+	  <y>316</y>
+	  <width>72</width>
+	  <height>18</height>
+	  <label>∏¯»Ò§ŒºÔŒ‡</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkRadioButton</class>
+	  <name>RDKOHNUM_AND</name>
+	  <x>135</x>
+	  <y>316</y>
+	  <width>50</width>
+	  <height>18</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>button_toggled</handler>
+	    <last_modification_time>Tue, 14 May 2002 02:29:44 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>send_event</handler>
+	    <data>CLICKED</data>
+	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
+	  </signal>
+	  <label>AND</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <group>KOHNUM</group>
+	</widget>
+
+	<widget>
+	  <class>GtkRadioButton</class>
+	  <name>RDKOHNUM_OR</name>
+	  <x>190</x>
+	  <y>316</y>
+	  <width>50</width>
+	  <height>18</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>button_toggled</handler>
+	    <last_modification_time>Tue, 14 May 2002 02:29:44 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>send_event</handler>
+	    <data>CLICKED</data>
+	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
+	  </signal>
+	  <label>OR</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <group>KOHNUM</group>
 	</widget>
       </widget>
 
@@ -4891,6 +4938,106 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkRadioButton</class>
+	  <name>RDBYOMEI_AND</name>
+	  <x>260</x>
+	  <y>76</y>
+	  <width>52</width>
+	  <height>20</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>button_toggled</handler>
+	    <last_modification_time>Tue, 14 May 2002 02:29:44 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>send_event</handler>
+	    <data>CLICKED</data>
+	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
+	  </signal>
+	  <label>AND</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <group>BYOMEI2</group>
+	</widget>
+
+	<widget>
+	  <class>GtkRadioButton</class>
+	  <name>RDBYOMEI_OR</name>
+	  <x>320</x>
+	  <y>76</y>
+	  <width>52</width>
+	  <height>20</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>button_toggled</handler>
+	    <last_modification_time>Tue, 14 May 2002 02:29:44 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>send_event</handler>
+	    <data>CLICKED</data>
+	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
+	  </signal>
+	  <label>OR</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <group>BYOMEI2</group>
+	</widget>
+
+	<widget>
+	  <class>GtkRadioButton</class>
+	  <name>RDSRYACT_AND</name>
+	  <x>260</x>
+	  <y>372</y>
+	  <width>52</width>
+	  <height>20</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>button_toggled</handler>
+	    <last_modification_time>Tue, 14 May 2002 02:29:44 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>send_event</handler>
+	    <data>CLICKED</data>
+	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
+	  </signal>
+	  <label>AND</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <group>SRYACT</group>
+	</widget>
+
+	<widget>
+	  <class>GtkRadioButton</class>
+	  <name>RDSRYACT_OR</name>
+	  <x>320</x>
+	  <y>372</y>
+	  <width>52</width>
+	  <height>20</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>button_toggled</handler>
+	    <last_modification_time>Tue, 14 May 2002 02:29:44 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>send_event</handler>
+	    <data>CLICKED</data>
+	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
+	  </signal>
+	  <label>OR</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <group>SRYACT</group>
 	</widget>
       </widget>
 

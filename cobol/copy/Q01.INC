@@ -65,6 +65,8 @@
                       08  Q01-CMB-KOHNUM-ITEM  PIC X(20)   OCCURS 150.
                   06  Q01-FTNJANUM-TBL.
                     07  Q01-FTNJANUM           PIC X(8)    OCCURS 5.
+                  06  Q01-RDKOHNUM-AND         PIC X.
+                  06  Q01-RDKOHNUM-OR          PIC X.
                 05  Q01-FIXED18.
                   06  Q01-CMB-BYOBUN.
                     07  Q01-BYOBUN             PIC X(24).
@@ -106,6 +108,10 @@
                         09  Q01-SRYLST-SRYACT  PIC X(80).
                       08  Q01-SRYLST-SELECT-TBL.
                         09  Q01-SRYLST-SELECT  PIC X   OCCURS  200.
+                  06  Q01-RDBYOMEI-AND         PIC X.
+                  06  Q01-RDBYOMEI-OR          PIC X.
+                  06  Q01-RDSRYACT-AND         PIC X.
+                  06  Q01-RDSRYACT-OR          PIC X.
                 05  Q01-FIXED19.
                   06  Q01-CMB-KMK-TBL.
                     07  Q01-CMB-KMK-OCC    OCCURS  3.

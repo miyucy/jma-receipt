@@ -110,12 +110,6 @@
            03  IDX2                                PIC 9(05).
            03  IDX3                                PIC 9(05).
            03  IDX-LEN                             PIC 9(05).
-           03  IDX-KMK1                            PIC 9(05).
-           03  IDX-KMK2                            PIC 9(05).
-           03  IDX-KMK3                            PIC 9(05).
-           03  IDX-SRT1                            PIC 9(05).
-           03  IDX-SRT2                            PIC 9(05).
-           03  IDX-SRT3                            PIC 9(05).
            03  IDX-GMN                             PIC 9(05).
       *
       *    カウント領域
@@ -128,21 +122,11 @@
            03  WRK-STR                             PIC X(20000).
            03  WRK-STR-LEN                         PIC 9(05).
            03  WRK-STR-PNT                         PIC 9(05).
-           03  WRK-KIGO-LEN                        PIC 9(05).
-           03  WRK-NUM-LEN                         PIC 9(05).
            03  WRK-PTINF-ADR-LEN                   PIC 9(05).
            03  WRK-PTINF-BANTI-LEN                 PIC 9(05).
-           03  WRK-SQL-TBL-NAME                    PIC X(30).
            03  WRK-SQL-PNT                         PIC 9(05).
            03  WRK-SQL                             PIC X(20000).
            03  WRK-SQL-COUNT                       PIC X(20000).
-           03  WRK-STK-PTID                        PIC 9(10).
-           03  WRK-STSRYYMD                        PIC X(08).
-           03  WRK-EDSRYYMD                        PIC X(08).
-           03  WRK-STBIRTHDAY                      PIC X(08).
-           03  WRK-EDBIRTHDAY                      PIC X(08).
-           03  WRK-STLASTYMD                       PIC X(08).
-           03  WRK-EDLASTYMD                       PIC X(08).
            03  WRK-EDPTNUM                         PIC X(20).
            03  WRK-ZZZZ9                           PIC ZZZZ9.
            03  WRK-TOTAL                           PIC ZZZ,ZZZ,ZZ9.
@@ -219,22 +203,6 @@
       *
       *    固定値領域
        01  CONST-AREA.
-           03  CONST-PTINF-MAX     PIC  9(05)  VALUE 50.
-           03  CONST-KMK-ITEM-AREA.
-               05  FILLER          PIC  X(10)  VALUE "ptnum".
-               05  FILLER          PIC  X(10)  VALUE "kananame".
-               05  FILLER          PIC  X(10)  VALUE "sex".
-               05  FILLER          PIC  X(10)  VALUE "birthday".
-               05  FILLER          PIC  X(10)  VALUE "home_adrs".
-           03  CONST-KMK-ITEM-R    REDEFINES   CONST-KMK-ITEM-AREA.
-               05  CONST-KMK-ITEM  PIC  X(10)  OCCURS  5.
-      *
-           03  CONST-ORDER-AREA.
-               05  FILLER          PIC  X(5)   VALUE "asc".
-               05  FILLER          PIC  X(5)   VALUE "desc".
-           03  CONST-ORDER-R       REDEFINES   CONST-ORDER-AREA.
-               05  CONST-ORDER     PIC  X(5)   OCCURS  2.
-      *
            03  CONST-JYOKENMEI-AREA.
                05  FILLER          PIC X(10)   VALUE   "基本情報".
                05  FILLER          PIC X(10)   VALUE   "保険".
@@ -263,16 +231,12 @@
        01  QUERY-PTINF-CNT-REC.
            COPY    "CPQPTINF-CNT.INC".
       *
-      *----(01.00.01) LINE ADD START ----------------------------------
       *    シェルテーブル
            COPY    "CPSHELLTBL.INC".
-      *----(01.00.01) LINE ADD END   ----------------------------------
       *
-      *----(01.00.02) LINE ADD START ----------------------------------
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -291,16 +255,17 @@
       *    照会用ＳＰＡ領域退避サブ
            COPY    "CPQSUB01.INC".
       *
+      *    ＳＱＬ組み立てサブ
+           COPY    "CPQSUB02.INC".
+      *
       *    患者一覧印刷パラメタ
            COPY    "CPORCHC28.INC".
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *----(01.00.02) LINE ADD START ----------------------------------
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *
       *    フィアルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -317,14 +282,10 @@
        01  SCRAREA.
            COPY    "Q01.INC".
            COPY    "Q02.INC".
-      *----(01.00.02) LINE ADD START ----------------------------------
            COPY    "Q97.INC".
-      *----(01.00.02) LINE ADD END   ----------------------------------
            COPY    "Q98.INC".
            COPY    "Q99.INC".
-      *----(01.00.02) LINE ADD START ----------------------------------
            COPY    "Q100.INC".
-      *----(01.00.02) LINE ADD END   ----------------------------------
            COPY    "QERR.INC".
            COPY    "QID1.INC".
       *
@@ -339,12 +300,10 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-      *----(01.00.02) LINE ADD START ----------------------------------
            INITIALIZE                  FLG-AREA
                                        IDX-AREA
                                        CNT-AREA
                                        WRK-AREA
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-Q01FREE
@@ -391,11 +350,9 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
-      *----(01.00.02) LINE ADD START ----------------------------------
                IF    ( FLG-END         =   1 )
                    GO  TO  100-INIT-EXT
                END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
       **** 暫定 ****
                IF  ( SPA-ERRCD                 =   "0001" )
       *            MOVE    "条件に該当する患者は存在しませんでした"
@@ -440,7 +397,6 @@
            END-IF
       *
            EVALUATE    SPA-MOTOPG
-      *----(01.00.02) LINE ADD START ----------------------------------
       *    処理確認画面
            WHEN    "Q97"
                GO  TO      300-SCREEN-EXT
@@ -448,18 +404,15 @@
            WHEN    "Q100"
                PERFORM 3001-Q100SPASET-SEC
                GO  TO      300-SCREEN-EXT
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *    確認メッセージ画面
            WHEN    "QID1"
                PERFORM 3001-QID1SPASET-SEC
                GO  TO      300-SCREEN-EXT
-      *----(01.00.02) LINE ADD START ----------------------------------
       *    情報削除画面
            WHEN    "XB01"
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                MOVE    LNK-SCRSPA          TO  SPA-Q01FREE
                GO  TO      300-SCREEN-EXT
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *    予約登録
            WHEN    "Y01"
       *    受付一覧
@@ -480,12 +433,7 @@
                GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
-      *----(01.00.01) LINE DEL START ----------------------------------
-      *    MOVE    SPACE               TO  SPA-QIDCD
-      *----(01.00.01) LINE DEL END   ----------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
            MOVE    SPACE               TO  SPA-Q00-QID-AREA
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *
            PERFORM 310-SPASET-SEC
       *
@@ -493,7 +441,6 @@
        300-SCREEN-EXT.
            EXIT.
       *
-      *----(01.00.02) LINE ADD START ----------------------------------
       *****************************************************************
       *    ＱＩＤ１戻りスパ編集処理
       *****************************************************************
@@ -557,12 +504,13 @@
                MOVE    SPA-Q01-KJYNYMD TO  BQ01-KJYNYMD
            END-IF
       *
-           INITIALIZE                  WRK-SQL
-           MOVE    1               TO  WRK-SQL-PNT
-           MOVE    ZERO            TO  FLG-JYOKEN-AND
-                                       FLG-JYOKEN
-           PERFORM 3101-SQL-EDIT-SEC
-           MOVE    WRK-SQL             TO  BQ01-SQL
+      *     PERFORM 3101-SQL-EDIT-SEC
+           CALL    "ORCGQSUB02"    USING
+                                   SPA-AREA
+                                   SPA-Q01FREE
+                                   QSUB02-LNK
+      *
+           MOVE    QSUB02-SQL      TO  BQ01-SQL
       *
            WRITE   BQ01
       *
@@ -605,135 +553,6 @@
        3001-Q100SPASET-EXT.
            EXIT.
       *
-      *----(01.00.02) LINE ADD END   ----------------------------------
-      *----(01.00.02) LINE DEL START ----------------------------------
-      *****************************************************************
-      *    ＱＩＤ１戻りスパ編集処理
-      *****************************************************************
-      *3001-QID1SPASET-SEC             SECTION.
-      *
-      *----(01.00.01) LINE DEL START ----------------------------------
-      *    EVALUATE    SPA-QIDCD
-      *    帳票印刷確認
-      *    WHEN    "2001"
-      *        PERFORM 30011-PRINT-KAKUNIN-SEC
-      *
-      *    END-EVALUATE
-      *
-      *    MOVE    SPACE               TO  SPA-QIDCD
-      *----(01.00.01) LINE DEL END   ----------------------------------
-      *---- (01.00.01) LINE ADD START ---------------------------------
-      *    IF  ( SPA-QID1-RTOK-FLG =   ZERO )
-      *        GO  TO  310-QID1SPASET-EXT
-      *    END-IF
-      *
-      *    MOVE    SPA-TERMID          TO  PRFNAME-TERMID
-      *    MOVE    SPA-SYSYMD          TO  PRFNAME-SYSYMD
-      *    ACCEPT  PRFNAME-SYSTIME     FROM    TIME
-      *
-      *    OPEN    OUTPUT              BQ01-FILE
-      *
-      *    INITIALIZE                  BQ01
-      *
-      *    MOVE    SPA-QID1-PROC-FLG   TO  BQ01-PROC-FLG
-      *    MOVE    SPA-QID1-FILENAME   TO  BQ01-CSVFILENAME
-      *    MOVE    SPA-GMN-Q02-HYODAI  TO  BQ01-HYODAI
-      *    MOVE    SPA-GMN-Q02-JYOKEN1 TO  BQ01-JYOKEN1
-      *    MOVE    SPA-GMN-Q02-JYOKEN2 TO  BQ01-JYOKEN2
-      *    MOVE    SPA-QID1-STPAGE     TO  BQ01-STPAGE
-      *    MOVE    SPA-QID1-EDPAGE     TO  BQ01-EDPAGE
-      *    MOVE    SPA-QID1-STKNS      TO  BQ01-STKNS
-      *    MOVE    SPA-QID1-EDKNS      TO  BQ01-EDKNS
-      *
-      *    INITIALIZE                  WRK-SQL
-      *    MOVE    1               TO  WRK-SQL-PNT
-      *    MOVE    ZERO            TO  FLG-JYOKEN-AND
-      *                                FLG-JYOKEN
-      *    PERFORM 3101-SQL-EDIT-SEC
-      *    MOVE    WRK-SQL             TO  BQ01-SQL
-      *
-      *    WRITE   BQ01
-      *
-      *    CLOSE   BQ01-FILE
-      *
-      *    印刷用スクリプト処理
-      *    MOVE    CONST-SHELNAME  TO  SHELLTBL-NAME
-      *    MOVE    SPA-QID1-PROC-FLG
-      *                            TO  SHELLTBL-ARG1
-      *    MOVE    SPA-QID1-FILENAME
-      *                            TO  SHELLTBL-ARG2
-      *    MOVE    PRFNAME         TO  SHELLTBL-ARG3
-      *    MOVE    PRFNAME-TERMID  TO  SHELLTBL-ARG4
-      *    MOVE    PRFNAME-SYSYMD  TO  SHELLTBL-ARG5
-      *    MOVE    PRFNAME-SYSTIME TO  SHELLTBL-ARG6
-      *
-      *    MOVE    SHELLTBL        TO  MCPDATA-REC
-      *    MOVE    "SHELL"         TO  MCP-FUNC
-      *    MOVE    PATH-SHELL-SHELL
-      *                            TO  MCP-PATH
-      *    CALL    "MCPSUB"        USING
-      *                            MCPAREA
-      *                            MCPDATA-REC
-      *
-      *---- (01.00.01) LINE ADD END   ---------------------------------
-      *
-      *----(01.00.01) LINE DEL START ----------------------------------
-      *    カーソルキー制御項目
-      *    MOVE   1                TO  SPA-GMN-Q02-CUR
-      *----(01.00.01) LINE DEL END   ----------------------------------
-      *
-      *    .
-      *310-QID1SPASET-EXT.
-      *    EXIT.
-      *
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *----(01.00.01) LINE DEL START ----------------------------------
-      *****************************************************************
-      *    印刷確認戻りスパ編集処理
-      *****************************************************************
-      *30011-PRINT-KAKUNIN-SEC         SECTION.
-      *
-      *    IF  ( SPA-QID1-FLG  NOT =   "OK" )
-      *        GO  TO  30011-PRINT-KAKUNIN-EXT
-      *    END-IF
-      *
-      *    帳票編集サブ呼出
-      *    INITIALIZE  ORCHC28AREA
-      *
-      *    MOVE    SPA-GMN-Q02-HYODAI
-      *                            TO  ORCHC28-HYODAI
-      *    MOVE    SPA-GMN-Q02-JYOKEN1
-      *                            TO  ORCHC28-JYOKEN1
-      *    MOVE    SPA-GMN-Q02-JYOKEN2
-      *                            TO  ORCHC28-JYOKEN2
-      *
-      *    IF  ( SPA-GMN-Q02-TOTAL =   SPACE )
-      *        MOVE    ZERO
-      *                            TO  ORCHC28-PTID-COUNT
-      *    ELSE
-      *        MOVE    SPA-GMN-Q02-KEKKA-MAX
-      *                            TO  ORCHC28-PTID-COUNT
-      *    END-IF
-      *
-      *    PERFORM VARYING IDX1    FROM    1   BY  1
-      *        UNTIL     ( IDX1    >   SPA-GMN-Q02-KEKKA-MAX )
-      *
-      *        MOVE    SPA-GMN-Q02-KEKKALST-NO (IDX1)
-      *                            TO  ORCHC28-PTID-SEQ (IDX1)
-      *
-      *        MOVE    SPA-GMN-Q02-PTINF-PTID (IDX1)
-      *                            TO  ORCHC28-PTID (IDX1)
-      *
-      *    END-PERFORM
-      *
-      *    CALL    "ORCHC28"       USING   SPA-AREA
-      *                                    ORCHC28AREA
-      *    .
-      *
-      *30011-PRINT-KAKUNIN-EXT.
-      *    EXIT.
-      *
-      *----(01.00.01) LINE DEL END   ----------------------------------
       *****************************************************************
       *    スパ初期編集処理
       *****************************************************************
@@ -744,9 +563,7 @@
       *
            INITIALIZE                  SPA-Q02
       *
-      *----(01.00.01) LINE ADD START ----------------------------------
            MOVE    ZERO            TO  SPA-GMN-Q02-TOTAL-GET-FLG
-      *----(01.00.01) LINE ADD END   ----------------------------------
       *    画面編集処理
            PERFORM 310-Q02-GMN-EDIT-SEC
       *
@@ -762,10 +579,6 @@
       *****************************************************************
        310-Q02-GMN-EDIT-SEC            SECTION.
       *
-           INITIALIZE                  WRK-SQL
-           MOVE    1               TO  WRK-SQL-PNT
-           MOVE    ZERO            TO  FLG-JYOKEN-AND
-                                       FLG-JYOKEN
       *
            MOVE    SPACE           TO  SPA-GMN-Q02-KEKKATBL
                                        SPA-GMN-Q02-PTINF-AREA
@@ -776,26 +589,16 @@
       *    画面条件編集処理
            PERFORM 3101-JYOKEN-EDIT-SEC
       *
-      *----(01.00.01) LINE DEL START ----------------------------------
-      *    IF      ( SPA-Q01-EDSRYYMD  =   ZERO )
-      *        MOVE    ALL "9"     TO  WRK-EDSRYYMD
-      *    ELSE
-      *        MOVE    SPA-Q01-EDSRYYMD
-      *                            TO  WRK-EDSRYYMD
-      *    END-IF
-      *
-      *    IF      ( SPA-Q01-EDBIRTHDAY
-      *                                =   ZERO )
-      *        MOVE    ALL "9"     TO  WRK-EDBIRTHDAY
-      *    ELSE
-      *        MOVE    SPA-Q01-EDBIRTHDAY
-      *                            TO  WRK-EDBIRTHDAY
-      *    END-IF
-      *----(01.00.01) LINE DEL END   ----------------------------------
       *
       *    ＳＱＬ文編集処理
-           PERFORM 3101-SQL-EDIT-SEC
+      *    PERFORM 3101-SQL-EDIT-SEC
+           CALL    "ORCGQSUB02"    USING
+                                   SPA-AREA
+                                   SPA-Q01FREE
+                                   QSUB02-LNK
       *
+           MOVE    QSUB02-SQL      TO  WRK-SQL
+           MOVE    QSUB02-SQL-CNT  TO  WRK-SQL-COUNT
       *
            DISPLAY "WRK-SQL  = " WRK-SQL
       *+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -845,13 +648,11 @@
                MOVE    WRK-NUM     TO  WRK-ZZZZ9
                MOVE    WRK-ZZZZ9   TO  SPA-GMN-Q02-KEKKALST-NO
                                                            (IDX-GMN)
-      *---- (01.00.01) LINE ADD START --------------------------------
       *
       *        患者番号
                MOVE    QUERY-PTINF-PTNUM 
                                    TO  SPA-GMN-Q02-KEKKALST-PTNUM
                                                            (IDX-GMN)
-      *---- (01.00.01) LINE ADD END ----------------------------------
       *
       *        氏名
                MOVE    QUERY-PTINF-NAME
@@ -881,7 +682,6 @@
                                TO  SPA-GMN-Q02-KEKKALST-BIRTH (IDX-GMN)
                END-IF
       *
-      *---- (01.00.02) LINE ADD START --------------------------------
       *        年齢
                IF  (   SPA-Q01-AGE-CALC-KBN    =   ZERO )
                    MOVE    SPA-SYSYMD      TO  WRK-KJYNYMD
@@ -916,7 +716,6 @@
                MOVE    WRK-AGE-G           TO  SPA-GMN-Q02-KEKKALST-AGE
                                                                (IDX-GMN)
       *
-      *---- (01.00.02) LINE ADD START --------------------------------
       *
       *        診療内容（住所を表示）
                MOVE    QUERY-PTINF-HOME-ADRS
@@ -982,18 +781,12 @@
            END-PERFORM
       *
       *    総件数編集
-      *----(01.00.01) LINE DEL START ----------------------------------
-      *    IF  ( SPA-GMN-Q02-SKIP-KNS  =   ZERO )
-      *----(01.00.01) LINE DEL END   ----------------------------------
-      *----(01.00.01) LINE ADD START ----------------------------------
            IF  ( SPA-GMN-Q02-TOTAL-GET-FLG =   ZERO )
                MOVE    1              TO   SPA-GMN-Q02-TOTAL-GET-FLG
-      *----(01.00.01) LINE ADD END   ----------------------------------
                PERFORM 3101-TOTAL-KNS-EDIT-SEC
            END-IF
       *
            MOVE   FLG-PTINF           TO  SPA-GMN-Q02-FLG-PTINF
-      *----(01.00.01) LINE ADD START ----------------------------------
       *    前頁ボタン活性編集
            IF  ( SPA-GMN-Q02-SKIP-KNS      >   0 )
                MOVE    WIDGET-NORMAL       TO  SPA-GMN-Q02-B06-STATE
@@ -1006,7 +799,6 @@
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  SPA-GMN-Q02-B07-STATE
            END-IF
-      *----(01.00.01) LINE ADD END   ----------------------------------
       *
       *    患者マスタクローズ処理
            PERFORM 910-PTINF-CLOSE-SEC
@@ -1014,7 +806,6 @@
            .
        310-Q02-GMN-EDIT-EXT.
            EXIT.
-      *---- (01.00.02) LINE ADD START --------------------------------
       *****************************************************************
       *    年齢計算処理
       *****************************************************************
@@ -1039,7 +830,6 @@
       *
        3101-AGE-CALC-EXT.
            EXIT.
-      *---- (01.00.02) LINE ADD END   --------------------------------
       *****************************************************************
       *    条件編集処理
       *****************************************************************
@@ -1107,9 +897,7 @@
            IF      ( FLG-PTINF         =   "1" )
                COMPUTE WRK-NUM =   IDX-GMN     -   1
                MOVE    WRK-NUM         TO  WRK-TOTAL
-      *----(01.00.01) LINE ADD START ----------------------------------
                                            SPA-GMN-Q02-TOTAL-NUM
-      *----(01.00.01) LINE ADD END   ----------------------------------
            ELSE
       *        検索結果件数を取得
       *        INITIALIZE                  MCPAREA
@@ -1127,9 +915,7 @@
                MOVE    MCPDATA-REC     TO  QUERY-PTINF-CNT-REC
                MOVE    QUERY-PTINF-CNT-TOTAL
                                        TO  WRK-TOTAL
-      *----(01.00.01) LINE ADD START ----------------------------------
                                            SPA-GMN-Q02-TOTAL-NUM
-      *----(01.00.01) LINE ADD END   ----------------------------------
            END-IF
       *
       *    左詰で編集を行う
@@ -1176,30 +962,18 @@
       *    次頁
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 210-TUGI-PAGE-SEC
-      *----(01.00.02) LINE ADD START ----------------------------------
       *    情報削除
                WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 480-JYOUHOU-DEL-SEC
-      *----(01.00.02) LINE ADD END   ----------------------------------
-      *----(01.00.01) LINE ADD START ----------------------------------
       *    ＣＳＶ確認
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 480-CSV-KAKUNIN-SEC
-      *----(01.00.01) LINE ADD END   ----------------------------------
       *    印刷確認
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 480-PRINT-KAKUNIN-SEC
-      *----(01.00.02) LINE ADD START ----------------------------------
       *    処理確認画面
                WHEN    "CLICKED"       ALSO    "B24"
                    PERFORM 490-KAKUNIN-SEC
-      *----(01.00.02) LINE ADD END   ----------------------------------
-      *    予約登録へ
-      * xx     WHEN    "CLICKED"       ALSO    "B10"
-      * xx         PERFORM 480-YOYAKU-SEC
-      *    受付一覧へ
-      * xx     WHEN    "CLICKED"       ALSO    "B11"
-      * xx         PERFORM 490-UKEICHI-SEC
            END-EVALUATE
       *
            .
@@ -1293,1335 +1067,6 @@
       *
            .
        4101-GMN-SPA-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＳＱＬ文編集処理
-      *****************************************************************
-       3101-SQL-EDIT-SEC               SECTION.
-      *
-      *----(01.00.01) LINE ADD START ----------------------------------
-           IF      ( SPA-Q01-STSRYYMD  =   SPACE )
-               MOVE    ALL "0"     TO  WRK-STSRYYMD
-           ELSE
-               MOVE    SPA-Q01-STSRYYMD
-                                   TO  WRK-STSRYYMD
-           END-IF
-      *
-           IF      ( SPA-Q01-EDSRYYMD  =   SPACE )
-               MOVE    ALL "9"     TO  WRK-EDSRYYMD
-           ELSE
-               MOVE    SPA-Q01-EDSRYYMD
-                                   TO  WRK-EDSRYYMD
-           END-IF
-      *
-           IF      ( SPA-Q01-STBIRTHDAY
-                                       =   SPACE )
-               MOVE    ALL "0"     TO  WRK-STBIRTHDAY
-           ELSE
-               MOVE    SPA-Q01-STBIRTHDAY
-                                   TO  WRK-STBIRTHDAY
-           END-IF
-      *
-           IF      ( SPA-Q01-EDBIRTHDAY
-                                       =   SPACE )
-               MOVE    ALL "9"     TO  WRK-EDBIRTHDAY
-           ELSE
-               MOVE    SPA-Q01-EDBIRTHDAY
-                                   TO  WRK-EDBIRTHDAY
-           END-IF
-      *
-           IF      ( SPA-Q01-STLASTYMD =   SPACE )
-               MOVE    ALL "0"     TO  WRK-STLASTYMD
-           ELSE
-               MOVE    SPA-Q01-STLASTYMD
-                                   TO  WRK-STLASTYMD
-           END-IF
-      *
-           IF      ( SPA-Q01-EDLASTYMD =   SPACE )
-               MOVE    ALL "9"     TO  WRK-EDLASTYMD
-           ELSE
-               MOVE    SPA-Q01-EDLASTYMD
-                                   TO  WRK-EDLASTYMD
-           END-IF
-      *
-           IF      ( SPA-Q01-EDPTNUM   =   SPACE )
-               MOVE    ALL "Z"     TO  WRK-EDPTNUM
-           ELSE
-               MOVE    SPA-Q01-EDPTNUM
-                                   TO  WRK-EDPTNUM
-           END-IF
-      *----(01.00.01) LINE ADD END   ----------------------------------
-      *
-      *    最終受診日
-           IF  ( SPA-Q01-GTBL (3)  =   "1" )
-               STRING  ",tbl_srykarrk b"       DELIMITED  BY  SIZE
-               INTO    WRK-SQL
-               WITH    POINTER WRK-SQL-PNT
-               END-STRING
-           END-IF
-      *
-      *    病名コード
-           IF  ( SPA-Q01-GTBL (4)  =   "1" )
-               STRING  ",tbl_ptbyomei c"       DELIMITED  BY  SIZE
-               INTO    WRK-SQL
-               WITH    POINTER WRK-SQL-PNT
-               END-STRING
-           END-IF
-      *
-      *----(01.00.02) LINE ADD START ----------------------------------
-      *    保険記号・番号
-      *    IF   ( SPA-Q01-GTBL (5)  =   "1" )
-      *        STRING  ",tbl_pthkninf d"       DELIMITED  BY  SIZE
-      *        INTO    WRK-SQL
-      *        WITH    POINTER WRK-SQL-PNT
-      *        END-STRING
-      *    END-IF
-      *
-      *    公費保険記号番号・負担者番号
-      *    IF   ( SPA-Q01-GTBL (6)  =   "1" )
-      *        STRING  ",tbl_ptkohinf e"       DELIMITED  BY  SIZE
-      *        INTO    WRK-SQL
-      *        WITH    POINTER WRK-SQL-PNT
-      *        END-STRING
-      *    END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
-           IF      ((  SPA-Q01-GTBL (5)    =   "1" )
-                OR  (  SPA-Q01-GTBL (6)    =   "1" ))
-            AND    (   SPA-Q01-GTBL (8)    =   "1" )
-               STRING  ",view_Q001 i"          DELIMITED  BY  SIZE
-               INTO    WRK-SQL
-               WITH    POINTER WRK-SQL-PNT
-               END-STRING
-           ELSE
-      *        保険記号・番号
-               IF   ( SPA-Q01-GTBL (5)  =   "1" )
-                   STRING  ",tbl_pthkninf d"   DELIMITED  BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
-               END-IF
-      *
-      *        公費保険記号番号・負担者番号
-               IF   ( SPA-Q01-GTBL (6)  =   "1" )
-                   STRING  ",tbl_ptkohinf e"   DELIMITED  BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
-               END-IF
-           END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
-      *
-      *    診察年月日
-           IF   ( SPA-Q01-GTBL (8)  =   "1" )
-      *----(01.00.02) LINE DEL START ----------------------------------
-      *        STRING  ",tbl_jyurrk f"         DELIMITED  BY  SIZE
-      *        INTO    WRK-SQL
-      *        WITH    POINTER WRK-SQL-PNT
-      *        END-STRING
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
-               IF    ( SPA-Q01-GTBL (4)  =   "1" )
-                OR   ( SPA-Q01-GTBL (5)  =   "1" )
-                OR   ( SPA-Q01-GTBL (6)  =   "1" )
-                OR   ( SPA-Q01-GTBL (9)  =   "1" )
-                   CONTINUE
-               ELSE
-                   STRING  ",tbl_jyurrk f"         DELIMITED  BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
-               END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
-           END-IF
-      *
-      *    診療行為コード
-           IF   ( SPA-Q01-GTBL (9)  =   "1" )
-               STRING  ",tbl_sryact g"         DELIMITED  BY  SIZE
-               INTO    WRK-SQL
-               WITH    POINTER WRK-SQL-PNT
-               END-STRING
-           END-IF
-      *
-           STRING  " where a.hospid='"         DELIMITED  BY   SIZE
-                   SPA-HOSPID                   DELIMITED  BY  SIZE
-                   "' and "                     DELIMITED  BY  SIZE
-           INTO    WRK-SQL
-           WITH    POINTER WRK-SQL-PNT
-           END-STRING
-      *
-      *----(01.00.01) LINE DEL START ----------------------------------
-      *    患者番号
-      *    IF  ( SPA-Q01-GTBL (1)  =   "1" )
-      *        MOVE    ZERO            TO  FLG-JYOKEN-AND
-      *        PERFORM     3101-PTINF-SQL-EDIT1-SEC
-      *        MOVE    1               TO  FLG-JYOKEN
-      *    END-IF
-      *----(01.00.01) LINE DEL END   ----------------------------------
-      *
-      *    カナ氏名・漢字氏名
-           IF  ( SPA-Q01-GTBL (2)  =   "1" )
-               MOVE    FLG-JYOKEN      TO  FLG-JYOKEN-AND
-               PERFORM     3101-PTINF-SQL-EDIT2-SEC
-               MOVE    1               TO  FLG-JYOKEN
-           END-IF
-      *
-      *    最終受診日
-           IF  ( SPA-Q01-GTBL (3)  =   "1" )
-               MOVE    ZERO            TO  FLG-JYOKEN-AND
-               PERFORM     3101-SRYKARRK-SQL-EDIT-SEC
-               MOVE    1               TO  FLG-JYOKEN
-           END-IF
-      *
-      *    病名コード
-           IF  ( SPA-Q01-GTBL (4)  =   "1" )
-               MOVE    ZERO            TO  FLG-JYOKEN-AND
-               PERFORM     3101-PTBYOMEI-SQL-EDIT-SEC
-               MOVE    1               TO  FLG-JYOKEN
-           END-IF
-      *
-      *    保険記号・番号
-           IF   ( SPA-Q01-GTBL (5)  =   "1" )
-      *----(01.00.02) LINE ADD START ----------------------------------
-               IF    ( SPA-Q01-GTBL (8)    =   "1" )
-                   MOVE    "1"         TO  FLG-HKNKOHSEL
-               ELSE
-                   MOVE    ZERO        TO  FLG-HKNKOHSEL
-               END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
-               MOVE    ZERO            TO  FLG-JYOKEN-AND
-               PERFORM     3101-PTHKNINF-SQL-EDIT-SEC
-               MOVE    1               TO  FLG-JYOKEN
-           END-IF
-      *
-      *    公費保険記号番号・負担者番号
-           IF   ( SPA-Q01-GTBL (6)  =   "1" )
-      *----(01.00.02) LINE ADD START ----------------------------------
-               IF    ( SPA-Q01-GTBL (8)    =   "1" )
-                   MOVE    "1"         TO  FLG-HKNKOHSEL
-               ELSE
-                   MOVE    ZERO        TO  FLG-HKNKOHSEL
-               END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
-               MOVE    ZERO            TO  FLG-JYOKEN-AND
-               PERFORM     3101-PTKOHINF-SQL-EDIT-SEC
-               MOVE    1               TO  FLG-JYOKEN
-           END-IF
-      *
-      *    生年月日・性別・住所・コメント
-           IF   ( SPA-Q01-GTBL (7)  =   "1" )
-               MOVE    FLG-JYOKEN      TO  FLG-JYOKEN-AND
-               PERFORM     3101-PTINF-SQL-EDIT3-SEC
-               MOVE    1               TO  FLG-JYOKEN
-           END-IF
-      *
-      *----(01.00.02) LINE DEL START ----------------------------------
-      *    テスト患者区分
-           IF    ( SPA-Q01-CHKTSTPT    =   "F" )
-               MOVE    FLG-JYOKEN      TO  FLG-JYOKEN-AND
-               PERFORM     3101-PTINF-SQL-EDIT4-SEC
-               MOVE    1               TO  FLG-JYOKEN
-           END-IF
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *
-      *    診察年月日
-           IF   ( SPA-Q01-GTBL (8)  =   "1" )
-      *----(01.00.02) LINE DEL START ----------------------------------
-      *        MOVE    ZERO            TO  FLG-JYOKEN-AND
-      *        PERFORM     3101-JYURRK-SQL-EDIT-SEC
-      *        MOVE    1               TO  FLG-JYOKEN
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
-               IF    ( SPA-Q01-GTBL (4)  =   "1" )
-                OR   ( SPA-Q01-GTBL (5)  =   "1" )
-                OR   ( SPA-Q01-GTBL (6)  =   "1" )
-                OR   ( SPA-Q01-GTBL (9)  =   "1" )
-                   CONTINUE
-               ELSE
-                   MOVE    ZERO            TO  FLG-JYOKEN-AND
-                   PERFORM     3101-JYURRK-SQL-EDIT-SEC
-                   MOVE    1               TO  FLG-JYOKEN
-               END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
-           END-IF
-      *
-      *    診療行為コード
-           IF   ( SPA-Q01-GTBL (9)  =   "1" )
-               MOVE    ZERO            TO  FLG-JYOKEN-AND
-               PERFORM     3101-SRYACT-SQL-EDIT-SEC
-               MOVE    1               TO  FLG-JYOKEN
-           END-IF
-      *
-      *----(01.00.01) LINE ADD START ----------------------------------
-      *    患者番号
-           MOVE    ZERO            TO  FLG-JYOKEN-AND
-           PERFORM 3101-PTNUM-SQL-EDIT-SEC
-           MOVE    1               TO  FLG-JYOKEN
-      *----(01.00.01) LINE ADD END   ----------------------------------
-      *    総件数取得用にＳＱＬ文を退避
-           MOVE    WRK-SQL         TO  WRK-SQL-COUNT
-      *
-      *    並べ替え順編集処理
-           PERFORM 3102-ORDER-EDIT-SEC
-      *
-           .
-       3101-SQL-EDIT-SEC-EXT.
-           EXIT.
-      *----(01.00.01) LINE DEL START ----------------------------------
-      *****************************************************************
-      *    患者マスタ検索条件編集処理１
-      *****************************************************************
-      *3101-PTINF-SQL-EDIT1-SEC        SECTION.
-      *
-      *    患者ＩＤ検索条件編集処理
-      *    PERFORM 3102-PTID-SELECT-EDIT-SEC
-      *
-      *    .
-      *3101-PTINF-SQL-EDIT1-EXT.
-      *    EXIT.
-      *----(01.00.01) LINE DEL END   ----------------------------------
-      *****************************************************************
-      *    患者マスタ検索条件編集処理２
-      *****************************************************************
-       3101-PTINF-SQL-EDIT2-SEC        SECTION.
-      *
-      *    カナ氏名検索条件編集処理
-           PERFORM 3102-KANANAME-SELECT-EDIT-SEC
-      *
-      *    漢字氏名検索条件編集処理
-           PERFORM 3102-NAME-SELECT-EDIT-SEC
-      *
-           .
-       3101-PTINF-SQL-EDIT2-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者マスタ検索条件編集処理３
-      *****************************************************************
-       3101-PTINF-SQL-EDIT3-SEC        SECTION.
-      *
-      *    生年月日検索条件編集処理
-           PERFORM 3102-BIRTH-SELECT-EDIT-SEC
-      *
-      *    性別検索条件編集処理
-           PERFORM 3102-SEX-SELECT-EDIT-SEC
-      *
-      *    住所検索条件編集処理
-           PERFORM 3102-HOME-ADRS-SELECT-EDIT-SEC
-      *
-      *    コメント検索条件編集処理
-           PERFORM 3102-COMMENT-SELECT-EDIT-SEC
-      *
-           .
-       3101-PTINF-SQL-EDIT3-EXT.
-           EXIT.
-      *----(01.00.02) LINE ADD START ----------------------------------
-      *****************************************************************
-      *    患者マスタ検索条件編集処理４
-      *****************************************************************
-       3101-PTINF-SQL-EDIT4-SEC        SECTION.
-      *
-          MOVE     1               TO  CNT-JYOKEN
-      *
-          PERFORM  900-SQL-JYOKEN-EDIT2-SEC
-      *
-          STRING   "(a.tstptnumkbn <> '1')"    DELIMITED   BY  SIZE
-          INTO     WRK-SQL
-          WITH     POINTER     WRK-SQL-PNT
-          END-STRING
-      *
-          PERFORM  900-SQL-JYOKEN-EDIT3-SEC
-           .
-       3101-PTINF-SQL-EDIT4-EXT.
-           EXIT.
-      *----(01.00.02) LINE ADD END   ----------------------------------
-      *****************************************************************
-      *    診療科履歴マスタ検索条件編集処理
-      *****************************************************************
-       3101-SRYKARRK-SQL-EDIT-SEC      SECTION.
-      *
-           MOVE    "b"             TO  WRK-SQL-TBL-NAME
-           PERFORM 900-SQL-JYOKEN-EDIT1-SEC
-      *
-      *    最終受診日検索条件編集
-      *----(01.00.01) LINE DEL START ----------------------------------
-      *    STRING  "(b.lastymd = '"            DELIMITED   BY  SIZE
-      *            SPA-Q01-LASTYMD             DELIMITED   BY  SIZE
-      *            "')"                        DELIMITED   BY  SIZE
-      *    INTO    WRK-SQL
-      *    WITH    POINTER     WRK-SQL-PNT
-      *    END-STRING
-      *----(01.00.01) LINE DEL END   ----------------------------------
-      *----(01.00.01) LINE ADD START ----------------------------------
-           STRING  "((b.lastymd >= '"          DELIMITED   BY  SIZE
-                   WRK-STLASTYMD               DELIMITED   BY  SIZE
-                   "') and "                   DELIMITED   BY  SIZE
-                   "(b.lastymd <= '"           DELIMITED   BY  SIZE
-                   WRK-EDLASTYMD               DELIMITED   BY  SIZE
-                   "'))"                       DELIMITED   BY  SIZE
-           INTO    WRK-SQL
-           WITH    POINTER     WRK-SQL-PNT
-           END-STRING
-      *----(01.00.01) LINE ADD END   ----------------------------------
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT4-SEC
-      *
-      *
-           .
-       3101-SRYKARRK-SQL-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者病名マスタ検索条件編集処理
-      *****************************************************************
-       3101-PTBYOMEI-SQL-EDIT-SEC          SECTION.
-      *
-           MOVE    "c"             TO  WRK-SQL-TBL-NAME
-           PERFORM 900-SQL-JYOKEN-EDIT1-SEC
-      *
-      *    STRING "((c.sryymd >= '"
-      *           WRK-STSRYYMD
-      *           "') and (c.sryymd <= '"
-      *           WRK-EDSRYYMD
-      *           "')) and"
-      *    DELIMITED   BY  SIZE
-      *    INTO        WRK-SQL
-      *    WITH POINTER WRK-SQL-PNT
-      *    END-STRING
-      *
-           STRING "(((c.sryymd <= '"
-                  WRK-EDSRYYMD
-                  "') and (c.tenkiymd >= '"
-                  WRK-STSRYYMD
-                  "')) or "
-                  "((c.sryymd <= '"
-                  WRK-EDSRYYMD
-                  "') and (c.tenkiymd = '        '"
-                  "))) and "
-           DELIMITED   BY  SIZE
-           INTO        WRK-SQL
-           WITH POINTER WRK-SQL-PNT
-           END-STRING
-      *
-           MOVE    ZERO    TO      CNT-JYOKEN
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL   (   IDX1    >   5 )
-      *
-      *----(01.00.02) LINE DEL START ----------------------------------
-      *        IF  ( SPA-Q01-BYOMEICD (IDX1)   NOT =   SPACE )
-      *            COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
-      *
-      *            PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-      *            IF  ( SPA-Q01-USERBYOMEIFLG (IDX1)  =   "1" )
-      *
-      *                自院病名コードの場合
-      *                STRING
-      *                    "(c.byomeiinputcd = '"  DELIMITED   BY  SIZE
-      *                    SPA-Q01-BYOMEICD (IDX1) DELIMITED   BY  SPACE
-      *                    "')"                    DELIMITED   BY  SIZE
-      *                INTO    WRK-SQL
-      *                WITH    POINTER WRK-SQL-PNT
-      *                END-STRING
-      *            ELSE
-      *
-      *                病名コードの場合
-      *                STRING
-      *                    "(c.byomeicd_1 = '"     DELIMITED   BY  SIZE
-      *                    SPA-Q01-BYOMEICD (IDX1) DELIMITED   BY  SPACE
-      *                    "') or"                 DELIMITED   BY  SIZE
-      *                    "(c.byomeicd_2 = '"     DELIMITED   BY  SIZE
-      *                    SPA-Q01-BYOMEICD (IDX1) DELIMITED   BY  SPACE
-      *                    "') or"                 DELIMITED   BY  SIZE
-      *                    "(c.byomeicd_3 = '"     DELIMITED   BY  SIZE
-      *                    SPA-Q01-BYOMEICD (IDX1) DELIMITED   BY  SPACE
-      *                    "') or"                 DELIMITED   BY  SIZE
-      *                    "(c.byomeicd_4 = '"     DELIMITED   BY  SIZE
-      *                    SPA-Q01-BYOMEICD (IDX1) DELIMITED   BY  SPACE
-      *                    "') or"                 DELIMITED   BY  SIZE
-      *                    "(c.byomeicd_5 = '"     DELIMITED   BY  SIZE
-      *                    SPA-Q01-BYOMEICD (IDX1) DELIMITED   BY  SPACE
-      *                    "') or"                 DELIMITED   BY  SIZE
-      *                    "(c.byomeicd_6 = '"     DELIMITED   BY  SIZE
-      *                    SPA-Q01-BYOMEICD (IDX1) DELIMITED   BY  SPACE
-      *                    "')"                    DELIMITED   BY  SIZE
-      *                INTO    WRK-SQL
-      *                WITH    POINTER WRK-SQL-PNT
-      *                END-STRING
-      *            END-IF
-      *        END-IF
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *----(01.00.02) LINE DEL START ----------------------------------
-               IF  ( SPA-Q01-BYOMEI (IDX1)   NOT =   SPACE )
-                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
-      *
-                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-      *            病名の項目長を求める
-                   MOVE    1               TO  WRK-STR-LEN
-                   MOVE    SPACE           TO  WRK-STR
-                   STRING  SPA-Q01-BYOMEI (IDX1)
-                                               DELIMITED   BY  SIZE
-                   INTO    WRK-STR
-                   WITH POINTER WRK-STR-LEN
-                   END-STRING
-                   COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
-      *
-      *            病名の実際の文字列長を求める
-                   MOVE    SPA-Q01-BYOMEI (IDX1)
-                                               TO  WRK-STR
-                   PERFORM 900-STR-LEN-GET-SEC
-                   MOVE    WRK-STR-LEN         TO  WRK-NUM-LEN
-      *
-                   STRING
-                       "(c.byomei like '"      DELIMITED   BY  SIZE
-                       SPA-Q01-BYOMEI (IDX1)   DELIMITED   BY  SPACE
-                       "%')"                   DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
-               END-IF
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *
-           END-PERFORM
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT4-SEC
-      *
-           .
-       3101-PTBYOMEI-SQL-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者保険マスタ検索条件編集処理
-      *****************************************************************
-       3101-PTHKNINF-SQL-EDIT-SEC      SECTION.
-      *
-      *----(01.00.02) LINE DEL START ----------------------------------
-      *    MOVE    "d"             TO  WRK-SQL-TBL-NAME
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
-           IF    ( FLG-HKNKOHSEL   =   ZERO )
-               MOVE    "d"             TO  WRK-SQL-TBL-NAME
-           ELSE
-               MOVE    "i"             TO  WRK-SQL-TBL-NAME
-           END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT1-SEC
-      *
-      *----(01.00.02) LINE DEL START ----------------------------------
-      *    STRING "((d.tekstymd <= '"
-      *           WRK-EDSRYYMD
-      *           "') and (d.tekedymd >= '"
-      *           WRK-STSRYYMD
-      *           "')) and"
-      *    DELIMITED   BY  SIZE
-      *    INTO        WRK-SQL
-      *    WITH POINTER WRK-SQL-PNT
-      *    END-STRING
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
-           IF    ( FLG-HKNKOHSEL   =   "1" )
-               STRING "((i.sryymd <= '"
-                      WRK-EDSRYYMD
-                      "') and (i.sryymd >= '"
-                      WRK-STSRYYMD
-                      "')) and"
-               DELIMITED   BY  SIZE
-               INTO        WRK-SQL
-               WITH POINTER WRK-SQL-PNT
-               END-STRING
-           END-IF
-
-           MOVE    ZERO    TO      CNT-JYOKEN
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL   (   IDX1    >   5 )
-      *
-               IF  ( SPA-Q01-HKNJANUM (IDX1)
-                                           NOT =   SPACE )
-                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
-      *
-                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-      *
-      *            保険者番号の項目長を求める
-                   MOVE    1               TO  WRK-STR-LEN
-                   MOVE    SPACE           TO  WRK-STR
-                   STRING  SPA-Q01-HKNJANUM (IDX1) 
-                                           DELIMITED   BY  SIZE
-                   INTO    WRK-STR
-                   WITH POINTER WRK-STR-LEN
-                   END-STRING
-                   COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
-      *
-      *            保険者番号の実際の文字列長を求める
-                   MOVE    SPA-Q01-HKNJANUM (IDX1) TO  WRK-STR
-                   PERFORM 900-STR-LEN-GET-SEC
-                   MOVE    WRK-STR-LEN             TO  WRK-KIGO-LEN
-      *
-                   STRING  "("             DELIMITED   BY  SIZE
-                       WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
-                       ".hknjanum ='"      DELIMITED   BY  SIZE
-                       SPA-Q01-HKNJANUM (IDX1)(1: WRK-KIGO-LEN)
-                                           DELIMITED   BY  SIZE
-                       "')"                DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
-               END-IF
-           END-PERFORM
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
-      *
-           MOVE    ZERO    TO      CNT-JYOKEN
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL   (   IDX1    >   5 )
-      *
-               IF  ( SPA-Q01-HKNNUM (IDX1) NOT =   SPACE )
-                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
-      *
-                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-                   STRING  "("             DELIMITED   BY  SIZE
-                       WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
-                       ".hknnum ='"        DELIMITED   BY  SIZE
-                       SPA-Q01-HKNNUM (IDX1)
-                                           DELIMITED   BY  SIZE
-                       "')"                DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
-               END-IF
-           END-PERFORM
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
-      *
-      *----(01.00.02) LINE ADD END   ----------------------------------
-      *
-           MOVE    ZERO    TO      CNT-JYOKEN
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL   (   IDX1    >   5 )
-      *
-               IF      ( SPA-Q01-KIGO (IDX1)   NOT =   SPACE )
-                OR     ( SPA-Q01-NUM  (IDX1)   NOT =   SPACE )
-                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
-      *
-                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-                   STRING  "("           DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
-      *
-                   IF  ( SPA-Q01-KIGO (IDX1)   NOT =   SPACE )
-      *                記号の項目長を求める
-                       MOVE    1               TO  WRK-STR-LEN
-                       MOVE    SPACE           TO  WRK-STR
-                       STRING  SPA-Q01-KIGO (IDX1) DELIMITED   BY  SIZE
-                       INTO    WRK-STR
-                       WITH POINTER WRK-STR-LEN
-                       END-STRING
-                       COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
-      *
-      *                記号の実際の文字列長を求める
-                       MOVE    SPA-Q01-KIGO (IDX1) TO  WRK-STR
-                       PERFORM 900-STR-LEN-GET-SEC
-                       MOVE    WRK-STR-LEN         TO  WRK-KIGO-LEN
-      *
-      *----(01.00.02) LINE DEL START ----------------------------------
-      *                STRING  "(d.kigo like '"    DELIMITED   BY  SIZE
-      *                    SPA-Q01-KIGO (IDX1)(1: WRK-KIGO-LEN)
-      *                                            DELIMITED   BY  SIZE
-      *                    "%')"                   DELIMITED   BY  SIZE
-      *                INTO    WRK-SQL
-      *                WITH    POINTER WRK-SQL-PNT
-      *                END-STRING
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
-                       STRING  "("                 DELIMITED   BY  SIZE
-                           WRK-SQL-TBL-NAME        DELIMITED   BY  SPACE
-                           ".kigo like '"          DELIMITED   BY  SIZE
-                           SPA-Q01-KIGO (IDX1)(1: WRK-KIGO-LEN)
-                                                   DELIMITED   BY  SIZE
-                           "%')"                   DELIMITED   BY  SIZE
-                       INTO    WRK-SQL
-                       WITH    POINTER WRK-SQL-PNT
-                       END-STRING
-      *----(01.00.02) LINE ADD END   ----------------------------------
-                       IF  ( SPA-Q01-NUM  (IDX1)   NOT =   SPACE )
-                           STRING  "and"           DELIMITED   BY  SIZE
-                           INTO    WRK-SQL
-                           WITH    POINTER WRK-SQL-PNT
-                           END-STRING
-                       END-IF
-                   END-IF
-      *
-                   IF  ( SPA-Q01-NUM  (IDX1)   NOT =   SPACE )
-      *                番号の項目長を求める
-                       MOVE    1               TO  WRK-STR-LEN
-                       MOVE    SPACE           TO  WRK-STR
-                       STRING  SPA-Q01-KIGO (IDX1) DELIMITED   BY  SIZE
-                       INTO    WRK-STR
-                       WITH POINTER WRK-STR-LEN
-                       END-STRING
-                       COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
-      *
-      *                番号の実際の文字列長を求める
-                       MOVE    SPA-Q01-NUM (IDX1) TO  WRK-STR
-                       PERFORM 900-STR-LEN-GET-SEC
-                       MOVE    WRK-STR-LEN         TO  WRK-NUM-LEN
-      *
-      *----(01.00.02) LINE DEL START ----------------------------------
-      *                STRING  "(d.num like '"     DELIMITED   BY  SIZE
-      *                        SPA-Q01-NUM  (IDX1)(1: WRK-NUM-LEN)
-      *                                            DELIMITED   BY  SIZE
-      *                        "%')"               DELIMITED   BY  SIZE
-      *                INTO    WRK-SQL
-      *                WITH    POINTER WRK-SQL-PNT
-      *                END-STRING
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
-                       STRING  "("                 DELIMITED   BY  SIZE
-                           WRK-SQL-TBL-NAME        DELIMITED   BY  SPACE
-                               ".num like '"       DELIMITED   BY  SIZE
-                               SPA-Q01-NUM  (IDX1)(1: WRK-NUM-LEN)
-                                                   DELIMITED   BY  SIZE
-                               "%')"               DELIMITED   BY  SIZE
-                       INTO    WRK-SQL
-                       WITH    POINTER WRK-SQL-PNT
-                       END-STRING
-      *----(01.00.02) LINE ADD END   ----------------------------------
-                   END-IF
-      *
-                   STRING  ")"                     DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
-      *
-      *----(01.00.02) LINE ADD START ----------------------------------
-           IF    ( FLG-HKNKOHSEL   =   ZERO )
-               STRING "and (d.sakjokbn = ' ')  "
-               DELIMITED   BY  SIZE
-               INTO        WRK-SQL
-               WITH POINTER WRK-SQL-PNT
-               END-STRING
-           END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT4-SEC
-      *
-           .
-       3101-PTHKNINF-SQL-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者公費マスタ検索条件編集処理
-      *****************************************************************
-       3101-PTKOHINF-SQL-EDIT-SEC          SECTION.
-      *
-      *----(01.00.02) LINE DEL START ----------------------------------
-      *    MOVE    "e"             TO  WRK-SQL-TBL-NAME
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
-           IF    ( FLG-HKNKOHSEL   =   ZERO )
-               MOVE    "e"             TO  WRK-SQL-TBL-NAME
-           ELSE
-               MOVE    "i"             TO  WRK-SQL-TBL-NAME
-           END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT1-SEC
-      *
-      *----(01.00.02) LINE DEL START ----------------------------------
-      *    STRING "((e.tekstymd <= '"
-      *           WRK-EDSRYYMD
-      *           "') and (e.tekedymd >= '"
-      *           WRK-STSRYYMD
-      *           "')) and"
-      *    DELIMITED   BY  SIZE
-      *    INTO        WRK-SQL
-      *    WITH POINTER WRK-SQL-PNT
-      *    END-STRING
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
-           IF    ( FLG-HKNKOHSEL   =   "1" )
-               STRING "((i.sryymd <= '"
-                      WRK-EDSRYYMD
-                      "') and (i.sryymd >= '"
-                      WRK-STSRYYMD
-                      "')) and"
-               DELIMITED   BY  SIZE
-               INTO        WRK-SQL
-               WITH POINTER WRK-SQL-PNT
-               END-STRING
-           END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
-      *
-           MOVE    ZERO    TO      CNT-JYOKEN
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL   (   IDX1    >   5 )
-      *
-               IF  ( SPA-Q01-KOHNUM (IDX1) NOT =   SPACE )
-                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
-      *
-                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-      *
-      *            保険番号の項目長を求める
-                   MOVE    1               TO  WRK-STR-LEN
-                   MOVE    SPACE           TO  WRK-STR
-                   STRING  SPA-Q01-KOHNUM (IDX1) 
-                                           DELIMITED   BY  SIZE
-                   INTO    WRK-STR
-                   WITH POINTER WRK-STR-LEN
-                   END-STRING
-                   COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
-      *
-      *            保険番号の実際の文字列長を求める
-                   MOVE    SPA-Q01-KOHNUM (IDX1)   TO  WRK-STR
-                   PERFORM 900-STR-LEN-GET-SEC
-                   MOVE    WRK-STR-LEN             TO  WRK-KIGO-LEN
-      *
-      *----(01.00.02) LINE DEL START ----------------------------------
-      *            STRING  "(e.kohnum ='"  DELIMITED   BY  SIZE
-      *                SPA-Q01-KOHNUM (IDX1)(1: WRK-KIGO-LEN)
-      *                                    DELIMITED   BY  SIZE
-      *                "')"                DELIMITED   BY  SIZE
-      *            INTO    WRK-SQL
-      *            WITH    POINTER WRK-SQL-PNT
-      *            END-STRING
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
-                   IF    ( SPA-Q01-KOHNUM (IDX1)   =   "027" )
-                    AND  ( SPA-Q01-PAYKBN (IDX1)   =   "01" OR "02" )
-                       STRING  "(("            DELIMITED   BY  SIZE
-                           WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
-                           ".kohnum ='"        DELIMITED   BY  SIZE
-                           SPA-Q01-KOHNUM (IDX1)(1: WRK-KIGO-LEN)
-                                               DELIMITED   BY  SIZE
-                           "')and("            DELIMITED   BY  SIZE
-                           WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
-                           ".paykbn ='"        DELIMITED   BY  SIZE
-                           SPA-Q01-PAYKBN (IDX1)
-                                               DELIMITED   BY  SIZE
-                           "'))"               DELIMITED   BY  SIZE
-                       INTO    WRK-SQL
-                       WITH    POINTER WRK-SQL-PNT
-                       END-STRING
-                   ELSE
-                       STRING  "("             DELIMITED   BY  SIZE
-                           WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
-                           ".kohnum ='"        DELIMITED   BY  SIZE
-                           SPA-Q01-KOHNUM (IDX1)(1: WRK-KIGO-LEN)
-                                               DELIMITED   BY  SIZE
-                           "')"                DELIMITED   BY  SIZE
-                       INTO    WRK-SQL
-                       WITH    POINTER WRK-SQL-PNT
-                       END-STRING
-                   END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
-               END-IF
-           END-PERFORM
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
-      *
-           MOVE    ZERO    TO      CNT-JYOKEN
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL   (   IDX1    >   5 )
-      *
-               IF  ( SPA-Q01-FTNJANUM  (IDX1)  NOT =   SPACE )
-                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
-      *
-                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-      *            負担者番号の項目長を求める
-                   MOVE    1               TO  WRK-STR-LEN
-                   MOVE    SPACE           TO  WRK-STR
-                   STRING  SPA-Q01-FTNJANUM (IDX1)
-                                               DELIMITED   BY  SIZE
-                   INTO    WRK-STR
-                   WITH POINTER WRK-STR-LEN
-                   END-STRING
-                   COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
-      *
-      *            負担者番号の実際の文字列長を求める
-                   MOVE    SPA-Q01-FTNJANUM (IDX1) TO  WRK-STR
-                   PERFORM 900-STR-LEN-GET-SEC
-                   MOVE    WRK-STR-LEN         TO  WRK-NUM-LEN
-      *
-      *----(01.00.02) LINE DEL START ----------------------------------
-      *            STRING  "(e.ftnjanum like '"
-      *                                        DELIMITED   BY  SIZE
-      *                    SPA-Q01-FTNJANUM  (IDX1)(1: WRK-NUM-LEN)
-      *                                        DELIMITED   BY  SIZE
-      *                    "%')"               DELIMITED   BY  SIZE
-      *            INTO    WRK-SQL
-      *            WITH    POINTER WRK-SQL-PNT
-      *            END-STRING
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
-                   STRING  "("                 DELIMITED   BY  SIZE
-                           WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
-                           ".ftnjanum like '"
-                                               DELIMITED   BY  SIZE
-                           SPA-Q01-FTNJANUM  (IDX1)(1: WRK-NUM-LEN)
-                                               DELIMITED   BY  SIZE
-                           "%')"               DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
-      *----(01.00.02) LINE ADD END   ----------------------------------
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
-      *
-      *----(01.00.02) LINE ADD START ----------------------------------
-           IF    ( FLG-HKNKOHSEL   =   ZERO )
-               STRING "and (e.sakjokbn = ' ')  "
-               DELIMITED   BY  SIZE
-               INTO        WRK-SQL
-               WITH POINTER WRK-SQL-PNT
-               END-STRING
-           END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT4-SEC
-      *
-           .
-       3101-PTKOHINF-SQL-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    受診履歴マスタ検索条件編集処理
-      *****************************************************************
-       3101-JYURRK-SQL-EDIT-SEC        SECTION.
-      *
-      *
-           MOVE    "f"             TO  WRK-SQL-TBL-NAME
-           PERFORM 900-SQL-JYOKEN-EDIT1-SEC
-      *
-      *
-      *    最終受診日検索条件編集
-           STRING  "(f.sryymd >= '"            DELIMITED   BY  SIZE
-                   WRK-STSRYYMD                DELIMITED   BY  SIZE
-                   "') and (f.sryymd <= '"     DELIMITED   BY  SIZE
-                   WRK-EDSRYYMD                DELIMITED   BY  SIZE
-                   "')"                        DELIMITED   BY  SIZE
-           INTO    WRK-SQL
-           WITH    POINTER     WRK-SQL-PNT
-           END-STRING
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT4-SEC
-      *
-           .
-       3101-JYURRK-SQL-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療行為マスタ検索条件編集処理
-      *****************************************************************
-       3101-SRYACT-SQL-EDIT-SEC        SECTION.
-      *
-           MOVE    "g"             TO  WRK-SQL-TBL-NAME
-           PERFORM 900-SQL-JYOKEN-EDIT1-SEC
-      *
-      *----(01.00.02) LINE ADD START ----------------------------------
-           STRING "((g.sryym <= '"
-                  WRK-EDSRYYMD (1:6)
-                  "') and (g.sryym >= '"
-                  WRK-STSRYYMD  (1:6)
-                  "')) and"
-           DELIMITED   BY  SIZE
-           INTO        WRK-SQL
-           WITH POINTER WRK-SQL-PNT
-           END-STRING
-      *----(01.00.02) LINE ADD END   ----------------------------------
-      *
-           MOVE    ZERO    TO      CNT-JYOKEN
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL   (   IDX1    >   5 )
-      *
-               IF      ( SPA-Q01-SRYCD     (IDX1)  NOT =   SPACE )
-                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
-      *
-                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-                   STRING  "(g.srycd1 = '"         DELIMITED   BY  SIZE
-                           SPA-Q01-SRYCD (IDX1)    DELIMITED   BY  SIZE
-                           "') or"                 DELIMITED   BY  SIZE
-                           "(g.srycd2 = '"         DELIMITED   BY  SIZE
-                           SPA-Q01-SRYCD (IDX1)    DELIMITED   BY  SIZE
-                           "') or"                 DELIMITED   BY  SIZE
-                           "(g.srycd3 = '"         DELIMITED   BY  SIZE
-                           SPA-Q01-SRYCD (IDX1)    DELIMITED   BY  SIZE
-                           "') or"                 DELIMITED   BY  SIZE
-                           "(g.srycd4 = '"         DELIMITED   BY  SIZE
-                           SPA-Q01-SRYCD (IDX1)    DELIMITED   BY  SIZE
-                           "') or"                 DELIMITED   BY  SIZE
-                           "(g.srycd5 = '"         DELIMITED   BY  SIZE
-                           SPA-Q01-SRYCD (IDX1)    DELIMITED   BY  SIZE
-                           "')"                    DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT4-SEC
-      *
-           .
-       3101-PTKOHINF-SQL-EDIT-EXT.
-           EXIT.
-      *----(01.00.01) LINE ADD START ----------------------------------
-      *****************************************************************
-      *    患者番号マスタ検索条件編集処理
-      *****************************************************************
-       3101-PTNUM-SQL-EDIT-SEC         SECTION.
-      *
-           IF  ( FLG-JYOKEN        =   1 )
-               STRING " and "      DELIMITED   BY  SIZE
-               INTO    WRK-SQL
-               WITH    POINTER     WRK-SQL-PNT
-               END-STRING
-           END-IF
-      *
-           STRING  "((h.hospid='"              DELIMITED   BY  SIZE
-                   SPA-HOSPID                  DELIMITED   BY  SIZE
-                   "')and("                    DELIMITED   BY  SIZE
-                   "h.ptid=a.ptid) "           DELIMITED   BY  SIZE
-           INTO    WRK-SQL
-           WITH    POINTER     WRK-SQL-PNT
-           END-STRING
-      *
-           IF  ( SPA-Q01-GTBL (1)  =   "1" )
-               STRING  "and (h.ptnum>='"   DELIMITED  BY  SIZE
-                       SPA-Q01-STPTNUM     DELIMITED  BY  SIZE
-                       "') and "           DELIMITED  BY  SIZE
-                       "(h.ptnum<='"       DELIMITED  BY  SIZE
-                       WRK-EDPTNUM         DELIMITED  BY  SIZE
-                       "')"                DELIMITED  BY  SIZE
-               INTO    WRK-SQL
-               WITH    POINTER WRK-SQL-PNT
-               END-STRING
-           END-IF
-      *
-           STRING  ")"         DELIMITED   BY  SIZE
-           INTO    WRK-SQL
-           WITH    POINTER     WRK-SQL-PNT
-           END-STRING
-      *
-           .
-       3101-PTNUM-SQL-EDIT-EXT.
-           EXIT.
-      *----(01.00.01) LINE ADD END   ----------------------------------
-      *----(01.00.01) LINE DEL START ----------------------------------
-      *****************************************************************
-      *    患者ＩＤ検索条件編集処理
-      *****************************************************************
-      *3102-PTID-SELECT-EDIT-SEC           SECTION.
-      *
-      *    MOVE    ZERO    TO      CNT-JYOKEN
-      *    PERFORM VARYING IDX1    FROM    1   BY  1
-      *        UNTIL   (   IDX1    >   5 )
-      *
-      *        IF  ( SPA-Q01-PTID (IDX1)   NOT =   ZERO )
-      *            COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
-      *
-      *            PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-      *            STRING  "(a.ptid = "            DELIMITED   BY  SIZE
-      *                    SPA-Q01-PTID (IDX1)     DELIMITED   BY  SIZE
-      *                    ")"                     DELIMITED   BY  SIZE
-      *            INTO    WRK-SQL
-      *            WITH    POINTER WRK-SQL-PNT
-      *            END-STRING
-      *        END-IF
-      *
-      *    END-PERFORM
-      *
-      *    PERFORM 900-SQL-JYOKEN-EDIT3-SEC
-      *
-      *    .
-      *3102-PTID-SELECT-EDIT-EXT.
-      *    EXIT.
-      *----(01.00.01) LINE DEL END   ----------------------------------
-      *****************************************************************
-      *    カナ氏名検索条件編集処理
-      *****************************************************************
-       3102-KANANAME-SELECT-EDIT-SEC       SECTION.
-      *
-           MOVE    ZERO    TO      CNT-JYOKEN
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL   (   IDX1    >   5 )
-               IF  ( SPA-Q01-KANANAME (IDX1)   NOT =   SPACE)
-      *
-                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
-      *
-                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-      *            カナ氏名の項目長を求める
-                   MOVE    1               TO  WRK-STR-LEN
-                   MOVE    SPACE           TO  WRK-STR
-                   STRING  SPA-Q01-KANANAME (IDX1) DELIMITED   BY  SIZE
-                   INTO    WRK-STR
-                   WITH POINTER WRK-STR-LEN
-                   END-STRING
-                   COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
-      *
-      *            カナ氏名の実際の文字列長を求める
-                   MOVE    SPA-Q01-KANANAME (IDX1)   TO  WRK-STR
-                   PERFORM 900-STR-LEN-GET-SEC
-      *
-                   STRING  "(a.kananame like '"    DELIMITED   BY  SIZE
-                           SPA-Q01-KANANAME (IDX1)(1: WRK-STR-LEN) 
-                                                   DELIMITED   BY  SIZE
-                           "%')"                   DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
-      *
-               END-IF
-           END-PERFORM
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
-      *
-           .
-       3102-KANANAME-SELECT-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    漢字氏名検索条件編集処理
-      *****************************************************************
-       3102-NAME-SELECT-EDIT-SEC           SECTION.
-      *
-           MOVE    ZERO    TO      CNT-JYOKEN
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL   (   IDX1    >   5 )
-               IF  ( SPA-Q01-NAME (IDX1)   NOT =   SPACE)
-      *
-                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
-      *
-                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-      *            カナ氏名の項目長を求める
-                   MOVE    1               TO  WRK-STR-LEN
-                   MOVE    SPACE           TO  WRK-STR
-                   STRING  SPA-Q01-NAME (IDX1)   DELIMITED   BY  SIZE
-                   INTO    WRK-STR
-                   WITH POINTER WRK-STR-LEN
-                   END-STRING
-                   COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
-      *
-      *            カナ氏名の実際の文字列長を求める
-                   MOVE    SPA-Q01-NAME (IDX1)   TO  WRK-STR
-                   PERFORM 900-STR-LEN-GET-SEC
-      *
-                   STRING  "(a.name like '"        DELIMITED   BY  SIZE
-                           SPA-Q01-NAME (IDX1)(1: WRK-STR-LEN) 
-                                                   DELIMITED   BY  SIZE
-                           "%')"                   DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
-      *
-               END-IF
-           END-PERFORM
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
-      *
-           .
-       3102-NAME-SELECT-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    生年月日検索条件編集処理
-      *****************************************************************
-       3102-BIRTH-SELECT-EDIT-SEC          SECTION.
-      *
-           IF      ( SPA-Q01-STBIRTHDAY    =   SPACE )
-            AND    ( SPA-Q01-EDBIRTHDAY    =   SPACE )
-               GO  TO  3102-BIRTH-SELECT-EDIT-EXT
-           END-IF
-      *
-           MOVE    1                   TO  CNT-JYOKEN
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-           STRING  "(birthday >= '"        DELIMITED   BY  SIZE
-                   WRK-STBIRTHDAY          DELIMITED   BY  SIZE
-                   "') and "               DELIMITED   BY  SIZE
-                   "(birthday  <= '"       DELIMITED   BY  SIZE
-                   WRK-EDBIRTHDAY          DELIMITED   BY  SIZE
-                   "')"                    DELIMITED   BY  SIZE
-           INTO    WRK-SQL
-           WITH    POINTER WRK-SQL-PNT
-           END-STRING
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
-      *
-      *
-           .
-       3102-BIRTH-SELECT-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    性別検索条件編集処理
-      *****************************************************************
-       3102-SEX-SELECT-EDIT-SEC            SECTION.
-      *
-           IF      ( SPA-Q01-SEX       =   SPACE )
-               GO  TO  3102-SEX-SELECT-EDIT-EXT
-           END-IF
-      *
-           MOVE    1                   TO  CNT-JYOKEN
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-           STRING  "(sex = '"       DELIMITED   BY  SIZE
-                   SPA-Q01-SEX      DELIMITED   BY  SIZE
-                   "')"             DELIMITED   BY  SIZE
-           INTO    WRK-SQL
-           WITH    POINTER WRK-SQL-PNT
-           END-STRING
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
-      *
-           .
-       3102-SEX-SELECT-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    住所検索条件編集処理
-      *****************************************************************
-       3102-HOME-ADRS-SELECT-EDIT-SEC      SECTION.
-      *
-           MOVE    ZERO    TO      CNT-JYOKEN
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL   (   IDX1    >   5 )
-               IF  ( SPA-Q01-JYUSHO (IDX1) NOT =   SPACE)
-      *
-                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
-      *
-                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-      *            住所の項目長を求める
-                   MOVE    1               TO  WRK-STR-LEN
-                   MOVE    SPACE           TO  WRK-STR
-                   STRING  SPA-Q01-JYUSHO (IDX1)   DELIMITED   BY  SIZE
-                   INTO    WRK-STR
-                   WITH POINTER WRK-STR-LEN
-                   END-STRING
-                   COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
-      *
-      *            住所の実際の文字列長を求める
-                   MOVE    SPA-Q01-JYUSHO (IDX1)   TO  WRK-STR
-                   PERFORM 900-STR-LEN-GET-SEC
-      *
-                   STRING  "(home_adrs like '"     DELIMITED   BY  SIZE
-                           SPA-Q01-JYUSHO (IDX1)(1: WRK-STR-LEN) 
-                                                   DELIMITED   BY  SIZE
-                           "%')"                   DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
-      *
-                END-IF
-           END-PERFORM
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
-      *
-           .
-       3102-HOME-ADRS-SELECT-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    コメント検索条件編集処理
-      *****************************************************************
-       3102-COMMENT-SELECT-EDIT-SEC        SECTION.
-      *
-           MOVE    ZERO    TO      CNT-JYOKEN
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL   (   IDX1    >   5 )
-               IF  ( SPA-Q01-COMMENT (IDX1) NOT =   SPACE)
-      *
-                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
-      *
-                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-      *            コメントの項目長を求める
-                   MOVE    1               TO  WRK-STR-LEN
-                   MOVE    SPACE           TO  WRK-STR
-                   STRING  SPA-Q01-COMMENT (IDX1)  DELIMITED   BY  SIZE
-                   INTO    WRK-STR
-                   WITH POINTER WRK-STR-LEN
-                   END-STRING
-                   COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
-      *
-      *            コメントの実際の文字列長を求める
-                   MOVE    SPA-Q01-COMMENT (IDX1)  TO  WRK-STR
-                   PERFORM 900-STR-LEN-GET-SEC
-      *
-                   STRING  "(comment_1 like '"     DELIMITED   BY  SIZE
-                           SPA-Q01-COMMENT (IDX1)(1: WRK-STR-LEN) 
-                                                   DELIMITED   BY  SIZE
-                           "%')or"                 DELIMITED   BY  SIZE
-                           " (comment_2 like '"    DELIMITED   BY  SIZE
-                           SPA-Q01-COMMENT (IDX1)(1: WRK-STR-LEN) 
-                                                   DELIMITED   BY  SIZE
-                           "%')"                   DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
-      *
-                END-IF
-           END-PERFORM
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
-      *
-      *
-           .
-       3102-COMMENT-SELECT-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    並べ替え順編集処理
-      *****************************************************************
-       3102-ORDER-EDIT-SEC                 SECTION.
-      *
-           MOVE    SPA-Q01-KMK (1)     TO  IDX-KMK1
-           MOVE    SPA-Q01-KMK (2)     TO  IDX-KMK2
-           MOVE    SPA-Q01-KMK (3)     TO  IDX-KMK3
-      *
-           MOVE    SPA-Q01-NARABE (1)  TO  IDX-SRT1
-           MOVE    SPA-Q01-NARABE (2)  TO  IDX-SRT2
-           MOVE    SPA-Q01-NARABE (3)  TO  IDX-SRT3
-      *
-           STRING  " ORDER BY "                DELIMITED   BY  SIZE
-                   CONST-KMK-ITEM (IDX-KMK1)   DELIMITED   BY  SPACE
-                   " "                         DELIMITED   BY  SIZE
-                   CONST-ORDER (IDX-SRT1)
-                                               DELIMITED   BY  SPACE
-                   ","                         DELIMITED   BY  SIZE
-                   CONST-KMK-ITEM (IDX-KMK2)   DELIMITED   BY  SPACE
-                   " "                         DELIMITED   BY  SIZE
-                   CONST-ORDER (IDX-SRT2)
-                                               DELIMITED   BY  SPACE
-                   ","                         DELIMITED   BY  SIZE
-                   CONST-KMK-ITEM (IDX-KMK3)   DELIMITED   BY  SPACE
-                   " "                         DELIMITED   BY  SIZE
-                   CONST-ORDER (IDX-SRT3)
-                                               DELIMITED   BY  SPACE
-           INTO    WRK-SQL
-           WITH    POINTER WRK-SQL-PNT
-           END-STRING
-      *
-           .
-      *
-       3102-ORDER-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    表題チェック
@@ -2740,18 +1185,6 @@
       *****************************************************************
        210-BACK                        SECTION.
       *
-      *----(01.00.02) LINE DEL START ----------------------------------
-      *    MOVE    "Q01"               TO  SPA-SAKIPG
-      *    MOVE    "Q02"               TO  SPA-MOTOPG
-      *
-      *    MOVE   "CHANGE"             TO  MCP-PUTTYPE
-      *    MOVE    SPA-SAKIPG          TO  MCP-WINDOW
-      *
-      *    PERFORM 900-PUT-WINDOW
-      *
-      *    MOVE    1                   TO  FLG-END
-      *----(01.00.02) LINE DEL END   ----------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
       *    ジョブ管理チェック処理
            PERFORM 900-JOBKANRI-CHK-SEC
            IF    ( FLG-JOBEND   =   ZERO )
@@ -2767,12 +1200,10 @@
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
            PERFORM 210-BACK-SYORI-SEC
       *
-      *----(01.00.02) LINE ADD END   ----------------------------------
            .
        210-BACK-EXT.
            EXIT.
       *
-      *----(01.00.02) LINE ADD START ----------------------------------
       *****************************************************************
       *    戻る　処理
       *****************************************************************
@@ -2791,7 +1222,6 @@
        210-BACK-SYORI-EXT.
            EXIT.
       *
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *****************************************************************
       *    前頁　処理
       *****************************************************************
@@ -2828,7 +1258,6 @@
            .
        210-TUGI-PAGE-EXT.
            EXIT.
-      *----(01.00.02) LINE ADD START ----------------------------------
       *****************************************************************
       *    情報削除へ
       *****************************************************************
@@ -2861,7 +1290,6 @@
            .
        480-JYOUHOU-DEL-EXT.
            EXIT.
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *****************************************************************
       *    予約登録へ
       *****************************************************************
@@ -2925,23 +1353,10 @@
            COMPUTE IDX1    =   SPA-GMN-Q02-SELNUM
                            -   SPA-GMN-Q02-SKIP-KNS
       *
-      *---- (01.00.01) LINE ADD START --------------------------------
-      *
-      *    患者ＩＤを患者番号に変換
-      *     INITIALIZE                  ORCSPTIDAREA
-      *     MOVE    SPA-HOSPID          TO  SPTID-HOSPID
-      *     MOVE    SPA-GMN-Q02-PTINF-PTID (IDX1)
-      *                                 TO  SPTID-PTID
-      *
-      *     CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-      *                                         SPA-1009-TBL
-      *
-      *     IF  SPTID-RC  NOT  =  ZERO
            IF  SPA-GMN-Q02-KEKKALST-PTNUM (IDX1)  =  SPACE
                MOVE    "1002"          TO  SPA-ERRCD
                GO  TO  480-KANJYA-EXT
            END-IF
-      *---- (01.00.01) LINE ADD END ----------------------------------
       *
       *    ＳＰＡの内容を退避
            INITIALIZE                  QSUB01-LNK
@@ -2955,11 +1370,8 @@
       *
            MOVE    SPA-GMN-Q02-PTINF-PTID (IDX1)
                                        TO  SPA-PTID
-      *---- (01.00.01) LINE ADD START --------------------------------
-            MOVE  SPA-GMN-Q02-KEKKALST-PTNUM (IDX1)
+           MOVE  SPA-GMN-Q02-KEKKALST-PTNUM (IDX1)
                                        TO  SPA-PTNUM
-      *     MOVE    SPTID-PTNUM         TO  SPA-PTNUM
-      *---- (01.00.01) LINE ADD END ----------------------------------
       *
       *    受付と患者検索以外の元をセット
            MOVE    "Q02"               TO  SPA-MOTOPG
@@ -3008,7 +1420,6 @@
        490-UKEICHI-EXT.
            EXIT.
       *
-      *----(01.00.01) LINE ADD START ----------------------------------
       *****************************************************************
       *    印刷確認
       *****************************************************************
@@ -3017,7 +1428,6 @@
       *    画面をＳＰＡにセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-      *----(01.00.02) LINE ADD START ----------------------------------
       *    ジョブ管理チェック処理
            PERFORM 900-JOBKANRI-CHK-SEC
            IF    ( FLG-JOBEND   =   ZERO )
@@ -3030,20 +1440,15 @@
                END-STRING
                GO  TO  480-CSV-KAKUNIN-EXT
            END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *
            MOVE    ZERO            TO  WRK-PROC-FLG
       *
-      *----(01.00.02) LINE UPD START ----------------------------------
-      *    PERFORM 480-KAKUNIN-CALL-SEC
            PERFORM 480-OUT-SIJI-CALL-SEC
-      *----(01.00.02) LINE UPD END   ----------------------------------
       *
            .
        480-CSV-KAKUNIN-EXT.
            EXIT.
       *
-      *----(01.00.01) LINE ADD END   ----------------------------------
       *****************************************************************
       *    印刷確認
       *****************************************************************
@@ -3052,7 +1457,6 @@
       *    画面をＳＰＡにセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-      *----(01.00.02) LINE ADD START ----------------------------------
       *    ジョブ管理チェック処理
            PERFORM 900-JOBKANRI-CHK-SEC
            IF    ( FLG-JOBEND   =   ZERO )
@@ -3065,7 +1469,6 @@
                END-STRING
                GO  TO  480-PRINT-KAKUNIN-EXT
            END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *
       *    表題全角半角混在チェック
            MOVE    SPA-GMN-Q02-HYODAI  TO  WRK-KANACHK-MAE-INPUT
@@ -3100,18 +1503,9 @@
            END-IF
       *
       *
-      *---- (01.00.01) LINE DEL START --------------------------------
-      *    MOVE    "2001"          TO  SPA-QIDCD
-      *---- (01.00.01) LINE DEL END   --------------------------------
-      *---- (01.00.01) LINE ADD START --------------------------------
-      *
            MOVE    1               TO  WRK-PROC-FLG
       *
-      *----(01.00.02) LINE UPD START ----------------------------------
-      *    PERFORM 480-KAKUNIN-CALL-SEC
            PERFORM 480-OUT-SIJI-CALL-SEC
-      *----(01.00.02) LINE UPD END   ----------------------------------
-      *---- (01.00.01) LINE ADD END   --------------------------------
       *
            .
        480-PRINT-KAKUNIN-EXT.
@@ -3156,60 +1550,6 @@
        490-KAKUNIN-EXT.
            EXIT.
       *
-      *---- (01.00.02) LINE DEL START --------------------------------
-      *****************************************************************
-      *    確認画面呼出処理
-      *****************************************************************
-      *480-KAKUNIN-CALL-SEC            SECTION.
-      *
-      *    MOVE    SPACE           TO  SPA-Q01-QID-AREA
-      *    INITIALIZE                  SPA-Q01-QID-AREA
-      *
-      *    MOVE    WRK-PROC-FLG    TO  SPA-QID1-PROC-FLG
-      *    MOVE    1               TO  SPA-QID1-STNUM
-      *
-      *    IF  ( WRK-PROC-FLG      =   ZERO )
-      *        MOVE    SPA-GMN-Q02-TOTAL-NUM
-      *                            TO  SPA-QID1-EDNUM
-      *    ELSE
-      *        COMPUTE SPA-QID1-EDNUM
-      *            =   SPA-GMN-Q02-TOTAL-NUM   /   CONST-LINE  +   0.99
-      *    END-IF
-      *
-      *    MOVE    SPACE           TO  SPA-MOTOPG
-      *    MOVE    SPA-AREA        TO  SPA-COMMON
-      *    MOVE    SPA-Q01FREE     TO  SPA-FREE
-      *
-      *    MOVE    "LINK"          TO  MCP-STATUS
-      *    MOVE    SPACE           TO  MCP-EVENT
-      *
-      *    CALL    "ORCGQID1"      USING
-      *                            MCPAREA
-      *                            SPAAREA
-      *                            LINKAREA
-      *                            SCRAREA
-      *
-      *
-      *    MOVE    SPA-COMMON      TO  SPA-AREA
-      *    MOVE    SPA-FREE        TO  SPA-Q01FREE
-      *
-      *    MOVE  "B12"             TO  MCP-WIDGET
-      *
-      *    MOVE  "Q02"             TO  SPA-MOTOPG
-      *    MOVE  "QID1"            TO  SPA-SAKIPG
-      *
-      *    MOVE  "NEW"             TO  MCP-PUTTYPE
-      *    MOVE  "QID1"            TO  MCP-WINDOW
-      *
-      *    PERFORM 900-PUT-WINDOW
-      *
-      *    MOVE  1                 TO  FLG-END
-      *    .
-      *
-      *480-KAKUNIN-CALL-EXT.
-      *    EXIT.
-      *---- (01.00.02) LINE DEL END   --------------------------------
-      *---- (01.00.02) LINE ADD START --------------------------------
       *****************************************************************
       *    出力指示画面呼出処理
       *****************************************************************
@@ -3262,11 +1602,6 @@
        480-OUT-SIJI-CALL-EXT.
            EXIT.
       *****************************************************************
-      *    処理結果確認画面
-      *****************************************************************
-      *---- (01.00.02) LINE ADD END   --------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
-      *****************************************************************
       *    画面遷移時のチェック処理
       *****************************************************************
        4801-GAMEN-SENIJI-CHK-SEC   SECTION.
@@ -3308,19 +1643,10 @@
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
-      *---- (01.00.02) LINE ADD START --------------------------------
            IF      SPA-QIDCD       NOT =   SPACE
                PERFORM 520-QIDSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
-      *---- (01.00.02) LINE ADD END   --------------------------------
-      *
-      *---- (01.00.01) LINE DEL START --------------------------------
-      *    IF      SPA-QIDCD       NOT =   SPACE
-      *        PERFORM 520-QIDSET-SEC
-      *        GO  TO  500-SET-SCREEN-EXT
-      *    END-IF
-      *---- (01.00.01) LINE DEL END   --------------------------------
       *
            MOVE    SPACE               TO  LINKAREA
       *
@@ -3339,7 +1665,6 @@
       *
            MOVE    WIDGET-NORMAL           TO  Q02-B10-STATE
                                                Q02-B24-STATE
-      *---- (01.00.01) LINE ADD START --------------------------------
       *    検索結果件数がゼロ件でない場合はボタンを活性にする
            IF  ( SPA-GMN-Q02-TOTAL-NUM     >   ZERO )
                MOVE    WIDGET-NORMAL       TO  Q02-B05-STATE
@@ -3357,7 +1682,6 @@
                                                Q02-B12-STATE
            END-IF
       *
-      *---- (01.00.01) LINE ADD END   --------------------------------
       *    表題
            MOVE    SPA-GMN-Q02-HYODAI      TO  Q02-HYODAI
       *    条件上段
@@ -3373,12 +1697,10 @@
       *        連番
                MOVE    SPA-GMN-Q02-KEKKALST-NO   (IDX1)
                                    TO  Q02-KEKKALST-NO (IDX1)
-      *---- (01.00.01) LINE ADD START --------------------------------
       *
       *        患者番号
                MOVE    SPA-GMN-Q02-KEKKALST-PTNUM   (IDX1)
                                    TO  Q02-KEKKALST-PTNUM (IDX1)
-      *---- (01.00.01) LINE ADD END ----------------------------------
       *
       *        氏名
                MOVE    SPA-GMN-Q02-KEKKALST-NAME (IDX1)
@@ -3389,11 +1711,9 @@
       *        誕生日
                MOVE    SPA-GMN-Q02-KEKKALST-BIRTH (IDX1)
                                    TO  Q02-KEKKALST-BIRTH (IDX1)
-      *---- (01.00.01) LINE ADD START --------------------------------
       *        年齢
                MOVE    SPA-GMN-Q02-KEKKALST-AGE (IDX1)
                                    TO  Q02-KEKKALST-AGE (IDX1)
-      *---- (01.00.01) LINE ADD END ----------------------------------
       *        診療内容
                MOVE    SPA-GMN-Q02-KEKKALST-SRYACT (IDX1)
                                    TO  Q02-KEKKALST-SRYACTNAIYO (IDX1)
@@ -3508,15 +1828,10 @@
                MOVE    "選択番号が未入力です"
                                        TO  SPA-ERRMSG
            WHEN    "1002"
-      *---- (01.00.01) LINE ADD START --------------------------------
-      *         MOVE    "患者番号取得エラー"
                MOVE    "患者番号が未登録のため遷移できません"
-      *---- (01.00.01) LINE ADD END ----------------------------------
                                        TO  SPA-ERRMSG
-      *---- (01.00.02) LINE ADD START --------------------------------
            WHEN    "7777"
                MOVE    WRK-SHORIERR    TO  SPA-ERRMSG
-      *---- (01.00.02) LINE ADD END ----------------------------------
            END-EVALUATE
       *
            MOVE    SPACE                TO  QERR
@@ -3538,7 +1853,6 @@
        510-ERRSET-EXT.
            EXIT.
       *
-      *---- (01.00.02) LINE ADD START --------------------------------
       *****************************************************************
       *    確認メッセージ表示処理
       *****************************************************************
@@ -3569,42 +1883,6 @@
            .
        520-QIDSET-EXT.
            EXIT.
-      *---- (01.00.02) LINE ADD END   --------------------------------
-      *
-      *---- (01.00.01) LINE DEL START --------------------------------
-      *****************************************************************
-      *    確認メッセージ表示処理
-      *****************************************************************
-      *520-QIDSET-SEC              SECTION.
-      *
-      *    MOVE    SPACE               TO  WRK-QIDMSG
-      *
-      *    EVALUATE    SPA-QIDCD
-      *    WHEN    "2001"
-      *        MOVE    "一覧表示されている患者情報の印刷を行います"
-      *                                TO  WRK-QIDMSG
-      *    END-EVALUATE
-      *
-      *    MOVE    SPACE               TO  QID1
-      *    MOVE    SPA-QIDCD           TO  QID1-ID1CODE
-      *    MOVE    WRK-QIDMSG          TO  QID1-ID1MSG
-      *    MOVE    "B12"               TO  MCP-WIDGET
-      *
-      *    MOVE    "Q02"               TO  SPA-MOTOPG
-      *    MOVE    "QID1"              TO  SPA-SAKIPG
-      *
-      *    MOVE    "NEW"               TO  MCP-PUTTYPE.
-      *    MOVE    "QID1"              TO  MCP-WINDOW.
-      *
-      *    PERFORM 900-PUT-WINDOW.
-      *
-      *    MOVE    1                   TO  FLG-END
-      *
-      *    .
-      *520-QIDSET-EXT.
-      *    EXIT.
-      *---- (01.00.01) LINE DEL END   --------------------------------
-      *
       *****************************************************************
       *    全角半角混在チェック
       *****************************************************************
@@ -3617,9 +1895,7 @@
                GO  TO  800-ENRTRY-CHK-EXT
            END-IF
       *
-      *----(01.00.02) LINE ADD START ----------------------------------
            MOVE    SPACE           TO  ORCSKANACHKAREA
-      *----(01.00.02) LINE ADD END   ----------------------------------
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"             TO  KANACHK-SYORI
            MOVE    WRK-KANACHK-MAE-INPUT
@@ -3637,89 +1913,6 @@
       *
            .
        800-ENRTRY-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＳＱＬ条件編集処理１
-      *****************************************************************
-       900-SQL-JYOKEN-EDIT1-SEC            SECTION.
-      *
-           IF  ( FLG-JYOKEN        =   1 )
-               STRING " and "      DELIMITED   BY  SIZE
-               INTO    WRK-SQL
-               WITH    POINTER     WRK-SQL-PNT
-               END-STRING
-           END-IF
-      *
-           STRING  "(("                        DELIMITED   BY  SIZE
-                   WRK-SQL-TBL-NAME            DELIMITED   BY  SPACE
-                   ".hospid='"                 DELIMITED   BY  SIZE
-                   SPA-HOSPID                  DELIMITED   BY  SIZE
-                   "')and("                    DELIMITED   BY  SIZE
-                   WRK-SQL-TBL-NAME            DELIMITED   BY  SPACE
-                   ".ptid=a.ptid) "            DELIMITED   BY  SIZE
-                   "and"                       DELIMITED   BY  SIZE
-           INTO    WRK-SQL
-           WITH    POINTER     WRK-SQL-PNT
-           END-STRING
-      *
-           .
-       900-SQL-JYOKEN-EDIT1-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＳＱＬ条件編集処理２
-      *****************************************************************
-       900-SQL-JYOKEN-EDIT2-SEC            SECTION.
-      *
-           IF  ( CNT-JYOKEN    =   1 )
-               IF  (   FLG-JYOKEN-AND  =   "1" )
-                   STRING  " and "         DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
-               END-IF
-      *
-               STRING  "("                 DELIMITED   BY  SIZE
-               INTO    WRK-SQL
-               WITH    POINTER WRK-SQL-PNT
-               END-STRING
-           ELSE
-               STRING  "or "               DELIMITED   BY  SIZE
-               INTO    WRK-SQL
-               WITH    POINTER WRK-SQL-PNT
-               END-STRING
-           END-IF
-      *
-           .
-       900-SQL-JYOKEN-EDIT2-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＳＱＬ条件編集処理３
-      *****************************************************************
-       900-SQL-JYOKEN-EDIT3-SEC            SECTION.
-      *
-           IF  ( CNT-JYOKEN    >   0 )
-               STRING  ")"      DELIMITED   BY  SIZE
-               INTO    WRK-SQL
-               WITH    POINTER WRK-SQL-PNT
-               END-STRING
-               MOVE    1           TO  FLG-JYOKEN-AND
-           END-IF
-      *
-           .
-       900-SQL-JYOKEN-EDIT3-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＳＱＬ条件編集処理４
-      *****************************************************************
-       900-SQL-JYOKEN-EDIT4-SEC            SECTION.
-      *
-           STRING  ")"         DELIMITED   BY  SIZE
-           INTO    WRK-SQL
-           WITH    POINTER     WRK-SQL-PNT
-           END-STRING
-      *
-           .
-       900-SQL-JYOKEN-EDIT4-EXT.
            EXIT.
       *****************************************************************
       *    文字列長取得処理
@@ -3849,7 +2042,6 @@
       *
        910-DB-CLOSE-EXT.
            EXIT.
-      *----(01.00.02) LINE ADD START ----------------------------------
       *****************************************************************
       *    ジョブ開始セット処理
       *****************************************************************
@@ -3907,7 +2099,6 @@
            .
        900-JOBKANRI-CHK-EXT.
            EXIT.
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
@@ -3920,10 +2111,3 @@
            .
        900-PUT-WINDOW-EXT.
            EXIT.
-
-      *----(01.00.XX) LINE ADD START ----------------------------------
-      *----(01.00.XX) LINE ADD END   ----------------------------------
-      *----(01.00.XX) LINE DEL START ----------------------------------
-      *----(01.00.XX) LINE DEL END   ----------------------------------
-      *----(01.00.XX) LINE UPD START ----------------------------------
-      *----(01.00.XX) LINE UPD END   ----------------------------------

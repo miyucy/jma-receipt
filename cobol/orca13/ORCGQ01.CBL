@@ -55,7 +55,11 @@
       * 01.00.03     NACL-太田    02/11/27 +病名コードを空白にしたとき、
       *                                    |対応する病名も空白にする
       * 01.00.04     NACL-太田    03/05/26 +老人一割、２割を追加
-      * 01.00.05     NACL-太田    02/05/28 +一括入力対応
+      * 01.00.05     NACL-太田    03/05/28 +一括入力対応
+      * 01.00.06     NACL-太田    03/06/12 +保険の種類・公費の種類
+      *                                    |・病名・診療行為について、
+      *                                    |複数入力があった場合は
+      *                                    |条件AND,ORの選択を可とする
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -97,6 +101,8 @@
            03  IDX3                                PIC 9(04).
            03  IDX4                                PIC 9(04).
            03  IDX5                                PIC 9(04).
+           03  IDX6                                PIC 9(04).
+           03  IDX7                                PIC 9(04).
            03  IDXA                                PIC 9(04).
            03  IDXB                                PIC 9(04).
            03  IDXC                                PIC 9(04).
@@ -137,6 +143,7 @@
            03  WRK-ERR-CUR                         PIC 9(05).
            03  WRK-PAGENO                          PIC 9(01).
            03  WRK-JYUSHO-IDX                      PIC 9(03).
+           03  WRK-STIDX                           PIC 9(04).
       *
       *
        01  WRK-WIDGET-AREA.
@@ -506,6 +513,14 @@
       *
       *    並び順ラジオボタン初期処理
            PERFORM 3101-RDIO-SYOKI-SEC
+      *
+      *    検索条件AND/OR切り替えラジオボタン初期化
+           MOVE    "F"                 TO  SPA-GMN-Q01-RDKOHNUM-AND
+           MOVE    "T"                 TO  SPA-GMN-Q01-RDKOHNUM-OR
+           MOVE    "F"                 TO  SPA-GMN-Q01-RDBYOMEI-AND
+           MOVE    "T"                 TO  SPA-GMN-Q01-RDBYOMEI-OR
+           MOVE    "F"                 TO  SPA-GMN-Q01-RDSRYACT-AND
+           MOVE    "T"                 TO  SPA-GMN-Q01-RDSRYACT-OR
       *
       *    カーソルキー制御項目
            MOVE   1                   TO  SPA-GMN-Q01-CUR
@@ -1001,6 +1016,24 @@
                MOVE    MCP-WIDGET   TO  WRK-WIDGET
       *
                PERFORM 440-TAB-CHANGE-SEC
+           WHEN    "CLICKED"       ALSO    "RDKOHNUM_AND"
+           WHEN    "CLICKED"       ALSO    "RDKOHNUM_OR"
+      *        画面をＳＰＡにセット
+               PERFORM 4101-GMN-SPA-SET-SEC
+               MOVE    Q01-RDKOHNUM-AND    TO  SPA-GMN-Q01-RDKOHNUM-AND
+               MOVE    Q01-RDKOHNUM-OR     TO  SPA-GMN-Q01-RDKOHNUM-OR
+           WHEN    "CLICKED"       ALSO    "RDBYOMEI_AND"
+           WHEN    "CLICKED"       ALSO    "RDBYOMEI_OR"
+      *        画面をＳＰＡにセット
+               PERFORM 4101-GMN-SPA-SET-SEC
+               MOVE    Q01-RDBYOMEI-AND    TO  SPA-GMN-Q01-RDBYOMEI-AND
+               MOVE    Q01-RDBYOMEI-OR     TO  SPA-GMN-Q01-RDBYOMEI-OR
+           WHEN    "CLICKED"       ALSO    "RDSRYACT_AND"
+           WHEN    "CLICKED"       ALSO    "RDSRYACT_OR"
+      *        画面をＳＰＡにセット
+               PERFORM 4101-GMN-SPA-SET-SEC
+               MOVE    Q01-RDSRYACT-AND    TO  SPA-GMN-Q01-RDSRYACT-AND
+               MOVE    Q01-RDSRYACT-OR     TO  SPA-GMN-Q01-RDSRYACT-OR
            END-EVALUATE
       *
            .
@@ -3252,6 +3285,10 @@
                INITIALIZE              SPA-GMN-Q01-HOKEN-AREA
                                        SPA-NAI-Q01-HOKEN-AREA
       *
+      *        検索条件AND/OR切り替えラジオボタン初期化
+               MOVE    "F"         TO  SPA-GMN-Q01-RDKOHNUM-AND
+               MOVE    "T"         TO  SPA-GMN-Q01-RDKOHNUM-OR
+      *
       *    病名　診療行為
            WHEN    2
                IF ( SPA-GMN-Q01-UBYOMEI-STATE
@@ -3285,6 +3322,12 @@
                                            SPA-GMN-Q01-RDBYOMEI-U-STATE
                                            SPA-GMN-Q01-RDBYOMEI-A-STATE
                END-IF
+      *
+      *        検索条件AND/OR切り替えラジオボタン初期化
+               MOVE    "F"             TO  SPA-GMN-Q01-RDBYOMEI-AND
+               MOVE    "T"             TO  SPA-GMN-Q01-RDBYOMEI-OR
+               MOVE    "F"             TO  SPA-GMN-Q01-RDSRYACT-AND
+               MOVE    "T"             TO  SPA-GMN-Q01-RDSRYACT-OR
       *
       *    並び順
            WHEN    3
@@ -3737,6 +3780,12 @@
            END-PERFORM
       *
       *    保険　公費
+           IF    ( SPA-GMN-Q01-RDKOHNUM-AND    =   "T" )
+               MOVE    "1"                 TO  SPA-Q01-KOHNUM-JKN
+           ELSE
+               MOVE    SPACE               TO  SPA-Q01-KOHNUM-JKN
+           END-IF
+      *
            PERFORM VARYING IDXC    FROM    1   BY  1
                    UNTIL ( IDXC    >   5 )
       *
@@ -3766,6 +3815,18 @@
            END-PERFORM
       *
       *    病名　診療行為
+           IF    ( SPA-GMN-Q01-RDBYOMEI-AND    =   "T" )
+               MOVE    "1"                 TO  SPA-Q01-BYOMEI-JKN
+           ELSE
+               MOVE    SPACE               TO  SPA-Q01-BYOMEI-JKN
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-RDSRYACT-AND    =   "T" )
+               MOVE    "1"                 TO  SPA-Q01-SRYACT-JKN
+           ELSE
+               MOVE    SPACE               TO  SPA-Q01-SRYACT-JKN
+           END-IF
+      *
            PERFORM VARYING IDXC    FROM    1   BY  1
                    UNTIL ( IDXC    >   5 )
                MOVE    SPA-GMN-Q01-BYOMEI(IDXC)
@@ -3789,10 +3850,139 @@
       *
            END-PERFORM
       *
+      *    重複チェック
+           PERFORM 4901-SPASET-DABURI-CHK
+      *
            .
        4901-SPASET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *       重複チェック
+      *****************************************************************
+       4901-SPASET-DABURI-CHK          SECTION.
+      *
+      *
+           PERFORM VARYING IDX6    FROM    1   BY  1
+                   UNTIL ( IDX6    >   4 )
+      *
+               COMPUTE WRK-STIDX   =   IDX6    +   1
+               PERFORM VARYING IDX7    FROM    WRK-STIDX   BY  1
+                       UNTIL ( IDX7    >   5 )
+      *
+      *            住所
+                   IF    ( SPA-Q01-JYUSHO (IDX6)   NOT =   SPACE )
+                       IF    ( SPA-Q01-JYUSHO (IDX6)
+                                       =   SPA-Q01-JYUSHO (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-JYUSHO (IDX7)
+                       END-IF
+                   END-IF
+      *
+      *            カナ氏名
+                   IF    ( SPA-Q01-KANANAME (IDX6) NOT =   SPACE )
+                       IF    ( SPA-Q01-KANANAME (IDX6)
+                                       =   SPA-Q01-KANANAME (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-KANANAME (IDX7)
+                       END-IF
+                   END-IF
+      *
+      *            漢字氏名
+                   IF    ( SPA-Q01-NAME (IDX6)     NOT =   SPACE )
+                       IF    ( SPA-Q01-NAME (IDX6)
+                                       =   SPA-Q01-NAME (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-NAME (IDX7)
+                       END-IF
+                   END-IF
+      *
+      *            保険者番号
+                   IF    ( SPA-Q01-HKNJANUM (IDX6) NOT =   SPACE )
+                       IF    ( SPA-Q01-HKNJANUM (IDX6)
+                                       =   SPA-Q01-HKNJANUM (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-HKNJANUM (IDX7)
+                       END-IF
+                   END-IF
+      *
+      *            保険の種類
+                   IF    ( SPA-Q01-HKNNUM (IDX6)   NOT =   SPACE )
+                       IF    ( SPA-Q01-HKNNUM (IDX6)
+                                       =   SPA-Q01-HKNNUM (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-HKNNUM (IDX7)
+                       END-IF
+                   END-IF
+      *
+      *            記号・番号
+                   IF    ( SPA-Q01-KIGO (IDX6)     NOT =   SPACE )
+                     OR  ( SPA-Q01-NUM  (IDX6)     NOT =   SPACE )
+                       IF    ( SPA-Q01-KIGO (IDX6)
+                                       =   SPA-Q01-KIGO (IDX7))
+                         AND ( SPA-Q01-NUM  (IDX6)
+                                       =   SPA-Q01-NUM  (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-KIGO (IDX7)
+                           MOVE    SPACE   TO  SPA-Q01-NUM  (IDX7)
+                       END-IF
+                   END-IF
+      *
+      *            公費の種類・支払い区分
+                   IF    ( SPA-Q01-KOHNUM (IDX6)   NOT =   SPACE )
+                     OR  ( SPA-Q01-PAYKBN (IDX6)   NOT =   SPACE )
+                       IF    ( SPA-Q01-KOHNUM (IDX6)
+                                       =   SPA-Q01-KOHNUM (IDX7))
+                         AND ( SPA-Q01-PAYKBN (IDX6)
+                                       =   SPA-Q01-PAYKBN (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-KOHNUM (IDX7)
+                           MOVE    SPACE   TO  SPA-Q01-PAYKBN (IDX7)
+                       END-IF
+                   END-IF
+      *
+      *            負担者番号
+                   IF    ( SPA-Q01-FTNJANUM (IDX6) NOT =   SPACE )
+                       IF    ( SPA-Q01-FTNJANUM (IDX6)
+                                       =   SPA-Q01-FTNJANUM (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-FTNJANUM (IDX7)
+                       END-IF
+                   END-IF
+      *
+      *            病名
+                   IF    ( SPA-Q01-BYOMEI (IDX6)   NOT =   SPACE )
+                       IF    ( SPA-Q01-BYOMEI (IDX6)
+                                       =   SPA-Q01-BYOMEI (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-BYOMEI (IDX7)
+                       END-IF
+                   END-IF
+      *
+      *            診療行為コード
+                   IF    ( SPA-Q01-SRYCD (IDX6)   NOT =   SPACE )
+                       IF    ( SPA-Q01-SRYCD (IDX6)
+                                       =   SPA-Q01-SRYCD (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-SRYCD (IDX7)
+                       END-IF
+                   END-IF
+      *
+               END-PERFORM
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX6    FROM    1   BY  1
+                   UNTIL ( IDX6    >   2 )
+      *
+               COMPUTE WRK-STIDX   =   IDX6    +   1
+               PERFORM VARYING IDX7    FROM    WRK-STIDX   BY  1
+                       UNTIL ( IDX7    >   3 )
+      *
+      *            コメント
+                   IF    ( SPA-Q01-COMMENT (IDX6)  NOT =   SPACE )
+                       IF    ( SPA-Q01-COMMENT (IDX6)
+                                       =   SPA-Q01-COMMENT (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-COMMENT (IDX7)
+                       END-IF
+                   END-IF
+      *
+               END-PERFORM
+           END-PERFORM
+      *
+           .
+       4901-SPASET-DABURI-EXT.
+           EXIT.
       *****************************************************************
       *       検索該当項目情報設定処理
       *****************************************************************
@@ -3822,7 +4012,7 @@
            END-IF
       *
       *    該当（４）
-           IF  ( SPA-Q01-BYOMEICD-G        NOT =   SPACE )
+           IF  ( SPA-Q01-BYOMEI-G          NOT =   SPACE )
       *
                MOVE    "1"                 TO  SPA-Q01-GTBL(4)
       *
@@ -4187,6 +4377,16 @@
            END-PERFORM
       *
            PERFORM 5001-MAPCUR-SEC
+      *
+      *    検索条件AND/OR切り替えラジオボタン
+           MOVE    SPA-GMN-Q01-RDKOHNUM-AND    TO  Q01-RDKOHNUM-AND
+           MOVE    SPA-GMN-Q01-RDKOHNUM-OR     TO  Q01-RDKOHNUM-OR
+      *
+           MOVE    SPA-GMN-Q01-RDBYOMEI-AND    TO  Q01-RDBYOMEI-AND
+           MOVE    SPA-GMN-Q01-RDBYOMEI-OR     TO  Q01-RDBYOMEI-OR
+      *
+           MOVE    SPA-GMN-Q01-RDSRYACT-AND    TO  Q01-RDSRYACT-AND
+           MOVE    SPA-GMN-Q01-RDSRYACT-OR     TO  Q01-RDSRYACT-OR
       *
            .
        500-GMNHEN-EXT.
