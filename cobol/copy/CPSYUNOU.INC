@@ -40,6 +40,9 @@
            03  SYU-SRYYMD              PIC  X(08).
       *伝票状態区分
            03  SYU-DENPJTIKBN          PIC  X(01).
+      *伝票作成区分（空白：外来　１：退院時作成　２：定期請求
+      *              ３：入院レセプト用ダミー）
+           03  SYU-CREATEKBN           PIC  X(01).
       *伝票発行日
            03  SYU-DENPPRTYMD          PIC  X(08).
       *請求期間
@@ -320,31 +323,57 @@
                  07  SYU-SHOKUJI         PIC  9(07).
       *食事療養費情報（食事日数・食事療養費・標準負担額）
            03  SYU-SKJ-AREA.
-               05  SYU-SYUSKJ-NISSU    PIC  9(02).
-               05  SYU-SYUSKJ-RYOYOHI  PIC  9(07).
-               05  SYU-SYUSKJ-FTN      PIC  9(07).
+               05  SYU-SYUSKJ-NISSU      PIC  9(02).
+               05  SYU-SYUSKJ-RYOYOHI    PIC  9(07).
+               05  SYU-SYUSKJ-FTN        PIC  9(07).
+               05  SYU-SYUSKJ-FTN-RECE   PIC  9(07).
+               05  SYU-SYUSKJ-FTNKBN     PIC  X(01).
            03  SYU-SKJ-AREA2.
-               05  SYU-KOH1SKJ-NISSU   PIC  9(02).
-               05  SYU-KOH1SKJ-RYOYOHI PIC  9(07).
-               05  SYU-KOH1SKJ-FTN     PIC  9(07).
-               05  SYU-KOH2SKJ-NISSU   PIC  9(02).
-               05  SYU-KOH2SKJ-RYOYOHI PIC  9(07).
-               05  SYU-KOH2SKJ-FTN     PIC  9(07).
-               05  SYU-KOH3SKJ-NISSU   PIC  9(02).
-               05  SYU-KOH3SKJ-RYOYOHI PIC  9(07).
-               05  SYU-KOH3SKJ-FTN     PIC  9(07).
-               05  SYU-KOH4SKJ-NISSU   PIC  9(02).
-               05  SYU-KOH4SKJ-RYOYOHI PIC  9(07).
-               05  SYU-KOH4SKJ-FTN     PIC  9(07).
+               05  SYU-KOH1SKJ-NISSU     PIC  9(02).
+               05  SYU-KOH1SKJ-RYOYOHI   PIC  9(07).
+               05  SYU-KOH1SKJ-FTN       PIC  9(07).
+               05  SYU-KOH1SKJ-FTN-RECE  PIC  9(07).
+               05  SYU-KOH1SKJ-FTNKBN    PIC  X(01).
+               05  SYU-KOH2SKJ-NISSU     PIC  9(02).
+               05  SYU-KOH2SKJ-RYOYOHI   PIC  9(07).
+               05  SYU-KOH2SKJ-FTN       PIC  9(07).
+               05  SYU-KOH2SKJ-FTN-RECE  PIC  9(07).
+               05  SYU-KOH2SKJ-FTNKBN    PIC  X(01).
+               05  SYU-KOH3SKJ-NISSU     PIC  9(02).
+               05  SYU-KOH3SKJ-RYOYOHI   PIC  9(07).
+               05  SYU-KOH3SKJ-FTN       PIC  9(07).
+               05  SYU-KOH3SKJ-FTN-RECE  PIC  9(07).
+               05  SYU-KOH3SKJ-FTNKBN    PIC  X(01).
+               05  SYU-KOH4SKJ-NISSU     PIC  9(02).
+               05  SYU-KOH4SKJ-RYOYOHI   PIC  9(07).
+               05  SYU-KOH4SKJ-FTN       PIC  9(07).
+               05  SYU-KOH4SKJ-FTN-RECE  PIC  9(07).
+               05  SYU-KOH4SKJ-FTNKBN    PIC  X(01).
            03  SYU-SKJ-AREA2R          REDEFINES   SYU-SKJ-AREA2.
                05  SYU-SKJ-TBL         OCCURS   4.
                  07  SYU-SKJ-NISSU       PIC  9(02).
                  07  SYU-SKJ-RYOYOHI     PIC  9(07).
                  07  SYU-SKJ-FTN         PIC  9(07).
-      *食事療養費
+                 07  SYU-SKJ-FTN-RECE    PIC  9(07).
+                 07  SYU-SKJ-FTNKBN      PIC  X(01).
+      *食事療養費（保険）
            03  SYU-RYOYOHI-SKJ         PIC  9(07).
-      *食事負担額
+      *食事負担額（保険：自己負担）
            03  SYU-SKYMONEY-SKJ        PIC  9(07).
+      *食事負担額（保険：自己負担消費税）
+           03  SYU-SKYMONEY-SKJ-TAX    PIC  9(07).
+      *食事負担額（保険：自己負担合計）
+           03  SYU-SKYMONEY-SKJ-KEI    PIC  9(07).
+      *食事療養費（自費）
+           03  SYU-RYOYOHI-SKJ-JIHI    PIC  9(07).
+      *食事負担額（自費：自己負担）
+           03  SYU-SKYMONEY-SKJ-JIHI   PIC  9(07).
+      *食事負担額（自費：自己負担消費税）
+           03  SYU-SKYMONEY-SKJ-JIHI-TAX
+                                       PIC  9(07).
+      *食事負担額（自費：自己負担合計）
+           03  SYU-SKYMONEY-SKJ-JIHI-KEI
+                                       PIC  9(07).
       *再計算区分
            03  SYU-SAIKEISANKBN        PIC  X(01).
       *院外処方区分
