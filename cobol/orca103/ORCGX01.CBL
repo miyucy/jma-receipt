@@ -324,13 +324,11 @@
            MOVE    "薬剤と病名"        TO  SPA-GMN-CHKKBNMEIL (1)
            MOVE    "2"                 TO  SPA-GMN-CHKKBNL    (2)
            MOVE    "診療行為と病名"    TO  SPA-GMN-CHKKBNMEIL (2)
-           MOVE    "3"                 TO  SPA-GMN-CHKKBNL    (3)
-           MOVE    "薬剤と禁忌"        TO  SPA-GMN-CHKKBNMEIL (3)
-           MOVE    "4"                 TO  SPA-GMN-CHKKBNL    (4)
-           MOVE    "薬剤と併用禁忌"    TO  SPA-GMN-CHKKBNMEIL (4)
-           MOVE    "5"                 TO  SPA-GMN-CHKKBNL    (5)
+           MOVE    "4"                 TO  SPA-GMN-CHKKBNL    (3)
+           MOVE    "薬剤と併用禁忌"    TO  SPA-GMN-CHKKBNMEIL (3)
+           MOVE    "5"                 TO  SPA-GMN-CHKKBNL    (4)
            MOVE    "診療行為の併用算定"
-                                       TO  SPA-GMN-CHKKBNMEIL (5)
+                                       TO  SPA-GMN-CHKKBNMEIL (4)
       *
            MOVE    1                   TO  SPA-GMN-CUR 
       *
@@ -1311,7 +1309,7 @@
            MOVE    SPA-GMN-CHKKBN-G    TO  X01-CHKKBN 
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       5
+                   UNTIL       IDX     >       4
                MOVE    SPA-GMN-CHKKBNLIST(IDX) TO  X01-CHKKBNLIST (IDX)
                MOVE    IDX                     TO  X01-CHKKBNCOUNT
            END-PERFORM
@@ -1391,7 +1389,7 @@
                WHEN    "0005"
                    MOVE    "点数マスタがありません"   TO  SPA-ERRMSG
                WHEN    "0006"
-                   MOVE    "チェク区分がありません"   TO  SPA-ERRMSG
+                   MOVE    "チェック区分がありません" TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE    "診療コード入力エラー"     TO  SPA-ERRMSG
                WHEN    "0008"
