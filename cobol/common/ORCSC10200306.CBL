@@ -500,6 +500,7 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+      *
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
@@ -3520,6 +3521,8 @@
                           (IDX-GAIKAN          =   ZERO )  AND
                           (LNK-ORCSC-SYOSIN    =   ZERO )  AND
                           (LNK-ORCSC-SYOSIN2   =   ZERO )
+      *                自動算定なしの時、追加しない
+                 AND  (LNK-ORCSC-GAIKANRIKBN-CHK   NOT =   "2" )
                        MOVE    IDX-SYU2        TO  IDX-Z
                        PERFORM
                            UNTIL   WRK-COM-SRYKBN (IDX-Z)
