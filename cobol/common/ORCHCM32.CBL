@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.01.01    NACL-森脇    03.03.18  出力先プリンタの変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -347,7 +348,7 @@
            MOVE    "HCM32.red"         TO  MKPRT-DIA
            MOVE    SPACE               TO  MKPRT-DEF
            MOVE    HC01PARA            TO  MKPRT-DAT
-           MOVE    SYS-1031-PRTNM(3)   TO  MKPRT-PRTNM
+           MOVE    SYS-1031-PRTNM(9)   TO  MKPRT-PRTNM
            CALL    "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
       *
