@@ -3875,7 +3875,7 @@
            END-IF.
       *
       *    Ï·¿ÍÊÝ¸±¼õµë¼Ô¡Ê£¶£µºÍ°Ê¾å´Þ¤à¡Ë
-           IF     FLG-KOUREI-KBN   =    "1"
+           IF     COMB-KOH1HKNNUM  = "027"
                MOVE    "1"            TO      FLG-YAKFTN
            END-IF.
       *
