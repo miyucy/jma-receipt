@@ -83,6 +83,7 @@
        01  IDX-AREA.
            03  IDX1                 PIC 9(04).
            03  IDX-M                PIC 9(04).
+           03  IDX-JIHI             PIC 9(04).
       *
       *    システム領域
        01  SYS-AREA.
@@ -663,6 +664,23 @@
            MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU24       TO  HCN03-HOKENGAI
+      *
+      *    保険適用外内訳編集
+           PERFORM     VARYING   IDX-JIHI FROM  1  BY  1
+                       UNTIL     IDX-JIHI  >  11
+               COMPUTE   WRK-KINGAKU-Z   =  SYU-TGMONEY(IDX-JIHI)  +
+                                            SYU-TGMONEY-TAX(IDX-JIHI)
+               MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
+               PERFORM   800-HENKAN-SEC
+               MOVE    WRK-ZHENSYU24       TO  HCN03-JIHIBUN(IDX-JIHI)
+           END-PERFORM
+      *
+      *    保険適用外消費税（再掲）
+           MOVE    SYU-TGMONEY-TAX-SAI     TO  WRK-KINGAKU-Z
+           MOVE    WRK-KINGAKU-Z           TO  WRK-ZHENSYU12
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-ZHENSYU24            TO  HCN03-HOKENZEI
+      *
       *    自費
            MOVE    ZERO                TO  WRK-JIHI-REC
            PERFORM VARYING     IDX1     FROM    1   BY  1
