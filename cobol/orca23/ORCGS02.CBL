@@ -2916,17 +2916,18 @@
       *----(01.00.03) LINE ADD START -------------------------------
            MOVE           ZERO                TO    WRK-TYK-HKNTEN
       *----(01.00.03) LINE ADD END   -------------------------------
-           PERFORM        VARYING      IDX1    FROM    1    BY    1
-                   UNTIL       (TBL-SRYKBN(IDX1)   =   SPACE)    OR
-                               (IDX1               >   100)
+           PERFORM VARYING      IDX1    FROM    1    BY    1
+                   UNTIL       (IDX1               >   100)
+                   OR          (TBL-SRYKBN(IDX1)   =   SPACE)
+                               
                EVALUATE    TBL-SRYKBN  (IDX1)
       *            ø«Œ≈
                    WHEN    "11"
                    WHEN    "12"
                     COMPUTE SYU-HKNTEN (01) =  SYU-HKNTEN (01)  +
                            (TBL-ZAITEN (IDX1) *   TBL-ZAIKAISU (IDX1))
-                    IF   TBL-SRYKBN  (IDX1)  =  "11"                     
-                    AND  FLG-SENIN          =   1                       
+                    IF   (TBL-SRYKBN  (IDX1)  =  "11")
+                    AND  (FLG-SENIN          =   1)                      
                          MOVE    1     TO     FLG-SENIN-SYOSIN          
                     END-IF                                              
       *            ªÿ∆≥
@@ -3374,8 +3375,8 @@
                 CONTINUE                                                010112
              ELSE                                                       010112 
                 MOVE   ACCT-SYUTEN1  TO  TBL-SYUTEN(IDX1)                010112
-                IF   SYU-SYUHKNNUM       =   "973"
-                AND  ACCT-SRYKBN         =   "70"
+                IF  (SYU-SYUHKNNUM       =   "973")
+                AND (ACCT-SRYKBN         =   "70")
                     COMPUTE  TBL-SYUTEN(IDX1) =  TBL-SYUTEN(IDX1)
                                               -  ACCT-SYUTEN2
                 END-IF
