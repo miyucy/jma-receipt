@@ -148,3 +148,45 @@
                05  SPA-WRK-CHK-SIKIBETU        PIC X(01)  OCCURS  31.
            03  WRK-SRYYM-SML                   PIC X(06).
            03  WRK-SRYYM-BIG                   PIC X(06).
+      *
+      *    入院会計作成用ワーク
+           03  WRK-YMD             PIC X(10). 
+           03  WRK-NAI-SRYYM-41.
+               05  WRK-NAI-SRYYM-41-YY  PIC 9(04).
+               05  WRK-NAI-SRYYM-41-MM  PIC 9(02).
+           03  WRK-TSUSAN          PIC 9(05).
+           03  WRK-SHONUM          PIC 9(03).
+           03  WRK-STYMD           PIC X(08).
+           03  WRK-EDYMD           PIC X(08).
+           03  WRK-NISSU           PIC 9(05).
+           03  WRK-NISSU1          PIC 9(05).
+           03  WRK-NISSU2          PIC 9(05).
+           03  WRK-SENTEI-STYMD    PIC X(08).
+           03  WRK-SANTEISTYMD     PIC X(08).
+           03  WRK-TOKUTEI-NYUIN   PIC X(02).
+           03  WRK-SAGAKU-KBN      PIC X(02).
+           03  WRK-SAGAKU-KBN9  REDEFINES  WRK-SAGAKU-KBN
+                                   PIC 9(02).
+           03  WRK-HKNCOMBINUM     PIC X(04).
+           03  WRK-HKNCOMBINUM9   REDEFINES  WRK-HKNCOMBINUM
+                                   PIC 9(04).
+           03  WRK-TAIHI-SRYKA     PIC X(02).
+           03  WRK-ZOGENPTN        PIC X(01).
+           03  WRK-ZOGEN           PIC S9(05).
+           03  WRK-KEISANYMD       PIC X(08).
+           03  WRK-TAIHI-SRYYM-41  PIC X(06).
+      *    医療機関設定の入院料加算チェック用
+           03  WRK-NYUKHNKSN-SRYCD PIC X(09)  OCCURS 20.
+           03  WRK-NYUKSNKBN       PIC X(03).
+           03  WRK-BTU-NYUKSNKBN   PIC X(03).
+           03  WRK-KSN-NYUKSNKBN   PIC X(03).
+           03  WRK-SRYCD           PIC X(09).
+           03  WRK-STYUKYMD        PIC X(08).
+           03  WRK-NYUINYM         PIC X(06).
+      *
+           03  WRK-TENSU-X.
+               05  WRK-TENSU       PIC Z(07).
+           03  WRK-KEI-X.
+               05  WRK-KEI         PIC Z(07).
+      *
+           03  WRK-MEISYO          PIC X(40).
