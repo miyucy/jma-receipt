@@ -86,6 +86,8 @@
            03  FLG-LINECHK                         PIC 9(01).
            03  FLG-RSIJBI-AREA-HEN                 PIC 9(01).
            03  FLG-SRYACT-HEN5                     PIC 9(01).
+           03  FLG-COMMENT-CHK                     PIC 9(01).
+           03  FLG-PTCOM                           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -133,6 +135,7 @@
            03  IDX18                               PIC 9(05).
            03  IDX19                               PIC 9(05).
            03  IDX20                               PIC 9(05).
+           03  IDX21                               PIC 9(05).
            03  IDXA                                PIC 9(05).
            03  IDXB                                PIC 9(05).
            03  IDXC                                PIC 9(05).
@@ -275,6 +278,15 @@
            03  WRK-SRYCD                           PIC X(09).
            03  WRK-SRYSYUKBN                       PIC X(03).
            03  WRK-TANINAME                        PIC X(24).
+      *
+       01  COMMENT-CHK-AREA.
+           03  COMMENT-IDX                         PIC 9(03).
+           03  COMMENT-OCC                         OCCURS 2.
+               05  COMMENT-ZAINUM                  PIC 9(08).
+               05  COMMENT-MAX                     PIC 9(03).
+               05  COMMENT-COMMENT-G.
+                   07  COMMENT-COMMENT             PIC X(80)
+                                                   OCCURS  10.
       *
        01  WRK-SRYKA-TBL.
            03  WRK-SRYKA-OCC                       OCCURS  20.
@@ -430,6 +442,7 @@
                "190809190".
            03  CONST-SRYKAMEI-LEN          PIC 9(05)   VALUE   32.
            03  CONST-GAZOU-TANICD          PIC X(03)   VALUE   "006".
+           03  CONST-SRYACCT-MAX           PIC 9(05)   VALUE   1000.
       *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"
@@ -1938,7 +1951,8 @@
       *
            MOVE    ZERO                TO  WKSRYACCT-MAX
            INITIALIZE                      WKSRYACCT-REC
-           PERFORM UNTIL     ( FLG-SRYACCT =   1 )
+           PERFORM UNTIL ( FLG-SRYACCT     =    1 )
+                    OR   ( WKSRYACCT-MAX  >=   CONST-SRYACCT-MAX )
       *
                PERFORM 20011-SRYACT-MATOME-SEC
       *
@@ -2013,21 +2027,104 @@
                                                        (WKSRYACCT-IDX)
             AND    ACCT-MEISAISU       =   WKACCT-MEISAISU
                                                        (WKSRYACCT-IDX)
-               COMPUTE WKACCT-ZAIKAISU  (WKSRYACCT-IDX)
-                   =   WKACCT-ZAIKAISU  (WKSRYACCT-IDX)
-                   +   ACCT-ZAIKAISU
-               PERFORM VARYING IDX1    FROM    1   BY  1
-                       UNTIL ( IDX1    >   31 )
-                   COMPUTE WKACCT-DAY (WKSRYACCT-IDX 1 IDX1)
-                        =  WKACCT-DAY (WKSRYACCT-IDX 1 IDX1)
-                        +   ACCT-DAY (1 IDX1)
-               END-PERFORM
+               INITIALIZE  COMMENT-CHK-AREA
+               MOVE    ACCT-ZAINUM     TO  COMMENT-ZAINUM (1)
+               MOVE    WKACCT-ZAINUM (WKSRYACCT-IDX)
+                                       TO  COMMENT-ZAINUM (2)
+               PERFORM 200111-PTCOM-CHK-SEC
+               IF    ( FLG-COMMENT-CHK =   ZERO )
+                   COMPUTE WKACCT-ZAIKAISU  (WKSRYACCT-IDX)
+                       =   WKACCT-ZAIKAISU  (WKSRYACCT-IDX)
+                       +   ACCT-ZAIKAISU
+                   PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL ( IDX1    >   31 )
+                       COMPUTE WKACCT-DAY (WKSRYACCT-IDX 1 IDX1)
+                            =  WKACCT-DAY (WKSRYACCT-IDX 1 IDX1)
+                            +   ACCT-DAY (1 IDX1)
+                  END-PERFORM
+               ELSE
+                   COMPUTE WKSRYACCT-MAX   =   WKSRYACCT-MAX   +   1
+                   MOVE    SRYACCT-REC TO  WKSRYACCT-OCC (WKSRYACCT-MAX)
+               END-IF
            END-SEARCH
       *
            .
        20011-SRYACT-MATOME-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    患者コメントチェック処理
+      *****************************************************************
+       200111-PTCOM-CHK-SEC            SECTION.
+      *
+           MOVE    ZERO            TO  FLG-COMMENT-CHK
+      *
+           MOVE    1               TO  COMMENT-IDX
+           PERFORM 2001111-PTCOM-HEN-SEC
+      *
+           MOVE    2               TO  COMMENT-IDX
+           PERFORM 2001111-PTCOM-HEN-SEC
+      *
+           IF    ( COMMENT-MAX (1)         =   COMMENT-MAX (2) )
+            AND  ( COMMENT-COMMENT-G (1)   =   COMMENT-COMMENT-G (2) )
+                CONTINUE
+           ELSE
+                MOVE   1           TO  FLG-COMMENT-CHK
+           END-IF
+      *
+           .
+       200111-PTCOM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者コメント編集処理
+      *****************************************************************
+       2001111-PTCOM-HEN-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTCOM
+      *
+           INITIALIZE                      PTCOM-REC
+           MOVE    SPA-HOSPID          TO  PTCOM-HOSPID
+           MOVE    SPA-PTID            TO  PTCOM-PTID
+           MOVE    COMMENT-ZAINUM (COMMENT-IDX)
+                                       TO  PTCOM-ZAINUM
+           MOVE    PTCOM-REC           TO  MCPDATA-REC
+           MOVE    "PTCOM-KEY2"        TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    1               TO  FLG-PTCOM
+           ELSE
+               MOVE    MCPDATA-REC     TO  PTCOM-REC
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-PTCOM   NOT =   ZERO )
+                    OR   ( COMMENT-MAX (COMMENT-IDX)
+                                           >   10 )
+      *
+               COMPUTE COMMENT-MAX (COMMENT-IDX)
+                   =   COMMENT-MAX (COMMENT-IDX)   +   1
+               MOVE    COMMENT-MAX (COMMENT-IDX)
+                                       TO  IDX21
+      *
+               MOVE    PTCOM-INPUTCOMENT
+                                   TO  COMMENT-COMMENT
+                                               (COMMENT-IDX IDX21)
+      *
+               MOVE    "PTCOM-KEY2"    TO  WRK-DBPATH
+               PERFORM 900-TBL-READ-SEC
+               IF    ( FLG-DBRC        NOT =   ZERO )
+                   MOVE    1           TO  FLG-PTCOM
+               ELSE
+                   MOVE    MCPDATA-REC TO  PTCOM-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "PTCOM-KEY2"        TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           .
+       2001111-PTCOM-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    診療行為並び替え処理
       *****************************************************************
@@ -2909,6 +3006,9 @@
                                        TO  WRK-SRYACT-STR
                END-IF
            END-IF
+      *
+           MOVE    "PTCOM-KEY"         TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
       *
            .
        2001111-PTCOM-SET-EXT.
