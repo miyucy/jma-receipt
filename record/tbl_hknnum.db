@@ -17,7 +17,8 @@ tbl_hknnum {
 	JOKEN_STYEAR			number(3);
 	JOKEN_EDYEAR			number(3);
 	TENTNK				number(3);
-	RECESKYKBN              char(1);
+	RECESKYKBN                      char(1);
+	RECEFTNDSPKBN                   char(1);
 	HON_GAIFTNKBN			char(1);
 	HON_GAIKFTNRATE			number(3);
 	HON_GAIKKOTGAK			number(6);
