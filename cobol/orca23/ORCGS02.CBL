@@ -87,6 +87,8 @@
       *  01.01.28    NACL-門脇    03.05.14  自賠責：腰部固定帯対応
       *  01.01.29    NACL-門脇    03.05.20  自賠責：療養担当手当て対応
       *  01.00.30    NACL-太田    03.07.01  出力先プリンタサブ追加
+      *  01.00.31    NACL-太田    03.08.26  請求書の引数設定修正
+      *                                     （労災対応）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -175,6 +177,8 @@
                            11  SPA-NAI-HKNCOMBILST         OCCURS  100.
                                13  SPA-NAI-HKNCOMBIL       PIC X(04).
                                13  SPA-NAI-HKNCOMBIMEIL    PIC X(50).
+                               13  SPA-NAI-HKNNUML         PIC X(03).
+                               13  SPA-NAI-RSI-HKNKBNL     PIC X(01).
       *
                    07  SPA-NAI-SRYKALST-G.
                        09  SPA-NAI-SRYKALST        OCCURS  99.
@@ -184,6 +188,8 @@
                            11  SPA-NAI-TSRYKA      PIC  X(02).
                            11  SPA-NAI-TSRYKAMEI   PIC  X(16).
                            11  SPA-NAI-TSRYYMD     PIC  X(08).
+                           11  SPA-NAI-THKNNUM     PIC  X(03).
+                           11  SPA-NAI-TRSI-HKNKBN PIC  X(01).
                            11  SPA-NAI-THAKYMD     PIC  X(08).
                            11  SPA-NAI-TSKYEDYMD   PIC  X(08).
                            11  SPA-NAI-TNYUGAIKBN  PIC  X(01).
@@ -267,6 +273,8 @@
            03  WRK-KUMINO          PIC X(04).
            03  WRK-HKNKUMI         PIC X(40).
            03  WRK-HKNKBN-MEI      PIC X(04).
+           03  WRK-HKNNUM          PIC X(03).
+           03  WRK-RSI-HKNKBN      PIC X(01).
       *
            03  WRK-ZAIKAISU        PIC 9(07).
       *
@@ -1015,6 +1023,10 @@
                                    TO  SPA-NAI-HKNCOMBIL (IDX11)
                MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX11)
                                    TO  SPA-NAI-HKNCOMBIMEIL (IDX11)
+               MOVE    ORCSHKN-NAI-HKNNUM  (IDX11)
+                                   TO  SPA-NAI-HKNNUML      (IDX11)
+               MOVE    ORCSHKN-NAI-RSI-HKNKBN  (IDX11)
+                                   TO  SPA-NAI-RSI-HKNKBNL  (IDX11)
       *
            END-PERFORM
       *
@@ -1297,6 +1309,8 @@
            MOVE    SYU-HKNCOMBINUM     TO  WRK-KUMINO
            PERFORM 510-HKNKUMI-MEI-SEC
            MOVE    WRK-HKNKUMI         TO  SPA-GMN-THKNCOMBI (IDX1)
+           MOVE    WRK-HKNNUM          TO  SPA-NAI-THKNNUM   (IDX1)
+           MOVE    WRK-RSI-HKNKBN      TO  SPA-NAI-TRSI-HKNKBN(IDX1)
       *
       *    患者負担率
            IF    ( SYU-PTFTNRATE       =   ZERO )
@@ -1982,6 +1996,17 @@
                    MOVE   SPA-GMN-NAME     TO  WRK-SPA-NAME
       *            MOVE   SPA-GMN-SRYKA    TO  WRK-SPA-SRYKA
       *            MOVE   SPA-GMN-SRYKAMEI TO  WRK-SPA-SRYKAMEI
+      *
+      *            労災判定
+                   IF   ( SPA-NAI-THKNNUM (SPA-GMN-SELBAN)
+                                           =   "971" OR "973" )
+                       MOVE    1           TO  WRK-SPA-HKNKBN
+                   ELSE
+                       MOVE    ZERO        TO  WRK-SPA-HKNKBN
+                   END-IF
+      *
+                   MOVE   SPA-NAI-TRSI-HKNKBN (SPA-GMN-SELBAN)
+                                           TO  WRK-SPA-RSI-HKNKBN
       *
       *            帳票プログラム取得
                    IF    ( SYU-NYUGAIKBN   =   1 )
@@ -4518,6 +4543,9 @@
       *    なければ保険組み合わせ番号を表示する
       *
            MOVE    SPACE           TO  WRK-HKNKUMI
+                                       WRK-HKNNUM
+                                       WRK-RSI-HKNKBN
+      *
            MOVE    ZERO            TO  FLG-CHK
       *
            PERFORM VARYING IDX11   FROM    1   BY  1
@@ -4526,6 +4554,10 @@
                IF    ( WRK-KUMINO  =   SPA-NAI-HKNCOMBIL (IDX11))
                    MOVE    SPA-NAI-HKNCOMBIMEIL (IDX11)
                                        TO  WRK-HKNKUMI
+                   MOVE    SPA-NAI-HKNNUML (IDX11)
+                                       TO  WRK-HKNNUM
+                   MOVE    SPA-NAI-RSI-HKNKBNL (IDX11)
+                                       TO  WRK-RSI-HKNKBN
                    MOVE    1           TO  FLG-CHK
                END-IF
            END-PERFORM

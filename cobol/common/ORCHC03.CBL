@@ -37,6 +37,7 @@
       *  01.00.07    NACL-Â¿¡¹Ç¼  03/05/13  ¼«ÇåÀÕÀÁµá½¤Àµ
       *  01.00.08    NACL-Â¿¡¹Ç¼  03/06/23  ¼«Èñ£··åÂÐ±þ
       *  01.00.09    NACL-Â¿¡¹Ç¼  03/06/30  ½ÐÎÏÀè¥×¥ê¥ó¥¿¥µ¥ÖÄÉ²Ã
+      *  01.00.10    NACL-ÂÀÅÄ    03/08/26  Ï«ºÒ¼«ÇåÀÕÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -78,6 +79,7 @@
            03  FLG-PTINF           PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
+           03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-SP              PIC 9(01).
@@ -232,6 +234,10 @@
        01  WRK-SYUNOU-REC.
            COPY    "CPSYUNOU.INC"  REPLACING
                                      //SYU-// BY //WRK-SYU-//.
+      *
+      *    ´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -554,6 +560,18 @@
            END-IF
            PERFORM 1001-HKNCOMBI-HEN-SEC
       *
+           IF    ( COMB-HKNNUM         =   "971" OR "973" )
+      *
+      *        ´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó¸¡º÷
+               INITIALIZE                      PTRSIINF-REC
+               MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+               MOVE    SPA-PTID            TO  PTRSI-PTID
+               MOVE    COMB-HKNID          TO  PTRSI-HKNID
+               PERFORM 910-PTRSIINF-READ-SEC
+           ELSE
+               INITIALIZE                      PTRSIINF-REC
+           END-IF
+      *
            .
        100-SYORI-EXT.
            EXIT.
@@ -854,7 +872,7 @@
            MOVE    WRK-Z7-G            TO  HC03-GOKTEN
       *
       *    Ï«ºÒ¡¦¼«Çå¤Î»þ¡¢ÅÀ¿ôÉ½¼¨¤Ê¤·
-           IF      SPA-HKNKBN          =   1
+           IF    ( COMB-HKNNUM             =    "971"  OR  "973" )
                MOVE    SPACE               TO  HC03-HKNRYO1
                MOVE    SPACE               TO  HC03-HKNRYO2
                MOVE    SPACE               TO  HC03-HKNRYO3
@@ -872,10 +890,10 @@
            MOVE    SYU-HKNTEKMONEY     TO  WRK-Z7
            MOVE    WRK-Z7-G            TO  HC03-HOKENBUN
       *    Ï«ºÒ¡¦¼«Çå¤Î»þ¡¢ÅÀ¿ôÉ½¼¨¤Ê¤·
-           IF      SPA-HKNKBN          =   1
+           IF    ( COMB-HKNNUM             =    "971"  OR  "973" )
       *        ¼«Çå¡¦Ï«ºÒÈó»ØÄê°åÎÅµ¡´Ø
       ******** IF     (SPA-RSI-HKNKBN      =    "4" )  OR
-               IF    ((SPA-RSI-HKNKBN      =    "4" )  AND
+               IF    ((PTRSI-HKNKBN        =    "4" )  AND
                       (SYU-PTFTNRATE   NOT =   ZERO  ))  OR
                       (SYS-4001-RSIIRYOKBN NOT =   "1" )
                    COMPUTE WRK-GOKTEN      =    SYU-HKNTEKMONEY
@@ -1309,6 +1327,46 @@
       *
            .
        910-HKNCOMBI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊóÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       910-PTRSIINF-READ-SEC         SECTION.
+      *
+           MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTRSIINF-REC
+                   MOVE    ZERO            TO  FLG-PTRSIINF
+               ELSE
+                   MOVE    1               TO  FLG-PTRSIINF
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTRSIINF
+           END-IF
+     *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       910-PTRSIINF-READ-EXT.
            EXIT.
       *
       *****************************************************************
