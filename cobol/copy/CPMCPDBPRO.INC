@@ -328,6 +328,7 @@
       *  01.01.141   NACL-小豆沢  04/05/28  DBOPEN,DBDISCONNECT削除
       *  01.01.142   NACL-太田    04/05/28  PTNYUINRRK-KEY32追加
       *  01.01.143   NACL-藤原    04/06/26  RECEPRT-KEY30追加
+      *  01.01.144   NACL-藤原    04/07/07  PTKOHINF-KEY7追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1613,6 +1614,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTKOHINF-KEY6"
                    MOVE    PATH-TBL-PTKOHINF-KEY6 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTKOHINF-KEY7"
+                   MOVE    PATH-TBL-PTKOHINF-KEY7 
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "PTKOHINF-ALL"
