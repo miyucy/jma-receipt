@@ -111,7 +111,7 @@
       *
        01  WRK-AREA.
            03  WRK-PARA.
-               05  WRK-PARA-TERMID             PIC X(16).
+               05  WRK-PARA-TERMID             PIC X(32).
                05  WRK-PARA-HOSPID             PIC X(24).
                05  WRK-PARA-PREFNUM            PIC X(02). 
                05  WRK-PARA-SRYYMD             PIC X(08).
