@@ -244,7 +244,7 @@
            03  WRK-PNT                                 PIC 9(05).
            03  WRK-UTAIGAI-CHK-YM                      PIC X(06).
            03  WRK-YMD.
-               05  WRK-YY                              PIC 9(02).
+               05  WRK-YY                              PIC 9(04).
                05  WRK-MM                              PIC 9(02).
                05  WRK-DD                              PIC 9(02).
            03  WRK-SRYKA                               PIC X(02).
@@ -2355,16 +2355,20 @@
            IF    ( WRK-PTKOH-FTNJANUM  =   SPACE )
             OR   ( WRK-PTKOH-JKYSNUM   =   SPACE )
       *
-               MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
-               MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
-               MOVE    "030001"        TO  WRK-ERRCD
-               PERFORM 212-ERRMES-HEN-SEC
+               IF    ( WRK-PTKOH-JKYSNUM       =   SPACE )
+                AND  ( PTKOH-KOHNUM            =   "012" )
+                    CONTINUE
+               ELSE
+                   MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
+                   MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
+                   MOVE    "030001"        TO  WRK-ERRCD
+                   PERFORM 212-ERRMES-HEN-SEC
       *
-               IF    ( ORCBSD01-CHKKBN (3) =   "1" )
-                   MOVE    1           TO  FLG-CHKEND (3)
-                   GO  TO  200111-FTNJKYNUM-CHK-EXT
+                   IF    ( ORCBSD01-CHKKBN (3) =   "1" )
+                       MOVE    1           TO  FLG-CHKEND (3)
+                       GO  TO  200111-FTNJKYNUM-CHK-EXT
+                   END-IF
                END-IF
-      *
            END-IF
       *
            IF    ( PTKOH-FTNJANUM      NOT =   SPACE )
@@ -2715,17 +2719,19 @@
                END-IF
            END-IF
       *
-           MOVE    PTBYO-CHARTBYOMEI   TO  WRK-KANACHK-MAE-INPUT
-           PERFORM 800-KANA-CHK-SEC
-           IF    ( FLG-KANACHK NOT =   2 )
-               MOVE    PTBYO-SRYKA         TO  SRH-SRYKA
-               MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
-               MOVE    "050009"            TO  WRK-ERRCD
-               PERFORM 213-ERRMES-HEN-SEC
+           IF    ( PTBYO-CHARTBYOMEI   NOT =   SPACE )
+               MOVE    PTBYO-CHARTBYOMEI   TO  WRK-KANACHK-MAE-INPUT
+               PERFORM 800-KANA-CHK-SEC
+               IF    ( FLG-KANACHK NOT =   2 )
+                   MOVE    PTBYO-SRYKA         TO  SRH-SRYKA
+                   MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
+                   MOVE    "050009"            TO  WRK-ERRCD
+                   PERFORM 213-ERRMES-HEN-SEC
       *
-               IF    ( ORCBSD01-CHKKBN (5) =   "1" )
-                   MOVE    1           TO  FLG-CHKEND (5)
-                   GO  TO  2001121-PTBYO-CHK-EXT
+                   IF    ( ORCBSD01-CHKKBN (5) =   "1" )
+                       MOVE    1           TO  FLG-CHKEND (5)
+                       GO  TO  2001121-PTBYO-CHK-EXT
+                   END-IF
                END-IF
            END-IF
       *
