@@ -2128,7 +2128,9 @@
       *
       *    新規で保険を追加する
            MOVE    ZERO                TO  SPA-NAI-HKNSTR
-           ADD     1                   TO  SPA-PTHKN-MAX
+           MOVE    ZERO                TO  SPA-NAI-HKNID
+           MOVE    SPACE               TO  SPA-NAI-SAKJOKBN
+           MOVE    SPACE               TO  SPA-MAE-HKN-AREA
       *    開始日
            MOVE    SPA-STR-TEKSTYMD    TO  SPA-NAI-HTEKSTYMD
            MOVE    SPA-STR-TEKSTYMD    TO  WRK-SYMD
