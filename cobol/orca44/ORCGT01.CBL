@@ -1459,6 +1459,8 @@
            IF      SPA-DATAKBN5-VALUE    =   "T" 
                MOVE    SPA-NAI-HKNJANUM
                                    TO  SHELLTBL-ARG21
+           ELSE
+               MOVE    "00000000"  TO  SHELLTBL-ARG21
            END-IF
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -1551,11 +1553,14 @@
            MOVE    SPA-HOSPID      TO  SHELLTBL-ARG15
            MOVE    RECEERR         TO  SHELLTBL-ARG16
            MOVE    SPA-NAI-SKYYM   TO  SHELLTBL-ARG17
-           IF      SPA-DATAKBN5-VALUE  =   "T" 
-           AND     WRK-3004-CHKFLG (IDX 2)
+           IF      WRK-3004-CHKFLG (IDX 2)
                                        =   "T"
-               MOVE    SPA-NAI-HKNJANUM
-                                   TO  SHELLTBL-ARG18
+               IF      SPA-DATAKBN5-VALUE  =   "T" 
+                   MOVE    SPA-NAI-HKNJANUM
+                                       TO  SHELLTBL-ARG18
+               ELSE
+                   MOVE    "00000000"  TO  SHELLTBL-ARG18
+               END-IF
            END-IF
            MOVE    SHELLTBL    TO  MCPDATA-REC
            MOVE    "SHELL"     TO  MCP-FUNC
