@@ -12,11 +12,6 @@
                05  CLAIM005-CLAIM-T01  PIC  X(2)   VALUE   "01" .
                05  CLAIM005-NAME-T01   PIC  X(50)  
                    VALUE   "È¬ÀÚ" .
-             03  CLAIM005-T01.
-               05  CLAIM005-ORCA-T01   PIC  X(9)   VALUE   "700140000" .
-               05  CLAIM005-CLAIM-T01  PIC  X(2)   VALUE   "01" .
-               05  CLAIM005-NAME-T01   PIC  X(50)  
-                   VALUE   "È¬ÀÚ" .
              03  CLAIM005-T02.
                05  CLAIM005-ORCA-T02   PIC  X(9)   VALUE   "700110000" .
                05  CLAIM005-CLAIM-T02  PIC  X(2)   VALUE   "02" .
