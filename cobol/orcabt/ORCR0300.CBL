@@ -95,6 +95,9 @@
       *                                     剤回数を編集する
       *  01.01.07    NACL-小豆沢  04/05/19  ＤＢ書き込み時のコミット追加
       *  01.01.08    NACL-門脇    04/05/21  DBOPEN,DBDISCONNECT削除
+      *  01.01.09    NACL-藤原    03/05/21  指導料・在宅料のとき
+      *                                     加算点数で告示区分１が７の
+      *                                     ときの点数・回数の編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -253,7 +256,7 @@
            03  FLG-TEIGEN              PIC 9(01).
            03  FLG-YKZ20               PIC 9(01).
            03  FLG-TOTALTEN            PIC 9(01).
-           03  FLG-KOKUJISKBKBN1       PIC 9(01).
+           03  FLG-KOKUJISKBKBN1       PIC 9(03).
            03  FLG-GAITENTTLKBN        PIC 9(03).
            03  FLG-TBLMAX              PIC 9(01).
            03  FLG-SRYSYUKBN721        PIC 9(01).
@@ -383,6 +386,8 @@
                                            OCCURS  3.
                05  WRK-SEHFLG          PIC 9(01).
            03  WRK-SRYCD1-MAX          PIC 9(03).           
+           03  WRK-KOKUJISKBKBN1-KOUI-TEN
+                                       PIC 9(09)V9(02).     
       *    日付変換用
            03  WRK-SYMD                PIC X(08).
       *
@@ -479,6 +484,8 @@
       *----(01.00.04) LINE ADD END ------------------------------------
                05  TBL-KOUI-KZMCOMPSIKIBETU     PIC  9(01).
                05  TBL-KOUI-NAME                PIC  X(200).
+      *        データ区分情報
+               05  TBL-KOUI-DATAKBN             PIC  9(01).
       *
       *    コメントデータ用テーブル
        01  TBL-COMMENT-AREA.
@@ -1928,6 +1935,7 @@
                                            FLG-KENSA-KASAN
                                            FLG-KENSA-TEIGEN
                                            WRK-SRYCD1-MAX
+                                           WRK-KOKUJISKBKBN1-KOUI-TEN
       *                                     
            MOVE    RECE041-SRYKBN      TO  WRK-SRYKBN
       *
@@ -2371,6 +2379,8 @@
                                        TBL-KOUI-SRYCD   (WRK-TBLMAX1)
                MOVE    RECE05-SRYSURYO (IDX)   TO
                                        TBL-KOUI-SRYSURYO(WRK-TBLMAX1)
+               MOVE    RECE05-DATAKBN  (IDX)   TO
+                                       TBL-KOUI-DATAKBN (WRK-TBLMAX1)
                INITIALIZE                  TNS-TENSU-REC
                MOVE    RECE05-SRYCD (IDX)      TO  TNS-SRYCD
                PERFORM 900-TENSU-READ-SEC
@@ -2403,9 +2413,20 @@
                        MOVE    TNS-KZMCOMPSIKIBETU TO
                                    TBL-KOUI-KZMCOMPSIKIBETU(WRK-TBLMAX1)
                    END-IF
+               END-IF 
       *
-                   IF      TNS-KOKUJISKBKBN1   NOT =   "1"
-                       MOVE    1                   TO  FLG-KOKUJISKBKBN1
+      *        
+               IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
+                   IF      TBL-KOUI-KOKUJISKBKBN1(WRK-TBLMAX1)
+                                           NOT =   "1"
+                       MOVE    IDX             TO  FLG-KOKUJISKBKBN1
+                   END-IF
+                   IF    ( TBL-KOUI-KOKUJISKBKBN1(WRK-TBLMAX1)
+                                                   =   "1" )
+                   AND   ( TBL-KOUI-DATAKBN (WRK-TBLMAX1)
+                                                   =   "2" )
+                       ADD     TBL-KOUI-TEN (WRK-TBLMAX1)
+                                       TO  WRK-KOKUJISKBKBN1-KOUI-TEN
                    END-IF
                END-IF
            END-IF
@@ -2663,14 +2684,42 @@
       ****************      IF      IDX                 <   WRK-TBLMAX1
       ****************          IF      FLG-KOKUJISKBKBN1   =   ZERO
                        IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
-                       AND   ( FLG-KOKUJISKBKBN1   =   ZERO           )
                        AND   ( IDX                 <   WRK-SRYCD1-MAX )
-                           MOVE    TBL-KOUI-TEN (IDX)
+                           IF      FLG-KOKUJISKBKBN1   =   ZERO
+                               MOVE    TBL-KOUI-TEN (IDX)
                                                        TO  WRK-TENSU
-                           MOVE    WRK-TENSU           TO  WRK-NUM
-                           MOVE    7                   TO  WRK-NAGASA
-                           COMPUTE RECE041-SYUTEN1 =   RECE041-SYUTEN1
+                               MOVE    WRK-TENSU       TO  WRK-NUM
+                               MOVE    7               TO  WRK-NAGASA
+                               COMPUTE RECE041-SYUTEN1 =
+                                                       RECE041-SYUTEN1
                                                    -   TBL-KOUI-TEN(IDX)
+                           ELSE
+                               IF    ( TBL-KOUI-KOKUJISKBKBN1 (IDX)
+                                                           =   "1" )
+                               AND   ( TBL-KOUI-DATAKBN (IDX)
+                                                           =   "2" )
+                                   MOVE    TBL-KOUI-TEN (IDX)
+                                                       TO  WRK-TENSU
+                                   MOVE    WRK-TENSU   TO  WRK-NUM
+                                   MOVE    7           TO  WRK-NAGASA
+                                   COMPUTE RECE041-SYUTEN1 =
+                                                       RECE041-SYUTEN1
+                                                   -   TBL-KOUI-TEN(IDX)
+                               ELSE
+                                   IF      IDX         =
+                                                   FLG-KOKUJISKBKBN1
+                                       COMPUTE WRK-TENSU     =
+                                           RECE041-SYUTEN1   -
+                                           WRK-KOKUJISKBKBN1-KOUI-TEN
+                                       MOVE    WRK-TENSU
+                                                       TO  WRK-NUM
+                                       MOVE    7       TO  WRK-NAGASA
+                                       COMPUTE RECE041-SYUTEN1 =
+                                               RECE041-SYUTEN1     -
+                                               WRK-TENSU
+                                   END-IF
+                               END-IF 
+                           END-IF
                        END-IF
       *----(01.00.04) LINE ADD END ------------------------------------
       *****************IF      IDX                 =   WRK-TBLMAX1
@@ -2714,12 +2763,32 @@
       ****************         IF      FLG-KOKUJISKBKBN1   =   ZERO
       ****************             IF      RECE041-ZAIKAISU    >   ZERO
                        IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
-                       AND   ( FLG-KOKUJISKBKBN1   =   ZERO           )
                        AND   ( RECE041-ZAIKAISU    >   ZERO           )
                        AND   ( IDX                 <   WRK-SRYCD1-MAX )
-                           MOVE    RECE041-ZAIKAISU    TO  WRK-KAISU
-                           MOVE    WRK-KAISU           TO  WRK-NUM
-                           MOVE    3                   TO  WRK-NAGASA
+                           IF      FLG-KOKUJISKBKBN1   =   ZERO
+                               MOVE    RECE041-ZAIKAISU
+                                                       TO  WRK-KAISU
+                               MOVE    WRK-KAISU       TO  WRK-NUM
+                               MOVE    3               TO  WRK-NAGASA
+                           ELSE
+                               IF    ( TBL-KOUI-KOKUJISKBKBN1 (IDX)
+                                                       =   "1"      )
+                               AND   ( TBL-KOUI-DATAKBN (IDX)
+                                                       =   "2"      )
+                                   MOVE    RECE041-ZAIKAISU
+                                                       TO  WRK-KAISU
+                                   MOVE    WRK-KAISU   TO  WRK-NUM
+                                   MOVE    3           TO  WRK-NAGASA
+                               ELSE
+                                   IF      IDX     =   FLG-KOKUJISKBKBN1
+                                       MOVE    RECE041-ZAIKAISU
+                                                       TO  WRK-KAISU
+                                       MOVE    WRK-KAISU
+                                                       TO  WRK-NUM
+                                       MOVE    3       TO  WRK-NAGASA
+                                   END-IF
+                               END-IF
+                           END-IF        
                        END-IF
       *----(01.00.04) LINE ADD END ------------------------------------
       **************** IF      IDX             =   WRK-TBLMAX1
