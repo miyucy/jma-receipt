@@ -6327,6 +6327,12 @@
                GO  TO  490-USERBYOMEI-KENSAKU-EXT
            END-IF
       *
+           IF    ( SPA-GMN-C02-BANGO       NOT =   SPACE )
+           AND   ( SPA-NAI-C02-BYOMEICD-MAX    >   1     )
+               MOVE    "0056"             TO  SPA-ERRCD
+               GO  TO  490-USERBYOMEI-KENSAKU-EXT 
+           END-IF
+      *
       *    変更処理のとき自院コードの入力がない場合
            IF    ( SPA-GMN-C02-BANGO   
                                    NOT =   SPACE ) 
