@@ -555,6 +555,9 @@
            MOVE    SPA-GMN-I51-NYUINKA TO  I51-SRYKA
       *    年齢
            MOVE    SPA-GMN-I51-AGE     TO  I51-NENREI
+      *    入院日
+           MOVE    SPA-GMN-I51-NYUINYMD
+                                       TO  I51-NYUINYMD
       *    算定開始日
            MOVE    SPA-GMN-I51-SANTEISTYMD
                                        TO  I51-SANTEISTYMD
@@ -1180,6 +1183,17 @@
                MOVE    SYS-1005-SRYKANAME
                                    TO  SPA-GMN-I51-NYUINKA
            END-IF
+      *
+      *    入院日
+           MOVE    PTNYUINRRK-NYUINYMD
+                                   TO  WRK-YMD
+           PERFORM 5002-HIZUKE-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4101-PTINF-SET-EXT
+           END-IF
+           MOVE    WRK-HENYMDG     TO  SPA-GMN-I51-NYUINYMD
+           MOVE    WRK-SYMD        TO  SPA-NAI-I51-NYUINYMD
+      *
       *
       *    算定開始日
       *    前回定期請求日の翌日か入院日を設定

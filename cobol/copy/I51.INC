@@ -35,6 +35,8 @@
                 04  I51-VALUE   PIC X(7).
               03  I51-SRYKA.
                 04  I51-VALUE   PIC X(10).
+              03  I51-NYUINYMD.
+                04  I51-VALUE   PIC X(14).
               03  I51-SANTEISTYMD.
                 04  I51-VALUE   PIC X(14).
               03  I51-SANTEIEDYMD.

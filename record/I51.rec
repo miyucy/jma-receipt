@@ -27,6 +27,9 @@ I51	{
 		SRYKA	{
 			value	varchar(10);
 		};
+		NYUINYMD	{
+			value	varchar(14);
+		};
 		SANTEISTYMD	{
 			value	varchar(14);
 		};

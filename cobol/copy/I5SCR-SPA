@@ -45,6 +45,8 @@
       *                入院科
                        11  SPA-GMN-I51-NYUINKA       PIC X(10).
                    09  SPA-GMN-I51-INPUT-AREA.
+      *                入院日
+                       11  SPA-GMN-I51-NYUINYMD      PIC X(10).
       *                算定開始日
                        11  SPA-GMN-I51-SANTEISTYMD   PIC X(10).
       *                算定終了日
@@ -141,6 +143,8 @@
       *                入力データ入院履歴枝番号
                        11  SPA-NAI-I51-PTRRKEDANUM   PIC 9(03).
                    09  SPA-NAI-I51-INPUT-AREA.
+      *                入院日
+                       11  SPA-NAI-I51-NYUINYMD      PIC X(08).
       *                算定開始日
                        11  SPA-NAI-I51-SANTEISTYMD   PIC X(08).
       *                算定終了日

@@ -395,8 +395,23 @@
     </widget>
     <widget>
       <class>GtkPandaEntry</class>
+      <name>NYUINYMD</name>
+      <x>128</x>
+      <y>72</y>
+      <width>88</width>
+      <height>24</height>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>14</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+
+    </widget>
+    <widget>
+      <class>GtkPandaEntry</class>
       <name>SANTEISTYMD</name>
-      <x>280</x>
+      <x>344</x>
       <y>72</y>
       <width>96</width>
       <height>24</height>
@@ -411,7 +426,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SANTEIEDYMD</name>
-      <x>408</x>
+      <x>464</x>
       <y>72</y>
       <width>96</width>
       <height>24</height>
@@ -1760,7 +1775,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label491</name>
-      <x>384</x>
+      <x>440</x>
       <y>72</y>
       <width>20</width>
       <height>25</height>
@@ -2052,11 +2067,27 @@
     <widget>
       <class>GtkLabel</class>
       <name>label488</name>
-      <x>200</x>
+      <x>256</x>
       <y>72</y>
       <width>80</width>
       <height>24</height>
       <label>算定期間</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+
+    </widget>
+    <widget>
+      <class>GtkLabel</class>
+      <name>label502</name>
+      <x>72</x>
+      <y>72</y>
+      <width>60</width>
+      <height>24</height>
+      <label>入院日</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
