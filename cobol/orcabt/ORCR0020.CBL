@@ -1159,6 +1159,7 @@
                              WHEN    "031"  THRU    "034"  
                                  EVALUATE   COMB-HOJOKBN
                                      WHEN   "B"
+                                     WHEN   "9"   
                                        MOVE   "9"   TO   WK-HONKZKKBN
                                      WHEN   "E"
                                      WHEN   "8"
@@ -1203,12 +1204,12 @@
       *          
       *----(01.00.13) LINE ADD END   --------------------------
       *
-            DISPLAY "WK-HONKZKKBN: " WK-HONKZKKBN 
-            DISPLAY "RECE01-NYUGAIKBN: " RECE01-NYUGAIKBN 
-            DISPLAY "WK-IHO: " WK-IHO 
-            DISPLAY "WK-KOKUHO: " WK-KOKUHO 
-            DISPLAY "WK-RJN: " WK-RJN 
-            DISPLAY "WK-KOHI-CNT: " WK-KOHI-CNT 
+      *      DISPLAY "WK-HONKZKKBN: " WK-HONKZKKBN 
+      *      DISPLAY "RECE01-NYUGAIKBN: " RECE01-NYUGAIKBN 
+      *      DISPLAY "WK-IHO: " WK-IHO 
+      *      DISPLAY "WK-KOKUHO: " WK-KOKUHO 
+      *      DISPLAY "WK-RJN: " WK-RJN 
+      *      DISPLAY "WK-KOHI-CNT: " WK-KOHI-CNT 
       *      ACCEPT     WRK-IN FROM CONSOLE
       *
       *----(01.00.13) LINE MOD START --------------------------
