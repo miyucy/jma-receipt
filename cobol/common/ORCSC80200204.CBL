@@ -1272,9 +1272,13 @@
                MOVE    WRK-COM-INPUTCD (IDX-Z)     TO  WRK-SRYCD2
                PERFORM 10011312-RIGAKU-SERCH-SEC
                IF      FLG-RIGAKU          =   1
-      *            £±¡¥£µÇÜ¤È¤¹¤ë
-                   MOVE    "101800010"     TO  WRK-SRYCD
-                   MOVE    1               TO  FLG-ROUSAI
+                   EVALUATE    SPA-RSI-SISIKBN
+                       WHEN    1
+                       WHEN    2
+      *                    £±¡¥£µÇÜ¤È¤¹¤ë
+                           MOVE    "101800010"     TO  WRK-SRYCD
+                           MOVE    1               TO  FLG-ROUSAI
+                   END-EVALUATE
                END-IF
            END-IF
       *
