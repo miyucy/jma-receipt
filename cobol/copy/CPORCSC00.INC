@@ -50,6 +50,8 @@
       *
       *    画面行位置
            03  LNK-ORCSC-CHK-IDX       PIC 9(04).
+      *    警告行位置
+           03  LNK-ORCSC-KEI-IDX       PIC 9(04).
       *
       *    合計点数
            03  LNK-ORCSC-ZAITEN        PIC 9(08).
@@ -146,20 +148,39 @@
       *時間外特例区分
            03  LNK-ORCSC-JIKANTOKU         PIC  9(01).
       *
-      *理学療法当月内算定
+      *リハビリ当月内回数集計
            03  LNK-ORCSC-RIGAKU-TBL.
-               05  LNK-ORCSC-RIGAKU-OCCS       OCCURS  6.
-                   07  LNK-ORCSC-RIGAKU-SRYCD  PIC  X(09).
-                   07  LNK-ORCSC-RIGAKU-CNT    PIC  9(03).
+      *        １:理学、２：作業、３：言語
+               05  LNK-ORCSC-DCNT-TBL        OCCURS  3.
+      *        集団
+                   07  LNK-ORCSC-DCNT-SN-G.
+                       09  LNK-ORCSC-DCNT-SN     PIC 9(03)   OCCURS  31.
+      *            当日
+                   07  LNK-ORCSC-TCNT-S          PIC 9(03).
+      *            月計
+                   07  LNK-ORCSC-TCNT-SN         PIC 9(03).
+      *        個別
+                   07  LNK-ORCSC-DCNT-KN-G.
+                       09  LNK-ORCSC-DCNT-KN     PIC 9(03)   OCCURS  31.
+                   07  LNK-ORCSC-TCNT-K          PIC 9(03).
+                   07  LNK-ORCSC-TCNT-KN         PIC 9(03).
+      *        早期リハ等加算（逓減対象外）
+               05  LNK-ORCSC-GAICNT-G.
+                   07  LNK-ORCSC-GCNT            PIC 9(01)   OCCURS  31.
+      *******  05  LNK-ORCSC-RIGAKU-OCCS       OCCURS  6.
+      *            07  LNK-ORCSC-RIGAKU-SRYCD  PIC  X(09).
+      *            07  LNK-ORCSC-RIGAKU-CNT    PIC  9(03).
       *            入院用追加
-                   07  LNK-ORCSC-RIG-KBN       PIC  X(01).
-                   07  LNK-ORCSC-RIG-RYO       PIC  X(01).
-                   07  LNK-ORCSC-RIG-DAY-G.
-                       09  LNK-ORCSC-RIG-DAY   PIC  9(01)
-                                               OCCURS 31.
-               05  LNK-ORCSC-SOUKI-G.
-                   07  LNK-ORCSC-SOUKI-FLG PIC  9(01)
-                                               OCCURS 31.
+      *            07  LNK-ORCSC-RIG-KBN       PIC  X(01).
+      *            07  LNK-ORCSC-RIG-RYO       PIC  X(01).
+      *            07  LNK-ORCSC-RIG-DAY-G.
+      *                09  LNK-ORCSC-RIG-DAY   PIC  9(01)
+      *                                        OCCURS 31.
+      *        05  LNK-ORCSC-SOUKI-G.
+      *            07  LNK-ORCSC-SOUKI-FLG PIC  9(01)
+      *********                                OCCURS 31.
+      *    リハビリ逓減確認
+           03  LNK-ORCSC-FLG-RIHTEI            PIC 9(01).
       *投薬の継続分チェック
            03  LNK-ORCSC-KBN20.
       *継続区分
@@ -222,4 +243,6 @@
       *
       *    労災の時、読み替えあり
            03  LNK-ORCSC-RSIOK              PIC  X(01).
+      *    エラーメッセージ
+           03  LNK-ORCSC-ERRMSG             PIC  X(80).
       *
