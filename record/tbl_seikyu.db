@@ -718,6 +718,33 @@ path	del4 	{
 };
 
 
+path	del5 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_seikyu
+                WHERE   HOSPID      =   :HOSPID
+                  AND   SRYYM       =   :SRYYM
+                  AND   NYUGAIKBN   =   :NYUGAIKBN
+                  AND   RECESYUBETU =   '0000' 
+                  AND   SKYKBN      <>  "0" 
+		;
+	};
+};
+
+
+path	del6 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_seikyu
+                WHERE   HOSPID       =   :HOSPID
+                  AND   SRYYM        =   :SRYYM
+                  AND   NYUGAIKBN    =   :NYUGAIKBN
+                  AND   TEISYUTUSAKI =   :TEISYUTUSAKI
+                  AND   SKYKBN       <>  "0" 
+		;
+	};
+};
+ 
 
 
 
