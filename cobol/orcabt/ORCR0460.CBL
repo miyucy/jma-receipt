@@ -43,6 +43,7 @@
       *                                     画像診断のフィルムを手技に表示
       *  01.00.09    NACL-門脇    03.02.13  乳幼児加算の時手技に表示
       *  01.00.10    NACL-門脇    03.03.06  初再診のコメント編集対応
+      *  01.00.11    NACL-門脇    03.03.12  先頭の診療行為コードの判定修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -910,9 +911,13 @@
                    ELSE
       *                先頭の診療行為コード編集              
                        IF      WRK-RECE45        =   ZERO
+                         IF  RECE45-SRYCD(IDX)(1:1)  =  "8"
+                           CONTINUE
+                         ELSE
                            MOVE    RECE45-SRYCD (IDX)
-                                                 TO  TBL-ZAIW-SRYCD1
+                                                 TO  TBL-ZAIW-SRYCD1 
                            MOVE    1             TO  WRK-RECE45
+                         END-IF
                        END-IF
       *                                                         
                        MOVE    WRK-ZAIWMAX (IDY) TO  IDZ
@@ -2246,8 +2251,7 @@
                    PERFORM 900-TENSU-INV-SEC
                    IF      FLG-TENSU            =       1
                        INITIALIZE               TNS-TENSU-REC
-                       DISPLAY   "TENSU FETCH ERR" 
-                  END-IF
+                   END-IF
                  END-IF
                END-IF
                MOVE    TNS-CDKBN-SYO       TO  RECE46-CDKBN-SYO
