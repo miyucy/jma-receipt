@@ -6051,7 +6051,9 @@
       *****************************************************************
        420-CLEA-SEC        SECTION.
       *
-           IF      SPA-GMN-BANGO       =   ZERO
+           IF     (SPA-GMN-BANGO       =   ZERO  )  AND
+                  (SPA-GMN-RRKSELNUM   =   SPACE )  AND
+                  (SPA-GMN-HENSRYYMD   =   SPACE )
       *        排他制御解除処理 
                PERFORM 990-LOCK-OUT-SEC
       *        クリア
