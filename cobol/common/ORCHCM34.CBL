@@ -1393,6 +1393,7 @@
            INITIALIZE                  PTBYOMEI-REC
            MOVE    PTINF-HOSPID        TO  PTBYO-HOSPID
            MOVE    PTINF-PTID          TO  PTBYO-PTID
+           MOVE    ORCHCM34-NYUGAIKBN  TO  PTBYO-NYUGAIKBN
       *
            MOVE    ORCHCM34-SRYYM      TO  PTBYO-TENKIYMD
            MOVE    "01"                TO  PTBYO-TENKIYMD (7:2)
