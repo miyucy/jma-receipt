@@ -38,6 +38,7 @@
       *  01.01.02    NACL-藤原    02/09/18  保険者番号の追加
       *  01.01.03    NACL-藤原    02/10/10  サイト区分追加
       *  01.01.04    NACL-藤原    02/10/11  ２００２年１０月改正対応
+      *  01.01.05    NACL-藤原    02/11/13  更新用ファイルの編集の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -148,7 +149,7 @@
       *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
-           03  WRK-PARA1.
+      *****03  WRK-PARA1.
       *********05  WRK-PARA-SKYYM  PIC X(06).
       *********05  WRK-PARA-TERMID PIC X(16).
       *********05  WRK-PARA-SYSYMD PIC X(08).
@@ -686,7 +687,9 @@
       *****************************************************************
        230-UPD-FILE-HENSYU-SEC         SECTION.
       *
-           MOVE    RECE10-REC          TO  RECE10X-REC
+      *****MOVE    RECE10-REC          TO  RECE10X-REC
+           MOVE    SPACE               TO  RECE10X-REC
+           MOVE    RECE10-KEY          TO  RECE10X-KEY
            WRITE   RECE10X-REC
            ADD     1                   TO  CNT-UPDFILE
            .
@@ -1151,18 +1154,20 @@
                    IF      MCP-RC          =   ZERO
                        PERFORM 900-UPD-FILE-READ-SEC
                    ELSE
-                       DISPLAY "UPD ERR KEY="  RECE10-KEY 
-                       MOVE  "*** ORCBM001 SEIKYU UPD ERR ***"
-                                           TO  WRK-RECEERR
-                       MOVE    RECE10-KEY  TO  WRK-RECEERR(33:)
+                       STRING "請求管理ＤＢ　更新エラー　"
+                                               DELIMITED  BY  SIZE
+                               RECE10-KEY      DELIMITED  BY  SIZE
+                                               INTO    WRK-RECEERR
+                       END-STRING                                
                        PERFORM 500-ERR-HENSYU-SEC
                        MOVE    1           TO  FLG-UPDFILE
                    END-IF
                ELSE
-                       DISPLAY "INV ERR KEY="  RECE10-KEY 
-                   MOVE  "*** ORCBM001 SEIKYU INVALID ***"
-                                           TO  WRK-RECEERR
-                   MOVE    RECE10-KEY      TO  WRK-RECEERR(33:)
+                   STRING "請求管理ＤＢ　読込み更新エラー　"
+                                               DELIMITED  BY  SIZE
+                           RECE10X-KEY         DELIMITED  BY  SIZE
+                                               INTO    WRK-RECEERR
+                   END-STRING                                
                    PERFORM 500-ERR-HENSYU-SEC
                    MOVE    1               TO  FLG-UPDFILE
                END-IF

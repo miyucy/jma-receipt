@@ -29,6 +29,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    02/11/13  更新用ファイルの編集の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -680,7 +681,9 @@
       *****************************************************************
        20013-UPD-FILE-HENSYU-SEC         SECTION.
       *
-           MOVE    RECE10-REC          TO  RECE10X-REC
+      *****MOVE    RECE10-REC          TO  RECE10X-REC
+           MOVE    SPACE               TO  RECE10X-REC
+           MOVE    RECE10-KEY          TO  RECE10X-KEY
            WRITE   RECE10X-REC
            ADD     1                   TO  CNT-UPDFILE
            .
@@ -1146,18 +1149,20 @@
                    IF      MCP-RC          =   ZERO
                        PERFORM 900-UPD-FILE-READ-SEC
                    ELSE
-                       DISPLAY "UPD ERR KEY="  RECE10-KEY 
-                       MOVE  "*** ORCBM001 SEIKYU UPD ERR ***"
-                                           TO  WRK-RECEERR
-                       MOVE    RECE10-KEY  TO  WRK-RECEERR(33:)
+                       STRING "請求管理ＤＢ　更新エラー　"
+                                               DELIMITED  BY  SIZE
+                               RECE10-KEY      DELIMITED  BY  SIZE
+                                               INTO    WRK-RECEERR
+                       END-STRING                                
                        PERFORM 500-ERR-HENSYU-SEC
                        MOVE    1           TO  FLG-UPDFILE
                    END-IF
                ELSE
-                       DISPLAY "INV ERR KEY="  RECE10-KEY 
-                   MOVE  "*** ORCBM001 SEIKYU INVALID ***"
-                                           TO  WRK-RECEERR
-                   MOVE    RECE10-KEY      TO  WRK-RECEERR(33:)
+                   STRING "請求管理ＤＢ　読込み更新エラー　"
+                                               DELIMITED  BY  SIZE
+                           RECE10X-KEY         DELIMITED  BY  SIZE
+                                               INTO    WRK-RECEERR
+                   END-STRING                                
                    PERFORM 500-ERR-HENSYU-SEC
                    MOVE    1               TO  FLG-UPDFILE
                END-IF

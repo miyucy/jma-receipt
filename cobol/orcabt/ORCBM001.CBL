@@ -39,6 +39,7 @@
       *  £²£°£°£²Ç¯£±£°·î²þÀµÂÐ±þ
       *  01.01.01    NACL-Æ£¸¶    02/10/09  £²£°£°£²Ç¯£¹·î°ÊÁ°¤Î¤ß½¸·×
       *                                     Á¥°÷ÊÝ¸±¤Î½¸·×ÊýË¡¤Î½¤Àµ 
+      *  01.01.02    NACL-Æ£¸¶    02/11/13  ¹¹¿·ÍÑ¥Õ¥¡¥¤¥ë¤ÎÊÔ½¸¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -572,7 +573,9 @@
       *****************************************************************
        230-UPD-FILE-HENSYU-SEC         SECTION.
       *
-           MOVE    RECE10-REC          TO  RECE10X-REC
+      *****MOVE    RECE10-REC          TO  RECE10X-REC
+           MOVE    SPACE               TO  RECE10X-REC
+           MOVE    RECE10-KEY          TO  RECE10X-KEY
            WRITE   RECE10X-REC
       *
            ADD     1                   TO  CNT-UPDFILE
@@ -678,6 +681,7 @@
       *
            PERFORM 900-UPD-FILE-READ-SEC
            PERFORM             UNTIL   FLG-UPDFILE    =   1
+                               OR      FLG-ERR        =   1
                MOVE    SPACE           TO  RECE10-REC   
                INITIALIZE                  RECE10-REC
                MOVE    RECE10X-KEY         TO  RECE10-KEY
@@ -697,16 +701,21 @@
                    IF      MCP-RC          =   ZERO
                        PERFORM 900-UPD-FILE-READ-SEC
                    ELSE
-                       MOVE  "*** ORCBM001 SEIKYU UPD ERR ***"
-                                           TO  WRK-RECEERR
-                       MOVE    RECE10-KEY  TO  WRK-RECEERR(33:)
+                       MOVE    SPACE               TO  WRK-RECEERR
+                       STRING "ÀÁµá´ÉÍý£Ä£Â¡¡¹¹¿·¥¨¥é¡¼¡¡"
+                                               DELIMITED  BY  SIZE
+                               RECE10-KEY      DELIMITED  BY  SIZE
+                                               INTO    WRK-RECEERR
+                       END-STRING                                
                        PERFORM 500-ERR-HENSYU-SEC
                        MOVE    1           TO  FLG-UPDFILE
                    END-IF
                ELSE
-                   MOVE  "*** ORCBM001 SEIKYU INVALID ***"
-                                           TO  WRK-RECEERR
-                   MOVE    RECE10X-KEY     TO  WRK-RECEERR(33:)
+                   STRING "ÀÁµá´ÉÍý£Ä£Â¡¡ÆÉ¹þ¤ß¹¹¿·¥¨¥é¡¼¡¡"
+                                               DELIMITED  BY  SIZE
+                           RECE10X-KEY         DELIMITED  BY  SIZE
+                                               INTO    WRK-RECEERR
+                   END-STRING                                
                    PERFORM 500-ERR-HENSYU-SEC
                    MOVE    1               TO  FLG-UPDFILE
                END-IF
