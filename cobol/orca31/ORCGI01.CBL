@@ -8149,7 +8149,7 @@
       *    入院料加算診療コード取り込み
            PERFORM    4801-NYUKSN-GET-SEC
       *    特定入院料区分のセット
-           IF      SPA-GMN-I01-TOKNYUIN-CD    =   SPACE
+           IF      PTNYUINRRK-TOKUTEI-NYUIN    =   SPACE
                MOVE     "0"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
            ELSE
                MOVE     "1"     TO  LNK-SCNYUACCT-TOKUTEINYUIN-KBN
