@@ -40,6 +40,7 @@
       * 01.00.09     NACL-多々納  03/02/19  療養担当手当追加
       * 01.00.10     NACL-多々納  03/03/28  自賠責の逓減を６ヶ月以降とする
       * 01.00.11     NACL-多々納  03/04/07  入院日のチェック追加
+      * 02.00.00     NACL-多々納  03/07/01  労災・自賠責以外診察回数をやめる
       *****************************************************************
       *
       *
@@ -196,7 +197,7 @@
            03  WRK-SEIKATU-CNT         PIC 9(04).
       *
       *    寝たきり回数
-           03  WRK-NETAKIRI-CNT    PIC 9(04).
+           03  WRK-NETAKIRI-CNT        PIC 9(04).
       *
       *    在宅自己注射
            03  WRK-ZAITAKU             PIC 9(01).
@@ -204,9 +205,9 @@
       *
       *    発生年月日
            03  WRK-HASSYOYMD.
-               05  WRK-HAS-YY         PIC 9(04).
-               05  WRK-HAS-MM         PIC 9(02).
-               05  WRK-HAS-DD         PIC 9(02).
+               05  WRK-HAS-YY          PIC 9(04).
+               05  WRK-HAS-MM          PIC 9(02).
+               05  WRK-HAS-DD          PIC 9(02).
       *
       *    初回算定日
            03  WRK-FSANTEIYMD          PIC X(08).
@@ -663,8 +664,15 @@
            MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-PTID            TO  JYURRK-PTID
-           MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
-           MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
+           IF      SPA-HKNKBN          =   1
+      *        労災・自賠責の時、診療月１日から診療日までの範囲
+               MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
+               MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
+           ELSE
+      *        以外の時、診療日のみ
+               MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
+           END-IF
+      *
            MOVE    SPA-SRYYMD          TO  JYURRK-UPSRYYMD
       *
            MOVE    "JYURRK-KEY14"      TO  WRK-PATH
@@ -1217,6 +1225,7 @@
                MOVE    1               TO  SPA-SEIKATU-ARI
                MOVE    1               TO  SPA-SEIKATU-ARI2
            END-IF
+      *
            .
        1007-SEIKATU-CHK-EXT.
            EXIT.
@@ -1415,7 +1424,6 @@
       *    消炎鎮痛処置定チェック
            PERFORM 1005-SYOUEN-CHK-SEC
       *
-      *
            .
        1000-SANTEI-RSI-EXT.
            EXIT.
@@ -1516,9 +1524,10 @@
       *
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
       *    MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
       *
            .
        10001-RSI-JYURRK-CHK-EXT.
@@ -2490,9 +2499,10 @@
       *
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
       *    MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
-      *    CALL    "MCPDBSUB"          USING
-      *                                MCPAREA
-      *                                MCPDATA-REC
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
       *
            .
        33051-JYURRK-MAECHK-EXT.
@@ -4412,7 +4422,6 @@
       *    診察料算定後、診察料のみの変更処理
       *****************************************************************
        1014-SINSATU-HENKAN-SEC              SECTION.
-      *
       *
            PERFORM 1010-SINSATU-HEN-SEC
       *

@@ -36,6 +36,7 @@
       * 01.00.07     NACL-多々納  03/04/11  科変更追加、履歴に科表示他
       * 01.00.08     NACL-多々納  03/05/29  入院アフターケアエラー
       * 01.00.09     NACL-多々納  03/06/09  入院日指定修正
+      * 01.00.10     NACL-多々納  03/07/09  時間外区分設定修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -264,6 +265,7 @@
            03  IDX-GG              PIC 9(04).
            03  WRK-MAX             PIC 9(04).
            03  WRK-STR             PIC 9(04).
+           03  IDX-G               PIC 9(04).
       *
            03  IDX-SET             PIC 9(04).
       *
@@ -2590,8 +2592,10 @@
                    (SPA-GMN-INPUTCD (IDX2)(3:1)  NOT =   SPACE)
                MOVE    SPA-GMN-INPUTCD (IDX2)(1:1)
                                            TO  SPA-COM-TIMEFLG(IDX2)
-               MOVE    SPA-COM-TIMEFLG (IDX2)
+               IF      SPA-SYORIFLG        =   ZERO
+                   MOVE    SPA-COM-TIMEFLG (IDX2)
                                            TO  SPA-NAI-TIMEFLG
+               END-IF
            END-IF
       *
       *    コメントの時、コメント内容編集
@@ -2706,10 +2710,12 @@
        31013-JIKANCHK-SEC                  SECTION.
       *    初診・手術・麻酔のみ
            IF      LNK-WKSRY-SRYKBN (IDX)  =   "11" OR "50"  OR  "54"
+                                           OR  "40"
                CONTINUE
            ELSE
                GO      TO     31013-JIKANCHK-EXT
            END-IF
+           MOVE    SPACE               TO  WRK-TIMEFLG
            MOVE    LNK-WKSRY-SRYCD  (IDX IDY)
                                        TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
@@ -2718,18 +2724,43 @@
                EVALUATE    TNS-TIMEKSNKBN
       *            時間外
                    WHEN    "1"
-                       MOVE    TNS-TIMEKSNKBN      TO  SPA-NAI-TIMEFLG
+                       MOVE    TNS-TIMEKSNKBN      TO  WRK-TIMEFLG
       *            休日
                    WHEN    "2"
                    WHEN    "3"
-                       MOVE    "2"                 TO  SPA-NAI-TIMEFLG
+                       MOVE    "2"                 TO  WRK-TIMEFLG
       *            深夜
                    WHEN    "4"
-                       MOVE    "3"                 TO  SPA-NAI-TIMEFLG
+                       MOVE    "3"                 TO  WRK-TIMEFLG
       *            時間外特例
                    WHEN    "5"
-                       MOVE    "4"                 TO  SPA-NAI-TIMEFLG
+                       MOVE    "4"                 TO  WRK-TIMEFLG
                END-EVALUATE
+          END-IF
+          IF      WRK-TIMEFLG      NOT =   SPACE
+      *        前の手技料に時間外区分を付加する
+               PERFORM VARYING     IDX-G   FROM    IDX2  BY -1
+                       UNTIL       IDX-G   <=   1
+                   IF     (SPA-COM-INPUTCD (IDX-G)(1:1)  =   "1" ) AND
+                          (SPA-COM-AUTOKBN (IDX-G)       =   SPACE )
+                      IF      (SPA-GMN-INPUTCD (IDX-G)(1:1)  NUMERIC )
+                          AND (SPA-GMN-INPUTCD (IDX-G)(2:1)  =   SPACE)
+                          AND (SPA-GMN-INPUTCD (IDX-G)(3:) NOT =  SPACE)
+                           CONTINUE
+                       ELSE
+                           MOVE    WRK-TIMEFLG     TO  SPA-COM-TIMEFLG
+                                                                (IDX-G)
+                           MOVE    SPACE           TO  SPA-GMN-INPUTCD
+                                                                (IDX-G)
+                           MOVE    WRK-TIMEFLG     TO  SPA-GMN-INPUTCD
+                                                        (IDX-G)(1:1)
+                           MOVE    SPA-COM-INPUTCD (IDX-G)
+                                                   TO  SPA-GMN-INPUTCD
+                                                        (IDX-G)(1:1)
+                       END-IF
+                       MOVE    1                   TO  IDX-G
+                   END-IF
+               END-PERFORM
            END-IF
       *
            .
@@ -4946,11 +4977,13 @@
                GO      TO      4101113-INPUTCD-CHK-EXT
            END-IF
       *
-      *    時間外加算の時、ＳＰＡへ
-           IF      SPA-COM-TIMEFLG(SPA-GMN-IDX)  NOT =   ZERO
-               MOVE    SPA-COM-TIMEFLG(SPA-GMN-IDX)
-                                           TO  SPA-NAI-TIMEFLG
-           END-IF
+      **** 時間外加算の時、ＳＰＡへ
+      *    IF      SPA-COM-TIMEFLG(SPA-GMN-IDX)  NOT =   ZERO
+      *        IF      SPA-SYORIFLG        =   ZERO
+      *            MOVE    SPA-COM-TIMEFLG(SPA-GMN-IDX)
+      *                                    TO  SPA-NAI-TIMEFLG
+      *        END-IF
+      **** END-IF
       *
       *    保険適用区分が保険適用外のもの（ユーザー登録の自費分）
            IF      SPA-COM-HKNTEKKBN(SPA-GMN-IDX)  =   2
@@ -5062,26 +5095,27 @@
                IF     (LNK-SC97-JIKAN      =   1   OR  2  OR  3
                                                    OR  4       )  AND
                       (TNS-DATAKBN         =   "1"             )
-                   IF     (SPA-NAI-TIMEFLG     NOT =   ZERO    )  AND
-                          (SPA-NAI-TIMEFLG     NOT =   LNK-SC97-JIKAN)
-                                                                  AND
-                          (SPA-COM-TIMEFLG(SPA-GMN-IDX)
-                                                   =   ZERO    )
-                       MOVE    "0030"              TO  SPA-ERRCD
-                   ELSE
+      *********入力された時間外を優先する
+      *            IF     (SPA-NAI-TIMEFLG     NOT =   ZERO    )  AND
+      *                   (SPA-NAI-TIMEFLG     NOT =   LNK-SC97-JIKAN)
+      *                                                           AND
+      *                   (SPA-COM-TIMEFLG(SPA-GMN-IDX)
+      *                                            =   ZERO    )
+      *                MOVE    "9030"              TO  SPA-ERRCD
+      ************ ELSE
                        MOVE    LNK-SC97-JIKAN      TO  SPA-COM-TIMEFLG
                                                           (SPA-GMN-IDX)
-                   END-IF
+      *************END-IF
                ELSE
                    MOVE    "0030"          TO  SPA-ERRCD
                END-IF
-           ELSE
-               IF      SPA-COM-TIMEFLG(SPA-GMN-IDX)
-                                           NOT =   ZERO
-                   MOVE    ZERO            TO  SPA-NAI-TIMEFLG
-                   MOVE    ZERO            TO  SPA-COM-TIMEFLG
-                                                          (SPA-GMN-IDX)
-               END-IF
+      ***  ELSE
+      *        IF      SPA-COM-TIMEFLG(SPA-GMN-IDX)
+      *                                    NOT =   ZERO
+      *            MOVE    ZERO            TO  SPA-NAI-TIMEFLG
+      *            MOVE    ZERO            TO  SPA-COM-TIMEFLG
+      *                                                   (SPA-GMN-IDX)
+      ******   END-IF
            END-IF
            .
        4101121-INPUTCD-CHECK-EXT.
@@ -10115,7 +10149,7 @@
                        ELSE
                            IF     (SPA-COM-INPUTCD (IDX)(1:1)
                                                        =  "8" )
-      ******************     AND  (SPA-COM-INPUTCHI-G(IDX)
+      *****************      AND  (SPA-COM-INPUTCHI-G(IDX)
       *****************                            NOT =  SPACE)
                                MOVE    SPA-GMN-MEISYO(IDX)
                                                  TO  WKSRY-INPUTCOMENT
@@ -10183,6 +10217,20 @@
                    WHEN    "4"
                        MOVE    "D"      TO  WKSRY-AUTOKBN  (IDY)
                END-EVALUATE
+      *
+           ELSE
+               IF      SPA-COM-DATAKBN (IDX)   =   "1"
+                   EVALUATE    SPA-COM-TIMEFLG (IDX)
+                       WHEN    1
+                           MOVE    "A"      TO  WKSRY-AUTOKBN  (IDY)
+                       WHEN    2
+                           MOVE    "B"      TO  WKSRY-AUTOKBN  (IDY)
+                       WHEN    3
+                           MOVE    "C"      TO  WKSRY-AUTOKBN  (IDY)
+                       WHEN    4
+                           MOVE    "D"      TO  WKSRY-AUTOKBN  (IDY)
+                   END-EVALUATE
+               END-IF
            END-IF
            .
        45022-JIKANGAI-SET-EXT.

@@ -509,6 +509,10 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+           INITIALIZE                  WRK-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-K08
            MOVE    SPA-WORK        TO  SPA-K01KYOUTU
@@ -1024,6 +1028,11 @@
            IF      LNK-SC97-KAISU      =   ZERO
                MOVE    1               TO  LNK-SC97-KAISU
            END-IF
+      *    外用薬の時、回数は１回とする
+           IF      LNK-WKSRY-SRYKBN (IDX)  =   "23"
+               MOVE    1               TO  LNK-SC97-KAISU
+           END-IF
+      *
            MOVE    ZERO                TO  IDX1
            MOVE    ZERO                TO  WRK-NISUU
            PERFORM VARYING     IDX4    FROM    1   BY  1
