@@ -795,9 +795,9 @@
                                                TO  WRK-YKZFTNZ 
                        MOVE    WRK-YKZFTNZ     TO  HCM2E-YKZFTN(IDX IDY)
                    END-IF    
-                   IF      IDY             =   2
-                   AND     IDX             =   3   OR  4   OR  5   OR
-                                               8   OR  9
+                   IF    ( IDY             =   2                       )
+                   AND   ( IDX             =   3   OR  4   OR  5   OR
+                                               8   OR  9               )
                        CONTINUE
                    ELSE                            
                        MOVE    SUM-FTNMONEY    (IDX IDY)
