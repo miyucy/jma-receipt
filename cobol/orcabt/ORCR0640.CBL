@@ -5484,12 +5484,23 @@
                                          WRK-SKJ-FTN(KH-IDX)
                       END-IF
       *
-                      ADD   SYU-SKJ-NISSU(IDX3)    TO
+                      IF     RECE62-HKNNUM           =   SPACE
+                      AND    RECE62-KOHNUM(1)        =   "012"
+                      AND    RECE62-KOHNUM(2)        =   SPACE
+                      AND    RECE62-KOHNUM(3)        =   SPACE
+                      AND    RECE62-KOHNUM(4)        =   SPACE
+                         ADD   SYU-SKJ-NISSU(IDX3)    TO
                                          RECE62-SHOKUJINISSU(KH-IDX)
-                      ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                         ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
                                          RECE62-SHOKUJIRYOYOHI(KH-IDX)
-                      ADD   SYU-SKJ-FTN-RECE(IDX3) TO
+                      ELSE
+                         ADD   SYU-SKJ-NISSU(IDX3)    TO
+                                         RECE62-SHOKUJINISSU(KH-IDX)
+                         ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                                         RECE62-SHOKUJIRYOYOHI(KH-IDX)
+                         ADD   SYU-SKJ-FTN-RECE(IDX3) TO
                                          RECE62-SHOKUJIFTN(KH-IDX)
+                      END-IF
       *
                       IF   RECE62-KOHNUM(1) =  "051"
                       AND  FLG-KOH      NOT =   2
