@@ -18,6 +18,6 @@
         02  LID1.
             03  LID1-FIXED1.
               04  LID1-ID1CODE.
-                05  LID1-VALUE  PIC X(11).
+                05  LID1-VALUE  PIC X(10).
               04  LID1-ID1MSG.
-                05  LID1-VALUE  PIC X(71).
+                05  LID1-VALUE  PIC X(70).

@@ -1,6 +1,6 @@
             02  L99.
               03  L99-MSG.
-                04  L99-VALUE   PIC X(81).
+                04  L99-VALUE   PIC X(80).
               03  L99-SCROLLEDWINDOW28.
                 04  L99-JOBKANRILST.
                   05  L99-COUNT   PIC S9(9)   BINARY.

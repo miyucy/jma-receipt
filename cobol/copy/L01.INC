@@ -27,7 +27,7 @@
               03  L01-PARA-G          OCCURS  10.
                 04  L01-PARA-TBL      OCCURS  3.
                   05  L01-PARA-STATE  PIC S9(9)   BINARY.
-                  05  L01-PARA        PIC X(11).
+                  05  L01-PARA        PIC X(10).
                 04  L01-PARAHYOJI-G   OCCURS  3.
                   05  L01-PARAHYOJI   PIC X(20).
               03  L01-NUM-G           OCCURS  10.

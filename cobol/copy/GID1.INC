@@ -18,6 +18,6 @@
         02  GID1.
             03  GID1-FIXED1.
               04  GID1-ID1CODE.
-                05  GID1-VALUE  PIC X(11).
+                05  GID1-VALUE  PIC X(10).
               04  GID1-ID1MSG.
-                05  GID1-VALUE  PIC X(71).
+                05  GID1-VALUE  PIC X(70).
