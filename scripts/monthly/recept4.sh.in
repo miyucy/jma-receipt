@@ -17,7 +17,8 @@ fi
 #        $14 JOBID 
 #        $15 SHELLID
 #        $16 エラーファイル名 
-#        $17 ファイル出力先
+#        $17 ファイル出力先区分
+#        $18 端末ｉｐアドレス
 #-------------------------------------------#
 
     rennum=0
@@ -45,9 +46,17 @@ fi
         
     $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${14}${15}
 
-        
-
 #   漢字コード変換（ＥＵＣからシフトＪＩＳ）	
     nkf -s /var/tmp/RECE300.dat > ${13}RECEIPTC.UKE
+
+    if  [ ${17} -eq '1' ]; then
+	$FDW -host ${18} -command jma-receipt-fd-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
+        exit
+    fi
+
+    if  [ ${17} -eq '2' ]; then
+	$FDW -host ${18} -command jma-receipt-mo-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
+        exit
+    fi
 
     exit 
