@@ -35,6 +35,8 @@
       * 01.00.04     NACL-多々納  02/12/29  高８、高９編集修正
       * 01.00.05     NACL-多々納  03/01/20  その他器材の編集追加
       *                                     中途の在宅編集修正
+      * 01.00.06     NACL-多々納  03/03/06  剤明細１９以上の編集修正
+      *                                     全角変換時空白判定追加
       *****************************************************************
       *
       *
@@ -109,6 +111,7 @@
            03  IDX-S               PIC 9(04).
            03  IDX-MAX             PIC 9(04).
            03  IDXA                PIC 9(04).
+           03  IDXA2               PIC 9(04).
            03  IDX-ACT             PIC 9(02).
            03  IDX-REN             PIC 9(04).
            03  IDX-JYU             PIC 9(04).
@@ -718,14 +721,22 @@
       *
       *    記号・番号
       *    全角変換
-           MOVE    PTHKN-KIGO          TO  WRK-MOJI
-           PERFORM 2009-HENKAN-SEC
-           MOVE    WRK-ZENKAKU-G(1:KANACHK-MAX)
-                                       TO  WRK-KIGONUM
-           MOVE    PTHKN-NUM           TO  WRK-MOJI
-           PERFORM 2009-HENKAN-SEC
-           MOVE    WRK-ZENKAKU-G(1:KANACHK-MAX)
-                                       TO  WRK-NUM
+           IF      PTHKN-KIGO          =   SPACE
+               MOVE    SPACE               TO  WRK-KIGONUM
+           ELSE
+               MOVE    PTHKN-KIGO          TO  WRK-MOJI
+               PERFORM 2009-HENKAN-SEC
+               MOVE    WRK-ZENKAKU-G(1:KANACHK-MAX)
+                                           TO  WRK-KIGONUM
+           END-IF
+           IF      PTHKN-NUM           =   SPACE
+               MOVE    SPACE               TO  WRK-NUM
+           ELSE
+               MOVE    PTHKN-NUM           TO  WRK-MOJI
+               PERFORM 2009-HENKAN-SEC
+               MOVE    WRK-ZENKAKU-G(1:KANACHK-MAX)
+                                           TO  WRK-NUM
+           END-IF
       *
            STRING  WRK-KIGONUM         DELIMITED   BY  SPACE
                    "・"                DELIMITED   BY  SIZE
@@ -762,10 +773,14 @@
       *            保険者番号へ記号（労災区分名）
                    MOVE    WRK-KIGONUM         TO  WRK-HKNJA-G
       *            記号へ患者交付番号
-                   MOVE    PTRSI-KOFUNUM       TO  WRK-MOJI
-                   PERFORM 2009-HENKAN-SEC
-                   MOVE    WRK-ZENKAKU-G(1:KANACHK-MAX)
-                                               TO  WRK-HEN-KIGONUM
+                   IF      PTRSI-KOFUNUM       =   SPACE
+                       CONTINUE
+                   ELSE
+                       MOVE    PTRSI-KOFUNUM       TO  WRK-MOJI
+                       PERFORM 2009-HENKAN-SEC
+                       MOVE    WRK-ZENKAKU-G(1:KANACHK-MAX)
+                                                   TO  WRK-HEN-KIGONUM
+                   END-IF
       *
                END-IF
            END-IF
@@ -931,23 +946,24 @@
       *    受給者番号
       *****MOVE    PTKOH-JKYSNUM       TO  WRK-JKYSNO
       *    保険者番号
-           MOVE    PTKOH-FTNJANUM      TO  WRK-MOJI
-           PERFORM 2009-HENKAN-SEC
-           MOVE    WRK-ZENKAKU-G(1:KANACHK-MAX)
-                                       TO  WRK-FTNSNO
+           IF      PTKOH-FTNJANUM      =   SPACE
+               MOVE    SPACE           TO  WRK-FTNSNO
+           ELSE
+               MOVE    PTKOH-FTNJANUM      TO  WRK-MOJI
+               PERFORM 2009-HENKAN-SEC
+               MOVE    WRK-ZENKAKU-G(1:KANACHK-MAX)
+                                           TO  WRK-FTNSNO
+           END-IF
       *    受給者番号
-           MOVE    PTKOH-JKYSNUM       TO  WRK-MOJI
-           PERFORM 2009-HENKAN-SEC
-      *****IF      KANACHK-MAX         >   14
-      *        COMPUTE WRK-MOJISU      =   KANACHK-MAX   -   14
-      *                                +   1
-      *        MOVE    WRK-ZENKAKU-G(WRK-MOJISU:14) TO  WRK-JKYSNO
-      *    ELSE
-      *        MOVE    WRK-ZENKAKU-G(1:14)        TO  WRK-JKYSNO
-      *****END-IF
-           MOVE    SPACE               TO  WRK-JKYSNO
-           MOVE    WRK-ZENKAKU-G(1:KANACHK-MAX)
-                                       TO  WRK-JKYSNO
+           IF      PTKOH-JKYSNUM       =   SPACE
+               MOVE    SPACE               TO  WRK-JKYSNO
+           ELSE
+               MOVE    PTKOH-JKYSNUM       TO  WRK-MOJI
+               PERFORM 2009-HENKAN-SEC
+               MOVE    SPACE               TO  WRK-JKYSNO
+               MOVE    WRK-ZENKAKU-G(1:KANACHK-MAX)
+                                            TO  WRK-JKYSNO
+           END-IF
       *
            .
        3102-PTKOHINF-HEN-EXT.
@@ -1283,7 +1299,7 @@
            END-IF
       *
            .
-       310-HCM19-HEN-EXT.
+       300-HCM19-HEN-EXT.
            EXIT.
       *****************************************************************
       *    西暦日本語変換処理
@@ -1616,15 +1632,17 @@
            IF     (IDX-S   +   IDX)    >   IDX-MAX
                MOVE    "次ページへ続く"    TO  WRK-NAIYOU
                                                  (WRK-PAGE-MAX 20)(50:)
-      *        改ページ
-               ADD     1                   TO  WRK-PAGE-MAX
-               MOVE    ZERO                TO  IDX
+               IF      IDX             >   ZERO
+      *            改ページ
+                   ADD     1                   TO  WRK-PAGE-MAX
+                   MOVE    ZERO                TO  IDX
+               END-IF
            END-IF
       *
-           PERFORM VARYING IDXA        FROM    1   BY  1
-                   UNTIL   IDXA        >   IDX-S
+           PERFORM VARYING IDXA2       FROM    1   BY  1
+                   UNTIL   IDXA2       >   IDX-S
                ADD     1                   TO  IDX
-               MOVE    WRK-NAIYOU-Z (IDXA) TO  WRK-NAIYOU
+               MOVE    WRK-NAIYOU-Z (IDXA2) TO  WRK-NAIYOU
                                                     (WRK-PAGE-MAX IDX)
            END-PERFORM
            ADD     1                   TO  IDX
@@ -1640,8 +1658,8 @@
            ADD     1               TO  IDX-S
       *
       *    １剤で２０行以上の時
-           IF      IDX-S               >   20
-               MOVE    20              TO  IDX-S
+           IF      IDX-S               >=  20
+               MOVE    19              TO  IDX-S
       *        帳票編集処理
                PERFORM 20022-PRINT-HEN-SEC
                MOVE    SPACE               TO  WRK-NAIYOU-AREA
@@ -1905,7 +1923,8 @@
            MOVE    WRK-MOJI            TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
-           IF      KANACHK-RC          =   ZERO
+           IF     (KANACHK-RC          =   ZERO )  AND
+                  (KANACHK-MAX         >   ZERO )
                MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                            TO  WRK-ZENKAKU-G
            ELSE
