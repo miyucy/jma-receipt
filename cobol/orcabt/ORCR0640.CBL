@@ -127,8 +127,10 @@
            03  FLG-SYSKANRI                            PIC 9(01).
            03  FLG-RECE62                              PIC 9(01).
            03  FLG-KANJI                               PIC 9(01).
-           03  FLG-SP                                  PIC 9(01). 
+           03  FLG-SP                                  PIC 9(01).
            03  FLG-PTCOM                               PIC 9(01).
+           03  FLG-NYUINACCT                           PIC 9(01).
+           03  FLG-NYUINACT                            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -149,6 +151,7 @@
            03  IDY                                     PIC 9(03).
            03  IDZ                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
+           03  ID1                                     PIC 9(03).
            03  NUM-IDX                                 PIC 9(01).
            03  HC-IDX                                  PIC 9(03).
            03  KH-IDX                                  PIC 9(03).
@@ -183,6 +186,10 @@
            03  FLG-KOH                                 PIC 9(01).
            03  WRK-FTNKEI                              PIC 9(09).
       *
+       01  WRK-DAY-TABLE.
+           03  WRK-DAY-T                               OCCURS   31.
+               05  WRK-DAY5                            PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-IN                                  PIC X(01).
@@ -198,6 +205,7 @@
            03  WRK-NUM-X                               PIC X(10). 
            03  WRK-STIDX                               PIC 9(02).
            03  WRK-EDIDX                               PIC 9(02).
+           03  WRK-SRYCD                               PIC 9(09).
       *
            03  WRK-RECEERR                             PIC X(200).
       *
@@ -284,6 +292,14 @@
       *    診療行為
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
+      *
+      *    入院会計
+       01  NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC".
+      *
+      *    入院診療行為
+       01  NYUINACT-REC.
+           COPY    "CPNYUINACT.INC".
       *
       *    点数
            COPY    "CPTENSU.INC".
@@ -481,10 +497,13 @@
       *
            INITIALIZE          WRK-AREA-SAIKEI
       *
+           INITIALIZE          WRK-DAY-TABLE
+      *
            PERFORM    VARYING    IDX    FROM   1   BY   1
                       UNTIL     (IDX      >   10)  OR
                                 (RECE62-SRYKA(IDX)   =   SPACE)
                PERFORM    RECE64-HENSYU-SEC
+               PERFORM    RECE64-HENSYU2-SEC
                PERFORM    FTN-SET-SEC
            END-PERFORM
            PERFORM     SAIKEI-KEISAN-SEC
@@ -564,6 +583,106 @@
       *
            .
        RECE64-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの作成（Ｆ００４）
+      *****************************************************************
+       RECE64-HENSYU2-SEC                SECTION.
+      *
+           INITIALIZE                            NYUINACCT-REC
+           MOVE    RECE62-HOSPID         TO      NACCT-HOSPID
+           MOVE    RECE62-NYUGAIKBN      TO      NACCT-NYUGAIKBN
+           MOVE    RECE62-PTID           TO      NACCT-PTID
+           MOVE    RECE62-SRYKA(IDX)     TO      NACCT-SRYKA
+           MOVE    RECE62-SRYYM          TO      NACCT-SRYYM
+           MOVE    NYUINACCT-REC         TO      MCPDATA-REC
+           MOVE    "DBSELECT"            TO      MCP-FUNC
+           MOVE    "NYUINACCT-KEY2"      TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+           IF      MCP-RC             =       ZERO
+      *
+               MOVE    "NYUINACCT-KEY2"  TO      ORC-DBPATH
+               PERFORM  NYUINACCT-READ-SEC
+               PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
+      *
+                 IF     NACCT-ZAISKBKBN    =    "5"  
+                   PERFORM    VARYING   IDY   FROM   1   BY   1
+                                    UNTIL    IDY    >    31
+                     IF   NACCT-DAY(IDY)   NOT =  ZERO 
+                             MOVE   NACCT-DAY(IDY)  TO   WRK-DAY5(IDY) 
+                     END-IF
+                   END-PERFORM
+                 END-IF
+      *
+                 MOVE          "NYUINACCT-KEY2"  TO   ORC-DBPATH
+                 PERFORM        NYUINACCT-READ-SEC
+               END-PERFORM
+      *
+           END-IF
+      *
+           MOVE   "NYUINACCT-KEY2"         TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+      *
+           INITIALIZE                            NYUINACCT-REC
+           MOVE    RECE62-HOSPID         TO      NACCT-HOSPID
+           MOVE    RECE62-NYUGAIKBN      TO      NACCT-NYUGAIKBN
+           MOVE    RECE62-PTID           TO      NACCT-PTID
+           MOVE    RECE62-SRYKA(IDX)     TO      NACCT-SRYKA
+           MOVE    RECE62-SRYYM          TO      NACCT-SRYYM
+           MOVE    NYUINACCT-REC         TO      MCPDATA-REC
+           MOVE    "DBSELECT"            TO      MCP-FUNC
+           MOVE    "NYUINACCT-KEY2"      TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+      *
+               MOVE    "NYUINACCT-KEY2"  TO      ORC-DBPATH
+               PERFORM  NYUINACCT-READ-SEC
+               PERFORM  UNTIL  (FLG-NYUINACCT  =    "1") 
+      *
+                 IF     NACCT-ZAISKBKBN    =    "1"  OR  "2"  OR
+                                                "4"  OR  "6"
+      *
+                   PERFORM  VARYING  IDY    FROM    1   BY  1
+                                  UNTIL   IDY     >       31
+      *
+                      PERFORM  VARYING  IDX1    FROM    1   BY  1
+                             UNTIL   IDX1    >       10
+                             OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
+      *
+                         IF  WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
+                              IF   NACCT-ZAITEN    NOT =    ZERO  
+                              AND  NACCT-DAY(IDY)  NOT =    ZERO  
+                                   PERFORM   RECE64-TENSOU2-SEC
+                                   PERFORM   RECE65-HENSYU2-SEC
+                                   PERFORM   RECE64-WRITE-SEC
+                              END-IF
+                              MOVE    10     TO    IDX1
+                              MOVE    31     TO    IDY
+                         END-IF
+      *
+                      END-PERFORM
+      *
+                   END-PERFORM
+      *
+                 END-IF
+      *
+                 MOVE          "NYUINACCT-KEY2"  TO   ORC-DBPATH
+                 PERFORM        NYUINACCT-READ-SEC
+               END-PERFORM
+      *
+           END-IF
+      *
+           MOVE   "NYUINACCT-KEY2"         TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+           .
+       RECE64-HENSYU2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -666,6 +785,59 @@
            EXIT.
       *
       *****************************************************************
+      *    レセプト中間ファイルの項目転送（Ｆ００４）
+      *****************************************************************
+       RECE64-TENSOU2-SEC                SECTION.
+      *
+           MOVE    SPACE                TO      RECE64-REC
+           INITIALIZE                           RECE64-REC
+           MOVE    RECE62-HOSPID        TO      RECE64-HOSPID
+           MOVE    RECE62-SRYYM         TO      RECE64-SRYYM
+           MOVE    RECE62-NYUGAIKBN     TO      RECE64-NYUGAIKBN
+           MOVE    RECE62-PTID          TO      RECE64-PTID
+           MOVE    RECE62-RECEKA        TO      RECE64-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI  TO      RECE64-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU   TO      RECE64-RECESYUBETU
+           MOVE    RECE62-HKNJANUM      TO      RECE64-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY   TO      RECE64-HOJOKBN
+           MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
+           MOVE    ZERO                 TO      RECE64-KOHBUNRI
+           MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
+           MOVE    NACCT-ZAINUM         TO      RECE64-ZAINUM
+           MOVE    RECE62-PTNUM         TO      RECE64-PTNUM
+      *
+           MOVE    NACCT-SRYKA          TO      RECE64-SRYKA
+           MOVE    NACCT-HKNCOMBI       TO      RECE64-HKNCOMBI
+           MOVE    SPACE                TO      RECE64-JIHOKBN
+           MOVE    NACCT-ZAITEN         TO      RECE64-ZAITEN
+           MOVE    NACCT-SRYCDTOTAL     TO      RECE64-SRYCDTOTAL
+           MOVE    NACCT-SURYOUTOTAL    TO      RECE64-SURYOUTOTAL
+           MOVE    NACCT-MEISAISU       TO      RECE64-MEISAISU
+           MOVE    NACCT-ZAIKAISU       TO      RECE64-ZAIKAISU
+           MOVE    NACCT-SYUTEN1        TO      RECE64-SYUTEN1
+           MOVE    NACCT-SYUTEN2        TO      RECE64-SYUTEN2
+           MOVE    NACCT-YKZTEN         TO      RECE64-YKZTEN
+           MOVE    NACCT-KIZAITEN       TO      RECE64-KIZAITEN
+           MOVE    NACCT-DRCD           TO      RECE64-DRCD
+           MOVE    SPACE                TO      RECE64-ZAIREQFLG
+           MOVE    ZERO                 TO      RECE64-TEIGENRATE
+           MOVE        ZERO             TO      WK-TAIHI-DAY
+           MOVE        ZERO             TO      WK-TAIHI-FLG
+           PERFORM     VARYING   IDX2   FROM    1    BY   1
+                           UNTIL     IDX2   >       31
+                   MOVE    NACCT-DAY(IDX2)  TO
+                                            RECE64-KAISU (1 IDX2)
+                   IF     (WK-TAIHI-FLG            =   ZERO)   AND
+                          (NACCT-DAY(IDX2)    NOT =   ZERO)
+                       MOVE     IDX2    TO      WK-TAIHI-DAY
+                       MOVE     1       TO      WK-TAIHI-FLG
+                   END-IF    
+           END-PERFORM
+           .
+       RECE64-TENSOU2-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    レセプト中間ファイルの作成（Ｆ００５）
       *****************************************************************
        RECE65-HENSYU-SEC               SECTION.
@@ -694,8 +866,6 @@
                    MOVE     "SRYACT-KEY2"    TO   ORC-DBPATH
                    PERFORM   SRYACT-READ-SEC
                END-PERFORM
-           ELSE
-               DISPLAY   "SRYACT SELECT ERR" 
            END-IF
       *
            MOVE   "SRYACT-KEY2"      TO  WK-PATH
@@ -703,6 +873,44 @@
       *
            .
        RECE65-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの作成（Ｆ００５）
+      *****************************************************************
+       RECE65-HENSYU2-SEC               SECTION.
+      *
+           INITIALIZE                      NYUINACT-REC
+           MOVE    NACCT-HOSPID       TO   NSRY-HOSPID
+           MOVE    NACCT-NYUGAIKBN    TO   NSRY-NYUGAIKBN
+           MOVE    NACCT-PTID         TO   NSRY-PTID
+           MOVE    NACCT-SRYKA        TO   NSRY-SRYKA
+           MOVE    NACCT-SRYYM        TO   NSRY-SRYYM
+           MOVE    NACCT-ZAINUM       TO   NSRY-ZAINUM
+           MOVE    NYUINACT-REC       TO   MCPDATA-REC
+           MOVE    "DBSELECT"         TO   MCP-FUNC
+           MOVE    "NYUINACT-KEY2"    TO   ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC               =       ZERO
+      *
+               MOVE    "NYUINACT-KEY2"  TO      ORC-DBPATH
+               PERFORM  NYUINACT-READ-SEC
+               PERFORM  UNTIL  (FLG-NYUINACT  =    "1")
+                   PERFORM   RECE65-TENSOU2-SEC
+                   PERFORM   RECE65-WRITE-SEC
+                   MOVE          "NYUINACT-KEY2"  TO   ORC-DBPATH
+                   PERFORM        NYUINACT-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE   "NYUINACT-KEY2"      TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
+      *
+           .
+       RECE65-HENSYU2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -745,6 +953,7 @@
                MOVE    SRY-MEISKYFLG(IDX2) TO   RECE65-MEISKYFLG(IDX4)
                MOVE    SRY-AUTOKBN(IDX2)  TO    RECE65-AUTOKBN(IDX4)
                MOVE    SRY-INPUTNUM(IDX2) TO    RECE65-INPUTNUM(IDX4)
+               MOVE    SRY-SRYCD(IDX2)    TO    WRK-SRYCD
                PERFORM    TENSU-TBL-SEC
                IF      TNS-SRYKBN         =     "80"
                    IF  TNS-GAITENTTLKBN   =     130
@@ -877,6 +1086,80 @@
       *
            .
        RECE65-TENSOU-TANKA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの項目転送（Ｆ００５）
+      *****************************************************************
+       RECE65-TENSOU2-SEC                SECTION.
+      *
+           MOVE    SPACE                TO      RECE65-REC
+           INITIALIZE                           RECE65-REC
+           MOVE    RECE62-HOSPID        TO      RECE65-HOSPID
+           MOVE    RECE62-SRYYM         TO      RECE65-SRYYM
+           MOVE    RECE62-NYUGAIKBN     TO      RECE65-NYUGAIKBN
+           MOVE    RECE62-PTID          TO      RECE65-PTID
+           MOVE    RECE62-RECEKA        TO      RECE65-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI  TO      RECE65-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU   TO      RECE65-RECESYUBETU
+           MOVE    RECE62-HKNJANUM      TO      RECE65-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
+           MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
+           MOVE    ZERO                 TO      RECE65-KOHBUNRI
+           MOVE    NSRY-ZAINUM          TO      RECE65-ZAINUM
+           MOVE    NSRY-RENNUM          TO      RECE65-RENNUM
+           MOVE    RECE62-PTNUM         TO      RECE65-PTNUM
+      *
+           MOVE    NSRY-SRYKA           TO      RECE65-SRYKA
+           MOVE    NSRY-SRYKBN          TO      RECE65-SRYKBN
+           MOVE    NSRY-SRYSYUKBN       TO      RECE65-SRYSYUKBN
+           MOVE    NSRY-JIHIMONEYTOTAL  TO      RECE65-JIHIMONEY
+           MOVE    ZERO                 TO      IDX4
+           PERFORM     VARYING   IDX2   FROM    1    BY   1
+                       UNTIL    (IDX2      >    5)    OR
+                                (NSRY-SRYCD(IDX2)  =   SPACE)
+             IF      NSRY-SRYCD(IDX2)(1:1)    =   "0"  OR  "1" OR  
+                                                  "8"
+               ADD     1                   TO  IDX4    
+               MOVE    NSRY-SRYCD(IDX2)    TO  RECE65-SRYCD(IDX4)
+               MOVE    NSRY-SRYSURYO(IDX2) TO  RECE65-SRYSURYO(IDX4)
+               MOVE    NSRY-SRYKAISU(IDX2) TO  RECE65-SRYKAISU(IDX4)
+               MOVE    SPACE               TO  RECE65-MEISKYFLG(IDX4)
+               MOVE    NSRY-AUTOKBN(IDX2)  TO  RECE65-AUTOKBN(IDX4)
+               MOVE    NSRY-INPUTNUM(IDX2) TO  RECE65-INPUTNUM(IDX4)
+               MOVE    NSRY-SRYCD(IDX2)    TO  WRK-SRYCD
+               PERFORM    TENSU-TBL-SEC
+               MOVE    TNS-TANICD          TO  RECE65-TANICD(IDX4)
+               MOVE    TNS-TANIMOJISU      TO  RECE65-TANIMOJISU(IDX4)
+               MOVE    TNS-TANINAME        TO  RECE65-TANINAME(IDX4)
+               IF      TNS-TENSIKIBETU    =     1   OR   3
+                   MOVE  TNS-TENSIKIBETU   TO  RECE65-TENSIKIBETU(IDX4)
+                   MOVE  TNS-TEN           TO  RECE65-TEN(IDX4)
+               END-IF
+               IF      RECE62-NYUGAIKBN   =     "1"
+                   MOVE  TNS-NYUTENTTLKBN TO    RECE65-TENTTLKBN(IDX4)
+               ELSE
+                   MOVE  TNS-GAITENTTLKBN TO    RECE65-TENTTLKBN(IDX4)
+               END-IF
+               MOVE    TNS-YUKOKETA       TO    RECE65-YUKOKETA(IDX4)
+               IF      NSRY-SRYCD    (IDX2)(1:1)     =   "8"
+               AND     NSRY-INPUTNUM (IDX2)      NOT =   ZERO
+                   MOVE    NSRY-HOSPID           TO  PTCOM-HOSPID
+                   MOVE    NSRY-PTID             TO  PTCOM-PTID
+                   MOVE    NSRY-ZAINUM           TO  PTCOM-ZAINUM
+                   MOVE    NSRY-SRYCD (IDX2)     TO  PTCOM-SRYCD
+                   MOVE    NSRY-INPUTNUM(IDX2)   TO  PTCOM-RENNUM
+                   PERFORM 950-PTCOM-READ-SEC
+                   MOVE    PTCOM-INPUTCOMENT     TO  RECE65-NAME(IDX4)
+               ELSE
+                   MOVE    TNS-NAME              TO  RECE65-NAME(IDX4)
+               END-IF
+      *
+             END-IF  
+           END-PERFORM
+      *
+           .
+       RECE65-TENSOU2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1049,7 +1332,8 @@
       *****************************************************************
        RECE-LEFT-SET-SEC               SECTION.
       *
-           PERFORM     TENSU-TBL-SEC2
+           MOVE        SRY-SRYCD(IDX3)     TO   WRK-SRYCD
+           PERFORM     TENSU-TBL-SEC
            EVALUATE    SRY-SRYKBN
       *    初診のレセ点数欄の編集
                WHEN    "11"
@@ -1681,7 +1965,8 @@
        TENSU-TBL-SEC               SECTION.
       *
            INITIALIZE                           TNS-TENSU-REC
-           MOVE    SRY-SRYCD(IDX2)      TO      TNS-SRYCD
+      *    MOVE    SRY-SRYCD(IDX2)      TO      TNS-SRYCD
+           MOVE    WRK-SRYCD            TO      TNS-SRYCD
            MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
            MOVE    RECE65-SRYYM         TO      WK-TAIHI-SRYYM
            MOVE    WK-TAIHI-DAY         TO      WK-TAIHI-SRYD
@@ -1707,40 +1992,6 @@
       *
            .
        TENSU-TBL-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    点数テーブルの検索
-      *****************************************************************
-       TENSU-TBL-SEC2               SECTION.
-      *
-           INITIALIZE                           TNS-TENSU-REC
-           MOVE    SRY-SRYCD(IDX3)      TO      TNS-SRYCD
-           MOVE    TNS-TENSU-REC        TO      MCPDATA-REC
-           MOVE    RECE65-SRYYM         TO      WK-TAIHI-SRYYM
-           MOVE    WK-TAIHI-DAY         TO      WK-TAIHI-SRYD
-           MOVE    WK-TAIHI-SRYYMD      TO      ORC-DBYMD
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "TENSU-KEY"          TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC               =       ZERO
-               MOVE    "TENSU-KEY"      TO      ORC-DBPATH
-               PERFORM  TENSU-READ-SEC
-               IF       FLG-TENSU       =       1
-                   DISPLAY   "TENSU FETCH ERR" 
-               END-IF
-           ELSE
-               DISPLAY   "TENSU SELECT ERR" 
-           END-IF
-      *
-           MOVE   "TENSU-KEY"      TO  WK-PATH
-           PERFORM   CSR-CLOSE-SEC
-      *
-           .
-       TENSU-TBL-EXT2.
            EXIT.
       *
       *****************************************************************
@@ -1794,6 +2045,19 @@
       *    レセプト中間ファイルの項目転送−負担金（Ｆ００２）
       *****************************************************************
        RECE62-HENSYU-SEC3               SECTION.
+      *
+      *
+           PERFORM  VARYING  ID1  FROM   1  BY   1
+                      UNTIL  ID1  >   4
+      *
+              IF      SYU-SHOKUJI-NISSU(ID1)  NOT =  ZERO
+                   ADD   SYU-SHOKUJI-NISSU(ID1)  TO  
+                                       RECE62-SHOKUJIKHNNISSU(ID1)
+                   ADD   SYU-SHOKUJI(ID1)        TO  
+                                       RECE62-SHOKUJIKHNRYO(ID1)
+              END-IF
+      *
+           END-PERFORM
       *
            IF      RECE62-SRYYM      >=  "200210"
              IF    RECE62-KOUREI  NOT =    SPACE
@@ -1898,6 +2162,8 @@
                 ADD    SYU-KOH1COMPFTN  TO   RECE62-RJNNYUFTN
              END-IF
            END-IF
+      *
+      *
            MOVE    ZERO                TO  HC-IDX
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       10
@@ -1930,6 +2196,14 @@
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
       *               END-IF
+      *
+                      ADD   SYU-SKJ-NISSU(IDX3)    TO
+                                         RECE62-SHOKUJINISSU(KH-IDX)
+                      ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                                         RECE62-SHOKUJIRYOYOHI(KH-IDX)
+                      ADD   SYU-SKJ-FTN(IDX3)      TO
+                                         RECE62-SHOKUJIFTN(KH-IDX)
+      *
                       IF   RECE62-KOHNUM(1) =  "051"
                       AND  FLG-KOH      NOT =   2
                             MOVE     1   TO   FLG-KOH
@@ -1955,6 +2229,14 @@
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
       *               END-IF
+      *
+                      ADD   SYU-SKJ-NISSU(IDX3)    TO
+                                         RECE62-SHOKUJINISSU(KH-IDX)
+                      ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                                         RECE62-SHOKUJIRYOYOHI(KH-IDX)
+                      ADD   SYU-SKJ-FTN(IDX3)      TO
+                                         RECE62-SHOKUJIFTN(KH-IDX)
+      *
                       IF   RECE62-KOHNUM(2) =  "051"
                       AND  FLG-KOH      NOT =   2
                             MOVE     1   TO   FLG-KOH
@@ -1980,6 +2262,14 @@
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
       *               END-IF
+      *
+                      ADD   SYU-SKJ-NISSU(IDX3)    TO
+                                         RECE62-SHOKUJINISSU(KH-IDX)
+                      ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                                         RECE62-SHOKUJIRYOYOHI(KH-IDX)
+                      ADD   SYU-SKJ-FTN(IDX3)      TO
+                                         RECE62-SHOKUJIFTN(KH-IDX)
+      *
                       IF   RECE62-KOHNUM(3) =  "051"
                       AND  FLG-KOH      NOT =   2
                             MOVE     1   TO   FLG-KOH
@@ -2005,6 +2295,14 @@
                             ADD   SYU-KOH-COMPFTN(IDX3)  TO
                                          RECE62-FTNMONEY(KH-IDX)
       *               END-IF
+      *
+                      ADD   SYU-SKJ-NISSU(IDX3)    TO
+                                         RECE62-SHOKUJINISSU(KH-IDX)
+                      ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                                         RECE62-SHOKUJIRYOYOHI(KH-IDX)
+                      ADD   SYU-SKJ-FTN(IDX3)      TO
+                                         RECE62-SHOKUJIFTN(KH-IDX)
+      *
                       IF   RECE62-KOHNUM(4) =  "051"
                       AND  FLG-KOH      NOT =   2
                             MOVE     1   TO   FLG-KOH
@@ -2019,7 +2317,7 @@
            EXIT.
       *
       *****************************************************************
-      *    在宅総合・在宅末期一部負担金再掲の計算処理
+      *    一部負担金再掲の計算処理
       *****************************************************************
        SAIKEI-KEISAN-SEC               SECTION.
       *
@@ -2300,6 +2598,51 @@
            .
        SRYACT-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    入院会計マスター読込
+      *****************************************************************
+       NYUINACCT-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+               MOVE    ZERO            TO  FLG-NYUINACCT
+           ELSE
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    1               TO  FLG-NYUINACCT
+           END-IF
+      *
+           .
+       NYUINACCT-READ-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    入院診療行為マスター読込
+      **************************************************************
+       NYUINACT-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  NYUINACT-REC
+               MOVE    ZERO            TO  FLG-NYUINACT
+           ELSE
+               INITIALIZE                  NYUINACT-REC
+               MOVE    1               TO  FLG-NYUINACT
+           END-IF
+      *
+           .
+       NYUINACT-ERAD-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    点数読込
       *****************************************************************
@@ -2398,10 +2741,10 @@
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+               CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  PTCOM-REC
                    MOVE    ZERO                TO  FLG-PTCOM
