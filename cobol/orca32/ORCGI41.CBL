@@ -4837,7 +4837,10 @@
            PERFORM    4801-PT-AGE-SEC
       *
       *    老人対象患者であれば入院診療コードの置き換え
-           IF     WRK-NENREI   >=    75
+           IF    ((FLG-HKNCOMBI     =   ZERO)    AND
+                  (COMB-KOH1HKNNUM  =   "027"))      OR
+                 ((WRK-NENREI      >=    70)     AND
+                  (PTINF-BIRTHDAY  <=   "19320930))
                INITIALIZE              SRYCDCHG-REC
       *
                MOVE    SYOKIKSN-IN-KHNSRYCD
