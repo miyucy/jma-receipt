@@ -228,6 +228,9 @@
            03  WRK-SYU-SUM-IDX             PIC 9(05).
            03  WRK-TAIINUPDCNT             PIC 9(05).
       *
+           03  WRK-MCP-WIDGET      PIC X(64).
+           03  WRK-IDOYMD                  PIC X(08).
+      *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
                                //SPA-// BY //WRK-SPA-//.
@@ -751,7 +754,7 @@
            PERFORM 900-TBL-SELECT-SEC
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1            >   30 )
+               UNTIL     ( IDX1            >   99 )
                    OR    ( FLG-DBRC    NOT =   ZERO )
       *
                MOVE    MCPDATA-REC TO  SYS-1005-REC
@@ -805,7 +808,7 @@
            PERFORM 900-TBL-SELECT-SEC
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1            >   20 )
+               UNTIL     ( IDX1            >   50 )
                    OR    ( FLG-DBRC    NOT =   ZERO )
       *
                MOVE    MCPDATA-REC TO  SYS-1010-REC
@@ -1091,6 +1094,8 @@
                END-IF
       *
            END-IF
+      *
+           MOVE    MCP-WIDGET      TO  WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
       *    患者番号チェック
@@ -3061,20 +3066,32 @@
       *****************************************************************
        4101-IDOYMD-CHK-SEC             SECTION.
       *
+           IF  ( SPA-GMN-I01-SYORIKBN-CD   NOT =   "08" )
+               GO  TO  4101-IDOYMD-CHK-EXT
+           END-IF
+      *
+           MOVE    SPA-NAI-I01-IDOYMD
+                                       TO  WRK-IDOYMD
+      *
            IF    ( SPA-GMN-I01-IDOYMD  =   SPACE )
-               GO  TO  4101-IDOYMD-CHK-EXT
-           END-IF
+               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-I01-IDOYMD
+               MOVE    SPA-SYSYMD      TO  SPA-NAI-I01-IDOYMD
+           ELSE
+               MOVE    SPA-GMN-I01-IDOYMD
+                                       TO  WRK-YMD
+               PERFORM 5002-HIZUKE-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
       *
-           MOVE    SPA-GMN-I01-IDOYMD
-                                   TO  WRK-YMD
-           PERFORM 5002-HIZUKE-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               MOVE    3           TO  SPA-GMN-I01-CUR
-               GO  TO  4101-IDOYMD-CHK-EXT
-           END-IF
+      *            エラーコードを設定（後続の処理は続行）
+                   MOVE    "0001"      TO  SPA-ERRCD
+                   MOVE    3           TO  SPA-GMN-I01-CUR
+                   MOVE    WRK-IDOYMD  TO  WRK-YMD
+                   PERFORM 5002-HIZUKE-CHK-SEC
+               END-IF
       *
-           MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-IDOYMD
-           MOVE    WRK-SYMD        TO  SPA-NAI-I01-IDOYMD
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-I01-IDOYMD
+               MOVE    WRK-SYMD        TO  SPA-NAI-I01-IDOYMD
+           END-IF
       *
            IF  ( SPA-GMN-I01-SYORIKBN-CD   =   "08" )
                MOVE    SPA-NAI-I01-IDOYMD
@@ -7682,7 +7699,7 @@
       *****************************************************************
        5011-INPUT-CUR-SEC          SECTION.
       *
-           EVALUATE    MCP-WIDGET
+           EVALUATE    WRK-MCP-WIDGET
            WHEN    "IDOYMD"
                MOVE    003             TO  SPA-GMN-I01-CUR
            WHEN    "BRMNUM"
@@ -7722,7 +7739,7 @@
            END-EVALUATE
       *
       *    次カーソル位置を設定
-           EVALUATE    MCP-WIDGET
+           EVALUATE    WRK-MCP-WIDGET
            WHEN    "DISPKBN"
                MOVE    212             TO  SPA-GMN-I01-CUR
            WHEN    "SELNUM"

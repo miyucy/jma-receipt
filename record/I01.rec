@@ -70,7 +70,7 @@ I01	{
 				state	int;
 			};
 			count	int;
-			item	varchar(27)[30];
+			item	varchar(27)[99];
 			state	int;
 		};
 		CMB_SHOKAI	{
@@ -99,7 +99,7 @@ I01	{
 				state	int;
 			};
 			count	int;
-			item	varchar(27)[20];
+			item	varchar(27)[50];
 			state	int;
 		};
 		CMB_DR2	{
@@ -108,7 +108,7 @@ I01	{
 				state	int;
 			};
 			count	int;
-			item	varchar(27)[20];
+			item	varchar(27)[50];
 			state	int;
 		};
 		CMB_DR3	{
@@ -117,7 +117,7 @@ I01	{
 				state	int;
 			};
 			count	int;
-			item	varchar(27)[20];
+			item	varchar(27)[50];
 			state	int;
 		};
 		CMB_HKNCOMBI	{

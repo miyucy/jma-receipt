@@ -56,7 +56,7 @@
                 05  I01-NYUINKA-STT                PIC S9(9)   BINARY.
                 05  I01-NYUINKA-CNT                PIC S9(9)   BINARY.
                 05  I01-NYUINKA-ITM                PIC X(27)
-                                                   OCCURS  30.
+                                                   OCCURS  99.
                 05  I01-NYUINKA-ITM-STT            PIC S9(9)   BINARY.
               04  I01-CMB-SHOKAI.
                 05  I01-SHOKAI                     PIC X(8).
@@ -76,7 +76,7 @@
                   06  I01-DR-STT                   PIC S9(9)   BINARY.
                   06  I01-DR-CNT                   PIC S9(9)   BINARY.
                   06  I01-DR-ITM                   PIC X(27)
-                                                   OCCURS  20.
+                                                   OCCURS  50.
                   06  I01-DR-ITM-STT               PIC S9(9)   BINARY.
               04  I01-CMB-HKNCOMBI.
                 05  I01-HKNCOMBI                   PIC X(51).

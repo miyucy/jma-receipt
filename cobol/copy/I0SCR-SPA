@@ -253,7 +253,7 @@
                  11  SPA-GMN-I01-CMB-NYUINKA.
                    13  SPA-GMN-I01-NYUINKA-CNT     PIC S9(9)   BINARY.
                    13  SPA-GMN-I01-NYUINKA-ITM     PIC X(27)
-                                           OCCURS  30
+                                           OCCURS  99
                                            INDEXED BY  CMB-IDX04.
                    13  SPA-GMN-I01-NYUINKA-ITM-STT PIC S9(9)   BINARY.
       *          初回コンボ
@@ -268,7 +268,7 @@
                    13 SPA-GMN-I01-CMB-DR-OCC       OCCURS  3.
                      15  SPA-GMN-I01-DR-CNT        PIC S9(9)   BINARY.
                      15  SPA-GMN-I01-DR-ITM        PIC X(27)
-                                           OCCURS  20
+                                           OCCURS  50
                                            INDEXED BY  CMB-IDX06.
                      15  SPA-GMN-I01-DR-ITM-STT    PIC S9(9)   BINARY.
       *          保険組み合わせコンボ
