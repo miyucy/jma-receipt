@@ -883,6 +883,11 @@
       ********************(WRK-ICD-CDSYU   NOT =   "J"         )
       *                点数コード決定
                        MOVE    ICD-SRYCD           TO  LNK-SC97-INCD
+      *                点数コードが同じ時
+                       IF      SPA-COM-INPUTCD(GMN-IDX)
+                                               =   LNK-SC97-INCD
+                           MOVE    ZERO            TO  LNK-SC97-NYURYOKU
+                       END-IF
                    ELSE
       *                一覧表示へ
       **************** MOVE    WRK-ICD-CDSYU       TO  LNK-SC97-CDSYU
