@@ -134,6 +134,7 @@
            03  IDX-S2              PIC 9(04).
            03  IDX-IP              PIC 9(04).
            03  IDX-SST             PIC 9(04).
+           03  IDX-SYU             PIC 9(04).
       *
            03  IDX-SS2             PIC 9(04).
            03  IDX-D1              PIC 9(02).
@@ -171,7 +172,15 @@
                05  WRK-TENSUS-Z    PIC ZZZZ9.99.
       *
            03  WRK-ZAITEN          PIC 9(08).
-           03  WRK-ZAITEN-90       PIC 9(08)V9(02).
+      **** 03  WRK-ZAITEN-90       PIC 9(08)V9(03).
+           03  WRK-ZAITEN-90       PIC 9(08).
+      *
+      *    点数計算
+           03  WRK-ZAITEN-G            PIC 9(08).
+           03  WRK-KASAN               PIC 9(08)V999.
+           03  WRK-KASAN-ALL           PIC 9(08)V999.
+           03  WRK-GENZAN              PIC 9(08)V999.
+           03  WRK-GENZAN-ALL          PIC 9(08)V999.
       *
            03  WRK-KINGAK          PIC 9(08).
            03  WRK-SRYSYUKBN       PIC X(03).
@@ -488,6 +497,10 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  IDX-AREA
+           INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-I44-I48.
@@ -2110,6 +2123,15 @@
            INITIALIZE                      WRK-MOJI-AREA.
       *
            MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX4) TO  WRK-HENKAN
+      *    １桁目が空白は削除とする
+           IF      WRK-HENKAN(1:1)     =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-INPUTCD
+                                                      (SPA-GMN-IDX4)
+               MOVE    1               TO  FLG-INS
+               MOVE    1               TO  FLG-MEI
+               GO      TO     41011-KOUI-HENDEL-EXT
+           END-IF
+      *
            PERFORM 41011-KOUI-INPUTCD-SYORI-SEC.
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    WRK-HENKAN      TO  SPA-GMN-INPUTCD(SPA-GMN-IDX4)
@@ -4063,6 +4085,8 @@
            MOVE    ZERO                TO  WRK-SURYOKEI.
            MOVE    ZERO                TO  WRK-MEISAISU.
            INITIALIZE                      WRK-WKSRY-AREA.
+      *    点数計算
+           PERFORM 45012-TENSU-KEISEN-SEC
       *
       *    入院行為新規作成
            MOVE    ZERO                TO  IDS.
@@ -4094,6 +4118,94 @@
            EXIT.
       *
       *****************************************************************
+      *    剤点数計算処理
+      *****************************************************************
+       45012-TENSU-KEISEN-SEC              SECTION.
+      *
+      *    剤点数
+           MOVE    ZERO                TO  WRK-ZAITEN
+           MOVE    ZERO                TO  WRK-ZAITEN-G
+           MOVE    ZERO                TO  IDX-SYU
+      *    点数算定
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX         >   SPA-GMN-MAX
+               IF      SPA-GMN-INPUTCD (IDX)(1:1)  =   "."
+                   CONTINUE
+               ELSE
+      *
+      *        点数集計
+               EVALUATE    SPA-COM-TENSIKIBETU (IDX)
+      *            ％加算・減算
+                   WHEN    5
+                   WHEN    6
+                       CONTINUE
+      *            点数（マイナス）
+                   WHEN    8
+                       COMPUTE WRK-ZAITEN-G    =   WRK-ZAITEN-G
+                                               +   SPA-COM-TEN (IDX)
+      *            点数
+                   WHEN    OTHER
+                       COMPUTE WRK-ZAITEN      =   WRK-ZAITEN
+                                               +   SPA-COM-TEN (IDX)
+               END-EVALUATE
+      *        手技料判定
+               IF      SPA-COM-DATAKBN (IDX)   =   "1"
+                   IF      IDX-SYU             =   ZERO
+                       MOVE    IDX             TO  IDX-SYU
+                   END-IF
+               END-IF
+      *
+      *        各集計
+      *****    MOVE    SPA-COM-INPUTCD(IDX)    TO  WRK-SRYCD-9
+      *        COMPUTE WRK-SRYCDTOTAL      =   WRK-SRYCDTOTAL
+      *                                    +   WRK-SRYCD-9
+      *        ADD     1                   TO  WRK-MEISAISU
+      *        ADD     1                   TO  WRK-SURYOUTOTAL
+      *******  ADD     1                   TO  IDX-ATO
+      *
+               END-IF
+           END-PERFORM
+      *
+      *    点数集計処理
+           MOVE    ZERO                TO  WRK-KASAN
+           MOVE    ZERO                TO  WRK-KASAN-ALL
+           MOVE    ZERO                TO  WRK-GENZAN
+           MOVE    ZERO                TO  WRK-GENZAN-ALL
+      *    点数算定
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX         >   SPA-GMN-MAX
+               EVALUATE    SPA-COM-TENSIKIBETU (IDX)
+      *            ％加算
+                   WHEN    5
+                       IF      IDX-SYU         >   ZERO
+                           COMPUTE WRK-KASAN   =   SPA-COM-TEN (IDX-SYU)
+                                               *   SPA-COM-TEN (IDX)
+                                               /   100
+                                               +   0.5
+                           ADD     WRK-KASAN       TO  WRK-KASAN-ALL
+                       END-IF
+      *            ％減算
+                   WHEN    6
+                       IF      IDX-SYU         >   ZERO
+                           COMPUTE WRK-GENZAN  =   SPA-COM-TEN (IDX-SYU)
+                                               *   SPA-COM-TEN (IDX)
+                                               /   100
+                           ADD     WRK-GENZAN     TO  WRK-GENZAN-ALL
+                       END-IF
+               END-EVALUATE
+           END-PERFORM
+      *
+      *    点数計算
+           COMPUTE WRK-ZAITEN          =   WRK-ZAITEN
+                                       +   WRK-KASAN-ALL
+                                       -   WRK-GENZAN-ALL
+                                       -   WRK-ZAITEN-G
+           .
+      *
+       45012-TENSU-KEISEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    剤のチェック処理
       *****************************************************************
        45011-NAIYOU-CHK-SEC              SECTION.
@@ -4101,7 +4213,7 @@
       *    診療コード計計算
            MOVE    ZERO                TO  WRK-KINGAK.
            MOVE    ZERO                TO  WRK-MEINUM.
-           MOVE    ZERO                TO  WRK-ZAITEN.
+      *****MOVE    ZERO                TO  WRK-ZAITEN.
            MOVE    ZERO                TO  WRK-SRYCDKEI.
            MOVE    ZERO                TO  WRK-SURYOKEI.
            MOVE    ZERO                TO  WRK-MEISAISU.
@@ -4119,11 +4231,11 @@
       *
       *        画面の計を集計する（１剤で１件）
                IF      SPA-COM-ZAIEND (IDX)    =   "1"
-                   IF      SPA-COM-KEIFLG (IDX)    =   "1"  OR  "2"
-                       MOVE    WRK-KINGAK              TO  WRK-ZAITEN
-                   ELSE
-                       MOVE    SPA-COM-TENSU  (IDX)    TO  WRK-ZAITEN
-                   END-IF
+      *********    IF      SPA-COM-KEIFLG (IDX)    =   "1"  OR  "2"
+      *                MOVE    WRK-KINGAK              TO  WRK-ZAITEN
+      *            ELSE
+      *                MOVE    SPA-COM-TENSU  (IDX)    TO  WRK-ZAITEN
+      ***********  END-IF
                    MOVE    SPA-COM-SYUTEN1(IDX)    TO  WRK-SYUTEN1
                    MOVE    SPA-COM-SYUTEN2 (IDX)   TO  WRK-SYUTEN2
                    MOVE    SPA-COM-YKZTEN  (IDX)   TO  WRK-YKZTEN
@@ -4472,11 +4584,11 @@
            END-IF.
       *    画面の計を集計する（１剤で１件）
            IF      SPA-COM-ZAIEND (IDX)    =   "1"
-               IF      SPA-COM-KEIFLG (IDX)   =   "1"  OR  "2"
-                   MOVE    WRK-KINGAK              TO  WRK-ZAITEN
-               ELSE
-                   MOVE    SPA-COM-TENSU  (IDX)    TO  WRK-ZAITEN
-               END-IF
+      ****     IF      SPA-COM-KEIFLG (IDX)   =   "1"  OR  "2"
+      *****        MOVE    WRK-KINGAK              TO  WRK-ZAITEN
+      *        ELSE
+      *            MOVE    SPA-COM-TENSU  (IDX)    TO  WRK-ZAITEN
+      ******   END-IF
                MOVE    SPA-COM-SYUTEN1(IDX)    TO  WRK-SYUTEN1
                MOVE    SPA-COM-SYUTEN2 (IDX)   TO  WRK-SYUTEN2
                MOVE    SPA-COM-YKZTEN  (IDX)   TO  WRK-YKZTEN
@@ -4494,7 +4606,7 @@
                ADD     SPA-COM-SURYO  (IDX)    TO  WRK-SURYOKEI
            END-IF.
       *
-           ADD     SPA-COM-TEN (IDX)       TO  WRK-ZAITEN-90.
+      *****ADD     SPA-COM-TEN (IDX)       TO  WRK-ZAITEN-90.
       *
       *    明細数
            ADD     1                       TO  WRK-MEISAISU.
@@ -4647,7 +4759,7 @@
            END-IF.
       *
       *    剤点数
-           MOVE    WRK-ZAITEN-90       TO  NACCT-ZAITEN.
+           MOVE    WRK-ZAITEN          TO  NACCT-ZAITEN.
       *    診療コード計
            MOVE    WRK-SRYCDKEI        TO  NACCT-SRYCDTOTAL.
       *    数量計
@@ -4655,7 +4767,7 @@
       *    明細数
            MOVE    WRK-MEISAISU        TO  NACCT-MEISAISU.
       *    手技点数１
-           MOVE    WRK-SYUTEN1         TO  NACCT-SYUTEN1.
+           MOVE    WRK-ZAITEN          TO  NACCT-SYUTEN1.
       *    手技点数２
            MOVE    WRK-SYUTEN2         TO  NACCT-SYUTEN2.
       *    薬剤点数
@@ -4786,7 +4898,7 @@
       *    明細数
            MOVE    WRK-MEISAISU        TO  NACCT-MEISAISU.
       *    手技点数１
-           MOVE    WRK-SYUTEN1         TO  NACCT-SYUTEN1.
+           MOVE    WRK-ZAITEN          TO  NACCT-SYUTEN1.
       *    手技点数２
            MOVE    WRK-SYUTEN2         TO  NACCT-SYUTEN2.
       *    薬剤点数
