@@ -36,6 +36,7 @@
       *  01.02.02    NACL-藤原    02/12/10  エラーメッセージの修正
       *  01.02.03    NACL-藤原    03/02/17  補助区分の追加
       *  01.02.04    NACL-藤原    03/05/28  補助区分の判定の修正
+      *  01.02.05    NACL-藤原    04/01/26  排他制御処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -139,6 +140,9 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+      *
+      *    排他制御サブパラメタ
+           COPY    "CPORCSLOCK.INC".
       *
       *
       *****************************************************************
@@ -263,12 +267,12 @@
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-               WHEN    "ACTIVATE"      ALSO    "PTNUM"
-                   PERFORM 4101-PTNUM-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SRYYM"
-                   PERFORM 4102-SRYYM-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SRYKA"
-                   PERFORM 4103-SRYKA-CHK-SEC
+      *********WHEN    "ACTIVATE"      ALSO    "PTNUM"
+      *********    PERFORM 4101-PTNUM-CHK-SEC
+      *********WHEN    "ACTIVATE"      ALSO    "SRYYM"
+      *********    PERFORM 4102-SRYYM-CHK-SEC
+      *********WHEN    "ACTIVATE"      ALSO    "SRYKA"
+      *********    PERFORM 4103-SRYKA-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 4104-SELNUM-CHK-SEC
                WHEN    ANY             ALSO    "RECELST"
@@ -306,12 +310,19 @@
                    MOVE    SPTID-PTID      TO  SPA-H99NAI-PTID
       *            患者マスター存在チェック
                    MOVE    SPA-HOSPID      TO  PTINF-HOSPID
-                   MOVE    SPA-H01NAI-PTID TO  PTINF-PTID
+                   MOVE    SPA-H99NAI-PTID TO  PTINF-PTID
                    PERFORM 900-PTINF-READ-SEC
                    IF      FLG-PTINF   NOT =   ZERO
                        MOVE    "0001"      TO  SPA-ERRCD
                    ELSE
-                       MOVE    PTINF-NAME  TO  SPA-H99GMN-NAME
+      *
+      *                排他制御処理
+                       PERFORM 990-LOCK-IN-SEC
+                       IF      SPA-ERRCD       NOT =   SPACE
+                           GO      TO     4101-PTNUM-CHK-EXT
+                       ELSE
+                           MOVE    PTINF-NAME  TO  SPA-H99GMN-NAME
+                       END-IF
                    END-IF
                END-IF     
            END-IF
@@ -778,6 +789,12 @@
                END-IF
            END-PERFORM
       * 
+           MOVE    SPA-H99GMN-PTNUM    TO  SPA-H01GMN-PTNUM
+           MOVE    SPA-H99NAI-PTID     TO  SPA-H01NAI-PTID
+           MOVE    SPA-H99GMN-SRYYM    TO  SPA-H01GMN-SRYYM
+           MOVE    SPA-H99NAI-SRYYM    TO  SPA-H01NAI-SRYYM
+           MOVE    SPA-H99GMN-NAME     TO  SPA-H01GMN-NAME 
+      *
            PERFORM 210-BACK
            .
        450-KAKUTEI-EXT.
@@ -895,8 +912,13 @@
                    MOVE    "対象のレセプトは存在しません"
                                              TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "ＩＤ取得サブでエラー" 
+                   MOVE    "該当の患者が存在しません"
                                                TO  SPA-ERRMSG
+      *
+               WHEN    "9999"
+                   MOVE    "他端末で使用中です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
            END-EVALUATE
       *
            MOVE    SPACE                TO  HERR
@@ -1046,6 +1068,40 @@
       *
            .
        900-SEIKYU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御処理
+      *****************************************************************
+       990-LOCK-IN-SEC         SECTION.
+      *
+      *    排他制御処理
+           MOVE    1                   TO  SLOCK-MODE
+           MOVE    SPA-H01NAI-PTID     TO  SLOCK-PTID
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           IF      SLOCK-RETURN    NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+           END-IF
+           .
+       990-LOCK-IN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御解除処理
+      *****************************************************************
+       990-LOCK-OUT-SEC         SECTION.
+      *
+      *    排他制御解除処理
+           MOVE    2                   TO  SLOCK-MODE
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           .
+       990-LOCK-OUT-EXT.
            EXIT.
       *
       *****************************************************`PN@`PN@ ******

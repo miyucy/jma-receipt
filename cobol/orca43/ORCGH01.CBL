@@ -45,6 +45,7 @@
       *                                     入院対応
       *                                     科コードの入力の修正
       *  01.02.04    NACL-藤原    03/07/05  患者氏名での検索を追加
+      *  01.02.05    NACL-藤原    04/01/26  排他制御処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -168,6 +169,8 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+      *    排他制御サブパラメタ
+           COPY    "CPORCSLOCK.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -321,8 +324,6 @@
            ELSE
                IF      WRK-SPA-PTNUM       NOT =   SPACE
                    MOVE    WRK-SPA-PTNUM       TO  H01-PTNUM
-      *************PERFORM 4101-PTNUM-CHK-SEC
-      *
                    MOVE    H01-PTNUM           TO  SPA-H01GMN-PTNUM
       *
                    MOVE    SPACE               TO  SPA-UPDFLG
@@ -350,7 +351,13 @@
                            IF      FLG-PTINF   NOT =   ZERO
                                MOVE    "0001"      TO  SPA-ERRCD
                            ELSE
-                               MOVE    PTINF-NAME  TO  SPA-H01GMN-NAME
+      *
+      *                        排他制御処理
+                               PERFORM 990-LOCK-IN-SEC
+                               IF      SPA-ERRCD       =   SPACE
+                                   MOVE    PTINF-NAME  TO
+                                                       SPA-H01GMN-NAME
+                               END-IF
                            END-IF
                        END-IF 
                    END-IF     
@@ -510,10 +517,19 @@
                GO  TO  320-H99SPASET-EXT
            END-IF
       *
-           INITIALIZE               RECE10-REC
-           MOVE    SPA-H99-KEY  TO  RECE10-KEY
+           MOVE    SPACE           TO  SPA-UPDFLG
+                                       SPA-HENFLG
+      *
+           INITIALIZE              RECE10-REC
+           MOVE    SPA-H99-KEY     TO  RECE10-KEY
            PERFORM 900-SEIKYU-INV-SEC
-           MOVE    MCPDATA-REC  TO  RECE10-REC  
+           MOVE    MCPDATA-REC     TO  RECE10-REC
+      *
+      *    排他制御処理
+           PERFORM 990-LOCK-IN-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  320-H99SPASET-EXT
+           END-IF
       *
            PERFORM 41021-SEIKYU-HENSYU-SEC
       *
@@ -887,7 +903,14 @@
                    IF      FLG-PTINF   NOT =   ZERO
                        MOVE    "0001"      TO  SPA-ERRCD
                    ELSE
-                       MOVE    PTINF-NAME  TO  SPA-H01GMN-NAME
+      *
+      *                排他制御処理
+                       PERFORM 990-LOCK-IN-SEC
+                       IF      SPA-ERRCD       NOT =   SPACE
+                           GO      TO     4101-PTNUM-CHK-EXT
+                       ELSE
+                           MOVE    PTINF-NAME  TO  SPA-H01GMN-NAME
+                       END-IF
                    END-IF
                END-IF     
            END-IF
@@ -1611,6 +1634,9 @@
                GO      TO      210-BACK-EXT
            END-IF
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
            MOVE    "M01"               TO  SPA-SAKIPG
            MOVE    "H01"               TO  SPA-MOTOPG
       *
@@ -1647,6 +1673,9 @@
       *
            MOVE    SPACE               TO  SPA-HENFLG
                                            SPA-UPDFLG                                     
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
            .
        420-CLEAR-EXT.
            EXIT.
@@ -1796,6 +1825,9 @@
                                        SPA-H01NAI-KOUMOKU
                                        SPA-H01NAI-KOUMOKU1
                                        SPA-RECE10-KEY
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
            .
        450-KOUSIN-EXT.
            EXIT.
@@ -2113,7 +2145,7 @@
                    MOVE    "対象のレセプトは存在しません"
                                              TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "ＩＤ取得サブでエラー" 
+                   MOVE    "該当の患者が存在しません"
                                                TO  SPA-ERRMSG
                WHEN    "0005"
                    MOVE    "診療年月が未入力です" 
@@ -2131,6 +2163,11 @@
                    MOVE
                        "対象の請求データが存在しないので更新できません"
                                              TO  SPA-ERRMSG
+      *
+               WHEN    "9999"
+                   MOVE    "他端末で使用中です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
            END-EVALUATE
       *
            MOVE    SPACE                TO  HERR
@@ -2518,6 +2555,40 @@
       *
            .
        900-KOHSKY-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御処理
+      *****************************************************************
+       990-LOCK-IN-SEC         SECTION.
+      *
+      *    排他制御処理
+           MOVE    1                   TO  SLOCK-MODE
+           MOVE    SPA-H01NAI-PTID     TO  SLOCK-PTID
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           IF      SLOCK-RETURN    NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+           END-IF
+           .
+       990-LOCK-IN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御解除処理
+      *****************************************************************
+       990-LOCK-OUT-SEC         SECTION.
+      *
+      *    排他制御解除処理
+           MOVE    2                   TO  SLOCK-MODE
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           .
+       990-LOCK-OUT-EXT.
            EXIT.
       *
       *****************************************************************
