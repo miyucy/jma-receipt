@@ -30,6 +30,7 @@ tbl_ptnyuinrrk	{
 	TUSANNISSU1		number(5,0);
 	TUSANNISSU2		number(5,0);
 	NYUINCHUKBN		char(1);
+	DOUJITSUKBN		char(1);
 	TERMID		varchar(16);
 	OPID		varchar(16);
 	CREYMD		char(8);

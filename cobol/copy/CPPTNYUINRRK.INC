@@ -92,6 +92,8 @@
       *  場合、自院歴のデータに値を設定する。
       *  （０：退院済／１：入院中）
            03  PTNYUINRRK-NYUINCHUKBN             PIC  X(01).
+      *同日再入院区分
+           03  PTNYUINRRK-DOUJITSUKBN             PIC  X(01).
       *端末ＩＤ
            03  PTNYUINRRK-TERMID                  PIC  X(16).
       *オペーレータＩＤ
