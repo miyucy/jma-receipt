@@ -662,6 +662,33 @@
                      MOVE "1"                TO WRK-HANBETU-DAY(IDZ IDY)
                   END-IF
       *
+               ELSE
+      *
+                IF      ( WRK-DAY1(IDX IDY)       =  ZERO )
+                AND     ( WRK-DAY5(IDX IDY)   NOT =  ZERO )
+      *
+                  MOVE   ZERO     TO    FLG-HANBETU
+                  PERFORM    VARYING   IDZ  FROM   1   BY   1
+                               UNTIL ( IDZ    >    10 )
+                                 OR  ( WRK-HANBETU-SKYYM(IDZ) = SPACE )
+                   IF   (WRK-HANBETU-SKYYM(IDZ)    = WRK-SKYYM(IDX))
+                   AND  (WRK-HANBETU-HKNCOMBINUM(IDZ)
+                                                   = WRK-DAY5(IDX IDY))
+                     MOVE "3"                TO WRK-HANBETU-DAY(IDZ IDY)
+                     MOVE  1                 TO FLG-HANBETU
+                     MOVE  10                TO IDZ
+                   END-IF
+                  END-PERFORM
+      *
+                  IF   FLG-HANBETU   =   ZERO
+                     MOVE WRK-SKYYM(IDX)     TO WRK-HANBETU-SKYYM(IDZ)
+                     MOVE WRK-DAY5(IDX IDY)  TO  
+                                          WRK-HANBETU-HKNCOMBINUM(IDZ)
+                     MOVE "3"                TO WRK-HANBETU-DAY(IDZ IDY)
+                  END-IF
+      *
+                END-IF
+      *
                END-IF
       *
               END-PERFORM
@@ -760,7 +787,7 @@
                                          UNTIL    IDZ    >    31
       *
                      IF    WRK-HANBETU2-DAY(IDX IDZ)   NOT =  SPACE 
-                        IF  WRK-HANBETU-DAY(IDY IDZ) = SPACE
+                        IF  WRK-HANBETU-DAY(IDY IDZ) = SPACE OR "3" 
                            MOVE   "2"   TO   WRK-HANBETU-DAY(IDY IDZ)
                         END-IF
                      END-IF
