@@ -72,6 +72,7 @@
            03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
            03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(04)   VALUE   ".TXT".
+      *
       *    パラメタファイル名
        01  FILE-NAME2.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
@@ -2744,8 +2745,8 @@
       *   時間外区分編集処理
       *****************************************************************
        31013-JIKANCHK-SEC                  SECTION.
-      *    手術・麻酔のみ
-           IF      LNK-WKSRY-SRYKBN (IDX)  =   "50"  OR  "54"
+      *    初診・手術・麻酔のみ
+           IF      LNK-WKSRY-SRYKBN (IDX)  =   "11" OR "50"  OR  "54"
                CONTINUE
            ELSE
                GO      TO     31013-JIKANCHK-EXT
@@ -6579,6 +6580,7 @@
       *****MOVE    LNK-ORCSC-GMN-IDX   TO  SPA-GMN-IDX
            MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
            MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
+           MOVE    ZERO                TO  WRK-MAX
       *!   INITIALIZE                  WRK-HZN-GMN-AREA
       *
       *    編集後内容セット
@@ -7344,6 +7346,7 @@
            MOVE    SPA-YAKJYO-1        TO  LNK-ORCSC-YAKJYO-1
            MOVE    SPA-YAKJYO-2        TO  LNK-ORCSC-YAKJYO-2
            MOVE    SPA-YAKJYO-3        TO  LNK-ORCSC-YAKJYO-3
+           MOVE    SPA-TOKUTEI-FLG     TO  LNK-ORCSC-TOKUTEI-FLG
       *
            MOVE    SPA-ROUMANSEI-ARI   TO  LNK-ORCSC-ROUMANSEI-ARI
            MOVE    SPA-ROUMANSEI-ARI2  TO  LNK-ORCSC-ROUMANSEI-ARI2
