@@ -1,5 +1,6 @@
 #!/bin/bash
-ORCABT=/usr/local/orca/lib
+ORCADIR=/usr/local/orca
+ORCABT="$ORCADIR"/lib
 DBSTUB=/usr/local/panda/bin/dbstub
 -------------------------------------------#
 #    Ì¤ÀÁµá°ìÍ÷ºîÀ®
@@ -21,4 +22,4 @@ DBSTUB=/usr/local/panda/bin/dbstub
         cd  $ORCABT
 
 ##      Ì¤ÀÁµá°ìÍ÷
-     	$DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBM005 -parameter $1,$4,$2,$5
+     	$DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBM005 -parameter $1,$4,$2,$5

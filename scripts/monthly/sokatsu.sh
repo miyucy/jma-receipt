@@ -1,5 +1,6 @@
 #!/bin/bash
-ORCABT=/usr/local/orca/lib
+ORCADIR=/usr/local/orca
+ORCABT="$ORCADIR"/lib
 DBSTUB=/usr/local/panda/bin/dbstub
 -------------------------------------------#
 #    決定通知書作成
@@ -22,10 +23,10 @@ DBSTUB=/usr/local/panda/bin/dbstub
 
 ##      決定通知書（社保）
         if  [ $2 = '1' ]; then
-       	    $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBM020 -parameter $1$5
+       	    $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBM020 -parameter $1$5
        	fi    
 
 ##      決定通知書（国保）
         if  [ $2 = '2' ]; then
-       	    $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBM021 -parameter $1$5
+       	    $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBM021 -parameter $1$5
        	fi    

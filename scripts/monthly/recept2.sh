@@ -1,5 +1,6 @@
 #!/bin/bash
-ORCABT=/usr/local/orca/lib
+ORCADIR=/usr/local/orca
+ORCABT="$ORCADIR"/lib
 DBSTUB=/usr/local/panda/bin/dbstub
 #-------------------------------------------#
 #    ∞ÂŒ≈¿¡µ·ΩÒΩ–ŒœΩËÕ˝
@@ -31,13 +32,13 @@ DBSTUB=/usr/local/panda/bin/dbstub
 
         if [ $4 =  0 ]; then
 #          fcu  -P$1 ORCR0101
-	   $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCR0101 -parameter $1,$2,$3,$7,$8,$9,${10},
+	   $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0101 -parameter $1,$2,$3,$7,$8,$9,${10},
         else 
-	   $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCR0102 -parameter $1,$2,$3,$7,$8
+	   $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0102 -parameter $1,$2,$3,$7,$8
            if  [ -e $6 ]; then
                exit 
            else
-	       $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE$1$2
+	       $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE$1$2
            fi
         fi
 

@@ -1,5 +1,6 @@
 #!/bin/bash
-ORCABT=/usr/local/orca/lib
+ORCADIR=/usr/local/orca
+ORCABT="$ORCADIR"/lib
 DBSTUB=/usr/local/panda/bin/dbstub
 #-------------------------------------------#
 #    レセ電ファイル作成処理
@@ -22,21 +23,21 @@ DBSTUB=/usr/local/panda/bin/dbstub
         
      cd  $ORCABT
 
-        $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCR0200 -parameter $1$6$7
+        $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0200 -parameter $1$6$7
         
         if  [ $4 = '1' ]; then          
 #           固定長のとき
-	    $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCR0210 -parameter $1,$2,$3,$6,$7
+	    $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0210 -parameter $1,$2,$3,$6,$7
         else 
 #           ＣＳＶのとき 
-	    $DBSTUB -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCR0300 -parameter $1,$2,$3,$6,$7
+	    $DBSTUB -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCR0300 -parameter $1,$2,$3,$6,$7
         fi 
         
         if  [ -e $8 ]; then
             exit 
         fi
         
-	$DBSTUB  -record /usr/local/orca/record/ -dir /usr/local/orca/lddef/directory -bddir /usr/local/orca/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE$6$7
+	$DBSTUB  -record "$ORCADIR"/record/ -dir "$ORCADIR"/lddef/directory -bddir "$ORCADIR"/lddef -db orca  -bd orcabt ORCBJOB -parameter JBE$6$7
 
         
 
