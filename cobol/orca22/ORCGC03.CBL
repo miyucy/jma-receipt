@@ -277,6 +277,7 @@
            COPY    "C08.INC".
            COPY    "C09.INC".
            COPY    "C10.INC".
+           COPY    "C11.INC".
            COPY    "CERR.INC".
            COPY    "CID1.INC".
            COPY    "CID2.INC".
@@ -2900,7 +2901,7 @@
       *
            INITIALIZE                  SPA-C01KYOUTU
            MOVE    "C03"               TO  SPA-C01-MOTOPG
-                                           SPA-MOTOPG 
+                                           SPA-MOTOPG
            MOVE    ZERO                TO  IDY
       * 
            IF      SPA-NAI-BYOMEIMOJI  >   ZERO

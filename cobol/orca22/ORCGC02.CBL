@@ -127,6 +127,7 @@
       *  01.08.02    NACL-藤原    04/02/24  入外区分の表示切替の機能追加
       *                                     病名文字数のエラー時の表示
       *  01.08.03    NACL-藤原    04/03/08  コラムリストの行制御
+      *  01.08.04    NACL-藤原    04/03/09  手術歴の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -475,6 +476,7 @@
            COPY    "C08.INC".
            COPY    "C09.INC".
            COPY    "C10.INC".
+           COPY    "C11.INC".
            COPY    "CERR.INC".
            COPY    "CID1.INC".
            COPY    "CID2.INC".
@@ -682,12 +684,11 @@
                INITIALIZE              SPA-C01KYOUTU
            END-IF
       *
-      *****MOVE    SPA-WORK        TO  SPA-C01KYOUTU
-      *
            EVALUATE    SPA-MOTOPG(1:3)
                WHEN    "C03"
                WHEN    "C07"
                WHEN    "C09"
+               WHEN    "C11"
                    GO      TO      300-SCREEN-EXT
                WHEN    "C04"
       *            自院病名セット処理
@@ -1769,9 +1770,6 @@
       *    前回の患者番号
                WHEN    "CLICKED"       ALSO    "B03"
                    PERFORM 230-MAEKPTNUM-SEC
-      *    入力ＣＤへ
-               WHEN    "CLICKED"       ALSO    "B16"
-                   PERFORM 600-C03-SYORI-SEC
       *    病名検索へ
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 600-C05-SYORI-SEC
@@ -1800,9 +1798,15 @@
                WHEN    "CLICKED"       ALSO    "B04"
                    MOVE    ZERO                TO  WRK-BUNRUICD 
                    PERFORM 490-USERBYOMEI-KENSAKU-SEC
+      *    入力ＣＤへ
+               WHEN    "CLICKED"       ALSO    "B16"
+                   PERFORM 600-C03-SYORI-SEC
       *    コメント処理
                WHEN    "CLICKED"       ALSO    "B17"
                    PERFORM 430-FREEMSG-SEC
+      *    手術歴登録処理
+               WHEN    "CLICKED"       ALSO    "B18"
+                   PERFORM 430-OPECOM-SEC
       *    入外区分表示切替え処理
                WHEN    "CLICKED"       ALSO    "B23"
                    PERFORM 430-HNYUGAIKBN-CHANGE-SEC
@@ -6181,7 +6185,7 @@
       *
            INITIALIZE                  SPA-C01KYOUTU
            MOVE    "C02"               TO  SPA-C01-MOTOPG
-                                           SPA-MOTOPG 
+                                           SPA-MOTOPG
            MOVE    ZERO                TO  IDY
       * 
            IF      SPA-NAI-C02-BYOMEIMOJI          >   ZERO
@@ -6286,6 +6290,63 @@
       *
            .
        430-FREEMSG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    手術歴登録画面へ
+      *****************************************************************
+       430-OPECOM-SEC              SECTION.
+      *
+      *    修正のチェック
+           IF      SPA-GMN-C02-BANGO   NOT =   ZERO
+               MOVE    "0073"          TO  SPA-ERRCD
+               GO      TO      430-OPECOM-EXT
+           END-IF
+      *
+           IF      SPA-GMN-C02-BANGO-X
+                                   NOT =   SPACE
+               MOVE    "0090"              TO  SPA-ERRCD
+               GO      TO      430-OPECOM-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  SPA-MOTOPG
+           INITIALIZE                  SPA-C01KYOUTU
+           MOVE    SPA-C01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-C02FREE         TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGC11"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-C01KYOUTU
+           MOVE    SPA-FREE        TO  SPA-C02FREE
+      *
+      *    カーソル移動
+           IF      SPA-NAI-C11-PTID    =   ZERO
+               MOVE    "PTNUM"             TO  MCP-WIDGET
+           ELSE
+               MOVE    "SELNUM1"           TO  MCP-WIDGET
+           END-IF
+      *
+           MOVE    "C02"               TO  SPA-MOTOPG
+           MOVE    "C11"               TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "C11"               TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       430-OPECOM-EXT.
            EXIT.
       *
       *****************************************************************
