@@ -492,10 +492,50 @@
       *---- (01.00.05) LINE ADD END   --------------------------------
       *    Èé²¼¶ÚÆùÃí¼Í
            03  CONS-HIKAKIN    PIC X(09)   VALUE   "130000510".
+      *
       *    ½é¿Ç¡Ê¿ÇÎÅ½ê¡Ë¾Ò²ð´µ¼Ô²Ã»»
            03  CONS-SYOSIN-KASAN1  PIC X(09) VALUE "111003770".
       *    Ï·¿Í½é¿Ç¡Ê¿ÇÎÅ½ê¡Ë¾Ò²ð´µ¼Ô²Ã»»
            03  CONS-SYOSIN-KASAN2  PIC X(09) VALUE "111700470".
+      *    ½é¿Ç¡ÊÆýÍÄ»ù¡Ë²Ã»»
+           03  CONS-SYOSIN-KASAN3  PIC X(09) VALUE "111000370".
+      *    ½é¿Ç¡Ê°é»ù±ÉÍÜ»ØÆ³¡Ë²Ã»»
+           03  CONS-SYOSIN-KASAN4  PIC X(09) VALUE "111000470".
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê½é¿Ç»þ¿ÇÎÅ»þ¤Î¾Ò²ð´µ¼Ô¡Ë²Ã»»
+           03  CONS-SYOSIN-KASAN5  PIC X(09) VALUE "111010370".
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£³¡Ë
+           03  CONS-SYOSIN-KASAN6  PIC X(09) VALUE "111010870".
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£´¡Ë
+           03  CONS-SYOSIN-KASAN7  PIC X(09) VALUE "111010970".
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£µ¡Ë
+           03  CONS-SYOSIN-KASAN8  PIC X(09) VALUE "111011070".
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£¶¡Ë
+           03  CONS-SYOSIN-KASAN9  PIC X(09) VALUE "111011170".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£±¡ÊÉÂ±¡¡Ë
+           03  CONS-SYOSIN-KASAN10 PIC X(09) VALUE "111011270".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£²¡ÊÉÂ±¡¡Ë
+           03  CONS-SYOSIN-KASAN11 PIC X(09) VALUE "111011370".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£³¡ÊÉÂ±¡¡Ë
+           03  CONS-SYOSIN-KASAN12 PIC X(09) VALUE "111009970".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£´¡ÊÉÂ±¡¡Ë
+           03  CONS-SYOSIN-KASAN13 PIC X(09) VALUE "111010070".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£µ¡ÊÉÂ±¡¡Ë
+           03  CONS-SYOSIN-KASAN14 PIC X(09) VALUE "111010170".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£¶¡ÊÉÂ±¡¡Ë
+           03  CONS-SYOSIN-KASAN15 PIC X(09) VALUE "111010270".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£±¡ÊÉÂ±¡¡Ë
+           03  CONS-SYOSIN-KASAN16 PIC X(09) VALUE "111702770".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£²¡ÊÉÂ±¡¡Ë
+           03  CONS-SYOSIN-KASAN17 PIC X(09) VALUE "111702870".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£³¡ÊÉÂ±¡¡Ë
+           03  CONS-SYOSIN-KASAN18 PIC X(09) VALUE "111702370".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£´¡ÊÉÂ±¡¡Ë
+           03  CONS-SYOSIN-KASAN19 PIC X(09) VALUE "111702470".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£µ¡ÊÉÂ±¡¡Ë
+           03  CONS-SYOSIN-KASAN20 PIC X(09) VALUE "111702570".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£¶¡ÊÉÂ±¡¡Ë
+           03  CONS-SYOSIN-KASAN21 PIC X(09) VALUE "111702670".
+      *
       *    ¸¡ºº¤Î²ó¿ô¤Ë½¸·×¤·¤Ê¤¤¿ÇÎÅ¹Ô°Ù
       *    ºÎ·ì¡Ê£Â¡Ý£Á¡Ë
            03  WRK-CONS-SAIKETSU1      PIC X(09)   VALUE "160101210".
@@ -970,12 +1010,31 @@
            END-IF
       *    ¾Ò²ð´µ¼Ô²Ã»»ÉþÍÑÊýË¡¤Ç¤Ê¤¤¤³¤È
            IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)  
-                                             =   CONS-SYOSIN-KASAN1 OR
-                                                 CONS-SYOSIN-KASAN2 OR
-                                                 CONS-COMMENT5      OR
-                                                 CONS-COMMENT6      OR
-                                                 CONS-COMMENT7      OR
-                                                 CONS-COMMENT8        
+                                            =   CONS-SYOSIN-KASAN1  OR
+                                                CONS-SYOSIN-KASAN2  OR
+                                                CONS-SYOSIN-KASAN3  OR
+                                                CONS-SYOSIN-KASAN4  OR
+                                                CONS-SYOSIN-KASAN5  OR
+                                                CONS-SYOSIN-KASAN6  OR
+                                                CONS-SYOSIN-KASAN7  OR
+                                                CONS-SYOSIN-KASAN8  OR
+                                                CONS-SYOSIN-KASAN9  OR
+                                                CONS-SYOSIN-KASAN10 OR
+                                                CONS-SYOSIN-KASAN11 OR
+                                                CONS-SYOSIN-KASAN12 OR
+                                                CONS-SYOSIN-KASAN13 OR
+                                                CONS-SYOSIN-KASAN14 OR
+                                                CONS-SYOSIN-KASAN15 OR
+                                                CONS-SYOSIN-KASAN16 OR
+                                                CONS-SYOSIN-KASAN17 OR
+                                                CONS-SYOSIN-KASAN18 OR
+                                                CONS-SYOSIN-KASAN19 OR
+                                                CONS-SYOSIN-KASAN20 OR
+                                                CONS-SYOSIN-KASAN21 OR
+                                                CONS-COMMENT5       OR
+                                                CONS-COMMENT6       OR
+                                                CONS-COMMENT7       OR
+                                                CONS-COMMENT8        
                CONTINUE
            ELSE
                MOVE    1             TO  FLG-NOPRT
