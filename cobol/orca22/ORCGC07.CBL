@@ -2214,6 +2214,11 @@
                                         MCPDATA-REC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "C07 RECECOM DEL ERR:" MCP-RC "."
+           ELSE
+               PERFORM 21211-RECEUPD-UPDATE-SEC
+               IF      SPA-ERRCD       NOT =   SPACE    
+                   GO  TO  2401-COMMENT-DELSYORI-EXT
+               END-IF
            END-IF
       *
       *    ºÆÉ½¼¨
