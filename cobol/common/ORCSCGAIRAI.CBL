@@ -736,7 +736,8 @@
                    END-IF
                END-IF
                IF      FLG-SYUNOU          =   ZERO
-      *
+      *            会計変更区分
+                   MOVE    SPACE               TO  SYU-ACCT-UPDKBN
                    MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                    MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *

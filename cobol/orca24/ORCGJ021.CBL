@@ -1422,6 +1422,8 @@
                END-IF
                GO      TO      300313-SYUNOU-UPD-EXT
            END-IF
+      *    会計変更区分
+           MOVE    "1"                 TO  SYU-ACCT-UPDKBN
       *
            MOVE    SPA-J021-ATO-HKNCOMBI
                                        TO  SYU-HKNCOMBINUM
