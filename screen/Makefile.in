@@ -44,9 +44,6 @@ SCREEN_screen = \
 	GERR.glade \
 	GID1.glade \
 	GID2.glade \
-	H01.glade \
-	H99.glade \
-	HERR.glade \
 	I01.glade \
 	I02.glade \
 	I03.glade \
