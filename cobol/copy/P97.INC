@@ -15,20 +15,35 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        02  P97.
-      ****  02  P97-FIXED3.
+         02  P97.
+  *******  02  P97-FIXED1.
               03  P97-SELNO.
                 04  P97-VALUE   PIC S9(4).
               03  P97-NAMEKEN.
                 04  P97-VALUE   PIC X(30).
-              03  P97-SCROLLEDWINDOW2.
+              03  P97-KBIRTHDAY.
+                04  P97-VALUE   PIC X(10).
+              03  P97-KSEXCOMB.
+                04  P97-KSEX.
+                  05  P97-VALUE   PIC X(6).
+                04  P97-KSEX-COUNT   PIC S9(9)   BINARY.
+                04  P97-KSEX-ITEM    PIC X(6)    OCCURS  3 TIMES.
+              03  P97-NYUGAIKBNCOMB.
+                04  P97-KNYUGAIKBN.
+                  05  P97-VALUE   PIC X(10).
+                04  P97-KNYUGAIKBN-COUNT   PIC S9(9)   BINARY.
+                04  P97-KNYUGAIKBN-ITEM    PIC X(10)   OCCURS  3 TIMES.
+              03  P97-SCROLLEDWINDOW1.
                 04  P97-LIST.
                   05  P97-COUNT   PIC S9(9)   BINARY.
                   05  P97-ITEM        OCCURS  100 TIMES.
-                    07  P97-NO      PIC X(5).
-                    07  P97-PTNUM   PIC X(20).
-                    07  P97-NAME    PIC X(50).
-                    07  P97-SEX     PIC X(4).
-                    07  P97-BIRTH   PIC X(12).
-                    07  P97-RRKYMD  PIC X(12).
+                    06  P97-NO      PIC X(4).
+                    06  P97-PTNUM   PIC X(20).
+                    06  P97-NAME    PIC X(50).
+                    06  P97-SEX     PIC X(2).
+                    06  P97-BIRTH   PIC X(10).
+                    06  P97-NENREI  PIC X(10).
+                    06  P97-RRKYMD  PIC X(10).
+                    06  P97-SRYKA   PIC X(4).
+                    06  P97-BRMNUM  PIC X(10).
                   05  P97-SELECT  PIC X       OCCURS  100 TIMES.
