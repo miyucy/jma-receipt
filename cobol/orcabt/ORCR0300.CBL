@@ -52,6 +52,7 @@
       *  01.00.12    NACL-藤原    03/10/10  コメントの名称編集の修正
       *  01.00.13    NACL-藤原    03/10/15  診療年月の編集の修正
       *  01.00.14    NACL-藤原    03/10/22  摘要情報の編集の修正
+      *  01.00.15    NACL-藤原    03/10/27  テスト患者を対象としない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3311,6 +3312,8 @@
                    OR    ( RECE02-PTNUM    =   SPACE                 )
                    OR    ( RECE02-RECESYUBETU
                                            =   ZERO    OR    8888    )
+                   OR    ( RECE02-TSTPTNUMKBN
+                                           =   "1"                   )
                            GO  TO  900-RECE02-READ-SEC
                    END-IF                       
                    ADD     1           TO  CNT-IN
