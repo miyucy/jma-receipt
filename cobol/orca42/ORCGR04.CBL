@@ -37,6 +37,8 @@
       *  01.01.04    NACL-藤原    03/02/08  確定のとき自動的に情報確認画面を表示
       *  01.01.05    NACL-藤原    03/02/25  プリンタ名をオンラインより渡す
       *  01.01.06    NACL-藤原    03/03/03  再印刷機能追加
+      *　入院機能追加　
+      *  01.04.01    NACL-藤原    03/06/05  労災・自賠責の入院処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -97,7 +99,7 @@
                05  SPA-GMN-PAGE                    PIC 9(02).
                05  SPA-GMN-CUR                     PIC 9(02).
                05  SPA-GMN-AREA.
-                   07  SPA-GMN-FILEKBN             PIC X(34).
+                   07  SPA-GMN-FILEKBN             PIC X(40).
                    07  SPA-GMN-CREYMD              PIC X(22).
                    07  SPA-GMN-PAGEH               PIC 9(04).
                    07  SPA-GMN-KENSUH              PIC 9(04).
@@ -190,6 +192,7 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+           03  WRK-NYUGAIKBN       PIC X(06).
            03  WRK-RECEERR         PIC X(200).
            03  WRK-RECEKBN         PIC X(08).
            03  WRK-PREFKBN         PIC X(01).
@@ -462,10 +465,18 @@
                        WHEN    "4"
                            MOVE    "・自賠責"    TO  WRK-RECEKBN
                    END-EVALUATE  
+                   EVALUATE    SPA-R01-RECE07-NYUGAIKBN
+                       WHEN    "1"
+                           MOVE    "入院"        TO  WRK-NYUGAIKBN
+                       WHEN    "2"
+                           MOVE    "入院外"      TO  WRK-NYUGAIKBN
+                   END-EVALUATE  
                    STRING  WRK-HENYMDG3(1:16) DELIMITED  BY  SIZE
+                           WRK-NYUGAIKBN      DELIMITED  BY  SPACE 
                            WRK-RECEKBN        DELIMITED  BY  SPACE 
                            "一括作成分"       DELIMITED  BY  SIZE
                            INTO    SPA-GMN-FILEKBN
+                   END-STRING
                WHEN    "2"
                    EVALUATE    SPA-R01-RECE07-RECEKBN
                        WHEN    "3"
@@ -473,9 +484,17 @@
                        WHEN    "4"
                            MOVE    "自賠責"   TO  WRK-RECEKBN
                    END-EVALUATE  
-                   STRING  WRK-RECEKBN        DELIMITED  BY  SPACE 
+                   EVALUATE    SPA-R01-RECE07-NYUGAIKBN
+                       WHEN    "1"
+                           MOVE    "入院"        TO  WRK-NYUGAIKBN
+                       WHEN    "2"
+                           MOVE    "入院外"      TO  WRK-NYUGAIKBN
+                   END-EVALUATE  
+                   STRING  WRK-NYUGAIKBN      DELIMITED  BY  SPACE 
+                           WRK-RECEKBN        DELIMITED  BY  SPACE 
                            "個別作成分"       DELIMITED  BY  SIZE
-                                              INTO    SPA-GMN-FILEKBN
+                           INTO    SPA-GMN-FILEKBN
+                   END-STRING
            END-EVALUATE
       *　　ファイル作成日
            IF      SPA-R01-RECE07-CREYMD   NOT =   SPACE
@@ -574,7 +593,9 @@
       *****PERFORM UNTIL       (IDX            =   24   )  OR
       *****                    (FLG-SYSKANRI   =   1    )
            PERFORM    UNTIL   FLG-SYSKANRI    =   1
-               MOVE    MCPDATA-REC       TO  SYS-2003-REC
+             MOVE    MCPDATA-REC       TO  SYS-2003-REC
+             IF      SYS-2003-NYUGAIKBN      =
+                                         SPA-R01-RECE07-NYUGAIKBN
                EVALUATE    SPA-R01-RECE07-RECEKBN
                    WHEN    "3"
                        IF      SYS-2003-TEISYUTUSAKI =   "3"
@@ -604,10 +625,11 @@
                                          TO  SPA-GMN-TSYURUINAME (IDX)
       *************        MOVE    "T"   TO  SPA-GMN-TCHK-VALUE  (IDX)
                        END-IF
-               END-EVALUATE        
+               END-EVALUATE
+             END-IF  
       *
-               MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
-               PERFORM 900-SYSKANRI-READ-SEC
+             MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
+             PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
       *    カーソルクロース
            MOVE    "DBCLOSE"           TO  MCP-FUNC
@@ -643,6 +665,7 @@
                END-EVALUATE        
                MOVE    SPA-NAI-SYUBETU (IDX 1)
                                            TO  RECE07-RECESYUBETU
+               MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
                MOVE    RECE07-REC          TO  MCPDATA-REC                             
                PERFORM 900-RECE07-READ-SEC
                IF      FLG-RECE07          =   ZERO
@@ -1437,7 +1460,9 @@
            MOVE    WRK-TEISYUTUSAKI    TO  WRK-RECE09-TEISYUTUSAKI
            MOVE    WRK-PREFKBN         TO  WRK-RECE09-PREFKBN
            MOVE    SPA-GMN-PRTJYUN     TO  WRK-RECE09-PRTJYUN
-           MOVE    "2"                 TO  WRK-RECE09-NYUGAIKBN
+      *****MOVE    "2"                 TO  WRK-RECE09-NYUGAIKBN
+           MOVE    SPA-R01-RECE07-NYUGAIKBN
+                                       TO  WRK-RECE09-NYUGAIKBN
            MOVE    SPA-GMN-TSTDATA (IDX)
                                        TO  WRK-RECE09-STDATA
            MOVE    SPA-GMN-TEDDATA (IDX)

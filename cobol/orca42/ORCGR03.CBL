@@ -61,6 +61,9 @@
       *  ２００３．４改正対応
       *  01.03.01    NACL-藤原    03/04/17  対象がないときエラーを表示する
       *  01.03.02    NACL-藤原    03/05/22  県番号をパラメタに追加
+      *
+      *  労災・自賠責入院機能追加
+      *  01.04.01    NACL-藤原    03/06/05  労災・自賠責の入院処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1222,12 +1225,12 @@
            END-IF
       *
       *    入院のときの労災・自賠責チェック     
-           IF      SPA-GMN-NYUGAIKBN          =   "1"
-               IF      SPA-R01-RECEKBN            =   "4" OR  "3" 
-                   MOVE    "0008"              TO  SPA-ERRCD
-                   GO  TO  450-TOUROKU-EXT
-               END-IF    
-           END-IF
+      *****IF      SPA-GMN-NYUGAIKBN          =   "1"
+      *         IF      SPA-R01-RECEKBN            =   "4" OR  "3" 
+      *             MOVE    "0008"              TO  SPA-ERRCD
+      *             GO  TO  450-TOUROKU-EXT
+      *         END-IF    
+      *****END-IF
       *   
       *    再印刷のときのチェック
            EVALUATE    SPA-GMN-SYOKBN     
@@ -1494,9 +1497,21 @@
                                                    TO  WRK-SHELL-SHELL
                            END-IF                        
                        WHEN    "3"
-                           MOVE    "recept6.sh"    TO  WRK-SHELL-SHELL
+                           IF      SPA-GMN-NYUGAIKBN   =   "1"
+                               MOVE    "recept10.sh"
+                                                   TO  WRK-SHELL-SHELL
+                           ELSE
+                               MOVE    "recept6.sh"
+                                                   TO  WRK-SHELL-SHELL
+                           END-IF
                        WHEN    "4"
-                           MOVE    "recept8.sh"    TO  WRK-SHELL-SHELL
+                           IF      SPA-GMN-NYUGAIKBN   =   "1"
+                               MOVE    "recept11.sh"
+                                                   TO  WRK-SHELL-SHELL
+                           ELSE
+                               MOVE    "recept8.sh"
+                                                   TO  WRK-SHELL-SHELL
+                           END-IF
                    END-EVALUATE        
       *            ファイルデイレクトリ位置指定
                    INITIALIZE              ORCSMKPASSAREA

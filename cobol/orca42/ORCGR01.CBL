@@ -64,6 +64,10 @@
       *  ２００３．４改正対応
       *  01.03.01    NACL-藤原    03/04/17  対象がないときエラーを表示する
       *  01.03.02    NACL-藤原    03/05/22  県番号をパラメタに追加
+      *
+      *  労災・自賠責入院機能追加
+      *  01.04.01    NACL-藤原    03/06/05  労災・自賠責の入院対象が
+      *                                     あるかチェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -174,6 +178,7 @@
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDXX                PIC 9(04).
       *
       *    システム領域
        01  SYS-AREA.
@@ -971,6 +976,53 @@
            ELSE
                MOVE    1                   TO  FLG-NYUINACCT    
            END-IF
+      *
+           PERFORM             UNTIL    FLG-NYUINACCT  =   "1"
+                               OR       FLG-CHK        =   "1"           
+      *    保険組合せ読込み
+               IF      NACCT-ZAISKBKBN     =   "5"
+                 PERFORM VARYING IDXX    FROM    1   BY  1
+                         UNTIL   IDXX    >       31
+                         OR      FLG-CHK =       "1"
+                   IF      NACCT-DAY (IDXX)      >   ZERO    
+                       INITIALIZE                  HKNCOMBI-REC
+                       MOVE    ACCT-HOSPID         TO  COMB-HOSPID
+                       MOVE    ACCT-PTID           TO  COMB-PTID
+                       MOVE    NACCT-DAY (IDXX)    TO  COMB-HKNCOMBINUM 
+                       MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+                       PERFORM  910-HKNCOMBI-INV-SEC
+      *
+                       IF      FLG-HKNCOMBI        =   ZERO
+                         EVALUATE    SPA-R01-RECEKBN
+                           WHEN    "0"
+                               IF      COMB-HKNNUM =
+                                               WRK-CONS-ROUSAI-HKNNUM
+                               OR      COMB-HKNNUM =
+                                               WRK-CONS-JIBAISEKI-HKNNUM
+                                   CONTINUE
+                               ELSE    
+                                   MOVE    "1"         TO  FLG-CHK
+                               END-IF
+                           WHEN    "3"
+                               IF      COMB-HKNNUM =
+                                               WRK-CONS-ROUSAI-HKNNUM
+                                   MOVE    "1"         TO  FLG-CHK
+                               END-IF
+                           WHEN    "4"
+                               IF      COMB-HKNNUM =
+                                               WRK-CONS-JIBAISEKI-HKNNUM
+                                   MOVE    "1"         TO  FLG-CHK
+                               END-IF
+                         END-EVALUATE
+                       END-IF
+                   END-IF
+                 END-PERFORM
+                 MOVE    1                   TO  FLG-NYUINACCT 
+               ELSE            
+                 MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
+                 PERFORM  900-NYUINACCT-READ-SEC
+               END-IF
+           END-PERFORM    
       *    カーソルクロース
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
@@ -979,9 +1031,9 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
-           IF      FLG-NYUINACCT       =   ZERO
-               MOVE    "1"                 TO  FLG-CHK
-           END-IF
+      *****IF      FLG-NYUINACCT       =   ZERO
+      *****    MOVE    "1"                 TO  FLG-CHK
+      *****END-IF
            .
        41052-NYUINACCT-CHK-EXT.
            EXIT.
@@ -1741,11 +1793,19 @@
                        MOVE    "recept9.sh"    TO  WRK-SHELL-SHELL
                    ELSE
                        MOVE    "recept1.sh"    TO  WRK-SHELL-SHELL
-                           END-IF                        
+                   END-IF                        
                WHEN    "3"
-                   MOVE    "recept6.sh"        TO  WRK-SHELL-SHELL
+                   IF      SPA-R01-NYUGAIKBN   =   "1"
+                       MOVE    "recept10.sh"   TO  WRK-SHELL-SHELL
+                   ELSE
+                       MOVE    "recept6.sh"    TO  WRK-SHELL-SHELL
+                   END-IF
                WHEN    "4"
-                   MOVE    "recept8.sh"        TO  WRK-SHELL-SHELL
+                   IF      SPA-R01-NYUGAIKBN   =   "1"
+                       MOVE    "recept11.sh"   TO  WRK-SHELL-SHELL
+                   ELSE
+                       MOVE    "recept8.sh"    TO  WRK-SHELL-SHELL
+                   END-IF
            END-EVALUATE        
       *    ファイルデイレクトリ位置指定
            INITIALIZE              ORCSMKPASSAREA
