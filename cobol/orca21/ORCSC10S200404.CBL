@@ -1808,13 +1808,13 @@
                     (SPA-HOSPSBT         =   1   )
                  CONTINUE
              ELSE
-               MOVE    SPACE               TO  WRK-KBN
-               PERFORM 2009-RSIHKN-SET-SEC
-               IF      SPA-GMN-IDX         >   ZERO
+                 MOVE    SPACE               TO  WRK-KBN
+                 PERFORM 2009-RSIHKN-SET-SEC
+                 IF      SPA-GMN-IDX         >   ZERO
       *            療養担当手当発生
                    PERFORM 330123-RYOYOU-TEATE-SEC
-               END-IF
-               GO      TO      200-SYOSIN-SET-EXT
+                 END-IF
+                 GO      TO      200-SYOSIN-SET-EXT
              END-IF
            END-IF
       *
@@ -2171,9 +2171,6 @@
                                        -   1
                GO      TO      3301-SYOSIN-HEN-EXT
            END-IF
-      *TEST
-           DISPLAY "C10S INPUTCD:" SPA-COM-INPUTCD(SPA-GMN-IDX)
-                ",SURYO:" SPA-COM-SURYO(SPA-GMN-IDX)
       *
            IF      WRK-SRYCD(1:2)      =   "83"
       *        再編集処理

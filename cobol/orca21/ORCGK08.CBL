@@ -2875,6 +2875,13 @@
                        PERFORM 45051-ORCS01-SET-SEC
                    END-PERFORM
                END-IF
+      *        診察料算定フラグ（地方公費用）
+               IF      LNK-WKSRY-SRYKBN (IDX)  =   "11"
+                                               OR  "12"
+                                               OR  "13"
+                                               OR  "14"
+                   MOVE    "1"                 TO  LNK-S01-SINSATUFLG
+               END-IF
            END-PERFORM
       *
       *    剤ごとに点数を入れ直す
