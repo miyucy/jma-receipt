@@ -99,6 +99,9 @@
            03  CNT-PTHKNINF            PIC 9(06).
            03  CNT-UPD                 PIC 9(06).
            03  CNT-IN                  PIC 9(06).
+           03  CNT-IN-SEL              PIC 9(06).
+           03  CNT-COMMIT              PIC 9(06).
+           03  CNT-HEN                 PIC 9(06).
       *
            03  CNT-OUT                 PIC 9(06).
            03  CNT-ERR                 PIC 9(06).
@@ -524,10 +527,6 @@
                            SET     IDX-HKN         TO  IDX
                            MOVE    HKN-HKNNUM      TO  TBL-HKNNUM
                                                           (IDX-HKN)
-      *TEST
-                       DISPLAY "IDX-HKN:" IDX
-                             ",TBL-HKNNUM:"  HKN-HKNNUM
-      *TEST
                        END-IF
                    END-IF
                    MOVE    SPACE           TO  WRK-HKNNUM
@@ -585,6 +584,25 @@
                ADD     1               TO  CNT-IN
                IF      CNT-IN (4:3)         =   ZERO
                    DISPLAY "***(ORCBMHKN)*** CNT-IN [" CNT-IN "]"
+               END-IF
+      *        £µ£°·ïËè¤Ë¥³¥ß¥Ã¥È¤¹¤ë
+               ADD     1               TO  CNT-IN-SEL
+               IF     CNT-IN-SEL       =   50
+      *         ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
+                    MOVE    "STE"           TO  SJOBKANRI-MODE
+                    INITIALIZE                  JOBKANRI-REC
+                    MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                    MOVE    WRK-PARA-SHELLID
+                                            TO  JOB-SHELLID
+                    MOVE    50              TO  JOB-UPDCNT
+                    CALL    "ORCSJOB"       USING
+                                            ORCSJOBKANRIAREA
+                                            JOBKANRI-REC
+      *
+                   PERFORM 9001-DBDBCOMMIT-SEC
+                   PERFORM 1001-DBSTART-SEC
+                   ADD     1                   TO  CNT-COMMIT
+                   MOVE    1                   TO  CNT-IN-SEL
                END-IF
       *
                IF     (WRK-PTID    NOT =   ZERO )  AND
@@ -1157,7 +1175,7 @@
                PERFORM 400-PRINT-OUT2-SEC
            END-IF
       *
-           DISPLAY "*** ORCBMHKN PTHKNINF:"       CNT-PTHKNINF
+           DISPLAY "*** ORCBMHKN PTHKNINF:"       CNT-IN
            DISPLAY "*** ORCBMHKN PTHKNINF OUT:"   CNT-OUT
            DISPLAY "*** ORCBMHKN PTHKNINF UPD:"   CNT-UPD
            DISPLAY "*** ORCBMHKN HKNCOMBI UPD:"   LNK-CNT-HKNCOMBI
@@ -1170,7 +1188,10 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    CNT-UPD         TO  JOB-UPDCNT
+           COMPUTE CNT-HEN         =   CNT-IN
+                                   -  (CNT-COMMIT   *   50 )
+      *****MOVE    CNT-UPD         TO  JOB-UPDCNT
+           MOVE    CNT-HEN         TO  JOB-UPDCNT
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
@@ -1349,13 +1370,37 @@
                                        ORCMCPAREA
                                        MCPDATA-REC.
       *
+           PERFORM 1001-DBSTART-SEC
+           .
+       100-DBOPEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â£Ó£Ô£Á£Ò£Ô½èÍý
+      *****************************************************************
+       1001-DBSTART-SEC        SECTION.
+      *
            MOVE    "DBSTART"       TO  MCP-FUNC.
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC.
            .
-       100-DBOPEN-EXT.
+       1001-DBSTART-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â£Ó£Ô£Á£Ò£Ô½èÍý
+      *****************************************************************
+       9001-DBDBCOMMIT-SEC        SECTION.
+      *
+           MOVE    "DBCOMMIT"      TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+           .
+       9001-DBDBCOMMIT-EXT.
            EXIT.
       *
       *****************************************************************
