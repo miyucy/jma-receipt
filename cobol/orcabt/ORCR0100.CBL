@@ -106,6 +106,8 @@
       *  01.01.04    NACL-藤原    02/10/24  保険内自費のみのとき出力しないように
       *                                     修正
       *  01.01.05    NACL-藤原    02.11.07  医療機関ＩＤ・診療年月を追加
+      *  01.01.06    NACL-藤原    02.11.08  国保の特定の保険者番号のとき
+      *                                     県内分とするように修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -548,6 +550,21 @@
       *
       *    改行コード
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
+      *
+      *    国保保険者（県内分特例）
+       01  WRK-CONS-KKH-HKNJANUM.
+      *    全国土木建築
+           03  WRK-CONS-KKH-HKNJANUM1
+                                    PIC X(08)   VALUE   "133033".
+      *    中央建設
+           03  WRK-CONS-KKH-HKNJANUM2
+                                    PIC X(08)   VALUE   "133264".
+      *    全国建設工事業
+           03  WRK-CONS-KKH-HKNJANUM3
+                                    PIC X(08)   VALUE   "133298".
+      *    全国歯科医師
+           03  WRK-CONS-KKH-HKNJANUM4
+                                    PIC X(08)   VALUE   "093013".
       *
        01  WRK-TENSU-AREA.
            03  WRK-KHNTEN.
@@ -2838,11 +2855,19 @@
                    MOVE    RECE02-HKNJANUM-KEY (1:2)
                                            TO  RECE08-PREFNUM
                END-IF
-               IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
-                   MOVE    "1"             TO  RECE08-PREFKBN
-               ELSE
-                   MOVE    "2"             TO  RECE08-PREFKBN
-               END-IF
+               EVALUATE    RECE02-HKNJANUM-KEY
+                   WHEN    WRK-CONS-KKH-HKNJANUM1
+                   WHEN    WRK-CONS-KKH-HKNJANUM2
+                   WHEN    WRK-CONS-KKH-HKNJANUM3
+                   WHEN    WRK-CONS-KKH-HKNJANUM4
+                       MOVE    "1"             TO  RECE08-PREFKBN
+                   WHEN    OTHER    
+                       IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
+                           MOVE    "1"             TO  RECE08-PREFKBN
+                       ELSE
+                           MOVE    "2"             TO  RECE08-PREFKBN
+                       END-IF
+               END-EVALUATE        
            ELSE
                MOVE    "0"             TO  RECE08-PREFKBN
                MOVE    "00"            TO  RECE08-PREFNUM
