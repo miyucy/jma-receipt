@@ -73,7 +73,6 @@
            03  FLG-PTNYUINRRK      PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
-           03  FLG-PTINF           PIC 9(01).
       *
            03  FLG-NAIYAK          PIC X(01).
            03  FLG-TONPUK          PIC X(01).
@@ -173,15 +172,6 @@
            03  WRK-KSN-NYUKSNKBN   PIC X(03).
            03  WRK-SRYCD           PIC X(09).
            03  WRK-STYUKYMD        PIC X(08).
-      *    年齢計算用
-           03  WRK-YMDS1.
-               05  WRK-YYS1        PIC 9(04).
-               05  WRK-MMS1        PIC 9(02).
-               05  WRK-DDS1        PIC 9(02).
-           03  WRK-YMDS2.
-               05  WRK-YYS2        PIC 9(04).
-               05  WRK-MMS2        PIC 9(02).
-               05  WRK-DDS2        PIC 9(02).
       *
            03  WRK-TENSU-X.
                05  WRK-TENSU       PIC Z(07).
@@ -242,8 +232,6 @@
            03  WRK-JIDMSG.
                05  WRK-JIDMSG1     PIC X(40).
                05  WRK-JIDMSG2     PIC X(40).
-      *    診療コード
-           03  WRK-SRYCD           PIC X(09).
       *    発生年月日
            03  WRK-HASSYOYMD.
                05  WRK-HAS-YY      PIC 9(04).
