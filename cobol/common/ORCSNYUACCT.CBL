@@ -1560,7 +1560,9 @@
                       (NACCT-ZAIKAISU      =   ZERO )  AND
                       (WRK-STDD            =   01   ))
       *            退院月の時は削除しない
-                   IF      NACCT-SRYYM(1:6)    =   WRK-RRK-YMD(1:6)
+      *            （転出以外の時）
+                   IF     (NACCT-SRYYM(1:6)    =   WRK-RRK-YMD(1:6))
+                     AND  (LNK-SCNYUACCT-SYORI-KBN NOT =   "8" )
       *                 診療会計更新
                        PERFORM 20013-NYUINACCT-UPDATE-SEC
                    ELSE
