@@ -1942,28 +1942,23 @@
                                        WHEN    1
                                           COMPUTE  TBL-JIHI-TAXNASI(1)
                                                =   TBL-JIHI-TAXNASI(1)
-                                               +  (SRY-JIHIMONEY(IDZ)
-                                                   *  SINRYO-COUNT) 
+                                               +   SRY-JIHIMONEY(IDZ)
                                        WHEN    2
                                           COMPUTE  TBL-JIHI-TAXNASI(2)
                                                =   TBL-JIHI-TAXNASI(2)
-                                               +  (SRY-JIHIMONEY(IDZ)
-                                                   *  SINRYO-COUNT) 
+                                               +   SRY-JIHIMONEY(IDZ)
                                        WHEN    3
                                           COMPUTE  TBL-JIHI-TAXNASI(3)
                                                =   TBL-JIHI-TAXNASI(3)
-                                               +  (SRY-JIHIMONEY(IDZ)
-                                                   *  SINRYO-COUNT) 
+                                               +   SRY-JIHIMONEY(IDZ)
                                        WHEN    4
                                           COMPUTE  TBL-JIHI-TAXNASI(4)
                                                =   TBL-JIHI-TAXNASI(4)
-                                               +  (SRY-JIHIMONEY(IDZ)
-                                                   *  SINRYO-COUNT) 
+                                               +   SRY-JIHIMONEY(IDZ)
                                        WHEN    5
                                           COMPUTE  TBL-JIHI-TAXNASI(5)
                                                =   TBL-JIHI-TAXNASI(5)
-                                               +  (SRY-JIHIMONEY(IDZ)
-                                                   *  SINRYO-COUNT) 
+                                               +   SRY-JIHIMONEY(IDZ)
                                    END-EVALUATE
                                END-IF
                            ELSE
@@ -2133,28 +2128,23 @@
                                        WHEN    1
                                           COMPUTE  TBL-JIHI-TAXARI(1)
                                                =   TBL-JIHI-TAXARI(1)
-                                               +  (SRY-JIHIMONEY(IDZ)
-                                                   *  SINRYO-COUNT) 
+                                               +   SRY-JIHIMONEY(IDZ)
                                        WHEN    2
                                           COMPUTE  TBL-JIHI-TAXARI(2)
                                                =   TBL-JIHI-TAXARI(2)
-                                               +  (SRY-JIHIMONEY(IDZ)
-                                                   *  SINRYO-COUNT) 
+                                               +   SRY-JIHIMONEY(IDZ)
                                        WHEN    3
                                           COMPUTE  TBL-JIHI-TAXARI(3)
                                                =   TBL-JIHI-TAXARI(3)
-                                               +  (SRY-JIHIMONEY(IDZ)
-                                                   *  SINRYO-COUNT) 
+                                               +   SRY-JIHIMONEY(IDZ)
                                        WHEN    4
                                           COMPUTE  TBL-JIHI-TAXARI(4)
                                                =   TBL-JIHI-TAXARI(4)
-                                               +  (SRY-JIHIMONEY(IDZ)
-                                                   *  SINRYO-COUNT) 
+                                               +   SRY-JIHIMONEY(IDZ)
                                        WHEN    5
                                           COMPUTE  TBL-JIHI-TAXARI(5)
                                                =   TBL-JIHI-TAXARI(5)
-                                               +  (SRY-JIHIMONEY(IDZ)
-                                                   *  SINRYO-COUNT) 
+                                               +   SRY-JIHIMONEY(IDZ)
                                    END-EVALUATE
                                END-IF
                            ELSE
