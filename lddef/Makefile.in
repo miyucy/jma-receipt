@@ -1,15 +1,8 @@
+top_srcdir = @top_srcdir@
+include $(top_srcdir)/Makefile.directories
+
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-
-prefix = @prefix@
-exec_prefix= @exec_prefix@
-ORCA_DIR = ${exec_prefix}
-libdir = @libdir@
-lddefdir = ${ORCA_DIR}/lddef
-recorddir = ${ORCA_DIR}/record
-SITEDIR = @sitedir@
-SITELDDEFDIR = ${SITEDIR}/lddef
-SITERECORDDIR = ${SITEDIR}/record
 
 CPP = @CPP@
 # dummy flags

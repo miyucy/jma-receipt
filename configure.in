@@ -143,5 +143,6 @@ etc/Makefile
 init/Makefile
 tools/Makefile
 Makefile
+Makefile.directories
 etc/jma-receipt.env
 ])

@@ -1,9 +1,8 @@
+top_srcdir = @top_srcdir@
+include $(top_srcdir)/Makefile.directories
+
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-
-prefix = @prefix@
-exec_prefix= @exec_prefix@
-recorddir = ${exec_prefix}/record
 
 RECORD_files = \
 	C02.rec \

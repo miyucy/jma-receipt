@@ -1,28 +1,23 @@
+top_srcdir = @top_srcdir@
+include $(top_srcdir)/Makefile.directories
+
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 
-prefix = @prefix@
-exec_prefix= @exec_prefix@
-ORCA_DIR = ${exec_prefix}
-datadir = ${ORCA_DIR}/data
-
-EXTRA_DIST = \
-             SRYKBNNAME.TXT \
-             TENSUKBNNAME.TXT \
-             transparent.jpg \
+ORCADATA_files = \
+	SRYKBNNAME.TXT \
+	TENSUKBNNAME.TXT \
+	transparent.jpg 
 
 all:   
-	touch build-stamp
 
 filecheck:
 
 clean: 
-	-rm -f build-stamp
 
 distclean: 
-	-rm -f build-stamp
 	-rm -f Makefile
 
 install: all
-	$(INSTALL) -d $(datadir)
-	$(INSTALL_DATA) $(EXTRA_DIST) $(datadir)
+	$(INSTALL) -d $(orcadatadir)
+	$(INSTALL_DATA) $(ORCADATA_files) $(datadir)

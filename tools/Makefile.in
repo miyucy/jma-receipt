@@ -1,11 +1,8 @@
+top_srcdir = @top_srcdir@
+include $(top_srcdir)/Makefile.directories
+
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-
-prefix = @prefix@
-exec_prefix= @exec_prefix@
-sysconfdir = @sysconfdir@
-
-EXTRA_DIST = monitor.sh
 
 SHFILE_sources = \
 	monitor.sh.in
@@ -14,14 +11,12 @@ SHFILE_scripts = $(SHFILE_sources:.sh.in=.sh)
 
 .SUFFIXES: .sh.in .sh
 
-
 .sh.in.sh: 
 	sed -e 's,\@jma-receipt-env\@,$(sysconfdir)\/jma-receipt\.env,g' \
 	$< > $@
 	chmod +x monitor.sh
 
 all: $(SHFILE_scripts)
-
 
 filecheck:
 

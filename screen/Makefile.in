@@ -1,11 +1,10 @@
+top_srcdir = @top_srcdir@
+include $(top_srcdir)/Makefile.directories
+
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 
-prefix = @prefix@
-exec_prefix= @exec_prefix@
-screendir = ${exec_prefix}/screen
-
-EXTRA_DIST = \
+SCREEN_files = \
 	C02.glade \
 	C03.glade \
 	C04.glade \
@@ -239,16 +238,14 @@ EXTRA_DIST = \
 	I49.glade
 
 all:   
-	touch build-stamp
+
 clean: 
-	-rm -f build-stamp
 
 distclean: 
-	-rm -f build-stamp
 	-rm -f Makefile
 
 filecheck:
-	@(for i in $(EXTRA_DIST) ;do echo "make	$${i}"; done ;\
+	@(for i in $(SCREEN_files) ;do echo "make	$${i}"; done ;\
 	find . \
 	-name "." -o \
 	-name "CVS" -prune -o \
@@ -261,4 +258,4 @@ filecheck:
 
 install: all
 	$(INSTALL) -d $(screendir)
-	$(INSTALL_DATA) $(EXTRA_DIST) $(screendir)
+	$(INSTALL_DATA) $(SCREEN_files) $(screendir)

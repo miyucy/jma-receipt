@@ -1,3 +1,6 @@
+top_srcdir = @top_srcdir@
+include $(top_srcdir)/Makefile.directories
+
 COPYS_sources = \
 	CPHOMEDIR.INC.in \
 	CPCOMMONSHELL.INC.in \
@@ -636,43 +639,6 @@ DBPATH = \
 MCPAREA = \
 	MCPAREA 
 
-prefix = @prefix@
-exec_prefix= @exec_prefix@
-
-sysconfdir = @sysconfdir@
-
-ORCA_DIR = ${exec_prefix}
-
-docdir = ${ORCA_DIR}/doc
-datadir = ${ORCA_DIR}/data
-formdir = ${ORCA_DIR}/form
-initdir = ${ORCA_DIR}/init
-lddefdir = ${ORCA_DIR}/lddef
-recorddir = ${ORCA_DIR}/record
-screendir = ${ORCA_DIR}/screen
-scriptsdir = ${ORCA_DIR}/scripts
-copydir = ${ORCA_DIR}/cobol/copy
-libdir  = @libdir@
-
-COPYGEN = @COPYGEN@
-
-SITEDIR = @sitedir@
-SITESRCDIR = @sitesrcdir@
-SITELIBDIR = @sitelibdir@
-
-SITECOPYDIR = ${SITEDIR}/cobol/copy
-SITEDATADIR = ${SITEDIR}/data
-SITEFORMDIR = ${SITEDIR}/form
-SITEINITDIR = ${SITEDIR}/init
-SITELDDEFDIR = ${SITEDIR}/lddef
-SITERECORDDIR = ${SITEDIR}/record
-SITESCREENDIR = ${SITEDIR}/screen
-SITESCRIPTSDIR = ${SITEDIR}/scripts
-
-allwaysscripts = ${scriptsdir}/allways
-dailyscripts = ${scriptsdir}/daily
-monthlyscripts = ${scriptsdir}/monthly
-printscripts = ${scriptsdir}/daily/print-data.rb
 
 COBOL = @COBC@
 INSTALL = @INSTALL@
@@ -725,7 +691,6 @@ clean:
 
 distclean: clean
 	-rm -f Makefile
-
 
 filecheck:
 	@(for i in $(COPYS) $(COPYS_sources) ;do echo "make	$${i}"; done ;\
