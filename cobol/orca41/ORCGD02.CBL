@@ -63,6 +63,8 @@
       *  01.00.21    ひさなが     03/06/13  テーブル異常の処理修正
       *  01.00.22    ひさなが     03/06/19  疑いチェック期間１ヵ月へ
       *                                     チェックに関係する修正
+      *  01.00.23    ひさなが     03/06/25  適応病名チェックでの
+      *                                     転帰日のチェックを中止する
       *
       *****************************************************************
       *
@@ -3268,13 +3270,7 @@
                ELSE
                    MOVE    2                    TO  FLG-TBL
                    MOVE    2                    TO  FLG-TENKIYMD-ER
-                   MOVE    20                   TO  IDY2
                    MOVE    MCPDATA-REC          TO  PTBYOMEI-REC
-                   IF  (PTBYO-TENKIYMD   NOT  =   SPACE)      AND
-                       (PTBYO-TENKIYMD   NOT  =   ZERO)       AND
-                       (PTBYO-TENKIYMD(1:6)   <   T-SINRYOU-AREA)
-                       MOVE    1                  TO  FLG-TENKIYMD-ER
-                   END-IF
                END-IF
            END-IF.
       *
@@ -3382,8 +3378,10 @@
                            END-IF
                        END-PERFORM
                        IF  (CHK-CD (IDY2)       =   SPACE) OR
-                           (CHK-CD (IDY2)       =   ZERO)  OR
-                           (FLG-TBL             =   2)
+                           (CHK-CD (IDY2)       =   ZERO)
+                           MOVE    20                   TO  IDY2
+                       END-IF
+                       IF  FLG-TBL             =   2
                            MOVE    1                    TO  FLG-END
                            MOVE    20                   TO  IDY2
                        END-IF
@@ -3484,8 +3482,10 @@
                            END-IF
                        END-PERFORM
                        IF  (CHK-CD (IDY2)       =   SPACE) OR
-                           (CHK-CD (IDY2)       =   ZERO)  OR
-                           (FLG-TBL             =   2)
+                           (CHK-CD (IDY2)       =   ZERO)
+                           MOVE    20                   TO  IDY2
+                       END-IF
+                       IF  FLG-TBL             =   2
                            MOVE    1                    TO  FLG-END
                            MOVE    20                   TO  IDY2
                        END-IF
