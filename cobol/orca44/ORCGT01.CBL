@@ -594,6 +594,7 @@
       *    Ä¢É¼¶èÊ¬£µ
                WHEN    "CLICKED"       ALSO    "DATAKBN5"
                    PERFORM 400-DATAKBN5-SEC
+           END-EVALUATE
       *
            .
        200-GMNSENI-EXT.

@@ -1283,6 +1283,7 @@
                            ELSE    
                                MOVE    "1001"              TO  SPA-ERRCD
                                GO  TO  450-TOUROKU-EXT
+                           END-IF
                        END-IF
                    END-IF    
                END-PERFORM

@@ -336,19 +336,20 @@
                        IF      SPTID-PTID          =   SPA-H01NAI-PTID
                            CONTINUE
                        ELSE
-                       INITIALIZE                  SPA-H01GMN-TABLE
+                           INITIALIZE              SPA-H01GMN-TABLE
                                                    SPA-H01GMN-KOUMOKU
-                       MOVE    SPTID-PTNUM     TO  SPA-H01GMN-PTNUM
-                       MOVE    SPTID-PTID      TO  SPA-H01NAI-PTID
-      *            患者マスター存在チェック
-                       MOVE    SPA-HOSPID      TO  PTINF-HOSPID
-                       MOVE    SPA-H01NAI-PTID TO  PTINF-PTID
-                       PERFORM 900-PTINF-READ-SEC
-                       IF      FLG-PTINF   NOT =   ZERO
-                           MOVE    "0001"      TO  SPA-ERRCD
-                       ELSE
-                           MOVE    PTINF-NAME  TO  SPA-H01GMN-NAME
-                       END-IF
+                           MOVE    SPTID-PTNUM     TO  SPA-H01GMN-PTNUM
+                           MOVE    SPTID-PTID      TO  SPA-H01NAI-PTID
+      *                患者マスター存在チェック
+                           MOVE    SPA-HOSPID      TO  PTINF-HOSPID
+                           MOVE    SPA-H01NAI-PTID TO  PTINF-PTID
+                           PERFORM 900-PTINF-READ-SEC
+                           IF      FLG-PTINF   NOT =   ZERO
+                               MOVE    "0001"      TO  SPA-ERRCD
+                           ELSE
+                               MOVE    PTINF-NAME  TO  SPA-H01GMN-NAME
+                           END-IF
+                       END-IF 
                    END-IF     
                END-IF    
                MOVE    2                   TO  SPA-H01GMN-CUR

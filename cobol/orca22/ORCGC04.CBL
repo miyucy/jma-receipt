@@ -820,7 +820,8 @@
                IF      SPA-GMN-C04-INPUTCD (IDX)   NOT =   SPACE
                    ADD     1           TO  IDY    
                    MOVE    SPA-GMN-C04-INPUTCD  (IDX)
-                                       TO  SPA-C01-TBYOMEICD (IDY) 
+                                       TO  SPA-C01-TBYOMEICD (IDY)
+               END-IF 
            END-PERFORM
            MOVE    SPA-C01KYOUTU   TO  SPA-WORK
       *
