@@ -663,6 +663,7 @@
                                PERFORM   RECE45-HENSYU-SEC
                                PERFORM   RECE44-WRITE-SEC
                         ELSE
+                             IF   ACCT-ZAIKAISU  NOT =    ZERO
                                IF   ACCT-SRYKBN  =  "11"  OR  "12" 
                                                           OR  "99" 
                                  IF  ACCT-SRYCDTOTAL = CONS-TOKKI1  OR
@@ -687,6 +688,7 @@
                                       PERFORM   RECE44-WRITE-SEC
                                  END-IF
                                END-IF
+                             END-IF
                         END-IF
       *
                    END-IF
@@ -746,6 +748,7 @@
                                PERFORM   RECE45-HENSYU-SEC
                                PERFORM   RECE44-WRITE-SEC
                            ELSE
+                             IF   ACCT-ZAIKAISU  NOT =    ZERO
                                IF   ACCT-SRYKBN  =  "11"  OR  "12" 
                                                           OR  "99" 
                                  IF  ACCT-SRYCDTOTAL = CONS-TOKKI1  OR
@@ -772,6 +775,7 @@
                                       PERFORM   RECE44-WRITE-SEC
                                  END-IF
                                END-IF
+                             END-IF
                            END-IF
                    END-IF
                    MOVE     "SRYACCT-KEY2"   TO   ORC-DBPATH

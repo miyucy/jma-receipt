@@ -765,6 +765,7 @@
                                  PERFORM RECE64-WRITE-SEC
                                END-IF
                            ELSE
+                             IF   ACCT-ZAIKAISU  NOT =    ZERO
                                IF   ACCT-SRYKBN  =  "11"  OR
                                                     "33"  OR  "99" 
                                  IF  ACCT-SRYCDTOTAL = CONS-TOKKI1 OR
@@ -788,6 +789,7 @@
                                       END-IF
                                  END-IF
                                END-IF
+                             END-IF
                            END-IF
                            MOVE    10                TO  IDX1
                        END-IF
