@@ -4139,17 +4139,7 @@
                                                 MCPDATA-REC
       *
                IF      MCP-RC     =   ZERO
-                   IF      RECE02-RECESYUBETU  =   8888
-                   AND     RECE02-TOTALTEN (1) =   ZERO
-                   AND     RECE02-TOTALTEN (2) =   ZERO
-                   AND     RECE02-TOTALTEN (3) =   ZERO
-                   AND     RECE02-TOTALTEN (4) =   ZERO
-                   AND     RECE02-TOTALTEN (5) =   ZERO
-                   AND     CNT-RECE061         =   ZERO
-                       CONTINUE
-                   ELSE
-                       ADD     1                 TO  CNT-OUT
-                   END-IF
+                   ADD     1                 TO  CNT-OUT
                ELSE 
                    DISPLAY "ORCR0104 RECE08=" MCP-RC " " RECE08-KEY 
                    STRING
@@ -4529,6 +4519,15 @@
                    AND     RECE02-RECESYUBETU  NOT =  8888
                        GO  TO  990-RECE02-READ-SEC
                    ELSE    
+                     IF      RECE02-TOTALTEN (1) =   ZERO
+                     AND     RECE02-TOTALTEN (2) =   ZERO 
+                     AND     RECE02-TOTALTEN (3) =   ZERO 
+                     AND     RECE02-TOTALTEN (4) =   ZERO
+                     AND     RECE02-TOTALTEN (5) =   ZERO
+                     AND     RECE02-RECESYUBETU  =   8888
+                     AND     RECE02-JIHTEKFLG    =   SPACE
+                       GO  TO  990-RECE02-READ-SEC
+                     ELSE
                        IF      RECE02-SRYYM        <   WRK-CONS-SRYYM
                            GO  TO  990-RECE02-READ-SEC
                        ELSE
@@ -4553,6 +4552,7 @@
                                                    TO KEY-N-HKNJANUM-KEY
                            END-IF
                        END-IF 
+                     END-IF
                    END-IF    
            END-READ
       *

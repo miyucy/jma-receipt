@@ -318,4 +318,6 @@
            03  RECE62-KOHBUNRI-MIN        PIC  9(01).
       *病床数編集フラグ（特定疾患療養指導料等）
            03  RECE62-BEDSUFLG            PIC  X(01).
+      *自費レセ摘要欄編集レコードフラグ
+           03  RECE62-JIHTEKFLG           PIC  X(01).
       *
