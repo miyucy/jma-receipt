@@ -469,7 +469,7 @@
            MOVE    "2"                 TO  SPA-GMN-HKNKOHSBTKBNL    (2)
            MOVE    "墓袋光驰闻蛙锐"    TO  SPA-GMN-HKNKOHSBTKBNMEIL (2)
            MOVE    "3"                 TO  SPA-GMN-HKNKOHSBTKBNL    (3)
-           MOVE    "戏客瘦副"          TO  SPA-GMN-HKNKOHSBTKBNMEIL (3)
+           MOVE    "戏客瘦夫"          TO  SPA-GMN-HKNKOHSBTKBNMEIL (3)
            MOVE    "4"                 TO  SPA-GMN-HKNKOHSBTKBNL    (4)
       *****MOVE    "汐阂"              TO  SPA-GMN-HKNKOHSBTKBNMEIL (4)
            MOVE    "汐阂ˇ极清"        TO  SPA-GMN-HKNKOHSBTKBNMEIL (4)
