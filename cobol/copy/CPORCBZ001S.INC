@@ -33,6 +33,8 @@
            03  ORCBZ001S-PTNUM-AREA.
                05  ORCBZ001S-PTNUM-G       OCCURS   120.
                    07  ORCBZ001S-PTNUM     PIC X(20).
+      *    最終患者番号
+           03  ORCBZ001S-LST-PTNUM     PIC X(20).
       *
       *    エラーコード （1:対象外,9:エラー）
            03  ORCBZ001S-RC            PIC 9(04).
