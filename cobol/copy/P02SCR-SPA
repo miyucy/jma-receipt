@@ -648,16 +648,20 @@
                        09  SPA-GMN24-TSYTBLO            OCCURS  20.
                            11  SPA-GMN24-TSYDPSTYMDW    PIC X(10).
                            11  SPA-GMN24-TSYDPEDYMDW    PIC X(10).
+                           11  SPA-GMN24-TSYLSKJGNSTYMDW    PIC X(10).
                            11  SPA-GMN24-TSYDPSTYMD     PIC X(08).
                            11  SPA-GMN24-TSYDPEDYMD     PIC X(08).
+                           11  SPA-GMN24-TSYLSKJGNSTYMD PIC X(08).
                            11  SPA-GMN24-TSYDELKBN      PIC X(01).
       *
                    07  SPA-GMN24-TSYS-AREA.
                        09  SPA-GMN24-TSYSELNUM              PIC X(04).
                        09  SPA-GMN24-TSYSTYMDW              PIC X(09).
                        09  SPA-GMN24-TSYEDYMDW              PIC X(09).
+                       09  SPA-GMN24-TSYSKJGNSTYMDW         PIC X(09).
                        09  SPA-GMN24-TSYSTYMD               PIC X(08).
                        09  SPA-GMN24-TSYEDYMD               PIC X(08).
+                       09  SPA-GMN24-TSYSKJGNSTYMD          PIC X(08).
       *
                        09  SPA-NAI24-TSYSELNUM              PIC 9(04).
                        09  SPA-MAE24-TSYSELNUM              PIC X(04).

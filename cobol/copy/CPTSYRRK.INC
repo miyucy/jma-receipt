@@ -33,6 +33,8 @@
                05  TSYRRK-NINSTYMD         PIC  X(08).
       *認定終了年月日
            03  TSYRRK-NINEDYMD             PIC  X(08).
+      *食事標準負担額減額開始日
+           03  TSYRRK-SKJGNSTYMD           PIC  X(08).
       *端末ＩＤ
            03  TSYRRK-TERMID               PIC  X(16).
       *オペーレータＩＤ

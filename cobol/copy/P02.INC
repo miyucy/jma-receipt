@@ -504,6 +504,8 @@
                     06  P02-VALUE   PIC X(10).
                   05  P02-P024-TSYEDYMD.
                     06  P02-VALUE   PIC X(10).
+                  05  P02-P024-TSYSKJGNSTYMD.
+                    06  P02-VALUE   PIC X(10).
                   05  P02-P024-TNKSELNUM.
                     06  P02-VALUE   PIC X(4).
                   05  P02-P024-TNKSTYMD.
@@ -517,6 +519,7 @@
                         08  P02-P024-TSYLNUM   PIC X(3).
                         08  P02-P024-TSYLSTYMD PIC X(10).
                         08  P02-P024-TSYLEDYMD PIC X(10).
+                        08  P02-P024-TSYLSKJGNSTYMD PIC X(10).
                       07  P02-P024-TSYLIST-SELECT PIC X
                                                 OCCURS  20 TIMES.
                   05  P02-SC105.
