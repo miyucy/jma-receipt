@@ -63,6 +63,7 @@
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
+           03  IDX2                PIC 9(04).
            03  IDY1                PIC 9(04).
            03  IDY2                PIC 9(04).
            03  IDY3                PIC 9(04).
@@ -478,12 +479,12 @@
            MOVE    JOB-TERMID        TO  SPA-GMN-TERMID  (IDX).
            MOVE    SPACE             TO  SPA-GMN-JOBNAME (IDX).
       *
-           PERFORM VARYING     TBL-IDX    FROM    1   BY  1
-                   UNTIL       TBL-IDX    >   MNAME-MAX
-               IF  JOB-SHELLID   =  MNAME-SHELLID (TBL-IDX)
-                   MOVE    MNAME-JOBNAME (TBL-IDX)
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL       IDX2    >   MNAME-MAX
+               IF  JOB-SHELLID   =  MNAME-SHELLID (IDX2)
+                   MOVE    MNAME-JOBNAME (IDX2)
                                              TO SPA-GMN-JOBNAME (IDX)
-                   COMPUTE TBL-IDX   =     MNAME-MAX   +   1
+                   COMPUTE IDX2   =     MNAME-MAX   +   1
                END-IF
            END-PERFORM.
            IF  SPA-GMN-JOBNAME (IDX)   =  SPACE
