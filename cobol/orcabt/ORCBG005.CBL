@@ -68,6 +68,7 @@
                03  BG00501SEQ-SRT-BRMNUM   PIC X(08).
                03  BG00501SEQ-SRT-SRYKA    PIC X(02).
                03  BG00501SEQ-SRT-PTID     PIC X(10).
+               03  BG00501SEQ-SRT-SEQ      PIC 9(03).
            02  BG00501SEQ-PTNYUINRRK-DAT.
            COPY    "CPPTNYUINRRK.INC"      REPLACING   //PTNYUINRRK-//
                                            BY          //BG00501SEQ-//.
@@ -80,6 +81,7 @@
                03  BG00501DYN-SRT-BRMNUM   PIC X(08).
                03  BG00501DYN-SRT-SRYKA    PIC X(02).
                03  BG00501DYN-SRT-PTID     PIC X(10).
+               03  BG00501DYN-SRT-SEQ      PIC 9(03).
            02  BG00501DYN-PTNYUINRRK-DAT.
            COPY    "CPPTNYUINRRK.INC"      REPLACING   //PTNYUINRRK-//
                                            BY          //BG00501DYN-//.
@@ -123,6 +125,7 @@
            03  CNT-LINE                PIC 9(02).
            03  CNT-PAGE                PIC 9(03).
            03  CNT-BG005               PIC 9(05).
+           03  CNT-BG00501DYN          PIC 9(03).
       *
       *    システム領域
        01  SYS-AREA.
@@ -236,6 +239,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    入退院日取得サブパラメタ
+           COPY "CPORCSNTYMD.INC".
       *
       *    病室番号編集サブ
            COPY "CPORCSBRMNUM.INC".
@@ -390,6 +396,8 @@
       *
            PERFORM 1201-PTNYUINRRK-SEL-SEC
       *
+           MOVE    ZERO                TO  CNT-BG00501DYN
+      *
            PERFORM UNTIL ( FLG-PTNYUINRRK  NOT =   ZERO )
       *
                PERFORM 1201-BG00501-HEN-SEC
@@ -455,6 +463,8 @@
       *****************************************************************
        1201-BG00501-HEN-SEC            SECTION.
       *
+           COMPUTE CNT-BG00501DYN  =   CNT-BG00501DYN  +   1
+      *
            MOVE    ZERO                TO  FLG-WKPTNYUINRRK
       *
       *    入院履歴マスタ検索
@@ -493,6 +503,8 @@
            MOVE    WKPTNYUINRRK-NYUINKA
                                        TO  BG00501DYN-SRT-SRYKA
            MOVE    WKPTNYUINRRK-PTID   TO  BG00501DYN-SRT-PTID
+      *
+           MOVE    CNT-BG00501DYN      TO  BG00501DYN-SRT-SEQ
       *
            MOVE    WKPTNYUINRRK-REC    TO  BG00501DYN-PTNYUINRRK-DAT
       *
@@ -637,9 +649,27 @@
                                        TO  HCMG005-BIRTHDAY(CNT-LINE)
       *
       *    入院日
-           MOVE    PTNYUINRRK-NYUINYMD TO  WRK-SYMD
-           PERFORM 800-SEIWA-HEN-SEC
-           MOVE    WRK-EDTYMD1         TO  HCMG005-NYUINYMD(CNT-LINE)
+           INITIALIZE                          ORCSNTYMDAREA
+           MOVE    PTINF-HOSPID            TO  SNTYMD-HOSPID
+           MOVE    PTINF-PTID              TO  SNTYMD-PTID
+           MOVE    "2"                     TO  SNTYMD-KBN
+           CALL    "ORCSNTYMD" USING           ORCSNTYMDAREA
+      *
+           PERFORM VARYING IDX2   FROM    1   BY  1
+                   UNTIL ( IDX2       >   SNTYMD-MAX )
+               IF    ( PTNYUINRRK-RRKNUM       = SNTYMD-RRKNUM (IDX2))
+      *
+                   MOVE    SNTYMD-NYUINYMD (IDX2)
+                                           TO  WRK-SYMD
+                   PERFORM 800-SEIWA-HEN-SEC
+                   MOVE    WRK-EDTYMD1     TO  HCMG005-NYUINYMD
+                                                           (CNT-LINE)
+      *
+                   MOVE    SNTYMD-MAX      TO  IDX2
+      *
+               END-IF
+      *
+           END-PERFORM
       *
       *    通算日数チェックサブ呼出
            INITIALIZE                      ORCSTUSANCHKAREA
@@ -652,6 +682,8 @@
                MOVE    PTNYUINRRK-TAIINYMD
                                        TO  STUSANCHK-KJNYMD
            END-IF
+      *
+           MOVE    PTNYUINRRK-RRKNUM   TO  STUSANCHK-RRKNUM
       *
            CALL    "ORCSTUSANCHK"          USING
                                            ORCSTUSANCHKAREA

@@ -68,6 +68,7 @@
                03  BG00401SEQ-SRT-BRMNUM   PIC X(08).
                03  BG00401SEQ-SRT-SRYKA    PIC X(02).
                03  BG00401SEQ-SRT-PTID     PIC X(10).
+               03  BG00401SEQ-SRT-SEQ      PIC 9(03).
            02  BG00401SEQ-PTNYUINRRK-DAT.
            COPY    "CPPTNYUINRRK.INC"      REPLACING   //PTNYUINRRK-//
                                            BY          //BG00401SEQ-//.
@@ -80,6 +81,7 @@
                03  BG00401DYN-SRT-BRMNUM   PIC X(08).
                03  BG00401DYN-SRT-SRYKA    PIC X(02).
                03  BG00401DYN-SRT-PTID     PIC X(10).
+               03  BG00401DYN-SRT-SEQ      PIC 9(03).
            02  BG00401DYN-PTNYUINRRK-DAT.
            COPY    "CPPTNYUINRRK.INC"      REPLACING   //PTNYUINRRK-//
                                            BY          //BG00401DYN-//.
@@ -123,6 +125,7 @@
            03  CNT-LINE                            PIC 9(02).
            03  CNT-PAGE                            PIC 9(03).
            03  CNT-BG004                           PIC 9(05).
+           03  CNT-BG00401DYN                      PIC 9(03).
       *
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
@@ -397,6 +400,8 @@
       *
            PERFORM 1201-PTNYUINRRK-SEL-SEC
       *
+           MOVE    ZERO                TO  CNT-BG00401DYN
+      *
            PERFORM UNTIL ( FLG-PTNYUINRRK  NOT =   ZERO )
       *
                PERFORM 1201-BG00401-HEN-SEC
@@ -462,6 +467,8 @@
       *****************************************************************
        1201-BG00401-HEN-SEC            SECTION.
       *
+           COMPUTE CNT-BG00401DYN  =   CNT-BG00401DYN  +   1
+      *
            MOVE    ZERO                TO  FLG-WKPTNYUINRRK
       *
       *    Æþ±¡ÍúÎò¥Þ¥¹¥¿¸¡º÷
@@ -500,6 +507,8 @@
            MOVE    WKPTNYUINRRK-NYUINKA
                                        TO  BG00401DYN-SRT-SRYKA
            MOVE    WKPTNYUINRRK-PTID   TO  BG00401DYN-SRT-PTID
+      *
+           MOVE    CNT-BG00401DYN      TO  BG00401DYN-SRT-SEQ
       *
            MOVE    WKPTNYUINRRK-REC    TO  BG00401DYN-PTNYUINRRK-DAT
       *
@@ -682,6 +691,8 @@
                MOVE    PTNYUINRRK-TAIINYMD
                                        TO  STUSANCHK-KJNYMD
            END-IF
+      *
+           MOVE    PTNYUINRRK-RRKNUM   TO  STUSANCHK-RRKNUM
       *
            CALL    "ORCSTUSANCHK"      USING   ORCSTUSANCHKAREA
            IF    ( STUSANCHK-RC    NOT =   ZERO )
