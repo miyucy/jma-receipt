@@ -912,13 +912,6 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *TEST
-      *   ACCEPT  WRK-SYSTIME         FROM    TIME
-      *    DISPLAY "K02 START:" WRK-SYSTIME (1:2) ":" 
-      *                         WRK-SYSTIME (3:2) ":" 
-      *                         WRK-SYSTIME (5:2) ":" 
-      *                         WRK-SYSTIME (7:2) "/" 
-      *    DISPLAY "*** ORCSNPL    START  ***"
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
@@ -3266,6 +3259,9 @@
                IF     (MCP-WIDGET(1:07)    =   "INPUTCD"  )  OR
                       (MCP-WIDGET(1:6)     =   "MEISYO"   )
                    PERFORM 2001-INPUT-SET-SEC
+                   IF      SPA-ERRCD   NOT =   SPACE
+                       GO      TO      200-ENTRY-EXT
+                   END-IF 
                    IF      WRK-IDX2        =   ZERO
                        GO      TO      200-ENTRY-EXT
                    END-IF 
@@ -3345,6 +3341,12 @@
                COMPUTE SPA-GMN-IDX     =   (SPA-GMN-PAGE   -   1)
                                        *   24
                                        +   WRK-IDX2
+      *
+               IF      SPA-GMN-IDX         >   WRK-GYO-MAX
+                   MOVE    "7001"          TO  SPA-ERRCD
+                   MOVE    WRK-GYO-MAX     TO  SPA-GMN-IDX
+                   GO      TO      2001-INPUT-SET-EXT
+               END-IF
            END-IF
       *
            .
@@ -4093,6 +4095,11 @@
                COMPUTE SPA-GMN-IDX     =   (SPA-GMN-PAGE   -   1)
                                        *   24
                                        +   WRK-IDX2
+               IF      SPA-GMN-IDX     >   WRK-GYO-MAX
+                   MOVE    "7001"          TO  SPA-ERRCD
+                   MOVE    WRK-GYO-MAX     TO  SPA-GMN-IDX
+                   GO      TO      41011-GYOU-SET-EXT
+               END-IF
            END-IF
       *
            .
@@ -5413,6 +5420,9 @@
                MOVE    ZERO               TO  IDX-IP
                GO      TO    4101191-INPUTSET-SYORI-EXT
            END-IF
+           IF      SPA-GMN-IDX         >   WRK-GYO-MAX
+               MOVE    WRK-GYO-MAX         TO  SPA-GMN-IDX
+           END-IF
            MOVE    SPACE               TO  SPA-ERRCD
       *
       *    対象なし
@@ -5483,7 +5493,7 @@
       *        行を挿入して追加する
                ADD     1               TO  SPA-GMN-IDX
                PERFORM 41014-GYOINSN-SEC
-             IF      SPA-ERRCD       =   SPACE
+               IF      SPA-ERRCD       =   SPACE
       *
                ADD     1               TO  IDX-IP
       *

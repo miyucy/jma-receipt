@@ -1661,6 +1661,10 @@
                COMPUTE SPA-GMN-IDX     =   (SPA-GMN-PAGE   -   1)
                                        *   23
                                        +   WRK-IDX2
+               IF      SPA-GMN-IDX     >   200
+                   MOVE    200             TO  SPA-GMN-IDX
+                   MOVE    "7001"          TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            .
@@ -2192,6 +2196,10 @@
                COMPUTE SPA-GMN-IDX     =   (SPA-GMN-PAGE   -   1)
                                        *   23
                                        +   WRK-IDX2
+               IF      SPA-GMN-IDX     >   200
+                   MOVE    200             TO  SPA-GMN-IDX
+                   MOVE    "7001"          TO  SPA-ERRCD
+               END-IF
            END-IF
       *
       *
@@ -4249,12 +4257,14 @@
       *****************************************************************
        41014-GYOINSN-SEC         SECTION.
       *
-           IF      SPA-GMN-MAX         =   200
+           IF      SPA-GMN-MAX         >=   200
+               MOVE    200                 TO  SPA-GMN-MAX
                MOVE    "0007"              TO  SPA-ERRCD
                GO      TO      41014-GYOINSN-EXT
            END-IF
       *
-           IF      SPA-GMN-IDX         =   200
+           IF      SPA-GMN-IDX         >=   200
+               MOVE    200                 TO  SPA-GMN-IDX
                MOVE    "0007"              TO  SPA-ERRCD
                GO      TO      41014-GYOINSN-EXT
            END-IF

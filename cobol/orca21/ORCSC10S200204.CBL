@@ -1655,14 +1655,15 @@
                PERFORM 2001-SRYCD-TBL-SEC
            ELSE
       *        Æ±ÆüºÆ¿ÇÎÁ»»Äê
-               IF    ((SPA-SYORIFLG        =   ZERO     ) AND
-                      (SPA-LSTYMD          =   SPA-SRYYMD  OR
-                       SPA-RRK-LSTYMD      =   SPA-SRYYMD )) OR
-                      (SPA-SYORIFLG        =   1          AND
-                       WRK-DAY-SINSATUCNT  >   ZERO       )
+               MOVE    ZERO                TO  FLG-DOUJITU
+               IF     ( SPA-SYORIFLG        =   ZERO     ) AND
+                      ((SPA-LSTYMD          =   SPA-SRYYMD ) OR
+                       (SPA-RRK-LSTYMD      =   SPA-SRYYMD ))
                    MOVE    1                   TO  FLG-DOUJITU
-               ELSE
-                   MOVE    ZERO                TO  FLG-DOUJITU
+               END-IF
+               IF      (SPA-SYORIFLG        =   1       )   AND
+                       (WRK-DAY-SINSATUCNT  >   ZERO    )
+                   MOVE    1                   TO  FLG-DOUJITU
                END-IF
                IF      FLG-DOUJITU         =   1
                    IF      SPA-TAKA-SRYKA-R    =   SPACE

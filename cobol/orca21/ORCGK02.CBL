@@ -1202,8 +1202,8 @@
                        MOVE    ZERO               TO  SPA-SAISIN-CHK
                        MOVE    2                  TO  FLG-PARASET
                        PERFORM 3002-PARA-SET-SEC
-                       IF      SPA-SYORIFLG        =   ZERO
-                          AND  SPA-WKSRY-HKNCOMBI  =   ZERO
+                       IF     (SPA-SYORIFLG        =   ZERO )
+                          AND (SPA-WKSRY-HKNCOMBI  =   ZERO )
                           PERFORM 3009-SAIHEN-SEC
                        END-IF
                    END-IF
@@ -1463,11 +1463,14 @@
                    MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
                    MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
                END-IF
-                   IF      SPA-SRYYMD          =   SPACE
-                       MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
-                       MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
-                   END-IF
-      *********END-IF
+               IF      SPA-SRYYMD          =   SPACE
+                   MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
+                   MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
+               END-IF
+      *
+               IF      SPA-MOTOPG          =   "K01"
+                   MOVE    SPA-DRCD            TO  WRK-DRCD
+               END-IF
       *        ½é´ü£Ó£Ð£ÁÊÔ½¸½èÍý
                INITIALIZE                  ORCSC95AREA
                MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
@@ -1480,6 +1483,9 @@
                                            SPA-AREA
                                            SPA-K01KYOUTU
                                            SPA-K02
+               IF      SPA-MOTOPG          =   "K01"
+                   MOVE    WRK-DRCD            TO  SPA-DRCD
+               END-IF
            END-IF
            IF      SPA-PTID            =   ZERO
                GO      TO      3009-SAIHEN-EXT
@@ -5290,7 +5296,7 @@
                       (TNS-SSTKIJUNCDTBL(1)    NOT =   ZERO ))  OR
                      ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:5)
                                                    =   "09500" OR
-                                                        "09600" ) AND
+                                                       "09600" ) AND
                       (TNS-TEN                     =   ZERO ))
                    MOVE    "2"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
                    MOVE    "1"             TO  SPA-COM-IN3 (SPA-GMN-IDX)
@@ -6039,6 +6045,9 @@
                MOVE    WRK-GMN-IDX        TO  SPA-GMN-IDX
                MOVE    ZERO               TO  IDX-IP
                GO      TO    4101191-INPUTSET-SYORI-EXT
+           END-IF
+           IF      SPA-GMN-IDX         >   200
+               MOVE    200                 TO  SPA-GMN-IDX
            END-IF
            MOVE    SPACE               TO  SPA-ERRCD
       *

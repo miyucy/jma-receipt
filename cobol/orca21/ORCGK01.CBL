@@ -95,11 +95,14 @@
                    07  SPA-GMN-DRCD-G.
                        09  SPA-GMN-DRCD        PIC X(04).
                        09  SPA-GMN-F1          PIC X(01).
-                       09  SPA-GMN-DRCDMEI     PIC X(22).
-                   07  SPA-GMN-DRCDLST                    OCCURS  10.
-                       09  SPA-GMN-DRCDL       PIC X(04).
-                       09  SPA-GMN-F1L         PIC X(01).
-                       09  SPA-GMN-DRCDMEIL    PIC X(22).
+                       09  SPA-GMN-DRCDMEI     PIC X(24).
+                   07  SPA-GMN-DRCDLST-G.
+                       09  SPA-GMN-DRCDLST                OCCURS  20.
+                           11  SPA-GMN-DRCDL       PIC X(04).
+                           11  SPA-GMN-F1L         PIC X(01).
+                           11  SPA-GMN-DRCDMEIL    PIC X(24).
+                   07  SPA-DRCD-MAX            PIC 9(04).
+      *
                    07  SPA-GMN-SRYYMD          PIC X(10).
                    07  SPA-GMN-ZENKAI-G.
                        09  SPA-GMN-ZENKAI          PIC X(01).
@@ -418,6 +421,9 @@
       *    初期ＳＰＡ編集処理パラメタ
            COPY    "CPORCSC95.INC".
       *
+      *    ドクター編集処理パラメタ
+           COPY    "CPORCSDRSET.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -586,9 +592,9 @@
       *****PERFORM 310-SPASET-SEC
       *
            EVALUATE    SPA-MOTOPG
-               WHEN    "K07"
+      ******** WHEN    "K07"
       *            履歴遷移より画面再編集
-                   PERFORM 320-K07SPASET-SEC
+      ***********  PERFORM 320-K07SPASET-SEC
       *
                WHEN    "K02"
                WHEN    "K02N"
@@ -597,6 +603,7 @@
                        PERFORM 310-K02SPASET-SEC
                    ELSE
                        PERFORM 310-K02SPASET-SEC
+                       MOVE    ZERO                TO  FLG-SYORI
                        PERFORM 3101-PTINF-SPA-SEC
                    END-IF
                WHEN    OTHER
@@ -627,9 +634,12 @@
                IF      WRK-SPA-PTNUM       NOT =   SPACE
       *            初期表示へ
                    MOVE    WRK-SPA-PTNUM   TO  K01-PTNUM
+                   MOVE    1               TO  FLG-SYORI
                    PERFORM 4101-PTNUM-CHK-SEC
                    MOVE    2               TO  SPA-GMN-CUR
+      *
                    IF      SPA-SRYKA       NOT =   SPACE
+                        PERFORM 4102-SRYKA-CHK-SEC
                         MOVE    SPA-SRYKA        TO  SPA-GMN-SRYKA
                         MOVE    SPA-SRYKAMEI     TO  SPA-GMN-SRYKAMEI
                         MOVE    3                TO  SPA-GMN-CUR
@@ -652,6 +662,7 @@
            PERFORM 310-SPASET-SEC
       *
       *    患者番号より初期セット
+           MOVE    1                   TO  FLG-SYORI
            PERFORM 3101-PTINF-SPA-SEC
            .
        3103-P02SPASET-EXT.
@@ -675,27 +686,27 @@
       *
            IF      SPA-SRYKA       NOT =   SPACE
                 MOVE    SPA-SRYKA          TO  SPA-GMN-SRYKA
-                PERFORM VARYING     IDX     FROM    1  BY  1
-                       UNTIL       IDX     >   10
+                PERFORM VARYING    IDX     FROM    1  BY  1
+                       UNTIL       IDX     >   SPA-SRYKA-MAX
                    IF      SPA-GMN-SRYKA       =   SPA-GMN-SRYKAL(IDX)
                        MOVE    SPA-GMN-SRYKALST(IDX)
                                                    TO  SPA-GMN-SRYKA-G
-                       MOVE    10                  TO  IDX
+                       MOVE    SPA-SRYKA-MAX       TO  IDX
                    END-IF
                 END-PERFORM
                 MOVE    3                TO  SPA-GMN-CUR
            END-IF
       *
            IF      SPA-DRCD        NOT =   SPACE
-               MOVE    SPA-DRCD(2:)        TO  SPA-GMN-DRCD 
+               MOVE    SPA-DRCD(2:4)       TO  SPA-GMN-DRCD
                PERFORM VARYING     IDX     FROM   1   BY  1
-                       UNTIL       IDX     >   10
+                       UNTIL       IDX     >   SPA-DRCD-MAX
                    IF      SPA-GMN-DRCD (1:4)  =   SPA-GMN-DRCDL(IDX)
                        MOVE    SPA-GMN-DRCDLST(IDX)
                                                TO  SPA-GMN-DRCD-G
                        MOVE    "1"             TO  SPA-NAI-DRCD(1:1)
                        MOVE    SPA-GMN-DRCD    TO  SPA-NAI-DRCD(2:)
-                       MOVE    10              TO  IDX
+                       MOVE    SPA-DRCD-MAX    TO  IDX
                    END-IF
                END-PERFORM
            END-IF
@@ -830,13 +841,13 @@
                MOVE    SPA-GMN-DRCDL  (01) TO  SPA-NAI-DRCD (2:)
            ELSE
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL       IDX     >   10
-                   IF      SPA-DRCD(1:4)   =   SPA-GMN-DRCDL   (IDX)
+                       UNTIL       IDX     >   SPA-DRCD-MAX
+                   IF      SPA-DRCD(2:4)   =   SPA-GMN-DRCDL   (IDX)
                        MOVE    SPA-GMN-DRCDLST(IDX) TO  SPA-GMN-DRCD-G
                        MOVE    "1"             TO  SPA-NAI-DRCD(1:1)
                        MOVE    SPA-GMN-DRCDL  (IDX)
                                                TO  SPA-NAI-DRCD(2:)
-                       MOVE    10              TO  IDX
+                       MOVE    SPA-DRCD-MAX    TO  IDX
                    END-IF
                END-PERFORM
            END-IF
@@ -928,16 +939,18 @@
                MOVE    "1"                 TO  SPA-NAI-DRCD (1:1)
                MOVE    SPA-GMN-DRCDL  (01) TO  SPA-NAI-DRCD (2:)
            ELSE
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL       IDX     >   10
-                   IF      SPA-DRCD(1:4)   =   SPA-GMN-DRCDL   (IDX)
-                       MOVE    SPA-GMN-DRCDLST(IDX) TO  SPA-GMN-DRCD-G
-                       MOVE    "1"             TO  SPA-NAI-DRCD(1:1)
-                       MOVE    SPA-GMN-DRCDL  (IDX)
-                                               TO  SPA-NAI-DRCD(2:)
-                       MOVE    10              TO  IDX
-                   END-IF
-               END-PERFORM
+      *********PERFORM VARYING     IDX     FROM    1   BY  1
+      *                UNTIL       IDX     >   SPA-DRCD-MAX
+      *            IF      SPA-DRCD(1:4)   =   SPA-GMN-DRCDL   (IDX)
+      *                MOVE    SPA-GMN-DRCDLST(IDX) TO  SPA-GMN-DRCD-G
+      *                MOVE    "1"             TO  SPA-NAI-DRCD(1:1)
+      *                MOVE    SPA-GMN-DRCDL  (IDX)
+      *                                        TO  SPA-NAI-DRCD(2:)
+      *                MOVE    SPA-DRCD-MAX    TO  IDX
+      *            END-IF
+      *********END-PERFORM
+               MOVE    "1"                 TO  SPA-NAI-DRCD(1:1)
+               MOVE    SPA-DRCD(2:4)       TO  SPA-NAI-DRCD(2:4)
            END-IF
       *    入力チェック用
            MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
@@ -977,7 +990,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   10   )  OR
+                   UNTIL       (IDX            >   40   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC           TO  SYS-1005-REC
       *********MOVE    SYS-1005-KBNCD (1:2)  TO  SPA-GMN-TKACD  (IDX)
@@ -985,6 +998,8 @@
       *
                MOVE    SYS-1005-KBNCD (1:2)  TO  SPA-GMN-SRYKAL   (IDX)
                MOVE    SYS-1005-SRYKANAME1   TO  SPA-GMN-SRYKAMEIL(IDX)
+      *
+               MOVE    IDX                   TO  SPA-SRYKA-MAX
       *
                MOVE    "SYSKANRI-KEY2"       TO  ORC-DBPATH
                PERFORM 900-KANRIMST-READ-SEC
@@ -998,49 +1013,62 @@
                                         MCPDATA-REC
       *
       *    職員情報（ドクター）
-           MOVE    SPACE               TO  SYS-1010-REC
-           INITIALIZE                  SYS-1010-REC
-           MOVE    "1010"              TO  SYS-1010-KANRICD
-           MOVE    ZERO                TO  SYS-1010-STYUKYMD
-           MOVE    ALL "9"             TO  SYS-1010-EDYUKYMD
+      **** MOVE    SPACE               TO  SYS-1010-REC
+      *    INITIALIZE                  SYS-1010-REC
+      *    MOVE    "1010"              TO  SYS-1010-KANRICD
+      *    MOVE    ZERO                TO  SYS-1010-STYUKYMD
+      *    MOVE    ALL "9"             TO  SYS-1010-EDYUKYMD
       *    システム管理検索
-           MOVE    SYS-1010-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           MOVE    SPA-NAI-SRYYMDS     TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-               PERFORM 900-KANRIMST-READ-SEC
-           ELSE
-               INITIALIZE                  SYS-1010-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           MOVE    ZERO                TO  IDX
-           PERFORM
-                   UNTIL       (IDX            >=  10   )  OR
-                               (FLG-SYSKANRI   =   1    )
-               MOVE    MCPDATA-REC             TO  SYS-1010-REC
-               IF      SYS-1010-KBNCD(1:1)     =   "1"
-                   ADD     1                 TO  IDX
-                   MOVE    SYS-1010-KBNCD(2:4)
-                                             TO  SPA-GMN-DRCDL (IDX)
-                   MOVE    SYS-1010-NAME     TO  SPA-GMN-DRCDMEIL(IDX)
-               END-IF
+      *    MOVE    SYS-1010-REC        TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+      *    MOVE    SPA-NAI-SRYYMDS     TO  ORC-DBYMD
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+      *        PERFORM 900-KANRIMST-READ-SEC
+      *    ELSE
+      *        INITIALIZE                  SYS-1010-REC
+      *        MOVE    1               TO  FLG-SYSKANRI
+      *    END-IF
+      *    MOVE    ZERO                TO  IDX
+      *    PERFORM
+      *            UNTIL       (IDX            >=  10   )  OR
+      *                        (FLG-SYSKANRI   =   1    )
+      *        MOVE    MCPDATA-REC             TO  SYS-1010-REC
+      *        IF      SYS-1010-KBNCD(1:1)     =   "1"
+      *            ADD     1                 TO  IDX
+      *            MOVE    SYS-1010-KBNCD(2:4)
+      *                                      TO  SPA-GMN-DRCDL (IDX)
+      *            MOVE    SYS-1010-NAME     TO  SPA-GMN-DRCDMEIL(IDX)
+      *        END-IF
       *
-               MOVE    "SYSKANRI-KEY2"    TO  ORC-DBPATH
-               PERFORM 900-KANRIMST-READ-SEC
-           END-PERFORM
+      *        MOVE    "SYSKANRI-KEY2"    TO  ORC-DBPATH
+      *        PERFORM 900-KANRIMST-READ-SEC
+      *    END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *****                             MCPDATA-REC
+      *
+      *    ドクター編集
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-NAI-SRYYMDS     TO  ORCSDR-SYSYMD
+           MOVE    "1"                 TO  ORCSDR-KBN
+           MOVE    SPA-SRYKA           TO  ORCSDR-SRYKA
+           MOVE    SPA-DRCD(2:4)       TO  ORCSDR-IN-DRCD
+           CALL   "ORCSDRSET"          USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+           MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN-DRCD-G
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
       *
            .
        3101-SYSKANRI-HEN-EXT.
@@ -1050,81 +1078,6 @@
       *    スパ初期編集処理
       *****************************************************************
        320-K07SPASET-SEC              SECTION.
-      *
-           MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
-           MOVE    SPA-PTID            TO  SPA-GMN-PTID
-           MOVE    SPA-NAME            TO  SPA-GMN-NAME
-      *
-      *    診療日
-           MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
-           MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMDS
-      *----(01.00.01) LINE ADD START ----------------------------------
-      *    診療科
-           MOVE    SPA-SRYKA           TO  SPA-GMN-SRYKA
-      *----(01.00.01) LINE ADD END   ----------------------------------
-      *
-           PERFORM 4101-PTNUM-CHK-SEC
-      *
-      *----(01.00.01) LINE ADD START ----------------------------------
-      *    診療科
-           PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL       IDX     >   10
-               IF      SPA-GMN-SRYKA       =   SPA-GMN-SRYKAL(IDX)
-                   MOVE    SPA-GMN-SRYKALST(IDX)   TO  SPA-GMN-SRYKA-G
-                   MOVE    10                      TO  IDX
-               END-IF
-           END-PERFORM
-      *----(01.00.01) LINE ADD END   ----------------------------------
-      *
-      *    分散入力
-           MOVE    SPA-BUNSAN          TO  SPA-GMN-BUNSAN
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-BUNSAN-MAX
-               IF      SPA-GMN-BUNSAN  =   SPA-GMN-BUNSANL (IDX)
-                   MOVE    SPA-GMN-BUNSAN-G    TO  SPA-GMN-BUNSAN-COMB
-                                                               (IDX)
-               END-IF
-           END-PERFORM
-      *    院外処方
-           MOVE    SPA-INGAIKBN        TO  SPA-GMN-INGAIKBN
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-INGAI-MAX
-               IF      SPA-GMN-INGAIKBN    =   SPA-GMN-INGAIKBNL (IDX)
-                   MOVE    SPA-GMN-INGAIKBN-G
-                                           TO  SPA-GMN-INGAIKBN-COMB
-                                                               (IDX)
-               END-IF
-           END-PERFORM
-      *    継続区分
-           MOVE    SPA-CONTKBN         TO  SPA-GMN-CONTKBN
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-CONTKBN-MAX
-               IF      SPA-GMN-CONTKBN  =   SPA-GMN-CONTKBNL (IDX)
-                   MOVE    SPA-GMN-CONTKBN-G   TO  SPA-GMN-CONTKBN-COMB
-                                                               (IDX)
-               END-IF
-           END-PERFORM
-      *
-      *    受け渡し項目
-           MOVE    SPA-RRKYMDW         TO  SPA-GMN-RRKYMD
-           MOVE    SPA-RRKYMD          TO  SPA-NAI-RRKYMD
-           MOVE    SPA-RENNUM          TO  SPA-NAI-RENNUM
-      *
-      *    選択が有ったら、前回表示を有りとする
-           IF      SPA-GMN-RRKYMD  NOT =   SPACE
-               MOVE    "0"                 TO  SPA-GMN-ZENKAI
-               MOVE    SPA-GMN-ZENKAI-COMB (01)    TO  SPA-GMN-ZENKAI-G
-           END-IF
-      *
-      *    保険組合せ
-           MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
-      *
-      *    対象の保険組合せチェック処理
-           PERFORM 41041-HKNCOMBI-TBLCHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    SPACE               TO  SPA-ERRCD
-               MOVE    SPA-NAI-HKNCOMBIOK  TO  SPA-GMN-HKNCOMBINUM
-           END-IF
       *
            .
        32O-K07SPASET-EXT.
@@ -1187,6 +1140,7 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        患者番号
                WHEN    "ACTIVATE"      ALSO    "PTNUM"
+                   MOVE    1               TO  FLG-SYORI
                    PERFORM 4101-PTNUM-CHK-SEC
                    GO      TO      200-ENTRY-EXT
       *        保険組合せ選択
@@ -1332,44 +1286,10 @@
            MOVE    PTINF-BIRTHDAY      TO  SPA-BIRTHDAY
       *
            MOVE    PTINF-NAME          TO  SPA-GMN-NAME
-      *
-      *    受付マスタよりドクターコード設定
-           MOVE    SPACE               TO  UKETUKE-REC
-           INITIALIZE                  UKETUKE-REC
-           MOVE    SPA-HOSPID          TO  UKE-HOSPID
-           MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
-           MOVE    SPA-GMN-PTID        TO  UKE-PTID
-      *
-           MOVE    UKETUKE-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
-               PERFORM 900-UKETUKE-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  UKETUKE-REC
-               INITIALIZE                  UKETUKE-REC
-               MOVE    1               TO  FLG-UKETUKE
+      *    患者番号入力時、受付読込
+           IF      FLG-SYORI           =   1
+               PERFORM 4102-UKETUKE-HEN-SEC
            END-IF
-           PERFORM UNTIL   FLG-UKETUKE        =   1
-               IF      UKE-DRCD        NOT =   SPACE
-                   MOVE    UKE-DRCD            TO  SPA-NAI-DRCD
-                   PERFORM 3101-DRCD-SET-SEC
-               END-IF
-               MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
-               PERFORM 900-UKETUKE-READ-SEC
-           END-PERFORM
-      *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
       *
       *    保険組合マスター編集
            INITIALIZE                  SPA-GMN-HKN-TBL
@@ -1476,6 +1396,72 @@
            EXIT.
       *
       *****************************************************************
+      *    受付マスタ編集処理
+      *****************************************************************
+       4102-UKETUKE-HEN-SEC             SECTION.
+      *
+      *    受付マスタよりドクターコード設定
+           MOVE    SPACE               TO  UKETUKE-REC
+           INITIALIZE                  UKETUKE-REC
+           MOVE    SPA-HOSPID          TO  UKE-HOSPID
+           MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
+           MOVE    SPA-GMN-PTID        TO  UKE-PTID
+      *
+           MOVE    UKETUKE-REC         TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+               PERFORM 900-UKETUKE-READ-SEC
+           ELSE
+               INITIALIZE                  UKETUKE-REC
+               MOVE    1               TO  FLG-UKETUKE
+           END-IF
+           PERFORM
+               UNTIL   FLG-UKETUKE        =   1
+      *        会計のまだの最初の受付を対象とする
+               IF      UKE-KAIKEITIME      =   ZERO
+      *        診療科
+                   MOVE    UKE-SRYKA           TO  SPA-GMN-SRYKA
+                   MOVE    UKE-SRYKA           TO  SPA-SRYKA
+      *            ドクター
+                   IF      UKE-DRCD        NOT =   SPACE
+                       MOVE    UKE-DRCD            TO  SPA-NAI-DRCD
+                       PERFORM 3101-DRCD-SET-SEC
+                   END-IF
+                   MOVE    1               TO  FLG-UKETUKE
+               END-IF
+      *
+               IF      FLG-UKETUKE         =   ZERO
+                   MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
+                   PERFORM 900-UKETUKE-READ-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"            TO  MCP-FUNC
+           MOVE    "UKETUKE-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *    診療科
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL       IDX     >   SPA-SRYKA-MAX
+               IF      SPA-GMN-SRYKA       =   SPA-GMN-SRYKAL(IDX)
+                   MOVE    SPA-GMN-SRYKALST(IDX)   TO  SPA-GMN-SRYKA-G
+                   MOVE    SPA-SRYKA-MAX           TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           .
+       4102-UKETUKE-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    対象の保険組合せ決定処理
       *****************************************************************
        41015-HKNCOMBI-SEL-SEC             SECTION.
@@ -1506,16 +1492,29 @@
       *****************************************************************
        3101-DRCD-SET-SEC             SECTION.
       *
-           MOVE    SPACE              TO  SPA-GMN-DRCD
+           MOVE    SPACE              TO  SPA-GMN-DRCD-G
            MOVE    SPA-NAI-DRCD(2:4)  TO  SPA-GMN-DRCD
+      *    ドクター編集
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-NAI-SRYYMDS     TO  ORCSDR-SYSYMD
+           MOVE    "1"                 TO  ORCSDR-KBN
+           MOVE    SPA-GMN-SRYKA       TO  ORCSDR-SRYKA
+           MOVE    SPA-GMN-DRCD        TO  ORCSDR-IN-DRCD
+           CALL   "ORCSDRSET"          USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+           MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN-DRCD-G
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
       *
-           PERFORM VARYING     IDX    FROM    1   BY  1
-                   UNTIL      (IDX        >   10  )  OR
-                              (SPA-GMN-DRCDL(IDX) =   SPACE )
-               IF      SPA-NAI-DRCD (2:4)    =   SPA-GMN-DRCDL(IDX)
-                   MOVE    SPA-GMN-DRCDLST(IDX)  TO  SPA-GMN-DRCD
-               END-IF
-           END-PERFORM
+      *
+      **** PERFORM VARYING     IDX    FROM    1   BY  1
+      *            UNTIL      (IDX        >   10  )  OR
+      *                       (SPA-GMN-DRCDL(IDX) =   SPACE )
+      *        IF      SPA-NAI-DRCD (2:4)    =   SPA-GMN-DRCDL(IDX)
+      *            MOVE    SPA-GMN-DRCDLST(IDX)  TO  SPA-GMN-DRCD
+      *        END-IF
+      **** END-PERFORM
       *
            .
        3101-DRCD-SET-EXT.
@@ -1816,10 +1815,10 @@
            END-IF
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL       IDX     >   10
+                   UNTIL       IDX     >   SPA-SRYKA-MAX
                IF      SPA-GMN-SRYKA       =   SPA-GMN-SRYKAL(IDX)
                    MOVE    SPA-GMN-SRYKALST(IDX)   TO  SPA-GMN-SRYKA-G
-                   MOVE    10                      TO  IDX
+                   MOVE    SPA-SRYKA-MAX           TO  IDX
                    MOVE    1                       TO  FLG-OK
                END-IF
            END-PERFORM
@@ -1829,6 +1828,21 @@
                GO      TO      4102-SRYKA-CHK-EXT
            END-IF
            MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
+      *
+      *    変更があった時、ドクターを変更する
+           IF      FLG-HEN             =   1
+               INITIALIZE                  ORCSDRSETAREA
+               MOVE    SPA-NAI-SRYYMDS     TO  ORCSDR-SYSYMD
+               MOVE    "1"                 TO  ORCSDR-KBN
+               MOVE    SPA-GMN-SRYKA       TO  ORCSDR-SRYKA
+               MOVE    SPA-GMN-DRCD-G      TO  ORCSDR-IN-DRCD-G
+               CALL   "ORCSDRSET"          USING
+                                           SPA-AREA
+                                           ORCSDRSETAREA
+               MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+               MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+               MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN-DRCD-G
+           END-IF
       *
       *    受診歴より、保険組合せを確定する
            IF      FLG-HEN             =   1
@@ -2033,40 +2047,68 @@
       *****************************************************************
        4105-DRCD-CHK-SEC             SECTION.
       *
-           IF     (SPA-GMN-DRCD    NOT =   SPACE )  AND
-                  (SPA-GMN-DRCD    NOT NUMERIC   )
-               INITIALIZE                      ORCSNUMAREA
-               MOVE    SPA-GMN-DRCD        TO  SNUM-INX
-               CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-               IF     (SNUM-RC         NOT =   ZERO  )   OR
-                      (SNUM-MINKBN     NOT =   SPACE )   OR
-                      (SNUM-SYOKBN     NOT =   SPACE )
-                   MOVE    "0021"                  TO  SPA-ERRCD
-                   MOVE    5                   TO  SPA-GMN-CUR
-                   GO      TO      4105-DRCD-CHK-EXT
-               ELSE
-                   MOVE    SNUM-OUTEDT(12:4)       TO  SPA-GMN-DRCD
-               END-IF
+           IF      SPA-GMN-DRCD        =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-DRCD-G
+               MOVE    SPACE           TO  SPA-NAI-DRCD
+               GO      TO      4105-DRCD-CHK-EXT
            END-IF
       *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL       IDX     >   10
-               IF      SPA-GMN-DRCD (1:4)  =   SPA-GMN-DRCDL(IDX)
-                   MOVE    SPA-GMN-DRCDLST(IDX)    TO  SPA-GMN-DRCD-G
-                   MOVE    "1"                 TO  SPA-NAI-DRCD(1:1)
-                   MOVE    SPA-GMN-DRCD        TO  SPA-NAI-DRCD(2:)
-                   MOVE    10                  TO  IDX
-                   MOVE    1                   TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-NAI-SRYYMDS     TO  ORCSDR-SYSYMD
+           MOVE    "2"                 TO  ORCSDR-KBN
+           MOVE    SPA-GMN-SRYKA       TO  ORCSDR-SRYKA
+           MOVE    SPA-GMN-DRCDLST-G   TO  ORCSDR-DRCD-TBL-G
+           MOVE    SPA-DRCD-MAX        TO  ORCSDR-DRCD-MAX
+           MOVE    SPA-GMN-DRCD-G      TO  ORCSDR-IN-DRCD-G
+           CALL    "ORCSDRSET"         USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+           MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN-DRCD-G
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+           IF      ORCSDR-ERRCD    NOT =   ZERO
                MOVE    "0021"              TO  SPA-ERRCD
                MOVE    5                   TO  SPA-GMN-CUR
                GO      TO      4105-DRCD-CHK-EXT
-            END-IF
-     *
+           END-IF
+      *
+           MOVE    "1"                 TO  SPA-NAI-DRCD(1:1)
+           MOVE    SPA-GMN-DRCD        TO  SPA-NAI-DRCD(2:)
+      *
+      *****IF     (SPA-GMN-DRCD    NOT =   SPACE )  AND
+      *           (SPA-GMN-DRCD    NOT NUMERIC   )
+      *        INITIALIZE                      ORCSNUMAREA
+      *        MOVE    SPA-GMN-DRCD        TO  SNUM-INX
+      *        CALL    "ORCSNUM"           USING
+      *                                    ORCSNUMAREA
+      *        IF     (SNUM-RC         NOT =   ZERO  )   OR
+      *               (SNUM-MINKBN     NOT =   SPACE )   OR
+      *               (SNUM-SYOKBN     NOT =   SPACE )
+      *            MOVE    "0021"                  TO  SPA-ERRCD
+      *            MOVE    5                   TO  SPA-GMN-CUR
+      *            GO      TO      4105-DRCD-CHK-EXT
+      *        ELSE
+      *            MOVE    SNUM-OUTEDT(12:4)       TO  SPA-GMN-DRCD
+      *        END-IF
+      *    END-IF
+      *
+      *    MOVE    ZERO                TO  FLG-OK
+      *    PERFORM VARYING     IDX     FROM   1   BY  1
+      *            UNTIL       IDX     >   10
+      *        IF      SPA-GMN-DRCD (1:4)  =   SPA-GMN-DRCDL(IDX)
+      *            MOVE    SPA-GMN-DRCDLST(IDX)    TO  SPA-GMN-DRCD-G
+      *            MOVE    "1"                 TO  SPA-NAI-DRCD(1:1)
+      *            MOVE    SPA-GMN-DRCD        TO  SPA-NAI-DRCD(2:)
+      *            MOVE    10                  TO  IDX
+      *            MOVE    1                   TO  FLG-OK
+      *        END-IF
+      *    END-PERFORM
+      *    IF      FLG-OK              =   ZERO
+      *        MOVE    "0021"              TO  SPA-ERRCD
+      *        MOVE    5                   TO  SPA-GMN-CUR
+      *        GO      TO      4105-DRCD-CHK-EXT
+      ******END-IF
+      *
            .
        4105-DRCD-CHK-EXT.
            EXIT.
@@ -2787,12 +2829,10 @@
            MOVE    SPA-GMN-CONTKBNNAME TO  K01-KZKKBNNAME
       *    診療科
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
+                   UNTIL       IDX     >   SPA-SRYKA-MAX
                MOVE    SPA-GMN-SRYKALST (IDX)  TO  K01-SRYKA-ITEM (IDX)
-               IF      SPA-GMN-SRYKALST (IDX)  NOT =   SPACE
-                   MOVE    IDX                 TO  K01-SRYKA-COUNT
-               END-IF
            END-PERFORM
+           MOVE    SPA-SRYKA-MAX       TO  K01-SRYKA-COUNT
       *    院外区分
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-INGAI-MAX
@@ -2840,13 +2880,11 @@
       *
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
+                   UNTIL       IDX     >   SPA-DRCD-MAX
                MOVE    SPA-GMN-DRCDLST (IDX)  TO  K01-DRNAME-ITEM(IDX)
-               IF      SPA-GMN-DRCDLST (IDX)  NOT =   SPACE
-                   MOVE    IDX                TO  K01-DRNAME-COUNT
-               END-IF
            END-PERFORM
-           MOVE   SPA-GMN-DRCD-G      TO  K01-DRNAME
+           MOVE    SPA-DRCD-MAX       TO  K01-DRNAME-COUNT
+           MOVE    SPA-GMN-DRCD-G     TO  K01-DRNAME
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-HKN-MAX
