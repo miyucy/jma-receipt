@@ -21,7 +21,7 @@
                    VALUE   "recovering" .
                05  FILLER               PIC  X(01)   VALUE   "3".  
                05  FILLER               PIC  X(20)   
-                   VALUE   "fullRecoverd" .
+                   VALUE   "fullyRecovered" .
                05  FILLER               PIC  X(01)   VALUE   "1".  
                05  FILLER               PIC  X(20)   
                    VALUE   "sequelae" .
@@ -48,7 +48,7 @@
                    VALUE   "home" .
                05  FILLER               PIC  X(01)   VALUE   "3".  
                05  FILLER               PIC  X(20)   
-                   VALUE   "unkown" .
+                   VALUE   "unknown" .
                05  FILLER               PIC  X(01)   VALUE   "3".  
            02  MML0016-R  REDEFINES   MML0016-T.
              03  MML0016-TX           OCCURS  14.
