@@ -4251,6 +4251,7 @@
            MOVE    CHKSND-REC          TO  MCPDATA-REC
            MOVE    PATH-TBL-CHKSND-KEY13
                                        TO  MCP-PATH
+           PERFORM 920-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  CHKSND-REC
                IF    ( CHKSND-NYUGAIKBN    =   SPACE )
