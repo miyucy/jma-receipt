@@ -112,6 +112,7 @@
       *  01.02.19   NACL-藤原     03/04/21  地方公費データのとき不明分は
       *                                     処理の対象としない
       *  01.02.20   NACL-門脇     03/04/24  一部負担金（）の編集修正
+      *  01.02.21   NACL-門脇     03/05/08  名称有効桁のセット
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1089,6 +1090,17 @@
                    MOVE   "1"                  TO    RECE04-COMCDFLG
                ELSE
                    MOVE    TNS-NAME            TO    RECE05-NAME(IDX4)
+               END-IF
+      *
+               IF  RECE05-YUKOKETA(IDX4)  =  ZERO
+                   PERFORM   VARYING   IDW   FROM   200   BY  -1
+                           UNTIL   IDW   <   1
+                       IF   RECE05-NAME(IDX4)(IDW:1)  NOT =   SPACE
+                           COMPUTE RECE05-YUKOKETA(IDX4)  =
+                                   IDW     /   2
+                           MOVE    1          TO  IDW
+                       END-IF
+                   END-PERFORM
                END-IF
       *
       *        特定器材（画像診断のフィルム以外）のとき単価を編集

@@ -43,6 +43,7 @@
       *                                     の単価を表示するように修正
       *  01.00.12    NACL-門脇    03.04.14  自賠責の小数点以下金額計算
       *                                     四捨五入に変更
+      *  01.00.13    NACL-門脇    03.05.08  名称有効桁のセット
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1061,6 +1062,17 @@
       *
                END-IF
       *
+               IF  RECE45-YUKOKETA(IDX4)  =  ZERO
+                   PERFORM   VARYING   IDW   FROM   200   BY  -1
+                           UNTIL   IDW   <   1
+                       IF   RECE45-NAME(IDX4)(IDW:1)  NOT =   SPACE
+                           COMPUTE RECE45-YUKOKETA(IDX4)  =
+                                   IDW     /   2
+                           MOVE    1          TO  IDW
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
                IF (  SRY-SRYCD(IDX2) = CONS-ROUSAI1  OR
                                        CONS-ROUSAI2  OR
                                        CONS-ROUSAI3  OR
@@ -2054,7 +2066,7 @@
                WHEN    "13"
                          COMPUTE    RECE41-TENSU(5)  =
                                     RECE41-TENSU(5)  +
-                                   (WK-ZAITEN   *   WRK-ZAIKAISU-XXX)
+                                   (WK-ZAITEN   *   WRK-ZAIKAISU)
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
