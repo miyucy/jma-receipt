@@ -190,7 +190,7 @@
            03  FLG-KHNTEN18                            PIC 9(01).
            03  FLG-KHNTEN19                            PIC 9(01).
       *
-      *    市它件玄恄啗
+      *    市它件玄迕恄啗
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
            03  CNT-OUT1                                PIC 9(06).
