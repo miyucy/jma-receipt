@@ -3396,6 +3396,7 @@
                    MOVE    SRY-SRYCD (IDX9)(5:1)
                                            TO  WRK-RSI-SONOTA-KBN
                    MOVE    TNS-TEN         TO  WRK-RSI-SONOTA-TEN
+               END-IF
            END-IF
       *
            .
