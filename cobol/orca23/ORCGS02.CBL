@@ -81,6 +81,7 @@
       *  01.01.24    NACL-門脇    03.04.15  自賠責文書料消費税対応
       *  01.01.25    NACL-門脇    03.04.16  船員保険（被保険者）＋通勤災害
       *                                     ＋初診時　対応
+      *  01.01.26    NACL-太田    03.05.01  収納一覧リスト表示修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1085,8 +1086,8 @@
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
            MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  SYU-PTID
-           MOVE    SPA-SRYYMD  (1:6)   TO  SYU-SRYYMD (1:6)
-           MOVE    "%"                 TO  SYU-SRYYMD (7:)
+           MOVE    SPA-NAI-SRYYM       TO  SYU-SRYYMD (1:6)
+           MOVE    "__"                TO  SYU-SRYYMD (7:)
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "SYUNOU-KEY14"      TO  WRK-DBPATH
            PERFORM 900-TBL-SELECT-SEC
