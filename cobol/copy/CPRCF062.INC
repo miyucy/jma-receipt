@@ -49,6 +49,7 @@
       *                                     の追加
       *  01.00.19    NACL-門脇    05.03.11  負担金額情報に項目追加
       *                                     レセプト記載外公費情報に項目追加
+      *  01.00.20    NACL-藤原    05.03.24  レセプト特記事項編集情報の追加
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -420,4 +421,25 @@
                05  RECE62-ZEROKISAIFLGINF OCCURS  5.
                    07  RECE62-ZEROKISAIFLG
                                           PIC  X(01).
+      *レセプト特記事項編集情報
+           03  RECE62-2006-AREA.
+      *        特記事項
+               05  RECE62-2006-TOKKIINF.
+                   07  RECE62-2006-TOKKI  PIC  X(12)
+                                               OCCURS  4.
+      *        給付割合
+               05  RECE62-2006-KYURATE    PIC  9(03).
+      *        レセ電：特記事項
+               05  RECE62-2006-RECEDEN-TOKKIINF.
+                   07  RECE62-2006-RECEDEN-TOKKI
+                                          PIC  X(02)
+                                               OCCURS  5.
+      *        レセ電：給付割合
+               05  RECE62-2006-RECEDEN-KYURATE
+                                          PIC  9(03).
+      *       レセ電：公費レコード区分
+               05  RECE62-2006-RECEDEN-KORECKBNINF.
+                   07  RECE62-2006-RECEDEN-KORECKBN
+                                          PIC  X(01)
+                                               OCCURS  4.
       *

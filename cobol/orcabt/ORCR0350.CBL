@@ -54,8 +54,10 @@
       *  01.00.12    NACL-藤原    05/03/01  注加算による加算項目の記載
       *                                     （処置・その他）
       *                                     超音波内視鏡加算を逓減の後に記載
-      *  01.00.13    NACL-藤原    04/02/05  公費の負担者番号・受給者番号
+      *  01.00.13    NACL-藤原    05/02/05  公費の負担者番号・受給者番号
       *                                     のカスタマイズ項目の編集
+      *  01.00.14    NACL-藤原    05/03/18  レセプト特記事項編集情報によ
+      *                                     るレセプト編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1526,6 +1528,14 @@
                MOVE   WRK-KYURATE          TO  WRK-NUM
                MOVE    3                   TO  WRK-NAGASA
            END-IF    
+      *    レセプト特記事項編集情報
+           IF      RECE62-2006-RECEDEN-KYURATE
+                                       >   ZERO
+               MOVE   RECE62-2006-RECEDEN-KYURATE
+                                           TO  WRK-NUM
+               MOVE    3                   TO  WRK-NAGASA
+           END-IF
+      *
            PERFORM 5005-NUM-HENSYU-SEC
       *    入院年月日
            MOVE    RECE62-NYUINYMD     TO  WRK-SYMD
@@ -1556,6 +1566,27 @@
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    特記事項
+           IF      RECE62-2006-RECEDEN-TOKKIINF
+                                   NOT =   SPACE
+      *        レセプト特記事項編集情報
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       5
+                   IF      RECE62-2006-RECEDEN-TOKKI (IDX)
+                                           NOT =   SPACE
+                       PERFORM VARYING IDZ FROM    1   BY  1
+                               UNTIL   IDZ >       5
+                           IF      RECE62-TOKKI (IDZ)  =   SPACE
+                               MOVE    RECE62-2006-RECEDEN-TOKKI (IDX)
+                                               TO  RECE62-TOKKI (IDZ)
+                           END-IF
+                           IF      RECE62-2006-RECEDEN-TOKKI (IDX)
+                                               =   RECE62-TOKKI (IDZ)      
+                               MOVE    5       TO  IDZ
+                           END-IF
+                       END-PERFORM
+                   END-IF
+               END-PERFORM
+           END-IF
            IF      FLG-RECE67          =   ZERO
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       5
@@ -1877,7 +1908,13 @@
                AND   ( RECE62-KOHJKYSNUM  (IDY)    =   SPACE   )
                    CONTINUE
                ELSE 
-                   PERFORM 20051-KOH-HENSYU-SEC
+      *            レセプト特記事項編集情報
+                   IF      RECE62-2006-RECEDEN-KORECKBN (IDY)
+                                                   =   "1"
+                       CONTINUE
+                   ELSE 
+                       PERFORM 20051-KOH-HENSYU-SEC
+                   END-IF
                END-IF
            END-PERFORM                      
            .

@@ -66,6 +66,8 @@
       *  01.02.03    NACL-門脇    05/03/02  薬剤で単位のないデータの数量編集
       *                                     修正
       *  01.02.04    NACL-藤原    05/03/07  包括対象検査のまとめの修正
+      *  01.02.05    NACL-藤原    05/03/18  レセプト特記事項編集情報によ
+      *                                     るレセプト編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -174,11 +176,12 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-RECE64          PIC 9(01).
            03  FLG-RECE65          PIC 9(01).
+      *
            03  FLG-SP              PIC 9(01).
            03  FLG-NOPRT           PIC 9(01).
-      **** 03  FLG-TENSU           PIC 9(01).
            03  FLG-TEIGEN          PIC 9(01).
            03  FLG-COMMENT         PIC 9(01).
            03  FLG-COMMENT2        PIC 9(01).
@@ -186,6 +189,12 @@
            03  FLG-HIKAKIN         PIC 9(01).
            03  FLG-SRYCD1          PIC 9(01).
            03  FLG-OK              PIC 9(01).
+      *
+           03  FLG-SYS-2006        PIC 9(01).
+           03  FLG-2006-CHK        PIC 9(01).
+           03  FLG-2006-ERR        PIC 9(01).
+           03  FLG-HKNNUM-OK       PIC 9(01).
+           03  FLG-CHK-SYOKBN      PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -209,6 +218,34 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
+      *
+           03  IDXY                PIC 9(03).
+           03  IDXZ                PIC 9(03).
+      *     
+           03  SYSKAN-IDX          PIC 9(03).
+           03  SYSKAN-IDY          PIC 9(03).
+           03  IDW1                PIC 9(04). 
+           03  IDW2                PIC 9(04). 
+      *
+      *    レセプト特記事項編集情報退避用領域
+       01  TBL-SYS2006-T-ALL.
+           03  TBL-SYS2006-OCC-ALL     OCCURS  100.
+               05  TBL-SYS2006-ALL     PIC  X(610).
+      *    レセプト特記事項編集情報退避用領域（該当診療年月用）
+       01  TBL-SYS2006-T.
+           03  TBL-SYS2006-OCC         OCCURS  100.
+               05  TBL-SYS2006         PIC  X(610).
+               05  TBL-SYS2006-KEY.
+                   07  TBL-SYS2006-HKNNUM
+                                       PIC  X(03).
+                   07  TBL-SYS2006-TEISYUTUSAKI
+                                       PIC  X(01).
+                   07  TBL-SYS2006-HKNJANUM
+                                       PIC  X(08).
+                   07  TBL-SYS2006-RJNKBN
+                                       PIC  X(01).
+                   07  TBL-SYS2006-ZAITAKU
+                                       PIC  X(01).
       *
       *    一時領域
        01  WRK-AREA.
@@ -306,6 +343,24 @@
       *
       *    剤の診療種別区分
            03  WRK-SRYSYUKBN                   PIC X(03).
+      *
+           03  WRK-SYS-SRYYMD                  PIC X(08).
+      *
+           03  WRK-SYS-2006-SORT.
+               05  WRK-SYS2006         PIC  X(610).
+               05  WRK-SYS2006-KEY.
+                   07  WRK-SYS2006-HKNNUM
+                                       PIC  X(03).
+                   07  WRK-SYS2006-TEISYUTUSAKI
+                                       PIC  X(01).
+                   07  WRK-SYS2006-HKNJANUM
+                                       PIC  X(08).
+                   07  WRK-SYS2006-RJNKBN
+                                       PIC  X(01).
+                   07  WRK-SYS2006-ZAITAKU
+                                       PIC  X(01).
+      *
+           03  WRK-HKNNUM              PIC X(03).
       *
       *    剤・診療行為テーブル
        01  TBL-ZAI-AREA.
@@ -657,6 +712,10 @@
       *
       *    パス名領域
        01  WRK-PATH                        PIC X(64).
+      *     
+      *    レセプト特記事項編集情報
+           COPY    "CPSK2006.INC"  REPLACING  //SYS-2006//
+                                   BY         //WRK-2006//.
       *
            COPY    "MCPAREA".
       *
@@ -669,9 +728,9 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
-      *
-      *    点数
-      **** COPY    "CPTENSU.INC".
+      *     
+      *    レセプト特記事項編集情報
+           COPY    "CPSK2006.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -741,6 +800,8 @@
       *    処理中止設定処理
            PERFORM 500-CANCEL-HENSYU-SEC
       *
+           PERFORM 110-SYSKANRI-HENSYU-SEC
+      *
            PERFORM 990-RECE62-READ-SEC
            .
        100-INIT-EXT.
@@ -781,6 +842,126 @@
       *
            .
        110-FILE-OPEN-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    システム管理マスタ取得      
+      *****************************************************************
+       110-SYSKANRI-HENSYU-SEC      SECTION.
+      *
+           MOVE     ZERO               TO  SYSKAN-IDY
+           MOVE     SPACE              TO  TBL-SYS2006-T
+           INITIALIZE                      TBL-SYS2006-T
+      *
+      *    レセプト特記事項編集情報
+           IF   WRK-PARA-SRYYM     NOT =   ZERO
+               INITIALIZE                       SYS-2006-REC
+               MOVE    "2006"               TO  SYS-2006-KANRICD
+               MOVE    WRK-PARA-SRYYM       TO  ORC-DBYMD (1:6)
+               MOVE    "01"                 TO  ORC-DBYMD (7:2) 
+               MOVE    SYS-2006-REC         TO  MCPDATA-REC
+               MOVE    "DBSELECT"           TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY7"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+               IF      MCP-RC               =   ZERO
+                   MOVE    "SYSKANRI-KEY7"  TO  ORC-DBPATH
+                   PERFORM 900-SYSKANRI-READ-SEC
+                   PERFORM  UNTIL   FLG-SYSKANRI    =   1
+      *
+                       MOVE    MCPDATA-REC   TO  SYS-2006-REC
+                       ADD     1             TO  SYSKAN-IDY
+                       MOVE    SYS-2006-REC  TO  TBL-SYS2006
+                                                          (SYSKAN-IDY)
+                       MOVE    SYS-2006-HKNNUM
+                                          TO  TBL-SYS2006-HKNNUM
+                                                          (SYSKAN-IDY)
+                       MOVE    SYS-2006-TEISYUTUSAKI
+                                          TO  TBL-SYS2006-TEISYUTUSAKI
+                                                          (SYSKAN-IDY)
+                       MOVE    SYS-2006-HKNJANUM
+                                          TO  TBL-SYS2006-HKNJANUM
+                                                          (SYSKAN-IDY)
+                       MOVE    SYS-2006-RJNKBN
+                                          TO  TBL-SYS2006-RJNKBN
+                                                          (SYSKAN-IDY)
+                       MOVE    SYS-2006-ZAITAKU
+                                          TO  TBL-SYS2006-ZAITAKU
+                                                          (SYSKAN-IDY)
+                       MOVE    1             TO  FLG-SYS-2006
+      *
+                       MOVE    "SYSKANRI-KEY7" TO  ORC-DBPATH
+                       PERFORM 900-SYSKANRI-READ-SEC
+      *
+                   END-PERFORM
+               END-IF
+      *
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY7"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *        条件による並びかえ
+               IF      SYSKAN-IDY          >   1
+                   PERFORM VARYING IDXX    FROM   1   BY  1
+                           UNTIL   IDXX    >    ( SYSKAN-IDY - 1 )
+                       PERFORM VARYING IDXZ    FROM    IDXX     BY  1
+                               UNTIL   IDXZ    >       SYSKAN-IDY
+                           IF    ( IDXZ    >   IDXX                   )
+                           AND   ( TBL-SYS2006-KEY (IDXX)
+                                           >   TBL-SYS2006-KEY (IDXZ) )
+                               MOVE    TBL-SYS2006-OCC (IDXX)
+                                           TO  WRK-SYS-2006-SORT
+                               MOVE    TBL-SYS2006-OCC (IDXZ)
+                                           TO  TBL-SYS2006-OCC (IDXX)
+                               MOVE    WRK-SYS-2006-SORT
+                                           TO  TBL-SYS2006-OCC (IDXZ)
+                           END-IF
+                       END-PERFORM
+                   END-PERFORM
+               END-IF
+           ELSE
+               MOVE     ZERO               TO  SYSKAN-IDX
+               MOVE     SPACE              TO  TBL-SYS2006-T-ALL
+               INITIALIZE                      TBL-SYS2006-T-ALL
+      *
+               INITIALIZE                      SYS-2006-REC
+               MOVE    "2006"              TO  SYS-2006-KANRICD
+               MOVE    SYS-2006-REC        TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"             USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+                   PERFORM 900-SYSKANRI-READ-SEC
+                   PERFORM  UNTIL   FLG-SYSKANRI   =    1
+      *
+                       MOVE    MCPDATA-REC     TO  SYS-2006-REC
+                       ADD     1               TO  SYSKAN-IDX
+                       MOVE    SYS-2006-REC    TO  TBL-SYS2006-ALL
+                                                      (SYSKAN-IDX)
+      *
+                       MOVE    "SYSKANRI-KEY5" TO  ORC-DBPATH
+                       PERFORM 900-SYSKANRI-READ-SEC
+                   END-PERFORM
+               END-IF
+      *
+               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY5"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+           END-IF 
+     *    
+           .
+       110-SYSKANRI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -891,9 +1072,16 @@
       *        検査のとき回数を編集する
                IF      WRK-KENSA-KAISU        >   ZERO
                    MOVE    WRK-KENSA-KAISU        TO  RECE62-KAISU  (17)
-                   REWRITE RECE62-REC
+      *************REWRITE RECE62-REC
                END-IF
       *
+      *        レセプト特記事項編集情報編集
+               IF      FLG-SYS-2006            =   1
+                   PERFORM 2008-SYS2006-HENSYU-SEC
+               END-IF
+      *
+               REWRITE RECE62-REC
+      *                 
                PERFORM 990-RECE62-READ-SEC
            END-IF
       *
@@ -1957,6 +2145,292 @@
            EXIT.
       *
       *****************************************************************
+      *    レセプト特記事項編集情報編集処理
+      *    （保険番号が必須入力のレセプト特記事項編集情報）
+      *****************************************************************
+       2008-SYS2006-HENSYU-SEC          SECTION.
+      *
+      *    給付割合
+           IF    ( RECE62-KOHNUM (1)   NOT =   SPACE )
+           OR    ( RECE62-ETC-KOHNUM (1)
+                                       NOT =   SPACE )
+               MOVE    1                   TO  FLG-CHK-SYOKBN
+               PERFORM 20081-SYS2006-HENSYU-SEC
+               IF      FLG-2006-CHK        =   1
+                   MOVE    SYS-2006-KYURATE    TO
+                                           RECE62-2006-KYURATE
+               END-IF
+           END-IF
+      *
+      *    特記事項
+           MOVE    ZERO                TO  IDZ
+           MOVE    1                   TO  IDW1
+           PERFORM UNTIL   IDW1                >   SYSKAN-IDY
+                   OR      TBL-SYS2006 (IDW1)  =   SPACE
+                   OR      IDZ                 =   4     
+               MOVE    1                   TO  FLG-CHK-SYOKBN
+               PERFORM 20082-SYS2006-HENSYU-SEC
+               IF      FLG-2006-CHK        =   1
+                   ADD     1               TO  IDZ    
+                   MOVE    SYS-2006-TOKKI  TO  RECE62-2006-TOKKI (IDZ)
+               END-IF
+           END-PERFORM
+      *
+      *    レセ電・給付割合
+           IF  (   FLG-SYS-2006            =   1       )
+           AND ( ( RECE62-KOHNUM (1)   NOT =   SPACE )
+           OR    ( RECE62-ETC-KOHNUM (1)
+                                       NOT =   SPACE ) )
+               MOVE    2                   TO  FLG-CHK-SYOKBN
+               PERFORM 20081-SYS2006-HENSYU-SEC
+               IF      FLG-2006-CHK        =   1
+                   MOVE    SYS-2006-RECEDEN-KYURATE
+                                               TO
+                                           RECE62-2006-RECEDEN-KYURATE
+               END-IF
+           END-IF
+      *
+      *    レセ電・特記事項
+           MOVE    ZERO                TO  IDZ
+           MOVE    1                   TO  IDW1
+           PERFORM UNTIL   IDW1                >   SYSKAN-IDY
+                   OR      TBL-SYS2006 (IDW1)  =   SPACE
+                   OR      IDZ                 =   4     
+               MOVE    2                   TO  FLG-CHK-SYOKBN
+               PERFORM 20082-SYS2006-HENSYU-SEC
+               IF      FLG-2006-CHK        =   1
+                   ADD     1               TO  IDZ    
+                   MOVE    SYS-2006-RECEDEN-TOKKI
+                                           TO  RECE62-2006-RECEDEN-TOKKI
+                                                                   (IDZ)
+               END-IF
+           END-PERFORM
+      *
+      *    レセ電・特記事項
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       4
+                   OR      RECE62-KOHNUM (IDY) =   SPACE
+               MOVE    ZERO        TO  FLG-2006-CHK
+               INITIALIZE              SYS-2006-REC 
+               PERFORM VARYING IDW2    FROM    1  BY  1
+                       UNTIL   IDW2            >  SYSKAN-IDY
+                       OR      TBL-SYS2006 (IDW2)
+                                               =   SPACE
+                   MOVE    ZERO            TO  FLG-2006-ERR
+                   MOVE    TBL-SYS2006 (IDW2)
+                                           TO  WRK-2006-REC
+      *
+                   IF      RECE62-KOHNUM (IDY)
+                                           =   WRK-2006-HKNNUM
+                       PERFORM 200811-SYS2006-CHECK-SEC
+                   END-IF    
+               END-PERFORM
+      *
+               MOVE    SYS-2006-RECEDEN-KORECKBN
+                                       TO  RECE62-2006-RECEDEN-KORECKBN
+                                                                   (IDZ)
+           END-PERFORM        
+      *
+           .
+       2008-SYS2006-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト特記事項編集情報（給付割合）編集処理
+      *****************************************************************
+       20081-SYS2006-HENSYU-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-2006-CHK
+           INITIALIZE                      SYS-2006-REC
+      *
+           PERFORM VARYING IDW1    FROM    1   BY  1
+                   UNTIL ( IDW1    >       4             )
+                   OR    ( RECE62-KOHNUM(IDW1) =   SPACE )
+               PERFORM VARYING IDW2    FROM     1   BY  1
+                       UNTIL   IDW2             >   SYSKAN-IDY
+                       OR      TBL-SYS2006 (IDW2)   =   SPACE
+                   MOVE    ZERO                TO  FLG-2006-ERR
+                   MOVE    TBL-SYS2006 (IDW2)  TO  WRK-2006-REC
+      *
+                   IF      RECE62-KOHNUM (IDW1)
+                                           =   WRK-2006-HKNNUM
+                       EVALUATE    FLG-CHK-SYOKBN
+                           WHEN    1
+                               IF      WRK-2006-KYURATE
+                                                       >   ZERO
+                                   PERFORM 200811-SYS2006-CHECK-SEC
+                               END-IF
+                           WHEN    2
+                               IF      WRK-2006-RECEDEN-KYURATE
+                                                       >   ZERO
+                                   PERFORM 200811-SYS2006-CHECK-SEC
+                               END-IF
+                       END-EVALUATE
+                   END-IF    
+               END-PERFORM
+      *
+               IF     FLG-2006-CHK     =   1
+                   MOVE    4               TO  IDW1
+               END-IF
+           END-PERFORM
+      *
+           IF      RECE62-ETC-KOHNUM (1)
+                                       =   SPACE
+               GO  TO  20081-SYS2006-HENSYU-EXT
+           END-IF
+      *
+      *    割合が設定されなかったとき又は 
+      *    原爆（０１９）より優先順位が低い公費で検索した場合
+      *    レセプト記載外公費情報の原爆を検索
+           IF    ( FLG-2006-CHK     =   ZERO                     )
+           OR    ( SYS-2006-HKNNUM =   "023"    OR  "051"    OR
+                                       "091"    OR  "052"    OR
+                                       "053"    OR  "012"        )
+           OR    ( SYS-2006-HKNNUM >   "100"                     )
+               PERFORM VARYING IDW1    FROM    1   BY  1
+                       UNTIL ( IDW1    >       4                 )
+                       OR    ( RECE62-ETC-KOHNUM(IDW1) =   SPACE )
+                   IF      RECE62-ETC-KOHNUM (IDW1)
+                                           =   "019"
+                       PERFORM VARYING IDW2    FROM     1   BY  1
+                               UNTIL   IDW2             >   SYSKAN-IDY
+                           MOVE    ZERO                TO  FLG-2006-ERR
+                           MOVE    TBL-SYS2006 (IDW2)  TO  WRK-2006-REC
+      *
+                           IF    ( WRK-2006-KYURATE
+                                                   >   ZERO            )
+                           AND   ( RECE62-ETC-KOHNUM (IDW1)
+                                                   =   WRK-2006-HKNNUM )
+                               PERFORM 200811-SYS2006-CHECK-SEC
+                           END-IF
+                       END-PERFORM
+      *
+                       MOVE    4               TO  IDW1
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       20081-SYS2006-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト特記事項編集情報条件チェック処理
+      *****************************************************************
+       200811-SYS2006-CHECK-SEC         SECTION.
+      *
+           IF      WRK-2006-TEISYUTUSAKI
+                                       NOT =   SPACE
+               IF      RECE62-TEISYUTUSAKI =   WRK-2006-TEISYUTUSAKI
+                   CONTINUE
+               ELSE
+                   GO  TO  200811-SYS2006-CHECK-EXT
+               END-IF
+           END-IF
+      *
+           IF      WRK-2006-HKNJANUM
+                                   NOT =   SPACE
+               IF      RECE62-HKNJANUM     =   WRK-2006-HKNJANUM
+                   CONTINUE
+               ELSE
+                   GO  TO  200811-SYS2006-CHECK-EXT
+               END-IF
+           END-IF
+      *
+           IF      WRK-2006-RJNKBN    =   "1"
+               IF      RECE62-RJNHKNID     >   ZERO
+                   CONTINUE
+               ELSE
+                   GO  TO  200811-SYS2006-CHECK-EXT
+               END-IF
+           END-IF
+      *
+           IF      WRK-2006-ZAITAKU   =   "1"
+               GO  TO  200811-SYS2006-CHECK-EXT
+           END-IF
+      *
+           MOVE    1                  TO  FLG-2006-CHK
+           MOVE    WRK-2006-REC       TO  SYS-2006-REC
+           .
+       200811-SYS2006-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト特記事項編集情報条件チェック処理
+      *****************************************************************
+       20082-SYS2006-HENSYU-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-2006-CHK
+           INITIALIZE                      SYS-2006-REC
+      *
+      *    保険番号設定時の対象の保険チェック
+           MOVE    ZERO                TO  FLG-HKNNUM-OK
+           MOVE    TBL-SYS2006 (IDW1)      TO  WRK-2006-REC
+           IF      WRK-2006-HKNNUM NOT =   SPACE
+               PERFORM VARYING IDW2    FROM    1   BY  1
+                       UNTIL ( IDW2    >       4             )
+                       OR    ( RECE62-KOHNUM(IDW2) =   SPACE )
+                       OR    ( FLG-HKNNUM-OK       =   1     )
+                   IF      RECE62-KOHNUM(IDW2) =   WRK-2006-HKNNUM
+                       MOVE    1                   TO  FLG-HKNNUM-OK
+                   END-IF
+               END-PERFORM
+      *        原爆のときはレセプト記載外公費情報も検索
+               IF    ( WRK-2006-HKNNUM         =   "019" )
+               AND   ( FLG-HKNNUM-OK           =   ZERO  )
+                   PERFORM VARYING IDW2    FROM    1   BY  1
+                           UNTIL ( IDW2    >       4                 )
+                           OR    ( RECE62-ETC-KOHNUM(IDW2) =   SPACE )
+                           OR    ( FLG-HKNNUM-OK           =   1     )
+                       IF      RECE62-ETC-KOHNUM (IDW2)
+                                               =   WRK-2006-HKNNUM
+                           MOVE    1               TO  FLG-HKNNUM-OK
+                       END-IF
+                   END-PERFORM
+               END-IF
+               IF      FLG-HKNNUM-OK   =   ZERO
+                   ADD     1                   TO  IDW1
+               ELSE
+      *            対象の保険がある場合は保険番号単位にチェック
+                   MOVE    WRK-2006-HKNNUM     TO  WRK-HKNNUM
+                   PERFORM     UNTIL ( IDW1        >   SYSKAN-IDY )
+                               OR    ( TBL-SYS2006-HKNNUM (IDW1)
+                                               NOT =   WRK-HKNNUM )
+                       MOVE    TBL-SYS2006 (IDW1)      TO  WRK-2006-REC
+                       EVALUATE    FLG-CHK-SYOKBN
+                           WHEN    1
+                               IF      WRK-2006-TOKKI
+                                                   NOT =   SPACE
+                                   PERFORM 200811-SYS2006-CHECK-SEC
+                               END-IF
+                           WHEN    2
+                               IF      WRK-2006-RECEDEN-TOKKI
+                                                   NOT =   SPACE
+                                   PERFORM 200811-SYS2006-CHECK-SEC
+                               END-IF
+                       END-EVALUATE
+                       ADD     1                   TO  IDW1
+                   END-PERFORM
+               END-IF
+           ELSE
+      *       保険番号未設定時は単体でチェック
+               EVALUATE    FLG-CHK-SYOKBN
+                   WHEN    1
+                       IF      WRK-2006-TOKKI     NOT =   SPACE
+                           PERFORM 200811-SYS2006-CHECK-SEC
+                       END-IF
+                   WHEN    2
+                       IF      WRK-2006-RECEDEN-TOKKI
+                                                   NOT =   SPACE
+                           PERFORM 200811-SYS2006-CHECK-SEC
+                       END-IF
+               END-EVALUATE
+               ADD     1                   TO  IDW1
+           END-IF
+           .
+       20082-SYS2006-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    点数再計算処理
       *****************************************************************
        400-TENSU-SAIKEISAN-SEC    SECTION.
@@ -2767,12 +3241,81 @@
                NOT AT  END
                    ADD     1           TO  CNT-RECE62
       *
+                   IF      WRK-PARA-SRYYM  =   ZERO
+                       MOVE    RECE62-SRYYM    TO  WRK-SYS-SRYYMD (1:6)
+                       MOVE    "01"            TO  WRK-SYS-SRYYMD (7:2)
+                       PERFORM 900-SYSKANRI-HENSYU-SEC
+                   END-IF
+      *
                    DISPLAY "RECE62  PTNUM=" RECE62-PTNUM
       *
            END-READ
       *
            .
        990-RECE62-READ-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    診療年月の対象となるシス管理を取得（個別処理のみ
+      ****************************************************************
+       900-SYSKANRI-HENSYU-SEC         SECTION.
+      *
+      *    レセプト特記事項編集情報
+           MOVE    ZERO                TO  FLG-SYS-2006
+           MOVE    ZERO                TO  SYSKAN-IDY
+           MOVE    SPACE               TO  TBL-SYS2006-T
+           INITIALIZE                      TBL-SYS2006-T
+      *
+           PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
+                   UNTIL ( SYSKAN-IDX          >  100  )
+                   OR    ( TBL-SYS2006-ALL(SYSKAN-IDX)
+                                               = SPACE )
+               MOVE    TBL-SYS2006-ALL (SYSKAN-IDX)
+                                               TO  SYS-2006-REC
+               IF    ( SYS-2006-STYUKYMD       <= WRK-SYS-SRYYMD    )
+               AND   ( WRK-SYS-SRYYMD          <= SYS-2006-EDYUKYMD )
+                    ADD     1             TO  SYSKAN-IDY
+                    MOVE    SYS-2006-REC  TO  TBL-SYS2006 (SYSKAN-IDY)
+                    MOVE    SYS-2006-HKNNUM
+                                          TO  TBL-SYS2006-HKNNUM
+                                                          (SYSKAN-IDY)
+                    MOVE    SYS-2006-TEISYUTUSAKI
+                                          TO  TBL-SYS2006-TEISYUTUSAKI
+                                                          (SYSKAN-IDY)
+                    MOVE    SYS-2006-HKNJANUM
+                                          TO  TBL-SYS2006-HKNJANUM
+                                                          (SYSKAN-IDY)
+                    MOVE    SYS-2006-RJNKBN
+                                          TO  TBL-SYS2006-RJNKBN
+                                                          (SYSKAN-IDY)
+                    MOVE    SYS-2006-ZAITAKU
+                                          TO  TBL-SYS2006-ZAITAKU
+                                                          (SYSKAN-IDY)
+                    MOVE    1             TO  FLG-SYS-2006
+               END-IF
+           END-PERFORM
+      *
+      *   条件による並びかえ
+          IF      SYSKAN-IDY          >   1
+              PERFORM VARYING IDXX    FROM   1   BY  1
+                      UNTIL   IDXX    >    ( SYSKAN-IDY - 1 )
+                  PERFORM VARYING IDXZ    FROM    IDXX     BY  1
+                          UNTIL   IDXZ    >       SYSKAN-IDY
+                      IF    ( IDXY    >   IDXX                   )
+                      AND   ( TBL-SYS2006-KEY (IDXX)
+                                      >   TBL-SYS2006-KEY (IDXZ) )
+                          MOVE    TBL-SYS2006-OCC (IDXX)
+                                              TO  WRK-SYS-2006-SORT
+                          MOVE    TBL-SYS2006-OCC (IDXZ)
+                                              TO  TBL-SYS2006-OCC (IDXX)
+                          MOVE    WRK-SYS-2006-SORT
+                                              TO  TBL-SYS2006-OCC (IDXZ)
+                      END-IF
+                  END-PERFORM
+               END-PERFORM
+           END-IF
+           .
+       900-SYSKANRI-HENSYU-EXT.
            EXIT.
       *
       ****************************************************************
@@ -2811,46 +3354,24 @@
            EXIT.
       *
       *****************************************************************
-      *    点数マスター読込（キー）
+      *    システム管理マスタ読込
       *****************************************************************
-      * 900-TENSU-INV-SEC         SECTION.
+       900-SYSKANRI-READ-SEC         SECTION.
       *
-      *     MOVE    "DBSELECT"          TO  MCP-FUNC
-      *     MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-      *     CALL    "ORCMCPSUB"          USING
-      *                                  MCPAREA
-      *                                  ORCMCPAREA
-      *                                  MCPDATA-REC
-      *     IF      MCP-RC              =   ZERO
-      *         MOVE    "DBFETCH"           TO  MCP-FUNC
-      *         MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-      *         CALL    "ORCMCPSUB"          USING
-      *                                      MCPAREA
-      *                                      ORCMCPAREA
-      *                                      MCPDATA-REC
-      *         IF      MCP-RC              =   ZERO
-      *             MOVE    ZERO                TO  FLG-TENSU
-      *             MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-      *         ELSE
-      *             INITIALIZE                  TNS-TENSU-REC
-      *             MOVE    1                   TO  FLG-TENSU
-      *         END-IF
-      *     ELSE
-      *         INITIALIZE                  TNS-TENSU-REC
-      *         MOVE    1                   TO  FLG-TENSU
-      *     END-IF
-      *
-      *     MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-      *     MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-      *     CALL    "ORCMCPSUB"          USING
-      *                                  MCPAREA
-      *                                  ORCMCPAREA
-      *                                  MCPDATA-REC
-      *
-      *     .
-      * 900-TENSU-INV-EXT.
-      *     EXIT.
-      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           .
+       900-SYSKANRI-READ-EXT.
+           EXIT.
+     *
       *****************************************************************
       *    カーソルクローズ処理
       *****************************************************************

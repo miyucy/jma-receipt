@@ -30,6 +30,8 @@
       *  01.00.01    NACL-ÃÁœ∆    05/02/14  π‚Œº‘∞Ï…Ù…È√¥≥€µ≠∫‹Ω§¿µ
       *  01.00.02    NACL-ÃÁœ∆    05/03/17  ∏¯»Ò¿¡µ·°¶¿¡µ·¥…Õ˝§Œ…È√¥∂‚≥€
       *                                      ‘Ω∏Ω§¿µ
+      *  01.00.03    NACL-∆£∏∂    05/03/18  •Ï•ª•◊•»∆√µ≠ªˆπ‡ ‘Ω∏æ Û§À§Ë
+      *                                     §Î•Ï•ª•◊•» ‘Ω∏
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2967,6 +2969,24 @@
                END-IF
            END-IF
       *
+      *    •Ï•ª•◊•»∆√µ≠ªˆπ‡ ‘Ω∏æ Û
+           IF      RECE62-2006-KYURATE >   ZERO
+               COMPUTE WRK-KYURATE-9   =
+                                       RECE62-2006-KYURATE /   10 
+               MOVE   "µÎ≥‰"           TO  HC06-KYURATE
+               MOVE    WRK-KYURATE-9   TO  WRK-KYURATE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"             TO  KANACHK-SYORI
+               MOVE    WRK-KYURATE     TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"   USING
+                                           ORCSKANACHKAREA
+               IF    ( KANACHK-RC      =   ZERO )
+               AND   ( KANACHK-MAX     >   ZERO )
+                   MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               TO  HC06-KYURATE(5:)
+               END-IF
+           END-IF
+      *
       *    ∏©√±Õ—π‡Ã‹
            IF    ( FLG-RECE67          =   ZERO )
            AND   ( RECE67-KYURATE      >   ZERO )
@@ -3018,6 +3038,18 @@
                    END-IF
                END-PERFORM
            END-PERFORM
+      *
+      *    •Ï•ª•◊•»∆√µ≠ªˆπ‡ ‘Ω∏æ Û
+           IF      RECE62-2006-TOKKIINF    NOT =   SPACE
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX                 >   4
+                       OR      IDZ                 =   4     
+                       OR      RECE62-2006-TOKKI(IDX)  =   SPACE
+                   ADD     1                    TO  IDZ    
+                   MOVE    RECE62-2006-TOKKI (IDX)           
+                                                TO  HC06-TOKKI (IDZ)
+               END-PERFORM
+           END-IF
       *
       *    ∏©√±Õ—π‡Ã‹
            IF      FLG-RECE67           =   ZERO
