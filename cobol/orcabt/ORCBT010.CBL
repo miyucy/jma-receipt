@@ -32,6 +32,7 @@
       *                                     を追加
       *  01.00.03    NACL-藤原    04/02/09  患者自己負担額が公費の上限額
       *                                     に到達しない場合のレセ種別
+      *  01.00.04    NACL-藤原    04/03/08  シス管による生保受給者番号の編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -315,6 +316,9 @@
       *     
            COPY    "CPSK2005.INC".
       *
+      *    患者登録機能制御情報
+           COPY  "CPSK1017.INC".
+      *
       *    診療会計
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
@@ -511,6 +515,24 @@
            END-IF
            IF      SYS-2005-RJNGNBKKBN =   SPACE
                MOVE    ZERO                TO  SYS-2005-RJNGNBKKBN
+           END-IF
+      *
+      *    患者登録機能制御情報
+           INITIALIZE                      SYS-1017-REC
+           MOVE    "1017"              TO  SYS-1017-KANRICD
+           MOVE    "*"                 TO  SYS-1017-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)              
+           MOVE    "01"                TO  ORC-DBYMD (7:2)   
+           MOVE    SYS-1017-REC        TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1017-REC
+           ELSE    
+               INITIALIZE                      SYS-1017-REC
+           END-IF
+           IF      SYS-1017-SEIHO-JKYSNUM
+                                       =   SPACE
+               MOVE    ZERO                TO  SYS-1017-SEIHO-JKYSNUM
            END-IF
       * 
       *    県内扱い保険者情報
@@ -1093,7 +1115,9 @@
                MOVE   PTKOH-TEKEDYMD   TO  TOUKEI01-TKOHTEKEDYMD (IDY)
       *             
       *        生保のとき月代わり受給者番号マスタより受給者番号をセット 
-               IF      PTKOH-KOHNUM        =   WRK-CONS-SEIHO-HKNNUM
+               IF    ( PTKOH-KOHNUM    =   WRK-CONS-SEIHO-HKNNUM )
+               AND   ( SYS-1017-SEIHO-JKYSNUM
+                                       =   ZERO                  )
                    MOVE    WRK-PARA-HOSPID TO  MONTHLYNUM-HOSPID
                    MOVE    TOUKEI01-PTID   TO  MONTHLYNUM-PTID
                    MOVE    WRK-CONS-SEIHO-HKNNUM

@@ -94,6 +94,7 @@
       *  01.00.35    NACL-藤原    04/02/04  月途中に老保の変更があった場合
       *                                     のＫＥＹの編集の修正
       *  01.00.36    NACL-門脇    04/02/12  年齢判定文修正
+      *  01.00.37    NACL-藤原    04/03/08  シス管による生保受給者番号の編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -236,6 +237,12 @@
            03  IDZ                                     PIC 9(02).
            03  TOKKI-IDX                               PIC 9(02).
            03  SYSKAN-IDX                              PIC 9(03).
+           03  SYSKAN-1017-IDX                         PIC 9(03).
+      *
+      *    患者登録機能制御情報退避用領域
+       01  TBL-SYS1017-T.
+           03  TBL-SYS1017-OCC                         OCCURS  10.
+               05  TBL-SYS1017                         PIC X(610).
       *
       *    パス名領域
        01  WK-PATH                                     PIC X(20).
@@ -361,6 +368,9 @@
       *    医療機関情報
            COPY  "CPSK1001.INC".
       *
+      *    患者登録機能制御情報
+           COPY  "CPSK1017.INC".
+      *
       *    月代わり受給者番号
        01  MONTHLYNUM-REC.
            COPY    "CPMONTHLYNUM.INC".
@@ -451,6 +461,75 @@
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
+      *    患者登録機能制御情報
+           IF      WRK-PARA-SRYYM      NOT =   ZERO
+               INITIALIZE                      SYSKANRI-REC
+               MOVE    "1017"              TO  SYS-KANRICD
+               MOVE    "*"                 TO  SYS-KBNCD
+               MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)              
+               MOVE    "01"                TO  ORC-DBYMD (7:2)   
+               MOVE    "SYSKANRI-KEY"      TO  WRK-PATH    
+               MOVE    SYSKANRI-REC        TO  MCPDATA-REC       
+               PERFORM 800-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-1017-REC
+               ELSE    
+                   INITIALIZE                      SYS-1017-REC
+               END-IF
+               IF      SYS-1017-SEIHO-JKYSNUM
+                                           =   SPACE
+                   MOVE    ZERO            TO  SYS-1017-SEIHO-JKYSNUM
+               END-IF
+           ELSE
+               MOVE     ZERO               TO  SYSKAN-1017-IDX
+               MOVE     SPACE              TO  TBL-SYS1017-T
+               INITIALIZE                      TBL-SYS1017-T
+      *
+               INITIALIZE                      SYSKANRI-REC
+               MOVE    "1017"              TO  SYS-KANRICD
+               MOVE    "*"                 TO  SYS-KBNCD
+               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"             USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                   PERFORM 810-SYSKANRI-READ-SEC
+                   PERFORM  UNTIL   FLG-SYSKANRI  =    1
+                       MOVE    MCPDATA-REC     TO  SYS-1017-REC
+                       IF      SYS-1017-SEIHO-JKYSNUM
+                                               =   SPACE
+                           MOVE    ZERO            TO
+                                               SYS-1017-SEIHO-JKYSNUM
+                       END-IF
+                       ADD     1               TO  SYSKAN-1017-IDX
+                       MOVE    SYS-1017-REC    TO
+                                         TBL-SYS1017(SYSKAN-1017-IDX)
+      *
+                       MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                       PERFORM 810-SYSKANRI-READ-SEC
+                   END-PERFORM
+               ELSE
+                   INITIALIZE                  SYS-1017-REC
+                   MOVE    ZERO            TO  SYS-1017-STYUKYMD
+                   MOVE    ALL "9"         TO  SYS-1017-EDYUKYMD
+                   MOVE    ZERO            TO  SYS-1017-SEIHO-JKYSNUM
+                   ADD     1               TO  SYSKAN-1017-IDX
+                   MOVE    SYS-1017-REC    TO
+                                           TBL-SYS1017(SYSKAN-1017-IDX)
+               END-IF
+      *
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           END-IF    
       *
           .
        100-INIT-EXT.
@@ -1027,7 +1106,9 @@
                    MOVE   SPACE           TO RECE02-KOHNINIKYUKBN(IDX2)
       *             
       *            生保のとき月代わり受給者番号マスタより受給者番号をセット 
-                   IF      PTKOH-KOHNUM        =   WRK-CONS-SEIHO-HKNNUM
+                   IF    ( PTKOH-KOHNUM    =   WRK-CONS-SEIHO-HKNNUM )
+                   AND   ( SYS-1017-SEIHO-JKYSNUM
+                                           =   ZERO                  )
                        MOVE    RECE02-HOSPID   TO  MONTHLYNUM-HOSPID
                        MOVE    RECE02-PTID     TO  MONTHLYNUM-PTID
                        MOVE    WRK-CONS-SEIHO-HKNNUM
@@ -2797,6 +2878,24 @@
       *
                    DISPLAY "RECE01 " IDZ " PTNUM=" RECE01-PTNUM     
       *
+                   IF      WRK-PARA-SRYYM  =  ZERO
+      *                患者登録機能制御情報                    *
+                       MOVE  RECE01-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
+                       MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
+                       PERFORM  VARYING  SYSKAN-1017-IDX  FROM  1  BY  1
+                                UNTIL  ( SYSKAN-1017-IDX  >  10      )
+                                OR    ( TBL-SYS1017(SYSKAN-1017-IDX)
+                                                          =   SPACE  )
+                           MOVE  TBL-SYS1017(SYSKAN-1017-IDX)
+                                                       TO  SYS-1017-REC
+                           IF   ( SYS-1017-STYUKYMD
+                                               <=  WRK-SYS-SRYYMD    )
+                           AND  ( WRK-SYS-SRYYMD
+                                               <=  SYS-1017-EDYUKYMD )
+                              MOVE     10      TO    SYSKAN-1017-IDX
+                           END-IF
+                       END-PERFORM
+                   END-IF
            END-READ
            .
        RECE01-READ-EXT.
