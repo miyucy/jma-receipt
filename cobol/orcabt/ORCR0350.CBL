@@ -4497,10 +4497,12 @@
                        MOVE    1           TO  FLG-END
                        MOVE    HIGH-VALUE  TO  KEY-NEW
                    NOT AT  END
-                       IF  ( ( WRK-PARA-SYARECEKBN =   ZERO )  AND
+                       IF  ( ( WRK-PARA-SYARECEKBN =   ZERO
+                                                   OR  "1" )   AND
                              ( RECE62-TEISYUTUSAKI
                                                    =   "1"  )      )
-                       OR  ( ( WRK-PARA-KKHRECEKBN =   ZERO )  AND
+                       OR  ( ( WRK-PARA-KKHRECEKBN =   ZERO
+                                                   OR  "1"  )  AND
                              ( RECE62-TEISYUTUSAKI
                                                    =   "2"  )      )
                        OR  (   RECE62-PTNUM        =   SPACE       )
