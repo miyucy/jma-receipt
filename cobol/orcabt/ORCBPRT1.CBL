@@ -33,6 +33,7 @@
       *  01.01.01    NACL-藤原    02/10/10  印刷用コンスタント領域の追加
       *                                     印刷用ファイルにサイト区分を追加
       *  01.01.02    NACL-藤原    03/01/20  プレビューＤＢ処理追加
+      *  01.01.03    NACL-藤原    04/11/29  引数にエラーファイル名を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -46,7 +47,7 @@
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PRT.
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -71,7 +72,7 @@
       *  01.01.02  ADD END
            03  PRT-PRTDATA         PIC X(10000).
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -248,12 +249,14 @@
                                                LNK-PRTKANRI-PRIORITY
                                                LNK-PRTKANRI-TERMID
                                                LNK-PRTKANRI-OPID
-                                               LNK-PRTKANRI-PRTNM    
+                                               LNK-PRTKANRI-PRTNM
+                                               RECEERR    
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-STPAGE
                                                WRK-PARA-EDPAGE
                                                WRK-PARA-PRTFLG     
+           END-UNSTRING
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -554,7 +557,7 @@
       *     EXIT.
       *
       *  01.01.02  END
-057400*
+      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
