@@ -168,3 +168,18 @@ path	st_key2 	{
 		;
 	};
 };
+
+
+path	key7 	{
+	DBSELECT	{
+		DECLARE tbl_syumei_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syumei
+			WHERE   HOSPID        =  :HOSPID
+			AND   NYUGAIKBN       =  :NYUGAIKBN
+			AND   PTID            =  :PTID
+			AND   DENPNUM         =  :DENPNUM
+            ORDER BY	DENPEDANUM DESC
+		;
+	};
+};
