@@ -235,11 +235,11 @@
                "4001 Ï«ºÒ¼«Çå°åÎÅµ¡´Ø¾ðÊó".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   25.
+           03  TBL-KANRICD-TBL         OCCURS   26.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   25.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   26.
       *
       *³°Íè¤Î¤ß
        01  TBL-KANRICD-G-AREA.
