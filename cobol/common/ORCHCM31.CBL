@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.01.01    NACL-森脇    03.03.18  出力先プリンタの変更
+      *  01.01.02    NACL-森脇    03/07/15  出力先プリンタサブ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -130,6 +131,11 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *----(01.01.02)--ADD-START---
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
+      *----(01.01.02)--ADD-END-----
       *
       *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
@@ -440,18 +446,34 @@
       *****************************************************************
        900-1031-READ-SEC             SECTION.
       *
+      *----(01.01.02)--UPD-START---
       *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"              TO  SYS-1031-KANRICD
-           MOVE    "*"                 TO  SYS-1031-KBNCD
-           MOVE    SYS-1031-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1031-REC
-           ELSE
+           INITIALIZE                      SYS-1031-REC
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1031-REC
+           IF      ORCSPRTNM-RC    NOT =   ZERO
                INITIALIZE                  SYS-1031-REC
-           END-IF
+           END-IF 
+      *
+      *    出力先プリンタ名割り当て情報編集
+      *     MOVE    SPACE               TO  SYS-1031-REC
+      *     INITIALIZE                  SYS-1031-REC
+      *     MOVE    "1031"              TO  SYS-1031-KANRICD
+      *     MOVE    "*"                 TO  SYS-1031-KBNCD
+      *     MOVE    SYS-1031-REC        TO  MCPDATA-REC
+      *     PERFORM 900-SYSKANRI-READ-SEC
+      *     IF      FLG-SYSKANRI        =   ZERO
+      *         MOVE    MCPDATA-REC         TO  SYS-1031-REC
+      *     ELSE
+      *         INITIALIZE                  SYS-1031-REC
+      *     END-IF
+      *----(01.01.02)--UPD-END-----
            .
       *
        900-1031-READ-EXT.
