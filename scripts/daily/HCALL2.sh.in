@@ -17,7 +17,7 @@ fi
 	echo	`date`
 	echo	$1
 
-ruby "$SCRIPTSDIR"/daily/print_parent2.rb "/var/tmp/temp.tmp" ${ORCA_DIR} ${SITEDIR} "ruby ${SCRIPTSDIR}/daily/print-data.rb " $1 
+ruby "$SCRIPTSDIR"/daily/print_parent2.rb "/var/tmp/temp.tmp" "ruby ${SCRIPTSDIR}/daily/print-data.rb " ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} $1 
 
 	rm -f $1
 	echo	`date`
