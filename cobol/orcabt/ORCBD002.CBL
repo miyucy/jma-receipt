@@ -484,11 +484,13 @@
                    IF      IDX             =   7
                        MOVE    ZERO            TO  WRK-JIHI
                    ELSE
-                       COMPUTE WRK-JIHI    =   BD002-TOTAL-TGMONEY  
-                                           +   BD002-TOTAL-TGMONEY-TAX  
-                                           +   BD002-JIHI-TOTAL
-                                           +   BD002-JIHI-TOTAL-TAX  
-                                           +   BD002-JIHI-TAX
+                       COMPUTE WRK-JIHI  =   BD002-TOTAL-TGMONEY  
+                                         +   BD002-TOTAL-TGMONEY-TAX  
+                                         +   BD002-JIHI-TOTAL
+                                         +   BD002-JIHI-TOTAL-TAX  
+                                         +   BD002-JIHI-TAX
+                                         +   BD002-RMSAGAKU
+                                         + BD002-SKYMONEY-SKJ-JIHI-KEI
                    END-IF
                    IF    IDX  =  8  OR  9
                        COMPUTE WRK-MONEY   =   BD002-RSIJIBAI-SKYMONEY
