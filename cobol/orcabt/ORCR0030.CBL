@@ -94,6 +94,7 @@
       *  01.02.08   NACL-門脇     02.10.07  在宅総合・末期フラグのセットを行う
       *                                     一部負担金再掲のセットを行う
       *  01.02.09   MCC-小豆沢    02.10.16  特定器材点数の集計先を修正
+      *  01.02.10   MCC-小豆沢    02.11.06  約束処方時の点数欄表示修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1709,7 +1710,7 @@
                    END-IF
       *    投薬のレセ点数欄の編集
                WHEN    "21"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"
+                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        IF    BUN-IDX        =   1
                            COMPUTE   RECE02-TENSU(14 BUN-IDX)  =
@@ -1860,7 +1861,7 @@
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                WHEN    "23"
-                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"
+                   IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
                        ADD    WK-ZAIKAISU    TO   RECE02-KAISU(17)
                        IF    BUN-IDX        =   1
                            COMPUTE   RECE02-TENSU(17 BUN-IDX)  =
