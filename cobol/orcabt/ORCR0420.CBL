@@ -1134,9 +1134,17 @@
                ADD     1                  TO    IDX4                                  *
                MOVE    SRY-SRYCD(IDX2)    TO    RECE45-SRYCD(IDX4)
       *
-               IF      SRY-SRYCD(IDX2)(1:1)  =  "S"
+               IF     (SRY-SRYCD(IDX2)(1:1)  =  "S"  )
+               OR     (SRY-SRYCD(IDX2)(1:3)  =  "001")
                   COMPUTE   RECE44-MEISAISU  =  RECE44-MEISAISU
                                              -  1
+               END-IF
+               IF      SRY-SRYCD(IDX2)(1:3)  =  "001"
+                  MOVE    SRY-SRYCD(IDX2)   TO    WRK-SRYCD
+                  COMPUTE   RECE44-SRYCDTOTAL  =  RECE44-SRYCDTOTAL
+                                               -  WRK-SRYCD
+                  COMPUTE   RECE44-SURYOUTOTAL =  RECE44-SURYOUTOTAL
+                                               -  1
                END-IF
       *
                IF      SRY-SRYKBN         =     "12"

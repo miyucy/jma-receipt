@@ -2218,9 +2218,17 @@
       *
                MOVE    SRY-SRYCD(IDX2)    TO    RECE85-SRYCD(IDX4)
       *
-               IF      SRY-SRYCD(IDX2)(1:1)  =  "S"
+               IF     (SRY-SRYCD(IDX2)(1:1)  =  "S"  )
+               OR     (SRY-SRYCD(IDX2)(1:3)  =  "001")
                   COMPUTE   RECE84-MEISAISU  =  RECE84-MEISAISU
                                              -  1
+               END-IF
+               IF      SRY-SRYCD(IDX2)(1:3)  =  "001"
+                  MOVE    SRY-SRYCD(IDX2)   TO    WRK-SRYCD
+                  COMPUTE   RECE84-SRYCDTOTAL  =  RECE84-SRYCDTOTAL
+                                               -  WRK-SRYCD
+                  COMPUTE   RECE84-SURYOUTOTAL =  RECE84-SURYOUTOTAL
+                                               -  1
                END-IF
       *
                IF      SRY-SRYCD(IDX2)    =     CONS-BYOITAIYO

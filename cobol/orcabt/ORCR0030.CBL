@@ -454,6 +454,8 @@
            03  WRK-SRYSURYO3                           PIC 9(05).
            03  WRK-RENNUM                              PIC 9(02).
       *
+           03  WRK-SRYCD                               PIC 9(09).
+      *
       *    1∑ÂÃ‹:¿∏ › 2∑ÂÃ‹:∑Î≥À 3∑ÂÃ‹:¿∫ø¿
            03  WRK-3SYU-KBN.
                05  WRK-3SYU        PIC X(03).
@@ -1363,9 +1365,17 @@
       *
                MOVE    SRY-SRYCD(IDX2)    TO    RECE05-SRYCD(IDX4)
       *
-               IF      SRY-SRYCD(IDX2)(1:1)  =  "S"
+               IF     (SRY-SRYCD(IDX2)(1:1)  =  "S"  )
+               OR     (SRY-SRYCD(IDX2)(1:3)  =  "001")
                   COMPUTE   RECE04-MEISAISU  =  RECE04-MEISAISU
                                              -  1
+               END-IF
+               IF      SRY-SRYCD(IDX2)(1:3)  =  "001"
+                  MOVE    SRY-SRYCD(IDX2)   TO    WRK-SRYCD
+                  COMPUTE   RECE04-SRYCDTOTAL  =  RECE04-SRYCDTOTAL
+                                               -  WRK-SRYCD
+                  COMPUTE   RECE04-SURYOUTOTAL =  RECE04-SURYOUTOTAL
+                                               -  1
                END-IF
       *
                IF      SRY-SRYKBN         =     "12"
