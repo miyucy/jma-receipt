@@ -569,6 +569,7 @@
                    END-EVALUATE  
                    EVALUATE    SPA-R01-RECE07-SYORISBT
                        WHEN    ZERO
+                       WHEN    SPACE
                            STRING  WRK-NYUGAIKBN  DELIMITED  BY  SPACE 
                                    "個別作成分"   DELIMITED  BY  SIZE
                                    INTO    SPA-GMN-FILEKBN

@@ -5625,6 +5625,9 @@
                MOVE    WRK-PARA-RECEKBN    TO  RECE07-RECEKBN
                MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN 
                MOVE    RECE08-TERMID       TO  RECE07-TERMID
+               IF      WRK-PARA-SYOKBN     =   "2"
+                   MOVE    ZERO            TO  RECE07-SYORISBT
+               END-IF
            ELSE
                ADD     1                   TO  RECE07-PAGE
                IF      CNT-KENSU           =   1

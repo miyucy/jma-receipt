@@ -38,6 +38,7 @@
       *  01.01.04    NACL-藤原    04/09/13  帳票別指定編集情報からの編集
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
+      *  01.01.02    NACL-藤原    05/01/21  受診日指定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2482,6 +2483,9 @@
                MOVE    WRK-PARA-RECEKBN    TO  RECE07-RECEKBN
                MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN 
                MOVE    RECE08-TERMID       TO  RECE07-TERMID
+               IF      WRK-PARA-SYOKBN     =   "2"
+                   MOVE    ZERO            TO  RECE07-SYORISBT
+               END-IF
            ELSE
                ADD     1                   TO  RECE07-PAGE
                IF      CNT-KENSU           =   1

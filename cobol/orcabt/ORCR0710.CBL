@@ -94,6 +94,7 @@
       *  01.02.06    NACL-門脇    04/12/21  実日数０記載対応
       *  01.02.07    NACL-門脇    05/01/13  公費請求テーブル保険組合せ
       *                                     番号情報編集修正
+      *  01.02.08    NACL-藤原    05/01/21  受診日指定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5644,6 +5645,9 @@
                MOVE    WRK-PARA-RECEKBN    TO  RECE07-RECEKBN
                MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN 
                MOVE    RECE08-TERMID       TO  RECE07-TERMID
+               IF      WRK-PARA-SYOKBN     =   "2"
+                   MOVE    ZERO            TO  RECE07-SYORISBT
+               END-IF
            ELSE
                ADD     1                   TO  RECE07-PAGE
                IF      CNT-KENSU           =   1

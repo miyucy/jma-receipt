@@ -44,6 +44,7 @@
       *  01.05.03    NACL-藤原    04/07/12  指定印刷時の選択項目の色指定
       *  中止処理追加
       *  01.06.01    NACL-藤原    04/09/28 中止ボタンを追加
+      *  01.06.02    NACL-藤原    05/01/13  受診日指定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -104,7 +105,7 @@
                05  SPA-GMN-PAGE                    PIC 9(02).
                05  SPA-GMN-CUR                     PIC 9(02).
                05  SPA-GMN-AREA.
-                   07  SPA-GMN-FILEKBN             PIC X(40).
+                   07  SPA-GMN-FILEKBN             PIC X(48).
                    07  SPA-GMN-CREYMD              PIC X(22).
                    07  SPA-GMN-PAGEH               PIC 9(04).
                    07  SPA-GMN-KENSUH              PIC 9(04).
@@ -204,6 +205,8 @@
            03  WRK-TEISYUTUSAKI    PIC X(01).
            03  WRK-HENFLG          PIC 9(01).
            03  WRK-PAGE            PIC ZZZZ9.
+           03  WRK-STYMD           PIC X(22).
+           03  WRK-EDYMD           PIC X(22).
       *
            03  WRK-RECE08-PRTJYUN  PIC 9(02).
       *
@@ -462,47 +465,67 @@
       *
            INITIALIZE              SPA-R04-AREA
       *　　ファイル作成区分
+           EVALUATE    SPA-R01-RECE07-RECEKBN
+               WHEN    "3"
+                   MOVE    "労災"        TO  WRK-RECEKBN
+               WHEN    "4"
+                   MOVE    "自賠責"      TO  WRK-RECEKBN
+           END-EVALUATE  
+           EVALUATE    SPA-R01-RECE07-NYUGAIKBN
+               WHEN    "1"
+                   MOVE    "入院"        TO  WRK-NYUGAIKBN
+               WHEN    "2"
+                   MOVE    "入院外"      TO  WRK-NYUGAIKBN
+           END-EVALUATE  
            EVALUATE    SPA-R01-FILEKBN
                WHEN    "1"
                    MOVE    SPA-R01-SRYYM       TO  WRK-SYMD (1:6)
                    MOVE    "01"                TO  WRK-SYMD (7:2) 
                    PERFORM 5002-HIZUKE-HEN-SEC
-                   EVALUATE    SPA-R01-RECE07-RECEKBN
-                       WHEN    "3"
-                           MOVE    "・労災"        TO  WRK-RECEKBN
-                       WHEN    "4"
-                           MOVE    "・自賠責"    TO  WRK-RECEKBN
-                   END-EVALUATE  
-                   EVALUATE    SPA-R01-RECE07-NYUGAIKBN
-                       WHEN    "1"
-                           MOVE    "入院"        TO  WRK-NYUGAIKBN
-                       WHEN    "2"
-                           MOVE    "入院外"      TO  WRK-NYUGAIKBN
-                   END-EVALUATE  
-                   STRING  WRK-HENYMDG3(1:16) DELIMITED  BY  SIZE
-                           WRK-NYUGAIKBN      DELIMITED  BY  SPACE 
-                           WRK-RECEKBN        DELIMITED  BY  SPACE 
-                           "一括作成分"       DELIMITED  BY  SIZE
+                   STRING  WRK-HENYMDG3(1:16)  DELIMITED  BY  SIZE
+                           WRK-NYUGAIKBN       DELIMITED  BY  SPACE 
+                           WRK-RECEKBN         DELIMITED  BY  SPACE 
+                           "一括作成分"        DELIMITED  BY  SIZE
                            INTO    SPA-GMN-FILEKBN
                    END-STRING
                WHEN    "2"
-                   EVALUATE    SPA-R01-RECE07-RECEKBN
-                       WHEN    "3"
-                           MOVE    "労災"     TO  WRK-RECEKBN
-                       WHEN    "4"
-                           MOVE    "自賠責"   TO  WRK-RECEKBN
-                   END-EVALUATE  
-                   EVALUATE    SPA-R01-RECE07-NYUGAIKBN
-                       WHEN    "1"
-                           MOVE    "入院"        TO  WRK-NYUGAIKBN
-                       WHEN    "2"
-                           MOVE    "入院外"      TO  WRK-NYUGAIKBN
-                   END-EVALUATE  
-                   STRING  WRK-NYUGAIKBN      DELIMITED  BY  SPACE 
-                           WRK-RECEKBN        DELIMITED  BY  SPACE 
-                           "個別作成分"       DELIMITED  BY  SIZE
-                           INTO    SPA-GMN-FILEKBN
-                   END-STRING
+                   EVALUATE    SPA-R01-RECE07-SYORISBT
+                       WHEN    ZERO
+                       WHEN    SPACE
+                           STRING  WRK-NYUGAIKBN  DELIMITED  BY  SPACE 
+                                   WRK-RECEKBN    DELIMITED  BY  SPACE 
+                                   "個別作成分"   DELIMITED  BY  SIZE
+                                              INTO    SPA-GMN-FILEKBN
+                           END-STRING
+                       WHEN    OTHER
+                           MOVE    SPA-R01-RECE07-STYMD
+                                                      TO  WRK-SYMD
+                           PERFORM 5002-HIZUKE-HEN-SEC
+                           MOVE    WRK-HENYMDG3       TO  WRK-STYMD
+                           MOVE    SPA-R01-RECE07-EDYMD
+                                                      TO  WRK-SYMD
+                           PERFORM 5002-HIZUKE-HEN-SEC
+                           MOVE    WRK-HENYMDG3       TO  WRK-EDYMD
+                           IF      SPA-R01-RECE07-SYORISBT     =   "1" 
+                               STRING  WRK-RECEKBN    DELIMITED BY SPACE 
+                                       "訂正日指定　" DELIMITED BY SIZE
+                                       WRK-STYMD      DELIMITED BY SIZE
+                                       "〜"           DELIMITED BY SIZE
+                                       WRK-EDYMD (17:6)
+                                                      DELIMITED BY SIZE
+                                       INTO    SPA-GMN-FILEKBN
+                               END-STRING
+                           ELSE    
+                               STRING  WRK-RECEKBN    DELIMITED BY SPACE 
+                                       "受診日指定　" DELIMITED BY SIZE
+                                       WRK-STYMD      DELIMITED BY SIZE
+                                       "〜"           DELIMITED BY SIZE
+                                       WRK-EDYMD (17:6)
+                                                      DELIMITED BY SIZE
+                                       INTO    SPA-GMN-FILEKBN
+                               END-STRING
+                           END-IF     
+                   END-EVALUATE
            END-EVALUATE
       *　　ファイル作成日
            IF      SPA-R01-RECE07-CREYMD   NOT =   SPACE

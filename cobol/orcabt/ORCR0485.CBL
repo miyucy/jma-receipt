@@ -44,6 +44,7 @@
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
       *  01.01.02    NACL-門脇    05/01/07  医師名、保険会社名の編集
+      *  01.01.02    NACL-藤原    05/01/21  受診日指定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -173,6 +174,7 @@
            03  FLG-RECECOM         PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-OPECOM          PIC 9(01).
+           03  FLG-BTPARA          PIC 9(01).
       *
            03  FLG-KUGIRI          PIC 9(01).
            03  FLG-SET             PIC 9(01).
@@ -395,6 +397,9 @@
        01  WRK-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
                                    BY         //WRK-RECE07//.
+      *     
+           COPY    "ORCA-DBPATH".
+           COPY    "ORCA-DBMETA".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -436,6 +441,10 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    パラメタ
+       01  BTPARA-REC.
+           COPY    "CPBTPARA.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -777,6 +786,21 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
            END-IF 
+      *
+      *    パラメタＤＢ読み込み
+           INITIALIZE                      BTPARA-REC
+           MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
+           MOVE    WRK-PARA-JOBID      TO  BTPARA-JOBID
+           MOVE    PATH-TBL-BTPARA-KEY5
+                                       TO  MCP-PATH
+           PERFORM 900-BTPARA-READ-SEC
+           IF      FLG-BTPARA          =   1
+               MOVE
+                   "パラメタ情報が取得できませんでした。"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    2                    TO  SPA-STS
+           END-IF
       *
            .
        120-HOSPINF-GET-EXT.
@@ -2145,6 +2169,18 @@
                MOVE    WRK-PARA-RECEKBN    TO  RECE07-RECEKBN
                MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN 
                MOVE    RECE08-TERMID       TO  RECE07-TERMID
+               IF      WRK-PARA-SYOKBN     =   "2"
+                   EVALUATE    BTPARA-INFO-KBN
+                       WHEN    "01"
+                           MOVE    ZERO            TO  RECE07-SYORISBT
+                       WHEN    "02"
+                           MOVE    "1"             TO  RECE07-SYORISBT
+                       WHEN    "03"
+                           MOVE    "2"             TO  RECE07-SYORISBT
+                   END-EVALUATE
+                   MOVE    BTPARA-INFO-PARA (1:8)  TO  RECE07-STYMD
+                   MOVE    BTPARA-INFO-PARA (9:8)  TO  RECE07-EDYMD
+               END-IF 
            ELSE
                ADD     1                   TO  RECE07-PAGE
                IF      CNT-KENSU           =   1
@@ -2838,6 +2874,56 @@
       *
            .
        900-OPECOM-READ-N-EXT.
+           EXIT.
+      *      
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-SEC         SECTION.
+      *
+           MOVE    BTPARA-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    PATH-TBL-BTPARA-KEY5    TO  MCP-PATH
+               PERFORM 900-BTPARA-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    PATH-TBL-BTPARA-KEY5
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       900-BTPARA-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-N-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  BTPARA-REC
+               MOVE    ZERO                TO  FLG-BTPARA
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           .
+       900-BTPARA-READ-N-EXT.
            EXIT.
       *
       *****************************************************************
