@@ -5039,6 +5039,15 @@
            MOVE   "099999913"   TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
       *     MOVE   1             TO  LNK-SCNYUACCT-SHOKUJIKBN
            MOVE   WRK-TAIHI-SHOKUJI  TO  LNK-SCNYUACCT-SHOKUJIKBN
+      *    ø©∆≤≤√ªª
+           PERFORM     4801-BTUSEL-SEC
+           IF   FLG-SYSKANRI           =    ZERO
+               IF   SYS-5001-BTU-SYOKUDOKBN       =    "2"
+                    MOVE     "197000570"    TO
+                                LNK-SCNYUACCT-SHOKUDO-SRYCD
+                    MOVE    1   TO   LNK-SCNYUACCT-SHOKUDO-KBN
+               END-IF
+           END-IF
       *     ›∏±¡»πÁ§ª
            MOVE   "099999914"   TO  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD
       *     MOVE   PTNYUINRRK-HKNCOMBINUM
