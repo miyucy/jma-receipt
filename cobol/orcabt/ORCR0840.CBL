@@ -892,6 +892,11 @@
       *****************************************************************
        230-RECE84-HENSYU2-SEC                SECTION.
       *
+           MOVE       ZERO       TO       WRK-TEN
+                                          WRK-MEISAI-CNT
+                                          WRK-SRYCDTOTAL
+                                          WRK-SURYOUTOTAL
+      *
            INITIALIZE                            NYUINACCT-REC
            MOVE    RECE82-HOSPID         TO      NACCT-HOSPID
            MOVE    RECE82-NYUGAIKBN      TO      NACCT-NYUGAIKBN
