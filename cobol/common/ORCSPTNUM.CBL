@@ -53,6 +53,7 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDX2                PIC 9(04).
       *
       *    ワーク領域
        01  WRK-AREA.
@@ -151,6 +152,25 @@
       *
            MOVE    1                   TO  SPTNUM-SYUBETU
       *
+      *    空白を除く(標準構成、数字型）
+           IF     (SPA-1009-PTNUMKSIKBN    =   "2" )  OR
+                 ((SPA-1009-PTNUMKSIKBN    =   "1" ) AND
+                  (SPA-1009-JIYKSIKBN      =   "2" ))
+               MOVE    SPACE               TO  WRK-PTNUM
+               MOVE    SPTNUM-PTNUM        TO  WRK-PTNUM
+               MOVE    SPACE               TO  SPTNUM-PTNUM
+               MOVE    ZERO                TO  IDX2
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   20
+                   IF      WRK-PTNUM(IDX:1)    =   SPACE
+                       CONTINUE
+                   ELSE
+                       ADD     1               TO  IDX2
+                       MOVE    WRK-PTNUM(IDX:1)
+                                           TO  SPTNUM-PTNUM(IDX2:1)
+                   END-IF
+               END-PERFORM
+           END-IF
       *
            INITIALIZE                      ORCSPTIDAREA
            MOVE    SPA-HOSPID          TO  SPTID-HOSPID
