@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 00.00.01     NACL-森脇    03/04/25  出力条件修正、科名セット変更
       * 02.01.01     Nacl-森脇    03/11/25  院外区分をパラメタに追加
+      * 02.01.02     NACL-森脇    04/08/31  条件修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -554,19 +555,17 @@
                END-PERFORM
       *        算定がある時対象
                IF      WRK-DD          >   ZERO
-                   IF      ACCT-YKZTEN     >   ZERO
-      *                薬剤点数のある剤を対象とする
-                       PERFORM 230-MAIN-SRY-SEC
+      *----(02.01.02)--UPD-START---
+      *            薬剤点数がなく、初診、再診、指導のときは対象外とする
+                   IF    ( ACCT-YKZTEN     =   ZERO )  AND
+                        (( ACCT-SRYKBN     =   "11" )  OR
+                         ( ACCT-SRYKBN     =   "12" )  OR
+                         ( ACCT-SRYKBN     =   "13" ))
+                       CONTINUE
                    ELSE
-      *                薬剤点数がない時、投薬か自費の時対象とする
-                       IF        ( ACCT-SRYKBN =   "21" )
-                           OR    ( ACCT-SRYKBN =   "22" )
-                           OR    ( ACCT-SRYKBN =   "23" )
-                           OR    ( ACCT-SRYKBN =   "95" )
-                           OR    ( ACCT-SRYKBN =   "96" )
-                           PERFORM 230-MAIN-SRY-SEC
-                       END-IF
+                       PERFORM 230-MAIN-SRY-SEC
                    END-IF
+      *----(02.01.02)--UPD-END-----
                END-IF
       *
       *         MOVE    "SRYACCT-KEY16" TO  ORC-DBPATH
@@ -613,31 +612,34 @@
       *
            PERFORM UNTIL ( FLG-SRYACT      =   1 )
       *----(02.01.01)--UPD-START---
-               IF      ACCT-ZAITEN         >   ZERO
-      *            点数がある時
-                   MOVE    "1"         TO  WRK-INGAIKBN
-                   IF      WRK-PARA-INGAIKBN   NOT =   1
-                       PERFORM 240-MAIN-HEN-SEC
-                   END-IF
-               ELSE
-      *            院内処方分、自費は対象とする
-                   IF     (SRY-SRYSYUKBN       =   "213"  OR
-                                                   "223"  OR
-                                                   "233"  OR
-                                                   "950"  OR
-                                                   "960")
+      *----(02.01.02)--UPD-START---
+               IF    ( ACCT-ZAITEN         =   ZERO ) AND
+                    (( ACCT-SRYKBN         =   "21" )  OR
+                     ( ACCT-SRYKBN         =   "22" )  OR
+                     ( ACCT-SRYKBN         =   "23" )  OR
+                     ( ACCT-SRYKBN         =   "14" ))
+                   IF    ( SRY-SRYSYUKBN       =   "213")  OR
+                         ( SRY-SRYSYUKBN       =   "223")  OR
+                         ( SRY-SRYSYUKBN       =   "233")
                        MOVE    "1"         TO  WRK-INGAIKBN
-                       IF      WRK-PARA-INGAIKBN   NOT =   1
-                           PERFORM 240-MAIN-HEN-SEC
-                       END-IF
                    ELSE
                        MOVE    "2"         TO  WRK-INGAIKBN
-                       IF      ( WRK-PARA-INGAIKBN NOT =   0 )
-                           AND ( WRK-PARA-INGAIKBN NOT =   SPACE )
-                           PERFORM 240-MAIN-HEN-SEC
-                       END-IF
                    END-IF
+               ELSE
+                   MOVE    "1"         TO  WRK-INGAIKBN
                END-IF
+      *
+      *        院内
+               IF    ( WRK-INGAIKBN    =   "1" ) AND
+                     ( WRK-PARA-INGAIKBN   NOT =   1 )
+                   PERFORM 240-MAIN-HEN-SEC
+               END-IF
+      *        院外
+               IF    ( WRK-INGAIKBN    =   "2" ) AND
+                     ( WRK-PARA-INGAIKBN       =   1 )
+                   PERFORM 240-MAIN-HEN-SEC
+               END-IF
+      *----(02.01.02)--UPD-END-----
       *----(02.01.01)--UPD-END-----
       *
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
