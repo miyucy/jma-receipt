@@ -26,7 +26,7 @@
       *キー
            03  PTNYUINRRK-KEY.
       *医療機関ＩＤ
-               05  PTNYUINRRK-HOSPNUM              PIC 9(2).
+               05  PTNYUINRRK-HOSPID              PIC  X(24).
       *患者ＩＤ
                05  PTNYUINRRK-PTID                PIC  9(10).
       *入院履歴番号（入院１回で＋１ずつ採番）
@@ -47,18 +47,10 @@
            03  PTNYUINRRK-NYUINYMD                PIC  X(08).
       *退院日
            03  PTNYUINRRK-TAIINYMD                PIC  X(08).
-      *退院事由
-           03  PTNYUINRRK-TAIINCD                 PIC  X(02).
       *特定入院料区分（１：医療機関／２：病棟／３：病室）
            03  PTNYUINRRK-TOKUTEI-KBN             PIC  X(01).
       *特定入院料
            03  PTNYUINRRK-TOKUTEI-NYUIN           PIC  X(02).
-      *特定入院料算定要件区分（空白：該当する／１：該当しない）
-           03  PTNYUINRRK-TOKU-SANTEIYOUKENKBN    PIC  X(01).
-      *入院加算コード
-           03  PTNYUINRRK-KSNSRYCD-G.
-               05  PTNYUINRRK-KSNSRYCD-OCC        OCCURS   3.
-                   07  PTNYUINRRK-KSNSRYCD        PIC  X(09).
       *室料差額
            03  PTNYUINRRK-RM-SAGAKU               PIC  X(02).
       *定期請求区分
@@ -75,7 +67,7 @@
            03  PTNYUINRRK-DRCD2                   PIC  X(05).
       *担当医３
            03  PTNYUINRRK-DRCD3                   PIC  X(05).
-      *状態区分（１:入院/２:転科/３:転棟/
+      *状態区分（０：異動処理時変更なし／１:入院/２:転科/３:転棟/
       *          ４:転室/５:他院入院／６:自院歴/７:入院料変更）
            03  PTNYUINRRK-JTIKBN                  PIC  X(01).
       *算定病棟
@@ -92,43 +84,12 @@
            03  PTNYUINRRK-TUSANNISSU1             PIC  9(05).
       *通算日数２（１８０日越え算定用）
            03  PTNYUINRRK-TUSANNISSU2             PIC  9(05).
-      *特定入院−通算対象日数
-           03  PTNYUINRRK-TOKU-TAISYONISSU        PIC  9(05).
       *自院歴−入院中区分
       *  自院歴で作成した歴と
       *  入院登録で作成した歴をレセプト上１つの入院期間としたい
       *  場合、自院歴のデータに値を設定する。
       *  （０：退院済／１：入院中）
            03  PTNYUINRRK-NYUINCHUKBN             PIC  X(01).
-      *同日再入院区分（１：自院退院からの再入院／２：他院歴からの再入院）
-           03  PTNYUINRRK-DOUJITSUKBN             PIC  X(01).
-      *入院履歴最大枝番号
-           03  PTNYUINRRK-MAXEDANUM               PIC  9(03).
-      *入院食事区分（０：食なし／１：食あり／２：特食）
-      *　　　　　　（Ａ：変更なし／Ｂ：個別指示／Ｃ：個別指示変更なし）
-           03  PTNYUINRRK-SKJKBN                  PIC  X(01).
-           03  PTNYUINRRK-SKJKBN-KOBETSU-G.
-      *入院食事区分　朝（０：食なし／１：食あり／２：特食）
-               05  PTNYUINRRK-SKJKBN-ASA              PIC  X(01).
-      *入院食事区分　昼（０：食なし／１：食あり／２：特食）
-               05  PTNYUINRRK-SKJKBN-HIRU             PIC  X(01).
-      *入院食事区分　夕（０：食なし／１：食あり／２：特食）
-               05  PTNYUINRRK-SKJKBN-YU               PIC  X(01).
-           03  PTNYUINRRK-SKJKBN-KOBETSU-R
-                           REDEFINES PTNYUINRRK-SKJKBN-KOBETSU-G.
-               05  PTNYUINRRK-SKJKBN-KOBETSU      PIC  X(01)
-                                                  OCCURS 3.
-      *入院日食事開始時間区分
-      *（０：食なし／１：朝から／２：昼から／３：夕から）
-           03  PTNYUINRRK-TIMEKBN-IN              PIC  X(01).
-      *選定入院区分（１：選定対象／２：選定対象外）
-           03  PTNYUINRRK-SENTEIKBN               PIC  X(01).
-      *他院関係区分（１：特別な関係にある医療機関）
-           03  PTNYUINRRK-TAINRELKBN              PIC  X(01).
-      *介護異動区分（１：介護施設からの急性増悪による異動）
-           03  PTNYUINRRK-KAIGOKBN                PIC  X(01).
-      *入院カレンダー設定区分（１：入院料を算定しない／２：入院料を算定する）
-           03  PTNYUINRRK-NYUCALKBN               PIC  X(01).
       *端末ＩＤ
            03  PTNYUINRRK-TERMID                  PIC  X(16).
       *オペーレータＩＤ
