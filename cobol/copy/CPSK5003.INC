@@ -60,6 +60,10 @@
                05  SYS-5003-KANGO              OCCURS  5.
                    07  SYS-5003-KANGO-CD       PIC X(09).
                    07  SYS-5003-KANGO-KBN      PIC X(01).
+           03  SYS-5003-TBLR     REDEFINES     SYS-5003-TBL.
+               05  SYS-5003-KSN                OCCURS  12.
+                   07  SYS-5003-KSNCD          PIC X(09).
+                   07  SYS-5003-KSNKBN         PIC X(01).
       *Í½È÷
            03                              PIC  X(380).
       *Ã¼Ëö£É£Ä
