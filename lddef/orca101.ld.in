@@ -17,6 +17,7 @@ bind	"W11"		"OpenCOBOL"	"ORCGW11";
 bind	"W12"		"OpenCOBOL"	"ORCGW12";
 bind	"W13"		"OpenCOBOL"	"ORCGW13";
 bind	"W14"		"OpenCOBOL"	"ORCGW14";
+bind	"W15"		"OpenCOBOL"	"ORCGW15";
 bind	"W20"		"OpenCOBOL"	"ORCGW20";
 bind	"W21"		"OpenCOBOL"	"ORCGW21";
 bind	"W22"		"OpenCOBOL"	"ORCGW22";
@@ -49,6 +50,7 @@ data	{
 		W12;
 		W13;
 		W14;
+		W15;
 		W20;
 		W21;
 		W22;
