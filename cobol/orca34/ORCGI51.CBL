@@ -31,6 +31,8 @@
       *  01.00.02    NACL-太田    03.01.23  食事の集計方法修正
       *  01.00.03    NACL-太田    03.01.24  保険組合せリストの表示を修正
       *  01.00.04    NACL-太田    03.02.05  自院歴作成データを考慮する
+      *  01.00.05    NACL-太田    03.03.25  算定開始日も入力可とする
+      *                                     入院の保険適用外金額欄追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -655,6 +657,11 @@
            MOVE    SPA-GMN-I51-TGMONEY (10)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-ETCTGMONEY
+      *
+      *    入院料
+           MOVE    SPA-GMN-I51-TGMONEY (11)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I51-NYUTGMONEY
       *
       *    自費
            MOVE    SPA-GMN-I51-JIHI1   TO  WRK-Z9
@@ -1595,31 +1602,6 @@
            MOVE    WRK-HENYMDG     TO  SPA-GMN-I51-SANTEIEDYMD
            MOVE    WRK-SYMD        TO  SPA-NAI-I51-SANTEIEDYMD
       *
-           IF    ( SPA-NAI-I51-SANTEIEDYMD
-                                   >=  SPA-NAI-I51-SANTEISTYMD )
-               CONTINUE
-           ELSE
-               MOVE    "0005"      TO  SPA-ERRCD
-               MOVE    3           TO  SPA-GMN-I51-CUR
-               GO  TO  4100-SANTEIEDYMD-CHK-EXT
-           END-IF
-      *
-      *    算定開始日〜算定開始日の翌月までの日付が入力されていること
-           MOVE    SPA-NAI-I51-SANTEISTYMD
-                                   TO  WRK-YMD
-           MOVE    "2"             TO  WRK-ZOGENPTN
-           MOVE    1               TO  WRK-ZOGEN
-           PERFORM 5002-CALENDAR-SEC
-      *
-           IF    ( SPA-NAI-I51-SANTEIEDYMD (1 : 6)
-                                   <= WRK-KEISANYMD (1 : 6) )
-               CONTINUE
-           ELSE
-               MOVE    "0006"      TO  SPA-ERRCD
-               MOVE    3           TO  SPA-GMN-I51-CUR
-               GO  TO  4100-SANTEIEDYMD-CHK-EXT
-           END-IF
-      *
            .
        4100-SANTEIEDYMD-CHK-EXT.
            EXIT.
@@ -2542,6 +2524,31 @@
       *    関連チェック処理
       *****************************************************************
        4801-KANREN-CHK-SEC         SECTION.
+      *
+           IF    ( SPA-NAI-I51-SANTEIEDYMD
+                                   >=  SPA-NAI-I51-SANTEISTYMD )
+               CONTINUE
+           ELSE
+               MOVE    "0005"      TO  SPA-ERRCD
+               MOVE    3           TO  SPA-GMN-I51-CUR
+               GO  TO  4801-KANREN-CHK-EXT
+           END-IF
+      *
+      *    算定開始日〜算定開始日の翌月までの日付が入力されていること
+           MOVE    SPA-NAI-I51-SANTEISTYMD
+                                   TO  WRK-YMD
+           MOVE    "2"             TO  WRK-ZOGENPTN
+           MOVE    1               TO  WRK-ZOGEN
+           PERFORM 5002-CALENDAR-SEC
+      *
+           IF    ( SPA-NAI-I51-SANTEIEDYMD (1 : 6)
+                                   <= WRK-KEISANYMD (1 : 6) )
+               CONTINUE
+           ELSE
+               MOVE    "0006"      TO  SPA-ERRCD
+               MOVE    3           TO  SPA-GMN-I51-CUR
+               GO  TO  4801-KANREN-CHK-EXT
+           END-IF
       *
       *
            .

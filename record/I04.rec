@@ -102,6 +102,9 @@ I04	{
 		ETCTGMONEY	{
 			value	varchar(10);
 		};
+		NYUTGMONEY	{
+			value	varchar(10);
+		};
 		JIHIMSG1	{
 			value	varchar(12);
 		};

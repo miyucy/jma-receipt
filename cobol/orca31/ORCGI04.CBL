@@ -1201,6 +1201,11 @@
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-ETCTGMONEY
       *
+      *    Æþ±¡ÎÁ
+           MOVE    SPA-GMN-I04-TGMONEY (11)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I04-NYUTGMONEY
+      *
       *    ¼«Èñ
            MOVE    SPA-GMN-I04-JIHI1   TO  WRK-Z9
            MOVE    WRK-Z9              TO  I04-JIHI1
