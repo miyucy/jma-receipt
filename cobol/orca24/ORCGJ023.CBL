@@ -99,7 +99,7 @@
       *
       *    保険組合せワーク
            03  WRK-J023-HKNCOMB-COMB.
-               05  WRK-J023-HKN-LIST    OCCURS  10.
+               05  WRK-J023-HKN-LIST    OCCURS  30.
                    07  WRK-J023-THKNCOMBINUM    PIC X(04).
                    07  WRK-J023-THKNCOMBY1      PIC X(01).
                    07  WRK-J023-THKNCOMBIMEI    PIC X(100).
@@ -721,7 +721,6 @@
       *    労災保険区分がアフターケアの時、履歴日編集処理
       *****************************************************************
        31401-AFTER-JYURRK-SEC          SECTION.
-      *
       *
       *    受診歴を検索する  医療機関、患者ＩＤ
            INITIALIZE                  JYURRK-REC
