@@ -1033,25 +1033,25 @@
            END-IF
       *
       *    三種公費併用のとき
-           IF      WRK-3SYU-KBN           =   ALL "1" AND 
-                   RECE02-HKNNUM          =   SPACE            
-               COMPUTE IDY     =   IDX1    -   1
-               MOVE    IDX1                TO  IDX                     
-               PERFORM 20051-KOH-HENSYU-SEC
-               COMPUTE IDY     =   IDX2    -   1
-               MOVE    IDX2                TO  IDX                     
-               PERFORM 20051-KOH-HENSYU-SEC
-               COMPUTE IDY     =   IDX3    -   1
-               MOVE    IDX3                TO  IDX                     
-               PERFORM 20051-KOH-HENSYU-SEC
-           ELSE
+      *****IF      WRK-3SYU-KBN           =   ALL "1" AND 
+      *            RECE02-HKNNUM          =   SPACE            
+      *        COMPUTE IDY     =   IDX1    -   1
+      *        MOVE    IDX1                TO  IDX                     
+      *        PERFORM 20051-KOH-HENSYU-SEC
+      *        COMPUTE IDY     =   IDX2    -   1
+      *        MOVE    IDX2                TO  IDX                     
+      *        PERFORM 20051-KOH-HENSYU-SEC
+      *        COMPUTE IDY     =   IDX3    -   1
+      *        MOVE    IDX3                TO  IDX                     
+      *        PERFORM 20051-KOH-HENSYU-SEC
+      *****ELSE
                PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       2
+                       UNTIL   IDY >       3
                        OR      RECE02-KOHNUM (IDY) =   SPACE
                    COMPUTE IDX     =   IDY     +   1
                    PERFORM 20051-KOH-HENSYU-SEC
                END-PERFORM                      
-           END-IF                            
+      *****END-IF                            
            .
        2005-HENSYU-EXT.
            EXIT. 
@@ -1708,8 +1708,10 @@
                        GO  TO  200711-ELSE-TAIHI-EXT
                    END-IF
                WHEN    "7"
-                   IF      RECE041-KIZAITEN  =   ZERO
-                       GO  TO  200711-ELSE-TAIHI-EXT
+                   IF      RECE041-SRYKBN    NOT =   "70"
+                       IF      RECE041-KIZAITEN  =   ZERO
+                           GO  TO  200711-ELSE-TAIHI-EXT
+                       END-IF
                    END-IF
            END-EVALUATE 
       *                                   
@@ -2409,17 +2411,6 @@
                    RECE041-FILE
                    RECE05-FILE
                    RECE09-FILE
-      *
-           IF      CNT-OUT            =   ZERO
-               IF      WRK-PARA-TEISYUTUSAKI  =   "1"  
-                   MOVE    "社保レセ電の対象データがありませんでした"
-                                          TO  WRK-RECEERR
-               ELSE                           
-                   MOVE    "国保レセ電の対象データがありませんでした"
-                                          TO  WRK-RECEERR
-               END-IF                           
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE

@@ -434,10 +434,18 @@
       *****************************************************************
        2002-HENSYU-SEC              SECTION.
       *
-           EVALUATE    RECEDEN-RECEDATA (1:2)
-               WHEN    "RE"
-                   ADD     1               TO  SUM-TOTALKENSU
-           END-EVALUATE
+           IF      RECEDEN-RECEDATA (1:2)  =   "RE"
+               EVALUATE    RECEDEN-RECESYUBETU (3:1)
+                   WHEN    "1"
+                       ADD     1               TO  SUM-TOTALKENSU
+                   WHEN    "2"
+                       ADD     2               TO  SUM-TOTALKENSU
+                   WHEN    "3"
+                       ADD     3               TO  SUM-TOTALKENSU
+               END-EVALUATE
+      *
+      *****    ADD     RECEDEN-TOTALTEN    TO  SUM-TOTALTEN       
+           END-IF
       *          
            MOVE    RECEDEN-RECEDATA    TO  RECE30-R
            WRITE   RECE30-R
