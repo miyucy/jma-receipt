@@ -113,6 +113,7 @@
       *  01.00.46    NACL-門脇    04/10/05  公費単独の在総診フラグセットの修正
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/09/28  中止処理の追加
+      *  01.03.02    NACL-藤原    04/11/01  記載なしの公費の処理
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -309,6 +310,8 @@
            03  WRK-ZAITAKU               PIC X(01).
       *
            03  RJN-RATE-KBN              PIC X(01).
+      *
+           03  WRK-RECESKYKBN            PIC  X(01).
       *
            COPY    "MCPAREA".
       *
@@ -666,77 +669,49 @@
       *    県番号
            MOVE    RECE01-PREFNUM      TO  RECE02-PREFNUM
       *    患者保険情報テーブルから主保険情報の取得
-           IF  RECE01-HKNID            NOT =   ZERO
-               INITIALIZE                          PTHKNINF-REC
-               MOVE    RECE01-HOSPID       TO      PTHKN-HOSPID
-               MOVE    RECE01-PTID         TO      PTHKN-PTID
-               MOVE    RECE01-HKNID        TO      PTHKN-HKNID
-               MOVE    PTHKNINF-REC        TO      MCPDATA-REC
-     **********MOVE    RECE01-TEKSTYMDX    TO      ORC-DBYMD
-     **********MOVE    RECE02-TEKSTYMD     TO      ORC-DBYMD
-               MOVE    "DBSELECT"          TO      MCP-FUNC
-      *********MOVE    "PTHKNINF-KEY3"      TO      ORC-DBPATH
-               MOVE    "PTHKNINF-KEY"       TO      ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING   MCPAREA
-                                                   ORCMCPAREA
-                                                   MCPDATA-REC
-               IF      MCP-RC              =       ZERO
-      *********    MOVE    "PTHKNINF-KEY3"      TO      ORC-DBPATH
-                   MOVE    "PTHKNINF-KEY"       TO      ORC-DBPATH
-                   PERFORM  PTHKNINF-READ-SEC
-                   IF       FLG-PTHKNINF        =   ZERO
-                        MOVE   PTHKN-HKNID      TO  RECE02-HKNID
-                        MOVE   PTHKN-HKNNUM     TO  RECE02-HKNNUM
-      *                 法別番号のセット
-                        INITIALIZE                  HKNNUM-REC
-                        MOVE   RECE01-HOSPID    TO  HKN-HOSPID
-                        MOVE   PTHKN-HKNNUM     TO  HKN-HKNNUM
-                        MOVE   HKNNUM-REC       TO  MCPDATA-REC
-                        MOVE   "DBSELECT"       TO  MCP-FUNC
-                        MOVE   "HKNNUM-KEY2"    TO  ORC-DBPATH
-                        CALL   "ORCMCPSUB"       USING   MCPAREA
-                                                         ORCMCPAREA
-                                                         MCPDATA-REC
-                        IF     MCP-RC           =   ZERO
-                            MOVE    "HKNNUM-KEY2"   TO  ORC-DBPATH
-                            PERFORM  HKNNUM-READ-SEC
-                            PERFORM  UNTIL
-                                 (FLG-HKNNUM     =    1)      OR
-                                 ((HKN-TEKSTYMD(1:6) <=
-                                                   RECE01-SRYYM) AND
-                                 (RECE01-SRYYM      <=
-                                                   HKN-TEKEDYMD(1:6)))
-                                MOVE   "HKNNUM-KEY2" TO  ORC-DBPATH
-                                PERFORM   HKNNUM-READ-SEC
-                            END-PERFORM
-                            IF       FLG-HKNNUM     =   ZERO
-                                MOVE   HKN-HBTNUM TO RECE02-HKNHBTNUM
-                                MOVE   SPACE        TO    WRK-JIHI-FLG
-                                IF     HKN-HKNKOHSBTKBN    =    "8"
-                                     MOVE   "1"     TO    WRK-JIHI-FLG
-                                END-IF
-                            END-IF
-                        END-IF
-                        MOVE   "HKNNUM-KEY2"       TO  WK-PATH
-                        PERFORM   CSR-CLOSE-SEC
-                        MOVE   PTHKN-HKNJANUM   TO  RECE02-HKNJANUM
-                        MOVE   PTHKN-HONKZKKBN  TO  RECE02-HONKZKKBN
-                                                    WK-HONKZKKBN
-                        MOVE   PTHKN-HOJOKBN    TO  RECE02-HOJOKBN
-                        MOVE   PTHKN-CONTKBN    TO  RECE02-CONTKBN
-                        MOVE   PTHKN-KIGO       TO  RECE02-KIGO
-                        MOVE   PTHKN-NUM        TO  RECE02-NUM
-                        MOVE   SPACE            TO  RECE02-CERTNUM
-                   ELSE
-                        DISPLAY  "PTHKNINF FETCH ERR "
-                                 RECE01-PTID " " RECE01-HKNID "##"
+           IF      RECE01-HKNID            NOT =   ZERO
+               MOVE    RECE01-HKNNUM        TO  RECE02-HKNNUM
+               MOVE    RECE01-HKNID         TO  RECE02-HKNID
+      *        法別番号のセット
+               INITIALIZE                  HKNNUM-REC
+               MOVE   RECE01-HOSPID    TO  HKN-HOSPID
+      *********MOVE   PTHKN-HKNNUM     TO  HKN-HKNNUM
+               MOVE   RECE02-HKNNUM    TO  HKN-HKNNUM
+               MOVE   HKNNUM-REC       TO  MCPDATA-REC
+               MOVE   "DBSELECT"       TO  MCP-FUNC
+               MOVE   "HKNNUM-KEY2"    TO  ORC-DBPATH
+               CALL   "ORCMCPSUB"       USING   MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+               IF     MCP-RC           =   ZERO
+                   MOVE    "HKNNUM-KEY2"   TO  ORC-DBPATH
+                   PERFORM  HKNNUM-READ-SEC
+                   PERFORM  UNTIL
+                            (FLG-HKNNUM    =    1)      OR
+                            ((HKN-TEKSTYMD (1:6)
+                                           <=  RECE01-SRYYM      ) AND
+                            (RECE01-SRYYM  <=  HKN-TEKEDYMD (1:6))     )
+                       MOVE   "HKNNUM-KEY2" TO  ORC-DBPATH
+                       PERFORM   HKNNUM-READ-SEC
+                   END-PERFORM
+                   IF       FLG-HKNNUM     =   ZERO
+                       MOVE   HKN-HBTNUM TO RECE02-HKNHBTNUM
+                       MOVE   SPACE        TO    WRK-JIHI-FLG
+                       IF     HKN-HKNKOHSBTKBN    =    "8"
+                            MOVE   "1"     TO    WRK-JIHI-FLG
+                       END-IF
                    END-IF
-               ELSE
-                   DISPLAY   "PTHKNINF SELECT ERR" 
                END-IF
-      *********MOVE    "PTHKNINF-KEY3"      TO      WK-PATH
-               MOVE    "PTHKNINF-KEY"       TO      WK-PATH
+               MOVE   "HKNNUM-KEY2"       TO  WK-PATH
                PERFORM   CSR-CLOSE-SEC
+               MOVE    RECE01-HKN-HKNJANUM  TO  RECE02-HKNJANUM
+               MOVE    RECE01-HKN-HONKZKKBN TO  RECE02-HONKZKKBN
+                                                WK-HONKZKKBN
+               MOVE    RECE01-HKN-HOJOKBN   TO  RECE02-HOJOKBN
+               MOVE    RECE01-CONTKBN       TO  RECE02-CONTKBN
+               MOVE    RECE01-KIGO          TO  RECE02-KIGO
+               MOVE    RECE01-NUM           TO  RECE02-NUM
+               MOVE    RECE01-CERTNUM       TO  RECE02-CERTNUM
            END-IF
       *    患者公費情報テーブルから老人保険情報の取得
            IF    ( RECE01-KOHHKNNUM-O (1)  =   "027" )
@@ -859,10 +834,17 @@
            PERFORM   VARYING   IDX    FROM   1   BY   1
                      UNTIL    (IDX          >     4)
                      OR       (RECE01-KOHID-O(IDX)  =   ZERO)  
-               IF  (RECE01-KOHHKNNUM-O (IDX)  =       "027")  OR
-                   (RECE01-KOHHKNNUM-O (IDX)  =   WRK-CHOKI)
+      ******** IF  (RECE01-KOHHKNNUM-O (IDX)  =       "027")  OR
+      ********     (RECE01-KOHHKNNUM-O (IDX)  =   WRK-CHOKI)
+               IF  (RECE01-KOHHKNNUM-O (IDX)  =       "027")
                      CONTINUE
                ELSE
+                   IF      RECE01-KOHHKNNUM-O (IDX)  =   WRK-CHOKI
+                       MOVE   "4"             TO  WRK-RECESKYKBN
+                   ELSE
+                       MOVE   RECE01-RECESKYKBN-O (IDX)
+                                             TO  WRK-RECESKYKBN
+                   END-IF
                    PERFORM   KOHI-SET-SEC
                END-IF
            END-PERFORM
@@ -884,20 +866,20 @@
       *    組合せ公費保険番号情報のセット
            PERFORM   KOHNUMHC-SET-SEC
       *
-      *    補足区分・レセプト記載外公費のセット
-           IF      RECE01-ETC-HKNNUM   NOT =   SPACE
-               MOVE    "1"                 TO  RECE02-HOSOKUKBN
-               MOVE    RECE01-ETC-HKNNUM   TO  RECE02-ETC-KOHNUM (1)
-           END-IF  
-           IF      WRK-CHOKI           NOT =   SPACE
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       4
-                   IF         RECE02-ETC-KOHNUM (IDX)  =   SPACE
-                       MOVE    WRK-CHOKI   TO  RECE02-ETC-KOHNUM (IDX)
-                       MOVE    4           TO  IDX
-                   END-IF
-               END-PERFORM  
-           END-IF  
+      *****補足区分・レセプト記載外公費のセット
+      *****IF      RECE01-ETC-HKNNUM   NOT =   SPACE
+      *****    MOVE    "1"                 TO  RECE02-HOSOKUKBN
+      *****    MOVE    RECE01-ETC-HKNNUM   TO  RECE02-ETC-KOHNUM (1)
+      *****END-IF  
+      *****IF      WRK-CHOKI           NOT =   SPACE
+      *****    PERFORM VARYING IDX FROM    1   BY  1
+      *****            UNTIL   IDX >       4
+      *****        IF         RECE02-ETC-KOHNUM (IDX)  =   SPACE
+      *****            MOVE    WRK-CHOKI   TO  RECE02-ETC-KOHNUM (IDX)
+      *****            MOVE    4           TO  IDX
+      *****        END-IF
+      *****    END-PERFORM  
+      *****END-IF  
       *
       *    特記事項のセット
       *    老保の編集
@@ -1063,6 +1045,7 @@
       *
                    MOVE   PTKOH-KOHID      TO  RECE02-KOHID(IDX2)
                    MOVE   PTKOH-KOHNUM     TO  RECE02-KOHNUM(IDX2)
+                   MOVE   WRK-RECESKYKBN   TO  RECE02-RECESKYKBN(IDX2)
       *            法別番号のセット
                    INITIALIZE                  HKNNUM-REC
                    MOVE   RECE01-HOSPID    TO  HKN-HOSPID
@@ -1172,36 +1155,16 @@
              END-IF
            END-IF
       *
-           EVALUATE    TRUE
-               WHEN    (RECE02-KOHNUM(1)   =     SPACE)    AND
-                       (RECE02-KOHNUM(2)   =     SPACE)    AND
-                       (RECE02-KOHNUM(3)   =     SPACE)    AND
-                       (RECE02-KOHNUM(4)   =     SPACE)
-                   MOVE    ZERO            TO    WK-KOHI-CNT
-               WHEN    (RECE02-KOHNUM(1)   NOT = SPACE)    AND
-                       (RECE02-KOHNUM(2)   =     SPACE)    AND
-                       (RECE02-KOHNUM(3)   =     SPACE)    AND
-                       (RECE02-KOHNUM(4)   =     SPACE)
-                   MOVE    1               TO    WK-KOHI-CNT
-               WHEN    (RECE02-KOHNUM(1)   NOT = SPACE)    AND
-                       (RECE02-KOHNUM(2)   NOT = SPACE)    AND
-                       (RECE02-KOHNUM(3)   =     SPACE)    AND
-                       (RECE02-KOHNUM(4)   =     SPACE)
-                   MOVE    2               TO    WK-KOHI-CNT
-               WHEN    (RECE02-KOHNUM(1)   NOT = SPACE)    AND
-                       (RECE02-KOHNUM(2)   NOT = SPACE)    AND
-                       (RECE02-KOHNUM(3)   NOT = SPACE)    AND
-                       (RECE02-KOHNUM(4)   =     SPACE)
-                   MOVE    3               TO    WK-KOHI-CNT
-               WHEN    (RECE02-KOHNUM(1)   NOT = SPACE)    AND
-                       (RECE02-KOHNUM(2)   NOT = SPACE)    AND
-                       (RECE02-KOHNUM(3)   NOT = SPACE)    AND
-                       (RECE02-KOHNUM(4)   NOT = SPACE)
-                   MOVE    3               TO    WK-KOHI-CNT
-           END-EVALUATE
+           MOVE    ZERO            TO    WK-KOHI-CNT
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       4
+               IF    ( RECE02-KOHNUM     (IDX) NOT =   SPACE )
+               AND   ( RECE02-RECESKYKBN (IDX)     =   SPACE )
+                   ADD     1               TO    WK-KOHI-CNT
+               END-IF
+           END-PERFORM    
       *
       *    山形地方公費対応
-      *****IF      WRK-PARA-PREFNUM    =   "06"
            IF      RECE02-PREFNUM      =   "06"
                IF  WK-KOKUHO               =     "1"  OR  "2"
                    IF   (RECE02-KOHNUM(1) (1:1)  =   "1")   OR
@@ -1218,7 +1181,6 @@
            END-IF
       *
       *    福岡地方公費対応
-      *****IF      WRK-PARA-PREFNUM    =   "40"
            IF      RECE02-PREFNUM      =   "40"
                IF  WK-KOKUHO               =   "1" OR  "2"
                    IF   (RECE02-KOHNUM   (1)(1:1)  =   "1" OR  "2")
@@ -2556,27 +2518,6 @@
            DISPLAY "*** ORCR0020 END ***"
            .
        300-TERM-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者情報読込
-      *****************************************************************
-       PTINF-READ-SEC           SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTINF-REC
-               MOVE    ZERO            TO  FLG-PTINF
-           ELSE
-               INITIALIZE                  PTINF-REC
-               MOVE    1               TO  FLG-PTINF
-           END-IF
-      *
-           .
-       PTINF-READ-EXT.
            EXIT.
       *****************************************************************
       *    患者保険情報読込

@@ -88,6 +88,7 @@
       *  01.02.11    NACL-藤原    04/06/15  印刷順の追加（個別作成時のみ）
       *  中止処理追加
       *  01.03.01    NACL-藤原    04/09/28  中止処理の追加
+      *  01.03.02    NACL-藤原    04/11/01  記載なしの公費の処理
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -185,9 +186,6 @@
            03  FLG-ADDKBN                              PIC 9(01).
            03  FLG-PTHKNINF                            PIC 9(01).
            03  FLG-PTINF                               PIC 9(01).
-           03  FLG-SEIKYU                              PIC 9(01).
-           03  FLG-KOHSKY                              PIC 9(01).
-           03  FLG-RECE07                              PIC 9(01).
            03  FLG-KYUSEIRRK                           PIC 9(01).
       * 
            03  FLG-KOH                                 PIC 9(01).
@@ -295,10 +293,13 @@
                    07  WRK-KOHID-O     PIC  9(10).
                    07  WRK-KOHHKNNUM-O PIC  X(03).
                    07  WRK-KOHPAYKBN-O PIC  X(02).
+                   07  WRK-RECESKYKBN-O
+                                       PIC  X(01).
            03  WRK-KOHI.
                05  WRK-KOHID           PIC  9(10).
                05  WRK-KOHHKNNUM       PIC  X(03).
                05  WRK-KOHPAYKBN       PIC  X(02).
+               05  WRK-RECESKYKBN      PIC  X(01).
       *
       *    請求区分別公費情報（１：レセプト　２：請求書）
            03  WRK-SEIKYUKBN-KOHI-AREA.
@@ -307,6 +308,7 @@
                        09  WRK-SEIKYU-KOHID      PIC  9(10).
                        09  WRK-SEIKYU-KOHHKNNUM  PIC  X(03).
                        09  WRK-SEIKYU-KOHPAYKBN  PIC  X(02).
+                       09  WRK-SEIKYU-RECESKYKBN PIC  X(01).
       *
        01  WRK-SRT-AREA.
            03  WRK-SRT-TABLE.
@@ -408,18 +410,6 @@
       *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
-      *
-           COPY    "CPRCF010.INC".
-      *
-      *    公費請求書
-           COPY    "CPKOHSKY.INC".
-      *
-      *    レセプト管理     
-       01  RECE07-REC. 
-           COPY    "CPRCF007.INC".
-      *
-      *    レセプト
-           COPY    "CPRCF008.INC".
       *
       *    旧姓履歴情報
        01  KYUSEIRRK-REC.
@@ -1243,14 +1233,15 @@
            MOVE    PTHKN-HKNJANUM      TO  WRK-RECE01-HKNJANUM
       *****MOVE    PTHKN-TEKSTYMD      TO  WRK-RECE01-TEKSTYMD
            MOVE    ZERO                TO  WRK-RECE01-TEKSTYMD 
-           MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE01-HONKZKKBN 
+           MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE01-HONKZKKBN
            EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
                WHEN    "031"   THRU    "034"
                    IF      PTHKN-HOJOKBN   =   SPACE
                        CONTINUE
                    ELSE    
-                       MOVE    PTHKN-HOJOKBN   TO  WRK-RECE01-HOJOKBN
+                       MOVE    PTHKN-HOJOKBN   TO
+                                               WRK-RECE01-HOJOKBN
                    END-IF
            END-EVALUATE             
       *
@@ -1310,9 +1301,18 @@
       *****IF      COMB-HKNID          NOT =   ZERO
                MOVE    PTHKN-TEKSTYMD     TO  WRK-RECE01-TEKSTYMDX (1)
                MOVE    PTHKN-TEKEDYMD     TO  WRK-RECE01-TEKEDYMDX (1)
-      *****END-IF    
-           MOVE    PTHKN-CONTKBN      TO  WRK-RECE01-CONTKBN
+      *****END-IF
+      *    
+      *    主保険情報
            MOVE    PTHKN-HKNID        TO  WRK-RECE01-HKNID
+           MOVE    PTHKN-CONTKBN      TO  WRK-RECE01-CONTKBN
+           MOVE    PTHKN-HKNJANUM     TO  WRK-RECE01-HKN-HKNJANUM
+           MOVE    PTHKN-HONKZKKBN    TO  WRK-RECE01-HKN-HONKZKKBN
+           MOVE    PTHKN-HOJOKBN      TO  WRK-RECE01-HKN-HOJOKBN
+           MOVE    PTHKN-KIGO         TO  WRK-RECE01-KIGO
+           MOVE    PTHKN-NUM          TO  WRK-RECE01-NUM
+           MOVE    SPACE              TO  WRK-RECE01-CERTNUM
+      *
            MOVE    WRK-TEISEIKBN      TO  WRK-RECE01-TEISEIKBN
            IF      WRK-TEISEIKBN      =   "1"
                MOVE    WRK-ERR-ERRKBN     TO  WRK-RECE01-ERR-ERRKBN
@@ -1444,8 +1444,17 @@
                    END-IF
                END-IF    
            END-PERFORM
+      *    
+      *    主保険情報
            IF      FLG-LASTHKNID       =   1
-               MOVE    PTHKN-HKNID     TO  WRK-RECE01-HKNID
+               MOVE    PTHKN-HKNID         TO  WRK-RECE01-HKNID
+               MOVE    PTHKN-HKNJANUM      TO  WRK-RECE01-HKN-HKNJANUM
+               MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE01-HKN-HONKZKKBN
+               MOVE    PTHKN-HOJOKBN       TO  WRK-RECE01-HKN-HOJOKBN
+               MOVE    PTHKN-CONTKBN       TO  WRK-RECE01-CONTKBN
+               MOVE    PTHKN-KIGO          TO  WRK-RECE01-KIGO
+               MOVE    PTHKN-NUM           TO  WRK-RECE01-NUM
+               MOVE    SPACE               TO  WRK-RECE01-CERTNUM
            END-IF
       *
            IF      WRK-TEISEIKBN           =   "1"
@@ -1489,6 +1498,8 @@
       *    公費の追加 
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
+               MOVE    SPACE               TO  WRK-RECESKYKBN
+      *
                IF      WRK-SEIKYU-KOHID (IDX1 IDX)    =   ZERO
                    MOVE    4                   TO  IDX
                ELSE
@@ -1496,24 +1507,38 @@
                    IF    ( WRK-RECE01-KOHID    NOT =   ZERO  )
                    AND   ( WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)  
                                                    =   "019" )
+      *************    IF      WRK-RECE01-HKNNUM   =   "060"   OR  "067" 
+      *************        IF      SYS-2005-RJNGNBKKBN =   "1" OR  ZERO
+      *************            MOVE    WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)
+      *************                            TO  WRK-RECE01-ETC-HKNNUM
+      *************        ELSE
+      *************            PERFORM 200121-KOHID-TBL-HENSYU-SEC
+      *************        END-IF
+      *************    ELSE                
+      *************        IF      SYS-2005-RJNGNBKKBN =   "2" OR  ZERO
+      *************            MOVE    WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)
+      *************                            TO  WRK-RECE01-ETC-HKNNUM
+      *************        ELSE
+      *************            PERFORM 200121-KOHID-TBL-HENSYU-SEC
+      *************        END-IF
+      *************    END-IF
                        IF      WRK-RECE01-HKNNUM   =   "060"   OR  "067" 
                            IF      SYS-2005-RJNGNBKKBN =   "1" OR  ZERO
-                               MOVE    WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)
-                                               TO  WRK-RECE01-ETC-HKNNUM
+                               MOVE    "4"         TO  WRK-RECESKYKBN
                            ELSE
-                               PERFORM 200121-KOHID-TBL-HENSYU-SEC
+                               MOVE    SPACE       TO  WRK-RECESKYKBN
                            END-IF
                        ELSE                
                            IF      SYS-2005-RJNGNBKKBN =   "2" OR  ZERO
-                               MOVE    WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)
-                                               TO  WRK-RECE01-ETC-HKNNUM
+                               MOVE    "4"         TO  WRK-RECESKYKBN
                            ELSE
-                               PERFORM 200121-KOHID-TBL-HENSYU-SEC
+                               MOVE    SPACE       TO  WRK-RECESKYKBN
                            END-IF
                        END-IF
                    ELSE
-                       PERFORM 200121-KOHID-TBL-HENSYU-SEC
+                       MOVE    SPACE       TO  WRK-RECESKYKBN
                    END-IF
+                   PERFORM 200121-KOHID-TBL-HENSYU-SEC
                END-IF      
            END-PERFORM
       *
@@ -1592,6 +1617,7 @@
                                            TO  WRK-KOHID-O    (IDY)
                    MOVE    WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)
                                            TO  WRK-KOHHKNNUM-O(IDY)
+                   MOVE    WRK-RECESKYKBN  TO  WRK-RECESKYKBN-O(IDY)
                    MOVE    1               TO  FLG-ADDKBN
                    MOVE    4               TO  IDY
                ELSE 
@@ -2205,40 +2231,6 @@
       *
            .
        900-PTINF-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    レセプト管理読込（キー）
-      *****************************************************************
-       900-RECE07-INV-SEC         SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-RECE07
-                   MOVE    MCPDATA-REC         TO  RECE07-REC
-               ELSE
-                   MOVE    1                   TO  FLG-RECE07
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-RECE07
-           END-IF
-      *
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           PERFORM 900-DBCLOSE-SEC
-           .
-       900-RECE07-INV-EXT.
            EXIT.
       *
       *****************************************************************

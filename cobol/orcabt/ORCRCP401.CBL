@@ -5865,6 +5865,20 @@
                    OR      RECE62-ETC-KOHNUM (IDX) =   SPACE
                MOVE    RECE62-ETC-KOHNUM (IDX) TO
                                        RECE10-ETC-KOHNUM (IDX)
+               MOVE    RECE62-ETC-JNISSU   (IDX)   TO
+                                       RECE10-ETC-JNISSU   (IDX)
+               MOVE    RECE62-ETC-TOTALTEN (IDX)   TO
+                                       RECE10-ETC-TOTALTEN (IDX)
+               MOVE    RECE62-ETC-FTNMONEY (IDX)   TO
+                                       RECE10-ETC-FTNMONEY (IDX)
+               MOVE    RECE62-ETC-SHOKUJINISSU  (IDX) 
+                                                   TO
+                                       RECE10-ETC-SHOKUJINISSU (IDX)
+               MOVE    RECE62-ETC-SHOKUJIRYOYOHI (IDX) 
+                                                   TO
+                                       RECE10-ETC-SHOKUJIRYOYOHI (IDX)
+               MOVE    RECE62-ETC-SHOKUJIFTN (IDX) TO
+                                       RECE10-ETC-SHOKUJIFTN(IDX)
            END-PERFORM
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC

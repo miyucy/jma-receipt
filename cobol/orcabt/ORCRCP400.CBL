@@ -57,6 +57,7 @@
       *                                     ¤ÎÊÔ½¸ÊýË¡¤òÊÑ¹¹
       *  01.01.13    NACL-¾®Æ¦Âô  04/12/06  ÃÏÊý¸øÈñ¡ÊÆý¾ãÊì¡Ë¤ÎÊ¬ÅÀµ­ºÜ
       *                                     ½¤Àµ
+      *  01.01.14    NACL-Æ£¸¶    04/11/01  µ­ºÜ¤Ê¤·¤Î¸øÈñ(¸¶Çú)¤Î½èÍý
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5171,8 +5172,14 @@
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
                    OR      RECE02-ETC-KOHNUM (IDX) =   SPACE
-               MOVE    RECE02-ETC-KOHNUM (IDX) TO
-                                       RECE10-ETC-KOHNUM (IDX)
+               MOVE    RECE02-ETC-KOHNUM   (IDX)   TO
+                                       RECE10-ETC-KOHNUM   (IDX)
+               MOVE    RECE02-ETC-JNISSU   (IDX)   TO
+                                       RECE10-ETC-JNISSU   (IDX)
+               MOVE    RECE02-ETC-TOTALTEN (IDX)   TO
+                                       RECE10-ETC-TOTALTEN (IDX)
+               MOVE    RECE02-ETC-FTNMONEY (IDX)   TO
+                                       RECE10-ETC-FTNMONEY (IDX)
            END-PERFORM
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC

@@ -71,6 +71,7 @@
       *                                     国保の場合は公費カウントしない
       *                                     （法別番号４１以外のとき）
       *                                     病棟区分の編集方法を変更
+      *  01.01.03    NACL-藤原    04/11/01  記載なしの公費の処理
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -304,6 +305,8 @@
            03  WRK-CHOKI                 PIC X(03).
       *
            03  RJN-RATE-KBN              PIC X(01).
+      *
+           03  WRK-RECESKYKBN            PIC X(01).
       *
       *    病棟区分テーブル                                             
        01  WRK-BYOTOKBN-TABLE.                                          
@@ -733,12 +736,7 @@
                END-IF
            END-PERFORM
       *    患者番号変換
-           INITIALIZE                       ORCSPTIDAREA
-           MOVE    RECE61-HOSPID        TO  SPTID-HOSPID
-           MOVE    RECE61-PTID          TO  SPTID-PTID
-           CALL    "ORCSPTID"           USING   ORCSPTIDAREA
-                                                SPA-1009-TBL
-           MOVE    SPTID-PTNUM          TO  RECE62-PTNUM
+           MOVE    RECE61-PTNUM        TO  RECE62-PTNUM
       *
       *    保険組合せ番号情報
            PERFORM VARYING IDX    FROM   1   BY   1
@@ -760,63 +758,14 @@
                MOVE    1                TO  RECE62-TEISYUTUSAKI
            END-IF
       *    患者情報の取得
-           INITIALIZE                           PTINF-REC
-           MOVE    RECE61-HOSPID        TO      PTINF-HOSPID
-           MOVE    RECE61-PTID          TO      PTINF-PTID
-           MOVE    PTINF-REC            TO      MCPDATA-REC
-           MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "PTINF-KEY"          TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"           USING   MCPAREA
-                                                 ORCMCPAREA
-                                                 MCPDATA-REC
-           IF      MCP-RC               =       ZERO
-               MOVE    "PTINF-KEY"      TO      ORC-DBPATH
-               PERFORM  PTINF-READ-SEC
-               IF      FLG-PTINF           =   ZERO
-                   MOVE   PTINF-KANANAME   TO  RECE62-KANANAME
-                   MOVE   PTINF-NAME       TO  RECE62-NAME
-                   MOVE   PTINF-SEX        TO  RECE62-SEX
-                   MOVE   PTINF-BIRTHDAY   TO  RECE62-BIRTHDAY
-                   MOVE   PTINF-DEATHKBN   TO  RECE62-DEATHKBN
-                   MOVE   PTINF-TSTPTNUMKBN
-                                           TO  RECE62-TSTPTNUMKBN 
-      *            患者年齢計算
-                   INITIALIZE                  ORCSAGECHKAREA
-                   MOVE    RECE61-HOSPID   TO  AGECHK-HOSPID
-                   MOVE    RECE61-PTID     TO  AGECHK-PTID
-                   MOVE    RECE61-SRYYM    TO  AGECHK-SRYYMD(1:6)
-                   MOVE    "01"            TO  AGECHK-SRYYMD(7:2)
-                   MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
-                   CALL    "ORCSAGECHK"        USING
-                                               ORCSAGECHKAREA
-                   IF      AGECHK-RC       =   ZERO
-                       MOVE  AGECHK-NENREI TO  WRK-NENREI
-                                               RECE62-AGE
-                   END-IF
-               END-IF
-           END-IF
-      *     
-           MOVE   "PTINF-KEY"      TO  WK-PATH
-           PERFORM   CSR-CLOSE-SEC
-      *     
-      *    旧姓履歴の取得
-           INITIALIZE                           KYUSEIRRK-REC
-           MOVE    RECE61-HOSPID        TO      KYUSEI-HOSPID
-           MOVE    RECE61-PTID          TO      KYUSEI-PTID
-           INITIALIZE                          STS-AREA-DAY
-           INITIALIZE                          LNK-DAY7-AREA
-           MOVE    "71"                 TO  LNK-DAY7-IRAI
-           MOVE    RECE62-SRYYM         TO  LNK-DAY7-YM
-           CALL    "ORCSDAY"            USING   STS-AREA-DAY
-                                                LNK-DAY7-AREA
-           MOVE    LNK-DAY7-KOYOMI      TO      KYUSEI-CHGYMD
-           MOVE    KYUSEIRRK-REC        TO      MCPDATA-REC
-           PERFORM 800-KYUSEIRRK-READ-SEC
-           IF       FLG-KYUSEIRRK           =   ZERO
-               MOVE    KYUSEI-NAME          TO  RECE62-NAME
-               MOVE    KYUSEI-KANANAME      TO  RECE62-KANANAME
-           END-IF         
-                
+           MOVE    RECE61-KANANAME     TO  RECE62-KANANAME
+           MOVE    RECE61-NAME         TO  RECE62-NAME
+           MOVE    RECE61-SEX          TO  RECE62-SEX
+           MOVE    RECE61-BIRTHDAY     TO  RECE62-BIRTHDAY
+           MOVE    RECE61-DEATHKBN     TO  RECE62-DEATHKBN
+           MOVE    RECE61-TSTPTNUMKBN  TO  RECE62-TSTPTNUMKBN
+           MOVE    RECE61-AGE          TO  WRK-NENREI
+                                           RECE62-AGE
       *    県番号
            MOVE    RECE61-PREFNUM      TO  RECE62-PREFNUM
       *    患者保険情報テーブルから主保険情報の取得
@@ -1003,10 +952,17 @@
            PERFORM   VARYING   IDX    FROM   1   BY   1
                      UNTIL    (IDX          >     4)
                      OR       (RECE61-KOHID-O(IDX)  =   ZERO)  
-               IF  (RECE61-KOHHKNNUM-O (IDX)  =       "027")  OR
-                   (RECE61-KOHHKNNUM-O (IDX)  =   WRK-CHOKI)
+      ******** IF  (RECE61-KOHHKNNUM-O (IDX)  =       "027")  OR
+      ********     (RECE61-KOHHKNNUM-O (IDX)  =   WRK-CHOKI)
+               IF  (RECE61-KOHHKNNUM-O (IDX)  =       "027")
                      CONTINUE
                ELSE
+                   IF      RECE61-KOHHKNNUM-O (IDX)  =   WRK-CHOKI
+                       MOVE   "4"             TO  WRK-RECESKYKBN
+                   ELSE
+                       MOVE   RECE61-RECESKYKBN-O (IDX)
+                                             TO  WRK-RECESKYKBN
+                   END-IF
                    PERFORM   KOHI-SET-SEC
                END-IF
            END-PERFORM
@@ -1020,20 +976,20 @@
       *    組合せ公費保険番号情報のセット
            PERFORM   KOHNUMHC-SET-SEC
       *
-      *    補足区分・レセプト記載外公費のセット
-           IF      RECE61-ETC-HKNNUM   NOT =   SPACE
-               MOVE    "1"                 TO  RECE62-HOSOKUKBN
-               MOVE    RECE61-ETC-HKNNUM   TO  RECE62-ETC-KOHNUM (1)
-           END-IF  
-           IF      WRK-CHOKI           NOT =   SPACE
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       4
-                   IF         RECE62-ETC-KOHNUM (IDX)  =   SPACE
-                       MOVE    WRK-CHOKI   TO  RECE62-ETC-KOHNUM (IDX)
-                       MOVE    4           TO  IDX
-                   END-IF
-               END-PERFORM  
-           END-IF  
+      *****補足区分・レセプト記載外公費のセット
+      *****IF      RECE61-ETC-HKNNUM   NOT =   SPACE
+      *****    MOVE    "1"                 TO  RECE62-HOSOKUKBN
+      *****    MOVE    RECE61-ETC-HKNNUM   TO  RECE62-ETC-KOHNUM (1)
+      *****END-IF  
+      *****IF      WRK-CHOKI           NOT =   SPACE
+      *****    PERFORM VARYING IDX FROM    1   BY  1
+      *****            UNTIL   IDX >       4
+      *****        IF         RECE62-ETC-KOHNUM (IDX)  =   SPACE
+      *****            MOVE    WRK-CHOKI   TO  RECE62-ETC-KOHNUM (IDX)
+      *****            MOVE    4           TO  IDX
+      *****        END-IF
+      *****    END-PERFORM  
+      *****END-IF  
       *
       *    特記事項のセット
       *    老保の編集
@@ -1222,6 +1178,7 @@
       *
                    MOVE   PTKOH-KOHID      TO  RECE62-KOHID(IDX2)
                    MOVE   PTKOH-KOHNUM     TO  RECE62-KOHNUM(IDX2)
+                   MOVE   WRK-RECESKYKBN   TO  RECE62-RECESKYKBN(IDX2)
       *            法別番号のセット
                    INITIALIZE                  HKNNUM-REC
                    MOVE   RECE61-HOSPID    TO  HKN-HOSPID
@@ -1328,33 +1285,14 @@
              END-IF
            END-IF
       *
-           EVALUATE    TRUE
-               WHEN    (RECE62-KOHNUM(1)   =     SPACE)    AND
-                       (RECE62-KOHNUM(2)   =     SPACE)    AND
-                       (RECE62-KOHNUM(3)   =     SPACE)    AND
-                       (RECE62-KOHNUM(4)   =     SPACE)
-                   MOVE    ZERO            TO    WK-KOHI-CNT
-               WHEN    (RECE62-KOHNUM(1)   NOT = SPACE)    AND
-                       (RECE62-KOHNUM(2)   =     SPACE)    AND
-                       (RECE62-KOHNUM(3)   =     SPACE)    AND
-                       (RECE62-KOHNUM(4)   =     SPACE)
-                   MOVE    1               TO    WK-KOHI-CNT
-               WHEN    (RECE62-KOHNUM(1)   NOT = SPACE)    AND
-                       (RECE62-KOHNUM(2)   NOT = SPACE)    AND
-                       (RECE62-KOHNUM(3)   =     SPACE)    AND
-                       (RECE62-KOHNUM(4)   =     SPACE)
-                   MOVE    2               TO    WK-KOHI-CNT
-               WHEN    (RECE62-KOHNUM(1)   NOT = SPACE)    AND
-                       (RECE62-KOHNUM(2)   NOT = SPACE)    AND
-                       (RECE62-KOHNUM(3)   NOT = SPACE)    AND
-                       (RECE62-KOHNUM(4)   =     SPACE)
-                   MOVE    3               TO    WK-KOHI-CNT
-               WHEN    (RECE62-KOHNUM(1)   NOT = SPACE)    AND
-                       (RECE62-KOHNUM(2)   NOT = SPACE)    AND
-                       (RECE62-KOHNUM(3)   NOT = SPACE)    AND
-                       (RECE62-KOHNUM(4)   NOT = SPACE)
-                   MOVE    3               TO    WK-KOHI-CNT
-           END-EVALUATE
+           MOVE    ZERO            TO    WK-KOHI-CNT
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       4
+               IF    ( RECE62-KOHNUM     (IDX) NOT =   SPACE )
+               AND   ( RECE62-RECESKYKBN (IDX)     =   SPACE )
+                   ADD     1               TO    WK-KOHI-CNT
+               END-IF
+           END-PERFORM    
       *
       *    福岡地方公費対応
            IF      RECE62-PREFNUM      =   "40"

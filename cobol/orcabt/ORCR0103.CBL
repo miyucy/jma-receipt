@@ -74,6 +74,7 @@
       *  01.02.12    NACL-小豆沢  04/05/19  ＤＢ書き込み時のコミット追加
       *  中止処理追加
       *  01.03.01    NACL-藤原    04/09/28  中止処理の追加
+      *  01.03.02    NACL-藤原    04/11/01  記載なしの公費(原爆)の処理
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3778,8 +3779,16 @@
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
                    OR      RECE02-ETC-KOHNUM (IDX) =   SPACE
-               MOVE    RECE02-ETC-KOHNUM (IDX) TO
-                                       RECE10-ETC-KOHNUM (IDX)
+               MOVE    RECE02-ETC-KOHNUM   (IDX)   TO
+                                       RECE10-ETC-KOHNUM   (IDX)
+               MOVE    RECE02-ETC-JNISSU   (IDX)   TO
+                                       RECE10-ETC-JNISSU   (IDX)
+               MOVE    RECE02-ETC-TOTALTEN (IDX)   TO
+                                       RECE10-ETC-TOTALTEN (IDX)
+               MOVE    RECE02-ETC-FTNMONEY (IDX)   TO
+                                       RECE10-ETC-FTNMONEY (IDX)
+               MOVE    RECE02-ETC-YKZFTN   (IDX)   TO
+                                       RECE10-ETC-YKZFTN   (IDX)
            END-PERFORM
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC

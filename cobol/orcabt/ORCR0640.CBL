@@ -111,6 +111,7 @@
       *  01.02.03    NACL-門脇    04/11/22  フィルム点数計算
       *                                     （診区４０、５０、５４、６０）
       *  01.02.04    NACL-小豆沢  04/12/08  点数フラグの初期化追加
+      *  01.02.05    NACL-藤原    04/11/01  記載なしの公費の処理
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -238,6 +239,7 @@
            03  FLG-HKNCOMBI                            PIC 9(01).
            03  FLG-HOUSIJI-COM                         PIC 9(01).
            03  FLG-FUKUSHI-SKJ                         PIC 9(01).
+           03  FLG-RECESKYKBN                          PIC 9(01).
       *
       *
       *    カウント領域
@@ -266,6 +268,8 @@
            03  IDX6                                    PIC 9(03).
            03  IDX7                                    PIC 9(02).
            03  IDXX                                    PIC 9(02).
+           03  IDYX                                    PIC 9(02).
+           03  IDZX                                    PIC 9(02).
            03  IDY                                     PIC 9(03).
            03  IDY3                                    PIC 9(03).
            03  IDZ                                     PIC 9(03).
@@ -716,6 +720,10 @@
       *
       *    点数マスタ退避ワーク
            COPY    "CPTTNS.INC".
+      *
+       01  WRK-RECE62-REC. 
+           COPY    "CPRCF062.INC"  REPLACING  //RECE62//
+                                   BY         //WRK-RECE62//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1288,6 +1296,20 @@
                PERFORM    FTN-SET-SEC
       ***  END-PERFORM
            PERFORM     SAIKEI-KEISAN-SEC
+      *
+      *    レセプト請求区分による公費情報の振り分け処理
+           MOVE    ZERO            TO  FLG-RECESKYKBN
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       4
+                   OR      FLG-RECESKYKBN  =   1
+               IF    ( RECE62-KOHNUM     (IDX) NOT =   SPACE )
+               AND   ( RECE62-RECESKYKBN (IDX) NOT =   SPACE )
+                   MOVE    1                TO  FLG-RECESKYKBN
+               END-IF
+           END-PERFORM
+           IF     FLG-RECESKYKBN        =   1
+               PERFORM 2113-RECESKYKBN-HENSYU-SEC
+           END-IF
       *
            IF      IDZ                  =   1
                IF ( ( RECE62-TEISYUTUSAKI   =   1           ) AND
@@ -4978,7 +5000,9 @@
                                                    RECE62-KOHNUM(1)
                       AND  RECE62-KOHIDHC(HC-IDX IDX2)  =
                                                    RECE62-KOHID(1)
-                           MOVE      2       TO     BUN-IDX2
+                           IF      RECE62-RECESKYKBN (1)       =   SPACE
+                               MOVE      2       TO     BUN-IDX2
+                           END-IF
                       END-IF
                    END-PERFORM
                END-IF
@@ -4998,7 +5022,9 @@
                                                    RECE62-KOHNUM(2)
                       AND  RECE62-KOHIDHC(HC-IDX IDX2)  =
                                                    RECE62-KOHID(2)
-                           MOVE      3       TO     BUN-IDX3
+                           IF      RECE62-RECESKYKBN (2)       =   SPACE
+                               MOVE      3       TO     BUN-IDX3
+                           END-IF
                       END-IF
                    END-PERFORM
                END-IF
@@ -5018,7 +5044,9 @@
                                                    RECE62-KOHNUM(3)
                       AND  RECE62-KOHIDHC(HC-IDX IDX2)  =
                                                    RECE62-KOHID(3)
-                           MOVE      4       TO     BUN-IDX4
+                           IF      RECE62-RECESKYKBN (3)       =   SPACE
+                               MOVE      4       TO     BUN-IDX4
+                           END-IF
                       END-IF
                    END-PERFORM
                END-IF
@@ -7444,6 +7472,131 @@
            .
        RECE65-REWRITE-EXT.
            EXIT.                                                       
+      *
+      *****************************************************************
+      *    レセプト請求区分による公費情報の振り分け処理
+      *****************************************************************
+       2113-RECESKYKBN-HENSYU-SEC      SECTION.
+      *
+      *    初期化
+           MOVE    RECE62-REC           TO  WRK-RECE62-REC
+           INITIALIZE                       RECE62-KOHINF-AREA
+                                            RECE62-HKNCOMBIINF-AREA
+                                            RECE62-JNISSUINF-AREA
+                                            RECE62-TOTALTENINF-AREA
+                                            RECE62-FTNMONEYINF-AREA
+                                            RECE62-SHOKUJIINF-AREA
+                                            RECE62-ETC-KOH-G
+                                            RECE62-HENTOTALTENINF-AREA
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       30
+               INITIALIZE              RECE62-TENSUINF-AREA (IDX)
+           END-PERFORM
+      *
+      *    主保険情報のみ編集
+           MOVE    WRK-RECE62-JNISSU   (1)
+                                       TO  RECE62-JNISSU  (1)
+           MOVE    WRK-RECE62-TOTALTEN (1)
+                                       TO  RECE62-TOTALTEN(1)
+           MOVE    WRK-RECE62-FTNMONEY (1)
+                                       TO  RECE62-FTNMONEY(1)
+           MOVE    WRK-RECE62-HENTOTALTEN (1)
+                                       TO  RECE62-HENTOTALTEN (1)
+           MOVE    WRK-RECE62-SHOKUJIINF (1)
+                                       TO  RECE62-SHOKUJIINF  (1)
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       30
+               MOVE    WRK-RECE62-TENSU (IDX 1)
+                                           TO  RECE62-TENSU (IDX 1)
+           END-PERFORM
+      *
+      *    レセプト請求区分による公費情報の振り分け
+      *    公費情報・実日数・請求点数・負担金額
+      *    明細点数・合計点数（ぶん点・公費分離区分編集用）
+           MOVE    ZERO                TO  IDY
+                                           IDXX
+                                           IDZX
+           MOVE    1                   TO  IDX2  
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       4
+               IF      WRK-RECE62-KOHNUM (IDX) NOT =   SPACE
+                   COMPUTE IDXX    =   IDX +   1
+                   EVALUATE    WRK-RECE62-RECESKYKBN (IDX)
+                       WHEN    SPACE
+                           ADD     1       TO  IDY
+                                               IDX2
+                           MOVE    WRK-RECE62-KOHINF (IDX)
+                                           TO  RECE62-KOHINF (IDY)
+                           COMPUTE IDYX    =   IDY +   1
+                           MOVE    WRK-RECE62-JNISSU   (IDXX)
+                                           TO  RECE62-JNISSU     (IDYX)
+                           MOVE    WRK-RECE62-TOTALTEN (IDXX)
+                                           TO  RECE62-TOTALTEN   (IDYX)
+                           MOVE    WRK-RECE62-FTNMONEY (IDXX)
+                                           TO  RECE62-FTNMONEY   (IDYX)
+                           MOVE    WRK-RECE62-SHOKUJIINF (IDXX)
+                                           TO  RECE62-SHOKUJIINF (IDYX)
+                           PERFORM VARYING IDX1    FROM    1   BY  1
+                                   UNTIL   IDX1    >       30
+                               MOVE    WRK-RECE62-TENSU (IDX1 IDXX)
+                                           TO  RECE62-TENSU (IDX1 IDX2)
+                           END-PERFORM
+                           MOVE    WRK-RECE62-HENTOTALTEN (IDXX)
+                                           TO  RECE62-HENTOTALTEN (IDX2)
+                       WHEN    "4"
+                           ADD     1       TO  IDZX
+                           MOVE    WRK-RECE62-KOHNUM (IDX)
+                                           TO  RECE62-ETC-KOHNUM (IDZX)
+                           MOVE    WRK-RECE62-JNISSU   (IDXX)
+                                           TO  RECE62-ETC-JNISSU (IDZX)
+                           MOVE    WRK-RECE62-TOTALTEN (IDXX)
+                                           TO RECE62-ETC-TOTALTEN(IDZX)
+                           MOVE    WRK-RECE62-FTNMONEY (IDXX)
+                                           TO RECE62-ETC-FTNMONEY(IDZX)
+                           MOVE    WRK-RECE62-SHOKUJINISSU   (IDXX)
+                                           TO  RECE62-ETC-SHOKUJINISSU
+                                                                 (IDZX)
+                           MOVE    WRK-RECE62-SHOKUJIRYOYOHI (IDXX)
+                                           TO RECE62-ETC-SHOKUJIRYOYOHI
+                                                                 (IDZX)
+                           MOVE    WRK-RECE62-SHOKUJIFTN (IDXX)
+                                           TO RECE62-ETC-SHOKUJIFTN
+                                                                 (IDZX)
+                   END-EVALUATE
+               END-IF
+           END-PERFORM
+      *
+      *    保険組合せ番号情報
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       10
+               IF     WRK-RECE62-HKNCOMBI (IDX)    NOT =   ZERO
+                   MOVE    WRK-RECE62-HKNCOMBI (IDX)
+                                           TO  RECE62-HKNCOMBI (IDX)
+                   MOVE    WRK-RECE62-HKNNUMHC (IDX)
+                                           TO  RECE62-HKNNUMHC (IDX)
+                   PERFORM VARYING IDY     FROM    1   BY  1
+                           UNTIL   IDY     >       4
+                       IF     WRK-RECE62-KOHNUMHC (IDX IDY)
+                                           NOT =   SPACE
+                           PERFORM VARYING IDXX    FROM    1   BY  1
+                                   UNTIL   IDXX    >       4
+                                   OR      RECE62-KOHNUM (IDXX)
+                               IF      WRK-RECE62-KOHNUMHC (IDX IDY)   =
+                                                   RECE62-KOHNUM (IDXX)
+                                   MOVE    WRK-RECE62-KOHNUMHCINF
+                                                         (IDX IDY)
+                                                   TO
+                                           RECE62-KOHNUMHCINF(IDX IDY)
+                               END-IF
+                           END-PERFORM
+                       END-IF
+                   END-PERFORM                 
+               END-IF
+           END-PERFORM
+      *
+           .
+       2113-RECESKYKBN-HENSYU-EXT.
+           EXIT.
       *
       *****************************************************************
       *    データ更新処理（Ｆ００２）

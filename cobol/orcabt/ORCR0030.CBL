@@ -179,12 +179,13 @@
       *  01.04.09   NACL-門脇     04/09/17  ＯＣＲ公費２の編集修正
       *  01.04.10   NACL-藤原     04/09/17  ＯＣＲ区分の設定に追加
       *  中止処理追加
-      *  01.01.01   NACL-藤原     04/09/28  中止処理の追加
-      *  01.01.02   NACL-門脇     04/10/14  外来管理加算の剤番号置き換え
-      *  01.01.03   NACL-門脇     04/11/15  公費月上限額取得修正
-      *  01.01.04   NACL-門脇     04/11/22  フィルム点数計算
+      *  01.05.01   NACL-藤原     04/09/28  中止処理の追加
+      *  01.05.02   NACL-門脇     04/10/14  外来管理加算の剤番号置き換え
+      *  01.05.03   NACL-門脇     04/11/15  公費月上限額取得修正
+      *  01.05.04   NACL-門脇     04/11/22  フィルム点数計算
       *                                     （診区４０、５０、５４、６０）
-      *  01.01.05    NACL-小豆沢  04/12/08  点数フラグの初期化追加
+      *  01.05.05    NACL-小豆沢  04/12/08  点数フラグの初期化追加
+      *  01.05.06    NACL-藤原    04/11/01  記載なしの公費の処理
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -299,6 +300,7 @@
            03  FLG-HKNNUM                              PIC 9(01).
            03  FLG-SYUTOTAL                            PIC 9(01).
            03  FLG-SYUTOTAL-SET                        PIC 9(01).
+           03  FLG-RECESKYKBN                          PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
        01  FLG-KHNTEN-AREA.
@@ -342,6 +344,8 @@
            03  IDX8                                    PIC 9(02).
            03  IDX9                                    PIC 9(03).
            03  IDXX                                    PIC 9(02).
+           03  IDYX                                    PIC 9(02).
+           03  IDZX                                    PIC 9(02).
            03  IDY                                     PIC 9(03).
            03  IDZ                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
@@ -776,6 +780,10 @@
       *    点数マスタ退避ワーク
            COPY    "CPTTNS.INC".
       *
+       01  WRK-RECE02-REC. 
+           COPY    "CPRCF002.INC"  REPLACING  //RECE02//
+                                   BY         //WRK-RECE02//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -1129,8 +1137,8 @@
        210-HENSYU-SEC                   SECTION.
       *
       *    地方公費データのとき不明分は処理の対象としない
-           IF      IDZ                  =   2
-           AND     RECE02-RECESYUBETU   =   ZERO
+           IF    ( IDZ                  =   2    )
+           AND   ( RECE02-RECESYUBETU   =   ZERO )
                GO  TO  210-HENSYU-EXT
            END-IF
       *
@@ -1157,6 +1165,20 @@
            PERFORM     2106-SAIKEI-KEISAN-SEC
            PERFORM     2107-NYUYOJI-COMENTFLG-SET-SEC
            PERFORM     2112-ICHIBUFUTAN-OKIKAE-SEC
+      *
+      *    レセプト請求区分による公費情報の振り分け処理
+           MOVE    ZERO            TO  FLG-RECESKYKBN
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       4
+                   OR      FLG-RECESKYKBN  =   1 
+               IF    ( RECE02-KOHNUM     (IDX) NOT =   SPACE )
+               AND   ( RECE02-RECESKYKBN (IDX) NOT =   SPACE )
+                   MOVE    1                TO  FLG-RECESKYKBN
+               END-IF
+           END-PERFORM
+           IF     FLG-RECESKYKBN        =   1
+               PERFORM 2113-RECESKYKBN-HENSYU-SEC
+           END-IF
       *
            IF      IDZ                  =   1
                IF ( ( RECE02-TEISYUTUSAKI   =   1               )  AND
@@ -2461,7 +2483,8 @@
                                             TBL-JNISSU-DAY(2 ACCT-IDX)
                                     END-IF
                                  END-IF                                 
-                               END-PERFORM                              
+                               END-PERFORM                 
+             
                            END-IF                                       
                       END-IF
                      END-IF
@@ -2505,7 +2528,7 @@
                                                    RECE02-KOHNUM(3)
                       AND  RECE02-KOHIDHC(HC-IDX IDX2)  =
                                                    RECE02-KOHID(3)
-                           MOVE      4       TO     BUN-IDX4
+                            MOVE      4       TO     BUN-IDX4
                            IF   FLG-SHOSAISIN      =    1               
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1     
                                     UNTIL    ACCT-IDX   >   31          
@@ -2534,7 +2557,7 @@
                                                    RECE02-KOHNUM(4)
                       AND  RECE02-KOHIDHC(HC-IDX IDX2)  =
                                                    RECE02-KOHID(4)
-                           MOVE      5       TO     BUN-IDX5
+                            MOVE      5       TO     BUN-IDX5
                            IF   FLG-SHOSAISIN      =    1               
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1     
                                     UNTIL    ACCT-IDX   >   31          
@@ -5508,6 +5531,124 @@
            .
        210145-RECE05-REWRITE-EXT.
            EXIT.                                                        
+      *
+      *****************************************************************
+      *    レセプト請求区分による公費情報の振り分け処理
+      *****************************************************************
+       2113-RECESKYKBN-HENSYU-SEC      SECTION.
+      *
+      *    初期化
+           MOVE    RECE02-REC           TO  WRK-RECE02-REC
+           INITIALIZE                       RECE02-KOHINF-AREA
+                                            RECE02-HKNCOMBIINF-AREA
+                                            RECE02-JNISSUINF-AREA
+                                            RECE02-TOTALTENINF-AREA
+                                            RECE02-FTNMONEYINF-AREA
+                                            RECE02-YKZFTNINF-AREA
+                                            RECE02-ETC-KOH-G
+                                            RECE02-HENTOTALTENINF-AREA
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       50
+               INITIALIZE              RECE02-TENSUINF-AREA (IDX)
+           END-PERFORM
+      *
+      *    主保険情報のみ編集
+           MOVE    WRK-RECE02-JNISSU   (1)
+                                       TO  RECE02-JNISSU  (1)
+           MOVE    WRK-RECE02-TOTALTEN (1)
+                                       TO  RECE02-TOTALTEN(1)
+           MOVE    WRK-RECE02-FTNMONEY (1)
+                                       TO  RECE02-FTNMONEY(1)
+           MOVE    WRK-RECE02-YKZFTN   (1)
+                                       TO  RECE02-YKZFTN  (1)
+           MOVE    WRK-RECE02-HENTOTALTEN (1)
+                                       TO  RECE02-HENTOTALTEN (1)
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       50
+               MOVE    WRK-RECE02-TENSU (IDX 1)
+                                           TO  RECE02-TENSU (IDX 1)
+           END-PERFORM
+      *
+      *    レセプト請求区分による公費情報の振り分け
+      *    公費情報・実日数・請求点数・負担金額
+      *    明細点数・合計点数（ぶん点・公費分離区分編集用）
+           MOVE    ZERO                TO  IDY
+                                           IDXX
+                                           IDZX
+           MOVE    1                   TO  IDX2  
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       4
+               IF      WRK-RECE02-KOHNUM (IDX) NOT =   SPACE
+                   COMPUTE IDXX    =   IDX +   1
+                   EVALUATE    WRK-RECE02-RECESKYKBN (IDX)
+                       WHEN    SPACE
+                           ADD     1       TO  IDY
+                                               IDX2
+                           MOVE    WRK-RECE02-KOHINF (IDX)
+                                           TO  RECE02-KOHINF (IDY)
+                           COMPUTE IDYX    =   IDY +   1
+                           MOVE    WRK-RECE02-JNISSU   (IDXX)
+                                           TO  RECE02-JNISSU  (IDYX)
+                           MOVE    WRK-RECE02-TOTALTEN (IDXX)
+                                           TO  RECE02-TOTALTEN(IDYX)
+                           MOVE    WRK-RECE02-FTNMONEY (IDXX)
+                                           TO  RECE02-FTNMONEY(IDYX)
+                           MOVE    WRK-RECE02-YKZFTN   (IDXX)
+                                           TO  RECE02-YKZFTN  (IDYX)
+                           PERFORM VARYING IDX1    FROM    1   BY  1
+                                   UNTIL   IDX1    >       50
+                               MOVE    WRK-RECE02-TENSU (IDX1 IDXX)
+                                           TO  RECE02-TENSU (IDX1 IDX2)
+                           END-PERFORM
+                           MOVE    WRK-RECE02-HENTOTALTEN (IDXX)
+                                           TO  RECE02-HENTOTALTEN (IDX2)
+                       WHEN    "4"
+                           ADD     1       TO  IDZX
+                           MOVE    WRK-RECE02-KOHNUM (IDX)
+                                           TO  RECE02-ETC-KOHNUM (IDZX)
+                           MOVE    WRK-RECE02-JNISSU   (IDXX)
+                                           TO  RECE02-ETC-JNISSU (IDZX)
+                           MOVE    WRK-RECE02-TOTALTEN (IDXX)
+                                           TO RECE02-ETC-TOTALTEN(IDZX)
+                           MOVE    WRK-RECE02-FTNMONEY (IDXX)
+                                           TO RECE02-ETC-FTNMONEY(IDZX)
+                           MOVE    WRK-RECE02-YKZFTN   (IDXX)
+                                           TO  RECE02-ETC-YKZFTN (IDZX)
+                   END-EVALUATE
+               END-IF
+           END-PERFORM
+      *
+      *    保険組合せ番号情報
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       10
+               IF     WRK-RECE02-HKNCOMBI (IDX)    NOT =   ZERO
+                   MOVE    WRK-RECE02-HKNCOMBI (IDX)
+                                           TO  RECE02-HKNCOMBI (IDX)
+                   MOVE    WRK-RECE02-HKNNUMHC (IDX)
+                                           TO  RECE02-HKNNUMHC (IDX)
+                   PERFORM VARYING IDY     FROM    1   BY  1
+                           UNTIL   IDY     >       4
+                       IF     WRK-RECE02-KOHNUMHC (IDX IDY)
+                                           NOT =   SPACE
+                           PERFORM VARYING IDXX    FROM    1   BY  1
+                                   UNTIL   IDXX    >       4
+                                   OR      RECE02-KOHNUM (IDXX)
+                               IF      WRK-RECE02-KOHNUMHC (IDX IDY)   =
+                                                   RECE02-KOHNUM (IDXX)
+                                   MOVE    WRK-RECE02-KOHNUMHCINF
+                                                         (IDX IDY)
+                                                   TO
+                                           RECE02-KOHNUMHCINF(IDX IDY)
+                               END-IF
+                           END-PERFORM
+                       END-IF
+                   END-PERFORM                 
+               END-IF
+           END-PERFORM
+      *
+           .
+       2113-RECESKYKBN-HENSYU-EXT.
+           EXIT.
       *
       *****************************************************************
       *    データ更新処理（Ｆ００２）

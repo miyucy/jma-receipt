@@ -52,6 +52,7 @@
       *  01.01.01    NACL-藤原    04/10/07  中止処理の追加
       *  01.01.02    NACL-小豆沢  04/12/10  入院略称マスタの読み込みワーク
       *                                     対応
+      *  01.01.03    NACL-藤原    04/11/01  記載なしの公費の処理
       *****************************************************************
       *
       *
@@ -851,16 +852,16 @@
       ***  PERFORM    VARYING    IDX    FROM   1   BY   1
       ***             UNTIL     (IDX      >   10)  OR
       ***                       (RECE62-SRYKA(IDX)   =   SPACE)
-               PERFORM    RECE62-HENSYU-SEC
-               PERFORM    RECE62-HENSYU2-SEC
-               PERFORM    RECE62-HENSYU3-SEC
-               PERFORM    RECE62-HENSYU4-SEC
-               PERFORM    RECE62-HENSYU9-SEC
+               PERFORM    200111-RECE62-HENSYU-SEC
+               PERFORM    200112-RECE62-HENSYU2-SEC
+               PERFORM    200113-RECE62-HENSYU3-SEC
+               PERFORM    200114-RECE62-HENSYU4-SEC
+               PERFORM    200115-RECE62-HENSYU9-SEC
       ***  END-PERFORM
       *
-           PERFORM     JNISSU-SET-SEC
+           PERFORM     200116-JNISSU-SET-SEC
       *
-           PERFORM     RECE62-REWRITE-SEC
+           PERFORM     200117-RECE62-REWRITE-SEC
            .
        20011-HENSYU-EXT.
            EXIT.
@@ -868,7 +869,7 @@
       *****************************************************************
       *    レセプト中間ファイルの編集（Ｆ００２）
       *****************************************************************
-       RECE62-HENSYU-SEC                SECTION.
+       200111-RECE62-HENSYU-SEC                SECTION.
       *
            INITIALIZE                            NYUINACCT-REC
            MOVE    RECE62-HOSPID         TO      NACCT-HOSPID
@@ -891,7 +892,7 @@
                  IF     NACCT-ZAISKBKBN    =    "1"  OR  "2"  OR  
                                                 "4"  OR  "5"  OR
                                                 "6"   
-                       PERFORM    NYUIN-DAY-TAIHI-SEC
+                       PERFORM    2001111-NYUIN-DAY-TAIHI-SEC
                  END-IF
       *
                  MOVE          "NYUINACCT-KEY7"  TO   ORC-DBPATH
@@ -920,9 +921,9 @@
                                MOVE    1      TO    FLG-SHOSAISIN
                       END-IF
       *
-                      PERFORM   KUMIAWASE-HANBETU-SEC
+                      PERFORM   500-KUMIAWASE-HANBETU-SEC
       *
-                      PERFORM   RECE62-TENSOU11-SEC
+                      PERFORM   2001112-RECE62-TENSOU11-SEC
                       MOVE    10              TO    IDX1
                  END-IF
       *
@@ -955,29 +956,29 @@
                        IF      ACCT-HKNCOMBI   =
                                                RECE62-HKNCOMBI (IDX1)
       *
-                           PERFORM    KUMIAWASE-HANBETU-SEC
+                           PERFORM    500-KUMIAWASE-HANBETU-SEC
       *
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                 MOVE    ZERO     TO    FLG-SHOSAISIN
                                 IF   ACCT-SRYKBN  =  "11"  OR
                                                      "13"  OR  "14"
-                                    PERFORM   SHOSAISIN-HANTEI-SEC
+                                    PERFORM 2001113-SHOSAISIN-HANTEI-SEC
                                 END-IF
-                                PERFORM   RECE62-TENSOU12-SEC
+                                PERFORM   2001114-RECE62-TENSOU12-SEC
                            END-IF
                            IF   (ACCT-ZAITEN    =        ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                 MOVE    ZERO     TO    FLG-SHOSAISIN
                                 IF   ACCT-SRYKBN  =  "11"  OR  "99" 
-                                    PERFORM   SHOSAISIN-HANTEI-SEC
+                                    PERFORM 2001113-SHOSAISIN-HANTEI-SEC
                                 END-IF
-                                PERFORM   RECE62-TENSOU12-SEC
+                                PERFORM   2001114-RECE62-TENSOU12-SEC
                            END-IF
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                 IF   ACCT-SRYKBN  =  "90" OR "92"   
-                                    PERFORM   NYUINRYO-TAIHI-SEC
+                                    PERFORM   2001115-NYUINRYO-TAIHI-SEC
                                 END-IF
                            END-IF
                            MOVE    10              TO    IDX1
@@ -996,42 +997,13 @@
                                            MCPDATA-REC
       *
            .
-       RECE62-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    組み合わせ判別（福祉用）主保険＋全国公費＋地方公費
-      *****************************************************************
-       KUMIAWASE-HANBETU-SEC               SECTION.
-      *
-           MOVE     ZERO      TO      FLG-FUKUSHI
-      *
-           IF      IDZ             =   1 
-             EVALUATE   WRK-PREFNUM
-      *
-               WHEN    "38"
-      *
-                 IF ( RECE62-KOHNUMHC(IDX1 1)(1:1)  =   "0"     )  AND
-                    ( RECE62-KOHNUMHC(IDX1 2)(1:1)
-                                             >=  "1" AND <=  "8")
-      *
-                      MOVE     1       TO      FLG-FUKUSHI
-      *
-                      MOVE    "1"      TO      RECE62-FUKUSHIFLG
-      *
-                 END-IF
-      *
-             END-EVALUATE
-           END-IF
-      *
-           .
-       KUMIAWASE-HANBETU-EXT.
+       200111-RECE62-HENSYU-EXT.
            EXIT.
       *
       ******************************************************************
       *    会計フラグ退避処理                                          *
       ******************************************************************
-       NYUIN-DAY-TAIHI-SEC         SECTION.
+       2001111-NYUIN-DAY-TAIHI-SEC         SECTION.
       *
            PERFORM    VARYING   IDY   FROM   1   BY   1
                                     UNTIL    IDY    >    31
@@ -1087,13 +1059,13 @@
       *
            END-PERFORM.
       *
-       NYUIN-DAY-TAIHI-EXT.
+       2001111-NYUIN-DAY-TAIHI-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００２）
       *****************************************************************
-       RECE62-TENSOU11-SEC                 SECTION.
+       2001112-RECE62-TENSOU11-SEC                 SECTION.
       *
            IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
@@ -1141,14 +1113,14 @@
                END-IF  
            END-PERFORM
            .
-       RECE62-TENSOU11-EXT.
+       2001112-RECE62-TENSOU11-EXT.
            EXIT.
       *
       *****************************************************************
       *    診療会計テーブルの内容から診療行為テーブルを読み込み、
       *    診療実日数のカウントを行える剤であるかの判定
       *****************************************************************
-       SHOSAISIN-HANTEI-SEC                 SECTION.
+       2001113-SHOSAISIN-HANTEI-SEC                 SECTION.
       *
            INITIALIZE                           SRYACT-REC
            MOVE    ACCT-HOSPID          TO      SRY-HOSPID
@@ -1215,7 +1187,7 @@
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００２）
       *****************************************************************
-       RECE62-TENSOU12-SEC                 SECTION.
+       2001114-RECE62-TENSOU12-SEC                 SECTION.
       *
            IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
@@ -1275,13 +1247,13 @@
                END-IF  
            END-PERFORM
            .
-       RECE62-TENSOU12-EXT.
+       2001114-RECE62-TENSOU12-EXT.
            EXIT.
       *
       *****************************************************************
       *    診療会計の入院料等の退避処理
       *****************************************************************
-       NYUINRYO-TAIHI-SEC                 SECTION.
+       2001115-NYUINRYO-TAIHI-SEC                 SECTION.
       *
            IF        ACCT-SRYCDTOTAL    =    190080470
                                         OR   190799670
@@ -1304,17 +1276,17 @@
            END-IF
       *
            .
-       NYUINRYO-TAIHI-EXT.
+       2001115-NYUINRYO-TAIHI-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの編集（Ｆ００２）
       *****************************************************************
-       RECE62-HENSYU2-SEC                SECTION.
+       200112-RECE62-HENSYU2-SEC                SECTION.
       *
-           PERFORM      MIJISI-GET-SEC
+           PERFORM      2001121-MIJISI-GET-SEC
       *
-           PERFORM      SENTEI-KEISU-GET-SEC
+           PERFORM      2001122-SENTEI-KEISU-GET-SEC
       *
            INITIALIZE                            NYUINACCT-REC
            MOVE    RECE62-HOSPID         TO      NACCT-HOSPID
@@ -1338,7 +1310,7 @@
                  AND    NACCT-SRYCDTOTAL   NOT   =    099999916
       *
       *            入院基本料と加減算点数の取得
-                   PERFORM   NYUINKHN-GET-SEC
+                   PERFORM   2001123-NYUINKHN-GET-SEC
       *
                    PERFORM  VARYING  IDY    FROM    1   BY  1
                                   UNTIL   IDY     >       31
@@ -1350,8 +1322,8 @@
                          IF  WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
                               IF   NACCT-ZAITEN    NOT =    ZERO  
                               AND  NACCT-DAY(IDY)  NOT =    ZERO  
-                                   PERFORM      KUMIAWASE-HANBETU-SEC
-                                   PERFORM      RECE62-TENSOU21-SEC
+                                   PERFORM 500-KUMIAWASE-HANBETU-SEC
+                                   PERFORM 2001124-RECE62-TENSOU21-SEC
                               END-IF
                               MOVE    10        TO     IDX1
                          END-IF
@@ -1376,8 +1348,8 @@
                               IF   (NACCT-ZAITEN    NOT =    ZERO)  
                               AND  (NACCT-DAY(IDY)  NOT =    ZERO)  
                               AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
-                                   PERFORM      KUMIAWASE-HANBETU-SEC
-                                   PERFORM      RECE62-TENSOU22-SEC
+                                   PERFORM 500-KUMIAWASE-HANBETU-SEC
+                                   PERFORM 2001125-RECE62-TENSOU22-SEC
                               END-IF
                               MOVE    10   TO     IDX1
                          END-IF
@@ -1431,8 +1403,8 @@
                            IF   (ACCT-ZAITEN    NOT =    ZERO)
                            AND  (ACCT-ZAIKAISU  NOT =    ZERO)
                                 IF   ACCT-SRYKBN  =  "90" OR "92"  
-                                    PERFORM      KUMIAWASE-HANBETU-SEC
-                                    PERFORM      RECE62-TENSOU23-SEC
+                                    PERFORM 500-KUMIAWASE-HANBETU-SEC
+                                    PERFORM 2001126-RECE62-TENSOU23-SEC
                                 END-IF
                            END-IF
                            MOVE    10            TO    IDX1
@@ -1451,13 +1423,13 @@
                                            MCPDATA-REC
       *
            .
-       RECE62-HENSYU2-EXT.
+       200112-RECE62-HENSYU2-EXT.
            EXIT.
       *
       *****************************************************************
       *    未実施減算額取得
       *****************************************************************
-       MIJISI-GET-SEC                 SECTION.
+       2001121-MIJISI-GET-SEC                 SECTION.
       *
            IF   FLG-MIJISI-INNAI  =   1
       *
@@ -1550,13 +1522,13 @@
            END-IF
       *
            .
-       MIJISI-GET-EXT.
+       2001121-MIJISI-GET-EXT.
            EXIT.
       *
       **************************************************************
       *    選定外泊時の係数取得
       **************************************************************
-       SENTEI-KEISU-GET-SEC           SECTION.
+       2001122-SENTEI-KEISU-GET-SEC           SECTION.
       *
            MOVE      ZERO           TO     WRK-SENTEI-KEISU
       *
@@ -1575,18 +1547,19 @@
       *
            .
       *
-       SENTEI-KEISU-GET-EXT.
+       2001122-SENTEI-KEISU-GET-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００２）
       *****************************************************************
-       RECE62-TENSOU21-SEC                 SECTION.
+       2001124-RECE62-TENSOU21-SEC                 SECTION.
       *
+      *    入院基本料と加減算点数の計算
            IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
                       MOVE    1          TO        KH-IDX
-                      PERFORM      NYUINACCT-GET-SEC
+                      PERFORM      20011241-NYUINACCT-GET-SEC
            END-IF
       *
            MOVE       IDX1              TO   HC-IDX
@@ -1615,63 +1588,18 @@
                  END-IF
       *
                  IF   KH-IDX             NOT =    ZERO
-                      PERFORM      NYUINACCT-GET-SEC
+                      PERFORM      20011241-NYUINACCT-GET-SEC
                  END-IF
                END-IF  
            END-PERFORM
            .
-       RECE62-TENSOU21-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    レセプト中間ファイルの項目転送（Ｆ００２）
-      *****************************************************************
-       RECE62-TENSOU22-SEC                 SECTION.
-      *
-           IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
-                 (RECE62-RJNHKNNUM       NOT =   SPACE)
-                      MOVE    1          TO        KH-IDX
-                      PERFORM      NYUINACCT-GET2-SEC
-           END-IF
-      *
-           MOVE       IDX1              TO   HC-IDX
-      *
-           MOVE       ZERO              TO   KH-IDX
-           PERFORM    VARYING   IDX2    FROM   1   BY   1
-                                UNTIL   (IDX2      >       4)
-               MOVE        ZERO          TO        KH-IDX
-               IF     RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
-      *
-                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
-                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(1)
-                      MOVE    2          TO        KH-IDX
-                 END-IF
-                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(2)
-                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(2)
-                      MOVE    3          TO        KH-IDX
-                 END-IF
-                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(3)
-                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(3)
-                      MOVE    4          TO        KH-IDX
-                 END-IF
-                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(4)
-                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(4)
-                      MOVE    5          TO        KH-IDX
-                 END-IF
-      *
-                 IF   KH-IDX             NOT =    ZERO
-                      PERFORM      NYUINACCT-GET2-SEC
-                 END-IF
-               END-IF  
-           END-PERFORM
-           .
-       RECE62-TENSOU22-EXT.
+       2001124-RECE62-TENSOU21-EXT.
            EXIT.
       *
       **************************************************************
       *    入院基本料と加減算点数の計算
       **************************************************************
-       NYUINACCT-GET-SEC           SECTION.
+       20011241-NYUINACCT-GET-SEC           SECTION.
       *
       *    入院料と外泊を比較して点数算定
       *
@@ -1948,13 +1876,59 @@
            END-EVALUATE
       *
            .
-       NYUINACCT-GET-EXT.
+       20011241-NYUINACCT-GET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの項目転送（Ｆ００２）
+      *****************************************************************
+       2001125-RECE62-TENSOU22-SEC                 SECTION.
+      *
+      *    入院基本料加減算点数の計算
+           IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+                 (RECE62-RJNHKNNUM       NOT =   SPACE)
+                      MOVE    1          TO        KH-IDX
+                      PERFORM      20011251-NYUINACCT-GET2-SEC
+           END-IF
+      *
+           MOVE       IDX1              TO   HC-IDX
+      *
+           MOVE       ZERO              TO   KH-IDX
+           PERFORM    VARYING   IDX2    FROM   1   BY   1
+                                UNTIL   (IDX2      >       4)
+               MOVE        ZERO          TO        KH-IDX
+               IF     RECE62-KOHNUMHC(HC-IDX IDX2)  NOT =  SPACE
+      *
+                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(1)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(1)
+                      MOVE    2          TO        KH-IDX
+                 END-IF
+                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(2)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(2)
+                      MOVE    3          TO        KH-IDX
+                 END-IF
+                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(3)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(3)
+                      MOVE    4          TO        KH-IDX
+                 END-IF
+                 IF   RECE62-KOHNUMHC(HC-IDX IDX2) =  RECE62-KOHNUM(4)
+                 AND  RECE62-KOHIDHC(HC-IDX IDX2)  =  RECE62-KOHID(4)
+                      MOVE    5          TO        KH-IDX
+                 END-IF
+      *
+                 IF   KH-IDX             NOT =    ZERO
+                      PERFORM      20011251-NYUINACCT-GET2-SEC
+                 END-IF
+               END-IF  
+           END-PERFORM
+           .
+       2001125-RECE62-TENSOU22-EXT.
            EXIT.
       *
       **************************************************************
       *    入院基本料加減算点数の計算
       **************************************************************
-       NYUINACCT-GET2-SEC           SECTION.
+       20011251-NYUINACCT-GET2-SEC           SECTION.
       *
            IF  NACCT-SRYCDTOTAL       =  190080470   OR                 
                                          190799670   OR                 
@@ -1984,13 +1958,13 @@
            END-IF
       *
            .
-       NYUINACCT-GET2-EXT.
+       20011251-NYUINACCT-GET2-EXT.
            EXIT.
       *
       **************************************************************
       *    入院基本料と加減算点数の取得
       **************************************************************
-       NYUINKHN-GET-SEC           SECTION.
+       2001123-NYUINKHN-GET-SEC           SECTION.
       *
            IF   NACCT-SRYKBN  =  "90"                                   
                  MOVE   903   TO  WRK-NYUTENTTLKBN                      
@@ -2048,7 +2022,7 @@
                               COMPUTE   WRK-KSNTEN  =  NACCT-ZAITEN
                                                     -  WRK-KHNTEN
       *                       看護比率基準未達時の入院基本点数の取得
-                              PERFORM  GAIHAKU-NYUINKHN-SET-SEC
+                              PERFORM  20011231-GAIHAKU-NYUINKHN-SET-SEC
                               IF   WRK-GAIHAKU-KHNTEN  NOT =  ZERO
                                  MOVE   WRK-GAIHAKU-KHNTEN
                                                TO   WRK-KHNTEN
@@ -2075,7 +2049,7 @@
                                        TO   NYURYAKUSHO-SRYCD
                  MOVE    NACCT-SRYYM   TO   ORC-DBYMD(1:6)
                  MOVE    "01"          TO   ORC-DBYMD(7:2)
-                 PERFORM  NYURYAKUSHO-READ-SEC
+                 PERFORM  900-NYURYAKUSHO-READ-SEC
                  IF       FLG-NYURYAKUSHO    =    ZERO
                    MOVE     NYURYAKUSHO-RYAKUSHO
                                        TO  WRK-RYAKUSHO
@@ -2152,13 +2126,13 @@
                                            MCPDATA-REC
       *
            .
-       NYUINKHN-GET-EXT.
+       2001123-NYUINKHN-GET-EXT.
            EXIT.
       *
       **************************************************************
       *    外泊時の入院基本料取得
       **************************************************************
-       GAIHAKU-NYUINKHN-SET-SEC           SECTION.
+       20011231-GAIHAKU-NYUINKHN-SET-SEC           SECTION.
       *
            EVALUATE  TNS-SRYCD
                WHEN  "190078210"
@@ -2316,13 +2290,13 @@
            END-IF
       *
            .
-       GAIHAKU-NYUINKHN-SET-EXT.
+       20011231-GAIHAKU-NYUINKHN-SET-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００２）
       *****************************************************************
-       RECE62-TENSOU23-SEC                 SECTION.
+       2001126-RECE62-TENSOU23-SEC                 SECTION.
       *
            IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
@@ -2331,7 +2305,7 @@
                             UNTIL    ACCT-IDX   >      31
                         IF  WRK-DAY1(ACCT-IDX)     NOT =    ZERO 
                         AND ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
-                            PERFORM      SRYACCT-GET-SEC
+                            PERFORM      20011261-SRYACCT-GET-SEC
                         END-IF
                  END-PERFORM
            END-IF
@@ -2366,7 +2340,7 @@
                                 UNTIL    ACCT-IDX   >      31
                           IF  WRK-DAY1(ACCT-IDX)     NOT =    ZERO 
                           AND ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
-                              PERFORM      SRYACCT-GET-SEC
+                              PERFORM      20011261-SRYACCT-GET-SEC
                           END-IF
                      END-PERFORM
                  END-IF
@@ -2374,13 +2348,13 @@
            END-PERFORM
       *
            .
-       RECE62-TENSOU23-EXT.
+       2001126-RECE62-TENSOU23-EXT.
            EXIT.
       *
       **************************************************************
       *    診療会計の入院基本料加減算点数の計算
       **************************************************************
-       SRYACCT-GET-SEC           SECTION.
+       20011261-SRYACCT-GET-SEC           SECTION.
       *
            EVALUATE   WRK-DAY1-NYUTENTTLKBN(ACCT-IDX)
               WHEN   903
@@ -2443,13 +2417,13 @@
            END-EVALUATE
       *
            .
-       SRYACCT-GET-EXT.
+       20011261-SRYACCT-GET-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの編集（Ｆ００２）
       *****************************************************************
-       RECE62-HENSYU3-SEC                SECTION.
+       200113-RECE62-HENSYU3-SEC                SECTION.
       *
            INITIALIZE                            NYUINACCT-REC
            MOVE    RECE62-HOSPID         TO      NACCT-HOSPID
@@ -2483,7 +2457,7 @@
                               IF   WRK-DAY1-NYUTENTTLKBN(IDY) = 903
                               AND  NACCT-ZAITEN    NOT =    ZERO  
                               AND  NACCT-DAY(IDY)  NOT =    ZERO  
-                                   PERFORM   NYUINKHN-GET3-SEC
+                                   PERFORM   2001131-NYUINKHN-GET3-SEC
                                    MOVE    31    TO    IDY
                               END-IF
                               MOVE    10    TO    IDX1
@@ -2541,7 +2515,7 @@
                               IF   (NACCT-ZAITEN    NOT =    ZERO)  
                               AND  (NACCT-DAY(IDY)  NOT =    ZERO)  
                               AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
-                                   PERFORM   NYUINKHN-GET3-SEC
+                                   PERFORM   2001131-NYUINKHN-GET3-SEC
                                    MOVE    31    TO    IDY
                               END-IF
                               MOVE    10    TO    IDX1
@@ -2600,7 +2574,7 @@
                                   UNTIL    ACCT-IDX   >   31
                                   IF  WRK-DAY1(ACCT-IDX)   NOT = ZERO 
                                   AND ACCT-DAY(1 ACCT-IDX) NOT = ZERO
-                                        PERFORM   ACCTKHN-GET3-SEC
+                                        PERFORM 2001132-ACCTKHN-GET3-SEC
                                         MOVE  31  TO  ACCT-IDX
                                   END-IF
                                END-PERFORM
@@ -2633,7 +2607,7 @@
       ***        END-IF
                  MOVE    WRK-SRYYMD-TAIHI  TO   WRK-SRYYMD
       *
-                 PERFORM   RYAKUSYO-HENSYU-SEC
+                 PERFORM   500-RYAKUSYO-HENSYU-SEC
                END-IF
       *
                IF   FLG-MIJISI-IRYO    =   1
@@ -2644,7 +2618,7 @@
       ***        END-IF
                  MOVE    WRK-SRYYMD-TAIHI  TO   WRK-SRYYMD
       *
-                 PERFORM   RYAKUSYO-HENSYU-SEC
+                 PERFORM   500-RYAKUSYO-HENSYU-SEC
                END-IF
       *
                IF   FLG-MIJISI-JYOKU   =   1
@@ -2655,19 +2629,19 @@
       ***        END-IF
                  MOVE    WRK-SRYYMD-TAIHI  TO   WRK-SRYYMD
       *
-                 PERFORM   RYAKUSYO-HENSYU-SEC
+                 PERFORM   500-RYAKUSYO-HENSYU-SEC
                END-IF
       *
            END-IF
       *
            .
-       RECE62-HENSYU3-EXT.
+       200113-RECE62-HENSYU3-EXT.
            EXIT.
       *
       **************************************************************
       *    入院略称の取得
       **************************************************************
-       NYUINKHN-GET3-SEC           SECTION.
+       2001131-NYUINKHN-GET3-SEC           SECTION.
       *
            INITIALIZE                      NYUINACT-REC
            MOVE    NACCT-HOSPID       TO   NSRY-HOSPID
@@ -2700,7 +2674,7 @@
                        MOVE    NACCT-SRYYM    TO  WRK-SRYYMD(1:6)
                        MOVE    "01"           TO  WRK-SRYYMD(7:2)
       *
-                       PERFORM   RYAKUSYO-HENSYU-SEC
+                       PERFORM   500-RYAKUSYO-HENSYU-SEC
       *
                        MOVE    "DBCLOSE"               TO  MCP-FUNC
                        MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
@@ -2724,13 +2698,13 @@
                                            MCPDATA-REC
       *
            .
-       NYUINKHN-GET3-EXT.
+       2001131-NYUINKHN-GET3-EXT.
            EXIT.
       *
       **************************************************************
       *    入院略称の取得（診療会計）
       **************************************************************
-       ACCTKHN-GET3-SEC           SECTION.
+       2001132-ACCTKHN-GET3-SEC           SECTION.
       *
            INITIALIZE                           SRYACT-REC
            MOVE    ACCT-HOSPID          TO      SRY-HOSPID
@@ -2759,7 +2733,7 @@
                        MOVE    ACCT-SRYYM         TO  WRK-SRYYMD(1:6)
                        MOVE    "01"               TO  WRK-SRYYMD(7:2)
       *
-                       PERFORM   RYAKUSYO-HENSYU-SEC
+                       PERFORM   500-RYAKUSYO-HENSYU-SEC
       *
                        MOVE    "DBCLOSE"               TO  MCP-FUNC
                        MOVE    "NYUINRYAKUSHO-KEY"     TO  ORC-DBPATH
@@ -2781,99 +2755,15 @@
                                            MCPDATA-REC
       *
            .
-       ACCTKHN-GET3-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入院略称の編集
-      *****************************************************************
-       RYAKUSYO-HENSYU-SEC                SECTION.
-      *
-           MOVE    SPACE         TO   NYURYAKUSHO-REC
-           INITIALIZE                 NYURYAKUSHO-REC
-      *
-           MOVE    WRK-SRYCD     TO   NYURYAKUSHO-SRYCD
-           MOVE    WRK-SRYYMD    TO   ORC-DBYMD
-           PERFORM  NYURYAKUSHO-READ-SEC
-           IF       FLG-NYURYAKUSHO    =    ZERO
-              MOVE     ZERO     TO    FLG-ARI
-              PERFORM  VARYING  ID1    FROM    1   BY  1
-                    UNTIL   ID1                   > 20
-                      OR    RECE62-NYUSYUBETU(ID1) = SPACE
-                      OR    FLG-ARI                = 1 
-                 IF  RECE62-NYUSYUBETU(ID1)  
-                            =  NYURYAKUSHO-RYAKUSHO
-                     MOVE  1   TO   FLG-ARI
-                 END-IF
-              END-PERFORM  
-              IF  FLG-ARI  =  ZERO  
-                     MOVE   NYURYAKUSHO-RYAKUSHO
-                               TO   RECE62-NYUSYUBETU(ID1)
-              END-IF
-      *
-              IF   WRK-SRYCD  =  "190109670"  OR  "190808870"
-      *
-                 MOVE     ZERO     TO    FLG-ARI
-                 PERFORM  VARYING  ID1    FROM    1   BY  1
-                       UNTIL   ID1                   > 20
-                         OR    RECE62-NYUSYUBETU(ID1) = SPACE
-                         OR    FLG-ARI                = 1 
-                    IF  RECE62-NYUSYUBETU(ID1)(1:4)   =   "有看"
-                        MOVE  1   TO   FLG-ARI
-                    END-IF
-                 END-PERFORM  
-                 IF  FLG-ARI  =  ZERO  
-                        MOVE   "有看"
-                                  TO   RECE62-NYUSYUBETU(ID1)(1:4)
-                 END-IF
-      *
-              END-IF
-              IF   WRK-SRYCD  =  "190117070"  OR  "190813270"
-      *
-                 MOVE     ZERO     TO    FLG-ARI
-                 PERFORM  VARYING  ID1    FROM    1   BY  1
-                       UNTIL   ID1                   > 20
-                         OR    RECE62-NYUSYUBETU(ID1) = SPACE
-                         OR    FLG-ARI                = 1 
-                    IF  RECE62-NYUSYUBETU(ID1)(1:4)   =   "有医"
-                        MOVE  1   TO   FLG-ARI
-                    END-IF
-                 END-PERFORM  
-                 IF  FLG-ARI  =  ZERO  
-                        MOVE   "有医"
-                                  TO   RECE62-NYUSYUBETU(ID1)(1:4)
-                 END-IF
-      *
-              END-IF
-              IF   WRK-SRYCD  =  "190117670"  OR  "190813870"
-      *
-                 MOVE     ZERO     TO    FLG-ARI
-                 PERFORM  VARYING  ID1    FROM    1   BY  1
-                       UNTIL   ID1                   > 20
-                         OR    RECE62-NYUSYUBETU(ID1) = SPACE
-                         OR    FLG-ARI                = 1 
-                    IF  RECE62-NYUSYUBETU(ID1)(1:6)   =   "有看医"
-                        MOVE  1   TO   FLG-ARI
-                    END-IF
-                 END-PERFORM  
-                 IF  FLG-ARI  =  ZERO  
-                        MOVE   "有看医"
-                                  TO   RECE62-NYUSYUBETU(ID1)(1:6)
-                 END-IF
-      *
-              END-IF
-      *
-           END-IF                  
-      *
-           .
-       RYAKUSYO-HENSYU-EXT.
+       2001132-ACCTKHN-GET3-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの編集（Ｆ００２）
       *****************************************************************
-       RECE62-HENSYU4-SEC                SECTION.
+       200114-RECE62-HENSYU4-SEC                SECTION.
       *
+      *    食事略称の取得
            PERFORM  VARYING  IDY    FROM    1   BY  1
                           UNTIL   IDY     >       31
       *
@@ -2885,7 +2775,7 @@
                  IF   WRK-DAY5(IDY)  =  RECE62-HKNCOMBI (IDX1)
                       IF   (WRK-DAY4(IDY)   NOT =    ZERO)  
                       AND  (WRK-DAY2(IDY)  =    ZERO  OR  4)
-                           PERFORM   NYUINKHN-GET4-SEC
+                           PERFORM   201141-NYUINKHN-GET4-SEC
                       END-IF
                       MOVE    10    TO    IDX1
                  END-IF
@@ -2898,62 +2788,62 @@
            END-PERFORM
       *
            .
-       RECE62-HENSYU4-EXT.
+       200114-RECE62-HENSYU4-EXT.
            EXIT.
       *
       **************************************************************
       *    食事略称の取得
       **************************************************************
-       NYUINKHN-GET4-SEC           SECTION.
+       201141-NYUINKHN-GET4-SEC           SECTION.
       *
            EVALUATE   WRK-DAY4(IDY)
              WHEN  1
                 EVALUATE   WRK-SHOKUJIRYOYO
                   WHEN  1
                      MOVE    "197000110"  TO  WRK-SRYCD
-                     PERFORM  NYUINKHN-SET4-SEC
+                     PERFORM  2011411-NYUINKHN-SET4-SEC
                      IF    WRK-TOKUKANRIKASAN  =  1
                         MOVE    "197000270"  TO  WRK-SRYCD
-                        PERFORM  NYUINKHN-SET4-SEC
+                        PERFORM  2011411-NYUINKHN-SET4-SEC
                      END-IF
                      IF    WRK-DAY41(IDY)  =  1
                         MOVE    "197000570"  TO  WRK-SRYCD
-                        PERFORM  NYUINKHN-SET4-SEC
+                        PERFORM  2011411-NYUINKHN-SET4-SEC
                      END-IF
                   WHEN  2
                      MOVE    "197000710"  TO  WRK-SRYCD
-                     PERFORM  NYUINKHN-SET4-SEC
+                     PERFORM  2011411-NYUINKHN-SET4-SEC
                 END-EVALUATE
              WHEN  2
              WHEN  3
              WHEN  4
                      MOVE    "197000110"  TO  WRK-SRYCD
-                     PERFORM  NYUINKHN-SET4-SEC
+                     PERFORM  2011411-NYUINKHN-SET4-SEC
                      IF    WRK-TOKUKANRIKASAN  =  1
                         MOVE    "197000270"  TO  WRK-SRYCD
-                        PERFORM  NYUINKHN-SET4-SEC
+                        PERFORM  2011411-NYUINKHN-SET4-SEC
                      END-IF
                      IF    WRK-DAY41(IDY)  =  1
                         MOVE    "197000570"  TO  WRK-SRYCD
-                        PERFORM  NYUINKHN-SET4-SEC
+                        PERFORM  2011411-NYUINKHN-SET4-SEC
                      END-IF
            END-EVALUATE
       *
            .
-       NYUINKHN-GET4-EXT.
+       201141-NYUINKHN-GET4-EXT.
            EXIT.
       *
       **************************************************************
       *    食事略称のセット
       **************************************************************
-       NYUINKHN-SET4-SEC           SECTION.
+       2011411-NYUINKHN-SET4-SEC           SECTION.
       *
            MOVE    SPACE          TO   NYURYAKUSHO-REC
            INITIALIZE                  NYURYAKUSHO-REC
            MOVE    WRK-SRYCD      TO   NYURYAKUSHO-SRYCD
            MOVE    RECE62-SRYYM   TO   ORC-DBYMD(1:6)
            MOVE    "01"           TO   ORC-DBYMD(7:2)
-           PERFORM  NYURYAKUSHO-READ-SEC
+           PERFORM  900-NYURYAKUSHO-READ-SEC
            IF       FLG-NYURYAKUSHO    =    ZERO
                 MOVE     ZERO     TO    FLG-ARI
                 PERFORM  VARYING  ID1    FROM    1   BY  1
@@ -2978,16 +2868,16 @@
                                            MCPDATA-REC
       *
            .
-       NYUINKHN-SET4-EXT.
+       2011411-NYUINKHN-SET4-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの編集（Ｆ００２）
       *****************************************************************
-       RECE62-HENSYU9-SEC                SECTION.
+       200115-RECE62-HENSYU9-SEC                SECTION.
       *
       *     点滴薬剤（器材）まとめ処理
-           PERFORM    TENTEK-MATOME-SEC
+           PERFORM    2001151-TENTEK-MATOME-SEC
       *
            INITIALIZE    WRK-TENTEK-FLG-TABLE
       *
@@ -3016,8 +2906,8 @@
                            MOVE   IDX1          TO   TENTEK-IDX
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
-                               PERFORM   KUMIAWASE-HANBETU-SEC
-                               PERFORM   RECE62-TENSOU9-SEC
+                               PERFORM   500-KUMIAWASE-HANBETU-SEC
+                               PERFORM   2001152-RECE62-TENSOU9-SEC
                            END-IF
                            MOVE   10            TO   IDX1
                        END-IF
@@ -3035,13 +2925,13 @@
                                            MCPDATA-REC
       *
            .
-       RECE62-HENSYU9-EXT.
+       200115-RECE62-HENSYU9-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００２）
       *****************************************************************
-       RECE62-TENSOU9-SEC                 SECTION.
+       2001152-RECE62-TENSOU9-SEC                 SECTION.
       *
            IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
@@ -3079,7 +2969,7 @@
                        MOVE  1        TO   WRK-TENTEK-FLG(TENTEK-IDX 1)
                    END-IF
                    IF        ACCT-SRYKBN     =    "33"
-                       PERFORM   TENTEK-SYUTEN-SEC
+                       PERFORM   20011521-TENTEK-SYUTEN-SEC
                        COMPUTE   TBL-TOTALTEN-ACCT(1) =  
                                  TBL-TOTALTEN-ACCT(1) +
                                  WRK-TENTEK-SYUTEN
@@ -3173,7 +3063,7 @@
                                                    (TENTEK-IDX KH-IDX)
                        END-IF
                        IF        ACCT-SRYKBN     =    "33"
-                           PERFORM   TENTEK-SYUTEN-SEC
+                           PERFORM   20011521-TENTEK-SYUTEN-SEC
                            IF     FLG-FUKUSHI =   1
                            AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
                                                    >=  "1" AND <=  "8"
@@ -3210,13 +3100,13 @@
            END-PERFORM
       *
            .
-       RECE62-TENSOU9-EXT.
+       2001152-RECE62-TENSOU9-EXT.
            EXIT.
       *
       *****************************************************************
       *    点滴注射の薬剤（器材）点数算定
       *****************************************************************
-       TENTEK-MATOME-SEC                    SECTION.
+       2001151-TENTEK-MATOME-SEC                    SECTION.
       *
            INITIALIZE                  WRK-TENTEK-TABLE
       *
@@ -3263,13 +3153,13 @@
            END-PERFORM
       *
            .
-       TENTEK-MATOME-EXT.
+       2001151-TENTEK-MATOME-EXT.
            EXIT.
       *
       *****************************************************************
       *    点滴注射の手技点数算定
       *****************************************************************
-       TENTEK-SYUTEN-SEC                    SECTION.
+       20011521-TENTEK-SYUTEN-SEC                    SECTION.
       *
       *診療行為テーブルから診療種別区分の取得
            INITIALIZE                      SRYACT-REC
@@ -3315,13 +3205,13 @@
                                            MCPDATA-REC
       *
            .
-       TENTEK-SYUTEN-EXT.
+       20011521-TENTEK-SYUTEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    実日数の項目転送（Ｆ００２）
       *****************************************************************
-       JNISSU-SET-SEC                    SECTION.
+       200116-JNISSU-SET-SEC                    SECTION.
       *
            PERFORM    VARYING    IDX    FROM   1   BY   1
                       UNTIL      IDX    >      5
@@ -3429,20 +3319,20 @@
            END-PERFORM
       *
            .
-       JNISSU-SET-EXT.
+       200116-JNISSU-SET-EXT.
            EXIT.
       *
       *****************************************************************
       *    データ更新処理（Ｆ００２）
       *****************************************************************
-       RECE62-REWRITE-SEC                SECTION.
+       200117-RECE62-REWRITE-SEC                SECTION.
       *
            REWRITE   RECE62-REC
       *
            ADD     1                   TO  CNT-MOD (IDZ)
       *
            .
-       RECE62-WRITE-EXT.
+       200117-RECE62-REWRITE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3553,6 +3443,120 @@
            DISPLAY "*** ORCR0630 END ***"
            .
        300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    組み合わせ判別（福祉用）主保険＋全国公費＋地方公費
+      *****************************************************************
+       500-KUMIAWASE-HANBETU-SEC               SECTION.
+      *
+           MOVE     ZERO      TO      FLG-FUKUSHI
+      *
+           IF      IDZ             =   1 
+             EVALUATE   WRK-PREFNUM
+      *
+               WHEN    "38"
+      *
+                 IF ( RECE62-KOHNUMHC(IDX1 1)(1:1)  =   "0"     )  AND
+                    ( RECE62-KOHNUMHC(IDX1 2)(1:1)
+                                             >=  "1" AND <=  "8")
+      *
+                      MOVE     1       TO      FLG-FUKUSHI
+      *
+                      MOVE    "1"      TO      RECE62-FUKUSHIFLG
+      *
+                 END-IF
+      *
+             END-EVALUATE
+           END-IF
+      *
+           .
+       500-KUMIAWASE-HANBETU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院略称の編集
+      *****************************************************************
+       500-RYAKUSYO-HENSYU-SEC                SECTION.
+      *
+           MOVE    SPACE         TO   NYURYAKUSHO-REC
+           INITIALIZE                 NYURYAKUSHO-REC
+      *
+           MOVE    WRK-SRYCD     TO   NYURYAKUSHO-SRYCD
+           MOVE    WRK-SRYYMD    TO   ORC-DBYMD
+           PERFORM  900-NYURYAKUSHO-READ-SEC
+           IF       FLG-NYURYAKUSHO    =    ZERO
+              MOVE     ZERO     TO    FLG-ARI
+              PERFORM  VARYING  ID1    FROM    1   BY  1
+                    UNTIL   ID1                   > 20
+                      OR    RECE62-NYUSYUBETU(ID1) = SPACE
+                      OR    FLG-ARI                = 1 
+                 IF  RECE62-NYUSYUBETU(ID1)  
+                            =  NYURYAKUSHO-RYAKUSHO
+                     MOVE  1   TO   FLG-ARI
+                 END-IF
+              END-PERFORM  
+              IF  FLG-ARI  =  ZERO  
+                     MOVE   NYURYAKUSHO-RYAKUSHO
+                               TO   RECE62-NYUSYUBETU(ID1)
+              END-IF
+      *
+              IF   WRK-SRYCD  =  "190109670"  OR  "190808870"
+      *
+                 MOVE     ZERO     TO    FLG-ARI
+                 PERFORM  VARYING  ID1    FROM    1   BY  1
+                       UNTIL   ID1                   > 20
+                         OR    RECE62-NYUSYUBETU(ID1) = SPACE
+                         OR    FLG-ARI                = 1 
+                    IF  RECE62-NYUSYUBETU(ID1)(1:4)   =   "有看"
+                        MOVE  1   TO   FLG-ARI
+                    END-IF
+                 END-PERFORM  
+                 IF  FLG-ARI  =  ZERO  
+                        MOVE   "有看"
+                                  TO   RECE62-NYUSYUBETU(ID1)(1:4)
+                 END-IF
+      *
+              END-IF
+              IF   WRK-SRYCD  =  "190117070"  OR  "190813270"
+      *
+                 MOVE     ZERO     TO    FLG-ARI
+                 PERFORM  VARYING  ID1    FROM    1   BY  1
+                       UNTIL   ID1                   > 20
+                         OR    RECE62-NYUSYUBETU(ID1) = SPACE
+                         OR    FLG-ARI                = 1 
+                    IF  RECE62-NYUSYUBETU(ID1)(1:4)   =   "有医"
+                        MOVE  1   TO   FLG-ARI
+                    END-IF
+                 END-PERFORM  
+                 IF  FLG-ARI  =  ZERO  
+                        MOVE   "有医"
+                                  TO   RECE62-NYUSYUBETU(ID1)(1:4)
+                 END-IF
+      *
+              END-IF
+              IF   WRK-SRYCD  =  "190117670"  OR  "190813870"
+      *
+                 MOVE     ZERO     TO    FLG-ARI
+                 PERFORM  VARYING  ID1    FROM    1   BY  1
+                       UNTIL   ID1                   > 20
+                         OR    RECE62-NYUSYUBETU(ID1) = SPACE
+                         OR    FLG-ARI                = 1 
+                    IF  RECE62-NYUSYUBETU(ID1)(1:6)   =   "有看医"
+                        MOVE  1   TO   FLG-ARI
+                    END-IF
+                 END-PERFORM  
+                 IF  FLG-ARI  =  ZERO  
+                        MOVE   "有看医"
+                                  TO   RECE62-NYUSYUBETU(ID1)(1:6)
+                 END-IF
+      *
+              END-IF
+      *
+           END-IF                  
+      *
+           .
+       500-RYAKUSYO-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3681,7 +3685,7 @@
       *****************************************************************
       *    入院略称マスター読込（主キー）
       *****************************************************************
-       NYURYAKUSHO-READ-SEC        SECTION.
+       900-NYURYAKUSHO-READ-SEC        SECTION.
       *
            MOVE     ZERO       TO    FLG-NYURYAKUSHO
       *
@@ -3717,7 +3721,7 @@
            END-IF
       *
            .
-       NYURYAKUSHO-READ-EXT.
+       900-NYURYAKUSHO-READ-EXT.
            EXIT.
       *****************************************************************
       *    入院略称マスター退避ワークチェック処理

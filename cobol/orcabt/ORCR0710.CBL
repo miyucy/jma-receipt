@@ -88,6 +88,7 @@
       *  01.02.02    NACL-藤原    04/10/25  負担金額等のカスタマイズ項目
       *                                     の編集方法を変更
       *  01.02.03    NACL-藤原    04/10/30  県番号４０で国保のときは処理しない
+      *  01.02.04    NACL-藤原    04/11/01  記載なしの公費の処理
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5836,8 +5837,22 @@
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
                    OR      RECE62-ETC-KOHNUM (IDX) =   SPACE
-               MOVE    RECE62-ETC-KOHNUM (IDX) TO
+               MOVE    RECE62-ETC-KOHNUM     (IDX) TO
                                        RECE10-ETC-KOHNUM (IDX)
+               MOVE    RECE62-ETC-JNISSU   (IDX)   TO
+                                       RECE10-ETC-JNISSU   (IDX)
+               MOVE    RECE62-ETC-TOTALTEN (IDX)   TO
+                                       RECE10-ETC-TOTALTEN (IDX)
+               MOVE    RECE62-ETC-FTNMONEY (IDX)   TO
+                                       RECE10-ETC-FTNMONEY (IDX)
+               MOVE    RECE62-ETC-SHOKUJINISSU  (IDX) 
+                                                   TO
+                                       RECE10-ETC-SHOKUJINISSU (IDX)
+               MOVE    RECE62-ETC-SHOKUJIRYOYOHI (IDX) 
+                                                   TO
+                                       RECE10-ETC-SHOKUJIRYOYOHI (IDX)
+               MOVE    RECE62-ETC-SHOKUJIFTN (IDX) TO
+                                       RECE10-ETC-SHOKUJIFTN(IDX)
            END-PERFORM
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
