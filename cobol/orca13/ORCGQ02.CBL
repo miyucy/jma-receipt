@@ -54,6 +54,7 @@
       *                                   |検索を行う
       *                                   +テスト患者区分を条件に追加
       * 01.00.03     MCC-太田     02/09/12+パスをサブプロから取得
+      * 01.00.04     NACL-太田    03/05/26+老人一割、２割を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -61,20 +62,16 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *---- (01.00.01) LINE ADD START --------------------------------
       *    パラメータファイル
            SELECT  BQ01-FILE   ASSIGN  PRFNAME
                                    ORGANIZATION    IS  SEQUENTIAL.
-      *---- (01.00.01) LINE ADD END   --------------------------------
       *
        DATA                            DIVISION.
        FILE                            SECTION.
       *
-      *---- (01.00.01) LINE ADD START --------------------------------
       *    パラメータファイル
        FD  BQ01-FILE.
            COPY    "CPBQ01.INC".
-      *---- (01.00.01) LINE ADD END   --------------------------------
       *
        WORKING-STORAGE                 SECTION.
       *
@@ -84,7 +81,6 @@
       *    画面用ＳＰＡ
            COPY    "Q01SCR-SPA".
       *
-      *---- (01.00.01) LINE ADD START --------------------------------
       *    コンスタント値
            COPY    "ENUM-VALUE".
       *
@@ -96,7 +92,6 @@
            03  PRFNAME-SYSYMD      PIC X(08).
            03  PRFNAME-SYSTIME     PIC 9(08).
            03  FILLER              PIC X(04)   VALUE   ".TXT".
-      *---- (01.00.01) LINE ADD END   --------------------------------
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                             PIC 9(01).
@@ -105,10 +100,8 @@
            03  FLG-JYOKEN                          PIC 9(01).
            03  FLG-JYOKEN-AND                      PIC 9(01).
            03  FLG-ENTRYCHK                        PIC 9(01).
-      *----(01.00.02) LINE ADD START ----------------------------------
            03  FLG-JOBEND                          PIC 9(01).
            03  FLG-HKNKOHSEL                       PIC 9(01).
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *
       *    添字領域
        01  IDX-AREA.
@@ -143,12 +136,13 @@
            03  WRK-SQL                             PIC X(20000).
            03  WRK-SQL-COUNT                       PIC X(20000).
            03  WRK-STK-PTID                        PIC 9(10).
+           03  WRK-STSRYYMD                        PIC X(08).
            03  WRK-EDSRYYMD                        PIC X(08).
+           03  WRK-STBIRTHDAY                      PIC X(08).
            03  WRK-EDBIRTHDAY                      PIC X(08).
-      *----(01.00.01) LINE ADD START ----------------------------------
+           03  WRK-STLASTYMD                       PIC X(08).
            03  WRK-EDLASTYMD                       PIC X(08).
            03  WRK-EDPTNUM                         PIC X(20).
-      *----(01.00.01) LINE ADD END   ----------------------------------
            03  WRK-ZZZZ9                           PIC ZZZZ9.
            03  WRK-TOTAL                           PIC ZZZ,ZZZ,ZZ9.
            03  WRK-JYOKEN-PNT                      PIC 9(05).
@@ -158,17 +152,9 @@
            03  WRK-NUM                             PIC 9(10).
            03  WRK-KEKKALST-NO-ST                  PIC 9(05).
            03  WRK-KEKKALST-NO-ED                  PIC 9(05).
-      *----(01.00.01) LINE DEL START ----------------------------------
-      *    03  WRK-QIDMSG                          PIC X(80).
-      *---- (01.00.01) LINE DEL END   --------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
            03  WRK-QIDMSG                          PIC X(80).
-      *----(01.00.02) LINE ADD END   ----------------------------------
            03  WRK-KANACHK-MAE-INPUT               PIC X(400).
-      *----(01.00.01) LINE ADD START ----------------------------------
            03  WRK-PROC-FLG                        PIC 9(1).
-      *---- (01.00.01) LINE ADD END   --------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
            03  WRK-SHORIERR                        PIC X(200).
            03  WRK-CALC-YMD1.
                05  WRK-CALC-YY1                    PIC 9(04).
@@ -185,64 +171,62 @@
                05  WRK-AGE-Z                       PIC ---9.
                05  WRK-AGE-MEI                     PIC X(04).
            03  WRK-KJYNYMD                         PIC 9(08).
-      *----(01.00.02) LINE ADD END   ----------------------------------
+           03  WRK-MCP-WIDGET                      PIC X(64).
       *
        01  WRK-WIDGET-AREA.
            03  WRK-WIDGET                          PIC X(20).
       *
            03  WRK-WIDGET-R1   REDEFINES   WRK-WIDGET.
-               05  WRK-WIDGET-R1-DAMMY1            PIC X(02).
+               05  WRK-WIDGET-R1-DAMMY1            PIC X(01).
                05  WRK-WIDGET1                     PIC 9(01).
-               05  WRK-WIDGET-R1-DAMMY2            PIC X(17).
+               05  WRK-WIDGET-R1-DAMMY2            PIC X(18).
       *
            03  WRK-WIDGET-R2   REDEFINES   WRK-WIDGET.
-               05  WRK-WIDGET-R2-DAMMY1            PIC X(03).
+               05  WRK-WIDGET-R2-DAMMY1            PIC X(02).
                05  WRK-WIDGET2                     PIC 9(01).
-               05  WRK-WIDGET-R2-DAMMY2            PIC X(16).
+               05  WRK-WIDGET-R2-DAMMY2            PIC X(17).
       *
            03  WRK-WIDGET-R3   REDEFINES   WRK-WIDGET.
-               05  WRK-WIDGET-R3-DAMMY1            PIC X(04).
+               05  WRK-WIDGET-R3-DAMMY1            PIC X(03).
                05  WRK-WIDGET3                     PIC 9(01).
-               05  WRK-WIDGET-R3-DAMMY2            PIC X(15).
+               05  WRK-WIDGET-R3-DAMMY2            PIC X(16).
       *
            03  WRK-WIDGET-R4   REDEFINES   WRK-WIDGET.
-               05  WRK-WIDGET-R4-DAMMY1            PIC X(05).
+               05  WRK-WIDGET-R4-DAMMY1            PIC X(04).
                05  WRK-WIDGET4                     PIC 9(01).
-               05  WRK-WIDGET-R4-DAMMY2            PIC X(14).
+               05  WRK-WIDGET-R4-DAMMY2            PIC X(15).
       *
            03  WRK-WIDGET-R5   REDEFINES   WRK-WIDGET.
-               05  WRK-WIDGET-R5-DAMMY1            PIC X(06).
+               05  WRK-WIDGET-R5-DAMMY1            PIC X(05).
                05  WRK-WIDGET5                     PIC 9(01).
-               05  WRK-WIDGET-R5-DAMMY2            PIC X(13).
+               05  WRK-WIDGET-R5-DAMMY2            PIC X(14).
       *
            03  WRK-WIDGET-R6   REDEFINES   WRK-WIDGET.
-               05  WRK-WIDGET-R6-DAMMY1            PIC X(07).
+               05  WRK-WIDGET-R6-DAMMY1            PIC X(06).
                05  WRK-WIDGET6                     PIC 9(01).
-               05  WRK-WIDGET-R6-DAMMY2            PIC X(12).
+               05  WRK-WIDGET-R6-DAMMY2            PIC X(13).
       *
            03  WRK-WIDGET-R7   REDEFINES   WRK-WIDGET.
-               05  WRK-WIDGET-R7-DAMMY1            PIC X(08).
+               05  WRK-WIDGET-R7-DAMMY1            PIC X(07).
                05  WRK-WIDGET7                     PIC 9(01).
-               05  WRK-WIDGET-R7-DAMMY2            PIC X(11).
+               05  WRK-WIDGET-R7-DAMMY2            PIC X(12).
+      *
+           03  WRK-WIDGET-R8   REDEFINES   WRK-WIDGET.
+               05  WRK-WIDGET-R8-DAMMY1            PIC X(08).
+               05  WRK-WIDGET8                     PIC 9(01).
+               05  WRK-WIDGET-R8-DAMMY2            PIC X(11).
       *
       *    固定値領域
        01  CONST-AREA.
            03  CONST-PTINF-MAX     PIC  9(05)  VALUE 50.
            03  CONST-KMK-ITEM-AREA.
-      *----(01.00.01) LINE ADD START ----------------------------------
                05  FILLER          PIC  X(10)  VALUE "ptnum".
-      *----(01.00.01) LINE ADD END   ----------------------------------
                05  FILLER          PIC  X(10)  VALUE "kananame".
                05  FILLER          PIC  X(10)  VALUE "sex".
                05  FILLER          PIC  X(10)  VALUE "birthday".
                05  FILLER          PIC  X(10)  VALUE "home_adrs".
            03  CONST-KMK-ITEM-R    REDEFINES   CONST-KMK-ITEM-AREA.
-      *----(01.00.01) LINE DEL START ----------------------------------
-      *        05  CONST-KMK-ITEM  PIC  X(10)  OCCURS  4.
-      *----(01.00.01) LINE DEL END   ----------------------------------
-      *----(01.00.01) LINE ADD START ----------------------------------
                05  CONST-KMK-ITEM  PIC  X(10)  OCCURS  5.
-      *----(01.00.01) LINE ADD END   ----------------------------------
       *
            03  CONST-ORDER-AREA.
                05  FILLER          PIC  X(5)   VALUE "asc".
@@ -258,18 +242,14 @@
                05  FILLER          PIC X(10)   VALUE   "診療行為".
            03  CONST-JYOKENMEI-R   REDEFINES   CONST-JYOKENMEI-AREA.
                05  CONST-JYOKENMEI PIC X(10)   OCCURS  5.
-      *----(01.00.01) LINE ADD START ----------------------------------
            03  CONST-SHELNAME      PIC X(100)
                VALUE   "scripts/allways/ORCBQ01.sh".
            03  CONST-LINE                          PIC 9(05)
                VALUE   30.
-      *----(01.00.01) LINE ADD END   ----------------------------------
-      *----(01.00.02) LINE ADD START ----------------------------------
            03  CONST-JOBID                         PIC 9(07)
                VALUE   1.
            03  CONST-JOB-SHELLID                   PIC X(08)
                VALUE   "ORCBQ01".
-      *----(01.00.02) LINE ADD END   ----------------------------------
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1256,22 +1236,44 @@
        3101-SQL-EDIT-SEC               SECTION.
       *
       *----(01.00.01) LINE ADD START ----------------------------------
-           IF      ( SPA-Q01-EDSRYYMD  =   ZERO )
+           IF      ( SPA-Q01-STSRYYMD  =   SPACE )
+               MOVE    ALL "0"     TO  WRK-STSRYYMD
+           ELSE
+               MOVE    SPA-Q01-STSRYYMD
+                                   TO  WRK-STSRYYMD
+           END-IF
+      *
+           IF      ( SPA-Q01-EDSRYYMD  =   SPACE )
                MOVE    ALL "9"     TO  WRK-EDSRYYMD
            ELSE
                MOVE    SPA-Q01-EDSRYYMD
                                    TO  WRK-EDSRYYMD
            END-IF
       *
+           IF      ( SPA-Q01-STBIRTHDAY
+                                       =   SPACE )
+               MOVE    ALL "0"     TO  WRK-STBIRTHDAY
+           ELSE
+               MOVE    SPA-Q01-STBIRTHDAY
+                                   TO  WRK-STBIRTHDAY
+           END-IF
+      *
            IF      ( SPA-Q01-EDBIRTHDAY
-                                       =   ZERO )
+                                       =   SPACE )
                MOVE    ALL "9"     TO  WRK-EDBIRTHDAY
            ELSE
                MOVE    SPA-Q01-EDBIRTHDAY
                                    TO  WRK-EDBIRTHDAY
            END-IF
       *
-           IF      ( SPA-Q01-EDLASTYMD =   ZERO )
+           IF      ( SPA-Q01-STLASTYMD =   SPACE )
+               MOVE    ALL "0"     TO  WRK-STLASTYMD
+           ELSE
+               MOVE    SPA-Q01-STLASTYMD
+                                   TO  WRK-STLASTYMD
+           END-IF
+      *
+           IF      ( SPA-Q01-EDLASTYMD =   SPACE )
                MOVE    ALL "9"     TO  WRK-EDLASTYMD
            ELSE
                MOVE    SPA-Q01-EDLASTYMD
@@ -1587,7 +1589,7 @@
       *----(01.00.01) LINE DEL END   ----------------------------------
       *----(01.00.01) LINE ADD START ----------------------------------
            STRING  "((b.lastymd >= '"          DELIMITED   BY  SIZE
-                   SPA-Q01-STLASTYMD           DELIMITED   BY  SIZE
+                   WRK-STLASTYMD               DELIMITED   BY  SIZE
                    "') and "                   DELIMITED   BY  SIZE
                    "(b.lastymd <= '"           DELIMITED   BY  SIZE
                    WRK-EDLASTYMD               DELIMITED   BY  SIZE
@@ -1612,7 +1614,7 @@
            PERFORM 900-SQL-JYOKEN-EDIT1-SEC
       *
       *    STRING "((c.sryymd >= '"
-      *           SPA-Q01-STSRYYMD
+      *           WRK-STSRYYMD
       *           "') and (c.sryymd <= '"
       *           WRK-EDSRYYMD
       *           "')) and"
@@ -1624,7 +1626,7 @@
            STRING "(((c.sryymd <= '"
                   WRK-EDSRYYMD
                   "') and (c.tenkiymd >= '"
-                  SPA-Q01-STSRYYMD
+                  WRK-STSRYYMD
                   "')) or "
                   "((c.sryymd <= '"
                   WRK-EDSRYYMD
@@ -1746,7 +1748,7 @@
       *    STRING "((d.tekstymd <= '"
       *           WRK-EDSRYYMD
       *           "') and (d.tekedymd >= '"
-      *           SPA-Q01-STSRYYMD
+      *           WRK-STSRYYMD
       *           "')) and"
       *    DELIMITED   BY  SIZE
       *    INTO        WRK-SQL
@@ -1758,7 +1760,7 @@
                STRING "((i.sryymd <= '"
                       WRK-EDSRYYMD
                       "') and (i.sryymd >= '"
-                      SPA-Q01-STSRYYMD
+                      WRK-STSRYYMD
                       "')) and"
                DELIMITED   BY  SIZE
                INTO        WRK-SQL
@@ -1974,7 +1976,7 @@
       *    STRING "((e.tekstymd <= '"
       *           WRK-EDSRYYMD
       *           "') and (e.tekedymd >= '"
-      *           SPA-Q01-STSRYYMD
+      *           WRK-STSRYYMD
       *           "')) and"
       *    DELIMITED   BY  SIZE
       *    INTO        WRK-SQL
@@ -1986,7 +1988,7 @@
                STRING "((i.sryymd <= '"
                       WRK-EDSRYYMD
                       "') and (i.sryymd >= '"
-                      SPA-Q01-STSRYYMD
+                      WRK-STSRYYMD
                       "')) and"
                DELIMITED   BY  SIZE
                INTO        WRK-SQL
@@ -2030,15 +2032,33 @@
       *            END-STRING
       *----(01.00.02) LINE DEL END   ----------------------------------
       *----(01.00.02) LINE ADD START ----------------------------------
-                   STRING  "("             DELIMITED   BY  SIZE
-                       WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
-                       ".kohnum ='"        DELIMITED   BY  SIZE
-                       SPA-Q01-KOHNUM (IDX1)(1: WRK-KIGO-LEN)
-                                           DELIMITED   BY  SIZE
-                       "')"                DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
+                   IF    ( SPA-Q01-KOHNUM (IDX1)   =   "027" )
+                    AND  ( SPA-Q01-PAYKBN (IDX1)   =   "01" OR "02" )
+                       STRING  "(("            DELIMITED   BY  SIZE
+                           WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
+                           ".kohnum ='"        DELIMITED   BY  SIZE
+                           SPA-Q01-KOHNUM (IDX1)(1: WRK-KIGO-LEN)
+                                               DELIMITED   BY  SIZE
+                           "')and("            DELIMITED   BY  SIZE
+                           WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
+                           ".paykbn ='"        DELIMITED   BY  SIZE
+                           SPA-Q01-PAYKBN (IDX1)
+                                               DELIMITED   BY  SIZE
+                           "'))"               DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   ELSE
+                       STRING  "("             DELIMITED   BY  SIZE
+                           WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
+                           ".kohnum ='"        DELIMITED   BY  SIZE
+                           SPA-Q01-KOHNUM (IDX1)(1: WRK-KIGO-LEN)
+                                               DELIMITED   BY  SIZE
+                           "')"                DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-IF
       *----(01.00.02) LINE ADD END   ----------------------------------
                END-IF
            END-PERFORM
@@ -2126,7 +2146,7 @@
       *
       *    最終受診日検索条件編集
            STRING  "(f.sryymd >= '"            DELIMITED   BY  SIZE
-                   SPA-Q01-STSRYYMD            DELIMITED   BY  SIZE
+                   WRK-STSRYYMD                DELIMITED   BY  SIZE
                    "') and (f.sryymd <= '"     DELIMITED   BY  SIZE
                    WRK-EDSRYYMD                DELIMITED   BY  SIZE
                    "')"                        DELIMITED   BY  SIZE
@@ -2151,7 +2171,7 @@
            STRING "((g.sryym <= '"
                   WRK-EDSRYYMD (1:6)
                   "') and (g.sryym >= '"
-                  SPA-Q01-STSRYYMD  (1:6)
+                  WRK-STSRYYMD  (1:6)
                   "')) and"
            DELIMITED   BY  SIZE
            INTO        WRK-SQL
@@ -2362,8 +2382,8 @@
       *****************************************************************
        3102-BIRTH-SELECT-EDIT-SEC          SECTION.
       *
-           IF      ( SPA-Q01-STBIRTHDAY    =   ZERO )
-            AND    ( SPA-Q01-EDBIRTHDAY    =   ZERO )
+           IF      ( SPA-Q01-STBIRTHDAY    =   SPACE )
+            AND    ( SPA-Q01-EDBIRTHDAY    =   SPACE )
                GO  TO  3102-BIRTH-SELECT-EDIT-EXT
            END-IF
       *
@@ -2372,7 +2392,7 @@
            PERFORM 900-SQL-JYOKEN-EDIT2-SEC
       *
            STRING  "(birthday >= '"        DELIMITED   BY  SIZE
-                   SPA-Q01-STBIRTHDAY      DELIMITED   BY  SIZE
+                   WRK-STBIRTHDAY          DELIMITED   BY  SIZE
                    "') and "               DELIMITED   BY  SIZE
                    "(birthday  <= '"       DELIMITED   BY  SIZE
                    WRK-EDBIRTHDAY          DELIMITED   BY  SIZE
@@ -3111,8 +3131,8 @@
       *****************************************************************
        480-OUT-SIJI-CALL-SEC           SECTION.
       *
-           MOVE    SPACE           TO  SPA-Q02-Q100-AREA
-           INITIALIZE                  SPA-Q02-Q100-AREA
+           MOVE    SPACE           TO  SPA-Q02-Q100-SENI-AREA
+           INITIALIZE                  SPA-Q02-Q100-SENI-AREA
       *
            MOVE    WRK-PROC-FLG    TO  SPA-Q02-Q100-PROC-FLG
            MOVE    1               TO  SPA-Q02-Q100-STNUM

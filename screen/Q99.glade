@@ -5,19 +5,16 @@
   <name>Q99</name>
   <program_name>Q99</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
 </project>
 
 <widget>
   <class>GtkWindow</class>
   <name>Q99</name>
   <width>700</width>
-  <height>500</height>
+  <height>600</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -28,7 +25,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Thu, 11 Jan 2001 08:24:34 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -50,7 +47,7 @@
       <class>GtkNumberEntry</class>
       <name>SELNUM</name>
       <x>80</x>
-      <y>424</y>
+      <y>520</y>
       <width>40</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -74,7 +71,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>16</x>
-      <y>464</y>
+      <y>568</y>
       <width>62</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -94,33 +91,19 @@
     </widget>
 
     <widget>
-      <class>GtkButton</class>
-      <name>B12</name>
-      <x>628</x>
-      <y>464</y>
-      <width>62</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F12</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 11 Jan 2001 08:25:45 GMT</last_modification_time>
-      </signal>
-      <label>確定</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>0</x>
+      <y>544</y>
+      <width>720</width>
+      <height>16</height>
     </widget>
 
     <widget>
       <class>GtkLabel</class>
       <name>label4</name>
       <x>16</x>
-      <y>424</y>
+      <y>520</y>
       <width>64</width>
       <height>24</height>
       <label>選択番号</label>
@@ -133,21 +116,12 @@
     </widget>
 
     <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>0</x>
-      <y>448</y>
-      <width>720</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow1</name>
       <x>8</x>
       <y>16</y>
       <width>688</width>
-      <height>400</height>
+      <height>490</height>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>

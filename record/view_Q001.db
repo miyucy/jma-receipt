@@ -10,6 +10,7 @@ view_Q001 {
 	NUM							varchar(80);
 	KOHID						number(10);
 	KOHNUM					char(3);
+	PAYKBN					char(2);
 	FTNJANUM				char(8);
 };
 

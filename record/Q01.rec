@@ -1,19 +1,19 @@
 Q01	{
 	fixed12	{
 		STSRYYMD	{
-			value	varchar(9);
+			value	varchar(10);
 		};
 		EDSRYYMD	{
-			value	varchar(9);
+			value	varchar(10);
 		};
 		notebook3	{
 			pageno	int;
 			fixed16	{
 				STBIRTHDAY	{
-					value	varchar(9);
+					value	varchar(10);
 				};
 				EDBIRTHDAY	{
-					value	varchar(9);
+					value	varchar(10);
 				};
 				STAGE	{
 					value	varchar(3);
@@ -22,9 +22,9 @@ Q01	{
 					value	varchar(3);
 				};
 				KJYNYMD	{
-					value	varchar(9);
+					value	varchar(10);
 				};
-				CNB_SEX	{
+				CMB_SEX	{
 					SEX	{
 						value	varchar(10);
 					};
@@ -32,10 +32,10 @@ Q01	{
 					item	varchar(10)[3];
 				};
 				STLASTYMD	{
-					value	varchar(9);
+					value	varchar(10);
 				};
 				EDLASTYMD	{
-					value	varchar(9);
+					value	varchar(10);
 				};
 				STPTNUM	{
 					value	varchar(20);
@@ -132,35 +132,35 @@ Q01	{
 				HKNJANUM5	{
 					value	varchar(8);
 				};
-				CNB_HKNNUM1	{
+				CMB_HKNNUM1	{
 					HKNNUM1	{
 						value	varchar(20);
 					};
 					count	int;
 					item	varchar(20)[50];
 				};
-				CNB_HKNNUM2	{
+				CMB_HKNNUM2	{
 					HKNNUM2	{
 						value	varchar(20);
 					};
 					count	int;
 					item	varchar(20)[50];
 				};
-				CNB_HKNNUM3	{
+				CMB_HKNNUM3	{
 					HKNNUM3	{
 						value	varchar(20);
 					};
 					count	int;
 					item	varchar(20)[50];
 				};
-				CNB_HKNNUM4	{
+				CMB_HKNNUM4	{
 					HKNNUM4	{
 						value	varchar(20);
 					};
 					count	int;
 					item	varchar(20)[50];
 				};
-				CNB_HKNNUM5	{
+				CMB_HKNNUM5	{
 					HKNNUM5	{
 						value	varchar(20);
 					};
@@ -197,35 +197,35 @@ Q01	{
 				NUM5	{
 					value	varchar(40);
 				};
-				CNB_KOHNUM1	{
+				CMB_KOHNUM1	{
 					KOHNUM1	{
 						value	varchar(20);
 					};
 					count	int;
 					item	varchar(20)[150];
 				};
-				CNB_KOHNUM2	{
+				CMB_KOHNUM2	{
 					KOHNUM2	{
 						value	varchar(20);
 					};
 					count	int;
 					item	varchar(20)[150];
 				};
-				CNB_KOHNUM3	{
+				CMB_KOHNUM3	{
 					KOHNUM3	{
 						value	varchar(20);
 					};
 					count	int;
 					item	varchar(20)[150];
 				};
-				CNB_KOHNUM4	{
+				CMB_KOHNUM4	{
 					KOHNUM4	{
 						value	varchar(20);
 					};
 					count	int;
 					item	varchar(20)[150];
 				};
-				CNB_KOHNUM5	{
+				CMB_KOHNUM5	{
 					KOHNUM5	{
 						value	varchar(20);
 					};
@@ -249,13 +249,13 @@ Q01	{
 				};
 			};
 			fixed18	{
-				CNB_BYOBUN	{
+				CMB_BYOBUN	{
 					BYOBUN	{
-						value	varchar(20);
+						value	varchar(24);
 						state	int;
 					};
 					count	int;
-					item	varchar(20)[100];
+					item	varchar(24)[100];
 					state	int;
 				};
 				RDBYOMEI_U	{
@@ -354,21 +354,21 @@ Q01	{
 				};
 			};
 			fixed19	{
-				CNB_KMK1	{
+				CMB_KMK1	{
 					KMK1	{
 						value	varchar(30);
 					};
 					count	int;
 					item	varchar(30)[10];
 				};
-				CNB_KMK2	{
+				CMB_KMK2	{
 					KMK2	{
 						value	varchar(30);
 					};
 					count	int;
 					item	varchar(30)[10];
 				};
-				CNB_KMK3	{
+				CMB_KMK3	{
 					KMK3	{
 						value	varchar(30);
 					};

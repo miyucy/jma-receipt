@@ -31,6 +31,7 @@
       *                                     画面ＱＩＤ１を
       *                                     Ｑ１００に名称変更
       *                                     新たにＱＩＤ１を追加
+      * 01.00.03     NACL-太田    03/06/04  確定ボタン削除
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -247,10 +248,11 @@
            MOVE    SPACE           TO  SPA-Q99
            INITIALIZE                  SPA-Q99
       *
-           MOVE    SPACE           TO  SPA-Q01-JYUSHO2
+           MOVE    SPACE           TO  SPA-Q01-Q99-JYUSHO
       *
            INITIALIZE                  ADRS-REC
-           MOVE    SPA-Q01-POST    TO  ADRS-POST
+           MOVE    SPA-Q01-Q99-POST
+                                   TO  ADRS-POST
       *
       *    住所検索処理
            PERFORM 900-ADRS-SELECT-SEC
@@ -307,9 +309,6 @@
       *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *    確定
-               WHEN    "CLICKED"       ALSO    "B12"
-                   PERFORM 490-KAKUTEI
            END-EVALUATE
       *
            .
@@ -352,8 +351,7 @@
            IF      ( SPA-GMN-Q99-SELNUM   >=   1 )
             AND    ( SPA-GMN-Q99-SELNUM   <=   SPA-GMN-Q99-MAX )
       *
-               MOVE    SPA-GMN-Q99-SELNUM
-                                       TO   SPA-GMN-Q99-SEL
+               PERFORM 490-KAKUTEI-SEC
       *
            ELSE
                MOVE    "0001"          TO  SPA-ERRCD
@@ -374,7 +372,7 @@
                    UNTIL     ( IDX1    >      200 )
                IF      (   Q99-ADRSLIST-SELECT (IDX1)  =   "T"  )
                    MOVE    IDX1            TO      SPA-GMN-Q99-SELNUM
-                                                   SPA-GMN-Q99-SEL
+                   PERFORM 490-KAKUTEI-SEC
                    MOVE   200              TO  IDX1
                END-IF
            END-PERFORM
@@ -405,7 +403,7 @@
       *****************************************************************
       *    確定　処理
       *****************************************************************
-       490-KAKUTEI                 SECTION.
+       490-KAKUTEI-SEC             SECTION.
       *
       *    選択番号チェック
       *    １．未入力チェック
@@ -427,9 +425,9 @@
       *
       *    住所を設定し、Ｑ０１に戻る
            MOVE    SPA-GMN-Q99-POST (SPA-GMN-Q99-SELNUM)
-                                       TO  SPA-Q01-POST
+                                       TO  SPA-Q01-Q99-POST
            MOVE    SPA-GMN-Q99-ADRS (SPA-GMN-Q99-SELNUM)
-                                       TO  SPA-Q01-JYUSHO2
+                                       TO  SPA-Q01-Q99-JYUSHO
            MOVE    "Q01"               TO  SPA-SAKIPG
            MOVE    "Q99"               TO  SPA-MOTOPG
       *

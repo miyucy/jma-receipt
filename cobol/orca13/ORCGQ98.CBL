@@ -170,12 +170,11 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-      *----(01.00.02) LINE ADD START ----------------------------------
            INITIALIZE                  FLG-AREA
                                        IDX-AREA
                                        CNT-AREA
                                        WRK-AREA
-      *----(01.00.02) LINE ADD END   ----------------------------------
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-Q01FREE
       *
@@ -257,7 +256,7 @@
            MOVE    SPACE           TO  SPA-Q98
            INITIALIZE                  SPA-Q98
       *
-           MOVE    SPACE           TO  SPA-Q01-JYUSHO3
+           MOVE    SPACE           TO  SPA-Q01-Q98-JYUSHO
       *
       *    ΩªΩÍ ‘Ω∏ΩËÕ˝
            PERFORM 3101-ADRS-EDIT-SEC
@@ -578,8 +577,8 @@
            END-IF
       *
       *    ΩªΩÍ§Ú¿ﬂƒÍ§∑°¢£—£∞£±§ÀÃ·§Î
-           MOVE    SPA-GMN-Q98-POST    TO  SPA-Q01-POST2
-           MOVE    SPA-GMN-Q98-ADRS    TO  SPA-Q01-JYUSHO3
+           MOVE    SPA-GMN-Q98-POST    TO  SPA-Q01-Q98-POST
+           MOVE    SPA-GMN-Q98-ADRS    TO  SPA-Q01-Q98-JYUSHO
       *
            MOVE    "Q01"               TO  SPA-SAKIPG
            MOVE    "Q98"               TO  SPA-MOTOPG

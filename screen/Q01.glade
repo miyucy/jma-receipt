@@ -278,7 +278,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>10</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -306,7 +306,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
+      <text_max_length>10</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -354,7 +354,7 @@
 	  </signal>
 	  <editable>True</editable>
 	  <text_visible>True</text_visible>
-	  <text_max_length>9</text_max_length>
+	  <text_max_length>10</text_max_length>
 	  <text></text>
 	  <input_mode>XIM</input_mode>
 	  <xim_enabled>False</xim_enabled>
@@ -382,7 +382,7 @@
 	  </signal>
 	  <editable>True</editable>
 	  <text_visible>True</text_visible>
-	  <text_max_length>9</text_max_length>
+	  <text_max_length>10</text_max_length>
 	  <text></text>
 	  <input_mode>XIM</input_mode>
 	  <xim_enabled>False</xim_enabled>
@@ -466,7 +466,7 @@
 	  </signal>
 	  <editable>True</editable>
 	  <text_visible>True</text_visible>
-	  <text_max_length>9</text_max_length>
+	  <text_max_length>10</text_max_length>
 	  <text></text>
 	  <input_mode>XIM</input_mode>
 	  <xim_enabled>False</xim_enabled>
@@ -474,7 +474,7 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_SEX</name>
+	  <name>CMB_SEX</name>
 	  <x>728</x>
 	  <y>8</y>
 	  <width>100</width>
@@ -535,7 +535,7 @@
 	  </signal>
 	  <editable>True</editable>
 	  <text_visible>True</text_visible>
-	  <text_max_length>9</text_max_length>
+	  <text_max_length>10</text_max_length>
 	  <text></text>
 	  <input_mode>XIM</input_mode>
 	  <xim_enabled>False</xim_enabled>
@@ -563,7 +563,7 @@
 	  </signal>
 	  <editable>True</editable>
 	  <text_visible>True</text_visible>
-	  <text_max_length>9</text_max_length>
+	  <text_max_length>10</text_max_length>
 	  <text></text>
 	  <input_mode>XIM</input_mode>
 	  <xim_enabled>False</xim_enabled>
@@ -2154,7 +2154,7 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_HKNNUM1</name>
+	  <name>CMB_HKNNUM1</name>
 	  <x>170</x>
 	  <y>96</y>
 	  <width>140</width>
@@ -2194,7 +2194,7 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_HKNNUM2</name>
+	  <name>CMB_HKNNUM2</name>
 	  <x>170</x>
 	  <y>124</y>
 	  <width>140</width>
@@ -2234,7 +2234,7 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_HKNNUM3</name>
+	  <name>CMB_HKNNUM3</name>
 	  <x>170</x>
 	  <y>152</y>
 	  <width>140</width>
@@ -2274,7 +2274,7 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_HKNNUM4</name>
+	  <name>CMB_HKNNUM4</name>
 	  <x>170</x>
 	  <y>180</y>
 	  <width>140</width>
@@ -2314,7 +2314,7 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_HKNNUM5</name>
+	  <name>CMB_HKNNUM5</name>
 	  <x>170</x>
 	  <y>208</y>
 	  <width>140</width>
@@ -2634,7 +2634,7 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_KOHNUM1</name>
+	  <name>CMB_KOHNUM1</name>
 	  <x>56</x>
 	  <y>336</y>
 	  <width>168</width>
@@ -2674,7 +2674,7 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_KOHNUM2</name>
+	  <name>CMB_KOHNUM2</name>
 	  <x>56</x>
 	  <y>364</y>
 	  <width>168</width>
@@ -2714,7 +2714,7 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_KOHNUM3</name>
+	  <name>CMB_KOHNUM3</name>
 	  <x>56</x>
 	  <y>392</y>
 	  <width>168</width>
@@ -2754,7 +2754,7 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_KOHNUM4</name>
+	  <name>CMB_KOHNUM4</name>
 	  <x>56</x>
 	  <y>420</y>
 	  <width>168</width>
@@ -2794,7 +2794,7 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_KOHNUM5</name>
+	  <name>CMB_KOHNUM5</name>
 	  <x>56</x>
 	  <y>448</y>
 	  <width>168</width>
@@ -3604,7 +3604,7 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_BYOBUN</name>
+	  <name>CMB_BYOBUN</name>
 	  <x>660</x>
 	  <y>10</y>
 	  <width>175</width>
@@ -3635,7 +3635,7 @@
 	    </signal>
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
-	    <text_max_length>20</text_max_length>
+	    <text_max_length>24</text_max_length>
 	    <text></text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
@@ -4979,7 +4979,7 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_KMK1</name>
+	  <name>CMB_KMK1</name>
 	  <x>56</x>
 	  <y>92</y>
 	  <width>352</width>
@@ -5019,7 +5019,7 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_KMK2</name>
+	  <name>CMB_KMK2</name>
 	  <x>56</x>
 	  <y>124</y>
 	  <width>352</width>
@@ -5059,7 +5059,7 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CNB_KMK3</name>
+	  <name>CMB_KMK3</name>
 	  <x>56</x>
 	  <y>156</y>
 	  <width>352</width>
