@@ -90,6 +90,7 @@
                            11  SPA-GMN-RRKYMD      PIC X(10).
                            11  SPA-GMN-SRYKA       PIC X(04).
                            11  SPA-GMN-HKNCOMBI    PIC X(06).
+                           11  SPA-GMN-HONKZKKBN   PIC X(02).
                            11  SPA-GMN-BRMNUM      PIC X(09).
                    07  SPA-GMN-SELNO          PIC 9(04).
       *
@@ -186,6 +187,7 @@
            03  WRK-HKNCOMBI        PIC X(04).
            03  WRK-HKNCOMBI-MEI    PIC X(10).
            03  WRK-HKNNUM          PIC X(03).
+           03  WRK-HONKZKKBN-MEI   PIC X(02).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -861,6 +863,7 @@
       *        保険表示
                PERFORM 20123-HKNCOMBI-MEI-SEC
                MOVE    WRK-HKNCOMBI-MEI    TO  SPA-GMN-HKNCOMBI (IDX)
+               MOVE    WRK-HONKZKKBN-MEI   TO  SPA-GMN-HONKZKKBN (IDX)
       *
                MOVE    IDX                 TO  SPA-GMN-MAX
            END-IF
@@ -1133,6 +1136,7 @@
       *
            MOVE    SPACE               TO  WRK-HKNCOMBI-MEI
            MOVE    SPACE               TO  WRK-HKNNUM
+           MOVE    SPACE               TO  WRK-HONKZKKBN-MEI
       *
            IF      WRK-HKNCOMBI    NOT =   SPACE
                PERFORM 201231-HKNCOMBI-CHK1-SEC
@@ -1172,6 +1176,7 @@
            END-IF
            MOVE    SPACE               TO  WRK-HKNCOMBI-MEI
            MOVE    SPACE               TO  WRK-HKNNUM
+           MOVE    SPACE               TO  WRK-HONKZKKBN-MEI
            IF     (FLG-HKNCOMBI        =   ZERO )  AND
                   (COMB-DELKBN     NOT =   "1"  )  AND
                  ((SPA-SYSYMD          >=  COMB-TEKSTYMD ) AND
@@ -1208,6 +1213,7 @@
            END-IF
            MOVE    SPACE               TO  WRK-HKNCOMBI-MEI
            MOVE    SPACE               TO  WRK-HKNNUM
+           MOVE    SPACE               TO  WRK-HONKZKKBN-MEI
            PERFORM
                UNTIL       FLG-HKNCOMBI        =   1
                IF     (COMB-DELKBN     NOT =   "1"  )  AND
@@ -1239,6 +1245,15 @@
                MOVE    COMB-SYU-TANSEIDONAME   TO  WRK-HKNCOMBI-MEI
                MOVE    COMB-HKNNUM             TO  WRK-HKNNUM
            END-IF
+      *    本人家族
+           EVALUATE    COMB-HONKZKKBN
+               WHEN    "1"
+                   MOVE    "本"            TO  WRK-HONKZKKBN-MEI
+               WHEN    "2"
+                   MOVE    "家"            TO  WRK-HONKZKKBN-MEI
+               WHEN    OTHER
+                   MOVE    SPACE           TO  WRK-HONKZKKBN-MEI
+           END-EVALUATE
       *
            .
        20123-HKNCOMBI-MEI-EXT.
@@ -1519,6 +1534,7 @@
                MOVE    SPA-GMN-RRKYMD(IDX)     TO  P97-RRKYMD (IDX)
                MOVE    SPA-GMN-SRYKA (IDX)     TO  P97-SRYKA  (IDX)
                MOVE    SPA-GMN-HKNCOMBI(IDX)   TO  P97-HKNCOMBI (IDX)
+               MOVE    SPA-GMN-HONKZKKBN(IDX)  TO  P97-HONKZKKBN (IDX)
                MOVE    SPA-GMN-BRMNUM(IDX)     TO  P97-BRMNUM (IDX)
       *
                MOVE    IDX                     TO  P97-COUNT

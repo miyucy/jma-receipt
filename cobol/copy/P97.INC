@@ -48,5 +48,6 @@
                     06  P97-RRKYMD  PIC X(10).
                     06  P97-SRYKA   PIC X(4).
                     06  P97-HKNCOMBI  PIC X(6).
+                    06  P97-HONKZKKBN PIC X(2).
                     06  P97-BRMNUM  PIC X(10).
                   05  P97-SELECT  PIC X       OCCURS  100 TIMES.

@@ -38,7 +38,8 @@ P97	{
 					value6	varchar(10);
 					value7	varchar(4);
 					value8	varchar(6);
-					value9	varchar(10);
+					value9	varchar(2);
+					value10	varchar(10);
 				}	[100];
 				select	bool[100];
 			};
