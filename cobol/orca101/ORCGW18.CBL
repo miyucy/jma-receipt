@@ -1745,7 +1745,7 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID2
-           MOVE    SPA-WIDCD            TO  WID2-ID1CODE
+           MOVE    SPA-WIDCD2           TO  WID2-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID2-ID1MSG
            MOVE    "いいえ"             TO  WID2-B01 
            MOVE    "は  い"             TO  WID2-B12 
