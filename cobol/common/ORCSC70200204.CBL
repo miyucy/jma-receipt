@@ -1811,7 +1811,9 @@
                MOVE    IDX-SAT             TO  IDX-S
                MOVE    ZERO                TO  FLG-SATU
                PERFORM 1003-JIDOU-CHK-SEC
-               PERFORM 1002-JIDOUSET-SEC
+               IF      FLG-ARI             =   ZERO
+                   PERFORM 1002-JIDOUSET-SEC
+               END-IF
            END-IF
       *
       *
