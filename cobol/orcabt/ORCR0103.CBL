@@ -29,6 +29,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    02.10.21  病名編集時に半角空白を全角へ変換
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1818,6 +1819,8 @@
            END-IF    
       *
            MOVE    WRK-BYOMEI2 TO  HC06-TEKIYO (WRK-LINETEK)
+           INSPECT HC06-TEKIYO (WRK-LINETEK)
+                           REPLACING    ALL   "  "   BY   "　"
       *
       *    最後の病名に印字するスペースがなかったとき 
            IF       FLG-TENKI              =   1     
@@ -1830,6 +1833,8 @@
                END-IF    
                ADD     1               TO  WRK-LINETEK
                MOVE    WRK-BYOMEI2     TO  HC06-TEKIYO (WRK-LINETEK)
+               INSPECT HC06-TEKIYO (WRK-LINETEK)
+                               REPLACING    ALL   "  "   BY   "　"
            END-IF
       *
       *
@@ -2034,14 +2039,14 @@
                   (RECE02-FTNMONEY (IDX3)
                                       NOT =   RECE02-FTNMONEY (IDX1))  )
       *
-             IF  ( RECE02-TOTALTEN (IDX3) =   RECE02-TOTALTEN (IDX1)   )
-             AND ( RECE02-FTNMONEY (IDX3) =   RECE02-FTNMONEY (IDX2)   )
-               CONTINUE
-             ELSE
+             IF    RECE02-FTNMONEY (IDX3)
+                                      NOT =   RECE02-FTNMONEY (IDX2)
+      *
                IF    RECE02-FTNMONEY (IDX3)   >   ZERO
                    MOVE    RECE02-FTNMONEY (IDX3) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(3)
                END-IF
+      *
              END-IF
       * 
            END-IF
