@@ -468,12 +468,9 @@
                GO  TO  4100-POST-CHK-EXT
            END-IF
       *
-           IF    ( SPA-GMN-POST    NOT =   SPA-NAI-POST )
-               MOVE    SPA-NAI-NEXT2   TO  SPA-NAI-NEXT
-               MOVE    SPA-NAI-BACK2   TO  SPA-NAI-BACK
-           END-IF
-      * 
            MOVE    ZERO            TO  SPA-GMN-SELNUM
+                                       SPA-NAI-NEXT
+                                       SPA-NAI-BACK
            MOVE    SPACE           TO  SPA-GMN-CITYKANA
                                        SPA-GMN-TOWNKANA
                                        SPA-GMN-CITYNAME
@@ -821,6 +818,33 @@
            EXIT.
       *
       *****************************************************************
+      *    更新後セット
+      *****************************************************************
+       4100-KOUSHINGO-SET-SEC      SECTION.
+      *
+           MOVE    SPA-NAI-POST    TO  SPA-GMN-POST
+           MOVE    SPA-NAI-NEXT2   TO  SPA-NAI-NEXT
+           MOVE    SPA-NAI-BACK2   TO  SPA-NAI-BACK
+           MOVE    ZERO            TO  SPA-GMN-SELNUM
+                                       SPA-NAI-NEXT2
+                                       SPA-NAI-BACK2
+           MOVE    SPACE           TO  SPA-GMN-CITYKANA
+                                       SPA-GMN-TOWNKANA
+                                       SPA-GMN-CITYNAME
+                                       SPA-GMN-TOWNNAME
+                                       SPA-NAI-POST
+      *
+      *    都道府県番号初期値セット
+           PERFORM 320-SPASET-PREFCD-SEC
+      *
+      *    該当町域リストセット
+           PERFORM 4100-CYOIKILST-SET-SEC
+           .
+      *
+       4100-KOUSHINGO-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -1020,11 +1044,8 @@
       *    追加処理
            PERFORM 490-INSERT-SEC
       *
-           MOVE    SPA-NAI-POST    TO  SPA-GMN-POST
-           MOVE    SPACE           TO  SPA-NAI-POST
-           PERFORM 4100-POST-CHK-SEC
-           MOVE    ZERO            TO  SPA-NAI-NEXT2
-                                       SPA-NAI-BACK2
+      *    更新後セット
+           PERFORM 4100-KOUSHINGO-SET-SEC
            .
        490-KOUSHIN-EXT.
            EXIT.
