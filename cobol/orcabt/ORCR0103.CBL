@@ -33,6 +33,8 @@
       *  01.01.02    NACL-藤原    02/10/24  保険内自費のみのとき出力しないように
       *                                     修正
       *  01.01.03    NACL-藤原    02/10/30  受給者番号が全角のときの印刷の対応
+      *  01.01.04    NACL-藤原    02/11/06  保険履歴の半角空白を全角に変換する
+      *  01.01.05    NACL-藤原    02/11/07  医療機関ＩＤ・診療年月を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -872,6 +874,7 @@
                            "−"                   DELIMITED  BY  SIZE
                            WRK-HKN-NUM            DELIMITED  BY  SPACE
                               INTO    WRK-HKN-RIREKI (WRK-RIREKI-MAX)
+                   END-STRING           
                END-IF                   
                IF      WRK-HKN-RIREKI (WRK-RIREKI-MAX)(13:)
                                           NOT =   SPACE
@@ -2159,8 +2162,8 @@
       *
       *    パラメータ０６ファイルより編集
            INITIALIZE                      RECE061-REC
-      ***     MOVE    RECE02-HOSPID       TO  RECE061-HOSPID
-      ***     MOVE    RECE02-SRYYM        TO  RECE061-SRYYM
+           MOVE    RECE02-HOSPID       TO  RECE061-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE061-SRYYM
            MOVE    RECE02-NYUGAIKBN    TO  RECE061-NYUGAIKBN
            MOVE    RECE02-PTID         TO  RECE061-PTID
            MOVE    RECE02-RECEKA       TO  RECE061-RECEKA
@@ -2178,8 +2181,8 @@
            END-START
            PERFORM
                UNTIL  ( FLG-RECE061           =   1 )
-      ***      OR     ( RECE02-HOSPID    NOT =   RECE061-HOSPID      )
-      ***      OR     ( RECE02-SRYYM     NOT =   RECE061-SRYYM       )
+               OR     ( RECE02-HOSPID    NOT =   RECE061-HOSPID      )
+               OR     ( RECE02-SRYYM     NOT =   RECE061-SRYYM       )
                OR     ( RECE02-NYUGAIKBN NOT =   RECE061-NYUGAIKBN   )
                OR     ( RECE02-PTID      NOT =   RECE061-PTID        )
                OR     ( RECE02-RECEKA    NOT =   RECE061-RECEKA      )
@@ -2508,6 +2511,8 @@
                    PERFORM 34120-PAGE-SEC
                END-IF
                ADD     1               TO  WRK-LINETEK
+               INSPECT WRK-HKN-RIREKI-TBL (IDX)    REPLACING   ALL "  "
+                                                               BY  "　"  
                MOVE    WRK-HKN-RIREKI-TBL (IDX)
                                        TO  HC06-TEKIYO(WRK-LINETEK)
            END-PERFORM

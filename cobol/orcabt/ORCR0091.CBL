@@ -45,6 +45,7 @@
       *                                     ¸¡ºº¤Î¤È¤­ZAITEN¤òÊÔ½¸¤¹¤ë
       *  01.00.08    NACL-Æ£¸¶    02.09.06  ½é¿Ç¤Î¤È¤­ÊÔ½¸¤¹¤ë
       *  01.00.09    NACL-¾®Æ¦Âô  02.09.28  ¸¡ºº¤ÎÅ¦Í×Íó°õºþ½ç¤ò½¤Àµ
+      *  01.00.10    NACL-Æ£¸¶    02.11.07  °åÎÅµ¡´Ø£É£Ä¡¦¿ÇÎÅÇ¯·î¤òÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -265,8 +266,8 @@
        210-HENSYU-SEC                   SECTION.
       *
            INITIALIZE                           RECE061-REC
-      ***     MOVE    RECE06-HOSPID        TO      RECE061-HOSPID
-      ***     MOVE    RECE06-SRYYM         TO      RECE061-SRYYM
+           MOVE    RECE06-HOSPID        TO      RECE061-HOSPID
+           MOVE    RECE06-SRYYM         TO      RECE061-SRYYM
            MOVE    RECE06-NYUGAIKBN     TO      RECE061-NYUGAIKBN
            MOVE    RECE06-PTID          TO      RECE061-PTID
            MOVE    RECE06-RECEKA        TO      RECE061-RECEKA

@@ -105,6 +105,7 @@
       *  01.01.03    NACL-門脇    02/10/17  公費２の一部負担金欄の編集修正
       *  01.01.04    NACL-藤原    02/10/24  保険内自費のみのとき出力しないように
       *                                     修正
+      *  01.01.05    NACL-藤原    02.11.07  医療機関ＩＤ・診療年月を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2430,8 +2431,8 @@
       *
       *    パラメータ０６ファイルより編集
            INITIALIZE                      RECE061-REC
-      ***     MOVE    RECE02-HOSPID       TO  RECE061-HOSPID
-      ***     MOVE    RECE02-SRYYM        TO  RECE061-SRYYM
+           MOVE    RECE02-HOSPID       TO  RECE061-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE061-SRYYM
            MOVE    RECE02-NYUGAIKBN    TO  RECE061-NYUGAIKBN
            MOVE    RECE02-PTID         TO  RECE061-PTID
            MOVE    RECE02-RECEKA       TO  RECE061-RECEKA
@@ -2449,8 +2450,8 @@
            END-START
            PERFORM
                UNTIL  ( FLG-RECE061           =   1 )
-      ***      OR     ( RECE02-HOSPID    NOT =   RECE061-HOSPID      )
-      ***      OR     ( RECE02-SRYYM     NOT =   RECE061-SRYYM       )
+               OR     ( RECE02-HOSPID    NOT =   RECE061-HOSPID      )
+               OR     ( RECE02-SRYYM     NOT =   RECE061-SRYYM       )
                OR     ( RECE02-NYUGAIKBN NOT =   RECE061-NYUGAIKBN   )
                OR     ( RECE02-PTID      NOT =   RECE061-PTID        )
                OR     ( RECE02-RECEKA    NOT =   RECE061-RECEKA      )
