@@ -38,6 +38,7 @@
       *  02.00.01    NACL-多々納  02/11/13  一括入力 
       *  02.00.02    NACL-藤原    03/01/08  通し番号編集区分の追加 
       *  02.00.03    NACL-藤原    03/02/27  入院用県単用項目編集プログラム名の追加
+      *  02.00.04    NACL-藤原    03/03/07  未入力時のチェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -789,21 +790,25 @@
       *
       **** MOVE    W12-BYOMEIHENKBN       TO  SPA-GMN-BYOMEIHENKBN-G 
       *
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-BYOMEIHENKBN-MAX
-               IF      SPA-GMN-BYOMEIHENKBN 
+           IF      SPA-GMN-BYOMEIHENKBN   =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-BYOMEIHENKBN-MAX
+                   IF      SPA-GMN-BYOMEIHENKBN 
                                    =   SPA-GMN-BYOMEIHENKBNL (IDY)
-                   MOVE    SPA-GMN-BYOMEIHENKBNLST (IDY)
+                       MOVE    SPA-GMN-BYOMEIHENKBNLST (IDY)
                                            TO  SPA-GMN-BYOMEIHENKBN-G
-                   MOVE    SPA-GMN-BYOMEIHENKBN-MAX
+                       MOVE    SPA-GMN-BYOMEIHENKBN-MAX
                                            TO  IDY
-               END-IF
-           END-PERFORM
+                   END-IF
+               END-PERFORM
       *     
-           IF      SPA-GMN-BYOMEIHENKBNMEI =   SPACE
-               MOVE    1                   TO  SPA-GMN-CUR
-               MOVE    "0001"              TO  SPA-ERRCD
-           END-IF
+               IF      SPA-GMN-BYOMEIHENKBNMEI =   SPACE
+                   MOVE    1                   TO  SPA-GMN-CUR
+                   MOVE    "0001"              TO  SPA-ERRCD
+               END-IF
+           END-IF 
       *
            .
        4100-BYOMEIHENKBN-CHK-EXT.
@@ -814,21 +819,24 @@
       *****************************************************************
        4101-KKHRECEKBN-CHK-SEC       SECTION.
       *
-      *
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-KKHRECEKBN-MAX
-               IF      SPA-GMN-KKHRECEKBN 
+           IF      SPA-GMN-KKHRECEKBN  =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-KKHRECEKBN-MAX
+                   IF      SPA-GMN-KKHRECEKBN 
                                    =   SPA-GMN-KKHRECEKBNL (IDY)
-                   MOVE    SPA-GMN-KKHRECEKBNLST (IDY)
+                       MOVE    SPA-GMN-KKHRECEKBNLST (IDY)
                                            TO  SPA-GMN-KKHRECEKBN-G
-                   MOVE    SPA-GMN-KKHRECEKBN-MAX
+                       MOVE    SPA-GMN-KKHRECEKBN-MAX
                                            TO  IDY
-               END-IF                                     
-           END-PERFORM
+                   END-IF                                     
+               END-PERFORM
       *     
-           IF      SPA-GMN-KKHRECEKBNMEI   =   SPACE
-               MOVE    5                      TO  SPA-GMN-CUR
-               MOVE    "0002"                  TO  SPA-ERRCD
+               IF      SPA-GMN-KKHRECEKBNMEI   =   SPACE
+                   MOVE    5                      TO  SPA-GMN-CUR
+                   MOVE    "0002"                  TO  SPA-ERRCD
+               END-IF
            END-IF    
       *
            .
@@ -840,21 +848,24 @@
       *****************************************************************
        4102-SYARECEKBN-CHK-SEC       SECTION.
       *
-      *
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-SYARECEKBN-MAX
-               IF      SPA-GMN-SYARECEKBN 
+           IF      SPA-GMN-SYARECEKBN  =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-SYARECEKBN-MAX
+                   IF      SPA-GMN-SYARECEKBN 
                                    =   SPA-GMN-SYARECEKBNL (IDY)
-                   MOVE    SPA-GMN-SYARECEKBNLST (IDY)
+                       MOVE    SPA-GMN-SYARECEKBNLST (IDY)
                                            TO  SPA-GMN-SYARECEKBN-G
-                   MOVE    SPA-GMN-SYARECEKBN-MAX
+                       MOVE    SPA-GMN-SYARECEKBN-MAX
                                            TO  IDY
-               END-IF                                     
-           END-PERFORM
+                   END-IF                                     
+               END-PERFORM
       *     
-           IF      SPA-GMN-SYARECEKBNMEI   =   SPACE
-               MOVE    4                       TO  SPA-GMN-CUR
-               MOVE    "0003"                  TO  SPA-ERRCD
+               IF      SPA-GMN-SYARECEKBNMEI   =   SPACE
+                   MOVE    4                       TO  SPA-GMN-CUR
+                   MOVE    "0003"                  TO  SPA-ERRCD
+               END-IF
            END-IF    
       *
            .
@@ -876,21 +887,24 @@
       *****************************************************************
        4104-KKHOCRKBN-CHK-SEC       SECTION.
       *
-      *
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-KKHOCRKBN-MAX
-               IF      SPA-GMN-KKHOCRKBN
+           IF      SPA-GMN-KKHOCRKBN   =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-KKHOCRKBN-MAX
+                   IF      SPA-GMN-KKHOCRKBN
                                    =   SPA-GMN-KKHOCRKBNL (IDY)
-                   MOVE    SPA-GMN-KKHOCRKBNLST (IDY)
+                       MOVE    SPA-GMN-KKHOCRKBNLST (IDY)
                                            TO  SPA-GMN-KKHOCRKBN-G
-                   MOVE    SPA-GMN-KKHOCRKBN-MAX
+                       MOVE    SPA-GMN-KKHOCRKBN-MAX
                                            TO  IDY
-               END-IF                                     
-           END-PERFORM
+                   END-IF                                     
+               END-PERFORM
       *     
-           IF      SPA-GMN-KKHOCRKBNMEI    =   SPACE
-               MOVE    7                  TO  SPA-GMN-CUR
-               MOVE    "0004"                  TO  SPA-ERRCD
+               IF      SPA-GMN-KKHOCRKBNMEI    =   SPACE
+                   MOVE    7                  TO  SPA-GMN-CUR
+                   MOVE    "0004"                  TO  SPA-ERRCD
+               END-IF
            END-IF    
            .
        4104-KKHOCRKBN-CHK-EXT.
@@ -943,22 +957,25 @@
       *****************************************************************
        4105-KKHPRTKBN-CHK-SEC       SECTION.
       *
-      *
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-KKHPRTKBN-MAX
-               IF      SPA-GMN-KKHPRTKBN
+           IF      SPA-GMN-KKHPRTKBN   =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-KKHPRTKBN-MAX
+                   IF      SPA-GMN-KKHPRTKBN
                                    =   SPA-GMN-KKHPRTKBNL (IDY)
-                   MOVE    SPA-GMN-KKHPRTKBNLST (IDY)
+                       MOVE    SPA-GMN-KKHPRTKBNLST (IDY)
                                            TO  SPA-GMN-KKHPRTKBN-G
-                   MOVE    SPA-GMN-KKHPRTKBN-MAX
+                       MOVE    SPA-GMN-KKHPRTKBN-MAX
                                            TO  IDY
-               END-IF                                     
-           END-PERFORM
+                   END-IF                                     
+               END-PERFORM
       *     
-           IF      SPA-GMN-KKHPRTKBNMEI    =   SPACE
-               MOVE    11                  TO  SPA-GMN-CUR
-               MOVE    "0005"                  TO  SPA-ERRCD
-           END-IF    
+               IF      SPA-GMN-KKHPRTKBNMEI    =   SPACE
+                   MOVE    11                  TO  SPA-GMN-CUR
+                   MOVE    "0005"                  TO  SPA-ERRCD
+               END-IF
+           END-IF     
       *
            .
        4105-KKHPRTKBN-CHK-EXT.
@@ -969,21 +986,24 @@
       *****************************************************************
        4107-BYOMEIHENKBN1-CHK-SEC       SECTION.
       *
-      *
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-BYOMEIHENKBN1-MAX
-               IF      SPA-GMN-BYOMEIHENKBN1 
+           IF      SPA-GMN-BYOMEIHENKBN1   =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-BYOMEIHENKBN1-MAX
+                   IF      SPA-GMN-BYOMEIHENKBN1 
                                    =   SPA-GMN-BYOMEIHENKBN1L (IDY)
-                   MOVE    SPA-GMN-BYOMEIHENKBN1LST (IDY)
+                       MOVE    SPA-GMN-BYOMEIHENKBN1LST (IDY)
                                            TO  SPA-GMN-BYOMEIHENKBN1-G
-                   MOVE    SPA-GMN-BYOMEIHENKBN1-MAX
+                       MOVE    SPA-GMN-BYOMEIHENKBN1-MAX
                                            TO  IDY
-               END-IF                                     
-           END-PERFORM
+                   END-IF                                     
+               END-PERFORM
       *     
-           IF      SPA-GMN-BYOMEIHENKBN1MEI =   SPACE
-               MOVE    2                       TO  SPA-GMN-CUR
-               MOVE    "0001"                  TO  SPA-ERRCD
+               IF      SPA-GMN-BYOMEIHENKBN1MEI =   SPACE
+                   MOVE    2                       TO  SPA-GMN-CUR
+                   MOVE    "0001"                  TO  SPA-ERRCD
+               END-IF
            END-IF    
       *
            .
@@ -996,21 +1016,24 @@
       *****************************************************************
        4108-TENKIHENKBN-CHK-SEC       SECTION.
       *
-      *
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-TENKIHENKBN-MAX
-               IF      SPA-GMN-TENKIHENKBN 
+           IF      SPA-GMN-TENKIHENKBN     =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-TENKIHENKBN-MAX
+                   IF      SPA-GMN-TENKIHENKBN 
                                    =   SPA-GMN-TENKIHENKBNL (IDY)
-                   MOVE    SPA-GMN-TENKIHENKBNLST (IDY)
+                       MOVE    SPA-GMN-TENKIHENKBNLST (IDY)
                                            TO  SPA-GMN-TENKIHENKBN-G
-                   MOVE    SPA-GMN-TENKIHENKBN-MAX
+                       MOVE    SPA-GMN-TENKIHENKBN-MAX
                                            TO  IDY
-               END-IF                                     
-           END-PERFORM
-      *     
-           IF      SPA-GMN-TENKIHENKBNMEI =   SPACE
-               MOVE    3                   TO  SPA-GMN-CUR
-               MOVE    "0007"                  TO  SPA-ERRCD
+                   END-IF                                     
+               END-PERFORM
+      *      
+               IF      SPA-GMN-TENKIHENKBNMEI =   SPACE
+                   MOVE    3                   TO  SPA-GMN-CUR
+                   MOVE    "0007"                  TO  SPA-ERRCD
+               END-IF
            END-IF    
       *
            .
@@ -1040,21 +1063,24 @@
       *****************************************************************
        4111-RENNUMHEKBN-CHK-SEC       SECTION.
       *
-      *
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-RENNUMHENKBN-MAX
-               IF      SPA-GMN-RENNUMHENKBN
+           IF      SPA-GMN-RENNUMHENKBN    =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-RENNUMHENKBN-MAX
+                   IF      SPA-GMN-RENNUMHENKBN
                                    =   SPA-GMN-RENNUMHENKBNL (IDY)
-                   MOVE    SPA-GMN-RENNUMHENKBNLST (IDY)
+                       MOVE    SPA-GMN-RENNUMHENKBNLST (IDY)
                                            TO  SPA-GMN-RENNUMHENKBN-G
-                   MOVE    SPA-GMN-RENNUMHENKBN-MAX
+                       MOVE    SPA-GMN-RENNUMHENKBN-MAX
                                            TO  IDY
-               END-IF                                     
-           END-PERFORM
+                   END-IF                                     
+               END-PERFORM
       *     
-           IF      SPA-GMN-RENNUMHENKBNMEI    =   SPACE
-               MOVE    12                  TO  SPA-GMN-CUR
-               MOVE    "0008"                  TO  SPA-ERRCD
+               IF      SPA-GMN-RENNUMHENKBNMEI    =   SPACE
+                   MOVE    12                  TO  SPA-GMN-CUR
+                   MOVE    "0008"                  TO  SPA-ERRCD
+               END-IF
            END-IF    
       *
            .
