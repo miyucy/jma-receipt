@@ -34,6 +34,7 @@
       *  01.00.05    NACL-多々納  02/07/29  パラメタファイルをＤＢへ
       *  01.00.06    NACL-多々納  02/09/11  自賠責追加
       *  01.00.07    NACL-多々納  02/10/25  入院追加
+      *  01.00.08    NACL-多々納  02/12/09  剤削除修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3150,7 +3151,8 @@
                        IF      WRK-DAY-S           =   ZERO
       *                    剤削除
                            MOVE    ZERO            TO  SPA-RRK-ZAINUM
-                                                 (IDX-RRK WRK-IDR-MAX)
+      ***************************************    (IDX-RRK WRK-IDR-MAX)
+                                                 (IDX-RRK WRK-IDR)
                        END-IF
                    END-IF
                END-IF
