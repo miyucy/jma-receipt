@@ -25,8 +25,9 @@
        01  SODRNACCT-AREA.
       *    異動事由
            03  SODRNACCT-ORDERID       PIC X(04).
-           03  SODRNACCT-IDOKBN        PIC X(04).
       *    入院料区分（01:一般／02:特定入院）
            03  SODRNACCT-NYUKBN        PIC X(02).
+      *    外泊・食事起算日
+           03  SODRNACCT-STARTYMD      PIC X(08).
       *    返却値
            03  SODRNACCT-RC            PIC S9(02).
