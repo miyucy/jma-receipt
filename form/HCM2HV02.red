@@ -5787,10 +5787,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O223">
       <attribute name="obj_pos">
-        <point val="13.85,4.6125"/>
+        <point val="13.85,7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.3956,4.37795;13.85,4.67795"/>
+        <rectangle val="12.3956,6.76545;13.85,7.06545"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKN-TBL[1].HKN-SYOG.HKN-SYOKENSU#</string>
@@ -5810,7 +5810,7 @@
             <real val="0.3"/>
           </attribute>
           <attribute name="pos">
-            <point val="13.85,4.6125"/>
+            <point val="13.85,7"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -6123,10 +6123,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O231">
       <attribute name="obj_pos">
-        <point val="13.85,7.0125"/>
+        <point val="13.85,4.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12.3956,6.77795;13.85,7.07795"/>
+        <rectangle val="12.3956,4.36545;13.85,4.66545"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKN-TBL[0].HKN-SYOG.HKN-SYOKENSU#</string>
@@ -6146,7 +6146,7 @@
             <real val="0.3"/>
           </attribute>
           <attribute name="pos">
-            <point val="13.85,7.0125"/>
+            <point val="13.85,4.6"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>

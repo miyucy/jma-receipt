@@ -2720,12 +2720,12 @@
         <point val="6.35,27.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="6.35,27.6811;19.9244,27.9611"/>
+        <rectangle val="6.35,27.6811;10.8748,27.9611"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#195;&#237;&#176;&#213;&#161;&#161;&#162;&#168;&#176;&#245;&#164;&#206;&#205;&#243;&#164;&#207;&#181;&#173;&#198;&#254;&#164;&#183;&#164;&#202;&#164;&#164;&#164;&#179;&#164;&#200;&#161;&#163;&#161;&#214;&#176;&#236;&#201;&#244;&#201;&#233;&#195;&#180;&#182;&#226;&#161;&#215;&#164;&#206;&#185;&#224;&#164;&#207;&#161;&#162;&#204;&#244;&#186;&#222;&#176;&#236;&#201;&#244;&#201;&#233;&#195;&#180;&#182;&#226;&#164;&#242;&#189;&#252;&#164;&#164;&#164;&#191;&#182;&#226;&#179;&#219;&#164;&#242;&#181;&#173;&#186;&#220;&#164;&#185;&#164;&#235;&#164;&#179;&#164;&#200;&#161;&#163;#</string>
+            <string>#&#195;&#237;&#176;&#213;&#161;&#161;&#162;&#168;&#176;&#245;&#164;&#206;&#205;&#243;&#164;&#207;&#181;&#173;&#198;&#254;&#164;&#183;&#164;&#202;&#164;&#164;&#164;&#179;&#164;&#200;&#161;&#163;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
@@ -5434,10 +5434,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O210">
       <attribute name="obj_pos">
-        <point val="13.35,4.6"/>
+        <point val="13.35,7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.8956,4.36545;13.35,4.66545"/>
+        <rectangle val="11.8956,6.76545;13.35,7.06545"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKN-TBL[1].HKN-SYOG.HKN-SYOKENSU#</string>
@@ -5457,7 +5457,7 @@
             <real val="0.3"/>
           </attribute>
           <attribute name="pos">
-            <point val="13.35,4.6"/>
+            <point val="13.35,7"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
@@ -5770,10 +5770,10 @@
     </object>
     <object type="Embed - Text" version="0" id="O218">
       <attribute name="obj_pos">
-        <point val="13.35,7"/>
+        <point val="13.35,4.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.8956,6.76545;13.35,7.06545"/>
+        <rectangle val="11.8956,4.36545;13.35,4.66545"/>
       </attribute>
       <attribute name="dnode_path">
         <string>#HKN-TBL[0].HKN-SYOG.HKN-SYOKENSU#</string>
@@ -5793,7 +5793,7 @@
             <real val="0.3"/>
           </attribute>
           <attribute name="pos">
-            <point val="13.35,7"/>
+            <point val="13.35,4.6"/>
           </attribute>
           <attribute name="color">
             <color val="#000000"/>
