@@ -35,6 +35,8 @@
       *                                     表示をやめる
       *  01.00.06    MCC-藤原     02.02.13  保険組合せを３から１０に変更
       *  01.00.07    MCC-藤原     02.05.13  病名の疑いフラグからの編集
+      *  01.00.08    NACL-藤原    02.11.11  転帰日が未来日のとき病名の表示
+      *                                     をするように修正
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -373,7 +375,8 @@
                    IF      PTBYO-TENKIKBN       =   SPACE
                        CONTINUE
                    ELSE
-                       IF      PTBYO-TENKIYMD(1:6)  =   RECE02-SRYYM
+      **************** IF      PTBYO-TENKIYMD(1:6)  =   RECE02-SRYYM
+                       IF      PTBYO-TENKIYMD(1:6)  >=  RECE02-SRYYM
                            CONTINUE
                        ELSE
                            GO  TO  2001-PTBYO-CHK-EXT
