@@ -4423,44 +4423,50 @@
       *****************************************************************
        410162-GRP-DENPNUM-CHK-SEC      SECTION.
       *
+           INITIALIZE                  TBL-GRP-AREA
       *    ¼õ¿ÇÍúÎòÊÑ¹¹
-           INITIALIZE                  JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
-           MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
-           MOVE    SPA-GMN-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
-           MOVE    SPA-RRK-GRP-DENPNUM(SPA-NAI-RRKSELNUM)
-                                       TO  JYURRK-GRP-DENPNUM
-      *
-           MOVE    JYURRK-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "JYURRK-KEY26"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "JYURRK-KEY26"      TO  ORC-DBPATH
-               PERFORM 970-JYURRK-READ-SEC
+           IF      SPA-RRK-GRP-DENPNUM(SPA-NAI-RRKSELNUM)
+                                       =   ZERO
+               MOVE    SPA-RRK-SRYKA  (SPA-NAI-RRKSELNUM)
+                                           TO  TBL-SRYKA (1)
            ELSE
                INITIALIZE                  JYURRK-REC
-               MOVE    1               TO  FLG-JYURRK
-           END-IF
-           INITIALIZE                   TBL-GRP-AREA
-           PERFORM
-               UNTIL    FLG-JYURRK         =   1
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL       IDX     >   10
-                   IF      TBL-SRYKA (IDX)     =   SPACE
-                       MOVE    JYURRK-SRYKA    TO  TBL-SRYKA (IDX)
-                   END-IF
-                   IF      JYURRK-SRYKA    =   TBL-SRYKA (IDX)
-                       MOVE    10              TO  IDX
-                   END-IF
-               END-PERFORM
+               MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+               MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
+               MOVE    SPA-GMN-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
+               MOVE    SPA-RRK-GRP-DENPNUM(SPA-NAI-RRKSELNUM)
+                                           TO  JYURRK-GRP-DENPNUM
       *
+               MOVE    JYURRK-REC          TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "JYURRK-KEY26"      TO  ORC-DBPATH
-               PERFORM 970-JYURRK-READ-SEC
-           END-PERFORM
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "JYURRK-KEY26"      TO  ORC-DBPATH
+                   PERFORM 970-JYURRK-READ-SEC
+               ELSE
+                   INITIALIZE                  JYURRK-REC
+                   MOVE    1               TO  FLG-JYURRK
+               END-IF
+               PERFORM
+                   UNTIL    FLG-JYURRK         =   1
+                   PERFORM VARYING     IDX     FROM    1   BY  1
+                           UNTIL       IDX     >   10
+                       IF      TBL-SRYKA (IDX)     =   SPACE
+                           MOVE    JYURRK-SRYKA    TO  TBL-SRYKA (IDX)
+                       END-IF
+                       IF      JYURRK-SRYKA    =   TBL-SRYKA (IDX)
+                           MOVE    10              TO  IDX
+                       END-IF
+                   END-PERFORM
+      *
+                   MOVE    "JYURRK-KEY26"      TO  ORC-DBPATH
+                   PERFORM 970-JYURRK-READ-SEC
+               END-PERFORM
+           END-IF
       *    Ê£¿ô¤Î²Ê¤Î»þ
            IF     (SPA-GMN-SRYKA   NOT =   "00" )  AND
                   (TBL-SRYKA (2)   NOT =   SPACE )
