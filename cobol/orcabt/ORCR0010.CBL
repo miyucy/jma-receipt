@@ -62,9 +62,15 @@
       *
       *  レセ電機能追加
       *  01.02.01    NACL-藤原    03/08/05  外来レセ電処理の追加
-      *  01.00.31    NACL-藤原    03/10/07  福岡県の地方公費対応（国保）
+      *  01.02.02    NACL-藤原    03/10/07  福岡県の地方公費対応（国保）
       *                                     県外扱いの保険者
       *                                     ２７老人＋障害者医療
+      *  01.02.03    NACL-藤原    03/11/06  社保・国保別で作成のとき
+      *                                     読み飛ばしをしない
+      *  01.02.04    NACL-藤原    03/11/19  老人＋原爆のレセ記載をシス管
+      *                                     より取得
+      *  01.02.05    NACL-藤原    03/12/03  福岡県の地方公費対応（社保）
+      *                                     ４１老人の本人・家族の記載
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1006,23 +1012,34 @@
                    AND   ( HKN-HBTNUM      NOT =   "41"              )    
                        PERFORM 20011-PREFKBN-40-CHECK-SEC
                    ELSE
-                       IF      COMB-HKNNUM         =   "060"   OR  "067" 
-                           IF      HKN-RECESKYKBN      =   "1" OR  "3"
+      *                福岡県の社保のとき（４１老人）
+                       IF    ( COMB-HKNNUM     NOT =   "060" AND "067" )
+                       AND   ( SYS-1001-PREFNUM    =   "40"            )
+                       AND   ( HKN-HBTNUM          =   "41"            )    
+                           IF      COMB-HONKZKKBN      =   "1" 
                                MOVE    2                   TO  IDX1
                            ELSE
                                MOVE    1                   TO  IDX1
                            END-IF
-                       ELSE                
-                           IF      HKN-RECESKYKBN      =   "2" OR  "3"
-                               MOVE    2                   TO  IDX1
-                           ELSE
-                               MOVE    1                   TO  IDX1
+                       ELSE
+                           IF      COMB-HKNNUM     =   "060"   OR  "067" 
+                               IF      HKN-RECESKYKBN  =   "1" OR  "3"
+                                   MOVE    2               TO  IDX1
+                               ELSE
+                                   MOVE    1               TO  IDX1
+                               END-IF
+                           ELSE                
+                               IF      HKN-RECESKYKBN  =   "2" OR  "3"
+                                   MOVE    2               TO  IDX1
+                               ELSE
+                                   MOVE    1               TO  IDX1
+                               END-IF
                            END-IF
                        END-IF
                    END-IF
                ELSE
                    MOVE    1                      TO  IDX1
-               END-IF       
+               END-IF
       *
                IF     IDX1                =   1
                    ADD     1                      TO  IDY    
