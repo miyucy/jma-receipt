@@ -632,12 +632,6 @@ COPYS = \
         CPPTTEIKIRRK.INC \
         CPTEIKI01.INC \
         CPTEIKI03.INC \
-        CPORCGI4A.INC \
-        CPORCGI4B.INC \
-        CPORCGI4C.INC \
-        CPORCGI4D.INC \
-        CPORCGI4F.INC \
-        CPORCGI4G.INC \
         I4SCR-NYU.INC \
         S04.INC \
         CPORCHCM31.INC \
