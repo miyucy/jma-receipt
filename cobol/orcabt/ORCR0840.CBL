@@ -40,6 +40,8 @@
       *  £²£°£°£´Ç¯£´·î²þÀµÂÐ±þ
       *  01.01.01    NACL-ÌçÏÆ    04/04/01  êóáì´µ¼Ô´ÉÍý²Ã»»¤ÎÂÐ±þ
       *  01.01.02    NACL-ÌçÏÆ    04/04/01  ¥ê¥Ï¸À¸ìÄ°³ÐÎÅË¡¡Ê£³¡ËÄÉ²ÃÂÐ±þ
+      *  01.01.03    NACL-ÌçÏÆ    04/04/05  ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ¤Î
+      *                                     ¥³¥á¥ó¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -511,6 +513,8 @@
       *
       *    ÉÂ°áÂßÍ¿ÎÁ
            03  CONS-BYOITAIYO        PIC X(09)  VALUE  "101910060".
+      *    ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ
+           03  CONS-HINKAI-COMMENT   PIC X(09)  VALUE  "114009410".
       *
       *   ÆüËÜ¸ì¿ô»ú
        01  TBL-SUJI-AREA.
@@ -2730,7 +2734,10 @@
               END-IF
            END-IF
       *
-           IF      RECE84-SRYKBN      =     "14"
+           IF     (RECE82-HKNKBN    NOT  =  "4"    AND
+                   RECE84-SRYKBN         =  "14"       )
+           OR     (RECE82-HKNKBN         =  "4"    AND
+                   RECE84-SRYKBN         =  "80"       )
               IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI-COMMENT
               AND  FLG-HOUSIJI-COM    =     ZERO
                    MOVE   "1"   TO    RECE84-FLG-HOUSIJI-COMMENT
@@ -2738,6 +2745,14 @@
               IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI2-COMMENT
                    MOVE  SPACE  TO    RECE84-FLG-HOUSIJI-COMMENT
                    MOVE    1    TO    FLG-HOUSIJI-COM
+              END-IF
+           END-IF
+           IF     (RECE82-HKNKBN    NOT  =  "4"    AND
+                   RECE84-SRYKBN         =  "14"       )
+           OR     (RECE82-HKNKBN         =  "4"    AND
+                   RECE84-SRYKBN         =  "80"       )
+              IF   SRY-SRYCD(IDX2)    =     CONS-HINKAI-COMMENT
+                   MOVE   "1"   TO    RECE84-FLG-HINKAI-COMMENT
               END-IF
            END-IF
       *

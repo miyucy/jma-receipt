@@ -50,6 +50,8 @@
       *                                     ¥»¥Ã¥È
       *  £²£°£°£´Ç¯£´·î²þÀµÂÐ±þ
       *  01.01.01    NACL-ÌçÏÆ    04.04.01  ¥ê¥Ï¸À¸ìÄ°³ÐÎÅË¡¡Ê£³¡ËÄÉ²ÃÂÐ±þ
+      *  01.01.02    NACL-ÌçÏÆ    04.04.05  ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ¤Î
+      *                                     ¥³¥á¥ó¥ÈÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -191,6 +193,7 @@
            03  FLG-RECE05          PIC 9(01).
            03  FLG-WRKRECE05       PIC 9(01).
            03  FLG-SHIDOU-COMMENT  PIC 9(01).
+           03  FLG-HINKAI-COMMENT  PIC 9(01).
            03  FLG-COMMENT         PIC 9(02).
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -238,6 +241,10 @@
            03  WRK-KOHBUNRI-JIDO   PIC 9(01).
            03  WRK-ZAINUM          PIC 9(08).
            03  WRK-RECEERR         PIC X(200).
+      *
+           03  WRK-FSANTEIYM       PIC 9(06).
+           03  WRK-AFTER2          PIC 9(06).
+           03  WRK-TOSEKIYMD       PIC 9(08).
       *
            03  TBL-SANTEI-DAY.
                05  TB-SANTEI-DAY     PIC 9(02)   OCCURS  31.
@@ -422,6 +429,8 @@
        01  CONST-AREA.
       *    ËýÀ­¤È¤¦ÄË¼À´µ
            03  CONS-MANSEI          PIC X(09) VALUE "113006510".
+      *    ºßÂð·ì±ÕÆ©ÀÏ»ØÆ³´ÉÍýÎÁ
+           03  CONS-TOSEKI          PIC X(09) VALUE "114009310".
       *
       *   ¥ê¥Ï¥Ó¥ê¿ÇÎÅ¹Ô°Ù¥Æ¡¼¥Ö¥ë
        01  TBL-RIHA-AREA.
@@ -517,6 +526,10 @@
       *     
       *    ¿ôÃÍÊÑ´¹¥µ¥Ö
            COPY    "CPORCSNUM.INC".
+      *
+      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
       *
       *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
            COPY    "CPORCSKANACHK.INC".
@@ -920,8 +933,22 @@
                          PERFORM    2001-RECE05-TENSOU-SEC
                       END-IF
                    WHEN      "14"
+                      MOVE   ZERO   TO  FLG-COMMENT
       *            ¡ÊË¬Ìä´Ç¸î»Ø¼¨ÎÁ»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
-                      PERFORM    2001-HOUSIJI-HANTEI-SEC
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-HOUSIJI-HANTEI-SEC
+                      END-IF
+      *            ¡ÊºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ»»Äê»þ¤Î
+      *              ºßÂð·ì±ÕÆ©ÀÏ»ØÆ³´ÉÍýÎÁ»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-HINKAI-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                         MOVE       RECE04-REC    TO   RECE041-REC
+                         WRITE      RECE041-REC
+                         ADD     1          TO      CNT-RECE04
+                         PERFORM    2001-RECE05-TENSOU-SEC
+                      END-IF
                    WHEN      "50"
       *            ¡Ê¼ê½ÑÆü¤Î¥»¥Ã¥È¡Ë
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
@@ -2073,15 +2100,233 @@
            IF     RECE04-FLG-HOUSIJI-COMMENT   =    "1"
                MOVE       3       TO     FLG-COMMENT
                PERFORM    2001-SHUJUTSU-ETC2-COMMENT-SEC
-           ELSE
-               MOVE       RECE04-REC    TO   RECE041-REC
-               WRITE      RECE041-REC
-               ADD     1          TO      CNT-RECE04
-               PERFORM    2001-RECE05-TENSOU-SEC
            END-IF
       *
            .
        2001-HOUSIJI-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ¤¬¤¢¤ë¤«È½Äê
+      *    ºßÂð·ì±ÕÆ©ÀÏ»ØÆ³´ÉÍýÎÁ»»ÄêÆü¤ÎÎò·î¤Ç£²·î°ÊÆâ¤«È½Äê
+      *****************************************************************
+       2001-HINKAI-HANTEI-SEC          SECTION.
+      *
+           IF   RECE04-FLG-HINKAI-COMMENT   =    "1"
+      *
+             MOVE     ZERO     TO     FLG-HINKAI-COMMENT
+             MOVE     ZERO     TO     WRK-TOSEKIYMD
+      *
+      *      »»ÄêÍúÎò¸¡º÷
+             INITIALIZE                  SANTEI-REC
+             MOVE    RECE04-HOSPID       TO  SANTEI-HOSPID
+             MOVE    RECE04-PTID         TO  SANTEI-PTID
+             MOVE    CONS-TOSEKI         TO  SANTEI-SRYCD
+             MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+             MOVE    ZERO                TO  SANTEI-SRYKA
+             MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+             MOVE    SANTEI-REC          TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"         USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
+             IF      MCP-RC              =   ZERO
+                    MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                    PERFORM        SANTEI-READ-SEC
+                    PERFORM   UNTIL  ( FLG-SANTEI         =   1 ) OR
+                                     ( FLG-HINKAI-COMMENT =   1 )
+      *
+                       MOVE   SANTEI-FSANTEIYMD(1:6)
+                                               TO  WRK-FSANTEIYM
+      *
+                       INITIALIZE                  STS-AREA-DAY
+                       INITIALIZE                  LNK-DAY6-AREA
+                       MOVE    "61"            TO  LNK-DAY6-IRAI
+                       MOVE    WRK-FSANTEIYM   TO  LNK-DAY6-KIJUN(1:6)
+                       MOVE    "01"            TO  LNK-DAY6-KIJUN(7:2)
+                       MOVE    "2"             TO  LNK-DAY6-ZOGENPTN
+                       MOVE     2              TO  LNK-DAY6-ZOGEN
+                       CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                       MOVE    LNK-DAY6-KEISAN(1:6)
+                                               TO  WRK-AFTER2
+      *
+                       IF     WRK-FSANTEIYM    <=  RECE04-SRYYM
+                       AND    RECE04-SRYYM     <=  WRK-AFTER2
+                             MOVE    1    TO   FLG-HINKAI-COMMENT
+                             MOVE  SANTEI-FSANTEIYMD
+                                          TO   WRK-TOSEKIYMD
+                       END-IF
+      * 
+                       MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                       PERFORM        SANTEI-READ-SEC
+                    END-PERFORM
+             END-IF
+      *
+             MOVE    "DBCLOSE"           TO  MCP-FUNC
+             MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"         USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
+      *
+             IF      FLG-HINKAI-COMMENT    =      1
+                 MOVE       99      TO     FLG-COMMENT
+                 PERFORM    2001-HINKAI-COMMENT-SEC
+             END-IF
+      *
+           END-IF
+      *
+           .
+       2001-HINKAI-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       2001-HINKAI-COMMENT-SEC          SECTION.
+      *
+           MOVE    RECE04-REC        TO      RECE041-REC
+           ADD     1                 TO      RECE041-MEISAISU
+           WRITE   RECE041-REC
+           ADD     1                 TO      CNT-RECE04
+      *
+             INITIALIZE                      RECE05-REC
+             MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
+             MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
+             MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
+             MOVE    RECE04-PTID         TO  RECE05-PTID
+             MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
+             MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
+             MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
+             MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
+             MOVE    RECE04-HOJOKBN      TO  RECE05-HOJOKBN
+             MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
+             MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
+             START   RECE05-FILE
+                 KEY IS    >=   RECE05-KEY
+                 INVALID
+                     MOVE    1           TO  FLG-RECE05
+                 NOT INVALID
+                     PERFORM 990-RECE05-NEXT-SEC
+                     MOVE    RECE05-REC  TO  WRK-RECE05-REC
+             END-START
+      *
+      *      £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+             MOVE    ZERO                 TO  IDX-RECE05
+             MOVE    SPACE                TO  WRK-SRYACTINF-AREA
+             INITIALIZE                       WRK-SRYACTINF-AREA
+             MOVE    SPACE                TO  WRK-NAMEINF-AREA
+             INITIALIZE                       WRK-NAMEINF-AREA
+             MOVE    SPACE                TO  WRK-DATAKBNINF-AREA
+             INITIALIZE                       WRK-DATAKBNINF-AREA
+             MOVE    SPACE                TO  WRK-HOUKNSKBNINF-AREA
+             INITIALIZE                       WRK-HOUKNSKBNINF-AREA
+             MOVE    SPACE                TO  WRK-KNSJISKBNINF-AREA
+             INITIALIZE                       WRK-KNSJISKBNINF-AREA
+             MOVE    SPACE                TO  WRK-CDKBNINF-AREA
+             INITIALIZE                       WRK-CDKBNINF-AREA
+      *      ¥³¥á¥ó¥È¤ÎÁÞÆþ
+             MOVE    SPACE                TO  COM-RECE05-REC
+             INITIALIZE                       COM-RECE05-REC
+             MOVE    "810000001"          TO  COM-SRYCD(1)
+             MOVE    ZERO                 TO  COM-SRYSURYO(1)
+             MOVE    16                   TO  COM-YUKOKETA(1)
+             MOVE    "½é²ó»ØÆ³´ÉÍý»»ÄêÆü¡¡¡¡¡¡·î¡¡¡¡Æü"
+                                          TO  COM-NAME(1)
+             MOVE    WRK-TOSEKIYMD(5:2)   TO  DAY-IDX2
+             MOVE    TBL-DAY(DAY-IDX2)    TO  COM-NAME(1)(21:4)
+             MOVE    WRK-TOSEKIYMD(7:2)   TO  DAY-IDX2
+             MOVE    TBL-DAY(DAY-IDX2)    TO  COM-NAME(1)(27:4)
+             COMPUTE  MAX-MEISAISU        =   RECE04-MEISAISU  +  1
+             MOVE    COM-SRYACTINF(1)     TO  WRK-SRYACTINF
+                                                   (MAX-MEISAISU)
+             MOVE    COM-NAMEINF(1)       TO  WRK-NAMEINF
+                                                   (MAX-MEISAISU)
+      *
+             PERFORM
+               UNTIL  ( FLG-RECE05           =   1                   )
+               OR     ( RECE04-HOSPID    NOT =   RECE05-HOSPID       )
+               OR     ( RECE04-SRYYM     NOT =   RECE05-SRYYM        )
+               OR     ( RECE04-NYUGAIKBN NOT =   RECE05-NYUGAIKBN    )
+               OR     ( RECE04-PTID      NOT =   RECE05-PTID         )
+               OR     ( RECE04-RECEKA    NOT =   RECE05-RECEKA       )
+               OR     ( RECE04-TEISYUTUSAKI
+                                         NOT =   RECE05-TEISYUTUSAKI )
+               OR     ( RECE04-RECESYUBETU
+                                         NOT =   RECE05-RECESYUBETU  )
+               OR     ( RECE04-HKNJANUM  NOT =   RECE05-HKNJANUM     )
+               OR     ( RECE04-HOJOKBN   NOT =   RECE05-HOJOKBN      )
+               OR     ( RECE04-TEKSTYMD  NOT =   RECE05-TEKSTYMD     )
+               OR     ( RECE04-ZAINUM    NOT =   RECE05-ZAINUM       )
+      *
+               PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX               >   5     )
+                         OR      ( RECE05-SRYCD(IDX) =   SPACE )
+                    ADD    1             TO      IDX-RECE05
+                    MOVE   RECE05-SRYACTINF(IDX) TO
+                                             WRK-SRYACTINF(IDX-RECE05)
+                    MOVE   RECE05-NAMEINF(IDX)   TO
+                                             WRK-NAMEINF(IDX-RECE05)     
+                    MOVE   RECE05-DATAKBNINF(IDX) TO
+                                             WRK-DATAKBNINF(IDX-RECE05)
+                    MOVE   RECE05-HOUKNSKBNINF(IDX) TO
+                                           WRK-HOUKNSKBNINF(IDX-RECE05)
+                    MOVE   RECE05-KNSJISKBNINF(IDX) TO
+                                           WRK-KNSJISKBNINF(IDX-RECE05)
+                    MOVE   RECE05-CDKBNINF(IDX)     TO
+                                           WRK-CDKBNINF(IDX-RECE05)
+               END-PERFORM 
+      *
+               PERFORM 990-RECE05-NEXT-SEC
+      *
+             END-PERFORM
+      *
+      *      ¥³¥á¥ó¥È¤ò´Þ¤ó¤ÀÆâÍÆ¤ÇÃæ´Ö¥Õ¥¡¥¤¥ë¤ÎºÆºîÀ®
+             MOVE       ZERO             TO      FLG-WRKRECE05
+             MOVE       ZERO             TO      IDX
+             MOVE       ZERO             TO      IDX-RECE05
+             MOVE       ZERO             TO      WRK-RENNUM
+             PERFORM    UNTIL     FLG-WRKRECE05  =    1
+                    INITIALIZE                        RECE051-REC
+                    MOVE    WRK-RECE05-KEY       TO   RECE051-KEY
+                    ADD     1                    TO   WRK-RENNUM
+                    MOVE    WRK-RENNUM           TO   RECE051-RENNUM
+                    MOVE    WRK-RECE05-KOHBUNRI  TO   RECE051-KOHBUNRI
+                    MOVE    WRK-RECE05-PTNUM     TO   RECE051-PTNUM
+                    MOVE    WRK-RECE05-SRYKA     TO   RECE051-SRYKA
+                    MOVE    WRK-RECE05-SRYKBN    TO   RECE051-SRYKBN
+                    MOVE    WRK-RECE05-SRYSYUKBN TO   RECE051-SRYSYUKBN
+                    MOVE    WRK-RECE05-JIHIMONEY TO   RECE051-JIHIMONEY
+                    PERFORM  VARYING   IDX   FROM   1   BY   1
+                             UNTIL   (IDX       >    5)   OR
+                                     (FLG-WRKRECE05   =   1)
+                       ADD         1             TO    IDX-RECE05
+                       IF  WK-RECE05-SRYCD(IDX-RECE05) = SPACE
+                           MOVE    1             TO    FLG-WRKRECE05
+                       ELSE
+                           MOVE  WRK-SRYACTINF(IDX-RECE05)
+                                            TO   RECE051-SRYACTINF(IDX)  
+                           MOVE  WRK-NAMEINF(IDX-RECE05)
+                                            TO   RECE051-NAMEINF(IDX)
+                           MOVE  WRK-DATAKBNINF(IDX-RECE05)
+                                            TO   RECE051-DATAKBNINF(IDX)
+                           MOVE  WRK-HOUKNSKBNINF(IDX-RECE05)
+                                        TO   RECE051-HOUKNSKBNINF(IDX)
+                           MOVE  WRK-KNSJISKBNINF(IDX-RECE05)
+                                        TO   RECE051-KNSJISKBNINF(IDX)
+                           MOVE  WRK-CDKBNINF(IDX-RECE05)
+                                        TO   RECE051-CDKBNINF(IDX)
+                       END-IF  
+                    END-PERFORM
+                    WRITE   RECE051-REC
+                    ADD     1                    TO  CNT-RECE05
+             END-PERFORM
+      *
+           .
+       2001-HINKAI-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

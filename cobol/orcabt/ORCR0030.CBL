@@ -153,6 +153,8 @@
       *  01.03.02   NACL-門脇     04/04/01  長期投薬加算（処方料、処方せん
       *                                     料）追加対応
       *  01.03.03   NACL-門脇     04/04/01  リハ言語聴覚療法（３）追加対応
+      *  01.03.04   NACL-門脇     04/04/05  在宅血液透析頻回指導管理料の
+      *                                     コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -675,6 +677,8 @@
            03  CONS-CTMRI-COMMENT16  PIC X(09)  VALUE  "170023410".
       *    四肢特殊ＭＲＩ撮影
            03  CONS-CTMRI-COMMENT17  PIC X(09)  VALUE  "170023510".
+      *    在宅血液透析頻回指導管理料
+           03  CONS-HINKAI-COMMENT   PIC X(09)  VALUE  "114009410".
       *
       *    酸素 
       *****COPY    "CMSANSOTBL.INC".
@@ -2075,6 +2079,11 @@
               IF   SRY-SRYCD(IDX2)    =     CONS-HOUSIJI2-COMMENT
                    MOVE  SPACE  TO    RECE04-FLG-HOUSIJI-COMMENT
                    MOVE    1    TO    FLG-HOUSIJI-COM
+              END-IF
+           END-IF
+           IF      RECE04-SRYKBN      =     "14"
+              IF   SRY-SRYCD(IDX2)    =     CONS-HINKAI-COMMENT
+                   MOVE   "1"   TO    RECE04-FLG-HINKAI-COMMENT
               END-IF
            END-IF
       *
