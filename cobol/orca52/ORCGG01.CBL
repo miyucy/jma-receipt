@@ -34,6 +34,7 @@
       *  01.00.04    MCC-藤原     02/05/15  処理前にジョブ管理を削除する
       *  01.00.05    MCC-藤原     02/06/04  再印刷・情報削除ボタン追加
       *  01.00.06    NACL-藤原    02/09/12  ディレクトリをサブプロへ
+      *  01.00.07    NACL-森脇    03/02/12  パラメタ入力チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -139,7 +140,7 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-PAGE            PIC ZZZZZZZZZ9.
       *
-           03  WRK-NUM             PIC 9(03).         
+           03  WRK-NUM             PIC 9(03).
       *         
            03  WRK-RECEERR         PIC X(200).
       *
@@ -572,35 +573,65 @@
       *
            MOVE    G01-PARA (IDX IDY)     TO  SPA-GMN-PARA (IDZ IDY)
       *----01-00-02-START------
-      *           
+      *----01-00-07-START------
+      *
            IF  SPA-GMN-PARA (IDZ IDY)    =   SPACE
-               IF  SPA-NAI-PARA (IDZ IDY)  =  "YMD"
-                   MOVE    SPA-SYSYMD                TO  WRK-YMD
-               ELSE    
-                   MOVE    "0002"                    TO  SPA-ERRCD
-                   GO  TO  4101-PARA-CHK-EXT
-               END-IF
+               EVALUATE    SPA-NAI-PARA (IDZ IDY)
+                   WHEN    "YMD"
+                       MOVE    SPA-SYSYMD  TO  SPA-NAI-HENPARA (IDZ IDY)
+                   WHEN    "YM"
+                       MOVE    SPA-SYSYMD(1:6)
+                                           TO  SPA-NAI-HENPARA (IDZ IDY)
+                   WHEN    "PSN1"
+                       MOVE    0           TO  SPA-NAI-HENPARA (IDZ IDY)
+                   WHEN     OTHER
+                       MOVE    "0002"      TO  SPA-ERRCD
+                       GO  TO  4101-PARA-CHK-EXT
+               END-EVALUATE
            ELSE
-               IF  SPA-NAI-PARA (IDZ IDY)  =  "YMD"
-                   MOVE    SPA-GMN-PARA (IDZ IDY)    TO  WRK-YMD
-               ELSE    
-                   MOVE    SPA-GMN-PARA (IDZ IDY)    TO
-                                            SPA-NAI-HENPARA (IDZ IDY)
-               END-IF
-           END-IF
-      *    
-           IF  SPA-NAI-PARA (IDZ IDY)  =  "YMD"
-               PERFORM 5002-HIZUKE-CHK-SEC
-               IF  SPA-ERRCD        =   SPACE
-                   MOVE    WRK-SYMD     TO
-                                        SPA-NAI-HENPARA (IDZ IDY) 
-                   MOVE    WRK-HENYMDG  TO
-                                        SPA-GMN-PARA    (IDZ IDY)
-               ELSE    
-                   GO  TO  4101-PARA-CHK-EXT
-               END-IF
+               EVALUATE    SPA-NAI-PARA (IDZ IDY)
+                   WHEN    "YMD"
+                       MOVE    SPA-GMN-PARA (IDZ IDY)   TO  WRK-YMD
+                       PERFORM 5002-HIZUKE-CHK-SEC
+                       IF  SPA-ERRCD        =   SPACE
+                           MOVE    WRK-SYMD
+                                   TO  SPA-NAI-HENPARA (IDZ IDY)
+                           MOVE    WRK-HENYMDG
+                                   TO  SPA-GMN-PARA (IDZ IDY)
+                       ELSE
+                           GO  TO  4101-PARA-CHK-EXT
+                       END-IF
+                   WHEN    "YM"
+                       MOVE    SPA-GMN-PARA (IDZ IDY)   TO  WRK-YMD
+                       PERFORM 5003-NENGETSU-CHK-SEC
+                       IF  SPA-ERRCD        =   SPACE
+                           MOVE    WRK-SYMD(1:6)
+                                   TO  SPA-NAI-HENPARA (IDZ IDY)
+                           MOVE    WRK-HENYMDG(1:6)
+                                   TO  SPA-GMN-PARA (IDZ IDY)
+                       ELSE
+                           GO  TO  4101-PARA-CHK-EXT
+                       END-IF
+                   WHEN    "PSN1"
+                       IF      SPA-GMN-PARA (IDZ IDY)(1:1) IS  NUMERIC
+                           IF      SPA-GMN-PARA (IDZ IDY)(2:)  =   SPACE
+                               MOVE    SPA-GMN-PARA(IDZ IDY)(1:1)
+                                   TO  SPA-NAI-HENPARA (IDZ IDY)
+                           ELSE
+                               MOVE    "0002"      TO  SPA-ERRCD
+                               GO  TO  4101-PARA-CHK-EXT
+                           END-IF
+                       ELSE
+                           MOVE    "0002"      TO  SPA-ERRCD
+                           GO  TO  4101-PARA-CHK-EXT
+                       END-IF
+                   WHEN    OTHER
+                       MOVE    SPA-GMN-PARA (IDZ IDY)
+                               TO  SPA-NAI-HENPARA (IDZ IDY)
+               END-EVALUATE
            END-IF
       *
+      *----01-00-07-END
       *----01-00-02-END
       *
            PERFORM 4101-NEXT-CUR-SEC
@@ -1610,6 +1641,29 @@
        5002-HIZUKE-CHK-EXT.
            EXIT.
       *
+      *----01-00-07----START
+      *****************************************************************
+      *    年月チェック・編集処理
+      *****************************************************************
+       5003-NENGETSU-CHK-SEC         SECTION.
+      *
+      *    日付画面チェックサブ
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    "1"                 TO  SGDAY-INTYPE
+           MOVE    WRK-YMD             TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+           IF      SGDAY-RC            =   ZERO
+               MOVE    SGDAY-OTDAY         TO  WRK-HENYMDG
+               MOVE    SGDAY-SDAY          TO  WRK-SYMD
+           ELSE
+               MOVE    "0002"              TO  SPA-ERRCD
+           END-IF
+           .
+       5003-NENGETSU-CHK-EXT.
+           EXIT.
+      *
+      *----01-00-07----END
       *****************************************************************
       *    管理マスター読込（キー）
       *****************************************************************
