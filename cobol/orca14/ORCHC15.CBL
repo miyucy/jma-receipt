@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     02.03.18  帳票ファイル名の変更
       *  01.00.03    NACL-多々納  02.09.13  印刷サプの追加
+      *  01.00.04    NACL-太田    03.06.12  フォームをDIAからMONPEに変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -45,7 +46,9 @@
       *
       *    印刷用データ
        FD  PRT-FILE.
-           COPY    "HC15.INC".
+      *     COPY    "HC15.INC".
+           COPY    "HCM15.INC"     REPLACING  //HCM15//
+                                   BY         //HC15//.
       *
        WORKING-STORAGE             SECTION.
       *
@@ -294,8 +297,10 @@
       *
             INITIALIZE                 ORCSMKPRTAREA
             MOVE   "HC01.sh"           TO  MKPRT-ID
-            MOVE   "HC15.dia"          TO  MKPRT-DIA
-            MOVE   "HC15.def"          TO  MKPRT-DEF
+      *      MOVE   "HC15.dia"          TO  MKPRT-DIA
+      *      MOVE   "HC15.def"          TO  MKPRT-DEF
+            MOVE   "HCM15.red"         TO  MKPRT-DIA
+            MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(7)   TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
