@@ -392,18 +392,6 @@
                END-IF
            END-IF
       *
-      **** 患者マスター検索
-      *    INITIALIZE                      PTINF-REC
-      *    MOVE    SPA-HOSPID          TO  PTINF-HOSPID
-      *    MOVE    ORCHC33-PTID        TO  PTINF-PTID
-      *    PERFORM 900-PTINF-READ-SEC
-      *    IF      FLG-PTINF           =   1
-      *        DISPLAY "*** PTINF  INVALIE:"   PTINF-KEY
-      *        MOVE    9               TO  ORCHC33-RC
-      *        MOVE    1               TO  FLG-END
-      *        GO      TO      120-PARA-HENSYU-EXT
-      **** END-IF
-      *
       *    診療科
            IF      ORCHC33-SRYKA       =   SPACE  OR  ZERO
                MOVE    SPACE               TO  WRK-SRYKA-MEI
@@ -1255,10 +1243,6 @@
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(10)  TO  MKPRT-PRTNM
-      *TEST
-      *システム管理ができるまで
-            MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
-      *TEST
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
       *
