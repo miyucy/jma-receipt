@@ -1311,7 +1311,6 @@
       *医療機関減算の取得（システム管理テーブルより）
       *    月内に複数の医療期間情報がないかチェック
            PERFORM   SYS-5000-CHK-SEC
-           DISPLAY "WRK-SYS5000-COUNT = " WRK-SYS5000-COUNT
       *
            IF        WRK-SYS5000-COUNT    =     ZERO
              INITIALIZE   TABLE-5000-NACCT
@@ -1751,6 +1750,10 @@
       *        室料差額の集計
                IF   NACCT-ZAISKBKBN       =   "3"
       *
+      *            システム管理から入院料未算定時の室料差額と食事の
+      *            取扱いを取得
+                   PERFORM    SYSKANRI-RMSGK-GET-SEC
+      *
       *            システム管理テーブルから設定室料差額の取り込み
                    MOVE    ZERO                TO   FLG-SYSKANRI
                    INITIALIZE                       SYS-5113-REC
@@ -1818,6 +1821,112 @@
       *
            .
        NYUINACCT-GET2-EXT.
+           EXIT.
+      *
+      *
+      **************************************************************
+      *    入院料関係の取得（その他）
+      **************************************************************
+       SYSKANRI-RMSGK-GET-SEC           SECTION.
+      *
+           PERFORM   SYS-5000-CHK-SEC
+      *
+           IF        WRK-SYS5000-COUNT    =     ZERO
+             INITIALIZE   TABLE-5000-NACCT
+             MOVE    ZERO                TO  FLG-SYSKANRI
+             INITIALIZE                      SYSKANRI-REC
+             MOVE    "5000"              TO  SYS-KANRICD
+             MOVE    "*"                 TO  SYS-KBNCD
+             MOVE    SYU-SRYYMD        TO  ORC-DBYMD
+             MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"             USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+             IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+               PERFORM  SYSKANRI-READ-SEC
+               PERFORM  VARYING SYU-IDX FROM 1 BY 1    
+                  UNTIL    SYU-IDX  >   31      
+                      MOVE   SYS-5000-NACCT-BRMSGKKBN
+                                  TO  TBL-5000-NACCT-BRMSGKKBN(SYU-IDX)
+                      MOVE   SYS-5000-NACCT-SKJKBN
+                                  TO  TBL-5000-NACCT-SKJKBN(SYU-IDX)
+               END-PERFORM
+             END-IF
+             MOVE     "SYSKANRI-KEY"   TO  WK-PATH
+             PERFORM   CSR-CLOSE-SEC
+           ELSE
+      *
+             INITIALIZE                      TABLE-5000-NACCT
+      *
+             MOVE    ZERO                TO  FLG-SYSKANRI
+             INITIALIZE                      SYSKANRI-REC
+             MOVE    "5000"              TO  SYS-KANRICD
+             MOVE    "*"                 TO  SYS-KBNCD
+             MOVE    SYU-SRYYMD          TO  ORC-DBYMD
+             MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"             USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+             IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
+               PERFORM  SYSKANRI-READ-SEC
+               PERFORM VARYING SYU-IDX FROM 1 BY 1    
+                  UNTIL    SYU-IDX  >   31      
+                      MOVE   SYS-5000-NACCT-BRMSGKKBN
+                                TO  TBL-5000-NACCT-BRMSGKKBN(SYU-IDX)
+                      MOVE   SYS-5000-NACCT-SKJKBN
+                                TO  TBL-5000-NACCT-SKJKBN(SYU-IDX)
+               END-PERFORM
+             END-IF
+      *
+             MOVE     "SYSKANRI-KEY"   TO  WK-PATH
+             PERFORM   CSR-CLOSE-SEC
+      *
+             MOVE    ZERO                TO  FLG-SYSKANRI
+             INITIALIZE                      SYSKANRI-REC
+             MOVE    "5000"              TO  SYS-KANRICD
+             MOVE    "*"                 TO  SYS-KBNCD
+             MOVE    SYU-SRYYMD(1:6)     TO  ORC-DBYMD(1:6)
+             MOVE    "__"                TO  ORC-DBYMD(7:2)
+             MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "SYSKANRI-KEY11"    TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"             USING
+                                             MCPAREA
+                                             ORCMCPAREA
+                                             MCPDATA-REC
+             IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+               PERFORM  SYSKANRI-READ-SEC
+               PERFORM  UNTIL    FLG-SYSKANRI   =   1
+                   MOVE   SYS-5000-STYUKYMD(7:2)  TO  KIRIKAE-IDXX
+                   PERFORM    VARYING  SYU-IDX  FROM KIRIKAE-IDX BY 1
+                              UNTIL    SYU-IDX  >   31
+                       MOVE   SYS-5000-NACCT-BRMSGKKBN
+                                  TO  TBL-5000-NACCT-BRMSGKKBN(SYU-IDX)
+                       MOVE   SYS-5000-NACCT-SKJKBN
+                                  TO  TBL-5000-NACCT-SKJKBN(SYU-IDX)
+                   END-PERFORM
+                   MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
+                   PERFORM  SYSKANRI-READ-SEC
+               END-PERFORM
+             END-IF
+      *
+             MOVE     "SYSKANRI-KEY11"      TO  WK-PATH
+             PERFORM   CSR-CLOSE-SEC
+      *
+      *
+           END-IF
+      *
+           .
+       SYSKANRI-RMSGK-GET-EXT.
            EXIT.
       *
       **************************************************************
@@ -3767,7 +3876,6 @@
        SYS-5000-GET-SEC                 SECTION.
       *
            INITIALIZE                      TABLE-GENSAN
-           INITIALIZE                      TABLE-5000-NACCT
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYSKANRI-REC
@@ -3799,13 +3907,6 @@
                         END-EVALUATE
                     END-IF
                   END-PERFORM
-             END-PERFORM
-             PERFORM VARYING SYU-IDX FROM 1 BY 1    
-                UNTIL    SYU-IDX  >   31      
-                    MOVE   SYS-5000-NACCT-BRMSGKKBN
-                                TO  TBL-5000-NACCT-BRMSGKKBN(SYU-IDX)
-                    MOVE   SYS-5000-NACCT-SKJKBN
-                                TO  TBL-5000-NACCT-SKJKBN(SYU-IDX)
              END-PERFORM
            END-IF
       *
@@ -3853,10 +3954,6 @@
                            MOVE   ZERO   TO  TBL-JOKUSOU
                                                        (SYU-IDX)
                        END-IF
-                       MOVE   SYS-5000-NACCT-BRMSGKKBN
-                                  TO  TBL-5000-NACCT-BRMSGKKBN(SYU-IDX)
-                       MOVE   SYS-5000-NACCT-SKJKBN
-                                  TO  TBL-5000-NACCT-SKJKBN(SYU-IDX)
                    END-PERFORM
                    MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
                    PERFORM  SYSKANRI-READ-SEC
