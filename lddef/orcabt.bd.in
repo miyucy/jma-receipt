@@ -152,5 +152,8 @@ bind	"ORCRCP400"	"OpenCOBOL";
 bind	"ORCBI201"	"OpenCOBOL";
 bind	"ORCBT010"	"OpenCOBOL";
 bind	"ORCBT020"	"OpenCOBOL";
+bind	"ORCDTCHK001"	"OpenCOBOL";
+bind	"ORCDTCHK002"	"OpenCOBOL";
+bind	"ORCDTCHK003"	"OpenCOBOL";
 
 #include "orcadb.inc"

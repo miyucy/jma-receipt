@@ -2,8 +2,8 @@
 <GTK-Interface>
 
 <project>
-  <name>RID1</name>
-  <program_name>RID1</program_name>
+  <name>DID1</name>
+  <program_name>DID1</program_name>
   <directory></directory>
   <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
@@ -58,8 +58,6 @@
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
     </widget>
 
     <widget>
@@ -97,8 +95,6 @@
       <text_visible>True</text_visible>
       <text_max_length>70</text_max_length>
       <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
     </widget>
 
     <widget>

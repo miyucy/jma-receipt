@@ -28,7 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    ひさなが     03/07/29  チェック内容全件印刷追加
-      *
+      *  01.00.02    NACL-太田    03/11/21  タイマーイベント追加等
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -45,38 +45,6 @@
       *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    画面用ＳＰＡ
-       01  SPA-D01.
-           03  SPA-D01-AREA.
-               05  SPA-GMN-PAGE               PIC 9(02).
-               05  SPA-GMN-MAX                PIC 9(03).
-               05  SPA-GMN-CUR                PIC 9(02).
-               05  SPA-GMN-KBN                PIC X(02).
-               05  SPA-GMN-RUN                PIC 9(01).
-               05  SPA-GMN-AREA.
-                   07  SPA-GMN-HOSPID         PIC X(24).
-                   07  SPA-GMN-SRYYMD         PIC X(08).
-                   07  SPA-GMN-SRYYMD-S       PIC X(08).
-                   07  SPA-GMN-SRYYM-D        PIC X(16).
-                   07  SPA-GMN-NYUGAIKBN-DSP.
-                       09  SPA-GMN-NYUGAIKBN      PIC X(01).
-                       09  SPA-GMN-NYUGAIKBN-AKI  PIC X(01).
-                       09  SPA-GMN-NYUGAIKBN-MSG  PIC X(14).
-                   07  SPA-GMN-TBLG.
-                       09  SPA-GMN-TBL1       OCCURS  5.
-                           11  SPA-GMN-NYUGAIKBN-K    PIC X(01).
-                           11  SPA-GMN-NYUGAIKBN-FL   PIC X(01).
-                           11  SPA-GMN-NYUGAIKBN-M    PIC X(14).
-                       09  SPA-GMN-TBL2       OCCURS  20.
-                           11  SPA-GMN-MSG            PIC X(40).
-                           11  SPA-GMN-CHKKBN         PIC X(20).
-                           11  SPA-GMN-TBL3       OCCURS  5.
-                               13  SPA-GMN-CHKKBN-K   PIC X(01).
-                               13  SPA-GMN-CHKKBN-FL  PIC X(01).
-                               13  SPA-GMN-CHKKBN-M   PIC X(18).
-               05  SPA-NAI-AREA.
-                   07  SPA-NAI-MOTOPG         PIC X(08).
-      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -92,14 +60,29 @@
        01  WRK-HEN-AREA.
            03  WRK-HENTIME.
                05  WRK-HH          PIC X(02).
-               05  FILLER          PIC X(01)   VALUE   ":".
+               05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-MM          PIC X(02).
-               05  FILLER          PIC X(01)   VALUE   ":".
+               05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
+      *
+       01  WRK-CONS-AREA.
+      *    システム管理ＤＢ（３００３）のキー値  
+           03  WRK-CONS-3003-KBNCD PIC X(08)   VALUE   "041".
+      *    印刷管理ＤＢのキー値  
+           03  WRK-CONS-PRTKANRI-TBL-KEY
+                                   PIC X(08)   VALUE   "ORCBSD1".
+           03  WRK-CONS-PRTKANRI-TBL-GROUP
+                                   PIC X(14)   VALUE   SPACE.
+      *    ジョブ管理ＤＢのキー値  
+           03  WRK-CONS-JOB-SHELLID
+                                   PIC X(08)   VALUE   "ORCBSD1".
+           03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
       *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+           COPY    "CPSK3003.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -135,18 +118,17 @@
            COPY    "DID2.INC".
       *
        PROCEDURE                   DIVISION    USING
-                                               MCPAREA
-                                               SPAAREA
-                                               LINKAREA
-                                               SCRAREA.
+           MCPAREA
+           SPAAREA
+           LINKAREA
+           SCRAREA.
       *
       *****************************************************************
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           MOVE    SPA-COMMON      TO  SPA-AREA.
-           MOVE    SPA-FREE        TO  SPA-D01.
+           MOVE    SPA-COMMON      TO  SPA-AREA
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -154,19 +136,19 @@
       *    画面遷移
                WHEN      OTHER
                    PERFORM 200-GMNSENI
-           END-EVALUATE.
+           END-EVALUATE
       *
-           MOVE    SPA-AREA        TO  SPA-COMMON.
-           MOVE    SPA-D01         TO  SPA-FREE.
+           MOVE    SPA-AREA        TO  SPA-COMMON
       *
-           EXIT    PROGRAM.
-      *
+           .
+           EXIT    PROGRAM
+           .
       *****************************************************************
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       * 
-      *
+           .
        100-INIT-EXT.
            EXIT.
       *
@@ -180,10 +162,12 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
       *    処理状態
+               WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
-           END-EVALUATE.
+           END-EVALUATE
       *
+           .
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
@@ -191,16 +175,17 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG.
-           MOVE    "D99"               TO  SPA-MOTOPG.
+           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           MOVE    "D99"               TO  SPA-MOTOPG
       *
-           MOVE    "JOIN"              TO  MCP-PUTTYPE.
-           MOVE    SPA-SAKIPG          TO  MCP-WINDOW.
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW,
+           PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END.
+           MOVE    1                   TO  FLG-END
       *
+           .
        210-BACK-EXT.
            EXIT.
       *
@@ -208,51 +193,71 @@
       *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
-      *
-           MOVE    SPACE               TO  D99.
-           MOVE    ZERO                TO  D99-COUNT.
+      *     
+           MOVE    SPACE               TO  D99
+           MOVE    ZERO                TO  D99-COUNT
       *        
-      *    ジョブ管理チェック処理
-           MOVE    "CHK"           TO  SJOBKANRI-MODE.
-           INITIALIZE                  JOBKANRI-REC.
-           MOVE    1               TO  JOB-JOBID.
-           MOVE    "ORCBSD1"       TO  JOB-SHELLID.
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC. 
-           IF  SJOBKANRI-RETURN   =   ZERO
-               MOVE    JOB-JOBID           TO  D99-RENNUM   (1)
-               MOVE    JOB-SHELLMSG        TO  D99-SHORINM  (1)
-               MOVE    JOB-STARTTIME(1:2)  TO  WRK-HH
-               MOVE    JOB-STARTTIME(3:2)  TO  WRK-MM
-               MOVE    JOB-STARTTIME(5:2)  TO  WRK-SS
-               MOVE    WRK-HENTIME         TO  D99-STARTTIME (1)
-               MOVE    JOB-ENDTIME(1:2)    TO  WRK-HH
-               MOVE    JOB-ENDTIME(3:2)    TO  WRK-MM
-               MOVE    JOB-ENDTIME(5:2)    TO  WRK-SS
-               MOVE    WRK-HENTIME         TO  D99-ENDTIME  (1)
-               MOVE    JOB-UPDCNT          TO  WRK-PAGE
-               MOVE    WRK-PAGE            TO  D99-PAGE     (1)
-               MOVE    JOB-YOBI            TO  D99-ERRMSG   (1)
-               IF  JOB-ENDYMD   =   SPACE
-                   MOVE    "処理中です"    TO  D99-MSG
-               ELSE
-                   IF  JOB-ERRCD   =   SPACE
-                       CONTINUE
-                   ELSE
-                       STRING  JOB-YOBI     DELIMITED  BY  SPACE
-                               "【"         DELIMITED  BY  SIZE
-                               JOB-SHELLMSG DELIMITED  BY  SPACE
-                               "】"         DELIMITED  BY  SIZE
-                                            INTO  D99-MSG
-                    END-IF
-               END-IF    
-               MOVE    1                    TO  D99-COUNT
-           END-IF.
-      *
-           IF  D99-MSG   =   SPACE
+           MOVE    SPACE               TO  SYS-3003-REC 
+           INITIALIZE                      SYS-3003-REC
+           MOVE    "3003"              TO  SYS-3003-KANRICD
+           MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD 
+           MOVE    SYS-3003-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-3003-REC 
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SYS-3003-JOBID
+      *            ジョブ管理チェック処理
+                   MOVE    "CHK"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    IDX             TO  JOB-JOBID
+                   MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  JOB-SHELLID
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC 
+                   IF      SJOBKANRI-RETURN    =   ZERO
+                       MOVE    JOB-JOBID       TO  D99-RENNUM   (IDX)
+                       MOVE    JOB-SHELLMSG    TO  D99-SHORINM  (IDX)
+                       MOVE    JOB-STARTTIME(1:2)
+                                               TO  WRK-HH
+                       MOVE    JOB-STARTTIME(3:2)
+                                               TO  WRK-MM
+                       MOVE    JOB-STARTTIME(5:2)
+                                               TO  WRK-SS
+                       MOVE    WRK-HENTIME     TO  D99-STARTTIME(IDX)
+                       MOVE    JOB-ENDTIME(1:2)
+                                               TO  WRK-HH
+                       MOVE    JOB-ENDTIME(3:2)
+                                               TO  WRK-MM
+                       MOVE    JOB-ENDTIME(5:2)
+                                               TO  WRK-SS
+                       MOVE    WRK-HENTIME     TO  D99-ENDTIME  (IDX)
+                       MOVE    JOB-UPDCNT      TO  WRK-PAGE
+                       MOVE    WRK-PAGE        TO  D99-PAGE     (IDX)
+                       MOVE    JOB-YOBI        TO  D99-ERRMSG   (IDX)
+                       IF      JOB-ENDYMD      =   SPACE
+                           MOVE    "処理中です"    TO  D99-MSG
+                       ELSE
+                           IF      JOB-ERRCD       =   SPACE
+                               CONTINUE
+                           ELSE
+                               INITIALIZE          D99-MSG
+                               STRING  JOB-YOBI    DELIMITED  BY  SPACE
+                                       "【"        DELIMITED  BY  SIZE
+                                      JOB-SHELLMSG DELIMITED  BY  SPACE
+                                      "】"         DELIMITED  BY  SIZE      
+                                                   INTO  D99-MSG
+                           END-IF                          
+                       END-IF    
+                       MOVE    IDX                     TO  D99-COUNT    
+                   END-IF
+               END-PERFORM
+           END-IF
+           IF      D99-MSG              =   SPACE
                MOVE    "B01"                TO  MCP-WIDGET
-               IF  D99-COUNT   >   ZERO    
+               IF      D99-COUNT            >   ZERO    
                    MOVE    "処理は正常に終了しました"
                                                 TO  D99-MSG
                ELSE
@@ -261,16 +266,54 @@
                END-IF                                 
            ELSE                                        
                MOVE    "B11"                TO  MCP-WIDGET
-           END-IF.                                 
+           END-IF                                 
       *
-           MOVE    SPACE               TO  LINKAREA.
+           MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "D99    "           TO  MCP-WINDOW.
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE
+           MOVE    "D99    "           TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
-      *
+           PERFORM 900-PUT-WINDOW
+           .
        490-KAKUNIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    管理マスター読込（キー）
+      *****************************************************************
+       900-SYSKANRI-INV-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1                   TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       900-SYSKANRI-INV-EXT.
            EXIT.
       *
       *****************************************************************
@@ -279,11 +322,12 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"       USING
-                                    MCPAREA
-                                    ORCMCPAREA
-                                    MCPDATA-REC.
+           CALL   "ORCMCPSUB"   USING
+                                MCPAREA
+                                ORCMCPAREA
+                                MCPDATA-REC.
       *
+           .
        900-PUT-WINDOW-EXT.
            EXIT.
       *

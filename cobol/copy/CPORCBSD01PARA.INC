@@ -15,9 +15,18 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        02  DID2.
-            03  DID2-FIXED1.
-              04  DID2-ID1CODE.
-                05  DID2-VALUE  PIC X(10).
-              04  DID2-ID1MSG.
-                05  DID2-VALUE  PIC X(70).
+      *----------------------------------------------------------------*
+      *    データチェック一括処理固有パラメータ
+      *                         COPY (CPORCBSD01PARA.INC)              *
+      *----------------------------------------------------------------*
+      *****************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+       01  ORCBSD01PARA.
+           03  ORCBSD01-SRYYM          PIC  X(06).
+           03  ORCBSD01-NYUGAIKBN      PIC  X(01).
+           03  ORCBSD01-CHKKBN-G.
+               05  ORCBSD01-CHKKBN     PIC  X(01)  OCCURS 50.
+           03  ORCBSD01-JIHIPROCKBN    PIC  X(01).
+           03  ORCBSD01-INGAIPROCKBN   PIC  X(01).

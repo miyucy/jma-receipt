@@ -11,60 +11,48 @@ fi
 
 #-------------------------------------------#
 #    データチェク処理
-#        CPCOMMONSHELL5.INC
-#        $1 SRYYM TERID SYSYMD
-#        $2 SYOKBN
-#        $3 RECEKBN
-#        $4 エラーファイル名 
+#        $1-${11} 印刷ＤＢ用固定引数
+#        ${12} ジョブＩＤ
+#        ${13} シェルＩＤ
+#        ${14} 医療機関ＩＤ 
+#        ${15} エラーファイル名 
+#        ${16} 診療年月
+#        ${17} 入外区分
+#        ${18} チェック区分×５０
+#        ${19} 自費保険者の処理区分
+#        ${20} 院外処方の処理区分
 #-------------------------------------------#
 ##      エラーファイル削除
-        if  [ -e $4 ]; then
-            rm  $4
+        if  [ -e ${15} ]; then
+            rm  ${15}
         fi
 
-	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCGD02 -parameter $1$2$3
 
-	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCGD03 -parameter $1$2$3
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCDTCHK001 -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20},
+    if  [ -e ${15} ]; then
+        exit
+    fi
 
-	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCGD04 -parameter $1$2$3
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCDTCHK002 -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20},
+    if  [ -e ${15} ]; then
+        exit
+    fi
 
-	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE0000001ORCBSD1
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCDTCHK003 -parameter $1,$2,$3,$4,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15},${16},${17},${18},${19},${20},
+    if  [ -e ${15} ]; then
+        exit
+    fi
+
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${12}${13}
 
 ##      作業ファイル削除
-        if  [ -e /tmp/ORCGD1.$5.dat ]; then
-             rm  /tmp/ORCGD1.$5.dat
-        fi
+tmpf="/var/tmp/DTCHK"*"$9"
 
-        if  [ -e /tmp/ORCGD2.$5.dat ]; then
-             rm  /tmp/ORCGD2.$5.dat
-        fi
+	for f in $tmpf
+	do
+		if  [ -e $f ]; then
+			rm  $f
+		fi
+	done
 
-        if  [ -e /tmp/ORCGD3.$5.dat ]; then
-             rm  /tmp/ORCGD3.$5.dat
-        fi
-
-        if  [ -e /tmp/ORCGD4.$5.dat ]; then
-             rm  /tmp/ORCGD4.$5.dat
-        fi
-
-        if  [ -e /tmp/ORCGD5.$5.dat ]; then
-             rm  /tmp/ORCGD5.$5.dat
-        fi
-
-        if  [ -e /tmp/ORCGD6.$5.dat ]; then
-             rm  /tmp/ORCGD6.$5.dat
-        fi
-
-        if  [ -e /tmp/ORCGD7.$5.dat ]; then
-             rm  /tmp/ORCGD7.$5.dat
-        fi
-
-        if  [ -e /tmp/ORCGD8.$5.dat ]; then
-             rm  /tmp/ORCGD8.$5.dat
-        fi
-
-        if  [ -e /tmp/ORCGD9.$5.dat ]; then
-             rm  /tmp/ORCGD9.$5.dat
-        fi
-
-        exit
+exit

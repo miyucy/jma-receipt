@@ -18,6 +18,6 @@
         02  DID1.
             03  DID1-FIXED1.
               04  DID1-ID1CODE.
-                05  DID1-VALUE  PIC X(11).
+                05  DID1-VALUE  PIC X(10).
               04  DID1-ID1MSG.
-                05  DID1-VALUE  PIC X(71).
+                05  DID1-VALUE  PIC X(70).

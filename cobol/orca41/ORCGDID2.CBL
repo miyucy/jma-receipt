@@ -11,11 +11,10 @@
       *     Everyone is granted permission to use, copy, modify and
       * redistribute this program, but only under the conditions described
       * in the JMA Open Source License. You should have received a copy of
-      * this license along with this program. If not, stop using this
+      * this licence along with this program. If not, stop using this
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *
        IDENTIFICATION                            DIVISION.
        PROGRAM-ID.                               ORCGDID2.
       *****************************************************************
@@ -28,7 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *      
+      *  01.00.01    NACL-太田    03/07/29  D01COMMON-SPAを追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -44,6 +43,9 @@
       *
       *    スパ領域
            COPY    "COMMON-SPA".
+      *
+      *    診療行為用共通パラメタ
+           COPY    "D01COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -65,7 +67,7 @@
       *****************************************************************
       *    連絡　領域
       *****************************************************************
-        LINKAGE                                  SECTION.
+        LINKAGE                     SECTION.
       *
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
@@ -75,40 +77,44 @@
        01  SCRAREA.
            COPY    "D01.INC".
            COPY    "D99.INC".
-           COPY    "DERR.INC".
+           COPY    "LERR.INC".
            COPY    "DID1.INC".
            COPY    "DID2.INC".
       *
-       PROCEDURE                     DIVISION    USING
-                                                 MCPAREA
-                                                 SPAAREA
-                                                 LINKAREA
-                                                 SCRAREA.
+       PROCEDURE                   DIVISION    USING
+           MCPAREA
+           SPAAREA
+           LINKAREA
+           SCRAREA.
       *
       *****************************************************************
       *    主　　処理
       *****************************************************************
-       000-PROC-SEC                              SECTION.
+       000-PROC-SEC                SECTION.
       *
-           MOVE    SPA-COMMON                    TO  SPA-AREA.
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-D01KYOUTU
       * 
-           EVALUATE    MCP-STATUS                ALSO    MCP-EVENT
-               WHEN    "LINK"                    ALSO    ANY
+           EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
+               WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN     "PUTG"                   ALSO   "CLICKED"
+               WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
            END-EVALUATE.
       *
-           MOVE    SPA-AREA                      TO  SPA-COMMON.
+           MOVE    SPA-D01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
       *
-           EXIT    PROGRAM.
+           .
+           EXIT    PROGRAM
+           .
       *****************************************************************
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                              SECTION.
       *
-      *
+           .
        100-INIT-EXT.
            EXIT.
       *
@@ -118,11 +124,21 @@
        200-GMNSENI                               SECTION.
       *
            EVALUATE    MCP-EVENT                 ALSO    MCP-WIDGET
-      *     登録
-               WHEN    "CLICKED"                 ALSO    "B12"
+      *        戻る
+               WHEN    "CLICKED"                 ALSO    "B01"
+                   MOVE    SPACE                 TO  SPA-DID1-FLG
                    PERFORM 210-BACK
-           END-EVALUATE.
+      *     印刷しない
+               WHEN    "CLICKED"                 ALSO    "B11"
+                   MOVE    "NO"                  TO  SPA-DID1-FLG
+                   PERFORM 210-BACK
+      *     印刷する
+               WHEN    "CLICKED"                 ALSO    "B12"
+                   MOVE    "OK"                  TO  SPA-DID1-FLG
+                   PERFORM 210-BACK
+           END-EVALUATE
       *
+           .
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
@@ -130,15 +146,16 @@
       *****************************************************************
        210-BACK                                  SECTION.
       *
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG.
-           MOVE    "DID2"              TO  SPA-MOTOPG.
+           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           MOVE    "DID2"              TO  SPA-MOTOPG
       *
-           MOVE   "JOIN"               TO  MCP-PUTTYPE.
-           MOVE    SPA-SAKIPG          TO  MCP-WINDOW.
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END.
+           MOVE    1                             TO  FLG-END
+           .
       *
        210-BACK-EXT.
            EXIT.
