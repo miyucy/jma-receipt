@@ -55,7 +55,7 @@ START_PORT=9100
 COB_SO=ORCGM00.so
 
 # MCPSUB lib
-COB_LIBRARY_PATH=/usr/lib
+COB_LIBRARY_PATH=/usr/lib:/usr/lib/panda
 # site-libの取り込み
 COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$SITELIBDIR"
 # orca lib
