@@ -52,6 +52,8 @@
       * 01.00.03     NACL-太田    02/10/14 +コンパイルエラーチェック
       *                                    |強化対応
       * 01.00.03     NACL-太田    02/10/17 +woody対応
+      * 01.00.03     NACL-太田    02/11/27 +病名コードを空白にしたとき、
+      *                                    |対応する病名も空白にする
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -2669,6 +2671,8 @@
            MOVE    Q01-BYOMEICD(IDX1)  TO  SPA-GMN-Q01-BYOMEICD(IDX1)
       *
            IF  ( SPA-GMN-Q01-BYOMEICD (IDX1)   =   SPACE )
+               MOVE    SPACE           TO  SPA-GMN-Q01-BYOMEI   (IDX1)
+               MOVE    SPACE           TO  SPA-Q01-BYOMEI       (IDX1)
                COMPUTE SPA-GMN-Q01-CUR =   SPA-GMN-Q01-CUR
                                    +   1
                GO  TO  4119-BYOMEICD-CHK-EXT
@@ -2710,6 +2714,7 @@
       *----(01.00.01) LINE ADD START ----------------------------------
                MOVE    USBYO-BYOMEI
                                    TO  SPA-GMN-Q01-BYOMEI (IDX1)
+                                       SPA-Q01-BYOMEI (IDX1)
       *----(01.00.01) LINE ADD END   ----------------------------------
            ELSE
                IF  ( WRK-MOJI      =   7 )
@@ -2731,6 +2736,7 @@
       *----(01.00.01) LINE ADD START ----------------------------------
                    MOVE    BYO-BYOMEI
                                    TO  SPA-GMN-Q01-BYOMEI (IDX1)
+                                       SPA-Q01-BYOMEI (IDX1)
       *----(01.00.01) LINE ADD END   ----------------------------------
                ELSE
                    MOVE    "0004"      TO  SPA-ERRCD
@@ -2836,11 +2842,7 @@
            COMPUTE SPA-GMN-Q01-CUR     =   304
                                        + ( IDX1 - 1 ) * 2
       *
-      *
-           MOVE    SPACE               TO  SPA-GMN-Q01-ERRCD
-                                                       (SPA-GMN-Q01-CUR)
-      *
-           MOVE    SPACE               TO  SPA-Q01-BYOMEI(IDX1)
+           COMPUTE WRK-IDX =   303 + ( IDX1    -   1 ) *   2
       *
            IF    ( Q01-BYOMEI (IDX1)   =   SPACE )
             OR   ( Q01-BYOMEI (IDX1)   =   SPA-GMN-Q01-BYOMEI (IDX1) )
@@ -2850,6 +2852,7 @@
                    MOVE    SPACE   TO  SPA-GMN-Q01-ERRCD (WRK-IDX)
                    MOVE    SPACE       TO  SPA-GMN-Q01-BYOMEICD (IDX1)
                    MOVE    SPACE       TO  SPA-GMN-Q01-BYOMEI   (IDX1)
+                   MOVE    SPACE       TO  SPA-Q01-BYOMEI(IDX1)
                END-IF
       *
                COMPUTE SPA-GMN-Q01-CUR =   SPA-GMN-Q01-CUR
@@ -2858,8 +2861,13 @@
            END-IF
       *
            MOVE    SPACE               TO  SPA-GMN-Q01-BYOMEICD (IDX1)
-           COMPUTE WRK-IDX =   303 + ( IDX1    -   1 ) *   2
-           MOVE    SPACE   TO  SPA-GMN-Q01-ERRCD (WRK-IDX)
+      *
+           MOVE    SPACE               TO  SPA-GMN-Q01-ERRCD (WRK-IDX)
+      *
+           MOVE    SPACE               TO  SPA-GMN-Q01-ERRCD
+                                                       (SPA-GMN-Q01-CUR)
+      *
+           MOVE    SPACE               TO  SPA-Q01-BYOMEI(IDX1)
       *
            MOVE    Q01-BYOMEI (IDX1)   TO  SPA-GMN-Q01-BYOMEI (IDX1)
       *
@@ -2880,6 +2888,7 @@
       *
            MOVE    SPA-GMN-Q01-BYOMEI (IDX1)
                                        TO  SPA-Q01-BYOMEI (IDX1)
+           DISPLAY "SPA-Q01-BYOMEI (" IDX1  ")=" SPA-Q01-BYOMEI (IDX1)
       *
            COMPUTE SPA-GMN-Q01-CUR     =   SPA-GMN-Q01-CUR
                                        +   1
