@@ -134,7 +134,7 @@
                    07  WRK-GMN-TYYKTIME    PIC X(05).
                    07  WRK-GMN-TUKETIME    PIC X(05).
                    07  WRK-GMN-TSRYKA      PIC X(10).
-                   07  WRK-GMN-TDRCD       PIC X(20).
+                   07  WRK-GMN-TDRCD       PIC X(24).
                    07  WRK-GMN-TSRYNAI     PIC X(10).
                    07  WRK-GMN-TKARUTE     PIC X(02).
                    07  WRK-GMN-TSYOHOU     PIC X(02).
