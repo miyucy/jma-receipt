@@ -234,10 +234,11 @@
       *  01.01.63    NACL-太田    03/04/28  PTTEIKIRRK-KEY5追加
       *  01.01.64    NACL-太田    03/04/28  SYUNOU-KEY15追加
       *  01.01.65    NACL-太田    03/04/30  SYUNOU-KEY16,17追加
-      *  01.01.51    NACL-多々納　03/05/01  JYURRK-KEY21追加
-      *  01.01.51    NACL-多々納　03/05/01  JYURRK-KEY22追加
-      *  01.01.52    NACL-多々納　03/05/06  PTBYOMEI-KEY8追加
+      *  01.01.66    NACL-多々納　03/05/01  JYURRK-KEY21追加
+      *  01.01.67    NACL-多々納　03/05/01  JYURRK-KEY22追加
+      *  01.01.68    NACL-多々納　03/05/06  PTBYOMEI-KEY8追加
       *                                     JYURRK-KEY23追加
+      *  01.01.69    NACL-太田    03/05/06  SYUNOU-KEY18追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -611,6 +612,7 @@
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY15"
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY16"
                WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY17"
+               WHEN    "DBUPDATE"      ALSO   "SYUNOU-KEY18"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY2"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY3"
@@ -628,6 +630,7 @@
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY15"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY16"
                WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY17"
+               WHEN    "DBDELETE"      ALSO   "SYUNOU-KEY18"
                    MOVE    PATH-TBL-SYUNOU-KEY
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL1"
@@ -1613,6 +1616,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SYUNOU-KEY17"
                    MOVE    PATH-TBL-SYUNOU-KEY17
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SYUNOU-KEY18"
+                   MOVE    PATH-TBL-SYUNOU-KEY18
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"

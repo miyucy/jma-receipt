@@ -477,6 +477,23 @@ path	key17 	{
 	};
 };
 
+path	key18 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key18_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPID    =    :HOSPID
+			AND   NYUGAIKBN   =    :NYUGAIKBN
+			AND   PTID        =    :PTID
+			AND   SRYYMD      LIKE :SRYYMD
+			AND   SKYSTYMD    >=   :SKYSTYMD
+			AND   SKYEDYMD    <=   :SKYEDYMD
+			AND   HKNCOMBINUM =    :HKNCOMBINUM
+			AND   CREATEKBN   <>   '3'
+		;
+	};
+};
+
 path	all 	{
 	DBSELECT	{
 		DECLARE tbl_syunou_all_csr CURSOR FOR

@@ -75,10 +75,8 @@ path	key5		{
 		SELECT *
 		FROM tbl_ptteikirrk
         WHERE  HOSPID  =   :HOSPID
-        AND    PTID    =   :PTID
-        AND    HKNCOMBINUM = :HKNCOMBINUM
-		AND    SKYSTYMD   <= :SKYSTYMD
-		AND    SKYEDYMD   >= :SKYEDYMD
+        AND    SRYYM   =   :SRYYM
+        AND    SAKKBN  LIKE :SAKKBN
 		;
 	};
 };
