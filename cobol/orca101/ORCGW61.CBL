@@ -58,7 +58,7 @@
                        09  SPA-GMN-TEISYUTUSAKIL   PIC X(01).
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-TEISYUTUSAKIMEIL
-                                                   PIC X(08).
+                                                   PIC X(10).
                    07  SPA-GMN-TEISYUTUSAKI-MAX    PIC 9(01).
       *
                    07  SPA-GMN-ZAITAKULST          OCCURS  2.
@@ -89,7 +89,7 @@
                            11  SPA-GMN-TSEIDONAME  PIC X(50).
                            11  SPA-GMN-THKNJANUM   PIC X(08).
                            11  SPA-GMN-TTEISYUTUSAKI
-                                                   PIC X(08).
+                                                   PIC X(10).
                            11  SPA-GMN-TSTYUKYMD   PIC X(09).
                            11  SPA-GMN-TEDYUKYMD   PIC X(09).  
       *

@@ -10,10 +10,10 @@
               03  W61-SEIDONAME.
                 04  W61-VALUE   PIC X(50).
               03  W61-TEISYUTUSAKI-COMBO.
-                04  W61-TEISYUTUSAKI         PIC X(10).
+                04  W61-TEISYUTUSAKI         PIC X(12).
                 04  W61-TEISYUTUSAKI-COUNT   PIC S9(9)   BINARY.
                 04  W61-TEISYUTUSAKI-ITEM
-                                          PIC X(10)   OCCURS  2 TIMES.
+                                          PIC X(12)   OCCURS  2 TIMES.
               03  W61-HKNJANUM.
                 04  W61-VALUE   PIC X(8).
               03  W61-HKNJANAME.
@@ -49,7 +49,7 @@
                     06  W61-TRENNUM       PIC X(3).
                     06  W61-THKNNUM       PIC X(3).
                     06  W61-TSEIDONAME    PIC X(50).
-                    06  W61-TTEISYUTUSAKI PIC X(8).
+                    06  W61-TTEISYUTUSAKI PIC X(10).
                     06  W61-THKNJANUM     PIC X(8).
                     06  W61-TSTYUKYMD     PIC X(9).
                     06  W61-TEDYUKYMD     PIC X(9).
