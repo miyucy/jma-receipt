@@ -136,6 +136,9 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+     *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -157,6 +160,11 @@
       *
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
       *
            EVALUATE    SSANTEI-SYORI
       *        新規、変更
@@ -604,6 +612,10 @@
       *
            IF      FLG-SYORI           =   1
       *
+      *
+               MOVE    SMCNDATE-YMD        TO  SANTEI-CREYMD
+               MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
       *        新規
                MOVE    SANTEI-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -621,6 +633,9 @@
       *        修正
       *        初回算定日変更チェック
                PERFORM 2001-SYOKAI-CHK-SEC
+      *
+               MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
       *
                MOVE    SANTEI-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -851,6 +866,9 @@
                END-IF
            ELSE
       *        修正
+               MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
+      *
                MOVE    SANTEI-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
@@ -911,6 +929,9 @@
                UNTIL      FLG-SANTEI       =   1
       *
                    MOVE    WRK-KON-FSANTEIYMD  TO  SANTEI-FSANTEIYMD
+      *
+                   MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
       *
                    MOVE    SANTEI-REC          TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC

@@ -228,6 +228,9 @@
       *    診療行為入院更新パラメタ領域
            COPY    "CPORCSCNYUIN.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *
       *****************************************************************
       *    連絡　領域
@@ -253,6 +256,11 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
            MOVE    ZERO                TO  LNK-SCNYUACCT-RC
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
       *
       *    患者マスター検索
            INITIALIZE                      PTINF-REC
@@ -1134,6 +1142,10 @@
       *        診療会計マスター編集処理
                PERFORM 40024-NYUINACCT-HEN-SEC
       *
+               MOVE    SMCNDATE-YMD        TO  NACCT-CREYMD
+               MOVE    SMCNDATE-YMD        TO  NACCT-UPYMD
+               MOVE    SMCNDATE-HMS        TO  NACCT-UPHMS
+      *
                MOVE    NYUINACCT-REC       TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "NYUINACCT-KEY"     TO  ORC-DBPATH
@@ -1152,6 +1164,9 @@
            ELSE
       *        診療会計マスター編集処理
                PERFORM 40024-NYUINACCT-HEN-SEC
+      *
+               MOVE    SMCNDATE-YMD        TO  NACCT-UPYMD
+               MOVE    SMCNDATE-HMS        TO  NACCT-UPHMS
       *
                MOVE    NYUINACCT-REC       TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1273,6 +1288,9 @@
            END-IF
            ADD     1                   TO  PTINF-MAXZAINUM
            MOVE    PTINF-MAXZAINUM     TO  WRK-ZAINUM
+      *
+           MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1413,6 +1431,10 @@
            MOVE    WRK-SRYSYUKBN       TO  NSRY-SRYSYUKBN
            MOVE    WRK-SRYKBN          TO  NSRY-SRYKBN
       *
+           MOVE    SMCNDATE-YMD        TO  NSRY-CREYMD
+           MOVE    SMCNDATE-YMD        TO  NSRY-UPYMD
+           MOVE    SMCNDATE-HMS        TO  NSRY-UPHMS
+      *
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "NYUINACT-KEY"      TO  ORC-DBPATH
@@ -1541,6 +1563,9 @@
                    PERFORM 20012-NYUINACCT-DELETE-SEC
                ELSE
       *            診療会計更新
+                   MOVE    SMCNDATE-YMD        TO  NACCT-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  NACCT-UPHMS
+      *
                    MOVE    NYUINACCT-REC       TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "NYUINACCT-KEY"     TO  ORC-DBPATH
@@ -1760,6 +1785,9 @@
                        END-IF
                    ELSE
       *                診療会計更新
+                       MOVE    SMCNDATE-YMD        TO  NACCT-UPYMD
+                       MOVE    SMCNDATE-HMS        TO  NACCT-UPHMS
+      *
                        MOVE    NYUINACCT-REC       TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "NYUINACCT-KEY"     TO  ORC-DBPATH

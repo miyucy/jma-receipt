@@ -264,6 +264,9 @@
       *   算定履歴更新サブ
            COPY    "CPORCSSANTEI.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -304,6 +307,11 @@
            INITIALIZE                  ORCSTEN-DAY-AREA
            INITIALIZE                  ORCSTEN-ERRCD
            MOVE    ZERO                TO  ORCSTEN-HENFLG
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
       *
            MOVE    "1"                 TO  SPA-NYUGAIKBN
       *
@@ -1553,6 +1561,10 @@
       *            診療会計マスターを変更する
                    PERFORM 490061-DAY-DEL-SEC
       *
+      *
+                   MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+      *
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
@@ -1678,6 +1690,9 @@
            PERFORM VARYING IDX         FROM    1   BY  1
                    UNTIL   IDX         >   IDX-H
                MOVE    TBL-JYURRK-REC (IDX-H)  TO  JYURRK-REC
+      *
+               MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC

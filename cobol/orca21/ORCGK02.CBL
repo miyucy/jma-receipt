@@ -880,6 +880,9 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -4899,6 +4902,7 @@
            PERFORM                 3002-PARA-SET-SEC
       *
       *    画面用スパ編集処理
+           MOVE    ZERO                TO  FLG-TEISEI
            PERFORM                 310-SPA-GMNSET-SEC
       *
            MOVE    1               TO  SPA-GMN-PAGE
@@ -11272,6 +11276,11 @@
       *****************************************************************
        4510-SNRYO-NYU-SEC              SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
       *    現在の内容をクリア
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                      WKSRYACT-REC
@@ -11606,6 +11615,9 @@
             MOVE    SPA-DOUJI-RENNUM    TO  WKSRY-DOUJI-RENNUM
       *     継続区分
             MOVE    SPA-CONTKBN         TO  WKSRY-CONTKBN
+      *
+           MOVE    SMCNDATE-YMD        TO  WKSRY-UPYMD
+           MOVE    SMCNDATE-HMS        TO  WKSRY-UPHMS
       *
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
            MOVE    "WKSRYACT-KEY"      TO  ORC-DBPATH

@@ -459,6 +459,9 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -2245,6 +2248,11 @@
       *****************************************************************
        45001-TOROKU-KOUSIN-SEC          SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
            MOVE    ZERO                TO  IDX-KOUI
            MOVE    SPA-TERMID          TO  FILE-TERMID2
            OPEN    INPUT               PARA-FILE
@@ -2648,6 +2656,10 @@
       *
            IF      SPA-SYORIFLG        =   ZERO
       *
+               MOVE    SMCNDATE-YMD        TO  SYU-CREYMD
+               MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -2735,6 +2747,10 @@
                    END-IF
                END-IF
                IF      FLG-SYUNOU          =   ZERO
+      *
+                   MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -2746,6 +2762,10 @@
       *            収納明細マスター作成
                    PERFORM 45001-SINMEI-SYORI2-SEC
                ELSE
+                   MOVE    SMCNDATE-YMD        TO  SYU-CREYMD
+                   MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -2803,6 +2823,10 @@
       *        収納明細更新
                PERFORM 45012-SYUMEI-UPD-SEC
       *
+      *
+               MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
@@ -2858,6 +2882,9 @@
       *            伝票状態区分
                    MOVE    "1"                 TO  SMEI-JOUTAIKBN
                END-IF
+      *
+               MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
       *
                MOVE    SYUMEI-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -2949,6 +2976,10 @@
                MOVE    SYS-0041-DENPNUMMAX
                                            TO  WRK-DENPNUM
       *
+               MOVE    SMCNDATE-YMD        TO  SYS-0041-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYS-0041-UPHMS
+      *
+      *
                MOVE    SYS-0041-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
@@ -3024,6 +3055,10 @@
                MOVE    "7"                 TO  SMEI-JOUTAIKBN
            END-IF
       *
+           MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
+           MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
+      *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
@@ -3078,6 +3113,9 @@
       *        診療科変更
                IF      SYU-SRYKA       NOT =   SMEI-SRYKA
                    MOVE    SYU-SRYKA           TO  SMEI-SRYKA
+      *
+                   MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
       *
                    MOVE    SYUMEI-REC          TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -3145,6 +3183,11 @@
            END-IF
       *状態区分
            MOVE    "8"                 TO  SMEI-JOUTAIKBN
+      *
+           MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
+           MOVE    SMCNDATE-YMD        TO  SMEI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SMEI-UPHMS
+      *
       *
            MOVE    SYUMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -3442,6 +3485,10 @@
                    ADD     1               TO  JYURRK-KAIKEI-RENNUM
                END-IF
       *
+      *
+               MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+      *
       *        キー変換
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -3565,6 +3612,9 @@
                             DISPLAY "K03 SRYACCT DEL ERR:" MCP-RC
                        END-IF
                    ELSE
+      *
+                       MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
+                       MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
                        MOVE    SRYACCT-REC         TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -3700,6 +3750,11 @@
       *    訂正時、受診履歴等の削除処理
       *****************************************************************
        450012-TEISEI-DELETE-SEC          SECTION.
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID2
            OPEN    INPUT               PARA-FILE
@@ -3840,6 +3895,11 @@
                                                MCPDATA-REC
       *
                    MOVE    WRK-JYURRK-RENNUM   TO  JYURRK-RENNUM
+      *
+                   MOVE    SMCNDATE-YMD        TO  JYURRK-CREYMD
+                   MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+      *
                    MOVE    JYURRK-REC          TO  MCPDATA-REC
                    MOVE    "DBINSERT"          TO  MCP-FUNC
                    MOVE    "JYURRK-KEY"        TO  ORC-DBPATH
@@ -4001,6 +4061,10 @@
                                               TO  ACCT-DAY (IDX-1 IDX-2)
                        MOVE    ZERO           TO  ACCT-DAY (IDX-3 IDX-2)
       *
+      *
+                       MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
+                       MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+      *
                        MOVE    SRYACCT-REC       TO  MCPDATA-REC
                        MOVE    "DBUPDATE"        TO  MCP-FUNC
                        MOVE    "SRYACCT-KEY"     TO  ORC-DBPATH
@@ -4151,6 +4215,11 @@
       *****************************************************************
        45001-JYURRK-SYORI3-SEC          SECTION.
       *
+      *
+           MOVE    SMCNDATE-YMD        TO  JYURRK-CREYMD
+           MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
+           MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+      *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "JYURRK-KEY"        TO  ORC-DBPATH
@@ -4233,6 +4302,10 @@
        45009-SRYKARRK-OUT-SEC            SECTION.
       *
            IF      FLG-SRYKARRK           =   ZERO
+      *
+               MOVE    SMCNDATE-YMD        TO  KARRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  KARRK-UPHMS
+      *
       *        更新
                MOVE    SRYKARRK-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -4247,6 +4320,10 @@
                END-IF
            ELSE
       *        新規
+               MOVE    SMCNDATE-YMD        TO  KARRK-CREYMD
+               MOVE    SMCNDATE-YMD        TO  KARRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  KARRK-UPHMS
+      *
                MOVE    SRYKARRK-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
@@ -4439,6 +4516,10 @@
       *        診療会計マスター編集処理
                PERFORM 45014-SRYACCT-HEN-SEC
       *
+               MOVE    SMCNDATE-YMD        TO  ACCT-CREYMD
+               MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
+               MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+      *
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
@@ -4455,6 +4536,9 @@
            ELSE
       *        診療会計マスター編集処理
                PERFORM 45014-SRYACCT-HEN-SEC
+      *
+               MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
+               MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -4497,6 +4581,9 @@
            END-IF
            ADD     1                   TO  PTINF-MAXZAINUM
            MOVE    PTINF-MAXZAINUM     TO  WRK-ZAINUM
+      *
+           MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -4621,6 +4708,9 @@
                    END-IF
                END-PERFORM
       *
+               MOVE    SMCNDATE-YMD        TO  SRY-CREYMD
+               MOVE    SMCNDATE-YMD        TO  SRY-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SRY-UPHMS
       *
                MOVE    SRYACT-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -4672,6 +4762,10 @@
       *入力値
            MOVE    LNK-WKSRY-INPUTCHI-G  (IDX IDX-SIN)
                                        TO  PTCOM-INPUTCHI-AREA
+      *
+           MOVE    SMCNDATE-YMD        TO  PTCOM-CREYMD
+           MOVE    SMCNDATE-YMD        TO  PTCOM-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTCOM-UPHMS
       *
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -4869,6 +4963,10 @@
                        (UKE-UKEID      NOT =   ZERO     )
                    IF      UKE-KAIKEITIME      =   ZERO
                        MOVE    WRK-TIME22          TO  UKE-KAIKEITIME
+      *
+                       MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
+                       MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
+      *
                        MOVE    UKETUKE-REC         TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "UKETUKE-KEY"       TO  ORC-DBPATH

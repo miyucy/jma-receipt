@@ -175,6 +175,9 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -1301,6 +1304,12 @@
       *****************************************************************
        410022-INPUTCD-HOZON-SEC          SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+      *
            INITIALIZE                      WRK-INPUTCD-TBL
            MOVE    ZERO                TO  IDX-T
       *
@@ -1381,6 +1390,10 @@
            MOVE    SPA-K023-SRYCD (IDX)    TO  ICD-SRYCD
            ADD     1                   TO  WRK-DSPSEQ
            MOVE    WRK-DSPSEQ          TO  ICD-DSPSEQ
+      *
+           MOVE    SMCNDATE-YMD        TO  ICD-CREYMD
+           MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
+           MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC

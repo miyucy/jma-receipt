@@ -220,6 +220,9 @@
       *   算定履歴更新サブ
            COPY    "CPORCSSANTEI.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -257,6 +260,11 @@
            INITIALIZE                  TBL-GAIHAKU-AREA
       *
            INITIALIZE                  ORCSCHO-ERRCD
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
       *
            MOVE    "1"                 TO  SPA-NYUGAIKBN
       *
@@ -1153,6 +1161,9 @@
                        PERFORM 40052-SRYACCT-DEL-SEC
                    ELSE
       *
+                       MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
+                       MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+      *
                        MOVE    SRYACCT-REC         TO  MCPDATA-REC
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
@@ -1337,6 +1348,10 @@
                    END-IF
                END-PERFORM
       *
+      *
+               MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+      *
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "JYURRK-KEY"        TO  ORC-DBPATH
@@ -1423,6 +1438,10 @@
                          ( FLG-SRYACCT-DEL     =   1    )
                        PERFORM 40052-SRYACCT-DEL-SEC
                    ELSE
+      *
+      *
+                   MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
       *
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1570,6 +1589,10 @@
                ADD     ACCT-DAY (1 IDX2)   TO  ACCT-ZAIKAISU
            END-PERFORM
       *
+           MOVE    SMCNDATE-YMD        TO  ACCT-CREYMD
+           MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
+           MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+      *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "SRYACCT-KEY"       TO  ORC-DBPATH
@@ -1609,6 +1632,9 @@
            END-IF
            ADD     1                   TO  PTINF-MAXZAINUM
            MOVE    PTINF-MAXZAINUM     TO  WRK-ZAINUM
+      *
+           MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1651,6 +1677,11 @@
            MOVE    ZERO                TO  SRY-SRYKAISU (1)
            MOVE    "3"                 TO  SRY-AUTOKBN  (1)
            MOVE    ZERO                TO  SRY-JIHIMONEY(1)
+      *
+      *
+           MOVE    SMCNDATE-YMD        TO  SRY-CREYMD
+           MOVE    SMCNDATE-YMD        TO  SRY-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SRY-UPHMS
       *
            MOVE    SRYACT-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC

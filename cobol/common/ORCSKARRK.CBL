@@ -81,6 +81,9 @@
            03  WRK-SYOSINYMD-RRK       PIC X(08).
            03  WRK-SYOSINYMD-RRK2      PIC X(08).
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
       *
@@ -136,6 +139,15 @@
       *
            MOVE    ZERO                TO  SKARRK-RC
            MOVE    SPACE               TO  SKARRK-ERRMSG
+      *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  IDX-AREA
+           INITIALIZE                  WRK-AREA
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
       *
       *    診療科履歴初期処理
            PERFORM 100-SRYKA-SYOKI-SEC
@@ -526,6 +538,9 @@
                MOVE    SPA-PTID            TO  KARRK-PTID
                MOVE    SPA-SRYKA           TO  KARRK-SRYKA
       *
+               MOVE    SMCNDATE-YMD        TO  KARRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  KARRK-UPHMS
+      *
                MOVE    SRYKARRK-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "SRYKARRK-KEY"      TO  ORC-DBPATH
@@ -542,6 +557,11 @@
                MOVE    SPA-HOSPID          TO  KARRK-HOSPID
                MOVE    SPA-PTID            TO  KARRK-PTID
                MOVE    SPA-SRYKA           TO  KARRK-SRYKA
+      *
+      *
+               MOVE    SMCNDATE-YMD        TO  KARRK-CREYMD
+               MOVE    SMCNDATE-YMD        TO  KARRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  KARRK-UPHMS
       *
                MOVE    SRYKARRK-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -745,7 +765,8 @@
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+      **** MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
            MOVE    SKARRK-SRYYM        TO  ORC-DBYMD(1:6)
            MOVE    "01"                TO  ORC-DBYMD(7:2)
            CALL    "ORCMCPSUB"          USING
@@ -754,7 +775,8 @@
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+      *******  MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
@@ -772,7 +794,8 @@
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+      **** MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           MOVE    "TENSU-KEY22"       TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA

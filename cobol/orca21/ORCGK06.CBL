@@ -271,6 +271,9 @@
       *   診療科履歴更新サブ
            COPY    "CPORCSKARRK.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -1563,6 +1566,11 @@
       *
       *    マスター削除
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-DEL-MAX
                INITIALIZE                      SANTEI-KEY
@@ -1684,6 +1692,9 @@
            MOVE    SPA-NAI-THKNCOMBI(IDX)
                                        TO  SANTEI-HKNCOMBINUM
            PERFORM 4501-SANTEI-HENSYU-SEC 
+      *
+           MOVE    SMCNDATE-YMD        TO  SANTEI-CREYMD
+      *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
@@ -1714,6 +1725,10 @@
                    UNTIL       IDY    >       31
                MOVE    SPA-NAI-TDAY (IDX IDY) TO  SANTEI-DAY (IDY)
            END-PERFORM
+      *
+           MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
+      *
            .
        4501-SANTEI-HENSYU-EXT.
            EXIT.
