@@ -1466,6 +1466,7 @@
            IF      WRK-SRYCD       NOT =   SPACE
                MOVE    1                   TO  FLG-SATU
                MOVE    IDX-SAT2            TO  IDX-S
+               MOVE    SPACE               TO  WRK-SRYCD-2
                PERFORM 1003-JIDOU-CHK-SEC
                PERFORM 1002-JIDOUSET-SEC
       *
@@ -1486,6 +1487,7 @@
                MOVE    "170000310"         TO  WRK-SRYCD
                COMPUTE IDX-S               =   IDX-SAT    -    1
                MOVE    ZERO                TO  FLG-SATU
+               MOVE    SPACE               TO  WRK-SRYCD-2
                PERFORM 1003-JIDOU-CHK-SEC
                PERFORM 1002-JIDOUSET-SEC
            END-IF
@@ -1573,7 +1575,8 @@
                    UNTIL      (IDX1        >   200     )   OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
-               IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
+               IF      (WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD ) OR
+                       (WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD-2)
                     MOVE    IDX1           TO  IDX-T
                     MOVE    1              TO  FLG-ARI
                END-IF
@@ -1602,6 +1605,7 @@
                                                TO  WRK-SRYCD
                MOVE    IDX-SYU            TO   IDX-T
                MOVE    IDX-SYU            TO   IDX-S
+               MOVE    SPACE              TO   WRK-SRYCD-2
                PERFORM 1003-JIDOU-CHK-SEC
       *        ²Ã»»ÄÉ²Ã
                MOVE    3                   TO  FLG-SATU
@@ -1798,9 +1802,11 @@
                IF      FLG-CTMRI           =   1
       *            £Ã£Ô²Ã»»
                    MOVE    "170012070"         TO  WRK-SRYCD
+                   MOVE    "170020470"         TO  WRK-SRYCD-2
                ELSE
       *            £Í£É£Ò²Ã»»
                    MOVE    "170020470"         TO  WRK-SRYCD
+                   MOVE    "170012070"         TO  WRK-SRYCD-2
                END-IF
                MOVE    IDX-SAT             TO  IDX-S
                MOVE    ZERO                TO  FLG-SATU
@@ -2132,6 +2138,7 @@
                ELSE
                    MOVE    ZERO                TO  FLG-SATU
                    MOVE    IDX-Z               TO  IDX-S
+                   MOVE    SPACE               TO  WRK-SRYCD-2
                    PERFORM 1003-JIDOU-CHK-SEC
                    PERFORM 1002-JIDOUSET-SEC
                END-IF
