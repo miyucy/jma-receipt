@@ -388,6 +388,9 @@
       *    入院会計作成サブ
            COPY    "CPORCSNYUACCT.INC".
       *
+      *    排他制御パラメタ
+           COPY    "CPORCSLOCK.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -630,6 +633,8 @@
                    IF      SPA-PTID            =   ZERO
                        MOVE    ZERO                TO  SPA-GMN-CUR-41
                    ELSE
+      *                排他制御処理
+                       PERFORM 990-LOCK-IN-SEC
                        PERFORM 41010-PTNUM-SYORI-SEC
                        GO      TO      300-SCREEN-EXT
                    END-IF
@@ -2277,6 +2282,12 @@
                GO      TO      41010-PTNUM-SYORI-EXT
            END-IF.
       *
+      *    排他制御処理
+           PERFORM 990-LOCK-IN-SEC.
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41010-PTNUM-SYORI-EXT
+           END-IF.
+      *
       *    患者入院履歴編集
            PERFORM 3103-PTNYUINRRK-HEN-SEC.
       *
@@ -3224,6 +3235,9 @@
       *****************************************************************
        420-CLEA-SEC        SECTION.
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC.
+      *
            IF      SPA-GMN-NUM-41    =   ZERO
       *    前回患者へ待避
                IF      SPA-GMN-PTNUM    NOT =   SPACE
@@ -3251,7 +3265,6 @@
                INITIALIZE                   SPA-GMN-INPUT-41
                INITIALIZE                   SPA-NAIGMN-AREA-41
                MOVE    ZERO                 TO  SPA-I4-SYORI
-      *
                MOVE    1                    TO  SPA-GMN-CUR-41
            END-IF.
       *
@@ -3488,6 +3501,9 @@
                GO      TO      210-BACK-EXT
            END-IF.
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC.
+      *
            MOVE    "I41"               TO  SPA-MOTOPG.
            MOVE    SPA-MOTOPG2         TO  SPA-SAKIPG.
            IF      SPA-I40-MOTOPG      =   "M01"
@@ -3521,6 +3537,9 @@
       *    戻る　処理
       *****************************************************************
        210-BACK-SYORI-SEC           SECTION.
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC.
       *
            MOVE    "I41"               TO  SPA-MOTOPG.
            MOVE    SPA-I40-MOTOPG      TO  SPA-SAKIPG.
@@ -4652,8 +4671,7 @@
       *        病棟入院料加算
                PERFORM   VARYING   IDX7   FROM   1  BY  1
                  UNTIL (IDX7                    >   12)   OR
-		       (SYS-5001-KSNCD(IDX7)    =   SPACE)
-                        
+                       (SYS-5001-KSNCD(IDX7)    =   SPACE)
                     IF   IDX7          =       6
       *                 児童思春期精神科入院医療管理加算（２０才未満）
                         IF   SYS-5001-KSNKBN(IDX7)   =   "2"
@@ -5342,6 +5360,7 @@
            EXIT.
       *
       *****************************************************************
+      *
        490-TOROKU-CRE-SEC                SECTION.
       *
       *    患者が選択されてきた時は、元の画面へ
@@ -5365,6 +5384,8 @@
                MOVE    SPACE                TO  SPA-GMN-SRYKA-IG-41
                MOVE    "00"                 TO  SPA-GMN-SRYKA-I-41
                MOVE    "全科指定"           TO  SPA-GMN-SRYKAMEI-I-41
+      *        排他制御解除処理
+               PERFORM 990-LOCK-OUT-SEC
            ELSE
       *        更新後、戻るへ
                PERFORM 210-BACK
@@ -5928,6 +5949,10 @@
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません"
                                        TO  WRK-ERRMSG
+               WHEN    "9999"
+                   MOVE    "他端末で使用中です。"
+                                       TO  WRK-ERRMSG
+                   MOVE    SLOCK-MSG   TO  WRK-ERRMSG(21:)
            END-EVALUATE.
       *
            MOVE    SPACE               TO  I4ERR.
@@ -6420,6 +6445,40 @@
            EXIT.
       *
       *****************************************************************
+      *    排他制御処理
+      *****************************************************************
+       990-LOCK-IN-SEC             SECTION.
+      *
+      *    排他制御処理
+           MOVE    1                   TO  SLOCK-MODE.
+           MOVE    SPA-GMN-PTID        TO  SLOCK-PTID.
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA.
+           IF      SLOCK-RETURN    NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+           END-IF.
+      *
+       990-LOCK-IN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御解除処理
+      *****************************************************************
+       990-LOCK-OUT-SEC            SECTION.
+      *
+      *    排他制御解除処理
+           MOVE    2                   TO  SLOCK-MODE.
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA.
+      *
+       990-LOCK-OUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
@@ -6438,10 +6497,9 @@
       *****************************************************************
        900-TBL-CLOSE-SEC               SECTION.
       *
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DB-CLOSE-SEC
+           MOVE    WRK-DBPATH      TO  ORC-DBPATH.
+           PERFORM 910-DB-CLOSE-SEC.
       *
-           .
        900-TBL-CLOSE-EXT.
            EXIT.
       *
@@ -6450,12 +6508,11 @@
       *****************************************************************
        910-DB-CLOSE-SEC                SECTION.
       *
-           MOVE    "DBCLOSE"            TO  MCP-FUNC
+           MOVE    "DBCLOSE"            TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
-                                        MCPDATA-REC
-           .
+                                        MCPDATA-REC.
       *
        910-DB-CLOSE-EXT.
            EXIT.
