@@ -1653,8 +1653,6 @@
                    MOVE    200         TO  SPA-GMN-CUR
            END-EVALUATE
       *
-           EVALUWATE
-      *
            .
        50011-CUR-SET-EXT.
            EXIT.
@@ -1782,6 +1780,10 @@
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
+      *
+           .
+       900-SYSKANRI-READ-EXT.
+           EXIT.
       *
       *****************************************************************
       *    £Ð£Õ£Ô¡¡½èÍý
