@@ -31,6 +31,7 @@
       *  01.00.01    NACL−太田   04/01/29  送信アドレスを最大件数を
       *                                     ２０件に拡張
       *                                     一括入力対応
+      *  01.00.02    NACL−太田   04/03/03  患者登録送信ボタン等追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -102,6 +103,17 @@
                    07  SPA-GMN-LBLNO-G.
                        09  SPA-GMN-LBLNO      PIC X(04)
                                               OCCURS 10.
+                   07  SPA-GMN-PTINF-SEND-G.
+                       09  SPA-GMN-PTINF-SEND PIC X(01) OCCURS 2.
+                   07  SPA-GMN-RECEDENKA-SEND-G.
+                       09  SPA-GMN-RECEDENKA-SEND
+                                              PIC X(01) OCCURS 2.
+                   07  SPA-GMN-BYOMEI-AGG-G.
+                       09  SPA-GMN-BYOMEI-AGG
+                                              PIC X(01) OCCURS 2.
+                   07  SPA-GMN-BYOMEI-SYNC-G.
+                       09  SPA-GMN-BYOMEI-SYNC
+                                              PIC X(01) OCCURS 2.
                    07  SPA-GMN-TBL.            
                        09  SPA-GMN-TBL-G      OCCURS  20.
                            11  SPA-GMN-TADDRESS-G.
@@ -464,6 +476,39 @@
                                        TO  SPA-GMN-SYNBUTTON (1)  
                MOVE    SYS-9000-SYNBUTTON (2)
                                        TO  SPA-GMN-SYNBUTTON (2)  
+      *
+               IF    ( SYS-9000-PT-FLG             =   "1" )
+                   MOVE    "F"         TO  SPA-GMN-PTINF-SEND (1)
+                   MOVE    "T"         TO  SPA-GMN-PTINF-SEND (2)
+               ELSE
+                   MOVE    "T"         TO  SPA-GMN-PTINF-SEND (1)
+                   MOVE    "F"         TO  SPA-GMN-PTINF-SEND (2)
+               END-IF
+      *
+               IF    ( SYS-9000-RECEDEN-FLG        =   "1" )
+                   MOVE    "F"         TO  SPA-GMN-RECEDENKA-SEND (1)
+                   MOVE    "T"         TO  SPA-GMN-RECEDENKA-SEND (2)
+               ELSE
+                   MOVE    "T"         TO  SPA-GMN-RECEDENKA-SEND (1)
+                   MOVE    "F"         TO  SPA-GMN-RECEDENKA-SEND (2)
+               END-IF
+      *
+               IF    ( SYS-9000-BYOMEI-SYU-FLG     =   "1" )
+                   MOVE    "F"         TO  SPA-GMN-BYOMEI-AGG (1)
+                   MOVE    "T"         TO  SPA-GMN-BYOMEI-AGG (2)
+               ELSE
+                   MOVE    "T"         TO  SPA-GMN-BYOMEI-AGG (1)
+                   MOVE    "F"         TO  SPA-GMN-BYOMEI-AGG (2)
+               END-IF
+      *
+               IF    ( SYS-9000-BYOMEI-DOUKI-FLG   =   "1" )
+                   MOVE    "F"         TO  SPA-GMN-BYOMEI-SYNC (1)
+                   MOVE    "T"         TO  SPA-GMN-BYOMEI-SYNC (2)
+               ELSE
+                   MOVE    "T"         TO  SPA-GMN-BYOMEI-SYNC (1)
+                   MOVE    "F"         TO  SPA-GMN-BYOMEI-SYNC (2)
+               END-IF
+      *
            ELSE
                MOVE    "T" 
                                        TO  SPA-GMN-UKEBUTTON (1)  
@@ -477,6 +522,16 @@
                                        TO  SPA-GMN-SYNBUTTON (1)  
                MOVE    "F" 
                                        TO  SPA-GMN-SYNBUTTON (2)  
+      *
+               MOVE    "T"             TO  SPA-GMN-PTINF-SEND (1)
+               MOVE    "F"             TO  SPA-GMN-PTINF-SEND (2)
+               MOVE    "T"             TO  SPA-GMN-RECEDENKA-SEND (1)
+               MOVE    "F"             TO  SPA-GMN-RECEDENKA-SEND (2)
+               MOVE    "T"             TO  SPA-GMN-BYOMEI-AGG (1)
+               MOVE    "F"             TO  SPA-GMN-BYOMEI-AGG (2)
+               MOVE    "T"             TO  SPA-GMN-BYOMEI-SYNC (1)
+               MOVE    "F"             TO  SPA-GMN-BYOMEI-SYNC (2)
+      *
            END-IF             
       *
            MOVE    SPACE               TO  SYS-9001-REC
@@ -566,6 +621,22 @@
                WHEN    "CLICKED"       ALSO    "SYNBUTTON1"
                WHEN    "CLICKED"       ALSO    "SYNBUTTON2"
                    PERFORM 450-SYNBUTTON-SEC
+      *    患者登録送信ボタン処理
+               WHEN    "CLICKED"       ALSO    "PTINF_SEND1"
+               WHEN    "CLICKED"       ALSO    "PTINF_SEND2"
+                   PERFORM 450-PTINF-SEND-SEC
+      *    診療科レセ電送信処理
+               WHEN    "CLICKED"       ALSO    "RECEDENKA_SEND1"
+               WHEN    "CLICKED"       ALSO    "RECEDENKA_SEND2"
+                   PERFORM 450-RECEDENKA-SEND-SEC
+      *    病名集約
+               WHEN    "CLICKED"       ALSO    "BYOMEI_AGG1"
+               WHEN    "CLICKED"       ALSO    "BYOMEI_AGG2"
+                   PERFORM 450-BYOMEI-AGG-SEC
+      *    病名同期
+               WHEN    "CLICKED"       ALSO    "BYOMEI_SYNC1"
+               WHEN    "CLICKED"       ALSO    "BYOMEI_SYNC2"
+                   PERFORM 450-BYOMEI-SYNC-SEC
            END-EVALUATE
       *
            .
@@ -724,6 +795,8 @@
            MOVE    W99-UKEBUTTON1         TO  SPA-GMN-UKEBUTTON (1) 
            MOVE    W99-UKEBUTTON2         TO  SPA-GMN-UKEBUTTON (2) 
       *
+           MOVE    5                      TO  SPA-GMN-CUR
+      *
            .
        430-UKEBUTTON-SEC-EXT.
            EXIT.
@@ -738,6 +811,8 @@
       *
            MOVE    W99-KANBUTTON1         TO  SPA-GMN-KANBUTTON (1) 
            MOVE    W99-KANBUTTON2         TO  SPA-GMN-KANBUTTON (2) 
+      *
+           MOVE    7                      TO  SPA-GMN-CUR
       *
            .
        440-KANBUTTON-SEC-EXT.
@@ -754,8 +829,74 @@
            MOVE    W99-SYNBUTTON1         TO  SPA-GMN-SYNBUTTON (1) 
            MOVE    W99-SYNBUTTON2         TO  SPA-GMN-SYNBUTTON (2) 
       *
+           MOVE    9                      TO  SPA-GMN-CUR
+      *
            .
        450-SYNBUTTON-SEC-EXT.
+           EXIT.
+      *****************************************************************
+      *   患者登録送信ボタン処理
+      *****************************************************************
+       450-PTINF-SEND-SEC              SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    W99-PTINF-SEND1     TO  SPA-GMN-PTINF-SEND (1) 
+           MOVE    W99-PTINF-SEND2     TO  SPA-GMN-PTINF-SEND (2) 
+      *
+           MOVE    103                 TO  SPA-GMN-CUR
+      *
+           .
+       450-PTINF-SEND-EXT.
+           EXIT.
+      *****************************************************************
+      *   診療科レセ電送信処理
+      *****************************************************************
+       450-RECEDENKA-SEND-SEC          SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    W99-RECEDENKA-SEND1 TO  SPA-GMN-RECEDENKA-SEND (1)
+           MOVE    W99-RECEDENKA-SEND2 TO  SPA-GMN-RECEDENKA-SEND (2)
+      *
+           MOVE    105                 TO  SPA-GMN-CUR
+      *
+           .
+       450-RECEDENKA-SEND-EXT.
+           EXIT.
+      *****************************************************************
+      *   病名集約
+      *****************************************************************
+       450-BYOMEI-AGG-SEC              SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    W99-BYOMEI-AGG1     TO  SPA-GMN-BYOMEI-AGG (1)
+           MOVE    W99-BYOMEI-AGG2     TO  SPA-GMN-BYOMEI-AGG (2)
+      *
+           MOVE    107                 TO  SPA-GMN-CUR
+      *
+           .
+       450-BYOMEI-AGG-EXT.
+           EXIT.
+      *****************************************************************
+      *   病名同期
+      *****************************************************************
+       450-BYOMEI-SYNC-SEC              SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    W99-BYOMEI-SYNC1    TO  SPA-GMN-BYOMEI-SYNC (1)
+           MOVE    W99-BYOMEI-SYNC2    TO  SPA-GMN-BYOMEI-SYNC (2)
+      *
+           MOVE    9                   TO  SPA-GMN-CUR
+      *
+           .
+       450-BYOMEI-SYNC-EXT.
            EXIT.
       *****************************************************************
       *   ＩＰアドレス入力チェック処理 
@@ -1083,6 +1224,31 @@
            MOVE    SPA-GMN-UKEBUTTON-G     TO  SYS-9000-UKEBUTTON-G
            MOVE    SPA-GMN-KANBUTTON-G     TO  SYS-9000-KANBUTTON-G
            MOVE    SPA-GMN-SYNBUTTON-G     TO  SYS-9000-SYNBUTTON-G
+      *     
+           IF    ( SPA-GMN-PTINF-SEND (2)      =   "T" )
+               MOVE    1                   TO  SYS-9000-PT-FLG
+           ELSE
+               MOVE    SPACE               TO  SYS-9000-PT-FLG
+           END-IF
+      *     
+           IF    ( SPA-GMN-RECEDENKA-SEND (2)  =   "T" )
+               MOVE    1                   TO  SYS-9000-RECEDEN-FLG
+           ELSE
+               MOVE    SPACE               TO  SYS-9000-RECEDEN-FLG
+           END-IF
+      *     
+           IF    ( SPA-GMN-BYOMEI-AGG (2)      =   "T" )
+               MOVE    1                   TO  SYS-9000-BYOMEI-SYU-FLG
+           ELSE
+               MOVE    SPACE               TO  SYS-9000-BYOMEI-SYU-FLG
+           END-IF
+      *     
+           IF    ( SPA-GMN-BYOMEI-SYNC (2)     =   "T" )
+               MOVE    1                   TO  SYS-9000-BYOMEI-DOUKI-FLG
+           ELSE
+               MOVE    SPACE               TO  SYS-9000-BYOMEI-DOUKI-FLG
+           END-IF
+      *     
            MOVE    SYS-9000-REC            TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI            =   ZERO
@@ -1280,12 +1446,21 @@
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-UKEBUTTON (1)  TO  W99-UKEBUTTON1
-           MOVE    SPA-GMN-UKEBUTTON (2)  TO  W99-UKEBUTTON2
-           MOVE    SPA-GMN-KANBUTTON (1)  TO  W99-KANBUTTON1
-           MOVE    SPA-GMN-KANBUTTON (2)  TO  W99-KANBUTTON2
-           MOVE    SPA-GMN-SYNBUTTON (2)  TO  W99-SYNBUTTON2
-           MOVE    SPA-GMN-SYNBUTTON (2)  TO  W99-SYNBUTTON2
+           MOVE    SPA-GMN-UKEBUTTON (1)   TO  W99-UKEBUTTON1
+           MOVE    SPA-GMN-UKEBUTTON (2)   TO  W99-UKEBUTTON2
+           MOVE    SPA-GMN-KANBUTTON (1)   TO  W99-KANBUTTON1
+           MOVE    SPA-GMN-KANBUTTON (2)   TO  W99-KANBUTTON2
+           MOVE    SPA-GMN-SYNBUTTON (1)   TO  W99-SYNBUTTON1
+           MOVE    SPA-GMN-SYNBUTTON (2)   TO  W99-SYNBUTTON2
+      *
+           MOVE    SPA-GMN-PTINF-SEND (1)      TO   W99-PTINF-SEND1
+           MOVE    SPA-GMN-PTINF-SEND (2)      TO   W99-PTINF-SEND2
+           MOVE    SPA-GMN-RECEDENKA-SEND (1)  TO   W99-RECEDENKA-SEND1
+           MOVE    SPA-GMN-RECEDENKA-SEND (2)  TO   W99-RECEDENKA-SEND2
+           MOVE    SPA-GMN-BYOMEI-AGG (1)      TO   W99-BYOMEI-AGG1
+           MOVE    SPA-GMN-BYOMEI-AGG (2)      TO   W99-BYOMEI-AGG2
+           MOVE    SPA-GMN-BYOMEI-SYNC (1)     TO   W99-BYOMEI-SYNC1
+           MOVE    SPA-GMN-BYOMEI-SYNC (2)     TO   W99-BYOMEI-SYNC2
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1512,6 +1687,23 @@
                MOVE  "SMEMO10"         TO   MCP-WIDGET
            WHEN    49
                MOVE  "B12"             TO   MCP-WIDGET
+      *
+           WHEN    101
+               MOVE  "PTINF_SEND1"     TO   MCP-WIDGET
+           WHEN    102
+               MOVE  "PTINF_SEND2"     TO   MCP-WIDGET
+           WHEN    103
+               MOVE  "RECEDENKA_SEND1" TO   MCP-WIDGET
+           WHEN    104
+               MOVE  "RECEDENKA_SEND2" TO   MCP-WIDGET
+           WHEN    105
+               MOVE  "BYOMEI_AGG1"     TO   MCP-WIDGET
+           WHEN    106
+               MOVE  "BYOMEI_AGG2"     TO   MCP-WIDGET
+           WHEN    107
+               MOVE  "BYOMEI_SYNC1"    TO   MCP-WIDGET
+           WHEN    108
+               MOVE  "BYOMEI_SYNC2"    TO   MCP-WIDGET
            END-EVALUATE
            .
        5001-MAPCUR-EXT.

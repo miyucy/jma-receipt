@@ -194,5 +194,33 @@ W99	{
 		LBLNO10	{
 			value	varchar(4);
 		};
+		frame1	{
+			fixed2	{
+				PTINF_SEND1	{
+					value	bool;
+				};
+				PTINF_SEND2	{
+					value	bool;
+				};
+				RECEDENKA_SEND1	{
+					value	bool;
+				};
+				RECEDENKA_SEND2	{
+					value	bool;
+				};
+				BYOMEI_AGG1	{
+					value	bool;
+				};
+				BYOMEI_AGG2	{
+					value	bool;
+				};
+				BYOMEI_SYNC1	{
+					value	bool;
+				};
+				BYOMEI_SYNC2	{
+					value	bool;
+				};
+			};
+		};
 	};
 };

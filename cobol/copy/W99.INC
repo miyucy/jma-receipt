@@ -36,3 +36,21 @@
                 04  W99-VALUE   PIC X.
               03  W99-LBLNO-G.
                 04 W99-LBLNO    PIC X(04)  OCCURS  10.
+              03  W99-FRAME1.
+                04  W99-FIXED2.
+                  05  W99-PTINF-SEND1.
+                    06  W99-VALUE   PIC X.
+                  05  W99-PTINF-SEND2.
+                    06  W99-VALUE   PIC X.
+                  05  W99-RECEDENKA-SEND1.
+                    06  W99-VALUE   PIC X.
+                  05  W99-RECEDENKA-SEND2.
+                    06  W99-VALUE   PIC X.
+                  05  W99-BYOMEI-AGG1.
+                    06  W99-VALUE   PIC X.
+                  05  W99-BYOMEI-AGG2.
+                    06  W99-VALUE   PIC X.
+                  05  W99-BYOMEI-SYNC1.
+                    06  W99-VALUE   PIC X.
+                  05  W99-BYOMEI-SYNC2.
+                    06  W99-VALUE   PIC X.
