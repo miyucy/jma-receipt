@@ -498,6 +498,9 @@
            END-IF
       *
            PERFORM 200-MAIN-SEC
+           IF    ( ORCHCM34-RC     NOT =   ZERO )
+               GO  TO  000-PROC-EXT
+           END-IF
       *
            PERFORM 300-END-SEC
            .
@@ -1865,6 +1868,13 @@
            MOVE    WKSRYACCT-OCC(IDX11)
                                        TO  SRYACCT-REC
       *
+           IF    ( ACCT-ZAITEN     NOT =   ZERO )
+            AND  ( ACCT-ZAIKAISU   NOT =   ZERO )
+               CONTINUE
+           ELSE
+               GO  TO  20011-SRYACT-HEN-EXT
+           END-IF
+      *
            MOVE    ZERO                TO  CNT-HOUSRYACT
       *
       *    診療行為マスター読み込み
@@ -2081,7 +2091,7 @@
       *
       *    約束セットのコードは読み飛ばす
            IF    ( SRY-SRYCD (IDX9)(1:1)   =   "S" )
-               GO  TO  200111-ZAIMEI-HEN-EXT
+               GO  TO  200111-JIHIMEI-HEN-EXT
            END-IF
       *
       *    診療コードより診療行為名称を取得
@@ -2758,7 +2768,7 @@
        210-WRK-SRYACT-TBL-HEN3-SEC     SECTION.
       *
            IF    ( WRK-SRYACT-MAX      >=  500 )
-               GO  TO  210-WRK-SRYACT-TBL-HEN2-EXT
+               GO  TO  210-WRK-SRYACT-TBL-HEN3-EXT
            END-IF
       *
            MOVE    WRK-SRYACT-STR      TO  WRK-STR
