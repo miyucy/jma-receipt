@@ -1181,7 +1181,6 @@
 099400     MOVE    "J03"               TO  SPA-MOTOPG
 099500*
 099600     MOVE    SPA-J01KYOUTU       TO  SPA-WORK
-           MOVE   SPA-KYOUTU           TO  LNK-KYOUTU
 099700*
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
 099800*****MOVE    "JOIN"              TO  MCP-PUTTYPE
