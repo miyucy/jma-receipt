@@ -193,6 +193,8 @@
               03  I04-SCROLLEDWINDOW1.
                 04  I04-HKNCOMBILST.
                   05  I04-HKNCOMBILST-CNT  PIC S9(9)   BINARY.
+                  05  I04-HKNCOMBILST-ROW  PIC S9(9)   BINARY.
+                  05  I04-HKNCOMBILST-ROWATTR PIC S9(9)   BINARY.
                   05  I04-HKNCOMBILST-ITM  OCCURS  15 TIMES.
                     06  I04-TSELNUM        PIC X(02).
                     06  I04-THKNCOMBI      PIC X(50).

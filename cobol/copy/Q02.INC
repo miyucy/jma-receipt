@@ -30,6 +30,8 @@
               04  Q02-SCR-KEKKALST.
                 05  Q02-KEKKALST.
                   06  Q02-KEKKALST-COUNT       PIC S9(9)   BINARY.
+                  06  Q02-KEKKALST-ROW         PIC S9(9)   BINARY.
+                  06  Q02-KEKKALST-ROWATTR     PIC S9(9)   BINARY.
                   06  Q02-KEKKALST-ITEM    OCCURS  200.
                     07  Q02-KEKKALST-NO        PIC X(5).
                     07  Q02-KEKKALST-PTNUM     PIC X(20).

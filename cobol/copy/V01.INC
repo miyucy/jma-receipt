@@ -34,6 +34,8 @@
               04  V01-SCROLLEDWINDOW1.
                 05  V01-CLIST1.
                   06  V01-COUNT   PIC S9(9)   BINARY.
+                  06  V01-ROW     PIC S9(9)   BINARY.
+                  06  V01-ROWATTR PIC S9(9)   BINARY.
                   06  V01-ITEM        OCCURS  100 TIMES.
                     07  V01-TBANGO    PIC X(4).
                     07  V01-TPAYKBN   PIC X(3).

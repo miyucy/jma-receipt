@@ -4,6 +4,8 @@
               03  G99-SCROLLEDWINDOW28.
                 04  G99-JOBKANRILST.
                   05  G99-COUNT   PIC S9(9)   BINARY.
+                  06  G99-ROW     PIC S9(9)   BINARY.
+                  06  G99-ROWATTR PIC S9(9)   BINARY.
                   05  G99-ITEM        OCCURS  30 TIMES.
                     06  G99-RENNUM    PIC X(7).
                     06  G99-SHORINM   PIC X(26).

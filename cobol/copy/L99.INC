@@ -4,6 +4,8 @@
               03  L99-SCROLLEDWINDOW28.
                 04  L99-JOBKANRILST.
                   05  L99-COUNT   PIC S9(9)   BINARY.
+                  05  L99-ROW     PIC S9(9)   BINARY.
+                  05  L99-ROWATTR PIC S9(9)   BINARY.
                   05  L99-ITEM        OCCURS  30 TIMES.
                     06  L99-RENNUM    PIC X(7).
                     06  L99-SHORINM   PIC X(26).

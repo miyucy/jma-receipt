@@ -21,6 +21,8 @@
           03  D99-SCROLLEDWINDOW28.
             04  D99-JOBKANRILST.
               05  D99-COUNT       PIC S9(9)   BINARY.
+              05  D99-ROW     PIC S9(9)   BINARY.
+              05  D99-ROWATTR PIC S9(9)   BINARY.
               05  D99-ITEM        OCCURS  30 TIMES.
                 06  D99-RENNUM    PIC X(7).
                 06  D99-SHORINM   PIC X(20).

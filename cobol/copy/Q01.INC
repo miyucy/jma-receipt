@@ -117,6 +117,8 @@
                   06  Q01-SCR-BYOLST.
                     07  Q01-BYOLST.
                       08  Q01-BYOLST-COUNT     PIC S9(9)   BINARY.
+                      08  Q01-BYOLST-ROW       PIC S9(9)   BINARY.
+                      08  Q01-BYOLST-ROWATTR   PIC S9(9)   BINARY.
                       08  Q01-BYOLST-ITEM  OCCURS  200 TIMES.
                         09  Q01-BYOLST-BYOMEICD
                                                PIC X(20).
@@ -133,6 +135,8 @@
                   06  Q01-SCR-SRYLST.
                     07  Q01-SRYLST.
                       08  Q01-SRYLST-COUNT     PIC S9(9)   BINARY.
+                      08  Q01-SRYLST-ROW       PIC S9(9)   BINARY.
+                      08  Q01-SRYLST-ROWATTR   PIC S9(9)   BINARY.
                       08  Q01-SRYLST-ITEM  OCCURS  200 TIMES.
                         09  Q01-SRYLST-SRYCD
                                                PIC X(09).

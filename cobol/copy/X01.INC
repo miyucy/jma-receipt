@@ -20,6 +20,8 @@
               03  X01-SCROLLEDWINDOW1.
                 04  X01-TENSU-LIST.
                   05  X01-COUNT   PIC S9(9)   BINARY.
+                  05  X01-ROW     PIC S9(9)   BINARY.
+                  05  X01-ROWATTR PIC S9(9)   BINARY.
                   05  X01-ITEM        OCCURS  100 TIMES.
                     06  X01-TBANGO     PIC X(4).
                     06  X01-TSTYUKYMD  PIC X(10).

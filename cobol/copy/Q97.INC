@@ -21,6 +21,8 @@
           03  Q97-SCROLLEDWINDOW28.
             04  Q97-JOBKANRILST.
               05  Q97-COUNT        PIC S9(9)   BINARY.
+              05  Q97-ROW          PIC S9(9)   BINARY.
+              05  Q97-ROWATTR      PIC S9(9)   BINARY.
               05  Q97-ITEM         OCCURS  30 TIMES.
                 06  Q97-RENNUM     PIC X(7).
                 06  Q97-SHORINM    PIC X(26).

@@ -52,6 +52,8 @@
               03  V03-SCROLLEDWINDOW28.
                 04  V03-KOHPLUSLST.
                   05  V03-KOHPLUSLST-COUNT PIC S9(9)   BINARY.
+                  05  V03-KOHPLUSLST-ROW     PIC S9(9)   BINARY.
+                  05  V03-KOHPLUSLST-ROWATTR PIC S9(9)   BINARY.
                   05  V03-KOHPLUSLST-ITEM  OCCURS  200 TIMES.
                     06  V03-TYUKO          PIC X(2).
                     06  V03-TSELNUM        PIC X(3).

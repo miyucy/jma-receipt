@@ -26,6 +26,8 @@
               03  X98-SCROLLEDWINDOW26.
                 04  X98-LIST.
                   05  X98-COUNT   PIC S9(9)   BINARY.
+                  05  X98-ROW     PIC S9(9)   BINARY.
+                  05  X98-ROWATTR PIC S9(9)   BINARY.
                   05  X98-ITEM        OCCURS  200 TIMES.
                     06  X98-NO      PIC X(3).
                     06  X98-NAME    PIC X(70).

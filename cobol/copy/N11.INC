@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * 日医標準レセプトソフト（JMA standard receipt software）
+      * ﾆ�ｰ衙ｸｽ爭�･ｻ･ﾗ･ﾈ･ｽ･ﾕ･ﾈ｡ﾊJMA standard receipt software｡ﾋ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -23,6 +23,8 @@
                   04  N11-SCR-KEKKALST.
                     05  N11-KEKKALST.
                       06  N11-KEKKALST-COUNT    PIC S9(9)   BINARY.
+                      06  N11-KEKKALST-ROW      PIC S9(9)   BINARY.
+                      06  N11-KEKKALST-ROWATTR  PIC S9(9)   BINARY.
                       06  N11-KEKKALST-ITEM     OCCURS  200.
                         07  N11-KEKKALST-NO     PIC X(5).
                         07  N11-KEKKALST-NAME   PIC X(100).

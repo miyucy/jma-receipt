@@ -3,6 +3,8 @@ X01	{
 		scrolledwindow1	{
 			TENSU_LIST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value1	varchar(4);
 					value2	varchar(10);

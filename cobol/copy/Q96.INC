@@ -25,6 +25,8 @@
               03  Q96-SCROLLEDWINDOW26.
                 04  Q96-LIST.
                   05  Q96-COUNT   PIC S9(9)   BINARY.
+                  05  Q96-ROW     PIC S9(9)   BINARY.
+                  05  Q96-ROWATTR PIC S9(9)   BINARY.
                   05  Q96-ITEM        OCCURS  200 TIMES.
                     06  Q96-NO      PIC X(3).
                     06  Q96-NAME    PIC X(70).

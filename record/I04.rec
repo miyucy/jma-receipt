@@ -242,6 +242,8 @@ I04	{
 		scrolledwindow1	{
 			HKNCOMBILST	{
 				count	int;
+				row	int;
+				rowattr	int;
 				item	{
 					value0	varchar(2);
 					value1	varchar(50);

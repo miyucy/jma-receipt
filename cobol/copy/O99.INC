@@ -22,6 +22,8 @@
               03  O99-SCROLLEDWINDOW28.
                 04  O99-JOBKANRILST.
                   05  O99-COUNT   PIC S9(9)   BINARY.
+                  05  O99-ROW     PIC S9(9)   BINARY.
+                  05  O99-ROWATTR PIC S9(9)   BINARY.
                   05  O99-ITEM        OCCURS  2 TIMES.
                     06  O99-RENNUM    PIC X(7).
                     06  O99-SHORINM   PIC X(34).
