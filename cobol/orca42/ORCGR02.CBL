@@ -64,6 +64,7 @@
       *  01.04.07    NACL-藤原    03/08/05  ヴで始まるカナ氏名のレセプト
       *                                     を対象とするように修正
       *  01.04.08    NACL-藤原    03/08/05  レセ電のボタンを削除
+      *  01.04.09    NACL-藤原    03/08/19  件数印刷の処理を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -71,15 +72,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -966,6 +966,8 @@
                    WHEN    "1001"
                    WHEN    "1002"    
                        PERFORM 450-PRINT-SEC
+                   WHEN    "1003"    
+                       PERFORM 440-PRINT-KENSU-SEC
                    WHEN    "8888"
                        CONTINUE    
                END-EVALUATE        
@@ -986,6 +988,7 @@
                                        SPA-R99-FLG
            MOVE    SPACE           TO  SPA-RIDCD
            MOVE    SPACE           TO  SPA-RIDCD2      
+           MOVE    ZERO            TO  SPA-R01-JOBCNT       
            .
        340-R99-SET-EXT.
            EXIT.
@@ -1000,6 +1003,9 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    "CHANGE"            TO  MCP-PUTTYPE
                    PERFORM 210-BACK
+      *    件数印刷
+               WHEN    "CLICKED"       ALSO    "B04"
+                   PERFORM 440-PRINT-KENSU-GIDMSG-SEC
       *        前頁
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 460-MAEGMN-SEC
@@ -1506,6 +1512,48 @@
            EXIT.
       *
       *****************************************************************
+      *    件数出力前処理
+      *****************************************************************
+       440-PRINT-KENSU-GIDMSG-SEC      SECTION.
+      *
+      *    ジョブ管理チェック処理
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC 
+           IF      SJOBKANRI-RETURN
+                                   =   ZERO
+               IF      JOB-ENDYMD      =   SPACE
+                   MOVE    "7777"          TO  SPA-ERRCD
+                   GO  TO  450-PRINT-GIDMSG-EXT
+               END-IF
+           END-IF    
+      *
+      *    ガイドメッセージセット
+           MOVE    "1003"              TO  SPA-RIDCD
+      *
+           .
+       440-PRINT-KENSU-GIDMSG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    出力処理
+      *****************************************************************
+       440-PRINT-KENSU-SEC                SECTION.
+      *
+           CALL    "ORCHC**"           USING   SPA-GMN-CREYMD
+                                               SPA-GMN-TBL1
+      *
+           .
+       440-PRINT-KENSU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    出力前処理
       *****************************************************************
        450-PRINT-GIDMSG-SEC                SECTION.
@@ -1745,6 +1793,8 @@
            CALL    "MCPSUB"        USING
                                    MCPAREA
                                    MCPDATA-REC
+      *
+           COMPUTE SPA-R01-JOBCNT  =   WRK-RECE08-PRTJYUN  +   1
       *                         
       *    情報確認画面を表示                                                   
            PERFORM 490-KAKUNIN-SEC
@@ -2501,6 +2551,8 @@
                    MOVE    "全件印刷をします"        TO  WRK-RIDMSG
                WHEN    "1002"
                    MOVE    "指定印刷をします"        TO  WRK-RIDMSG
+               WHEN    "1003"
+                   MOVE    "件数印刷をします"        TO  WRK-RIDMSG
                WHEN    "6666"
                    MOVE    "レセプト印刷中です"      TO  WRK-RIDMSG
                WHEN    "8888"

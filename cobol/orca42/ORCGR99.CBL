@@ -265,7 +265,7 @@
                MOVE    JOB-YOBI        TO  R99-ERRMSG   (IDX)
                IF      SPA-R01-GMNKBN  =   "R02"  OR  "R04"
                    COMPUTE R99-PROGRESSBAR-VALUE  =
-                           JOB-STEPCNT  /   2      *   100
+                           JOB-STEPCNT  /   SPA-R01-JOBCNT *   100
                ELSE
                    COMPUTE R99-PROGRESSBAR-VALUE  =
                            JOB-STEPCNT  /   13     *   100

@@ -735,6 +735,7 @@
                                        SPA-R99-FLG
            MOVE    SPACE           TO  SPA-RIDCD
            MOVE    SPACE           TO  SPA-RIDCD2      
+           MOVE    ZERO            TO  SPA-R01-JOBCNT       
            .
        340-R99-SET-EXT.
            EXIT.
@@ -1412,6 +1413,8 @@
            CALL    "MCPSUB"        USING
                                    MCPAREA
                                    MCPDATA-REC                         
+      *
+           COMPUTE SPA-R01-JOBCNT  =   WRK-RECE08-PRTJYUN  +   1
       *                         
       *    情報確認画面を表示                                                   
            PERFORM 490-KAKUNIN-SEC
