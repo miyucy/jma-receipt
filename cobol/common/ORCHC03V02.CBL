@@ -902,11 +902,12 @@
       *
       *    保険適用外編集
            PERFORM     VARYING   IDX-JIHI FROM  1  BY  1
-                       UNTIL     IDX  >  10
+                       UNTIL     IDX-JIHI  >  10
                MOVE   ZERO      TO    WRK-Z72
                COMPUTE   WRK-Z72   =   SYU-TGMONEY(IDX-JIHI)  +
                                        SYU-TGMONEY-TAX(IDX-JIHI)
                PERFORM   800-HENKAN-SEC
+               DISPLAY "IDX-JIHI = " IDX-JIHI
                MOVE    WRK-Z72-G           TO  HC03-JIHIBUN(IDX-JIHI)
            END-PERFORM
       *
