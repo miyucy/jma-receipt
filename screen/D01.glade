@@ -414,86 +414,6 @@
     </widget>
 
     <widget>
-      <class>GtkPandaCombo</class>
-      <name>CHKKBNCOMB01</name>
-      <x>448</x>
-      <y>76</y>
-      <width>150</width>
-      <height>20</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items></items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>CHKKBN01</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 16 Jun 2003 04:56:36 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 16 Jun 2003 04:57:16 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
-	<text>≥Œ«ß£∞£±</text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>CHKKBNCOMB02</name>
-      <x>448</x>
-      <y>106</y>
-      <width>150</width>
-      <height>20</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items></items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>CHKKBN02</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 16 Jun 2003 04:59:05 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 16 Jun 2003 04:59:37 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
-	<text>≥Œ«ß£∞£≤</text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>CHKMSG3</name>
       <x>168</x>
@@ -783,10 +703,90 @@
 
     <widget>
       <class>GtkPandaCombo</class>
+      <name>CHKKBNCOMB01</name>
+      <x>448</x>
+      <y>76</y>
+      <width>166</width>
+      <height>20</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>CHKKBN01</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 16 Jun 2003 04:56:36 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 16 Jun 2003 04:57:16 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>20</text_max_length>
+	<text>≥Œ«ß£∞£±</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>CHKKBNCOMB02</name>
+      <x>448</x>
+      <y>106</y>
+      <width>166</width>
+      <height>20</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>CHKKBN02</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 16 Jun 2003 04:59:05 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 16 Jun 2003 04:59:37 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>20</text_max_length>
+	<text>≥Œ«ß£∞£≤</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
       <name>CHKKBNCOMB03</name>
       <x>448</x>
       <y>136</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -814,7 +814,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£∞£≥</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -826,7 +826,7 @@
       <name>CHKKBNCOMB04</name>
       <x>448</x>
       <y>166</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -854,7 +854,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£∞£¥</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -866,7 +866,7 @@
       <name>CHKKBNCOMB05</name>
       <x>448</x>
       <y>196</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -894,7 +894,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£∞£µ</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -906,7 +906,7 @@
       <name>CHKKBNCOMB06</name>
       <x>448</x>
       <y>226</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -934,7 +934,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£∞£∂</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -946,7 +946,7 @@
       <name>CHKKBNCOMB07</name>
       <x>448</x>
       <y>256</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -974,7 +974,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£∞£∑</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -986,7 +986,7 @@
       <name>CHKKBNCOMB08</name>
       <x>448</x>
       <y>286</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1014,7 +1014,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£∞£∏</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -1026,7 +1026,7 @@
       <name>CHKKBNCOMB09</name>
       <x>448</x>
       <y>316</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1054,7 +1054,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£∞£π</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -1066,7 +1066,7 @@
       <name>CHKKBNCOMB10</name>
       <x>448</x>
       <y>346</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1094,7 +1094,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£±£∞</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -1106,7 +1106,7 @@
       <name>CHKKBNCOMB11</name>
       <x>448</x>
       <y>376</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1134,7 +1134,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£±£±</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -1146,7 +1146,7 @@
       <name>CHKKBNCOMB12</name>
       <x>448</x>
       <y>406</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1174,7 +1174,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£±£≤</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -1186,7 +1186,7 @@
       <name>CHKKBNCOMB13</name>
       <x>448</x>
       <y>436</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1214,7 +1214,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£±£≥</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -1226,7 +1226,7 @@
       <name>CHKKBNCOMB14</name>
       <x>448</x>
       <y>466</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1254,7 +1254,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£±£¥</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -1266,7 +1266,7 @@
       <name>CHKKBNCOMB15</name>
       <x>448</x>
       <y>496</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1294,7 +1294,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£±£µ</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -1306,7 +1306,7 @@
       <name>CHKKBNCOMB16</name>
       <x>448</x>
       <y>526</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1334,7 +1334,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£±£∂</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -1346,7 +1346,7 @@
       <name>CHKKBNCOMB17</name>
       <x>448</x>
       <y>556</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1374,7 +1374,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£±£∑</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -1386,7 +1386,7 @@
       <name>CHKKBNCOMB18</name>
       <x>448</x>
       <y>586</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1414,7 +1414,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£±£∏</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -1426,7 +1426,7 @@
       <name>CHKKBNCOMB19</name>
       <x>448</x>
       <y>616</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1454,7 +1454,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£±£π</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
@@ -1466,7 +1466,7 @@
       <name>CHKKBNCOMB20</name>
       <x>448</x>
       <y>646</y>
-      <width>150</width>
+      <width>166</width>
       <height>20</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1494,7 +1494,7 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>16</text_max_length>
+	<text_max_length>20</text_max_length>
 	<text>≥Œ«ß£≤£∞</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
