@@ -42,6 +42,7 @@
       *                                     端末ＩＤを６４バイトへ修正
       * 01.00.16     NACL-多々納  03/06/27  職員番号追加
       * 01.00.17     NACL-多々納  03/08/25  県番号追加
+      * 01.00.18     NACL-多々納  03/09/26  業務権限追加（９バイト）
       *****************************************************************
       *
       *     共通ＳＰＡ     (RL=3100)
@@ -80,6 +81,19 @@
              03  SPA-HOSPSBT           PIC 9(01).
       *県番号
              03  SPA-PREFNUM           PIC 9(02).
+      *
+      *業務処理権限
+             03  SPA-GSRAUTH-G.
+                 05  SPA-GSRAUTH-11        PIC X(01).
+                 05  SPA-GSRAUTH-12        PIC X(01).
+                 05  SPA-GSRAUTH-14        PIC X(01).
+                 05  SPA-GSRAUTH-21        PIC X(01).
+                 05  SPA-GSRAUTH-22        PIC X(01).
+                 05  SPA-GSRAUTH-23        PIC X(01).
+                 05  SPA-GSRAUTH-24        PIC X(01).
+                 05  SPA-GSRAUTH-31        PIC X(01).
+                 05  SPA-GSRAUTH-32        PIC X(01).
+      *
       *----(01.00.01) LINE ADD START ----------------------------------
       *予備１
       *******03  SPA-YOBI1             PIC 9(01).
@@ -235,6 +249,7 @@
       ****** 03  SPA-WORK                  PIC X(1507).
       ****** 03  SPA-WORK                  PIC X(2479).
       ****** 03  SPA-WORK                  PIC X(2474).
-             03  SPA-WORK                  PIC X(2472).
+      ****** 03  SPA-WORK                  PIC X(2472).
+             03  SPA-WORK                  PIC X(2463).
       *----(01.00.02) LINE UPD END   ----------------------------------
       *

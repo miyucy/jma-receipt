@@ -5011,6 +5011,15 @@
       *****************************************************************
        481-KANJATOROKU-SEC             SECTION.
       *
+      *    患者登録の権限がない時、エラー
+           IF      SPA-GSRAUTH-12      =   "1"
+               CONTINUE
+           ELSE
+               MOVE    "9300"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-I01-CUR
+               GO  TO  481-KANJATOROKU-EXT
+           END-IF
+      *
       *    ＳＰＡの内容を退避
            INITIALIZE                  I0SUB01-LNK
            MOVE    SPA-TERMID          TO  I0SUB01-TERMID
@@ -10827,6 +10836,19 @@
                                        TO  I01-DISPKBN-STT
            MOVE    SPA-GMN-I01-DISPKBN-ITM-STT
                                        TO  I01-DISPKBN-ITM-STT
+      *業務処理権限設定
+      *    入院会計照会
+           IF      SPA-GSRAUTH-32      =   "1"
+               MOVE    WIDGET-NORMAL       TO  I01-B21-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  I01-B21-STATE
+           END-IF
+      *    患者登録
+           IF      SPA-GSRAUTH-12      =   "1"
+               MOVE    WIDGET-NORMAL       TO  I01-B05-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  I01-B05-STATE
+           END-IF
       *
            .
        500-GMNHEN-STATE-EDIT-EXT.
@@ -11283,6 +11305,12 @@
            WHEN    "4001"  THRU    "4999"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
+      *
+           WHEN    "9300"
+               MOVE    "患者登録の業務権限はありません。"
+                                                TO  SPA-ERRMSG
+               MOVE    "患者登録はできません。"
+                                                TO  SPA-ERRMSG(33:)
            WHEN    "9999"
                MOVE    "他端末で使用中です。"
                                        TO  SPA-ERRMSG

@@ -444,6 +444,27 @@
       *2001.9.27 ¶¯À©¥×¥í¥Æ¥¯¥È¡Ê£Ð£ÇÌ¤ºîÀ®¡ËEND
       *
       *****MOVE    SYS-1010-REC         TO  SPA-WORK
+      *
+      *¶ÈÌ³½èÍý¸¢¸ÂÀßÄê
+      *    ¼õÉÕ
+           MOVE    SYS-1010-GSRAUTH(16:1)  TO  SPA-GSRAUTH-11
+      *    ´µ¼ÔÅÐÏ¿
+           MOVE    SYS-1010-GSRAUTH(17:1)  TO  SPA-GSRAUTH-12
+      *    Í½ÌóÅÐÏ¿
+           MOVE    SYS-1010-GSRAUTH(19:1)  TO  SPA-GSRAUTH-14
+      *    ¿ÇÎÅ¹Ô°Ù
+           MOVE    SYS-1010-GSRAUTH(21:1)  TO  SPA-GSRAUTH-21
+      *    ÉÂÌ¾ÅÐÏ¿
+           MOVE    SYS-1010-GSRAUTH(22:1)  TO  SPA-GSRAUTH-22
+      *    ¼ýÇ¼ÅÐÏ¿
+           MOVE    SYS-1010-GSRAUTH(23:1)  TO  SPA-GSRAUTH-23
+      *    ²ñ·×¾È²ñ
+           MOVE    SYS-1010-GSRAUTH(24:1)  TO  SPA-GSRAUTH-24
+      *    ÆþÂà±¡ÅÐÏ¿
+           MOVE    SYS-1010-GSRAUTH(36:1)  TO  SPA-GSRAUTH-31
+      *    Æþ±¡²ñ·×¾È²ñ
+           MOVE    SYS-1010-GSRAUTH(37:1)  TO  SPA-GSRAUTH-32
+      *
            .
        320-SYS-1010-SPASET-EXT.
            EXIT.
