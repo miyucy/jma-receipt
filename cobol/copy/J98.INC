@@ -32,6 +32,7 @@
                     06  J98-NAME    PIC X(70).
                     06  J98-TANI    PIC X(6).
                     06  J98-KISOTEN  PIC X(10).
+                    06  J98-SRYKBN   PIC X(02).
                   05  J98-SELECT  PIC X       OCCURS  200 TIMES.
               03  J98-JIINCOB.
                 04  J98-JIIN.
