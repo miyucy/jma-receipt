@@ -820,6 +820,23 @@
       *****************************************************************
        4105-SAKKBN-CHK-SEC                 SECTION.
       *
+           PERFORM 41051-SAKKBN-CHK-SEC
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF      SPA-GMN-RENNUM  =   ZERO
+                   PERFORM 420-TUIKA-SEC
+               ELSE
+                   PERFORM 430-HENKOU-SEC
+               END-IF
+           END-IF
+      *
+           .
+       4105-SAKKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    作成区分  入力処理
+      *****************************************************************
+       41051-SAKKBN-CHK-SEC                SECTION.
+      *
            INITIALIZE                  SPA-NAI-SKYSTYMD
                                        SPA-NAI-SKYEDYMD
                                        SPA-NAI-NYUINYMD
@@ -855,19 +872,11 @@
       *
            IF    ( WRK-HENFLG          =   ZERO )
                MOVE    "0001"               TO  SPA-ERRCD
-               GO  TO  4105-SAKKBN-CHK-EXT
+               GO  TO  41051-SAKKBN-CHK-EXT
            END-IF 
       *
-           IF    ( SPA-ERRCD           =   SPACE )
-               IF      SPA-GMN-RENNUM  =   ZERO
-                   PERFORM 420-TUIKA-SEC
-               ELSE
-                   PERFORM 430-HENKOU-SEC
-               END-IF
-           END-IF
-      *
            .
-       4105-SAKKBN-CHK-EXT.
+       41051-SAKKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1364,9 +1373,9 @@
            IF      SPA-ERRCD            =   SPACE
                PERFORM 4104-SRYYM-CHK-SEC
            END-IF
-      *    IF      SPA-ERRCD            =   SPACE
-      *        PERFORM 4105-SAKKBN-CHK-SEC
-      *    END-IF
+           IF      SPA-ERRCD            =   SPACE
+               PERFORM 41051-SAKKBN-CHK-SEC
+           END-IF
       *
            IF      SPA-ERRCD            =   SPACE
                MOVE    WRK-GMN-CUR          TO  SPA-GMN-CUR
