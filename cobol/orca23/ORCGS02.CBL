@@ -252,6 +252,7 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+           03  WRK-NAI-SRYYM       PIC X(06).
       *
       *    保険組合せ名称
            03  WRK-KUMINO          PIC X(04).
@@ -3377,13 +3378,22 @@
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
+           MOVE    SPA-NAI-SRYYM      TO   WRK-NAI-SRYYM
+      *
            INITIALIZE                  SPA-S02-AREA
-           IF      SPA-SRYYMD          =   SPACE
+      *
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    WRK-NAI-SRYYM      TO  SGDAY-INDAY
+           MOVE    "1"                TO  SGDAY-INTYPE
+           CALL    "ORCSGDAY"         USING
+                                      ORCSGDAYAREA
+           IF    ( SGDAY-RC           =   ZERO )
+               MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-SRYYM
+               MOVE    SGDAY-OTDAY(1:6)    TO  SPA-SRYYMDW
+               MOVE    SGDAY-SDAY          TO  SPA-NAI-SRYYM
+           ELSE
                MOVE    SPA-SYSYMDWH(1:6)   TO  SPA-GMN-SRYYM
                MOVE    SPA-SYSYMD  (1:6)   TO  SPA-NAI-SRYYM
-           ELSE
-               MOVE    SPA-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
-               MOVE    SPA-SRYYMD (1:6)    TO  SPA-NAI-SRYYM
            END-IF
       *
            PERFORM 3101-SRYKA-SPA-SEC
