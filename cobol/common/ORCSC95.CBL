@@ -37,6 +37,7 @@
       *  01.00.08    NACL-多々納  03/07/17  検索変更他
       *  01.00.09    NACL-多々納  03/10/27  育児栄養加算、カーソル移動追加
       *  01.00.10    NACL-多々納  04/10/08  ワーク診療行為にドクター追加
+      *  01.00.11    NACL-多々納  05/01/14  病名編集追加
       *****************************************************************
       *
       *
@@ -122,6 +123,7 @@
            03  IDX-STR             PIC 9(02).
            03  IDX-R               PIC 9(04).
            03  IDX-S               PIC 9(04).
+           03  IDX-K               PIC 9(04).
            03  IDXS                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDK                 PIC 9(04).
@@ -230,6 +232,20 @@
            03  WRK-FUKU-ZAINUM         PIC 9(08).
       *    ワーク診療行為内容追加
            03  WRK-INPUTCD             PIC X(22).
+      *    病名編集用
+           03  WRK-BYOMEI-AREA.
+               05  WRK-BYOMEI-TBL.
+                   07  WRK-BYOMEI-OCC          OCCURS   100.
+                       09  WRK-BYOMEI-NO       PIC X(02).
+                       09  WRK-BYOMEI          PIC X(164).
+                       09  WRK-UTAGAIFLG       PIC X(02).
+                       09  WRK-MANSEIKBN       PIC X(02).
+               05  WRK-BYOMEI-HEN          PIC X(164).
+               05  WRK-Z9                  PIC Z9.
+               05  IDX-B                   PIC 9(04).
+               05  IDX-B2                  PIC 9(04).
+               05  IDX-B3                  PIC 9(04).
+               05  FLG-BYOMEI-END          PIC 9(01).
       *
       *他科受診科有り
        01  WRK-TAKA-SRYKA-AREA.
@@ -424,12 +440,13 @@
       *            中途終了分編集
                    PERFORM 200-WKSRYACT-SYORI-SEC
       *        診療科変更時
-               WHEN    "3"
                WHEN    "K"
       *            受診履歴情報セット
                    PERFORM 1001-SPA-JYUSIN-SEC
       *            特定疾患の有無検索
                    PERFORM 11011-TOKUTEI-SYORI-SEC
+      *            病名編集
+      *!!!         PERFORM 11012-BYOMEI-HENSYU-SEC
       *            中途終了分編集
                    PERFORM 200-WKSRYACT-SYORI-SEC
       *        中途終了分追加
@@ -1183,6 +1200,9 @@
       *
       *    特定疾患の有無検索
            PERFORM 11011-TOKUTEI-SYORI-SEC
+      *
+      *    病名編集
+           PERFORM 11012-BYOMEI-HENSYU-SEC
       *
       *    中途終了分処理
            PERFORM 200-WKSRYACT-SYORI-SEC
@@ -3288,6 +3308,123 @@
            .
        110111-MANSEIKBN-SET-EXT.
            EXIT.
+      *    
+      *****************************************************************
+      *    病名編集処理
+      *****************************************************************
+       11012-BYOMEI-HENSYU-SEC             SECTION.
+      *
+      *    病名内容
+           INITIALIZE                  SPA-GMN-BYOMEITBL
+           INITIALIZE                  WRK-BYOMEI-AREA
+      *
+      *    特定疾患の有無検索
+           MOVE    SPACE               TO  PTBYOMEI-REC
+           INITIALIZE                  PTBYOMEI-REC
+           MOVE    SPA-HOSPID          TO  PTBYO-HOSPID
+           MOVE    SPA-PTID            TO  PTBYO-PTID
+           MOVE    SPA-SRYKA           TO  PTBYO-SRYKA
+           MOVE    SPA-SRYYMD          TO  PTBYO-SRYYMD
+      *
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTBYOMEI-KEY25"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PTBYOMEI-KEY25"    TO  ORC-DBPATH
+               PERFORM 980-PTBYOMEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTBYOMEI
+               MOVE    SPACE               TO  PTBYOMEI-REC
+               INITIALIZE                  PTBYOMEI-REC
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX-B
+           PERFORM UNTIL      (FLG-PTBYOMEI    =   1 )  OR
+                              (IDX-B           >=  100)
+      *
+               ADD     1               TO  IDX-B
+               MOVE    PTBYO-SRYKA     TO  WRK-BYOMEI-NO(IDX-B)
+               MOVE    PTBYO-BYOMEI    TO  WRK-BYOMEI (IDX-B)
+      *        疾患区分
+               IF      PTBYO-MANSEIKBN NOT =   ZERO
+                   MOVE    SPACE           TO  WRK-BYOMEI-HEN
+                   STRING  "☆"                DELIMITED   BY  SIZE
+                           WRK-BYOMEI (IDX-B)  DELIMITED   BY  SPACE
+                                   INTO    WRK-BYOMEI-HEN
+                   END-STRING
+                   MOVE    WRK-BYOMEI-HEN  TO  WRK-BYOMEI (IDX-B)
+               END-IF
+      *        疑い区分
+               IF      PTBYO-UTAGAIFLG NOT =   SPACE
+                   MOVE    SPACE           TO  WRK-BYOMEI-HEN
+                   STRING  "△"                DELIMITED   BY  SIZE
+                           WRK-BYOMEI (IDX-B)  DELIMITED   BY  SPACE
+                                   INTO    WRK-BYOMEI-HEN
+                   END-STRING
+                   MOVE    WRK-BYOMEI-HEN  TO  WRK-BYOMEI (IDX-B)
+               END-IF
+      *
+               MOVE    "PTBYOMEI-KEY25"    TO  ORC-DBPATH
+               PERFORM 980-PTBYOMEI-READ-SEC
+           END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTBYOMEI-KEY25"    TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   IDX-B   )   OR
+                              (SPA-BYOMEI-MAX  >=  100)
+               MOVE    ZERO            TO  FLG-BYOMEI-END
+               MOVE    1               TO  IDX-B2
+               PERFORM
+                       UNTIL  (FLG-BYOMEI-END  =   1  )  OR
+                              (SPA-BYOMEI-MAX  >=  100)
+                   IF     (IDX-B2  +   22)     >   164
+                       COMPUTE IDX-B3          =   164   -   IDX-B2
+                   ELSE
+                       MOVE    22              TO  IDX-B3
+                   END-IF
+                   ADD     1               TO  SPA-BYOMEI-MAX
+                   MOVE    WRK-BYOMEI(IDX)(IDX-B2:IDX-B3)
+                                           TO  SPA-GMN-BYOMEI
+                                                    (SPA-BYOMEI-MAX)
+                   IF      IDX-B2          =   1
+                       MOVE    WRK-BYOMEI-NO(IDX)
+                                           TO  SPA-GMN-BYOMEI-NO
+                                                    (SPA-BYOMEI-MAX)
+                       PERFORM VARYING  IDX-K   FROM   1   BY  1
+                               UNTIL    IDX-K      >   SPA-SRYKA-MAX
+                           IF     SPA-GMN-SRYKAL(IDX-K)   =
+                                                   WRK-BYOMEI-NO(IDX)
+                               MOVE    SPA-GMN-SRYKAMEIL(IDX-K)(1:2)
+                                               TO  SPA-GMN-BYOMEI-NO
+                                                    (SPA-BYOMEI-MAX)
+                               MOVE    SPA-SRYKA-MAX   TO  IDX-K
+                           END-IF
+                       END-PERFORM
+                   END-IF
+                   COMPUTE IDX-B2      =   IDX-B2  +   22
+                   IF     (IDX-B2              >   164     )  OR
+                          (WRK-BYOMEI(IDX)(IDX-B2:)    =   SPACE)
+                       MOVE    1           TO  FLG-BYOMEI-END
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+           IF      SPA-BYOMEI-MAX      >   100
+               MOVE    100             TO  SPA-BYOMEI-MAX
+           END-IF
+           .
+       11012-BYOMEI-HENSYU-EXT.
+           EXIT.
       *****************************************************************
       *    入院ＳＰＡ編集、ワーク診療行為作成処理
       *****************************************************************
@@ -3337,6 +3474,8 @@
       *    特定疾患の有無検索
            PERFORM 11011-TOKUTEI-SYORI-SEC
       *
+      *    病名編集
+      *!!  PERFORM 11012-BYOMEI-HENSYU-SEC
       *
            PERFORM 200-WKSRYACT-SYORI-SEC
            .
@@ -3457,6 +3596,9 @@
       *
       *    特定疾患の有無検索
            PERFORM 11011-TOKUTEI-SYORI-SEC
+      *
+      *    病名編集
+           PERFORM 11012-BYOMEI-HENSYU-SEC
       *
       *    訂正日の初診算定日
            PERFORM 3009-SYOSIN-SYORI-SEC
