@@ -1078,7 +1078,7 @@
       *
       *    労災・自賠責の負担割合を求める
       *
-           IF   WK-HKNKBN              =   "1"
+      *    IF   WK-HKNKBN              =   "1"
       *
                INITIALIZE                           PTINF-REC
                MOVE    LNK-SYU-HOSPID       TO      PTINF-HOSPID
@@ -1120,7 +1120,8 @@
                    DISPLAY  "PTINF AGE-CHK ERR " LNK-SYU-PTID
                END-IF
       *
-           END-IF.
+      *    END-IF.
+           .
       *
       *    保険番号テーブルから公費の負担上限金額の取得
            PERFORM         210-HOKEN-KAISU-SEC.
