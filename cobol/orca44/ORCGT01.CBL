@@ -63,14 +63,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
 
@@ -1918,29 +1918,19 @@
                                    TO  SHELLTBL-ARG10      
            MOVE    LNK-PRTKANRI-PRTNM
                                    TO  SHELLTBL-ARG11      
-           INITIALIZE                     STS-AREA-DAY
-           INITIALIZE                     LNK-DAY6-AREA
-           MOVE    "61"                   TO  LNK-DAY6-IRAI
-           MOVE    SPA-NAI-SRYYM          TO  LNK-DAY6-KIJUN (1:6)
-           MOVE    "01"                   TO  LNK-DAY6-KIJUN (7:2)
-           MOVE    "2"                    TO  LNK-DAY6-ZOGENPTN
-           MOVE    1                      TO  LNK-DAY6-ZOGEN
-           CALL    "ORCSDAY"              USING   STS-AREA-DAY
-                                                  LNK-DAY6-AREA
-           MOVE    LNK-DAY6-KEISAN(1:6)   TO  SHELLTBL-ARG12
            EVALUATE    SPA-NAI-WIDGET     
                WHEN    "B06"
-                   MOVE    "1"         TO  SHELLTBL-ARG13
+                   MOVE    "1"         TO  SHELLTBL-ARG12
                WHEN    "B07"
-                   MOVE    "2"         TO  SHELLTBL-ARG13
+                   MOVE    "2"         TO  SHELLTBL-ARG12
            END-EVALUATE
            MOVE    SYS-2005-RECEDENOUT
-                                       TO  SHELLTBL-ARG14
+                                       TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-JOBID
-                                   TO  SHELLTBL-ARG15
+                                   TO  SHELLTBL-ARG14
            MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  SHELLTBL-ARG16         
-           MOVE    RECEERR         TO  SHELLTBL-ARG17
+                                   TO  SHELLTBL-ARG15         
+           MOVE    RECEERR         TO  SHELLTBL-ARG16
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL

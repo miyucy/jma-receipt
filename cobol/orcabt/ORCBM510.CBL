@@ -33,14 +33,14 @@
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                 PIC X(200).
       *
@@ -82,7 +82,6 @@
       *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
-           05  WRK-PARA-SKYYM          PIC X(06).
            05  WRK-PARA-TEISYUTUSAKI   PIC X(01).
            05  WRK-PARA-JOBID          PIC 9(07).
            05  WRK-PARA-SHELLID        PIC X(08).
@@ -227,7 +226,6 @@
                                                LNK-PRTKANRI-TERMID
                                                LNK-PRTKANRI-OPID
                                                LNK-PRTKANRI-PRTNM
-                                               WRK-PARA-SKYYM
                                                WRK-PARA-TEISYUTUSAKI
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID

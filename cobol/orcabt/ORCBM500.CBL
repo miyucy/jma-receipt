@@ -110,7 +110,6 @@
       *    パラメタエリア
        01  WRK-AREA.
            COPY    "CPORCSPRTLNK.INC".
-           05  WRK-PARA-SKYYM          PIC X(06).
            05  WRK-PARA-TEISYUTUSAKI   PIC X(01).
            05  WRK-PARA-JOBID          PIC 9(07).
            05  WRK-PARA-SHELLID        PIC X(08).
@@ -242,7 +241,6 @@
                                                LNK-PRTKANRI-TERMID
                                                LNK-PRTKANRI-OPID    
                                                LNK-PRTKANRI-PRTNM   
-                                               WRK-PARA-SKYYM
                                                WRK-PARA-TEISYUTUSAKI
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
@@ -322,8 +320,7 @@
       *****************************************************************
        120-SKYYM-HENSYU-SEC      SECTION.
       *
-           MOVE    WRK-PARA-SKYYM      TO  WRK-SYMD(1:6)
-           MOVE    "01"                TO  WRK-SYMD(7:2)
+           MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMD (1:5)    TO  WRK-SEIYM 
       *
