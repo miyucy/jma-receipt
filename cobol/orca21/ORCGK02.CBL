@@ -1183,9 +1183,7 @@
            MOVE    SPACE               TO  SPA-KIDCD2
       *
       *    入院機能の判定
-           IF     (SPA-MOTOPG(1:3)     =   "M01" )  OR
-                 ((SPA-MOTOPG(1:1) NOT =   "K"  ) AND
-                  (SPA-PTNUM           =   SPACE ))
+           IF     (SPA-MOTOPG(1:3)     =   "M01" )
                PERFORM 3009-NYUINCHK-SEC
                IF      FLG-END             =   1
                    GO      TO      300-SCREEN-EXT

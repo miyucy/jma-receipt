@@ -467,6 +467,9 @@
                        MOVE    4                   TO  SPA-GMN-CUR
                    END-IF
            END-EVALUATE
+           IF      SPA-MOTOPG(1:3)     =   "K02"
+               MOVE    SPA-MOTOPG          TO  SPA-HZN-MOTOPG
+           END-IF
       *
            .
        300-SCREEN-EXT.
@@ -2239,7 +2242,11 @@
                MOVE    "M01"               TO  SPA-SAKIPG
            ELSE
       *        待ち受け以外の時、Ｋ０２へ
-               MOVE    "K02"               TO  SPA-SAKIPG
+               IF      SPA-HZN-MOTOPG      =   SPACE
+                   MOVE    "K02"               TO  SPA-SAKIPG
+               ELSE
+                   MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
+               END-IF
            END-IF
       *
            MOVE    "U02"               TO  SPA-MOTOPG
