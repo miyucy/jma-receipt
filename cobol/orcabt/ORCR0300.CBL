@@ -55,6 +55,7 @@
       *  01.00.15    NACL-藤原    03/10/27  テスト患者を対象としない
       *  01.00.16    NACL-藤原    03/11/12  時間加算の追加
       *  01.00.17    NACL-藤原    03/11/17  傷病名データファイル名の変更
+      *  01.00.18    NACL-藤原    03/11/19  老人外来金額の項目変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1149,16 +1150,22 @@
       *****END-IF    
            PERFORM 5005-NUM-HENSYU-SEC     
       *    老人医療（老人外来金額）
-      *****IF      RECE02-NYUGAIKBN    =   "2"
-      *****    MOVE    RECE02-RJNGAIFTN    TO  WRK-NUM
-      *****    MOVE    6                   TO  WRK-NAGASA
-      *****END-IF    
+           IF    ( RECE02-NYUGAIKBN    =   "2"  )
+           AND   ( RECE02-FTNMONEY (IDX1)
+                                       >   ZERO )
+               MOVE    RECE02-FTNMONEY (IDX1)
+                                           TO  WRK-NUM
+               MOVE    6                   TO  WRK-NAGASA
+           END-IF    
            PERFORM 5005-NUM-HENSYU-SEC     
       *    老人医療（老人入院金額）
-      *****IF      RECE02-NYUGAIKBN    =   "1"
-      *****    MOVE    RECE02-RJNNYUFTN    TO  WRK-NUM
-      *****    MOVE    6                   TO  WRK-NAGASA
-      *****END-IF    
+           IF    ( RECE02-NYUGAIKBN    =   "1"  )
+           AND   ( RECE02-FTNMONEY (IDX1)
+                                       >   ZERO )
+               MOVE    RECE02-FTNMONEY (IDX1)
+                                           TO  WRK-NUM
+               MOVE    6                   TO  WRK-NAGASA
+           END-IF    
            MOVE    1                   TO  WRK-END 
            PERFORM 5005-NUM-HENSYU-SEC     
       *
