@@ -4166,6 +4166,10 @@
                        ADD     1                   TO  SPA-GMN-IDX
                        MOVE    WRK-GMN-TBL(IDX4)   TO  SPA-GMN-TBL
                                                                 (IDX2)
+                       MOVE    SPACE               TO  SPA-MAE-INPUTCD
+                                                                (IDX2)
+                       MOVE    SPACE               TO  SPA-COM-CHKFLG
+                                                                (IDX2)
                    END-PERFORM
                    INITIALIZE                  WRK-SCR-REC
                    MOVE    ZERO                TO  IDX3
@@ -4192,6 +4196,9 @@
                    ADD     1                   TO  SPA-GMN-IDX
                    MOVE    WRK-GMN-TBL(IDX4)   TO  SPA-GMN-TBL
                                                             (IDX2)
+                   MOVE    SPACE               TO  SPA-MAE-INPUTCD(IDX2)
+                   MOVE    SPACE               TO  SPA-COM-CHKFLG
+                                                                (IDX2)
                END-PERFORM
            END-IF
       *    時間外入力あり

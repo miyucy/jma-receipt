@@ -2597,7 +2597,8 @@
       *            点数マスタ編集
                    INITIALIZE                  ORCSC92AREA
                    MOVE    SPACE               TO  LNK-SC92-KBN
-                   MOVE    WRK-SYORIFLG        TO  LNK-SC92-SYORIFLG
+      ***********  MOVE    WRK-SYORIFLG        TO  LNK-SC92-SYORIFLG
+                   MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
                    MOVE    "K02"               TO  LNK-SC92-PG
                    MOVE    IDX-1               TO  LNK-SC92-GMN-IDX
                    MOVE    SPA-COM-INPUTCD(IDX-1)
@@ -2617,6 +2618,7 @@
                           (LNK-SC92-ERRAREA    NOT =   SPACE )
                        MOVE    SPACE           TO  SPA-ERRCD
                        MOVE    "1"             TO  SPA-COM-CUR (IDX-1)
+                       MOVE    SPACE           TO  SPA-COM-CHKFLG(IDX-1)
                     END-IF
       *
       *            入力コードの画面用再編集
@@ -2653,8 +2655,13 @@
                    PERFORM 4101121-MOJI-SET-SEC
                    PERFORM 4101129-KAISUU-CHK-SEC
       *
-                   IF      SPA-COM-CUR (IDX-1) =   "1"
-                       MOVE    SPACE         TO  SPA-MAE-INPUTCD(IDX-1)
+                   IF     (SPA-COM-CUR (IDX-1) =   SPACE )  AND
+                          (SPA-COM-CHKFLG (IDX-1)  =   "1"   )
+                       MOVE    SPA-GMN-INPUTCD(IDX-1)
+                                          TO  SPA-MAE-INPUTCD (IDX-1)
+                   ELSE
+                       MOVE    SPACE      TO  SPA-MAE-INPUTCD (IDX-1)
+                       MOVE    SPACE      TO  SPA-COM-CHKFLG (IDX-1)
                    END-IF
                END-IF
       *
