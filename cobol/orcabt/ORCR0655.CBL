@@ -1,0 +1,574 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCR0655.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト
+      *  コンポーネント名  : 科別の同一剤のまとめをする
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/01/14    NACL−藤原    新規作成
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *****************************************************************
+      *
+       ENVIRONMENT             DIVISION.
+       CONFIGURATION           SECTION.
+       INPUT-OUTPUT            SECTION.
+       FILE-CONTROL.
+           SELECT  RECE62-FILE     ASSIGN  RECE62PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE62-KEY
+                                   FILE    STATUS  IS  STS-RECE62.
+           SELECT  RECE64-FILE     ASSIGN  RECE64PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE64-KEY
+                                   FILE    STATUS  IS  STS-RECE64.
+           SELECT  RECE642-FILE    ASSIGN  RECE642PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE642-KEY
+                                   FILE    STATUS  IS  STS-RECE642.
+           SELECT  RECE64W-FILE    ASSIGN  RECE64WPARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE64W-KEY
+                                   FILE    STATUS  IS  STS-RECE64W.
+      *    エラーファイル
+           SELECT  RECEERR-FILE    ASSIGN  RECEERR
+                                   FILE    STATUS  IS  STS-RECEERR.
+      *
+       DATA                    DIVISION.
+       FILE                    SECTION.
+      *
+       FD  RECE62-FILE.
+       01  RECE62-REC. 
+           COPY    "CPRCF062.INC".
+      *
+       FD  RECE64-FILE.
+       01  RECE64-REC. 
+           COPY    "CPRCF064.INC".
+      *
+       FD  RECE642-FILE.
+       01  RECE642-REC. 
+           COPY    "CPRCF0642.INC".
+      *
+       FD  RECE64W-FILE.
+       01  RECE64W-REC. 
+           COPY    "CPRCF064.INC"  REPLACING  //RECE64//
+                                   BY         //RECE64W//.
+      * 
+      *    エラーファイル
+       FD  RECEERR-FILE.
+       01  RECEERR-REC             PIC X(200). 
+      *
+       WORKING-STORAGE             SECTION.
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE62//.
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE64//.
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE642//.
+      *
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01//
+                                   BY         //RECE64W//.
+      *
+      *    エラーファイル 名称領域 
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01PARA//
+                                   BY         //RECEERR//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
+      *
+      *    フラグ領域
+       01  STS-AREA.
+           03  STS-RECE62                              PIC X(02).
+           03  STS-RECE64                              PIC X(02).
+           03  STS-RECE642                             PIC X(02).
+           03  STS-RECE64W                             PIC X(02).
+           03  STS-RECEERR                             PIC X(02).
+      *
+       01  FLG-AREA.
+           03  FLG-END                                 PIC 9(01).
+           03  FLG-RECE62                              PIC 9(01).
+           03  FLG-RECE64                              PIC 9(01).
+           03  FLG-RECE642                             PIC 9(01).
+      *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-IN                                  PIC 9(06).
+           03  CNT-RECE642                             PIC 9(06).
+           03  CNT-RECE64W                             PIC 9(06). 
+      *
+      *    添字領域
+       01  IDX-AREA.
+           03  IDX                                     PIC 9(03).
+           03  IDY                                     PIC 9(03).
+      *
+      *    一時領域
+       01  WRK-AREA.
+           03  WRK-PARA.
+               05  WRK-PARA-SRYYM                      PIC  X(06).
+               05  WRK-PARA-TERMID                     PIC  X(16).
+               05  WRK-PARA-SYSYMD                     PIC  X(08).
+               05  WRK-PARA-JOBID                      PIC  9(07).
+               05  WRK-PARA-SHELLID                    PIC  X(08).
+      *
+           03  WRK-RECEERR             PIC X(200). 
+      *
+       01  WRK-RECE642-REC.
+           COPY    "CPRCF0642.INC" REPLACING  //RECE642//
+                                   BY         //WRK-RECE642//.
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *
+      *    ジョブ管理マスタ
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
+      *
+      *****************************************************************
+      *    サブプロ用領域
+      *****************************************************************
+      *
+      *   ジョブ管理ＤＢ制御サブ
+           COPY    "CPORCSJOBKANRI.INC".
+      *    ＤＢ検索
+           COPY    "MCPDATA.INC".
+      *     
+           COPY    "CPORCMCP.INC".  
+      *
+           COPY    "MCPAREA".
+      *
+      ****************************************************************
+       LINKAGE                 SECTION.
+       01  COMMAND-PARAM.
+           02  FILLER      PIC X(256).
+      ****************************************************************
+       PROCEDURE           DIVISION
+               USING
+           COMMAND-PARAM.
+      *
+      *****************************************************************
+      *    主処理
+      *****************************************************************
+       000-PROC-SEC                SECTION.
+      *
+           PERFORM 100-INIT-SEC
+      *
+           PERFORM 200-MAIN-SEC    UNTIL   FLG-END =   1 
+      *
+           PERFORM 300-TERM-SEC
+      *
+           STOP    RUN
+           .
+      *****************************************************************
+      *    初期　処理
+      *****************************************************************
+       100-INIT-SEC                SECTION.
+      *
+           INITIALIZE                  CNT-AREA
+                                       WRK-AREA
+                                       FLG-AREA
+      *
+           MOVE    ZERO                TO  FLG-END
+      *
+           MOVE    COMMAND-PARAM       TO  WRK-PARA
+      *
+           PERFORM 100-DBOPEN-SEC
+      *
+      *    ステップ管理開始処理
+           MOVE    "STS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    "ORCR0655"      TO  JOB-PGID
+           MOVE    "同一剤のまとめ"
+                                   TO  JOB-SHELLMSG
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *
+           MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
+      *
+           MOVE    "RECE640"           TO  RECE64PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE64PARA-TERMID
+      *
+           MOVE    "RECE642"           TO  RECE642PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE642PARA-TERMID
+      *
+           MOVE    "RECE64W"           TO  RECE64WPARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE64WPARA-TERMID
+      *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
+          .
+       100-INIT-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    主処理
+      *****************************************************************
+       200-MAIN-SEC                SECTION.
+      *
+      *    同一剤のまとめ処理
+           OPEN    INPUT               RECE62-FILE
+                                       RECE64-FILE
+           OPEN    I-O                 RECE642-FILE
+           PERFORM 900-RECE62-READ-SEC
+      *
+           PERFORM 210-RECE642-WRITE-SEC
+                                   UNTIL   FLG-RECE62  =   1
+           CLOSE   RECE642-FILE
+                   RECE64-FILE
+                   RECE62-FILE
+      *
+      *    元のレイアウトに出力処理
+           OPEN    INPUT   RECE642-FILE
+                   OUTPUT  RECE64W-FILE
+      *
+           PERFORM 900-RECE642-READ-SEC 
+           PERFORM 220-RECE64W-WRITE-SEC
+                                   UNTIL   FLG-RECE642 =   1
+           CLOSE   RECE64W-FILE
+                   RECE642-FILE
+      *
+           MOVE    1               TO  FLG-END
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      * 
+      *****************************************************************
+      *    同一剤のまとめ処理
+      *****************************************************************
+       210-RECE642-WRITE-SEC                SECTION.
+      *
+           INITIALIZE                      RECE64-REC
+           MOVE    RECE62-HOSPID       TO  RECE64-HOSPID
+           MOVE    RECE62-SRYYM        TO  RECE64-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE64-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE64-PTID
+           MOVE    RECE62-RECEKA       TO  RECE64-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE64-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE64-RECESYUBETU
+           MOVE    RECE62-HKNJANUM     TO  RECE64-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE64-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE64-TEKSTYMD
+           MOVE    ZERO                TO  RECE64-ZAINUM
+      *
+           START   RECE64-FILE
+               KEY IS    >=   RECE64-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE64
+               NOT INVALID
+                   PERFORM 900-RECE64-READ-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE64           =   1                   )
+               OR     ( RECE62-HOSPID    NOT =   RECE64-HOSPID       )
+               OR     ( RECE62-SRYYM     NOT =   RECE64-SRYYM        )
+               OR     ( RECE62-NYUGAIKBN NOT =   RECE64-NYUGAIKBN    )
+               OR     ( RECE62-PTID      NOT =   RECE64-PTID         )
+               OR     ( RECE62-RECEKA    NOT =   RECE64-RECEKA       )
+               OR     ( RECE62-TEISYUTUSAKI
+                                         NOT =   RECE64-TEISYUTUSAKI )
+               OR     ( RECE62-RECESYUBETU
+                                         NOT =   RECE64-RECESYUBETU  )
+               OR     ( RECE62-HKNJANUM  NOT =   RECE64-HKNJANUM     )
+               OR     ( RECE62-HOJOKBN-KEY
+                                         NOT =   RECE64-HOJOKBN      )
+               OR     ( RECE62-TEKSTYMD  NOT =   RECE64-TEKSTYMD     )
+      *
+      *        複数診療科受診でないとき
+               IF      RECE62-SRYKA (2)    =   SPACE
+               OR      RECE64-COMCDFLG     =   "1"  
+                   MOVE    SPACE               TO  RECE642-REC
+                   INITIALIZE                      RECE642-REC
+                   MOVE    RECE64-HOSPID       TO  RECE642-HOSPID
+                   MOVE    RECE64-SRYYM        TO  RECE642-SRYYM
+                   MOVE    RECE64-NYUGAIKBN    TO  RECE642-NYUGAIKBN
+                   MOVE    RECE64-PTID         TO  RECE642-PTID
+                   MOVE    RECE64-TEISYUTUSAKI TO  RECE642-TEISYUTUSAKI
+                   MOVE    RECE64-RECESYUBETU  TO  RECE642-RECESYUBETU
+                   MOVE    RECE64-HKNJANUM     TO  RECE642-HKNJANUM
+                   MOVE    RECE64-HOJOKBN      TO  RECE642-HOJOKBN
+                   MOVE    RECE64-TEKSTYMD     TO  RECE642-TEKSTYMD
+                   MOVE    RECE64-KOHBUNRI     TO  RECE642-KOHBUNRI
+                   MOVE    RECE64-SRYKBN       TO  RECE642-SRYKBN
+                   MOVE    RECE64-SRYCDTOTAL   TO  RECE642-SRYCDTOTAL
+                   MOVE    RECE64-SURYOUTOTAL  TO  RECE642-SURYOUTOTAL
+                   MOVE    RECE64-MEISAISU     TO  RECE642-MEISAISU 
+                   MOVE    RECE64-ZAIKAISU     TO  RECE642-ZAIKAISU
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       4
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >       31
+                           MOVE    RECE64-KAISU (IDX IDY)
+                                           TO   RECE642-KAISU (IDX IDY)
+                       END-PERFORM
+                   END-PERFORM
+                   MOVE    RECE64-REC          TO  RECE642-REC1
+                   WRITE   RECE642-REC
+                   ADD     1                   TO  CNT-RECE642
+               ELSE
+      *
+      *        複数診療科受診のとき
+      *            既に同一剤があるか
+                   MOVE    SPACE               TO  RECE642-REC
+                   INITIALIZE                      RECE642-REC
+                   MOVE    RECE64-HOSPID       TO  RECE642-HOSPID
+                   MOVE    RECE64-SRYYM        TO  RECE642-SRYYM
+                   MOVE    RECE64-NYUGAIKBN    TO  RECE642-NYUGAIKBN
+                   MOVE    RECE64-PTID         TO  RECE642-PTID
+                   MOVE    RECE64-TEISYUTUSAKI TO  RECE642-TEISYUTUSAKI
+                   MOVE    RECE64-RECESYUBETU  TO  RECE642-RECESYUBETU
+                   MOVE    RECE64-HKNJANUM     TO  RECE642-HKNJANUM
+                   MOVE    RECE64-HOJOKBN      TO  RECE642-HOJOKBN
+                   MOVE    RECE64-TEKSTYMD     TO  RECE642-TEKSTYMD
+                   MOVE    RECE64-KOHBUNRI     TO  RECE642-KOHBUNRI
+                   MOVE    RECE64-SRYKBN       TO  RECE642-SRYKBN
+                   MOVE    RECE64-SRYCDTOTAL   TO  RECE642-SRYCDTOTAL
+                   MOVE    RECE64-SURYOUTOTAL  TO  RECE642-SURYOUTOTAL
+                   MOVE    RECE64-MEISAISU     TO  RECE642-MEISAISU 
+                   MOVE    RECE642-REC         TO  WRK-RECE642-REC
+                   PERFORM 900-RECE642-INV-SEC
+                   IF      FLG-RECE642         =   1
+                       MOVE    WRK-RECE642-REC     TO  RECE642-REC
+                       MOVE    RECE64-REC          TO  RECE642-REC1
+                   END-IF
+      *            剤回数・日数回数テーブルの加算
+                   ADD     RECE64-ZAIKAISU     TO  RECE642-ZAIKAISU
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       4
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >       31
+                           ADD     RECE64-KAISU (IDX IDY)
+                                           TO   RECE642-KAISU (IDX IDY)
+                       END-PERFORM
+                   END-PERFORM
+      *     
+                   IF      FLG-RECE642         =   1
+                       WRITE   RECE642-REC
+                       ADD     1                   TO  CNT-RECE642
+                   ELSE
+                       REWRITE RECE642-REC
+                   END-IF
+               END-IF
+      *
+               PERFORM     900-RECE64-READ-SEC
+           END-PERFORM
+      *
+           PERFORM 900-RECE62-READ-SEC
+           .
+       210-RECE642-WRITE-EXT.
+           EXIT.
+      *
+      * 
+      *****************************************************************
+      *    主処理
+      *****************************************************************
+       220-RECE64W-WRITE-SEC                SECTION.
+      *
+           MOVE    RECE642-REC1        TO  RECE64W-REC
+      *
+      *   剤回数・日数回数テーブルの加算したものを編集
+           MOVE    RECE642-ZAIKAISU     TO  RECE64W-ZAIKAISU
+           MOVE    RECE642-DAY-AREA     TO  RECE64W-DAY-AREA
+      *
+           WRITE   RECE64W-REC
+           ADD     1                   TO  CNT-RECE64W
+      *
+           PERFORM     900-RECE642-READ-SEC
+           .
+       220-RECE64W-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー出力処理
+      *****************************************************************
+       500-ERR-HENSYU-SEC                SECTION.
+      *
+           OPEN    INPUT   RECEERR-FILE
+           IF      STS-RECEERR         =   ZERO
+               CLOSE   RECEERR-FILE
+           ELSE
+               OPEN    OUTPUT              RECEERR-FILE
+      *
+               MOVE    WRK-RECEERR         TO  RECEERR-REC
+               WRITE   RECEERR-REC
+               CLOSE   RECEERR-FILE
+      *         
+      *        ジョブ管理開始処理
+               MOVE    "JBE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               MOVE    WRK-RECEERR     TO  JOB-YOBI
+               MOVE    "9999"          TO  JOB-ERRCD
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
+           END-IF
+      *                             
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    終了処理
+      *****************************************************************
+       300-TERM-SEC                SECTION.
+      *
+      *    ステップ管理終了処理
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *
+           PERFORM 900-DBDISCONNECT-SEC
+      *
+           DISPLAY "RECE64     :" CNT-IN   
+           DISPLAY "RECE642    :" CNT-RECE642
+           DISPLAY "RECE64W    :" CNT-RECE64W
+           DISPLAY "*** ORCR0655 END ***"
+           .
+       300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト０２データ読込処理
+      *****************************************************************
+       900-RECE62-READ-SEC           SECTION.
+      *
+           READ    RECE62-FILE         NEXT
+               AT  END
+                   MOVE    1           TO  FLG-RECE62
+               NOT AT  END
+                   MOVE    ZERO        TO  FLG-RECE62
+           END-READ
+           .
+       900-RECE62-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   レセプト０４データ読込処理
+      *****************************************************************
+       900-RECE64-READ-SEC            SECTION.
+      *
+           READ    RECE64-FILE   NEXT
+               AT  END
+                   MOVE    1             TO    FLG-RECE64
+               NOT AT END    
+                   MOVE    ZERO          TO    FLG-RECE64
+                   ADD     1             TO    CNT-IN
+           END-READ
+           .
+       900-RECE64-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    中間ファイルＲＥＡＤ処理（Ｆ００４）
+      *****************************************************************
+       900-RECE642-READ-SEC            SECTION.
+      *
+           READ    RECE642-FILE   NEXT
+               AT  END
+                   MOVE    1             TO    FLG-RECE642
+               NOT AT END    
+                   MOVE    ZERO          TO    FLG-RECE642
+           END-READ
+           .
+       900-RECE642-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    中間ファイルＲＥＡＤ処理（Ｆ００４）
+      *****************************************************************
+       900-RECE642-INV-SEC            SECTION.
+      *
+           READ    RECE642-FILE
+               INVALID
+                   MOVE    1             TO    FLG-RECE642
+               NOT INVALID
+                   MOVE    ZERO          TO    FLG-RECE642
+           END-READ
+           .
+       900-RECE642-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢ　オープン処理
+      *****************************************************************
+       100-DBOPEN-SEC                SECTION.
+      *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       100-DBOPEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢ　クローズ処理
+      *****************************************************************
+       900-DBDISCONNECT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       900-DBCLOSE-EXT.
+           EXIT.
