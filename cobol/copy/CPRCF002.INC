@@ -40,6 +40,7 @@
       *  01.02.07    NACL-藤原    03.03.11  レセプト種別不明情報の追加
       *  01.02.08    NACL-門脇    03.04.16  船員保険（被保険者）＋通勤災害
       *                                     フラグの追加
+      *  01.02.09    NACL-門脇    03.06.19  実日数テーブルの追加
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -255,6 +256,12 @@
                05  RECE02-ERR-HKNCOMBINUM PIC 9(04).
                05  RECE02-ERR-TEKSTYMD    PIC 9(08).
                05  RECE02-ERR-TEKEDYMD    PIC 9(08).
+      *
+      *実日数テーブル情報
+           03  RECE02-JNISSUTBLINF        OCCURS 31.
+      *実日数テーブル
+               05  RECE02-JNISSUTBL       PIC  X(01).
+      *
       *予備
            03  RECE02-FILLER              PIC  X(32).
       *

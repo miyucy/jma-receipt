@@ -37,6 +37,7 @@
       *                                     処理の対象としない
       *  01.00.08    NACL-門脇    03/06/06  特定入院料の略称が無い場合の
       *                                     対応
+      *  01.00.09    NACL-門脇    03/06/19  実日数テーブル編集の追加
       *****************************************************************
       *
       *
@@ -2651,6 +2652,16 @@
                           UNTIL      IDY    >     31
                     IF    TBL-JNISSU-DAY(IDX IDY)  NOT =  SPACE
                           ADD    1      TO    RECE62-JNISSU(IDX)
+                    END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+           PERFORM    VARYING    IDX    FROM   1   BY   1
+                      UNTIL      IDX    >      2
+               PERFORM    VARYING    IDY    FROM    1   BY   1
+                          UNTIL      IDY    >     31
+                    IF    TBL-JNISSU-DAY(IDX IDY)  NOT =  SPACE
+                          MOVE   "1"    TO    RECE62-JNISSUTBL(IDY)
                     END-IF
                END-PERFORM
            END-PERFORM

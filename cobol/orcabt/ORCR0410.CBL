@@ -39,6 +39,7 @@
       *  01.00.08    NACL-門脇    03.05.19  自賠責の初診日の編集修正
       *  01.00.09    NACL-門脇    03.05.20  自賠責：療養担当手当て対応
       *  01.00.10    NACL-門脇    03.06.09  消費税端数対応
+      *  01.00.11    NACL-門脇    03.06.19  実日数テーブル編集の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1722,6 +1723,7 @@
                     IF    TBL-JNISSU-DAY(IDZ)
                                         NOT =  SPACE
                           ADD    1      TO    RECE41-JNISSU
+                          MOVE  "1"     TO    RECE41-JNISSUTBL(IDZ)
                     END-IF
            END-PERFORM
       *

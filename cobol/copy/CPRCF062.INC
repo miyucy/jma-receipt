@@ -29,6 +29,7 @@
       *  01.00.06    NACL-門脇    03.04.16  船員保険（被保険者）＋通勤災害
       *                                     フラグの追加
       *  01.00.07    NACL-門脇    03.05.28  病棟番号・種別の追加
+      *  01.00.08    NACL-門脇    03.06.19  実日数テーブルの追加
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -300,6 +301,12 @@
                05  RECE62-ERR-HKNCOMBINUM PIC 9(04).
                05  RECE62-ERR-TEKSTYMD    PIC 9(08).
                05  RECE62-ERR-TEKEDYMD    PIC 9(08).
+      *
+      *実日数テーブル情報
+           03  RECE62-JNISSUTBLINF        OCCURS 31.
+      *実日数テーブル
+               05  RECE62-JNISSUTBL       PIC  X(01).
+      *
       *予備
            03  RECE62-FILLER              PIC  X(32).
       *

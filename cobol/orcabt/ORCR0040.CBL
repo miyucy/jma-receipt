@@ -41,6 +41,7 @@
       *                                     Œ≈Õ‹»Ò∆±∞’ΩÒ∏Ú…’Œ¡§Œ∏Ú…’∆¸ ‘Ω∏
       *  01.00.09    NACL-ÃÁœ∆    03.04.24  Õ¢∑Ï§œ•≥•·•Û•» ‘Ω∏¬–æ›≥∞§»§π§Î
       *  01.00.10    NACL-ÃÁœ∆    03.05.28  ºıø«Õ˙ŒÚ•≠°º§Œ —ππ
+      *  01.00.11    NACL-ÃÁœ∆    03.06.19   £øÙø«Œ≈≤ ºıø«§Œ ‘Ω∏Ω§¿µ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1135,10 +1136,14 @@
                                                RECE02-HKNCOMBI(9) OR
                                                RECE02-HKNCOMBI(10)
                             MOVE   JYURRK-SRYYMD   TO   WRK-SRYYMDX
-                            MOVE   "1"     TO    
+                            IF   RECE02-JNISSUTBL(WRK-SRYDD) = SPACE
+                               CONTINUE
+                            ELSE
+                               MOVE   "1"     TO    
                                         TBL-JUSHIN-ARI (IDX)
-                            MOVE   "1"     TO    
+                               MOVE   "1"     TO    
                                         TBL-JUSHIN-DAY (IDX WRK-SRYDD)
+                            END-IF
                       END-IF      
                    END-IF
       *

@@ -37,6 +37,7 @@
       *                                     前月薬剤管理指導料の算定日編集
       *  01.00.04    NACL-門脇    03.04.24  輸血はコメント編集対象外とする
       *  01.00.05    NACL-門脇    03.05.28  受診履歴キーの変更
+      *  01.00.06    NACL-門脇    03.06.19  複数診療科受診の編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1034,10 +1035,14 @@
                                                RECE62-HKNCOMBI(9) OR
                                                RECE62-HKNCOMBI(10)
                             MOVE   JYURRK-SRYYMD   TO   WRK-SRYYMDX
-                            MOVE   "1"     TO    
+                            IF   RECE62-JNISSUTBL(WRK-SRYDD) = SPACE
+                               CONTINUE
+                            ELSE
+                               MOVE   "1"     TO    
                                         TBL-JUSHIN-ARI (IDX)
-                            MOVE   "1"     TO    
+                               MOVE   "1"     TO    
                                         TBL-JUSHIN-DAY (IDX WRK-SRYDD)
+                            END-IF
                       END-IF      
                    END-IF
       *

@@ -42,6 +42,7 @@
       *  01.00.08    NACL-藤原    03.03.03  診療科数１０から２０へ変更
       *  01.00.09    NACL-藤原    03/04/21  地方公費データのとき不明分は
       *                                     処理の対象としない
+      *  01.00.10    NACL-門脇    03/06/19  実日数テーブル編集の追加
       *****************************************************************
       *
       *
@@ -584,6 +585,17 @@
                     IF    TBL-JNISSU-DAY(HKN-IDX DAY-IDX)
                                         NOT =  SPACE
                           ADD    1      TO    RECE02-JNISSU(HKN-IDX)
+                    END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+           PERFORM    VARYING    HKN-IDX    FROM   1   BY   1
+                      UNTIL      HKN-IDX    >      2
+               PERFORM    VARYING    DAY-IDX    FROM    1   BY   1
+                          UNTIL      DAY-IDX    >     31
+                    IF    TBL-JNISSU-DAY(HKN-IDX DAY-IDX)
+                                        NOT =  SPACE
+                          MOVE   "1"    TO    RECE02-JNISSUTBL(DAY-IDX)
                     END-IF
                END-PERFORM
            END-PERFORM
