@@ -106,6 +106,7 @@
            03  IDXA                        PIC 9(05).
            03  IDXB                        PIC 9(05).
            03  TN-IDX                      PIC 9(02).
+           03  IDX-DAY                     PIC 9(02).
       *
       *    パラメタ領域
        01  PARA-AREA.
@@ -154,6 +155,8 @@
            03  WRK-HKNCOMBINUM9    REDEFINES  WRK-HKNCOMBINUM
                                    PIC 9(04).
            03  WRK-TAIHI-SRYKA     PIC X(02).
+           03  WRK-TAIHI-SHOKUJI   PIC 9(02).
+           03  WRK-TAIHI-HKN       PIC 9(04).
            03  WRK-ZOGENPTN        PIC X(01).
            03  WRK-ZOGEN           PIC S9(05).
            03  WRK-KEISANYMD       PIC X(08).
@@ -460,7 +463,16 @@
            ELSE
                COMPUTE   WRK-CHK-SRYMR =   WRK-CHK-SRYMR - 1
            END-IF
-           DISPLAY   "WRK-CHK-SRYYMR = " WRK-CHK-SRYYMR
+      *    前月の末日を算定
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY7-AREA
+           MOVE    "71"                TO  LNK-DAY7-IRAI
+           MOVE    WRK-CHK-SRYYM       TO  LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY7-AREA
+           MOVE    LNK-DAY7-KOYOMI     TO  IDX-DAY
+           DISPLAY   "WRK-CHK-SRYYM = " WRK-CHK-SRYYM
+           DISPLAY   "IDX-DAY = " IDX-DAY
            .
        100-INIT-EXT.
            EXIT.
@@ -572,9 +584,13 @@
            EXIT.
       *
       *****************************************************************
-      *    入院会計存在チェック処理
+      *    入院会計前月データ存在チェック処理
+      *    （食事と保険組合せの退避処理も併せて行う）
       *****************************************************************
        2001-NYUINACCT-MAECHK-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  WRK-TAIHI-SHOKUJI
+           MOVE    ZERO                TO  WRK-TAIHI-HKN
       *
            MOVE    ZERO                TO  FLG-NYUINACCT-MAE-CHK
            INITIALIZE                      NYUINACCT-REC
@@ -588,11 +604,20 @@
       *
                MOVE    "NYUINACCT-KEY7"    TO  ORC-DBPATH
                PERFORM 910-NYUINACCT-READ-SEC
-               PERFORM UNTIL ( FLG-NYUINACCT       NOT =   ZERO )
-                        OR   ( FLG-NYUINACCTARI    NOT =   ZERO )
+               PERFORM UNTIL  FLG-NYUINACCT NOT =   ZERO
       *
                    IF    ( NACCT-ZAISKBKBN     =    "1"    )
                        MOVE    1           TO  FLG-NYUINACCT-MAE-CHK
+                   END-IF
+      *            食事
+                   IF    ( NACCT-ZAISKBKBN     =    "4"    )
+                       MOVE    NACCT-DAY(IDX-DAY)
+                                           TO  WRK-TAIHI-SHOKUJI
+                   END-IF
+      *            保険組合せ
+                   IF    ( NACCT-ZAISKBKBN     =    "5"    )
+                       MOVE    NACCT-DAY(IDX-DAY)
+                                           TO  WRK-TAIHI-HKN
                    END-IF
       *
                    MOVE    "NYUINACCT-KEY7"    TO  ORC-DBPATH
@@ -1672,8 +1697,7 @@
            DISPLAY  "410191-NYUACCT-SAKUSEI-SEC 10"
       *    食事区分
            MOVE    "099999913"         TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
-           MOVE   1                    TO  LNK-SCNYUACCT-SHOKUJIKBN
-      *     MOVE   SPA-TAIHI-SHOKUJI    TO  LNK-SCNYUACCT-SHOKUJIKBN
+           MOVE   WRK-TAIHI-SHOKUJI    TO  LNK-SCNYUACCT-SHOKUJIKBN
       *    食堂加算
            PERFORM 4801-BTUSEL-SEC
            IF      FLG-SYSKANRI        =    ZERO
@@ -1685,8 +1709,7 @@
            END-IF
       *    保険組合せ
            MOVE    "099999914"     TO  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD
-           MOVE    1               TO  LNK-SCNYUACCT-HKNCOMBINUM
-      *     MOVE    SPA-TAIHI-HKN   TO  LNK-SCNYUACCT-HKNCOMBINUM
+           MOVE    WRK-TAIHI-HKN   TO  LNK-SCNYUACCT-HKNCOMBINUM
            DISPLAY  "410191-NYUACCT-SAKUSEI-SEC 11"
       *    転科元入院科
            MOVE   "00"             TO  LNK-SCNYUACCT-MOTO-NYUINKA
@@ -1822,8 +1845,7 @@
            END-IF
       *    食事区分
            MOVE    "099999913"         TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
-           MOVE    1                   TO  LNK-SCNYUACCT-SHOKUJIKBN
-      *     MOVE    SPA-TAIHI-SHOKUJI   TO  LNK-SCNYUACCT-SHOKUJIKBN
+           MOVE    WRK-TAIHI-SHOKUJI   TO  LNK-SCNYUACCT-SHOKUJIKBN
       *    食堂加算
            PERFORM 4801-BTUSEL-SEC
            IF      FLG-SYSKANRI           =    ZERO
@@ -1835,8 +1857,7 @@
            END-IF
       *    保険組合せ
            MOVE    "099999914"     TO  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD
-           MOVE    1               TO  LNK-SCNYUACCT-HKNCOMBINUM
-      *     MOVE    SPA-TAIHI-HKN   TO  LNK-SCNYUACCT-HKNCOMBINUM
+           MOVE    WRK-TAIHI-HKN   TO  LNK-SCNYUACCT-HKNCOMBINUM
       *    転科元入院科
            MOVE    "00"            TO  LNK-SCNYUACCT-MOTO-NYUINKA
            MOVE    SPA-SRYKA       TO  WRK-TAIHI-SRYKA
