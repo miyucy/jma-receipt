@@ -35,6 +35,7 @@
       *  01.00.05    NACL-Â¿¡¹Ç¼  03/03/04  Ê£¿ô¿ÇÎÅ²Ê¤Þ¤È¤áÄÉ²Ã
       *  01.00.06    NACL-Â¿¡¹Ç¼  03/04/15  Ï«ºÒÊÔ½¸½¤Àµ
       *  01.00.07    NACL-Â¿¡¹Ç¼  03/05/13  ¼«ÇåÀÕÀÁµá½¤Àµ
+      *  01.00.08    NACL-Â¿¡¹Ç¼  03/06/23  ¼«Èñ£··åÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -137,8 +138,13 @@
                05  WRK-FIL             PIC X(09).
                05  WRK-Z7              PIC Z,ZZZ,ZZZ.
            03  WRK-Z72-G.
-               05  WRK-FIL2            PIC X(09).
-               05  WRK-Z72             PIC -,---,---.
+      *****    05  WRK-FIL2            PIC X(09).
+      ****     05  WRK-Z72             PIC -,---,---.
+               05  WRK-FIL2            PIC X(18).
+           03  WRK-Z72                 PIC S9(07).
+           03  WRK-Z72-H               PIC Z,ZZZ,ZZZ.
+           03  WRK-Z72-HS              REDEFINES   WRK-Z72-H
+                                       PIC -,---,---.
       *    ¼«Èñ½¸·×
            03  WRK-JIHI-REC.
                05  WRK-JIHI            PIC S9(07)   OCCURS  5.
@@ -989,7 +995,14 @@
      *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "2"                 TO  KANACHK-SYORI
-           MOVE    WRK-Z72             TO  KANACHK-MAE-INPUT
+      *****MOVE    WRK-Z72             TO  KANACHK-MAE-INPUT
+           IF      WRK-Z72             <   ZERO
+               MOVE    WRK-Z72             TO  WRK-Z72-HS
+               MOVE    WRK-Z72-HS          TO  KANACHK-MAE-INPUT
+           ELSE
+               MOVE    WRK-Z72             TO  WRK-Z72-H
+               MOVE    WRK-Z72-H           TO  KANACHK-MAE-INPUT
+           END-IF
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF      KANACHK-RC          =   ZERO
