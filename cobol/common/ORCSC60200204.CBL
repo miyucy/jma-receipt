@@ -1608,10 +1608,15 @@
       *
       *        時間外加算チェック（診察、加算、時間加算のもの）
                IF     (WRK-COM-SRYKBN  (IDX-Z)     =   "11"  OR
-                                                       "12"     ) AND
-                      (WRK-COM-DATAKBN (IDX-Z)     =   "2"      ) AND
-                      (WRK-COM-TIMEKSNKBN(IDX-Z)   NOT =   ZERO )
-                   MOVE    1               TO  FLG-JIKASAN
+                                                       "12"     ) 
+                   IF     (WRK-COM-DATAKBN   (IDX-Z)   =   "2"  ) AND
+                          (WRK-COM-TIMEKSNKBN(IDX-Z)   NOT =   ZERO)
+                       MOVE    1               TO  FLG-JIKASAN
+                   END-IF
+                   IF     (WRK-COM-DATAKBN (IDX-Z)     =   "1"    ) AND
+                          (WRK-COM-TIMEFLG (IDX-Z)     NOT =   ZERO )
+                       MOVE    1               TO  FLG-JIKASAN
+                   END-IF
                END-IF
       *        逓減加算算定チェック
                IF     (WRK-COM-TEIGENKBN (IDX-Z)   =   1    )  AND

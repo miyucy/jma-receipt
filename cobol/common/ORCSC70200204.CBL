@@ -40,6 +40,7 @@
       * 01.00.11     NACL-多々納  03/02/18  フィルム料を手技料２へ
       * 01.00.12     NACL-多々納  03/02/26  点数ゼロのきざみ値計算の修正
       * 01.00.13     NACL-多々納  03/04/25  単純撮影に間接撮影などを追加
+      * 01.00.14     NACL-多々納  03/07/30  同時併施点数計算修正他
       *****************************************************************
       *
       *
@@ -1370,6 +1371,7 @@
                IF      WRK-SATUEI-SURYO    >   ZERO
                    MOVE    "1"             TO  WRK-COM-SURFLG (IDX-Z)
                    MOVE    WRK-SATUEI-SURYO    TO  WRK-COM-SURYO (IDX-Z)
+                   MOVE    WRK-SATUEI-SURYO    TO  WRK-KEIMAI
                END-IF
       *        きざみ値計算
                PERFORM 1000132-TENSU-KEISAN-SEC
@@ -1626,6 +1628,12 @@
                MOVE    SPACE               TO  WRK-SRYCD-2
                PERFORM 1003-JIDOU-CHK-SEC
                PERFORM 1002-JIDOUSET-SEC
+               IF      FLG-ADD             =   1
+                   IF      WRK-COM-INPUTCD (IDX-SAT + 1)
+                                               =   "170002110"
+                       COMPUTE IDX-SAT         =   IDX-SAT    +   1
+                   END-IF
+               END-IF
            END-IF
       *
            .
@@ -2252,10 +2260,15 @@
       *
       *        時間外加算チェック（診察、加算、時間加算のもの）
                IF     (WRK-COM-SRYKBN  (IDX-Z)     =   "11"  OR
-                                                       "12"     ) AND
-                      (WRK-COM-DATAKBN (IDX-Z)     =   "2"      ) AND
-                      (WRK-COM-TIMEKSNKBN(IDX-Z)   NOT =   ZERO )
-                   MOVE    1               TO  FLG-JIKASAN
+                                                       "12"     )
+                   IF     (WRK-COM-DATAKBN   (IDX-Z)   =   "2"  ) AND
+                          (WRK-COM-TIMEKSNKBN(IDX-Z)   NOT =   ZERO)
+                       MOVE    1               TO  FLG-JIKASAN
+                   END-IF
+                   IF     (WRK-COM-DATAKBN (IDX-Z)   =   "1"  ) AND
+                          (WRK-COM-TIMEFLG (IDX-Z)   NOT =   ZERO )
+                       MOVE    1               TO  FLG-JIKASAN
+                   END-IF
                END-IF
       *
       *        ＣＴ．ＭＲＩの算定チェック
@@ -2296,7 +2309,7 @@
                    GO      TO      200-ALL-SYORI-EXT
                END-IF
       *        時間入力追加
-               MOVE    "840000071"         TO  WRK-SRYCD
+               MOVE    "840000071"             TO  WRK-SRYCD
                IF      WRK-COM-INPUTCD(IDX-Z + 1)  =   WRK-SRYCD
                    CONTINUE
                ELSE
