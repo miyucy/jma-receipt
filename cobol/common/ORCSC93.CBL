@@ -649,7 +649,11 @@
                            MOVE    SPACE         TO  SPA-COM-SRYSYUKBN
                                                                  (IDX)
       *                    前行に回数がない時）
-                           IF     (IDX                 =   1   )  OR
+                           IF     (SPA-COM-INPUTCD (IDX)(1:4)
+                                                   NOT =   "0082"
+                                                       AND "0083"
+                                                       AND "0084" )  OR
+                                  (IDX                 =   1   )  OR
                                   (SPA-COM-KAIFLG (IDX - 1 )   =   "1")
                                MOVE    "99"        TO  SPA-COM-SRYKBN
                                                                 (IDX)
