@@ -654,6 +654,7 @@
            MOVE    WRK-Z9 (4:2)        TO  KANACHK-MAE-INPUT 
            CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
            IF      KANACHK-RC          =   ZERO
+           AND     KANACHK-MAX         >   ZERO
                MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                            TO  WRK-KOHNUM
            END-IF    

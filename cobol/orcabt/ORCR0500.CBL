@@ -282,20 +282,19 @@
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
       *
-      *    出力先プリンタ名割り当て情報処理
+      *    レセプト通し番号情報処理
            PERFORM 110-SYSKANRI-HENSYU-SEC
-      *     
+      *
            MOVE    "HC21"              TO  HC01PARA-FORM-ID
            MOVE    WRK-PARA-TERMID32   TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    1                   TO  HC01PARA-CNT
-           OPEN    OUTPUT              PRT-FILE
            .
        100-INIT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    出力先プリンタ名割り当て情報処理
+      *    レセプト通し番号情報処理
       *****************************************************************
        110-SYSKANRI-HENSYU-SEC                   SECTION.
       *
@@ -331,6 +330,9 @@
            END-IF              
       *
       *    帳票印刷処理
+      *
+           OPEN    OUTPUT              PRT-FILE
+      *
       *****MOVE    "RECEPRT-KEY3"      TO  WRK-PATH
            MOVE    "RECEPRT-KEY12"     TO  WRK-PATH
            PERFORM 900-RECEPRT-SELECT-SEC
@@ -341,6 +343,8 @@
       *****MOVE    "RECEPRT-KEY3"      TO  WRK-PATH
            MOVE    "RECEPRT-KEY12"     TO  WRK-PATH
            PERFORM 900-RECEPRT-CLS-SEC
+      *
+           CLOSE                       PRT-FILE
       *
       *    帳票クリア処理
       *****MOVE    "RECEPRT-KEY4"      TO  WRK-PATH
@@ -664,8 +668,6 @@
       *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
-      *
-           CLOSE                       PRT-FILE
       *     
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
