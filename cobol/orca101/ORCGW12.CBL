@@ -51,6 +51,7 @@
       *  02.00.13    NACL-藤原    04/03/29  続紙区分に縦形式（長）追加
       *  02.00.14    NACL-藤原    04/04/09  レセプトコメント（症状詳記）記録区分
       *                                     ・診療科編集区分の追加
+      *  02.00.15    NACL-太田    04/04/15  プリンタ名の指定を入／外分ける
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -143,6 +144,12 @@
                        09  SPA-GMN-SYAPRTNM-NEXT
                                               PIC X(16).              
                        09  SPA-GMN-KKHPRTNM-NEXT
+                                              PIC X(16).              
+                       09  SPA-GMN-SYAPRTNM-N PIC X(16).              
+                       09  SPA-GMN-KKHPRTNM-N PIC X(16).              
+                       09  SPA-GMN-SYAPRTNM-NEXT-N
+                                              PIC X(16).              
+                       09  SPA-GMN-KKHPRTNM-NEXT-N
                                               PIC X(16).              
                        09  SPA-GMN-RENNUMHENKBN-G.
                            11  SPA-GMN-RENNUMHENKBN
@@ -833,6 +840,13 @@
                MOVE    SYS-2005-KKHPRTNM   TO  SPA-GMN-KKHPRTNM         
                MOVE    SYS-2005-KKHPRTNM-NEXT
                                            TO  SPA-GMN-KKHPRTNM-NEXT
+               MOVE    SYS-2005-SYAPRTNM-N TO  SPA-GMN-SYAPRTNM-N
+               MOVE    SYS-2005-SYAPRTNM-NEXT-N
+                                           TO  SPA-GMN-SYAPRTNM-NEXT-N
+      *
+               MOVE    SYS-2005-KKHPRTNM-N TO  SPA-GMN-KKHPRTNM-N
+               MOVE    SYS-2005-KKHPRTNM-NEXT-N
+                                           TO  SPA-GMN-KKHPRTNM-NEXT-N
       *         
                MOVE    SYS-2005-RENNUMHENKBN 
                                            TO  SPA-GMN-RENNUMHENKBN
@@ -1064,6 +1078,10 @@
            MOVE    W12-KKHPRTNM-NEXT   TO  SPA-GMN-KKHPRTNM-NEXT
            MOVE    W12-SRYKAHENKBN     TO  SPA-GMN-SRYKAHENKBN-G
            MOVE    W12-RECECOMKBN      TO  SPA-GMN-RECECOMKBN-G
+           MOVE    W12-SYAPRTNM-N      TO  SPA-GMN-SYAPRTNM-N
+           MOVE    W12-KKHPRTNM-N      TO  SPA-GMN-KKHPRTNM-N
+           MOVE    W12-SYAPRTNM-NEXT-N TO  SPA-GMN-SYAPRTNM-NEXT-N
+           MOVE    W12-KKHPRTNM-NEXT-N TO  SPA-GMN-KKHPRTNM-NEXT-N
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -1832,6 +1850,10 @@
            MOVE    SPA-GMN-KKHPRTNM-NEXT   TO  SYS-2005-KKHPRTNM-NEXT
            MOVE    SPA-GMN-SRYKAHENKBN     TO  SYS-2005-SRYKAHENKBN
            MOVE    SPA-GMN-RECECOMKBN      TO  SYS-2005-RECECOMKBN
+           MOVE    SPA-GMN-SYAPRTNM-N      TO  SYS-2005-SYAPRTNM-N
+           MOVE    SPA-GMN-KKHPRTNM-N      TO  SYS-2005-KKHPRTNM-N
+           MOVE    SPA-GMN-SYAPRTNM-NEXT-N TO  SYS-2005-SYAPRTNM-NEXT-N
+           MOVE    SPA-GMN-KKHPRTNM-NEXT-N TO  SYS-2005-KKHPRTNM-NEXT-N
            MOVE    SYS-2005-REC            TO  SYSKANRI-REC
       *     
            IF      FLG-SYSKANRI            =   ZERO
@@ -2105,6 +2127,16 @@
            MOVE    SPA-GMN-KKHPRTNM-NEXT
                                        TO  W12-KKHPRTNM-NEXT 
       *
+           MOVE    SPA-GMN-SYAPRTNM-N  TO  W12-SYAPRTNM-N
+      *
+           MOVE    SPA-GMN-SYAPRTNM-NEXT-N
+                                       TO  W12-SYAPRTNM-NEXT-N
+      *
+           MOVE    SPA-GMN-KKHPRTNM-N  TO  W12-KKHPRTNM-N
+      *
+           MOVE    SPA-GMN-KKHPRTNM-NEXT-N
+                                       TO  W12-KKHPRTNM-NEXT-N
+      *
            IF      SPA-BEDSU       >   ZERO
                MOVE    WIDGET-NORMAL       TO  W12-PREFPRGID1-STATE
            ELSE
@@ -2290,6 +2322,14 @@
                     MOVE  "RECECOMKBN"       TO   MCP-WIDGET
                 WHEN    23
                     MOVE  "SRYKAHENKBN"      TO   MCP-WIDGET
+                WHEN    24
+                    MOVE  "SYAPRTNM_N"       TO   MCP-WIDGET
+                WHEN    25
+                    MOVE  "SYAPRTNM_NEXT_N"  TO   MCP-WIDGET
+                WHEN    26
+                    MOVE  "KKHPRTNM_N"       TO   MCP-WIDGET
+                WHEN    27
+                    MOVE  "KKHPRTNM_NEXT_N"  TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE
@@ -2338,13 +2378,13 @@
                WHEN    "KKHPRTNM"
                    MOVE    18          TO  SPA-GMN-CUR
                WHEN    "KKHPRTNM_NEXT"
-                   MOVE    14          TO  SPA-GMN-CUR
+                   MOVE    16          TO  SPA-GMN-CUR
                WHEN    "RENNUMHENKBN"
                    MOVE    9           TO  SPA-GMN-CUR
                WHEN    "NEXTPRTKBN_1"
-                   MOVE    19          TO  SPA-GMN-CUR
+                   MOVE    24          TO  SPA-GMN-CUR
                WHEN    "NEXTPRTKBN"
-                   MOVE    16          TO  SPA-GMN-CUR
+                   MOVE    19          TO  SPA-GMN-CUR
                WHEN    "RJNGNBKKBN"
                    MOVE    20          TO  SPA-GMN-CUR
                WHEN    "JIHITEKKSIKBN"
@@ -2353,6 +2393,14 @@
                    MOVE    11          TO  SPA-GMN-CUR
                WHEN    "KKHPRTKBN"
                    MOVE    99          TO  SPA-GMN-CUR
+               WHEN    "SYAPRTNM_N"
+                   MOVE    25          TO  SPA-GMN-CUR
+               WHEN    "SYAPRTNM_NEXT_N"
+                   MOVE    26          TO  SPA-GMN-CUR
+               WHEN    "KKHPRTNM_N"
+                   MOVE    27          TO  SPA-GMN-CUR
+               WHEN    "KKHPRTNM_NEXT_N"
+                   MOVE    14          TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .

@@ -74,6 +74,14 @@
                 04  W12-VALUE   PIC X(16).
               03  W12-KKHPRTNM-NEXT.
                 04  W12-VALUE   PIC X(16).
+              03  W12-SYAPRTNM-N.
+                04  W12-VALUE   PIC X(16).
+              03  W12-SYAPRTNM-NEXT-N.
+                04  W12-VALUE   PIC X(16).
+              03  W12-KKHPRTNM-N.
+                04  W12-VALUE   PIC X(16).
+              03  W12-KKHPRTNM-NEXT-N.
+                04  W12-VALUE   PIC X(16).
               03  W12-RENNUMHENKBN-COMBO.
                 04  W12-RENNUMHENKBN       PIC X(22).
                 04  W12-RENNUMHENKBN-COUNT PIC S9(9)   BINARY.

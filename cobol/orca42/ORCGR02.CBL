@@ -179,6 +179,10 @@
                    07  SPA-NAI-2005-KKHPRTNM       PIC X(16).
                    07  SPA-NAI-2005-SYAPRTNM-NEXT  PIC X(16).
                    07  SPA-NAI-2005-KKHPRTNM-NEXT  PIC X(16).
+                   07  SPA-NAI-2005-SYAPRTNM-N     PIC X(16).
+                   07  SPA-NAI-2005-KKHPRTNM-N     PIC X(16).
+                   07  SPA-NAI-2005-SYAPRTNM-NEXT-N  PIC X(16).
+                   07  SPA-NAI-2005-KKHPRTNM-NEXT-N  PIC X(16).
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBL-OCC         OCCURS  2.
                            11  SPA-NAI-TBL-G       OCCURS  36.
@@ -624,6 +628,28 @@
                                         TO  SPA-NAI-2005-SYAPRTNM-NEXT
            MOVE    SYS-2005-KKHPRTNM-NEXT
                                         TO  SPA-NAI-2005-KKHPRTNM-NEXT
+           IF      SYS-2005-SYAPRTNM-N  =   SPACE
+                   MOVE   SYS-2005-SYAPRTNM
+                                        TO  SYS-2005-SYAPRTNM-N
+           END-IF
+           IF      SYS-2005-KKHPRTNM-N  =   SPACE
+                   MOVE   SYS-2005-KKHPRTNM
+                                        TO  SYS-2005-KKHPRTNM-N
+           END-IF
+           IF      SYS-2005-SYAPRTNM-NEXT-N  =   SPACE
+                   MOVE   SYS-2005-SYAPRTNM-NEXT
+                                        TO  SYS-2005-SYAPRTNM-NEXT-N
+           END-IF
+           IF      SYS-2005-KKHPRTNM-NEXT-N  =   SPACE
+                   MOVE   SYS-2005-KKHPRTNM-NEXT
+                                        TO  SYS-2005-KKHPRTNM-NEXT-N
+           END-IF
+           MOVE    SYS-2005-SYAPRTNM-N  TO  SPA-NAI-2005-SYAPRTNM-N
+           MOVE    SYS-2005-KKHPRTNM-N  TO  SPA-NAI-2005-KKHPRTNM-N
+           MOVE    SYS-2005-SYAPRTNM-NEXT-N
+                                       TO SPA-NAI-2005-SYAPRTNM-NEXT-N
+           MOVE    SYS-2005-KKHPRTNM-NEXT-N
+                                       TO SPA-NAI-2005-KKHPRTNM-NEXT-N
       *
       *    出力先プリンタ名割り当て情報編集
            MOVE    SPACE               TO  SYS-1031-REC
@@ -637,15 +663,21 @@
            ELSE    
                INITIALIZE                  SYS-1031-REC
            END-IF                                     
-      *
+      *    社保印刷先
            IF      SYS-2005-SYAPRTNM   =   SPACE
                MOVE    SYS-1031-PRTNM (4)  TO  SPA-NAI-2005-SYAPRTNM
            END-IF                                              
-      *
+           IF      SYS-2005-SYAPRTNM-N =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SPA-NAI-2005-SYAPRTNM-N
+           END-IF                                              
+      *    国保印刷先
            IF      SYS-2005-KKHPRTNM   =   SPACE
                MOVE    SYS-1031-PRTNM (4)  TO  SPA-NAI-2005-KKHPRTNM
            END-IF                                              
-      *
+           IF      SYS-2005-KKHPRTNM-N =   SPACE
+               MOVE    SYS-1031-PRTNM (4)  TO  SPA-NAI-2005-KKHPRTNM-N
+           END-IF                                              
+      *    社保印刷先（続紙）
            IF      SYS-2005-SYAPRTNM-NEXT  =   SPACE
                IF      SYS-2005-SYAPRTNM       =   SPACE
                    MOVE    SYS-1031-PRTNM (4)  TO
@@ -655,14 +687,32 @@
                                            SPA-NAI-2005-SYAPRTNM-NEXT
                END-IF
            END-IF                                              
-      *
+           IF      SYS-2005-SYAPRTNM-NEXT-N  =   SPACE
+               IF      SYS-2005-SYAPRTNM-N       =   SPACE
+                   MOVE    SYS-1031-PRTNM (4)  TO
+                                           SPA-NAI-2005-SYAPRTNM-NEXT-N
+               ELSE                                              
+                   MOVE    SYS-2005-SYAPRTNM-N   TO
+                                           SPA-NAI-2005-SYAPRTNM-NEXT-N
+               END-IF
+           END-IF                                              
+      *    国保印刷先（続紙）
            IF      SYS-2005-KKHPRTNM-NEXT  =   SPACE
                IF      SYS-2005-KKHPRTNM       =   SPACE
                    MOVE    SYS-1031-PRTNM (4)  TO
                                            SPA-NAI-2005-KKHPRTNM-NEXT
                ELSE                                              
-                   MOVE    SYS-1031-PRTNM (4)  TO
+                   MOVE    SYS-2005-KKHPRTNM   TO
                                            SPA-NAI-2005-KKHPRTNM-NEXT
+               END-IF
+           END-IF                                              
+           IF      SYS-2005-KKHPRTNM-NEXT-N  =   SPACE
+               IF      SYS-2005-KKHPRTNM-N       =   SPACE
+                   MOVE    SYS-1031-PRTNM (4)  TO
+                                           SPA-NAI-2005-KKHPRTNM-NEXT-N
+               ELSE                                              
+                   MOVE    SYS-2005-KKHPRTNM-N  TO
+                                           SPA-NAI-2005-KKHPRTNM-NEXT-N
                END-IF
            END-IF                                              
       *
@@ -1703,10 +1753,18 @@
       *****************************************************************
        440-PRINT-KENSU-SEC                SECTION.
       *
-           CALL    "ORCHCM35"          USING   SPA-AREA
+           EVALUATE   SPA-R01-RECE07-NYUGAIKBN
+               WHEN   "1"
+                   CALL    "ORCHCM35"  USING   SPA-AREA
+                                               SPA-NAI-2005-SYAPRTNM-N
+                                               SPA-GMN-FILEKBN
+                                               SPA-GMN-TBL1
+               WHEN   "2"
+                   CALL    "ORCHCM35"  USING   SPA-AREA
                                                SPA-NAI-2005-SYAPRTNM
                                                SPA-GMN-FILEKBN
                                                SPA-GMN-TBL1
+           END-EVALUATE
       *
            .
        440-PRINT-KENSU-EXT.
@@ -1898,10 +1956,18 @@
            MOVE    WRK-RECE09-KEY  TO  SHELLTBL-ARG7 
            MOVE    "00000"         TO  SHELLTBL-ARG8
            MOVE    "99999"         TO  SHELLTBL-ARG9
-           MOVE    SPA-NAI-2005-SYAPRTNM
+           EVALUATE   SPA-R01-RECE07-NYUGAIKBN
+               WHEN   "1"
+                   MOVE    SPA-NAI-2005-SYAPRTNM-N
                                    TO  SHELLTBL-ARG11
-           MOVE    SPA-NAI-2005-KKHPRTNM
+                   MOVE    SPA-NAI-2005-KKHPRTNM-N
                                    TO  SHELLTBL-ARG12
+               WHEN   "2"
+                   MOVE    SPA-NAI-2005-SYAPRTNM
+                                   TO  SHELLTBL-ARG11
+                   MOVE    SPA-NAI-2005-KKHPRTNM
+                                   TO  SHELLTBL-ARG12
+           END-EVALUATE
       *                                 
            MOVE    SPACE           TO  LNK-PRTKANRI-AREA
            INITIALIZE                  LNK-PRTKANRI-AREA
@@ -1949,10 +2015,18 @@
            MOVE    LNK-PRTKANRI-PRTNM
                                    TO  SHELLTBL-ARG23
            MOVE    SPA-GMN-PRTKBN  TO  SHELLTBL-ARG24
-           MOVE    SPA-NAI-2005-SYAPRTNM-NEXT
+           EVALUATE   SPA-R01-RECE07-NYUGAIKBN
+               WHEN   "1"
+                   MOVE    SPA-NAI-2005-SYAPRTNM-NEXT-N
                                    TO  SHELLTBL-ARG25
-           MOVE    SPA-NAI-2005-KKHPRTNM-NEXT
+                   MOVE    SPA-NAI-2005-KKHPRTNM-NEXT-N
                                    TO  SHELLTBL-ARG26
+               WHEN   "2"
+                   MOVE    SPA-NAI-2005-SYAPRTNM-NEXT
+                                   TO  SHELLTBL-ARG25
+                   MOVE    SPA-NAI-2005-KKHPRTNM-NEXT
+                                   TO  SHELLTBL-ARG26
+           END-EVALUATE
            EVALUATE    SPA-RID1-FLG
                WHEN    "PV"
                    MOVE    "4"             TO  SHELLTBL-ARG27

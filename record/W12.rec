@@ -91,6 +91,18 @@ W12	{
 		KKHPRTNM_NEXT	{
 			value	varchar(16);
 		};
+		SYAPRTNM_N	{
+			value	varchar(16);
+		};
+		SYAPRTNM_NEXT_N	{
+			value	varchar(16);
+		};
+		KKHPRTNM_N	{
+			value	varchar(16);
+		};
+		KKHPRTNM_NEXT_N	{
+			value	varchar(16);
+		};
 		RENNUMHENKBN_COMBO	{
 			RENNUMHENKBN	{
 				value	varchar(22);

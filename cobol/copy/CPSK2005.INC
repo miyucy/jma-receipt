@@ -106,8 +106,18 @@
                05  SYS-2005-SRYKAHENKBN PIC  X(01).
       *レセプトコメント（症状詳記）記録区分
                05  SYS-2005-RECECOMKBN  PIC  X(01).
+      *社保出力先プリンタ名（入院）
+               05  SYS-2005-SYAPRTNM-N  PIC  X(16).
+      *国保出力先プリンタ名（入院）
+               05  SYS-2005-KKHPRTNM-N  PIC  X(16).
+      *社保出力先プリンタ名（続紙）（入院）
+               05  SYS-2005-SYAPRTNM-NEXT-N
+                                        PIC  X(16).
+      *国保出力先プリンタ名（続紙）（入院）
+               05  SYS-2005-KKHPRTNM-NEXT-N
+                                        PIC  X(16).
       *予備
-           03  FILLER                   PIC  X(240).
+           03  FILLER                   PIC  X(176).
       *端末ＩＤ
            03  SYS-2005-TERMID          PIC  X(16).
       *オペーレータＩＤ
