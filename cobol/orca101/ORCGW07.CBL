@@ -48,6 +48,7 @@
       *  02.01.08    NACL-多々納  04/03/08  時間外加算特例乳幼児他追加
       *  02.01.09    NACL-藤原    04/03/08  生保受給者番号の追加
       *  02.01.10    NACL-多々納  04/03/10  時間外加算乳幼児チェック追加
+      *  02.01.11    NACL-藤原    04/03/08  生保受給者番号の機能停止
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3587,7 +3588,8 @@
                WHEN    "HAKKOKBN"
                    MOVE    23              TO  SPA-GMN-CUR
                WHEN    "HOJYOKBN"
-                   MOVE    24              TO  SPA-GMN-CUR
+      *************MOVE    24              TO  SPA-GMN-CUR
+                   MOVE    99              TO  SPA-GMN-CUR
                WHEN    "SEIHO_JKYSNUM"
                    MOVE    99              TO  SPA-GMN-CUR
                WHEN    "SRYNYKNKNRKBN"
