@@ -28,7 +28,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *
+      *  01.00.01    NACL-ÂÀÅÄ    02.12.10  ¼ýÇ¼ÌÀºÙºï½ü½èÍýÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -307,6 +307,10 @@
       *    ¼ýÇ¼¥Þ¥¹¥¿¡¼
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
+      *
+      *    ¼ýÇ¼ÌÀºÙ¥Þ¥¹¥¿¡¼
+       01  SYUMEI-REC.
+           COPY    "CPSYUMEI.INC".
       *
       *    ¼õ¿ÇÍúÎò
        01  JYURRK-REC.
@@ -5658,15 +5662,78 @@
            MOVE    SPA-NAI-I01-TAIINYMD
                                    TO  SYU-SKYEDYMD
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
-           MOVE    "SYUNOU-DEL2"   TO  WRK-DBPATH
-           PERFORM 900-TBL-DELETE-SEC
-           IF    ( FLG-DBRC    NOT =   ZERO )
-               MOVE    "2009"  TO  SPA-ERRCD
-               GO  TO  4801-SYUNOU-DEL-EXT
-           END-IF
+           MOVE    "SYUNOU-KEY5"   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+      *
+           PERFORM UNTIL ( FLG-DBRC    NOT =   ZERO )
+      *
+              MOVE    MCPDATA-REC      TO  SYUNOU-REC
+      *
+      *       ¼ýÇ¼¥Ç¡¼¥¿ºï½ü
+              MOVE    SYUNOU-REC       TO  MCPDATA-REC
+              MOVE    "SYUNOU-KEY"     TO  WRK-DBPATH
+              PERFORM 900-TBL-DELETE-SEC
+              IF    ( FLG-DBRC    NOT =   ZERO )
+                   MOVE    "2009"  TO  SPA-ERRCD
+                   GO  TO  4801-SYUNOU-DEL-EXT
+              END-IF
+      *
+              PERFORM 4801-SYUMEI-DEL-SEC
+              IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4801-SYUNOU-DEL-EXT
+              END-IF
+      *
+              MOVE    "SYUNOU-KEY5"   TO  WRK-DBPATH
+              PERFORM 900-TBL-READ-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "SYUNOU-KEY5"   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
            .
       *
        4801-SYUNOU-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼ýÇ¼ÌÀºÙºï½ü½èÍý
+      *****************************************************************
+       4801-SYUMEI-DEL-SEC         SECTION.
+      *
+           INITIALIZE               SYUMEI-REC
+           MOVE    SYU-HOSPID       TO  SMEI-HOSPID
+           MOVE    SYU-NYUGAIKBN    TO  SMEI-NYUGAIKBN
+           MOVE    SYU-PTID         TO  SMEI-PTID
+           MOVE    SYU-DENPNUM      TO  SMEI-DENPNUM
+           MOVE    SYUMEI-REC       TO  MCPDATA-REC
+           MOVE    "SYUMEI-KEY2"   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+      *
+           PERFORM UNTIL ( FLG-DBRC    NOT =   ZERO )
+      *
+               MOVE    MCPDATA-REC      TO  SYUMEI-REC
+      *
+      *        ¼ýÇ¼ÌÀºÙºï½ü
+               MOVE    SYUMEI-REC       TO  MCPDATA-REC
+               MOVE    "SYUMEI-KEY"     TO  WRK-DBPATH
+               PERFORM 900-TBL-DELETE-SEC
+               IF    ( FLG-DBRC    NOT =   ZERO )
+                   MOVE    "2009"  TO  SPA-ERRCD
+                   GO  TO  4801-SYUMEI-DEL-EXT
+               END-IF
+      *
+               MOVE    "SYUMEI-KEY2"   TO  WRK-DBPATH
+               PERFORM 900-TBL-READ-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "SYUMEI-KEY2"   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+      *
+           .
+      *
+       4801-SYUMEI-DEL-EXT.
            EXIT.
       *****************************************************************
       *    Å¾²ÊÎòÂàÈò½èÍý

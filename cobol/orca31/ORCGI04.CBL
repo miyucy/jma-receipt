@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    02.12.10  収納明細作成処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -118,7 +119,6 @@
            03  WRK-Z9                      PIC --,---,---.
            03  WRK-Z92                     PIC --,---,---.
            03  WRK-ZZ9                     PIC ZZ9.
-           03  WRK-Z07                     PIC Z(07).
       *
       *    入力項目名
            03  WRK-MCP-WIDGET              PIC X(64).
@@ -151,6 +151,7 @@
            03  WRK-SYU-SUM-IDX             PIC 9(05).
            03  WRK-IDX                     PIC 9(05).
            03  WRK-DENPNUM                 PIC 9(07).
+           03  WRK-DENPNUM-X               PIC X(08).
            03  WRK-NYUINKA                 PIC X(02).
            03  WRK-BTUNUM                  PIC X(02).
            03  WRK-BRMNUM                  PIC X(08).
@@ -174,7 +175,13 @@
                                //PTNYUINRRK-// BY //WKPTNYUINRRK-//.
       *    収納ワーク
        01  WKSYUNOU-REC.
-           COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //WKSYU-//.
+           COPY  "CPSYUNOU.INC"    REPLACING  //SYU-//
+                                           BY //WKSYU-//.
+      *
+      *    収納明細ワーク
+       01  WKSYUMEI-REC.
+           COPY  "CPSYUMEI.INC"    REPLACING  //SMEI-//
+                                           BY //WKSMEI-//.
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -206,6 +213,10 @@
       *    収納マスター
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
+      *
+      *    収納明細マスタ−
+       01  SYUMEI-REC.
+           COPY    "CPSYUMEI.INC".
       *
       *    診療行為マスター
        01  SRYACT-REC.
@@ -2265,8 +2276,100 @@
       *
            MOVE      SYUNOU-REC    TO  SPA-I0-SYUNOU-DAT (IDX-SYU)
       *
+      *    収納明細マスタ更新処理
+           PERFORM 4801-SYUMEI-UPD-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4801-SYUNOU-UPD-EXT
+           END-IF
+      *
            .
        4801-SYUNOU-UPD-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納明細マスタ更新処理
+      *****************************************************************
+       4801-SYUMEI-UPD-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  SYUMEI-REC
+           INITIALIZE                      SYUMEI-REC
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+           MOVE    SYU-PTID            TO  SMEI-PTID
+      *
+      *    伝票番号
+           MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
+      *    伝票番号枝番
+           MOVE    01                  TO  SMEI-DENPEDANUM
+      *    伝票状態区分
+           MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
+      *    請求発行日（発行日の西暦）
+           MOVE    SPA-SYSYMD          TO  SMEI-SKYPRINTYMD
+      *    請求再発行日
+           MOVE    SPACE               TO  SMEI-SKYREPRINTYMD
+      *    領収書発行日
+           MOVE    SMEI-SKYPRINTYMD    TO  SMEI-RYOSYUPRINTYMD
+      *    領収書再発行日
+           MOVE    SPACE               TO  SMEI-RYOSYUREPRINTYMD
+      *    請求金額
+           MOVE    SYU-SKYMONEY        TO  SMEI-SKYMONEY
+      *    入返金日
+           MOVE    SMEI-SKYPRINTYMD    TO  SMEI-NYUHEN-YMD
+      *    入金連番
+           MOVE    01                  TO  SMEI-NYUKINRENNUM
+      *
+      *    入金額がゼロの時、入金力なし
+           IF    ( SYU-NYUKIN-TOTAL    =   ZERO )
+               CONTINUE
+           ELSE
+      *        入返金区分
+               MOVE    "1"                 TO  SMEI-NYUHEN-KBN
+      *        入返金額
+               MOVE    SYU-NYUKIN-TOTAL    TO  SMEI-NYUHEN-MONEY
+      *        入金方法
+               MOVE    "01"                TO  SMEI-NYUKIN-HOHO
+           END-IF
+      *    状態区分
+           IF    ( SYU-SKYMONEY        =   ZERO )
+               MOVE    SPACE               TO  SMEI-JOUTAIKBN
+           ELSE
+               IF   (  SYU-SKYMONEY    >   SYU-NYUKIN-TOTAL )
+                   MOVE    "9"             TO  SMEI-JOUTAIKBN
+               ELSE
+                   MOVE    "1"             TO  SMEI-JOUTAIKBN
+               END-IF
+           END-IF
+      *
+           MOVE    SYUMEI-REC      TO  WKSYUMEI-REC
+      *
+      *    更新前チェック（既に重複するデータがある場合はエラー）
+           MOVE   ZERO             TO  FLG-SYUMEI
+           MOVE    SYUMEI-REC      TO  MCPDATA-REC
+           MOVE    "SYUMEI-KEY"    TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    NOT =   ZERO )
+               MOVE    1           TO  FLG-SYUMEI
+           END-IF
+      *
+           MOVE    "SYUMEI-KEY"    TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( FLG-SYUMEI      =   ZERO )
+               MOVE    "2003"      TO  SPA-ERRCD
+               GO  TO  4801-SYUMEI-UPD-EXT
+           END-IF
+      *
+           MOVE    WKSYUMEI-REC    TO  SYUMEI-REC
+           MOVE    SYUMEI-REC      TO  MCPDATA-REC
+           MOVE    "SYUMEI-KEY"    TO  WRK-DBPATH
+           PERFORM 900-TBL-INSERT-SEC
+           IF    ( FLG-DBRC    NOT =   ZERO )
+               MOVE    "2003"      TO  SPA-ERRCD
+               GO  TO  4801-SYUMEI-UPD-EXT
+           END-IF
+      *
+      *
+           .
+       4801-SYUMEI-UPD-EXT.
            EXIT.
       *****************************************************************
       *    伝票番号取得処理
@@ -2298,8 +2401,13 @@
       *
            IF    ( FLG-SYSKANRI        =   ZERO )
                MOVE    SYS-0041-DENPNUMMAX-NYU
-                                       TO  WRK-Z07
-               MOVE    WRK-Z07         TO  SYS-0041-DENPNUMMAX-NYU
+                                       TO  WRK-DENPNUM-X
+               IF    ( WRK-DENPNUM-X   =   SPACE )
+                   MOVE    ZERO        TO  SYS-0041-DENPNUMMAX-NYU
+               ELSE
+                   MOVE    WRK-DENPNUM-X
+                                       TO  SYS-0041-DENPNUMMAX-NYU
+               END-IF
       *
                COMPUTE SYS-0041-DENPNUMMAX-NYU
                    =   SYS-0041-DENPNUMMAX-NYU +   1
@@ -2601,6 +2709,9 @@
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
            WHEN    "2002"
+               MOVE    "更新処理に失敗しました"
+                                       TO  SPA-ERRMSG
+           WHEN    "2003"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
            END-EVALUATE
