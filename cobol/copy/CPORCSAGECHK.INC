@@ -23,6 +23,8 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  03/11/13  老人フラグ追加
+      * 01.00.02     NACL-多々納  04/04/21  老人区分２、保険区分追加
+      *                                     実年齢追加
       ************************************************************
        01  ORCSAGECHKAREA.
       *入力値
@@ -38,7 +40,7 @@
            03  AGECHK-HKNCOMBINUM      PIC X(04).
       *出力値
            03  AGECHK-OUT-AREA.
-      *        年齢
+      *        年齢（保険）
                05  AGECHK-NENREI         PIC 9(03).
       *        以下、保険組合番号入力時
       *        負担割合（３歳未満と70歳以上の８，９割給付のみ）
@@ -47,10 +49,20 @@
                05  AGECHK-FTNRATEMEI     PIC X(10).
       *        老人エラー（１：老人保険なし、２：７５歳以上老人公費なし）
                05  AGECHK-RJNCHK         PIC 9(01).
-      *        保険エラー（１：保険切替えなし、２：保険なし）
+      *        保険エラー（１：保険なし）
                05  AGECHK-HKNCHK         PIC 9(01).
       *        老人区分（０：一般、１：老人）
                05  AGECHK-ROUJIN         PIC 9(01).
+      *        老人区分２（０：一般、１：老人）
+      *        （当日に老人公費がある時）
+               05  AGECHK-ROUJIN2        PIC 9(01).
+      *        保険区分（１：労災、２：自賠責、３：自費、０：以外）
+               05  AGECHK-HKNKBN         PIC 9(01).
+      *        実年齢（診療日の年齢）
+               05  AGECHK-NENREI2.
+                   07  AGECHK-NENREI2-YY     PIC 9(03).
+                   07  AGECHK-NENREI2-MM     PIC 9(02).
+                   07  AGECHK-NENREI2-DD     PIC 9(02).
       *    復帰コード
            03  AGECHK-RC              PIC 9(02).
       *
