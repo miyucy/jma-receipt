@@ -63,14 +63,16 @@ HCM2E.red	診療報酬請求書（医科・歯科）
 HCM2F.red	診療報酬請求書（医科・歯科）続紙	
 HCN02.red	退院証明書	
 HCN03.red	入院診療費請求書兼領収書	
-HCM2G.red
-HCM2H.red
-HCM301.red
-HCM302.red
-HCM303.red
-HCM304.red
-HCM305.red
-HCM306.red
-HCN06.red
-HCN061.red
-HCN062.red
+HCM2G.red	診療報酬請求書（医科・歯科）
+HCM2H.red	診療報酬請求書（医科・歯科）続紙
+HCM301.red	薬剤情報（１）
+HCM302.red	薬剤情報（２）
+HCM303.red	薬剤情報（３）
+HCM304.red	薬剤情報（４）
+HCM305.red	薬剤情報（５）
+HCM306.red	薬剤情報（６）
+HCN06.red	診療報酬明細書（医科入院）
+HCN061.red	診療報酬明細書（医科入院）続紙
+HCN062.red	診療報酬明細書（医科入院）続紙
+HCM31.red	支払証明書（日別）
+HCM32.red	支払証明書（月別）
