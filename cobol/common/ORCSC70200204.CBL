@@ -14,7 +14,7 @@
       * this license along with this program. If not, stop using this
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
-      ********************************************************************
+      *******************************************************************
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSC70200204.
       *****************************************************************
@@ -298,7 +298,7 @@
            03  FILLER              PIC X(09)  VALUE   "170002010".
       *
        01  TBL-DOUJI-HEISI-R       REDEFINES  TBL-DOUJI-HEISI-AREA.
-           03  TBL-DOUJI-OCC       OCCURS   14  INDEXED  TBL-IDX.
+           03  TBL-DOUJI-OCC       OCCURS   16  INDEXED  TBL-IDX.
                05  TBL-DOUJI-1     PIC X(09).
                05  TBL-DOUJI-2     PIC X(09).
       *
@@ -1856,7 +1856,7 @@
                MOVE    IDX-SYU            TO   IDX-T
                MOVE    IDX-SYU            TO   IDX-S
                MOVE    SPACE              TO   WRK-SRYCD-2
-      *******  PERFORM 1003-JIDOU-CHK-SEC
+               PERFORM 1003-JIDOU-CHK-SEC
       *        加算追加
                MOVE    3                   TO  FLG-SATU
                PERFORM 1002-JIDOUSET-SEC
@@ -2597,10 +2597,6 @@
       *    自動算定処理
       *****************************************************************
        300-AUTO-SYORI-SEC                SECTION.
-      *
-      *2001.3.21  自動算定を保留事項とする
-      *****GO      TO      300-AUTO-SYORI-EXT.
-      *
       *
            MOVE    ZERO                TO  FLG-CTMRI
            MOVE    ZERO                TO  FLG-XSEN
