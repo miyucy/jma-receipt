@@ -139,6 +139,8 @@
            03  WRK-HKNKUMI                 PIC X(40).
            03  WRK-HKNNUM                  PIC X(03).
            03  WRK-ZZZ                     PIC ZZZ.
+           03  WRK-SELNUMST                PIC 9(05).
+           03  WRK-SELNUMED                PIC 9(05).
       *
        01  WK-GMN-RITU.
            03  WK-GMN-FTNRITU              PIC ZZZ.
@@ -756,8 +758,13 @@
                    UNTIL ( IDX-LST     >   SPA-GMN-SYULIST-MAX )
       *
                IF    ( S05-SYULIST-SELECT (IDX-LST) =   "T" )
-                   MOVE    IDX-LST     TO  SPA-GMN-SELNUM
-                                           SPA-GMN-SYULIST-SEL
+                   MOVE    IDX-LST     TO  SPA-GMN-SYULIST-SEL
+      *
+                   COMPUTE SPA-GMN-SELNUM
+                       = ( SPA-GMN-SYULIST-PAGE  - 1 )
+                       *   CONST-SYULIST-MAX
+                       +   IDX-LST
+      *
                    MOVE    SPA-GMN-SYULIST-MAX
                                        TO  IDX-LST
                END-IF
@@ -793,7 +800,10 @@
                GO  TO  4100-SELNUM-CHK-EXT
            END-IF
       *
-           MOVE    SPA-GMN-SELNUM      TO  SPA-GMN-SYULIST-SEL
+           COMPUTE SPA-GMN-SYULIST-SEL
+               =   SPA-GMN-SELNUM
+               - ( SPA-GMN-SYULIST-PAGE  - 1 )
+               *   CONST-SYULIST-MAX
       *
            PERFORM 4200-S01-SPA-SET-SEC
            PERFORM 210-BACK
@@ -807,7 +817,20 @@
       *****************************************************************
        41001-SELNUM-CHK-SEC            SECTION.
       *
-           IF    ( SPA-GMN-SELNUM      >   SPA-GMN-SYULIST-MAX )
+           COMPUTE WRK-SELNUMST
+               = ( SPA-GMN-SYULIST-PAGE  - 1 )
+               *   CONST-SYULIST-MAX
+               +   1
+      *
+           COMPUTE WRK-SELNUMED
+               = ( SPA-GMN-SYULIST-PAGE  - 1 )
+               *   CONST-SYULIST-MAX
+               +   SPA-GMN-SYULIST-MAX
+      *
+           IF    ( SPA-GMN-SELNUM      >=  WRK-SELNUMST )
+            AND  ( SPA-GMN-SELNUM      <=  WRK-SELNUMED )
+               CONTINUE
+           ELSE
                MOVE    "0001"          TO  SPA-ERRCD
                MOVE    1               TO  SPA-GMN-CUR
                GO  TO  41001-SELNUM-CHK-EXT
