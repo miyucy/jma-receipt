@@ -69,6 +69,7 @@
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACCTARI            PIC 9(01).
+           03  FLG-NYUINACCT-MAE-CHK       PIC 9(01).
            03  FLG-ENTRYCHK                PIC 9(01).
            03  FLG-TENSU                   PIC 9(01).
            03  FLG-PTRSIINF                PIC 9(01).
@@ -179,6 +180,10 @@
                05  WRK-IPN-HANTEI-D1       PIC 9(02).
            03  WRK-IPN-HANTEI-YMD2         PIC X(08).
       *
+           03  WRK-CHK-SRYYM               PIC X(06).
+           03  WRK-CHK-SRYYMR      REDEFINES  WRK-CHK-SRYYM.
+               05  WRK-CHK-SRYYR           PIC 9(04).
+               05  WRK-CHK-SRYMR           PIC 9(02).
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
            03  WRK-NENREI          PIC 9(03).
@@ -447,7 +452,15 @@
            MOVE    "SYSKANRI-KEY"      TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
-      *    前月分の入院会計が作成済であることをチェック
+      *    前月分会計取得用の年月算出
+           MOVE    WRK-PARA-SRYYM      TO  WRK-CHK-SRYYM
+           IF      WRK-CHK-SRYMR        =   1
+               COMPUTE   WRK-CHK-SRYYR =   WRK-CHK-SRYYR - 1
+               MOVE      12            TO  WRK-CHK-SRYMR
+           ELSE
+               COMPUTE   WRK-CHK-SRYMR =   WRK-CHK-SRYMR - 1
+           END-IF
+           DISPLAY   "WRK-CHK-SRYYMR = " WRK-CHK-SRYYMR
            .
        100-INIT-EXT.
            EXIT.
@@ -482,6 +495,9 @@
       *                入院会計存在チェック
                        PERFORM    2001-NYUINACCT-CHK-SEC
                        IF         FLG-NYUINACCTARI   =    ZERO
+      *                     前月分入院会計の存在チェック
+      *                     （併せて保険組合せと食事の情報を退避）
+                            PERFORM     2001-NYUINACCT-MAECHK-SEC
       *                     入院会計作成処理
                             PERFORM     2001-NYUINACCT-INS-SEC
                        END-IF
@@ -556,17 +572,57 @@
            EXIT.
       *
       *****************************************************************
+      *    入院会計存在チェック処理
+      *****************************************************************
+       2001-NYUINACCT-MAECHK-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYUINACCT-MAE-CHK
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    PTNYUINRRK-HOSPID   TO  NACCT-HOSPID
+           MOVE    "1"                 TO  NACCT-NYUGAIKBN
+           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    WRK-CHK-SRYYM       TO  NACCT-SRYYM
+           MOVE    "NYUINACCT-KEY7"    TO  ORC-DBPATH
+           PERFORM 910-NYUINACCT-SELECT-SEC
+           IF      FLG-NYUINACCT       =   ZERO
+      *
+               MOVE    "NYUINACCT-KEY7"    TO  ORC-DBPATH
+               PERFORM 910-NYUINACCT-READ-SEC
+               PERFORM UNTIL ( FLG-NYUINACCT       NOT =   ZERO )
+                        OR   ( FLG-NYUINACCTARI    NOT =   ZERO )
+      *
+                   IF    ( NACCT-ZAISKBKBN     =    "1"    )
+                       MOVE    1           TO  FLG-NYUINACCT-MAE-CHK
+                   END-IF
+      *
+                   MOVE    "NYUINACCT-KEY7"    TO  ORC-DBPATH
+                   PERFORM 910-NYUINACCT-READ-SEC
+      *
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "NYUINACCT-KEY7"    TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           .
+       2001-NYUINACCT-MAECHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    入院会計作成処理
       *****************************************************************
        2001-NYUINACCT-INS-SEC          SECTION.
       *
-           PERFORM     410191-KAIKEI-SAKUSEI-SEC
+           IF    FLG-NYUINACCT-MAE-CHK     =    1
+               PERFORM     410191-KAIKEI-SAKUSEI-SEC
+           END-IF
+      *
            PERFORM     2002-HCMSL55-HEN-SEC
       *
            .
        2001-NYUINACCT-INS-EXT.
            EXIT.
-      *****************************************************************
+      ****************************a*************************************
       *    帳票編集処理
       *****************************************************************
        2002-HCMSL55-HEN-SEC            SECTION.
@@ -596,7 +652,11 @@
       *
            MOVE    WRK-PARA-SRYYM      TO  WRK-SRYYM
            MOVE    WRK-SRYYM           TO  LST-SRYYM (CNT-LINE)
-           MOVE    "入院会計を作成しました" TO  WRK-NAIYO
+           IF      FLG-NYUINACCT-MAE-CHK   =   ZERO
+               MOVE  "前月入院会計がありませんでした" TO  WRK-NAIYO
+           ELSE
+               MOVE  "入院会計を作成しました" TO  WRK-NAIYO
+           END-IF
            MOVE    WRK-NAIYO           TO  LST-NAIYO (CNT-LINE)
       *
            IF    ( CNT-LINE            >=  CONST-LST-MEISAI-MAX )
