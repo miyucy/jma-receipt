@@ -80,10 +80,10 @@ W02	{
 				};
 				SKYPRTFLG_COMBO	{
 					SKYPRTFLG	{
-						value	varchar(14);
+						value	varchar(22);
 					};
 					count	int;
-					item	varchar(14)[2];
+					item	varchar(22)[3];
 				};
 				SYOHOPRTFLG_COMBO	{
 					SYOHOPRTFLG	{

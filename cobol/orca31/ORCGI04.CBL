@@ -775,7 +775,7 @@
            MOVE    3               TO  SPA-GMN-I04-SKYPRTOUT-CNT
            MOVE    "0:発行なし"    TO  SPA-GMN-I04-SKYPRTOUT-ITM (01)
            MOVE    "1:発行あり"    TO  SPA-GMN-I04-SKYPRTOUT-ITM (02)
-           MOVE    "2:請求額がある場合は発行する"  
+           MOVE    "2:発行あり（請求額あり）"  
                                    TO  SPA-GMN-I04-SKYPRTOUT-ITM (03)
       *
             .
