@@ -1530,7 +1530,7 @@
                GO  TO  41002-BYOMEIINPUT-CHK-EXT
            END-IF
       *
-           INITIALIZE                 SPA-GMN-KOUMOKU
+           INITIALIZE                 SPA-GMN-KOUMOKU1
                                       SPA-NAI-KOUMOKU
                                       SPA-NAI-SELNO
       *                  

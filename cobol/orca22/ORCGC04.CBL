@@ -101,6 +101,7 @@
       * 
            03  WRK-SYOKBN          PIC 9(01).
            03  WRK-BANGO           PIC S9(05).
+           03  WRK-SEIGYO          PIC X(01).  
       *
        01  WRK-TBL-MAX             PIC 9(03)   VALUE   100.
       *
@@ -699,6 +700,7 @@
                    END-PERFORM
                END-IF    
            END-IF
+           PERFORM 410022-BYOMEI-HENSYU-SEC 
       *
            IF      SPA-ERRCD           =   SPACE
                MOVE    ZERO                TO  SPA-GMN-C04-SELNUM
@@ -737,6 +739,15 @@
                END-IF
            END-IF
       *
+           .
+       410021-INPUTCD-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病名編集処理
+      *****************************************************************
+       410022-BYOMEI-HENSYU-SEC      SECTION.
+      * 
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       6
                PERFORM 3101-BYOMEITOP-HENSYU-SEC
@@ -761,7 +772,7 @@
            END-IF
       *
            .
-       410021-INPUTCD-HENSYU-EXT.
+       410022-BYOMEI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -800,14 +811,99 @@
       *****************************************************************
        41003-INPUTCD-CHK-SEC          SECTION.
       *
-           MOVE    2               TO  SPA-GMN-C04-CUR
-      *
-           MOVE    SPACE               TO  WRK-HAISIYMDH
+           MOVE    SPACE           TO  WRK-HAISIYMDH
+                                       WRK-SEIGYO
       *
            MOVE    MCP-WIDGET      TO  WRK-WIDGET
            MOVE    WRK-WIDGET2     TO  IDZ
       *
-           COMPUTE SPA-GMN-C04-CUR =   SPA-GMN-C04-CUR    +   IDZ
+           COMPUTE SPA-GMN-C04-CUR =   2   +   IDZ
+      *
+      *    コードの挿入・削除の制御文字取得
+           IF      C04-INPUTCD (IDZ)  NOT =   SPACE
+               PERFORM VARYING IDX FROM    10  BY  -1
+                       UNTIL   IDX <       2
+                   IF      C04-INPUTCD (IDZ)(IDX:1)
+                                       NOT =   SPACE
+                       EVALUATE    C04-INPUTCD (IDZ)(IDX:1)
+                           WHEN    "-"
+                               MOVE    "-"         TO  WRK-SEIGYO
+                           WHEN    "+"
+                               MOVE    "+"         TO  WRK-SEIGYO
+                           WHEN    OTHER
+                               IF      IDX             >   2
+                                   COMPUTE IDW     =   IDX     -   1
+                                   IF      C04-INPUTCD (IDZ)(IDW:2)
+                                                   =   "−"
+                                       MOVE    "-"     TO  WRK-SEIGYO
+                                   END-IF
+                                   IF      C04-INPUTCD (IDZ)(IDW:2)
+                                                   =   "＋"
+                                       MOVE    "+"     TO  WRK-SEIGYO
+                                   END-IF
+                               END-IF
+                       END-EVALUATE
+      *                追加のとき
+                       IF      WRK-SEIGYO      =   "+"
+                           IF      SPA-GMN-C04-INPUTCD (6)
+                                                   NOT =   SPACE
+                               MOVE    SPACE           TO  WRK-SEIGYO
+                           END-IF 
+                           IF      IDZ         >   1
+                               COMPUTE IDW     =   IDZ     -   1
+                               IF      SPA-GMN-C04-INPUTCD (IDW)
+                                                           =   SPACE 
+                                   MOVE    SPACE       TO  WRK-SEIGYO
+                               END-IF
+                           END-IF
+                           IF      WRK-SEIGYO      =   SPACE
+                               COMPUTE SPA-GMN-C04-CUR =   2   +   IDZ
+                               GO  TO  41003-INPUTCD-CHK-EXT
+                           END-IF
+                       END-IF
+                       MOVE    2               TO  IDX
+                   END-IF 
+               END-PERFORM
+           ELSE
+               MOVE    "-"                     TO  WRK-SEIGYO
+           END-IF
+      *       
+           EVALUATE    WRK-SEIGYO
+               WHEN    "-"
+                   PERFORM VARYING IDX FROM    IDZ BY  1
+                           UNTIL   IDX >       6
+                       IF      IDX             =   6
+                           INITIALIZE  SPA-NAI-C04-BYOMEI-G (IDX)
+                                       SPA-GMN-C04-INPUTCD  (IDX)
+                       ELSE
+                           COMPUTE IDW     =   IDX     +   1
+                           MOVE    SPA-NAI-C04-BYOMEI-G (IDW)
+                                   TO  SPA-NAI-C04-BYOMEI-G (IDX)
+                           MOVE    SPA-GMN-C04-INPUTCD   (IDW)
+                                   TO  SPA-GMN-C04-INPUTCD  (IDX)
+                       END-IF                     
+                   END-PERFORM                           
+                   PERFORM 410022-BYOMEI-HENSYU-SEC 
+                   MOVE    SPACE           TO  WRK-SEIGYO     
+                   GO  TO  41003-INPUTCD-CHK-EXT
+               WHEN    "+"
+                   PERFORM VARYING IDX FROM    6   BY  -1
+                           UNTIL   IDX <       IDZ
+                       IF      IDX             =   IDZ
+                           INITIALIZE  SPA-NAI-C04-BYOMEI-G(IDX)
+                                       SPA-GMN-C04-INPUTCD (IDX)
+                       ELSE
+                           COMPUTE IDW     =   IDX     -   1
+                           MOVE    SPA-NAI-C04-BYOMEI-G (IDW)
+                                   TO  SPA-NAI-C04-BYOMEI-G(IDX)
+                           MOVE    SPA-GMN-C04-INPUTCD   (IDW)
+                                   TO  SPA-GMN-C04-INPUTCD  (IDX)
+                       END-IF                     
+                   END-PERFORM
+                   PERFORM 410022-BYOMEI-HENSYU-SEC 
+                   MOVE    SPACE           TO  WRK-SEIGYO     
+                   GO  TO  41003-INPUTCD-CHK-EXT
+           END-EVALUATE                               
       *
            INITIALIZE              SPA-NAI-C04-BYOMEI-G (IDZ)
       *
@@ -831,6 +927,8 @@
            MOVE    C04-INPUTCD (IDZ)   TO  SPA-GMN-C04-INPUTCD(IDZ)
       *
            PERFORM 410021-INPUTCD-HENSYU-SEC
+      *
+           PERFORM 410022-BYOMEI-HENSYU-SEC 
       *
            IF      SPA-ERRCD           =   SPACE   OR  "0075"
                ADD     1                   TO  SPA-GMN-C04-CUR
@@ -899,15 +997,6 @@
                MOVE    "0013"              TO  SPA-ERRCD
                GO  TO  41020-BYOMEISEL-EXT
            END-IF
-      *
-      *    変更処理のとき      
-           IF      SPA-NAI-C04-BYOMEICD-MAX
-                                       =   1
-           AND     SPA-GMN-C02-BANGO   >   ZERO                             
-               MOVE    99                  TO  SPA-GMN-C04-CUR
-               MOVE    "0003"              TO  SPA-ERRCD
-               GO  TO  41020-BYOMEISEL-EXT
-           END-IF
       * 
            MOVE    ZERO                TO  WRK-SELNO
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -932,6 +1021,7 @@
                    MOVE    6       TO  IDXX
                END-IF
            END-PERFORM
+           PERFORM 410022-BYOMEI-HENSYU-SEC 
       *
            MOVE    2                   TO  SPA-GMN-C04-CUR     
            .
