@@ -96,7 +96,6 @@
            COPY    "CPNYUKSNCHK.INC".
       *---- (NYUIN.15) LINE ADD END      -----------------------------
       *
-           COPY    'ORCA-DBINFO'.
            COPY    'ORCA-DBCOMM'.
            COPY    'ORCA-DBPATH'.
       *
