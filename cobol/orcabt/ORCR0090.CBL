@@ -954,9 +954,13 @@
                    ELSE                          
                        EVALUATE    RECE05-SRYCD (IDX) (1:1)
                            WHEN    "0"
-                               IF      IDY           =   ZERO
-                                   MOVE    1             TO  IDY
-                               END-IF    
+                             IF      RECE05-SRYCD (IDX) (1:3) = "059"
+                                 MOVE   4              TO  IDY
+                             ELSE
+                                 IF      IDY           =   ZERO
+                                     MOVE    1             TO  IDY
+                                 END-IF
+                           END-IF    
                            WHEN    "8"
                                IF      IDY           =   ZERO
                                    MOVE    2             TO  IDY
