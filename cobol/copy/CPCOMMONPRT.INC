@@ -32,7 +32,7 @@
            03  HC01PARA-FORM-ID        PIC  X(04).
            03  FILLER                  PIC  X(01) VALUE ".".
       *****03  HC01PARA-TERMID         PIC  X(16).
-           03  HC01PARA-TERMID         PIC  X(32).
+           03  HC01PARA-TERMID         PIC  X(64).
            03  FILLER                  PIC  X(01) VALUE ".".
            03  HC01PARA-SYOHMS         PIC  9(08).
            03  FILLER                  PIC  X(01) VALUE ".".
