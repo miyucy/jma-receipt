@@ -235,6 +235,7 @@
            03  FLG-SYULIST-ROW     PIC 9(01).
            03  FLG-JOBKANRI        PIC 9(01).
            03  FLG-ARI             PIC 9(01).
+           03  FLG-HIT             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -634,6 +635,11 @@
            IF      SPA-SID1-FLG    =   "OK"
                IF      SPA-SIDCD            =   "2001"
                    PERFORM 430-TORIKESI-KOUSHIN-SEC
+                   MOVE    SPA-ERRCD
+                                   TO  WRK-ERRCD
+               END-IF
+               IF      SPA-SIDCD            =   "2002"
+                   PERFORM 440-IKATUSAIKEI-SEC
                    MOVE    SPA-ERRCD
                                    TO  WRK-ERRCD
                END-IF
@@ -2139,6 +2145,11 @@
       *
            MOVE    WIDGET-NORMAL               TO  S02-PTNUM-STATE
       *
+           MOVE    WIDGET-NORMAL               TO  S02-B07S-STATE
+           IF    ( SPA-GMN-NYUGAIKBN           =   "1" )
+               MOVE    WIDGET-INSENSITIVE      TO  S02-B07S-STATE
+           END-IF
+      *
            PERFORM 5001-MAPCUR-SEC
            .
        500-GMNHEN-EXT.
@@ -2250,7 +2261,7 @@
                PERFORM 450-REPRINT-SEC
       *    外来分一括再計算
            WHEN    "CLICKED"       ALSO    "B07S"
-               PERFORM 440-IKATUSAIKEI-SEC
+               PERFORM 440-IKATUSAIKEI-CHK-SEC
            END-EVALUATE
            .
        200-GMNSENI-EXT.
@@ -3242,6 +3253,33 @@
        440-SAIKEI-EXT.
            EXIT.
       *
+      **************************************************************
+      *    外来分一括再計算チェック処理
+      **************************************************************
+       440-IKATUSAIKEI-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HIT
+           PERFORM VARYING IDX3    FROM    1   BY  1
+                   UNTIL ( IDX3    >   SPA-GMN-MAX )
+                    OR   ( FLG-HIT =   1 )
+      *
+               IF    ( SPA-NAI-TNYUGAIKBN (IDX3)   =   "2" )
+                   MOVE    1           TO  FLG-HIT
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( FLG-HIT         =   ZERO )
+               MOVE    "0060"          TO  SPA-ERRCD
+               GO  TO  440-IKATUSAIKEI-CHK-EXT
+           END-IF
+      *
+           MOVE    "2002"              TO  SPA-SIDCD
+      *
+           .
+      *
+       440-IKATUSAIKEI-CHK-EXT.
+           EXIT.
       **************************************************************
       *    外来分一括再計算処理
       **************************************************************
@@ -4478,6 +4516,9 @@
            EVALUATE    SPA-SIDCD
            WHEN    "2001"
                MOVE    "請求データを取り消します"
+                                        TO  WRK-SIDMSG
+           WHEN    "2002"
+               MOVE    "外来収納の一括再計算を行います"
                                         TO  WRK-SIDMSG
            END-EVALUATE
       *

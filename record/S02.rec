@@ -6,6 +6,9 @@ S02	{
 		B03S	{
 	           	state	int;
 		};
+		B07S	{
+	           	state	int;
+		};
 		PTNUM	{
 	           	state	int;
 			value	varchar(20);
