@@ -1,22 +1,423 @@
 O03	{
 	fixed6	{
-		LISTWIND	{
-			LIST11	{
-				count	int;
-				item	{
-					value0	varchar(28);
-					value1	varchar(10);
-					value2	varchar(10);
-				}	[50];
-				select	bool[50];
-			};
+		SYOKBN	{
+			value	bool;
+			label	varchar(8);
 		};
-		PRJUNCOMBO	{
-			PRJUN	{
-				value	varchar(22);
+		PAGE1	{
+			value	number(4);
+		};
+		PAGE2	{
+			value	number(4);
+		};
+		PAGE3	{
+			value	number(4);
+		};
+		PAGE4	{
+			value	number(4);
+		};
+		PAGE5	{
+			value	number(4);
+		};
+		PAGE6	{
+			value	number(4);
+		};
+		PAGE7	{
+			value	number(4);
+		};
+		PAGE8	{
+			value	number(4);
+		};
+		PAGE9	{
+			value	number(4);
+		};
+		PAGE10	{
+			value	number(4);
+		};
+		PAGE11	{
+			value	number(4);
+		};
+		PAGE12	{
+			value	number(4);
+		};
+		PAGE13	{
+			value	number(4);
+		};
+		PAGE14	{
+			value	number(4);
+		};
+		PAGE15	{
+			value	number(4);
+		};
+		PAGE16	{
+			value	number(4);
+		};
+		PAGE17	{
+			value	number(4);
+		};
+		PAGE18	{
+			value	number(4);
+		};
+		PAGE19	{
+			value	number(4);
+		};
+		PAGE20	{
+			value	number(4);
+		};
+		PAGE21	{
+			value	number(4);
+		};
+		PAGE22	{
+			value	number(4);
+		};
+		PAGE23	{
+			value	number(4);
+		};
+		PAGE24	{
+			value	number(4);
+		};
+		PAGE25	{
+			value	number(4);
+		};
+		PAGE26	{
+			value	number(4);
+		};
+		PAGE27	{
+			value	number(4);
+		};
+		PAGE28	{
+			value	number(4);
+		};
+		PAGE29	{
+			value	number(4);
+		};
+		PAGE30	{
+			value	number(4);
+		};
+		PAGE31	{
+			value	number(4);
+		};
+		PAGE32	{
+			value	number(4);
+		};
+		PAGE33	{
+			value	number(4);
+		};
+		PAGE34	{
+			value	number(4);
+		};
+		PAGE35	{
+			value	number(4);
+		};
+		PAGE36	{
+			value	number(4);
+		};
+		KENSU1	{
+			value	number(4);
+		};
+		KENSU2	{
+			value	number(4);
+		};
+		KENSU3	{
+			value	number(4);
+		};
+		KENSU4	{
+			value	number(4);
+		};
+		KENSU5	{
+			value	number(4);
+		};
+		KENSU6	{
+			value	number(4);
+		};
+		KENSU7	{
+			value	number(4);
+		};
+		KENSU8	{
+			value	number(4);
+		};
+		KENSU9	{
+			value	number(4);
+		};
+		KENSU10	{
+			value	number(4);
+		};
+		KENSU11	{
+			value	number(4);
+		};
+		KENSU12	{
+			value	number(4);
+		};
+		KENSU13	{
+			value	number(4);
+		};
+		KENSU14	{
+			value	number(4);
+		};
+		KENSU15	{
+			value	number(4);
+		};
+		KENSU16	{
+			value	number(4);
+		};
+		KENSU17	{
+			value	number(4);
+		};
+		KENSU18	{
+			value	number(4);
+		};
+		KENSU19	{
+			value	number(4);
+		};
+		KENSU20	{
+			value	number(4);
+		};
+		KENSU21	{
+			value	number(4);
+		};
+		KENSU22	{
+			value	number(4);
+		};
+		KENSU23	{
+			value	number(4);
+		};
+		KENSU24	{
+			value	number(4);
+		};
+		KENSU25	{
+			value	number(4);
+		};
+		KENSU26	{
+			value	number(4);
+		};
+		KENSU27	{
+			value	number(4);
+		};
+		KENSU28	{
+			value	number(4);
+		};
+		KENSU29	{
+			value	number(4);
+		};
+		KENSU30	{
+			value	number(4);
+		};
+		KENSU31	{
+			value	number(4);
+		};
+		KENSU32	{
+			value	number(4);
+		};
+		KENSU33	{
+			value	number(4);
+		};
+		KENSU34	{
+			value	number(4);
+		};
+		KENSU35	{
+			value	number(4);
+		};
+		KENSU36	{
+			value	number(4);
+		};
+		CHK01	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK02	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK03	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK04	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK05	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK06	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK07	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK08	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK09	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK10	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK11	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK12	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK13	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK14	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK15	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK16	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK17	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK18	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK19	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK20	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK21	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK22	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK23	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK24	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK25	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK26	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK27	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK28	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK29	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK30	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK31	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK32	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK33	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK34	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK35	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		CHK36	{
+	           	state	int;
+			value	bool;
+			label	varchar(20);
+		};
+		FILEKBN	{
+			value	varchar(34);
+		};
+		CREYMD	{
+			value	varchar(22);
+		};
+		KENSU	{
+			value	number(4);
+		};
+		PAGE	{
+			value	number(4);
+		};
+		PRTJYUN_COMBO	{
+			PRTJYUN	{
+				value	varchar(25);
 			};
 			count	int;
-			item	varchar(22)[10];
+			item	varchar(25)[05];
 		};
 	};
 };
