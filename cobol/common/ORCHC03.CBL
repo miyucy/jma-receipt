@@ -33,6 +33,7 @@
       *  01.00.03    NACL-多々納  02/09/13  自賠責・印刷サプの追加
       *  01.00.04    NACL-多々納  02/11/15  自費消費税対応修正
       *  01.00.05    NACL-多々納  03/03/04  複数診療科まとめ追加
+      *  01.00.06    NACL-多々納  03/04/15  労災編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -176,6 +177,9 @@
            COPY    "CPSK1010.INC".
       *
            COPY    "CPSK1013.INC".
+      *
+      *    労災医療機関情報
+           COPY    "CPSK4001.INC".
       *
       *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
@@ -440,6 +444,36 @@
                END-IF
            ELSE
                INITIALIZE                  SYS-1031-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+      *    労災医療機関情報編集
+           MOVE    SPACE               TO  SYS-4001-REC
+           INITIALIZE                  SYS-4001-REC
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-4001-REC
+               END-IF
+           ELSE
+               INITIALIZE                  SYS-4001-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            MOVE    "DBCLOSE"           TO  MCP-FUNC
@@ -817,7 +851,9 @@
            MOVE    WRK-Z7-G            TO  HC03-HOKENBUN
       *    労災・自賠の時、点数表示なし
            IF      SPA-HKNKBN          =   1
-               IF      SPA-RSI-HKNKBN      =    "4"
+      *        自賠・労災非指定医療機関
+               IF     (SPA-RSI-HKNKBN      =    "4" )  OR
+                      (SYS-4001-RSIIRYOKBN NOT =   "1" )
                    COMPUTE WRK-GOKTEN      =    SYU-HKNTEKMONEY
                                            +    SYU-RSISHOSHIN-MONEY
                                            +    SYU-RSISAISHIN-MONEY
