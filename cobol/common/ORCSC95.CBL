@@ -2520,7 +2520,7 @@
                            MOVE    1               TO  FLG-TENKI
       *                Ãæ»ß
                        WHEN    "3"
-                           IF      PTBYO-TENKIYMD  <   SPA-K02N-NYUINYMD
+                           IF      PTBYO-TENKIYMD  <=  SPA-K02N-NYUINYMD
                                IF      PTBYO-TENKIYMD  >=  WRK-TENKIYMD
                                    MOVE    PTBYO-TENKIYMD  TO
                                                            WRK-TENKIYMD
