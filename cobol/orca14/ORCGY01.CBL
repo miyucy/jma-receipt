@@ -490,12 +490,12 @@
                MOVE    SPA-WORK            TO  SPA-Y01KYOUTU
            ELSE
                INITIALIZE                  SPA-Y01KYOUTU
-               IF      SPA-MOTOPG         =   "I41"
-                   MOVE    SPA-PTID            TO  SPA-Y01-PTID
-                   MOVE    SPA-PTNUM           TO  SPA-Y01-PTNUM
-                   MOVE    SPA-SEX             TO  SPA-Y01-SEX
-                   MOVE    SPA-BIRTHDAY        TO  SPA-Y01-BIRTHDAY
-               END-IF
+      ******** IF      SPA-MOTOPG         =   "I41"
+      *            MOVE    SPA-PTID            TO  SPA-Y01-PTID
+      *            MOVE    SPA-PTNUM           TO  SPA-Y01-PTNUM
+      *            MOVE    SPA-SEX             TO  SPA-Y01-SEX
+      *            MOVE    SPA-BIRTHDAY        TO  SPA-Y01-BIRTHDAY
+      *********END-IF
            END-IF
       *
            PERFORM 310-SPASET-SEC
@@ -522,14 +522,14 @@
                        MOVE    SPA-BIRTHDAYW  TO  SPA-GMN-BIRTHDAYH
                        MOVE    SPA-NAME       TO  SPA-GMN-YYKNAME
                    END-IF
-                   IF      SPA-MOTOPG         =   "I41"
-                       MOVE    SPA-PTID       TO  SPA-GMN-PTID
-                       MOVE    SPA-PTNUM      TO  SPA-GMN-PTNUM
-                       MOVE    SPA-NAME       TO  SPA-GMN-NAME
-                       MOVE    SPA-SEX        TO  SPA-GMN-SEX
-                       MOVE    SPA-BIRTHDAYW  TO  SPA-GMN-BIRTHDAYH
-                       MOVE    SPA-NAME       TO  SPA-GMN-YYKNAME
-                   END-IF
+      *************IF      SPA-MOTOPG         =   "I41"
+      *                MOVE    SPA-PTID       TO  SPA-GMN-PTID
+      *                MOVE    SPA-PTNUM      TO  SPA-GMN-PTNUM
+      *                MOVE    SPA-NAME       TO  SPA-GMN-NAME
+      *                MOVE    SPA-SEX        TO  SPA-GMN-SEX
+      *                MOVE    SPA-BIRTHDAYW  TO  SPA-GMN-BIRTHDAYH
+      *                MOVE    SPA-NAME       TO  SPA-GMN-YYKNAME
+      ************ END-IF
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-GMN-SELBAN
@@ -1599,13 +1599,13 @@
       *    Í½Ìó»þ´Ö
            MOVE    WRK-TIME            TO  SPA-NAI-YYKTIME
            IF      SPA-NAI-YYKTIME(1:2)    <=  "08"
-               MOVE    08                  TO  SPA-NAI-YYKTIME(1:2)
+               MOVE    08                  TO  SPA-NAI-KYYKTIME(1:2)
            END-IF
            IF      SPA-NAI-YYKTIME(1:2)    >=  "21"
-               MOVE    "21"                TO  SPA-NAI-YYKTIME(1:2)
+               MOVE    "21"                TO  SPA-NAI-KYYKTIME(1:2)
            END-IF
       *    ¥­¡¼Í½Ìó»þ´Ö
-           MOVE    SPA-NAI-YYKTIME         TO  SPA-NAI-KYYKTIME(1:2)
+      *****MOVE    SPA-NAI-YYKTIME         TO  SPA-NAI-KYYKTIME(1:2)
            MOVE    ZERO                    TO  SPA-NAI-KYYKTIME(3:2)
       *
            IF      (SPA-NAI-YYKYMD     =   SPA-Y01-YYKYMDS )  AND
