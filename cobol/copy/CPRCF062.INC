@@ -303,6 +303,15 @@
                05  RECE62-ERR-TEKEDYMD    PIC 9(08).
       *他保険入院料算定済みフラグ
            03  RECE62-NYUINRYOFLG         PIC  X(01).
-      *予備
-           03  RECE62-FILLER              PIC  X(31).
+      *
+      *実日数テーブル情報
+           03  RECE62-JNISSUTBLINF        OCCURS 31.
+      *実日数テーブル
+               05  RECE62-JNISSUTBL       PIC  X(01).
+      *
+      *公費実日数テーブル情報
+           03  RECE62-KOHJNISSUTBLINF.
+      *公費実日数テーブル
+               05  RECE62-KOHJNISSUTBL    PIC  X(01)
+                                          OCCURS 31.
       *

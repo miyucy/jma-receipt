@@ -38,6 +38,7 @@
       *  01.00.04    NACL-門脇    03.04.24  輸血はコメント編集対象外とする
       *  01.00.05    NACL-門脇    03.05.28  受診履歴キーの変更
       *  01.00.06    NACL-門脇    03.06.19  複数診療科受診の編集修正
+      *  01.00.07    NACL-門脇    03.08.20  公費受診日のコメント編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -211,6 +212,7 @@
            03  IDX2                PIC 9(04).
            03  DAY-IDX             PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDY2                PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDX-RECE65          PIC 9(04).
       *     
@@ -701,6 +703,14 @@
       *
            END-IF
       *
+      *    公費受診日のコメント
+      *
+           IF   RECE62-KOHJNISSUTBLINF    =   ALL " "
+              CONTINUE
+           ELSE
+              PERFORM   2001-KOHJYUSIN-COMMENT-SEC
+           END-IF
+      *
       *    パラメータ０４ファイルより編集
            INITIALIZE                      RECE64-REC
            MOVE    RECE62-HOSPID       TO  RECE64-HOSPID
@@ -1012,6 +1022,135 @@
       *
            .
        2001-NYUINRYO-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費受診日のコメント編集
+      *****************************************************************
+       2001-KOHJYUSIN-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                TBL-NYU-DAY
+      *
+           MOVE    ZERO          TO  DAY-IDX
+           MOVE    ZERO          TO  FLG-NYU-RENZOKU
+      *
+           PERFORM    VARYING    IDX  FROM   1   BY   1
+                      UNTIL     (IDX      >   31)  OR
+                                (DAY-IDX  >   31)
+                IF   RECE62-KOHJNISSUTBL(IDX)   = SPACE
+                      MOVE  ZERO  TO  FLG-NYU-RENZOKU
+                ELSE
+                      IF    FLG-NYU-RENZOKU  =  ZERO
+                         ADD   1     TO  DAY-IDX
+                         MOVE  IDX   TO  TBL-NYU-DAY-ST(DAY-IDX)
+                      END-IF
+                      MOVE  IDX      TO  TBL-NYU-DAY-ED(DAY-IDX)
+                      MOVE  1        TO  FLG-NYU-RENZOKU
+                END-IF
+           END-PERFORM
+      *
+           PERFORM    VARYING    DAY-IDX  FROM   1   BY   1
+                      UNTIL  (DAY-IDX                      >   31)  OR
+                             (TBL-NYU-DAY-ST(DAY-IDX)  = ZERO)
+                IF    TBL-NYU-DAY-ST(DAY-IDX) 
+                                    =   TBL-NYU-DAY-ED(DAY-IDX)
+                      MOVE  CONS-SANTEI-COMMENT1
+                                    TO  TBL-NYU-DAY-CD(DAY-IDX)
+                ELSE
+                      MOVE  CONS-SANTEI-COMMENT2
+                                    TO  TBL-NYU-DAY-CD(DAY-IDX)
+                END-IF
+           END-PERFORM
+      *
+           MOVE       ZERO       TO   IDZ
+           INITIALIZE            WRK-FREE-AREA2
+      *
+           MOVE       5          TO   FLG-COMMENT
+      *
+           PERFORM  2002-FREE-COMMENT3-SEC
+      *
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
+           MOVE    ZERO                TO  IDX-RECE65
+           MOVE    SPACE               TO  WRK-SRYACTINF-AREA
+           INITIALIZE                      WRK-SRYACTINF-AREA
+           MOVE    SPACE               TO  WRK-NAMEINF-AREA
+           INITIALIZE                      WRK-NAMEINF-AREA
+      *
+           MOVE    SPACE               TO  COM-RECE65-REC
+           INITIALIZE                      COM-RECE65-REC
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   50    )
+                         OR      ( WK-FREE-NAME2(IDX) =   SPACE )
+                ADD    1                  TO  IDX-RECE65
+                MOVE   "810000001"        TO  COM-SRYCD(1)
+                MOVE   ZERO               TO  COM-SRYSURYO(1)
+                MOVE   COM-SRYACTINF(1)   TO  WRK-SRYACTINF(IDX-RECE65)
+                MOVE   WRK-FREEINF2(IDX)  TO  WRK-NAMEINF(IDX-RECE65)
+           END-PERFORM 
+      *
+      *    受診日の編集を含んだ内容で中間ファイルの再作成
+           MOVE       ZERO             TO      FLG-WRKRECE65
+           MOVE       ZERO             TO      IDX
+           MOVE       ZERO             TO      IDX-RECE65
+           MOVE       ZERO             TO      WRK-RENNUM
+           MOVE       ZERO             TO      WRK-CNT-MEISAI
+           PERFORM    UNTIL     FLG-WRKRECE65  =    1
+                INITIALIZE                       RECE651-REC
+                MOVE    RECE62-HOSPID        TO  RECE651-HOSPID
+                MOVE    RECE62-SRYYM         TO  RECE651-SRYYM
+                MOVE    RECE62-NYUGAIKBN     TO  RECE651-NYUGAIKBN
+                MOVE    RECE62-PTID          TO  RECE651-PTID
+                MOVE    RECE62-RECEKA        TO  RECE651-RECEKA
+                MOVE    RECE62-TEISYUTUSAKI  TO  RECE651-TEISYUTUSAKI
+                MOVE    RECE62-RECESYUBETU   TO  RECE651-RECESYUBETU
+                MOVE    RECE62-HKNJANUM-KEY  TO  RECE651-HKNJANUM
+                MOVE    RECE62-HOJOKBN-KEY   TO  RECE651-HOJOKBN
+                MOVE    RECE62-TEKSTYMD      TO  RECE651-TEKSTYMD
+                MOVE    99999980             TO  RECE651-ZAINUM
+                MOVE    "99"                 TO  RECE651-SRYKBN
+                ADD     1                    TO  WRK-RENNUM
+                MOVE    WRK-RENNUM           TO  RECE651-RENNUM
+                PERFORM  VARYING   IDX   FROM   1   BY   1
+                         UNTIL   (IDX       >    5)   OR
+                                 (FLG-WRKRECE65   =   1)
+                   ADD         1             TO    IDX-RECE65
+                   IF  WK-RECE65-SRYCD(IDX-RECE65) = SPACE
+                       MOVE    1             TO    FLG-WRKRECE65
+                   ELSE
+                       MOVE  WRK-SRYACTINF(IDX-RECE65)
+                                        TO   RECE651-SRYACTINF(IDX)  
+                       MOVE  WRK-NAMEINF(IDX-RECE65)
+                                        TO   RECE651-NAMEINF(IDX)
+                       ADD   1          TO   WRK-CNT-MEISAI
+                   END-IF  
+                END-PERFORM
+                WRITE   RECE651-REC
+                ADD     1                    TO  CNT-RECE65
+           END-PERFORM
+      *
+      *
+           INITIALIZE                      RECE641-REC
+           MOVE    RECE62-HOSPID       TO  RECE641-HOSPID
+           MOVE    RECE62-SRYYM        TO  RECE641-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE641-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE641-PTID
+           MOVE    RECE62-RECEKA       TO  RECE641-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE641-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE641-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE641-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE641-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE641-TEKSTYMD
+           MOVE    99999980            TO  RECE641-ZAINUM
+           MOVE    "99"                TO  RECE641-SRYKBN
+      *
+           MOVE    WRK-CNT-MEISAI      TO  RECE641-MEISAISU
+      *
+           WRITE   RECE641-REC
+           ADD     1                   TO  CNT-RECE64
+      *
+           .
+       2001-KOHJYUSIN-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2345,6 +2484,199 @@
       *
            .
        2002-FREE-COMMENT2-KAIGYO-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費受診日の日付の編集
+      *****************************************************************
+       2002-FREE-COMMENT3-SEC          SECTION.                         
+      *
+           ADD      1          TO    IDZ
+      *
+           EVALUATE   FLG-COMMENT
+              WHEN    5
+                 MOVE     3          TO    WRK-KETA
+                                           WRK-KETA-TAIHI
+                 MOVE     2          TO    WRK-KETA2
+                 MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
+                 MOVE    "福祉"  TO    WK-FREE-NAME2(IDZ)(1:4)
+           END-EVALUATE
+      *
+           MOVE      ZERO          TO  FLG-FIRST
+      *
+           PERFORM   VARYING   IDX    FROM   1   BY   1
+                          UNTIL   (IDX                  >    31 )
+                           OR     (TBL-NYU-DAY-ST(IDX)  =   ZERO)
+      *
+                 IF  TBL-NYU-DAY-CD(IDX)   =  CONS-SANTEI-COMMENT1
+      *
+                       MOVE   TBL-NYU-DAY-ST(IDX) TO  IDY
+      *
+                       IF  FLG-FIRST  =  ZERO
+                         ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                         COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                         MOVE    "　"
+                             TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                         MOVE  1  TO  FLG-FIRST 
+                       ELSE
+                         IF    WK-FREE-YUKOKETA2(IDZ)  =  25
+                           PERFORM  2002-FREE-COMMENT3-KAIGYO-SEC
+                         ELSE
+                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                           COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                           MOVE    "、"
+                             TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                         END-IF
+                       END-IF
+      *
+                       IF  TBL-NYU-DAY-ST(IDX)     <  10 
+                          IF    WK-FREE-YUKOKETA2(IDZ)  =
+                                                       24 OR 25
+                            PERFORM  2002-FREE-COMMENT3-KAIGYO-SEC
+                          END-IF
+                          ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    TBL-DAY(IDY)(3:2)     
+                              TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+      *
+                          ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    "日"
+                              TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                       ELSE
+                          IF    WK-FREE-YUKOKETA2(IDZ)  =
+                                                 23 OR 24 OR 25
+                            PERFORM  2002-FREE-COMMENT3-KAIGYO-SEC
+                          END-IF
+                          ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    TBL-DAY(IDY)     
+                              TO  WK-FREE-NAME2(IDZ)(WRK-KETA:4)
+      *
+                          ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                          MOVE    "日"
+                              TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                       END-IF
+      *
+                 ELSE
+      *
+                       MOVE   TBL-NYU-DAY-ST(IDX) TO  IDY
+                       MOVE   TBL-NYU-DAY-ED(IDX) TO  IDY2
+      *
+                       IF  FLG-FIRST  =  ZERO
+                         ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                         COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                         MOVE    "　"
+                             TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                         MOVE  1  TO  FLG-FIRST 
+                       ELSE
+                         IF    WK-FREE-YUKOKETA2(IDZ)  =  25
+                           PERFORM  2002-FREE-COMMENT3-KAIGYO-SEC
+                         ELSE
+                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                           COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                           MOVE    "、"
+                             TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                         END-IF
+                       END-IF
+      *
+                       IF  TBL-NYU-DAY-ST(IDX)     <  10 
+                          IF  TBL-NYU-DAY-ED(IDX)  <  10
+                            IF    WK-FREE-YUKOKETA2(IDZ)  =  
+                                       21 OR 22 OR 23 OR 24 OR 25
+                              PERFORM  2002-FREE-COMMENT3-KAIGYO-SEC
+                            END-IF
+                            ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                            COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                            MOVE    TBL-DAY(IDY)(3:2)     
+                                TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+      *
+                            ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
+                            COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                            MOVE    "日〜"
+                                TO  WK-FREE-NAME2(IDZ)(WRK-KETA:4)
+      *
+                            ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                            COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                            MOVE    TBL-DAY(IDY2)(3:2)     
+                                TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+      *
+                            ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                            COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                            MOVE    "日"
+                                TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                          ELSE
+                            IF    WK-FREE-YUKOKETA2(IDZ)  =  
+                                 20 OR 21 OR 22 OR 23 OR 24 OR 25
+                              PERFORM  2002-FREE-COMMENT3-KAIGYO-SEC
+                            END-IF
+                            ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                            COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                            MOVE    TBL-DAY(IDY)(3:2)     
+                                TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+      *
+                            ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
+                            COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                            MOVE    "日〜"
+                                TO  WK-FREE-NAME2(IDZ)(WRK-KETA:4)
+      *
+                            ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
+                            COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                            MOVE    TBL-DAY(IDY2)
+                                TO  WK-FREE-NAME2(IDZ)(WRK-KETA:4)
+      *
+                            ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                            COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                            MOVE    "日"
+                                TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                          END-IF
+                       ELSE
+                          IF    WK-FREE-YUKOKETA2(IDZ)  =  
+                               19 OR 20 OR 21 OR 22 OR 23 OR 24 OR 25
+                              PERFORM  2002-FREE-COMMENT3-KAIGYO-SEC
+                          END-IF
+                          ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  2
+                          MOVE    TBL-DAY(IDY)     
+                              TO  WK-FREE-NAME2(IDZ)(WRK-KETA:4)
+      *
+                          ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                          MOVE    "日〜"
+                              TO  WK-FREE-NAME2(IDZ)(WRK-KETA:4)
+      *
+                          ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                          MOVE    TBL-DAY(IDY2)
+                              TO  WK-FREE-NAME2(IDZ)(WRK-KETA:4)
+      *
+                          ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
+                          COMPUTE  WRK-KETA   =  WRK-KETA   +  4
+                          MOVE    "日"
+                              TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
+                       END-IF
+      *
+                 END-IF
+      *
+           END-PERFORM
+           .
+       2002-FREE-COMMENT3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費受診日の日付の編集（改行）
+      *****************************************************************
+       2002-FREE-COMMENT3-KAIGYO-SEC          SECTION.                  
+      *
+           ADD      1              TO  IDZ
+      *
+           MOVE    WRK-KETA-TAIHI  TO  WRK-KETA
+           MOVE    WRK-KETA2       TO  WK-FREE-YUKOKETA2(IDZ)
+           MOVE    ALL "　"        TO  WK-FREE-NAME2(IDZ)(1:4)
+      *
+           .
+       2002-FREE-COMMENT3-KAIGYO-EXT.
            EXIT.
       *
       *****************************************************************

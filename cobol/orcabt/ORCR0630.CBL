@@ -2726,6 +2726,16 @@
            END-PERFORM
       *
            PERFORM    VARYING    IDX    FROM   1   BY   1
+                      UNTIL      IDX    >      2
+               PERFORM    VARYING    IDY    FROM    1   BY   1
+                          UNTIL      IDY    >     31
+                    IF    TBL-JNISSU-DAY(IDX IDY)  NOT =  SPACE
+                          MOVE   "1"    TO    RECE62-JNISSUTBL(IDY)
+                    END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+           PERFORM    VARYING    IDX    FROM   1   BY   1
                       UNTIL      IDX    >      10
                PERFORM    VARYING    IDY    FROM    1   BY   1
                           UNTIL      IDY    >     5

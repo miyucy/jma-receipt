@@ -264,6 +264,9 @@
       *乳幼児・幼児のコメントフラグ
            03  RECE02-NYUYOJIFLG          PIC  X(01).
       *
-      *予備
-           03  RECE02-FILLER              PIC  X(31).
+      *公費実日数テーブル情報
+           03  RECE02-KOHJNISSUTBLINF.
+      *公費実日数テーブル
+               05  RECE02-KOHJNISSUTBL    PIC  X(01)
+                                          OCCURS 31.
       *

@@ -46,6 +46,7 @@
       *                                     置き換え
       *  01.00.14    NACL-門脇    03/06/11  選定療養の他医療機関受診の
       *                                     診療行為コード修正
+      *  01.00.15    NACL-門脇    03/08/20  公費実日数テーブル情報のセット
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -195,6 +196,7 @@
            03  IDX4                                    PIC 9(03).
            03  IDX5                                    PIC 9(03).
            03  IDX6                                    PIC 9(03).
+           03  IDX7                                    PIC 9(02).
            03  IDY                                     PIC 9(03).
            03  IDZ                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
@@ -366,6 +368,8 @@
            03  WRK-SRYSURYO                            PIC 9(05)V9(03).
            03  WRK-SRYSURYO2                           PIC 9(05).
            03  WRK-SRYSURYO3                           PIC 9(05).
+      *
+           03  WRK-PREFNUM                             PIC X(02).
       *
            03  WRK-RECEERR                             PIC X(200).
       *
@@ -624,6 +628,7 @@
       *
                IF      FLG-SYSKANRI     =   ZERO
                   MOVE   MCPDATA-REC   TO  SYS-1001-REC
+                  MOVE   SYS-1001-PREFNUM  TO  WRK-PREFNUM
                ELSE
                   MOVE  "医療機関情報が取得できませんでした。"
                                        TO  WRK-RECEERR
@@ -5224,6 +5229,9 @@
                           WHEN  RECE62-KOHNUM(1)  =  SYU-KOH-HKNNUM(4)
                                 MOVE     4    TO   IDX3
                       END-EVALUATE
+      *
+                      PERFORM   KOHJNISSUTBL-SET-SEC
+      *
                       ADD      1          TO   RECE62-KOHKENSU(1)
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                       IF    (RECE62-FTNMONEY(1)  =  ZERO)
@@ -5264,6 +5272,9 @@
                           WHEN  RECE62-KOHNUM(2)  =  SYU-KOH-HKNNUM(4)
                                 MOVE     4    TO   IDX3
                       END-EVALUATE
+      *
+                      PERFORM   KOHJNISSUTBL-SET-SEC
+      *
                       ADD      1          TO   RECE62-KOHKENSU(2)
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                       IF    (RECE62-FTNMONEY(1)  =  ZERO)
@@ -5304,6 +5315,9 @@
                           WHEN  RECE62-KOHNUM(3)  =  SYU-KOH-HKNNUM(4)
                                 MOVE     4    TO   IDX3
                       END-EVALUATE
+      *
+                      PERFORM   KOHJNISSUTBL-SET-SEC
+      *
                       ADD      1          TO   RECE62-KOHKENSU(3)
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                       IF    (RECE62-FTNMONEY(1)  =  ZERO)
@@ -5344,6 +5358,9 @@
                           WHEN  RECE62-KOHNUM(4)  =  SYU-KOH-HKNNUM(4)
                                 MOVE     4    TO   IDX3
                       END-EVALUATE
+      *
+                      PERFORM   KOHJNISSUTBL-SET-SEC
+      *
                       ADD      1          TO   RECE62-KOHKENSU(4)
       *               IF    SYU-KOH-HKNFTNMONEY(IDX3)   NOT =  ZERO
                       IF    (RECE62-FTNMONEY(1)  =  ZERO)
@@ -5376,6 +5393,33 @@
            END-PERFORM
            .
        RECE62-HENSYU-EXT3.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費実日数テーブル情報のセット
+      *****************************************************************
+       KOHJNISSUTBL-SET-SEC               SECTION.
+      *
+           EVALUATE   WRK-PREFNUM
+      *
+             WHEN    "38"
+      *
+               IF   SYU-KOH-HKNNUM(IDX3)(1:1) = "1" OR "2" OR "3" OR
+                                                "4" OR "5" OR "6" OR
+                                                "7" OR "8"
+                  PERFORM    VARYING   IDX7    FROM   1   BY   1
+                               UNTIL   IDX7      >      31
+                    IF   SYU-DAY(IDX7)       NOT =  SPACE
+                    AND  RECE62-JNISSUTBL(IDX7)  =   "1"
+                       MOVE   "1"   TO   RECE62-KOHJNISSUTBL(IDX7)
+                    END-IF
+                  END-PERFORM
+               END-IF
+      *
+           END-EVALUATE
+      *
+           .
+       KOHJNISSUTBL-SET-EXT.
            EXIT.
       *
       *****************************************************************

@@ -43,6 +43,7 @@
       *  01.00.10    NACL-ÌçÏÆ    03.05.28  ¼õ¿ÇÍúÎò¥­¡¼¤ÎÊÑ¹¹
       *  01.00.11    NACL-ÌçÏÆ    03.06.19  Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç¤ÎÊÔ½¸½¤Àµ
       *  01.00.12    NACL-ÌçÏÆ    03.07.15  ÆýÍÄ»ù¡¦ÍÄ»ù¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *  01.00.13    NACL-ÌçÏÆ    03.08.20  ¸øÈñ¼õ¿ÇÆü¤Î¥³¥á¥ó¥ÈÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -941,6 +942,14 @@
       *
               PERFORM   2002-NYUYOJI-COMMENT-SEC
       *
+           END-IF
+      *
+      *    ¸øÈñ¼õ¿ÇÆü¤Î¥³¥á¥ó¥È
+      *
+           IF   RECE02-KOHJNISSUTBLINF    =   ALL " "
+              CONTINUE
+           ELSE
+              PERFORM   2002-KOHJYUSIN-COMMENT-SEC
            END-IF
       *
       *    Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç
@@ -2244,6 +2253,114 @@
            EXIT.
       *
       *****************************************************************
+      *    ¸øÈñ¼õ¿ÇÆü¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       2002-KOHJYUSIN-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                TBL-SANTEI-DAY
+      *
+           MOVE    ZERO          TO  DAY-IDX
+           PERFORM    VARYING    IDX  FROM   1   BY   1
+                      UNTIL     (IDX      >   31)  OR
+                                (DAY-IDX  >   31)
+                IF   RECE02-KOHJNISSUTBL(IDX)  NOT = SPACE
+                      ADD   1     TO   DAY-IDX
+                      MOVE  IDX   TO   TB-SANTEI-DAY(DAY-IDX)
+                END-IF
+           END-PERFORM
+      *
+           MOVE       ZERO       TO   IDZ
+           INITIALIZE            WRK-FREE-AREA2
+      *
+           MOVE       5          TO   FLG-COMMENT
+      *
+           PERFORM  2002-FREE-COMMENT2-SEC
+      *
+      *    £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+           MOVE    ZERO                TO  IDX-RECE05
+           MOVE    SPACE               TO  WRK-SRYACTINF-AREA
+           INITIALIZE                      WRK-SRYACTINF-AREA
+           MOVE    SPACE               TO  WRK-NAMEINF-AREA
+           INITIALIZE                      WRK-NAMEINF-AREA
+      *
+           MOVE    SPACE               TO  COM-RECE05-REC
+           INITIALIZE                      COM-RECE05-REC
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   50    )
+                         OR      ( WK-FREE-NAME2(IDX) =   SPACE )
+                ADD    1                  TO  IDX-RECE05
+                MOVE   "810000001"        TO  COM-SRYCD(1)
+                MOVE   ZERO               TO  COM-SRYSURYO(1)
+                MOVE   COM-SRYACTINF(1)   TO  WRK-SRYACTINF(IDX-RECE05)
+                MOVE   WRK-FREEINF2(IDX)  TO  WRK-NAMEINF(IDX-RECE05)
+           END-PERFORM 
+      *
+      *    ¼õ¿ÇÆü¤ÎÊÔ½¸¤ò´Þ¤ó¤ÀÆâÍÆ¤ÇÃæ´Ö¥Õ¥¡¥¤¥ë¤ÎºÆºîÀ®
+           MOVE       ZERO             TO      FLG-WRKRECE05
+           MOVE       ZERO             TO      IDX
+           MOVE       ZERO             TO      IDX-RECE05
+           MOVE       ZERO             TO      WRK-RENNUM
+           MOVE       ZERO             TO      WRK-CNT-MEISAI
+           PERFORM    UNTIL     FLG-WRKRECE05  =    1
+                INITIALIZE                       RECE051-REC
+                MOVE    RECE02-HOSPID        TO  RECE051-HOSPID
+                MOVE    RECE02-SRYYM         TO  RECE051-SRYYM
+                MOVE    RECE02-NYUGAIKBN     TO  RECE051-NYUGAIKBN
+                MOVE    RECE02-PTID          TO  RECE051-PTID
+                MOVE    RECE02-RECEKA        TO  RECE051-RECEKA
+                MOVE    RECE02-TEISYUTUSAKI  TO  RECE051-TEISYUTUSAKI
+                MOVE    RECE02-RECESYUBETU   TO  RECE051-RECESYUBETU
+                MOVE    RECE02-HKNJANUM-KEY  TO  RECE051-HKNJANUM
+                MOVE    RECE02-HOJOKBN-KEY   TO  RECE051-HOJOKBN
+                MOVE    RECE02-TEKSTYMD      TO  RECE051-TEKSTYMD
+                MOVE    99999980             TO  RECE051-ZAINUM
+                MOVE    "99"                 TO  RECE051-SRYKBN
+                ADD     1                    TO  WRK-RENNUM
+                MOVE    WRK-RENNUM           TO  RECE051-RENNUM
+                PERFORM  VARYING   IDX   FROM   1   BY   1
+                         UNTIL   (IDX       >    5)   OR
+                                 (FLG-WRKRECE05   =   1)
+                   ADD         1             TO    IDX-RECE05
+                   IF  WK-RECE05-SRYCD(IDX-RECE05) = SPACE
+                       MOVE    1             TO    FLG-WRKRECE05
+                   ELSE
+                       MOVE  WRK-SRYACTINF(IDX-RECE05)
+                                        TO   RECE051-SRYACTINF(IDX)  
+                       MOVE  WRK-NAMEINF(IDX-RECE05)
+                                        TO   RECE051-NAMEINF(IDX)
+                       ADD   1          TO   WRK-CNT-MEISAI
+                   END-IF  
+                END-PERFORM
+                WRITE   RECE051-REC
+                ADD     1                    TO  CNT-RECE05
+           END-PERFORM
+      *
+      *
+           INITIALIZE                      RECE041-REC
+           MOVE    RECE02-HOSPID       TO  RECE041-HOSPID
+           MOVE    RECE02-SRYYM        TO  RECE041-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE041-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE041-PTID
+           MOVE    RECE02-RECEKA       TO  RECE041-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE041-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE041-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
+           MOVE    99999980            TO  RECE041-ZAINUM
+           MOVE    "99"                TO  RECE041-SRYKBN
+      *
+           MOVE    WRK-CNT-MEISAI      TO  RECE041-MEISAISU
+      *
+           WRITE   RECE041-REC
+           ADD     1                   TO  CNT-RECE04
+      *
+           .
+       2002-KOHJYUSIN-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ËýÀ­áÖÄË¼À´µ´ÉÍýÎÁ¤¬¤¢¤ë¤«È½Äê
       *****************************************************************
        2001-SHIDOU-HANTEI-SEC          SECTION.
@@ -3062,6 +3179,12 @@
                  MOVE     2          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
                  MOVE    "¸òÉÕ"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
+               WHEN    5
+                 MOVE     4          TO    WRK-KETA
+                                           WRK-KETA-TAIHI
+                 MOVE     2          TO    WRK-KETA2
+                 MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
+                 MOVE    "Ê¡»ã"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
            END-EVALUATE
       *
            MOVE      ZERO          TO  FLG-FIRST

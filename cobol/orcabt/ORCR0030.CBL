@@ -125,6 +125,7 @@
       *  01.02.27   NACL-藤原     03/06/30  三種公費のときのＯＣＲの修正
       *  01.02.28   NACL-門脇     03/07/15  乳幼児・幼児のコメントフラグ
       *                                     セット
+      *  01.02.29   NACL-門脇     03/08/20  公費実日数テーブル情報のセット
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -269,7 +270,8 @@
            03  IDX1                                    PIC 9(03).
            03  IDX2                                    PIC 9(03).
            03  IDX3                                    PIC 9(03).
-           03  IDX4                                    PIC 9(03). 
+           03  IDX4                                    PIC 9(03).
+           03  IDX5                                    PIC 9(02).
            03  IDY                                     PIC 9(03).
            03  IDZ                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
@@ -387,6 +389,7 @@
        01  WRK-AREA.
            03  WRK-IN                                  PIC X(01).
            03  WRK-PARA.
+               05  WRK-PARA-PREFNUM                    PIC X(02).
                05  WRK-PARA-SRYYM                      PIC X(06).
                05  WRK-PARA-TERMID                     PIC X(16).
                05  WRK-PARA-SYSYMD                     PIC X(08).
@@ -3325,6 +3328,9 @@
                           WHEN  RECE02-KOHNUM(1)  =  SYU-KOH-HKNNUM(4)
                                 MOVE     4    TO   IDX3
                       END-EVALUATE
+      *
+                      PERFORM   KOHJNISSUTBL-SET-SEC
+      *
                       COMPUTE  RECE02-YKZFTN(KH-IDX) =
                                           RECE02-YKZFTN(KH-IDX) +
                                           SYU-KOH-COMPYKZFTN(IDX3)
@@ -3358,6 +3364,9 @@
                           WHEN  RECE02-KOHNUM(2)  =  SYU-KOH-HKNNUM(4)
                                 MOVE     4    TO   IDX3
                       END-EVALUATE
+      *
+                      PERFORM   KOHJNISSUTBL-SET-SEC
+      *
                       COMPUTE  RECE02-YKZFTN(KH-IDX) =
                                           RECE02-YKZFTN(KH-IDX) +
                                           SYU-KOH-COMPYKZFTN(IDX3)
@@ -3391,6 +3400,9 @@
                           WHEN  RECE02-KOHNUM(3)  =  SYU-KOH-HKNNUM(4)
                                 MOVE     4    TO   IDX3
                       END-EVALUATE
+      *
+                      PERFORM   KOHJNISSUTBL-SET-SEC
+      *
                       COMPUTE  RECE02-YKZFTN(KH-IDX) =
                                           RECE02-YKZFTN(KH-IDX) +
                                           SYU-KOH-COMPYKZFTN(IDX3)
@@ -3424,6 +3436,9 @@
                           WHEN  RECE02-KOHNUM(4)  =  SYU-KOH-HKNNUM(4)
                                 MOVE     4    TO   IDX3
                       END-EVALUATE
+      *
+                      PERFORM   KOHJNISSUTBL-SET-SEC
+      *
                       COMPUTE  RECE02-YKZFTN(KH-IDX) =
                                           RECE02-YKZFTN(KH-IDX) +
                                           SYU-KOH-COMPYKZFTN(IDX3)
@@ -3449,6 +3464,30 @@
            END-PERFORM
            .
        RECE02-HENSYU-EXT3.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費実日数テーブル情報のセット
+      *****************************************************************
+       KOHJNISSUTBL-SET-SEC               SECTION.
+      *
+           EVALUATE   WRK-PARA-PREFNUM
+      *
+             WHEN    "38"
+      *
+               IF   SYU-KOH-HKNNUM(IDX3)(1:1) = "1" OR "2" OR "3" OR
+                                                "4" OR "5" OR "6" OR
+                                                "7" OR "8"
+                    MOVE   SYU-SRYYMD(7:2)  TO   IDX5
+                    IF    RECE02-JNISSUTBL(IDX5)  =  "1"
+                       MOVE   "1"   TO   RECE02-KOHJNISSUTBL(IDX5)
+                    END-IF
+               END-IF
+      *
+           END-EVALUATE
+      *
+           .
+       KOHJNISSUTBL-SET-EXT.
            EXIT.
       *
       *****************************************************************
