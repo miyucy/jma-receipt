@@ -21,18 +21,11 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.02.01    NACL-藤原    09/03/12  フラグ、データエリア追加
-      *
-      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
-      *                                     キーにkohid 追加
-      *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
-      *                                     ０８（老健）のレセプト対応
-      *                                     receipt_kbn 追加 
       ************************************************************
        01  KOHSKY-REC.
            03  KOHSKY-KEY.
       *医療機関ＩＤ
-               05  KOHSKY-HOSPNUM          PIC 9(2).
+               05  KOHSKY-HOSPID          PIC  X(24).
       *診療年月
                05  KOHSKY-SRYYM           PIC  9(06).
       *入外区分
@@ -48,13 +41,9 @@
       *保険者番号        
                05  KOHSKY-HKNJANUM-KEY    PIC  X(08).
       *補助区分（船員保険のときのみ）
-               05  KOHSKY-HOJOKBN-KEY     PIC  X(01).
-      *公費ＩＤ（公費単独のみ）
-               05  KOHSKY-KOHID-KEY       PIC  9(10).
+               05  KOHSKY-HOJOKBN-KEY      PIC  X(01).
       *適用開始年月日
                05  KOHSKY-TEKSTYMD        PIC  X(08). 
-      *分割区分
-               05  KOHSKY-RECEIPT-KBN     PIC  X(10).
       *患者番号
            03  KOHSKY-PTNUM               PIC  X(20).
       *カナ氏名
@@ -140,7 +129,7 @@
       *明細点数情報
                05  KOHSKY-TENSUINF        OCCURS  5.
       *明細点数
-                   07  KOHSKY-TENSU       PIC S9(08).
+                   07  KOHSKY-TENSU       PIC  9(08).
       *実日数情報
            03  KOHSKY-JNISSUINF           OCCURS  5.
       *実日数
@@ -148,11 +137,11 @@
       *合計点数情報
            03  KOHSKY-TOTALTENINF         OCCURS  5.
       *合計点数
-               05  KOHSKY-TOTALTEN        PIC S9(08).
+               05  KOHSKY-TOTALTEN        PIC  9(08).
       *負担金額情報
            03  KOHSKY-FTNMONEYINF         OCCURS  5.
       *負担金額
-               05  KOHSKY-FTNMONEY        PIC S9(09).
+               05  KOHSKY-FTNMONEY        PIC  9(09).
       *薬剤一部負担金情報
            03  KOHSKY-YKZFTNINF           OCCURS  5.
       *薬剤一部負担金
@@ -165,14 +154,14 @@
                05  KOHSKY-SHOKUJIRYOYOHI  PIC  9(09).
       *標準負担額
                05  KOHSKY-SHOKUJIFTN      PIC  9(09).
-      *一部負担金・食事療養費標準負担額区分
+      *標準負担区分
            03  KOHSKY-SHOKUJIFTNKBN       PIC  X(01).
       *初診時間区分
            03  KOHSKY-SHOSHINTIME         PIC  X(01).
       *在宅総合・在宅末期フラグ
            03  KOHSKY-ZAITAKU             PIC  X(01).
       *在宅総合・在宅末期一部負担金再掲
-           03  KOHSKY-ZAITAKU-SAIKEI      PIC S9(09).
+           03  KOHSKY-ZAITAKU-SAIKEI      PIC  9(09).
       *請求年月
            03  KOHSKY-SKYYM               PIC  X(06).
       *返戻年月
@@ -181,10 +170,6 @@
            03  KOHSKY-SKYKBN              PIC  X(01).
       *訂正区分
            03  KOHSKY-TEISEIKBN           PIC  X(01).
-      *
-      *フラグ
-           03  KOHSKY-FLGINF.
-               05  KOHSKY-FLG             PIC  9(01)   OCCURS  5.
       *登録年月日
            03  KOHSKY-CREYMD              PIC  X(08).
       *更新年月日
