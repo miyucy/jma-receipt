@@ -3684,9 +3684,9 @@
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC.
            MOVE    "DBSELECT"          TO  MCP-FUNC.
            IF      SPA-GMN-SRYKA-I-41     =   "00"
-               MOVE    "NYUINACCT-KEY12"   TO  ORC-DBPATH
+               MOVE    "NYUINACCT-KEY16"   TO  ORC-DBPATH
            ELSE
-               MOVE    "NYUINACCT-KEY11"   TO  ORC-DBPATH
+               MOVE    "NYUINACCT-KEY15"   TO  ORC-DBPATH
            END-IF.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
