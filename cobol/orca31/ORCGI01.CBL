@@ -265,8 +265,6 @@
            COPY    "CPSK5001.INC".
       *    ¡ÊÉÂ¼¼¾ðÊó¡Ë
            COPY    "CPSK5002.INC".
-      *    ¡ÊÉÂÅïÆþ±¡ÎÁ²Ã»»¾ðÊó¡Ë
-           COPY    "CPSK5003.INC".
       *    ¡Ê¼¼ÎÁº¹³Û¡Ë
            COPY    "CPSK5113.INC".
       *    ¡ÊÆÃÄêÆþ±¡ÎÁ¡ÝÉÂÅï¡Ë
@@ -6082,27 +6080,16 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
       *ÉÂÅï²Ã»»¾ðÊó
-           INITIALIZE              SYSKANRI-REC
+           PERFORM     4801-BTUSEL-SEC
       *
-           MOVE    "5003"          TO  SYS-KANRICD
-           MOVE    PTNYUINRRK-BTUNUM
-                                   TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
-           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-      *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¤ÎÉÂÅï²Ã»»¾ðÊó¤è¤ê¼èÆÀ
-           MOVE    "SYSKANRI-KEY"  TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-      *
-           IF   FLG-DBRC           =    ZERO
-               MOVE    MCPDATA-REC TO   SYS-5003-REC
+           IF   FLG-SYSKANRI           =    ZERO
       *        Æþ±¡ÎÁ²Ã»»
                PERFORM   VARYING   IDX7   FROM   1  BY  1
-                 UNTIL  (SYS-5003-KSNCD(IDX7)    =   SPACE)  OR
+                 UNTIL  (SYS-5001-KSNCD(IDX7)    =   SPACE)  OR
                         (IDX7                    >   12)
-                    IF   SYS-5003-KSNKBN(IDX7)   =   "2"
+                    IF   SYS-5001-KSNKBN(IDX7)   =   "2"
                          ADD    1                TO  IDX8
-                         MOVE   SYS-5003-KSNCD(IDX7)  TO
+                         MOVE   SYS-5001-KSNCD(IDX7)  TO
                                 LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
                     END-IF
                END-PERFORM
