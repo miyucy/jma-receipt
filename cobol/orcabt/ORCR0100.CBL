@@ -2372,9 +2372,10 @@
                   (RECE02-FTNMONEY (IDX3)
                                       NOT =   RECE02-FTNMONEY (IDX1))  )
       *
-             IF    RECE02-FTNMONEY (IDX3)
-                                      NOT =   RECE02-FTNMONEY (IDX2)
-      *
+             IF  ( RECE02-TOTALTEN (IDX3) =   RECE02-TOTALTEN (IDX1)   )
+             AND ( RECE02-FTNMONEY (IDX3) =   RECE02-FTNMONEY (IDX2)   )
+               CONTINUE
+             ELSE
       **       MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK9
       **       MOVE    WRK-KGK9               TO  HC06-TOTALTEN(3)
       *********IF      RECE02-YKZFTN   (IDX3) >   ZERO
@@ -2385,7 +2386,6 @@
                    MOVE    RECE02-FTNMONEY (IDX3) TO  WRK-KGK9
                    MOVE    WRK-KGK9               TO  HC06-FTNMONEY(3)
                END-IF
-      *
              END-IF
       * 
            END-IF
