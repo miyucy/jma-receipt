@@ -40,6 +40,7 @@
       * 01.00.11     NACL-Â¿¡¹Ç¼  03/02/18  ¥Õ¥£¥ë¥àÎÁ¤ò¼êµ»ÎÁ£²¤Ø
       * 01.00.12     NACL-Â¿¡¹Ç¼  03/02/26  ÅÀ¿ô¥¼¥í¤Î¤­¤¶¤ßÃÍ·×»»¤Î½¤Àµ
       * 01.00.13     NACL-Â¿¡¹Ç¼  03/04/25  Ã±½ã»£±Æ¤Ë´ÖÀÜ»£±Æ¤Ê¤É¤òÄÉ²Ã
+      * 01.00.14     NACL-Â¿¡¹Ç¼  03/07/24  Æ±»þÊ»»Ü¿ÇÃÇÎÁÄþ¸º½¤Àµ
       *****************************************************************
       *
       *
@@ -94,6 +95,8 @@
            03  FLG-ENK3            PIC 9(01).
       *    ÅÀÅ©¤Î¥Á¥§¥Ã¥¯
            03  FLG-TENTEKI         PIC 9(01).
+      *    ¿ÇÃÇÎÁÅÀ¿ôÄþ¸º
+           03  FLG-SATU-GEN        PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -130,6 +133,8 @@
       *    ¹Ôºï½ü
            03  IDX-D1              PIC 9(04).
            03  IDX-D2              PIC 9(04).
+      *
+           03  IDX-K               PIC 9(04).
       *
       *
       *    °ì»þÎÎ°è
@@ -1300,6 +1305,7 @@
                   (WRK-COM-DATAKBN (IDX-Z)         =   "1" ) AND
                   (WRK-COM-KZMCOMPSIKIBETU (IDX-Z) NOT =   ZERO)
       *        ¤­¤¶¤ßÃÍ·×»»
+               MOVE    ZERO                TO  FLG-SATU-GEN
                PERFORM 1000132-TENSU-KEISAN-SEC
       *        »£±ÆÎÁ¤Î¿ôÎÌ¤òÊÝÂ¸
                MOVE    WRK-COM-SURYO (IDX-Z)   TO  WRK-SATUEI-SURYO
@@ -1319,6 +1325,8 @@
        1000133-SINDAN-KEISAN-SEC          SECTION.
       *
            MOVE    WRK-COM-TEN  (IDX-Z)    TO  WRK-SATU-TEN
+      *    ÆýÍÄ»ù²Ã»»¥¯¥ê¥¢
+           MOVE    ZERO                TO  WRK-SATU-KASAN
       *
       *    ´ÖÀÜ»£±Æ¤Ë¤è¤ëÄþ¸º·×»»
            IF     (WRK-CNT-SATUEI      =   1   )  AND
@@ -1344,7 +1352,16 @@
                    END-IF
                END-PERFORM
            END-IF
-           MOVE    ZERO                TO  WRK-SATU-KASAN
+      *
+      *    Æ±»þ»£±Æ¤Ë¤è¤ëÄþ¸º
+           IF     (WRK-CNT-SATUEI      >   1   )  AND
+                  (WRK-COM-TNSSRYSYUKBN(IDX-Z)(1:2)  =  "71" )
+               COMPUTE WRK-SATU-TEN        =   WRK-SATU-TEN
+                                           /   2
+               MOVE    1                   TO  FLG-SATU-GEN
+           ELSE
+               MOVE    ZERO                TO  FLG-SATU-GEN
+           END-IF
       *
       *    ¤­¤¶¤ßÃÍÈ½Äê
            IF     (WRK-COM-INPUTCD (IDX-Z)(1:1)    =   "1" ) AND
@@ -1409,7 +1426,11 @@
                                            +    TNS-KZMTEN
                END-IF
            ELSE
-               COMPUTE WRK-KZMTEN          =   WRK-SATU-TEN   /  2
+               IF      FLG-SATU-GEN        =   ZERO
+                   COMPUTE WRK-KZMTEN          =   WRK-SATU-TEN   /  2
+               ELSE
+                   MOVE    WRK-SATU-TEN        TO  WRK-KZMTEN
+               END-IF
            END-IF
       *    ¤­¤¶¤ßÃÍÈ½Äê
            EVALUATE    TRUE
@@ -1490,17 +1511,17 @@
            ELSE
       *        ¿ÇÃÇÎÁ²Ã»»
       *        £²²óÌÜ¤Î»þ¡¢100Ê¬50¡¡¤È¤¹¤ë
-               IF     (WRK-CNT-SATUEI      >   1       )  AND
-                      (WRK-COM-TNSSRYSYUKBN (IDX-Z) =   "711" )
-                   COMPUTE WRK-TENSU1          =   WRK-COM-KISOTEN
-                                                              (IDX-Z)
-                                               *   0.5
-                                               +   0.5
-                   MOVE    WRK-TENSU1          TO  WRK-TENSU
-                   ADD     WRK-TENSU           TO  WRK-TENSUKEI2
-               ELSE
+      *        IF     (WRK-CNT-SATUEI      >   1       )  AND
+      *               (WRK-COM-TNSSRYSYUKBN (IDX-Z) =   "711" )
+      *            COMPUTE WRK-TENSU1          =   WRK-COM-KISOTEN
+      *                                                       (IDX-Z)
+      *                                        *   0.5
+      *                                        +   0.5
+      *            MOVE    WRK-TENSU1          TO  WRK-TENSU
+      *            ADD     WRK-TENSU           TO  WRK-TENSUKEI2
+      ******** ELSE
                    ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-TENSUKEI2
-               END-IF
+      ******** END-IF
            END-IF
       *
            .
