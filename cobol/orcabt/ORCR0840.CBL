@@ -558,8 +558,6 @@
            COPY    "CPORCSJOBKANRI.INC".
       *    入院点滴一括更新サブ
            COPY    "CPORCSTENTEK.INC".
-      *    入院点滴一括更新サブ
-           COPY    "CPORCSTENTEK.INC".
       *    労災入院会計作成サブ
            COPY    "CPORCSROUNYUIN.INC".
       *    ＤＢ検索

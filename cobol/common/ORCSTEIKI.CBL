@@ -361,7 +361,7 @@
            PERFORM    VARYING   IDX    FROM   1   BY   1
                       UNTIL  (IDX            >    10)
                         OR   (LNK-SYU-SKYSTYMD(IDX) =  SPACE)
-              IF   LNK-SYU-SYUHKNNUM  =  "971"  OR  "973"
+              IF   LNK-SYU-SYUHKNNUM(IDX)  =  "971"  OR  "973"
                       PERFORM       NYUIN-KAIKEI-SET2-SEC
               ELSE
                       PERFORM       NYUIN-KAIKEI-SET-SEC
