@@ -561,10 +561,8 @@
       *
       *    初期編集
            IF      SPA-MOTOPG(1:3)     =   "I41"
-               MOVE    SPA-GMN-SRYKA-LIST-L-41(01)
-                                           TO  SPA-I43-SRYKA-G
-               MOVE    SPA-I43-HKN-LIST(01)
-                                           TO  SPA-I43-HKNCOMBI-G
+               MOVE    SPA-GMN-SRYKA-IG-41     TO  SPA-I43-SRYKA-G
+               MOVE    SPA-I43-HKN-LIST(01)    TO  SPA-I43-HKNCOMBI-G
            END-IF.
       *
       *    保険組合せの再編集
