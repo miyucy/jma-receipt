@@ -622,13 +622,13 @@ COPYS = \
         HCM2H.INC \
         CPTEIKIKANRI.INC \
         CPTEIKIPRT.INC \
-        CPORCGI4A.INC \ 
-        CPORCGI4B.INC \ 
-        CPORCGI4C.INC \ 
-        CPORCGI4D.INC \ 
-        CPORCGI4F.INC \ 
-        CPORCGI4G.INC \ 
-        I4SCR-NYU.INC 
+        CPORCGI4A.INC \
+        CPORCGI4B.INC \
+        CPORCGI4C.INC \
+        CPORCGI4D.INC \
+        CPORCGI4F.INC \
+        CPORCGI4G.INC \
+        I4SCR-NYU.INC
 
 DBPATH = \
 	ORCA-DBPATH
