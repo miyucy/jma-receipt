@@ -23,7 +23,6 @@
       * Maj/Min/Rev  修正者       日付     内容
       ************************************************************
        01  NCLAIMERRCD-AREA.
-           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   75.
            03  NCLAIMERRCD-VAL.
       *-----------------------------------------------------------
                05                      PIC X(04)   VALUE   "0001".
@@ -73,6 +72,10 @@
                05                      PIC X(04)   VALUE   "0012".
                05                      PIC X(80)   VALUE
                    "入退院・給食情報区分２重送信".
+      *-----------------------------------------------------------
+               05                      PIC X(04)   VALUE   "0013".
+               05                      PIC X(80)   VALUE
+                   "オーダーＩＤエラー".
       *-----------------------------------------------------------
                05                      PIC X(04)   VALUE   "0901".
                05                      PIC X(80)   VALUE
@@ -327,6 +330,7 @@
                    "未使用項目".
       *-----------------------------------------------------------
            03  NCLAIMERRCD-R   REDEFINES   NCLAIMERRCD-VAL.
-               05  NCLAIMERRCD-OCC     OCCURS  75.
+               05  NCLAIMERRCD-OCC     OCCURS  76.
                    07  NCLAIMERRCDL    PIC X(04).
                    07  NCLAIMERRCDLMEI PIC X(80).
+           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   76.

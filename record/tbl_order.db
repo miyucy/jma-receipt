@@ -144,3 +144,18 @@ path	upd1 	{
 		;
 	};
 };
+
+
+path	key7 	{
+	DBSELECT	{
+		DECLARE tbl_order_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_order
+		WHERE  HOSPID        = :HOSPID
+		AND    PTNUM         = :PTNUM
+		AND    ITEMNUM       = 1
+		AND    STATUS_ORDER  <>    '3'
+		ORDER  BY  SRYYMD DESC,UKEYMD DESC,UKEHMS DESC,KARTE_KEY DESC,ORDERNUM DESC
+		;
+	};
+};

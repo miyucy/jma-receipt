@@ -203,6 +203,7 @@
                    07  SPA-NAI-HSRYKA              PIC X(02).
                    07  SPA-NAI-HHKNCOMBI           PIC X(04).
                    07  SPA-NAI-MAEIDOYMD           PIC X(08).
+                   07  SPA-NAI-DIRECT-KHNERR       PIC 9(01).
                    07  SPA-NAI-ORDER-DAT           PIC X(1000).
                    07  SPA-NAI-INF-CHK             PIC 9(05).
                05  SPA-NAI-INPUT-AREA.
@@ -233,6 +234,7 @@
                    07  SPA-NAI-UKEYMD              PIC X(08).
                05  SPA-NAI-ALLIDOLST-AREA.
                    07  SPA-NAI-ALLIDOLST-OCC       OCCURS  50.
+                       09  SPA-NAI-TALLHOSPID      PIC X(24).
                        09  SPA-NAI-TALLKARTE-KEY   PIC X(36).
                        09  SPA-NAI-TALLORDERNUM    PIC 9(02).
                        09  SPA-NAI-TALLIDOYMD      PIC X(08).
@@ -272,6 +274,8 @@
            03  FLG-PTINF                   PIC 9(01).
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-ORCSNUM                 PIC 9(01).
+           03  FLG-KHNERR                  PIC 9(01).
+           03  FLG-PTNUM                   PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -341,6 +345,8 @@
            03  WRK-INF-CANCEL              PIC 9(02).
            03  WRK-I0ID1-FLG               PIC X(02).
            03  WRK-I0IDCD                  PIC X(04).
+           03  WRK-PTNUM-PTID              PIC 9(10).
+           03  WRK-PTNUM-PTNUM             PIC X(20).
       *
        01  WRK-ROW-AREA.
            03  WRK-ALLIDOLST-ROW           PIC S9(9).
@@ -429,6 +435,10 @@
       *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
+      *
+      *    患者番号
+       01  PTNUM-REC.
+           COPY    "CPPTNUM.INC".
       *
       *    入院履歴情報
        01  PTNYUINRRK-REC.
@@ -1203,6 +1213,8 @@
       *
                COMPUTE IDX-MAX =   IDX-MAX +   1
       *
+               MOVE    ORDER-HOSPID
+                                   TO  SPA-NAI-TALLHOSPID    (IDX-MAX)
                MOVE    ORDER-KARTE-KEY
                                    TO  SPA-NAI-TALLKARTE-KEY (IDX-MAX)
                MOVE    ORDER-ORDERNUM
@@ -1219,10 +1231,17 @@
                PERFORM 4200-ORDERID-CHK-SEC
                MOVE    WRK-CMB-ITM2    TO  SPA-GMN-TALLIDOJIYU(IDX-MAX)
       *
-               MOVE    ORDER-PTNUM TO  SPA-GMN-TALLPTNUM  (IDX-MAX)
-               MOVE    ORDER-PTID  TO  SPA-NAI-TALLPTID   (IDX-MAX)
+               MOVE    ORDER-PTNUM TO  WRK-PTNUM-PTNUM
+               PERFORM 900-PTNUM-KEY2-SEL-SEC
+               IF    ( FLG-PTNUM   =   ZERO )
+                   MOVE    PTNUM-PTID
+                                       TO  SPA-NAI-TALLPTID   (IDX-MAX)
+                   MOVE    PTNUM-PTNUM
+                                       TO  SPA-GMN-TALLPTNUM  (IDX-MAX)
+               END-IF
       *
-               MOVE    ORDER-PTID  TO  WRK-PTINF-PTID
+               MOVE    SPA-NAI-TALLPTID   (IDX-MAX)
+                                   TO  WRK-PTINF-PTID
                PERFORM 900-PTINF-KEY-SEL-SEC
                MOVE    PTINF-NAME  TO  SPA-GMN-TALLNAME   (IDX-MAX)
       *
@@ -1256,7 +1275,7 @@
            INITIALIZE                  SPA-GMN-KJNIDOLST-AREA
                                        SPA-NAI-KJNIDOLST-AREA
       *
-           PERFORM 900-ORDER-KEY5-SEL-SEC
+           PERFORM 900-ORDER-KEY7-SEL-SEC
       *
            MOVE    ZERO            TO  IDX-MAX
       *
@@ -1283,13 +1302,13 @@
       *
                MOVE    ORDER-STATUS-ORDER  TO  SPA-GMN-TKJNSTS (IDX-MAX)
       *
-               PERFORM 900-ORDER-KEY5-FET-SEC
+               PERFORM 900-ORDER-KEY7-FET-SEC
       *
            END-PERFORM
       *
            MOVE    IDX-MAX         TO  SPA-GMN-KJNIDOLST-MAX
       *
-           MOVE    PATH-TBL-ORDER-KEY5     TO  MCP-PATH
+           MOVE    PATH-TBL-ORDER-KEY7     TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
       *
            .
@@ -1522,17 +1541,24 @@
       *****************************************************************
        41011-INPUT-AREA-HEN-SEC        SECTION.
       *
+           IF    ( SPA-GMN-TALLSTS (SPA-GMN-ALLIDOLST-SEL) =   "4" )
+               PERFORM 41011-DIRECT-UPD-KHNCHK-SEC
+               IF    ( FLG-KHNERR  NOT =   ZERO )
+                   GO  TO  41011-INPUT-AREA-HEN-EXT
+               END-IF
+           END-IF
+      *
            EVALUATE    SPA-GMN-TALLSTS (SPA-GMN-ALLIDOLST-SEL)
            WHEN    "1"
                PERFORM 41011-KHNERR-HEN-SEC
            WHEN    "3"
                CONTINUE
            WHEN    OTHER
-              EVALUATE    SPA-NAI-TALLORDERID (SPA-GMN-ALLIDOLST-SEL)
-              WHEN    NORDERID-NYUINID
-                  PERFORM 41011-INPUT-NYUIN-HEN-SEC
+               EVALUATE    SPA-NAI-TALLORDERID (SPA-GMN-ALLIDOLST-SEL)
+               WHEN    NORDERID-NYUINID
+                   PERFORM 41011-INPUT-NYUIN-HEN-SEC
                WHEN    NORDERID-TAIINID
-                  PERFORM 41011-INPUT-TAIIN-HEN-SEC
+                   PERFORM 41011-INPUT-TAIIN-HEN-SEC
                WHEN    NORDERID-GAIHKID
                WHEN    NORDERID-GAIHKID
                WHEN    NORDERID-GBACKID
@@ -1540,12 +1566,50 @@
                WHEN    NORDERID-FSPCLID
                WHEN    NORDERID-FSELEID
                WHEN    NORDERID-FSTOPID
-                  PERFORM 41011-INPUT-KAIKEI-HEN-SEC
-              END-EVALUATE
+                   PERFORM 41011-INPUT-KAIKEI-HEN-SEC
+               END-EVALUATE
            END-EVALUATE
       *
            .
        41011-INPUT-AREA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    直接更新時基本項目チェック処理
+      *****************************************************************
+       41011-DIRECT-UPD-KHNCHK-SEC     SECTION.
+      *
+           MOVE    ZERO            TO  FLG-KHNERR
+      *
+           INITIALIZE                  SODR-AREA
+           INITIALIZE                  LNK-ORDER-REC
+      *
+           MOVE    SPA-NAI-TALLHOSPID    (SPA-GMN-ALLIDOLST-SEL)
+                                   TO  SODR-HOSPID
+           MOVE    SPA-NAI-TALLKARTE-KEY (SPA-GMN-ALLIDOLST-SEL)
+                                   TO  SODR-UID8
+           MOVE    SPA-NAI-TALLORDERNUM (SPA-GMN-ALLIDOLST-SEL)
+                                   TO  SODR-ORDERNUM
+           CALL    "ORCSODRS02"        USING   SODR-AREA
+                                               LNK-ORDER-REC
+           IF    ( SODR-ERRCD  NOT =   SPACE )
+      *
+               MOVE    1           TO  FLG-KHNERR
+      *
+               PERFORM 41011-HEAD-AREA-HEN-SEC
+      *
+               MOVE    1           TO  SPA-NAI-DIRECT-KHNERR
+      *
+               INITIALIZE                  SPA-GMN-INPUT-AREA
+                                           SPA-NAI-INPUT-AREA
+               PERFORM 3101-KJNIDOLST-SEC
+      *
+               MOVE    LNK-ORDER-REC   TO  ERR-ORDER-REC
+               PERFORM 3101-ERRMESLST-SEC
+      *
+           END-IF
+      *
+           .
+       41011-DIRECT-UPD-KHNCHK-EXT.
            EXIT.
       *****************************************************************
       *    基本項目エラー時編集処理
@@ -2164,7 +2228,7 @@
            INITIALIZE ORCSAGECHKAREA
            MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
            MOVE    SPA-NAI-PTID        TO  AGECHK-PTID
-           MOVE    SPA-NAI-HIDOYMD     TO  AGECHK-SRYYMD
+           MOVE    SPA-SYSYMD          TO  AGECHK-SRYYMD
            MOVE    SPA-NAI-BIRTHDAY    TO  AGECHK-BIRTHDAY
            CALL    "ORCSAGECHK"        USING   ORCSAGECHKAREA
            IF    ( AGECHK-RC       =   ZERO )
@@ -3692,11 +3756,11 @@
       *****************************************************************
        2300-SODR-COMMON-SET-SEC       SECTION.
       *
-           MOVE    ORDER-HOSPID        TO  SODR-HOSPID
+           MOVE    SPA-HOSPID          TO  SODR-HOSPID
            MOVE    ORDER-KARTE-KEY     TO  SODR-UID8
            MOVE    ORDER-NYUGAIKBN     TO  SODR-NYUGAIKBN
-           MOVE    ORDER-PTNUM         TO  SODR-PTNUM
-           MOVE    ORDER-PTID          TO  SODR-PTID
+           MOVE    SPA-GMN-PTNUM       TO  SODR-PTNUM
+           MOVE    SPA-NAI-PTID        TO  SODR-PTID
            MOVE    ORDER-SRYKA         TO  SODR-SRYKA
            MOVE    ORDER-SRYYMD        TO  SODR-SRYYMD
            MOVE    ORDER-HKNCOMBI      TO  SODR-HKNCOMBI
@@ -4054,7 +4118,9 @@
                                                I06-SNTNYUIN-STATE
                MOVE    WIDGET-INSENSITIVE  TO  I06-B12-STATE
            ELSE
-               IF    ( SPA-NAI-STATUS-ORDER    =   "2" OR  "4" )
+               IF    ( SPA-NAI-STATUS-ORDER    =   "2" )
+                OR  (( SPA-NAI-STATUS-ORDER    =   "4" )
+                 AND ( SPA-NAI-DIRECT-KHNERR   =   ZERO ))
                    EVALUATE    SPA-NAI-ORDERID
                    WHEN    NORDERID-NYUINID
                        MOVE    WIDGET-NORMAL
@@ -4477,8 +4543,9 @@
        800-SEIWA-HEN-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-HIZUKE-ERR
-           MOVE    SPACE               TO  WRK-SYMD
-                                           WRK-HENYMDG
+      *
+           MOVE    ZERO                TO  WRK-SYMD
+           MOVE    WRK-SYMD            TO  WRK-HENYMDG
       *
       *    日付画面チェックサブ
            INITIALIZE                      ORCSGDAYAREA
@@ -4736,17 +4803,17 @@
        900-ORDER-KEY4-FET-EXT.
            EXIT.
       *****************************************************************
-      *    入院オーダー検索(KEY5)
+      *    入院オーダー検索(KEY7)
       *****************************************************************
-       900-ORDER-KEY5-SEL-SEC          SECTION.
+       900-ORDER-KEY7-SEL-SEC          SECTION.
       *
            MOVE    ZERO            TO  FLG-ORDER
       *
            INITIALIZE                  ORDER-REC
            MOVE    SPA-HOSPID      TO  ORDER-HOSPID
-           MOVE    SPA-NAI-PTID    TO  ORDER-PTID
+           MOVE    SPA-GMN-PTNUM   TO  ORDER-PTNUM
            MOVE    ORDER-REC       TO  MCPDATA-REC
-           MOVE    PATH-TBL-ORDER-KEY5 TO  MCP-PATH
+           MOVE    PATH-TBL-ORDER-KEY7 TO  MCP-PATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  ORDER-REC
@@ -4757,14 +4824,14 @@
       *
       *
            .
-       900-ORDER-KEY5-SEL-EXT.
+       900-ORDER-KEY7-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    入院オーダーFETCH(KEY5)
+      *    入院オーダーFETCH(KEY7)
       *****************************************************************
-       900-ORDER-KEY5-FET-SEC          SECTION.
+       900-ORDER-KEY7-FET-SEC          SECTION.
       *
-           MOVE    PATH-TBL-ORDER-KEY5 TO  MCP-PATH
+           MOVE    PATH-TBL-ORDER-KEY7 TO  MCP-PATH
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  ORDER-REC
@@ -4774,7 +4841,7 @@
            END-IF
       *
            .
-       900-ORDER-KEY5-FET-EXT.
+       900-ORDER-KEY7-FET-EXT.
            EXIT.
       *****************************************************************
       *    入院オーダー検索(KEY6)
@@ -4944,6 +5011,68 @@
       *
            .
        900-PTNYUINRRK-KEY39-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者番号情報検索処理(KEY)
+      *****************************************************************
+       900-PTNUM-KEY-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTNUM
+      *
+           INITIALIZE                  PTNUM-REC
+           MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
+           MOVE    WRK-PTNUM-PTID      TO  PTNUM-PTID
+           MOVE    PTNUM-REC           TO  MCPDATA-REC
+           MOVE    PATH-TBL-PTNUM-KEY  TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTNUM-REC
+           ELSE
+               INITIALIZE                  PTNUM-REC
+               MOVE    1               TO  FLG-PTNUM
+           END-IF
+      *
+           MOVE    PATH-TBL-PTNUM-KEY  TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       900-PTNUM-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者番号情報検索処理(KEY2)
+      *****************************************************************
+       900-PTNUM-KEY2-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTNUM
+      *
+           IF    ( WRK-PTNUM-PTNUM     =   SPACE )
+               INITIALIZE                  PTNUM-REC
+               MOVE    1               TO  FLG-PTNUM
+           ELSE
+      *
+               INITIALIZE                  PTNUM-REC
+               MOVE    SPA-HOSPID          TO  PTNUM-HOSPID
+               STRING  WRK-PTNUM-PTNUM     DELIMITED   BY  SPACE
+                       "%"                 DELIMITED   BY  SIZE
+               INTO    PTNUM-PTNUM
+               END-STRING
+      *
+               MOVE    PTNUM-REC           TO  MCPDATA-REC
+               MOVE    PATH-TBL-PTNUM-KEY2 TO  MCP-PATH
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    MCPDATA-REC     TO  PTNUM-REC
+               ELSE
+                   INITIALIZE                  PTNUM-REC
+                   MOVE    1               TO  FLG-PTNUM
+               END-IF
+      *
+               MOVE    PATH-TBL-PTNUM-KEY2 TO  MCP-PATH
+               PERFORM 910-DBCLOSE-SEC
+           END-IF
+      *
+           .
+       900-PTNUM-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
