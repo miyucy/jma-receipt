@@ -5,7 +5,7 @@ prefix = @prefix@
 exec_prefix= @exec_prefix@
 sysconfdir = @sysconfdir@
 
-EXTRA_DIST = dbgroup.inc kentan.inc
+EXTRA_DIST = dbgroup.inc kentan.inc jma-receipt.env
 
 all:   
 	touch build-stamp
@@ -14,6 +14,7 @@ clean:
 
 distclean: 
 	-rm -f build-stamp
+	-rm -f jma-receipt.env
 	-rm -f Makefile
 
 install: all

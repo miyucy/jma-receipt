@@ -69,4 +69,5 @@ doc/Makefile
 etc/Makefile
 init/Makefile
 Makefile
+etc/jma-receipt.env
 ])

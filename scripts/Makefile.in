@@ -5,15 +5,64 @@ INSTALL_DATA = @INSTALL_DATA@
 
 prefix = @prefix@
 exec_prefix= @exec_prefix@
+sysconfdir= @sysconfdir@
 scriptsdir = ${exec_prefix}/scripts
 
-all:   
-	touch build-stamp
-clean: 
-	-rm -f build-stamp
+noinst_shell_sources = \
+		sample.sh.in 
 
-distclean: 
-	-rm -f build-stamp
+
+shell_sources = \
+		allways/ORCBQ01.sh.in \
+		allways/master_upgrade.sh.in \
+		allways/orcbsd01.sh.in \
+		allways/orcbse01.sh.in \
+		allways/orcbsf01.sh.in \
+		allways/orcbsf02.sh.in \
+		allways/orcbsf03.sh.in \
+		allways/orhcml09.sh.in \
+		allways/print.sh.in \
+		allways/site-upgrade.sh.in \
+		allways/tensu.sh.in \
+		daily/HCALL.sh.in \
+		daily/execoprg.sh.in \
+		daily/HC01.sh.in \
+		daily/HCALL2.sh.in \
+		monthly/recept1.sh.in \
+		monthly/recept2.sh.in \
+		monthly/recept3.sh.in \
+		monthly/recept4.sh.in \
+		monthly/recept5.sh.in \
+		monthly/recept6.sh.in \
+		monthly/recept7.sh.in \
+		monthly/recept8.sh.in \
+		monthly/sokatsu.sh.in 
+
+ruby_sources = \
+		daily/print-data.rb.in \
+		daily/print_parent2.rb.in \
+		daily/print_parent.rb.in
+
+shell_scripts = $(shell_sources:.sh.in=.sh)
+noinst_shell_scripts = $(noinst_shell_sources:.sh.in=.sh)
+
+ruby_scripts = $(ruby_surces:.rb.in=.rb)
+
+.SUFFIXES: .sh.in .sh .rb.in .rb
+
+.sh.in.sh: 
+	sed -e 's,\@sysconfdir\@,$(sysconfdir),g' \
+	$< > $@
+
+all:   \
+	$(noinst_shell_scripts) \
+#	$(shell_scripts)
+
+clean: 
+	-rm $(noinst_shell_scripts)
+#	-rm $(shell_scripts)
+
+distclean: clean
 	-rm -f Makefile
 
 install: all
@@ -21,7 +70,7 @@ install: all
 	$(INSTALL) -d $(scriptsdir)/allways
 	$(INSTALL) -d $(scriptsdir)/daily
 	$(INSTALL) -d $(scriptsdir)/monthly
-
-	for file in allways/*sh ;do $(INSTALL) $$file $(scriptsdir)/allways; done
-	for file in daily/*sh daily/*rb;do $(INSTALL) $$file $(scriptsdir)/daily; done
-	for file in monthly/*sh ;do $(INSTALL) $$file $(scriptsdir)/monthly; done
+	for file in $(shell_scripts) $(ruby_scripts);do \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  $(INSTALL) $$file $(scriptsdir)/$$dir; \
+	done

@@ -1,0 +1,19 @@
+#! /bin/sh
+
+. @sysconfdir@/jma-receipt.env
+
+echo datadir = $datadir
+echo formdir = $formdir
+echo initdir = $initdir
+echo lddefdir = $lddefdir
+echo recorddir = $recorddir
+echo screendir = $screendir
+echo scriptsdir = $scriptsdir
+echo libdir  = $libdir
+
+echo DBSTUB = $DBSTUB
+
+#example
+echo $DBSTUB -record $recorddir -dir $lddefdir/directory -bddir $lddefdir -db orca -bd orcabt ORCBQ01 -parameter
+
+exit 0
