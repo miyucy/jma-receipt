@@ -39,6 +39,20 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    処理対象患者ソートファイル(順編成）
+           SELECT  BG00501SEQ-FILE ASSIGN  ORCBG00501PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  BG00501SEQ-SRT-G
+                                   FILE    STATUS  IS  STS-BG00501SEQ.
+      *
+      *    処理対象患者ファイル
+           SELECT  BG00501DYN-FILE ASSIGN  ORCBG00501PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  BG00501DYN-SRT-G
+                                   FILE    STATUS  IS  STS-BG00501DYN.
+      *
 006900*    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -46,11 +60,42 @@
        DATA                    DIVISION.
        FILE                        SECTION.
       *
+      *    処理対象患者ファイル（順編成）
+       FD  BG00501SEQ-FILE.
+       01  BG00501SEQ-REC.
+           02  BG00501SEQ-SRT-G.
+               03  BG00501SEQ-SRT-BTUNUM   PIC X(02).
+               03  BG00501SEQ-SRT-BRMNUM   PIC X(08).
+               03  BG00501SEQ-SRT-SRYKA    PIC X(02).
+               03  BG00501SEQ-SRT-PTID     PIC X(10).
+           02  BG00501SEQ-PTNYUINRRK-DAT.
+           COPY    "CPPTNYUINRRK.INC"      REPLACING   //PTNYUINRRK-//
+                                           BY          //BG00501SEQ-//.
+      *
+      *    処理対象患者ファイル
+       FD  BG00501DYN-FILE.
+       01  BG00501DYN-REC.
+           02  BG00501DYN-SRT-G.
+               03  BG00501DYN-SRT-BTUNUM   PIC X(02).
+               03  BG00501DYN-SRT-BRMNUM   PIC X(08).
+               03  BG00501DYN-SRT-SRYKA    PIC X(02).
+               03  BG00501DYN-SRT-PTID     PIC X(10).
+           02  BG00501DYN-PTNYUINRRK-DAT.
+           COPY    "CPPTNYUINRRK.INC"      REPLACING   //PTNYUINRRK-//
+                                           BY          //BG00501DYN-//.
+      *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                 PIC X(200).
       *
        WORKING-STORAGE             SECTION.
+      *
+      *    処理対象患者ファイル
+           COPY    "CPCOMMONDAT2.INC"
+                                           REPLACING   //RECE01//
+                                           BY          //ORCBG00501//.
+           03  FILLER                      PIC X(04)   VALUE   ".dat".
+      *
       *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
@@ -62,12 +107,16 @@
       *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR             PIC X(02).
+           03  STS-BG00501SEQ                      PIC X(02).
+           03  STS-BG00501DYN                      PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-PTNYUINRRK          PIC 9(01).
+           03  FLG-WKPTNYUINRRK                    PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
+           03  FLG-BG00501                         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -138,6 +187,11 @@
            COPY    "CPSHELLTBL.INC".
       *
            COPY    "ORCA-DBPATH".
+      *
+      *    患者入院履歴ワーク
+       01  WKPTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC"  REPLACING   //PTNYUINRRK-//
+                                       BY          //WKPTNYUINRRK-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -282,6 +336,9 @@
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
       *
+           MOVE    "BG00501"           TO  ORCBG00501PARA-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  ORCBG00501PARA-TERMID
+      *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
       *
@@ -291,7 +348,12 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
-           PERFORM 120-PTNYUINRRK-SEL-SEC
+           PERFORM 120-BG00501-HEN-SEC
+      *
+           OPEN    INPUT               BG00501SEQ-FILE
+      *
+           MOVE    ZERO                TO  FLG-BG00501
+           PERFORM 900-BG00501SEQ-READ-SEC
       *
       *
            .
@@ -317,9 +379,43 @@
            EXIT.
       *
       *****************************************************************
+      *    対象患者ソートファイル編集処理
+      *****************************************************************
+       120-BG00501-HEN-SEC             SECTION.
+      *
+           OPEN    OUTPUT              BG00501SEQ-FILE
+           CLOSE                       BG00501SEQ-FILE
+      *
+           OPEN    OUTPUT              BG00501DYN-FILE
+      *
+           PERFORM 1201-PTNYUINRRK-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-PTNYUINRRK  NOT =   ZERO )
+      *
+               PERFORM 1201-BG00501-HEN-SEC
+      *
+               MOVE    WRK-DBPATH      TO  ORC-DBPATH
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC      NOT =   ZERO )
+                   MOVE    1           TO  FLG-PTNYUINRRK
+               ELSE
+                   MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    WRK-DBPATH          TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           CLOSE                       BG00501DYN-FILE
+      *
+           .
+       120-BG00501-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    患者入院履歴検索処理
       *****************************************************************
-       120-PTNYUINRRK-SEL-SEC         SECTION.
+       1201-PTNYUINRRK-SEL-SEC         SECTION.
       *
            MOVE    SPACE               TO  WRK-DBPATH
       *
@@ -352,7 +448,58 @@
            END-IF
       *
            .
-       120-PTNYUINRRK-SEL-EXT.
+       1201-PTNYUINRRK-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    処理対象患者ファイル編集処理
+      *****************************************************************
+       1201-BG00501-HEN-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-WKPTNYUINRRK
+      *
+      *    入院履歴マスタ検索
+           MOVE    PTNYUINRRK-REC      TO  WKPTNYUINRRK-REC
+           MOVE    "PTNYUINRRK-KEY4"   TO  ORC-DBPATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  WKPTNYUINRRK-REC
+           ELSE
+               MOVE    PTNYUINRRK-REC  TO  WKPTNYUINRRK-REC
+               MOVE    1               TO  FLG-WKPTNYUINRRK
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-WKPTNYUINRRK    =   1 )
+                    OR  (( WKPTNYUINRRK-TENNYUYMD
+                                              <=  WRK-PARA-KJNYMD )
+                     AND ( WKPTNYUINRRK-TENNYUYMD
+                                              >=  WRK-PARA-KJNYMD ))
+      *
+               MOVE    "PTNYUINRRK-KEY4"   TO  ORC-DBPATH
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC     TO  WKPTNYUINRRK-REC
+               ELSE
+                   MOVE    PTNYUINRRK-REC  TO  WKPTNYUINRRK-REC
+                   MOVE    1               TO  FLG-WKPTNYUINRRK
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "PTNYUINRRK-KEY4"   TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           MOVE    WKPTNYUINRRK-BTUNUM TO  BG00501DYN-SRT-BTUNUM
+           MOVE    WKPTNYUINRRK-BRMNUM TO  BG00501DYN-SRT-BRMNUM
+           MOVE    WKPTNYUINRRK-NYUINKA
+                                       TO  BG00501DYN-SRT-SRYKA
+           MOVE    WKPTNYUINRRK-PTID   TO  BG00501DYN-SRT-PTID
+      *
+           MOVE    WKPTNYUINRRK-REC    TO  BG00501DYN-PTNYUINRRK-DAT
+      *
+           WRITE   BG00501DYN-REC
+      *
+           .
+       1201-BG00501-HEN-EXT.
            EXIT.
       *****************************************************************
       *    主　　処理
@@ -363,7 +510,7 @@
       *
            MOVE    ZERO                TO  CNT-BG005
       *
-           PERFORM UNTIL ( FLG-PTNYUINRRK  =   1 )
+           PERFORM UNTIL ( FLG-BG00501     =   1 )
                    OR    ( FLG-END     NOT =   ZERO )
       *
                MOVE    SPACE               TO  HCMG005
@@ -372,7 +519,7 @@
                PERFORM 210-HEAD-EDIT-SEC
       *
                MOVE    ZERO                TO  CNT-LINE
-               PERFORM UNTIL ( FLG-PTNYUINRRK  =   1 )
+               PERFORM UNTIL ( FLG-BG00501     =   1 )
                        OR    ( CNT-LINE        >=  CONST-LINE-MAX )
                        OR    ( FLG-END     NOT =   ZERO )
       *
@@ -554,13 +701,7 @@
       *
            COMPUTE CNT-BG005       =   CNT-BG005   +   1
       *
-           MOVE    WRK-DBPATH      TO  ORC-DBPATH
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC      NOT =   ZERO )
-               MOVE    1                   TO  FLG-PTNYUINRRK
-           ELSE
-               MOVE    MCPDATA-REC         TO  PTNYUINRRK-REC
-           END-IF
+           PERFORM 900-BG00501SEQ-READ-SEC
       *
            .
        210-BODY-EDIT-EXT.
@@ -773,6 +914,12 @@
       *****************************************************************
        300-END-SEC                 SECTION.
       *
+      *    ファイル削除
+           MOVE    ZERO            TO  IF-RESULT
+           MOVE    ORCBG00501PARA  TO  IF-FILENAME
+           CALL    "orcfiledel"    USING
+                                       ORCSFDELAREA
+      *
            IF    ( CNT-BG005           =   ZERO )
                MOVE    "処理対象のデータがありませんでした"
                                    TO  WRK-RECEERR
@@ -883,6 +1030,22 @@
        800-ERRMSG-EDIT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    処理対象患者ファイル読込処理
+      *****************************************************************
+       900-BG00501SEQ-READ-SEC             SECTION.
+      *
+           READ    BG00501SEQ-FILE     NEXT
+           AT  END
+               MOVE    1               TO  FLG-BG00501
+           NOT AT  END
+               MOVE    BG00501SEQ-PTNYUINRRK-DAT
+                                       TO  PTNYUINRRK-REC
+           END-READ
+      *
+           .
+       900-BG00501SEQ-READ-EXT.
+           EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
