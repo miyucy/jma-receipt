@@ -65,6 +65,8 @@
                05  SPA-JIKANTOKU           PIC  9(01).
       *小児科外来診療科
                05  SPA-SYONIKA             PIC  9(01).
+      *長期投薬加算有無
+               05  SPA-CHOKITOFLG          PIC  9(01).
       *
       *    Ｋ９８画面用
            03  SPA-J98-MOTOPG              PIC X(08).
