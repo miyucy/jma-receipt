@@ -1,4 +1,4 @@
-T99	{
+G99	{
 	fixed6	{
 		MSG	{
 			value	varchar(80);
