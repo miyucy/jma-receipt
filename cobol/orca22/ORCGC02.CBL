@@ -944,6 +944,27 @@
       *
            MOVE    SPA-GMN-C02-HNYUGAIKBNLST (1)
                                    TO  SPA-GMN-C02-HNYUGAIKBN-G
+      *      
+      *    システム日付
+           IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
+                                                   OR  "K02N")
+               MOVE    SPA-SRYYMDW     TO  SPA-GMN-C02-SYSYMD
+               MOVE    SPA-SRYYMD      TO  SPA-NAI-C02-SYSYMD
+           ELSE    
+               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-C02-SYSYMD
+               MOVE    SPA-SYSYMD      TO  SPA-NAI-C02-SYSYMD
+           END-IF   
+      *
+      *    システム日付の前月
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    SPA-NAI-C02-SYSYMD  TO  LNK-DAY6-KIJUN 
+           MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    -1                  TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  SPA-NAI-C02-SYSYMD-BACK
       *         
       *    主病名編集フラグ情報
            MOVE    SPACE            TO  SYSKANRI-REC
@@ -974,27 +995,6 @@
                MOVE    SPACE           TO  SYS-1001-REC
            END-IF
            MOVE    SYS-1001-HOSPSBT1   TO  SPA-C02-1001-HOSPSBT1
-      *      
-      *    システム日付
-           IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
-                                                   OR  "K02N")
-               MOVE    SPA-SRYYMDW     TO  SPA-GMN-C02-SYSYMD
-               MOVE    SPA-SRYYMD      TO  SPA-NAI-C02-SYSYMD
-           ELSE    
-               MOVE    SPA-SYSYMDWH    TO  SPA-GMN-C02-SYSYMD
-               MOVE    SPA-SYSYMD      TO  SPA-NAI-C02-SYSYMD
-           END-IF   
-      *
-      *    システム日付の前月
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY6-AREA
-           MOVE    "61"                TO  LNK-DAY6-IRAI
-           MOVE    SPA-NAI-C02-SYSYMD  TO  LNK-DAY6-KIJUN 
-           MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
-           MOVE    -1                  TO  LNK-DAY6-ZOGEN
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY6-AREA
-           MOVE    LNK-DAY6-KEISAN     TO  SPA-NAI-C02-SYSYMD-BACK
       *
       *    診療科編集
            PERFORM 3104-SRYKA-SPA-SEC
@@ -3032,6 +3032,9 @@
                                            WRK-KBN
            PERFORM 5001-HKNBYOMEIFLG-HENSYU-SEC
            MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-HKNBYOMEIFLGMEI
+      *                                 
+           MOVE    SPA-PTBYO-RECEDENFLG
+                                       TO  SPA-NAI-C02-RECEDENFLG
       *
       *   入力病名コード数カウント
            PERFORM 410111-BYOMEICDSU-HENSYU-SEC
@@ -3782,23 +3785,6 @@
            PERFORM 41021-BYOMEI-HENSYU-SEC
            PERFORM 41022-CHARTBYOMEI-HENSYU-SEC
       *
-      *****六番目に接頭語が入力されたとき
-      *****IF      SPA-ERRCD               =   SPACE  
-      *****    IF      IDZ                 =   6
-      *****        IF      SPA-NAI-C02-USERBYOMEIFLG(IDZ)  =   SPACE
-      *****            IF      SPA-NAI-C02-BYOMEICD (IDZ)(1:1) =   "Z"
-      *****            AND     SPA-NAI-C02-BYOMEICD (IDZ)(4:1)
-      *****                                                NOT =   "8"
-      *****                MOVE    "0059"          TO  SPA-ERRCD
-      *****            END-IF
-      *****        ELSE
-      *****            IF      SPA-NAI-C02-BYOMEISBT(IDZ)(1:1) =   "1"
-      *****                MOVE    "0059"          TO  SPA-ERRCD
-      *****            END-IF
-      *****        END-IF 
-      *****    END-IF    
-      *****END-IF
-      *
       *   入力病名コード数カウント
            PERFORM 410111-BYOMEICDSU-HENSYU-SEC
       *                                       
@@ -3835,20 +3821,12 @@
                MOVE    9                   TO  SPA-GMN-C02-CUR
                GO  TO  41021-BYOMEICD-HENSYU-EXT
            END-IF    
-      *****変更処理で自院病名コードのとき開始日へ遷移
-      *****IF      SPA-GMN-C02-BANGO      >   ZERO
-      ***** AND     SPA-NAI-C02-USERBYOMEIFLG  (1) =   "1"
-      *****    MOVE    9                          TO  SPA-GMN-C02-CUR
-      *****    GO  TO  41021-BYOMEICD-HENSYU-EXT
-      *****END-IF
       *    複数病名コード入力のとき開始日へ遷移
            IF      WRK-SEIGYO      =   "-"
                CONTINUE
            ELSE
                ADD     1               TO  SPA-GMN-C02-CUR
            END-IF
-      *****IF      SPA-NAI-C02-BYOMEICD-MAX
-      *****                                >   1
            IF      SPA-GMN-C02-CUR         =   8
                MOVE    9           TO  SPA-GMN-C02-CUR
            END-IF
@@ -4658,6 +4636,7 @@
                PERFORM 5001-MANSEIKBN-HENSYU-SEC                                
                MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-MANSEIKBNMEI
            END-IF
+           MOVE    LNK-BYO-RECEDENFLG  TO  SPA-NAI-C02-RECEDENFLG
            MOVE    LNK-BYO-BYOMEIHENFLG
                                        TO  SPA-NAI-C02-BYOMEIHENFLG
            IF      SPA-NAI-C02-BYOMEIHENFLG  =   "1" 
@@ -7122,7 +7101,12 @@
                                               TO  C02-BYOMEICD (IDX)
            END-PERFORM
            MOVE    SPA-GMN-C02-BYOMEI         TO  C02-BYOMEI
-           MOVE    SPA-GMN-C02-BYOMEIHENFLG   TO  C02-BYOMEIHENFLG
+           MOVE    SPA-GMN-C02-BYOMEIHENFLG   TO  C02-BYOMEIHENFLG-VALUE
+           MOVE    "black"                    TO  C02-BYOMEIHENFLG-STYLE
+           IF    ( SPA-NAI-C02-BYOMEIHENFLG   =   "1" )
+           AND   ( SPA-NAI-C02-RECEDENFLG     =   "1" )
+               MOVE    "red"                  TO  C02-BYOMEIHENFLG-STYLE
+           END-IF
            MOVE    SPA-GMN-C02-CHARTBYOMEI    TO  C02-CHARTBYOMEI
       *
            MOVE    SPA-GMN-C02-REZEMM         TO  C02-REZEMM
