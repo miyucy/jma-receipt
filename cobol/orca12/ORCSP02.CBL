@@ -998,11 +998,11 @@
       *****************************************************************
        10041-HKNHEN-SEC          SECTION.
       *
-           ADD     1                   TO  SPA-GMN-HKNMAX
       *
-           IF      SPA-GMN-HKNMAX      >   50
+           IF      SPA-GMN-HKNMAX      >=  50
                GO      TO      10041-HKNHEN-EXT
            END-IF
+           ADD     1                   TO  SPA-GMN-HKNMAX
       *
            MOVE    HKN-HKNNUM          TO  SPA-GMN-HKNNUML
                                                     (SPA-GMN-HKNMAX)
@@ -1029,10 +1029,10 @@
       *****************************************************************
        10042-KOHHEN-SEC          SECTION.
       *
-           ADD     1                   TO  SPA-GMN-KOHMAX
-           IF      SPA-GMN-KOHMAX      >   100
+           IF      SPA-GMN-KOHMAX      >=  100
                GO      TO      10042-KOHHEN-EXT
            END-IF
+           ADD     1                   TO  SPA-GMN-KOHMAX
       *
            MOVE    HKN-HKNNUM          TO  SPA-GMN-KOHNUML
                                                     (SPA-GMN-KOHMAX)
