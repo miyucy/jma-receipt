@@ -185,6 +185,11 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+                                       IDX-AREA
+                                       CNT-AREA
+                                       WRK-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-P02SCRAREA
            MOVE    SPA-WORK        TO  SPA-P02KYOUTU

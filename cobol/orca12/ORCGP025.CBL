@@ -260,6 +260,10 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+           INITIALIZE                  WRK-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-P02SCRAREA
       *
@@ -479,7 +483,7 @@
       *
            IF  SPA-NAI25-SRY-MAX       =   1
                MOVE    1               TO  SPA-NAI25-SELNUM2
-      *        受診２ﾃｰﾌﾞﾙ編集
+      *        受診２テーブル編集
                MOVE    SPA-NAI25-SRY-SRYKA(1)  TO  WRK-SRYKA
       **        １年前の年月日取得
       *         PERFORM 4221-ZENYMD-GET-SEC
@@ -874,7 +878,7 @@
                MOVE    "2502"        TO  SPA-ERRCD
                GO  TO                470-KYUSEI-DELETE-EXT
            END-IF
-      *旧姓ﾃｰﾌﾞﾙとの内容確認
+      *旧姓テーブルとの内容確認
            MOVE    ZERO              TO  WRK-IDX
            MOVE    ZERO              TO  IDY
            PERFORM   VARYING   IDX   FROM    1   BY  1
@@ -1217,7 +1221,7 @@
                GO  TO                  4220-JYU-SELNUM-EXT
            END-IF
       *
-      *    受診２ﾃｰﾌﾞﾙ編集
+      *    受診２テーブル編集
            MOVE    SPA-NAI25-SRY-SRYKA (SPA-NAI25-SELNUM2)
                                        TO  WRK-SRYKA
       *
