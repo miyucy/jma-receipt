@@ -43,6 +43,7 @@
       *                                     としないようにする
       *                                     入院会計の医保の組合せがないとき
       *                                     入院歴を全て表示する
+      *  01.00.12    NACL-門脇    03/11/27  ”老保”編集条件修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -903,7 +904,8 @@
       *    特記事項のセット
       *    老保の編集
            IF      RECE62-HKNHBTNUM     =   SPACE
-           AND     RECE62-KOHHBTNUM (1) =   "12"
+      ***> AND     RECE62-KOHHBTNUM (1) =   "12"
+           AND     RECE62-KOHHBTNUM (1)   NOT =  SPACE
            AND     RECE62-KOHHBTNUM (2) =   SPACE
            AND     RECE62-KOHHBTNUM (3) =   SPACE
            AND     RECE62-KOHHBTNUM (4) =   SPACE
@@ -931,6 +933,7 @@
                            IF      PTKOH-TEKSTYMD(1:6)  <=  RECE61-SRYYM
                            AND     RECE61-SRYYM         <=
                                                     PTKOH-TEKEDYMD(1:6)
+                           AND     PTKOH-SAKJOKBN   =  SPACE
                                ADD      1           TO  TOKKI-IDX
                                MOVE    "04"         TO  RECE62-TOKKI
                                                             (TOKKI-IDX)
