@@ -485,9 +485,9 @@
            MOVE    "2 診療科"          TO  SPA-GMN-GAIMOVE-LIST(3)
       *
       *
-           MOVE    "0 包括まとめ入力をしない"
+           MOVE    "0 包括分入力をしない"
                                        TO  SPA-GMN-HOUKATU-LIST(1)
-           MOVE    "1 包括まとめ入力をする"
+           MOVE    "1 包括分入力をする"
                                        TO  SPA-GMN-HOUKATU-LIST(2)
       *
       *
