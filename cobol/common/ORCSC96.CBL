@@ -421,6 +421,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "入力できません。"
                                        TO  SPA-ERRMSG(29:)
+               WHEN    "0085"
+                   MOVE    "集団療法が１２単位を超えます。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "入力できません。"
+                                       TO  SPA-ERRMSG(31:)
                WHEN    "0091"
                    MOVE
                    "算定上限回数を超えています。算定できません。"
