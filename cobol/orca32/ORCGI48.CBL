@@ -440,7 +440,7 @@
            END-IF.
            IF     (SPA-I48-GMN-MAX     =   ZERO  )  AND
                   (SPA-I48-CDSYUBETU   =   "J"   )  OR
-                  (SPA-I48-GMN-SYORI   =   "9"  OR  "U")
+                  (SPA-I48-GMN-SYORI   =   "8"  OR  "9"  OR  "U")
                MOVE    "1"                 TO  WRK-WIDGET-SW
                PERFORM 3102-TENSU-SET-SEC
       *        ÅÀ¿ô¥Þ¥¹¥¿¸¡º÷»þ¡¢¼«±¡¤¬¥¼¥í·ï¤Î»þ¡¢Á´ÂÎ¤ò¸¡º÷
@@ -572,13 +572,13 @@
                                MOVE    TNS-TEN
                                                TO  SPA-I48-GMN-KISOTEN
                                                                 (IDX)
-      *                         ÌôºÞ¡¦´ïºà¤Î»þÃ±°Ì
+      *                        ÌôºÞ¡¦´ïºà¤Î»þÃ±°Ì
                                IF      TNS-SRYCD (1:1) =   "6"  OR  "7"
                                    MOVE    TNS-TANINAME    TO
                                                SPA-I48-GMN-TANI(IDX)
                                END-IF
       *
-      *                ¿ÇÎÅ¹Ô°Ù¤ÇÏ·¿Í¤Î»þ¡¢ºÆÊÔ½¸
+      *                        ¿ÇÎÅ¹Ô°Ù¤ÇÏ·¿Í¤Î»þ¡¢ºÆÊÔ½¸
                                IF     (TNS-SRYCD(1:1)      =   "1") AND
                                       (TNS-ROUTEKKBN       =   2  )
                                    MOVE    SPACE   TO  SPA-I48-GMN-NAME
@@ -750,20 +750,20 @@
       *        ÅÀ¿ô¥Þ¥¹¥¿¥Á¥§¥Ã¥¯
                PERFORM 31021-TENSU-CHK-SEC
       *        ¸¡ºº¤ÇÊñ³çÈ½Äê¤¬¤¢¤ë»þ¤ÎÈ½Äê
-               IF      SPA-I48-GMN-SYORI   =   "9"
-                   EVALUATE    SPA-I48-NAI-HOUKATU
-                       WHEN    "1"
+      **         IF      SPA-I48-GMN-SYORI   =   "9"
+      **             EVALUATE    SPA-I48-NAI-HOUKATU
+      **                 WHEN    "1"
       *                    Êñ³ç¤¢¤ê
-                           IF      TNS-HOUKNSKBN       =   ZERO
-                               MOVE    1               TO  FLG-CHK
-                           END-IF
-                       WHEN    "2"
+      **                     IF      TNS-HOUKNSKBN       =   ZERO
+      **                         MOVE    1               TO  FLG-CHK
+      **                     END-IF
+      **                 WHEN    "2"
       *                    Êñ³ç¤Ê¤·
-                           IF      TNS-HOUKNSKBN   NOT =   ZERO
-                               MOVE    1               TO  FLG-CHK
-                           END-IF
-                   END-EVALUATE
-               END-IF
+      **                     IF      TNS-HOUKNSKBN   NOT =   ZERO
+      **                         MOVE    1               TO  FLG-CHK
+      **                     END-IF
+      **             END-EVALUATE
+      **         END-IF
       *
                IF      FLG-CHK             =   ZERO
                    ADD     1               TO  IDX2
@@ -1009,6 +1009,14 @@
                MOVE   1                TO  FLG-CHK
            END-IF.
       *
+      *    ¿ÇÎÅ¶èÊ¬
+           IF      (TNS-SRYKBN            =   "90" )  OR
+                   (TNS-SRYKBN            =   "99" )
+               CONTINUE
+           ELSE
+               MOVE   1                TO  FLG-CHK
+           END-IF.
+      *
        31021-TENSU-CHK-EXT.
            EXIT.
       *
@@ -1049,39 +1057,39 @@
            END-IF.
       *
       *    ¸¡ºº¤Î»þ¡¢Êñ³ç¤ÎÊÔ½¸
-           IF      SPA-I48-GMN-SYORI   =   "9"
-               EVALUATE    TNS-HOUKNSKBN
-                   WHEN    01
+      **     IF      SPA-I48-GMN-SYORI   =   "9"
+      **         EVALUATE    TNS-HOUKNSKBN
+      **             WHEN    01
       *                ·ì±Õ²½³Ø¸¡ºº¤ÎÊñ³ç
-                       MOVE    "¡ú"            TO  WRK-KENSA-HEN
-                   WHEN    02
+      **                 MOVE    "¡ú"            TO  WRK-KENSA-HEN
+      **             WHEN    02
       *                ÆâÊ¬Èç³Ø¸¡ºº¤ÎÊñ³ç
-                       MOVE    "¡ú"            TO  WRK-KENSA-HEN
-                   WHEN    03
+      **                 MOVE    "¡ú"            TO  WRK-KENSA-HEN
+      **             WHEN    03
       *                ´Î±ê¥¦¥¤¥ë¥¹´ØÏ¢¸¡ºº¤ÎÊñ³ç
-                       MOVE    "¡ú"            TO  WRK-KENSA-HEN
-                   WHEN    04
+      **                 MOVE    "¡ú"            TO  WRK-KENSA-HEN
+      **             WHEN    04
       *                ¼ðáç¥Þ¡¼¥«¡¼¤ÎÊñ³ç
-                       MOVE    "¡ü"            TO  WRK-KENSA-HEN
-                   WHEN    05
+      **                 MOVE    "¡ü"            TO  WRK-KENSA-HEN
+      **             WHEN    05
       *                £´°Ê³°¤Î¼ðáç¥Þ¡¼¥«¡¼¤ÎÊñ³ç
-                       MOVE    "¢¡"            TO  WRK-KENSA-HEN
-                   WHEN    06
+      **                 MOVE    "¢¡"            TO  WRK-KENSA-HEN
+      **             WHEN    06
       *                ½Ð·ì¡¦¶Å¸Ç¸¡ºº¤ÎÊñ³ç
-                       MOVE    "¡ú"            TO  WRK-KENSA-HEN
-                   WHEN    07
+      **                 MOVE    "¡ú"            TO  WRK-KENSA-HEN
+      **             WHEN    07
       *                ¼«¸Ê¹³ÂÎ¸¡ºº¤ÎÊñ³ç
-                       MOVE    "¢¡"            TO  WRK-KENSA-HEN
-                   WHEN    OTHER
-                       MOVE    SPACE           TO  WRK-KENSA-HEN
-               END-EVALUATE
-               MOVE    SPA-I48-GMN-NAME(IDX)   TO  WRK-HEN-NAME
-               MOVE    SPACE               TO  SPA-I48-GMN-NAME(IDX)
-               STRING  WRK-KENSA-HEN       DELIMITED   BY  SIZE
-                       WRK-HEN-NAME        DELIMITED   BY  SIZE
-                       INTO                    SPA-I48-GMN-NAME(IDX)
-               END-STRING
-           END-IF.
+      **                 MOVE    "¢¡"            TO  WRK-KENSA-HEN
+      **             WHEN    OTHER
+      **                 MOVE    SPACE           TO  WRK-KENSA-HEN
+      **         END-EVALUATE
+      **         MOVE    SPA-I48-GMN-NAME(IDX)   TO  WRK-HEN-NAME
+      **         MOVE    SPACE               TO  SPA-I48-GMN-NAME(IDX)
+      **         STRING  WRK-KENSA-HEN       DELIMITED   BY  SIZE
+      **                 WRK-HEN-NAME        DELIMITED   BY  SIZE
+      **                 INTO                    SPA-I48-GMN-NAME(IDX)
+      **         END-STRING
+      **     END-IF.
       *
        31021-TENSU-HEN-EXT.
            EXIT.
@@ -1518,6 +1526,14 @@
       *
            MOVE    ZERO                TO  FLG-HENSYU.
       *
+           IF     (I48-SELNUM (2)   NOT =   SPACE)  OR
+                  (I48-SELNUM (3)   NOT =   SPACE)  OR
+                  (I48-SELNUM (4)   NOT =   SPACE)  OR
+                  (I48-SELNUM (5)   NOT =   SPACE)
+               MOVE    "0003"          TO  SPA-ERRCD
+               GO      TO      41011-SELNUM-ALLCHK-EXT
+           END-IF.
+      *
            PERFORM VARYING     IDX-1   FROM   1   BY   1
                    UNTIL      (IDX-1       >   5  )  OR
                               (FLG-HENSYU  =   1  )
@@ -1591,15 +1607,15 @@
            END-PERFORM.
       *
       *    ¸¡ºº¥Á¥§¥Ã¥¯
-           IF      SPA-I48-GMN-SYORI   =   "9"
-               IF      SPA-I48-GMN-SYORI2  =   SPACE
-                   PERFORM 41013-KENSA-GRP-SEC
-               ELSE
-                   PERFORM 41014-KENSA-SEL-SEC
-               END-IF
-           ELSE
+      **     IF      SPA-I48-GMN-SYORI   =   "9"
+      **         IF      SPA-I48-GMN-SYORI2  =   SPACE
+      **             PERFORM 41013-KENSA-GRP-SEC
+      **         ELSE
+      **             PERFORM 41014-KENSA-SEL-SEC
+      **         END-IF
+      **     ELSE
                PERFORM 41012-SRYCD-SEL-SEC
-           END-IF.
+      **     END-IF.
       *
        41011-SELNUM-CHK-EXT.
            EXIT.
@@ -1794,15 +1810,15 @@
            END-IF.
       *
       *    ¸¡ºº¥Á¥§¥Ã¥¯
-           IF      SPA-I48-GMN-SYORI   =   "9"
-               IF      SPA-I48-GMN-SYORI2  =   SPACE
-                   PERFORM 41013-KENSA-GRP-SEC
-               ELSE
-                   PERFORM 41014-KENSA-SEL-SEC
-               END-IF
-           ELSE
+      **     IF      SPA-I48-GMN-SYORI   =   "9"
+      **         IF      SPA-I48-GMN-SYORI2  =   SPACE
+      **             PERFORM 41013-KENSA-GRP-SEC
+      **         ELSE
+      **             PERFORM 41014-KENSA-SEL-SEC
+      **         END-IF
+      **     ELSE
                PERFORM 41012-SRYCD-SEL-SEC
-           END-IF.
+      **     END-IF.
       *
        41012-LISTSEL-EXT.
            EXIT.
@@ -2249,7 +2265,7 @@
                                        TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE
-                   "¸¡ºº°Ê³°¤Î»þ¡¢ºÇ½é¤ÎÁªÂòÈÖ¹æ°ÌÃÖ¤Î¤ß¤ÎÆþÎÏ¤Ç¤¹"
+                   "¸¡ºº°Ê³°¤Î»þ¡¢ºÇ½é¤ÎÁªÂòÈÖ¹æ°ÌÃÖ¤Î¤ß¤ÎÆþÎÏ²ÄÇ½¤Ç¤¹"
                                        TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE
