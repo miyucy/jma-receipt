@@ -33,6 +33,8 @@
       *                                     パラメタに入外区分の追加
       *  01.01.03    NACL-藤原    02/10/21  印刷用ファイルにサイト区分を追加
       *  01.01.04    NACL-藤原    03/01/10  印刷順通し番号を追加
+      *  01.01.05    NACL-門脇    03/01/31  事業所名の長さ変更のため
+      *                                     帳票ＩＤ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -140,6 +142,7 @@
       *    労災レセプト
            COPY    "HCM21.INC".
            COPY    "HCM22.INC".
+           COPY    "HCM22V01.INC".
            COPY    "HCM24.INC".
            COPY    "HCM18.INC".
            COPY    "HCM20.INC".
@@ -412,6 +415,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCM22
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM22-RENNUM
                        MOVE    HCM22               TO  RECE08-PRTDATA
+                   WHEN    "HCM22V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM22V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM22V01-RENNUM
+                       MOVE    HCM22V01            TO  RECE08-PRTDATA
                    WHEN    "HCM24.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM24
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM24-RENNUM
