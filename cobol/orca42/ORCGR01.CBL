@@ -220,6 +220,8 @@
              05  WRK-SHELL-SRYYM   PIC  X(06).
              05  WRK-SHELL-TERMID  PIC  X(16).
              05  WRK-SHELL-SYSYMD  PIC  X(08).  
+           03  WRK-RECEKBN         PIC X(06).
+           03  WRK-NYUGAIKBN       PIC X(10).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -499,12 +501,22 @@
       *
            EVALUATE    SPA-R01-RECEKBN
                WHEN    "0"
-                   MOVE    "医　　　保"    TO  SPA-GMN-SYOKBN
+                   MOVE    "医　保"    TO  WRK-RECEKBN
                WHEN    "3"
-                   MOVE    "労　　　災"    TO  SPA-GMN-SYOKBN
+                   MOVE    "労　災"    TO  WRK-RECEKBN
                WHEN    "4"
-                   MOVE    "自　賠　責"    TO  SPA-GMN-SYOKBN
+                   MOVE    "自賠責"    TO  WRK-RECEKBN
            END-EVALUATE
+           EVALUATE    SPA-R01-NYUGAIKBN
+               WHEN    "1"
+                   MOVE    "（入院）"        TO  WRK-NYUGAIKBN
+               WHEN    "2"
+                   MOVE    "（入院外）"      TO  WRK-NYUGAIKBN
+           END-EVALUATE  
+           STRING  WRK-RECEKBN        DELIMITED  BY  SIZE 
+                   WRK-NYUGAIKBN      DELIMITED  BY  SPACE
+                   INTO    SPA-GMN-SYOKBN
+           END-STRING
       *             
       *****IF      SPA-SYSYMD(7:2)     >=  "10"
            IF      SPA-SYSYMD(7:2)     >   "10"
@@ -803,12 +815,11 @@
       *
            IF      SPA-GMN-NYUGAIKBN    =   SPACE
       *********MOVE    "2"                  TO  SPA-GMN-NYUGAIKBN
-               MOVE    SPA-R01-RECE07-NYUGAIKBN
-                                            TO  SPA-GMN-NYUGAIKBN
+               MOVE    SPA-R01-NYUGAIKBN    TO  SPA-GMN-NYUGAIKBN
            END-IF
       *
       *****IF      SPA-GMN-NYUGAIKBN    =   SPACE   OR  "1" OR  "2"
-           IF      SPA-GMN-NYUGAIKBN    =   SPA-R01-RECE07-NYUGAIKBN
+           IF      SPA-GMN-NYUGAIKBN    =   SPA-R01-NYUGAIKBN
                CONTINUE
            ELSE
                MOVE    "0001"               TO  SPA-ERRCD
@@ -1282,9 +1293,9 @@
                    ELSE     
                        MOVE    "0012"                 TO  SPA-ERRCD
                        GO  TO  480-ZENKAI-HYOUJI-EXT
-                   END-IF    
+                   END-IF 
                    IF      SYS-2001-NYUGAIKBN  =
-                                           SPA-R01-RECE07-NYUGAIKBN
+                                           SPA-R01-NYUGAIKBN
                        CONTINUE
                    ELSE     
                        MOVE    "0013"                 TO  SPA-ERRCD
@@ -1442,12 +1453,16 @@
            IF      SPA-R01-FILEKBN         =   "1"
                MOVE    SPA-R01-SRYYM       TO  RECE07-SRYYM
                MOVE    "1"                 TO  RECE07-SYOKBN
-               MOVE    "2"                 TO  RECE07-NYUGAIKBN
+      *********MOVE    "2"                 TO  RECE07-NYUGAIKBN
+               MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
+               MOVE    SPA-R01-RECEKBN     TO  RECE07-RECEKBN
                MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
            ELSE
-      *****    MOVE    ZERO                TO  RECE07-SRYYM
+      *********MOVE    ZERO                TO  RECE07-SRYYM
                MOVE    "2"                 TO  RECE07-SYOKBN
-               MOVE    "RECEKANRI-KEY2"    TO  WRK-PATH
+               MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
+      *********MOVE    "RECEKANRI-KEY2"    TO  WRK-PATH
+               MOVE    "RECEKANRI-KEY5"    TO  WRK-PATH
            END-IF
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
@@ -1485,6 +1500,7 @@
            END-IF 
            MOVE    "2"                 TO  SYS-2001-SYOKBN
            MOVE    SPA-R01-RECEKBN     TO  SYS-2001-RECEKBN
+           MOVE    SPA-R01-NYUGAIKBN   TO  SYS-2001-NYUGAIKBN
            MOVE    SYS-2001-REC        TO  MCPDATA-REC
            IF      FLG-SYSKANRI        =   1
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1630,7 +1646,7 @@
            MOVE    SPACE           TO  SHELLTBL
            EVALUATE    SPA-R01-RECEKBN
                WHEN    "0"
-                   IF      SPA-R01-RECE07-NYUGAIKBN   =   "1"
+                   IF      SPA-R01-NYUGAIKBN   =   "1"
                        MOVE    "recept9.sh"    TO  WRK-SHELL-SHELL
                    ELSE
                        MOVE    "recept1.sh"    TO  WRK-SHELL-SHELL
@@ -2057,6 +2073,9 @@
                                                        TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE    "前回とはレセプトの種類が違います"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0013"
+                   MOVE    "前回とは入外区分が違います"
                                                        TO  SPA-ERRMSG
                WHEN    "0015"
                    MOVE    "対象のレセプトが作成されいてません"

@@ -332,14 +332,13 @@
                MOVE    SPA-R01-SRYYM       TO  RECE07-SRYYM
                MOVE    "1"                 TO  RECE07-SYOKBN
       *********MOVE    "2"                 TO  RECE07-NYUGAIKBN
-               MOVE    SPA-R01-RECE07-NYUGAIKBN
-                                           TO  RECE07-NYUGAIKBN
+               MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
+               MOVE    SPA-R01-RECEKBN     TO  RECE07-RECEKBN
                MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
            ELSE
       *********MOVE    ZERO                TO  RECE07-SRYYM
                MOVE    "2"                 TO  RECE07-SYOKBN
-               MOVE    SPA-R01-RECE07-NYUGAIKBN
-                                           TO  RECE07-NYUGAIKBN
+               MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
       *********MOVE    "RECEKANRI-KEY2"    TO  WRK-PATH
                MOVE    "RECEKANRI-KEY5"    TO  WRK-PATH
            END-IF

@@ -114,7 +114,7 @@
                05  SPA-GMN-CUR                     PIC 9(03).
                05  SPA-GMN-AREA.
                    07  SPA-GMN-SYOKBN              PIC X(01).
-                   07  SPA-GMN-FILEKBN             PIC X(34).
+                   07  SPA-GMN-FILEKBN             PIC X(40).
                    07  SPA-GMN-CREYMD              PIC X(22).
                    07  SPA-GMN-PAGEH               PIC 9(04).
                    07  SPA-GMN-KENSUH              PIC 9(04).

@@ -570,7 +570,7 @@
                MOVE    "Æþ±¡³°"        TO  SPA-GMN-NYUGAIKBNMEIL    (1)
                MOVE    1               TO  SPA-GMN-NYUGAIKBN-MAX
            END-IF
-           EVALUATE    SPA-R01-RECE07-NYUGAIKBN 
+           EVALUATE    SPA-R01-NYUGAIKBN 
                WHEN    "1"
                    MOVE    "1"             TO  SPA-GMN-NYUGAIKBN
                    MOVE    "Æþ±¡"          TO  SPA-GMN-NYUGAIKBNMEI
@@ -1283,14 +1283,13 @@
                MOVE    SPA-R01-SRYYM       TO  RECE07-SRYYM
                MOVE    "1"                 TO  RECE07-SYOKBN
       *********MOVE    "2"                 TO  RECE07-NYUGAIKBN
-               MOVE    SPA-R01-RECE07-NYUGAIKBN
-                                           TO  RECE07-NYUGAIKBN
+               MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
+               MOVE    SPA-R01-RECEKBN     TO  RECE07-RECEKBN
                MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
            ELSE
       *********MOVE    ZERO                TO  RECE07-SRYYM
                MOVE    "2"                 TO  RECE07-SYOKBN
-               MOVE    SPA-R01-RECE07-NYUGAIKBN
-                                           TO  RECE07-NYUGAIKBN
+               MOVE    SPA-R01-NYUGAIKBN   TO  RECE07-NYUGAIKBN
       *********MOVE    "RECEKANRI-KEY2"    TO  WRK-PATH
                MOVE    "RECEKANRI-KEY5"    TO  WRK-PATH
            END-IF
@@ -1559,7 +1558,7 @@
                MOVE    ZERO                TO  SPA-R01-SRYYM
            END-IF
       *
-           MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-R01-RECE07-NYUGAIKBN     
+           MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-R01-NYUGAIKBN     
       *
            MOVE    SPA-R01KYOUTU       TO  SPA-WORK       
       *

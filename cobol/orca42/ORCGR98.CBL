@@ -28,6 +28,9 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *                                     修正
+      *　入院機能追加　
+      *  01.00.01    NACL-藤原    02/12/11  入外区分追加 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -422,7 +425,9 @@
                MOVE    SPA-HOSPID      TO  ACCT-HOSPID
                MOVE    SPA-NAI-SRYYM   TO  ACCT-SRYYM
                MOVE    PTKOH-PTID      TO  ACCT-PTID
-               MOVE    "2"             TO  ACCT-NYUGAIKBN
+      *********MOVE    "2"             TO  ACCT-NYUGAIKBN
+               MOVE    SPA-R01-NYUGAIKBN
+                                       TO  ACCT-NYUGAIKBN
                MOVE    SRYACCT-REC     TO  MCPDATA-REC
                MOVE    "DBSELECT"      TO  MCP-FUNC
                MOVE    "SRYACCT-KEY9"  TO  ORC-DBPATH
