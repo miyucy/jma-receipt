@@ -85,6 +85,8 @@
                 04  I51-VALUE   PIC X(10).
               03  I51-ETCTGMONEY.
                 04  I51-VALUE   PIC X(10).
+              03  I51-NYUTGMONEY.
+                04  I51-VALUE   PIC X(10).
               03  I51-JIHIMSG1.
                 04  I51-VALUE   PIC X(12).
               03  I51-JIHIMSG2.

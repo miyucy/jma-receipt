@@ -92,6 +92,8 @@
                 04  I04-VALUE   PIC X(10).
               03  I04-ETCTGMONEY.
                 04  I04-VALUE   PIC X(10).
+              03  I04-NYUTGMONEY.
+                04  I04-VALUE   PIC X(10).
               03  I04-JIHIMSG1.
                 04  I04-VALUE   PIC X(12).
               03  I04-JIHIMSG2.
