@@ -50,45 +50,6 @@
       *    ≤ËÃÃÕ—∂¶ƒÃ•π•—ŒŒ∞Ë
            COPY    "K02SCR-SPA".
       *
-      *    ≤ËÃÃÕ—£”£–£¡° ∂¶ƒÃ§ÿ°À
-      *01  SPA-K07.
-      *    03  SPA-K07-AREA.
-      *        05  SPA-GMN-PAGE        PIC 9(02).
-      *        05  SPA-GMN-MAX         PIC 9(04).
-      *        05  SPA-GMN-CUR         PIC 9(02).
-      *
-      *        05  SPA-GMN-AREA.
-      *            07  SPA-GMN-PTNUM          PIC X(22).
-      *            07  SPA-GMN-KANANAME       PIC X(30).
-      *            07  SPA-GMN-SEX            PIC X(02).
-      *            07  SPA-GMN-NAME           PIC X(40).
-      *            07  SPA-GMN-BIRTH          PIC X(09).
-      *            07  SPA-GMN-SRYKAMEI       PIC X(10).
-      *            07  SPA-GMN-TBL            OCCURS   100.
-      *                09  SPA-GMN-NO              PIC 9(04).
-      *                09  SPA-GMN-SRYYMD          PIC X(09).
-      *                09  SPA-GMN-SINSATSU        PIC X(06).
-      *                09  SPA-GMN-NAIFUKU         PIC X(06).
-      *                09  SPA-GMN-TONPUKU         PIC X(06).
-      *                09  SPA-GMN-GAIYOU          PIC X(06).
-      *                09  SPA-GMN-CYUSYA          PIC X(06).
-      *                09  SPA-GMN-SYOCHI          PIC X(06).
-      *                09  SPA-GMN-OP              PIC X(06).
-      *                09  SPA-GMN-MASUI           PIC X(06).
-      *                09  SPA-GMN-KENSA           PIC X(06).
-      *                09  SPA-GMN-GAZOU           PIC X(06).
-      *                09  SPA-GMN-SONOTA          PIC X(06).
-      *                09  SPA-GMN-NYURYOKU        PIC 9(02).
-      *            07  SPA-GMN-SELNUM           PIC X(02).
-      *
-      *
-      *        05  SPA-NAI-AREA.
-      *            07  SPA-NAI-TBL             OCCURS  100.
-      *                09  SPA-NAI-HKNCOMBINUM     PIC X(04).
-      *                09  SPA-NAI-RENNUM          PIC 9(01).
-      *                09  SPA-NAI-SRYYMD          PIC X(08).
-      *************07  SPA-NAI-SELNUM           PIC 9(04).
-      *
       *    •’•È•∞ŒŒ∞Ë
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -136,6 +97,8 @@
            03  WRK-WYMD            PIC X(09).
       *
            03  WRK-DOSELNUM            PIC 9(03).
+      *
+           03  WRK-DBPATH              PIC X(64).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-ZZ              PIC ZZZ.
@@ -334,21 +297,29 @@
                MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
                MOVE    SPA-PTID            TO  JYURRK-PTID
                MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-      *********MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
-      *        MOVE    SPA-NAI-RRKYMD(IDX) TO  JYURRK-SRYYMD
-      *********MOVE    SPA-NAI-RENNUM(IDX) TO  JYURRK-RENNUM
-               MOVE    SPA-NAI-RRK-DENPNUM(IDX)
-                                           TO  JYURRK-DENPNUM
+      *        ∆˛±°
+               IF      SPA-NYUGAIKBN       =   "1"
+                   MOVE    SPA-NAI-RRKYMD(IDX) TO  JYURRK-SRYYMD
+                   MOVE    SPA-NAI-RENNUM(IDX) TO  JYURRK-RENNUM
+                   MOVE    SPA-NAI-RRK-SRYKA(IDX)  TO  JYURRK-SRYKA
+                   MOVE    SPA-NAI-RRK-HKNCOMBI(IDX)
+                                               TO  JYURRK-HKNCOMBINUM
+                   MOVE    "JYURRK-KEY19"      TO  WRK-DBPATH
+               ELSE
+                   MOVE    SPA-NAI-RRK-DENPNUM(IDX)
+                                               TO  JYURRK-DENPNUM
+                   MOVE    "JYURRK-KEY6"       TO  WRK-DBPATH
+               END-IF
       *
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "JYURRK-KEY6"       TO  ORC-DBPATH
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    "JYURRK-KEY6"       TO  ORC-DBPATH
+                   MOVE    WRK-DBPATH          TO  ORC-DBPATH
                    PERFORM 900-JYURRK-NEXT-SEC
                ELSE
                    INITIALIZE                  JYURRK-REC
@@ -362,12 +333,12 @@
       *                Ã¿∫Ÿπ‡Ã‹¬‡»Ú
                        PERFORM 3101-JYURRK-HEN-SEC
       ***********  END-IF
-                   MOVE    "JYURRK-KEY6"       TO  ORC-DBPATH
+                   MOVE    WRK-DBPATH          TO  ORC-DBPATH
                    PERFORM 900-JYURRK-NEXT-SEC
                END-PERFORM
       *
                MOVE    "DBCLOSE"           TO  MCP-FUNC
-               MOVE    "JYURRK-KEY6"       TO  ORC-DBPATH
+               MOVE    WRK-DBPATH          TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
