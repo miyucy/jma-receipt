@@ -1420,7 +1420,7 @@
                                            "30"  OR  "31"  OR  "32" OR
                                            "33"  OR  "40"  OR  "50" OR
                                            "60"  OR  "70"  OR  "80" OR
-                                           "14"  OR  "54"
+                                           "14"  OR  "54"  OR  "13"
                            MOVE  ZERO          TO   WK-ZAIKAISU
                            MOVE  ZERO          TO   WK-ZAITEN
                            MOVE  ZERO          TO   WK-SYUTEN
@@ -1688,7 +1688,7 @@
                    ELSE
                          COMPUTE    RECE41-TENSU(7)  =
                                     RECE41-TENSU(7)  +
-                                   (TNS-TEN   *   ACCT-ZAIKAISU)
+                                   (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF                   
       *
       *    在宅のレセ点数欄の編集
@@ -2054,7 +2054,7 @@
                WHEN    "13"
                          COMPUTE    RECE41-TENSU(5)  =
                                     RECE41-TENSU(5)  +
-                                   (TNS-TEN   *   WRK-ZAIKAISU-XXX)
+                                   (WK-ZAITENSU   *   WRK-ZAIKAISU-XXX)
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF     SRY-SRYCD(IDX3) (1:1)   =    "6"  OR  "S"
@@ -2363,7 +2363,7 @@
                    ELSE
                          COMPUTE    RECE41-TENSU(6)  =
                                     RECE41-TENSU(6)  +
-                                   (TNS-TEN   *   ACCT-ZAIKAISU)
+                                   (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF                   
       *
       *    在宅のレセ点数欄の編集

@@ -1518,7 +1518,7 @@
                                             "30"  OR  "31"  OR  "32" OR
                                             "33"  OR  "40"  OR  "50" OR
                                             "60"  OR  "70"  OR  "80" OR
-                                            "14"  OR  "54"
+                                            "14"  OR  "54"  OR  "13"
                            MOVE  ZERO          TO   WK-ZAIKAISU
                            MOVE  ZERO          TO   WK-ZAITEN
                            MOVE  ZERO          TO   WK-SYUTEN
@@ -1542,7 +1542,7 @@
                IF    SRY-SRYKBN   =   "21"   OR   "22"   OR   "23"   OR
                                       "31"   OR   "32"   OR   "33"   OR
                                       "40"   OR   "50"   OR   "60"   OR
-                                      "70"   OR   "54"
+                                      "70"   OR   "54"   OR   "13"
                      MOVE    6      TO    IDX3
                END-IF
            END-PERFORM
@@ -1822,22 +1822,22 @@
                    IF    BUN-IDX        =   1
                        COMPUTE    RECE02-TENSU(7 BUN-IDX)  =
                                   RECE02-TENSU(7 BUN-IDX)  +
-                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
                        COMPUTE    RECE02-TENSU(7 BUN-IDX2)  =
                                   RECE02-TENSU(7 BUN-IDX2)  +
-                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
                        COMPUTE    RECE02-TENSU(7 BUN-IDX3)  =
                                   RECE02-TENSU(7 BUN-IDX3)  +
-                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
                        COMPUTE    RECE02-TENSU(7 BUN-IDX4)  =
                                   RECE02-TENSU(7 BUN-IDX4)  +
-                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
       *    在宅のレセ点数欄の編集
                WHEN    "14"
