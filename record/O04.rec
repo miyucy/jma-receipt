@@ -1,5 +1,11 @@
 O04	{
 	fixed14	{
+		B06	{
+			state	int;
+		};
+		B07	{
+			state	int;
+		};
 		PTNUM	{
 			value	varchar(20);
 		};

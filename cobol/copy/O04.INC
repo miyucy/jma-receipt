@@ -16,6 +16,8 @@
       * 113-8621, Japan.
       ********************************************************************
         02  O04.
+              03  O04-B06-STATE PIC S9(9)   BINARY.
+              03  O04-B07-STATE PIC S9(9)   BINARY.
               03  O04-PTNUM     PIC X(20).
               03  O04-SRYYM     PIC X(15).
               03  O04-KANANAME  PIC X(50).

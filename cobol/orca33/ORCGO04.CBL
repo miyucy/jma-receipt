@@ -1386,10 +1386,20 @@
                MOVE    "３期"          TO  O04-LBLSKY3RD
            END-IF
       *
-           MOVE    WIDGET-NORMAL       TO  O04-BTNSKY-STATE
+           MOVE    WIDGET-NORMAL       TO  O04-B06-STATE
+                                           O04-B07-STATE
+                                           O04-BTNSKY-STATE
                                            O04-CHOSEIIN-STATE
                                            O04-NYUKINHOUHOU-STATE
                                            O04-NYUKINHOUHOULST-STATE
+      *
+           IF    ( SPA-NAI-O04-SKYTBL-PAGE  <=   1 )
+               MOVE    WIDGET-INSENSITIVE  TO  O04-B06-STATE
+           END-IF
+      *
+           IF    ( SPA-NAI-O04-SKYTBL-NEXT   =   ZERO )
+               MOVE    WIDGET-INSENSITIVE  TO  O04-B07-STATE
+           END-IF
       *
            IF    ( SPA-GMN-O04-SYORIKBN      =   CONST-PROC-RRKSYU )
             AND  ( SPA-NAI-O04-PROC-FLG      =   3  )
@@ -1542,6 +1552,12 @@
       *    登録
            WHEN    "CLICKED"           ALSO    "B12"
                PERFORM 410-TOROKU-SEC
+      *    前ページ処理
+           WHEN    "CLICKED"           ALSO    "B06"
+               PERFORM 4101-PREV-PAGE-SEC
+      *    次ページ処理
+           WHEN    "CLICKED"           ALSO    "B07"
+               PERFORM 4101-NEXT-PAGE-SEC
       *    氏名検索
            WHEN    "CLICKED"           ALSO    "B09"
                PERFORM 410-P97-SENI-SEC
@@ -2045,10 +2061,6 @@
       *
            END-PERFORM
       *
-           IF    ( FLG-PTTEIKIRRK  =   ZERO )
-               MOVE    1               TO  SPA-NAI-O04-SKYTBL-NEXT
-           END-IF
-      *
            PERFORM UNTIL ( FLG-PTTEIKIRRK  NOT =   ZERO )
                     OR   ( SPA-GMN-O04-SKYLIST-MAX
                                               >=   CONST-SKYLIST-MAX )
@@ -2144,6 +2156,10 @@
       *
            MOVE    PATH-TBL-PTTEIKIRRK-KEY8    TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
+      *
+           IF    ( FLG-PTTEIKIRRK  =   ZERO )
+               MOVE    1               TO  SPA-NAI-O04-SKYTBL-NEXT
+           END-IF
       *
            .
        4101-SKYLIST-HEN-EXT.
@@ -2533,6 +2549,34 @@
       *
            .
        4101-SKYPRT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    前頁処理
+      *****************************************************************
+       4101-PREV-PAGE-SEC              SECTION.
+      *
+           IF    ( SPA-NAI-O04-SKYTBL-PAGE >   1 )
+               COMPUTE SPA-NAI-O04-SKYTBL-PAGE
+                   =   SPA-NAI-O04-SKYTBL-PAGE -   1
+               PERFORM 4101-SKYLIST-HEN-SEC
+           END-IF
+      *
+           .
+       4101-PREV-PAGE-EXT.
+           EXIT.
+      *****************************************************************
+      *    次頁処理
+      *****************************************************************
+       4101-NEXT-PAGE-SEC              SECTION.
+      *
+           IF    ( SPA-NAI-O04-SKYTBL-NEXT =   1 )
+               COMPUTE SPA-NAI-O04-SKYTBL-PAGE
+                   =   SPA-NAI-O04-SKYTBL-PAGE +   1
+               PERFORM 4101-SKYLIST-HEN-SEC
+           END-IF
+      *
+           .
+       4101-NEXT-PAGE-EXT.
            EXIT.
       *****************************************************************
       *    差額ボタンチェック処理

@@ -202,7 +202,6 @@
                        09  SPA-NAI-O04-BIRTHDAY        PIC X(08).
                        09  SPA-NAI-O04-SRYYMD          PIC X(08).
                        09  SPA-NAI-O04-SKYTBL-PAGE     PIC 9(03).
-                       09  SPA-NAI-O04-SKYTBL-NEXT     PIC 9(01).
                        09  SPA-NAI-O04-SAKKBN          PIC X(01).
                        09  SPA-NAI-O04-SAKKBN-MAX      PIC X(01).
                        09  SPA-NAI-O04-SRYKA           PIC X(02).
@@ -242,4 +241,5 @@
                        09  SPA-NAI-O04-TSK-SAKKBN-MAX  PIC X(01).
                        09  SPA-NAI-O04-TSK-SRYKACD     PIC X(02).
                        09  SPA-NAI-O04-TSK-SRYKAMEI    PIC X(20).
+                   07  SPA-NAI-O04-SKYTBL-NEXT         PIC 9(01).
       *
