@@ -11,6 +11,10 @@ R01	{
 			count	int;
 			item	varchar(12)[5];
 		};
+		TEISEIYM	{
+			state	int;
+			value	varchar(7);
+		};
 		STJYUSINYMD	{
 			state	int;
 			value	varchar(10);
@@ -59,6 +63,9 @@ R01	{
 		};
 		LABEL	{
 			value	varchar(10);
+		};
+		CREYMD	{
+			value	varchar(22);
 		};
 	};
 };

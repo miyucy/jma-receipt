@@ -360,8 +360,37 @@
 
     <widget>
       <class>GtkPandaEntry</class>
-      <name>STJYUSINYMD</name>
+      <name>TEISEIYM</name>
       <x>230</x>
+      <y>608</y>
+      <width>65</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:05:17 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:05:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>7</text_max_length>
+      <text>H17.12</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>STJYUSINYMD</name>
+      <x>470</x>
       <y>608</y>
       <width>88</width>
       <height>24</height>
@@ -389,7 +418,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>EDJYUSINYMD</name>
-      <x>352</x>
+      <x>600</x>
       <y>608</y>
       <width>88</width>
       <height>24</height>
@@ -696,7 +725,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label511</name>
-      <x>320</x>
+      <x>565</x>
       <y>608</y>
       <width>30</width>
       <height>24</height>
@@ -776,9 +805,25 @@
     <widget>
       <class>GtkLabel</class>
       <name>LABEL</name>
-      <x>235</x>
+      <x>350</x>
       <y>576</y>
       <width>200</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>CREYMD</name>
+      <x>300</x>
+      <y>608</y>
+      <width>160</width>
       <height>24</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>

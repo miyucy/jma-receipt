@@ -7,6 +7,9 @@
                 04  R01-SYORI-COUNT   PIC S9(9)   BINARY.
                 04  R01-SYORILST
                         PIC X(12)   OCCURS  5 TIMES.
+              03  R01-TEISEIYM-STATE   PIC S9(09) BINARY.
+              03  R01-TEISEIYM.
+                04  R01-VALUE   PIC X(7).
               03  R01-STJYUSINYMD-STATE   PIC S9(09) BINARY.
               03  R01-STJYUSINYMD.
                 04  R01-VALUE   PIC X(10).
@@ -43,3 +46,5 @@
               03  R01-SYOKBN         PIC X(25).
               03  R01-LABEL.
                 04  R01-VALUE   PIC X(10).
+              03  R01-CREYMD.
+                04  R01-VALUE   PIC X(22).
