@@ -357,6 +357,8 @@
            MOVE    SPACE           TO  SPA-GMN-MSG
            MOVE    SPACE           TO  SPA-GMN-MSG-STYLE
       *
+           PERFORM 400-JYOKYO-SET-SEC
+      *
            .
        310-SPASET-EXT.
            EXIT.
