@@ -163,7 +163,7 @@
                05  WRK-BYOMEI      PIC X(100).
                05  WRK-CHARTBYOMEI PIC X(100).
                05  WRK-UTAGAIFLG   PIC X(01).
-               05  WRK-BYOMEISBT   PIC X(01).
+               05  WRK-BYOMEISBT   PIC 9(01).
                05  WRK-RECECD-TBL.
                    07  WRK-RECECD  OCCURS  4
                                    PIC X(01).
@@ -2348,8 +2348,8 @@
       *****OR    ( SPA-NAI-BYOMEIHENFLG    =   "1"               )
                CONTINUE
            ELSE 
-               MOVE    SPACE                   TO  WRK-RECECD-TBL
-                                                   WRK-BYOMEISBT
+               INITIALIZE                      WRK-RECECD-TBL
+                                               WRK-BYOMEISBT
       * 
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
