@@ -116,4 +116,5 @@ bind	"ORCBMHKN"	"OpenCOBOL";
 bind	"ORCBLMAIN"	"OpenCOBOL";
 bind	"ORCBMCHK"	"OpenCOBOL";
 bind	"ORCBMCHKM"	"OpenCOBOL";
+bind	"ORCBMCNGM"	"OpenCOBOL";
 #include "orcadb.inc"
