@@ -118,11 +118,11 @@ UPDLIST=`awk '{gsub(/\t| |;/,""); print} ' $UPDFILE`
 
 for UPD in $UPDLIST
 do
-	echo ${UPD:31:$LEN}
-	if	orcawget ${UPD:31:$LEN} ;	then
-		echo ${UPD:31:$LEN} "ダウンロードが終了しました"
+	echo ${UPD:34:$LEN}
+	if	orcawget ${UPD:34:$LEN} ;	then
+		echo ${UPD:34:$LEN} "ダウンロードが終了しました"
 	else
-		echo ${UPD:31:$LEN} "ダウンロードに失敗しました"
+		echo ${UPD:34:$LEN} "ダウンロードに失敗しました"
 		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001MSTMNT99
 	        exit 99
 	fi

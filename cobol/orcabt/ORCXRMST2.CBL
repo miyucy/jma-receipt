@@ -30,32 +30,31 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     MCC-太田     02/03/18  点数マスタレイアウト変更
       *                                     対応
+      * 02.05.00     NACL-竹田    05/04/05  バージョン依存緩和処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
-      *FILE-CONTROL.
+       FILE-CONTROL.
       *
       *    入力：パラメータファイル
-      *    SELECT  IN-FILE         ASSIGN
-      *                            "ORCXRMST1DATA"
-      *                            ORGANIZATION    IS  LINE SEQUENTIAL
-      *                            FILE    STATUS  IS  STS-IN.
-      *
+           SELECT  IN-FILE         ASSIGN  PGEXIST01
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-IN.
+       
        DATA                        DIVISION.
-      *FILE                        SECTION.
+       FILE                        SECTION.
       *
       *    入力ファイル
-      *FD  IN-FILE.
-      *01  IN-REC.
-      *    03  IN-DBRVERVION           PIC X(21).
-      *    03  IN-UPPG                 PIC X(10).
-      *    03  IN-UPFILE               PIC X(100).
+       FD  IN-FILE.
+       01  IN-REC.
+           03  IN-FIL                  PIC X(01).
       *
       *
        WORKING-STORAGE             SECTION.
       *
+       01  PGEXIST01                   PIC X(256).
       *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
@@ -74,6 +73,7 @@
       *
            03  FLG-SYORI               PIC 9(01).
       *
+           03  FLG-CHECK               PIC 9(01).
       *    カウント領域
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(06).
@@ -123,6 +123,7 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+           COPY    "CPHOMEDIR.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -130,6 +131,8 @@
        LINKAGE                     SECTION.
        01  PARA-REC.
            03  PARA-DBFILE               PIC X(13).
+           03  PARA-MASTER-KBN           PIC X(02).
+           03  PARA-SEPARATE             PIC X(01).
            03  PARA-DBRVERVION           PIC X(21).
            03  PARA-UPPG                 PIC X(10).
            03  PARA-UPFILE               PIC X(100).
@@ -215,7 +218,15 @@
            MOVE    PARA-DBRVERVION     TO  LNK-DBRVERSION
       *---(01.00.01) LINE ADD END   -------------------------------------
       *
+      *    更新プログラム存在チェック
+           PERFORM 2001-PGEXIST-CHECK
+           IF      FLG-CHECK           NOT =  ZERO
+                   DISPLAY "*(ORCXMST2)* MODULE NOT FOUND:" PARA-UPPG
+                   PERFORM 100-DBOPEN-SEC
+                   GO  TO              200-MAIN-EXT
+           END-IF
       *    更新プログラム実行
+           DISPLAY "take para-uppg = " PARA-UPPG
            CALL    PARA-UPPG           USING
                                        LNK-AREA
       *
@@ -227,7 +238,9 @@
       *
       *    ＤＢ管理マスタ検索
            INITIALIZE                  DBKANRI-REC
-           MOVE    "ORCADB00"          TO  DBKANRI-KANRICD
+      *    MOVE    "ORCADB00"          TO  DBKANRI-KANRICD
+           MOVE    "ORCADB"            TO  DBKANRI-KANRICD
+           MOVE    PARA-MASTER-KBN     TO  DBKANRI-KANRICD(7:2)
            MOVE    DBKANRI-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "DBKANRI-KEY"       TO  ORC-DBPATH
@@ -262,6 +275,26 @@
       *
            .
        200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    更新プログラム存在チェック
+      *****************************************************************
+       2001-PGEXIST-CHECK              SECTION.
+           STRING  HOMEDIR-NAME        DELIMITED  BY  SPACE
+                   PARA-UPPG           DELIMITED  BY  SPACE
+                   ".so"               DELIMITED  BY  SIZE
+                                       INTO   PGEXIST01 
+           END-STRING
+      *    入力　初期処理
+           OPEN    INPUT           IN-FILE
+           IF      STS-IN          NOT =   ZERO
+               MOVE    1           TO  FLG-CHECK
+               DISPLAY "*(ORCXRMST2)* IN-FILE OPN STS["
+                                       STS-IN "]"
+           END-IF
+           .
+       2001-PGEXIST-EXT.
            EXIT.
       *
       *****************************************************************
