@@ -256,7 +256,7 @@
                05  WRK-KEI         PIC Z(07).
       *
            03  WRK-MEISYO          PIC X(40).
-	   03  WRK-TUSAN           PIC 9(08).
+           03  WRK-TUSAN           PIC 9(08).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -2900,7 +2900,8 @@
                GO      TO      41012-DAY-CHK-EXT
            END-IF.
            IF    (SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "4")  AND
-                 (SPA-WRK-CHK-SIKIBETU (IDX) NOT = SPACE)
+                 (SPA-WRK-CHK-SIKIBETU (IDX)     =  "1")  AND
+                 (SPA-GMN-DAY-41 (IDX)       NOT = ZERO)
                MOVE    "0039"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
                GO      TO      41012-DAY-CHK-EXT
@@ -2929,7 +2930,8 @@
                GO      TO      41012-DAY-CHK-EXT
            END-IF.
            IF    (SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "6")  AND
-                 (SPA-WRK-CHK-SIKIBETU (IDX) NOT = SPACE)
+                 (SPA-WRK-CHK-SIKIBETU (IDX) NOT = SPACE) AND
+                 (SPA-GMN-DAY-41 (IDX)       NOT = ZERO)
                MOVE    "0042"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
                GO      TO      41012-DAY-CHK-EXT
@@ -3337,11 +3339,17 @@
                      MOVE    03           TO  SPA-GMN-CUR-41
                      MOVE    "0036"       TO  SPA-ERRCD
                   END-IF
-                  IF   (SPA-NAI-TZAISKBKBN-41 (IDX3)  =  "4" OR "6") AND
-                       (SPA-WRK-CHK-SIKIBETU (IDX)    =  "1")        AND
+                  IF   (SPA-NAI-TZAISKBKBN-41 (IDX3)  =  "4")       AND
+                       (SPA-WRK-CHK-SIKIBETU (IDX)    =  "1")       AND
                        (SPA-WRK-KOMENTO-D         NOT =  ZERO)
                      MOVE    03            TO  SPA-GMN-CUR-41
-                     MOVE    "0045"        TO  SPA-ERRCD
+                     MOVE    "0039"        TO  SPA-ERRCD
+                  END-IF
+                  IF   (SPA-NAI-TZAISKBKBN-41 (IDX3)  =  "6")        AND
+                       (SPA-WRK-CHK-SIKIBETU (IDX)    =  "1" OR "2") AND
+                       (SPA-WRK-KOMENTO-D         NOT =  ZERO)
+                     MOVE    03            TO  SPA-GMN-CUR-41
+                     MOVE    "0042"        TO  SPA-ERRCD
                   END-IF
                END-PERFORM
                IF   SPA-ERRCD   =  SPACE
@@ -3366,11 +3374,17 @@
                      MOVE    03            TO  SPA-GMN-CUR-41
                      MOVE    "0026"        TO  SPA-ERRCD
                   END-IF
-                  IF   (SPA-NAI-TZAISKBKBN-41 (IDX3)  =  "4" OR "6") AND
+                  IF   (SPA-NAI-TZAISKBKBN-41 (IDX3)  =  "4")        AND
                        (SPA-WRK-CHK-SIKIBETU (IDX)    =  "1")        AND
                        (SPA-WRK-KOMENTO-D         NOT = ZERO)
                      MOVE    03            TO  SPA-GMN-CUR-41
-                     MOVE    "0045"        TO  SPA-ERRCD
+                     MOVE    "0039"        TO  SPA-ERRCD
+                  END-IF
+                  IF   (SPA-NAI-TZAISKBKBN-41 (IDX3)  =  "6")        AND
+                       (SPA-WRK-CHK-SIKIBETU (IDX)    =  "1" OR "2") AND
+                       (SPA-WRK-KOMENTO-D         NOT = ZERO)
+                     MOVE    03            TO  SPA-GMN-CUR-41
+                     MOVE    "0042"        TO  SPA-ERRCD
                   END-IF
                END-PERFORM
                IF   SPA-ERRCD   =  SPACE
@@ -3529,8 +3543,12 @@
                IF      SPA-GMN-TZAISKBKBN-41 (IDX)   =  "2"
                    PERFORM VARYING    IDK      FROM    1   BY  1
                            UNTIL      IDK      >   31
-                       IF    SPA-GMN-TDAY-41 (IDX IDK)  NOT = SPACE
+                       IF    SPA-GMN-TDAY-41   (IDX IDK)   =
+                                                " 1"  OR  " 2"  OR  " 3"
                            MOVE    "1"    TO  SPA-WRK-CHK-SIKIBETU (IDK)
+                       END-IF
+                       IF    SPA-GMN-TDAY-41   (IDX IDK)   =  " 4"
+                           MOVE    "2"    TO  SPA-WRK-CHK-SIKIBETU (IDK)
                        END-IF
                    END-PERFORM
                END-IF
@@ -5646,9 +5664,12 @@
                IF      SPA-GMN-TZAISKBKBN-41 (IDX)   =  "2"
                    PERFORM VARYING    IDK      FROM    1   BY  1
                            UNTIL      IDK      >   31
-                       IF    SPA-GMN-TDAY-41   (IDX IDK)   NOT =  
-                                                               ALL SPACE
+                       IF    SPA-GMN-TDAY-41   (IDX IDK)   =
+                                                " 1"  OR  " 2"  OR  " 3"
                            MOVE    "1"    TO  SPA-WRK-CHK-SIKIBETU (IDK)
+                       END-IF
+                       IF    SPA-GMN-TDAY-41   (IDX IDK)   =  " 4"
+                           MOVE    "2"    TO  SPA-WRK-CHK-SIKIBETU (IDK)
                        END-IF
                    END-PERFORM
                END-IF
@@ -5689,10 +5710,19 @@
            IF     WRK-CHK-ZAISKBKBN                 =  "2"
                PERFORM   VARYING  IDX  FROM  1  BY 1
                          UNTIL    IDX    >   SPA-GMN-MAX-41
-                   IF      SPA-GMN-TZAISKBKBN-41 (IDX)   =  "4" OR "6"
+                   IF      SPA-GMN-TZAISKBKBN-41 (IDX)   =  "4"
                        PERFORM VARYING    IDK      FROM    1   BY  1
                                UNTIL      IDK      >   31
-                           IF    SPA-WRK-CHK-SIKIBETU (IDK)   =    "1"
+                           IF    SPA-WRK-CHK-SIKIBETU (IDK)   =   "1"
+                               MOVE  SPACE TO  SPA-GMN-TDAY-41 (IDX IDK)
+                           END-IF
+                       END-PERFORM
+                   END-IF
+                   IF      SPA-GMN-TZAISKBKBN-41 (IDX)   =  "6"
+                       PERFORM VARYING    IDK      FROM    1   BY  1
+                               UNTIL      IDK      >   31
+                           IF    SPA-WRK-CHK-SIKIBETU (IDK)   =
+                                                          "1"   OR   "2"
                                MOVE  SPACE TO  SPA-GMN-TDAY-41 (IDX IDK)
                            END-IF
                        END-PERFORM
@@ -5700,10 +5730,26 @@
                END-PERFORM
                PERFORM   VARYING  IDX  FROM  1  BY 1
                          UNTIL    IDX    >   SPA-GENSAN-ST4-41
-                   IF      SPA-NAI-TZAISKBKBN-41 (IDX)   =  "4" OR "6"
+                   IF      SPA-NAI-TZAISKBKBN-41 (IDX)   =  "4"
                        PERFORM VARYING    IDK      FROM    1   BY  1
                                UNTIL      IDK      >   31
-                           IF    SPA-WRK-CHK-SIKIBETU (IDK)   =    "1"
+                           IF    SPA-WRK-CHK-SIKIBETU (IDK)   =   "1"
+                               MOVE  ZERO  TO  SPA-NAI-DAY-41 (IDX IDK)
+                           END-IF
+                       END-PERFORM
+                       MOVE    ZERO              TO  WRK-ZAIKAISU
+                       PERFORM VARYING    IDK      FROM    1   BY  1
+                               UNTIL      IDK      >   31
+                           ADD     SPA-NAI-DAY-41  (IDX IDK)
+                                           TO  WRK-ZAIKAISU
+                       END-PERFORM
+                       MOVE  WRK-ZAIKAISU  TO  SPA-NAI-ZAIKAISU-41 (IDX)
+                   END-IF
+                   IF      SPA-NAI-TZAISKBKBN-41 (IDX)   =  "6"
+                       PERFORM VARYING    IDK      FROM    1   BY  1
+                               UNTIL      IDK      >   31
+                           IF    SPA-WRK-CHK-SIKIBETU (IDK)   =
+                                                           "1"  OR  "2"
                                MOVE  ZERO  TO  SPA-NAI-DAY-41 (IDX IDK)
                            END-IF
                        END-PERFORM
@@ -6522,9 +6568,6 @@
                                        TO  WRK-ERRMSG(1:42)
                    MOVE    "の変更はできません。"
                                        TO  WRK-ERRMSG(43:20)
-               WHEN    "0045"
-                   MOVE    "外泊されている日ですから設定はできません。"
-                                       TO  WRK-ERRMSG
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません。"
                                        TO  WRK-ERRMSG
