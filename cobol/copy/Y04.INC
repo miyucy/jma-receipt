@@ -38,7 +38,7 @@
                 04  Y04-SRYNAIYO.
                   05  Y04-VALUE   PIC X(21).
                 04  Y04-S2-COUNT   PIC S9(9)   BINARY.
-                04  Y04-SRYNAIYOLST    PIC X(21)   OCCURS  10 TIMES.
+                04  Y04-SRYNAIYOLST    PIC X(21)   OCCURS  31 TIMES.
               03  Y04-KANJA-LIST1.
                 04  Y04-PT-LIST1.
                   05  Y04-LIST1-COUNT   PIC S9(9)   BINARY.

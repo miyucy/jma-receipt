@@ -348,7 +348,7 @@
       *
            MOVE    ZERO                TO  SPA-SINRYO-MAX
            PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL      (IDX             >   9     )   OR
+                   UNTIL      (IDX             >   30    )   OR
                               (FLG-SYSKANRI    =   1   )
       *
                MOVE    MCPDATA-REC       TO  SYS-1012-REC
