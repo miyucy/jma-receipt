@@ -29,6 +29,12 @@
       *  01.00.05    NACL-門脇    03.09.29  包括対象検査情報の追加
       *                                     検査等実施判断情報の追加
       *                                     各種番号等情報の追加
+      *
+      *  01.01.01    NACL-藤原    04/05/26  レイアウト変更
+      *                                     診療種別区分
+      *                                     告示等識別区分１
+      *                                     きざみ値計算識別
+      *                                     注加算コードの追加
       ************************************************************
       *01  RECE05-REC.
            03  RECE05-KEY.
@@ -68,56 +74,66 @@
            03  RECE05-SRYSYUKBN           PIC  X(03).
       *自費金額
            03  RECE05-JIHIMONEY           PIC  9(07).
+      *
+           03  RECE05-SRYACT-TBL          OCCURS  5.
       *診療行為情報
-           03  RECE05-SRYACTINF           OCCURS  5.
+               05  RECE05-SRYACTINF.
       *診療コード
-               05  RECE05-SRYCD           PIC  X(09).
+                   07  RECE05-SRYCD           PIC  X(09).
+      *診療種別区分
+                   07  RECE05-SRYSYUKBN-X     PIC  X(03).
       *数量
-               05  RECE05-SRYSURYO        PIC  9(05)V9(03).
+                   07  RECE05-SRYSURYO        PIC  9(05)V9(03).
       *回数
-               05  RECE05-SRYKAISU        PIC  9(03).
+                   07  RECE05-SRYKAISU        PIC  9(03).
       *単位コード
-               05  RECE05-TANICD          PIC  9(03).
+                   07  RECE05-TANICD          PIC  9(03).
       *単位名称有効桁数
-               05  RECE05-TANIMOJISU      PIC  9(01).
+                   07  RECE05-TANIMOJISU      PIC  9(01).
       *単位名称
-               05  RECE05-TANINAME        PIC  X(24).
+                   07  RECE05-TANINAME        PIC  X(24).
       *点数識別区分
-               05  RECE05-TENSIKIBETU     PIC  9(01).
+                   07  RECE05-TENSIKIBETU     PIC  9(01).
       *点数
-               05  RECE05-TEN             PIC  9(09)V9(02).
+                   07  RECE05-TEN             PIC  9(09)V9(02).
       *明細請求フラグ
-               05  RECE05-MEISKYFLG       PIC  X(01).
+                   07  RECE05-MEISKYFLG       PIC  X(01).
       *自動算定区分
-               05  RECE05-AUTOKBN         PIC  X(01).
+                   07  RECE05-AUTOKBN         PIC  X(01).
       *名称入力番号
-               05  RECE05-INPUTNUM        PIC  9(03).
+                   07  RECE05-INPUTNUM        PIC  9(03).
       *点数欄集計先識別
-               05  RECE05-TENTTLKBN       PIC  9(03).
-      *名称情報
-           03  RECE05-NAMEINF             OCCURS  5.
-      *漢字有効桁数
-               05  RECE05-YUKOKETA        PIC  9(02).
-      *漢字名称
-               05  RECE05-NAME            PIC  X(200).
-      *データ区分情報
-          03  RECE05-DATAKBNINF           OCCURS  5.
-              05  RECE05-DATAKBN          PIC  9(01).
-      *包括対象検査情報
-          03  RECE05-HOUKNSKBNINF         OCCURS  5.
+                   07  RECE05-TENTTLKBN       PIC  9(03).
+      *データ区分
+                   07  RECE05-DATAKBN         PIC  9(01).
       *包括対象検査
-              05  RECE05-HOUKNSKBN        PIC  9(02).
-      *検査等実施判断情報
-          03  RECE05-KNSJISKBNINF         OCCURS  5.
+                   07  RECE05-HOUKNSKBN       PIC  9(02).
       *検査等実施判断
-              05  RECE05-KNSJISKBN        PIC  9(01).
-      *各種番号等情報
-          03  RECE05-CDKBNINF             OCCURS  5.
+                   07  RECE05-KNSJISKBN       PIC  9(01).
       *各種番号等
-              05  RECE05-CDKBN-KBN        PIC  X(01).
-              05  RECE05-CDKBN-SYO        PIC  9(01).
-              05  RECE05-CDKBN-BU         PIC  9(02).
-              05  RECE05-CDKBN-KBNNUM     PIC  9(03).
-              05  RECE05-CDKBN-KBNNUM-EDA PIC  9(02).
-              05  RECE05-CDKBN-KOUBAN     PIC  9(02).
-              05  RECE05-KOUHYOJYUNNUM    PIC  9(09).
+                   07  RECE05-CDKBNINF.
+                       09  RECE05-CDKBN-KBN        PIC  X(01).
+                       09  RECE05-CDKBN-SYO        PIC  9(01).
+                       09  RECE05-CDKBN-BU         PIC  9(02).
+                       09  RECE05-CDKBN-KBNNUM     PIC  9(03).
+                       09  RECE05-CDKBN-KBNNUM-EDA PIC  9(02).
+                       09  RECE05-CDKBN-KOUBAN     PIC  9(02).
+                       09  RECE05-KOUHYOJYUNNUM    PIC  9(09).
+      *告示等識別区分１
+                   07  RECE05-KOKUJISKBKBN1   PIC  9(01).
+      *きざみ値計算識別
+                   07  RECE05-KZMCOMPSIKIBETU PIC  9(01).
+      *注加算コード
+                   07  RECE05-CHUKSNINF.
+      *コード
+                       09  RECE05-CHUKSNCD     PIC  X(04).
+      *通番
+                       09  RECE05-CHUKSNTUBAN  PIC  X(01).
+      *入力コメント
+                   07  RECE05-INPUTCOMENT      PIC  X(80).
+      *名称情報
+               05  RECE05-NAMEINF.
+      *漢字有効桁数
+                   07  RECE05-YUKOKETA         PIC  9(02).
+      *漢字名称
+                   07  RECE05-NAME             PIC  X(200).
