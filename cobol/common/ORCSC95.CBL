@@ -33,6 +33,7 @@
       *  01.00.04    NACL−多々納 02/10/10  外来管理加算チェックの有無
       *  01.00.05    NACL−多々納 02/10/18  入院追加
       *  01.00.06    NACL-多々納  03/02/19  療養担当手当追加
+      *  01.00.07    NACL-多々納  03/04/09  保険編集サブプロ追加
       *****************************************************************
       *
       *
@@ -284,6 +285,9 @@
       *    保険年齢・負担割合算定サブ
            COPY    "CPORCSAGECHK.INC".
       *
+      *    保険組合せセット領域
+           COPY    "CPORCSHKNSET.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -335,11 +339,11 @@
                WHEN    "2"
       *********WHEN    "5"
                WHEN    "8"
+                   PERFORM 110-K02SYOSIN-SEC
                    IF      LNK-SC95-PG     =   "K02"
       *                患者の確定している時、患者情報のセット
                        PERFORM 1001-SPA-JYUSIN-SEC
                    END-IF
-                   PERFORM 110-K02SYOSIN-SEC
                    PERFORM 200-WKSRYACT-SYORI-SEC
       *        入院のＳＰＡ編集、ワーク診療行為作成
                WHEN    "5"
@@ -356,7 +360,7 @@
       *        保険区分変更時
                WHEN    "7"
       *            保険組合せが使用できるかのチェック
-                   PERFORM 100131-HKNCOMBI-CHK-SEC
+      *************PERFORM 100131-HKNCOMBI-CHK-SEC
       *********    IF      SPA-SYORIFLG        =   ZERO
                        PERFORM 200-WKSRYACT-SYORI-SEC
       ***********  END-IF
@@ -837,8 +841,8 @@
       *****************************************************************
        1001-SPA-JYUSIN-SEC              SECTION.
       *
-           MOVE    SPACE               TO  SPA-HKNCOMBIMEI
-           MOVE    SPACE               TO  SPA-FTNRATEMEI
+      *    MOVE    SPACE               TO  SPA-HKNCOMBIMEI
+      *    MOVE    SPACE               TO  SPA-FTNRATEMEI
       *
            IF     (SPA-GMN-SRYKA       =   SPACE      ) AND
                   (SPA-SYSYMD          =   SPA-SRYYMD ) AND
@@ -1053,7 +1057,8 @@
            END-IF
       *    保険組合せ（中途終了分選択時は選択済み）
            IF     (LNK-SC95-KBN        =   "8"  )  OR
-                  (SPA-SYORIFLG        =   1    )
+                  (SPA-SYORIFLG        =   1    )  OR
+                  (SPA-HKNCOMBINUM NOT =   SPACE)
                CONTINUE
            ELSE
                MOVE    JYURRK-HKNCOMBINUM  TO  SPA-HKNCOMBINUM
@@ -1309,6 +1314,68 @@
       *
       *
            INITIALIZE                  SPA-GMN-HKNCOMBI-LISTG
+      *
+           INITIALIZE                  ORCSHKNSETAREA
+           MOVE    "1"                 TO  ORCSHKN-KBN
+           CALL    "ORCSHKNSET"        USING
+                                       SPA-AREA
+                                       ORCSHKNSETAREA
+      *
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   ORCSHKN-HKN-MAX
+               MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
+                                       TO  SPA-GMN-THKNCOMBINUM (IDX)
+               MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
+                                       TO  SPA-GMN-THKNCOMBIMEI (IDX)
+      *
+               MOVE    ORCSHKN-NAI-HKNID (IDX)
+                                       TO  SPA-NAI-HKNID  (IDX)
+               MOVE    ORCSHKN-NAI-HKNNUM (IDX)
+                                       TO  SPA-NAI-HKNNUM  (IDX)
+               MOVE    ORCSHKN-NAI-KOH1HKNNUM (IDX)
+                                       TO  SPA-NAI-KOH1HKNNUM (IDX)
+               MOVE    ORCSHKN-NAI-KOH2HKNNUM (IDX)
+                                       TO  SPA-NAI-KOH2HKNNUM (IDX)
+               MOVE    ORCSHKN-NAI-KOH3HKNNUM (IDX)
+                                       TO  SPA-NAI-KOH3HKNNUM (IDX)
+               MOVE    ORCSHKN-NAI-KOH4HKNNUM (IDX)
+                                       TO  SPA-NAI-KOH4HKNNUM (IDX)
+      *
+               MOVE    ORCSHKN-NAI-FTNRATE (IDX)
+                                       TO  SPA-NAI-TFTNRATE (IDX)
+               MOVE    ORCSHKN-GMN-FTNRATEMEI (IDX)
+                                       TO  SPA-GMN-TFTNRATEMEI (IDX)
+      *
+      *        四肢区分
+               MOVE    ORCSHKN-NAI-RSI-SISIKBN (IDX)
+                                           TO  SPA-NAI-RSI-SISIKBN
+                                                              (IDX)
+      *        傷病年月日
+               MOVE    ORCSHKN-NAI-RSI-SHOBYOYMD (IDX)
+                                           TO  SPA-NAI-RSI-SHOBYOYMD
+                                                               (IDX)
+      *        労災区分
+               MOVE    ORCSHKN-NAI-RSI-HKNKBN (IDX)
+                                           TO  SPA-NAI-RSI-HKNKBN
+                                                               (IDX)
+           END-PERFORM
+      *
+           MOVE    ORCSHKN-HKN-MAX     TO  SPA-HKN-MAX
+           IF      SPA-HKN-MAX         =   ZERO
+               GO      TO      10013-HKNCOMBI-EXT
+           END-IF
+      *
+           IF      ORCSHKN-IDX         =   ZERO
+               MOVE    1               TO  ORCSHKN-IDX
+           END-IF
+           MOVE    SPA-GMN-THKNCOMBINUM (ORCSHKN-IDX)
+                                       TO  SPA-HKNCOMBINUM
+      *
+      *    保険組合せが使用できるかのチェック
+           PERFORM 100131-HKNCOMBI-CHK-SEC
+           GO      TO      10013-HKNCOMBI-EXT
+      *
+      *!!!!!
            MOVE    ZERO                TO  FLG-HKNCOMBICHK
       *
       *    保険組合マスター編集
@@ -1395,7 +1462,7 @@
       *                                MCPDATA-REC
       *
       *    保険組合せが使用できるかのチェック
-           PERFORM 100131-HKNCOMBI-CHK-SEC
+      *****PERFORM 100131-HKNCOMBI-CHK-SEC
       *
            .
        10013-HKNCOMBI-EXT.
@@ -1417,8 +1484,15 @@
       *
                    MOVE    SPA-GMN-HKN-LIST (IDX)
                                            TO  SPA-GMN-HKNCOMBI-G
+                   MOVE    SPA-NAI-TFTNRATE  (IDX)
+                                           TO  SPA-GMN-FTNRATE
                    MOVE    SPA-GMN-TFTNRATEMEI (IDX)
                                            TO  SPA-GMN-FTNRATEMEI
+      *
+                   MOVE    SPA-NAI-TFTNRATE  (IDX)
+                                           TO  SPA-FTNRATE
+                   MOVE    SPA-GMN-TFTNRATEMEI (IDX)
+                                           TO  SPA-FTNRATEMEI
       *            労災判定
                    IF      SPA-NAI-HKNNUM (IDX)    =   "971"
                                                    OR  "973"
@@ -1447,13 +1521,13 @@
            MOVE    SPA-HKNCOMBINUM     TO  AGECHK-HKNCOMBINUM
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
-           IF      AGECHK-FTNRATE  NOT =   ZERO
+      *****IF      AGECHK-FTNRATE  NOT =   ZERO
       *        負担率
-               MOVE    AGECHK-FTNRATEMEI   TO  SPA-GMN-FTNRATEMEI
-               MOVE    AGECHK-FTNRATEMEI   TO  SPA-FTNRATEMEI
-               MOVE    AGECHK-FTNRATE      TO  SPA-GMN-FTNRATE
-               MOVE    AGECHK-FTNRATE      TO  SPA-FTNRATE
-           END-IF
+      *        MOVE    AGECHK-FTNRATEMEI   TO  SPA-GMN-FTNRATEMEI
+      *        MOVE    AGECHK-FTNRATEMEI   TO  SPA-FTNRATEMEI
+      *        MOVE    AGECHK-FTNRATE      TO  SPA-GMN-FTNRATE
+      *        MOVE    AGECHK-FTNRATE      TO  SPA-FTNRATE
+      *****END-IF
            MOVE    ZERO                TO  SPA-RJN-ERR
       *
       *    老人でＨ１４．１０の保険変更がない時
@@ -1643,6 +1717,9 @@
       *    Ｋ０２初画面用編集処理
       *****************************************************************
        110-K02SYOSIN-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SPA-HKNCOMBIMEI
+           MOVE    SPACE               TO  SPA-FTNRATEMEI
       *
       *    患者マスター読み込み
            MOVE    SPA-HOSPID          TO  PTINF-HOSPID
@@ -2272,17 +2349,17 @@
                PERFORM 10014-UKETUKE-CHK-SEC
            END-IF
       *
-      *    診療科、ドクター名称編集
-           PERFORM 10012-SYSKAN-SEC
-      *
-      *    保険組合せ名称編集
-           PERFORM 10013-HKNCOMBI-SEC
-      *
       *    前回患者保存
            MOVE    SPA-PTID            TO  SPA-LAST-PTID
            MOVE    SPA-PTNUM           TO  SPA-LAST-PTNUM
       *
            PERFORM 110-K02SYOSIN-SEC
+      *
+      *    診療科、ドクター名称編集
+           PERFORM 10012-SYSKAN-SEC
+      *
+      *    保険組合せ名称編集
+           PERFORM 10013-HKNCOMBI-SEC
       *
            PERFORM 200-WKSRYACT-SYORI-SEC
            .
@@ -2348,7 +2425,7 @@
            PERFORM 11011-TOKUTEI-SYORI-SEC
       *
       *    保険組合せが使用できるかのチェック
-           PERFORM 100131-HKNCOMBI-CHK-SEC
+      *****PERFORM 100131-HKNCOMBI-CHK-SEC
       *
       *    継続のチェック
       *    収納テーブル読み込み
