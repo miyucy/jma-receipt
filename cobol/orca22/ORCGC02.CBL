@@ -935,7 +935,7 @@
                                        TO  SPA-GMN-C02-SYOKBN-G
       *
            MOVE    "0"             TO  SPA-GMN-C02-HNYUGAIKBNL     (1)
-           MOVE    "全体"          TO  SPA-GMN-C02-HNYUGAIKBNMEIL  (1)
+           MOVE    "入院・入院外"  TO  SPA-GMN-C02-HNYUGAIKBNMEIL  (1)
            MOVE    "1"             TO  SPA-GMN-C02-HNYUGAIKBNL     (2)
            MOVE    "入院"          TO  SPA-GMN-C02-HNYUGAIKBNMEIL  (2)
            MOVE    "2"             TO  SPA-GMN-C02-HNYUGAIKBNL     (3)
@@ -1797,7 +1797,7 @@
                WHEN    "CLICKED"       ALSO    "B17"
                    PERFORM 430-FREEMSG-SEC
       *    入外区分表示切替え処理
-               WHEN    "CLICKED"       ALSO    "B20"
+               WHEN    "CLICKED"       ALSO    "B23"
                    PERFORM 430-HNYUGAIKBN-CHANGE-SEC
       *    表示切替え処理
                WHEN    "CLICKED"       ALSO    "B21"
@@ -7249,11 +7249,11 @@
       *
            EVALUATE    SPA-GMN-C02-HNYUGAIKBN
                WHEN    ZERO
-                   MOVE    "全  体"        TO  C02-B20-LABEL
+                   MOVE    "入・外"        TO  C02-B23-LABEL
                WHEN    "1"
-                   MOVE    "入  院"        TO  C02-B20-LABEL
+                   MOVE    "入  院"        TO  C02-B23-LABEL
                WHEN    "2"
-                   MOVE    "入院外"        TO  C02-B20-LABEL
+                   MOVE    "入院外"        TO  C02-B23-LABEL
            END-EVALUATE
       *               
            PERFORM 5001-MAPCUR-SEC
