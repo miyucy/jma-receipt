@@ -30,7 +30,6 @@
       * 01.00.01     MCC-多々納   01/05/23  表示キー追加
       * 01.01.01     MCC-藤原     01/09/26  JOINの修正      
       * 01.00.03     MCC-多々納   02/07/18  インターフェースの変更
-      * 01.00.04     NACL-多々納  05/12/12  MONFUNC対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -152,7 +151,22 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA102SCRAREA.INC".
+           COPY    "Z01.INC".
+           COPY    "Z02.INC".
+           COPY    "Z03.INC".
+           COPY    "Z04.INC".
+           COPY    "Z05.INC".
+           COPY    "Z06.INC".
+           COPY    "Z07.INC".
+           COPY    "Z90.INC".
+           COPY    "Z91.INC".
+           COPY    "Z97.INC".
+           COPY    "Z98.INC".
+           COPY    "Z99.INC".
+           COPY    "ZERR.INC".
+           COPY    "ZID1.INC".
+           COPY    "ZID2.INC".
+           COPY    "ZID3.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -379,14 +393,6 @@
                    MOVE    01              TO  SPA-Z99GMN-IDX
                END-IF
            END-IF
-      *    画面表示コードが１０文字以上をエラーとする
-           IF     (SPA-Z99GMN-INPUTCD(1)   NOT =   SPACE )  AND
-                  (SPA-Z99GMN-INPUTCD(1)(11:)
-                                           NOT =   SPACE )
-               MOVE    "0013"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-Z99GMN-CUR
-               MOVE    01                  TO  SPA-Z99GMN-IDX
-           END-IF
       *
            .
       *
@@ -472,31 +478,18 @@
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-Z99GMN-INPUTCD(SPA-Z99GMN-IDX)
                                        TO  KANACHK-MAE-INPUT
-           MOVE    20                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
-           MOVE    KANACHK-MAE-INPUT   TO  SPA-Z99GMN-INPUTCD
-                                               (SPA-Z99GMN-IDX)
            IF      KANACHK-RC      NOT =   ZERO
       *        全角半角混在エラー
                MOVE    "0007"          TO  SPA-ERRCD
            ELSE
                MOVE    KANACHK-MAX     TO  CNT-STRING
-      *        間に空白がある時、エラー
-               IF      KANACHK-RC2     NOT =   ZERO
-                   MOVE    "0012"          TO  SPA-ERRCD
-                   GO      TO      410111-INPUTCD-CHK-EXT
-               END-IF
-      *
       *        全角
                IF      KANACHK-SYUBETU     =   2
                    MOVE    1               TO  FLG-KANJI
                    IF      KANACHK-MAX         >   10
                        MOVE    "0006"              TO  SPA-ERRCD
-                   END-IF
-      *            全角空白はエラー
-                   IF     KANACHK-RC3      NOT =   ZERO
-                       MOVE    "0014"      TO  SPA-ERRCD
                    END-IF
                END-IF
       *        半角
@@ -513,11 +506,6 @@
                        IF      SPA-Z99GMN-INPUTCD(SPA-Z99GMN-IDX)(1:1)
                                                    =   "S"   OR  "P"
                            MOVE    "0008"      TO  SPA-ERRCD
-                       END-IF
-      *                #,$チェック
-                       IF      SPA-Z99GMN-INPUTCD(SPA-Z99GMN-IDX)(1:1)
-                                                   =   "#"   OR  "$"
-                           MOVE    "0010"      TO  SPA-ERRCD
                        END-IF
                    END-IF
                END-IF
@@ -540,7 +528,6 @@
                                                =   "+"   OR  "-"
                                                OR  "/"   OR  "!"
                                                OR  "."   OR  "*"
-                                               OR  "_"
                        MOVE    "0010"      TO  SPA-ERRCD
                    END-IF
                ELSE
@@ -593,7 +580,7 @@
       *
       *    入力コード使用チェック
            INITIALIZE                  INPUTCD-REC
-      *****MOVE    SPA-HOSPID          TO  ICD-HOSPID
+           MOVE    SPA-HOSPID          TO  ICD-HOSPID
            MOVE    SPA-Z99GMN-INPUTCD(SPA-Z99GMN-IDX)
                                        TO  ICD-INPUTCD
            IF      FLG-KANJI           =   1
@@ -617,22 +604,31 @@
       *
            MOVE    ICD-CDSYU           TO  WRK-CDSYU
       *
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
-           MOVE    "tbl_inputcd"       TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           IF      CNT-STRING          =   20
+               MOVE    "INPUTCD-KEY2"      TO  WRK-PATH
+           ELSE
+               MOVE    "INPUTCD-KEY"       TO  WRK-PATH
+           END-IF
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_inputcd"       TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    WRK-PATH            TO  ORC-DBPATH
                PERFORM                     920-INPUTCD-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
       *
-           MOVE    "tbl_inputcd"       TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBLOSEC-SEC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    WRK-PATH            TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF     (FLG-INPUTCD         =   ZERO  )  AND
                   (SPA-Z99GMN-INPUTCD(SPA-Z99GMN-IDX)
@@ -989,20 +985,6 @@
                    MOVE
                    "表示入力コードに全角１文字の数字は使用できません"
                                                  TO  SPA-ERRMSG
-               WHEN    "0012"
-                   MOVE    "文字の間に空白は入力できません。"
-                                                 TO  SPA-ERRMSG
-               WHEN    "0013"
-                   MOVE    "表示入力コードは半角１０文字、"
-                                                 TO  SPA-ERRMSG
-                   MOVE    "全角５文字までにして下さい。"
-                                                 TO  SPA-ERRMSG(31:)
-               WHEN    "0014"
-                   STRING  "全角空白があります。"
-                           "全角空白は入力できません。"
-                                        DELIMITED  BY  SIZE
-                                                 INTO  SPA-ERRMSG
-                   END-STRING
            END-EVALUATE.
       *
            MOVE    SPACE               TO  ZERR
@@ -1094,7 +1076,11 @@
       *****************************************************************
        920-INPUTCD-READ-SEC     SECTION.
       *
-           PERFORM 920-DBFETCH-SEC
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  INPUTCD-REC
                MOVE    ZERO                TO  FLG-INPUTCD
@@ -1106,48 +1092,6 @@
            .
        920-INPUTCD-READ-EXT.
            EXIT.
-      *****************************************************************
-      *    テーブル検索処理
-      *****************************************************************
-       910-DBSELECT-SEC                SECTION.
-      *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-      *
-           .
-       910-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ読み込み処理
-      *****************************************************************
-       920-DBFETCH-SEC                 SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-      *
-           .
-      *
-       920-DBFETCH-EXT.
-           EXIT.
-      *****************************************************************
-      *   ＤＢクローズ処理
-      *****************************************************************
-       990-DBLOSEC-SEC                 SECTION.
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-           .
-       990-DBLOSEC-EXT.
-           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
@@ -1155,11 +1099,10 @@
        900-PUT-WINDOW                            SECTION.
       *
            MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"                    USING
-                                                     MCPAREA
-                                                     MCPDATA-REC
-                                                     SPA-AREA
-           .
+           CALL   "ORCMCPSUB"                     USING  MCPAREA
+                                                         ORCMCPAREA
+                                                         MCPDATA-REC.
+      *
        900-PUT-WINDOW-EXT.
            EXIT.
       *
