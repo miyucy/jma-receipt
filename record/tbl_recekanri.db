@@ -57,6 +57,7 @@ path	key3		{
                     AND     TEISYUTUSAKI =   :TEISYUTUSAKI
                     AND     RECESYUBETU  <>  '0000'
                     AND     RECESYUBETU  <>  '8888'
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
 		;
 	};
 };
