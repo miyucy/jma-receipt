@@ -86,8 +86,8 @@ path	key2 	{
 			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD,
 			                  RENNUM,
-			                  DOUJI_RENNUM
-			                  
+			                  DOUJI_RENNUM,
+			                  EDANUM
 		;
 	};
 };
@@ -103,7 +103,8 @@ path	key3 	{
 			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD,
 			                  RENNUM,
-			                  DOUJI_RENNUM
+			                  DOUJI_RENNUM,
+			                  EDANUM
 		;
 	};
 };
@@ -119,7 +120,8 @@ path	key4 	{
 			AND   SRYYMD      =   :SRYYMD
 			AND   LASTKBN     =   '1'
 			ORDER   BY        RENNUM,
-			                  DOUJI_RENNUM
+			                  DOUJI_RENNUM,
+			                  EDANUM
 		;
 	};
 };
@@ -135,6 +137,9 @@ path	key5 	{
 			AND   SRYYMD      =   :SRYYMD
 			AND   RENNUM      =   :RENNUM
 			AND   LASTKBN     =   '1'
+			ORDER   BY        DOUJI_RENNUM,
+                                          KAIKEI_RENNUM,
+                                          EDANUM
 		;
 	};
 };
@@ -148,6 +153,11 @@ path	key6 	{
 			AND   PTID        =   :PTID
 			AND   DENPNUM     =   :DENPNUM
 			AND   LASTKBN     =   '1'
+			ORDER   BY        SRYKA,
+			                  SRYYMD,
+			                  RENNUM,
+			                  DOUJI_RENNUM,
+			                  EDANUM
 		;
 	};
 };
@@ -163,7 +173,8 @@ path	key7 	{
 			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD  DESC,
 			                  RENNUM,
-			                  DOUJI_RENNUM
+			                  DOUJI_RENNUM,
+			                  EDANUM
 		;
 	};
 };
@@ -256,7 +267,8 @@ path	key8 	{
 			ORDER   BY        SRYYMD  DESC,
                                           SRYKA,
 			                  RENNUM,
-			                  DOUJI_RENNUM
+			                  DOUJI_RENNUM,
+			                  EDANUM
 		;
 	};
 };
@@ -292,8 +304,9 @@ path	key10 	{
 		        	AND   PTID        =   :PTID
 	         		AND   LASTKBN     =   '1'
                                 AND   SRYYMD      <=  :SRYYMD )
-			ORDER   BY        PTID,
-			                  SRYYMD
+			ORDER   BY        RENNUM,
+			                  DOUJI_RENNUM,
+			                  EDANUM
 		;
 	};
 };path	key11 	{
@@ -313,8 +326,9 @@ path	key10 	{
               			AND   SRYKA       =   :SRYKA
 	         		AND   LASTKBN     =   '1'
                                 AND   SRYYMD      <=  :SRYYMD )
-			ORDER   BY        PTID,
-			                  SRYYMD
+			ORDER   BY        RENNUM,
+			                  DOUJI_RENNUM,
+			                  EDANUM
 		;
 	};
 };
@@ -332,7 +346,8 @@ path	key12	{
 			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD  DESC,
 			                  RENNUM,
-			                  DOUJI_RENNUM
+			                  DOUJI_RENNUM,
+			                  EDANUM
 		;
 	};
 };
@@ -348,7 +363,8 @@ path	key13	{
 			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD  DESC,
 			                  RENNUM,
-			                  DOUJI_RENNUM
+			                  DOUJI_RENNUM,
+			                  EDANUM
 		;
 	};
 };
@@ -415,7 +431,8 @@ path	key16	{
 			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD  DESC,
 			                  RENNUM,
-			                  DOUJI_RENNUM
+			                  DOUJI_RENNUM,
+			                  EDANUM
 		;
 	};
 };
@@ -433,7 +450,8 @@ path	key18	{
 			AND   LASTKBN     =   '1'
 			ORDER   BY        SRYYMD  DESC,
 			                  RENNUM,
-			                  DOUJI_RENNUM
+			                  DOUJI_RENNUM,
+			                  EDANUM
 		;
 	};
 };

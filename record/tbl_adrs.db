@@ -36,6 +36,8 @@ path	key2		{
 		SELECT *
 		FROM tbl_adrs
 			WHERE   POST      =   :POST
+			ORDER  BY  LPUBCD,
+                                   RENNUM
 ;
 	};
 };

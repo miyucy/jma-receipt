@@ -126,6 +126,8 @@ path	key2	{
 		FROM tbl_hknnum
 			WHERE   HOSPID      =   :HOSPID
 			AND   HKNNUM        =   :HKNNUM
+			ORDER  BY  TEKSTYMD,
+                                   PAYKBN
 		;
 	};
 };
@@ -138,7 +140,9 @@ path	key3		{
 			WHERE   HOSPID      =   :HOSPID
 			AND   TEKSTYMD      <=  :TEKSTYMD
 			AND   TEKEDYMD      >=  :TEKEDYMD
-			ORDER  BY  HKNNUM
+			ORDER  BY  HKNNUM,
+                                   TEKSTYMD,
+                                   PAYKBN
 		;
 	};
 };
@@ -152,6 +156,9 @@ path	key4		{
 			AND   HBTNUM        =   :HBTNUM
 			AND   TEKSTYMD      <=  :TEKSTYMD
 			AND   TEKEDYMD      >=  :TEKEDYMD
+			ORDER  BY  HKNNUM,
+                                   TEKSTYMD,
+                                   PAYKBN
 		;
 	};
 };
@@ -165,6 +172,8 @@ path	key5	{
 			AND   HKNNUM        =   :HKNNUM
 			AND   TEKSTYMD      <=  :TEKSTYMD
 			AND   TEKEDYMD      >=  :TEKEDYMD
+			ORDER  BY  TEKSTYMD,
+                                   PAYKBN
 		;
 	};
 };
@@ -177,3 +186,31 @@ path	all		{
  		;
 	};
 };
+
+path	key6		{ 	
+	DBSELECT	{
+		DECLARE tbl_hknnum_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_hknnum
+			WHERE   HOSPID      =   :HOSPID
+			ORDER  BY  HKNNUM,
+                                   TEKSTYMD,
+                                   PAYKBN
+		;
+	};
+};
+
+path	key7		{ 	
+	DBSELECT	{
+		DECLARE tbl_hknnum_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_hknnum
+			WHERE   HOSPID      =   :HOSPID
+			AND   HKNNUM        =   :HKNNUM
+			AND   PAYKBN        =   :PAYKBN
+			ORDER  BY  TEKSTYMD
+		;
+	};
+};
+
+

@@ -35,7 +35,7 @@ P02D	{
 				value	varchar(17);
 			};
 			count	int;
-			item	varchar(16)[3];
+			item	varchar(16)[4];
 		};
 		COMMENT	{
 			value	varchar(101);

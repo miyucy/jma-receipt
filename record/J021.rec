@@ -1,19 +1,34 @@
 J021	{
 	knmino	{
-		SELNUM	{
+		MAE_HKNCOMBI	{
 			value	varchar(5);
 		};
+		MAE_HKNCOMBIMEI	{
+			value	varchar(41);
+		};
+		ATO_HKNCOMBI	{
+			value	varchar(5);
+		};
+		ATO_HKNCOMBIMEI	{
+			value	varchar(41);
+		};
+		MAE_FTNRATE	{
+			value	varchar(9);
+		};
+		ATO_FTNRATE	{
+			value	varchar(9);
+		};
 		scrolledwindow1	{
-			clist2	{
+			HKNLIST	{
 				count	int;
 				item	{
-					value1	varchar(5);
-					value2	varchar(31);
+					value1	varchar(4);
+					value2	varchar(40);
 					value3	varchar(10);
 					value4	varchar(10);
-					value5	varchar(5);
-				}	[30];
-				select	bool[30];
+					value5	varchar(8);
+				}	[40];
+				select	bool[40];
 			};
 		};
 	};

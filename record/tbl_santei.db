@@ -75,6 +75,10 @@ path	key2 	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
+			ORDER   BY      SRYCD,
+                                        NYUGAIKBN,
+                                        SRYKA,
+                                        HKNCOMBINUM
 		;
 	};
 };
@@ -141,6 +145,20 @@ path	key5 	{
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYM       =   :SRYYM
 			AND   SRYCD       =   :SRYCD
+			ORDER   BY      HKNCOMBINUM
+		;
+	};
+};
+
+path	key6 	{
+	DBSELECT	{
+		DECLARE tbl_santei_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_santei
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+			AND   HKNCOMBINUM =   :HKNCOMBINUM
 		;
 	};
 };

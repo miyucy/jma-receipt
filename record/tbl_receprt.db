@@ -18,16 +18,7 @@ tbl_receprt	{
         TERMID              char(32);
         PRTJYUN             number(2);
         PRTRENNUM           number(6);
-        PRTDATA             char(1000);
-        PRTDATA1            char(1000);
-        PRTDATA2            char(1000);
-        PRTDATA3            char(1000);
-        PRTDATA4            char(1000);
-        PRTDATA5            char(1000);
-        PRTDATA6            char(1000);
-        PRTDATA7            char(1000);
-        PRTDATA8            char(1000);
-        PRTDATA9            char(1000);
+        PRTDATA             varchar(10000);
 #-----> ธกบ๗อันเฬÜ
 	STKANANAME			char(100),virtual;
 	EDKANANAME			char(100),virtual;

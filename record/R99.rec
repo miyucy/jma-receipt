@@ -19,5 +19,8 @@ R99	{
 		B12	{
 	           	state	int;
 		};
+		PROGRESSBAR	{
+	           	value	int;
+		};
 	};
 };

@@ -11,16 +11,7 @@ tbl_prtdata	{
 	PRIORITY        number(4);
 	PAGE        	number(5);
 	PRTFLG			char(1);
-	PRTDATA1		varchar(1000);
-	PRTDATA2		varchar(1000);
-	PRTDATA3		varchar(1000);
-	PRTDATA4		varchar(1000);
-	PRTDATA5		varchar(1000);
-	PRTDATA6		varchar(1000);
-	PRTDATA7		varchar(1000);
-	PRTDATA8		varchar(1000);
-	PRTDATA9		varchar(1000);
-	PRTDATA10   	varchar(1000);
+	PRTDATA			varchar(10000);
 #-----> ธกบ๗อันเฬÜ
 	STPAGE			number(5),virtual;
 	EDPAGE			number(5),virtual;

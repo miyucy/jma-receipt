@@ -9,12 +9,16 @@ tbl_hkncombi {
 	CONTKBN				char(1);
 	KOH1ID				number(10);
 	KOH1HKNNUM			char(3);
+	KOH1PAYKBN      		char(2);
 	KOH2ID				number(10);
 	KOH2HKNNUM			char(3);
+	KOH2PAYKBN      		char(2);
 	KOH3ID				number(10);
 	KOH3HKNNUM			char(3);
+	KOH3PAYKBN      		char(2);
 	KOH4ID				number(10);
 	KOH4HKNNUM			char(3);
+	KOH4PAYKBN      		char(2);
 	TEKSTYMD			char(8);
 	TEKEDYMD			char(8);
 	SYU_TANSEIDONAME		varchar(40);
@@ -128,6 +132,7 @@ path	key2	{
 		FROM tbl_hkncombi
 			WHERE   HOSPID      =   :HOSPID
 			AND   PTID          =   :PTID
+			ORDER   BY  HKNCOMBINUM
 		;
 	};
 };

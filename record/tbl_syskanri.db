@@ -41,6 +41,7 @@ path	key2	{
 			WHERE   KANRICD      =   :KANRICD
 			AND     STYUKYMD     <=  :STYUKYMD
 			AND     EDYUKYMD     >=  :EDYUKYMD
+			ORDER BY KBNCD
 		;
 	};
 };
@@ -73,6 +74,7 @@ path	key5	{
 		SELECT *
 		FROM tbl_syskanri
 			WHERE   KANRICD      =   :KANRICD
+			ORDER	BY	KBNCD,STYUKYMD
 		;
 	};
 };

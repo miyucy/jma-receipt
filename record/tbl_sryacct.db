@@ -181,6 +181,8 @@ path	key2 	{
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYM       =   :SRYYM
+			ORDER   BY      SRYKBN,
+                                        ZAINUM
 		;
 	};
 };
@@ -196,6 +198,7 @@ path	key3 	{
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYM       =   :SRYYM
 			AND   SRYKBN      =   :SRYKBN
+			ORDER   BY      ZAINUM
 		;
 	};
 };
@@ -209,6 +212,9 @@ path	key4 	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
+			ORDER   BY      SRYYM,
+                                        SRYKBN,
+                                        ZAINUM
 		;
 	};
 };
@@ -224,6 +230,7 @@ path	key5 	{
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYM       =   :SRYYM
 			AND   ZAINUM      =   :ZAINUM
+			ORDER   BY      SRYKBN
 		;
 	};
 };
@@ -236,7 +243,7 @@ path	key6 	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   SRYYM       =   :SRYYM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
-			ORDER  BY  PTID,HKNCOMBI,SRYKA
+			ORDER  BY  PTID,HKNCOMBI,SRYKA,SRYKBN
 		;
 	};
 };
@@ -250,6 +257,9 @@ path	key7 	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
+			ORDER  BY   SRYKA,
+                                    SRYKBN,
+                                    ZAINUM
 		;
 	};
 };
@@ -263,7 +273,8 @@ path	key8 	{
 			AND   SRYYM       =   :SRYYM
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   ZAIKAISU    >   0 
-			ORDER  BY  PTID,HKNCOMBI,SRYKA
+			ORDER  BY  PTID,HKNCOMBI,SRYKA,
+                                   ZAINUM
 		;
 	};
 };
@@ -278,7 +289,8 @@ path	key9 	{
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
 			AND   ZAIKAISU    >   0 
-			ORDER  BY  PTID,HKNCOMBI,SRYKA
+			ORDER  BY  PTID,HKNCOMBI,SRYKA,
+                                   ZAINUM
 		;
 	};
 };
@@ -315,7 +327,26 @@ path	key10 	{
 			AND  (YKZTEN      >   0    OR
 		 	      SRYKBN      =   '95' OR
 		 	      SRYKBN      =   '96' )
+			ORDER  BY  SRYKA,
+                                   ZAINUM
 		;
 	};
 };
+
+path	key11	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key11_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYM       =   :SRYYM
+			AND   HKNCOMBI    =   :HKNCOMBI
+			ORDER   BY      ZAINUM
+		;
+	};
+};
+
 

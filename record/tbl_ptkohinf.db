@@ -3,6 +3,7 @@ tbl_ptkohinf {
 	PTID 				number(10);
 	KOHID				number(10);
 	KOHNUM				char(3);
+	PAYKBN				char(2);
 	FTNJANUM			char(8);
 	JKYSNUM 			char(20);
 	TEKSTYMD			char(8);
@@ -40,7 +41,8 @@ path	key2 	{
 			WHERE   HOSPID      =   :HOSPID
 			AND   PTID        =   :PTID
 			ORDER   BY  TEKEDYMD DESC,
-			TEKSTYMD DESC
+			            TEKSTYMD DESC,
+			            KOHID
 		;
 	};
 };
@@ -67,6 +69,7 @@ path	key4 	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   KOHNUM      =   :KOHNUM
+			ORDER   BY      KOHID
 		;
 	};
 };
@@ -81,6 +84,7 @@ path	key5 	{
 			AND   TEKSTYMD    <   :TEKSTYMD
 			AND   TEKEDYMD    >=  :TEKEDYMD
 			AND   SAKJOKBN    <>   "1"
+			ORDER   BY      KOHID
 		;
 	};
 };

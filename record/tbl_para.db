@@ -3,11 +3,7 @@ tbl_para {
 	TERMID				char(32);
 	FILEMEI 			char(20);
 	EDANUM  			number(3,0);
-	DATA_REC1 			char(1000);
-	DATA_REC2 			char(1000);
-	DATA_REC3 			char(1000);
-	DATA_REC4 			char(1000);
-	DATA_REC5 			char(1000);
+	DATA_REC 			char(5000);
 };
 primary	{
 	GYOUMUID,TERMID,FILEMEI,EDANUM;
@@ -34,6 +30,7 @@ path	key2 	{
 			WHERE   GYOUMUID   =   :GYOUMUID
 			AND   TERMID       =   :TERMID
 			AND   FILEMEI      LIKE :FILEMEI
+			ORDER   BY        EDANUM
 		;
 	};
 };
@@ -71,6 +68,8 @@ path	key3 	{
 		FROM tbl_para
 			WHERE   GYOUMUID   =   :GYOUMUID
 			AND   TERMID       =   :TERMID
+			ORDER   BY        FILEMEI,
+                                          EDANUM
 		;
 	};
 };

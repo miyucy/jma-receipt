@@ -4,7 +4,7 @@ JID1	{
 			value	varchar(11);
 		};
 		ID1MSG	{
-			value	varchar(71);
+			value	varchar(81);
 		};
 	};
 };

@@ -122,6 +122,8 @@ path	key2 	{
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYMD      =   :SRYYMD
 			AND   HKNCOMBI    =   :HKNCOMBI
+			ORDER   BY        ZAINUM,
+                                          RENNUM
 		;
 	};
 };
@@ -137,6 +139,8 @@ path	key3 	{
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYMD      =   :SRYYMD
 			AND   ZAINUM      =   :ZAINUM
+			ORDER   BY        ZAINUM,
+                                          RENNUM
 		;
 	};
 };
@@ -179,6 +183,10 @@ path	key4 	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
+			ORDER   BY        SRYKA,
+		                          SRYYMD,
+                                          ZAINUM,
+                                          RENNUM
 		;
 	};
 };
@@ -189,6 +197,11 @@ path	key5 	{
 		FROM tbl_wksryact
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
+			ORDER   BY        PTID,
+                                          SRYKA,
+		                          SRYYMD,
+                                          ZAINUM,
+                                          RENNUM
 		;
 	};
 };

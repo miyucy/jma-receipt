@@ -45,8 +45,9 @@ path	key2 	{
 		FROM tbl_pthkninf
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
-			ORDER   BY  TEKEDYMD DESC,
-			TEKSTYMD DESC
+			ORDER   BY      TEKEDYMD DESC,
+		                	TEKSTYMD DESC,
+                                        HKNID
 		;
 	};
 };
@@ -61,6 +62,7 @@ path	key3 	{
 			AND   HKNID       =   :HKNID
 			AND   TEKSTYMD    <=  :TEKSTYMD
 			AND   TEKEDYMD    >=  :TEKEDYMD
+			ORDER   BY      TEKSTYMD
 		;
 	};
 };
@@ -75,6 +77,7 @@ path	key4 	{
 			AND   HKNNUM      =   :HKNNUM
 			AND   TEKSTYMD    =   :TEKSTYMD
 			AND   TEKEDYMD    =   :TEKEDYMD
+			ORDER   BY      TEKSTYMD
 		;
 	};
 };

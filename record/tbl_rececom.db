@@ -39,6 +39,7 @@ path	key1		{
 			WHERE   HOSPID    =   :HOSPID
 			AND     PTID      =   :PTID
 			AND     SRYYM     =   :SRYYM
+			ORDER BY HKNCOMBI,SRYDD
 		;
 	};
 };

@@ -60,7 +60,8 @@ path	key2	{
 		FROM tbl_ptbyomei
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
-			AND   SRYKA       =   :SRYKA 
+			AND   SRYKA       =   :SRYKA
+			ORDER BY SRYYMD,RENNUM 
 		;
 	};
 };

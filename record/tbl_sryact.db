@@ -82,6 +82,7 @@ path	key2 	{
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYM       =   :SRYYM
 			AND   ZAINUM      =   :ZAINUM
+			ORDER  BY  RENNUM
 		;
 	};
 };
@@ -94,6 +95,9 @@ path	key3 	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
+			ORDER  BY  SRYKA,
+                                   ZAINUM,
+                                   RENNUM
 		;
 	};
 };
@@ -107,6 +111,9 @@ path	key4 	{
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
+			ORDER  BY  SRYKA,
+                                   ZAINUM,
+                                   RENNUM
 		;
 	};
 };
@@ -119,7 +126,10 @@ path	key5	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   PTID        =   :PTID
-			ORDER   BY        SRYYM
+			ORDER   BY        SRYKA,
+                                          SRYYM,
+                                          ZAINUM,
+                                          RENNUM
 		;
 	};
 };
@@ -137,6 +147,10 @@ path	key6	{
 			 OR  (SRYCD3      =   :SRYCD3)
 			 OR  (SRYCD4      =   :SRYCD4)
 			 OR  (SRYCD5      =   :SRYCD5))
+			ORDER   BY        SRYKA,
+                                          SRYYM,
+                                          ZAINUM,
+                                          RENNUM
 		;
 	};
 };
@@ -155,6 +169,10 @@ path	key7	{
 			 OR  (SRYCD3      =   :SRYCD3)
 			 OR  (SRYCD4      =   :SRYCD4)
 			 OR  (SRYCD5      =   :SRYCD5))
+			ORDER   BY        SRYKA,
+                                          SRYYM,
+                                          ZAINUM,
+                                          RENNUM
 		;
 	};
 };
@@ -174,6 +192,10 @@ path	key8	{
 			 OR  (SRYCD3      =   :SRYCD3)
 			 OR  (SRYCD4      =   :SRYCD4)
 			 OR  (SRYCD5      =   :SRYCD5))
+			ORDER   BY        SRYKA,
+                                          SRYYM,
+                                          ZAINUM,
+                                          RENNUM
 		;
 	};
 };

@@ -49,6 +49,7 @@ path	key2 	{
 			AND		DRCD          =   :DRCD
 			AND 	YYKYMD        =   :YYKYMD
 			AND		KEYYYKTIME    =   :KEYYYKTIME
+			ORDER   BY        YYKID
 		;
 	};
 };
@@ -62,6 +63,7 @@ path	key3 	{
 			AND		SRYNAIYO      =   :SRYNAIYO
 			AND		DRCD          =   :DRCD
 			AND		YYKYMD        =   :YYKYMD
+			ORDER   BY        KEYYYKTIME,YYKID
 		;
 	};
 };
@@ -74,6 +76,7 @@ path	key4 	{
 			WHERE   HOSPID        =   :HOSPID
 			AND		YYKYMD        =   :YYKYMD
 			AND		PTID          =   :PTID
+			ORDER   BY        KEYYYKTIME,YYKID
 		;
 	};
 };
@@ -85,6 +88,7 @@ path	key5 	{
 		FROM tbl_yyk
 			WHERE   HOSPID        =   :HOSPID
 			AND		YYKYMD        =   :YYKYMD
+			ORDER   BY        KEYYYKTIME,YYKID
 		;
 	};
 };
@@ -105,6 +109,7 @@ path	key6 	{
 		FROM tbl_yyk
 			WHERE   HOSPID      =   :HOSPID
 			AND     PTID        =   :PTID
+			ORDER   BY        YYKYMD,KEYYYKTIME,YYKID
 		;
 	};
 };

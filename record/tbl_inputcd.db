@@ -25,6 +25,7 @@ path	key		{
 			WHERE   HOSPID     =   :HOSPID
 			AND   CDSYU        =   :CDSYU
 			AND   INPUTCD      LIKE   :INPUTCD
+			ORDER   BY         INPUTCD
 		;
 	};
 };
@@ -48,7 +49,8 @@ path	key3	{
 		FROM tbl_inputcd
 			WHERE   HOSPID     =   :HOSPID
 			AND  SRYCD         LIKE :SRYCD
-			ORDER   BY         DSPSEQ
+			ORDER   BY         DSPSEQ,
+                                           INPUTCD
 		;
 	};
 };
@@ -60,7 +62,8 @@ path	key4	{
 		FROM tbl_inputcd
 			WHERE   SRYCD      =   :SRYCD
 			AND   HOSPID       =   :HOSPID
-			ORDER   BY         DSPSEQ
+			ORDER   BY         DSPSEQ,
+                                           INPUTCD
 		;
 	};
 };

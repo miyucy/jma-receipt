@@ -40,6 +40,7 @@ path	key2	{
 		FROM tbl_inputset
 			WHERE   HOSPID    =   :HOSPID
 			AND   SETCD       =   :SETCD
+			ORDER   BY        SETSEQ
 		;
 	};
 };

@@ -6,22 +6,8 @@ W13	{
 		YUKOEDYMD	{
 			value	varchar(10);
 		};
-		RSIIRYOKBN_COMBO	{
-			RSIIRYOKBN	{
-				value	varchar(21);
-			};
-			count	int;
-			item	varchar(20)[2];
-		};
 		RSIIRYOCDN	{
 			value	varchar(41);
-		};
-		TENKBN_COMBO	{
-			TENKBN	{
-				value	varchar(21);
-			};
-			count	int;
-			item	varchar(20)[2];
 		};
 		SONSHOUKBN1	{
 			value	varchar(3);
@@ -41,6 +27,23 @@ W13	{
 				}	[40];
 				select	bool[40];
 			};
+		};
+		TENKBN_COMBO	{
+			TENKBN	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[2];
+		};
+		KSNRATE	{
+			value	number(2);
+		};
+		RSIIRYOKBN_COMBO	{
+			RSIIRYOKBN	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(20)[2];
 		};
 	};
 };
