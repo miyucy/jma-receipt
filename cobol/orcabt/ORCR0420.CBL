@@ -1378,7 +1378,7 @@
       *
                    MOVE   "1"                  TO    RECE44-COMCDFLG
       *
-                   IF   SRY-SRYSYUKBN      =     "332"
+                   IF   SRY-SRYSYUKBN      =     "334"
                    AND  SRY-SRYCD(IDX2)    =     "810000001"
                    AND  FLG-HOUTEN-COM     =     ZERO
                       PERFORM  VARYING  IDV  FROM  1  BY  2
@@ -1746,7 +1746,7 @@
            END-IF
       *
            IF      RECE44-SRYKBN      =     "33"
-              IF   SRY-SRYSYUKBN      =     "332"
+              IF   SRY-SRYSYUKBN      =     "334"
               AND  FLG-HOUTEN-COM     =     ZERO
                    MOVE   "1"   TO    RECE44-FLG-HOUTEN-COMMENT
               END-IF

@@ -934,7 +934,7 @@
                                END-IF    
                              END-IF
                            WHEN    "8"
-                               IF   RECE45-SRYSYUKBN  =  "332"
+                               IF   RECE45-SRYSYUKBN  =  "334"
                                    MOVE    5         TO  IDY
                                ELSE
                                  IF      IDY          =   ZERO
