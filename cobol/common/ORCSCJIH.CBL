@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/11/20  自賠責器材追加
+      * 01.00.02     NACL-多々納  03/04/30  剤別点数追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -215,15 +216,16 @@
            EVALUATE    WRK-MOJI
                WHEN    "0"
       *            金額入力のする自費は回数は１とする
-                   IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "095" OR
-                                                           "096" ) AND
-                          (WRK-COM-KISOTEN(IDX-Z)      =   ZERO  )
-                       IF      LNK-ORCSC-KAISU         >   1
-                           MOVE    "0008"          TO  WRK-ERRCD
-                           MOVE    "1"             TO  WRK-COM-CUR
-                                                          (IDX-Z)
-                       END-IF
-                   END-IF
+      *!           IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "095" OR
+      *!                                                   "096" ) AND
+      *!                  (WRK-COM-KISOTEN(IDX-Z)      =   ZERO  )
+      *!               IF      LNK-ORCSC-KAISU         >   1
+      *!                   MOVE    "0008"          TO  WRK-ERRCD
+      *!                   MOVE    "1"             TO  WRK-COM-CUR
+      *!                                                  (IDX-Z)
+      *!               END-IF
+      *!           END-IF
+                           CONTINUE
       *
                WHEN    OTHER
       *            計算できる点数識別であること
@@ -295,8 +297,16 @@
                IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "095" OR
                                                        "096" ) AND
                       (WRK-COM-KISOTEN(IDX-Z)      =   ZERO  )
-                   CONTINUE
+                   COMPUTE WRK-KINGAK          =   WRK-COM-JIHIMONEY
+                                                               (IDX-Z)
+                                               *   LNK-ORCSC-KAISU
+                   MOVE    WRK-KINGAK          TO  WRK-COM-KEI (IDX-Z)
+                   MOVE    WRK-KINGAK          TO  WRK-GMN-KEI (IDX-Z)
+                   MOVE    "1"                 TO  WRK-COM-KEIFLG(IDX-Z)
                ELSE
+      *
+                   MOVE    WRK-KINGAK          TO  WRK-COM-JIHIMONEY
+                                                               (IDX-Z)
                    COMPUTE WRK-KINGAK          =   WRK-KINGAK
                                                *   LNK-ORCSC-KAISU
                    MOVE    WRK-KINGAK          TO  WRK-COM-KEI (IDX-Z)
