@@ -39,6 +39,7 @@
       *  01.00.04    NACL-藤原    04/01/29  転帰区分の編集
       *  01.00.05    NACL-多々納  04/02/27  保険修正
       *  01.00.06    NACL-藤原    04/03/19  病名検索にサブパラメタ追加
+      *  01.00.07    NACL-藤原    04/03/22  更新エラー時の処理終了
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -116,6 +117,7 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
+           03  IDX4                PIC 9(04).
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
@@ -132,9 +134,9 @@
       *
            03  TBL-MAX             PIC 9(04).
       *
-           03  IDX-I                   PIC 9(04).
-           03  IDX-I1                  PIC 9(04).
-           03  IDX-I2                  PIC 9(04).
+           03  IDX-I               PIC 9(04).
+           03  IDX-I1              PIC 9(04).
+           03  IDX-I2              PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -614,8 +616,14 @@
                    IF      FLG-ZAIEND          =   1
                        IF      TBL-MAX         >   ZERO
                            PERFORM 2004-WKSRYACT-OUT-SEC
+                           IF      FLG-END         =   1
+                               GO  TO  200-MAIN-EXT
+                           END-IF
                        END-IF
                        PERFORM 2003-TBLSET-SEC
+                       IF      FLG-END         =   1
+                           GO  TO  200-MAIN-EXT
+                       END-IF
                    ELSE
                        PERFORM 2005-TBLSET-NEXT-SEC
                    END-IF
@@ -624,6 +632,9 @@
            DISPLAY "TBL-MAX = " TBL-MAX
            IF      TBL-MAX         >   ZERO
                PERFORM 2004-WKSRYACT-OUT-SEC
+               IF      FLG-END             =   1
+                   GO  TO  200-MAIN-EXT
+               END-IF
            END-IF
       *
       *    病名セット処理
@@ -1280,6 +1291,9 @@
                   (FLG-CHUSIN          =   1   ) OR
                   (WRK-KASAN           >   ZERO))
                PERFORM 2004-TBL-BUNKATU-SEC
+               IF      FLG-END         =   1
+                   GO  TO  2003-TBLSET-EXT
+               END-IF
            END-IF
       *
       *    入院の時、１明細１剤とする
@@ -1757,6 +1771,8 @@
                ELSE
                    DISPLAY "L0031 WKSRYACT INS ERR:"  MCP-RC
                            ",KEY:"   WKSRY-KEY  "!!!"
+                   MOVE    1                   TO  FLG-END
+                   MOVE    TBL-MAX             TO  IDX 
                END-IF
            END-PERFORM
       *
@@ -2490,10 +2506,10 @@
                END-IF
       *       病名コード
                MOVE    ZERO         TO  IDZ
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       LNK-BYO-BYOMEI-MAX
-                   MOVE    LNK-BYO-TBYOMEICD (IDX)
-                                       TO  PTBYO-BYOMEICD  (IDX)
+               PERFORM VARYING IDX4    FROM    1   BY  1
+                       UNTIL   IDX4    >       LNK-BYO-BYOMEI-MAX
+                   MOVE    LNK-BYO-TBYOMEICD (IDX4)
+                                       TO  PTBYO-BYOMEICD  (IDX4)
                END-PERFORM
       *        病名コード数
                MOVE    LNK-BYO-BYOMEICDSU  TO  PTBYO-BYOMEICDSU
