@@ -315,6 +315,7 @@
       *  01.01.133   NACL-藤原    04/03/11  SRYACCT-KEY34,KEY35追加
       *                                     tbl_opecom.db 追加
       *  01.01.134   NACL-藤原    04/03/26  OPECOM-KEY4,KEY5追加
+      *  01.01.135   NACL-太田    04/03/26  CHK-KEY11追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1232,6 +1233,10 @@
                    PERFORM 2001-SEL-CHK-SEC
                WHEN    ANY             ALSO   "CHK-KEY10"
                    MOVE    PATH-TBL-CHK-KEY10
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-CHK-SEC
+               WHEN    ANY             ALSO   "CHK-KEY11"
+                   MOVE    PATH-TBL-CHK-KEY11
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-CHK-SEC
       *追加/*終了*01.09.12********************************************

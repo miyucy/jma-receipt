@@ -28,6 +28,8 @@ tbl_chk	{
 	UPYUKOEDYMD 	char(8),virtual;
 	UPCDKBN   		char(1),virtual;
 	UPRENNUM		number(2),virtual;
+#-----> 検索キー用項目
+	SELNAME		char(200),virtual;
 };
 
 primary	{
@@ -249,6 +251,24 @@ path	key10	{
 		AND   A.YUKOSTYMD  <=   :YUKOSTYMD
 		AND   A.YUKOEDYMD  >=   :YUKOEDYMD
 		ORDER  BY   COALESCE(B.SRYCD,'999999999'),A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD,A.RENNUM
+		;
+	};
+};
+
+path	key11	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key11_csr CURSOR FOR
+		SELECT A.* FROM TBL_CHK A,TBL_TENSU B
+		WHERE  A.CHKKBN     = :CHKKBN
+		AND A.YUKOSTYMD    <= :YUKOSTYMD
+		AND A.YUKOEDYMD    >= :YUKOEDYMD
+		AND A.RENNUM        = 1 
+		AND B.SRYCD         = A.SRYCD
+		AND B.YUKOSTYMD    <= :YUKOSTYMD
+		AND B.YUKOEDYMD    >= :YUKOEDYMD
+		AND	(B.NAME      LIKE :SELNAME
+		 OR	 B.KANANAME  LIKE :SELNAME)
+		ORDER BY B.KANANAME,A.SRYCD
 		;
 	};
 };
