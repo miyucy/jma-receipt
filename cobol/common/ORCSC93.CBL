@@ -1361,7 +1361,8 @@
                MOVE    1                   TO  FLG-KENSA-ARI
            END-IF
       *
-           IF     (WRK-KENSA-MAX       <=  WRK-KENSA-CNT   )  OR
+           IF    ((WRK-KENSA-MAX       >   1             )  AND
+                  (WRK-KENSA-MAX       <=  WRK-KENSA-CNT )) OR
                   (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "." ) 
                CONTINUE
            ELSE
