@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-小豆沢  04/05/28  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -675,6 +674,12 @@
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
+           MOVE    "DBOPEN"             TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            PERFORM 1001-DBSTART-SEC
            .
        100-DBOPEN-EXT.
@@ -719,7 +724,12 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
-           END-IF
-           .
-       900-DBCLOSE-EXT.
+           END-IF.
+      *
+           MOVE    "DBDISCONNECT"       TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+       900-DBDISCONNECT-EXT.
            EXIT.

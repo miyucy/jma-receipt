@@ -34,7 +34,6 @@
       *                                     印刷用ファイルにサイト区分を追加
       *  01.01.02    NACL-藤原    03/03/04  印刷ＤＢへのプリンタ名追加による
       *                                     修正
-      *  01.01.03    NACL-小豆沢  04/05/28  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -636,6 +635,12 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    "DBOPEN"             TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -655,5 +660,11 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-       900-DBCLOSE-EXT.
+           MOVE    "DBDISCONNECT"       TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
+       900-DBDISCONNECT-EXT.
            EXIT.
