@@ -35,6 +35,7 @@
       *  01.00.04    NACL-藤原    04/01/19  公費欄の保険番号の表示を法別番号
       *                                     に修正
       *  01.00.05    NACL-藤原    04/09/14  開設者氏名の文字数変更
+      *  01.00.06    NACL-藤原    04/12/10  備考欄の一部負担金等の記載
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -243,7 +244,7 @@
                    07  SUM-ROU-KOH-TBL.
                        09  SUM-ROU-KOH-KENSU          PIC  9(06).
                        09  SUM-ROU-KOH-NISSU          PIC  9(06).
-                       09  SUM-ROU-KOH-YKZFTN         PIC  9(08).
+                       09  SUM-ROU-KOH-ITBFTN         PIC  9(08).
                        09  SUM-ROU-KOH-FTNMONEY       PIC  9(09).
                        09  SUM-ROU-KOH-SHOKUJIKENSU   PIC  9(06).
                        09  SUM-ROU-KOH-SHOKUJINISSU   PIC  9(06).
@@ -598,15 +599,15 @@
                    MOVE    SUM-ROU-KOH-KENSU    (IDX1 IDX) 
                                            TO  WRK-KENSUZ
                    MOVE    WRK-KENSUZ      TO  HCM2L-BKO-KENSU (IDX) 
-      *************IF      IDX             =   1
-                       MOVE    SUM-ROU-KOH-NISSU    (IDX1 IDX)
+                   MOVE    SUM-ROU-KOH-NISSU    (IDX1 IDX)
                                            TO  WRK-NISSUZ 
-                       MOVE    WRK-NISSUZ  TO  HCM2L-BKO-NISSU (IDX) 
-                       MOVE    SUM-ROU-KOH-FTNMONEY (IDX1 IDX)
+                   MOVE    WRK-NISSUZ      TO  HCM2L-BKO-NISSU (IDX) 
+                   MOVE    SUM-ROU-KOH-ITBFTN   (IDX1 IDX)
                                            TO  WRK-FTNMONEYZ
-      *                 MOVE    WRK-FTNMONEYZ
-      *                                     TO  HCM2L-BKO-ITBFTN(IDX)
-      *************END-IF                        
+                   MOVE    WRK-FTNMONEYZ   TO  HCM2L-BKO-ITBFTN(IDX)
+                   MOVE    SUM-ROU-KOH-FTNMONEY (IDX1 IDX)
+                                           TO  WRK-FTNMONEYZ
+                   MOVE    WRK-FTNMONEYZ   TO  HCM2L-BKO-KOJYO (IDX)
                END-IF
            END-PERFORM    
       *     
@@ -905,7 +906,9 @@
       *****************************************************************
        800-SYSKANRI-READ-SEC           SECTION.
       *
-           MOVE    LNK-PRTKANRI-SKYYMD     TO  ORC-DBYMD
+      *****MOVE    LNK-PRTKANRI-SKYYMD     TO  ORC-DBYMD
+           MOVE    LNK-PRTKANRI-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                    TO  ORC-DBYMD (7:2)
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING

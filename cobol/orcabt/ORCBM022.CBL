@@ -40,6 +40,7 @@
       *  01.01.02    NACL-Æ£¸¶    03/07/10  ÆÃÄê¼À´µÍ­¤ê¡¦Ìµ¤·¤Î½¸·×¤ò
       *                                     Æ±¤¸Íó¤ËÊÔ½¸¤¹¤ë
       *  01.01.03    NACL-Æ£¸¶    03/10/30  È÷¹ÍÍó¤ËÏ·¿ÍºÆ·Ç¤òÄÉ²Ã
+      *  01.01.04    NACL-Æ£¸¶    04/12/10  È÷¹ÍÍó¤Î°ìÉôÉéÃ´¶âÅù¤Îµ­ºÜ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -131,6 +132,7 @@
            03  WRK-RECEERR         PIC X(200). 
            03  WRK-PATH            PIC X(64).
            03  WRK-INDEX           PIC 9(02).
+           03  WRK-FTNMONEY        PIC  9(10).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -187,7 +189,7 @@
                    07  SUM-ROU-KOH-TBL.
                        09  SUM-ROU-KOH-KENSU          PIC  9(06).
                        09  SUM-ROU-KOH-NISSU          PIC  9(06).
-                       09  SUM-ROU-KOH-YKZFTN         PIC  9(08).
+                       09  SUM-ROU-KOH-ITBFTN         PIC  9(08).
                        09  SUM-ROU-KOH-FTNMONEY       PIC  9(09).
                        09  SUM-ROU-KOH-SHOKUJIKENSU   PIC  9(06).
                        09  SUM-ROU-KOH-SHOKUJINISSU   PIC  9(06).
@@ -830,19 +832,91 @@
                        COMPUTE IDX1    =   IDW     +       1
                        ADD     1
                              TO  SUM-ROU-KOH-KENSU          (IDY3 IDY1)
-      *************    IF      IDY1                =   1           
-                           ADD     RECE10-JNISSU         (IDX1)
+                       ADD     RECE10-JNISSU         (IDX1)
                              TO  SUM-ROU-KOH-NISSU          (IDY3 IDY1)
+                       IF      IDY1                =   1
+                           EVALUATE    RECE10-KYURATE
+                               WHEN    9
+                                   COMPUTE WRK-FTNMONEY    =
+                                           RECE10-TOTALTEN (IDX1)
+                                                           *   10
+                                                           *   0.1 
+                               WHEN    8
+                                   COMPUTE WRK-FTNMONEY    =
+                                           RECE10-TOTALTEN (IDX1)
+                                                           *   10
+                                                           *   0.2 
+                               WHEN    OTHER
+                                   MOVE    ZERO        TO  WRK-FTNMONEY
+                           END-EVALUATE                                                  
+                           ADD     WRK-FTNMONEY
+                                 TO  SUM-ROU-KOH-ITBFTN    (IDY3 IDY1)
+                       ELSE
+                           ADD     RECE10-FTNMONEY       (1)
+                             TO  SUM-ROU-KOH-ITBFTN         (IDY3 IDY1)
                            ADD     RECE10-FTNMONEY       (IDX1)
                              TO  SUM-ROU-KOH-FTNMONEY       (IDY3 IDY1)
+                       END-IF
       *                           
-                           ADD     RECE10-SHOKUJINISSU   (IDX1)
+                       IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
+                           ADD     1
+                             TO  SUM-ROU-KOH-SHOKUJIKENSU   (IDY3 IDY1)
+                       END-IF
+                       ADD     RECE10-SHOKUJINISSU   (IDX1)
                              TO  SUM-ROU-KOH-SHOKUJINISSU   (IDY3 IDY1)
-                           ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
+                       ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
                              TO  SUM-ROU-KOH-SHOKUJIRYOYOHI (IDY3 IDY1)
-                           ADD     RECE10-SHOKUJIFTN     (IDX1)
+                       ADD     RECE10-SHOKUJIFTN     (IDX1)
                              TO  SUM-ROU-KOH-SHOKUJIFTN     (IDY3 IDY1)
-      *************    END-IF
+                   END-IF           
+               END-PERFORM
+           END-IF
+      *
+      *    ¸øÈñºÆ·Ç¡ÊÏ·¿ÍÈïÇø¡Ë¥ì¥»µ­ºÜ³°Ê¬                  
+           IF      RECE10-ETC-KOHNUM (1)   NOT =   SPACE
+               PERFORM VARYING IDW FROM    1   BY  1
+                       UNTIL   IDW >       4
+                       OR      RECE10-ETC-KOHNUM (IDW) =   SPACE
+                   EVALUATE    RECE10-ETC-KOHNUM (IDW)
+                       WHEN    "019"
+                           MOVE    1               TO  IDY1
+                       WHEN    OTHER
+                           MOVE    ZERO            TO  IDY1
+                   END-EVALUATE
+      *
+                   IF      IDY1                >   ZERO 
+                       ADD     1
+                             TO  SUM-ROU-KOH-KENSU     (IDY3 IDY1)
+                       ADD     RECE10-ETC-JNISSU  (IDW)
+                             TO  SUM-ROU-KOH-NISSU     (IDY3 IDY1)
+                       EVALUATE    RECE10-KYURATE
+                           WHEN    9
+                               COMPUTE WRK-FTNMONEY    =
+                                       RECE10-ETC-TOTALTEN (IDW)
+                                                       *   10
+                                                       *   0.1 
+                           WHEN    8
+                               COMPUTE WRK-FTNMONEY    =
+                                       RECE10-ETC-TOTALTEN (IDW)
+                                                       *   10
+                                                       *   0.2 
+                           WHEN    OTHER
+                               MOVE    ZERO            TO  WRK-FTNMONEY
+                       END-EVALUATE                                                  
+                       ADD     WRK-FTNMONEY
+                             TO  SUM-ROU-KOH-ITBFTN    (IDY3 IDY1)
+      *                           
+                       IF      RECE10-ETC-SHOKUJINISSU (IDW)
+                                                 >   ZERO
+                           ADD     1
+                             TO  SUM-ROU-KOH-SHOKUJIKENSU   (IDY3 IDY1)
+                       END-IF
+                       ADD     RECE10-ETC-SHOKUJINISSU   (IDW)
+                             TO  SUM-ROU-KOH-SHOKUJINISSU   (IDY3 IDY1)
+                       ADD     RECE10-ETC-SHOKUJIRYOYOHI (IDW)
+                             TO  SUM-ROU-KOH-SHOKUJIRYOYOHI (IDY3 IDY1)
+                       ADD     RECE10-ETC-SHOKUJIFTN     (IDW)
+                             TO  SUM-ROU-KOH-SHOKUJIFTN     (IDY3 IDY1)
                    END-IF           
                END-PERFORM
            END-IF                  

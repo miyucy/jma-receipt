@@ -928,7 +928,9 @@
       *****************************************************************
        800-SYSKANRI-READ-SEC           SECTION.
       *
-           MOVE    LNK-PRTKANRI-SKYYMD     TO  ORC-DBYMD
+      *****MOVE    LNK-PRTKANRI-SKYYMD     TO  ORC-DBYMD
+           MOVE    LNK-PRTKANRI-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                    TO  ORC-DBYMD (7:2)
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING

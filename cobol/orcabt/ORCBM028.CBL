@@ -64,7 +64,8 @@
            COPY    "HCM2IV01.INC"  REPLACING  //HCM2IV01//
                                    BY         //HCM2I//.
       *****COPY    "HCM2J.INC".
-           COPY    "HCM2JV01.INC"  REPLACING  //HCM2JV01//
+      *****COPY    "HCM2JV01.INC"  REPLACING  //HCM2JV01//
+           COPY    "HCM2JV02.INC"  REPLACING  //HCM2JV02//
                                    BY         //HCM2J//.
       *
       *    ¥¹¥ÑÎÎ°è
@@ -246,7 +247,7 @@
                    07  SUM-ROU-KOH-TBL.
                        09  SUM-ROU-KOH-KENSU          PIC  9(06).
                        09  SUM-ROU-KOH-NISSU          PIC  9(06).
-                       09  SUM-ROU-KOH-YKZFTN         PIC  9(08).
+                       09  SUM-ROU-KOH-ITBFTN         PIC  9(08).
                        09  SUM-ROU-KOH-FTNMONEY       PIC  9(09).
                        09  SUM-ROU-KOH-SHOKUJIKENSU   PIC  9(06).
                        09  SUM-ROU-KOH-SHOKUJINISSU   PIC  9(06).
@@ -757,15 +758,34 @@
                    MOVE    SUM-ROU-KOH-KENSU    (IDX1 IDX) 
                                            TO  WRK-KENSUZ
                    MOVE    WRK-KENSUZ      TO  HCM2J-BKO-KENSU (IDX) 
-      *************IF      IDX             =   1
-                       MOVE    SUM-ROU-KOH-NISSU    (IDX1 IDX)
+                   MOVE    SUM-ROU-KOH-NISSU    (IDX1 IDX)
                                            TO  WRK-NISSUZ 
-                       MOVE    WRK-NISSUZ  TO  HCM2J-BKO-NISSU (IDX) 
-                       MOVE    SUM-ROU-KOH-FTNMONEY (IDX1 IDX)
+                   MOVE    WRK-NISSUZ      TO  HCM2J-BKO-NISSU (IDX) 
+                   MOVE    SUM-ROU-KOH-ITBFTN  (IDX1 IDX)
                                            TO  WRK-ZZ9
-      *                 MOVE    WRK-ZZ9 (2:)
-      *                                     TO  HCM2J-BKO-ITBFTN(IDX)
-      *************END-IF                        
+                   MOVE    WRK-ZZ9 (2:)    TO  HCM2J-BKO-ITBFTN(IDX)
+                   MOVE    SUM-ROU-KOH-FTNMONEY (IDX1 IDX)
+                                           TO  WRK-ZZ9
+                   MOVE    WRK-ZZ9 (2:)    TO  HCM2J-BKO-KOJYO (IDX)
+                   IF      IDX         NOT =   2   AND     7
+                       MOVE    SUM-ROU-KOH-SHOKUJIKENSU    (IDX1 IDX) 
+                                           TO  WRK-SHOKENSUZ
+                       MOVE    WRK-SHOKENSUZ
+                                           TO  HCM2J-BKO-SYOKENSU (IDX) 
+                       MOVE    SUM-ROU-KOH-SHOKUJINISSU    (IDX1 IDX)
+                                           TO  WRK-SHONISSUZ
+                       MOVE    WRK-SHONISSUZ
+                                           TO  HCM2J-BKO-SYONISSU (IDX)
+                       MOVE    SUM-ROU-KOH-SHOKUJIFTN (IDX1 IDX)
+                                           TO  WRK-SHOFTNZ
+                       MOVE    WRK-SHOFTNZ TO  HCM2J-BKO-SYOFTNGAK(IDX)
+                   END-IF 
+                   IF      IDX         NOT =   7
+                       MOVE    SUM-ROU-KOH-SHOKUJIRYOYOHI (IDX1 IDX)
+                                           TO  WRK-SHORYOYOHIZ
+                       MOVE    WRK-SHORYOYOHIZ
+                                           TO  HCM2J-BKO-SYOKINGAK(IDX)
+                   END-IF
                END-IF
            END-PERFORM    
       *     
@@ -986,7 +1006,8 @@
                MOVE    HCM2I               TO  SPRT-PRTDATA
            ELSE                          
       *********MOVE    "HCM2J.red"         TO  SPRT-PRTID
-               MOVE    "HCM2JV01.red"      TO  SPRT-PRTID
+      *********MOVE    "HCM2JV01.red"      TO  SPRT-PRTID
+               MOVE    "HCM2JV02.red"      TO  SPRT-PRTID
                MOVE    HCM2J               TO  SPRT-PRTDATA
            END-IF    
            EVALUATE    IDX1
@@ -1082,7 +1103,9 @@
       *****************************************************************
        800-SYSKANRI-READ-SEC           SECTION.
       *
-           MOVE    LNK-PRTKANRI-SKYYMD     TO  ORC-DBYMD
+      *****MOVE    LNK-PRTKANRI-SKYYMD     TO  ORC-DBYMD
+           MOVE    LNK-PRTKANRI-SRYYM      TO  ORC-DBYMD (1:6)
+           MOVE    "01"                    TO  ORC-DBYMD (7:2)
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
