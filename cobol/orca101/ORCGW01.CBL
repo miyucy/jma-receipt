@@ -59,6 +59,7 @@
       *                                     修正
       *  01.05.11    NACL-多々納  03/07/11  出力先プリンタ割り当て修正
       *  01.05.12    NACL-多々納  03/07/29  claim接続を入院へも追加
+      *  01.05.13    NACL-多々納  03/09/19  区分登録を桁数分編集へ
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -170,6 +171,9 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+      *
+           03  WRK-IN              PIC 9(03).
+           03  WRK-CODE-MAX        PIC 9(03).
       *    入力項目名
            03  WRK-MCP-WIDGET          PIC X(64).
            03  WRK-RATE-AREA.
@@ -1283,6 +1287,7 @@
                END-IF
            END-PERFORM
       *
+           MOVE    ZERO                TO  WRK-CODE-MAX
            EVALUATE    SPA-GMN-KANRICD
                WHEN    "1005"
                WHEN    "1012"
@@ -1294,11 +1299,14 @@
       *---- (01.02.02) LINE ADD START --------------------------------
       *********WHEN    "2003"
       *---- (01.02.02) LINE ADD END   --------------------------------
-                   IF      WRK-LEN         NOT =   2
+                   MOVE    2                   TO  WRK-CODE-MAX
+      ***********  IF      WRK-LEN         NOT =   2
+                   IF      WRK-LEN             >   2
                        MOVE    "0008"          TO  SPA-ERRCD
                        GO  TO  4105-KBNCD-CHK-EXT
                    END-IF
                WHEN    "1013"
+                   MOVE    2                   TO  WRK-CODE-MAX
                    IF      WRK-LEN         NOT =   2
                        MOVE    "0008"          TO  SPA-ERRCD
                        GO  TO  4105-KBNCD-CHK-EXT
@@ -1313,6 +1321,7 @@
                        GO  TO  4105-KBNCD-CHK-EXT
                    END-IF
                WHEN    "1010"
+                   MOVE    5                   TO  WRK-CODE-MAX
                    IF      WRK-LEN         NOT =   5
                        MOVE    "0011"          TO  SPA-ERRCD
                        GO  TO  4105-KBNCD-CHK-EXT
@@ -1328,7 +1337,8 @@
                    END-IF
       *---- (01.02.02) LINE ADD START --------------------------------
                WHEN    "2004"
-                   IF      WRK-LEN         NOT =   4
+                   MOVE    4                   TO  WRK-CODE-MAX
+                   IF      WRK-LEN             >   4
                        MOVE    "0013"          TO  SPA-ERRCD
                        GO  TO  4105-KBNCD-CHK-EXT
                    END-IF
@@ -1337,7 +1347,8 @@
                WHEN    "3001"
                WHEN    "3002"
                WHEN    "2003"
-                   IF      WRK-LEN         NOT =  3       
+                   MOVE    3                   TO  WRK-CODE-MAX
+                   IF      WRK-LEN             >  3
                        MOVE    "0014"          TO  SPA-ERRCD
                        GO  TO  4105-KBNCD-CHK-EXT
                    END-IF
@@ -1352,20 +1363,9 @@
            IF      SPA-GMN-KBNCD           =   SPACE
                MOVE    "0002"          TO  SPA-ERRCD
                GO  TO  4105-KBNCD-CHK-EXT
-           ELSE
-               MOVE    ZERO               TO  WRK-HENFLG
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       SPA-GMN-KBNCD-MAX
-                       OR      WRK-HENFLG  =   1
-                   IF      SPA-GMN-KBNCD   =   SPA-GMN-KBNCDL (IDY)
-                       MOVE    SPA-GMN-KBNCDLST (IDY)
-                                           TO  SPA-GMN-KBNCD-G
-                       MOVE    1           TO  WRK-HENFLG
-                   END-IF                                     
-               END-PERFORM
            END-IF
       *
-           INITIALIZE                     ORCSNUMAREA
+           INITIALIZE                  ORCSNUMAREA
            MOVE    SPA-GMN-KBNCD(1:WRK-LEN)
                                        TO  SNUM-INX
            CALL    "ORCSNUM"           USING
@@ -1375,9 +1375,30 @@
                   (SNUM-SYOKBN     NOT =   SPACE )
                MOVE    "0007"                  TO  SPA-ERRCD
                GO  TO  4105-KBNCD-CHK-EXT
+           ELSE
+               COMPUTE WRK-IN          =   15  -   WRK-CODE-MAX
+                                       +   1
+               MOVE    SPACE           TO  SPA-GMN-KBNCD
+               MOVE    SNUM-OUTEDT(WRK-IN:WRK-CODE-MAX)
+                                       TO  SPA-GMN-KBNCD(1:WRK-CODE-MAX)
            END-IF
       *
-           MOVE    SPA-GMN-KBNCD       TO  SPA-NAI-KBNCD     
+           MOVE    ZERO               TO  WRK-HENFLG
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-KBNCD-MAX
+                   OR      WRK-HENFLG  =   1
+               IF      SPA-GMN-KBNCD   =   SPA-GMN-KBNCDL (IDY)
+                   MOVE    SPA-GMN-KBNCDLST (IDY)
+                                           TO  SPA-GMN-KBNCD-G
+                   MOVE    1           TO  WRK-HENFLG
+               END-IF                                     
+           END-PERFORM
+      *    新規の時名称を空白にする
+           IF      WRK-HENFLG          =   ZERO
+               MOVE    SPACE               TO  SPA-GMN-KBNCDMEI
+           END-IF
+      *
+           MOVE    SPA-GMN-KBNCD       TO  SPA-NAI-KBNCD
       *
       *    システム管理読み込み
            MOVE    SPACE               TO  SYS-KEY
