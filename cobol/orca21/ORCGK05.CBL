@@ -249,10 +249,6 @@
            03  WRK-MOJISU          PIC 9(04).
            03  WRK-FREE            PIC 9(04).
       *
-      *    入力名称
-           03  WRK-MEISYO              PIC X(62).
-           03  IDX-MEI                 PIC 9(04).
-      *
            03  WRK-KEI             PIC 9(08).
            03  WRK-IDX             PIC 9(03).
       *    入力項目名編集用 
