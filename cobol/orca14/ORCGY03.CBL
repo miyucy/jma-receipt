@@ -537,7 +537,7 @@
            MOVE    ZERO                TO  IDX
            PERFORM
                    UNTIL      (FLG-YYK     =   1   )
-                         OR   (IDX         >   200 )
+                         OR   (IDX         >=   200 )
                MOVE    ZERO                TO  FLG-SYORI
                IF     (SPA-GMN-SINRYOCD    =   "00"  )  OR
                       (SPA-NAI-DRNCD(2:4)   =   "9999")
