@@ -149,6 +149,6 @@
            03  WRK-SRYYM-SML                   PIC X(06).
            03  WRK-SRYYM-BIG                   PIC X(06).
       *
-      *    次月会計作成用の保険組合せ退避
+      *    次月会計作成用の保険組合せと食事の退避領域
            03  WRK-TAIHI-HKN                   PIC 9(03).
-
+           03  WRK-TAIHI-SHOKUJI               PIC 9(03).
