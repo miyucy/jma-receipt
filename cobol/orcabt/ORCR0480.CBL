@@ -316,6 +316,8 @@
                    07  WRK-HENMM   PIC X(02).
                    07  WRK-HENDD   PIC X(02).
       *
+           03  WRK-STRYMD999       PIC X(06).
+      *
            03  WRK-EDIT-AREA.
       *        編集傷病名文字数 
                05  WRK-CLM                     PIC 9(03).
@@ -910,14 +912,18 @@
            MOVE    RECE41-SHOBYOYMD    TO  WRK-SYMD
            PERFORM 31012-SE-WA-YMDEDIT-SEC
            MOVE    WRK-HENYMD          TO  HC22-SYOBYOYMD 
+      *
+           MOVE    SPACE               TO  WRK-STRYMD999
       *    療養開始年月日
            IF      RECE41-RYOSTYMD     <   WRK-STYMD
                MOVE    WRK-STYMDW          TO  HC22-STRYMD
+                                               WRK-STRYMD999
                MOVE    WRK-STYMD(7:2)      TO  IDX5
            ELSE      
                MOVE    RECE41-RYOSTYMD     TO  WRK-SYMD
                PERFORM 31012-SE-WA-YMDEDIT-SEC
                MOVE    WRK-HENYMD          TO  HC22-STRYMD
+                                               WRK-STRYMD999
                MOVE  RECE41-RYOSTYMD(7:2)  TO  IDX5
            END-IF    
       *    療養終了年月日
@@ -936,6 +942,7 @@
                  IF   RECE41-NYUINBITBL(IDX4)  =  SPACE
                      MOVE    IDX4                TO  WRK-KGK2
                      MOVE    WRK-KGK2            TO  HC22-STRYMD (5:2)
+                                                     WRK-STRYMD999(5:2)
                      MOVE    IDX6                TO  IDX4
                  END-IF
            END-PERFORM
@@ -948,6 +955,11 @@
                      MOVE    IDX5                TO  IDX4
                  END-IF
            END-PERFORM
+      *
+           IF      RECE41-JNISSU  =  999
+                MOVE   WRK-STRYMD999   TO   HC22-ENDYMD
+           END-IF
+      *
       *    実日数
            MOVE    RECE41-JNISSU       TO  WRK-JNISSU
            MOVE    WRK-JNISSU          TO  HC22-NISSU
