@@ -418,6 +418,8 @@
            MOVE    SPA-C07-SRYYMS      TO  SPA-SRYYMD(1:6)
            MOVE    "00"                TO  SPA-SRYYMD(7:2)
            MOVE    SPA-NAI-C02-PTID    TO  SPA-PTID
+           MOVE    SPA-NAI-C02-BIRTHDAY
+                                       TO  SPA-BIRTHDAY
       *
            INITIALIZE                  ORCSHKNSETAREA
            MOVE    "1"                 TO  ORCSHKN-KBN

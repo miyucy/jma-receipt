@@ -138,8 +138,7 @@
       *                                     編集フラグのクリア
       *                                     種別が部位の自院コード入力のとき
       *                                     の病名編集フラグの設定を修正
-      *  01.08.10    NACL-藤原    04/04/20  ２１の修飾語コード＋病名コード
-      *                                     入力時の病名編集フラグの設定
+      *  01.08.10    NACL-藤原    04/05/06  アフターケア日の表示修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2030,7 +2029,8 @@
                        WHEN    "2"
                            MOVE    "女"          TO  SPA-GMN-C02-SEX
                    END-EVALUATE
-                   MOVE    PTINF-BIRTHDAY    TO  WRK-SYMD
+                   MOVE    PTINF-BIRTHDAY    TO  SPA-NAI-C02-BIRTHDAY
+                                                 WRK-SYMD
                    PERFORM 5002-HIZUKE-HEN-SEC
                    MOVE    WRK-HENYMDG       TO  SPA-GMN-C02-BIRTHDAY
                    MOVE    SPA-NAI-C02-PTID  TO  SPA-LAST-PTID
@@ -4221,10 +4221,6 @@
                            MOVE    SPA-NAI-C02-BYOMEICD-O (IDXX IDXY)
                                            TO  WRK-PTBYO-CHK-BYOMEICD 
                                               (WRK-PTBYO-CHK-BYOMEICDSU)
-                       ELSE
-                           MOVE    "1"     TO  SPA-NAI-C02-BYOMEIHENFLG
-                           MOVE    "病名編集"
-                                           TO  SPA-GMN-C02-BYOMEIHENFLG
                        END-IF
                    END-PERFORM
                END-PERFORM
@@ -6753,7 +6749,7 @@
                            MOVE    "1"     TO  WRK-PTBYO-CHK-RECEDENFLG
                        END-IF
                END-EVALUATE
-           END-IF
+           END-IF    
            .
        5001-RECEDENFLG-HENSYU-EXT.
            EXIT
