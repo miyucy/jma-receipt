@@ -491,6 +491,7 @@
       *
            PERFORM
                    UNTIL       FLG-JYURRK      =   1
+             IF      LNK-HKNCOMBINUM     =   JYURRK-HKNCOMBINUM
                PERFORM VARYING     IDX-JYU     FROM    1   BY  1
                        UNTIL      (IDX-JYU         >   15  )   OR
                                   (JYURRK-ZAINUM (IDX-JYU) =   ZERO )
@@ -502,6 +503,7 @@
                    END-IF
                    PERFORM 2002-SRYACT-SYORI-SEC
                END-PERFORM
+             END-IF
       *
                MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
                PERFORM 970-JYURRK-NEXT-SEC
@@ -625,7 +627,9 @@
            END-IF
            PERFORM
                    UNTIL       FLG-JYURRK      =   1
-               MOVE    JYURRK-RENNUM       TO  WRK-RENNUM
+               IF      LNK-HKNCOMBINUM     =   JYURRK-HKNCOMBINUM
+                   MOVE    JYURRK-RENNUM       TO  WRK-RENNUM
+               END-IF
       *
                MOVE    "JYURRK-KEY4"       TO  ORC-DBPATH
                PERFORM 970-JYURRK-NEXT-SEC
