@@ -157,6 +157,7 @@
       *井基彩嘲丸壳闻彩换年铜り
                05  SPA-SYONIKA-ARI         PIC  9(01).
                05  SPA-SYONIKA-ARI2        PIC  9(01).
+               05  SPA-SYONIKA-ARI3        PIC  9(01).
       *戏客她拉祭吹嘲丸另圭壳闻彩
                05  SPA-ROUMANSEI           PIC  9(01).
       *戏客她拉祭吹嘲丸另圭壳闻彩铜り∈１¨薄嘲、２:薄柒∷
