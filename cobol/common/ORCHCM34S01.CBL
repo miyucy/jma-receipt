@@ -389,9 +389,6 @@
       *    病棟選定入院自己負担取得サブ
            COPY    "CPORCSBTUSENTEI.INC".
       *
-      *    保険算定用年齢・割合計算サブ
-           COPY    "CPORCSAGECHK.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
