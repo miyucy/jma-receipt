@@ -411,6 +411,11 @@
                MOVE    TNS-SSTKIJUNCD(2)   TO  SPA-GMN-JITEN2
                MOVE    TNS-SSTKIJUNCD(3)   TO  SPA-GMN-JITEN3
                MOVE    TNS-SSTKIJUNCD(4)   TO  SPA-GMN-JITEN4
+           ELSE
+               MOVE    ZERO                TO  SPA-GMN-JITEN1
+               MOVE    ZERO                TO  SPA-GMN-JITEN2
+               MOVE    ZERO                TO  SPA-GMN-JITEN3
+               MOVE    ZERO                TO  SPA-GMN-JITEN4
            END-IF
       *    ī
            PERFORM VARYING     IDX     FROM    1   BY  1
