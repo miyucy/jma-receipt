@@ -114,6 +114,9 @@
            03  IDY                 PIC 9(04).
            03  IDX1                PIC 9(04).
       *
+           03  IDX-G               PIC 9(04).
+           03  IDX-STR             PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-STR-YMD.
@@ -441,9 +444,9 @@
            MOVE    SPA-Y01-DRCD        TO  SPA-NAI-DRNCD
       *
            MOVE    SPA-Y01-YYKYMDS     TO  WRK-STR-YMD
+           MOVE    1                   TO  SPA-GMN-PAGE
            PERFORM 310-YYKHEN-SEC
       *
-           MOVE    1               TO  SPA-GMN-PAGE
            MOVE    1               TO  SPA-GMN-CUR
            .
        300-SCREEN-EXT.
@@ -454,8 +457,15 @@
       *****************************************************************
        310-YYKHEN-SEC              SECTION.
       *
+      *    開始行設定
+           COMPUTE IDX-STR             =   (SPA-GMN-PAGE  -  1)
+                                       *    200
+                                       +    1
+      *
            INITIALIZE              SPA-GMN-TBL
            INITIALIZE              SPA-NAI-TBL
+      *
+           MOVE    ZERO                TO  SPA-NAI-NEXT
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   6
@@ -499,6 +509,7 @@
                END-IF
       *
                MOVE    ZERO                TO  IDY
+               MOVE    ZERO                TO  IDX-G
                PERFORM 
                        UNTIL       FLG-YOYAKU      =   1
                    MOVE    ZERO                TO  FLG-SYORI
@@ -560,8 +571,15 @@
        3101-YOYAKU-HEN-SEC              SECTION.
       *
            IF      YYK-YYKID            >   ZERO
+      *        対象外のページを読み飛ばし
+               ADD     1               TO  IDX-G
+               IF      IDX-G           <   IDX-STR
+                   GO      TO      3101-YOYAKU-HEN-EXT
+               END-IF
+      *
                ADD     1               TO  IDY
                IF      IDY             >   200
+                   MOVE    1               TO  SPA-NAI-NEXT
                    GO      TO      3101-YOYAKU-HEN-EXT
                END-IF
                PERFORM 41002-SRYNAIYO-SET-SEC
@@ -831,11 +849,11 @@
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 420-MAEHI-SEC
       *    前頁
-      *        WHEN    "CLICKED"       ALSO    "B06"
-      *            PERFORM 430-MAEGMN-SEC
+               WHEN    "CLICKED"       ALSO    "B06"
+                   PERFORM 430-MAEGMN-SEC
       *    次頁
-      *        WHEN    "CLICKED"       ALSO    "B07"
-      *            PERFORM 440-ATOGMN-SEC
+               WHEN    "CLICKED"       ALSO    "B07"
+                   PERFORM 440-ATOGMN-SEC
       *    次日
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 430-ATOHI-SEC
@@ -910,6 +928,7 @@
            ELSE
                MOVE    Y04-SRYNAIYO        TO  SPA-GMN-SINRYO
                MOVE    SPA-NAI-YYKYMD (01) TO  WRK-STR-YMD
+               MOVE    1                   TO  SPA-GMN-PAGE
                PERFORM 310-YYKHEN-SEC
            END-IF
            ADD     1                   TO  SPA-GMN-CUR
@@ -946,6 +965,7 @@
                MOVE    "1"                 TO  SPA-NAI-DRNCD (1:1)
                MOVE    SPA-GMN-DRNCD       TO  SPA-NAI-DRNCD (2:4)
                MOVE    SPA-NAI-YYKYMD (01) TO  WRK-STR-YMD
+               MOVE    1                   TO  SPA-GMN-PAGE
                PERFORM 310-YYKHEN-SEC
            END-IF
            MOVE    1                   TO  SPA-GMN-CUR
@@ -967,6 +987,7 @@
            CALL    "ORCSDAY"            USING   STS-AREA-DAY
                                                LNK-DAY6-AREA
            MOVE    LNK-DAY6-KEISAN     TO  WRK-STR-YMD
+           MOVE    1                   TO  SPA-GMN-PAGE
            PERFORM 310-YYKHEN-SEC
       *
            .
@@ -979,6 +1000,7 @@
        430-ATOHI-SEC              SECTION.
       *
            MOVE    SPA-NAI-YYKYMD (02) TO  WRK-STR-YMD
+           MOVE    1                   TO  SPA-GMN-PAGE
            PERFORM 310-YYKHEN-SEC
       *
            .
@@ -990,6 +1012,14 @@
       *****************************************************************
        430-MAEGMN-SEC             SECTION.
       *
+           IF      SPA-GMN-PAGE        =   1
+               GO      TO      430-MAEGMN-EXT
+           END-IF
+      *
+           COMPUTE SPA-GMN-PAGE        =   SPA-GMN-PAGE   -   1
+           MOVE    SPA-NAI-YYKYMD (01) TO  WRK-STR-YMD
+           PERFORM 310-YYKHEN-SEC
+      *
            .
        430-MAEGMN-EXT.
            EXIT.
@@ -998,6 +1028,15 @@
       *    次頁　処理
       *****************************************************************
        440-ATOGMN-SEC             SECTION.
+      *
+           IF      SPA-NAI-NEXT        =   ZERO
+               MOVE    "0003"          TO  SPA-ERRCD
+               GO      TO      440-ATOGMN-EXT
+           END-IF
+      *
+           COMPUTE SPA-GMN-PAGE        =   SPA-GMN-PAGE   +   1
+           MOVE    SPA-NAI-YYKYMD (01) TO  WRK-STR-YMD
+           PERFORM 310-YYKHEN-SEC
       *
            .
        440-ATOGMN-EXT.
@@ -1029,6 +1068,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "ドクターコードの入力に誤りがあります"
+                                               TO  SPA-ERRMSG
+               WHEN    "0003"
+                   MOVE    "次ページは有りません"
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *

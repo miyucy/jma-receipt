@@ -32,6 +32,7 @@
       *                                     医療機関ＩＤをスパよりセット
       *  01.00.02    MCC-藤原     01/05/24  患者番号ゼロ詰め処理
       *  01.00.03    NACL-多々納  03/05/19  診療内容・ドクター選択追加
+      *  01.00.04    NACL-多々納  03/12/02  前頁・次頁追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -60,6 +61,8 @@
                05  SPA-GMN-LINE            PIC 9(02).
                05  SPA-GMN-MAX             PIC 9(02).
                05  SPA-GMN-CUR             PIC 9(02).
+      *
+               05  SPA-NAI-NEXT            PIC 9(01).
       *
                05  SPA-GMN-AREA.
                    07  SPA-GMN-SINYMD      PIC X(12).
@@ -135,6 +138,8 @@
            03  IDX-D               PIC 9(04).
            03  IDY                 PIC 9(04).
       *
+           03  IDX-G               PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
@@ -147,6 +152,7 @@
       *
            03  WRK-PATH                PIC X(64).
       *
+           03  WRK-STR             PIC 9(04).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
@@ -491,9 +497,9 @@
                END-IF
            END-PERFORM
       *
+           MOVE    1               TO  SPA-GMN-PAGE
            PERFORM 310-SPASET-SEC
       *
-           MOVE    1               TO  SPA-GMN-PAGE
            MOVE    1               TO  SPA-GMN-CUR
            .
        300-SCREEN-EXT.
@@ -503,6 +509,11 @@
       *    予約マスタ編集処理
       *****************************************************************
        310-SPASET-SEC           SECTION.
+      *
+      *    開始行設定
+           COMPUTE WRK-STR             =   (SPA-GMN-PAGE  -  1)
+                                       *    200
+                                       +    1
       *
            INITIALIZE                  SPA-GMN-TBL
            INITIALIZE                  SPA-NAI-TBL
@@ -535,9 +546,11 @@
                MOVE    1                   TO  FLG-YYK
            END-IF
            MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX-G
+           MOVE    ZERO                TO  SPA-NAI-NEXT
            PERFORM
                    UNTIL      (FLG-YYK     =   1   )
-                         OR   (IDX         >=   200 )
+                         OR   (IDX         >   200 )
                MOVE    ZERO                TO  FLG-SYORI
                IF     (SPA-GMN-SINRYOCD    =   "00"  )  OR
                       (SPA-NAI-DRNCD(2:4)   =   "9999")
@@ -593,8 +606,20 @@
       *****************************************************************
        3101-YOYAKU-HEN-SEC           SECTION.
       *
+      *    開始行読み飛ばし
+           ADD     1               TO  IDX-G
+           IF      IDX-G           <   WRK-STR
+               GO      TO      3101-YOYAKU-HEN-EXT
+           END-IF
+      *
            ADD     1               TO  IDX
-           MOVE    IDX             TO  SPA-GMN-TBANGO  (IDX)
+           IF      IDX             >   200
+               MOVE    1               TO  SPA-NAI-NEXT
+               GO      TO      3101-YOYAKU-HEN-EXT
+           END-IF
+      *
+      *****MOVE    IDX             TO  SPA-GMN-TBANGO  (IDX)
+           MOVE    IDX-G           TO  SPA-GMN-TBANGO  (IDX)
            MOVE    YYK-KEYYYKTIME  TO  SPA-NAI-TKYYKTIME (IDX)
            MOVE    YYK-YYKTIME     TO  SPA-GMN-TYYKTIME(IDX)
            MOVE    YYK-SRYKA       TO  SPA-NAI-TSRYKA  (IDX)
@@ -925,6 +950,7 @@
                MOVE    1                   TO  SPA-GMN-CUR
            ELSE
       *        画面再編集
+               MOVE    1                   TO  SPA-GMN-PAGE
                PERFORM 310-SPASET-SEC
                MOVE    2                   TO  SPA-GMN-CUR
            END-IF
@@ -956,6 +982,7 @@
                MOVE    "1"                 TO  SPA-NAI-DRNCD(1:1)
                MOVE    SPA-GMN-DRCD        TO  SPA-NAI-DRNCD(2:)
       *        画面再編集
+               MOVE    1                   TO  SPA-GMN-PAGE
                PERFORM 310-SPASET-SEC
                MOVE    3                   TO  SPA-GMN-CUR
            END-IF
@@ -983,10 +1010,13 @@
       *****************************************************************
        430-MAEGMN-SEC             SECTION.
       *
-           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "Y03    "                  TO  MCP-WINDOW.
+           IF      SPA-GMN-PAGE        =   1
+               GO      TO      430-MAEGMN-EXT
+           END-IF
       *
-           PERFORM 900-PUT-WINDOW
+           COMPUTE SPA-GMN-PAGE        =   SPA-GMN-PAGE   -   1
+           PERFORM 310-SPASET-SEC
+      *
            .
        430-MAEGMN-EXT.
            EXIT.
@@ -996,6 +1026,13 @@
       *****************************************************************
        440-ATOGMN-SEC             SECTION.
       *
+           IF      SPA-NAI-NEXT        =   ZERO
+               MOVE    "0003"          TO  SPA-ERRCD
+               GO      TO      440-ATOGMN-EXT
+           END-IF
+      *
+           COMPUTE SPA-GMN-PAGE        =   SPA-GMN-PAGE   +   1
+           PERFORM 310-SPASET-SEC
            .
        440-ATOGMN-EXT.
            EXIT.
@@ -1031,6 +1068,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "ドクターが有りません"
+                                       TO  SPA-ERRMSG
+               WHEN    "0003"
+                   MOVE    "次ページは有りません"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
