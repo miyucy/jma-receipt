@@ -287,6 +287,7 @@
       *  01.01.109   NACL-Æ£¸¶    03/10/16  SYUNOU-KEY21ÄÉ²Ã
       *  01.01.110   NACL-Â¿¡¹Ç¼¡¡03/11/11  RECECOM-KEY4
       *                                     PTKOHINF-KEY6ÄÉ²Ã 
+      *  01.01.111   NACL-¿¹ÏÆ    03/11/11  SRYACCT-KEY26
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1643,6 +1644,11 @@
                WHEN    ANY             ALSO   "SRYACCT-KEY25"
                    MOVE    PATH-TBL-SRYACCT-KEY25
                                        TO  WRK-PATH
+      *----(01.01.111)-ADD-START---
+               WHEN    ANY             ALSO   "SRYACCT-KEY26"
+                   MOVE    PATH-TBL-SRYACCT-KEY26
+                                       TO  WRK-PATH
+      *----(01.01.111)-ADD-END-----
                WHEN    ANY             ALSO   "SRYACCT-ALL"
                    MOVE    PATH-TBL-SRYACCT-ALL
                                        TO  WRK-PATH

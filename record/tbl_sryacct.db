@@ -598,3 +598,21 @@ path	key25 	{
 		;
 	};
 };
+
+path	key26 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key26_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct A,tbl_ptinf B
+			WHERE  A.HOSPID    =   :HOSPID
+			AND    A.SRYYM     =   :SRYYM
+			AND    A.HOSPID    =   B.HOSPID
+			AND    A.PTID      =   B.PTID
+			AND    B.TSTPTNUMKBN   <>  '1'
+			ORDER  BY   A.SRYKA,
+                        A.SRYKBN,
+                        ZAINUM
+		;
+	};
+};
+

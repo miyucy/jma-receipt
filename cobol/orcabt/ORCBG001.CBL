@@ -519,6 +519,7 @@
       *****************************************************************
        220-MAIN-ACCT-SEC           SECTION.
       *
+      *----(02.01.01)--UPD-START---
       *    ÂÐ¾Ý¿ÇÎÅÇ¯·î¤Ç¸¡º÷
            INITIALIZE                  SRYACCT-REC
            MOVE    WRK-PARA-HOSPID TO  ACCT-HOSPID
@@ -527,13 +528,15 @@
       *
            MOVE    SRYACCT-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY16" TO  ORC-DBPATH
+      *     MOVE    "SRYACCT-KEY16" TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SRYACCT-KEY16"     TO  ORC-DBPATH
+      *         MOVE    "SRYACCT-KEY16" TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
                PERFORM 900-ACCT-DBFETCH-SEC
            ELSE
                MOVE    1                   TO  FLG-SRYACCT
@@ -566,12 +569,15 @@
                    END-IF
                END-IF
       *
-               MOVE    "SRYACCT-KEY16"     TO  ORC-DBPATH
+      *         MOVE    "SRYACCT-KEY16" TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
                PERFORM 900-ACCT-DBFETCH-SEC
            END-PERFORM
       *
-           MOVE    "SRYACCT-KEY16" TO  ORC-DBPATH
+      *     MOVE    "SRYACCT-KEY16" TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY26" TO  ORC-DBPATH
            PERFORM 900-ACCT-DBCLOSE-SEC
+      *----(02.01.01)--UPD-END-----
       *
            .
        220-MAIN-ACCT-EXT.
@@ -807,7 +813,6 @@
            MOVE    TOKEI-NAME          TO  WRK-NAI-NAME  (IDY)
            MOVE    TOKEI-TANI          TO  WRK-NAI-TANI  (IDY)
       *----(02.01.01)--ADD-START---
-           DISPLAY "TOKEI-TEN=" TOKEI-TEN
       *    ÅÀ¿ôÊÔ½¸
            MOVE    TOKEI-TEN           TO  WRK-TEN
            PERFORM 400-ZHEN-TEN-SET-SEC
@@ -1200,7 +1205,6 @@
            .
        300-END-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *     ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¸¡º÷½èÍý
