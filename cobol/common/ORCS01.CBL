@@ -7373,7 +7373,8 @@
                     COMPUTE   WK-FTN  =
                               LNK-SYU-KOH-COMPFTN(KOH-IDX)  +
                               WK-KOH-YAKFTN-T(KOH-IDX)
-                    IF        WK-FTN    >  995
+      *             IF        WK-FTN    >  995
+                    IF        WK-FTN    >  1000
                         MOVE  1000   TO   LNK-SYU-KOH-COMPFTN(KOH-IDX)
                         MOVE  ZERO   TO   WK-KOH-YAKFTN-T(KOH-IDX)
                     ELSE

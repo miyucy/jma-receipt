@@ -98,6 +98,9 @@
       *                                     注加算コードの追加
       *  01.01.13    NACL-門脇    04/07/28  投薬料の器材点の集計修正
       *  01.01.14    NACL-門脇    04/08/04  同一保険番号対応
+      *  01.01.15    NACL-門脇    04/08/05  食事療養費が患者負担あり（上限
+      *                                     あり）の場合の療養の給付−負担
+      *                                     金額欄記載修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -304,6 +307,7 @@
            03  WRK-FTNKEI                              PIC 9(09).
            03  WRK-FTNKEI2                             PIC 9(09).
            03  WRK-FTNKEI3                             PIC 9(09).
+           03  WRK-FTNKEI4                             PIC 9(09).
            03  WRK-KINGAKU                             PIC 9(09).
            03  WRK-KINGAKU2                            PIC 9(09).
       *
@@ -6420,9 +6424,11 @@
       *
                 COMPUTE  WRK-FTNKEI2 = RECE62-FTNMONEY(KOHFTN-IDX + 1)
                                      + WRK-SKJ-FTN(KOHFTN-IDX + 1)
-                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 +  5
-                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 / 10
-                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 * 10
+      *
+                COMPUTE  WRK-FTNKEI4 = WRK-FTNKEI2 +  5
+                COMPUTE  WRK-FTNKEI4 = WRK-FTNKEI4 / 10
+                COMPUTE  WRK-FTNKEI4 = WRK-FTNKEI4 * 10
+      *
                 MOVE     RECE62-FTNMONEY(KOHFTN-IDX + 1)  
                                    TO  WRK-FTNKEI3
                 COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 +  5
@@ -6434,8 +6440,13 @@
                                    TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
                 END-IF
                 IF  WRK-FTNKEI3  <  14000
-                AND WRK-FTNKEI2  =  14000
-                    MOVE  WRK-FTNKEI2  
+                AND WRK-FTNKEI4  =  14000
+                    MOVE  WRK-FTNKEI4
+                                   TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                END-IF
+                IF  WRK-FTNKEI3  <  14000
+                AND WRK-FTNKEI4  <  14000
+                    MOVE  WRK-FTNKEI2
                                    TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
                 END-IF
       *
@@ -6452,9 +6463,11 @@
       *
                 COMPUTE  WRK-FTNKEI2 = RECE62-FTNMONEY(KOHFTN-IDX + 1)
                                      + WRK-SKJ-FTN(KOHFTN-IDX + 1)
-                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 +  5
-                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 / 10
-                COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 * 10
+      *
+                COMPUTE  WRK-FTNKEI4 = WRK-FTNKEI2 +  5
+                COMPUTE  WRK-FTNKEI4 = WRK-FTNKEI4 / 10
+                COMPUTE  WRK-FTNKEI4 = WRK-FTNKEI4 * 10
+      *
                 MOVE     RECE62-FTNMONEY(KOHFTN-IDX + 1)  
                                    TO  WRK-FTNKEI3
                 COMPUTE  WRK-FTNKEI3 = WRK-FTNKEI3 +  5
@@ -6475,8 +6488,13 @@
                                    TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
                     END-IF
                     IF  WRK-FTNKEI3  <  WRK-NYUJGNGAK
-                    AND WRK-FTNKEI2  =  WRK-NYUJGNGAK
-                      MOVE  WRK-FTNKEI2  
+                    AND WRK-FTNKEI4  =  WRK-NYUJGNGAK
+                      MOVE  WRK-FTNKEI4
+                                   TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                    END-IF
+                    IF  WRK-FTNKEI3  <  WRK-NYUJGNGAK
+                    AND WRK-FTNKEI4  <  WRK-NYUJGNGAK
+                      MOVE  WRK-FTNKEI2
                                    TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
                     END-IF
                   END-IF

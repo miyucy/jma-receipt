@@ -6882,7 +6882,10 @@
              IF    LNK-SYU-SRYYMD(1:6)   <  "200310"
                COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
                                   +   LNK-SYU-SKYMONEY-SKJ-KEI
-               IF        WK-FTN    >  13995
+               COMPUTE   WK-FTN   =   WK-FTN     +   5
+               COMPUTE   WK-FTN   =   WK-FTN     /  10
+               COMPUTE   WK-FTN   =   WK-FTN     *  10
+               IF        WK-FTN    >=  14000
                  COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
                                             +  LNK-SYU-SKYMONEY-SKJ-KEI
                  MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
@@ -6907,24 +6910,6 @@
            IF    LNK-SYU-SRYYMD(1:6)   <   "200304"
                CONTINUE
            ELSE
-      *      生活保護がある方の特例処理
-      ***    IF ((LNK-SYU-KOH1HKNNUM    =  "012") AND (FLG-HIKAKU = 1))
-      ***    OR ((LNK-SYU-KOH2HKNNUM    =  "012") AND (FLG-HIKAKU = 2))
-      ***    OR ((LNK-SYU-KOH3HKNNUM    =  "012") AND (FLG-HIKAKU = 3))
-      ***    OR ((LNK-SYU-KOH4HKNNUM    =  "012") AND (FLG-HIKAKU = 4))
-      ***      COMPUTE   WK-FTN   =   LNK-SYU-SKYMONEY  
-      ***                         +   LNK-SYU-SKYMONEY-SKJ-KEI
-      ***      COMPUTE   WK-FTN   =   WK-FTN     +   5
-      ***      COMPUTE   WK-FTN   =   WK-FTN     /  10
-      ***      COMPUTE   WK-FTN   =   WK-FTN     *  10
-      ***      IF        WK-FTN    >=  WK-NYUJGNGAK
-      ***        COMPUTE  LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY    
-      ***                                   +  LNK-SYU-SKYMONEY-SKJ-KEI
-      ***        MOVE      ZERO            TO  LNK-SYU-SKYMONEY-SKJ
-      ***                                      LNK-SYU-SKYMONEY-SKJ-TAX
-      ***                                      LNK-SYU-SKYMONEY-SKJ-KEI
-      ***      END-IF
-      ***    END-IF
       *      更正がある方の特例処理
              IF ((LNK-SYU-KOH1HKNNUM    =  "015") AND (FLG-HIKAKU = 1))
              OR ((LNK-SYU-KOH2HKNNUM    =  "015") AND (FLG-HIKAKU = 2))
