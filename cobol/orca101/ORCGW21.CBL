@@ -98,9 +98,9 @@
            03  WRK-KANRI-AREA.
                05  WRK-KANRIDAT1                   PIC X(100).
                05  WRK-KANRIDAT1-R     REDEFINES   WRK-KANRIDAT1.
-                   07  WRK-KANRIDAT1-DUMMY         PIC X(03).
+                   07  WRK-KANRIDAT1-DUMMY1        PIC X(03).
                    07  WRK-KANRIDAT1-99999         PIC 9(05).
-                   07  WRK-KANRIDAT1-DUMMY         PIC X(92).
+                   07  WRK-KANRIDAT1-DUMMY2        PIC X(92).
                05  WRK-KANRIDAT2                   PIC X(100).
                05  WRK-KANRIDAT3                   PIC X(100).
                05  WRK-KANRIDAT4                   PIC X(100).
