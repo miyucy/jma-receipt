@@ -445,7 +445,7 @@
       <name>HKNCOMBI</name>
       <x>568</x>
       <y>8</y>
-      <width>170</width>
+      <width>300</width>
       <height>24</height>
       <signal>
 	<name>activate</name>
@@ -470,7 +470,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>RATE</name>
-      <x>741</x>
+      <x>876</x>
       <y>9</y>
       <width>56</width>
       <height>24</height>
