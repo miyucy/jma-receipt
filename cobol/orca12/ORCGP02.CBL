@@ -969,6 +969,7 @@
       *    画面ＳＰＡ編集のみ（次の画面の初期編集）
            MOVE    "LINK"              TO  MCP-STATUS
            MOVE    ZERO                TO  SPA-TAGU-FLG
+           MOVE    SPACE               TO  SPA-MOTOPG
            PERFORM 3002-GMNSET-SEC
            MOVE    SPACE              TO  SPA-P02-WIDGET
            MOVE    ZERO               TO  SPA-FLG-END
@@ -1026,6 +1027,7 @@
       *    画面ＳＰＡ編集のみ（各画面の初期編集）
            MOVE    "LINK"              TO  MCP-STATUS
            MOVE    ZERO                TO  SPA-TAGU-FLG
+           MOVE    SPACE               TO  SPA-MOTOPG
            PERFORM 3002-GMNSET-SEC
            MOVE    SPACE              TO  SPA-P02-WIDGET
            MOVE    ZERO               TO  SPA-FLG-END
@@ -1088,6 +1090,7 @@
       *    画面ＳＰＡ編集のみ（各画面の初期編集）
            MOVE    "LINK"              TO  MCP-STATUS
            MOVE    ZERO                TO  SPA-TAGU-FLG
+           MOVE    SPACE               TO  SPA-MOTOPG
            PERFORM 3002-GMNSET-SEC
       *
            MOVE    SPACE              TO  SPA-P02-WIDGET
@@ -3333,6 +3336,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "2437"
                    MOVE    "公費負担適用期間を入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2438"
+                   MOVE    "公費負担適用開始日＜終了日で入力して下さい"
                                                TO  SPA-ERRMSG
       *        入力履歴
                WHEN    "2502"
