@@ -32,6 +32,7 @@
       *                                     摘要欄記載対応
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/07  中止処理の追加
+      *  01.01.02    NACL-門脇    05/01/06  自費レセプトの出力条件修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -309,6 +310,11 @@
            IF     RECE66-RECESYUBETU  =  8888
               IF     RECE66-ZAITEN  NOT =  ZERO
                   PERFORM     RECE661-WRITE-SEC
+              ELSE
+                IF   RECE66-SRYKBN  =  "11" OR "33" OR "99"
+                                            OR "90" OR "92"
+                     PERFORM  RECE661-WRITE-SEC
+                END-IF
               END-IF
            ELSE
               IF     RECE66-SRYKBN  NOT =  "95" AND "96"
