@@ -257,6 +257,9 @@
       *
            COPY    "ORCA-DBPATH".
       *
+      *    点数マスタ退避ワーク
+           COPY    "CPTTNS.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -351,6 +354,7 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
+                                       TTNS-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -1322,48 +1326,108 @@
       *****************************************************************
        900-TNS-READ-SEC            SECTION.
       *
-           MOVE    ZERO            TO  TNS-YUKOSTYMD
-           MOVE    ALL "9"         TO  TNS-YUKOEDYMD
+           MOVE    ZERO                TO  FLG-TENSU
       *
-           MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "TENSU-KEY"     TO  ORC-DBPATH
            MOVE    WRK-PARA-DENPPRTYM
                                    TO  ORC-DBYMD(1:6)
            MOVE    WRK-DD          TO  ORC-DBYMD(7:2)
       *
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF        ( MCP-RC          =   ZERO )
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               MOVE    "TENSU-KEY"     TO  ORC-DBPATH
+           MOVE    TNS-SRYCD           TO  TTNS-CHK-SRYCD
+           MOVE    ORC-DBYMD           TO  TTNS-CHK-YMD
+      *
+      *    点数マスタ退避ワークチェック
+           PERFORM 9001-TTNS-CHK-SEC
+      *
+      *    退避ワークに存在しない場合はＤＢを検索
+           IF    ( TTNS-FLG            =   ZERO )
+               INITIALIZE                      TNS-TENSU-REC
+               MOVE    TTNS-CHK-SRYCD      TO  TNS-SRYCD
+               MOVE    TTNS-CHK-YMD        TO  ORC-DBYMD
+               MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
                CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "DBFETCH"           TO  MCP-FUNC
+                   MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+                   IF      MCP-RC              =   ZERO
+                       MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
+                       MOVE    ZERO            TO  FLG-TENSU
+      *
+      *                点数マスタ退避ワークに編集する
+                       PERFORM 9001-TTNS-HEN-SEC
+                   ELSE
+                       INITIALIZE                  TNS-TENSU-REC
+                       MOVE    1                   TO  FLG-TENSU
+                   END-IF
+               ELSE
+                   INITIALIZE                  TNS-TENSU-REC
+                   MOVE    1                   TO  FLG-TENSU
+               END-IF
+      *
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
-               IF        ( MCP-RC          =   ZERO )
-                   MOVE    ZERO            TO  FLG-TENSU
-                   MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
-               ELSE
-                   INITIALIZE                  TNS-TENSU-REC
-                   MOVE    1               TO  FLG-TENSU
-               END-IF
-           ELSE
-               INITIALIZE                  TNS-TENSU-REC
-               MOVE    1               TO  FLG-TENSU
            END-IF
-      *----(02.01.03)--ADD-START---
-           MOVE    "DBCLOSE"       TO  MCP-FUNC
-           MOVE    "TENSU-KEY"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-      *----(02.01.03)--ADD-END-----
+      *
            .
        900-TNS-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ退避ワークチェック処理
+      *****************************************************************
+       9001-TTNS-CHK-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  TTNS-FLG
+           INITIALIZE                      TNS-TENSU-REC
+      *
+           PERFORM VARYING TTNS-IDX    FROM    1   BY  1
+                   UNTIL ( TTNS-IDX    >   TTNS-MAX )
+                    OR   ( TTNS-FLG    =   1 )
+               IF    ( TTNS-KEY-SRYCD (TTNS-IDX)
+                                       =   TTNS-CHK-SRYCD )
+                 AND ( TTNS-KEY-YUKOSTYMD (TTNS-IDX)
+                                      <=   TTNS-CHK-YMD )
+                 AND ( TTNS-KEY-YUKOEDYMD (TTNS-IDX)
+                                      >=   TTNS-CHK-YMD )
+                   MOVE    1           TO  TTNS-FLG
+                   MOVE    TTNS-DAT (TTNS-IDX)
+                                       TO  TNS-TENSU-REC
+               END-IF
+           END-PERFORM
+      *
+           .
+       9001-TTNS-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ退避ワーク編集処理
+      *****************************************************************
+       9001-TTNS-HEN-SEC               SECTION.
+      *
+           IF    ( TTNS-CONST-MAX  >   TTNS-MAX )
+               COMPUTE TTNS-MAX    =   TTNS-MAX    +   1
+               MOVE    TNS-SRYCD       TO  TTNS-KEY-SRYCD
+                                                   (TTNS-MAX)
+               MOVE    TNS-YUKOSTYMD   TO  TTNS-KEY-YUKOSTYMD
+                                                   (TTNS-MAX)
+               MOVE    TNS-YUKOEDYMD   TO  TTNS-KEY-YUKOEDYMD
+                                                   (TTNS-MAX)
+               MOVE    TNS-TENSU-REC   TO  TTNS-DAT
+                                                   (TTNS-MAX)
+           END-IF
+      *
+           .
+       9001-TTNS-HEN-EXT.
            EXIT.
       *
       *****************************************************************
