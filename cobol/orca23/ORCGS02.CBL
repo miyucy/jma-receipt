@@ -1099,8 +1099,6 @@
            MOVE    SPA-GMN-SRYYM       TO  S02-SRYYM
            MOVE    SPA-GMN-BIRTHDAY    TO  S02-BIRTHDAY
            MOVE    SPA-GMN-SRYKA-G     TO  S02-SRYKA
-           DISPLAY "SPA-GMN-SRYKA-G =  "   SPA-GMN-SRYKA-G
-           DISPLAY "S02-SRYKA       =  "   S02-SRYKA
            MOVE    SPA-GMN-NYUGAIKBN-G TO  S02-NYUGAIKBN
       *     
            PERFORM VARYING   IDX     FROM    1   BY  1
@@ -3130,7 +3128,7 @@
       *
            MOVE    "S02"           TO  SPA-MOTOPG
       *
-           IF    ( SPA-BEDSU    >      ZERO )
+           IF  ( SPA-S01-NYUGAIKBN   =   "1" )
                MOVE    "S03N"          TO  SPA-SAKIPG
                MOVE   "CHANGE"         TO  MCP-PUTTYPE
                MOVE   "S03N"           TO  MCP-WINDOW
@@ -3264,7 +3262,7 @@
       *
            MOVE    "S02"           TO  SPA-MOTOPG
       *
-           IF    ( SPA-BEDSU    >      ZERO )
+           IF    ( SPA-S01-NYUGAIKBN   =   "1" )
                MOVE    "S03N"          TO  SPA-SAKIPG
                MOVE   "CHANGE"         TO  MCP-PUTTYPE
                MOVE   "S03N"           TO  MCP-WINDOW
@@ -3329,7 +3327,7 @@
       *
            MOVE    "S02"           TO  SPA-MOTOPG
       *
-           IF    ( SPA-BEDSU    >      ZERO )
+           IF    ( SPA-S01-NYUGAIKBN   =   "1" )
                MOVE    "S03N"          TO  SPA-SAKIPG
                MOVE   "CHANGE"         TO  MCP-PUTTYPE
                MOVE   "S03N"           TO  MCP-WINDOW
@@ -3369,7 +3367,7 @@
       *
            MOVE    "S02"           TO  SPA-MOTOPG
       *
-           IF    ( SPA-BEDSU    >      ZERO )
+           IF    ( SPA-S01-NYUGAIKBN   =   "1" )
                MOVE    "S03N"          TO  SPA-SAKIPG
                MOVE   "CHANGE"         TO  MCP-PUTTYPE
                MOVE   "S03N"           TO  MCP-WINDOW

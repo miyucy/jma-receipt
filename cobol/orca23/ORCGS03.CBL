@@ -247,6 +247,8 @@
       *
            03  WRK-MISYU           PIC 9(08).
       *
+           03  WRK-NYUGAIKBN       PIC X(01).
+      *
            03  WRK-ERRMSG          PIC X(40).
       *
       *    ¥Þ¥Ã¥×²èÌÌ¹Ô
@@ -826,12 +828,35 @@
       *    Á°²óÌ¤¼ý³Û»»½Ð½èÍý
       *************************************************************
        3101-ZENMISYU-SEC                  SECTION.
-      * 
-
+      *
+           MOVE    ZERO            TO  SPA-GMN-ZENMISYU
+      *
+           MOVE    "1"             TO  WRK-NYUGAIKBN
+           PERFORM 3101-MISYU-SEC
+      *
+           COMPUTE SPA-GMN-ZENMISYU
+               =   SPA-GMN-ZENMISYU    +   WRK-MISYU
+      *
+           MOVE    "2"             TO  WRK-NYUGAIKBN
+           PERFORM 3101-MISYU-SEC
+      *
+           COMPUTE SPA-GMN-ZENMISYU
+               =   SPA-GMN-ZENMISYU    +   WRK-MISYU
+      *
+           .
+       3101-ZENMISYU-EXT.
+           EXIT.
+      *
+      *************************************************************
+      *    Ì¤¼ý³Û»»½Ð½èÍý
+      *************************************************************
+       3101-MISYU-SEC                      SECTION.
+      *
+           MOVE   ZERO                 TO  WRK-MISYU
+      *
            INITIALIZE                      SYUNOU-REC
            MOVE    SPA-HOSPID          TO  SYU-HOSPID
-      *****MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
-           MOVE    SPA-S01-NYUGAIKBN   TO  SYU-NYUGAIKBN
+           MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  SYU-PTID
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -846,6 +871,7 @@
            ELSE
                MOVE    1                    TO  FLG-SYUNOU
            END-IF
+      *
            PERFORM     UNTIL      (FLG-SYUNOU      =   1  )
                MOVE    ZERO               TO  FLG-SYORI
                IF     (SPA-NAI-SRYKA       NOT =   SPACE    )  AND
@@ -854,17 +880,16 @@
                END-IF
       *
                IF     (SPA-S01-DENPPRTYMD  <  SYU-DENPPRTYMD )
-                OR    (SPA-S01-DENPNUM     =  SYU-DENPNUM )
+                OR   ((SPA-S01-NYUGAIKBN   =  SYU-NYUGAIKBN )
+                  AND (SPA-S01-DENPNUM     =  SYU-DENPNUM   ))
                        MOVE    1     TO      FLG-SYORI
                END-IF
       *
                IF      FLG-SYORI           =   ZERO
                    IF     SYU-SKYMONEY     >   SYU-NYUKIN-TOTAL
-                      MOVE   ZERO      TO  WRK-MISYU
-                      COMPUTE   WRK-MISYU     =  SYU-SKYMONEY   -
-                                                 SYU-NYUKIN-TOTAL
-                      COMPUTE SPA-GMN-ZENMISYU = SPA-GMN-ZENMISYU +
-                                                     WRK-MISYU
+                      COMPUTE   WRK-MISYU
+                           =    WRK-MISYU
+                           +  ( SYU-SKYMONEY   -    SYU-NYUKIN-TOTAL )
                    END-IF
                END-IF
       *
@@ -876,10 +901,10 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
-           .
-       3101-ZENMISYU-EXT.
-           EXIT.
       *
+           .
+       3101-MISYU-EXT.
+           EXIT.
       *************************************************************
       *    ¹ç·×ÀÁµá³Û·×»»½èÍý
       *************************************************************
