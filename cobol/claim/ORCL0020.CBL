@@ -189,7 +189,6 @@
                WRITE                       OUT-LF02-REC
                IF      STS-LF02        NOT =   ZERO
                    DISPLAY "*** ORCL0020  ERR="   STS-LF02
-                   ACCEPT  WRK-IN
                    MOVE    10             TO  IDX
                END-IF
            END-PERFORM

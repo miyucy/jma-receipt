@@ -370,7 +370,6 @@
            PERFORM 900-LF03-READ-SEC
            IF      FLG-LF03        =   1
                DISPLAY "*** ORCL0021 LF03 INVALID ***"
-               ACCEPT  WRK-IN
                MOVE    1               TO  FLG-END
            END-IF
            .
@@ -1128,7 +1127,6 @@
       *    １剤で２０行以上の時
            IF      IDX-IJ              >   20
                DISPLAY "*** ORCL0021 INDEX OVER ****"
-               ACCEPT  WRK-IN
            END-IF
       *
       *     フィルム
