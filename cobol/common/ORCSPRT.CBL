@@ -15,18 +15,19 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-000200 IDENTIFICATION          DIVISION.
-000300 PROGRAM-ID.             ORCSPRT.
-000400*****************************************************************
-000500*  システム名        : ＯＲＣＡ
-000600*  サブシステム名    : 帳票管理
-000700*  コンポーネント名  : 帳票印刷管理・印刷ＤＢ制御
-000800*  管理者            : 
-000900*  作成日付    作業者        記述
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCSPRT.
+      *****************************************************************
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 帳票管理
+      *  コンポーネント名  : 帳票印刷管理・印刷ＤＢ制御
+      *  管理者            : 
+      *  作成日付    作業者        記述
       *  02/04/16    MCC−藤原　   新規作成
-001100*****************************************************************
+      *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    02/10/10  サイト区分追加
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -224,6 +225,11 @@
            MOVE    SPRT-PRIORITY       TO  PRTDATA-PRIORITY
            MOVE    PRTKANRI-PAGE       TO  PRTDATA-PAGE
            MOVE    SPACE               TO  PRTDATA-PRTFLG
+           IF      SPRT-SITEKBN        =   SPACE
+               MOVE    "0"                 TO  PRTDATA-SITEKBN
+           ELSE    
+               MOVE    SPRT-SITEKBN        TO  PRTDATA-SITEKBN
+           END-IF    
            MOVE    SPRT-PRTDATA        TO  PRTDATA-PRTDATA
       *
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
