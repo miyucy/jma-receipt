@@ -58,6 +58,19 @@ ruby_scripts = $(ruby_sources:.rb.in=.rb)
 all:   $(noinst_shell_scripts) $(shell_scripts)
 
 filecheck:
+	@(for i in $(noinst_shell_sources) $(shell_sources) $(ruby_scripts) ;do echo "make	`basename $${i}`"; done ;\
+	find . \
+	-name "." -o \
+	-name "CVS" -prune -o \
+	-name "Makefile*" -o \
+	-name ".cvsignore" -o \
+	-name "*.bak" -o \
+	-name "build-stamp" -o \
+	-name "allways" -o \
+	-name "daily" -o \
+	-name "monthly" -o \
+	-printf "file\t%f\n") \
+	|sort +1 |uniq -u -f1
 
 clean: 
 	-rm $(noinst_shell_scripts)
