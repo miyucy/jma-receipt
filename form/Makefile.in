@@ -64,7 +64,9 @@ EXTRA_DIST = \
               HCM2C.red \
               HCM2D.red \
               HCM2E.red \
-              HCM2F.red 
+              HCM2F.red \
+              HC04V03.dia \
+              HC041V03.dia 
 
 all:   
 	touch build-stamp
