@@ -191,10 +191,16 @@
       *        カーソルのクリア
                MOVE    SPACE           TO  SPA-COM-CUR    (IDX)
       *        診療区分、種別のクリア
-      *!       IF      SPA-COM-INPUTCD(IDX)(1:1)   NOT =   "1"
+               IF      SPA-COM-INPUTCD(IDX)(1:1)   NOT =   "1" 
                    MOVE    SPACE           TO  SPA-COM-SRYKBN    (IDX)
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN (IDX)
-      *!       END-IF
+               ELSE
+                   IF      SPA-COM-SRYSYUKBN (IDX)
+                                       NOT =   SPA-COM-TNSSRYSYUKBN(IDX)
+                       MOVE    SPACE       TO  SPA-COM-SRYKBN(IDX)
+                       MOVE    SPACE       TO  SPA-COM-SRYSYUKBN (IDX)
+                   END-IF
+               END-IF
       *
                IF      (SPA-GMN-INPUTCD(IDX) =   SPACE )   AND
                        (SPA-COM-INPUTCD(IDX) =   SPACE )
