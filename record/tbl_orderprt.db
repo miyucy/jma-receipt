@@ -139,6 +139,7 @@ path	del1  	{
 			AND   SYSYMD       =   :SYSYMD
 			AND   PRINTYMD     =   :PRINTYMD
 			AND   PRINTHMS     =   :PRINTHMS
+			AND   PRTKBN       =   :PRTKBN
 		;
 	};
 };
