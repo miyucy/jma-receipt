@@ -982,7 +982,8 @@
                                          ORCMCPAREA
                                          MCPDATA-REC.
       *
-           EVALUATE   FLG-TSYRRK       ALSO     FLG-TNKRRK
+           IF  LNK-SYU-SRYYMD(1:6)          <  "200210"
+              EVALUATE   FLG-TSYRRK       ALSO     FLG-TNKRRK
                  WHEN    1                ALSO     0
                  WHEN    1                ALSO     1
                          MOVE     "1"     TO       FLG-SANSHOU
@@ -990,18 +991,29 @@
                          MOVE     "2"     TO       FLG-SANSHOU
                  WHEN    0                ALSO     0
                          MOVE     "3"     TO       FLG-SANSHOU
-           END-EVALUATE.
+              END-EVALUATE
+           ELSE
+              EVALUATE   FLG-TSYRRK       ALSO     FLG-TNKRRK
+                 WHEN    1                ALSO     1
+                         MOVE     "1"     TO       FLG-SANSHOU
+                 WHEN    0                ALSO     1
+                         MOVE     "2"     TO       FLG-SANSHOU
+                 WHEN    0                ALSO     0
+                 WHEN    1                ALSO     0
+                         MOVE     "3"     TO       FLG-SANSHOU
+              END-EVALUATE
+           END-IF.
       *
       *    公費負担部分検索用の参照部分セット（本人で固定）
            MOVE       "1"       TO    FLG-SANSHOU2.
       *
            EVALUATE    FLG-TSYRRK       ALSO     FLG-TNKRRK        
-               WHEN    1                ALSO     0                 
                WHEN    1                ALSO     1                 
                        MOVE    SPACE    TO       FLG-SANSHOU3      
                WHEN    0                ALSO     1                 
                        MOVE     "2"     TO       FLG-SANSHOU3      
                WHEN    0                ALSO     0                 
+               WHEN    1                ALSO     0
                        MOVE     "1"     TO       FLG-SANSHOU3      
            END-EVALUATE.                                    
       *

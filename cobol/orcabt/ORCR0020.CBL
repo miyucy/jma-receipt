@@ -921,12 +921,12 @@
              PERFORM   CSR-CLOSE-SEC
       *
              EVALUATE    FLG-TSYRRK    ALSO     FLG-TNKRRK
-                 WHEN    1             ALSO     0
                  WHEN    1             ALSO     1
                        MOVE     SPACE   TO       RECE02-TEISYOTOKU
                  WHEN    0             ALSO     1
                        MOVE     "2"     TO       RECE02-TEISYOTOKU
                  WHEN    0             ALSO     0
+                 WHEN    1             ALSO     0
                        MOVE     "1"     TO       RECE02-TEISYOTOKU
              END-EVALUATE
       *
