@@ -1376,6 +1376,18 @@
       *    選択
            WHEN    "CLICKED"       ALSO    "B03"
                MOVE    101           TO    SPA-GMN-I04-CUR
+      *    コンボ初期化（テスト用）
+           WHEN    "CLICKED"       ALSO    "B07"
+               MOVE    SPA-GMN-I04-SKYPRTOUT-ITM (2)
+                                     TO    SPA-GMN-I04-SKYPRTOUT
+               MOVE    SPA-GMN-I04-TAIPRTOUT-ITM (2)
+                                     TO    SPA-GMN-I04-TAIPRTOUT
+      *    コンボ初期化（テスト用）
+           WHEN    "CLICKED"       ALSO    "B08"
+               MOVE    SPA-GMN-I04-SKYPRTOUT-ITM (1)
+                                     TO    SPA-GMN-I04-SKYPRTOUT
+               MOVE    SPA-GMN-I04-TAIPRTOUT-ITM (1)
+                                     TO    SPA-GMN-I04-TAIPRTOUT
       *    登録
            WHEN    "CLICKED"       ALSO    "B12"
                PERFORM 450-TOUROKU-SEC
