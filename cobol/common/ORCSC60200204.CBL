@@ -511,7 +511,8 @@
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
-                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE AND
+                               WRK-COM-INPUTCD (IDX-Z) =   SPACE )
       *
                ADD     1                   TO  IDX-MAX
       *
@@ -1328,7 +1329,8 @@
       *    Ç¯Îð°Ê³°¤Î²Ã»»
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   200     )   OR
-                              (WRK-GMN-INPUTCD (IDX)   =   SPACE )
+                              (WRK-GMN-INPUTCD (IDX)   =   SPACE  AND
+                               WRK-COM-INPUTCD (IDX)   =   SPACE )
       *        Êñ³ç°Ê³°¤Î²Ã»»¤Ç£±ºÞ¤Ë¤Ä¤­£±¼êµ»¤Ç¤¢¤ë
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-DATAKBN(IDX)        =   "1" )  AND
@@ -1399,7 +1401,8 @@
                MOVE    ZERO                TO  WRK-TENSUKEI-G2
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL      (IDX         >   200     )   OR
-                                  (WRK-GMN-INPUTCD (IDX)   =   SPACE )
+                                  (WRK-GMN-INPUTCD (IDX)   =   SPACE AND
+                                   WRK-COM-INPUTCD (IDX)   =   SPACE )
                    IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                           (WRK-COM-TENSIKIBETU(IDX)    =   6   )  AND
                           (WRK-COM-KIJUNTEIGENKBN(IDX) =   ZERO )
@@ -1441,7 +1444,8 @@
       *    Ç¯Îð²Ã»»·×»»
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   200     )   OR
-                              (WRK-GMN-INPUTCD (IDX)   =   SPACE )
+                              (WRK-GMN-INPUTCD (IDX)   =   SPACE  AND
+                               WRK-COM-INPUTCD (IDX)   =   SPACE )
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-DATAKBN    (IDX)    =   "2" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   5   )  AND
@@ -1490,7 +1494,8 @@
       *    ³°Íè´ÉÍý²Ã»»¤Î»»Äê¤Ç¤­¤Ê¤¤¼êµ»¤ò¸¡º÷
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   200     )   OR
-                              (WRK-GMN-INPUTCD (IDX)   =   SPACE )
+                              (WRK-GMN-INPUTCD (IDX)   =   SPACE  AND
+                               WRK-COM-INPUTCD (IDX)   =   SPACE )
                IF      (WRK-COM-INPUTCD(IDX)(1:1)      =   "1" )  AND
                        (WRK-COM-INPUTCD(IDX)(1:3)  NOT =   "101") AND
                        (WRK-COM-GAIKANRIKBN (IDX)      =   1   )
@@ -1527,7 +1532,8 @@
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
-                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE  AND
+                               WRK-COM-INPUTCD (IDX-Z) =   SPACE )
                IF     (WRK-COM-SRYKBN (IDX-Z)  =   "60"  )  AND
                       (WRK-COM-INPUTCD(IDX-Z)(1:1)  =   "1" )  AND
                       (WRK-COM-DATAKBN(IDX-Z)  =   "1"   )
@@ -1555,7 +1561,8 @@
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
-                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE  AND
+                               WRK-COM-INPUTCD (IDX-Z) =   SPACE )
       *        »þ´Ö³°¶ÛµÞ±¡Æâ²èÁü¿ÇÃÇ²Ã»»
                IF      WRK-COM-INPUTCD(IDX-Z)  =   "160000210"
                    MOVE    IDX-Z           TO  IDX-JIKAN
@@ -1737,7 +1744,8 @@
       *    º£²óÆþÎÏ¤Î¸¡ºº¶èÊ¬ÈÖ¹æ¤Î¥Á¥§¥Ã¥¯
            PERFORM VARYING IDX-ACT     FROM    1   BY  1
                    UNTIL  (IDX-ACT     >   200  )  OR
-                          (WRK-COM-INPUTCD (IDX-ACT)  =   SPACE )
+                          (WRK-GMN-INPUTCD (IDX-ACT)  =   SPACE   AND
+                           WRK-COM-INPUTCD (IDX-ACT)  =   SPACE )
                IF     (IDX-ACT         NOT =   IDX-Z  )  AND
                       (WRK-COM-CDKBN-KBN   (IDX-ACT)
                                            =   "D"   )  AND
@@ -1872,7 +1880,8 @@
            PERFORM VARYING     IDX1    FROM    IDX-Z  BY  1
                    UNTIL      (IDX1        >   200     )   OR
                               (FLG-ARI                 =   1    ) OR
-                              (WRK-GMN-INPUTCD (IDX1)  =   SPACE )
+                              (WRK-COM-INPUTCD (IDX1)  =   SPACE  AND
+                               WRK-GMN-INPUTCD (IDX1)  =   SPACE )
                IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
                     MOVE    IDX1           TO  IDX-T
                     MOVE    1              TO  FLG-ARI
@@ -1959,7 +1968,8 @@
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
-                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE  AND
+                               WRK-COM-INPUTCD (IDX-Z) =   SPACE )
       *        »þ´Ö³°¶ÛµÞ±¡Æâ²èÁü¿ÇÃÇ²Ã»»
                IF      WRK-COM-INPUTCD(IDX-Z)  =   "160000210"
                    MOVE    IDX-Z           TO  IDX-JIKAN
@@ -2112,7 +2122,8 @@
            INITIALIZE                  WRK-NYUINDAY-AREA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   200  )  OR
-                              (WRK-GMN-INPUTCD (IDX)   =   SPACE )
+                              (WRK-GMN-INPUTCD (IDX)   =   SPACE  AND
+                               WRK-COM-INPUTCD (IDX)   =   SPACE )
       *
       *        ¸¡ºº¤Î»þ¡¢¸¡ººÅù¼Â»ÜÈ½ÃÇ¤ò¹Ô¤¦
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1"  )  AND
