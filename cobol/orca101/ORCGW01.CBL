@@ -146,6 +146,8 @@
            03  FLG-SYSKANRI                       PIC 9(01).
            03  FLG-TOUROKU                        PIC 9(01).
       *
+           03  FLG-CHK                            PIC 9(01).
+      *
       *
       *    添字領域
        01  IDX-AREA.
@@ -1685,12 +1687,21 @@
                    UNTIL   IDX >       SPA-GMN-MAX
                    OR      SPA-ERRCD   NOT =   SPACE
                IF      SPA-GMN-SELNUM      =   IDX 
-                   CONTINUE
+      *            選択された内容の開始日が変更された場合
+                   IF      SPA-NAI-STYUKYMD    =   SPA-NAI-TSTYUKYMD
+                                                               (IDX)
+                       MOVE    ZERO            TO  FLG-CHK
+                   ELSE
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
                ELSE
-                   IF      SPA-NAI-STYUKYMD
-                                           >=  SPA-NAI-TSTYUKYMD (IDX)
-                   AND     SPA-NAI-STYUKYMD
-                                           <=  SPA-NAI-TEDYUKYMD (IDX)
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+               IF      FLG-CHK             =   1
+                   IF     (SPA-NAI-STYUKYMD
+                                           >=  SPA-NAI-TSTYUKYMD (IDX))
+                   AND    (SPA-NAI-STYUKYMD
+                                           <=  SPA-NAI-TEDYUKYMD (IDX))
                        MOVE    "0004"              TO  SPA-ERRCD 
                    END-IF
                    IF      SPA-NAI-EDYUKYMD
