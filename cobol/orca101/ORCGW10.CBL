@@ -55,7 +55,7 @@
                05  SPA-GMN-PAGE        PIC 9(02).
                05  SPA-GMN-LINE        PIC 9(02).
                05  SPA-GMN-MAX         PIC 9(03).
-               05  SPA-GMN-CUR         PIC 9(02).
+               05  SPA-GMN-CUR         PIC 9(03).
       *
                05  SPA-GMN-AREA.
                    07  SPA-GMN-STYUKYMD       PIC X(09).
@@ -65,18 +65,30 @@
                        09  SPA-GMN-HCNUM      PIC 9(03).
                        09  SPA-GMN-HCNAME     PIC X(80).
                        09  SPA-GMN-PRGNAME    PIC X(24).
-                       09  SPA-GMN-PARA-G     OCCURS  3.
+                       09  SPA-GMN-PARA-G     OCCURS  8.
                            11  SPA-GMN-PARAHYOJI
                                               PIC X(20).
                            11  SPA-GMN-PARA   PIC X(10).
+                       09  SPA-GMN-OPTHISSU-KBN-G
+                                               OCCURS  8.
+                           11  SPA-GMN-OPTHISSU
+                                              PIC X(01).
+                           11  SPA-GMN-OPTNINI
+                                              PIC X(01).
                    07  SPA-GMN-3002-AREA.
                        09  SPA-GMN-HCNUM1     PIC 9(03).
                        09  SPA-GMN-HCNAME1    PIC X(80).
                        09  SPA-GMN-PRGNAME1   PIC X(24).
-                       09  SPA-GMN-PARA1-G    OCCURS  3.
+                       09  SPA-GMN-PARA1-G    OCCURS  8.
                            11  SPA-GMN-PARAHYOJI1
                                               PIC X(20).
                            11  SPA-GMN-PARA1  PIC X(10).
+                       09  SPA-GMN-OPTHISSU-KBN1-G
+                                               OCCURS  8.
+                           11  SPA-GMN-OPTHISSU1
+                                              PIC X(01).
+                           11  SPA-GMN-OPTNINI1
+                                              PIC X(01).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD           PIC 9(08).
@@ -106,11 +118,6 @@
       *
        01  WRK-AREA.
            03  WRK-WIDMSG          PIC X(70).
-           03  WRK-WIDGET.
-               05                  PIC X(04).
-               05  WRK-WIDGET3     PIC X(01).
-               05                  PIC X(04).
-               05  WRK-WIDGET2     PIC X(01).    
            03  WRK-YMD             PIC X(09). 
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -132,6 +139,24 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
+      *
+       01  WRK-WIDGET-AREA.
+           03  WRK-WIDGET                          PIC X(20).
+      *
+           03  WRK-WIDGET-R7   REDEFINES   WRK-WIDGET.
+               05  WRK-WIDGET-R7-DAMMY1            PIC X(07).
+               05  WRK-WIDGET7                     PIC 9(02).
+               05  WRK-WIDGET-R7-DAMMY2            PIC X(11).
+      *
+           03  WRK-WIDGET-R8   REDEFINES   WRK-WIDGET.
+               05  WRK-WIDGET-R8-DAMMY1            PIC X(08).
+               05  WRK-WIDGET8                     PIC 9(02).
+               05  WRK-WIDGET-R8-DAMMY2            PIC X(10).
+      *
+       01  CONST-AREA.
+           03  CONST-3001-PARA-MAX PIC 9(05)   VALUE 8.
+           03  CONST-3002-PARA-MAX PIC 9(05)   VALUE 8.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -175,8 +200,8 @@
            COPY    "W04.INC".
            COPY    "W05.INC".
            COPY    "W06.INC".
-           COPY    "W07.INC". 
-           COPY    "W08.INC". 
+           COPY    "W07.INC".
+           COPY    "W08.INC".
            COPY    "W09.INC".
            COPY    "W10.INC".
            COPY    "W11.INC".
@@ -331,6 +356,18 @@
       *
            INITIALIZE   SPA-W10-AREA
       *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL ( IDX >       CONST-3001-PARA-MAX )
+               MOVE    "T"             TO  SPA-GMN-OPTHISSU (IDX)
+               MOVE    "F"             TO  SPA-GMN-OPTNINI  (IDX)
+           END-PERFORM
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL ( IDX >       CONST-3002-PARA-MAX )
+               MOVE    "T"             TO  SPA-GMN-OPTHISSU1(IDX)
+               MOVE    "F"             TO  SPA-GMN-OPTNINI1 (IDX)
+           END-PERFORM
+      *
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-STYUKYMD
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-EDYUKYMD 
       * 
@@ -349,11 +386,23 @@
                        MOVE    SYS-3001-HCNAME     TO  SPA-GMN-HCNAME
                        MOVE    SYS-3001-PRGNAME    TO  SPA-GMN-PRGNAME
                        PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       3
+                               UNTIL   IDX >       CONST-3001-PARA-MAX
                            MOVE    SYS-3001-PARAHYOJI(IDX)
                                            TO  SPA-GMN-PARAHYOJI(IDX)
                            MOVE    SYS-3001-PARA     (IDX)
                                            TO  SPA-GMN-PARA     (IDX)
+                           IF    ( SYS-3001-HISSU-KBN(IDX)
+                                                   =   SPACE OR "1" )
+                               MOVE    "T"         TO  SPA-GMN-OPTHISSU
+                                                                 (IDX)
+                               MOVE    "F"         TO  SPA-GMN-OPTNINI
+                                                                 (IDX)
+                           ELSE
+                               MOVE    "F"         TO  SPA-GMN-OPTHISSU
+                                                                 (IDX)
+                               MOVE    "T"         TO  SPA-GMN-OPTNINI
+                                                                 (IDX)
+                           END-IF
                        END-PERFORM
                    ELSE
                        MOVE    SPA-W01-KBNCD(1:3)  TO  SPA-GMN-HCNUM
@@ -366,16 +415,28 @@
                        MOVE    SYS-3002-HCNAME     TO  SPA-GMN-HCNAME1
                        MOVE    SYS-3002-PRGNAME    TO  SPA-GMN-PRGNAME1
                        PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       3
+                               UNTIL   IDX >       CONST-3002-PARA-MAX
                            MOVE    SYS-3002-PARAHYOJI(IDX)
                                            TO  SPA-GMN-PARAHYOJI1(IDX)
                            MOVE    SYS-3002-PARA     (IDX)
                                            TO  SPA-GMN-PARA1     (IDX)
+                           IF    ( SYS-3002-HISSU-KBN(IDX)
+                                                   =   SPACE OR "1" )
+                               MOVE    "T"         TO  SPA-GMN-OPTHISSU1
+                                                                 (IDX)
+                               MOVE    "F"         TO  SPA-GMN-OPTNINI1
+                                                                 (IDX)
+                           ELSE
+                               MOVE    "F"         TO  SPA-GMN-OPTHISSU1
+                                                                 (IDX)
+                               MOVE    "T"         TO  SPA-GMN-OPTNINI1
+                                                                 (IDX)
+                           END-IF
                        END-PERFORM
                    ELSE
                        MOVE    SPA-W01-KBNCD(1:3)  TO  SPA-GMN-HCNUM1
                    END-IF
-                   MOVE    11                  TO  SPA-GMN-CUR
+                   MOVE    101                 TO  SPA-GMN-CUR
            END-EVALUATE                                           
            . 
        31O-SPASET-EXT.
@@ -397,6 +458,48 @@
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
+      *    必須オプションボタン
+               WHEN    "CLICKED"       ALSO    "OPTHISSU01"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU02"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU03"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU04"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU05"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU06"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU07"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU08"
+                   MOVE    MCP-WIDGET  TO      WRK-WIDGET
+                   PERFORM 4201-OPTHISSU-CHK-SEC
+               WHEN    "CLICKED"       ALSO    "OPTHISSU011"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU021"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU031"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU041"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU051"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU061"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU071"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU081"
+                   MOVE    MCP-WIDGET  TO      WRK-WIDGET
+                   PERFORM 4211-OPTHISSU-CHK-SEC
+      *    任意オプションボタン
+               WHEN    "CLICKED"       ALSO    "OPTNINI01"
+               WHEN    "CLICKED"       ALSO    "OPTNINI02"
+               WHEN    "CLICKED"       ALSO    "OPTNINI03"
+               WHEN    "CLICKED"       ALSO    "OPTNINI04"
+               WHEN    "CLICKED"       ALSO    "OPTNINI05"
+               WHEN    "CLICKED"       ALSO    "OPTNINI06"
+               WHEN    "CLICKED"       ALSO    "OPTNINI07"
+               WHEN    "CLICKED"       ALSO    "OPTNINI08"
+                   MOVE    MCP-WIDGET  TO      WRK-WIDGET
+                   PERFORM 4202-OPTNINI-CHK-SEC
+               WHEN    "CLICKED"       ALSO    "OPTNINI011"
+               WHEN    "CLICKED"       ALSO    "OPTNINI021"
+               WHEN    "CLICKED"       ALSO    "OPTNINI031"
+               WHEN    "CLICKED"       ALSO    "OPTNINI041"
+               WHEN    "CLICKED"       ALSO    "OPTNINI051"
+               WHEN    "CLICKED"       ALSO    "OPTNINI061"
+               WHEN    "CLICKED"       ALSO    "OPTNINI071"
+               WHEN    "CLICKED"       ALSO    "OPTNINI081"
+                   MOVE    MCP-WIDGET  TO      WRK-WIDGET
+                   PERFORM 4212-OPTNINI-CHK-SEC
            END-EVALUATE
       *
            .
@@ -443,7 +546,7 @@
            MOVE    W10-HCNAME          TO  SPA-GMN-HCNAME
            MOVE    W10-PROGNAME        TO  SPA-GMN-PRGNAME
            PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL       IDZ     >   3
+                   UNTIL       IDZ     >   CONST-3001-PARA-MAX
                MOVE    W10-PARAHYOJI (IDZ) TO  SPA-GMN-PARAHYOJI(IDZ)
                MOVE    W10-PARA (IDZ)      TO  SPA-GMN-PARA(IDZ)
            END-PERFORM
@@ -451,7 +554,7 @@
            MOVE    W10-HCNAME1         TO  SPA-GMN-HCNAME1
            MOVE    W10-PROGNAME1       TO  SPA-GMN-PRGNAME1
            PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL       IDZ     >   3
+                   UNTIL       IDZ     >   CONST-3002-PARA-MAX
                MOVE    W10-PARAHYOJI1(IDZ) TO  SPA-GMN-PARAHYOJI1(IDZ)
                MOVE    W10-PARA1(IDZ)      TO  SPA-GMN-PARA1(IDZ)
            END-PERFORM
@@ -533,9 +636,11 @@
        4103-PARAHYOJI-CHK-SEC     SECTION.
       *
            PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL       IDZ     >   3
+                   UNTIL       IDZ     >   CONST-3001-PARA-MAX
                IF      SPA-GMN-PARAHYOJI(IDZ)  =   SPACE
                    MOVE    SPACE           TO  SPA-GMN-PARA (IDZ)
+                   MOVE    "T"             TO  SPA-GMN-OPTHISSU (IDZ)
+                   MOVE    "F"             TO  SPA-GMN-OPTNINI  (IDZ)
                END-IF
            END-PERFORM
       *
@@ -553,7 +658,7 @@
            END-IF
       *
            PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL      (IDZ     >   3   )   OR
+                   UNTIL      (IDZ     >   CONST-3001-PARA-MAX   )   OR
                               (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-GMN-PARAHYOJI(IDZ)  =   SPACE
                    IF      SPA-GMN-PARA (IDZ)  NOT =   SPACE
@@ -565,18 +670,105 @@
                    END-IF
                END-IF
                IF      SPA-ERRCD       NOT =   SPACE
-                   EVALUATE    IDZ
-                      WHEN     1
-                          MOVE    5            TO  SPA-GMN-CUR
-                      WHEN     2
-                          MOVE    7            TO  SPA-GMN-CUR
-                      WHEN     3
-                          MOVE    9            TO  SPA-GMN-CUR
-                   END-EVALUATE
+                   COMPUTE SPA-GMN-CUR
+                       =   ( IDZ - 1 ) * 2 + 5
                END-IF
            END-PERFORM
            .
        4104-PARA-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    必須オプションボタンチェック
+      *****************************************************************
+       4201-OPTHISSU-CHK-SEC       SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    WRK-WIDGET8         TO  IDZ
+      *
+           IF    ( SPA-GMN-PARAHYOJI(IDZ)  =   SPACE )
+               MOVE    "T"             TO  SPA-GMN-OPTHISSU (IDZ)
+               MOVE    "F"             TO  SPA-GMN-OPTNINI  (IDZ)
+           ELSE
+               MOVE    W10-OPTHISSU (IDZ)
+                                       TO  SPA-GMN-OPTHISSU (IDZ)
+               MOVE    W10-OPTNINI  (IDZ)
+                                       TO  SPA-GMN-OPTNINI  (IDZ)
+           END-IF
+      *
+           .
+       4201-OPTHISSU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    必須オプションボタンチェック
+      *****************************************************************
+       4211-OPTHISSU-CHK-SEC       SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    WRK-WIDGET8         TO  IDZ
+      *
+           IF    ( SPA-GMN-PARAHYOJI1(IDZ)  =   SPACE )
+               MOVE    "T"             TO  SPA-GMN-OPTHISSU1 (IDZ)
+               MOVE    "F"             TO  SPA-GMN-OPTNINI1  (IDZ)
+           ELSE
+               MOVE    W10-OPTHISSU1 (IDZ)
+                                       TO  SPA-GMN-OPTHISSU1 (IDZ)
+               MOVE    W10-OPTNINI1  (IDZ)
+                                       TO  SPA-GMN-OPTNINI1  (IDZ)
+           END-IF
+      *
+           .
+       4211-OPTHISSU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    任意オプションボタンチェック
+      *****************************************************************
+       4202-OPTNINI-CHK-SEC        SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    WRK-WIDGET7         TO  IDZ
+      *
+           IF    ( SPA-GMN-PARAHYOJI(IDZ)  =   SPACE )
+               MOVE    "T"             TO  SPA-GMN-OPTHISSU (IDZ)
+               MOVE    "F"             TO  SPA-GMN-OPTNINI  (IDZ)
+           ELSE
+               MOVE    W10-OPTHISSU (IDZ)
+                                       TO  SPA-GMN-OPTHISSU (IDZ)
+               MOVE    W10-OPTNINI  (IDZ)
+                                       TO  SPA-GMN-OPTNINI  (IDZ)
+           END-IF
+      *
+           .
+       4202-OPTNINI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    任意オプションボタンチェック
+      *****************************************************************
+       4212-OPTNINI-CHK-SEC        SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    WRK-WIDGET7         TO  IDZ
+      *
+           IF    ( SPA-GMN-PARAHYOJI1(IDZ)  =   SPACE )
+               MOVE    "T"             TO  SPA-GMN-OPTHISSU1(IDZ)
+               MOVE    "F"             TO  SPA-GMN-OPTNINI1 (IDZ)
+           ELSE
+               MOVE    W10-OPTHISSU1 (IDZ)
+                                      TO  SPA-GMN-OPTHISSU1(IDZ)
+               MOVE    W10-OPTNINI1  (IDZ)
+                                      TO  SPA-GMN-OPTNINI1 (IDZ)
+           END-IF
+      *
+           .
+       4212-OPTNINI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -604,7 +796,7 @@
       *
       *
            PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL       IDZ     >   3
+                   UNTIL       IDZ     >   CONST-3002-PARA-MAX
                IF      SPA-GMN-PARAHYOJI1(IDZ)  =   SPACE
                    MOVE    SPACE           TO  SPA-GMN-PARA1 (IDZ)
                END-IF
@@ -623,7 +815,7 @@
            END-IF
       *
            PERFORM VARYING     IDZ     FROM    1   BY  1
-                   UNTIL      (IDZ     >   3   )   OR
+                   UNTIL      (IDZ     >   CONST-3002-PARA-MAX   )   OR
                               (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-GMN-PARAHYOJI1(IDZ) =   SPACE
                    IF      SPA-GMN-PARA1 (IDZ) NOT =   SPACE
@@ -635,14 +827,8 @@
                    END-IF
                END-IF
                IF      SPA-ERRCD       NOT =   SPACE
-                   EVALUATE    IDZ
-                      WHEN     1
-                          MOVE    15           TO  SPA-GMN-CUR
-                      WHEN     2
-                          MOVE    17           TO  SPA-GMN-CUR
-                      WHEN     3
-                          MOVE    19           TO  SPA-GMN-CUR
-                   END-EVALUATE
+                   COMPUTE SPA-GMN-CUR
+                       =   ( IDZ - 1 ) * 2 + 105
                END-IF
            END-PERFORM
            .
@@ -760,11 +946,21 @@
                    MOVE    SPA-GMN-HCNAME      TO  SYS-3001-HCNAME 
                    MOVE    SPA-GMN-PRGNAME     TO  SYS-3001-PRGNAME
                    PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       3
+                           UNTIL   IDX >       CONST-3001-PARA-MAX
                        MOVE    SPA-GMN-PARAHYOJI (IDX)
                                            TO  SYS-3001-PARAHYOJI(IDX)
                        MOVE    SPA-GMN-PARA (IDX)
                                            TO  SYS-3001-PARA     (IDX)
+                       IF    ( SPA-GMN-PARAHYOJI (IDX) NOT = SPACE )
+                           IF    ( SPA-GMN-OPTHISSU(IDX)   =   "T" )
+                               MOVE    "1" TO  SYS-3001-HISSU-KBN(IDX)
+                           ELSE
+                               MOVE    "2" TO  SYS-3001-HISSU-KBN(IDX)
+                           END-IF
+                       ELSE
+                               MOVE    SPACE
+                                           TO  SYS-3001-HISSU-KBN(IDX)
+                       END-IF
                    END-PERFORM
                    MOVE    SYS-3001-REC         TO  SYSKANRI-REC
                WHEN    "3002"     
@@ -781,11 +977,21 @@
                    MOVE    SPA-GMN-HCNAME1     TO  SYS-3002-HCNAME 
                    MOVE    SPA-GMN-PRGNAME1    TO  SYS-3002-PRGNAME
                    PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       3
+                           UNTIL   IDX >       CONST-3002-PARA-MAX
                        MOVE    SPA-GMN-PARAHYOJI1(IDX)
                                            TO  SYS-3002-PARAHYOJI(IDX)
                        MOVE    SPA-GMN-PARA1     (IDX)
                                            TO  SYS-3002-PARA     (IDX)
+                       IF    ( SPA-GMN-PARAHYOJI1 (IDX) NOT = SPACE )
+                           IF    ( SPA-GMN-OPTHISSU1(IDX)   =   "T" )
+                               MOVE    "1" TO  SYS-3002-HISSU-KBN(IDX)
+                           ELSE
+                               MOVE    "2" TO  SYS-3002-HISSU-KBN(IDX)
+                           END-IF
+                       ELSE
+                               MOVE    SPACE
+                                           TO  SYS-3002-HISSU-KBN(IDX)
+                       END-IF
                    END-PERFORM
                    MOVE    SYS-3002-REC         TO  SYSKANRI-REC
            END-EVALUATE       
@@ -859,7 +1065,7 @@
            IF      SPA-GMN-HCNAME1     =   SPACE    
            OR      SPA-GMN-PRGNAME1    =   SPACE   
                MOVE  "0099"                TO  SPA-ERRCD
-               MOVE   11                   TO  SPA-GMN-CUR
+               MOVE   101                  TO  SPA-GMN-CUR
                GO  TO  4902-TAG2-CHK-EXT
            END-IF
       *
@@ -909,22 +1115,30 @@
            MOVE    SPA-GMN-HCNAME       TO  W10-HCNAME
            MOVE    SPA-GMN-PRGNAME      TO  W10-PROGNAME
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       3
+                   UNTIL   IDX >       CONST-3001-PARA-MAX
                MOVE    SPA-GMN-PARAHYOJI (IDX)
                                               TO  W10-PARAHYOJI(IDX)
                MOVE    SPA-GMN-PARA (IDX)     TO  W10-PARA     (IDX)
-           END-PERFORM                                           
+               MOVE    SPA-GMN-OPTHISSU (IDX)
+                                        TO  W10-OPTHISSU (IDX)
+               MOVE    SPA-GMN-OPTNINI  (IDX)
+                                        TO  W10-OPTNINI  (IDX)
+           END-PERFORM
       *
       *    月次統計情報 
            MOVE    SPA-GMN-HCNUM1       TO  W10-HCNUM1
            MOVE    SPA-GMN-HCNAME1      TO  W10-HCNAME1
            MOVE    SPA-GMN-PRGNAME1     TO  W10-PROGNAME1
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       3
+                   UNTIL   IDX >       CONST-3002-PARA-MAX
                MOVE    SPA-GMN-PARAHYOJI1(IDX)
                                               TO  W10-PARAHYOJI1(IDX)
                MOVE    SPA-GMN-PARA1(IDX)     TO  W10-PARA1     (IDX)
-           END-PERFORM                                           
+               MOVE    SPA-GMN-OPTHISSU1 (IDX)
+                                        TO  W10-OPTHISSU1 (IDX)
+               MOVE    SPA-GMN-OPTNINI1  (IDX)
+                                        TO  W10-OPTNINI1  (IDX)
+           END-PERFORM
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1055,32 +1269,72 @@
                     MOVE  "PARAHYOJI3"     TO   MCP-WIDGET
                 WHEN    09
                     MOVE  "PARA3"          TO   MCP-WIDGET
-      *         月次統計情報    
+                WHEN    10
+                    MOVE  "PARAHYOJI4"     TO   MCP-WIDGET
                 WHEN    11
-                    MOVE  "HCNAME1"        TO   MCP-WIDGET
+                    MOVE  "PARA4"          TO   MCP-WIDGET
+                WHEN    12
+                    MOVE  "PARAHYOJI5"     TO   MCP-WIDGET
                 WHEN    13
-                    MOVE  "PROGNAME1"      TO   MCP-WIDGET
+                    MOVE  "PARA5"          TO   MCP-WIDGET
                 WHEN    14
-                    MOVE  "PARAHYOJI11"    TO   MCP-WIDGET
+                    MOVE  "PARAHYOJI6"     TO   MCP-WIDGET
                 WHEN    15
-                    MOVE  "PARA11"         TO   MCP-WIDGET
+                    MOVE  "PARA6"          TO   MCP-WIDGET
                 WHEN    16
-                    MOVE  "PARAHYOJI21"    TO   MCP-WIDGET
+                    MOVE  "PARAHYOJI7"     TO   MCP-WIDGET
                 WHEN    17
-                    MOVE  "PARA21"         TO   MCP-WIDGET
+                    MOVE  "PARA7"          TO   MCP-WIDGET
                 WHEN    18
-                    MOVE  "PARAHYOJI31"    TO   MCP-WIDGET
+                    MOVE  "PARAHYOJI8"     TO   MCP-WIDGET
                 WHEN    19
+                    MOVE  "PARA8"          TO   MCP-WIDGET
+      *         月次統計情報    
+                WHEN    101
+                    MOVE  "HCNAME1"        TO   MCP-WIDGET
+                WHEN    103
+                    MOVE  "PROGNAME1"      TO   MCP-WIDGET
+                WHEN    104
+                    MOVE  "PARAHYOJI11"    TO   MCP-WIDGET
+                WHEN    105
+                    MOVE  "PARA11"         TO   MCP-WIDGET
+                WHEN    106
+                    MOVE  "PARAHYOJI21"    TO   MCP-WIDGET
+                WHEN    107
+                    MOVE  "PARA21"         TO   MCP-WIDGET
+                WHEN    108
+                    MOVE  "PARAHYOJI31"    TO   MCP-WIDGET
+                WHEN    109
                     MOVE  "PARA31"         TO   MCP-WIDGET
-      *              
-                WHEN    99
+                WHEN    110
+                    MOVE  "PARAHYOJI41"    TO   MCP-WIDGET
+                WHEN    111
+                    MOVE  "PARA41"         TO   MCP-WIDGET
+                WHEN    112
+                    MOVE  "PARAHYOJI51"    TO   MCP-WIDGET
+                WHEN    113
+                    MOVE  "PARA51"         TO   MCP-WIDGET
+                WHEN    114
+                    MOVE  "PARAHYOJI61"    TO   MCP-WIDGET
+                WHEN    115
+                    MOVE  "PARA61"         TO   MCP-WIDGET
+                WHEN    116
+                    MOVE  "PARAHYOJI71"    TO   MCP-WIDGET
+                WHEN    117
+                    MOVE  "PARA71"         TO   MCP-WIDGET
+                WHEN    118
+                    MOVE  "PARAHYOJI81"    TO   MCP-WIDGET
+                WHEN    119
+                    MOVE  "PARA81"         TO   MCP-WIDGET
+      *
+                WHEN    999
                     MOVE  "B12"            TO   MCP-WIDGET
             END-EVALUATE
       *
            EVALUATE    SPA-GMN-CUR
-               WHEN    1   THRU    10
+               WHEN    1   THRU    100
                    MOVE    0               TO  W10-PAGENO
-               WHEN    11  THRU    20
+               WHEN    101  THRU   200
                    MOVE    1               TO  W10-PAGENO
            END-EVALUATE                       
            .
@@ -1108,24 +1362,64 @@
                WHEN    "PARAHYOJI3 "
                    MOVE    9           TO  SPA-GMN-CUR
                WHEN    "PARA3 "
-                   MOVE    99          TO  SPA-GMN-CUR
+                   MOVE    10          TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI4 "
+                   MOVE    11          TO  SPA-GMN-CUR
+               WHEN    "PARA4 "
+                   MOVE    12          TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI5 "
+                   MOVE    13          TO  SPA-GMN-CUR
+               WHEN    "PARA5 "
+                   MOVE    14          TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI6 "
+                   MOVE    15          TO  SPA-GMN-CUR
+               WHEN    "PARA6 "
+                   MOVE    16          TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI7 "
+                   MOVE    17          TO  SPA-GMN-CUR
+               WHEN    "PARA7 "
+                   MOVE    18          TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI8 "
+                   MOVE    19          TO  SPA-GMN-CUR
+               WHEN    "PARA8 "
+                   MOVE    999         TO  SPA-GMN-CUR
       *
                WHEN    "HCNAME1"
-                   MOVE    13          TO  SPA-GMN-CUR
+                   MOVE    103         TO  SPA-GMN-CUR
                WHEN    "PROGNAME1"
-                   MOVE    14          TO  SPA-GMN-CUR
+                   MOVE    104         TO  SPA-GMN-CUR
                WHEN    "PARAHYOJI11"
-                   MOVE    15          TO  SPA-GMN-CUR
+                   MOVE    105         TO  SPA-GMN-CUR
                WHEN    "PARA11"
-                   MOVE    16          TO  SPA-GMN-CUR
+                   MOVE    106         TO  SPA-GMN-CUR
                WHEN    "PARAHYOJI21"
-                   MOVE    17          TO  SPA-GMN-CUR
+                   MOVE    107         TO  SPA-GMN-CUR
                WHEN    "PARA21"
-                   MOVE    18          TO  SPA-GMN-CUR
+                   MOVE    108         TO  SPA-GMN-CUR
                WHEN    "PARAHYOJI31"
-                   MOVE    19          TO  SPA-GMN-CUR
+                   MOVE    109         TO  SPA-GMN-CUR
                WHEN    "PARA31"
-                   MOVE    99          TO  SPA-GMN-CUR
+                   MOVE    110         TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI41"
+                   MOVE    111         TO  SPA-GMN-CUR
+               WHEN    "PARA41"
+                   MOVE    112         TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI51"
+                   MOVE    113         TO  SPA-GMN-CUR
+               WHEN    "PARA51"
+                   MOVE    114         TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI61"
+                   MOVE    105         TO  SPA-GMN-CUR
+               WHEN    "PARA61"
+                   MOVE    116         TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI71"
+                   MOVE    117         TO  SPA-GMN-CUR
+               WHEN    "PARA71"
+                   MOVE    118         TO  SPA-GMN-CUR
+               WHEN    "PARAHYOJI81"
+                   MOVE    119         TO  SPA-GMN-CUR
+               WHEN    "PARA81"
+                   MOVE    999         TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .

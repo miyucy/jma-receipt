@@ -31,9 +31,12 @@
                     06  W10-VALUE       PIC X(80).
                   05  W10-HCNUM.
                     06  W10-VALUE       PIC S9(3).
-                  05  W10-PARA-G        OCCURS  3.
+                  05  W10-PARA-G        OCCURS  8.
                       06  W10-PARAHYOJI PIC X(20).
                       06  W10-PARA      PIC X(10).
+                  05  W10-OPTHISSU-KBN-G        OCCURS  8.
+                      06  W10-OPTHISSU  PIC X.
+                      06  W10-OPTNINI   PIC X.
                 04  W10-N01.
                   05  W10-N01-STATE     PIC S9(9)   BINARY.
                 04  W10-FIXED1.
@@ -43,8 +46,11 @@
                     06  W10-VALUE       PIC X(80).
                   05  W10-HCNUM1.
                     06  W10-VALUE       PIC S9(3).
-                  05  W10-PARA1-G        OCCURS  3.
+                  05  W10-PARA1-G        OCCURS  8.
                       06  W10-PARAHYOJI1 PIC X(20).
                       06  W10-PARA1      PIC X(10).
+                  05  W10-OPTHISSU-KBN1-G        OCCURS  8.
+                      06  W10-OPTHISSU1 PIC X.
+                      06  W10-OPTNINI1  PIC X.
                 04  W10-N02.
                   05  W10-N02-STATE     PIC S9(9)   BINARY.
