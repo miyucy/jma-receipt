@@ -1328,7 +1328,9 @@
                    PERFORM  UNTIL  (FLG-SYUNOU   =    "1")
                      IF (LNK-SYU-SKYSTYMD(1:6) = SYU-SKYSTYMD(1:6)) AND
                         (SYU-DENPJTIKBN    NOT =  "3")
+                      IF   LNK-SYU-SKYSTYMD    > SYU-SKYSTYMD
                              PERFORM        2201-SYUNOU-COUNT-SEC
+                      END-IF
                      END-IF
                      MOVE           "SYUNOU-KEY2"    TO   ORC-DBPATH
                      PERFORM        SYUNOU-READ-SEC
