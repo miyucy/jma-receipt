@@ -29,6 +29,8 @@
            03  ORCSHKN-IN-AREA.
       *処理区分（１：当日対象、２：全部）
                05  ORCSHKN-KBN                 PIC  X(01).
+      *処理区分２（１：包括まとめ入力有り）
+               05  ORCSHKN-KBN2                PIC  X(01).
       *
       *保険組合せ一覧
            03  ORCSHKN-OUT-AREA.

@@ -823,6 +823,7 @@ COPYS = \
 	HCM401.INC \
         CPSYUDAY.INC \
         HCM03.INC \
+        CPORCSCGAIRAI.INC \
 
 DBPATH = \
 	ORCA-DBPATH
