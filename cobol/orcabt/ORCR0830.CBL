@@ -1320,54 +1320,58 @@
                          COMPUTE  WRK-KEISAN  =  WRK-KHNTEN
                                               -  WRK-MIJISI
                                               +  WRK-ACCT-KASAN(IDY)
-                         EVALUATE  WRK-ROUNYUIN-JOUSU-KBN(IDY)
-                           WHEN  "1"
-                            COMPUTE  WRK-KEISAN  = (WRK-KEISAN * 1.30)
-                                                 +  0.5
-                           WHEN  "2"
-                            COMPUTE  WRK-KEISAN  = (WRK-KEISAN * 1.01)
-                                                 +  0.5
-                         END-EVALUATE
+      *>                 EVALUATE  WRK-ROUNYUIN-JOUSU-KBN(IDY)
+      *>                   WHEN  "1"
+      *>                    COMPUTE  WRK-KEISAN  = (WRK-KEISAN * 1.30)
+      *>                                         +  0.5
+      *>                   WHEN  "2"
+      *>                    COMPUTE  WRK-KEISAN  = (WRK-KEISAN * 1.01)
+      *>                                         +  0.5
+      *>                 END-EVALUATE
                          COMPUTE  WRK-NYUTOKRYO  =  WRK-KEISAN
                                                  +  WRK-KSNTEN
                        WHEN   1
                        WHEN   4
                          IF   WRK-KHNTEN2  NOT =  ZERO
-                           COMPUTE  WRK-KEISAN =
+                           COMPUTE  WRK-NYUTOKRYO  = 
+      *>                   COMPUTE  WRK-KEISAN =
                                  (WRK-KHNTEN2  *  0.15)  +  0.5
                          ELSE
-                           COMPUTE  WRK-KEISAN =
+                           COMPUTE  WRK-NYUTOKRYO  = 
+      *>                   COMPUTE  WRK-KEISAN =
                                  (WRK-KHNTEN   *  0.15)  +  0.5
                          END-IF
       *>                 COMPUTE    WRK-KEISAN =  WRK-KEISAN
       *>                                       +  WRK-ACCT-KASAN(IDY)
-                         EVALUATE  WRK-ROUNYUIN-JOUSU-KBN(IDY)
-                           WHEN  "1"
-                             COMPUTE  WRK-NYUTOKRYO  = 
-                                     (WRK-KEISAN * 1.30)  +  0.5
-                           WHEN  "2"
-                             COMPUTE  WRK-NYUTOKRYO  = 
-                                     (WRK-KEISAN * 1.01)  +  0.5
-                         END-EVALUATE
+      *>                 EVALUATE  WRK-ROUNYUIN-JOUSU-KBN(IDY)
+      *>                   WHEN  "1"
+      *>                     COMPUTE  WRK-NYUTOKRYO  = 
+      *>                             (WRK-KEISAN * 1.30)  +  0.5
+      *>                   WHEN  "2"
+      *>                     COMPUTE  WRK-NYUTOKRYO  = 
+      *>                             (WRK-KEISAN * 1.01)  +  0.5
+      *>                 END-EVALUATE
                          MOVE   1   TO   FLG-GAIHAKU
                        WHEN   2
                          IF   WRK-KHNTEN2  NOT =  ZERO
-                           COMPUTE  WRK-KEISAN =
+                           COMPUTE  WRK-NYUTOKRYO  = 
+      *>                   COMPUTE  WRK-KEISAN =
                                  (WRK-KHNTEN2  *  0.3)  +  0.5
                          ELSE
-                           COMPUTE  WRK-KEISAN =
+                           COMPUTE  WRK-NYUTOKRYO  = 
+      *>                   COMPUTE  WRK-KEISAN =
                                  (WRK-KHNTEN   *  0.3)  +  0.5
                          END-IF
       *>                 COMPUTE    WRK-KEISAN =  WRK-KEISAN
       *>                                       +  WRK-ACCT-KASAN(IDY)
-                         EVALUATE  WRK-ROUNYUIN-JOUSU-KBN(IDY)
-                           WHEN  "1"
-                             COMPUTE  WRK-NYUTOKRYO  = 
-                                     (WRK-KEISAN * 1.30)  +  0.5
-                           WHEN  "2"
-                             COMPUTE  WRK-NYUTOKRYO  = 
-                                     (WRK-KEISAN * 1.01)  +  0.5
-                         END-EVALUATE
+      *>                 EVALUATE  WRK-ROUNYUIN-JOUSU-KBN(IDY)
+      *>                   WHEN  "1"
+      *>                     COMPUTE  WRK-NYUTOKRYO  = 
+      *>                             (WRK-KEISAN * 1.30)  +  0.5
+      *>                   WHEN  "2"
+      *>                     COMPUTE  WRK-NYUTOKRYO  = 
+      *>                             (WRK-KEISAN * 1.01)  +  0.5
+      *>                 END-EVALUATE
                          MOVE   1   TO   FLG-GAIHAKU
                   END-EVALUATE
                   EVALUATE   WRK-DAY2(IDY)
