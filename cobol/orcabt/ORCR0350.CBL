@@ -232,6 +232,7 @@
            03  IDXY                    PIC 9(03).
            03  IDXZ                    PIC 9(03).
            03  IDW1                    PIC 9(03).
+           03  IDW2                    PIC 9(03).
            03  IDX0                    PIC 9(03).
            03  SYSKAN-IDX              PIC 9(03).
       *    
@@ -4110,17 +4111,17 @@
            IF      WRK-DATA        =   SPACE
                CONTINUE
            ELSE                   
-               PERFORM VARYING IDW FROM    WRK-NAGASA  BY  -1
-                       UNTIL   IDW <       1
-                   IF      WRK-DATA (IDW:1)   NOT =   SPACE
+               PERFORM VARYING IDW2    FROM    WRK-NAGASA  BY  -1
+                       UNTIL   IDW2    <       1
+                   IF      WRK-DATA (IDW2:1)   NOT =   SPACE
                        STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED
                                                              BY  SIZE
-                               WRK-DATA(1:IDW)           DELIMITED
+                               WRK-DATA(1:IDW2)          DELIMITED
                                                              BY  SIZE
                                INTO        WRK-REC
                        END-STRING
-                       ADD     IDW                 TO  WRK-REC-LENGTH        
-                       MOVE    1                   TO  IDW
+                       ADD     IDW2                TO  WRK-REC-LENGTH        
+                       MOVE    1                   TO  IDW2
                    END-IF
                END-PERFORM
            END-IF
@@ -4154,22 +4155,22 @@
                                                +   1
                END-IF                                
       *     
-               PERFORM VARYING IDW FROM    WRK-ST    BY  1
-                       UNTIL   IDW >       10
-                   IF      WRK-NUM (IDW:1)   NOT =   SPACE
+               PERFORM VARYING IDW2    FROM    WRK-ST    BY  1
+                       UNTIL   IDW2    >       10
+                   IF      WRK-NUM (IDW2:1)  NOT =   SPACE
                         COMPUTE IDZ     =    11  +   WRK-SYOSUU
-                                                 -   IDW       
+                                                 -   IDW2       
                         IF      WRK-SYOSUU       >   ZERO
                             ADD     1                TO  IDZ
                         END-IF     
                         STRING  WRK-REC(1:WRK-REC-LENGTH)
                                                  DELIMITED  BY  SIZE
-                               WRK-NUM(IDW:IDZ)  DELIMITED  BY  SIZE
+                               WRK-NUM(IDW2:IDZ)  DELIMITED  BY  SIZE
                                INTO        WRK-REC
                        END-STRING
                        COMPUTE WRK-REC-LENGTH    =   WRK-REC-LENGTH   +
                                                      IDZ                  
-                       MOVE    10                TO  IDW
+                       MOVE    10                TO  IDW2
                    END-IF
                END-PERFORM
            END-IF    
