@@ -1777,11 +1777,7 @@
                  IF  (SYU-DAY(SYU-IDX)       =     "1"  OR  "2")   AND
                      (ACCT-DAY(1 SYU-IDX)    NOT =  ZERO)          AND
                      (SYU-HKNCOMBINUM        =    ACCT-HKNCOMBI)
-                   IF  ACCT-SRYKBN  =  "95" OR "96"
-                     ADD   1                      TO     SINRYO-COUNT
-                   ELSE
                      ADD   ACCT-DAY(1 SYU-IDX)    TO     SINRYO-COUNT
-                   END-IF
                  END-IF
            END-PERFORM          
       *
