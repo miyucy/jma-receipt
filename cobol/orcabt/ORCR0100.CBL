@@ -99,6 +99,9 @@
       *
       *  01.01.01    NACL-藤原    02/09/17  県内県外区分・県番号・
       *                                     年齢・給付割合の追加
+      *  01.01.02    NACL-小豆沢  02/09/30  給付割合を食事−日数（１）
+      *                                     にもセットする
+      *                                     ※診療年月平成１４年９月まで
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3104,10 +3107,10 @@
                COMPUTE WRK-KYURATE-9   =
                               (100     -   RECE02-KYURATE)
                                            / 10 
-      *********MOVE    WRK-KYURATE-9   TO  RECE10-SHOKUJINISSU (1)
+               MOVE    WRK-KYURATE-9   TO  RECE10-SHOKUJINISSU (1)
                MOVE    WRK-KYURATE-9   TO  RECE10-KYURATE
            ELSE
-      *********MOVE    ZERO            TO  RECE10-SHOKUJINISSU (1)
+               MOVE    ZERO            TO  RECE10-SHOKUJINISSU (1)
                MOVE    ZERO            TO  RECE10-KYURATE
            END-IF             
       *
