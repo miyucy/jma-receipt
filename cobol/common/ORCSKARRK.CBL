@@ -380,6 +380,9 @@
                          ((WRK-LST-SRYYMD  NOT =   SPACE  ) AND
                           (WRK-LST-SRYYMD2 NOT =   SPACE  ) AND
                           (FLG-JYURRK-CHK  NOT =   ZERO   ))
+      *         Ò≥Á§œ¬–æ›≥∞
+             IF      JYURRK-HKNCOMBINUM    NOT =   "9999"
+      *
       *        ø«Œ≈≤ Õ˙ŒÚ§œ≥∞ÕË§Œ§ﬂ§«∫Ó¿Æ§π§Î
                IF      JYURRK-NYUGAIKBN    =   "2"
                    IF      SPA-SRYKA       =   JYURRK-SRYKA
@@ -423,6 +426,8 @@
                    END-IF
                END-IF
                MOVE    1                   TO  FLG-JYURRK-ARI
+      *
+               END-IF
       *
                MOVE    "JYURRK-KEY8"       TO  ORC-DBPATH
                PERFORM 970-JYURRK-NEXT-SEC
@@ -629,7 +634,8 @@
            PERFORM
                UNTIL       (FLG-SRYACCT         =   1    )  OR
                            (FLG-SRYACCT-CHK     =   1    )
-               IF      ACCT-ZAIKAISU       >   ZERO
+               IF     (ACCT-ZAIKAISU       >   ZERO  )  AND
+                      (ACCT-HKNCOMBI   NOT =   "9999")
       *            ø«Œ≈π‘∞Ÿ§Ë§Í
                    PERFORM 300112-SRYACT-HEN-SEC
                    IF      FLG-SRYACCT-CHK     =   1
