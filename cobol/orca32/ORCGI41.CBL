@@ -255,6 +255,7 @@
            03  WRK-SRYCD           PIC X(09).
            03  WRK-STYUKYMD        PIC X(08).
            03  WRK-NYUINYM         PIC X(06).
+           03  WRK-TOKUBETSU-NYUIN PIC X(01).
       *
            03  WRK-TENSU-X.
                05  WRK-TENSU       PIC Z(07).
@@ -5605,11 +5606,12 @@
            EXIT.
       *
       *****************************************************************
-      *    点数マスタ検索処理
+      *    点数マスタ検索処理（入院料）
       *****************************************************************
        48011-TENSU-SEL-SEC              SECTION.
       *
            MOVE    SPACE           TO  WRK-NYUKSNKBN
+           MOVE    SPACE           TO  WRK-TOKUBETSU-NYUIN
       *
            MOVE    ZERO            TO  FLG-TENSU
            INITIALIZE              TNS-TENSU-REC
@@ -5637,13 +5639,24 @@
       *
            MOVE    TNS-NYUKHNKSNKBN
                                    TO  WRK-BTU-NYUKSNKBN
+      *    特別入院料の判定
+           EVALUATE   TNS-NYUKHNKBN
+               WHEN   73
+               WHEN   74
+               WHEN   75
+               WHEN   76
+               WHEN   77
+               WHEN   78
+               WHEN   79
+                   MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+           END-EVALUATE
            .
       *
        48011-TENSU-SEL-EXT.
            EXIT.
       *
       *****************************************************************
-      *    点数マスタ検索処理
+      *    点数マスタ検索処理（入院料加算）
       *****************************************************************
        48012-TENSU-SEL-SEC              SECTION.
       *
@@ -5652,6 +5665,15 @@
            MOVE    ZERO            TO  FLG-TENSU
            INITIALIZE              TNS-TENSU-REC
       *
+      *    特別入院料算定時に幼児加算と乳幼児加算の加算コード置き換え
+           IF      WRK-TOKUBETSU-NYUIN   =   "1"
+               EVALUATE   WRK-NYUKHNKSN-SRYCD(IDX8)
+                   WHEN   "190100470"
+                       MOVE  "190100570"  TO  WRK-NYUKHNKSN-SRYCD(IDX8)
+                   WHEN   "190100770"
+                       MOVE  "190100870"  TO  WRK-NYUKHNKSN-SRYCD(IDX8)
+               END-EVALUATE
+           END-IF
       *
            MOVE    WRK-NYUKHNKSN-SRYCD(IDX8)
                                    TO  TNS-SRYCD
