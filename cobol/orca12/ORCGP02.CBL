@@ -2538,10 +2538,13 @@
            END-IF
       *
       *    患者マスター存在チェック
+           IF      SPA-GMN-PTID        =   ZERO 
+               GO  TO                  491010-PTNUM-DBCHECK-EXT
+           END-IF
            MOVE    SPA-HOSPID         TO  PTINF-HOSPID
            MOVE    SPA-GMN-PTID       TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
-           IF      FLG-PTINF          =   ZERO
+           IF      FLG-PTINF          =   ZERO 
                MOVE    "1011"              TO  SPA-ERRCD
                GO  TO                  491010-PTNUM-DBCHECK-EXT
            END-IF
