@@ -32,6 +32,8 @@
            03  ORCSPRTNM-KBNCD         PIC X(08).
       *    基準日（空白時、システム日付）
            03  ORCSPRTNM-SRYYMD        PIC X(08).
+      *    入外区分（空白時、ＳＰＡ）
+           03  ORCSPRTNM-NYUGAIKBN     PIC X(01).
       *
       *出力値
       *    帳票名（処理区分：１の時のみ）
