@@ -37,6 +37,7 @@
       *  01.00.02    NACL-Â¿¡¹Ç¼  03/05/07  ÅêÌô¤ò±¡Æâ¤Ø
       *  01.00.03    NACL-Æ£¸¶    03/09/30  ÉÂÌ¾¥³¡¼¥É¤Î¼è¤ê¹þ¤ß
       *  01.00.04    NACL-Æ£¸¶    04/01/29  Å¾µ¢¶èÊ¬¤ÎÊÔ½¸
+      *  01.00.05    NACL-Â¿¡¹Ç¼  04/02/27  ÊÝ¸±½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -158,6 +159,7 @@
       *
            03  WRK-PTID            PIC 9(10).
            03  WRK-SRYKA           PIC X(02).
+           03  WRK-SRYKA-KEY       PIC X(02).
            03  WRK-NYUGAIKBN       PIC X(01).
       *
            03  WRK-KASAN           PIC 9(04).
@@ -298,6 +300,8 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1001.INC".
+      *
+           COPY    "CPSK1005.INC".
       *
       *    ´µ¼ÔÈÖ¹æ¹½À®´ÉÍý¾ðÊó
            COPY  "CPSK1009.INC".
@@ -518,6 +522,8 @@
            END-IF
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-9000-REC
+           ELSE
+               INITIALIZE                  SYS-9000-REC
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
@@ -665,6 +671,13 @@
                END-IF
            END-IF
       *
+           MOVE    WRK-SRYKA           TO  WRK-SRYKA-KEY
+      *    ¥ì¥»ÅÅ¤Î²Ê¤«¤é¿ÇÎÅ²Ê¤ØÊÑ¹¹
+           IF      SYS-9000-RECEDEN-FLG    =   "1"
+               PERFORM 2002-RECDEN-SRYKA-SEC
+           END-IF
+      *
+      *
       *    Æþ±¡³°Íè¶èÊ¬ (true OR false) (claim:admitFlag)
            IF      LF04-NYUGAIKBN      =   "true"
                MOVE   "1"              TO  WRK-NYUGAIKBN
@@ -677,6 +690,55 @@
            EXIT.
       *
       *****************************************************************
+      *    ¥ì¥»ÅÅ¤Î²Ê¤«¤é¿ÇÎÅ²Ê¤ØÊÑ¹¹½èÍý
+      *****************************************************************
+       2002-RECDEN-SRYKA-SEC                SECTION.
+      *
+      *
+           MOVE    SPACE               TO  SYS-1005-REC
+           INITIALIZE                      SYS-1005-REC
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    WRK-SRYYMD          TO  ORC-DBYMD
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               INITIALIZE                      SYS-1005-REC
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           PERFORM
+               UNTIL       FLG-SYSKANRI    =   1
+               MOVE    MCPDATA-REC         TO  SYS-1005-REC
+      *        ¥ì¥»ÅÅ²Ê
+               IF      SYS-1005-RECESRYKA  =   WRK-SRYKA
+      *            ¿ÇÎÅ²ÊÃÖ´¹¤¨
+                   MOVE    SYS-1005-KBNCD      TO  WRK-SRYKA
+                   MOVE    1                   TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+                   PERFORM 900-KANRIMST-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       2002-RECDEN-SRYKA-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ÊÝ¸±¼Ô¥Þ¥¹¥¿¡¼ÊÔ½¸½èÍý
       *****************************************************************
        2001-HKNCOMBI-SET-SEC                SECTION.
@@ -686,7 +748,7 @@
       *
            MOVE    WRK-HOSPID          TO  LF03-HOSPID
            MOVE    WRK-PTID            TO  LF03-PTID
-           MOVE    WRK-SRYKA           TO  LF03-SRYKA
+           MOVE    WRK-SRYKA-KEY       TO  LF03-SRYKA
            DISPLAY "LF03-HOSPID = " "[" LF03-HOSPID "]"
            DISPLAY "LF03-PTID = " "[" LF03-PTID "]"
            DISPLAY "LF03-SRYKA = " "[" LF03-SRYKA "]"
@@ -733,20 +795,31 @@
                WHEN    "00"
       *            ¹ñÊÝ
                    MOVE    "060"               TO  WRK-HKNNUM
-               WHEN    "97"
+               WHEN    "R1"
       *            Ï«ºÒ
                    MOVE    "971"               TO  WRK-HKNNUM
-               WHEN    "98"
+               WHEN    "R3"
       *            ¼«ÇåÀÕ
                    MOVE    "973"               TO  WRK-HKNNUM
                WHEN    "99"
       *            Êñ³çÆþÎÏ
-                   MOVE    "999"               TO  WRK-HKNCOMBI
+                   MOVE    "9999"              TO  WRK-HKNCOMBI
                    GO      TO      20011-HKNSYORI-EXT
+               WHEN    "XX"
+      *            ¸øÈñÃ±ÆÈ
+                   MOVE    SPACE               TO  WRK-HKNNUM
                WHEN    OTHER
-      *            ÊÝ¸±
-                   MOVE    ZERO                    TO  WRK-HKNNUM
-                   MOVE    LF04-HKN-HKNSBTCODE(1)  TO  WRK-HKNNUM(2:2)
+      *            ¼«Èñ
+                   IF      LF04-HKN-HKNSBTCODE (1)(1:1)    =   "Z"
+                       MOVE    "98"                TO  WRK-HKNNUM(1:2)
+                       MOVE    LF04-HKN-HKNSBTCODE (1)(2:1)
+                                                   TO  WRK-HKNNUM(3:1)
+                   ELSE
+      *                ÊÝ¸±
+                       MOVE    ZERO                    TO  WRK-HKNNUM
+                       MOVE    LF04-HKN-HKNSBTCODE(1)
+                                                   TO  WRK-HKNNUM(2:2)
+                   END-IF
            END-EVALUATE
       *
       *    ÊÝ¸±ÁÈ¹ç¤»¸¡º÷
@@ -820,6 +893,9 @@
                        MOVE    IDH-MAX         TO  IDH
                    ELSE
                        PERFORM 200112-KOH-CHK-SEC
+                       IF      WRK-HKNCOMBI    NOT =   SPACE
+                           MOVE    IDH-MAX         TO  IDH
+                       END-IF
                    END-IF
                ELSE
       *            ¸øÈñÃ±ÆÈ¤Î»þ
@@ -828,7 +904,6 @@
                    END-IF
                END-IF
            END-PERFORM
-      *
       *
            .
        20011-HKNSYORI-EXT.
@@ -958,7 +1033,6 @@
       *        ¸øÈñÂÐ¾Ý
                MOVE    TBL-COMB-HKNCOMBINUM(IDH)
                                            TO  WRK-HKNCOMBI
-               MOVE    IDH-MAX             TO  IDH
            END-IF
       *
       *

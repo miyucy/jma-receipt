@@ -136,6 +136,8 @@
            03  WRK-15MIMAN-ARI         PIC 9(01).
            03  FLG-15MIMAN             PIC 9(01).
            03  FLG-CHK                 PIC 9(01).
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê»ÜÀßµ¬½à¤¢¤ê
+           03  FLG-SYONIKA-ARI         PIC 9(01).
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê»»Äê
            03  FLG-SYONIKA             PIC 9(01).
            03  FLG-SYOSIN              PIC 9(01).
@@ -169,6 +171,8 @@
            03  WRK-KBN                 PIC X(01).
            03  WRK-KBN2                PIC X(01).
            03  FLG-ARI                 PIC 9(01).
+      *
+           03  FLG-ARIS                PIC 9(01).
       *
            03  WRK-LSTYMD              PIC X(08).
            03  WRK-LSTSRYKA            PIC X(02).
@@ -462,9 +466,14 @@
       *
            COPY    "CPSK1005.INC".
       *
+           COPY    "CPSK1006.INC".
+      *
            COPY    "CPSK1001.INC".
       *    °åÎÅµ¡´Ø¾ðÊó¡Ý½êºßÃÏ¡¢Ï¢ÍíÀè 
            COPY    "CPSK1002.INC".
+      *
+      *    £Ã£Ì£Á£É£ÍÀÜÂ³¾ðÊó
+           COPY  "CPSK9000.INC".
       *
       *    ¼õ¿ÇÍúÎò
        01  JYURRK-REC.
@@ -554,13 +563,72 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  IDX-AREA
+           INITIALIZE                  WRK-AREA
+      *
+      *    ¾®»ù²Ê³°Íè¿ÇÎÅ²ÊÊÔ½¸
+           MOVE    SPACE               TO  SYS-1006-REC
+           INITIALIZE                      SYS-1006-REC
+           MOVE    "1006"              TO  SYS-1006-KANRICD
+           MOVE    "1"                 TO  SYS-1006-KBNCD
+      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷¡Ê»ÜÀß´ð½à¡Ë
+           MOVE    SYS-1006-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    LNK-SYSYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 901-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1006-REC
+               INITIALIZE                  SYS-1006-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ZERO                TO  FLG-SYONIKA-ARI
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1006-REC
+               IF      SYS-1006-SSTKIJUN (121) =   1
+                   MOVE    1               TO  FLG-SYONIKA-ARI
+               END-IF
+           END-IF
+      *
+      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷¡Ê£Ã£Ì£Á£É£ÍÀÜÂ³¾ðÊó¡Ë
+           MOVE    SPACE               TO  SYS-9000-REC
+           INITIALIZE                      SYS-9000-REC
+           MOVE    "9000"              TO  SYS-9000-KANRICD
+           MOVE    "*"                 TO  SYS-9000-KBNCD
+           MOVE    SYS-9000-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    LNK-SYSYMD          TO  ORC-DBYMD
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-9000-REC
+           ELSE
+               INITIALIZE                      SYS-9000-REC
+           END-IF
+      *    ¥ì¥»ÅÅ¤Î²Ê¤ØÊÑ¹¹
+           MOVE    LNK-SRYKA           TO  WRK-SRYKA
+           IF     (SYS-9000-RECEDEN-FLG    =   "1" )  AND
+                  (LNK-SRYKA           NOT =   "XX")
+               PERFORM 1001-RECDEN-SRYKA-SEC
+           END-IF
+      *
            OPEN    I-O     LF03-FILE
       *
            INITIALIZE                  FLG-AREA
            MOVE    LNK-HOSPID      TO  LF03-HOSPID
            MOVE    LNK-PTID        TO  LF03-PTID
-           MOVE    LNK-SRYKA       TO  LF03-SRYKA
-           DISPLAY "LD03 READ START "
+           MOVE    WRK-SRYKA       TO  LF03-SRYKA
+      *
+           DISPLAY "LD03 READ START WRK-SRYKA:"  WRK-SRYKA
+      *
            PERFORM 900-LF03-READ-SEC
            IF      FLG-LF03        =   1
                DISPLAY "LNK-HOSPID INVALID"
@@ -568,10 +636,50 @@
                INITIALIZE                  LF03-REC
                MOVE    LNK-HOSPID      TO  LF03-HOSPID
                MOVE    LNK-PTID        TO  LF03-PTID
-               MOVE    LNK-SRYKA       TO  LF03-SRYKA
+               MOVE    WRK-SRYKA       TO  LF03-SRYKA
            END-IF
            .
        100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ì¥»ÅÅ¤Î²Ê¤ØÊÑ¹¹½èÍý
+      *****************************************************************
+       1001-RECDEN-SRYKA-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1005-REC
+           INITIALIZE                      SYS-1005-REC
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    LNK-SRYKA           TO  SYS-1005-KBNCD
+           MOVE    LNK-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-SYSKANRI
+                   MOVE    MCPDATA-REC         TO  SYS-1005-REC
+      *            ¥ì¥»ÅÅ¿ÇÎÅ²Ê
+                   IF      SYS-1005-RECESRYKA  =   SPACE
+                       MOVE    "XX"                TO  WRK-SRYKA
+                   ELSE
+                       MOVE    SYS-1005-RECESRYKA  TO  WRK-SRYKA
+                   END-IF
+               END-IF
+           END-IF
+           .
+       1001-RECDEN-SRYKA-EXT.
            EXIT.
       *
       *****************************************************************
@@ -725,12 +833,10 @@
       *
            MOVE    "regist"        TO  WRK-LF01-UKEYMD-KREPCODE
       *    ¼õÉÕ¤«¤é
-           IF      LNK-SRYKA       =   "XX"
+           IF      WRK-SRYKA       =   "XX"
                MOVE    "info"          TO  WRK-LF01-UKEYMD-KREPCODE
       *        ¿ÇÎÅ²ÊÀßÄê
                PERFORM 2009-SRYKA-SET-SEC
-           ELSE
-               MOVE    LNK-SRYKA       TO  WRK-SRYKA
            END-IF
       *
            MOVE    "false"         TO  WRK-LF01-NYUGAIKBN
@@ -738,22 +844,22 @@
       *
       *    ¿ÇÎÅ²ÊÌ¾¾Î
       * 
-           MOVE    SPACE               TO  SYS-1005-REC
-           INITIALIZE                      SYS-1005-REC
-           MOVE    "1005"              TO  SYS-1005-KANRICD
-           MOVE    WRK-SRYKA           TO  SYS-1005-KBNCD
-           MOVE    LNK-SYSYMD          TO  ORC-DBYMD
-           MOVE    SYS-1005-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1005-REC
+      **** MOVE    SPACE               TO  SYS-1005-REC
+      *    INITIALIZE                      SYS-1005-REC
+      *    MOVE    "1005"              TO  SYS-1005-KANRICD
+      *    MOVE    WRK-SRYKA           TO  SYS-1005-KBNCD
+      *    MOVE    LNK-SYSYMD          TO  ORC-DBYMD
+      *    MOVE    SYS-1005-REC        TO  MCPDATA-REC
+      *    PERFORM 900-SYSKANRI-INV-SEC
+      *    IF      FLG-SYSKANRI        =   ZERO
+      ******** MOVE    MCPDATA-REC         TO  SYS-1005-REC
                MOVE    SYS-1005-SRYKANAME  TO  WRK-LF01-SRYNAME
                                            WRK-LF01-CRE001-DPERTNAME
                                            WRK-LF01-CRE301-DPERTNAME
                MOVE    WRK-SRYKA           TO  WRK-LF01-CRE001-DPERTID
                                            WRK-LF01-CRE301-DPERTID
                MOVE    "I"                 TO  WRK-LF01-SRYREP
-           END-IF
+      *****END-IF
       *
       *    ÊÝ¸±¾ðÊó  
            INITIALIZE                  HKNCOMBI-REC
@@ -860,35 +966,51 @@
                        PERFORM 500-HIZUKE-HENSYU-SEC
                        MOVE    WRK-HENYMD      
                                TO  WRK-LF01-TEKEDYMD (IDX)
-      **************** MOVE    "0.3" TO  WRK-LF01-OUTRATIO (IDX)
-             DISPLAY "PTHKN-HKNNUM = " "[" PTHKN-HKNNUM "]" 
                        PERFORM VARYING IDW FROM    1   BY  1
                                UNTIL   IDW >       40
                          IF    PTHKN-HKNNUM  =  MML0031-HOKEN (IDW)
                                MOVE    MML0031-NAME(IDW) 
                                        TO  WRK-LF01-HKNSBT  (IDX)
-      *   ¹ñÊÝ¤Î¾ì¹ç¤Ï¡¢¥¼¥í¤òÀßÄê
-                           IF  PTHKN-HKNNUM    =   "060"
-                               MOVE    "00"    TO  WRK-LF01-HKNSBTCODE
-                                                           (IDX)
-                           ELSE
-                               MOVE    PTHKN-HKNNUM
-                                                 TO  WRK-999
-                               MOVE    WRK-999
-                                                 TO  WRK-ZZZ
-                               MOVE    WRK-ZZZ(2:2) 
-                                               TO  WRK-LF01-HKNSBTCODE
-                                                              (IDX)
-                           END-IF
-             DISPLAY "WRK-LF01-HKNSBT  (IDX) = " "[" 
-                      WRK-LF01-HKNSBT  (IDX) "]"
-             DISPLAY "WRK-999 = " "[" 
-                      WRK-999 "]"
+      *                        ÊÝ¸±¼ïÊÌ
+      *                        PERFORM 2001-HKNNUM-SET-SEC
                                MOVE    99        TO  IDW
                          END-IF
                       END-PERFORM
-      *          END-IF
-      *      END-PERFORM
+      *                 
+                      PERFORM 2001-HKNNUM-SET-SEC
+                   ELSE
+      *                ¼çÊÝ¸±¤Ê¤·
+                       MOVE    COMB-HKNCOMBINUM    TO
+                                               LF03-HKNCOMBINUM (IDX)
+      *                 
+                       INITIALIZE              UIDIO-AREA
+                       PERFORM 500-UUID-SET-SEC
+                       MOVE    C-UID               TO
+                                               WRK-LF01-UID2    (IDX)
+                                               LF03-UID         (IDX)
+                       MOVE    LNK-SYSYMD          TO  WRK-WYMD
+                       PERFORM 500-HIZUKE-HENSYU-SEC
+                       MOVE    WRK-HENYMD          TO  
+                               WRK-LF01-CONFIRMDATE2(IDX)
+                       MOVE    "9999" 
+                                               TO  WRK-LF01-HKNJANUM
+                                                                (IDX)
+                       MOVE    "¸øÈñÃ±ÆÈ"      TO  WRK-LF01-HKNSBT
+                                                                (IDX)
+                       MOVE    "XX"            TO  WRK-LF01-HKNSBTCODE
+                                                                 (IDX)
+                       MOVE    "µ­ºÜ¤Ê¤·"      TO  WRK-LF01-KIGO (IDX)
+                       MOVE    "µ­ºÜ¤Ê¤·"      TO  WRK-LF01-NUM  (IDX)
+                       MOVE    "true"          TO  WRK-LF01-HONKZKKBN
+                                                                 (IDX)
+                       MOVE    COMB-TEKSTYMD   TO  WRK-WYMD
+                       PERFORM 500-HIZUKE-HENSYU-SEC
+                       MOVE    WRK-HENYMD      TO  WRK-LF01-TEKSTYMD
+                                                               (IDX)
+                       MOVE    COMB-TEKEDYMD   TO  WRK-WYMD
+                       PERFORM 500-HIZUKE-HENSYU-SEC
+                       MOVE    WRK-HENYMD      TO  WRK-LF01-TEKEDYMD
+                                                               (IDX)
                    END-IF
       *
       *   ¸øÈñÆÉ¤ß½Ð¤·
@@ -962,7 +1084,6 @@
            INITIALIZE                  SRYKARRK-REC
            MOVE    LNK-HOSPID          TO  KARRK-HOSPID
            MOVE    LNK-PTID            TO  KARRK-PTID
-      *D   MOVE    SPA-SRYKA           TO  KARRK-SRYKA
       *
            MOVE    SRYKARRK-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1148,6 +1269,12 @@
                PERFORM 900-TENSU-INV-SEC
                IF       FLG-TENSU       =       ZERO
                    MOVE    TNS-NAME        TO  WRK-LF01-HOSPSBT
+      *            ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¤ÇÆ±ÆüºÆ¿Ç¤Î»þ
+                   IF     (WRK-LF01-IJICD(1:3) =   "113") AND
+                          (WRK-LSTYMD          =   LNK-SYSYMD)
+                       MOVE    "¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¡¦Æ±ÆüºÆ¿Ç"
+                                               TO  WRK-LF01-HOSPSBT
+                   END-IF
                ELSE
                    DISPLAY "*** ORCL0011 TEN INVALID KEY=" 
                            WRK-LF01-IJICD 
@@ -1190,11 +1317,59 @@
                    MOVE    ZERO                TO  FLG-SYSKANRI
                    MOVE    MCPDATA-REC         TO  SYS-1005-REC
                    MOVE    SYS-1005-KBNCD      TO  WRK-SRYKA
+               ELSE
+                   INITIALIZE                      SYS-1005-REC
                END-IF
+           ELSE
+               INITIALIZE                      SYS-1005-REC
            END-IF
       *
            .
        2009-SRYKA-SET-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    ÊÝ¸±¼ïÊÌÊÔ½¸½èÍý
+      *****************************************************************
+       2001-HKNNUM-SET-SEC              SECTION.
+      *
+           EVALUATE    PTHKN-HKNNUM 
+               WHEN    "060"
+      *            ¹ñÊÝ¤Î¾ì¹ç¤Ï¡¢¥¼¥í¤òÀßÄê
+                   MOVE    "00"    TO  WRK-LF01-HKNSBTCODE (IDX)
+               WHEN    "971"
+      *            Ï«ºÒ
+                   MOVE    "R1"    TO  WRK-LF01-HKNSBTCODE (IDX)
+                   MOVE    "9999"  TO  WRK-LF01-HKNJANUM (IDX)
+                   MOVE    "Ï«ºÒ"  TO  WRK-LF01-HKNSBT  (IDX)
+               WHEN    "973"
+      *            ¼«ÇåÀÕ
+                   MOVE    "R3"    TO  WRK-LF01-HKNSBTCODE (IDX)
+                   MOVE    "9999"  TO  WRK-LF01-HKNJANUM (IDX)
+                   MOVE    "¼«ÇåÀÕ"    TO  WRK-LF01-HKNSBT  (IDX)
+               WHEN    OTHER
+                   IF      PTHKN-HKNNUM(1:2)   =   "98"
+      *                ¼«Èñ
+                       MOVE    "Z"         TO  WRK-LF01-HKNSBTCODE
+                                                            (IDX)(1:1)
+                       MOVE    PTHKN-HKNNUM(3:1)
+                                           TO  WRK-LF01-HKNSBTCODE
+                                                            (IDX)(2:1)
+                       MOVE    "9999" 
+                                           TO  WRK-LF01-HKNJANUM (IDX)
+                       MOVE    "¼«Èñ" 
+                                           TO  WRK-LF01-HKNSBT  (IDX)
+                   ELSE
+      *                ¤½¤ÎÂ¾¡Ê²¼£²·å¡Ë
+                       MOVE    PTHKN-HKNNUM    TO  WRK-999
+                       MOVE    WRK-999         TO  WRK-ZZZ
+                       MOVE    WRK-ZZZ(2:2)    TO  WRK-LF01-HKNSBTCODE
+                                                                (IDX)
+                   END-IF
+           END-EVALUATE
+      *
+           .
+       2001-HKNNUM-SET-EXT.
            EXIT.
       * 
       *****************************************************************
@@ -1338,6 +1513,18 @@
       *
       *    ¼õ¿ÇÍúÎò¤è¤ê¿Ç»¡²ó¿ô¤òµá¤á¤ë
            PERFORM 1000-SINSATU-KAISU-SEC
+      *
+           MOVE    ZERO                TO  FLG-ARIS
+      *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ
+           IF      (FLG-SYONIKA-ARI    =   1   )  AND
+                  ((WRK-NENREI-YY      <   3   )  OR
+                   (WRK-NENREI-YY      =   3   AND
+                    WRK-NENREI-MM      =   ZERO ))
+               PERFORM 20201-SYONIKA-HEN-SEC
+               IF      FLG-ARIS        =   1
+                   GO      TO      2020-SRYCD-SET-EXT
+               END-IF
+           END-IF
       *
       *    ¿Ç»¡ÎÁ¥³¡¼¥É¤ò·èÄê¤¹¤ë
            IF      WRK-SYOSIN          =   1
@@ -1661,6 +1848,54 @@
       *
       *
       *****************************************************************
+      *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁÊÑ´¹½èÍý
+      *****************************************************************
+       20201-SYONIKA-HEN-SEC        SECTION.
+      *
+           IF      (WRK-NENREI-YY      =   3 )  AND
+                   (WRK-NENREI-MM      =   ZERO)  AND
+                   (PTINF-BIRTHDAY(7:2)    <=  LNK-SYSYMD(7:2))
+      *        £³ºÐ¤ÎÃÂÀ¸Æü°ÊÁ°¤Ç¡¢Åö·î¤Ë¿Ç»¡¤¬¤¢¤Ã¤¿»þ
+               IF      WRK-LSTYMD(1:6)     =   LNK-SYSYMD(1:6)
+                   IF     (WRK-LSTYMD          =   LNK-SYSYMD) AND
+                          (FLG-SYONIKA         =   ZERO      )
+                       GO      TO      20201-SYONIKA-HEN-EXT
+                   END-IF
+               ELSE
+                   GO      TO      20201-SYONIKA-HEN-EXT
+               END-IF
+           END-IF
+           MOVE    1                   TO  FLG-ARIS
+      *
+      *    ¿Ç»¡ÎÁ¥³¡¼¥É¤ò·èÄê¤¹¤ë
+           IF      WRK-SYOSIN          =   1
+      *        ½é¿Ç
+               IF      SYS-1001-SYOHOKBN    =   "0"
+      *            ±¡Æâ
+                   MOVE    "113003710"         TO  WRK-LF01-IJICD
+               ELSE
+      *            ±¡³°
+                   MOVE    "113003510"         TO  WRK-LF01-IJICD
+               END-IF
+               MOVE    "130"           TO  WRK-LF01-BUNDLE-CLASSCODE
+           ELSE
+      *        ºÆ¿Ç
+               IF      SYS-1001-SYOHOKBN    =   "0"
+      *            ±¡Æâ
+                   MOVE    "113003810"         TO  WRK-LF01-IJICD
+               ELSE
+      *            ±¡³°
+                   MOVE    "113003610"         TO  WRK-LF01-IJICD
+               END-IF
+               MOVE    "130"           TO  WRK-LF01-BUNDLE-CLASSCODE
+           END-IF
+      *
+           .
+       20201-SYONIKA-HEN-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    ÆüÉÕÊÑ´¹½èÍý
       *****************************************************************
        500-HIZUKE-HENSYU-SEC        SECTION.
@@ -1866,6 +2101,26 @@
       *
            .
        900-COMB-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´ÉÍý¥Þ¥¹¥¿¡¼ÆÉ¹þ½èÍý
+      *****************************************************************
+       901-SYSKANRI-READ-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       901-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
