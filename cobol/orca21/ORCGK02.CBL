@@ -1326,7 +1326,11 @@
                            PERFORM 30010-INIT-GMN-SEC
                        ELSE
                            IF      SPA-SYORIFLG        =   ZERO
-                               PERFORM 30011-INIT-HEN-SEC
+                               IF      SPA-GMN-PTNUM(1:1)  =   "*"
+                                   PERFORM 3009-SAIHEN-SEC
+                               ELSE
+                                   PERFORM 30011-INIT-HEN-SEC
+                               END-IF
                            ELSE
                                PERFORM 3003-GMN-HEN-SEC
                            END-IF
