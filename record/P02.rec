@@ -743,6 +743,9 @@ P02	{
 				P024_TSYEDYMD	{
 					value	varchar(10);
 				};
+				P024_TSYSKJGNSTYMD	{
+					value	varchar(10);
+				};
 				P024_TNKSELNUM	{
 					value	varchar(4);
 				};
@@ -759,6 +762,7 @@ P02	{
 							value1	varchar(3);
 							value2	varchar(10);
 							value3	varchar(10);
+							value4	varchar(10);
 						}	[20];
 						select	bool[20];
 					};

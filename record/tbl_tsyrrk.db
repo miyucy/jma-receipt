@@ -3,6 +3,7 @@ tbl_tsyrrk {
 	PTID				number(10,0);
 	NINSTYMD			char(8);
 	NINEDYMD			char(8);
+	SKJGNSTYMD			char(8);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
@@ -73,6 +74,7 @@ path	upd1	{
                    PTID                = :PTID,
                    NINSTYMD            = :NINSTYMD,
                    NINEDYMD            = :NINEDYMD,
+                   SKJGNSTYMD          = :SKJGNSTYMD,
                    TERMID              = :TERMID,
                    OPID                = :OPID,
                    CREYMD              = :CREYMD,

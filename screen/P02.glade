@@ -7109,8 +7109,8 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>P024_TSRSELNUM</name>
-	  <x>360</x>
-	  <y>80</y>
+	  <x>472</x>
+	  <y>64</y>
 	  <width>48</width>
 	  <height>20</height>
 	  <can_focus>True</can_focus>
@@ -7137,8 +7137,8 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>P024_TSYSTYMD</name>
-	  <x>360</x>
-	  <y>104</y>
+	  <x>472</x>
+	  <y>88</y>
 	  <width>91</width>
 	  <height>20</height>
 	  <can_focus>True</can_focus>
@@ -7165,8 +7165,52 @@
 	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>P024_TSYEDYMD</name>
-	  <x>512</x>
-	  <y>104</y>
+	  <x>624</x>
+	  <y>88</y>
+	  <width>91</width>
+	  <height>20</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Tue, 26 Dec 2000 08:58:18 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Tue, 26 Dec 2000 08:58:30 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text></text>
+	  <input_mode>XIM</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label2021</name>
+	  <x>400</x>
+	  <y>112</y>
+	  <width>162</width>
+	  <height>18</height>
+	  <label>食事標準負担減額開始日</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>P024_TSYSKJGNSTYMD</name>
+	  <x>568</x>
+	  <y>112</y>
 	  <width>91</width>
 	  <height>20</height>
 	  <can_focus>True</can_focus>
@@ -7193,7 +7237,7 @@
 	<widget>
 	  <class>GtkButton</class>
 	  <name>BT2</name>
-	  <x>296</x>
+	  <x>408</x>
 	  <y>168</y>
 	  <width>62</width>
 	  <height>24</height>
@@ -7211,7 +7255,7 @@
 	<widget>
 	  <class>GtkButton</class>
 	  <name>BT1</name>
-	  <x>296</x>
+	  <x>408</x>
 	  <y>136</y>
 	  <width>62</width>
 	  <height>24</height>
@@ -7360,7 +7404,7 @@
 	  <name>sc104</name>
 	  <x>8</x>
 	  <y>40</y>
-	  <width>248</width>
+	  <width>350</width>
 	  <height>176</height>
 	  <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
 	  <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
@@ -7390,8 +7434,8 @@
 	      <data>SELECT</data>
 	      <last_modification_time>Tue, 25 Sep 2001 05:04:48 GMT</last_modification_time>
 	    </signal>
-	    <columns>3</columns>
-	    <column_widths>30,91,80</column_widths>
+	    <columns>4</columns>
+	    <column_widths>30,91,80,96</column_widths>
 	    <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	    <show_titles>True</show_titles>
 	    <shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -7427,6 +7471,18 @@
 	      <child_name>CList:title</child_name>
 	      <name>label1813</name>
 	      <label>終了日</label>
+	      <justify>GTK_JUSTIFY_CENTER</justify>
+	      <wrap>False</wrap>
+	      <xalign>0.5</xalign>
+	      <yalign>0.5</yalign>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	    </widget>
+	    <widget>
+	      <class>GtkLabel</class>
+	      <child_name>CList:title</child_name>
+	      <name>label1900</name>
+	      <label>食事減額開始日</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -7522,8 +7578,8 @@
 	<widget>
 	  <class>GtkLabel</class>
 	  <name>label1808</name>
-	  <x>288</x>
-	  <y>56</y>
+	  <x>400</x>
+	  <y>40</y>
 	  <width>108</width>
 	  <height>18</height>
 	  <label>新規入力、訂正</label>
@@ -7538,8 +7594,8 @@
 	<widget>
 	  <class>GtkLabel</class>
 	  <name>label1809</name>
-	  <x>296</x>
-	  <y>104</y>
+	  <x>408</x>
+	  <y>88</y>
 	  <width>54</width>
 	  <height>18</height>
 	  <label>認定日</label>
@@ -7554,8 +7610,8 @@
 	<widget>
 	  <class>GtkLabel</class>
 	  <name>label1819</name>
-	  <x>296</x>
-	  <y>80</y>
+	  <x>408</x>
+	  <y>64</y>
 	  <width>62</width>
 	  <height>18</height>
 	  <label>選択番号</label>
@@ -7570,8 +7626,8 @@
 	<widget>
 	  <class>GtkLabel</class>
 	  <name>label1810</name>
-	  <x>456</x>
-	  <y>104</y>
+	  <x>568</x>
+	  <y>88</y>
 	  <width>54</width>
 	  <height>18</height>
 	  <label>終了日</label>
