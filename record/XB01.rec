@@ -1,4 +1,4 @@
-ORCXB01	{
+XB01	{
 	fixed3	{
 		SELNO	{
 			value	number(4);

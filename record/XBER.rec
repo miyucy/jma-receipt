@@ -1,4 +1,4 @@
-ORCXBER 	{
+XBER 	{
 	fixed1	{
 		XBERCODE {
 			value	varchar(11);

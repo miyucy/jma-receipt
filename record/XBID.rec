@@ -1,4 +1,4 @@
-ORCXBID 	{
+XBID 	{
 	fixed1	{
 		XBIDCODE {
 			value	varchar(11);
