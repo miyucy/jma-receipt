@@ -5997,6 +5997,12 @@
                GO  TO  600-C05-SYORI-EXT
            END-IF
       *
+           IF      SPA-GMN-C02-BANGO-X
+                                   NOT =   SPACE
+               MOVE    "0090"              TO  SPA-ERRCD
+               GO  TO  600-C05-SYORI-EXT
+           END-IF
+      *
       *    画面移行用のパラメタ変更
       *    受付と患者検索以外の元をセット
            MOVE    "C05"               TO  SPA-SAKIPG
@@ -6064,6 +6070,12 @@
       *    修正のチェック
            IF      SPA-GMN-C02-BANGO   NOT =   ZERO
                MOVE    "0073"          TO  SPA-ERRCD
+               GO      TO      430-FREEMSG-EXT
+           END-IF
+      *
+           IF      SPA-GMN-C02-BANGO-X
+                                   NOT =   SPACE
+               MOVE    "0090"              TO  SPA-ERRCD
                GO      TO      430-FREEMSG-EXT
            END-IF
       *
@@ -6291,6 +6303,12 @@
            OR      SPA-GMN-C02-SRYKA   =   SPACE
       *****OR      SPA-GMN-C02-CUR     =   27  OR  26
                MOVE    "0050"              TO  SPA-ERRCD
+               GO  TO  490-USERBYOMEI-KENSAKU-EXT
+           END-IF
+      *
+           IF      SPA-GMN-C02-BANGO-X
+                                   NOT =   SPACE
+               MOVE    "0090"              TO  SPA-ERRCD
                GO  TO  490-USERBYOMEI-KENSAKU-EXT
            END-IF
       *     
@@ -7264,6 +7282,8 @@
                                                DELIMITED   BY  SIZE 
                                                INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "0090"
+                   MOVE    "簡単修正処理中です"    TO  SPA-ERRMSG   
                WHEN    "0103"
                    MOVE    "病名コードでの組み立てができませんでした。"
                                        TO  SPA-ERRMSG
