@@ -902,10 +902,10 @@
       *
            PERFORM     UNTIL      (FLG-SYUNOU      =   1  )
                MOVE    ZERO               TO  FLG-SYORI
-               IF     (SPA-NAI-SRYKA       NOT =   SPACE    )  AND
-                      (SPA-NAI-SRYKA       NOT =   SYU-SRYKA)
-                   MOVE    1                 TO  FLG-SYORI
-               END-IF
+      *         IF     (SPA-NAI-SRYKA       NOT =   SPACE    )  AND
+      *                (SPA-NAI-SRYKA       NOT =   SYU-SRYKA)
+      *             MOVE    1                 TO  FLG-SYORI
+      *         END-IF
       *
                IF     (SPA-S01-DENPPRTYMD  <  SYU-DENPPRTYMD )
                 OR   ((SPA-S01-NYUGAIKBN   =  SYU-NYUGAIKBN )
