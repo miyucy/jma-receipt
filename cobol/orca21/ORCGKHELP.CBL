@@ -788,6 +788,7 @@
       *
            MOVE    SPACE               TO  HELP-REC
            INITIALIZE                  HELP-REC
+           MOVE    SPA-KHELP-HELPKBN   TO  HELP-HELPKBN
            MOVE    SPACE               TO  HELP-KEY-OPID
            MOVE    SPA-KHELP-LDNAME    TO  HELP-LDNAME
            MOVE    WRK-INPUT-MENU
