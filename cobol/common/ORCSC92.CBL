@@ -420,6 +420,20 @@
       *****************************************************************
        200-INPUTCD-KIHON-SEC      SECTION.
       *
+      *    老人適用区分チェック
+           EVALUATE    TNS-ROUTEKKBN
+               WHEN    0
+                   CONTINUE
+               WHEN    1
+                   IF      LNK-SC92-ROUJIN  NOT =   ZERO
+                       PERFORM 2002-SRYCDCHG-HEN-SEC
+                   END-IF
+               WHEN    2
+                   IF      LNK-SC92-ROUJIN  NOT =   1
+                       PERFORM 2002-SRYCDCHG-HEN-SEC
+                   END-IF
+           END-EVALUATE
+      *
       *    病院診療所区分チェック
            EVALUATE    TNS-HOSPSRYKBN
                WHEN    0
@@ -450,21 +464,21 @@
                    END-IF
            END-EVALUATE
       *
-      *    老人適用区分チェック
-           EVALUATE    TNS-ROUTEKKBN
-               WHEN    0
-                   CONTINUE
-               WHEN    1
-                   IF      LNK-SC92-ROUJIN  NOT =   ZERO
-                       PERFORM 2002-SRYCDCHG-HEN-SEC
+      **** 老人適用区分チェック
+      *    EVALUATE    TNS-ROUTEKKBN
+      *        WHEN    0
+      *            CONTINUE
+      *        WHEN    1
+      *            IF      LNK-SC92-ROUJIN  NOT =   ZERO
+      *                PERFORM 2002-SRYCDCHG-HEN-SEC
       *****************MOVE    "0015"          TO  LNK-SC92-ERRCD2
-                   END-IF
-               WHEN    2
-                   IF      LNK-SC92-ROUJIN  NOT =   1
-                       PERFORM 2002-SRYCDCHG-HEN-SEC
+      *            END-IF
+      *        WHEN    2
+      *            IF      LNK-SC92-ROUJIN  NOT =   1
+      *                PERFORM 2002-SRYCDCHG-HEN-SEC
       *****************MOVE    "0015"          TO  LNK-SC92-ERRCD2
-                   END-IF
-           END-EVALUATE
+      *            END-IF
+      *****END-EVALUATE
       *
       *    算定回数チェック
            IF      TNS-SANTEIRRKKBN    NOT =   ZERO
