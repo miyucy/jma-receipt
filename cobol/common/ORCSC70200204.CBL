@@ -40,7 +40,6 @@
       * 01.00.11     NACL-Â¿¡¹Ç¼  03/02/18  ¥Õ¥£¥ë¥àÎÁ¤ò¼êµ»ÎÁ£²¤Ø
       * 01.00.12     NACL-Â¿¡¹Ç¼  03/02/26  ÅÀ¿ô¥¼¥í¤Î¤­¤¶¤ßÃÍ·×»»¤Î½¤Àµ
       * 01.00.13     NACL-Â¿¡¹Ç¼  03/04/25  Ã±½ã»£±Æ¤Ë´ÖÀÜ»£±Æ¤Ê¤É¤òÄÉ²Ã
-      * 01.00.14     NACL-Â¿¡¹Ç¼  03/07/24  Æ±»þÊ»»Ü¿ÇÃÇÎÁÄþ¸º½¤Àµ
       *****************************************************************
       *
       *
@@ -1402,10 +1401,10 @@
                                                            (IDX-Z)
                ELSE
                    IF      WRK-KEIMAI          =   ZERO
-                       IF      WRK-COM-SURYO (IDX-Z)   =   ZERO
+      ************     IF      WRK-COM-SURYO (IDX-Z)   =   ZERO
                            MOVE    1               TO  WRK-COM-SURYO
                                                            (IDX-Z)
-                       END-IF
+      *********        END-IF
                    ELSE
                        MOVE    WRK-KEIMAI      TO  WRK-COM-SURYO
                                                            (IDX-Z)
@@ -1745,7 +1744,7 @@
                MOVE    IDX-SYU            TO   IDX-T
                MOVE    IDX-SYU            TO   IDX-S
                MOVE    SPACE              TO   WRK-SRYCD-2
-               PERFORM 1003-JIDOU-CHK-SEC
+               PERFORM 1003-JIDOU-AGECHK-SEC
       *        ²Ã»»ÄÉ²Ã
                MOVE    3                   TO  FLG-SATU
                PERFORM 1002-JIDOUSET-SEC
@@ -1762,6 +1761,29 @@
       *
            .
        1007-NYUYOJI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼«Æ°²Ã»»¡¡Â¸ºß¥Á¥§¥Ã¥¯¡ÊÆýÍÄ»ù²Ã»»¡Ë½èÍý
+      *****************************************************************
+       1003-JIDOU-AGECHK-SEC        SECTION.
+      *
+      *    Â¸ºß¥Á¥§¥Ã¥¯
+           MOVE    ZERO                TO  FLG-ARI
+           MOVE    ZERO                TO  IDX-T
+           PERFORM VARYING     IDX1    FROM    IDX-SYU  BY  1
+                   UNTIL      (IDX1        >   200     )   OR
+                              (FLG-ARI                 =   1    ) OR
+                              (WRK-GMN-INPUTCD (IDX1)  =   SPACE ) OR
+                              (WRK-GMN-INPUTCD(IDX1)(1:1)  =   "*")
+              IF      (IDX1                NOT =   IDX-SYU   )  AND
+                      (WRK-COM-INPUTCD (IDX1)  =   WRK-SRYCD )
+                    MOVE    IDX1           TO  IDX-T
+                    MOVE    1              TO  FLG-ARI
+               END-IF
+           END-PERFORM
+           .
+       1003-JIDOU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2005,7 +2027,9 @@
       *            ²Ã»»¤ÇÄê³Û²Ã»»¤Î»þ¤Î½¸·×
                    IF      WRK-COM-DATAKBN (IDX-Z)     =   "2"
                        IF      WRK-COM-TENSIKIBETU(IDX-Z)  =   5
-                           MOVE    IDX-Z               TO  IDX-KAS
+                           IF      WRK-COM-SANFLG (IDX-Z)  =   ZERO
+                               MOVE    IDX-Z               TO  IDX-KAS
+                           END-IF
                        ELSE
                            IF     (WRK-COM-SANFLG (IDX-Z)  =   ZERO  )
                              AND  (WRK-COM-TENSIKIBETU(IDX-Z)
