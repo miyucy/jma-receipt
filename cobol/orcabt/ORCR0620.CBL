@@ -75,6 +75,7 @@
       *  01.01.04    NACL-Æ£¸¶    05/01/08  Æ±·î¤Ë·ÑÂ³¤Ê¤·¤Ç£²²óÆþ±¡¤·¤¿
       *                                     ¾ì¹ç¤ÎÆþ±¡Ç¯·îÆü¤Îµ­ºÜÊýË¡
       *  01.01.05    NACL-ÌçÏÆ    05/02/14  ¹âÎð¼Ô°ìÉôÉéÃ´³Ûµ­ºÜ½¤Àµ
+      *  01.01.06    NACL-ÌçÏÆ    05/02/25  ÆÃµ­»ö¹à¡ÉÏ·ÊÝ¡ÉÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -999,13 +1000,11 @@
       *    ÆÃµ­»ö¹à¤Î¥»¥Ã¥È
       *    Ï·ÊÝ¤ÎÊÔ½¸
            MOVE    ZERO       TO     FLG-ROUJINHOKEN
-      ***> IF      RECE62-HKNHBTNUM     =   SPACE
            IF      RECE62-HKNNUM        =   SPACE
-      ***> AND     RECE62-KOHHBTNUM (1) =   "12"
-           AND     RECE62-KOHHBTNUM (1)   NOT =  SPACE
-           AND     RECE62-KOHHBTNUM (2) =   SPACE
-           AND     RECE62-KOHHBTNUM (3) =   SPACE
-           AND     RECE62-KOHHBTNUM (4) =   SPACE
+      ***  AND     RECE62-KOHHBTNUM (1)   NOT =  SPACE
+      ***  AND     RECE62-KOHHBTNUM (2) =   SPACE
+      ***  AND     RECE62-KOHHBTNUM (3) =   SPACE
+      ***  AND     RECE62-KOHHBTNUM (4) =   SPACE
                IF  (   RECE61-SRYYM         >=  "200210"            )
                AND ((  RECE62-AGE           >=  75             ) OR 
                     (( RECE62-BIRTHDAY      <=  19320930 ) AND
