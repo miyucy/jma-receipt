@@ -1978,13 +1978,20 @@
            IF  LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
                IF  LNK-SYU-SYUHKNNUM    =  SYU-SYUHKNNUM
       *
-                 IF COMB-KOH1HKNNUM      =    "027"                     
+                 IF COMB-KOH1HKNNUM      =    "027"
                       COMPUTE  WK-SYU-SYUCOMPFTN  =                     
                                         SYU-KOH1COMPFTN    +   5        
                       COMPUTE  WK-SYU-SYUCOMPFTN  =                     
                                         WK-SYU-SYUCOMPFTN  /  10        
                       COMPUTE  WK-SYU-SYUCOMPFTN  =                     
                                         WK-SYU-SYUCOMPFTN  *  10        
+                      IF  (SYU-KOH2HKNNUM     NOT = SPACE)              
+                      OR  (SYU-KOH3HKNNUM     NOT = SPACE)
+                      OR  (SYU-KOH4HKNNUM     NOT = SPACE)
+                          IF   WK-SYU-SYUCOMPFTN   >   12000
+                             MOVE   12000   TO   WK-SYU-SYUCOMPFTN
+                          END-IF 
+                      END-IF
                       IF     LNK-SYU-SRYYMD(7:2)    =  SYU-SRYYMD(7:2)  
                           ADD   WK-SYU-SYUCOMPFTN TO   FTN-KOHI1-D      
                       END-IF                                            
@@ -1997,6 +2004,14 @@
                                         WK-SYU-SYUCOMPFTN  /  10        
                       COMPUTE  WK-SYU-SYUCOMPFTN  =                     
                                         WK-SYU-SYUCOMPFTN  *  10        
+                      IF  (SYU-KOH1HKNNUM     NOT = SPACE)              
+                      OR  (SYU-KOH2HKNNUM     NOT = SPACE)
+                      OR  (SYU-KOH3HKNNUM     NOT = SPACE)
+                      OR  (SYU-KOH4HKNNUM     NOT = SPACE)
+                          IF   WK-SYU-SYUCOMPFTN   >   12000
+                             MOVE   12000   TO   WK-SYU-SYUCOMPFTN
+                          END-IF 
+                      END-IF
                       ADD   WK-SYU-SYUCOMPFTN     TO   FTN-SYU-M        
                  END-IF                                                 
       *
