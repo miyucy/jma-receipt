@@ -92,6 +92,8 @@
       *    リハビリあり
            03  FLG-RIGAKU          PIC 9(01).
       *
+           03  FLG-SOUKIKSN          PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -126,6 +128,9 @@
            03  IDX-RSI             PIC 9(04).
       *
            03  IDX-HZN             PIC 9(04).
+      *
+           03  IDX-STR             PIC 9(02).
+           03  IDX-KSN             PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -1252,8 +1257,13 @@
       *****************************************************************
        2002-GAIRAI-ALL-CHK-SEC                SECTION.
       *
+           MOVE    SPA-SRYYMD         TO  WRK-SRYYMD
       *    厚生労働大臣が定める患者のチェック
            PERFORM 200221-SOUKIKSN-CHK-SEC
+      *    早期リハビリ加算の判定
+           IF      FLG-SOUKIKSN       =   1
+               PERFORM 200221-SOUKIKSN-KIKANCHK-SEC
+           END-IF
       *
            MOVE    SPA-SRYYMD(7:2)    TO  IDD
            MOVE    SPA-SRYYMD         TO  WRK-SRYYMD
@@ -1278,7 +1288,7 @@
       *
       *    急性発生１８０日以内の時、上限回数変更
            IF      (LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
-                   (LNK-ORCSC-KYUSEI-180   >   SPA-SRYYMD)
+                   (LNK-ORCSC-KYUSEI-180   >   WRK-SRYYMD)
                MOVE    12                  TO  WRK-MAX-CNT
            ELSE
                MOVE    8                   TO  WRK-MAX-CNT
@@ -1288,6 +1298,11 @@
                  ",LNK-ORCSC-KYUSEI-180:" LNK-ORCSC-KYUSEI-180
                  ",WRK-RIGAKU-RYO:" WRK-RIGAKU-RYO
       *TEST
+      *    急性発生９０日以内の時、逓減なし
+           IF      (LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
+                   (LNK-ORCSC-KYUSEI-90    >   WRK-SRYYMD)
+               MOVE    1                   TO  FLG-SOUKI-ARI
+           END-IF
       *
       *    月上限判定
            EVALUATE    WRK-RIGAKU-RYO
@@ -1325,16 +1340,23 @@
                    END-IF
       *        個別
                WHEN    "K"
-      *            早期リハ加算等がある場合
+      *            発生日９０日前、理学療法外来移行加算がある場合
                    IF      FLG-SOUKI-ARI       =   1
       *                今回分集計
                        PERFORM 20023-KAISU-HEN-SEC
                        GO      TO      2002-GAIRAI-ALL-CHK-EXT
                    END-IF
-      *            早期リハ加算分を引く
+      *            逓減対象外分を引く
       *            当月の算定回数
                    MOVE    ZERO                TO  WRK-TUKI-CNT
-                   PERFORM VARYING     IDY     FROM    1   BY  1
+                   IF      LNK-ORCSC-KYUSEI-90(1:6)
+                                               =   WRK-SRYYMD(1:6)
+                       MOVE    LNK-ORCSC-KYUSEI-90(7:2)
+                                               TO  IDX-STR
+                   ELSE
+                       MOVE    1               TO  IDX-STR
+                   END-IF
+                   PERFORM VARYING     IDY     FROM    IDX-STR  BY  1
                            UNTIL       IDY     >   IDD
                        IF     (WRK-GCNT (IDY)      =   ZERO    )  AND
                               (LNK-ORCSC-GAI-FLG (IDY) =   ZERO)
@@ -1446,7 +1468,10 @@
            IF     (FLG-SOUKI-ARI       =   1    )
                OR (WRK-GCNT (IDD)      >   ZERO )
                OR (LNK-ORCSC-GAI-FLG(IDD)  >   ZERO )
-      *        早期リハビリ加算あり１日最大６単位とする
+      *        急性発生９０日以内の時、上限回数変更
+           OR     ((LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
+                   (LNK-ORCSC-KYUSEI-90    >   WRK-SRYYMD))
+      *        逓減対象外１日最大６単位とする
                MOVE    6               TO  WRK-RIGAK-MAX
            ELSE
       *       １日最大４単位とする
@@ -1505,6 +1530,7 @@
        200221-SOUKIKSN-CHK-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-SOUKI-ARI
+           MOVE    ZERO                TO  IDX-KSN
       *
            PERFORM VARYING     IDX-R   FROM    1   BY  1
                    UNTIL      (IDX-R       >   200     )   OR
@@ -1519,11 +1545,46 @@
                    IF      FLG-SOUKI           =   1
                        MOVE    1               TO  FLG-SOUKI-ARI
                    END-IF
+                   IF      FLG-SOUKIKSN        =   1
+                       MOVE    IDX-R           TO  IDX-KSN
+                   END-IF
                END-IF
            END-PERFORM
       *
            .
        200221-SOUKIKSN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    早期リハビリ加算の判定処理（共通）
+      *****************************************************************
+       200221-SOUKIKSN-KIKANCHK-SEC            SECTION.
+      *
+      *    急性発生９０日以内
+           IF      (LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
+                  ((LNK-ORCSC-KYUSEI-90    NOT =   SPACE ) AND
+                   (LNK-ORCSC-KYUSEI-90    >   WRK-SRYYMD))
+               CONTINUE
+           ELSE
+               IF      IDX-KSN             =   ZERO
+                   MOVE    IDX-Z           TO  IDX-KSN
+               END-IF
+      *TEST
+              DISPLAY "C80 IDX-KSN:" IDX-KSN
+                     ",KZMFLG:" WRK-COM-KZMFLG (IDX-KSN)
+                     ",LNK-ORCSC-KEI-IDX:" LNK-ORCSC-KEI-IDX
+                     ",SRYCD:"  WRK-COM-INPUTCD (IDX-KSN)
+      *TEST
+               IF     (WRK-COM-KZMFLG (IDX-KSN) =   SPACE) AND
+                      (LNK-ORCSC-KEI-IDX        =   ZERO )
+                   MOVE    "K097"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-KSN)
+                   MOVE    "1"             TO  WRK-COM-KZMFLG(IDX-KSN)
+                   MOVE    IDX-KSN         TO  LNK-ORCSC-KEI-IDX
+               END-IF
+           END-IF
+           .
+       200221-SOUKIKSN-KIKANCHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1618,6 +1679,10 @@
                    MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
                    MOVE    IDD                 TO  WRK-SRYYMD (7:2)
       *
+      *            早期リハビリ加算の判定
+                   IF      FLG-SOUKIKSN       =   1
+                       PERFORM 200221-SOUKIKSN-KIKANCHK-SEC
+                   END-IF
       *            当日上限チェック
                    MOVE    WRK-COM-KAISU(IDX-Z)   TO  WRK-KAISU
       *            当日に早期リハ加算がある時、ありとする
@@ -1654,7 +1719,7 @@
       *
       *    急性発生１８０日以内の時、上限回数変更
            IF      (LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
-                   (LNK-ORCSC-KYUSEI-180   >   SPA-SRYYMD)
+                   (LNK-ORCSC-KYUSEI-180   >   WRK-SRYYMD)
                MOVE    12                  TO  WRK-MAX-CNT
            ELSE
                MOVE    8                   TO  WRK-MAX-CNT
@@ -1664,6 +1729,11 @@
                  ",LNK-ORCSC-SYOEN-CNT:" LNK-ORCSC-SYOEN-CNT
                  ",LNK-ORCSC-KYUSEI-180:" LNK-ORCSC-KYUSEI-180
       *TEST
+      *    急性発生９０日以内の時、逓減なし
+           IF      (LNK-ORCSC-KYUSEI-FLG   =   1   )  OR
+                   (LNK-ORCSC-KYUSEI-90    >   WRK-SRYYMD)
+               MOVE    1                   TO  FLG-SOUKI-ARI
+           END-IF
       *
       *    労災の時、理学療法の逓減は傷病発生３月以降とする
            IF     (SPA-HKNKBN          =   1        )  AND
@@ -1708,16 +1778,23 @@
                    END-IF
       *        個別
                WHEN    "K"
-      *            早期リハ加算等がある場合
+      *            発生日９０日前、理学療法外来移行加算がある場合
                    IF      FLG-SOUKI-ARI       =   1
       *                今回分集計
                        PERFORM 20023-KAISU-HEN-SEC
                        GO      TO      20012-NTUKIMAX-CHK-EXT
                    END-IF
-      *            早期リハ加算分を引く
+      *            逓減対象外分を引く
       *            当月の算定回数
                    MOVE    ZERO                TO  WRK-TUKI-CNT
-                   PERFORM VARYING     IDY     FROM    1   BY  1
+                   IF      LNK-ORCSC-KYUSEI-90(1:6)
+                                               =   WRK-SRYYMD(1:6)
+                       MOVE    LNK-ORCSC-KYUSEI-90(7:2)
+                                               TO  IDX-STR
+                   ELSE
+                       MOVE    1               TO  IDX-STR
+                   END-IF
+                   PERFORM VARYING     IDY     FROM    IDX-STR   BY  1
                            UNTIL       IDY     >   IDD
                        IF     (WRK-GCNT (IDY)      =   ZERO) AND
                               (LNK-ORCSC-GAI-FLG (IDY)
@@ -1784,19 +1861,33 @@
            EXIT.
       *
       *****************************************************************
-      *    早期リハビリ加算処理
+      *    理学療法外来移行加算処理
       *****************************************************************
        20011-SOUKI-CHK-SEC         SECTION.
       *
-      *    早期リハビリ加算
-           SET     TBL-RIDX            TO  1
-           SEARCH      TBL-RIHABIRI-OCC    VARYING   TBL-RIDX
+      *    理学療法外来移行加算
+           SET     TBL-RIDX2           TO  1
+           SEARCH      TBL-RIHABIRI2-OCC   VARYING   TBL-RIDX2
                    AT  END
                        MOVE    ZERO            TO  FLG-SOUKI
-                   WHEN    WRK-SRYCD           =   TBL-RIHA-SRYCD
-                                                           (TBL-RIDX)
+                   WHEN    WRK-SRYCD           =   TBL-RIHA2-SRYCD
+                                                           (TBL-RIDX2)
                        MOVE    1               TO  FLG-SOUKI
            END-SEARCH
+      *
+           MOVE    ZERO                TO  FLG-SOUKIKSN
+           IF      FLG-SOUKI           =   ZERO
+      *
+      *        理学療法外来移行加算
+               SET     TBL-RIDX           TO  1
+               SEARCH      TBL-RIHABIRI-OCC   VARYING   TBL-RIDX
+                       AT  END
+                           MOVE    ZERO            TO  FLG-SOUKIKSN
+                       WHEN    WRK-SRYCD           =   TBL-RIHA-SRYCD
+                                                           (TBL-RIDX)
+                           MOVE    1               TO  FLG-SOUKIKSN
+               END-SEARCH
+           END-IF
       *
            .
        20011-SOUKI-CHK-EXT.

@@ -456,6 +456,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "して下さい"
                                        TO  SPA-ERRMSG(35:)
+               WHEN    "K097"
+                   MOVE    "警告！早期リハビリ加算は"
+                                       TO  SPA-ERRMSG
+                   MOVE    "急性発生日から９０日以内に算定できます。"
+                                       TO  SPA-ERRMSG(25:)
                WHEN    "0110"
                    MOVE    "他保険にて診察料算定済のコメントは"
                                        TO  SPA-ERRMSG

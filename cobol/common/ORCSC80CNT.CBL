@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  04/03/23  Ｈ１６年４月改正追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -535,15 +536,29 @@
       *****************************************************************
        20023-SOUKI-TBL-SEC         SECTION.
       *
-      *    早期リハビリ加算
-           SET     TBL-RIDX            TO  1
-           SEARCH      TBL-RIHABIRI-OCC    VARYING   TBL-RIDX
-                   AT  END
-                       MOVE    ZERO            TO  FLG-SOUKI
-                   WHEN    WRK-SRYCD           =   TBL-RIHA-SRYCD
+      *Ｈ１６．４以前
+           IF      SPA-SRYYMD          <   "20040401"
+      *        早期リハビリ加算
+               SET     TBL-RIDX            TO  1
+               SEARCH      TBL-RIHABIRI-OCC    VARYING   TBL-RIDX
+                       AT  END
+                           MOVE    ZERO            TO  FLG-SOUKI
+                       WHEN    WRK-SRYCD           =   TBL-RIHA-SRYCD
                                                            (TBL-RIDX)
-                       MOVE    1               TO  FLG-SOUKI
-           END-SEARCH
+                           MOVE    1               TO  FLG-SOUKI
+               END-SEARCH
+           ELSE
+      *Ｈ１６．４から
+      *        早期リハビリ加算
+               SET     TBL-RIDX2           TO  1
+               SEARCH      TBL-RIHABIRI2-OCC    VARYING   TBL-RIDX2
+                       AT  END
+                           MOVE    ZERO            TO  FLG-SOUKI
+                       WHEN    WRK-SRYCD           =   TBL-RIHA2-SRYCD
+                                                           (TBL-RIDX2)
+                           MOVE    1               TO  FLG-SOUKI
+               END-SEARCH
+           END-IF
       *
            IF      FLG-SOUKI           =   1
       *        訂正の時、当日算定有無の判定
