@@ -1829,10 +1829,8 @@
       **************************************************************
        NYUINACCT-SYU-SEC           SECTION.
       *
-           IF   WRK-DAY22-NYUKHNRYO(IDY)  NOT =  ZERO
-      *
-             MOVE     ZERO     TO    FLG-ARI
-             PERFORM  VARYING  SYUKEI-IDX2    FROM    1   BY  1
+           MOVE     ZERO     TO    FLG-ARI
+           PERFORM  VARYING  SYUKEI-IDX2    FROM    1   BY  1
                   UNTIL  SYUKEI-IDX2           > 10
                    OR    WRK-GAI-DAY(SYUKEI-IDX SYUKEI-IDX2) = ZERO
                    OR    FLG-ARI               = 1
@@ -1843,8 +1841,8 @@
                            WRK-GAI-KAISU   (SYUKEI-IDX SYUKEI-IDX2 IDY) 
                  MOVE  1  TO   FLG-ARI
               END-IF
-             END-PERFORM  
-             IF  FLG-ARI  =  ZERO  
+           END-PERFORM  
+           IF  FLG-ARI  =  ZERO  
                  MOVE  IDY 
                           TO   WRK-GAI-DAY     (SYUKEI-IDX SYUKEI-IDX2)
                  MOVE  WRK-DAY22-NYUKHNRYO(IDY)
@@ -1852,8 +1850,6 @@
                  ADD   1  TO   WRK-GAI-ZAIKAISU(SYUKEI-IDX SYUKEI-IDX2)
                  MOVE  1  TO                                            
                            WRK-GAI-KAISU   (SYUKEI-IDX SYUKEI-IDX2 IDY) 
-             END-IF
-      *
            END-IF
       *
            .

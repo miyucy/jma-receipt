@@ -1264,11 +1264,11 @@
                                   WRK-MIJISI
                          MOVE     1      TO    FLG-MIJISI-GENSAN        
                   END-EVALUATE
-                  IF  WRK-NYUKHNRYO  NOT =  ZERO
-                    MOVE     ZERO     TO    FLG-ARI
-                    PERFORM  VARYING  ID1    FROM    1   BY  1
+                  MOVE     ZERO     TO    FLG-ARI
+                  PERFORM  VARYING  ID1    FROM    1   BY  1
                                 UNTIL   ID1                   > 10
-                                  OR    RECE62-NYUKHNRYO(ID1) = ZERO
+                                  OR    RECE62-NYUKHNNISSU(ID1)
+                                                              = ZERO
                                   OR    FLG-ARI               = 1
                       IF  RECE62-NYUKHNRYO(ID1)  =  WRK-NYUKHNRYO
                             IF   KH-IDX =  1
@@ -1279,13 +1279,12 @@
                                       TO   RECE62-NYUKHNKEI(ID1 KH-IDX)
                             MOVE  1   TO   FLG-ARI
                       END-IF
-                    END-PERFORM  
-                    IF  FLG-ARI  =  ZERO  
+                  END-PERFORM  
+                  IF  FLG-ARI  =  ZERO  
                       ADD        1           TO  RECE62-NYUKHNNISSU(ID1)
                       MOVE   WRK-NYUKHNRYO   TO  RECE62-NYUKHNRYO(ID1)
                       ADD    WRK-NYUKHNRYO   
                                        TO  RECE62-NYUKHNKEI(ID1 KH-IDX)
-                    END-IF
                   END-IF
                WHEN   920
                   MOVE      ZERO   TO  WRK-NYUTOKRYO
@@ -1351,13 +1350,11 @@
                       COMPUTE  WRK-NYUTOKRYO = WRK-NYUTOKRYO
                                              + WRK-ACCT90(IDY)
                   END-IF
-                  IF  WRK-NYUTOKRYO  NOT =  ZERO
-                   IF     FLG-GAIHAKU  =  ZERO
+                  IF     FLG-GAIHAKU  =  ZERO
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
                         UNTIL ( ID1                          > 10    )  
-                          OR  ( RECE62-NYUTOKRYO(ID1)        = ZERO   
-                            AND RECE62-NYUTOKRYO-RYAKU(ID1)  = SPACE )
+                          OR  ( RECE62-NYUTOKNISSU(ID1)      = ZERO  )
                           OR  ( FLG-ARI                      = 1     )
                       IF  RECE62-NYUTOKRYO-RYAKU(ID1)  =  WRK-RYAKUSHO
                             IF   KH-IDX =  1
@@ -1373,18 +1370,17 @@
                       ADD        1           TO  RECE62-NYUTOKNISSU(ID1)
                       MOVE   WRK-RYAKUSHO    TO  RECE62-NYUTOKRYO-RYAKU
                                                                    (ID1)
-      ***             Î¬¾Î¤¬Ìµ¤¤¾ì¹ç¤Î°Ù¤Î½èÃÖ
+      ***             Î¬¾Î¤¬¶õÇò¤Î¾ì¹ç¤Î°Ù¤Î½èÃÖ
                       MOVE   999999999       TO  RECE62-NYUTOKRYO(ID1)
       *
                       ADD    WRK-NYUTOKRYO   
                                        TO  RECE62-NYUTOKKEI(ID1 KH-IDX)
                     END-IF
-                   ELSE
+                  ELSE
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
                         UNTIL ( ID1                          > 10    )  
-                          OR  ( RECE62-NYUTOKRYO(ID1)        = ZERO   
-                            AND RECE62-NYUTOKRYO-RYAKU(ID1)  = SPACE )
+                          OR  ( RECE62-NYUTOKNISSU(ID1)      = ZERO  )
                           OR  ( FLG-ARI                      = 1     )
                       IF  RECE62-NYUTOKRYO(ID1)  =  WRK-NYUTOKRYO
                             IF   KH-IDX =  1
@@ -1398,7 +1394,7 @@
                     END-PERFORM  
                     IF  FLG-ARI  =  ZERO  
                       ADD        1           TO  RECE62-NYUTOKNISSU(ID1)
-      ***             Î¬¾Î¤¬Ìµ¤¤¾ì¹ç¤Î°Ù¤Î½èÃÖ
+      ***             ÅÀ¿ô¤¬¥¼¥í¤Î¾ì¹ç¤Î°Ù¤Î½èÃÖ
                       MOVE   "£¹£¹£¹£¹£¹£¹£¹"
                                              TO  RECE62-NYUTOKRYO-RYAKU
                                                                    (ID1)
@@ -1407,7 +1403,6 @@
                       ADD    WRK-NYUTOKRYO   
                                        TO  RECE62-NYUTOKKEI(ID1 KH-IDX)
                     END-IF
-                   END-IF
                   END-IF
            END-EVALUATE
       *
