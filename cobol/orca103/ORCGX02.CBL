@@ -241,6 +241,7 @@
            COPY    "X01.INC".
            COPY    "X02.INC".
            COPY    "X03.INC".
+           COPY    "X04.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC". 
@@ -658,7 +659,7 @@
                                    SPA-NAI-TBL
       *
            IF    ( SPA-X03-GMN-LCHKLST-MAX >   WRK-CONS-MAX )
-               MOVE    WRK-CONS-MAX    TO  SPA-X03-GMN-LCHKLST-MAX
+               MOVE    WRK-CONS-MAX    TO  SPA-GMN-MAX
            ELSE
                MOVE    SPA-X03-GMN-LCHKLST-MAX
                                        TO  SPA-GMN-MAX

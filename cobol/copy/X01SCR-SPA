@@ -40,7 +40,8 @@
                    07  SPA-X03-GMN-LCHKLST-MAX         PIC 9(03).
                    07  SPA-X03-GMN-LCHKLST-OCC         OCCURS  100.
                        09  SPA-X03-GMN-TLCHK-NUM       PIC 9(03).
-                       09  SPA-X03-GMN-TLCHK-NAME      PIC X(70).
+                       09  SPA-X03-GMN-TLCHK-NAME      PIC X(100).
+                       09  SPA-X03-GMN-TLCHK-JYKN      PIC X(01).
                    07  SPA-X03-GMN-LCHKLST-FLG         PIC 9(01)
                                                        OCCURS  100.
                05  SPA-X03-GMN-RCHKKBNMEI              PIC X(20).
@@ -51,8 +52,10 @@
                    07  SPA-X03-GMN-RCHKLST-MAX         PIC 9(03).
                    07  SPA-X03-GMN-RCHKLST-OCC         OCCURS  100.
                        09  SPA-X03-GMN-TRCHK-NUM       PIC 9(03).
-                       09  SPA-X03-GMN-TRCHK-NAME      PIC X(70).
-                   07  SPA-X03-GMN-RCHKLST-FLG         PIC 9(01)
+                       09  SPA-X03-GMN-TRCHK-NAME      PIC X(100).
+                       09  SPA-X03-GMN-TRCHK-JYKN      PIC X(01).
+                   07  SPA-X03-GMN-RCHKLST-FLG-G.
+                       09  SPA-X03-GMN-RCHKLST-FLG     PIC 9(01)
                                                        OCCURS  100.
                05  SPA-X03-GMN-CHKKBN-G.
                    07  SPA-X03-GMN-CHKKBN              PIC X(01).
@@ -78,12 +81,18 @@
                05  SPA-X03-NAI-LCHKLST.
                    07  SPA-X03-NAI-LCHKLST-OCC         OCCURS  100.
                        09  SPA-X03-NAI-TLCHK-SRYCD     PIC X(09).
+                       09  SPA-X03-NAI-TLCHK-BYOCD     PIC X(07)
+                                                       OCCURS  21.
+                       09  SPA-X03-NAI-TLCHK-BYOSTATUS PIC X(01).
                05  SPA-X03-NAI-RYUKOSTYMD              PIC X(08).
                05  SPA-X03-NAI-RYUKOEDYMD              PIC X(08).
                05  SPA-X03-NAI-RCHKLST.
                    07  SPA-X03-NAI-RCHKLST-OCC         OCCURS  100.
                        09  SPA-X03-NAI-TRCHK-SRYCD     PIC X(09).
                        09  SPA-X03-NAI-TRCHK-DELFLG    PIC 9(01).
+                       09  SPA-X03-NAI-TRCHK-BYOCD     PIC X(07)
+                                                       OCCURS  21.
+                       09  SPA-X03-NAI-TRCHK-BYOSTATUS PIC X(01).
                05  SPA-X03-NAI-SELCHKLST.
                    07  SPA-X03-NAI-SELCHKLST-KBN       PIC X(01).
                    07  SPA-X03-NAI-SELCHKLST-OCC       OCCURS  100.
@@ -142,4 +151,4 @@
                05  SPA-X98-USER-COB               OCCURS  10.
                    07  SPA-X98-USERLST            PIC X(20).
       *    他の画面
-           03  SPA-X01SONOTA                  PIC X(30000). 
+           03  SPA-X01SONOTA                  PIC X(700000). 

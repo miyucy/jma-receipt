@@ -106,6 +106,7 @@
        01  FLG-AREA.
            03  FLG-END                            PIC 9(01).
            03  FLG-CHK                            PIC 9(01).
+           03  FLG-CHKSND                         PIC 9(01).
            03  FLG-TENSU                          PIC 9(01).
       *
            03  FLG-OK                             PIC 9(01).
@@ -138,6 +139,10 @@
            03  WRK-INPUTCD             PIC X(09).
            03  WRK-CD-MCNT             PIC 9(02).
            03  WRK-CHKKBN              PIC X(01).
+           03  WRK-TNS-G.
+               05  WRK-TNS-YUKOSTYMD   PIC X(08).
+               05  WRK-TNS-SRYCD       PIC X(09).
+               05  WRK-TNS-NAME        PIC X(100).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -161,6 +166,9 @@
       *
        01  CHK-REC.
            COPY    "CPCHK.INC".
+      *
+       01  CHKSND-REC.
+           COPY    "CPCHKSND.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -187,6 +195,7 @@
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+           COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    連絡領域
@@ -201,6 +210,7 @@
            COPY    "X01.INC".
            COPY    "X02.INC".
            COPY    "X03.INC".
+           COPY    "X04.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC". 
@@ -300,6 +310,7 @@
       *
            EVALUATE    SPA-MOTOPG(1:3)
            WHEN    "X02"
+           WHEN    "X04"
                MOVE    SPA-X01-CHKKBN
                                    TO  WRK-CHKKBN
                PERFORM 310-SPASET-SEC
@@ -836,88 +847,99 @@
            MOVE    SPA-GMN-SRYCD       TO  SPA-MAE-SRYCD
       *
       *    チェックマスタ読み込み 
-           INITIALIZE                  CHK-REC
-           MOVE    SPA-GMN-CHKKBN      TO  CHK-CHKKBN
-           MOVE    SPA-GMN-SRYCD       TO  CHK-SRYCD
-           MOVE    CHK-REC             TO  MCPDATA-REC
-           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "CHK-KEY6"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "CHK-KEY6"         TO  ORC-DBPATH
-               PERFORM 900-CHK-READ-SEC
-           ELSE
-               INITIALIZE                  CHK-REC
-               MOVE    1               TO  FLG-CHK
-           END-IF
-      *
-           MOVE    ZERO                TO  IDX
-           PERFORM UNTIL      (IDX     =  100  )  OR
-                              (FLG-CHK =   1   )
-               IF      CHK-RENNUM           =   1
-                   ADD     1                    TO  IDX 
-                   MOVE    IDX                  TO  SPA-GMN-TBANGO
-                                                                 (IDX)
-                   MOVE    CHK-YUKOSTYMD        TO  SPA-NAI-TSTYUKYMD
-                                                                 (IDX)
-                   MOVE    CHK-YUKOSTYMD         TO  WRK-SYMD
-                   PERFORM 5002-HIZUKE-HEN-SEC
-                   MOVE    WRK-HENYMDG          TO  SPA-GMN-TSTYUKYMD
-                                                                (IDX)
-                   MOVE    CHK-YUKOEDYMD        TO  SPA-NAI-TEDYUKYMD
-                                                                (IDX)
-                   MOVE    CHK-YUKOEDYMD        TO  WRK-SYMD
-                   PERFORM 5002-HIZUKE-HEN-SEC
-                   MOVE    WRK-HENYMDG          TO  SPA-GMN-TEDYUKYMD
-                                                                (IDX)
-      *
-      *           点数マスタ読み込み
-                   INITIALIZE                   TNS-TENSU-REC
-                   MOVE    CHK-SRYCD            TO  TNS-SRYCD
-                   MOVE    CHK-YUKOSTYMD        TO  ORC-DBYMD
-                   MOVE    TNS-TENSU-REC        TO  MCPDATA-REC
-      *
-                   MOVE    "DBSELECT"           TO  MCP-FUNC
-                   MOVE    "TENSU-KEY"          TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"          USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-                   IF      MCP-RC              =   ZERO
-                        MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-                        PERFORM 900-TENSU-READ-SEC
-                   ELSE
-                       MOVE    1                   TO  FLG-TENSU
-                   END-IF
-                   IF      FLG-TENSU           =   ZERO
-                       IF     (TNS-SRYCD(1:1)      =   "1") AND
-                              (TNS-ROUTEKKBN       =   2  )
-                           MOVE    SPACE       TO  SPA-NAI-NAME (IDX)
-                           STRING  "［老］"        DELIMITED   BY  SIZE
-                                   TNS-NAME        DELIMITED   BY  SIZE
-                           INTO    SPA-NAI-NAME (IDX)
-                           END-STRING
-                       ELSE
-                           MOVE    TNS-NAME    TO  SPA-NAI-NAME (IDX)
-                       END-IF
-                   END-IF
-                   MOVE    IDX                  TO  SPA-GMN-MAX 
+           IF    ( SPA-GMN-CHKKBN      =   "1" OR "2" )
+               MOVE    ZERO            TO  FLG-CHKSND
+               PERFORM 900-CHKSND-KEY12-SEL-SEC
+               IF      MCP-RC              =   ZERO
+                   PERFORM 900-CHKSND-KEY12-FET-SEC
+               ELSE
+                   INITIALIZE              CHKSND-REC
+                   MOVE    1           TO  FLG-CHKSND
                END-IF
       *
-               MOVE    "CHK-KEY6"              TO  ORC-DBPATH
-               PERFORM 900-CHK-READ-SEC
-           END-PERFORM
-      *    カーソルクロース
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "CHK-KEY2"          TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+               MOVE    ZERO            TO  IDX
+               PERFORM UNTIL      (IDX     =  100  )  OR
+                                  (FLG-CHKSND =   1   )
+                   ADD     1                   TO  IDX 
+                   MOVE    IDX                 TO  SPA-GMN-TBANGO
+                                                              (IDX)
+                   MOVE    CHKSND-YUKOSTYMD    TO  SPA-NAI-TSTYUKYMD
+                                                              (IDX)
+                   MOVE    CHKSND-YUKOSTYMD    TO  WRK-SYMD
+                   PERFORM 5002-HIZUKE-HEN-SEC
+                   MOVE    WRK-HENYMDG         TO  SPA-GMN-TSTYUKYMD
+                                                              (IDX)
+                   MOVE    CHKSND-YUKOEDYMD    TO  SPA-NAI-TEDYUKYMD
+                                                              (IDX)
+                   MOVE    CHKSND-YUKOEDYMD    TO  WRK-SYMD
+                   PERFORM 5002-HIZUKE-HEN-SEC
+                   MOVE    WRK-HENYMDG         TO  SPA-GMN-TEDYUKYMD
+                                                              (IDX)
+      *
+                   MOVE    CHKSND-SRYCD        TO  WRK-TNS-SRYCD
+                   MOVE    CHKSND-YUKOSTYMD    TO  WRK-TNS-YUKOSTYMD
+                   PERFORM 41041-SRYNAME-HEN-SEC
+                   MOVE    WRK-TNS-NAME        TO  SPA-NAI-NAME (IDX)
+      *
+                   MOVE    IDX                 TO  SPA-GMN-MAX
+      *
+                   PERFORM 900-CHKSND-KEY12-FET-SEC
+      *
+               END-PERFORM
+      *
+      *        カーソルクロース
+               MOVE    PATH-TBL-CHKSND-KEY12   TO  MCP-PATH
+               MOVE    "DBCLOSECURSOR"         TO  MCP-FUNC
+               CALL    "MCPSUB"             USING
+                                            MCPAREA
+                                            MCPDATA-REC
+           ELSE
+               MOVE    ZERO            TO  FLG-CHK
+               PERFORM 900-CHK-KEY12-SEL-SEC
+               IF      MCP-RC              =   ZERO
+                   PERFORM 900-CHK-KEY12-FET-SEC
+               ELSE
+                   INITIALIZE                  CHK-REC
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+      *
+               MOVE    ZERO                TO  IDX
+               PERFORM UNTIL      (IDX     =  100  )  OR
+                                  (FLG-CHK =   1   )
+                   ADD     1                   TO  IDX 
+                   MOVE    IDX                 TO  SPA-GMN-TBANGO
+                                                              (IDX)
+                   MOVE    CHK-YUKOSTYMD       TO  SPA-NAI-TSTYUKYMD
+                                                              (IDX)
+                   MOVE    CHK-YUKOSTYMD       TO  WRK-SYMD
+                   PERFORM 5002-HIZUKE-HEN-SEC 
+                   MOVE    WRK-HENYMDG         TO  SPA-GMN-TSTYUKYMD
+                                                              (IDX)
+                   MOVE    CHK-YUKOEDYMD       TO  SPA-NAI-TEDYUKYMD
+                                                              (IDX)
+                   MOVE    CHK-YUKOEDYMD       TO  WRK-SYMD
+                   PERFORM 5002-HIZUKE-HEN-SEC
+                   MOVE    WRK-HENYMDG         TO  SPA-GMN-TEDYUKYMD
+                                                              (IDX)
+      *
+                   MOVE    CHK-SRYCD           TO  WRK-TNS-SRYCD
+                   MOVE    CHK-YUKOSTYMD       TO  WRK-TNS-YUKOSTYMD
+                   PERFORM 41041-SRYNAME-HEN-SEC
+                   MOVE    WRK-TNS-NAME        TO  SPA-NAI-NAME (IDX)
+      *
+                   MOVE    IDX                 TO  SPA-GMN-MAX
+      *
+                   PERFORM 900-CHK-KEY12-FET-SEC
+      *
+               END-PERFORM
+      *
+      *        カーソルクロース
+               MOVE    PATH-TBL-CHK-KEY12   TO  MCP-PATH
+               MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+               CALL    "MCPSUB"             USING
+                                            MCPAREA
+                                            MCPDATA-REC
+           END-IF
       *
            EVALUATE    SPA-GMN-MAX
                WHEN    ZERO
@@ -939,9 +961,48 @@
            EXIT.
       *
       *****************************************************************
+      *    診療行為名称編集処理
+      *****************************************************************
+       41041-SRYNAME-HEN-SEC               SECTION.
+      *
+           MOVE    SPACE               TO  WRK-TNS-NAME
+      *
+           INITIALIZE                  TNS-TENSU-REC
+           MOVE    WRK-TNS-SRYCD       TO  TNS-SRYCD
+           MOVE    WRK-TNS-YUKOSTYMD   TO  ORC-DBYMD
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    "TENSU-KEY"     TO  ORC-DBPATH
+               PERFORM 900-TENSU-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+           IF    ( FLG-TENSU           =   ZERO )
+               IF     (TNS-SRYCD(1:1)      =   "1") AND
+                      (TNS-ROUTEKKBN       =   2  )
+                   STRING  "［老］"    DELIMITED   BY  SIZE
+                           TNS-NAME    DELIMITED   BY  SIZE
+                   INTO    WRK-TNS-NAME
+                   END-STRING
+               ELSE
+                   MOVE    TNS-NAME  TO  WRK-TNS-NAME
+               END-IF
+           END-IF
+      *
+           .
+       41041-SRYNAME-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *  　入力コードチェック処理
       *****************************************************************
-       4010-SRYCD-CHK-SEC                        SECTION.
+       4010-SRYCD-CHK-SEC                  SECTION.
       *
            MOVE    ZERO               TO  FLG-KENSAKU
       *
@@ -1247,7 +1308,12 @@
            MOVE    SPA-GMN-NAME        TO  SPA-X01-NAME  
            MOVE    SPA-X01KYOUTU       TO  SPA-WORK
       *
-           MOVE    "X02"               TO  SPA-SAKIPG
+           IF    ( SPA-X01-CHKKBN      =   "1" OR  "2" )
+               MOVE    "X04"           TO  SPA-SAKIPG
+           ELSE
+               MOVE    "X02"           TO  SPA-SAKIPG
+           END-IF
+      *
            MOVE    "X01"               TO  SPA-MOTOPG
       *
            MOVE   "CHANGE"             TO  MCP-PUTTYPE
@@ -1541,18 +1607,21 @@
            EXIT.
       *
       *****************************************************************
-      *    チェックマスタ読み込み処理
+      *    チェックマスタ検索処理
       *****************************************************************
-       900-CHK-READ-SEC         SECTION.
+       900-CHK-KEY12-SEL-SEC           SECTION.
       *
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  CHK-REC
+           INITIALIZE                  CHK-REC
+           MOVE    SPA-GMN-CHKKBN      TO  CHK-CHKKBN
+           MOVE    SPA-GMN-SRYCD       TO  CHK-SRYCD
+           MOVE    CHK-REC             TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    PATH-TBL-CHK-KEY12  TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  CHK-REC
                MOVE    ZERO            TO  FLG-CHK
            ELSE
                INITIALIZE                  CHK-REC
@@ -1560,7 +1629,74 @@
            END-IF
       *
            .
-       900-CHK-READ-EXT.
+       900-CHK-KEY12-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタFETCH処理(KEY12)
+      *****************************************************************
+       900-CHK-KEY12-FET-SEC           SECTION.
+      *
+           MOVE    PATH-TBL-CHK-KEY12  TO  MCP-PATH
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  CHK-REC
+               MOVE    ZERO            TO  FLG-CHK
+           ELSE
+               INITIALIZE                  CHK-REC
+               MOVE    1               TO  FLG-CHK
+           END-IF
+      *
+           .
+       900-CHK-KEY12-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ２検索処理
+      *****************************************************************
+       900-CHKSND-KEY12-SEL-SEC           SECTION.
+      *
+           INITIALIZE                  CHKSND-REC
+           MOVE    SPA-GMN-CHKKBN      TO  CHKSND-CHKKBN
+           MOVE    SPA-GMN-SRYCD       TO  CHKSND-SRYCD
+           MOVE    CHKSND-REC             TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    PATH-TBL-CHKSND-KEY12  TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  CHKSND-REC
+               MOVE    ZERO            TO  FLG-CHKSND
+           ELSE
+               INITIALIZE                  CHKSND-REC
+               MOVE    1               TO  FLG-CHKSND
+           END-IF
+      *
+           .
+       900-CHKSND-KEY12-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ２FETCH処理(KEY12)
+      *****************************************************************
+       900-CHKSND-KEY12-FET-SEC           SECTION.
+      *
+           MOVE    PATH-TBL-CHKSND-KEY12  TO  MCP-PATH
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  CHKSND-REC
+               MOVE    ZERO            TO  FLG-CHKSND
+           ELSE
+               INITIALIZE                  CHKSND-REC
+               MOVE    1               TO  FLG-CHKSND
+           END-IF
+      *
+           .
+       900-CHKSND-KEY12-FET-EXT.
            EXIT.
       * 
       *****************************************************************

@@ -428,18 +428,6 @@
                        09  TKAISU-SRYCD-DAY            PIC 9(01)
                                                        OCCURS 31.
       *
-      *    病名コード退避ワーク
-       01  TBYOMEICD-AREA.
-           03  TBYOMEICD-IDX1                          PIC 9(05).
-           03  TBYOMEICD-IDX2                          PIC 9(05).
-           03  TBYOMEICD-STIDX                         PIC 9(05).
-           03  TBYOMEICD-MAX                           PIC 9(05).
-           03  TBYOMEICD-OCC                           OCCURS 101.
-               05  TBYOMEICD-BYOMEICD                  PIC X(07).
-               05  TBYOMEICD-KEY.
-                   07  TBYOMEICD-ERRFLG                PIC 9(01).
-                   07  TBYOMEICD-SRYYMD                PIC X(08).
-      *
       *    入院調剤料算定日退避ワーク
        01  TNYUIN-CHOZAI-AREA.
            03  TNYUIN-CHOZAI-DAY                       PIC 9(01)
@@ -694,6 +682,10 @@
        01  CHK-REC.
            COPY    "CPCHK.INC".
       *
+      *    チェックマスタ２
+       01  CHKSND-REC.
+           COPY    "CPCHKSND.INC".
+      *
       *    保険番号
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
@@ -741,9 +733,13 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *    適応病名チェックサブ
+           COPY    "CPORCSDTCHK01.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+           COPY    "ORCA-DBPATH".
       *
       ****************************************************************
        LINKAGE                         SECTION.
@@ -882,7 +878,7 @@
       *    薬剤と病名
            MOVE    "1"                 TO  WRK-CHK-CHKKBN
            MOVE    "1"                 TO  WRK-CHK-CDKBN
-           PERFORM 900-CHK-KEY5-SEL-SEC
+           PERFORM 900-CHKSND-KEY5-SEL-SEC
            IF    ( FLG-CHKMST          =   ZERO )
                MOVE    1               TO  FLG-YKZBYO
            END-IF
@@ -890,7 +886,7 @@
       *    診療行為と病名
            MOVE    "2"                 TO  WRK-CHK-CHKKBN
            MOVE    "1"                 TO  WRK-CHK-CDKBN
-           PERFORM 900-CHK-KEY5-SEL-SEC
+           PERFORM 900-CHKSND-KEY5-SEL-SEC
            IF    ( FLG-CHKMST          =   ZERO )
                MOVE    1               TO  FLG-SRYBYO
            END-IF
@@ -1318,7 +1314,6 @@
                                        TSRYCD-AREA
                                        TJNISSU-AREA
                                        TKAISU-AREA
-                                       TBYOMEICD-AREA
                                        TNYUIN-CHOZAI-AREA
                                        TNYUIN-ACCT-AREA
                                        TNYUKSN-AREA
@@ -3975,23 +3970,49 @@
        200112-CHKMST-YKZ-BYO-CHK-SEC   SECTION.
       *
            MOVE    ZERO                TO  FLG-CHKMST-BYOMEI
-           INITIALIZE                      TBYOMEICD-AREA
       *
            MOVE    ZERO                TO  FLG-CHKMST
       *
-           INITIALIZE                      CHK-REC
-           MOVE    "1"                 TO  CHK-CHKKBN
-           MOVE    "1"                 TO  CHK-CDKBN
+           INITIALIZE                      CHKSND-REC
+           MOVE    "1"                 TO  CHKSND-CHKKBN
+           MOVE    "1"                 TO  CHKSND-CDKBN
            MOVE    TSRYKA-SRYCD (IDX6 IDX7)
-                                       TO  CHK-SRYCD
-           MOVE    CHK-REC             TO  MCPDATA-REC
-           MOVE    "CHK-KEY3"          TO  ORC-DBPATH
-           PERFORM 910-DBSELECT-SEC
+                                       TO  CHKSND-SRYCD
+           MOVE    WRK-KJNYMD          TO  CHKSND-YUKOSTYMD
+                                           CHKSND-YUKOEDYMD
+           MOVE    CHKSND-REC          TO  MCPDATA-REC
+           MOVE    PATH-TBL-CHKSND-KEY3
+                                       TO  MCP-PATH
+           PERFORM 920-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  CHK-REC
+      *
+               MOVE    MCPDATA-REC     TO  CHKSND-REC
+      *
+               MOVE    PATH-TBL-CHKSND-KEY3
+                                       TO  MCP-PATH
+               PERFORM 920-DBCLOSE-SEC
+      *
+               INITIALIZE                  SDTCHK01AREA
+               MOVE    ALL "1"         TO  SDTCHK01-CHK-PTN-G
+               MOVE    DTCHK003-HOSPID TO  SDTCHK01-HOSPID
+               MOVE    DTCHK003-PTID   TO  SDTCHK01-PTID
+               MOVE    TSRYKA-SRYKA (IDX6)
+                                       TO  SDTCHK01-SRYKA
+               MOVE    CHKSND-CHKKBN   TO  SDTCHK01-CHKKBN
+               MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                       TO  SDTCHK01-SRYCD
+               MOVE    WRK-KJNYMD      TO  SDTCHK01-KJNYMD
+               MOVE    CHKSND-CDKBN    TO  SDTCHK01-CDKBN
+               MOVE    ORCBSD01-NYUGAIKBN
+                                       TO  SDTCHK01-NYUGAIKBN
+               CALL    "ORCSDTCHK01"   USING   SDTCHK01AREA
+               IF    ( SDTCHK01-O-OK   =   ZERO )
+                   MOVE    TSRYKA-SRYKA (IDX6)
+                                       TO  WRK-SRYKA
+                   PERFORM 200112-YKZ-BYO-ERRMES-HEN-SEC
+               END-IF
            ELSE
                MOVE    1               TO  FLG-CHKMST
-               MOVE    2               TO  FLG-CHKMST-BYOMEI
                IF    ( CONST-TCHK-MAX  >   TCHK-YKZ-BYO-MAX )
                    COMPUTE TCHK-YKZ-BYO-MAX
                        =   TCHK-YKZ-BYO-MAX    +   1
@@ -4001,180 +4022,8 @@
                END-IF
            END-IF
       *
-           PERFORM UNTIL ( FLG-CHKMST  NOT =   ZERO )
-                      OR ( FLG-CHKMST-BYOMEI   =  1 )
-      *
-      *        チェックマスタより患者病名チェック処理
-               PERFORM VARYING IDX10   FROM    1   BY  1
-                       UNTIL ( IDX10           >   10 )
-                          OR ( CHK-CD (IDX10)      =   SPACE )
-                          OR ( FLG-CHKMST-BYOMEI   =  1 )
-      *
-                   MOVE    TSRYKA-SRYKA (IDX6)
-                                       TO  WRK-SRYKA
-                   MOVE    CHK-CD (IDX10)
-                                       TO  WRK-CHK-CD
-                   PERFORM 200112-CHKMST-BYO-CHK-SEC
-      *
-               END-PERFORM
-      *
-               MOVE    "CHK-KEY3"      TO  ORC-DBPATH
-               PERFORM 910-DBFETCH-SEC
-               IF    ( MCP-RC          =   ZERO )
-                   MOVE    MCPDATA-REC TO  CHK-REC
-               ELSE
-                   MOVE    1           TO  FLG-CHKMST
-               END-IF
-      *
-           END-PERFORM
-      *
-           MOVE    "CHK-KEY3"          TO  ORC-DBPATH
-           PERFORM 910-DBCLOSE-SEC
-      *
-           IF    ( FLG-CHKMST-BYOMEI   =   ZERO )
-      *
-      *        病名コード退避ワーク並べ替え処理
-               PERFORM 200112-TBYOMEICD-SORT-SEC
-      *
-               MOVE    TSRYKA-SRYKA (IDX6)
-                                       TO  WRK-SRYKA
-               PERFORM 200112-YKZ-BYO-ERRMES-HEN-SEC
-           END-IF
-      *
            .
        200112-CHKMST-YKZ-BYO-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    チェックマスタより患者病名チェック処理
-      *****************************************************************
-       200112-CHKMST-BYO-CHK-SEC       SECTION.
-      *
-           MOVE    ZERO                TO  FLG-BYOMEI-ERR
-           MOVE    "00000000"          TO  WRK-PTBYO-SRYYMD
-      *
-           MOVE    ZERO                TO  FLG-PTBYOMEI
-           INITIALIZE                      PTBYOMEI-REC
-           MOVE    DTCHK003-HOSPID     TO  PTBYO-HOSPID
-           MOVE    DTCHK003-PTID       TO  PTBYO-PTID
-           MOVE    WRK-SRYKA           TO  PTBYO-SRYKA
-      *
-           MOVE    WRK-CHK-CD          TO  PTBYO-BYOMEICD (01)
-      *
-           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-           MOVE    "PTBYOMEI-KEY19"    TO  ORC-DBPATH
-           PERFORM 911-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    "PTBYOMEI-KEY19"
-                                       TO  ORC-DBPATH
-               PERFORM 900-PTBYOMEI-FETCH-SEC
-           ELSE
-               MOVE    1               TO  FLG-PTBYOMEI
-           END-IF
-      *
-           PERFORM UNTIL ( FLG-PTBYOMEI            NOT =   ZERO )
-                    OR   ( FLG-CHKMST-BYOMEI           =   1 )
-      *
-               MOVE    ZERO            TO  FLG-ERRSET
-      *
-               PERFORM 2001121-PTBYO-TAISYO-CHK-SEC
-               IF    ( FLG-PTBYO-TAISYO    =   1 )
-                   MOVE    1           TO  FLG-CHKMST-BYOMEI
-               ELSE
-      *
-      *            適用期間が正しい場合、入外区分の誤りとして
-      *            "2"を、適用期間が誤っている場合は適用期間の誤りとして
-      *            "1"を設定
-                   IF    ( PTBYO-TENKIKBN      =   SPACE )
-                       IF    ( PTBYO-SRYYMD (1:6) <=   ORCBSD01-SRYYM )
-                           MOVE    2   TO  FLG-BYOMEI-ERR
-                           MOVE    1   TO  FLG-ERRSET
-                       ELSE
-                           IF    ( FLG-BYOMEI-ERR <=   1 )
-                               MOVE    1   TO  FLG-BYOMEI-ERR
-                               MOVE    1   TO  FLG-ERRSET
-                           END-IF
-                       END-IF
-                   ELSE
-                       IF    ( PTBYO-SRYYMD   (1:6)
-                                                   <=  ORCBSD01-SRYYM )
-                        AND  ( PTBYO-TENKIYMD (1:6)
-                                                   >=  ORCBSD01-SRYYM )
-                           MOVE    2   TO  FLG-BYOMEI-ERR
-                           MOVE    1   TO  FLG-ERRSET
-                       ELSE
-                           IF    ( FLG-BYOMEI-ERR <=   1 )
-                               MOVE    1   TO  FLG-BYOMEI-ERR
-                               MOVE    1   TO  FLG-ERRSET
-                           END-IF
-                       END-IF
-                   END-IF
-               END-IF
-      *
-               IF    ( FLG-ERRSET      =   1 )
-                   IF    ( WRK-PTBYO-SRYYMD  < PTBYO-SRYYMD )
-                       MOVE    PTBYO-SRYYMD
-                                           TO  WRK-PTBYO-SRYYMD
-                   END-IF
-               END-IF
-      *
-               MOVE    "PTBYOMEI-KEY19"
-                                       TO  ORC-DBPATH
-               PERFORM 900-PTBYOMEI-FETCH-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "PTBYOMEI-KEY19"    TO  ORC-DBPATH
-           PERFORM 910-DBCLOSE-SEC
-      *
-           IF    ( FLG-CHKMST-BYOMEI   =   ZERO )
-               IF    ( FLG-BYOMEI-ERR  =   1 OR 2 )
-                   IF    ( CONST-TBYOMEICD-MAX
-                                           >   TBYOMEICD-MAX )
-                       COMPUTE TBYOMEICD-MAX
-                           =   TBYOMEICD-MAX   +   1
-      *
-                       MOVE    WRK-CHK-CD
-                                       TO  TBYOMEICD-BYOMEICD
-                                                   (TBYOMEICD-MAX)
-                       MOVE    FLG-BYOMEI-ERR
-                                       TO  TBYOMEICD-ERRFLG
-                                                   (TBYOMEICD-MAX)
-                       MOVE    WRK-PTBYO-SRYYMD
-                                       TO  TBYOMEICD-SRYYMD
-                                                   (TBYOMEICD-MAX)
-                   END-IF
-               END-IF
-           END-IF
-      *
-           .
-       200112-CHKMST-BYO-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＳＯＲＴ作業領域ＳＯＲＴ処理
-      *****************************************************************
-       200112-TBYOMEICD-SORT-SEC       SECTION.
-      *
-      *    ソート用ワークについて並び替えを行う
-           PERFORM VARYING TBYOMEICD-IDX1  FROM    2   BY  1
-                   UNTIL ( TBYOMEICD-IDX1  >   TBYOMEICD-MAX )
-               COMPUTE TBYOMEICD-STIDX     =   TBYOMEICD-IDX1    -   1
-               MOVE    TBYOMEICD-OCC (TBYOMEICD-IDX1)
-                                   TO  TBYOMEICD-OCC
-                                            (CONST-TBYOMEICD-MAX + 1)
-               PERFORM VARYING TBYOMEICD-IDX2
-                       FROM    TBYOMEICD-STIDX   BY  -1
-                       UNTIL ( TBYOMEICD-IDX2    <   1 )
-                          OR ( TBYOMEICD-KEY (CONST-TBYOMEICD-MAX + 1)
-                                   <=  TBYOMEICD-KEY (TBYOMEICD-IDX2) )
-                       MOVE    TBYOMEICD-OCC (TBYOMEICD-IDX2)
-                           TO  TBYOMEICD-OCC (TBYOMEICD-IDX2 + 1)
-               END-PERFORM
-               MOVE    TBYOMEICD-OCC (CONST-TBYOMEICD-MAX + 1)
-                           TO  TBYOMEICD-OCC (TBYOMEICD-IDX2 + 1)
-           END-PERFORM
-      *
-           .
-       200112-TBYOMEICD-SORT-EXT.
            EXIT.
       *****************************************************************
       *    薬剤と病名エラーメッセージ編集処理
@@ -4183,7 +4032,7 @@
       *
            MOVE    WRK-SRYKA           TO  SRH-1005-SRYKA
       *
-           MOVE    CHK-SRYCD           TO  WRK-SRYCD
+           MOVE    CHKSND-SRYCD        TO  WRK-SRYCD
            MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU       NOT =   ZERO )
@@ -4192,7 +4041,7 @@
                MOVE    WRK-OUT-INPUT   TO  TNS-NAME
            END-IF
       *
-           IF    ( TBYOMEICD-MAX       =   ZERO )
+           IF    ( SDTCHK01-O-MAX      =   ZERO )
                MOVE    TNS-NAME        TO  WRK-ERRMES-PLUS
                MOVE    "080001"        TO  WRK-ERRCD
                PERFORM 213-ERRMES-HEN-SEC
@@ -4202,21 +4051,17 @@
                END-IF
            ELSE
                PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >    TBYOMEICD-MAX )
+                       UNTIL ( IDX0    >    SDTCHK01-O-MAX )
                         OR   ( FLG-CHKEND (8)  =   1 )
       *
-                   MOVE    TBYOMEICD-BYOMEICD (IDX0)
-                                               TO  WRK-BYOMEICD
-                   PERFORM 900-BYOMEI-KEY-SEL-SEC
-      *
                    MOVE   SPACE                TO  WRK-ERRMES-PLUS
-                   STRING TNS-NAME             DELIMITED BY SPACE
-                          "、"                 DELIMITED BY SIZE
-                          BYO-BYOMEI           DELIMITED BY SPACE
+                   STRING TNS-NAME                 DELIMITED BY SPACE
+                          "、"                     DELIMITED BY SIZE
+                          SDTCHK01-O-BYOMEI (IDX0) DELIMITED BY SPACE
                    INTO   WRK-ERRMES-PLUS
                    END-STRING
       *
-                   IF   ( TBYOMEICD-ERRFLG (IDX0) =   2 )
+                   IF   ( SDTCHK01-O-ERRFLG (IDX0) =   2 )
                        IF    ( ORCBSD01-NYUGAIKBN = "1" )
                            MOVE    "080002"   TO  WRK-ERRCD
                        ELSE
@@ -4292,20 +4137,47 @@
        200112-CHKMST-SRY-BYO-CHK-SEC   SECTION.
       *
            MOVE    ZERO                TO  FLG-CHKMST-BYOMEI
-           INITIALIZE                      TBYOMEICD-AREA
       *
            MOVE    ZERO                TO  FLG-CHKMST
       *
-           INITIALIZE                      CHK-REC
-           MOVE    "2"                 TO  CHK-CHKKBN
-           MOVE    "1"                 TO  CHK-CDKBN
+           INITIALIZE                      CHKSND-REC
+           MOVE    "2"                 TO  CHKSND-CHKKBN
+           MOVE    "1"                 TO  CHKSND-CDKBN
            MOVE    TSRYKA-SRYCD (IDX6 IDX7)
-                                       TO  CHK-SRYCD
-           MOVE    CHK-REC             TO  MCPDATA-REC
-           MOVE    "CHK-KEY3"          TO  ORC-DBPATH
-           PERFORM 910-DBSELECT-SEC
+                                       TO  CHKSND-SRYCD
+           MOVE    WRK-KJNYMD          TO  CHKSND-YUKOSTYMD
+                                           CHKSND-YUKOEDYMD
+           MOVE    CHKSND-REC          TO  CHKSND-REC
+           MOVE    PATH-TBL-CHKSND-KEY3
+                                       TO  MCP-PATH
+           PERFORM 920-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  CHK-REC
+      *
+               MOVE    MCPDATA-REC     TO  CHKSND-REC
+      *
+               MOVE    PATH-TBL-CHKSND-KEY3
+                                       TO  MCP-PATH
+               PERFORM 920-DBCLOSE-SEC
+      *
+               INITIALIZE                  SDTCHK01AREA
+               MOVE    "1"             TO  SDTCHK01-CHK-PTN-G
+               MOVE    DTCHK003-HOSPID TO  SDTCHK01-HOSPID
+               MOVE    DTCHK003-PTID   TO  SDTCHK01-PTID
+               MOVE    TSRYKA-SRYKA (IDX6)
+                                       TO  SDTCHK01-SRYKA
+               MOVE    CHKSND-CHKKBN   TO  SDTCHK01-CHKKBN
+               MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                       TO  SDTCHK01-SRYCD
+               MOVE    WRK-KJNYMD      TO  SDTCHK01-KJNYMD
+               MOVE    CHKSND-CDKBN    TO  SDTCHK01-CDKBN
+               MOVE    ORCBSD01-NYUGAIKBN
+                                       TO  SDTCHK01-NYUGAIKBN
+               CALL    "ORCSDTCHK01"   USING   SDTCHK01AREA
+               IF    ( SDTCHK01-O-OK   =   ZERO )
+                   MOVE    TSRYKA-SRYKA (IDX6)
+                                       TO  WRK-SRYKA
+                   PERFORM 200112-SRY-BYO-ERRMES-HEN-SEC
+               END-IF
            ELSE
                MOVE    1               TO  FLG-CHKMST
                MOVE    2               TO  FLG-CHKMST-BYOMEI
@@ -4318,46 +4190,6 @@
                END-IF
            END-IF
       *
-           PERFORM UNTIL ( FLG-CHKMST  NOT =   ZERO )
-                      OR ( FLG-CHKMST-BYOMEI   =  1 )
-      *
-      *        チェックマスタより患者病名チェック処理
-               PERFORM VARYING IDX10   FROM    1   BY  1
-                       UNTIL ( IDX10           >   10 )
-                          OR ( CHK-CD (IDX10)      =   SPACE )
-                          OR ( FLG-CHKMST-BYOMEI   =  1 )
-      *
-                   MOVE    TSRYKA-SRYKA (IDX6)
-                                       TO  WRK-SRYKA
-                   MOVE    CHK-CD (IDX10)
-                                       TO  WRK-CHK-CD
-                   PERFORM 200112-CHKMST-BYO-CHK-SEC
-      *
-               END-PERFORM
-      *
-               MOVE    "CHK-KEY3"      TO  ORC-DBPATH
-               PERFORM 910-DBFETCH-SEC
-               IF    ( MCP-RC          =   ZERO )
-                   MOVE    MCPDATA-REC TO  CHK-REC
-               ELSE
-                   MOVE    1           TO  FLG-CHKMST
-               END-IF
-      *
-           END-PERFORM
-      *
-           MOVE    "CHK-KEY3"          TO  ORC-DBPATH
-           PERFORM 910-DBCLOSE-SEC
-      *
-           IF    ( FLG-CHKMST-BYOMEI   =   ZERO )
-      *
-      *        病名コード退避ワーク並べ替え処理
-               PERFORM 200112-TBYOMEICD-SORT-SEC
-      *
-               MOVE    TSRYKA-SRYKA (IDX6)
-                                       TO  WRK-SRYKA
-               PERFORM 200112-SRY-BYO-ERRMES-HEN-SEC
-           END-IF
-      *
            .
        200112-CHKMST-SRY-BYO-CHK-EXT.
            EXIT.
@@ -4368,7 +4200,7 @@
       *
            MOVE    WRK-SRYKA           TO  SRH-1005-SRYKA
       *
-           MOVE    CHK-SRYCD           TO  WRK-SRYCD
+           MOVE    CHKSND-SRYCD        TO  WRK-SRYCD
            MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU       NOT =   ZERO )
@@ -4377,7 +4209,7 @@
                MOVE    WRK-OUT-INPUT   TO  TNS-NAME
            END-IF
       *
-           IF    ( TBYOMEICD-MAX       =   ZERO )
+           IF    ( SDTCHK01-O-MAX      =   ZERO )
                MOVE    "090001"        TO  WRK-ERRCD
                MOVE    TNS-NAME        TO  WRK-ERRMES-PLUS
                PERFORM 213-ERRMES-HEN-SEC
@@ -4387,21 +4219,17 @@
                END-IF
            ELSE
                PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >    TBYOMEICD-MAX )
+                       UNTIL ( IDX0    >    SDTCHK01-O-MAX )
                         OR   ( FLG-CHKEND (9)  =   1 )
       *
-                   MOVE    TBYOMEICD-BYOMEICD (IDX0)
-                                               TO  WRK-BYOMEICD
-                   PERFORM 900-BYOMEI-KEY-SEL-SEC
-      *
                    MOVE   SPACE                TO  WRK-ERRMES-PLUS
-                   STRING TNS-NAME             DELIMITED BY SPACE
-                          "、"                 DELIMITED BY SIZE
-                          BYO-BYOMEI           DELIMITED BY SPACE
+                   STRING TNS-NAME                 DELIMITED BY SPACE
+                          "、"                     DELIMITED BY SIZE
+                          SDTCHK01-O-BYOMEI (IDX0) DELIMITED BY SPACE
                    INTO   WRK-ERRMES-PLUS
                    END-STRING
       *
-                   IF   ( TBYOMEICD-ERRFLG (IDX0) =   2 )
+                   IF   ( SDTCHK01-O-ERRFLG (IDX0) =   2 )
                        IF    ( ORCBSD01-NYUGAIKBN = "1" )
                            MOVE    "090002"   TO  WRK-ERRCD
                        ELSE
@@ -4521,6 +4349,7 @@
            MOVE    "2"                 TO  CHK-CDKBN
            MOVE    TSRYCD-SRYCD (IDX6) TO  CHK-SRYCD
            MOVE    CHK-REC             TO  MCPDATA-REC
+           MOVE    WRK-KJNYMD          TO  ORC-DBYMD
            MOVE    "CHK-KEY3"          TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
@@ -4916,6 +4745,7 @@
            MOVE    "2"                 TO  CHK-CDKBN
            MOVE    TSRYCD-SRYCD (IDX6) TO  CHK-SRYCD
            MOVE    CHK-REC             TO  MCPDATA-REC
+           MOVE    WRK-KJNYMD          TO  ORC-DBYMD
            MOVE    "CHK-KEY3"          TO  ORC-DBPATH
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
@@ -6450,6 +6280,37 @@
        900-CHK-KEY5-SEL-EXT.
            EXIT.
       *****************************************************************
+      *    チェックマスタ２検索処理(CHK-KEY5)
+      *****************************************************************
+       900-CHKSND-KEY5-SEL-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHKMST
+      *
+           INITIALIZE                      CHKSND-REC
+           MOVE    WRK-CHK-CHKKBN      TO  CHKSND-CHKKBN
+           MOVE    WRK-CHK-CDKBN       TO  CHKSND-CDKBN
+           MOVE    WRK-KJNYMD          TO  CHKSND-YUKOSTYMD
+                                           CHKSND-YUKOEDYMD
+           MOVE    CHKSND-REC          TO  MCPDATA-REC
+           MOVE    PATH-TBL-CHKSND-KEY5
+                                       TO  MCP-PATH
+           PERFORM 920-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  CHKSND-REC
+           ELSE
+               INITIALIZE                  CHKSND-REC
+               MOVE    1               TO  FLG-CHKMST
+           END-IF
+      *
+           MOVE    PATH-TBL-CHKSND-KEY5
+                                       TO  MCP-PATH
+           PERFORM 920-DBCLOSE-SEC
+      *
+           .
+      *
+       900-CHKSND-KEY5-SEL-EXT.
+           EXIT.
+      *****************************************************************
       *    診療会計読込処理(KEY28)
       *****************************************************************
        900-SRYACCT-KEY28-FETCH-SEC     SECTION.
@@ -6869,6 +6730,51 @@
            .
       *
        910-DBCLOSE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理（FHETCHも行う)
+      *****************************************************************
+       920-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 920-DBFETCH-SEC
+           END-IF
+      *
+           .
+      *
+       920-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       920-DBCLOSE-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBCLOSE-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ　オープン処理

@@ -84,6 +84,8 @@ db	{
 	tbl_btpara;
         tbl_order;
         tbl_help;
+        tbl_chksnd;
+        query_dtchk;
 };
 db	"shell"	{
 	shell;

@@ -1,5 +1,17 @@
 X03	{
 	fixed6	{
+		B09	{
+			state	int;
+		};
+		B09_2	{
+			state	int;
+		};
+		B10	{
+			state	int;
+		};
+		B10_2	{
+			state	int;
+		};
 		LCHKKBNMEI	{
 			value	varchar(20);
 		};
@@ -14,12 +26,16 @@ X03	{
 		};
 		scrolledwindow1	{
 			LCHKLST	{
+				LBLLJYKN	{
+					value	varchar(04);
+				};
 				count	int;
 				row	int;
 				rowattr	int;
 				item	{
 					value0	varchar(4);
-					value1	varchar(70);
+					value1	varchar(100);
+					value2	varchar(4);
 				}	[100];
 				select	bool[100];
 			};
@@ -38,12 +54,16 @@ X03	{
 		};
 		scrolledwindow3	{
 			RCHKLST	{
+				LBLRJYKN	{
+					value	varchar(04);
+				};
 				count	int;
 				row	int;
 				rowattr	int;
 				item	{
 					value0	varchar(4);
-					value1	varchar(70);
+					value1	varchar(100);
+					value2	varchar(4);
 				}	[100];
 				select	bool[100];
 			};

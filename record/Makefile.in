@@ -294,6 +294,7 @@ RECORD_files = \
 	N41.rec \
 	N41ERR.rec \
 	N41ID1.rec \
+	X04.rec \
 
 
 DEF_files = \
@@ -443,6 +444,8 @@ DB_files = \
 	tbl_btpara.db \
 	tbl_order.db \
 	tbl_help.db \
+	query_dtchk.db \
+	tbl_chksnd.db \
 
 all:   
 

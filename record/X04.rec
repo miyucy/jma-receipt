@@ -1,0 +1,143 @@
+X04	{
+	fixed2	{
+		B06	{
+			state	int;
+		};
+		B09	{
+			state	int;
+		};
+		B10	{
+			state	int;
+		};
+		CHKKBN	{
+			value	varchar(50);
+		};
+		SRYCD	{
+			value	varchar(9);
+		};
+		STYUKYMD	{
+			value	varchar(9);
+		};
+		EDYUKYMD	{
+			value	varchar(9);
+		};
+		NAME	{
+			value	varchar(100);
+		};
+		CMB_NYUGAIKBN	{
+			NYUGAIKBN	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[02];
+		};
+		SELNUM	{
+			value	varchar(50);
+		};
+		BYOSTATUS	{
+			value	varchar(10);
+		};
+		BYOMEICD1	{
+			value	varchar(20);
+			state	int;
+		};
+		BYOMEICD2	{
+			value	varchar(20);
+			state	int;
+		};
+		BYOMEICD3	{
+			value	varchar(20);
+			state	int;
+		};
+		BYOMEICD4	{
+			value	varchar(20);
+			state	int;
+		};
+		BYOMEICD5	{
+			value	varchar(20);
+			state	int;
+		};
+		BYOMEICD6	{
+			value	varchar(20);
+			state	int;
+		};
+		BYOMEI	{
+			value	varchar(100);
+			state	int;
+		};
+		CMB_JYKNKBN	{
+			JYKNKBN	{
+				value	varchar(12);
+			};
+			count	int;
+			item	varchar(12)[05];
+		};
+		SEL_BYOMEI	{
+			value	varchar(100);
+		};
+		CMB_SRCBYOKBN	{
+			SRCBYOKBN	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[05];
+		};
+		CMB_SRTKBN	{
+			SRTKBN	{
+				value	varchar(23);
+			};
+			count	int;
+			item	varchar(23)[50];
+		};
+		CMB_SRCJYKNKBN	{
+			SRCJYKNKBN	{
+				value	varchar(12);
+			};
+			count	int;
+			item	varchar(12)[05];
+		};
+		scrolledwindow1	{
+			BYOLST	{
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(1);
+					value2	varchar(100);
+					value3	varchar(4);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		scrolledwindow3	{
+			SRCBYOLST	{
+				LBLSRCBYOCD	{
+					value	varchar(10);
+				};
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(100);
+					value2	varchar(12);
+				}	[50];
+				select	bool[50];
+			};
+		};
+		scrolledwindow2	{
+			CDLST	{
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(7);
+					value2	varchar(40);
+				}	[30];
+				select	bool[30];
+			};
+		};
+	};
+};

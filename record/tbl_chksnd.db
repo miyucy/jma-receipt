@@ -1,0 +1,274 @@
+tbl_chksnd	{
+	CHKKBN			char(1);
+	SRYCD   		char(9);
+	YUKOSTYMD  		char(8);
+	YUKOEDYMD  		char(8);
+	CDKBN   		char(1);
+	RENNUM			number(3);
+	CD				varchar(170);
+	BYOMEI			varchar(160);
+	COMPKBN			char(1);
+	BYOMEIHENFLG	char(1);
+	TERMID  		varchar(16);
+	OPID    		varchar(16);
+	CREYMD  		char(8);
+	UPYMD   		char(8);
+	UPHMS			char(6);
+#-----> 潛平□凳蕙迕嫩杴
+	UPCHKKBN		char(1),virtual;
+	UPSRYCD   		char(9),virtual;
+	UPYUKOSTYMD 	char(8),virtual;
+	UPYUKOEDYMD 	char(8),virtual;
+	UPCDKBN   		char(1),virtual;
+	UPRENNUM		number(3),virtual;
+#-----> 腹綢平□迕嫩杴
+	SELNAME		char(200),virtual;
+};
+
+primary	{
+	CHKKBN,SRYCD,YUKOSTYMD,YUKOEDYMD,CDKBN,RENNUM;
+};
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chksnd
+			WHERE CHKKBN      =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			AND   YUKOSTYMD  <=   :YUKOSTYMD
+			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			AND   CDKBN       =   :CDKBN
+			AND   RENNUM      =   :RENNUM
+		;
+	};
+};
+
+path	key2	{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chksnd
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			AND   YUKOSTYMD  <=   :YUKOSTYMD
+			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			ORDER   BY        SRYCD,
+                                          RENNUM
+		;
+	};
+};
+
+path	key3	{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chksnd
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			AND   YUKOSTYMD  <=   :YUKOSTYMD
+			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			AND   CDKBN       =   :CDKBN
+			ORDER   BY        SRYCD,
+                                          RENNUM
+		;
+	};
+};
+
+path	key4	{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chksnd
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			AND   YUKOSTYMD  <=   :YUKOSTYMD
+			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			ORDER   BY        SRYCD,
+                                          RENNUM
+		;
+	};
+};
+
+path	key5	{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chksnd
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   CDKBN       =   :CDKBN
+			AND   YUKOSTYMD  <=   :YUKOSTYMD
+			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			ORDER   BY        SRYCD,
+                                          RENNUM
+		;
+	};
+};
+
+path	upd1	{
+	DBUPDATE		{
+		UPDATE	tbl_chksnd
+				SET
+		CHKKBN		 =	:CHKKBN,
+		SRYCD   	 =	:SRYCD,
+		YUKOSTYMD  	 =	:YUKOSTYMD,
+		YUKOEDYMD  	 =	:YUKOEDYMD,
+		CDKBN   	 =	:CDKBN,
+		RENNUM		 =	:RENNUM,
+		CD			 =	:CD,
+		BYOMEI		 =	:BYOMEI,
+		COMPKBN		 =	:COMPKBN,
+		BYOMEIHENFLG =	:BYOMEIHENFLG,
+		TERMID  	 =	:TERMID,
+		OPID    	 =	:OPID,
+		CREYMD  	 =	:CREYMD,
+		UPYMD   	 =	:UPYMD,
+		UPHMS		 =	:UPHMS,
+	WHERE	CHKKBN		=	:UPCHKKBN
+	AND		SRYCD		=	:UPSRYCD
+	AND		YUKOSTYMD	=	:UPYUKOSTYMD
+	AND		YUKOEDYMD	=	:UPYUKOEDYMD
+	AND		CDKBN		=	:UPCDKBN
+	AND		RENNUM		=	:UPRENNUM
+		;
+	};
+};
+
+path	del11	{ 	
+	DBDELETE	{
+		DELETE
+		FROM tbl_chksnd
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			AND   YUKOSTYMD   =   :YUKOSTYMD
+			AND   YUKOEDYMD   =   :YUKOEDYMD
+		;
+	};
+};
+
+path	all	{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chksnd
+ 		;
+	};
+};
+
+path	key6	{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chksnd
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			ORDER  BY  YUKOSTYMD,
+                                   RENNUM
+		;
+	};
+};
+
+path	key7	{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chksnd
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   SRYCD       >=  :SRYCD
+			AND   SRYCD       <=  :UPSRYCD
+			AND   CDKBN       =   :CDKBN
+			AND   YUKOSTYMD  <=   :YUKOSTYMD
+			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			ORDER   BY        SRYCD,
+                                          RENNUM
+		;
+	};
+};
+
+
+path	key8	{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key8_csr CURSOR FOR
+		SELECT A.* from tbl_chksnd A left join tbl_tensu B
+		ON    A.SRYCD     =   B.SRYCD
+		AND   B.YUKOSTYMD  <=   :YUKOSTYMD
+		AND   B.YUKOEDYMD  >=   :YUKOEDYMD
+		WHERE A.CHKKBN    =   :CHKKBN
+		AND   A.SRYCD     >=  :SRYCD
+		AND   A.SRYCD     <=  :UPSRYCD
+		AND   A.CDKBN     =   :CDKBN
+		AND   A.YUKOSTYMD  <=   :YUKOSTYMD
+		AND   A.YUKOEDYMD  >=   :YUKOEDYMD
+		ORDER   BY COALESCE(B.KANANAME,'任任任任任任任任任任'),A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD,A.RENNUM
+		;
+	};
+};
+
+path	key9	{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key9_csr CURSOR FOR
+		SELECT A.* from tbl_chksnd A left join tbl_tensu B
+		ON    A.SRYCD     =   B.SRYCD
+		AND   B.YUKOSTYMD  <=   :YUKOSTYMD
+		AND   B.YUKOEDYMD  >=   :YUKOEDYMD
+		WHERE A.CHKKBN    =   :CHKKBN
+		AND   A.SRYCD     >=  :SRYCD
+		AND   A.SRYCD     <=  :UPSRYCD
+		AND   A.CDKBN     =   :CDKBN
+		AND   A.YUKOSTYMD  <=   :YUKOSTYMD
+		AND   A.YUKOEDYMD  >=   :YUKOEDYMD
+		ORDER  BY   COALESCE(B.CDKBN_KBN,'z'),B.CDKBN_KBNNUM,B.CDKBN_KBNNUM_EDA,
+					B.CDKBN_KOUBAN,A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD,A.RENNUM
+		;
+	};
+};
+
+path	key10	{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key10_csr CURSOR FOR
+		SELECT A.* from tbl_chksnd A left join tbl_tensu B
+		ON    A.SRYCD     =   B.SRYCD
+		AND   B.YUKOSTYMD  <=   :YUKOSTYMD
+		AND   B.YUKOEDYMD  >=   :YUKOEDYMD
+		WHERE A.CHKKBN    =   :CHKKBN
+		AND   A.SRYCD     >=  :SRYCD
+		AND   A.SRYCD     <=  :UPSRYCD
+		AND   A.CDKBN     =   :CDKBN
+		AND   A.YUKOSTYMD  <=   :YUKOSTYMD
+		AND   A.YUKOEDYMD  >=   :YUKOEDYMD
+		ORDER  BY   COALESCE(B.SRYCD,'999999999'),A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD,A.RENNUM
+		;
+	};
+};
+
+path	key11	{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key11_csr CURSOR FOR
+		SELECT A.* FROM TBL_CHKSND A,TBL_TENSU B
+		WHERE  A.CHKKBN     = :CHKKBN
+		AND A.YUKOSTYMD    <= :YUKOSTYMD
+		AND A.YUKOEDYMD    >= :YUKOEDYMD
+		AND A.RENNUM        = 1 
+		AND B.SRYCD         = A.SRYCD
+		AND B.YUKOSTYMD    <= :YUKOSTYMD
+		AND B.YUKOEDYMD    >= :YUKOEDYMD
+		AND	(B.NAME      LIKE :SELNAME
+		 OR	 B.KANANAME  LIKE :SELNAME)
+		ORDER BY B.KANANAME,A.SRYCD
+		;
+	};
+};
+
+path	key12	{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key12_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chksnd
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			AND   RENNUM      =   1
+			ORDER  BY  YUKOSTYMD,
+                                   RENNUM
+		;
+	};
+};
