@@ -21,6 +21,7 @@ X91	{
 		};
 		STSRYNAME	{
 			value	varchar(100);
+			style   varchar(20);
 			state	int;
 		};
 		EDSRYCD	{

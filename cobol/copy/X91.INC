@@ -34,6 +34,8 @@
               03  X91-STSRYNAME-G.
                 04  X91-STSRYNAME
                                 PIC X(100).
+                04  X91-STSRYNAME-STYLE
+                                      PIC X(20).
                 04  X91-STSRYNAME-STATE
                                 PIC S9(9)   BINARY.
               03  X91-EDSRYCD-G.

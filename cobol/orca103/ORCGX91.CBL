@@ -81,8 +81,6 @@
                    07  SPA-GMN-SYU2        PIC X(01).
                    07  SPA-GMN-SYU3        PIC X(01).
                05  SPA-NAI-AREA.
-      *            1:点数マスタに存在しない
-      *            2:チェックマスタに存在しない
                    07  SPA-NAI-SRYCD-EXSIT-FLG
                                                PIC 9(01).
       *
@@ -135,7 +133,6 @@
            03  WRK-SRTKBN              PIC X(01).
            03  WRK-INPUTCD             PIC X(09).
            03  WRK-CD-MCNT             PIC 9(02).
-           03  WRK-GMN-SRYCD           PIC X(09).
            03  WRK-STR-IN              PIC X(500).
            03  WRK-STR-OUT             PIC X(500).
            03  WRK-STR-LEN             PIC 9(8).
@@ -191,6 +188,10 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    チェック
+       01  CHK-REC.
+           COPY    "CPCHK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -400,8 +401,6 @@
       *
            IF    ( SPA-X98-SRYCD   NOT =   SPACE )
                MOVE    SPA-X98-SRYCD   TO  SPA-GMN-STSRYCD
-      *
-               MOVE    SPA-GMN-STSRYCD TO  WRK-GMN-SRYCD
                PERFORM 4101-STSRYCD-CHK-SEC
                MOVE    7               TO  SPA-GMN-CUR
            ELSE
@@ -480,26 +479,30 @@
       *
       *    薬剤と病名チェックボタン
            WHEN    "CLICKED"       ALSO    "CHKYKZBYO"
-               PERFORM 4101-GMN-SPA-SET-SEC
                MOVE    X91-CHKYKZBYO   TO  SPA-GMN-CHKYKZBYO
+               PERFORM 4101-GMN-SPA-SET-SEC
+               PERFORM 41011-CHKMST-CHK-SEC
                MOVE    2               TO  SPA-GMN-CUR
       *
       *    診療行為と病名チェックボタン
            WHEN    "CLICKED"       ALSO    "CHKSRYBYO"
-               PERFORM 4101-GMN-SPA-SET-SEC
                MOVE    X91-CHKSRYBYO   TO  SPA-GMN-CHKSRYBYO
+               PERFORM 4101-GMN-SPA-SET-SEC
+               PERFORM 41011-CHKMST-CHK-SEC
                MOVE    3               TO  SPA-GMN-CUR
       *
       *    薬剤と併用禁忌チェックボタン
            WHEN    "CLICKED"       ALSO    "CHKYKZHEI"
-               PERFORM 4101-GMN-SPA-SET-SEC
                MOVE    X91-CHKYKZHEI   TO  SPA-GMN-CHKYKZHEI
+               PERFORM 4101-GMN-SPA-SET-SEC
+               PERFORM 41011-CHKMST-CHK-SEC
                MOVE    4               TO  SPA-GMN-CUR
       *
       *    診療行為の併用算定チェックボタン
            WHEN    "CLICKED"       ALSO    "CHKSRYHEI"
-               PERFORM 4101-GMN-SPA-SET-SEC
                MOVE    X91-CHKSRYHEI   TO  SPA-GMN-CHKSRYHEI
+               PERFORM 4101-GMN-SPA-SET-SEC
+               PERFORM 41011-CHKMST-CHK-SEC
                MOVE    5               TO  SPA-GMN-CUR
       *
       *    診療行為範囲指定チェックボタン
@@ -657,15 +660,58 @@
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
+      *
+      *        チェックマスタチェック
+               PERFORM 41011-CHKMST-CHK-SEC
            ELSE
-               MOVE    1               TO  SPA-NAI-SRYCD-EXSIT-FLG
                INITIALIZE                  TNS-TENSU-REC
            END-IF
+      *
+           MOVE    "TENSU-KEY24"       TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
       *
            MOVE    TNS-NAME            TO  SPA-GMN-STSRYNAME
       *
            .
        4101-STSRYCD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタチェック
+      *****************************************************************
+       41011-CHKMST-CHK-SEC            SECTION.
+      *
+           MOVE    ZERO            TO  SPA-NAI-SRYCD-EXSIT-FLG
+      *
+           IF    ( SPA-GMN-STSRYNAME   =   SPACE )
+               GO  TO  41011-CHKMST-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   WRK-CONS-CHKKBN-MAX )
+                    OR   ( SPA-NAI-SRYCD-EXSIT-FLG
+                                   =   1 )
+      *
+               IF    ( SPA-GMN-CHKKBN (IDX0)   =   "T" )
+                   INITIALIZE                  CHK-REC
+                   MOVE    WRK-CONS-CHKKBN (IDX0)
+                                       TO  CHK-CHKKBN
+                   MOVE    SPA-GMN-STSRYCD TO  CHK-SRYCD
+                   MOVE    CHK-REC         TO  MCPDATA-REC
+                   MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+                   MOVE    "CHK-KEY2"      TO  ORC-DBPATH
+                   PERFORM 910-DBSELECT-SEC
+                   IF    ( MCP-RC          =   ZERO )
+                       MOVE    1           TO  SPA-NAI-SRYCD-EXSIT-FLG
+                   END-IF
+      *
+                   MOVE    "CHK-KEY2"      TO  ORC-DBPATH
+                   PERFORM 910-DBCLOSE-SEC
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       41011-CHKMST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    終了診療行為コードチェック
@@ -1531,6 +1577,12 @@
            MOVE    SPA-GMN-SYU1        TO  X91-SYU1
            MOVE    SPA-GMN-SYU2        TO  X91-SYU2
            MOVE    SPA-GMN-SYU3        TO  X91-SYU3
+      *
+           MOVE    "black"             TO  X91-STSRYNAME-STYLE
+           IF    ( SPA-NAI-SRYCD-EXSIT-FLG
+                                       =   ZERO )
+               MOVE    "blue"          TO  X91-STSRYNAME-STYLE
+           END-IF
       *
            IF    ( SPA-GMN-CHKSRYRANGE =   "T" )
                MOVE    WIDGET-NORMAL   TO  X91-STSRYCD-STATE
