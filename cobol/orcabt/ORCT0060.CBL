@@ -362,6 +362,8 @@
                                        ZOUSYU-DENPJTIKBN
                                        ZOUSYU-CREATEKBN
                                        ZOUSYU-DENPPRTYMD
+                                       ZOUSYU-ROOMNUM
+                                       ZOUSYU-BYOTONUM
                                        ZOUSYU-NYUKIN-TOTAL
                                        ZOUSYU-NYUKIN-KAISU
                                        ZOUSYU-TERMID
@@ -375,6 +377,8 @@
                                        GENSYU-DENPJTIKBN
                                        GENSYU-CREATEKBN
                                        GENSYU-DENPPRTYMD
+                                       GENSYU-ROOMNUM
+                                       GENSYU-BYOTONUM
                                        GENSYU-NYUKIN-TOTAL
                                        GENSYU-NYUKIN-KAISU
                                        GENSYU-TERMID
