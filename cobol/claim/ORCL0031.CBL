@@ -36,6 +36,7 @@
       *  01.00.01    MCC-多々納   02/04/30  改正に伴う修正
       *  01.00.02    NACL-多々納  03/05/07  投薬を院内へ
       *  01.00.03    NACL-藤原    03/09/30  病名コードの取り込み
+      *  01.00.04    NACL-藤原    04/01/29  転帰区分の編集
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1317,6 +1318,7 @@
            MOVE    LF04-SND-SKNENDDATE(IDX)(9:2)
                                        TO  WRK-TENKIDD
       *    転帰
+           MOVE    SPACE               TO  WRK-TENKI
            IF      LF04-SND-SKNENDDATE(IDX)    NOT =   SPACE
       *        転帰が空白の時、治癒
                IF      LF04-SND-TENKI  (IDX)       =   SPACE 
@@ -1433,13 +1435,17 @@
       *
            PERFORM VARYING     IDX-T   FROM    1   BY  1
                    UNTIL       IDX-T   >   14
-      *        転帰が空白の時、治癒
                IF      LF04-SND-TENKI (IDX)    =   MML0016-TENKI (IDX-T)
                    MOVE    MML0016-ORCA-TENKI (IDX-T)
                                                TO  WRK-TENKI
                    MOVE    14                  TO  IDX-T
                END-IF
            END-PERFORM
+      *
+      *    該当の転帰が無い場合は治癒にする
+           IF      WRK-TENKI           =   SPACE
+               MOVE    "1"              TO  WRK-TENKI
+           END-IF
       *
            .
        2006121-TENKSET-EXT.
