@@ -136,6 +136,12 @@
       *            ÇÑ´þ¥Õ¥é¥°
                    07  TBL-HAIKI           PIC 9(01).
                    07  TBL-HAIKI-SURYO     PIC 9(05)V9(03).
+               05  TBL-DAY-AREA2       OCCURS   31.
+                   07  TBL-DAY2            PIC 9(01).
+                   07  TBL-SURYO2          PIC 9(05)V9(03).
+      *            ÇÑ´þ¥Õ¥é¥°
+                   07  TBL-HAIKI2          PIC 9(01).
+                   07  TBL-HAIKI-SURYO2    PIC 9(05)V9(03).
       *
       *    ´ïºà½¸·×ÍÑ
        01  TBL-KIZAI-AREA.
@@ -418,7 +424,7 @@
                                   (SRY-SRYCD(IDX2) =   SPACE )
       *            ÌôºÞ
                    IF     (SRY-SRYCD (IDX2)(1:1)   =   "6" )  AND
-                          (SRY-SRYSYUKBN           =   "330")
+                          (SRY-SRYSYUKBN           =   "330" OR "331")
                        PERFORM 10012-TBL-HENSYU-SEC
                    END-IF
       *            ¼êµ»ÎÁ
@@ -439,7 +445,7 @@
            END-PERFORM
       *
       *    ´ïºà¥Æ¡¼¥Ö¥ëÊÔ½¸
-           IF     (TBL-SRY-SRYSYUKBN (1)   =   "330")
+           IF     (TBL-SRY-SRYSYUKBN (1)   =   "330"  OR  "331")
       *        ¿ÇÎÅ¹Ô°Ù¤è¤ê´ïºàÊÔ½¸
                PERFORM 10016-TBL-KIZAIHEN-SEC
            END-IF
@@ -456,7 +462,12 @@
            PERFORM VARYING IDX-T       FROM    1   BY  1
                    UNTIL   IDX-T       >   50
                IF      SRY-SRYCD (IDX2)    =   TBL-SRYCD (IDX-T)
-                   PERFORM 100121-DAY-HEN-SEC
+                   IF      SRY-SRYSYUKBN       =   "330"
+                       PERFORM 100121-DAY-HEN-SEC
+                   END-IF
+                   IF      SRY-SRYSYUKBN       =   "331"
+                       PERFORM 100122-DAY2-HEN-SEC
+                   END-IF
                    MOVE    50              TO  IDX-T
                ELSE
                    IF      TBL-SRYCD (IDX-T)   =   SPACE
@@ -482,7 +493,12 @@
                            MOVE    TNS-MADOKUKBN       TO  TBL-MADOKU
                                                                (IDX-T)
       *
-                           PERFORM 100121-DAY-HEN-SEC
+                           IF      SRY-SRYSYUKBN       =   "330"
+                               PERFORM 100121-DAY-HEN-SEC
+                           END-IF
+                           IF      SRY-SRYSYUKBN       =   "331"
+                               PERFORM 100122-DAY2-HEN-SEC
+                           END-IF
                        END-IF
                        MOVE    50              TO  IDX-T
                    END-IF
@@ -551,6 +567,54 @@
       *
            .
        100121-DAY-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ëÊÔ½¸½èÍý¡ÊÅÀÅ©¼êµ»ÎÁ¤Ê¤·¡Ë
+      *****************************************************************
+       100122-DAY2-HEN-SEC            SECTION.
+      *
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL       IDX-D   >   31
+               IF      ACCT-DAY (1 IDX-D)  >   ZERO
+                   ADD     ACCT-DAY (1 IDX-D)  TO  TBL-DAY2(IDX-T IDX-D)
+      *            »ÄÎÌÇÑ´þ·×»»
+                   MOVE    ZERO                TO  FLG-HAIKI
+                   IF     (IDX2                <   5  )  AND
+                          (SRY-SRYCD (IDX2 + 1)    =   "099309901")
+                       MOVE    1                   TO  FLG-HAIKI
+                   END-IF
+                   IF     (IDX2                =   5  )  AND
+                          (IDXA                <   IDXS)
+                       COMPUTE IDXA2           =   IDXA    +   1
+                       IF      TBL-SRY-SRYCD (IDXA2 1)
+                                                   =   "099309901"
+                           MOVE    1                   TO  FLG-HAIKI
+                       END-IF
+                   END-IF
+      *            ¿ôÎÌ
+                   IF      FLG-HAIKI            =   ZERO
+                       COMPUTE WRK-SURYO        =   SRY-SRYSURYO(IDX2)
+                                                *   ACCT-DAY (1 IDX-D)
+                   ELSE
+                       COMPUTE WRK-SURYO-9     =   SRY-SRYSURYO(IDX2)
+                                               +   0.99
+                       COMPUTE WRK-SURYO       =   WRK-SURYO-9
+                                               *   ACCT-DAY (1 IDX-D)
+      *                ÇÑ´þ¿ôÎÌ
+                       MOVE    1               TO  TBL-HAIKI2
+                                                          (IDX-T IDX-D)
+                       COMPUTE WRK-HAIKI-SURYO =   WRK-SURYO-9
+                                               -   SRY-SRYSURYO(IDX2)
+                       ADD     WRK-HAIKI-SURYO TO  TBL-HAIKI-SURYO2
+                                                          (IDX-T IDX-D)
+                   END-IF
+                   ADD     WRK-SURYO            TO  TBL-SURYO2
+                                                          (IDX-T IDX-D)
+               END-IF
+           END-PERFORM
+      *
+           .
+       100122-DAY2-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -806,7 +870,8 @@
                PERFORM VARYING     IDX-T   FROM    1   BY  1
                        UNTIL      (IDX-T   >   50  )  OR
                                   (TBL-SRYCD (IDX-T)   =   SPACE)
-                   IF      TBL-DAY (IDX-T IDX-D)   >   ZERO
+                   IF     (TBL-DAY (IDX-T IDX-D)   >   ZERO ) OR
+                          (TBL-DAY2 (IDX-T IDX-D)  >   ZERO )
                        MOVE    1               TO  FLG-TENTEKI
                        ADD     1               TO  IDX
                        IF      IDX             <=  50
@@ -834,6 +899,16 @@
                END-IF
            END-PERFORM
       *
+      *TEST
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL       IDX-D   >   31
+               IF     ORCSTEN-ZAITEN (IDX-D)  >   ZERO
+                  DISPLAY "IDX-D:" IDX-D
+                         ",ZAITEN:" ORCSTEN-ZAITEN (IDX-D)
+                         ",CHUSYARYO:" ORCSTEN-CHUSYARYO (IDX-D)
+               END-IF
+           END-PERFORM
+      *TEST
            .
        200-KEISAN-SYORI-EXT.
            EXIT.
@@ -846,9 +921,14 @@
            MOVE    TBL-SRYCD (IDX-T)   TO  ORCSTEN-SRYCD (IDX-D IDX)
            MOVE    TBL-SURYO (IDX-T IDX-D)
                                        TO  ORCSTEN-SURYO (IDX-D IDX)
+           IF      TBL-DAY2 (IDX-T IDX-D)  >   ZERO
+               ADD     TBL-SURYO2(IDX-T IDX-D)
+                                       TO  ORCSTEN-SURYO (IDX-D IDX)
+           END-IF
       *
            COMPUTE WRK-TENSU-KEI       =   TBL-TEN  (IDX-T)
-                                       *   TBL-SURYO (IDX-T IDX-D)
+      ******************************   *   TBL-SURYO (IDX-T IDX-D)
+                                       *   ORCSTEN-SURYO (IDX-D IDX)
            COMPUTE WRK-TENSU-GOK       =   WRK-TENSU-GOK 
                                        +   WRK-TENSU-KEI
       *****IF      WRK-TENSU-KEI       <=  15
@@ -862,13 +942,23 @@
       *
       *****ADD     WRK-TENSU           TO  ORCSTEN-ZAITEN (IDX-D)
       *    ±ÕÎÌ
-           ADD     TBL-CHUSYARYO (IDX-T IDX-D)
+           IF      TBL-DAY (IDX-T IDX-D)  >   ZERO
+               ADD     TBL-CHUSYARYO (IDX-T IDX-D)
                                        TO  ORCSTEN-CHUSYARYO (IDX-D)
+           END-IF
       *    ÇÑ´þ¤¢¤ê
            IF      TBL-HAIKI (IDX-T IDX-D) =   1
                MOVE    "099309901"         TO  ORCSTEN-HAIK-SRYCD
                                                      (IDX-D IDX)
                MOVE    TBL-HAIKI-SURYO(IDX-T IDX-D)
+                                           TO  ORCSTEN-HAIK-SURYO
+                                                     (IDX-D IDX)
+           END-IF
+      *    ÇÑ´þ¤¢¤ê¡Ê¼êµ»¤Ê¤·¡Ë
+           IF      TBL-HAIKI2(IDX-T IDX-D) =   1
+               MOVE    "099309901"         TO  ORCSTEN-HAIK-SRYCD
+                                                     (IDX-D IDX)
+               ADD     TBL-HAIKI-SURYO2(IDX-T IDX-D)
                                            TO  ORCSTEN-HAIK-SURYO
                                                      (IDX-D IDX)
            END-IF

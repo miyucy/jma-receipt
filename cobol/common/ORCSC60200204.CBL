@@ -2144,8 +2144,9 @@
       *        検査で入院回数の時、回数集計
                IF     (SPA-NYUGAIKBN               =   "1" )  AND
                       (WRK-COM-SRYKBN (IDX)(1:1)   =   "6" )  AND
-                      (WRK-GMN-INPUTCD(IDX)(1:1)   =   "*"   OR
-                       WRK-COM-KAIFLG (IDX)        =   "1" )
+                     ((WRK-GMN-INPUTCD(IDX)(1:1)   =   "*" ) OR
+                      (WRK-COM-KAIFLG (IDX)        =   "1" ) OR
+                      (WRK-COM-ZAIEND (IDX)        =   "1" ))
                    PERFORM 3009-NYUINKAISU-SEC
                END-IF
                IF      WRK-COM-ZAIEND (IDX)    =   "1"
