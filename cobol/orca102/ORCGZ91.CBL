@@ -41,6 +41,7 @@
       *  02.00.01    NACL-øπœ∆    03/12/24  §Ω§Œ¬æ∫‡Œ¡ƒ…≤√
       *  02.00.02    NACL-øπœ∆    04/07/29  ƒæ¡∞•∏•Á•÷¥…Õ˝•¡•ß•√•Øƒ…≤√
       *  02.00.03    NACL-øπœ∆    04/10/26  ø«Œ≈π‘∞Ÿ√ÌºÕ»œ∞œΩ§¿µ
+      *  02.00.04    NACL-øπœ∆    04/10/27  ø«Œ≈π‘∞Ÿ¡™¬Ú —ππ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -420,7 +421,11 @@
            INITIALIZE                  SPA-GMN-SRYSTR-AREA
            INITIALIZE                  SPA-GMN-SRYEND-AREA
       *
-           MOVE  "F"     TO  SPA-GMN-SRYCHK  
+           MOVE  "F"     TO  SPA-GMN-SRYCHK
+      *----(02.00.04)--UPD-START---
+           MOVE  "F"     TO  SPA-GMN-SRY (1)
+           MOVE  "F"     TO  SPA-GMN-SRY (2)
+      *----(02.00.04)--UPD-END-----
       *
       *----(01.01.01)--ADD-START---
            MOVE  "F"     TO  SPA-GMN-IYKCHKALL
@@ -446,10 +451,7 @@
            MOVE  "F"     TO  SPA-GMN-COMCHK(1)
            MOVE  "F"     TO  SPA-GMN-COMCHK(2)
            MOVE  "F"     TO  SPA-GMN-COMCHK(3)
-      *----(01.01.01)--ADD-START---
-      *
-           MOVE  "T"     TO  SPA-GMN-SRY (1)
-           MOVE  "F"     TO  SPA-GMN-SRY (2)
+      *----(01.01.01)--ADD-END-----
            MOVE  "T"     TO  SPA-GMN-CYU (1)
            MOVE  "F"     TO  SPA-GMN-CYU (2)
            MOVE  "T"     TO  SPA-GMN-SYU (1)
@@ -585,15 +587,47 @@
       *    ΩËÕ˝≥Œ«ß
                WHEN    "CLICKED"       ALSO    "B13"
                    PERFORM 490-KAKUNIN-SEC
+      *----(02.00.04)--UPD-START---
       *        ø«Œ≈π‘∞Ÿ•¡•ß•√•Ø
                WHEN    "CLICKED"       ALSO    "SRYCHK"
                    EVALUATE    SPA-GMN-SRYCHK
                        WHEN    "T"
-                           MOVE    "F"  TO  SPA-GMN-SRYCHK
+                           MOVE    "F"     TO  SPA-GMN-SRYCHK
+                           MOVE    "F"     TO  SPA-GMN-SRY(1)
+                           MOVE    "F"     TO  SPA-GMN-SRY(2)
                        WHEN    "F"
-                           MOVE    "T"  TO  SPA-GMN-SRYCHK
-                   END-EVALUATE     
-                   MOVE  1              TO  SPA-GMN-CUR     
+                           MOVE    "T"     TO  SPA-GMN-SRYCHK
+                           MOVE    "T"     TO  SPA-GMN-SRY(1)
+                           MOVE    "F"     TO  SPA-GMN-SRY(2)
+                   END-EVALUATE
+                   MOVE  1             TO  SPA-GMN-CUR
+               WHEN    "CLICKED"       ALSO    "SRY1"
+                   EVALUATE    SPA-GMN-SRY(1)
+                       WHEN    "T"
+                           MOVE    "F"         TO  SPA-GMN-SRYCHK
+                           MOVE    "F"         TO  SPA-GMN-SRY(1)
+                           MOVE    "F"         TO  SPA-GMN-SRY(2)
+                           MOVE    1           TO  SPA-GMN-CUR
+                       WHEN    "F"
+                           MOVE    "T"         TO  SPA-GMN-SRYCHK
+                           MOVE    "T"         TO  SPA-GMN-SRY(1)
+                           MOVE    "F"         TO  SPA-GMN-SRY(2)
+                           MOVE    2           TO  SPA-GMN-CUR
+                   END-EVALUATE
+               WHEN    "CLICKED"       ALSO    "SRY2"
+                   EVALUATE    SPA-GMN-SRY(2)
+                       WHEN    "T"
+                           MOVE    "F"         TO  SPA-GMN-SRYCHK
+                           MOVE    "F"         TO  SPA-GMN-SRY(1)
+                           MOVE    "F"         TO  SPA-GMN-SRY(2)
+                           MOVE    1           TO  SPA-GMN-CUR
+                       WHEN    "F"
+                           MOVE    "T"         TO  SPA-GMN-SRYCHK
+                           MOVE    "F"         TO  SPA-GMN-SRY(1)
+                           MOVE    "T"         TO  SPA-GMN-SRY(2)
+                           MOVE    4           TO  SPA-GMN-CUR
+                   END-EVALUATE
+      *----(02.00.04)--UPD-END-----
       *        ∞ÂÃÙ… •¡•ß•√•Ø
       *----(01.01.01)--ADD-START---
                WHEN    "CLICKED"       ALSO    "IYKCHKALL"
@@ -735,15 +769,6 @@
                    MOVE  20             TO  SPA-GMN-CUR
       *----(02.00.01)--UPD-END-----
       *----(01.01.01)--ADD-END-----
-               WHEN    "CLICKED"       ALSO    "SRY1" 
-                   MOVE  Z91-SRY(1)           TO  SPA-GMN-SRY(1)
-               WHEN    "CLICKED"       ALSO    "SRY2" 
-                   MOVE  Z91-SRY(2)           TO  SPA-GMN-SRY(2) 
-                   IF  Z91-SRY(2)      =  "F"
-                       MOVE  2                TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE  4                TO  SPA-GMN-CUR
-                   END-IF
                WHEN    "CLICKED"       ALSO    "KEI1" 
                    MOVE  Z91-KEI(1)           TO  SPA-GMN-KEI(1) 
                WHEN    "CLICKED"       ALSO    "KEI2" 
