@@ -191,6 +191,9 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *    Æþ±¡Ä´ºÞÎÁ¹¹¿·¥µ¥Ö
+           COPY    "CPORCSCHOZAI.INC".
+      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -199,6 +202,7 @@
       ***
        LINKAGE             SECTION.
            COPY  "MCPAREA". 
+           COPY  "COMMON-SPA".
        01  LNK-ORCS02-REC.
            COPY  "CPORCS02.INC".
        01  LNK-SYUNOU-REC-T.
@@ -207,6 +211,7 @@
       /
        PROCEDURE           DIVISION  USING
                                      MCPAREA
+                                     SPA-AREA
                                      LNK-ORCS02-REC
                                      LNK-SYUNOU-REC-T.
       ******************************************************************
@@ -233,6 +238,9 @@
                          WRK-HANBETU-TABLE
                          WRK-HANBETU2-TABLE
                          FLG-AREA.
+      *
+      *    Ä´ºÞÎÁ°ì³çÊÑ¹¹½èÍý
+           PERFORM       NYUIN-CHOZAI-SEC.
       *
            PERFORM       NYUIN-HANBETU-SEC.
       *
@@ -289,6 +297,24 @@
        MAIN-EXT.
            EXIT PROGRAM
            STOP RUN.
+      *
+      *****************************************************************
+      *    Ä´ºÞÎÁ°ì³çÊÑ¹¹½èÍý
+      *****************************************************************
+       NYUIN-CHOZAI-SEC           SECTION.
+      *
+           INITIALIZE             ORCSCHOZAIAREA
+           MOVE       "1"         TO    ORCSCHO-KBN
+           MOVE       LNK-S02-PTID TO   ORCSCHO-PTID
+           MOVE       LNK-S02-SKYSTYMD(1:6)
+                                  TO    ORCSCHO-SRYYM
+           CALL  "ORCSCHOZAI"     USING   SPA-AREA
+                                          ORCSCHOZAIAREA
+      *
+           .
+      *
+       NYUIN-CHOZAI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ·îÊÌÊÝ¸±ÊÌÈ½ÊÌ½èÍý
