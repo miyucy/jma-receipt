@@ -67,6 +67,8 @@
                05  SPA-SYONIKA             PIC  9(01).
       *長期投薬加算有無
                05  SPA-CHOKITOFLG          PIC  9(01).
+      *外用の入力回数（剤判定の場合に使用）
+               05  SPA-CHOKIKAISU          PIC  9(05).
       *
       *    Ｋ９８画面用
            03  SPA-J98-MOTOPG              PIC X(08).
