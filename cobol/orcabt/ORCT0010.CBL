@@ -34,10 +34,18 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
+      *    定期請求収納ファイル(初期化用)
+           SELECT  TEIKI01CL-FILE
+                                  ASSIGN   TEIKI01PARA
+                                  ORGANIZATION    IS  INDEXED
+                                  ACCESS  MODE    IS  SEQUENTIAL
+                                  RECORD  KEY     IS  TEIKI01CL-KEY
+                                  FILE    STATUS  IS  STS-TEIKI01CL.
+      *
       *    定期請求収納ファイル(OT)
            SELECT  TEIKI01-FILE   ASSIGN   TEIKI01PARA
                                   ORGANIZATION    IS  INDEXED
-                                  ACCESS  MODE    IS  SEQUENTIAL
+                                  ACCESS  MODE    IS  DYNAMIC
                                   RECORD  KEY     IS  TEIKI01-KEY
                                   FILE    STATUS  IS  STS-TEIKI01.
       *
@@ -57,6 +65,12 @@
       *
        DATA                    DIVISION.
        FILE                    SECTION.
+      *
+      *    定期請求収納ファイル（初期化用）
+       FD  TEIKI01CL-FILE.
+       01  TEIKI01CL-REC.
+           COPY "CPTEIKI01.INC"        REPLACING   //TEIKI01-//
+                                       BY          //TEIKI01CL-//.
       *
       *    定期請求収納ファイル
        FD  TEIKI01-FILE.
@@ -105,6 +119,7 @@
        01  STS-AREA.
            03  STS-TEIKIERR                            PIC X(02).
            03  STS-TEIKI01                             PIC X(02).
+           03  STS-TEIKI01CL                           PIC X(02).
            03  STS-TEIKI02                             PIC X(02).
            03  STS-TEIKI03                             PIC X(02).
       *
@@ -360,6 +375,10 @@
            DISPLAY "1:TEIKI01PARA = " TEIKI01PARA
            DISPLAY "1:TEIKI02PARA = " TEIKI02PARA
            DISPLAY "1:TEIKI03PARA = " TEIKI03PARA
+      *
+      *    定期請求収納ファイル初期化
+           OPEN    OUTPUT              TEIKI01CL-FILE
+           CLOSE   TEIKI01CL-FILE
       *
            OPEN    OUTPUT              TEIKI01-FILE
            OPEN    OUTPUT              TEIKI02-FILE

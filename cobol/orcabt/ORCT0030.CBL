@@ -39,12 +39,21 @@
                    ORGANIZATION   LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-TEIKI03.
       *
+      *    請求取消対象収納ファイル(初期化用)
+           SELECT  TEIKI04CL-FILE
+                                  ASSIGN   TEIKI04PARA
+                                  ORGANIZATION    IS  INDEXED
+                                  ACCESS  MODE    IS  SEQUENTIAL
+                                  RECORD  KEY     IS  TEIKI04CL-KEY
+                                  FILE    STATUS  IS  STS-TEIKI04CL.
+      *
+      *
       *    請求取消対象収納ファイル(OT)
            SELECT  TEIKI04-FILE   ASSIGN   TEIKI04PARA
                                   ORGANIZATION    IS  INDEXED
-                                  ACCESS  MODE    IS  SEQUENTIAL
+                                  ACCESS  MODE    IS  DYNAMIC
                                   RECORD  KEY     IS  TEIKI04-KEY
-                                   FILE    STATUS  IS  STS-TEIKI04.
+                                  FILE    STATUS  IS  STS-TEIKI04.
       *
       *    削除対象患者請求履歴ファイル(OT)
            SELECT  TEIKI05-FILE    ASSIGN  TEIKI05PARA
@@ -61,6 +70,12 @@
       *    定期請求期間情報
        FD  TEIKI03-FILE.
            COPY "CPTEIKI03.INC".
+      *
+      *    請求取消対象収納ファイル（初期化用）
+       FD  TEIKI04CL-FILE.
+       01  TEIKI04CL-REC.
+           COPY "CPTEIKI01.INC"        REPLACING   //TEIKI01-//
+                                       BY          //TEIKI04CL-//.
       *
       *    請求取消対象収納ファイル
        FD  TEIKI04-FILE.
@@ -108,6 +123,7 @@
            03  STS-TEIKIERR                            PIC X(02).
            03  STS-TEIKI03                             PIC X(02).
            03  STS-TEIKI04                             PIC X(02).
+           03  STS-TEIKI04CL                           PIC X(02).
            03  STS-TEIKI05                             PIC X(02).
       *
        01  FLG-AREA.
@@ -278,6 +294,10 @@
       *
            MOVE    "TEIKIERR"          TO  TEIKIERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  TEIKIERR-TERMID
+      *
+      *    請求取消対象収納ファイル初期化
+           OPEN    OUTPUT              TEIKI04CL-FILE
+           CLOSE   TEIKI04CL-FILE
       *
            OPEN    INPUT               TEIKI03-FILE
            OPEN    OUTPUT              TEIKI04-FILE

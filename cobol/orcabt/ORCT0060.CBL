@@ -320,6 +320,7 @@
            PERFORM 910-TEIKI01-READ-SEC
            PERFORM 910-TEIKI04-READ-SEC
       *
+      *
            PERFORM UNTIL ( KEY-ZOU     =   HIGH-VALUE )
                    AND   ( KEY-GEN     =   HIGH-VALUE )
       *
@@ -477,6 +478,7 @@
                MOVE    TEIKI01-KEY     TO  KEY-ZOU
            END-READ
       *
+           DISPLAY "KEY-ZOU = " KEY-ZOU
            .
        910-TEIKI01-READ-EXT.
            EXIT.
@@ -492,6 +494,7 @@
            NOT AT END
                MOVE    TEIKI04-KEY     TO  KEY-GEN
            END-READ
+           DISPLAY "KEY-GEN = " KEY-GEN
       *
            .
        910-TEIKI04-READ-EXT.
