@@ -38,8 +38,6 @@
                05  ORCHCN03-PTID           PIC  9(10).
       *        ¥µº‘»÷πÊ
                05  ORCHCN03-PTNUM          PIC  X(20).
-      *        ¥µº‘ª·Ãæ
-               05  ORCHCN03-NAME           PIC  X(100).
       *        ∆˛≥∞∂Ë ¨
                05  ORCHCN03-NYUGAIKBN      PIC X(01).
       *        ≈¡…º»÷πÊ

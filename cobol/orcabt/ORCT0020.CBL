@@ -337,7 +337,6 @@
            MOVE    TEIKIPRT-HOSPID     TO  ORCHCN03-HOSPID    (CNT-OUT1)
            MOVE    TEIKIPRT-PTID       TO  ORCHCN03-PTID      (CNT-OUT1)
            MOVE    TEIKIPRT-PTNUM      TO  ORCHCN03-PTNUM     (CNT-OUT1)
-           MOVE    TEIKIPRT-NAME       TO  ORCHCN03-NAME      (CNT-OUT1)
            MOVE    "1"                 TO  ORCHCN03-NYUGAIKBN (CNT-OUT1)
       *
            MOVE    SYU-DENPNUM         TO  ORCHCN03-DENPNUM   (CNT-OUT1)

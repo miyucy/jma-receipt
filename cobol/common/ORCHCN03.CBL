@@ -375,6 +375,19 @@
       *****************************************************************
        200-MAIN-SEC                      SECTION.
       *
+      *
+      *    患者マスター検索
+           INITIALIZE                      PTINF-REC
+           MOVE    ORCHCN03-HOSPID (IDX-M)
+                                       TO  PTINF-HOSPID
+           MOVE    ORCHCN03-PTID   (IDX-M)
+                                       TO  PTINF-PTID
+           PERFORM 900-PTINF-READ-SEC
+           IF    ( FLG-PTINF           =   1 )
+               DISPLAY "*** PTINF  INV :"   PTINF-KEY
+               GO      TO      200-MAIN-EXT
+           END-IF
+
       *    収納マスタ検索処理
            PERFORM 2001-SYUNOU-SEL-SEC
       *
@@ -446,7 +459,7 @@
            MOVE    ORCHCN03-PTNUM (IDX-M)
                                        TO  HCN03-KNJNO
       *    患者名称
-           MOVE    ORCHCN03-NAME  (IDX-M)
+           MOVE    PTINF-NAME
                                        TO  HCN03-KNJNAMW
       *
       *    保険組合せ名称編集処理

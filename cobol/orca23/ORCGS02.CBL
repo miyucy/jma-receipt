@@ -1893,7 +1893,6 @@
                        MOVE    WRK-SPA-HOSPID  TO  ORCHCN03-HOSPID (1)
                        MOVE    WRK-SPA-PTID    TO  ORCHCN03-PTID   (1)
                        MOVE    WRK-SPA-PTNUM   TO  ORCHCN03-PTNUM  (1)
-                       MOVE    WRK-SPA-NAME    TO  ORCHCN03-NAME   (1)
                        MOVE    "1"         TO  ORCHCN03-NYUGAIKBN (1)
       *
                        MOVE    SYU-SKYSTYMD

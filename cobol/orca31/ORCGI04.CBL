@@ -3097,7 +3097,6 @@
                    MOVE    SPA-HOSPID TO ORCHCN03-HOSPID (IDX2)
                    MOVE    SPA-PTID   TO ORCHCN03-PTID   (IDX2)
                    MOVE    SPA-PTNUM  TO ORCHCN03-PTNUM  (IDX2)
-                   MOVE    SPA-NAME   TO ORCHCN03-NAME   (IDX2)
                    MOVE    "1"        TO ORCHCN03-NYUGAIKBN (IDX2)
       *
                    MOVE    SPA-I0-SYUNOU-DAT (IDX1)
