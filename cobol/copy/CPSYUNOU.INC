@@ -60,7 +60,7 @@
       *肩瘦副≥纷换砷么垛
            03  SYU-SYUCOMPFTN          PIC  9(07).
       *肩瘦副≥纷换砷么垛∈边帽疤淡峡脱∷
-           03  SYU-SYUCOMPFTN-ENTANI   PIC  9(07).
+           03  SYU-SYUCOMPFTN-ENTANI   PIC  9(07)V9(01).
       *肩瘦副≥纷换挑恨办婶砷么垛
            03  SYU-SYUCOMPYKZFTN       PIC  9(07).
       *肩瘦副≥纷换砷么垛纷
@@ -76,7 +76,7 @@
       *给锐１≥纷换砷么垛
                05  SYU-KOH1COMPFTN         PIC  9(07).
       *给锐１≥纷换砷么垛∈边帽疤淡峡脱∷
-               05  SYU-KOH1COMPFTN-ENTANI  PIC  9(07).
+               05  SYU-KOH1COMPFTN-ENTANI  PIC  9(07)V9(01).
       *给锐１≥纷换挑恨办婶砷么垛
                05  SYU-KOH1COMPYKZFTN      PIC  9(07).
       *给锐１≥纷换砷么垛纷
@@ -90,7 +90,7 @@
       *给锐２≥纷换砷么垛
                05  SYU-KOH2COMPFTN         PIC  9(07).
       *给锐２≥纷换砷么垛∈边帽疤淡峡脱∷
-               05  SYU-KOH2COMPFTN-ENTANI  PIC  9(07).
+               05  SYU-KOH2COMPFTN-ENTANI  PIC  9(07)V9(01).
       *给锐２≥纷换挑恨办婶砷么垛
                05  SYU-KOH2COMPYKZFTN      PIC  9(07).
       *给锐２≥纷换砷么垛纷
@@ -104,7 +104,7 @@
       *给锐３≥纷换砷么垛
                05  SYU-KOH3COMPFTN         PIC  9(07).
       *给锐３≥纷换砷么垛∈边帽疤淡峡脱∷
-               05  SYU-KOH3COMPFTN-ENTANI  PIC  9(07).
+               05  SYU-KOH3COMPFTN-ENTANI  PIC  9(07)V9(01).
       *给锐３≥纷换挑恨办婶砷么垛
                05  SYU-KOH3COMPYKZFTN      PIC  9(07).
       *给锐３≥纷换砷么垛纷
@@ -118,7 +118,7 @@
       *给锐４≥纷换砷么垛
                05  SYU-KOH4COMPFTN         PIC  9(07).
       *给锐４≥纷换砷么垛∈边帽疤淡峡脱∷
-               05  SYU-KOH4COMPFTN-ENTANI  PIC  9(07).
+               05  SYU-KOH4COMPFTN-ENTANI  PIC  9(07)V9(01).
       *给锐４≥纷换挑恨办婶砷么垛
                05  SYU-KOH4COMPYKZFTN      PIC  9(07).
       *给锐４≥纷换砷么垛纷
@@ -135,7 +135,7 @@
       *给锐≥纷换砷么垛
                  07  SYU-KOH-COMPFTN         PIC  9(07).
       *给锐≥纷换砷么垛∈边帽疤淡峡脱∷
-                 07  SYU-KOH-COMPFTN-ENTANI  PIC  9(07).
+                 07  SYU-KOH-COMPFTN-ENTANI  PIC  9(07)V9(01).
       *给锐≥纷换挑恨办婶砷么垛
                  07  SYU-KOH-COMPYKZFTN      PIC  9(07).
       *给锐≥纷换砷么垛纷
@@ -269,6 +269,8 @@
            03  SYU-RJN-FTN             PIC  9(07).
       *给锐办婶砷么垛
            03  SYU-KOH-FTN             PIC  9(07).
+      *给锐办婶砷么垛∈边帽疤∷
+           03  SYU-KOH-FTN-ENTANI      PIC  9(07)V9(01).
       *挑恨办婶砷么垛
            03  SYU-YKZ-FTN             PIC  9(07).
       *レセプト叫蜗脱挑恨办婶砷么垛
@@ -478,6 +480,10 @@
               05  SYU-KYUFUGAI-GOKEI-TEN      PIC  9(07).
       *泣侍箭羌フラグ
            03  SYU-DAYINFFLG           PIC  X(01).
+      *掐薄旺悟戎规
+           03  SYU-NYUIN-RRKNUM        PIC  9(03).
+      *柴纷恃构惰尸
+           03  SYU-ACCT-UPDKBN         PIC  X(01).
       *眉琐ＩＤ
            03  SYU-TERMID              PIC  X(16).
       *オペ〖レ〖タＩＤ
