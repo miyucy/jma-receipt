@@ -1111,6 +1111,8 @@
                        PERFORM 3011-K98-SET-SEC
                        MOVE    1                   TO  FLG-GMN
                    ELSE
+                       MOVE    "1"                 TO  SPA-COM-CUR
+                                                         (SPA-GMN-IDX)
                        MOVE    2                   TO  FLG-GMN
                    END-IF
                WHEN    "K04"
