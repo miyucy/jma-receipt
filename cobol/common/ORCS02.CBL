@@ -2849,7 +2849,7 @@
       *      COMPUTE  WK-SEIKYUKIKAN-NISSU  =  WK-SEIKYUKIKAN-NISSU 
       *                                     +  1
       *
-      **>    MOVE     ZERO     TO      WK-SHOKUJI-JIHI
+             MOVE     ZERO     TO      WK-SHOKUJI-JIHI
       *
              IF       ( NACCT-DAY(IDY)   NOT =  ZERO )
              AND      ( LNK-SYU-DAY(IDY)     =  "1"  )
@@ -3266,7 +3266,7 @@
       *
              END-IF
       *
-      **>    MOVE     ZERO     TO      WK-SHOKUJI-JIHI
+             MOVE     ZERO     TO      WK-SHOKUJI-JIHI
       *
              IF       ( WK-ROSAITOKU97(IDY)  NOT =  ZERO       )
       **>    AND      ( LNK-SYU-DAY(IDY)         =  "1" OR "2" )
