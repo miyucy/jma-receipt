@@ -19,9 +19,23 @@ Y03	{
 					value7	varchar(20);
 					value8	varchar(16);
 					value9	varchar(4);
-				}	[90];
-				select	bool[90];
+				}	[100];
+				select	bool[100];
 			};
+		};
+		SRYNAIYO_COB	{
+			SRYNAIYO	{
+				value	varchar(21);
+			};
+			count	int;
+			item	varchar(21)[20];
+		};
+		DRNAME_COB	{
+			DRNAME	{
+				value	varchar(29);
+			};
+			count	int;
+			item	varchar(29)[50];
 		};
 	};
 };

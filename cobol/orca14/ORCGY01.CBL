@@ -3182,6 +3182,10 @@
        440-YYKICHI-SEC            SECTION.
       *
            INITIALIZE                      SPA-Y01KYOUTU
+      *
+           MOVE    SPA-GMN-SRYNAIYO    TO  SPA-Y01-SRYNAIYOG
+           MOVE    SPA-GMN-DRNAME      TO  SPA-Y01-DRNAME
+           MOVE    SPA-NAI-DRCD        TO  SPA-Y01-DRCD
       *    予約日が選択時、予約時、以外の時、システム日付とする
            IF      SPA-SEL-YOUBI       =   ZERO
                MOVE    WRK-SYSYMD          TO  SPA-Y01-YYKYMDS
@@ -3218,6 +3222,10 @@
        460-MINICHI-SEC            SECTION.
       *
            INITIALIZE                      SPA-Y01KYOUTU
+      *
+           MOVE    SPA-GMN-SRYNAIYO    TO  SPA-Y01-SRYNAIYOG
+           MOVE    SPA-GMN-DRNAME      TO  SPA-Y01-DRNAME
+           MOVE    SPA-NAI-DRCD        TO  SPA-Y01-DRCD
       *    予約日が選択時、予約時、以外の時、システム日付とする
            IF      SPA-SEL-YOUBI       =   ZERO
                MOVE    WRK-SYSYMD          TO  SPA-Y01-YYKYMDS

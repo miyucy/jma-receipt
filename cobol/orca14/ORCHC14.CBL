@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     02.03.18  帳票ファイル名の変更
+      *  01.00.02    NACL-多々納  03/05/19  診療内容・ドクター選択追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -71,6 +72,7 @@
       *
            03  FLG-SP              PIC 9(01).
            03  FLG-OK              PIC 9(01).
+           03  FLG-SYORI           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -106,6 +108,8 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
            03  WRK-HENYMDG         PIC X(22).
+      *
+           03  WRK-PATH                PIC X(64).
       *
            03  WRK-HKNCOMBI        PIC X(40).
       *
@@ -219,16 +223,24 @@
            INITIALIZE                  YYK-REC
            MOVE    SPA-HOSPID          TO  YYK-HOSPID
            MOVE    SPA-Y01-YYKYMDS     TO  YYK-YYKYMD
+           MOVE    SPA-Y03-SRYNAIYO    TO  YYK-SRYNAIYO
+           MOVE    SPA-Y03-DRCD        TO  YYK-DRCD
+           IF     (SPA-Y03-SRYNAIYO    =   "00"  )  OR
+                  (SPA-Y03-DRCD(2:4)   =   "9999")
+               MOVE    "YYK-KEY5"          TO  WRK-PATH
+           ELSE
+               MOVE    "YYK-KEY3"          TO  WRK-PATH
+           END-IF
       *
            MOVE    YYK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "YYK-KEY5"          TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "YYK-KEY5"          TO  ORC-DBPATH
+               MOVE    WRK-PATH            TO  ORC-DBPATH
                PERFORM 900-YOYAKU-READ-SEC
            ELSE
                MOVE    1               TO  FLG-YYK
@@ -237,27 +249,49 @@
            INITIALIZE                  HC14
            PERFORM
                    UNTIL       FLG-YYK     =   1
-               IF     (YYK-YYKID           >   ZERO          )  AND
-                      (YYK-YYKYMD          =   SPA-Y01-YYKYMDS )  AND
-                      ((SPA-Y01-YYKID       =   ZERO )  OR
-                      ((SPA-Y01-YYKID  NOT =   ZERO ) AND
-                       (YYK-RAIINZUMI      =   SPACE) ))
-                   ADD     1               TO  IDX
-                   IF      IDX             >   34
-      *                帳票印刷開始処理
-                       PERFORM 200-HC14-PRINT-SEC
-                       ADD     1           TO  IDX
+               MOVE    ZERO                TO  FLG-SYORI
+               IF     (SPA-Y03-SRYNAIYO    =   "00"  )  OR
+                      (SPA-Y03-DRCD(2:4)   =   "9999")
+                   IF      SPA-Y03-SRYNAIYO    NOT =   "00"
+                       IF      SPA-Y03-SRYNAIYO    =  YYK-SRYNAIYO
+                           MOVE    1           TO  FLG-SYORI
+                       END-IF
                    END-IF
-      *            明細編集処理
-                   PERFORM 300-HC14-HEN-SEC
+                   IF      SPA-Y03-DRCD(2:4)   NOT =   "9999"
+                       IF      SPA-Y03-DRCD         =  YYK-DRCD
+                           MOVE    1           TO  FLG-SYORI
+                       END-IF
+                   END-IF
+                   IF     (SPA-Y03-SRYNAIYO    =   "00"  )  AND
+                          (SPA-Y03-DRCD(2:4)   =   "9999")
+                       MOVE    1           TO  FLG-SYORI
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-SYORI
+               END-IF
+               IF      FLG-SYORI           =   1
+      *
+                   IF     (YYK-YYKID       >   ZERO           )  AND
+                          ((SPA-Y01-YYKID      =   ZERO  )  OR
+                          ((SPA-Y01-YYKID  NOT =   ZERO  ) AND
+                           (YYK-RAIINZUMI      =   SPACE )) )
+                       ADD     1               TO  IDX
+                       IF      IDX             >   34
+      *                    帳票印刷開始処理
+                           PERFORM 200-HC14-PRINT-SEC
+                           ADD     1           TO  IDX
+                       END-IF
+      *                明細編集処理
+                       PERFORM 300-HC14-HEN-SEC
+                   END-IF
                END-IF
       *
-               MOVE    "YYK-KEY5"          TO  ORC-DBPATH
+               MOVE    WRK-PATH            TO  ORC-DBPATH
                PERFORM 900-YOYAKU-READ-SEC
            END-PERFORM
       *    カーソルクロース
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "YYK-KEY5"          TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA

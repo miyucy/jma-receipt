@@ -28,10 +28,10 @@
                05  SPA-Y01-SRYNAIYO          PIC X(02).
                05  SPA-Y01-SK1               PIC X(01).
                05  SPA-Y01-SRYNAIYOMEI       PIC X(10).
-           03  SPA-Y01-DRNAME.      
+           03  SPA-Y01-DRNAME.
                05  SPA-Y01-DRCDH             PIC X(04).
                05  SPA-Y01-D1                PIC X(01).
-               05  SPA-Y01-DRCDMAI           PIC X(20).
+               05  SPA-Y01-DRCDMAI           PIC X(24).
            03  SPA-Y01-DRCD                  PIC X(05).
            03  SPA-Y01-YYKYMD                PIC X(07).
            03  SPA-Y01-YYKYMDS               PIC X(08).
@@ -43,4 +43,8 @@
            03  SPA-Y01-BIRTHDAY              PIC X(08).
       *
            03  SPA-Y01-KEIKOKU               PIC 9(01).
+      *    Í½Ìó°õºþÍÑ
+           03  SPA-Y03-SET.
+               05  SPA-Y03-SRYNAIYO          PIC X(02).
+               05  SPA-Y03-DRCD              PIC X(05).
       *
