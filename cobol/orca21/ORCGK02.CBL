@@ -1219,6 +1219,9 @@
                        MOVE    ZERO               TO  SPA-SAISIN-CHK
                        MOVE    2                  TO  FLG-PARASET
                        PERFORM 3002-PARA-SET-SEC
+      *TEST
+           DISPLAY "K02 A SPA-HKNCOMINUM:" SPA-HKNCOMBINUM
+      *TEST
                        IF     (SPA-SYORIFLG        =   ZERO )
                           AND (SPA-WKSRY-HKNCOMBI  =   ZERO )
                           PERFORM 3009-SAIHEN-SEC

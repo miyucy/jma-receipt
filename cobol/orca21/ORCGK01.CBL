@@ -188,7 +188,7 @@
                    07  SPA-NAI-SYOYMD          PIC X(08).
                    07  SPA-NAI-LSTYMD          PIC X(08).
                    07  SPA-NAI-HKNIDX          PIC 9(04).
-                   07  SPA-NAI-HKNCOMBIOK      PIC 9(04).
+                   07  SPA-NAI-HKNCOMBIOK      PIC X(04).
       *
                    07  SPA-NAI-DOUJI.
                        09  SPA-NAI-DOUJI-RENNUM    PIC 9(01).
@@ -425,6 +425,9 @@
       *    ドクター編集処理パラメタ
            COPY    "CPORCSDRSET.INC".
       *
+      *    保険組合せセット領域
+           COPY    "CPORCSHKNSET.INC".
+      *
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
@@ -619,7 +622,6 @@
            ELSE
                MOVE    09              TO  SPA-GMN-CUR
            END-IF
-           MOVE    1               TO  SPA-GMN-PAGE
       *
            .
        300-SCREEN-EXT.
@@ -1305,100 +1307,152 @@
            INITIALIZE                  SPA-GMN-HKN-TBL
            MOVE    ZERO                TO  SPA-HKN-MAX
            MOVE    ZERO                TO  IDX
+           MOVE    SPA-GMN-PTID        TO  SPA-PTID
+           MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
       *
-           MOVE    SPACE               TO  HKNCOMBI-REC
-           INITIALIZE                  HKNCOMBI-REC
-           MOVE    SPA-HOSPID          TO  COMB-HOSPID
-           MOVE    SPA-GMN-PTID        TO  COMB-PTID
+           INITIALIZE                  ORCSHKNSETAREA
+           MOVE    "2"                 TO  ORCSHKN-KBN
+           CALL    "ORCSHKNSET"        USING
+                                       SPA-AREA
+                                       ORCSHKNSETAREA
       *
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-               PERFORM 910-HKNCOMBI-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-HKNCOMBI
-           END-IF
-           PERFORM
-                   UNTIL      (IDX             >=  100       )  OR
-                              (FLG-HKNCOMBI    =   1         )
-               IF      COMB-DELKBN         =   "1"
-                   CONTINUE
-               ELSE
-                   ADD     1                   TO  SPA-HKN-MAX
-                   ADD     1                   TO  IDX
-                   MOVE    COMB-HKNCOMBINUM    TO  SPA-GMN-THKNCOMBINUM
-                                                               (IDX)
-                   MOVE    COMB-TEKSTYMD       TO  SPA-NAI-TEKSTYMD
-                                                               (IDX)
-                   MOVE    COMB-TEKEDYMD       TO  SPA-NAI-TEKEDYMD
-                                                               (IDX)
-                   MOVE    COMB-HKNNUM         TO  SPA-NAI-HKNNUM(IDX)
-                   MOVE    COMB-KOH1HKNNUM     TO  SPA-NAI-KOH1HKNNUM
-                                                                (IDX)
-                   MOVE    COMB-KOH2HKNNUM     TO  SPA-NAI-KOH2HKNNUM 
-                                                                (IDX)
-                   MOVE    COMB-KOH3HKNNUM     TO  SPA-NAI-KOH3HKNNUM
-                                                                (IDX)
-                   MOVE    COMB-KOH4HKNNUM     TO  SPA-NAI-KOH4HKNNUM 
-                                                                 (IDX)
-                   MOVE    COMB-GAI-KFTNRATE   TO  SPA-NAI-TFTNRATE
-                                                                (IDX)
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   ORCSHKN-HKN-MAX
+               MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
+                                       TO  SPA-GMN-THKNCOMBINUM (IDX)
+               MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
+                                       TO  SPA-GMN-THKNCOMBIMEI (IDX)
       *
-                   IF      COMB-GAI-KFTNRATE   =   ZERO
-                       MOVE    SPACE           TO  SPA-GMN-TFTNRATE
-                                                                (IDX)
-                   ELSE
-                       MOVE    COMB-GAI-KFTNRATE   TO  WRK-ZZ9
-                       MOVE    WRK-ZZ9         TO  SPA-GMN-TFTNRATE
-                                                             (IDX)(1:3)
-                       MOVE    "%"             TO  SPA-GMN-TFTNRATE
-                                                             (IDX)(4:)
-                   END-IF
+               MOVE    ORCSHKN-NAI-HKNNUM (IDX)
+                                       TO  SPA-NAI-HKNNUM  (IDX)
+               MOVE    ORCSHKN-NAI-KOH1HKNNUM (IDX)
+                                       TO  SPA-NAI-KOH1HKNNUM (IDX)
+               MOVE    ORCSHKN-NAI-KOH2HKNNUM (IDX)
+                                       TO  SPA-NAI-KOH2HKNNUM (IDX)
+               MOVE    ORCSHKN-NAI-KOH3HKNNUM (IDX)
+                                       TO  SPA-NAI-KOH3HKNNUM (IDX)
+               MOVE    ORCSHKN-NAI-KOH4HKNNUM (IDX)
+                                       TO  SPA-NAI-KOH4HKNNUM (IDX)
       *
-                   MOVE    COMB-TEKSTYMD       TO  WRK-SYMD
-                   PERFORM 41012-SEIWA-HEN-SEC
-                   MOVE    WRK-HENYMDG         TO  SPA-GMN-TTEKSTYMD
-                                                               (IDX)
+               MOVE    ORCSHKN-NAI-FTNRATE (IDX)
+                                       TO  SPA-NAI-TFTNRATE (IDX)
+               MOVE    ORCSHKN-GMN-FTNRATEMEI (IDX)
+                                       TO  SPA-GMN-TFTNRATE (IDX)
       *
-                   MOVE    COMB-TEKEDYMD       TO  WRK-SYMD
-                   PERFORM 41012-SEIWA-HEN-SEC
-                   MOVE    WRK-HENYMDG         TO  SPA-GMN-TTEKEDYMD
-                                                                (IDX)
+               MOVE    ORCSHKN-NAI-TEKSTYMD (IDX)
+                                       TO  SPA-NAI-TEKSTYMD (IDX)
+               MOVE    ORCSHKN-NAI-TEKEDYMD (IDX)
+                                       TO  SPA-NAI-TEKEDYMD (IDX)
+               MOVE    ORCSHKN-GMN-TEKSTYMD (IDX)
+                                       TO  SPA-GMN-TTEKSTYMD (IDX)
+               MOVE    ORCSHKN-GMN-TEKEDYMD (IDX)
+                                       TO  SPA-GMN-TTEKEDYMD (IDX)
       *
-                   PERFORM 41011-HKNCOMBI-HEN-SEC
-                   MOVE    WRK-HKNCOMBI      TO SPA-GMN-THKNCOMBIMEI
-                                                                  (IDX)
-               END-IF
-      *
-               MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-               PERFORM 910-HKNCOMBI-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    ORCSHKN-HKN-MAX     TO  SPA-HKN-MAX
+           IF      SPA-HKN-MAX         =   ZERO
+               GO      TO      4101-PTNUM-CHK-EXT
+           END-IF
+      *
+           IF      ORCSHKN-IDX         =   ZERO
+               MOVE    1               TO  ORCSHKN-IDX
+           END-IF
+           MOVE    SPA-GMN-THKNCOMBINUM (ORCSHKN-IDX)
+                                       TO  SPA-HKNCOMBINUM
+           MOVE    SPA-HKNCOMBINUM     TO  SPA-NAI-HKNCOMBIOK
+      *
+           MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
+           PERFORM 41041-HKNCOMBI-TBLCHK-SEC
+      *
+      *
+      **** MOVE    SPACE               TO  HKNCOMBI-REC
+      *    INITIALIZE                  HKNCOMBI-REC
+      *    MOVE    SPA-HOSPID          TO  COMB-HOSPID
+      *    MOVE    SPA-GMN-PTID        TO  COMB-PTID
+      *
+      *    MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+      *    MOVE    "DBSELECT"          TO  MCP-FUNC
+      *    MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+      *        PERFORM 910-HKNCOMBI-READ-SEC
+      *    ELSE
+      *        MOVE    1               TO  FLG-HKNCOMBI
+      *    END-IF
+      *    PERFORM
+      *            UNTIL      (IDX             >=  100       )  OR
+      *                       (FLG-HKNCOMBI    =   1         )
+      *        IF      COMB-DELKBN         =   "1"
+      *            CONTINUE
+      *        ELSE
+      *            ADD     1                   TO  SPA-HKN-MAX
+      *            ADD     1                   TO  IDX
+      *            MOVE    COMB-HKNCOMBINUM    TO  SPA-GMN-THKNCOMBINUM
+      *                                                        (IDX)
+      *            MOVE    COMB-TEKSTYMD       TO  SPA-NAI-TEKSTYMD
+      *                                                        (IDX)
+      *            MOVE    COMB-TEKEDYMD       TO  SPA-NAI-TEKEDYMD
+      *                                                        (IDX)
+      *            MOVE    COMB-HKNNUM         TO  SPA-NAI-HKNNUM(IDX)
+      *            MOVE    COMB-KOH1HKNNUM     TO  SPA-NAI-KOH1HKNNUM
+      *                                                         (IDX)
+      *            MOVE    COMB-KOH2HKNNUM     TO  SPA-NAI-KOH2HKNNUM 
+      *                                                         (IDX)
+      *            MOVE    COMB-KOH3HKNNUM     TO  SPA-NAI-KOH3HKNNUM
+      *                                                         (IDX)
+      *            MOVE    COMB-KOH4HKNNUM     TO  SPA-NAI-KOH4HKNNUM 
+      *                                                          (IDX)
+      *            MOVE    COMB-GAI-KFTNRATE   TO  SPA-NAI-TFTNRATE
+      *                                                         (IDX)
+      *
+      *            IF      COMB-GAI-KFTNRATE   =   ZERO
+      *                MOVE    SPACE           TO  SPA-GMN-TFTNRATE
+      *                                                         (IDX)
+      *            ELSE
+      *                MOVE    COMB-GAI-KFTNRATE   TO  WRK-ZZ9
+      *                MOVE    WRK-ZZ9         TO  SPA-GMN-TFTNRATE
+      *                                                      (IDX)(1:3)
+      *                MOVE    "%"             TO  SPA-GMN-TFTNRATE
+      *                                                      (IDX)(4:)
+      *            END-IF
+      *
+      *            MOVE    COMB-TEKSTYMD       TO  WRK-SYMD
+      *            PERFORM 41012-SEIWA-HEN-SEC
+      *            MOVE    WRK-HENYMDG         TO  SPA-GMN-TTEKSTYMD
+      *                                                        (IDX)
+      *
+      *            MOVE    COMB-TEKEDYMD       TO  WRK-SYMD
+      *            PERFORM 41012-SEIWA-HEN-SEC
+      *            MOVE    WRK-HENYMDG         TO  SPA-GMN-TTEKEDYMD
+      *                                                         (IDX)
+      *
+      *            PERFORM 41011-HKNCOMBI-HEN-SEC
+      *            MOVE    WRK-HKNCOMBI      TO SPA-GMN-THKNCOMBIMEI
+      *                                                           (IDX)
+      *        END-IF
+      *
+      *        MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+      *        PERFORM 910-HKNCOMBI-READ-SEC
+      *    END-PERFORM
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *                                 MCPDATA-REC
       *
       *    対象の保険組合せ決定
-           PERFORM 41015-HKNCOMBI-SEL-SEC
+      **** PERFORM 41015-HKNCOMBI-SEL-SEC
       *
       *    受診履歴より、保険組合せを確定する
            PERFORM 41014-JYURRK-HKNCOMBI-SEC
       *
-           IF      SPA-HKN-MAX         >   ZERO
-               COMPUTE SPA-GMN-PAGE        =  (SPA-HKN-MAX    -   1 ) 
-                                           /  20    +   1
-           ELSE
-               MOVE    1                   TO  SPA-GMN-PAGE
-           END-IF
       *
            MOVE    2                   TO  SPA-GMN-CUR
            .
@@ -1476,7 +1530,7 @@
       *****************************************************************
        41015-HKNCOMBI-SEL-SEC             SECTION.
       *
-           MOVE    ZERO                TO  SPA-NAI-HKNCOMBIOK
+           MOVE    SPACE               TO  SPA-NAI-HKNCOMBIOK
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX             >   SPA-HKN-MAX
                IF      (SPA-NAI-SRYYMDS    >=  SPA-NAI-TEKSTYMD(IDX))
@@ -1533,83 +1587,83 @@
       *****************************************************************
       *    保険組合せ名称編集処理
       *****************************************************************
-       41011-HKNCOMBI-HEN-SEC             SECTION.
+      *41011-HKNCOMBI-HEN-SEC             SECTION.
       *
-           MOVE    SPACE               TO  WRK-HKNCOMBI
+      *    MOVE    SPACE               TO  WRK-HKNCOMBI
       *
-           STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
-                   " "                     DELIMITED  BY  SIZE
-                   COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                   " "                     DELIMITED  BY  SIZE
-                   COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
-                   " "                     DELIMITED  BY  SIZE
-                   COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
-                   " "                     DELIMITED  BY  SIZE
-                   COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
-                         INTO              WRK-HKNCOMBI
-           END-STRING
+      *    STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+      *            " "                     DELIMITED  BY  SIZE
+      *            COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+      *            " "                     DELIMITED  BY  SIZE
+      *            COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+      *            " "                     DELIMITED  BY  SIZE
+      *            COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+      *            " "                     DELIMITED  BY  SIZE
+      *            COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+      *                  INTO              WRK-HKNCOMBI
+      *    END-STRING
       *    主保険がない時
-           IF      COMB-SYU-TANSEIDONAME   =   SPACE
-               MOVE    SPACE               TO  WRK-HKNCOMBI
-               STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                       " "                     DELIMITED  BY  SIZE
-                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
-                       " "                     DELIMITED  BY  SIZE
-                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
-                       " "                     DELIMITED  BY  SIZE
-                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
-                         INTO              WRK-HKNCOMBI
-               END-STRING
-           END-IF
+      *    IF      COMB-SYU-TANSEIDONAME   =   SPACE
+      *        MOVE    SPACE               TO  WRK-HKNCOMBI
+      *        STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+      *                " "                     DELIMITED  BY  SIZE
+      *                COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+      *                " "                     DELIMITED  BY  SIZE
+      *                COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+      *                " "                     DELIMITED  BY  SIZE
+      *                COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+      *                  INTO              WRK-HKNCOMBI
+      *        END-STRING
+      *    END-IF
       *
       *    労災の時、コメントの追加
-           IF      COMB-HKNNUM         =   "971"  OR  "973"
+      *    IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        患者保険情報検索
-               INITIALIZE                      PTRSIINF-REC
-               MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
-               MOVE    SPA-GMN-PTID        TO  PTRSI-PTID
-               MOVE    COMB-HKNID          TO  PTRSI-HKNID
-               MOVE    PTRSIINF-REC        TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "PTRSIINF-KEY"     TO  ORC-DBPATH
-                   PERFORM 993-PTRSIINF-NEXT-SEC
-               ELSE
-                   INITIALIZE                      PTRSIINF-REC
-                   MOVE    1                   TO  FLG-PTRSIINF
-               END-IF
-               IF      PTRSI-COMMENT       =   SPACE
-                   CONTINUE
-               ELSE
-                   MOVE    SPACE               TO  WRK-HKNCOMBI
-                   MOVE    SPACE               TO  WRK-HKNKBN-MEI
-                   EVALUATE    PTRSI-HKNKBN
-                       WHEN    "1"
-                           MOVE    "短"        TO  WRK-HKNKBN-MEI
-                       WHEN    "2"
-                           MOVE    "傷"        TO  WRK-HKNKBN-MEI
-                       WHEN    "3"
-                           MOVE    "ア"        TO  WRK-HKNKBN-MEI
-                   END-EVALUATE
-                   STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
-                           " "                     DELIMITED  BY  SIZE
-                           WRK-HKNKBN-MEI          DELIMITED  BY  SPACE
-                           "（"                    DELIMITED  BY  SIZE
-                           PTRSI-COMMENT           DELIMITED  BY  SPACE
-                           "）"                    DELIMITED  BY  SIZE
-                           INTO              WRK-HKNCOMBI
-                   END-STRING
-               END-IF
-           END-IF
+      *        INITIALIZE                      PTRSIINF-REC
+      *        MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+      *        MOVE    SPA-GMN-PTID        TO  PTRSI-PTID
+      *        MOVE    COMB-HKNID          TO  PTRSI-HKNID
+      *        MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+      *        MOVE    "DBSELECT"          TO  MCP-FUNC
+      *        MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+      *        CALL    "ORCMCPSUB"         USING
+      *                                    MCPAREA
+      *                                    ORCMCPAREA
+      *                                    MCPDATA-REC
+      *        IF      MCP-RC              =   ZERO
+      *            MOVE    "PTRSIINF-KEY"     TO  ORC-DBPATH
+      *            PERFORM 993-PTRSIINF-NEXT-SEC
+      *        ELSE
+      *            INITIALIZE                      PTRSIINF-REC
+      *            MOVE    1                   TO  FLG-PTRSIINF
+      *        END-IF
+      *        IF      PTRSI-COMMENT       =   SPACE
+      *            CONTINUE
+      *        ELSE
+      *            MOVE    SPACE               TO  WRK-HKNCOMBI
+      *            MOVE    SPACE               TO  WRK-HKNKBN-MEI
+      *            EVALUATE    PTRSI-HKNKBN
+      *                WHEN    "1"
+      *                    MOVE    "短"        TO  WRK-HKNKBN-MEI
+      *                WHEN    "2"
+      *                    MOVE    "傷"        TO  WRK-HKNKBN-MEI
+      *                WHEN    "3"
+      *                    MOVE    "ア"        TO  WRK-HKNKBN-MEI
+      *            END-EVALUATE
+      *            STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+      *                    " "                     DELIMITED  BY  SIZE
+      *                    WRK-HKNKBN-MEI          DELIMITED  BY  SPACE
+      *                    "（"                    DELIMITED  BY  SIZE
+      *                    PTRSI-COMMENT           DELIMITED  BY  SPACE
+      *                    "）"                    DELIMITED  BY  SIZE
+      *                    INTO              WRK-HKNCOMBI
+      *            END-STRING
+      *        END-IF
+      *    END-IF
       *
-           .
-       41011-HKNCOMBI-HEN-EXT.
-           EXIT.
+      *    .
+      *41011-HKNCOMBI-HEN-EXT.
+      ***  EXIT.
       *
       *****************************************************************
       *    西暦和暦編集処理
