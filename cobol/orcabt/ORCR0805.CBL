@@ -16,23 +16,22 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCR0600.
+       PROGRAM-ID.             ORCR0805.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : レセプト
-      *  コンポーネント名  : 仮収納データ作成
+      *  サブシステム名    : レセプト（労災・自賠責）
+      *  コンポーネント名  : 仮収納データ作成（自賠責）
       *  管理者            :
       *  作成日付    作業者        記述
-      *  02/01/07    NACL−門脇    新規作成
+      *  03/06/16    NACL−門脇    新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    NACL-太田    03.04.02  負担金計算サブ引数修正
-      *  01.00.02    NACL-門脇    03.12.15  日別収納更新・削除
-      *  01.00.03    NACL-門脇    04.01.14  診療行為の包括分は除く
+      *  01.00.01    NACL-門脇    03.12.15  日別収納更新・削除
+      *  01.00.02    NACL-門脇    04.01.14  診療行為の包括分は除く
       *                                     SRYACCT8→29
       *                                     SRYACCT9→30
-      *  01.00.04    NACL-門脇    04.05.21  DBOPEN,DBDISCONNECT削除
+      *  01.00.03    NACL-門脇    04.05.21  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -165,8 +164,6 @@
            COPY    "COMMON-SPA".
       *
        01  WRK-CONS-AREA.
-      *    労災保険番号 
-           03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971". 
       *    自賠責保険番号 
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".       
       *
@@ -291,8 +288,8 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    "ORCR0600"      TO  JOB-PGID
-           MOVE    "仮収納データ作成"
+           MOVE    "ORCR0805"      TO  JOB-PGID
+           MOVE    "仮収納データ作成（自賠責）"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
@@ -596,8 +593,7 @@
       *
                    IF      FLG-HKNCOMBI    =   ZERO
                        IF      COMB-HKNNUM     =
-                                              WRK-CONS-ROUSAI-HKNNUM OR
-                                              WRK-CONS-JIBAI-HKNNUM 
+                                              WRK-CONS-JIBAI-HKNNUM
                            MOVE    "1"             TO  WRK-ROUSAIKBN
                        END-IF
                    END-IF
@@ -606,20 +602,8 @@
                    PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                    OR      FLG-ERR         =   1
                                    OR      KEY-NEW     NOT =   KEY-OLD
-      *                社保・国保の読み飛ばし
-                       EVALUATE    WRK-PARA-RECEKBN
-                           WHEN    "0"
-                               PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
-                           WHEN    "1"
-                               IF      COMB-HKNNUM 
-                                               NOT =   "060" AND "067"
-                                   PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
-                               END-IF
-                           WHEN    "2"
-                               IF      COMB-HKNNUM =   "060" OR  "067"
-                                   PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
-                               END-IF
-                       END-EVALUATE
+      *
+                       PERFORM   20011-SRYACCT-FILE-HENSYU-SEC 
       *
                        IF      FLG-ERR            =   1
                           CONTINUE
@@ -657,8 +641,10 @@
       *
            MOVE    SPACE               TO  WRK-DATAKBN
       *
-      *    労災保険・自賠責のとき処理しない
+      *    自賠責保険以外のとき処理しない
            IF      WRK-ROUSAIKBN       =   "1"
+               CONTINUE
+           ELSE
                GO  TO  20011-SRYACCT-FILE-HENSYU-EXT
            END-IF
       *
@@ -766,30 +752,11 @@
            PERFORM 910-HKNCOMBI-INV-SEC
       *
            IF      FLG-HKNCOMBI    =   ZERO
-      *        医保以外読み飛ばし
-               IF      COMB-HKNNUM     =   WRK-CONS-ROUSAI-HKNNUM OR
-                                           WRK-CONS-JIBAI-HKNNUM 
-                   MOVE    "1"         TO  WRK-SYOKBN
+      *        自賠責保険以外読み飛ばし
+               IF      COMB-HKNNUM     =   WRK-CONS-JIBAI-HKNNUM
+                   CONTINUE
                ELSE    
-      *            社保・国保の読み飛ばし
-                   EVALUATE    WRK-PARA-RECEKBN
-                       WHEN    "0"
-                           CONTINUE 
-                       WHEN    "1"
-                           IF      COMB-HKNNUM 
-                                       NOT =   "060" AND "067"
-                               CONTINUE
-                           ELSE
-                               MOVE    "1"       TO  WRK-SYOKBN
-                           END-IF
-                       WHEN    "2"
-                           IF      COMB-HKNNUM
-                                           =   "060" OR  "067"
-                               CONTINUE
-                           ELSE
-                               MOVE    "1"       TO  WRK-SYOKBN
-                           END-IF
-                   END-EVALUATE
+                   MOVE    "1"         TO  WRK-SYOKBN
                END-IF
            END-IF
            .
@@ -803,7 +770,7 @@
       *
            MOVE    SPACE               TO  WRK-DATAKBN
       *
-      *    労災保険・自賠責のとき処理しない
+      *    自賠責保険以外のとき処理しない
            IF      WRK-SYOKBN       =   "1"
                GO  TO  200122-NYUINACCT-HENSYU-EXT
            END-IF
@@ -907,11 +874,8 @@
                          OR  ( LNK-SYU-SKYSTYMD (IDX1) =   SPACE )
                          OR  ( FLG-ERR                 =      1  )
                  IF  LNK-SYU-SYUHKNNUM(IDX1)  =
-                                              WRK-CONS-ROUSAI-HKNNUM OR
-                                              WRK-CONS-JIBAI-HKNNUM 
-                    CONTINUE
-                 ELSE
-                    PERFORM 20011-KARITEIKI-OUTPUT-SEC
+                                              WRK-CONS-JIBAI-HKNNUM
+                    PERFORM   20011-KARITEIKI-OUTPUT-SEC
                  END-IF
                END-PERFORM
            ELSE
@@ -1198,8 +1162,7 @@
            MOVE    SPACE               TO  WRK-ROUSAIKBN
       *
            IF      FLG-HKNCOMBI        =   ZERO
-               IF      COMB-HKNNUM     =   WRK-CONS-ROUSAI-HKNNUM OR 
-                                           WRK-CONS-JIBAI-HKNNUM 
+               IF      COMB-HKNNUM     =   WRK-CONS-JIBAI-HKNNUM
                    MOVE    "1"             TO  WRK-ROUSAIKBN
                END-IF    
            END-IF    
@@ -1208,19 +1171,8 @@
            PERFORM         UNTIL   FLG-SRYACCT     =   1 
                            OR      FLG-ERR         =   1
                            OR      KEY-NEW     NOT =   KEY-OLD
-      *        社保・国保の読み飛ばし
-               EVALUATE    WRK-PARA-RECEKBN
-                   WHEN    "0"
-                       PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
-                   WHEN    "1"
-                       IF      COMB-HKNNUM NOT =   "060" AND "067"
-                           PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
-                       END-IF
-                   WHEN    "2"
-                       IF      COMB-HKNNUM     =   "060" OR  "067"
-                           PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
-                       END-IF
-               END-EVALUATE
+      *
+               PERFORM   20011-SRYACCT-FILE-HENSYU-SEC 
       *
                IF        FLG-ERR            =    1
                  CONTINUE
@@ -1324,7 +1276,7 @@
       *****************************************************************
       *    エラーメッセージ編集処理
       *****************************************************************
-       600-ERRMSG-EDIT-SEC             SECTION.
+       600-ERRMSG-EDIT-SEC             SECTION.                        
       *
            MOVE    SPACE               TO  ERR-HEN-ERRMSG
 	                                   ERR-PTNUM
@@ -1404,9 +1356,9 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-           DISPLAY "KARITEIKI (ORCR0600) CNT " CNT-OUT1
-           DISPLAY "HIBETU    (ORCR0600) CNT " CNT-OUT2
-           DISPLAY "*** ORCR0600 END ***"
+           DISPLAY "KARITEIKI (ORCR0805) CNT " CNT-OUT1
+           DISPLAY "HIBETU    (ORCR0805) CNT " CNT-OUT2
+           DISPLAY "*** ORCR0805 END ***"
            .
        300-TERM-EXT.
            EXIT.

@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
 000200 IDENTIFICATION          DIVISION.
-000300 PROGRAM-ID.             ORCR0400.
+000300 PROGRAM-ID.             ORCR0405.
 000400*****************************************************************
 000500*  システム名        : ＯＲＣＡ
 000600*  サブシステム名    : レセプト（労災・自賠責）
@@ -168,19 +168,23 @@
                05  WRK-YY              PIC 9(04).
                05  WRK-MM              PIC 9(02).
                05  WRK-DD              PIC 9(02).     
+      *          
+      ***  03  WRK-IN                  PIC X(01).
       *
        01  WRK-CONS-AREA.
       *    労災保険番号 
-           03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971".
+      *    03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971".
+      *    自賠責保険番号 
+           03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".       
       *     
-      *
-       01  WRK-RECE07-REC. 
-           COPY    "CPRCF007.INC"  REPLACING  //RECE07//
-                                   BY         //WRK-RECE07//.
       * 
        01  WRK-RECE40-REC. 
            COPY    "CPRCF040.INC"  REPLACING  //RECE40//
                                    BY         //WRK-RECE40//.
+      *
+       01  WRK-RECE07-REC. 
+           COPY    "CPRCF007.INC"  REPLACING  //RECE07//
+                                   BY         //WRK-RECE07//.
       *
            COPY    "MCPAREA".
       *
@@ -284,8 +288,8 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    "ORCR0400"      TO  JOB-PGID
-           MOVE    "対象患者抽出（労災）"                              
+           MOVE    "ORCR0405"      TO  JOB-PGID
+           MOVE    "対象患者抽出（自賠責）"                             
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
@@ -301,7 +305,6 @@
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
-      *
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
       *       医療機関ＩＤ編集
@@ -404,7 +407,7 @@
       *
       *    診療年月レセプト管理削除処理（一括分）
            INITIALIZE                  RECE07-REC
-           MOVE    "HC21"              TO  RECE07-PRTID
+           MOVE    "HC23"              TO  RECE07-PRTID
            MOVE    WRK-PARA-SRYYM      TO  RECE07-SRYYM
            MOVE    "1"                 TO  RECE07-SYOKBN
            MOVE    "2"                 TO  RECE07-NYUGAIKBN
@@ -512,7 +515,7 @@
                                                    WRK-ROUSAIKBN
       *
                    IF      FLG-HKNCOMBI    =   ZERO
-                       IF      COMB-HKNNUM  =   WRK-CONS-ROUSAI-HKNNUM
+                       IF      COMB-HKNNUM  =   WRK-CONS-JIBAI-HKNNUM   
                            IF      COMB-TEKSTYMD   <=  WRK-STYMD
                            AND     COMB-TEKEDYMD   >=  WRK-EDYMD
                                MOVE    SPACE           TO  WRK-UPDKBN
@@ -536,9 +539,9 @@
       *                処理対象以外かアフターケア以外か日付変更がないとき
       *                同じ患者ＩＤ・診療科・保険組合せは読み飛ばす
                        IF    ( WRK-ROUSAIKBN         =   "1"           )  
-                       OR    (     ( WRK-UPDKBN      =   SPACE       )         
+                       OR    (     ( WRK-UPDKBN      =   SPACE       )           
                                AND ( PTRSI-HKNKBN    =   "1" OR  "2" 
-                                                             OR  "4" ) )  
+                                                             OR  "4" ) )   
                            MOVE    KEY-NEW             TO  KEY-OLD
                            PERFORM     UNTIL   FLG-SRYACCT =   1 
                                        OR      KEY-NEW NOT =   KEY-OLD
@@ -743,7 +746,7 @@
       *
       *    レセプト管理削除処理（個別分）
            INITIALIZE                  RECE07-REC
-           MOVE    "HC21"              TO  RECE07-PRTID
+           MOVE    "HC23"              TO  RECE07-PRTID
            MOVE    "2"                 TO  RECE07-NYUGAIKBN
            MOVE    RECE07-REC          TO  MCPDATA-REC
            MOVE    "RECEKANRI-DEL2"    TO  ORC-DBPATH
@@ -755,7 +758,7 @@
       *
       *    レセプト削除処理（個別分）
            INITIALIZE                  RECE08-REC
-           MOVE    "HC21"              TO  RECE08-PRTID
+           MOVE    "HC23"              TO  RECE08-PRTID
            MOVE    "2"                 TO  RECE08-NYUGAIKBN
            MOVE    RECE08-REC          TO  MCPDATA-REC
            MOVE    "RECEPRT-DEL2"      TO  ORC-DBPATH
@@ -907,7 +910,7 @@
                                                WRK-ROUSAIKBN
       *
                IF      FLG-HKNCOMBI    =   ZERO
-                   IF      COMB-HKNNUM  =   WRK-CONS-ROUSAI-HKNNUM
+                   IF      COMB-HKNNUM  =   WRK-CONS-JIBAI-HKNNUM       
                        IF      COMB-TEKSTYMD   <=  WRK-STYMD
                        AND     COMB-TEKEDYMD   >=  WRK-EDYMD
                            MOVE    SPACE           TO  WRK-UPDKBN
@@ -1008,7 +1011,7 @@
            PERFORM 900-DBDISCONNECT-SEC
       *     
            DISPLAY "RECE40  CNT " CNT-OUT 
-           DISPLAY "*** ORCR0400 END ***"
+           DISPLAY "*** ORCR0405 END ***"
       ***  ACCEPT  WRK-IN FROM CONSOLE 
            .
        300-TERM-EXT.

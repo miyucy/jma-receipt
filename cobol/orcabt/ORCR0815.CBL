@@ -16,12 +16,12 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCR0810.
+       PROGRAM-ID.             ORCR0815.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト入院（労災・自賠責）
-      *  コンポーネント名  : 月次業務　労災明細書ファイル作成
-      *                              （労災対象患者抽出）
+      *  コンポーネント名  : 月次業務　自賠責明細書ファイル作成
+      *                              （自賠責対象患者抽出）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  03/06/01    NACL−藤原　  新規作成
@@ -338,8 +338,8 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    "ORCR0810"      TO  JOB-PGID
-           MOVE    "対象患者抽出（労災）"                              
+           MOVE    "ORCR0815"      TO  JOB-PGID
+           MOVE    "対象患者抽出（自賠責）"                              
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
@@ -548,7 +548,7 @@
       *
       *    診療年月レセプト管理削除処理（一括分）
            INITIALIZE                  RECE07-REC
-           MOVE    "HC21"              TO  RECE07-PRTID
+           MOVE    "HC23"              TO  RECE07-PRTID
            MOVE    WRK-PARA-SRYYM      TO  RECE07-SRYYM
            MOVE    "1"                 TO  RECE07-SYOKBN
            MOVE    "1"                 TO  RECE07-NYUGAIKBN
@@ -693,8 +693,8 @@
                    INITIALIZE                      WRK-ERR-AREA
       *
                    IF      FLG-HKNCOMBI    =   ZERO
-      *                労災保険の対象であるか
-                       IF      COMB-HKNNUM  =   WRK-CONS-ROUSAI-HKNNUM
+      *                自賠責保険の対象であるか
+                       IF      COMB-HKNNUM  =   WRK-CONS-JIBAI-HKNNUM
       *                    診療月内に摘要日が存在するか
                            IF      COMB-TEKSTYMD   <=  WRK-STYMD
                            AND     COMB-TEKEDYMD   >=  WRK-EDYMD
@@ -718,7 +718,7 @@
                            PERFORM 200111-SRYACCT-HENSYU-SEC 
                        END-IF    
       *
-      *                労災保険以外または日付変更がないとき
+      *                自賠責保険以外または日付変更がないとき
       *                または既にエラー対象のとき
       *                同じ患者ＩＤ・保険組合せは読み飛ばす
                        IF    ( WRK-ROUSAIKBN   =   "1"   )
@@ -926,7 +926,7 @@
                        MOVE    HKNCOMBI-REC    TO
                                            WRK-HKNCOMBI-REC  (IDX1)
                        IF      COMB-HKNNUM NOT =
-                                           WRK-CONS-ROUSAI-HKNNUM
+                                           WRK-CONS-JIBAI-HKNNUM
                            MOVE    "1"         TO
                                            WRK-HKNCOMBI-SYOKBN (IDX1)
                        END-IF
@@ -1197,7 +1197,7 @@
       *
       *    レセプト管理削除処理（個別分）
            INITIALIZE                  RECE07-REC
-           MOVE    "HC21"              TO  RECE07-PRTID
+           MOVE    "HC23"              TO  RECE07-PRTID
            MOVE    "1"                 TO  RECE07-NYUGAIKBN
            MOVE    RECE07-REC          TO  MCPDATA-REC
            MOVE    "RECEKANRI-DEL2"    TO  ORC-DBPATH
@@ -1209,7 +1209,7 @@
       *
       *    レセプト削除処理（個別分）
            INITIALIZE                  RECE08-REC
-           MOVE    "HC21"              TO  RECE08-PRTID
+           MOVE    "HC23"              TO  RECE08-PRTID
            MOVE    "1"                 TO  RECE08-NYUGAIKBN
            MOVE    RECE08-REC          TO  MCPDATA-REC
            MOVE    "RECEPRT-DEL2"      TO  ORC-DBPATH
@@ -1433,7 +1433,7 @@
                INITIALIZE                      WRK-ERR-AREA
       *
                IF      FLG-HKNCOMBI    =   ZERO
-                   IF      COMB-HKNNUM  =   WRK-CONS-ROUSAI-HKNNUM
+                   IF      COMB-HKNNUM  =   WRK-CONS-JIBAI-HKNNUM
                        IF      COMB-TEKSTYMD   <=  WRK-STYMD
                        AND     COMB-TEKEDYMD   >=  WRK-EDYMD
                            MOVE    SPACE           TO  WRK-UPDKBN
@@ -1603,7 +1603,7 @@
            PERFORM 900-DBDISCONNECT-SEC
       *     
            DISPLAY "RECE82  CNT " CNT-OUT 
-           DISPLAY "*** ORCR0810 END ***"
+           DISPLAY "*** ORCR0815 END ***"
            .
        300-TERM-EXT.
            EXIT.
