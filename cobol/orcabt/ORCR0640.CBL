@@ -5890,7 +5890,11 @@
                END-IF
            END-IF
       *
-           COMPUTE IDX     =   11      -   IDY
+           IF      IDY                 >   10
+               MOVE    1                   TO  IDX
+           ELSE
+               COMPUTE IDX     =   11      -   IDY
+           END-IF
            MOVE    ZERO                TO  WRK-NUM-X
            MOVE    WRK-NUM (1:IDY)     TO  WRK-NUM-X (IDX:)
            MOVE    SPACE               TO  WRK-NUM
