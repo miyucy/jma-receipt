@@ -1157,8 +1157,6 @@
                                                   "8"
                ADD     1                  TO    IDX4
       *
-               PERFORM  RECE05-TENSOU-COMCNT-HEN-SEC
-      *
                MOVE    SRY-SRYCD(IDX2)    TO    RECE05-SRYCD(IDX4)
                IF      SRY-SRYKBN         =     "12"
                    IF   SRY-SRYCD(IDX2)   =     CONS-SAISHIN1    OR
@@ -1226,6 +1224,9 @@
                                                 RECE05-SRYKBN
                    END-IF
                END-IF
+      *
+               PERFORM  RECE05-TENSOU-COMCNT-HEN-SEC
+      *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
                   COMPUTE WRK-SRYSURYO2   =     WRK-SRYSURYO            
                                           +     0.999                   
@@ -1436,13 +1437,13 @@
       *****************************************************************
        RECE05-TENSOU-COMCNT-HEN-SEC               SECTION.
       *
-           IF      SRY-SRYKBN         =     "11"
+           IF      RECE04-SRYKBN      =     "11"
               IF   SRY-SRYCD(IDX2)    =     "830000020"
                         MOVE   "1"        TO    RECE02-COMCNTFLG
               END-IF
            END-IF
       *
-           IF      SRY-SRYKBN         =     "12"
+           IF      RECE04-SRYKBN      =     "12"
               IF   SRY-SRYCD(IDX2)    =     "830000021"   OR
                                             "112009750"   OR
                                             "112009850"   OR
@@ -1512,14 +1513,14 @@
               END-IF
            END-IF
       *
-           IF      SRY-SRYKBN         =     "40"
+           IF      RECE04-SRYKBN      =     "40"
               IF   SRY-SRYCD(IDX2)    =     "140036710"   OR
                                             "140007710"
                         MOVE   "1"        TO    RECE02-COMCNTFLG
               END-IF
            END-IF
       *
-           IF      SRY-SRYKBN         =     "80"
+           IF      RECE04-SRYKBN      =     "80"
               IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
                                             "180022210"   OR
                                             "180706810"   OR

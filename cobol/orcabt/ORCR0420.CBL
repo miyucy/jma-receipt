@@ -1015,8 +1015,6 @@
                                                   "8"
       *
                ADD     1                  TO    IDX4                                  *
-               PERFORM  RECE45-TENSOU-COMCNT-HEN-SEC
-      *
                MOVE    SRY-SRYCD(IDX2)    TO    RECE45-SRYCD(IDX4)
       *
                IF      SRY-SRYKBN         =     "12"
@@ -1109,6 +1107,9 @@
                    END-IF                                               
                   END-IF                                                
                END-IF                                                   
+      *
+               PERFORM  RECE45-TENSOU-COMCNT-HEN-SEC
+      *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
                   COMPUTE WRK-SRYSURYO2   =     WRK-SRYSURYO            
                                           +     0.999                   
@@ -1428,19 +1429,19 @@
       *****************************************************************
        RECE45-TENSOU-COMCNT-HEN-SEC               SECTION.
       *
-           IF      SRY-SRYKBN         =     "11"
+           IF      RECE44-SRYKBN      =     "11"
               IF   SRY-SRYCD(IDX2)    =     "830000020"
                         MOVE   "1"        TO    RECE41-COMCNTFLG
               END-IF
            END-IF
       *
-           IF      SRY-SRYKBN         =     "12"
+           IF      RECE44-SRYKBN      =     "12"
               IF   SRY-SRYCD(IDX2)    =     "830000021"
                         MOVE   "1"        TO    RECE41-COMCNTFLG
               END-IF
            END-IF
       *
-           IF      SRY-SRYKBN         =     "80"
+           IF      RECE44-SRYKBN      =     "80"
               IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
                                             "180022210"   OR
                                             "180706810"   OR
