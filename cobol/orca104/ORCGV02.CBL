@@ -34,7 +34,8 @@
       *  01.00.05    MCC-藤原     02/03/22  保険番号マスタの読込みの修正
       *  01.00.06    NACL-多々納  02/12/24  負担区分の初期値の編集
       *  01.00.07    NACL-太田    03/01/08  レセプト負担金額コンボ追加
-      *  01.00.08    NACL-太田    03/02/14  法別番号チェック区分追加
+      *  01.00.08    NACL-多々納  03/02/14  法別番号チェック区分追加
+      *                                     一括入力へ変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -232,6 +233,9 @@
            03  FLG-END             PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
       *
+           03  FLG-KOUSIN          PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
+      *
       *    カウント領域
       *
        01  CNT-AREA.
@@ -259,7 +263,10 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
-           03  WRK-PAGENO          PIC 9(01).    
+           03  WRK-PAGENO          PIC 9(01).
+      *
+           03  WRK-MCP-WIDGET      PIC X(64).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -287,6 +294,9 @@
            COPY  "CPORCSDAY.INC".
       *
            COPY  "CPORCSLNK.INC".
+      *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -573,8 +583,14 @@
            MOVE    SPA-HOSPID              TO  HKN-HOSPID
            MOVE    SPA-V01-HKNNUM          TO  HKN-HKNNUM
            MOVE    SPA-V01-PAYKBN          TO  HKN-PAYKBN
-           MOVE    SPA-V01-STYUKYMD        TO  HKN-TEKSTYMD
-           MOVE    SPA-V01-EDYUKYMD        TO  HKN-TEKEDYMD
+           IF      SPA-OLD-STYUKYMD        =   SPACE
+               MOVE    SPA-V01-STYUKYMD        TO  HKN-TEKSTYMD
+               MOVE    SPA-V01-EDYUKYMD        TO  HKN-TEKEDYMD
+           ELSE
+               MOVE    SPA-OLD-STYUKYMD        TO  HKN-TEKSTYMD
+               MOVE    SPA-OLD-EDYUKYMD        TO  HKN-TEKEDYMD
+           END-IF
+      *
            MOVE    HKNNUM-REC              TO  MCPDATA-REC
            PERFORM 900-HKNNUM-INV-SEC
            IF      FLG-HKNNUM              =   ZERO
@@ -818,137 +834,196 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-               WHEN    "ACTIVATE"      ALSO    "HBTNUM"
-                   PERFORM 4100-HBTNUM-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SEIDONAME"
-                   PERFORM 4101-SEIDONAME-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "TANSEIDONAME"
-                   PERFORM 4102-TANSEIDONAME-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HKNKOHSBTKBN"
-                   PERFORM 4103-HKNKOHSBTKBN-CHK-SEC
-      *        法別番号チェック
-               WHEN    "ACTIVATE"      ALSO    "HBTNUMCHKKBN"
-                   PERFORM 4103-HBTNUMCHKKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "KENSNUMCHKKBN"
-                   PERFORM 4104-KENSNUMCHKKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "JKYSKENSNUMCHKKBN"
-                   PERFORM 4105-JKYSKENSNUMCHKKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HKNKOHKBN"
-                   PERFORM 4106-HKNKOHKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "GENHKNNUM1"
-               WHEN    "ACTIVATE"      ALSO    "GENHKNNUM2"
-               WHEN    "ACTIVATE"      ALSO    "GENHKNNUM3"
-                   PERFORM 4107-GENHKNNUM-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "JOKENSTYEAR"
-                   PERFORM 4108-JOKENSTYEAR-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "JOKENEDYEAR"
-                   PERFORM 4109-JOKENEDYEAR-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "TENTNK"
-                   PERFORM 4110-TENTNK-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "RECESKYKBN"
-                   PERFORM 4130-RECESKYKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "RECEFTNDSPKBN"
-                   PERFORM 4140-RECEFTNDSPKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "GAIFTNKBN1"
-               WHEN    "ACTIVATE"      ALSO    "GAIFTNKBN2"
-               WHEN    "ACTIVATE"      ALSO    "GAIFTNKBN3"
-               WHEN    "ACTIVATE"      ALSO    "GAIFTNKBN4"
-                   PERFORM 4111-GAIFTNKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "GAIKFTNRATE1"
-               WHEN    "ACTIVATE"      ALSO    "GAIKFTNRATE2"
-               WHEN    "ACTIVATE"      ALSO    "GAIKFTNRATE3"
-               WHEN    "ACTIVATE"      ALSO    "GAIKFTNRATE4"
-                   PERFORM 4112-GAIKFTNRATE-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "GAIKKOTGAK1"
-               WHEN    "ACTIVATE"      ALSO    "GAIKKOTGAK2"
-               WHEN    "ACTIVATE"      ALSO    "GAIKKOTGAK3"
-               WHEN    "ACTIVATE"      ALSO    "GAIKKOTGAK4"
-                   PERFORM 4113-GAIKKOTGAK-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "GAIKJGNGAK1"
-               WHEN    "ACTIVATE"      ALSO    "GAIKJGNGAK2"
-               WHEN    "ACTIVATE"      ALSO    "GAIKJGNGAK3"
-               WHEN    "ACTIVATE"      ALSO    "GAIKJGNGAK4"
-                   PERFORM 4114-GAIKJGNGAK-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "GAIDJGNGAK1" 
-               WHEN    "ACTIVATE"      ALSO    "GAIDJGNGAK2" 
-               WHEN    "ACTIVATE"      ALSO    "GAIDJGNGAK3" 
-               WHEN    "ACTIVATE"      ALSO    "GAIDJGNGAK4" 
-                   PERFORM 4115-GAIDJGNGAK-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "GAIDJGNCNT1"  
-               WHEN    "ACTIVATE"      ALSO    "GAIDJGNCNT2"  
-               WHEN    "ACTIVATE"      ALSO    "GAIDJGNCNT3"  
-               WHEN    "ACTIVATE"      ALSO    "GAIDJGNCNT4"  
-                   PERFORM 4116-GAIDJGNCNT-CHK-SEC  
-               WHEN    "ACTIVATE"      ALSO    "GAIMNAIJGNGAK1"  
-               WHEN    "ACTIVATE"      ALSO    "GAIMNAIJGNGAK2"  
-               WHEN    "ACTIVATE"      ALSO    "GAIMNAIJGNGAK3"  
-               WHEN    "ACTIVATE"      ALSO    "GAIMNAIJGNGAK4"  
-                   PERFORM 4117-GAIMNAIJGNGAK-CHK-SEC                
-               WHEN    "ACTIVATE"      ALSO    "GAIMGAIJGNGAK1"  
-               WHEN    "ACTIVATE"      ALSO    "GAIMGAIJGNGAK2"  
-               WHEN    "ACTIVATE"      ALSO    "GAIMGAIJGNGAK3"  
-               WHEN    "ACTIVATE"      ALSO    "GAIMGAIJGNGAK4"  
-                   PERFORM 4118-GAIMGAIJGNGAK-CHK-SEC                
-               WHEN    "ACTIVATE"      ALSO    "GAIMJGNCNT1"  
-               WHEN    "ACTIVATE"      ALSO    "GAIMJGNCNT2"  
-               WHEN    "ACTIVATE"      ALSO    "GAIMJGNCNT3"  
-               WHEN    "ACTIVATE"      ALSO    "GAIMJGNCNT4"  
-                   PERFORM 4119-GAIMJGNCNT-CHK-SEC  
-               WHEN    "ACTIVATE"      ALSO    "GAIYKZFTNKBN1"  
-               WHEN    "ACTIVATE"      ALSO    "GAIYKZFTNKBN2"  
-               WHEN    "ACTIVATE"      ALSO    "GAIYKZFTNKBN3"  
-               WHEN    "ACTIVATE"      ALSO    "GAIYKZFTNKBN4"  
-                   PERFORM 4120-GAIYKZFTNKBN-CHK-SEC  
-               WHEN    "ACTIVATE"      ALSO    "NYUFTNKBN1"
-               WHEN    "ACTIVATE"      ALSO    "NYUFTNKBN2"
-               WHEN    "ACTIVATE"      ALSO    "NYUFTNKBN3"
-               WHEN    "ACTIVATE"      ALSO    "NYUFTNKBN4"
-                   PERFORM 4121-NYUFTNKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NYUKFTNRATE1"
-               WHEN    "ACTIVATE"      ALSO    "NYUKFTNRATE2"
-               WHEN    "ACTIVATE"      ALSO    "NYUKFTNRATE3"
-               WHEN    "ACTIVATE"      ALSO    "NYUKFTNRATE4"
-                   PERFORM 4122-NYUKFTNRATE-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NYUKKOTGAK1"
-               WHEN    "ACTIVATE"      ALSO    "NYUKKOTGAK2"
-               WHEN    "ACTIVATE"      ALSO    "NYUKKOTGAK3"
-               WHEN    "ACTIVATE"      ALSO    "NYUKKOTGAK4"
-                   PERFORM 4123-NYUKKOTGAK-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NYUKJGNGAK1"
-               WHEN    "ACTIVATE"      ALSO    "NYUKJGNGAK2"
-               WHEN    "ACTIVATE"      ALSO    "NYUKJGNGAK3"
-               WHEN    "ACTIVATE"      ALSO    "NYUKJGNGAK4"
-                   PERFORM 4124-NYUKJGNGAK-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NYUDJGNGAK1" 
-               WHEN    "ACTIVATE"      ALSO    "NYUDJGNGAK2" 
-               WHEN    "ACTIVATE"      ALSO    "NYUDJGNGAK3" 
-               WHEN    "ACTIVATE"      ALSO    "NYUDJGNGAK4" 
-                   PERFORM 4125-NYUDJGNGAK-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NYUDJGNCNT1"  
-               WHEN    "ACTIVATE"      ALSO    "NYUDJGNCNT2"  
-               WHEN    "ACTIVATE"      ALSO    "NYUDJGNCNT3"  
-               WHEN    "ACTIVATE"      ALSO    "NYUDJGNCNT4"  
-                   PERFORM 4126-NYUDJGNCNT-CHK-SEC  
-               WHEN    "ACTIVATE"      ALSO    "NYUMJGNGAK1"  
-               WHEN    "ACTIVATE"      ALSO    "NYUMJGNGAK2"  
-               WHEN    "ACTIVATE"      ALSO    "NYUMJGNGAK3"  
-               WHEN    "ACTIVATE"      ALSO    "NYUMJGNGAK4"  
-                   PERFORM 4127-NYUMJGNGAK-CHK-SEC                
-               WHEN    "ACTIVATE"      ALSO    "NYUMJGNCNT1"  
-               WHEN    "ACTIVATE"      ALSO    "NYUMJGNCNT2"  
-               WHEN    "ACTIVATE"      ALSO    "NYUMJGNCNT3"  
-               WHEN    "ACTIVATE"      ALSO    "NYUMJGNCNT4"  
-                   PERFORM 4128-NYUMJGNCNT-CHK-SEC  
-               WHEN    "ACTIVATE"      ALSO    "NYUSKJRYYKBN1"  
-               WHEN    "ACTIVATE"      ALSO    "NYUSKJRYYKBN2"  
-               WHEN    "ACTIVATE"      ALSO    "NYUSKJRYYKBN3"  
-               WHEN    "ACTIVATE"      ALSO    "NYUSKJRYYKBN4"  
-                   PERFORM 4129-NYUSKJRYYKBN-CHK-SEC  
-           END-EVALUATE
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
       *
+           MOVE    1                   TO  FLG-KOUSIN
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
            .
        200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
+           MOVE    V02-HBTNUM          TO  SPA-GMN-HBTNUM
+           MOVE    V02-SEIDONAME       TO  SPA-GMN-SEIDONAME
+           MOVE    V02-TANSEIDONAME    TO  SPA-GMN-TANSEIDONAME
+           MOVE    V02-HKNKOHSBTKBN    TO  SPA-GMN-HKNKOHSBTKBN-G
+           MOVE    V02-HBTNUMCHKKBN    TO  SPA-GMN-HBTNUMCHKKBN-G
+           MOVE    V02-KENSNUMCHKKBN   TO  SPA-GMN-KENSNUMCHKKBN-G
+           MOVE    V02-JKYSKENSNUMCHKKBN
+                                       TO  SPA-GMN-JKYSKENSNUMCHKKBN-G
+           MOVE    V02-HKNKOHKBN       TO  SPA-GMN-HKNKOHKBN-G
+      *    限定保険番号チェック
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   3
+               MOVE    V02-GENHKNNUM (IDX)  TO  SPA-GMN-GENHKNNUM (IDX)
+           END-PERFORM
+      *
+           MOVE    V02-JOKENSTYEAR     TO  SPA-GMN-JOKENSTYEAR
+           MOVE    V02-JOKENEDYEAR     TO  SPA-GMN-JOKENEDYEAR
+           MOVE    V02-TENTNK          TO  SPA-GMN-TENTNK
+           MOVE    V02-RECESKYKBN      TO  SPA-GMN-RECESKYKBN-G
+           MOVE    V02-RECEFTNDSPKBN   TO  SPA-GMN-RECEFTNDSPKBN-G
+      *
+      *    タグ別
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   4
+               PERFORM 41011-GMN-SPA-TAU-SEC
+           END-PERFORM
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    タグ別画面をＳＰＡセット処理
+      *****************************************************************
+       41011-GMN-SPA-TAU-SEC       SECTION.
+      *
+      *    外来負担区分チェック
+           MOVE    V02-GAIFTNKBN (IDX) TO  SPA-GMN-GAIFTNKBN-G (IDX)
+           MOVE    V02-GAIKFTNRATE (IDX)
+                                       TO  SPA-GMN-GAIKFTNRATE (IDX)
+           MOVE    V02-GAIKKOTGAK  (IDX)
+                                       TO  SPA-GMN-GAIKKOTGAK (IDX)
+           MOVE    V02-GAIKJGNGAK  (IDX)
+                                       TO  SPA-GMN-GAIKJGNGAK (IDX)
+           MOVE    V02-GAIDJGNGAK(IDX) TO  SPA-GMN-GAIDJGNGAK (IDX)
+           MOVE    V02-GAIDJGNCNT(IDX) TO  SPA-GMN-GAIDJGNCNT (IDX)
+           MOVE    V02-GAIMNAIJGNGAK(IDX)
+                                       TO  SPA-GMN-GAIMNAIJGNGAK (IDX)
+           MOVE    V02-GAIMGAIJGNGAK (IDX)
+                                       TO  SPA-GMN-GAIMGAIJGNGAK (IDX)
+           MOVE    V02-GAIMJGNCNT    (IDX)
+                                       TO  SPA-GMN-GAIMJGNCNT (IDX)
+           MOVE    V02-GAIYKZFTNKBN  (IDX)
+                                       TO  SPA-GMN-GAIYKZFTNKBN-G(IDX)
+           MOVE    V02-NYUFTNKBN     (IDX)
+                                       TO  SPA-GMN-NYUFTNKBN-G (IDX)
+           MOVE    V02-NYUKFTNRATE   (IDX)
+                                       TO  SPA-GMN-NYUKFTNRATE (IDX)
+           MOVE    V02-NYUKKOTGAK(IDX) TO  SPA-GMN-NYUKKOTGAK (IDX)
+           MOVE    V02-NYUKJGNGAK(IDX) TO  SPA-GMN-NYUKJGNGAK (IDX)
+           MOVE    V02-NYUDJGNGAK(IDX) TO  SPA-GMN-NYUDJGNGAK (IDX)
+           MOVE    V02-NYUDJGNCNT(IDX) TO  SPA-GMN-NYUDJGNCNT (IDX)
+           MOVE    V02-NYUMJGNGAK (IDX)
+                                       TO  SPA-GMN-NYUMJGNGAK (IDX)
+           MOVE    V02-NYUMJGNCNT(IDX) TO  SPA-GMN-NYUMJGNCNT (IDX)
+           MOVE    V02-NYUSKJRYYKBN(IDX)
+                                       TO  SPA-GMN-NYUSKJRYYKBN-G (IDX)
+      *
+           .
+       41011-GMN-SPA-TAU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+           PERFORM 4100-HBTNUM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    制度名チェック
+           PERFORM 4101-SEIDONAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4102-TANSEIDONAME-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4103-HKNKOHSBTKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4103-HBTNUMCHKKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4104-KENSNUMCHKKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4105-JKYSKENSNUMCHKKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4106-HKNKOHKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4130-RECESKYKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4140-RECEFTNDSPKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4111-GAIFTNKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4112-GAIKFTNRATE-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4113-GAIKKOTGAK-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4120-GAIYKZFTNKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4121-NYUFTNKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4129-NYUSKJRYYKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           .
+       4102-KIHON-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -956,11 +1031,6 @@
       *****************************************************************
        4100-HBTNUM-CHK-SEC       SECTION.
       *
-           MOVE    1                   TO  SPA-GMN-CUR
-      *
-           MOVE    V02-HBTNUM          TO  SPA-GMN-HBTNUM
-      * 
-           MOVE    2                   TO  SPA-GMN-CUR
            .
        4100-HBTNUM-CHK-EXT.
            EXIT.
@@ -970,11 +1040,28 @@
       *****************************************************************
        4101-SEIDONAME-CHK-SEC       SECTION.
       *
-           MOVE    2                   TO  SPA-GMN-CUR
+           IF      SPA-GMN-SEIDONAME   =   SPACE
+               IF      FLG-KOUSIN          =   2
+                   MOVE    "0020"              TO  SPA-ERRCD
+                   MOVE    2                   TO  SPA-GMN-CUR
+               END-IF
+               GO      TO  4101-SEIDONAME-CHK-EXT
+           END-IF
       *
-           MOVE    V02-SEIDONAME       TO  SPA-GMN-SEIDONAME
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-SEIDONAME   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0020"          TO  SPA-ERRCD
+               MOVE    2               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-SEIDONAME
+           END-IF
       *
-           MOVE    3                   TO  SPA-GMN-CUR
            .
        4101-SEIDONAME-CHK-EXT.
            EXIT.
@@ -984,46 +1071,77 @@
       *****************************************************************
        4102-TANSEIDONAME-CHK-SEC     SECTION.
       *
-           MOVE    3                   TO  SPA-GMN-CUR
+           IF      SPA-GMN-TANSEIDONAME    =   SPACE
+               IF      FLG-KOUSIN          =   2
+                   MOVE    "0021"              TO  SPA-ERRCD
+                   MOVE    3                   TO  SPA-GMN-CUR
+               END-IF
+               GO      TO  4102-TANSEIDONAME-CHK-EXT
+           END-IF
       *
-           MOVE    V02-TANSEIDONAME    TO  SPA-GMN-TANSEIDONAME
-      *                           
-           MOVE    4                   TO  SPA-GMN-CUR
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-TANSEIDONAME    TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0021"          TO  SPA-ERRCD
+               MOVE    3               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-TANSEIDONAME
+           END-IF
+      *
            .
        4102-TANSEIDONAME-CHK-EXT.
            EXIT.
-      *
       *****************************************************************
       *    保険公費種別区分チェック
       *****************************************************************
        4103-HKNKOHSBTKBN-CHK-SEC     SECTION.
       *
-           MOVE    4                   TO  SPA-GMN-CUR
-      *
-           MOVE    V02-HKNKOHSBTKBN    TO  SPA-GMN-HKNKOHSBTKBN-G
-      *
-           IF      SPA-GMN-HKNKOHSBTKBNMEI    =   SPACE
-              MOVE    "0001"           TO  SPA-ERRCD
-           ELSE       
-               MOVE    16              TO  SPA-GMN-CUR
-           END-IF    
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-HKNKOHSBTKBN-MAX
+               IF      SPA-GMN-HKNKOHSBTKBN
+                                      =   SPA-GMN-HKNKOHSBTKBNL (IDX)
+                   MOVE    SPA-GMN-HKNKOHSBTKBNMEIL (IDX)
+                                           TO  SPA-GMN-HKNKOHSBTKBNMEI
+                   MOVE    SPA-GMN-HKNKOHSBTKBN-MAX
+                                           TO  IDX
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+               MOVE    4                   TO  SPA-GMN-CUR
+               MOVE    "0001"              TO  SPA-ERRCD
+           END-IF
            .
        4103-HKNKOHSBTKBN-CHK-EXT.
            EXIT.
+      *
       *****************************************************************
-      *    保険公費種別区分チェック
+      *    法別番号チェック区分チェック処理
       *****************************************************************
        4103-HBTNUMCHKKBN-CHK-SEC     SECTION.
       *
-           MOVE    16                  TO  SPA-GMN-CUR
-      *
-           MOVE    V02-HBTNUMCHKKBN    TO  SPA-GMN-HBTNUMCHKKBN-G
-      *
-           IF      SPA-GMN-HBTNUMCHKKBN    =   "0"  OR  "1"
-               MOVE    5               TO  SPA-GMN-CUR
-           ELSE
-              MOVE    "0001"           TO  SPA-ERRCD
-           END-IF 
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   2
+               IF      SPA-GMN-HBTNUMCHKKBN
+                                      =   SPA-GMN-HBTNUMCHKKBN-LST(IDX)
+                                                                 (1:1)
+                   MOVE    SPA-GMN-HBTNUMCHKKBN-LST (IDX)
+                                           TO  SPA-GMN-HBTNUMCHKKBN-G
+                   MOVE    2               TO  IDX
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+               MOVE    16                  TO  SPA-GMN-CUR
+               MOVE    "0022"              TO  SPA-ERRCD
+           END-IF
            .
        4103-HBTNUMCHKKBN-CHK-EXT.
            EXIT.
@@ -1033,15 +1151,23 @@
       *****************************************************************
        4104-KENSNUMCHKKBN-CHK-SEC          SECTION.
       *
-           MOVE    5                   TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-KENSNUMCHKKBN-MAX
+               IF      SPA-GMN-KENSNUMCHKKBN
+                                      =   SPA-GMN-KENSNUMCHKKBNL (IDX)
+                   MOVE    SPA-GMN-KENSNUMCHKKBNMEIL (IDX)
+                                           TO  SPA-GMN-KENSNUMCHKKBNMEI
+                   MOVE    SPA-GMN-KENSNUMCHKKBN-MAX
+                                           TO  IDX
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+               MOVE    5                   TO  SPA-GMN-CUR
+               MOVE    "0002"              TO  SPA-ERRCD
+           END-IF
       *
-           MOVE    V02-KENSNUMCHKKBN   TO  SPA-GMN-KENSNUMCHKKBN-G
-      *
-           IF      SPA-GMN-KENSNUMCHKKBNMEI    =   SPACE
-              MOVE    "0002"           TO  SPA-ERRCD
-           ELSE       
-               MOVE    7               TO  SPA-GMN-CUR
-           END-IF    
            .
        4104-KENSNUMCHKKBN-CHK-EXT.
            EXIT.
@@ -1051,16 +1177,28 @@
       *****************************************************************
        4105-JKYSKENSNUMCHKKBN-CHK-SEC          SECTION.
       *
-           MOVE    6                   TO  SPA-GMN-CUR
-      *
-           MOVE    V02-JKYSKENSNUMCHKKBN
-                                       TO  SPA-GMN-JKYSKENSNUMCHKKBN-G
-      *
-           IF      SPA-GMN-JKYSKENSNUMCHKKBNMEI    =   SPACE
-              MOVE    "0003"           TO  SPA-ERRCD
-           ELSE       
-               MOVE    8               TO  SPA-GMN-CUR
-           END-IF    
+      *    未入力でもＯＫとする
+           IF      SPA-GMN-JKYSKENSNUMCHKKBN   =   SPACE
+               MOVE    SPACE           TO  SPA-GMN-JKYSKENSNUMCHKKBN-G
+               GO      TO     4105-JKYSKENSNUMCHKKBN-CHK-EXT
+           END-IF
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-JKYSKENSNUMCHKKBN-MAX
+               IF      SPA-GMN-JKYSKENSNUMCHKKBN
+                                      =   SPA-GMN-JKYSKENSNUMCHKKBNL
+                                                              (IDX)
+                   MOVE    SPA-GMN-JKYSKENSNUMCHKKBNMEIL (IDX)
+                                           TO  SPA-GMN-KENSNUMCHKKBNMEI
+                   MOVE    SPA-GMN-JKYSKENSNUMCHKKBN-MAX
+                                           TO  IDX
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+               MOVE    6                   TO  SPA-GMN-CUR
+               MOVE    "0003"              TO  SPA-ERRCD
+           END-IF
            .
        4105-JKYSKENSNUMCHKKBN-CHK-EXT.
            EXIT.
@@ -1070,24 +1208,42 @@
       *****************************************************************
        4106-HKNKOHKBN-CHK-SEC        SECTION.
       *
-           MOVE    7                   TO  SPA-GMN-CUR
+           IF      SPA-GMN-HKNKOHKBN   =   SPACE
+               MOVE    SPACE           TO   SPA-GMN-HKNKOHKBN-G
+           END-IF
       *
-           MOVE    V02-HKNKOHKBN       TO  SPA-GMN-HKNKOHKBN-G
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-HKNKOHKBN-MAX
+               IF      SPA-GMN-HKNKOHKBN
+                                      =   SPA-GMN-HKNKOHKBNL (IDX)
+                   MOVE    SPA-GMN-HKNKOHKBNMEIL (IDX)
+                                           TO  SPA-GMN-HKNKOHKBNMEI
+                   MOVE    SPA-GMN-HKNKOHKBN-MAX
+                                           TO  IDX
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF     (FLG-CHK             =   ZERO  )  AND
+                  (SPA-GMN-HKNKOHKBN   NOT =   SPACE )
+               MOVE    7                   TO  SPA-GMN-CUR
+               MOVE    "0004"              TO  SPA-ERRCD
+               GO      TO      4106-HKNKOHKBN-CHK-EXT
+           END-IF
       *
            EVALUATE    SPA-GMN-HKNKOHSBTKBN
                WHEN    "6"
-                   IF      SPA-GMN-HKNKOHKBNMEI    NOT =   SPACE
-                       MOVE    "0004"           TO  SPA-ERRCD
+                   IF      SPA-GMN-HKNKOHKBN   NOT =   SPACE
+                       MOVE    "0004"              TO  SPA-ERRCD
+                       MOVE    7                   TO  SPA-GMN-CUR
                    END-IF
                WHEN    "7"
-                   IF      SPA-GMN-HKNKOHKBNMEI    =   SPACE
-                       MOVE    "0010"           TO  SPA-ERRCD
+                   IF      SPA-GMN-HKNKOHKBN   =   SPACE
+                       MOVE    "0010"              TO  SPA-ERRCD
+                       MOVE    7                   TO  SPA-GMN-CUR
                    END-IF
            END-EVALUATE
-      *            
-           IF      SPA-ERRCD           =   SPACE       
-               MOVE    6                   TO  SPA-GMN-CUR
-           END-IF    
+      *
            .
        4106-HKNKOHKBN-CHK-EXT.
            EXIT.
@@ -1097,21 +1253,6 @@
       *****************************************************************
        4107-GENHKNNUM-CHK-SEC            SECTION.
       *
-           MOVE    7                   TO  SPA-GMN-CUR
-      *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GENHKNNUM1"
-                   MOVE    1                   TO  IDX
-               WHEN    "GENHKNNUM2"
-                   MOVE    2                   TO  IDX
-               WHEN    "GENHKNNUM3"
-                   MOVE    3                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR     +   IDX   
-      *
-           MOVE    V02-GENHKNNUM (IDX)  TO  SPA-GMN-GENHKNNUM (IDX)
-      *
-           ADD     1                    TO  SPA-GMN-CUR
            .
        4107-GENHKNNUM-CHK-EXT.
            EXIT.
@@ -1121,11 +1262,6 @@
       *****************************************************************
        4108-JOKENSTYEAR-CHK-SEC        SECTION.
       *
-           MOVE    11                   TO  SPA-GMN-CUR
-      *
-           MOVE    V02-JOKENSTYEAR      TO  SPA-GMN-JOKENSTYEAR
-      *
-           ADD     1                    TO  SPA-GMN-CUR
            .
        4108-JOKENSTYEAR-CHK-EXT.
            EXIT.
@@ -1135,11 +1271,6 @@
       *****************************************************************
        4109-JOKENEDYEAR-CHK-SEC            SECTION.
       *
-           MOVE    12                  TO  SPA-GMN-CUR
-      * 
-           MOVE    V02-JOKENEDYEAR     TO  SPA-GMN-JOKENEDYEAR
-      *
-           ADD     1                   TO  SPA-GMN-CUR
            .
        4109-JOKENEDYEAR-CHK-EXT.
            EXIT.
@@ -1149,11 +1280,6 @@
       *****************************************************************
        4110-TENTNK-CHK-SEC         SECTION.
       *
-           MOVE    13                 TO  SPA-GMN-CUR
-      *
-           MOVE    V02-TENTNK         TO  SPA-GMN-TENTNK
-      *
-           MOVE    14                 TO  SPA-GMN-CUR
            .
        4110-TENTNK-CHK-EXT.
            EXIT.
@@ -1163,15 +1289,35 @@
       *****************************************************************
        4130-RECESKYKBN-CHK-SEC         SECTION.
       *
-           MOVE    14                  TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-RECESKYKBN-MAX
+               IF      SPA-GMN-RECESKYKBN
+                                      =   SPA-GMN-RECESKYKBNL (IDX)
+                   MOVE    SPA-GMN-RECESKYKBNMEIL (IDX)
+                                           TO  SPA-GMN-RECESKYKBNMEI
+                   MOVE    SPA-GMN-RECESKYKBN-MAX
+                                           TO  IDX
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF     (FLG-CHK              =   ZERO )  AND
+                  (SPA-GMN-RECESKYKBN   NOT =   SPACE )
+               MOVE    14                  TO  SPA-GMN-CUR
+               MOVE    "0005"              TO  SPA-ERRCD
+               GO      TO      4130-RECESKYKBN-CHK-EXT
+           END-IF
       *
-           MOVE    V02-RECESKYKBN      TO  SPA-GMN-RECESKYKBN-G
-      *
-           IF      SPA-GMN-RECESKYKBNMEI    =   SPACE
-              MOVE    "0005"           TO  SPA-ERRCD
-           ELSE       
-               MOVE    15              TO  SPA-GMN-CUR
-           END-IF    
+      *    地方公費の時必須とする
+           IF      FLG-KOUSIN          =   2
+               IF      (SPA-V01-HKNNUM     >=  "100"  AND
+                                           <=  "899" )
+                   IF      SPA-GMN-RECESKYKBN  =   SPACE
+                       MOVE    14                  TO  SPA-GMN-CUR
+                       MOVE    "0005"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
            .
        4130-RECESKYKBN-CHK-EXT.
            EXIT.
@@ -1181,15 +1327,25 @@
       *****************************************************************
        4140-RECEFTNDSPKBN-CHK-SEC      SECTION.
       *
-           MOVE    15                  TO  SPA-GMN-CUR
-      *
-           MOVE    V02-RECEFTNDSPKBN   TO  SPA-GMN-RECEFTNDSPKBN-G
-      *
-           IF      SPA-GMN-RECEFTNDSPKBNMEI    =   SPACE
-              MOVE    "0011"           TO  SPA-ERRCD
-           ELSE
-               MOVE    20              TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-RECEFTNDSPKBN-MAX
+               IF      SPA-GMN-RECEFTNDSPKBN
+                                      =   SPA-GMN-RECEFTNDSPKBNL (IDX)
+                   MOVE    SPA-GMN-RECEFTNDSPKBNMEIL (IDX)
+                                           TO  SPA-GMN-RECEFTNDSPKBNMEI
+                   MOVE    SPA-GMN-RECEFTNDSPKBN-MAX
+                                           TO  IDX
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF     (FLG-CHK              =   ZERO )  AND
+                  (SPA-GMN-RECEFTNDSPKBN   NOT =   SPACE )
+               MOVE    15                  TO  SPA-GMN-CUR
+               MOVE    "0011"              TO  SPA-ERRCD
+               GO      TO      4130-RECESKYKBN-CHK-EXT
            END-IF
+      *
            .
        4140-RECEFTNDSPKBN-CHK-EXT.
            EXIT.
@@ -1199,246 +1355,51 @@
       *****************************************************************
        4111-GAIFTNKBN-CHK-SEC       SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GAIFTNKBN1"
-                   MOVE    1                   TO  IDX
-               WHEN    "GAIFTNKBN2"
-                   MOVE    2                   TO  IDX
-               WHEN    "GAIFTNKBN3"
-                   MOVE    3                   TO  IDX
-               WHEN    "GAIFTNKBN4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   20  
+           EVALUATE    SPA-GMN-PAGENO
+               WHEN    0
+                   MOVE    1               TO  IDX
+                   MOVE    20              TO  WRK-GMN-CUR
+               WHEN    1
+                   MOVE    2               TO  IDX
+                   MOVE    50              TO  WRK-GMN-CUR
+               WHEN    2
+                   MOVE    3               TO  IDX
+                   MOVE    80              TO  WRK-GMN-CUR
+               WHEN    3
+                   MOVE    4               TO  IDX
+                   MOVE    110             TO  WRK-GMN-CUR
+           END-EVALUATE
       *
-           MOVE    V02-GAIFTNKBN (IDX) TO  SPA-GMN-GAIFTNKBN-G (IDX)
-      *     
-           PERFORM VARYING IDY FROM   1   BY  1
-                   UNTIL   IDY >      SPA-GMN-GAIFTNKBN-MAX
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING IDY     FROM   1   BY  1
+                   UNTIL   IDY     >   SPA-GMN-GAIFTNKBN-MAX
                IF      SPA-GMN-GAIFTNKBN (IDX)
-                                      =   SPA-GMN-GAIFTNKBNL (IDY)
+                                       =   SPA-GMN-GAIFTNKBNL (IDY)
                    MOVE    SPA-GMN-GAIFTNKBNMEIL (IDY)
-                                      TO  SPA-GMN-GAIFTNKBNMEI(IDX)
+                                           TO  SPA-GMN-GAIFTNKBNMEI(IDX)
+                   MOVE    1               TO  FLG-CHK
                    MOVE    SPA-GMN-GAIFTNKBN-MAX
-                                      TO  IDY
+                                           TO  IDY
                END-IF
            END-PERFORM
       *
-           IF      SPA-GMN-GAIFTNKBNMEI (IDX)  =   SPACE
-               MOVE    "0006"           TO  SPA-ERRCD
-           ELSE
-               IF      SPA-GMN-GAIFTNKBN (IDX) =   "3"
-                   IF      SPA-V01-HKNNUM (1:1)    >=  "1" AND <= "8"
-                       CONTINUE
-                   ELSE
-                       MOVE    "0010"              TO  SPA-ERRCD
-                   END-IF
-               END-IF
+           IF      FLG-CHK             =   ZERO
+               MOVE    "0006"              TO  SPA-ERRCD
+               MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
+               GO      TO      4111-GAIFTNKBN-CHK-EXT
+           END-IF
       *
-           IF      SPA-ERRCD           =   SPACE 
-               ADD     1               TO  SPA-GMN-CUR
-           END-IF    
+          IF      SPA-GMN-GAIFTNKBN (IDX) =   "3"
+               IF      SPA-V01-HKNNUM (1:1)    >=  "1" AND <= "8"
+                   CONTINUE
+               ELSE
+                   MOVE    "0010"              TO  SPA-ERRCD
+                   MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
            .
        4111-GAIFTNKBN-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    外来回負担割合チェック処理
-      *****************************************************************
-       4112-GAIKFTNRATE-CHK-SEC           SECTION.
-      *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GAIKFTNRATE1"
-                   MOVE    1                   TO  IDX
-               WHEN    "GAIKFTNRATE2"
-                   MOVE    2                   TO  IDX
-               WHEN    "GAIKFTNRATE3"
-                   MOVE    3                   TO  IDX
-               WHEN    "GAIKFTNRATE4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   21  
-      *
-           MOVE    V02-GAIKFTNRATE (IDX)
-                                       TO  SPA-GMN-GAIKFTNRATE (IDX)
-      *
-           ADD     1                   TO  SPA-GMN-CUR
-           .
-       4112-GAIKFTNRATE-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    外来回固定額チェック処理
-      *****************************************************************
-       4113-GAIKKOTGAK-CHK-SEC        SECTION.
-      *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GAIKKOTGAK1"
-                   MOVE    1                   TO  IDX
-               WHEN    "GAIKKOTGAK2"
-                   MOVE    2                   TO  IDX
-               WHEN    "GAIKKOTGAK3"
-                   MOVE    3                   TO  IDX
-               WHEN    "GAIKKOTGAK4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   22  
-      *
-           MOVE    V02-GAIKKOTGAK  (IDX)
-                                        TO  SPA-GMN-GAIKKOTGAK (IDX)
-      *
-           ADD     1                    TO  SPA-GMN-CUR
-           . 
-       4113-GAIKKOTGAK-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    外来回上限額チェック処理
-      *****************************************************************
-       4114-GAIKJGNGAK-CHK-SEC        SECTION.
-      *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GAIKJGNGAK1"
-                   MOVE    1                   TO  IDX
-               WHEN    "GAIKJGNGAK2"
-                   MOVE    2                   TO  IDX
-               WHEN    "GAIKJGNGAK3"
-                   MOVE    3                   TO  IDX
-               WHEN    "GAIKJGNGAK4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   23  
-      *
-           MOVE    V02-GAIKJGNGAK  (IDX)
-                                        TO  SPA-GMN-GAIKJGNGAK (IDX)
-      *
-           ADD     1                    TO  SPA-GMN-CUR
-           .
-       4114-GAIKJGNGAK-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    外来日上限額チェック処理
-      *****************************************************************
-       4115-GAIDJGNGAK-CHK-SEC        SECTION.
-      *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GAIDJGNGAK1"
-                   MOVE    1                   TO  IDX
-               WHEN    "GAIDJGNGAK2"
-                   MOVE    2                   TO  IDX
-               WHEN    "GAIDJGNGAK3"
-                   MOVE    3                   TO  IDX
-               WHEN    "GAIDJGNGAK4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   24  
-      *
-      *
-           MOVE    V02-GAIDJGNGAK(IDX)  TO  SPA-GMN-GAIDJGNGAK (IDX)
-      *
-           ADD     1                    TO  SPA-GMN-CUR
-           .
-       4115-GAIDJGNGAK-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    外来日上限回数チェック処理
-      *****************************************************************
-       4116-GAIDJGNCNT-CHK-SEC        SECTION.
-      *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GAIDJGNCNT1"
-                   MOVE    1                   TO  IDX
-               WHEN    "GAIDJGNCNT2"
-                   MOVE    2                   TO  IDX
-               WHEN    "GAIDJGNCNT3"
-                   MOVE    3                   TO  IDX
-               WHEN    "GAIDJGNCNT4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   25  
-      *
-           MOVE    V02-GAIDJGNCNT(IDX) TO  SPA-GMN-GAIDJGNCNT (IDX)
-      *
-           ADD     1                   TO  SPA-GMN-CUR
-           .
-       4116-GAIDJGNCNT-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    外来月院内上限額チェック処理
-      *****************************************************************
-       4117-GAIMNAIJGNGAK-CHK-SEC        SECTION.
-      *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GAIMNAIJGNGAK1"
-                   MOVE    1                   TO  IDX
-               WHEN    "GAIMNAIJGNGAK2"
-                   MOVE    2                   TO  IDX
-               WHEN    "GAIMNAIJGNGAK3"
-                   MOVE    3                   TO  IDX
-               WHEN    "GAIMNAIJGNGAK4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   26  
-      *
-           MOVE    V02-GAIMNAIJGNGAK(IDX)
-                                  TO  SPA-GMN-GAIMNAIJGNGAK (IDX)
-      *
-           ADD     1              TO  SPA-GMN-CUR
-           .
-       4117-GAIMNAIJGNGAK-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    外来月院外上限額チェック処理
-      *****************************************************************
-       4118-GAIMGAIJGNGAK-CHK-SEC        SECTION.
-      *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GAIMGAIJGNGAK1"
-                   MOVE    1                   TO  IDX
-               WHEN    "GAIMGAIJGNGAK2"
-                   MOVE    2                   TO  IDX
-               WHEN    "GAIMGAIJGNGAK3"
-                   MOVE    3                   TO  IDX
-               WHEN    "GAIMGAIJGNGAK4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   27  
-      *
-           MOVE    V02-GAIMGAIJGNGAK   (IDX)
-                                   TO  SPA-GMN-GAIMGAIJGNGAK (IDX)
-      *
-           ADD     1               TO  SPA-GMN-CUR
-           .
-       4118-GAIMGAIJGNGAK-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    外来月上限回数チェック処理
-      *****************************************************************
-       4119-GAIMJGNCNT-CHK-SEC        SECTION.
-      *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GAIMJGNCNT1"
-                   MOVE    1                   TO  IDX
-               WHEN    "GAIMJGNCNT2"
-                   MOVE    2                   TO  IDX
-               WHEN    "GAIMJGNCNT3"
-                   MOVE    3                   TO  IDX
-               WHEN    "GAIMJGNCNT4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   28  
-      *
-           MOVE    V02-GAIMJGNCNT  (IDX)
-                                   TO  SPA-GMN-GAIMJGNCNT (IDX)
-      *
-           ADD     1               TO  SPA-GMN-CUR
-           .
-       4119-GAIMJGNCNT-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1446,26 +1407,42 @@
       *****************************************************************
        4120-GAIYKZFTNKBN-CHK-SEC        SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "GAIYKZFTNKBN1"
-                   MOVE    1                   TO  IDX
-               WHEN    "GAIYKZFTNKBN2"
-                   MOVE    2                   TO  IDX
-               WHEN    "GAIYKZFTNKBN3"
-                   MOVE    3                   TO  IDX
-               WHEN    "GAIYKZFTNKBN4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   29  
       *
-           MOVE    V02-GAIYKZFTNKBN    (IDX)
-                                       TO  SPA-GMN-GAIYKZFTNKBN-G(IDX)
+           EVALUATE    SPA-GMN-PAGENO
+               WHEN    0
+                   MOVE    1               TO  IDX
+                   MOVE    29              TO  WRK-GMN-CUR
+               WHEN    1
+                   MOVE    2               TO  IDX
+                   MOVE    59              TO  WRK-GMN-CUR
+               WHEN    2
+                   MOVE    3               TO  IDX
+                   MOVE    89              TO  WRK-GMN-CUR
+               WHEN    3
+                   MOVE    4               TO  IDX
+                   MOVE    119             TO  WRK-GMN-CUR
+           END-EVALUATE
       *
-           IF      SPA-GMN-GAIYKZFTNKBNMEI (IDX)  =   SPACE
-              MOVE    "0007"           TO  SPA-ERRCD
-           ELSE       
-               ADD     1               TO  SPA-GMN-CUR
-           END-IF    
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING IDY     FROM   1   BY  1
+                   UNTIL   IDY     >   SPA-GMN-GAIYKZFTNKBN-MAX
+               IF      SPA-GMN-GAIYKZFTNKBN (IDX)
+                                       =   SPA-GMN-GAIYKZFTNKBNL (IDY)
+                   MOVE    SPA-GMN-GAIYKZFTNKBNMEIL (IDY)
+                                           TO  SPA-GMN-GAIYKZFTNKBNMEI
+                                                                (IDX)
+                   MOVE    1               TO  FLG-CHK
+                   MOVE    SPA-GMN-GAIYKZFTNKBN-MAX
+                                           TO  IDY
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-CHK             =   ZERO
+               MOVE    "0007"              TO  SPA-ERRCD
+               MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
+               GO      TO      4120-GAIYKZFTNKBN-CHK-EXT
+           END-IF
+      *
            .
        4120-GAIYKZFTNKBN-CHK-EXT.
            EXIT.
@@ -1475,60 +1452,174 @@
       *****************************************************************
        4121-NYUFTNKBN-CHK-SEC       SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "NYUFTNKBN1"
-                   MOVE    1                   TO  IDX
-               WHEN    "NYUFTNKBN2"
-                   MOVE    2                   TO  IDX
-               WHEN    "NYUFTNKBN3"
-                   MOVE    3                   TO  IDX
-               WHEN    "NYUFTNKBN4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   30  
       *
-           MOVE    V02-NYUFTNKBN   (IDX)
-                                   TO  SPA-GMN-NYUFTNKBN-G (IDX)
+           EVALUATE    SPA-GMN-PAGENO
+               WHEN    0
+                   MOVE    1               TO  IDX
+                   MOVE    30              TO  WRK-GMN-CUR
+               WHEN    1
+                   MOVE    2               TO  IDX
+                   MOVE    60              TO  WRK-GMN-CUR
+               WHEN    2
+                   MOVE    3               TO  IDX
+                   MOVE    90              TO  WRK-GMN-CUR
+               WHEN    3
+                   MOVE    4               TO  IDX
+                   MOVE    120             TO  WRK-GMN-CUR
+           END-EVALUATE
       *
-           IF      SPA-GMN-NYUFTNKBNMEI (IDX)  =   SPACE
-              MOVE    "0008"           TO  SPA-ERRCD
-           ELSE
-               IF      SPA-GMN-NYUFTNKBN (IDX) =   "3"
-                   IF      SPA-V01-HKNNUM (1:1)    >=  "1" AND <= "8"
-                       CONTINUE
-                   ELSE
-                       MOVE    "0010"              TO  SPA-ERRCD
-                   END-IF
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING IDY     FROM   1   BY  1
+                   UNTIL   IDY     >   SPA-GMN-NYUFTNKBN-MAX
+               IF      SPA-GMN-NYUFTNKBN (IDX)
+                                       =   SPA-GMN-NYUFTNKBNL (IDY)
+                   MOVE    SPA-GMN-NYUFTNKBNMEIL (IDY)
+                                           TO  SPA-GMN-NYUFTNKBNMEI
+                                                                (IDX)
+                   MOVE    1               TO  FLG-CHK
+                   MOVE    SPA-GMN-NYUFTNKBN-MAX
+                                           TO  IDY
                END-IF
+           END-PERFORM
       *
-           IF      SPA-ERRCD           =   SPACE                           
-               ADD     1               TO  SPA-GMN-CUR
-           END-IF    
+           IF      FLG-CHK             =   ZERO
+               MOVE    "0008"              TO  SPA-ERRCD
+               MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
+               GO      TO      4121-NYUFTNKBN-CHK-EXT
+           END-IF
+           IF      SPA-GMN-NYUFTNKBN (IDX) =   "3"
+               IF      SPA-V01-HKNNUM (1:1)    >=  "1" AND <= "8"
+                   CONTINUE
+               ELSE
+                   MOVE    "0010"              TO  SPA-ERRCD
+                   MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
            .
        4121-NYUFTNKBN-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    入院食事療養費区分チェック処理
+      *****************************************************************
+       4129-NYUSKJRYYKBN-CHK-SEC        SECTION.
       *
+      *
+           EVALUATE    SPA-GMN-PAGENO
+               WHEN    0
+                   MOVE    1               TO  IDX
+                   MOVE    29              TO  WRK-GMN-CUR
+               WHEN    1
+                   MOVE    2               TO  IDX
+                   MOVE    59              TO  WRK-GMN-CUR
+               WHEN    2
+                   MOVE    3               TO  IDX
+                   MOVE    89              TO  WRK-GMN-CUR
+               WHEN    3
+                   MOVE    4               TO  IDX
+                   MOVE    119             TO  WRK-GMN-CUR
+           END-EVALUATE
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING IDY     FROM   1   BY  1
+                   UNTIL   IDY     >   SPA-GMN-NYUSKJRYYKBN-MAX
+               IF      SPA-GMN-NYUSKJRYYKBN (IDX)
+                                       =   SPA-GMN-NYUSKJRYYKBNL (IDY)
+                   MOVE    SPA-GMN-NYUSKJRYYKBNMEIL (IDY)
+                                           TO  SPA-GMN-NYUSKJRYYKBNMEI
+                                                                (IDX)
+                   MOVE    1               TO  FLG-CHK
+                   MOVE    SPA-GMN-NYUSKJRYYKBN-MAX
+                                           TO  IDY
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-CHK             =   ZERO
+               MOVE    "0009"              TO  SPA-ERRCD
+               MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
+               GO      TO      4129-NYUSKJRYYKBN-CHK-EXT
+           END-IF
+      *
+           .
+       4129-NYUSKJRYYKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来回負担割合チェック処理
+      *****************************************************************
+       4112-GAIKFTNRATE-CHK-SEC           SECTION.
+      *
+           .
+       4112-GAIKFTNRATE-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来回固定額チェック処理
+      *****************************************************************
+       4113-GAIKKOTGAK-CHK-SEC        SECTION.
+      *
+           . 
+       4113-GAIKKOTGAK-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来回上限額チェック処理
+      *****************************************************************
+       4114-GAIKJGNGAK-CHK-SEC        SECTION.
+      *
+           .
+       4114-GAIKJGNGAK-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来日上限額チェック処理
+      *****************************************************************
+       4115-GAIDJGNGAK-CHK-SEC        SECTION.
+      *
+           .
+       4115-GAIDJGNGAK-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来日上限回数チェック処理
+      *****************************************************************
+       4116-GAIDJGNCNT-CHK-SEC        SECTION.
+      *
+           .
+       4116-GAIDJGNCNT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来月院内上限額チェック処理
+      *****************************************************************
+       4117-GAIMNAIJGNGAK-CHK-SEC        SECTION.
+      *
+           .
+       4117-GAIMNAIJGNGAK-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来月院外上限額チェック処理
+      *****************************************************************
+       4118-GAIMGAIJGNGAK-CHK-SEC        SECTION.
+      *
+           .
+       4118-GAIMGAIJGNGAK-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来月上限回数チェック処理
+      *****************************************************************
+       4119-GAIMJGNCNT-CHK-SEC        SECTION.
+      *
+           .
+       4119-GAIMJGNCNT-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    入院回負担割合チェック処理
       *****************************************************************
        4122-NYUKFTNRATE-CHK-SEC           SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "NYUKFTNRATE1"
-                   MOVE    1                   TO  IDX
-               WHEN    "NYUKFTNRATE2"
-                   MOVE    2                   TO  IDX
-               WHEN    "NYUKFTNRATE3"
-                   MOVE    3                   TO  IDX
-               WHEN    "NYUKFTNRATE4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   31  
-      *
-           MOVE    V02-NYUKFTNRATE (IDX)
-                                   TO  SPA-GMN-NYUKFTNRATE (IDX)
-      *
-           ADD     1               TO  SPA-GMN-CUR
            .
        4122-NYUKFTNRATE-CHK-EXT.
            EXIT.
@@ -1538,21 +1629,6 @@
       *****************************************************************
        4123-NYUKKOTGAK-CHK-SEC        SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "NYUKKOTGAK1"
-                   MOVE    1                   TO  IDX
-               WHEN    "NYUKKOTGAK2"
-                   MOVE    2                   TO  IDX
-               WHEN    "NYUKKOTGAK3"
-                   MOVE    3                   TO  IDX
-               WHEN    "NYUKKOTGAK4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   32  
-      *
-           MOVE    V02-NYUKKOTGAK(IDX)  TO  SPA-GMN-NYUKKOTGAK (IDX)
-      *
-           ADD     1                    TO  SPA-GMN-CUR
            . 
        4123-NYUKKOTGAK-CHK-EXT.
            EXIT.
@@ -1562,21 +1638,6 @@
       *****************************************************************
        4124-NYUKJGNGAK-CHK-SEC        SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "NYUKJGNGAK1"
-                   MOVE    1                   TO  IDX
-               WHEN    "NYUKJGNGAK2"
-                   MOVE    2                   TO  IDX
-               WHEN    "NYUKJGNGAK3"
-                   MOVE    3                   TO  IDX
-               WHEN    "NYUKJGNGAK4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   33  
-      *
-           MOVE    V02-NYUKJGNGAK(IDX)  TO  SPA-GMN-NYUKJGNGAK (IDX)
-      *
-           ADD     1                    TO  SPA-GMN-CUR
            .
        4124-NYUKJGNGAK-CHK-EXT.
            EXIT.
@@ -1586,21 +1647,6 @@
       *****************************************************************
        4125-NYUDJGNGAK-CHK-SEC        SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "NYUDJGNGAK1"
-                   MOVE    1                   TO  IDX
-               WHEN    "NYUDJGNGAK2"
-                   MOVE    2                   TO  IDX
-               WHEN    "NYUDJGNGAK3"
-                   MOVE    3                   TO  IDX
-               WHEN    "NYUDJGNGAK4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   34  
-      *
-           MOVE    V02-NYUDJGNGAK(IDX)  TO  SPA-GMN-NYUDJGNGAK (IDX)
-      *
-           ADD     1                    TO  SPA-GMN-CUR
            .
        4125-NYUDJGNGAK-CHK-EXT.
            EXIT.
@@ -1610,21 +1656,6 @@
       *****************************************************************
        4126-NYUDJGNCNT-CHK-SEC        SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "NYUDJGNCNT1"
-                   MOVE    1                   TO  IDX
-               WHEN    "NYUDJGNCNT2"
-                   MOVE    2                   TO  IDX
-               WHEN    "NYUDJGNCNT3"
-                   MOVE    3                   TO  IDX
-               WHEN    "NYUDJGNCNT4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   35  
-      *
-           MOVE    V02-NYUDJGNCNT(IDX)  TO  SPA-GMN-NYUDJGNCNT (IDX)
-      *
-           ADD     1                    TO  SPA-GMN-CUR
            .
        4126-NYUDJGNCNT-CHK-EXT.
            EXIT.
@@ -1633,23 +1664,6 @@
       *    入院月院内上限額チェック処理
       *****************************************************************
        4127-NYUMJGNGAK-CHK-SEC        SECTION.
-      *
-           EVALUATE    MCP-WIDGET
-               WHEN    "NYUMJGNGAK1"
-                   MOVE    1                   TO  IDX
-               WHEN    "NYUMJGNGAK2"
-                   MOVE    2                   TO  IDX
-               WHEN    "NYUMJGNGAK3"
-                   MOVE    3                   TO  IDX
-               WHEN    "NYUMJGNGAK4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   36
-      *
-           MOVE    V02-NYUMJGNGAK    (IDX)
-                                        TO  SPA-GMN-NYUMJGNGAK (IDX)
-      *
-           ADD     1                    TO  SPA-GMN-CUR
            .
        4127-NYUMJGNGAK-CHK-EXT.
            EXIT.
@@ -1659,53 +1673,10 @@
       *****************************************************************
        4128-NYUMJGNCNT-CHK-SEC        SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "NYUMJGNCNT1"
-                   MOVE    1                   TO  IDX
-               WHEN    "NYUMJGNCNT2"
-                   MOVE    2                   TO  IDX
-               WHEN    "NYUMJGNCNT3"
-                   MOVE    3                   TO  IDX
-               WHEN    "NYUMJGNCNT4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   37  
-      *
-           MOVE    V02-NYUMJGNCNT(IDX) TO  SPA-GMN-NYUMJGNCNT (IDX)
-      *
-           ADD     1                   TO  SPA-GMN-CUR
            .
        4128-NYUMJGNCNT-CHK-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    入院食事療養費区分チェック処理
-      *****************************************************************
-       4129-NYUSKJRYYKBN-CHK-SEC        SECTION.
-      *
-           EVALUATE    MCP-WIDGET
-               WHEN    "NYUSKJRYYKBN1"
-                   MOVE    1                   TO  IDX
-               WHEN    "NYUSKJRYYKBN2"
-                   MOVE    2                   TO  IDX
-               WHEN    "NYUSKJRYYKBN3"
-                   MOVE    3                   TO  IDX
-               WHEN    "NYUSKJRYYKBN4"
-                   MOVE    4                   TO  IDX
-           END-EVALUATE 
-           COMPUTE SPA-GMN-CUR     =   (IDX -   1) *   30  +   38  
-      *
-           MOVE    V02-NYUSKJRYYKBN(IDX)
-                                   TO  SPA-GMN-NYUSKJRYYKBN-G (IDX)
-      *
-           IF      SPA-GMN-NYUSKJRYYKBNMEI (IDX)  =   SPACE
-              MOVE    "0009"       TO  SPA-ERRCD
-           ELSE       
-               COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR     -   18
-           END-IF    
-           .
-       4129-NYUSKJRYYKBN-CHK-EXT.
-           EXIT.
       *
       *****************************************************************
       *    タグ編集処理
@@ -1725,6 +1696,11 @@
       *
       *    タグが変わったとき関連チェック
            IF      WRK-PAGENO      NOT =   SPA-GMN-PAGENO
+               MOVE    1                   TO  FLG-KOUSIN
+               PERFORM 410-INPUT-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      440-TAG-CHANGE-EXT
+               END-IF
                PERFORM 4900-KANRENCHK-SEC
            END-IF
            IF      SPA-ERRCD            =   SPACE
@@ -1797,6 +1773,8 @@
       *
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1002"                  TO  SPA-ERRCD
+               DISPLAY "V02 HKNNUM DEL ERR:"  MCP-RC
+                       ",KEY:" HKN-KEY
                GO  TO  4031-DEL-EXT
            END-IF
       *
@@ -1810,7 +1788,14 @@
       *       登録前処理
       *****************************************************************
        490-TOUROKU-SEC              SECTION.
-      *   
+      *
+      *    入力チェック処理
+           MOVE    2                   TO  FLG-KOUSIN
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      490-TOUROKU-EXT
+           END-IF
+      *
            PERFORM 4900-KANRENCHK-SEC
            IF      SPA-ERRCD        =   SPACE
                MOVE    "1001"           TO  SPA-VIDCD
@@ -1828,8 +1813,15 @@
            MOVE    SPA-HOSPID              TO  HKN-HOSPID
            MOVE    SPA-V01-HKNNUM          TO  HKN-HKNNUM
            MOVE    SPA-V01-PAYKBN          TO  HKN-PAYKBN
-           MOVE    SPA-V01-STYUKYMD        TO  HKN-TEKSTYMD
-           MOVE    SPA-V01-EDYUKYMD        TO  HKN-TEKEDYMD
+      *
+           IF     (SPA-V01-SYORI           =   2  )  AND
+                  (SPA-OLD-STYUKYMD    NOT =   SPACE)
+               MOVE    SPA-OLD-STYUKYMD        TO  HKN-TEKSTYMD
+               MOVE    SPA-OLD-EDYUKYMD        TO  HKN-TEKEDYMD
+           ELSE
+               MOVE    SPA-V01-STYUKYMD        TO  HKN-TEKSTYMD
+               MOVE    SPA-V01-EDYUKYMD        TO  HKN-TEKEDYMD
+           END-IF
            MOVE    HKNNUM-REC              TO  MCPDATA-REC
            PERFORM 900-HKNNUM-INV-SEC
            IF      FLG-HKNNUM              =   ZERO
@@ -1904,22 +1896,39 @@
                                        TO  HKN-NYUSKJRYYKBN  (IDX)   
            END-PERFORM 
       *
-           MOVE    HKNNUM-REC              TO  MCPDATA-REC
-           MOVE    "HKNNUM-KEY"            TO  ORC-DBPATH
            IF      FLG-HKNNUM              =   ZERO
+      *        更新
+               MOVE    HKNNUM-REC              TO  MCPDATA-REC
+               MOVE    "HKNNUM-KEY"            TO  ORC-DBPATH
                MOVE    "DBUPDATE"              TO  MCP-FUNC
-           ELSE
-               MOVE    "DBINSERT"              TO  MCP-FUNC
-           END-IF
-           CALL    "ORCMCPSUB"              USING
+               CALL    "ORCMCPSUB"              USING
                                                 MCPAREA
                                                 ORCMCPAREA
                                                 MCPDATA-REC
       *
-           IF      MCP-RC              NOT =   ZERO 
-               MOVE    "1001"                  TO  SPA-ERRCD
-               GO  TO  490-KOUSHIN-EXT
-           END-IF      
+               IF      MCP-RC              NOT =   ZERO 
+                   MOVE    "1001"                  TO  SPA-ERRCD
+                   DISPLAY "V02 HKNNUM UPD ERR:"  MCP-RC
+                           ",KEY:" HKN-KEY
+                   GO  TO  490-KOUSHIN-EXT
+               END-IF
+           ELSE
+      *        追加
+               MOVE    HKNNUM-REC              TO  MCPDATA-REC
+               MOVE    "HKNNUM-KEY"            TO  ORC-DBPATH
+               MOVE    "DBINSERT"              TO  MCP-FUNC
+               CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+      *
+               IF      MCP-RC              NOT =   ZERO 
+                   MOVE    "1001"                  TO  SPA-ERRCD
+                   DISPLAY "V02 HKNNUM INS ERR:"  MCP-RC
+                           ",KEY:" HKN-KEY
+                   GO  TO  490-KOUSHIN-EXT
+               END-IF
+           END-IF
       *
            MOVE   "JOIN"               TO  MCP-PUTTYPE
            PERFORM 210-BACK 
@@ -1935,86 +1944,11 @@
            MOVE    SPACE                TO  SPA-ERRCD
            MOVE    SPA-GMN-CUR          TO  WRK-GMN-CUR
       *
-           EVALUATE    SPA-GMN-PAGENO
-               WHEN    0
-                   PERFORM 4901-TAG1-CHK-SEC
-               WHEN    1
-                   PERFORM 4901-TAG2-CHK-SEC
-               WHEN    2
-                   PERFORM 4901-TAG3-CHK-SEC
-               WHEN    3
-                   PERFORM 4901-TAG4-CHK-SEC
-           END-EVALUATE
-      *
            IF      SPA-ERRCD            =   SPACE
                MOVE    WRK-GMN-CUR          TO SPA-GMN-CUR
            END-IF         
            .
        4900-KANRENCHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *       本人情報タグの関連チェック処理
-      *****************************************************************
-       4901-TAG1-CHK-SEC           SECTION.
-      *
-           MOVE    "GAIFTNKBN1"    TO  MCP-WIDGET
-           PERFORM 4111-GAIFTNKBN-CHK-SEC
-      *
-           IF      SPA-ERRCD       =   SPACE     
-               MOVE    "NYUFTNKBN1"    TO  MCP-WIDGET
-               PERFORM 4121-NYUFTNKBN-CHK-SEC
-           END-IF    
-           .
-       4901-TAG1-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *       家族情報タグの関連チェック処理
-      *****************************************************************
-       4901-TAG2-CHK-SEC           SECTION.
-      *
-           MOVE    "GAIFTNKBN2"    TO  MCP-WIDGET
-           PERFORM 4111-GAIFTNKBN-CHK-SEC
-      *
-           IF      SPA-ERRCD       =   SPACE     
-               MOVE    "NYUFTNKBN2"    TO  MCP-WIDGET
-               PERFORM 4121-NYUFTNKBN-CHK-SEC
-           END-IF    
-           .
-       4901-TAG2-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *       低所得情報タグの関連チェック処理
-      *****************************************************************
-       4901-TAG3-CHK-SEC           SECTION.
-      *
-           MOVE    "GAIFTNKBN3"    TO  MCP-WIDGET
-           PERFORM 4111-GAIFTNKBN-CHK-SEC
-      *
-           IF      SPA-ERRCD       =   SPACE     
-               MOVE    "NYUFTNKBN3"    TO  MCP-WIDGET
-               PERFORM 4121-NYUFTNKBN-CHK-SEC
-           END-IF    
-           .
-       4901-TAG3-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *       定年金情報タグの関連チェック処理
-      *****************************************************************
-       4901-TAG4-CHK-SEC           SECTION.
-      *
-           MOVE    "GAIFTNKBN4"    TO  MCP-WIDGET
-           PERFORM 4111-GAIFTNKBN-CHK-SEC
-      *
-           IF      SPA-ERRCD       =   SPACE     
-               MOVE    "NYUFTNKBN4"    TO  MCP-WIDGET
-               PERFORM 4121-NYUFTNKBN-CHK-SEC
-           END-IF    
-           .
-       4901-TAG4-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2198,14 +2132,15 @@
                END-PERFORM
                MOVE    SPA-GMN-NYUSKJRYYKBN-MAX
                                    TO  V02-NYUSKJRYYKBN-COUNT (IDY)
-           END-PERFORM                                         
+           END-PERFORM
       *
            MOVE    SPA-GMN-PAGENO       TO  V02-PAGENO      
       *
       *
            MOVE    WIDGET-INSENSITIVE     TO  V02-B03-STATE
       *
-           IF      SPA-V01-SELNUM          >   ZERO    
+           IF     (SPA-V01-SELNUM      >   ZERO )  AND
+                  (SPA-V01-SYORI   NOT =   1    )
                MOVE    WIDGET-NORMAL      TO  V02-B03-STATE
            END-IF
       *      
@@ -2256,6 +2191,15 @@
                                                TO  SPA-ERRMSG
                WHEN    "0011"
                    MOVE    "レセプト負担金額入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0020"
+                   MOVE    "制度名入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0021"
+                   MOVE    "短縮制度名入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0022"
+                   MOVE    "法別番号チェック区分入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
@@ -2326,6 +2270,10 @@
       *    画面カーソルセット処理    
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
+      *
+          IF     SPA-GMN-CUR           =   ZERO
+               PERFORM 50011-GMN-CUR-SET-SEC
+          END-IF
       *
           EVALUATE    SPA-GMN-CUR
                 WHEN    01
@@ -2532,6 +2480,216 @@
       *
            .
        5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力カーソル位置編集処理
+      *****************************************************************
+       50011-GMN-CUR-SET-SEC      SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "HBTNUM"
+                   MOVE    2               TO  SPA-GMN-CUR
+               WHEN    "SEIDONAME"
+                   MOVE    3               TO  SPA-GMN-CUR
+               WHEN    "TANSEIDONAME"
+                   MOVE    4               TO  SPA-GMN-CUR
+               WHEN    "HKNKOHSBTKBN"
+                   MOVE    16              TO  SPA-GMN-CUR
+               WHEN    "HBTNUMCHKKBN"
+                   MOVE    5               TO  SPA-GMN-CUR
+               WHEN    "KENSNUMCHKKBN"
+                   MOVE    7               TO  SPA-GMN-CUR
+               WHEN    "JKYSKENSNUMCHKKBN"
+                   MOVE    8               TO  SPA-GMN-CUR
+               WHEN    "HKNKOHKBN"
+                   MOVE    6               TO  SPA-GMN-CUR
+               WHEN    "GENHKNNUM1"
+                   MOVE    9               TO  SPA-GMN-CUR
+               WHEN    "GENHKNNUM2"
+                   MOVE    10              TO  SPA-GMN-CUR
+               WHEN    "GENHKNNUM3"
+                   MOVE    11              TO  SPA-GMN-CUR
+               WHEN    "JOKENSTYEAR"
+                   MOVE    12              TO  SPA-GMN-CUR
+               WHEN    "JOKENEDYEAR"
+                   MOVE    13              TO  SPA-GMN-CUR
+               WHEN    "TENTNK"
+                   MOVE    14              TO  SPA-GMN-CUR
+               WHEN    "RECESKYKBN"
+                   MOVE    15              TO  SPA-GMN-CUR
+               WHEN    "RECEFTNDSPKBN"
+                   MOVE    20              TO  SPA-GMN-CUR
+      *
+      *
+               WHEN    "GAIFTNKBN1"
+                   MOVE    21              TO  SPA-GMN-CUR
+               WHEN    "GAIKFTNRATE1"
+                   MOVE    22              TO  SPA-GMN-CUR
+               WHEN    "GAIKKOTGAK1"
+                   MOVE    23              TO  SPA-GMN-CUR
+               WHEN    "GAIKJGNGAK1"
+                   MOVE    24              TO  SPA-GMN-CUR
+               WHEN    "GAIDJGNGAK1"
+                   MOVE    25              TO  SPA-GMN-CUR
+               WHEN    "GAIDJGNCNT1"
+                   MOVE    26              TO  SPA-GMN-CUR
+               WHEN    "GAIMNAIJGNGAK1"
+                   MOVE    27              TO  SPA-GMN-CUR
+               WHEN    "GAIMGAIJGNGAK1"
+                   MOVE    28              TO  SPA-GMN-CUR
+               WHEN    "GAIMJGNCNT1"
+                   MOVE    29              TO  SPA-GMN-CUR
+               WHEN    "GAIYKZFTNKBN1"
+                   MOVE    30              TO  SPA-GMN-CUR
+      *
+               WHEN    "NYUFTNKBN1"
+                   MOVE    31              TO  SPA-GMN-CUR
+               WHEN    "NYUKFTNRATE1"
+                   MOVE    32              TO  SPA-GMN-CUR
+               WHEN    "NYUKKOTGAK1"
+                   MOVE    33              TO  SPA-GMN-CUR
+               WHEN    "NYUKJGNGAK1"
+                   MOVE    34              TO  SPA-GMN-CUR
+               WHEN    "NYUDJGNGAK1"
+                   MOVE    35              TO  SPA-GMN-CUR
+               WHEN    "NYUDJGNCNT1"
+                   MOVE    36              TO  SPA-GMN-CUR
+               WHEN    "NYUMJGNGAK1"
+                   MOVE    37              TO  SPA-GMN-CUR
+               WHEN    "NYUMJGNCNT1"
+                   MOVE    38              TO  SPA-GMN-CUR
+               WHEN    "NYUSKJRYYKBN1"
+                   MOVE    20              TO  SPA-GMN-CUR
+      *
+      *
+               WHEN    "GAIFTNKBN2"
+                   MOVE    51              TO  SPA-GMN-CUR
+               WHEN    "GAIKFTNRATE2"
+                   MOVE    52              TO  SPA-GMN-CUR
+               WHEN    "GAIKKOTGAK2"
+                   MOVE    53              TO  SPA-GMN-CUR
+               WHEN    "GAIKJGNGAK2"
+                   MOVE    54              TO  SPA-GMN-CUR
+               WHEN    "GAIDJGNGAK2"
+                   MOVE    55              TO  SPA-GMN-CUR
+               WHEN    "GAIDJGNCNT2"
+                   MOVE    56              TO  SPA-GMN-CUR
+               WHEN    "GAIMNAIJGNGAK2"
+                   MOVE    57              TO  SPA-GMN-CUR
+               WHEN    "GAIMGAIJGNGAK2"
+                   MOVE    58              TO  SPA-GMN-CUR
+               WHEN    "GAIMJGNCNT2"
+                   MOVE    59              TO  SPA-GMN-CUR
+               WHEN    "GAIYKZFTNKBN2"
+                   MOVE    60              TO  SPA-GMN-CUR
+      *
+               WHEN    "NYUFTNKBN2"
+                   MOVE    61              TO  SPA-GMN-CUR
+               WHEN    "NYUKFTNRATE2"
+                   MOVE    62              TO  SPA-GMN-CUR
+               WHEN    "NYUKKOTGAK2"
+                   MOVE    63              TO  SPA-GMN-CUR
+               WHEN    "NYUKJGNGAK2"
+                   MOVE    64              TO  SPA-GMN-CUR
+               WHEN    "NYUDJGNGAK2"
+                   MOVE    65              TO  SPA-GMN-CUR
+               WHEN    "NYUDJGNCNT2"
+                   MOVE    66              TO  SPA-GMN-CUR
+               WHEN    "NYUMJGNGAK2"
+                   MOVE    67              TO  SPA-GMN-CUR
+               WHEN    "NYUMJGNCNT2"
+                   MOVE    68              TO  SPA-GMN-CUR
+               WHEN    "NYUSKJRYYKBN2"
+                   MOVE    50              TO  SPA-GMN-CUR
+      *
+      *
+      *
+               WHEN    "GAIFTNKBN3"
+                   MOVE    81              TO  SPA-GMN-CUR
+               WHEN    "GAIKFTNRATE3"
+                   MOVE    82              TO  SPA-GMN-CUR
+               WHEN    "GAIKKOTGAK3"
+                   MOVE    83              TO  SPA-GMN-CUR
+               WHEN    "GAIKJGNGAK3"
+                   MOVE    84              TO  SPA-GMN-CUR
+               WHEN    "GAIDJGNGAK3"
+                   MOVE    85              TO  SPA-GMN-CUR
+               WHEN    "GAIDJGNCNT3"
+                   MOVE    86              TO  SPA-GMN-CUR
+               WHEN    "GAIMNAIJGNGAK3"
+                   MOVE    87              TO  SPA-GMN-CUR
+               WHEN    "GAIMGAIJGNGAK3"
+                   MOVE    88              TO  SPA-GMN-CUR
+               WHEN    "GAIMJGNCNT3"
+                   MOVE    89              TO  SPA-GMN-CUR
+               WHEN    "GAIYKZFTNKBN3"
+                   MOVE    90              TO  SPA-GMN-CUR
+      *
+               WHEN    "NYUFTNKBN3"
+                   MOVE    91              TO  SPA-GMN-CUR
+               WHEN    "NYUKFTNRATE3"
+                   MOVE    92              TO  SPA-GMN-CUR
+               WHEN    "NYUKKOTGAK3"
+                   MOVE    93              TO  SPA-GMN-CUR
+               WHEN    "NYUKJGNGAK3"
+                   MOVE    94              TO  SPA-GMN-CUR
+               WHEN    "NYUDJGNGAK3"
+                   MOVE    95              TO  SPA-GMN-CUR
+               WHEN    "NYUDJGNCNT3"
+                   MOVE    96              TO  SPA-GMN-CUR
+               WHEN    "NYUMJGNGAK3"
+                   MOVE    97              TO  SPA-GMN-CUR
+               WHEN    "NYUMJGNCNT3"
+                   MOVE    98              TO  SPA-GMN-CUR
+               WHEN    "NYUSKJRYYKBN3"
+                   MOVE    80              TO  SPA-GMN-CUR
+      *
+      *
+               WHEN    "GAIFTNKBN4"
+                   MOVE    111             TO  SPA-GMN-CUR
+               WHEN    "GAIKFTNRATE4"
+                   MOVE    112             TO  SPA-GMN-CUR
+               WHEN    "GAIKKOTGAK4"
+                   MOVE    113             TO  SPA-GMN-CUR
+               WHEN    "GAIKJGNGAK4"
+                   MOVE    114             TO  SPA-GMN-CUR
+               WHEN    "GAIDJGNGAK4"
+                   MOVE    115             TO  SPA-GMN-CUR
+               WHEN    "GAIDJGNCNT4"
+                   MOVE    116             TO  SPA-GMN-CUR
+               WHEN    "GAIMNAIJGNGAK4"
+                   MOVE    117             TO  SPA-GMN-CUR
+               WHEN    "GAIMGAIJGNGAK4"
+                   MOVE    118             TO  SPA-GMN-CUR
+               WHEN    "GAIMJGNCNT4"
+                   MOVE    119             TO  SPA-GMN-CUR
+               WHEN    "GAIYKZFTNKBN4"
+                   MOVE    120             TO  SPA-GMN-CUR
+      *
+               WHEN    "NYUFTNKBN4"
+                   MOVE    121             TO  SPA-GMN-CUR
+               WHEN    "NYUKFTNRATE4"
+                   MOVE    122             TO  SPA-GMN-CUR
+               WHEN    "NYUKKOTGAK4"
+                   MOVE    123             TO  SPA-GMN-CUR
+               WHEN    "NYUKJGNGAK4"
+                   MOVE    124             TO  SPA-GMN-CUR
+               WHEN    "NYUDJGNGAK4"
+                   MOVE    125             TO  SPA-GMN-CUR
+               WHEN    "NYUDJGNCNT4"
+                   MOVE    126             TO  SPA-GMN-CUR
+               WHEN    "NYUMJGNGAK4"
+                   MOVE    127             TO  SPA-GMN-CUR
+               WHEN    "NYUMJGNCNT4"
+                   MOVE    128             TO  SPA-GMN-CUR
+               WHEN    "NYUSKJRYYKBN4"
+                   MOVE    110             TO  SPA-GMN-CUR
+      *
+           END-EVALUATE
+      *
+           .
+       50011-GMN-CUR-SET-EXT.
            EXIT.
       *
       *****************************************************************
