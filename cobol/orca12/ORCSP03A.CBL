@@ -107,6 +107,7 @@
            03  WRK-TEKEDYMDW           PIC X(09).
       *
            03  WRK-IDX             PIC 9(04).
+           03  WRK-KYURATE             PIC 9(03).
       *
       *    半角全角変換
        01  WRK-HENKAN-AREA.
@@ -433,6 +434,8 @@
                END-IF
       *
                MOVE    HKNJA-IDOYMD        TO  SPA-HKNJA-IDOYMD
+               MOVE    HKNJA-KYURATE1      TO  SPA-HKNJA-KYURATE1
+               MOVE    HKNJA-KYURATE2      TO  SPA-HKNJA-KYURATE2
            ELSE
                MOVE    SPACE               TO  SPA-HKNJA-HKNJANAME
                MOVE    SPACE               TO  SPA-HKNJA-ADRS
@@ -441,6 +444,8 @@
       *
                MOVE    SPACE               TO  SPA-HKNJA-KEIFLG
                MOVE    SPACE               TO  SPA-HKNJA-IDOYMD
+               MOVE    ZERO                TO  SPA-HKNJA-KYURATE1
+               MOVE    ZERO                TO  SPA-HKNJA-KYURATE2
       *
                MOVE    SPACE               TO  WRK-HKNJA-HKNNUM
       *        保険者番号モジュラス10チェック
@@ -803,7 +808,14 @@
                        MOVE    IDT         TO  SPA-GMN-HOJO-MAX
                    END-PERFORM
                    IF      SPA-GMN-HOJOKBN     =   SPACE
-                       MOVE    "3"             TO  SPA-GMN-HOJOKBN
+      *                給付割合から
+                       IF     (SPA-HKNJA-KYURATE1  NOT =   ZERO )  OR
+                              (SPA-HKNJA-KYURATE2  NOT =   ZERO )
+                           PERFORM 3101101-HOJO-KYURATE-SEC
+                       ELSE
+                           MOVE    "3"             TO  SPA-GMN-HOJOKBN
+                       END-IF
+      *
       *                Ｈ１４．１０以降、老人は１割を初期とする
                        IF    ((SPA-NAI-HTEKSTYMD   >=  "20021001" ) AND
                               (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70)) OR
@@ -904,6 +916,31 @@
            EXIT.
       *
       *****************************************************************
+      *    給付割合から補助区分編集処理
+      *****************************************************************
+       3101101-HOJO-KYURATE-SEC            SECTION.
+      *
+           IF      SPA-GMN-HONKZKKBN   =   "1"
+               MOVE    SPA-HKNJA-KYURATE1  TO  WRK-KYURATE
+           ELSE
+               MOVE    SPA-HKNJA-KYURATE2  TO  WRK-KYURATE
+           END-IF
+           EVALUATE    WRK-KYURATE
+               WHEN    000
+                   MOVE    "3"             TO  SPA-GMN-HOJOKBN
+               WHEN    080
+                   MOVE    "2"             TO  SPA-GMN-HOJOKBN
+               WHEN    090
+                   MOVE    "1"             TO  SPA-GMN-HOJOKBN
+               WHEN    100
+                   MOVE    "0"             TO  SPA-GMN-HOJOKBN
+           END-EVALUATE
+      *
+           .
+       3101101-HOJO-KYURATE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    老人補助区分編集処理
       *****************************************************************
        310111-HKNTBL-RJNHEN-SEC            SECTION.
@@ -972,6 +1009,16 @@
                    PERFORM 1001-HOJOKBN-CHK-SEC
                END-IF
            END-IF
+      *
+      *   国保で新規の場合
+           IF     (SPA-MAE-HONKZKKBN   NOT =   SPA-GMN-HONKZKKBN) AND
+                  (SPA-GMN-HKNNUM          =   "060"     )  AND
+                 ((SPA-NAI-HKNSTR          =   ZERO  ) OR
+                  (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
+                                           =   "1"    )) 
+               PERFORM 3101101-HOJO-KYURATE-SEC
+           END-IF
+           MOVE    SPA-GMN-HONKZKKBN   TO  SPA-MAE-HONKZKKBN
       *
            .
        1001-HONKZKKBN-CHK-EXT.

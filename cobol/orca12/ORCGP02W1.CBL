@@ -1102,6 +1102,7 @@
                                            TO  SPA-GMN-HIHKNJANAME
            MOVE    SPA-PTHKN-HONKZKKBN (IDX)
                                            TO  SPA-GMN-HONKZKKBN
+           MOVE    SPA-GMN-HONKZKKBN       TO  SPA-MAE-HONKZKKBN
            MOVE    SPA-PTHKN-HOJOKBN (IDX) TO  SPA-GMN-HOJOKBN
            MOVE    SPA-PTHKN-CONTKBN (IDX) TO  SPA-GMN-CONTKBN
            MOVE    SPA-PTHKN-KIGO    (IDX) TO  SPA-GMN-KIGO
@@ -2148,6 +2149,9 @@
       *        保険者番号変更時に異動チェックをクリアする
                IF      P02-P02-HKNJANUM    NOT =   SPA-GMN-HKNJANUM
                    MOVE    SPACE               TO  SPA-HKNJA-KEIFLG
+               END-IF
+               IF      P02-P02-HONKZKBN(1:1)   NOT = SPA-GMN-HONKZKKBN
+                   MOVE    SPA-GMN-HONKZKKBN   TO  SPA-MAE-HONKZKKBN
                END-IF
                MOVE    P02-P02-HKNJANUM    TO  SPA-GMN-HKNJANUM
                MOVE    P02-P02-HKNNUM      TO  SPA-GMN-HKNNUM-G
