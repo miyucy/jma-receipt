@@ -36,3 +36,10 @@
       *ø«Œ≈≤ 
            03  LNK-ORCSSKS-SRYKA           PIC  X(02).
       *
+      * ÷µ—√Õ
+      *
+           03  LNK-ORCSSKS-OUT-AREA.
+      *∑◊ªª≈¡…º»÷πÊ
+               05  LNK-ORCSSKS-DENPNUM-END    PIC  9(07)
+                                           OCCURS  15.
+      *

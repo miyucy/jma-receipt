@@ -98,6 +98,7 @@
       *  01.00.36    NACL-門脇    04.01.21  労災の特定器材(09593)対応
       *  01.00.37    NACL-太田    04.02.09  コラムリスト編集修正
       *  01.00.38    NACL-門脇    04.07.16  再計算をサブへ修正
+      *  01.00.39    NACL-門脇    04.12.01  収納外来一括再計算対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -233,13 +234,16 @@
            03  FLG-ERR             PIC 9(01).
            03  FLG-SYULIST-ROW     PIC 9(01).
            03  FLG-JOBKANRI        PIC 9(01).
+           03  FLG-ARI             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX1                PIC 9(05).
            03  IDX2                PIC 9(05).
+           03  IDX3                PIC 9(05).
            03  IDX4                PIC 9(05).
            03  IDX5                PIC 9(05).
+           03  IDX6                PIC 9(05).
            03  IDX7                PIC 9(05).
            03  IDX9                PIC 9(05).
            03  IDX11               PIC 9(05).
@@ -295,6 +299,9 @@
            03  WRK-STPAGE          PIC 9(05).
            03  WRK-EDPAGE          PIC 9(05).
            03  WRK-PAGE            PIC ZZZZZZZZZ9.
+      *
+           03  WRK-DENPNUM-END-TABLE.
+               05  WRK-DENPNUM-END PIC 9(07)   OCCURS  15.
       *
        01  WRK-ROW.
            05  WRK-SYULIST-ROW     PIC S9(9)   BINARY.
@@ -2241,6 +2248,9 @@
       *    再印刷
            WHEN    "CLICKED"       ALSO    "B08S"
                PERFORM 450-REPRINT-SEC
+      *    外来分一括再計算
+           WHEN    "CLICKED"       ALSO    "B07S"
+               PERFORM 440-IKATUSAIKEI-SEC
            END-EVALUATE
            .
        200-GMNSENI-EXT.
@@ -3230,6 +3240,107 @@
            MOVE    1                   TO  SPA-GMN-CUR
            .
        440-SAIKEI-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    外来分一括再計算処理
+      **************************************************************
+       440-IKATUSAIKEI-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  IDX6
+           INITIALIZE     WRK-DENPNUM-END-TABLE
+      *
+      ***  IF    ( SPA-GMN-NYUGAIKBN   =   "0" OR  "2" )
+      ***      MOVE    "2"             TO  WRK-NYUGAIKBN
+      ***  ELSE
+      ***      GO      TO      440-IKATUSAIKEI-EXT
+      ***  END-IF
+           MOVE    "2"                 TO  WRK-NYUGAIKBN
+      *
+           MOVE    ZERO                TO  FLG-SYUNOU
+           INITIALIZE                      SYUNOU-REC
+           MOVE    SPA-HOSPID          TO  SYU-HOSPID
+           MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  SYU-PTID
+           MOVE    SPA-NAI-SRYYM       TO  SYU-SRYYMD (1:6)
+           MOVE    "__"                TO  SYU-SRYYMD (7:)
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "SYUNOU-KEY14"      TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           PERFORM   UNTIL ( FLG-SYUNOU  =   1 )
+      *
+               MOVE    MCPDATA-REC     TO   SYUNOU-REC
+      *
+               MOVE    ZERO            TO   FLG-ARI
+               PERFORM    VARYING   IDX3   FROM   1   BY   1
+                       UNTIL  (IDX3                   >   15 )
+                         OR   (WRK-DENPNUM-END(IDX3)  =  ZERO)
+                         OR   (FLG-ARI                =   1  )
+                   IF  WRK-DENPNUM-END(IDX3)  =   SYU-DENPNUM
+                         MOVE   1    TO   FLG-ARI
+                   END-IF
+               END-PERFORM
+      *
+               IF   SYU-DENPJTIKBN  NOT =   "3"
+               AND  FLG-ARI             =   ZERO
+                  INITIALIZE                   LNK-ORCSSAIKEISAN-REC
+      *
+                  MOVE     SYU-HOSPID     TO   LNK-ORCSSKS-HOSPID
+                  MOVE     SYU-NYUGAIKBN  TO   LNK-ORCSSKS-NYUGAIKBN
+                  MOVE     SYU-PTID       TO   LNK-ORCSSKS-PTID
+                  MOVE     SYU-DENPNUM    TO   LNK-ORCSSKS-DENPNUM
+                  MOVE     SYU-SRYKA      TO   LNK-ORCSSKS-SRYKA
+      *
+                  CALL    "ORCSSAIKEISAN"     USING
+                                              SPA-AREA
+                                              LNK-ORCSSAIKEISAN-REC
+      *
+                  PERFORM    VARYING   IDX3   FROM   1   BY   1
+                       UNTIL  (IDX3                          >   15 )
+                         OR   (LNK-ORCSSKS-DENPNUM-END(IDX3) =  ZERO)
+                      ADD    1     TO   IDX6
+                      MOVE   LNK-ORCSSKS-DENPNUM-END(IDX3)
+                                   TO   WRK-DENPNUM-END(IDX6)
+                  END-PERFORM
+      *
+               END-IF
+      *
+               MOVE    "SYUNOU-KEY14"  TO  WRK-DBPATH
+               PERFORM 900-TBL-READ-SEC
+               IF    ( FLG-DBRC    NOT =   ZERO )
+                   MOVE    1           TO  FLG-SYUNOU
+               END-IF
+      *
+               IF    SPA-ERRCD   NOT =  SPACE
+                   MOVE    1           TO  FLG-SYUNOU
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "SYUNOU-KEY14"      TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    SPA-ERRCD   NOT =  SPACE
+                  MOVE    "0064"       TO  SPA-ERRCD
+           ELSE
+              IF    WRK-DENPNUM-END(1)  =  ZERO
+                  MOVE    "0060"       TO  SPA-ERRCD
+              END-IF
+           END-IF
+      *
+      *****PERFORM    310-SPA-SET-SEC.
+      *
+           PERFORM 3101-MISYU-EDIT-SEC
+      *
+           PERFORM 300-SYUNOU-HENSYU-SEC
+           MOVE    1                   TO  SPA-GMN-CUR
+      *
+           .
+       440-IKATUSAIKEI-EXT.
            EXIT.
       *
       **************************************************************
@@ -4293,7 +4404,7 @@
                                                TO  SPA-ERRMSG
       *
                WHEN    "0060"
-                   MOVE "当該収納データが見つかりません" 
+                   MOVE "該当収納データが見つかりません" 
                                                TO  SPA-ERRMSG
                WHEN    "0061"
                    MOVE "請求取消済みの為、再計算はできません"
@@ -4303,6 +4414,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0063"
                    MOVE "受診履歴が見つかりません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0064"
+                   MOVE "再計算できないデータがあります。"
                                                TO  SPA-ERRMSG
       *
                WHEN    "1001"

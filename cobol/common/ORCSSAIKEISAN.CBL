@@ -28,6 +28,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-ÌçÏÆ    04/10/01  ¼«ÇåÀÕÆÃÄê´ïºàÅù¾ÃÈñÀÇÂÐ±þ
+      *  01.00.02    NACL-ÌçÏÆ    04/12/01  ¼ýÇ¼³°Íè°ì³çºÆ·×»»ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -48,6 +49,7 @@
            03  IDX4                        PIC 9(03).
            03  IDX5                        PIC 9(03).
            03  IDY                         PIC 9(03).
+           03  IDY2                        PIC 9(03).
            03  IDZ                         PIC 9(03).
            03  IDW                         PIC 9(03).
            03  SAI-IDX                     PIC 9(03).
@@ -663,6 +665,8 @@
       *
       *    ¼ýÇ¼¥Ç¡¼¥¿¹¹¿·Åù
       *
+           MOVE       ZERO      TO     IDY2
+      *
            PERFORM    VARYING   IDY    FROM   1   BY   1
                               UNTIL  (IDY                 >    15 )
                                 OR   (LNK-SYU-SRYYMD(IDY) =  SPACE)
@@ -748,6 +752,10 @@
                                                     ORCMCPAREA
                                                     MCPDATA-REC
                  END-IF
+      *
+                 ADD    1         TO   IDY2
+                 MOVE   LNK-SYU-DENPNUM(IDY)
+                                  TO   LNK-ORCSSKS-DENPNUM-END(IDY2)
       *
              ELSE
       *
