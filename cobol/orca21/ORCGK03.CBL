@@ -845,6 +845,8 @@
                                                        (SPA-HKN-MAX)
                MOVE    SPA-TBL-HKNCOMBIMEI(1)  TO  SPA-GMN-THKNCOMBIMEI
                                                        (SPA-HKN-MAX)
+               MOVE    SPA-TBL-FTNRATEMEI (1)  TO  SPA-NAI-TFTNRATEMEI
+                                                       (SPA-HKN-MAX)
                MOVE    1                       TO  IDX
                PERFORM 3003-SRYKA-HEN-SEC
            ELSE
