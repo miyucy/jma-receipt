@@ -5764,6 +5764,26 @@
       *    Æþ±¡´µ¼Ô¤ÎÇ¯Îð·×»»
            PERFORM    4801-PT-AGE-SEC
       *
+      *    Æþ±¡´µ¼Ô¤ÎÏ·¿ÍÊÝ¸±È½Äê
+           MOVE    ZERO                TO   FLG-HKNCOMBI
+           INITIALIZE              HKNCOMBI-REC
+      *
+           MOVE    SPA-HOSPID          TO   COMB-HOSPID
+           MOVE    PTNYUINRRK-PTID     TO   COMB-PTID
+           MOVE    PTNYUINRRK-HKNCOMBINUM
+                                       TO   COMB-HKNCOMBINUM
+           MOVE    HKNCOMBI-REC        TO   MCPDATA-REC
+           MOVE    "HKNCOMBI-KEY"      TO   WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC 
+           IF    ( FLG-DBRC    =   ZERO )
+               MOVE    MCPDATA-REC
+                                       TO   HKNCOMBI-REC
+           ELSE
+               MOVE    1               TO   FLG-HKNCOMBI
+           END-IF
+      *
+           MOVE    "HKNCOMBI-KEY"      TO   WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
       *    Ï·¿ÍÂÐ¾Ý´µ¼Ô¤Ç¤¢¤ì¤ÐÆþ±¡¿ÇÎÅ¥³¡¼¥É¤ÎÃÖ¤­´¹¤¨
            IF    ((FLG-HKNCOMBI     =   ZERO)    AND
                   (COMB-KOH1HKNNUM  =   "027"))      OR
