@@ -56,6 +56,8 @@
       *                                     未入力チェックの追加
       *  01.00.18    ひさなが     03/06/03  診療行為と病名チェック
       *                                     薬剤と病名チェックの修正
+      *  01.00.19    ひさなが     03/06/06  病名に対応する病名コードの
+      *                                     未入力チェックの修正
       *
       *****************************************************************
       *
@@ -164,6 +166,7 @@
            03  T-ERR-13-2          PIC X(01).
            03  T-ERR-13-3          PIC X(01).
            03  T-ERR-14            PIC X(01).
+           03  T-ERR-15            PIC X(01).
            03  T-CNT-IN            PIC 9(09).
            03  T-CNT-OUT           PIC 9(09).
       *
@@ -1109,6 +1112,7 @@
                MOVE    SPACE             TO  T-ERR-13
                MOVE    SPACE             TO  T-ERR-13-2
                MOVE    SPACE             TO  T-ERR-14
+               MOVE    SPACE             TO  T-ERR-15
                IF  (T-NYUGAIKBN-AREA       =  "1")   AND
                    (SPA-GMN-CNV (12)       =  "1")   AND
                    (PTINF-TSTPTNUMKBN  NOT =  "1")
@@ -1140,6 +1144,7 @@
                    MOVE    SPACE             TO  T-ERR-06
                    MOVE    SPACE             TO  T-ERR-07
                    MOVE    SPACE             TO  T-ERR-13-3
+                   MOVE    SPACE             TO  T-ERR-15
                    PERFORM T-510-RECECHEK-SEC
                END-IF
       *
@@ -2096,8 +2101,8 @@
                IF  MCP-RC   NOT =   ZERO
                    IF  ((SPA-GMN-CNV (5)   =  "1")    OR
                         (SPA-GMN-CNV (7)   =  "1"))  AND
-                       (T-ERR-05          = SPACE)   AND
-                       (T-ERR-07          = SPACE)
+                       ((T-ERR-05          = SPACE)   OR
+                        (T-ERR-07          = SPACE))
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                        MOVE    SPACE                 TO  DID2-REC
                        MOVE    ACCT-HOSPID           TO  DID2-REC(1:24)
@@ -2138,27 +2143,6 @@
                            MOVE    "*"               TO  T-ERR-05
                            MOVE    "ED"              TO  T-HANNTEI6
                        END-IF
-      *修正/*開始*03.05.09*********************************************
-                       IF  (SPA-GMN-CNV (5)    = "1")    AND
-                           (T-ERR-05           = SPACE)  AND
-                           (PTBYO-BYOMEI  NOT  = SPACE)  AND
-                           (PTBYO-BYOMEICD (1) = SPACE)  AND
-                           (PTBYO-BYOMEICD (2) = SPACE)  AND
-                           (PTBYO-BYOMEICD (3) = SPACE)  AND
-                           (PTBYO-BYOMEICD (4) = SPACE)  AND
-                           (PTBYO-BYOMEICD (5) = SPACE)  AND
-                           (PTBYO-BYOMEICD (6) = SPACE)
-                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-                           MOVE SPACE                TO  DID2-REC
-                           MOVE ACCT-HOSPID          TO  DID2-REC(1:24)
-                           MOVE "-"                  TO  DID2-REC(25:1)
-                           MOVE ACCT-PTID            TO  DID2-REC(26:10)
-                           MOVE T-MESSAGE-510-06     TO  DID2-REC(71:90)
-                           WRITE   DID2-REC
-                           MOVE    "*"               TO  T-ERR-05
-                           MOVE    "ED"              TO  T-HANNTEI6
-                       END-IF
-      *修正/*終了*03.05.09*********************************************
                        IF  (SPA-GMN-CNV (7)   = "1")          AND
                            (PTBYO-TENKIKBN    = SPACE)        AND
                            (PTBYO-UTAGAIFLG   = "1")          AND
@@ -2241,6 +2225,26 @@
                                PERFORM T-520-RECECHEK-SEC
                            END-IF
                        END-IF
+      *修正/*開始*03.06.06*********************************************
+                       IF  (SPA-GMN-CNV (15)   = "1")    AND
+                           (T-ERR-15           = SPACE)  AND
+                           (PTBYO-BYOMEI  NOT  = SPACE)  AND
+                           (PTBYO-BYOMEICD (1) = SPACE)  AND
+                           (PTBYO-BYOMEICD (2) = SPACE)  AND
+                           (PTBYO-BYOMEICD (3) = SPACE)  AND
+                           (PTBYO-BYOMEICD (4) = SPACE)  AND
+                           (PTBYO-BYOMEICD (5) = SPACE)  AND
+                           (PTBYO-BYOMEICD (6) = SPACE)
+                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                           MOVE SPACE                TO  DID2-REC
+                           MOVE ACCT-HOSPID          TO  DID2-REC(1:24)
+                           MOVE "-"                  TO  DID2-REC(25:1)
+                           MOVE ACCT-PTID            TO  DID2-REC(26:10)
+                           MOVE T-MESSAGE-510-06     TO  DID2-REC(71:90)
+                           WRITE   DID2-REC
+                           MOVE    "*"               TO  T-ERR-15
+                       END-IF
+      *修正/*終了*03.06.06*********************************************
                        PERFORM T-510-RECECHEK-READ-SEC
                    END-PERFORM
                END-IF
@@ -3258,11 +3262,11 @@
                MOVE    ACCT-PTID           TO  DID2-REC(26:10)
                MOVE    "-"                 TO  DID2-REC(36:1)
                MOVE    SRY-SRYCD (IDX3)    TO  DID2-REC(37:9)
-               MOVE    "-"                 TO  DID2-REC(46:1)
-               MOVE    CHK-CD (IDY2)       TO  DID2-REC(47:9)
                MOVE    T-MESSAGE-530-04    TO  DID2-REC(71:90)
                IF  FLG-TENKIYMD-ER   =   1
-                   MOVE    T-MESSAGE-530-A   TO  DID2-REC(161:6)
+                   MOVE    "-"                 TO  DID2-REC(46:1)
+                   MOVE    CHK-CD (IDY2)       TO  DID2-REC(47:9)
+                   MOVE    T-MESSAGE-530-A     TO  DID2-REC(161:6)
                END-IF
                WRITE   DID2-REC
                MOVE    "*"                 TO  T-ERR-09
@@ -3284,11 +3288,11 @@
                MOVE    ACCT-PTID           TO  DID2-REC(26:10)
                MOVE    "-"                 TO  DID2-REC(36:1)
                MOVE    SRY-SRYCD (IDX3)    TO  DID2-REC(37:9)
-               MOVE    "-"                 TO  DID2-REC(46:1)
-               MOVE    CHK-CD (IDY2)       TO  DID2-REC(47:9)
                MOVE    T-MESSAGE-530-03    TO  DID2-REC(71:90)
                IF  FLG-TENKIYMD-ER   =   1
-                   MOVE    T-MESSAGE-530-A   TO  DID2-REC(161:6)
+                   MOVE    "-"                 TO  DID2-REC(46:1)
+                   MOVE    CHK-CD (IDY2)       TO  DID2-REC(47:9)
+                   MOVE    T-MESSAGE-530-A     TO  DID2-REC(161:6)
                END-IF
                WRITE   DID2-REC
                MOVE    "*"                 TO  T-ERR-08
