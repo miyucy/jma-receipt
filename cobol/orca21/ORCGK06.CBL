@@ -68,6 +68,7 @@
                            13  SPA-GMN-TFSANTEIYMD PIC X(09).
                            13  SPA-GMN-TMSANTEID   PIC 9(02).
                            13  SPA-GMN-TMSANTEICNT PIC 9(03).
+                           13  SPA-GMN-TMSANTEITEN PIC 9(08).
                    09  SPA-GMN-KOUMOKU.
                        11  SPA-GMN-RENNUM          PIC 9(03).
                        11  SPA-GMN-SRYCD           PIC X(09).
@@ -92,6 +93,7 @@
                                                    PIC 9(01).
                            11  SPA-NAI-JGNCNT      PIC 9(03).
                            11  SPA-NAI-JGNCNT1D    PIC 9(03).
+                           11  SPA-NAI-MSANTEIFLG  PIC 9(01).
       * 
                        09  SPA-NAI-TBL.
                            11  SPA-NAI-TBLO        OCCURS  100.
@@ -102,6 +104,7 @@
                                13  SPA-NAI-TDAY-G      OCCURS  31.
                                    15  SPA-NAI-TDAY    PIC 9(02).
                                13  SPA-NAI-TUPDFLG     PIC 9(01).
+                               13  SPA-NAI-TMSANTEIFLG PIC 9(01).
       *
                       09  SPA-DEL-TBL.
                           11  SPA-DEL-TBLO         OCCURS  100.
@@ -127,6 +130,7 @@
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
+           03  FLG-HEN             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -176,6 +180,7 @@
            03  WRK-INTYPE             PIC X(01).
       *
            03  WRK-ZZ                 PIC ZZ9.
+           03  WRK-Z9                 PIC ZZZZZZZZ.
       *
            03  WRK-SRYYM.
                05  WRK-SRY-YY         PIC 9(04).
@@ -545,6 +550,9 @@
                                                                  (IDX)
                END-IF
       *
+               MOVE    SANTEI-MSANTEITEN   TO  SPA-GMN-TMSANTEITEN (IDX)
+               MOVE    SANTEI-MSANTEIFLG   TO  SPA-NAI-TMSANTEIFLG (IDX)
+      *
                MOVE    "SANTEI-KEY2"           TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
            END-PERFORM
@@ -834,6 +842,9 @@
                MOVE    SPA-NAI-TDAY (SPA-GMN-RENNUM IDZ)
                                            TO  SPA-GMN-DAY(IDZ)
            END-PERFORM
+      *
+           MOVE    SPA-NAI-TMSANTEIFLG(SPA-GMN-RENNUM)
+                                       TO  SPA-NAI-MSANTEIFLG
       * 
            MOVE    SPA-GMN-SRYCD        TO  TNS-SRYCD
            PERFORM 900-TENSU-READ-SEC
@@ -1148,8 +1159,19 @@
       *
            COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR    +   IDY
       *
+           IF      K06-DAY (IDY)       =   SPA-GMN-DAY (IDY)
+               MOVE    ZERO            TO  FLG-HEN
+           ELSE
+               MOVE    1               TO  FLG-HEN
+           END-IF
            MOVE    K06-DAY (IDY)           TO  SPA-GMN-DAY (IDY)
       *
+      *    内分泌負荷試験は変更できない
+           IF     (SPA-NAI-MSANTEIFLG  =   1   )  AND
+                  (FLG-HEN             =   1   )
+               MOVE    "0030"              TO  SPA-ERRCD
+               GO  TO  41013-DAY-CHK-EXT
+           END-IF
            IF      SPA-NAI-JGNCNT1D        >   ZERO
                IF      SPA-GMN-DAY (IDY)       >   SPA-NAI-JGNCNT1D
                    IF      SPA-KEIFLG1         =   ZERO
@@ -1489,7 +1511,12 @@
                MOVE    "0004"              TO  SPA-ERRCD
                GO  TO  430-HENKOU-EXT
            END-IF
-      * 
+      *    内分泌負荷試験は変更できない
+           IF      SPA-NAI-MSANTEIFLG  =   1
+               MOVE    "0030"              TO  SPA-ERRCD
+               GO  TO  430-HENKOU-EXT
+           END-IF
+      *
       *----(01.00.01) LINE UPD START ----------------------------------
       *****MOVE    SPA-GMN-RENNUM  TO  IDY
            MOVE    SPA-GMN-RENNUM  TO  IDY-CHK
@@ -1525,6 +1552,11 @@
       *
            IF      SPA-GMN-RENNUM  =   ZERO
                MOVE    "0004"              TO  SPA-ERRCD
+               GO  TO  440-SAKUJYO-EXT
+           END-IF
+      *    内分泌負荷試験は変更できない
+           IF      SPA-NAI-MSANTEIFLG  =   1
+               MOVE    "0030"              TO  SPA-ERRCD
                GO  TO  440-SAKUJYO-EXT
            END-IF
       *
@@ -1940,6 +1972,7 @@
       *
            MOVE    SPA-NENREI-HEN      TO  K06-NENREI
       *
+           MOVE    ZERO                TO  K06-COUNT
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX                 >   100
                    OR          SPA-GMN-TRENNUM (IDX)=   ZERO  
@@ -1957,6 +1990,9 @@
                                                TO  K06-TMSANTEICNT(IDX)
                MOVE    SPA-GMN-TMSANTEID   (IDX)
                                                TO  K06-TMSANTEID  (IDX)
+               MOVE    SPA-GMN-TMSANTEITEN (IDX)
+                                               TO  WRK-Z9
+               MOVE    WRK-Z9                  TO  K06-TMSANTEITEN(IDX)
       *
                MOVE    IDX                     TO  K06-COUNT
            END-PERFORM
@@ -2097,6 +2133,9 @@
                                                    TO  SPA-ERRMSG
                    MOVE    "算定日を変更して下さい。"
                                                    TO  SPA-ERRMSG(29:)
+               WHEN    "0030"
+                   MOVE    "内分泌負荷試験検査は変更できません。"
+                                                       TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "更新処理でエラーになりました"
                                                    TO  SPA-ERRMSG

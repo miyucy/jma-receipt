@@ -162,6 +162,7 @@
                        09  SPA-NAI-SRYKA           PIC X(02).
       *
                        09  SPA-NAI-JIDFLG          PIC 9(01).
+               05  SPA-KEI-FLG         PIC 9(01).
       *
       *    フラグ領域
        01  STS-AREA.
@@ -344,6 +345,7 @@
            03  WRK-MEIBAN          PIC 9(03).
       *
            03  WRK-ERRMSG          PIC X(40).
+           03  WRK-MCP-PUTTYPE     PIC X(8).
       *
            03  WRK-GOKEI-X2.
                05  WRK-GOKEI-Z2    PIC ZZZ,ZZZ,ZZZ.
@@ -439,6 +441,9 @@
       *    ワーク診療行為マスタ−
        01  WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC".
+      *    附加情報を追加
+           03  WKSRYACTPLUS-REC.
+           COPY    "CPWKSRYACTPLUS.INC".
       *
       *    点数マスタ−
       *01  TENSU-REC.
@@ -491,6 +496,10 @@
            02  LNK-WKSRYACT-REC      OCCURS   600.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK-WKSRY-//.
+      *    附加情報を追加
+           03  LNK-WKSRYACTPLUS-REC.
+           COPY    "CPWKSRYACTPLUS.INC"  REPLACING
+                                     //WKSRYP-// BY //LNK-WKSRYP-//.
        01  LNK-WKSRYACT-MAX           PIC 9(04).
       *
       *    診療行為マスタワーク
@@ -498,6 +507,10 @@
            02  HZN-WKSRYACT-REC      OCCURS   600.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //HZN-WKSRY-//.
+      *    附加情報を追加
+           03  HZN-WKSRYACTPLUS-REC.
+           COPY    "CPWKSRYACTPLUS.INC"  REPLACING
+                                     //WKSRYP-// BY //HZN-WKSRYP-//.
        01  HZN-WKSRYACT-MAX           PIC 9(04).
       *
       *    診療行為マスタワーク
@@ -505,11 +518,19 @@
            02  SRT-WKSRYACT-REC      OCCURS   600.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //SRT-WKSRY-//.
+      *    附加情報を追加
+           03  SRT-WKSRYACTPLUS-REC.
+           COPY    "CPWKSRYACTPLUS.INC"  REPLACING
+                                     //WKSRYP-// BY //SRT-WKSRYP-//.
       *
       *    診療行為マスタワーク
        01  WRK-WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                     //WKSRY-// BY //WRK-WKSRY-//.
+      *    附加情報を追加
+           03  WRK-WKSRYACTPLUS-REC.
+           COPY    "CPWKSRYACTPLUS.INC"  REPLACING
+                                     //WKSRYP-// BY //WRK-WKSRYP-//.
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -678,30 +699,31 @@
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "KERR"
-               MOVE    SPACE               TO  SPA-MOTOPG
-               PERFORM 5001-MAPCUR-SEC
+               IF     (SPA-ERRMSG2     NOT =   SPACE )  AND
+                      (SPA-KEI-FLG         =   1     )
+                   MOVE    "JOIN"              TO  WRK-MCP-PUTTYPE
+                   PERFORM 45021-END-SYORI-SEC
+               ELSE
+                   MOVE    SPACE               TO  SPA-MOTOPG
+                   PERFORM 5001-MAPCUR-SEC
+               END-IF
            ELSE
-      *
       *        初期画面編集
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END             =   1
-                   GO      TO      100-INIT-EXT
-               END-IF
-      *
       *        画面編集
-               PERFORM 500-GMNHEN-SEC
-               IF      FLG-END             =   1
-                   GO      TO      100-INIT-EXT
+               IF      FLG-END             =   ZERO
+                   PERFORM 500-GMNHEN-SEC
                END-IF
            END-IF
       *
-      *****MOVE   "NEW"                TO  MCP-PUTTYPE.
-           MOVE   SPACE                TO  MCP-PUTTYPE.
-           MOVE   "K08"                TO  MCP-WINDOW.
+           IF      FLG-END             =   ZERO
+               MOVE   SPACE                TO  MCP-PUTTYPE
+               MOVE   "K08"                TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+               PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END
+               MOVE    1                   TO  FLG-END
+           END-IF
            .
       *
        100-INIT-EXT.
@@ -1765,7 +1787,8 @@
       *    COMPUTE WRK-KEI-G           =   WRK-ZAITEN
       *                                *   WRK-SRYKAISUKEI
       *****MOVE    WRK-KEI-G           TO  SPA-NAI-HKNTEN  (IDX-NAI)
-           IF      LNK-WKSRY-SRYCD (01 01)     =   "630010002"
+      *****IF      LNK-WKSRY-SRYCD (01 01)     =   "630010002"
+           IF      LNK-WKSRYP-PLUSKBN (IDX)    =   1
       *        薬剤料逓減　を減算
                MOVE    1                   TO  SPA-NAI-HKNSFLG(IDX-NAI)
            ELSE
@@ -4060,6 +4083,7 @@
            CALL    "ORCSCNYUIN"        USING
                                        SPA-AREA
                                        ORCSCNYUINAREA
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO     4502-NYUKOUSIN-SYORI-EXT
            END-IF
@@ -4068,9 +4092,30 @@
            IF      FLG-SIJISEN         =   1
                PERFORM 45900-SIJISEN-SYORI-SEC
            END-IF
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO     4502-NYUKOUSIN-SYORI-EXT
+      *    警告エラー
+           IF      SPA-ERRCD           =   SPACE
+               IF     (SPA-ERRMSG2     NOT =   SPACE)  AND
+                      (SPA-KEI-FLG         =   ZERO )
+                   MOVE    "K001"          TO  SPA-ERRCD
+                   MOVE    1               TO  SPA-KEI-FLG
+                END-IF
            END-IF
+           IF      SPA-ERRCD           =   SPACE
+               IF      FLG-KAKU-FLG        =   1
+                   MOVE    "JOIN"              TO  WRK-MCP-PUTTYPE
+               ELSE
+                   MOVE    "CHANGE"            TO  WRK-MCP-PUTTYPE
+               END-IF
+               PERFORM 45021-END-SYORI-SEC
+           END-IF
+           .
+       4502-NYUKOUSIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院終了処理
+      *****************************************************************
+       45021-END-SYORI-SEC             SECTION.
       *
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
@@ -4084,19 +4129,13 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "CHANGE"            TO  MCP-PUTTYPE
-           IF      FLG-KAKU-FLG        =   1
-               MOVE    "JOIN"              TO  MCP-PUTTYPE
-           END-IF
-      *
+           MOVE    WRK-MCP-PUTTYPE     TO  MCP-PUTTYPE
            MOVE    "K02N"              TO  MCP-WINDOW
-      *
            PERFORM 900-PUT-WINDOW
-      *
            MOVE    1                   TO  FLG-END
       *
            .
-       4502-NYUKOUSIN-SYORI-EXT.
+       45021-END-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4756,6 +4795,9 @@
                WHEN    "1201"
                    MOVE    "入院帳票が印刷エラーです。"
                                        TO  SPA-ERRMSG
+      *!
+               WHEN    "K001"
+                   MOVE    SPA-ERRMSG2     TO  SPA-ERRMSG
       *!
                WHEN    OTHER
                    MOVE    SPA-ERRCD   TO  SPA-ERRMSG

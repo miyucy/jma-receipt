@@ -411,6 +411,9 @@
       *    ワーク診療行為マスタ−
        01  WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC".
+      *    附加情報を追加
+           03  WKSRYACTPLUS-REC.
+           COPY    "CPWKSRYACTPLUS.INC".
       *
       *    受診内容
        01  UKETUKE-REC.
@@ -425,16 +428,16 @@
            COPY    "CPTENSU.INC".
       *
       *    診療行為マスタワーク
-       01  LNK-WKSRYACT-AREA.
-           02  LNK-WKSRYACT-REC      OCCURS   50.
-           COPY    "CPWKSRYACT.INC"  REPLACING
-                                     //WKSRY-// BY //LNK-WKSRY-//.
-       01  LNK-WKSRYACT-MAX           PIC 9(04).
+      *01  LNK-WKSRYACT-AREA.
+      *    02  LNK-WKSRYACT-REC      OCCURS   50.
+      *    COPY    "CPWKSRYACT.INC"  REPLACING
+      *                              //WKSRY-// BY //LNK-WKSRY-//.
+      *01  LNK-WKSRYACT-MAX           PIC 9(04).
       *
       *    診療行為マスタワーク
-       01  WRK-WKSRYACT-REC.
-           COPY    "CPWKSRYACT.INC"  REPLACING
-                                    //WKSRY-// BY //WRK-WKSRY-//.
+      *01  WRK-WKSRYACT-REC.
+      *    COPY    "CPWKSRYACT.INC"  REPLACING
+      *DDD                          //WKSRY-// BY //WRK-WKSRY-//.
       *
       *    保存用収納ワーク
        01  WRK-SYUNOU-REC.
@@ -606,26 +609,30 @@
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "KERR"
-               MOVE    SPACE               TO  SPA-MOTOPG
-               PERFORM 5001-MAPCUR-SEC
+               IF     (SPA-ERRMSG2     NOT =   SPACE )  AND
+                      (SPA-KEI-FLG         =   1     )
+                   MOVE    "JOIN"              TO  WRK-MCP-PUTTYPE
+                   PERFORM 4900-END-SYORI-SEC
+               ELSE
+                   MOVE    SPACE               TO  SPA-MOTOPG
+                   PERFORM 5001-MAPCUR-SEC
+               END-IF
            ELSE
-      *
       *        初期画面編集
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END             =   1
-                   GO      TO      100-INIT-EXT
-               END-IF
-      *
       *        画面編集
-               PERFORM 500-GMNHEN-SEC
+               IF      FLG-END         NOT =   1
+                   PERFORM 500-GMNHEN-SEC
+               END-IF
            END-IF
       *
-           MOVE   SPACE                TO  MCP-PUTTYPE.
-           MOVE   "K03"                TO  MCP-WINDOW.
+           IF      FLG-END         NOT =   1
+               MOVE   SPACE                TO  MCP-PUTTYPE
+               MOVE   "K03"                TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                   TO  FLG-END
+           END-IF
            .
       *
        100-INIT-EXT.
@@ -3826,6 +3833,7 @@
        4909-NASI-SYORI-SEC             SECTION.
       *
       *    初診料算定がある時は、算定履歴と診療科履歴を作成する
+           MOVE    SPACE               TO  SPA-ERRMSG2
            IF      SPA-SYOSIN-YMD  NOT =   SPACE
       *        外来更新処理
                INITIALIZE                  ORCSCGAIRAIAREA
@@ -3834,9 +3842,21 @@
                CALL    "ORCSCGAIRAI"       USING
                                            SPA-AREA
                                            ORCSCGAIRAIAREA
+               MOVE    SPA-WORK        TO  SPA-K01KYOUTU
+           END-IF
+      *    警告エラー
+           IF      SPA-ERRCD           =   SPACE
+               IF     (SPA-ERRMSG2     NOT =   SPACE)  AND
+                      (SPA-KEI-FLG         =   ZERO )
+                   MOVE    "K001"          TO  SPA-ERRCD
+                   MOVE    1               TO  SPA-KEI-FLG
+                END-IF
            END-IF
       *
-           PERFORM 4900-END-SYORI-SEC
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    "CHANGE"            TO  WRK-MCP-PUTTYPE
+               PERFORM 4900-END-SYORI-SEC
+           END-IF
       *
            .
        4909-NASI-SYORI-EXT.
@@ -3849,10 +3869,6 @@
       *    登録・更新処理
            IF      SPA-KIDCD           =   SPACE
                PERFORM 45001-TOROKU-KOUSIN-SEC
-               IF     (SPA-ERRCD       NOT =   SPACE )   OR
-                      (SPA-KIDCD       NOT =   SPACE )
-                   GO  TO      4500-TOROKU-SYORI-EXT
-               END-IF
                IF      FLG-CLAIM-OK        =   ZERO
                    MOVE    "CHANGE"            TO  WRK-MCP-PUTTYPE
                ELSE
@@ -3861,34 +3877,16 @@
            ELSE
       *        訂正時、受診履歴等の削除
                PERFORM 450012-TEISEI-DELETE-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO  TO      4500-TOROKU-SYORI-EXT
-               END-IF
                MOVE    "JOIN"              TO  WRK-MCP-PUTTYPE
            END-IF
       *
-      *    排他制御解除処理
-           PERFORM 990-LOCK-OUT-SEC
-      *
-      *    共通のキーをクリアする
-      *
-           MOVE    SPACE               TO  SPA-ERRMSG
-           INITIALIZE                      SPA-KYOTUKEY
-           INITIALIZE                      SPA-K01KYOUTU
-           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
-      *
-           MOVE    SPACE               TO  LINKAREA
-      *
-      *****MOVE    "K01"               TO  SPA-SAKIPG
-           MOVE    "K02"               TO  SPA-SAKIPG
-           MOVE    "K03"               TO  SPA-MOTOPG
-      *
-      *****MOVE    "CHANGE"            TO  MCP-PUTTYPE
-           MOVE    WRK-MCP-PUTTYPE     TO  MCP-PUTTYPE
-           MOVE    "K02"               TO  MCP-WINDOW
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
+           IF     (SPA-ERRCD       NOT =   SPACE )   OR
+                  (SPA-KIDCD       NOT =   SPACE )
+               MOVE    SPACE               TO  WRK-MCP-PUTTYPE
+           ELSE
+      *        終了処理
+               PERFORM 4900-END-SYORI-SEC
+           END-IF
            .
        4500-TOROKU-SYORI-EXT.
            EXIT.
@@ -4052,11 +4050,9 @@
       **** EXIT.
       *!
       *****************************************************************
-      *    診療行為なしの終了処理
+      *     処理終了処理
       *****************************************************************
        4900-END-SYORI-SEC          SECTION.
-      *
-           MOVE    "CHANGE"            TO  WRK-MCP-PUTTYPE
       *
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
@@ -4137,6 +4133,7 @@
       *****************************************************************
        450012-GAIRAI-CALL-SEC           SECTION.
       *
+           MOVE    SPACE               TO  SPA-ERRMSG2
       *    外来更新処理
            INITIALIZE                  ORCSCGAIRAIAREA
       *    登録・更新
@@ -4173,6 +4170,7 @@
            CALL    "ORCSCGAIRAI"       USING
                                        SPA-AREA
                                        ORCSCGAIRAIAREA
+           MOVE    SPA-WORK        TO  SPA-K01KYOUTU
       *
       *    伝票番号を編集する
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -4182,6 +4180,14 @@
                                        TO  SPA-SYUNOU-REC(IDX)
            END-PERFORM
       *
+      *    警告エラー
+           IF      SPA-ERRCD           =   SPACE
+               IF     (SPA-ERRMSG2     NOT =   SPACE)  AND
+                      (SPA-KEI-FLG         =   ZERO )
+                   MOVE    "K001"          TO  SPA-ERRCD
+                   MOVE    1               TO  SPA-KEI-FLG
+                END-IF
+           END-IF
            .
        450012-GAIRAI-CALL-EXT.
            EXIT.
@@ -4278,6 +4284,17 @@
            CALL    "ORCSCGAIRAI"       USING
                                        SPA-AREA
                                        ORCSCGAIRAIAREA
+      *
+           MOVE    SPA-WORK        TO  SPA-K01KYOUTU
+           MOVE    SPACE               TO  SPA-KIDCD
+      *    警告エラー
+           IF      SPA-ERRCD           =   SPACE
+               IF     (SPA-ERRMSG2     NOT =   SPACE)  AND
+                      (SPA-KEI-FLG         =   ZERO )
+                   MOVE    "K001"          TO  SPA-ERRCD
+                   MOVE    1               TO  SPA-KEI-FLG
+                END-IF
+           END-IF
       *
            .
        450012-TEISEI-DELETE-EXT.
@@ -4826,6 +4843,11 @@
                                        TO  SPA-ERRMSG
                    MOVE    "訂正できません。"
                                        TO  SPA-ERRMSG(31:)
+               WHEN    "9000"
+                   MOVE    "算定履歴の更新エラーです。"
+                                       TO  SPA-ERRMSG
+               WHEN    "K001"
+                   MOVE    SPA-ERRMSG2     TO  SPA-ERRMSG
                WHEN    OTHER
                    MOVE    SPA-ERRCD   TO  SPA-ERRMSG
            END-EVALUATE
@@ -5264,22 +5286,6 @@
            .
        980-PARA-READ-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    パラメタデータ順読み
-      *****************************************************************
-      *990-PARA-NEXT-SEC           SECTION.
-      *
-      *    READ    PARA-FILE       NEXT
-      *        AT  END
-      *            MOVE    1           TO  FLG-PARA
-      *        NOT AT  END
-      *            MOVE    ZERO        TO  FLG-PARA
-      *    END-READ
-      *
-      *    .
-      *990-PARA-NEXT-EXT.
-      *    EXIT.
       *
       *****************************************************************
       *    排他制御解除処理

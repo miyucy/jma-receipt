@@ -223,6 +223,7 @@
            03  FLG-FIRUMU           PIC 9(01).
       *
            03  FLG-SONOTA           PIC 9(01).
+           03  FLG-NAIFUTAN         PIC 9(01).
       *
            03  FLG-RIHTEI           PIC 9(01).
       *
@@ -232,6 +233,9 @@
            03  FLG-HENKOU            PIC 9(01).
       *    入院指示せん
            03  FLG-SIJISEN           PIC 9(01).
+      *    初期
+           03  FLG-INIT              PIC 9(01).
+           03  FLG-MAE-TENSU         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -412,6 +416,8 @@
       *    労災保険用
            03  WRK-TENSU           PIC 9(08).
            03  WRK-EN              PIC 9(08).
+      *    訂正時の点数判定
+           03  WRK-MAE-TENSU           PIC 9(08).
       *
       *    自費用
            03  WRK-TENTTLKBN       PIC 9(03).
@@ -890,6 +896,8 @@
            COPY    "CPORCHC502.INC".
       *    入院指示箋発行サブ
            COPY    "CPORCHC503.INC".
+      *    内分泌負荷試験更新パラメタ
+           COPY    "CPORCSSANFUKA.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -2573,11 +2581,19 @@
                    MOVE    SPACE           TO  SPA-MAE-INPUTCD (IDX)
                END-IF
            END-PERFORM
+      *    内分泌負荷試験検査情報
+           INITIALIZE              SPA-NAI-FUKATEN-AREA
       *    診療行為、計計算処理、編集
+           MOVE    1               TO  FLG-INIT
            MOVE    SPACE           TO  FLG-TOROKU
            PERFORM 510-TBLHEN-SEC
            MOVE    SPACE           TO  FLG-TOROKU
+      *    訂正時点数変更チェック
+           MOVE    ZERO                TO  SPA-TEISEI-CHK
+           MOVE    ZERO                TO  SPA-TEISEI-ERR
       *    警告フラグクリア
+           MOVE    ZERO                TO  WRK-MAE-TENSU
+           MOVE    ZERO                TO  FLG-MAE-TENSU
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   (IDX        >   200 )  OR
                           ((SPA-GMN-INPUTCD(IDX)   =   SPACE ) AND
@@ -2590,14 +2606,52 @@
                MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
                MOVE    SPACE           TO  SPA-COM-NYU-KZMFLG-G(IDX)
+      *        訂正時の点数判定
+               IF      SPA-SYORIFLG        =   1
+                   IF      FLG-MAE-TENSU   =   ZERO
+                       IF     (SPA-COM-MAE-TENSU(IDX)  >   ZERO  )  OR
+                              (SPA-COM-INPUTCD (IDX)   NOT =   SPACE)
+                           MOVE    SPA-COM-MAE-TENSU(IDX)
+                                               TO  WRK-MAE-TENSU
+                           MOVE    1           TO  FLG-MAE-TENSU
+                       END-IF
+                   END-IF
+                   IF      SPA-COM-ZAIEND(IDX)     =   "1"
+                       IF      SPA-COM-SRYKBN(IDX)     =   "95"
+                                                       OR  "96"
+                           MOVE    SPA-COM-JIHIMONEY(IDX)
+                                                   TO  WRK-TENSU
+                       ELSE
+                           MOVE    SPA-COM-TENSU (IDX)
+                                                   TO  WRK-TENSU
+                       END-IF
+                       IF      WRK-TENSU       NOT =   WRK-MAE-TENSU
+                           MOVE    1               TO  SPA-TEISEI-ERR
+                           MOVE    "1"             TO  SPA-COM-CUR (IDX)
+                       END-IF
+                   END-IF
+                   IF      SPA-COM-ZAIEND(IDX)     =   "1"
+                       MOVE    ZERO                TO  WRK-MAE-TENSU
+                       MOVE    ZERO                TO  FLG-MAE-TENSU
+                   END-IF
+               END-IF
            END-PERFORM
       *
            MOVE    SPACE               TO  SPA-ERRCD
            MOVE    SPACE               TO  SPA-KIDCD
+      *    内分泌負荷試験検査情報
+           INITIALIZE              SPA-NAI-FUKATEN-AREA
       *
            IF      WRK-ERRCD1      NOT =   SPACE
                MOVE    WRK-ERRCD1          TO  SPA-ERRCD
            END-IF
+      *
+           IF     (SPA-TEISEI-ERR      =   1  )  AND
+                  (SPA-ERRCD           =   SPACE)
+               MOVE    "K999"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-TEISEI-CHK
+           END-IF
+      *
            .
        310-SPA-GMNSET-EXT.
            EXIT.
@@ -2632,6 +2686,10 @@
                                        SPA-K02
                                        SPA-SCR-REC
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *
+           IF      ORCSCWKSRY-ERRCD    NOT =   SPACE
+               MOVE    ORCSCWKSRY-ERRCD    TO  WRK-ERRCD1
+           END-IF
       *
            .
        3103-SAIHEN-HEN-EXT.
@@ -5763,6 +5821,7 @@
                                        ORCSC93AREA
                                        MSYU-DATA-REC
            IF      SPA-ERRCD       NOT =   SPACE
+              AND (FLG-INIT            =   ZERO )
                GO      TO      5101-TBLSAIHEN-EXT
            END-IF
       *
@@ -5775,13 +5834,14 @@
       *                                SPA-AREA
       *                                SPA-SCR-REC
       *                                SPA-K02
-      *!   MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      5101-TBLSAIHEN-EXT
-           END-IF
+      *    MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *    IF      SPA-ERRCD       NOT =   SPACE
+      *        GO      TO      5101-TBLSAIHEN-EXT
+      *!   END-IF
       *
       *    剤ごとに回数を入れ直す（リハビリ等同時回数チェックのため）
            MOVE    ZERO                TO  FLG-SONOTA
+           MOVE    ZERO                TO  FLG-NAIFUTAN
            MOVE    ZERO                TO  WRK-KAISU
            INITIALIZE                      WRK-NYUIN-AREA
            PERFORM VARYING     IDX     FROM    WRK-GYO-MAX BY  -1
@@ -5849,6 +5909,12 @@
                    IF      SPA-COM-SRYKBN (IDX)    =   "80"
                        MOVE    1               TO  FLG-SONOTA
                    END-IF
+      *            内分泌負担試験有無
+                   IF     (SPA-COM-SRYKBN (IDX)    =   "60"  )  AND
+                          (SPA-COM-DATAKBN(IDX)    =   "1"   )  AND
+                          (SPA-COM-HOUKNSKBN(IDX)  =   08    )
+                       MOVE    1               TO  FLG-NAIFUTAN
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -5863,6 +5929,7 @@
            END-PERFORM
       *
            IF      SPA-ERRCD       NOT =   SPACE
+              AND (FLG-INIT            =   ZERO )
                GO      TO      5101-TBLSAIHEN-EXT
            END-IF
       *
@@ -5875,9 +5942,48 @@
                                            SPA-AREA
                                            SPA-K02
                                            ORCSC80CNTAREA
-      *
            END-IF
-      *
+      *!!
+      *    内分泌負担試験編集
+           IF      FLG-NAIFUTAN        =   1
+               INITIALIZE                  ORCSSANFUKAAREA
+               MOVE    2                   TO  LNK-SANFUKA-SYORI
+               MOVE    "K02"               TO  LNK-SANFUKA-PG
+               MOVE    SPA-SRYYMD          TO  LNK-SANFUKA-SRYYMD
+      *        訂正時の診療コード
+               MOVE    SPA-K02-TEISEI-AREA TO  LNK-SANFUKA-TEISEI-AREA
+               MOVE    SPA-NAI-FUKATEN-MAX TO  LNK-SANFUKA-TEN-MAX
+               MOVE    SPA-NAI-FUKATEN-ALL TO  LNK-SANFUKA-MSANTESU
+               MOVE    SPA-NAI-FUKATEN-DAY TO  LNK-SANFUKA-MSANTEID
+               MOVE    SPA-NAI-FUKATEN-DEL TO  LNK-SANFUKA-MSANTESU-DEL
+               CALL    "ORCSSANFUKA"       USING
+                                           ORCSSANFUKAAREA
+                                           SPA-AREA
+                                           SPA-SCR-REC
+      *        上限点数
+               MOVE    LNK-SANFUKA-TEN-MAX     TO  SPA-NAI-FUKATEN-MAX
+      *        当月分合計
+               MOVE    LNK-SANFUKA-MSANTESU    TO  SPA-NAI-FUKATEN-ALL
+      *        当月最終算定日
+               MOVE    LNK-SANFUKA-MSANTEID    TO  SPA-NAI-FUKATEN-DAY
+      *        訂正分合計
+               MOVE    LNK-SANFUKA-MSANTESU-DEL
+                                               TO  SPA-NAI-FUKATEN-DEL
+               IF     (SPA-ERRCD           =   SPACE )  AND
+                      (LNK-SANFUKA-ERRMSG  NOT =   SPACE)
+                   MOVE    LNK-SANFUKA-ERRMSG  TO  SPA-ERRMSG2
+                   MOVE    "1061"              TO  SPA-ERRCD
+               END-IF
+               IF     (SPA-ERRCD(1:1)      =   "K"   )  AND
+                      (LNK-SANFUKA-ERRMSG  NOT =   SPACE)
+                   MOVE    LNK-SANFUKA-ERRMSG  TO  SPA-ERRMSG2
+               END-IF
+           END-IF
+           IF     (SPA-ERRCD       NOT =   SPACE)
+              AND (FLG-INIT            =   ZERO )
+               GO      TO      5101-TBLSAIHEN-EXT
+           END-IF
+      *!!
       *    剤ごとの処理
       *    診療種別件数クリア
            INITIALIZE                  SPA-SRYKBN-AREA
@@ -8581,17 +8687,15 @@
       *****************************************************************
        4410-WSINPARA-SEC             SECTION.
       *
-      *!   IF      SPA-PTID        NOT =   ZERO
-               INITIALIZE                  ORCSCWKSRYAREA
-               MOVE    "4"                 TO  ORCSCWKSRY-KBN
-               MOVE    "K02N"              TO  ORCSCWKSRY-PG
-               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
-               CALL    "ORCSCWKSRY"        USING
-                                           ORCSCWKSRYAREA
-                                           SPA-AREA
-                                           SPA-K02
-                                           SPA-SCR-REC
-      *!   END-IF
+           INITIALIZE                  ORCSCWKSRYAREA
+           MOVE    "4"                 TO  ORCSCWKSRY-KBN
+           MOVE    "K02N"              TO  ORCSCWKSRY-PG
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           CALL    "ORCSCWKSRY"        USING
+                                       ORCSCWKSRYAREA
+                                       SPA-AREA
+                                       SPA-K02
+                                       SPA-SCR-REC
       *
            .
        4410-WSINPARA-EXT.
@@ -10229,6 +10333,14 @@
            IF      SPA-ERRCD           =   "A001"
                MOVE    SPACE               TO  SPA-ERRCD
            END-IF
+      *    訂正時の登録エラー
+           IF     (SPA-TEISEI-ERR      =   1  )  AND
+                  (SPA-TEISEI-CHK      =   ZERO)
+               MOVE    "K999"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-TEISEI-CHK
+               MOVE    1                   TO  SPA-GMN-CUR
+           END-IF
+      *
       *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC

@@ -97,6 +97,8 @@
       *    Ê£¿ô²Ê¤Þ¤È¤áÍ­Ìµ
            03  FLG-FUKU-FLG              PIC 9(01).
            03  FLG-SRYKA                 PIC 9(01).
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³
+           03  FLG-NAIBUN                PIC 9(01).
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -307,6 +309,9 @@
       *    ¥ï¡¼¥¯¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡Ý
        01  WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC".
+      *DDD Éí²Ã¾ðÊó¤òÄÉ²Ã
+      *DDD 03  WKSRYACTPLUS-REC.
+      *    COPY    "CPWKSRYACTPLUS.INC".
       *
       *    ¼õ¿ÇÆâÍÆ
        01  UKETUKE-REC.
@@ -325,12 +330,20 @@
            02  LNK-WKSRYACT-REC      OCCURS   50.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK-WKSRY-//.
+      *    Éí²Ã¾ðÊó¤òÄÉ²Ã
+           03  LNK-WKSRYACTPLUS-REC.
+           COPY    "CPWKSRYACTPLUS.INC"  REPLACING
+                                     //WKSRYP-// BY //LNK-WKSRYP-//.
        01  LNK-WKSRYACT-MAX           PIC 9(04).
       *
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¥ï¡¼¥¯
        01  WRK-WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                     //WKSRY-// BY //WRK-WKSRY-//.
+      *    Éí²Ã¾ðÊó¤òÄÉ²Ã
+           03  WRK-WKSRYACTPLUS-REC.
+           COPY    "CPWKSRYACTPLUS.INC"  REPLACING
+                                     //WKSRYP-// BY //WRK-WKSRYP-//.
       *
       *    ÊÝÂ¸ÍÑ¼ýÇ¼¥ï¡¼¥¯
        01  WRK-SYUNOU-REC.
@@ -376,6 +389,8 @@
       *
       *    ¿ÇÎÅ¹Ô°ÙÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
            COPY    "K01COMMON-SPA".
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³¹¹¿·¥Ñ¥é¥á¥¿
+           COPY    "CPORCSSANFUKA.INC".
       *
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
@@ -423,6 +438,8 @@
                WHEN    "3"
                    PERFORM 400-SYOSIN-SYORI-SEC
            END-EVALUATE
+      *
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
            .
        000-PROC-EXT.
@@ -515,7 +532,22 @@
                IF      SPA-SYORIFLG        =   ZERO
                    PERFORM 45003-UKETUKE-SEC
                END-IF
+           END-IF
       *
+           IF      FLG-NAIBUN          =   1
+      *        ÆâÊ¬ÈçÉé²Ù»î¸³Êñ³çÅÀ¿ô¥Á¥§¥Ã¥¯
+               INITIALIZE                  ORCSSANFUKAAREA
+               INITIALIZE                  SPA-SCR-REC
+               MOVE    3                   TO  LNK-SANFUKA-SYORI
+               MOVE    "K02"               TO  LNK-SANFUKA-PG
+               MOVE    SPA-SRYYMD          TO  LNK-SANFUKA-SRYYMD
+               CALL    "ORCSSANFUKA"       USING
+                                           ORCSSANFUKAAREA
+                                           SPA-AREA
+                                           SPA-SCR-REC
+               IF      LNK-SANFUKA-ERRMSG  NOT =   SPACE
+                   MOVE    LNK-SANFUKA-ERRMSG  TO  SPA-ERRMSG2
+               END-IF
            END-IF
       *
            .
@@ -698,7 +730,8 @@
                PERFORM 45001-JYURRK-SYORI3-SEC
            END-IF
       *    ¿ÇÎÅ²ÊÍúÎòºîÀ®
-           IF      WRK-SRYKA-REN       =   1
+           IF    ( SPA-ERRCD           =   SPACE ) AND
+                 ( WRK-SRYKA-REN       =   1 )
                PERFORM 1003-SRYKARRK-SAKUSEI-SEC
            END-IF
       *
@@ -2161,6 +2194,10 @@
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
                                        SPA-AREA
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³ºï½ü¥Õ¥é¥°
+           IF      SSANTEI-MSANTEIDEL  =   1
+               MOVE    1               TO  FLG-NAIBUN
+           END-IF
       *
            .
        45001131-SANTEI-DEL-EXT.
@@ -2919,9 +2956,9 @@
       *****************************************************************
        4502-SANTEI-SYORI-SEC              SECTION.
       *
-      *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   IDX-KOUI
+                   UNTIL      (IDX     >   IDX-KOUI  )
+                           OR (SPA-ERRCD   NOT =   SPACE )
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL      (IDY     >   5   )  OR
                                   (LNK-WKSRY-SRYCD (IDX IDY) =   SPACE)
@@ -2955,6 +2992,7 @@
                    END-IF
                END-PERFORM
            END-PERFORM
+      *
       *
            .
        4502-SANTEI-SYORI-EXT.
@@ -3017,6 +3055,14 @@
            MOVE    WRK-HKNCOMBI        TO  SSANTEI-HKNCOMBINUM
       *    ÊÝ¸±¶èÊ¬¤ÏÆ±¤¸
            MOVE    SPA-HKNKBN          TO  SSANTEI-HKNKBN
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³ÍÑ
+           IF      LNK-WKSRYP-MSANTEITFLG(IDX)   =   1
+               MOVE    LNK-WKSRYP-MSANTEITEN (IDX)
+                                        TO  SSANTEI-MSANTEITEN
+               MOVE    LNK-WKSRYP-MSANTEITENKBN (IDX)
+                                        TO  SSANTEI-MSANTEITENKBN
+               MOVE    1                TO  FLG-NAIBUN
+           END-IF
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
                                        SPA-AREA
@@ -3216,6 +3262,8 @@
            MOVE    SPA-HOSPID          TO  UKE-HOSPID
            MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
            MOVE    SPA-PTID            TO  UKE-PTID
+           MOVE    SPA-SRYKA           TO  UKE-SRYKA
+      *
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
@@ -3491,7 +3539,7 @@
       *****************************************************************
        300-DELETE-SYORI-SEC             SECTION.
       *
-      *
+           MOVE    ZERO                TO  FLG-NAIBUN
       *    ºï½ü½èÍý
       *    Ê£¿ô²Ê¡¦ÊÝ¸±ÆþÎÏ¤¬¤¢¤Ã¤¿¾ì¹ç¡¢¤¹¤Ù¤Æºï½ü¤¹¤ë
            IF      SPA-TEI-DENPNUM (1) NOT =   ZERO
@@ -3510,6 +3558,22 @@
                CALL    "ORCSKARRK"         USING
                                            ORCSKARRKAREA
                                            SPA-AREA
+           END-IF
+      *
+           IF      FLG-NAIBUN          =   1
+      *        ÆâÊ¬ÈçÉé²Ù»î¸³Êñ³çÅÀ¿ô¥Á¥§¥Ã¥¯
+               INITIALIZE                  ORCSSANFUKAAREA
+               INITIALIZE                  SPA-SCR-REC
+               MOVE    3                   TO  LNK-SANFUKA-SYORI
+               MOVE    "K02"               TO  LNK-SANFUKA-PG
+               MOVE    SPA-SRYYMD          TO  LNK-SANFUKA-SRYYMD
+               CALL    "ORCSSANFUKA"       USING
+                                           ORCSSANFUKAAREA
+                                           SPA-AREA
+                                           SPA-SCR-REC
+               IF      LNK-SANFUKA-ERRMSG  NOT =   SPACE
+                   MOVE    LNK-SANFUKA-ERRMSG  TO  SPA-ERRMSG2
+               END-IF
            END-IF
       *
            .

@@ -271,6 +271,8 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *    内分泌負荷試験更新パラメタ
+           COPY    "CPORCSSANFUKA.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -515,12 +517,10 @@
                WHEN    1
                    IF      SPA-HOSPSBT     NOT =   1
                        MOVE    "0016"          TO  SPA-ERRCD
-                       GO      TO      200-INPUTCD-KIHON-EXT
                    END-IF
                WHEN    2
                    IF      SPA-HOSPSBT     NOT =   2
                        MOVE    "0116"          TO  SPA-ERRCD
-                       GO      TO      200-INPUTCD-KIHON-EXT
                    END-IF
            END-EVALUATE
       *
@@ -539,12 +539,10 @@
            END-EVALUATE
       *
       *    施設基準適合分チェック（コメント・用法は対象外）
-           IF     (LNK-SC92-SRYCD  (1:1)
-                                           =   "8"    )  OR
-                  (LNK-SC92-SRYCD  (1:3)
-                                           =   "001"  )  OR
-                  (LNK-SC92-SRYCD  (1:3)
-                                           =   "008"  )  OR
+           IF     (SPA-ERRCD           NOT =   SPACE  )  OR
+                  (LNK-SC92-SRYCD  (1:1)   =   "8"    )  OR
+                  (LNK-SC92-SRYCD  (1:3)   =   "001"  )  OR
+                  (LNK-SC92-SRYCD  (1:3)   =   "008"  )  OR
                   (TNS-SSTKIJUNCD(01)      =   ZERO   )
                CONTINUE
            ELSE
@@ -2437,7 +2435,6 @@
            .
        3006-TENSUPLUS-HEN-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    加算行追加編集処理

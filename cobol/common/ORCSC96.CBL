@@ -456,6 +456,9 @@
                                        TO  SPA-ERRMSG
                    MOVE    "算定できません"
                                        TO  SPA-ERRMSG(43:)
+               WHEN    "0093"
+                   MOVE    "中途終了登録エラー。"
+                                       TO  SPA-ERRMSG
                WHEN    "K092"
                    MOVE    "警告！"
                                        TO  SPA-ERRMSG
@@ -843,6 +846,23 @@
                WHEN    "1055"
                    MOVE    "複数科、複数保険は入力はできません。"
                                        TO  SPA-ERRMSG
+      *
+               WHEN    "1060"
+                   MOVE    "既に内分泌負荷試験の当月点数が上限を"
+                                       TO  SPA-ERRMSG
+                   MOVE    "超えています。算定できません。"
+                                       TO  SPA-ERRMSG(37:)
+               WHEN    "1061"
+                   MOVE    "内分泌負荷試験点数エラー"
+                                       TO  SPA-ERRMSG
+               WHEN    "K060"
+                   MOVE    "警告！内分泌負荷試験の訂正が必要です。"
+                                       TO  SPA-ERRMSG
+               WHEN    "K999"
+                   MOVE    "警告！！登録時と診療内容が違います。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "必ず登録をして点数を変更して下さい。"
+                                       TO  SPA-ERRMSG(37:)
       *
                WHEN    "9300"
                    MOVE    "患者登録の業務権限はありません。"

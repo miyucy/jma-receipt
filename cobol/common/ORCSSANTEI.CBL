@@ -26,6 +26,7 @@
       *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
       *  01.00.01    MCC-Â¿¡¹Ç¼   02.05.17  Ï«ºÒÍÑÊÝ¸±¼ïÊÌËè¤ÎÄÉ²Ã
       *  01.00.02    NACL-Â¿¡¹Ç¼  02.12.05  ËýÀ­áÖÄË¼À´µ´ÉÍýÎÁ¤Î½é²ó»»ÄêÆü½¤Àµ
+      *  01.00.03    NACL-Â¿¡¹Ç¼  05.03.05  ÆâÊ¬ÈçÉé²Ù»î¸³ÅÀ¿ô¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -50,6 +51,9 @@
            03  FLG-SRYKARRK        PIC 9(01).
       *
            03  FLG-MANSEI-ALL      PIC 9(01).
+      *
+           03  FLG-NAIBUN-ADD      PIC 9(01).
+           03  FLG-NAIBUN-DEL      PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -127,6 +131,14 @@
        01  HZN-SANTEI-REC.
            COPY    "CPSANTEI.INC"   REPLACING
                                     //SANTEI-// BY //HZN-SANTEI-//.
+      *    »»ÄêÍúÎò
+       01  KEN-SANTEI-REC.
+           COPY    "CPSANTEI.INC"   REPLACING
+                                    //SANTEI-// BY //KEN-SANTEI-//.
+      *    »»ÄêÍúÎò
+       01  KEN2-SANTEI-REC.
+           COPY    "CPSANTEI.INC"   REPLACING
+                                    //SANTEI-// BY //KEN2-SANTEI-//.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -148,6 +160,7 @@
       *
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
+           COPY    "ORCA-DBPATH".
       *
       *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
            COPY    "CPORCSMCNDATE.INC".
@@ -375,17 +388,7 @@
                    MOVE    SANTEI-REC          TO  HZN-SANTEI-REC
                END-IF
       *
-               MOVE    SANTEI-REC          TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC          NOT =   ZERO
-                  DISPLAY "ORCSSANTEISANTEI UPD ERR:" SANTEI-KEY
-                                                    ","   MCP-RC
-               END-IF
+               PERFORM 510-SANTEI-UPD-SEC
       *
                MOVE    WRK-DBPATH          TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
@@ -757,7 +760,22 @@
       *        ½é²ó»»ÄêÆü
                MOVE    WRK-FSANTEIYMD      TO  SANTEI-FSANTEIYMD
                MOVE    WRK-SRYYMD(7:2)     TO  SANTEI-MSANTEID
+      *        ÆâÊ¬ÈçÉé²Ù»î¸³ÍÑ
+               IF      SSANTEI-MSANTEITEN  >   ZERO
+      *            Åö·î»»ÄêÅÀ¿ôÂÐ¾Ý¥Õ¥é¥°
+                   MOVE    1                   TO  SANTEI-MSANTEIFLG
+      *            Åö·î»»ÄêÅÀ¿ô
+                   MOVE    SSANTEI-MSANTEITEN  TO  SANTEI-MSANTEITEN
+      *            Åö·î»»ÄêÅÀ¿ô¶èÊ¬
+                   MOVE    SSANTEI-MSANTEITENKBN
+                                               TO  SANTEI-MSANTEITENKBN
+               END-IF
+      *
+      *        ÆâÊ¬ÈçÉéÃ´»î¸³ÍÑ
+               INITIALIZE                      KEN-SANTEI-REC
            ELSE
+      *        ÆâÊ¬ÈçÉéÃ´»î¸³ÍÑ
+               MOVE    SANTEI-REC          TO  KEN-SANTEI-REC
       *        ½¤Àµ
                IF      SANTEI-FSANTEIYMD(7:2)  =   ZERO
                    MOVE    SANTEI-REC          TO  HZN-SANTEI-REC
@@ -771,6 +789,16 @@
                IF     (IDX-Y2              <   WRK-MAE-DD ) OR
                       (SANTEI-MSANTEID     =   ZERO       )
                    MOVE    IDX-Y2          TO  SANTEI-MSANTEID
+               END-IF
+      *        ÆâÊ¬ÈçÉé²Ù»î¸³ÍÑ
+               IF      SSANTEI-MSANTEITEN  >   ZERO
+      *            Åö·î»»ÄêÅÀ¿ôÂÐ¾Ý¥Õ¥é¥°
+                   MOVE    1                   TO  SANTEI-MSANTEIFLG
+      *            Åö·î»»ÄêÅÀ¿ô
+                   MOVE    SSANTEI-MSANTEITEN  TO  SANTEI-MSANTEITEN
+      *            Åö·î»»ÄêÅÀ¿ô¶èÊ¬
+                   MOVE    SSANTEI-MSANTEITENKBN
+                                               TO  SANTEI-MSANTEITENKBN
                END-IF
            END-IF
       *
@@ -845,22 +873,13 @@
       *****END-IF
       *
            IF      FLG-SYORI           =   1
-      *
-               MOVE    SMCNDATE-YMD        TO  SANTEI-CREYMD
-               MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
-               MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
-      *        ¿·µ¬
-               MOVE    SANTEI-REC          TO  MCPDATA-REC
-               MOVE    "DBINSERT"          TO  MCP-FUNC
-               MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "ORCSSANTEI  INS ERR:" SANTEI-KEY
-                                          ","   MCP-RC
+               IF      SANTEI-MSANTEIFLG   =   1
+      *            ÆâÊ¬ÈçÉéÃ´»î¸³ÍÑ
+                   MOVE    SANTEI-REC          TO  KEN-SANTEI-REC
+                   MOVE    1                   TO  FLG-NAIBUN-ADD
                END-IF
+      *
+               PERFORM 500-SANTEI-INS-SEC
       *
                IF      FLG-MANSEI-ALL      =   1
                    PERFORM 400-SANTEI-MANSEI-SEC
@@ -870,29 +889,33 @@
                    END-IF
                END-IF
            ELSE
-      *
-      *        ½¤Àµ
+      *        ÆâÊ¬ÈçÉé²Ù»î¸³ºï½ü¥Õ¥é¥°
+               IF      SANTEI-MSANTEIFLG   =   1
+                   IF      SANTEI-MSANTEICNT   =   ZERO
+                       MOVE    1               TO  FLG-NAIBUN-DEL
+                   ELSE
+                       MOVE    1               TO  FLG-NAIBUN-ADD
+      *                ÆâÊ¬ÈçÉéÃ´»î¸³ÍÑ
+                       MOVE    SANTEI-REC          TO  KEN-SANTEI-REC
+                   END-IF
+               END-IF
       *        ½é²ó»»ÄêÆüÊÑ¹¹¥Á¥§¥Ã¥¯
                PERFORM 2001-SYOKAI-CHK-SEC
-      *
-               MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
-               MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
-      *
-               MOVE    SANTEI-REC          TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "ORCSSANTEI UPD ERR:" SANTEI-KEY
-                                                  ","  MCP-RC
-               END-IF
+      *        ½¤Àµ
+               PERFORM 510-SANTEI-UPD-SEC
       *
                IF      FLG-SYOKAI          =   1
                    PERFORM 400-SANTEI-ALLUPD-SEC
                END-IF
+           END-IF
+      *
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³Êñ³ç¹¹¿·
+           IF     (FLG-NAIBUN-ADD      =   1 )  OR
+                  (FLG-NAIBUN-DEL      =   1 )
+               PERFORM 3001-NAIBUNFUKA-UPD-SEC
+           END-IF
+           IF      FLG-NAIBUN-DEL      =   1
+               MOVE    1               TO  SSANTEI-MSANTEIDEL
            END-IF
            .
       *
@@ -1008,7 +1031,6 @@
            .
        20011-SANTEI-CHK-EXT.
            EXIT.
-      *
       *****************************************************************
       *    ºï½ü½èÍý
       *****************************************************************
@@ -1047,6 +1069,8 @@
                PERFORM 10010-MAE-SANTEI-HEN-SEC
                MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
            END-IF
+      *    ÆâÊ¬ÈçÉéÃ´»î¸³ÍÑ
+           MOVE    SANTEI-REC          TO  KEN-SANTEI-REC
       *
       *    ÊÑ¹¹Á°¤Î½é²ó»»ÄêÆüÊÝÂ¸
            MOVE    SANTEI-SRYYM        TO  WRK-MAE-YMD(1:6)
@@ -1123,44 +1147,31 @@
       *        PERFORM 2009-SSANTEI-RSI-SEC
       ***  END-IF
       *
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³ºï½ü¥Õ¥é¥°
+           IF      SANTEI-MSANTEIFLG   =   1
+               MOVE    1               TO  FLG-NAIBUN-DEL
+            END-IF
            IF      SANTEI-MSANTEICNT   =   ZERO
       *        ½é²ó»»ÄêÆüÊÑ¹¹¥Á¥§¥Ã¥¯
                PERFORM 2003-DEL-SYOKAI-SEC
       *        ºï½ü
-               MOVE    SANTEI-REC          TO  MCPDATA-REC
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC          NOT =   ZERO
-                  DISPLAY "ORCSSANTEISANTEI DEL ERR:"  SANTEI-KEY
-                                              ","  MCP-RC
-               END-IF
+               PERFORM 520-SANTEI-DEL-SEC
            ELSE
       *        ½é²ó»»ÄêÆüÊÑ¹¹¥Á¥§¥Ã¥¯
                PERFORM 2001-SYOKAI-CHK-SEC
       *        ½¤Àµ
-               MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
-               MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
-      *
-               MOVE    SANTEI-REC          TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC          NOT =   ZERO
-                  DISPLAY "ORCSSANTEISANTEI UPD ERR:" SANTEI-KEY
-                                          ","  MCP-RC
-               END-IF
+               PERFORM 510-SANTEI-UPD-SEC
            END-IF
       *
       *    ¤¹¤Ù¤Æ¤Î½é²ó²ó¿ô¤ÎÊÑ¹¹
            IF      FLG-SYOKAI          =   1
                PERFORM 400-SANTEI-ALLUPD-SEC
+           END-IF
+      *
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³Êñ³ç¹¹¿·
+           IF      FLG-NAIBUN-DEL      =   1
+               MOVE    1               TO  SSANTEI-MSANTEIDEL
+               PERFORM 3001-NAIBUNFUKA-UPD-SEC
            END-IF
       *
            .
@@ -1305,22 +1316,9 @@
            PERFORM
                UNTIL      FLG-SANTEI       =   1
       *
-                   MOVE    WRK-KON-FSANTEIYMD  TO  SANTEI-FSANTEIYMD
+               MOVE    WRK-KON-FSANTEIYMD  TO  SANTEI-FSANTEIYMD
       *
-                   MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
-                   MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
-      *
-                   MOVE    SANTEI-REC          TO  MCPDATA-REC
-                   MOVE    "DBUPDATE"          TO  MCP-FUNC
-                   MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"          USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-                   IF      MCP-RC          NOT =   ZERO
-                      DISPLAY "ORCSSANTEISANTEI UPD ERR:" SANTEI-KEY
-                                                    ","   MCP-RC
-                   END-IF
+               PERFORM 510-SANTEI-UPD-SEC
       *
                MOVE    WRK-DBPATH          TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
@@ -1342,22 +1340,9 @@
            PERFORM
                UNTIL      FLG-SANTEI       =   1
       *
-                   MOVE    WRK-KON-FSANTEIYMD  TO  SANTEI-FSANTEIYMD
+               MOVE    WRK-KON-FSANTEIYMD  TO  SANTEI-FSANTEIYMD
       *
-                   MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
-                   MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
-      *
-                   MOVE    SANTEI-REC          TO  MCPDATA-REC
-                   MOVE    "DBUPDATE"          TO  MCP-FUNC
-                   MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"          USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-                   IF      MCP-RC          NOT =   ZERO
-                      DISPLAY "ORCSSANTEISANTEI UPD ERR:" SANTEI-KEY
-                                                    ","   MCP-RC
-                   END-IF
+               PERFORM 510-SANTEI-UPD-SEC
       *
                MOVE    WRK-DBPATH          TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
@@ -1365,6 +1350,183 @@
       *
            .
        400-SANTEI-MANSEI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³Êñ³ç¹¹¿·½èÍý
+      *****************************************************************
+       3001-NAIBUNFUKA-UPD-SEC         SECTION.
+      *
+           MOVE    "099600801"         TO  WRK-SRYCD
+           MOVE    SSANTEI-SRYYMD      TO  WRK-SRYYMD
+      *    »»ÄêÍúÎò¸¡º÷
+           MOVE    "SANTEI-KEY"        TO  WRK-DBPATH
+           PERFORM 1001-SANTEI-KEN-SEC
+           IF      FLG-SANTEI          =   ZERO
+               MOVE    SANTEI-REC          TO  KEN2-SANTEI-REC
+               MOVE    ZERO                TO  KEN2-SANTEI-MSANTEID
+               MOVE    ZERO                TO  KEN2-SANTEI-MSANTEICNT
+               INITIALIZE                      KEN2-SANTEI-DAY-AREA
+               MOVE    ZERO                TO  KEN2-SANTEI-MSANTEITEN
+      *        Åö·îÊ¬¤Î½¸·×
+               PERFORM 30011-NAIBUFUKA-SUM-SEC
+      *        Åö·î½é²ó»»ÄêÆü
+               MOVE    KEN2-SANTEI-REC     TO  SANTEI-REC
+               PERFORM VARYING     IDX2    FROM   1   BY  1
+                       UNTIL       IDX2    >   31
+                   IF      SANTEI-DAY (IDX2)   >   ZERO
+                       IF      SANTEI-MSANTEID     =   ZERO
+                           MOVE    IDX2        TO  SANTEI-MSANTEID
+                        END-IF
+      *                 ²ó¿ô
+                        ADD     SANTEI-DAY (IDX2)
+                                                   TO  SANTEI-MSANTEICNT
+                   END-IF
+               END-PERFORM
+               IF      (SANTEI-MSANTEITEN      =   ZERO )  AND
+                       (SANTEI-MSANTEICNT      =   ZERO )  AND
+                       (SANTEI-MSANTEID        =   ZERO )
+      *            Éé²Ù»î¸³¤¬Ìµ¤¤»þ¡¢ºï½ü
+                   PERFORM 520-SANTEI-DEL-SEC
+               ELSE
+                   PERFORM 510-SANTEI-UPD-SEC
+               END-IF
+           ELSE
+      *    ¿·µ¬
+               INITIALIZE                  SANTEI-REC
+               MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+               MOVE    KEN-SANTEI-PTID     TO  SANTEI-PTID
+               MOVE    KEN-SANTEI-SRYYM    TO  SANTEI-SRYYM
+               MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+               MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+               MOVE    ZERO                TO  SANTEI-SRYKA
+      *        ½é²ó»»ÄêÆü
+               MOVE    KEN-SANTEI-FSANTEIYMD   TO  SANTEI-FSANTEIYMD
+               MOVE    KEN-SANTEI-MSANTEID     TO  SANTEI-MSANTEID
+               MOVE    KEN-SANTEI-MSANTEICNT   TO  SANTEI-MSANTEICNT
+      *        ÆâÊ¬ÈçÉé²Ù»î¸³ÍÑ
+      *        Åö·î»»ÄêÅÀ¿ôÂÐ¾Ý¥Õ¥é¥°
+               MOVE    1                   TO  SANTEI-MSANTEIFLG
+      *        Åö·î»»ÄêÅÀ¿ô
+               MOVE    KEN-SANTEI-MSANTEITEN
+                                           TO  SANTEI-MSANTEITEN
+      *        Åö·î»»ÄêÅÀ¿ô¶èÊ¬
+               MOVE    ZERO                TO  SANTEI-MSANTEITENKBN
+               MOVE    KEN-SANTEI-DAY-AREA TO  SANTEI-DAY-AREA
+      *
+               PERFORM 500-SANTEI-INS-SEC
+           END-IF
+           .
+       3001-NAIBUNFUKA-UPD-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³Êñ³çºï½ü½èÍý
+      *****************************************************************
+       30011-NAIBUFUKA-SUM-SEC         SECTION.
+      *
+      *    »»ÄêÍúÎò¸¡º÷
+           MOVE    SANTEI-REC              TO  MCPDATA-REC
+           MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
+               PERFORM 900-SANTEI-READ2-SEC
+           ELSE
+               INITIALIZE                  SANTEI-REC
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           PERFORM UNTIL   FLG-SANTEI      =   1
+               IF     (SANTEI-MSANTEICNT   >   ZERO   )  AND
+                      (SANTEI-SRYCD    NOT =   KEN2-SANTEI-SRYCD )
+                   COMPUTE KEN2-SANTEI-MSANTEITEN
+                                           =   KEN2-SANTEI-MSANTEITEN
+                                           +   SANTEI-MSANTEITEN
+                   PERFORM VARYING     IDX2    FROM   1   BY  1
+                           UNTIL       IDX2    >   31
+                       IF      SANTEI-DAY (IDX2)   >   ZERO
+                            ADD     SANTEI-DAY (IDX2)
+                                               TO  KEN2-SANTEI-DAY(IDX2)
+                       END-IF
+                   END-PERFORM
+               END-IF
+               MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
+               PERFORM 900-SANTEI-READ2-SEC
+           END-PERFORM
+           MOVE    PATH-TBL-SANTEI-KEY9    TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+           .
+       30011-NAIBUFUKA-SUM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÄÉ²Ã½èÍý
+      *****************************************************************
+       500-SANTEI-INS-SEC                SECTION.
+      *
+           MOVE    SMCNDATE-YMD        TO  SANTEI-CREYMD
+           MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
+      *    ¿·µ¬
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ORCSSANTEI  INS ERR:" SANTEI-KEY
+                                      ","   MCP-RC
+               MOVE    "9000"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       500-SANTEI-INS-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¹¹¿·½èÍý
+      *****************************************************************
+       510-SANTEI-UPD-SEC                SECTION.
+      *
+           MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ORCSSANTEI UPD ERR:" SANTEI-KEY
+                                                  ","  MCP-RC
+               MOVE    "9000"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       510-SANTEI-UPD-EXT.
+           EXIT.
+      *****************************************************************
+      *    ºï½ü½èÍý
+      *****************************************************************
+       520-SANTEI-DEL-SEC                SECTION.
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ORCSSANTEI DEL ERR:" SANTEI-KEY
+                                                  ","  MCP-RC
+               MOVE    "9000"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       520-SANTEI-DEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1455,5 +1617,65 @@
       *
            .
        975-SRYKARRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »»ÄêÎò¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       900-SANTEI-READ2-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SANTEI-REC
+               MOVE    ZERO                TO  FLG-SANTEI
+           ELSE
+               INITIALIZE                      SANTEI-REC
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           .
+       900-SANTEI-READ2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
+      *****************************************************************
+       990-DBCLOSE-SEC           SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *

@@ -174,6 +174,9 @@
            03  FLG-FIRUMU          PIC 9(01).
            03  FLG-SYUNOU-ERR      PIC 9(01).
       *
+           03  FLG-NAIFUTAN        PIC 9(01).
+           03  FLG-NAIBUN          PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDS                 PIC 9(04).
@@ -658,6 +661,10 @@
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
+      *    Éí²Ã¾ðÊó
+       01  WKSRYACTPLUS-REC.
+           COPY    "CPWKSRYACTPLUS.INC".
+      *
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -704,6 +711,9 @@
       *
       *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³¹¹¿·¥Ñ¥é¥á¥¿
+           COPY    "CPORCSSANFUKA.INC".
       *
       *    £Ä£Â¸¡º÷
       *01  MCPDATA-REC                 PIC X(5000).
@@ -810,28 +820,30 @@
       *    ¥¨¥é¡¼²èÌÌ¤è¤ê
            IF      SPA-MOTOPG          =   "JERR"
                MOVE    SPACE               TO  SPA-MOTOPG
-               PERFORM 5001-MAPCUR-SEC
+               IF      SPA-KEI-FLG         =   1
+      *            ½ªÎ»
+                   MOVE    "JOIN"          TO  WRK-PUTTYPE
+                   PERFORM 410021-END-SYORI-SEC
+               ELSE
+                   PERFORM 5001-MAPCUR-SEC
+               END-IF
            ELSE
-      *
       *        ½é´ü²èÌÌ¥»¥Ã¥È
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END             =   1
-                   GO      TO      100-INIT-EXT
-               END-IF
-      *
       *        ²èÌÌÊÔ½¸
-               PERFORM 500-GMNHEN-SEC
+               IF      FLG-END             =   ZERO
+                   PERFORM 500-GMNHEN-SEC
+               END-IF
            END-IF
       *
-           MOVE    SPACE               TO  LINKAREA
+           IF      FLG-END             =   ZERO
+               MOVE    SPACE               TO  LINKAREA
+               MOVE   SPACE                TO  MCP-PUTTYPE
+               MOVE   "J04"                TO  MCP-WINDOW
       *
-      *****MOVE   "NEW"                TO  MCP-PUTTYPE.
-           MOVE   SPACE                TO  MCP-PUTTYPE.
-           MOVE   "J04"                TO  MCP-WINDOW.
-      *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                   TO  FLG-END
+           END-IF
            .
        100-INIT-EXT.
            EXIT.
@@ -1029,6 +1041,10 @@
                        MOVE    "JOIN"          TO  WRK-PUTTYPE
       *                ¹¹¿·½èÍý
                        PERFORM 41002-KOUSIN-SYORI-SEC
+      *
+                       IF      SPA-ERRCD       NOT =   SPACE
+                           PERFORM 510-ERRSET-SEC
+                       END-IF
                    ELSE
                        MOVE    1                   TO  SPA-GMN-CUR
                    END-IF
@@ -1364,6 +1380,8 @@
       *
            MOVE    IDX2                TO  SPA-GMN-MAX
       *
+           INITIALIZE                  SPA-J04-TEISEI-AREA
+      *
       *    »ÄÎÌÇÑ´þ¤ÎÈ½Äê
            PERFORM VARYING     IDX-1 FROM    1   BY  1
                    UNTIL      (IDX-1     >   200     )  OR
@@ -1373,8 +1391,20 @@
                       (SPA-COM-INPUTCD(IDX-1)(1:1)  =   "6" )
                    PERFORM 31034-HAIKI-CHKI-SEC
                END-IF
+      *        Å¸³«»þ¤ÎÆâÍÆÊÔ½¸¡ÊÆâÊ¬ÈçÉé²Ù»î¸³ÍÑ¡Ë
+               IF     (SPA-COM-INPUTCD(IDX-1)(1:1) =   "1" ) AND
+                      (SPA-COM-SANTEIRRKKBN (IDX-1)   =   1   )
+                   ADD     1                   TO  IDX-S
+                   MOVE    SPA-COM-INPUTCD(IDX-1)  TO  SPA-J04-TEI-SRYCD
+                                                       (IDX-S)
+                   MOVE    1                   TO  SPA-J04-TEI-KAISU
+                                                       (IDX-S)
+               END-IF
            END-PERFORM
-      *
+      *    ¼«Èñ¤Î»þÅ¸³«»þ¤Ê¤·
+           IF      SPA-COM-SRYKBN(1)   =   "96"  OR  "95"
+               INITIALIZE                  SPA-J04-TEISEI-AREA
+           END-IF
       *    ²èÁü¿ÇÃÇ¤Î¥Õ¥£¥ë¥àÈ½Äê
            PERFORM VARYING     IDX-1   FROM    1   BY 1
                    UNTIL       IDX-1   >   IDX2
@@ -1818,7 +1848,7 @@
                            MOVE    SRY-SRYCD (IDX2)  TO  TNS-SRYCD
                            PERFORM 910-TENSU-READ-SEC
                            IF      FLG-TENSU         =   ZERO
-                               MOVE    TNS-NAME  TO  SPA-KNK-SRYMEI
+                               MOVE    TNS-NAME      TO  SPA-KNK-SRYMEI
                                                                (IDX3)
                            END-IF
                        END-IF
@@ -3448,6 +3478,36 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      510-TBLHEN-EXT
            END-IF
+      *!!
+      *    ÆâÊ¬ÈçÉéÃ´»î¸³ÊÔ½¸
+           MOVE    ZERO                TO  FLG-NAIFUTAN
+           PERFORM VARYING     IDX     FROM    1   BY   1
+                   UNTIL      (IDX     >   200     )  OR
+                             ((SPA-GMN-INPUTCD (IDX)   =   SPACE )  AND
+                              (SPA-COM-INPUTCD (IDX)   =   SPACE ))
+      *        ÆâÊ¬ÈçÉéÃ´»î¸³Í­Ìµ
+               IF     (SPA-COM-SRYKBN (IDX)    =   "60"  )  AND
+                      (SPA-COM-DATAKBN(IDX)    =   "1"   )  AND
+                      (SPA-COM-HOUKNSKBN(IDX)  =   08    )
+                   MOVE    1               TO  FLG-NAIFUTAN
+               END-IF
+           END-PERFORM
+           IF      FLG-NAIFUTAN        =   1
+               INITIALIZE                  ORCSSANFUKAAREA
+               MOVE    2                   TO  LNK-SANFUKA-SYORI
+               MOVE    "J04"               TO  LNK-SANFUKA-PG
+               MOVE    SPA-J02-SRYYMD      TO  LNK-SANFUKA-SRYYMD
+      *        ÄûÀµ»þ¤Î¿ÇÎÅ¥³¡¼¥É
+               MOVE    SPA-J04-TEISEI-AREA TO  LNK-SANFUKA-TEISEI-AREA
+               CALL    "ORCSSANFUKA"       USING
+                                           ORCSSANFUKAAREA
+                                           SPA-AREA
+                                           SPA-SCR-REC
+           END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      510-TBLHEN-EXT
+           END-IF
+      *!!
       *
       *    ¿ÇÎÅ¼ïÊÌ·ï¿ô¥¯¥ê¥¢
            INITIALIZE                  SPA-SRYKBN-AREA
@@ -4773,8 +4833,44 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41002-KOUSIN-SYORI-EXT
            END-IF
-      *    ¿ÇÎÅ²ñ·×¥Ñ¥é¥á¥¿¹¹¿·
-      *****PERFORM 4503-PARA-KOU-SEC
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³È½Äê
+           IF      FLG-NAIBUN          =   1
+      *        ÆâÊ¬ÈçÉé²Ù»î¸³Êñ³çÅÀ¿ô¥Á¥§¥Ã¥¯
+               INITIALIZE                  ORCSSANFUKAAREA
+               INITIALIZE                  SPA-SCR-REC
+               MOVE    3                   TO  LNK-SANFUKA-SYORI
+               MOVE    "J04"               TO  LNK-SANFUKA-PG
+               IF      SPA-SEL-RRKYMD      =   SPACE
+                   MOVE    SPA-J02-SRYYMD(1:6) TO  LNK-SANFUKA-SRYYMD
+                   MOVE    "01"                TO  LNK-SANFUKA-SRYYMD
+                                                             (7:2)
+               ELSE
+                   MOVE    SPA-SEL-RRKYMD      TO  LNK-SANFUKA-SRYYMD
+               END-IF
+               CALL    "ORCSSANFUKA"       USING
+                                           ORCSSANFUKAAREA
+                                           SPA-AREA
+                                           SPA-SCR-REC
+               IF      LNK-SANFUKA-ERRMSG  NOT =   SPACE
+                   MOVE    "K001"              TO  SPA-ERRCD
+      *            ·Ù¹ðºÑ¤ß
+                   MOVE    1                    TO  SPA-KEI-FLG
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+      *        ½ªÎ»
+               PERFORM 410021-END-SYORI-SEC
+           END-IF
+      *
+           .
+       41002-KOUSIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ½ªÎ»½èÍý
+      *****************************************************************
+       410021-END-SYORI-SEC            SECTION.
       *
       *    ¥Õ¥¡¥¤¥ëºï½ü
            MOVE    SPA-TERMID          TO  FILE-TERMID
@@ -4783,7 +4879,6 @@
            CALL    "orcfiledel"        USING
                                        ORCSFDELAREA
            MOVE    1                   TO  FLG-END2
-      *
       *
            MOVE    "J02"               TO  SPA-SAKIPG
            MOVE    "J04"               TO  SPA-MOTOPG
@@ -4805,7 +4900,7 @@
            MOVE    1                   TO  FLG-END
       *
            .
-       41002-KOUSIN-SYORI-EXT.
+       410021-END-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4827,6 +4922,7 @@
       *        GO      TO      4501-SINKOUI-KOU-EXT
       *****END-IF
       *
+           MOVE    ZERO                TO  FLG-NAIBUN
       *
       *    »»ÄêÍúÎò¤Îºï½ü
            PERFORM 45013-SANTEI-DELETE-SEC
@@ -4854,6 +4950,8 @@
            MOVE    ZERO                TO  WRK-MEISAISU
            INITIALIZE                      WRK-WKSRY-AREA
            MOVE    ZERO                TO  FLG-SYORI
+      *    Éí²Ã¾ðÊó
+           INITIALIZE                      WKSRYACTPLUS-REC
       *
       *    ¿ÇÎÅ¹Ô°Ù¿·µ¬ºîÀ®
            MOVE    ZERO                TO  IDS
@@ -4900,6 +4998,10 @@
            MOVE    ZERO                TO  WRK-SURYOKEI
            MOVE    ZERO                TO  WRK-MEISAISU
            INITIALIZE                      WRK-WKSRY-AREA
+      *    Éí²Ã¾ðÊó
+           INITIALIZE                      WKSRYACTPLUS-REC
+           MOVE    ZERO                TO  FLG-NAIBUN
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX
              IF    SPA-GMN-INPUTCD(IDX)(1:1)   =   "." 
@@ -4926,6 +5028,9 @@
                    MOVE    SPA-COM-YKZTEN  (IDX)   TO  WRK-YKZTEN
                    MOVE    SPA-COM-KIZAITEN(IDX)   TO  WRK-KIZAITEN
                END-IF
+      *
+      *        ³ÆÉí²Ã¾ðÊó
+               PERFORM 450112-WKSRYACTPLUS-SEC
       *        ÌóÂ«¥»¥Ã¥È
                IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "S"
                    CONTINUE
@@ -5043,6 +5148,48 @@
       *
            .
        45011-NAIYOU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ³ÆÉí²Ã¾ðÊóÊÔ½¸½èÍý
+      *****************************************************************
+       450112-WKSRYACTPLUS-SEC          SECTION.
+      *
+      *    Ï«ºÒ¤Î±ß
+           IF      SPA-HKNKBN          =   1
+               MOVE    SPA-COM-RSIKIN(IDX) TO  WKSRYP-RSIKINGAKU
+           ELSE
+               MOVE    ZERO                TO  WKSRYP-RSIKINGAKU
+           END-IF
+      *    ÅÀ¿ô¶èÊ¬
+           IF     (SPA-COM-TENSIKIBETU(IDX)    =   7
+                                               OR  8  )  AND
+                  (SPA-COM-KISOTEN (IDX)   =   SPA-COM-TENSU(IDX))
+               MOVE    1                   TO  WKSRYP-PLUSKBN
+           END-IF
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³ÍÑ
+           IF     (SPA-COM-SRYKBN(IDX)     =   "60" )  AND
+                  (SPA-COM-DATAKBN(IDX)    =   "1"   )  AND
+                  (SPA-COM-HOUKNSKBN(IDX)  =   08    )
+      *        Åö·î»»Äê¥Õ¥é¥°
+               MOVE    1                   TO  WKSRYP-MSANTEITFLG
+      *        Åö·î»»ÄêÅÀ¿ô¶èÊ¬
+               IF      SPA-COM-TEN (IDX)   =   SPA-COM-KISOTEN(IDX)
+                   MOVE    1               TO  WKSRYP-MSANTEITENKBN
+               ELSE
+                   MOVE    2               TO  WKSRYP-MSANTEITENKBN
+               END-IF
+      *        Åö·î»»ÄêÅÀ¿ô
+               MOVE    SPA-COM-KISOTEN(IDX)    TO WKSRYP-MSANTEITEN
+           END-IF
+      *
+      *    ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾Ý
+           IF     (SPA-COM-SRYKBN(IDX)     =   "21" )  AND
+                  (SPA-COM-INPUTCD(IDX)    =   "820000047")
+               MOVE    1                   TO  WKSRYP-TEI-NKBN
+           END-IF
+      *
+           .
+       450112-WKSRYACTPLUS-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5176,6 +5323,10 @@
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
                                        SPA-AREA
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³ºï½ü¥Õ¥é¥°
+           IF      SSANTEI-MSANTEIDEL  =   1
+               MOVE    1               TO  FLG-NAIBUN
+           END-IF
       *
            .
        450122-SANTEI-DEL-EXT.
@@ -5287,6 +5438,9 @@
       *        MOVE    SPA-COM-KEI  (IDX)      TO  SRY-JIHIMONEY
       *        MOVE    SPA-COM-KEI  (IDX)      TO  WRK-ZAITEN
       *****END-IF
+      *
+      *    ³ÆÉí²Ã¾ðÊó
+           PERFORM 450112-WKSRYACTPLUS-SEC
       *
       *    ½¸·×
            IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "S"
@@ -5623,6 +5777,14 @@
            END-IF
       *    ÆÃÄêÌôºÞ¤Î½é²óÆü
            MOVE    SPA-TOKTEI-YMD      TO  SSANTEI-SYOKAIYMD
+      *    ÆâÊ¬ÈçÉé²Ù»î¸³ÍÑ
+           IF      WKSRYP-MSANTEITFLG  =   1
+               MOVE    WKSRYP-MSANTEITEN
+                                        TO  SSANTEI-MSANTEITEN
+               MOVE    WKSRYP-MSANTEITENKBN
+                                        TO  SSANTEI-MSANTEITENKBN
+               MOVE    1                TO  FLG-NAIBUN
+           END-IF
       *
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
@@ -6629,9 +6791,14 @@
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
-           MOVE    "J04"               TO  LNK-SC96-PG
-           CALL    "ORCSC96"           USING    SPA-AREA
-                                                ORCSC96AREA
+           IF      SPA-ERRCD           =   "K001"
+               MOVE    LNK-SANFUKA-ERRMSG  TO  SPA-ERRMSG
+           ELSE
+               MOVE    "J04"               TO  LNK-SC96-PG
+               CALL    "ORCSC96"           USING
+                                           SPA-AREA
+                                           ORCSC96AREA
+           END-IF
       *
            MOVE    SPACE               TO  JERR
            MOVE    SPA-ERRCD           TO  JERR-ERRCODE

@@ -2091,6 +2091,11 @@
                            ",KEY:"   RECECOM-KEY    "."
            END-IF
       *
+      *    レセプト作成管理マスタ更新
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 21212-RECEUPD-UPDATE-SEC
+           END-IF
+      *
       *    再表示
            PERFORM                     310-SPA-SET-SEC
       *

@@ -78,6 +78,7 @@
            03  FLG-HEN-CHK         PIC 9(01).
            03  FLG-AUTO-OK         PIC 9(01).
            03  FLG-INGAIKBN        PIC 9(01).
+           03  FLG-INGAIKBN-ARI    PIC 9(01).
            03  FLG-SET             PIC 9(01).
       *
            03  FLG-SYUBETU         PIC 9(01).
@@ -231,6 +232,18 @@
        01  WRK-HZN-SCR-AREA.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //WRK-HZN-//.
+      *
+      *    附加情報
+       01  WKSRYACTPLUS-REC.
+           COPY    "CPWKSRYACTPLUS.INC".
+      *    ワーク診療行為マスタ−（パラメタ）
+       01  PARA-WKSRYACT-REC.
+           COPY    "CPWKSRYACT.INC"  REPLACING
+                                     //WKSRY-// BY //PARA-WKSRY-//.
+      *    附加情報を追加
+           03  PARA-WKSRYACTPLUS-REC.
+           COPY    "CPWKSRYACTPLUS.INC"  REPLACING
+                                     //WKSRYP-// BY //PARA-WKSRYP-//.
       *
       *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
@@ -400,6 +413,7 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-INGAIKBN
+           MOVE    ZERO                TO  FLG-INGAIKBN-ARI
            MOVE    ZERO                TO  IDX-HZN
       *
            PERFORM     VARYING   IDX   FROM    1   BY  1
@@ -522,17 +536,19 @@
                        END-IF
                        MOVE    ZERO                TO  FLG-SET
       *                院内・院外処方を点数より変更
+                       IF      FLG-INGAIKBN-ARI    =   1
       *                院外
-                       IF      FLG-INGAIKBN        =   1
-                           MOVE    "1"             TO  SPA-INGAIKBN
-                       END-IF
-      *                院内（入院は院内）
-                       IF      FLG-INGAIKBN        =   2
-                                                   OR  ZERO
-                           MOVE    "0"             TO  SPA-INGAIKBN
+                           IF      FLG-INGAIKBN        =   1
+                               MOVE    "1"             TO  SPA-INGAIKBN
+                           END-IF
+      *                    院内（入院は院内）
+                          IF      FLG-INGAIKBN        =   2
+                               MOVE    "0"             TO  SPA-INGAIKBN
+                           END-IF
                        END-IF
       *
                        MOVE    ZERO                TO  FLG-INGAIKBN
+                       MOVE    ZERO                TO  FLG-INGAIKBN-ARI
                    END-IF
                END-IF
            END-PERFORM
@@ -775,12 +791,12 @@
            END-PERFORM
       *
            IF      WRK-ERRCD1      NOT =   SPACE
-               MOVE    WRK-ERRCD1          TO  SPA-ERRCD
+               MOVE    WRK-ERRCD1          TO  ORCSCWKSRY-ERRCD
                IF      ORCSCWKSRY-K09TUIKA =   1
-                   MOVE    "7004"          TO  SPA-ERRCD
+                   MOVE    "7004"          TO  ORCSCWKSRY-ERRCD
                END-IF
            ELSE
-               MOVE    WRK-ERRCD           TO  SPA-ERRCD
+               MOVE    WRK-ERRCD           TO  ORCSCWKSRY-ERRCD
            END-IF
       *
            .
@@ -875,6 +891,11 @@
                END-IF
            END-IF
       *
+      *    投薬の判定
+           IF      SPA-NYUGAIKBN       =   "2"
+               PERFORM 310113-INGAI-CHK-SEC
+           END-IF
+      *
       *    明細編集
            ADD     1                   TO  IDX2
            IF      IDX2                >   WRK-GYO-MAX
@@ -956,6 +977,10 @@
                                            TO  SPA-GMN-INPUTCD (IDX2)
            END-IF
            MOVE    SPA-GMN-INPUTCD (IDX2)  TO  SPA-MAE-INPUTCD (IDX2)
+      *
+      *    剤点数の設定（訂正前）
+           MOVE    LNK-WKSRY-ZAITENKEI(IDX)
+                                       TO  SPA-COM-MAE-TENSU (IDX2)
       *
       *    約束セットの時、以下処理なし
            IF      LNK-WKSRY-SRYCD(IDX IDY)(1:1) =   "S"
@@ -1112,6 +1137,16 @@
                MOVE    LNK-WKSRY-SRYKBN (IDX)
                                            TO  SPA-GMN-SRYKBN(IDX2)
            END-IF
+      *
+           .
+       310112-SRYSYUKBN-GAI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   投薬の判定処理
+      *****************************************************************
+       310113-INGAI-CHK-SEC                  SECTION.
+      *
       *    訂正の時、診療種別が未入力で院外の薬剤があった時
            IF     (LNK-WKSRY-SRYSYUKBN (IDX)   =   SPACE OR
                                                    "210" OR
@@ -1122,6 +1157,7 @@
                                                OR  "23" )
                IF     (FLG-SYORIFLG            =   1    )  OR
                       (LNK-WKSRY-TERMID (IDX)  =   "WKSRYACT")
+                   MOVE    1                   TO  FLG-INGAIKBN-ARI
                    IF      LNK-WKSRY-ZAITENKEI (IDX)   =   ZERO
       *                剤点数＝ゼロ　院外
       *                剤内に薬剤がある時のみ
@@ -1135,9 +1171,8 @@
                    END-IF
                END-IF
            END-IF
-      *
            .
-       310112-SRYSYUKBN-GAI-EXT.
+       310113-INGAI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1553,6 +1588,8 @@
       *
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                  WKSRYACT-REC
+           MOVE    SPACE               TO  WKSRYACTPLUS-REC
+           INITIALIZE                  WKSRYACTPLUS-REC
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX
                IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "."
@@ -1673,6 +1710,11 @@
                                                   TO  WRK-KINGAK
                    END-IF
       *
+      *            各附加情報
+                   IF      FLG-SYORI           =   2
+                       PERFORM 30022-WKSRYACTPLUS-SEC
+                   END-IF
+      *
                    IF     (IDX                     <   SPA-GMN-MAX) AND
                           (SPA-GMN-INPUTCD (IDX + 1)(1:1)
                                                    =   "."    )
@@ -1739,6 +1781,8 @@
            MOVE    SPA-CONTKBN         TO  WKSRY-CONTKBN
       *    ドクター
            MOVE    SPA-DRCD            TO  WKSRY-DRCD
+      *    電子カルテフラグ
+           MOVE    1                   TO  WKSRY-KARTE-FLG
       *
            MOVE    SMCNDATE-YMD        TO  WKSRY-CREYMD
            MOVE    SMCNDATE-YMD        TO  WKSRY-UPYMD
@@ -1754,7 +1798,7 @@
            IF      MCP-RC              =   ZERO
                CONTINUE
            ELSE
-               MOVE    "0090"              TO  SPA-ERRCD
+               MOVE    "0093"              TO  SPA-ERRCD
                DISPLAY "K02 WKSRYACT INS ERR:"  MCP-RC
            END-IF
       *
@@ -1947,7 +1991,9 @@
       *    ＤＢからの作成でない
            MOVE    ALL "1"             TO  WKSRY-TERMID
       *
-           MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
+           MOVE    WKSRYACT-REC        TO  PARA-WKSRYACT-REC
+           MOVE    WKSRYACTPLUS-REC    TO  PARA-WKSRYACTPLUS-REC
+           MOVE    PARA-WKSRYACT-REC   TO  PARA-DATA-REC
       *
            WRITE   PARA-REC
            IF      STS-PARA        NOT =   ZERO
@@ -1957,9 +2003,54 @@
            MOVE    ZERO                TO  IDY
            MOVE    SPACE               TO  WKSRYACT-REC
            INITIALIZE                  WKSRYACT-REC
+           MOVE    SPACE               TO  WKSRYACTPLUS-REC
+           INITIALIZE                  WKSRYACTPLUS-REC
       *
            .
        300211-WKSRYPARA-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    各附加情報編集処理
+      *****************************************************************
+       30022-WKSRYACTPLUS-SEC          SECTION.
+      *
+      *    労災の円
+           IF      SPA-HKNKBN          =   1
+               MOVE    SPA-COM-RSIKIN(IDX) TO  WKSRYP-RSIKINGAKU
+           ELSE
+               MOVE    ZERO                TO  WKSRYP-RSIKINGAKU
+           END-IF
+      *    点数区分
+           IF     (SPA-COM-TENSIKIBETU(IDX)    =   7
+                                               OR  8  )  AND
+                  (SPA-COM-KISOTEN (IDX)   =   SPA-COM-TENSU(IDX))
+               MOVE    1                   TO  WKSRYP-PLUSKBN
+           END-IF
+      *    内分泌負荷試験用
+           IF     (SPA-COM-SRYKBN(IDX)     =   "60" )  AND
+                  (SPA-COM-DATAKBN(IDX)    =   "1"   )  AND
+                  (SPA-COM-HOUKNSKBN(IDX)  =   08    )
+      *        当月算定フラグ
+               MOVE    1                   TO  WKSRYP-MSANTEITFLG
+      *        当月算定点数区分
+               IF      SPA-COM-TEN (IDX)   =   SPA-COM-KISOTEN(IDX)
+                   MOVE    1               TO  WKSRYP-MSANTEITENKBN
+               ELSE
+                   MOVE    2               TO  WKSRYP-MSANTEITENKBN
+               END-IF
+      *        当月算定点数
+               MOVE    SPA-COM-KISOTEN(IDX)    TO WKSRYP-MSANTEITEN
+           END-IF
+      *
+      *    内服７種類逓減対象
+           IF     (SPA-COM-SRYKBN(IDX)     =   "21" )  AND
+                  (SPA-COM-INPUTCD(IDX)    =   "820000047")
+               MOVE    1                   TO  WKSRYP-TEI-NKBN
+           END-IF
+      *
+           .
+       30022-WKSRYACTPLUS-EXT.
            EXIT.
       *****************************************************************
       *    ＳＰＡをパラメタファイルへ書込処理
@@ -2603,10 +2694,14 @@
                COMPUTE WRK-EN          =   SPA-COM-TEN (IDX)
                                        *   SPA-COM-KAISU (IDX)
                MOVE    ZERO            TO  WRK-TENSU
+      *        労災の円
+               MOVE    WRK-EN          TO  SPA-COM-RSIKIN(IDX)
            ELSE
                COMPUTE WRK-TENSU       =   SPA-COM-KISOTEN (IDX)
                                        *   SPA-COM-KAISU (IDX)
                MOVE    ZERO            TO  WRK-EN
+      *        労災の円
+               MOVE    ZERO            TO  SPA-COM-RSIKIN(IDX)
            END-IF
       *
            EVALUATE    SPA-COM-SRYKBN  (IDX)
@@ -2769,6 +2864,8 @@
                IF      IDY             =   ZERO
                    MOVE    SPACE               TO  WKSRYACT-REC
                    INITIALIZE                  WKSRYACT-REC
+                   MOVE    SPACE               TO  WKSRYACTPLUS-REC
+                   INITIALIZE                  WKSRYACTPLUS-REC
                    ADD     1                   TO  WRK-ZAINUM
                    MOVE    ZERO                TO  WRK-RENNUM
                    MOVE    ORCSCWKSRY-KSN-HKNCOMBI (IDX)
@@ -2794,7 +2891,7 @@
                IF      ORCSCWKSRY-KSN-AUTOKBN(IDX) =   SPACE
                     MOVE    "3"                TO  WKSRY-AUTOKBN (IDY)
                END-IF
-               IF      ORCSCWKSRY-KSN-AUTOKBN(IDX)    =   "1"
+               IF      ORCSCWKSRY-KSN-AUTOKBN(IDX) =   "1"
                     MOVE    SPACE              TO  WKSRY-AUTOKBN (IDY)
                END-IF
                IF     (ORCSCWKSRY-KSN-SRYCD  (IDX)(1:1)
@@ -2805,6 +2902,8 @@
                ADD     ORCSCWKSRY-KSN-TENSU(IDX)      TO  WRK-TENSUKEI
                ADD     ORCSCWKSRY-KSN-TENSU(IDX)      TO  WRK-SYUTEN1
                MOVE    1                       TO  WRK-KAISUKEI
+      *        各附加情報編集処理
+               PERFORM 30041-WKSRYACTPLUS-SEC
       *
                IF      ORCSCWKSRY-KSN-ZAIEND(IDX)     =   "1"
       *            診療行為パラメタ出力
@@ -2816,6 +2915,21 @@
            END-PERFORM
            .
        3004-JIDOU-SAKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    各附加情報編集処理
+      *****************************************************************
+       30041-WKSRYACTPLUS-SEC          SECTION.
+      *
+      *    薬剤料逓減　を減算
+           IF      ORCSCWKSRY-KSN-SRYCD (IDX)  =   "630010002"
+               MOVE    1                   TO  WKSRYP-PLUSKBN
+      *        内服７種類逓減対象
+               MOVE    2                   TO  WKSRYP-TEI-NKBN
+           END-IF
+      *
+           .
+       30041-WKSRYACTPLUS-EXT.
            EXIT.
       *****************************************************************
       *    追加のコメントの日数変換編集処理

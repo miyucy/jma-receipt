@@ -4866,6 +4866,11 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "C95 WKSRYACT UPD ERR:" MCP-RC
+                              ",KEY:" WKSRY-KEY
+               END-IF
       *
                MOVE    "WKSRYACT-KEY6"     TO  ORC-DBPATH
                PERFORM 940-WKSINKOUI-READ-SEC
@@ -5151,7 +5156,7 @@
                INITIALIZE                  PTCOM-REC
            END-IF
       *
-      *    MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTCOM-KEY"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA

@@ -1,4 +1,4 @@
-SRCS = ORCHC01.CBL \
+qSRCS = ORCHC01.CBL \
        ORCHC02.CBL \
        ORCHC03.CBL \
        ORCHC19.CBL \
@@ -138,6 +138,7 @@ SRCS = ORCHC01.CBL \
        ORCHC501.CBL \
        ORCHC502.CBL \
        ORCHC503.CBL \
+       ORCSSANFUKA.CBL \
 
 CSRCS = \
 	orcfiledel.c \
