@@ -756,6 +756,12 @@
       *
       *    外来管理加算、継続管理加算の判定
            PERFORM 100111-KEIZOKU-CHK-SEC
+           IF      FLG-GAIRAI          =   1
+      *        労災読み替え加算分は外来管理加算削除としない
+               IF      WRK-COM-RSIFLG2 (IDX-Z)     =   "1"
+                   MOVE    ZERO            TO  FLG-GAIRAI
+               END-IF
+           END-IF
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      10011-SYUGISYORI-EXT
             END-IF
@@ -893,7 +899,7 @@
            END-IF
       *
       *    アフターケアの時算定できないコードのチェック
-           IF      LNK-ORCSC-RSI-HKNKBN    =   "3"
+           IF      SPA-RSI-HKNKBN      =   "3"
                PERFORM 100113-RSI-AFTCHK-SEC
                IF      WRK-ERRCD       NOT =   SPACE
                    GO      TO      10011-SYUGISYORI-EXT
@@ -972,7 +978,7 @@
       *****************************************************************
       *    診察料の決定処理
       *****************************************************************
-       100121-SINSATU-CD-SEC                  SECTION.
+       100121-SINSATU-CD-SEC           SECTION.
       *
            MOVE    WRK-SAN-KAISU       TO  WRK-KAISU
       *
@@ -1058,7 +1064,7 @@
            END-IF
       *    労災で継続管理の時
            IF      FLG-KEIZOK          =   1
-               IF      LNK-ORCSC-RSI-HKNKBN    =   "3"
+               IF      SPA-RSI-HKNKBN      =   "3"
       *            アフターケアの時エラー
                    MOVE    "8006"          TO  WRK-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
@@ -1086,7 +1092,7 @@
            END-SEARCH
       *    労災の外来管理加算点数セット
            IF      WRK-KBN             =   "G"
-               IF      LNK-ORCSC-RSI-HKNKBN    =   "3"
+               IF      SPA-RSI-HKNKBN      =   "3"
       *            アフターケアの時エラー
                    MOVE    "8007"          TO  WRK-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
@@ -1139,26 +1145,26 @@
            END-IF
       *
       *    救急医療管理加算
-           IF      WRK-COM-INPUTCD(IDX-Z)  =   "101110030"
+      **** IF      WRK-COM-INPUTCD(IDX-Z)  =   "101110030"
       *        同一傷病に付き１回
-               IF      LNK-ORCSC-RSI-KYUKASN   =   1
-                   MOVE    "8003"          TO  WRK-ERRCD
-                   MOVE    "1"             TO  WRK-COM-CUR
-                                                         (IDX-Z)
-                   GO      TO      10013-RSI-SINSATU-CHK-EXT
-               END-IF
-           END-IF
+      *        IF      LNK-ORCSC-RSI-KYUKASN   =   1
+      *            MOVE    "8003"          TO  WRK-ERRCD
+      *            MOVE    "1"             TO  WRK-COM-CUR
+      *                                                  (IDX-Z)
+      *            GO      TO      10013-RSI-SINSATU-CHK-EXT
+      *        END-IF
+      **** END-IF
       *
       *    療養の給付請求書取扱料
-           IF      WRK-COM-INPUTCD(IDX-Z)  =   "101130020"
+      **** IF      WRK-COM-INPUTCD(IDX-Z)  =   "101130020"
       *        同一傷病に付き１回
-               IF      LNK-ORCSC-RSI-KYUFU     =   1
-                   MOVE    "8011"          TO  WRK-ERRCD
-                   MOVE    "1"             TO  WRK-COM-CUR
-                                                         (IDX-Z)
-                   GO      TO      10013-RSI-SINSATU-CHK-EXT
-               END-IF
-           END-IF
+      *        IF      LNK-ORCSC-RSI-KYUFU     =   1
+      *            MOVE    "8011"          TO  WRK-ERRCD
+      *            MOVE    "1"             TO  WRK-COM-CUR
+      *                                                  (IDX-Z)
+      *            GO      TO      10013-RSI-SINSATU-CHK-EXT
+      *        END-IF
+      **** END-IF
       *
       *    再診時療養指導管理料
            IF      WRK-COM-INPUTCD(IDX-Z)  =   "101120030"
@@ -2084,7 +2090,9 @@
       *
       *    特定薬剤治療管理初回算定コメントがあれば初回とする
            IF     (WRK-COM-INPUTCD (IDX-Z) =   "840000038" ) AND
-                  (LNK-ORCSC-TOKTEI-YMD    =   SPACE   )
+                  (LNK-ORCSC-TOKTEI-YMD    =   SPACE   )  AND
+                  (WRK-COM-ATAI1 (IDX-Z)(1:2)  NOT =   SPACE) AND
+                  (WRK-COM-ATAI2 (IDX-Z)(1:2)  NOT =   SPACE )
       *
                MOVE    WRK-COM-ATAI1 (IDX-Z)(1:2)  TO  WRK-WYY
                MOVE    WRK-COM-ATAI2 (IDX-Z)(1:2)  TO  WRK-WMM
@@ -2346,6 +2354,10 @@
                    MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
                    MOVE    WRK-KBN2        TO  WRK-SINSATU-KBN2
                    MOVE    IDX-Z           TO  IDX-SINSATU
+      *            労災の時、労災コードで判定する
+                   IF      SPA-HKNKBN      =   1
+                       PERFORM 20012-RSISINSATU-CHK-SEC
+                   END-IF
                END-IF
       *
       *        外来管理加算、継続管理加算の判定
@@ -2555,39 +2567,12 @@
                END-IF
            END-IF
       *
-      *    労災の時、外来管理加算の算定チェック
            IF      SPA-HKNKBN          =   1
+      *        労災の時、外来管理加算の読み替えチェック
                PERFORM 20011-RSIGAIKAN-SYORI-SEC
            ELSE
-      *
-      *    労災以外の外来管理加算の算定チェック
-           IF      FLG-GAIKAN          =   1
-               IF      IDX-GAIKAN          >   ZERO
-                   MOVE    "0102"              TO  LNK-ORCSC-KIDCD
-                   MOVE    IDX-GAIKAN          TO  LNK-ORCSC-CHK-IDX
-               END-IF
-           ELSE
-               IF     (IDX-SYU             >   ZERO )  AND
-                      (IDX-GAIKAN          =   ZERO )  AND
-                      (LNK-ORCSC-GAIFLG    =   ZERO )
-                   IF     (LNK-ORCSC-ROUMANSEI-ARI     NOT =   ZERO ) OR
-                          (LNK-ORCSC-ROUMANSEI-ARI2    NOT =   ZERO  AND
-                           LNK-ORCSC-SINSATU-CNT       NOT =   3    ) OR
-                          (LNK-ORCSC-TOKUTEI-KNJ2  =   1  )  OR
-                          (LNK-ORCSC-TOKUTEI-KNJ   =   1  )  OR
-                          (LNK-ORCSC-GAIRAI-NASI   =   1  )
-                       CONTINUE
-                   ELSE
-                       MOVE    IDX-SYU         TO  IDX-Z
-                       PERFORM
-                           UNTIL  WRK-COM-DATAKBN (IDX-Z + 1) NOT =  "2"
-                               ADD     1               TO  IDX-Z
-                       END-PERFORM
-      *                外来管理加算コード追加処理
-                       PERFORM 2001-GAIKASAN-SEC
-                   END-IF
-               END-IF
-           END-IF
+      *        労災以外の外来管理加算の算定チェック
+               PERFORM 20012-GAIKAN-SYORI-SEC
            END-IF
       *
            IF     (SPA-ERRCD           =   SPACE )  AND
@@ -2613,58 +2598,15 @@
                END-IF
            END-IF
       *
-      *    再診の４回目以降の時、人工腎臓があれば変更する
-           IF     (WRK-SINSATU-KAISU       =   4   )  AND
-                 ( LNK-ORCSC-SAISIN-CHK    =   ZERO  )  OR
-                 ((LNK-ORCSC-TOKUTEI-JNZ   NOT =  WRK-TOKUTEI-JNZ OR
-                   LNK-ORCSC-TOKUTEI-KNJ   NOT =  WRK-TOKUTEI-KNJ))
-      *        診察料の決定
-               MOVE    WRK-SINSATU-KAISU   TO  WRK-SAN-KAISU
-               MOVE    WRK-SINSATU-KBN     TO  WRK-KBN
-               PERFORM 100121-SINSATU-CD-SEC
-               IF     (WRK-SRYCD       NOT =   SPACE )  AND
-                      (WRK-COM-INPUTCD (IDX-SINSATU)
-                                       NOT =   WRK-SRYCD)
-      *            人工腎臓
-                   IF      LNK-ORCSC-TOKUTEI-JNZ   =   1
-                       IF      WRK-SINSATU-KBN2    NOT =   "J"
-                           MOVE    "0115"          TO  LNK-ORCSC-KIDCD
-                           GO      TO      200-ALL-SYORI-EXT
-                       END-IF
-                   END-IF
-      *            厚生大臣の
-                   IF     (LNK-ORCSC-TOKUTEI-KNJ   =   1 )  OR
-                          (LNK-ORCSC-TOKUTEI-KNJ2  =   1 )
-                       IF      WRK-SINSATU-KBN2    NOT =   "E"
-                           MOVE    "0114"          TO  LNK-ORCSC-KIDCD
-                           GO      TO      200-ALL-SYORI-EXT
-                       END-IF
-                   END-IF
-      *
-                   MOVE    ZERO            TO  LNK-ORCSC-SAISIN-CHK
-      *            自動変更
-                   MOVE    IDX-SINSATU         TO  IDX-T
-                   MOVE    1                   TO  FLG-ARI
-                   PERFORM 1100-KASAN-SET-SEC
-                   MOVE    SPACE               TO  WRK-COM-AUTOKBN
-                                                          (IDX-SINSATU)
-               END-IF
+      *    人工腎臓・厚生大臣による再診料振替え処理
+           IF      SPA-HKNKBN          =   ZERO
+               PERFORM 20013-SAISIN-SYORI-SEC
+           ELSE
+      *        労災
+               PERFORM 20014-RSISAISIN-SYORI-SEC
            END-IF
-      *
-      *    外来管理加算の４回目以降の変更
-           IF     (WRK-SINSATU-KAISU       =   4   )  AND
-                  (LNK-ORCSC-TOKUTEIG-KNJ  NOT =  WRK-TOKUTEIG-KNJ)
-      *        外来管理加算
-               IF      IDX-GAIKAN          >   ZERO
-      *            外来管理加算コード変更処理
-                   MOVE    1               TO  FLG-ARI
-                   PERFORM 20011-GAIKASAN-SET-SEC
-                   MOVE    IDX-GAIKAN      TO  IDX-T
-                   MOVE    1               TO  FLG-ARI
-                   PERFORM 1100-KASAN-SET-SEC
-                   MOVE    SPACE           TO  WRK-COM-AUTOKBN
-                                                          (IDX-GAIKAN)
-               END-IF
+           IF      LNK-ORCSC-KIDCD NOT =   SPACE
+               GO      TO       200-ALL-SYORI-EXT
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -2744,6 +2686,32 @@
       *
            .
        2001-SINSATU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    労災診察料の判定処理
+      *****************************************************************
+       20012-RSISINSATU-CHK-SEC          SECTION.
+      *
+      *    診察料検索
+           SET     TBL-RSI              TO  1
+           SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
+              AT   END
+                   MOVE    SPACE               TO  WRK-KBN
+                   MOVE    SPACE               TO  WRK-KBN2
+                   MOVE    ZERO                TO  WRK-KAISU
+               WHEN    WRK-COM-INPUTCD(IDX-Z)  =   TBLR-SRYCD (TBL-RSI)
+                   MOVE    TBLR-KBN  (TBL-RSI) TO  WRK-KBN
+                   MOVE    TBLR-KAISU(TBL-RSI) TO  WRK-KAISU
+           END-SEARCH
+      *
+           IF      WRK-KBN             =   "F"  OR  "S"
+               MOVE    WRK-KBN         TO  WRK-SINSATU-KBN
+               MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
+               MOVE    IDX-Z           TO  IDX-SINSATU
+           END-IF
+      *
+           .
+       20012-RSISINSATU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    労災コードの判定処理
@@ -2885,6 +2853,7 @@
       *
            COMPUTE IDX-S               =   IDX-Z   +  1
       *
+           MOVE    ZERO                TO  FLG-ADD
       *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA
            MOVE    "1"                 TO  LNK-SC92-KBN
@@ -2903,7 +2872,6 @@
                                        ORCSC92AREA
                                        WRK-SCR-REC
                                        SPA-AREA
-      *
       *
       *    エラーの時、追加なし
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
@@ -2926,6 +2894,7 @@
       **** MOVE    "1"                 TO  WRK-COM-AUTOKBN (IDX-S)
            MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
       *
+           MOVE    1                   TO  FLG-ADD
            ADD     1                   TO  WRK-GMN-MAX
            .
        2001-GAIKASAN-EXT.
@@ -3082,87 +3051,11 @@
            EXIT.
       *
       *****************************************************************
-      *    労災外来管理加算の算定処理
+      *    外来管理加算の算定チェック処理
       *****************************************************************
-       20011-RSIGAIKAN-SYORI-SEC       SECTION.
+       20012-GAIKAN-SYORI-SEC       SECTION.
       *
-      *    アフターケアの時、外来管理加算を算定しない
-           IF      LNK-ORCSC-RSI-HKNKBN    =   "3"
-               GO    TO      20011-RSIGAIKAN-SYORI-EXT
-           END-IF
-      *
-      *    外来管理加算がないとき、労災のコードで点数マスタを検索
-           IF      LNK-ORCSC-GAIRAI-TEN    =   ZERO
-               PERFORM 200111-RSI-GAIKASAN-SEC
-               MOVE    WRK-SRYCD           TO  TNS-SRYCD
-               PERFORM 910-TENSU-READ-SEC
-               IF      FLG-TENSU           =   ZERO
-                   MOVE    TNS-TEN         TO  LNK-ORCSC-GAIRAI-TEN
-               END-IF
-           END-IF
-      *
-           MOVE   ZERO                 TO  WRK-GAI-CNT
-           MOVE   ZERO                 TO  WRK-GAI-IDX
-           MOVE   99999999             TO  WRK-GAI-TEN
-      *
-           PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200      )   OR
-                              (SPA-ERRCD           NOT =   SPACE )  OR
-                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
-                MOVE    ZERO                TO  WRK-COM-RSIGIRI
-                                                            (IDX-Z)
-      *
-                IF     (WRK-COM-SRYKBN     (IDX-Z)
-                                           NOT =   "95" AND "96") AND
-                       (WRK-COM-INPUTCD(IDX-Z)(1:3)
-                                           NOT =   "101"  )   AND
-                       (WRK-COM-GAIKANRIKBN(IDX-Z)
-                                               =   1   )
-                   IF      WRK-COM-SYUTEN2 (IDX-Z)
-                                               <   LNK-ORCSC-GAIRAI-TEN
-                       ADD     1               TO  WRK-GAI-CNT
-                       IF      WRK-COM-SYUTEN2 (IDX-Z)
-                                               <   WRK-GAI-TEN
-                           MOVE    WRK-COM-SYUTEN2 (IDX-Z)
-                                               TO  WRK-GAI-TEN
-                           MOVE    IDX-Z       TO  WRK-GAI-IDX
-                       END-IF
-                   END-IF
-                END-IF
-           END-PERFORM
-      *
-           IF      WRK-GAI-CNT         >   1
-      *        外来管理加算へ読み替える
-               MOVE    ZERO                TO  WRK-GAI-CNT
-               PERFORM VARYING     IDX-Z   FROM    1   BY  1
-                   UNTIL      (IDX-Z       >   200      )   OR
-                              (SPA-ERRCD           NOT =   SPACE )  OR
-                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
-      *
-                    IF     (WRK-COM-SRYKBN     (IDX-Z)
-                                          NOT =   "95" AND "96") AND
-                           (WRK-COM-INPUTCD(IDX-Z)(1:3)
-                                           NOT =   "101"  )   AND
-                           (WRK-COM-GAIKANRIKBN(IDX-Z)
-                                               =   1   )
-                       IF      WRK-COM-SYUTEN2 (IDX-Z)
-                                               <   LNK-ORCSC-GAIRAI-TEN
-                           ADD     1               TO  WRK-GAI-CNT
-                           IF      IDX-Z       NOT =   WRK-GAI-IDX
-                               MOVE    1           TO  WRK-COM-RSIGIRI
-                                                            (IDX-Z)
-      *                        労災の時、読み替えあり
-                               MOVE    "1"         TO  LNK-ORCSC-RSIOK
-                           END-IF
-                       END-IF
-                    END-IF
-               END-PERFORM
-           END-IF
-      *
-      *    外来管理加算不可のコードがあり、５２点以下の手技が存在しない
-           IF     (FLG-GAIKAN              =   1   )  AND
-                  (WRK-GAI-CNT             =   ZERO)
-      *        外来管理加算削除
+           IF      FLG-GAIKAN          =   1
                IF      IDX-GAIKAN          >   ZERO
                    MOVE    "0102"              TO  LNK-ORCSC-KIDCD
                    MOVE    IDX-GAIKAN          TO  LNK-ORCSC-CHK-IDX
@@ -3189,8 +3082,210 @@
                    END-IF
                END-IF
            END-IF
+      *
+           .
+       20012-GAIKAN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労災外来管理加算の読み替え処理
+      *****************************************************************
+       20011-RSIGAIKAN-SYORI-SEC       SECTION.
+      *
+      *    アフターケアの時、外来管理加算を算定しない
+           IF      SPA-RSI-HKNKBN      =   "3"
+               GO    TO      20011-RSIGAIKAN-SYORI-EXT
+           END-IF
+      *
+      *    外来管理加算がないとき、労災のコードで点数マスタを検索
+           IF      LNK-ORCSC-GAIRAI-TEN    =   ZERO
+               PERFORM 200111-RSI-GAIKASAN-SEC
+               MOVE    WRK-SRYCD           TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF      FLG-TENSU           =   ZERO
+                   MOVE    TNS-TEN         TO  LNK-ORCSC-GAIRAI-TEN
+               END-IF
+           END-IF
+      *
+           MOVE   ZERO                 TO  WRK-GAI-CNT
+           MOVE   ZERO                 TO  WRK-GAI-IDX
+           MOVE   99999999             TO  WRK-GAI-TEN
+      *
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   200      )   OR
+                              (SPA-ERRCD           NOT =   SPACE )  OR
+                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+                MOVE    ZERO                TO  WRK-COM-RSIGIRI
+                                                            (IDX-Z)
+      *
+                IF     (WRK-COM-SRYKBN     (IDX-Z)
+                                           NOT =   "95" AND "96") AND
+      **************   (WRK-COM-INPUTCD(IDX-Z)(1:3)
+      **************                       NOT =   "101"  )   AND
+                       (WRK-COM-GAIKANRIKBN(IDX-Z)
+                                               =   1   )
+                   IF     (WRK-COM-SYUTEN2 (IDX-Z) >  ZERO )  AND
+                          (WRK-COM-SYUTEN2 (IDX-Z)
+                                               <   LNK-ORCSC-GAIRAI-TEN)
+                       ADD     1               TO  WRK-GAI-CNT
+                       IF      WRK-COM-SYUTEN2 (IDX-Z)
+                                               <   WRK-GAI-TEN
+                           MOVE    WRK-COM-SYUTEN2 (IDX-Z)
+                                               TO  WRK-GAI-TEN
+                           MOVE    IDX-Z       TO  WRK-GAI-IDX
+                       END-IF
+                   END-IF
+                END-IF
+           END-PERFORM
+      *
+           IF      WRK-GAI-CNT         >   1
+      *        外来管理加算へ読み替える
+               MOVE    ZERO                TO  WRK-GAI-CNT
+               PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   200      )   OR
+                              (SPA-ERRCD           NOT =   SPACE )  OR
+                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+      *
+                    IF     (WRK-COM-SRYKBN     (IDX-Z)
+                                          NOT =   "95" AND "96") AND
+      ******************** (WRK-COM-INPUTCD(IDX-Z)(1:3)
+      ********************                 NOT =   "101"  )   AND
+                           (WRK-COM-GAIKANRIKBN(IDX-Z)
+                                               =   1   )
+                       IF     (WRK-COM-SYUTEN2 (IDX-Z)
+                                               >   ZERO   )  AND
+                              (WRK-COM-SYUTEN2 (IDX-Z)
+                                               <   LNK-ORCSC-GAIRAI-TEN)
+                           ADD     1               TO  WRK-GAI-CNT
+                           IF      IDX-Z       NOT =   WRK-GAI-IDX
+                               MOVE    1           TO  WRK-COM-RSIGIRI
+                                                            (IDX-Z)
+      *                        労災の時、読み替えあり
+                               MOVE    "1"         TO  LNK-ORCSC-RSIOK
+                           END-IF
+                       END-IF
+                    END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    外来管理加算不可のコードがあり、５２点以下の手技が存在しない
+           IF     (FLG-GAIKAN              =   1   OR
+                   LNK-ORCSC-TOKUTEI-KNJ2  =   1  )  AND
+                  (WRK-GAI-CNT             =   ZERO)
+      *        外来管理加算削除
+               IF      IDX-GAIKAN          >   ZERO
+                   MOVE    "0102"              TO  LNK-ORCSC-KIDCD
+                   MOVE    IDX-GAIKAN          TO  LNK-ORCSC-CHK-IDX
+               END-IF
+           ELSE
+               IF     (IDX-SYU             >   ZERO )  AND
+                      (IDX-GAIKAN          =   ZERO )  AND
+                      (LNK-ORCSC-GAIFLG    =   ZERO )  AND
+                      (WRK-GAI-CNT         >   ZERO)
+                   MOVE    IDX-SYU         TO  IDX-Z
+                   PERFORM
+                           UNTIL  WRK-COM-DATAKBN (IDX-Z + 1) NOT =  "2"
+                       ADD     1               TO  IDX-Z
+                   END-PERFORM
+      *            外来管理加算コード追加処理
+                   PERFORM 2001-GAIKASAN-SEC
+      *            労災読み替え加算分
+                   IF      FLG-ADD         =   1
+                       MOVE    "1"             TO  WRK-COM-RSIFLG2
+                                                               (IDX-S)
+                   END-IF
+               END-IF
+           END-IF
            .
        20011-RSIGAIKAN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   人工腎臓・厚生大臣による再診料振替え処理
+      *****************************************************************
+       20013-SAISIN-SYORI-SEC                SECTION.
+      *
+      *    再診の４回目以降の時、人工腎臓があれば変更する
+           IF     (WRK-SINSATU-KAISU       =   4   )  AND
+                 ( LNK-ORCSC-SAISIN-CHK    =   ZERO  )  OR
+                 ((LNK-ORCSC-TOKUTEI-JNZ   NOT =  WRK-TOKUTEI-JNZ OR
+                   LNK-ORCSC-TOKUTEI-KNJ   NOT =  WRK-TOKUTEI-KNJ))
+      *        診察料の決定
+               MOVE    WRK-SINSATU-KAISU   TO  WRK-SAN-KAISU
+               MOVE    WRK-SINSATU-KBN     TO  WRK-KBN
+               PERFORM 100121-SINSATU-CD-SEC
+               IF     (WRK-SRYCD       NOT =   SPACE )  AND
+                      (WRK-COM-INPUTCD (IDX-SINSATU)
+                                       NOT =   WRK-SRYCD)
+      *            人工腎臓
+                   IF      LNK-ORCSC-TOKUTEI-JNZ   =   1
+                       IF      WRK-SINSATU-KBN2    NOT =   "J"
+                           MOVE    "0115"          TO  LNK-ORCSC-KIDCD
+                           GO      TO      20013-SAISIN-SYORI-EXT
+                       END-IF
+                   END-IF
+      *            厚生大臣の
+                   IF     (LNK-ORCSC-TOKUTEI-KNJ   =   1 )  OR
+                          (LNK-ORCSC-TOKUTEI-KNJ2  =   1 )
+                       IF      WRK-SINSATU-KBN2    NOT =   "E"
+                           MOVE    "0114"          TO  LNK-ORCSC-KIDCD
+                           GO      TO      20013-SAISIN-SYORI-EXT
+                       END-IF
+                   END-IF
+      *
+                   MOVE    ZERO            TO  LNK-ORCSC-SAISIN-CHK
+      *            自動変更
+                   MOVE    IDX-SINSATU         TO  IDX-T
+                   MOVE    1                   TO  FLG-ARI
+                   PERFORM 1100-KASAN-SET-SEC
+                   MOVE    SPACE               TO  WRK-COM-AUTOKBN
+                                                          (IDX-SINSATU)
+               END-IF
+           END-IF
+      *
+      *    外来管理加算の４回目以降の変更
+           IF     (WRK-SINSATU-KAISU       =   4   )  AND
+                  (LNK-ORCSC-TOKUTEIG-KNJ  NOT =  WRK-TOKUTEIG-KNJ)
+      *        外来管理加算
+               IF      IDX-GAIKAN          >   ZERO
+      *            外来管理加算コード変更処理
+                   MOVE    1               TO  FLG-ARI
+                   PERFORM 20011-GAIKASAN-SET-SEC
+                   MOVE    IDX-GAIKAN      TO  IDX-T
+                   MOVE    1               TO  FLG-ARI
+                   PERFORM 1100-KASAN-SET-SEC
+                   MOVE    SPACE           TO  WRK-COM-AUTOKBN
+                                                          (IDX-GAIKAN)
+               END-IF
+           END-IF
+      *
+           .
+       20013-SAISIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労災人工腎臓・厚生大臣による再診料振替え処理
+      *****************************************************************
+       20014-RSISAISIN-SYORI-SEC                SECTION.
+      *
+      *    ３ヶ月超で５回目以降の時、人工腎臓があれば変更する
+           IF     (WRK-SINSATU-KAISU       =   5     )  AND
+                 ( LNK-ORCSC-SAISIN-CHK    =   ZERO  )  OR
+                 ((LNK-ORCSC-TOKUTEI-JNZ   NOT =  WRK-TOKUTEI-JNZ OR
+                   LNK-ORCSC-TOKUTEI-KNJ   NOT =  WRK-TOKUTEI-KNJ))
+      *        人工腎臓・慢性疼痛
+               IF     (LNK-ORCSC-TOKUTEI-JNZ   =   1   )  OR
+                      (LNK-ORCSC-TOKUTEI-KNJ   =   1   )  OR
+                      (LNK-ORCSC-TOKUTEI-KNJ2  =   1   )
+                   MOVE    "0120"          TO  LNK-ORCSC-KIDCD
+                   GO      TO      20014-RSISAISIN-SYORI-EXT
+               END-IF
+      *
+               MOVE    ZERO            TO  LNK-ORCSC-SAISIN-CHK
+           END-IF
+      *
+           .
+       20014-RSISAISIN-SYORI-EXT.
            EXIT.
       *
       *****************************************************************

@@ -106,6 +106,8 @@
            03  WRK-MAX             PIC 9(04).
       *    »»Äê²ó¿ô
            03  WRK-SANTEI-CNT      PIC 9(04).
+      *    ¿ÇÎÅ²ÊÌ¾¾Î
+           03  WRK-SRYKAMEI        PIC X(20).
       *
       *    ¥³¥á¥ó¥È¤ÎÆþÎÏÃÍÍÑ
        01  WRK-INPUT-SET-AREA.
@@ -165,6 +167,8 @@
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
            COPY    "CPSK1006.INC".
+      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+           COPY    "CPSK1005.INC".
       *
            COPY    "CPSK1010.INC".
       *
@@ -642,6 +646,7 @@
                                                 SPA-AREA
                                                 TNS-TENSU-REC
            MOVE    LNK-SC91-ERRCD      TO  LNK-SC92-ERRCD3
+           MOVE    LNK-SC91-ERRMSG     TO  LNK-SC92-ERRMSG
       *
            .
        2001-SANTEI-CHK-EXT.
@@ -937,15 +942,26 @@
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
       *
+           IF      WRK-RSI-KBN         =   SPACE
+      *        ¼ç¥­¡¼
+               MOVE    "SANTEI-KEY"        TO  WRK-PATH
+           ELSE
+      *        Ï«ºÒËè¤Î»»Äê
+               MOVE    "SANTEI-KEY3"       TO  WRK-PATH
+           END-IF
+      *
+      *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+      *****MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+           MOVE    WRK-PATH            TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+      *********MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+               MOVE    WRK-PATH            TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SANTEI
@@ -978,6 +994,19 @@
       *    »»ÄêÎò¤Î²ó¿ô¤ò¥Á¥§¥Ã¥¯¤¹¤ë
            IF      WRK-SANTEI-CNT      >   ZERO
                MOVE    "0033"              TO  LNK-SC92-ERRCD6
+      *
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    SANTEI-SRYYM        TO  LNK-DAY2-YMD(1:6)
+               MOVE    SANTEI-MSANTEID     TO  LNK-DAY2-YMD(7:2)
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               STRING  LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
+                       "¡¡"                DELIMITED  BY  SIZE
+                       TNS-NAME            DELIMITED  BY  SPACE
+                      INTO                 LNK-SC92-ERRMSG
+               END-STRING
            END-IF
            .
        20051-CHK-SANTEI-EXT.
@@ -992,9 +1021,12 @@
            SEARCH  TBL-SANTEI-OCC      VARYING   TBL-SAN
                AT  END
                    MOVE    ZERO            TO  FLG-HKNSAN
+                   MOVE    SPACE           TO  WRK-RSI-KBN
                WHEN    CHK-CD (IDX-C)      =   TBL-SANTEI-SRYCD
                                                           (TBL-SAN)
                    MOVE    1               TO  FLG-HKNSAN
+                   MOVE    TBL-RSI-KBN    (TBL-SAN)
+                                           TO  WRK-RSI-KBN
            END-SEARCH
       *
            .
@@ -1015,6 +1047,11 @@
                    IF      SPA-COM-INPUTCD(IDX)
                                                =   CHK-CD (IDX-C)
                        MOVE    "0033"          TO  LNK-SC92-ERRCD6
+      *
+                       STRING  "º£²ó¡¡"            DELIMITED  BY  SIZE
+                               TNS-NAME            DELIMITED  BY  SPACE
+                              INTO                 LNK-SC92-ERRMSG
+                       END-STRING
                    END-IF
                END-IF
            END-PERFORM
@@ -1062,7 +1099,7 @@
            MOVE    TNS-TEN             TO  SPA-COM-TEN      (IDX-T)
            MOVE    TNS-TEN             TO  SPA-COM-KISOTEN  (IDX-T)
       *
-           IF      SPA-HKNKBN          =   1  OR  2
+           IF      SPA-HKNKBN          =   1
       *        Ï«ºÒ¡¦¼«ÇåÀÕ ÊÔ½¸
                PERFORM 3000-RSIJIB-HEN-SEC
            END-IF
@@ -1254,6 +1291,14 @@
                MOVE    1               TO  SPA-COM-RSIKBN (IDX-T)
            END-IF
       *
+      *    ¼«ÇåÀÕÌÀºÙÎÁ¡¦¿ÇÃÇÎÁ
+      *    IF     (SPA-RSI-HKNKBN      =   "4"  )  AND
+      *           (SPA-COM-SRYKBN  (IDX-T) =   "80" ) AND
+      *           (SPA-COM-INPUTCD (IDX-T)(1:4)    =   "0958" OR
+      *                                                "0959" )
+      *        COMPUTE SPA-COM-KISOTEN  (IDX-T)    =   TNS-TEN
+      *                                            /   10
+      *****END-IF
            .
        3000-RSIJIB-HEN-EXT.
            EXIT.
@@ -1401,6 +1446,14 @@
            MOVE    TNS-NAME            TO  WRK-MEISYO
            INITIALIZE                  WRK-INPUT-SET-AREA
       *
+      *    ½é¿ÇÎÁ»»Äê²Ê¡¢ºÆ¿ÇÎÁ»»Äê²Ê¤Î¤ßÂÐ¾Ý¤È¤¹¤ë
+           IF      SPA-COM-INPUTCD (IDX-T) =   "830000020"  OR
+                                               "830000021"
+               CONTINUE
+           ELSE
+               GO      TO      3003-INPUT-MEISYO2-EXT
+            END-IF
+      *
       *    »ÜÀß´ð½à¥³¡¼¥É¡ÊÆþÎÏÃÍÊÔ½¸¡Ë
            PERFORM VARYING IDX-SST     FROM    1   BY  1
                    UNTIL   IDX-SST     >   8
@@ -1422,13 +1475,55 @@
                                            +  1
                    COMPUTE WRK-ICHI2       =   (WRK-ICHI     *  2  )
                                            -  1
-                   MOVE    LNK-SC92-LSTSRYKAMEI  TO  WRK-MEISYO
-                                                 (WRK-ICHI2:)
+                   PERFORM 30031-SRYKA-MEI-HEN-SEC
+      *************MOVE    LNK-SC92-LSTSRYKAMEI  TO  WRK-MEISYO
+                   MOVE    WRK-SRYKAMEI          TO  WRK-MEISYO
+                                                       (WRK-ICHI2:)
                END-IF
            END-PERFORM
       *
            .
        3003-INPUT-MEISYO2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     ¿ÇÎÅ²ÊÌ¾¾ÎÊÔ½¸½èÍý
+      *****************************************************************
+       30031-SRYKA-MEI-HEN-SEC            SECTION.
+      *
+      *    ¿ÇÎÅ²Ê
+           MOVE    SPACE               TO  SYS-1005-REC
+           INITIALIZE                  SYS-1005-REC
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    SPA-COM-ATAI(IDX-T IDX-SST)(1:2)
+                                       TO  SYS-1005-KBNCD (1:2)
+           MOVE    ZERO                TO  SYS-1005-STYUKYMD
+           MOVE    ALL "9"             TO  SYS-1005-EDYUKYMD
+      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1005-REC
+               INITIALIZE                  SYS-1005-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    SPACE               TO  WRK-SRYKAMEI
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC           TO  SYS-1005-REC
+               MOVE    SYS-1005-SRYKANAME1   TO  WRK-SRYKAMEI
+           END-IF
+      *
+           .
+       30031-SRYKA-MEI-HEN-EXT.
            EXIT.
       *
       *****************************************************************

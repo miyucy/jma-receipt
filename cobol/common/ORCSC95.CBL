@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-多々納   02/04/10  労災追加
       *  01.00.02    NACL-多々納  02/08/06  アフターケア用追加
+      *  01.00.03    NACL-多々納  02/09/11  自賠責追加
       *****************************************************************
       *
       *
@@ -271,6 +272,9 @@
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
+      *    保険年齢・負担割合算定サブ
+           COPY    "CPORCSAGECHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -822,8 +826,8 @@
                    IF      HZN-JYURRK-REC      =   SPACE
                        MOVE    JYURRK-REC      TO  HZN-JYURRK-REC
                    END-IF
-      *         労災の時、同じ保険であること
-                   IF     ((HZN-JYURRK-HKNKBN  =   1  )  AND
+      *            労災の時、同じ保険であること
+                   IF     ((HZN-JYURRK-HKNKBN  =   "1"  OR "2")  AND
                            (HZN-JYURRK-HKNCOMBINUM
                                                =   JYURRK-HKNCOMBINUM))
                        OR ((HZN-JYURRK-HKNKBN   =   ZERO) AND
@@ -1157,6 +1161,7 @@
                                            TO  SPA-GMN-FTNRATEMEI
       *            労災判定
                    IF      SPA-NAI-HKNNUM (IDX)    =   "971"
+                                                   OR  "973"
                        MOVE    1                   TO  SPA-HKNKBN
                    ELSE
                        MOVE    ZERO                TO  SPA-HKNKBN
@@ -1178,6 +1183,7 @@
                                            TO  SPA-GMN-FTNRATEMEI
       *        労災判定
                IF      SPA-NAI-HKNNUM (01)     =   "971"
+                                               OR  "973"
                    MOVE    1                   TO  SPA-HKNKBN
                ELSE
                    MOVE    ZERO                TO  SPA-HKNKBN
@@ -1185,6 +1191,30 @@
                MOVE    SPA-NAI-HKNID (01)  TO  SPA-HKNID
                MOVE    SPA-NAI-RSI-HKNKBN (01)
                                            TO  SPA-RSI-HKNKBN
+           END-IF
+      *
+      *    保険算定年齢チェック等
+           INITIALIZE                  ORCSAGECHKAREA
+           MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
+           MOVE    SPA-PTID            TO  AGECHK-PTID
+           MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
+      **** MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
+           MOVE    SPA-HKNCOMBINUM     TO  AGECHK-HKNCOMBINUM
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+           IF      AGECHK-FTNRATE  NOT =   ZERO
+      *        負担率
+               MOVE    AGECHK-FTNRATEMEI   TO  SPA-GMN-FTNRATEMEI
+               MOVE    AGECHK-FTNRATEMEI   TO  SPA-FTNRATEMEI
+               MOVE    AGECHK-FTNRATE      TO  SPA-GMN-FTNRATE
+               MOVE    AGECHK-FTNRATE      TO  SPA-FTNRATE
+           END-IF
+           MOVE    ZERO                TO  SPA-RJN-ERR
+      *
+      *    老人でＨ１４．１０の保険変更がない時
+           IF      AGECHK-RJNCHK   NOT =   ZERO
+               MOVE    "1027"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-RJN-ERR
            END-IF
       *
            .
@@ -1210,9 +1240,22 @@
                    COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
                          INTO              WRK-HKNCOMBI
            END-STRING
+      *    主保険がない時
+           IF      COMB-SYU-TANSEIDONAME   =   SPACE
+               MOVE    SPACE               TO  WRK-HKNCOMBI
+               STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                         INTO              WRK-HKNCOMBI
+               END-STRING
+           END-IF
       *
       *    労災の時、コメントの追加
-           IF      COMB-HKNNUM         =   "971"
+           IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        患者保険情報検索
                INITIALIZE                      PTRSIINF-REC
                MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
@@ -1264,7 +1307,7 @@
                MOVE    PTRSI-SISIKBN       TO  SPA-NAI-RSI-SISIKBN
                                                           (SPA-HKN-MAX)
       *        傷病年月日
-               IF      PTRSI-HKNKBN        =   "1"  OR  "2"
+               IF      PTRSI-HKNKBN        =   "1"  OR  "2"  OR  "4"
                    MOVE    PTRSI-SHOBYOYMD     TO  SPA-NAI-RSI-SHOBYOYMD
                                                           (SPA-HKN-MAX)
                ELSE

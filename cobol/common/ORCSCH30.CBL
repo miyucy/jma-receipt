@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  02/09/04  種別区分の追加
+      * 01.00.02     NACL-多々納  02/09/17  処方のみの時院内処方とする
       *****************************************************************
       *
       *
@@ -85,6 +87,9 @@
                    07  TBL-SRYCD           PIC X(09).
                    07  TBL-SURYO           PIC 9(05)V9(03).
                05  WRK-YSRYCD              PIC X(09).
+               05  WRK-SRYKBN              PIC X(02).
+      *
+           03  WRK-ZAITENKEI            PIC 9(07).
       *
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -412,10 +417,12 @@
            MOVE    ZERO                TO  WRK-KAISU
            MOVE    ZERO                TO  IDX-S
            MOVE    SPACE               TO  WRK-YSRYCD
+           MOVE    SPACE               TO  WRK-SRYKBN
            PERFORM
                    UNTIL   FLG-SRYACT      =   1
       *        投薬を対象とする
                IF      SRY-SRYKBN          =   "21"   OR  "22" OR "23"
+                   MOVE    SRY-SRYKBN          TO  WRK-SRYKBN
       *            診療会計より、点数チェック
                    PERFORM 20021-SRYACCT-SYORI-SEC
                    MOVE    ZERO                TO  FLG-OK
@@ -429,6 +436,16 @@
                           (ORCSCH30-KBN        =   "2"   )
                        MOVE    1               TO  FLG-OK
                    END-IF
+      *            処方のみのときは院内分とする
+                   IF      SRY-SRYSYUKBN(3:1)  =   "3"
+                       IF      ORCSCH30-KBN        =   "1"
+                           MOVE    1               TO  FLG-OK
+                       END-IF
+                       IF      ORCSCH30-KBN        =   "2"
+                           MOVE    ZERO            TO  FLG-OK
+                       END-IF
+                   END-IF
+      *
                    IF      FLG-OK              =   1
                        PERFORM VARYING     IDXA    FROM    1   BY  1
                                UNTIL      (IDXA    >   5   )  OR
@@ -489,6 +506,18 @@
       *
                MOVE    WRK-YSRYCD          TO  ORCHC30-YSRYCD(IDY)
                MOVE    WRK-KAISU           TO  ORCHC30-KAISU (IDY)
+      *
+               EVALUATE    WRK-SRYKBN
+      *            内服
+                   WHEN    "21"
+                       MOVE    "1"         TO  ORCHC30-ZAIKBN(IDY)
+      *            頓服
+                   WHEN    "22"
+                       MOVE    "2"         TO  ORCHC30-ZAIKBN(IDY)
+      *            外用
+                   WHEN    "23"
+                       MOVE    "3"         TO  ORCHC30-ZAIKBN(IDY)
+               END-EVALUATE
            END-PERFORM
       *
            .
@@ -571,13 +600,38 @@
            MOVE    ZERO                TO  WRK-KAISU
            MOVE    ZERO                TO  IDX-S
            MOVE    SPACE               TO  WRK-YSRYCD
+           MOVE    SPACE               TO  WRK-SRYKBN
+           MOVE    ZERO                TO  WRK-ZAITENKEI
            PERFORM
                UNTIL   FLG-WKSRYACT    =   1
                IF      WKSRY-RENNUM        =   1
       *            剤終了時、編集へ
                    IF      IDX-S           >   ZERO
-      *                パラメタ編集
-                       PERFORM 2003-HC30TBL-SET-SEC
+                       MOVE    ZERO            TO  FLG-OK
+      *                投薬で、点数がゼロのもを対象（院内）
+                       IF     (ORCSCH30-KBN        =   "3" )  AND
+                              (WRK-ZAITENKEI       >   ZERO)
+                           MOVE    1               TO  FLG-OK
+                       END-IF
+      *                投薬で、点数がゼロのもを対象（院外）
+                       IF     (ORCSCH30-KBN        =   "4" )  AND
+                              (WRK-ZAITENKEI       =   ZERO)
+                           MOVE    1               TO  FLG-OK
+                       END-IF
+      *                処方のみのときは院内分とする
+                       IF      WKSRY-SRYSYUKBN(3:1)    =   "3"
+                           IF      ORCSCH30-KBN        =   "3"
+                               MOVE    1               TO  FLG-OK
+                           END-IF
+                           IF      ORCSCH30-KBN        =   "4"
+                               MOVE    ZERO            TO  FLG-OK
+                           END-IF
+                       END-IF
+      *
+                       IF      FLG-OK              =   1
+      *                    パラメタ編集
+                           PERFORM 2003-HC30TBL-SET-SEC
+                       END-IF
                    END-IF
       *            回数
                    MOVE    WKSRY-ZAIKAIKEI     TO  WRK-KAISU
@@ -585,28 +639,15 @@
                    MOVE    SPACE               TO  WRK-TBL-AREA
                    MOVE    ZERO                TO  IDX-S
                    MOVE    SPACE               TO  WRK-YSRYCD
+                   MOVE    WKSRY-SRYKBN        TO  WRK-SRYKBN
+                   MOVE    ZERO                TO  WRK-ZAITENKEI
                END-IF
       *
-      *        投薬で、点数がゼロのもを対象（院外）
-               IF      ORCSCH30-KBN        =   "4" 
-                   IF     (WKSRY-SRYKBN        =   "21"  OR
-                                                   "22"  OR
-                                                   "23"    )  AND
-                          (WKSRY-ZAITENKEI     =   ZERO    )
-                       MOVE    1               TO  FLG-OK
-                   END-IF
-               END-IF
-      *        投薬で、点数がゼロのもを対象（院内）
-               IF      ORCSCH30-KBN        =   "3"
-                   IF     (WKSRY-SRYKBN        =   "21"  OR
-                                                   "22"  OR
-                                                   "23"    )  AND
-                          (WKSRY-ZAITENKEI     >   ZERO    )
-                       MOVE    1               TO  FLG-OK
-                   END-IF
-               END-IF
-      *
-               IF      FLG-OK              =   1
+      *        投薬を対象とする
+               IF      WKSRY-SRYKBN        =   "21"  OR
+                                               "22"  OR
+                                               "23"
+                   MOVE    WKSRY-ZAITENKEI         TO  WRK-ZAITENKEI
                    PERFORM 20031-WKSRYACT-HEN-SEC
                END-IF
       *
@@ -616,8 +657,21 @@
       *
       *    剤終了時、編集へ
            IF      IDX-S           >   ZERO
-      *        パラメタ編集
-               PERFORM 2003-HC30TBL-SET-SEC
+               MOVE    ZERO            TO  FLG-OK
+      *        投薬で、点数がゼロのもを対象（院内）
+               IF      (ORCSCH30-KBN        =   "3" )  AND
+                       (WRK-ZAITENKEI       >   ZERO)
+                   MOVE    1               TO  FLG-OK
+               END-IF
+      *        投薬で、点数がゼロのもを対象（院外）
+               IF     (ORCSCH30-KBN        =   "4" )  AND
+                      (WRK-ZAITENKEI       =   ZERO)
+                   MOVE    1               TO  FLG-OK
+               END-IF
+               IF      FLG-OK              =   1
+      *            パラメタ編集
+                   PERFORM 2003-HC30TBL-SET-SEC
+               END-IF
            END-IF
       *
            .

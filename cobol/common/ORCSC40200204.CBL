@@ -689,7 +689,7 @@
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
                END-IF
       *        アフターケアの時算定不可
-               IF      LNK-ORCSC-RSI-HKNKBN    =   "3"
+               IF      SPA-RSI-HKNKBN          =   "3"
                    MOVE    "8018"              TO  WRK-ERRCD
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
                END-IF
@@ -732,6 +732,16 @@
                            WHEN    1
       *                        １．５倍
                                MOVE    "101400020"      TO  WRK-SRYCD
+                           WHEN    2
+      *                        皮膚科光線治療・ 鋼線等による直接牽引は
+      *                        手の場合も、１．５倍する
+                               IF      WRK-COM-INPUTCD(IDX-ZS)
+                                                        =   "140028810"
+                                                        OR  "140029010"
+                                                        OR  "140029210"
+      *                            １．５倍
+                                   MOVE    "101400020"  TO  WRK-SRYCD
+                               END-IF
                        END-EVALUATE
                        MOVE    2                    TO  FLG-ROUSAI
       *            消炎鎮痛処置
@@ -740,6 +750,14 @@
                            WHEN    1
       *                        １．５倍
                                 MOVE    "101400020"      TO  WRK-SRYCD
+                           WHEN    2
+      *                        消炎鎮痛の時、手の場合も、１．５倍する
+                               IF      WRK-COM-INPUTCD(IDX-ZS)
+                                                        =   "140029610"
+                                                        OR  "140040310"
+      *                            １．５倍
+                                   MOVE    "101400020"  TO  WRK-SRYCD
+                               END-IF
                        END-EVALUATE
                        MOVE    2                    TO  FLG-ROUSAI
       *                湿布処置の時、部位による

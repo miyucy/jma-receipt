@@ -192,6 +192,10 @@
                 05   WRK-SYO-MM    PIC 9(02).
                 05   WRK-SYO-DD    PIC 9(02).
       *
+      *    ¼«ÇåÀÕ¶â³ÛÍÑ
+           03  WRK-KINGAK          PIC 9(08).
+           03  FLG-JIHI            PIC 9(01).
+      *
       *    ÊÝÂ¸ÍÑ
        01  HOZ-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
@@ -872,6 +876,7 @@
                    WHEN    "005"
                        EVALUATE    SPA-RSI-SISIKBN
                            WHEN    1
+                           WHEN    2
       *                        £±¡¥£µÇÜ
                                MOVE    "101800010"      TO  WRK-SRYCD
                        END-EVALUATE
@@ -1119,6 +1124,8 @@
       *
                EVALUATE    WRK-MOJI
                    WHEN    "0"
+      *                ¼«ÇåÀÕ
+                       PERFORM 10021-JIHI-KEI-SEC
                    WHEN    "8"
                    WHEN    "."
                    WHEN    "S"
@@ -1172,6 +1179,32 @@
       *
            .
        1002-TENSU-KEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼«ÇåÀÕ·×»»½èÍý
+      *****************************************************************
+       10021-JIHI-KEI-SEC                  SECTION.
+      *
+           IF      WRK-COM-INPUTCD(IDX-Z)(1:5) =   "09591"  OR
+                                                   "09592"
+               CONTINUE
+           ELSE
+               GO      TO      10021-JIHI-KEI-EXT
+           END-IF
+      *
+      *    ¼«ÇåÀÕÌÀºÙÎÁ¡¦¿ÇÃÇÎÁ
+           COMPUTE WRK-COM-KISOTEN(IDX-Z)  =   WRK-COM-TEN (IDX-Z)
+                                           /   10
+      *
+           ADD     WRK-COM-KISOTEN (IDX-Z) TO  LNK-SC90-TENGAKEI
+      *    ²ó¿ô
+           MOVE    LNK-ORCSC-KAISU         TO  WRK-COM-KAISU (IDX-Z)
+      *
+           MOVE    SPACE                   TO  WRK-COM-KEIFLG (IDX-Z)
+      *
+           .
+       10021-JIHI-KEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1526,11 +1559,13 @@
                        IF      TBL-RIGAKU-RYO(TBL-SAN) =   "S"
                            COMPUTE WRK-R-TCNT-S    =   WRK-R-TCNT-S
                                                    +   LNK-SC91-CNT
+                                                   -   LNK-SC91-ATO-CNT
                            COMPUTE WRK-R-DCNT-S    =   WRK-R-DCNT-S
                                                    +   LNK-SC91-DAYCNT
                        ELSE
                            COMPUTE WRK-R-TCNT-K    =   WRK-R-TCNT-K
                                                    +   LNK-SC91-CNT
+                                                   -   LNK-SC91-ATO-CNT
                            COMPUTE WRK-R-DCNT-K    =   WRK-R-DCNT-K
                                                    +   LNK-SC91-DAYCNT
                        END-IF
@@ -1543,11 +1578,13 @@
                        IF      TBL-RIGAKU-RYO(TBL-SAN) =   "S"
                            COMPUTE WRK-S-TCNT-S    =   WRK-S-TCNT-S
                                                    +   LNK-SC91-CNT
+                                                   -   LNK-SC91-ATO-CNT
                            COMPUTE WRK-S-DCNT-S    =   WRK-S-DCNT-S
                                                    +   LNK-SC91-DAYCNT
                        ELSE
                            COMPUTE WRK-S-TCNT-K    =   WRK-S-TCNT-K
                                                    +   LNK-SC91-CNT
+                                                   -   LNK-SC91-ATO-CNT
                            COMPUTE WRK-S-DCNT-K    =   WRK-S-DCNT-K
                                                    +   LNK-SC91-DAYCNT
                        END-IF
@@ -1560,11 +1597,13 @@
                        IF      TBL-RIGAKU-RYO(TBL-SAN) =   "S"
                            COMPUTE WRK-G-TCNT-S    =   WRK-G-TCNT-S
                                                    +   LNK-SC91-CNT
+                                                   -   LNK-SC91-ATO-CNT
                            COMPUTE WRK-G-DCNT-S    =   WRK-G-DCNT-S
                                                    +   LNK-SC91-DAYCNT
                        ELSE
                            COMPUTE WRK-G-TCNT-K    =   WRK-G-TCNT-K
                                                    +   LNK-SC91-CNT
+                                                   -   LNK-SC91-ATO-CNT
                            COMPUTE WRK-G-DCNT-K    =   WRK-G-DCNT-K
                                                    +   LNK-SC91-DAYCNT
                        END-IF

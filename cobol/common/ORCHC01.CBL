@@ -38,6 +38,7 @@
       *  01.00.09    MCC-多々納   02/03/27  保険組合せなし追加
       *  01.00.10    MCC-多々納   02/05/07  全角変換の追加
       *  01.00.11    MCC-多々納   02/05/23  労災の追加
+      *  01.00.12    NACL-多々納  02/09/13  自賠責・印刷サプの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -73,11 +74,11 @@
            COPY    "CPCOMMONPRT1.INC".
       *---- (01.00.05) LINE ADD END   ----------------------------
       *    シェル用領域
-           COPY    "CPCOMMONSHELL.INC".
+      *    COPY    "CPCOMMONSHELL.INC".
       *
       *    シェル用領域
-           COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "CPSHELLTBL.INC".
+      **** COPY    "ORCA-DBPATH".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -280,6 +281,9 @@
       *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
       *
+      *    印刷パラメタ
+           COPY    "CPORCSMKPRT.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -413,26 +417,36 @@
       *　　印刷用データ出力
             WRITE  HC01
       *
-            MOVE   "HC01.sh"           TO  SHELL-ID
-            MOVE   "HC01.dia"          TO  SHELL-DIA
-            MOVE   "HC01.def"          TO  SHELL-DEF
-            MOVE   HC01PARA            TO  SHELL-DAT
-            MOVE   SYS-1031-PRTNM(1)    TO  SHELL-PRTNM
+      ***** MOVE   "HC01.sh"           TO  SHELL-ID
+      *     MOVE   "HC01.dia"          TO  SHELL-DIA
+      *     MOVE   "HC01.def"          TO  SHELL-DEF
+      *     MOVE   HC01PARA            TO  SHELL-DAT
+      ***** MOVE   SYS-1031-PRTNM(1)    TO  SHELL-PRTNM
             CLOSE                       PRT-FILE
+      *
+            INITIALIZE                 ORCSMKPRTAREA
+            MOVE   "HC01.sh"           TO  MKPRT-ID
+            MOVE   "HC01.dia"          TO  MKPRT-DIA
+            MOVE   "HC01.def"          TO  MKPRT-DEF
+            MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
+            CALL   "ORCSMKPRT"         USING
+                                       ORCSMKPRTAREA
+      *
       *   印刷用スクリプト処理
       *★    ETC-EXEC SHELL   SHELL-AREA 10
-           MOVE    SHELL-NAME          TO  SHELLTBL-NAME
-           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
-           MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
-           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
-           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
-           MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                   MCPAREA
-                   MCPDATA-REC
+      *    MOVE    SHELL-NAME          TO  SHELLTBL-NAME
+      *    MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
+      *    MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
+      *    MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
+      *    MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
+      *    MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
+      *    MOVE    SHELLTBL            TO  MCPDATA-REC
+      *    MOVE    "SHELL"             TO  MCP-FUNC
+      *    MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+      *    CALL    "MCPSUB"            USING
+      *            MCPAREA
+      ******       MCPDATA-REC
       *
       *---- (01.00.05) LINE MOD START ----------------------------
       *    続紙あり
@@ -840,7 +854,7 @@
       *---- (01.00.11) LINE ADD START ----------------------------
       *
       *    労災の時、保険者番号・記号の変更
-           IF      COMB-HKNNUM         =   "971"
+           IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        患者保険情報検索
                INITIALIZE                      PTRSIINF-REC
                MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
@@ -1086,37 +1100,55 @@
        20021-HC011-PRINT-SEC                SECTION.
       *
       *    ファイルＯＰＥＮ
-           MOVE    "HC011"             TO  HC011PARA-FORM-ID
-           MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
+      **   MOVE    "HC011"             TO  HC011PARA-FORM-ID
+      *    MOVE    SYS-TIME            TO  HC011PARA-SYOHMS
       *    変更★★★★★★
+      *    ADD     1                   TO  WRK-PAGE
+      *    MOVE    WRK-PAGE            TO  HC011PARA-CNT
+      *****OPEN    OUTPUT               PRTX-FILE
+      *    ファイルＯＰＥＮ
+           MOVE    "HC011"             TO  HC01PARA-FORM-ID
+           MOVE    SPA-TERMID          TO  HC01PARA-TERMID
+           MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            ADD     1                   TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC01PARA-CNT
-           OPEN    OUTPUT               PRTX-FILE
+           MOVE    HC01PARA            TO  HC011PARA
+           OPEN    OUTPUT              PRTX-FILE
+      *
       *
       *　　印刷用データ出力
            WRITE   HC011
       *
-           MOVE    "HC01.sh"           TO  SHELL-ID
-           MOVE    "HC011.dia"         TO  SHELL-DIA
-           MOVE    "HC011.def"         TO  SHELL-DEF
-           MOVE    HC011PARA           TO  SHELL-DAT
-           MOVE    SYS-1031-PRTNM(1)   TO  SHELL-PRTNM 
+      **** MOVE    "HC01.sh"           TO  SHELL-ID
+      *    MOVE    "HC011.dia"         TO  SHELL-DIA
+      *    MOVE    "HC011.def"         TO  SHELL-DEF
+      *    MOVE    HC011PARA           TO  SHELL-DAT
+      **** MOVE    SYS-1031-PRTNM(1)   TO  SHELL-PRTNM 
            CLOSE                       PRTX-FILE
+      *
+            INITIALIZE                 ORCSMKPRTAREA
+            MOVE   "HC01.sh"           TO  MKPRT-ID
+            MOVE   "HC011.dia"         TO  MKPRT-DIA
+            MOVE   "HC011.def"         TO  MKPRT-DEF
+            MOVE   HC011PARA           TO  MKPRT-DAT
+            MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
+            CALL   "ORCSMKPRT"         USING
+                                       ORCSMKPRTAREA
       *
       *    印刷用スクリプト処理
       *★    ETC-EXEC SHELL   SHELL-AREA 10
-           MOVE    SHELL-NAME          TO  SHELLTBL-NAME
-           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
-           MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
-           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
-           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
-           MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                   MCPAREA
-                   MCPDATA-REC
+      *    MOVE    SHELL-NAME          TO  SHELLTBL-NAME
+      *    MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
+      *    MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
+      *    MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
+      *    MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
+      *    MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
+      *    MOVE    SHELLTBL            TO  MCPDATA-REC
+      *    MOVE    "SHELL"             TO  MCP-FUNC
+      *    MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+      *    CALL    "MCPSUB"            USING
+      *            MCPAREA
+      ******       MCPDATA-REC
       *
            INITIALIZE  HC011
            MOVE    ZERO                TO  IDX

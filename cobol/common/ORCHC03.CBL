@@ -30,6 +30,7 @@
       *  01.00.01    MCC-藤原     01/10/03  出力先プリンタ名編集
       *  01.00.01    MCC-藤原     02/03/18  帳票ファイル名の変更
       *  01.00.02    MCC-多々納   02/05/01  マイナス表示を行うようにした
+      *  01.00.03    NACL-多々納  02/09/13  自賠責・印刷サプの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -53,11 +54,11 @@
       *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
       *    シェル用領域
-           COPY    "CPCOMMONSHELL.INC".
+      **** COPY    "CPCOMMONSHELL.INC".
       *
       *    シェル用領域
-           COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "CPSHELLTBL.INC".
+      *****COPY    "ORCA-DBPATH".
       *
       *
       *    フラグ領域
@@ -216,6 +217,9 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    印刷パラメタ
+           COPY    "CPORCSMKPRT.INC".
+      *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -293,26 +297,36 @@
       *　　印刷用データ出力
               WRITE  HC03
       *
-            MOVE   "HC01.sh"           TO  SHELL-ID
-            MOVE   "HC03.dia"          TO  SHELL-DIA
-            MOVE   "HC03.def"          TO  SHELL-DEF
-            MOVE   HC01PARA            TO  SHELL-DAT
-            MOVE   SYS-1031-PRTNM(3)   TO  SHELL-PRTNM 
+      ******MOVE   "HC01.sh"           TO  SHELL-ID
+      *     MOVE   "HC03.dia"          TO  SHELL-DIA
+      *     MOVE   "HC03.def"          TO  SHELL-DEF
+      *     MOVE   HC01PARA            TO  SHELL-DAT
+      ***** MOVE   SYS-1031-PRTNM(3)   TO  SHELL-PRTNM 
             CLOSE                       PRT-FILE
+      *
+            INITIALIZE                 ORCSMKPRTAREA
+            MOVE   "HC01.sh"           TO  MKPRT-ID
+            MOVE   "HC03.dia"          TO  MKPRT-DIA
+            MOVE   "HC03.def"          TO  MKPRT-DEF
+            MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   SYS-1031-PRTNM(3)   TO  MKPRT-PRTNM
+            CALL   "ORCSMKPRT"         USING
+                                       ORCSMKPRTAREA
+      *
       *   印刷用スクリプト処理
       *★   ETC-EXEC SHELL   SHELL-AREA 10
-           MOVE    SHELL-NAME          TO  SHELLTBL-NAME
-           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
-           MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
-           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
-           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
-           MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                   MCPAREA
-                   MCPDATA-REC
+      *    MOVE    SHELL-NAME          TO  SHELLTBL-NAME
+      *    MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
+      *    MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
+      *    MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
+      *    MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
+      *    MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
+      *    MOVE    SHELLTBL            TO  MCPDATA-REC
+      *    MOVE    "SHELL"             TO  MCP-FUNC
+      *    MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+      *    CALL    "MCPSUB"            USING
+      *            MCPAREA
+      **********   MCPDATA-REC
       *
       *
            .
@@ -610,9 +624,39 @@
                                        +   SYU-HKNTEN (10)
            MOVE    WRK-GOKTEN          TO  WRK-Z7
            MOVE    WRK-Z7-G            TO  HC03-GOKTEN
+      *
+      *    労災・自賠の時、点数表示なし
+           IF      SPA-HKNKBN          =   1
+               MOVE    SPACE               TO  HC03-HKNRYO1
+               MOVE    SPACE               TO  HC03-HKNRYO2
+               MOVE    SPACE               TO  HC03-HKNRYO4
+               MOVE    SPACE               TO  HC03-HKNRYO5
+               MOVE    SPACE               TO  HC03-HKNRYO6
+               MOVE    SPACE               TO  HC03-HKNRYO7
+               MOVE    SPACE               TO  HC03-HKNRYO8
+               MOVE    SPACE               TO  HC03-HKNRYO9
+               MOVE    SPACE               TO  HC03-HKNRYO10
+               MOVE    ALL "*"             TO  HC03-GOKTEN
+           END-IF
+      *
       *    保険適用分
            MOVE    SYU-HKNTEKMONEY     TO  WRK-Z7
            MOVE    WRK-Z7-G            TO  HC03-HOKENBUN
+      *    労災・自賠の時、点数表示なし
+           IF      SPA-HKNKBN          =   1
+               IF      SPA-RSI-HKNKBN      =    "4"
+                   COMPUTE WRK-GOKTEN      =    SYU-HKNTEKMONEY
+                                           +    SYU-RSISHOSHIN-MONEY
+                                           +    SYU-RSISAISHIN-MONEY
+                                           +    SYU-RSISDO-MONEY
+                                           +    SYU-RSIETC-MONEY
+                   MOVE    WRK-GOKTEN          TO  WRK-Z7
+                   MOVE    WRK-Z7-G            TO  HC03-HOKENBUN
+               ELSE
+                   MOVE    SPACE               TO  HC03-HOKENBUN
+               END-IF
+           END-IF
+      *
       *    保険適用外分
            MOVE    ZERO                TO  WRK-GOKTEN
            PERFORM VARYING     IDX     FROM    1   BY  1

@@ -35,6 +35,9 @@
       *  01.00.06    MCC-多々納   02.05.15  麻薬対応の追加
       *  01.00.07    MCC-多々納   02.05.16  中途終了・労災保険の追加
       *  01.00.08    MCC-多々納   02.07.01  保険継続時の編集内容変更
+      *  01.00.09    NACL-多々納  02.09.05  中途終了の修正
+      *  01.00.10    NACL-多々納  02.09.13  印刷サプの追加
+      *  01.00.11    NACL-多々納  02.09.17  Ｈ１４．１０改正分追加
       *****************************************************************
       *
       *
@@ -58,11 +61,11 @@
       *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
       *    シェル用領域
-           COPY    "CPCOMMONSHELL.INC".
+      **** COPY    "CPCOMMONSHELL.INC".
       *
       *    シェル用領域
-           COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "CPSHELLTBL.INC".
+      *****COPY    "ORCA-DBPATH".
       *
       *
       *    フラグ領域
@@ -100,6 +103,8 @@
       *    麻薬区分
            03  FLG-MAYAKU          PIC 9(01).
       *
+           03  FLG-OK2              PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -128,7 +133,7 @@
       *    一時領域
        01  WRK-AREA.
       *
-           03  WRK-PAGE                    PIC 9(03).
+           03  WRK-PAGE            PIC 9(03).
       *
            03  WRK-DRCD            PIC  X(05).
       *
@@ -185,6 +190,8 @@
            03  WRK-KAISU           PIC 9(05).
       *
            03  WRK-TNS-NAME        PIC X(200).
+      *
+           03  WRK-ZAITENKEI        PIC 9(07).
       *
       *    文字変換
       **** 03  WRK-ZENKAKU-G.
@@ -338,6 +345,9 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    印刷パラメタ
+           COPY    "CPORCSMKPRT.INC".
+      *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -364,6 +374,14 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
+      *    Ｈ１４．１０以降の時、新レイアウトのＰＧをＣＡＬＬする
+           IF      SPA-SRYYMD          >=  "20021001"
+               CALL    "ORCHCM19"          USING   SPA-AREA
+                                                   ORCHC19AREA
+               GO      TO      000-PROC-EXT
+           END-IF
+      *
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
@@ -422,27 +440,36 @@
       *　　印刷用データ出力
             WRITE  HC19
       *
-            MOVE   "HC01.sh"           TO  SHELL-ID
-            MOVE   "HC19.dia"          TO  SHELL-DIA
-            MOVE   "HC19.def"          TO  SHELL-DEF
-            MOVE   HC01PARA            TO  SHELL-DAT
-            MOVE   SYS-1031-PRTNM(2)   TO  SHELL-PRTNM 
+      ****  MOVE   "HC01.sh"           TO  SHELL-ID
+      *     MOVE   "HC19.dia"          TO  SHELL-DIA
+      *     MOVE   "HC19.def"          TO  SHELL-DEF
+      *     MOVE   HC01PARA            TO  SHELL-DAT
+      ******MOVE   SYS-1031-PRTNM(2)   TO  SHELL-PRTNM 
             CLOSE                       PRT-FILE
+      *
+            INITIALIZE                 ORCSMKPRTAREA
+            MOVE   "HC01.sh"           TO  MKPRT-ID
+            MOVE   "HC19.dia"          TO  MKPRT-DIA
+            MOVE   "HC19.def"          TO  MKPRT-DEF
+            MOVE   HC01PARA            TO  MKPRT-DAT
+            MOVE   SYS-1031-PRTNM(2)   TO  MKPRT-PRTNM
+            CALL   "ORCSMKPRT"         USING
+                                       ORCSMKPRTAREA
       *
       *   印刷用スクリプト処理
       *★   ETC-EXEC SHELL   SHELL-AREA 10
-           MOVE    SHELL-NAME          TO  SHELLTBL-NAME
-           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
-           MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
-           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
-           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
-           MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                   MCPAREA
-                   MCPDATA-REC
+      *    MOVE    SHELL-NAME          TO  SHELLTBL-NAME
+      *    MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
+      *    MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
+      *    MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
+      *    MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
+      *    MOVE    SHELL-ARG5          TO  SHELLTBL-ARG5
+      *    MOVE    SHELLTBL            TO  MCPDATA-REC
+      *    MOVE    "SHELL"             TO  MCP-FUNC
+      *    MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+      *    CALL    "MCPSUB"            USING
+      *            MCPAREA
+      ***********  MCPDATA-REC
       *
            .
        400-PRINT-EXT.
@@ -739,7 +766,7 @@
       *---(01.00.07) LINE ADD START ------------------------------------
       *
       *    労災の時、保険者番号・記号の変更
-           IF      COMB-HKNNUM         =   "971"
+           IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        患者保険情報検索
                INITIALIZE                      PTRSIINF-REC
                MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
@@ -1807,6 +1834,7 @@
            MOVE    ZERO                TO  IDX-S
            MOVE    ZERO                TO  FLG-KAISU
            MOVE    ZERO                TO  FLG-ZAITAKU
+           MOVE    ZERO                TO  FLG-OK2
            PERFORM
                UNTIL   FLG-WKSRYACT    =   1
                IF      WKSRY-RENNUM        =   1
@@ -1819,30 +1847,44 @@
                    MOVE    WKSRY-SRYSYUKBN     TO  WRK-SRYSYUKBN
                    MOVE    WKSRY-SRYKBN        TO  WRK-SRYKBN
                    MOVE    ZERO                TO  FLG-OK
+                   MOVE    ZERO                TO  FLG-OK2
                    MOVE    ZERO                TO  IDX-S
                END-IF
       *
-      *        投薬で、点数がゼロのもを対象（院外）
-               IF      ORCHC19-KBN         =   "4" 
-                   IF    ((WKSRY-SRYKBN        =   "21"  OR
-                                                   "22"  OR
-                                                   "23"    )  AND
-                          (WKSRY-ZAITENKEI     =   ZERO    ))  OR
-                         ((WKSRY-SRYKBN        =   "14"    )  AND
-                          (WKSRY-YKZTEN        >   ZERO    ))
-                       MOVE    1               TO  FLG-OK
-                   END-IF
-               END-IF
+      *******  投薬で、点数がゼロのもを対象（院外）
+      *        IF      ORCHC19-KBN         =   "4" 
+      *            IF    ((WKSRY-SRYKBN        =   "21"  OR
+      *                                            "22"  OR
+      *                                            "23"    )  AND
+      *                   (WKSRY-ZAITENKEI     =   ZERO    ))  OR
+      *                  ((WKSRY-SRYKBN        =   "14"    )  AND
+      *                   (WKSRY-YKZTEN        >   ZERO    ))
+      *                MOVE    1               TO  FLG-OK
+      *            END-IF
+      *        END-IF
       *        投薬で、点数がゼロのもを対象（院内）
-               IF      ORCHC19-KBN         =   "5"
-                   IF    ((WKSRY-SRYKBN        =   "21"  OR
-                                                   "22"  OR
-                                                   "23"    )  AND
-                          (WKSRY-ZAITENKEI     >   ZERO    ))  OR
-                         ((WKSRY-SRYKBN        =   "14"    )  AND
-                          (WKSRY-YKZTEN        >   ZERO    ))
-                       MOVE    1               TO  FLG-OK
-                   END-IF
+      *        IF      ORCHC19-KBN         =   "5"
+      *            IF    ((WKSRY-SRYKBN        =   "21"  OR
+      *                                            "22"  OR
+      *                                            "23"    )  AND
+      *                   (WKSRY-ZAITENKEI     >   ZERO    ))  OR
+      *                  ((WKSRY-SRYKBN        =   "14"    )  AND
+      *                   (WKSRY-YKZTEN        >   ZERO    ))
+      *                MOVE    1               TO  FLG-OK
+      *            END-IF
+      *********END-IF
+      *        在宅自己注射はすべてで対象とする
+               IF     (WKSRY-SRYKBN        =   "14"    )  AND
+                      (WKSRY-YKZTEN        >   ZERO    )
+                   MOVE    1               TO  FLG-OK
+                   MOVE    2               TO  FLG-OK2
+               END-IF
+      *        投薬対象
+               IF      WKSRY-SRYKBN        =   "21"  OR
+                                               "22"  OR
+                                               "23"
+                   MOVE    WKSRY-ZAITENKEI     TO  WRK-ZAITENKEI
+                   MOVE    1                   TO  FLG-OK
                END-IF
       *
                IF      FLG-OK              =   1
@@ -1925,6 +1967,35 @@
       *    中途終了剤毎の編集処理
       *****************************************************************
        20032-PRINT-HENSYU-SEC         SECTION.
+      *
+      *    投薬で、点数がゼロのもを対象（院外）
+           IF      ORCHC19-KBN         =   "4" 
+               IF     (WRK-SRYKBN          =   "21"  OR
+                                               "22"  OR
+                                               "23"    )  AND
+                      (WRK-ZAITENKEI        =   ZERO   )
+                   MOVE    1               TO  FLG-OK2
+               END-IF
+           END-IF
+      *    投薬で、点数がゼロのもを対象（院内）
+           IF      ORCHC19-KBN         =   "5"
+               IF     (WRK-SRYKBN          =   "21"  OR
+                                               "22"  OR
+                                               "23"    )  AND
+                      (WRK-ZAITENKEI       >   ZERO    )
+                   MOVE    1               TO  FLG-OK2
+               END-IF
+           END-IF
+           IF      FLG-OK2             =   ZERO
+               IF      IDX-Z               >   ZERO
+                   COMPUTE IDX-Z           =   IDX-Z     -   1
+               END-IF
+               MOVE    SPACE               TO  WRK-NAIYOU-AREA
+               MOVE    SPACE               TO  WRK-SRYCD
+               MOVE    ZERO                TO  FLG-KAISU
+               MOVE    ZERO                TO  FLG-ZAITAKU
+               GO      TO       20032-PRINT-HENSYU-EXT
+           END-IF
       *
       *    最後の行に回数を編集
            IF      WRK-SRYCD (1:1)     =   "6"

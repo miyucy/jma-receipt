@@ -194,7 +194,7 @@
                    MOVE    "算定できない年齢です。"
                                        TO  SPA-ERRMSG
                WHEN    "0033"
-                   MOVE    "併用算定できません。"
+                   MOVE    "上記算定済です。併用算定はできません。"
                                        TO  SPA-ERRMSG
                WHEN    "0034"
                    MOVE
@@ -378,7 +378,8 @@
                    MOVE    "入力できません。"
                                        TO  SPA-ERRMSG(29:)
                WHEN    "0091"
-                   MOVE    "算定上限回数を超えています。算定できません"
+                   MOVE
+                   "算定上限回数を超えています。算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "0092"
                    MOVE    "理学療法等の１日の上限単位を超えています。"
@@ -387,6 +388,9 @@
                                        TO  SPA-ERRMSG(43:)
                WHEN    "0093"
                    MOVE    "個別療法と集団療法の混在はできません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0094"
+                   MOVE    "既にこの労災では算定済です。算定できません"
                                        TO  SPA-ERRMSG
                WHEN    "0110"
                    MOVE    "他保険にて診察料算定済のコメントは"
@@ -582,9 +586,7 @@
                                        TO  SPA-ERRMSG
                WHEN    "1012"
                    MOVE    "対象のデータがありません。"
-                                       TO  SPA-ERRMSG(1:26)
-                   MOVE    "すべて入力コードセット済です"
-                                       TO  SPA-ERRMSG(27:)
+                                       TO  SPA-ERRMSG
                WHEN    "1013"
                    MOVE    "訂正で継続確定済みの時、"
                                        TO  SPA-ERRMSG(1:24)
@@ -642,6 +644,11 @@
                WHEN    "1026"
                    MOVE    "診療室入力の時は、訂正はできません。"
                                        TO  SPA-ERRMSG
+               WHEN    "1027"
+                   MOVE    "老人の保険割合が設定されていません。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "保険を登録し直して下さい。"
+                                       TO  SPA-ERRMSG(37:)
                WHEN    "K001"
                    MOVE    "警告！時間外算定がありません"
                                        TO  SPA-ERRMSG

@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/08/23  注射に外用薬を入力可能とする
+      * 01.00.02     NACL-多々納  02/09/12  自賠責の追加（09591〜09592)
       *****************************************************************
       *
       *
@@ -484,6 +485,17 @@
                                                                (IDX)
                            MOVE    "1"           TO  SPA-COM-ZAIEND
                                                                (IDX)
+      *                    自賠責の時、８０とする
+                           IF     (SPA-RSI-HKNKBN            =  "4") AND
+                                  (SPA-COM-INPUTCD(IDX)(1:5) =  "09591"
+                                                            OR  "09592")
+                               MOVE    "80"      TO  SPA-COM-SRYKBN
+                                                               (IDX)
+                               MOVE    "800"     TO  SPA-COM-SRYSYUKBN
+                                                               (IDX)
+                               MOVE    "1"       TO  SPA-COM-ZAIEND
+                                                               (IDX)
+                           END-IF
       *                保険外（自費）（1行１剤とする）
                        WHEN    "096"
                            MOVE    "96"          TO  SPA-COM-SRYKBN

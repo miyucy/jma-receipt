@@ -328,6 +328,12 @@
       *****************************************************************
        10021-KEISAN-SEC                  SECTION.
       *
+           IF     (WRK-COM-INPUTCD(IDX-Z)(1:5) =   "09591" OR
+                                                   "09592" ) AND
+                  (WRK-COM-KISOTEN(IDX-Z)  NOT =   WRK-COM-TEN(IDX-Z))
+               MOVE    WRK-COM-TEN(IDX-Z)  TO  WRK-COM-KISOTEN(IDX-Z)
+           END-IF
+      *
            EVALUATE    WRK-COM-TENSIKIBETU(IDX-Z)
       *        ¶â³Û
                WHEN    1

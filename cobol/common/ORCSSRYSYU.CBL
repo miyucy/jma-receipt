@@ -24,7 +24,11 @@
       *  返却エラーコード  : 
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  XX.XX.XX    ＮＮＮ        新規作成
+      *  00/00/00    MCC−多々納   新規作成
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.00    NACL-多々納  02/09/12  ディレクトリをサブプロへ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -52,10 +56,17 @@
        WORKING-STORAGE             SECTION.
       *
       *    パラメタファイル名
-       01  FILE-NAME.
-           03  FILLER          PIC X(16)   VALUE   "/usr/local/orca/".
-           03  FILLER          PIC X(05)   VALUE   "data/".
-           03  FILLER           PIC X(15)   VALUE   "SRYKBNNAME.TXT".
+      *01  FILE-NAME.
+      *    03  FILLER          PIC X(16)   VALUE   "/usr/local/orca/".
+      *    03  FILLER          PIC X(05)   VALUE   "data/".
+      *    03  FILLER           PIC X(15)   VALUE   "SRYKBNNAME.TXT".
+      *
+       01  FILE-NAME               PIC X(512).
+      *
+      *    ファイル名
+       01  DATA-FILE.
+           03  FILLER              PIC X(05)   VALUE   "data/".
+           03  FILLER              PIC X(15)   VALUE   "SRYKBNNAME.TXT".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -69,6 +80,8 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
       *
+      *    フィアルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -85,6 +98,12 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
+      *
+      *    フィアルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    DATA-FILE           TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  FILE-NAME
       *
       *    診療種別テーブルセット
            OPEN    INPUT               SRYKBN-FILE

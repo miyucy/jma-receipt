@@ -352,6 +352,8 @@
            MOVE    IDX-ICD             TO  SPA-GMN-INCNT (IDX)
       *    入力コード表示済み
            MOVE    "1"                 TO  SPA-COM-GMNFLG (IDX)
+      *    前へ編集
+           MOVE    SPA-GMN-INPUTCD (IDX)   TO  SPA-MAE-INPUTCD (IDX)
       *
            .
        100-COM-GMNINPUT-EXT.
