@@ -70,6 +70,7 @@
       *  01.00.30    NACL-小豆沢  03.07.10  異動取消時に診療会計を削除しないよう
       *                                     変更
       *  01.00.31    NACL-小豆沢  03.07.11  診療録管理体制加算の特別チェック削除
+      *  01.00.32    NACL-小豆沢  03.09.24  特別入院基本料算定時の乳幼児加算対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -326,6 +327,7 @@
            03  WRK-NACCT-SRYYM             PIC X(08).
            03  WRK-PRINT-PG                PIC X(20).
            03  WRK-ORCSHKN-HKNCOMBINUM     PIC X(04).
+           03  WRK-TOKUBETSU-NYUIN         PIC X(01).
       *    会計作成用退避領域
            03  WRK-TAIHI-HKN               PIC 9(03).
            03  WRK-TAIHI-SHOKUJI           PIC 9(03).
@@ -7908,11 +7910,12 @@
            EXIT.
       *
       *****************************************************************
-      *    点数マスタ検索処理
+      *    点数マスタ検索処理（入院料）
       *****************************************************************
        48011-TENSU-SEL-SEC              SECTION.
       *
            MOVE    SPACE           TO  WRK-NYUKSNKBN
+           MOVE    SPACE           TO  WRK-TOKUBETSU-NYUIN
       *
            MOVE    ZERO            TO  FLG-TENSU
            INITIALIZE              TNS-TENSU-REC
@@ -7940,13 +7943,25 @@
       *
            MOVE    TNS-NYUKHNKSNKBN
                                    TO  WRK-BTU-NYUKSNKBN
+      *
+      *    特別入院料の判定
+           EVALUATE   TNS-NYUKHNKBN
+               WHEN   73
+               WHEN   74
+               WHEN   75
+               WHEN   76
+               WHEN   77
+               WHEN   78
+               WHEN   79
+                   MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+           END-EVALUATE
            .
       *
        48011-TENSU-SEL-EXT.
            EXIT.
       *
       *****************************************************************
-      *    点数マスタ検索処理
+      *    点数マスタ検索処理（入院料加算）
       *****************************************************************
        48012-TENSU-SEL-SEC              SECTION.
       *
@@ -7954,6 +7969,16 @@
       *
            MOVE    ZERO            TO  FLG-TENSU
            INITIALIZE              TNS-TENSU-REC
+      *
+      *    特別入院料算定時に幼児加算と乳幼児加算の加算コード置き換え
+           IF      WRK-TOKUBETSU-NYUIN   =   "1"
+               EVALUATE   WRK-NYUKHNKSN-SRYCD(IDX8)
+                   WHEN   "190100470"
+                       MOVE  "190100570"  TO  WRK-NYUKHNKSN-SRYCD(IDX8)
+                   WHEN   "190100770"
+                       MOVE  "190100870"  TO  WRK-NYUKHNKSN-SRYCD(IDX8)
+               END-EVALUATE
+           END-IF
       *
            MOVE    WRK-NYUKHNKSN-SRYCD(IDX8)
                                    TO  TNS-SRYCD
