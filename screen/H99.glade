@@ -29,7 +29,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 05 Jan 2001 11:20:35 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -359,14 +359,14 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label495</name>
-      <x>50</x>
+      <name>NAME</name>
+      <x>320</x>
       <y>60</y>
-      <width>60</width>
-      <height>18</height>
-      <label>¥µº‘»÷πÊ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
+      <width>200</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -375,10 +375,10 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>NAME</name>
-      <x>320</x>
-      <y>60</y>
-      <width>200</width>
+      <name>SRYKANAME</name>
+      <x>180</x>
+      <y>100</y>
+      <width>150</width>
       <height>24</height>
       <label></label>
       <justify>GTK_JUSTIFY_LEFT</justify>
@@ -399,7 +399,23 @@
       <label>ø«Œ≈«Ø∑Ó</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label495</name>
+      <x>50</x>
+      <y>60</y>
+      <width>60</width>
+      <height>18</height>
+      <label>¥µº‘»÷πÊ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -412,26 +428,10 @@
       <y>100</y>
       <width>60</width>
       <height>18</height>
-      <label>ø«Œ≈≤   </label>
+      <label>ø«Œ≈≤ </label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SRYKANAME</name>
-      <x>180</x>
-      <y>100</y>
-      <width>150</width>
-      <height>24</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
