@@ -112,6 +112,7 @@
       *  01.00.36    NACL-門脇    03/05/12  自賠責の患者請求しない＜０％＞
       *                                     場合の対応
       *  01.00.37    NACL-門脇    03/05/21  減免の端数設定対応
+      *  01.00.38    NACL-門脇    03/05/22  自賠責の療養担当手当対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1134,6 +1135,20 @@
                                                HOKEN-FUTAN-AREA
                                                HOKEN-ZAN-AREA
                                                WK-YAKFTN.
+      *
+      *    自賠責・療養担当手当用特例処理
+      *    （自賠責の場合、７点を８４円に読み替える）
+      *    （療養担当手当：１月１回の算定）
+           IF    LNK-SYU-SYUHKNNUM       =    "973"
+           AND   LNK-S01-RYOYO       NOT =    ZERO
+               COMPUTE  LNK-SYU-HKNTEN (10)  =  LNK-SYU-HKNTEN (10)
+                                             -  LNK-S01-RYOYO
+               COMPUTE  LNK-SYU-HKNTEN (12)  =  LNK-SYU-HKNTEN (12)
+                                             -  LNK-S01-RYOYO
+      *
+               COMPUTE  LNK-SYU-RSIETC-MONEY =  LNK-SYU-RSIETC-MONEY
+                                             +  84
+           END-IF.
       *
       *    患者負担金算出前の１００％負担額算出
            MOVE      ZERO         TO      WK-ZENGAKU.

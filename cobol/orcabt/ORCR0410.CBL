@@ -35,8 +35,9 @@
       *  01.00.05    NACL-門脇    03.04.14  労災の小数点以下金額計算
       *                                     四捨五入に変更
       *  01.00.06    NACL-門脇    03.04.15  自賠責文書料消費税対応
-      *  01.00.07    NACL-門脇    03.05.13  腰部固定帯加算を器材点へ
+      *  01.00.07    NACL-門脇    03.05.13  自賠責：腰部固定帯加算対応
       *  01.00.08    NACL-門脇    03.05.19  自賠責の初診日の編集修正
+      *  01.00.09    NACL-門脇    03.05.20  自賠責：療養担当手当て対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -239,6 +240,8 @@
       *
       *    腰部固定帯加算
            03  CONS-YOUBUKASAN PIC X(09)   VALUE   "140037490".
+      *    療養担当手当て
+           03  CONS-RYOYOTEATE PIC X(09)   VALUE   "199000610".
       *
       *---------------------------------------------------------------
       *
@@ -1409,6 +1412,12 @@
                                     ( WRK-ZAIKAISU-JI * TNS-TEN )
                             COMPUTE  TBL-YKZTEN-JI(ID1)  =
                                      TBL-YKZTEN-JI(ID1)  +
+                                    ( WRK-ZAIKAISU-JI * TNS-TEN )
+                       END-IF
+      *
+                       IF   SRY-SRYCD(IDY) =  CONS-RYOYOTEATE
+                            COMPUTE  TBL-SYUTEN-JI(ID1)  =
+                                     TBL-SYUTEN-JI(ID1)  -
                                     ( WRK-ZAIKAISU-JI * TNS-TEN )
                        END-IF
       *
