@@ -39,6 +39,8 @@
       *                                     ¤Ê¤¤
       *  02.00.03    NACL-Â¿¡¹Ç¼  02/10/02  Ãí²Ã»»¥Á¥§¥Ã¥¯¤òºÞËè¤È¤¹¤ë
       *  02.00.04    NACL-Â¿¡¹Ç¼  02/10/03  Ï«ºÒ²Ã»»¤Ê¤·¤ÎÄÉ²Ã
+      *  02.00.05    NACL-Â¿¡¹Ç¼  02/10/18  Æþ±¡²ó¿ôÄÉ²Ã
+      *  02.00.06    NACL-Â¿¡¹Ç¼  02/10/21  ËýÀ­áÖÄË´ÉÍýÎÁ¤Î²þÀµÄÉ²Ã
       *****************************************************************
       *
       *
@@ -110,6 +112,13 @@
            03  WRK-SANTEI-CNT      PIC 9(04).
       *    ¿ÇÎÅ²ÊÌ¾¾Î
            03  WRK-SRYKAMEI        PIC X(20).
+      *
+           03  WRK-SRYCD               PIC X(09).
+      *
+           03  WRK-SYOSINYMD1          PIC X(08).
+           03  WRK-YMD.
+               05  WRK-YYMM            PIC X(06).
+               05  WRK-DD              PIC 9(02).
       *
       *    ¥³¥á¥ó¥È¤ÎÆþÎÏÃÍÍÑ
        01  WRK-INPUT-SET-AREA.
@@ -256,6 +265,10 @@
            IF     (LNK-SC92-SRYCD(1:1) =   "S" )  AND
                   (LNK-SC92-SRYCD(2:5) NUMERIC )  AND
                   (LNK-SC92-SRYCD(7:)  =   SPACE)
+               GO      TO      000-PROC-EXT
+           END-IF
+      *    Æþ±¡²ó¿ô½èÍý¤Ê¤·
+           IF      LNK-SC92-SRYCD(1:1) =   "*"   OR  SPACE
                GO      TO      000-PROC-EXT
            END-IF
       *
@@ -899,6 +912,13 @@
       *                                MCPAREA
       *                                MCPDATA-REC
       *
+      *    ËýÀ­áÖÄË¼À´µ´ÉÍýÎÁ¤Î¥Á¥§¥Ã¥¯
+           IF     (LNK-SC92-ERRCD6 NOT =   SPACE      )  AND
+                  (LNK-SC92-SRYCD      =   "113006510")  AND
+                  (SPA-SRYYMD          >=  "20021101" )
+               PERFORM 20053-MANSEI-CHK-SEC
+           END-IF
+      *
            .
        2005-HEIYOU-CHK-EXT.
            EXIT.
@@ -1061,6 +1081,191 @@
            END-PERFORM
            .
        20052-CHK-INPUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     ËýÀ­áÖÄË¼À´µ´ÉÍýÎÁ¤Î¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       20053-MANSEI-CHK-SEC        SECTION.
+      *
+      *    Ä¾µ¢¤Î½é¿Ç»»ÄêÆü¤ò·èÄê¤¹¤ë
+           PERFORM 200531-SYOSIN-SANTEI-SEC
+      *
+      *    Ä¾µ¢¤ÎËýÀ­áÖÄË¼À´µ´ÉÍýÎÁ»»ÄêÆü
+           MOVE    "113006510"         TO  WRK-SRYCD
+           PERFORM 2005332-SANTEI-CHK-SEC
+      *    ÄûÀµ¤Î»þ¡¢ÅöÆü¤Ê¤é£Ï£Ë¤È¤¹¤ë
+           IF      LNK-SC92-SYORIFLG   =   1
+               IF      WRK-YMD         =   SPA-SRYYMD
+                   MOVE    SPACE           TO  LNK-SC92-ERRCD6
+                   MOVE    SPACE           TO  LNK-SC92-ERRMSG
+               END-IF
+           END-IF
+      *
+      *    ½é¿Ç»»ÄêÆü¤¬Á°²ó¤Î»»ÄêÆü¤è¤ê¸å¤Î»þ¡¢»»Äê¤¬¤Ç¤­¤ë¤³¤È
+           IF     (WRK-YMD             =   SPACE  )  OR
+                  (WRK-SYOSINYMD1      >   WRK-YMD)
+               MOVE    SPACE           TO  LNK-SC92-ERRCD6
+               MOVE    SPACE           TO  LNK-SC92-ERRMSG
+           END-IF
+           .
+       20053-MANSEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »»ÄêÍúÎò¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       200531-SYOSIN-SANTEI-SEC                SECTION.
+      *
+      *    ½é¿ÇÎÁ¤Î»»ÄêÍúÎò¤Î¥Á¥§¥Ã¥¯
+           MOVE    SPACE               TO  WRK-SYOSINYMD1
+      *
+           EVALUATE    SPA-HOSPSBT
+      *        ÉÂ±¡
+               WHEN    1
+      *            Ï·¿Í
+                   MOVE    "111700110"         TO  WRK-SRYCD
+                   PERFORM 2005332-SANTEI-CHK-SEC
+                   IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                          (WRK-YMD             >   WRK-SYOSINYMD1)
+                       MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+                   END-IF
+      *            Ï·¿Í³°
+                   MOVE    "111000110"         TO  WRK-SRYCD
+                   PERFORM 2005332-SANTEI-CHK-SEC
+                   IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                          (WRK-YMD             >   WRK-SYOSINYMD1)
+                       MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+                   END-IF
+      *        ¿ÇÎÅ½ê
+               WHEN    2
+      *            Ï·¿Í
+                   MOVE    "111700210"         TO  WRK-SRYCD
+                   PERFORM 2005332-SANTEI-CHK-SEC
+                   IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                          (WRK-YMD             >   WRK-SYOSINYMD1)
+                       MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+                   END-IF
+      *            Ï·¿Í³°
+                   MOVE    "111003610"         TO  WRK-SRYCD
+                   PERFORM 2005332-SANTEI-CHK-SEC
+                   IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                          (WRK-YMD             >   WRK-SYOSINYMD1)
+                       MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+                   END-IF
+           END-EVALUATE
+      *    ¾®»ù²Ê¿Ç»¡ÎÁ
+      *    ¡¡¡¡±¡³°½èÊý   ½é¿Ç
+           MOVE    "113003510"         TO  WRK-SRYCD
+           PERFORM 2005332-SANTEI-CHK-SEC
+           IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD1)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+           END-IF
+      *    ¡¡¡¡±¡Æâ½èÊý   ½é¿Ç
+           MOVE    "113003710"         TO  WRK-SRYCD
+           PERFORM 2005332-SANTEI-CHK-SEC
+           IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD1)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+           END-IF
+      *
+      *    ²¾¤Î½é¿ÇÎÁ
+           MOVE    "099110001"         TO  WRK-SRYCD
+           PERFORM 2005332-SANTEI-CHK-SEC
+           IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD1)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+           END-IF
+      *
+      *    Ï«ºÒ½é¿ÇÎÁ
+           MOVE    "101110010"         TO  WRK-SRYCD
+           PERFORM 2005332-SANTEI-CHK-SEC
+           IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                  (WRK-YMD             >   WRK-SYOSINYMD1)
+               MOVE    WRK-YMD         TO  WRK-SYOSINYMD1
+           END-IF
+      *
+           .
+      *
+       200531-SYOSIN-SANTEI--EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »»ÄêÍúÎò¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       2005332-SANTEI-CHK-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-YMD
+      *
+           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+           PERFORM 910-TENSU-READ-SEC
+      *
+      *    »»ÄêÍúÎò¸¡º÷
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           EVALUATE    TNS-SANTEIRRKKBN
+               WHEN    1
+                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+                   MOVE    ZERO                TO  SANTEI-SRYKA
+               WHEN    2
+                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+                   MOVE    ZERO                TO  SANTEI-SRYKA
+               WHEN    3
+                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+               WHEN    4
+                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+           END-EVALUATE
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           PERFORM UNTIL       FLG-SANTEI          =   1
+      *
+               IF      SANTEI-MSANTEICNT   >   ZERO
+                   IF      SANTEI-SRYYM    <=  SPA-SRYYMD(1:6)
+                       PERFORM VARYING     IDX-Y2  FROM    1  BY  1
+                               UNTIL       IDX-Y2      >   31
+                           IF      SANTEI-DAY (IDX-Y2) >   ZERO
+                               MOVE    IDX-Y2          TO  WRK-DD
+                           END-IF
+                       END-PERFORM
+                       MOVE    SANTEI-SRYYM        TO  WRK-YYMM
+                       MOVE    1                   TO  FLG-SANTEI
+                   END-IF
+               END-IF
+      *
+               IF      FLG-SANTEI          =   ZERO
+                   MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+                   PERFORM 920-SANTEI-READ-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SANTEI-KEY3"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+      *
+       2005332-SANTEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
