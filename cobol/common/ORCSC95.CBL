@@ -2531,18 +2531,18 @@
       *
                MOVE    PTINF-COMMENT-1    TO  SPA-GMN-TABOO (IDX)
                                                              (11:)
-               IF      PTINF-COMMENT-1(49:)   NOT =   SPACE
+               IF      PTINF-COMMENT-1(53:)   NOT =   SPACE
                    ADD     1                  TO  IDX
-                   MOVE    PTINF-COMMENT-1(49:) TO  SPA-GMN-TABOO (IDX)
+                   MOVE    PTINF-COMMENT-1(53:) TO  SPA-GMN-TABOO (IDX)
                END-IF
-               IF      PTINF-COMMENT-1(111:)  NOT =   SPACE
+               IF      PTINF-COMMENT-1(115:)  NOT =   SPACE
                     ADD     1                  TO  IDX
-                    MOVE    PTINF-COMMENT-1(111:)
+                    MOVE    PTINF-COMMENT-1(115:)
                                                TO  SPA-GMN-TABOO (IDX)
                 END-IF
-                IF      PTINF-COMMENT-1(173:)  NOT =   SPACE
+                IF      PTINF-COMMENT-1(177:)  NOT =   SPACE
                     ADD     1                  TO  IDX
-                    MOVE    PTINF-COMMENT-1(173:)
+                    MOVE    PTINF-COMMENT-1(177:)
                                                TO  SPA-GMN-TABOO (IDX)
                 END-IF
       *
@@ -2557,7 +2557,8 @@
                MOVE    PTINF-COMMENT-2     TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
-               IF      KANACHK-SYUBETU     =   ZERO
+               IF     (KANACHK-SYUBETU     =   ZERO ) OR
+                      (KANACHK-RC2         =   8    )
       *            ºÇÂç·å¿ôÈ½Äê
                    MOVE    ZERO                TO  KANACHK-MAX
                    PERFORM VARYING     IDK     FROM    200  BY  -1
