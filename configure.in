@@ -13,12 +13,12 @@ AC_ARG_WITH(sitedir,
             [sitedir='${prefix}'])
 
 AC_ARG_WITH(sitesrcdir,
-	    [  --with-sitesrcdir=DIR      site libraries in DIR [PREFIX/site-src]],
+	    [  --with-sitesrcdir=DIR   site src libraries in DIR [PREFIX/site-src]],
             [sitesrcdir=$withval],
             [sitesrcdir='${prefix}/site-src'])
 
 AC_ARG_WITH(sitelibdir,
-	    [  --with-sitelibdir=DIR      site libraries in DIR [PREFIX/lib]],
+	    [  --with-sitelibdir=DIR   site cobol libraries in DIR [PREFIX/lib]],
             [sitelibdir=$withval],
             [sitelibdir='${prefix}/lib'])
 
@@ -26,15 +26,17 @@ AC_SUBST(sitedir)dnl
 AC_SUBST(sitesrcdir)dnl
 AC_SUBST(sitelibdir)dnl
 
-AC_ARG_WITH(open-cobol-prefix,[--with-open-cobol-prefix=<direcotry> Prefix open-cobol is installed(optional)], 
+AC_ARG_WITH(open-cobol-prefix,
+             [  --with-open-cobol-prefix=PFX   prefix where open-cobol is installed (optional)], 
   open_cobol_prefix="$withval", open_cobol_prefix="")
 
-AC_ARG_WITH(open-cobol-exec-prefix,[--with-open-cobol-exec-prefix=<direcotry> Prefix open-cobol is installed(optional)], 
+AC_ARG_WITH(open-cobol-exec-prefix,
+             [  --with-open-cobol-exec-prefix=PFX Exec prefix where open-cobol is installed (optional)], 
   open_cobol_exec_prefix="$withval", open_cobol_exec_prefix="")
 
   if test x$open_cobol_exec_prefix != x ; then
     if test x${COBC+set} != xset; then
-      COBC=$open_cobol_exec_prefix/cobc
+      COBC=$open_cobol_exec_prefix/bin/cobc
     fi
   fi
   if test x$open_cobol_prefix != x ; then
