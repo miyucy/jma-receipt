@@ -356,8 +356,6 @@
       *                給付対象外点数（初診）
                        MOVE    ORCS40-ZAITEN (IDX)
                                            TO  SYU-KYUFUGAI-SHOSHIN-TEN
-                   ELSE
-                       MOVE    1           TO  FLG-SYOSIN-ERR
                    END-IF
                WHEN    "14"
                    EVALUATE    WRK-KASAN
@@ -852,8 +850,8 @@
       *                給付対象外点数（初診）
                        MOVE    ACCT-ZAITEN
                                            TO  SYU-KYUFUGAI-SHOSHIN-TEN
-                   ELSE
-                       MOVE    1           TO  FLG-SYOSIN-ERR
+      *********    ELSE
+      *********        MOVE    1           TO  FLG-SYOSIN-ERR
                    END-IF
                WHEN    "14"         ALSO   1
                    MOVE    1                   TO  FLG-SYORI-END
