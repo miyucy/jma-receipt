@@ -184,6 +184,7 @@
            03  FLG-KOH                                 PIC 9(01).
            03  FLG-CONTKBN                             PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
+           03  FLG-KOHRECEDSP                          PIC 9(01).
       *
       *    カウント挝拌
        01  CNT-AREA.
@@ -1146,6 +1147,7 @@
                    END-IF
                    IF     IDX1          =        1
       *                孟数给锐レセ淡很冉年
+                       MOVE    ZERO        TO  FLG-KOHRECEDSP
                        INITIALIZE          ORCSFTNJGNCHKAREA
                        MOVE    COMB-HOSPID TO  LNK-FTNJGNCHK-HOSPID
                        MOVE    COMB-PTID   TO  LNK-FTNJGNCHK-PTID
@@ -1162,7 +1164,7 @@
                        CALL    "ORCSFTNJGNCHK"     USING
                                                    ORCSFTNJGNCHKAREA
                        IF     LNK-FTNJGNCHK-RC   =   1
-                           MOVE       2        TO    IDX1
+                           MOVE       1        TO    FLG-KOHRECEDSP
                        END-IF
                    END-IF
                ELSE
@@ -1170,11 +1172,13 @@
                END-IF
       *
                IF     IDX1                =   1
-                   ADD     1                      TO  IDY    
-                   MOVE    COMB-KOHHKNNUM (IDX)   TO 
+                   IF      FLG-KOHRECEDSP  NOT =  1
+                       ADD     1                      TO  IDY    
+                       MOVE    COMB-KOHHKNNUM (IDX)   TO 
                                           WRK-SEIKYU-KOHHKNNUM(IDX1 IDY)
-                   MOVE    COMB-KOHID     (IDX)   TO
+                       MOVE    COMB-KOHID     (IDX)   TO
                                           WRK-SEIKYU-KOHID    (IDX1 IDY)
+                   END-IF
                ELSE
                    ADD     1                      TO  IDZ    
                    MOVE    COMB-KOHHKNNUM (IDX)   TO 
