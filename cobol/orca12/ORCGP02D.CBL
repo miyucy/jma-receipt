@@ -346,6 +346,12 @@
                INITIALIZE                  PARA-REC
                MOVE    1               TO  FLG-PARA
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PARA-KEY"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF      FLG-PARA           =   1
                INITIALIZE                      PTRSIINF-REC
@@ -657,6 +663,12 @@
                MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
                PERFORM 900-KANRIMST-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN2D-SONSHOUKBN-MAX
@@ -2011,6 +2023,12 @@
                INITIALIZE                  PARA-REC
                MOVE    1               TO  FLG-PARA
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PARA-KEY"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF      FLG-PARA           =    ZERO
                MOVE    PARA-DATA-REC       TO  PTRSIINF-REC
@@ -2343,6 +2361,12 @@
                INITIALIZE                  PARA-REC
                MOVE    1               TO  FLG-PARA
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PARA-KEY"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF      FLG-PARA           =   1
       *        ди╡ц

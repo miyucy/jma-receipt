@@ -615,6 +615,12 @@
                    PERFORM 921-HKNMST-NEXT-SEC
                END-IF
            END-PERFORM
+           MOVE    "HKNNUM-KEY4"       TO  ORC-DBPATH
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            IF     FLG-OK               =   1
                MOVE    SPACE           TO  WRK-MAE-KOHNUM
@@ -1224,6 +1230,12 @@
                    PERFORM 921-HKNMST-NEXT-SEC
                END-IF
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      FLG-CHK             =   ZERO
       *        マスタなし
                MOVE    "0072"          TO  SPA-ERRCD
@@ -2003,6 +2015,12 @@
                INITIALIZE              HKNNUM-REC
                MOVE    1               TO  FLG-HKNNUM
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            IF      FLG-HKNNUM          =   ZERO
       *        開始日
@@ -2123,6 +2141,12 @@
                INITIALIZE              HKNNUM-REC
                MOVE    1               TO  FLG-HKNNUM
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            IF      FLG-HKNNUM          =   ZERO
       *        開始日

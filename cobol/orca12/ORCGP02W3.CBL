@@ -236,6 +236,12 @@
                MOVE    "PARA-KEY2"         TO  ORC-DBPATH
                PERFORM 990-PARA-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        100-NC01AREA-TBL-EXT.
@@ -274,13 +280,21 @@
                       (SPA-ERRCD       NOT =   SPACE)
                IF      DBCOMB-HKNCOMBINUM    <  9000
                    PERFORM 1001-NUMBCONT-SEC
-                   IF      WRK-RECEDA(1)   NOT =  ZERO  OR
-                           WRK-RECEDA(2)   NOT =  ZERO  OR
-                           WRK-RECEDA(3)   NOT =  ZERO  OR
-                           WRK-RECEDA(4)   NOT =  ZERO  
-                       PERFORM  1002-COMBIWRT-SEC
+                   IF     (WRK-RECEDA(1)   NOT =  ZERO)  OR
+                          (WRK-RECEDA(2)   NOT =  ZERO)  OR
+                          (WRK-RECEDA(3)   NOT =  ZERO)  OR
+                          (WRK-RECEDA(4)   NOT =  ZERO)  
+                       IF      CNT-PARAEDANUM      =   999
+                           MOVE    "0010"              TO  SPA-ERRCD
+                       ELSE
+                           PERFORM  1002-COMBIWRT-SEC
+                       END-IF
                    ELSE
-                       PERFORM  1003-COMBIDEL-SEC
+                       IF      CNT-PARAEDANUM      =   999
+                           MOVE    "0010"              TO  SPA-ERRCD
+                       ELSE
+                           PERFORM  1003-COMBIDEL-SEC
+                       END-IF
                    END-IF
                END-IF
                IF      SPA-ERRCD           =  SPACE
@@ -322,27 +336,27 @@
                  COMB-KOH4HKNNUM             =  DBCOMB-KOH4HKNNUM  AND
                  PARA-NC01-FLG (IDX2)        =  ZERO
       *　　　　　適用開始年月日、適用終了年月日が共に同じデータ
-                 IF  COMB-TEKSTYMD           =  DBCOMB-TEKSTYMD    AND
-                     COMB-TEKEDYMD           =  DBCOMB-TEKEDYMD    AND
-                     WRK-RECEDA(1)           =  ZERO
+                 IF  (COMB-TEKSTYMD          =  DBCOMB-TEKSTYMD )  AND
+                     (COMB-TEKEDYMD          =  DBCOMB-TEKEDYMD )  AND
+                     (WRK-RECEDA(1)          =  ZERO            )
                      MOVE    IDX2            TO  WRK-RECEDA(1)
                  END-IF
       *　　　　　適用開始年月日のみ同じデータ
-                 IF  COMB-TEKSTYMD           =  DBCOMB-TEKSTYMD    AND
-                     COMB-TEKEDYMD       NOT =  DBCOMB-TEKEDYMD    AND
-                     WRK-RECEDA(2)           =  ZERO
+                 IF (COMB-TEKSTYMD           =  DBCOMB-TEKSTYMD )  AND
+                    (COMB-TEKEDYMD       NOT =  DBCOMB-TEKEDYMD )  AND
+                    (WRK-RECEDA(2)           =  ZERO            )
                      MOVE    IDX2            TO WRK-RECEDA(2)
                  END-IF
       *　　　　　適用終了年月日のみ同じデータ
-                 IF  COMB-TEKSTYMD       NOT =  DBCOMB-TEKSTYMD    AND
-                     COMB-TEKEDYMD           =  DBCOMB-TEKEDYMD    AND
-                     WRK-RECEDA(3)           =  ZERO
+                 IF (COMB-TEKSTYMD       NOT =  DBCOMB-TEKSTYMD )  AND
+                    (COMB-TEKEDYMD           =  DBCOMB-TEKEDYMD )  AND
+                    (WRK-RECEDA(3)           =  ZERO            )
                      MOVE    IDX2            TO WRK-RECEDA(3)
                  END-IF
       *　　　　　適用年月日が一部重複しているデータ
-                 IF  COMB-TEKSTYMD       NOT =  DBCOMB-TEKSTYMD    AND
-                     COMB-TEKEDYMD       NOT =  DBCOMB-TEKEDYMD    AND
-                     WRK-RECEDA(4)           =  ZERO               AND
+                 IF (COMB-TEKSTYMD       NOT =  DBCOMB-TEKSTYMD )  AND
+                    (COMB-TEKEDYMD       NOT =  DBCOMB-TEKEDYMD )  AND
+                    (WRK-RECEDA(4)           =  ZERO            )  AND
                    ((COMB-TEKSTYMD           >  DBCOMB-TEKSTYMD    AND
                      COMB-TEKSTYMD           <  DBCOMB-TEKEDYMD)   OR
                     (COMB-TEKEDYMD           >  DBCOMB-TEKSTYMD    AND
@@ -367,11 +381,6 @@
       *****************************************************************
        1002-COMBIWRT-SEC                         SECTION.
       *
-           IF      CNT-PARAEDANUM      =   999
-               MOVE    "0010"              TO  SPA-ERRCD
-               GO            TO                  1002-COMBIWRT-EXT
-           END-IF
-      *
       *  入力組み合わせデータに処理済フラグを立てる
            EVALUATE    TRUE
                WHEN    WRK-RECEDA(1)   NOT =   ZERO
@@ -385,8 +394,19 @@
            END-EVALUATE
            MOVE    WRK-RECEDA(IDX1)    TO  IDX2
            IF      IDX2                =   ZERO
-               GO      TO      1002-COMBIWRT-EXT
+               CONTINUE
+           ELSE
+               PERFORM 10021-COMBIWRT2-SEC
            END-IF
+           .
+       1002-COMBIWRT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    番号継続時出力ルーチン
+      *****************************************************************
+       10021-COMBIWRT2-SEC                         SECTION.
+      *
            MOVE    PARA-NC01-REC (IDX2)
                                        TO  HKNCOMBI-REC
            MOVE    1                   TO  PARA-NC01-FLG (IDX2)
@@ -414,6 +434,12 @@
                INITIALIZE                  PARA-REC
                MOVE    1               TO  FLG-PARA
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PARA-KEY"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF      FLG-PARA            =   ZERO
                MOVE    DBCOMB-HKNCOMBINUM  TO  COMB-HKNCOMBINUM
@@ -444,18 +470,13 @@
                                            MCPDATA-REC
            END-IF
            .
-       1002-COMBIWRT-EXT.
+       10021-COMBIWRT2-EXT.
            EXIT.
       *
       *****************************************************************
       *    番号削除時出力ルーチン
       *****************************************************************
        1003-COMBIDEL-SEC                         SECTION.
-      *
-           IF      CNT-PARAEDANUM      =   999
-               MOVE    "0010"              TO  SPA-ERRCD
-               GO            TO                  1003-COMBIDEL-EXT
-           END-IF
       *
       *  パラメータデータに内容を出力する
            COMPUTE CNT-PARAEDANUM      =   CNT-PARAEDANUM  +  1
@@ -480,6 +501,12 @@
                INITIALIZE                  PARA-REC
                MOVE    1               TO  FLG-PARA
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PARA-KEY"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF      FLG-PARA            =   ZERO
                MOVE    "1"                 TO  DBCOMB-DELKBN
@@ -527,7 +554,6 @@
            MOVE    SPA-MAE-AUTOCOMBINUM    TO  CNT-AUTOCOMBINUM
            IF      SPA-MAE-AUTOCOMBINUM    =   8999
                MOVE    "0011"              TO  SPA-ERRCD
-               GO      TO      200-NUMBNEW-EXT
            END-IF
       *
       ***  INITIALIZE                      PARA-REC
@@ -549,34 +575,38 @@
       *        INITIALIZE                  PARA-REC
       *        MOVE    1                   TO  FLG-PARA
       *****END-IF
-           MOVE    SPACE               TO  SPA-ERRCD
+      *****MOVE    SPACE               TO  SPA-ERRCD
       *
            PERFORM     VARYING     IDX2    FROM    1   BY  1
                UNTIL  (IDX2                >   999 )  OR
-                      (PARA-NC01-REC(IDX2) =   SPACE )
+                      (PARA-NC01-REC(IDX2) =   SPACE )  OR
+                      (SPA-ERRCD       NOT =   SPACE )
                IF      PARA-NC01-FLG (IDX2)  =   ZERO
                    MOVE    PARA-NC01-REC (IDX2)  TO  HKNCOMBI-REC
                    IF      CNT-AUTOCOMBINUM    =   8999
                        MOVE    "0011"              TO  SPA-ERRCD
-                       GO            TO            200-NUMBNEW-EXT
+                   ELSE
+                       COMPUTE CNT-AUTOCOMBINUM    =   CNT-AUTOCOMBINUM
+                                                   +   1
                    END-IF
-                   COMPUTE CNT-AUTOCOMBINUM    =   CNT-AUTOCOMBINUM
-                                               +   1
                    IF      CNT-PARAEDANUM      =   9999
                        MOVE  "0010"                TO SPA-ERRCD
-                       GO            TO            200-NUMBNEW-EXT
                    END-IF
+                   IF      SPA-ERRCD           =   SPACE
       *  パラメータデータに内容を出力する
-                   COMPUTE CNT-PARAEDANUM      =   CNT-PARAEDANUM
-                                               +   1
-                   MOVE    CNT-AUTOCOMBINUM    TO  COMB-HKNCOMBINUM
-                   PERFORM 2001-PARAHKNCOMBI-INS-SEC
+                       COMPUTE CNT-PARAEDANUM      =   CNT-PARAEDANUM
+                                                   +   1
+                       MOVE    CNT-AUTOCOMBINUM    TO  COMB-HKNCOMBINUM
+                       PERFORM 2001-PARAHKNCOMBI-INS-SEC
+                   END-IF
                END-IF
       *
            END-PERFORM
       *
-      *    ＳＰＡの保険組合せ番号変更
-           MOVE    CNT-AUTOCOMBINUM    TO  SPA-PTNUM-AUTOCOMBINUM
+           IF      SPA-ERRCD           =   SPACE
+      *        ＳＰＡの保険組合せ番号変更
+               MOVE    CNT-AUTOCOMBINUM    TO  SPA-PTNUM-AUTOCOMBINUM
+           END-IF
       *
            .
        200-NUMBNEW-EXT.
@@ -607,6 +637,12 @@
                INITIALIZE                  PARA-REC
                MOVE    1               TO  FLG-PARA
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PARA-KEY"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            IF      FLG-PARA            =   ZERO
                MOVE    HKNCOMBI-REC        TO  PARA-DATA-REC

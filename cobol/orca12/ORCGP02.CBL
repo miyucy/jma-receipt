@@ -2295,6 +2295,12 @@
                                                 ORCMCPAREA
                                                 MCPDATA-REC
                END-IF
+               MOVE    "DBCLOSE"          TO  MCP-FUNC
+               MOVE    "YYK-KEY"          TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
       *        削除
                MOVE    WRK-YYK-REC         TO  YYK-REC
                MOVE    YYK-REC             TO  MCPDATA-REC
@@ -2308,6 +2314,12 @@
                MOVE    "YYK-KEY6"          TO  ORC-DBPATH
                PERFORM 900-YOYAKU-READ-SEC
             END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "YYK-KEY6"          TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    入院診療行為マスター
            INITIALIZE                      NYUINACT-REC
@@ -2770,19 +2782,16 @@
       *
            IF      FLG-PTNUM           =   ZERO
                MOVE    "1011"              TO  SPA-ERRCD
-               GO  TO                  491010-PTNUM-DBCHECK-EXT
-           END-IF
+           ELSE
       *
       *    患者マスター存在チェック
-           IF      SPA-GMN-PTID        =   ZERO 
-               GO  TO                  491010-PTNUM-DBCHECK-EXT
-           END-IF
-           MOVE    SPA-HOSPID         TO  PTINF-HOSPID
-           MOVE    SPA-GMN-PTID       TO  PTINF-PTID
-           PERFORM 900-PTINF-READ-SEC
-           IF      FLG-PTINF          =   ZERO 
-               MOVE    "1011"              TO  SPA-ERRCD
-               GO  TO                  491010-PTNUM-DBCHECK-EXT
+           IF      SPA-GMN-PTID    NOT =   ZERO 
+               MOVE    SPA-HOSPID         TO  PTINF-HOSPID
+               MOVE    SPA-GMN-PTID       TO  PTINF-PTID
+               PERFORM 900-PTINF-READ-SEC
+               IF      FLG-PTINF          =   ZERO 
+                   MOVE    "1011"              TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            .

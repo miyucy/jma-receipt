@@ -723,7 +723,6 @@
        4101-RENRAKUNAME-CHK-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    仕事チェック処理
       *****************************************************************
@@ -1096,6 +1095,13 @@
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1015-REC
            ELSE
@@ -1131,6 +1137,12 @@
                    MOVE    1                   TO  FLG-OK
                END-IF
            END-IF
+           MOVE   "DBCLOSE"            TO  MCP-FUNC
+           MOVE   "ADRS-KEY"           TO  ORC-DBPATH
+           CALL   "ORCMCPSUB"          USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            IF      FLG-OK              =   ZERO
       *        周辺住所一覧へ

@@ -490,6 +490,12 @@
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
       *        都道府県区分
@@ -734,6 +740,12 @@
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1017-REC
       *        人名辞書使用チェック
@@ -872,13 +884,13 @@
            IF     SPA-GMN20-DRCDLST (1)    NOT =   SPACE
                MOVE    SPA-GMN20-DRCDLST(1)   TO  SPA-GMN20-DRCD
            END-IF
-      *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+      *****カーソルクロース
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+      *    CALL    "ORCMCPSUB"          USING
+      *                                 MCPAREA
+      *                                 ORCMCPAREA
+      *********                         MCPDATA-REC
       *
            .
        312-DOCTOR-SPASET-EXT.
@@ -919,6 +931,12 @@
                MOVE    "SYSKANRI-KEY2"         TO  ORC-DBPATH
                PERFORM 900-SYSTEM-READ-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"              USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
       *
            MOVE    SPA-GMN-SRYKA-LST (1)   TO  SPA-GMN-SRYKA-G
            MOVE    SPA-GMN-SRYKA-LST (1)   TO  SPA-GMN20-SRYKA-G
@@ -1010,6 +1028,12 @@
                MOVE    "HKNNUM-KEY6"       TO  ORC-DBPATH
                PERFORM 921-HKNMST-NEXT-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY6"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            .
        1004-HKNKOH-SET-EXT.
@@ -1019,7 +1043,6 @@
       *    保険情報編集処理
       *****************************************************************
        10041-HKNHEN-SEC          SECTION.
-      *
       *
            IF      SPA-GMN-HKNMAX      >=  50
                GO      TO      10041-HKNHEN-EXT
@@ -2273,6 +2296,12 @@
                INITIALIZE              HKNNUM-REC
                MOVE    1               TO  FLG-HKNNUM
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *
            MOVE    SPACE               TO  WRK-HKNKOHSBTKBN
            MOVE    SPACE               TO  WRK-TANSEIDONAME
@@ -2342,6 +2371,12 @@
                MOVE    "PTRSIINF-KEY3"     TO  ORC-DBPATH
                PERFORM 993-PTRSIINF-NEXT-SEC
            END-PERFORM
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "PTRSIINF-KEY3"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
       *    患者労災保険情報マスタ　総件数（既削除データ除く）
            MOVE    IDX                 TO  SPA-P02-RSHKNMAX

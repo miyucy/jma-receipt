@@ -414,6 +414,12 @@
                INITIALIZE                  HKNJAINF-REC
                MOVE    1               TO  FLG-HKNJAINF
            END-IF
+           MOVE    "DBCLOSE"             TO  MCP-FUNC
+           MOVE    "HKNJAINF-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
       *
            MOVE    SPACE               TO  WRK-HKNJA-HKNNUM
       *    保険者番号あり
@@ -1744,6 +1750,12 @@
                    PERFORM 921-HKNMST-NEXT-SEC
                END-IF
            END-PERFORM
+           MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
       *    対象があった時
            IF      FLG-CHK             =   1
                GO      TO      2002-HNKKIKAN-CHK-EXT
@@ -2328,6 +2340,12 @@
                INITIALIZE                  HKNJAINF-REC
                MOVE    1               TO  FLG-HKNJAINF
            END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
            IF      FLG-HKNJAINF        =   ZERO
                MOVE    HKNJA-HKNJANAME     TO  SPA-HKNJA-HKNJANAME
                MOVE    HKNJA-ADRS          TO  SPA-HKNJA-ADRS
