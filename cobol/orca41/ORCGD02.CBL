@@ -58,6 +58,8 @@
       *                                     薬剤と病名チェックの修正
       *  01.00.19    ひさなが     03/06/06  病名に対応する病名コードの
       *                                     未入力チェックの修正
+      *  01.00.20    ひさなが     03/06/10  疑いフラグが急性かつ疑いの
+      *                                     チェックに関係する修正
       *
       *****************************************************************
       *
@@ -424,6 +426,9 @@
            03  T-MESSAGE-510-06    PIC X(90)   VALUE
                "510-06該当患者は病名に対応する病名コードが入力されていま
       -        "せん                              ".
+           03  T-MESSAGE-510-07    PIC X(90)   VALUE
+               "510-07該当患者は転帰区分と転帰日の関係誤り              
+      -        "                                  ".
            03  T-MESSAGE-520-01    PIC X(90)   VALUE
                "520-01診療科履歴情報テーブル異常                        
       -        "                                  ".
@@ -2098,12 +2103,17 @@
                WRITE   DID3-REC
            ELSE
                PERFORM T-510-RECECHEK-READ-SEC
+      *修正/*開始*03.06.10*********************************************
+      *         IF  MCP-RC   NOT =   ZERO
+      *             IF  ((SPA-GMN-CNV (5)   =  "1")    OR
+      *                  (SPA-GMN-CNV (7)   =  "1"))  AND
+      *                 ((T-ERR-05          = SPACE)   OR
+      *                  (T-ERR-07          = SPACE))
                IF  MCP-RC   NOT =   ZERO
-                   IF  ((SPA-GMN-CNV (5)   =  "1")    OR
-                        (SPA-GMN-CNV (7)   =  "1"))  AND
-                       ((T-ERR-05          = SPACE)   OR
-                        (T-ERR-07          = SPACE))
-                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                   IF  (SPA-GMN-CNV (5)   =  "1")  AND
+                       (T-ERR-05          = SPACE)
+      *修正/*終了*03.06.10*********************************************
+                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                        MOVE    SPACE                 TO  DID2-REC
                        MOVE    ACCT-HOSPID           TO  DID2-REC(1:24)
                        MOVE    "-"                   TO  DID2-REC(25:1)
@@ -2111,7 +2121,9 @@
                        MOVE    T-MESSAGE-510-02      TO  DID2-REC(71:90)
                        WRITE   DID2-REC
                        MOVE    "*"                   TO  T-ERR-05
-                       MOVE    "*"                   TO  T-ERR-07
+      *修正/*開始*03.06.10*********************************************
+      *                 MOVE    "*"                   TO  T-ERR-07
+      *修正/*終了*03.06.10*********************************************
                        MOVE    "ED"                  TO  T-HANNTEI6
                    END-IF
                ELSE
@@ -2143,9 +2155,31 @@
                            MOVE    "*"               TO  T-ERR-05
                            MOVE    "ED"              TO  T-HANNTEI6
                        END-IF
+      *修正/*開始*03.06.10*********************************************
+                       IF  ((SPA-GMN-CNV (7)     = "1")      AND
+                            (PTBYO-TENKIKBN      = SPACE)    AND
+                            (PTBYO-TENKIYMD  NOT = SPACE)    AND
+                            (T-ERR-07            = SPACE))    OR
+                           ((SPA-GMN-CNV (7)     = "1")      AND
+                            (PTBYO-TENKIKBN  NOT = SPACE)    AND
+                            (PTBYO-TENKIYMD      = SPACE)    AND
+                            (T-ERR-07            = SPACE))
+                           COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                           MOVE    SPACE             TO  DID2-REC
+                           MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
+                           MOVE    "-"               TO  DID2-REC(25:1)
+                           MOVE    PTBYO-PTID        TO  DID2-REC(26:10)
+                           MOVE    T-MESSAGE-510-07  TO  DID2-REC(71:90)
+                           WRITE   DID2-REC
+                           MOVE    "*"               TO  T-ERR-07
+                       END-IF
+      *修正/*終了*03.06.10*********************************************
                        IF  (SPA-GMN-CNV (7)   = "1")          AND
                            (PTBYO-TENKIKBN    = SPACE)        AND
-                           (PTBYO-UTAGAIFLG   = "1")          AND
+      *修正/*開始*03.06.10*********************************************
+      *                     (PTBYO-UTAGAIFLG   = "1")          AND
+                           (PTBYO-UTAGAIFLG   = "1" OR "3")   AND
+      *修正/*終了*03.06.10*********************************************
                            (PTBYO-SRYYMD(1:6) < W-YMD4(1:6))  AND
                            (T-ERR-07          = SPACE)
                            COMPUTE T-CNT-OUT = T-CNT-OUT + 1
