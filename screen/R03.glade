@@ -720,7 +720,6 @@
       <y>170</y>
       <width>104</width>
       <height>26</height>
-      <sensitive>False</sensitive>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
@@ -745,7 +744,6 @@
       <y>574</y>
       <width>104</width>
       <height>26</height>
-      <sensitive>False</sensitive>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
