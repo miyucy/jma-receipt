@@ -6611,20 +6611,28 @@
                WHEN    "03"
                        MOVE   "190024510"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "04"
-                       MOVE   "190024310"   TO  SYOKIKSN-IN-KHNSRYCD
+                       MOVE   "190110210"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "05"
-                       MOVE   "190024610"   TO  SYOKIKSN-IN-KHNSRYCD
+                       MOVE   "190110310"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "06"
-                       MOVE   "190024710"   TO  SYOKIKSN-IN-KHNSRYCD
+                       MOVE   "190024310"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "07"
-                       MOVE   "190066710"   TO  SYOKIKSN-IN-KHNSRYCD
+                       MOVE   "190110410"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "08"
-                       MOVE   "190066810"   TO  SYOKIKSN-IN-KHNSRYCD
+                       MOVE   "190110510"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "09"
-                       MOVE   "190024810"   TO  SYOKIKSN-IN-KHNSRYCD
+                       MOVE   "190024610"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "10"
-                       MOVE   "190075510"   TO  SYOKIKSN-IN-KHNSRYCD
+                       MOVE   "190024710"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "11"
+                       MOVE   "190066710"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "12"
+                       MOVE   "190066810"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "13"
+                       MOVE   "190024810"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "14"
+                       MOVE   "190075510"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "15"
                        MOVE   "190788810"   TO  SYOKIKSN-IN-KHNSRYCD
                WHEN    "20"
                        MOVE   "190076710"   TO  SYOKIKSN-IN-KHNSRYCD
