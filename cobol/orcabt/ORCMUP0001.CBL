@@ -528,7 +528,6 @@
       *****************************************************************
        20103-TENSUPLUS-SYORI-SEC       SECTION.
       *
-      *
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNSUP-SRYCD         TO  TNSP-SRYCD
@@ -620,6 +619,26 @@
            EXIT.
       *
       *****************************************************************
+      *    ＤＢ削除  処理
+      *****************************************************************
+       20105-TENSU-DEL-SEC           SECTION.
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    8               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+           END-IF
+           .
+       20105-TENSU-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    更新  処理
       *****************************************************************
        2020-UPDATE-SYORI-SEC           SECTION.
@@ -685,12 +704,46 @@
        2020-UPDATE-SYORI-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    削除  処理
       *****************************************************************
        2030-DELETE-SYORI-SEC           SECTION.
       *
+           MOVE    ZERO                TO  FLG-SYORI
+      *
+           INITIALIZE                  TNS-TENSU-REC
+           MOVE    TNSWK-SRYCD         TO  TNS-SRYCD
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TENSU-KEY4"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "TENSU-KEY4"        TO  ORC-DBPATH
+               PERFORM                     910-TENSU-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+           PERFORM UNTIL   (FLG-TENSU      =   1  )  OR
+                           (FLG-SYORI      =   1  )
+               IF     (TNS-KEY          =  TNSWK-KEY )
+      *            削除
+                   PERFORM 20105-TENSU-DEL-SEC
+                   ADD     1                   TO  CNT-DEL
+                   MOVE    1                   TO  FLG-SYORI
+               ELSE
+                   MOVE    "TENSU-KEY4"    TO  ORC-DBPATH
+                   PERFORM                 910-TENSU-READ-SEC
+               END-IF
+           END-PERFORM
+      *
+      *    削除エラー
+           IF      FLG-SYORI           =   ZERO
+               MOVE    9               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+           END-IF
            .
        2030-DELETE-SYORI-EXT.
            EXIT.
@@ -731,16 +784,20 @@
                    MOVE    "更新データなし"   TO  WRK-MSG-01
                WHEN   4
                    MOVE    "点数付加更新エラー"
-                                               TO  WRK-MSG-01
+                                              TO  WRK-MSG-01
                WHEN   5
                    MOVE    "点数追加済み"
-                                               TO  WRK-MSG-01
+                                              TO  WRK-MSG-01
                WHEN   6
                    MOVE    "点数付加追加済み"
-                                               TO  WRK-MSG-01
+                                              TO  WRK-MSG-01
                WHEN   7
                    MOVE    "点数付加追加エラー"
-                                               TO  WRK-MSG-01
+                                              TO  WRK-MSG-01
+               WHEN   8
+                   MOVE    "削除エラー"       TO  WRK-MSG-01
+               WHEN   9
+                   MOVE    "削除データなし"   TO  WRK-MSG-01
            END-EVALUATE
       *
            MOVE    WRK-MSG-AREA       TO  PLF-REC
