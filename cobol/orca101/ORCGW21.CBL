@@ -3528,15 +3528,15 @@
       *****************************************************************
        800-BRM-KA-SRH-SEC                  SECTION.
       *
-           SET     S1005-IDX   TO  1
-           SEARCH  SPA-W21-1005-OCC    VARYING S1005-IDX
+           SET     S21-1005-IDX   TO  1
+           SEARCH  SPA-W21-1005-OCC    VARYING S21-1005-IDX
            AT  END
                INITIALIZE          WRK-KANRI-AREA
-           WHEN    SPA-W21-1005-KBNCD (S1005-IDX)  =   WRK-KANRICD
-               SET WRK-KANRIIDX    TO  S1005-IDX
-               MOVE    SPA-W21-1005-SRYKANAME (S1005-IDX)
+           WHEN    SPA-W21-1005-KBNCD (S21-1005-IDX)  =   WRK-KANRICD
+               SET WRK-KANRIIDX    TO  S21-1005-IDX
+               MOVE    SPA-W21-1005-SRYKANAME (S21-1005-IDX)
                                TO  WRK-KANRIDAT1
-           WHEN    SPA-W21-1005-KBNCD (S1005-IDX)  =   SPACE
+           WHEN    SPA-W21-1005-KBNCD (S21-1005-IDX)  =   SPACE
                INITIALIZE          WRK-KANRI-AREA
            END-SEARCH
       *
