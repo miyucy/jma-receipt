@@ -296,6 +296,8 @@
        01  RECE07-REC. 
            COPY    "CPRCF007.INC".
       *
+           COPY    "CPRCF008.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -1267,6 +1269,26 @@
            MOVE    ZERO            TO  SPA-R01-JOBCNT       
                                        SPA-R01-STOPFLG    
            MOVE    SPACE           TO  SPA-R99-CANCEL
+      *
+      *    ¥ì¥»°õºþ£Ä£Â¤Î½é´ü²½
+           INITIALIZE                  RECE08-REC
+           MOVE    SPA-R01-RECE07-PRTID  TO  RECE08-PRTID
+           IF      SPA-R01-RECE07-SYOKBN   =   "1"
+               MOVE    SPA-R01-SRYYM       TO  RECE08-RECEYM
+           ELSE
+               MOVE    ZERO                TO  RECE08-RECEYM
+           END-IF                                    
+           MOVE    SPA-R01-RECE07-CREYMD  TO  RECE08-CREYMD
+           MOVE    SPA-R01-RECE07-CREHMS
+                                       TO  RECE08-CREHMS
+           MOVE    SPA-R01-RECE07-NYUGAIKBN
+                                       TO  RECE08-NYUGAIKBN
+           MOVE    RECE08-REC          TO  MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    PATH-TBL-RECEPRT-UPD1
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING    MCPAREA
+                                                MCPDATA-REC
       *
       *    °õºþ£Ä£Â¤Î£Ë£Å£ÙÍÑ     
            ACCEPT  SYS-YMD         FROM    DATE
