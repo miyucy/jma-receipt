@@ -117,6 +117,7 @@
                    07  SPA-NAI-KYYKTIME        PIC 9(04).
                    07  SPA-NAI-YYKTIME         PIC 9(04).
       *
+      *
       *        表示リスト等
                05  SPA-GMN-HYOU-AERA.
                    07  SPA-GMN-SRYKALST    PIC X(17)   OCCURS  40.
@@ -173,6 +174,9 @@
                    07  SPA-MAE-PTNUM           PIC X(20).
                    07  SPA-MAE-YYKNAME         PIC X(50).
                    07  SPA-MAE-YYKYMD          PIC X(10).
+      *
+                   07  SPA-CHK-YYKYMD          PIC X(08).
+                   07  SPA-CHK-KYYKTIME        PIC 9(04).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-SELBAN              PIC 9(03).
@@ -239,6 +243,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-HENFLG          PIC 9(01).
+           03  FLG-TOUROKU         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -1178,6 +1183,7 @@
       *        一括入力分
                WHEN    OTHER
       *           入力チェック処理
+                  MOVE    1                   TO  FLG-TOUROKU
                   PERFORM 410-INPUT-CHK-SEC
            END-EVALUATE
       *
@@ -1783,6 +1789,10 @@
       **   MOVE    6                   TO  SPA-GMN-CUR
       *
       **   MOVE    Y01-YYKTIME         TO  SPA-GMN-YYKTIME
+           IF     (SPA-GMN-YYKTIME     =   SPACE )  AND
+                  (FLG-TOUROKU         =   1     )
+               GO      TO      41015-YYKTIME-EXT
+           END-IF
       *
            MOVE    SPACE               TO  WRK-TIME-X
            MOVE    ZERO                TO  WRK-TIME
@@ -1886,10 +1896,15 @@
                    (SPA-NAI-KYYKTIME   =   SPA-Y01-YYKTIME )
                CONTINUE
            ELSE
-      *        予約件数チェック
-               PERFORM 410161-YYKKEN-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   MOVE    6                   TO  SPA-GMN-CUR
+               IF      (SPA-NAI-YYKYMD      =   SPA-CHK-YYKYMD )  AND
+                       (SPA-NAI-KYYKTIME    =   SPA-CHK-KYYKTIME)
+                   CONTINUE
+               ELSE
+      *            予約件数チェック
+                   PERFORM 410161-YYKKEN-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       MOVE    6                   TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-IF
       *
@@ -1904,6 +1919,9 @@
       *****************************************************************
        410161-YYKKEN-CHK-SEC        SECTION.
       *
+           MOVE    SPACE               TO  SPA-CHK-YYKYMD
+           MOVE    ZERO                TO  SPA-CHK-KYYKTIME
+      *
            MOVE    SPA-HOSPID          TO  YYK-HOSPID
            MOVE    SPA-GMN-SRYNAIYO    TO  YYK-SRYNAIYO
            MOVE    SPA-NAI-DRCD        TO  YYK-DRCD
@@ -1913,6 +1931,8 @@
            PERFORM 910-YOYAKU-INV-SEC
            IF      FLG-YYK             =   ZERO
                IF      YYK-YYKMAXCNT       <=  YYK-YYKCNT
+                   MOVE    SPA-NAI-YYKYMD      TO  SPA-CHK-YYKYMD
+                   MOVE    SPA-NAI-KYYKTIME    TO  SPA-CHK-KYYKTIME
                    MOVE    "1000"          TO  SPA-ERRCD
                END-IF
            END-IF
@@ -2058,9 +2078,9 @@
                IF      SPA-GMN-MAX      >   ZERO
                    MOVE    12               TO  SPA-GMN-CUR
                ELSE
-                   IF      SPA-GMN-CUR      =   12
+      ***********  IF      SPA-GMN-CUR      =   12
                        MOVE    3            TO  SPA-GMN-CUR
-                   END-IF
+      ***********  END-IF
                END-IF
            ELSE
                MOVE    5               TO  SPA-GMN-CUR
@@ -2326,9 +2346,7 @@
                IF      SPA-GMN-MAX      >   ZERO
                    MOVE    12               TO  SPA-GMN-CUR
                ELSE
-                   IF      SPA-GMN-CUR      =   12
-                       MOVE    3            TO  SPA-GMN-CUR
-                   END-IF
+                   MOVE    3            TO  SPA-GMN-CUR
                END-IF
            ELSE
                MOVE    6               TO  SPA-GMN-CUR
@@ -2541,7 +2559,7 @@
                IF      SPA-GMN-MAX      >   ZERO
                    MOVE    12               TO  SPA-GMN-CUR
                ELSE
-                   IF      SPA-GMN-CUR      =   12
+                   IF      SPA-GMN-CUR      =   12  OR  ZERO
                        MOVE    3            TO  SPA-GMN-CUR
                    END-IF
                END-IF
@@ -2859,6 +2877,9 @@
       *
            MOVE    ZERO                TO  SPA-Y01-KEIKOKU
       *
+           MOVE    SPACE               TO  SPA-CHK-YYKYMD
+           MOVE    ZERO                TO  SPA-CHK-KYYKTIME
+      *
       *    MOVE    SPA-SYSYMD          TO  SPA-NAI-YYKYMD
       *    MOVE    SPA-SYSYMDWH        TO  SPA-GMN-YYKYMD
       *
@@ -2886,6 +2907,7 @@
        4901-TOROKU-CHK-SEC             SECTION.
       *
       *    入力チェック処理
+           MOVE    2                   TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4901-TOROKU-CHK-EXT

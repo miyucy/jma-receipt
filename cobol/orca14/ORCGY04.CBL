@@ -24,6 +24,7 @@
       *  管理者            : 
       *  作成日付    作業者        記述
       *  01.00.01    NACL-多々納  02/09/11  ドクター編集の修正
+      *  01.00.02    NACL-多々納  03/03/07  ドクター件数の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -338,13 +339,13 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    ZERO                TO  WRK-SINRYO-MAX
+           MOVE    ZERO                TO  SPA-SINRYO-MAX
            PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL      (IDX             >   10    )   OR
+                   UNTIL      (IDX             >   9     )   OR
                               (FLG-SYSKANRI    =   1   )
       *
                MOVE    MCPDATA-REC       TO  SYS-1012-REC
-               ADD      1                TO  WRK-SINRYO-MAX
+               ADD      1                TO  SPA-SINRYO-MAX
                MOVE    SYS-1012-KBNCD    TO  SPA-GMN-SINRYOCD
                MOVE    SPACE             TO  SPA-GMN-SK1
                MOVE    SYS-1012-SRYNAIYODSP
@@ -362,15 +363,15 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *    全体
-           ADD     1                   TO  WRK-SINRYO-MAX
+           ADD     1                   TO  SPA-SINRYO-MAX
            MOVE    "00"                TO  SPA-GMN-SINRYOLST
-                                                   (WRK-SINRYO-MAX)
+                                                   (SPA-SINRYO-MAX)
                                                    (1:2)
            MOVE    SPACE               TO  SPA-GMN-SINRYOLST
-                                                   (WRK-SINRYO-MAX)
+                                                   (SPA-SINRYO-MAX)
                                                    (3:1)
            MOVE    "全体"              TO  SPA-GMN-SINRYOLST
-                                                   (WRK-SINRYO-MAX)
+                                                   (SPA-SINRYO-MAX)
                                                    (4:)
       *    職員情報をＳＰＡにセット
            MOVE    SPACE               TO  SYS-1010-REC
@@ -397,7 +398,7 @@
            MOVE    ZERO                TO  WRK-DRNCD-MAX
            MOVE    ZERO                TO  IDX
            PERFORM
-                   UNTIL      (IDX             >   10    )   OR
+                   UNTIL      (IDX               >=  49  )   OR
                               (FLG-SYSKANRI      =   1   )
       *
                MOVE    MCPDATA-REC      TO  SYS-1010-REC
@@ -429,6 +430,7 @@
                                                 (WRK-DRNCD-MAX)(5:1)
            MOVE    "指定なし"          TO  SPA-GMN-DRNAMELST
                                                 (WRK-DRNCD-MAX)(6:)
+           MOVE    WRK-DRNCD-MAX       TO  SPA-DRCD-MAX
       *
            MOVE    SPA-Y01-SRYNAIYOG   TO  SPA-GMN-SINRYO
            MOVE    SPA-Y01-DRNAME      TO  SPA-GMN-DRNAME
@@ -679,20 +681,18 @@
            MOVE    ZERO                TO  Y04-S1-COUNT
                                            Y04-S2-COUNT
            PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL       IDX     >   10
-               IF  SPA-GMN-DRNAMELST (IDX)
-                                       NOT   =    SPACE
-                   ADD  1              TO   Y04-S1-COUNT
-               END-IF
-               IF  SPA-GMN-SINRYOLST (IDX)
-                                       NOT   =    SPACE
-                   ADD  1              TO   Y04-S2-COUNT
-               END-IF
-               MOVE    SPA-GMN-DRNAMELST (IDX)
-                                           TO  Y04-DRNAMELST  (IDX)
+                   UNTIL       IDX     >   SPA-SINRYO-MAX
                MOVE    SPA-GMN-SINRYOLST (IDX)
                                            TO  Y04-SRYNAIYOLST(IDX)
            END-PERFORM
+            MOVE    SPA-SINRYO-MAX     TO   Y04-S2-COUNT
+      *
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL       IDX     >  SPA-DRCD-MAX
+               MOVE    SPA-GMN-DRNAMELST (IDX)
+                                           TO  Y04-DRNAMELST  (IDX)
+           END-PERFORM
+           MOVE    SPA-DRCD-MAX        TO   Y04-S1-COUNT
       *
       *    PERFORM VARYING     IDX     FROM    1   BY  1
       *            UNTIL       IDX             >   6
@@ -887,7 +887,7 @@
       *
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   10   )
+                   UNTIL       IDX            >   SPA-SINRYO-MAX
                    IF Y04-SRYNAIYO(1:2)        
                                        =   SPA-GMN-SINRYOLST(IDX)(1:2)
                       MOVE  SPA-GMN-SINRYOLST(IDX)
@@ -921,14 +921,14 @@
       *
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   10   )
-                   IF Y04-DRNAME(1:4)        
+                   UNTIL      (IDX            >   SPA-DRCD-MAX )
+               IF     Y04-DRNAME(1:4)        
                                        =   SPA-GMN-DRNAMELST(IDX)(1:4)
                       MOVE  SPA-GMN-DRNAMELST(IDX)
                                        TO  Y04-DRNAME
                       MOVE  IDX        TO  IDY
                       MOVE  99         TO  IDX
-                   END-IF
+               END-IF
            END-PERFORM
            IF      IDY                 =   ZERO
                    MOVE    "0002"      TO  SPA-ERRCD
