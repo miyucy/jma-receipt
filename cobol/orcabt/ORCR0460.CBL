@@ -498,10 +498,10 @@
            03  CONS-SYOSIN-KASAN1  PIC X(09) VALUE "111003770".
       *    Ï·¿Í½é¿Ç¡Ê¿ÇÎÅ½ê¡Ë¾Ò²ð´µ¼Ô²Ã»»
            03  CONS-SYOSIN-KASAN2  PIC X(09) VALUE "111700470".
-      *    ½é¿Ç¡ÊÆýÍÄ»ù¡Ë²Ã»»
-           03  CONS-SYOSIN-KASAN3  PIC X(09) VALUE "111000370".
-      *    ½é¿Ç¡Ê°é»ù±ÉÍÜ»ØÆ³¡Ë²Ã»»
-           03  CONS-SYOSIN-KASAN4  PIC X(09) VALUE "111000470".
+      ***  ½é¿Ç¡ÊÆýÍÄ»ù¡Ë²Ã»»
+      ***  03  CONS-SYOSIN-KASAN3  PIC X(09) VALUE "111000370".
+      ***  ½é¿Ç¡Ê°é»ù±ÉÍÜ»ØÆ³¡Ë²Ã»»
+      ***  03  CONS-SYOSIN-KASAN4  PIC X(09) VALUE "111000470".
       *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê½é¿Ç»þ¿ÇÎÅ»þ¤Î¾Ò²ð´µ¼Ô¡Ë²Ã»»
            03  CONS-SYOSIN-KASAN5  PIC X(09) VALUE "111010370".
       *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£³¡Ë
@@ -1026,8 +1026,8 @@
            IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)  
                                             =   CONS-SYOSIN-KASAN1  OR
                                                 CONS-SYOSIN-KASAN2  OR
-                                                CONS-SYOSIN-KASAN3  OR
-                                                CONS-SYOSIN-KASAN4  OR
+      ***                                       CONS-SYOSIN-KASAN3  OR
+      ***                                       CONS-SYOSIN-KASAN4  OR
                                                 CONS-SYOSIN-KASAN5  OR
                                                 CONS-SYOSIN-KASAN6  OR
                                                 CONS-SYOSIN-KASAN7  OR

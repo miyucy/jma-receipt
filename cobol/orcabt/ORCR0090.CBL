@@ -631,12 +631,12 @@
       *    Ï·¿Í½é¿Ç¡Ê¿ÇÎÅ½ê¡Ë¾Ò²ð´µ¼Ô²Ã»»
            03  WRK-CONS-SYOSIN-KASAN2  PIC X(09)   VALUE 
                                                    "111700470".
-      *    ½é¿Ç¡ÊÆýÍÄ»ù¡Ë²Ã»»
-           03  WRK-CONS-SYOSIN-KASAN3  PIC X(09)   VALUE 
-                                                   "111000370".
-      *    ½é¿Ç¡Ê°é»ù±ÉÍÜ»ØÆ³¡Ë²Ã»»
-           03  WRK-CONS-SYOSIN-KASAN4  PIC X(09)   VALUE 
-                                                   "111000470".
+      ***  ½é¿Ç¡ÊÆýÍÄ»ù¡Ë²Ã»»
+      ***  03  WRK-CONS-SYOSIN-KASAN3  PIC X(09)   VALUE 
+      ***                                          "111000370".
+      ***  ½é¿Ç¡Ê°é»ù±ÉÍÜ»ØÆ³¡Ë²Ã»»
+      ***  03  WRK-CONS-SYOSIN-KASAN4  PIC X(09)   VALUE 
+      ***                                          "111000470".
       *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê½é¿Ç»þ¿ÇÎÅ»þ¤Î¾Ò²ð´µ¼Ô¡Ë²Ã»»
            03  WRK-CONS-SYOSIN-KASAN5  PIC X(09)   VALUE 
                                                    "111010370".
@@ -1216,8 +1216,8 @@
                IF    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)              
                                             =   WRK-CONS-SYOSIN-KASAN1
                                             OR  WRK-CONS-SYOSIN-KASAN2
-                                            OR  WRK-CONS-SYOSIN-KASAN3
-                                            OR  WRK-CONS-SYOSIN-KASAN4
+      ***                                   OR  WRK-CONS-SYOSIN-KASAN3
+      ***                                   OR  WRK-CONS-SYOSIN-KASAN4
                                             OR  WRK-CONS-SYOSIN-KASAN5
                                             OR  WRK-CONS-SYOSIN-KASAN6
                                             OR  WRK-CONS-SYOSIN-KASAN7
@@ -1244,8 +1244,8 @@
                    IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)             
                                              =   WRK-CONS-SYOSIN-KASAN1 
                                              OR  WRK-CONS-SYOSIN-KASAN2 
-                                             OR  WRK-CONS-SYOSIN-KASAN3 
-                                             OR  WRK-CONS-SYOSIN-KASAN4 
+      ***                                    OR  WRK-CONS-SYOSIN-KASAN3 
+      ***                                    OR  WRK-CONS-SYOSIN-KASAN4 
                                              OR  WRK-CONS-SYOSIN-KASAN5 
                                              OR  WRK-CONS-SYOSIN-KASAN6 
                                              OR  WRK-CONS-SYOSIN-KASAN7 
