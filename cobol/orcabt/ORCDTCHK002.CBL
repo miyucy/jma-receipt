@@ -2303,21 +2303,6 @@
       *    患者情報取得処理
            PERFORM 900-PTINF-KEY-SEL-SEC
       *
-      *    入院患者の年齢計算
-           INITIALIZE ORCSAGECHKAREA
-           MOVE    DTCHK003-HOSPID     TO  AGECHK-HOSPID
-           MOVE    DTCHK003-PTID       TO  AGECHK-PTID
-           MOVE    WRK-KJNYMD          TO  AGECHK-SRYYMD
-           MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
-           CALL    "ORCSAGECHK"        USING
-                                           ORCSAGECHKAREA
-           IF    ( AGECHK-RC       =   ZERO )
-               CONTINUE
-           ELSE
-               INITIALIZE  ORCSAGECHKAREA
-           END-IF
-      *
-      *
       *    保険組み合わせ
            INITIALIZE                  ORCSHKNSETAREA
            INITIALIZE                  SPA-AREA
@@ -2639,6 +2624,21 @@
       *    保険適応年齢チェック処理
       *****************************************************************
        200112-HKNAGE-CHK-SEC           SECTION.
+      *
+      *    年齢計算
+           INITIALIZE ORCSAGECHKAREA
+           MOVE    DTCHK003-HOSPID     TO  AGECHK-HOSPID
+           MOVE    DTCHK003-PTID       TO  AGECHK-PTID
+           MOVE    WRK-KJNYMD          TO  AGECHK-SRYYMD
+           MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
+           MOVE    COMB-HKNCOMBINUM    TO  AGECHK-HKNCOMBINUM
+           CALL    "ORCSAGECHK"        USING
+                                           ORCSAGECHKAREA
+           IF    ( AGECHK-RC       =   ZERO )
+               CONTINUE
+           ELSE
+               INITIALIZE  ORCSAGECHKAREA
+           END-IF
       *
            MOVE    ZERO                TO  FLG-SEIHO
            MOVE    ZERO                TO  FLG-RJN
