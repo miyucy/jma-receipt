@@ -1356,7 +1356,7 @@
       *************IF      LF04-SND-SPINAME1 (IDX)
       *************                        =   PTBYO-BYOMEI
                    IF      WRK-BYOMEI1     =   PTBYO-BYOMEI
-                                                   (1:PTBYO-BYOMEIMOJI)
+      *                                            (1:PTBYO-BYOMEIMOJI)
                        MOVE    1           TO  FLG-PTBYOMEI-UMU
                    END-IF
                    MOVE    PTBYO-RENNUM        TO  WRK-PTBYO-RENNUM
