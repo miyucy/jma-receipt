@@ -384,7 +384,7 @@
                                IF    ( RECE64-RECESYUBETU
                                                    =   ZERO   OR  8888 )
                                OR    ( RECE64-SRYKBN
-                                                  >=  "90"             )
+                                                   =  "95"    OR  "96" )
                                    CONTINUE
                                ELSE
                                    MOVE    1           TO  FLG-READ
