@@ -127,6 +127,77 @@ W07	{
 					count	int;
 					item	varchar(12)[2];
 				};
+				JIKANTOKU_CHK_COMB	{
+					JIKANTOKU_CHK	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[2];
+				};
+				JIKANW1_HH1	{
+					state   int;
+					value	varchar(2);
+				};
+				JIKANW1_MM1	{
+					state   int;
+					value	varchar(2);
+				};
+				JIKANW1_HH2	{
+					state   int;
+					value	varchar(2);
+				};
+				JIKANW1_MM2	{
+					state   int;
+					value	varchar(2);
+				};
+				JIKANW2_HH1	{
+					state   int;
+					value	varchar(2);
+				};
+				JIKANW2_MM1	{
+					state   int;
+					value	varchar(2);
+				};
+				JIKANW2_HH2	{
+					state   int;
+					value	varchar(2);
+				};
+				JIKANW2_MM2	{
+					state   int;
+					value	varchar(2);
+				};
+				JIKANS1_HH1	{
+					state   int;
+					value	varchar(2);
+				};
+				JIKANS1_MM1	{
+					state   int;
+					value	varchar(2);
+				};
+				JIKANS1_HH2	{
+					state   int;
+					value	varchar(2);
+				};
+				JIKANS1_MM2	{
+					state   int;
+					value	varchar(2);
+				};
+				JIKANS2_HH1	{
+					state   int;
+					value	varchar(2);
+				};
+				JIKANS2_MM1	{
+					state   int;
+					value	varchar(2);
+				};
+				JIKANS2_HH2	{
+					state   int;
+					value	varchar(2);
+				};
+				JIKANS2_MM2	{
+					state   int;
+					value	varchar(2);
+				};
 			};
 			TAGNAME1    {
 			    state   int;

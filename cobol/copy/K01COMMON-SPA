@@ -74,6 +74,17 @@
       *入院調剤技術基本料チェック
                05  SPA-CHOKICHK-FLG        PIC X(01).
                05  SPA-CHOKI-ARI           PIC X(01).
+      *時間外加算特例乳幼児
+               05  SPA-JIKANTOKU-NYU       PIC X(01).
+      *画像診断管理加算１（写真診断）
+               05  SPA-GAZOUKSN1           PIC X(01).
+      *時間外チェック除外時間
+               05  SPA-JIKANTOKU-CHK       PIC X(01).
+               05  SPA-JIKANCHK-TIME-G.
+                   07  SPA-JIKANCHK-TIME   OCCURS  2.
+                       09  SPA-JIKANCHK-STR        PIC 9(04).
+                       09  SPA-JIKANCHK-END        PIC 9(04).
+               05  SPA-JIKANCHK-ERR        PIC X(01).
       *
            03  SPA-K01SET-AREA.
       *処理フラグ（０：通常、１：訂正）
@@ -122,8 +133,10 @@
                05  SPA-TA-HKNCOMBI-AREA.
                    07  SPA-TA-HKNCOMBI         PIC  9(04)
                                                OCCURS  10.
+      *同日診察料有無
+               05  SPA-DOUJITU             PIC  9(01).
       *外来診療料算定有無
-               05  SPA-GAIRAISIN          PIC  9(01).
+               05  SPA-GAIRAISIN           PIC  9(01).
       *特定疾患有無（病名）
                05  SPA-TOKUTEI             PIC  9(01).
                05  SPA-TOKUTEIFLG          PIC  9(01).
@@ -224,6 +237,10 @@
                05  SPA-SEIKATU-ARI         PIC  9(01).
                05  SPA-SEIKATU-ARI2        PIC  9(01).
       *
+      *開放型病院共同指導料算定あり
+               05  SPA-KAIHOU1-ARI         PIC  9(01).
+               05  SPA-KAIHOU2-ARI         PIC  9(01).
+      *
       *受診回数
                05  SPA-SINSATU-CNT         PIC  9(03).
       *１５歳未満再診科算定有り
@@ -292,7 +309,8 @@
                    07  SPA-K98-TYPE            PIC X(01).
       *
                    07  SPA-K98-SRYCD-G.
-                       09  SPA-K98-SRYCD       PIC X(09)  OCCURS  5.
+                       09  SPA-K98-SRYCD-OCC   OCCURS  5.
+                           11  SPA-K98-SRYCD       PIC X(09).
       *
       *禁忌一覧画面より（Ｋ０２１）
                05  SPA-K021-CHK             PIC  9(01).

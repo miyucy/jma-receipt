@@ -68,6 +68,9 @@
       *            処理名
                    07  SPA-GMN-SYORIMEI          PIC X(10).
       *
+      *            時間外名称（H16.4以降）
+                   07  SPA-GMN-JIKANMSG          PIC X(20).
+      *
                    07  SPA-GMN-GOKEI             PIC 9(11).
                    07  SPA-GMN-LASTYMD           PIC X(09).
                    07  SPA-GMN-SYOSINYMD         PIC X(09).

@@ -68,9 +68,23 @@
            03  SYS-1008-SURYOZERO-FLG   PIC X(01).
       *入院調剤技術基本料チェック
            03  SYS-1008-CHOKICHK-FLG   PIC X(01).
+      *時間外加算乳幼児チェック
+           03  SYS-1008-JIKANTOKU-CHK      PIC X(01).
+      *チェック除外時間
+      *    平日
+           03  SYS-1008-JIKANCHK-WEEK-G.
+               05  SYS-1008-JIKANCHK-WEEK      OCCURS   2.
+                   07  SYS-1008-JIKANCHK-WST   PIC 9(04).
+                   07  SYS-1008-JIKANCHK-WED   PIC 9(04).
+      *    土曜
+           03  SYS-1008-JIKANCHK-SAT-G.
+               05  SYS-1008-JIKANCHK-SAT       OCCURS   2.
+                   07  SYS-1008-JIKANCHK-SST   PIC 9(04).
+                   07  SYS-1008-JIKANCHK-SED   PIC 9(04).
       *予備
       *****03  FILLER                   PIC X(489).
-           03  FILLER                   PIC X(486).
+      *****03  FILLER                   PIC X(486).
+           03  FILLER                   PIC X(453).
       *端末ＩＤ
            03  SYS-1008-TERMID          PIC  X(16).
       *オペーレータＩＤ

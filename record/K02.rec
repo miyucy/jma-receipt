@@ -356,6 +356,10 @@ K02	{
 				select	bool[150];
 			};
 		};
+		JIKANMSG	{
+		    style   varchar(20);
+			value	varchar(20);
+		};
 		B04S    {
 	           	state	int;
 		};

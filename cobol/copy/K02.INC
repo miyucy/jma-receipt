@@ -94,6 +94,9 @@
                     06  K02-RRKSRYKA  PIC X(2).
                     06  K02-RRKHKNCOMBI  PIC X(04).
                   05  K02-SELECT  PIC X       OCCURS  150 TIMES.
+              03  K02-JIKANMSG.
+                04  K02-JIKANMSG-STYLE   PIC X(20).
+                04  K02-JIKANMSG-VALUE   PIC X(20).
               03  K02-B04S.
                 04  K02-B04S-STATE   PIC S9(9)   BINARY.
               03  K02-B05S.

@@ -64,6 +64,38 @@
                     06  W07-GAZOUKSN1-COUNT   PIC S9(9)   BINARY.
                     06  W07-GAZOUKSN1-ITEM
                             PIC X(12)   OCCURS  2 TIMES.
+                  05  W07-JIKANTOKU-CHK-COMB.
+                    06  W07-JIKANTOKU-CHK.
+                      07  W07-VALUE   PIC X(22).
+                    06  W07-JIKANTOKU-CHK-COUNT   PIC S9(9)   BINARY.
+                    06  W07-JIKANTOKU-CHK-ITEM
+                            PIC X(22)   OCCURS  2 TIMES.
+                  05  W07-JIKANW1-TIME  OCCURS  2.
+                     06  W07-JIKANW1-HH-G.
+                        07  W07-JIKANW1-HH-STATE   PIC S9(9)   BINARY.
+                        07  W07-JIKANW1-HH     PIC X(2).
+                     06  W07-JIKANW1-MM-G.
+                        07  W07-JIKANW1-MM-STATE   PIC S9(9)   BINARY.
+                        07  W07-JIKANW1-MM     PIC X(2).
+                     06  W07-JIKANW2-HH-G.
+                        07  W07-JIKANW2-HH-STATE   PIC S9(9)   BINARY.
+                        07  W07-JIKANW2-HH     PIC X(2).
+                     06  W07-JIKANW2-MM-G.
+                        07  W07-JIKANW2-MM-STATE   PIC S9(9)   BINARY.
+                        07  W07-JIKANW2-MM     PIC X(2).
+                  05  W07-JIKANS1-TIME  OCCURS  2.
+                     06  W07-JIKANS1-HH-G.
+                        07  W07-JIKANS1-HH-STATE   PIC S9(9)   BINARY.
+                        07  W07-JIKANS1-HH     PIC X(2).
+                     06  W07-JIKANS1-MM-G.
+                        07  W07-JIKANS1-MM-STATE   PIC S9(9)   BINARY.
+                        07  W07-JIKANS1-MM     PIC X(2).
+                     06  W07-JIKANS2-HH-G.
+                        07  W07-JIKANS2-HH-STATE   PIC S9(9)   BINARY.
+                        07  W07-JIKANS2-HH     PIC X(2).
+                     06  W07-JIKANS2-MM-G.
+                        07  W07-JIKANS2-MM-STATE   PIC S9(9)   BINARY.
+                        07  W07-JIKANS2-MM     PIC X(2).
                 04  W07-TAGNAME1.
                   05  W07-TAGNAME1-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG2.
