@@ -31,14 +31,8 @@
       ************************************************************
       *
        01  SPA-K01KYOUTU.
-      *処理フラグ（０：通常、１：訂正）
-           03  SPA-SYORIFLG                PIC  9(01).
-      *訂正伝票番号
-           03  SPA-DENPNUM                 PIC  9(07).
-      *継続中フラグ（１：継続中）
-           03  SPA-CONTFLG                 PIC  9(01).
-      *
-           03  SPA-K01SET-AREA.
+      *初期設定（システム管理）
+           03  SPA-K02SYS-AREA.
       *前回処方表示フラグ
                05  SPA-ZENSYOHOFLG         PIC  X(01).
       *相互作用チェック期間
@@ -49,6 +43,33 @@
                05  SPA-BUNSAN              PIC  X(01).
       *薬剤情報発行フラグ
                05  SPA-YAKJYOPRTFLG        PIC  9(01).
+      *小児科外来診療科
+               05  SPA-SYONIKA             PIC  9(01).
+      *老人慢性疾患外来総合診療科
+               05  SPA-ROUMANSEI           PIC  9(01).
+      *時間外特例医療機関
+               05  SPA-JIKANTOKU           PIC  9(01).
+      *
+      *調剤技術基本料有無
+               05  SPA-CHOKI-FLG           PIC  9(01).
+      *薬剤情報提供料有無(一般）
+               05  SPA-YAKJYO-1            PIC  9(01).
+      *薬剤情報提供料有無(老人１）
+               05  SPA-YAKJYO-2            PIC  9(01).
+      *薬剤情報提供料有無(老人２）
+               05  SPA-YAKJYO-3            PIC  9(01).
+      *療養担当手当（北海道）
+               05  SPA-RYOYOU-FLG          PIC  X(01).
+      *特定薬剤治療管理料有無
+               05  SPA-TOKUTEI-FLG         PIC  X(01).
+      *
+           03  SPA-K01SET-AREA.
+      *処理フラグ（０：通常、１：訂正）
+               05  SPA-SYORIFLG                PIC  9(01).
+      *訂正伝票番号
+               05  SPA-DENPNUM                 PIC  9(07).
+      *継続中フラグ（１：継続中）
+               05  SPA-CONTFLG                 PIC  9(01).
       *主保険−保険番号
                05  SPA-HKNNUM              PIC  X(03).
       *公費１−保険番号
@@ -153,7 +174,6 @@
                05  SPA-K02N-NYUINYMD           PIC X(08).
       *        退院日
                05  SPA-K02N-TAIINYMD           PIC X(08).
-      *
       *        当月入院有無（算定履歴チェック用）
                05  SPA-K02N-NYUINFLG          PIC  9(01).
       *
@@ -167,33 +187,16 @@
                05  SPA-FUKU-HKNCOMBI       PIC  X(04).
       *
            03  SPA-K02SET-AREA.
-      *小児科外来診療科
-               05  SPA-SYONIKA             PIC  9(01).
       *小児科外来診療科算定有り
                05  SPA-SYONIKA-ARI         PIC  9(01).
                05  SPA-SYONIKA-ARI2        PIC  9(01).
                05  SPA-SYONIKA-ARI3        PIC  9(01).
-      *老人慢性疾患外来総合診療科
-               05  SPA-ROUMANSEI           PIC  9(01).
       *老人慢性疾患外来総合診療科有り（１：院外、２:院内）
                05  SPA-ROUMANSEI-ARI       PIC  9(01).
       *老人慢性疾患外来総合診療科有り（前回）
                05  SPA-ROUMANSEI-ARI2      PIC  9(01).
       *在宅訪問診療科有り
                05  SPA-HOUMON-ARI          PIC  9(01).
-      *
-      *調剤技術基本料有無
-               05  SPA-CHOKI-FLG           PIC  9(01).
-      *薬剤情報提供料有無(一般）
-               05  SPA-YAKJYO-1            PIC  9(01).
-      *薬剤情報提供料有無(老人１）
-               05  SPA-YAKJYO-2            PIC  9(01).
-      *薬剤情報提供料有無(老人２）
-               05  SPA-YAKJYO-3            PIC  9(01).
-      *療養担当手当（北海道）
-               05  SPA-RYOYOU-FLG          PIC  X(01).
-      *特定薬剤治療管理料有無
-               05  SPA-TOKUTEI-FLG         PIC  X(01).
       *
       *寝たきり老人在宅総合診察料あり
                05  SPA-NETAKIRI-ARI        PIC  9(01).
@@ -232,8 +235,6 @@
       *労災外来管理加算点数
                05  SPA-GAIRAI-TEN          PIC  9(08)V9(03).
       *
-      *時間外特例医療機関
-               05  SPA-JIKANTOKU           PIC  9(01).
       *他保険受診有無
                05  SPA-TAHOKEN-FLG         PIC  9(01).
       *訂正初期表示
