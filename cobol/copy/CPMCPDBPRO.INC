@@ -350,6 +350,7 @@
       *  01.01.160   NACL-門脇    04/12/22  SYUNOU-KEY35追加
       *  01.01.161   NACL-多々納  05/01/26  PTBYOMEI-KEY25追加
       *                                     HELP  追加
+      *  01.01.162   NACL-森脇    05/01/26  SRYACT-KEY10追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1932,6 +1933,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACT-KEY9"
                    MOVE    PATH-TBL-SRYACT-KEY9
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "SRYACT-KEY10"
+                   MOVE    PATH-TBL-SRYACT-KEY10
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "SRYACT-ALL"
                    MOVE    PATH-TBL-SRYACT-ALL
