@@ -608,7 +608,7 @@ path	key25 	{
 path	key26 	{
 	DBSELECT	{
 		DECLARE tbl_sryacct_key26_csr CURSOR FOR
-		SELECT *
+		SELECT A.*
 		FROM tbl_sryacct A,tbl_ptinf B
 			WHERE  A.HOSPID    =   :HOSPID
 			AND    A.SRYYM     =   :SRYYM
@@ -617,7 +617,7 @@ path	key26 	{
 			AND    B.TSTPTNUMKBN   <>  '1'
 			ORDER  BY   A.SRYKA,
                         A.SRYKBN,
-                        ZAINUM
+                        A.ZAINUM
 		;
 	};
 };
