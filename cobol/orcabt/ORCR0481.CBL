@@ -287,9 +287,12 @@
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-PARA.
+               05  WRK-PARA-CREYMD  PIC  X(08).
+               05  WRK-PARA-CREHMS  PIC  X(08).
                05  WRK-PARA-SRYYM   PIC  X(06).
                05  WRK-PARA-TERMID  PIC  X(16).
                05  WRK-PARA-SYSYMD  PIC  X(08).
+               05  WRK-PARA-SYOKBN  PIC  X(01).
                05  WRK-PARA-RECEKBN PIC  X(01).
                05  WRK-PARA-RECEYM  PIC  X(06). 
                05  WRK-PARA-JOBID   PIC  9(07).

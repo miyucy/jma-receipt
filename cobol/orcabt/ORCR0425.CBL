@@ -34,6 +34,8 @@
       *                                     算定時の点滴注射のコメント対応
       *  01.01.02    NACL-門脇    04.07.12  ファイルクリア追加
       *  01.01.03    NACL-門脇    04.08.17  レセプト科の編集
+      *  中止処理追加
+      *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -149,6 +151,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
+           03  CNT-IN-CANCEL                           PIC 9(06).
            03  CNT-RECE442                             PIC 9(06).
            03  CNT-RECE44W                             PIC 9(06). 
       *
@@ -226,24 +229,7 @@
                                        WRK-AREA
                                        FLG-AREA
       *
-           MOVE    ZERO                TO  FLG-END
-      *
            MOVE    COMMAND-PARAM       TO  WRK-PARA
-      *
-           PERFORM 100-DBOPEN-SEC
-      *
-      *    ステップ管理開始処理
-           MOVE    "STS"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    "ORCR0425"      TO  JOB-PGID
-           MOVE    "同一剤のまとめ（労災・自賠責）"
-                                   TO  JOB-SHELLMSG
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA  
-                                   JOBKANRI-REC
       *
            MOVE    "RECE410"           TO  RECE41PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE41PARA-TERMID
@@ -259,6 +245,23 @@
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
+           PERFORM 100-DBOPEN-SEC
+      *
+      *    ステップ管理開始処理
+           MOVE    "STS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    "ORCR0425"      TO  JOB-PGID
+           MOVE    "同一剤のまとめ（労災・自賠責）"
+                                   TO  JOB-SHELLMSG
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *
            OPEN    OUTPUT              RECE442X-FILE
            CLOSE                       RECE442X-FILE
@@ -283,6 +286,7 @@
       *
            PERFORM 210-RECE442-WRITE-SEC
                                    UNTIL   FLG-RECE41  =   1
+                                   OR      FLG-END     =   1
            CLOSE   RECE442-FILE
                    RECE44-FILE
                    RECE41-FILE
@@ -294,6 +298,7 @@
            PERFORM 900-RECE442-READ-SEC 
            PERFORM 220-RECE44W-WRITE-SEC
                                    UNTIL   FLG-RECE442 =   1
+                                   OR      FLG-END     =   1
            CLOSE   RECE44W-FILE
                    RECE442-FILE
       *
@@ -328,7 +333,8 @@
                    PERFORM 900-RECE44-READ-SEC
            END-START
            PERFORM
-               UNTIL  ( FLG-RECE44           =   1                   )
+               UNTIL  ( FLG-END              =   1                   )
+               OR     ( FLG-RECE44           =   1                   )
                OR     ( RECE41-HOSPID    NOT =   RECE44-HOSPID       )
                OR     ( RECE41-SRYYM     NOT =   RECE44-SRYYM        )
                OR     ( RECE41-NYUGAIKBN NOT =   RECE44-NYUGAIKBN    )
@@ -421,6 +427,12 @@
                END-IF
       *
                PERFORM     900-RECE44-READ-SEC
+      *
+      *        処理中止設定処理
+               IF      CNT-IN-CANCEL   =   50
+                   MOVE    ZERO            TO  CNT-IN-CANCEL
+                   PERFORM 500-CANCEL-HENSYU-SEC
+               END-IF
            END-PERFORM
       *
            PERFORM 900-RECE41-READ-SEC
@@ -429,7 +441,7 @@
            EXIT.
       *
       *****************************************************************
-      *    主処理
+      *    元のレイアウトに出力処理
       *****************************************************************
        220-RECE44W-WRITE-SEC                SECTION.
       *
@@ -443,6 +455,12 @@
            ADD     1                   TO  CNT-RECE44W
       *
            PERFORM     900-RECE442-READ-SEC
+      *
+      *    処理中止設定処理
+           IF      CNT-IN-CANCEL   =   50
+               MOVE    ZERO            TO  CNT-IN-CANCEL
+               PERFORM 500-CANCEL-HENSYU-SEC
+           END-IF
            .
        220-RECE44W-WRITE-EXT.
            EXIT.
@@ -501,9 +519,57 @@
            END-IF
       *                             
            MOVE    1                   TO  FLG-END
-      *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -515,7 +581,7 @@
                AT  END
                    MOVE    1           TO  FLG-RECE41
                NOT AT  END
-                   ADD     ZERO        TO  FLG-RECE41
+                   MOVE    ZERO        TO  FLG-RECE41
       *
                    DISPLAY "RECE41  PTNUM=" RECE41-PTNUM
       *
@@ -535,6 +601,7 @@
                NOT AT END    
                    MOVE    ZERO          TO    FLG-RECE44
                    ADD     1             TO    CNT-IN
+                   ADD     1             TO    CNT-IN-CANCEL
            END-READ
            .
        900-RECE44-READ-EXT.
@@ -550,6 +617,7 @@
                    MOVE    1             TO    FLG-RECE442
                NOT AT END    
                    MOVE    ZERO          TO    FLG-RECE442
+                   ADD     1             TO    CNT-IN-CANCEL
            END-READ
            .
        900-RECE442-READ-EXT.

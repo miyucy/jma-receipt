@@ -619,7 +619,7 @@
                AT  END
                    MOVE    1           TO  FLG-RECE02
                NOT AT  END
-                   ADD     ZERO        TO  FLG-RECE02
+                   MOVE    ZERO        TO  FLG-RECE02
       *
                    DISPLAY "RECE02  PTNUM=" RECE02-PTNUM
            END-READ
