@@ -30,6 +30,7 @@ RECORD_files = \
 	FID1.rec \
 	FID2.rec \
 	G01.rec \
+	G02.rec \
 	G99.rec \
 	GERR.rec \
 	GID1.rec \
