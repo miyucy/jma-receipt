@@ -3,5 +3,3 @@
               03  W23-SEIKYU01  PIC X(3).
               03  W23-SEIKYU02  PIC X(3).
               03  W23-SEIKYU03  PIC X(3).
-              03  W23-RESEIKYUKBN
-                                PIC X(1).
