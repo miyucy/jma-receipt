@@ -803,6 +803,7 @@ COPYS = \
         S05.INC \
         CPTCF001.INC \
         CPTCF002.INC \
+        CPTCF003.INC \
 
 DBPATH = \
 	ORCA-DBPATH

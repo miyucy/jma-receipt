@@ -177,9 +177,15 @@
                05  TOUKEI01-HOME-TEL1       PIC  X(15).
       *       地方公共団体コード
                05  TOUKEI01-LPUBCD          PIC  X(05).
+      *    保険組合せ
+           03 TOUKEI01-HKNCOMBIINF.
+               05  TOUKEI01-HKNCOMBI        PIC  9(04)  OCCURS  10.
+      *    診療科情報
+           03 TOUKEI01-SRYKAINF.
+               05  TOUKEI01-SRYKA           PIC  X(02)  OCCURS  20.
       *
       *    レセプト種別
-           03  TOUKEI01-RECESYUBETU        PIC  9(04).
+           03  TOUKEI01-RECESYUBETU         PIC  9(04).
       *
       *    未訂正区分
            03  TOUKEI01-TEISEIKBN           PIC  X(01).
