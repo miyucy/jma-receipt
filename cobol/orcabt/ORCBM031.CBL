@@ -77,8 +77,6 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
-           03  IDX1                PIC 9(04).
-           03  IDX2                PIC 9(04).
       *
       *    ¥Ñ¥é¥á¥¿ÎÎ°è
        01  WRK-PARA.
@@ -103,7 +101,6 @@
       *
            03  WRK-RECEERR         PIC X(200).
            03  WRK-PATH            PIC X(64).
-           03  WRK-INDEX           PIC 9(02).
       *
       *    ¿ô»ú¹àÌÜÊÔ½¸
            03  WRK-KENSUZ          PIC ZZZZ.
@@ -142,10 +139,7 @@
                05  GSUM-TOTALTEN       PIC 9(10).
                05  GSUM-FTNMONEY       PIC 9(10).
                05  GSUM-YKZFTN         PIC 9(10).
-               05  GSUM-SHOKUJIKENSU   PIC 9(06).
-               05  GSUM-SHOKUJIRYOYOHI PIC 9(10).
-               05  GSUM-SHOKUJIFTN     PIC 9(10).
-      *    ¿©»ö½¸·×
+      *    ¿©»öÁí·×
            03  GSUM-SHO-TBL        OCCURS  2.
                05  GSUM-SHO-KENSU      PIC 9(06).
                05  GSUM-SHO-RYOYOHI    PIC 9(10).
@@ -359,7 +353,6 @@
       *
       *    Æþ±¡³°¡Ê¤½¤ÎÂ¾¤Î¥ì¥»¡Ë¡¦Æþ±¡½¸·×
            MOVE    LOW-VALUE       TO  KEY-AREA
-           MOVE    1               TO  WRK-INDEX
       *
            MOVE    "SEIKYU-KEY4"   TO  WRK-PATH
            PERFORM 900-SEIKYU-SELECT-SEC
@@ -494,31 +487,27 @@
                GO  TO  20011-HKN-SYUKEI-EXT
            END-IF
       *
-      *    °åÎÅÊÝ¸±¡¦Ï·¿ÍÊÝ·òÊ¬
-           MOVE    1               TO  IDX1
-           MOVE    IDX             TO  IDX2
-      *
       *    ·ï¿ô
-           ADD     1               TO  SUM-KENSU(IDX2)
+           ADD     1               TO  SUM-KENSU(IDX)
       *
       *    ÎÅÍÜ¤ÎµëÉÕ 
-           ADD     RECE10-TOTALTEN(IDX1)
-                                   TO  SUM-TOTALTEN(IDX2)
-           ADD     RECE10-FTNMONEY(IDX1)
-                                   TO  SUM-FTNMONEY(IDX2)
+           ADD     RECE10-TOTALTEN(1)
+                                   TO  SUM-TOTALTEN(IDX)
+           ADD     RECE10-FTNMONEY(1)
+                                   TO  SUM-FTNMONEY(IDX)
            IF        ( RECE10-NYUGAIKBN    =   "2")
-               AND   ( IDX2                =   3   OR  5   OR  8 )
-               ADD     RECE10-YKZFTN(IDX1)
-                                       TO  SUM-YKZFTN(IDX2)
+               AND   ( IDX                =   3   OR  5   OR  8 )
+               ADD     RECE10-YKZFTN(1)
+                                       TO  SUM-YKZFTN(IDX)
            END-IF
       *    ¿©»öÎÅÍÜ
            IF          RECE10-NYUGAIKBN    =   "1"
-               IF          RECE10-SHOKUJINISSU(IDX1)   >   ZERO
-                   ADD     1       TO   SUM-SHOKUJIKENSU(IDX2)
-                   ADD     RECE10-SHOKUJIRYOYOHI(IDX1)
-                                   TO   SUM-SHOKUJIRYOYOHI(IDX2)
-                   ADD     RECE10-SHOKUJIFTN(IDX1)
-                                   TO   SUM-SHOKUJIFTN(IDX2)
+               IF          RECE10-SHOKUJINISSU(1)   >   ZERO
+                   ADD     1       TO   SUM-SHOKUJIKENSU(IDX)
+                   ADD     RECE10-SHOKUJIRYOYOHI(1)
+                                   TO   SUM-SHOKUJIRYOYOHI(IDX)
+                   ADD     RECE10-SHOKUJIFTN(1)
+                                   TO   SUM-SHOKUJIFTN(IDX)
                END-IF
            END-IF
       *
@@ -535,46 +524,36 @@
            PERFORM VARYING IDZ     FROM    1   BY  1
                    UNTIL ( IDZ     >       4 )
                    OR    ( RECE10-KOHNUM(IDZ)  =   SPACE )
-               PERFORM 200121-KOH-SYUKEI-01-SEC
+               COMPUTE IDY     =   IDZ     +   1
+      *
+      *        ·ï¿ô
+               ADD     1               TO  SUM-KENSU(12)
+      *
+      *        ÎÅÍÜ¤ÎµëÉÕ
+               ADD     RECE10-TOTALTEN(IDY)
+                                   TO  SUM-TOTALTEN(12)
+               ADD     RECE10-FTNMONEY(IDY)
+                                   TO  SUM-FTNMONEY(12)
+      *
+               EVALUATE    RECE10-NYUGAIKBN
+               WHEN    "2"
+                   ADD     RECE10-YKZFTN(IDY)
+                                       TO  SUM-YKZFTN(12)
+      *        ¿©»öÎÅÍÜ
+               WHEN    "1"
+                   IF      RECE10-SHOKUJINISSU(IDY)   >   ZERO
+                       ADD     1   TO  SUM-SHOKUJIKENSU(12)
+                       ADD     RECE10-SHOKUJIRYOYOHI(IDY)
+                                   TO  SUM-SHOKUJIRYOYOHI(12)
+                       ADD     RECE10-SHOKUJIFTN(IDY)
+                                   TO  SUM-SHOKUJIFTN(12)
+                   END-IF
+               END-EVALUATE
+      *
+               MOVE    1               TO  FLG-UPD
            END-PERFORM
            .
        20012-KOH-SYUKEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¸øÈñ½¸·×½èÍý
-      *****************************************************************
-       200121-KOH-SYUKEI-01-SEC    SECTION.
-      *
-           COMPUTE IDY     =   IDZ     +   1
-      *
-      *    ·ï¿ô
-           ADD     1               TO  SUM-KENSU(12)
-      *
-      *    ÎÅÍÜ¤ÎµëÉÕ
-           ADD     RECE10-TOTALTEN(IDY)
-                                   TO  SUM-TOTALTEN(12)
-           ADD     RECE10-FTNMONEY(IDY)
-                                   TO  SUM-FTNMONEY(12)
-      *
-           EVALUATE    RECE10-NYUGAIKBN
-           WHEN    "2"
-               ADD     RECE10-YKZFTN(IDY)
-                                       TO  SUM-YKZFTN(12)
-      *    ¿©»öÎÅÍÜ
-           WHEN    "1"
-               IF      RECE10-SHOKUJINISSU(IDY)   >   ZERO
-                   ADD     1   TO  SUM-SHOKUJIKENSU(12)
-                   ADD     RECE10-SHOKUJIRYOYOHI(IDY)
-                               TO  SUM-SHOKUJIRYOYOHI(12)
-                   ADD     RECE10-SHOKUJIFTN(IDY)
-                               TO  SUM-SHOKUJIFTN(12)
-               END-IF
-           END-EVALUATE
-      *
-           MOVE    1               TO  FLG-UPD
-           .
-       200121-KOH-SYUKEI-01-EXT.
            EXIT.
       *
       *****************************************************************
@@ -613,8 +592,8 @@
       *****************************************************************
        20021-HEAD-HEN-SEC          SECTION.
       *
-      *    Ä¢É¼ÊÔ½¸<¸«½Ð¤·¡¦£È£Ã£Í£²£Ñ>½èÍý
            INITIALIZE                  HCM2Q
+           INITIALIZE                  HCM2R
       *
            MOVE    WRK-SEIYMDWH    TO  HCM2Q-SEIYMD
       *
@@ -629,10 +608,6 @@
                                    TO  HCM2Q-KAISETUNAME
       *
            MOVE    SYS-1001-HOSPCDN    TO  HCM2Q-HOSPCD
-      *
-      *    Ä¢É¼ÊÔ½¸<¸«½Ð¤·¡¦£È£Ã£Í£²£Ò>½èÍý
-           INITIALIZE                  HCM2R
-      *
            MOVE    SYS-1001-HOSPCDN    TO  HCM2R-HOSPCD
       *
            .
@@ -660,15 +635,13 @@
                                        TO  WRK-TENSUZ
                    MOVE    WRK-TENSUZ  TO  HCM2Q-IPN-TENSU(CNT-LINE IDX)
                    EVALUATE    IDX
-                   WHEN    3
-                       MOVE    SUM-YKZFTN(IDX)
+                   WHEN    1   THRU    2
+                       MOVE    SUM-FTNMONEY(IDX)
                                        TO  WRK-ITBFTNZ
                        MOVE    WRK-ITBFTNZ
                                TO  HCM2Q-IPN-ITBFTN(CNT-LINE IDX)
-                   WHEN    4
-                       CONTINUE
-                   WHEN    1   THRU    2
-                       MOVE    SUM-FTNMONEY(IDX)
+                   WHEN    3
+                       MOVE    SUM-YKZFTN(IDX)
                                        TO  WRK-ITBFTNZ
                        MOVE    WRK-ITBFTNZ
                                TO  HCM2Q-IPN-ITBFTN(CNT-LINE IDX)
@@ -782,7 +755,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ä¢É¼ÊÔ½¸<ÌÀºÙ¹Ô>½èÍý
+      *    Ä¢É¼ÊÔ½¸<¹ç·×¹Ô>½èÍý
       *****************************************************************
        20023-GOKEI-HEN-SEC         SECTION.
       *
@@ -802,15 +775,13 @@
                                        TO  WRK-TENSUZ
                    MOVE    WRK-TENSUZ  TO  HCM2Q-IPN-TENSU(CNT-LINE IDX)
                    EVALUATE    IDX
-                   WHEN    3
-                       MOVE    GSUM-YKZFTN(IDX)
+                   WHEN    1   THRU    2
+                       MOVE    GSUM-FTNMONEY(IDX)
                                        TO  WRK-ITBFTNZ
                        MOVE    WRK-ITBFTNZ
                                TO  HCM2Q-IPN-ITBFTN(CNT-LINE IDX)
-                   WHEN    4
-                       CONTINUE
-                   WHEN    1   THRU    2
-                       MOVE    GSUM-FTNMONEY(IDX)
+                   WHEN    3
+                       MOVE    GSUM-YKZFTN(IDX)
                                        TO  WRK-ITBFTNZ
                        MOVE    WRK-ITBFTNZ
                                TO  HCM2Q-IPN-ITBFTN(CNT-LINE IDX)
