@@ -19,12 +19,10 @@
                03  HC401-SINRYOU-G    PIC  X(4).
                03  HC401-SINRYOU-Y    PIC  X(2).
                03  HC401-SINRYOU-M    PIC  X(2).
+               03  HC401-NYUGAIKBN    PIC  X(8).
                03  HC401-PAGE         PIC  X(3).
                03  HC401-RENBAN       PIC  X(5)  OCCURS  20  TIMES.
-      *修正/*開始*01.10.15********************************************
-      *         03  HC401-PTID         PIC  X(10) OCCURS  20  TIMES.
                03  HC401-PTID         PIC  X(20) OCCURS  20  TIMES.
-      *修正/*開始*01.10.15********************************************
                03  HC401-NAME         PIC  X(30) OCCURS  20  TIMES.
                03  HC401-NENREI       PIC  X(3)  OCCURS  20  TIMES.
                03  HC401-MESG         PIC  X(90) OCCURS  20  TIMES.

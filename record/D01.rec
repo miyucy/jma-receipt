@@ -1,136 +1,214 @@
 D01	{
 	fixed6	{
 		SRYYM	{
-			value	varchar(7);
-		};
-		NYUGAIKBN	{
-			value	bool;
-		};
-		CHKBTN1	{
-			value	bool;
-		};
-		CHKBTN2	{
-			value	bool;
-		};
-		CHKBTN3	{
-			value	bool;
-		};
-		CHKBTN4	{
-			value	bool;
-		};
-		CHKBTN5	{
-			value	bool;
-		};
-		CHKBTN6	{
-			value	bool;
-		};
-		CHKBTN7	{
-			value	bool;
-		};
-		CHKBTN8	{
-			value	bool;
-		};
-		CHKBTN9	{
-			value	bool;
-		};
-		CHKBTN10	{
-			value	bool;
-		};
-		CHKBTN11	{
-			value	bool;
-		};
-		CHKBTN12	{
-			value	bool;
-		};
-		CHKBTN13	{
-			value	bool;
-		};
-		CHKBTN14	{
-			value	bool;
-		};
-		CHKBTN15	{
-			value	bool;
-		};
-		CHKBTN16	{
-			value	bool;
-		};
-		CHKBTN17	{
-			value	bool;
-		};
-		CHKBTN18	{
-			value	bool;
-		};
-		CHKBTN19	{
-			value	bool;
-		};
-		CHKBTN20	{
-			value	bool;
-		};
-		NYUGAIMSG	{
-			value	varchar(62);
+			value	varchar(6);
 		};
 		CHKMSG1	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG2	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG3	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG4	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG5	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG6	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG7	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG8	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG9	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG10	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG11	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG12	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG13	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG14	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG15	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG16	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG17	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG18	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG19	{
-			value	varchar(62);
+			value	varchar(40);
 		};
 		CHKMSG20	{
-			value	varchar(62);
+			value	varchar(40);
 		};
-		CHKMSG99	{
-			value	varchar(62);
+		NYUGAIKBNCOMB	{
+			NYUGAIKBN	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB01	{
+			CHKKBN01	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB02	{
+			CHKKBN02	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB03	{
+			CHKKBN03	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB04	{
+			CHKKBN04	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB05	{
+			CHKKBN05	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB06	{
+			CHKKBN06	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB07	{
+			CHKKBN07	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB08	{
+			CHKKBN08	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB09	{
+			CHKKBN09	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB10	{
+			CHKKBN10	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB11	{
+			CHKKBN11	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB12	{
+			CHKKBN12	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB13	{
+			CHKKBN13	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB14	{
+			CHKKBN14	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB15	{
+			CHKKBN15	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB16	{
+			CHKKBN16	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB17	{
+			CHKKBN17	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB18	{
+			CHKKBN18	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB19	{
+			CHKKBN19	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
+		};
+		CHKKBNCOMB20	{
+			CHKKBN20	{
+				value	varchar(16);
+			};
+			count	int;
+			item	varchar(16)[5];
 		};
 	};
 };

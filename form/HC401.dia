@@ -39,7 +39,7 @@
         <point val="8.99818,1.40301"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.99818,1.18;9.60418,1.48"/>
+        <rectangle val="8.99818,1.17158;9.72538,1.47158"/>
       </attribute>
       <attribute name="orca_id">
         <string>#SINRYOU-G#</string>
@@ -81,7 +81,7 @@
         <point val="10.45,1.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.7228,1.17699;10.45,1.47699"/>
+        <rectangle val="9.7228,1.16857;10.45,1.46857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#SINRYOU-Y#</string>
@@ -123,7 +123,7 @@
         <point val="11.9,1.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.1728,1.17699;11.9,1.47699"/>
+        <rectangle val="11.1728,1.16857;11.9,1.46857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#SINRYOU-M#</string>
@@ -165,7 +165,7 @@
         <point val="27.5,1.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="26.4092,1.17699;27.5,1.47699"/>
+        <rectangle val="26.4092,1.16857;27.5,1.46857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PAGE#</string>
@@ -207,7 +207,7 @@
         <point val="2.2,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,2.67699;2.2,2.97699"/>
+        <rectangle val="0.382,2.66857;2.2,2.96857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN01#</string>
@@ -249,7 +249,7 @@
         <point val="2.2,3.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,3.57699;2.2,3.87699"/>
+        <rectangle val="0.382,3.56857;2.2,3.86857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN02#</string>
@@ -291,7 +291,7 @@
         <point val="2.2,4.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,4.47699;2.2,4.77699"/>
+        <rectangle val="0.382,4.46857;2.2,4.76857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN03#</string>
@@ -333,7 +333,7 @@
         <point val="2.2,5.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,5.37699;2.2,5.67699"/>
+        <rectangle val="0.382,5.36857;2.2,5.66857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN04#</string>
@@ -375,7 +375,7 @@
         <point val="2.2,6.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,6.27699;2.2,6.57699"/>
+        <rectangle val="0.382,6.26857;2.2,6.56857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN05#</string>
@@ -417,7 +417,7 @@
         <point val="2.2,7.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,7.17699;2.2,7.47699"/>
+        <rectangle val="0.382,7.16857;2.2,7.46857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN06#</string>
@@ -459,7 +459,7 @@
         <point val="2.2,8.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,8.07699;2.2,8.37699"/>
+        <rectangle val="0.382,8.06857;2.2,8.36857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN07#</string>
@@ -501,7 +501,7 @@
         <point val="2.2,9.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,8.97699;2.2,9.27699"/>
+        <rectangle val="0.382,8.96857;2.2,9.26857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN08#</string>
@@ -543,7 +543,7 @@
         <point val="2.2,10.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,9.87699;2.2,10.177"/>
+        <rectangle val="0.382,9.86857;2.2,10.1686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN09#</string>
@@ -585,7 +585,7 @@
         <point val="2.2,11"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,10.777;2.2,11.077"/>
+        <rectangle val="0.382,10.7686;2.2,11.0686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN10#</string>
@@ -627,7 +627,7 @@
         <point val="2.2,11.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,11.677;2.2,11.977"/>
+        <rectangle val="0.382,11.6686;2.2,11.9686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN11#</string>
@@ -669,7 +669,7 @@
         <point val="2.2,12.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,12.577;2.2,12.877"/>
+        <rectangle val="0.382,12.5686;2.2,12.8686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN12#</string>
@@ -711,7 +711,7 @@
         <point val="2.2,13.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,13.477;2.2,13.777"/>
+        <rectangle val="0.382,13.4686;2.2,13.7686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN13#</string>
@@ -753,7 +753,7 @@
         <point val="2.2,14.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,14.377;2.2,14.677"/>
+        <rectangle val="0.382,14.3686;2.2,14.6686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN14#</string>
@@ -795,7 +795,7 @@
         <point val="2.2,15.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,15.277;2.2,15.577"/>
+        <rectangle val="0.382,15.2686;2.2,15.5686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN15#</string>
@@ -837,7 +837,7 @@
         <point val="2.2,16.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,16.177;2.2,16.477"/>
+        <rectangle val="0.382,16.1686;2.2,16.4686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN16#</string>
@@ -879,7 +879,7 @@
         <point val="2.2,17.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,17.077;2.2,17.377"/>
+        <rectangle val="0.382,17.0686;2.2,17.3686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN17#</string>
@@ -921,7 +921,7 @@
         <point val="2.2,18.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,17.977;2.2,18.277"/>
+        <rectangle val="0.382,17.9686;2.2,18.2686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN18#</string>
@@ -963,7 +963,7 @@
         <point val="2.2,19.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,18.877;2.2,19.177"/>
+        <rectangle val="0.382,18.8686;2.2,19.1686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN19#</string>
@@ -1005,7 +1005,7 @@
         <point val="2.2,20"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="0.382,19.777;2.2,20.077"/>
+        <rectangle val="0.382,19.7686;2.2,20.0686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#RENBAN20#</string>
@@ -1047,7 +1047,7 @@
         <point val="5.4,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,2.67699;5.4,2.97699"/>
+        <rectangle val="1.764,2.66857;5.4,2.96857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID01#</string>
@@ -1089,7 +1089,7 @@
         <point val="5.4,3.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,3.57699;5.4,3.87699"/>
+        <rectangle val="1.764,3.56857;5.4,3.86857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID02#</string>
@@ -1131,7 +1131,7 @@
         <point val="5.4,4.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,4.47699;5.4,4.77699"/>
+        <rectangle val="1.764,4.46857;5.4,4.76857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID03#</string>
@@ -1173,7 +1173,7 @@
         <point val="5.4,5.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,5.37699;5.4,5.67699"/>
+        <rectangle val="1.764,5.36857;5.4,5.66857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID04#</string>
@@ -1215,7 +1215,7 @@
         <point val="5.4,6.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,6.27699;5.4,6.57699"/>
+        <rectangle val="1.764,6.26857;5.4,6.56857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID05#</string>
@@ -1257,7 +1257,7 @@
         <point val="5.4,7.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,7.17699;5.4,7.47699"/>
+        <rectangle val="1.764,7.16857;5.4,7.46857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID06#</string>
@@ -1299,7 +1299,7 @@
         <point val="5.4,8.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,8.07699;5.4,8.37699"/>
+        <rectangle val="1.764,8.06857;5.4,8.36857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID07#</string>
@@ -1341,7 +1341,7 @@
         <point val="5.4,9.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,8.97699;5.4,9.27699"/>
+        <rectangle val="1.764,8.96857;5.4,9.26857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID08#</string>
@@ -1383,7 +1383,7 @@
         <point val="5.4,10.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,9.87699;5.4,10.177"/>
+        <rectangle val="1.764,9.86857;5.4,10.1686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID09#</string>
@@ -1425,7 +1425,7 @@
         <point val="5.4,11"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,10.777;5.4,11.077"/>
+        <rectangle val="1.764,10.7686;5.4,11.0686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID10#</string>
@@ -1467,7 +1467,7 @@
         <point val="5.4,11.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,11.677;5.4,11.977"/>
+        <rectangle val="1.764,11.6686;5.4,11.9686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID11#</string>
@@ -1509,7 +1509,7 @@
         <point val="5.4,12.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,12.577;5.4,12.877"/>
+        <rectangle val="1.764,12.5686;5.4,12.8686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID12#</string>
@@ -1551,7 +1551,7 @@
         <point val="5.4,13.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,13.477;5.4,13.777"/>
+        <rectangle val="1.764,13.4686;5.4,13.7686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID13#</string>
@@ -1593,7 +1593,7 @@
         <point val="5.4,14.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,14.377;5.4,14.677"/>
+        <rectangle val="1.764,14.3686;5.4,14.6686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID14#</string>
@@ -1635,7 +1635,7 @@
         <point val="5.4,15.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,15.277;5.4,15.577"/>
+        <rectangle val="1.764,15.2686;5.4,15.5686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID15#</string>
@@ -1677,7 +1677,7 @@
         <point val="5.4,16.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,16.177;5.4,16.477"/>
+        <rectangle val="1.764,16.1686;5.4,16.4686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID16#</string>
@@ -1719,7 +1719,7 @@
         <point val="5.4,17.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,17.077;5.4,17.377"/>
+        <rectangle val="1.764,17.0686;5.4,17.3686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID17#</string>
@@ -1761,7 +1761,7 @@
         <point val="5.4,18.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,17.977;5.4,18.277"/>
+        <rectangle val="1.764,17.9686;5.4,18.2686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID18#</string>
@@ -1803,7 +1803,7 @@
         <point val="5.4,19.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,18.877;5.4,19.177"/>
+        <rectangle val="1.764,18.8686;5.4,19.1686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID19#</string>
@@ -1845,7 +1845,7 @@
         <point val="5.4,20"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.764,19.777;5.4,20.077"/>
+        <rectangle val="1.764,19.7686;5.4,20.0686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#PTID20#</string>
@@ -1887,7 +1887,7 @@
         <point val="5.6,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,2.67699;5.9636,2.97699"/>
+        <rectangle val="5.6,2.66857;5.9636,2.96857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME01#</string>
@@ -1929,7 +1929,7 @@
         <point val="5.6,3.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,3.57699;5.9636,3.87699"/>
+        <rectangle val="5.6,3.56857;5.9636,3.86857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME02#</string>
@@ -1971,7 +1971,7 @@
         <point val="5.6,4.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,4.47699;5.9636,4.77699"/>
+        <rectangle val="5.6,4.46857;5.9636,4.76857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME03#</string>
@@ -2013,7 +2013,7 @@
         <point val="5.6,5.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,5.37699;5.9636,5.67699"/>
+        <rectangle val="5.6,5.36857;5.9636,5.66857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME04#</string>
@@ -2055,7 +2055,7 @@
         <point val="5.6,6.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,6.27699;5.9636,6.57699"/>
+        <rectangle val="5.6,6.26857;5.9636,6.56857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME05#</string>
@@ -2097,7 +2097,7 @@
         <point val="5.6,7.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,7.17699;5.9636,7.47699"/>
+        <rectangle val="5.6,7.16857;5.9636,7.46857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME06#</string>
@@ -2139,7 +2139,7 @@
         <point val="5.6,8.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,8.07699;5.9636,8.37699"/>
+        <rectangle val="5.6,8.06857;5.9636,8.36857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME07#</string>
@@ -2181,7 +2181,7 @@
         <point val="5.6,9.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,8.97699;5.9636,9.27699"/>
+        <rectangle val="5.6,8.96857;5.9636,9.26857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME08#</string>
@@ -2223,7 +2223,7 @@
         <point val="5.6,10.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,9.87699;5.9636,10.177"/>
+        <rectangle val="5.6,9.86857;5.9636,10.1686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME09#</string>
@@ -2265,7 +2265,7 @@
         <point val="5.6,11"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,10.777;5.9636,11.077"/>
+        <rectangle val="5.6,10.7686;5.9636,11.0686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME10#</string>
@@ -2307,7 +2307,7 @@
         <point val="5.6,11.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,11.677;5.9636,11.977"/>
+        <rectangle val="5.6,11.6686;5.9636,11.9686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME11#</string>
@@ -2349,7 +2349,7 @@
         <point val="5.6,12.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,12.577;5.9636,12.877"/>
+        <rectangle val="5.6,12.5686;5.9636,12.8686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME12#</string>
@@ -2391,7 +2391,7 @@
         <point val="5.6,13.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,13.477;5.9636,13.777"/>
+        <rectangle val="5.6,13.4686;5.9636,13.7686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME13#</string>
@@ -2433,7 +2433,7 @@
         <point val="5.6,14.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,14.377;5.9636,14.677"/>
+        <rectangle val="5.6,14.3686;5.9636,14.6686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME14#</string>
@@ -2475,7 +2475,7 @@
         <point val="5.6,15.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,15.277;5.9636,15.577"/>
+        <rectangle val="5.6,15.2686;5.9636,15.5686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME15#</string>
@@ -2517,7 +2517,7 @@
         <point val="5.6,16.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,16.177;5.9636,16.477"/>
+        <rectangle val="5.6,16.1686;5.9636,16.4686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME16#</string>
@@ -2559,7 +2559,7 @@
         <point val="5.6,17.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,17.077;5.9636,17.377"/>
+        <rectangle val="5.6,17.0686;5.9636,17.3686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME17#</string>
@@ -2601,7 +2601,7 @@
         <point val="5.6,18.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,17.977;5.9636,18.277"/>
+        <rectangle val="5.6,17.9686;5.9636,18.2686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME18#</string>
@@ -2643,7 +2643,7 @@
         <point val="5.6,19.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,18.877;5.9636,19.177"/>
+        <rectangle val="5.6,18.8686;5.9636,19.1686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME19#</string>
@@ -2685,7 +2685,7 @@
         <point val="5.6,20"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="5.6,19.777;5.9636,20.077"/>
+        <rectangle val="5.6,19.7686;5.9636,20.0686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NAME20#</string>
@@ -2727,7 +2727,7 @@
         <point val="11.7,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,2.67699;11.7,2.97699"/>
+        <rectangle val="10.6092,2.66857;11.7,2.96857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI01#</string>
@@ -2769,7 +2769,7 @@
         <point val="11.7,3.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,3.57699;11.7,3.87699"/>
+        <rectangle val="10.6092,3.56857;11.7,3.86857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI02#</string>
@@ -2811,7 +2811,7 @@
         <point val="11.7,4.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,4.47699;11.7,4.77699"/>
+        <rectangle val="10.6092,4.46857;11.7,4.76857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI03#</string>
@@ -2853,7 +2853,7 @@
         <point val="11.7,5.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,5.37699;11.7,5.67699"/>
+        <rectangle val="10.6092,5.36857;11.7,5.66857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI04#</string>
@@ -2895,7 +2895,7 @@
         <point val="11.7,6.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,6.27699;11.7,6.57699"/>
+        <rectangle val="10.6092,6.26857;11.7,6.56857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI05#</string>
@@ -2937,7 +2937,7 @@
         <point val="11.7,7.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,7.17699;11.7,7.47699"/>
+        <rectangle val="10.6092,7.16857;11.7,7.46857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI06#</string>
@@ -2979,7 +2979,7 @@
         <point val="11.7,8.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,8.07699;11.7,8.37699"/>
+        <rectangle val="10.6092,8.06857;11.7,8.36857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI07#</string>
@@ -3021,7 +3021,7 @@
         <point val="11.7,9.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,8.97699;11.7,9.27699"/>
+        <rectangle val="10.6092,8.96857;11.7,9.26857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI08#</string>
@@ -3063,7 +3063,7 @@
         <point val="11.7,10.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,9.87699;11.7,10.177"/>
+        <rectangle val="10.6092,9.86857;11.7,10.1686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI09#</string>
@@ -3105,7 +3105,7 @@
         <point val="11.7,11"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,10.777;11.7,11.077"/>
+        <rectangle val="10.6092,10.7686;11.7,11.0686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI10#</string>
@@ -3147,7 +3147,7 @@
         <point val="11.7,11.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,11.677;11.7,11.977"/>
+        <rectangle val="10.6092,11.6686;11.7,11.9686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI11#</string>
@@ -3189,7 +3189,7 @@
         <point val="11.7,12.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,12.577;11.7,12.877"/>
+        <rectangle val="10.6092,12.5686;11.7,12.8686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI12#</string>
@@ -3231,7 +3231,7 @@
         <point val="11.7,13.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,13.477;11.7,13.777"/>
+        <rectangle val="10.6092,13.4686;11.7,13.7686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI13#</string>
@@ -3273,7 +3273,7 @@
         <point val="11.7,14.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,14.377;11.7,14.677"/>
+        <rectangle val="10.6092,14.3686;11.7,14.6686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI14#</string>
@@ -3315,7 +3315,7 @@
         <point val="11.7,15.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,15.277;11.7,15.577"/>
+        <rectangle val="10.6092,15.2686;11.7,15.5686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI15#</string>
@@ -3357,7 +3357,7 @@
         <point val="11.7,16.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,16.177;11.7,16.477"/>
+        <rectangle val="10.6092,16.1686;11.7,16.4686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI16#</string>
@@ -3399,7 +3399,7 @@
         <point val="11.7,17.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,17.077;11.7,17.377"/>
+        <rectangle val="10.6092,17.0686;11.7,17.3686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI17#</string>
@@ -3441,7 +3441,7 @@
         <point val="11.7,18.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,17.977;11.7,18.277"/>
+        <rectangle val="10.6092,17.9686;11.7,18.2686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI18#</string>
@@ -3483,7 +3483,7 @@
         <point val="11.7,19.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,18.877;11.7,19.177"/>
+        <rectangle val="10.6092,18.8686;11.7,19.1686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI19#</string>
@@ -3525,7 +3525,7 @@
         <point val="11.7,20"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6092,19.777;11.7,20.077"/>
+        <rectangle val="10.6092,19.7686;11.7,20.0686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#NENREI20#</string>
@@ -3567,7 +3567,7 @@
         <point val="11.9,2.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,2.67699;12.2636,2.97699"/>
+        <rectangle val="11.9,2.66857;12.2636,2.96857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG01#</string>
@@ -3609,7 +3609,7 @@
         <point val="11.9,3.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,3.57699;12.2636,3.87699"/>
+        <rectangle val="11.9,3.56857;12.2636,3.86857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG02#</string>
@@ -3651,7 +3651,7 @@
         <point val="11.9,4.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,4.47699;12.2636,4.77699"/>
+        <rectangle val="11.9,4.46857;12.2636,4.76857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG03#</string>
@@ -3693,7 +3693,7 @@
         <point val="11.9,5.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,5.37699;12.2636,5.67699"/>
+        <rectangle val="11.9,5.36857;12.2636,5.66857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG04#</string>
@@ -3735,7 +3735,7 @@
         <point val="11.9,6.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,6.27699;12.2636,6.57699"/>
+        <rectangle val="11.9,6.26857;12.2636,6.56857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG05#</string>
@@ -3777,7 +3777,7 @@
         <point val="11.9,7.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,7.17699;12.2636,7.47699"/>
+        <rectangle val="11.9,7.16857;12.2636,7.46857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG06#</string>
@@ -3819,7 +3819,7 @@
         <point val="11.9,8.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,8.07699;12.2636,8.37699"/>
+        <rectangle val="11.9,8.06857;12.2636,8.36857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG07#</string>
@@ -3861,7 +3861,7 @@
         <point val="11.9,9.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,8.97699;12.2636,9.27699"/>
+        <rectangle val="11.9,8.96857;12.2636,9.26857"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG08#</string>
@@ -3903,7 +3903,7 @@
         <point val="11.9,10.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,9.87699;12.2636,10.177"/>
+        <rectangle val="11.9,9.86857;12.2636,10.1686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG09#</string>
@@ -3945,7 +3945,7 @@
         <point val="11.9,11"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,10.777;12.2636,11.077"/>
+        <rectangle val="11.9,10.7686;12.2636,11.0686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG10#</string>
@@ -3987,7 +3987,7 @@
         <point val="11.9,11.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,11.677;12.2636,11.977"/>
+        <rectangle val="11.9,11.6686;12.2636,11.9686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG11#</string>
@@ -4029,7 +4029,7 @@
         <point val="11.9,12.8"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,12.577;12.2636,12.877"/>
+        <rectangle val="11.9,12.5686;12.2636,12.8686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG12#</string>
@@ -4071,7 +4071,7 @@
         <point val="11.9,13.7"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,13.477;12.2636,13.777"/>
+        <rectangle val="11.9,13.4686;12.2636,13.7686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG13#</string>
@@ -4113,7 +4113,7 @@
         <point val="11.9,14.6"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,14.377;12.2636,14.677"/>
+        <rectangle val="11.9,14.3686;12.2636,14.6686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG14#</string>
@@ -4155,7 +4155,7 @@
         <point val="11.9,15.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,15.277;12.2636,15.577"/>
+        <rectangle val="11.9,15.2686;12.2636,15.5686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG15#</string>
@@ -4197,7 +4197,7 @@
         <point val="11.9,16.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,16.177;12.2636,16.477"/>
+        <rectangle val="11.9,16.1686;12.2636,16.4686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG16#</string>
@@ -4239,7 +4239,7 @@
         <point val="11.9,17.3"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,17.077;12.2636,17.377"/>
+        <rectangle val="11.9,17.0686;12.2636,17.3686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG17#</string>
@@ -4281,7 +4281,7 @@
         <point val="11.9,18.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,17.977;12.2636,18.277"/>
+        <rectangle val="11.9,17.9686;12.2636,18.2686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG18#</string>
@@ -4323,7 +4323,7 @@
         <point val="11.9,19.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,18.877;12.2636,19.177"/>
+        <rectangle val="11.9,18.8686;12.2636,19.1686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG19#</string>
@@ -4365,7 +4365,7 @@
         <point val="11.9,20"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.9,19.777;12.2636,20.077"/>
+        <rectangle val="11.9,19.7686;12.2636,20.0686"/>
       </attribute>
       <attribute name="orca_id">
         <string>#MESG20#</string>
@@ -4402,9 +4402,201 @@
         </composite>
       </attribute>
     </object>
+    <object type="Standard - Text" version="0" id="O104">
+      <attribute name="obj_pos">
+        <point val="17.7345,1.38444"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="17.7345,1.15301;17.7345,1.45301"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>##</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="17.7345,1.38444"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Standard - Text" version="0" id="O105">
+      <attribute name="obj_pos">
+        <point val="17.7345,1.42194"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="17.7345,1.19051;17.7345,1.49051"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>##</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="17.7345,1.42194"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Standard - Text" version="0" id="O106">
+      <attribute name="obj_pos">
+        <point val="17.7595,1.42194"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="17.7595,1.19051;17.7595,1.49051"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>##</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="17.7595,1.42194"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Standard - Text" version="0" id="O107">
+      <attribute name="obj_pos">
+        <point val="17.772,1.40944"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="17.772,1.17801;17.772,1.47801"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>##</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="17.772,1.40944"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Standard - Text" version="0" id="O108">
+      <attribute name="obj_pos">
+        <point val="18.272,1.58444"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="18.272,1.35301;18.272,1.65301"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>##</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="18.272,1.58444"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="ORCA - Text" version="0" id="O109">
+      <attribute name="obj_pos">
+        <point val="17.7441,1.40995"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="17.7441,1.17852;18.1077,1.47852"/>
+      </attribute>
+      <attribute name="orca_id">
+        <string>#NYUGAIKBN#</string>
+      </attribute>
+      <attribute name="orca_type">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="orca_size">
+        <int val="8"/>
+      </attribute>
+      <attribute name="orca_hankaku">
+        <boolean val="false"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>##1#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.3"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="17.7441,1.40995"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
   </layer>
   <layer name="&#192;&#254;" visible="true">
-    <object type="Standard - Box" version="0" id="O104">
+    <object type="Standard - Box" version="0" id="O110">
       <attribute name="obj_pos">
         <point val="0.8,1.7"/>
       </attribute>
@@ -4427,7 +4619,7 @@
         <boolean val="false"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O105">
+    <object type="Standard - Line" version="0" id="O111">
       <attribute name="obj_pos">
         <point val="0.8,2.3"/>
       </attribute>
@@ -4445,7 +4637,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O106">
+    <object type="Standard - Line" version="0" id="O112">
       <attribute name="obj_pos">
         <point val="0.8,3.2"/>
       </attribute>
@@ -4463,7 +4655,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O107">
+    <object type="Standard - Line" version="0" id="O113">
       <attribute name="obj_pos">
         <point val="2.3,1.7"/>
       </attribute>
@@ -4481,7 +4673,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O108">
+    <object type="Standard - Line" version="0" id="O114">
       <attribute name="obj_pos">
         <point val="5.5,1.7"/>
       </attribute>
@@ -4499,7 +4691,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O109">
+    <object type="Standard - Line" version="0" id="O115">
       <attribute name="obj_pos">
         <point val="11.8,1.7"/>
       </attribute>
@@ -4517,7 +4709,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O110">
+    <object type="Standard - Line" version="0" id="O116">
       <attribute name="obj_pos">
         <point val="10.8,1.7"/>
       </attribute>
@@ -4535,7 +4727,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O111">
+    <object type="Standard - Line" version="0" id="O117">
       <attribute name="obj_pos">
         <point val="0.8,9.5"/>
       </attribute>
@@ -4553,7 +4745,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O112">
+    <object type="Standard - Line" version="0" id="O118">
       <attribute name="obj_pos">
         <point val="0.8,8.6"/>
       </attribute>
@@ -4571,7 +4763,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O113">
+    <object type="Standard - Line" version="0" id="O119">
       <attribute name="obj_pos">
         <point val="0.8,12.2"/>
       </attribute>
@@ -4589,7 +4781,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O114">
+    <object type="Standard - Line" version="0" id="O120">
       <attribute name="obj_pos">
         <point val="0.8,10.4"/>
       </attribute>
@@ -4607,7 +4799,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O115">
+    <object type="Standard - Line" version="0" id="O121">
       <attribute name="obj_pos">
         <point val="0.8,5"/>
       </attribute>
@@ -4625,7 +4817,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O116">
+    <object type="Standard - Line" version="0" id="O122">
       <attribute name="obj_pos">
         <point val="0.8,4.1"/>
       </attribute>
@@ -4643,7 +4835,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O117">
+    <object type="Standard - Line" version="0" id="O123">
       <attribute name="obj_pos">
         <point val="0.8,5.9"/>
       </attribute>
@@ -4661,7 +4853,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O118">
+    <object type="Standard - Line" version="0" id="O124">
       <attribute name="obj_pos">
         <point val="0.8,13.1"/>
       </attribute>
@@ -4679,7 +4871,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O119">
+    <object type="Standard - Line" version="0" id="O125">
       <attribute name="obj_pos">
         <point val="0.8,6.8"/>
       </attribute>
@@ -4697,7 +4889,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O120">
+    <object type="Standard - Line" version="0" id="O126">
       <attribute name="obj_pos">
         <point val="0.8,7.7"/>
       </attribute>
@@ -4715,7 +4907,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O121">
+    <object type="Standard - Line" version="0" id="O127">
       <attribute name="obj_pos">
         <point val="0.8,14.9"/>
       </attribute>
@@ -4733,7 +4925,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O122">
+    <object type="Standard - Line" version="0" id="O128">
       <attribute name="obj_pos">
         <point val="0.8,14"/>
       </attribute>
@@ -4751,7 +4943,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O123">
+    <object type="Standard - Line" version="0" id="O129">
       <attribute name="obj_pos">
         <point val="0.8,15.8"/>
       </attribute>
@@ -4769,7 +4961,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O124">
+    <object type="Standard - Line" version="0" id="O130">
       <attribute name="obj_pos">
         <point val="0.8,16.7"/>
       </attribute>
@@ -4787,7 +4979,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O125">
+    <object type="Standard - Line" version="0" id="O131">
       <attribute name="obj_pos">
         <point val="0.8,11.3"/>
       </attribute>
@@ -4805,7 +4997,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O126">
+    <object type="Standard - Line" version="0" id="O132">
       <attribute name="obj_pos">
         <point val="0.8,17.6"/>
       </attribute>
@@ -4823,7 +5015,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O127">
+    <object type="Standard - Line" version="0" id="O133">
       <attribute name="obj_pos">
         <point val="0.8,18.5"/>
       </attribute>
@@ -4841,7 +5033,7 @@
         <real val="0"/>
       </attribute>
     </object>
-    <object type="Standard - Line" version="0" id="O128">
+    <object type="Standard - Line" version="0" id="O134">
       <attribute name="obj_pos">
         <point val="0.8,19.4"/>
       </attribute>
@@ -4861,12 +5053,12 @@
     </object>
   </layer>
   <layer name="&#202;&#184;&#187;&#250;" visible="true">
-    <object type="Standard - Text" version="0" id="O129">
+    <object type="Standard - Text" version="0" id="O135">
       <attribute name="obj_pos">
         <point val="10.925,3.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.925,2.80265;10.925,3.20265"/>
+        <rectangle val="10.925,2.79143;10.925,3.19143"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -4891,12 +5083,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O130">
+    <object type="Standard - Text" version="0" id="O136">
       <attribute name="obj_pos">
         <point val="11.75,3.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="11.75,2.80265;11.75,3.20265"/>
+        <rectangle val="11.75,2.79143;11.75,3.19143"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -4921,12 +5113,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O131">
+    <object type="Standard - Text" version="0" id="O137">
       <attribute name="obj_pos">
         <point val="10.1,3.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.1,2.80265;10.1,3.20265"/>
+        <rectangle val="10.1,2.79143;10.1,3.19143"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -4951,12 +5143,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O132">
+    <object type="Standard - Text" version="0" id="O138">
       <attribute name="obj_pos">
         <point val="9.275,3.1"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="9.275,2.80265;9.275,3.20265"/>
+        <rectangle val="9.275,2.79143;9.275,3.19143"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -4981,12 +5173,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O133">
+    <object type="Standard - Text" version="0" id="O139">
       <attribute name="obj_pos">
         <point val="27.5,1.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="27.5,1.17699;27.9848,1.47699"/>
+        <rectangle val="27.5,1.16857;28.0454,1.46857"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -5011,12 +5203,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O134">
+    <object type="Standard - Text" version="0" id="O140">
       <attribute name="obj_pos">
         <point val="25.05,0.9"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="25.05,0.676991;25.05,0.976991"/>
+        <rectangle val="25.05,0.668571;25.05,0.968571"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -5041,12 +5233,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O135">
+    <object type="Standard - Text" version="0" id="O141">
       <attribute name="obj_pos">
         <point val="1.1,2.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="1.1,1.97699;1.706,2.27699"/>
+        <rectangle val="1.1,1.96857;1.8272,2.26857"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -5071,12 +5263,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O136">
+    <object type="Standard - Text" version="0" id="O142">
       <attribute name="obj_pos">
         <point val="3,2.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="3,1.97699;4.3938,2.27699"/>
+        <rectangle val="3,1.96857;4.6362,2.26857"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -5101,12 +5293,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O137">
+    <object type="Standard - Text" version="0" id="O143">
       <attribute name="obj_pos">
         <point val="10.9,2.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.9,1.97699;11.6878,2.27699"/>
+        <rectangle val="10.9,1.96857;11.809,2.26857"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -5131,12 +5323,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O138">
+    <object type="Standard - Text" version="0" id="O144">
       <attribute name="obj_pos">
         <point val="18.3,2.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="18.3,1.97699;21.027,2.27699"/>
+        <rectangle val="18.3,1.96857;21.5724,2.26857"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -5161,12 +5353,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O139">
+    <object type="Standard - Text" version="0" id="O145">
       <attribute name="obj_pos">
         <point val="12,1.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="12,1.17699;16.545,1.47699"/>
+        <rectangle val="12,1.16857;17.454,1.46857"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -5191,12 +5383,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O140">
+    <object type="Standard - Text" version="0" id="O146">
       <attribute name="obj_pos">
         <point val="10.6,1.4"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="10.6,1.17699;10.903,1.47699"/>
+        <rectangle val="10.6,1.16857;10.9636,1.46857"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
@@ -5221,12 +5413,12 @@
         </composite>
       </attribute>
     </object>
-    <object type="Standard - Text" version="0" id="O141">
+    <object type="Standard - Text" version="0" id="O147">
       <attribute name="obj_pos">
         <point val="7.4,2.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="7.4,1.97699;8.7938,2.27699"/>
+        <rectangle val="7.4,1.96857;9.0362,2.26857"/>
       </attribute>
       <attribute name="text">
         <composite type="text">
