@@ -25,9 +25,9 @@ tbl_ptnyuinrrk	{
 	SANTEI_BRMNUM		char(8);
 	TENNYUYMD		char(8);
 	TENSTUYMD		char(8);
-	TAISYONISSU		number(4,0);
-	TUSANNISSU1		number(4,0);
-	TUSANNISSU2		number(4,0);
+	TAISYONISSU		number(5,0);
+	TUSANNISSU1		number(5,0);
+	TUSANNISSU2		number(5,0);
 	NYUINCHUKBN		char(1);
 	TERMID		varchar(16);
 	OPID		varchar(16);
