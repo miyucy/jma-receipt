@@ -656,7 +656,15 @@
                                                NOT =  SPA-COM-SRYKBN
                                                        (IDX-1) )  AND
                                       (SPA-COM-INPUTCD(IDX-1 + 1)(1:1)
-                                                   =   "6"     )) 
+                                                   =   "6"     ))
+      *                         コメントの時
+                                OR   ((SPA-COM-SRYKBN (IDX-1 + 1)
+                                                   =  SPA-COM-SRYKBN
+                                                       (IDX-1) )  AND
+                                      (SPA-COM-SRYKBN (IDX-1 + 1)
+                                                   =   "99"   ) AND
+                                      (SPA-COM-SRYSYUKBN (IDX-1 + 1)
+                                                   =   SPACE   ))
                                    CONTINUE
                                ELSE
                                    MOVE    SPACE   TO  SPA-COM-KAIFLG
@@ -693,7 +701,7 @@
                    IF     (SPA-COM-INPUTCD(IDX)    =   "114701210" OR
                                                        "114701710" )
       *                次行が自動発生の２４時間加算の時、自動としない
-                       IF      (IDX                <   200   )  AND
+                       IF      (IDX                <   WRK-GYO-MAX) AND
                                (SPA-COM-AUTOKBN (IDX + 1)  =   "2")
                            MOVE    SPACE           TO  SPA-COM-AUTOKBN
                                                            (IDX + 1)
@@ -815,7 +823,7 @@
                                             OR  "022"
                                             OR  "046" )  AND
                    (SPA-COM-SURYO(IDX-1)(6:3)  >   ZERO)
-               IF     (IDX-1               <   200  )  AND
+               IF     (IDX-1               <   WRK-GYO-MAX  )  AND
                       (SPA-COM-INPUTCD(IDX-1 + 1)  =   "099309901")
                    CONTINUE
                ELSE
@@ -2132,7 +2140,7 @@
            MOVE    SPA-SRYKA           TO  SPA-TBL-SRYKA (IDH 1)
            MOVE    SPA-DRCD            TO  SPA-TBL-DRCD  (IDH 1)
            PERFORM VARYING     IDH1    FROM    1   BY  1
-                   UNTIL      (IDH1    >   200  )  OR
+                   UNTIL      (IDH1    >   WRK-GYO-MAX )  OR
                              ((SPA-GMN-INPUTCD (IDH1)  =   SPACE ) AND
                               (SPA-COM-INPUTCD (IDH1)  =   SPACE ))
                IF      SPA-GMN-INPUTCD (IDH1)(1:1) =   "#"
@@ -2157,7 +2165,7 @@
                    UNTIL      (IDH     >   15   )  OR
                               (SPA-TBL-HKNCOMBI(IDH)   =   SPACE )
                PERFORM VARYING     IDH1    FROM    1   BY  1
-                       UNTIL      (IDH1    >   200  )  OR
+                       UNTIL      (IDH1    >   WRK-GYO-MAX  )  OR
                                  ((SPA-GMN-INPUTCD (IDH1)  =   SPACE )
                              AND  (SPA-COM-INPUTCD (IDH1)  =   SPACE ))
                  IF      SPA-GMN-INPUTCD (IDH1)(1:1) =   "#"
