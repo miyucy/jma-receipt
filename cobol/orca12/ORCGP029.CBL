@@ -1244,10 +1244,10 @@
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
-      *!       IF      MCP-RC      NOT =   ZERO
+               IF      MCP-RC      NOT =   ZERO
                    DISPLAY "P029 TSYRRK DEL ERR:" MCP-RC
                           ",KEY:" TSYRRK-KEY
-      *!       END-IF
+               END-IF
       *    変更
            WHEN    ( TSYRRK-NINSTYMD-O     NOT =   SPACE )
                MOVE    TSYRRK-REC      TO  MCPDATA-REC
@@ -1272,17 +1272,8 @@
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
-      **        存在した時、修正
-      *         MOVE    TSYRRK-REC          TO  MCPDATA-REC
-      *         MOVE    "DBUPDATE"          TO  MCP-FUNC
-      *         MOVE    "TSYRRK-KEY"        TO  ORC-DBPATH
-      *         CALL    "MCPDBSUB"          USING
-      *                                     MCPAREA
-      *                                     MCPDATA-REC
-      *         IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 TSYRRK INS ERR:" MCP-RC
                           ",KEY:" TSYRRK-KEY
-      *         END-IF
                END-IF
            END-EVALUATE
       *
@@ -1335,17 +1326,8 @@
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC          NOT =   ZERO
-      **        存在した時、修正
-      *         MOVE    TNKRRK-REC          TO  MCPDATA-REC
-      *         MOVE    "DBUPDATE"          TO  MCP-FUNC
-      *         MOVE    "TNKRRK-KEY"        TO  ORC-DBPATH
-      *         CALL    "MCPDBSUB"          USING
-      *                                     MCPAREA
-      *                                     MCPDATA-REC
-      *         IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 TNKRRK INS ERR:" MCP-RC
                           ",KEY:" TNKRRK-KEY
-      *         END-IF
                END-IF
            END-EVALUATE
            .
