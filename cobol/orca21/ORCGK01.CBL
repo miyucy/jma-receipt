@@ -778,7 +778,7 @@
       *        処方区分
                MOVE    SYS-1001-SYOHOKBN       TO  SPA-SYOHOKBN
       *        病床数
-               MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
+      *********MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
       *        薬剤情報発行フラグ
                MOVE    SYS-1001-YAKUJYOPRTFLG  TO  SPA-YAKJYOPRTFLG
                IF      SYS-1001-YAKUJYOPRTFLG  =   SPACE
