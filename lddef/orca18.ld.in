@@ -1,0 +1,23 @@
+name	orca18;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGU01";
+bind	"U01"		"OpenCOBOL"	"ORCGU01";
+bind	"U1ERR"		"OpenCOBOL"	"ORCGU1ERR";
+
+multiplex_group	orca18;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+		U01;
+                U1ERR;
+	};
+};
+
+#include "orcadb.inc"
+

@@ -1,0 +1,61 @@
+name	orca21;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGK02";
+bind	"K01"		"OpenCOBOL"	"ORCGK01";
+bind	"K02"		"OpenCOBOL"	"ORCGK02";
+bind	"K021"		"OpenCOBOL"	"ORCGK021";
+bind	"K022"		"OpenCOBOL"	"ORCGK022";
+bind	"K023"		"OpenCOBOL"	"ORCGK023";
+bind	"K03"		"OpenCOBOL"	"ORCGK03";
+bind	"K04"		"OpenCOBOL"	"ORCGK04";
+bind	"K05"		"OpenCOBOL"	"ORCGK05";
+bind	"K051"		"OpenCOBOL"	"ORCGK051";
+bind	"K052"		"OpenCOBOL"	"ORCGK052";
+bind	"K06"		"OpenCOBOL"	"ORCGK06";
+bind	"K07"		"OpenCOBOL"	"ORCGK07";
+bind	"K08"		"OpenCOBOL"	"ORCGK08";
+bind	"K09"		"OpenCOBOL"	"ORCGK09";
+bind	"K10"		"OpenCOBOL"	"ORCGK10";
+bind	"K98"		"OpenCOBOL"	"ORCGK98";
+bind	"K99"		"OpenCOBOL"	"ORCGK99";
+bind	"KERR"		"OpenCOBOL"	"ORCGKERR";
+bind	"KERR2"		"OpenCOBOL"	"ORCGKERR2";
+bind	"KID1"		"OpenCOBOL"	"ORCGKID1";
+bind	"KID2"		"OpenCOBOL"	"ORCGKID2";
+
+multiplex_group	orca21;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+		K01;
+		K02;
+		K021;
+		K022;
+		K023;
+		K03;
+		K04;
+                K05;
+                K051;
+                K052;
+                K06;
+		K07;
+                K08;
+                K09;
+                K10;
+		K98;
+		K99;
+                KERR;
+                KERR2;
+                KID1;
+                KID2;
+	};
+};
+
+#include "orcadb.inc"
+

@@ -1,0 +1,39 @@
+name	orca22;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGC02";
+bind	"C02"		"OpenCOBOL"	"ORCGC02";
+bind	"C03"		"OpenCOBOL"	"ORCGC03";
+bind	"C04"		"OpenCOBOL"	"ORCGC04";
+bind	"C05"		"OpenCOBOL"	"ORCGC05";
+bind	"C06"		"OpenCOBOL"	"ORCGC06";
+bind	"C07"		"OpenCOBOL"	"ORCGC07";
+bind	"C08"		"OpenCOBOL"	"ORCGC08";
+bind	"CERR"		"OpenCOBOL"	"ORCGCERR";
+bind	"CID1"		"OpenCOBOL"	"ORCGCID1";
+bind	"CID2"		"OpenCOBOL"	"ORCGCID2";
+
+multiplex_group	orca22;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+		C02;
+                C03;
+		C04;
+		C05;
+		C06;
+		C07;
+		C08;
+		CERR;
+                CID1;
+                CID2;
+	};
+};
+
+#include "orcadb.inc"
+

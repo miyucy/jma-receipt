@@ -1,0 +1,51 @@
+name	orca101;
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGW01";
+bind	"W01"		"OpenCOBOL"	"ORCGW01";
+bind	"W02"		"OpenCOBOL"	"ORCGW02";
+bind	"W03"		"OpenCOBOL"	"ORCGW03";
+bind	"W04"		"OpenCOBOL"	"ORCGW04";
+bind	"W05"		"OpenCOBOL"	"ORCGW05";
+bind	"W06"		"OpenCOBOL"	"ORCGW06";
+bind	"W07"		"OpenCOBOL"	"ORCGW07";
+bind	"W08"		"OpenCOBOL"	"ORCGW08";
+bind	"W09"		"OpenCOBOL"	"ORCGW09";
+bind	"W10"		"OpenCOBOL"	"ORCGW10";
+bind	"W11"		"OpenCOBOL"	"ORCGW11";
+bind	"W12"		"OpenCOBOL"	"ORCGW12";
+bind	"W13"		"OpenCOBOL"	"ORCGW13";
+bind	"W14"		"OpenCOBOL"	"ORCGW14";
+bind	"WERR"		"OpenCOBOL"	"ORCGWERR";
+bind	"WID1"		"OpenCOBOL"	"ORCGWID1";
+
+multiplex_group	orca101;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+		W01;
+		W02;
+                W03;
+                W04;
+                W05;
+                W06;
+                W07;
+                W08;
+                W09;
+                W10;
+		W11;
+		W12;
+		W13;
+		W14;
+		WERR;
+		WID1;
+	};
+};
+
+
+#include "orcadb.inc"
+

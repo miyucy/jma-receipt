@@ -1,0 +1,27 @@
+name	orca14;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGY01";
+bind	"Y01"		"OpenCOBOL"	"ORCGY01";
+bind	"Y03"		"OpenCOBOL"	"ORCGY03";
+bind	"Y04"		"OpenCOBOL"	"ORCGY04";
+bind	"YERR"		"OpenCOBOL"	"ORCGYERR";
+
+multiplex_group	orca14;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+		Y01;
+		Y03;
+		Y04;
+		YERR;
+	};
+};
+
+#include "orcadb.inc"
+

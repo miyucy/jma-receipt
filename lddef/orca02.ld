@@ -1,3 +1,4 @@
+# 1 "orca02.ld.in"
 name	orca02;
 
 arraysize	20;
@@ -10,17 +11,21 @@ bind	"XBID"   	"OpenCOBOL"	"ORCGXBID1";
 
 multiplex_group	orca02;
 
+# 1 "orcahome.inc" 1
 home	"/usr/local/orca/lib";
+# 13 "orca02.ld.in" 2
+
 
 data	{
 	spa	orcaspa;
-#	linkage	orcalink;
 	window	{
 		XB01;
                 XBER;
                 XBID;
 	};
 };
+
+# 1 "orcadb.inc" 1
 db	{
 	tbl_syskanri;
 	tbl_byomei;
@@ -65,22 +70,15 @@ db	{
 	tbl_example;
 	tbl_dbkanri;
 	tbl_recekanri;
-	tbl_ptrsiinf;
-	tbl_prtkanri;
-	tbl_prtdata;
-	query_ptinf;
-	query_ptinf_cnt;
+	q_tbl_ptinf;
+	q_tbl_ptinf_cnt;
 	tbl_interact;
 	tbl_sskijyo;
-	tbl_jinmei;
-	tbl_monthlynum;
-	view_Q001;
-        tbl_yakujyo;
 };
 db	"shell"	{
 	shell;
 };
 
-
+# 24 "orca02.ld.in" 2
 
 

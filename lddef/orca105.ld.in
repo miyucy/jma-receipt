@@ -1,0 +1,26 @@
+name	orca105;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGN01";
+bind	"N01"		"OpenCOBOL"	"ORCGN01";
+bind	"NERR"		"OpenCOBOL"	"ORCGNERR";
+bind	"NID1"		"OpenCOBOL"	"ORCGNID1";
+
+multiplex_group	orca105;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+		N01;
+		NERR;
+		NID1;
+	};
+};
+
+#include "orcadb.inc"
+
+

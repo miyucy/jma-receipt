@@ -1,0 +1,23 @@
+name	orca19;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGP97";
+bind	"P97"		"OpenCOBOL"	"ORCGP97";
+bind	"P97ERR" 	"OpenCOBOL"	"ORCGP97ERR";
+
+multiplex_group	orca19;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+		P97;
+                P97ERR;
+	};
+};
+
+#include "orcadb.inc"
+

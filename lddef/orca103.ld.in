@@ -1,0 +1,30 @@
+name	orca103;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGX01";
+bind	"X01"		"OpenCOBOL"	"ORCGX01";
+bind	"X02"		"OpenCOBOL"	"ORCGX02";
+bind	"X98"		"OpenCOBOL"	"ORCGX98";
+bind	"XERR"		"OpenCOBOL"	"ORCGXERR";
+bind	"XID1"		"OpenCOBOL"	"ORCGXID1";
+
+multiplex_group	orca103;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+		X01;
+		X02;
+                X98;
+		XERR;
+		XID1;
+	};
+};
+
+#include "orcadb.inc"
+
+

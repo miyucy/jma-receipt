@@ -1,0 +1,27 @@
+name	orca43;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGH01";
+bind	"H01"		"OpenCOBOL"	"ORCGH01";
+bind	"H99"		"OpenCOBOL"	"ORCGH99";
+bind	"HERR"		"OpenCOBOL"	"ORCGHERR";
+bind	"HID1"		"OpenCOBOL"	"ORCGHID1";
+
+multiplex_group	orca43;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+		H01;
+                H99;
+		HERR;
+                HID1;
+	};
+};
+
+#include "orcadb.inc"
+

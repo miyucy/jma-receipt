@@ -1,0 +1,10 @@
+name	recept;
+
+arraysize	20;
+textsize	400;
+
+bind	"SR3201"	"OpenCOBOL";
+
+#include "orcadb.inc"
+
+

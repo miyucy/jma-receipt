@@ -1,0 +1,51 @@
+name	orca;
+
+#linksize	64512;
+
+base	"@exec_prefix@";
+
+lddir	"=/lddef";
+bddir	"=/lddef";
+record	"=/record";
+
+multiplex_level	id;
+
+linkage	orcalink;
+
+ld	{
+	orca00	"localhost:9100";
+	orca01	"localhost:9101";
+	orca02	"localhost:9102";
+	orca11	"localhost:9111";
+	orca12	"localhost:9112";
+	orca13	"localhost:9113";
+	orca14	"localhost:9114";
+	orca18	"localhost:9118";
+	orca19	"localhost:9119";
+	orca21	"localhost:9121";
+	orca22	"localhost:9122";
+	orca23	"localhost:9123";
+	orca24	"localhost:9124";
+	orca41	"localhost:9141";
+	orca42	"localhost:9142";
+	orca43	"localhost:9143";
+	orca44	"localhost:9144";
+	orca51	"localhost:9151";
+	orca52	"localhost:9152";
+	orca71	"localhost:9171";
+	orca82	"localhost:9182";
+	orca101	"localhost:9201";
+	orca102	"localhost:9202";
+	orca103	"localhost:9203";
+	orca104	"localhost:9204";
+	orca105	"localhost:9205"; 
+	orca106	"localhost:9206"; 
+        orca107	"localhost:9207"; 
+};
+bd	{
+        orcabt;
+        recept;
+#include	<../etc/kentan.inc>
+};
+
+#include	<../etc/dbgroup.inc>

@@ -4,50 +4,82 @@ INSTALL_DATA = @INSTALL_DATA@
 prefix = @prefix@
 exec_prefix= @exec_prefix@
 lddefdir = ${exec_prefix}/lddef
+libdir = @libdir@
 
-EXTRA_DIST = \
-             directory \
-             orca00.ld \
-             orca01.ld \
-             orca02.ld \
-             orca11.ld \
-             orca12.ld \
-             orca13.ld \
-             orca14.ld \
-             orca18.ld \
-             orca19.ld \
-             orca21.ld \
-             orca22.ld \
-             orca23.ld \
-             orca24.ld \
-             orca41.ld \
-             orca42.ld \
-             orca43.ld \
-             orca44.ld \
-             orca51.ld \
-             orca52.ld \
-             orca71.ld \
-             orca82.ld \
-             orca101.ld \
-             orca102.ld \
-             orca103.ld \
-             orca104.ld \
-             orca105.ld \
-             orca106.ld \
-             orca107.ld \
-             orcabt.bd \
-             orcadb.inc \
-             recept.bd 
+CPP = cpp
 
-all:   
-	touch build-stamp
+LDFILE_sources = \
+	orca00.ld.in \
+	orca01.ld.in \
+	orca02.ld.in \
+	orca11.ld.in \
+	orca12.ld.in \
+	orca13.ld.in \
+	orca14.ld.in \
+	orca18.ld.in \
+	orca19.ld.in \
+	orca21.ld.in \
+	orca22.ld.in \
+	orca23.ld.in \
+	orca24.ld.in \
+	orca41.ld.in\
+	orca42.ld.in \
+	orca43.ld.in \
+	orca44.ld.in \
+	orca51.ld.in \
+	orca52.ld.in \
+	orca71.ld.in \
+	orca82.ld.in \
+	orca101.ld.in \
+	orca102.ld.in \
+	orca103.ld.in \
+	orca104.ld.in \
+	orca105.ld.in \
+	orca106.ld.in \
+	orca107.ld.in
+
+BDFILE_sources = \
+	orcabt.bd.in \
+	recept.bd.in 
+
+LDFILE = $(LDFILE_sources:.ld.in=.ld)
+BDFILE = $(BDFILE_sources:.bd.in=.bd)
+
+DIRECTORYFILE_in = directory.in
+DIRECTORYFILE = directory
+
+ORCAHOMEFILE_in = orcahome.inc.in
+ORCAHOMEFILE = orcahome.inc
+
+ORCADBFILE= orcadb.inc
+
+INSTALL_LDFILE = $(LDFILE) $(BDFILE) $(DIRECTORYFILE) \
+                 $(ORCAHOMEFILE) $(ORCADBFILE)
+
+.SUFFIXES: .ld.in .bd.in .ld .bd 
+
+.ld.in.ld .bd.in.bd:
+	$(CPP) $< > $@
+
+all: $(LDFILE) $(BDFILE) $(DIRECTORYFILE)
+
+$(LDFILE) $(BDFILE):  orcahome.inc
+
+directory:
+	sed -e 's,\@exec_prefix\@,$(exec_prefix),g' \
+	$(DIRECTORYFILE_in) > $(DIRECTORYFILE) 
+
+orcahome.inc:
+	sed -e 's,\@libdir\@,$(libdir),g' \
+	$(ORCAHOMEFILE_in) > $(ORCAHOMEFILE)
+
 clean: 
-	-rm -f build-stamp
+	-rm $(LDFILE) $(BDFILE)
+	-rm directory orcahome.inc
 
-distclean: 
-	-rm -f build-stamp
+distclean: clean
 	-rm -f Makefile
 
 install: all
 	$(INSTALL) -d $(lddefdir)
-	$(INSTALL) $(EXTRA_DIST) $(lddefdir)
+	$(INSTALL) $(INSTALL_LDFILE) $(lddefdir)

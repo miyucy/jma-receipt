@@ -1,0 +1,35 @@
+name	orca13;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGQ01";
+bind	"Q01"		"OpenCOBOL"	"ORCGQ01";
+bind	"Q02"		"OpenCOBOL"	"ORCGQ02";
+bind	"Q97"		"OpenCOBOL"	"ORCGQ97";
+bind	"Q98"		"OpenCOBOL"	"ORCGQ98";
+bind	"Q99"		"OpenCOBOL"	"ORCGQ99";
+bind	"Q100"		"OpenCOBOL"	"ORCGQ100";
+bind	"QERR"		"OpenCOBOL"	"ORCGQERR";
+bind	"QID1"		"OpenCOBOL"	"ORCGQID1";
+
+multiplex_group	orca13;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+		Q01;
+		Q02;
+		Q97;
+		Q98;
+		Q99;
+		Q100;
+                QERR;
+                QID1;
+	};
+};
+
+#include "orcadb.inc"
+

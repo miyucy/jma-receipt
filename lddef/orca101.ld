@@ -1,3 +1,4 @@
+# 1 "orca101.ld.in"
 name	orca101;
 arraysize	20;
 textsize	400;
@@ -22,11 +23,13 @@ bind	"WID1"		"OpenCOBOL"	"ORCGWID1";
 
 multiplex_group	orca101;
 
+# 1 "orcahome.inc" 1
 home	"/usr/local/orca/lib";
+# 25 "orca101.ld.in" 2
+
 
 data	{
 	spa	orcaspa;
-#	linkage	orcalink;
 	window	{
 		W01;
 		W02;
@@ -47,6 +50,8 @@ data	{
 	};
 };
 
+
+# 1 "orcadb.inc" 1
 db	{
 	tbl_syskanri;
 	tbl_byomei;
@@ -91,19 +96,15 @@ db	{
 	tbl_example;
 	tbl_dbkanri;
 	tbl_recekanri;
-	tbl_ptrsiinf;
-	tbl_prtkanri;
-	tbl_prtdata;
-	query_ptinf;
-	query_ptinf_cnt;
+	q_tbl_ptinf;
+	q_tbl_ptinf_cnt;
 	tbl_interact;
 	tbl_sskijyo;
-	tbl_jinmei;
-	tbl_monthlynum;
-	view_Q001;
-        tbl_yakujyo;
 };
 db	"shell"	{
 	shell;
 };
+
+# 50 "orca101.ld.in" 2
+
 

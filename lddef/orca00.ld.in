@@ -1,0 +1,35 @@
+name	orca00;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGM00";
+bind	"M00"		"OpenCOBOL"	"ORCGM00";
+bind	"M01"		"OpenCOBOL"	"ORCGM01";
+bind	"M02"		"OpenCOBOL"	"ORCGM02";
+bind	"M95"		"OpenCOBOL"	"ORCGM95";
+bind	"M96"		"OpenCOBOL"	"ORCGM96";
+bind	"MERR"		"OpenCOBOL"	"ORCGMERR";
+bind	"MID1"		"OpenCOBOL"	"ORCGMID1";
+bind	"MVER"		"OpenCOBOL"	"ORCGMVER";
+
+multiplex_group	orca00;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+                M00;
+		M01;
+                M02;
+                M95;
+		M96;
+                MERR;
+                MID1;
+		MVER;
+	};
+};
+
+#include "orcadb.inc"
+

@@ -1,0 +1,29 @@
+name	orca71;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGE01";
+bind	"E01"		"OpenCOBOL"	"ORCGE01";
+bind	"E02"		"OpenCOBOL"	"ORCGE02";
+bind	"EERR"		"OpenCOBOL"	"ORCGEERR";
+bind	"EID1"		"OpenCOBOL"	"ORCGEID1";
+bind	"EID2"		"OpenCOBOL"	"ORCGEID2";
+
+multiplex_group	orca71;
+
+#include "orcahome.inc"
+
+
+data	{
+	spa	orcaspa;
+	window	{
+		E01;
+		E02;
+		EERR;
+		EID1;
+		EID2;
+	};
+};
+
+#include "orcadb.inc"

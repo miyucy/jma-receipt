@@ -1,0 +1,26 @@
+name	orca23;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGS02";
+bind	"S02"		"OpenCOBOL"	"ORCGS02";
+bind	"S03"		"OpenCOBOL"	"ORCGS03";
+bind	"SERR"		"OpenCOBOL"	"ORCGSERR";
+
+multiplex_group	orca23;
+
+#include "orcahome.inc"
+
+
+data	{
+	spa	orcaspa;
+	window	{
+		S02;
+		S03;
+                SERR;
+	};
+};
+
+#include "orcadb.inc"
+

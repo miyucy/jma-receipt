@@ -1,0 +1,27 @@
+name	orca44;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGT01";
+bind	"T01"		"OpenCOBOL"	"ORCGT01";
+bind	"T99"		"OpenCOBOL"	"ORCGT99";
+bind	"TERR"		"OpenCOBOL"	"ORCGTERR";
+bind	"TID1"		"OpenCOBOL"	"ORCGTID1";
+
+multiplex_group	orca44;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+		T01;
+		T99;
+		TERR;
+                TID1;
+	};
+};
+
+#include "orcadb.inc"
+

@@ -1,3 +1,4 @@
+# 1 "orcabt.bd.in"
 name	orcabt;
 
 arraysize	20;
@@ -21,7 +22,7 @@ bind	"ORCR0200"	"OpenCOBOL";
 bind	"ORCR0210"	"OpenCOBOL";
 bind	"ORCR0300"	"OpenCOBOL";
 bind	"ORCR0400"	"OpenCOBOL";
-bind    "ORCR0405"  "OpenCOBOL";
+bind    "ORCR0405"	"OpenCOBOL";
 bind	"ORCR0410"	"OpenCOBOL";
 bind	"ORCR0420"	"OpenCOBOL";
 bind	"ORCR0430"	"OpenCOBOL";
@@ -31,12 +32,12 @@ bind	"ORCR0450"	"OpenCOBOL";
 bind	"ORCR0460"	"OpenCOBOL";
 bind	"ORCR0465"	"OpenCOBOL";
 bind	"ORCR0466"	"OpenCOBOL";
-bind    "ORCR0467"  "OpenCOBOL"; 
+bind    "ORCR0467"	"OpenCOBOL"; 
 bind	"ORCR0470"	"OpenCOBOL";
 bind	"ORCR0480"	"OpenCOBOL";
 bind	"ORCR0481"	"OpenCOBOL";
 bind	"ORCR0482"	"OpenCOBOL";
-bind    "ORCR0485"  "OpenCOBOL"; 
+bind    "ORCR0485"	"OpenCOBOL"; 
 bind	"ORCR0490"	"OpenCOBOL";
 bind	"ORCR0500"	"OpenCOBOL";
 bind	"ORCBD001"	"OpenCOBOL";
@@ -77,7 +78,7 @@ bind	"ORCBPRT"	"OpenCOBOL";
 bind	"ORCBQ01"	"OpenCOBOL";
 bind	"ORCHC30"	"OpenCOBOL";
 
-
+# 1 "orcadb.inc" 1
 db	{
 	tbl_syskanri;
 	tbl_byomei;
@@ -122,20 +123,14 @@ db	{
 	tbl_example;
 	tbl_dbkanri;
 	tbl_recekanri;
-	tbl_ptrsiinf;
-	tbl_prtkanri;
-	tbl_prtdata;
-	query_ptinf;
-	query_ptinf_cnt;
+	q_tbl_ptinf;
+	q_tbl_ptinf_cnt;
 	tbl_interact;
 	tbl_sskijyo;
-	tbl_jinmei;
-	tbl_monthlynum;
-	view_Q001;
-        tbl_yakujyo;
 };
 db	"shell"	{
 	shell;
 };
 
+# 80 "orcabt.bd.in" 2
 

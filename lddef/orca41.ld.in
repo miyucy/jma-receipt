@@ -1,0 +1,30 @@
+name	orca41;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGD01";
+bind	"D01"		"OpenCOBOL"	"ORCGD01";
+bind	"D99"		"OpenCOBOL"	"ORCGD99";
+bind	"DERR"		"OpenCOBOL"	"ORCGDERR";
+bind	"DID1"		"OpenCOBOL"	"ORCGDID1";
+bind	"DID2"		"OpenCOBOL"	"ORCGDID2";
+
+multiplex_group	orca41;
+
+#include "orcahome.inc"
+
+
+data	{
+	spa	orcaspa;
+	window	{
+		D01;
+		D99;
+		DERR;
+		DID1;
+		DID2;
+	};
+};
+
+#include "orcadb.inc"
+

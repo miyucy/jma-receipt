@@ -1,0 +1,29 @@
+name	orca104;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGV01";
+bind	"V01"		"OpenCOBOL"	"ORCGV01";
+bind	"V02"		"OpenCOBOL"	"ORCGV02";
+bind	"VERR"		"OpenCOBOL"	"ORCGVERR";
+bind	"VID1"		"OpenCOBOL"	"ORCGVID1";
+
+multiplex_group	orca104;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+		V01;
+		V02;
+		VERR;
+		VID1;
+	};
+};
+
+#include "orcadb.inc"
+
+
+

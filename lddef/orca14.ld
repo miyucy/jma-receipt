@@ -1,3 +1,4 @@
+# 1 "orca14.ld.in"
 name	orca14;
 
 arraysize	20;
@@ -11,11 +12,13 @@ bind	"YERR"		"OpenCOBOL"	"ORCGYERR";
 
 multiplex_group	orca14;
 
+# 1 "orcahome.inc" 1
 home	"/usr/local/orca/lib";
+# 14 "orca14.ld.in" 2
+
 
 data	{
 	spa	orcaspa;
-#	linkage	orcalink;
 	window	{
 		Y01;
 		Y03;
@@ -23,6 +26,8 @@ data	{
 		YERR;
 	};
 };
+
+# 1 "orcadb.inc" 1
 db	{
 	tbl_syskanri;
 	tbl_byomei;
@@ -67,21 +72,15 @@ db	{
 	tbl_example;
 	tbl_dbkanri;
 	tbl_recekanri;
-	tbl_ptrsiinf;
-	tbl_prtkanri;
-	tbl_prtdata;
-	query_ptinf;
-	query_ptinf_cnt;
+	q_tbl_ptinf;
+	q_tbl_ptinf_cnt;
 	tbl_interact;
 	tbl_sskijyo;
-	tbl_jinmei;
-	tbl_monthlynum;
-	view_Q001;
-        tbl_yakujyo;
 };
 db	"shell"	{
 	shell;
 };
 
+# 26 "orca14.ld.in" 2
 
 

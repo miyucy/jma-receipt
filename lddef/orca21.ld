@@ -1,3 +1,4 @@
+# 1 "orca21.ld.in"
 name	orca21;
 
 arraysize	20;
@@ -22,16 +23,19 @@ bind	"K10"		"OpenCOBOL"	"ORCGK10";
 bind	"K98"		"OpenCOBOL"	"ORCGK98";
 bind	"K99"		"OpenCOBOL"	"ORCGK99";
 bind	"KERR"		"OpenCOBOL"	"ORCGKERR";
+bind	"KERR2"		"OpenCOBOL"	"ORCGKERR2";
 bind	"KID1"		"OpenCOBOL"	"ORCGKID1";
 bind	"KID2"		"OpenCOBOL"	"ORCGKID2";
 
 multiplex_group	orca21;
 
+# 1 "orcahome.inc" 1
 home	"/usr/local/orca/lib";
+# 31 "orca21.ld.in" 2
+
 
 data	{
 	spa	orcaspa;
-#	linkage	orcalink;
 	window	{
 		K01;
 		K02;
@@ -51,10 +55,13 @@ data	{
 		K98;
 		K99;
                 KERR;
+                KERR2;
                 KID1;
                 KID2;
 	};
 };
+
+# 1 "orcadb.inc" 1
 db	{
 	tbl_syskanri;
 	tbl_byomei;
@@ -99,22 +106,15 @@ db	{
 	tbl_example;
 	tbl_dbkanri;
 	tbl_recekanri;
-	tbl_ptrsiinf;
-	tbl_prtkanri;
-	tbl_prtdata;
-	query_ptinf;
-	query_ptinf_cnt;
+	q_tbl_ptinf;
+	q_tbl_ptinf_cnt;
 	tbl_interact;
 	tbl_sskijyo;
-	tbl_jinmei;
-	tbl_monthlynum;
-	view_Q001;
-        tbl_yakujyo;
 };
 db	"shell"	{
 	shell;
 };
 
-
+# 60 "orca21.ld.in" 2
 
 

@@ -1,0 +1,25 @@
+name	orca107;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGN21";
+bind	"N21"		"OpenCOBOL"	"ORCGN21";
+bind	"N21ERR"		"OpenCOBOL"	"ORCGN21ERR";
+bind	"N21ID1"		"OpenCOBOL"	"ORCGN21ID1";
+
+multiplex_group	orca107;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+		N21;
+		N21ERR;
+		N21ID1;
+	};
+};
+
+#include "orcadb.inc"
+

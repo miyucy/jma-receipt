@@ -1,0 +1,27 @@
+name	orca51;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGL01";
+bind	"L01"		"OpenCOBOL"	"ORCGL01";
+bind	"L99"		"OpenCOBOL"	"ORCGL99";
+bind	"LERR"		"OpenCOBOL"	"ORCGLERR";
+bind	"LID1"		"OpenCOBOL"	"ORCGLID1";
+
+multiplex_group	orca51;
+
+#include "orcahome.inc"
+
+data	{
+	spa	orcaspa;
+	window	{
+                L01;
+                L99;
+		LERR;
+		LID1;
+	};
+};
+
+#include "orcadb.inc"
+
