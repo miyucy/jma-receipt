@@ -162,13 +162,13 @@ fi
 for i in $ALWAYS_LD; do
     LDNUM=`echo $i|sed -e "s/[^0-9]//g"`
     ORCA_PORT=`expr $START_PORT + $LDNUM`
-    $APS -dir $DIRECTORY -lddir $LDDEF -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT >/dev/null&
+    $APS -nocheck -dir $DIRECTORY -lddir $LDDEF -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT >/dev/null&
 done
 
 for i in $LD; do
     LDNUM=`echo $i|sed -e "s/[^0-9]//g"`
     ORCA_PORT=`expr $START_PORT + $LDNUM`
-    $APS -dir $DIRECTORY -lddir $LDDEF -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT &
+    $APS -nocheck -dir $DIRECTORY -lddir $LDDEF -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT &
 done
 
 $WFC -dir $DIRECTORY -lddir $LDDEF -bddir $LDDEF -base $ORCA_DIR >/dev/null
