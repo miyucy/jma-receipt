@@ -1594,8 +1594,9 @@
            END-IF
       *    Í½Ìó»þ´Ö
            MOVE    WRK-TIME            TO  SPA-NAI-YYKTIME
+           MOVE    WRK-TIME            TO  SPA-NAI-KYYKTIME
            IF      SPA-NAI-YYKTIME(1:2)    <=  "08"
-               MOVE    08                  TO  SPA-NAI-KYYKTIME(1:2)
+               MOVE    "08"                TO  SPA-NAI-KYYKTIME(1:2)
            END-IF
            IF      SPA-NAI-YYKTIME(1:2)    >=  "21"
                MOVE    "21"                TO  SPA-NAI-KYYKTIME(1:2)
