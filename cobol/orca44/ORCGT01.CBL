@@ -57,6 +57,7 @@
       * レセ電機能追加
       *  01.05.01    NACL-藤原    03.08.06  レセ電処理の追加
       *  01.05.02    NACL-藤原    03.09.02  メッセージコードの修正
+      *  01.05.03    NACL-藤原    03.09.24  レセ電ファイルの出力先指定の修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1925,8 +1926,10 @@
                WHEN    "B07"
                    MOVE    "2"         TO  SHELLTBL-ARG12
            END-EVALUATE
-           MOVE    SYS-2005-RECEDENOUT
-                                       TO  SHELLTBL-ARG13
+           STRING  SYS-2005-RECEDENOUT DELIMITED  BY  SPACE
+                   "/"                 DELIMITED  BY  SIZE
+                               INTO    SHELLTBL-ARG13
+           END-STRING
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG14
            MOVE    WRK-CONS-JOB-SHELLID
