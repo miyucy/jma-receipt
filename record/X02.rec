@@ -198,5 +198,8 @@ X02	{
 		CHKKBN	{
 			value	varchar(50);
 		};
+		LBLPAGE	{
+			value	varchar(10);
+		};
 	};
 };

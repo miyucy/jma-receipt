@@ -40,3 +40,5 @@
                 05  X02-VALUE   PIC X(9).
               04  X02-CHKKBN.
                 05  X02-VALUE   PIC X(50).
+              04  X02-LBLPAGE.
+                05  X02-VALUE   PIC X(10).

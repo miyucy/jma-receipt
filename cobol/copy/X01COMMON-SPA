@@ -55,6 +55,7 @@
                07  SPA-XID1-FLG            PIC X(02).
       *£Ø£¹£¸²èÌÌ¤è¤ê
            05  SPA-X98-AREA.
+               07  SPA-X98-SYORIKBN        PIC X(01).
                07  SPA-X98-CDSYUBETU       PIC X(01).
                07  SPA-X98-INPUTCD         PIC X(22).
                07  SPA-X98-NAIYOU          PIC X(07).

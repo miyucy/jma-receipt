@@ -38,6 +38,8 @@
       *  01.00.07    NACL-太田    04/03/15  名称での検索も可能とする
       *                                     チェック項目複写画面への
       *                                     遷移を追加
+      *  01.00.08    NACL-太田    04/07/07  検索画面戻り時のカーソル制御
+      *                                     修正
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -89,6 +91,7 @@
            COPY    "ENUM-VALUE".
       *     
        01  WRK-CONS-MAX                   PIC 9(03)   VALUE   100. 
+       01  WRK-CONS-LINE-MAX              PIC 9(03)   VALUE   20. 
        01  WRK-CONS-PAGE                  PIC 9(02)   VALUE   5.
       *
       *
@@ -107,6 +110,7 @@
            03  FLG-INPUTCD                        PIC 9(01).
            03  FLG-KANJI                          PIC 9(01).
            03  FLG-KENSAKU-SENI                   PIC 9(01).
+           03  FLG-CD-TUIKA                       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -114,10 +118,12 @@
            03  IDY                               PIC 9(03).
            03  IDZ                               PIC 9(03).
            03  IDZ1                              PIC 9(03).
+           03  IDX1                              PIC 9(03).
            03  IDX2                              PIC 9(02).
            03  IDX3                              PIC 9(02).
            03  IDX4                              PIC 9(03).
            03  IDX5                              PIC 9(03).
+           03  IDX6                              PIC 9(03).
       *
       *    一時領域
        01  WRK-AREA.
@@ -149,6 +155,12 @@
            03  WRK-BYOMEICD            PIC X(07).
            03  WRK-BYOMEI              PIC X(200).
            03  WRK-TNS-NAME            PIC X(70).
+           03  WRK-CURSOR              PIC 9(03).
+           03  WRK-PAGE-MAX            PIC 9(03).
+           03  WRK-PAGE-DSP-G.
+               05  WRK-PAGE-DSP-ACTIVE PIC Z9.
+               05  WRK-PAGE-DSP-LBL    PIC X(01).
+               05  WRK-PAGE-DSP-MAX    PIC Z9.
       *
        01  TBL-AREA.
            03  TBL-GMN-AREA.
@@ -433,7 +445,7 @@
       *
            MOVE    IDX             TO  SPA-GMN-MAX
            COMPUTE SPA-GMN-PAGE    =   (SPA-GMN-MAX - 1)
-                                   /   20  + 1
+                                   /   WRK-CONS-LINE-MAX   +   1
            MOVE    1               TO  SPA-GMN-CUR 
       *
            .
@@ -518,15 +530,56 @@
        320-X98SPASET-SEC          SECTION.
       *
            IF      SPA-X98-SRYCD   NOT =   SPACE
-               MOVE    SPA-X98-SRYCD       TO  X02-TEKCD(SPA-GMN-CUR)
+               MOVE    1           TO  WRK-CURSOR
+               IF    ( SPA-X98-SYORIKBN    =   "1" )
       *
-               IF    ( SPA-GMN-CUR         =   20 )
-                   MOVE    1               TO  SPA-GMN-CUR
+                   COMPUTE WRK-CURSOR
+                       = ( SPA-GMN-PAGE -  1 )
+                       *   WRK-CONS-LINE-MAX
+                       +   SPA-GMN-CUR
+      *
+                   MOVE    SPA-X98-SRYCD
+                                   TO  SPA-GMN-TTEKCD  (WRK-CURSOR)
+      *
+                   PERFORM 4101-TEKCD-CHK-SEC
+                   IF    ( SPA-ERRCD   NOT =   SPACE )
+                       GO  TO  320-X98SPASET-EXT
+                   END-IF
+      *
+                   IF    ( SPA-GMN-CUR >=  WRK-CONS-LINE-MAX )
+                       IF    ( SPA-GMN-PAGE    <   WRK-CONS-PAGE )
+                           COMPUTE SPA-GMN-PAGE
+                               =   SPA-GMN-PAGE    +   1
+                           MOVE    1       TO  SPA-GMN-CUR
+                       END-IF
+      *
+                   ELSE
+                       COMPUTE SPA-GMN-CUR =   SPA-GMN-CUR +   1
+                   END-IF
+      *
                ELSE
-                   COMPUTE SPA-GMN-CUR =   SPA-GMN-CUR     +   1
+      *
+                   MOVE    ZERO        TO  SPA-GMN-CUR
+      *
+                   COMPUTE SPA-GMN-MAX =   SPA-GMN-MAX +   1
+                   IF    ( SPA-GMN-MAX >   WRK-CONS-MAX )
+                       MOVE    WRK-CONS-MAX
+                                       TO  SPA-GMN-MAX
+                   END-IF
+                   MOVE    SPA-X98-SRYCD
+                                   TO  SPA-GMN-TTEKCD  (SPA-GMN-MAX)
+      *
+                   COMPUTE SPA-GMN-PAGE
+                       = ( SPA-GMN-MAX -   1 )
+                       /   WRK-CONS-LINE-MAX   +   1
+      *
+                   PERFORM 4101-TEKCD-CHK-SEC
+                   IF    ( SPA-ERRCD   NOT =   SPACE )
+                       GO  TO  320-X98SPASET-EXT
+                   END-IF
+      *
                END-IF
-      *        入力チェック処理
-               PERFORM 410-INPUT-CHK-SEC
+      *
            END-IF
            .
        320-X98SPASET-EXT.
@@ -563,9 +616,15 @@
            INITIALIZE              SPA-GMN-TBL
                                    SPA-NAI-TBL
       *
+           IF    ( SPA-X03-GMN-LCHKLST-MAX >   WRK-CONS-MAX )
+               MOVE    WRK-CONS-MAX    TO  SPA-X03-GMN-LCHKLST-MAX
+           ELSE
+               MOVE    SPA-X03-GMN-LCHKLST-MAX
+                                       TO  SPA-GMN-MAX
+           END-IF
+      *
            PERFORM VARYING IDX5    FROM    1   BY  1
-                   UNTIL ( IDX5    >   SPA-X03-GMN-LCHKLST-MAX )
-                    OR   ( IDX5    >   WRK-CONS-MAX )
+                   UNTIL ( IDX5    >   SPA-GMN-MAX )
       *
                MOVE    SPA-X03-NAI-TLCHK-SRYCD (IDX5)
                                    TO  SPA-GMN-TTEKCD(IDX5)
@@ -604,7 +663,7 @@
                    PERFORM  409-X03-SENI-SEC
       *        検索
                WHEN    "CLICKED"       ALSO    "B09"
-                   PERFORM  409-KENSAKU-SEC
+                   PERFORM  409-KENSAKU-CHK-SEC
       *        確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM  410-KAKUTEI-SEC
@@ -620,7 +679,6 @@
       *    会話　処理
       *****************************************************************
        200-ENTRY                             SECTION.
-      *
       *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
            MOVE    ZERO                TO  SPA-GMN-CUR
@@ -655,9 +713,10 @@
        4101-GMN-SPA-SET-SEC       SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   20
-               COMPUTE IDZ             =   IDX
-                                       +  (SPA-GMN-PAGE - 1 ) * 20
+                   UNTIL       IDX     >   WRK-CONS-LINE-MAX
+               COMPUTE IDZ
+                   =   IDX
+                   +  (SPA-GMN-PAGE - 1 )  *   WRK-CONS-LINE-MAX
       *        全角入力の時、１０文字まで
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                     TO  KANACHK-SYORI
@@ -747,7 +806,7 @@
                IF     SPA-GMN-TTEKCD(IDX)(1:1) =   "/"
                    COMPUTE SPA-GMN-CUR         =   IDX
                                                -  ((SPA-GMN-PAGE  -  1)
-                                               *   20 )
+                                               *   WRK-CONS-LINE-MAX )
       *
                    MOVE    SPACE       TO  WRK-INPUTCD
                    MOVE    ZERO        TO  WRK-MOJI
@@ -864,7 +923,7 @@
                                        TO  WRK-INPUTCD
                    COMPUTE SPA-GMN-CUR         =   IDX
                                                -  ((SPA-GMN-PAGE  -  1)
-                                               *   20 )
+                                               *  WRK-CONS-LINE-MAX )
                    PERFORM 409-KENSAKU-SEC
                    GO  TO  41012-BYOMEI-CHK-EXT
                END-IF
@@ -1005,7 +1064,7 @@
                ELSE
                    COMPUTE SPA-GMN-CUR         =   IDX
                                                -  ((SPA-GMN-PAGE  -  1)
-                                               *   20 )
+                                               *   WRK-CONS-LINE-MAX )
                    MOVE    WRK-SRYCD       TO  WRK-INPUTCD
                    PERFORM 409-KENSAKU-SEC
                    GO  TO  41013-TENSU-CHK-EXT
@@ -1062,7 +1121,7 @@
                                        TO  WRK-SRYCD
       *
            PERFORM VARYING IDX3    FROM    1   BY  1
-                   UNTIL  (IDX3    >   20  )   OR
+                   UNTIL  (IDX3    >   WRK-CONS-LINE-MAX  )   OR
                           (WRK-SRYCD (IDX3:1)
                                    =   SPACE  )
       *
@@ -1180,7 +1239,7 @@
                MOVE    "0007"             TO  SPA-ERRCD
                GO  TO  440-ATOGMN-EXT
            ELSE
-               COMPUTE IDX     =   SPA-GMN-PAGE   *   20
+               COMPUTE IDX     =   SPA-GMN-PAGE   *   WRK-CONS-LINE-MAX
                IF      SPA-GMN-TTEKCD (IDX)   =   SPACE
                    MOVE    "0007"             TO  SPA-ERRCD
                    GO  TO  440-ATOGMN-EXT
@@ -1293,16 +1352,44 @@
        4091-X03-INIT-EXT.
            EXIT.
       *****************************************************************
+      *    検索ボタン押下時チェック処理
+      *****************************************************************
+       409-KENSAKU-CHK-SEC         SECTION.
+      *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO      409-KENSAKU-CHK-EXT
+           END-IF
+      *
+           IF    ( SPA-GMN-MAX     >=  WRK-CONS-MAX )
+               MOVE    "0011"      TO  SPA-ERRCD
+               GO  TO      409-KENSAKU-CHK-EXT
+           END-IF
+      *
+           MOVE    1               TO  FLG-CD-TUIKA
+      *
+           PERFORM 409-KENSAKU-SEC
+      *
+           .
+       409-KENSAKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    検索処理
       *****************************************************************
        409-KENSAKU-SEC             SECTION.
-      *
       *
       *    共通ＳＰＡ編集
            INITIALIZE                  SPA-X98-AREA
            MOVE    "2"                 TO  SPA-X98-TYPE
       *
            INITIALIZE                  SPA-X98GMN-AREA
+      *
+           IF    ( FLG-CD-TUIKA        =   ZERO )
+               MOVE    "1"             TO  SPA-X98-SYORIKBN
+           ELSE
+               MOVE    "2"             TO  SPA-X98-SYORIKBN
+           END-IF
       *
            EVALUATE    SPA-X01-CHKKBN
            WHEN    "1"
@@ -1569,7 +1656,7 @@
       *
            MOVE    SPACE               TO  X02
       *
-           COMPUTE IDY     =   SPA-GMN-PAGE    *   20
+           COMPUTE IDY     =   SPA-GMN-PAGE    *   WRK-CONS-LINE-MAX
            COMPUTE IDZ     =   IDY             -   19
       *
            MOVE    ZERO                TO  IDX
@@ -1583,9 +1670,10 @@
                IF      SPA-GMN-TTEKCD  (IDZ1)  NOT =   SPACE
                    MOVE    IDX                 TO  WRK-MAX
                END-IF
+      *
       *        エラー位置
                IF      SPA-NAI-ERR (IDZ1)  =   "1"
-                   MOVE    IDX             TO  SPA-GMN-CUR
+                   MOVE    IDX                 TO  SPA-GMN-CUR
                END-IF
            END-PERFORM
            MOVE    SPA-GMN-CHKKBN-G    TO  X02-CHKKBN
@@ -1593,6 +1681,21 @@
            MOVE    SPA-GMN-NAME        TO  X02-NAME
            MOVE    SPA-GMN-STYUKYMD    TO  X02-STYUKYMD
            MOVE    SPA-GMN-EDYUKYMD    TO  X02-EDYUKYMD
+      *
+           IF    ( SPA-GMN-MAX     <=  WRK-CONS-LINE-MAX )
+               MOVE    1               TO  WRK-PAGE-MAX
+           ELSE
+               COMPUTE WRK-PAGE-MAX
+                   = ( SPA-GMN-MAX -   1 )
+                   /   WRK-CONS-LINE-MAX
+                   +   1
+           END-IF
+      *
+           INITIALIZE                  WRK-PAGE-DSP-G
+           MOVE    SPA-GMN-PAGE        TO  WRK-PAGE-DSP-ACTIVE
+           MOVE    "/"                 TO  WRK-PAGE-DSP-LBL
+           MOVE    WRK-PAGE-MAX        TO  WRK-PAGE-DSP-MAX
+           MOVE    WRK-PAGE-DSP-G      TO  X02-LBLPAGE
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1624,12 +1727,16 @@
                    MOVE    WRK-MCP-WIDGET(6:2)     TO  IDX2
                    MOVE    IDX2                    TO  SPA-GMN-CUR
                    ADD     1                       TO  SPA-GMN-CUR
-                   IF      SPA-GMN-CUR             >   20
+                   IF      SPA-GMN-CUR             >   WRK-CONS-LINE-MAX
                        MOVE    99                  TO  SPA-GMN-CUR
                    END-IF
                ELSE
-                   COMPUTE SPA-GMN-CUR         =   WRK-MAX
-                                               +   1
+                   IF  WRK-MAX     NOT =   WRK-CONS-LINE-MAX
+                       COMPUTE SPA-GMN-CUR         =   WRK-MAX
+                                                   +   1
+                   ELSE
+                       MOVE    WRK-CONS-LINE-MAX   TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-IF
       *
@@ -1711,6 +1818,9 @@
                                                       TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "修飾語コードは入力できません"
+                                                      TO  SPA-ERRMSG
+               WHEN    "0011"
+                   MOVE    "適用コードの登録上限数に到達しています" 
                                                       TO  SPA-ERRMSG
                WHEN    "0011"
                    MOVE    "セットコードは入力できません"
