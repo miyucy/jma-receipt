@@ -1,0 +1,45 @@
+#!/bin/sh
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+#-------------------------------------------#
+#    定期請求データ作成
+#
+#        $1 SRYYM TERID SYSYMD
+#        $2 SYOKBN
+#           1:一括作成  2:個別作成
+#        $3 KIKANST KIKANED KBN (1)
+#           定期請求の期間開始日,終了日
+#           有効区分（区分='1'の期間が処理対象）
+#        $4 KIKANST KIKANED KBN (2)
+#        $5 KIKANST KIKANED KBN (3)
+#        $6 JOBID 
+#        $7 SHELLID
+#        $8 エラーファイル
+#-------------------------------------------#
+##      エラーファイル削除
+	echo $#
+	echo "echo " $8
+        if  [ -e $8 ]; then
+            rm  $8
+        fi
+        
+        rm  /var/tmp/TEIKI*
+
+##   -- ORCT0010 START --  
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCT0010 -parameter $1,$2,$3,$4,$5,$6,$7,
+        if  [ -e $8 ]; then
+            exit  
+        fi 
+
+	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE$6$7
+	
+        exit
+

@@ -91,7 +91,9 @@ LIB_SRCS = \
        ORCR0700.CBL \
        ORCR0710.CBL \
        ORCBM026.CBL \
-       ORCBDXXX.CBL
+       ORCBDXXX.CBL \
+       ORCT0010.CBL \
+       ORCT0020.CBL 
 
 EXEC_SRCS =  ORCXSMST1.CBL
 

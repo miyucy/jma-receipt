@@ -132,10 +132,10 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-SHELL-ARG1.
              05  WRK-SHELL-SRYYM   PIC  X(06).
-             05  WRK-SHELL-TERMID  PIC  X(16).
+             05  WRK-SHELL-TERMID  PIC  X(32).
              05  WRK-SHELL-SYSYMD  PIC  X(08).
-           03  WRK-SHELL-ARG3.
-             05  WRK-SHELL-ARG3-OCC    OCCURS  3.
+           03  WRK-SHELL-KIKAN-TBL.
+             05  WRK-SHELL-KIKAN-OCC    OCCURS  3.
                07  WRK-SHELL-KIKAN-ST  PIC  X(08).
                07  WRK-SHELL-KIKAN-ED  PIC  X(08).
                07  WRK-SHELL-KIKAN-KBN PIC  X(01).
@@ -946,12 +946,13 @@
       *
                MOVE    SPACE               TO  SHELLTBL
       *
-               MOVE    "teikiseikyu.sh"    TO  WRK-SHELL-SHELL
+               MOVE    "teiki1.sh"         TO  WRK-SHELL-SHELL
       *
       *        ファイルデイレクトリ位置指定
                INITIALIZE              ORCSMKPASSAREA
                MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
                CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
                MOVE    SPA-NAI-SRYYM   TO  WRK-SHELL-SRYYM
                MOVE    SPA-TERMID      TO  WRK-SHELL-TERMID
@@ -983,22 +984,27 @@
                                        TO  WRK-SHELL-KIKAN-ST (3)
                MOVE    SPA-NAI-KIKAN03ED
                                        TO  WRK-SHELL-KIKAN-ED (3)
+      *
                IF    ( SPA-GMN-CHK-KIKAN03 =   "T" )
                    MOVE    "1"         TO  WRK-SHELL-KIKAN-KBN (3)
                ELSE
                    MOVE    SPACE       TO  WRK-SHELL-KIKAN-KBN (3)
                END-IF
       *
-               MOVE    WRK-SHELL-ARG3
+               MOVE    WRK-SHELL-KIKAN-OCC (1)
                                        TO  SHELLTBL-ARG3
-               MOVE    TEIKIERR        TO  SHELLTBL-ARG4
-               MOVE    WRK-CONS-JOB-JOBID
+               MOVE    WRK-SHELL-KIKAN-OCC (2)
+                                       TO  SHELLTBL-ARG4
+               MOVE    WRK-SHELL-KIKAN-OCC (3)
                                        TO  SHELLTBL-ARG5
-               MOVE    WRK-CONS-JOB-SHELLID
+               MOVE    WRK-CONS-JOB-JOBID
                                        TO  SHELLTBL-ARG6
-               MOVE    "DUMMY"         TO  SHELLTBL-ARG7
-               MOVE    SPA-NAI-SRYYM   TO  SHELLTBL-ARG8
+               MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SHELLTBL-ARG7
+               MOVE    TEIKIERR
+                                       TO  SHELLTBL-ARG8
                MOVE    SHELLTBL        TO  MCPDATA-REC
+               DISPLAY "MCPDATA-REC = " MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    PATH-SHELL-SHELL
                                        TO  MCP-PATH

@@ -174,8 +174,14 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-SHELL-ARG1.
              05  WRK-SHELL-SRYYM   PIC  X(06).
-             05  WRK-SHELL-TERMID  PIC  X(16).
+             05  WRK-SHELL-TERMID  PIC  X(32).
              05  WRK-SHELL-SYSYMD  PIC  X(08).  
+           03  WRK-SHELL-ARG3.
+             05  WRK-SHELL-ARG3-TBL.
+               07  WRK-SHELL-ARG3-OCC    OCCURS  3.
+                 09  WRK-SHELL-KIKAN-ST  PIC  X(08).
+                 09  WRK-SHELL-KIKAN-ED  PIC  X(08).
+                 09  WRK-SHELL-KIKAN-KBN PIC  X(01).
            03  WRK-HENFLG          PIC 9(01).
       *
        01  WRK-HEN-AREA.
@@ -1370,26 +1376,28 @@
            CLOSE   TEIKIERR-FILE
       *
            MOVE    SPACE           TO  SHELLTBL
-           MOVE    "teikiseikyu.sh"
+           MOVE    "teiki1.sh"
                                    TO  WRK-SHELL-SHELL
       *    ファイルデイレクトリ位置指定
            INITIALIZE              ORCSMKPASSAREA
            MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
            CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
-           MOVE    SPA-NAI-SRYYM   TO  WRK-SHELL-SRYYM
+           MOVE    ZERO            TO  WRK-SHELL-SRYYM
            MOVE    SPA-TERMID      TO  WRK-SHELL-TERMID
            MOVE    SPA-SYSYMD      TO  WRK-SHELL-SYSYMD
            MOVE    WRK-SHELL-ARG1  TO  SHELLTBL-ARG1
            MOVE    "2"             TO  SHELLTBL-ARG2
-           MOVE    "DUMMY"         TO  SHELLTBL-ARG3
-           MOVE    TEIKIERR        TO  SHELLTBL-ARG4
+           MOVE    SPACE           TO  SHELLTBL-ARG3
+                                       SHELLTBL-ARG4
+                                       SHELLTBL-ARG5
            MOVE    WRK-CONS-JOB-JOBID
-                                   TO  SHELLTBL-ARG5
-           MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG6
-           MOVE    "DUMMY"         TO  SHELLTBL-ARG7
-           MOVE    SPA-NAI-SRYYM   TO  SHELLTBL-ARG8
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SHELLTBL-ARG7
+           MOVE    TEIKIERR
+                                   TO  SHELLTBL-ARG8
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    PATH-SHELL-SHELL
