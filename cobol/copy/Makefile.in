@@ -576,7 +576,7 @@ filecheck:
 	-printf "file\t%f\n") \
 	|sort +1 |uniq -u -f1 
 
-install: 
+install: all installdirs
 
 installdirs:
 

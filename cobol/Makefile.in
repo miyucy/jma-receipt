@@ -48,7 +48,7 @@ distclean:
 	-rm -f Makefile Makefile.global
 
 install installdirs:
-	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@ ; done
+	@set -e; for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i $@ ; done
 
 install-copys install-copydirs: 
 	@set -e; for i in $(COPYDIRS); do $(MAKE) -C $$i $@ ; done
