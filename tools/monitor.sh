@@ -11,7 +11,7 @@
 ####################################################################
 
 # glserver を起動するか？
-Start_GLSERVER=false
+Start_GLSERVER=true
 
 # jma-receipt の位置
 # . は jma-receipt/ 直下で起動される事を想定している
