@@ -118,6 +118,8 @@
       *                                     告示等識別区分１
       *                                     きざみ値計算識別
       *                                     注加算コードの追加
+      *  01.05.01    NACL-小豆沢  04.06.11  皮下筋肉注射以外で単剤の場合
+      *                                     摘要欄け記載するように対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1288,7 +1290,11 @@
                        END-IF
                        IF      RECE04-SRYKBN     =   "31"
                        AND     RECE05-SRYCD(IDX) =   CONS-HIKAKIN
-                           MOVE    1             TO  FLG-HIKAKIN
+                           IF  RECE05-SRYCD(2)   =   SPACE
+                               CONTINUE
+                           ELSE
+                               MOVE    1         TO  FLG-HIKAKIN
+                           END-IF
                        END-IF  
                    END-IF
                END-PERFORM
