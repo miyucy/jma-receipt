@@ -57,10 +57,10 @@
       *
        WORKING-STORAGE             SECTION.
       *
-       01  TOUKEI04.
-           03  FILLER                   PIC  X(09) VALUE "/var/tmp/".
-           03  TOUKEI04-FILE-ID         PIC  X(08) VALUE "TOKEI110".
-           03  TOUKEI04-TERMID          PIC  X(32).
+      *
+           COPY    "CPCOMMONDAT5.INC"
+                                   REPLACING  //TEIKI01PARA//
+                                   BY         //TOUKEI04//.
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
@@ -368,7 +368,7 @@
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *     
-      *
+           MOVE    "TOKEI110"          TO  TOUKEI04-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  TOUKEI04-TERMID
       *
            OPEN    OUTPUT              TOUKEI04-FILE
