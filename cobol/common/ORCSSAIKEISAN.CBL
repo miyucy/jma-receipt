@@ -485,15 +485,17 @@
                  MOVE    LNK-SYU-SRYKA(IDY)  TO  ACCT-SRYKA
                  MOVE    LNK-SYU-SRYYMD(IDY)(1:6)
                                              TO  ACCT-SRYYM
+                 MOVE    LNK-SYU-HKNCOMBINUM(IDY)
+                                             TO  ACCT-HKNCOMBI
                  MOVE    SRYACCT-REC         TO  MCPDATA-REC
                  MOVE    "DBSELECT"          TO  MCP-FUNC
-                 MOVE    "SRYACCT-KEY32"     TO  ORC-DBPATH
+                 MOVE    "SRYACCT-KEY24"     TO  ORC-DBPATH
                  CALL    "ORCMCPSUB"          USING
                                               MCPAREA
                                               ORCMCPAREA
                                               MCPDATA-REC
                  IF      MCP-RC              =   ZERO
-                     MOVE    "SRYACCT-KEY32" TO  ORC-DBPATH
+                     MOVE    "SRYACCT-KEY24" TO  ORC-DBPATH
                      PERFORM  900-SRYACCT-READ-SEC
                  ELSE
                      MOVE    1               TO  FLG-SRYACCT
@@ -506,7 +508,7 @@
                              (IDX1           >       100    )   
       *
                  MOVE    "DBCLOSE"           TO  MCP-FUNC
-                 MOVE    "SRYACCT-KEY32"     TO  ORC-DBPATH
+                 MOVE    "SRYACCT-KEY24"     TO  ORC-DBPATH
                  CALL    "ORCMCPSUB"          USING
                                               MCPAREA
                                               ORCMCPAREA
@@ -949,7 +951,6 @@
        4401-SRYACCT-SET-SEC           SECTION.
       *
            IF    (ACCT-ZAITEN       NOT = ZERO                  ) AND
-                 (ACCT-HKNCOMBI     =  LNK-SYU-HKNCOMBINUM(IDY) ) AND
                  (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO)    
       *
               MOVE    ACCT-SRYKBN    TO  TBL-SRYKBN(IDX1)
@@ -979,7 +980,7 @@
       *
            END-IF
       *
-           MOVE    "SRYACCT-KEY32"   TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY24"   TO  ORC-DBPATH
            PERFORM  900-SRYACCT-READ-SEC
            .
       *
