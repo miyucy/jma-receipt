@@ -210,6 +210,8 @@
       *  01.01.44    ひさなが     03/03/05  PTNYUINRRK-KEY19の追加
       *  01.01.45    NACL-森脇    03/03/05  SYUMEI-KEY4,KEY5の追加
       *  01.01.46    NACL-太田    03/03/10  SENTEICDCHG-KEY,2,3,ALL追加
+      *  01.01.47    NACL-伊藤    03/03/11  INTERACT-KEY3の追加
+      *                                     INTERACT-UPD1,DEL1追加 
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -831,10 +833,18 @@
                WHEN    "DBUPDATE"      ALSO   "INTERACT-KEY"
                WHEN    "DBUPDATE"      ALSO   "INTERACT-KEY1"
                WHEN    "DBUPDATE"      ALSO   "INTERACT-KEY2"
+               WHEN    "DBUPDATE"      ALSO   "INTERACT-KEY3"
                WHEN    "DBDELETE"      ALSO   "INTERACT-KEY"
                WHEN    "DBDELETE"      ALSO   "INTERACT-KEY1"
                WHEN    "DBDELETE"      ALSO   "INTERACT-KEY2"
+               WHEN    "DBDELETE"      ALSO   "INTERACT-KEY3"
                    MOVE    PATH-TBL-INTERACT-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "INTERACT-UPD1"
+                   MOVE    PATH-TBL-INTERACT-UPD1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "INTERACT-DEL1"
+                   MOVE    PATH-TBL-INTERACT-DEL1
                                        TO  WRK-PATH
                WHEN    "DBUPDATE"      ALSO   "SSKIJYO-KEY"
                WHEN    "DBDELETE"      ALSO   "SSKIJYO-KEY"
@@ -2149,6 +2159,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "INTERACT-KEY2"
                    MOVE    PATH-TBL-INTERACT-KEY2
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "INTERACT-KEY3"
+                   MOVE    PATH-TBL-INTERACT-KEY3
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "INTERACT-ALL"
                    MOVE    PATH-TBL-INTERACT-ALL
