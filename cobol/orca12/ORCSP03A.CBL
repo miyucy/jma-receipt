@@ -708,11 +708,12 @@
            EVALUATE    SPA-GMN-HKNNUM
       *        Á¥°÷
                WHEN    "002"
-                   IF    ((SPA-NAI-HTEKSTYMD       >=  "20021001") AND
+                   IF   (  SPA-BYMD-70             >   ZERO      )  AND
+                        (((SPA-NAI-HTEKSTYMD       >=  "20021001") AND
                           (SPA-NAI-HTEKSTYMD       >=  SPA-BYMD-70)) OR
                          ((SPA-NAI-HTEKSTYMD       =   SPACE     ) AND
                           (SPA-SYSYMD              >=  "20021001") AND
-                          (SPA-SYSYMD              >=  SPA-BYMD-70))
+                          (SPA-SYSYMD              >=  SPA-BYMD-70)))
                        MOVE    4               TO  IDY
                        MOVE    11              TO  WRK-HJO-MAX
                    ELSE
@@ -733,7 +734,9 @@
                               (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70)) OR
                              ((SPA-SYSYMD          >=  "20021001" ) AND
                               (SPA-SYSYMD          >=  SPA-BYMD-70))
-                           MOVE    "9"         TO  SPA-GMN-HOJOKBN
+                           IF     (SPA-BYMD-70       >   ZERO      )
+                               MOVE    "9"         TO  SPA-GMN-HOJOKBN
+                           END-IF
                        END-IF
                    END-IF
       *        ¹ñÊÝ
@@ -751,7 +754,9 @@
                               (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70)) OR
                              ((SPA-SYSYMD          >=  "20021001" ) AND
                               (SPA-SYSYMD          >=  SPA-BYMD-70))
-                           MOVE    "1"         TO  SPA-GMN-HOJOKBN
+                           IF     (SPA-BYMD-70       >   ZERO      )
+                               MOVE    "1"         TO  SPA-GMN-HOJOKBN
+                           END-IF
                        END-IF
                    END-IF
       *        ¶¦ºÑ
@@ -770,6 +775,10 @@
                        MOVE    1               TO  IDY
                        MOVE    1               TO  WRK-HJO-MAX
                    END-IF
+                   IF      SPA-BYMD-70         =   ZERO
+                       MOVE    1               TO  IDY
+                       MOVE    1               TO  WRK-HJO-MAX
+                   END-IF
                    MOVE    ZERO                TO  SPA-GMN-HOJO-MAX
                    PERFORM VARYING     IDT     FROM    IDY BY  1
                            UNTIL       IDT     >   WRK-HJO-MAX
@@ -784,7 +793,9 @@
                               (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70)) OR
                              ((SPA-SYSYMD          >=  "20021001" ) AND
                               (SPA-SYSYMD          >=  SPA-BYMD-70))
-                           MOVE    "9"         TO  SPA-GMN-HOJOKBN
+                           IF     (SPA-BYMD-70       >   ZERO      )
+                               MOVE    "9"         TO  SPA-GMN-HOJOKBN
+                           END-IF
                        END-IF
                    END-IF
       *        ¤½¤ÎÂ¾
@@ -838,6 +849,7 @@
            IF     ((SPA-NAI-HTEKSTYMD  >=  SPA-BYMD-70)  OR
                    (SPA-NAI-HTEKSTYMD  =   SPACE    AND
                     SPA-SYSYMD         >=  SPA-BYMD-70))  AND
+                   (SPA-BYMD-70        >   ZERO        )  AND
                    (SPA-GMN-HKNNUM(1:1)    NOT =   "9" )
                PERFORM VARYING     IDT     FROM    1  BY  1
                        UNTIL       IDT     >   2
@@ -1127,6 +1139,7 @@
            END-IF
       *    Í­¸ú³«»ÏÆþÎÏ»þ¤ËÏ·¿ÍÊä½õ¶èÊ¬¤ÎºÆÊÔ½¸
            IF      (SPA-NAI-HTEKSTYMD  >=  "20021001" )  AND
+                   (SPA-BYMD-70        >   ZERO       )   AND
                    (SPA-NAI-HTEKSTYMD  >=  SPA-BYMD-70)
                PERFORM 310110-HOJKBN-HENSYU-SEC
            END-IF
@@ -1461,6 +1474,7 @@
       *    £·£°ºÐ°Ê¾å¤ÏÉ¬¿Ü
            IF     (SPA-NAI-HTEKSTYMD   >=  "20021001" )  AND
                   (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70)  AND
+                  (SPA-BYMD-70         >   ZERO      )   AND
                   (SPA-GMN-HKNNUM(1:1) NOT =   "9"    )
                IF      SPA-GMN-HOJOKBN     =   SPACE
                    MOVE    "0060"          TO  SPA-ERRCD

@@ -208,6 +208,10 @@
                05  WRK-BYY         PIC 9(04).
                05  WRK-BMM         PIC 9(02).
                05  WRK-BDD         PIC 9(02).
+      *    保存年齢
+           03  WRK-MAE-NENREI.
+               05  WRK-MAE-NENREI-YY       PIC 9(03).
+               05  WRK-MAE-NENREI-MM       PIC 9(02).
       *    入力項目名
       *****03  WRK-MCP-WIDGET          PIC X(64).
       *    保険開始位置
@@ -854,6 +858,7 @@
       *        船員
                WHEN    "002"
                    IF     (SPA-PTHKN-TEKSTYMD(IDX) >=  "20021001") AND
+                          (SPA-BYMD-70             >   ZERO      )  AND
                           (SPA-PTHKN-TEKSTYMD(IDX) >=  SPA-BYMD-70)
                        MOVE    4               TO  IDY
                        MOVE    11              TO  WRK-HJO-MAX
@@ -861,7 +866,7 @@
                        MOVE    1               TO  IDY
                        MOVE    3               TO  WRK-HJO-MAX
                    END-IF
-                   MOVE    ZERO                TO  SPA-GMN-HOJO-MAX
+      *************MOVE    ZERO                TO  SPA-GMN-HOJO-MAX
                    PERFORM VARYING     IDT     FROM    IDY BY  1
                            UNTIL       IDT     >   WRK-HJO-MAX
                        IF      WRK-HJO-REC1 (IDT)(1:1)
@@ -890,6 +895,7 @@
                WHEN    "033"
                WHEN    "034"
                    IF     (SPA-PTHKN-TEKSTYMD(IDX) >=  "20021001") AND
+                          (SPA-BYMD-70             >   ZERO      )  AND
                           (SPA-PTHKN-TEKSTYMD(IDX) >=  SPA-BYMD-70)
                        MOVE    2               TO  IDY
                        MOVE    5               TO  WRK-HJO-MAX
@@ -897,7 +903,7 @@
                        MOVE    1               TO  IDY
                        MOVE    1               TO  WRK-HJO-MAX
                    END-IF
-                   MOVE    ZERO                TO  SPA-GMN-HOJO-MAX
+      *************MOVE    ZERO                TO  SPA-GMN-HOJO-MAX
                    PERFORM VARYING     IDT     FROM    IDY BY  1
                            UNTIL       IDT     >   WRK-HJO-MAX
                        IF      WRK-HJO-REC5 (IDT)(1:1)
@@ -941,6 +947,7 @@
       *
       *    適用開始日が７０歳以上で、労災・治験・自費
            IF      (SPA-PTHKN-TEKSTYMD(IDX)    >=  SPA-BYMD-70)  AND
+                   (SPA-BYMD-70                >   ZERO      )  AND
                    (SPA-PTHKN-HKNNUM(IDX)(1:1) NOT =   "9")
                PERFORM VARYING     IDT     FROM    1  BY  1
                        UNTIL       IDT     >   2
@@ -1219,6 +1226,7 @@
       *        船員
                WHEN    "002"
                    IF     (SPA-NAI-HTEKSTYMD       >=  "20021001") AND
+                          (SPA-BYMD-70             >   ZERO      )  AND
                           (SPA-NAI-HTEKSTYMD       >=  SPA-BYMD-70)
                        MOVE    4               TO  IDY
                        MOVE    11              TO  WRK-HJO-MAX
@@ -1248,6 +1256,7 @@
                WHEN    "033"
                WHEN    "034"
                    IF     (SPA-PTHKN-TEKSTYMD(IDX) >=  "20021001") AND
+                          (SPA-BYMD-70             >   ZERO      )  AND
                           (SPA-PTHKN-TEKSTYMD(IDX) >=  SPA-BYMD-70)
                        MOVE    2               TO  IDY
                        MOVE    5               TO  WRK-HJO-MAX
@@ -1302,6 +1311,7 @@
       *
       *    適用開始日が７０歳以上で、労災・治験・自費
            IF      (SPA-NAI-HTEKSTYMD      >=  SPA-BYMD-70)  AND
+                   (SPA-BYMD-70            >   ZERO       )  AND
                    (SPA-GMN-HKNNUM(1:1) NOT =   "9")
                PERFORM VARYING     IDT     FROM    1  BY  1
                        UNTIL       IDT     >   2
@@ -2569,6 +2579,8 @@
                GO      TO      410121-NENREI-SET-EXT
            END-IF
       *
+           MOVE    SPA-NAI-NENREI      TO  WRK-MAE-NENREI
+      *
            MOVE    SPA-NAI-BIRTHDAY    TO  WRK-YMDS1
            MOVE    SPA-SYSYMD          TO  WRK-YMDS2
            COMPUTE WRK-NENREI-YY       =   WRK-YYS2
@@ -2618,6 +2630,11 @@
            MOVE    WRK-BASEYMD         TO  SPA-BYMD-75
            COMPUTE SPA-B75-YY          =   SPA-B75-YY  +   75
       *
+      *    新規複写後、生年月日変更時に補助区分の再編集をおこなう
+           IF     (SPA-P02-SYORI       =   1    )  AND
+                  (WRK-MAE-NENREI      =   ZERO )
+               PERFORM 31011-HKN-HEN-SEC
+           END-IF
            .
        410121-NENREI-SET-EXT.
            EXIT.
@@ -3170,6 +3187,7 @@
       *!   IF      FLG-TOUROKU2         =   1
       *        ７０歳以上の時、老人割合が設定されていること
                IF     (SPA-SYSYMD          >=  "20021001" )  AND
+                      (SPA-BYMD-70         >   ZERO       )  AND
                       (SPA-SYSYMD          >=  SPA-BYMD-70)
                    PERFORM 410331-RJN-HKNCHK-SEC
                END-IF
@@ -4209,6 +4227,7 @@
       *
            MOVE    SPA-NAI-KOHSTR      TO  WRK-NAI-KOHSTR
            MOVE    ZERO                TO  IDY
+           MOVE    SPA-GMN-KOH-AREA    TO  WRK-GMN-KOH-AREA
       *
            PERFORM VARYING     IDX     FROM    WRK-NAI-KOHSTR BY  1
                    UNTIL      (IDX         >   SPA-PTKOH-MAX )  OR
@@ -4247,24 +4266,7 @@
                GO      TO      4501-ALLHKN-CHK-EXT
            END-IF
       *    元へ戻す
-           INITIALIZE                  SPA-GMN-KOH-AREA
-           MOVE    ZERO                TO  SPA-NAI-KOHEND
-           MOVE    ZERO                TO  IDY
-           MOVE    WRK-NAI-KOHSTR      TO  SPA-NAI-KOHSTR
-           PERFORM VARYING     IDX     FROM    WRK-NAI-KOHSTR BY  1
-                   UNTIL      (IDX         >   SPA-PTKOH-MAX )  OR
-                              (IDY         >=  3         )  OR
-                              (SPA-ERRCD   NOT =   SPACE )
-               IF      SPA-PTKOH-SAKJOKBN (IDX)    =   SPACE
-                   IF      IDY             =   ZERO
-                       MOVE    IDX             TO  SPA-NAI-KOHSTR
-                   END-IF
-                   MOVE    IDX                 TO  SPA-NAI-KOHEND
-                   ADD     1                   TO  IDY
-                   MOVE    1                   TO  FLG-CHK
-                   PERFORM 3102-KOUHI-HEN-SEC
-               END-IF
-           END-PERFORM
+           MOVE    WRK-GMN-KOH-AREA    TO  SPA-GMN-KOH-AREA
            .
        4501-ALLHKN-CHK-EXT.
            EXIT.
