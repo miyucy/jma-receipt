@@ -838,11 +838,11 @@
            PERFORM   VARYING   IDX   FROM    1   BY  1
                      UNTIL   ( IDX       >   10 )
                      OR    ( SPA-GMN-DISCOUNTKBN-KBNCD(IDX) = SPACE )
-                     OR    ( SPA-GMN-DISCOUNTKBN (4:)   NOT = SPACE )
                IF  SPA-GMN-DISCOUNTKBN
                                      =   SPA-GMN-DISCOUNTKBN-KBNCD(IDX)
                    MOVE    SPA-GMN-DISCOUNTKBN-BODY (IDX)
                                      TO  SPA-GMN-DISCOUNTKBN-MEI
+                   MOVE    10        TO  IDX
                END-IF
            END-PERFORM
       *    ³ä°úÎ¨
@@ -855,7 +855,6 @@
            PERFORM   VARYING   IDX   FROM    1   BY  1
                      UNTIL   ( IDX         >   10 )
                      OR      ( SPA-GMN-DISCOUNT-KBNCD(IDX) = SPACE )
-                     OR      ( WRK-RATE-EDIT-R         NOT = SPACE )
                IF  WRK-RATE-KBN        =   SPA-GMN-DISCOUNT-KBNCD(IDX)
                    MOVE    SPA-GMN-DISCOUNT-RITU (IDX)
                                            TO  WRK-RATE-EDITZ
@@ -867,6 +866,7 @@
                    WHEN    "2"
                        MOVE    "(±ß)"      TO  WRK-RATE-TANI
                    END-EVALUATE
+                   MOVE    10              TO  IDX
                END-IF
            END-PERFORM
            MOVE    WRK-RATE-AREA       TO  SPA-GMN-DISCOUNT
