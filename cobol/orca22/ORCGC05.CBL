@@ -124,7 +124,7 @@
            03  WRK-HAISIYMDH       PIC X(22).
            03  WRK-CIDMSG          PIC X(100).
            03  WRK-BYOKEN          PIC X(30).
-           03  WRK-BYOMEI          PIC X(40).
+      *****03  WRK-BYOMEI          PIC X(40).
       *
       *    並びかえ用ワーク
            03  WRK-GMN-BYOMEICD-G.
@@ -542,6 +542,7 @@
        420-CLEAR-SEC             SECTION.
       *
            INITIALIZE                  SPA-GMN-BYOKEN
+                                       SPA-NAI-BYOKEN
                                        SPA-GMN-BYOMEI-TBL
                                        SPA-NAI-BYOMEI-TBL
            MOVE    ZERO            TO  SPA-GMN-SELNUM1
@@ -760,6 +761,7 @@
       *
       *    入力時のみ
            IF      SPA-GMN-BYOKEN      =   SPACE
+               MOVE    3                   TO  SPA-GMN-CUR
                GO  TO  491-BUBUN-KENSAKU-EXT
            END-IF
       *
@@ -789,14 +791,19 @@
                END-IF
            END-PERFORM
       *
-           MOVE    SPACE               TO  WRK-BYOMEI
+           MOVE    SPACE               TO  SPA-NAI-BYOKEN
            STRING  "＊"                DELIMITED  BY  SIZE
                    WRK-BYOKEN          DELIMITED  BY  SPACE
                    "＊"                DELIMITED  BY  SIZE
-                                       INTO    WRK-BYOMEI
+                                       INTO    SPA-NAI-BYOKEN
            END-STRING
       *
            MOVE    1               TO  SPA-GMN-PAGE
+           INITIALIZE                  SPA-GMN-BYOMEI-TBL
+                                       SPA-NAI-BYOMEI-TBL
+           MOVE    ZERO            TO  SPA-GMN-BYOMEI-MAX
+                                       SPA-NAI-SELNO1
+                                       SPA-GMN-SELNUM1
            PERFORM 410112-BYOMEI-LST-SEC
       *
       *    選択番号へカーソルを移動させる
@@ -815,6 +822,7 @@
       *
       *    入力時のみ
            IF      SPA-GMN-BYOKEN      =   SPACE
+               MOVE    3                   TO  SPA-GMN-CUR
                GO  TO  492-ATO-KENSAKU-EXT
            END-IF
       *
@@ -844,13 +852,18 @@
                END-IF
            END-PERFORM
       *
-           MOVE    SPACE               TO  WRK-BYOMEI
+           MOVE    SPACE               TO  SPA-NAI-BYOKEN
            STRING  "＊"                DELIMITED  BY  SIZE
                    WRK-BYOKEN          DELIMITED  BY  SPACE
-                                       INTO    WRK-BYOMEI
+                                       INTO    SPA-NAI-BYOKEN
            END-STRING
       *
            MOVE    1               TO  SPA-GMN-PAGE
+           INITIALIZE                  SPA-GMN-BYOMEI-TBL
+                                       SPA-NAI-BYOMEI-TBL
+           MOVE    ZERO            TO  SPA-GMN-BYOMEI-MAX
+                                       SPA-NAI-SELNO1
+                                       SPA-GMN-SELNUM1
            PERFORM 410112-BYOMEI-LST-SEC
       *
       *    選択番号へカーソルを移動させる
@@ -901,7 +914,7 @@
            END-IF
       *
            MOVE    1               TO  SPA-GMN-PAGE
-           MOVE    SPA-GMN-BYOKEN  TO  WRK-BYOMEI
+           MOVE    SPA-GMN-BYOKEN  TO  SPA-NAI-BYOKEN
            PERFORM 410112-BYOMEI-LST-SEC
       *
       *    選択番号へカーソルを移動させる
@@ -918,8 +931,7 @@
        410112-BYOMEI-LST-SEC           SECTION.
       *      
            INITIALIZE                  BYOMEI-REC
-      *****MOVE    SPA-GMN-BYOKEN      TO  BYO-BYOMEI
-           MOVE    WRK-BYOMEI          TO  BYO-BYOMEI
+           MOVE    SPA-NAI-BYOKEN      TO  BYO-BYOMEI
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "BYOMEI-KEY2"       TO  ORC-DBPATH
