@@ -483,7 +483,6 @@
                IF  JOB-SHELLID   =  MNAME-SHELLID (TBL-IDX)
                    MOVE    MNAME-JOBNAME (TBL-IDX)
                                              TO SPA-GMN-JOBNAME (IDX)
-                   COMPUTE TBL-IDX   =     MNAME-MAX   +   1
                END-IF
            END-PERFORM.
            IF  SPA-GMN-JOBNAME (IDX)   =  SPACE
