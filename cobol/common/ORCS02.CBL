@@ -64,6 +64,7 @@
       *  01.00.25    NACL-ÌçÏÆ    04/09/07  £±£°±ßÌ¤Ëþ»Í¼Î¸ÞÆþ¤·¤Ê¤¤¾ì¹ç
       *                                     ¤Î½¤Àµ
       *  01.00.26    NACL-ÌçÏÆ    04/09/07  ËÌ³¤Æ»ÃÏÊý¸øÈñÂÐ±þ
+      *  01.00.27    NACL-ÌçÏÆ    04/09/08  À¸ÊÝÃ±ÆÈ¤Î¸ÂÅÙ³Û½¤Àµ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2235,7 +2236,8 @@
                             CONTINUE
                           ELSE
                             IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
-                              IF    MAX-KIN-KOHI1-M    >  15000
+                              IF   (COMB-HKNNUM  NOT   =   SPACE)
+                              AND  (MAX-KIN-KOHI1-M    >   15000)
                                 MOVE    15000    TO   MAX-KIN-KOHI1-M
                                                       WK-NYUJGNGAK
                               END-IF
@@ -2261,7 +2263,8 @@
                             CONTINUE
                           ELSE
                             IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
-                              IF    MAX-KIN-KOHI2-M    >  15000
+                              IF   (COMB-HKNNUM  NOT   =   SPACE)
+                              AND  (MAX-KIN-KOHI2-M    >   15000)
                                 MOVE    15000    TO   MAX-KIN-KOHI2-M
                                                       WK-NYUJGNGAK
                               END-IF
@@ -2287,7 +2290,8 @@
                             CONTINUE
                           ELSE
                             IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
-                              IF    MAX-KIN-KOHI3-M    >  15000
+                              IF   (COMB-HKNNUM  NOT   =   SPACE)
+                              AND  (MAX-KIN-KOHI3-M    >   15000)
                                 MOVE    15000    TO   MAX-KIN-KOHI3-M
                                                       WK-NYUJGNGAK
                               END-IF
@@ -2313,7 +2317,8 @@
                             CONTINUE
                           ELSE
                             IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
-                              IF    MAX-KIN-KOHI4-M    >  15000
+                              IF   (COMB-HKNNUM  NOT   =   SPACE)
+                              AND  (MAX-KIN-KOHI4-M    >   15000)
                                 MOVE    15000    TO   MAX-KIN-KOHI4-M
                                                       WK-NYUJGNGAK
                               END-IF

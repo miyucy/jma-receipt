@@ -136,6 +136,7 @@
       *  01.01.04    NACL-ÌçÏÆ    04/09/07  £±£°±ßÌ¤Ëþ»Í¼Î¸ÞÆþ¤·¤Ê¤¤¾ì¹ç
       *                                     ¤Î½¤Àµ
       *  01.01.05    NACL-ÌçÏÆ    04/09/07  ËÌ³¤Æ»ÃÏÊý¸øÈñÂÐ±þ
+      *  01.01.06    NACL-ÌçÏÆ    04/09/08  À¸ÊÝÃ±ÆÈ¤Î¸ÂÅÙ³Û½¤Àµ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2928,7 +2929,8 @@
                             CONTINUE
                           ELSE
                             IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
-                              IF    MAX-KIN-KOHI1-M    >   8000
+                              IF   (COMB-HKNNUM  NOT   =   SPACE)
+                              AND  (MAX-KIN-KOHI1-M    >   8000 )
                                 MOVE     8000    TO   MAX-KIN-KOHI1-M
                               END-IF
                             ELSE
@@ -2952,7 +2954,8 @@
                             CONTINUE
                           ELSE
                             IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
-                              IF    MAX-KIN-KOHI2-M    >   8000
+                              IF   (COMB-HKNNUM  NOT   =   SPACE)
+                              AND  (MAX-KIN-KOHI2-M    >   8000 )
                                 MOVE     8000    TO   MAX-KIN-KOHI2-M
                               END-IF
                             ELSE
@@ -2976,7 +2979,8 @@
                             CONTINUE
                           ELSE
                             IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
-                              IF    MAX-KIN-KOHI3-M    >   8000
+                              IF   (COMB-HKNNUM  NOT   =   SPACE)
+                              AND  (MAX-KIN-KOHI3-M    >   8000 )
                                 MOVE     8000    TO   MAX-KIN-KOHI3-M
                               END-IF
                             ELSE
@@ -3000,7 +3004,8 @@
                             CONTINUE
                           ELSE
                             IF  COMB-KOHHKNNUM(KOH-IDX) = "012"
-                              IF    MAX-KIN-KOHI4-M    >   8000
+                              IF   (COMB-HKNNUM  NOT   =   SPACE)
+                              AND  (MAX-KIN-KOHI4-M    >   8000 )
                                 MOVE     8000    TO   MAX-KIN-KOHI4-M
                               END-IF
                             ELSE
