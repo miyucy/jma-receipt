@@ -2186,10 +2186,10 @@
                                        TO   LNK-SCNYUACCT-EDSRYYMD
       *    保険組合せ
            MOVE   PTNYUINRRK-HKNCOMBINUM
-                                        TO  WRK-HKNCOMBINUM
-           MOVE   WRK-HKNCOMBINUM9      TO  LNK-SCNYUACCT-HKNCOMBINUM
-           MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
-           MOVE   "00"          TO  SPA-SRYKA
+                                       TO  WRK-HKNCOMBINUM
+           MOVE   WRK-HKNCOMBINUM9     TO  LNK-SCNYUACCT-HKNCOMBINUM
+           MOVE   SPA-SRYKA            TO  WRK-TAIHI-SRYKA
+           MOVE   "00"                 TO  SPA-SRYKA
            CALL   "ORCSNYUACCT"  USING   SPA-AREA
                                          ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
