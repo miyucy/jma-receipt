@@ -61,6 +61,9 @@
       *                                     公費の負担者番号・受給者番号
       *                                     のカスタマイズ項目を中止
       *  01.00.15    NACL-藤原    05/04/04  コメント編集行を変更
+      *  01.00.16    NACL-藤原    05/04/04  神奈川の公費レコード記載なしを
+      *                                     レセプト特記事項編集情報対応
+      *                                     により中止する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1904,13 +1907,13 @@
                    UNTIL   IDY >       3
                    OR      RECE62-KOHNUM (IDY) =   SPACE
                COMPUTE IDX     =   IDY     +   1
-               IF    ( SYS-1001-PREFNUM            =   "14"    )
-               AND   ( RECE62-KOHNUM (IDY) (1:1)   >=  "1" AND 
-                                                   <=  "8"     )
-               AND   ( RECE62-KOHFTNJANUM (IDY)    =   SPACE   )
-               AND   ( RECE62-KOHJKYSNUM  (IDY)    =   SPACE   )
-                   CONTINUE
-               ELSE 
+      *********IF    ( SYS-1001-PREFNUM            =   "14"    )
+      *********AND   ( RECE62-KOHNUM (IDY) (1:1)   >=  "1" AND 
+      *********                                    <=  "8"     )
+      *********AND   ( RECE62-KOHFTNJANUM (IDY)    =   SPACE   )
+      *********AND   ( RECE62-KOHJKYSNUM  (IDY)    =   SPACE   )
+      *********    CONTINUE
+      *********ELSE 
       *            レセプト特記事項編集情報
                    IF      RECE62-2006-RECEDEN-KORECKBN (IDY)
                                                    =   "1"
@@ -1918,7 +1921,7 @@
                    ELSE 
                        PERFORM 20051-KOH-HENSYU-SEC
                    END-IF
-               END-IF
+      *********END-IF
            END-PERFORM                      
            .
        2005-HENSYU-EXT.
