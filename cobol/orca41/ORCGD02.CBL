@@ -232,6 +232,9 @@
                05  WRK-PARA-OPID                   PIC X(16).
                05  WRK-PARA-SYOKBN                 PIC X(01).
                05  WRK-PARA-RECEKBN                PIC X(01).
+      *½¤Àµ/*³«»Ï*03.01.31*********************************************
+           03  WRK-TSTPTNUMKBN                     PIC X(01).
+      *½¤Àµ/*½ªÎ»*03.01.31*********************************************
       *
       *    ÊÝ¸±ÁÈ¹ç¤»ºî¶È
        01  W-HKNCOMBI.
@@ -737,9 +740,6 @@
                    PERFORM T-500-RECECHEK-SEC
                END-IF
                IF  (SPA-GMN-CNV (12)   =  "1")          AND
-      *½¤Àµ/*³«»Ï*03.01.31*********************************************
-                   (PTINF-TSTPTNUMKBN  =  "0")          AND
-      *½¤Àµ/*½ªÎ»*03.01.31*********************************************
                    (T-ERR-12           =  SPACE)        AND
                    (W-JITU-DAY4    NOT =  ZERO)         AND
                    (W-JITU-DAY4        <  W-JITU-DAY5)
@@ -800,7 +800,7 @@
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
-                                       MCPDATA-REC.    
+                                       MCPDATA-REC.
       *
        T-100-RECECHEK-READ-EXT.
            EXIT.
@@ -811,13 +811,15 @@
       *
            IF  (ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
                (ACCT-PTID     NOT =   W1-SRY-PTID)
+      *½¤Àµ/*³«»Ï*03.01.31*********************************************
+               PERFORM T-500-RECECHEK2-SEC
+      *½¤Àµ/*½ªÎ»*03.01.31*********************************************
                IF  (W1-SRY-HOSPID   NOT =   ALL "*")  AND
                    ((T-ERR-04            =   SPACE)  OR
                     (T-ERR-13            =   SPACE))
                    PERFORM T-500-RECECHEK-SEC
                END-IF
                IF  (SPA-GMN-CNV (12)   =  "1")          AND
-                   (PTINF-TSTPTNUMKBN  =  "0")          AND
                    (T-ERR-12           =  SPACE)        AND
                    (W-JITU-DAY4    NOT =  ZERO)         AND
                    (W-JITU-DAY4        <  W-JITU-DAY5)
@@ -849,13 +851,9 @@
                MOVE    SPACE             TO  T-ERR-12
                MOVE    SPACE             TO  T-ERR-13
                MOVE    SPACE             TO  T-ERR-13-2
-      *½¤Àµ/*³«»Ï*03.02.07*********************************************
-           ELSE
-               MOVE    "--"              TO  T-HANNTEI6
-      *½¤Àµ/*½ªÎ»*03.02.07*********************************************
            END-IF.
       *½¤Àµ/*³«»Ï*03.01.31*********************************************
-           IF  PTINF-TSTPTNUMKBN  =  "0"
+           IF  WRK-TSTPTNUMKBN  NOT =  "1"
       *½¤Àµ/*½ªÎ»*03.01.31*********************************************
                IF  (ACCT-HOSPID     NOT =   COMB-HOSPID)  OR
                    (ACCT-PTID       NOT =   COMB-PTID)  OR
@@ -875,7 +873,7 @@
                PERFORM T-510-RECECHEK-SEC
                IF  (SPA-GMN-CNV (5)   =   "1")    AND
                    (T-ERR-05          =  SPACE)   AND
-                   (T-HANNTEI6        =   "OK")   AND
+                   (T-HANNTEI6        =   "CH")   AND
                    ((T-HANNTEI7        =  "ER")    OR
                     (T-HANNTEI8        =  "ER"))
                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
@@ -893,7 +891,7 @@
            MOVE    ACCT-PTID    TO  W1-SRY-PTID.
            MOVE    ACCT-SRYKA   TO  W1-SRY-SRYKA.
            MOVE    COMB-HKNNUM  TO  W-COMB-HKNNUM.
-           MOVE    SPACE        TO  T-HANNTEI6.
+           MOVE    "ED"         TO  T-HANNTEI6.
       *
        T-100-RECECHEK-HANTI-EXT.
            EXIT.
@@ -1553,8 +1551,11 @@
                    MOVE    "*"                     TO  T-ERR-04
                ELSE
                    MOVE    MCPDATA-REC             TO  PTINF-REC
-                   IF  (T-ERR-04          =   SPACE)  AND
-                       (SPA-GMN-CNV (4)   =   "1")
+                   IF  (T-ERR-04              =   SPACE)  AND
+      *½¤Àµ/*³«»Ï*03.01.31*********************************************
+                       (PTINF-TSTPTNUMKBN NOT =   "1")    AND
+      *½¤Àµ/*½ªÎ»*03.01.31*********************************************
+                       (SPA-GMN-CNV (4)       =   "1")
                        MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM1
                        MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM2
                        MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM3
@@ -1625,10 +1626,13 @@
                            WRITE   DID2-REC
                            MOVE    "*"               TO  T-ERR-04
                        END-IF
-      *½¤Àµ/*½ªÎ»*03.05.05*********************************************
+      *½¤Àµ/*½ªÎ»*03.02.05*********************************************
                    END-IF
-                   IF  (T-ERR-13           =   SPACE)  AND
-                       (SPA-GMN-CNV (13)   =   "1")
+                   IF  (T-ERR-13               =   SPACE)  AND
+      *½¤Àµ/*³«»Ï*03.01.31*********************************************
+                       (PTINF-TSTPTNUMKBN  NOT =   "1")    AND
+      *½¤Àµ/*½ªÎ»*03.01.31*********************************************
+                       (SPA-GMN-CNV (13)       =   "1")
                        INITIALIZE              ORCSKANACHKAREA
                        MOVE    "1"             TO  KANACHK-SYORI
                        MOVE    PTINF-KANANAME  TO  KANACHK-MAE-INPUT
@@ -1689,6 +1693,60 @@
       *
        T-500-RECECHEK-READ-EXT.
            EXIT.
+      *½¤Àµ/*³«»Ï*03.01.31*********************************************
+      *
+      *******************
+      *
+       T-500-RECECHEK2-SEC               SECTION.
+      *
+           INITIALIZE                  PTINF-REC.
+           MOVE    ACCT-HOSPID         TO  PTINF-HOSPID.
+           MOVE    ACCT-PTID           TO  PTINF-PTID.
+      *
+           MOVE    PTINF-REC           TO  MCPDATA-REC.
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+           IF  MCP-RC   NOT =   ZERO
+               MOVE    SPACE                   TO  DID2-REC
+               MOVE    T-MESSAGE-500-01        TO  DID2-REC(10:90)
+               WRITE   DID2-REC
+               MOVE    SPACE                   TO  DID3-REC
+               MOVE    T-MESSAGE-500-01(1:60)  TO  DID3-REC(1:60)
+               WRITE   DID3-REC
+           ELSE
+               PERFORM T-500-RECECHEK-READ-SEC
+               IF  MCP-RC   NOT =   ZERO
+                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                   MOVE    SPACE                   TO  DID2-REC
+                   MOVE    W1-SRY-HOSPID           TO  DID2-REC(1:24)
+                   MOVE    "-"                     TO  DID2-REC(25:1)
+                   MOVE    W1-SRY-PTID             TO  DID2-REC(26:10)
+                   MOVE    T-MESSAGE-500-02        TO  DID2-REC(71:90)
+                   WRITE   DID2-REC
+                   MOVE    "*"                     TO  T-ERR-04
+                   MOVE    ZERO                    TO  WRK-TSTPTNUMKBN
+               ELSE
+                   MOVE    MCPDATA-REC             TO  PTINF-REC
+                   MOVE    PTINF-TSTPTNUMKBN       TO  WRK-TSTPTNUMKBN
+               END-IF
+           END-IF.
+      *
+           INITIALIZE                  MCPAREA.
+           MOVE    "DBCLOSE"           TO  MCP-FUNC.
+           MOVE    "PTINF-KEY"         TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+       T-500-RECECHEK2-EXT.
+           EXIT.
+      *½¤Àµ/*½ªÎ»*03.01.31*********************************************
       *
       *****************************************************************
       *    ´µ¼ÔÉÂÌ¾¾ðÊó¥Æ¡¼¥Ö¥ë »²¾È½èÍý
@@ -1706,19 +1764,6 @@
            ELSE
                MOVE    ZERO              TO  FLG-RUN
            END-IF.
-      *
-           IF  (FLG-RUN    =   1)      OR
-               (T-ERR-05   =   SPACE)  OR
-               (T-ERR-06   =   SPACE)
-               PERFORM T-510-RECECHEK-CHK1-SEC
-           END-IF.
-      *
-       T-510-RECECHEK-EXT.
-           EXIT.
-      *
-      *******************
-      *
-       T-510-RECECHEK-CHK1-SEC           SECTION.
       *
            MOVE    ACCT-SRYYM          TO  W-YMD4(1:6).
            MOVE    00                  TO  W-YMD4(7:2).
@@ -1771,7 +1816,7 @@
                        WRITE   DID2-REC
                        MOVE    "*"               TO  T-ERR-05
                        MOVE    "*"               TO  T-ERR-07
-                       MOVE    SPACE             TO  T-HANNTEI6
+                       MOVE    "ED"              TO  T-HANNTEI6
                    END-IF
                ELSE
                    PERFORM UNTIL      MCP-RC   NOT  =  ZERO
@@ -1801,7 +1846,7 @@
                                MOVE T-MESSAGE-510-03 TO  DID2-REC(71:90)
                                WRITE   DID2-REC
                                MOVE    "*"           TO  T-ERR-05
-                               MOVE    SPACE         TO  T-HANNTEI6
+                               MOVE    "ED"          TO  T-HANNTEI6
                            END-IF
                            IF  (SPA-GMN-CNV (7)   = "1")          AND
                                (PTBYO-TENKIKBN    = SPACE)        AND
@@ -1861,7 +1906,7 @@
                                END-IF
                            END-IF
                        END-IF
-                       IF  (T-HANNTEI6           =  "OK")       AND
+                       IF  (T-HANNTEI6           =  "CH")       AND
                            (PTBYO-BYOMEI     NOT = SPACE)       AND
                            (PTBYO-SRYYMD(1:6)    = ACCT-SRYYM)  AND
                            (T-ERR-05             = SPACE)
@@ -1871,7 +1916,7 @@
                                MOVE    "ER"           TO  T-HANNTEI7
       *½¤Àµ/*³«»Ï*03.02.07*********************************************
                            ELSE
-                               MOVE    "--"           TO  T-HANNTEI6
+                               MOVE    "ED"           TO  T-HANNTEI6
       *½¤Àµ/*½ªÎ»*03.02.07*********************************************
                            END-IF
                        END-IF
@@ -1905,7 +1950,7 @@
                                        ORCMCPAREA
                                        MCPDATA-REC.
       *
-       T-510-RECECHEK-CHK1-EXT.
+       T-510-RECECHEK-EXT.
            EXIT.
       *
       *******************
@@ -2148,7 +2193,7 @@
                         (SRY-SRYCD (3)   =   "113003710")   OR
                         (SRY-SRYCD (4)   =   "113003710")   OR
                         (SRY-SRYCD (5)   =   "113003710"))
-                       MOVE    "OK"                    TO  T-HANNTEI6
+                       MOVE    "CH"                    TO  T-HANNTEI6
                        MOVE    "ER"                    TO  T-HANNTEI8
                        MOVE    ACCT-DAY-TBL2 (1)       TO  WK-SRYACCT
                    END-IF
