@@ -740,7 +740,8 @@
                                        SPA-R99-CANCEL
            MOVE    SPACE           TO  SPA-RIDCD
            MOVE    SPACE           TO  SPA-RIDCD2      
-           MOVE    ZERO            TO  SPA-R01-JOBCNT       
+           MOVE    ZERO            TO  SPA-R01-JOBCNT
+                                       SPA-R01-STOPFLG    
            .
        340-R99-SET-EXT.
            EXIT.

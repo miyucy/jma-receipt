@@ -239,6 +239,7 @@
        490-CANCEL-SEC            SECTION.
       *
            MOVE    "CAN"           TO  SPA-R99-CANCEL
+           MOVE    1               TO  SPA-R01-STOPFLG
       *
       *    中止フラグのセット
            MOVE    "CHK"           TO  SJOBKANRI-MODE
@@ -353,6 +354,52 @@
            ELSE
                MOVE    "F12:印    刷"      TO  R99-B12-LABEL
            END-IF
+      *
+      *    中止ボタン状態フラグによる中止フラグのセット
+           IF      SPA-R01-STOPFLG =   1
+               MOVE    "CHK"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               IF      SPA-R01-GMNKBN  =   "R02"  OR  "R04"
+                   MOVE    WRK-CONS-JOB-JOBID1
+                                           TO  JOB-JOBID
+                   MOVE    WRK-CONS-JOB-SHELLID1
+                                           TO  JOB-SHELLID
+               ELSE
+                   MOVE    WRK-CONS-JOB-JOBID
+                                           TO  JOB-JOBID
+                   MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  JOB-SHELLID
+               END-IF
+               CALL    "ORCSJOB"       USING
+                                       ORCSJOBKANRIAREA 
+                                       JOBKANRI-REC
+               IF    ( SJOBKANRI-RETURN    =   ZERO )
+               AND   ( JOB-STOPFLG         =   ZERO )
+                   IF    ( SPA-R01-GMNKBN  =   "R02"  OR  "R04"        )
+                   OR    ((SPA-R01-GMNKBN  NOT =   "R02"  OR  "R04" )
+                                                                   AND
+                         ( JOB-ENDYMD          =   SPACE            )  )
+      *                ジョブ管理終了処理
+                       MOVE    "STP"           TO  SJOBKANRI-MODE
+                       INITIALIZE                  JOBKANRI-REC
+                       IF      SPA-R01-GMNKBN  =   "R02"  OR  "R04"
+                           MOVE    WRK-CONS-JOB-JOBID1
+                                                   TO  JOB-JOBID
+                           MOVE    WRK-CONS-JOB-SHELLID1
+                                                   TO  JOB-SHELLID
+                       ELSE
+                           MOVE    WRK-CONS-JOB-JOBID
+                                                   TO  JOB-JOBID
+                           MOVE    WRK-CONS-JOB-SHELLID
+                                                   TO  JOB-SHELLID
+                       END-IF
+                       MOVE    1               TO  JOB-STOPFLG
+                       CALL    "ORCSJOB"       USING
+                                               ORCSJOBKANRIAREA  
+                                               JOBKANRI-REC
+                   END-IF
+               END-IF
+           END-IF    
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
