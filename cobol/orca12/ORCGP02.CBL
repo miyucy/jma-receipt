@@ -3246,6 +3246,9 @@
                WHEN    "0094"
                    MOVE    "適用開始日が保険適用の開始日以前です。"
                                                TO  SPA-ERRMSG
+               WHEN    "0095"
+                   MOVE    "老人公費の場合、全角での入力はできません。"
+                                               TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "日付変換エラーです。"
                                                TO  SPA-ERRMSG

@@ -34,6 +34,7 @@
       * 01.00.05     NACL-多々納  03/04/03  公費変更チェック修正
       * 01.00.06     NACL-多々納  03/07/08  保険者異動日チェック追加
       * 01.00.07     NACL-多々納  03/08/07  公費負担者番号チェック修正
+      * 01.00.08     NACL-多々納  03/09/02  公費自動切替え追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -374,6 +375,11 @@
       *    全角の時、すべてのチェックをはずす
            IF     (KANACHK-RC          =   ZERO  )  AND
                   (KANACHK-SYUBETU     =   2     )
+      *        老人公費の場合、全角はエラーとする
+               IF      SPA-GMN-KOHNUM (IDX-K)  =   "027"
+                   MOVE    "0095"              TO  SPA-ERRCD
+                   MOVE    20                  TO  SPA-GMN-CUR
+               END-IF
                GO      TO      1001-FTNJANUM-CHK-EXT
            END-IF
       *    半角で間に空白がないこと
@@ -850,6 +856,15 @@
                MOVE    "0076"              TO  SPA-ERRCD
                MOVE    22                  TO  SPA-GMN-CUR
            END-IF
+      *    全角の時、すべてのチェックをはずす
+           IF     (KANACHK-RC          =   ZERO  )  AND
+                  (KANACHK-SYUBETU     =   2     )
+      *        老人公費の場合、全角はエラーとする
+               IF      SPA-GMN-KOHNUM (IDX-K)  =   "027"
+                   MOVE    "0095"              TO  SPA-ERRCD
+                   MOVE    22                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF
       *
            .
        1001-JKYSNUM-CHK-EXT.
@@ -1186,6 +1201,8 @@
            IF      WRK-HKN-TEKSTYMD    =   SPACE
                MOVE    WRK-HKN2-TEKSTYMD   TO  WRK-HKN-TEKSTYMD
                MOVE    WRK-HKN2-TEKEDYMD   TO  WRK-HKN-TEKEDYMD
+               MOVE    SPACE               TO  WRK-HKN2-TEKSTYMD
+               MOVE    SPACE               TO  WRK-HKN2-TEKEDYMD
            END-IF
       *    適応期間エラー
       *    保険期間の終了日が変更された時、終了日を自動変更する
@@ -1195,6 +1212,22 @@
                   (WRK-HKN-TEKEDYMD    NOT =   ALL "9"          )
                MOVE    IDX-K                TO  SPA-KOH-IDX1
                MOVE    WRK-HKN-TEKEDYMD     TO  SPA-HKN-TEKEDYMD
+      *
+      *        公費の切替えで次ぎの公費も対象の時、追加とする
+               IF     (WRK-HKN2-TEKSTYMD    NOT =   SPACE   )
+                 AND  (WRK-HKN2-TEKSTYMD    NOT =   WRK-HKN-TEKSTYMD  )
+                 AND  (SPA-NAI-KTEKEDYMD(IDX-K) >=  WRK-HKN2-TEKSTYMD)
+                   MOVE    WRK-HKN2-TEKSTYMD       TO  SPA-HKN2-TEKSTYMD
+                   MOVE    SPA-GMN-KOHNUM(IDX-K)   TO  SPA-HKN2-KOHNUM
+                   IF      SPA-NAI-KTEKEDYMD(IDX-K)
+                                                <=  WRK-HKN2-TEKEDYMD
+                       MOVE    SPA-NAI-KTEKEDYMD(IDX-K)
+                                                   TO  SPA-HKN2-TEKEDYMD
+                   ELSE
+                       MOVE    WRK-HKN2-TEKEDYMD   TO  SPA-HKN2-TEKEDYMD
+                   END-IF
+               END-IF
+      *
                MOVE    SPACE                TO  SPA-PIDMSG
       *
                INITIALIZE                      STS-AREA-DAY
@@ -1796,9 +1829,11 @@
       *
       *    老人公費の時、新規公費を追加する
       *    Ｈ１４．１０改正分のみ
-           IF     (SPA-GMN-KOHNUM (SPA-KOH-IDX1)   =   "027" )  AND
+           IF    ((SPA-GMN-KOHNUM (SPA-KOH-IDX1)   =   "027" )  AND
                   (SPA-NAI-PTKOH-PAYKBN (SPA-KOH-IDX1)
-                                                   =   ZERO  )
+                                                   =   ZERO  ))
+      *        次の開始日がある時、新規追加
+               OR  (SPA-HKN2-TEKSTYMD   NOT =   SPACE  )
                MOVE    1                   TO  SPA-KOH-ADD
                IF     (SPA-KOH-MAX         =   3 )  OR
                       (SPA-KOH-IDX1        =   3 )
@@ -1840,12 +1875,21 @@
            MOVE    ZERO                TO  IDX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-PTKOH-MAX
+      *      老人公費以外
+             IF    SPA-HKN2-TEKSTYMD   NOT =   SPACE
+               IF      SPA-HKN2-KOHNUM     =   SPA-PTKOH-KOHNUM (IDX)
+                   PERFORM 31012-IPN-KOHHEN-SEC
+                   MOVE    SPA-PTKOH-MAX       TO  IDX
+               END-IF
+             ELSE
+      *        老人公費
                IF     (SPA-PTKOH-KOHNUM (IDX)  =   "027" )  AND
                       (SPA-PTKOH-PAYKBN (IDX)  =   ZERO  )  AND
                       (SPA-PTKOH-SAKJOKBN(IDX) =   SPACE )
                    PERFORM 31011-RJN-KOHHEN-SEC
                    MOVE    SPA-PTKOH-MAX       TO  IDX
                END-IF
+             END-IF
            END-PERFORM
       *
            MOVE    ZERO                TO  SPA-KOH-ADD
@@ -1937,10 +1981,57 @@
            EXIT.
       *
       *****************************************************************
+      *    老人公費以外追加編集処理
+      *****************************************************************
+       31012-IPN-KOHHEN-SEC           SECTION.
+      *
+           MOVE    SPA-PTKOH-KOHNUM (IDX)
+                                       TO  SPA-GMN-KOHNUM (IDX-K)
+           MOVE    SPACE               TO  SPA-GMN-KOHKBN (IDX-K)
+           MOVE    SPA-PTKOH-PAYKBN (IDX)
+                                       TO  SPA-NAI-PTKOH-PAYKBN(IDX-K)
+           MOVE    SPA-PTKOH-FTNJANUM (IDX)
+                                       TO  SPA-GMN-FTNJANUM (IDX-K)
+           MOVE    SPA-PTKOH-JKYSNUM (IDX)
+                                       TO  SPA-GMN-JKYSNUM (IDX-K)
+      *    開始日
+           MOVE    SPA-HKN2-TEKSTYMD   TO  WRK-SYMD
+           PERFORM 410112-SEIYMDHEN-SEC
+           MOVE    SPA-HKN2-TEKSTYMD   TO  SPA-NAI-KTEKSTYMD (IDX-K)
+           MOVE    WRK-HENYMD          TO  SPA-GMN-KTEKSTYMD (IDX-K)
+      *    終了日
+           IF      SPA-HKN2-TEKEDYMD   =   ALL "9"
+               MOVE    "9999999"           TO  SPA-GMN-KTEKEDYMD
+                                                                 (IDX-K)
+           ELSE
+               MOVE    SPA-HKN2-TEKEDYMD   TO  WRK-SYMD
+               PERFORM 410112-SEIYMDHEN-SEC
+               MOVE    WRK-HENYMD          TO  SPA-GMN-KTEKEDYMD
+                                                                (IDX-K)
+           END-IF
+           MOVE    SPA-HKN2-TEKEDYMD   TO  SPA-NAI-KTEKEDYMD (IDX-K)
+           MOVE    SPA-SYSYMD          TO  SPA-NAI-KKAKUNINYMD
+                                                              (IDX-K)
+           MOVE    SPA-SYSYMDWH        TO  SPA-GMN-KKAKUNINYMD
+                                                              (IDX-K)
+      *
+           MOVE    SPA-PTKOH-HKN-SBTKBN (IDX)
+                                       TO  SPA-NAI-PTKOH-SBTKBN(IDX-K)
+      *
+           .
+       31012-IPN-KOHHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    老人公費の時、新規公費編集処理（画面内）
       *****************************************************************
        3101-RJN-KOHADD2-SEC           SECTION.
       *
+           IF     SPA-HKN2-TEKSTYMD    NOT =   SPACE
+      *        老人以外の公費追加
+               PERFORM 310111-IPN-KOHADD2-SEC
+               GO      TO      3101-RJN-KOHADD2-EXT
+           END-IF
       *
            INITIALIZE                  SPA-GMN-KOH-TBL (IDX-K)
            MOVE    SPA-GMN-KOHNUM (SPA-KOH-IDX1)
@@ -2020,6 +2111,55 @@
       *
            .
        3101-RJN-KOHADD2-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    老人以外の公費新規公費編集処理（画面内）
+      *****************************************************************
+       310111-IPN-KOHADD2-SEC           SECTION.
+      *
+           INITIALIZE                  SPA-GMN-KOH-TBL (IDX-K)
+           MOVE    SPA-GMN-KOH-TBL (SPA-KOH-IDX1)
+                                       TO  SPA-GMN-KOH-TBL (IDX-K)
+      *
+           INITIALIZE                  SPA-NAI-PTKOH-EDANUM(IDX-K)
+           INITIALIZE                  SPA-NAI-PTKOH-KOHID (IDX-K)
+           INITIALIZE                  SPA-MAE-KOHNUM-G    (IDX-K)
+      *    開始日
+           MOVE    SPA-HKN2-TEKSTYMD   TO  WRK-SYMD
+           PERFORM 410112-SEIYMDHEN-SEC
+           MOVE    SPA-HKN2-TEKSTYMD   TO  SPA-NAI-KTEKSTYMD (IDX-K)
+           MOVE    WRK-HENYMD          TO  SPA-GMN-KTEKSTYMD (IDX-K)
+      *    終了日
+           IF      SPA-HKN2-TEKEDYMD   =   ALL "9"
+               MOVE    "9999999"           TO  SPA-GMN-KTEKEDYMD(IDX-K)
+           ELSE
+               MOVE    SPA-HKN2-TEKEDYMD   TO  WRK-SYMD
+               PERFORM 410112-SEIYMDHEN-SEC
+               MOVE    WRK-HENYMD          TO  SPA-GMN-KTEKEDYMD(IDX-K)
+           END-IF
+           MOVE    SPA-HKN2-TEKEDYMD   TO  SPA-NAI-KTEKEDYMD (IDX-K)
+      *
+           MOVE    SPA-SYSYMD          TO  SPA-NAI-KKAKUNINYMD
+                                                              (IDX-K)
+           MOVE    SPA-SYSYMDWH        TO  SPA-GMN-KKAKUNINYMD
+                                                              (IDX-K)
+      *
+           MOVE    ZERO                TO  SPA-KOH-ADD
+           EVALUATE    IDX-K
+               WHEN    1
+                   MOVE    20              TO  SPA-GMN-CUR
+               WHEN    2
+                   MOVE    26              TO  SPA-GMN-CUR
+               WHEN    3
+                   MOVE    32              TO  SPA-GMN-CUR
+           END-EVALUATE
+           MOVE    1                   TO  FLG-AUTO
+           MOVE    SPA-GMN-CUR         TO  WRK-CUR
+      *
+           .
+       310111-IPN-KOHADD2-EXT.
            EXIT.
       *
       *****************************************************************
