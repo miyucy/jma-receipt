@@ -132,6 +132,7 @@
            COPY    "K06.INC".
            COPY    "K07.INC".
            COPY    "K08.INC".
+           COPY    "K081.INC".
            COPY    "K09.INC".
            COPY    "K10.INC".
            COPY    "K97.INC".
@@ -717,12 +718,16 @@
                MOVE    1                   TO  FLG-UKETUKE
            END-IF
            MOVE    SPACE               TO  WRK-DRCD
+           MOVE    SPACE               TO  WRK-HKNCOMBI
            PERFORM
                    UNTIL       FLG-UKETUKE     =    1
                IF      (UKE-SRYKA          =   SPA-K97-SRYKA  ) AND
                        (UKE-UKEID      NOT =   ZERO     )
                    IF      UKE-KAIKEITIME      =   ZERO
                        MOVE    UKE-DRCD(2:4)       TO  WRK-DRCD
+                       IF      UKE-HKNCOMBI    NOT =   ZERO
+                           MOVE    UKE-HKNCOMBI        TO  WRK-HKNCOMBI
+                       END-IF
                        MOVE    1                   TO  FLG-UKETUKE
                    END-IF
                END-IF
@@ -767,6 +772,11 @@
                    MOVE    WRK-DRCD            TO  SPA-K97-SELNUM3
                    PERFORM 22041-DRCD-CHK-SEC
                END-IF
+           END-IF
+      *
+           IF      WRK-HKNCOMBI    NOT =   SPACE
+               MOVE    WRK-HKNCOMBI        TO  SPA-K97-SELNUM1
+               PERFORM 2202-SELNUM1-CHK-SEC
            END-IF
       *
            .

@@ -81,6 +81,8 @@
       *
       *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
+      *    画面Ｋ０８１スパ領域
+           COPY    "K081SCR-SPA".
       *
       *    画面スパ領域
        01  SPA-K08.
@@ -200,6 +202,8 @@
            03  FLG-SYORI-END       PIC 9(01).
       *
            03  FLG-SYOSIN-OK       PIC 9(01).
+      *
+           03  FLG-SIJISEN         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -429,6 +433,9 @@
       *    労災医療機関情報
            COPY    "CPSK4001.INC".
       *
+      *    入院指示せん設定情報
+           COPY  "CPSK5007.INC".
+      *
       *    ワーク診療行為マスタ−
        01  WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC".
@@ -542,6 +549,15 @@
       *    給付対象外点数編集サブパラメタ
            COPY    "CPORCSSYU40.INC".
       *
+      *    入院指示せんオーダ作成サブ
+           COPY    "CPORCSORDERPRT.INC".
+      *    入院処方箋発行サブ
+           COPY    "CPORCHC501.INC".
+      *    注射処方箋発行サブ
+           COPY    "CPORCHC502.INC".
+      *    入院指示箋発行サブ
+           COPY    "CPORCHC503.INC".
+      *
       *
       *    ＳＰＡパラメタ（ORCSC97.CBL 用のDAMMY)
        01  SPA-SCR-REC.
@@ -577,6 +593,7 @@
            COPY    "K06.INC".
            COPY    "K07.INC".
            COPY    "K08.INC".
+           COPY    "K081.INC".
            COPY    "K09.INC".
            COPY    "K10.INC".
            COPY    "K97.INC".
@@ -700,17 +717,32 @@
                WHEN    "KID1"
       *            確認画面より
                    PERFORM 30010-KID1-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+               WHEN    "K081"
+      *            指示せん発行画面
+                   PERFORM 3014-K081-SET-SEC
+      *
+               WHEN    OTHER
+                   PERFORM 3000-INIT-SCREEN-SEC
            END-EVALUATE
+      *
+           .
+       300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初期画面処理
+      *****************************************************************
+       3000-INIT-SCREEN-SEC          SECTION.
       *
            MOVE    SPACE               TO  SPA-KIDCD
       *
            INITIALIZE                  SPA-K08
            INITIALIZE                  SPA-K08-AREA
-           PERFORM                 310-SPA-SET-SEC
+           PERFORM                     310-SPA-SET-SEC
       *
       *    削除区分設置
            PERFORM 41031-DELFLG-SET-SEC
+      *
       *
            IF      FLG-DEL-ARI         =   ZERO
                MOVE    11              TO  SPA-GMN-CUR
@@ -719,7 +751,7 @@
            END-IF
       *
            .
-       300-SCREEN-EXT.
+       3000-INIT-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -751,6 +783,44 @@
            .
        30010-KID1-SET-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    指示せん発行画面（Ｋ０８１）より処理
+      *****************************************************************
+       3014-K081-SET-SEC                  SECTION.
+      *
+           MOVE    SPA-ETCKYOUTU-AREA  TO  SPA-K081
+      *
+           EVALUATE    SPA-K081-OKFLG
+               WHEN    ZERO
+                   MOVE    1               TO  SPA-GMN-CUR
+               WHEN    1
+      *        登録・発行
+      *            発行有無判定
+                   IF      (SPA-K081GMN-SYOHOU     =   "1" )  OR
+                           (SPA-K081GMN-CHUSYA     =   "1" )  OR
+                           (SPA-K081GMN-SIJISEN    =   "1" )
+                       MOVE    1               TO  FLG-SIJISEN
+                   ELSE
+                       MOVE    ZERO            TO  FLG-SIJISEN
+                   END-IF
+      *            入院更新処理
+                   PERFORM 4502-NYUKOUSIN-SYORI-SEC
+               WHEN    2
+      *        発行のみ
+                   IF      (SPA-K081GMN-SYOHOU     =   "1" )  OR
+                           (SPA-K081GMN-CHUSYA     =   "1" )  OR
+                           (SPA-K081GMN-SIJISEN    =   "1" )
+      *                入院指示せん発行処理
+                       PERFORM 45900-SIJISEN-SYORI-SEC
+                   END-IF
+                   MOVE    1               TO  SPA-GMN-CUR
+           END-EVALUATE
+      *
+           .
+       3014-K081-SET-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    画面編集処理
@@ -933,6 +1003,14 @@
            MOVE    IDX                 TO  WRK-MAX
       *
            CLOSE                       PARA-FILE
+      *
+      *    入院の時、入院指示せんチェク
+           IF      SPA-NYUGAIKBN       =   "1"
+               PERFORM 30001-SIJISEN-CHK-SEC
+           ELSE
+               INITIALIZE                  SPA-K081
+               MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA
+           END-IF
       *
            MOVE    ZERO                TO  IDX4
       *    保険毎にＳＯＲＴする
@@ -1348,12 +1426,8 @@
                INITIALIZE                  SYS-1010-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
                MOVE    SYS-1010-NAME       TO  WRK-DRCD-MEI
@@ -2218,6 +2292,99 @@
        31013-INPUTCD-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入院指示せん発行チェック
+      *****************************************************************
+       30001-SIJISEN-CHK-SEC         SECTION.
+      *
+           INITIALIZE                  SPA-K081
+      *    システム管理検索
+           MOVE    SPACE               TO  SYS-5007-REC
+           INITIALIZE                  SYS-5007-REC
+           MOVE    "5007"              TO  SYS-5007-KANRICD
+           MOVE    "01"                TO  SYS-5007-KBNCD
+           MOVE    SYS-5007-REC        TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SRYYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 960-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-5007-REC
+               INITIALIZE                  SYS-5007-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-5007-REC
+           ELSE
+               INITIALIZE                  SYS-5007-REC
+           END-IF
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      SYS-5007-SIJISENKBN =   "1"
+               MOVE    1               TO  SPA-NAI-SIJISENKBN
+           ELSE
+               MOVE    ZERO            TO  SPA-NAI-SIJISENKBN
+           END-IF
+      *
+      *    診療内容判定
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   WRK-MAX
+               IF     (LNK-WKSRY-SRYKBN (IDX)  =   "21"
+                                               OR  "22"
+                                               OR  "23" )
+                   MOVE    1               TO  SPA-NAI-SYOHOU
+               END-IF
+               IF     (LNK-WKSRY-SRYKBN (IDX)      =   "14" )
+                    PERFORM VARYING     IDX2    FROM    1   BY  1
+                            UNTIL      (IDX2    >   5   )  OR
+                                       (SPA-NAI-SYOHOU  =   1  )
+                       IF      LNK-WKSRY-SRYCD (IDX IDX2)(1:1)
+                                                        =   "6"
+                                                        OR  "7"
+                           MOVE    1               TO  SPA-NAI-SYOHOU
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
+               IF     (LNK-WKSRY-SRYKBN (IDX)  =   "31"
+                                               OR  "32"
+                                               OR  "33" )
+                    PERFORM VARYING     IDX2    FROM    1   BY  1
+                            UNTIL      (IDX2    >   5   )  OR
+                                       (SPA-NAI-CHUSYA  =   1  )
+                       IF      LNK-WKSRY-SRYCD (IDX IDX2)(1:1)
+                                                        =   "6"
+                                                        OR  "7"
+                           MOVE    1               TO  SPA-NAI-CHUSYA
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
+               IF     (LNK-WKSRY-SRYKBN (IDX)    =   "40"
+                                               OR  "80" )
+                    PERFORM VARYING     IDX2    FROM    1   BY  1
+                            UNTIL      (IDX2    >   5   )  OR
+                                       (SPA-NAI-SIJISEN  =   1  )
+                       IF      LNK-WKSRY-SRYCD (IDX IDX2)(1:1)
+                                                        =   "1"
+                           MOVE    1               TO  SPA-NAI-SIJISEN
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+           MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA
+      *
+           .
+       30001-SIJISEN-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    画面遷移処理
@@ -2228,6 +2395,9 @@
       *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
+      *        登録・発行
+               WHEN    "CLICKED"       ALSO    "B10"
+                    PERFORM 4100-TOROKU-PRINT-SEC
       *        登録
                WHEN    "CLICKED"       ALSO    "B12"
                     PERFORM 450-TOROKU-SEC
@@ -2618,6 +2788,22 @@
            MOVE    1                   TO  FLG-END
            .
        450-TOROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    登録・発行　処理
+      *****************************************************************
+       4100-TOROKU-PRINT-SEC             SECTION.
+      *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41001-K081-SYORI-SEC
+           END-IF
+      *
+           .
+       4100-TOROKU-PRINT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3514,12 +3700,8 @@
                MOVE    1               TO  FLG-HKNCOMBI
                INITIALIZE                  HKNCOMBI-REC
            END-IF
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-HKNCOMBI        =   ZERO
       *        本人で通勤災害
                IF     (COMB-HONKZKKBN      =   "1"  )  AND
@@ -3696,12 +3878,8 @@
                        PERFORM 940-SRYACCT-READ-SEC
                    END-PERFORM
       *
-                   MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                    MOVE    "SRYACCT-KEY5"      TO  ORC-DBPATH
-                   CALL    "ORCMCPSUB"          USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
+                   PERFORM 990-DBCLOSE-SEC
                END-PERFORM
            END-IF
       *
@@ -3709,12 +3887,8 @@
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "JYURRK-KEY5"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    IDX-Y               TO  WRK-IDX-Y
            .
@@ -3798,12 +3972,8 @@
                PERFORM 900-SRYACT-NEXT-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        450511-YAKFTN-SRYACT-EXT.
@@ -3889,6 +4059,14 @@
            CALL    "ORCSCNYUIN"        USING
                                        SPA-AREA
                                        ORCSCNYUINAREA
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO     4502-NYUKOUSIN-SYORI-EXT
+           END-IF
+      *
+      *    入院指示せん発行
+           IF      FLG-SIJISEN         =   1
+               PERFORM 45900-SIJISEN-SYORI-SEC
+           END-IF
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO     4502-NYUKOUSIN-SYORI-EXT
            END-IF
@@ -4102,15 +4280,165 @@
                MOVE    "WKSRYACT-KEY6"     TO  ORC-DBPATH
                PERFORM 970-WKSRYACT-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "WKSRYACT-KEY6"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        4900-WKSRYACT-CLEAR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院指示せん指示画面へ（Ｋ０８１）
+      *****************************************************************
+       41001-K081-SYORI-SEC             SECTION.
+      *
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  SPA-MOTOPG
+      *
+           MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-K08             TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGK081"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-K08
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           MOVE    SPA-ETCKYOUTU-AREA  TO  SPA-K081
+      *
+           MOVE    "K081"              TO  SPA-SAKIPG
+           MOVE    "K08"               TO  SPA-MOTOPG
+      *
+           MOVE    "K08"               TO  SPA-ETC-MOTOPG
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    "B12"               TO  MCP-WIDGET
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "K081"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       41001-K081-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院指示せん発行処理
+      *****************************************************************
+       45900-SIJISEN-SYORI-SEC             SECTION.
+      *
+      *    入院指示せんオーダーデータ作成
+           INITIALIZE                  ORCSORDERPRTAREA
+           MOVE    "K08"               TO  LNK-ORDERPRT-PG
+      *    パラメタより
+           MOVE    2                   TO  LNK-ORDERPRT-KBN
+      *
+           IF      SPA-K081GMN-SYOHOU  =   "1"
+               MOVE    1                   TO  LNK-ORDERPRT-SYOHOU
+           END-IF
+           IF      SPA-K081GMN-CHUSYA  =   "1"
+               MOVE    1                   TO  LNK-ORDERPRT-CHUSYA
+           END-IF
+           IF      SPA-K081GMN-SIJISEN =   "1"
+               MOVE    1                   TO  LNK-ORDERPRT-SIJISEN
+           END-IF
+           IF      SPA-K081GMN-DRCD    NOT =   SPACE
+               MOVE    "1"                 TO  LNK-ORDERPRT-DRCD(1:1)
+               MOVE    SPA-K081GMN-DRCD    TO  LNK-ORDERPRT-DRCD(2:4)
+           END-IF
+           CALL    "ORCSORDERPRT"      USING
+                                       ORCSORDERPRTAREA
+                                       SPA-AREA
+           IF      LNK-ORDERPRT-RCD    NOT =   ZERO
+               MOVE    "1200"              TO  SPA-ERRCD
+           END-IF
+      *
+      *    入院処方箋印刷
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-K081GMN-SYOHOU  =   "1"    )
+               INITIALIZE              ORCHC501AREA
+               MOVE    SPA-PTNUM           TO  ORCHC501-PTNUM
+               MOVE    SPA-SYSYMD          TO  ORCHC501-SYSYMD
+               MOVE    SPA-SRYKA           TO  ORCHC501-SRYKA
+               MOVE    SPA-HKNCOMBINUM     TO  ORCHC501-HKNCOMBI
+               MOVE    LNK-ORDERPRT-PRINTYMD   TO  ORCHC501-PRINTYMD
+               MOVE    LNK-ORDERPRT-PRINTHMS   TO  ORCHC501-PRINTHMS
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   4
+                   IF      SPA-K081GMN-CHK1KBN (IDX)   =   "1"
+                       MOVE    1               TO  ORCHC501-CHKPRT(IDX)
+                   END-IF
+               END-PERFORM
+               CALL    "ORCHC501"          USING
+                                           SPA-AREA
+                                           ORCHC501AREA
+               IF      ORCHC501-RC         NOT =   ZERO
+                   MOVE    "1201"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *    注射処方箋印刷
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-K081GMN-CHUSYA  =   "1"    )
+               INITIALIZE                  ORCHC502AREA
+               MOVE    SPA-PTNUM           TO  ORCHC502-PTNUM
+               MOVE    SPA-SYSYMD          TO  ORCHC502-SYSYMD
+               MOVE    SPA-SRYKA           TO  ORCHC502-SRYKA
+               MOVE    SPA-HKNCOMBINUM     TO  ORCHC502-HKNCOMBI
+               MOVE    LNK-ORDERPRT-PRINTYMD   TO  ORCHC502-PRINTYMD
+               MOVE    LNK-ORDERPRT-PRINTHMS   TO  ORCHC502-PRINTHMS
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   4
+                   IF      SPA-K081GMN-CHK2KBN (IDX)   =   "1"
+                       MOVE    1               TO  ORCHC502-CHKPRT(IDX)
+                   END-IF
+               END-PERFORM
+               CALL    "ORCHC502"          USING
+                                           SPA-AREA
+                                           ORCHC502AREA
+               IF      ORCHC502-RC         NOT =   ZERO
+                   MOVE    "1201"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *    指示せん印刷
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-K081GMN-SIJISEN =   "1"    )
+               INITIALIZE              ORCHC503AREA
+               MOVE    SPA-PTNUM           TO  ORCHC503-PTNUM
+               MOVE    SPA-SYSYMD          TO  ORCHC503-SYSYMD
+               MOVE    SPA-SRYKA           TO  ORCHC503-SRYKA
+               MOVE    SPA-HKNCOMBINUM     TO  ORCHC503-HKNCOMBI
+               MOVE    LNK-ORDERPRT-PRINTYMD   TO  ORCHC503-PRINTYMD
+               MOVE    LNK-ORDERPRT-PRINTHMS   TO  ORCHC503-PRINTHMS
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   4
+                   IF      SPA-K081GMN-CHK3KBN (IDX)   =   "1"
+                       MOVE    1               TO  ORCHC503-CHKPRT(IDX)
+                   END-IF
+               END-PERFORM
+               CALL    "ORCHC503"          USING
+                                           SPA-AREA
+                                           ORCHC503AREA
+               IF      ORCHC503-RC         NOT =   ZERO
+                   MOVE    "1201"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       45900-SIJISEN-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4305,6 +4633,20 @@
                MOVE    "red"               TO  K08-MSGDATA-STYLE
            END-IF
       *
+      *    登録・発行
+           MOVE    SPACE               TO  K08-B10-LABEL
+           MOVE    WIDGET-INSENSITIVE  TO  K08-B10-STATE
+           IF      SPA-NYUGAIKBN       =   "1"
+               MOVE    SPA-ETCKYOUTU-AREA  TO  SPA-K081
+               IF     (SPA-NAI-SIJISENKBN  =   1  )  AND
+                     ((SPA-NAI-SYOHOU      =   1 )  OR
+                      (SPA-NAI-CHUSYA      =   1 )  OR
+                      (SPA-NAI-SIJISEN     =   1 ))
+      *            入院指示せん発行あり
+                   MOVE    "登録・発行"        TO  K08-B10-LABEL
+                   MOVE    WIDGET-NORMAL       TO  K08-B10-STATE
+               END-IF
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -4403,6 +4745,14 @@
                                        TO  SPA-ERRMSG
                    MOVE    "訂正できません。"
                                        TO  SPA-ERRMSG(31:)
+      *!
+               WHEN    "1200"
+                   MOVE    "入院帳票オーダマスタ更新エラー。"
+                                       TO  SPA-ERRMSG
+               WHEN    "1201"
+                   MOVE    "入院帳票が印刷エラーです。"
+                                       TO  SPA-ERRMSG
+      *!
                WHEN    OTHER
                    MOVE    SPA-ERRCD   TO  SPA-ERRMSG
            END-EVALUATE
@@ -4511,12 +4861,8 @@
                INITIALIZE                  SYS-4001-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        4500-RSI-SYSKANRI-EXT.
@@ -4556,12 +4902,8 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        910-TENSU-READ-EXT.
@@ -4644,12 +4986,8 @@
                MOVE    1                   TO  FLG-INPUTCD
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "INPUTCD-KEY"       TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        930-INPUTCD-NEXT-EXT.
@@ -4760,6 +5098,7 @@
            .
        960-SYSKANRI-READ-EXT.
            EXIT.
+      *****************************************************************
       *    ワーク診療行為データ次読込
       *****************************************************************
        970-WKSRYACT-READ-SEC         SECTION.
@@ -4781,6 +5120,20 @@
        970-WKSRYACT-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ＤＢＣＬＯＳＥ処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
       *
       *****************************************************************
       *    排他制御解除処理

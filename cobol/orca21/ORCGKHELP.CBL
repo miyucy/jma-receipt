@@ -46,7 +46,7 @@
            COPY    "K01COMMON-SPA".
       *
       *    画面スパ領域
-      **** COPY    "K02SCR-SPA".
+           COPY    "KHELPSCR-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -89,6 +89,12 @@
       *    コラムリスト位置
            03  WRK-KHELP-ROW           PIC S9(09).
       *
+           03  WRK-MCP-PATH.
+               05  WRK-MCP-BLOCKS      PIC S9(9)   BINARY.
+               05  WRK-MCP-RNAME       PIC S9(9)   BINARY.
+               05  WRK-MCP-PNAME       PIC S9(9)   BINARY.
+      *
+      *
        01  WRK-TBLMAX                  PIC 9(04)   VALUE    100.
       *
       *    業務名
@@ -119,6 +125,8 @@
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
+           COPY    "ORCA-DBPATH".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -145,6 +153,7 @@
            COPY    "K06.INC".
            COPY    "K07.INC".
            COPY    "K08.INC".
+           COPY    "K081.INC".
            COPY    "K09.INC".
            COPY    "K10.INC".
            COPY    "K97.INC".
@@ -172,11 +181,13 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
-           MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-WORK        TO  SPA-K01KYOUTU
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *    ヘルプ・発行指示共通
+           MOVE    SPA-ETCKYOUTU-AREA  TO  SPA-KHELP
       *
-           MOVE    SPACE           TO  SPA-ERRCD
-           MOVE    ZERO            TO  FLG-END
+           MOVE    SPACE               TO  SPA-ERRCD
+           MOVE    ZERO                TO  FLG-END
       *
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -194,8 +205,9 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-           MOVE    SPA-K01KYOUTU   TO  SPA-WORK
-           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-KHELP           TO  SPA-ETCKYOUTU-AREA
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
       *
            .
            EXIT    PROGRAM
@@ -289,21 +301,16 @@
            MOVE    SPA-KHELP-LDNAME    TO  HELP-LDNAME
       *
            IF      SPA-KHELP-MENUNUM1  =   ZERO
-               MOVE    "HELP-KEY1"         TO  WRK-ORC-DBPATH
+               MOVE    PATH-TBL-HELP-KEY1  TO  WRK-MCP-PATH
            ELSE
                MOVE    SPA-KHELP-MENUNUM1  TO  HELP-MENUNUM1
-               MOVE    "HELP-KEY2"         TO  WRK-ORC-DBPATH
+               MOVE    PATH-TBL-HELP-KEY2  TO  WRK-MCP-PATH
            END-IF
       *
            MOVE    HELP-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 900-HELP-READ-SEC
            ELSE
                INITIALIZE                  HELP-REC
@@ -339,15 +346,12 @@
                    MOVE    HELP-MENUNUM2   TO  SPA-KHELP-TMENUNUM2(IDX)
                END-IF
       *
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+               MOVE    WRK-MCP-PATH        TO  MCP-PATH
                PERFORM 900-HELP-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    WRK-MCP-PATH        TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
+      *
       *    次頁判定
            IF     (IDX                 >=  WRK-TBLMAX )  AND
                   (FLG-HELP            =   ZERO)
@@ -605,17 +609,10 @@
            MOVE    SPA-KHELP-MENUNUM1  TO  HELP-MENUNUM1
            MOVE    SPA-KHELP-MENUNUM2  TO  HELP-MENUNUM2
       *
-           MOVE    "HELP-KEY3"         TO  WRK-ORC-DBPATH
-      *
            MOVE    HELP-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
                PERFORM 900-HELP-READ-SEC
            ELSE
                INITIALIZE                  HELP-REC
@@ -626,16 +623,12 @@
                ADD     1                   TO  IDX-H
                MOVE    HELP-HELP           TO  WRK-HELP (IDX-H)
       *
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+               MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
                PERFORM 900-HELP-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    PATH-TBL-HELP-KEY3  TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        4021-MENUNUM2-SYORI-EXT.
@@ -726,17 +719,11 @@
            MOVE    WRK-INPUT-MENU
                                        TO  HELP-MENU
       *
-           MOVE    "HELP-KEY4"         TO  WRK-ORC-DBPATH
-      *
            MOVE    HELP-REC            TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    PATH-TBL-HELP-KEY4  TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+               MOVE    PATH-TBL-HELP-KEY4  TO  MCP-PATH
                PERFORM 900-HELP-READ-SEC
            ELSE
                INITIALIZE                  HELP-REC
@@ -772,15 +759,11 @@
                    MOVE    HELP-MENUNUM2   TO  SPA-KHELP-TMENUNUM2(IDX)
                END-IF
       *
-               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+               MOVE    PATH-TBL-HELP-KEY4  TO  MCP-PATH
                PERFORM 900-HELP-READ-SEC
            END-PERFORM
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+           MOVE    PATH-TBL-HELP-KEY4  TO  MCP-PATH
+           PERFORM 990-DBCLOSE-SEC
       *    次頁判定
            IF     (IDX                 >=  300 )  AND
                   (FLG-HELP            =   ZERO)
@@ -819,12 +802,14 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           IF      SPA-KHELP-MOTOPG    =   SPACE
+           IF      SPA-ETC-MOTOPG      =   SPACE
                MOVE    "K02"               TO  SPA-SAKIPG
            ELSE
-               MOVE    SPA-KHELP-MOTOPG    TO  SPA-SAKIPG
+               MOVE    SPA-ETC-MOTOPG      TO  SPA-SAKIPG
            END-IF
            MOVE    "KHELP"             TO  SPA-MOTOPG
+      *
+           INITIALIZE                  SPA-HELP-AREA
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
@@ -1028,11 +1013,10 @@
       *****************************************************************
        900-HELP-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HELP-REC
                MOVE    ZERO            TO  FLG-HELP
@@ -1043,6 +1027,35 @@
       *
            .
        900-HELP-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    ZERO            TO  MCP-RC
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC           SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************
