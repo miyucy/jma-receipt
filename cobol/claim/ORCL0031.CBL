@@ -47,7 +47,7 @@
       *    SELECT  SRYKBN-FILE     ASSIGN  "SRYKBNNAME.TXT,T"
       *                            FILE    STATUS  IS  STS-SRYKBN.
       *    ÊÝ¸±¾ðÊó
-           SELECT  LF03-FILE       ASSIGN  "/var/tmp/LF03"
+           SELECT  LF03-FILE       ASSIGN  "/var/tmp/LF03V01"
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  LF03-KEY
@@ -522,8 +522,10 @@
       *
            MOVE    WRK-HOSPID          TO  LF03-HOSPID
            MOVE    WRK-PTID            TO  LF03-PTID
+           MOVE    WRK-SRYKA           TO  LF03-SRYKA
            DISPLAY "LF03-HOSPID = " "[" LF03-HOSPID "]"
            DISPLAY "LF03-PTID = " "[" LF03-PTID "]"
+           DISPLAY "LF03-SRYKA = " "[" LF03-SRYKA "]"
            PERFORM 900-LF03-READ-SEC
            IF      FLG-LF03        =   1
                DISPLAY "*** ORCL0031 LF03 INVALID ***"

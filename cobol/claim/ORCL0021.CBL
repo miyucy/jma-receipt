@@ -39,7 +39,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *    
-           SELECT  LF03-FILE       ASSIGN  "/var/tmp/LF03"
+           SELECT  LF03-FILE       ASSIGN  "/var/tmp/LF03V01"
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  LF03-KEY
@@ -366,6 +366,7 @@
       *
            MOVE    LNK-HOSPID      TO  LF03-HOSPID
            MOVE    LNK-PTID        TO  LF03-PTID
+           MOVE    LNK-SRYKA       TO  LF03-SRYKA
            PERFORM 900-LF03-READ-SEC
            IF      FLG-LF03        =   1
                DISPLAY "*** ORCL0021 LF03 INVALID ***"

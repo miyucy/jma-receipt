@@ -14,6 +14,8 @@
       *
                05  LF03-PTID            PIC 9(10).
       *
+               05  LF03-SRYKA           PIC X(02).
+      *
            03  LF03-UID-NEW             PIC X(36).
       *
            03  LF03-UID-OLD             PIC X(36).

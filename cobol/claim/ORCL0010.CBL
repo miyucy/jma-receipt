@@ -11,6 +11,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     03.01.28  ファイル名に診療科を追加 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -35,6 +36,7 @@
        01  FILE-NAME.
            03                      PIC X(14)  VALUE  "/var/tmp/claim".   
            03  FILE-PTID           PIC 9(10).   
+           03  FILE-SRYKA          PIC X(02).   
            03                      PIC X(04)  VALUE  ".txt".   
 018000*    フラグ領域
        01  STS-AREA.
@@ -153,6 +155,9 @@
                                                WRK-LF01-REC
       *
            MOVE    WRK-PARA-PTID       TO  FILE-PTID
+      *-->  01.00.01  ADD START
+           MOVE    WRK-PARA-SRYKA      TO  FILE-SRYKA
+      *-->  01.00.01  ADD END
            OPEN    OUTPUT    LF01-FILE
            MOVE    WRK-LF01-REC        TO  LF01-REC
            WRITE   LF01-REC

@@ -40,7 +40,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *    
-           SELECT  LF03-FILE       ASSIGN  "/var/tmp/LF03"
+           SELECT  LF03-FILE       ASSIGN  "/var/tmp/LF03V01"
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  LF03-KEY
@@ -521,6 +521,7 @@
            INITIALIZE                  FLG-AREA
            MOVE    LNK-HOSPID      TO  LF03-HOSPID
            MOVE    LNK-PTID        TO  LF03-PTID
+           MOVE    LNK-SRYKA       TO  LF03-SRYKA
            DISPLAY "LD03 READ START "
            PERFORM 900-LF03-READ-SEC
            IF      FLG-LF03        =   1
@@ -529,6 +530,7 @@
                INITIALIZE                  LF03-REC
                MOVE    LNK-HOSPID      TO  LF03-HOSPID
                MOVE    LNK-PTID        TO  LF03-PTID
+               MOVE    LNK-SRYKA       TO  LF03-SRYKA
            END-IF
            .
        100-INIT-EXT.
