@@ -37,7 +37,7 @@
                 04  J023-HKNCOMBI.
                   05  J023-VALUE  PIC X(55).
                 04  J023-HKNCOMBI-COUNT  PIC S9(9)   BINARY.
-                04  J023-HKNCOMBI-ITEM   PIC X(55)   OCCURS  10 TIMES.
+                04  J023-HKNCOMBI-ITEM   PIC X(55)   OCCURS  30 TIMES.
               03  J023-SCROLLEDWINDOW1.
                 04  J023-RECELIST.
                   05  J023-RECE-COUNT  PIC S9(9)   BINARY.
@@ -55,9 +55,9 @@
                 04  J023-JYURRK-COUNT  PIC S9(9)   BINARY.
                 04  J023-JYURRK-ROW  PIC S9(9)   BINARY.
                 04  J023-JYURRK-ROWATTR  PIC S9(9)   BINARY.
-                04  J023-ITEM       OCCURS  5 TIMES.
+                04  J023-ITEM       OCCURS 10 TIMES.
                   05  J023-TJYURRKNUM     PIC X(2).
                   05  J023-TJYURRKYMD     PIC X(10).
-                04  J023-JYURRK-SELECT PIC X       OCCURS  5 TIMES.
+                04  J023-JYURRK-SELECT PIC X       OCCURS  10 TIMES.
               03  J023-JYURRKNUM.
                 04  J023-VALUE  PIC S9(2).

@@ -248,13 +248,13 @@
                    07  SPA-J023-HKNCOMBY1       PIC X(01).
                    07  SPA-J023-HKNCOMBIMEI     PIC X(50).
                05  SPA-J023-HKNCOMB-COMB.
-                   07  SPA-J023-HKN-LIST    OCCURS  10.
+                   07  SPA-J023-HKN-LIST    OCCURS  30.
                        09  SPA-J023-THKNCOMBINUM    PIC X(04).
                        09  SPA-J023-THKNCOMBY1      PIC X(01).
                        09  SPA-J023-THKNCOMBIMEI    PIC X(50).
                    07  SPA-J023-HKNMAX              PIC 9(04).
       *            Ï«ºÒÊÝ¸±¶èÊ¬
-                   07  SPA-J023-RSI-THKNKBN-OCC  OCCURS  10.
+                   07  SPA-J023-RSI-THKNKBN-OCC  OCCURS  30.
                        09  SPA-J023-RSI-THKNKBN     PIC X(01).
                05  SPA-J023-RSI-HKNKBN         PIC X(01).
       *
