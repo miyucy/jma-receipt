@@ -1219,6 +1219,52 @@
                     MOVE  IDX4  TO  LNK-NYURECEDEN-SKJ-MEISAISU(IDX2)
                 END-IF
            END-PERFORM
+      *    レセ電サブ返却エリアへの食事セット（特別食加算）
+           PERFORM    VARYING   IDX1   FROM  1  BY  1
+                      UNTIL     (IDX1   >     31)
+                IF    WRK-SKJ3-TOKU-SHOKU(IDX1)   NOT =  SPACE
+                    ADD    1     TO    IDX2
+                    MOVE  WRK-SKJ3-HKNCOMBI-DAY(IDX1) TO
+                                    WRK-HKNCOMBI-9
+                    MOVE  "0"       TO   WRK-HKNCOMBI-X
+                    MOVE   WRK-HKNCOMBI-TAIHI  TO
+                                    LNK-NYURECEDEN-SKJ-HKNCOMBI(IDX2)
+                    MOVE   "SI"   TO
+                                  LNK-NYURECEDEN-SKJ-RECSKB(IDX2 1)
+                    MOVE   "97"   TO
+                                  LNK-NYURECEDEN-SKJ-SRYSKB(IDX2 1)
+                    MOVE   WRK-SKJ3-TOKU-SHOKU(IDX1)  TO
+                                  LNK-NYURECEDEN-SKJ-SRYCD(IDX2 1)
+                    MOVE  350  TO
+                                LNK-NYURECEDEN-SKJ-TEN(IDX2 1)
+                    MOVE  WRK-SKJ3-KAISU(IDX1)  TO
+                                  LNK-NYURECEDEN-SKJ-KAISU(IDX2 1)
+                    MOVE  1   TO  LNK-NYURECEDEN-SKJ-MEISAISU(IDX2)
+                END-IF
+           END-PERFORM
+      *    レセ電サブ返却エリアへの食事セット（複数献立加算）
+           PERFORM    VARYING   IDX1   FROM  1  BY  1
+                      UNTIL     (IDX1   >     31)
+                IF    WRK-SKJ2-FUKUSU(IDX1)   NOT =  SPACE
+                    ADD    1     TO    IDX2
+                    MOVE  WRK-SKJ2-HKNCOMBI-DAY(IDX1) TO
+                                    WRK-HKNCOMBI-9
+                    MOVE  "0"       TO   WRK-HKNCOMBI-X
+                    MOVE   WRK-HKNCOMBI-TAIHI  TO
+                                    LNK-NYURECEDEN-SKJ-HKNCOMBI(IDX2)
+                    MOVE   "SI"   TO
+                                  LNK-NYURECEDEN-SKJ-RECSKB(IDX2 1)
+                    MOVE   "97"   TO
+                                  LNK-NYURECEDEN-SKJ-SRYSKB(IDX2 1)
+                    MOVE   WRK-SKJ2-FUKUSU(IDX1)  TO
+                                  LNK-NYURECEDEN-SKJ-SRYCD(IDX2 1)
+                    MOVE   50  TO
+                                LNK-NYURECEDEN-SKJ-TEN(IDX2 1)
+                    MOVE  WRK-SKJ2-KAISU(IDX1)  TO
+                                  LNK-NYURECEDEN-SKJ-KAISU(IDX2 1)
+                    MOVE  1   TO  LNK-NYURECEDEN-SKJ-MEISAISU(IDX2)
+                END-IF
+           END-PERFORM
       *
            .
        200-MAIN-EXT.
