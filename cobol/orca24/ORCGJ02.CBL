@@ -323,6 +323,11 @@
            03  WRK-ZZZ-X.
                05  WRK-ZZZ             PIC ZZZ.
       *
+           03  WRK-Z9-X.
+               05  WRK-Z9              PIC Z9.
+           03  WRK-ZZ9-X.
+               05  WRK-ZZ9             PIC ZZ9.
+      *
            03  WRK-HENNYMD             PIC X(22).
       *
            03  WRK-IDX                 PIC 9(04).
@@ -2067,11 +2072,11 @@
            END-PERFORM
       *    合計
            IF      SPA-NAI-ZAIKAISU(IDX)   >=  100
-               MOVE    SPA-NAI-ZAIKAISU(IDX)   TO  WRK-ZZZ
-               MOVE    WRK-ZZZ-X               TO  SPA-GMN-TDAYGOK(IDG)
+               MOVE    SPA-NAI-ZAIKAISU(IDX)   TO  WRK-ZZ9
+               MOVE    WRK-ZZ9-X               TO  SPA-GMN-TDAYGOK(IDG)
            ELSE
-               MOVE    SPA-NAI-ZAIKAISU(IDX)   TO  WRK-ZZ
-               MOVE    WRK-ZZ-X                TO  SPA-GMN-TDAYGOK(IDG)
+               MOVE    SPA-NAI-ZAIKAISU(IDX)   TO  WRK-Z9
+               MOVE    WRK-Z9-X                TO  SPA-GMN-TDAYGOK(IDG)
            END-IF
       *
       *    診療科が全科の時、次の行へ科名称を編集
@@ -4681,11 +4686,11 @@
                END-PERFORM
                MOVE    WRK-ZAIKAISU        TO  SPA-NAI-ZAIKAISU (IDX)
                IF      SPA-NAI-ZAIKAISU (IDX)  >=  100
-                   MOVE    SPA-NAI-ZAIKAISU (IDX)  TO  WRK-ZZZ
-                   MOVE    WRK-ZZZ-X           TO  SPA-GMN-TDAYGOK(IDG)
+                   MOVE    SPA-NAI-ZAIKAISU (IDX)  TO  WRK-ZZ9
+                   MOVE    WRK-ZZ9-X           TO  SPA-GMN-TDAYGOK(IDG)
                ELSE
-                   MOVE    SPA-NAI-ZAIKAISU (IDX)  TO  WRK-ZZ
-                   MOVE    WRK-ZZ-X            TO  SPA-GMN-TDAYGOK(IDG)
+                   MOVE    SPA-NAI-ZAIKAISU (IDX)  TO  WRK-Z9
+                   MOVE    WRK-Z9-X            TO  SPA-GMN-TDAYGOK(IDG)
                END-IF
            END-PERFORM
            .
@@ -6057,11 +6062,11 @@
            END-PERFORM
            MOVE    WRK-ZAIKAISU        TO  SPA-NAI-ZAIKAISU (IDX)
            IF      SPA-NAI-ZAIKAISU (IDX)  >=   100
-               MOVE    SPA-NAI-ZAIKAISU (IDX)  TO  WRK-ZZZ
-               MOVE    WRK-ZZZ-X               TO  SPA-GMN-TDAYGOK(IDG)
+               MOVE    SPA-NAI-ZAIKAISU (IDX)  TO  WRK-ZZ9
+               MOVE    WRK-ZZ9-X               TO  SPA-GMN-TDAYGOK(IDG)
            ELSE
-               MOVE    SPA-NAI-ZAIKAISU (IDX)   TO  WRK-ZZ
-               MOVE    WRK-ZZ-X                 TO  SPA-GMN-TDAYGOK(IDG)
+               MOVE    SPA-NAI-ZAIKAISU (IDX)   TO  WRK-Z9
+               MOVE    WRK-Z9-X                 TO  SPA-GMN-TDAYGOK(IDG)
            END-IF
       *
       *    合計回数の再表示
