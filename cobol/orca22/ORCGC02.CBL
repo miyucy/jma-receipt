@@ -412,6 +412,7 @@
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-C02FREE
+           MOVE    SPA-WORK        TO  SPA-C01KYOUTU
       *
       *    ²èÌÌ£Ó£Ð£ÁÆÉ¤ß¹þ¤ß
            PERFORM 1002-C02SPA-SET-SEC
@@ -591,9 +592,11 @@
                END-IF
       *                      
                MOVE    SPA-MOTOPG          TO  SPA-MOTOPG2
+      *
+               INITIALIZE              SPA-C01KYOUTU
            END-IF
       *
-           MOVE    SPA-WORK        TO  SPA-C01KYOUTU
+      *****MOVE    SPA-WORK        TO  SPA-C01KYOUTU
       *
            EVALUATE    SPA-MOTOPG(1:3)
                WHEN    "C03"
