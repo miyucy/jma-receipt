@@ -47,6 +47,8 @@
       *  01.00.13    NACL-太田    03.04.02  負担金計算サブ引数修正
       *  01.00.14    NACL-太田    03.04.08  患者登録への遷移を追加
       *  01.00.15    NACL-太田    03.04.09  保険組合せの取得方法修正
+      *  01.00.16    NACL-太田    03.05.08  入院歴表示の自院歴退院日の
+      *                                     編集を修正（入院中対応）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2628,6 +2630,12 @@
       *
                MOVE    PTNYUINRRK-TAIINYMD
                                    TO  SPA-NAI-I01-TTAIINYMD (IDX1)
+           END-IF
+      *
+           IF    ( PTNYUINRRK-JTIKBN       =   "6" )
+            AND  ( PTNYUINRRK-NYUINCHUKBN  =   "1" )
+               MOVE    "*"         TO  SPA-GMN-I01-TTAIINYMD (IDX1)
+                                                             (10:)
            END-IF
       *
       *    通算対象日数

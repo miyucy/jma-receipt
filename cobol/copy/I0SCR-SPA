@@ -155,7 +155,7 @@
       *            Æþ±¡Æü
                    13  SPA-GMN-I01-TNYUINYMD       PIC X(9).
       *            Âà±¡Æü
-                   13  SPA-GMN-I01-TTAIINYMD       PIC X(9).
+                   13  SPA-GMN-I01-TTAIINYMD       PIC X(11).
       *            Æþ±¡²Ê
                    13  SPA-GMN-I01-TNYUINKA        PIC X(20).
       *            ÉÂÌ¾
@@ -465,7 +465,19 @@
       *          Æþ±¡´ðËÜÎÁ
                  11  SPA-GMN-I03-KHNRYO            PIC X(50).
       *          ÍúÎò¶èÊ¬
-                 11  SPA-GMN-I03-RRKKBN            PIC X(10).
+                 11  SPA-GMN-I03-RRKKBN.
+                     13  SPA-GMN-I03-RRKKBN-CD     PIC X(01).
+                     13                            PIC X(01).
+                     13  SPA-GMN-I03-RRKKBN-NM     PIC X(08).
+      *
+      *          Æþ±¡Ãæ¶èÊ¬
+                 11  SPA-GMN-I03-NYUINCHUKBN.
+                     13  SPA-GMN-I03-NYUINCHUKBN-CD
+                                                   PIC X(01).
+                     13                            PIC X(01).
+                     13  SPA-GMN-I03-NYUINCHUKBN-NM
+                                                   PIC X(08).
+                 11  SPA-GMN-I03-NYUINCHUKBN-STT   PIC S9(9)   BINARY.
       *
       *        ²èÌÌÆþÎÏÉôÎÎ°è
                09  SPA-NAI-I03-INPUT-AREA.
@@ -477,8 +489,6 @@
                  11  SPA-NAI-I03-TAIINYMD          PIC X(08).
                  11  SPA-NAI-I03-TAIINYMD-MAE      PIC X(09).
                  11  SPA-NAI-I03-TAIINYMD-ERRCD    PIC X(04).
-      *          ÍúÎò¶èÊ¬
-                 11  SPA-NAI-I03-RRKKBN            PIC X(1).
       *
       *        ²èÌÌ¥³¥ó¥Ü¥Ç¡¼¥¿ÎÎ°è
                09  SPA-GMN-I03-CMB-DAT-AREA.
@@ -489,6 +499,18 @@
                                            OCCURS  2
                                            INDEXED BY  CMB-IDX11.
                  11  SPA-GMN-I03-SHOKAI-ITM-STT    PIC S9(9)   BINARY.
+                 11  SPA-GMN-I03-CMB-RRKKBN.
+                   13  SPA-GMN-I03-RRKKBN-CNT      PIC S9(9)
+                                                   BINARY.
+                   13  SPA-GMN-I03-RRKKBN-ITM PIC X(10)
+                                           OCCURS  2.
+                 11  SPA-GMN-I03-CMB-NYUINCHUKBN.
+                   13  SPA-GMN-I03-NYUINCHUKBN-CNT PIC S9(9)
+                                                   BINARY.
+                   13  SPA-GMN-I03-NYUINCHUKBN-ITM PIC X(10)
+                                           OCCURS  2.
+                 11  SPA-GMN-I03-NYUINCHUKBN-ITM-STT
+                                                   PIC S9(9)   BINARY.
       *
       *    ²èÌÌ¥¹¥ÑÎÎ°è
          03  SPA-I04.

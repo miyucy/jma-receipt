@@ -119,7 +119,7 @@
                     07  I01-TBTUNAME               PIC X(20).
                     07  I01-TBRMNUM                PIC X(6).
                     07  I01-TNYUINYMD              PIC X(9).
-                    07  I01-TTAIINYMD              PIC X(9).
+                    07  I01-TTAIINYMD              PIC X(11).
                     07  I01-TNYUINKA               PIC X(20).
                     07  I01-TBYOMEI                PIC X(40).
                     07  I01-TTENKI                 PIC X(4).

@@ -35,5 +35,18 @@
               04  I03-BYOMEI               PIC X(50)
                                            OCCURS  5.
               04  I03-KHNRYO               PIC X(50).
-              04  I03-RRKKBN               PIC X.
-              04  I03-RRKKBN-LBL           PIC X(10).
+              04  I03-CMB-RRKKBN.
+                05  I03-RRKKBN             PIC X(10).
+                05  I03-RRKKBN-CNT         PIC S9(9)
+                                           BINARY.
+                05  I03-RRKKBN-ITM         PIC X(10)
+                                           OCCURS  2.
+              04  I03-CMB-NYUINCHUKBN.
+                05  I03-NYUINCHUKBN        PIC X(10).
+                05  I03-NYUINCHUKBN-STT    PIC S9(9)   BINARY.
+                05  I03-NYUINCHUKBN-CNT    PIC S9(9)
+                                           BINARY.
+                05  I03-NYUINCHUKBN-ITM    PIC X(10)
+                                           OCCURS  2.
+                05  I03-NYUINCHUKBN-ITM-STT
+                                           PIC S9(9)   BINARY.

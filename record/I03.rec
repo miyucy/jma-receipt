@@ -46,9 +46,21 @@ I03	{
 		KHNRYO	{
 			value	varchar(50);
 		};
-		RRKKBN	{
-			value	bool;
-			label	varchar(10);
+		CMB_RRKKBN	{
+			RRKKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[02];
+		};
+		CMB_NYUINCHUKBN	{
+			NYUINCHUKBN	{
+				value	varchar(10);
+				state	int;
+			};
+			count	int;
+			item	varchar(10)[02];
+			state	int;
 		};
 	};
 };

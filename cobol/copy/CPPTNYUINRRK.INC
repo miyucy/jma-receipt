@@ -73,7 +73,7 @@
       *算定病棟
            03  PTNYUINRRK-SANTEI-BTUNUM           PIC  X(02).
       *算定病室
-           03  PTNYUINRRK-SANTEI-BRMNUM           PIC  X(02).
+           03  PTNYUINRRK-SANTEI-BRMNUM           PIC  X(08).
       *転入日
            03  PTNYUINRRK-TENNYUYMD               PIC  X(08).
       *転出日
@@ -84,6 +84,12 @@
            03  PTNYUINRRK-TUSANNISSU1             PIC  9(04).
       *通算日数２（１８０日越え算定用）
            03  PTNYUINRRK-TUSANNISSU2             PIC  9(04).
+      *自院歴−入院中区分
+      *  自院歴で作成した歴と
+      *  入院登録で作成した歴をレセプト上１つの入院期間としたい
+      *  場合、自院歴のデータに値を設定する。
+      *  （０：退院済／１：入院中）
+           03  PTNYUINRRK-NYUINCHUKBN             PIC  X(01).
       *端末ＩＤ
            03  PTNYUINRRK-TERMID                  PIC  X(16).
       *オペーレータＩＤ

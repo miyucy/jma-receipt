@@ -22,12 +22,13 @@ tbl_ptnyuinrrk	{
 	DRCD3			char(5);
 	JTIKBN			char(1);
 	SANTEI_BTUNUM		char(2);
-	SANTEI_BRMNUM		char(2);
+	SANTEI_BRMNUM		char(8);
 	TENNYUYMD		char(8);
 	TENSTUYMD		char(8);
 	TAISYONISSU		number(4,0);
 	TUSANNISSU1		number(4,0);
 	TUSANNISSU2		number(4,0);
+	NYUINCHUKBN		char(1);
 	TERMID		varchar(16);
 	OPID		varchar(16);
 	CREYMD		char(8);
