@@ -1633,6 +1633,10 @@
       *        診療科変更確認
                WHEN    "0107"
                    MOVE    SPACE               TO  SPA-KIDCD
+                   PERFORM 41013-SRYKA-CHANGE-SEC
+      *        診療科変更確認
+               WHEN    "0122"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                        MOVE    3               TO  FLG-PARASET
                        PERFORM                 3002-PARA-SET-SEC
@@ -1640,6 +1644,16 @@
                        PERFORM                     310-SPA-GMNSET-SEC
                    ELSE
                        MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
+      *
+      *        診療科変更確認
+               WHEN    "0123"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+                       PERFORM 41013-SRYKA-CHANGE-SEC
+                   ELSE
+                       MOVE    SPA-MAE-SRYKA-G     TO  SPA-GMN-SRYKA-G
+                       MOVE    1                   TO  SPA-GMN-CUR
                    END-IF
       *
       *        診療日が未来日の確認
@@ -3875,9 +3889,14 @@
                END-IF
            END-IF
       *
-               MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
-               MOVE    K02N-SRYKA          TO  SPA-GMN-SRYKA-G
-               PERFORM 41013-SRYKA-CHANGE-SEC
+           MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
+           MOVE    K02N-SRYKA          TO  SPA-GMN-SRYKA-G
+           IF      SPA-SYORIFLG        =   1
+               MOVE    "0123"              TO  SPA-KIDCD
+           ELSE
+               MOVE    "0107"              TO  SPA-KIDCD
+           END-IF
+      *********PERFORM 41013-SRYKA-CHANGE-SEC
       *****END-IF
            .
        41013-SRYKAI-SYORI-EXT.
@@ -3913,11 +3932,15 @@
       *
       *    再表示編集処理
            IF      LNK-SC95-WKSRYACT   =   1
-               MOVE    "0107"          TO  SPA-KIDCD
+               MOVE    "0122"          TO  SPA-KIDCD
            END-IF
       *
       *
            MOVE    HZN-SCR-REC         TO  SPA-SCR-REC
+           IF     (SPA-SYORIFLG        =   ZERO )  AND
+                  (SPA-KID1-FLG    NOT =   "OK" )
+               INITIALIZE                  SPA-SCR-REC
+           END-IF
       *
            MOVE    1               TO  SPA-GMN-PAGE
            MOVE    1               TO  SPA-GMN-CUR
@@ -11330,6 +11353,16 @@
                    MOVE    "訂正のみ行うようにして下さい。"
                                        TO  WRK-KIDMSG(31:)
                WHEN    "0107"
+                   MOVE     "診療科が変更されました。"
+                                       TO  WRK-KIDMSG
+                   MOVE     "現在の診療内容を残しますか？"
+                                       TO  WRK-KIDMSG(25:)
+               WHEN    "0123"
+                   MOVE     "診療科が変更されました。"
+                                       TO  WRK-KIDMSG
+                   MOVE     "よろしいですか？"
+                                       TO  WRK-KIDMSG(25:)
+               WHEN    "0122"
                    MOVE    "この科の中途終了データが存在します。"
                                        TO  WRK-KIDMSG
                    MOVE    "ＯＫで中途終了内容へ置換えます。"
@@ -11413,6 +11446,7 @@
                WHEN    "0109"
                WHEN    "0118"
                WHEN    "0119"
+               WHEN    "0107"
                    MOVE    "ＮＯ"            TO  KID1-B01
            END-EVALUATE
       *

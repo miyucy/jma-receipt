@@ -1171,17 +1171,17 @@
       *            確認画面より
                    PERFORM 30010-KID1-SET-SEC
                    MOVE    2                   TO  FLG-GMN
-                   GO      TO      300-SCREEN-EXT
+      *************GO      TO      300-SCREEN-EXT
                WHEN    "KID2"
       *            確認画面２より
                    PERFORM 30011-KID2-SET-SEC
                    MOVE    2                   TO  FLG-GMN
-                   GO      TO      300-SCREEN-EXT
+      *************GO      TO      300-SCREEN-EXT
                WHEN    "K09"
       *            ＤＯ選択画面より
                    PERFORM 3013-K09-SET-SEC
                    MOVE    2                   TO  FLG-GMN
-                   GO      TO      300-SCREEN-EXT
+      ************ GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
       *
@@ -1726,6 +1726,7 @@
       *
            EVALUATE    SPA-KIDCD
                WHEN    "0101"
+                   MOVE    SPACE               TO  SPA-KIDCD
       *            診療料　自動修正
                    MOVE    SPA-CHK-IDX         TO  SPA-GMN-IDX
       *            入力分変換処理
@@ -1779,18 +1780,18 @@
       *************END-IF
       *
                WHEN    "0104"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
       *                終了処理へ
                        PERFORM 210-BACK-OK-SEC
                    END-IF
       *        保険組合せ変更確認
                WHEN    "0105"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                        MOVE    ZERO            TO  FLG-CHK2
-                       MOVE    SPACE               TO  SPA-KIDCD
                        PERFORM 41012-HKNCOMBI-CHANGE-SEC
                    ELSE
-                       MOVE    SPACE               TO  SPA-KIDCD
                        MOVE    SPA-MAE-HKNCOMBI-G
                                            TO  SPA-GMN-HKNCOMBI-G
                        PERFORM 3101-HKNCOMBI-HEN-SEC
@@ -1798,16 +1799,16 @@
       *
       *        診療科変更確認
                WHEN    "0107"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
-                       MOVE    SPACE               TO  SPA-KIDCD
                        PERFORM 41013-SRYKA-CHANGE-SEC
                    ELSE
-                       MOVE    SPA-MAE-SRYKA-G
-                                           TO  SPA-GMN-SRYKA-G
+                       PERFORM 41013-SRYKA-CHANGE-SEC
                    END-IF
       *
       *        同日再診３回以上の確認
                WHEN    "0106"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                        MOVE    SPACE           TO  SPA-KID1-FLG
                        MOVE    SPACE           TO  SPA-KIDCD
@@ -1825,6 +1826,7 @@
       *
       *        初診料自動履歴算定の確認
                WHEN    "0108"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
       *                パラメタファイルより表示
                        MOVE    SPACE               TO  SPA-KIDCD
@@ -1840,6 +1842,7 @@
       *
       *        再診を初診料へ自動算定の確認
                WHEN    "0110"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                        MOVE    SPACE               TO  SPA-KIDCD
       *                初診料算定へ
@@ -1850,6 +1853,7 @@
       *
       *        再診を初診料へ自動算定の確認（警告表示）
                WHEN    "0112"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                        MOVE    SPACE               TO  SPA-KIDCD
       *                初診料算定へ
@@ -1860,6 +1864,7 @@
       *
       *        診療日が未来日の確認
                WHEN    "0111"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
       *                診療日確定後、編集
                        PERFORM 410171-SRYYMD-OK-SEC
@@ -1898,6 +1903,7 @@
       *
       *        クリアの確認
                WHEN    "0116"
+                   MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                        PERFORM 220-CLEAR-SYORI-SEC
                    ELSE
@@ -1913,6 +1919,28 @@
                    ELSE
       *                診察料の変更のみ
                        PERFORM 410131-SINSATUHEN-SEC
+                   END-IF
+      *
+      *        科変更時、中途終了あり
+               WHEN    "0122"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+      *                内容置換え
+                       PERFORM 410132-SAIHENSYU-SEC
+                   ELSE
+      *                診察料の変更のみ
+                       MOVE    2                  TO  SPA-TAHOKEN-FLG
+                       PERFORM 410131-SINSATUHEN-SEC
+                   END-IF
+      *
+      *        診療科変更確認
+               WHEN    "0123"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+                       PERFORM 41013-SRYKA-CHANGE-SEC
+                   ELSE
+                       MOVE    1                   TO  SPA-GMN-CUR
+                       MOVE    SPA-MAE-SRYKA-G     TO  SPA-GMN-SRYKA-G
                    END-IF
       *
       *        他保険算定あり
@@ -1949,7 +1977,7 @@
       *
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KID1-FLG
-           MOVE    SPACE               TO  SPA-KIDCD
+      *****MOVE    SPACE               TO  SPA-KIDCD
            .
        30010-KID1-SET-EXT.
            EXIT.
@@ -4411,6 +4439,10 @@
       *        他保険ありの時
                MOVE    "H"                 TO  LNK-SC10S-SYORI
            END-IF
+           IF      SPA-TAHOKEN-FLG     =   2
+      *        科変更時
+               MOVE    "K"                 TO  LNK-SC10S-SYORI
+           END-IF
            CALL    "ORCSC10S"          USING
                                        ORCSC10SAREA
                                        SPA-AREA
@@ -4418,8 +4450,12 @@
                                        SPA-K02
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            MOVE    ZERO                TO  SPA-TAHOKEN-FLG
-           IF      SPA-KIDCD           =   "0109"
-               MOVE    SPACE               TO  SPA-KIDCD
+           IF      SPA-TAHOKEN-FLG     =   2
+               CONTINUE
+           ELSE
+               IF      SPA-KIDCD           =   "0109"
+                   MOVE    SPACE               TO  SPA-KIDCD
+               END-IF
            END-IF
       *
       *    診療行為、計計算処理、編集
@@ -4496,11 +4532,16 @@
                    GO      TO      41013-SRYKAI-SYORI-EXT
                END-IF
            END-IF
-      ******** MOVE    "0107"              TO  SPA-KIDCD
       *
-               MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
-               MOVE    K02-SRYKA           TO  SPA-GMN-SRYKA-G
-               PERFORM 41013-SRYKA-CHANGE-SEC
+           MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
+           MOVE    K02-SRYKA           TO  SPA-GMN-SRYKA-G
+           IF      SPA-SYORIFLG        =   1
+               MOVE    "0123"              TO  SPA-KIDCD
+           ELSE
+               MOVE    "0107"              TO  SPA-KIDCD
+           END-IF
+      *
+      *********PERFORM 41013-SRYKA-CHANGE-SEC
       *****END-IF
            .
        41013-SRYKAI-SYORI-EXT.
@@ -4510,6 +4551,7 @@
       *    診療科変換処理
       *****************************************************************
        41013-SRYKA-CHANGE-SEC         SECTION.
+      *
       *
            MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
            MOVE    SPA-GMN-SRYKAMEI    TO  SPA-SRYKAMEI
@@ -4541,10 +4583,14 @@
            END-IF
       *
            MOVE    WRK-SCR-REC         TO  SPA-SCR-REC
+           IF     (SPA-KID1-FLG    NOT =   "OK"  )  AND
+                  (SPA-SYORIFLG        =   ZERO  )
+               INITIALIZE                  SPA-SCR-REC
+           END-IF
       *
       *    再表示編集処理
            IF      LNK-SC95-WKSRYACT   =   1
-               MOVE    "0107"          TO  SPA-KIDCD
+               MOVE    "0122"          TO  SPA-KIDCD
                GO      TO      41013-SRYKA-CHANGE-EXT
            END-IF
            MOVE    1               TO  SPA-GMN-PAGE
@@ -12600,9 +12646,15 @@
                    MOVE    "訂正のみ行うようにして下さい。"
                                        TO  WRK-KIDMSG(31:)
                WHEN    "0107"
-               MOVE
-               "診療科が変更されました。現在の診療内容はクリアします。"
+                   MOVE     "診療科が変更されました。"
                                        TO  WRK-KIDMSG
+                   MOVE     "現在の診療内容を残しますか？"
+                                       TO  WRK-KIDMSG(25:)
+               WHEN    "0123"
+                   MOVE     "診療科が変更されました。"
+                                       TO  WRK-KIDMSG
+                   MOVE     "よろしいですか。"
+                                       TO  WRK-KIDMSG(25:)
                WHEN    "0108"
                MOVE
                "初診算定日を登録します。現在の診療内容はクリアします。"
@@ -12669,6 +12721,11 @@
                                        TO  WRK-KIDMSG
                    MOVE    "よろしいですか？"
                                        TO  WRK-KIDMSG(41:)
+               WHEN    "0122"
+                   MOVE    "この科の中途終了データが存在します。"
+                                       TO  WRK-KIDMSG
+                   MOVE    "ＯＫで中途終了内容へ置換えます。"
+                                       TO  WRK-KIDMSG(41:)
                WHEN    OTHER
                    MOVE    SPA-KIDCD
                                        TO  WRK-KIDMSG
@@ -12685,6 +12742,8 @@
                WHEN    "0113"
                WHEN    "0118"
                WHEN    "0119"
+               WHEN    "0107"
+               WHEN    "0122"
                    MOVE    "ＮＯ"            TO  KID1-B01
            END-EVALUATE
       *
