@@ -1139,6 +1139,8 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
+           MOVE    SPACE               TO  N31
+      *
            MOVE    SPA-GMN-POST        TO  N31-POST
            MOVE    SPA-GMN-SELNUM      TO  N31-SELNUM
            MOVE    SPA-GMN-PREFCD-G    TO  N31-PREFCD
