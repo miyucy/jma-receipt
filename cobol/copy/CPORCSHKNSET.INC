@@ -40,21 +40,32 @@
       *        一覧画面表示
                05  ORCSHKN-GMN-HKNCOMBI-LISTG.
                    07  ORCSHKN-GMN-HKN-LIST    OCCURS  100.
-      *                画面表示用
+      *                保険組合番号
                        09  ORCSHKN-GMN-HKNCOMBINUM     PIC  X(04).
+      *                保険名称（労災の部位は１２文字まで）
                        09  ORCSHKN-GMN-HKNCOMBIMEI     PIC  X(50).
+      *                負担割合（ZZZ%）
                        09  ORCSHKN-GMN-FTNRATEMEI      PIC  X(05).
+      *                適用期間
                        09  ORCSHKN-GMN-TEKSTYMD        PIC  X(09).
                        09  ORCSHKN-GMN-TEKEDYMD        PIC  X(09).
       *                内部表示
+      *                適用期間
                        09  ORCSHKN-NAI-TEKSTYMD        PIC  X(08).
                        09  ORCSHKN-NAI-TEKEDYMD        PIC  X(08).
+      *                負担割合
                        09  ORCSHKN-NAI-FTNRATE         PIC  9(03).
+      *                保険ＩＤ
                        09  ORCSHKN-NAI-HKNID           PIC  9(10).
+      *                保険種別
                        09  ORCSHKN-NAI-HKNNUM          PIC  X(03).
+      *                労災・四肢区分
                        09  ORCSHKN-NAI-RSI-SISIKBN     PIC  X(01).
+      *                労災・傷病年月日
                        09  ORCSHKN-NAI-RSI-SHOBYOYMD   PIC  X(08).
+      *                労災・保険区分
                        09  ORCSHKN-NAI-RSI-HKNKBN      PIC  X(01).
+      *                公費種類
                        09  ORCSHKN-NAI-KOH1HKNNUM      PIC  X(03).
                        09  ORCSHKN-NAI-KOH2HKNNUM      PIC  X(03).
                        09  ORCSHKN-NAI-KOH3HKNNUM      PIC  X(03).
