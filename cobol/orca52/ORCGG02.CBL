@@ -504,7 +504,7 @@
                        PERFORM 210-BACK-SYORI-SEC
                    WHEN    "1004"
                        IF    ( SPA-GMN-FILE1       =   "1" OR  "2" )
-                       AND   ( SPA-GMN-FILE2       =   "1" OR  "2" )
+                       OR    ( SPA-GMN-FILE2       =   "1" OR  "2" )
                            MOVE    SPACE               TO  SPA-GID1-FLG
                            MOVE    "2001"              TO  SPA-GIDCD
                            GO  TO  330-GID1-SET-EXT
