@@ -1084,7 +1084,6 @@
            PERFORM 900-SYSKANRI-INV-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
                MOVE    MCPDATA-REC     TO  SYS-3003-REC
-               MOVE    SPACE            TO  SPA-ERRCD
                PERFORM VARYING IDX0 FROM    1   BY  1
                        UNTIL ( IDX0 >       SYS-3003-JOBID )
       *

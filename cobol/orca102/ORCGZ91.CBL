@@ -1017,10 +1017,9 @@
            MOVE    SYS-3003-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SPACE               TO  SPA-ERRCD
                MOVE    MCPDATA-REC         TO  SYS-3003-REC 
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       SYS-3003-JOBID
+                       UNTIL ( IDX >       SYS-3003-JOBID )
       *            ジョブ管理チェック処理
                    MOVE    "CHK"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
