@@ -11,34 +11,34 @@
       *     Everyone is granted permission to use, copy, modify and
       * redistribute this program, but only under the conditions described
       * in the JMA Open Source License. You should have received a copy of
-      * this license along with this program. If not, stop using this
+      * this licence along with this program. If not, stop using this
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-       IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGLID1.
+       IDENTIFICATION                            DIVISION.
+       PROGRAM-ID.                               ORCGLID2.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : 日次統計
-      *  コンポーネント名  : 確認画面１
+      *  サブシステム名    : 点数マスタ設定
+      *  コンポーネント名  : 確認画面２（ＬＩＤ２）
       *  管理者            : 
-      *  00/12/01    MCC−藤原　   新規作成
+      *  作成日付    作業者        記述
+      *  03/08/06    NACL−太田    新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.01    MCC-藤原     01/09/21  JOINの修正      
       *****************************************************************
       *
-       ENVIRONMENT                 DIVISION.
-       CONFIGURATION               SECTION.
-       INPUT-OUTPUT                SECTION.
+       ENVIRONMENT                               DIVISION.
+       CONFIGURATION                             SECTION.
+       INPUT-OUTPUT                              SECTION.
        FILE-CONTROL.
       *
-       DATA                        DIVISION.
-      *FILE                        SECTION.
+       DATA                                      DIVISION.
+      *FILE                                      SECTION.
       *
       *
-       WORKING-STORAGE             SECTION.
+       WORKING-STORAGE                           SECTION.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -48,18 +48,20 @@
       *
       *    フラグ領域
        01  FLG-AREA.
-           03  FLG-END             PIC 9(01).
+           03  FLG-END                           PIC 9(01).
       *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
-      *    ＤＢ検索
-           COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    ＤＢ検索
+           COPY    "MCPDATA.INC".
+      *     
+           COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    連絡　領域
@@ -109,7 +111,7 @@
       *****************************************************************
       *    初期　処理
       *****************************************************************
-       100-INIT-SEC                SECTION.
+       100-INIT-SEC                              SECTION.
       *
            .
        100-INIT-EXT.
@@ -118,16 +120,20 @@
       *****************************************************************
       *    画面遷移処理
       *****************************************************************
-       200-GMNSENI                   SECTION.
+       200-GMNSENI                               SECTION.
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+           EVALUATE    MCP-EVENT                 ALSO    MCP-WIDGET
       *        戻る
-               WHEN    "CLICKED"       ALSO    "B01"
-                   MOVE    SPACE           TO  SPA-LID1-FLG
+               WHEN    "CLICKED"                 ALSO    "B01"
+                   MOVE    SPACE                 TO  SPA-LID1-FLG
                    PERFORM 210-BACK
-      *     登録
-               WHEN    "CLICKED"       ALSO    "B12"
-                   MOVE    "OK"            TO  SPA-LID1-FLG
+      *     印刷しない
+               WHEN    "CLICKED"                 ALSO    "B11"
+                   MOVE    "NO"                  TO  SPA-LID1-FLG
+                   PERFORM 210-BACK
+      *     印刷する
+               WHEN    "CLICKED"                 ALSO    "B12"
+                   MOVE    "OK"                  TO  SPA-LID1-FLG
                    PERFORM 210-BACK
            END-EVALUATE
       *
@@ -137,35 +143,33 @@
       *****************************************************************
       *    戻る　処理
       *****************************************************************
-       210-BACK                    SECTION.
-      * 
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "LID1"              TO  SPA-MOTOPG
+       210-BACK                                  SECTION.
       *
-      ***  MOVE    "BACK"              TO  MCP-PUTTYPE
+           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           MOVE    "LID2"              TO  SPA-MOTOPG
+      *
            MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END
-      *
+           MOVE    1                             TO  FLG-END
            .
+      *
        210-BACK-EXT.
            EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
-       900-PUT-WINDOW              SECTION.
+       900-PUT-WINDOW                            SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCMCPSUB"   USING
-                                MCPAREA
-                                ORCMCPAREA
-                                MCPDATA-REC.
+           MOVE   "PUTWINDOW"                    TO  MCP-FUNC.
+           CALL   "ORCMCPSUB"                     USING
+                                                  MCPAREA
+                                                  ORCMCPAREA
+                                                  MCPDATA-REC.
       *
-           .
        900-PUT-WINDOW-EXT.
            EXIT.
       *

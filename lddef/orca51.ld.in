@@ -8,6 +8,7 @@ bind	"L01"		"OpenCOBOL"	"ORCGL01";
 bind	"L99"		"OpenCOBOL"	"ORCGL99";
 bind	"LERR"		"OpenCOBOL"	"ORCGLERR";
 bind	"LID1"		"OpenCOBOL"	"ORCGLID1";
+bind	"LID2"		"OpenCOBOL"	"ORCGLID2";
 
 multiplex_group	orca51;
 
@@ -19,6 +20,7 @@ data	{
                 L99;
 		LERR;
 		LID1;
+		LID2;
 	};
 };
 

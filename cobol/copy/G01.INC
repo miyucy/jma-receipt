@@ -20,16 +20,28 @@
                 04  G01-B06-STATE     PIC S9(9)   BINARY.
               03  G01-B07.
                 04  G01-B07-STATE     PIC S9(9)   BINARY.
+              03  G01-MARKHISSU-G.
+                04  G01-MARKHISSU-STYLE
+                                      PIC X(20).
+                04  G01-MARKHISSU     PIC X(01).
+              03  G01-MARKNINI-G.
+                04  G01-MARKNINI-STYLE
+                                      PIC X(20).
+                04  G01-MARKNINI      PIC X(01).
               03  G01-CHK-G           OCCURS  10.
                 04  G01-CHK-STATE     PIC S9(9)   BINARY.
                 04  G01-CHK-VALUE     PIC X.
                 04  G01-CHK-LABEL     PIC X(80).
               03  G01-PARA-G          OCCURS  10.
-                04  G01-PARA-TBL      OCCURS  3.
+                04  G01-PARA-TBL      OCCURS  8.
                   05  G01-PARA-STATE  PIC S9(9)   BINARY.
                   05  G01-PARA        PIC X(20).
-                04  G01-PARAHYOJI-G   OCCURS  3.
+                04  G01-PARAHYOJI-G   OCCURS  8.
                   05  G01-PARAHYOJI   PIC X(20).
+                04  G01-PARAMARK-G   OCCURS  8.
+                  05  G01-PARAMARK-STYLE
+                                      PIC X(20).
+                  05  G01-PARAMARK    PIC X(01).
               03  G01-NUM-G           OCCURS  10.
                 04  G01-NUM-STATE     PIC S9(9)   BINARY.
                 04  G01-NUM           PIC X(03).

@@ -36,6 +36,7 @@ SCREEN_screen = \
 	G99.glade \
 	GERR.glade \
 	GID1.glade \
+	GID2.glade \
 	H01.glade \
 	H99.glade \
 	HERR.glade \
@@ -100,6 +101,7 @@ SCREEN_screen = \
 	L99.glade \
 	LERR.glade \
 	LID1.glade \
+	LID2.glade \
 	M01.glade \
 	M01N.glade \
 	M02.glade \

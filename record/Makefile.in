@@ -33,6 +33,7 @@ RECORD_files = \
 	G99.rec \
 	GERR.rec \
 	GID1.rec \
+	GID2.rec \
 	H01.rec \
 	H99.rec \
 	HERR.rec \
@@ -103,6 +104,7 @@ RECORD_files = \
 	L99.rec \
 	LERR.rec \
 	LID1.rec \
+	LID2.rec \
 	M00.rec \
 	M01.rec \
 	M01N.rec \
