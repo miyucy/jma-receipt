@@ -2683,6 +2683,7 @@
                         END-IF
                         IF   WRK-NENREI         =   3
                             IF    WRK-YMDS1(5:2)  = WRK-YMDS2(5:2)
+                             AND  WRK-YMDS1(5:4) <=   WRK-YMDS2(5:4)
                                   IF   WRK-YMDS1(7:2)  NOT = "01"
                                        ADD   -1     TO  WRK-NENREI
                                   END-IF
@@ -3586,6 +3587,14 @@
                                             -   WRK-YYS1
                     IF   WRK-YMDS1(5:4)     >   WRK-YMDS2(5:4)
                          ADD   -1           TO  WRK-NENREI
+                    END-IF
+                    IF   WRK-NENREI         =   70 
+                    AND  WRK-YMDS1(5:4)    <=   WRK-YMDS2(5:4)
+                            IF    WRK-YMDS1(5:2)  = WRK-YMDS2(5:2)
+                                  IF   WRK-YMDS1(7:2)  NOT = "01"
+                                       ADD   -1     TO  WRK-NENREI
+                                  END-IF
+                            END-IF
                     END-IF
                ELSE
                     DISPLAY  "PTINF FETCH ERR"
