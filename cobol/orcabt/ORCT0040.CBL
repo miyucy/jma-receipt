@@ -31,7 +31,6 @@
       *                                     氏名をカナ氏名に修正
       * 01.00.02     NACL-太田    03.11.12  更新日付編集対応
       * 01.00.03     NACL-太田    04.03.30  訂正更新処理追加
-      * 01.00.04     NACL-太田    04/05/28  DBOPEN,DBDISCONNECT削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2295,6 +2294,12 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
+           MOVE    "DBOPEN"            TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -2304,6 +2309,7 @@
        100-DBOPEN-EXT.
            EXIT.
       *
+
       *****************************************************************
       *    ＤＢ　クローズ処理
       *****************************************************************
@@ -2316,6 +2322,12 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
            END-IF
+      *
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
       *
            .
        900-DBDISCONNECT-EXT.
