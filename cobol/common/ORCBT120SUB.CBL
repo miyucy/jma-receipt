@@ -652,7 +652,7 @@
                MOVE    "PTHKNINF-KEY"   TO      ORC-DBPATH
                PERFORM 910-PTHKNINF-READ-SEC
                IF    FLG-PTHKNINF   =       ZERO
-                   MOVE   PTHKN-HKNNUM
+                   MOVE   PTHKN-HKNJANUM
                               TO  LNK-ORCBT120SUB-HKNJANUM(SYU-IDX)
                END-IF
            END-IF
