@@ -6015,6 +6015,15 @@
       *    食事区分
            MOVE   "099999913"   TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
            MOVE   1             TO  LNK-SCNYUACCT-SHOKUJIKBN
+      *    食堂加算
+           PERFORM     4801-BTUSEL-SEC
+           IF   FLG-SYSKANRI           =    ZERO
+               IF   SYS-5001-BTU-SYOKUDOKBN       =    "2"
+                    MOVE     "197000570"    TO
+                                LNK-SCNYUACCT-SHOKUDO-SRYCD
+                    MOVE    1   TO   LNK-SCNYUACCT-SHOKUDO-KBN
+               END-IF
+           END-IF
       *    保険組合せ
            MOVE   "099999914"   TO  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD
            MOVE   PTNYUINRRK-HKNCOMBINUM
@@ -6093,12 +6102,6 @@
                                 LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
                     END-IF
                END-PERFORM
-           END-IF
-      *食堂加算
-           IF   SYS-5001-BTU-SYOKUDOKBN         =    "2"
-                ADD      1      TO     IDX8
-                MOVE     "197000570"    TO
-                                LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
            END-IF
       *
       *病室情報
@@ -6296,6 +6299,15 @@
       *    食事区分
            MOVE   "099999913"   TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
            MOVE   1             TO  LNK-SCNYUACCT-SHOKUJIKBN
+      *    食堂加算
+           PERFORM     4801-BTUSEL-SEC
+           IF   FLG-SYSKANRI           =    ZERO
+               IF   SYS-5001-BTU-SYOKUDOKBN       =    "2"
+                    MOVE     "197000570"    TO
+                                LNK-SCNYUACCT-SHOKUDO-SRYCD
+                    MOVE    1   TO   LNK-SCNYUACCT-SHOKUDO-KBN
+               END-IF
+           END-IF
       *    保険組合せ
            MOVE   "099999914"   TO  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD
            MOVE   PTNYUINRRK-HKNCOMBINUM
@@ -6396,6 +6408,15 @@
       *    食事区分
            MOVE   "099999913"   TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
            MOVE   1             TO  LNK-SCNYUACCT-SHOKUJIKBN
+      *    食堂加算
+           PERFORM     4801-BTUSEL-SEC
+           IF   FLG-SYSKANRI           =    ZERO
+               IF   SYS-5001-BTU-SYOKUDOKBN       =    "2"
+                    MOVE     "197000570"    TO
+                                LNK-SCNYUACCT-SHOKUDO-SRYCD
+                    MOVE    1   TO   LNK-SCNYUACCT-SHOKUDO-KBN
+               END-IF
+           END-IF
       *    保険組合せ
            MOVE   "099999914"   TO  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD
            MOVE   PTNYUINRRK-HKNCOMBINUM
