@@ -712,6 +712,12 @@
                                       TO  Y04-TYYKYMD5
               MOVE    SPA-GMN-YYKYMD (6)
                                       TO  Y04-TYYKYMD6
+           MOVE    ZERO               TO  Y04-LIST1-COUNT
+           MOVE    ZERO               TO  Y04-LIST2-COUNT
+           MOVE    ZERO               TO  Y04-LIST3-COUNT
+           MOVE    ZERO               TO  Y04-LIST4-COUNT
+           MOVE    ZERO               TO  Y04-LIST5-COUNT
+           MOVE    ZERO               TO  Y04-LIST6-COUNT
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX             >   50
                    OR          SPA-GMN-TSINRYO (1 IDX)  =   SPACE 

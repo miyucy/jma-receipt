@@ -2374,6 +2374,7 @@
            MOVE    ZERO                TO  P02-P02-CONDITION2-COUNT
            MOVE    ZERO                TO  P02-P02-CONDITION3-COUNT
       *    ¾õÂÖ£±
+           MOVE    ZERO                TO  P02-P02-CONDITION1-COUNT
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL    (IDX         >   10  )  OR
                               (SPA-GMN-CONDITION-KBNCD (1 IDX)
@@ -2387,6 +2388,7 @@
                MOVE    IDX                 TO  P02-P02-CONDITION1-COUNT
            END-PERFORM
       *    ¾õÂÖ£²
+           MOVE    ZERO                TO  P02-P02-CONDITION2-COUNT
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL    (IDX         >   10  )  OR
                               (SPA-GMN-CONDITION-KBNCD (2 IDX)
@@ -2400,6 +2402,7 @@
                MOVE    IDX                 TO  P02-P02-CONDITION2-COUNT
            END-PERFORM
       *    ¾õÂÖ£³
+           MOVE    ZERO                TO  P02-P02-CONDITION3-COUNT
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL    (IDX         >   10  )  OR
                               (SPA-GMN-CONDITION-KBNCD (3 IDX)
@@ -2572,7 +2575,7 @@
       *
                MOVE    "F"             TO  P02-HKNLIST-SELECT (IDX2)
            END-PERFORM
-           MOVE    IDX2                TO  P02-HKNLIST-COUNT
+           MOVE    SPA-HKNCOMBI-MAX    TO  P02-HKNLIST-COUNT
       *
            MOVE    SPA-GMN-SELNUM      TO  P02-P02-SELNUM
       *
@@ -2660,6 +2663,7 @@
            MOVE    "·î¡Ý¾å²ó¿ô"    TO  P02-P027-TITLE8
            MOVE    "  ÌôºÞÉéÃ´"    TO  P02-P027-TITLE9
       *
+           MOVE    ZERO                TO  P02-P027-HKNKUMI-COUNT
            PERFORM   VARYING     IDX     FROM   1   BY  1
                      UNTIL       IDX     >   SPA-GMN27-MAX
                      OR        ( SPA-GMN27-NUM   (IDX)
@@ -2738,6 +2742,7 @@
                MOVE    1               TO  SPA-GMN27-HKN-PCNT
            END-IF
            MOVE    SPA-GMN27-HKN-PCNT  TO  IDX2
+           MOVE    ZERO                TO  P02-P027-HKNLIST-COUNT
            PERFORM VARYING     IDX     FROM    1    BY  1
                    UNTIL     ( IDX         >   5    )
                    OR        ( SPA-GMN27-HKNRENNUM (IDX2 IDX)
@@ -2810,6 +2815,7 @@
            IF      SPA-GMN27-KOH-PCNT  =   ZERO
                MOVE    1               TO  SPA-GMN27-KOH-PCNT
            END-IF
+           MOVE    ZERO                TO  P02-P027-KOHLIST-COUNT
            MOVE    SPA-GMN27-KOH-PCNT  TO  IDX2
            PERFORM VARYING     IDX     FROM    1    BY  1
                    UNTIL     ( IDX         >   5    )
@@ -2948,6 +2954,7 @@
       *****************************************************************
        2001-P025-SET-SEC         SECTION.
       *
+           MOVE    ZERO                TO  P02-P025-KYUSEILIST-COUNT
            MOVE    ZERO                TO  IDY
            PERFORM   VARYING     IDX   FROM    1   BY  1
                      UNTIL      (IDX       >   10)
