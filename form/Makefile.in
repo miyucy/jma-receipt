@@ -79,6 +79,17 @@ distclean:
 	-rm -f build-stamp
 	-rm -f Makefile
 
+filecheck:
+	@(for i in $(EXTRA_DIST) ;do echo "make	$${i}"; done ;\
+	find . \
+	-name "." -o \
+	-name "CVS" -prune -o \
+	-name "Makefile*" -o \
+	-name ".cvsignore" -o \
+	-name "*.bak" -o \
+	-printf "file\t%f\n") \
+	|sort +1 |uniq -u -f1 
+
 install: all
 	$(INSTALL) -d $(formdir)
 	$(INSTALL_DATA) $(EXTRA_DIST) $(formdir)
