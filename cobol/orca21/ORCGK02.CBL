@@ -241,6 +241,8 @@
       *
            03  FLG-IN1             PIC 9(01).
       *
+           03  FLG-FIRUMU           PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -901,6 +903,7 @@
       *    ¼ç¡¡¡¡½èÍý
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
       *
       *
            INITIALIZE                  FLG-AREA
@@ -2883,6 +2886,8 @@
                                                                 (IDX)))
                        MOVE    "1"             TO  SPA-COM-KAIFLG
                                                                (IDX2)
+                       MOVE    "1"             TO  SPA-COM-ZAIEND
+                                                               (IDX2)
                        MOVE    ZERO                TO  FLG-SET
                    END-IF
                END-IF
@@ -2962,6 +2967,30 @@
                                           TO  SPA-MAE-INPUTCD (IDX)
                    ELSE
                        MOVE    SPACE      TO  SPA-MAE-INPUTCD (IDX)
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+      *    ²èÁü¿ÇÃÇ¤Î¥Õ¥£¥ë¥àÈ½Äê
+           MOVE    ZERO              TO  FLG-FIRUMU
+           PERFORM VARYING     IDX-1 FROM    IDX2   BY  -1
+                   UNTIL       IDX-1     <   1
+               IF      SPA-COM-ZAIEND (IDX-1)  =   "1"
+                   MOVE    ZERO            TO  FLG-FIRUMU
+               END-IF
+               IF      SPA-COM-SRYKBN (IDX-1)  =   "70"
+                   IF     (SPA-COM-INPUTCD(IDX-1)(1:1)   =   "7" )  AND
+                          (SPA-COM-DATAKBN (IDX-1)       =   "3" )
+                       MOVE    1               TO  FLG-FIRUMU
+                   END-IF
+                   IF     (SPA-COM-INPUTCD(IDX-1)(1:1)   =   "1" )  AND
+                          (SPA-COM-DATAKBN (IDX-1)       =   "1" )  AND
+                          (SPA-COM-KZMCOMPSIKIBETU(IDX-1)  NOT =  ZERO)
+                       IF     (SPA-COM-SURYO (IDX-1)     >   1   )  AND
+                              (FLG-FIRUMU                =   ZERO)
+                           MOVE    "1"         TO  SPA-COM-SURFLG
+                                                               (IDX-1)
+                       END-IF
                    END-IF
                END-IF
            END-PERFORM
