@@ -91,7 +91,7 @@ LIB_SRCS = \
        ORCR0700.CBL \
        ORCR0710.CBL
 
-EXEC_SRCS =  ORCXSMST1.CBL
+#EXEC_SRCS =  ORCXSMST1.CBL
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global
