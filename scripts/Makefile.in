@@ -37,6 +37,7 @@ shell_sources = \
 	monthly/recept7.sh.in \
 	monthly/recept8.sh.in \
 	monthly/sokatsu.sh.in \
+	monthly/teikiseikyu.sh.in \
 
 ruby_scripts = \
 	daily/print-data.rb \
