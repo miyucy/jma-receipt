@@ -165,6 +165,7 @@ RECORD_files = \
 	RERR.rec \
 	RID1.rec \
 	RID2.rec \
+	RID3.rec \
 	S02.rec \
 	S03.rec \
 	S03N.rec \
@@ -221,6 +222,7 @@ RECORD_files = \
 	XA99.rec \
 	XAERR.rec \
 	XAID1.rec \
+	XAID2.rec \
 	XB01.rec \
 	XBER.rec \
 	XBID.rec \
