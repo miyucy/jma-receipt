@@ -3352,7 +3352,7 @@
       *        ¼À´µ¶èÊ¬
                IF      PTBYO-MANSEIKBN NOT =   ZERO
                    MOVE    SPACE           TO  WRK-BYOMEI-HEN
-                   STRING  "¡ù"                DELIMITED   BY  SIZE
+                   STRING  "¡ý"                DELIMITED   BY  SIZE
                            WRK-BYOMEI (IDX-B)  DELIMITED   BY  SPACE
                                    INTO    WRK-BYOMEI-HEN
                    END-STRING
