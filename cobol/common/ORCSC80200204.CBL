@@ -1245,6 +1245,10 @@
       *
       *    労災の時、加算なし
            IF      WRK-COM-INPUTCD(IDX-Z)(1:3) =   "101"
+      *        四肢加算チェック
+               IF      WRK-COM-INPUTCD (IDX-Z) =   "101800010" 
+                   MOVE    2               TO  WRK-COM-SANFLG (IDX-Z)
+               END-IF
                GO      TO      100113-RSIHKN-SYORI-EXT
            END-IF
       *
