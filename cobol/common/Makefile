@@ -92,6 +92,7 @@ SRCS = ORCHC01.CBL \
        ORCBZ001S.CBL \
        ORCSPRTNM.CBL \
        ORCHC33.CBL \
+       ORCHCM34.CBL \
 
 CSRCS = \
 	orcfiledel.c

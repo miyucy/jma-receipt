@@ -11,6 +11,9 @@
             02  HCM342-SRYKA    PIC X(10).
             02  HCM342-NYUINYMD PIC X(22).
             02  HCM342-TAIINYMD PIC X(22).
+            02  HCM342-LBLSRYKA PIC X(6).
+            02  HCM342-LBLNYUINYMD  PIC X(6).
+            02  HCM342-LBLTAIINYMD  PIC X(6).
             02  HCM342-SRYAREA          OCCURS  39 TIMES.
               03  HCM342-SRYKBN   PIC X(2).
               03  HCM342-HKNCOMBINUM2 PIC X(4).

@@ -11,6 +11,9 @@
             02  HCM341-SRYKA    PIC X(10).
             02  HCM341-NYUINYMD PIC X(22).
             02  HCM341-TAIINYMD PIC X(22).
+            02  HCM341-LBLSRYKA PIC X(6).
+            02  HCM341-LBLNYUINYMD  PIC X(6).
+            02  HCM341-LBLTAIINYMD  PIC X(6).
             02  HCM341-HKNAREA          OCCURS  6 TIMES.
               03  HCM341-HKNCOMBINUM  PIC X(4).
               03  HCM341-HKNCOMBIMEI  PIC X(30).
