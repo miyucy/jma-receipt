@@ -1385,10 +1385,10 @@
                                                            (IDX-Z)
                ELSE
                    IF      WRK-KEIMAI          =   ZERO
-      **!              IF      WRK-COM-SURYO (IDX-Z)   =   ZERO
+                       IF      WRK-COM-SURYO (IDX-Z)   =   ZERO
                            MOVE    1               TO  WRK-COM-SURYO
                                                            (IDX-Z)
-      **!              END-IF
+                       END-IF
                    ELSE
                        MOVE    WRK-KEIMAI      TO  WRK-COM-SURYO
                                                            (IDX-Z)
