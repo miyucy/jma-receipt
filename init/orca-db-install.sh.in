@@ -87,6 +87,8 @@ if ! [	-d	$HOME/orca-mstlog	];	then
 	su - orca -c "mkdir orca-mstlog" 
 fi
 #整合性チェック
+	rm -f $HOME/orca-mstlog/SQLSELECT.TXT
+	rm -f $HOME/orca-mstlog/master_log
 	VERLIST=`awk '/version/{gsub(/\t| |;/,""); print} ' $VERSIONFL`
 	VERDATA=`echo $VERLIST | awk '{i=split($0,arr,"("); print arr[i]} ' `
 	VERDATA1=`echo $VERDATA | awk '{gsub(/[-)]/,""); print } ' `
