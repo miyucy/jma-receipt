@@ -52,6 +52,10 @@
                05  HKNJAWK-TEL               PIC  X(15).
       *記号
                05  HKNJAWK-KIGO              PIC  X(80).
+      *異動区分
+               05  HKNJAWK-IDOKBN            PIC  X(01).
+      *異動年月日
+               05  HKNJAWK-IDOYMD            PIC  X(08).
       *端末ＩＤ
                05  HKNJAWK-TERMID            PIC  X(16).
       *オペーレータＩＤ
