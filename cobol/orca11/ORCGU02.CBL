@@ -3107,17 +3107,17 @@
            MOVE    SPA-HOSPID          TO  SHELLTBL-ARG5
       *    ドクター
            IF      SPA-GMN-DRCD        =   SPACE
-               MOVE    "@@@@@"             TO  SHELLTBL-ARG6
+               MOVE    "@@@@@"             TO  SHELLTBL-ARG8
            ELSE
-               MOVE    SPACE               TO  SHELLTBL-ARG6
-               MOVE    "1"                 TO  SHELLTBL-ARG6(1:1)
-               MOVE    SPA-GMN-DRCD        TO  SHELLTBL-ARG6(2:4)
+               MOVE    SPACE               TO  SHELLTBL-ARG8
+               MOVE    "1"                 TO  SHELLTBL-ARG8(1:1)
+               MOVE    SPA-GMN-DRCD        TO  SHELLTBL-ARG8(2:4)
            END-IF
       *    保険組合せ
            IF      SPA-GMN-COMBINUM    =   ZERO
-               MOVE    "@@@@"              TO  SHELLTBL-ARG7
+               MOVE    "@@@@"              TO  SHELLTBL-ARG9
            ELSE
-               MOVE    SPA-GMN-COMBINUM    TO  SHELLTBL-ARG7
+               MOVE    SPA-GMN-COMBINUM    TO  SHELLTBL-ARG9
            END-IF
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
