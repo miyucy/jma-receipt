@@ -1063,10 +1063,42 @@
               03  FILLER      PIC S9(9)   BINARY  VALUE 11.
               03  FILLER      PIC S9(9)   BINARY  VALUE 30.
               03  FILLER      PIC S9(9)   BINARY  VALUE 8.
-            02  PATH-TBL-RECEPRT-ALL.
+            02  PATH-TBL-RECEPRT-KEY10.
               03  FILLER      PIC S9(9)   BINARY  VALUE 11.
               03  FILLER      PIC S9(9)   BINARY  VALUE 30.
               03  FILLER      PIC S9(9)   BINARY  VALUE 9.
+            02  PATH-TBL-RECEPRT-KEY11.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 11.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 30.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 10.
+            02  PATH-TBL-RECEPRT-KEY12.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 11.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 30.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 11.
+            02  PATH-TBL-RECEPRT-KEY13.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 11.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 30.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 12.
+            02  PATH-TBL-RECEPRT-KEY14.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 11.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 30.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 13.
+            02  PATH-TBL-RECEPRT-KEY15.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 11.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 30.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 14.
+            02  PATH-TBL-RECEPRT-KEY16.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 11.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 30.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 15.
+            02  PATH-TBL-RECEPRT-KEY17.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 11.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 30.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 16.
+            02  PATH-TBL-RECEPRT-ALL.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 11.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 30.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 17.
             02  PATH-TBL-SRYCDCHG-KEY.
               03  FILLER      PIC S9(9)   BINARY  VALUE 1.
               03  FILLER      PIC S9(9)   BINARY  VALUE 31.
@@ -1307,10 +1339,26 @@
               03  FILLER      PIC S9(9)   BINARY  VALUE 1.
               03  FILLER      PIC S9(9)   BINARY  VALUE 42.
               03  FILLER      PIC S9(9)   BINARY  VALUE 2.
-            02  PATH-TBL-RECEKANRI-ALL.
+            02  PATH-TBL-RECEKANRI-KEY4.
               03  FILLER      PIC S9(9)   BINARY  VALUE 1.
               03  FILLER      PIC S9(9)   BINARY  VALUE 42.
               03  FILLER      PIC S9(9)   BINARY  VALUE 3.
+            02  PATH-TBL-RECEKANRI-KEY5.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 1.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 42.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 4.
+            02  PATH-TBL-RECEKANRI-KEY6.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 1.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 42.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 5.
+            02  PATH-TBL-RECEKANRI-KEY7.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 1.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 42.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 6.
+            02  PATH-TBL-RECEKANRI-ALL.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 1.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 42.
+              03  FILLER      PIC S9(9)   BINARY  VALUE 7.
             02  PATH-TBL-PTRSIINF-KEY.
               03  FILLER      PIC S9(9)   BINARY  VALUE 1.
               03  FILLER      PIC S9(9)   BINARY  VALUE 43.
