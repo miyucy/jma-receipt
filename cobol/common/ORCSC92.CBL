@@ -915,7 +915,7 @@
       *    ËýÀ­áÖÄË¼À´µ´ÉÍýÎÁ¤Î¥Á¥§¥Ã¥¯
            IF     (LNK-SC92-ERRCD6 NOT =   SPACE      )  AND
                   (LNK-SC92-SRYCD      =   "113006510")  AND
-                  (SPA-SRYYMD          >=  "20021101" )
+                  (SPA-SRYYMD          >=  "20021017" )
                PERFORM 20053-MANSEI-CHK-SEC
            END-IF
       *
