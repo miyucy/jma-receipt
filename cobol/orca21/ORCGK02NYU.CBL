@@ -1418,8 +1418,8 @@
                                            SPA-K01KYOUTU
                                            SPA-K02
            ELSE
-               IF     (SPA-SRYYMD          =   SPACE        )  AND
-                      (SPA-PTID            =   SPA-GMN-PTID )
+               IF     (SPA-PTID            =   SPA-GMN-PTID )  AND
+                      (SPA-NAI-SRYYMD  NOT =   SPA-SRYYMD   )
                    MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
                    MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
                END-IF
@@ -2773,7 +2773,9 @@
                MOVE    ZERO                TO  FLG-OK2
            END-IF
            IF      FLG-OK2             =   1
-               IF      SPA-COM-KISOTEN (IDX2)      =   ZERO
+               MOVE    SPA-COM-INPUTCD (IDX2)  TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF      TNS-TEN                 =   ZERO
                    MOVE    "1"                 TO  SPA-COM-KEIFLG(IDX2)
                    MOVE    LNK-WKSRY-JIHIMONEY(IDX IDY)
                                                TO  SPA-COM-KEI   (IDX2)
@@ -2784,11 +2786,11 @@
                                                TO  SPA-GMN-KEI   (IDX2)
                ELSE
                    MOVE    "2"                 TO  SPA-COM-KEIFLG(IDX2)
-                   MOVE    SPA-COM-KISOTEN (IDX2)
+                   MOVE    TNS-TEN
                                                TO  SPA-COM-KEI   (IDX2)
-                   MOVE    SPA-COM-KISOTEN (IDX2)
+                   MOVE    TNS-TEN
                                                TO  SPA-GMN-KEI   (IDX2)
-                   MOVE    SPA-COM-KISOTEN (IDX2)
+                   MOVE    TNS-TEN
                                                TO  SPA-COM-JIHIMONEY
                                                                  (IDX2)
                END-IF
