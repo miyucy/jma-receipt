@@ -55,6 +55,8 @@
       *                                     HCM09.redを追加
       *  01.02.02    NACL-藤原    03/05/16  印刷ＤＢに患者ＩＤも編集する
       *  01.02.03    NACL-藤原    03/04/17  山形レセHCRCP060.redを追加
+      *  01.02.04    NACL-藤原    03/08/28  入院外の続紙の対応
+      *                                     出力内容指定の処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -164,6 +166,8 @@
                05  WRK-PARA-SYOKBN               PIC X(01).
                05  WRK-PARA-SYAPRTNM             PIC X(16).
                05  WRK-PARA-KKHPRTNM             PIC X(16). 
+               05  WRK-PARA-SYAPRTNM-NEXT        PIC X(16).
+               05  WRK-PARA-KKHPRTNM-NEXT        PIC X(16). 
       *
            COPY    "CPORCSPRTLNK.INC".
       *
@@ -289,6 +293,8 @@
                                              LNK-PRTKANRI-TERMID
                                              LNK-PRTKANRI-OPID    
                                              LNK-PRTKANRI-PRTNM
+                                             WRK-PARA-SYAPRTNM-NEXT
+                                             WRK-PARA-KKHPRTNM-NEXT
            END-UNSTRING                                  
       *
            PERFORM 100-DBOPEN-SEC
@@ -491,17 +497,21 @@
        2001-RECEPRT-PRINT-SEC          SECTION.
       *      
            MOVE    SPACE               TO  PRT-REC 
-      *****MOVE    "HC06"              TO  PRT-PRTID
            MOVE    RECE08-FORMID       TO  PRT-PRTID
       *     
-           EVALUATE    RECE08-TEISYUTUSAKI
-               WHEN    "0"
-               WHEN    "1" 
-      *************MOVE    SYS-2005-SYAPRTNM   TO  PRT-PRTNM
+           EVALUATE    RECE08-TEISYUTUSAKI ALSO    RECE08-RENNUM
+               WHEN    "0"                 ALSO    1
+               WHEN    "1"                 ALSO    1
                    MOVE    WRK-PARA-SYAPRTNM   TO  PRT-PRTNM
-               WHEN    "2" 
-      *************MOVE    SYS-2005-KKHPRTNM   TO  PRT-PRTNM
+               WHEN    "2"                 ALSO    1
                    MOVE    WRK-PARA-KKHPRTNM   TO  PRT-PRTNM
+               WHEN    "0"                 ALSO    ANY
+               WHEN    "1"                 ALSO    ANY
+                   MOVE    WRK-PARA-SYAPRTNM-NEXT
+                                               TO  PRT-PRTNM
+               WHEN    "2"                 ALSO    ANY
+                   MOVE    WRK-PARA-KKHPRTNM-NEXT
+                                               TO  PRT-PRTNM
            END-EVALUATE
       *
       *    通し番号印刷のときのみ編集
@@ -589,26 +599,35 @@
            MOVE    RECE08-FORMID       TO  SPRT-PRTID
            MOVE    RECE08-PRTDATA      TO  SPRT-PRTDATA
       *         
-           EVALUATE    RECE08-FORMID
-               WHEN    "HCM06.red"                  
-               WHEN    "HCM06V01.red"                  
-               WHEN    "HCM06V02.red"                  
-               WHEN    "HCM09.red"                  
-               WHEN    "HCRCP060.red"                  
+           EVALUATE    RECE08-FORMID   ALSO    RECE08-NYUGAIKBN
+               WHEN    "HCM06.red"     ALSO    ANY                  
+               WHEN    "HCM06V01.red"  ALSO    ANY                
+               WHEN    "HCM06V02.red"  ALSO    ANY                
+               WHEN    "HCM09.red"     ALSO    ANY             
+               WHEN    "HCRCP060.red"  ALSO    ANY                
+               WHEN    "HCN061.red"    ALSO    "2"              
+               WHEN    "HCN062.red"    ALSO    "2"              
                    MOVE    "医科レセプト（入院外）"    TO  SPRT-TITLE
-               WHEN    "HCN06.red"                  
-               WHEN    "HCN061.red"                  
-               WHEN    "HCN062.red"                  
+               WHEN    "HCN06.red"     ALSO    ANY             
+               WHEN    "HCN061.red"    ALSO    "1"              
+               WHEN    "HCN062.red"    ALSO    "1"              
                    MOVE    "医科レセプト（入院）"      TO  SPRT-TITLE
                END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
-           EVALUATE    RECE08-TEISYUTUSAKI
-               WHEN    "0"
-               WHEN    "1" 
+           EVALUATE    RECE08-TEISYUTUSAKI ALSO    RECE08-RENNUM
+               WHEN    "0"                 ALSO    1
+               WHEN    "1"                 ALSO    1
                    MOVE    WRK-PARA-SYAPRTNM   TO  SPRT-PRTNM
-               WHEN    "2" 
+               WHEN    "2"                 ALSO    1
                    MOVE    WRK-PARA-KKHPRTNM   TO  SPRT-PRTNM
+               WHEN    "0"                 ALSO    ANY
+               WHEN    "1"                 ALSO    ANY
+                   MOVE    WRK-PARA-SYAPRTNM-NEXT
+                                               TO  SPRT-PRTNM
+               WHEN    "2"                 ALSO    ANY
+                   MOVE    WRK-PARA-KKHPRTNM-NEXT
+                                               TO  SPRT-PRTNM
            END-EVALUATE
            MOVE    "1"                 TO  SPRT-SITEKBN
            MOVE    "1"                 TO  SPRT-PRTFLG

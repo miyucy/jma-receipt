@@ -44,6 +44,7 @@
       *  01.00.09    NACL-藤原    03/07/30  カスタマイズ項目のＯＣＲ対応の修正
       *  01.00.10    NACL-藤原    03/08/05  月内で保険者が変わったときの
       *                                     件数の集計方法を変更する
+      *  01.00.11    NACL-藤原    03/08/17  続紙の対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -167,6 +168,10 @@
       *     
            COPY    "HCM09.INC"     REPLACING  //HCM09//
                                    BY         //HC06//.
+           COPY    "HCN061.INC"   REPLACING   //HCN061//
+                                   BY         //HC061//.
+           COPY    "HCN062.INC"   REPLACING   //HCN062//
+                                   BY         //HC062//.
       *
       *    スパ領域
        01  SPA-AREA.
@@ -202,6 +207,7 @@
            03  FLG-KOHSKY          PIC 9(01).
            03  FLG-RECE02X         PIC 9(01).
            03  FLG-TENKI           PIC 9(01).     
+           03  FLG-SRYKBNPRT       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -349,6 +355,10 @@
                05  WRK-LINETEK                 PIC 9(02).
       *        前行の続きのとき（傷病名）         
                05  WRK-CONTINUE                PIC 9(01).
+      *    適用欄最大行数
+           03  WRK-TEKIYOU-LINE                PIC 9(03).
+      *    適用欄行数
+           03  WRK-TEKIYOU-LINE-GYO            PIC 9(03).
       *    傷病名編集
            03  WRK-BYOMEI                      PIC X(150).
            03  WRK-BYOMEIW                     PIC X(150).
@@ -431,10 +441,20 @@
            03  WRK-BYOMEI1-MAX     PIC 9(02)   VALUE   48.
       *    傷病名最大文字数（適用欄）
            03  WRK-BYOMEI2-MAX     PIC 9(02)   VALUE   44.
-      *    適用欄最大行数
-           03  WRK-TEKIYOU-LINE    PIC 9(02)   VALUE   35.
       *    傷病名欄最大行数
            03  WRK-BYOMEI-LINE     PIC 9(02)   VALUE   5.
+      *    適用欄最大行数
+           03  WRK-TEKIYOU1-LINE   PIC 9(02)   VALUE   35.
+      *    適用欄（続紙）最大行数（横タイプ）
+           03  WRK-TEKIYOU2-LINE   PIC 9(03)   VALUE   140.
+      *    適用欄（続紙）最大行数（縦タイプ）
+           03  WRK-TEKIYOU3-LINE   PIC 9(03)   VALUE   110.
+      *    適用欄（続紙）の行別行数（横タイプ）
+           03  WRK-TEKIYOU2-LINE-GYO
+                                   PIC 9(03)   VALUE   35.
+      *    適用欄（続紙）行別行数（縦タイプ）
+           03  WRK-TEKIYOU3-LINE-GYO
+                                   PIC 9(03)   VALUE   55.
       *
       *   特記事項
        01  TBL-TOKKI-AREA.
@@ -893,6 +913,9 @@
            IF      SYS-2005-SYUBYOHENFLG    =   SPACE
                MOVE    ZERO             TO  SYS-2005-SYUBYOHENFLG
            END-IF
+           IF      SYS-2005-NEXTPRTKBN-G      =   SPACE
+               MOVE    ZERO             TO  SYS-2005-NEXTPRTKBN-G
+           END-IF
       * 
       *    県内扱い保険者情報
            MOVE    SPACE            TO  WRK-1033-TABLE
@@ -1162,7 +1185,8 @@
       *****************************************************************
        2001-SYORI-SEC                SECTION.
       *
-           MOVE    1         TO  CNT-PAGE
+           MOVE    1                  TO  CNT-PAGE
+           MOVE    WRK-TEKIYOU1-LINE  TO  WRK-TEKIYOU-LINE
       *
       *    医療保険・公費のフラグ
            MOVE    SPACE              TO  WRK-3SYU-KBN
@@ -1729,6 +1753,167 @@
       *
            .
        3101-FUMEI-HENSYU-EXT.
+           EXIT.
+      *     
+      *****************************************************************
+      *    帳票編集<続紙ヘッダー部>処理
+      *****************************************************************
+       310-HCN061-HEAD-HEN-SEC          SECTION.
+      *
+           EVALUATE    SYS-2005-NEXTPRTKBN-G
+               WHEN    "1"
+                   INITIALIZE                      HC061
+                   MOVE    SPACE               TO  HC061
+      *
+      *            患者番号
+                   MOVE    RECE02-PTNUM        TO  HC061-PTNUM
+      *
+      *            提出先
+                   MOVE    HC06-TEISYUTUSAKI   TO  HC061-TEISYUTUSAKI
+      *
+      *            診療年月
+                   MOVE    HC06-SRYY           TO  HC061-SRYY 
+                   MOVE    HC06-SRYM           TO  HC061-SRYM 
+      *
+      *            県番
+                   MOVE    SYS-1001-PREFNUM    TO  HC061-PREFNUM
+      *
+      *            医療機関コード
+                   MOVE    SYS-1001-HOSPCDN    TO  HC061-HOSPCDN
+      *
+      *            保険種別１
+                   MOVE    HC06-HKNSBT1        TO  HC061-HKNSBT1  
+      *
+      *            保険種別２
+                   MOVE    HC06-HKNSBT2        TO  HC061-HKNSBT2  
+      *
+      *            本人・家族
+                   MOVE    HC06-HONKZK         TO  HC061-HONKZK
+      *
+      *            老人保険−市町村番号
+                   MOVE    HC06-RJNFTNJANUM    TO  HC061-RJNFTNJANUM
+      *
+      *            老人保険−受給者番号
+                   MOVE    HC06-RJNJKYSNUM     TO  HC061-RJNJKYSNUM
+      * 
+      *            保険者番号・記号番号
+                   MOVE    HC06-HKNJANUM       TO  HC061-HKNJANUM
+                   MOVE    HC06-KIGO           TO  HC061-KIGO
+                   MOVE    HC06-NUM            TO  HC061-NUM
+      *     
+      *            公費−負担者番号・受給者番号
+                   IF      HC06-KOHJKYSNUM1N   =   SPACE
+                       MOVE    HC06-KOHJKYSNUM1
+                                               TO  HC061-KOHJKYSNUM1
+                   ELSE
+                       MOVE    HC06-KOHJKYSNUM1N
+                                               TO  HC061-KOHJKYSNUM1N
+                   END-IF
+                   IF      HC06-KOHJKYSNUM2N   =   SPACE
+                       MOVE    HC06-KOHJKYSNUM2
+                                               TO  HC061-KOHJKYSNUM2
+                   ELSE
+                       MOVE    HC06-KOHJKYSNUM2N
+                                               TO  HC061-KOHJKYSNUM2N
+                   END-IF
+                   IF      HC06-KOHFTNJANUM1N  =   SPACE
+                       MOVE    HC06-KOHFTNJANUM1
+                                               TO  HC061-KOHFTNJANUM1
+                   ELSE
+                       MOVE    HC06-KOHFTNJANUM1N
+                                               TO  HC061-KOHFTNJANUM1N
+                   END-IF
+                   IF      HC06-KOHFTNJANUM2N  =   SPACE
+                       MOVE    HC06-KOHFTNJANUM2
+                                               TO  HC061-KOHFTNJANUM2
+                   ELSE
+                       MOVE    HC06-KOHFTNJANUM2N
+                                               TO  HC061-KOHFTNJANUM2N
+                   END-IF
+      *
+      *            給付割合
+                   MOVE    HC06-KYURATE        TO  HC061-KYURATE
+      *
+      *           氏名
+                   MOVE    HC06-NAME           TO  HC061-NAME
+               WHEN    "2"
+                   INITIALIZE                      HC062
+                   MOVE    SPACE               TO  HC062
+      *
+      *            患者番号
+                   MOVE    RECE02-PTNUM        TO  HC062-PTNUM
+      *
+      *            提出先
+                   MOVE    HC06-TEISYUTUSAKI   TO  HC062-TEISYUTUSAKI
+      *
+      *            診療年月
+                   MOVE    HC06-SRYY           TO  HC062-SRYY 
+                   MOVE    HC06-SRYM           TO  HC062-SRYM 
+      *
+      *            県番
+                   MOVE    SYS-1001-PREFNUM    TO  HC062-PREFNUM
+      *
+      *            医療機関コード
+                   MOVE    SYS-1001-HOSPCDN    TO  HC062-HOSPCDN
+      *
+      *            保険種別１
+                   MOVE    HC06-HKNSBT1        TO  HC062-HKNSBT1  
+      *
+      *            保険種別２
+                   MOVE    HC06-HKNSBT2        TO  HC062-HKNSBT2  
+      *
+      *            本人・家族
+                   MOVE    HC06-HONKZK         TO  HC062-HONKZK
+      *
+      *            老人保険−市町村番号
+                   MOVE    HC06-RJNFTNJANUM    TO  HC062-RJNFTNJANUM
+      *
+      *            老人保険−受給者番号
+                   MOVE    HC06-RJNJKYSNUM     TO  HC062-RJNJKYSNUM
+      * 
+      *            保険者番号・記号番号
+                   MOVE    HC06-HKNJANUM       TO  HC062-HKNJANUM
+                   MOVE    HC06-KIGO           TO  HC062-KIGO
+                   MOVE    HC06-NUM            TO  HC062-NUM
+      *     
+      *            公費−負担者番号・受給者番号
+                   IF      HC06-KOHJKYSNUM1N   =   SPACE
+                       MOVE    HC06-KOHJKYSNUM1
+                                               TO  HC062-KOHJKYSNUM1
+                   ELSE
+                       MOVE    HC06-KOHJKYSNUM1N
+                                               TO  HC062-KOHJKYSNUM1N
+                   END-IF
+                   IF      HC06-KOHJKYSNUM2N   =   SPACE
+                       MOVE    HC06-KOHJKYSNUM2
+                                               TO  HC062-KOHJKYSNUM2
+                   ELSE
+                       MOVE    HC06-KOHJKYSNUM2N
+                                               TO  HC062-KOHJKYSNUM2N
+                   END-IF
+                   IF      HC06-KOHFTNJANUM1N  =   SPACE
+                       MOVE    HC06-KOHFTNJANUM1
+                                               TO  HC062-KOHFTNJANUM1
+                   ELSE
+                       MOVE    HC06-KOHFTNJANUM1N
+                                               TO  HC062-KOHFTNJANUM1N
+                   END-IF
+                   IF      HC06-KOHFTNJANUM2N  =   SPACE
+                       MOVE    HC06-KOHFTNJANUM2
+                                               TO  HC062-KOHFTNJANUM2
+                   ELSE
+                       MOVE    HC06-KOHFTNJANUM2N
+                                               TO  HC062-KOHFTNJANUM2N
+                   END-IF
+      *
+      *            給付割合
+                   MOVE    HC06-KYURATE        TO  HC062-KYURATE
+      *
+      *           氏名
+                   MOVE    HC06-NAME           TO  HC062-NAME
+           END-EVALUATE
+           .
+       310-HCN061-HEAD-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2454,8 +2639,22 @@
                                PERFORM 34120-PAGE-SEC
                            END-IF    
                            ADD     1           TO  WRK-LINETEK
-                           MOVE    WRK-KUGIRI1 TO
-                                               HC06-TEKIYO (WRK-LINETEK)
+                           IF      CNT-PAGE        =   1
+                               MOVE    WRK-KUGIRI1 TO
+                                           HC06-TEKIYO (WRK-LINETEK)
+                           ELSE
+                               EVALUATE    SYS-2005-NEXTPRTKBN-G
+                                   WHEN    "0"
+                                       MOVE    WRK-KUGIRI1     TO
+                                           HC06-TEKIYO (WRK-LINETEK)
+                                   WHEN    "1"    
+                                       MOVE    WRK-KUGIRI1     TO
+                                           HC061-TEKIYO (WRK-LINETEK)
+                                   WHEN    "2"
+                                       MOVE    WRK-KUGIRI1     TO
+                                           HC062-TEKIYO (WRK-LINETEK)
+                               END-EVALUATE
+                           END-IF    
                        END-IF
                    END-IF
                END-IF
@@ -2579,9 +2778,20 @@
                END-IF
            END-IF    
       *
-           MOVE    WRK-BYOMEI2 TO  HC06-TEKIYO (WRK-LINETEK)
-           INSPECT HC06-TEKIYO (WRK-LINETEK)
+           INSPECT WRK-BYOMEI2
                            REPLACING    ALL   "  "   BY   "　"
+           IF      CNT-PAGE        =   1
+               MOVE    WRK-BYOMEI2 TO  HC06-TEKIYO  (WRK-LINETEK)
+           ELSE
+               EVALUATE    SYS-2005-NEXTPRTKBN-G
+                   WHEN    "0"    
+                       MOVE    WRK-BYOMEI2 TO  HC06-TEKIYO (WRK-LINETEK)
+                   WHEN    "1"    
+                       MOVE    WRK-BYOMEI2 TO  HC061-TEKIYO(WRK-LINETEK)
+                   WHEN    "2"    
+                       MOVE    WRK-BYOMEI2 TO  HC062-TEKIYO(WRK-LINETEK)
+               END-EVALUATE
+           END-IF    
       *
       *    最後の病名に印字するスペースがなかったとき 
            IF       FLG-TENKI              =   1     
@@ -2593,9 +2803,23 @@
                    PERFORM 34120-PAGE-SEC
                END-IF    
                ADD     1               TO  WRK-LINETEK
-               MOVE    WRK-BYOMEI2     TO  HC06-TEKIYO (WRK-LINETEK)
-               INSPECT HC06-TEKIYO (WRK-LINETEK)
-                               REPLACING    ALL   "  "   BY   "　"
+               INSPECT WRK-BYOMEI2
+                           REPLACING    ALL   "  "   BY   "　"
+               IF      CNT-PAGE        =   1
+                   MOVE    WRK-BYOMEI2 TO  HC06-TEKIYO  (WRK-LINETEK)
+               ELSE
+                   EVALUATE    SYS-2005-NEXTPRTKBN-G
+                       WHEN    "0"    
+                           MOVE    WRK-BYOMEI2 
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                       WHEN    "1"    
+                           MOVE    WRK-BYOMEI2
+                                           TO  HC061-TEKIYO(WRK-LINETEK)
+                       WHEN    "2"    
+                           MOVE    WRK-BYOMEI2
+                                           TO  HC062-TEKIYO(WRK-LINETEK)
+                   END-EVALUATE
+               END-IF    
            END-IF
       *
       *
@@ -3155,7 +3379,21 @@
                    PERFORM 34120-PAGE-SEC
                END-IF    
                ADD     1               TO  WRK-LINETEK
-               MOVE    WRK-KUGIRI1 TO  HC06-TEKIYO (WRK-LINETEK)
+               IF      CNT-PAGE        =   1   
+                   MOVE    WRK-KUGIRI1 TO  HC06-TEKIYO  (WRK-LINETEK)
+               ELSE
+                   EVALUATE    SYS-2005-NEXTPRTKBN-G
+                       WHEN    "0"   
+                           MOVE    WRK-KUGIRI1
+                                       TO  HC06-TEKIYO (WRK-LINETEK)
+                       WHEN    "1"   
+                           MOVE    WRK-KUGIRI1
+                                       TO  HC061-TEKIYO(WRK-LINETEK)
+                       WHEN    "2"   
+                           MOVE    WRK-KUGIRI1
+                                       TO  HC062-TEKIYO(WRK-LINETEK)
+                   END-EVALUATE
+               END-IF    
            END-IF
       *
            IF      RECE02-TEISYOTOKU   =   SPACE
@@ -3166,14 +3404,46 @@
                    PERFORM 34120-PAGE-SEC
                END-IF    
                ADD     1               TO  WRK-LINETEK
-               EVALUATE    RECE02-TEISYOTOKU
-                   WHEN    "1"
-                       MOVE    "低所得１"
+               IF      CNT-PAGE        =   1   
+                   EVALUATE    RECE02-TEISYOTOKU
+                       WHEN    "1"
+                           MOVE    "低所得１"
                                        TO  HC06-TEKIYO(WRK-LINETEK)
-                   WHEN    "2"
-                       MOVE    "低所得２"
+                       WHEN    "2"
+                           MOVE    "低所得２"
                                        TO  HC06-TEKIYO(WRK-LINETEK)
-               END-EVALUATE        
+                   END-EVALUATE        
+               ELSE
+                   EVALUATE    SYS-2005-NEXTPRTKBN-G
+                       WHEN    "0"   
+                           EVALUATE    RECE02-TEISYOTOKU
+                               WHEN    "1"
+                                   MOVE    "低所得１"
+                                       TO  HC06-TEKIYO(WRK-LINETEK)
+                               WHEN    "2"
+                                   MOVE    "低所得２"
+                                       TO  HC06-TEKIYO(WRK-LINETEK)
+                           END-EVALUATE        
+                       WHEN    "1"   
+                           EVALUATE    RECE02-TEISYOTOKU
+                               WHEN    "1"
+                                   MOVE    "低所得１"
+                                       TO  HC061-TEKIYO(WRK-LINETEK)
+                               WHEN    "2"
+                                   MOVE    "低所得２"
+                                       TO  HC061-TEKIYO(WRK-LINETEK)
+                           END-EVALUATE        
+                       WHEN    "2"   
+                           EVALUATE    RECE02-TEISYOTOKU
+                               WHEN    "1"
+                                   MOVE    "低所得１"
+                                       TO  HC062-TEKIYO(WRK-LINETEK)
+                               WHEN    "2"
+                                   MOVE    "低所得２"
+                                       TO  HC062-TEKIYO(WRK-LINETEK)
+                           END-EVALUATE        
+                   END-EVALUATE
+               END-IF    
            END-IF
       *         
            MOVE    ZERO                TO  WRK-R061-ZAINUM-O
@@ -3242,55 +3512,99 @@
       *****************************************************************
        3410-RECE061-HENSYU-SEC           SECTION.
       *
+           MOVE    ZERO                  TO   FLG-KUGIRI
+      *
            IF  CNT-ZAIMEISAISU           =   1
-      *        次の行為明細数を追加すると何行になるか
-               COMPUTE   WRK-WLINETEK    =   WRK-LINETEK
-                                         +   RECE061-ZAIMEISAISU
                IF  CNT-RECE061           >   1
       *            公費分離区分が変更している場合、公費区切り線分を追加
                    IF  RECE061-KOHBUNRI  NOT =   WRK-R061-KOHBUNRI-O
-                       ADD     1             TO  WRK-WLINETEK
                        MOVE    2             TO  FLG-KUGIRI
                    ELSE
       *                診療区分が変更している場合、診療区切り線分を追加
                        IF  RECE061-SRYKBN    NOT =   WRK-R061-SRYKBN-O
-                           ADD     1             TO  WRK-WLINETEK
                            MOVE    1             TO  FLG-KUGIRI
                        END-IF
                    END-IF
                END-IF
+           END-IF    
       *
-               IF  WRK-WLINETEK          >   WRK-TEKIYOU-LINE
-                   PERFORM 34120-PAGE-SEC
+           IF      WRK-LINETEK          >=   WRK-TEKIYOU-LINE
+               PERFORM 34120-PAGE-SEC
       *
-      *            区切り線
-                   IF  FLG-KUGIRI        =   2
-                       PERFORM 34110-KUGIRI-LINE-SEC
-                   END-IF
-      *            診療区分
-                   ADD     1               TO  WRK-LINETEK
-                   MOVE    RECE061-SRYKBN  TO  HC06-SRYKBN
-                                                       (WRK-LINETEK)
-               ELSE
-      *            区切り線
-                   IF  FLG-KUGIRI    NOT =   ZERO
-                       PERFORM 34110-KUGIRI-LINE-SEC
-                   END-IF
-      *            診療区分
-                   ADD     1             TO  WRK-LINETEK
-                   IF  RECE061-SRYKBN    NOT =   WRK-R061-SRYKBN-O
-                       MOVE    RECE061-SRYKBN
-                                   TO  HC06-SRYKBN  (WRK-LINETEK)
-                   END-IF
+      *        区切り線（改頁後には診療区切り線は表示しない）
+               IF      FLG-KUGIRI        =   2
+                   PERFORM 34110-KUGIRI-LINE-SEC
                END-IF
            ELSE
-               ADD     1                 TO  WRK-LINETEK
+      *        区切り線
+               IF      FLG-KUGIRI    NOT =   ZERO
+                   PERFORM 34110-KUGIRI-LINE-SEC
+               END-IF
+           END-IF    
+      *
+      *    診療区分
+           IF  WRK-LINETEK          >=   WRK-TEKIYOU-LINE
+                   PERFORM 34120-PAGE-SEC
            END-IF
+      *              
+           ADD     1                 TO  WRK-LINETEK
+      *
+           MOVE    ZERO                  TO  FLG-SRYKBNPRT
+           IF      CNT-PAGE          >   1 
+               EVALUATE    SYS-2005-NEXTPRTKBN-G
+                   WHEN    ZERO
+                       CONTINUE
+                   WHEN    "1"
+                       IF      WRK-LINETEK     =   36  OR  71  OR  106
+                           MOVE    1               TO  FLG-SRYKBNPRT
+                       END-IF
+                   WHEN    "2"
+                       IF      WRK-LINETEK     =   56
+                           MOVE    1               TO  FLG-SRYKBNPRT
+                       END-IF
+               END-EVALUATE
+           END-IF
+      *
+           IF    ( FLG-KUGIRI        =   1 )
+           OR    ( WRK-LINETEK       =   1 )
+           OR    ( CNT-RECE061       =   1 )
+           OR    ( FLG-SRYKBNPRT     =   1 ) 
+               IF      CNT-PAGE        =   1   
+                   MOVE    RECE061-SRYKBN  TO  HC06-SRYKBN
+                                                       (WRK-LINETEK)
+               ELSE                                    
+                   EVALUATE    SYS-2005-NEXTPRTKBN-G
+                       WHEN    ZERO
+                           MOVE    RECE061-SRYKBN  TO  HC06-SRYKBN
+                                                       (WRK-LINETEK)
+                       WHEN    "1"
+                           MOVE    RECE061-SRYKBN  TO  HC061-SRYKBN
+                                                       (WRK-LINETEK)
+                       WHEN    "2"
+                           MOVE    RECE061-SRYKBN  TO  HC062-SRYKBN
+                                                       (WRK-LINETEK)
+                   END-EVALUATE
+               END-IF
+           END-IF                                    
       *
       *    明細
            INSPECT RECE061-TEKIYO-INF
                            REPLACING    ALL   "  "   BY   "　"
-           MOVE    RECE061-TEKIYO-INF  TO  HC06-TEKIYO(WRK-LINETEK)
+           IF      CNT-PAGE        =   1   
+               MOVE    RECE061-TEKIYO-INF  TO  HC06-TEKIYO (WRK-LINETEK)
+           ELSE    
+               EVALUATE    SYS-2005-NEXTPRTKBN-G
+                   WHEN    ZERO
+                       MOVE    RECE061-TEKIYO-INF
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                   WHEN    "1"
+                       MOVE    RECE061-TEKIYO-INF
+                                           TO  HC061-TEKIYO(WRK-LINETEK)
+                   WHEN    "2"
+                       MOVE    RECE061-TEKIYO-INF
+                                           TO  HC062-TEKIYO(WRK-LINETEK)
+               END-EVALUATE
+           END-IF  
       *
            .
        3410-RECE061-HENSYU-EXT.
@@ -3306,9 +3620,37 @@
            EVALUATE    FLG-KUGIRI
            WHEN    2
                PERFORM 34110-KOHNAME-SET-SEC
-               MOVE    WRK-KUGIRI2 TO  HC06-TEKIYO (WRK-LINETEK)
+               IF      CNT-PAGE        =   1   
+                   MOVE    WRK-KUGIRI2 TO  HC06-TEKIYO  (WRK-LINETEK)
+               ELSE    
+                   EVALUATE    SYS-2005-NEXTPRTKBN-G
+                       WHEN    ZERO
+                           MOVE    WRK-KUGIRI2
+                                       TO  HC06-TEKIYO  (WRK-LINETEK)
+                       WHEN    "1"
+                           MOVE    WRK-KUGIRI2 
+                                       TO  HC061-TEKIYO (WRK-LINETEK)
+                       WHEN    "2"
+                           MOVE    WRK-KUGIRI2 
+                                       TO  HC062-TEKIYO (WRK-LINETEK)
+                   END-EVALUATE
+               END-IF    
            WHEN    1
-               MOVE    WRK-KUGIRI1 TO  HC06-TEKIYO (WRK-LINETEK)
+               IF      CNT-PAGE        =   1   
+                   MOVE    WRK-KUGIRI1 TO  HC06-TEKIYO  (WRK-LINETEK)
+               ELSE    
+                   EVALUATE    SYS-2005-NEXTPRTKBN-G
+                       WHEN    ZERO
+                           MOVE    WRK-KUGIRI1
+                                       TO  HC06-TEKIYO  (WRK-LINETEK)
+                       WHEN    "1"
+                           MOVE    WRK-KUGIRI1 
+                                       TO  HC061-TEKIYO (WRK-LINETEK)
+                       WHEN    "2"
+                           MOVE    WRK-KUGIRI1 
+                                       TO  HC062-TEKIYO (WRK-LINETEK)
+                   END-EVALUATE
+               END-IF    
            END-EVALUATE
       *
            .
@@ -3323,10 +3665,30 @@
       *
       *    帳票印刷処理
            PERFORM 390-PRINT-OUT-SEC
+      *     
       *    帳票編集<ヘッダー部>処理
            ADD     1             TO  CNT-PAGE
-           PERFORM 310-HC101-HEAD-HEN-SEC
+           EVALUATE    SYS-2005-NEXTPRTKBN-G
+               WHEN    "0"
+                   PERFORM 310-HC101-HEAD-HEN-SEC
+               WHEN    OTHER
+                   PERFORM 310-HCN061-HEAD-HEN-SEC
+           END-EVALUATE
            MOVE    ZERO          TO  WRK-LINETEK
+      *
+      *    続紙の最大行をセット     
+           IF      CNT-PAGE        =   1   
+               MOVE    WRK-TEKIYOU1-LINE TO  WRK-TEKIYOU-LINE
+           ELSE    
+               EVALUATE    SYS-2005-NEXTPRTKBN-G
+                   WHEN    "0"
+                       MOVE    WRK-TEKIYOU1-LINE TO  WRK-TEKIYOU-LINE
+                   WHEN    "1"   
+                       MOVE    WRK-TEKIYOU2-LINE TO  WRK-TEKIYOU-LINE
+                   WHEN    "2"   
+                       MOVE    WRK-TEKIYOU3-LINE TO  WRK-TEKIYOU-LINE
+               END-EVALUATE
+           END-IF    
       *
            .
        34120-PAGE-EXT.
@@ -3486,8 +3848,22 @@
                                PERFORM 34120-PAGE-SEC
                            ELSE
                                ADD     1           TO  WRK-LINETEK
-                               MOVE    WRK-KUGIRI1     TO 
-                                               HC06-TEKIYO(WRK-LINETEK)
+                               IF      CNT-PAGE        =   1   
+                                   MOVE    WRK-KUGIRI1     TO 
+                                               HC06-TEKIYO (WRK-LINETEK)
+                               ELSE                 
+                                   EVALUATE    SYS-2005-NEXTPRTKBN-G
+                                     WHEN    "0"
+                                       MOVE    WRK-KUGIRI1     TO 
+                                               HC06-TEKIYO (WRK-LINETEK)
+                                     WHEN    "1"
+                                       MOVE    WRK-KUGIRI1     TO 
+                                               HC061-TEKIYO(WRK-LINETEK)
+                                     WHEN    "2"
+                                       MOVE    WRK-KUGIRI1     TO 
+                                               HC062-TEKIYO(WRK-LINETEK)
+                                   END-EVALUATE
+                               END-IF                
                            END-IF
                        END-IF
                      END-IF
@@ -3500,8 +3876,22 @@
                            PERFORM 34120-PAGE-SEC
                        END-IF
                        ADD     1               TO  WRK-LINETEK
-                       MOVE    WRK-COMMENT (IDW)
-                                       TO  HC06-TEKIYO(WRK-LINETEK)
+                       IF      CNT-PAGE        =   1   
+                           MOVE    WRK-COMMENT (IDW)
+                                       TO  HC06-TEKIYO (WRK-LINETEK)
+                       ELSE                
+                           EVALUATE    SYS-2005-NEXTPRTKBN-G
+                               WHEN    "0"
+                                   MOVE    WRK-COMMENT (IDW)
+                                       TO  HC06-TEKIYO (WRK-LINETEK)
+                               WHEN    "1"
+                                   MOVE    WRK-COMMENT (IDW)
+                                       TO  HC061-TEKIYO(WRK-LINETEK)
+                               WHEN    "2"
+                                   MOVE    WRK-COMMENT (IDW)
+                                       TO  HC062-TEKIYO(WRK-LINETEK)
+                           END-EVALUATE
+                       END-IF                
                      END-PERFORM
                  END-IF
                END-IF  
@@ -3526,8 +3916,22 @@
                            PERFORM 34120-PAGE-SEC
                        ELSE
                            ADD     1               TO  WRK-LINETEK
-                           MOVE    WRK-KUGIRI1     TO 
-                                               HC06-TEKIYO(WRK-LINETEK)
+                           IF      CNT-PAGE        =   1   
+                               MOVE    WRK-KUGIRI1     TO 
+                                               HC06-TEKIYO (WRK-LINETEK)
+                           ELSE                    
+                               EVALUATE    SYS-2005-NEXTPRTKBN-G
+                                   WHEN    "0"   
+                                       MOVE    WRK-KUGIRI1     TO 
+                                               HC06-TEKIYO (WRK-LINETEK)
+                                   WHEN    "1"   
+                                       MOVE    WRK-KUGIRI1     TO 
+                                               HC061-TEKIYO(WRK-LINETEK)
+                                   WHEN    "2"   
+                                       MOVE    WRK-KUGIRI1     TO 
+                                               HC062-TEKIYO(WRK-LINETEK)
+                               END-EVALUATE
+                           END-IF                    
                        END-IF
                    END-IF
                END-IF
@@ -3537,10 +3941,24 @@
                    PERFORM 34120-PAGE-SEC
                END-IF
                ADD     1               TO  WRK-LINETEK
-               INSPECT WRK-HKN-RIREKI-TBL  (IDXX)  REPLACING   ALL "  "
-                                                               BY  "　"  
-               MOVE    WRK-HKN-RIREKI-TBL  (IDXX)
-                                       TO  HC06-TEKIYO(WRK-LINETEK)
+               INSPECT WRK-HKN-RIREKI-TBL (IDXX)   REPLACING   ALL "  "
+                                                               BY  "　"
+               IF      CNT-PAGE        =   1   
+                   MOVE    WRK-HKN-RIREKI-TBL (IDXX)
+                                       TO  HC06-TEKIYO (WRK-LINETEK)
+               ELSE                        
+                   EVALUATE    SYS-2005-NEXTPRTKBN-G
+                       WHEN    "0"   
+                           MOVE    WRK-HKN-RIREKI-TBL (IDXX)
+                                       TO  HC06-TEKIYO (WRK-LINETEK)
+                       WHEN    "1"   
+                           MOVE    WRK-HKN-RIREKI-TBL (IDXX)
+                                       TO  HC061-TEKIYO(WRK-LINETEK)
+                       WHEN    "2"   
+                           MOVE    WRK-HKN-RIREKI-TBL (IDXX)
+                                       TO  HC062-TEKIYO(WRK-LINETEK)
+                   END-EVALUATE
+               END-IF                        
            END-PERFORM
       *
            .
@@ -3679,11 +4097,25 @@
                END-IF                      
                MOVE    RECE02-KANANAME     TO  RECE08-KANANAME
                MOVE    "2"                 TO  RECE08-NYUGAIKBN
-               MOVE    "HCM09.red"         TO  RECE08-FORMID
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
-               MOVE    HC06                TO  RECE08-PRTDATA
+               IF      CNT-PAGE            =   1                                 
+                   MOVE    "HCM09.red"         TO  RECE08-FORMID
+                   MOVE    HC06                TO  RECE08-PRTDATA
+               ELSE
+                   EVALUATE    SYS-2005-NEXTPRTKBN-G
+                       WHEN    "0"   
+                           MOVE    "HCM09.red"     TO  RECE08-FORMID
+                           MOVE    HC06            TO  RECE08-PRTDATA
+                       WHEN    "1"   
+                           MOVE    "HCN061.red"    TO  RECE08-FORMID
+                           MOVE    HC061           TO  RECE08-PRTDATA
+                       WHEN    "2"   
+                           MOVE    "HCN062.red"    TO  RECE08-FORMID
+                           MOVE    HC062           TO  RECE08-PRTDATA
+                   END-EVALUATE
+               END-IF        
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    RECE08-REC          TO  MCPDATA-REC
