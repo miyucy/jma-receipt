@@ -1191,8 +1191,8 @@
            MOVE    ZERO               TO  KOHIDX
                                           KOHIDX1
            PERFORM   VARYING   IDX  FROM    1   BY  1
-                     UNTIL   ( IDX                >    4    )
-                     OR      ( RECE02-KOHID(IDX)  =   SPACE )
+                     UNTIL   ( IDX                     >    4    )
+                     OR      ( RECE02-KOHNUM (IDX)     =   SPACE )
       *        À¸ÊÝ
                IF  RECE02-KOHNUM (IDX)  =   "012"
                    MOVE    "1"          TO  WRK-3SYU (1:1)
@@ -1479,65 +1479,69 @@
       *
            MOVE    ZERO                TO  WRK-KYUFUGAITEN
       *
-           INITIALIZE                      SYUNOU-REC
-           MOVE    RECE02-HOSPID       TO  SYU-HOSPID
-           MOVE    RECE02-NYUGAIKBN    TO  SYU-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  SYU-PTID
-           MOVE    RECE02-SRYKA(IDX)   TO  SYU-SRYKA
-           MOVE    RECE02-SRYYM        TO  SYU-SRYYMD(1:6)
-           MOVE    "__"                TO  SYU-SRYYMD(7:2)
-           MOVE    SYUNOU-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYUNOU-KEY16"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "SYUNOU-KEY16"  TO  ORC-DBPATH
-               PERFORM 900-SYUNOU-READ-SEC
-               PERFORM UNTIL   FLG-SYUNOU  =    1
-                   PERFORM VARYING IDX1    FROM    1   BY  1
-                           UNTIL   IDX1    >       10
-                           OR      RECE02-HKNCOMBI (IDX1)   =   ZERO 
-                       IF     (SYU-HKNCOMBINUM
-                                           =   RECE02-HKNCOMBI (IDX1) )
-                       AND    (RECE02-KOHNUMHC (IDX1 1)
-                                       NOT =   SPACE                  )
-                           INITIALIZE          ORCSKOHPLUS-AREA
-                           MOVE    RECE02-HOSPID
-                                           TO  LNK-SKOHPLUS-HOSPID
-                           MOVE    SYS-1001-PREFNUM
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       10
+                   OR      RECE02-HKNCOMBI (IDX1)  =   ZERO
+               IF      RECE02-KOHNUMHC (IDX1 1)
+                                       NOT =   SPACE
+      *            
+                   INITIALIZE                  ORCSKOHPLUS-AREA
+                   MOVE    RECE02-HOSPID   TO  LNK-SKOHPLUS-HOSPID
+                   MOVE    SYS-1001-PREFNUM
                                            TO  LNK-SKOHPLUS-PREFNUM
-                           MOVE    RECE02-PTID
-                                           TO  LNK-SKOHPLUS-PTID
-                           MOVE    SYU-HKNCOMBINUM
+                   MOVE    RECE02-PTID     TO  LNK-SKOHPLUS-PTID
+                   MOVE    RECE02-HKNCOMBI (IDX1)
                                            TO  LNK-SKOHPLUS-HKNCOMBI
-                           MOVE    RECE02-SRYYM
-                                           TO  LNK-SKOHPLUS-SRYYMD(1:6)
-                           MOVE    "01"    TO  LNK-SKOHPLUS-SRYYMD(7:2)
-                           CALL    "ORCSKOHPLUS"   USING
-                                                   ORCSKOHPLUS-AREA
-                           IF      LNK-SKOHPLUS-RC =   ZERO
-                               IF      LNK-SKOHPLUS-FTNKBN =   "1"
+                   MOVE    RECE02-SRYYM    TO  LNK-SKOHPLUS-SRYYMD(1:6)
+                   MOVE    "01"            TO  LNK-SKOHPLUS-SRYYMD(7:2)
+                   CALL    "ORCSKOHPLUS"   USING
+                                           ORCSKOHPLUS-AREA
+      *           
+                   IF    ( LNK-SKOHPLUS-RC     =   ZERO )
+                   AND   ( LNK-SKOHPLUS-FTNKBN =   "1"  )
+                       PERFORM VARYING IDX FROM    1   BY  1
+                               UNTIL   IDX >       20
+                               OR      RECE02-SRYKA (IDX)  =   SPACE
+                           INITIALIZE                  SYUNOU-REC
+                           MOVE    RECE02-HOSPID   TO  SYU-HOSPID
+                           MOVE    RECE02-NYUGAIKBN
+                                                   TO  SYU-NYUGAIKBN
+                           MOVE    RECE02-PTID     TO  SYU-PTID
+                           MOVE    RECE02-SRYKA(IDX)
+                                                   TO  SYU-SRYKA
+                           MOVE    RECE02-SRYYM    TO  SYU-SRYYMD(1:6)
+                           MOVE    "__"            TO  SYU-SRYYMD(7:2)
+                           MOVE    RECE02-HKNCOMBI (IDX1)
+                                                   TO  SYU-HKNCOMBINUM
+                           MOVE    SYUNOU-REC      TO  MCPDATA-REC
+                           MOVE    "DBSELECT"      TO  MCP-FUNC
+                           MOVE    "SYUNOU-KEY21"  TO  ORC-DBPATH
+                           CALL    "ORCMCPSUB"     USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+                           IF      MCP-RC          =   ZERO
+                               MOVE    "SYUNOU-KEY21"  TO  ORC-DBPATH
+                               PERFORM 900-SYUNOU-READ-SEC
+                               PERFORM UNTIL   FLG-SYUNOU  =    1
                                    ADD     SYU-KYUFUGAI-GOKEI-TEN
-                                                   TO WRK-KYUFUGAITEN
-                               END-IF
+                                                   TO  WRK-KYUFUGAITEN
+                                   MOVE    "SYUNOU-KEY21"
+                                                   TO  ORC-DBPATH
+                                   PERFORM 900-SYUNOU-READ-SEC
+                               END-PERFORM          
                            END-IF
-                           MOVE    10              TO  IDX1
-                       END-IF
-                   END-PERFORM          
-                   MOVE    "SYUNOU-KEY16"  TO   ORC-DBPATH
-                   PERFORM 900-SYUNOU-READ-SEC
-               END-PERFORM
-           END-IF
       *
-           MOVE    "DBCLOSE"            TO      MCP-FUNC
-           MOVE    "SYUNOU-KEY16"       TO      ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
+                           MOVE    "DBCLOSE"       TO  MCP-FUNC
+                           MOVE    "SYUNOU-KEY21"  TO  ORC-DBPATH
+                           CALL    "ORCMCPSUB"     USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+                       END-PERFORM
+                   END-IF
+               END-IF
+           END-PERFORM
       *
            .
        300-KYUFUGAI-HENSYU-EXT.
