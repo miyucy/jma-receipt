@@ -130,6 +130,10 @@
       *    消炎鎮痛処理
            03  WRK-DAY-CNT         PIC 9(04).
            03  WRK-TEI-CNT         PIC 9(04).
+      *    消炎鎮痛処理（１月）
+           03  WRK-DAY-CNT-TBL.
+               05  WRK-DAY         PIC 9(03)
+                                   OCCURS   31.
       *
       *
            03  WRK-TENSU-X.
@@ -567,16 +571,62 @@
                END-IF
            END-IF
       *
-      *    当月に５回以上の時、逓減（マッサージ等は対象外）
-           IF     (LNK-ORCSC-SYOEN-CNT <   4   )  OR
-                  (WRK-SYOCHI-KBN      =   "01")
-               GO      TO      100112-SYOEN-CHK-EXT
-           END-IF
-      *
       *    労災の時、同一部位毎に逓減するので、対象外とする
            IF      SPA-HKNKBN          =   1
                GO      TO      100112-SYOEN-CHK-EXT
            END-IF
+      *TEST
+           DISPLAY "C40 INPUTCD:" WRK-COM-INPUTCD(IDX-Z)
+                  ",WRK-SYOCHI-KBN:" WRK-SYOCHI-KBN
+                  ",LNK-ORCSC-SYOEN-CNT:" LNK-ORCSC-SYOEN-CNT
+                  ",NYU-KAI:" WRK-COM-NYU-KAI (IDX-Z)
+      *TEST
+      *
+      *    当月に５回以上の時、逓減（マッサージ等は対象外）
+           IF     (WRK-SYOCHI-KBN      =   "01")
+               GO      TO      100112-SYOEN-CHK-EXT
+           END-IF
+           IF     (SPA-NYUGAIKBN       =   "2"  )  AND
+                  (LNK-ORCSC-SYOEN-CNT <   4   )
+               GO      TO      100112-SYOEN-CHK-EXT
+           END-IF
+           IF     (SPA-NYUGAIKBN       =   "1" )  AND
+                  (WRK-COM-NYU-KAI (IDX-Z)     >   ZERO )
+               IF     (WRK-COM-NYU-KAI (IDX-Z)  +  LNK-ORCSC-SYOEN-CNT)
+                                           <=  4
+                   COMPUTE LNK-ORCSC-SYOEN-CNT  =  LNK-ORCSC-SYOEN-CNT
+                                                +  WRK-COM-NYU-KAI
+                                                            (IDX-Z)
+                   GO      TO      100112-SYOEN-CHK-EXT
+               END-IF
+      *        今回入力時に逓減となる時
+               IF     (WRK-COM-NYU-KAI (IDX-Z) >   1  )  AND
+                      (LNK-ORCSC-SYOEN-CNT     <   4  )
+                   COMPUTE LNK-ORCSC-SYOEN-CNT =   LNK-ORCSC-SYOEN-CNT
+                                               +   WRK-COM-NYU-KAI
+                                                                (IDX-Z)
+                   MOVE    "140047670"         TO  WRK-SRYCD
+                   IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
+                       CONTINUE
+                   ELSE
+                       MOVE    "9014"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR
+                                                            (IDX-Z + 1)
+                       GO      TO      100112-SYOEN-CHK-EXT
+                   END-IF
+               END-IF
+               COMPUTE LNK-ORCSC-SYOEN-CNT =   LNK-ORCSC-SYOEN-CNT
+                                           +   WRK-COM-NYU-KAI
+                                                             (IDX-Z)
+           END-IF
+           IF     (SPA-NYUGAIKBN       =   "1" )  AND
+                  (WRK-COM-NYU-KAI (IDX-Z) =   ZERO )  AND
+                  (LNK-ORCSC-SYOEN-CNT <   4   )
+               GO      TO      100112-SYOEN-CHK-EXT
+           END-IF
+      *TEST
+           DISPLAY "LNK-ORCSC-SYOEN-CNT:" LNK-ORCSC-SYOEN-CNT
+      *TEST
       *
       *    消炎鎮痛逓減
            MOVE    IDX-Z               TO  IDX-S
@@ -600,6 +650,8 @@
       *
            MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
            MOVE    ZERO                TO  WRK-DAY-CNT
+      *
+           INITIALIZE                  WRK-DAY-CNT-TBL
       *
       *    マッサージ等を当月のすべての保険を検索する
            MOVE    WRK-COM-INPUTCD (IDX-Z)
@@ -632,6 +684,11 @@
                UNTIL       FLG-SANTEI      =   1
                COMPUTE WRK-DAY-CNT         =   WRK-DAY-CNT
                                            +   SANTEI-DAY (IDX-Y2)
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL       IDX2    >   31
+                   COMPUTE WRK-DAY (IDX2)  =   WRK-DAY (IDX2)
+                                           +   SANTEI-DAY (IDX2)
+               END-PERFORM
       *
                MOVE    "SANTEI-KEY5"       TO  ORC-DBPATH
                PERFORM 920-SANTEI-READ-SEC
@@ -655,8 +712,25 @@
       *
            IF      WRK-DAY-CNT         >=  3
                MOVE    "0076"              TO  WRK-ERRCD
-               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+               GO      TO      1001121-RSI-SYOEN-CHK-EXT
            END-IF
+      *    入院で入院日の指定がある時
+           IF     (SPA-NYUGAIKBN       =   "2" )  OR
+                  (LNK-ORCSC-SYORIFLG  =   "1" )  OR
+                  (WRK-COM-NYU-KAI (IDX-Z) =   ZERO )
+               GO      TO      1001121-RSI-SYOEN-CHK-EXT
+           END-IF
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2    >   31  )   OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF     (WRK-DAY (IDX2)  +   WRK-COM-NYUINDAY(IDX-Z IDX2))
+                                           >=  3
+                   MOVE    "0076"          TO  WRK-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z + 1)
+               END-IF
+           END-PERFORM
+      *
            .
        1001121-RSI-SYOEN-CHK-EXT.
            EXIT.

@@ -282,10 +282,6 @@
                        MOVE    IDX-Z           TO  IDX-ZS
                        MOVE    IDX-Z           TO  IDX-ZS2
                    END-IF
-      *        ÌôºÞ
-               WHEN    "6"
-                   MOVE    "9020"              TO  WRK-ERRCD
-                   MOVE    "1"                 TO  WRK-COM-CUR(IDX-Z)
       *        ´ïºà
                WHEN    "7"
                    MOVE    "0047"              TO  WRK-ERRCD

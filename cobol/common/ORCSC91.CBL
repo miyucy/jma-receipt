@@ -340,6 +340,8 @@
            ELSE
                PERFORM 1001-SANTEI-YMD-SEC
            END-IF
+           MOVE    TNS-JGNCNT1D        TO  LNK-SC91-DAYMAXCNT
+           MOVE    TNS-JGNCNT          TO  LNK-SC91-MAXCNT
       *
            MOVE    TNS-JGNCNTERR       TO  WRK-JGNCNTERR
       *

@@ -1144,6 +1144,21 @@
                        END-IF
                    END-IF
                END-IF
+      *        入院点滴で診療種別が入力されていること
+               IF      SPA-NYUGAIKBN           =   1
+                   IF      (SPA-COM-TNSSRYSYUKBN (IDX) =   "300" OR
+                                                           "330" )  AND
+                           (IDX                    >   1 )  AND
+                           (SPA-GMN-INPUTCD(IDX - 1)(1:4)
+                                                   =   ".330")
+      *                年齢加算以外
+                       IF      SPA-COM-INPUTCD(IDX)    =   "130009470"
+                           MOVE    ZERO                TO  FLG-ARI
+                       ELSE
+                           MOVE    1                   TO  FLG-ARI
+                       END-IF
+                   END-IF
+               END-IF
       *
            END-IF
            IF      FLG-ARI             =   ZERO

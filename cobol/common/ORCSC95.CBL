@@ -2507,9 +2507,8 @@
            MOVE    ZERO                TO  FLG-JIKAN
       *
            PERFORM VARYING     IDX-JYU     FROM    1   BY  1
-                   UNTIL      (IDX-JYU     >   50   )   OR
-                              (WRK-ZAINUM-G (IDX-JYU)
-                                           =   ZERO  )
+                   UNTIL      (IDX-JYU     >   50   )
+             IF    WRK-ZAINUM-G (IDX-JYU)  NOT =   ZERO
       *
                PERFORM VARYING     IDX-R   FROM    1   BY  1
                        UNTIL      (IDX-R           >   15  )
@@ -2520,6 +2519,7 @@
                        PERFORM 490111-ZAISET-HEN-SEC
                    END-IF
                END-PERFORM
+             END-IF
            END-PERFORM
       *
           .
@@ -2569,15 +2569,20 @@
                ELSE
       *
                    PERFORM 49011-SRYACT-HEN-SEC
+      *            剤回数がゼロの時、対象外
+                   IF      WKSRY-ZAIKAIKEI     =   ZERO
+                       CONTINUE
+                   ELSE
       *
-                   MOVE    SRY-ZAINUM          TO  WRK-ZAINUM
-                   MOVE    SPACE               TO  PARA-REC
-                   MOVE    "WKSRYACT"          TO  PARA-FILEMEI
-                   ADD     1                   TO  WRK-EDABAN
-                   MOVE    WRK-EDABAN          TO  PARA-EDABAN
-                   MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
+                       MOVE    SRY-ZAINUM          TO  WRK-ZAINUM
+                       MOVE    SPACE               TO  PARA-REC
+                       MOVE    "WKSRYACT"          TO  PARA-FILEMEI
+                       ADD     1                   TO  WRK-EDABAN
+                       MOVE    WRK-EDABAN          TO  PARA-EDABAN
+                       MOVE    WKSRYACT-REC        TO  PARA-DATA-REC
       *
-                   WRITE                       PARA-REC
+                       WRITE                       PARA-REC
+                   END-IF
                END-IF
       *
                MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
@@ -2598,6 +2603,7 @@
       *****************************************************************
        49011-SRYACT-HEN-SEC           SECTION.
       *
+           MOVE    ZERO                TO  WRK-ZAIKAISU
       *    剤回数取得
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
