@@ -65,6 +65,7 @@
       *                                     ０：請求しないとして更新する
       *  01.02.07    NACL-藤原    03/08/05  月内で保険者が変わったときの
       *                                     件数の集計方法を変更する
+      *  01.02.08    NACL-藤原    04/01/19  病床数の記載の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -338,7 +339,7 @@
            03  WRK-HKNJANUM        PIC X(08).
            03  WRK-KYURATE-9       PIC 9(03).
            03  WRK-KYURATE         PIC Z9.
-           03  WRK-BEDSU           PIC ZZ9.
+           03  WRK-BEDSU           PIC ZZZ.
       *
            03  WRK-ERRMSG          PIC X(40).
       *
@@ -1682,8 +1683,18 @@
       *     END-IF
       *
       *    病床数
-           MOVE    SYS-1001-BEDSU      TO  WRK-BEDSU
-           MOVE    WRK-BEDSU           TO  HC06-BEDSU
+           IF    ( SYS-1001-BEDSU      >   ZERO )
+           AND   ( SYS-1001-HOSPSBT    =   "1"  ) 
+               IF      RECE02-BEDSUFLG     =   "1" 
+                   MOVE    SYS-1001-BEDSU      TO  WRK-BEDSU
+                   MOVE    WRK-BEDSU           TO  HC06-BEDSU
+               ELSE
+                   IF      SYS-1001-BEDSUIPN   >=  200
+                       MOVE    SYS-1001-BEDSUIPN   TO  WRK-BEDSU
+                       MOVE    WRK-BEDSU           TO  HC06-BEDSU
+                   END-IF
+               END-IF
+           END-IF
       *
       *    ＯＣＲ
            IF  CNT-PAGE                =   1
