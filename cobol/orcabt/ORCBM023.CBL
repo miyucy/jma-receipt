@@ -567,16 +567,6 @@
                    END-IF
                END-PERFORM    
            END-PERFORM
-      *
-      *    ¹ç·×¡¦Áí¹ç·×
-           MOVE    SUM-GOK-KENSU (IDX1 2)  TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2D-KENSUG (1)    
-      *
-           MOVE    SUM-GOK-KENSU (IDX1 3)  TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ              TO  HCM2D-KENSUG (2)
-      *
-           MOVE    SUM-GOK-KENSU (IDX1 4)  TO  WRK-GKENSUZ
-           MOVE    WRK-GKENSUZ             TO  HCM2D-GKENSU
       *     
       *    Ä¢É¼°õºþ½èÍý¡Ê£±ÊÇÌÜ¡Ë
            MOVE    ZERO                TO  FLG-PRTKBN
@@ -589,6 +579,16 @@
       * 
            PERFORM 3201-KOH-HENSYU-SEC
                                    UNTIL   FLG-MF01-END   =   1
+      *
+      *    ¹ç·×¡¦Áí¹ç·×
+           MOVE    SUM-GOK-KENSU (IDX1 2)  TO  WRK-KENSUZ
+           MOVE    WRK-KENSUZ              TO  HCM2D-KENSUG (1)    
+      *
+           MOVE    SUM-GOK-KENSU (IDX1 3)  TO  WRK-KENSUZ
+           MOVE    WRK-KENSUZ              TO  HCM2D-KENSUG (2)
+      *
+           MOVE    SUM-GOK-KENSU (IDX1 4)  TO  WRK-GKENSUZ
+           MOVE    WRK-GKENSUZ             TO  HCM2D-GKENSU
            .
        320-BODY-HEN-EXT.
            EXIT.
