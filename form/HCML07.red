@@ -28,7 +28,7 @@
     </element>
     <element name="TEN" occurs="15">
       <appinfo>
-        <embed object="string" length="12"/>
+        <embed object="string" length="14"/>
       </appinfo>
     </element>
     <element name="HKNTEK" occurs="15">

@@ -5368,7 +5368,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="12"/>
+        <int val="14"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="true"/>
@@ -5410,7 +5410,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="12"/>
+        <int val="14"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="true"/>
@@ -5452,7 +5452,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="12"/>
+        <int val="14"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="true"/>
@@ -5494,7 +5494,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="12"/>
+        <int val="14"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="true"/>
@@ -5536,7 +5536,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="12"/>
+        <int val="14"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="true"/>
@@ -5578,7 +5578,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="12"/>
+        <int val="14"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="true"/>
@@ -5620,7 +5620,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="12"/>
+        <int val="14"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="true"/>
@@ -5662,7 +5662,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="12"/>
+        <int val="14"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="true"/>
@@ -5704,7 +5704,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="12"/>
+        <int val="14"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="true"/>
@@ -5746,7 +5746,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="12"/>
+        <int val="14"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="true"/>
@@ -5788,7 +5788,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="12"/>
+        <int val="14"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="true"/>
@@ -5830,7 +5830,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="12"/>
+        <int val="14"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="true"/>
@@ -5872,7 +5872,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="12"/>
+        <int val="14"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="true"/>
@@ -5914,7 +5914,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="12"/>
+        <int val="14"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="true"/>
@@ -5956,7 +5956,7 @@
         <enum val="0"/>
       </attribute>
       <attribute name="orca_size">
-        <int val="12"/>
+        <int val="14"/>
       </attribute>
       <attribute name="orca_hankaku">
         <boolean val="true"/>
