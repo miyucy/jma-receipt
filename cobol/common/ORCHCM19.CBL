@@ -86,6 +86,8 @@
            03  FLG-ZAITAKU         PIC 9(01).
            03  FLG-ZAITAKU-ARI     PIC 9(01).
       *
+           03  FLG-INNAI           PIC 9(01).
+      *
            03  FLG-SYOHOU          PIC 9(01).
       *
            03  FLG-PRINT           PIC 9(01).
@@ -1343,6 +1345,14 @@
                        MOVE    1               TO  FLG-ZAITAKU
                    END-IF
                END-IF
+      *        処方のみで、院内処方印刷の時
+               MOVE    ZERO                TO  FLG-INNAI
+               IF     (SRY-SRYSYUKBN       =   "213"  OR
+                                               "223"  OR
+                                               "233")   AND
+                      (ORCHC19-KBN         =   "3"   )
+                   MOVE    1               TO  FLG-INNAI
+               END-IF
       *
       *        薬剤を対象とする
       *****    IF      SRY-SRYSYUKBN       =   "210"  OR  "220"  OR
@@ -1358,7 +1368,8 @@
                            ACCT-ZAITEN         =   ZERO )  OR
                           (ORCHC19-KBN         =   "3"   AND
                            ACCT-ZAITEN     NOT =   ZERO )  OR
-                          (FLG-ZAITAKU         =   1    )
+                          (FLG-ZAITAKU         =   1    )  OR
+                          (FLG-INNAI           =   1    )
                        PERFORM VARYING     IDXA    FROM    1   BY  1
                                UNTIL      (IDXA    >   5   )  OR
                                           (SRY-SRYCD (IDXA)   =   SPACE)
@@ -2043,6 +2054,14 @@
                    MOVE    1               TO  FLG-OK2
                END-IF
            END-IF
+      *        処方のみで、院内処方印刷の時
+           IF      WRK-SRYKBN          =   "21"  OR  "22" OR "23"
+               IF     (WRK-SRYSYUKBN       =   "213"  OR
+                                               "223"  OR
+                                               "233")   AND
+                      (ORCHC19-KBN         =   "5"   )
+                   MOVE    1               TO  FLG-OK2
+               END-IF
       *
            IF      FLG-OK2             =   ZERO
                IF      IDX-Z               >   ZERO
