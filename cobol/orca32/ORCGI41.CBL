@@ -3080,7 +3080,7 @@
                       (SNUM-SYOKBN     NOT =   SPACE)
                    MOVE    "0003"            TO  SPA-ERRCD
                    MOVE    WRK-GMN-DAY-G     TO  SPA-GMN-DAY-G-41
-                   GO      TO      41013-DAY-CHK2-EXT
+                   GO      TO      41013-DAY-CHK3-EXT
                ELSE
                    MOVE    SNUM-OUTNUM       TO  IDW9
                END-IF
@@ -3099,9 +3099,9 @@
                       (SNUM-SYOKBN     NOT =   SPACE)
                    MOVE    "0003"          TO  SPA-ERRCD
                    MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
-                   GO      TO      41013-DAY-CHK2-EXT
+                   GO      TO      41013-DAY-CHK3-EXT
                ELSE
-                   MOVE    SNUM-OUTNUM     TO  IDW9
+                   COMPUTE   IDW9   =   SNUM-OUTNUM   +   1
                END-IF
                PERFORM VARYING    IDW8     FROM    IDW9   BY  1
                        UNTIL      IDW8     >   31
@@ -3123,7 +3123,7 @@
                   (SNUM-SYOKBN     NOT =   SPACE)
                MOVE    "0003"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
-               GO      TO      41013-DAY-CHK2-EXT
+               GO      TO      41013-DAY-CHK3-EXT
            ELSE
                MOVE    SNUM-OUTNUM     TO  IDV
                COMPUTE   IDW9   =   SNUM-OUTNUM   +   1
@@ -3172,14 +3172,8 @@
                MOVE    "0031"              TO  SPA-ERRCD
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX             >   SPA-GMN-MAX-41
-                   IF   (SPA-GMN-TBLREC-41 (IDX)(1:3)  NOT = "---") AND
-                        (SPA-GMN-TMEISYO-41 (IDX)(1:3) NOT = "."  )
-                       PERFORM VARYING    IDW8     FROM    1      BY  1
-                               UNTIL      IDW8     >   31
-                           MOVE    ALL SPACE    TO
-                                             SPA-GMN-TDAY-41 (IDX IDW8)
-                       END-PERFORM
-                   END-IF
+                   MOVE    ALL SPACE      TO  SPA-GMN-TBLREC-41 (IDX)
+                   MOVE    ZERO           TO  SPA-GMN-MAX-41
                END-PERFORM
                GO      TO       41013-DAY-CHK4-EXT
            ELSE
@@ -3223,6 +3217,7 @@
                        MOVE    99              TO  IDW9
                    END-IF
       *
+
                    IF     IDW9     =     99
                        PERFORM VARYING    IDK     FROM    IDW8   BY  1
                                UNTIL      IDK     >   31
@@ -3260,7 +3255,7 @@
                   (SNUM-SYOKBN     NOT =   SPACE)
                MOVE    "0003"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
-               GO      TO      41013-DAY-CHK2-EXT
+               GO      TO      41013-DAY-CHK4-EXT
            ELSE
                MOVE    SNUM-OUTNUM     TO  IDV
                COMPUTE   IDW9   =   SNUM-OUTNUM   +   1
