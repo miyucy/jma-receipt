@@ -5440,7 +5440,13 @@
                GO  TO  800-KANA-CHK-EXT
            END-IF
       *
-           MOVE    KANACHK-SYUBETU     TO  FLG-KANACHK
+      *    全角文字の場合、間に半角スペースがなかったかチェック
+           IF    ( KANACHK-SYUBETU     =   2  )
+            AND  ( KANACHK-RC2         =   8  )
+               MOVE    9               TO  FLG-KANACHK
+           ELSE
+               MOVE    KANACHK-SYUBETU TO  FLG-KANACHK
+           END-IF
       *
            .
        800-KANA-CHK-EXT.
