@@ -30,6 +30,7 @@
       *  01.00.02    NACL-多々納  02/08/02  画面のＳＰＡを保存領域へ編集
       *  01.00.03    NACL-多々納  02/11/20  GO TO 先修正他
       *  01.00.04    NACL-多々納  03/03/05  排他制御処理追加
+      *  01.00.05    NACL-多々納  03/12/01  一覧表を２００件へ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -146,7 +147,7 @@
                                                    OCCURS  7.
       *            受付患者一覧
                    07  SPA-GMN-TBL.
-                       09  SPA-GMN-TBLO        OCCURS  50.
+                       09  SPA-GMN-TBLO        OCCURS  200.
                            11  SPA-GMN-TBANGO      PIC 9(03).
                            11  SPA-GMN-TYYKTIME    PIC X(04).
                            11  SPA-GMN-TNAME       PIC X(20).
@@ -200,7 +201,7 @@
                                13  SPA-NAI-YYYKMAXCNT   PIC 9(03).
       *            受付患者一覧
                    07  SPA-NAI-TBL.
-                       09  SPA-NAI-TBLO        OCCURS   50.
+                       09  SPA-NAI-TBLO        OCCURS   200.
                            11  SPA-NAI-TPTID       PIC X(10).
                            11  SPA-NAI-TPTNUM      PIC X(20).
                            11  SPA-NAI-TYYKYMD     PIC X(08).
@@ -339,14 +340,14 @@
            03  WRK-YYKTIME             PIC X(04).
            03  WRK-IDX                 PIC 9(04).
            03  WRK-GMN-TBL.
-               05  WRK-GMN-TBLO        OCCURS   50.
+               05  WRK-GMN-TBLO        OCCURS   200.
                    07  WRK-GMN-TBANGO      PIC 9(03).
                    07  WRK-GMN-TYYKTIME    PIC X(04).
                    07  WRK-GMN-TNAME       PIC X(20).
                    07  WRK-GMN-TKAMEI      PIC X(04).
                    07  WRK-GMN-TRAIINZUMI  PIC X(04).
            03  WRK-NAI-TBL.
-               05  WRK-NAI-TBLO        OCCURS   50.
+               05  WRK-NAI-TBLO        OCCURS   200.
                    07  WRK-NAI-TPTID       PIC X(10).
                    07  WRK-NAI-TPTNUM      PIC X(20).
                    07  WRK-NAI-TYYKYMD     PIC X(08).
@@ -2173,7 +2174,7 @@
            MOVE    ZERO                TO  IDX
            PERFORM 
                UNTIL     (FLG-YYK          =   1       )
-                     OR  (IDX              >   50      )
+                     OR  (IDX              >=  200     )
       *
                IF      YYK-YYKID       =   ZERO
                    CONTINUE

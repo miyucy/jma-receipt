@@ -83,7 +83,7 @@
                    07  SPA-DRCD-MAX            PIC 9(04).
       *
                    07  SPA-GMN-TBL.
-                       09  SPA-GMN-TBLO    OCCURS  100.
+                       09  SPA-GMN-TBLO    OCCURS  200.
                            11  SPA-GMN-TBANGO      PIC 9(03).
                            11  SPA-GMN-TYYKTIME    PIC X(04).
                            11  SPA-GMN-TSRYKA      PIC X(20).
@@ -99,7 +99,7 @@
                    07  SPA-NAI-SINYMD          PIC X(08).
                    07  SPA-NAI-DRNCD           PIC X(05).
                    07  SPA-NAI-TBL.
-                       09  SPA-NAI-TBLO    OCCURS  100.
+                       09  SPA-NAI-TBLO    OCCURS  200.
                            11  SPA-NAI-TSRYKA      PIC X(02).
                            11  SPA-NAI-TKYYKTIME   PIC X(04). 
                            11  SPA-NAI-TSINRYO     PIC X(02).
@@ -168,7 +168,7 @@
            03  WRK-YYKID           PIC X(02).
            03  WRK-IDX             PIC 9(04).
            03  WRK-GMN-TBL.
-               05  WRK-GMN-TBLO    OCCURS  100.
+               05  WRK-GMN-TBLO    OCCURS  200.
                    07  WRK-GMN-TBANGO      PIC 9(03).
                    07  WRK-GMN-TYYKTIME    PIC X(04).
                    07  WRK-GMN-TSRYKA      PIC X(20).
@@ -180,7 +180,7 @@
                    07  WRK-GMN-TRAIIN      PIC X(04).
       *
            03  WRK-NAI-TBL.
-               05  WRK-NAI-TBLO    OCCURS  100.
+               05  WRK-NAI-TBLO    OCCURS  200.
                    07  WRK-NAI-TSRYKA      PIC X(02).
                    07  WRK-NAI-TKYYKTIME   PIC X(04).  
                    07  WRK-NAI-TSINRYO     PIC X(02).
@@ -536,7 +536,8 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM
-                   UNTIL       FLG-YYK      =   1
+                   UNTIL      (FLG-YYK     =   1   )
+                         OR   (IDX         >   200 )
                MOVE    ZERO                TO  FLG-SYORI
                IF     (SPA-GMN-SINRYOCD    =   "00"  )  OR
                       (SPA-NAI-DRNCD(2:4)   =   "9999")
