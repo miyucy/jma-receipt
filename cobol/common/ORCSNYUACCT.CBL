@@ -32,6 +32,7 @@
       * 01.00.03     NACL-多々納  02/12/26  年齢チェック追加
       * 01.00.04     NACL-多々納  03/01/28  次月分作成追加
       * 01.00.05     NACL-多々納  03/03/12  選定療養費追加
+      * 01.00.06     NACL-多々納  04/08/01  入院取消修正
       *****************************************************************
       *
       *
@@ -1798,14 +1799,15 @@
            PERFORM
                UNTIL   FLG-NYUINACCT       =   1
                MOVE    ZERO                TO  FLG-DELETE
-               IF      LNK-SCNYUACCT-SYORI-KBN     =   "5"
+      *        すべて削除とする
+      *******  IF      LNK-SCNYUACCT-SYORI-KBN     =   "5"
       *            入院取消の時、入院・入院加算のみ削除する
-                   IF      NACCT-ZAISKBKBN     =   "1"  OR  "6"
-                       MOVE    1               TO  FLG-DELETE
-                   END-IF
-               ELSE
+      *            IF      NACCT-ZAISKBKBN     =   "1"  OR  "6"
+      *                MOVE    1               TO  FLG-DELETE
+      *            END-IF
+      *********ELSE
                    MOVE    1               TO  FLG-DELETE
-               END-IF
+      *********END-IF
       *
                IF      FLG-DELETE          =   1
                    ADD     1               TO  WRK-CNT
@@ -1852,10 +1854,10 @@
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
-      *    入院取消の時外泊は残す
-           IF      LNK-SCNYUACCT-SYORI-KBN     =   "5"
-               GO      TO      5001-NYUINACCT-DEL-EXT
-           END-IF
+      *!   入院取消の時外泊は残す
+      *!   IF      LNK-SCNYUACCT-SYORI-KBN     =   "5"
+      *!       GO      TO      5001-NYUINACCT-DEL-EXT
+      *!   END-IF
       *
       *    外泊削除
            MOVE    ZERO                TO  WRK-CNT
