@@ -16,3 +16,6 @@
                     06  KHELP-TMENU      PIC X(30).
                   05  KHELP-SELECT
                           PIC X       OCCURS  100 TIMES.
+              03  KHELP-HEAD.
+                04  KHELP-HEAD-STYLE PIC X(20).
+                04  KHELP-HEAD-VALUE PIC X(10).
