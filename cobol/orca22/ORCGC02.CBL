@@ -4655,6 +4655,8 @@
                                                WRK-KBN
                PERFORM 5001-MANSEIKBN-HENSYU-SEC                                
                MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-MANSEIKBNMEI
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN-C02-MANSEIKBN-G 
            END-IF
            MOVE    LNK-BYO-RECEDENFLG  TO  SPA-NAI-C02-RECEDENFLG
            MOVE    LNK-BYO-BYOMEIHENFLG
