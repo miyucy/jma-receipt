@@ -9204,9 +9204,9 @@
                        MOVE   "190110610"  TO  STUSAN-TOKUTEI-SRYCD(4)
                        MOVE   "190110310"  TO  STUSAN-TOKUTEI-SRYCD(5)
                        MOVE   "190110710"  TO  STUSAN-TOKUTEI-SRYCD(6)
-                   WHEN   "03"
-                   WHEN   "04"
-                   WHEN   "05"
+                   WHEN   "06"
+                   WHEN   "07"
+                   WHEN   "08"
                        MOVE   "190024310"  TO  STUSAN-TOKUTEI-SRYCD(1)
                        MOVE   "190024410"  TO  STUSAN-TOKUTEI-SRYCD(2)
                        MOVE   "190110410"  TO  STUSAN-TOKUTEI-SRYCD(3)
