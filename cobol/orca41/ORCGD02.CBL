@@ -601,6 +601,8 @@
            03  W-YOYAKU5           PIC X(09)   VALUE   "113003510".
       *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê±¡Æâ½èÊý¡Ë½é¿Ç»þ
            03  W-YOYAKU6           PIC X(09)   VALUE   "113003710".
+      *    ¼ÂÆü¿ô»»Äê
+           03  W-YOYAKU7           PIC X(09)   VALUE   "099409901".
        01  WRK-HKNNUM.
       *    Ï«ºÒ
            03  W-HKNNUM1           PIC X(03)   VALUE   "971".
@@ -1103,12 +1105,12 @@
                         (ACCT-ZAITEN   NOT =   ZERO))             OR
                        ((SPA-GMN-CNV (20)   =   SPACE)         AND
                         (ACCT-SRYKBN        =  "99")           AND
-                        (ACCT-SRYCDTOTAL(6:9) =  "099409901"))    OR
+                        (ACCT-SRYCDTOTAL(6:9) =  W-YOYAKU7))    OR
                        (SPA-GMN-CNV (20)   =   "1")               OR
                        ((SPA-GMN-CNV (20)   =   "2")           AND
                         (ACCT-ZAITEN        =  ZERO)           AND
                         (ACCT-SRYKBN    NOT =  "99")           AND
-                        (ACCT-SRYCDTOTAL(6:9) NOT =  "099409901"))
+                        (ACCT-SRYCDTOTAL(6:9) NOT =  W-YOYAKU7))
                        PERFORM T-100-RECECHEK-HANTEI-1-SEC
                    END-IF
       *½¤Àµ/*½ªÎ»*03.08.26*********************************************
@@ -1215,11 +1217,6 @@
       *
            IF  (ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
                (ACCT-PTID     NOT =   W1-SRY-PTID)
-               IF  (W1-SRY-HOSPID   NOT =  ALL "*")     AND
-                   ((T-ERR-04            =  SPACE)     OR
-                    (T-ERR-13            =  SPACE))
-                   PERFORM T-500-RECECHEK2-SEC
-               END-IF
                PERFORM T-500-RECECHEK-SEC
                IF  (SPA-GMN-CNV (12) NOT =  SPACE)        AND
                    (T-ERR-12             =  SPACE)        AND
@@ -1275,6 +1272,13 @@
                END-IF
                IF  T-HANNTEI5   =   "*"
                    PERFORM T-200-RECECHEK-CHK1-SEC
+               END-IF
+               IF  (T-HANNTEI8         =   "*")               AND
+                   ((ACCT-HOSPID   NOT =   W1-SRY-HOSPID)  OR
+                    (ACCT-PTID     NOT =   W1-SRY-PTID))      AND
+                   ((T-ERR-04          =   SPACE)          OR
+                    (T-ERR-13          =   SPACE))
+                   PERFORM T-500-RECECHEK2-SEC
                END-IF
                IF  COMB-HKNNUM   =   W-HKNNUM1
                    MOVE    W-HKNNUM1         TO  WK1-HKNNUM-S
@@ -2627,7 +2631,6 @@
        T-500-RECECHEK2-SEC               SECTION.
       *
            IF  (T-ERR-04              =   SPACE)  AND
-               (PTINF-TSTPTNUMKBN NOT =   "1")    AND
                (SPA-GMN-CNV (4)   NOT =   SPACE)
                MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM1
                MOVE    PTINF-BIRTHDAY(1:6)     TO  W-YM2
@@ -2643,9 +2646,9 @@
                    (T-SINRYOU-AREA    <   W-YM1)
                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                    MOVE    SPACE             TO  DID2-REC
-                   MOVE    W1-SRY-HOSPID     TO  DID2-REC(1:24)
+                   MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
                    MOVE    "-"               TO  DID2-REC(25:1)
-                   MOVE    W1-SRY-PTID       TO  DID2-REC(26:10)
+                   MOVE    ACCT-PTID         TO  DID2-REC(26:10)
                    MOVE    T-MESSAGE-500-03  TO  DID2-REC(71:90)
                    WRITE   DID2-REC
                    MOVE    "*"               TO  T-ERR-04
@@ -2654,9 +2657,9 @@
                    (T-SINRYOU-AREA    <   W-YM2)
                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                    MOVE    SPACE             TO  DID2-REC
-                   MOVE    W1-SRY-HOSPID     TO  DID2-REC(1:24)
+                   MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
                    MOVE    "-"               TO  DID2-REC(25:1)
-                   MOVE    W1-SRY-PTID       TO  DID2-REC(26:10)
+                   MOVE    ACCT-PTID         TO  DID2-REC(26:10)
                    MOVE    T-MESSAGE-500-04  TO  DID2-REC(71:90)
                    WRITE   DID2-REC
                    MOVE    "*"               TO  T-ERR-04
@@ -2668,16 +2671,15 @@
                     (PTINF-BIRTHDAY(7:2)  =   "01"))
                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                    MOVE    SPACE             TO  DID2-REC
-                   MOVE    W1-SRY-HOSPID     TO  DID2-REC(1:24)
+                   MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
                    MOVE    "-"               TO  DID2-REC(25:1)
-                   MOVE    W1-SRY-PTID       TO  DID2-REC(26:10)
+                   MOVE    ACCT-PTID         TO  DID2-REC(26:10)
                    MOVE    T-MESSAGE-500-05  TO  DID2-REC(71:90)
                    WRITE   DID2-REC
                    MOVE    "*"               TO  T-ERR-04
                END-IF
            END-IF.
            IF  (T-ERR-13               =   SPACE)  AND
-               (PTINF-TSTPTNUMKBN  NOT =   "1")    AND
                (SPA-GMN-CNV (13)   NOT =   SPACE)
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "1"             TO  KANACHK-SYORI
@@ -2687,9 +2689,9 @@
                IF  KANACHK-RC           NOT =   ZERO
                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                    MOVE    SPACE             TO  DID1-REC
-                   MOVE    W1-SRY-HOSPID     TO  DID2-REC(1:24)
+                   MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
                    MOVE    "-"               TO  DID2-REC(25:1)
-                   MOVE    W1-SRY-PTID       TO  DID2-REC(26:10)
+                   MOVE    ACCT-PTID         TO  DID2-REC(26:10)
                    MOVE    T-MESSAGE-600-01  TO  DID2-REC(71:90)
                    WRITE   DID2-REC
                    IF  SPA-GMN-CNV (13)  =  "1"
@@ -2698,7 +2700,6 @@
                END-IF
            END-IF.
            IF  (T-ERR-13               =   SPACE)  AND
-               (PTINF-TSTPTNUMKBN  NOT =   "1")    AND
                (SPA-GMN-CNV (13)   NOT =   SPACE)
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "1"             TO  KANACHK-SYORI
@@ -2708,9 +2709,9 @@
                IF  KANACHK-RC   NOT =   ZERO
                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
                    MOVE    SPACE             TO  DID1-REC
-                   MOVE    W1-SRY-HOSPID     TO  DID2-REC(1:24)
+                   MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
                    MOVE    "-"               TO  DID2-REC(25:1)
-                   MOVE    W1-SRY-PTID       TO  DID2-REC(26:10)
+                   MOVE    ACCT-PTID         TO  DID2-REC(26:10)
                    MOVE    T-MESSAGE-600-01  TO  DID2-REC(71:90)
                    WRITE   DID2-REC
                    IF  SPA-GMN-CNV (13)  =  "1"
@@ -3234,12 +3235,14 @@
                    IF  (SPA-GMN-CNV (12) NOT =  SPACE)             AND
                        (T-ERR-12             =  SPACE)             AND
                        (T-NYUGAIKBN-AREA     =  "2")               AND
-                       ((ACCT-SRYKBN           =  "11")        OR
-                        (ACCT-SRYKBN           =  "12")        OR
-                        (ACCT-SRYKBN           =  "13")        OR
-                        (ACCT-SRYKBN           =  "14")        OR
-                        ((ACCT-SRYKBN          =  "99")    AND
-                         (ACCT-SRYCDTOTAL(6:9) =  "099409901")))
+                       (((ACCT-SRYKBN      NOT <  "10")       AND
+                         (ACCT-SRYKBN      NOT >  "80")       AND
+                         ((SRY-SRYKBN            =  "11")        OR
+                          (SRY-SRYKBN            =  "12")        OR
+                          (SRY-SRYKBN            =  "13")        OR
+                          (SRY-SRYKBN            =  "14")))      OR
+                        ((ACCT-SRYKBN          =  "99")       AND
+                         (ACCT-SRYCDTOTAL(6:9) =  W-YOYAKU7)))
       *½¤Àµ/*½ªÎ»*03.08.21*********************************************
                        MOVE    ZERO                 TO  W-JITU-DAY4
                        PERFORM VARYING  IDX6  FROM  1  BY  1
@@ -3266,6 +3269,7 @@
       *                     (SRY-SRYKBN        NOT =  "12")   AND
                        IF  (SPA-GMN-CNV (12)  NOT =  SPACE)  AND
                            (T-ERR-12              =  SPACE)  AND
+                           (T-NYUGAIKBN-AREA      =  "2")    AND
                            (ACCT-SRYKBN       NOT <  "10")   AND
                            (ACCT-SRYKBN       NOT >  "80")   AND
                            (SRY-SRYKBN        NOT =  "11")   AND
