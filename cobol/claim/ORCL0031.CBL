@@ -41,6 +41,7 @@
       *  01.00.06    NACL-藤原    04/03/19  病名検索にサブパラメタ追加
       *  01.00.07    NACL-藤原    04/03/22  更新エラー時の処理終了
       *  01.00.08    NACL-多々納  04/03/29  外用回数編集修正
+      *  01.00.09    NACL-多々納  04/08/24  入院回数修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -134,6 +135,7 @@
            03  IDH-MAX             PIC 9(04).
       *
            03  TBL-MAX             PIC 9(04).
+           03  TBL-IDX             PIC 9(04).
       *
            03  IDX-I               PIC 9(04).
            03  IDX-I1              PIC 9(04).
@@ -1459,6 +1461,8 @@
                END-IF
            END-IF
       *
+           MOVE    IDX1                TO  TBL-IDX
+      *
            .
        20031-WKSRYACT-HEN-EXT.
            EXIT.
@@ -1669,7 +1673,11 @@
        2004-WKSRYACT-OUT-SEC                SECTION.
       *
       *    投薬で用法がある時、用法を追加する
-           COMPUTE IDX3                =   IDX1    -  1
+      *****COMPUTE IDX3                =   IDX1    -  1
+           MOVE    TBL-IDX             TO  IDX3
+           IF      IDX3                =   ZERO
+               COMPUTE IDX3                =   IDX1    -  1
+           END-IF
            DISPLAY "LF04-ADMINCODE(1) = " LF04-ADMINCODE(1)
            DISPLAY "LF04-ADMINCODE(2) = " LF04-ADMINCODE(2)
            DISPLAY "LF04-ADMINCODE(3) = " LF04-ADMINCODE(3)
