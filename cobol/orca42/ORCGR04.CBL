@@ -1412,6 +1412,15 @@
                                    TO  SHELLTBL-ARG21      
            MOVE    LNK-PRTKANRI-PRTNM
                                    TO  SHELLTBL-ARG22
+      *****EVALUATE    SPA-RID1-FLG
+      *****    WHEN    "PV"
+      *****        MOVE    "4"             TO  SHELLTBL-ARG23
+      *****    WHEN    "NO"
+      *****        MOVE    "3"             TO  SHELLTBL-ARG23
+      *****    WHEN    "OK"
+      *****        MOVE    "2"             TO  SHELLTBL-ARG23
+      *****END-EVALUATE
+           MOVE    "2"             TO  SHELLTBL-ARG23
       *     
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC

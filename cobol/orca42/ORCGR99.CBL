@@ -441,13 +441,14 @@
            IF      R99-MSG              =   SPACE
                IF      R99-COUNT            >   ZERO    
                    IF      SPA-R01-GMNKBN  =   "R02"   OR  "R04"
-                       IF      JOB-UPDCNT           =   ZERO
-                           MOVE    "該当のレセプトはありませんでした"
-                                                TO  R99-MSG
-                       ELSE
-                           IF      JOB-STOPFLG      NOT =   ZERO
-                               MOVE    "印刷処理が中止されました"
+                       IF      JOB-STOPFLG      NOT =   ZERO
+                           MOVE    "印刷処理が中止されました"
                                                         TO  R99-MSG
+                       ELSE
+                           IF      JOB-UPDCNT           =   ZERO
+                               MOVE
+                                   "該当のレセプトはありませんでした"
+                                                            TO  R99-MSG
                            ELSE
                                MOVE    JOB-UPDCNT           TO  WRK-PAGE
                                STRING

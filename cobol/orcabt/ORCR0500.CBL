@@ -91,6 +91,13 @@
            03  PRT-PRTID           PIC X(30).
            03  PRT-PRTNM           PIC X(20).
            03  PRT-SITEKBN         PIC X(01).
+           03  PRT-PRTKBN          PIC X(01).
+           03  PRT-OUT             PIC X(165).
+           03  PRT-TBL-KEY         PIC X(08).
+           03  PRT-RENNUM          PIC 9(04).
+           03  PRT-TBL-GROUP       PIC X(14).
+           03  PRT-SHORI-RENNUM    PIC 9(04).
+           03  PRT-PAGE            PIC 9(05).
            03  PRT-PRTDATA         PIC X(10000).
       *
       *    エラーファイル
@@ -170,6 +177,7 @@
                05  WRK-PARA-TERMID64             PIC X(64).
                05  WRK-PARA-SYOKBN               PIC X(01).
                05  WRK-PARA-PRTNM                PIC X(16).
+               05  WRK-PARA-PRTKBN               PIC X(01). 
       *
            COPY    "CPORCSPRTLNK.INC".
       *
@@ -318,7 +326,11 @@
                                              LNK-PRTKANRI-TERMID
                                              LNK-PRTKANRI-OPID    
                                              LNK-PRTKANRI-PRTNM
+                                             WRK-PARA-PRTKBN
            END-UNSTRING                                  
+      *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -439,7 +451,8 @@
                MOVE    SPACE           TO  SHELLTBL
       *        ファイルデイレクトリ位置指定
                INITIALIZE              ORCSMKPASSAREA
-               MOVE    "scripts/daily/HCALL2.sh"
+      *********MOVE    "scripts/daily/HCALL2.sh"
+               MOVE    "scripts/daily/HCALL_prv.sh"
                                        TO  MKPASS-IN-01
                CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
                MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
@@ -538,6 +551,19 @@
            MOVE    RECE08-FORMID       TO  PRT-PRTID
       *****MOVE    SYS-1031-PRTNM(4)   TO  PRT-PRTNM 
            MOVE    WRK-PARA-PRTNM      TO  PRT-PRTNM
+           MOVE    "1"                 TO  PRT-SITEKBN
+           MOVE    WRK-PARA-PRTKBN     TO  PRT-PRTKBN
+           MOVE    "/var/tmp/.orca_ps/"
+                                       TO  PRT-OUT
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                       TO  PRT-TBL-KEY
+           MOVE    LNK-PRTKANRI-RENNUM TO  PRT-RENNUM
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                       TO  PRT-TBL-GROUP
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                       TO  PRT-SHORI-RENNUM
+           ADD     1                   TO  WRK-RENNUM
+           MOVE    WRK-RENNUM          TO  PRT-PAGE
       *
       *    通し番号印刷のときのみ編集
            IF      SYS-2005-RENNUMHENKBN   =   "1"
