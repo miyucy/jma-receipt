@@ -2296,43 +2296,43 @@
                INITIALIZE                      I48
            ELSE
       *        ÆâÉþÌôºÞ
-               MOVE    "3"                 TO  SPA-I48-GMN-SYORI
-               IF     (SPA-GMN-IDX4        =   1  )  OR 
-                      (SPA-COM-KAIFLG (SPA-GMN-IDX4 - 1)    =   "1" ) OR
-                      (SPA-GMN-INPUTCD(SPA-GMN-IDX4 - 1)(1:1)  =  "S")
+      **         MOVE    "3"                 TO  SPA-I48-GMN-SYORI
+      **         IF     (SPA-GMN-IDX4        =   1  )  OR 
+      **                (SPA-COM-KAIFLG (SPA-GMN-IDX4 - 1)    =   "1" ) OR
+      **                (SPA-GMN-INPUTCD(SPA-GMN-IDX4 - 1)(1:1)  =  "S")
       *            ÆâÉþÌôºÞ
-                   MOVE    "3"                 TO  SPA-I48-GMN-SYORI
-               ELSE
-                   EVALUATE    SPA-COM-SRYKBN(SPA-GMN-IDX4 - 1)
-                       WHEN    SPACE
+      **             MOVE    "3"                 TO  SPA-I48-GMN-SYORI
+      **         ELSE
+      **             EVALUATE    SPA-COM-SRYKBN(SPA-GMN-IDX4 - 1)
+      **                 WHEN    SPACE
       *                    ¿ÇÎÅ¶èÊ¬¤¬·èÄê¤·¤Æ¤Ê¤¤»þ
-                           PERFORM  4101-I48-SYRKBN-SEC
-                       WHEN    "31"
-                       WHEN    "32"
-                       WHEN    "33"
+      **                     PERFORM  4101-I48-SYRKBN-SEC
+      **                 WHEN    "31"
+      **                 WHEN    "32"
+      **                 WHEN    "33"
       *                    Ãí¼Í
-                           MOVE    "5"         TO  SPA-I48-GMN-SYORI
-                       WHEN    "23"
+      **                     MOVE    "5"         TO  SPA-I48-GMN-SYORI
+      **                 WHEN    "23"
       *                    ³°Ìô
-                           MOVE    "4"         TO  SPA-I48-GMN-SYORI
-                       WHEN    "21"
-                       WHEN    "22"
+      **                     MOVE    "4"         TO  SPA-I48-GMN-SYORI
+      **                 WHEN    "21"
+      **                 WHEN    "22"
       *                    ³°Ìô
-                           MOVE    "3"         TO  SPA-I48-GMN-SYORI
-                       WHEN    OTHER
+      **                     MOVE    "3"         TO  SPA-I48-GMN-SYORI
+      **                 WHEN    OTHER
       *                    ¿ÇÎÅ¹Ô°Ù
-                           MOVE    "3"         TO  SPA-I48-GMN-SYORI
-                           MOVE    1           TO  FLG-KOUI
-                   END-EVALUATE
-               END-IF
+      **                     MOVE    "3"         TO  SPA-I48-GMN-SYORI
+      **                     MOVE    1           TO  FLG-KOUI
+      **             END-EVALUATE
+      **         END-IF
       *
       *        ÅÀ¿ô¥Þ¥¹¥¿ÊÔ½¸¤Ç¡¢ÂÐ¾Ý¥Ç¡¼¥¿¤Ê¤·¤Î»þ¡¢¿ÇÎÅ¹Ô°Ù¤Ç¸¡º÷¤¹¤ë
-               IF     (SPA-I48-GMN-MAX     =   ZERO )  AND
-                      (SPA-I48-CDSYUBETU   =   "J"  )  AND
-                      (FLG-KOUI            =   1    )
+      **         IF     (SPA-I48-GMN-MAX     =   ZERO )  AND
+      **                (SPA-I48-CDSYUBETU   =   "J"  )  AND
+      **                (FLG-KOUI            =   1    )
                    INITIALIZE                  SPA-I48GMN-AREA
                    MOVE    "8"                 TO  SPA-I48-GMN-SYORI
-               END-IF
+      **         END-IF
            END-IF.
       *
            MOVE    "I48"               TO  SPA-SAKIPG.
@@ -2869,7 +2869,8 @@
       *
       *    ºÞÊ¬Î¥½èÍý
            INITIALIZE                  ORCSC93AREA.
-           MOVE    "I44"               TO  LNK-SC93-PG.
+      **     MOVE    "I44"               TO  LNK-SC93-PG.
+           MOVE    "J04"               TO  LNK-SC93-PG.
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤¬¤¢¤ê¡¢£³ºÐËþ¤Î»þ
            IF      (SPA-SYONIKA        =   1   )  AND
                    (SPA-NAI-NENREI-YY  <   3   )
@@ -3964,6 +3965,10 @@
                    ELSE
                        MOVE    SPA-COM-TENSU  (IDX)    TO  WRK-ZAITEN
                    END-IF
+               DISPLAY "**SPA-COM-SYUTEN1 " SPA-COM-SYUTEN1(IDX)
+               DISPLAY "  SPA-COM-SYUTEN2 " SPA-COM-SYUTEN2 (IDX)
+               DISPLAY "  SPA-COM-YKZTEN  " SPA-COM-YKZTEN  (IDX)
+               DISPLAY "  SPA-COM-KIZAITEN " SPA-COM-KIZAITEN(IDX)
                    MOVE    SPA-COM-SYUTEN1(IDX)    TO  WRK-SYUTEN1
                    MOVE    SPA-COM-SYUTEN2 (IDX)   TO  WRK-SYUTEN2
                    MOVE    SPA-COM-YKZTEN  (IDX)   TO  WRK-YKZTEN
@@ -4397,6 +4402,10 @@
                ELSE
                    MOVE    SPA-COM-TENSU  (IDX)    TO  WRK-ZAITEN
                END-IF
+               DISPLAY "**SPA-COM-SYUTEN1 " SPA-COM-SYUTEN1(IDX)
+               DISPLAY "  SPA-COM-SYUTEN2 " SPA-COM-SYUTEN2 (IDX)
+               DISPLAY "  SPA-COM-YKZTEN  " SPA-COM-YKZTEN  (IDX)
+               DISPLAY "  SPA-COM-KIZAITEN " SPA-COM-KIZAITEN(IDX)
                MOVE    SPA-COM-SYUTEN1(IDX)    TO  WRK-SYUTEN1
                MOVE    SPA-COM-SYUTEN2 (IDX)   TO  WRK-SYUTEN2
                MOVE    SPA-COM-YKZTEN  (IDX)   TO  WRK-YKZTEN
