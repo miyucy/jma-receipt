@@ -128,7 +128,7 @@
 008300                         13  SPA-NAI-SRYYMD     PIC X(08).
 008400                         13  SPA-NAI-SRYCD1     PIC X(09).
 008100                 09  SPA-NAI-TBLOCC2     OCCURS  8.
-008500                     11  SPA-GMN-TBLREC2     OCCURS  100.
+008500                     11  SPA-NAI-TBLREC2     OCCURS  100.
 008600                         13  SPA-NAI-SRYYYMM    PIC X(06).
 008700                         13  SPA-NAI-SRYCD2     PIC X(09).
 008800*
