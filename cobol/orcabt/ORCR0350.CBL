@@ -1663,7 +1663,15 @@
                    UNTIL   IDY >       3
                    OR      RECE62-KOHNUM (IDY) =   SPACE
                COMPUTE IDX     =   IDY     +   1
-               PERFORM 20051-KOH-HENSYU-SEC
+               IF    ( SYS-1001-PREFNUM            =   "14"    )
+               AND   ( RECE62-KOHNUM (IDY) (1:1)   >=  "1" AND 
+                                                   <=  "8"     )
+               AND   ( RECE62-KOHFTNJANUM (IDY)    =   SPACE   )
+               AND   ( RECE62-KOHJKYSNUM  (IDY)    =   SPACE   )
+                   CONTINUE
+               ELSE 
+                   PERFORM 20051-KOH-HENSYU-SEC
+               END-IF
            END-PERFORM                      
            .
        2005-HENSYU-EXT.
