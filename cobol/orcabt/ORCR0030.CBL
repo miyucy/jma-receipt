@@ -114,6 +114,7 @@
       *  01.02.20   NACL-門脇     03/04/24  一部負担金（）の編集修正
       *  01.02.21   NACL-門脇     03/05/08  名称有効桁のセット
       *  01.02.22   NACL-門脇     03/05/13  処方せん回数のセット修正
+      *  01.02.23   NACL-門脇     03/05/22  残量廃棄の数量セット
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -216,6 +217,9 @@
            03  FLG-KANJI                               PIC 9(01).
            03  FLG-SP                                  PIC 9(01). 
            03  FLG-PTCOM                               PIC 9(01).
+           03  FLG-ZANHAIKI                            PIC 9(01).
+           03  FLG-RECE05                              PIC 9(01).
+           03  FLG-REWRITE                             PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
        01  FLG-KHNTEN-AREA.
@@ -368,6 +372,14 @@
            03  WRK-TOKKI                               PIC X(02).
            03  TOKKI-IDX                               PIC 9(02). 
       *
+           03  WRK-TANICD                              PIC 9(03).
+           03  WRK-TANIMOJISU                          PIC 9(01).
+           03  WRK-TANINAME                            PIC X(24).
+           03  WRK-SRYSURYO                            PIC 9(05)V9(03).
+           03  WRK-SRYSURYO2                           PIC 9(05).
+           03  WRK-SRYSURYO3                           PIC 9(05).
+           03  WRK-RENNUM                              PIC 9(02).
+      *
       *    数字半角全角変換用     
            03  WRK-CHAR-IDX                    PIC 9(02).
            03  WRK-CHAR-HENKAN-AREA.
@@ -465,7 +477,8 @@
            03  CONS-SANSO          PIC X(09) VALUE "770020070".
       *    高気圧酸素加算
            03  CONS-SANSO2         PIC X(09) VALUE "770030070".
-      *
+      *    残量廃棄
+           03  CONS-ZANHAIKI       PIC X(09) VALUE "099309901".
       *
       *    酸素 
       *****COPY    "CMSANSOTBL.INC".
@@ -681,7 +694,8 @@
                CLOSE                       RECE055-FILE
       *
                OPEN    OUTPUT              RECE04-FILE
-                                           RECE05-FILE
+      ****                                 RECE05-FILE
+               OPEN    I-O                 RECE05-FILE
            END-IF
            OPEN    I-O                 RECE02-FILE
       *
@@ -777,6 +791,14 @@
                                                RECE02-HKNCOMBI (IDX1)
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
+      *
+                               MOVE  ZERO  TO   WRK-SRYSURYO
+                               MOVE  ZERO  TO   WRK-SRYSURYO2
+                               MOVE  ZERO  TO   WRK-SRYSURYO3
+                               MOVE  ZERO  TO   WRK-TANICD
+                               MOVE  ZERO  TO   WRK-TANIMOJISU
+                               MOVE  SPACE TO   WRK-TANINAME
+      *
                                PERFORM   RECE04-TENSOU-SEC
                                PERFORM   RECE05-HENSYU-SEC
                                PERFORM   RECE04-WRITE-SEC
@@ -797,6 +819,14 @@
                                                        CONS-TOKKI12
                                       PERFORM   TOKKI-HENSYU-SEC
                                  ELSE
+      *
+                                      MOVE  ZERO  TO   WRK-SRYSURYO
+                                      MOVE  ZERO  TO   WRK-SRYSURYO2
+                                      MOVE  ZERO  TO   WRK-SRYSURYO3
+                                      MOVE  ZERO  TO   WRK-TANICD
+                                      MOVE  ZERO  TO   WRK-TANIMOJISU
+                                      MOVE  SPACE TO   WRK-TANINAME
+      *
                                       PERFORM   RECE04-TENSOU-SEC
                                       PERFORM   RECE05-HENSYU-SEC
                                       PERFORM   RECE04-WRITE-SEC
@@ -950,9 +980,14 @@
                MOVE    "SRYACT-KEY2"    TO      ORC-DBPATH
                PERFORM  SRYACT-READ-SEC
                PERFORM  UNTIL  FLG-SRYACT    =    1
+                   MOVE   ZERO   TO  FLG-ZANHAIKI
+                   MOVE   ZERO   TO  WRK-RENNUM
                    PERFORM   RECE05-TENSOU-SEC
                    PERFORM   RECE02-HENSYU-SEC
                    PERFORM   RECE05-WRITE-SEC
+                   IF  FLG-ZANHAIKI  =  1
+                      PERFORM  RECE05-REWRITE-SEC
+                   END-IF
                    MOVE     "SRYACT-KEY2"    TO   ORC-DBPATH
                    PERFORM   SRYACT-READ-SEC
                END-PERFORM
@@ -1063,9 +1098,35 @@
                                                 RECE05-SRYKBN
                    END-IF
                END-IF
-               MOVE    TNS-TANICD         TO    RECE05-TANICD(IDX4)
-               MOVE    TNS-TANIMOJISU     TO    RECE05-TANIMOJISU(IDX4)
-               MOVE    TNS-TANINAME       TO    RECE05-TANINAME(IDX4)
+               IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
+                  COMPUTE WRK-SRYSURYO2   =     WRK-SRYSURYO            
+                                          +     0.999                   
+                  COMPUTE RECE05-SRYSURYO(IDX4)                         
+                                          =     WRK-SRYSURYO2           
+                                          -     WRK-SRYSURYO            
+                  IF  RECE05-SRYSURYO(IDX4)  NOT = ZERO                 
+                    MOVE  WRK-TANICD      TO    RECE05-TANICD(IDX4)     
+                    MOVE  WRK-TANIMOJISU  TO    RECE05-TANIMOJISU(IDX4) 
+                    MOVE  WRK-TANINAME    TO    RECE05-TANINAME(IDX4)   
+                    IF    RECE05-RENNUM  >  1                           
+                    AND   IDX4           =  1                           
+                      MOVE    1           TO    FLG-ZANHAIKI            
+                      COMPUTE  WRK-RENNUM  =  RECE05-RENNUM  -  1       
+                      MOVE WRK-SRYSURYO2  TO  WRK-SRYSURYO3             
+                    ELSE                                                
+                      MOVE WRK-SRYSURYO2  TO  RECE05-SRYSURYO(IDX4 - 1) 
+                    END-IF
+                  END-IF                                                
+               ELSE                                                     
+                  MOVE    SRY-SRYSURYO(IDX2)                            
+                                          TO    WRK-SRYSURYO            
+                  MOVE    TNS-TANICD      TO    RECE05-TANICD(IDX4)
+                                                WRK-TANICD              
+                  MOVE    TNS-TANIMOJISU  TO    RECE05-TANIMOJISU(IDX4)
+                                                WRK-TANIMOJISU          
+                  MOVE    TNS-TANINAME    TO    RECE05-TANINAME(IDX4)
+                                                WRK-TANINAME            
+               END-IF                                                   
                IF      TNS-TENSIKIBETU    =     1   OR   3
                    MOVE  TNS-TENSIKIBETU  TO   RECE05-TENSIKIBETU(IDX4)
                    MOVE  TNS-TEN          TO    RECE05-TEN(IDX4)
@@ -3686,6 +3747,70 @@
            .
        RECE05-WRITE-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    データ出力処理（Ｆ００５）
+      *****************************************************************
+       RECE05-REWRITE-SEC              SECTION.                        
+      *
+           IF      IDZ             =   1               
+      *    レセプト処理
+      *
+              MOVE    ZERO                TO  FLG-REWRITE
+      *
+              INITIALIZE                      RECE05-REC
+              MOVE    RECE04-HOSPID       TO  RECE05-HOSPID
+              MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
+              MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
+              MOVE    RECE04-PTID         TO  RECE05-PTID
+              MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
+              MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
+              MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
+              MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
+              MOVE    RECE04-HOJOKBN      TO  RECE05-HOJOKBN
+              MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
+              MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
+              START   RECE05-FILE
+                    KEY IS    >=   RECE05-KEY
+                    INVALID
+                        MOVE    1         TO  FLG-RECE05
+                    NOT INVALID
+                        MOVE    ZERO      TO  FLG-RECE05
+                        READ    RECE05-FILE   NEXT
+                          AT  END
+                            MOVE    1     TO  FLG-RECE05
+                        END-READ
+              END-START
+              PERFORM   UNTIL
+                  (RECE04-HOSPID       NOT =  RECE05-HOSPID)      OR
+                  (RECE04-SRYYM        NOT =  RECE05-SRYYM)       OR
+                  (RECE04-NYUGAIKBN    NOT =  RECE05-NYUGAIKBN)   OR
+                  (RECE04-PTID         NOT =  RECE05-PTID)        OR
+                  (RECE04-RECEKA       NOT =  RECE05-RECEKA)      OR
+                  (RECE04-TEISYUTUSAKI NOT =  RECE05-TEISYUTUSAKI) OR
+                  (RECE04-RECESYUBETU  NOT =  RECE05-RECESYUBETU)  OR
+                  (RECE04-HKNJANUM     NOT =  RECE05-HKNJANUM)    OR
+                  (RECE04-HOJOKBN      NOT =  RECE05-HOJOKBN )    OR
+                  (RECE04-TEKSTYMD     NOT =  RECE05-TEKSTYMD)    OR
+                  (RECE04-ZAINUM       NOT =  RECE05-ZAINUM)      OR
+                  (FLG-RECE05                =      1        )    OR
+                  (FLG-REWRITE               =      1        )
+                   IF    RECE05-RENNUM   =   WRK-RENNUM
+                      MOVE    1              TO  FLG-REWRITE
+                      MOVE    WRK-SRYSURYO3  TO  RECE05-SRYSURYO(5)
+                      REWRITE   RECE05-REC
+                   END-IF
+                   READ    RECE05-FILE   NEXT
+                     AT  END
+                       MOVE    1     TO  FLG-RECE05
+                   END-READ
+              END-PERFORM
+      *
+           END-IF 
+      *
+           .
+       RECE05-REWRITE-EXT.
+           EXIT.                                                        
       *
       *****************************************************************
       *    データ更新処理（Ｆ００２）
