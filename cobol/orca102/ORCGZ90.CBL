@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.01.01    MCC-藤原     01/09/26  JOINの修正      
+      *  02.00.00    NACL-多々納  03/06/16  一括入力へ変更
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -62,6 +63,8 @@
            03  FLG-KANA                          PIC 9(01).
            03  FLG-SUJI                          PIC 9(01).
       *
+           03  FLG-TOUROKU                       PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR                           PIC 9(06).
@@ -76,6 +79,8 @@
       *    入力項目名編集用 
            03  WRK-IDX2            PIC 9(02).
            03  WRK-WIDGET          PIC X(20).
+      *
+           03  WRK-MCP-WIDGET      PIC X(64).
       *
            03  WRK-Z90-AREA.
                05  WRK-Z90GMN-TBL.
@@ -120,6 +125,7 @@
            COPY    "Z04.INC".
            COPY    "Z05.INC".
            COPY    "Z06.INC".
+           COPY    "Z07.INC".
            COPY    "Z90.INC".
            COPY    "Z91.INC".
            COPY    "Z97.INC".
@@ -139,6 +145,10 @@
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                              SECTION.
+      *
+           INITIALIZE                            FLG-AREA
+           INITIALIZE                            IDX-AREA
+           INITIALIZE                            WRK-AREA
       *
            MOVE    SPA-COMMON                    TO  SPA-AREA.
            MOVE    SPA-WORK                      TO  SPA-Z01KYOUTU
@@ -246,7 +256,9 @@
        320-Z98SPASET-SEC          SECTION.
       *
            IF      SPA-Z98-SRYCD   NOT =   SPACE
-               MOVE    SPA-Z98-SRYCD       TO  Z90-SRYCDCHG 
+               MOVE    SPA-Z98-SRYCD       TO  Z90-SRYCDCHG
+                                                        (SPA-Z90-IDX)
+               MOVE    SPA-Z98-SRYCD       TO  SPA-Z90GMN-SRYCDCHG
                                                         (SPA-Z90-IDX)
                PERFORM 2001-SRYCD-CHK-SEC
            END-IF
@@ -275,113 +287,165 @@
       *****************************************************************
        200-ENTRY-SEC                             SECTION.
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        診療行為コード１
-               WHEN    "ACTIVATE"      ALSO    "SRYCDCHG1"
-                   MOVE    1               TO  SPA-Z90-IDX
-                   PERFORM 2001-SRYCD-CHK-SEC
-      *        診療行為コード２
-               WHEN    "ACTIVATE"      ALSO    "SRYCDCHG2"
-                   MOVE    2               TO  SPA-Z90-IDX
-                   PERFORM 2001-SRYCD-CHK-SEC
-      *        診療行為コード３
-               WHEN    "ACTIVATE"      ALSO    "SRYCDCHG3"
-                   MOVE    3               TO  SPA-Z90-IDX
-                   PERFORM 2001-SRYCD-CHK-SEC
-      *        診療行為コード４
-               WHEN    "ACTIVATE"      ALSO    "SRYCDCHG4"
-                   MOVE    4               TO  SPA-Z90-IDX
-                   PERFORM 2001-SRYCD-CHK-SEC
-      *        診療行為コード５
-               WHEN    "ACTIVATE"      ALSO    "SRYCDCHG5"
-                   MOVE    5               TO  SPA-Z90-IDX
-                   PERFORM 2001-SRYCD-CHK-SEC
-           END-EVALUATE
+      *    入力個所のセット
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-Z90GMN-CUR
+      *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
            .
       *
        200-ENTRY-EXT.
            EXIT.
       *
       *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC          SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェックと別画面処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      410-INPUT-CHK-EXT
+           END-IF
+      *
+      *    登録時、必須入力チェック
+      *    IF      FLG-TOUROKU         =   1
+      *        PERFORM 4109-TOUROKU-CHK-SEC
+      *        IF      SPA-ERRCD       NOT =   SPACE
+      *            GO      TO      410-INPUT-CHK-EXT
+      *        END-IF
+      *    END-IF
+      *
+           .
+      *
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面ＳＰＡ編集処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC          SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   5
+               MOVE    Z90-SRYCDCHG (IDX)  TO
+                                     SPA-Z90GMN-SRYCDCHG (IDX)
+           END-PERFORM
+           .
+      *
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC          SECTION.
+      *
+      *    入力コードチェック
+           PERFORM 2001-SRYCD-CHK-SEC
+           IF     (FLG-END             =   1 )  OR
+                  (SPA-ERRCD       NOT =   SPACE )
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+           .
+      *
+       4102-KIHON-CHK-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    入力項目の決定
       *****************************************************************
        2001-SRYCD-CHK-SEC               SECTION.
       *
-           MOVE    SPA-Z90-IDX         TO  SPA-Z90GMN-CUR
-           MOVE    Z90-SRYCDCHG (SPA-Z90-IDX)
-                                       TO
-                                 SPA-Z90GMN-SRYCDCHG (SPA-Z90-IDX)
-      *
-      *    一覧表へ
-           IF      SPA-Z90GMN-SRYCDCHG(SPA-Z90-IDX)(1:2)   =   "//"
-               PERFORM 20011-Z98-SYORI-SEC
-               GO      TO      2001-SRYCD-CHK-EXT
-           END-IF
-      *    点数マスタ存在チェック
-           IF      SPA-Z90GMN-SRYCDCHG(SPA-Z90-IDX)     =   SPACE
-               MOVE    SPACE       TO  SPA-Z90GMN-SRYNAME (SPA-Z90-IDX)
-           ELSE
-               INITIALIZE                      TNS-TENSU-REC
-               MOVE    SPA-Z90GMN-SRYCDCHG(SPA-Z90-IDX)
-                                           TO  TNS-SRYCD
-               PERFORM 900-TENSU-READ-SEC
-               IF      FLG-TENSU           =   ZERO
-                   MOVE    TNS-NAME            TO  SPA-Z90GMN-SRYNAME
-                                                       (SPA-Z90-IDX)
-      * 
-      *            病院診療所区分が同じであること
-                   IF      TNS-HOSPSRYKBN      =   SPA-GMN-HOSPSRYKBN
-                       CONTINUE
-                   ELSE
-                       MOVE    "0004"              TO  SPA-ERRCD
-                       GO      TO      2001-SRYCD-CHK-EXT
-                   END-IF
-      *            老人区分が同じ時、エラー
-                   IF      TNS-ROUTEKKBN      =   SPA-GMN-ROUTEKKBN
-                       MOVE    "0005"              TO  SPA-ERRCD
-                       GO      TO      2001-SRYCD-CHK-EXT
-                   END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   5   )   OR
+                              (SPA-ERRCD   NOT =   SPACE )  OR
+                              (FLG-END         =   1     )
+               MOVE    IDX                 TO  SPA-Z90-IDX
+      *        一覧表へ
+               IF      SPA-Z90GMN-SRYCDCHG(SPA-Z90-IDX)(1:2)   =   "//"
+                   PERFORM 20011-Z98-SYORI-SEC
                ELSE
-                   MOVE    SPACE               TO  SPA-Z90GMN-SRYNAME
-                                                       (SPA-Z90-IDX)
-                   MOVE    "0001"              TO  SPA-ERRCD
-                   GO      TO      2001-SRYCD-CHK-EXT
+                   PERFORM 20012-SRYCD-TNSCHK-SEC
                END-IF
-           END-IF
+           END-PERFORM
       *
-      *    ダブりチェック
-           IF      SPA-Z90GMN-SRYCDCHG(SPA-Z90-IDX) NOT =   SPACE
-               IF      SPA-Z90GMN-SRYCDCHG(SPA-Z90-IDX)
-                                               =   SPA-Z01-SRYCD
-                   MOVE    "0003"              TO  SPA-ERRCD
-               END-IF
-               PERFORM VARYING     IDX     FROM    1   BY 1
-                       UNTIL      (IDX             >   5   )  OR
-                                  (SPA-ERRCD   NOT =   SPACE )
-                   IF     (IDX             NOT =   SPA-Z90-IDX )  AND
-                          (SPA-Z90GMN-SRYCDCHG(IDX)
-                                               =   SPA-Z90GMN-SRYCDCHG
-                                                         (SPA-Z90-IDX))
-                       MOVE    "0002"              TO  SPA-ERRCD
-                   END-IF
-               END-PERFORM
-           END-IF
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF     (FLG-END             =   1 )  OR
+                  (SPA-ERRCD       NOT =   SPACE )
                GO      TO      2001-SRYCD-CHK-EXT
            END-IF
       *
       *    空白行削除
            PERFORM 2002-SPACE-DEL-SEC
       *
-      *    カーソル
-           ADD     1                   TO  SPA-Z90-IDX
-           MOVE    SPA-Z90-IDX         TO  SPA-Z90GMN-CUR
-           IF      SPA-Z90GMN-CUR      >   5
-               MOVE    6               TO  SPA-Z90GMN-CUR
+           .
+       2001-SRYCD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ存在チェック処理
+      *****************************************************************
+       20012-SRYCD-TNSCHK-SEC           SECTION.
+      *
+      *    点数マスタ存在チェック
+           IF      SPA-Z90GMN-SRYCDCHG(SPA-Z90-IDX)     =   SPACE
+               MOVE    SPACE       TO  SPA-Z90GMN-SRYNAME (SPA-Z90-IDX)
+               GO      TO      20012-SRYCD-TNSCHK-EXT
+           END-IF
+      *
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    SPA-Z90GMN-SRYCDCHG(SPA-Z90-IDX)
+                                           TO  TNS-SRYCD
+           PERFORM 900-TENSU-READ-SEC
+           IF      FLG-TENSU           =   ZERO
+               MOVE    TNS-NAME            TO  SPA-Z90GMN-SRYNAME
+                                                       (SPA-Z90-IDX)
+      *        病院診療所区分が同じであること
+               IF      TNS-HOSPSRYKBN      =   SPA-GMN-HOSPSRYKBN
+                   CONTINUE
+               ELSE
+                   MOVE    "0004"              TO  SPA-ERRCD
+               END-IF
+      *        老人区分が同じ時、エラー
+               IF      TNS-ROUTEKKBN      =   SPA-GMN-ROUTEKKBN
+                   MOVE    "0005"              TO  SPA-ERRCD
+               END-IF
+           ELSE
+               MOVE    SPACE               TO  SPA-Z90GMN-SRYNAME
+                                                       (SPA-Z90-IDX)
+               MOVE    "0001"              TO  SPA-ERRCD
+           END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    SPA-Z90-IDX         TO  SPA-Z90GMN-CUR
+               GO      TO      20012-SRYCD-TNSCHK-EXT
+           END-IF
+      *
+      *    ダブりチェック
+           IF      SPA-Z90GMN-SRYCDCHG(SPA-Z90-IDX)
+                                           =   SPA-Z01-SRYCD
+               MOVE    "0003"              TO  SPA-ERRCD
+           END-IF
+           PERFORM VARYING     IDY     FROM    1   BY 1
+                   UNTIL      (IDY             >   5   )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF     (IDY             NOT =   SPA-Z90-IDX )  AND
+                      (SPA-Z90GMN-SRYCDCHG(IDY)
+                                           =   SPA-Z90GMN-SRYCDCHG
+                                                         (SPA-Z90-IDX))
+                   MOVE    "0002"              TO  SPA-ERRCD
+               END-IF
+           END-PERFORM
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    SPA-Z90-IDX         TO  SPA-Z90GMN-CUR
+               GO      TO      20012-SRYCD-TNSCHK-EXT
            END-IF
       *
            .
-       2001-SRYCD-CHK-EXT.
+       20012-SRYCD-TNSCHK-EXT.
            EXIT.
       *****************************************************************
       *    空白行削除処理
@@ -420,7 +484,7 @@
            MOVE    "2"                 TO  SPA-Z98-TYPE
       *
            INITIALIZE                  SPA-Z98GMN-AREA
-           MOVE    SPACE               TO  Z98                        
+           MOVE    SPACE               TO  Z98
       *
            MOVE   "NEW"                TO  MCP-PUTTYPE.
            MOVE   "Z98    "            TO  MCP-WINDOW.
@@ -467,9 +531,9 @@
            PERFORM VARYING  IDX    FROM  1  BY  1  
                    UNTIL    IDX        >  5
                MOVE    SPA-Z90GMN-SRYCDCHG (IDX)
-                                   TO  Z90-SRYCDCHG (IDX)
+                                       TO  Z90-SRYCDCHG (IDX)
                MOVE    SPA-Z90GMN-SRYNAME  (IDX)
-                                   TO  Z90-SRYCDNAME(IDX)
+                                       TO  Z90-SRYCDNAME(IDX)
            END-PERFORM
       *
       *
@@ -482,6 +546,10 @@
       *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
+      *
+           IF      SPA-Z90GMN-CUR          =   ZERO
+               PERFORM 50011-CUR-SET-SEC
+           END-IF
       *
            EVALUATE    SPA-Z90GMN-CUR
                WHEN    01
@@ -500,6 +568,28 @@
       *
            .
        5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    カーソルセット処理
+      *****************************************************************
+       50011-CUR-SET-SEC                            SECTION.
+      *
+      *    最後の行へ
+           PERFORM VARYING  IDX    FROM  1  BY  1  
+                   UNTIL    IDX        >  5
+               IF      SPA-Z90GMN-SRYCDCHG (IDX)   =   SPACE
+                   MOVE    IDX             TO  SPA-Z90GMN-CUR
+                   MOVE    5               TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-Z90GMN-CUR      =   ZERO
+               MOVE    6                   TO  SPA-Z90GMN-CUR
+           END-IF
+      *
+           .
+       50011-CUR-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -570,6 +660,13 @@
       *    確認処理
       *****************************************************************
        412-KAKUTEI-SEC                           SECTION.
+      *
+           MOVE    1                   TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      412-KAKUTEI-EXT
+           END-IF
       *
       *    入力内容をＰＲＧ共通ＳＰＡにセット
            PERFORM  VARYING  IDX       FROM  1  BY  1
