@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       *  Maj/Min/Rev  修正者       日付      内容
       *  01.01.01     NACL-森脇    03/10/10  公費情報読み込み修正
+      *  01.01.01     NACL-森脇    04/06/10  月代わり受給者番号
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -73,6 +74,7 @@
            03  CNT-LINE                PIC 9(02).
            03  CNT-RECEDEN             PIC 9(06).
            03  CNT-RECE10              PIC 9(06).
+           03  FLG-MONTHLYNUM          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -130,6 +132,10 @@
       *    患者公費情報
        01  PTKOH-REC.
            COPY    "CPPTKOHINF.INC".
+      *
+      *    月代わり受給者番号
+       01  MONTHLYNUM-REC.
+           COPY    "CPMONTHLYNUM.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -432,15 +438,29 @@
                END-IF
            END-IF
       *
+      *----(01.01.02)--UPD-START---
       *    保険公費
-           IF      RECE10-KOHNUM(1)    NOT =   SPACE
-               MOVE    RECE10-KOHNUM(1)    TO  WRK-KOHNUM
+           PERFORM VARYING   IDX    FROM    1   BY   1
+                   UNTIL    (IDX    >       4)
+                   OR       (RECE10-KOHNUM(IDX) =   SPACE)
+               MOVE    RECE10-KOHNUM(IDX)   TO  WRK-KOHNUM
                PERFORM 900-PTKOH-READ-SEC
                IF      FLG-PTKOH           =   ZERO
-                   MOVE    PTKOH-FTNJANUM      TO  HCM37-KOHFTNJANUM
-                   MOVE    PTKOH-JKYSNUM       TO  HCM37-KOHJKYSNUM
+      *            生保のとき月代わり受給者番号マスタより受給者番号をセット 
+                   IF    ( PTKOH-KOHNUM    =   "012" )
+                       PERFORM 910-MONTHLYNUM-READ-SEC
+                       IF      FLG-MONTHLYNUM  =   ZERO
+                           MOVE    MONTHLYNUM-JKYSNUM
+                                                   TO  HCM37-KOHJKYSNUM
+                       END-IF
+                   ELSE
+                       MOVE   PTKOH-JKYSNUM    TO  HCM37-KOHJKYSNUM
+                   END-IF    
+                   MOVE    PTKOH-FTNJANUM  TO  HCM37-KOHFTNJANUM
+      *            MOVE    4               TO  IDX
                END-IF
-           END-IF
+           END-PERFORM
+      *----(01.01.02)--UPD-END-----
       *
       *    カルテ番号
            MOVE    RECE10-PTNUM        TO  HCM37-DEMPNUM
@@ -806,6 +826,7 @@
        900-PTINF-READ-EXT.
            EXIT.
       *
+      *----(01.01.02)--UPD-START---
       *****************************************************************
       *    患者公費情報マスター読込
       *****************************************************************
@@ -815,19 +836,21 @@
            MOVE    SYS-1001-HOSPID     TO  PTKOH-HOSPID
            MOVE    RECE10-PTID         TO  PTKOH-PTID
            MOVE    WRK-KOHNUM          TO  PTKOH-KOHNUM
-           MOVE    RECE10-TEKSTYMD     TO  PTKOH-TEKSTYMD
-           MOVE    RECE10-TEKSTYMD     TO  PTKOH-TEKEDYMD
+           MOVE    RECE10-SKYYM        TO  PTKOH-TEKSTYMD(1:6)
+           MOVE    "01"                TO  PTKOH-TEKSTYMD(7:2)
+           MOVE    RECE10-SKYYM        TO  PTKOH-TEKEDYMD(1:6)
+           MOVE    "01"                TO  PTKOH-TEKEDYMD(7:2)
            MOVE    PTKOH-REC           TO  MCPDATA-REC
       *     MOVE    RECE10-TEKSTYMD     TO  ORC-DBYMD
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "PTKOHINF-KEY5"     TO  ORC-DBPATH
+           MOVE    "PTKOHINF-KEY6"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "PTKOHINF-KEY5"     TO  ORC-DBPATH
+               MOVE    "PTKOHINF-KEY6"     TO  ORC-DBPATH
                CALL    "ORCMCPSUB"         USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -845,7 +868,7 @@
            END-IF
       *
            MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "PTKOHINF-KEY5"     TO  ORC-DBPATH
+           MOVE    "PTKOHINF-KEY6"     TO  ORC-DBPATH
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
@@ -855,6 +878,57 @@
        900-PTKOH-READ-EXT.
            EXIT.
       *
+      *----(01.01.02)--UPD-END-----
+      *----(01.01.02)--ADD-START---
+      *****************************************************************
+      *    月代わり受給者番号マスタ読込
+      *****************************************************************
+       910-MONTHLYNUM-READ-SEC     SECTION.
+      *
+           INITIALIZE                  MONTHLYNUM-REC
+           MOVE    RECE10-HOSPID   TO  MONTHLYNUM-HOSPID
+           MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
+           MOVE    012             TO  MONTHLYNUM-KOHNUM
+           MOVE    PTKOH-TEKSTYMD(1:6)
+                                   TO  MONTHLYNUM-SRYYM
+           MOVE    RECE10-NYUGAIKBN TO  MONTHLYNUM-NYUGAIKBN
+           MOVE    MONTHLYNUM-REC   TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"           TO  MCP-FUNC
+           MOVE    "MONTHLYNUM-KEY"     TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC               =   ZERO
+               MOVE    "DBFETCH"            TO  MCP-FUNC
+               MOVE    "MONTHLYNUM-KEY"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC               =   ZERO
+                   MOVE    ZERO                 TO  FLG-MONTHLYNUM
+                   MOVE    MCPDATA-REC          TO  MONTHLYNUM-REC
+               ELSE
+                   MOVE    1                   TO  FLG-MONTHLYNUM
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-MONTHLYNUM
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "MONTHLYNUM-KEY"    TO      ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       910-MONTHLYNUM-READ-EXT.
+           EXIT.
+      *
+      *----(01.01.02)--ADD-END-----
       *****************************************************************
       *    ＤＢ　オープン処理
       *****************************************************************
