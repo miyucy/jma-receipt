@@ -71,6 +71,13 @@ W12	{
 			count	int;
 			item	varchar(22)[3];
 		};
+		NEXTPRTKBN_COMBO	{
+			NEXTPRTKBN	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[2];
+		};
 		KKHPRTKBN_COMBO	{
 			KKHPRTKBN	{
 				value	varchar(20);
