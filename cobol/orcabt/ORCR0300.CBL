@@ -90,12 +90,15 @@
       *  01.01.04    NACL-藤原    04/04/27  ユーザーコメントの追加
       *  01.01.05    NACL-藤原    04/05/11  診療識別が画像診断（７０）の
       *                                     ときコメントは先頭に記載する
-      *  01.01.06    NACL-藤原    04/05/13  指導料・在宅料摘要欄編集
+      *  01.01.06    NACL-藤原    03/08/13  指導料・在宅料摘要欄編集
       *                                     加算点数でも告示区分１により
       *                                     剤回数を編集する
-      *  01.01.07    NACL-藤原    03/05/19  指導料・在宅料摘要欄編集
+      *  01.01.07    NACL-小豆沢  04/05/19  ＤＢ書き込み時のコミット追加
+      *  01.01.08    NACL-門脇    04/05/21  DBOPEN,DBDISCONNECT削除
+      *  01.01.09    NACL-藤原    03/05/21  指導料・在宅料のとき
       *                                     加算点数で告示区分１が７の
       *                                     ときの点数・回数の編集
+      *  01.01.10    NACL-太田    03/05/21  処理高速化対応（保険組合せ）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -263,6 +266,7 @@
            03  FLG-KENSA-TEIGEN        PIC 9(01).
            03  FLG-SET                 PIC 9(01).
            03  FLG-OPECOM-CHK          PIC 9(01).
+           03  FLG-HIT                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -270,6 +274,7 @@
            03  CNT-OUT                 PIC 9(06).
            03  CNT-RECE04              PIC 9(06).
            03  CNT-RECE09              PIC 9(06).
+           03  CNT-COMMIT              PIC 9(03). 
       *
        01  INDEX-AREA.
            03  IDW                     PIC 9(03).
@@ -283,6 +288,7 @@
            03  IDXY                    PIC 9(03).
            03  IDW1                    PIC 9(03).
            03  SYSKAN-IDX              PIC 9(03).
+           03  IDX0                    PIC 9(03).
       *
        01  KEY-AREA                                VALUE   LOW-VALUE.
            03  KEY-NEW.
@@ -293,8 +299,8 @@
                05  KEY-O-SRYKA         PIC X(02).      
       *
        01  SUM-AREA                                VALUE   ZERO.
-           03  SUM-TOTALKENSU          PIC 9(06).
-           03  SUM-TOTALTEN            PIC 9(10).
+           03  SUM-TOTALKENSU         PIC 9(06).
+           03  SUM-TOTALTEN         PIC 9(10).
       *
       *    医療機関（基本情報）退避用領域
        01  TBL-SYS1001-T.
@@ -382,7 +388,7 @@
                05  WRK-KOHNUM          PIC 9(01)
                                            OCCURS  3.
                05  WRK-SEHFLG          PIC 9(01).
-           03  WRK-SRYCD1-MAX          PIC 9(03).      
+           03  WRK-SRYCD1-MAX          PIC 9(03).           
            03  WRK-KOKUJISKBKBN1-KOUI-TEN
                                        PIC 9(09)V9(02).     
       *    日付変換用
@@ -481,6 +487,8 @@
       *----(01.00.04) LINE ADD END ------------------------------------
                05  TBL-KOUI-KZMCOMPSIKIBETU     PIC  9(01).
                05  TBL-KOUI-NAME                PIC  X(200).
+      *        データ区分情報
+               05  TBL-KOUI-DATAKBN             PIC  9(01).
       *
       *    コメントデータ用テーブル
        01  TBL-COMMENT-AREA.
@@ -656,6 +664,13 @@
       *
       *    改行コード
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
+      *
+      *    保険組み合わせ退避ワーク
+       01  THKNCOMBI-AREA.
+           02      TCOMB-MAX        PIC 9(05).
+           02      TCOMB-OCC        OCCURS     30.
+           COPY    "CPHKNCOMBI.INC" REPLACING   //COMB-//
+                                    BY          //TCOMB-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -940,6 +955,9 @@
                INITIALIZE                     WRK-RECE041-SRYKBN
                                               TBL-KOUI-SRYKBN12-AREA
       *
+      *        患者保険組み合わせ取得処理
+               PERFORM     2001-HKNCOMBI-GET-SEC
+      *
       *        保険履歴情報編集処理
                PERFORM     2001-RIREKI-HEN-SEC 
       *
@@ -976,6 +994,13 @@
                PERFORM     2007-HENSYU-SEC
       *        症状表記
                PERFORM     2009-COMMENT-HEN-SEC
+      *
+               ADD     1           TO  CNT-COMMIT
+               IF  CNT-COMMIT      =    300
+                   MOVE  ZERO      TO      CNT-COMMIT
+                   PERFORM 900-DBCOMMIT-SEC
+                   PERFORM 900-DBSTART-SEC
+               END-IF
       *
                PERFORM     900-RECE02-READ-SEC
            END-PERFORM
@@ -1763,17 +1788,33 @@
       *   
            INITIALIZE                 WRK-FTNKBN-AREA
       *
-      *    保険組合せ読込み
-           INITIALIZE                 HKNCOMBI-REC
-           MOVE    RECE041-HOSPID  TO  COMB-HOSPID
-           MOVE    RECE041-PTID    TO  COMB-PTID
-           MOVE    RECE041-HKNCOMBI
-                                  TO  COMB-HKNCOMBINUM 
-           MOVE    HKNCOMBI-REC   TO  MCPDATA-REC
-           PERFORM 910-HKNCOMBI-INV-SEC
-           IF      FLG-HKNCOMBI   =   1
-               DISPLAY "HKNCONBI INV"
-               GO  TO  20070-FTNKBN-HENSYU-EXT
+           MOVE    ZERO               TO  FLG-HIT
+           PERFORM VARYING IDX0    FROM    1  BY 1
+                   UNTIL ( IDX0    >  TCOMB-MAX )
+                    OR   ( FLG-HIT =  1 )
+               IF    ( RECE041-HOSPID      =   TCOMB-HOSPID (IDX0))
+                AND  ( RECE041-PTID        =   TCOMB-PTID   (IDX0))
+                AND  ( RECE041-HKNCOMBI    =   TCOMB-HKNCOMBINUM
+                                                            (IDX0))
+                    MOVE   TCOMB-OCC (IDX0)
+                                       TO  HKNCOMBI-REC
+                    MOVE   1           TO  FLG-HIT
+               END-IF
+           END-PERFORM
+      * 
+           IF    ( FLG-HIT         =  ZERO )
+      *        保険組合せ読込み
+               INITIALIZE                 HKNCOMBI-REC
+               MOVE    RECE041-HOSPID  TO  COMB-HOSPID
+               MOVE    RECE041-PTID    TO  COMB-PTID
+               MOVE    RECE041-HKNCOMBI
+                                      TO  COMB-HKNCOMBINUM 
+               MOVE    HKNCOMBI-REC   TO  MCPDATA-REC
+               PERFORM 910-HKNCOMBI-INV-SEC
+               IF      FLG-HKNCOMBI   =   1
+                   DISPLAY "HKNCONBI INV"
+                   GO  TO  20070-FTNKBN-HENSYU-EXT
+               END-IF
            END-IF
       *                                                      
       *    主保険のみ      
@@ -2367,6 +2408,8 @@
                                        TBL-KOUI-SRYCD   (WRK-TBLMAX1)
                MOVE    RECE05-SRYSURYO (IDX)   TO
                                        TBL-KOUI-SRYSURYO(WRK-TBLMAX1)
+               MOVE    RECE05-DATAKBN  (IDX)   TO
+                                       TBL-KOUI-DATAKBN (WRK-TBLMAX1)
                INITIALIZE                  TNS-TENSU-REC
                MOVE    RECE05-SRYCD (IDX)      TO  TNS-SRYCD
                PERFORM 900-TENSU-READ-SEC
@@ -2399,17 +2442,21 @@
                        MOVE    TNS-KZMCOMPSIKIBETU TO
                                    TBL-KOUI-KZMCOMPSIKIBETU(WRK-TBLMAX1)
                    END-IF
+               END-IF 
       *
-                   IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
-                       IF      TNS-KOKUJISKBKBN1   NOT =   "1"
-                           MOVE    IDX             TO  FLG-KOKUJISKBKBN1
-                       END-IF
-                       IF    ( TNS-KOKUJISKBKBN1       =   "1" )
-                       AND   ( TNS-DATAKBN             =   "2" )
-                           ADD     TNS-TEN         TO
-                                           WRK-KOKUJISKBKBN1-KOUI-TEN
-                       END-IF
-                   END-IF 
+      *        
+               IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
+                   IF      TBL-KOUI-KOKUJISKBKBN1(WRK-TBLMAX1)
+                                           NOT =   "1"
+                       MOVE    IDX             TO  FLG-KOKUJISKBKBN1
+                   END-IF
+                   IF    ( TBL-KOUI-KOKUJISKBKBN1(WRK-TBLMAX1)
+                                                   =   "1" )
+                   AND   ( TBL-KOUI-DATAKBN (WRK-TBLMAX1)
+                                                   =   "2" )
+                       ADD     TBL-KOUI-TEN (WRK-TBLMAX1)
+                                       TO  WRK-KOKUJISKBKBN1-KOUI-TEN
+                   END-IF
                END-IF
            END-IF
            .
@@ -2690,15 +2737,15 @@
                                ELSE
                                    IF      IDX         =
                                                    FLG-KOKUJISKBKBN1
-                                       MOVE
+                                       COMPUTE WRK-TENSU     =
+                                           RECE041-SYUTEN1   -
                                            WRK-KOKUJISKBKBN1-KOUI-TEN
-                                                       TO  WRK-TENSU
                                        MOVE    WRK-TENSU
                                                        TO  WRK-NUM
                                        MOVE    7       TO  WRK-NAGASA
                                        COMPUTE RECE041-SYUTEN1 =
                                                RECE041-SYUTEN1     -
-                                              WRK-KOKUJISKBKBN1-KOUI-TEN
+                                               WRK-TENSU
                                    END-IF
                                END-IF 
                            END-IF
@@ -2745,12 +2792,32 @@
       ****************         IF      FLG-KOKUJISKBKBN1   =   ZERO
       ****************             IF      RECE041-ZAIKAISU    >   ZERO
                        IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
-                       AND   ( FLG-KOKUJISKBKBN1   =   ZERO           )
                        AND   ( RECE041-ZAIKAISU    >   ZERO           )
                        AND   ( IDX                 <   WRK-SRYCD1-MAX )
-                           MOVE    RECE041-ZAIKAISU    TO  WRK-KAISU
-                           MOVE    WRK-KAISU           TO  WRK-NUM
-                           MOVE    3                   TO  WRK-NAGASA
+                           IF      FLG-KOKUJISKBKBN1   =   ZERO
+                               MOVE    RECE041-ZAIKAISU
+                                                       TO  WRK-KAISU
+                               MOVE    WRK-KAISU       TO  WRK-NUM
+                               MOVE    3               TO  WRK-NAGASA
+                           ELSE
+                               IF    ( TBL-KOUI-KOKUJISKBKBN1 (IDX)
+                                                       =   "1"      )
+                               AND   ( TBL-KOUI-DATAKBN (IDX)
+                                                       =   "2"      )
+                                   MOVE    RECE041-ZAIKAISU
+                                                       TO  WRK-KAISU
+                                   MOVE    WRK-KAISU   TO  WRK-NUM
+                                   MOVE    3           TO  WRK-NAGASA
+                               ELSE
+                                   IF      IDX     =   FLG-KOKUJISKBKBN1
+                                       MOVE    RECE041-ZAIKAISU
+                                                       TO  WRK-KAISU
+                                       MOVE    WRK-KAISU
+                                                       TO  WRK-NUM
+                                       MOVE    3       TO  WRK-NAGASA
+                                   END-IF
+                               END-IF
+                           END-IF        
                        END-IF
       *----(01.00.04) LINE ADD END ------------------------------------
       **************** IF      IDX             =   WRK-TBLMAX1
@@ -3073,6 +3140,43 @@
        301-RECE11-HENSYU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    保険組合せ取得処理
+      *****************************************************************
+       2001-HKNCOMBI-GET-SEC    SECTION.
+      *
+           INITIALIZE                 THKNCOMBI-AREA
+      *
+           MOVE    ZERO            TO FLG-HKNCOMBI
+           INITIALIZE                 HKNCOMBI-REC
+           MOVE    RECE02-HOSPID   TO  COMB-HOSPID
+           MOVE    RECE02-PTID     TO  COMB-PTID
+           MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
+           PERFORM 910-HKNCOMBI-KEY2-SEL-SEC
+           IF    ( FLG-HKNCOMBI    =   ZERO )
+               PERFORM 910-HKNCOMBI-KEY2-FETCH-SEC
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-HKNCOMBI    =   1 )
+                    OR   ( TCOMB-MAX      >=   30 )
+      *
+               COMPUTE TCOMB-MAX   =   TCOMB-MAX   +   1
+               MOVE    HKNCOMBI-REC    TO  TCOMB-OCC (TCOMB-MAX)
+      *
+               PERFORM 910-HKNCOMBI-KEY2-FETCH-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "HKNCOMBI-KEY2"     TO  ORC-DBPATH
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+      *    
+           .
+       2001-HKNCOMBI-GET-EXT.
+           EXIT. 
       *****************************************************************
       *    患者番号別保険履歴情報編集処理
       *****************************************************************
@@ -3981,6 +4085,48 @@
            EXIT.
       *
       *****************************************************************
+      *    保険組合せマスタ検索処理(KEY2)
+      *****************************************************************
+       910-HKNCOMBI-KEY2-SEL-SEC         SECTION.
+      *
+           MOVE    "HKNCOMBI-KEY2" TO  ORC-DBPATH
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    ZERO         TO FLG-HKNCOMBI
+           ELSE
+               MOVE    1            TO FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       910-HKNCOMBI-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せマスタ読込処理(KEY2)
+      *****************************************************************
+       910-HKNCOMBI-KEY2-FETCH-SEC     SECTION.
+      *
+           MOVE    "HKNCOMBI-KEY2" TO  ORC-DBPATH
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    ZERO        TO  FLG-HKNCOMBI
+               MOVE    MCPDATA-REC TO  HKNCOMBI-REC
+           ELSE
+               MOVE    1           TO  FLG-HKNCOMBI
+               INITIALIZE              HKNCOMBI-REC
+           END-IF
+      *
+           .
+       910-HKNCOMBI-KEY2-FETCH-EXT.
+           EXIT.
+      *****************************************************************
       *    システム管理マスタ読込
       *****************************************************************
        910-SYSKANRI-INV-SEC         SECTION.
@@ -4397,12 +4543,6 @@
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
-           MOVE    "DBOPEN"            TO  MCP-FUNC.
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC.
-      *
            MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
@@ -4423,11 +4563,34 @@
                                         ORCMCPAREA
                                         MCPDATA-REC.
       *
-           MOVE    "DBDISCONNECT"      TO  MCP-FUNC.
+           .
+       900-DBCLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢ　ＣＯＭＭＩＴ処理
+      *****************************************************************
+       900-DBCOMMIT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "MCPSUB"          USING
+                                        MCPAREA
+                                        MCPDATA-REC.
+      *
+           .
+       900-DBCOMMIT-EXT.
+           EXIT.
+      *      
+      *****************************************************************
+      *    ＤＢ　ＳＴＡＲＴ処理
+      *****************************************************************
+       900-DBSTART-SEC                SECTION.
+      *
+           MOVE    "DBSTART"           TO  MCP-FUNC.
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC.
            .
-       900-DBCLOSE-EXT.
+       900-DBSTART-EXT.
            EXIT.
