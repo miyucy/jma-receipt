@@ -79,37 +79,6 @@
            03  IDX-ST                      PIC 9(02).
            03  IDX-ED                      PIC 9(02).
       *
-      *    ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ
-       01  CONSTANT-AREA.
-      *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
-           03  CONS-KEIKAKU-GENSAN1        PIC X(09) VALUE "190080470".
-           03  CONS-KEIKAKU-GENSAN2        PIC X(09) VALUE "190799670".
-      *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»
-           03  CONS-INNAI-GENSAN1          PIC X(09) VALUE "190080570".
-           03  CONS-INNAI-GENSAN2          PIC X(09) VALUE "190799770".
-      *    °åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤À°È÷¸º»»
-           03  CONS-ANZEN-GENSAN1          PIC X(09) VALUE "190111690".
-           03  CONS-ANZEN-GENSAN2          PIC X(09) VALUE "190809090".
-      *    êóáìÂÐºöÌ¤¼Â»Ü¸º»»
-           03  CONS-JYOKU-GENSAN1          PIC X(09) VALUE "190111790".
-           03  CONS-JYOKU-GENSAN2          PIC X(09) VALUE "190809190".
-      *    Æü¾ïÀ¸³è¾ã³²²Ã»»
-           03  CONS-NICHIJOU-KSN1          PIC X(09) VALUE "190109170".
-           03  CONS-NICHIJOU-KSN2          PIC X(09) VALUE "190807570".
-      *    ÃÔÊò²Ã»»
-           03  CONS-CHIHOU-KSN1            PIC X(09) VALUE "190109270".
-           03  CONS-CHIHOU-KSN2            PIC X(09) VALUE "190808670".
-      *    êóáì´µ¼Ô´ÉÍý²Ã»»
-           03  CONS-JYOKU-KSN1             PIC X(09) VALUE "190116990".
-           03  CONS-JYOKU-KSN2             PIC X(09) VALUE "190813390".
-      *    ÆÃÄê¹³Àº¿ÀÉÂÌô¼£ÎÅ´ÉÍý²Ã»»
-           03  CONS-TOKUSEIYAKU-KSN        PIC X(09) VALUE "190117570".
-      *    ¤½¤ÎÂ¾¿ÇÎÅ¹Ô°Ù¤ÇÆþÎÏ¤·¤¿Æþ±¡ÎÁ²Ã»»
-           03  CONS-ETCNYUIN-TBL.
-             05  CONS-ETCNYUIN-KSN         PIC X(09)  OCCURS 10.
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß¥ï¡¼¥¯ÍÑ
-           03  TTNS-CONST-MAX              PIC 9(03) VALUE 200.
-      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
       *
@@ -198,11 +167,11 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           DISPLAY   "ORCBT120SUB PROC-SEC"
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  LNK-ORCBT120SUB-HENKYAKU-AREA
-           INITIALIZE                  CONS-ETCNYUIN-TBL
            MOVE    ZERO                TO  LNK-ORCBT120SUB-RC
       *
       *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯
@@ -350,7 +319,8 @@
            INITIALIZE                           LNK-DAY6-AREA
            MOVE    "61"                     TO  LNK-DAY6-IRAI
            MOVE    LNK-ORCBT120SUB-SANTEIYMD TO LNK-DAY6-KIJUN
-           MOVE    -1                       TO  LNK-DAY6-ZOGENPTN
+           MOVE    "1"                      TO  LNK-DAY6-ZOGENPTN
+           MOVE    -1                       TO  LNK-DAY6-ZOGEN
            CALL    "ORSCDAY"                USING  STS-AREA-DAY
                                                    LNK-DAY6-AREA
            MOVE    LNK-DAY6-KEISAN          TO  WRK-MAE-SANTEIYMD
