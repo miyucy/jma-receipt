@@ -94,6 +94,7 @@
       *                                     算定対応追加
       *  01.00.46    NACL-太田    04.03.11  転科・転棟・転室時の項目変更
       *                                     チェックを削除
+      *  01.00.47    NACL-太田    04.03.12  算定入院料の表示を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -376,6 +377,7 @@
       *    特定入院料の会計作成用に診療コードを退避する領域
            03  WRK-TOKUTEI-SRYCD1          PIC X(09).
            03  WRK-TOKUTEI-SRYCD2          PIC X(09).
+           03  WRK-SRYCD                   PIC X(09).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -2040,6 +2042,15 @@
            MOVE    WRK-CMB-ITM2    TO  SPA-NAI-I01-TOKNYUIN-ORG
                                        SPA-NAI-I01-TOKNYUINMOT
       *
+      *    算定入院料
+           IF    ( SPA-GMN-I01-TOKNYUIN    =   SPACE )
+               MOVE    SPA-NAI-I01-KHNRYO-NM
+                                       TO  SPA-GMN-I01-SNTNYUIN
+           ELSE
+               MOVE    SPA-GMN-I01-TOKNYUIN-NM
+                                       TO  SPA-GMN-I01-SNTNYUIN
+           END-IF
+      *
       *    室料差額
            MOVE    PTNYUINRRK-RM-SAGAKU
                                    TO  WRK-CMB-CD
@@ -3367,6 +3378,7 @@
                                        SPA-GMN-I01-HKNCOMBI-ITM-STT
                                        SPA-GMN-I01-TOKNYUIN-STT
                                        SPA-GMN-I01-TOKNYUIN-ITM-STT
+                                       SPA-GMN-I01-SNTNYUIN-STT
                                        SPA-GMN-I01-MAEUKE-STT
                                        SPA-GMN-I01-SEIKYU-STT
                                        SPA-GMN-I01-SEIKYU-ITM-STT
@@ -3404,6 +3416,7 @@
                                        SPA-GMN-I01-HKNCOMBI-ITM-STT
                                        SPA-GMN-I01-TOKNYUIN-STT
                                        SPA-GMN-I01-TOKNYUIN-ITM-STT
+                                       SPA-GMN-I01-SNTNYUIN-STT
       *
            .
       *
@@ -3874,6 +3887,7 @@
        4101-CMB-TOKNYUIN-SET-SEC       SECTION.
       *
            INITIALIZE  SPA-GMN-I01-CMB-TOKNYUIN
+                       SPA-NAI-I01-KHNRYO-G
       *
            MOVE    ZERO            TO  FLG-CMB-EDIT
       *    病棟情報からコンボ項目を設定
@@ -3883,6 +3897,20 @@
            PERFORM 4102-SYSKANRI-SEL-SEC
            IF    ( FLG-SYSKANRI    =   ZERO )
                MOVE    MCPDATA-REC TO  SYS-5001-REC
+      *
+      *        病棟の入院基本料を退避する
+               IF    ( SYS-5001-BTU-KHNSRYCD
+                               NOT =   SPACE )
+                   MOVE    SYS-5001-BTU-KHNSRYCD
+                                   TO  SPA-NAI-I01-KHNRYO-CD
+                   MOVE    SYS-5001-BTU-KHNSRYCD
+                                   TO  WRK-SRYCD
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+                   IF    ( FLG-TENSU   =   ZERO )
+                       MOVE    TNS-NAME    TO   SPA-NAI-I01-KHNRYO-NM
+                   END-IF
+               END-IF
+      *
                IF    ( SYS-5001-BTU-TOKTEI-NYUIN
                                NOT =   SPACE )
                    MOVE    "5110"      TO  WRK-KANRICD
@@ -4081,8 +4109,11 @@
       *****************************************************************
        4101-TOKNYUIN-SYOKI-SEC         SECTION.
       *
-           MOVE    ZERO                TO  FLG-TOKSET-LOOP
            INITIALIZE  SPA-GMN-I01-TOKNYUIN
+                       SPA-GMN-I01-SNTNYUIN
+      *
+           MOVE    ZERO                TO  FLG-TOKSET-LOOP
+      *
            PERFORM VARYING IDX10
                    FROM    SPA-GMN-I01-TOKNYUIN-CNT    BY  -1
                    UNTIL ( IDX10   <   1 )
@@ -4104,6 +4135,14 @@
       *
            END-PERFORM
       *
+      *    算定入院料についても初期値を設定
+           IF    ( SPA-GMN-I01-TOKNYUIN    =   SPACE )
+               MOVE    SPA-NAI-I01-KHNRYO-NM
+                                       TO  SPA-GMN-I01-SNTNYUIN
+           ELSE
+               MOVE    SPA-GMN-I01-TOKNYUIN-NM
+                                       TO  SPA-GMN-I01-SNTNYUIN
+           END-IF
       *
            .
        4101-TOKNYUIN-SYOKI-EXT.
@@ -4347,13 +4386,17 @@
        4101-HKNCOMBI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    特定入院チェック処理
+      *    特定入院チェック処理（算定入院料の設定も行う）
       *****************************************************************
        4101-TOKNYUIN-CHK-SEC           SECTION.
       *
+           MOVE    SPACE           TO  SPA-NAI-I01-TOKNYUIN-ORG
+                                       SPA-GMN-I01-SNTNYUIN
+      *
            IF    ( SPA-GMN-I01-TOKNYUIN
                                        =   SPACE )
-               MOVE    SPACE       TO  SPA-NAI-I01-TOKNYUIN-ORG
+               MOVE    SPA-NAI-I01-KHNRYO-NM
+                                   TO  SPA-GMN-I01-SNTNYUIN
                GO  TO  4101-TOKNYUIN-CHK-EXT
            END-IF
       *
@@ -4364,6 +4407,8 @@
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-TOKNYUIN
                MOVE    WRK-CMB-ITM2
                                    TO  SPA-NAI-I01-TOKNYUIN-ORG
+               MOVE    SPA-GMN-I01-TOKNYUIN-NM
+                                   TO  SPA-GMN-I01-SNTNYUIN
            ELSE
                MOVE    "0024"      TO  SPA-ERRCD
                MOVE    16          TO  SPA-GMN-I01-CUR
@@ -4995,6 +5040,7 @@
                                        SPA-GMN-I01-HKNCOMBI-ITM-STT
                                        SPA-GMN-I01-TOKNYUIN-STT
                                        SPA-GMN-I01-TOKNYUIN-ITM-STT
+                                       SPA-GMN-I01-SNTNYUIN-STT
                                        SPA-GMN-I01-MAEUKE-STT
                                        SPA-GMN-I01-SEIKYU-STT
                                        SPA-GMN-I01-SEIKYU-ITM-STT
@@ -5037,6 +5083,7 @@
                                        SPA-GMN-I01-HKNCOMBI-ITM-STT
                                        SPA-GMN-I01-TOKNYUIN-STT
                                        SPA-GMN-I01-TOKNYUIN-ITM-STT
+                                       SPA-GMN-I01-SNTNYUIN-STT
                                        SPA-GMN-I01-MAEUKE-STT
                                        SPA-GMN-I01-SEIKYU-STT
                                        SPA-GMN-I01-SEIKYU-ITM-STT
@@ -11553,6 +11600,9 @@
                                            TO  I01-TOKNYUIN-ITM (IDX1)
            END-PERFORM
       *
+      *    算定入院料
+           MOVE    SPA-GMN-I01-SNTNYUIN    TO  I01-SNTNYUIN
+      *
       *    前受け金
            MOVE    SPA-GMN-I01-MAEUKE      TO  I01-MAEUKE
       *
@@ -11694,6 +11744,9 @@
                                        TO  I01-TOKNYUIN-STT
            MOVE    SPA-GMN-I01-TOKNYUIN-ITM-STT
                                        TO  I01-TOKNYUIN-ITM-STT
+      *    算定入院料
+           MOVE    SPA-GMN-I01-SNTNYUIN-STT
+                                       TO  I01-SNTNYUIN-STT
       *    前受け金
            MOVE    SPA-GMN-I01-MAEUKE-STT
                                        TO  I01-MAEUKE-STT
@@ -12301,7 +12354,7 @@
       *
            MOVE    SPA-GMN-I01-HKNCOMBI-NM
                                        TO  I0ID2-HKNCOMBI
-           MOVE    SPA-GMN-I01-TOKNYUIN-NM
+           MOVE    SPA-GMN-I01-SNTNYUIN
                                        TO  I0ID2-TOKNYUIN
       *
            MOVE    "B12"                TO  MCP-WIDGET
@@ -12431,6 +12484,33 @@
            .
       *
        800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ検索処理
+      *****************************************************************
+       900-TENSU-KEY-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TENSU
+           INITIALIZE                  TNS-TENSU-REC
+      *
+           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+           MOVE    WRK-KJNYMD          TO  ORC-DBYMD
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+      *
+           MOVE    "TENSU-KEY"         TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        =   ZERO )
+               MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
+           ELSE
+               MOVE    1               TO  FLG-TENSU
+           END-IF
+      *
+      *    点数マスタクローズ
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           .
+       900-TENSU-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

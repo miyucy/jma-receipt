@@ -144,6 +144,10 @@ I01	{
 			item	varchar(51)[30];
 			state	int;
 		};
+		SNTNYUIN{
+			value	varchar(60);
+			state	int;
+		};
 		MAEUKE	{
 			value	number(5);
 			state	int;

@@ -94,6 +94,8 @@
                 05  I01-TOKNYUIN-ITM               PIC X(51)
                                                    OCCURS  30.
                 05  I01-TOKNYUIN-ITM-STT           PIC S9(9)   BINARY.
+              04  I01-SNTNYUIN                     PIC X(60).
+              04  I01-SNTNYUIN-STT                 PIC S9(9)   BINARY.
               04  I01-MAEUKE                       PIC S9(5).
               04  I01-MAEUKE-STT                   PIC S9(9)   BINARY.
               04  I01-CMB-SEIKYU.

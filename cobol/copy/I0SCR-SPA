@@ -121,6 +121,9 @@
                    13                              PIC X(01).
                    13  SPA-GMN-I01-TOKNYUIN-NM     PIC X(48).
                  11  SPA-GMN-I01-TOKNYUIN-STT      PIC S9(9)   BINARY.
+      *          算定入院料
+                 11  SPA-GMN-I01-SNTNYUIN          PIC X(60).
+                 11  SPA-GMN-I01-SNTNYUIN-STT      PIC S9(9)   BINARY.
       *          前受け金
                  11  SPA-GMN-I01-MAEUKE            PIC S9(5).
                  11  SPA-GMN-I01-MAEUKE-STT        PIC S9(9)   BINARY.
@@ -217,6 +220,10 @@
                    13  SPA-NAI-I01-TOKNYUIN-ORG-CD
                                                    PIC X(02).
                  11  SPA-NAI-I01-TOKNYUINMOT       PIC X(3).
+      *          病棟入院基本料
+                 11  SPA-NAI-I01-KHNRYO-G.
+                    13  SPA-NAI-I01-KHNRYO-CD      PIC X(09).
+                    13  SPA-NAI-I01-KHNRYO-NM      PIC X(60).
       *          退院処理時、請求データ取消フラグ
                  11  SPA-NAI-I01-TORIKESI-FLG      PIC 9(01).
       *        入院歴リスト内部領域

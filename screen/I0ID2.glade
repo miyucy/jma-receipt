@@ -224,7 +224,7 @@
       <y>200</y>
       <width>72</width>
       <height>25</height>
-      <label>特定入院料</label>
+      <label>算定入院料</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
