@@ -64,8 +64,9 @@ end
 
 # 定数の指定(最後に、かならず「/」を付けた形にしてください)
 # 修正開始 (2002/10/16)
-BASE_DIR1 = '/usr/local/orca/'		# ORCA標準
-BASE_DIR2 = '/usr/local/orca/'		# site-lib
+BASE_DIR1 = ARGV[2] + '/'		# ORCA標準
+BASE_DIR2 = ARGV[3] + '/'		# site-lib
+
 
 DIA_DIR = 'form/'
 DEF_DIR = 'record/'
@@ -117,7 +118,7 @@ end
 # 引数の領域から、文字列の取得
 temp_file = String(ARGV[0])		# 一時ファイル
 exec_file = String(ARGV[1])		# 起動プログラムファイル
-data_file = String(ARGV[2])		# dataファイル名
+data_file = String(ARGV[4])		# dataファイル名
 
 
 # ============================================================
