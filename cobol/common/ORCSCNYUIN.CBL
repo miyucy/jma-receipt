@@ -633,6 +633,10 @@
            IF      LNK-SC97-KAISU      =   ZERO
                MOVE    1               TO  LNK-SC97-KAISU
            END-IF
+      *    外用薬の時、回数は１回とする
+           IF      LNK-WKSRY-SRYKBN (01)   =   "23"
+               MOVE    1               TO  LNK-SC97-KAISU
+           END-IF
            MOVE    ZERO                TO  IDX-KAI1
            MOVE    ZERO                TO  IDX-KAI2
            PERFORM VARYING     IDX2    FROM    1   BY  1
