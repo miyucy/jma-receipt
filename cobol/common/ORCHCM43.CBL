@@ -104,6 +104,9 @@
       *
            03  WRK-SRYKA-MEI       PIC X(30).
       *
+       01  WKSYUNOU-REC.
+           COPY    "CPSYUNOU.INC"     REPLACING //SYU-//
+                                      BY        //WKSYU-//.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -708,6 +711,9 @@
       *
       *    Á°²óÌ¤¼ý³Û·×»»
            MOVE    ZERO                TO  WRK-MISYUMONEY
+           IF    ( IDX-SYU =   1 )
+               PERFORM 3001-MISYU-SEC
+           END-IF
       *
            MOVE    WRK-MISYUMONEY      TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
@@ -724,6 +730,19 @@
        300-HCM43-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    Á°²óÌ¤¼ýÊÔ½¸½èÍý
+      *****************************************************************
+       3001-MISYU-SEC                  SECTION.
+      *
+           PERFORM 900-SYUNOU-KEY38-SEL-SEC
+      *
+           COMPUTE WRK-MISYUMONEY
+               =   WKSYU-SKYMONEY  -   WKSYU-NYUKIN-TOTAL
+      *
+           .
+       3001-MISYU-EXT.
+           EXIT.
       *****************************************************************
       *    Ä¢É¼°õºþ½èÍý
       *****************************************************************
@@ -967,6 +986,34 @@
       *
            .
        900-PTINF-KEY-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼ýÇ¼¸¡º÷½èÍý(KEY38)
+      *****************************************************************
+       900-SYUNOU-KEY38-SEL-SEC        SECTION.
+      *
+           INITIALIZE                  WKSYUNOU-REC
+           MOVE    SPA-HOSPID      TO  WKSYU-HOSPID
+           MOVE    SPA-NYUGAIKBN   TO  WKSYU-NYUGAIKBN
+           MOVE    SPA-PTID        TO  WKSYU-PTID
+           STRING  ORCHCM43-STSRYYM    DELIMITED   BY  SPACE
+                   "01"                DELIMITED   BY  SIZE
+           INTO    WKSYU-SRYYMD
+           END-STRING
+      *
+           MOVE    WKSYUNOU-REC    TO  MCPDATA-REC
+           MOVE    PATH-TBL-SYUNOU-KEY38
+                                   TO  MCP-PATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  WKSYUNOU-REC
+           ELSE
+               INITIALIZE              WKSYUNOU-REC
+           END-IF
+      *
+           .
+      *
+       900-SYUNOU-KEY38-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
