@@ -41,6 +41,7 @@
       *                                     に"0"を表示する
       *  01.00.11    NACL-藤原    03/05/12  印刷開始・終了頁の編集の修正 
       *  01.00.12    NACL-太田    03/07/02  出力先プリンタサブ追加
+      *  01.00.13    NACL-太田    03/07/30  編集パラメータにPTNUM追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -247,6 +248,9 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+      *    患者番号変換サブ
+           COPY    "CPORCSPTNUM.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -601,6 +605,9 @@
                        MOVE    0           TO  SPA-NAI-HENPARA (IDZ IDY)
                        MOVE    "0"
                                            TO  SPA-GMN-PARA  (IDZ IDY)
+                   WHEN    "PTNUM"
+                       MOVE    SPACE       TO  SPA-NAI-HENPARA (IDZ IDY)
+                       MOVE    SPACE       TO  SPA-GMN-PARA  (IDZ IDY)
                    WHEN     OTHER
                        MOVE    "0002"      TO  SPA-ERRCD
                        GO  TO  4101-PARA-CHK-EXT
@@ -638,6 +645,20 @@
                                MOVE    "0002"      TO  SPA-ERRCD
                                GO  TO  4101-PARA-CHK-EXT
                            END-IF
+                       ELSE
+                           MOVE    "0002"      TO  SPA-ERRCD
+                           GO  TO  4101-PARA-CHK-EXT
+                       END-IF
+                   WHEN    "PTNUM"
+                       INITIALIZE                  ORCSPTNUMAREA
+                       MOVE    SPA-GMN-PARA (IDZ IDY)
+                                               TO  SPTNUM-PTNUM
+                       CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
+                                               SPA-AREA
+                       IF    ( SPTNUM-RC       NOT =   20 )
+                           MOVE    SPTNUM-PTNUM
+                                           TO  SPA-GMN-PARA (IDZ IDY)
+                                               SPA-NAI-HENPARA (IDZ IDY)
                        ELSE
                            MOVE    "0002"      TO  SPA-ERRCD
                            GO  TO  4101-PARA-CHK-EXT
