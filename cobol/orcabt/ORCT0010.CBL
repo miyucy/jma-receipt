@@ -554,11 +554,11 @@
                IF    ( PTTEIKIRRK-SAKKBN   =   "9" )
                    MOVE    1       TO  FLG-GETUMATUSITEI
                END-IF
-           ELSE
-               IF    ( PTNYUINRRK-TEIKI-SEIKYUKBN
+           END-IF
+      *
+           IF    ( PTNYUINRRK-TEIKI-SEIKYUKBN
                                            =   "2" )
-                   MOVE    1       TO  FLG-GETUMATUSITEI
-               END-IF
+               MOVE    1           TO  FLG-GETUMATUSITEI
            END-IF
       *
            IF    ( FLG-GETUMATUSITEI       =   1 )

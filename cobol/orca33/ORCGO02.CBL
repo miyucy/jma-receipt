@@ -698,20 +698,26 @@
            MOVE    SPA-NAI-TSRYYM     (SPA-GMN-RENNUM)
                                        TO  SPA-NAI-SRYYM
       *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   WRK-CONS-SAKKBN-MAX )
-      *
-               IF    ( SPA-NAI-TSAKKBN (SPA-GMN-RENNUM)
-                                   =   WRK-CONS-SAKKBNL (IDX1) )
-                   MOVE    WRK-CONS-SAKKBNLST (IDX1)
-                                       TO  SPA-GMN-SAKKBN-G
-                   MOVE    WRK-CONS-SAKKBN-MAX
-                                       TO  IDX1
-               END-IF
-      *
-           END-PERFORM
-      *
            PERFORM 4150-SAKKBN-SET-SEC
+      *
+           PERFORM VARYING IDX1    FROM 1  BY  1
+                   UNTIL ( IDX1    >    SPA-GMN-SAKKBN-MAX )
+               IF    ( SPA-NAI-TSAKKBN (SPA-GMN-RENNUM)
+                                       =  SPA-GMN-SAKKBNL (IDX1) )
+                   MOVE    SPA-GMN-SAKKBNLST (IDX1)
+                                                   TO  SPA-GMN-SAKKBN-G
+                   MOVE    SPA-NAI-SKYINF-SKYSTYMD (IDX1)
+                                                   TO  SPA-NAI-SKYSTYMD
+                   MOVE    SPA-NAI-SKYINF-SKYEDYMD (IDX1)
+                                                   TO  SPA-NAI-SKYEDYMD
+                   MOVE    SPA-NAI-SKYINF-NYUINYMD (IDX1)
+                                                   TO  SPA-NAI-NYUINYMD
+                   MOVE    SPA-NAI-SKYINF-TAIINYMD (IDX1)
+                                                   TO  SPA-NAI-TAIINYMD
+                   MOVE    1                       TO  WRK-HENFLG
+                   MOVE    SPA-GMN-SAKKBN-MAX      TO  IDX1
+               END-IF
+           END-PERFORM
       *
            MOVE    4                   TO  SPA-GMN-CUR 
       *
@@ -1614,14 +1620,14 @@
                MOVE    SPA-GMN-MAX     TO  SPA-GMN-TRENNUM(SPA-GMN-MAX)
       *
                PERFORM VARYING IDX1    FROM 1  BY  1
-                   UNTIL ( IDX1    >    SPA-GMN-SAKKBN-MAX )
-                   IF    ( SYS-5012-SAKKBN  =  SPA-GMN-SAKKBNL (IDX1) )
-                       MOVE    SPA-GMN-SAKKBNMEIL (IDX1)
+                   UNTIL ( IDX1    >    WRK-CONS-SAKKBN-MAX )
+                   IF    ( SYS-5012-SAKKBN  =  WRK-CONS-SAKKBNL (IDX1) )
+                       MOVE    WRK-CONS-SAKKBNMEIL (IDX1)
                                        TO  SPA-GMN-TSAKKBN (SPA-GMN-MAX)
-                       MOVE    SPA-GMN-SAKKBNL (IDX1)
+                       MOVE    WRK-CONS-SAKKBNL (IDX1)
                                        TO  SPA-NAI-TSAKKBN (SPA-GMN-MAX)
                        MOVE    1                       TO  WRK-HENFLG
-                       MOVE    SPA-GMN-SAKKBN-MAX      TO  IDX1
+                       MOVE    WRK-CONS-SAKKBN-MAX     TO  IDX1
                    END-IF
                END-PERFORM
       *
@@ -1675,12 +1681,12 @@
                MOVE    WRK-HENYMDG TO  SPA-GMN-TNYUINYMD(SPA-GMN-MAX)
       *
                IF    ( SYS-5012-TAIINYMD   =   "99999999" )
+                   MOVE    "入院中"
+                                   TO  SPA-GMN-TTAIINYMD(SPA-GMN-MAX)
+               ELSE
                    MOVE    SYS-5012-TAIINYMD   TO  WRK-SYMD
                    PERFORM 5002-HIZUKE-HEN-SEC
                    MOVE    WRK-HENYMDG
-                                   TO  SPA-GMN-TTAIINYMD(SPA-GMN-MAX)
-               ELSE
-                   MOVE    "入院中"
                                    TO  SPA-GMN-TTAIINYMD(SPA-GMN-MAX)
                END-IF
       *
@@ -2241,9 +2247,8 @@
                     MOVE  "PTNUM"      TO  MCP-WIDGET
              WHEN    5
                     MOVE  "SRYYM"      TO  MCP-WIDGET
-      *      暫定的にコメント
-      *      WHEN    6
-      *             MOVE  "SAKKBN"     TO  MCP-WIDGET
+             WHEN    6
+                    MOVE  "SAKKBN"     TO  MCP-WIDGET
              WHEN    7
                     MOVE  "B12"        TO  MCP-WIDGET
            END-EVALUATE
