@@ -50,6 +50,8 @@
       *                                     合計点数情報（ぶん点・公費分離
       *                                     区分編集用）の追加
       *  01.02.15    NACL-藤原    04.06.08  適用終了日の追加
+      *  01.02.16    NACL-藤原    04.06.15  印刷順の追加（個別作成時のみ）
+      *  01.02.17    NACL-藤原    04.07.06  組合せ公費保険ＩＤの追加
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -159,18 +161,12 @@
                05  RECE02-KOHNUMHCINF     OCCURS  4.
       *組合せ公費保険番号
                    07  RECE02-KOHNUMHC    PIC  X(03).
+      *組合せ公費保険ＩＤ
+                   07  RECE02-KOHIDHC     PIC  9(10).
       *特記事項情報
            03  RECE02-TOKKIINF            OCCURS  5.
       *特記事項
                05  RECE02-TOKKI           PIC  X(02).
-      *病棟区分情報
-           03  RECE02-BYOTOKBNINF         OCCURS  4.
-      *病棟区分
-               05  RECE02-BYOTOKBN        PIC  X(02).
-      *実日数情報
-           03  RECE02-JNISSUINF           OCCURS  5.
-      *実日数
-               05  RECE02-JNISSU          PIC  9(02).
       *診療区分別点数情報
            03  RECE02-SRYKBNINF           OCCURS  50.
       *基本点数
@@ -181,6 +177,10 @@
                05  RECE02-TENSUINF        OCCURS  5.
       *明細点数
                    07  RECE02-TENSU       PIC  9(08).
+      *実日数情報
+           03  RECE02-JNISSUINF           OCCURS  5.
+      *実日数
+               05  RECE02-JNISSU          PIC  9(02).
       *合計点数情報
            03  RECE02-TOTALTENINF         OCCURS  5.
       *合計点数
@@ -298,4 +298,6 @@
            03  RECE02-HENTOTALTENINF      OCCURS  5.
       *合計点数（ぶん点・公費分離区分編集用）
                05  RECE02-HENTOTALTEN     PIC  9(08).
+      *印刷順
+           03  RECE02-PRTSEQ              PIC  9(03).
       *

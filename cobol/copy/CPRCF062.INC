@@ -38,6 +38,9 @@
       *                                     福祉編集フラグ（食事療養）の追加
       *                                     合計点数情報（ぶん点・公費分離
       *                                     区分編集用）の追加
+      *  01.00.13    NACL-藤原    04.06.08  適用終了日の追加
+      *  01.00.14    NACL-藤原    04.06.15  印刷順の追加（個別作成時のみ）
+      *  01.00.14    NACL-藤原    04.07.06  組合せ公費保険ＩＤの追加
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -79,6 +82,12 @@
            03  RECE62-DEATHKBN            PIC  X(01).
       *年齢
            03  RECE62-AGE                 PIC  9(03).
+      *レセプト対象年月日情報
+           03  RECE62-TEKYMD.
+      *適用開始年月日
+               05  RECE62-TEKSTYMD-X      PIC  X(08). 
+      *適用終了年月日
+               05  RECE62-TEKEDYMD-X      PIC  X(08). 
       *主保険情報
            03  RECE62-HKN.
       *主保険−保険ＩＤ
@@ -143,6 +152,8 @@
                05  RECE62-KOHNUMHCINF     OCCURS  4.
       *組合せ公費保険番号
                    07  RECE62-KOHNUMHC    PIC  X(03).
+      *組合せ公費保険ＩＤ
+                   07  RECE62-KOHIDHC     PIC  9(10).
       *診療区分別点数情報
            03  RECE62-SRYKBNINF           OCCURS  30.
       *基本点数
@@ -338,4 +349,6 @@
            03  RECE62-HENTOTALTENINF      OCCURS  5.
       *合計点数（ぶん点・公費分離区分編集用）
                05  RECE62-HENTOTALTEN     PIC  9(08).
+      *印刷順
+           03  RECE62-PRTSEQ              PIC  9(03).
       *
