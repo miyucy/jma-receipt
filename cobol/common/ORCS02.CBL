@@ -28,6 +28,7 @@
       ****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL−門脇   03/03/07  老人限度額の集計変更
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1204,7 +1205,13 @@
            MOVE     ZERO     TO     FLG-KOUREI.                         
       *
            IF  LNK-S02-KOUREI-NYUIN-KBN   =   "1"
-               IF  LNK-SYU-SYUHKNNUM    =  SYU-SYUHKNNUM
+      **       IF  LNK-SYU-SYUHKNNUM    =  SYU-SYUHKNNUM
+               IF ( SYU-SYUHKNNUM       =  "971" OR "973" OR SPACE )
+               OR ( SYU-SYUHKNNUM(1:2)  =  "98"                    )
+      *
+                 CONTINUE
+      *
+               ELSE
       *
                  IF COMB-KOH1HKNNUM      =    "027"                     
       *               COMPUTE  WK-SYU-SYUCOMPFTN  =                     

@@ -102,7 +102,8 @@
       *  01.02.14    NACL-藤原    03.01.17  データ区分の追加
       *                                     診療行為による特記事項の編集の修正
       *  01.02.15   NACL-門脇     03.02.06  コメントカウントフラグの編集追加
-      *  01.02.14   NACL-藤原     03.03.12  補助区分の追加
+      *  01.02.14   NACL-藤原     03.02.12  補助区分の追加
+      *  01.02.15   NACL-門脇     03.03.07  在総診フラグセット取りやめ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -699,7 +700,7 @@
       *
            INITIALIZE                   FLG-KHNTEN-AREA
            PERFORM    VARYING    IDX    FROM   1   BY   1
-                      UNTIL     (IDX      >   10)  OR
+                      UNTIL     (IDX      >   20)  OR
                                 (RECE02-SRYKA(IDX)   =   SPACE)
                PERFORM    RECE04-HENSYU-SEC
                PERFORM    YKZFTN-SET-SEC
@@ -999,30 +1000,30 @@
                         MOVE   "1"        TO    RECE02-GAIRAIKSN-PRTKBN
                    END-IF
                END-IF
-               IF      RECE02-SRYYM      >=  "200210" 
-                 IF  ( RECE02-AGE        >=  70 )    OR
-                    (( RECE02-AGE        >=  65  AND     
-                       RECE02-RJNHKNNUM   = "027"))   
+      **       IF      RECE02-SRYYM      >=  "200210" 
+      **         IF  ( RECE02-AGE        >=  70 )    OR
+      **            (( RECE02-AGE        >=  65  AND     
+      **               RECE02-RJNHKNNUM   = "027"))   
       *   
-                   IF   SRY-SRYKBN           =     "14"  
-                      IF   SRY-SRYCD(IDX2)   =     CONS-ZAITAKU1    OR
-                                                   CONS-ZAITAKU2    OR
-                                                   CONS-ZAITAKU3    OR
-                                                   CONS-ZAITAKU4
-                        MOVE   "1"        TO    RECE02-ZAITAKU
+      **           IF   SRY-SRYKBN           =     "14"  
+      **              IF   SRY-SRYCD(IDX2)   =     CONS-ZAITAKU1    OR
+      **                                           CONS-ZAITAKU2    OR
+      **                                           CONS-ZAITAKU3    OR
+      **                                           CONS-ZAITAKU4
+      **                MOVE   "1"        TO    RECE02-ZAITAKU
       *
-                        IF  RECE02-RECESYUBETU   =   "8888"
-                              MOVE  SPACE       TO  RECE02-ZAITAKU
-                        END-IF
-                        IF  RECE02-HKNNUM        =   SPACE 
-                              MOVE  SPACE       TO  RECE02-ZAITAKU
-                        END-IF
+      **                IF  RECE02-RECESYUBETU   =   "8888"
+      **                      MOVE  SPACE       TO  RECE02-ZAITAKU
+      **                END-IF
+      **                IF  RECE02-HKNNUM        =   SPACE 
+      **                      MOVE  SPACE       TO  RECE02-ZAITAKU
+      **                END-IF
       *
-                      END-IF
-                   END-IF
+      **              END-IF
+      **           END-IF
       *
-                 END-IF
-               END-IF
+      **         END-IF
+      **       END-IF
       *
                MOVE    SRY-SRYSURYO(IDX2) TO    RECE05-SRYSURYO(IDX4)
                MOVE    SRY-SRYKAISU(IDX2) TO    RECE05-SRYKAISU(IDX4)

@@ -98,6 +98,7 @@
       *                                     薬剤負担金を算定しないよう修正
       *                                     （フラグ初期化位置変更）
       *  01.00.28    NACL−門脇   03/02/06  自費保険の課税対応
+      *  01.00.29    NACL−門脇   03/03/07  老人限度額の集計変更
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2074,7 +2075,13 @@
            MOVE     ZERO     TO     FLG-ZAITAKU.                         
       *
            IF  LNK-S01-KOUREI-ZAITAKU-KBN   =   "1"
-               IF  LNK-SYU-SYUHKNNUM    =  SYU-SYUHKNNUM
+      **       IF  LNK-SYU-SYUHKNNUM    =  SYU-SYUHKNNUM
+               IF ( SYU-SYUHKNNUM       =  "971" OR "973" OR SPACE )
+               OR ( SYU-SYUHKNNUM(1:2)  =  "98"                    )
+      *
+                 CONTINUE
+      *
+               ELSE
       *
                  IF COMB-KOH1HKNNUM      =    "027"
                       COMPUTE  WK-SYU-SYUCOMPFTN  =                     
@@ -2126,7 +2133,13 @@
            IF   ( LNK-S01-KOUREI-ZAITAKU-KBN   NOT =   "1" )
            AND  ( FLG-KOUREI-KBN                   =   "1" )
       *
-               IF  LNK-SYU-SYUHKNNUM    =  SYU-SYUHKNNUM
+      **       IF  LNK-SYU-SYUHKNNUM    =  SYU-SYUHKNNUM
+               IF ( SYU-SYUHKNNUM       =  "971" OR "973" OR SPACE )
+               OR ( SYU-SYUHKNNUM(1:2)  =  "98"                    )
+      *
+                 CONTINUE
+      *
+               ELSE
       *
                  IF COMB-KOH1HKNNUM      =    "027"
                       IF  (SYU-KOH2HKNNUM     NOT = SPACE)              

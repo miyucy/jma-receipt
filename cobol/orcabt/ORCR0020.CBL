@@ -72,8 +72,9 @@
       *  01.00.22   NACL-Æ£¸¶     03.01.30  ÆÃµ­»ö¹à£°£´Ï·ÊÝ¤ÎÈ½Äê¤Ë¤ò£·£°ºÐ
       *                                     ¤òÄÉ²Ã
       *  01.00.23    NACL-Æ£¸¶    03/02/12  ¥Æ¥¹¥È´µ¼ÔÈÖ¹æ¶èÊ¬¡¦Êä½õ¶èÊ¬¤ÎÄÉ²Ã
-      *  01.02.24    NACL-Æ£¸¶    03/03/07  ¥ì¥»¥×¥Èµ­ºÜ³°¸øÈñ¾ðÊóÄÉ²Ã
+      *  01.00.24    NACL-Æ£¸¶    03/03/07  ¥ì¥»¥×¥Èµ­ºÜ³°¸øÈñ¾ðÊóÄÉ²Ã
       *                                     ¿ÇÎÅ²Ê¿ô£±£°¤«¤é£²£°¤ØÊÑ¹¹
+      *  01.00.25    NACL-ÌçÏÆ    03/03/07  ºßÁí¿Ç¥Õ¥é¥°¥»¥Ã¥È
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -190,6 +191,7 @@
            03  FLG-HKNNUM                              PIC 9(01).
            03  FLG-HKNCOMBI                            PIC 9(01).
            03  FLG-SRYACCT                             PIC 9(01).
+           03  FLG-SRYACT                              PIC 9(01).
            03  FLG-SYSKANRI                            PIC 9(01).
            03  FLG-KYUSEIRRK                           PIC 9(01).
            03  FLG-CHK                                 PIC 9(01).
@@ -209,6 +211,7 @@
            03  IDX                                     PIC 9(03).
            03  IDY                                     PIC 9(03).
            03  IDX2                                    PIC 9(03).
+           03  IDX3                                    PIC 9(03).
            03  IDZ                                     PIC 9(02).
            03  TOKKI-IDX                               PIC 9(02).
       *
@@ -257,6 +260,8 @@
       *
            03  WRK-CHOKI                 PIC X(03).
       *
+           03  WRK-ZAITAKU               PIC X(01).
+      *
            03  RJN-RATE-KBN              PIC X(01).
       *
            COPY    "MCPAREA".
@@ -276,6 +281,22 @@
       *    ¸ÇÄêÃ¼Ëö£É£Ä
            03  WRK-CONS-TERMID     PIC X(32)   VALUE
                                    "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
+      *
+      *    ºßÁí¿Ç¥Æ¡¼¥Ö¥ë
+       01  TBL-ZAITAKU-AREA.
+      *    ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅÎÁ¡Ê±¡Æâ½èÊý¤»¤ó¤ò¸òÉÕ¤¹¤ë¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114701210".
+      *    ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅÎÁ¡Ê±¡Æâ½èÊý¤»¤ó¤ò¸òÉÕ¤·¤Ê¤¤¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114701710".
+      *    ºßÂðËö´ü°åÎÅÁí¹ç¿ÇÎÅÎÁ¡Ê±¡³°¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114007610".
+      *    ºßÂðËö´ü°åÎÅÁí¹ç¿ÇÎÅÎÁ¡Ê±¡Æâ¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114007710".
+      *
+       01  TBL-ZAITAKU-R       REDEFINES   TBL-ZAITAKU-AREA.
+            03  TBL-ZAITAKU    PIC X(09)   OCCURS   4.       
+      *
+       01  TBL-ZAITAKU-MAX     PIC 9(02)   VALUE    4.  
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -327,6 +348,13 @@
        01  TNKRRK-REC.
            COPY    "CPTNKRRK.INC".
       *
+      *    ¿ÇÎÅ²ñ·×
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
+      *
+      *    ¿ÇÎÅ¹Ô°Ù
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
@@ -974,6 +1002,9 @@
              END-EVALUATE
       *
            END-IF
+      *
+      *    ºßÁí¿Ç¥Õ¥é¥°¥»¥Ã¥È
+           PERFORM    ZAITAKU-SET-SEC
       *
            .
        210-HENSYU-EXT.
@@ -2060,6 +2091,96 @@
            EXIT.
       *
       *****************************************************************
+      *    ºßÁí¿Ç¥Õ¥é¥°¥»¥Ã¥È
+      *****************************************************************
+       ZAITAKU-SET-SEC                SECTION.
+      *
+           IF   RECE01-SRYYM    >=  "200210"
+      *
+             MOVE      SPACE     TO    WRK-ZAITAKU
+      *
+             PERFORM   VARYING   IDX3   FROM    1   BY  1
+                         UNTIL   ( IDX3   >   TBL-ZAITAKU-MAX )
+                          OR     ( WRK-ZAITAKU    =    "1"    )
+      *
+               INITIALIZE                           SRYACT-REC
+               MOVE    RECE01-HOSPID        TO      SRY-HOSPID
+               MOVE    RECE01-NYUGAIKBN     TO      SRY-NYUGAIKBN
+               MOVE    RECE01-PTID          TO      SRY-PTID
+               MOVE    RECE01-SRYYM         TO      SRY-SRYYM
+               MOVE    TBL-ZAITAKU(IDX3)    TO      SRY-SRYCD(1)
+               MOVE    TBL-ZAITAKU(IDX3)    TO      SRY-SRYCD(2)
+               MOVE    TBL-ZAITAKU(IDX3)    TO      SRY-SRYCD(3)
+               MOVE    TBL-ZAITAKU(IDX3)    TO      SRY-SRYCD(4)
+               MOVE    TBL-ZAITAKU(IDX3)    TO      SRY-SRYCD(5)
+               MOVE    SRYACT-REC           TO      MCPDATA-REC
+               MOVE    "DBSELECT"           TO      MCP-FUNC
+               MOVE    "SRYACT-KEY7"        TO      ORC-DBPATH
+               CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+               IF      MCP-RC               =       ZERO
+                   MOVE    "SRYACT-KEY7"    TO      ORC-DBPATH 
+                   PERFORM   SRYACT-READ-SEC
+                   IF      FLG-SRYACT       =       ZERO
+                       INITIALIZE                   SRYACCT-REC
+                       MOVE    SRY-HOSPID       TO   ACCT-HOSPID
+                       MOVE    SRY-NYUGAIKBN    TO   ACCT-NYUGAIKBN
+                       MOVE    SRY-SRYKA        TO   ACCT-SRYKA
+                       MOVE    SRY-PTID         TO   ACCT-PTID
+                       MOVE    SRY-SRYYM        TO   ACCT-SRYYM
+                       MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
+                       MOVE    SRYACCT-REC      TO   MCPDATA-REC
+                       MOVE    "DBSELECT"       TO   MCP-FUNC
+                       MOVE    "SRYACCT-KEY5"   TO   ORC-DBPATH
+                       CALL    "ORCMCPSUB"           USING
+                                                     MCPAREA
+                                                     ORCMCPAREA
+                                                     MCPDATA-REC
+                       IF      MCP-RC           =       ZERO
+                           MOVE    "SRYACCT-KEY5"   TO  ORC-DBPATH 
+                           PERFORM   SRYACCT-READ-SEC
+                           IF      FLG-SRYACCT  =       ZERO
+                               IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
+                                   (ACCT-ZAIKAISU NOT =  ZERO)
+                                   MOVE    1   TO   WRK-ZAITAKU
+                               END-IF
+                           END-IF
+                       END-IF
+      *
+                       MOVE    "SRYACCT-KEY5"  TO    WK-PATH
+                       PERFORM   CSR-CLOSE-SEC
+      *
+                   END-IF
+               END-IF
+      *
+               MOVE    "SRYACT-KEY7"    TO    WK-PATH
+               PERFORM   CSR-CLOSE-SEC
+      *
+             END-PERFORM
+      *
+             IF    WRK-ZAITAKU   =   "1"
+               IF  ( RECE02-AGE          >=  70      )   OR
+                   ( AGECHK-NENREI       >=  65  AND                  
+                     RECE01-KOHID    NOT  =   ZERO   )                  
+                 MOVE    "1"           TO  RECE02-ZAITAKU
+      *
+                 IF  RECE02-RECESYUBETU   =   "8888"
+                     MOVE  SPACE       TO  RECE02-ZAITAKU
+                 END-IF
+                 IF  RECE02-HKNNUM        =   SPACE 
+                     MOVE  SPACE       TO  RECE02-ZAITAKU
+                 END-IF
+      *
+               END-IF
+             END-IF
+      *
+           END-IF
+           .
+       ZAITAKU-SET-EXT.
+           EXIT.
+      * 
+      *****************************************************************
       *    ¥Ç¡¼¥¿½ÐÎÏ½èÍý
       *****************************************************************
        220-DATA-WRITE-SEC                SECTION.
@@ -2388,6 +2509,50 @@
            EXIT.
       *
       *****************************************************************
+      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       SRYACCT-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+               MOVE    ZERO            TO  FLG-SRYACCT
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF
+      *
+           .
+       SRYACCT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       SRYACT-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SRYACT-REC
+               MOVE    ZERO            TO  FLG-SRYACT
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+      *
+           .
+       SRYACT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ´ÉÍý¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
       *****************************************************************
        800-SYSKANRI-READ-SEC           SECTION.
@@ -2505,7 +2670,7 @@
            .
        910-MONTHLYNUM-READ-EXT.
            EXIT.
-      *      
+      *
       *****************************************************************
       *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
       *****************************************************************
