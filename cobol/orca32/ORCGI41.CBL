@@ -4944,6 +4944,14 @@
                    MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
                END-IF
            END-IF
+      *
+      *    広範囲熱傷特定集中治療室管理料の場合は最長６０日間の算定の為、
+      *    次月の会計作成時は無条件に一般の入院料算定とする
+           IF   PTNYUINRRK-TOKUTEI-KBN   =   "3"
+               IF   PTNYUINRRK-TOKUTEI-NYUIN = "13"
+                   MOVE    SPACE   TO    WRK-TOKUTEI-NYUIN
+               END-IF
+           END-IF
       *    
            IF      WRK-TOKUTEI-NYUIN          NOT =   SPACE
                PERFORM   410191-TOKTEI-NYUIN-SET-SEC
