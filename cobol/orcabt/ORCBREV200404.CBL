@@ -454,7 +454,6 @@
            END-IF
       *
            PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
-                     OR  ( FLG-END         NOT =   ZERO )
       *
                IF    ( KEY-HOSPID          NOT =   NACCT-HOSPID )
                 OR   ( KEY-PTID            NOT =   NACCT-PTID )
@@ -469,9 +468,6 @@
       *
       *                入院会計作成処理
                        PERFORM 2001-NYUINACCT-INS-SEC
-                       IF    ( FLG-END     NOT =   ZERO )
-                           GO  TO  200-MAIN-EXT
-                       END-IF
       *
                        MOVE    WKNYUINACCT-REC TO  NYUINACCT-REC
       *
@@ -481,9 +477,6 @@
       *
       *        入院会計変更処理
                PERFORM 2001-NYUINACCT-UPD-SEC
-               IF    ( FLG-END         NOT =   ZERO )
-                   GO  TO  200-MAIN-EXT
-               END-IF
       *
                MOVE    "NYUINACCT-KEY21"   TO  ORC-DBPATH
                PERFORM 910-DBFETCH-SEC
@@ -560,9 +553,6 @@
       *        剤存在チェック（存在すれば削除する）
                MOVE    SYS-5000-KSNCD  (15)    TO  WRK-DEL-SRYCD
                PERFORM 20011-ZAI-SONZAI-CHK-SEC
-               IF    ( FLG-END     NOT =   ZERO )
-                   GO  TO  2001-NYUINACCT-INS-EXT
-               END-IF
       *
       *        離島加算追加
                INITIALIZE                          WRK-INS-SRY-G
@@ -572,9 +562,6 @@
                MOVE    "6"                     TO  WRK-NACCT-ZAISKBKBN
       *
                PERFORM 20011-ZAI-SAKUSEI-SEC
-               IF    ( FLG-END     NOT =   ZERO )
-                   GO  TO  2001-NYUINACCT-INS-EXT
-               END-IF
       *
                COMPUTE CNT-JOB-UPDCNT  =   CNT-JOB-UPDCNT  +   1
       *
@@ -805,15 +792,9 @@
       *
       *        入院診療行為削除
                PERFORM 20011-NYUINACT-DEL-SEC
-               IF    ( FLG-END     NOT =   ZERO )
-                   GO  TO  20011-ZAI-SONZAI-CHK-EXT
-               END-IF
       *
       *        入院会計削除
                PERFORM 20011-NYUINACCT-DEL-SEC
-               IF    ( FLG-END     NOT =   ZERO )
-                   GO  TO  20011-ZAI-SONZAI-CHK-EXT
-               END-IF
       *
            END-PERFORM
       *
@@ -842,7 +823,6 @@
                MOVE    "入院診療行為の削除に失敗しました"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  20011-NYUINACT-DEL-EXT
            END-IF
       *
            .
@@ -867,7 +847,6 @@
                MOVE    "入院会計の削除に失敗しました"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  20011-NYUINACCT-DEL-EXT
            END-IF
       *
            .
@@ -902,9 +881,6 @@
       *
       *            剤番号取得処理
                    PERFORM 20011-ZAINUM-SET-SEC
-                   IF    ( FLG-END             NOT =   ZERO )
-                       GO  TO  20011-ZAI-SAKUSEI-EXT
-                   END-IF
       *
       *            入院会計作成処理
                    MOVE    WRK-ZAIKAISU (IDXB) TO  WRK-INS-ZAI-KAISU
@@ -914,15 +890,9 @@
                                                TO  WRK-INS-ZAI-DAY(IDX0)
                    END-PERFORM
                    PERFORM 20011-NYUINACCT-INS-SEC
-                   IF    ( FLG-END             NOT =   ZERO )
-                       GO  TO  20011-ZAI-SAKUSEI-EXT
-                   END-IF
       *
       *            入院診療行為追加処理
                    PERFORM 20011-NYUINACT-INS-SEC
-                   IF    ( FLG-END             NOT =   ZERO )
-                       GO  TO  20011-ZAI-SAKUSEI-EXT
-                   END-IF
                END-IF
       *
            END-PERFORM
@@ -1000,7 +970,6 @@
                MOVE    "患者情報の検索に失敗しました"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  20011-ZAINUM-SET-EXT
            END-IF
       *
       *    最大剤番号
@@ -1025,7 +994,6 @@
                MOVE    "患者情報の更新に失敗しました"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  20011-ZAINUM-SET-EXT
            END-IF 
       *
            .
@@ -1190,7 +1158,6 @@
                    MOVE    "入院診療行為の追加に失敗しました"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
-                   GO  TO  20011-NYUINACT-INS-EXT
                END-IF
       *
            END-PERFORM
@@ -1259,7 +1226,6 @@
                MOVE    "入院会計の追加に失敗しました"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  20011-NYUINACCT-INS-EXT
            END-IF
       *
            .
@@ -1286,6 +1252,7 @@
        2001-SINSEIJI-UPD-SEC           SECTION.
       *
            MOVE    WKTNS-SINSEIJI-TEN  TO  NACCT-ZAITEN
+                                           NACCT-SYUTEN1
       *
            MOVE    SMCNDATE-YMD        TO  NACCT-UPYMD
            MOVE    SMCNDATE-HMS        TO  NACCT-UPHMS
@@ -1300,7 +1267,6 @@
                MOVE    "入院会計の更新に失敗しました"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  2001-SINSEIJI-UPD-EXT
            END-IF
       *
            COMPUTE CNT-JOB-UPDCNT  =   CNT-JOB-UPDCNT  +   1
@@ -1491,41 +1457,33 @@
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
-       500-ERR-HENSYU-SEC          SECTION.
+       500-ERR-HENSYU-SEC              SECTION.
       *
-           DISPLAY "WRK-RECEERR = " WRK-RECEERR
+           OPEN    OUTPUT      RECEERR-FILE
       *
-           OPEN    INPUT           RECEERR-FILE
-           IF        ( STS-RECEERR =   ZERO )
-           DISPLAY "** THEN ** "
-               CONTINUE
-           ELSE
-           DISPLAY "** ELSE ** "
-               OPEN    OUTPUT      RECEERR-FILE
+           MOVE    WRK-RECEERR     TO  RECEERR-REC
+           WRITE   RECEERR-REC
+           CLOSE   RECEERR-FILE
       *
-               MOVE    WRK-RECEERR     TO  RECEERR-REC
-               WRITE   RECEERR-REC
-               CLOSE   RECEERR-FILE
+      *    ジョブ管理終了処理
+           MOVE    "JBE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    WRK-RECEERR     TO  JOB-YOBI
+           MOVE    "9999"          TO  JOB-ERRCD
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI-REC
       *
-      *        ジョブ管理開始処理
-               MOVE    "JBE"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
-                                       TO  JOB-SHELLID
-               MOVE    WRK-RECEERR     TO  JOB-YOBI
-               MOVE    "9999"          TO  JOB-ERRCD
-               CALL    "ORCSJOB"           USING
-                                           ORCSJOBKANRIAREA
-                                           JOBKANRI-REC
-           END-IF
+           PERFORM 900-DBDISCONNECT-SEC
       *
-           MOVE    1                   TO  FLG-END
+           STOP RUN
       *
            .
        500-ERR-HENSYU-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    全角半角混在チェック
