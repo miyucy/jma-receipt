@@ -36,18 +36,16 @@ shell_sources = \
 	monthly/recept6.sh.in \
 	monthly/recept7.sh.in \
 	monthly/recept8.sh.in \
-	monthly/sokatsu.sh.in 
+	monthly/sokatsu.sh.in \
 
-ruby_sources = \
-	daily/print-data.rb.in \
-	daily/print_parent2.rb.in \
-	daily/print_parent.rb.in
+ruby_scripts = \
+	daily/print-data.rb \
+	daily/print_parent2.rb \
+	daily/print_parent.rb
 
 shell_scripts = $(shell_sources:.sh.in=.sh) 
 
 noinst_shell_scripts = $(noinst_shell_sources:.sh.in=.sh)
-
-ruby_scripts = $(ruby_sources:.rb.in=.rb)
 
 .SUFFIXES: .sh.in .sh .rb.in .rb
 
@@ -58,7 +56,9 @@ ruby_scripts = $(ruby_sources:.rb.in=.rb)
 all:   $(noinst_shell_scripts) $(shell_scripts)
 
 filecheck:
-	@(for i in $(noinst_shell_sources) $(shell_sources) $(ruby_scripts) ;do echo "make	`basename $${i}`"; done ;\
+	@(for i in $(noinst_shell_sources) $(noinst_shell_scripts) \
+		  $(shell_sources) $(shell_scripts) $(ruby_scripts) \
+			;do echo "make	`basename $${i}`"; done ; \
 	find . \
 	-name "." -o \
 	-name "CVS" -prune -o \
