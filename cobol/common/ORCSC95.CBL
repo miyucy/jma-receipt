@@ -176,6 +176,14 @@
            03  WRK-IDXH                PIC 9(04).
            03  WRK-CNT-HKN             PIC 9(04).
            03  WRK-CNT-HKN2            PIC 9(04).
+      *     £øÙ≤ §ﬁ§»§·
+           03  WRK-FUKU-AREA.
+               05  WRK-FUKU-TBL        OCCURS   10.
+                   07  WRK-FUKU-HKNCOMBI       PIC X(04).
+                   07  WRK-FUKU-SRYKA          PIC X(02).
+                   07  WRK-FUKU-KBN            PIC X(01).
+                   07  WRK-FUKU-DENPNUM        PIC 9(07).
+           03  IDX-F                   PIC 9(04).
       *
       *¬æ≤ ºıø«≤ Õ≠§Í
        01  WRK-TAKA-SRYKA-AREA.
@@ -840,9 +848,13 @@
        200-GAIRAI-SPASET-SEC           SECTION.
       *
            INITIALIZE                  SPA-K02
-           MOVE    SPACE               TO  SPA-HKNCOMBINUM
-           MOVE    ZERO                TO  SPA-FTNRATE
-           MOVE    SPACE               TO  SPA-FTNRATEMEI
+           IF      LNK-SC95-PG         =   "K01"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  SPA-HKNCOMBINUM
+               MOVE    ZERO                TO  SPA-FTNRATE
+               MOVE    SPACE               TO  SPA-FTNRATEMEI
+           END-IF
       *
       *    ¥µº‘æ Û•ª•√•»
            PERFORM 110-K02SYOSIN-SEC
@@ -1024,6 +1036,13 @@
              AND  (SPA-SRYYMD          =   JYURRK-SRYYMD)
       *         £øÙ≤ ø«Œ≈§Œ»ΩƒÍ§Ú§π§Î
                PERFORM 200211-FUKU-HEN-SEC
+               IF      FLG-SYUNOU          =   ZERO
+      *             £øÙø«Œ≈≤ 
+                   IF      SYU-FUKU-DENPNUM    >   ZERO
+                       MOVE    SYU-FUKU-KBN    TO  SPA-NAI-RRK-FUKU-KBN
+                                                                  (IDX)
+                   END-IF
+               END-IF
            END-IF
       *
            .
@@ -1064,13 +1083,6 @@
       *                                MCPAREA
       *                                MCPDATA-REC
       *
-           IF      FLG-SYUNOU          =   ZERO
-      *         £øÙø«Œ≈≤ 
-               IF      SYU-FUKU-DENPNUM    >   ZERO
-                   MOVE    SYU-FUKU-KBN        TO  SPA-NAI-RRK-FUKU-KBN
-                                                                  (IDX)
-               END-IF
-           END-IF
       *
       *
            .
@@ -1179,6 +1191,8 @@
                MOVE    1                   TO  FLG-JYURRK
            END-IF
       *
+           INITIALIZE                  SPA-FUKU-AREA
+           INITIALIZE                  WRK-FUKU-AREA
            MOVE    SPACE               TO  WRK-JYURRK-REC
            MOVE    SPACE               TO  HZN-JYURRK-REC
            MOVE    ZERO                TO  IDX-JYU
@@ -1264,8 +1278,11 @@
                END-IF
            END-PERFORM
       *
+      *
       *    ºıø«ŒÚ§ §∑
            IF      JYURRK-REC          =   SPACE
+      *         £øÙ≤ §ﬁ§»§· ‘Ω∏
+               PERFORM 100112-FUKU-HEN-SEC
                GO      TO      10011-JYURRK-EXT
            END-IF
       *    •…•Ø•ø°º
@@ -1283,9 +1300,45 @@
       *
       *    ∫«Ω™ºıø«Õ˙ŒÚ
            MOVE    JYURRK-RENNUM       TO  LNK-SC95-LAST-RENNUM
-      *
+      *     £øÙ≤ §ﬁ§»§· ‘Ω∏
+           PERFORM 100112-FUKU-HEN-SEC
            .
        10011-JYURRK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     £øÙ≤ §ﬁ§»§· ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       100112-FUKU-HEN-SEC        SECTION.
+      *     £øÙ≤ §ﬁ§»§· ‘Ω∏
+            IF      SPA-SYORIFLG        =   ZERO
+               PERFORM VARYING     IDX-F   FROM   1   BY  1
+                    UNTIL     (IDX-F   >   10 )   OR
+                              (WRK-FUKU-SRYKA (IDX-F) =  SPACE )
+                   IF     (WRK-FUKU-KBN (IDX-F)    =   "1"  )  AND
+                          (SPA-SRYKA           NOT =   SPACE    )  AND
+                          (WRK-FUKU-SRYKA(IDX-F)   NOT =   SPA-SRYKA)
+                       IF      WRK-FUKU-HKNCOMBI(IDX-F)
+                                                   =   SPA-HKNCOMBINUM
+                           MOVE    WRK-FUKU-KBN (IDX-F)
+                                                   TO  SPA-FUKU-SYORI
+                       ELSE
+                           MOVE    WRK-FUKU-HKNCOMBI(IDX-F)
+                                                   TO  SPA-FUKU-HKNCOMBI
+                           MOVE    WRK-FUKU-KBN (IDX-F)
+                                                   TO  SPA-FUKU-MATKBN
+                       END-IF
+                   END-IF
+                   IF     (WRK-FUKU-KBN (IDX-F)    =   "1"  )  AND
+                          (WRK-FUKU-SRYKA(IDX-F)   =   SPA-SRYKA)  AND
+                          (SPA-FUKU-SYORI          =   SPACE    )
+                       MOVE    "F"                 TO  SPA-FUKU-SYORI
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       100112-FUKU-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1333,6 +1386,50 @@
                    END-IF
                END-PERFORM
            END-IF
+      *
+      *     £øÙ≤ ø«Œ≈§Œ»ΩƒÍ§Ú§π§Î
+           IF      SPA-SYORIFLG        =   1
+               IF     (SPA-SRYKA           =   JYURRK-SRYKA ) AND
+                      (SPA-RENNUM          =   JYURRK-RENNUM) AND
+                      (SPA-DOUJI-RENNUM    =   JYURRK-DOUJI-RENNUM)
+      *         £øÙ≤ ø«Œ≈§Œ»ΩƒÍ§Ú§π§Î
+                   PERFORM 200211-FUKU-HEN-SEC
+                   IF      FLG-SYUNOU          =   ZERO
+      *             £øÙø«Œ≈≤ 
+                       MOVE    SYU-FUKU-KBN    TO  SPA-FUKU-SYORI
+                   END-IF
+               END-IF
+           ELSE
+               PERFORM 200211-FUKU-HEN-SEC
+      *         £øÙø«Œ≈≤ 
+               IF      SYU-FUKU-KBN    NOT =   SPACE
+      *            ≤ ÀË§À ‘Ω∏
+                   PERFORM VARYING     IDX-F   FROM   1   BY  1
+                           UNTIL       IDX-F   >   10
+                       IF     (WRK-FUKU-DENPNUM (IDX-F)   =   ZERO)
+                           MOVE    SYU-FUKU-KBN    TO  WRK-FUKU-KBN
+                                                                (IDX-F)
+                           MOVE    SYU-FUKU-DENPNUM
+                                                   TO  WRK-FUKU-DENPNUM
+                                                                (IDX-F)
+                           MOVE    SYU-HKNCOMBINUM TO  WRK-FUKU-HKNCOMBI
+                                                                (IDX-F)
+                           MOVE    SYU-SRYKA       TO  WRK-FUKU-SRYKA
+                                                                (IDX-F)
+                       END-IF
+                       IF      WRK-FUKU-DENPNUM (IDX-F)
+                                                   =   SYU-FUKU-DENPNUM
+                           IF      WRK-FUKU-KBN (IDX-F)  =   "2"
+                               CONTINUE
+                           ELSE
+                               MOVE    SYU-FUKU-KBN    TO
+                                                   WRK-FUKU-KBN (IDX-F)
+                           END-IF
+                           MOVE    10              TO  IDX-F
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-IF
            .
        100111-DOUJI-JYURRK-EXT.
            EXIT.
@@ -1371,7 +1468,11 @@
       *                                MCPAREA
       *                                MCPDATA-REC
       *
-           IF      FLG-SYUNOU          =   ZERO
+           IF      FLG-SYUNOU      NOT =   ZERO
+              GO   TO      100111-CONTKBN-HANTEI-EXT
+           END-IF
+      *
+           IF      JYURRK-DOUJI-RENNUM NOT =   ZERO
       *        ≈¡…ºæı¬÷∂Ë ¨
                IF      SYU-DENPJTIKBN      =   "7"
       *            ∆±ª˛ø«Œ≈≈¡…º»÷πÊ
@@ -1386,6 +1487,7 @@
                                                              (IDX-JYU)
                END-IF
            END-IF
+      *
       *
            .
        100111-CONTKBN-HANTEI-EXT.
@@ -2154,13 +2256,13 @@
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+           MOVE    "SYUNOU-KEY13"      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
                                         MCPAREA
                                         ORCMCPAREA
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
-               MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+               MOVE    "SYUNOU-KEY13"      TO  ORC-DBPATH
                PERFORM 980-SYUNOU-READ-SEC
            ELSE
                MOVE    SPACE               TO  SYUNOU-REC
@@ -2174,12 +2276,12 @@
                                        -   SYU-NYUKIN-TOTAL
                ADD     WRK-MISYU           TO  SPA-MISYUMONEY
       *
-               MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+               MOVE    "SYUNOU-KEY13"      TO  ORC-DBPATH
                PERFORM 980-SYUNOU-READ-SEC
            END-PERFORM
       *
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
-      *    MOVE    "SYUNOU-KEY2"       TO  ORC-DBPATH
+      *    MOVE    "SYUNOU-KEY13"      TO  ORC-DBPATH
       *    CALL    "MCPDBSUB"          USING
       *                                MCPAREA
       *                                MCPDATA-REC
