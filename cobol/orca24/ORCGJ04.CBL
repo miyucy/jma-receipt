@@ -4301,6 +4301,7 @@
       *
       *    入力コード・名称チェック処理
            MOVE    "1"                 TO  FLG-TOROKU
+           MOVE    1                   TO  WRK-STR
            PERFORM 410112-KOUI-SPACHK-SEC
            .
        41001-KOUI-ALLCHK-EXT.

@@ -307,6 +307,8 @@
            03  WRK-TBANGO              PIC  9(04).
       *
            03  WRK-MOTOPG              PIC X(08).
+      *    Ï·¿ÍÇ¯Îð
+           03  WRK-ROU-NEN             PIC 9(02).
       *
            03  WRK-ERRMSG              PIC X(80).
            03  WRK-JIDMSG.
@@ -1081,21 +1083,35 @@
                END-IF
            END-IF
       *
-           IF      SPA-NAI-SRYYM       >=  "200210"
-      *        ³ºÅö·î£±Æü¤¬£·£µºÐ°Ê¾å¤Î»þ¡¢Ï·¿Í¤È¤¹¤ë
-               IF      SPA-NAI-NENREI-YY   >=  75
-                   MOVE    1                   TO  SPA-J02-ROUJIN
-               ELSE
-                   MOVE    ZERO                TO  SPA-J02-ROUJIN
-               END-IF
+      *    £È£±£´¡¥£±£°»þÅÀ¤Ç£·£°ºÐÌ¤Ëþ¤Î»þ
+           IF     (SPA-NAI-SRYYM       >=  "200210"   )  AND
+                  (SPA-BIRTHDAY        >=  "19321001" )
+               MOVE    75                  TO  WRK-ROU-NEN
            ELSE
-      *        ³ºÅö·î£±Æü¤¬£·£°ºÐ°Ê¾å¤Î»þ¡¢Ï·¿Í¤È¤¹¤ë
-               IF      SPA-NAI-NENREI-YY   >=  70
-                   MOVE    1                   TO  SPA-J02-ROUJIN
-               ELSE
-                   MOVE    ZERO                TO  SPA-J02-ROUJIN
-               END-IF
+               MOVE    70                  TO  WRK-ROU-NEN
            END-IF
+      *    ³ºÅö·î£±Æü¤¬£·£µºÐ°Ê¾å¤Î»þ¡¢Ï·¿Í¤È¤¹¤ë
+           IF      SPA-NAI-NENREI-YY   >=  WRK-ROU-NEN
+               MOVE    1                   TO  SPA-J02-ROUJIN
+           ELSE
+               MOVE    ZERO                TO  SPA-J02-ROUJIN
+           END-IF
+      *
+      **** IF      SPA-NAI-SRYYM       >=  "200210"
+      *        ³ºÅö·î£±Æü¤¬£·£µºÐ°Ê¾å¤Î»þ¡¢Ï·¿Í¤È¤¹¤ë
+      *        IF      SPA-NAI-NENREI-YY   >=  75
+      *            MOVE    1                   TO  SPA-J02-ROUJIN
+      *        ELSE
+      *            MOVE    ZERO                TO  SPA-J02-ROUJIN
+      *        END-IF
+      *    ELSE
+      *        ³ºÅö·î£±Æü¤¬£·£°ºÐ°Ê¾å¤Î»þ¡¢Ï·¿Í¤È¤¹¤ë
+      *        IF      SPA-NAI-NENREI-YY   >=  70
+      *            MOVE    1                   TO  SPA-J02-ROUJIN
+      *        ELSE
+      *            MOVE    ZERO                TO  SPA-J02-ROUJIN
+      *        END-IF
+      *****END-IF
       *
       *    ¿ÇÎÅ²Ê°ìÍ÷ÊÔ½¸
            PERFORM 3005-SRYKA-HEN-SEC
