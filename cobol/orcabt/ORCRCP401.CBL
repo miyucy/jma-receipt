@@ -3021,12 +3021,6 @@
       *****************************************************************
        3110-TOKKI-SET-SEC          SECTION.
       *
-           IF    RECE62-SRYYM      >=  "200504"
-              MOVE   "£±£²´ï¼£"   TO   TBL-TOKKINAME(11)
-           ELSE
-              MOVE   "£±£²ºà¼£"   TO   TBL-TOKKINAME(11)
-           END-IF
-      *
            MOVE    ZERO                TO  IDZ
       *     
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -3040,6 +3034,10 @@
                        ADD     1                TO  IDZ
                        MOVE    TBL-TOKKINAME(IDY)
                                                 TO  HC06-TOKKI (IDZ)
+                       IF   IDY                =   11
+                       AND  RECE62-SRYYM      >=  "200504"
+                          MOVE   "£±£²´ï¼£"     TO  HC06-TOKKI (IDZ)
+                       END-IF
                        MOVE    11               TO  IDY
                    END-IF
                END-PERFORM
