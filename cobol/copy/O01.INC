@@ -15,23 +15,24 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
+      *
         02  O01.
       *     02  O01-FIXED17.
               03  O01-SEIYM.
                 04  O01-VALUE   PIC X(6).
+              03  O01-IKKATU.
+                04  O01-VALUE   PIC X.
+              03  O01-KOBETU.
+                04  O01-VALUE   PIC X.
+              03  O01-CHK-KIKAN01.
+                04  O01-VALUE   PIC X.
+              03  O01-CHK-KIKAN02.
+                04  O01-VALUE   PIC X.
+              03  O01-CHK-KIKAN03.
+                04  O01-VALUE   PIC X.
               03  O01-KIKAN01.
                 04  O01-VALUE   PIC X(20).
               03  O01-KIKAN02.
                 04  O01-VALUE   PIC X(20).
               03  O01-KIKAN03.
                 04  O01-VALUE   PIC X(20).
-              03  O01-CHKBUTON05.
-                04  O01-VALUE   PIC X.
-              03  O01-CHKBUTON01.
-                04  O01-VALUE   PIC X.
-              03  O01-CHKBUTON02.
-                04  O01-VALUE   PIC X.
-              03  O01-CHKBUTON03.
-                04  O01-VALUE   PIC X.
-              03  O01-CHKBUTON04.
-                04  O01-VALUE   PIC X.
