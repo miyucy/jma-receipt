@@ -72,6 +72,8 @@
                            13  SPA-GMN-SRYNAIYO    PIC X(02).
                            13  SPA-GMN-DRCD        PIC X(05).
                            13  SPA-GMN-DRCDMEI     PIC X(24).
+                           13  SPA-GMN-HKNCOMBI    PIC X(04).
+                           13  SPA-GMN-HKNCOMBIMEI PIC X(50).
                            13  SPA-GMN-UKETIMEH    PIC X(08).
                            13  SPA-GMN-YYKTIMEH    PIC X(08).
                            13  SPA-GMN-UKETIME     PIC X(06).
@@ -97,6 +99,8 @@
            03  FLG-UKETUKE         PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-HKNCOMBI            PIC 9(01).
+           03  FLG-PTRSIINF            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -147,6 +151,9 @@
       *
            03  WRK-ZZZ9            PIC ZZZ9.
       *
+           03  WRK-HKNCOMBI        PIC X(100).
+           03  WRK-HKNKBN-MEI      PIC X(02).
+      *
            03  WRK-UKETIME         PIC X(10).
       *    確認メッセージ
            03  WRK-U1IDMSG         PIC X(80).
@@ -182,6 +189,8 @@
                    07  SPA-WRK-SRYNAIYO    PIC X(02).
                    07  SPA-WRK-DRCD        PIC X(05).
                    07  SPA-WRK-DRCDMEI     PIC X(24).
+                   07  SPA-WRK-HKNCOMBI    PIC X(04).
+                   07  SPA-WRK-HKNCOMBIMEI PIC X(50).
                    07  SPA-WRK-UKETIMEH    PIC X(08).
                    07  SPA-WRK-YYKTIMEH    PIC X(08).
                    07  SPA-WRK-UKETIME     PIC X(06).
@@ -199,6 +208,7 @@
                    07  WORK-SORT-SRYKA        PIC X(02).
                    07  WORK-SORT-SRYNAIYO     PIC X(02).
                    07  WORK-SORT-DRCD         PIC X(05).
+                   07  WORK-SORT-HKNCOMBI     PIC X(04).
                    07  WORK-SORT-UKETIME      PIC X(06).
                    07  WORK-SORT-YYKTIME      PIC X(04).
                    07  WORK-SORT-KEY          PIC X(10).
@@ -230,6 +240,13 @@
            COPY  "CPSK1010.INC".
       *    状態情報
            COPY    "CPSK1018.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
+      *    患者労災保険情報
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
       *
       *
       *****************************************************************
@@ -815,6 +832,9 @@
            MOVE    SPA-GMN-DRCD   (SPA-NAI-SELFLG SPA-NAI-SELNUM)
                                        TO  SPA-DRCD
       *
+           MOVE    SPA-GMN-HKNCOMBI(SPA-NAI-SELFLG SPA-NAI-SELNUM)
+                                       TO  SPA-HKNCOMBINUM
+      *
            MOVE    SPA-GMN-UKEID  (SPA-NAI-SELFLG SPA-NAI-SELNUM)
                                        TO  SPA-P02-UKEID
       *
@@ -1021,6 +1041,8 @@
                                            TO  U01-SI-SRYNAIYOMEI(IDY)
                MOVE    SPA-GMN-DRCDMEI (IDX IDY)
                                            TO  U01-SI-DRCD (IDY)
+               MOVE    SPA-GMN-HKNCOMBIMEI (IDX IDY)
+                                           TO  U01-SI-HKNCOMBI (IDY)
                MOVE    SPA-GMN-UKETIMEH (IDX IDY)
                                            TO  U01-SI-UKETIME (IDY)
                MOVE    SPA-GMN-YYKTIMEH(IDX IDY)
@@ -1057,6 +1079,8 @@
                                            TO  U01-SZ-SRYNAIYOMEI(IDY)
                MOVE    SPA-GMN-DRCDMEI(IDX IDY)
                                            TO  U01-SZ-DRCD    (IDY)
+               MOVE    SPA-GMN-HKNCOMBIMEI (IDX IDY)
+                                           TO  U01-SZ-HKNCOMBI (IDY)
                MOVE    SPA-GMN-UKETIMEH(IDX IDY)
                                            TO  U01-SZ-UKETIME (IDY)
                MOVE    SPA-GMN-YYKTIMEH(IDX IDY)
@@ -1229,12 +1253,8 @@
                PERFORM 900-UKETUKE-READ-SEC
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "UKETUKE-KEY3"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
       *    ＳＰＡ領域へＳＯＲＴ編集
            INITIALIZE                  SPA-GMN-TBL
@@ -1267,6 +1287,12 @@
            MOVE    UKE-SRYNAIYO        TO  WORK-SORT-SRYNAIYO
                                                            (IDX1 IDX4)
            MOVE    UKE-DRCD            TO  WORK-SORT-DRCD  (IDX1 IDX4)
+      *
+           IF      UKE-HKNCOMBI        =   ZERO
+               MOVE    SPACE           TO  WORK-SORT-HKNCOMBI(IDX1 IDX4)
+           ELSE
+               MOVE    UKE-HKNCOMBI    TO  WORK-SORT-HKNCOMBI(IDX1 IDX4)
+           END-IF
            MOVE    UKE-UKETIME         TO  WORK-SORT-UKETIME(IDX1 IDX4)
       *    受付分
            IF      IDX1                =   1
@@ -1369,6 +1395,13 @@
                MOVE    SYS-1012-SRYNAIYODSP    TO  SPA-GMN-SRYNAIYOMEI
                                                           (IDX IDX2)
            END-IF
+      *    保険組合せ設定
+           IF      SPA-GMN-HKNCOMBI(IDX IDX2)  =   SPACE  OR  ZERO
+               MOVE    SPACE           TO  SPA-GMN-HKNCOMBIMEI(IDX IDX2)
+           ELSE
+               PERFORM 50031-HKNCOMBI-HEN-SEC
+               MOVE    WRK-HKNCOMBI    TO  SPA-GMN-HKNCOMBIMEI(IDX IDX2)
+           END-IF
            . 
       *
        5003-SPA-HEN-EXT.
@@ -1397,6 +1430,135 @@
       *
        50030-SPA-CONDITION-EXT.
            EXIT.
+      *****************************************************************
+      *    保険組合せ設定処理
+      *****************************************************************
+       50031-HKNCOMBI-HEN-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-HKNCOMBI
+      *
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    SPA-HOSPID          TO  COMB-HOSPID
+           MOVE    SPA-GMN-PTID(IDX IDX2)
+                                       TO  COMB-PTID
+           MOVE    SPA-GMN-HKNCOMBI(IDX IDX2)
+                                       TO  COMB-HKNCOMBINUM
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-HKNCOMBI-READ-SEC
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      COMB-DELKBN     NOT =   SPACE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+           IF      FLG-HKNCOMBI        =   ZERO
+               PERFORM 500311-HKNCOMBIMEI-HEN-SEC
+           END-IF
+      *
+           .
+       50031-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ名称編集処理
+      *****************************************************************
+       500311-HKNCOMBIMEI-HEN-SEC      SECTION.
+      *
+      *
+           STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+                   " "                     DELIMITED  BY  SIZE
+                   COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                   " "                     DELIMITED  BY  SIZE
+                   COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                   " "                     DELIMITED  BY  SIZE
+                   COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                   " "                     DELIMITED  BY  SIZE
+                   COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                         INTO              WRK-HKNCOMBI
+           END-STRING
+      *    主保険がない時
+           IF      COMB-SYU-TANSEIDONAME   =   SPACE
+               MOVE    SPACE               TO  WRK-HKNCOMBI
+               STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                         INTO              WRK-HKNCOMBI
+               END-STRING
+           END-IF
+      *
+      *    労災の時、コメントの追加
+           IF      COMB-HKNNUM         =   "971"  OR  "973"
+      *        患者保険情報検索
+               INITIALIZE                      PTRSIINF-REC
+               MOVE    SPA-HOSPID          TO  PTRSI-HOSPID
+               MOVE    SPA-PTID            TO  PTRSI-PTID
+               MOVE    COMB-HKNID          TO  PTRSI-HKNID
+               MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "PTRSIINF-KEY"     TO  ORC-DBPATH
+                   PERFORM 993-PTRSIINF-NEXT-SEC
+               ELSE
+                   INITIALIZE                      PTRSIINF-REC
+                   MOVE    1                   TO  FLG-PTRSIINF
+               END-IF
+               MOVE    "PTRSIINF-KEY"      TO  ORC-DBPATH
+               PERFORM 990-DBCLOSE-SEC
+      *
+               MOVE    SPACE               TO  WRK-HKNKBN-MEI
+               EVALUATE    PTRSI-HKNKBN
+                   WHEN    "1"
+                       MOVE    "短"        TO  WRK-HKNKBN-MEI
+                   WHEN    "2"
+                       MOVE    "傷"        TO  WRK-HKNKBN-MEI
+                   WHEN    "3"
+                       MOVE    "ア"        TO  WRK-HKNKBN-MEI
+               END-EVALUATE
+               IF      PTRSI-COMMENT       =   SPACE
+                   MOVE    SPACE               TO  WRK-HKNCOMBI
+                   STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+                           " "                     DELIMITED  BY  SIZE
+                           WRK-HKNKBN-MEI          DELIMITED  BY  SPACE
+                           INTO              WRK-HKNCOMBI
+                   END-STRING
+               ELSE
+                   MOVE    SPACE               TO  WRK-HKNCOMBI
+                   STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+                           " "                     DELIMITED  BY  SIZE
+                           WRK-HKNKBN-MEI          DELIMITED  BY  SPACE
+                           "（"                    DELIMITED  BY  SIZE
+                           PTRSI-COMMENT(1:24)     DELIMITED  BY  SPACE
+                           "）"                    DELIMITED  BY  SIZE
+                           INTO              WRK-HKNCOMBI
+                   END-STRING
+               END-IF
+           END-IF
+      *
+           .
+       500311-HKNCOMBIMEI-HEN-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    受付状況並べ替え
       *****************************************************************
@@ -1465,6 +1627,8 @@
                                        TO  SPA-GMN-SRYNAIYO(IDX IDX2)
            MOVE    WORK-SORT-DRCD   (IDX IDX3)
                                        TO  SPA-GMN-DRCD   (IDX IDX2)
+           MOVE    WORK-SORT-HKNCOMBI (IDX IDX3)
+                                       TO  SPA-GMN-HKNCOMBI (IDX IDX2)
            MOVE    WORK-SORT-UKETIME(IDX IDX3)
                                        TO  SPA-GMN-UKETIME(IDX IDX2)
            MOVE    WORK-SORT-YYKTIME(IDX IDX3)
@@ -1521,12 +1685,8 @@
                    MOVE    1               TO  FLG-UKETUKE
                END-IF
       *
-               MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
                MOVE    "UKETUKE-KEY3"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
+               PERFORM 990-DBCLOSE-SEC
                IF        FLG-UKETUKE       =   ZERO
                    MOVE    IDX                 TO  UKE-HYOJIJUN
                    MOVE    UKETUKE-REC         TO  MCPDATA-REC
@@ -1596,12 +1756,8 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        900-PTINF-READ-EXT.
@@ -1656,16 +1812,72 @@
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "SYSKANRI-KEY10"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           PERFORM 990-DBCLOSE-SEC
       *
            .
        910-SYSKANRI-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    保険組合せマスター読込
+      *****************************************************************
+       900-HKNCOMBI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+               MOVE    ZERO            TO  FLG-HKNCOMBI
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       900-HKNCOMBI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者労災保険情報読み込み
+      *****************************************************************
+       993-PTRSIINF-NEXT-SEC        SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTRSIINF-REC
+               MOVE    ZERO            TO  FLG-PTRSIINF
+           ELSE
+               INITIALIZE                  PTRSIINF-REC
+               MOVE    1               TO  FLG-PTRSIINF
+           END-IF
+      *
+           .
+       993-PTRSIINF-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************

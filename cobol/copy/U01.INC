@@ -38,6 +38,7 @@
                     07  U01-SI-SRYKAMEI  PIC X(6).
                     07  U01-SI-SRYNAIYOMEI  PIC X(8).
                     07  U01-SI-DRCD  PIC X(24).
+                    07  U01-SI-HKNCOMBI  PIC X(50).
                     07  U01-SI-UKETIME  PIC X(8).
                     07  U01-SI-YYKTIME  PIC X(8).
                   06  U01-SI-SELECT  PIC X       OCCURS  200 TIMES.
@@ -55,6 +56,7 @@
                     07  U01-SZ-SRYKAMEI  PIC X(6).
                     07  U01-SZ-SRYNAIYOMEI  PIC X(8).
                     07  U01-SZ-DRCD  PIC X(24).
+                    07  U01-SZ-HKNCOMBI  PIC X(50).
                     07  U01-SZ-UKETIME  PIC X(8).
                     07  U01-SZ-YYKTIME  PIC X(8).
                   06  U01-SZ-SELECT  PIC X       OCCURS  200 TIMES.

@@ -105,7 +105,8 @@ U02	{
 					value5	varchar(10);
 					value6	varchar(29);
 					value7	varchar(20);
-					value8	varchar(10);
+					value8	varchar(55);
+					value9	varchar(10);
 				}	[200];
 				select	bool[200];
 			};

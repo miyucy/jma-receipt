@@ -395,7 +395,7 @@
     <widget>
       <class>GtkButton</class>
       <name>BUP</name>
-      <x>960</x>
+      <x>988</x>
       <y>180</y>
       <width>24</width>
       <height>24</height>
@@ -413,8 +413,8 @@
     <widget>
       <class>GtkButton</class>
       <name>BDOWN</name>
-      <x>960</x>
-      <y>210</y>
+      <x>988</x>
+      <y>204</y>
       <width>24</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -445,12 +445,92 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label21</name>
+      <x>104</x>
+      <y>684</y>
+      <width>72</width>
+      <height>16</height>
+      <label>選択番号</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label11</name>
+      <x>100</x>
+      <y>456</y>
+      <width>72</width>
+      <height>16</height>
+      <label>選択番号</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaTimer</class>
+      <name>pandatimer1</name>
+      <x>888</x>
+      <y>696</y>
+      <width>21</width>
+      <height>21</height>
+      <signal>
+	<name>timeout</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 25 Jun 2003 06:37:26 GMT</last_modification_time>
+      </signal>
+      <duration>60</duration>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label77</name>
+      <x>12</x>
+      <y>36</y>
+      <width>49</width>
+      <height>16</height>
+      <label>受付</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label78</name>
+      <x>12</x>
+      <y>476</y>
+      <width>49</width>
+      <height>16</height>
+      <label>受診済</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow1</name>
-      <x>88</x>
-      <y>52</y>
-      <width>872</width>
-      <height>388</height>
+      <x>16</x>
+      <y>56</y>
+      <width>964</width>
+      <height>380</height>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
@@ -487,8 +567,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Wed, 23 Jan 2002 07:12:12 GMT</last_modification_time>
 	</signal>
-	<columns>10</columns>
-	<column_widths>38,82,159,80,54,72,69,96,64,56</column_widths>
+	<columns>11</columns>
+	<column_widths>36,82,160,80,54,72,69,96,106,54,54</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -601,7 +681,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label65</name>
-	  <label>受付時間</label>
+	  <label>保険組合せ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -614,6 +694,19 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label66</name>
+	  <label>受付時間</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label79</name>
 	  <label>予約時間</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
@@ -628,10 +721,10 @@
     <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow2</name>
-      <x>88</x>
-      <y>492</y>
-      <width>872</width>
-      <height>180</height>
+      <x>16</x>
+      <y>496</y>
+      <width>964</width>
+      <height>176</height>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
@@ -668,8 +761,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Wed, 23 Jan 2002 07:12:21 GMT</last_modification_time>
 	</signal>
-	<columns>10</columns>
-	<column_widths>39,82,159,80,59,65,57,100,76,64</column_widths>
+	<columns>11</columns>
+	<column_widths>36,82,160,80,54,72,69,96,106,54,54</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -782,7 +875,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label75</name>
-	  <label>受付時間</label>
+	  <label>保険組合せ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -795,6 +888,19 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label76</name>
+	  <label>受付時間</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label80</name>
 	  <label>会計時間</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
@@ -804,86 +910,6 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label21</name>
-      <x>104</x>
-      <y>684</y>
-      <width>72</width>
-      <height>16</height>
-      <label>選択番号</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label11</name>
-      <x>100</x>
-      <y>456</y>
-      <width>72</width>
-      <height>16</height>
-      <label>選択番号</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label78</name>
-      <x>16</x>
-      <y>500</y>
-      <width>49</width>
-      <height>16</height>
-      <label>受診済</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label77</name>
-      <x>20</x>
-      <y>56</y>
-      <width>49</width>
-      <height>16</height>
-      <label>受付</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkPandaTimer</class>
-      <name>pandatimer1</name>
-      <x>888</x>
-      <y>696</y>
-      <width>21</width>
-      <height>21</height>
-      <signal>
-	<name>timeout</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Wed, 25 Jun 2003 06:37:26 GMT</last_modification_time>
-      </signal>
-      <duration>60</duration>
     </widget>
   </widget>
 </widget>

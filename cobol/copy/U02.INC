@@ -98,6 +98,7 @@
                     07  U02-ULSRYKA       PIC X(10).
                     07  U02-ULDRNAME      PIC X(29).
                     07  U02-ULSRYNAIYO    PIC X(20).
+                    07  U02-ULHKNCOMBI    PIC X(55).
                     07  U02-ULRRKYMD      PIC X(10).
                   05  U02-UKETUKE-SELECT  PIC X       OCCURS  200 TIMES.
               03  U02-MIKAKUNINN-LIST.
