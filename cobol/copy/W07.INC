@@ -42,6 +42,11 @@
                       07  W07-VALUE   PIC X(30).
                     06  W07-HOUKATU-COUNT   PIC S9(9)   BINARY.
                     06  W07-HOUKATU-ITEM    PIC X(30)   OCCURS  2 TIMES.
+                  05  W07-SURYOZERO-COMB.
+                    06  W07-SURYOZERO.
+                      07  W07-VALUE   PIC X(22).
+                    06  W07-SURYOZERO-COUNT   PIC S9(9)   BINARY.
+                    06  W07-SURYOZERO-ITEM    PIC X(22)   OCCURS  2.
                 04  W07-TAGNAME1.
                   05  W07-TAGNAME1-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG2.
