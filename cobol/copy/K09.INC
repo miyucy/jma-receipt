@@ -18,9 +18,9 @@
         02  K09.
       *****  02  K09-FIXED1.
               03  K09-DOSEL.
-                04  K09-VALUE   PIC X(41).
+                04  K09-VALUE   PIC X(40).
               03  K09-SELNUM.
-                04  K09-VALUE   PIC X(4).
+                04  K09-VALUE   PIC X(3).
               03  K09-SCROLLEDWINDOW2.
                 04  K09-RRKLIST.
                   05  K09-COUNT1   PIC S9(9)   BINARY.

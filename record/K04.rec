@@ -1,42 +1,42 @@
 K04	{
 	fixed31	{
 		PTNUM	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		KANANAME	{
-			value	varchar(31);
+			value	varchar(30);
 		};
 		NAME	{
-			value	varchar(31);
+			value	varchar(30);
 		};
 		BIRTHDAY	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		SEX	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		SRYYM	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		SRYKA	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SANTEILIST	{
 			count	int;
 			item	{
-				value1	varchar(51);
+				value0	varchar(50);
+				value1	varchar(8);
 				value2	varchar(9);
-				value3	varchar(10);
-				value4	varchar(10);
+				value3	varchar(9);
+				value4	varchar(3);
 				value5	varchar(4);
-				value6	varchar(5);
-				value7	varchar(3);
-				value8	varchar(3);
+				value6	varchar(2);
+				value7	varchar(2);
 			}	[30];
 			select	bool[30];
 		};
 		NENREI	{
-			value	varchar(7);
+			value	varchar(6);
 		};
 	};
 };

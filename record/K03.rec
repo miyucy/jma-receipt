@@ -1,170 +1,170 @@
 K03	{
 	fixed3	{
 		PTNUM	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SRYYMD	{
-			value	varchar(15);
+			value	varchar(14);
 		};
 		KANANAME	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		NAME	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		SEX	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		BIRTHDAY	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		HKNCOMBI	{
-			value	varchar(61);
+			value	varchar(60);
 		};
 		FTNRATE	{
-			value	varchar(6);
+			value	varchar(5);
 		};
 		SRYKA	{
-			value	varchar(11);
-		};
-		HAKYMD	{
 			value	varchar(10);
 		};
+		HAKYMD	{
+			value	varchar(9);
+		};
 		DENPNUM	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SSUHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SJTHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SYCHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		CSYHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		TYKHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		ZTKHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SDOHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		KNSHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		FTNTOTAL	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		TOTALHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		KOHFTN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		ETCHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		GZUHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		JIHI1	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		JIHIGOK	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		YKZFTN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		JIHI5	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		JIHI4	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		JIHI3	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		JIHI2	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		RJNFTN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		CHOSEI	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		GOKSKY	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		MISYUZAN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SKYMONEY	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		JIHITAX	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		HKNTEKGAI	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		HKNTEKMONEY	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		NENREI	{
-			value	varchar(7);
+			value	varchar(6);
 		};
 		SUUTGMONEY	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SDOTGMONEY	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		ZTKTGMONEY	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		TYKTGMONEY	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		CSYTGMONEY	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SYCTGMONEY	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SJTGMONEY	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		KNSTGMONEY	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		GZUTGMONEY	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		ETCTGMONEY	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SYORIMEI	{
 		    style   varchar(20);
 			value	varchar(12);
 		};
 		ROUSYOSIN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		ROUSAISIN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		ROUSIDOU	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		ROUETC	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		JIHIMSG1	{
 			value	varchar(8);
@@ -182,50 +182,50 @@ K03	{
 			value	varchar(8);
 		};
 		JIHITAXGOK	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		JIHITAX1	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		JIHITAX2	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		JIHITAX3	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		JIHITAX4	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		JIHITAX5	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		NYUKIN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SYOHOPRTFLGCOMBO	{
 			SYOHOPRTFLG	{
-				value	varchar(19);
+				value	varchar(18);
 			};
 			count	int;
 			item	varchar(18)[3];
 		};
 		HAKFLGCOMBO	{
 			HAKFLG	{
-				value	varchar(19);
+				value	varchar(18);
 			};
 			count	int;
 			item	varchar(18)[2];
 		};
 		YAKJYOFLGCOMBO	{
 			YAKJYOFLG	{
-				value	varchar(19);
+				value	varchar(18);
 			};
 			count	int;
 			item	varchar(18)[4];
 		};
 		DRCDCOMBO	{
 			DRCD	{
-				value	varchar(21);
+				value	varchar(20);
 			};
 			count	int;
 			item	varchar(20)[10];

@@ -15,25 +15,33 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-         02  K04.
-            03  K04-FIXED31.
-              04  K04-PTNUM   PIC X(21).
-              04  K04-KANANAME    PIC X(31).
-              04  K04-NAME    PIC X(31).
-              04  K04-BIRTHDAY    PIC X(10).
-              04  K04-SEX PIC X(3).
-              04  K04-SRYYM   PIC X(10).
-              04  K04-SRYKA   PIC X(11).
-              04  K04-SANTEILIST.
-                05  K04-SANTEILIST-COUNT PIC S9(9) BINARY.
-                05  K04-SANTEILIST-ITEM  OCCURS  30 TIMES.
-                  06  K04-SANTEINAME  PIC X(51).
-                  06  K04-SRYKAMEI    PIC X(9).
-                  06  K04-SYOKAIYMD   PIC X(10).
-                  06  K04-SANTEIYMD   PIC X(10).
-                  06  K04-KAISU       PIC X(4).
-                  06  K04-YY          PIC X(5).
-                  06  K04-MM          PIC X(3).
-                  06  K04-DD          PIC X(3).
-                05  K04-SANTEILIST-SELECT PIC X OCCURS 30 TIMES.
-              04  K04-NENREI    PIC X(07).
+        02  K04.
+      **** 02  K04-FIXED31.
+              03  K04-PTNUM.
+                04  K04-VALUE   PIC X(20).
+              03  K04-KANANAME.
+                04  K04-VALUE   PIC X(30).
+              03  K04-NAME.
+                04  K04-VALUE   PIC X(30).
+              03  K04-BIRTHDAY.
+                04  K04-VALUE   PIC X(9).
+              03  K04-SEX.
+                04  K04-VALUE   PIC X(2).
+              03  K04-SRYYM.
+                04  K04-VALUE   PIC X(9).
+              03  K04-SRYKA.
+                04  K04-VALUE   PIC X(10).
+              03  K04-SANTEILIST.
+                04  K04-SANTEILIST-COUNT   PIC S9(9)   BINARY.
+                04  K04-SANTEILIST-ITEM        OCCURS  30 TIMES.
+                  06  K04-SANTEINAME  PIC X(50).
+                  06  K04-SRYKAMEI    PIC X(8).
+                  06  K04-SYOKAIYMD   PIC X(9).
+                  06  K04-SANTEIYMD   PIC X(9).
+                  06  K04-KAISU       PIC X(3).
+                  06  K04-YY          PIC X(4).
+                  06  K04-MM          PIC X(2).
+                  06  K04-DD          PIC X(2).
+                04  K04-SANTEILIST-SELECT  PIC X       OCCURS  30 TIMES.
+              03  K04-NENREI.
+                04  K04-VALUE   PIC X(6).

@@ -16,13 +16,13 @@
       * 113-8621, Japan.
       ********************************************************************
         02  K021.
-     ****  02  K021-FIXED10.
+      **** 02  K021-FIXED10.
               03  K021-SELNUM.
-                04  K021-VALUE  PIC X(4).
+                04  K021-VALUE  PIC X(3).
               03  K021-TOUMEI.
-                04  K021-VALUE  PIC X(101).
+                04  K021-VALUE  PIC X(100).
               03  K021-KNKMEI.
-                04  K021-VALUE  PIC X(101).
+                04  K021-VALUE  PIC X(100).
               03  K021-SCROLLEDWINDOW3.
                 04  K021-SAYOKIJYO.
                   05  K021-VALUE  PIC X(2000).
@@ -33,9 +33,9 @@
                 04  K021-MEDLIST.
                   05  K021-COUNT  PIC S9(9)   BINARY.
                   05  K021-ITEM       OCCURS  30 TIMES.
-                    06  K021-TSEQNO PIC X(3).
-                    06  K021-TTOUMEI PIC X(35).
-                    06  K021-TKNKMEI PIC X(35).
+                    06  K021-TSEQNO  PIC X(3).
+                    06  K021-TTOUMEI PIC X(40).
+                    06  K021-TKNKMEI PIC X(40).
                     06  K021-TTOUYMD PIC X(9).
                     06  K021-TSYOJYOUCD PIC X(7).
                   05  K021-SELECT PIC X       OCCURS  30 TIMES.

@@ -16,19 +16,20 @@
       * 113-8621, Japan.
       ********************************************************************
         02  K05.
-      ****  02  K05-FIXED2.
+      *** 02  K05-FIXED2.
               03  K05-SETCODE.
-                04  K05-VALUE   PIC X(7).
+                04  K05-VALUE   PIC X(6).
               03  K05-NAME.
-                04  K05-VALUE   PIC X(81).
+                04  K05-VALUE   PIC X(80).
               03  K05-SRYKBN    OCCURS  23.
-                04  K05-VALUE   PIC X(3).
+                04  K05-VALUE   PIC X(2).
               03  K05-INPUTCD   OCCURS  23.
-                04  K05-VALUE   PIC X(23).
+                04  K05-VALUE   PIC X(22).
               03  K05-MEISYO    OCCURS  23.
-                04  K05-VALUE   PIC X(63).
-              03  K05-SURYO     OCCURS  23.
-                04  K05-VALUE   PIC X(21).
+                04  K05-VALUE   PIC X(62).
+              03  K05-SURYO-G     OCCURS  23.
+                04  K05-SURYO-STYLE   PIC X(20).
+                04  K05-SURYO   PIC X(20).
               03  K05-SYORINAME.
                 04  K05-SYORINAME-STYLE   PIC X(20).
-                04  K05-SYORINAME-VALUE   PIC X(21).
+                04  K05-SYORINAME-VALUE   PIC X(20).

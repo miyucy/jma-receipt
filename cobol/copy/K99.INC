@@ -18,6 +18,6 @@
         02  K99.
       *      02  K99-FIXED1.
               03  K99-PED.
-                04  K99-VALUE   PIC X(21).
+                04  K99-VALUE   PIC X(20).
               03  K99-PIN.
-                04  K99-VALUE   PIC X(3).
+                04  K99-VALUE   PIC X(2).

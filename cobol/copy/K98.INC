@@ -16,12 +16,13 @@
       * 113-8621, Japan.
       ********************************************************************
         02  K98.
-     ***  02  K98-FIXED32.
+      ***  02  K98-FIXED32.
               03  K98-INPUT.
-                04  K98-VALUE   PIC X(23).
+                04  K98-VALUE   PIC X(22).
               03  K98-SENTAKU.
-                04  K98-VALUE   PIC X(31).
-              03  K98-SELNUM     PIC X(04)   OCCURS  5.
+                04  K98-VALUE   PIC X(30).
+              03  K98-SELNUM    OCCURS  5.
+                04  K98-VALUE   PIC X(3).
               03  K98-SCROLLEDWINDOW26.
                 04  K98-LIST.
                   05  K98-COUNT   PIC S9(9)   BINARY.
@@ -33,12 +34,11 @@
                   05  K98-SELECT  PIC X       OCCURS  200 TIMES.
               03  K98-JIINCOB.
                 04  K98-JIIN.
-                  05  K98-VALUE   PIC X(17).
+                  05  K98-VALUE   PIC X(16).
                 04  K98-JIIN-COUNT   PIC S9(9)   BINARY.
                 04  K98-JIIN-ITEM    PIC X(16)   OCCURS  10 TIMES.
               03  K98-USERCOB.
                 04  K98-USER.
-                  05  K98-VALUE   PIC X(11).
+                  05  K98-VALUE   PIC X(10).
                 04  K98-USER-COUNT   PIC S9(9)   BINARY.
                 04  K98-USER-ITEM    PIC X(10)   OCCURS  10 TIMES.
-

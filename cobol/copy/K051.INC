@@ -18,7 +18,7 @@
         02  K051.
       *      02  K051-FIXED1.
               03  K051-INPUTCD      OCCURS   5.
-                04  K051-VALUE  PIC X(21).
+                04  K051-VALUE  PIC X(20).
       *        03  K051-INPUTCD2.
       *          04  K051-VALUE  PIC X(7).
       *        03  K051-INPUTCD3.

@@ -1,7 +1,7 @@
 K10	{
 	fixed1	{
 		SELNUM	{
-			value	varchar(4);
+			value	varchar(3);
 		};
 		scrolledwindow1	{
 			LIST	{

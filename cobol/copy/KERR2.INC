@@ -18,8 +18,8 @@
         02  KERR2.
       *****     02  KERR2-FIXED1.
               03  KERR2-ERRCODE.
-                04  KERR2-VALUE PIC X(11).
+                04  KERR2-VALUE PIC X(10).
               03  KERR2-ERRMSG.
-                04  KERR2-VALUE PIC X(81).
+                04  KERR2-VALUE PIC X(80).
               03  KERR2-ERRMSG2.
-                04  KERR2-VALUE PIC X(81).
+                04  KERR2-VALUE PIC X(80).

@@ -1,10 +1,10 @@
 K09	{
 	fixed1	{
 		DOSEL	{
-			value	varchar(41);
+			value	varchar(40);
 		};
 		SELNUM	{
-			value	varchar(4);
+			value	varchar(3);
 		};
 		scrolledwindow2	{
 			RRKLIST	{

@@ -17,5 +17,5 @@
       ********************************************************************
          02  KERR.
             03  KERR-FIXED1.
-              04  KERR-ERRCODE    PIC X(11).
-              04  KERR-ERRMSG PIC X(81).
+              04  KERR-ERRCODE    PIC X(10).
+              04  KERR-ERRMSG PIC X(80).

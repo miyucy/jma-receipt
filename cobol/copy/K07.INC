@@ -18,7 +18,7 @@
         02  K07.
       ****   02  K07-FIXED32.
               03  K07-SELNUM.
-                04  K07-VALUE   PIC X(4).
+                04  K07-VALUE   PIC X(3).
               03  K07-SCROLLEDWINDOW26.
                 04  K07-LIST.
                   05  K07-COUNT   PIC S9(9)   BINARY.

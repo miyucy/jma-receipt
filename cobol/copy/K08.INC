@@ -16,63 +16,65 @@
       * 113-8621, Japan.
       ********************************************************************
         02  K08.
-    ****** 02  K08-FIXED1.
+      *** 02  K08-FIXED1.
               03  K08-PTNUM.
-                04  K08-VALUE   PIC X(21).
+                04  K08-VALUE   PIC X(20).
               03  K08-KANANAME.
-                04  K08-VALUE   PIC X(51).
+                04  K08-VALUE   PIC X(50).
               03  K08-NAME.
-                04  K08-VALUE   PIC X(51).
+                04  K08-VALUE   PIC X(50).
               03  K08-SEX.
-                04  K08-VALUE   PIC X(3).
+                04  K08-VALUE   PIC X(2).
               03  K08-HKNKUMI.
-                04  K08-VALUE   PIC X(61).
+                04  K08-VALUE   PIC X(60).
               03  K08-RATE.
-                04  K08-VALUE   PIC X(7).
+                04  K08-VALUE   PIC X(6).
               03  K08-LASTYMD.
-                04  K08-VALUE   PIC X(10).
+                04  K08-VALUE   PIC X(9).
               03  K08-SYOSINYMD.
-                04  K08-VALUE   PIC X(10).
+                04  K08-VALUE   PIC X(9).
               03  K08-MISYUMONEY.
-                04  K08-VALUE   PIC X(16).
-              03  K08-SRYKA.
-                04  K08-VALUE   PIC X(11).
-              03  K08-SRYYMD.
                 04  K08-VALUE   PIC X(15).
-              03  K08-GOKEITEN.
-                04  K08-VALUE   PIC X(16).
-              03  K08-ZAITENTOTAL.
-                04  K08-VALUE   PIC X(17).
-              03  K08-BIRTHDAY.
+              03  K08-SRYKA.
                 04  K08-VALUE   PIC X(10).
+              03  K08-SRYYMD.
+                04  K08-VALUE   PIC X(14).
+              03  K08-GOKEITEN.
+                04  K08-VALUE   PIC X(15).
+              03  K08-ZAITENTOTAL.
+                04  K08-VALUE   PIC X(16).
+              03  K08-BIRTHDAY.
+                04  K08-VALUE   PIC X(9).
               03  K08-NENREI.
-                04  K08-VALUE   PIC X(7).
+                04  K08-VALUE   PIC X(6).
               03  K08-SYORIMEI.
                 04  K08-SYORIMEI-STYLE   PIC X(20).
                 04  K08-SYORIMEI-VALUE   PIC X(12).
               03  K08-SSUHKNTEN.
-                04  K08-VALUE   PIC X(11).
+                04  K08-VALUE   PIC X(10).
               03  K08-SDOHKNTEN.
-                04  K08-VALUE   PIC X(11).
+                04  K08-VALUE   PIC X(10).
               03  K08-ZTKHKNTEN.
-                04  K08-VALUE   PIC X(11).
+                04  K08-VALUE   PIC X(10).
               03  K08-TYKHKNTEN.
-                04  K08-VALUE   PIC X(11).
+                04  K08-VALUE   PIC X(10).
               03  K08-CSYHKNTEN.
-                04  K08-VALUE   PIC X(11).
+                04  K08-VALUE   PIC X(10).
               03  K08-SYCHKNTEN.
-                04  K08-VALUE   PIC X(11).
+                04  K08-VALUE   PIC X(10).
               03  K08-SJTHKNTEN.
-                04  K08-VALUE   PIC X(11).
+                04  K08-VALUE   PIC X(10).
               03  K08-KNSHKNTEN.
-                04  K08-VALUE   PIC X(11).
+                04  K08-VALUE   PIC X(10).
               03  K08-GZUHKNTEN.
-                04  K08-VALUE   PIC X(11).
+                04  K08-VALUE   PIC X(10).
               03  K08-ETCHKNTEN.
-                04  K08-VALUE   PIC X(11).
+                04  K08-VALUE   PIC X(10).
               03  K08-SELNUM    PIC S9(3)  OCCURS  10.
               03  K08-SCROLLEDWINDOW1.
                 04  K08-MEILIST.
+                  05  K08-FIXED2.
+                    06  FILLER  PIC S9(9)   BINARY.
                   05  K08-COUNT   PIC S9(9)   BINARY.
                   05  K08-ITEM        OCCURS  300 TIMES.
                     06  K08-BANGO     PIC X(3).

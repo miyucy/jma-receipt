@@ -1,19 +1,19 @@
 K06	{
 	fixed5	{
 		PTNUM	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		SRYYM	{
-			value	varchar(8);
+			value	varchar(7);
 		};
 		KANANAME	{
-			value	varchar(31);
+			value	varchar(30);
 		};
 		MEISYO	{
-			value	varchar(71);
+			value	varchar(70);
 		};
 		SEX	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		DAY01	{
 			value	number(2);
@@ -109,19 +109,19 @@ K06	{
 			value	number(2);
 		};
 		SRYCD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		NYUGAIKBN	{
 			value	number(1);
 		};
 		FSANTEIYMD	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		NAME	{
-			value	varchar(31);
+			value	varchar(30);
 		};
 		BIRTHDAY	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		SELNUM	{
 			value	number(3);
@@ -133,7 +133,7 @@ K06	{
 			value	number(3);
 		};
 		NENREI	{
-			value	varchar(7);
+			value	varchar(6);
 		};
 		SRYKA	{
 			value	number(2);
@@ -142,15 +142,15 @@ K06	{
 			SANTEILST	{
 				count	int;
 				item	{
-					value1	varchar(4);
-					value2	varchar(10);
-					value3	varchar(3);
-					value4	varchar(11);
-					value5	varchar(20);
-					value6	varchar(60);
-					value7	varchar(10);
-					value8	varchar(3);
-					value9	varchar(4);
+					value0	varchar(4);
+					value1	varchar(9);
+					value2	varchar(2);
+					value3	varchar(10);
+					value4	varchar(20);
+					value5	varchar(60);
+					value6	varchar(10);
+					value7	varchar(2);
+					value8	varchar(4);
 				}	[100];
 				select	bool[100];
 			};
@@ -159,10 +159,10 @@ K06	{
 			value	number(4);
 		};
 		SRYKAMEI	{
-			value	varchar(8);
+			value	varchar(10);
 		};
 		HKNCOMBIMEI	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 	};
 };

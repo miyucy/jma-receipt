@@ -16,17 +16,17 @@
       * 113-8621, Japan.
       ********************************************************************
         02  K023.
-      ******02  K023-FIXED10.
+      ****  02  K021-FIXED10.
               03  K023-SRYCD        OCCURS   20.
-                04  K023-VALUE  PIC X(10).
+                04  K023-VALUE  PIC X(09).
               03  K023-SRYCDMEI     OCCURS   20.
-                04  K023-VALUE  PIC X(61).
+                04  K023-VALUE  PIC X(60).
               03  K023-INPUTCD1     OCCURS   20.
-                04  K023-VALUE  PIC X(21).
+                04  K023-VALUE  PIC X(20).
               03  K023-INPUTCD2     OCCURS   20.
-                04  K023-VALUE  PIC X(21).
+                04  K023-VALUE  PIC X(20).
               03  K023-MIDASI.
                 04  K023-MIDASI-STYLE  PIC X(20).
                 04  K023-MIDASI-VALUE  PIC X(12).
               03  K023-INPUTCD3     OCCURS  20.
-                04  K023-VALUE  PIC X(21).
+                04  K023-VALUE  PIC X(20).

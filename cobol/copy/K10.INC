@@ -18,7 +18,7 @@
         02  K10.
       ****  02  K10-FIXED1.
               03  K10-SELNUM.
-                04  K10-VALUE   PIC X(4).
+                04  K10-VALUE   PIC X(3).
               03  K10-SCROLLEDWINDOW1.
                 04  K10-LIST.
                   05  K10-COUNT   PIC S9(9)   BINARY.

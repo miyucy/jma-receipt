@@ -1,83 +1,83 @@
 K08	{
 	fixed1	{
 		PTNUM	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		KANANAME	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		NAME	{
-			value	varchar(51);
+			value	varchar(50);
 		};
 		SEX	{
-			value	varchar(3);
+			value	varchar(2);
 		};
 		HKNKUMI	{
-			value	varchar(61);
+			value	varchar(60);
 		};
 		RATE	{
-			value	varchar(7);
+			value	varchar(6);
 		};
 		LASTYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		SYOSINYMD	{
-			value	varchar(10);
+			value	varchar(9);
 		};
 		MISYUMONEY	{
-			value	varchar(16);
-		};
-		SRYKA	{
-			value	varchar(11);
-		};
-		SRYYMD	{
 			value	varchar(15);
 		};
-		GOKEITEN	{
-			value	varchar(16);
-		};
-		ZAITENTOTAL	{
-			value	varchar(17);
-		};
-		BIRTHDAY	{
+		SRYKA	{
 			value	varchar(10);
 		};
+		SRYYMD	{
+			value	varchar(14);
+		};
+		GOKEITEN	{
+			value	varchar(15);
+		};
+		ZAITENTOTAL	{
+			value	varchar(16);
+		};
+		BIRTHDAY	{
+			value	varchar(9);
+		};
 		NENREI	{
-			value	varchar(7);
+			value	varchar(6);
 		};
 		SYORIMEI	{
 		    style   varchar(20);
 			value	varchar(12);
 		};
 		SSUHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SDOHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		ZTKHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		TYKHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		CSYHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SYCHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SJTHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		KNSHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		GZUHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		ETCHKNTEN	{
-			value	varchar(11);
+			value	varchar(10);
 		};
 		SELNUM01	{
 			value	number(3);
@@ -111,11 +111,13 @@ K08	{
 		};
 		scrolledwindow1	{
 			MEILIST	{
+				fixed2	{
+				};
 				count	int;
 				item	{
+					value0	varchar(4);
 					value1	varchar(3);
-					value2	varchar(4);
-					value3	varchar(150);
+					value2	varchar(150);
 				}	[300];
 				select	bool[300];
 			};
