@@ -174,6 +174,7 @@
            03  FLG-WRKRECE05       PIC 9(01).
            03  FLG-JINZOU-COMMENT  PIC 9(01).
            03  FLG-SHIDOU-COMMENT  PIC 9(01).
+           03  FLG-SANTEI          PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -410,6 +411,10 @@
       *    ¿ÇÎÅ¹Ô°Ù
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
+      *
+      *    »»ÄêÍúÎò
+       01  SANTEI-REC.
+           COPY    "CPSANTEI.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
@@ -1439,6 +1444,50 @@
                                      ORCMCPAREA
                                      MCPDATA-REC
       *
+      *
+      ***  IF  RECE04-SRYYM       >=  "200210"
+      *
+      *      »»ÄêÍúÎò¸¡º÷
+             INITIALIZE                  SANTEI-REC
+             MOVE    RECE04-HOSPID       TO  SANTEI-HOSPID
+             MOVE    RECE04-PTID         TO  SANTEI-PTID
+             MOVE    RECE04-SRYYM        TO  SANTEI-SRYYM
+             MOVE    "113006510"         TO  SANTEI-SRYCD
+             MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+             MOVE    ZERO                TO  SANTEI-SRYKA
+             MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+             MOVE    SANTEI-REC          TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"         USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
+             IF      MCP-RC              =   ZERO
+                  MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+                  PERFORM        SANTEI-READ-SEC
+                  PERFORM   UNTIL   FLG-SANTEI  =   1
+      *
+                     IF     SANTEI-FSANTEIYMD(1:6)  =  RECE04-SRYYM   
+                           CONTINUE
+                     ELSE
+                           MOVE    ZERO    TO      FLG-SHIDOU-COMMENT
+                     END-IF
+      * 
+                     MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+                     PERFORM        SANTEI-READ-SEC
+                  END-PERFORM
+             END-IF
+      *
+             MOVE    "DBCLOSE"           TO  MCP-FUNC
+             MOVE    "SANTEI-KEY"        TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"         USING
+                                         MCPAREA
+                                         ORCMCPAREA
+                                         MCPDATA-REC
+      *
+      ***  END-IF
+      *
            .
        2001-SHIDOU-HANTEI-EXT.
            EXIT.
@@ -2085,6 +2134,28 @@
       *
            .
        TENSU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    »»ÄêÎò¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       SANTEI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SANTEI-REC
+               MOVE    ZERO                TO  FLG-SANTEI
+           ELSE
+               INITIALIZE                      SANTEI-REC
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           .
+       SANTEI-READ-EXT.
            EXIT.
       *
       *****************************************************************
