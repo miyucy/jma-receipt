@@ -106,8 +106,11 @@
       *  02.07.16    NACL-藤原    03/06/03  未コード化傷病名コードのとき
       *                                     病名よりコード検索をする
       *                                     病名からのコード検索方法の修正
-      *  02.07.18    NACL-藤原    03/07/03  主病名編集フラグにより主病名
+      *  02.07.17    NACL-藤原    03/07/03  主病名編集フラグにより主病名
       *                                     のチェックを行う
+      *  02.07.18    NACL-藤原    03/07/07  病名コード入力時、病名が変更
+      *                                     なければ疑い・慢性区分の変更
+      *                                     をしないように修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2660,12 +2663,13 @@
                                   INTO          WRK-BYOMEI
                    END-STRING
                END-IF    
-           END-PERFORM    
-           MOVE    WRK-BYOMEI          TO  SPA-GMN-C02-BYOMEI
+           END-PERFORM
+      **** MOVE    WRK-BYOMEI          TO  SPA-GMN-C02-BYOMEI
       *
       *    疑いフラグ編集
-           MOVE    SPACE               TO  SPA-GMN-C02-UTAGAIFLG-G 
-           PERFORM VARYING IDX FROM    1   BY  1
+           IF      WRK-BYOMEI      NOT =   SPA-GMN-C02-BYOMEI
+             MOVE    SPACE               TO  SPA-GMN-C02-UTAGAIFLG-G 
+             PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       6
                    OR      SPA-GMN-C02-UTAGAIFLG   =   "3"
                EVALUATE    SPA-NAI-C02-UTAGAIFLG   (IDX)
@@ -2686,26 +2690,30 @@
                    WHEN    "3"
                        MOVE    "3"     TO  SPA-GMN-C02-UTAGAIFLG
                 END-EVALUATE
-           END-PERFORM
-           MOVE    SPA-GMN-C02-UTAGAIFLG   TO  WRK-KBN
-           PERFORM 5001-UTAGAIFLG-HENSYU-SEC
-           MOVE    WRK-KBNMEI              TO  SPA-GMN-C02-UTAGAIFLGMEI
+             END-PERFORM
+             MOVE    SPA-GMN-C02-UTAGAIFLG
+                                           TO  WRK-KBN
+             PERFORM 5001-UTAGAIFLG-HENSYU-SEC
+             MOVE    WRK-KBNMEI            TO  SPA-GMN-C02-UTAGAIFLGMEI
       *            
       *    慢性区分編集
-           MOVE    SPACE               TO  SPA-GMN-C02-MANSEIKBN-G  
-           PERFORM VARYING IDX FROM    1   BY  1
+             MOVE    SPACE               TO  SPA-GMN-C02-MANSEIKBN-G  
+             PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       6
                IF      SPA-NAI-C02-TOKSKNCD (IDX)   NOT =   ZERO
                    MOVE    SPA-NAI-C02-TOKSKNCD (IDX)
                                            TO  SPA-GMN-C02-MANSEIKBN
                    MOVE    6               TO  IDX
                END-IF   
-           END-PERFORM
+             END-PERFORM
       *     
-           MOVE    SPA-GMN-C02-MANSEIKBN
+             MOVE    SPA-GMN-C02-MANSEIKBN
                                        TO  WRK-KBN
-           PERFORM 5001-MANSEIKBN-HENSYU-SEC
-           MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-MANSEIKBNMEI
+             PERFORM 5001-MANSEIKBN-HENSYU-SEC
+             MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-MANSEIKBNMEI
+           END-IF
+      *
+           MOVE    WRK-BYOMEI          TO  SPA-GMN-C02-BYOMEI
       *
       *    病名コードエラーの時以下の処理はしない
            IF      SPA-ERRCD            NOT =   SPACE     
