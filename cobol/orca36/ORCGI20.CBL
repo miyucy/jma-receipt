@@ -2622,12 +2622,16 @@
            WHEN    "1"
                STRING  " ORDER BY BRMNUM,KANANAME,PTNUM"
                        DELIMITED  BY  SIZE
+                       ",NYUINYMD,TAIINYMD,RRKNUM"
+                       DELIMITED  BY  SIZE
                INTO    WRK-SQL
                WITH    POINTER WRK-SQL-PNT
                END-STRING
       *
            WHEN    "2"
                STRING  " ORDER BY PTNUM"
+                       DELIMITED  BY  SIZE
+                       ",NYUINYMD,TAIINYMD,RRKNUM"
                        DELIMITED  BY  SIZE
                INTO    WRK-SQL
                WITH    POINTER WRK-SQL-PNT
@@ -2636,12 +2640,16 @@
            WHEN    "3"
                STRING  " ORDER BY KANANAME,PTNUM"
                        DELIMITED  BY  SIZE
+                       ",NYUINYMD,TAIINYMD,RRKNUM"
+                       DELIMITED  BY  SIZE
                INTO    WRK-SQL
                WITH    POINTER WRK-SQL-PNT
                END-STRING
       *
            WHEN    OTHER
                STRING  " ORDER BY BRMNUM,KANANAME,PTNUM"
+                       DELIMITED  BY  SIZE
+                       ",NYUINYMD,TAIINYMD,RRKNUM"
                        DELIMITED  BY  SIZE
                INTO    WRK-SQL
                WITH    POINTER WRK-SQL-PNT
