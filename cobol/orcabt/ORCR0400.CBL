@@ -98,6 +98,7 @@
            03  FLG-PTRSIINF                            PIC 9(01).
            03  FLG-PTINF                               PIC 9(01).
            03  FLG-RECE07                              PIC 9(01).
+           03  FLG-SET                                 PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -111,6 +112,7 @@
            03  IDY                                     PIC 9(03). 
            03  IDZ                                     PIC 9(03).
            03  TBL-MAX                                 PIC 9(03).
+           03  SYSKAN-IDX                              PIC 9(03).
       *
        01  KEY-AREA                            VALUE   LOW-VALUE.
            03  KEY-NEW.
@@ -121,10 +123,15 @@
                05  KEY-O-PTID                          PIC 9(10).
                05  KEY-O-HKNCOMBI                      PIC 9(04).
                05  KEY-O-SRYKA                         PIC X(02).
-024000*
-024100*    °ì»þÎÎ°è
       *
-024200 01  WRK-AREA.
+      *    ¥·¥¹¥«¥ó¡Ê£±£°£°£±¡ËÂàÈòÍÑÎÎ°è
+       01  TBL-SYS1001-T.
+           03  TBL-SYS1001-OCC                         OCCURS  10.
+               05  TBL-SYS1001                         PIC X(610).
+      *
+      *    °ì»þÎÎ°è
+      *
+       01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-SRYYM                      PIC  X(06).
                05  WRK-PARA-TERMID                     PIC  X(16).
@@ -133,6 +140,8 @@
                05  WRK-PARA-RECEKBN                    PIC  X(01).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
+      *
+           03  WRK-SYS-SRYYMD          PIC X(08).
       *
            03  WRK-RECEERR             PIC X(200). 
       *
@@ -291,7 +300,6 @@
       *
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
-      *
       *       °åÎÅµ¡´Ø£É£ÄÊÔ½¸
               INITIALIZE                  SYS-1001-REC
               MOVE    "1001"              TO  SYS-1001-KANRICD
@@ -307,7 +315,46 @@
                                               TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
               END-IF
+           ELSE
+              MOVE     ZERO               TO  SYSKAN-IDX
+              MOVE     SPACE              TO  TBL-SYS1001-T
+              INITIALIZE                      TBL-SYS1001-T
       *
+              INITIALIZE                      SYS-1001-REC
+              MOVE    "1001"              TO  SYS-1001-KANRICD
+              MOVE    "*"                 TO  SYS-1001-KBNCD
+              MOVE    SYS-1001-REC        TO  MCPDATA-REC
+              MOVE    "DBSELECT"          TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"             USING
+                                              MCPAREA
+                                              ORCMCPAREA
+                                              MCPDATA-REC
+              IF      MCP-RC              =   ZERO
+                  MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                  PERFORM 900-SYSKANRI-READ-SEC
+                  PERFORM  UNTIL   FLG-SYSKANRI  =    1
+      *
+                    MOVE    MCPDATA-REC   TO  SYS-1001-REC
+                    ADD     1             TO  SYSKAN-IDX
+                    MOVE    SYS-1001-REC  TO  TBL-SYS1001(SYSKAN-IDX)
+      *
+                    MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                    PERFORM 900-SYSKANRI-READ-SEC
+      *
+                  END-PERFORM
+              ELSE
+                  MOVE    "°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡£"
+                                            TO  WRK-RECEERR
+                  PERFORM 500-ERR-HENSYU-SEC
+              END-IF
+      *
+              MOVE    "DBCLOSE"           TO  MCP-FUNC
+              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+              CALL    "ORCMCPSUB"          USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
            END-IF
       *
            OPEN    OUTPUT              RECE401-FILE
@@ -750,20 +797,26 @@
            MOVE    MCPDATA-REC         TO  SYS-2002-REC
       *
       *    °åÎÅµ¡´Ø£É£ÄÊÔ½¸
-           INITIALIZE                  SYS-1001-REC
-           MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    SYS-2002-SRYYM      TO  ORC-DBYMD (1:6)
-           MOVE    "01"                TO  ORC-DBYMD (7:2)
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1001-REC
-           ELSE
+           MOVE  ZERO           TO  FLG-SET
+           MOVE  SYS-2002-SRYYM TO  WRK-SYS-SRYYMD(1:6)
+           MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
+           PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                    UNTIL  ( SYSKAN-IDX              >  10   )
+                     OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                     OR    ( FLG-SET                 =   1   )
+      *
+                MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
+                IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
+                    MOVE     1       TO    FLG-SET
+                END-IF
+      *
+           END-PERFORM
+           IF     FLG-SET  =  ZERO
                MOVE    "°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡£"
-                                           TO  WRK-RECEERR
+                                       TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
-               GO     TO     20021-KOBETU-HENSYU-EXT
+               GO       TO      20021-KOBETU-HENSYU-EXT
            END-IF
       *
       *??     IF      SYS-2002-RECEKBN    =   "1"
