@@ -190,7 +190,7 @@
       *        カーソルのクリア
                MOVE    SPACE           TO  SPA-COM-CUR    (IDX)
       *        診療区分、種別のクリア
-               IF      SPA-COM-INPUTCD(IDX)(1:1)   NOT =   "1"
+               IF      SPA-COM-INPUTCD(IDX)(1:1)   NOT =   "1" 
                    MOVE    SPACE           TO  SPA-COM-SRYKBN    (IDX)
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN (IDX)
                ELSE
@@ -866,6 +866,7 @@
                END-IF
                MOVE    1               TO  FLG-SYUGI
            END-IF
+      *
       *    診区　変更時
            IF     (IDX                 >   1         )  AND
                   (SPA-COM-SRYKBN (IDX - 1)

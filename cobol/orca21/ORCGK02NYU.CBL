@@ -2182,6 +2182,7 @@
       *
       *    老人判定
            PERFORM 3102-ROUJIN-SET-SEC
+      *
       *    保険算定年齢チェック等
            INITIALIZE                  ORCSAGECHKAREA
            MOVE    SPA-HOSPID          TO  AGECHK-HOSPID
@@ -3493,7 +3494,6 @@
            MOVE    SPACE               TO  SPA-SRYYMDW(10:)
            MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
            MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
-      *
       *    受付一覧からの時、ドクターを編集する
            IF      WRK-MOTOPG          =   "U01"
                MOVE    WRK-SPA-DRCD    TO  SPA-DRCD
@@ -3960,6 +3960,7 @@
        41012-HKNCOMBI-CHANGE-SEC         SECTION.
       *
            MOVE    SPA-NAI-ROUJIN      TO  WRK-ROUJIN
+      *
       *    保険組合
            PERFORM 3101-HKNCOMBI-HEN-SEC
            IF      SPA-ERRCD           NOT =   SPACE
@@ -3970,6 +3971,7 @@
            IF      SPA-NAI-ROUJIN  NOT =   WRK-ROUJIN
                PERFORM 410121-ROUJINCHK-SEC
            END-IF
+      *
       *    保険区分が変更された時、ワーク診療行為を判定する
            PERFORM 410121-HKNCOMBI-SAI-SEC
       *
@@ -11446,6 +11448,9 @@
            END-PERFORM
            MOVE    SPA-TABOO-MAX       TO  K02N-TABOO-COUNT
       *
+      *    非活性処理
+           PERFORM 510-GSRAUTH-SEC
+      *
            IF      FLG-END             =   ZERO
       *         カーソルセット
                 PERFORM 5001-MAPCUR-SEC
@@ -11453,6 +11458,48 @@
            .
        500-GMNHEN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    非活性処理
+      *****************************************************************
+       510-GSRAUTH-SEC             SECTION.
+      *
+      *業務処理権限設定
+      *    受付
+           IF      SPA-GSRAUTH-11      =   "1"
+               MOVE    WIDGET-NORMAL       TO  K02N-B04S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B04S-STATE
+           END-IF
+      *    患者登録
+           IF      SPA-GSRAUTH-12      =   "1"
+               MOVE    WIDGET-NORMAL       TO  K02N-B05S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B05S-STATE
+           END-IF
+      *    病名登録
+           IF      SPA-GSRAUTH-22      =   "1"
+               MOVE    WIDGET-NORMAL       TO  K02N-B07S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B07S-STATE
+           END-IF
+      *    収納登録
+           IF      SPA-GSRAUTH-23      =   "1"
+               MOVE    WIDGET-NORMAL       TO  K02N-B08S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B08S-STATE
+           END-IF
+      *    会計照会
+           IF      SPA-GSRAUTH-24      =   "1"
+               MOVE    WIDGET-NORMAL       TO  K02N-B09S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K02N-B09S-STATE
+           END-IF
+      *
+           .
+       51O-GSRAUTH-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    画面数量項目編集処理

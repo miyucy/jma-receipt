@@ -157,7 +157,7 @@
       *
            03  WRK-ERRCD           PIC X(04).
       *
-           03  WRK-UKEID           PIC 9(04).
+           03  WRK-UKEID           PIC 9(05).
            03  WRK-HKN-CNT         PIC 9(04).
            03  WRK-KOH-CNT         PIC 9(04).
       *
@@ -740,6 +740,10 @@
                PERFORM 930-UKETUKE-READ-SEC
                IF      FLG-UKETUKE         =   ZERO
                    ADD     1                   TO  UKE-PTID
+                   IF      UKE-PTID            >   99999
+                      MOVE    "9001"              TO  SPA-ERRCD
+                      GO      TO      240-UKETUKE-SYORI-EXT
+                   END-IF
                    MOVE    UKE-PTID            TO  WRK-UKEID
       *
                    MOVE    UKETUKE-REC         TO  MCPDATA-REC
@@ -752,7 +756,7 @@
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "P029 UKETUKE UPD ERR:" MCP-RC 
                                ",KEY:"  UKE-KEY
-                       MOVE    "0030"          TO  SPA-ERRCD
+                       MOVE    "9002"          TO  SPA-ERRCD
                    END-IF
                ELSE
                    INITIALIZE                  UKETUKE-REC
@@ -772,7 +776,7 @@
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "P029 UKETUKE INS ERR:" MCP-RC 
                                ",KEY:"  UKE-KEY
-                       MOVE    "0030"          TO  SPA-ERRCD
+                       MOVE    "9002"          TO  SPA-ERRCD
                    END-IF
                END-IF
       *
@@ -791,7 +795,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 UKETUKE INS ERR:" MCP-RC
                                ",KEY:"  UKE-KEY
-                   MOVE    "0030"          TO  SPA-ERRCD
+                   MOVE    "9002"          TO  SPA-ERRCD
                END-IF
            ELSE
                MOVE    PARA-DATA-REC       TO  UKETUKE-REC
@@ -822,7 +826,7 @@
                    IF      MCP-RC          NOT =   ZERO
                        DISPLAY "P029 UKETUKE UPD ERR:" MCP-RC
                                ",KEY:"  UKE-KEY
-                       MOVE    "0030"          TO  SPA-ERRCD
+                       MOVE    "9002"          TO  SPA-ERRCD
                    END-IF
                 END-IF
            END-IF
@@ -929,7 +933,7 @@
                IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 HKNCOMBI INS ERR:" MCP-RC
                            ",KEY:" COMB-KEY
-                   MOVE    "0030"          TO  SPA-ERRCD
+                   MOVE    "9003"          TO  SPA-ERRCD
                END-IF
            ELSE
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
@@ -1411,11 +1415,11 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
-      *!       IF      MCP-RC          NOT =   ZERO
+               IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTKOHFTN INS ERR:" MCP-RC
                                    ",KEY:" PTKOHFTN-KEY
-      *!           MOVE    "9000"              TO  SPA-ERRCD
-      *!       END-IF
+                   MOVE    "9000"              TO  SPA-ERRCD
+               END-IF
            ELSE
                MOVE    PARA-DATA-REC       TO  PTKOHFTN-REC
       *        ¹¹¿·
@@ -1426,11 +1430,11 @@
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
-      *!       IF      MCP-RC          NOT =   ZERO
+               IF      MCP-RC          NOT =   ZERO
                    DISPLAY "P029 PTKOHFTN UPD ERR:" MCP-RC
                                    ",KEY:" PTKOHFTN-KEY
-      *!           MOVE    "9000"              TO  SPA-ERRCD
-      *!       END-IF
+                   MOVE    "9000"              TO  SPA-ERRCD
+               END-IF
            END-IF
            .
        300-PTKOHFTN-SYORI-EXT.

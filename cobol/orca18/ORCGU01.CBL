@@ -59,7 +59,7 @@
                05  SPA-GMN-ICHIRAN.
                07  SPA-GMN-TBL.
                    09  SPA-GMN-TBL2      OCCURS  2.
-                       11  SPA-GMN-TBLREC    OCCURS  100.
+                       11  SPA-GMN-TBLREC    OCCURS  200.
                            13  SPA-GMN-NO          PIC 9(04).
                            13  SPA-GMN-PTNUM       PIC X(20).
                            13  SPA-GMN-PTID        PIC 9(10).
@@ -169,7 +169,7 @@
       *    £Ó£Ð£Á¥½¡¼¥ÈÍÑ¥ï¡¼¥¯
        01  WRK-SORT-GMN.
            03  SPA-WRK-TBL.
-               05  SPA-WRK-TBLREC    OCCURS  100.
+               05  SPA-WRK-TBLREC    OCCURS  200.
                    07  SPA-WRK-NO          PIC 9(04).
                    07  SPA-WRK-PTNUM       PIC X(20).
                    07  SPA-WRK-PTID        PIC 9(10).
@@ -191,7 +191,7 @@
       *   ¼õÉÕÆâÍÆÊÔ½¸ÎÎ°è
         01  WORK-SORT-TBL.
             03  WORK-SORT-TBLO                OCCURS   2.
-                05  WORK-SORT-TBLREC          OCCURS   100.
+                05  WORK-SORT-TBLREC          OCCURS   200.
                    07  WORK-SORT-PTID         PIC X(10).
                    07  WORK-SORT-NAME         PIC X(50).
                    07  WORK-SORT-NICKNAME     PIC X(50).
@@ -694,13 +694,13 @@
            MOVE    ZERO                TO  WRK-SELNO
       *     
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       100
+                   UNTIL       IDX     >       200
                IF      U01-SI-SELECT (IDX)    =   "T"
                    IF      IDX             =   SPA-NAI-SELNO (1)
                        CONTINUE
                    ELSE        
                        MOVE    IDX             TO  WRK-SELNO
-                       MOVE    100             TO  IDX
+                       MOVE    200             TO  IDX
                    END-IF
                END-IF    
            END-PERFORM
@@ -727,10 +727,10 @@
            MOVE    ZERO                TO  WRK-SELNO
       *     
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       100
+                   UNTIL       IDX     >       200
                IF      U01-SZ-SELECT (IDX)    =   "T"
                    MOVE    IDX             TO  WRK-SELNO
-                   MOVE    100             TO  IDX
+                   MOVE    200             TO  IDX
                END-IF    
            END-PERFORM
       *
@@ -1003,7 +1003,7 @@
       *    ¼õÉÕ°ìÍ÷
            MOVE    1                   TO  IDX
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY             >   100  )   OR
+                   UNTIL      (IDY             >   200  )   OR
                               (SPA-GMN-NO (IDX IDY) =   ZERO)
                MOVE    SPA-GMN-NO    (IDX IDY)  TO  WRK-ZZZ9
                MOVE    WRK-ZZZ9                 TO  U01-SI-NO  (IDY)
@@ -1038,7 +1038,7 @@
       *    ²ñ·×ºÑ°ìÍ÷
            MOVE    2                   TO  IDX
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY             >   100  )   OR
+                   UNTIL      (IDY             >   200  )   OR
                               (SPA-GMN-NO (IDX IDY) =   ZERO) 
                MOVE    SPA-GMN-NO    (IDX IDY)  TO  WRK-ZZZ9
                MOVE    WRK-ZZZ9                 TO  U01-SZ-NO  (IDY)
@@ -1220,7 +1220,7 @@
                        ADD     1                   TO  IDX3
                        MOVE    IDX3                TO  IDX4
                    END-IF
-                   IF      IDX4            <=  100
+                   IF      IDX4            <=  200
                        PERFORM 50012-UKETUKE-SET-SEC
                    END-IF
                END-IF
@@ -1405,7 +1405,7 @@
            MOVE    ZERO                   TO  IDX2  
       *    ¼õÉÕ»þ´Ö½ç¤Ë£Ó£Ï£Ò£Ô
            PERFORM VARYING   IDX2      FROM    1   BY  1
-                   UNTIL     IDX2          >   100
+                   UNTIL     IDX2          >   200
                IF  IDX  =  1
                    MOVE    HIGH-VALUE      TO  WRK-UKETIME
                ELSE
@@ -1413,7 +1413,7 @@
                END-IF
                MOVE    ZERO            TO  WRK-IDX
                PERFORM VARYING   IDX3      FROM    1   BY  1
-                       UNTIL     IDX3      >  100
+                       UNTIL     IDX3      >  200
                    IF      IDX             =  1
                        IF     (WORK-SORT-UKETIME (IDX IDX3)
                                                    NOT =   SPACE)  AND

@@ -34,6 +34,7 @@
       *  02.00.00    NACL-多々納  02/07/30  インターフェース変更
       *  02.00.01    NACL-多々納  03/02/13  食事標準負担減額日追加
       *  02.00.02    NACL-多々納  03/03/24  公費負担額追加
+      *  02.00.03    NACL-多々納  03/10/14  公費負担額初期編集追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -454,8 +455,109 @@
                    MOVE    WRK-HENYMD  TO  SPA-GMN24-TNKDPEDYMDW(IDX)
                END-IF
            END-PERFORM
+      *
+      *TEST
+      *    公費負担の最初を選択とする
+           IF      (SPA-GMN24-FTNSELNUM    =   ZERO )  AND
+                   (SPA-MAE24-FTNSELNUM    =   ZERO )  AND
+                   (SPA-FTN1-MAX           >   ZERO )
+               PERFORM 3102-KOHFTN-HEN-SEC
+           END-IF
+      *TEST
            .
        31O-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費負担初期編集処理
+      *****************************************************************
+       3102-KOHFTN-HEN-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  WRK-FTN1-IDX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                    UNTIL      IDX     >   SPA-FTN1-MAX
+               IF      SPA-NAI24-FTNDELKBN (IDX)   =   SPACE
+                   MOVE    IDX             TO  WRK-FTN1-IDX
+                   MOVE    IDX             TO  SPA-NAI24-FTNSELNUM
+                   MOVE    SPA-FTN1-MAX    TO  IDX
+               END-IF
+           END-PERFORM
+           IF      WRK-FTN1-IDX        =   ZERO
+               GO      TO                  3102-KOHFTN-HEN-EXT
+           END-IF
+           MOVE    1                   TO  SPA-GMN24-FTNSELNUM
+           MOVE    SPA-GMN24-FTNSELNUM TO  SPA-MAE24-FTNSELNUM
+      *
+      *    対象のデータをパラメタファイルより編集する
+           INITIALIZE                      PARA-REC
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "PTKOHFTN"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  WRK-PARA-EDANUM
+           MOVE    SPACE               TO  LNK-PTKOHFTN-AREA
+           PERFORM
+               UNTIL   FLG-PARA            =   1
+               MOVE    PARA-DATA-REC           TO  PTKOHFTN-REC
+      *        公費ＩＤの同じものを対象とする
+               IF      PTKOHFTN-KOHID      =   SPA-NAI24-KOHID
+                                                        (WRK-FTN1-IDX)
+                   ADD     1                   TO  IDX
+                   IF      IDX                 <=  50
+                       MOVE    PARA-DATA-REC   TO  LNK-PTKOHFTN-REC
+                                                             (IDX)
+                       MOVE    IDX             TO  SPA-FTN2-MAX
+                   END-IF
+               END-IF
+      *
+               MOVE    PARA-EDANUM         TO  WRK-PARA-EDANUM
+      *
+               MOVE    "PARA-KEY2"         TO  ORC-DBPATH
+               PERFORM 990-PARA-READ-SEC
+           END-PERFORM
+      *    画面テーブルへ編集する
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-FTN2-MAX
+               MOVE    LNK-PTKOHFTN-REC (IDX)  TO  PTKOHFTN-REC
+      *
+               MOVE    PTKOHFTN-RENNUM     TO  SPA-NAI24-TRENNUM  (IDX)
+               MOVE    PTKOHFTN-TEKSTYMD   TO  SPA-NAI24-TFTNSTYMD(IDX)
+               MOVE    PTKOHFTN-TEKEDYMD   TO  SPA-NAI24-TFTNEDYMD (IDX)
+               MOVE    PTKOHFTN-GAIJGNGAK  TO  SPA-GMN24-TGAIJGNGAK(IDX)
+               MOVE    PTKOHFTN-NYUJGNGAK  TO  SPA-GMN24-TNYUJGNGAK(IDX)
+      *
+               MOVE    PTKOHFTN-TEKSTYMD   TO  WRK-SYMD
+               PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
+               MOVE    WRK-HENYMD          TO  SPA-GMN24-TFTNSTYMD(IDX)
+               MOVE    PTKOHFTN-TEKEDYMD   TO  WRK-SYMD
+               PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
+               MOVE    WRK-HENYMD          TO  SPA-GMN24-TFTNEDYMD(IDX)
+      *
+           END-PERFORM
+      *
+           IF      SPA-FTN2-MAX        =   ZERO
+               MOVE    ZERO                TO  SPA-GMN24-FTNSELNUM
+               MOVE    ZERO                TO  SPA-MAE24-FTNSELNUM
+           END-IF
+      *
+           .
+       3102-KOHFTN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
