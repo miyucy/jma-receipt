@@ -63,7 +63,7 @@ path	key3 	{
 			AND		SRYNAIYO      =   :SRYNAIYO
 			AND		DRCD          =   :DRCD
 			AND		YYKYMD        =   :YYKYMD
-			ORDER   BY        KEYYYKTIME,YYKID
+			ORDER   BY        KEYYYKTIME,YYKTIME,YYKID
 		;
 	};
 };
@@ -88,7 +88,7 @@ path	key5 	{
 		FROM tbl_yyk
 			WHERE   HOSPID        =   :HOSPID
 			AND		YYKYMD        =   :YYKYMD
-			ORDER   BY        KEYYYKTIME,YYKID
+			ORDER   BY        KEYYYKTIME,YYKTIME,YYKID
 		;
 	};
 };
