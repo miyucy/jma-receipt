@@ -4,16 +4,16 @@ O03	{
 			LIST11	{
 				count	int;
 				item	{
-					value1	varchar(28);
+					value0	varchar(28);
+					value1	varchar(10);
 					value2	varchar(10);
-					value3	varchar(10);
 				}	[50];
 				select	bool[50];
 			};
 		};
 		PRJUNCOMBO	{
 			PRJUN	{
-				value	varchar(23);
+				value	varchar(22);
 			};
 			count	int;
 			item	varchar(22)[10];

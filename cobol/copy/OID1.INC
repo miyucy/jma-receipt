@@ -16,8 +16,8 @@
       * 113-8621, Japan.
       ********************************************************************
         02  OID1.
-            03  OID1-FIXED1.
-              04  OID1-ID1CODE.
-                05  OID1-VALUE  PIC X(11).
-              04  OID1-ID1MSG.
-                05  OID1-VALUE  PIC X(71).
+      *     02  OID1-FIXED1.
+              03  OID1-ID1CODE.
+                04  OID1-VALUE  PIC X(10).
+              03  OID1-ID1MSG.
+                04  OID1-VALUE  PIC X(70).

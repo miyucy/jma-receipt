@@ -16,8 +16,8 @@
       * 113-8621, Japan.
       ********************************************************************
         02  OERR.
-            03  OERR-FIXED1.
-              04  OERR-ERRCODE.
-                05  OERR-VALUE  PIC X(11).
-              04  OERR-ERRMSG.
-                05  OERR-VALUE  PIC X(61).
+      *     02  OERR-FIXED1.
+              03  OERR-ERRCODE.
+                04  OERR-VALUE  PIC X(10).
+              03  OERR-ERRMSG.
+                04  OERR-VALUE  PIC X(60).

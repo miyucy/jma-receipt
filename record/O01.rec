@@ -1,16 +1,16 @@
 O01	{
 	fixed17	{
 		SEIYM	{
-			value	varchar(7);
+			value	varchar(6);
 		};
 		KIKAN01	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		KIKAN02	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		KIKAN03	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		CHKBUTON05	{
 			value	bool;

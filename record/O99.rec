@@ -1,17 +1,17 @@
-R99	{
+O99	{
 	fixed6	{
 		MSG	{
-			value	varchar(81);
+			value	varchar(80);
 		};
 		scrolledwindow28	{
 			JOBKANRILST	{
 				count	int;
 				item	{
-					value1	varchar(7);
-					value2	varchar(34);
+					value0	varchar(7);
+					value1	varchar(34);
+					value2	varchar(8);
 					value3	varchar(8);
-					value4	varchar(8);
-					value6	varchar(100);
+					value4	varchar(100);
 				}	[2];
 				select	bool[2];
 			};

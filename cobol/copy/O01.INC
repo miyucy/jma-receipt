@@ -16,22 +16,22 @@
       * 113-8621, Japan.
       ********************************************************************
         02  O01.
-            03  O01-FIXED17.
-              04  O01-SEIYM.
-                05  O01-VALUE   PIC X(7).
-              04  O01-KIKAN01.
-                05  O01-VALUE   PIC X(21).
-              04  O01-KIKAN02.
-                05  O01-VALUE   PIC X(21).
-              04  O01-KIKAN03.
-                05  O01-VALUE   PIC X(21).
-              04  O01-CHKBUTON05.
-                05  O01-VALUE   PIC X.
-              04  O01-CHKBUTON01.
-                05  O01-VALUE   PIC X.
-              04  O01-CHKBUTON02.
-                05  O01-VALUE   PIC X.
-              04  O01-CHKBUTON03.
-                05  O01-VALUE   PIC X.
-              04  O01-CHKBUTON04.
-                05  O01-VALUE   PIC X.
+      *     02  O01-FIXED17.
+              03  O01-SEIYM.
+                04  O01-VALUE   PIC X(6).
+              03  O01-KIKAN01.
+                04  O01-VALUE   PIC X(20).
+              03  O01-KIKAN02.
+                04  O01-VALUE   PIC X(20).
+              03  O01-KIKAN03.
+                04  O01-VALUE   PIC X(20).
+              03  O01-CHKBUTON05.
+                04  O01-VALUE   PIC X.
+              03  O01-CHKBUTON01.
+                04  O01-VALUE   PIC X.
+              03  O01-CHKBUTON02.
+                04  O01-VALUE   PIC X.
+              03  O01-CHKBUTON03.
+                04  O01-VALUE   PIC X.
+              03  O01-CHKBUTON04.
+                04  O01-VALUE   PIC X.

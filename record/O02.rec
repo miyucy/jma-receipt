@@ -1,29 +1,29 @@
 O02	{
 	fixed6	{
 		PTNUM	{
-			value	varchar(21);
+			value	varchar(20);
 		};
 		NAME	{
-			value	varchar(69);
+			value	varchar(68);
 		};
 		SEIYM	{
-			value	varchar(7);
+			value	varchar(6);
 		};
 		scrolledwindow1	{
 			LIST01	{
 				count	int;
 				item	{
-					value1	varchar(20);
-					value2	varchar(68);
-					value3	varchar(6);
-					value4	varchar(10);
+					value0	varchar(20);
+					value1	varchar(68);
+					value2	varchar(6);
+					value3	varchar(10);
 				}	[50];
 				select	bool[50];
 			};
 		};
 		SAKKBNCOMBO	{
 			SAKKBN	{
-				value	varchar(13);
+				value	varchar(12);
 			};
 			count	int;
 			item	varchar(12)[10];
