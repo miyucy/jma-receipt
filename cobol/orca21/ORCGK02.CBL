@@ -6934,7 +6934,7 @@
                    MOVE    LNK-ORCSC-RIGAKU-TBL
                                            TO  WRK-RIGAKU-TBL
       *            コメント等
-               WHEN    "90"
+      *********WHEN    "90"
                WHEN    "93"
                WHEN    "99"
                    PERFORM 510211-SRYKBN-90-SEC
@@ -6948,8 +6948,9 @@
                                            SPA-AREA
       *************PERFORM 510212-SRYKBN-95-SEC
       *            食事
+               WHEN    "90"
                WHEN    "97"
-                   MOVE    "9020"          TO  SPA-ERRCD
+                   MOVE    "9200"          TO  SPA-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR (01)
            END-EVALUATE
       *

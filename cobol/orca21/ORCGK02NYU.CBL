@@ -6447,7 +6447,7 @@
                    MOVE    LNK-ORCSC-RIGAKU-TBL
                                            TO  WRK-RIGAKU-TBL
       *            コメント等
-               WHEN    "90"
+      *********WHEN    "90"
                WHEN    "93"
                WHEN    "99"
                    PERFORM 510211-SRYKBN-90-SEC
@@ -6460,6 +6460,7 @@
                                            WRK-SCR-REC
                                            SPA-AREA
       *            入院（食事）
+               WHEN    "90"
                WHEN    "97"
                    CALL    "ORCSCN97"      USING
                                            MCPAREA
