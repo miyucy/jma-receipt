@@ -36,8 +36,8 @@ COPYS = \
 	CPCOMMONDAT2.INC \
 	CPCOMMONDAT3.INC \
 	CPCOMMONDAT4.INC \
-	CPCOMMONSHELL5.INC.in \
-	CPCOMMONSHELLUP.INC.in \
+	CPCOMMONSHELL5.INC \
+	CPCOMMONSHELLUP.INC \
 	CPCOMMONPRT.INC \
 	CPCOMMONPRT1.INC \
 	CPDAYSTS.INC \
@@ -342,7 +342,6 @@ COPYS = \
 	MERR.INC \
 	MID1.INC \
 	MVER.INC \
-	Makefile \
 	N01.INC \
 	N01COMMON-SPA \
 	N11.INC \
@@ -552,9 +551,6 @@ all: $(COPYS_inc)
 	    -e "s,\@monthlyscripts_len\@,$$monthlyscripts_len,g" \
 	    -e "s,\@printscripts_len\@,$$printscripts_len,g" \
 	  $< > $@
-test:
-	formdir_len=`echo $(formdir)|wc -c` \
-	@echo $$formdir_len
 
 clean: 
 	-rm $(COPYS_inc)
