@@ -9,6 +9,8 @@ fi
 
 . $JMARECEIPT_ENV
 
+umask 022
+
 HOME=/home/orca
 MSTDIR=orca-$(date +%Y%m%d)
 VERSIONFL=${DOCDIR}/version
