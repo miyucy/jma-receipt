@@ -2804,8 +2804,9 @@
            END-IF
       *
       *    初診・再診料の算定チェック
-      *    訂正の時、チェックなし
-           IF      LNK-ORCSC-SYORIFLG  =   ZERO
+      *    訂正・入院の時、チェックなし
+           IF     (LNK-ORCSC-SYORIFLG  =   ZERO )  AND
+                  (SPA-NYUGAIKBN       =   "2"  )
                IF     (LNK-ORCSC-CHK-IDX   >   ZERO       )  AND
                       (LNK-ORCSC-LSTYMD    =   SPA-SRYYMD )
       *            労災には同日再診はないのでチェックなし
@@ -2816,6 +2817,11 @@
                        GO      TO      200-ALL-SYORI-EXT
                    END-IF
                END-IF
+           END-IF
+      *
+      *    以下外来のみとする
+           IF      SPA-NYUGAIKBN       =   "1"
+                GO      TO      200-ALL-SYORI-EXT
            END-IF
       *
            IF      SPA-HKNKBN          =   1
