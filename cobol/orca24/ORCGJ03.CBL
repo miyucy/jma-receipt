@@ -438,6 +438,7 @@
            COPY    "J99.INC".
            COPY    "JERR.INC".
            COPY    "JID1.INC".
+           COPY    "JID2.INC".
 029400*
 029500 PROCEDURE                   DIVISION    USING
 029600     MCPAREA

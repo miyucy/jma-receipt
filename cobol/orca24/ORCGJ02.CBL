@@ -140,7 +140,9 @@
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
+           03  FLG-SYUMEI          PIC 9(01).
            03  FLG-PTNYUINRRK      PIC 9(01).
+           03  FLG-SYUTTL          PIC 9(01).
       *
            03  FLG-NAIYAK          PIC X(01).
            03  FLG-TONPUK          PIC X(01).
@@ -431,6 +433,9 @@
            03  WRK-RRK-DRCD            PIC X(05).
            03  WRK-GRP-DENPNUM         PIC 9(07).
       *
+           03  WRK-DENPNUM             PIC 9(07).
+           03  WRK-KA-DENPNUM          PIC 9(07).
+      *
            03  WRK-ACCT-UPDKBN         PIC X(01).
       *    点滴算定エラー
            03  WRK-ERR-TBL.
@@ -587,6 +592,10 @@
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
       *
+      *    収納合計マスタ−
+       01  SYUTTL-REC.
+           COPY    "CPSYUTOTAL.INC".
+      *
       *     パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
@@ -688,6 +697,7 @@
            COPY    "J99.INC".
            COPY    "JERR.INC".
            COPY    "JID1.INC".
+           COPY    "JID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -905,10 +915,9 @@
       *        回数入力より
                WHEN    "J022"
                    PERFORM 3002-J022-HEN-SEC
-                   GO      TO      300-SCREEN-EXT
       *        レセコメントより
                WHEN    "J023"
-                   GO      TO      300-SCREEN-EXT
+                   CONTINUE
       *            確認画面より
                WHEN    "JID1"
                    PERFORM 3003-JID1-SET-SEC
@@ -918,12 +927,31 @@
                        PERFORM 510-ERRSET-SEC
                        MOVE    1               TO  FLG-END
                    END-IF
-                   GO      TO      300-SCREEN-EXT
+      *            確認画面より
+               WHEN    "JID2"
+                   PERFORM 3004-JID2-SET-SEC
+                   MOVE    SPACE           TO  SPA-JIDCD
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       PERFORM 500-GMNHEN-SEC
+                       PERFORM 510-ERRSET-SEC
+                       MOVE    1               TO  FLG-END
+                   END-IF
       *        収納変更確認画面
                WHEN    "J025"
                    PERFORM 3002-J025-BACK-SEC
-                   GO      TO      300-SCREEN-EXT
+      *        その他
+               WHEN    OTHER
+                   PERFORM 3001-SCREEN-INIT-SEC
            END-EVALUATE
+      *
+           .
+       300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初期画面編集処理
+      *****************************************************************
+       3001-SCREEN-INIT-SEC                  SECTION.
       *
            MOVE    SPACE               TO  SPA-JIDCD
            INITIALIZE                  SPA-J02-AREA
@@ -1027,7 +1055,7 @@
            MOVE    1                   TO  SPA-IDXZ
       *
            .
-       300-SCREEN-EXT.
+       3001-SCREEN-INIT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1203,7 +1231,7 @@
                        MOVE    1                  TO  SPA-GMN-CUR
                    END-IF
       *
-               WHEN    "0115"
+      *********WHEN    "0115"
                WHEN    "0118"
       *            受診日の変更確認
                    IF      SPA-JID1-FLG        =   "OK"
@@ -1211,6 +1239,8 @@
                    ELSE
                        MOVE    SPACE           TO  SPA-NAI-HENSRYYMD
                        MOVE    SPACE           TO  SPA-GMN-HENSRYYMD
+                       MOVE    SPACE           TO  SPA-JIDCD
+                       MOVE    SPACE           TO  SPA-JID1-FLG
                    END-IF
       *
                WHEN    "0116"
@@ -1225,6 +1255,33 @@
            END-EVALUATE
            .
        3003-JID1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     確認画面２よりの処理
+      *****************************************************************
+       3004-JID2-SET-SEC                  SECTION.
+      *
+           EVALUATE    SPA-JIDCD2
+               WHEN    "0115"
+               WHEN    "0118"
+                   EVALUATE    SPA-JID2-FLG
+                       WHEN    1
+      *                受診日の変更
+                           PERFORM 410161-HENSRYYMD-UPDSYORI-SEC
+                       WHEN    2
+      *                受診日の追加
+                           PERFORM 410162-HENSRYYMD-INSSYORI-SEC
+                       WHEN    OTHER
+                           MOVE    SPACE           TO  SPA-NAI-HENSRYYMD
+                           MOVE    SPACE           TO  SPA-GMN-HENSRYYMD
+                   END-EVALUATE
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  SPA-JIDCD2
+           MOVE    ZERO                TO  SPA-JID2-FLG
+           .
+       3004-JID2-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1913,22 +1970,32 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-RRK-MAX
                MOVE    ZERO            TO  FLG-HEN
-               IF     (IDX                 <   SPA-RRK-MAX )  AND
-                      (SPA-RRK-RRKYMD(IDX)
-                                           =   SPA-RRK-RRKYMD
-                                                       (IDX + 1)) AND
-                      (SPA-RRK-SRYKA(IDX)  =   SPA-RRK-SRYKA
-                                                       (IDX + 1))
-                   MOVE    1                   TO  FLG-HEN
-               END-IF
-               IF     (IDX                 >   1           )  AND
-                      (SPA-RRK-RRKYMD(IDX)
-                                           =   SPA-RRK-RRKYMD
-                                                       (IDX - 1)) AND
-                      (SPA-RRK-SRYKA(IDX)  =   SPA-RRK-SRYKA
-                                                       (IDX - 1))
-                   MOVE    1                   TO  FLG-HEN
-               END-IF
+               PERFORM VARYING     IDX2    FROM    IDX BY  1
+                       UNTIL       IDX2    >   SPA-RRK-MAX
+                   IF     (IDX2            NOT =   IDX )  AND
+                          (SPA-RRK-RRKYMD(IDX)
+                                               =   SPA-RRK-RRKYMD
+                                                       (IDX2)) AND
+                          (SPA-RRK-SRYKA(IDX)  =   SPA-RRK-SRYKA
+                                                       (IDX2))
+                       MOVE    1                   TO  FLG-HEN
+                       MOVE    SPA-RRK-MAX         TO  IDX2
+                   ELSE
+                       IF     (SPA-RRK-RRKYMD(IDX)
+                                           NOT =   SPA-RRK-RRKYMD
+                                                       (IDX2))
+                           MOVE    SPA-RRK-MAX     TO  IDX2
+                       END-IF
+                   END-IF
+               END-PERFORM
+      *!       IF     (IDX                 >   1           )  AND
+      *               (SPA-RRK-RRKYMD(IDX)
+      *                                    =   SPA-RRK-RRKYMD
+      *                                                (IDX - 1)) AND
+      *               (SPA-RRK-SRYKA(IDX)  =   SPA-RRK-SRYKA
+      *                                                (IDX - 1))
+      *            MOVE    1                   TO  FLG-HEN
+      *!       END-IF
                IF     (SPA-RRK-RENNUM (IDX)    >   1 ) OR
                       (SPA-RRK-DOUJI-RENNUM (IDX)  >  ZERO )
                    MOVE    1                   TO  FLG-HEN
@@ -4408,10 +4475,10 @@
            END-IF
            IF      SPA-ERRCD           =   SPACE
       *        更新の確認メッセージ
-               MOVE    "0115"              TO  SPA-JIDCD
+               MOVE    "0115"              TO  SPA-JIDCD2
                IF      SPA-RRK-GRP-DENPNUM(SPA-NAI-RRKSELNUM)
                                        NOT =   ZERO
-                   MOVE    "0118"              TO  SPA-JIDCD
+                   MOVE    "0118"              TO  SPA-JIDCD2
                END-IF
            END-IF
       *
@@ -4737,10 +4804,14 @@
                         WHEN    2
       *                     連番の変更
                            PERFORM 41016111-RENHENKOU-SEC
+                        WHEN    3
+      *                    診療日の追加
+                           PERFORM 41016111-YMDINS-SEC
                    END-EVALUATE
       *            受診日・回数変更時、算定履歴を変更する
                    IF     (SPA-NAI-DAY-AREA (IDX)  NOT =  ACCT-DAY-AREA)
-                   AND    (FLG-SYORI           =   1      )
+                   AND    (FLG-SYORI           =   1   OR
+                                                   3  )
                        PERFORM 4902-SANTEI-KOUSIN-SEC
                    END-IF
       *
@@ -4939,6 +5010,383 @@
            .
        41016131-JYURRK-SEISETUPD-EXT.
            EXIT.
+      *****************************************************************
+      *    受診日追加処理
+      *****************************************************************
+       410162-HENSRYYMD-INSSYORI-SEC      SECTION.
+      *
+      *    現在表示されている内容を更新する
+      *    診療会計マスター更新
+           IF      SPA-UPDFLG          =   "1"
+               PERFORM 4901-SRYACCT-UPD-SEC
+               IF     (SPA-ERRCD      NOT  =   SPACE ) OR
+                      (FLG-END             =   1     )
+                   MOVE    11              TO  SPA-J025-SYORI
+               ELSE
+                   PERFORM 4101621-HEN-INSSYORI-SEC
+               END-IF
+           ELSE
+               PERFORM 4101621-HEN-INSSYORI-SEC
+           END-IF
+           .
+       410162-HENSRYYMD-INSSYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    受診日追加処理
+      *****************************************************************
+       4101621-HEN-INSSYORI-SEC      SECTION.
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+           INITIALIZE                  TBL-GRP-AREA
+      *    受診履歴変更
+           INITIALIZE                  JYURRK-REC
+           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
+           MOVE    SPA-GMN-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-RRK-SRYKA  (SPA-NAI-RRKSELNUM)
+                                       TO  JYURRK-SRYKA
+           MOVE    SPA-RRK-RRKYMD (SPA-NAI-RRKSELNUM)
+                                       TO  JYURRK-SRYYMD
+           MOVE    SPA-RRK-RENNUM (SPA-NAI-RRKSELNUM)
+                                       TO  JYURRK-RENNUM
+           MOVE    SPA-RRK-GRP-DENPNUM(SPA-NAI-RRKSELNUM)
+                                       TO  JYURRK-GRP-DENPNUM
+      *    入院の場合、保険毎に変更する
+           IF      SPA-NYUGAIKBN       =   "1"
+               MOVE    SPA-RRK-HKNCOMBI(SPA-NAI-RRKSELNUM)
+                                           TO  JYURRK-HKNCOMBINUM
+               MOVE    "JYURRK-KEY19"      TO  WRK-ORC-DBPATH
+           ELSE
+               IF      SPA-RRK-GRP-DENPNUM(SPA-NAI-RRKSELNUM)
+                                           =   ZERO
+                   MOVE    "JYURRK-KEY5"       TO  WRK-ORC-DBPATH
+               ELSE
+                   MOVE    "JYURRK-KEY26"      TO  WRK-ORC-DBPATH
+               END-IF
+           END-IF
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+               PERFORM 970-JYURRK-READ-SEC
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+      *
+      *    変更前日
+           MOVE    SPA-RRK-RRKYMD (SPA-NAI-RRKSELNUM)(7:2)
+                                       TO  IDX-D1
+      *    変更後日
+           MOVE    SPA-NAI-HENSRYYMD(7:2)
+                                       TO  IDX-D2
+           MOVE    ZERO                TO  WRK-DENPNUM
+           MOVE    ZERO                TO  WRK-GRP-DENPNUM
+           MOVE    ZERO                TO  WRK-KA-DENPNUM
+           PERFORM
+               UNTIL    FLG-JYURRK         =   1
+      *        対象の診療会計を更新する
+               MOVE    JYURRK-REC          TO  HZN-JYURRK-REC
+               IF      JYURRK-NYUGAIKBN    =   "2"
+                   IF     (JYURRK-EDANUM       =   1   )  OR
+                          (WRK-DENPNUM         =   ZERO )
+      *               伝票番号取得と収納の作成
+                      PERFORM 4101621-INS-INIT-SEC
+                   END-IF
+               END-IF
+      *        変更後日
+               MOVE    SPA-NAI-HENSRYYMD   TO  JYURRK-SRYYMD
+               MOVE    WRK-DENPNUM         TO  JYURRK-DENPNUM
+               IF      JYURRK-GRP-DENPNUM  NOT =   ZERO
+                   MOVE    WRK-GRP-DENPNUM     TO  JYURRK-GRP-DENPNUM
+               END-IF
+      *
+      *        診療会計更新
+               MOVE    3                   TO  FLG-SYORI
+               PERFORM VARYING     IDX-Z   FROM    1  BY  1
+                       UNTIL       IDX-Z   >   15
+                   IF      JYURRK-ZAINUM (IDX-Z)  NOT =   ZERO
+                       PERFORM 4101612-ACCT-UPDSYORI-SEC
+                   END-IF
+               END-PERFORM
+      *        伝票番号保存
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   10
+                   IF      TBL-DENPNUM (IDX)   =   ZERO
+                       MOVE    JYURRK-DENPNUM  TO  TBL-DENPNUM (IDX)
+                   END-IF
+                   IF      JYURRK-DENPNUM  =   TBL-DENPNUM (IDX)
+                       MOVE    10              TO  IDX
+                   END-IF
+               END-PERFORM
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   10
+                   IF      TBL-SRYKA (IDX)     =   SPACE
+                       MOVE    JYURRK-SRYKA    TO  TBL-SRYKA (IDX)
+                   END-IF
+                   IF      JYURRK-SRYKA        =   TBL-SRYKA (IDX)
+                       MOVE    10              TO  IDX
+                   END-IF
+               END-PERFORM
+      *        受診履歴追加
+               MOVE    1                   TO  JYURRK-RENNUM
+      *
+               MOVE    SMCNDATE-YMD        TO  JYURRK-CREYMD
+               MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
+               MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+      *
+               MOVE    JYURRK-REC          TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "JYURRK-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "J02 JYURRK INS ERR:" MCP-RC
+                               ",KEY:" JYURRK-KEY
+                   MOVE    "2001"              TO  SPA-ERRCD
+               END-IF
+      *
+               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+               PERFORM 970-JYURRK-READ-SEC
+           END-PERFORM
+      *
+      *    診療科履歴変更
+           MOVE    SPA-SRYKA           TO  WRK-SRYKA
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   10  )   OR
+                              (TBL-SRYKA (IDX)     =   SPACE)  OR
+                              (SPA-ERRCD       NOT =   SPACE)
+               INITIALIZE                  ORCSKARRKAREA
+               MOVE    SPA-GMN-PTID        TO  SPA-PTID
+               MOVE    SPA-NAI-SRYYM       TO  SKARRK-SRYYM
+               MOVE    TBL-SRYKA (IDX)     TO  SPA-SRYKA
+               CALL    "ORCSKARRK"         USING
+                                           ORCSKARRKAREA
+                                           SPA-AREA
+           END-PERFORM
+           MOVE    WRK-SRYKA           TO  SPA-SRYKA
+      *
+           IF     (SPA-NYUGAIKBN       =   "2"   )  AND
+                  (SPA-RRK-HKNCOMBI(SPA-NAI-RRKSELNUM)
+                                   NOT =   "9999" )
+      *        収納再計算
+               PERFORM 49012-SYUNOU-SAIKEISAN-SEC
+               IF     (SPA-ERRCD      NOT  =   SPACE ) OR
+                      (FLG-END             =   1     )
+                   MOVE    12              TO  SPA-J025-SYORI
+               ELSE
+                   PERFORM 41016219-INSSYORI-END-SEC
+               END-IF
+           ELSE
+               PERFORM 41016219-INSSYORI-END-SEC
+           END-IF
+           MOVE    SPACE               TO  SPA-NAI-HENSRYYMD
+           MOVE    SPACE               TO  SPA-GMN-HENSRYYMD
+           MOVE    ZERO                TO  SPA-NAI-RRKSELNUM
+           MOVE    SPACE               TO  SPA-GMN-RRKSELNUM
+      *
+           .
+       4101621-HEN-INSSYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    変更後処理
+      *****************************************************************
+       41016219-INSSYORI-END-SEC             SECTION.
+      *
+      *    受診履歴編集
+           PERFORM 3103-JYURRK-HEN-SEC
+      *
+      *    保存用パラメタ作成
+           PERFORM 4201-SRYACCT-PARA-SEC
+           MOVE    1                   TO  SPA-GMN-PAGE
+           MOVE    1                   TO  SPA-STRNUM
+      *
+      *    診療会計マスターより編集をする
+           PERFORM 410181-SRYACCT-HEN-SEC
+      *    受診履歴の連番を変更した時、メッセージを表示
+           IF     (FLG-JYURRK-UPD      =   1   )  AND
+                  (SPA-NYUGAIKBN       =   "2" )
+               MOVE    "K001"              TO  SPA-ERRCD
+           END-IF
+      *
+           IF      SPA-RRK-MAX         =   ZERO
+               IF      SPA-SRYKA-MAX       =   1
+                   MOVE    07              TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    06              TO  SPA-GMN-CUR
+               END-IF
+           ELSE
+               MOVE    1               TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       41016219-INSSYORI-END-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    伝票番号取得と収納の作成処理
+      *****************************************************************
+       4101621-INS-INIT-SEC             SECTION.
+      *    伝票番号取得処理
+           PERFORM 49011212-DENPNUM-SET-SEC
+           MOVE    JYURRK-DENPNUM      TO  WRK-DENPNUM
+      *
+           IF     (JYURRK-GRP-DENPNUM  NOT =   ZERO )  AND
+                  (WRK-GRP-DENPNUM         =   ZERO )
+               MOVE    JYURRK-DENPNUM          TO  WRK-GRP-DENPNUM
+           END-IF
+      *
+      *    収納作成
+           MOVE    JYURRK-HOSPID       TO  SYU-HOSPID
+           MOVE    JYURRK-PTID         TO  SYU-PTID
+           MOVE    JYURRK-NYUGAIKBN    TO  SYU-NYUGAIKBN
+           MOVE    HZN-JYURRK-DENPNUM  TO  SYU-DENPNUM
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+               PERFORM 980-SYUNOU-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYUNOU-REC
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           MOVE    SYUNOU-REC          TO  WRK-SYUNOU-REC
+           IF     (SYU-GRP-DENPNUM     >   ZERO        ) AND
+                  (SYU-FUKU-DENPNUM    =   SYU-DENPNUM ) AND
+                  (SYU-FUKU-KBN        =   "1"         )
+               MOVE    WRK-DENPNUM         TO  WRK-KA-DENPNUM
+           END-IF
+           IF      FLG-SYUNOU          =   ZERO
+               MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
+      *        まとめ入力分
+               IF      SYU-GRP-RENNUM      >   ZERO
+                   MOVE    WRK-GRP-DENPNUM     TO  SYU-GRP-DENPNUM
+               ELSE
+                   MOVE    ZERO                TO  SYU-GRP-DENPNUM
+               END-IF
+      *        複数科まとめ識別伝票番号
+               IF     (SYU-GRP-DENPNUM     >   ZERO    ) AND
+                      (SYU-FUKU-KBN    NOT =   SPACE   )
+                   MOVE    WRK-KA-DENPNUM      TO  SYU-FUKU-DENPNUM
+               END-IF
+      *
+      *        変更後日
+               MOVE    SPA-NAI-HENSRYYMD   TO  SYU-SRYYMD
+               MOVE    SPA-NAI-HENSRYYMD   TO  SYU-SKYSTYMD
+               MOVE    ALL "9"             TO  SYU-SKYEDYMD
+      *        伝票番号発行日
+               MOVE    SPA-SYSYMD          TO  SYU-DENPPRTYMD
+      *        請求書作成区分
+               MOVE    "0"                 TO  SYU-SKYKUKBN
+      *        会計変更区分
+               MOVE    "2"                 TO  SYU-ACCT-UPDKBN
+      *        継続区分
+               MOVE    ZERO                TO  SYU-DOUJI-DENPNUM
+               MOVE    SPACE               TO  SYU-CONTKBN
+      *        伝票状態区分
+               IF      SYU-DENPJTIKBN      =   "7"
+                   MOVE    SPACE               TO  SYU-DENPJTIKBN
+               END-IF
+      *
+               MOVE    SMCNDATE-YMD        TO  SYU-CREYMD
+               MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+      *
+               MOVE    SYUNOU-REC          TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "J02 SYUNOU INS ERR:" SYU-KEY
+                                      ",MCP-RC:" MCP-RC 
+                   MOVE    "2003"              TO  SPA-ERRCD
+               END-IF
+      *        収納合計レコード
+               IF         SYU-GRP-DENPNUM      >   ZERO
+                  PERFORM 41016211-SYUTTL-INS-SEC
+               END-IF
+      *
+           END-IF
+      *
+           .
+       4101621-INS-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納合計レコード作成処理
+      *****************************************************************
+       41016211-SYUTTL-INS-SEC             SECTION.
+           INITIALIZE                  SYUTTL-REC
+           MOVE    SYU-HOSPID          TO  SYUTTL-HOSPID
+           MOVE    SYU-NYUGAIKBN       TO  SYUTTL-NYUGAIKBN
+           MOVE    SYU-PTID            TO  SYUTTL-PTID
+           MOVE    WRK-SYU-DENPNUM     TO  SYUTTL-DENPNUM
+      *
+           MOVE    SYUTTL-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUTOTAL-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUTOTAL-KEY"        TO  ORC-DBPATH
+               PERFORM 981-SYUTTL-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYUTTL
+               INITIALIZE              SYUTTL-REC
+           END-IF
+      *
+           IF      FLG-SYUTTL          =   ZERO
+               MOVE    SYU-DENPNUM         TO  SYUTTL-DENPNUM
+               MOVE    SYU-SRYYMD          TO  SYUTTL-SRYYMD
+      *        伝票発行日
+               MOVE    SYU-DENPPRTYMD      TO  SYUTTL-DENPPRTYMD
+      *        新規作成
+               MOVE    SMCNDATE-YMD        TO  SYUTTL-CREYMD
+               MOVE    SMCNDATE-YMD        TO  SYUTTL-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYUTTL-UPHMS
+      *
+               MOVE    SYUTTL-REC          TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "SYUTOTAL-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"         USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "J02 SYUTTL INS ERR:" SYUTTL-KEY
+                       ",MCP-RC:"  MCP-RC
+                   MOVE    "2003"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       41016211-SYUTTL-INS-EXT.
+           EXIT.
       *
       *****************************************************************
       *    受診日の変更処理
@@ -4982,6 +5430,25 @@
                                                 (IDY IDX-D3 IDX-D1)
            .
        41016111-RENHENKOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    受診日の追加処理
+      *****************************************************************
+       41016111-YMDINS-SEC             SECTION.
+      *
+      *    日の変更（変更後は連番を１とする）
+           MOVE    HZN-JYURRK-RENNUM   TO  IDX-D3
+           COMPUTE IDX-D3              =   IDX-D3    +   1
+      *
+           MOVE    SPA-NAI-DAY (IDY IDX-D3 IDX-D1)
+                                       TO  WRK-DAY-S
+           MOVE    WRK-DAY-S           TO  SPA-NAI-DAY (IDY 2 IDX-D2)
+           MOVE    WRK-DAY-S           TO  SPA-NAI-DAY (IDY 1 IDX-D2)
+      *    剤回数
+           ADD     WRK-DAY-S           TO  ACCT-ZAIKAISU
+           .
+       41016111-YMDINS-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7694,8 +8161,8 @@
                 MOVE    WRK-SYUNOU-REC     TO  SYUNOU-REC
            ELSE
                 MOVE    TBL-SYUNOU-REC(1)  TO  SYUNOU-REC
+                PERFORM 490121-SYUNOU-SAIKEI-SEC
            END-IF
-           PERFORM 490121-SYUNOU-SAIKEI-SEC
       *
            PERFORM VARYING     IDX     FROM    2   BY  1
                    UNTIL       IDX     >   IDX-SYU
@@ -7706,20 +8173,25 @@
                    PERFORM 490122-J025-HENSYU-SEC
                END-IF
       *
-               MOVE    SYUNOU-REC          TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC              =   ZERO
+      *        追加分
+               IF      TBL-SYU-ACCT-UPDKBN(IDX)    =   "2"
+                   MOVE    SYUNOU-REC          TO  MCPDATA-REC
+                   MOVE    "DBSELECT"          TO  MCP-FUNC
                    MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-                   PERFORM 980-SYUNOU-READ-SEC
-               ELSE
-                   MOVE    SPACE               TO  SYUNOU-REC
-                   INITIALIZE                  SYUNOU-REC
-                   MOVE    1               TO  FLG-SYUNOU
+                   CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+                   IF      MCP-RC              =   ZERO
+                       MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+                       PERFORM 980-SYUNOU-READ-SEC
+                   ELSE
+                       MOVE    SPACE               TO  SYUNOU-REC
+                       INITIALIZE                  SYUNOU-REC
+                       MOVE    1               TO  FLG-SYUNOU
+                   END-IF
+      *            新規分追加
+                   PERFORM 4901219-SYUNOU-MEI-OUT-SEC
                END-IF
       *
                IF      FLG-ERR         =   1
@@ -7801,46 +8273,108 @@
                                        TO  SPA-J025-ERRMSG(25:)
                END-IF
            END-IF
-           IF     (FLG-SYUNOU          =   ZERO )  AND
-                  (FLG-ERR             =   ZERO )
+           IF     (FLG-SYUNOU          =   ZERO ) AND
+                  (WRK-ACCT-UPDKBN     =   "2"  )
+      *        新規分追加
+               PERFORM 4901219-SYUNOU-MEI-OUT-SEC
+           END-IF
+           IF      FLG-SYUNOU          =   ZERO
                IF      IDX-J025        <=  100
                    MOVE    SYU-SKYMONEY    TO  SPA-J025-ATO-SKYMONEY
                                                     (IDX-J025)
                END-IF
-               IF      WRK-ACCT-UPDKBN     =   "2"
-      *            入返金額
-                   MOVE    SYU-SKYMONEY        TO  SYU-NYUKIN-TOTAL
-      *            入金回数
-                   MOVE    1                   TO  SYU-NYUKIN-KAISU
-      *            伝票状態区分
-                   IF      SYU-SKYMONEY        =   ZERO
-                       MOVE    SPACE               TO  SYU-DENPJTIKBN
-                   ELSE
-                       MOVE    "1"                 TO  SYU-DENPJTIKBN
+      *
+               IF      WRK-ACCT-UPDKBN     NOT =   "2"
+                   IF      FLG-ERR             =   ZERO
+      *                会計変更区分
+                       MOVE    SPACE           TO  SYU-ACCT-UPDKBN
                    END-IF
-      *            収納明細
-                   PERFORM 4901211-SYUMEI-OUT-SEC
-               END-IF
       *
-      *        会計変更区分
-               MOVE    SPACE               TO  SYU-ACCT-UPDKBN
-      *
-               MOVE    SYUNOU-REC          TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"         USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-               IF      MCP-RC         NOT  =   ZERO
-                   MOVE    "2001"              TO  SPA-ERRCD
-                   DISPLAY "J02 SYUNOU UPDATE:" MCP-RC
+                   MOVE    SYUNOU-REC          TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+                   IF      MCP-RC         NOT  =   ZERO
+                       MOVE    "2001"              TO  SPA-ERRCD
+                       DISPLAY "J02 SYUNOU UPDATE:" MCP-RC
                           ",KEY:" SYU-KEY
+                   END-IF
                END-IF
            END-IF
       *
            .
        490121-SYUNOU-SAIKEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納新規追加分処理
+      *****************************************************************
+       4901219-SYUNOU-MEI-OUT-SEC           SECTION.
+      *
+           IF      FLG-ERR         =   1
+               MOVE    ZERO            TO  SYU-SKYMONEY
+           END-IF
+      *    入返金額
+           MOVE    SYU-SKYMONEY        TO  SYU-NYUKIN-TOTAL
+      *    入金回数
+           MOVE    1                   TO  SYU-NYUKIN-KAISU
+      *    伝票状態区分
+           IF      SYU-SKYMONEY        =   ZERO
+               MOVE    SPACE               TO  SYU-DENPJTIKBN
+           ELSE
+               MOVE    "1"                 TO  SYU-DENPJTIKBN
+           END-IF
+           IF      FLG-ERR             =   ZERO
+      *        会計変更区分
+               MOVE    SPACE           TO  SYU-ACCT-UPDKBN
+           END-IF
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    "SYUNOU-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC         NOT  =   ZERO
+               MOVE    "2001"              TO  SPA-ERRCD
+               DISPLAY "J02 SYUNOU UPDATE:" MCP-RC
+                            ",KEY:" SYU-KEY
+           END-IF
+      *    収納明細
+           MOVE    SPACE               TO  SYUMEI-REC
+           INITIALIZE                      SYUMEI-REC
+           MOVE    SYU-HOSPID          TO  SMEI-HOSPID
+           MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
+           MOVE    SYU-PTID            TO  SMEI-PTID
+      *    伝票番号
+           MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
+      *    伝票番号枝番
+           MOVE    01                  TO  SMEI-DENPEDANUM
+           MOVE    SYUMEI-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
+               PERFORM 982-SYUMEI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYUMEI-REC
+               INITIALIZE                  SYUMEI-REC
+               MOVE    1               TO  FLG-SYUMEI
+           END-IF
+           IF      FLG-SYUMEI          =   1
+               PERFORM 4901211-SYUMEI-OUT-SEC
+           END-IF
+      *
+           .
+       4901219-SYUNOU-MEI-OUT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8271,6 +8805,12 @@
                WHEN    10
       *            収納チェック
                    CONTINUE
+               WHEN    11
+      *            診療日追加
+                   PERFORM 4101621-HEN-INSSYORI-SEC
+               WHEN    12
+      *            診療日追加後
+                   PERFORM 41016219-INSSYORI-END-SEC
                WHEN    OTHER
       *            登録
       *            患者が選択されてきた時は、元の画面へ
@@ -9075,6 +9615,11 @@
                GO      TO      500-SET-SCREEN-EXT
            END-IF
       *
+           IF      SPA-JIDCD2      NOT =   SPACE
+               PERFORM 520-JID2SET-SEC
+               GO      TO      500-SET-SCREEN-EXT
+           END-IF
+      *
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
@@ -9192,7 +9737,7 @@
                    MOVE    "入院日ではありません。"
                                        TO  WRK-ERRMSG
                    MOVE    "追加はできません。"
-                                       TO  WRK-ERRMSG(35:)
+                                       TO  WRK-ERRMSG(23:)
                WHEN    "0030"
                    MOVE    "入外区分がありません。"
                                        TO  WRK-ERRMSG
@@ -9267,6 +9812,9 @@
                                        TO  WRK-ERRMSG
                WHEN    "2002"
                    MOVE    "受診履歴の新規エラーです。"
+                                       TO  WRK-ERRMSG
+               WHEN    "2003"
+                   MOVE    "新規作成エラーです。"
                                        TO  WRK-ERRMSG
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません"
@@ -9430,6 +9978,54 @@
            .
        520-JIDSET-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージ表示理
+      *****************************************************************
+       520-JID2SET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  JID2
+           EVALUATE    SPA-JIDCD2
+               WHEN    "0115"
+                   MOVE    "診療日の変更、または追加を選択して下さい。"
+                                       TO  JID2-ID2MSG
+                   MOVE    "現在までの変更分の登録もしますので"
+                                       TO  JID2-ID2MSG2
+                   MOVE    "取消はできません。"
+                                       TO  JID2-ID2MSG2(35:)
+               WHEN    "0118"
+                   MOVE    "診療日の変更、または追加を選択して下さい。"
+                                       TO  JID2-ID2MSG
+                   MOVE    "まとめ入力分をすべて対象とします。"
+                                       TO  JID2-ID2MSG(43:)
+                   MOVE    "現在までの変更分の登録もしますので"
+                                       TO  JID2-ID2MSG2
+                   MOVE    "取消はできません。"
+                                       TO  JID2-ID2MSG2(35:)
+               WHEN    OTHER
+                   MOVE    SPA-JIDCD2
+                                       TO  JID2-ID2MSG
+           END-EVALUATE
+      *
+           MOVE    ZERO                TO  SPA-JID2-FLG
+      *
+           MOVE    SPA-JIDCD2          TO  JID2-ID2CODE
+           MOVE    "B12"               TO  MCP-WIDGET
+      *
+           MOVE    "J02"               TO  SPA-MOTOPG
+           MOVE    "JID2"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "JID2"              TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       520-JID2SET-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    システム管理マスタ読み込み処理
@@ -9818,6 +10414,50 @@
       *
            .
        910-PTNYUINRRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納合計マスター読込
+      *****************************************************************
+       981-SYUTTL-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SYUTTL-REC
+               MOVE    ZERO                TO  FLG-SYUTTL
+           ELSE
+               INITIALIZE                      SYUTTL-REC
+               MOVE    1                   TO  FLG-SYUTTL
+           END-IF
+      *
+           .
+       981-SYUTTL-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納明細マスター読込
+      *****************************************************************
+       982-SYUMEI-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SYUMEI-REC
+               MOVE    ZERO                TO  FLG-SYUMEI
+           ELSE
+               INITIALIZE                      SYUMEI-REC
+               MOVE    1                   TO  FLG-SYUMEI
+           END-IF
+      *
+           .
+       982-SYUMEI-READ-EXT.
            EXIT.
       *
       *****************************************************************
