@@ -31,7 +31,7 @@
       *ºıø«Õ˙ŒÚ
            03  JYURRK-KEY.
       *  ∞ÂŒ≈µ°¥ÿ£…£ƒ
-               05  JYURRK-HOSPNUM           PIC 9(2).
+               05  JYURRK-HOSPID           PIC  X(24).
       *  ¥µº‘£…£ƒ
                05  JYURRK-PTID             PIC  9(10).
       *  ∆˛≥∞∂Ë ¨
@@ -52,9 +52,7 @@
            03  JYURRK-DRCD                 PIC X(05).
       * ›∏±¡»πÁ»÷πÊ
            03  JYURRK-HKNCOMBINUM          PIC X(04).
-      * ›∏±∂Ë ¨° £∞°ß∞Ï»Ã°¢£±°ßœ´∫“°¢£≤°ßº´«Â¿’°¢£≥°ßªı≤ ° Ã§ª»Õ—°À
-      *          £¥°ßº´«Â¿’° ∑Ú ›Ω‡µÚ°À°¢£µ°ß∏¯Ã≥∫“≥≤° ∑Ú ›Ω‡µÚ°À°¢
-      *          £∂°ß∏¯≥≤°À
+      * ›∏±∂Ë ¨° £∞°ß∞Ï»Ã°¢£±°ßœ´∫“°¢£≤°ßº´«Â¿’°¢£≥°ßªı≤ °À
            03  JYURRK-HKNKBN               PIC X(01).
       *≈¡…º»÷πÊ
            03  JYURRK-DENPNUM              PIC 9(07).
@@ -62,8 +60,6 @@
            03  JYURRK-GRP-DENPNUM          PIC 9(07).
       *§ﬁ§»§·∆˛Œœœ¢»÷
            03  JYURRK-GRP-RENNUM           PIC 9(02).
-      *º˝«ºππø∑∂Ë ¨
-           03  JYURRK-SYU-UPDKBN           PIC  X(01).
       *ø«Œ≈∂Ë ¨
            03  JYURRK-SRYKBN-G.
       *  ø«Œ≈∂Ë ¨£±
@@ -142,7 +138,7 @@
            03  JYURRK-UPHMS                PIC  X(06).
       *°°°°ºÁ•≠°ºππø∑Õ—π‡Ã‹
            03  JYURRK-UPKEY.
-               05  JYURRK-UPHOSPNUM           PIC 9(2).
+               05  JYURRK-UPHOSPID           PIC  X(24).
                05  JYURRK-UPPTID             PIC  9(10).
                05  JYURRK-UNYUGAIKBN         PIC  X(01).
                05  JYURRK-UPSRYKA            PIC  X(02).
