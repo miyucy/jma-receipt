@@ -600,7 +600,17 @@ COPYS = \
         HCM303.INC \
         HCM304.INC \
         HCM305.INC \
-        HCM306.INC \ 
+        HCM306.INC \
+        CPRCF061.INC \
+        CPRCF062.INC \
+        CPRCF063.INC \
+        CPRCF0631.INC \
+        CPRCF064.INC \
+        CPRCF065.INC \
+        CPRCF066.INC \
+        CPRCF0661.INC \
+        CPRCF067.INC \
+        CPRCF069.INC
 
 DBPATH = \
 	ORCA-DBPATH
