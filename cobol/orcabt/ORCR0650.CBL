@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト（入院）
-      *  コンポーネント名  : 
+      *  コンポーネント名  : 公費分点数判定
       *  管理者            : 
       *  作成日付    作業者        記述
       *  02/12/13    NaCl−門脇    新規作成
@@ -31,6 +31,8 @@
       *                                     合計点数情報（ぶん点・公費分離
       *                                     区分編集用）を使用するよう修正
       *  01.00.02    NACL-門脇    04.08.04  同一保険番号対応
+      *  中止処理追加
+      *  01.01.01    NACL-藤原    04/10/07  中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -111,6 +113,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
+           03  CNT-IN-CANCEL                           PIC 9(06).
            03  CNT-OUT1                                PIC 9(06).
            03  CNT-OUT2                                PIC 9(06).
            03  CNT-OUT3                                PIC 9(06).
@@ -191,10 +194,21 @@
       *
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
-      *
-           MOVE    ZERO                TO  FLG-END
+                                       FLG-AREA
       *
            MOVE    COMMAND-PARAM       TO  WRK-PARA
+      *
+           MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
+      *
+           MOVE    "RECE640"           TO  RECE64PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE64PARA-TERMID
+      *
+           MOVE    "RECE650"           TO  RECE65PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE65PARA-TERMID
+      *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -210,24 +224,14 @@
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
-      *
-           MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
-      *
-           MOVE    "RECE640"           TO  RECE64PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE64PARA-TERMID
-      *
-           MOVE    "RECE650"           TO  RECE65PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE65PARA-TERMID
-      *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *
            OPEN    INPUT               RECE62-FILE
            OPEN    I-O                 RECE64-FILE
                                        RECE65-FILE
       *
-           PERFORM    RECE62-READ-SEC
+           PERFORM    900-RECE62-READ-SEC
       *
           .
        100-INIT-EXT.
@@ -240,7 +244,13 @@
       *
            PERFORM     210-HENSYU-SEC
       *
-           PERFORM     RECE62-READ-SEC
+           PERFORM     900-RECE62-READ-SEC
+      *
+      *    処理中止設定処理
+           IF      CNT-IN-CANCEL       =   50
+               MOVE    ZERO                TO  CNT-IN-CANCEL
+               PERFORM 500-CANCEL-HENSYU-SEC
+           END-IF
            .
        200-MAIN-EXT.
            EXIT.
@@ -291,7 +301,7 @@
                        MOVE   1         TO      FLG-RECE64
                    NOT  INVALID
                        MOVE   ZERO      TO      FLG-RECE64
-                       PERFORM   RECE64-NEXT-SEC
+                       PERFORM   900-RECE64-NEXT-SEC
            END-START
            PERFORM   UNTIL
                     (RECE62-HOSPID    NOT = RECE64-HOSPID)    OR
@@ -309,7 +319,7 @@
                      PERFORM      KOHBUNRI-SET-SEC
                      PERFORM      RECE64-REWRITE-SEC
                      PERFORM      RECE65-HENSYU-SEC
-                     PERFORM      RECE64-NEXT-SEC
+                     PERFORM      900-RECE64-NEXT-SEC
            END-PERFORM
       *
            .
@@ -374,7 +384,7 @@
                        MOVE    1        TO      FLG-RECE65
                    NOT  INVALID
                        MOVE    ZERO     TO      FLG-RECE65
-                       PERFORM   RECE65-NEXT-SEC
+                       PERFORM   900-RECE65-NEXT-SEC
            END-START
            PERFORM   UNTIL
                   (RECE62-HOSPID        NOT =  RECE65-HOSPID)    OR
@@ -393,7 +403,7 @@
                       MOVE   KH-IDX        TO     RECE65-KOHBUNRI
                       PERFORM      RECE65-REWRITE-SEC
                    END-IF
-                   PERFORM      RECE65-NEXT-SEC
+                   PERFORM      900-RECE65-NEXT-SEC
            END-PERFORM
       *
            .
@@ -425,7 +435,7 @@
            .
        RECE65-REWRITE-EXT.
            EXIT.
-057400*
+      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
@@ -461,6 +471,55 @@
            EXIT.
       *
       *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
@@ -493,25 +552,26 @@
       *****************************************************************
       *    中間ファイルＲＥＡＤ処理（Ｆ００２）
       *****************************************************************
-       RECE62-READ-SEC            SECTION.
+       900-RECE62-READ-SEC            SECTION.
       *
            READ    RECE62-FILE   NEXT
                AT  END
                    MOVE    1     TO    FLG-END
                NOT  AT  END
                    ADD     1     TO    CNT-IN
+                                       CNT-IN-CANCEL
       *
                    DISPLAY "RECE62  PTNUM=" RECE62-PTNUM
       *
            END-READ
            .
-       RECE62-READ-EXT.
+       900-RECE62-READ-EXT.
            EXIT.
       *
       *****************************************************************
       *    中間ファイルＲＥＡＤ処理（Ｆ００４）
       *****************************************************************
-       RECE64-NEXT-SEC            SECTION.
+       900-RECE64-NEXT-SEC            SECTION.
       *
            MOVE    ZERO          TO    FLG-RECE64
            READ    RECE64-FILE   NEXT
@@ -519,13 +579,13 @@
                    MOVE    1     TO    FLG-RECE64
            END-READ
            .
-       RECE64-NEXT-EXT.
+       900-RECE64-NEXT-EXT.
            EXIT.
       *
       *****************************************************************
       *    中間ファイルＲＥＡＤ処理（Ｆ００５）
       *****************************************************************
-       RECE65-NEXT-SEC            SECTION.
+       900-RECE65-NEXT-SEC            SECTION.
       *
            MOVE    ZERO          TO    FLG-RECE65
            READ    RECE65-FILE   NEXT
@@ -533,7 +593,7 @@
                    MOVE    1     TO    FLG-RECE65
            END-READ
            .
-       RECE65-READ-EXT.
+       900-RECE65-NEXT-EXT.
            EXIT.
       *
       *****************************************************************

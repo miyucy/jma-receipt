@@ -108,6 +108,7 @@
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
+           03  FLG-READ                                PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -121,7 +122,6 @@
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
-      *****03  WRK-IN                  PIC X(01).
            03  WRK-PARA.
                05  WRK-PARA1.
                    07  WRK-PARA-SRYYM  PIC X(06).
@@ -131,6 +131,8 @@
                05  WRK-PARA-SHELLID    PIC X(08).
                05  WRK-PARA-TEISYUTUSAKI
                                        PIC X(01).
+               05  WRK-PARA-SYARECEKBN PIC X(01).
+               05  WRK-PARA-KKHRECEKBN PIC X(01).
       *
            03  WRK-RECEERR             PIC X(200). 
            03  WRK-KOHBUNRI            PIC 9(01).
@@ -193,6 +195,8 @@
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA1
                                                WRK-PARA-TEISYUTUSAKI
+                                               WRK-PARA-SYARECEKBN
+                                               WRK-PARA-KKHRECEKBN
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
            END-UNSTRING                                  
@@ -374,20 +378,37 @@
       *****************************************************************
        900-RECE04-READ-SEC             SECTION.
       *
-           READ    RECE04-FILE         NEXT
-               AT  END
-                   MOVE    1           TO  FLG-END
-               NOT AT  END
-                   IF    ( RECE04-TEISYUTUSAKI
-                                       NOT =   WRK-PARA-TEISYUTUSAKI )
-                   OR    ( RECE04-RECESYUBETU
-                                           =   ZERO    OR    8888    )
-                   OR    ( RECE04-SRYKBN   =  "95"     OR    "96"    )
-                           GO  TO  900-RECE04-READ-SEC
-                   END-IF                       
-                   ADD     1           TO  CNT-IN
-                   MOVE    ZERO        TO  FLG-END
-           END-READ
+           MOVE    ZERO                TO  FLG-READ
+      *
+           PERFORM                 UNTIL   FLG-END     =   1
+                                   OR      FLG-READ    =   1            
+               READ    RECE04-FILE         NEXT
+                   AT  END
+                       MOVE    1           TO  FLG-END
+                   NOT AT  END
+                       IF  ( ( WRK-PARA-SYARECEKBN =   ZERO
+                                                   OR  "2"  )  AND
+                             ( RECE04-TEISYUTUSAKI
+                                                   =   "1"  )      )
+                       OR  ( ( WRK-PARA-KKHRECEKBN =   ZERO
+                                                   OR  "2"  )  AND
+                             ( RECE04-TEISYUTUSAKI
+                                                   =   "2"  )      )
+                       OR  (   RECE04-RECESYUBETU  =   ZERO   OR 
+                                                       8888        )
+                       OR  (   RECE04-SRYKBN       =   "95"   OR
+                                                       "96"        )
+                           CONTINUE
+                       ELSE
+                           MOVE    1           TO  FLG-READ
+                       END-IF      
+      *
+                       IF      FLG-READ            =   1         
+                           ADD     1                   TO  CNT-IN
+                           MOVE    ZERO                TO  FLG-END
+                       END-IF
+               END-READ
+           END-PERFORM
            .
        900-RECE04-READ-EXT.
            EXIT.

@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト（入院）
-      *  コンポーネント名  : 
+      *  コンポーネント名  : 診療区分別点数集計
       *  管理者            : 
       *  作成日付    作業者        記述
       *  02/12/11    NaCl−門脇    新規作成
@@ -105,6 +105,8 @@
       *  01.01.17    NACL-門脇    04/08/20  兵庫県地方公費対応
       *  01.01.18    NACL-藤原    04/09/17  ＯＣＲ記載対応
       *  01.01.19    NACL-門脇    04/10/04  点滴の診療コード＊数量の累計編集
+      *  中止処理追加
+      *  01.02.01    NACL-藤原    04/10/07  中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -238,6 +240,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN-COMMIT                           PIC 9(06).
+           03  CNT-IN-CANCEL                           PIC 9(06).
            03  CNT-OUT1                                PIC 9(06).
            03  CNT-OUT2                                PIC 9(06).
            03  CNT-TBL-OCC                             OCCURS  2.
@@ -827,6 +830,9 @@
       *
            MOVE    COMMAND-PARAM       TO  WRK-PARA
       *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
@@ -841,6 +847,8 @@
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *                             
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
@@ -1030,10 +1038,6 @@
            MOVE   "SYSKANRI-KEY"        TO  WK-PATH
            PERFORM   CSR-CLOSE-SEC
       *
-      *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
-      *
            .
        100-INIT-EXT.
            EXIT.
@@ -1219,10 +1223,16 @@
                PERFORM     210-HENSYU-SEC
       *
                PERFORM     RECE62-READ-SEC
-      	       IF  CNT-IN-COMMIT   =   300
-      	           MOVE  ZERO          TO      CNT-IN-COMMIT
+              IF  CNT-IN-COMMIT   =   300
+                  MOVE  ZERO          TO      CNT-IN-COMMIT
                    PERFORM 900-DBCOMMIT-SEC
                    PERFORM 900-DBSTART-SEC
+               END-IF
+      *
+      *        処理中止設定処理
+               IF      CNT-IN-CANCEL       =   50
+                   MOVE    ZERO                TO  CNT-IN-CANCEL
+                   PERFORM 500-CANCEL-HENSYU-SEC
                END-IF
            END-PERFORM
       *
@@ -7472,6 +7482,56 @@
            EXIT.
       *
       *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
@@ -7941,6 +8001,7 @@
                NOT  AT  END
                    ADD     1     TO    CNT-IN(IDZ)
                    ADD     1     TO    CNT-IN-COMMIT
+                                       CNT-IN-CANCEL
       *
                    DISPLAY "RECE62 " IDZ " PTNUM=" RECE62-PTNUM     
       *

@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト（入院）
-      *  コンポーネント名  : 
+      *  コンポーネント名  : 診療実日数編集
       *  管理者            : 
       *  作成日付    作業者        記述
       *  02/12/11    NaCl−門脇    新規作成
@@ -48,6 +48,8 @@
       *  01.00.14    NACL-門脇    04/04/23  選定入院時の他医療機関受診の
       *                                     算定修正
       *  01.00.15    NACL-門脇    04/08/04  同一保険番号対応
+      *  中止処理追加
+      *  01.01.01    NACL-藤原    04/10/07  中止処理の追加
       *****************************************************************
       *
       *
@@ -120,13 +122,14 @@
            03  CNT-TBL-OCC                             OCCURS  2.
                05  CNT-IN                              PIC 9(06).
                05  CNT-MOD                             PIC 9(06).
+           03  CNT-IN-CANCEL                           PIC 9(06).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX                                     PIC 9(03).
            03  IDY                                     PIC 9(03).
            03  IDZ                                     PIC 9(03).
-	   03  IDX1                                    PIC 9(03).
+           03  IDX1                                    PIC 9(03).
            03  IDX2                                    PIC 9(03).
            03  HC-IDX                                  PIC 9(03).
            03  KH-IDX                                  PIC 9(03).
@@ -362,6 +365,9 @@
       *
            MOVE    COMMAND-PARAM       TO  WRK-PARA
       *
+           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
@@ -376,10 +382,21 @@
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *
-           MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
+      *    システム管理情報編集処理
+           IF      FLG-END             =   ZERO
+               PERFORM 1001-SYSKANRI-HENSYU-SEC
+           END-IF
+           .
+       100-INIT-EXT.
+           EXIT.
       *
+      ******************************************************************
+      *    システム管理情報編集処理
+      ******************************************************************
+       1001-SYSKANRI-HENSYU-SEC          SECTION.
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
       *       医療機関情報
@@ -397,7 +414,7 @@
                                               MCPDATA-REC
               IF      MCP-RC              =   ZERO
                   MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-                  PERFORM  SYSKANRI-READ-SEC
+                  PERFORM  900-SYSKANRI-READ-SEC
       *
                   IF      FLG-SYSKANRI     =   ZERO
                      MOVE   SYS-1001-PREFNUM  TO  WRK-PREFNUM
@@ -436,14 +453,14 @@
                                               MCPDATA-REC
               IF      MCP-RC              =   ZERO
                   MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
-                  PERFORM  SYSKANRI-READ-SEC
+                  PERFORM  900-SYSKANRI-READ-SEC
                   PERFORM  UNTIL   FLG-SYSKANRI  =    1
       *
                     ADD     1             TO  SYSKAN-IDX
                     MOVE    SYS-1001-REC  TO  TBL-SYS1001(SYSKAN-IDX)
       *
                     MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
-                    PERFORM  SYSKANRI-READ-SEC
+                    PERFORM  900-SYSKANRI-READ-SEC
       *
                   END-PERFORM
               ELSE
@@ -464,7 +481,7 @@
            IF   WRK-PARA-SRYYM    NOT =  ZERO
       *
              MOVE     WRK-PARA-SRYYM     TO  WRK-SRYYM-5000
-             PERFORM   SYS-5000-CHK-SEC
+             PERFORM   10012-SYS-5000-CHK-SEC
       *      医療機関減算の取得（システム管理テーブルより）
              MOVE     ZERO               TO  WRK-SHOKUJIRYOYO
                                              WRK-TOKUKANRIKASAN
@@ -490,9 +507,9 @@
                                              MCPDATA-REC
              IF      MCP-RC              =   ZERO
                  MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
-                 PERFORM  SYSKANRI-READ-SEC
+                 PERFORM  900-SYSKANRI-READ-SEC
       *
-                 PERFORM  SYSKAN-HENSYU-SEC
+                 PERFORM  10011-SYSKAN-HENSYU-SEC
       *
              END-IF
       *
@@ -506,7 +523,7 @@
              IF        WRK-SYS5000-COUNT    =     ZERO
                  CONTINUE
              ELSE
-                 PERFORM  SYS-5000-GET-SEC
+                 PERFORM  10013-SYS-5000-GET-SEC
              END-IF
       *
            ELSE
@@ -527,17 +544,14 @@
                                              MCPDATA-REC
              IF      MCP-RC              =   ZERO
                  MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
-                 PERFORM  SYSKANRI-READ-SEC
+                 PERFORM  900-SYSKANRI-READ-SEC
                  PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
-      *
                    ADD     1            TO  SYSKAN-IDX
                    MOVE   SYS-5000-REC  TO  TBL-SYS5000(SYSKAN-IDX)
       *
                    MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
-                   PERFORM  SYSKANRI-READ-SEC
-      *
+                   PERFORM  900-SYSKANRI-READ-SEC
                  END-PERFORM
-      *
              END-IF
       *
              MOVE    "DBCLOSE"               TO  MCP-FUNC
@@ -546,17 +560,16 @@
                                              MCPAREA
                                              ORCMCPAREA
                                              MCPDATA-REC
-      *
            END-IF
       *
            .
-       100-INIT-EXT.
+       1001-SYSKANRI-HENSYU-EXT.
            EXIT.
       *
       ******************************************************************
       *    月内に複数の医療期間情報がないか検索（医療機関減算の確認）  *
       ******************************************************************
-       SYS-5000-CHK-SEC                 SECTION.
+       10012-SYS-5000-CHK-SEC                 SECTION.
       *
            MOVE     ZERO               TO  WRK-SYS5000-COUNT
       *
@@ -574,11 +587,11 @@
                                            MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
-               PERFORM  SYSKANRI-READ-SEC
+               PERFORM  900-SYSKANRI-READ-SEC
                PERFORM  UNTIL    FLG-SYSKANRI   =   1
                    ADD     1     TO        WRK-SYS5000-COUNT
                    MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
-                   PERFORM  SYSKANRI-READ-SEC
+                   PERFORM  900-SYSKANRI-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -591,13 +604,13 @@
       *
            .
       *
-       SYS-5000-CHK-EXT.
+       10012-SYS-5000-CHK-EXT.
            EXIT.
       *
       ******************************************************************
       *    月内の医療期間情報取得（医療機関減算情報）                  *
       ******************************************************************
-       SYS-5000-GET-SEC                 SECTION.
+       10013-SYS-5000-GET-SEC                 SECTION.
       *
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5000"              TO  SYS-KANRICD
@@ -613,7 +626,7 @@
                                            MCPDATA-REC
            IF      MCP-RC              =   ZERO
                MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
-               PERFORM  SYSKANRI-READ-SEC
+               PERFORM  900-SYSKANRI-READ-SEC
                PERFORM  UNTIL    FLG-SYSKANRI   =   1
                  MOVE   SYS-5000-STYUKYMD(7:2)  TO  IDV
                  PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
@@ -660,7 +673,7 @@
                   END-IF
                  END-PERFORM
                  MOVE    "SYSKANRI-KEY11"  TO  ORC-DBPATH
-                 PERFORM  SYSKANRI-READ-SEC
+                 PERFORM  900-SYSKANRI-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -673,13 +686,13 @@
       *
            .
       *
-       SYS-5000-GET-EXT.
+       10013-SYS-5000-GET-EXT.
            EXIT.
       *
       *****************************************************************
       *    シスカンの編集
       *****************************************************************
-       SYSKAN-HENSYU-SEC                SECTION.
+       10011-SYSKAN-HENSYU-SEC                SECTION.
       *
            PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
                     UNTIL     GENSAN-IDX   >   4
@@ -719,7 +732,7 @@
            END-IF
       *
            .
-       SYSKAN-HENSYU-EXT.
+       10011-SYSKAN-HENSYU-EXT.
            EXIT.
       * 
       *****************************************************************
@@ -741,7 +754,7 @@
                    MOVE    WRK-CONS-TERMID     TO  RECE62PARA-TERMID
                END-IF
       *
-               PERFORM 200-HENSYU-SEC
+               PERFORM 2001-HENSYU-SEC
            END-PERFORM 
       *
            MOVE    1                   TO  FLG-END
@@ -752,34 +765,41 @@
       *****************************************************************
       *    主処理
       *****************************************************************
-       200-HENSYU-SEC                SECTION.
+       2001-HENSYU-SEC                SECTION.
       *
            MOVE    ZERO                TO  FLG-RECE62
       *
            OPEN    I-O                 RECE62-FILE
       *
-           PERFORM    RECE62-READ-SEC
+           PERFORM    900-RECE62-READ-SEC
       *
            PERFORM                     UNTIL   FLG-RECE62  =   1
-               PERFORM     210-HENSYU-SEC
+                                       OR      FLG-END     =   1
+               PERFORM     20011-HENSYU-SEC
       *
-               PERFORM     RECE62-READ-SEC
+               PERFORM     900-RECE62-READ-SEC
+      *
+      *        処理中止設定処理
+               IF      CNT-IN-CANCEL       =   50
+                   MOVE    ZERO                TO  CNT-IN-CANCEL
+                   PERFORM 500-CANCEL-HENSYU-SEC
+               END-IF
            END-PERFORM
       *
            CLOSE   RECE62-FILE
            .
-       200-HENSYU-EXT.
+       2001-HENSYU-EXT.
            EXIT.
       * 
       *****************************************************************
       *    編集処理
       *****************************************************************
-       210-HENSYU-SEC                   SECTION.
+       20011-HENSYU-SEC                   SECTION.
       *
       *    地方公費データのとき不明分は処理の対象としない
-           IF      IDZ                  =   2
-           AND     RECE62-RECESYUBETU   =   ZERO
-               GO  TO  210-HENSYU-EXT
+           IF    ( IDZ                  =   2    )
+           AND   ( RECE62-RECESYUBETU   =   ZERO )
+               GO  TO  20011-HENSYU-EXT
            END-IF
       *
            MOVE       SPACE             TO     TBL-JNISSU
@@ -816,7 +836,7 @@
       *
            PERFORM     RECE62-REWRITE-SEC
            .
-       210-HENSYU-EXT.
+       20011-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -839,7 +859,7 @@
            IF      MCP-RC             =       ZERO
       *
                MOVE    "NYUINACCT-KEY7"  TO      ORC-DBPATH
-               PERFORM  NYUINACCT-READ-SEC
+               PERFORM  900-NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
                  IF     NACCT-ZAISKBKBN    =    "1"  OR  "2"  OR  
@@ -849,7 +869,7 @@
                  END-IF
       *
                  MOVE          "NYUINACCT-KEY7"  TO   ORC-DBPATH
-                 PERFORM        NYUINACCT-READ-SEC
+                 PERFORM        900-NYUINACCT-READ-SEC
                END-PERFORM
       *
            END-IF
@@ -900,7 +920,7 @@
                                                 MCPDATA-REC
            IF      MCP-RC               =       ZERO
                MOVE    "SRYACCT-KEY33"  TO      ORC-DBPATH
-               PERFORM  SRYACCT-READ-SEC
+               PERFORM  900-SRYACCT-READ-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
                    PERFORM VARYING IDX1    FROM    1   BY  1
@@ -938,7 +958,7 @@
                        END-IF
                    END-PERFORM
                    MOVE     "SRYACCT-KEY33"  TO   ORC-DBPATH
-                   PERFORM   SRYACCT-READ-SEC
+                   PERFORM   900-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -1119,7 +1139,7 @@
                                                 MCPDATA-REC
            IF      MCP-RC               =       ZERO
                MOVE    "SRYACT-KEY9"    TO      ORC-DBPATH
-               PERFORM  SRYACT-READ-SEC
+               PERFORM  900-SRYACT-READ-SEC
                PERFORM  UNTIL  FLG-SRYACT    =    1
                    PERFORM   VARYING   SRYACT-IDX  FROM  1   BY   1
                              UNTIL    (SRYACT-IDX    >   5)  OR
@@ -1131,7 +1151,7 @@
                        MOVE    SRY-SRYCD(SRYACT-IDX) TO   TNS-SRYCD
                        MOVE    ACCT-SRYYM         TO  ORC-DBYMD(1:6)
                        MOVE    "01"               TO  ORC-DBYMD(7:2)
-                       PERFORM  TENSU-READ-SEC
+                       PERFORM  900-TENSU-READ-SEC
                        IF       FLG-TENSU      =    ZERO
                          IF ( (TNS-JITUDAY    =     2)    AND
                               (TNS-DAYCNT     =     1   OR   2) ) OR
@@ -1150,7 +1170,7 @@
                                                   MCPDATA-REC
                    END-PERFORM
                    MOVE     "SRYACT-KEY9"    TO   ORC-DBPATH
-                   PERFORM   SRYACT-READ-SEC
+                   PERFORM   900-SRYACT-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -1285,7 +1305,7 @@
            IF      MCP-RC             =       ZERO
       *
                MOVE    "NYUINACCT-KEY7"  TO      ORC-DBPATH
-               PERFORM  NYUINACCT-READ-SEC
+               PERFORM  900-NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
                  IF     NACCT-ZAISKBKBN          =    "1"  
@@ -1346,7 +1366,7 @@
                  END-IF
       *
                  MOVE          "NYUINACCT-KEY7"  TO   ORC-DBPATH
-                 PERFORM        NYUINACCT-READ-SEC
+                 PERFORM        900-NYUINACCT-READ-SEC
                END-PERFORM
       *
            END-IF
@@ -1374,7 +1394,7 @@
                                                 MCPDATA-REC
            IF      MCP-RC               =       ZERO
                MOVE    "SRYACCT-KEY33"  TO      ORC-DBPATH
-               PERFORM  SRYACCT-READ-SEC
+               PERFORM  900-SRYACCT-READ-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
                    PERFORM VARYING IDX1    FROM    1   BY  1
@@ -1393,7 +1413,7 @@
                        END-IF
                    END-PERFORM
                    MOVE     "SRYACCT-KEY33"  TO   ORC-DBPATH
-                   PERFORM   SRYACCT-READ-SEC
+                   PERFORM   900-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -1424,7 +1444,7 @@
       ***      END-IF
                MOVE    RECE62-SRYYM       TO  ORC-DBYMD(1:6)
                MOVE    "01"               TO  ORC-DBYMD(7:2)
-               PERFORM  TENSU-READ-SEC
+               PERFORM  900-TENSU-READ-SEC
                IF       FLG-TENSU      =    ZERO
                   PERFORM VARYING GENSAN-IDX2 FROM 1 BY 1
                                UNTIL     GENSAN-IDX2   >   31
@@ -1454,7 +1474,7 @@
       ***      END-IF
                MOVE    RECE62-SRYYM       TO  ORC-DBYMD(1:6)
                MOVE    "01"               TO  ORC-DBYMD(7:2)
-               PERFORM  TENSU-READ-SEC
+               PERFORM  900-TENSU-READ-SEC
                IF       FLG-TENSU      =    ZERO
                   PERFORM VARYING GENSAN-IDX2 FROM 1 BY 1
                                UNTIL     GENSAN-IDX2   >   31
@@ -1484,7 +1504,7 @@
       ***      END-IF
                MOVE    RECE62-SRYYM       TO  ORC-DBYMD(1:6)
                MOVE    "01"               TO  ORC-DBYMD(7:2)
-               PERFORM  TENSU-READ-SEC
+               PERFORM  900-TENSU-READ-SEC
                IF       FLG-TENSU      =    ZERO
                   PERFORM VARYING GENSAN-IDX2 FROM 1 BY 1
                                UNTIL     GENSAN-IDX2   >   31
@@ -1977,7 +1997,7 @@
                                            MCPDATA-REC
            IF      MCP-RC             =    ZERO
                MOVE    "NYUINACT-KEY9"     TO   ORC-DBPATH
-               PERFORM NYUINACT-READ-SEC
+               PERFORM 900-NYUINACT-READ-SEC
            ELSE
                MOVE    1              TO   FLG-NYUINACT
            END-IF
@@ -1994,7 +2014,7 @@
                      MOVE    NSRY-SRYCD(NYUINACT-IDX) TO   TNS-SRYCD
                      MOVE    NACCT-SRYYM        TO  ORC-DBYMD(1:6)
                      MOVE    "01"               TO  ORC-DBYMD(7:2)
-                     PERFORM  TENSU-READ-SEC
+                     PERFORM  900-TENSU-READ-SEC
                      IF       FLG-TENSU      =    ZERO
                          IF   TNS-DATAKBN    =    1
                               MOVE   TNS-TEN   TO   WRK-KHNTEN
@@ -2060,7 +2080,7 @@
                                              MCPDATA-REC
                  IF      MCP-RC             =    ZERO
                      MOVE  "SENTEICDCHG-KEY2" TO  ORC-DBPATH
-                     PERFORM  SENTEICDCHG-READ-SEC
+                     PERFORM  900-SENTEICDCHG-READ-SEC
                  ELSE
                      MOVE    1                TO  FLG-SENTEICDCHG
                  END-IF
@@ -2072,7 +2092,7 @@
                     MOVE    SENCHG-SENTEISRYCD  TO    TNS-SRYCD
                     MOVE    NACCT-SRYYM         TO    ORC-DBYMD(1:6)
                     MOVE    "01"                TO    ORC-DBYMD(7:2)
-                    PERFORM  TENSU-READ-SEC
+                    PERFORM  900-TENSU-READ-SEC
                     IF       FLG-TENSU      =    ZERO
                        MOVE     TNS-TEN         TO    WRK-SENTEI-KHNTEN
                        COMPUTE  WRK-SENTEI-ZAITEN  =  WRK-SENTEI-KHNTEN
@@ -2263,7 +2283,7 @@
                MOVE    WRK-GAIHAKU-SRYCD  TO  TNS-SRYCD
                MOVE    NACCT-SRYYM        TO  ORC-DBYMD(1:6)
                MOVE    "01"               TO  ORC-DBYMD(7:2)
-               PERFORM  TENSU-READ-SEC
+               PERFORM  900-TENSU-READ-SEC
                IF       FLG-TENSU      =    ZERO
                         MOVE   TNS-TEN    TO  WRK-GAIHAKU-KHNTEN
                END-IF                  
@@ -2420,7 +2440,7 @@
            IF      MCP-RC             =       ZERO
       *
                MOVE    "NYUINACCT-KEY7"  TO      ORC-DBPATH
-               PERFORM  NYUINACCT-READ-SEC
+               PERFORM  900-NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
                  IF     NACCT-ZAISKBKBN          =    "1"  
@@ -2450,7 +2470,7 @@
                  END-IF
       *
                  MOVE          "NYUINACCT-KEY7"  TO   ORC-DBPATH
-                 PERFORM        NYUINACCT-READ-SEC
+                 PERFORM        900-NYUINACCT-READ-SEC
                END-PERFORM
       *
            END-IF
@@ -2478,7 +2498,7 @@
            IF      MCP-RC             =       ZERO
       *
                MOVE    "NYUINACCT-KEY7"  TO      ORC-DBPATH
-               PERFORM  NYUINACCT-READ-SEC
+               PERFORM  900-NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
                  IF     NACCT-ZAISKBKBN    =    "6"  
@@ -2511,7 +2531,7 @@
                  END-IF
       *
                  MOVE          "NYUINACCT-KEY7"  TO   ORC-DBPATH
-                 PERFORM        NYUINACCT-READ-SEC
+                 PERFORM        900-NYUINACCT-READ-SEC
                END-PERFORM
       *
            END-IF
@@ -2539,7 +2559,7 @@
                                                 MCPDATA-REC
            IF      MCP-RC               =       ZERO
                MOVE    "SRYACCT-KEY33"  TO      ORC-DBPATH
-               PERFORM  SRYACCT-READ-SEC
+               PERFORM  900-SRYACCT-READ-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
                    PERFORM VARYING IDX1    FROM    1   BY  1
@@ -2564,7 +2584,7 @@
                        END-IF
                    END-PERFORM
                    MOVE     "SRYACCT-KEY33"  TO   ORC-DBPATH
-                   PERFORM   SRYACCT-READ-SEC
+                   PERFORM   900-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -2640,7 +2660,7 @@
            IF      MCP-RC             =       ZERO
       *
                MOVE    "NYUINACT-KEY9"  TO      ORC-DBPATH
-               PERFORM  NYUINACT-READ-SEC
+               PERFORM  900-NYUINACT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACT  =    "1")
       *
                  PERFORM   VARYING  NYUINACT-IDX  FROM 1  BY  1
@@ -2665,7 +2685,7 @@
                  END-PERFORM
       *
                  MOVE          "NYUINACT-KEY9"  TO   ORC-DBPATH
-                 PERFORM        NYUINACT-READ-SEC
+                 PERFORM        900-NYUINACT-READ-SEC
                END-PERFORM
       *
            END-IF
@@ -2701,7 +2721,7 @@
                                                 MCPDATA-REC
            IF      MCP-RC               =       ZERO
                MOVE    "SRYACT-KEY9"    TO      ORC-DBPATH
-               PERFORM  SRYACT-READ-SEC
+               PERFORM  900-SRYACT-READ-SEC
                PERFORM  UNTIL  FLG-SRYACT    =    1
                    PERFORM   VARYING   SRYACT-IDX  FROM  1   BY   1
                              UNTIL    (SRYACT-IDX    >   5)  OR
@@ -2723,7 +2743,7 @@
                                                        MCPDATA-REC
                    END-PERFORM
                    MOVE     "SRYACT-KEY9"    TO   ORC-DBPATH
-                   PERFORM   SRYACT-READ-SEC
+                   PERFORM   900-SRYACT-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -2959,7 +2979,7 @@
                                                  MCPDATA-REC
            IF      MCP-RC               =       ZERO
                MOVE    "SRYACCT-KEY33"  TO      ORC-DBPATH
-               PERFORM  SRYACCT-READ-SEC
+               PERFORM  900-SRYACCT-READ-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
                    PERFORM VARYING IDX1    FROM    1   BY  1
@@ -2977,7 +2997,7 @@
                        END-IF
                    END-PERFORM
                    MOVE     "SRYACCT-KEY33"  TO   ORC-DBPATH
-                   PERFORM   SRYACCT-READ-SEC
+                   PERFORM   900-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -3242,7 +3262,7 @@
                                            MCPDATA-REC
            IF      MCP-RC             =    ZERO
                  MOVE    "SRYACT-KEY9"    TO   ORC-DBPATH
-                 PERFORM  SRYACT-READ-SEC
+                 PERFORM  900-SRYACT-READ-SEC
            ELSE
                  MOVE    1                TO   FLG-SRYACT
            END-IF
@@ -3434,6 +3454,56 @@
            EXIT.
       *
       *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
@@ -3462,7 +3532,7 @@
       *****************************************************************
       *    入院会計マスター読込
       *****************************************************************
-       NYUINACCT-READ-SEC         SECTION.
+       900-NYUINACCT-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -3478,13 +3548,13 @@
            END-IF
       *
            .
-       NYUINACCT-READ-EXT.
+       900-NYUINACCT-READ-EXT.
            EXIT.
       *
       **************************************************************
       *    入院診療行為マスター読込
       **************************************************************
-       NYUINACT-READ-SEC         SECTION.
+       900-NYUINACT-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -3500,13 +3570,13 @@
            END-IF
       *
            .
-       NYUINACT-ERAD-EXT.
+       900-NYUINACT-READ-EXT.
            EXIT.
       *
       *****************************************************************
       *    診療会計読込
       *****************************************************************
-       SRYACCT-READ-SEC           SECTION.
+       900-SRYACCT-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -3522,13 +3592,13 @@
            END-IF
       *
            .
-       SRYACCT-READ-EXT.
+       900-SRYACCT-READ-EXT.
            EXIT.
       *
       *****************************************************************
       *    診療行為読込
       *****************************************************************
-       SRYACT-READ-SEC           SECTION.
+       900-SRYACT-READ-SEC           SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -3544,13 +3614,13 @@
            END-IF
       *
            .
-       SRYACT-READ-EXT.
+       900-SRYACT-READ-EXT.
            EXIT.
       *     
       *****************************************************************
       *    点数マスター読込（主キー）
       *****************************************************************
-       TENSU-READ-SEC         SECTION.
+       900-TENSU-READ-SEC         SECTION.
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -3579,7 +3649,7 @@
            END-IF
       *
            .
-       TENSU-READ-EXT.
+       900-TENSU-READ-EXT.
            EXIT.
       *     
       *****************************************************************
@@ -3620,7 +3690,7 @@
       *****************************************************************
       *    選定療養マスター読込
       *****************************************************************
-       SENTEICDCHG-READ-SEC         SECTION.
+       900-SENTEICDCHG-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -3636,13 +3706,13 @@
            END-IF
       *
            .
-       SENTEICDCHG-READ-EXT.
+       900-SENTEICDCHG-READ-EXT.
            EXIT.
       *
       **************************************************************
       *    システム管理マスタ読み込み処理
       **************************************************************
-       SYSKANRI-READ-SEC         SECTION.
+       900-SYSKANRI-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
            CALL    "ORCMCPSUB"          USING
@@ -3662,8 +3732,97 @@
            END-IF
       *
            .
-       SYSKANRI-READ-EXT.
+       900-SYSKANRI-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    中間ファイルＲＥＡＤ処理
+      *****************************************************************
+       900-RECE62-READ-SEC            SECTION.
+      *
+           READ    RECE62-FILE   NEXT
+               AT  END
+                   MOVE    1     TO    FLG-RECE62
+               NOT  AT  END
+                   ADD     1     TO    CNT-IN (IDZ)
+                                       CNT-IN-CANCEL
+      *
+                   DISPLAY "RECE62 " IDZ " PTNUM=" RECE62-PTNUM     
+      *
+                   IF   WRK-PARA-SRYYM    NOT =  ZERO
+                     CONTINUE
+                   ELSE
+      *              医療機関ＩＤ編集
+                     MOVE  ZERO           TO  FLG-SET
+                     MOVE  RECE62-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
+                     MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
+                     PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                           UNTIL  ( SYSKAN-IDX              >  10   )
+                            OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
+                            OR    ( FLG-SET                 =   1   )
+      *
+                       MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
+                       IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                       AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
+                          MOVE     1               TO    FLG-SET
+                          MOVE   SYS-1001-PREFNUM  TO    WRK-PREFNUM
+                       END-IF
+      *
+                     END-PERFORM
+                     IF     FLG-SET  =  ZERO
+               STRING  "医療機関情報が取得できませんでした。診療年月＝"
+                                               DELIMITED  BY  SIZE 
+                       RECE62-SRYYM            DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
+                        PERFORM 500-ERR-HENSYU-SEC
+                        MOVE    1              TO  FLG-RECE62
+                     END-IF
+                   END-IF
+      *
+                   IF   WRK-PARA-SRYYM    NOT =  ZERO
+                      CONTINUE
+                   ELSE
+                      MOVE      RECE62-SRYYM   TO  WRK-SRYYM-5000
+                      PERFORM   10012-SYS-5000-CHK-SEC
+      *               医療機関減算の取得（システム管理テーブルより）
+                      MOVE     ZERO      TO  WRK-SHOKUJIRYOYO
+                                             WRK-TOKUKANRIKASAN
+      *
+                      MOVE     ZERO      TO  FLG-MIJISI-INNAI
+                                             FLG-MIJISI-IRYO
+                                             FLG-MIJISI-JYOKU
+      *
+                      MOVE     SPACE     TO  TBL-GENSAN
+                      INITIALIZE             TBL-GENSAN
+      *
+                      MOVE  ZERO         TO  FLG-SET
+                      MOVE  RECE62-SRYYM TO  WRK-SYS-SRYYMD(1:6)
+                      MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
+                      PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
+                           UNTIL  ( SYSKAN-IDX              >  10   )
+                            OR    ( TBL-SYS5000(SYSKAN-IDX) = SPACE )
+                            OR    ( FLG-SET                 =   1   )
+      *
+                       MOVE  TBL-SYS5000(SYSKAN-IDX)  TO  SYS-5000-REC
+                       IF   ( SYS-5000-STYUKYMD  <=  WRK-SYS-SRYYMD    )
+                       AND  ( WRK-SYS-SRYYMD     <=  SYS-5000-EDYUKYMD )
+                          MOVE     1       TO    FLG-SET
+                          PERFORM  10011-SYSKAN-HENSYU-SEC
+                       END-IF
+      *
+                      END-PERFORM
+                      IF        WRK-SYS5000-COUNT    =     ZERO
+                          CONTINUE
+                      ELSE
+                          PERFORM  10013-SYS-5000-GET-SEC
+                      END-IF
+                   END-IF
+           END-READ
+           .
+       900-RECE62-READ-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    ＤＢ　オープン処理
@@ -3705,91 +3864,3 @@
            .
        900-DBDISCONNECT-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    中間ファイルＲＥＡＤ処理
-      *****************************************************************
-       RECE62-READ-SEC            SECTION.
-      *
-           READ    RECE62-FILE   NEXT
-               AT  END
-                   MOVE    1     TO    FLG-RECE62
-               NOT  AT  END
-                   ADD     1     TO    CNT-IN (IDZ)
-      *
-                   DISPLAY "RECE62 " IDZ " PTNUM=" RECE62-PTNUM     
-      *
-                   IF   WRK-PARA-SRYYM    NOT =  ZERO
-                     CONTINUE
-                   ELSE
-      *              医療機関ＩＤ編集
-                     MOVE  ZERO           TO  FLG-SET
-                     MOVE  RECE62-SRYYM   TO  WRK-SYS-SRYYMD(1:6)
-                     MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
-                     PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                           UNTIL  ( SYSKAN-IDX              >  10   )
-                            OR    ( TBL-SYS1001(SYSKAN-IDX) = SPACE )
-                            OR    ( FLG-SET                 =   1   )
-      *
-                       MOVE  TBL-SYS1001(SYSKAN-IDX)  TO  SYS-1001-REC
-                       IF   ( SYS-1001-STYUKYMD  <=  WRK-SYS-SRYYMD    )
-                       AND  ( WRK-SYS-SRYYMD     <=  SYS-1001-EDYUKYMD )
-                          MOVE     1               TO    FLG-SET
-                          MOVE   SYS-1001-PREFNUM  TO    WRK-PREFNUM
-                       END-IF
-      *
-                     END-PERFORM
-                     IF     FLG-SET  =  ZERO
-               STRING  "医療機関情報が取得できませんでした。診療年月＝"
-                                               DELIMITED  BY  SIZE 
-                       RECE62-SRYYM            DELIMITED  BY  SIZE
-                                       INTO    WRK-RECEERR
-               END-STRING
-                        PERFORM 500-ERR-HENSYU-SEC
-                        MOVE    1              TO  FLG-RECE62
-                     END-IF
-                   END-IF
-      *
-                   IF   WRK-PARA-SRYYM    NOT =  ZERO
-                      CONTINUE
-                   ELSE
-                      MOVE      RECE62-SRYYM   TO  WRK-SRYYM-5000
-                      PERFORM   SYS-5000-CHK-SEC
-      *               医療機関減算の取得（システム管理テーブルより）
-                      MOVE     ZERO      TO  WRK-SHOKUJIRYOYO
-                                             WRK-TOKUKANRIKASAN
-      *
-                      MOVE     ZERO      TO  FLG-MIJISI-INNAI
-                                             FLG-MIJISI-IRYO
-                                             FLG-MIJISI-JYOKU
-      *
-                      MOVE     SPACE     TO  TBL-GENSAN
-                      INITIALIZE             TBL-GENSAN
-      *
-                      MOVE  ZERO         TO  FLG-SET
-                      MOVE  RECE62-SRYYM TO  WRK-SYS-SRYYMD(1:6)
-                      MOVE  "01"         TO  WRK-SYS-SRYYMD(7:2)
-                      PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
-                           UNTIL  ( SYSKAN-IDX              >  10   )
-                            OR    ( TBL-SYS5000(SYSKAN-IDX) = SPACE )
-                            OR    ( FLG-SET                 =   1   )
-      *
-                       MOVE  TBL-SYS5000(SYSKAN-IDX)  TO  SYS-5000-REC
-                       IF   ( SYS-5000-STYUKYMD  <=  WRK-SYS-SRYYMD    )
-                       AND  ( WRK-SYS-SRYYMD     <=  SYS-5000-EDYUKYMD )
-                          MOVE     1       TO    FLG-SET
-                          PERFORM  SYSKAN-HENSYU-SEC
-                       END-IF
-      *
-                      END-PERFORM
-                      IF        WRK-SYS5000-COUNT    =     ZERO
-                          CONTINUE
-                      ELSE
-                          PERFORM  SYS-5000-GET-SEC
-                      END-IF
-                   END-IF
-           END-READ
-           .
-       RECE62-READ-EXT.
-           EXIT.
-      *

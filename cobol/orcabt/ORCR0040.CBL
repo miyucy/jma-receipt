@@ -185,10 +185,6 @@
                                    BY         //RECEERR//.
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-      *    ¥¹¥ÑÎÎ°è
-       01  SPA2-AREA.
-           03  SPA-STS              PIC 9(04).
-      *
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
            03  STS-RECE02          PIC X(02).
@@ -539,7 +535,7 @@
            PERFORM 100-INIT-SEC
       *
            PERFORM 200-MAIN-SEC
-                   UNTIL   SPA-STS  =   2
+                   UNTIL  FLG-END  =   1
       *
            PERFORM 300-END-SEC
       *
@@ -550,7 +546,6 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  SPA2-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
@@ -3165,7 +3160,6 @@
                END-IF
       *                             
                MOVE    1                   TO  FLG-END
-               MOVE    2                   TO  SPA-STS
            END-IF
            .
        500-CANCEL-HENSYU-EXT.
@@ -3226,11 +3220,10 @@
            READ    RECE02-FILE         NEXT
                AT  END
                    MOVE    1           TO  FLG-END
-                   MOVE    2           TO  SPA-STS
                NOT AT  END
                    ADD     1           TO  CNT-RECE02
                    ADD     1           TO  CNT-IN-COMMIT
-                   MOVE    ZERO        TO  FLG-END
+                                           CNT-IN-CANCEL
       *
                    DISPLAY "RECE02  PTNUM=" RECE02-PTNUM
            END-READ

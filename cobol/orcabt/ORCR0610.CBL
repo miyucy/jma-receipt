@@ -45,6 +45,9 @@
       *
       *  レセ電機能追加
       *  01.02.01    NACL-藤原    04/07/30  入院レセ電処理の追加
+      *
+      *  中止処理追加
+      *  01.03.01    NACL-藤原    04/10/07  中止処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -157,6 +160,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
+           03  CNT-IN-CANCEL                           PIC 9(06).
            03  CNT-OUT1                                PIC 9(06).
            03  CNT-OUT2                                PIC 9(06).
       *
@@ -306,10 +310,6 @@
            COPY    "CPRCF061.INC"  REPLACING  //RECE61//
                                    BY         //WRK-RECE61//.
       *
-       01  WRK-RECE07-REC. 
-           COPY    "CPRCF007.INC"  REPLACING  //RECE07//
-                                   BY         //WRK-RECE07//.
-      *
       *    社保（継続）のとき 
        01  WRK-CONTKBN-REC. 
            COPY    "CPRCF061.INC"  REPLACING  //RECE61//
@@ -358,24 +358,9 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-           COPY    "CPRCF010.INC".
-      *
       *    入院会計
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
-      *
-      *    公費請求書
-           COPY    "CPKOHSKY.INC".
-      *
-      *    レセプト管理     
-       01  RECE07-REC. 
-           COPY    "CPRCF007.INC".
-      *
-      *    レセプト
-           COPY    "CPRCF008.INC".
-      *
-      *    レセプト電算
-           COPY    "CPRECEDEN.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -424,23 +409,9 @@
       *
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
+                                       FLG-AREA
       *
            MOVE    COMMAND-PARAM       TO  WRK-PARA
-      *
-           PERFORM 100-DBOPEN-SEC
-      *
-      *    ステップ管理開始処理
-           MOVE    "STS"               TO  SJOBKANRI-MODE
-           INITIALIZE                      JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-           MOVE    "ORCR0610"          TO  JOB-PGID
-           MOVE    "対象患者抽出"      TO  JOB-SHELLMSG
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA  
-                                       JOBKANRI-REC
-      *
-           MOVE    ZERO                TO  FLG-END
       *
            MOVE    WRK-PARA-SRYYM      TO  SYS-2001-SRYYM
            MOVE    WRK-PARA-SYOKBN     TO  SYS-2001-SYOKBN 
@@ -454,80 +425,96 @@
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
+           PERFORM 100-DBOPEN-SEC
       *
-           IF   WRK-PARA-SRYYM    NOT =  ZERO
-      *       医療機関ＩＤ編集
-              INITIALIZE                  SYS-1001-REC
-              MOVE    "1001"              TO  SYS-1001-KANRICD
-              MOVE    "*"                 TO  SYS-1001-KBNCD
-              MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
-              MOVE    "01"                TO  ORC-DBYMD (7:2)
-              MOVE    SYS-1001-REC        TO  MCPDATA-REC
-              PERFORM 910-SYSKANRI-INV-SEC
-              IF      FLG-SYSKANRI        =   ZERO
-                  MOVE    MCPDATA-REC         TO  SYS-1001-REC
-              ELSE
-                  MOVE    "医療機関情報が取得できませんでした。"
-                                              TO  WRK-RECEERR
-                  PERFORM 500-ERR-HENSYU-SEC
-              END-IF
-           ELSE
-              MOVE     ZERO               TO  SYSKAN-IDX
-              MOVE     SPACE              TO  TBL-SYS1001-T
-              INITIALIZE                      TBL-SYS1001-T
+      *    ステップ管理開始処理
+           MOVE    "STS"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+           MOVE    "ORCR0610"          TO  JOB-PGID
+           MOVE    "対象患者抽出"      TO  JOB-SHELLMSG
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA  
+                                       JOBKANRI-REC
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *
-              INITIALIZE                      SYS-1001-REC
-              MOVE    "1001"              TO  SYS-1001-KANRICD
-              MOVE    "*"                 TO  SYS-1001-KBNCD
-              MOVE    SYS-1001-REC        TO  MCPDATA-REC
-              MOVE    "DBSELECT"          TO  MCP-FUNC
-              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
-              CALL    "ORCMCPSUB"             USING
-                                              MCPAREA
-                                              ORCMCPAREA
-                                              MCPDATA-REC
-              IF      MCP-RC              =   ZERO
-                  MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
-                  PERFORM 900-SYSKANRI-READ-SEC
-                  PERFORM  UNTIL   FLG-SYSKANRI  =    1
+           IF      FLG-END             =   ZERO
+               IF   WRK-PARA-SRYYM    NOT =  ZERO
+      *            医療機関ＩＤ編集
+                   INITIALIZE                  SYS-1001-REC
+                   MOVE    "1001"              TO  SYS-1001-KANRICD
+                   MOVE    "*"                 TO  SYS-1001-KBNCD
+                   MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+                   MOVE    "01"                TO  ORC-DBYMD (7:2)
+                   MOVE    SYS-1001-REC        TO  MCPDATA-REC
+                   PERFORM 910-SYSKANRI-INV-SEC
+                   IF      FLG-SYSKANRI        =   ZERO
+                       MOVE    MCPDATA-REC         TO  SYS-1001-REC
+                   ELSE
+                       MOVE    "医療機関情報が取得できませんでした。"
+                                                   TO  WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                   END-IF
+               ELSE
+                   MOVE     ZERO               TO  SYSKAN-IDX
+                   MOVE     SPACE              TO  TBL-SYS1001-T
+                   INITIALIZE                      TBL-SYS1001-T
       *
-                    MOVE    MCPDATA-REC   TO  SYS-1001-REC
-                    ADD     1             TO  SYSKAN-IDX
-                    MOVE    SYS-1001-REC  TO  TBL-SYS1001(SYSKAN-IDX)
+                   INITIALIZE                      SYS-1001-REC
+                   MOVE    "1001"              TO  SYS-1001-KANRICD
+                   MOVE    "*"                 TO  SYS-1001-KBNCD
+                   MOVE    SYS-1001-REC        TO  MCPDATA-REC
+                   MOVE    "DBSELECT"          TO  MCP-FUNC
+                   MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"             USING
+                                                   MCPAREA
+                                                   ORCMCPAREA
+                                                   MCPDATA-REC
+                   IF      MCP-RC              =   ZERO
+                       MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                       PERFORM 900-SYSKANRI-READ-SEC
+                       PERFORM  UNTIL   FLG-SYSKANRI  =    1
       *
-                    MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
-                    PERFORM 900-SYSKANRI-READ-SEC
+                           MOVE    MCPDATA-REC   TO  SYS-1001-REC
+                           ADD     1             TO  SYSKAN-IDX
+                           MOVE    SYS-1001-REC  TO
+                                                 TBL-SYS1001(SYSKAN-IDX)
       *
-                  END-PERFORM
-              ELSE
-                  MOVE    "医療機関情報が取得できませんでした。"
-                                            TO  WRK-RECEERR
-                  PERFORM 500-ERR-HENSYU-SEC
-              END-IF
+                           MOVE    "SYSKANRI-KEY8" TO  ORC-DBPATH
+                           PERFORM 900-SYSKANRI-READ-SEC
+                       END-PERFORM
+                   ELSE
+                       MOVE    "医療機関情報が取得できませんでした。"
+                                                 TO  WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                   END-IF
       *
-              MOVE    "DBCLOSE"           TO  MCP-FUNC
-              MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
-              CALL    "ORCMCPSUB"          USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-           END-IF
+                   MOVE    "DBCLOSE"           TO  MCP-FUNC
+                   MOVE    "SYSKANRI-KEY8"     TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+               END-IF
       *     
-      *    レセプト編集区分情報
-           INITIALIZE                  SYS-2005-REC
-           MOVE    "2005"              TO  SYS-2005-KANRICD
-           MOVE    "*"                 TO  SYS-2005-KBNCD
-           MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
-           MOVE    "01"                TO  ORC-DBYMD (7:2)
-           MOVE    SYS-2005-REC        TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-2005-REC
-           ELSE    
-               MOVE    SPACE               TO  SYS-2005-REC
-           END-IF
-           IF      SYS-2005-RJNGNBKKBN =   SPACE
-               MOVE    ZERO                TO  SYS-2005-RJNGNBKKBN
+      *        レセプト編集区分情報
+               INITIALIZE                  SYS-2005-REC
+               MOVE    "2005"              TO  SYS-2005-KANRICD
+               MOVE    "*"                 TO  SYS-2005-KBNCD
+               MOVE    WRK-PARA-SRYYM      TO  ORC-DBYMD (1:6)
+               MOVE    "01"                TO  ORC-DBYMD (7:2)
+               MOVE    SYS-2005-REC        TO  MCPDATA-REC
+               PERFORM 910-SYSKANRI-INV-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-2005-REC
+               ELSE    
+                   MOVE    SPACE               TO  SYS-2005-REC
+               END-IF
+               IF      SYS-2005-RJNGNBKKBN =   SPACE
+                   MOVE    ZERO                TO  SYS-2005-RJNGNBKKBN
+               END-IF
            END-IF
       *
            OPEN    OUTPUT              RECE611-FILE
@@ -547,7 +534,7 @@
       *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
-      *    
+      *
            EVALUATE    WRK-PARA-SYOKBN
                WHEN    "1"
                    PERFORM 2001-IKKATU-SYORI-SEC
@@ -565,6 +552,9 @@
       *****************************************************************
        2001-IKKATU-SYORI-SEC               SECTION.
       *
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
+      *
       *    診療年月編集
            MOVE    WRK-PARA-SRYYM      TO  WRK-STYMD (1:6)
            MOVE    "01"                TO  WRK-STYMD (7:2)
@@ -576,292 +566,81 @@
                                                LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD 
       *
-      *    診療年月の請求管理削除処理（種別不明分）
-           INITIALIZE                  RECE10-REC
-           MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
-           MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
-           MOVE    "1"                 TO  RECE10-NYUGAIKBN
-           MOVE    RECE10-REC          TO  MCPDATA-REC
-           MOVE    "SEIKYU-DEL5"       TO  ORC-DBPATH
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"              USING
+           IF      FLG-END             =   ZERO 
+      *        診療会計読み込み（患者ＩＤ、保険組合せ、診療科順）
+      *
+               MOVE    "1"                 TO  WRK-DBKBN 
+      *      
+               INITIALIZE                  SRYACCT-REC
+               MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
+               MOVE    SYS-2001-SRYYM      TO  ACCT-SRYYM
+               MOVE    "1"                 TO  ACCT-NYUGAIKBN
+               MOVE    SRYACCT-REC         TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
-                                            MCPDATA-REC      
-           IF      MCP-RC           NOT =   ZERO
-               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
-               MOVE
-                   "請求管理削除処理（種別不明分）でエラーとなりました"
-                                           TO    WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  2001-IKKATU-SYORI-EXT
-           END-IF
-      *
-      *    診療年月の請求管理削除処理（社保分）
-           IF      WRK-PARA-RECEKBN    =   "0" OR  "1"          
-               INITIALIZE                  RECE10-REC
-               MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
-               MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
-               MOVE    "1"                 TO  RECE10-NYUGAIKBN
-               MOVE    1                   TO  RECE10-TEISYUTUSAKI
-               MOVE    RECE10-REC          TO  MCPDATA-REC
-               MOVE    "SEIKYU-DEL6"       TO  ORC-DBPATH
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               CALL    "ORCMCPSUB"              USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC      
-               IF      MCP-RC           NOT =   ZERO
-                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
-                   MOVE
-                       "請求管理削除処理（社保分）でエラーとなりました"
-                                           TO    WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   GO  TO  2001-IKKATU-SYORI-EXT
-               END-IF
-           END-IF      
-      *
-      *    診療年月の請求管理削除処理（国保分）
-           IF      WRK-PARA-RECEKBN    =   "0" OR  "2"          
-               INITIALIZE                  RECE10-REC
-               MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
-               MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
-               MOVE    "1"                 TO  RECE10-NYUGAIKBN
-               MOVE    2                   TO  RECE10-TEISYUTUSAKI
-               MOVE    RECE10-REC          TO  MCPDATA-REC
-               MOVE    "SEIKYU-DEL6"       TO  ORC-DBPATH
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               CALL    "ORCMCPSUB"              USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC      
-               IF      MCP-RC           NOT =   ZERO
-                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
-                   MOVE
-                       "請求管理削除処理（国保分）でエラーとなりました"
-                                           TO    WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   GO  TO  2001-IKKATU-SYORI-EXT
-               END-IF
-           END-IF      
-      *
-      *    診療年月の公費請求書削除処理（社保分）
-           IF      WRK-PARA-RECEKBN    =   "0" OR  "1"          
-               INITIALIZE                  KOHSKY-REC
-               MOVE    SYS-1001-HOSPID     TO  KOHSKY-HOSPID
-               MOVE    WRK-PARA-SRYYM      TO  KOHSKY-SRYYM
-               MOVE    1                   TO  KOHSKY-TEISYUTUSAKI
-               MOVE    "1"                 TO  KOHSKY-NYUGAIKBN
-               MOVE    KOHSKY-REC          TO  MCPDATA-REC
-               MOVE    "KOHSKY-DEL1"       TO  ORC-DBPATH
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               CALL    "ORCMCPSUB"              USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC      
-               IF      MCP-RC           NOT =   ZERO
-                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
-                   MOVE
-                     "公費請求書削除処理（社保分）でエラーとなりました"
-                                           TO    WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   GO  TO  2001-IKKATU-SYORI-EXT
-               END-IF
-           END-IF      
-      *
-      *    診療年月公費請求書削除処理（国保分）
-           IF      WRK-PARA-RECEKBN    =   "0" OR  "2"          
-               INITIALIZE                  KOHSKY-REC
-               MOVE    SYS-1001-HOSPID     TO  KOHSKY-HOSPID
-               MOVE    WRK-PARA-SRYYM      TO  KOHSKY-SRYYM
-               MOVE    2                   TO  KOHSKY-TEISYUTUSAKI
-               MOVE    "1"                 TO  KOHSKY-NYUGAIKBN
-               MOVE    KOHSKY-REC          TO  MCPDATA-REC
-               MOVE    "KOHSKY-DEL1"        TO  ORC-DBPATH
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               CALL    "ORCMCPSUB"              USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC      
-               IF      MCP-RC           NOT =   ZERO
-                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
-                   MOVE
-                     "公費請求書削除処理（国保分）でエラーとなりました"
-                                           TO    WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   GO  TO  2001-IKKATU-SYORI-EXT
-               END-IF
-           END-IF      
-      *
-      *    診療年月のレセ電削除処理（社保分）
-           IF      WRK-PARA-RECEKBN    =   "0" OR  "1"          
-               INITIALIZE                  RECEDEN-REC
-               MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
-               MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
-               MOVE    1                   TO  RECEDEN-TEISYUTUSAKI
-               MOVE    "1"                 TO  RECEDEN-NYUGAIKBN
-               MOVE    RECEDEN-REC         TO  MCPDATA-REC
-               MOVE    "RECEDEN-DEL1"      TO  ORC-DBPATH
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               CALL    "ORCMCPSUB"              USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC      
-               IF      MCP-RC           NOT =   ZERO
-                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
-                   MOVE
-                     "レセ電削除処理（社保分）でエラーとなりました"
-                                           TO    WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   GO  TO  2001-IKKATU-SYORI-EXT
-               END-IF
-           END-IF      
-      *
-      *    診療年月のレセ電削除処理（国保分）
-           IF      WRK-PARA-RECEKBN    =   "0" OR  "2"          
-               INITIALIZE                  RECEDEN-REC
-               MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
-               MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
-               MOVE    2                   TO  RECEDEN-TEISYUTUSAKI
-               MOVE    "1"                 TO  RECEDEN-NYUGAIKBN
-               MOVE    RECEDEN-REC         TO  MCPDATA-REC
-               MOVE    "RECEDEN-DEL1"      TO  ORC-DBPATH
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               CALL    "ORCMCPSUB"              USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC      
-               IF      MCP-RC           NOT =   ZERO
-                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
-                   MOVE
-                     "レセ電削除処理（国保分）でエラーとなりました"
-                                           TO    WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   GO  TO  2001-IKKATU-SYORI-EXT
-               END-IF
-           END-IF      
-      *
-      *    診療年月レセプト管理削除処理（一括分）
-           INITIALIZE                  RECE07-REC
-           MOVE    "HC06"              TO  RECE07-PRTID
-           MOVE    WRK-PARA-SRYYM      TO  RECE07-SRYYM
-           MOVE    "1"                 TO  RECE07-SYOKBN
-           MOVE    "1"                 TO  RECE07-NYUGAIKBN
-           MOVE    WRK-PARA-RECEKBN    TO  RECE07-RECEKBN
-           MOVE    RECE07-REC          TO  MCPDATA-REC
-           MOVE    "RECEKANRI-KEY7"    TO  WRK-PATH
-           PERFORM 900-RECE07-INV-SEC
-           IF      FLG-RECE07          =   ZERO
-               MOVE    RECE07-REC          TO  WRK-RECE07-REC
-               MOVE    RECE07-REC          TO  MCPDATA-REC 
-               MOVE    "RECEKANRI-DEL1"    TO  ORC-DBPATH
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               CALL    "ORCMCPSUB"              USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC    
-               IF      MCP-RC           NOT =   ZERO
-                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
-                   MOVE
-                   "レセプト管理削除処理でエラーとなりました"
-                                           TO    WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   GO  TO  2001-IKKATU-SYORI-EXT
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
+                   PERFORM 900-SRYACCT-READ-SEC
+               ELSE
+                   INITIALIZE                  SRYACCT-REC
+                   MOVE    1                   TO  FLG-SRYACCT
                END-IF
       *
-      *        診療年月レセプト削除処理（一括分）
-               INITIALIZE                  RECE08-REC
-               MOVE    WRK-RECE07-PRTID    TO  RECE08-PRTID
-               MOVE    WRK-RECE07-SRYYM    TO  RECE08-RECEYM
-               MOVE    WRK-RECE07-CREYMD   TO  RECE08-CREYMD
-               MOVE    WRK-RECE07-CREHMS   TO  RECE08-CREHMS
-               MOVE    WRK-RECE07-NYUGAIKBN
-                                           TO  RECE08-NYUGAIKBN
-               MOVE    RECE08-REC          TO  MCPDATA-REC
-               MOVE    "RECEPRT-DEL1"      TO  ORC-DBPATH
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               CALL    "ORCMCPSUB"              USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC
-               IF      MCP-RC           NOT =   ZERO
-                   DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
-                   MOVE    "レセプト削除処理でエラーとなりました"
-                                           TO    WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   GO  TO  2001-IKKATU-SYORI-EXT
-               END-IF
-           END-IF  
-      *
-      *    診療会計読み込み（患者ＩＤ、保険組合せ、診療科順）
-      *
-           MOVE    "1"                 TO  WRK-DBKBN 
-      *      
-           INITIALIZE                  SRYACCT-REC
-           MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
-           MOVE    SYS-2001-SRYYM      TO  ACCT-SRYYM
-           MOVE    "1"                 TO  ACCT-NYUGAIKBN
-           MOVE    SRYACCT-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
+               PERFORM UNTIL       FLG-SRYACCT     =   1
+                       OR          FLG-END         =   1
+                   PERFORM 20011-IKKATU-HENSYU-SEC
+               END-PERFORM
+      *        カーソルクロース
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
                MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
-               PERFORM 900-SRYACCT-READ-SEC
-           ELSE
-               INITIALIZE                  SRYACCT-REC
-               MOVE    1                   TO  FLG-SRYACCT
-           END-IF
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+           END-IF 
       *
-           PERFORM UNTIL       FLG-SRYACCT     =   1
-               PERFORM 20011-IKKATU-HENSYU-SEC
-           END-PERFORM
-      *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY29"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           IF      FLG-END             =   ZERO 
+      *        入院会計読み込み（患者ＩＤ、診療科、剤識別区分順）
       *
-      *    入院会計読み込み（患者ＩＤ、診療科、剤識別区分順）
+               MOVE    "2"                 TO  WRK-DBKBN 
       *
-           MOVE    "2"                 TO  WRK-DBKBN 
-      *
-           MOVE    LOW-VALUE           TO  KEY-AREA
+               MOVE    LOW-VALUE           TO  KEY-AREA
       *     
-           INITIALIZE                  NYUINACCT-REC
-           MOVE    SYS-1001-HOSPID     TO  NACCT-HOSPID
-           MOVE    SYS-2001-SRYYM      TO  NACCT-SRYYM
-           MOVE    "1"                 TO  NACCT-NYUGAIKBN
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY13"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "NYUINACCT-KEY13"       TO  ORC-DBPATH
-               PERFORM 900-NYUINACCT-READ-SEC
-           ELSE
                INITIALIZE                  NYUINACCT-REC
-               MOVE    1                   TO  FLG-NYUINACCT
-           END-IF
+               MOVE    SYS-1001-HOSPID     TO  NACCT-HOSPID
+               MOVE    SYS-2001-SRYYM      TO  NACCT-SRYYM
+               MOVE    "1"                 TO  NACCT-NYUGAIKBN
+               MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "NYUINACCT-KEY13"    TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "NYUINACCT-KEY13"       TO  ORC-DBPATH
+                   PERFORM 900-NYUINACCT-READ-SEC
+               ELSE
+                   INITIALIZE                  NYUINACCT-REC
+                   MOVE    1                   TO  FLG-NYUINACCT
+               END-IF
       *
-           PERFORM UNTIL       FLG-NYUINACCT   =   1
-               PERFORM 20012-IKKATU-HENSYU-SEC
-           END-PERFORM
-      *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY13"    TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+               PERFORM UNTIL       FLG-NYUINACCT   =   1
+                       OR          FLG-END         =   1
+                   PERFORM 20012-IKKATU-HENSYU-SEC
+               END-PERFORM
+      *        カーソルクロース
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "NYUINACCT-KEY13"    TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+           END-IF
            .
        2001-IKKATU-SYORI-EXT.
            EXIT. 
@@ -883,6 +662,7 @@
            AND   ( PTINF-TSTPTNUMKBN   =   "1"  )
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
+                               OR      FLG-END         =   1
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
                    MOVE    "SRYACCT-KEY29"         TO  ORC-DBPATH
                    PERFORM 900-SRYACCT-READ-SEC
@@ -890,6 +670,7 @@
            ELSE
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
+                               OR      FLG-END         =   1
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
       *            保険組合せ読込み
                    INITIALIZE                  HKNCOMBI-REC
@@ -924,27 +705,15 @@
       *             
                    MOVE    KEY-NEW             TO  KEY-OLD
                    PERFORM         UNTIL   FLG-SRYACCT     =   1 
+                                   OR      FLG-END         =   1
                                    OR      KEY-NEW     NOT =   KEY-OLD
-      *****************社保・国保の読み飛ばし
-      *****************EVALUATE    WRK-PARA-RECEKBN
-      *                    WHEN    "0"
-      *                        PERFORM 20011-FILE-SYORI-SEC 
-      *                    WHEN    "1"
-      *                        IF      COMB-HKNNUM 
-      *                                        NOT =   "060" AND "067"
-      *                            PERFORM 20011-FILE-SYORI-SEC 
-      *                        END-IF
-      *                    WHEN    "2"
-      *                        IF      COMB-HKNNUM =   "060" OR  "067"
-      *                            PERFORM 20011-FILE-SYORI-SEC 
-      *                        END-IF
-      *****************END-EVALUATE
                        PERFORM 20011-FILE-SYORI-SEC 
       *
                        IF      WRK-UPDKBN          =   SPACE                   
       *                    同じ患者ＩＤ・診療科・保険組合せは読み飛ばす
                            MOVE    KEY-NEW             TO  KEY-OLD
                            PERFORM     UNTIL   FLG-SRYACCT =   1 
+                                       OR      FLG-END     =   1
                                        OR      KEY-NEW NOT =   KEY-OLD
                                MOVE    "SRYACCT-KEY29" TO  ORC-DBPATH
                                PERFORM 900-SRYACCT-READ-SEC
@@ -1173,10 +942,11 @@
            MOVE    SYS-1001-HOSPID         TO  PTINF-HOSPID
            MOVE    KEY-N-PTID              TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
-           IF      FLG-PTINF           =   ZERO
-           AND     PTINF-TSTPTNUMKBN   =   "1"
+           IF    ( FLG-PTINF           =   ZERO )
+           AND   ( PTINF-TSTPTNUMKBN   =   "1"  )
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-NYUINACCT   =   1 
+                               OR      FLG-END         =   1
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
                    MOVE    "NYUINACCT-KEY13"       TO  ORC-DBPATH
                    PERFORM 900-NYUINACCT-READ-SEC
@@ -1187,6 +957,7 @@
                                                WRK-HKNCOMBI-TABLE
       *
                PERFORM         UNTIL   FLG-NYUINACCT   =   1 
+                               OR      FLG-END         =   1
                                OR      KEY-NEW     NOT =   KEY-OLD
       *            剤識別区分別テーブル編集
                    EVALUATE    NACCT-ZAISKBKBN
@@ -1206,44 +977,46 @@
                    PERFORM 900-NYUINACCT-READ-SEC
                END-PERFORM
       *
-      *        入院会計より保険組合せ読込     
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       31
-                   IF      WRK-DAY (1 IDX)     >   ZERO    AND
-                           WRK-DAY (2 IDX)     >   ZERO
-                       PERFORM 200121-NYUINACCT-CHK-SEC
-                   END-IF
-               END-PERFORM        
+               IF      FLG-END                 =   ZERO 
+      *            入院会計より保険組合せ読込     
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       31
+                       IF      WRK-DAY (1 IDX)     >   ZERO    AND
+                               WRK-DAY (2 IDX)     >   ZERO
+                           PERFORM 200121-NYUINACCT-CHK-SEC
+                       END-IF
+                   END-PERFORM        
       *
-      *        入院会計の保険組合せを追加
-               PERFORM VARYING IDX2    FROM    1   BY  1
-                       UNTIL   IDX2    >       10
-                       OR      WRK-COMB-HKNCOMBINUM (IDX2) =   ZERO
-                   IF      WRK-HKNCOMBI-SYOKBN (IDX2)  =   "1"
-                       CONTINUE
-                   ELSE    
-                       MOVE    SPACE               TO  WRK-ERR-AREA
-                       INITIALIZE                      WRK-ERR-AREA
+      *            入院会計の保険組合せを追加
+                   PERFORM VARYING IDX2    FROM    1   BY  1
+                           UNTIL   IDX2    >       10
+                           OR      WRK-COMB-HKNCOMBINUM (IDX2) =   ZERO
+                       IF      WRK-HKNCOMBI-SYOKBN (IDX2)  =   "1"
+                           CONTINUE
+                       ELSE    
+                           MOVE    SPACE               TO  WRK-ERR-AREA
+                           INITIALIZE                      WRK-ERR-AREA
       *
-                       MOVE    WRK-HKNCOMBI-REC (IDX2)
-                                               TO  HKNCOMBI-REC    
-                       IF      WRK-HKNCOMBI-SYOKBN (IDX2)  =   "2"
-                           MOVE    "1"             TO  WRK-TEISEIKBN
-                           IF      WRK-HKNCOMBI-ERR-DAY (IDX2)
-                                                   =   ZERO
-                               MOVE    1           TO  WRK-ERR-ERRKBN
-                           ELSE
-                               MOVE    WRK-HKNCOMBI-ERR-DAY (IDX2)
+                           MOVE    WRK-HKNCOMBI-REC (IDX2)
+                                                   TO  HKNCOMBI-REC    
+                           IF      WRK-HKNCOMBI-SYOKBN (IDX2)  =   "2"
+                               MOVE    "1"         TO  WRK-TEISEIKBN
+                               IF      WRK-HKNCOMBI-ERR-DAY (IDX2)
+                                                       =   ZERO
+                                   MOVE    1       TO  WRK-ERR-ERRKBN
+                               ELSE
+                                   MOVE    WRK-HKNCOMBI-ERR-DAY (IDX2)
                                                    TO  WRK-ERR-DAY
-                               MOVE    6           TO  WRK-ERR-ERRKBN
-                           END-IF
-                           MOVE    WRK-COMB-HKNCOMBINUM (IDX2)  TO
+                                   MOVE    6       TO  WRK-ERR-ERRKBN
+                               END-IF
+                               MOVE    WRK-COMB-HKNCOMBINUM (IDX2)  TO
                                                    WRK-ERR-HKNCOMBINUM
-                       END-IF        
+                           END-IF        
       *
-                       PERFORM 200122-NYUINACCT-HENSYU-SEC
-                   END-IF 
-               END-PERFORM
+                           PERFORM 200122-NYUINACCT-HENSYU-SEC
+                       END-IF 
+                   END-PERFORM
+               END-IF
            END-IF    
            .
        20012-IKKATU-HENSYU-EXT.
@@ -1276,28 +1049,6 @@
                                            WRK-CONS-JIBAI-HKNNUM 
                            MOVE    "1"         TO
                                            WRK-HKNCOMBI-SYOKBN (IDX1)
-      *****************ELSE    
-      *********************社保・国保の読み飛ばし
-      *********************EVALUATE    WRK-PARA-RECEKBN
-      *                        WHEN    "0"
-      *                            CONTINUE 
-      *                        WHEN    "1"
-      *                            IF      COMB-HKNNUM 
-      *                                        NOT =   "060" AND "067"
-      *                                CONTINUE
-      *                            ELSE
-      *                                MOVE    "1"       TO
-      *                                    WRK-HKNCOMBI-SYOKBN (IDX1)   
-      *                            END-IF
-      *                        WHEN    "2"
-      *                            IF      COMB-HKNNUM
-      *                                            =   "060" OR  "067"
-      *                                        CONTINUE
-      *                            ELSE
-      *                                MOVE    "1"       TO
-      *                                    WRK-HKNCOMBI-SYOKBN (IDX1)      
-      *                            END-IF
-      *********************END-EVALUATE
                        END-IF
                    ELSE
                        MOVE    WRK-DAY (2 IDX) TO
@@ -1884,46 +1635,6 @@
       *****************************************************************
        2002-KOBETU-SYORI-SEC               SECTION.
       *
-      *    レセプト管理削除処理（個別分）
-           INITIALIZE                  RECE07-REC
-           MOVE    "HC06"              TO  RECE07-PRTID
-           MOVE    "1"                 TO  RECE07-NYUGAIKBN
-           MOVE    RECE07-REC          TO  MCPDATA-REC
-           MOVE    "RECEKANRI-DEL2"    TO  ORC-DBPATH
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"              USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC      
-           IF      MCP-RC           NOT =   ZERO
-               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
-               MOVE
-                   "レセプト管理削除処理（個別分）でエラーとなりました"
-                                           TO    WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  2002-KOBETU-SYORI-EXT
-           END-IF
-      *
-      *    レセプト削除処理（個別分）
-           INITIALIZE                  RECE08-REC
-           MOVE    "HC06"              TO  RECE08-PRTID
-           MOVE    "1"                 TO  RECE08-NYUGAIKBN
-           MOVE    RECE08-REC          TO  MCPDATA-REC
-           MOVE    "RECEPRT-DEL2"      TO  ORC-DBPATH
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"              USING
-                                                MCPAREA
-                                                ORCMCPAREA
-                                                MCPDATA-REC      
-           IF      MCP-RC           NOT =   ZERO
-               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
-               MOVE
-                   "レセプト削除処理（個別分）でエラーとなりました"
-                                           TO    WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  2002-KOBETU-SYORI-EXT
-           END-IF
-      *
       *    レセプト指示（個別指示）コード読み込み
            INITIALIZE                      SYS-2002-REC
            MOVE    "2002"              TO  SYS-2002-KANRICD
@@ -2003,141 +1714,83 @@
                                                LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD 
       *
-      *    診療年月の請求管理削除処理
-           INITIALIZE                  RECE10-REC
-           MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
-           MOVE    SYS-2002-PTID       TO  RECE10-PTID
-           MOVE    SYS-2002-SRYYM      TO  RECE10-SRYYM
-           MOVE    SYS-2002-NYUGAIKBN  TO  RECE10-NYUGAIKBN
-           MOVE    RECE10-REC          TO  MCPDATA-REC
-           MOVE    "SEIKYU-DEL4"       TO  ORC-DBPATH
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC      
-           IF      MCP-RC           NOT =   ZERO
-               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
-               MOVE
-                   "請求管理削除処理（個別分）でエラーとなりました"
-                                           TO    WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  20021-KOBETU-HENSYU-EXT
-           END-IF
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
       *
-      *    診療年月の公費請求書削除処理
-           INITIALIZE                  KOHSKY-REC
-           MOVE    SYS-1001-HOSPID     TO  KOHSKY-HOSPID
-           MOVE    SYS-2002-PTID       TO  KOHSKY-PTID
-           MOVE    SYS-2002-SRYYM      TO  KOHSKY-SRYYM
-           MOVE    SYS-2002-NYUGAIKBN  TO  KOHSKY-NYUGAIKBN
-           MOVE    KOHSKY-REC          TO  MCPDATA-REC
-           MOVE    "KOHSKY-DEL2"       TO  ORC-DBPATH
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-           IF      MCP-RC           NOT =   ZERO
-               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
-               MOVE
-                   "公費請求書削除処理（個別分）でエラーとなりました"
-                                           TO    WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  20021-KOBETU-HENSYU-EXT
-           END-IF
-      *
-      *    診療年月のレセ電削除処理
-           INITIALIZE                  RECEDEN-REC
-           MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
-           MOVE    SYS-2002-PTID       TO  RECEDEN-PTID
-           MOVE    SYS-2002-SRYYM      TO  RECEDEN-SRYYM
-           MOVE    SYS-2002-NYUGAIKBN  TO  RECEDEN-NYUGAIKBN
-           MOVE    RECEDEN-REC         TO  MCPDATA-REC
-           MOVE    "RECEDEN-DEL2"      TO  ORC-DBPATH
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCMCPSUB"             USING
-                                           MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-           IF      MCP-RC           NOT =   ZERO
-               DISPLAY "DBPATH=" ORC-DBPATH " MCP-RC=" MCP-RC
-               MOVE
-                   "レセ電削除処理（個別分）でエラーとなりました"
-                                           TO    WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  20021-KOBETU-HENSYU-EXT
-           END-IF
-      *
+           IF      FLG-END             =   ZERO
       *        診療会計読み込み
-           MOVE    "1"                 TO  WRK-DBKBN 
+               MOVE    "1"                 TO  WRK-DBKBN 
       *      
-           INITIALIZE                  SRYACCT-REC
-           MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
-           MOVE    SYS-2002-PTID       TO  ACCT-PTID
-           MOVE    SYS-2002-SRYYM      TO  ACCT-SRYYM
-           MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
-           MOVE    SRYACCT-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
+               INITIALIZE                  SRYACCT-REC
+               MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
+               MOVE    SYS-2002-PTID       TO  ACCT-PTID
+               MOVE    SYS-2002-SRYYM      TO  ACCT-SRYYM
+               MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
+               MOVE    SRYACCT-REC         TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
-               PERFORM 900-SRYACCT-READ-SEC
-           ELSE
-               INITIALIZE                  SRYACCT-REC
-               MOVE    1                   TO  FLG-SRYACCT
-           END-IF
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+                   PERFORM 900-SRYACCT-READ-SEC
+               ELSE
+                   INITIALIZE                  SRYACCT-REC
+                   MOVE    1                   TO  FLG-SRYACCT
+               END-IF
       *
-           PERFORM UNTIL       FLG-SRYACCT     =   1
-               PERFORM 20011-HENSYU-SEC
-           END-PERFORM
-      *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+               PERFORM UNTIL       FLG-SRYACCT     =   1
+                       OR          FLG-END         =   1 
+                   PERFORM 20011-HENSYU-SEC
+               END-PERFORM
+      *        カーソルクロース
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+           END-IF 
       *
+           IF      FLG-END             =   ZERO
       *        入院会計読み込み
-           MOVE    "2"                 TO  WRK-DBKBN 
-      *      
+               MOVE    "2"                 TO  WRK-DBKBN 
       *
-           MOVE    LOW-VALUE           TO  KEY-AREA
+               MOVE    LOW-VALUE           TO  KEY-AREA
       *     
-           INITIALIZE                  NYUINACCT-REC
-           MOVE    SYS-1001-HOSPID     TO  NACCT-HOSPID
-           MOVE    SYS-2002-PTID       TO  NACCT-PTID
-           MOVE    SYS-2002-SRYYM      TO  NACCT-SRYYM
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    SYS-1001-HOSPID     TO  NACCT-HOSPID
+               MOVE    SYS-2002-PTID       TO  NACCT-PTID
+               MOVE    SYS-2002-SRYYM      TO  NACCT-SRYYM
+               MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
-               PERFORM 900-NYUINACCT-READ-SEC
-           ELSE
-               INITIALIZE                  SRYACCT-REC
-               MOVE    1                   TO  FLG-NYUINACCT
-           END-IF
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
+                   PERFORM 900-NYUINACCT-READ-SEC
+               ELSE
+                   INITIALIZE                  SRYACCT-REC
+                   MOVE    1                   TO  FLG-NYUINACCT
+               END-IF
       *
-           PERFORM UNTIL       FLG-NYUINACCT     =   1
-               PERFORM 20012-HENSYU-SEC
-           END-PERFORM
-      *    カーソルクロース
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+               PERFORM UNTIL       FLG-NYUINACCT     =   1
+                       OR          FLG-END           =   1
+                   PERFORM 20012-HENSYU-SEC
+               END-PERFORM
+      *        カーソルクロース
+               MOVE    "DBCLOSE"           TO  MCP-FUNC
+               MOVE    "NYUINACCT-KEY14"   TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+           END-IF
       *
            MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH
            PERFORM 900-SYSKANRI-READ-SEC
@@ -2152,7 +1805,8 @@
       *
            MOVE    KEY-NEW             TO  KEY-OLD
       *
-           PERFORM             UNTIL   FLG-SRYACCT     =   1 
+           PERFORM             UNTIL   FLG-SRYACCT     =   1
+                               OR      FLG-END         =   1      
                MOVE    ACCT-HKNCOMBI       TO  KEY-N-HKNCOMBI
                MOVE    ACCT-PTID           TO  KEY-N-PTID 
                MOVE    ACCT-SRYKA          TO  KEY-N-SRYKA
@@ -2169,7 +1823,7 @@
                INITIALIZE                      WRK-ERR-AREA
       *
                IF      FLG-HKNCOMBI        =   ZERO
-                   IF      COMB-HKNNUM     =   WRK-CONS-ROUSAI-HKNNUM OR 
+                   IF      COMB-HKNNUM     =   WRK-CONS-ROUSAI-HKNNUM OR
                                                WRK-CONS-JIBAI-HKNNUM 
                        MOVE    "1"             TO  WRK-ROUSAIKBN
                    ELSE                                         
@@ -2188,6 +1842,7 @@
       *
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
+                               OR      FLG-END         =   1      
                                OR      KEY-NEW     NOT =   KEY-OLD
       *************社保・国保の読み飛ばし
       *            EVALUATE    WRK-PARA-RECEKBN
@@ -2208,6 +1863,7 @@
       *                同じ患者ＩＤ・診療科・保険組合せは読み飛ばす
                        MOVE    KEY-NEW             TO  KEY-OLD
                        PERFORM     UNTIL   FLG-SRYACCT     =   1 
+                                   OR      FLG-END         =   1      
                                    OR      KEY-NEW     NOT =   KEY-OLD
                            MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
                            PERFORM 900-SRYACCT-READ-SEC
@@ -2233,6 +1889,7 @@
                                            WRK-HKNCOMBI-TABLE
       *
            PERFORM         UNTIL   FLG-NYUINACCT   =   1 
+                           OR      FLG-END         =   1      
                            OR      KEY-NEW     NOT =   KEY-OLD
       *        剤識別区分別テーブル編集
                EVALUATE    NACCT-ZAISKBKBN
@@ -2252,42 +1909,44 @@
                PERFORM 900-NYUINACCT-READ-SEC
            END-PERFORM
       *
-      *    入院会計より保険組合せ読込     
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       31
-               IF      WRK-DAY (1 IDX)     >   ZERO    AND
-                       WRK-DAY (2 IDX)     >   ZERO
-                   PERFORM 200121-NYUINACCT-CHK-SEC
-               END-IF
-           END-PERFORM        
+           IF      FLG-END             =   ZERO
+      *        入院会計より保険組合せ読込     
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       31
+                   IF      WRK-DAY (1 IDX)     >   ZERO    AND
+                           WRK-DAY (2 IDX)     >   ZERO
+                       PERFORM 200121-NYUINACCT-CHK-SEC
+                   END-IF
+               END-PERFORM        
       *
-      *    入院会計の保険組合せを追加
-           PERFORM VARYING IDX2    FROM    1   BY  1
-                   UNTIL   IDX2    >       10
-                   OR      WRK-COMB-HKNCOMBINUM (IDX2) =   ZERO
-               IF      WRK-HKNCOMBI-SYOKBN (IDX2)  =   "1"
-                   CONTINUE
-               ELSE    
-                   MOVE    SPACE               TO  WRK-ERR-AREA
-                   INITIALIZE                      WRK-ERR-AREA
-                   MOVE    WRK-HKNCOMBI-REC (IDX2)
-                                           TO  HKNCOMBI-REC    
-                   IF      WRK-HKNCOMBI-SYOKBN (IDX2)  =   "2"
-                       MOVE    "1"         TO  WRK-TEISEIKBN
-                       IF      WRK-HKNCOMBI-ERR-DAY (IDX2)
-                                                   =   ZERO
-                           MOVE    1           TO  WRK-ERR-ERRKBN
-                       ELSE
-                           MOVE    WRK-HKNCOMBI-ERR-DAY (IDX2)
-                                               TO  WRK-ERR-DAY
-                           MOVE    6           TO  WRK-ERR-ERRKBN
-                       END-IF
-                       MOVE    WRK-COMB-HKNCOMBINUM (IDX2)  TO
+      *        入院会計の保険組合せを追加
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                       UNTIL   IDX2    >       10
+                       OR      WRK-COMB-HKNCOMBINUM (IDX2) =   ZERO
+                   IF      WRK-HKNCOMBI-SYOKBN (IDX2)  =   "1"
+                       CONTINUE
+                   ELSE    
+                       MOVE    SPACE               TO  WRK-ERR-AREA
+                       INITIALIZE                      WRK-ERR-AREA
+                       MOVE    WRK-HKNCOMBI-REC (IDX2)
+                                                   TO  HKNCOMBI-REC    
+                       IF      WRK-HKNCOMBI-SYOKBN (IDX2)  =   "2"
+                           MOVE    "1"         TO  WRK-TEISEIKBN
+                           IF      WRK-HKNCOMBI-ERR-DAY (IDX2)
+                                                       =   ZERO
+                               MOVE    1           TO  WRK-ERR-ERRKBN
+                           ELSE
+                               MOVE    WRK-HKNCOMBI-ERR-DAY (IDX2)
+                                                   TO  WRK-ERR-DAY
+                               MOVE    6           TO  WRK-ERR-ERRKBN
+                           END-IF
+                           MOVE    WRK-COMB-HKNCOMBINUM (IDX2)  TO
                                                WRK-ERR-HKNCOMBINUM
-                   END-IF        
-                   PERFORM 200122-NYUINACCT-HENSYU-SEC
-               END-IF 
-           END-PERFORM
+                       END-IF        
+                       PERFORM 200122-NYUINACCT-HENSYU-SEC
+                   END-IF 
+               END-PERFORM
+           END-IF    
            .
        20012-HENSYU-EXT.
            EXIT. 
@@ -2323,6 +1982,55 @@
            MOVE    1                   TO  FLG-END
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       500-CANCEL-HENSYU-SEC                SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA  
+                                   JOBKANRI-REC
+           IF    ( SJOBKANRI-RETURN
+                                   =   ZERO )
+           AND   ( JOB-STOPFLG     =   1    )
+               MOVE    "処理が中止されました"
+                                           TO  WRK-RECEERR
+      *
+               OPEN    INPUT   RECEERR-FILE
+               IF      STS-RECEERR         =   ZERO
+                   CLOSE   RECEERR-FILE
+               ELSE
+                   OPEN    OUTPUT              RECEERR-FILE
+      *    
+                   MOVE    WRK-RECEERR         TO  RECEERR-REC
+                   WRITE   RECEERR-REC
+                   CLOSE   RECEERR-FILE
+      *         
+      *            ジョブ管理終了処理
+                   MOVE    "CAN"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    WRK-RECEERR     TO  JOB-YOBI
+                   MOVE    "8888"          TO  JOB-ERRCD
+                   MOVE    2               TO  JOB-STOPFLG
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC
+               END-IF
+      *                             
+               MOVE    1                   TO  FLG-END
+           END-IF
+           .
+       500-CANCEL-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2437,6 +2145,12 @@
                MOVE    ACCT-PTID           TO  KEY-N-PTID 
                MOVE    ACCT-HKNCOMBI       TO  KEY-N-HKNCOMBI
                MOVE    ACCT-SRYKA          TO  KEY-N-SRYKA
+      *
+               ADD     1                   TO  CNT-IN-CANCEL
+               IF      CNT-IN-CANCEL       =   50
+                   MOVE    ZERO                TO  CNT-IN-CANCEL
+                   PERFORM 500-CANCEL-HENSYU-SEC
+               END-IF
            END-IF
            .
        900-SRYACCT-READ-EXT.
@@ -2464,6 +2178,12 @@
       *********MOVE    NACCT-HKNCOMBI      TO  KEY-N-HKNCOMBI
       *********MOVE    NACCT-SRYKA         TO  KEY-N-SRYKA
                MOVE    SPACE               TO  KEY-N-SRYKA
+      *
+               ADD     1                   TO  CNT-IN-CANCEL
+               IF      CNT-IN-CANCEL       =   50
+                   MOVE    ZERO                TO  CNT-IN-CANCEL
+                   PERFORM 500-CANCEL-HENSYU-SEC
+               END-IF
            END-IF
            .
        900-NYUINACCT-READ-EXT.
@@ -2647,44 +2367,6 @@
       *
            .
        900-PTINF-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    レセプト管理読込（キー）
-      *****************************************************************
-       900-RECE07-INV-SEC         SECTION.
-      *
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    WRK-PATH            TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-RECE07
-                   MOVE    MCPDATA-REC         TO  RECE07-REC
-               ELSE
-                   MOVE    1                   TO  FLG-RECE07
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-RECE07
-           END-IF
-      *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    WRK-PATH            TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"         USING
-                                       MCPAREA
-                                       ORCMCPAREA
-                                       MCPDATA-REC
-           .
-       900-RECE07-INV-EXT.
            EXIT.
       *
       *****************************************************************

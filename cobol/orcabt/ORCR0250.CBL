@@ -371,26 +371,21 @@
                    AT  END
                        MOVE    1           TO  FLG-END
                    NOT AT  END
-                       IF    ( WRK-PARA-SYARECEKBN =   ZERO )
-                       AND   (  RECE64-TEISYUTUSAKI
-                                                   =   "1"  )
-                           CONTINUE
-                       ELSE 
-                           IF    ( WRK-PARA-KKHRECEKBN =   ZERO )
-                           AND   (  RECE64-TEISYUTUSAKI
-                                                       =   "2"  )
+                       IF  ( ( WRK-PARA-SYARECEKBN =   ZERO
+                                                   OR  "1" )   AND
+                             ( RECE64-TEISYUTUSAKI
+                                                   =   "1"  )      )
+                       OR  ( ( WRK-PARA-KKHRECEKBN =   ZERO
+                                                   OR  "1"  )  AND
+                             ( RECE64-TEISYUTUSAKI
+                                                   =   "2"  )      )
+                       OR  (   RECE64-RECESYUBETU  =   ZERO   OR 
+                                                       8888        )
+                       OR  ( RECE64-SRYKBN         >=  "90"   AND 
+                                                   <   "99"        )
                                CONTINUE
-                           ELSE 
-                               IF    ( RECE64-RECESYUBETU
-                                                   =   ZERO   OR  8888 )
-                               OR    ( RECE64-SRYKBN
-                                                   >=  "90"   AND 
-                                                   <   "99"       )
-                                   CONTINUE
-                               ELSE
-                                   MOVE    1           TO  FLG-READ
-                               END-IF
-                           END-IF
+                       ELSE
+                           MOVE    1           TO  FLG-READ
                        END-IF      
       *
                        IF      FLG-READ            =   1         

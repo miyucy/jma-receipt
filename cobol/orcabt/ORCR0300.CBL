@@ -271,6 +271,8 @@
            03  FLG-RECE11              PIC 9(01).
            03  FLG-OPECOM              PIC 9(01).
       *
+           03  FLG-READ                PIC 9(01).
+      *
            03  FLG-TEIGEN              PIC 9(01).
            03  FLG-YKZ20               PIC 9(01).
            03  FLG-TOTALTEN            PIC 9(01).
@@ -338,6 +340,8 @@
                                        PIC X(01).
                05  WRK-PARA-JOBID      PIC 9(07).
                05  WRK-PARA-SHELLID    PIC X(08).
+               05  WRK-PARA-SYARECEKBN PIC X(01).
+               05  WRK-PARA-KKHRECEKBN PIC X(01).
       *
            03  WRK-SYS-SRYYMD          PIC X(08).
       *
@@ -871,6 +875,8 @@
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA1
                                                WRK-PARA-TEISYUTUSAKI
+                                               WRK-PARA-SYARECEKBN
+                                               WRK-PARA-KKHRECEKBN
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
            END-UNSTRING                                  
@@ -4483,67 +4489,96 @@
       *****************************************************************
        900-RECE02-READ-SEC             SECTION.
       *
-           READ    RECE02-FILE     NEXT
-               AT  END
-                   MOVE    1           TO  FLG-END
-                   MOVE    HIGH-VALUE  TO KEY-NEW
-               NOT AT  END
-                   IF    ( RECE02-TEISYUTUSAKI
-                                       NOT =   WRK-PARA-TEISYUTUSAKI )
-                   OR    ( RECE02-PTNUM    =   SPACE                 )
-                   OR    ( RECE02-RECESYUBETU
-                                           =   ZERO    OR    8888    )
-                   OR    ( RECE02-TSTPTNUMKBN
-                                           =   "1"                   )
-                           GO  TO  900-RECE02-READ-SEC
-                   END-IF
+           MOVE    ZERO                TO  FLG-READ
       *
-      *            山形地方公費対応（国保）
-                   IF    ( SYS-1001-PREFNUM    =   "06" )
-                   AND   ( RECE02-TEISYUTUSAKI =   "2"  ) 
-                       IF    ( RECE02-KOHNUM (1) (1:1) =   "1" OR  "2" )
-                       OR    ( RECE02-KOHNUM (2) (1:1) =   "1" OR  "2" )
-                       OR    ( RECE02-KOHNUM (3) (1:1) =   "1" OR  "2" )
-                       OR    ( RECE02-KOHNUM (4) (1:1) =   "1" OR  "2" )
-                           GO  TO  900-RECE02-READ-SEC
-                       END-IF
-                   END-IF
+           PERFORM                 UNTIL   FLG-END     =   1
+                                   OR      FLG-READ    =   1            
       *
-      *            福岡地方公費対応（国保）
-                   IF    ( SYS-1001-PREFNUM    =   "40" )
-                   AND   ( RECE02-TEISYUTUSAKI =   "2"  ) 
-                       IF    ( RECE02-KOHNUM (1) (1:1) =   "1" OR  "2" )
-                       OR    ( RECE02-KOHNUM (2) (1:1) =   "1" OR  "2" )
-                       OR    ( RECE02-KOHNUM (3) (1:1) =   "1" OR  "2" )
-                       OR    ( RECE02-KOHNUM (4) (1:1) =   "1" OR  "2" )
-                           IF    ( RECE02-KOHNUM (1)   =
-                                                       "141" OR "142" )
-                           OR    ( RECE02-KOHNUM (2)    =
-                                                       "141" OR "142" )
-                           OR    ( RECE02-KOHNUM (3)    =
-                                                       "141" OR "142" )
-                           OR    ( RECE02-KOHNUM (4)    =
-                                                       "141" OR "142" )
-                               CONTINUE 
-                           ELSE 
-                               GO  TO  900-RECE02-READ-SEC
+               READ    RECE02-FILE         NEXT
+                   AT  END
+                       MOVE    1           TO  FLG-END
+                       MOVE    HIGH-VALUE  TO  KEY-NEW
+                   NOT AT  END
+                       IF  ( ( WRK-PARA-SYARECEKBN =   ZERO
+                                                   OR  "2" )   AND
+                             ( RECE02-TEISYUTUSAKI
+                                                   =   "1"  )      )
+                       OR  ( ( WRK-PARA-KKHRECEKBN =   ZERO
+                                                   OR  "2"  )  AND
+                             ( RECE02-TEISYUTUSAKI
+                                                   =   "2"  )      )
+                       OR  (   RECE02-PTNUM        =   SPACE       )
+                       OR  (   RECE02-TSTPTNUMKBN  =   "1"         )
+                       OR  (   RECE02-RECESYUBETU  =   ZERO   OR 
+                                                       8888        )
+                           CONTINUE
+                       ELSE
+      *
+      *                    医療機関情報取得
+                           IF      WRK-PARA-SRYYM  =   ZERO
+                               MOVE  RECE02-SRYYM      TO
+                                                   WRK-SYS-SRYYMD(1:6)
+                               MOVE  "01"              TO
+                                                   WRK-SYS-SRYYMD(7:2)
+                               PERFORM 900-SYSKANRI-HENSYU-SEC
                            END-IF
+      *
+      *                    山形地方公費対応（国保）
+                           IF    ( SYS-1001-PREFNUM    =   "06" )
+                           AND   ( RECE02-TEISYUTUSAKI =   "2"  ) 
+                               IF    ( RECE02-KOHNUM (1) (1:1)
+                                                       =   "1" OR  "2" )
+                               OR    ( RECE02-KOHNUM (2) (1:1)
+                                                       =   "1" OR  "2" )
+                               OR    ( RECE02-KOHNUM (3) (1:1)
+                                                       =   "1" OR  "2" )
+                               OR    ( RECE02-KOHNUM (4) (1:1)
+                                                       =   "1" OR  "2" )
+                                   CONTINUE
+                               ELSE
+                                   MOVE    1               TO  FLG-READ
+                               END-IF
+                           ELSE
+      *
+      *                      福岡地方公費対応（国保）
+                             IF    ( SYS-1001-PREFNUM    =   "40" )
+                             AND   ( RECE02-TEISYUTUSAKI =   "2"  ) 
+                               IF    ( RECE02-KOHNUM (1) (1:1)
+                                                       =   "1" OR  "2" )
+                               OR    ( RECE02-KOHNUM (2) (1:1)
+                                                       =   "1" OR  "2" )
+                               OR    ( RECE02-KOHNUM (3) (1:1)
+                                                       =   "1" OR  "2" )
+                               OR    ( RECE02-KOHNUM (4) (1:1)
+                                                       =   "1" OR  "2" )
+                                   IF    ( RECE02-KOHNUM (1)   =
+                                                       "141" OR "142" )
+                                   OR    ( RECE02-KOHNUM (2)    =
+                                                       "141" OR "142" )
+                                   OR    ( RECE02-KOHNUM (3)    =
+                                                       "141" OR "142" )
+                                   OR    ( RECE02-KOHNUM (4)    =
+                                                       "141" OR "142" )
+                                       MOVE    1           TO  FLG-READ
+                                   END-IF
+                               ELSE
+                                   MOVE    1           TO  FLG-READ
+                               END-IF
+                             ELSE
+                               MOVE    1               TO  FLG-READ
+                             END-IF
+                           END-IF
+                       END-IF    
+      *
+                       IF      FLG-READ            =   1
+                           ADD     1           TO  CNT-IN
+                           MOVE    RECE02-RECEKA 
+                                               TO  KEY-N-SRYKA
+      *
+                           DISPLAY "RECE02  PTNUM=" RECE02-PTNUM     
                        END-IF
-                   END-IF
-      *
-                   ADD     1           TO  CNT-IN
-                   MOVE    RECE02-RECEKA 
-                                       TO  KEY-N-SRYKA
-      *
-                   DISPLAY "RECE02  PTNUM=" RECE02-PTNUM     
-      *
-                   IF      WRK-PARA-SRYYM  =   ZERO
-      *                医療機関ＩＤ編集
-                       MOVE  RECE02-SRYYM      TO  WRK-SYS-SRYYMD(1:6)
-                       MOVE  "01"              TO  WRK-SYS-SRYYMD(7:2)
-                       PERFORM 900-SYSKANRI-HENSYU-SEC
-                   END-IF
-           END-READ
+               END-READ
+           END-PERFORM
            .
        910-RECE02-READ-EXT.
            EXIT.

@@ -683,6 +683,9 @@
       *****************************************************************
        2001-IKKATU-SYORI-SEC               SECTION.
       *
+      *    処理中止設定処理
+           PERFORM 500-CANCEL-HENSYU-SEC
+      *
       *    診療年月編集
            MOVE    WRK-PARA-SRYYM      TO  WRK-STYMD (1:6)
            MOVE    "01"                TO  WRK-STYMD (7:2)
@@ -693,9 +696,6 @@
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD 
-      *
-      *    処理中止設定処理
-           PERFORM 500-CANCEL-HENSYU-SEC
       *
            IF      FLG-END             =   ZERO 
       *        診療会計読み込み（患者ＩＤ、保険組合せ、診療科順）

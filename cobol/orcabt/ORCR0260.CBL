@@ -303,23 +303,19 @@
                    AT  END
                        MOVE    1           TO  FLG-END
                    NOT AT  END
-                       IF    ( WRK-PARA-SYARECEKBN =   ZERO )
-                       AND   (  RECE631-TEISYUTUSAKI
-                                                   =   "1"  )
+                       IF  ( ( WRK-PARA-SYARECEKBN =   ZERO
+                                                   OR  "1" )   AND
+                             ( RECE631-TEISYUTUSAKI
+                                                   =   "1"  )      )
+                       OR  ( ( WRK-PARA-KKHRECEKBN =   ZERO
+                                                   OR  "1"  )  AND
+                             ( RECE631-TEISYUTUSAKI
+                                                   =   "2"  )      )
+                       OR  (   RECE631-RECESYUBETU =   ZERO   OR 
+                                                       8888        )
                            CONTINUE
-                       ELSE 
-                           IF    ( WRK-PARA-KKHRECEKBN =   ZERO )
-                           AND   (  RECE631-TEISYUTUSAKI
-                                                       =   "2"  )
-                               CONTINUE
-                           ELSE 
-                               IF      RECE631-RECESYUBETU
-                                                   =   ZERO   OR  8888
-                                   CONTINUE
-                               ELSE
-                                   MOVE    1           TO  FLG-READ
-                               END-IF
-                           END-IF
+                       ELSE
+                           MOVE    1           TO  FLG-READ
                        END-IF
       *
                        IF      FLG-READ            =   1         
