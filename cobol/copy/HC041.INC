@@ -18,7 +18,7 @@
        01  HC041.
               03  HC041-HOSPCD      PIC  X(20).
               03  HC041-ADRS        PIC  X(50).
-              03  HC041-HOSPNAME    PIC  X(30).
+              03  HC041-HOSPNAME    PIC  X(100).
               03  HC041-KAISETUNAME PIC  X(30).
               03  HC041-KYURATE-TBL         OCCURS  3.
                   05  HC041-KYURATE-TBL     OCCURS  2.

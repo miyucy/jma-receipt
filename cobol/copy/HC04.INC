@@ -18,7 +18,7 @@
        01  HC04.
               03  HC04-HOSPCD      PIC  X(20).
               03  HC04-ADRS        PIC  X(50).
-              03  HC04-HOSPNAME    PIC  X(30).
+              03  HC04-HOSPNAME    PIC  X(100).
               03  HC04-KAISETUNAME PIC  X(30).
               03  HC04-HKN-TBL.
                   05  HC04-HKN-TBL1     OCCURS  4.
