@@ -148,6 +148,7 @@
       *
            03  WRK-PTID                PIC 9(10).
            03  WRK-PAYKBN              PIC X(02).
+           03  WRK-HKNNUM              PIC X(03).
       *
            03  WRK-Z3                  PIC ZZ9.
       *
@@ -264,6 +265,11 @@
            03  MEISAI-TEKEDYMD         PIC X(08).
            03  FILLER                  PIC X(01).
            03  MEISAI-MSG              PIC X(20).
+      *
+       01  TBL-HKNNUM-AREA.
+           03  TBL-HKNNUM-OCC          OCCURS   20
+                                       INDEXED  IDX-HKN.
+               05  TBL-HKNNUM          PIC X(03).
       *
       *****************************************************************
       *    その他連絡領域
@@ -442,11 +448,9 @@
       *
            MOVE    WRK-PARA-HOSPID     TO  SPA-HOSPID
       *
-      *    政管が保険置換対象かのチェック
-           MOVE    "001"               TO  PTHKN-HKNNUM
-           MOVE    WRK-PARA-HOSPID     TO  PTHKN-HOSPID
-           PERFORM 210-PTHKNINF-CHK-SEC
-           IF      FLG-SYORI           =   ZERO
+      *    置換対象テーブル保存
+           PERFORM 1002-HKNNUM-TBL-SEC
+           IF      IDX                 =   ZERO
       *        保険置換処理なし
                MOVE    "処理対象の保険がありませんでした"
                                            TO  WRK-RECEERR
@@ -473,6 +477,78 @@
       *
            .
        110-PARA-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ編集処理
+      *****************************************************************
+       1002-HKNNUM-TBL-SEC         SECTION.
+      *
+      *
+           INITIALIZE                  TBL-HKNNUM-AREA
+           MOVE    ZERO                TO  IDX
+           SET     IDX-HKN             TO  ZERO
+      *    保険番号　全件編集（適用範囲分）
+           INITIALIZE                  HKNNUM-REC
+           MOVE    WRK-PARA-HOSPID     TO  HKN-HOSPID
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY6"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNNUM-KEY6"       TO  ORC-DBPATH
+               PERFORM 950-HKNNUM-NEXT-SEC
+           ELSE
+               INITIALIZE                  HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+      *
+           MOVE    SPACE           TO  WRK-HKNNUM
+           MOVE    SPACE           TO  WRK-PAYKBN
+           PERFORM
+               UNTIL       FLG-HKNNUM  =   1
+      *        Ｈ１５．４．１で改正のあったものを対象とする
+               IF      HKN-TEKSTYMD        =   "20030401"
+                   IF     (FLG-CHK         =   1   )  AND
+                          (HKN-HKNNUM      =   WRK-HKNNUM)  AND
+                          (HKN-PAYKBN      =   WRK-PAYKBN)
+      *                変更
+                       ADD     1               TO  IDX
+                       IF      IDX             >   20
+                           DISPLAY "TBL-HKNNUM 20 OVER" HKN-HKNNUM
+                       ELSE
+                           SET     IDX-HKN         TO  IDX
+                           MOVE    HKN-HKNNUM      TO  TBL-HKNNUM
+                                                          (IDX-HKN)
+      *TEST
+                       DISPLAY "IDX-HKN:" IDX
+                             ",TBL-HKNNUM:"  HKN-HKNNUM
+      *TEST
+                       END-IF
+                   END-IF
+                   MOVE    SPACE           TO  WRK-HKNNUM
+                   MOVE    SPACE           TO  WRK-PAYKBN
+               END-IF
+               IF      HKN-TEKEDYMD        =   "20030331"
+                   MOVE    1               TO  FLG-CHK
+                   MOVE    HKN-PAYKBN      TO  WRK-PAYKBN
+                   MOVE    HKN-HKNNUM      TO  WRK-HKNNUM
+               ELSE
+                   MOVE    SPACE           TO  WRK-HKNNUM
+                   MOVE    SPACE           TO  WRK-PAYKBN
+               END-IF
+      *
+               MOVE    "HKNNUM-KEY6"       TO  ORC-DBPATH
+               PERFORM 950-HKNNUM-NEXT-SEC
+           END-PERFORM
+      *
+      *
+           .
+       1002-HKNNUM-TBL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -573,53 +649,13 @@
       *****************************************************************
        210-PTHKNINF-CHK-SEC          SECTION.
       *
-      *
-           MOVE    ZERO               TO  FLG-HKNNUM
-           MOVE    SPACE              TO  HKNNUM-REC
-           INITIALIZE                     HKNNUM-REC
-           MOVE    PTHKN-HOSPID       TO  HKN-HOSPID
-           MOVE    PTHKN-HKNNUM       TO  HKN-HKNNUM
-      *
-           MOVE    HKNNUM-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"         TO  MCP-FUNC
-           MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"     USING   MCPAREA
-                                           ORCMCPAREA
-                                           MCPDATA-REC
-           IF      MCP-RC             =   ZERO
-               MOVE    "HKNNUM-KEY2"  TO  ORC-DBPATH
-               PERFORM 950-HKNNUM-NEXT-SEC
-           ELSE
-               INITIALIZE                 HKNNUM-REC
-               MOVE    1              TO  FLG-HKNNUM
-           END-IF
-      *
-           MOVE    ZERO                TO  FLG-SYORI
-           MOVE    ZERO                TO  FLG-CHK
-           MOVE    SPACE               TO  WRK-PAYKBN
-           PERFORM
-               UNTIL   FLG-HKNNUM   =   1
-      *        Ｈ１５．４．１で改正のあったものを対象とする
-               IF      HKN-TEKSTYMD        =   "20030401"
-                   IF     (FLG-CHK         =   1   )  AND
-                          (HKN-PAYKBN      =   WRK-PAYKBN)
+           SET     IDX-HKN              TO  1
+           SEARCH  TBL-HKNNUM-OCC       VARYING   IDX-HKN
+                   AT   END
+                       MOVE    ZERO            TO  FLG-SYORI
+                   WHEN    PTHKN-HKNNUM    =   TBL-HKNNUM (IDX-HKN)
                        MOVE    1               TO  FLG-SYORI
-                   END-IF
-               END-IF
-               IF      HKN-TEKEDYMD        =   "20030331"
-                   MOVE    1               TO  FLG-CHK
-                   MOVE    HKN-PAYKBN      TO  WRK-PAYKBN
-               END-IF
-      *
-               MOVE    "HKNNUM-KEY2"       TO  ORC-DBPATH
-               PERFORM 950-HKNNUM-NEXT-SEC
-           END-PERFORM
-      *
-      *    MOVE    "DBCLOSE"          TO  MCP-FUNC
-      *    MOVE    "HKNNUM-KEY2"      TO  ORC-DBPATH
-      *    CALL    "ORCMCPSUB"     USING   MCPAREA
-      *                                    ORCMCPAREA
-      *                                    MCPDATA-REC
+           END-SEARCH
       *
            .
        210-PTHKNINF-CHK-EXT.
