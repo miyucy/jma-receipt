@@ -352,8 +352,6 @@
       *
            EVALUATE    MCP-FUNC
              WHEN     'DBCLOSE'
-             WHEN     'DBOPEN'
-             WHEN     'DBDISCONNECT'
                  CONTINUE
              WHEN      OTHER
                  CALL    "MCPSUB"    USING   MCPAREA
