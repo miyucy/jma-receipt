@@ -105,6 +105,7 @@
            03  FLG-RJN                     PIC 9(01).
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACCTARI            PIC 9(01).
+           03  FLG-WKPTTEIKIRRK            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -307,6 +308,7 @@
            03  IDX-SHOKUJIX                PIC X(02).
            03  IDX-SHOKUJI9   REDEFINES    IDX-SHOKUJIX
                                            PIC 9(02).
+           03  WRK-NYUINCHU-TAIINYMD       PIC X(08).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -323,6 +325,11 @@
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
                                //SPA-// BY //WRK-SPA-//.
+      *
+      *    入院履歴ワーク
+       01  WKPTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC"  REPLACING
+                               //PTNYUINRRK-// BY //WKPTNYUINRRK-//.
       *
       *    収納ワーク
        01  SUMSYUNOU-REC.
@@ -5770,8 +5777,81 @@
                END-IF
            END-IF
       *
+      *    前回自院歴チェック
+           PERFORM 4801-ZENKAI-ZIINRRK-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   ZERO )
+               GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
+           END-IF
+      *
            .
        4801-NYUIN-TOUROKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    前回自院歴チェック
+      *****************************************************************
+       4801-ZENKAI-ZIINRRK-CHK-SEC     SECTION.
+      *
+      *    前回入院歴（自院分）をチェック
+           MOVE    SPACE               TO  WRK-NYUINCHU-TAIINYMD
+           MOVE    ZERO                TO  FLG-WKPTTEIKIRRK
+      *
+           INITIALIZE      WKPTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  WKPTNYUINRRK-HOSPID
+           MOVE    SPA-NAI-I01-PTID    TO  WKPTNYUINRRK-PTID
+      *
+           MOVE    SPA-NAI-I01-NYUINYMD
+                                       TO  WRK-YMD
+           MOVE    "1"                 TO  WRK-ZOGENPTN
+           MOVE    -1                  TO  WRK-ZOGEN
+           PERFORM 5002-CALENDAR-SEC
+           MOVE    WRK-KEISANYMD       TO  WKPTNYUINRRK-NYUINYMD
+                                           WRK-NYUINCHU-TAIINYMD
+      *
+           MOVE    WKPTNYUINRRK-REC    TO  MCPDATA-REC
+           MOVE    "PTNYUINRRK-KEY12"  TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    1               TO  FLG-WKPTTEIKIRRK
+           ELSE
+               MOVE    MCPDATA-REC     TO  WKPTNYUINRRK-REC
+           END-IF
+      *
+           MOVE    "PTNYUINRRK-KEY12"  TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           IF    ( FLG-WKPTTEIKIRRK    NOT =   ZERO )
+               GO  TO  4801-ZENKAI-ZIINRRK-CHK-EXT
+           END-IF
+      *
+      *    前歴の自院歴が｢入院中｣の場合
+           IF    ( WKPTNYUINRRK-JTIKBN         =   "6" )
+            AND  ( WKPTNYUINRRK-NYUINCHUKBN    =   "1" )
+      *
+      *        継続入院であること
+               IF    ( SPA-GMN-I01-SHOKAI-CD   NOT =   "2" )
+                   MOVE    "1031"      TO  SPA-ERRCD
+                   MOVE    9           TO  SPA-GMN-I01-CUR
+                   GO TO   4801-ZENKAI-ZIINRRK-CHK-EXT
+               END-IF
+      *
+      *        初回番号が等しいこと
+               IF    ( WKPTNYUINRRK-SHONUM NOT =   SPA-GMN-I01-SHONUM )
+                   MOVE    "1031"      TO  SPA-ERRCD
+                   MOVE    10          TO  SPA-GMN-I01-CUR
+                   GO TO   4801-ZENKAI-ZIINRRK-CHK-EXT
+               END-IF
+      *
+      *        自院歴の退院日の翌日が入院日となっていること
+               IF    ( WKPTNYUINRRK-TAIINYMD
+                                   NOT =   WRK-NYUINCHU-TAIINYMD )
+                   MOVE    "1032"      TO  SPA-ERRCD
+                   MOVE    7           TO  SPA-GMN-I01-CUR
+                   GO TO   4801-ZENKAI-ZIINRRK-CHK-EXT
+               END-IF
+           END-IF
+      *
+           .
+       4801-ZENKAI-ZIINRRK-CHK-EXT.
            EXIT.
       *****************************************************************
       *    退院登録時関連チェック
@@ -10358,6 +10438,16 @@
            WHEN    "1030"
                MOVE    "退院月の会計テーブルが作成されていません"
                                        TO  SPA-ERRMSG
+           WHEN    "1031"
+               MOVE    "前歴の自院歴が｢入院中｣です。前歴の継続"
+                                       TO  SPA-ERRMSG (1 : 40)
+               MOVE    "入院として登録してください"
+                                       TO  SPA-ERRMSG (41 : )
+           WHEN    "1032"
+               MOVE    "前歴の自院歴が｢入院中｣です。入院日を前"
+                                       TO  SPA-ERRMSG (1 : 40)
+               MOVE    "歴の退院日の翌日にしてください"
+                                       TO  SPA-ERRMSG (41 : )
            WHEN    "2012"
                MOVE    "退院計算に必要な会計情報が作成されていません"
                                        TO  SPA-ERRMSG
