@@ -3112,7 +3112,7 @@
 
       *            
            PERFORM   VARYING   IDX   FROM    1   BY  1
-                     UNTIL     IDX       >   33
+                     UNTIL     IDX       >   35
       *        <Ã±²Á>
                EVALUATE    IDX
       *        ºÆ¿Ç
