@@ -116,6 +116,7 @@ path	key5	{
 		SELECT *
 		FROM tbl_syumei
 			WHERE   HOSPID        =  :HOSPID
+                        AND     NYUGAIKBN     =  :NYUGAIKBN
 			AND   DENPNUM         =  :DENPNUM
 			AND   DENPEDANUM      <  :DENPEDANUM
                         ORDER BY	DENPEDANUM
