@@ -645,10 +645,10 @@
                 MOVE    TNS-TANINAME       TO  SPA-K98-GMN-TANI(IDX)
            END-IF
       *
-      *    診療コードの時、種別
-           IF      TNS-SRYCD (1:1)     =   "1"
-               MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
-           END-IF
+      *!   診療コードの時、種別
+      *!   IF      TNS-SRYCD (1:1)     =   "1"
+      *!       MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
+      *!   END-IF
       *
       *----(01.00.01) LINE ADD START ----------------------------------
       *    診療行為で老人の時、再編集
@@ -1094,10 +1094,10 @@
                MOVE    TNS-TANINAME        TO  SPA-K98-GMN-TANI(IDX)
            END-IF
       *
-      *    診療コードの時、種別
-           IF      TNS-SRYCD (1:1)     =   "1"
-               MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
-           END-IF
+      *!   診療コードの時、種別
+      *!   IF      TNS-SRYCD (1:1)     =   "1"
+      *!       MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
+      *!   END-IF
       *
       *    診療行為で老人の時、再編集
       *****IF     (SPA-K98-GMN-SYORI   =   "8" )  AND
