@@ -14,7 +14,6 @@
 
 require 'socket'
 require 'xml_valid.rb'
-EXP = "export"
 
 $port, $file_path = ARGV
 $file_path.chomp!('/')
@@ -156,7 +155,6 @@ end
 #----- Main -----------------------------------------
 
 svppt = "server:>> "
-system(EXP, "LD_LIBRARY_PATH=.:/usr/local/orca/lib")
 
 while true
   gsock = TCPServer.open($port)
