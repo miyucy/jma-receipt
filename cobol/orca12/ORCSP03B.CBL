@@ -33,6 +33,7 @@
       * 01.00.04     NACL-多々納  03/02/14  法別番号チェック区分追加
       * 01.00.05     NACL-多々納  03/04/03  公費変更チェック修正
       * 01.00.06     NACL-多々納  03/07/08  保険者異動日チェック追加
+      * 01.00.07     NACL-多々納  03/08/07  公費負担者番号チェック修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -425,6 +426,12 @@
            ELSE
                MOVE    SPACE               TO  SPA-NAI-PTKOH-KEIFLG
                                                                (IDX-K)
+               PERFORM 10110-KOHHBTNUMKBN-SEC
+               IF      WRK-KOHHBTNUMKBN    =   ZERO
+      *            公費が入力済みで法別番号チェクなしの時
+                   MOVE    SPA-MAE-KOHNUM (IDX-K)  TO  WRK-MAE-KOHNUM
+               ELSE
+      *
                EVALUATE    SPA-GMN-FTNJANUM(IDX-K)(1:2)
       *            老人
                    WHEN    "27"
@@ -446,6 +453,8 @@
       *                法別番号より公費種類を決定する
                        PERFORM 10011-HKNNUM-SET-SEC
                END-EVALUATE
+      *
+               END-IF
            END-IF
       *
            IF      WRK-MAE-KOHNUM      =   SPACE
@@ -480,6 +489,28 @@
       *
            .
        1001-FTNJANUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    法別番号チェック区分編集処理
+      *****************************************************************
+       10110-KOHHBTNUMKBN-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  WRK-KOHHBTNUMKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-KOHMAX
+               IF     (SPA-GMN-KOHNUM(IDX-K)
+                                      =    SPA-GMN-KOHNUML (IDX)) AND
+                      (SPA-GMN-KOHKBN(IDX-K)
+                                      =    SPA-GMN-KOHKBNL (IDX))
+      *            法別番号チェック区分
+                   MOVE    SPA-NAI-KOHHBTNUMKBN (IDX)
+                                           TO  WRK-KOHHBTNUMKBN
+               END-IF
+           END-PERFORM
+      *
+           .
+       10110-KOHHBTNUMKBN-EXT.
            EXIT.
       *
       *****************************************************************
