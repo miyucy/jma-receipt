@@ -30,3 +30,14 @@ path	all 	{
  		;
 	};
 };
+
+#sitekey
+path	st_key1 	{
+	DBSELECT	{
+		DECLARE tbl_kensasort_st_key1_csr CURSOR FOR
+		SELECT *
+		FROM tbl_kensasort
+		WHERE   SRYCD     =   :SRYCD
+		;
+	};
+};

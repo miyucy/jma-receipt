@@ -253,3 +253,19 @@ path	all2	{
 		;
 	};
 };
+
+#sitekey
+path	st_key1 	{
+	DBSELECT	{
+		DECLARE tbl_nyuinact_st_key1_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_nyuinact a,tbl_ptinf b
+		WHERE   a.HOSPID        =  :HOSPID
+		AND     a.SRYYM         =  :SRYYM
+		AND     a.HOSPID        =  b.HOSPID
+		AND     a.PTID          =  b.PTID
+		AND     b.TSTPTNUMKBN  <> '1'
+		ORDER   BY a.PTID,a.SRYKA,a.ZAINUM
+		;
+	};
+};
