@@ -1037,6 +1037,17 @@
                END-IF
                MOVE    1               TO  FLG-SYUGI
            END-IF
+      *!!
+      *    ½èÊý¤»¤óÎÁ¤Ï¼êµ»ÎÁ¤ÇºÞÊ¬Î¥¤È¤¹¤ë
+           IF     (SPA-COM-SRYKBN (IDX)    =   "80" )  AND
+                  (SPA-COM-SRYSYUKBN(IDX)  =   "820")  AND
+                  (SPA-COM-DATAKBN (IDX)   =   "1"  )
+               IF      FLG-SYUGI           =   1
+                   MOVE    2               TO  FLG-SYORI
+               END-IF
+               MOVE    1               TO  FLG-SYUGI
+           END-IF
+      *!!
       *
       *    ¿Ç¶è¡¡ÊÑ¹¹»þ
            IF     (IDX                 >   1         )  AND
