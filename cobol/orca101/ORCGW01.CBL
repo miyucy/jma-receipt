@@ -58,6 +58,7 @@
       *  01.05.10    NACL-太田    03/07/08  1027 割引率情報の区分コード表示を
       *                                     修正
       *  01.05.11    NACL-多々納  03/07/11  出力先プリンタ割り当て修正
+      *  01.05.12    NACL-多々納  03/07/29  claim接続を入院へも追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -282,14 +283,16 @@
            03  FILLER              PIC X(35)   VALUE
                "5010 定期請求情報".
            03  FILLER              PIC X(35)   VALUE
+               "9000 ＣＬＡＩＭ接続情報".
+           03  FILLER              PIC X(35)   VALUE
                "9800 排他制御情報".
       *
        01  TBL-KANRICD-N-AREAR         REDEFINES   TBL-KANRICD-N-AREA.
-           03  TBL-KANRICD-N-TBL           OCCURS   9.
+           03  TBL-KANRICD-N-TBL           OCCURS   10.
                05  TBL-KANRICD-N           PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-N        PIC X(30).
-       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   9.
+       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   10.
       *
       *****************************************************************
       *    ファイルレイアウト
