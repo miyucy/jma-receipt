@@ -1334,16 +1334,16 @@
            END-IF
       *
       *    前受け金チェック処理
-           PERFORM 4101-MAEUKE-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
+      *    PERFORM 4101-MAEUKE-CHK-SEC
+      *    IF    ( SPA-ERRCD   NOT =   SPACE )
+      *        GO  TO  4102-KIHON-CHK-EXT
+      *    END-IF
       *
       *    定期請求チェック処理
-           PERFORM 4101-SEIKYU-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
+      *    PERFORM 4101-SEIKYU-CHK-SEC
+      *    IF    ( SPA-ERRCD   NOT =   SPACE )
+      *        GO  TO  4102-KIHON-CHK-EXT
+      *    END-IF
       *
       *    検索時患者表示チェック処理
            PERFORM 4101-DISPKBN-CHK-SEC
@@ -7657,14 +7657,18 @@
       *???     END-IF
       *??? END-IF
       *
+      *??? xx 暫定 xx 定期請求区分にはカーソルを飛ばさないようにする xx
            IF    ( SPA-GMN-I01-CUR =   18  )
-               IF  ( SPA-GMN-I01-SEIKYU-STT    =   WIDGET-NORMAL )
-                   MOVE    "SEIKYU"        TO  MCP-WIDGET
-                   GO  TO  5001-MAPCUR-EXT
-               ELSE
-                   COMPUTE SPA-GMN-I01-CUR =   SPA-GMN-I01-CUR +   1
-               END-IF
+               COMPUTE SPA-GMN-I01-CUR =   SPA-GMN-I01-CUR +   1
            END-IF
+      *??? IF    ( SPA-GMN-I01-CUR =   18  )
+      *???     IF  ( SPA-GMN-I01-SEIKYU-STT    =   WIDGET-NORMAL )
+      *???         MOVE    "SEIKYU"        TO  MCP-WIDGET
+      *???         GO  TO  5001-MAPCUR-EXT
+      *???     ELSE
+      *???         COMPUTE SPA-GMN-I01-CUR =   SPA-GMN-I01-CUR +   1
+      *???     END-IF
+      *??? END-IF
       *
            IF    ( SPA-GMN-I01-CUR =   19  )
                IF  ( SPA-GMN-I01-DISPKBN-STT   =   WIDGET-NORMAL )

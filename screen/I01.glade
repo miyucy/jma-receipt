@@ -1028,7 +1028,7 @@
       <y>300</y>
       <width>85</width>
       <height>24</height>
-      <can_focus>Fasle</can_focus>
+      <can_focus>False</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -1048,7 +1048,7 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_SEIKYU</name>
-      <x>105</x>
+      <x>2000</x>
       <y>300</y>
       <width>195</width>
       <height>24</height>
@@ -1063,7 +1063,7 @@
 	<class>GtkPandaEntry</class>
 	<child_name>GtkPandaCombo:entry</child_name>
 	<name>SEIKYU</name>
-	<can_focus>True</can_focus>
+	<can_focus>False</can_focus>
 	<signal>
 	  <name>activate</name>
 	  <handler>send_event</handler>
@@ -1088,8 +1088,8 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_DISPKBN</name>
-      <x>430</x>
-      <y>300</y>
+      <x>620</x>
+      <y>265</y>
       <width>100</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -1367,7 +1367,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label16</name>
-      <x>25</x>
+      <x>2000</x>
       <y>300</y>
       <width>60</width>
       <height>24</height>
@@ -1552,8 +1552,8 @@
     <widget>
       <class>GtkLabel</class>
       <name>label17</name>
-      <x>320</x>
-      <y>300</y>
+      <x>510</x>
+      <y>265</y>
       <width>100</width>
       <height>24</height>
       <label>検索時患者表示</label>
