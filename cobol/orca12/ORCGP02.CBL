@@ -41,6 +41,7 @@
       *  01.00.10    MCC-太田     02/05/31  カナ氏名候補画面を追加
       *  01.00.11    MCC-多々納   02/06/18  月代り受給者番号の追加
       *  02.00.00    MCC-多々納   02/06/21  画面レイアウト変更
+      *  02.00.01    NACL-多々納  02/09/10  平成１４年１０月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -122,7 +123,7 @@
                05  WRK-KOHID           PIC 9(10).
                05  WRK-AUTOCOMBINUM    PIC 9(04).
                05  WRK-MANUCOMBINUM    PIC 9(04).
-           03  WRK-PIDMSG          PIC X(80).
+           03  WRK-PIDMSG          PIC X(100).
       *
            03  WRK-MOTOPG              PIC X(08).
       *
@@ -578,6 +579,15 @@
                    IF      SPA-PID1-FLG        =   "OK"
                        PERFORM 4991-DELETE-SYORI-SEC
                    END-IF
+      *        保険重複確認
+               WHEN    "0105"
+               WHEN    "0104"
+               WHEN    "0106"
+               WHEN    "0107"
+                   IF      SPA-PID1-FLG        =   "OK"
+                       MOVE    "P02 "          TO  SPA-P02-GAMEN
+                       PERFORM 3002-GMNSET-SEC
+                   END-IF
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-PIDCD
@@ -933,6 +943,7 @@
                MOVE    1                   TO  SPA-TAGU-FLG
                PERFORM 3002-GMNSET-SEC
                IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                      (SPA-PIDCD       NOT =   SPACE )  OR
                       (SPA-FLG-END     NOT =   ZERO  )
                   GO  TO                  460-TAGUCHG-EXT
                END-IF
@@ -1923,6 +1934,7 @@
       **   画面の内容を保存＆更新前チェック
            PERFORM 4901-KOUSINMAE-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )  OR
                   (SPA-FLG-END     NOT =   ZERO  )
                GO  TO                  490-TOUROKU-EXT
            END-IF
@@ -2025,7 +2037,8 @@
                MOVE    SPA-COMMON          TO  SPA-AREA
                MOVE    SPA-FREE            TO  SPA-P02SCRAREA
                MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-               IF      SPA-ERRCD           NOT =   SPACE
+               IF     (SPA-ERRCD           NOT =   SPACE )  OR
+                      (SPA-PIDCD           NOT =   SPACE )
                    MOVE    "P02"               TO  SPA-P02-GAMEN
                    MOVE    MCP-WIDGET          TO  SPA-P02-WIDGET
                    GO      TO                  4901-KOUSINMAE-EXT
@@ -2375,16 +2388,18 @@
                    MOVE    "性別は１：男２：女で入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "0022"
-                   MOVE    "労災保険ではありません。"
+                   MOVE    "労災・自賠責保険ではありません。"
                                                TO  SPA-ERRMSG
-                   MOVE    "労災を表示後、選択して下さい。"
-                                               TO  SPA-ERRMSG(25:)
+                   MOVE    "労災・自賠責を表示後、選択して下さい。"
+                                               TO  SPA-ERRMSG(33:)
                WHEN    "0023"
-                   MOVE    "労災保険です。選択できません。"
+                   MOVE    "労災・自賠責保険です。選択できません。"
                                                TO  SPA-ERRMSG
                WHEN    "0024"
-                   MOVE    "労災が保険番号マスタに登録されていません。"
+                   MOVE    "労災・自賠責保険が保険番号マスタ"
                                                TO  SPA-ERRMSG
+                   MOVE    "に登録されていません。"
+                                               TO  SPA-ERRMSG(33:)
                WHEN    "0025"
                    MOVE    "カナ氏名は全角で入力して下さい"
                                                TO  SPA-ERRMSG
@@ -2444,10 +2459,10 @@
                    MOVE    "新しく保険を追加して下さい"
                                                TO  SPA-ERRMSG(29:)
                WHEN    "0043"
-                   MOVE    "労災保険はこの画面では変更できません。"
+               MOVE    "労災・自賠責保険はこの画面では変更できません。"
                                                TO  SPA-ERRMSG
                    MOVE    "労災・自賠ボタンを選択して下さい"
-                                               TO  SPA-ERRMSG(39:)
+                                               TO  SPA-ERRMSG(47:)
                WHEN    "0044"
                    MOVE    "保険の種別がありません。"
                                                TO  SPA-ERRMSG
@@ -2521,6 +2536,14 @@
                WHEN    "0066"
                    MOVE    "本人のみ入力可能です。"
                                                TO  SPA-ERRMSG
+               WHEN    "0067"
+                   MOVE    "保険者番号と法別番号が違います。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0068"
+                   MOVE    "老人補助区分は変更できません。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "新しい保険を入力して下さい。"
+                                               TO  SPA-ERRMSG(33:)
       *    公費エラー
                WHEN    "0070"
                    MOVE    "負担者番号・受給者番号が入力されています"
@@ -2569,8 +2592,10 @@
                    MOVE    "受給者番号検証番号エラーです。"
                                                TO  SPA-ERRMSG
                WHEN    "0085"
-                 MOVE    "適用終了日を入力してください（適用年齢）"
+                 MOVE    "公費に適用年齢の指定があります。"
                                                TO  SPA-ERRMSG
+                 MOVE    "適用終了日を入力してください。"
+                                               TO  SPA-ERRMSG(33:)
                WHEN    "0086"
                    MOVE    "公費の年齢適用エラーです"
                                                TO  SPA-ERRMSG
@@ -2587,11 +2612,24 @@
                    MOVE
                    "警告！適用開始日時点での年齢が７０歳未満です"
                                                TO  SPA-ERRMSG
+               WHEN    "K002"
+                   MOVE
+                   "警告！適用開始日時点での年齢が７５歳未満です"
+                                               TO  SPA-ERRMSG
                WHEN    "0090"
                    MOVE    "公費の空いている行に追加して下さい。"
                                                TO  SPA-ERRMSG
                WHEN    "0091"
                    MOVE    "適用期間がマスタの範囲を超えています"
+                                               TO  SPA-ERRMSG
+               WHEN    "0092"
+                   MOVE    "負担者番号との法別番号が違います。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0093"
+                   MOVE    "適用開始日が保険適用の終了日以降です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0094"
+                   MOVE    "適用開始日が保険適用の開始日以前です。"
                                                TO  SPA-ERRMSG
       *    更新前エラー
                WHEN    "0100"
@@ -2606,6 +2644,16 @@
                WHEN    "0103"
                    MOVE    "性別は必ず入力して下さい"
                                                TO  SPA-ERRMSG
+               WHEN    "0104"
+                   MOVE    "保険の老人割合が入力されていません。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "保険を再作成して下さい。"
+                                               TO  SPA-ERRMSG(37:)
+               WHEN    "0105"
+                   MOVE    "老人割合が入力されていません。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "公費を作成して下さい。"
+                                               TO  SPA-ERRMSG(31:)
       *    キーエラー
                WHEN    "0110"
                    MOVE    "この画面では選択できません。"
@@ -2831,6 +2879,37 @@
                    MOVE
                         "よろしいですか？"
                                        TO  WRK-PIDMSG(37:)
+               WHEN    "0104"
+                   STRING    SPA-PIDMSG    DELIMITED  BY  SPACE
+                             "を老人負担割合へ追加変更します。"
+                                           DELIMITED  BY  SIZE
+                             "よろしいですか？"
+                                           DELIMITED  BY  SIZE
+                                       INTO    WRK-PIDMSG
+                   END-STRING
+               WHEN    "0105"
+      **********   MOVE
+      *            "保険の期間が重複します。前の保険を終了させます。"
+      *                                TO  WRK-PIDMSG
+      *            MOVE
+      *                 "よろしいですか？"
+      *********                        TO  WRK-PIDMSG(47:)
+                   STRING     "保険の期間が重複します。前の"
+                                           DELIMITED  BY  SIZE
+                              SPA-PIDMSG   DELIMITED  BY  SPACE
+                              "を終了させます。よろしいですか？"
+                                           DELIMITED  BY  SIZE
+                                       INTO    WRK-PIDMSG
+                   END-STRING
+               WHEN    "0106"
+                   MOVE
+                   "公費の期間が重複します。前の公費を終了させます。"
+                                       TO  WRK-PIDMSG
+                   MOVE
+                        "よろしいですか？"
+                                       TO  WRK-PIDMSG(47:)
+               WHEN    "0107"
+                   MOVE    SPA-PIDMSG      TO  WRK-PIDMSG
                WHEN    OTHER
                    MOVE    SPA-PIDCD
                                        TO  WRK-PIDMSG
