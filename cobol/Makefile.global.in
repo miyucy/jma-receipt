@@ -1,14 +1,17 @@
-COBOL = cobc
+COBOL = @COBC@
 INSTALL = @INSTALL@
 MKDIR = mkdir -p
 COBOLFLAGS =  -m -dynamic
-COBOLFLAGSE = -dynamic
+EXEC_COBOLFLAGS = -dynamic
 DEPDIR = .deps
 prefix = @prefix@
 exec_prefix= @exec_prefix@
 orcadir = ${exec_prefix}/orca
 libdir  = ${orcadir}/lib
 copydir = ../copy
+
+OBJS = ${SRCS:.CBL=.so}
+EXEC = ${EXEC_SRCS:.CBL=}
 
 define postprocess-depend
 @if test ! -d $(DEPDIR); then mkdir $(DEPDIR); fi
@@ -20,15 +23,15 @@ endef
 	
 %: %.CBL
 	$(postprocess-depend)
-	$(COBOL) $(COBOLFLAGSE) -I $(copydir) -MT $@ -MF $(DEPDIR)/${@:=.Po} $<
+	$(COBOL) $(EXEC_COBOLFLAGS) -I $(copydir) -MT $@ -MF $(DEPDIR)/${@:=.Po} $<
 
-all: $(OBJS)
+all: $(OBJS) $(EXEC)
 
 clean: 
-	-rm -f $(OBJS)
+	-rm -f $(OBJS) $(EXEC)
 
 distclean: 
-	-rm -f $(OBJS)
+	-rm -f $(OBJS) $(EXEC)
 	-rm -R $(DEPDIR)
 
 
