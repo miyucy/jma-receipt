@@ -2577,6 +2577,13 @@
                END-IF
            END-IF
       *
+      *    ½é¿ÇÎÁ»»ÄêÆü¤¬Æþ±¡Æü
+           IF      SPA-SYOSIN          =   1
+               IF      SPA-SYOYMD          >=  SPA-K02N-NYUINYMD
+                   MOVE    ZERO            TO  SPA-SYOSIN
+               END-IF
+           END-IF
+      *
            .
        11011-NYU-SYOYMD-SET-EXT.
            EXIT.
