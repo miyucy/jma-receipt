@@ -49,6 +49,7 @@
       *  01.05.02    NACL-藤原    02/10/04  区分コードの最大行を２００に変更
       *  01.05.03    NACL-多々納  02/11/12  コード桁数チェック追加
       *                                     一括入力へ
+      *  01.05.04    NACL-多々納  02/11/25  ベット数より入院表示判定
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -424,6 +425,14 @@
            MOVE    "4001"                  TO  SPA-GMN-KANRICDL (24)
       *****MOVE    "労災医療機関情報"
            MOVE    "労災自賠医療機関情報"  TO  SPA-GMN-KANRICDMEIL(24)
+      *
+      *    入院はベット数がある時のみ
+           IF      SPA-BEDSU           =   ZERO
+               MOVE    24                  TO  SPA-GMN-KANRICD-MAX
+               MOVE    1                   TO  SPA-GMN-CUR
+               GO      TO        310-SPASET-EXT
+           END-IF
+      *
            MOVE    "5000"                  TO  SPA-GMN-KANRICDL (25)
            MOVE    "医療機関情報−入院基本"
                                            TO  SPA-GMN-KANRICDMEIL(25)
@@ -441,9 +450,9 @@
            MOVE    "入院用管理マスタ設定"  TO  SPA-GMN-KANRICDMEIL(30)
            MOVE    "5010"                  TO  SPA-GMN-KANRICDL (31)
            MOVE    "定期請求情報"          TO  SPA-GMN-KANRICDMEIL(31)
-      *     
+      *
            MOVE    31                      TO  SPA-GMN-KANRICD-MAX
-      *     
+      *
            MOVE    1               TO  SPA-GMN-CUR
       *
            .
