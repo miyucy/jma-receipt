@@ -743,7 +743,6 @@
                PERFORM 810-PTINF-READ-SEC
            END-PERFORM
       *    カーソルクロース
-           INITIALIZE                  MCPAREA
            MOVE    "DBCLOSE"           TO  MCP-FUNC
            MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
            CALL    "ORCMCPSUB"          USING
@@ -1058,6 +1057,7 @@
            END-IF
            IF      SPA-GMN-SELNO       =   ZERO   OR
                                        >   SPA-GMN-MAX
+               MOVE    4               TO  SPA-GMN-CUR
                MOVE    "0002"          TO  SPA-ERRCD
            END-IF
       *
@@ -1332,6 +1332,9 @@
                                                 TO  SPA-ERRMSG
                 WHEN    "0004"
                     MOVE    "性別のみの検索はできません。"
+                                                TO  SPA-ERRMSG
+                WHEN    "0005"
+                    MOVE    "入外区分のみの検索はできません。"
                                                 TO  SPA-ERRMSG
                 WHEN    OTHER
                     MOVE    SPACE               TO  SPA-ERRMSG
