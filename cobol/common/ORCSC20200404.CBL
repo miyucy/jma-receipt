@@ -143,7 +143,7 @@
            03  WRK-ERRCD6          PIC X(04). 
       *
            03  WRK-SYOKEIS         PIC 9(08)V99.
-           03  WRK-SYOKEIS2        PIC 9(08)V99.
+           03  WRK-SYOKEIS2        PIC 9(08)V9(4).
            03  WRK-SYOKEI          PIC 9(08).
       *
            03  WRK-ZAIKEI          PIC 9(08)V99.
@@ -176,7 +176,7 @@
                05  WRK-SANTEN-9        PIC 9(08)V99.
                05  WRK-TENKEI          PIC 9(08).
                05  WRK-ZAITEN          PIC 9(08).
-               05  WRK-ZAITEN-G        PIC 9(08)V99.
+               05  WRK-ZAITEN-G        PIC 9(08)V9(4).
       *
                05  WRK-CHK-SRYSYUKBN   PIC X(03).
       *    Ç¯ÎðÈ½ÄêÍÑ
@@ -1127,7 +1127,7 @@
                    (WRK-COM-ZAIEND (IDX)   =   "1")
                MOVE    WRK-ZAITEN-G        TO  WRK-ZAITEN
                IF      WRK-ZAITEN          <   205
-                   IF      WRK-ZAITEN          =   ZERO
+                   IF      WRK-ZAITEN-G        =   ZERO
                        CONTINUE
                    ELSE
       *
@@ -1458,7 +1458,6 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-SYOHORYO
-      *
       *
            IF      WRK-ZAICNT          >=  7
       *        ÆâÉþ¤ÎÌôºÞÄþ¸ºÍ­¤ê¥Á¥§¥Ã¥¯
