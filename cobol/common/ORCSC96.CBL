@@ -523,10 +523,8 @@
                    MOVE    "この診療種別には入力できません。"
                                        TO  SPA-ERRMSG
                WHEN    "8021"
-                   MOVE    "労災保険には電話再診はありません。"
+                   MOVE    "労災保険の診療コードを入力して下さい。"
                                        TO  SPA-ERRMSG
-                   MOVE    "労災の診察料を入力して下さい。"
-                                       TO  SPA-ERRMSG(35:)
                WHEN    "S001"
                    MOVE    "約束セット内に使用できないコードがあります"
                                        TO  SPA-ERRMSG
