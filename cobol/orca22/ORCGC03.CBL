@@ -54,6 +54,8 @@
       *                                     残らないように修正
       *  01.01.06    NACL-藤原    03/07/17  入力ＣＤの長さを更新前にチェ
       *                                     ックするよう追加
+      *  02.01.07    NACL-藤原    03/08/27  病名から検索したコードがエラー
+      *                                     のときの確認画面を表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -488,12 +490,54 @@
                    ELSE
                        MOVE    1                   TO  SPA-GMN-CUR
                    END-IF
+      *
+               WHEN    "0103"
+                   IF      SPA-CID1-FLG        =   "OK"
+                       PERFORM 3301-BYOMEIHENFLG-SET-SEC
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
       * 
            END-EVALUATE
       *     
            MOVE    SPACE           TO  SPA-CIDCD
            .
        330-CID1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    コードでエラーとなった病名を未コード化傷病名とする
+      *****************************************************************
+       3301-BYOMEIHENFLG-SET-SEC             SECTION.
+      *
+           INITIALIZE                   SPA-GMN-BYOMEICD-G
+                                        SPA-NAI-BYOMEI-TBL
+           MOVE    ZERO             TO  SPA-NAI-BYOMEICD-MAX
+      *         
+           MOVE    ZERO                TO  WRK-MOJISU
+           PERFORM VARYING     IDX     FROM    80  BY  -1
+                   UNTIL       IDX     <       1
+               IF      SPA-GMN-BYOMEI(IDX:1)   NOT =   SPACE
+                   MOVE    IDX                 TO  WRK-MOJISU 
+                   MOVE    1                   TO  IDX
+               END-IF  
+           END-PERFORM
+           COMPUTE WRK-MOJISU   =   WRK-MOJISU  /   2        
+           MOVE    WRK-MOJISU           TO  SPA-NAI-BYOMEIMOJI
+      *
+           MOVE    "1"              TO  SPA-NAI-BYOMEIHENFLG
+           MOVE    " 病名編集"      TO  SPA-GMN-BYOMEIHENFLG
+      *
+           MOVE    WRK-CONS-BYOMEICD    TO  SPA-GMN-BYOMEICD(1)
+           MOVE    SPA-GMN-BYOMEICD (1)
+                                        TO  BYO-BYOMEICD
+           MOVE    1                    TO  IDZ
+           PERFORM 410111-BYOMEI-HENSYU-SEC
+           MOVE    1                    TO  SPA-NAI-BYOMEICD-MAX
+      *
+           MOVE    12                   TO  SPA-GMN-CUR
+           .
+       3301-BYOMEIHENFLG-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1763,6 +1807,13 @@
       *
            MOVE    11                   TO  SPA-GMN-CUR
       *
+      *    未コード化傷病名コードのとき病名がおなじとき    
+           IF      C03-BYOMEI              =   SPA-GMN-BYOMEI
+           AND     SPA-GMN-BYOMEICD (1)    =   WRK-CONS-BYOMEICD
+               MOVE    12                  TO  SPA-GMN-CUR 
+               GO  TO  41013-BYOMEI-CHK-EXT
+           END-IF
+      *
            MOVE    C03-BYOMEI           TO  SPA-GMN-BYOMEI
       *     
            MOVE    ZERO                 TO  SPA-NAI-BYOMEIMOJI
@@ -1856,6 +1907,11 @@
                                END-IF      
                            END-PERFORM    
                            PERFORM 41021-BYOMEI-HENSYU-SEC
+                           IF      SPA-ERRCD       =    "0006"
+                               MOVE    "0103"           TO  SPA-CIDCD
+                               MOVE    SPACE            TO  SPA-ERRCD
+                               GO  TO  41013-BYOMEI-CHK-EXT
+                           END-IF
                            MOVE    12              TO  SPA-GMN-CUR
       *             
                            IF      SPA-CIDCD2          =   SPACE
@@ -3433,6 +3489,11 @@
                WHEN    "0102"
                    MOVE    "自院病名一覧を出力します。"
                                        TO  WRK-CIDMSG
+               WHEN    "0103"
+                   MOVE    "病名コードでの組み立てができませんでした。"
+                                       TO  WRK-CIDMSG
+                   MOVE    "編集病名としますか？"
+                                       TO  WRK-CIDMSG (43:)
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  WRK-CIDMSG
