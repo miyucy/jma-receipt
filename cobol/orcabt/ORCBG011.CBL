@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
+      * 01.00.01     NACL-森脇     04/01/05  番号を患者ごとにカウント
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1025,14 +1026,21 @@
       *
            COMPUTE CNT-LINE    =   CNT-LINE    +   1
            COMPUTE CNT-PTSYU   =   CNT-PTSYU   +   1
-           COMPUTE CNT-KNS     =   CNT-KNS     +   1
+      *----(01.00.01)--UPD-START---
+      *     COMPUTE CNT-KNS     =   CNT-KNS     +   1
+      *----(01.00.01)--UPD-END-----
       *
       *    収納マスター検索
            PERFORM 200111-SYUNOU-SEL-SEC
       *
+      *----(01.00.01)--UPD-START---
       *    番号
-           MOVE    CNT-KNS                 TO  WRK-ZZZZ9
-           MOVE    WRK-ZZZZ9               TO  HCM39-CD  (CNT-LINE)
+           IF      CNT-PTSYU           =   1
+               COMPUTE CNT-KNS     =   CNT-KNS     +   1
+               MOVE    CNT-KNS                 TO  WRK-ZZZZ9
+               MOVE    WRK-ZZZZ9               TO  HCM39-CD  (CNT-LINE)
+           END-IF
+      *----(01.00.01)--UPD-END-----
       *
       *    患者情報（患者番号・氏名・電話番号（自宅））
       *    １件目か、改ページ後１行目のみ編集
