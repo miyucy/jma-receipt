@@ -1633,6 +1633,8 @@
            MOVE    PATH-TBL-ORDER-KEY6 TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
       *
+           PERFORM 41011-DIRECT-UPD-CHK-SEC
+      *
            IF    ( SPA-GMN-SHOKAI  =   "2" )
                PERFORM 41011-SHONYUINYMD-SEC
                MOVE    WRK-SHONUM      TO  SPA-GMN-SHONUM
@@ -1783,6 +1785,8 @@
            MOVE    PATH-TBL-ORDER-KEY6 TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
       *
+           PERFORM 41011-DIRECT-UPD-CHK-SEC
+      *
            IF    ( ITEM-TAIINCD    NOT =   SPACE )
                PERFORM 41011-TAIINCD-SEC
                MOVE    WRK-TAIINCD     TO  SPA-GMN-TAIINCD
@@ -1865,6 +1869,8 @@
       *
            MOVE    PATH-TBL-ORDER-KEY6 TO  MCP-PATH
            PERFORM 910-DBCLOSE-SEC
+      *
+           PERFORM 41011-DIRECT-UPD-CHK-SEC
       *
            PERFORM 3101-NYUINKALST-SET-SEC
            MOVE    SPA-GMN-NYUINKA     TO  WRK-CMB-CD
@@ -2086,6 +2092,26 @@
       *
            .
        410111-INPUT-KAIKEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    直接更新時入院科保険組合せ設定処理
+      *****************************************************************
+       41011-DIRECT-UPD-CHK-SEC        SECTION.
+      *
+           MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
+      *
+           IF    ( SPA-NAI-STATUS-ORDER    =   "4" )
+               IF    ( SPA-NAI-STS-NYUINKA =   "-" )
+                   MOVE    ORDER-SRYKA     TO  SPA-GMN-NYUINKA
+               END-IF
+      *
+               IF    ( SPA-NAI-STS-HKNCOMBI    =   "-" )
+                   MOVE    ORDER-HKNCOMBI  TO  SPA-GMN-HKNCOMBI
+               END-IF
+           END-IF
+      *
+           .
+       41011-DIRECT-UPD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    患者基本情報編集処理
