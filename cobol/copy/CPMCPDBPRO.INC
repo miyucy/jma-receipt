@@ -300,6 +300,7 @@
       *  01.01.118   NACL-門脇  　04/01/14  SRYACCT-KEY29,30,31,32,33追加
       *  01.01.119   NACL-太田    04/01/19  SYUNOU-KEY24追加
       *  01.01.120   NACL-太田    04/01/23  PTNYUINRRK-KEY29追加
+      *  01.01.121   NACL-藤原    04/01/30  USERBYOMEI-DEL1,DEL2追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -890,6 +891,12 @@
                WHEN    "DBUPDATE"      ALSO   "USERBYOMEI-KEY"
                WHEN    "DBDELETE"      ALSO   "USERBYOMEI-KEY"
                    MOVE    PATH-TBL-USERBYOMEI-KEY
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "USERBYOMEI-DEL1"
+                   MOVE    PATH-TBL-USERBYOMEI-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBDELETE"      ALSO   "USERBYOMEI-DEL2"
+                   MOVE    PATH-TBL-USERBYOMEI-DEL2
                                        TO  WRK-PATH
                WHEN    "DBUPDATE"      ALSO   "RECECOM-KEY"
                WHEN    "DBUPDATE"      ALSO   "RECECOM-KEY1"
