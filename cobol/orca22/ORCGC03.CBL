@@ -1197,7 +1197,7 @@
            PERFORM 41021-BYOMEI-HENSYU-SEC
       *
            IF      SPA-ERRCD           NOT =   SPACE     
-               GO  TO  4102-BYOMEI-CHK-EXT
+               GO  TO  41021-BYOMEICD-HENSYU-EXT
            END-IF
       *
            IF      SPA-GMN-BYOMEICD (IDZ)  =   SPACE                                    
