@@ -636,6 +636,7 @@
                                        OR  "973"
                MOVE    ZERO            TO  AGECHK-ROUJIN
            END-IF
+           .
       *
        2009-ROUJIN-HANTEI-EXT.
            EXIT.
