@@ -65,6 +65,7 @@
            03  IDXA                    PIC 9(05).
            03  IDXB                    PIC 9(05).
            03  IDX-IJI                 PIC 9(05).
+           03  IDX-CMB                 PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -83,9 +84,13 @@
            03  WRK-STATUS-ITEM         PIC X(01).
            03  WRK-UKEYMD              PIC X(08).
            03  WRK-UKEHMS              PIC X(06).
-           03  WRK-ORDERID-G.
-               05  WRK-ORDERID1        PIC X(02).
-               05  WRK-ORDERID2        PIC X(02).
+           03  WRK-ORDER-CLAIMID-G.
+               05  WRK-ORDER-CLAIMIDH  PIC X(02).
+               05  WRK-ORDER-CLAIMIDT  PIC X(03).
+           03  WRK-CMB-CD              PIC X(10).
+           03  WRK-CMB-ITM-G.
+               05  WRK-CMB-ITM         PIC X(200).
+           03  WRK-ORDERID             PIC X(04).
       *
        01  ERRCD-AREA.
            03  ERRCD-KHNERR            PIC X(04).
@@ -98,8 +103,11 @@
            03  CONST-SRYTBLP-MAX       PIC 9(05)   VALUE   20.
            03  CONST-SRYTBLC-MAX       PIC 9(05)   VALUE   30.
       *
-      *    入院CLAIM項目IDコピー句
+      *    項目IDコピー句
            COPY    "CPNCLAIMID.INC".
+      *
+      *    ORDERIDコピー句
+           COPY    "CPNORDERID.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -310,10 +318,9 @@
                        =   WRK-ORDERNUM    +   1
       *
                    EVALUATE    LF04-SRYCD (IDXA)
-                   WHEN    "01"
+                   WHEN    NORDERID-ORDER-NYUIN
+                   WHEN    NORDERID-ORDER-KYUSYOKU
                            PERFORM 2001-NYUINIDO-SEC
-      *            WHEN    "02"
-      *                PERFORM 2001-KYUSYOKU-SEC
                    WHEN    OTHER
                        MOVE    "0008"  TO  WRK-ERRCD
                        MOVE    "000"   TO  WRK-IDOKBN
@@ -372,12 +379,30 @@
       *
                        COMPUTE CNT-ORDER   =   CNT-ORDER   +   1
       *
-                   IF    (  LF04-IJICD (IDXA IDXB)     =   "001"
-                                                       OR  "002" )
-                       COMPUTE CNT-IDOKBN  =   CNT-IDOKBN  +   1
-                       MOVE    LF04-IJICD (IDXA IDXB)
-                                   TO  WRK-IDOKBN
-                   END-IF
+                   EVALUATE    LF04-SRYCD (IDXA) 
+                   WHEN    NORDERID-ORDER-NYUIN
+                       IF    (  LF04-IJICD (IDXA IDXB)
+                                               =   NORDERID-NYUINCL2
+                                               OR  NORDERID-TAIINCL2
+                                                                     )
+                           COMPUTE CNT-IDOKBN  =   CNT-IDOKBN  +   1
+                           MOVE    LF04-IJICD (IDXA IDXB)
+                                       TO  WRK-IDOKBN
+                       END-IF
+                   WHEN    NORDERID-ORDER-KYUSYOKU
+                       IF    (  LF04-IJICD (IDXA IDXB)
+                                               =   NORDERID-GAIHKCL2
+                                               OR  NORDERID-GBACKCL2
+                                               OR  NORDERID-FNORLCL2
+                                               OR  NORDERID-FSPCLCL2
+                                               OR  NORDERID-FSELECL2
+                                               OR  NORDERID-FSTOPCL2
+                                                                     )
+                           COMPUTE CNT-IDOKBN  =   CNT-IDOKBN  +   1
+                           MOVE    LF04-IJICD (IDXA IDXB)
+                                       TO  WRK-IDOKBN
+                       END-IF
+                   END-EVALUATE
       *
                END-IF
       *
@@ -461,27 +486,36 @@
       *
            MOVE        SPACE           TO  WRK-PGNAME
       *
-           INITIALIZE  WRK-ORDERID-G
-           MOVE    LF04-SRYCD (IDXA)   TO  WRK-ORDERID1
+           INITIALIZE  WRK-ORDER-CLAIMID-G
+           MOVE    LF04-SRYCD (IDXA)   TO  WRK-ORDER-CLAIMIDH
+           MOVE    WRK-IDOKBN          TO  WRK-ORDER-CLAIMIDT
+           MOVE    WRK-ORDER-CLAIMID-G TO  WRK-CMB-CD
+           PERFORM 2300-ORDERID-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SODR-ORDERID
       *
-           EVALUATE    WRK-IDOKBN
-           WHEN   "001"
-      *
-               MOVE    "01"            TO  WRK-ORDERID2
-               MOVE    WRK-ORDERID-G   TO  SODR-ORDERID
+           EVALUATE    SODR-ORDERID
+           WHEN   NORDERID-NYUINID
       *
                PERFORM 20011-ORCSODR01-ITM-CHK-SEC
       *
                MOVE    "ORCSODR01"     TO  WRK-PGNAME
       *
-           WHEN   "002"
-      *
-               MOVE    "02"            TO  WRK-ORDERID2
-               MOVE    WRK-ORDERID-G   TO  SODR-ORDERID
+           WHEN   NORDERID-TAIINID
       *
                PERFORM 20011-ORCSODR02-ITM-CHK-SEC
       *
                MOVE    "ORCSODR02"     TO  WRK-PGNAME
+      *
+           WHEN   NORDERID-GAIHKID
+           WHEN   NORDERID-GBACKID
+           WHEN   NORDERID-FNORLID
+           WHEN   NORDERID-FSPCLID
+           WHEN   NORDERID-FSELEID
+           WHEN   NORDERID-FSTOPID
+      *
+               PERFORM 20011-ORCSODR03-ITM-CHK-SEC
+      *
+               MOVE    "ORCSODR03"     TO  WRK-PGNAME
       *
            END-EVALUATE
       *
@@ -573,18 +607,17 @@
            MOVE    SCL31N-HKNCOMBI     TO  LNK-ORDER-HKNCOMBI  (IDX1)
            MOVE    SCL31N-DRCD         TO  LNK-ORDER-DRCD      (IDX1)
       *
-           INITIALIZE                      WRK-ORDERID-G
-      *
-           MOVE    LF04-SRYCD (IDXA)   TO  WRK-ORDERID1
-      *
-           EVALUATE    WRK-IDOKBN
-           WHEN    "001"
-               MOVE    "01"            TO  WRK-ORDERID2
-           WHEN    "002"
-               MOVE    "02"            TO  WRK-ORDERID2
-           END-EVALUATE
-      *
-           MOVE    WRK-ORDERID-G       TO  LNK-ORDER-ORDERID   (IDX1)
+           INITIALIZE                      WRK-ORDER-CLAIMID-G
+           MOVE    LF04-SRYCD (IDXA)   TO  WRK-ORDER-CLAIMIDH
+           MOVE    WRK-IDOKBN          TO  WRK-ORDER-CLAIMIDT
+           MOVE    WRK-ORDER-CLAIMID-G TO  WRK-CMB-CD
+           PERFORM 2300-ORDERID-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    LF04-SRYCD (IDXA)
+                                       TO  LNK-ORDER-ORDERID   (IDX1)
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  LNK-ORDER-ORDERID   (IDX1)
+           END-IF
       *
            MOVE    WRK-ORDERNUM        TO  LNK-ORDER-ORDERNUM  (IDX1)
            MOVE    IDX1                TO  LNK-ORDER-ITEMNUM   (IDX1)
@@ -669,6 +702,20 @@
       *
            .
        20011-ORCSODR02-ITM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    会計処理項目チェック（必須項目抜け）
+      *****************************************************************
+       20011-ORCSODR03-ITM-CHK-SEC     SECTION.
+      *
+      *    入院科チェック
+           PERFORM 20011-NYUINKA-CHK-SEC
+      *
+      *    保険組合せチェック
+           PERFORM 20011-HKNCOMBI-CHK-SEC
+      *
+           .
+       20011-ORCSODR03-ITM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院区分チェック
@@ -810,28 +857,29 @@
            MOVE    WRK-UKEYMD          TO  ORDER-UKEYMD
            MOVE    WRK-UKEHMS          TO  ORDER-UKEHMS
       *
-           INITIALIZE                      WRK-ORDERID-G
+           INITIALIZE                      WRK-ORDERID
       *
            MOVE    LF04-SRYCD (IDXA)   TO  WRK-KANACHK-MAE-INPUT
            PERFORM 800-HANKAKU-CHK-SEC
            IF    ( FLG-ENTRYCHK        =   ZERO )
                MOVE    LF04-SRYCD (IDXA)
-                                       TO  WRK-ORDERID1
+                                       TO  WRK-ORDERID
            ELSE
-               MOVE    SPACE           TO  WRK-ORDERID1
+               MOVE    SPACE           TO  WRK-ORDERID
                MOVE    1               TO  FLG-CHRERR
            END-IF
       *
-           EVALUATE    WRK-IDOKBN
-           WHEN   "001"
-               MOVE    "01"            TO  WRK-ORDERID2
-           WHEN   "002"
-               MOVE    "02"            TO  WRK-ORDERID2
-           WHEN   OTHER
-               MOVE    "00"            TO  WRK-ORDERID2
-           END-EVALUATE
-      *
-           MOVE    WRK-ORDERID-G       TO  ORDER-ORDERID
+           INITIALIZE                      WRK-ORDER-CLAIMID-G
+           MOVE    LF04-SRYCD (IDXA)   TO  WRK-ORDER-CLAIMIDH
+           MOVE    WRK-IDOKBN          TO  WRK-ORDER-CLAIMIDT
+           MOVE    WRK-ORDER-CLAIMID-G TO  WRK-CMB-CD
+           PERFORM 2300-ORDERID-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    LF04-SRYCD (IDXA)
+                                       TO  ORDER-ORDERID
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  ORDER-ORDERID
+           END-IF
       *
            MOVE    ERRCD-ERRCD (1)     TO  ORDER-ERRCD1
            MOVE    ERRCD-ERRCD (2)     TO  ORDER-ERRCD2
@@ -892,13 +940,24 @@
        20011-ORDER-INSERT-EXT.
            EXIT.
       *****************************************************************
-      *    給食処理
+      *    オーダーＩＤチェック処理
       *****************************************************************
-       2001-KYUSYOKU-SEC               SECTION.
+       2300-ORDERID-CHK-SEC            SECTION.
       *
+           INITIALIZE                  WRK-CMB-ITM-G
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB         >   NORDERID-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( NORDERID-CLAIMID (IDX-CMB)  =   WRK-CMB-CD )
+                   MOVE    NORDERID-ORCAID  (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
       *
            .
-       2001-KYUSYOKU-EXT.
+       2300-ORDERID-CHK-EXT.
            EXIT.
       *****************************************************************
       *    終了処理

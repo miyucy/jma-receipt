@@ -354,60 +354,21 @@
            03  CONST-TOKNYUIN-MAX          PIC 9(05)   VALUE 30.
            03  CONST-ALLIDOLST-MAX         PIC 9(05)   VALUE 50.
            03  CONST-KJNIDOLST-MAX         PIC 9(05)   VALUE 50.
-           03  CONST-ORDERID-MAX           PIC 9(05)   VALUE 12.
            03  CONST-ERRCD-MAX             PIC 9(05)   VALUE 10.
            03  CONST-ORDER-MAX             PIC 9(05)   VALUE 30.
-           03  CONST-ORDERID-VAL.
-               05  PIC X(04)           VALUE   "0101".
-               05  PIC X(30)           VALUE   "Æþ±¡".
-               05  PIC X(10)           VALUE   "Æþ±¡".
-               05  PIC X(04)           VALUE   "0102".
-               05  PIC X(30)           VALUE   "Âà±¡".
-               05  PIC X(10)           VALUE   "Âà±¡".
-               05  PIC X(04)           VALUE   "0201".
-               05  PIC X(30)           VALUE   "³°Çñ".
-               05  PIC X(10)           VALUE   "³°Çñ".
-               05  PIC X(04)           VALUE   "0202".
-               05  PIC X(30)           VALUE   "¼£ÎÅ¤Î°Ù¤Î³°Çñ".
-               05  PIC X(10)           VALUE   "¼£³°Çñ".
-               05  PIC X(04)           VALUE   "0203".
-               05  PIC X(30)           VALUE   "ÁªÄêÆþ±¡Ãæ¤Î³°Çñ".
-               05  PIC X(10)           VALUE   "Áª³°Çñ".
-               05  PIC X(04)           VALUE   "0204".
-               05  PIC X(30)           VALUE   "Â¾°åÎÅµ¡´Ø¼õ¿Ç".
-               05  PIC X(10)           VALUE   "Â¾¼õ¿Ç".
-               05  PIC X(04)           VALUE   "0205".
-               05  PIC X(30)           VALUE   "µ¢±¡".
-               05  PIC X(10)           VALUE   "µ¢±¡".
-               05  PIC X(04)           VALUE   "0301".
-               05  PIC X(30)           VALUE   "¿©»öÎÅÍÜ¤Î¤ß".
-               05  PIC X(10)           VALUE   "°ìÈÌ¿©".
-               05  PIC X(04)           VALUE   "0302".
-               05  PIC X(30)           VALUE   "¿©»öÎÅÍÜ¡ÜÆÃ¿©".
-               05  PIC X(10)           VALUE   "ÆÃÊÌ¿©".
-               05  PIC X(04)           VALUE   "0303".
-               05  PIC X(30)           VALUE   "¿©»öÎÅÍÜ¡ÜÁªÂò¿©".
-               05  PIC X(10)           VALUE   "ÁªÂò¿©".
-               05  PIC X(04)           VALUE   "0304".
-               05  PIC X(30)           VALUE   "¿©»öÎÅÍÜ¡ÜÆÃ¿©¡ÜÁªÂò¿©".
-               05  PIC X(10)           VALUE   "ÆÃ¿©¡ÜÁª¿©".
-               05  PIC X(04)           VALUE   "0305".
-               05  PIC X(30)           VALUE   "¿©»ß¤á".
-               05  PIC X(10)           VALUE   "¿©»ß¤á".
-           03  CONST-ORDERID-R REDEFINES   CONST-ORDERID-VAL.
-               05  CONST-ORDERID-OCC       OCCURS  12.
-                   07  CONST-ORDERID       PIC     X(04).
-                   07  CONST-ORDERIDMEI    PIC     X(30).
-                   07  CONST-ORDERIDMEI2   PIC     X(10).
       *
       *    ¥¹¥ÑÎÎ°è ¥ï¡¼¥¯
            COPY    "COMMON-SPA"      REPLACING
                                //SPA-// BY //WRK-SPA-//.
       *
-      *    Æþ±¡CLAIM¹àÌÜID
+      *
+      *    ¹àÌÜID¥³¥Ô¡¼¶ç
            COPY    "CPNCLAIMID.INC".
       *
-      *    Æþ±¡CLAIM¥¨¥é¡¼¥³¡¼¥É
+      *    ORDERID¥³¥Ô¡¼¶ç
+           COPY    "CPNORDERID.INC".
+      *
+      *    ¥¨¥é¡¼¥³¡¼¥É
            COPY    "CPNCLAIMERRCD.INC".
       *
        01  ERR-ORDER-REC.
@@ -1523,10 +1484,18 @@
                CONTINUE
            WHEN    OTHER
               EVALUATE    SPA-NAI-TALLORDERID (SPA-GMN-ALLIDOLST-SEL)
-              WHEN    "0101"
+              WHEN    NORDERID-NYUINID
                   PERFORM 41011-INPUT-NYUIN-HEN-SEC
-              WHEN    "0102"
+               WHEN    NORDERID-TAIINID
                   PERFORM 41011-INPUT-TAIIN-HEN-SEC
+               WHEN    NORDERID-GAIHKID
+               WHEN    NORDERID-GAIHKID
+               WHEN    NORDERID-GBACKID
+               WHEN    NORDERID-FNORLID
+               WHEN    NORDERID-FSPCLID
+               WHEN    NORDERID-FSELEID
+               WHEN    NORDERID-FSTOPID
+                  PERFORM 41011-INPUT-KAIKEI-HEN-SEC
               END-EVALUATE
            END-EVALUATE
       *
@@ -1713,7 +1682,7 @@
        41011-INPUT-NYUIN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Âà±¡±¡ÆþÎÏÎÎ°èÊÔ½¸½èÍý
+      *    Âà±¡ÆþÎÏÎÎ°èÊÔ½¸½èÍý
       *****************************************************************
        41011-INPUT-TAIIN-HEN-SEC       SECTION.
       *
@@ -1798,6 +1767,77 @@
       *
            .
        41011-INPUT-TAIIN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ²ñ·×ÆþÎÏÎÎ°èÊÔ½¸½èÍý
+      *****************************************************************
+       41011-INPUT-KAIKEI-HEN-SEC      SECTION.
+      *
+           PERFORM 41011-HEAD-AREA-HEN-SEC
+      *
+           INITIALIZE                  SPA-GMN-INPUT-AREA
+                                       SPA-NAI-INPUT-AREA
+                                       ERR-ORDER-REC
+                                       ITEM-AREA
+      *
+           MOVE    ALL "-"         TO  SPA-NAI-STATUS-G
+           MOVE    ZERO            TO  CNT-ORDER
+           MOVE    ZERO            TO  CNT-DRCD
+      *
+           PERFORM 900-ORDER-KEY6-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-ORDER   NOT =   ZERO )
+      *
+               IF    ( ORDER-STATUS-ITEM   NOT =   "3" )
+      *
+                   COMPUTE CNT-ORDER   =  CNT-ORDER    +   1
+      *
+                   IF    ( CNT-ORDER   =  1 )
+                       MOVE    ORDER-REC       TO  SPA-NAI-ORDER-DAT
+                   END-IF
+      *
+                   PERFORM 410111-INPUT-KAIKEI-HEN-SEC
+      *
+               END-IF
+      *
+               IF    ( ERR-ORDER-MAX   >=  CONST-ORDER-MAX )
+                   CONTINUE
+               ELSE
+                   COMPUTE ERR-ORDER-MAX   =   ERR-ORDER-MAX   +   1
+                   MOVE    ORDER-REC   TO  ERR-ORDER-OCC (ERR-ORDER-MAX)
+               END-IF
+      *
+               PERFORM 900-ORDER-KEY6-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    PATH-TBL-ORDER-KEY6 TO  MCP-PATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           PERFORM 3101-NYUINKALST-SET-SEC
+           MOVE    SPA-GMN-NYUINKA     TO  WRK-CMB-CD
+           PERFORM 4200-NYUINKALST-CHK-SEC
+           IF    ( WRK-CMB-ITM NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYUINKA-G
+           END-IF
+      *
+           PERFORM 3101-HKNCOMBILST-SET-SEC
+           MOVE    SPA-GMN-HKNCOMBI    TO  WRK-CMB-CD
+           PERFORM 4200-HKNCOMBILST-CHK-SEC
+           IF    ( WRK-CMB-ITM NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-HKNCOMBI-G
+           END-IF
+      *
+           PERFORM 3101-KJNIDOLST-SEC
+      *
+           IF    ( SPA-NAI-STATUS-ORDER    =   ZERO )
+               CONTINUE
+           ELSE
+               PERFORM 3101-ERRMESLST-SEC
+           END-IF
+      *
+           .
+       41011-INPUT-KAIKEI-HEN-EXT.
            EXIT.
       *****************************************************************
       *    ½é²óÆþ±¡ÆüÊÔ½¸½èÍý
@@ -1977,6 +2017,23 @@
       *
            .
        410111-INPUT-TAIIN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ²ñ·×ÆþÎÏÎÎ°èÊÔ½¸½èÍý
+      *****************************************************************
+       410111-INPUT-KAIKEI-HEN-SEC      SECTION.
+      *
+           EVALUATE    ORDER-ITEMID
+           WHEN    NCLAIMID-NYUINKAID
+               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-NYUINKA
+               MOVE    ORDER-ITEM          TO  SPA-GMN-NYUINKA
+           WHEN    NCLAIMID-HKNCOMBIID
+               MOVE    ORDER-STATUS-ITEM   TO  SPA-NAI-STS-HKNCOMBI
+               MOVE    ORDER-ITEM          TO  SPA-GMN-HKNCOMBI
+           END-EVALUATE
+      *
+           .
+       410111-INPUT-KAIKEI-HEN-EXT.
            EXIT.
       *****************************************************************
       *    ´µ¼Ô´ðËÜ¾ðÊóÊÔ½¸½èÍý
@@ -2819,13 +2876,13 @@
       *
            INITIALIZE                  WRK-CMB-ITM-G
            PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB         >   CONST-ORDERID-MAX )
+                   UNTIL ( IDX-CMB         >   NORDERID-MAX )
                     OR   ( WRK-CMB-ITM NOT =   SPACE )
       *
-               IF    ( CONST-ORDERID (IDX-CMB) =   WRK-CMB-CD )
-                   MOVE    CONST-ORDERIDMEI  (IDX-CMB)
+               IF    ( NORDERID-ORCAID (IDX-CMB) =   WRK-CMB-CD )
+                   MOVE    NORDERID-ORCAMES1 (IDX-CMB)
                                        TO  WRK-CMB-ITM
-                   MOVE    CONST-ORDERIDMEI2 (IDX-CMB)
+                   MOVE    NORDERID-ORCAMES2 (IDX-CMB)
                                        TO  WRK-CMB-ITM2
                    MOVE    IDX-CMB     TO  WRK-CMB-IDX
                END-IF
@@ -2973,10 +3030,18 @@
        212-TOUROKU-SEC                 SECTION.
       *
            EVALUATE    SPA-NAI-ORDERID
-           WHEN    "0101"
+           WHEN    NORDERID-NYUINID
                PERFORM 2121-NYUIN-TOUROKU-SEC
-           WHEN    "0102"
+           WHEN    NORDERID-TAIINID
                PERFORM 2121-TAIIN-TOUROKU-SEC
+           WHEN    NORDERID-GAIHKID
+           WHEN    NORDERID-GAIHKID
+           WHEN    NORDERID-GBACKID
+           WHEN    NORDERID-FNORLID
+           WHEN    NORDERID-FSPCLID
+           WHEN    NORDERID-FSELEID
+           WHEN    NORDERID-FSTOPID
+               PERFORM 2121-KAIKEI-TOUROKU-SEC
            END-EVALUATE
       *
            .
@@ -3056,7 +3121,7 @@
        2121-NYUIN-TOUROKU-EXT.
            EXIT.
       *****************************************************************
-      *    Âà±¡±¡ÅÐÏ¿½èÍý
+      *    Âà±¡ÅÐÏ¿½èÍý
       *****************************************************************
        2121-TAIIN-TOUROKU-SEC          SECTION.
       *
@@ -3106,6 +3171,48 @@
       *
            .
        2121-TAIIN-TOUROKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    ²ñ·×ÅÐÏ¿½èÍý
+      *****************************************************************
+       2121-KAIKEI-TOUROKU-SEC         SECTION.
+      *
+           INITIALIZE                  ORDER-REC
+           INITIALIZE                  SODR-AREA
+           INITIALIZE                  LNK-ORDER-REC
+      *
+           MOVE    SPA-NAI-ORDER-DAT   TO  ORDER-REC
+      *
+           PERFORM 2300-SODR-COMMON-SET-SEC
+      *
+           MOVE    ZERO                TO  IDX-ITM
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-NYUINKA-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ORDER-MAX     >   IDX-ITM )
+               PERFORM 2300-HKNCOMBI-SET-SEC
+           END-IF
+      *
+           MOVE   IDX-ITM          TO  LNK-ORDER-MAX
+      *
+           CALL   "ORCSODR03"      USING   SODR-AREA
+                                           LNK-ORDER-REC
+           EVALUATE    TRUE
+           WHEN  ( SODR-RC      NOT =   ZERO )
+               MOVE    "4004"   TO  SPA-ERRCD
+           WHEN  ( SODR-ERRCD   NOT =   SPACE )
+               MOVE    LNK-ORDER-REC    TO ERR-ORDER-REC
+               PERFORM 3101-ERRMESLST-SEC
+           WHEN  OTHER
+               PERFORM 220-CLEAR-SEC
+      *        °ÛÆ°¥ê¥¹¥ÈÊÔ½¸½èÍý
+               PERFORM 3101-ALLIDOLST-SEC
+           END-EVALUATE
+      *
+           .
+       2121-KAIKEI-TOUROKU-EXT.
            EXIT.
       *****************************************************************
       *    Æþ±¡¶èÊ¬ÀßÄê½èÍý
@@ -3739,7 +3846,7 @@
            ELSE
                IF    ( SPA-NAI-STATUS-ORDER    =   "2" OR  "4" )
                    EVALUATE    SPA-NAI-ORDERID
-                   WHEN    "0101"
+                   WHEN    NORDERID-NYUINID
                        MOVE    WIDGET-NORMAL
                                            TO  I06-BRMNUM-STATE
                                                I06-BTUNAME-STATE
@@ -3763,12 +3870,25 @@
                                                I06-TOKNYUIN-ITEM-STATE
                                                I06-B12-STATE
                                                I06-SNTNYUIN-STATE
-                   WHEN    "0102"
+                   WHEN    NORDERID-TAIINID
                        MOVE    WIDGET-NORMAL
                                            TO  I06-NYUINKA-STATE
                                                I06-NYUINKA-ITEM-STATE
                                                I06-TAIINCD-STATE
                                                I06-TAIINCD-ITEM-STATE
+                                               I06-HKNCOMBI-STATE
+                                               I06-HKNCOMBI-ITEM-STATE
+                                               I06-B12-STATE
+                   WHEN    NORDERID-GAIHKID
+                   WHEN    NORDERID-GAIHKID
+                   WHEN    NORDERID-GBACKID
+                   WHEN    NORDERID-FNORLID
+                   WHEN    NORDERID-FSPCLID
+                   WHEN    NORDERID-FSELEID
+                   WHEN    NORDERID-FSTOPID
+                       MOVE    WIDGET-NORMAL
+                                           TO  I06-NYUINKA-STATE
+                                               I06-NYUINKA-ITEM-STATE
                                                I06-HKNCOMBI-STATE
                                                I06-HKNCOMBI-ITEM-STATE
                                                I06-B12-STATE
