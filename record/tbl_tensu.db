@@ -912,7 +912,7 @@ path	key13	{
 			AND   DATAKBN       =  1
 			AND   CHUKSNTSUBAN  =  '0'
 			AND   NYUKHNKSNKBN  BETWEEN 1  AND  135
-			ORDER   BY          NYUKHNKSNKBN
+			ORDER   BY          NYUKHNKSNKBN,SRYCD
 			;
 	};
 };
@@ -931,7 +931,7 @@ path	key14	{
 			AND   DATAKBN       =  1
 			AND   CHUKSNTSUBAN  =  '0'
 			AND   NYUKHNKSNKBN  BETWEEN 1  AND  135
-			ORDER   BY          NYUKHNKSNKBN
+			ORDER   BY          NYUKHNKSNKBN,SRYCD
 			;
 	};
 };
@@ -951,7 +951,7 @@ path	key15	{
 			AND   DATAKBN       =  1
 			AND   CHUKSNTSUBAN  =  '0'
 			AND   NYUKHNKSNKBN  BETWEEN 1  AND  135
-			ORDER   BY          NYUKHNKSNKBN
+			ORDER   BY          NYUKHNKSNKBN,SRYCD
 			;
 	};
 };
