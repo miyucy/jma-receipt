@@ -69,7 +69,7 @@
                        09  SPA-GMN-SINRYOCD    PIC X(02).
                        09  SPA-GMN-SK1         PIC X(01).
                        09  SPA-GMN-SINRYOMEI   PIC X(18).
-                   07  SPA-GMN-SINRYOLST       PIC X(21)   OCCURS  20.
+                   07  SPA-GMN-SINRYOLST       PIC X(21)   OCCURS  31.
                    07  SPA-SINRYO-MAX          PIC 9(04).
       *
                    07  SPA-GMN-DRNAME.
@@ -377,7 +377,7 @@
       *
            MOVE    ZERO                TO  SPA-SINRYO-MAX
            PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL      (IDX             >=  29  )   OR
+                   UNTIL      (IDX             >=  30  )   OR
                               (FLG-SYSKANRI    =   1   )
       *
                MOVE    MCPDATA-REC       TO  SYS-1012-REC
