@@ -33,6 +33,7 @@
       *  02.00.03    NACL-多々納  02/09/10  自賠責の追加
       *  02.00.04    NACL-多々納  02/09/27  コンボのチェック追加
       *  02.00.05    NACL-多々納  03/05/12  自費請求区分追加
+      *  02.00.06    NACL-多々納  05/01/11  自賠責担当医、保険会社名追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -65,6 +66,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
       *
       *    カウント領域
@@ -124,6 +126,9 @@
       *    システム管理（損傷区分）
            COPY    "CPSK4002.INC".
       *
+      *    職員情報
+           COPY    "CPSK1010.INC".
+      *
       *    患者保険情報
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
@@ -175,6 +180,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    ドクター編集変換サブ
+           COPY    "CPORCSDRSET.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -437,6 +445,11 @@
       *自賠責患者請求区分
            MOVE    PTRSI-JIBAISEIKBN   TO  SPA-GMN2D-JIBAISEIKBN
       *
+      *自賠責担当医コード
+           MOVE    PTRSI-DRCD(2:4)     TO  SPA-GMN2D-DRCD
+      *自賠責保険会社名
+           MOVE    PTRSI-HOKENNAME     TO  SPA-GMN2D-HOKENNAME
+      *
            .
        3001-RSHKN-SET-EXT.
            EXIT.
@@ -680,8 +693,62 @@
                                            TO  SPA-GMN2D-SONSHOUKBN-G
                END-IF
            END-PERFORM
+      *
+      *    ドクター
+           IF      SPA-GMN2D-DRCD  NOT =   SPACE
+               PERFORM 30021-DRCD-HEN-SEC
+           END-IF
            .
        3002-COMBBOX-HEX-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ドクター名称編集処理
+      *****************************************************************
+       30021-DRCD-HEN-SEC            SECTION.
+      *    職員情報（ドクター）
+           MOVE    SPACE               TO  SYS-1010-REC
+           INITIALIZE                  SYS-1010-REC
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           MOVE    "1"                 TO  SYS-1010-KBNCD(1:1)
+           MOVE    SPA-GMN2D-DRCD      TO  SYS-1010-KBNCD(2:4)
+      *
+      *    システム管理検索
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1010-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1010-REC
+               MOVE    SYS-1010-NAME       TO  SPA-GMN2D-DRCDMEI
+      *
+               ADD     1                   TO  SPA-GMN2D-DRCD-MAX
+               IF      SPA-GMN2D-DRCD-MAX  >   20
+                   MOVE    20                  TO  SPA-GMN2D-DRCD-MAX
+               END-IF
+               MOVE    SPA-GMN2D-DRCD-G    TO  SPA-GMN2D-DRCDLST
+                                                   (SPA-GMN2D-DRCD-MAX)
+           END-IF
+      *
+       30021-DRCD-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -809,6 +876,24 @@
       *                                TO  P02D-TSONSHOUKBN (IDX)
       *    END-PERFORM
       *****MOVE    SPA-GMN2D-SISI-MAX   TO  P02D-SISIKBNLST-COUNT
+      *    自賠責担当医
+           MOVE    SPA-GMN2D-SRYKA-G   TO  P02D-SRYKA
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SRYKA-MAX
+               MOVE    SPA-GMN-SRYKA-LST (IDX)
+                                       TO  P02D-SRYKA-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-SRYKA-MAX       TO  P02D-SRYKA-COUNT
+      *
+           MOVE    SPA-GMN2D-DRCD-G    TO  P02D-DRCD
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN2D-DRCD-MAX
+               MOVE    SPA-GMN2D-DRCDLST (IDX)
+                                       TO  P02D-DRCD-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN2D-DRCD-MAX  TO  P02D-DRCD-COUNT
+      *
+           MOVE    SPA-GMN2D-HOKENNAME TO  P02D-HOKENNAME
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -859,6 +944,13 @@
                    MOVE    "CITYNAME"          TO  MCP-WIDGET
                WHEN    15
                    MOVE    "CITYKBN"           TO  MCP-WIDGET
+               WHEN    25
+                   MOVE    "SRYKA"             TO  MCP-WIDGET
+               WHEN    26
+                   MOVE    "DRCD"              TO  MCP-WIDGET
+               WHEN    27
+                   MOVE    "HOKENNAME"         TO  MCP-WIDGET
+      *
                WHEN    16
                    MOVE    "KOHNUM3"           TO  MCP-WIDGET
                WHEN    17
@@ -871,7 +963,7 @@
                    MOVE    "JIBAISEIKBN"       TO  MCP-WIDGET
       *********WHEN    19
       **********   MOVE    "KENSAYMD"          TO  MCP-WIDGET
-               WHEN    20
+               WHEN    90
                    MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE
       *
@@ -934,7 +1026,20 @@
                WHEN    "CITYNAME"
                    MOVE    15              TO  SPA-GMN2D-CUR
                WHEN    "CITYKBN"
-                   MOVE    20              TO  SPA-GMN2D-CUR
+                   EVALUATE    SPA-GMN2D-HKNKBN
+                       WHEN    "4"
+                           MOVE    25              TO  SPA-GMN2D-CUR
+                       WHEN    "1"
+                       WHEN    "2"
+                           MOVE    90              TO  SPA-GMN2D-CUR
+                   END-EVALUATE
+               WHEN    "SRYKA"
+                   MOVE    26              TO  SPA-GMN2D-CUR
+               WHEN    "DRCD"
+                   MOVE    27              TO  SPA-GMN2D-CUR
+               WHEN    "HOKENNAME"
+                   MOVE    90              TO  SPA-GMN2D-CUR
+      *
                WHEN    "KOHNUM3"
                    MOVE    17              TO  SPA-GMN2D-CUR
                WHEN    "SONSHOUKBN"
@@ -942,7 +1047,7 @@
                WHEN    "SINSATUYMD"
                    MOVE    19              TO  SPA-GMN2D-CUR
                WHEN    "SINSATUEND"
-                   MOVE    20              TO  SPA-GMN2D-CUR
+                   MOVE    90              TO  SPA-GMN2D-CUR
            END-EVALUATE
       *
            .
@@ -997,15 +1102,11 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェックと別画面処理
            PERFORM 4102-KIHON-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      410-INPUT-CHK-EXT
-           END-IF
       *
       *    登録時、必須入力チェック
            IF      FLG-TOUROKU         =   1
-               PERFORM 4109-TOUROKU-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO      TO      410-INPUT-CHK-EXT
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 4109-TOUROKU-CHK-SEC
                END-IF
            END-IF
       *
@@ -1047,6 +1148,10 @@
            MOVE    P02D-SONSHOUKBN    TO  SPA-GMN2D-SONSHOUKBN-G
            MOVE    P02D-SINSATUYMD    TO  SPA-GMN2D-SINSATUYMD
            MOVE    P02D-SINSATUEND    TO  SPA-GMN2D-SINSATUEND
+      *    自賠責担当医他
+           MOVE    P02D-SRYKA         TO  SPA-GMN2D-SRYKA-G
+           MOVE    P02D-DRCD          TO  SPA-GMN2D-DRCD-G
+           MOVE    P02D-HOKENNAME     TO  SPA-GMN2D-HOKENNAME
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -1058,114 +1163,102 @@
        4102-KIHON-CHK-SEC          SECTION.
       *
            PERFORM 4101-HKNKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
       *    自賠責患者請求区分
-           PERFORM 41011-JIBAISEIKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41011-JIBAISEIKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4101-COMMENT-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-COMMENT-CHK-SEC
            END-IF
       *
-           PERFORM 4101-KOFUNUM-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-KOFUNUM-CHK-SEC
            END-IF
       *
-           PERFORM 4101-KOHNUM2-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-KOHNUM2-CHK-SEC
            END-IF
       *
-           PERFORM 4101-SAIGAI-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-SAIGAI-CHK-SEC
            END-IF
       *
-           PERFORM 4101-SINKEI-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-SINKEI-CHK-SEC
            END-IF
       *
-           PERFORM 4101-TENKI-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-TENKI-CHK-SEC
            END-IF
       *
-           PERFORM 4101-SISIKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-SISIKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4101-SHOBYOYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-SHOBYOYMD-CHK-SEC
            END-IF
       *
-           PERFORM 4101-RYOSTYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-RYOSTYMD-CHK-SEC
            END-IF
       *
-           PERFORM 4101-RYOEDYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-RYOEDYMD-CHK-SEC
            END-IF
       *
-           PERFORM 4101-JIGYOUNAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-JIGYOUNAME-CHK-SEC
            END-IF
       *
-           PERFORM 4101-PREFNAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-PREFNAME-CHK-SEC
            END-IF
       *
-           PERFORM 4101-PREFKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-PREFKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4101-CITYNAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-CITYNAME-CHK-SEC
            END-IF
       *
-           PERFORM 4101-CITYKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-CITYKBN-CHK-SEC
+           END-IF
+      *    自賠責診療科
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-SRYKA-CHK-SEC
+           END-IF
+      *    自賠責担当医
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-DRCD-CHK-SEC
+           END-IF
+      *    自賠責保険会社名
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-HOKENNAME-CHK-SEC
            END-IF
       *
-           PERFORM 4101-KOHNUM3-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-KOHNUM3-CHK-SEC
            END-IF
       *
-           PERFORM 4101-SONSHOUKBN-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-SONSHOUKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4101-SINSATUYMD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-SINSATUYMD-CHK-SEC
            END-IF
       *
-           PERFORM 4101-SINSATUEND-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-SINSATUEND-CHK-SEC
            END-IF
            .
       *
        4102-KIHON-CHK-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    保険番号チェック処理
@@ -1827,6 +1920,153 @@
            EXIT.
       *
       *****************************************************************
+      *    自賠責診療科　処理
+      *****************************************************************
+       4101-SRYKA-CHK-SEC           SECTION.
+      *
+      *    自賠責以外は入力なしとする
+           IF      SPA-GMN2D-HKNKBN    =   "4"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN2D-SRYKA-G
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-SRYKA-MAX
+               IF      SPA-GMN2D-SRYKA     =   SPA-GMN-SRYKA-LST
+                                                          (IDX)(1:2)
+                   MOVE    SPA-GMN-SRYKA-LST (IDX)
+                                           TO  SPA-GMN2D-SRYKA-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      SPA-GMN2D-SRYKA     =   SPACE
+               CONTINUE
+           ELSE
+               IF      FLG-OK              =   ZERO
+                   MOVE    "0036"              TO  SPA-ERRCD
+                   MOVE    25                  TO  SPA-GMN2D-CUR
+               ELSE
+                   IF      SPA-GMN2D-SRYKA NOT =   SPA-NAI2D-MAE-SRYKA
+                       PERFORM 41011-DRCD-LIST-SEC
+                   END-IF
+                   MOVE    SPA-GMN2D-SRYKA     TO  SPA-NAI2D-MAE-SRYKA
+               END-IF
+           END-IF
+      *
+          .
+       4101-SRYKA-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ドクター一覧編集処理
+      *****************************************************************
+       41011-DRCD-LIST-SEC           SECTION.
+      *
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+           MOVE    "1"                 TO  ORCSDR-KBN
+           MOVE    SPA-GMN2D-SRYKA     TO  ORCSDR-SRYKA
+           CALL    "ORCSDRSET"         USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN2D-DRCDLST-G
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-GMN2D-DRCD-MAX
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING   IDX       FROM    1   BY  1
+                   UNTIL     IDX           >   SPA-GMN2D-DRCD-MAX
+               IF      SPA-GMN2D-DRCD      =   SPA-GMN2D-DRCD-CD(IDX)
+                   MOVE    SPA-GMN2D-DRCDLST(IDX)
+                                               TO  SPA-GMN2D-DRCD-G
+                   MOVE    1                   TO  FLG-CHK
+                   MOVE    SPA-GMN2D-DRCD-MAX  TO  IDX
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+               MOVE    SPA-GMN2D-DRCDLST(1)
+                                           TO  SPA-GMN2D-DRCD-G
+           END-IF
+          .
+       41011-DRCD-LIST-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自賠責担当医　処理
+      *****************************************************************
+       4101-DRCD-CHK-SEC           SECTION.
+      *
+      *    自賠責以外は入力なしとする
+           IF      SPA-GMN2D-HKNKBN    =   "4"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN2D-DRCD-G
+           END-IF
+      *
+           IF      SPA-GMN2D-DRCD      =   SPACE
+               GO      TO      4101-DRCD-CHK-EXT
+           END-IF
+      *
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+           MOVE    "2"                 TO  ORCSDR-KBN
+           MOVE    SPA-GMN2D-SRYKA     TO  ORCSDR-SRYKA
+           MOVE    SPA-GMN2D-DRCDLST-G TO  ORCSDR-DRCD-TBL-G
+           MOVE    SPA-GMN2D-DRCD-MAX  TO  ORCSDR-DRCD-MAX
+           MOVE    SPA-GMN2D-DRCD-G    TO  ORCSDR-IN-DRCD-G
+           CALL    "ORCSDRSET"         USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN2D-DRCDLST-G
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-GMN2D-DRCD-MAX
+           MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN2D-DRCD-G
+           IF      ORCSDR-ERRCD    NOT =   ZERO
+               MOVE    "0037"              TO  SPA-ERRCD
+               MOVE    26                  TO  SPA-GMN2D-CUR
+           END-IF
+      *
+          .
+       4101-DRCD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    自賠責保険会社名　処理
+      *****************************************************************
+       4101-HOKENNAME-CHK-SEC           SECTION.
+      *
+      *    自賠責以外は入力なしとする
+           IF      SPA-GMN2D-HKNKBN    =   "4"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN2D-HOKENNAME
+           END-IF
+      *
+           IF      SPA-GMN2D-HOKENNAME NOT =   SPACE
+      *        半角空白→全角空白
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN2D-HOKENNAME
+                                           TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                      (KANACHK-SYUBETU     =   1     )
+                   MOVE    "0038"              TO  SPA-ERRCD
+                   MOVE    27                  TO  SPA-GMN2D-CUR
+                   IF      KANACHK-RC2         =   7
+                       MOVE    KANACHK-OUT-INPUT
+                                               TO  SPA-GMN2D-HOKENNAME
+                   END-IF
+               ELSE
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN2D-HOKENNAME
+               END-IF
+           END-IF
+      *
+          .
+       4101-HOKENNAME-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    健康管理手帳番号 入力処理
       *****************************************************************
        4101-KOHNUM3-CHK-SEC           SECTION.
@@ -2279,6 +2519,11 @@
                WHEN    "4"
                    MOVE    SPA-GMN2D-JIBAISEIKBN
                                                TO  PTRSI-JIBAISEIKBN
+      *    自賠責担当医
+                   MOVE    "1"                 TO  PTRSI-DRCD(1:1)
+                   MOVE    SPA-GMN2D-DRCD      TO  PTRSI-DRCD(2:4)
+      *    自賠責保険会社名
+                   MOVE    SPA-GMN2D-HOKENNAME TO  PTRSI-HOKENNAME
            END-EVALUATE
       *
            MOVE    SPA-GMN2D-HIHKNJANAME
@@ -2588,6 +2833,15 @@
                                                TO  SPA-ERRMSG
                WHEN    "0035"
                    MOVE    "自賠責請求区分がありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0036"
+                   MOVE    "自賠責担当医の診療科がありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0037"
+                   MOVE    "自賠責担当医コードがありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0038"
+                   MOVE    "自賠責保険会社名は全角で入力して下さい"
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *

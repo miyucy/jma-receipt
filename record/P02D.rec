@@ -106,5 +106,22 @@ P02D	{
 			count	int;
 			item	varchar(30)[2];
 		};
+		SRYKA_COMB	{
+			SRYKA	{
+				value	varchar(15);
+			};
+			count	int;
+			item	varchar(15)[40];
+		};
+		DRCD_COMB	{
+			DRCD	{
+				value	varchar(29);
+			};
+			count	int;
+			item	varchar(29)[20];
+		};
+		HOKENNAME	{
+			value	varchar(80);
+		};
 	};
 };

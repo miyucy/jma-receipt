@@ -91,3 +91,18 @@
                   05  P02D-VALUE  PIC X(30).
                 04  P02D-JIBAISEIKBN-COUNT  PIC S9(9)   BINARY.
                 04  P02D-JIBAISEIKBN-ITEM   PIC X(30)   OCCURS  2 TIMES.
+              03  P02D-SRYKA-COMB.
+                04  P02D-SRYKA.
+                  05  P02D-VALUE  PIC X(15).
+                04  P02D-SRYKA-COUNT  PIC S9(9)   BINARY.
+                04  P02D-SRYKA-ITEM
+                        PIC X(15)   OCCURS  40 TIMES.
+              03  P02D-DRCD-COMB.
+                04  P02D-DRCD.
+                  05  P02D-VALUE  PIC X(29).
+                04  P02D-DRCD-COUNT  PIC S9(9)   BINARY.
+                04  P02D-DRCD-ITEM
+                        PIC X(29)   OCCURS  20 TIMES.
+              03  P02D-HOKENNAME.
+                04  P02D-VALUE  PIC X(80).
+
