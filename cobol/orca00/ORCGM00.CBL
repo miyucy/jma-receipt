@@ -51,6 +51,7 @@
       *  01.02.13    NACL-太田    04/01/13  職員情報取得失敗時の処理修正
       *  01.02.14    NACL-多々納  04/02/02  環境設定に外来時間外区分追加
       *  01.02.15    NACL-伊藤    04/02/05  M97の追加
+      *  01.02.16    NACL-森脇    04/01/16  プログラム更新ボタン追加
       *****************************************************************
       *
       *
@@ -496,14 +497,16 @@
                MOVE    SYSKANRI-REC        TO  SYS-1010-REC
       *
       *2001.9.27 強制プロテクト（ＰＧ未作成）
-               MOVE    "0"             TO  SYS-1010-GSRAUTH(3:1)
-                                           SYS-1010-GSRAUTH(4:1)
+      *----(01.02.16)--UPD-START---
+      *         MOVE    "0"             TO  SYS-1010-GSRAUTH(3:1)
+               MOVE    "0"             TO  SYS-1010-GSRAUTH(4:1)
                                            SYS-1010-GSRAUTH(18:1)
                                            SYS-1010-GSRAUTH(26:1)
                                            SYS-1010-GSRAUTH(32:1)
                                            SYS-1010-GSRAUTH(41:1)
                                            SYS-1010-GSRAUTH(46:1)
                                            SYS-1010-GSRAUTH(47:1)
+      *----(01.02.16)--UPD-END-----
       *2001.9.27 強制プロテクト（ＰＧ未作成）END
       *********MOVE    SYS-1010-REC        TO  SPA-WORK
       *---- (01.02.10) LINE ADD START --------------------------------
@@ -600,6 +603,16 @@
                    ELSE
                        MOVE    "0002"          TO  SPA-ERRCD
                    END-IF 
+      *----(01.02.16)--ADD-START---
+      *        プログラム更新処理
+               WHEN    "02"
+                   IF      SYS-1010-KANRIAUTHFLG   =   "T"
+                       AND     SYS-1010-GSRAUTH(3:1)    =  "1"
+                       MOVE    "M97"           TO  SPA-SAKIPG
+                   ELSE
+                       MOVE    "0002"          TO  SPA-ERRCD
+                   END-IF 
+      *----(01.02.16)--ADD-END-----
       *        プログラム更新処理
                WHEN    "03"
                    IF      SYS-1010-GSRAUTH(3:1)    =  "1"
@@ -623,6 +636,9 @@
                IF      SPA-SAKIPG      NOT =  SPACE
                    EVALUATE    SPA-SAKIPG
                        WHEN    "M01"
+      *----(01.02.16)--ADD-START---
+                       WHEN    "M97"
+      *----(01.02.16)--ADD-END-----
                            CONTINUE
                        WHEN    OTHER
                            INITIALIZE                  LINKAREA
@@ -782,10 +798,13 @@
       *
       *****MOVE    SPA-WORK            TO  SYS-1010-REC
       *
+      *----(01.02.16)--UPD-START---
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       3
+                   UNTIL   IDX >       4
+      *             UNTIL   IDX >       3
                MOVE    WIDGET-INSENSITIVE      TO  M00-STATE-O (IDX)
            END-PERFORM           
+      *----(01.02.16)--UPD-END-----
       *
            IF      SYS-1010-GSRAUTH(1:1)    =  "1"
                MOVE    WIDGET-NORMAL      TO  M00-G01-STATE
@@ -796,6 +815,13 @@
            IF      SYS-1010-GSRAUTH(4:1)    =  "1"
                MOVE    WIDGET-NORMAL      TO  M00-G04-STATE
            END-IF
+      *
+      *----(01.02.16)--ADD-START---
+           IF      SYS-1010-KANRIAUTHFLG   =   "T"
+               AND     SYS-1010-GSRAUTH(3:1)    =  "1"
+               MOVE    WIDGET-NORMAL       TO  M00-G02-STATE
+           END-IF
+      *----(01.02.16)--ADD-END-----
       *
       *2001.8.7 強制プロテクト（ＰＧ未作成）
       ***     MOVE    WIDGET-INSENSITIVE      TO  M00-G03-STATE
