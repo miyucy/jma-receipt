@@ -42,6 +42,9 @@
       *                                     SRYACCT7¢ª33
       *  01.00.11    NACL-ÌçÏÆ    04/02/27  Ì¤¼Â»Ü¸º»»·îÅÓÃæÊÑ¹¹ÂÐ±þ
       *  01.00.12    NACL-ÌçÏÆ    04/03/17  Ê¡»ã¥ì¥»ÂÐ±þ
+      *  01.00.13    NACL-ÌçÏÆ    04/03/18  Í­¾²¿ÇÎÅ½ê£±·²Æþ±¡´ðËÜÎÁ£±
+      *                                     ¡Ê°å»ÕÇÛÃÖÅ¬¹ç¡Ë¤Î³°Çñ»þ
+      *                                     ¤Î´ðËÜÎÁ¼èÆÀÂÐ±þÅù
       *****************************************************************
       *
       *
@@ -1643,9 +1646,15 @@
                                  (WRK-KHNTEN    *  0.3)
                                                 +  0.5
                        WHEN   4
-                         COMPUTE  WRK-NYUKHNRYO =
-                                 (WRK-KHNTEN    *  0.15)
-                                                +  0.5
+                         IF   RECE62-SRYYM    >=    "200404"
+                            COMPUTE  WRK-NYUKHNRYO =
+                                    (WRK-KHNTEN    *  0.3)
+                                                   +  0.5
+                         ELSE
+                            COMPUTE  WRK-NYUKHNRYO =
+                                    (WRK-KHNTEN    *  0.15)
+                                                   +  0.5
+                         END-IF
                     END-EVALUATE
                   END-IF
                   EVALUATE   WRK-DAY2(IDY)
@@ -1664,8 +1673,9 @@
                                   TBL-MIJISI-TENSU(IDY)
                          MOVE     1      TO    FLG-MIJISI-GENSAN        
                   END-EVALUATE
-                  MOVE     ZERO     TO    FLG-ARI
-                  PERFORM  VARYING  ID1    FROM    1   BY  1
+                  IF   WRK-NYUKHNRYO  NOT = ZERO
+                    MOVE     ZERO     TO    FLG-ARI
+                    PERFORM  VARYING  ID1    FROM    1   BY  1
                                 UNTIL   ID1                   > 10
                                   OR    RECE62-NYUKHNNISSU(ID1)
                                                               = ZERO
@@ -1687,8 +1697,8 @@
                                       TO   RECE62-NYUKHNKEI(ID1 KH-IDX)
                             MOVE  1   TO   FLG-ARI
                       END-IF
-                  END-PERFORM  
-                  IF  FLG-ARI  =  ZERO  
+                    END-PERFORM  
+                    IF  FLG-ARI  =  ZERO  
                       ADD        1           TO  RECE62-NYUKHNNISSU(ID1)
                       MOVE   WRK-NYUKHNRYO   TO  RECE62-NYUKHNRYO(ID1)
                       IF     FLG-FUKUSHI =   1
@@ -1701,6 +1711,7 @@
                       END-IF
                       ADD    WRK-NYUKHNRYO   
                                        TO  RECE62-NYUKHNKEI(ID1 KH-IDX)
+                    END-IF
                   END-IF
                WHEN   920
                   MOVE      ZERO   TO  WRK-NYUTOKRYO
@@ -1743,9 +1754,15 @@
                                                 +  0.5
                          MOVE   1   TO   FLG-GAIHAKU
                        WHEN   4
-                         COMPUTE  WRK-NYUTOKRYO =
-                                 (WRK-KHNTEN    *  0.15)
-                                                +  0.5
+                         IF   RECE62-SRYYM    >=    "200404"
+                            COMPUTE  WRK-NYUTOKRYO =
+                                    (WRK-KHNTEN    *  0.3)
+                                                   +  0.5
+                         ELSE
+                            COMPUTE  WRK-NYUTOKRYO =
+                                    (WRK-KHNTEN    *  0.15)
+                                                   +  0.5
+                         END-IF
                          MOVE   1   TO   FLG-GAIHAKU
                     END-EVALUATE
                   END-IF
@@ -1775,7 +1792,8 @@
                       COMPUTE  WRK-NYUTOKRYO = WRK-NYUTOKRYO
                                              + WRK-ACCT90(IDY)
                   END-IF
-                  IF     FLG-GAIHAKU  =  ZERO
+                  IF   WRK-NYUTOKRYO  NOT = ZERO
+                   IF     FLG-GAIHAKU  =  ZERO
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
                         UNTIL ( ID1                          > 10    )  
@@ -1817,7 +1835,7 @@
                       ADD    WRK-NYUTOKRYO   
                                        TO  RECE62-NYUTOKKEI(ID1 KH-IDX)
                     END-IF
-                  ELSE
+                   ELSE
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
                         UNTIL ( ID1                          > 10    )  
@@ -1860,6 +1878,7 @@
                       ADD    WRK-NYUTOKRYO   
                                        TO  RECE62-NYUTOKKEI(ID1 KH-IDX)
                     END-IF
+                   END-IF
                   END-IF
            END-EVALUATE
       *
@@ -2206,6 +2225,11 @@
                WHEN  "190109670"
                      MOVE  "190097010"      TO   WRK-GAIHAKU-SRYCD
                WHEN  "190808870"
+                     MOVE  "190805710"      TO   WRK-GAIHAKU-SRYCD
+      *
+               WHEN  "190117070"
+                     MOVE  "190097010"      TO   WRK-GAIHAKU-SRYCD
+               WHEN  "190813270"
                      MOVE  "190805710"      TO   WRK-GAIHAKU-SRYCD
            END-EVALUATE
       *
@@ -2726,6 +2750,23 @@
                  END-PERFORM  
                  IF  FLG-ARI  =  ZERO  
                         MOVE   "Í­´Ç"
+                                  TO   RECE62-NYUSYUBETU(ID1)(1:4)
+                 END-IF
+      *
+              END-IF
+              IF   WRK-SRYCD  =  "190117070"  OR  "190813270"
+      *
+                 MOVE     ZERO     TO    FLG-ARI
+                 PERFORM  VARYING  ID1    FROM    1   BY  1
+                       UNTIL   ID1                   > 20
+                         OR    RECE62-NYUSYUBETU(ID1) = SPACE
+                         OR    FLG-ARI                = 1 
+                    IF  RECE62-NYUSYUBETU(ID1)(1:4)   =   "Í­°å"
+                        MOVE  1   TO   FLG-ARI
+                    END-IF
+                 END-PERFORM  
+                 IF  FLG-ARI  =  ZERO  
+                        MOVE   "Í­°å"
                                   TO   RECE62-NYUSYUBETU(ID1)(1:4)
                  END-IF
       *
