@@ -1178,6 +1178,7 @@
                        INITIALIZE                  WRK-MOJI-AREA
                        MOVE    IDX-1               TO  IDX
                        PERFORM 3101-INPUTCD-HEN-SEC
+                       MOVE    IDX-1               TO  SPA-GMN-IDX
                        IF      SPA-ERRCD           =   SPACE
                            MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)
                                                    TO  SPA-MAE-INPUTCD
