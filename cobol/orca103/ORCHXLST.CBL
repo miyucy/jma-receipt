@@ -140,29 +140,31 @@
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  H02-MIDASI2             PIC X(50).
        01  BODY-01.
+           03  B01-NYUGAIKBN           PIC X(02).
            03  B01-SRYCD1              PIC X(09).
            03  FILLER                  PIC X(01).
            03  B01-NAME1               PIC X(50).
            03  FILLER                  PIC X(02).
-           03  B01-TEKIYO              PIC X(96).
+           03  B01-COMPKBN             PIC X(02).
+           03  B01-TEKIYO              PIC X(92).
            03  B01-TEKIYO-R1           REDEFINES   B01-TEKIYO.
-               05  B01-SRYCD2          PIC X(09).
+               05  B01-SRYCD2          PIC X(07).
                05  FILLER              PIC X(01).
                05  B01-NAME2           PIC X(80).
-               05  B01-FIL-R1          PIC X(06).
+               05  B01-FIL-R1          PIC X(04).
            03  B01-TEKIYO-R2           REDEFINES   B01-TEKIYO.
                05  B01-BYOMEICD        PIC X(07).
                05  FILLER              PIC X(01).
-               05  B01-BYOMEI          PIC X(88).
+               05  B01-BYOMEI          PIC X(84).
            03  B01-TEKIYO-R3           REDEFINES   B01-TEKIYO.
                05  FILLER              PIC X(07).
-               05  B01-MEISAI          PIC X(89).
+               05  B01-MEISAI          PIC X(85).
       *
        01  CONST-AREA.
            03  CONST-HCM44-MAX         PIC 9(05)   VALUE   55.
            03  CONST-MEISAI-ST         PIC 9(05)   VALUE   4.
-           03  CONST-TEKIYO-MAX        PIC 9(05)   VALUE   96.
-           03  CONST-TEKIYO-R3-MAX     PIC 9(05)   VALUE   89.
+           03  CONST-TEKIYO-MAX        PIC 9(05)   VALUE   92.
+           03  CONST-TEKIYO-R3-MAX     PIC 9(05)   VALUE   85.
            03  CONST-MKCD-MAX          PIC 9(05)   VALUE   21.
            03  CONST-CHK-MAX           PIC 9(05)   VALUE   10.
       *
@@ -567,9 +569,30 @@
            INITIALIZE              BODY-01
       *
            IF    ( CNT-TEKCD   =   1 )
+      *
+               EVALUATE    CHKSND-NYUGAIKBN
+               WHEN    "1"
+                   MOVE    "入"       TO  B01-NYUGAIKBN
+               WHEN    "2"
+                   MOVE    "外"       TO  B01-NYUGAIKBN
+               WHEN    OTHER
+                   MOVE    "　"       TO  B01-NYUGAIKBN
+               END-EVALUATE
+      *
                MOVE    CHKSND-SRYCD   TO  B01-SRYCD1
                MOVE    WRK-SRYNAME    TO  B01-NAME1
            END-IF
+      *
+           EVALUATE    CHKSND-COMPKBN
+           WHEN    "2"
+               MOVE    "完"           TO  B01-COMPKBN
+           WHEN    "3"
+               MOVE    "前"           TO  B01-COMPKBN
+           WHEN    "4"
+               MOVE    "後"           TO  B01-COMPKBN
+           WHEN    OTHER
+               MOVE    "　"           TO  B01-COMPKBN
+           END-EVALUATE
       *
            MOVE    CHKSND-CD       TO  WRK-KEY-CD-G
            MOVE    1               TO  WRK-PNT
