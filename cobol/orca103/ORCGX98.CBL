@@ -1101,6 +1101,7 @@
            MOVE    "2"                 TO  SPA-X98-TYPE
            MOVE    "2"                 TO  SPA-X98-GMN-KBN
            MOVE    "4"                 TO  SPA-X98-GMN-SYORI
+           MOVE    ZERO                TO  SPA-X98-NEXT
       *
       *    £Ó£Ð£Á¥»¥Ã¥È
            PERFORM                     310-SPA-SET-SEC
@@ -1123,6 +1124,7 @@
            MOVE    "2"                 TO  SPA-X98-GMN-KBN
            MOVE    "2"                 TO  SPA-X98-TYPE
            MOVE    "6"                 TO  SPA-X98-GMN-SYORI
+           MOVE    ZERO                TO  SPA-X98-NEXT
       *
       *    £Ó£Ð£Á¥»¥Ã¥È
            PERFORM                     310-SPA-SET-SEC
@@ -1144,6 +1146,7 @@
       *
            MOVE    "1"                 TO  SPA-X98-GMN-KBN
            MOVE    SPACE               TO  SPA-X98-GMN-SYORI
+           MOVE    ZERO                TO  SPA-X98-NEXT
       *
       *    £Ó£Ð£Á¥»¥Ã¥È
            PERFORM                     310-SPA-SET-SEC
@@ -1166,6 +1169,7 @@
            MOVE    "2"                 TO  SPA-X98-GMN-KBN
            MOVE    "8"                 TO  SPA-X98-GMN-SYORI
            MOVE    "2"                 TO  SPA-X98-TYPE
+           MOVE    ZERO                TO  SPA-X98-NEXT
       *
       *    £Ó£Ð£Á¥»¥Ã¥È
            PERFORM                     310-SPA-SET-SEC
@@ -1206,6 +1210,7 @@
       *
       *    £Ó£Ð£Á¥»¥Ã¥È
            MOVE    "2"                 TO  SPA-X98-TYPE
+           MOVE    ZERO                TO  SPA-X98-NEXT
            PERFORM                     310-SPA-SET-SEC
       *
           .
@@ -1250,6 +1255,7 @@
       *
       *    £Ó£Ð£Á¥»¥Ã¥È
            MOVE    "2"                 TO  SPA-X98-TYPE
+           MOVE    ZERO                TO  SPA-X98-NEXT
            PERFORM                     310-SPA-SET-SEC
       *
           .
@@ -1292,6 +1298,7 @@
       *
       *    £Ó£Ð£Á¥»¥Ã¥È
            MOVE    "2"                 TO  SPA-X98-TYPE
+           MOVE    ZERO                TO  SPA-X98-NEXT
            PERFORM                     310-SPA-SET-SEC
       *
           .
