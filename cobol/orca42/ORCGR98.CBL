@@ -36,6 +36,8 @@
       *  01.00.03   NACL-藤原     03.01.20  月代り受給者番号に入外区分を追加
       *  01.00.04   NACL-藤原     03.07.07  公費の開始日が末日でも対象と
       *                                     なるように修正
+      *  01.00.05   NACL-藤原     04.01.09  受給者番号のチェックをマスタ設定
+      *                                     により行なう
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -84,6 +86,8 @@
                            11  SPA-NAI-TBL-G       OCCURS  25.
                                13  SPA-NAI-TPTID   PIC 9(10).
                                13  SPA-NAI-TSRYYM  PIC 9(06).
+      *           受給者検証番号チェック区分
+                   07  SPA-NAI-JKYSKENSNUMCHKKBN   PIC  X(01).
       *        入力項目名
                05  SPA-MCP-WIDGET                  PIC X(64).
       *
@@ -96,6 +100,7 @@
            03  FLG-PTKOHINF        PIC 9(01).
            03  FLG-MONTHLYNUM      PIC 9(01).
            03  FLG-NYUINACCT       PIC 9(01).
+           03  FLG-HKNNUM          PIC 9(01). 
       *     
            03  FLG-CHK             PIC 9(01).
            03  FLG-SEIHO           PIC 9(01). 
@@ -201,6 +206,10 @@
       *    入院会計
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
+      *
+      *    保険情報
+       01  HKNNUM-REC.
+           COPY    "CPHKNNUM.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -380,6 +389,19 @@
       *    該当診療月の生保の患者情報編集処理
       *****************************************************************
        3101-SEH-HENSYU-SEC         SECTION.
+      *
+      *受給者検証番号チェック区分
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPID      TO  HKN-HOSPID
+           MOVE    "012"           TO  HKN-HKNNUM
+           MOVE    SPA-NAI-SRYYM   TO  HKN-TEKSTYMD (1:6)
+           MOVE    "01"            TO  HKN-TEKSTYMD (7:2)  
+           MOVE    HKN-TEKSTYMD    TO  HKN-TEKEDYMD
+           MOVE    "00"            TO  HKN-PAYKBN   
+           MOVE    HKNNUM-REC      TO  MCPDATA-REC
+           PERFORM 900-HKNNUM-INV-SEC
+           MOVE    HKN-JKYSKENSNUMCHKKBN
+                                   TO  SPA-NAI-JKYSKENSNUMCHKKBN
       *
            MOVE    ZERO            TO  IDX1
                                        IDX2
@@ -869,16 +891,18 @@
                MOVE    "0008"              TO  SPA-ERRCD
            END-IF
       *
-      *    入力された保険者番号をセットすれば、サブプロ内で
-      *    検証してくれる (処理区分:2)
-           INITIALIZE                      LNK-CHKDGT-AREA
-           MOVE    2                   TO  LNK-I-SYORIKBN
-           MOVE    SPA-GMN-TJKYSNUM (IDX1 IDX)
-                                       TO  LNK-I-CODE
-           CALL    "ORCSCHKDGT"    USING   LNK-CHKDGT-AREA
-           IF      LNK-O-ERRCD     NOT =   ZERO
-               MOVE    "0005"          TO  SPA-ERRCD
-               GO  TO               41023-JKYSNUM-CHK-EXT
+      *    受給者検証番号チェック区分よりチェック
+           IF      SPA-NAI-JKYSKENSNUMCHKKBN
+                                       =   "1"
+               INITIALIZE                      LNK-CHKDGT-AREA
+               MOVE    2                   TO  LNK-I-SYORIKBN
+               MOVE    SPA-GMN-TJKYSNUM (IDX1 IDX)
+                                           TO  LNK-I-CODE
+               CALL    "ORCSCHKDGT"    USING   LNK-CHKDGT-AREA
+               IF      LNK-O-ERRCD     NOT =   ZERO
+                   MOVE    "0005"          TO  SPA-ERRCD
+                   GO  TO               41023-JKYSNUM-CHK-EXT
+               END-IF
            END-IF
            .
        41023-JKYSNUM-CHK-EXT.
@@ -1855,6 +1879,57 @@
            END-IF
            .
        900-NYUINACCT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険番号（主キー）読込処理
+      *****************************************************************
+       900-HKNNUM-INV-SEC         SECTION.
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
+               PERFORM 900-HKNNUM-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-HKNNUM
+           END-IF
+      *
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY"        TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           .
+       900-HKNNUM-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険番号マスター読込
+      *****************************************************************
+       900-HKNNUM-READ-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNNUM-REC
+               MOVE    ZERO            TO  FLG-HKNNUM
+           ELSE
+               INITIALIZE                  HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+      *
+           .
+       900-HKNNUM-READ-EXT.
            EXIT.
       *
       *****************************************************************
