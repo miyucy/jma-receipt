@@ -186,6 +186,7 @@
                        09  SPA-NAI-HTEKEDYMD        PIC X(08).
                        09  SPA-NAI-HKAKUNINYMD      PIC X(08).
                        09  SPA-NAI-SKKGETYMD        PIC X(08).
+                       09  SPA-NAI-HIHKNFLG         PIC 9(01).
       *
                        09  SPA-NAI-HKNID               PIC 9(10).
                        09  SPA-NAI-PTHKN-SBTKBN        PIC X(01).
@@ -214,7 +215,7 @@
       *            対象開始番号
                    07  SPA-NAI-HKNSTR              PIC 9(04).
       *
-      *            公費情報
+      *            公費情報（変更したらワークも）
                    07  SPA-GMN-KOH-AREA.
                        09  SPA-GMN-KOH-TBL         OCCURS   3.
                            11  SPA-GMN-KOHNUM-G.
