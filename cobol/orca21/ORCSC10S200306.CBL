@@ -1385,7 +1385,8 @@
       *
       *    £²£´»þ´ÖÏ¢ÂÓ²Ã»»
            MOVE    SPACE               TO  WRK-24KSAN-SRYCD
-           IF      WRK-SANTEI-NASI     NOT =   SPACE
+           IF     (WRK-SANTEI-NASI     NOT =   SPACE )  OR
+                  (WRK-SANTEI-ARI      NOT =   SPACE )
                PERFORM 10021-24KASAN-SET-SEC
            END-IF
       *
@@ -1402,7 +1403,14 @@
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
            MOVE    SPA-PTID            TO  SANTEI-PTID
-           MOVE     WRK-SANTEI-NASI    TO  SANTEI-SRYYM
+      *
+           IF     (WRK-SANTEI-NASI     NOT =   SPACE )  AND
+                  (WRK-SANTEI-NASI         >   WRK-SANTEI-ARI)
+               MOVE    WRK-SANTEI-NASI     TO  SANTEI-SRYYM
+           ELSE
+               MOVE    WRK-SANTEI-ARI      TO  SANTEI-SRYYM
+           END-IF
+      **** MOVE    WRK-SANTEI-NASI     TO  SANTEI-SRYYM
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC

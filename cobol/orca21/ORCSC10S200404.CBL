@@ -1502,17 +1502,22 @@
                IF      FLG-TOUG-SANTEI     >=  1
                    MOVE    2                   TO  SPA-NETAKIRI-ARI2
                END-IF
+               MOVE    WRK-SANTEI-YM       TO  WRK-SANTEI-NASI
            END-IF
-           MOVE    WRK-SANTEI-YM       TO  WRK-SANTEI-NASI
       *
       *    当月算定回数
            MOVE    WRK-SANTEI-CNT      TO  WRK-NETAKIRI-CNT
       *
       *    ２４時間連帯加算
            MOVE    SPACE               TO  WRK-24KSAN-SRYCD
-           IF      WRK-SANTEI-NASI     NOT =   SPACE
+           IF     (WRK-SANTEI-NASI     NOT =   SPACE )  OR
+                  (WRK-SANTEI-ARI      NOT =   SPACE )
                PERFORM 10021-24KASAN-SET-SEC
            END-IF
+      *TEST
+           DISPLAY "C10S WRK-SANTEI-NASI:" WRK-SANTEI-NASI
+                  ",WRK-24KSAN-SRYCD:" WRK-24KSAN-SRYCD
+      *TEST
       *
            .
        1002-NETAKIRI-CHK-EXT.
@@ -1527,7 +1532,14 @@
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPID          TO  SANTEI-HOSPID
            MOVE    SPA-PTID            TO  SANTEI-PTID
-           MOVE     WRK-SANTEI-NASI    TO  SANTEI-SRYYM
+      *
+           IF     (WRK-SANTEI-NASI     NOT =   SPACE )  AND
+                  (WRK-SANTEI-NASI         >   WRK-SANTEI-ARI)
+               MOVE    WRK-SANTEI-NASI     TO  SANTEI-SRYYM
+           ELSE
+               MOVE    WRK-SANTEI-ARI      TO  SANTEI-SRYYM
+           END-IF
+      **** MOVE    WRK-SANTEI-NASI     TO  SANTEI-SRYYM
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1562,9 +1574,8 @@
                    PERFORM 920-SANTEI-READ-SEC
                END-IF
            END-PERFORM
-               
            .
-       1002-NETAKIRI-CHK-EXT.
+       10021-24KASAN-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2508,6 +2519,7 @@
            MOVE    1                   TO  SPA-NETAKIRI-ARI3
       *    ２４時間連帯加算
            IF      WRK-24KSAN-SRYCD    NOT =   SPACE
+               MOVE    ZERO                TO  WRK-IDX-IN
                MOVE    WRK-24KSAN-SRYCD    TO  WRK-SRYCD
       *        追加共通処理
                PERFORM 33041-SRYCD-ADD-SEC
