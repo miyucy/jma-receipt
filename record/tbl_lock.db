@@ -500,3 +500,12 @@ path	del1 	{
 #		;
 #	};
 #};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_lock_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_lock
+		;
+	};
+};

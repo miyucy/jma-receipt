@@ -146,3 +146,12 @@ path	key3	{
 		;
 	};
 };
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_ldmap_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ldmap
+		;
+	};
+};

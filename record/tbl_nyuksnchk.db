@@ -33,3 +33,11 @@ path	key		{
 	};
 };
 
+path	all		{ 	
+	DBSELECT	{
+		DECLARE tbl_nyuksnchk_all_csr	CURSOR FOR
+		SELECT *
+		FROM tbl_nyuksnchk
+		;
+	};
+};
