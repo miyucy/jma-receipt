@@ -28,6 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-藤原    02.01.20  未実施減算のときの▲表示
+      *                                     検査の回数の編集
+      *                                     画像診断のフィルムを手技に表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -252,6 +254,9 @@
            03  WRK-SRYCD                       PIC X(01).
       *     
            03  WRK-R05IDX                      PIC 9(02).
+      *
+      *    検査の回数
+           03  WRK-KENSA-KAISU                 PIC 9(05). 
       *     
            03  WRK-WLINETEK                    PIC 9(03).
            03  WRK-SRYSURYOW                   PIC X(20).
@@ -595,6 +600,13 @@
            03  CONS-GENZAN6            PIC X(09)   VALUE   "190809090".
            03  CONS-GENZAN7            PIC X(09)   VALUE   "190111790".
            03  CONS-GENZAN8            PIC X(09)   VALUE   "190809190".
+      *    検査の回数に集計しない診療行為
+      *    採血（Ｂ−Ａ）
+           03  WRK-CONS-SAIKETSU1      PIC X(09)   VALUE "160101210".
+      *    採血（Ｂ−Ｖ）
+           03 WRK-CONS-SAIKETSU2       PIC X(09)   VALUE "160095710".
+      *    採血（Ｂ−Ｃ）
+           03 WRK-CONS-SAIKETSU3       PIC X(09)   VALUE "160095810".
       *
       *    パス名領域
        01  WRK-PATH                        PIC X(64).
@@ -707,7 +719,7 @@
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
-           OPEN    INPUT               RECE62-FILE
+           OPEN    I-O                 RECE62-FILE
       *
            OPEN    INPUT               RECE64-FILE
       *
@@ -729,6 +741,8 @@
       *
       *        行カウンタ初期化
            MOVE    ZERO                TO  WRK-LINENUM
+      *    検査回数初期化
+           MOVE    ZERO                TO   WRK-KENSA-KAISU
       *
            MOVE    ZERO                TO  CNT-SRYKBN60   
            INITIALIZE                      WRK-RECE64-TABLE
@@ -821,9 +835,13 @@
       *    検査があるときまとめる
            IF      WRK-RECE64-MAX          >   ZERO
                PERFORM 2007-SRYKBN60-HENSYU-SEC
-                  CONTINUE
            END-IF         
       *
+      *    検査のとき回数を編集する
+           IF      WRK-KENSA-KAISU        >   ZERO
+               MOVE    WRK-KENSA-KAISU        TO  RECE62-KAISU  (17)
+               REWRITE RECE62-REC
+           END-IF
       *
            PERFORM 990-RECE62-READ-SEC
       *
@@ -925,7 +943,13 @@
                            WHEN    "6"
                                MOVE    5             TO  IDY
                            WHEN    "7"
-                               MOVE    4             TO  IDY
+                               IF    ( RECE64-SRYKBN     =   "70" )
+                               AND   ( RECE65-DATAKBN (IDX)
+                                                         =   "3"  )
+                                   MOVE    3                 TO  IDY
+                               ELSE
+                                   MOVE    4                 TO  IDY
+                               END-IF
                            WHEN    OTHER
                                DISPLAY "ORCR0690 SRYCD="
                                                  RECE65-SRYCD (IDX) 
@@ -1581,6 +1605,28 @@
                    END-IF
                END-IF        
            END-PERFORM
+      *             
+      *    検査のとき回数を集計
+           IF      WRK-ZAIWMAX(3)     >   ZERO
+           AND     RECE64-SRYKBN      =   "60"
+               IF      TBL-ZAIW-SRYCD (3 1)   =   WRK-CONS-SAIKETSU1
+                                              OR  WRK-CONS-SAIKETSU2
+                                              OR  WRK-CONS-SAIKETSU3 
+                   CONTINUE
+               ELSE
+                   MOVE    TBL-ZAIW-SRYCD (3 1)
+                                             TO  TNS-SRYCD
+                   MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
+                   MOVE    RECE65-SRYYM      TO  ORC-DBYMD(1:6)
+                   MOVE    "01"              TO  ORC-DBYMD(7:2)
+                   PERFORM 900-TENSU-INV-SEC
+                   IF      TNS-KNSJISKBN     =   "2"
+                       CONTINUE
+                   ELSE 
+                       ADD     RECE64-ZAIKAISU   TO  WRK-KENSA-KAISU
+                   END-IF
+               END-IF
+           END-IF     
       *
            .
        20052-SRYKBNELSE-CHECK-EXT.
