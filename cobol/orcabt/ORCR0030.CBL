@@ -2800,10 +2800,11 @@
                                 RECE02-FTNMONEY(1)  -  WRK-KOH-FTN
                   ELSE
                      IF  FLG-KOH  =  "1"
-                        ADD   WRK-KOH-GAI   TO  WRK-KOH-FTN
-                                                RECE02-FTNMONEY(2)
+      *                 ADD   WRK-KOH-GAI   TO  WRK-KOH-FTN
+      *                                         RECE02-FTNMONEY(2)
                         COMPUTE   RECE02-ZAITAKU-SAIKEI  =  
                                 RECE02-FTNMONEY(1)  -  WRK-KOH-FTN
+                                                    -  WRK-KOH-GAI
                      END-IF
                      IF  FLG-KOH  =  "2"
       *                 ADD   WRK-KOH-GAI   TO  WRK-KOH-FTN
