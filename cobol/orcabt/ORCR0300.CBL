@@ -344,6 +344,10 @@
                    07  TBL-ZAIW-TEN             PIC  9(09)V9(02).
       *            データ区分情報
                    07  TBL-ZAIW-DATAKBN         PIC  9(01).
+      *            漢字有効桁数/漢字名称
+                   07  TBL-ZAIW-NAMEINF.
+                       09  TBL-ZAIW-YUKOKETA    PIC  9(02).
+                       09  TBL-ZAIW-NAME        PIC  X(200).
       *
       *    コメントデータ用テーブル
        01  TBL-COMMENT-AREA.
@@ -1511,6 +1515,9 @@
                          UNTIL   ( IDX               >   5     )
                          OR      ( RECE05-SRYCD(IDX) =   SPACE )
                          OR      ( FLG-END           =   1     )
+                   IF      RECE05-SRYCD (IDX) (1:3) = "059"
+                       MOVE    "777770000"      TO  RECE05-SRYCD (IDX)
+                   END-IF
       *
                    EVALUATE    RECE05-SRYCD (IDX) (1:1)
                        WHEN    "0"
@@ -1705,6 +1712,8 @@
                                    TBL-ZAIW-TEN        (WRK-ZAIWMAX)
                MOVE    RECE05-DATAKBN    (IDX) TO
                                    TBL-ZAIW-DATAKBN    (WRK-ZAIWMAX)
+               MOVE    RECE05-NAMEINF   (IDX)  TO
+                                   TBL-ZAIW-NAMEINF    (WRK-ZAIWMAX)
            END-IF
       *
            EVALUATE    TBL-ZAIW-SRYCD (WRK-ZAIWMAX) (1:1)
@@ -2005,6 +2014,10 @@
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
       *    特定器材名称
+           IF      TBL-ZAIW-SRYCD (IDX)        =   "777770000"
+               MOVE    TBL-ZAIW-NAME (IDX)     TO  WRK-DATA
+           END-IF
+           MOVE    40                  TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC
       *
@@ -2163,7 +2176,7 @@
            EXIT.
       *
       *****************************************************************
-      *    症状表記編集処理
+      *    症状詳記編集処理
       *****************************************************************
        2009-COMMENT-HEN-SEC      SECTION.
       *
