@@ -9701,7 +9701,12 @@
       *
       *    薬剤の時、投薬へ
            IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "6"
-               MOVE    "21"                        TO  WRK-SRYKBN
+      *        注射薬の時、注射へ
+               IF      SPA-COM-YKZKBN (IDX)    =   "4"
+                   MOVE    "31"                        TO  WRK-SRYKBN
+               ELSE
+                   MOVE    "21"                        TO  WRK-SRYKBN
+               END-IF
            END-IF
       *    器材の時、その他へ
            IF      SPA-COM-INPUTCD(IDX)(1:1)   =   "7"
