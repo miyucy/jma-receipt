@@ -87,6 +87,15 @@
       *  01.01.02    NACL-藤原    04/04/22  画像診断の加算が複数ある場合の
       *                                     出力の修正
       *  01.01.03    NACL-藤原    04/04/26  乳幼児の時間加算の追加
+      *  01.01.04    NACL-藤原    04/04/27  ユーザーコメントの追加
+      *  01.01.05    NACL-藤原    04/05/11  診療識別が画像診断（７０）の
+      *                                     ときコメントは先頭に記載する
+      *  01.01.06    NACL-藤原    04/05/13  指導料・在宅料摘要欄編集
+      *                                     加算点数でも告示区分１により
+      *                                     剤回数を編集する
+      *  01.01.07    NACL-藤原    03/05/19  指導料・在宅料摘要欄編集
+      *                                     加算点数で告示区分１が７の
+      *                                     ときの点数・回数の編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -131,11 +140,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE11-KEY
                                    FILE    STATUS  IS  STS-RECE11.
-      *    レセプト電算ファイル  
-           SELECT  RECE30-FILE     ASSIGN  "/var/tmp/RECE300.dat"
-                                   ORGANIZATION    IS  LINE
-                                                       SEQUENTIAL
-                                   FILE    STATUS  IS  STS-RECE30.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -173,10 +177,6 @@
        FD  RECE11-FILE.
        01  RECE11-REC. 
            COPY    "CPRCF011.INC".
-      *
-      *    レセプト電算ファイル  
-       FD  RECE30-FILE.
-       01  RECE30-R         PIC X(200).
       *     
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -254,7 +254,7 @@
            03  FLG-TEIGEN              PIC 9(01).
            03  FLG-YKZ20               PIC 9(01).
            03  FLG-TOTALTEN            PIC 9(01).
-           03  FLG-KOKUJISKBKBN1       PIC 9(01).
+           03  FLG-KOKUJISKBKBN1       PIC 9(03).
            03  FLG-GAITENTTLKBN        PIC 9(03).
            03  FLG-TBLMAX              PIC 9(01).
            03  FLG-SRYSYUKBN721        PIC 9(01).
@@ -293,8 +293,8 @@
                05  KEY-O-SRYKA         PIC X(02).      
       *
        01  SUM-AREA                                VALUE   ZERO.
-           03  SUM-TOTALKENSU         PIC 9(06).
-           03  SUM-TOTALTEN         PIC 9(10).
+           03  SUM-TOTALKENSU          PIC 9(06).
+           03  SUM-TOTALTEN            PIC 9(10).
       *
       *    医療機関（基本情報）退避用領域
        01  TBL-SYS1001-T.
@@ -332,7 +332,7 @@
            03  WRK-HENSYU-AREA.
                05  WRK-DATA            PIC X(80).
                05  WRK-NUM             PIC ZZZZZZZZZ9.999. 
-               05  WRK-NAGASA          PIC 9(02).
+               05  WRK-NAGASA          PIC 9(03).
                05  WRK-ST              PIC 9(02). 
                05  WRK-SYOSUU          PIC 9(01).
                05  WRK-END             PIC 9(01).
@@ -382,7 +382,9 @@
                05  WRK-KOHNUM          PIC 9(01)
                                            OCCURS  3.
                05  WRK-SEHFLG          PIC 9(01).
-           03  WRK-SRYCD1-MAX          PIC 9(03).           
+           03  WRK-SRYCD1-MAX          PIC 9(03).      
+           03  WRK-KOKUJISKBKBN1-KOUI-TEN
+                                       PIC 9(09)V9(02).     
       *    日付変換用
            03  WRK-SYMD                PIC X(08).
       *
@@ -797,8 +799,6 @@
       *
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
-      *
-           OPEN    OUTPUT             RECE30-FILE  
       *
            OPEN    I-O                RECE02-FILE  
       *
@@ -1584,7 +1584,8 @@
                                                    TO  BYO-BYOMEICD
                            PERFORM 900-BYOMEI-READ-SEC
                            IF      BYO-HAISIYMD    NOT =   SPACE
-                               IF      BYO-HAISIYMD    <   RECE031-SRYYMD
+                               IF      BYO-HAISIYMD    <
+                                                       RECE031-SRYYMD
                                    IF      RECE031-SYUBYOFLG-X  =   "1" 
                                    AND     SYS-2005-SYUBYOHENFLG
                                                             NOT =   ZERO
@@ -1863,11 +1864,11 @@
                IF      WRK-3SYU-KBN       =   ALL "1"  
                    EVALUATE    WRK-KOHNUM (1) ALSO    WRK-KOHNUM (2)
                        WHEN    1              ALSO    ZERO
-                           MOVE    2              TO  WRK-FTNKBN
+                           MOVE    "2"            TO  WRK-FTNKBN
                        WHEN    ZERO           ALSO    1
-                           MOVE    3              TO  WRK-FTNKBN
+                           MOVE    "3"            TO  WRK-FTNKBN
                        WHEN    1              ALSO    1
-                           MOVE    4              TO  WRK-FTNKBN
+                           MOVE    "4"            TO  WRK-FTNKBN
                    END-EVALUATE
                ELSE    
       *                                                      
@@ -1922,6 +1923,7 @@
                                            FLG-KENSA-KASAN
                                            FLG-KENSA-TEIGEN
                                            WRK-SRYCD1-MAX
+                                           WRK-KOKUJISKBKBN1-KOUI-TEN
       *                                     
            MOVE    RECE041-SRYKBN      TO  WRK-SRYKBN
       *
@@ -1976,6 +1978,7 @@
                        WHEN    "0"
                        WHEN    "8"
                            IF      RECE041-SRYKBN  =   "13"    OR  "14"
+                                                               OR  "70"
                                PERFORM 200711-SRYKBN13-COMMENT-TAIHI-SEC
                            ELSE
                                PERFORM 200711-COMMENT-TAIHI-SEC
@@ -2041,6 +2044,7 @@
       *    診療行為コード＝'０'のとき対象外出力しない
            IF      RECE05-SRYCD (IDX) (1:1) =   "0"
                IF    ( RECE05-SRYCD (IDX)(1:3)  =   "002"             )
+               OR    ( RECE05-SRYCD (IDX)(1:3)  =   "008"             )
                OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT1 ) 
                OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT2 ) 
       *********OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT3 ) 
@@ -2063,7 +2067,8 @@
                MOVE    RECE05-NAME  (IDX)  TO
                                            TBL-KOUI-NAME  (WRK-TBLMAX1)
       *
-               IF      RECE05-SRYCD (IDX) (1:1) =   "0"
+               IF    ( RECE05-SRYCD (IDX) (1:1)     =   "0"   )
+               AND   ( RECE05-SRYCD (IDX) (1:3) NOT =   "008" )
       *            部位／薬剤
                    MOVE    "810000001"     TO  
                                        TBL-KOUI-SRYCD (WRK-TBLMAX1)
@@ -2075,13 +2080,22 @@
                            MOVE    "810000001"     TO  
                                            TBL-KOUI-SRYCD (WRK-TBLMAX1)
                      ELSE
+                       IF      RECE05-SRYCD (IDX) (1:3)    =   "008"
+                           MOVE    "810000001"     TO  
+                                           TBL-KOUI-SRYCD (WRK-TBLMAX1)
+                       END-IF
                        MOVE    RECE02-HOSPID           TO  PTCOM-HOSPID
                        MOVE    RECE02-PTID             TO  PTCOM-PTID
                        MOVE    RECE05-ZAINUM           TO  PTCOM-ZAINUM
                        MOVE    RECE05-SRYCD   (IDX)    TO  PTCOM-SRYCD
                        MOVE    RECE05-INPUTNUM(IDX)    TO  PTCOM-RENNUM
                        PERFORM 950-PTCOM-READ-SEC
-                       IF      PTCOM-INPUTCHI1     =   SPACE
+                       IF      RECE05-SRYCD (IDX) (1:3)    =   "008"
+                           MOVE    PTCOM-INPUTCOMENT
+                                                   TO
+                                           TBL-KOUI-NAME (WRK-TBLMAX1)
+                       ELSE
+                         IF      PTCOM-INPUTCHI1     =   SPACE
                            INITIALIZE                  TNS-TENSU-REC
                            MOVE    RECE05-SRYCD (IDX)  TO  TNS-SRYCD
                            PERFORM 900-TENSU-READ-SEC
@@ -2101,7 +2115,7 @@
                                                    TO
                                            TBL-KOUI-NAME (WRK-TBLMAX1)
                            END-IF
-                       ELSE
+                         ELSE
                            MOVE    SPACE           TO
                                            TBL-KOUI-NAME (WRK-TBLMAX1)  
                            INITIALIZE              ORCSKANACHKAREA
@@ -2119,6 +2133,7 @@
                                                    TO
                                            TBL-KOUI-NAME (WRK-TBLMAX1)
                            END-IF
+                         END-IF
                        END-IF
                      END-IF
                    END-IF    
@@ -2136,6 +2151,7 @@
       *    診療行為コード＝'０'のとき対象外出力しない
            IF      RECE05-SRYCD (IDX) (1:1) =   "0"
                IF    ( RECE05-SRYCD (IDX)(1:3)  =   "002"             )
+               OR    ( RECE05-SRYCD (IDX)(1:3)  =   "008"             )
                OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT1 ) 
                OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT2 ) 
       *********OR    ( RECE05-SRYCD (IDX)       =   WRK-CONS-COMMENT3 ) 
@@ -2158,7 +2174,8 @@
                MOVE    RECE05-NAME  (IDX)  TO
                                    TBL-COMMENT-NAME  (WRK-TBLMAX8)
       *                             
-               IF      RECE05-SRYCD (IDX) (1:1) =   "0"
+               IF    ( RECE05-SRYCD (IDX) (1:1)     =   "0"   )
+               AND   ( RECE05-SRYCD (IDX) (1:3) NOT =   "008" )
       *            部位／薬剤
                    MOVE    "810000001"     TO  
                                    TBL-COMMENT-SRYCD (WRK-TBLMAX8)
@@ -2170,13 +2187,22 @@
                            MOVE    "810000001"     TO  
                                        TBL-COMMENT-SRYCD (WRK-TBLMAX8)
                      ELSE
+                       IF      RECE05-SRYCD (IDX) (1:3)    =   "008"
+                           MOVE    "810000001"     TO  
+                                       TBL-COMMENT-SRYCD (WRK-TBLMAX8)
+                       END-IF
                        MOVE    RECE02-HOSPID           TO  PTCOM-HOSPID
                        MOVE    RECE02-PTID             TO  PTCOM-PTID
                        MOVE    RECE05-ZAINUM           TO  PTCOM-ZAINUM
                        MOVE    RECE05-SRYCD   (IDX)    TO  PTCOM-SRYCD
                        MOVE    RECE05-INPUTNUM(IDX)    TO  PTCOM-RENNUM
                        PERFORM 950-PTCOM-READ-SEC
-                       IF      PTCOM-INPUTCHI1     =   SPACE
+                       IF      RECE05-SRYCD (IDX) (1:3)    =   "008"
+                           MOVE    PTCOM-INPUTCOMENT
+                                                   TO
+                                       TBL-COMMENT-NAME (WRK-TBLMAX8)
+                       ELSE
+                         IF      PTCOM-INPUTCHI1     =   SPACE
                            INITIALIZE                  TNS-TENSU-REC
                            MOVE    RECE05-SRYCD (IDX)  TO  TNS-SRYCD
                            PERFORM 900-TENSU-READ-SEC
@@ -2196,7 +2222,7 @@
                                                    TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)
                            END-IF
-                       ELSE
+                         ELSE
                            MOVE    SPACE               TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)  
                            INITIALIZE              ORCSKANACHKAREA
@@ -2214,6 +2240,7 @@
                                                    TO
                                        TBL-COMMENT-NAME (WRK-TBLMAX8)
                            END-IF
+                         END-IF
                        END-IF
                      END-IF
                    END-IF    
@@ -2373,9 +2400,16 @@
                                    TBL-KOUI-KZMCOMPSIKIBETU(WRK-TBLMAX1)
                    END-IF
       *
-                   IF      TNS-KOKUJISKBKBN1   NOT =   "1"
-                       MOVE    1                   TO  FLG-KOKUJISKBKBN1
-                   END-IF
+                   IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
+                       IF      TNS-KOKUJISKBKBN1   NOT =   "1"
+                           MOVE    IDX             TO  FLG-KOKUJISKBKBN1
+                       END-IF
+                       IF    ( TNS-KOKUJISKBKBN1       =   "1" )
+                       AND   ( TNS-DATAKBN             =   "2" )
+                           ADD     TNS-TEN         TO
+                                           WRK-KOKUJISKBKBN1-KOUI-TEN
+                       END-IF
+                   END-IF 
                END-IF
            END-IF
            .
@@ -2520,6 +2554,14 @@
       *    摘要データ編集処理
       *****************************************************************
        20072-ZAI-HENSYU-SEC          SECTION.
+      *
+      *    コメントデータの編集（診療区分７０）
+           IF      RECE041-SRYKBN      =   "70"                 
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       WRK-TBLMAX8
+                   PERFORM 200724-COMMENT-HENSYU-SEC
+               END-PERFORM  
+           END-IF          
       *     
       *    診療行為データ・コメントデータの編集
            PERFORM VARYING IDX FROM    1   BY  1
@@ -2624,14 +2666,42 @@
       ****************      IF      IDX                 <   WRK-TBLMAX1
       ****************          IF      FLG-KOKUJISKBKBN1   =   ZERO
                        IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
-                       AND   ( FLG-KOKUJISKBKBN1   =   ZERO           )
                        AND   ( IDX                 <   WRK-SRYCD1-MAX )
-                           MOVE    TBL-KOUI-TEN (IDX)
+                           IF      FLG-KOKUJISKBKBN1   =   ZERO
+                               MOVE    TBL-KOUI-TEN (IDX)
                                                        TO  WRK-TENSU
-                           MOVE    WRK-TENSU           TO  WRK-NUM
-                           MOVE    7                   TO  WRK-NAGASA
-                           COMPUTE RECE041-SYUTEN1 =   RECE041-SYUTEN1
+                               MOVE    WRK-TENSU       TO  WRK-NUM
+                               MOVE    7               TO  WRK-NAGASA
+                               COMPUTE RECE041-SYUTEN1 =
+                                                       RECE041-SYUTEN1
                                                    -   TBL-KOUI-TEN(IDX)
+                           ELSE
+                               IF    ( TBL-KOUI-KOKUJISKBKBN1 (IDX)
+                                                           =   "1" )
+                               AND   ( TBL-KOUI-DATAKBN (IDX)
+                                                           =   "2" )
+                                   MOVE    TBL-KOUI-TEN (IDX)
+                                                       TO  WRK-TENSU
+                                   MOVE    WRK-TENSU   TO  WRK-NUM
+                                   MOVE    7           TO  WRK-NAGASA
+                                   COMPUTE RECE041-SYUTEN1 =
+                                                       RECE041-SYUTEN1
+                                                   -   TBL-KOUI-TEN(IDX)
+                               ELSE
+                                   IF      IDX         =
+                                                   FLG-KOKUJISKBKBN1
+                                       MOVE
+                                           WRK-KOKUJISKBKBN1-KOUI-TEN
+                                                       TO  WRK-TENSU
+                                       MOVE    WRK-TENSU
+                                                       TO  WRK-NUM
+                                       MOVE    7       TO  WRK-NAGASA
+                                       COMPUTE RECE041-SYUTEN1 =
+                                               RECE041-SYUTEN1     -
+                                              WRK-KOKUJISKBKBN1-KOUI-TEN
+                                   END-IF
+                               END-IF 
+                           END-IF
                        END-IF
       *----(01.00.04) LINE ADD END ------------------------------------
       *****************IF      IDX                 =   WRK-TBLMAX1
@@ -2678,7 +2748,7 @@
                        AND   ( FLG-KOKUJISKBKBN1   =   ZERO           )
                        AND   ( RECE041-ZAIKAISU    >   ZERO           )
                        AND   ( IDX                 <   WRK-SRYCD1-MAX )
-                           MOVE    1                   TO  WRK-KAISU
+                           MOVE    RECE041-ZAIKAISU    TO  WRK-KAISU
                            MOVE    WRK-KAISU           TO  WRK-NUM
                            MOVE    3                   TO  WRK-NAGASA
                        END-IF
@@ -2699,11 +2769,13 @@
                PERFORM 5001-FILE-WRITE-SEC
            END-PERFORM
       *
-      *    コメントデータの編集（診療区分１３・１４）                 
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       WRK-TBLMAX8
-               PERFORM 200724-COMMENT-HENSYU-SEC
-           END-PERFORM            
+      *    コメントデータの編集（診療区分１３・１４）
+           IF      RECE041-SRYKBN      =   "13"    OR  "14"                 
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       WRK-TBLMAX8
+                   PERFORM 200724-COMMENT-HENSYU-SEC
+               END-PERFORM  
+           END-IF          
       *
       *    医薬品データの編集                 
            PERFORM VARYING IDX FROM    1   BY  1
@@ -3589,8 +3661,7 @@
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
-           CLOSE   RECE30-FILE
-                   RECE02-FILE
+           CLOSE   RECE02-FILE
                    RECE03-FILE
                    RECE041-FILE
                    RECE05-FILE
