@@ -123,6 +123,7 @@
            03  NUM-KET                 PIC 9(03).
       *
            03  IDX-STR                 PIC 9(04).
+           03  IDX-STR1                PIC 9(04).
            03  IDX-KET                 PIC 9(04).
            03  IDX-MAX                 PIC 9(04).
            03  IDX2                    PIC 9(04).
@@ -449,8 +450,19 @@
                                (WRK-NAIYOU(IDX-STR:)  =   SPACE)
       *        改行は対象外
                IF      (WRK-NAIYOU(IDX-STR:1)  =   X"0A")
-                   MOVE    KOU-MAX             TO  IDX-KET
-                   ADD     1                   TO  IDX-STR
+                   IF      IDX-STR             >   1
+                        COMPUTE IDX-STR1       =   IDX-STR   -  1
+                   END-IF
+      *            行の最後が改行の時
+                   IF     (IDX-KET             =   1   )  AND
+                          (IDX-STR             >   1   )  AND
+                          (WRK-NAIYOU(IDX-STR1:1)
+                                               >=  X"A1" )
+                       ADD     1                   TO  IDX-STR
+                   ELSE
+                       MOVE    KOU-MAX             TO  IDX-KET
+                       ADD     1                   TO  IDX-STR
+                   END-IF
                ELSE
                    IF      WRK-NAIYOU(IDX-STR:1)
                                                >=  X"A1"
