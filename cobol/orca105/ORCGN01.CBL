@@ -1033,6 +1033,23 @@
                        IF      SPA-HKNJANUM-LEN NOT =   6
                            MOVE    "0005"         TO  SPA-ERRCD
                        END-IF
+      *----(02.01.01)--ADD-START---
+                       IF        ( SPA-HKNJANUM-LEN   =   6 )
+                           AND   ( SPA-GMN-HKNJANUM(3:1)  =   "3" )
+                           IF      SPA-GMN-HGKYURATE  =   SPACE
+                               MOVE    "0"     TO  SPA-GMN-HGKYURATE
+                           END-IF
+                           IF      SPA-GMN-HNKYURATE  =   SPACE
+                               MOVE    "0"     TO  SPA-GMN-HNKYURATE
+                           END-IF
+                           IF      SPA-GMN-KGKYURATE  =   SPACE
+                               MOVE    "0"     TO  SPA-GMN-KGKYURATE
+                           END-IF
+                           IF      SPA-GMN-KNKYURATE  =   SPACE
+                               MOVE    "0"     TO  SPA-GMN-KNKYURATE
+                           END-IF
+                       END-IF
+      *----(02.01.01)--ADD-END-----
                    WHEN    OTHER
                        IF      SPA-HKNJANUM-LEN NOT =   8
                            MOVE    "0005"         TO  SPA-ERRCD
@@ -1458,7 +1475,39 @@
                GO      TO      490-TOUROKU-EXT
            END-IF
       *
-           MOVE    "1001"           TO  SPA-NIDCD
+           MOVE    "1001"          TO  SPA-NIDCD
+      *
+      *----(02.01.01)--ADD-START---
+      *    本人給付割合チェック
+           EVALUATE    SPA-GMN-HGKYURATE    ALSO     SPA-GMN-HNKYURATE
+             WHEN      "3"     ALSO    "3"
+             WHEN      "2"     ALSO    "2"
+             WHEN      "1"     ALSO    "1"
+             WHEN      "0"     ALSO    "0"
+             WHEN      "0"     ALSO    "1"
+             WHEN      "1"     ALSO    "2"
+             WHEN      "2"     ALSO    "3"
+             WHEN      SPACE   ALSO    SPACE
+               CONTINUE
+             WHEN      OTHER
+               MOVE    "1011"          TO  SPA-NIDCD
+           END-EVALUATE
+      *
+      *    家族給付割合チェック
+           EVALUATE    SPA-GMN-KGKYURATE    ALSO     SPA-GMN-KNKYURATE
+             WHEN      "3"     ALSO    "3"
+             WHEN      "2"     ALSO    "2"
+             WHEN      "1"     ALSO    "1"
+             WHEN      "0"     ALSO    "0"
+             WHEN      "0"     ALSO    "1"
+             WHEN      "1"     ALSO    "2"
+             WHEN      "2"     ALSO    "3"
+             WHEN      SPACE   ALSO    SPACE
+               CONTINUE
+             WHEN      OTHER
+               MOVE    "1011"          TO  SPA-NIDCD
+           END-EVALUATE
+      *----(02.01.01)--ADD-END-----
            .
        490-TOUROKU-EXT.
            EXIT.
@@ -1467,7 +1516,6 @@
       *       登録処理
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
-      *
       *
            MOVE    SPACE               TO  HKNJAINF-REC
            INITIALIZE                      HKNJAINF-REC
@@ -1664,6 +1712,7 @@
            IF        ( SPA-GMN-HKNNUM  =   "060" )
                AND   ( SPA-HKNJANUM-LEN    =   6 )
                AND   ( SPA-GMN-HKNJANUM(3:1)   =   "3" )
+               AND   ( SPA-ERRCD       =   SPACE )
                MOVE    SPA-GMN-HGKYURATE-G TO  N01-HGKYURATE
                MOVE    SPA-GMN-HNKYURATE-G TO  N01-HNKYURATE
                MOVE    SPA-GMN-KGKYURATE-G TO  N01-KGKYURATE
@@ -1774,6 +1823,11 @@
            EVALUATE    SPA-NIDCD
                WHEN    "1001"
                    MOVE    "登録処理をします"    TO  WRK-NIDMSG
+      *----(02.01.01)--ADD-START---
+               WHEN    "1011"
+                   MOVE    "想定外の給付割合です。登録処理をしますか？"
+                                                 TO  WRK-NIDMSG
+      *----(02.01.01)--ADD-END-----
                WHEN    "1002"
                    MOVE    "削除処理をします"    TO  WRK-NIDMSG
            END-EVALUATE
