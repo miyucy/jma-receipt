@@ -153,7 +153,7 @@
        01  WK-SHOKUJI-TAIHI-AREA.
            03  WK-SHOKUJIRYOYO         PIC 9(01).
            03  WK-TOKUKANRIKASAN       PIC 9(01).
-           03  WK-SHOKUDOKASAN         PIC 9(01).
+      *    03  WK-SHOKUDOKASAN         PIC 9(01).
            03  WK-SHOKUJI-NISSU        PIC 9(02).
            03  WK-SHOKUJI-RYOYOHI      PIC 9(07).
            03  WK-SHOKUJI-FTN          PIC 9(07).
@@ -163,6 +163,10 @@
            03  WK-RYOYOHI-SKJ          PIC 9(07).
            03  WK-TSUSAN-NISSU         PIC 9(04).
            03  WK-SEIKYUKIKAN-NISSU    PIC 9(04).
+      *    食堂加算退避テーブル
+       01  WK-SHOKUDOKASAN-TABLE.
+           03  WK-SHOKUDOKASAN-T       OCCURS   31.
+               05  WK-SHOKUDOKASAN     PIC 9(04).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1474,7 +1478,8 @@
       ******************************************************************
        2300-SHOKUJI-KEISAN-SEC         SECTION.
       *
-           INITIALIZE    WK-SHOKUJI-TAIHI-AREA.
+           INITIALIZE    WK-SHOKUJI-TAIHI-AREA 
+                         WK-SHOKUDOKASAN-TABLE.
       *
       *    システム管理マスタ（５０００）から食事情報取得
            INITIALIZE                         SYS-5000-REC.
@@ -1498,11 +1503,11 @@
                             ELSE
                                MOVE  1       TO   WK-TOKUKANRIKASAN
                             END-IF
-                            IF  SYS-5000-SHOKUKBN(2) =  "1"
-                               MOVE  ZERO    TO   WK-SHOKUDOKASAN
-                            ELSE
-                               MOVE  1       TO   WK-SHOKUDOKASAN
-                            END-IF
+      *                     IF  SYS-5000-SHOKUKBN(2) =  "1"
+      *                        MOVE  ZERO    TO   WK-SHOKUDOKASAN
+      *                     ELSE
+      *                        MOVE  1       TO   WK-SHOKUDOKASAN
+      *                     END-IF
                      ELSE
                             MOVE     2       TO   WK-SHOKUJIRYOYO
                      END-IF
@@ -1551,6 +1556,41 @@
                PERFORM  NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
+                 IF     NACCT-SRYCDTOTAL    =    197000570   
+                             PERFORM        23001-SHOKUDOKASAN-TAIHI-SEC
+                 END-IF
+      * 
+                 MOVE          "NYUINACCT-KEY2"  TO   ORC-DBPATH
+                 PERFORM        NYUINACCT-READ-SEC
+               END-PERFORM
+      *
+           END-IF.
+      *
+           MOVE    "DBCLOSE"               TO  MCP-FUNC.
+           MOVE    "NYUINACCT-KEY2"        TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC.
+      **
+           INITIALIZE                            NYUINACCT-REC.
+           MOVE    LNK-SYU-HOSPID        TO      NACCT-HOSPID.
+           MOVE    LNK-SYU-NYUGAIKBN     TO      NACCT-NYUGAIKBN.
+           MOVE    LNK-SYU-PTID          TO      NACCT-PTID.
+           MOVE    "00"                  TO      NACCT-SRYKA.
+           MOVE    LNK-SYU-SKYSTYMD(1:6) TO      NACCT-SRYYM.
+           MOVE    NYUINACCT-REC         TO      MCPDATA-REC.
+           MOVE    "DBSELECT"            TO      MCP-FUNC.
+           MOVE    "NYUINACCT-KEY2"      TO      ORC-DBPATH.
+           CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                 ORCMCPAREA
+                                                 MCPDATA-REC.
+           IF      MCP-RC             =       ZERO
+      *
+               MOVE    "NYUINACCT-KEY2"  TO      ORC-DBPATH
+               PERFORM  NYUINACCT-READ-SEC
+               PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
+      *
                  IF     NACCT-SRYCDTOTAL    =    099999913   
                              PERFORM        23001-SHOKUJI-COUNT-SEC
                  END-IF
@@ -1572,6 +1612,23 @@
            EXIT.
       *
       ******************************************************************
+      *        食堂加算退避                                       *
+      ******************************************************************
+       23001-SHOKUDOKASAN-TAIHI-SEC         SECTION.
+      *
+           PERFORM    VARYING   IDY   FROM   1   BY   1
+                                    UNTIL    IDY    >    31
+      *
+             IF       NACCT-DAY(IDY)   NOT =  ZERO 
+                    MOVE   NACCT-DAY(IDY)  TO   WK-SHOKUDOKASAN(IDY) 
+             END-IF
+      *
+           END-PERFORM.
+      *
+       23001-SHOKUDOKASAN-TAIHI-EXT.
+           EXIT.
+      *
+      ******************************************************************
       *        食事療養費等の計算                                       *
       ******************************************************************
        23001-SHOKUJI-COUNT-SEC         SECTION.
@@ -1590,6 +1647,8 @@
              IF       ( NACCT-DAY(IDY)   NOT =  ZERO )
              AND      ( LNK-SYU-DAY(IDY)     =  "1"  )
       *
+              IF  WK-SHOKUDOKASAN(IDY)  =  ZERO
+      *
                 EVALUATE   NACCT-DAY(IDY)
                   WHEN  1
                       EVALUATE   WK-SHOKUJIRYOYO
@@ -1600,12 +1659,12 @@
                           MOVE   1920    TO   LNK-SYU-SHOKUJI1
                           IF    WK-TOKUKANRIKASAN  =  1
                             ADD   200    TO   WK-SHOKUJI-RYOYOHI
-                            MOVE  200    TO   LNK-SYU-SHOKUJI1
+                            ADD   200    TO   LNK-SYU-SHOKUJI1
                           END-IF
-                          IF    WK-SHOKUDOKASAN    =  1
-                            ADD    50    TO   WK-SHOKUJI-RYOYOHI
-                            MOVE   50    TO   LNK-SYU-SHOKUJI1
-                          END-IF
+      *                   IF    WK-SHOKUDOKASAN    =  1
+      *                     ADD    50    TO   WK-SHOKUJI-RYOYOHI
+      *                     ADD    50    TO   LNK-SYU-SHOKUJI1
+      *                   END-IF
                         WHEN  2
                           ADD       1    TO   WK-SHOKUJI-NISSU
                                               LNK-SYU-SHOKUJI1-NISSU
@@ -1615,38 +1674,94 @@
                   WHEN  2
                           ADD       1    TO   WK-SHOKUJI-NISSU
                                               LNK-SYU-SHOKUJI1-NISSU
-                                              LNK-SYU-SHOKUJI2-NISSU
-                          ADD    1920    TO   WK-SHOKUJI-RYOYOHI
-                          MOVE   1920    TO   LNK-SYU-SHOKUJI1
-                          IF    WK-TOKUKANRIKASAN  =  1
-                            ADD   200    TO   WK-SHOKUJI-RYOYOHI
-                            MOVE  200    TO   LNK-SYU-SHOKUJI1
-                          END-IF
-                          IF    WK-SHOKUDOKASAN    =  1
-                            ADD    50    TO   WK-SHOKUJI-RYOYOHI
-                            MOVE   50    TO   LNK-SYU-SHOKUJI1
-                          END-IF
-                          ADD     350    TO   WK-SHOKUJI-RYOYOHI
-                          MOVE    350    TO   LNK-SYU-SHOKUJI2
-                  WHEN  3
-                          ADD       1    TO   WK-SHOKUJI-NISSU
-                                              LNK-SYU-SHOKUJI1-NISSU
                                               LNK-SYU-SHOKUJI3-NISSU
                           ADD    1920    TO   WK-SHOKUJI-RYOYOHI
                           MOVE   1920    TO   LNK-SYU-SHOKUJI1
                           IF    WK-TOKUKANRIKASAN  =  1
                             ADD   200    TO   WK-SHOKUJI-RYOYOHI
-                            MOVE  200    TO   LNK-SYU-SHOKUJI1
+                            ADD   200    TO   LNK-SYU-SHOKUJI1
                           END-IF
-                          IF    WK-SHOKUDOKASAN    =  1
-                            ADD    50    TO   WK-SHOKUJI-RYOYOHI
-                            MOVE   50    TO   LNK-SYU-SHOKUJI1
+      *                   IF    WK-SHOKUDOKASAN    =  1
+      *                     ADD    50    TO   WK-SHOKUJI-RYOYOHI
+      *                     ADD    50    TO   LNK-SYU-SHOKUJI1
+      *                   END-IF
+                          ADD     350    TO   WK-SHOKUJI-RYOYOHI
+                          MOVE    350    TO   LNK-SYU-SHOKUJI3
+                  WHEN  3
+                          ADD       1    TO   WK-SHOKUJI-NISSU
+                                              LNK-SYU-SHOKUJI1-NISSU
+                                              LNK-SYU-SHOKUJI4-NISSU
+                          ADD    1920    TO   WK-SHOKUJI-RYOYOHI
+                          MOVE   1920    TO   LNK-SYU-SHOKUJI1
+                          IF    WK-TOKUKANRIKASAN  =  1
+                            ADD   200    TO   WK-SHOKUJI-RYOYOHI
+                            ADD   200    TO   LNK-SYU-SHOKUJI1
                           END-IF
+      *                   IF    WK-SHOKUDOKASAN    =  1
+      *                     ADD    50    TO   WK-SHOKUJI-RYOYOHI
+      *                     ADD    50    TO   LNK-SYU-SHOKUJI1
+      *                   END-IF
                           ADD      50    TO   WK-SHOKUJI-RYOYOHI
-                          MOVE     50    TO   LNK-SYU-SHOKUJI3
+                          MOVE     50    TO   LNK-SYU-SHOKUJI4
                 END-EVALUATE
       *
-                EVALUATE   FLG-SKJ
+              ELSE
+      *
+                EVALUATE   NACCT-DAY(IDY)
+                  WHEN  1
+                      EVALUATE   WK-SHOKUJIRYOYO
+                        WHEN  1
+                          ADD       1    TO   WK-SHOKUJI-NISSU
+                                              LNK-SYU-SHOKUJI2-NISSU
+                          ADD    1920    TO   WK-SHOKUJI-RYOYOHI
+                          MOVE   1920    TO   LNK-SYU-SHOKUJI2
+                          IF    WK-TOKUKANRIKASAN  =  1
+                            ADD   200    TO   WK-SHOKUJI-RYOYOHI
+                            ADD   200    TO   LNK-SYU-SHOKUJI2
+                          END-IF
+                          ADD      50    TO   WK-SHOKUJI-RYOYOHI
+                          ADD      50    TO   LNK-SYU-SHOKUJI2
+                        WHEN  2
+                          ADD       1    TO   WK-SHOKUJI-NISSU
+                                              LNK-SYU-SHOKUJI1-NISSU
+                          ADD    1520    TO   WK-SHOKUJI-RYOYOHI
+                          MOVE   1520    TO   LNK-SYU-SHOKUJI1
+                      END-EVALUATE
+                  WHEN  2
+                          ADD       1    TO   WK-SHOKUJI-NISSU
+                                              LNK-SYU-SHOKUJI2-NISSU
+                                              LNK-SYU-SHOKUJI3-NISSU
+                          ADD    1920    TO   WK-SHOKUJI-RYOYOHI
+                          MOVE   1920    TO   LNK-SYU-SHOKUJI2
+                          IF    WK-TOKUKANRIKASAN  =  1
+                            ADD   200    TO   WK-SHOKUJI-RYOYOHI
+                            ADD   200    TO   LNK-SYU-SHOKUJI2
+                          END-IF
+                          ADD      50    TO   WK-SHOKUJI-RYOYOHI
+                          ADD      50    TO   LNK-SYU-SHOKUJI2
+      *
+                          ADD     350    TO   WK-SHOKUJI-RYOYOHI
+                          MOVE    350    TO   LNK-SYU-SHOKUJI3
+                  WHEN  3
+                          ADD       1    TO   WK-SHOKUJI-NISSU
+                                              LNK-SYU-SHOKUJI2-NISSU
+                                              LNK-SYU-SHOKUJI4-NISSU
+                          ADD    1920    TO   WK-SHOKUJI-RYOYOHI
+                          MOVE   1920    TO   LNK-SYU-SHOKUJI2
+                          IF    WK-TOKUKANRIKASAN  =  1
+                            ADD   200    TO   WK-SHOKUJI-RYOYOHI
+                            ADD   200    TO   LNK-SYU-SHOKUJI2
+                          END-IF
+                          ADD      50    TO   WK-SHOKUJI-RYOYOHI
+                          ADD      50    TO   LNK-SYU-SHOKUJI2
+      *
+                          ADD      50    TO   WK-SHOKUJI-RYOYOHI
+                          MOVE     50    TO   LNK-SYU-SHOKUJI4
+                END-EVALUATE
+      *
+              END-IF
+      *
+              EVALUATE   FLG-SKJ
                   WHEN  0
                           ADD     780    TO   WK-SHOKUJI-FTN
                   WHEN  1
@@ -1660,7 +1775,7 @@
                     ELSE
                           ADD     500    TO   WK-SHOKUJI-FTN
                     END-IF
-                END-EVALUATE
+              END-EVALUATE
       *
              END-IF
       *
