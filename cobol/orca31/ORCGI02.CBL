@@ -1069,9 +1069,9 @@
                                            TO  I02-TTUSAN (IDX1)
                IF    ( SPA-GMN-I02-TENKALST-SEL
                                            =   IDX1    )
-                   MOVE    "T"             TO  I02-TENKALST-SELECT
+                   MOVE    "T"        TO  I02-TENKALST-SELECT(IDX1)
                ELSE
-                   MOVE    "F"             TO  I02-TENKALST-SELECT
+                   MOVE    "F"        TO  I02-TENKALST-SELECT(IDX1)
                END-IF
            END-PERFORM
       *
@@ -1115,9 +1115,9 @@
                                            TO   I02-TTENKI    (IDX1)
                IF    ( SPA-GMN-I02-BYOMEILST-SEL
                                            =   IDX1    )
-                   MOVE    "T"             TO   I02-BYOMEILST-SELECT
+                   MOVE    "T"       TO   I02-BYOMEILST-SELECT(IDX1)
                ELSE
-                   MOVE    "F"             TO   I02-BYOMEILST-SELECT
+                   MOVE    "F"       TO   I02-BYOMEILST-SELECT(IDX1)
                END-IF
            END-PERFORM
       *
