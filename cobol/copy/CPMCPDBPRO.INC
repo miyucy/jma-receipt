@@ -218,6 +218,7 @@
       *  01.01.50    NACL-太田    03/03/19  PTKOHFTN-KEY,KEY2,KEY3,DEL1
       *                                     UPD1,ALL追加
       *  01.01.51    NACL-多々納　03/03/19  PTHKNINF-KEY5追加
+      *  01.01.52    NACL-太田    03/03/20  PTKOHFTN-KEY4追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -2522,6 +2523,9 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTKOHFTN-KEY3"
                    MOVE    PATH-TBL-PTKOHFTN-KEY3
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTKOHFTN-KEY4"
+                   MOVE    PATH-TBL-PTKOHFTN-KEY4
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "PTKOHFTN-ALL"
                    MOVE    PATH-TBL-PTKOHFTN-ALL

@@ -61,6 +61,19 @@ path	key3 	{
 	};
 };
 
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_ptkohftn_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptkohftn
+			WHERE   HOSPID    =   :HOSPID
+			AND   PTID        =   :PTID
+			AND   KOHID       =   :KOHID
+			ORDER   BY        TEKSTYMD DESC
+		;
+	};
+};
+
 path	del1 	{
 	DBDELETE	{
 		DELETE
@@ -70,6 +83,7 @@ path	del1 	{
 		;
 	};
 };
+
 
 path	upd1	{ 	
 	DBUPDATE	{
