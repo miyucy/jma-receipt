@@ -6,6 +6,13 @@ R98	{
 	        B07	{
 	           	state	int;
 	        };
+	        B09	{
+	           	state	int;
+	           	label	varchar(8);
+	        };
+		RENNUM01	{
+			value	number(5);
+		};
 		PTNUM01	{
 			value	varchar(21);
 		};
@@ -17,6 +24,9 @@ R98	{
 		};
 		JKYSNUM01	{
 			value	varchar(21);
+		};
+		RENNUM02	{
+			value	number(5);
 		};
 		PTNUM02	{
 			value	varchar(21);
@@ -30,6 +40,9 @@ R98	{
 		JKYSNUM02	{
 			value	varchar(21);
 		};
+		RENNUM03	{
+			value	number(5);
+		};
 		PTNUM03	{
 			value	varchar(21);
 		};
@@ -41,6 +54,9 @@ R98	{
 		};
 		JKYSNUM03	{
 			value	varchar(21);
+		};
+		RENNUM04	{
+			value	number(5);
 		};
 		PTNUM04	{
 			value	varchar(21);
@@ -54,6 +70,9 @@ R98	{
 		JKYSNUM04	{
 			value	varchar(21);
 		};
+		RENNUM05	{
+			value	number(5);
+		};
 		PTNUM05	{
 			value	varchar(21);
 		};
@@ -65,6 +84,9 @@ R98	{
 		};
 		JKYSNUM05	{
 			value	varchar(21);
+		};
+		RENNUM06	{
+			value	number(5);
 		};
 		PTNUM06	{
 			value	varchar(21);
@@ -78,6 +100,9 @@ R98	{
 		JKYSNUM06	{
 			value	varchar(21);
 		};
+		RENNUM07	{
+			value	number(5);
+		};
 		PTNUM07	{
 			value	varchar(21);
 		};
@@ -89,6 +114,9 @@ R98	{
 		};
 		JKYSNUM07	{
 			value	varchar(21);
+		};
+		RENNUM08	{
+			value	number(5);
 		};
 		PTNUM08	{
 			value	varchar(21);
@@ -102,6 +130,9 @@ R98	{
 		JKYSNUM08	{
 			value	varchar(21);
 		};
+		RENNUM09	{
+			value	number(5);
+		};
 		PTNUM09	{
 			value	varchar(21);
 		};
@@ -113,6 +144,9 @@ R98	{
 		};
 		JKYSNUM09	{
 			value	varchar(21);
+		};
+		RENNUM10	{
+			value	number(5);
 		};
 		PTNUM10	{
 			value	varchar(21);
@@ -126,6 +160,9 @@ R98	{
 		JKYSNUM10	{
 			value	varchar(21);
 		};
+		RENNUM11	{
+			value	number(5);
+		};
 		PTNUM11	{
 			value	varchar(21);
 		};
@@ -137,6 +174,9 @@ R98	{
 		};
 		JKYSNUM11	{
 			value	varchar(21);
+		};
+		RENNUM12	{
+			value	number(5);
 		};
 		PTNUM12	{
 			value	varchar(21);
@@ -150,6 +190,9 @@ R98	{
 		JKYSNUM12	{
 			value	varchar(21);
 		};
+		RENNUM13	{
+			value	number(5);
+		};
 		PTNUM13	{
 			value	varchar(21);
 		};
@@ -161,6 +204,9 @@ R98	{
 		};
 		JKYSNUM13	{
 			value	varchar(21);
+		};
+		RENNUM14	{
+			value	number(5);
 		};
 		PTNUM14	{
 			value	varchar(21);
@@ -174,6 +220,9 @@ R98	{
 		JKYSNUM14	{
 			value	varchar(21);
 		};
+		RENNUM15	{
+			value	number(5);
+		};
 		PTNUM15	{
 			value	varchar(21);
 		};
@@ -185,6 +234,9 @@ R98	{
 		};
 		JKYSNUM15	{
 			value	varchar(21);
+		};
+		RENNUM16	{
+			value	number(5);
 		};
 		PTNUM16	{
 			value	varchar(21);
@@ -198,6 +250,9 @@ R98	{
 		JKYSNUM16	{
 			value	varchar(21);
 		};
+		RENNUM17	{
+			value	number(5);
+		};
 		PTNUM17	{
 			value	varchar(21);
 		};
@@ -209,6 +264,9 @@ R98	{
 		};
 		JKYSNUM17	{
 			value	varchar(21);
+		};
+		RENNUM18	{
+			value	number(5);
 		};
 		PTNUM18	{
 			value	varchar(21);
@@ -222,6 +280,9 @@ R98	{
 		JKYSNUM18	{
 			value	varchar(21);
 		};
+		RENNUM19	{
+			value	number(5);
+		};
 		PTNUM19	{
 			value	varchar(21);
 		};
@@ -233,6 +294,9 @@ R98	{
 		};
 		JKYSNUM19	{
 			value	varchar(21);
+		};
+		RENNUM20	{
+			value	number(5);
 		};
 		PTNUM20	{
 			value	varchar(21);
@@ -246,6 +310,9 @@ R98	{
 		JKYSNUM20	{
 			value	varchar(21);
 		};
+		RENNUM21	{
+			value	number(5);
+		};
 		PTNUM21	{
 			value	varchar(21);
 		};
@@ -257,6 +324,9 @@ R98	{
 		};
 		JKYSNUM21	{
 			value	varchar(21);
+		};
+		RENNUM22	{
+			value	number(5);
 		};
 		PTNUM22	{
 			value	varchar(21);
@@ -270,6 +340,9 @@ R98	{
 		JKYSNUM22	{
 			value	varchar(21);
 		};
+		RENNUM23	{
+			value	number(5);
+		};
 		PTNUM23	{
 			value	varchar(21);
 		};
@@ -282,6 +355,9 @@ R98	{
 		JKYSNUM23	{
 			value	varchar(21);
 		};
+		RENNUM24	{
+			value	number(5);
+		};
 		PTNUM24	{
 			value	varchar(21);
 		};
@@ -293,6 +369,9 @@ R98	{
 		};
 		JKYSNUM24	{
 			value	varchar(21);
+		};
+		RENNUM25	{
+			value	number(5);
 		};
 		PTNUM25	{
 			value	varchar(21);
@@ -309,6 +388,10 @@ R98	{
 		SRYYMH	{
 		    style   varchar(20);
 			value	varchar(27);
+		};
+		HYOUJIKBN	{
+		    style   varchar(20);
+			value	varchar(8);
 		};
 	};
 };
