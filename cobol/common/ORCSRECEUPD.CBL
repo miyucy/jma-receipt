@@ -52,7 +52,7 @@
        01  WRK-AREA.
            03  WRK-SYSYMD.
                05  WRK-SYSYM       PIC X(06).
-               05  WRK-SYSDD       PIC X(02).
+               05  WRK-SYSDD       PIC 9(02).
       *
            03  WRK-DBPATH.
                05  FILLER          PIC S9(09)  BINARY.
@@ -115,6 +115,9 @@
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
+      *???
+           DISPLAY "DATE=" SMCNDATE-YMD "#"
+      *???
       *
            MOVE    SMCNDATE-YMD        TO  WRK-SYSYMD
            IF      WRK-SYSDD           <=   10
