@@ -170,6 +170,7 @@
            03  FLG-RJN                                 PIC 9(01).
            03  FLG-PROC                                PIC 9(01).
            03  FLG-PTBYO-HKN                           PIC 9(01).
+           03  FLG-THEIYOU-SET                         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -402,6 +403,7 @@
       *        処理パラメタの入外区分を優先的に設定
                05  TSRYCD-NYUGAIKBN                    PIC X(01).
                05  TSRYCD-SRYCD                        PIC X(09).
+               05  TSRYCD-KAISU                        PIC 9(09).
       *
       *    実日数退避ワーク（実日数チェック用）
        01  TJNISSU-AREA.
@@ -1954,6 +1956,8 @@
                                    TO  TSRYCD-NYUGAIKBN (TSRYCD-MAX)
                    MOVE    SRY-SRYCD (IDX1)
                                    TO  TSRYCD-SRYCD (TSRYCD-MAX)
+                   MOVE    ACCT-ZAIKAISU
+                                   TO  TSRYCD-KAISU (TSRYCD-MAX)
                END-IF
            ELSE
       *
@@ -1962,6 +1966,11 @@
                    MOVE    SRY-NYUGAIKBN
                                    TO  TSRYCD-NYUGAIKBN (IDX0)
                END-IF
+      *
+               COMPUTE TSRYCD-KAISU (TSRYCD-MAX)
+                   =   TSRYCD-KAISU (TSRYCD-MAX)
+                   +   ACCT-ZAIKAISU
+      *
            END-IF
       *
            .
@@ -4579,11 +4588,23 @@
                    UNTIL ( IDX0    >   TSRYCD-MAX )
                     OR   ( WRK-FLG-CHKEND      =   1 )
       *
-               IF    ( IDX-TSRYCD  NOT =   IDX0 )
-                AND  ( WRK-CHK-CD      =   TSRYCD-SRYCD (IDX0) )
-                    IF    ( TSRYCD-NYUGAIKBN(IDX-TSRYCD)
+               MOVE    ZERO            TO  FLG-THEIYOU-SET
+      *
+               IF    ( WRK-CHK-CD      =   TSRYCD-SRYCD (IDX0) )
+                   IF    ( IDX-TSRYCD  =   IDX0 )
+                       IF    ( TSRYCD-KAISU (IDX0)
+                                       >   1 )
+                           MOVE    1   TO  FLG-THEIYOU-SET
+                       END-IF
+                   ELSE
+                           MOVE    1   TO  FLG-THEIYOU-SET
+                   END-IF
+               END-IF
+      *
+               IF    ( FLG-THEIYOU-SET =   1 )
+                   IF    ( TSRYCD-NYUGAIKBN(IDX-TSRYCD)
                                        =   ORCBSD01-NYUGAIKBN )
-                      OR  ( TSRYCD-NYUGAIKBN(IDX0)
+                     OR  ( TSRYCD-NYUGAIKBN(IDX0)
                                        =   ORCBSD01-NYUGAIKBN )
                        IF    ( CONST-THEIYOU-MAX   > THEIYOU-MAX )
                            COMPUTE THEIYOU-MAX =   THEIYOU-MAX +   1
