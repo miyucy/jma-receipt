@@ -53,6 +53,7 @@
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-RJN             PIC 9(01).
            03  FLG-ROUSAI          PIC 9(01).
+           03  FLG-ARI             PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
       *    添字領域
@@ -76,26 +77,8 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-STYMD.
-               05  WRK-STYYMM.
-                   07  WRK-STYY            PIC 9(04).
-                   07  WRK-STMM            PIC 9(02).
-               05  WRK-STDD                PIC 9(02).
-           03  WRK-EDYMD.
-               05  WRK-EDYYMM.
-                   07  WRK-EDYY            PIC 9(04).
-                   07  WRK-EDMM            PIC 9(02).
-               05  WRK-EDDD                PIC 9(02).
-      *
-           03  WRK-RRK-YMD                 PIC X(08).
-           03  WRK-YMD                     PIC X(08).
-           03  WRK-YMDR        REDEFINES   WRK-YMD.
-               05  WRK-YY                  PIC 9(04).
-               05  WRK-MM                  PIC 9(02).
-               05  WRK-DD                  PIC 9(02).
       *
            03  WRK-GAIHAKU-SRYCD           PIC X(09).
-           03  WRK-CNT                     PIC 9(03).
            03  WRK-MEISAISU                PIC 9(03).
       *
       *    労災入院会計ワーク
@@ -141,8 +124,6 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *
-           COPY    "CPSK1001.INC".
       *
            COPY    "CPSK5000.INC".
       *
@@ -295,6 +276,7 @@
        200-MAIN-SEC            SECTION.
       *
       *労災入院料の取得
+           MOVE    ZERO                    TO  FLG-ARI
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-SROUNYUIN-HOSPID    TO  NACCT-HOSPID
            MOVE    LNK-SROUNYUIN-PTID      TO  NACCT-PTID
@@ -315,10 +297,10 @@
                        PERFORM    VARYING   IDX   FROM   1   BY   1
                                   UNTIL     IDX   >   31
                            IF    (LNK-SROUNYUIN-NYUIN-FLG(IDX) = "1")
-                                      AND
-                                 (NACCT-DAY(IDX)   =   1)
+                           AND   (NACCT-DAY(IDX)    NOT =  ZERO) 
                                MOVE    NSRY-SRYCD(1)   TO  
                                                    WRK-NYUINKHN(IDX)
+                               MOVE    1    TO   FLG-ARI
       *                        外泊コード編集用に入院基本料加算区分と
       *                        診療区分の退避
                                PERFORM   210-GAIHAKU-MAE-SEC
@@ -333,7 +315,12 @@
                    MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
                    PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
+               IF   FLG-ARI     =   ZERO
+                   MOVE     3      TO      LNK-SROUNYUIN-RC
+                   GO   TO    200-MAIN-EXT
+               END-IF
            ELSE
+               MOVE     3      TO      LNK-SROUNYUIN-RC
                GO   TO    200-MAIN-EXT
            END-IF
       *    入院会計クローズ
@@ -355,16 +342,14 @@
       *            外泊区分の退避
                    PERFORM    VARYING   IDX   FROM   1   BY   1
                               UNTIL     IDX   >   31
-                       IF    (LNK-SROUNYUIN-NYUIN-FLG(IDX) = "1")  AND
-                             (NACCT-DAY(IDX)   NOT =   ZERO)
+                       IF    (WRK-NYUINKHN(IDX) NOT = SPACE) 
+                       AND   (NACCT-DAY(IDX)    NOT =  ZERO) 
                               PERFORM     210-GAIHAKU-SET-SEC
                        END-IF
                    END-PERFORM
                    MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
                    PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
-           ELSE
-               GO   TO    200-MAIN-EXT
            END-IF
       *    入院会計クローズ
            MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
@@ -391,7 +376,6 @@
            IF      MCP-RC              =   ZERO
                MOVE    "SYSKANRI-KEY"  TO  ORC-DBPATH
                PERFORM  SYSKANRI-READ-SEC
-               DISPLAY   "FLG-SYSKANRI = " FLG-SYSKANRI
                PERFORM  VARYING   GENSAN-IDX  FROM  1  BY  1
                         UNTIL     GENSAN-IDX   >   4
                     IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"
@@ -421,41 +405,41 @@
                     END-IF
                END-PERFORM
            END-IF
-           DISPLAY "WRK-GENSAN2 = " WRK-GENSAN2
-           DISPLAY "WRK-GENSAN3 = " WRK-GENSAN3
-           DISPLAY "WRK-GENSAN4 = " WRK-GENSAN4
       *
       *労災入院時の入院料加算取得（入院会計より）
-           MOVE    ZERO                    TO  KSN-IDX
-           INITIALIZE                          NYUINACCT-REC
-           MOVE    LNK-SROUNYUIN-HOSPID    TO  NACCT-HOSPID
-           MOVE    LNK-SROUNYUIN-PTID      TO  NACCT-PTID
-           MOVE    LNK-SROUNYUIN-SANTEIYM  TO  NACCT-SRYYM
-           MOVE    "6"                     TO  NACCT-ZAISKBKBN
-           MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
-           PERFORM 910-NYUINACCT-SELECT-SEC
-           IF      FLG-NYUINACCT           =   ZERO
-               MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
-               PERFORM   910-NYUINACCT-READ-SEC
-               PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
+      *     MOVE    ZERO                    TO  KSN-IDX
+      *     INITIALIZE                          NYUINACCT-REC
+      *     MOVE    LNK-SROUNYUIN-HOSPID    TO  NACCT-HOSPID
+      *     MOVE    LNK-SROUNYUIN-PTID      TO  NACCT-PTID
+      *     MOVE    LNK-SROUNYUIN-SANTEIYM  TO  NACCT-SRYYM
+      *     MOVE    "6"                     TO  NACCT-ZAISKBKBN
+      *     MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+      *     PERFORM 910-NYUINACCT-SELECT-SEC
+      *     IF      FLG-NYUINACCT           =   ZERO
+      *         MOVE     "NYUINACCT-KEY17"  TO  ORC-DBPATH
+      *         PERFORM   910-NYUINACCT-READ-SEC
+      *         PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
       *            入院料加算の退避
-                   ADD        1         TO         KSN-IDX
-                   MOVE    NACCT-SRYCDTOTAL   TO   WRK-NYUKSN(KSN-IDX)
-                   PERFORM    VARYING   IDX   FROM   1   BY   1
-                              UNTIL     IDX   >   31
-                       IF    (LNK-SROUNYUIN-NYUIN-FLG(IDX) = "1")  AND
-                             (NACCT-DAY(IDX)   NOT =   ZERO)
-                           MOVE   NACCT-DAY(IDX)
-                                        TO  WRK-NYUKSN-DAY(KSN-IDX IDX)
-                       END-IF
-                   END-PERFORM
-                   MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
-                   PERFORM 910-NYUINACCT-READ-SEC
-               END-PERFORM
-           END-IF
+      *             PERFORM    VARYING   IDX   FROM   1   BY   1
+      *                        UNTIL     IDX   >   31
+      *                 IF    (WRK-NYUINKHN(IDX) NOT = SPACE)
+      *                 AND   (LNK-SROUNYUIN-GAIHAKU(IDX)  
+      *                                       =  ZERO  OR  4)
+      *                 AND   (NACCT-DAY(IDX)    NOT =  ZERO)
+      *                     ADD        1         TO   KSN-IDX
+      *                     MOVE   NACCT-SRYCDTOTAL(6:9)
+      *                                          TO   WRK-NYUKSN(KSN-IDX)
+      *                     MOVE   NACCT-DAY(IDX)
+      *                                  TO  WRK-NYUKSN-DAY(KSN-IDX IDX)
+      *                 END-IF
+      *             END-PERFORM
+      *             MOVE    "NYUINACCT-KEY17"       TO  ORC-DBPATH
+      *             PERFORM 910-NYUINACCT-READ-SEC
+      *         END-PERFORM
+      *     END-IF
       *    入院会計クローズ
-           MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
-           PERFORM   910-DB-CLOSE-SEC
+      *     MOVE    "NYUINACCT-KEY17"           TO  ORC-DBPATH
+      *     PERFORM   910-DB-CLOSE-SEC
       *
       *
       *    取得した労災入院情報から日単位の入院会計情報を再構築
@@ -463,39 +447,40 @@
                         UNTIL      IDX   >   31
                MOVE     ZERO                TO  WRK-MEISAISU
       *        入院基本料
-               ADD      1                   TO  WRK-MEISAISU
-               MOVE     WRK-NYUINKHN(IDX)   TO  LNK-SROUNYUIN-SRYCD
+               IF         WRK-NYUINKHN(IDX)  NOT =        SPACE
+                   ADD      1               TO  WRK-MEISAISU
+                   MOVE   WRK-NYUINKHN(IDX) TO  LNK-SROUNYUIN-SRYCD
                                            (IDX WRK-MEISAISU)
+               END-IF
       *        外泊
                IF         WRK-GAIHAKU(IDX)   NOT =        SPACE
-                   ADD      1                   TO  WRK-MEISAISU
+                   ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GAIHAKU(IDX)  TO  LNK-SROUNYUIN-SRYCD
                                            (IDX WRK-MEISAISU)
                END-IF
       *        減算情報（システム管理）
-               IF      (LNK-SROUNYUIN-GAIHAKU(IDX)   =   ZERO)    AND
-                       (WRK-GENSAN2         NOT =    SPACE)
+               IF      (WRK-NYUINKHN(IDX)   NOT =         SPACE)  AND
+                       (WRK-GAIHAKU(IDX)        =         SPACE)  AND
+                       (WRK-GENSAN2         NOT =         SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GENSAN2       TO  LNK-SROUNYUIN-SRYCD
                                            (IDX WRK-MEISAISU)
                END-IF
-               IF      (LNK-SROUNYUIN-GAIHAKU(IDX)   =   ZERO)    AND
-                       (WRK-GENSAN3         NOT =    SPACE)
+               IF      (WRK-NYUINKHN(IDX)   NOT =         SPACE)  AND
+                       (WRK-GAIHAKU(IDX)        =         SPACE)  AND
+                       (WRK-GENSAN3         NOT =         SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GENSAN3       TO  LNK-SROUNYUIN-SRYCD
                                            (IDX WRK-MEISAISU)
                END-IF
-               IF      (LNK-SROUNYUIN-GAIHAKU(IDX)   =   ZERO)    AND
-                       (WRK-GENSAN4         NOT =    SPACE)
+               IF      (WRK-NYUINKHN(IDX)   NOT =         SPACE)  AND
+                       (WRK-GAIHAKU(IDX)        =         SPACE)  AND
+                       (WRK-GENSAN4         NOT =         SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-GENSAN4       TO  LNK-SROUNYUIN-SRYCD
                                            (IDX WRK-MEISAISU)
                END-IF
       *        労災乗数（特定入院料の場合は労災乗数なし）
-               DISPLAY  "LNK-SROUNYUIN-SRYKBN(IDX) = "
-                                       LNK-SROUNYUIN-SRYKBN(IDX)
-               DISPLAY  "LNK-SROUNYUIN-JOUSU-KBN(IDX) = "
-                                       LNK-SROUNYUIN-JOUSU-KBN(IDX)
                IF       LNK-SROUNYUIN-SRYKBN(IDX)    =    "90"
                    EVALUATE  LNK-SROUNYUIN-JOUSU-KBN(IDX)
                        WHEN  "1"
@@ -509,8 +494,8 @@
                    END-EVALUATE
                END-IF
       *        初期加算（長期減算）
-               IF      (LNK-SROUNYUIN-GAIHAKU(IDX)   =   ZERO)    AND
-                       (WRK-SHOKIKSN(IDX)   NOT =        SPACE)
+               IF      (WRK-GAIHAKU(IDX)        =         SPACE)  AND
+                       (WRK-SHOKIKSN(IDX)   NOT =         SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-SHOKIKSN(IDX) TO  LNK-SROUNYUIN-SRYCD
                                            (IDX WRK-MEISAISU)
@@ -519,10 +504,14 @@
       *         PERFORM   VARYING   KSN-IDX   FROM  1  BY  1
       *                   UNTIL    (WRK-NYUKSN(KSN-IDX)  =  SPACE)  OR
       *                            (KSN-IDX             >  20)
-      *                   ADD     1           TO  WRK-MEISAISU
-      *                   MOVE WRK-NYUKSN(KSN-IDX)
-      *                                       TO  LNK-SROUNYUIN-SRYCD
-      *                                           (IDX WRK-MEISAISU)
+      *            IF    WRK-NYUKSN-DAY(IDX)  =  ZERO
+      *                CONTINUE
+      *            ELSE
+      *                ADD     1           TO  WRK-MEISAISU
+      *                MOVE WRK-NYUKSN(KSN-IDX)
+      *                                    TO  LNK-SROUNYUIN-SRYCD
+      *                                   (IDX WRK-MEISAISU)
+      *            END-IF
       *         END-PERFORM
            END-PERFORM
       *
@@ -535,19 +524,13 @@
                             OR (IDX2    >      20)
                    PERFORM    210-TENSU-KEISAN-SEC
                END-PERFORM
+      *
+               IF    LNK-SROUNYUIN-NYUIN-FLG(IDX)  =   "1"
+               AND   LNK-SROUNYUIN-ZAITEN(IDX)     =   ZERO
+                  MOVE     SPACE   TO   LNK-SROUNYUIN-NYUIN-FLG(IDX)
+               END-IF
            END-PERFORM
       *
-      *    編集結果の表示
-           PERFORM      VARYING    IDX   FROM   1  BY  1
-                        UNTIL      IDX   >   31
-               DISPLAY   "IDX = "  IDX
-               DISPLAY   "ZAITEN = "  LNK-SROUNYUIN-ZAITEN(IDX)
-               PERFORM   VARYING   IDX2    FROM   1  BY   1
-                         UNTIL (LNK-SROUNYUIN-SRYCD(IDX IDX2) = SPACE)
-                            OR (IDX2    >      20)
-                   DISPLAY  "SRYCD = " LNK-SROUNYUIN-SRYCD(IDX IDX2)
-               END-PERFORM
-           END-PERFORM
            .
        200-MAIN-EXT.
            EXIT.
@@ -604,19 +587,57 @@
       *
            MOVE   NACCT-DAY(IDX)     TO    LNK-SROUNYUIN-GAIHAKU(IDX)
       *
-      *    EVALUATE   NACCT-DAY(IDX)
-      *        WHEN
-      *        WHEN
-      *            MOVE    *******     TO    WRK-GAIHAKU(IDX)
-      *
-      *           労さーん、ここよろしく  
-      *           WRK-NYUKHNKSNKBN 9(3) を設定するようにしとくから
-      *                                 参照してちょ
-      *
-      *    END-EVALUATE
+           EVALUATE   LNK-SROUNYUIN-SRYKBN(IDX)
+              WHEN     "90"
+                 EVALUATE   NACCT-DAY(IDX)
+                    WHEN     1
+                      MOVE   "190107290"   TO  WRK-GAIHAKU(IDX)
+                    WHEN     2
+                      MOVE   "190107390"   TO  WRK-GAIHAKU(IDX)
+                    WHEN     4
+                      PERFORM   2101-GAIHAKU-TAKIKAN-SEC
+                 END-EVALUATE
+              WHEN     "92"
+                 EVALUATE   NACCT-DAY(IDX)
+                    WHEN     1
+                      MOVE   "190107490"   TO  WRK-GAIHAKU(IDX)
+                    WHEN     2
+                      MOVE   "190107590"   TO  WRK-GAIHAKU(IDX)
+                    WHEN     4
+                      PERFORM   2101-GAIHAKU-TAKIKAN-SEC
+                 END-EVALUATE
+           END-EVALUATE
       *
            .
        210-GAIHAKU-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外泊診療コード取得
+      *****************************************************************
+       2101-GAIHAKU-TAKIKAN-SEC           SECTION.
+      *
+           EVALUATE   WRK-NYUKHNKSNKBN(IDX)
+      *
+               WHEN   099  THRU  100 
+               WHEN   201  THRU  219
+               WHEN   221  THRU  222
+               WHEN   224
+               WHEN   227  THRU  228
+                  MOVE   "190108790"    TO   WRK-GAIHAKU(IDX)
+               WHEN   013  THRU  021
+               WHEN   101  THRU  109
+                  MOVE   "190108890"    TO   WRK-GAIHAKU(IDX)
+               WHEN   075  THRU  080
+                  MOVE   "190108990"    TO   WRK-GAIHAKU(IDX)
+               WHEN   085  THRU  086
+               WHEN   132  THRU  133
+                  MOVE   "190109090"    TO   WRK-GAIHAKU(IDX)
+      *
+           END-EVALUATE
+      *
+           .
+       2101-GAIHAKU-TAKIKAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -680,13 +701,18 @@
        210-TENSU-KEISAN-SEC            SECTION.
       *
            INITIALIZE                      TNS-TENSU-REC
-           IF     (IDX2      =    1)      AND
-                  (LNK-SROUNYUIN-GAIHAKU(IDX)   NOT =  ZERO)
+           IF     (IDX2                   =     1  )
+           AND    (WRK-GAIHAKU(IDX)   NOT =   SPACE)
                PERFORM    GAIHAKU-NYUINKHN-SET-SEC
-               MOVE    WRK-GAIHAKU-SRYCD   TO  TNS-SRYCD
+               IF    WRK-GAIHAKU-SRYCD    NOT =   SPACE
+                  MOVE    WRK-GAIHAKU-SRYCD   TO  TNS-SRYCD
+               ELSE
+                  MOVE    LNK-SROUNYUIN-SRYCD(IDX IDX2)
+                                              TO  TNS-SRYCD
+               END-IF
            ELSE
-               MOVE    LNK-SROUNYUIN-SRYCD(IDX IDX2)
-                                           TO  TNS-SRYCD
+                  MOVE    LNK-SROUNYUIN-SRYCD(IDX IDX2)
+                                              TO  TNS-SRYCD
            END-IF
            MOVE    LNK-SROUNYUIN-SANTEIYM  TO  ORC-DBYMD(1:6)
            MOVE    "01"                    TO  ORC-DBYMD(7:2)
@@ -701,14 +727,14 @@
                WHEN    5
                    COMPUTE    LNK-SROUNYUIN-ZAITEN(IDX)  =
                               LNK-SROUNYUIN-ZAITEN(IDX)  +
-                            ((LNK-SROUNYUIN-ZAITEN(IDX)  *  
+                            ((LNK-SROUNYUIN-ZAITEN(IDX)  *
                               (TNS-TEN   /  100))  + 0.5)
       *        ％減算
                WHEN    6
                    COMPUTE    LNK-SROUNYUIN-ZAITEN(IDX)  =
-                              LNK-SROUNYUIN-ZAITEN(IDX)  -
-                            ((LNK-SROUNYUIN-ZAITEN(IDX)  *  
-                              (TNS-TEN   /  100))  + 0.5)
+                            ( LNK-SROUNYUIN-ZAITEN(IDX)  -
+                             (LNK-SROUNYUIN-ZAITEN(IDX)  *
+                             (TNS-TEN   /  100)))        +  0.5
       *        点数（マイナス）
                WHEN    8
                    COMPUTE  LNK-SROUNYUIN-ZAITEN(IDX)  =
@@ -716,18 +742,12 @@
       *        WHEN  OTHER
       *            ADD   TNS-TEN     TO  LNK-SROUNYUIN-ZAITEN(IDX)
            END-EVALUATE
-           DISPLAY   "IDX = " IDX
-           DISPLAY   "LNK-SROUNYUIN-SRYCD = " 
-                      LNK-SROUNYUIN-SRYCD(IDX IDX2)
-           DISPLAY   "LNK-SROUNYUIN-ZAITEN = "
-                      LNK-SROUNYUIN-ZAITEN(IDX)
       *
       *    診療コード計
            MOVE    TNS-SRYCD          TO  WRK-SRYCD-X
            COMPUTE LNK-SROUNYUIN-SRYCDTOTAL(IDX)  =
                    LNK-SROUNYUIN-SRYCDTOTAL(IDX)  +   WRK-SRYCD-9
            ADD      1          TO  LNK-SROUNYUIN-MEISAISU(IDX)
-      *
       *
            .
        210-TENSU-KEISAN-EXT.
@@ -922,18 +942,16 @@
                    MOVE    MCPDATA-REC        TO  PTINF-REC
                    MOVE    ZERO               TO  FLG-PTINF
                ELSE
+                   INITIALIZE                     PTINF-REC
                    MOVE    1                  TO  FLG-PTINF
                END-IF
            ELSE
+               INITIALIZE                 PTINF-REC
                MOVE    1              TO  FLG-PTINF
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "PTINF-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "PTINF-KEY"        TO  ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
       *
            .
        900-PTINF-READ-EXT.
@@ -974,6 +992,7 @@
                MOVE    MCPDATA-REC        TO  NYUINACCT-REC
                MOVE    ZERO               TO  FLG-NYUINACCT
            ELSE
+               INITIALIZE                     NYUINACCT-REC
                MOVE    1                  TO  FLG-NYUINACCT
            END-IF
       *
@@ -1022,52 +1041,6 @@
       *
            .
        910-NYUINACT-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    点数マスター読込
-      *****************************************************************
-       910-TENSU-READ-SEC         SECTION.
-      *
-           MOVE    ZERO                TO  TNS-YUKOSTYMD
-           MOVE    ALL "9"             TO  TNS-YUKOEDYMD
-      *
-           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           MOVE    WRK-YMD             TO  ORC-DBYMD
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-                   MOVE    ZERO                TO  FLG-TENSU
-               ELSE
-                   INITIALIZE                  TNS-TENSU-REC
-                   MOVE    1                   TO  FLG-TENSU
-               END-IF
-           ELSE
-               INITIALIZE                  TNS-TENSU-REC
-               MOVE    1                   TO  FLG-TENSU
-           END-IF
-      *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      *
-           .
-       910-TENSU-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1143,12 +1116,8 @@
                INITIALIZE                  TNS-TENSU-REC
            END-IF
       *
-           MOVE    "DBCLOSE"           TO  MCP-FUNC
-           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "TENSU-KEY"     TO   ORC-DBPATH
+           PERFORM   910-DB-CLOSE-SEC
       *
            .
        TENSU-READ-EXT.
