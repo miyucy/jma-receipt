@@ -100,6 +100,7 @@
            03  FLG-CHOKIKSN         PIC 9(01).
       *    ÌôºÞÈ½Äê
            03  FLG-YAKUZAI-ARI         PIC 9(01).
+           03  FLG-ZAIEND              PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -811,6 +812,8 @@
            MOVE    ZERO                TO  FLG-CHOKIKA1
            MOVE    ZERO                TO  FLG-CHOKIKA2
       *
+           MOVE    ZERO                TO  FLG-ZAIEND
+      *
            INITIALIZE                  WRK-ZAIKEI-AREA
            INITIALIZE                  TBL-NYUINDAY-AREA
            MOVE    SPACE               TO  WRK-HENSYU-MEISYO
@@ -858,11 +861,13 @@
                    END-EVALUATE
                END-IF
       *        ÅêÌô¤Î»þ¡¢ÌôºÞ¥³¡¼¥É¤¬¤¢¤ë¤³¤È
-               IF      WRK-CHK-SRYSYUKBN(1:2)  =   "21"
+               IF     (WRK-CHK-SRYSYUKBN(1:2)  =   "21"
                                                OR  "22"
                                                OR  "23"
-                                               OR  "29"
+                                               OR  "29" )  AND
+                       (FLG-ZAIEND             =   ZERO )
                    PERFORM 30001-TOUYAKU-CHK-SEC
+                   MOVE    1                   TO  FLG-ZAIEND
                END-IF
       *
                EVALUATE    WRK-CHK-SRYSYUKBN
@@ -945,6 +950,7 @@
                END-IF
                IF      WRK-COM-ZAIEND (IDX)    =   "1"
                    MOVE    ZERO                TO  FLG-MADOKU-ARI
+                   MOVE    ZERO                TO  FLG-ZAIEND
                END-IF
       *
       *        Â¾ÊÝ¸±¤Ë¤Æ»»Äê¤ÎÈ½Äê
