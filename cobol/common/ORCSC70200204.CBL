@@ -1046,6 +1046,7 @@
                MOVE    IDX-SAT         TO  IDX-SAT2
            END-IF
       *
+      *
            MOVE    IDX-SAT2            TO  IDX-S
            PERFORM 100012-SINDAN-SET-SEC
       *
@@ -1064,7 +1065,7 @@
                               (WRK-COM-AUTOKBN(IDX-Z)  =   "K"   )
       *
                MOVE    IDX-Z               TO  IDX-MAX
-               IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "*"
+               IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "*"  OR "."
                    CONTINUE
                ELSE
       *            ÌÀºÙ·×»»
@@ -1446,20 +1447,24 @@
            IF      WRK-COM-INPUTCD (IDX-SAT)   =   "170002010"
       *        ÆÃ¼ì»£±Æ¤Î¼Ì¿¿¿ÇÃÇ¡Ê£²²óÌÜ°Ê¹ß¡Ë
                MOVE    "170000610"         TO  WRK-SRYCD
+               MOVE    SPACE               TO  WRK-SRYCD-2
            ELSE
       *    Ã±½ã»£±Æ¤Î¿ÇÃÇÎÁ
                IF      WRK-COM-INPUTCD (IDX-SAT)   =   "170002110"
       *            Â¤±ÆºÞ»ÈÍÑ¤Î¿ÇÃÇÎÁ
                    MOVE    "170000810"         TO  WRK-SRYCD
+                   MOVE    SPACE               TO  WRK-SRYCD-2
                ELSE
                    EVALUATE    FLG-BUIKBN
                        WHEN    1
                        WHEN    3
       *                    ¤½¤ÎÂ¾
                            MOVE    "170000510"         TO  WRK-SRYCD
+                           MOVE    "170000410"         TO  WRK-SRYCD-2
                        WHEN    2
       *                    Æ¬¡¦¶»¡¦Ê¢¡¦ÀÔ¿ñ
                            MOVE    "170000410"         TO  WRK-SRYCD
+                           MOVE    "170000510"         TO  WRK-SRYCD-2
                    END-EVALUATE
                END-IF
            END-IF
@@ -1470,7 +1475,6 @@
            IF      WRK-SRYCD       NOT =   SPACE
                MOVE    1                   TO  FLG-SATU
                MOVE    IDX-SAT2            TO  IDX-S
-               MOVE    SPACE               TO  WRK-SRYCD-2
                PERFORM 1003-JIDOU-CHK-SEC
                PERFORM 1002-JIDOUSET-SEC
       *
@@ -1580,18 +1584,19 @@
                               (FLG-ARI                 =   1    ) OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE ) OR
                               (WRK-GMN-INPUTCD(IDX1)(1:1)  =   "*")
-              IF      (WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD ) OR
-                      (WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD-2)
+              IF      (WRK-COM-INPUTCD (IDX1) NOT =   SPACE )  AND
+                     ((WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD ) OR
+                      (WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD-2))
                     MOVE    IDX1           TO  IDX-T
                     MOVE    1              TO  FLG-ARI
                END-IF
-               IF     (WRK-SRYCD               =    "170000510"   OR
-                                                    "170000410" )  AND
-                      (WRK-COM-INPUTCD (IDX1)  =    "170000510"   OR
-                                                    "170000410" )
-                    MOVE    IDX1           TO  IDX-T
-                    MOVE    1              TO  FLG-ARI
-               END-IF
+      *!!      IF     (WRK-SRYCD               =    "170000510"   OR
+      *                                             "170000410" )  AND
+      *               (WRK-COM-INPUTCD (IDX1)  =    "170000510"   OR
+      *                                             "170000410" )
+      *             MOVE    IDX1           TO  IDX-T
+      *!            MOVE    1              TO  FLG-ARI
+      **!      END-IF
            END-PERFORM
            .
        1003-JIDOU-CHK-EXT.
