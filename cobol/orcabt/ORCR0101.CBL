@@ -352,9 +352,6 @@
       *****************************************************************
        500-CANCEL-HENSYU-SEC                SECTION.
       *
-      *???
-           DISPLAY "ORCR0101 CHK"
-      *???
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
