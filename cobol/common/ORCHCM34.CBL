@@ -311,9 +311,9 @@
            03  WRK-SRYACT-SRYKBN                   PIC X(02).
            03  WRK-SRYACT-HKNCOMBI                 PIC X(04).
            03  WRK-SRYACT-DAY-OCC                  OCCURS  31.
-               05  WRK-SRYACT-DAY-X                PIC X(02).
+               05  WRK-SRYACT-DAY-X                PIC X(03).
                05  WRK-SRYACT-DAY-Z    REDEFINES   WRK-SRYACT-DAY-X
-                                                   PIC Z(02).
+                                                   PIC Z(03).
       *
        01  SRH-AREA.
            03  SRH-IDX                             PIC 9(05).

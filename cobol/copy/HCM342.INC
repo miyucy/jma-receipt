@@ -19,4 +19,4 @@
               03  HCM342-SRYKBN   PIC X(2).
               03  HCM342-HKNCOMBINUM2 PIC X(4).
               03  HCM342-TEKIYO   PIC X(52).
-              03  HCM342-DAY  PIC X(2)    OCCURS  31 TIMES.
+              03  HCM342-DAY  PIC X(3)    OCCURS  31 TIMES.
