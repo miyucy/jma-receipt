@@ -2318,7 +2318,11 @@
        4101-NYUREKILST-EDIT2-SEC       SECTION.
       *
       *    自院他院フラグ
-           MOVE    1               TO  SPA-NAI-I01-TZITA-FLG (IDX1)
+           IF    ( PTNYUINRRK-JTIKBN   =   "5" )
+               MOVE    1           TO  SPA-NAI-I01-TZITA-FLG (IDX1)
+           ELSE
+               MOVE    2           TO  SPA-NAI-I01-TZITA-FLG (IDX1)
+           END-IF
       *
       *    入院歴
            MOVE    PTNYUINRRK-RRKNUM
@@ -4800,7 +4804,7 @@
            MOVE    SPA-WORK        TO  SPA-I0KYOUTU
       *
            IF    ( SPA-NAI-I01-TZITA-FLG (SPA-GMN-I01-SELNUM)
-                                   =   SPACE )
+                                   =   ZERO  )
                MOVE    "NYUGAI"        TO  MCP-WIDGET
            ELSE
                MOVE    "B01"           TO  MCP-WIDGET
@@ -7282,6 +7286,19 @@
            INITIALIZE                  WRK-TSUSAN
                                        WRK-SANTEISTYMD
       *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   50 )
+               IF    ( SPA-NAI-I01-TZITA-FLG (IDX1)
+                                                   =   2 )
+                AND  ( SPA-GMN-I01-TSHONUM (IDX1)
+                                   =   PTNYUINRRK-SHONUM )
+                   COMPUTE WRK-TSUSAN
+                       =   WRK-TSUSAN
+                       +   SPA-NAI-I01-TNYURRKTAISYO (IDX1)
+               END-IF
+      *
+           END-PERFORM
+      *
       *    歴をさかのぼり通算の対象となるデータを抽出する
            INITIALIZE    WRK-REKI-ZIIN-TBL
            PERFORM VARYING IDX1    FROM    1   BY  1
@@ -7356,6 +7373,7 @@
       *
            END-PERFORM
       *
+      *
            .
        4801-NYUTSUSAN-SANTEI-GET-EXT.
            EXIT.
@@ -7367,6 +7385,19 @@
            INITIALIZE                  WRK-NYUINNISSU
                                        WRK-TSUSAN
                                        WRK-SANTEISTYMD
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   50 )
+               IF    ( SPA-NAI-I01-TZITA-FLG (IDX1)
+                                                   =   2 )
+                AND  ( SPA-GMN-I01-TSHONUM (IDX1)
+                                   =   PTNYUINRRK-SHONUM )
+                   COMPUTE WRK-TSUSAN
+                       =   WRK-TSUSAN
+                       +   SPA-NAI-I01-TNYURRKTAISYO (IDX1)
+               END-IF
+      *
+           END-PERFORM
       *
       *    入院日から（異動日当日を含まない）異動日までの日数を求める
       *    （入院日数とする）
