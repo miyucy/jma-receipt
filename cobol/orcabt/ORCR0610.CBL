@@ -23,7 +23,7 @@
       *  コンポーネント名  : 月次業務　明細書・請求書用ファイル作成
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  02/12/101   NACL−藤原　  新規作成
+      *  02/12/01    NACL−藤原　  新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -42,8 +42,6 @@
       *                                     SRYACCT9→30
       *  01.00.09    NACL-藤原    04/04/15  ＤＢ更新エラー時の処理
       *  01.00.10    NACL-藤原    04/06/15  印刷順の追加（個別作成時のみ）
-      *  01.00.11    NACL-藤原    04/08/02  会計を残して入院取消を行った
-      *                                     ままの入院会計のエラー対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -152,7 +150,6 @@
            03  FLG-CONTKBN                             PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
            03  FLG-LASTHKNID                           PIC 9(01). 
-           03  FLG-ZAISKBKBN                           PIC 9(01). 
       *
       *    カウント領域
        01  CNT-AREA.
@@ -745,7 +742,6 @@
       *    診療会計読み込み（患者ＩＤ、保険組合せ、診療科順）
       *
            MOVE    "1"                 TO  WRK-DBKBN 
-           MOVE    ZERO                TO  FLG-ZAISKBKBN
       *      
            INITIALIZE                  SRYACCT-REC
            MOVE    SYS-1001-HOSPID     TO  ACCT-HOSPID
@@ -780,7 +776,6 @@
       *    入院会計読み込み（患者ＩＤ、診療科、剤識別区分順）
       *
            MOVE    "2"                 TO  WRK-DBKBN 
-           MOVE    ZERO                TO  FLG-ZAISKBKBN
       *
            MOVE    LOW-VALUE           TO  KEY-AREA
       *     
@@ -1136,13 +1131,9 @@
                MOVE    KEY-NEW             TO  KEY-OLD
                INITIALIZE                      WRK-DAY-AREA
                                                WRK-HKNCOMBI-TABLE
-                                               FLG-ZAISKBKBN
       *
                PERFORM         UNTIL   FLG-NYUINACCT   =   1 
                                OR      KEY-NEW     NOT =   KEY-OLD
-                   IF      NACCT-ZAISKBKBN     =   "1"
-                       MOVE    1                   TO  FLG-ZAISKBKBN
-                   END-IF
       *            剤識別区分別テーブル編集
                    EVALUATE    NACCT-ZAISKBKBN
                        WHEN    "1"
@@ -1597,10 +1588,6 @@
                MOVE    WRK-ERR-TEKEDYMD   TO  WRK-RECE61-ERR-TEKEDYMD
            END-IF
       *
-           IF      FLG-ZAISKBKBN      =   1
-               MOVE    1                  TO  WRK-RECE61-ZAISKBKBN
-           END-IF
-      *
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
                    MOVE    WRK-RECE61-REC      TO  RECE61-REC
@@ -1694,10 +1681,6 @@
                END-IF            
                MOVE    "1"                 TO  WRK-RECE61-TEISEIKBN     
            END-IF    
-      *      
-           IF      FLG-ZAISKBKBN      =   1
-               MOVE    1                  TO  WRK-RECE61-ZAISKBKBN
-           END-IF
       *
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
@@ -2092,7 +2075,6 @@
        20011-HENSYU-SEC                SECTION.
       *
            MOVE    KEY-NEW             TO  KEY-OLD
-           MOVE    ZERO                TO  FLG-ZAISKBKBN
       *
            PERFORM             UNTIL   FLG-SRYACCT     =   1 
                MOVE    ACCT-HKNCOMBI       TO  KEY-N-HKNCOMBI
@@ -2173,13 +2155,9 @@
            MOVE    KEY-NEW             TO  KEY-OLD
            INITIALIZE                      WRK-DAY-AREA
                                            WRK-HKNCOMBI-TABLE
-                                           FLG-ZAISKBKBN
       *
            PERFORM         UNTIL   FLG-NYUINACCT   =   1 
                            OR      KEY-NEW     NOT =   KEY-OLD
-               IF      NACCT-ZAISKBKBN     =   "1"
-                   MOVE    1                   TO  FLG-ZAISKBKBN
-               END-IF
       *        剤識別区分別テーブル編集
                EVALUATE    NACCT-ZAISKBKBN
                    WHEN    "1"
