@@ -1435,6 +1435,12 @@
                MOVE    IDX-Z               TO  IDX-ZS
            END-IF
       *
+      *    腰部固定帯加算は通則加算対象外とする
+           IF      WRK-COM-INPUTCD (IDX-Z) =   "140037490"
+               MOVE    "1"                 TO  WRK-COM-TUSOKUGAIKBN
+                                                              (IDX-Z)
+           END-IF
+      *
            MOVE    ZERO                TO  LNK-SC90-HAIKI
            MOVE    LNK-ORCSC-KAISU     TO  LNK-SC90-KAISU
            MOVE    "1"                 TO  LNK-SC90-KBN
