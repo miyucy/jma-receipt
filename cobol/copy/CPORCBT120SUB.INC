@@ -34,7 +34,7 @@
            03  LNK-ORCBT120SUB-HOSPID                  PIC  X(24).
       *吹荚ＩＤ
            03  LNK-ORCBT120SUB-PTID                    PIC  9(10).
-      *换年钳奉
+      *换年钳奉泣
            03  LNK-ORCBT120SUB-SANTEIYMD               PIC  X(08).
       *壳闻彩∈００¨链彩で盖年セット∷
            03  LNK-ORCBT120SUB-SRYKA                   PIC  X(02).
@@ -113,23 +113,23 @@
       *给锐１≥毁失惰尸
                      09  LNK-ORCBT120SUB-SYU-KOH1PAYKBN  PIC  X(02).
       *给锐２≥给锐戎规
-                     09  LNK-ORCBT120SUB-SYU-KOH1HKNNUM  PIC  X(03).
+                     09  LNK-ORCBT120SUB-SYU-KOH2HKNNUM  PIC  X(03).
       *给锐２≥给锐ＩＤ
-                     09  LNK-ORCBT120SUB-SYU-KOH1ID      PIC  9(10).
+                     09  LNK-ORCBT120SUB-SYU-KOH2ID      PIC  9(10).
       *给锐２≥毁失惰尸
-                     09  LNK-ORCBT120SUB-SYU-KOH1PAYKBN  PIC  X(02).
+                     09  LNK-ORCBT120SUB-SYU-KOH2PAYKBN  PIC  X(02).
       *给锐３≥给锐戎规
-                     09  LNK-ORCBT120SUB-SYU-KOH1HKNNUM  PIC  X(03).
+                     09  LNK-ORCBT120SUB-SYU-KOH3HKNNUM  PIC  X(03).
       *给锐３≥给锐ＩＤ
-                     09  LNK-ORCBT120SUB-SYU-KOH1ID      PIC  9(10).
+                     09  LNK-ORCBT120SUB-SYU-KOH3ID      PIC  9(10).
       *给锐３≥毁失惰尸
-                     09  LNK-ORCBT120SUB-SYU-KOH1PAYKBN  PIC  X(02).
+                     09  LNK-ORCBT120SUB-SYU-KOH3PAYKBN  PIC  X(02).
       *给锐４≥给锐戎规
-                     09  LNK-ORCBT120SUB-SYU-KOH1HKNNUM  PIC  X(03).
+                     09  LNK-ORCBT120SUB-SYU-KOH4HKNNUM  PIC  X(03).
       *给锐４≥给锐ＩＤ
-                     09  LNK-ORCBT120SUB-SYU-KOH1ID      PIC  9(10).
+                     09  LNK-ORCBT120SUB-SYU-KOH4ID      PIC  9(10).
       *给锐４≥毁失惰尸
-                     09  LNK-ORCBT120SUB-SYU-KOH1PAYKBN  PIC  X(02).
+                     09  LNK-ORCBT120SUB-SYU-KOH4PAYKBN  PIC  X(02).
       *给锐≥砷么攫鼠浩年盗
                    07  LNK-ORCBT120SUB-SYU-KOHFTN-TABLE  REDEFINES
                                         LNK-ORCBT120SUB-SYU-KOHAREA.
