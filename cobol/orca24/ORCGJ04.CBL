@@ -33,6 +33,7 @@
       * 02.00.02     NACL-多々納  02/07/29  パラメタファイルをＤＢへ
       * 02.00.03     NACL−多々納 02/09/19  インターフェースの変更
       * 02.00.04     NACL-多々納  02/11/20  自賠責器材追加
+      * 02.00.05     NACL-多々納  02/12/02  食事の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1846,6 +1847,10 @@
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *
+           IF      WRK-STR             =   ZERO
+               MOVE    1               TO  WRK-STR
+           END-IF
+      *
       *    変換・削除処理
            MOVE    WRK-STR             TO  SPA-GMN-IDX
            MOVE    ZERO                TO  WRK-IDX2
@@ -2117,6 +2122,9 @@
                MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
            ELSE
                MOVE    WRK-IN-IDX          TO  SPA-GMN-IDX
+           END-IF
+           IF      SPA-GMN-IDX         =   ZERO
+               GO      TO      410119-SAIINPUT-EXT
            END-IF
       *
       *    数量・回数入力なし
@@ -3360,6 +3368,19 @@
                                            WRK-SCR-REC
                                            SPA-AREA
       *************PERFORM 510212-SRYKBN-95-SEC
+      *            入院（食事）
+               WHEN    "97"
+                   IF      SPA-NYUGAIKBN       =   1
+                       CALL    "ORCSCN97"      USING
+                                               MCPAREA
+                                               ORCSC00AREA
+                                               WRK-SCR-REC
+                                               SPA-AREA
+                       ADD     1               TO  SPA-SRYKBN-CNT (10)
+                   ELSE
+                       MOVE    "9020"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (01)
+                   END-IF
            END-EVALUATE
       *
       *****MOVE    LNK-ORCSC-MAP-IDX   TO  SPA-MAP-IDX
@@ -4111,6 +4132,14 @@
            END-IF
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO    520-ALL-CHEK-EXT
+           END-IF
+      *        入院（食事）
+           IF      SPA-SRYKBN-CNT (10) >   ZERO
+               CALL    "ORCSCN97"      USING
+                                       MCPAREA
+                                       ORCSC00AREA
+                                       SPA-SCR-REC
+                                       SPA-AREA
            END-IF
       *
            .

@@ -1446,7 +1446,6 @@
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
       *
-      *
       *    診察日の再編集
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-RRK-MAX
@@ -4568,11 +4567,11 @@
       *    受診履歴編集
            PERFORM 3103-JYURRK-HEN-SEC
       *
-      *    診療会計マスターより編集をする
-           PERFORM 410181-SRYACCT-HEN-SEC
-      *
       *    保存用パラメタ作成
            PERFORM 4201-SRYACCT-PARA-SEC
+      *
+      *    診療会計マスターより編集をする
+           PERFORM 410181-SRYACCT-HEN-SEC
       *
            IF      SPA-RRK-MAX         =   ZERO
                IF      SPA-SRYKA-MAX       =   1
