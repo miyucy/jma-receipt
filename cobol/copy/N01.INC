@@ -22,28 +22,28 @@
                 04  N01-HGKYURATE-STATE PIC S9(9)   BINARY.
                 04  N01-HGKYURATE-COUNT PIC S9(9)   BINARY.
                 04  N01-HGKYURATE-ITEM
-                        PIC X(30)   OCCURS  3 TIMES.
+                        PIC X(30)   OCCURS  4 TIMES.
               03  N01-HNKYURATECOMBO.
                 04  N01-HNKYURATE.
                   05  N01-VALUE   PIC X(30).
                 04  N01-HNKYURATE-STATE PIC S9(9)   BINARY.
                 04  N01-HNKYURATE-COUNT PIC S9(9)   BINARY.
                 04  N01-HNKYURATE-ITEM
-                        PIC X(30)   OCCURS  3 TIMES.
+                        PIC X(30)   OCCURS  4 TIMES.
               03  N01-KGKYURATECOMBO.
                 04  N01-KGKYURATE.
                   05  N01-VALUE   PIC X(30).
                 04  N01-KGKYURATE-STATE   PIC S9(9)   BINARY.
                 04  N01-KGKYURATE-COUNT   PIC S9(9)   BINARY.
                 04  N01-KGKYURATE-ITEM
-                        PIC X(30)   OCCURS  3 TIMES.
+                        PIC X(30)   OCCURS  4 TIMES.
               03  N01-KNKYURATECOMBO.
                 04  N01-KNKYURATE.
                   05  N01-VALUE   PIC X(30).
                 04  N01-KNKYURATE-STATE   PIC S9(9)   BINARY.
                 04  N01-KNKYURATE-COUNT   PIC S9(9)   BINARY.
                 04  N01-KNKYURATE-ITEM
-                        PIC X(30)   OCCURS  3 TIMES.
+                        PIC X(30)   OCCURS  4 TIMES.
               03  N01-POST.
                 04  N01-VALUE   PIC X(7).
               03  N01-ADRS.

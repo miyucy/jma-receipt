@@ -100,7 +100,7 @@
                        09  SPA-GMN-HGKYURATE      PIC X(01).
                        09  FILLER                 PIC X(01).
                        09  SPA-GMN-HGKYURATEMEI   PIC X(20).
-                   07  SPA-GMN-HGKYURATELST   OCCURS  3.
+                   07  SPA-GMN-HGKYURATELST   OCCURS  4.
                        09  SPA-GMN-HGKYURATEL     PIC X(01).
                        09  FILLER                 PIC X(01).
                        09  SPA-GMN-HGKYURATEMEIL  PIC X(20).
@@ -110,7 +110,7 @@
                        09  SPA-GMN-HNKYURATE      PIC X(01).
                        09  FILLER                 PIC X(01).
                        09  SPA-GMN-HNKYURATEMEI   PIC X(20).
-                   07  SPA-GMN-HNKYURATELST   OCCURS  3.
+                   07  SPA-GMN-HNKYURATELST   OCCURS  4.
                        09  SPA-GMN-HNKYURATEL     PIC X(01).
                        09  FILLER                 PIC X(01).
                        09  SPA-GMN-HNKYURATEMEIL  PIC X(20).
@@ -120,7 +120,7 @@
                        09  SPA-GMN-KGKYURATE      PIC X(01).
                        09  FILLER                 PIC X(01).
                        09  SPA-GMN-KGKYURATEMEI   PIC X(20).
-                   07  SPA-GMN-KGKYURATELST   OCCURS  3.
+                   07  SPA-GMN-KGKYURATELST   OCCURS  4.
                        09  SPA-GMN-KGKYURATEL     PIC X(01).
                        09  FILLER                 PIC X(01).
                        09  SPA-GMN-KGKYURATEMEIL  PIC X(20).
@@ -130,7 +130,7 @@
                        09  SPA-GMN-KNKYURATE      PIC X(01).
                        09  FILLER                 PIC X(01).
                        09  SPA-GMN-KNKYURATEMEI   PIC X(20).
-                   07  SPA-GMN-KNKYURATELST   OCCURS  3.
+                   07  SPA-GMN-KNKYURATELST   OCCURS  4.
                        09  SPA-GMN-KNKYURATEL     PIC X(01).
                        09  FILLER                 PIC X(01).
                        09  SPA-GMN-KNKYURATEMEIL  PIC X(20).
@@ -434,20 +434,24 @@
            MOVE    "4:πÁ ª∏Âæ√Ã«"      TO  SPA-GMN-IDOKBNLST (4)
            MOVE    4                   TO  SPA-GMN-IDOMAX
       *----(02.01.01)--ADD-START---
-      *    µÎ…’≥‰πÁ£±°¢£≤
-           MOVE    "1:£∏≥‰"            TO  SPA-GMN-HGKYURATELST (1)
+      *    µÎ…’≥‰πÁ
+           MOVE    "0:£∑≥‰"            TO  SPA-GMN-HGKYURATELST (1)
                                            SPA-GMN-HNKYURATELST (1)
                                            SPA-GMN-KGKYURATELST (1)
                                            SPA-GMN-KNKYURATELST (1)
-           MOVE    "2:£π≥‰"            TO  SPA-GMN-HGKYURATELST (2)
+           MOVE    "1:£∏≥‰"            TO  SPA-GMN-HGKYURATELST (2)
                                            SPA-GMN-HNKYURATELST (2)
                                            SPA-GMN-KGKYURATELST (2)
                                            SPA-GMN-KNKYURATELST (2)
-           MOVE    "3:£±£∞≥‰"          TO  SPA-GMN-HGKYURATELST (3)
+           MOVE    "2:£π≥‰"            TO  SPA-GMN-HGKYURATELST (3)
                                            SPA-GMN-HNKYURATELST (3)
                                            SPA-GMN-KGKYURATELST (3)
                                            SPA-GMN-KNKYURATELST (3)
-           MOVE    3                   TO  SPA-GMN-HGKYURATEMAX
+           MOVE    "3:£±£∞≥‰"          TO  SPA-GMN-HGKYURATELST (4)
+                                           SPA-GMN-HNKYURATELST (4)
+                                           SPA-GMN-KGKYURATELST (4)
+                                           SPA-GMN-KNKYURATELST (4)
+           MOVE    4                   TO  SPA-GMN-HGKYURATEMAX
                                            SPA-GMN-HNKYURATEMAX
                                            SPA-GMN-KGKYURATEMAX
                                            SPA-GMN-KNKYURATEMAX
@@ -604,7 +608,9 @@
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG         TO  SPA-GMN-IDOYMD
       *----(02.01.01)--ADD-START---
-               IF      HKNJA-HKNNUM    =   "060"
+               IF        ( HKNJA-HKNNUM    =   "060" )
+                   AND   ( SPA-HKNJANUM-LEN    =   6 )
+                   AND   ( SPA-GMN-HKNJANUM(3:1)   =   "3" )
       *            À‹øÕ≥∞ÕËµÎ…’≥‰πÁ
                    EVALUATE    HKNJA-HON-GAIKYURATE
                    WHEN    080
@@ -613,6 +619,8 @@
                        MOVE    "2"         TO  SPA-GMN-HGKYURATE
                    WHEN    100
                        MOVE    "3"         TO  SPA-GMN-HGKYURATE
+                   WHEN    OTHER
+                       MOVE    "0"         TO  SPA-GMN-HGKYURATE
                    END-EVALUATE
       *            À‹øÕ∆˛±°µÎ…’≥‰πÁ
                    EVALUATE    HKNJA-HON-NYUKYURATE
@@ -622,6 +630,8 @@
                        MOVE    "2"         TO  SPA-GMN-HNKYURATE
                    WHEN    100
                        MOVE    "3"         TO  SPA-GMN-HNKYURATE
+                   WHEN    OTHER
+                       MOVE    "0"         TO  SPA-GMN-HNKYURATE
                    END-EVALUATE
       *            ≤»¬≤≥∞ÕËµÎ…’≥‰πÁ
                    EVALUATE    HKNJA-KZK-GAIKYURATE
@@ -631,6 +641,8 @@
                        MOVE    "2"         TO  SPA-GMN-KGKYURATE
                    WHEN    100
                        MOVE    "3"         TO  SPA-GMN-KGKYURATE
+                   WHEN    OTHER
+                       MOVE    "0"         TO  SPA-GMN-KGKYURATE
                    END-EVALUATE
       *            ≤»¬≤∆˛±°µÎ…’≥‰πÁ
                    EVALUATE    HKNJA-KZK-NYUKYURATE
@@ -640,6 +652,8 @@
                        MOVE    "2"         TO  SPA-GMN-KNKYURATE
                    WHEN    100
                        MOVE    "3"         TO  SPA-GMN-KNKYURATE
+                   WHEN    OTHER
+                       MOVE    "0"         TO  SPA-GMN-KNKYURATE
                    END-EVALUATE
                END-IF
       *----(02.01.019--ADD-END-----
@@ -651,6 +665,12 @@
                        MOVE    "001"           TO  SPA-GMN-HKNNUM
                    WHEN    6
                        MOVE    "060"           TO  SPA-GMN-HKNNUM
+                       IF      SPA-GMN-HKNJANUM(3:1)   =   "3"
+                           MOVE    "0:£∑≥‰"    TO  SPA-GMN-HGKYURATE
+                                                   SPA-GMN-HNKYURATE
+                                                   SPA-GMN-KGKYURATE
+                                                   SPA-GMN-KNKYURATE
+                       END-IF
                    WHEN    8
                        IF      SPA-GMN-HKNJANUM (1:2)
                                                =   "27"
@@ -1641,7 +1661,9 @@
            END-PERFORM
            MOVE    SPA-GMN-KNKYURATEMAX    TO  N01-KNKYURATE-COUNT
       *
-           IF      SPA-GMN-HKNNUM      =   "060"
+           IF        ( SPA-GMN-HKNNUM  =   "060" )
+               AND   ( SPA-HKNJANUM-LEN    =   6 )
+               AND   ( SPA-GMN-HKNJANUM(3:1)   =   "3" )
                MOVE    SPA-GMN-HGKYURATE-G TO  N01-HGKYURATE
                MOVE    SPA-GMN-HNKYURATE-G TO  N01-HNKYURATE
                MOVE    SPA-GMN-KGKYURATE-G TO  N01-KGKYURATE
@@ -1847,10 +1869,12 @@
                    MOVE    6               TO  SPA-GMN-CUR
                WHEN    "HKNNUM"
       *----(02.01.01)--UPD-START---
-                   IF      SPA-GMN-HKNNUM  =   "060"
-                        MOVE    14             TO  SPA-GMN-CUR
+                   IF        ( SPA-GMN-HKNNUM  =   "060" )
+                       AND   ( SPA-HKNJANUM-LEN    =   6 )
+                       AND   ( SPA-GMN-HKNJANUM(3:1)   =   "3" )
+                       MOVE    14             TO  SPA-GMN-CUR
                    ELSE
-                        MOVE    7              TO  SPA-GMN-CUR
+                       MOVE    7              TO  SPA-GMN-CUR
                    END-IF
                WHEN    "HGKYURATE"
                    MOVE    15              TO  SPA-GMN-CUR

@@ -28,7 +28,7 @@ N01	{
 			};
 			state   int;
 			count	int;
-			item	varchar(30)[3];
+			item	varchar(30)[4];
 		};
 		HNKYURATECOMBO	{
 			HNKYURATE	{
@@ -36,7 +36,7 @@ N01	{
 			};
 			state   int;
 			count	int;
-			item	varchar(30)[3];
+			item	varchar(30)[4];
 		};
 		KGKYURATECOMBO	{
 			KGKYURATE	{
@@ -44,7 +44,7 @@ N01	{
 			};
 			state   int;
 			count	int;
-			item	varchar(30)[3];
+			item	varchar(30)[4];
 		};
 		KNKYURATECOMBO	{
 			KNKYURATE	{
@@ -52,7 +52,7 @@ N01	{
 			};
 			state   int;
 			count	int;
-			item	varchar(30)[3];
+			item	varchar(30)[4];
 		};
 		POST	{
 			value	varchar(7);
