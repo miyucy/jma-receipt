@@ -1838,14 +1838,14 @@
       *
                  INITIALIZE                           TNS-TENSU-REC
                  IF        TBL-ZAIW-SRYCD1  =   "6"
-                     MOVE    ALL "9"            TO
-                                            TNS-CDKBN-KBN
-                                            TNS-CDKBN-SYO 
-                                            TNS-CDKBN-BU
-                                            TNS-CDKBN-KBNNUM
-                                            TNS-CDKBN-KBNNUM-EDA
+      ***************MOVE    ALL "9"            TO
+                     MOVE    "9"        TO  TNS-CDKBN-KBN
+                     MOVE    9          TO  TNS-CDKBN-SYO 
+                     MOVE    99         TO  TNS-CDKBN-BU
+                     MOVE    999        TO  TNS-CDKBN-KBNNUM
+                     MOVE    99         TO  TNS-CDKBN-KBNNUM-EDA
                                             TNS-CDKBN-KOUBAN
-                                            TNS-KOUHYOJYUNNUM
+                     MOVE    999999999  TO  TNS-KOUHYOJYUNNUM
                  ELSE  
                    MOVE    TBL-ZAIW-SRYCD1      TO      TNS-SRYCD
                    MOVE    TNS-TENSU-REC        TO      MCPDATA-REC

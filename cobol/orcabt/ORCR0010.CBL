@@ -254,7 +254,7 @@
                05  WRK-ROUSAIKBN       PIC X(01).
                05  WRK-ERR-DAY         PIC 9(02).
                05  WRK-ERR-HKNCOMBINUM PIC 9(04).
-               05  WRK-ERR-ERRKBN      PIC X(01).
+               05  WRK-ERR-ERRKBN      PIC 9(01).
                05  WRK-ERR-TEKSTYMD    PIC 9(08).
                05  WRK-ERR-TEKEDYMD    PIC 9(08).
       * 
@@ -650,10 +650,6 @@
                MOVE    ZERO                TO  SYS-2005-RJNGNBKKBN
            END-IF
       *
-      *
-      *??
-           DISPLAY "ORCR0010 FILE OPEN START"
-      *??
            OPEN    OUTPUT              RECE011-FILE
            CLOSE                       RECE011-FILE
       *
@@ -663,9 +659,6 @@
            CLOSE                       RECE011X-FILE
       *
            OPEN    I-O                 RECE01X-FILE  
-      *??
-           DISPLAY "ORCR0010 FILE OPEN END"
-      *??
            .
        100-INIT-EXT.
            EXIT.
@@ -730,7 +723,7 @@
                MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
                MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
                MOVE    "2"                 TO  RECE10-NYUGAIKBN
-               MOVE    "1"                 TO  RECE10-TEISYUTUSAKI
+               MOVE    1                   TO  RECE10-TEISYUTUSAKI
                MOVE    "2"                 TO  RECE10-NYUGAIKBN
                MOVE    RECE10-REC          TO  MCPDATA-REC
       *********MOVE    "SEIKYU-DEL3"       TO  ORC-DBPATH
@@ -756,7 +749,7 @@
                MOVE    SYS-1001-HOSPID     TO  RECE10-HOSPID
                MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
                MOVE    "2"                 TO  RECE10-NYUGAIKBN
-               MOVE    "2"                 TO  RECE10-TEISYUTUSAKI
+               MOVE    2                   TO  RECE10-TEISYUTUSAKI
                MOVE    "2"                 TO  RECE10-NYUGAIKBN
                MOVE    RECE10-REC          TO  MCPDATA-REC
       *********MOVE    "SEIKYU-DEL3"       TO  ORC-DBPATH
@@ -781,7 +774,7 @@
                INITIALIZE                  KOHSKY-REC
                MOVE    SYS-1001-HOSPID     TO  KOHSKY-HOSPID
                MOVE    WRK-PARA-SRYYM      TO  KOHSKY-SRYYM
-               MOVE    "1"                 TO  KOHSKY-TEISYUTUSAKI
+               MOVE    1                   TO  KOHSKY-TEISYUTUSAKI
                MOVE    "2"                 TO  KOHSKY-NYUGAIKBN
                MOVE    KOHSKY-REC          TO  MCPDATA-REC
                MOVE    "KOHSKY-DEL1"       TO  ORC-DBPATH
@@ -805,7 +798,7 @@
                INITIALIZE                  KOHSKY-REC
                MOVE    SYS-1001-HOSPID     TO  KOHSKY-HOSPID
                MOVE    WRK-PARA-SRYYM      TO  KOHSKY-SRYYM
-               MOVE    "2"                 TO  KOHSKY-TEISYUTUSAKI
+               MOVE    2                   TO  KOHSKY-TEISYUTUSAKI
                MOVE    "2"                 TO  KOHSKY-NYUGAIKBN
                MOVE    KOHSKY-REC          TO  MCPDATA-REC
                MOVE    "KOHSKY-DEL1"        TO  ORC-DBPATH
@@ -829,7 +822,7 @@
                INITIALIZE                  RECEDEN-REC
                MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
                MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
-               MOVE    "1"                 TO  RECEDEN-TEISYUTUSAKI
+               MOVE    1                   TO  RECEDEN-TEISYUTUSAKI
                MOVE    "2"                 TO  RECEDEN-NYUGAIKBN
                MOVE    RECEDEN-REC         TO  MCPDATA-REC
                MOVE    "RECEDEN-DEL1"      TO  ORC-DBPATH
@@ -853,7 +846,7 @@
                INITIALIZE                  RECEDEN-REC
                MOVE    SYS-1001-HOSPID     TO  RECEDEN-HOSPID
                MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
-               MOVE    "2"                 TO  RECEDEN-TEISYUTUSAKI
+               MOVE    2                   TO  RECEDEN-TEISYUTUSAKI
                MOVE    "2"                 TO  RECEDEN-NYUGAIKBN
                MOVE    RECEDEN-REC         TO  MCPDATA-REC
                MOVE    "RECEDEN-DEL1"      TO  ORC-DBPATH

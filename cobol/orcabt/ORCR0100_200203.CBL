@@ -1078,7 +1078,7 @@
       *
       *    ø«Œ≈«Ø∑Ó° ø«Œ≈«Ø∑Ó∆¸§»§∑§∆¬‡»Ú°À
            MOVE    RECE02-SRYYM        TO  WRK-SYMD
-           MOVE    "01"                TO  WRK-SDD
+           MOVE    1                   TO  WRK-SDD
            MOVE    WRK-SYMD            TO  WRK-SRYYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    LNK-DAY2-EDTYMD1-Y  TO  HC06-SRYY (1:2)

@@ -329,7 +329,7 @@
            03  WRK-HENSYU-AREA.
                05  WRK-DATA            PIC X(80).
                05  WRK-NUM             PIC ZZZZZZZZZ9.999. 
-               05  WRK-NAGASA          PIC 9(02).
+               05  WRK-NAGASA          PIC 9(03).
                05  WRK-ST              PIC 9(02). 
                05  WRK-SYOSUU          PIC 9(01).
                05  WRK-END             PIC 9(01).
@@ -1579,7 +1579,8 @@
                                                    TO  BYO-BYOMEICD
                            PERFORM 900-BYOMEI-READ-SEC
                            IF      BYO-HAISIYMD    NOT =   SPACE
-                               IF      BYO-HAISIYMD    <   RECE031-SRYYMD
+                               IF      BYO-HAISIYMD    <
+                                                       RECE031-SRYYMD
                                    IF      RECE031-SYUBYOFLG-X  =   "1" 
                                    AND     SYS-2005-SYUBYOHENFLG
                                                             NOT =   ZERO
@@ -1858,11 +1859,11 @@
                IF      WRK-3SYU-KBN       =   ALL "1"  
                    EVALUATE    WRK-KOHNUM (1) ALSO    WRK-KOHNUM (2)
                        WHEN    1              ALSO    ZERO
-                           MOVE    2              TO  WRK-FTNKBN
+                           MOVE    "2"            TO  WRK-FTNKBN
                        WHEN    ZERO           ALSO    1
-                           MOVE    3              TO  WRK-FTNKBN
+                           MOVE    "3"            TO  WRK-FTNKBN
                        WHEN    1              ALSO    1
-                           MOVE    4              TO  WRK-FTNKBN
+                           MOVE    "4"            TO  WRK-FTNKBN
                    END-EVALUATE
                ELSE    
       *                                                      

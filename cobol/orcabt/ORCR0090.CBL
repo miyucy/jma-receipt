@@ -456,13 +456,14 @@
       *    剤の先頭の診療コード
            03  TBL-ZAIW-SRYCD1             PIC X(09).
       *    剤の先頭の診療コードの各種番号等情報
-           03  TBL-ZAIW-CDKBN-KBN          PIC X(01).
-           03  TBL-ZAIW-CDKBN-SYO          PIC 9(01).
-           03  TBL-ZAIW-CDKBN-BU           PIC 9(02).
-           03  TBL-ZAIW-CDKBN-KBNNUM       PIC 9(03).
-           03  TBL-ZAIW-CDKBN-KBNNUM-EDA   PIC 9(02).
-           03  TBL-ZAIW-CDKBN-KOUBAN       PIC 9(02).
-           03  TBL-ZAIW-KOUHYOJYUNNUM      PIC 9(09).
+           03  TBL-ZAIW-CDKBN-AREA.
+               05  TBL-ZAIW-CDKBN-KBN          PIC X(01).
+               05  TBL-ZAIW-CDKBN-SYO          PIC 9(01).
+               05  TBL-ZAIW-CDKBN-BU           PIC 9(02).
+               05  TBL-ZAIW-CDKBN-KBNNUM       PIC 9(03).
+               05  TBL-ZAIW-CDKBN-KBNNUM-EDA   PIC 9(02).
+               05  TBL-ZAIW-CDKBN-KOUBAN       PIC 9(02).
+               05  TBL-ZAIW-KOUHYOJYUNNUM      PIC 9(09).
       *    剤の先頭の診療コードの検査等実施判断情報
            03  TBL-ZAIW-KNSJISKBN          PIC 9(01).
       *     
@@ -2172,7 +2173,7 @@
                                                =
                                                WRK-SUM-KAISU (IDXX) -
                                                WRK-KAISU   (1)                                       
-                               MOVE    "1"         TO  WRK-RECE04-FLG 
+                               MOVE    1           TO  WRK-RECE04-FLG 
                                                        (IDY)
                            END-IF
                        END-IF
@@ -2737,13 +2738,14 @@
       ****                                  TNS-CDKBN-KBNNUM-EDA
       ****                                  TNS-CDKBN-KOUBAN 
       ****                                  TNS-KOUHYOJYUNNUM
-                                            TBL-ZAIW-CDKBN-KBN
-                                            TBL-ZAIW-CDKBN-SYO
-                                            TBL-ZAIW-CDKBN-BU
-                                            TBL-ZAIW-CDKBN-KBNNUM
-                                            TBL-ZAIW-CDKBN-KBNNUM-EDA
-                                            TBL-ZAIW-CDKBN-KOUBAN
-                                            TBL-ZAIW-KOUHYOJYUNNUM
+      *****                                 TBL-ZAIW-CDKBN-KBN
+      *****                                 TBL-ZAIW-CDKBN-SYO
+      *****                                 TBL-ZAIW-CDKBN-BU
+      *****                                 TBL-ZAIW-CDKBN-KBNNUM
+      *****                                 TBL-ZAIW-CDKBN-KBNNUM-EDA
+      *****                                 TBL-ZAIW-CDKBN-KOUBAN
+      *****                                 TBL-ZAIW-KOUHYOJYUNNUM
+                                            TBL-ZAIW-CDKBN-AREA
       ****       ELSE  
       ****           MOVE    TBL-ZAIW-SRYCD1   TO  TNS-SRYCD
       ****           MOVE    TNS-TENSU-REC     TO  MCPDATA-REC
