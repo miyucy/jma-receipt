@@ -114,7 +114,7 @@
       *
       *    投薬日
        01  TBL-TOUYAKU-AREA.
-           03  TBL-TOUYAKU-OCC1        OCCURS   2.
+           03  TBL-TOUYAKU-OCC1        OCCURS   3.
                05  TBL-TOUYAKU-OCC         OCCURS   31.
                    07  TBL-TOU-DAY         PIC 9(01).
                    07  TBL-TOU-AREA        OCCURS   10.
@@ -376,7 +376,7 @@
                                MOVE    IDX             TO  IDX1
                            END-IF
       *                    当月で退院以降はなしとする
-                           IF     (IDX1            =   2  )  AND
+                           IF     (IDX1                =  2  )  AND
                                   (TBL-NYU-DAY (IDX3)  =   ZERO)
                                MOVE    WRK-KAISU       TO  IDX2
                            ELSE
