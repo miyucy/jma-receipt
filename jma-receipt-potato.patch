@@ -4,7 +4,7 @@ RCS file: /var/lib/cvs/jma-receipt/etc/dbgroup.inc,v
 retrieving revision 1.2
 diff -u -r1.2 dbgroup.inc
 --- etc/dbgroup.inc	22 Nov 2002 10:32:22 -0000	1.2
-+++ etc/dbgroup.inc	26 Nov 2002 07:33:23 -0000
++++ etc/dbgroup.inc	27 Nov 2002 04:55:04 -0000
 @@ -10,8 +10,8 @@
   priority 100;
   type "PostgreSQL";
@@ -16,14 +16,29 @@ diff -u -r1.2 dbgroup.inc
  };
  db_group "shell" {
   type "shell";
+Index: etc/jma-receipt.env.in
+===================================================================
+RCS file: /var/lib/cvs/jma-receipt/etc/jma-receipt.env.in,v
+retrieving revision 1.10
+diff -u -r1.10 jma-receipt.env.in
+--- etc/jma-receipt.env.in	27 Nov 2002 04:50:52 -0000	1.10
++++ etc/jma-receipt.env.in	27 Nov 2002 04:55:04 -0000
+@@ -29,6 +29,6 @@
+ SITESCREENDIR=${SITEDIR}/screen
+ SITESCRIPTSDIR=${SITEDIR}/scripts
+ 
+-DBSTUB=/usr/lib/panda/sbin/dbstub
++DBSTUB=/usr/local/panda/bin/dbstub
+ 
+ DBNAME=orca
 Index: screen/H99.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/H99.glade,v
-retrieving revision 1.4
-diff -u -r1.4 H99.glade
---- screen/H99.glade	26 Nov 2002 06:41:08 -0000	1.4
-+++ screen/H99.glade	26 Nov 2002 07:33:23 -0000
-@@ -447,7 +447,7 @@
+retrieving revision 1.6
+diff -u -r1.6 H99.glade
+--- screen/H99.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/H99.glade	27 Nov 2002 04:55:04 -0000
+@@ -412,7 +412,7 @@
        <y>100</y>
        <width>60</width>
        <height>18</height>
@@ -35,10 +50,10 @@ diff -u -r1.4 H99.glade
 Index: screen/J04.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/J04.glade,v
-retrieving revision 1.4
-diff -u -r1.4 J04.glade
---- screen/J04.glade	26 Nov 2002 06:41:08 -0000	1.4
-+++ screen/J04.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 J04.glade
+--- screen/J04.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/J04.glade	27 Nov 2002 04:55:04 -0000
 @@ -2050,7 +2050,7 @@
        <y>80</y>
        <width>405</width>
@@ -51,10 +66,10 @@ diff -u -r1.4 J04.glade
 Index: screen/K02.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/K02.glade,v
-retrieving revision 1.4
-diff -u -r1.4 K02.glade
---- screen/K02.glade	26 Nov 2002 06:41:08 -0000	1.4
-+++ screen/K02.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 K02.glade
+--- screen/K02.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/K02.glade	27 Nov 2002 04:55:04 -0000
 @@ -2551,7 +2551,7 @@
        <y>88</y>
        <width>340</width>
@@ -67,10 +82,10 @@ diff -u -r1.4 K02.glade
 Index: screen/K021.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/K021.glade,v
-retrieving revision 1.4
-diff -u -r1.4 K021.glade
---- screen/K021.glade	26 Nov 2002 06:41:08 -0000	1.4
-+++ screen/K021.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 K021.glade
+--- screen/K021.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/K021.glade	27 Nov 2002 04:55:04 -0000
 @@ -219,7 +219,7 @@
        <y>344</y>
        <width>56</width>
@@ -83,10 +98,10 @@ diff -u -r1.4 K021.glade
 Index: screen/K023.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/K023.glade,v
-retrieving revision 1.4
-diff -u -r1.4 K023.glade
---- screen/K023.glade	26 Nov 2002 06:41:08 -0000	1.4
-+++ screen/K023.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 K023.glade
+--- screen/K023.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/K023.glade	27 Nov 2002 04:55:04 -0000
 @@ -1944,7 +1944,7 @@
        <y>36</y>
        <width>268</width>
@@ -99,10 +114,10 @@ diff -u -r1.4 K023.glade
 Index: screen/K05.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/K05.glade,v
-retrieving revision 1.4
-diff -u -r1.4 K05.glade
---- screen/K05.glade	26 Nov 2002 06:41:08 -0000	1.4
-+++ screen/K05.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 K05.glade
+--- screen/K05.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/K05.glade	27 Nov 2002 04:55:04 -0000
 @@ -2449,7 +2449,7 @@
        <y>80</y>
        <width>405</width>
@@ -115,10 +130,10 @@ diff -u -r1.4 K05.glade
 Index: screen/N01.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/N01.glade,v
-retrieving revision 1.4
-diff -u -r1.4 N01.glade
---- screen/N01.glade	26 Nov 2002 06:41:08 -0000	1.4
-+++ screen/N01.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 N01.glade
+--- screen/N01.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/N01.glade	27 Nov 2002 04:55:04 -0000
 @@ -609,7 +609,7 @@
        <y>40</y>
        <width>80</width>
@@ -194,11 +209,11 @@ diff -u -r1.4 N01.glade
 Index: screen/P02.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/P02.glade,v
-retrieving revision 1.10
-diff -u -r1.10 P02.glade
---- screen/P02.glade	26 Nov 2002 06:41:08 -0000	1.10
-+++ screen/P02.glade	26 Nov 2002 07:33:23 -0000
-@@ -5569,7 +5569,7 @@
+retrieving revision 1.12
+diff -u -r1.12 P02.glade
+--- screen/P02.glade	26 Nov 2002 08:06:00 -0000	1.12
++++ screen/P02.glade	27 Nov 2002 04:55:04 -0000
+@@ -5369,7 +5369,7 @@
  	  <y>516</y>
  	  <width>44</width>
  	  <height>24</height>
@@ -207,7 +222,7 @@ diff -u -r1.10 P02.glade
  	  <justify>GTK_JUSTIFY_LEFT</justify>
  	  <wrap>False</wrap>
  	  <xalign>0.5</xalign>
-@@ -6602,7 +6602,7 @@
+@@ -6402,7 +6402,7 @@
  	  <name>label1768</name>
  	  <x>24</x>
  	  <y>24</y>
@@ -219,10 +234,10 @@ diff -u -r1.10 P02.glade
 Index: screen/P02D.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/P02D.glade,v
-retrieving revision 1.5
-diff -u -r1.5 P02D.glade
---- screen/P02D.glade	26 Nov 2002 06:41:08 -0000	1.5
-+++ screen/P02D.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.7
+diff -u -r1.7 P02D.glade
+--- screen/P02D.glade	26 Nov 2002 08:06:00 -0000	1.7
++++ screen/P02D.glade	27 Nov 2002 04:55:04 -0000
 @@ -452,7 +452,7 @@
        <y>116</y>
        <width>120</width>
@@ -343,10 +358,10 @@ diff -u -r1.5 P02D.glade
 Index: screen/P02E.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/P02E.glade,v
-retrieving revision 1.4
-diff -u -r1.4 P02E.glade
---- screen/P02E.glade	26 Nov 2002 06:41:08 -0000	1.4
-+++ screen/P02E.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 P02E.glade
+--- screen/P02E.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/P02E.glade	27 Nov 2002 04:55:04 -0000
 @@ -364,7 +364,7 @@
        <y>120</y>
        <width>52</width>
@@ -368,10 +383,10 @@ diff -u -r1.4 P02E.glade
 Index: screen/R98.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/R98.glade,v
-retrieving revision 1.4
-diff -u -r1.4 R98.glade
---- screen/R98.glade	26 Nov 2002 06:41:10 -0000	1.4
-+++ screen/R98.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 R98.glade
+--- screen/R98.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/R98.glade	27 Nov 2002 04:55:04 -0000
 @@ -2454,7 +2454,7 @@
        <y>50</y>
        <width>100</width>
@@ -384,10 +399,10 @@ diff -u -r1.4 R98.glade
 Index: screen/V02.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/V02.glade,v
-retrieving revision 1.4
-diff -u -r1.4 V02.glade
---- screen/V02.glade	26 Nov 2002 06:41:11 -0000	1.4
-+++ screen/V02.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 V02.glade
+--- screen/V02.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/V02.glade	27 Nov 2002 04:55:04 -0000
 @@ -3723,7 +3723,7 @@
        <height>16</height>
        <label>〜</label>
@@ -553,10 +568,10 @@ diff -u -r1.4 V02.glade
 Index: screen/W03.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/W03.glade,v
-retrieving revision 1.4
-diff -u -r1.4 W03.glade
---- screen/W03.glade	26 Nov 2002 06:41:11 -0000	1.4
-+++ screen/W03.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 W03.glade
+--- screen/W03.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/W03.glade	27 Nov 2002 04:55:04 -0000
 @@ -1734,7 +1734,7 @@
        <y>10</y>
        <width>100</width>
@@ -569,10 +584,10 @@ diff -u -r1.4 W03.glade
 Index: screen/W04.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/W04.glade,v
-retrieving revision 1.4
-diff -u -r1.4 W04.glade
---- screen/W04.glade	26 Nov 2002 06:41:11 -0000	1.4
-+++ screen/W04.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 W04.glade
+--- screen/W04.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/W04.glade	27 Nov 2002 04:55:04 -0000
 @@ -402,7 +402,7 @@
        <y>10</y>
        <width>100</width>
@@ -666,10 +681,10 @@ diff -u -r1.4 W04.glade
 Index: screen/W06.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/W06.glade,v
-retrieving revision 1.4
-diff -u -r1.4 W06.glade
---- screen/W06.glade	26 Nov 2002 06:41:11 -0000	1.4
-+++ screen/W06.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 W06.glade
+--- screen/W06.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/W06.glade	27 Nov 2002 04:55:04 -0000
 @@ -782,7 +782,7 @@
        <height>24</height>
        <label>（社保）</label>
@@ -709,10 +724,10 @@ diff -u -r1.4 W06.glade
 Index: screen/W07.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/W07.glade,v
-retrieving revision 1.5
-diff -u -r1.5 W07.glade
---- screen/W07.glade	26 Nov 2002 06:41:11 -0000	1.5
-+++ screen/W07.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.7
+diff -u -r1.7 W07.glade
+--- screen/W07.glade	26 Nov 2002 08:06:00 -0000	1.7
++++ screen/W07.glade	27 Nov 2002 04:55:04 -0000
 @@ -356,9 +356,9 @@
  	  <y>128</y>
  	  <width>300</width>
@@ -764,10 +779,10 @@ diff -u -r1.5 W07.glade
 Index: screen/W10.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/W10.glade,v
-retrieving revision 1.4
-diff -u -r1.4 W10.glade
---- screen/W10.glade	26 Nov 2002 06:41:11 -0000	1.4
-+++ screen/W10.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 W10.glade
+--- screen/W10.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/W10.glade	27 Nov 2002 04:55:04 -0000
 @@ -302,7 +302,7 @@
        <height>16</height>
        <label>〜</label>
@@ -789,10 +804,10 @@ diff -u -r1.4 W10.glade
 Index: screen/W11.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/W11.glade,v
-retrieving revision 1.4
-diff -u -r1.4 W11.glade
---- screen/W11.glade	26 Nov 2002 06:41:11 -0000	1.4
-+++ screen/W11.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 W11.glade
+--- screen/W11.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/W11.glade	27 Nov 2002 04:55:04 -0000
 @@ -1487,7 +1487,7 @@
        <y>10</y>
        <width>100</width>
@@ -805,10 +820,10 @@ diff -u -r1.4 W11.glade
 Index: screen/W12.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/W12.glade,v
-retrieving revision 1.4
-diff -u -r1.4 W12.glade
---- screen/W12.glade	26 Nov 2002 06:41:11 -0000	1.4
-+++ screen/W12.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 W12.glade
+--- screen/W12.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/W12.glade	27 Nov 2002 04:55:04 -0000
 @@ -416,7 +416,7 @@
        <y>100</y>
        <width>150</width>
@@ -830,11 +845,11 @@ diff -u -r1.4 W12.glade
 Index: screen/X01.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/X01.glade,v
-retrieving revision 1.4
-diff -u -r1.4 X01.glade
---- screen/X01.glade	26 Nov 2002 06:41:11 -0000	1.4
-+++ screen/X01.glade	26 Nov 2002 07:33:23 -0000
-@@ -481,7 +481,7 @@
+retrieving revision 1.6
+diff -u -r1.6 X01.glade
+--- screen/X01.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/X01.glade	27 Nov 2002 04:55:04 -0000
+@@ -466,7 +466,7 @@
        <y>90</y>
        <width>100</width>
        <height>18</height>
@@ -843,7 +858,7 @@ diff -u -r1.4 X01.glade
        <justify>GTK_JUSTIFY_LEFT</justify>
        <wrap>False</wrap>
        <xalign>0.5</xalign>
-@@ -497,7 +497,7 @@
+@@ -482,7 +482,7 @@
        <y>130</y>
        <width>100</width>
        <height>18</height>
@@ -855,10 +870,10 @@ diff -u -r1.4 X01.glade
 Index: screen/X02.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/X02.glade,v
-retrieving revision 1.4
-diff -u -r1.4 X02.glade
---- screen/X02.glade	26 Nov 2002 06:41:11 -0000	1.4
-+++ screen/X02.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 X02.glade
+--- screen/X02.glade	26 Nov 2002 08:06:00 -0000	1.6
++++ screen/X02.glade	27 Nov 2002 04:55:04 -0000
 @@ -1472,7 +1472,7 @@
        <y>56</y>
        <width>100</width>
@@ -889,10 +904,10 @@ diff -u -r1.4 X02.glade
 Index: screen/Z02.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/Z02.glade,v
-retrieving revision 1.4
-diff -u -r1.4 Z02.glade
---- screen/Z02.glade	26 Nov 2002 06:41:11 -0000	1.4
-+++ screen/Z02.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 Z02.glade
+--- screen/Z02.glade	26 Nov 2002 08:06:01 -0000	1.6
++++ screen/Z02.glade	27 Nov 2002 04:55:04 -0000
 @@ -994,7 +994,7 @@
        <height>18</height>
        <label>レセプト編集情報</label>
@@ -950,10 +965,10 @@ diff -u -r1.4 Z02.glade
 Index: screen/Z03.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/Z03.glade,v
-retrieving revision 1.4
-diff -u -r1.4 Z03.glade
---- screen/Z03.glade	26 Nov 2002 06:41:11 -0000	1.4
-+++ screen/Z03.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 Z03.glade
+--- screen/Z03.glade	26 Nov 2002 08:06:01 -0000	1.6
++++ screen/Z03.glade	27 Nov 2002 04:55:04 -0000
 @@ -572,7 +572,7 @@
  	  <y>536</y>
  	  <width>64</width>
@@ -975,10 +990,10 @@ diff -u -r1.4 Z03.glade
 Index: screen/Z05.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/Z05.glade,v
-retrieving revision 1.4
-diff -u -r1.4 Z05.glade
---- screen/Z05.glade	26 Nov 2002 06:41:11 -0000	1.4
-+++ screen/Z05.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 Z05.glade
+--- screen/Z05.glade	26 Nov 2002 08:06:01 -0000	1.6
++++ screen/Z05.glade	27 Nov 2002 04:55:04 -0000
 @@ -1240,7 +1240,7 @@
        <y>364</y>
        <width>96</width>
@@ -991,10 +1006,10 @@ diff -u -r1.4 Z05.glade
 Index: screen/Z06.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/Z06.glade,v
-retrieving revision 1.4
-diff -u -r1.4 Z06.glade
---- screen/Z06.glade	26 Nov 2002 06:41:11 -0000	1.4
-+++ screen/Z06.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 Z06.glade
+--- screen/Z06.glade	26 Nov 2002 08:06:01 -0000	1.6
++++ screen/Z06.glade	27 Nov 2002 04:55:04 -0000
 @@ -606,7 +606,7 @@
        <y>200</y>
        <width>80</width>
@@ -1007,10 +1022,10 @@ diff -u -r1.4 Z06.glade
 Index: screen/Z90.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/Z90.glade,v
-retrieving revision 1.4
-diff -u -r1.4 Z90.glade
---- screen/Z90.glade	26 Nov 2002 06:41:11 -0000	1.4
-+++ screen/Z90.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 Z90.glade
+--- screen/Z90.glade	26 Nov 2002 08:06:01 -0000	1.6
++++ screen/Z90.glade	27 Nov 2002 04:55:04 -0000
 @@ -464,7 +464,7 @@
        <y>72</y>
        <width>344</width>
@@ -1023,10 +1038,10 @@ diff -u -r1.4 Z90.glade
 Index: screen/Z91.glade
 ===================================================================
 RCS file: /var/lib/cvs/jma-receipt/screen/Z91.glade,v
-retrieving revision 1.4
-diff -u -r1.4 Z91.glade
---- screen/Z91.glade	26 Nov 2002 06:41:11 -0000	1.4
-+++ screen/Z91.glade	26 Nov 2002 07:33:23 -0000
+retrieving revision 1.6
+diff -u -r1.6 Z91.glade
+--- screen/Z91.glade	26 Nov 2002 08:06:01 -0000	1.6
++++ screen/Z91.glade	27 Nov 2002 04:55:04 -0000
 @@ -308,7 +308,7 @@
        <y>96</y>
        <width>64</width>
