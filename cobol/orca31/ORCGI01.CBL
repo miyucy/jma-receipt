@@ -92,6 +92,8 @@
       *                                     変わらない不具合を修正
       *  01.00.45    NACL-小豆沢  04.03.10  老人性痴呆疾患治療病棟入院料２の
       *                                     算定対応追加
+      *  01.00.46    NACL-太田    04.03.11  転科・転棟・転室時の項目変更
+      *                                     チェックを削除
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1951,7 +1953,8 @@
                                    TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
       *
-           IF      ( PTNYUINRRK-JTIKBN     = "2" OR "3" OR "4" OR "7" )
+           IF      ( PTNYUINRRK-JTIKBN     = "0" OR "2" OR "3" 
+                                          OR "4" OR "7" )
             AND    ( PTNYUINRRK-TAIINYMD   = "99999999" )
                MOVE    WRK-HENYMDG TO  SPA-GMN-I01-MAEIDOYMD
            END-IF
@@ -6388,18 +6391,19 @@
                END-IF
            END-IF
       *
+      *    *** 2004.03.11 削除 ***
       *    入院科または、病室番号または、病棟名または、特定入院料のいずれ
       *    かが変更されていること 
-           IF    ( SPA-GMN-I01-NYUINKA-CD  =   SPA-NAI-I01-NYUINKA-MOT )
-            AND  ( SPA-GMN-I01-BTUNAME     =   SPA-NAI-I01-BTUNAME-MOT )
-            AND  ( SPA-GMN-I01-BRMNUM      =   SPA-NAI-I01-BRMNUM-MOT  )
-            AND  ( SPA-GMN-I01-HKNCOMBI-CD =   SPA-NAI-I01-HKNCOMBI-MOT)
-            AND  ( SPA-NAI-I01-TOKNYUIN-ORG
-                                           =   SPA-NAI-I01-TOKNYUINMOT )
-                   MOVE    "1017"      TO  SPA-ERRCD
-                   MOVE    4           TO  SPA-GMN-I01-CUR
-                   GO  TO  4801-TEKNA-CHK-EXT
-           END-IF
+      *-   IF    ( SPA-GMN-I01-NYUINKA-CD  =   SPA-NAI-I01-NYUINKA-MOT )
+      *-    AND  ( SPA-GMN-I01-BTUNAME     =   SPA-NAI-I01-BTUNAME-MOT )
+      *-    AND  ( SPA-GMN-I01-BRMNUM      =   SPA-NAI-I01-BRMNUM-MOT  )
+      *-    AND  ( SPA-GMN-I01-HKNCOMBI-CD =   SPA-NAI-I01-HKNCOMBI-MOT)
+      *-    AND  ( SPA-NAI-I01-TOKNYUIN-ORG
+      *-                                   =   SPA-NAI-I01-TOKNYUINMOT )
+      *-           MOVE    "1017"      TO  SPA-ERRCD
+      *-           MOVE    4           TO  SPA-GMN-I01-CUR
+      *-           GO  TO  4801-TEKNA-CHK-EXT
+      *-   END-IF
       *
       *    該当月の会計テーブルが作成済であること
            MOVE    SPA-NAI-I01-IDOYMD (1 : 6)
@@ -6598,6 +6602,7 @@
       *    転科　転棟　転室
            WHEN    "08"
       *
+               MOVE    "0"       TO  PTNYUINRRK-JTIKBN
                EVALUATE    TRUE
       *        科が変わった場合
                WHEN    WRK-NYUINKA-KEY NOT =   PTNYUINRRK-NYUINKA

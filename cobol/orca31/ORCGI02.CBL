@@ -868,14 +868,19 @@
                MOVE    4                   TO  WRK-BIKO-ITEM-KBN (IDX3)
            END-IF
       *
-           MOVE    IDX3                    TO  WRK-BIKO-ITEM-CNT
-           MOVE    1                       TO  WRK-BIKO-IDX
-      *    Ä¹¤¤Ì¾¾Î¤ÇÊÔ½¸
-           PERFORM 3101-BIKO-EDIT-SEC
-           IF    ( WRK-BIKO-PNT    >   34 )
-      *        Ã»¤¤Ì¾¾Î¤ÇÊÔ½¸
-               MOVE    2                   TO  WRK-BIKO-IDX
+           IF    ( IDX3    >   ZERO )
+      *
+               MOVE    IDX3                    TO  WRK-BIKO-ITEM-CNT
+               MOVE    1                       TO  WRK-BIKO-IDX
+      *        Ä¹¤¤Ì¾¾Î¤ÇÊÔ½¸
                PERFORM 3101-BIKO-EDIT-SEC
+               IF    ( WRK-BIKO-PNT    >   34 )
+      *            Ã»¤¤Ì¾¾Î¤ÇÊÔ½¸
+                   MOVE    2                   TO  WRK-BIKO-IDX
+                   PERFORM 3101-BIKO-EDIT-SEC
+               END-IF
+           ELSE
+               MOVE    WRK-BIKO-YMD            TO  WRK-BIKO-NAIYO
            END-IF
       *
            .

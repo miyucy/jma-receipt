@@ -67,8 +67,8 @@
            03  PTNYUINRRK-DRCD2                   PIC  X(05).
       *繫癲啣ㄢ
            03  PTNYUINRRK-DRCD3                   PIC  X(05).
-      *橇謫嗉坌﹋ㄠ:ェ情/ㄡ:鱉粗/ㄢ:鱉麟/ㄣ:鱉撮/ㄤ:職情ェ情▼
-      *          ㄥ:憤情昳/ㄦ:ェ情恔庍凳﹌
+      *橇謫嗉坌﹋ㄟ“唱が質咥凜庍凳卅仄▼ㄠ:ェ情/ㄡ:鱉粗/ㄢ:鱉麟/
+      *          ㄣ:鱉撮/ㄤ:職情ェ情▼ㄥ:憤情昳/ㄦ:ェ情恔庍凳﹌
            03  PTNYUINRRK-JTIKBN                  PIC  X(01).
       *遙爛匟麟
            03  PTNYUINRRK-SANTEI-BTUNUM           PIC  X(02).
