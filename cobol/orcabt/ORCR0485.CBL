@@ -37,6 +37,7 @@
       *  01.00.04    NACL-門脇    03.03.03  剤番号桁修正対応
       *  01.00.05    NACL-藤原    03.03.05  レセプトコメントＤＢに入外区分を追加
       *  01.00.06    NACL-藤原    03/04/17  出力件数をジョブ管理ＤＢへ更新
+      *  01.00.07    NACL-門脇    04/01/26  カナ氏名の長さ等修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -147,12 +148,14 @@
       *****COPY    "HC23.INC".
       *****COPY    "HCM23.INC"     REPLACING  //HCM23//
       *****                        BY         //HC23//.
-           COPY    "HCM23V01.INC"  REPLACING  //HCM23V01//
+      *****COPY    "HCM23V01.INC"  REPLACING  //HCM23V01//
+           COPY    "HCM23V02.INC"  REPLACING  //HCM23V02//
                                    BY         //HC23//.
       *
       *    自賠責（続紙）     
       *****COPY    "HC29.INC".
-           COPY    "HCM29.INC"     REPLACING  //HCM29//
+      *****COPY    "HCM29.INC"     REPLACING  //HCM29//
+           COPY    "HCM29V01.INC"  REPLACING  //HCM29V01//
                                    BY         //HC29//.
       *
       *    スパ領域
@@ -1790,15 +1793,17 @@
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
-               IF      CNT-PAGE            =   1                                 
+               IF      CNT-PAGE            =   1
                    MOVE    HC23                TO  RECE08-PRTDATA
       *************MOVE    "HC23"              TO  RECE08-FORMID
       *************MOVE    "HCM23.red"         TO  RECE08-FORMID
-                   MOVE    "HCM23V01.red"      TO  RECE08-FORMID
+      *************MOVE    "HCM23V01.red"      TO  RECE08-FORMID
+                   MOVE    "HCM23V02.red"      TO  RECE08-FORMID
                ELSE
                    MOVE    HC29                TO  RECE08-PRTDATA
       *************MOVE    "HC29"              TO  RECE08-FORMID
-                   MOVE    "HCM29.red"         TO  RECE08-FORMID
+      *************MOVE    "HCM29.red"         TO  RECE08-FORMID
+                   MOVE    "HCM29V01.red"      TO  RECE08-FORMID
                END-IF        
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC

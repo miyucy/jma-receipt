@@ -40,6 +40,7 @@
       *  01.00.07    NACL-藤原    03/04/17  出力件数をジョブ管理ＤＢへ更新
       *  01.00.08    NACL-門脇    03.06.03  外来診療料対応
       *                                     （平成１５年６月以降）
+      *  01.00.09    NACL-門脇    04/01/26  カナ氏名の長さ等修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -150,14 +151,16 @@
       *****COPY    "HC18.INC".
       *****COPY    "HCM18.INC"     REPLACING  //HCM18//
       *****                        BY         //HC18//.
-           COPY    "HCM18V01.INC"  REPLACING  //HCM18V01//
+      *****COPY    "HCM18V01.INC"  REPLACING  //HCM18V01//
+           COPY    "HCM18V02.INC"  REPLACING  //HCM18V02//
                                    BY         //HC18//.
       *
       *    アフターケア（続紙）     	
       *****COPY    "HC20.INC".
       *****COPY    "HCM20.INC"     REPLACING  //HCM20//
       *****                        BY         //HC20//.
-           COPY    "HCM20V01.INC"  REPLACING  //HCM20V01//
+      *****COPY    "HCM20V01.INC"  REPLACING  //HCM20V01//
+           COPY    "HCM20V02.INC"  REPLACING  //HCM20V02//
                                    BY         //HC20//.
       *
       *    スパ領域
@@ -1419,16 +1422,18 @@
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
-               IF      CNT-PAGE            =   1                                 
+               IF      CNT-PAGE            =   1
                    MOVE    HC18                TO  RECE08-PRTDATA
       *************MOVE    "HC18"              TO  RECE08-FORMID
       *************MOVE    "HCM18.red"         TO  RECE08-FORMID
-                   MOVE    "HCM18V01.red"      TO  RECE08-FORMID
+      *************MOVE    "HCM18V01.red"      TO  RECE08-FORMID
+                   MOVE    "HCM18V02.red"      TO  RECE08-FORMID
                ELSE
                    MOVE    HC20                TO  RECE08-PRTDATA
       *************MOVE    "HC20"              TO  RECE08-FORMID
       *************MOVE    "HCM20.red"         TO  RECE08-FORMID
-                   MOVE    "HCM20V01.red"      TO  RECE08-FORMID
+      *************MOVE    "HCM20V01.red"      TO  RECE08-FORMID
+                   MOVE    "HCM20V02.red"      TO  RECE08-FORMID
                END-IF        
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC

@@ -166,6 +166,20 @@ FORM_files = \
               HCM03.red \
               HCM17.red \
               HCM41.red \
+              HCM09V01.red \
+              HCM18V02.red \
+              HCM20V02.red \
+              HCM21V02.red \
+              HCM22V02.red \
+              HCM23V02.red \
+              HCM24V02.red \
+              HCM29V01.red \
+              HCN06V01.red \
+              HCN21V01.red \
+              HCN22V01.red \
+              HCN23V01.red \
+              HCRCP060V01.red \
+              HCRCP400V01.red \
 
 all:   
 

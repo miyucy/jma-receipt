@@ -547,7 +547,7 @@
       *
       *    診療年月レセプト管理削除処理（一括分）
            INITIALIZE                  RECE07-REC
-           MOVE    "HC21"              TO  RECE07-PRTID
+           MOVE    "HC23"              TO  RECE07-PRTID
            MOVE    WRK-PARA-SRYYM      TO  RECE07-SRYYM
            MOVE    "1"                 TO  RECE07-SYOKBN
            MOVE    "1"                 TO  RECE07-NYUGAIKBN
@@ -1196,7 +1196,7 @@
       *
       *    レセプト管理削除処理（個別分）
            INITIALIZE                  RECE07-REC
-           MOVE    "HC21"              TO  RECE07-PRTID
+           MOVE    "HC23"              TO  RECE07-PRTID
            MOVE    "1"                 TO  RECE07-NYUGAIKBN
            MOVE    RECE07-REC          TO  MCPDATA-REC
            MOVE    "RECEKANRI-DEL2"    TO  ORC-DBPATH
@@ -1208,7 +1208,7 @@
       *
       *    レセプト削除処理（個別分）
            INITIALIZE                  RECE08-REC
-           MOVE    "HC21"              TO  RECE08-PRTID
+           MOVE    "HC23"              TO  RECE08-PRTID
            MOVE    "1"                 TO  RECE08-NYUGAIKBN
            MOVE    RECE08-REC          TO  MCPDATA-REC
            MOVE    "RECEPRT-DEL2"      TO  ORC-DBPATH

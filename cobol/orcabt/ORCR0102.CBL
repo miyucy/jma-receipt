@@ -60,6 +60,11 @@
       *　プレビュー機能追加
       *  01.03.01    NACL-藤原    03/07/07  プレビュー機能追加
       *  01.03.02    NACL-藤原    03/10/09  福岡レセHCRCP400.redを追加
+      *  01.03.03    NACL-門脇    04/01/26  カナ氏名の長さ等修正
+      *                                     HCM09V01.REDを追加
+      *                                     HCRCP060V01.REDを追加
+      *                                     HCRCP400V01.REDを追加
+      *                                     HCN06V01.REDを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -187,11 +192,15 @@
            COPY    "HCM06V01.INC".
            COPY    "HCM06V02.INC".
            COPY    "HCN06.INC".
+           COPY    "HCN06V01.INC".
            COPY    "HCN061.INC".
            COPY    "HCN062.INC".
            COPY    "HCM09.INC".
+           COPY    "HCM09V01.INC".
            COPY    "HCRCP060.INC".
+           COPY    "HCRCP060V01.INC".
            COPY    "HCRCP400.INC".
+           COPY    "HCRCP400V01.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -548,6 +557,10 @@
                        MOVE    RECE08-PRTDATA      TO  HCN06
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN06-RENNUM
                        MOVE    HCN06               TO  RECE08-PRTDATA
+                   WHEN    "HCN06V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN06V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN06V01-RENNUM
+                       MOVE    HCN06V01            TO  RECE08-PRTDATA
                    WHEN    "HCN061.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN061
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN061-RENNUM
@@ -560,14 +573,28 @@
                        MOVE    RECE08-PRTDATA      TO  HCM09
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM09-RENNUM
                        MOVE    HCM09               TO  RECE08-PRTDATA
+                   WHEN    "HCM09V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM09V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM09V01-RENNUM
+                       MOVE    HCM09V01            TO  RECE08-PRTDATA
                    WHEN    "HCRCP060.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCRCP060
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCRCP060-RENNUM
                        MOVE    HCRCP060            TO  RECE08-PRTDATA
+                   WHEN    "HCRCP060V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCRCP060V01
+                       MOVE    WRK-HEN-RENNUM-AREA 
+                                                TO  HCRCP060V01-RENNUM
+                       MOVE    HCRCP060V01         TO  RECE08-PRTDATA
                    WHEN    "HCRCP400.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCRCP400
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCRCP400-RENNUM
                        MOVE    HCRCP400            TO  RECE08-PRTDATA
+                   WHEN    "HCRCP400V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCRCP400V01
+                       MOVE    WRK-HEN-RENNUM-AREA 
+                                                TO  HCRCP400V01-RENNUM
+                       MOVE    HCRCP400V01         TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
       *             
@@ -619,12 +646,18 @@
                WHEN    "HCM06V01.red"  ALSO    ANY                
                WHEN    "HCM06V02.red"  ALSO    ANY                
                WHEN    "HCM09.red"     ALSO    ANY             
+               WHEN    "HCM09V01.red"  ALSO    ANY             
                WHEN    "HCRCP060.red"  ALSO    ANY                
+               WHEN    "HCRCP060V01.red"  
+                                       ALSO    ANY                
                WHEN    "HCRCP400.red"  ALSO    ANY                
+               WHEN    "HCRCP400V01.red"  
+                                       ALSO    ANY                
                WHEN    "HCN061.red"    ALSO    "2"              
                WHEN    "HCN062.red"    ALSO    "2"              
                    MOVE    "医科レセプト（入院外）"    TO  SPRT-TITLE
                WHEN    "HCN06.red"     ALSO    ANY             
+               WHEN    "HCN06V01.red"  ALSO    ANY             
                WHEN    "HCN061.red"    ALSO    "1"              
                WHEN    "HCN062.red"    ALSO    "1"              
                    MOVE    "医科レセプト（入院）"      TO  SPRT-TITLE

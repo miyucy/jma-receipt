@@ -52,6 +52,7 @@
       *  01.00.15    NACL-Æ£¸¶    04/01/16  Â³»æ»ÍÊ¬³ä¤Îµ­ºÜ¿ô¤Î½¤Àµ
       *  01.00.16    NACL-Æ£¸¶    04/01/19  ÉÂ¾²¿ô¤Îµ­ºÜ¤Î½¤Àµ
       *  01.00.17    NACL-ÌçÏÆ    04/01/20  ¼«Èñ¥ì¥»Å¦Í×ÍóÊÔ½¸½¤Àµ
+      *  01.00.18    NACL-ÌçÏÆ    04/01/26  ¥«¥Ê»áÌ¾¤ÎÄ¹¤µÅù½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -173,7 +174,8 @@
            03                      PIC X(04)   VALUE   ".dat".
       *
       *     
-           COPY    "HCM09.INC"     REPLACING  //HCM09//
+      ***  COPY    "HCM09.INC"     REPLACING  //HCM09//
+           COPY    "HCM09V01.INC"  REPLACING  //HCM09V01//
                                    BY         //HC06//.
            COPY    "HCN061.INC"   REPLACING   //HCN061//
                                    BY         //HC061//.
@@ -233,6 +235,8 @@
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDW                 PIC 9(04).
+           03  IDW1                PIC 9(04).
+           03  IDW2                PIC 9(04).
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
@@ -313,7 +317,7 @@
            03  WRK-HKNJANUM        PIC X(08).
            03  WRK-KYURATE-9       PIC 9(03).
            03  WRK-KYURATE         PIC Z9.
-           03  WRK-BEDSU           PIC ZZZ.
+           03  WRK-BEDSU           PIC ZZZZ.
       *
            03  WRK-ERRMSG          PIC X(40).
       *
@@ -1652,7 +1656,19 @@
            PERFORM 3110-KYURATE-SET-SEC
       *
       *    ¥«¥Ê»áÌ¾
-           MOVE    RECE02-KANANAME     TO  HC06-KANANAME
+           MOVE    ZERO    TO   IDW2
+           PERFORM   VARYING   IDW1   FROM   50   BY  -2
+                           UNTIL   IDW1   <   1
+               IF   RECE02-KANANAME(IDW1 - 1:2)  NOT =   SPACE
+                           COMPUTE IDW2 = IDW1 / 2
+                           MOVE   2   TO  IDW1
+               END-IF
+           END-PERFORM
+           IF     IDW2   > 20
+                MOVE    RECE02-KANANAME     TO  HC06-KANANAME2
+           ELSE
+                MOVE    RECE02-KANANAME     TO  HC06-KANANAME
+           END-IF
       *
       *    »áÌ¾
            MOVE    RECE02-NAME         TO  HC06-NAME
@@ -4220,13 +4236,15 @@
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
-               IF      CNT-PAGE            =   1                                 
-                   MOVE    "HCM09.red"         TO  RECE08-FORMID
+               IF      CNT-PAGE            =   1
+      ***          MOVE    "HCM09.red"         TO  RECE08-FORMID
+                   MOVE    "HCM09V01.red"      TO  RECE08-FORMID
                    MOVE    HC06                TO  RECE08-PRTDATA
                ELSE
                    EVALUATE    SYS-2005-NEXTPRTKBN-G
                        WHEN    "0"   
-                           MOVE    "HCM09.red"     TO  RECE08-FORMID
+      ***                  MOVE    "HCM09.red"     TO  RECE08-FORMID
+                           MOVE    "HCM09V01.red"  TO  RECE08-FORMID
                            MOVE    HC06            TO  RECE08-PRTDATA
                        WHEN    "1"   
                            MOVE    "HCN061.red"    TO  RECE08-FORMID

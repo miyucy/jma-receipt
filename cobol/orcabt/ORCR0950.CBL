@@ -29,6 +29,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-ÌçÏÆ    04/01/26  ¥«¥Ê»áÌ¾¤ÎÄ¹¤µÅù½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -152,11 +153,13 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    Ã»´ü¡Ê£³£´£·£°£²¡Ë     
-           COPY    "HCN22.INC"     REPLACING  //HCN22//
+      *****COPY    "HCN22.INC"     REPLACING  //HCN22//
+           COPY    "HCN22V01.INC"  REPLACING  //HCN22V01//
                                    BY         //HC22//.
       *
       *    Ä¹´ü¡¦Ã»´ü¡ÊÂ³»æ¡Ë     
-           COPY    "HCM24V01.INC"  REPLACING  //HCM24V01//
+      *****COPY    "HCM24V01.INC"  REPLACING  //HCM24V01//
+           COPY    "HCM24V02.INC"  REPLACING  //HCM24V02//
                                    BY         //HC24//.
       *
       *    ¥¹¥ÑÎÎ°è
@@ -222,6 +225,8 @@
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDW                 PIC 9(04).
+           03  IDW1                PIC 9(04).
+           03  IDW2                PIC 9(04).
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
@@ -977,7 +982,19 @@
       *    ¥«¥Ê»áÌ¾
            MOVE    RECE82-KANANAME     TO  HC22-KANANAME
       *    »áÌ¾
-           MOVE    RECE82-NAME         TO  HC22-NAME
+           MOVE    ZERO    TO   IDW2
+           PERFORM   VARYING   IDW1   FROM   50   BY  -2
+                           UNTIL   IDW1   <   1
+               IF   RECE82-NAME(IDW1 - 1:2)  NOT =   SPACE
+                           COMPUTE IDW2 = IDW1 / 2
+                           MOVE   2   TO  IDW1
+               END-IF
+           END-PERFORM
+           IF     IDW2   > 13
+                MOVE    RECE82-NAME     TO  HC22-NAME2
+           ELSE
+                MOVE    RECE82-NAME     TO  HC22-NAME
+           END-IF
       *    Ç¯Îð
            MOVE    RECE82-BIRTHDAY     TO  WRK-BIRTHDAY    
            COMPUTE WRK-NENREI          =   RECE82-SRYYM
@@ -2117,12 +2134,14 @@
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
-               IF      CNT-PAGE            =   1                                 
+               IF      CNT-PAGE            =   1
                    MOVE    HC22                TO  RECE08-PRTDATA
-                   MOVE    "HCN22.red"        TO  RECE08-FORMID
+      *************MOVE    "HCN22.red"         TO  RECE08-FORMID
+                   MOVE    "HCN22V01.red"      TO  RECE08-FORMID
                ELSE
                    MOVE    HC24                TO  RECE08-PRTDATA
-                   MOVE    "HCM24V01.red"      TO  RECE08-FORMID
+      *************MOVE    "HCM24V01.red"      TO  RECE08-FORMID
+                   MOVE    "HCM24V02.red"      TO  RECE08-FORMID
                END-IF        
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC

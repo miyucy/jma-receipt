@@ -39,6 +39,7 @@
       *  01.00.06    NACL-Æ£¸¶    03/04/17  ½ÐÎÏ·ï¿ô¤ò¥¸¥ç¥Ö´ÉÍý£Ä£Â¤Ø¹¹¿·
       *  01.00.07    NACL-ÌçÏÆ    03.06.03  ³°Íè¿ÇÎÅÎÁÂÐ±þ
       *                                     ¡ÊÊ¿À®£±£µÇ¯£¶·î°Ê¹ß¡Ë
+      *  01.00.08    NACL-ÌçÏÆ    04/01/26  ¥«¥Ê»áÌ¾¤ÎÄ¹¤µÅù½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -149,14 +150,16 @@
       *****COPY    "HC21.INC".
       *****COPY    "HCM21.INC"     REPLACING  //HCM21//
       *****                        BY         //HC21//.
-           COPY    "HCM21V01.INC"  REPLACING  //HCM21V01//
+      *****COPY    "HCM21V01.INC"  REPLACING  //HCM21V01//
+           COPY    "HCM21V02.INC"  REPLACING  //HCM21V02//
                                    BY         //HC21//.
       *
       *    ¡ÊÂ³»æ¡Ë     
       *****COPY    "HC24.INC".
       *****COPY    "HCM24.INC"     REPLACING  //HCM24//
       *****                        BY         //HC24//.
-           COPY    "HCM24V01.INC"  REPLACING  //HCM24V01//
+      *****COPY    "HCM24V01.INC"  REPLACING  //HCM24V01//
+           COPY    "HCM24V02.INC"  REPLACING  //HCM24V02//
                                    BY         //HC24//.
       *
       *    ¥¹¥ÑÎÎ°è
@@ -221,6 +224,8 @@
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDW                 PIC 9(04).
+           03  IDW1                PIC 9(04).
+           03  IDW2                PIC 9(04).
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
@@ -904,7 +909,19 @@
       *    ¥«¥Ê»áÌ¾
            MOVE    RECE41-KANANAME     TO  HC21-KANANAME
       *    »áÌ¾
-           MOVE    RECE41-NAME         TO  HC21-NAME
+           MOVE    ZERO    TO   IDW2
+           PERFORM   VARYING   IDW1   FROM   50   BY  -2
+                           UNTIL   IDW1   <   1
+               IF   RECE41-NAME(IDW1 - 1:2)  NOT =   SPACE
+                           COMPUTE IDW2 = IDW1 / 2
+                           MOVE   2   TO  IDW1
+               END-IF
+           END-PERFORM
+           IF     IDW2   > 13
+                MOVE    RECE41-NAME     TO  HC21-NAME2
+           ELSE
+                MOVE    RECE41-NAME     TO  HC21-NAME
+           END-IF
       *    Ç¯Îð
            MOVE    RECE41-BIRTHDAY     TO  WRK-BIRTHDAY    
            COMPUTE WRK-NENREI          =   RECE41-SRYYM
@@ -1823,16 +1840,18 @@
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
-               IF      CNT-PAGE            =   1                                 
+               IF      CNT-PAGE            =   1
                    MOVE    HC21                TO  RECE08-PRTDATA
       *************MOVE    "HC21"              TO  RECE08-FORMID
       *************MOVE    "HCM21.red"         TO  RECE08-FORMID
-                   MOVE    "HCM21V01.red"      TO  RECE08-FORMID
+      *************MOVE    "HCM21V01.red"      TO  RECE08-FORMID
+                   MOVE    "HCM21V02.red"      TO  RECE08-FORMID
                ELSE
                    MOVE    HC24                TO  RECE08-PRTDATA
       *************MOVE    "HC24"              TO  RECE08-FORMID
       *************MOVE    "HCM24.red"         TO  RECE08-FORMID
-                   MOVE    "HCM24V01.red"      TO  RECE08-FORMID
+      *************MOVE    "HCM24V01.red"      TO  RECE08-FORMID
+                   MOVE    "HCM24V02.red"      TO  RECE08-FORMID
                END-IF        
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC

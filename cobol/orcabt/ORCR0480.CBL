@@ -41,6 +41,7 @@
       *  01.00.07    NACL-藤原    03/04/17  出力件数をジョブ管理ＤＢへ更新
       *  01.00.08    NACL-門脇    03.06.03  外来診療料対応
       *                                     （平成１５年６月以降）
+      *  01.00.09    NACL-門脇    04/01/26  カナ氏名の長さ等修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -151,14 +152,16 @@
       *****COPY    "HC22.INC".
       *****COPY    "HCM22.INC"     REPLACING  //HCM22//
       *****                        BY         //HC22//.
-           COPY    "HCM22V01.INC"  REPLACING  //HCM22V01//
+      *****COPY    "HCM22V01.INC"  REPLACING  //HCM22V01//
+           COPY    "HCM22V02.INC"  REPLACING  //HCM22V02//
                                    BY         //HC22//.
       *
       *    長期・短期（続紙）     
       *****COPY    "HC24.INC".
       *****COPY    "HCM24.INC"     REPLACING  //HCM24//
       *****                        BY         //HC24//.
-           COPY    "HCM24V01.INC"  REPLACING  //HCM24V01//
+      *****COPY    "HCM24V01.INC"  REPLACING  //HCM24V01//
+           COPY    "HCM24V02.INC"  REPLACING  //HCM24V02//
                                    BY         //HC24//.
       *
       *    スパ領域
@@ -223,6 +226,8 @@
       *    添字領域
        01  IDX-AREA.
            03  IDW                 PIC 9(04).
+           03  IDW1                PIC 9(04).
+           03  IDW2                PIC 9(04).
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
@@ -968,7 +973,19 @@
       *    カナ氏名
            MOVE    RECE41-KANANAME     TO  HC22-KANANAME
       *    氏名
-           MOVE    RECE41-NAME         TO  HC22-NAME
+           MOVE    ZERO    TO   IDW2
+           PERFORM   VARYING   IDW1   FROM   50   BY  -2
+                           UNTIL   IDW1   <   1
+               IF   RECE41-NAME(IDW1 - 1:2)  NOT =   SPACE
+                           COMPUTE IDW2 = IDW1 / 2
+                           MOVE   2   TO  IDW1
+               END-IF
+           END-PERFORM
+           IF     IDW2   > 13
+                MOVE    RECE41-NAME     TO  HC22-NAME2
+           ELSE
+                MOVE    RECE41-NAME     TO  HC22-NAME
+           END-IF
       *    年齢
            MOVE    RECE41-BIRTHDAY     TO  WRK-BIRTHDAY    
            COMPUTE WRK-NENREI          =   RECE41-SRYYM
@@ -1837,16 +1854,18 @@
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
-               IF      CNT-PAGE            =   1                                 
+               IF      CNT-PAGE            =   1
                    MOVE    HC22                TO  RECE08-PRTDATA
       *************MOVE    "HC22"              TO  RECE08-FORMID
       *************MOVE    "HCM22.red"         TO  RECE08-FORMID
-                   MOVE    "HCM22V01.red"      TO  RECE08-FORMID
+      *************MOVE    "HCM22V01.red"      TO  RECE08-FORMID
+                   MOVE    "HCM22V02.red"      TO  RECE08-FORMID
                ELSE
                    MOVE    HC24                TO  RECE08-PRTDATA
       *************MOVE    "HC24"              TO  RECE08-FORMID
       *************MOVE    "HCM24.red"         TO  RECE08-FORMID
-                   MOVE    "HCM24V01.red"      TO  RECE08-FORMID
+      *************MOVE    "HCM24V01.red"      TO  RECE08-FORMID
+                   MOVE    "HCM24V02.red"      TO  RECE08-FORMID
                END-IF        
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC

@@ -32,6 +32,7 @@
       *  01.00.01    NACL-藤原    03/11/10  公費分点欄の診療区分の表示をする
       *  01.00.02    NACL-藤原    04/01/07  その他の点数欄表示
       *  01.00.03    NACL-藤原    04/01/19  病床数の記載の修正
+      *  01.00.04    NACL-門脇    04/01/26  カナ氏名の長さ等修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -153,7 +154,8 @@
            03                      PIC X(04)   VALUE   ".dat".
       *
       *     
-           COPY    "HCRCP400.INC"  REPLACING  //HCRCP400//
+      ***  COPY    "HCRCP400.INC"  REPLACING  //HCRCP400//
+           COPY    "HCRCP400V01.INC"  REPLACING  //HCRCP400V01//
                                    BY         //HC06//.
            COPY    "HCN061.INC"   REPLACING   //HCN061//
                                    BY         //HC061//.
@@ -214,6 +216,8 @@
       *    添字領域
        01  IDX-AREA.
            03  IDW                 PIC 9(04).
+           03  IDW1                PIC 9(04).
+           03  IDW2                PIC 9(04).
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
@@ -296,7 +300,7 @@
            03  WRK-HKNJANUM        PIC X(08).
            03  WRK-KYURATE-9       PIC 9(03).
            03  WRK-KYURATE         PIC Z9.
-           03  WRK-BEDSU           PIC ZZZ.
+           03  WRK-BEDSU           PIC ZZZZ.
       *
            03  WRK-ERRMSG          PIC X(40).
       *
@@ -1754,7 +1758,19 @@
            PERFORM 3110-KYURATE-SET-SEC
       *
       *    カナ氏名
-           MOVE    RECE02-KANANAME     TO  HC06-KANANAME
+           MOVE    ZERO    TO   IDW2
+           PERFORM   VARYING   IDW1   FROM   50   BY  -2
+                           UNTIL   IDW1   <   1
+               IF   RECE02-KANANAME(IDW1 - 1:2)  NOT =   SPACE
+                           COMPUTE IDW2 = IDW1 / 2
+                           MOVE   2   TO  IDW1
+               END-IF
+           END-PERFORM
+           IF     IDW2   > 20
+                MOVE    RECE02-KANANAME     TO  HC06-KANANAME2
+           ELSE
+                MOVE    RECE02-KANANAME     TO  HC06-KANANAME
+           END-IF
       *
       *    氏名
            MOVE    RECE02-NAME         TO  HC06-NAME
@@ -4347,13 +4363,15 @@
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
-               IF      CNT-PAGE            =   1                                 
-                   MOVE    "HCRCP400.red"      TO  RECE08-FORMID
+               IF      CNT-PAGE            =   1
+      ***          MOVE    "HCRCP400.red"      TO  RECE08-FORMID
+                   MOVE    "HCRCP400V01.red"   TO  RECE08-FORMID
                    MOVE    HC06                TO  RECE08-PRTDATA
                ELSE
                    EVALUATE    SYS-2005-NEXTPRTKBN-G
                        WHEN    "0"   
-                           MOVE    "HCRCP400.red"  TO  RECE08-FORMID
+      ***                  MOVE    "HCRCP400.red"  TO  RECE08-FORMID
+                           MOVE    "HCRCP400V01.red"  TO  RECE08-FORMID
                            MOVE    HC06            TO  RECE08-PRTDATA
                        WHEN    "1"   
                            MOVE    "HCN061.red"    TO  RECE08-FORMID

@@ -29,6 +29,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    04/01/26  カナ氏名の長さ等修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -135,11 +136,13 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    自賠責     
-           COPY    "HCN23.INC"     REPLACING  //HCN23//
+      *****COPY    "HCN23.INC"     REPLACING  //HCN23//
+           COPY    "HCN23V01.INC"  REPLACING  //HCN23V01//
                                    BY         //HC23//.
       *
       *    自賠責（続紙）     
-           COPY    "HCM29.INC"     REPLACING  //HCM29//
+      *****COPY    "HCM29.INC"     REPLACING  //HCM29//
+           COPY    "HCM29V01.INC"  REPLACING  //HCM29V01//
                                    BY         //HC29//.
       *
       *    スパ領域
@@ -2044,12 +2047,14 @@
                MOVE    WRK-PARA-TERMID     TO  RECE08-TERMID
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
-               IF      CNT-PAGE            =   1                                 
+               IF      CNT-PAGE            =   1
                    MOVE    HC23                TO  RECE08-PRTDATA
-                   MOVE    "HCN23.red"         TO  RECE08-FORMID
+      *************MOVE    "HCN23.red"         TO  RECE08-FORMID
+                   MOVE    "HCN23V01.red"      TO  RECE08-FORMID
                ELSE
                    MOVE    HC29                TO  RECE08-PRTDATA
-                   MOVE    "HCM29.red"         TO  RECE08-FORMID
+      *************MOVE    "HCM29.red"         TO  RECE08-FORMID
+                   MOVE    "HCM29V01.red"      TO  RECE08-FORMID
                END-IF        
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC
