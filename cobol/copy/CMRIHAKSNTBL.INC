@@ -74,6 +74,18 @@
            03  TBL-RIHABIRI-OCC      OCCURS   34  INDEXED   TBL-RIDX.
                05  TBL-RIHA-SRYCD      PIC X(09).
       *
+      *平成１６年４月から
+       01  TBL-RIHABIRI-AREA02.
+      *    理学療法外来移行加算(老人）
+           03  FILLER              PIC X(09)   VALUE   "180708070".
+      *    作業療法外来移行加算(老人）
+           03  FILLER              PIC X(09)   VALUE   "180708970".
+      *
+       01  TBL-RIHABIRI-AREA02-R     REDEFINES   TBL-RIHABIRI-AREA02.
+           03  TBL-RIHABIRI2-OCC     OCCURS   2  INDEXED   TBL-RIDX2.
+               05  TBL-RIHA2-SRYCD     PIC X(09).
+      *
+      *
       *    早期リハビリあり
        01  FLG-SOUKI                   PIC 9(01).
       *

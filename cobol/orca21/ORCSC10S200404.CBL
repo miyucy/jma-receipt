@@ -1315,6 +1315,7 @@
       *
            MOVE    ZERO                TO  SPA-KYUSEI-FLG
            MOVE    SPACE               TO  SPA-KYUSEI-180
+           MOVE    SPACE               TO  SPA-KYUSEI-90
       *
            MOVE    "099800101"         TO  WRK-SRYCD
       *
@@ -1391,12 +1392,29 @@
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY6-AREA
       *TEST
-           DISPLAY "C10S WRK-YMD:" WRK-YMD
+           DISPLAY "C10S 180 WRK-YMD:" WRK-YMD
                    ",LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
                    ",LNK-DAY6-KOYOMI:" LNK-DAY6-KOYOMI
                    ",SPA-SRYYMD:" SPA-SRYYMD
       *TEST
            MOVE    LNK-DAY6-KEISAN     TO  SPA-KYUSEI-180
+      *
+      *    90Æü¸å
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-YMD             TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    90                  TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+      *TEST
+           DISPLAY "C10S 90 WRK-YMD:" WRK-YMD
+                   ",LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
+                   ",LNK-DAY6-KOYOMI:" LNK-DAY6-KOYOMI
+                   ",SPA-SRYYMD:" SPA-SRYYMD
+      *TEST
+           MOVE    LNK-DAY6-KEISAN     TO  SPA-KYUSEI-90
            .
        10019-KYUSEI-CHK-EXT.
            EXIT.

@@ -7437,6 +7437,7 @@
       *    消炎鎮痛処置当月内算定
            MOVE    SPA-SYOEN-CNT       TO  LNK-ORCSC-SYOEN-CNT
       *    急性発生１８０日以内
+           MOVE    SPA-KYUSEI-90       TO  LNK-ORCSC-KYUSEI-90
            MOVE    SPA-KYUSEI-180      TO  LNK-ORCSC-KYUSEI-180
            MOVE    SPA-KYUSEI-FLG      TO  LNK-ORCSC-KYUSEI-FLG
       *    当月外来管理加算の取れない患者
@@ -8533,6 +8534,7 @@
       *    消炎鎮痛処置当月内算定
            MOVE    SPA-SYOEN-CNT       TO  LNK-ORCSC-SYOEN-CNT
       *    急性発生１８０日以内
+           MOVE    SPA-KYUSEI-90       TO  LNK-ORCSC-KYUSEI-90
            MOVE    SPA-KYUSEI-180      TO  LNK-ORCSC-KYUSEI-180
            MOVE    SPA-KYUSEI-FLG      TO  LNK-ORCSC-KYUSEI-FLG
       *    当月外来管理加算の取れない患者
