@@ -569,6 +569,10 @@
                END-IF
       *
            END-IF
+      *
+      *    時間外特例医療機関の施設基準はすべてありとする
+           MOVE    1                   TO  SPA-JIKANTOKU
+      *
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
       *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
       *    CALL    "MCPDBSUB"          USING
@@ -802,6 +806,10 @@
                END-IF
       *
            END-IF
+      *
+      *    時間外特例医療機関の施設基準はすべてありとする
+           MOVE    1                   TO  SPA-JIKANTOKU
+      *
       *    MOVE    "DBCLOSE"           TO  MCP-FUNC
       *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
       *    CALL    "MCPDBSUB"          USING
@@ -2725,7 +2733,9 @@
            END-IF
            MOVE    ZERO                TO  SPA-SYONIKA
            MOVE    ZERO                TO  SPA-ROUMANSEI
-           MOVE    ZERO                TO  SPA-JIKANTOKU
+      *    時間外特例医療機関の施設基準はすべてありとする
+           MOVE    1                   TO  SPA-JIKANTOKU
+      *
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
                IF      SYS-1006-SSTKIJUN (121) =   1
