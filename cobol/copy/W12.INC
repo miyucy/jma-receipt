@@ -78,28 +78,28 @@
                             PIC X(20)   OCCURS  2 TIMES.
                   05  W12-SYARECEKBN-COMBO.
                     06  W12-SYARECEKBN.
-                      07  W12-VALUE   PIC X(20).
+                      07  W12-VALUE   PIC X(24).
                     06  W12-SYARECEKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-SYARECEKBNLST
-                            PIC X(20)   OCCURS  2 TIMES.
+                            PIC X(24)   OCCURS  4 TIMES.
                   05  W12-KKHRECEKBN-COMBO.
                     06  W12-KKHRECEKBN.
-                      07  W12-VALUE   PIC X(20).
+                      07  W12-VALUE   PIC X(24).
                     06  W12-KKHRECEKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-KKHRECEKBNLST
-                            PIC X(20)   OCCURS  2 TIMES.
+                            PIC X(24)   OCCURS  4 TIMES.
                   05  W12-SYAOCRKBN-COMBO.
                     06  W12-SYAOCRKBN.
-                      07  W12-VALUE   PIC X(20).
+                      07  W12-VALUE   PIC X(24).
                     06  W12-SYAOCRKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-SYAOCRKBNLST
-                            PIC X(20)   OCCURS  2 TIMES.
+                            PIC X(24)   OCCURS  4 TIMES.
                   05  W12-KKHOCRKBN-COMBO.
                     06  W12-KKHOCRKBN.
-                      07  W12-VALUE   PIC X(20).
+                      07  W12-VALUE   PIC X(24).
                     06  W12-KKHOCRKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-KKHOCRKBNLST
-                            PIC X(20)   OCCURS  2 TIMES.
+                            PIC X(24)   OCCURS  4 TIMES.
                   05  W12-RJNGNBKKBN-COMBO.
                     06  W12-RJNGNBKKBN.
                       07  W12-VALUE   PIC X(24).

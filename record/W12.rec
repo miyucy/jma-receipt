@@ -101,31 +101,31 @@ W12	{
 				};
 				SYARECEKBN_COMBO	{
 					SYARECEKBN	{
-						value	varchar(20);
+						value	varchar(24);
 					};
 					count	int;
-					item	varchar(20)[2];
+					item	varchar(24)[4];
 				};
 				KKHRECEKBN_COMBO	{
 					KKHRECEKBN	{
-						value	varchar(20);
+						value	varchar(24);
 					};
 					count	int;
-					item	varchar(20)[2];
+					item	varchar(24)[4];
 				};
 				SYAOCRKBN_COMBO	{
 					SYAOCRKBN	{
-						value	varchar(20);
+						value	varchar(24);
 					};
 					count	int;
-					item	varchar(20)[2];
+					item	varchar(24)[4];
 				};
 				KKHOCRKBN_COMBO	{
 					KKHOCRKBN	{
-						value	varchar(20);
+						value	varchar(24);
 					};
 					count	int;
-					item	varchar(20)[2];
+					item	varchar(24)[4];
 				};
 				RJNGNBKKBN_COMBO	{
 					RJNGNBKKBN	{
