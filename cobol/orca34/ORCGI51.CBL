@@ -156,6 +156,7 @@
            03  WRK-SKYSTYM                 PIC X(08).
            03  WRK-SKYEDYMD                PIC X(08).
            03  WRK-NOW-SKYSTYMD            PIC X(08).
+           03  WRK-MAE-SKYEDYMD            PIC X(08).
       *
       *
       *    スパ領域 ワーク
@@ -250,6 +251,10 @@
       *    患者労災保険情報
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
+      *
+      *    患者定期請求履歴
+        01 PTTEIKIRRK-REC.
+           COPY     "CPPTTEIKIRRK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1228,58 +1233,53 @@
       *****************************************************************
        4101-SKYSTYMD-GET-SEC           SECTION.
       *
-      *    ＝＝　暫定　＝＝
-      *    収納マスタより、最新の定期請求で作成された
-      *    収納データを検索し、その収納の請求終了日が退院日
-      *    以前となっていること
-           MOVE    SPACE           TO  WRK-SKYEDYMD
-           MOVE    ZERO            TO  FLG-SYUNOU
-           INITIALIZE  SYUNOU-REC
-           MOVE    SPA-HOSPID      TO  SYU-HOSPID
-           MOVE    SPA-NAI-I51-PTID
-                                   TO  SYU-PTID
-           MOVE    "1"             TO  SYU-NYUGAIKBN
-           MOVE    "A"             TO  SYU-DENPJTIKBN
-           MOVE    "00000000"      TO  SYU-SKYSTYMD
-           MOVE    "99999999"      TO  SYU-SKYEDYMD
-           MOVE    SYUNOU-REC      TO  MCPDATA-REC
-           MOVE    "SYUNOU-KEY8"   TO  WRK-DBPATH
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC        =   ZERO )
-               MOVE    MCPDATA-REC TO  SYUNOU-REC
-           ELSE
-               MOVE    1           TO  FLG-SYUNOU
-           END-IF
-      *
-           MOVE    "SYUNOU-KEY8"   TO  WRK-DBPATH
-           PERFORM 900-TBL-CLOSE-SEC
-      *
-           IF    ( FLG-SYUNOU      =   ZERO )
-               MOVE    SYU-SKYEDYMD    TO  WRK-SKYEDYMD
+      *    前回定期請求終了日取得処理
+           PERFORM 4101-MAE-TEIKI-SKYEDYMD-GET-SEC
+           IF    ( WRK-MAE-SKYEDYMD    NOT =   SPACE )
+               MOVE    WRK-MAE-SKYEDYMD
+                                   TO  WRK-YMD
+               MOVE    "1"         TO  WRK-ZOGENPTN
+               MOVE    1           TO  WRK-ZOGEN
+               PERFORM 5002-CALENDAR-SEC
+               MOVE    WRK-KEISANYMD
+                                   TO  WRK-NOW-SKYSTYMD
            ELSE
                MOVE    PTNYUINRRK-NYUINYMD
-                                       TO  WRK-SKYEDYMD
-           END-IF
-      *
-           MOVE    SPACE               TO  WRK-NOW-SKYSTYMD
-           IF    ( FLG-SYUNOU      =   ZERO )
-               IF    ( WRK-SKYEDYMD    <   PTNYUINRRK-NYUINYMD )
-                   MOVE    PTNYUINRRK-NYUINYMD
-                                       TO  WRK-NOW-SKYSTYMD
-               ELSE
-                   MOVE    WRK-SKYEDYMD    TO  WRK-YMD
-                   MOVE    "1"             TO  WRK-ZOGENPTN
-                   MOVE    1               TO  WRK-ZOGEN
-                   PERFORM 5002-CALENDAR-SEC
-                   MOVE    WRK-KEISANYMD   TO  WRK-NOW-SKYSTYMD
-               END-IF
-           ELSE
-               MOVE    PTNYUINRRK-NYUINYMD
-                                           TO  WRK-NOW-SKYSTYMD
+                                   TO  WRK-NOW-SKYSTYMD
            END-IF
       *
            .
        4101-SKYSTYMD-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    前回定期請求終了日取得処理
+      *****************************************************************
+       4101-MAE-TEIKI-SKYEDYMD-GET-SEC SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MAE-SKYEDYMD
+      *
+           INITIALIZE  PTTEIKIRRK-REC
+      *
+           MOVE    PTNYUINRRK-PTID     TO  PTTEIKIRRK-PTID
+           MOVE    PTTEIKIRRK-REC      TO  MCPDATA-REC
+           MOVE    "PTTEIKIRRK-KEY3"   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC            =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTTEIKIRRK-REC
+      *        現在入院分の定期請求データかチェック
+               IF    ( PTNYUINRRK-NYUINYMD
+                                      <=   PTTEIKIRRK-SKYEDYMD )
+                   MOVE    PTTEIKIRRK-SKYEDYMD
+                                       TO  WRK-MAE-SKYEDYMD
+               END-IF
+           END-IF
+      *
+           MOVE    "PTTEIKIRRK-KEY3"   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           .
+      *
+       4101-MAE-TEIKI-SKYEDYMD-GET-EXT.
            EXIT.
       *****************************************************************
       *    システム管理マスタ検索処理
