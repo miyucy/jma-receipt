@@ -272,3 +272,29 @@ path	key11	{
 		;
 	};
 };
+
+
+path	key12	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key12_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			AND   RENNUM      =   1
+			ORDER  BY  YUKOSTYMD,
+                                   RENNUM
+		;
+	};
+};
+
+path	key13	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key13_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk
+			WHERE CHKKBN    in ( '1','2')
+			ORDER  BY  CHKKBN,SRYCD,YUKOSTYMD,RENNUM
+		;
+	};
+};
