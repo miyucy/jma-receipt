@@ -3281,30 +3281,11 @@
       *                         PERFORM T-540-RECECHEK-COMP-SEC
       *                     END-IF
       *                 END-IF
-                       MOVE    SPACE         TO  W-SRYCD-S3-KBN
                        IF  (SPA-GMN-CNV (12)  NOT =  SPACE)  AND
                            (T-ERR-12              =  SPACE)  AND
                            (T-NYUGAIKBN-AREA      =  "2")  AND
                            (SRY-SRYCD (IDX3)  NOT =  SPACE)
                            PERFORM T-540-RECECHEK-CHK-SEC
-                       END-IF
-                       IF  W-SRYCD-S3-KBN    =   "A"
-                           MOVE    ZERO                 TO  W-JITU-DAY4
-                           PERFORM VARYING  IDX6  FROM  1  BY  1
-                                   UNTIL    IDX6  >    31
-                               IF  (ACCT-DAY (1,IDX6)  NOT =  ZERO)  OR
-                                   (ACCT-DAY (2,IDX6)  NOT =  ZERO)  OR
-                                   (ACCT-DAY (3,IDX6)  NOT =  ZERO)  OR
-                                   (ACCT-DAY (4,IDX6)  NOT =  ZERO)
-                                   MOVE    "1"    TO  W-JITU-DAY1 (IDX6)
-                               END-IF
-                               IF  W-JITU-DAY1 (IDX6)   =    "1"
-                                   COMPUTE W-JITU-DAY4 = W-JITU-DAY4 + 1
-                               END-IF
-                           END-PERFORM
-                       END-IF
-                       IF  W-SRYCD-S3-KBN    =   "N"
-                           PERFORM T-540-RECECHEK-COMP-SEC
                        END-IF
       *½¤Àµ/*½ªÎ»*03.08.21*********************************************
                        IF  (SRY-SRYCD (IDX3)   NOT =   ZERO)   AND
@@ -4695,6 +4676,7 @@
       *             ELSE
       *                 MOVE    SPACE             TO  W-SRYCD-S3-KBN
       *                 MOVE    SPACE             TO  W-SRYCD-82 (IDY5)
+      *             END-IF
                    IF  ((TNS-JITUDAY       =   2)           AND
                         (TNS-DAYCNT        =   1   OR   2))     OR
                        (SRY-SRYCD (IDX3)  =  W-YOYAKU7      OR
@@ -4703,11 +4685,25 @@
                                              W-YOYAKU10     OR
                                              W-YOYAKU11     OR
                                              W-YOYAKU12)
-                       MOVE    "A"               TO  W-SRYCD-S3-KBN
-                   ELSE
-                       MOVE    "N"               TO  W-SRYCD-S3-KBN
-      *½¤Àµ/*½ªÎ»*03.08.21*********************************************
+                       MOVE    ZERO                 TO  W-JITU-DAY4
+                       PERFORM VARYING  IDX6  FROM  1  BY  1
+                               UNTIL    IDX6  >    31
+                           IF  (ACCT-DAY (1,IDX6)  NOT =  ZERO)  OR
+                               (ACCT-DAY (2,IDX6)  NOT =  ZERO)  OR
+                               (ACCT-DAY (3,IDX6)  NOT =  ZERO)  OR
+                               (ACCT-DAY (4,IDX6)  NOT =  ZERO)
+                               MOVE    "1"    TO  W-JITU-DAY1 (IDX6)
+                           END-IF
+                           IF  W-JITU-DAY1 (IDX6)   =    "1"
+                               COMPUTE W-JITU-DAY4 = W-JITU-DAY4 + 1
+                           END-IF
+                       END-PERFORM
                    END-IF
+                   IF  (TNS-JITUDAY       =   1)    AND
+                       (TNS-DAYCNT        =   0)
+                       PERFORM T-540-RECECHEK-COMP-SEC
+                   END-IF
+      *½¤Àµ/*½ªÎ»*03.08.21*********************************************
                END-IF
            END-IF.
       *
