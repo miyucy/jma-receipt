@@ -411,11 +411,7 @@
            MOVE    LOW-VALUE           TO  KEY-AREA
            MOVE    1                   TO  WRK-INDEX
       *     
-           IF      WRK-PARA-NYUGAIKBN  =   "1"
-               MOVE    "SEIKYU-KEY16"      TO  WRK-PATH
-           ELSE
-               MOVE    "SEIKYU-KEY12"      TO  WRK-PATH
-           END-IF  
+           MOVE    "SEIKYU-KEY12"      TO  WRK-PATH
            PERFORM 900-SEIKYU-SELECT-SEC
       *
            PERFORM 200-HENSYU-SEC      UNTIL   FLG-RECE10   =   1 
@@ -433,11 +429,7 @@
                MOVE    LOW-VALUE           TO  KEY-AREA
                MOVE    2                   TO  WRK-INDEX
       *         
-               IF      WRK-PARA-NYUGAIKBN  =   "1"
-                   MOVE    "SEIKYU-KEY17"      TO  WRK-PATH
-               ELSE
-                   MOVE    "SEIKYU-KEY13"      TO  WRK-PATH
-               END-IF  
+               MOVE    "SEIKYU-KEY13"      TO  WRK-PATH
                PERFORM 900-SEIKYU-SELECT-SEC
       *
                PERFORM 200-HENSYU-SEC      UNTIL   FLG-RECE10   =   1 
