@@ -219,6 +219,12 @@ tbl_syunou {
         DAY_31                          char(1);
         FUKU_DENPNUM                    number(7,0);
 	FUKU_KBN      			char(1);
+        KYUFUGAI_SHOSHIN_TEN            number(7,0);
+        KYUFUGAI_SIDOU_TEN              number(7,0);
+        KYUFUGAI_OSIN1_TEN              number(7,0);
+        KYUFUGAI_OSIN2_TEN              number(7,0);
+        KYUFUGAI_OSIN3_TEN              number(7,0);
+        KYUFUGAI_GOKEI_TEN              number(7,0);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);

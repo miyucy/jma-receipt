@@ -427,6 +427,25 @@
            03  SYU-FUKU-DENPNUM        PIC  9(07).
       *複数科まとめ区分（１：継続　２：確定）
            03  SYU-FUKU-KBN            PIC  X(01).
+      *診療区分別給付外点数
+           03  SYU-KYUFUGAI.
+               05  SYU-KYUFUGAI-TBL          OCCURS   6.
+      *    給付対象外点数
+                   09  SYU-KYUFUGA-TEN       PIC  9(07).
+      *診療区分別給付外点数再定義
+           03  SYU-KYUFUGAI-R      REDEFINES   SYU-KYUFUGAI.
+      *給付対象外点数（初診）
+              05  SYU-KYUFUGAI-SHOSHIN-TEN    PIC  9(07).
+      *給付対象外点数（指導）
+              05  SYU-KYUFUGAI-SIDOU-TEN      PIC  9(07).
+      *給付対象外点数（往診）
+              05  SYU-KYUFUGAI-OSIN1-TEN      PIC  9(07).
+      *給付対象外点数（往診／夜間）
+              05  SYU-KYUFUGAI-OSIN2-TEN      PIC  9(07).
+      *給付対象外点数（往診／深夜／緊急）
+              05  SYU-KYUFUGAI-OSIN3-TEN      PIC  9(07).
+      *給付対象外点数（合計）
+              05  SYU-KYUFUGAI-GOKEI-TEN      PIC  9(07).
       *端末ＩＤ
            03  SYU-TERMID              PIC  X(16).
       *オペーレータＩＤ
