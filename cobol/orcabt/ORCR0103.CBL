@@ -75,6 +75,8 @@
       *  中止処理追加
       *  01.03.01    NACL-藤原    04/09/28  中止処理の追加
       *  01.03.02    NACL-藤原    04/11/01  記載なしの公費(原爆)の処理
+      *  01.03.03    NACL-門脇    05/01/13  公費請求テーブル保険組合せ
+      *                                     番号情報編集修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1516,10 +1518,19 @@
                MOVE    RECE02X-KOHJKYSNUM  (IDX)
                                        TO  KOHSKY-KOHJKYSNUM (IDX)
            END-PERFORM
+      ***  PERFORM VARYING IDX FROM    1   BY  1
+      ***          UNTIL   IDX >       10
+      ***      MOVE   RECE02X-HKNCOMBIINF (IDX)
+      ***                                  TO KOHSKY-HKNCOMBIINF (IDX)
+      ***  END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
-               MOVE    RECE02X-HKNCOMBIINF (IDX)
-                                           TO KOHSKY-HKNCOMBIINF (IDX)
+               MOVE   RECE02X-HKNCOMBI(IDX)   TO  KOHSKY-HKNCOMBI(IDX)
+               MOVE   RECE02X-HKNNUMHC(IDX)   TO  KOHSKY-HKNNUMHC(IDX)
+               MOVE   RECE02X-KOHNUMHC(IDX 1) TO  KOHSKY-KOHNUMHC(IDX 1)
+               MOVE   RECE02X-KOHNUMHC(IDX 2) TO  KOHSKY-KOHNUMHC(IDX 2)
+               MOVE   RECE02X-KOHNUMHC(IDX 3) TO  KOHSKY-KOHNUMHC(IDX 3)
+               MOVE   RECE02X-KOHNUMHC(IDX 4) TO  KOHSKY-KOHNUMHC(IDX 4)
            END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       50
