@@ -365,7 +365,9 @@
       *
            PERFORM 100-INIT-SEC
       *
-           PERFORM 200-MAIN-SEC
+           IF      FLG-END             =   ZERO
+               PERFORM 200-MAIN-SEC
+           END-IF
       *
            PERFORM 300-END-SEC
       *
@@ -439,6 +441,19 @@
            MOVE    "ORCATERM"          TO  SPA-TERMID
       *
            MOVE    WRK-PARA-HOSPID     TO  SPA-HOSPID
+      *
+      *    政管が保険置換対象かのチェック
+           MOVE    "001"               TO  PTHKN-HKNNUM
+           MOVE    WRK-PARA-HOSPID     TO  PTHKN-HOSPID
+           PERFORM 210-PTHKNINF-CHK-SEC
+           IF      FLG-SYORI           =   ZERO
+      *        保険置換処理なし
+               MOVE    "処理対象の保険がありませんでした"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1                   TO  FLG-END
+               GO  TO              100-INIT-EXT
+           END-IF
       *
       *    帳票出力　初期処理
            PERFORM 2710-OUTLST-INIT-SEC
@@ -516,7 +531,12 @@
               OR      (PTHKN-TEKEDYMD          <   "20030401")
                    CONTINUE
                ELSE
+      *            保険置換対象チェック
                    PERFORM 210-PTHKNINF-CHK-SEC
+                   IF      FLG-SYORI           =   1
+      *                保険置換処理
+                       PERFORM 2101-PTHKNINF-KOUSIN-SEC
+                   END-IF
                END-IF
                MOVE    PTHKN-PTID          TO  WRK-PTID
       *
@@ -601,10 +621,6 @@
       *                                    ORCMCPAREA
       *                                    MCPDATA-REC
       *
-           IF      FLG-SYORI           =   1
-               PERFORM 2101-PTHKNINF-KOUSIN-SEC
-           END-IF
-      *
            .
        210-PTHKNINF-CHK-EXT.
            EXIT.
@@ -624,13 +640,13 @@
                GO      TO      2101-PTHKNINF-KOUSIN-EXT
            END-IF
       *
-      *    任継は、変換しない
-           IF      PTHKN-CONTKBN       =   "2"
+      *****任継は、変換しない
+      *    IF      PTHKN-CONTKBN       =   "2"
       *        任継患者情報出力
-               MOVE    ZERO            TO  FLG-HOJOKBN
-               PERFORM 2101-CONTI2-SYORI-SEC
-               GO      TO      2101-PTHKNINF-KOUSIN-EXT
-           END-IF
+      *        MOVE    ZERO            TO  FLG-HOJOKBN
+      *        PERFORM 2101-CONTI2-SYORI-SEC
+      *        GO      TO      2101-PTHKNINF-KOUSIN-EXT
+      *****END-IF
       *    Ｈ１４．１０時点で７０歳未満の時
            MOVE    PTHKN-HOSPID        TO  PTINF-HOSPID
            MOVE    PTHKN-PTID          TO  PTINF-PTID
