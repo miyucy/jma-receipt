@@ -584,6 +584,21 @@
                WHEN    "8021"
                    MOVE    "労災保険の診療コードを入力して下さい。"
                                        TO  SPA-ERRMSG
+               WHEN    "8022"
+                   MOVE    "救急医療管理加算は入院日のみに"
+                                       TO  SPA-ERRMSG
+                   MOVE    "算定可能です。"
+                                       TO  SPA-ERRMSG(31:)
+               WHEN    "8050"
+                   MOVE    "外来診察料算定時は電話再診の算定は"
+                                       TO  SPA-ERRMSG
+                   MOVE    "できません。"
+                                       TO  SPA-ERRMSG(35:)
+               WHEN    "8051"
+                   MOVE    "継続管理加算、外来管理加算は算定"
+                                       TO  SPA-ERRMSG
+                   MOVE    "できません。"
+                                       TO  SPA-ERRMSG(31:)
                WHEN    "S001"
                    MOVE    "約束セット内に使用できないコードがあります"
                                        TO  SPA-ERRMSG
@@ -697,6 +712,9 @@
                                        TO  SPA-ERRMSG(25:)
                WHEN    "9028"
                    MOVE    "この診療種別は外来のみの使用です。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9029"
+                   MOVE    "アフターケアは入院では選択できません。"
                                        TO  SPA-ERRMSG
                WHEN    "9100"
                    MOVE    "診療内容が２００行を超えます。"

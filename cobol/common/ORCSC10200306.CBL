@@ -249,6 +249,9 @@
       *厚生大臣が定める患者（外来管理）
            03  WRK-TOKUTEIG-KNJ      PIC  9(01).
       *
+      *    初診算定日
+           03  WRK-SYOYMD              PIC X(08).
+      *
       *    保存用ＳＰＡ
        01  HZN-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
@@ -319,17 +322,28 @@
       *
       *
       *    小児科外来診察料(院外処方 初診)
-           03  FILLER              PIC X(13)   VALUE   "100 113003510".
+           03  FILLER              PIC X(13)   VALUE   "200F113003510".
       *    小児科外来診察料(院内処方 初診)
-           03  FILLER              PIC X(13)   VALUE   "100 113003710".
+           03  FILLER              PIC X(13)   VALUE   "200F113003710".
       *    小児科外来診察料(院外処方 再診)
            03  FILLER              PIC X(13)   VALUE   "200 113003610".
       *    小児科外来診察料(院内処方 再診)
            03  FILLER              PIC X(13)   VALUE   "200 113003810".
       *
+      *
+      *    外来診療料
+           03  FILLER              PIC X(13)   VALUE   "301 112011310".
+      *    同日外来診療料
+           03  FILLER              PIC X(13)   VALUE   "301D112011710".
+      *    外来診療料（老人）
+           03  FILLER              PIC X(13)   VALUE   "311 112705510".
+      *    同日外来診療料（老人）
+           03  FILLER              PIC X(13)   VALUE   "311D112705850".
+      *
+      *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
-           03  TBL-SINSATU-OCC         OCCURS  24    INDEXED  TBL-IDX.
-      *        回数
+           03  TBL-SINSATU-OCC         OCCURS  28    INDEXED  TBL-IDX.
+      *        １：一般、２：小児科外来診察料、３：外来診療料
                05  TBL-KAISU           PIC 9(01).
       *        老人一般区分（０：一般、１：老人）
                05  TBL-ROUJIN          PIC 9(01).
@@ -337,23 +351,21 @@
                05  TBL-HOSPSBT         PIC 9(01).
       *        D:同日再診、T：電話再診、S:同日電話再診、F:初診
                05  TBL-KBN             PIC X(01).
-      *        M:１５才未満、E：厚生省が定める患者、J:人工腎臓
-      *********05  TBL-KBN2            PIC X(01).
       *        診療コード
                05  TBL-SRYCD           PIC X(09).
       *
-       01  TBL-SIN-MAX                 PIC 9(04)   VALUE   24.
+       01  TBL-SIN-MAX                 PIC 9(04)   VALUE   28.
       *
       *
       *    外来管理加算・継続管理加算テーブル
        01  TBL-GAIRAI-AREA.
-      *    一般（３回目まで）
+      *    一般
            03  FILLER              PIC X(13)   VALUE   "100G112011010".
       *
-      *    老人 病院（３回目まで）
+      *    老人 病院
            03  FILLER              PIC X(13)   VALUE   "111G112705110".
       *
-      *    老人 診療所（３回目まで）
+      *    老人 診療所
            03  FILLER              PIC X(13)   VALUE   "112G112705310".
       *
       *    継続管理加算（一般）
@@ -600,7 +612,7 @@
       *****************************************************************
       *    明細別内容チェック、自動算定編集処理
       *****************************************************************
-       10011-SYUGISYORI-SEC                  SECTION.
+       10011-SYUGISYORI-SEC            SECTION.
       *
       *    在宅診察料が有る時、再診料を削除する
            IF      LNK-ORCSC-HOUMON-ARI    =   1
@@ -633,12 +645,14 @@
                END-IF
            END-IF
       *
+           IF      SPA-NYUGAIKBN       =   "2"
       *    外来管理加算、継続管理加算の判定
-           PERFORM 100111-KEIZOKU-CHK-SEC
-           IF      FLG-GAIRAI          =   1
+               PERFORM 100111-KEIZOKU-CHK-SEC
+               IF      FLG-GAIRAI          =   1
       *        労災読み替え加算分は外来管理加算削除としない
-               IF      WRK-COM-RSIFLG2 (IDX-Z)     =   "1"
-                   MOVE    ZERO            TO  FLG-GAIRAI
+                   IF      WRK-COM-RSIFLG2 (IDX-Z)     =   "1"
+                       MOVE    ZERO            TO  FLG-GAIRAI
+                   END-IF
                END-IF
            END-IF
            IF      WRK-ERRCD       NOT =   SPACE
@@ -784,6 +798,16 @@
                    GO      TO      10011-SYUGISYORI-EXT
                END-IF
            END-IF
+      *
+      *    ２００床以上で再診がある時
+      *    外来診療料算定有無
+           IF     (SPA-BEDSUIPN        >=  200 )  AND
+                  (SPA-HOSPSBT         =   1   )  AND
+                  (WRK-COM-SRYKBN (IDX-Z)  =   "12")
+               MOVE    1                   TO  LNK-ORCSC-GAIRAISIN
+           ELSE
+               MOVE    ZERO                TO  LNK-ORCSC-GAIRAISIN
+           END-IF
            .
        10011-SYUGISYORI-EXT.
            EXIT.
@@ -841,6 +865,17 @@
       *           (FLG-KEIZOK          =   1   )
       *        GO      TO      100111-KEIZOKU-CHK-EXT
       **** END-IF
+      *
+      *    ２００床以上の場合、エラー
+           IF     (SPA-BEDSUIPN        >=  200 )  AND
+                  (SPA-HOSPSBT         =   1   )
+               IF     (FLG-KEIZOK          =   1 )  OR
+                      (FLG-GAIRAI          =   1 )
+                   MOVE    "8051"          TO  WRK-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
+                   GO      TO      100111-KEIZOKU-CHK-EXT
+               END-IF
+           END-IF
       *
       *    健保の時
            IF      SPA-HKNKBN      NOT =   1
@@ -956,6 +991,18 @@
       *        初診料算定時、エラー
                IF      LNK-ORCSC-SYOSIN2       =   1
                    MOVE    "8013"          TO  WRK-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR
+                                                         (IDX-Z)
+                   GO      TO      10013-RSI-SINSATU-CHK-EXT
+               END-IF
+           END-IF
+      *
+      *    救急医療管理加算（入院）入院日のみ
+           IF      WRK-COM-INPUTCD(IDX-Z)  =   "101110020"
+               IF      SPA-SRYYMD          =   LNK-ORCSC-NYUINYMD
+                   CONTINUE
+               ELSE
+                   MOVE    "8022"          TO  WRK-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR
                                                          (IDX-Z)
                    GO      TO      10013-RSI-SINSATU-CHK-EXT
@@ -1123,6 +1170,11 @@
       *----(01.00.01) LINE UPD END   ----------------------------------
               WHEN     "12"
       *           再診料加算
+                  IF      WRK-KAISU                =   3
+      *               今回が外来診察料である時
+                      PERFORM 10022-GAIRAISIN-SET-SEC
+                  ELSE
+      *
                   EVALUATE    WRK-COM-TIMEFLG(IDX-Z)  ALSO
                                                       LNK-ORCSC-ROUJIN
       *            /* 時間外 */
@@ -1150,6 +1202,8 @@
                        WHEN    4       ALSO     1
                            MOVE    "112701310"     TO  WRK-SRYCD
                    END-EVALUATE
+      *
+                   END-IF
            END-EVALUATE
       *
       *    小児科外来診療科の加算
@@ -1222,6 +1276,42 @@
       *
            .
        1002-KASAN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来診察料時間外編集処理
+      *****************************************************************
+       10022-GAIRAISIN-SET-SEC        SECTION.
+      *
+           EVALUATE    WRK-COM-TIMEFLG(IDX-Z)  ALSO   LNK-ORCSC-ROUJIN
+      *            /* 時間外 */
+               WHEN    1       ALSO     0
+                   MOVE    "112006470"         TO  WRK-SRYCD
+      *            /* 休日 */
+               WHEN    2       ALSO     0
+                   MOVE    "112006570"         TO  WRK-SRYCD
+      *            /* 深夜 */
+               WHEN    3       ALSO     0
+                   MOVE    "112006670"         TO  WRK-SRYCD
+      *            /* 時間外特例 */
+               WHEN    4       ALSO     0
+                   MOVE    "112006770"         TO  WRK-SRYCD
+      *            /* 時間外 　老人
+               WHEN    1       ALSO     1
+                   MOVE    "112701710"         TO  WRK-SRYCD
+      *            /* 休日 　老人*/
+               WHEN    2       ALSO     1
+                   MOVE    "112701810"         TO  WRK-SRYCD
+      *            /* 深夜 　老人*/
+               WHEN    3       ALSO     1
+                   MOVE    "112701910"         TO  WRK-SRYCD
+      *            /* 時間外特例　老人*/
+               WHEN    4       ALSO     1
+                   MOVE    "112702010"         TO  WRK-SRYCD
+           END-EVALUATE
+      *
+           .
+       10022-GAIRAISIN-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2376,13 +2466,13 @@
                    MOVE    1                   TO  FLG-SIDOU
                    PERFORM 230-SIDOU-SYOSIN-SEC
                END-IF
-      * 
-      *         老人慢性疾病外来総合診療科チェック
-                IF      WRK-COM-INPUTCD(IDX-Z) =   "113701010"  OR
-                                                   "113701110"  OR
-                                                   "113701510" 
-                   PERFORM 230-ROUMANSEI-SYOSIN-SEC
-               END-IF
+      *
+      *D        老人慢性疾病外来総合診療科チェック
+      *D        IF      WRK-COM-INPUTCD(IDX-Z) =   "113701010"  OR
+      *D                                           "113701110"  OR
+      *D                                           "113701510" 
+      *D           PERFORM 230-ROUMANSEI-SYOSIN-SEC
+      *D       END-IF
       *
       *        小児科外来診療科チェック
       *            初診
@@ -2529,7 +2619,9 @@
            IF     (LNK-ORCSC-SYORIFLG  =   ZERO )  AND
                   (SPA-NYUGAIKBN       =   "2"  )
                IF     (LNK-ORCSC-CHK-IDX   >   ZERO       )  AND
-                      (LNK-ORCSC-LSTYMD    =   SPA-SRYYMD )
+                      (LNK-ORCSC-LSTYMD    =   SPA-SRYYMD )  AND
+      *               同日再診有無
+                      (LNK-ORCSC-RRK-LSTYMD    NOT =   SPACE )
       *            労災には同日再診はないのでチェックなし
                    IF      SPA-HKNKBN          =   1
                        CONTINUE
@@ -2667,6 +2759,7 @@
                       (WRK-KBN2        =   SPACE   )
                    CONTINUE
                ELSE
+      *
       *            電話再診もエラー
                    IF      WRK-KBN         =   "T" OR  "S"
                        MOVE    "8021"          TO  WRK-ERRCD
@@ -2674,6 +2767,15 @@
                        MOVE    "8001"          TO  WRK-ERRCD
                    END-IF
                    MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
+      *            外来診察料の判定（２００床以上）はＯＫとする
+                   IF     (SPA-BEDSUIPN        >=  200 )  AND
+                          (SPA-HOSPSBT         =   1   )
+                       IF      WRK-KAISU           =   3
+                           MOVE    SPACE           TO  WRK-ERRCD
+                           MOVE    SPACE           TO  WRK-COM-CUR
+                                                            (IDX-Z)
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *
@@ -2686,6 +2788,19 @@
                END-IF
            END-IF
       *
+      *    外来診察料の判定（２００床以上）
+           IF     (SPA-BEDSUIPN        >=  200 )  AND
+                  (SPA-HOSPSBT         =   1   )
+               IF      WRK-KAISU           =   3
+                   CONTINUE
+               ELSE
+      *            電話再診はエラーとする
+                   IF      WRK-KBN         =   "T" OR  "S"
+                       MOVE    "8050"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
+                   END-IF
+               END-IF
+           END-IF
            .
        2001-SINSATU-CHK-EXT.
            EXIT.
@@ -2739,6 +2854,7 @@
       *    労災の救急医療管理加算、再診料療養指導料は対象外とする
            IF       WRK-COM-INPUTCD(IDX-Z) =    "101110030"  OR
                                                 "101120030"
+                                           OR   "101110020"
                MOVE    1                   TO  FLG-RSIFLG
            ELSE
                MOVE    ZERO                TO  FLG-RSIFLG
@@ -2899,8 +3015,16 @@
                GO      TO      230-SIDOU-SYOSIN-EXT
            END-IF
       *
+      *    最終退院日がある時、退院日
+           IF     (LNK-ORCSC-TAIINYMD  =   SPACE )  OR
+                  (LNK-ORCSC-TAIINYMD  <=  LNK-ORCSC-SYOYMD)
+               MOVE    LNK-ORCSC-SYOYMD    TO  WRK-SYOYMD
+           ELSE
+               MOVE    LNK-ORCSC-TAIINYMD  TO  WRK-SYOYMD
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-KYUJITU
-           IF      LNK-ORCSC-SYOYMD    =   SPACE
+           IF      WRK-SYOYMD          =   SPACE
                MOVE    SPA-SRYYMD          TO  WRK-KEIYMD
                MOVE    SPA-SRYYMD          TO  WRK-KEIYMDZEN
            ELSE
@@ -2908,7 +3032,8 @@
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
                MOVE    "61"                TO  LNK-DAY6-IRAI
-               MOVE    LNK-ORCSC-SYOYMD    TO  LNK-DAY6-KIJUN
+      ******** MOVE    LNK-ORCSC-SYOYMD    TO  LNK-DAY6-KIJUN
+               MOVE    WRK-SYOYMD          TO  LNK-DAY6-KIJUN
                MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
                MOVE    1                   TO  LNK-DAY6-ZOGEN
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
@@ -2941,19 +3066,6 @@
                    END-IF
                WHEN    WRK-KEIYMD          =   SPA-SRYYMD
                    CONTINUE
-      *********    IF      FLG-SIDOU       =   1
-      *                MOVE    "0034"          TO  SPA-ERRCD
-      *            ELSE
-      *                IF      FLG-KYUJITU     =   ZERO
-      *                    MOVE    "0034"          TO  SPA-ERRCD
-      *                ELSE
-      *                    IF      WRK-COM-KZMFLG (IDX-Z)  =   SPACE
-      *                        MOVE    "1"         TO  WRK-COM-KZMFLG
-      *                                                         (IDX-Z)
-      *                        MOVE    "K002"          TO  SPA-ERRCD
-      *                    END-IF
-      *                END-IF
-      ***********  END-IF
            END-EVALUATE
       *
            IF      SPA-ERRCD       NOT =   SPACE
@@ -2962,48 +3074,48 @@
            .
        230-SIDOU-SYOSIN-EXT.
            EXIT.
-      *
+      *D
       *****************************************************************
       *    老人慢性疾患外来総合診察料との初診日チェック
       *****************************************************************
-       230-ROUMANSEI-SYOSIN-SEC            SECTION.
+      *230-ROUMANSEI-SYOSIN-SEC            SECTION.
       *
-           MOVE    ZERO                TO  FLG-KYUJITU
-           IF      LNK-ORCSC-SYOYMD    =   SPACE
-               MOVE    SPA-SRYYMD          TO  WRK-KEIYMD
-           ELSE
+      *    MOVE    ZERO                TO  FLG-KYUJITU
+      *    IF      LNK-ORCSC-SYOYMD    =   SPACE
+      *        MOVE    SPA-SRYYMD          TO  WRK-KEIYMD
+      *    ELSE
       *        初診料算定日＋１月後
-               MOVE    LNK-ORCSC-SYOYMD    TO  WRK-KEIYMD
-               COMPUTE WRK-KEI-MM          =   WRK-KEI-MM
-                                           +   1
-               IF      WRK-KEI-MM          >   12
-                   MOVE    1                   TO  WRK-KEI-MM
-                   COMPUTE WRK-KEI-YY          =   WRK-KEI-YY
-                                               +   1
-               END-IF
-           END-IF
-           IF      LNK-ORCSC-SYOYMD(7:2)   =   "01"
+      *        MOVE    LNK-ORCSC-SYOYMD    TO  WRK-KEIYMD
+      *        COMPUTE WRK-KEI-MM          =   WRK-KEI-MM
+      *                                    +   1
+      *        IF      WRK-KEI-MM          >   12
+      *            MOVE    1                   TO  WRK-KEI-MM
+      *            COMPUTE WRK-KEI-YY          =   WRK-KEI-YY
+      *                                        +   1
+      *        END-IF
+      *    END-IF
+      *    IF      LNK-ORCSC-SYOYMD(7:2)   =   "01"
       *        初診料算定日が１日の時翌月から
-               IF      WRK-KEIYMD(1:6)     <=  SPA-SRYYMD(1:6)
-                   CONTINUE
-               ELSE
-                   MOVE    "0034"              TO  SPA-ERRCD
-               END-IF
-           ELSE
+      *        IF      WRK-KEIYMD(1:6)     <=  SPA-SRYYMD(1:6)
+      *            CONTINUE
+      *        ELSE
+      *            MOVE    "0034"              TO  SPA-ERRCD
+      *        END-IF
+      *    ELSE
       *        初診料算定日が１日以外の時、翌々月から
-               IF      WRK-KEIYMD(1:6)     <   SPA-SRYYMD(1:6)
-                   CONTINUE
-               ELSE
-                   MOVE    "0065"            TO  SPA-ERRCD
-               END-IF
-           END-IF
+      *        IF      WRK-KEIYMD(1:6)     <   SPA-SRYYMD(1:6)
+      *            CONTINUE
+      *        ELSE
+      *            MOVE    "0065"            TO  SPA-ERRCD
+      *        END-IF
+      *    END-IF
       *
-           IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
-           END-IF
-           .
-       230-ROUMANSEI-SYOSIN-EXT.
-           EXIT.
+      *    IF      SPA-ERRCD       NOT =   SPACE
+      *        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
+      *    END-IF
+      *    .
+      *230-ROUMANSEI-SYOSIN-EXT.
+      *D   EXIT.
       *
       *****************************************************************
       *    特定薬剤治療管理料の算定チェック処理
@@ -3059,6 +3171,12 @@
       *****************************************************************
        20012-GAIKAN-SYORI-SEC       SECTION.
       *
+      *    外来診療料算定時算定なし
+           IF     (SPA-BEDSUIPN        >=  200 )  AND
+                  (SPA-HOSPSBT         =   1   )
+               GO      TO      20012-GAIKAN-SYORI-EXT
+           END-IF
+      *
            IF      FLG-GAIKAN          =   1
                IF      IDX-GAIKAN          >   ZERO
                    MOVE    "0102"              TO  LNK-ORCSC-KIDCD
@@ -3097,6 +3215,12 @@
       *    労災外来管理加算の読み替え処理
       *****************************************************************
        20011-RSIGAIKAN-SYORI-SEC       SECTION.
+      *
+      *    外来診療料算定時算定なし
+           IF     (SPA-BEDSUIPN        >=  200 )  AND
+                  (SPA-HOSPSBT         =   1   )
+               GO    TO      20011-RSIGAIKAN-SYORI-EXT
+           END-IF
       *
       *    アフターケアの時、外来管理加算を算定しない
            IF      SPA-RSI-HKNKBN      =   "3"

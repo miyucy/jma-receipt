@@ -249,6 +249,9 @@
       *厚生大臣が定める患者（外来管理）
            03  WRK-TOKUTEIG-KNJ      PIC  9(01).
       *
+      *    初診算定日
+           03  WRK-SYOYMD              PIC X(08).
+      *
       *    保存用ＳＰＡ
        01  HZN-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
@@ -1205,6 +1208,18 @@
       *        初診料算定時、エラー
                IF      LNK-ORCSC-SYOSIN2       =   1
                    MOVE    "8013"          TO  WRK-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR
+                                                         (IDX-Z)
+                   GO      TO      10013-RSI-SINSATU-CHK-EXT
+               END-IF
+           END-IF
+      *
+      *    救急医療管理加算（入院）入院日のみ
+           IF      WRK-COM-INPUTCD(IDX-Z)  =   "101110020"
+               IF      SPA-SRYYMD          =   LNK-ORCSC-NYUINYMD
+                   CONTINUE
+               ELSE
+                   MOVE    "8022"          TO  WRK-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR
                                                          (IDX-Z)
                    GO      TO      10013-RSI-SINSATU-CHK-EXT
@@ -2807,8 +2822,10 @@
       *    訂正・入院の時、チェックなし
            IF     (LNK-ORCSC-SYORIFLG  =   ZERO )  AND
                   (SPA-NYUGAIKBN       =   "2"  )
-               IF     (LNK-ORCSC-CHK-IDX   >   ZERO       )  AND
-                      (LNK-ORCSC-LSTYMD    =   SPA-SRYYMD )
+              IF     (LNK-ORCSC-CHK-IDX   >   ZERO       )  AND
+                      (LNK-ORCSC-LSTYMD    =   SPA-SRYYMD ) AND
+      *               同日再診有無
+                      (LNK-ORCSC-RRK-LSTYMD    NOT =   SPACE )
       *            労災には同日再診はないのでチェックなし
                    IF      SPA-HKNKBN          =   1
                        CONTINUE
@@ -3018,6 +3035,7 @@
       *    労災の救急医療管理加算、再診料療養指導料は対象外とする
            IF       WRK-COM-INPUTCD(IDX-Z) =    "101110030"  OR
                                                 "101120030"
+                                           OR   "101110020"
                MOVE    1                   TO  FLG-RSIFLG
            ELSE
                MOVE    ZERO                TO  FLG-RSIFLG
@@ -3209,8 +3227,15 @@
                GO      TO      230-SIDOU-SYOSIN-EXT
            END-IF
       *
+      *    最終退院日がある時、退院日
+           IF     (LNK-ORCSC-TAIINYMD  =   SPACE )  OR
+                  (LNK-ORCSC-TAIINYMD  <=  LNK-ORCSC-SYOYMD)
+               MOVE    LNK-ORCSC-SYOYMD    TO  WRK-SYOYMD
+           ELSE
+               MOVE    LNK-ORCSC-TAIINYMD  TO  WRK-SYOYMD
+           END-IF
            MOVE    ZERO                TO  FLG-KYUJITU
-           IF      LNK-ORCSC-SYOYMD    =   SPACE
+           IF      WRK-SYOYMD          =   SPACE
                MOVE    SPA-SRYYMD          TO  WRK-KEIYMD
                MOVE    SPA-SRYYMD          TO  WRK-KEIYMDZEN
            ELSE
@@ -3218,11 +3243,21 @@
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
                MOVE    "61"                TO  LNK-DAY6-IRAI
-               MOVE    LNK-ORCSC-SYOYMD    TO  LNK-DAY6-KIJUN
+      *********MOVE    LNK-ORCSC-SYOYMD    TO  LNK-DAY6-KIJUN
+               MOVE    WRK-SYOYMD          TO  LNK-DAY6-KIJUN
                MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
                MOVE    1                   TO  LNK-DAY6-ZOGEN
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
+      *TEST
+               DISPLAY "C10 LNK-ORCSC-SYOYMD:" LNK-ORCSC-SYOYMD
+                     ",LNK-DAY6-KOYOMI:" LNK-DAY6-KOYOMI
+                     ",LNK-DAY6-KOYOMIZEN:" LNK-DAY6-KOYOMIZEN
+                     ",LNK-DAY6-KOYOMIGO:" LNK-DAY6-KOYOMIGO
+               DISPLAY "C10 LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
+                     ",LNK-DAY6-KEISANZEN:" LNK-DAY6-KEISANZEN
+                     ",LNK-DAY6-KEISANGO:" LNK-DAY6-KEISANGO
+      *TEST
                MOVE    LNK-DAY6-KEISAN     TO  WRK-KEIYMD
                MOVE    LNK-DAY6-KEISANZEN  TO  WRK-KEIYMDZEN
                IF      LNK-DAY6-KEISAN NOT =   LNK-DAY6-KEISANZEN
