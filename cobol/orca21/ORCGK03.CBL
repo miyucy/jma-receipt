@@ -889,10 +889,13 @@
       *    ¼ýÇ¼ÊÔ½¸
            PERFORM 3102-SYUNOU-HEN-SEC
       *
+           COMPUTE WRK-SKYMONEY        =   SPA-GOK-SKYMONEY
+                                       +   SPA-GOK-CHOSEI
+                                       -   SPA-OLD-SKYMONEY
       *    ÀÁµá½ñÈ¯¹Ô¥Õ¥é¥°
            IF     (SPA-GMN-HAKFLG      =   SPACE )  OR
                  ((SPA-GMN-HAKFLG      =   "2"   )  AND
-                  (SPA-GOK-SKYMONEY    =   ZERO  ))
+                  (WRK-SKYMONEY        <=  ZERO  ))
                MOVE    "0"             TO  SPA-GMN-HAKFLG
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1059,11 +1062,11 @@
                   (SPA-IDX-KOUI        >   ZERO)
                COMPUTE WRK-SKYMONEY        =   SPA-MAE-SKYMONEY
                                                     (SPA-SYUNOU-IDX)
-                                           +   SPA-TEI-CHOSEI
+                                           -   SPA-TMAE-CHOSEI
                                                     (SPA-SYUNOU-IDX)
                MOVE    WRK-SKYMONEY        TO  WRK-Z9-1
                COMPUTE WRK-SKYMONEY2       =   SYU-SKYMONEY
-                                           +   SYU-CHOSEI
+                                           -   SYU-CHOSEI
                MOVE    WRK-SKYMONEY2       TO  WRK-Z9-2
                STRING  "ÄûÀµÁ°ÀÁµá³Û¡§"    DELIMITED  BY  SIZE
                        WRK-Z9-1            DELIMITED  BY  SIZE
@@ -1126,19 +1129,26 @@
                    COMPUTE SPA-TEI-SKYMONEY (IDX)
                                            =   SYU-SKYMONEY
                                            -   SYU-CHOSEI
-                                           -  (SPA-MAE-SKYMONEY (IDX)
-                                           -   SPA-TEI-CHOSEI (IDX) )
+                                           -   SPA-MAE-SKYMONEY (IDX)
       *            ¾ÃÈñÀÇ¡ÊºÆ·Ç¡ËÄûÀµº¹³Û
                    COMPUTE SPA-TEI-SKYMONEY-TAX-SAI (IDX)
                                            =   SYU-SKYMONEY-TAX-SAI
                                            -   SPA-MAE-SKYMONEY-TAX-SAI
                                                                 (IDX)
+      *            º£²óÀÁµá³Û
+                   IF      SYU-SKYMONEY    <   SYU-CHOSEI
+                       MOVE    ZERO        TO  SPA-TEIKEI-SKYMONEY (IDX)
+                   ELSE
+                       COMPUTE SPA-TEIKEI-SKYMONEY (IDX)
+                                           =   SYU-SKYMONEY
+                                           -   SYU-CHOSEI
+                   END-IF
       *            ¥¯¥ê¥¢¤Î»þ¡¢¥¼¥í¤È¤¹¤ë
                    IF      SPA-IDX-KOUI        =   ZERO
                        MOVE    ZERO        TO  SPA-TEI-SKYMONEY (IDX)
                        MOVE    ZERO        TO  SPA-TEI-SKYMONEY-TAX-SAI
                                                             (IDX)
-                       MOVE    ZERO        TO  SPA-TEI-CHOSEI (IDX)
+                       MOVE    ZERO        TO  SPA-TMAE-CHOSEI (IDX)
                    END-IF
                END-IF
            END-PERFORM
@@ -1154,21 +1164,28 @@
       *            º£²óÀÁµá³Û ¡Ý Á°²óÀÁµá³Û
       *            ÀÁµá¶â³ÛÄûÀµº¹³Û
                    COMPUTE SPA-TEI-SKYMONEY (IDX)
-                                           =   SYU-SKYMONEY
-                                           -   SYU-CHOSEI
-                                           -  (SPA-MAE-SKYMONEY (IDX)
-                                           -   SPA-TEI-CHOSEI (IDX) )
+                                           =  (SYU-SKYMONEY
+                                           -   SYU-CHOSEI    )
+                                           -   SPA-MAE-SKYMONEY (IDX)
       *            ¾ÃÈñÀÇ¡ÊºÆ·Ç¡ËÄûÀµº¹³Û
                    COMPUTE SPA-TEI-SKYMONEY-TAX-SAI (IDX)
                                            =   SYU-SKYMONEY-TAX-SAI
                                            -   SPA-MAE-SKYMONEY-TAX-SAI
                                                                 (IDX)
+      *            º£²óÀÁµá³Û
+                   IF      SYU-SKYMONEY    <   SYU-CHOSEI
+                       MOVE    ZERO        TO  SPA-TEIKEI-SKYMONEY (IDX)
+                   ELSE
+                       COMPUTE SPA-TEIKEI-SKYMONEY (IDX)
+                                           =   SYU-SKYMONEY
+                                           -   SYU-CHOSEI
+                   END-IF
       *            ¥¯¥ê¥¢¤Î»þ¡¢¥¼¥í¤È¤¹¤ë
                    IF      SPA-IDX-KOUI        =   ZERO
                        MOVE    ZERO        TO  SPA-TEI-SKYMONEY (IDX)
                        MOVE    ZERO        TO  SPA-TEI-SKYMONEY-TAX-SAI
                                                             (IDX)
-                       MOVE    ZERO        TO  SPA-TEI-CHOSEI (IDX)
+                       MOVE    ZERO        TO  SPA-TMAE-CHOSEI (IDX)
                    END-IF
                END-IF
            END-PERFORM
@@ -1205,7 +1222,7 @@
                                        TO  SPA-MAE-SKYMONEY-TAX-SAI
                                                             (IDX)
       *    Ä´À°³Û
-           MOVE    SYU-CHOSEI          TO  SPA-TEI-CHOSEI (IDX)
+           MOVE    SYU-CHOSEI          TO  SPA-TMAE-CHOSEI (IDX)
       *
            .
        31092-SYUNOU-MAE-EXT.
@@ -1247,7 +1264,7 @@
                                            TO  SPA-MAE-SKYMONEY-TAX-SAI
                                                              (IDX)
       *        Ä´À°¶â
-               MOVE    SYUTTL-CHOSEI       TO  SPA-TEI-CHOSEI (IDX)
+               MOVE    SYUTTL-CHOSEI       TO  SPA-TMAE-CHOSEI (IDX)
            ELSE
       *        Æ±¤¸ÊÝ¸±¤ÎÁ°ÀÁµá³Û¤ò²Ã»»¤¹¤ë
                PERFORM VARYING     IDX2    FROM    1   BY  1
@@ -1261,9 +1278,9 @@
                                            TO  SPA-MAE-NYUKIN-TOTAL(IDX)
                        ADD     SPA-MAE-SKYMONEY-TAX-SAI (IDX2)
                                            TO  SPA-MAE-SKYMONEY-TAX-SAI
-                                                                   (IDX)
-                       ADD     SPA-TEI-CHOSEI  (IDX2)
-                                           TO  SPA-TEI-CHOSEI      (IDX)
+                                                                  (IDX)
+                       ADD     SPA-TMAE-CHOSEI  (IDX2)
+                                           TO  SPA-TMAE-CHOSEI    (IDX)
                    END-IF
                END-PERFORM
            END-IF
@@ -1291,9 +1308,10 @@
                                                +   SYU-CHOSEI
                ELSE
       *            ÄûÀµÆþ¶â³Û
-                   COMPUTE WRK-SEIKYU      =   SPA-TEI-SKYMONEY(IDX)
-                                           +   SYU-CHOSEI
-                                           -   SPA-TEI-CHOSEI (IDX)
+                   COMPUTE WRK-SEIKYU      =  (SPA-TEIKEI-SKYMONEY(IDX)
+                                           +   SYU-CHOSEI   )
+                                           -   SPA-MAE-SKYMONEY (IDX)
+      *???                                 -   SPA-TMAE-CHOSEI (IDX)
                END-IF
       *        º£²óÆþ¶â
                IF      WRK-SEIKYU          <   ZERO
@@ -1317,6 +1335,7 @@
            MOVE    ZERO                TO  FLG-FUKU
            INITIALIZE                  WRK-TEISEI-AREA
            MOVE    ZERO                TO  SPA-GOK-NYUKIN
+           MOVE    ZERO                TO  SPA-OLD-SEIKYU
            MOVE    ZERO                TO  SPA-NAI-SEIKYU
            MOVE    ZERO                TO  SPA-NAI-CHOSEI
            MOVE    ZERO                TO  SPA-NAI-SKYMONEY-TAX-SAI
@@ -1347,12 +1366,14 @@
            IF     (SPA-SYUNOU-IDX      >   ZERO ) AND
                   (SPA-DENPNUM         >   ZERO )
       *        ÄûÀµÁ°
-               ADD     SPA-TEI-SKYMONEY(SPA-SYUNOU-IDX)
+               ADD     SPA-TEIKEI-SKYMONEY(SPA-SYUNOU-IDX)
                                            TO  SPA-NAI-SEIKYU
                ADD     SPA-TEI-SKYMONEY-TAX-SAI(SPA-SYUNOU-IDX)
                                            TO  SPA-NAI-SKYMONEY-TAX-SAI
-               ADD     SPA-TEI-CHOSEI  (SPA-SYUNOU-IDX)
+               ADD     SPA-TMAE-CHOSEI (SPA-SYUNOU-IDX)
                                            TO  SPA-NAI-CHOSEI
+               ADD     SPA-MAE-SKYMONEY(SPA-SYUNOU-IDX)
+                                           TO  SPA-OLD-SEIKYU
            END-IF
       *    Á´²Ê¤Î»þ¡¢Ã±ÆÈ²Ê¤ÎÊÝ¸±¤ò½¸·×
            IF      SPA-GMN-SRYKA       =   ZERO
@@ -1413,12 +1434,14 @@
                    IF      SYU-PTID        =   ZERO
                        MOVE    WRK-SYUNOU-REC      TO  SYUNOU-REC
                        IF     (WRK-SYU-DENPNUM     >   ZERO )
-                           ADD     SPA-TEI-SKYMONEY(IDX)
+                           ADD     SPA-TEIKEI-SKYMONEY(IDX)
                                            TO  SPA-NAI-SEIKYU
                            ADD     SPA-TEI-SKYMONEY-TAX-SAI(IDX)
                                            TO  SPA-NAI-SKYMONEY-TAX-SAI
-                           ADD     SPA-TEI-CHOSEI  (IDX)
+                           ADD     SPA-TMAE-CHOSEI  (IDX)
                                            TO  SPA-NAI-CHOSEI
+                           ADD     SPA-MAE-SKYMONEY(IDX)
+                                           TO  SPA-OLD-SEIKYU
                        END-IF
                    ELSE
                        PERFORM 31000-SYUNOU-ADD-SEC
@@ -1482,19 +1505,21 @@
                                            TO  SYU-RSIJIBAI-SKYMONEY
       *
       *ÄûÀµÁ°
-           ADD     SPA-MAE-SKYMONEY(IDX)   TO  WRK-SKYMONEY
-           ADD     SPA-MAE-NYUKIN-TOTAL(IDX)
-                                           TO  WRK-NYUKIN-TOTAL
-           ADD     SPA-MAE-SKYMONEY-TAX-SAI(IDX)
-                                           TO  WRK-SKYMONEY-TAX-SAI
+      *    ADD     SPA-MAE-SKYMONEY(IDX)   TO  WRK-SKYMONEY
+      *    ADD     SPA-MAE-NYUKIN-TOTAL(IDX)
+      *                                    TO  WRK-NYUKIN-TOTAL
+      *    ADD     SPA-MAE-SKYMONEY-TAX-SAI(IDX)
+      *                                    TO  WRK-SKYMONEY-TAX-SAI
            IF     (WRK-SYU-DENPNUM     >   ZERO )
       *        ÄûÀµÁ°
-               ADD     SPA-TEI-SKYMONEY(IDX)
+               ADD     SPA-TEIKEI-SKYMONEY(IDX)
                                            TO  SPA-NAI-SEIKYU
                ADD     SPA-TEI-SKYMONEY-TAX-SAI(IDX)
                                            TO  SPA-NAI-SKYMONEY-TAX-SAI
-               ADD     SPA-TEI-CHOSEI  (IDX)
+               ADD     SPA-TMAE-CHOSEI  (IDX)
                                            TO  SPA-NAI-CHOSEI
+               ADD     SPA-MAE-SKYMONEY(IDX)
+                                           TO  SPA-OLD-SEIKYU
            END-IF
       *
             .
@@ -2009,9 +2034,9 @@
        3101-SEIKYU-KEI-SEC                  SECTION.
       *
       *    º£²óÀÁµá³Û
-           COMPUTE SPA-GMN-SEIKYU      =   SPA-NAI-SEIKYU
-                                       +   SPA-GMN-CHOSEI
-                                       -   SPA-NAI-CHOSEI
+           COMPUTE SPA-GMN-SEIKYU      =  (SPA-NAI-SEIKYU
+                                       +   SPA-GMN-CHOSEI )
+                                       -   SPA-OLD-SEIKYU
       *
       *    º£²óÆþ¶â
            IF      SPA-GMN-SEIKYU      <   ZERO
@@ -2035,7 +2060,7 @@
            MOVE    ZERO            TO  SPA-GOK-NYUKIN
            MOVE    ZERO            TO  SPA-GOK-CHOSEI
            MOVE    ZERO            TO  SPA-GOK-SKYMONEY
-           MOVE    ZERO            TO  WRK-MAE-CHOSEI
+           MOVE    ZERO            TO  SPA-OLD-SKYMONEY
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYUNOU-MAX
                MOVE    SPA-SYUNOU-REC (IDX)    TO  WRK-SYUNOU-REC
@@ -2045,18 +2070,24 @@
                    IF     WRK-SYU-DENPNUM      =   ZERO
                        ADD    WRK-SYU-SKYMONEY     TO  SPA-GOK-SKYMONEY
                    ELSE
-                       ADD    SPA-TEI-SKYMONEY(IDX)
+                       ADD    SPA-TEIKEI-SKYMONEY(IDX)
                                                    TO  SPA-GOK-SKYMONEY
-                       ADD    SPA-TEI-CHOSEI(IDX)  TO  WRK-MAE-CHOSEI
+                       ADD    SPA-MAE-SKYMONEY(IDX)
+                                                   TO  SPA-OLD-SKYMONEY
                    END-IF
                END-IF
            END-PERFORM
-           COMPUTE SPA-GOK-CHOSEI      =   SPA-GOK-CHOSEI
-                                       -   WRK-MAE-CHOSEI
       *    ¹ç·×ÀÁµá³Û
-           COMPUTE SPA-GMN-SEIGOK      =   SPA-GOK-SKYMONEY
-                                       +   SPA-GOK-CHOSEI
+           IF      SPA-OLD-SKYMONEY    NOT =   ZERO
+               COMPUTE SPA-GMN-SEIGOK  =  (SPA-GOK-SKYMONEY
+                                       +   SPA-GOK-CHOSEI )
+                                       -   SPA-OLD-SKYMONEY
                                        +   SPA-GMN-ZENMISYU
+           ELSE
+               COMPUTE SPA-GMN-SEIGOK  =  (SPA-GOK-SKYMONEY
+                                       +   SPA-GOK-CHOSEI )
+                                       +   SPA-GMN-ZENMISYU
+           END-IF
            .
        3103-NYUKIN-KEI-EXT.
            EXIT.
@@ -3033,8 +3064,9 @@
        310512-NYUKIN-JYUTOU-SEC           SECTION.
       *
       *    º£²óÀÁµá³Û¹ç·×
-           COMPUTE WRK-SEIKYU          =   SPA-GOK-SKYMONEY
-                                       +   SPA-GOK-CHOSEI
+           COMPUTE WRK-SEIKYU          =  (SPA-GOK-SKYMONEY
+                                       +   SPA-GOK-CHOSEI )
+                                       -   SPA-OLD-SKYMONEY
            IF      SPA-GMN-NYUKINKBN   =   "2"  OR  "3"
       *        Æþ¶â³Û¡Ýº£²óÀÁµá³Û
       *        IF      SPA-GMN-SEIKYU      <   SPA-GMN-NYUKIN
@@ -3109,8 +3141,9 @@
       *****************************************************************
        31050-NYUKIN-SYOKICHK-SEC           SECTION.
       *
-           COMPUTE WRK-SEIKYU          =   SPA-GOK-SKYMONEY
-                                       +   SPA-GOK-CHOSEI
+           COMPUTE WRK-SEIKYU          =  (SPA-GOK-SKYMONEY
+                                       +   SPA-GOK-CHOSEI )
+                                       -   SPA-OLD-SKYMONEY
       *
            IF    ((SPA-GMN-HKNCOMBI    NOT =   ZERO )  AND
                   (SPA-GMN-SRYKA       NOT =   ZERO ))  OR
@@ -3180,11 +3213,11 @@
                            COMPUTE WRK-SKYMONEY    =   SYU-SKYMONEY
                                                    +   SYU-CHOSEI
                        ELSE
-                           COMPUTE WRK-SKYMONEY    =   SPA-TEI-SKYMONEY
-                                                                (IDX)
-                                                   +   SYU-CHOSEI
-                                                   -   SPA-TEI-CHOSEI
-                                                                (IDX)
+                           COMPUTE WRK-SKYMONEY
+                                               =  (SPA-TEIKEI-SKYMONEY
+                                                                  (IDX)
+                                               +   SYU-CHOSEI   )
+                                               -   SPA-MAE-SKYMONEY(IDX)
                        END-IF
                        IF      WRK-SKYMONEY    <=  WRK-NYUKIN
                            MOVE    WRK-SKYMONEY    TO  SYU-NYUKIN-TOTAL
@@ -3255,7 +3288,6 @@
       *            º£²óÀÁµá³Û¤¬¥¼¥í°Ê¾å¤Ç¤¢¤ë¤³¤È
                    COMPUTE WRK-SEIKYU      =   SPA-GMN-CHOSEI
                                            +   SPA-NAI-SEIKYU
-                                           -   SPA-NAI-CHOSEI
                    IF     (WRK-SEIKYU          <   ZERO )  AND
                           (SPA-NAI-SEIKYU      >   ZERO )
                        MOVE    "0004"                  TO  SPA-ERRCD
@@ -3277,19 +3309,10 @@
       *****************************************************************
        4101-CHOSEI-HENKOU-SEC              SECTION.
       *
-           IF      SPA-SYORIFLG        =   1
-               IF      SPA-GOK-SKYMONEY    <   SPA-NAI-SEIKYU
-                   MOVE    ZERO            TO  WRK-SEIKYU
-               ELSE
-                   MOVE    SPA-NAI-SEIKYU  TO  WRK-SEIKYU
-               END-IF
-           ELSE
-               MOVE    SPA-NAI-SEIKYU      TO  WRK-SEIKYU
-           END-IF
       *    º£²óÀÁµá³Û
-           COMPUTE SPA-GMN-SEIKYU      =   WRK-SEIKYU
-                                       +   SPA-GMN-CHOSEI
-                                       -   SPA-NAI-CHOSEI
+           COMPUTE SPA-GMN-SEIKYU      =  (SPA-NAI-SEIKYU
+                                       +   SPA-GMN-CHOSEI )
+                                       -   SPA-OLD-SEIKYU
            IF      SPA-GMN-SEIKYU      <   ZERO
                MOVE    ZERO            TO  SPA-GMN-NYUKIN
            ELSE
@@ -4087,11 +4110,11 @@
            MOVE    SPA-SYUNOU-MAX      TO  ORCSCGAIRAI-SYUNOU-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYUNOU-MAX
-      *        ÄûÀµ¤Î»þ¡¢ÀÁµá³Û¤«¤éÁ°²óÄ´À°³Û¤ò°ú¤¯
+      *        ÄûÀµ¤Î»þ¡¢ÀÁµá³Û¤ÎºÆ¥»¥Ã¥È
                MOVE    SPA-SYUNOU-REC(IDX) TO  SYUNOU-REC
                IF      SYU-DENPNUM     NOT =   ZERO
-                   COMPUTE SYU-SKYMONEY    =   SYU-SKYMONEY
-                                           -   SPA-TEI-CHOSEI  (IDX)
+                   MOVE    SPA-TEIKEI-SKYMONEY(IDX)
+                                           TO  SYU-SKYMONEY
                    MOVE    SYUNOU-REC      TO  SPA-SYUNOU-REC(IDX)
                END-IF
            END-PERFORM
@@ -4122,8 +4145,9 @@
        450011-NYUKIN-KEISAN-SEC           SECTION.
       *
       *    º£²óÀÁµá³Û¹ç·×
-           COMPUTE WRK-SEIKYU          =   SPA-GOK-SKYMONEY
-                                       +   SPA-GOK-CHOSEI
+           COMPUTE WRK-SEIKYU          =  (SPA-GOK-SKYMONEY
+                                       +   SPA-GOK-CHOSEI )
+                                       -   SPA-OLD-SKYMONEY
       *
            IF      SPA-GMN-NYUKINKBN   =   "2"  OR  "3"
       *        Æþ¶â³Û¡Ýº£²óÀÁµá³Û
