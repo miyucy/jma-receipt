@@ -37,11 +37,11 @@
       *管理テーブル
            03  SYS-1034-TBL.
       *県番号
-               05  SYS-1034-PRTNM-TBL   OCCURS  10.
+               05  SYS-1034-PRTNM-TBL   OCCURS  20.
       *点数表区分
                    07  SYS-1034-PRTNM   PIC  X(16).
       *予備
-           03                           PIC  X(340).
+           03                           PIC  X(180).
       *端末ＩＤ
            03  SYS-1034-TERMID          PIC  X(16).
       *オペーレータＩＤ
