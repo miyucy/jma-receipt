@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    02.09.09  自賠責対応
+      *  01.00.02    NACL-門脇    02.11.21  自賠責（ポリネック等の対応）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1363,7 +1364,8 @@
       *
                        IF  ( ACCT-SRYKBN         =  "80"    ) AND
                            ( SRY-SRYCD(IDY)(1:5) =  "09591" 
-                                                 OR "09592" )
+                                                 OR "09592" 
+                                                 OR "09593" )           
                                COMPUTE  WRK-TEN-JI   =  TNS-TEN / 10
                                COMPUTE  TBL-SYUTEN-JI(ID1)  =
                                         TBL-SYUTEN-JI(ID1)  -
