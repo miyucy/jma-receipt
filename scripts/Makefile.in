@@ -53,7 +53,7 @@ ruby_scripts = $(ruby_sources:.rb.in=.rb)
 .SUFFIXES: .sh.in .sh .rb.in .rb
 
 .sh.in.sh: 
-	sed -e 's,\@sysconfdir\@,$(sysconfdir),g' \
+	sed -e 's,\@jma-receipt-env\@,$(sysconfdir)\/jma-receipt\.env,g' \
 	$< > $@
 
 all:   \

@@ -1,6 +1,6 @@
 #! /bin/sh
 
-. @sysconfdir@/jma-receipt.env
+. @jma-receipt-env@
 
 echo DATADIR = $DATADIR
 echo FORMDIR = $FORMDIR
@@ -14,9 +14,16 @@ echo SITEDIR=$SITEDIR
 echo SITESRCDIR=$SITESRCDIR
 echo SITELIBDIR=$SITELIBDIR
 
-echo DBSTUB = $DBSTUB
+echo SITERECORDDIR=$SITERECORDDIR
+echo SITELDDEFDIR=$SITELDDEFDIR
 
-#example
+echo DBSTUB = $DBSTUB
+echo DBHOST = $DBHOST
+
+# example
 echo $DBSTUB -record $RECORDDIR -dir $LDDERDIR/directory -bddir $LDDEFDIR -db orca -bd orcabt ORCBQ01 -parameter
+
+# CHIHOUKOUHI example
+echo $DBSTUB -host $DBHOST -record $SITERECORDDIR -dir $LDDEFDIR/directory -bddir $SITELDDEFDIR -db orca  -bd shimane ORCBS321 -parameter $1
 
 exit 0

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. @sysconfdir@/jma-receipt.env
+. @jma-receipt-env@
 
 # compile COBOL programs
 for f in `ls ${SITESRCDIR}/cobol`; do
@@ -21,7 +21,7 @@ for d in scripts/daily scripts/kaisei scripts/monthly scripts/kentan; do
   if test -d "${SITESRCDIR}/${d}"; then
     mkdir -p "${SITEDIR}/${d}"
     for f in `ls ${SITESRCDIR}/${d}`; do 
-      sed -e 's,\@sysconfdir\@,@sysconfdir@,g' \
+      sed -e 's,\@jma-receipt-env\@,@jma-receipt-env@,g' \
       < "${SITESRCDIR}/${d}/${f}" > "${SITEDIR}/${d}/${f}"
     done
   fi

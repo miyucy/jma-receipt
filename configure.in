@@ -8,9 +8,9 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
 AC_ARG_WITH(sitedir,
-	    [  --with-sitedir=DIR      site libraries in DIR [PREFIX/site-lib]],
+	    [  --with-sitedir=DIR      site libraries in DIR [PREFIX]],
             [sitedir=$withval],
-            [sitedir='${prefix}/site-lib'])
+            [sitedir='${prefix}'])
 
 AC_ARG_WITH(sitesrcdir,
 	    [  --with-sitesrcdir=DIR      site libraries in DIR [PREFIX/site-src]],
@@ -18,9 +18,9 @@ AC_ARG_WITH(sitesrcdir,
             [sitesrcdir='${prefix}/site-src'])
 
 AC_ARG_WITH(sitelibdir,
-	    [  --with-sitelibdir=DIR      site libraries in DIR [PREFIX/site-lib/lib]],
+	    [  --with-sitelibdir=DIR      site libraries in DIR [PREFIX/lib]],
             [sitelibdir=$withval],
-            [sitelibdir='${prefix}/site-lib/lib'])
+            [sitelibdir='${prefix}/lib'])
 
 AC_SUBST(sitedir)dnl
 AC_SUBST(sitesrcdir)dnl
