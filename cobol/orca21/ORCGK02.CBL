@@ -12890,7 +12890,6 @@
                                         MCPDATA-REC
            IF      MCP-RC              =   ZERO
                CONTINUE
-               DISPLAY "K02 WKSRYACT INS :"  MCP-RC ",KEY:" WKSRY-KEY
            ELSE
                MOVE    "0090"              TO  SPA-ERRCD
                DISPLAY "K02 WKSRYACT INS ERR:"  MCP-RC
