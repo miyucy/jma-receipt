@@ -841,20 +841,20 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL     ( IDX         >   20          )
                    OR        ( IDX         >   SPA-TSY-MAX )
-               MOVE    SPACE               TO  LNK-TSY-KEY-O   (IDX)
+      *********MOVE    SPACE               TO  LNK-TSY-KEY-O   (IDX)
       *        初期表示時の所得レコード数以内の場合
-               IF  IDX                     <=  WRK-TSY-MAX
+               IF      IDX                 <=  WRK-TSY-MAX
       *            削除データの場合
                    IF  SPA-GMN24-TSYDELKBN(IDX)   =   "1"
                        MOVE    ALL "9"     TO  LNK-TSY-UPYMD      (IDX)
                    ELSE
-      *                変更前キー転送
-                       MOVE    LNK-TSY-HOSPID (IDX)
-                                           TO  LNK-TSY-HOSPID-O   (IDX)
-                       MOVE    LNK-TSY-PTID   (IDX)
-                                           TO  LNK-TSY-PTID-O     (IDX)
-                       MOVE    LNK-TSY-NINSTYMD (IDX)
-                                           TO  LNK-TSY-NINSTYMD-O (IDX)
+      **************   変更前キー転送
+      *                MOVE    LNK-TSY-HOSPID (IDX)
+      *                                    TO  LNK-TSY-HOSPID-O   (IDX)
+      *                MOVE    LNK-TSY-PTID   (IDX)
+      *                                    TO  LNK-TSY-PTID-O     (IDX)
+      *                MOVE    LNK-TSY-NINSTYMD (IDX)
+      **************                       TO  LNK-TSY-NINSTYMD-O (IDX)
       *                認定期間変更時、変更年月日・更新年月日転送
                        IF  ( SPA-GMN24-TSYDPSTYMD(IDX)
                                    NOT =   LNK-TSY-NINSTYMD(IDX)) OR
@@ -974,20 +974,20 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL     ( IDX         >   10          )
                    OR        ( IDX         >   SPA-TNK-MAX )
-               MOVE    SPACE               TO  LNK-TNK-KEY-O(IDX)
+      *********MOVE    SPACE               TO  LNK-TNK-KEY-O(IDX)
       *        初期表示時の所得レコード数以内の場合
                IF  IDX                     <=  WRK-TNK-MAX
       *            削除データの場合
                    IF  SPA-GMN24-TNKDELKBN(IDX)   =   "1"
                        MOVE    ALL "9"     TO  LNK-TNK-UPYMD   (IDX)
                    ELSE
-      *                変更前キー転送
-                       MOVE    LNK-TNK-HOSPID (IDX)
-                                           TO  LNK-TNK-HOSPID-O(IDX)
-                       MOVE    LNK-TNK-PTID (IDX)
-                                           TO  LNK-TNK-PTID-O  (IDX)
-                       MOVE    LNK-TNK-STYMD (IDX)
-                                           TO  LNK-TNK-STYMD-O (IDX)
+      ************     変更前キー転送
+      *                MOVE    LNK-TNK-HOSPID (IDX)
+      *                                    TO  LNK-TNK-HOSPID-O(IDX)
+      *                MOVE    LNK-TNK-PTID (IDX)
+      *                                    TO  LNK-TNK-PTID-O  (IDX)
+      *                MOVE    LNK-TNK-STYMD (IDX)
+      ************                         TO  LNK-TNK-STYMD-O (IDX)
       *                認定期間変更時、変更年月日・更新年月日転送
                        IF  (SPA-GMN24-TNKDPSTYMD(IDX)
                                    NOT =   LNK-TNK-STYMD(IDX))  OR

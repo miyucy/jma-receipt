@@ -1234,7 +1234,6 @@
            MOVE    PARA-DATA-REC       TO  TSYRRK-REC
            MOVE    SPA-GMN-PTID        TO  TSYRRK-PTID
       *
-      *
            EVALUATE    TRUE
       *    ºï½ü
            WHEN    ( TSYRRK-UPYMD      =   ALL "9" )
@@ -1245,10 +1244,10 @@
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
-               IF      MCP-RC      NOT =   ZERO
+      *!       IF      MCP-RC      NOT =   ZERO
                    DISPLAY "P029 TSYRRK DEL ERR:" MCP-RC
                           ",KEY:" TSYRRK-KEY
-               END-IF
+      *!       END-IF
       *    ÊÑ¹¹
            WHEN    ( TSYRRK-NINSTYMD-O     NOT =   SPACE )
                MOVE    TSYRRK-REC      TO  MCPDATA-REC

@@ -1811,6 +1811,11 @@
                INITIALIZE                      PARA-REC
                MOVE    "TSYRRK"            TO  PARA-FILEMEI
                MOVE    IDX                 TO  PARA-EDANUM
+      *        更新キーを編集する
+               MOVE    TSYRRK-HOSPID       TO  TSYRRK-HOSPID-O
+               MOVE    TSYRRK-PTID         TO  TSYRRK-PTID-O
+               MOVE    TSYRRK-NINSTYMD     TO  TSYRRK-NINSTYMD-O
+      *
                MOVE    TSYRRK-REC          TO  PARA-DATA-REC
                PERFORM 400-PARA-INSERT-SEC
       *********WRITE   PARA-REC
@@ -1850,6 +1855,11 @@
                INITIALIZE                      PARA-REC
                MOVE    "TNKRRK"            TO  PARA-FILEMEI
                MOVE    IDX                 TO  PARA-EDANUM
+      *        更新キーを編集する
+               MOVE    TNKRRK-HOSPID       TO  TNKRRK-HOSPID-O
+               MOVE    TNKRRK-PTID         TO  TNKRRK-PTID-O
+               MOVE    TNKRRK-STYMD        TO  TNKRRK-STYMD-O
+      *
                MOVE    TNKRRK-REC          TO  PARA-DATA-REC
                PERFORM 400-PARA-INSERT-SEC
       *********WRITE   PARA-REC
