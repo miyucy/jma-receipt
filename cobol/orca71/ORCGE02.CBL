@@ -157,9 +157,11 @@
                05  WK-TBL-MSG-C    PIC X(128).
                05  WK-TBL-BTN-C    PIC X(001).
        01  WK-TBL3.
-           03  WK-TBL-MSG-D     PIC X(128).
-           03  WK-TBL-SW-CNT    PIC 9(003).
-           03  WK-TBL-SW-SW     PIC X(001).
+           03  WK-TBL-MSG-D        PIC X(128).
+           03  WK-TBL-SW-CNT       PIC 9(003).
+           03  WK-TBL-SW-SW        PIC X(001).
+       01  WK-ARE0.
+           03  WK-SRYYM            PIC X(006).
       *
       *    シェル用領域
            COPY    "CPSHELLTBL.INC".
@@ -187,6 +189,8 @@
            COPY    "CPORCMCP.INC".
       *
       *   日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
            COPY    "CPORCSGDAY.INC".
       *
       *****************************************************************
@@ -349,7 +353,7 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
            END-IF.
       *
-           MOVE    1                       TO  SPA-GMN-CUR.
+           MOVE    ZERO                    TO  SPA-GMN-CUR.
       *
            PERFORM 310-SPASET-SEC.
       *
@@ -371,7 +375,7 @@
       *
            MOVE    SPA-MOTOPG          TO  SPA-NAI-MOTOPG.
       *
-           MOVE    1                   TO  SPA-GMN-CUR.
+           MOVE    ZERO                TO  SPA-GMN-CUR.
       *
            MOVE    1                   TO  SPA-GMN-PAGE.
       *
@@ -435,7 +439,7 @@
                WHEN      ANY           ALSO    "CLIST2"
                    PERFORM T-000-CLST2CHK-SEC
                WHEN    OTHER
-                   MOVE    1               TO  SPA-GMN-CUR
+                   MOVE    ZERO            TO  SPA-GMN-CUR
            END-EVALUATE.
       *
        200-GMNSENI-EXT.
@@ -462,7 +466,7 @@
                WHEN      ANY           ALSO    "CLIST2"
                    PERFORM T-000-CLST2CHK-SEC
                WHEN    OTHER
-                   MOVE    1               TO  SPA-GMN-CUR
+                   MOVE    ZERO            TO  SPA-GMN-CUR
            END-EVALUATE.
       *
        200-ENTRY-EXT.
@@ -556,7 +560,12 @@
       *****************************************************************
        5011-MAPCUR-SEC              SECTION.
       *
-           MOVE    "B12"           TO  MCP-WIDGET.
+           EVALUATE    SPA-GMN-CUR
+               WHEN    01
+                   MOVE    "SRYYM"         TO  MCP-WIDGET
+               WHEN    OTHER
+                   MOVE    "B12"           TO  MCP-WIDGET
+           END-EVALUATE.
       *
        5011-MAPCUR-EXT.
            EXIT.
@@ -712,12 +721,15 @@
                MOVE    E02-SRYYM(1:6)      TO  SPA-GMN-SRYYM
            ELSE
                MOVE    SPACE               TO  SPA-GMN-SRYYM
+               MOVE    SPACE               TO  WK-SRYYM
            END-IF.
       *
            IF  SPA-GMN-SRYYM =  "******"
                MOVE    SPACE               TO  SPA-GMN-SRYYM
+               MOVE    SPACE               TO  WK-SRYYM
            END-IF.
       *
+           MOVE    ZERO                TO  SPA-GMN-CUR.
            IF  SPA-GMN-SRYYM NOT =  SPACE
                INITIALIZE                  ORCSGDAYAREA
                MOVE    "1"                 TO  SGDAY-INTYPE
@@ -725,10 +737,28 @@
                CALL    "ORCSGDAY"          USING   ORCSGDAYAREA
                IF  SGDAY-RC   =   ZERO
                    MOVE    SPACE               TO  SPA-ERRCD
+                   MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-SRYYM
+                   MOVE    SGDAY-SDAY(1:6)     TO  WK-SRYYM
+                   INITIALIZE                  STS-AREA-DAY
+                   INITIALIZE                  LNK-DAY1-AREA
+                   MOVE    ZERO                TO  LNK-DAY1-YMD
+                   MOVE    "11"                TO  LNK-DAY1-IRAI
+                   MOVE    SGDAY-SDAY(1:6)     TO  LNK-DAY1-YMD-X(1:6)
+                   MOVE    "01"                TO  LNK-DAY1-YMD-X(7:2)
+                   CALL    "ORCSDAY"             USING   STS-AREA-DAY
+                                                         LNK-DAY1-AREA
+                   IF  STS-DAY-RC1   NOT =   ZERO
+                       MOVE    "0003"              TO  SPA-ERRCD
+                       MOVE    01                  TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-SRYYM
+                   END-IF
                ELSE
                    MOVE    "0003"              TO  SPA-ERRCD
+                   MOVE    01                  TO  SPA-GMN-CUR
                END-IF
            END-IF.
+      *
        T-000-SNENCHEK-EXT.
            EXIT.
       *
@@ -1112,18 +1142,27 @@
            IF      STS-EIE01         =   ZERO
               READ    EIE01-FILE
                       NOT  AT  END
-                           MOVE    EIE01-REC(1:6)
-                                   TO  SPA-GMN-SRYYM
+                           MOVE    EIE01-REC(1:6)     TO  SPA-GMN-SRYYM
+                           IF  EIE01-REC(1:6) NOT =  SPACE
+                               INITIALIZE             ORCSGDAYAREA
+                               MOVE    "1"            TO  SGDAY-INTYPE
+                               MOVE    EIE01-REC(1:6) TO  SGDAY-INDAY
+                               CALL    "ORCSGDAY"  USING   ORCSGDAYAREA
+                               IF  SGDAY-RC   =   ZERO
+                                   MOVE    SGDAY-OTDAY(1:6)
+                                                      TO  SPA-GMN-SRYYM
+                               END-IF
+                           END-IF
+                           MOVE    EIE01-REC(1:6)  TO  WK-SRYYM
                            MOVE    EIE01-REC(8:128)
-                                   TO  SPA-GMN-FILE-ID
+                                                   TO  SPA-GMN-FILE-ID
                            MOVE    EIE01-REC(137:64)
-                                   TO  SPA-GMN-FILE-KEY
+                                                   TO  SPA-GMN-FILE-KEY
                            PERFORM VARYING IDX1  FROM  1  BY 1
                                    UNTIL   IDX1  >   500
                                READ    EIE01-FILE
                                  AT   END
-                                      MOVE    501
-                                              TO  IDX1
+                                      MOVE    501          TO  IDX1
                                  NOT  AT  END
                                    IF      EIE01-REC(1:8)  NOT =
                                                            "SRYYM***"
@@ -1151,12 +1190,9 @@
            PERFORM VARYING IDX1  FROM  1  BY 1
                    UNTIL   IDX1  >    60
                IF      WK-TBL-MSG (IDX1)  NOT =  SPACE
-                   MOVE    WK-TBL-MSG (IDX1)
-                           TO  EIE00-REC(1:20)
-                   MOVE    WK-TBL-KBN1 (IDX1)
-                           TO  EIE00-REC(22:1)
-                   MOVE    WK-TBL-KBN2 (IDX1)
-                           TO  EIE00-REC(24:1)
+                   MOVE    WK-TBL-MSG (IDX1)       TO  EIE00-REC(1:20)
+                   MOVE    WK-TBL-KBN1 (IDX1)      TO  EIE00-REC(22:1)
+                   MOVE    WK-TBL-KBN2 (IDX1)      TO  EIE00-REC(24:1)
                    WRITE   EIE00-REC
                END-IF
            END-PERFORM.
@@ -1174,7 +1210,7 @@
            OPEN    OUTPUT                  EIE01-FILE.
       *
            MOVE    SPACE                   TO  EIE01-REC.
-           MOVE    SPA-GMN-SRYYM           TO  EIE01-REC.
+           MOVE    WK-SRYYM                TO  EIE01-REC.
            MOVE    SPA-GMN-FILE-ID         TO  EIE01-REC(8:128).
            MOVE    SPA-GMN-FILE-KEY        TO  EIE01-REC(137:64).
            WRITE   EIE01-REC.
@@ -1286,13 +1322,11 @@
                PERFORM UNTIL   FLG-FIL  =    1
                    READ    EIE02-FILE
                            AT   END
-                                MOVE    1
-                                        TO  FLG-FIL
+                                MOVE    1     TO  FLG-FIL
                            NOT  AT  END
                                 MOVE    EIE02-REC
-                                        TO  WK-TBL-MSG-C (IDX4)
-                                MOVE    "F"
-                                        TO  WK-TBL-BTN-C (IDX4)
+                                              TO  WK-TBL-MSG-C (IDX4)
+                                MOVE    "F"   TO  WK-TBL-BTN-C (IDX4)
                                 COMPUTE   IDX4 = IDX4 + 1
                    END-READ
                END-PERFORM
