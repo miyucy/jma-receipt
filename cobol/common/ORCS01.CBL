@@ -3841,6 +3841,11 @@
                MOVE    "1"            TO      FLG-YAKFTN
            END-IF.
       *
+      *    Ï·¿ÍÊÝ¸±¼õµë¼Ô¡Ê£¶£µºÍ°Ê¾å´Þ¤à¡Ë
+           IF     FLG-KOUREI-KBN   =    "1"
+               MOVE    "1"            TO      FLG-YAKFTN
+           END-IF.
+      *
        YAKFTN-HANTEI-EXT.
            EXIT.
       *
