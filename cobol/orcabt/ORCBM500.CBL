@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-藤原    04/03/18  対象が無い場合のエラー表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -38,22 +39,22 @@
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
                                    FILE    STATUS  IS  STS-RECE30.
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
-006900*
-007000 DATA                    DIVISION.
-007100 FILE                    SECTION.
+      *
+       DATA                    DIVISION.
+       FILE                    SECTION.
       *
       *    レセプト電算ファイル  
        FD  RECE30-FILE.
        01  RECE30-R         PIC X(200).
       *     
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
-010200 WORKING-STORAGE             SECTION.
+       WORKING-STORAGE             SECTION.
       *     レセプト電算ファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01//
@@ -66,20 +67,20 @@
                                    BY         //RECEERR//.
            03                      PIC X(04)   VALUE   ".dat".
       *
-018000*    フラグ領域
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE30              PIC X(02).
            03  STS-RECEERR             PIC X(02).
       *
-018100 01  FLG-AREA.
+       01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-RECEDEN             PIC 9(01).
            03  FLG-RECE10              PIC 9(01).
-020700*
-020800*    カウント領域
-020900 01  CNT-AREA.
-021000     03  CNT-IN                  PIC 9(06).
+      *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-IN                  PIC 9(06).
            03  CNT-OUT                 PIC 9(06).
            03  CNT-RECEDEN             PIC 9(06).
            03  CNT-RECE10              PIC 9(06).
@@ -105,8 +106,8 @@
        01  SUM-AREA                                VALUE   ZERO.
            03  SUM-TOTALKENSU         PIC 9(06).
            03  SUM-TOTALTEN         PIC 9(10).
-024000*
-024100*    一時領域
+      *
+      *    一時領域
       *    パラメタエリア
        01  WRK-AREA.
            COPY    "CPORCSPRTLNK.INC".
@@ -511,6 +512,15 @@
                                        MCPDATA-REC
       *
            CLOSE   RECE30-FILE
+      *
+      *???
+           DISPLAY "CNT=" CNT-RECEDEN "#"
+      *???
+           IF      CNT-RECEDEN         =   ZERO
+               MOVE    "処理対象のデータがありませんでした"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
