@@ -2194,7 +2194,7 @@
                MOVE    ZERO                  TO  SUM-AREA  
                PERFORM   VARYING   IDX   FROM    4   BY  1
                          UNTIL     IDX       >   10
-                         OR        RECE62-NYUKHNRYO (IDX)    >   ZERO
+                         OR        RECE62-NYUKHNRYO (IDX)    =   ZERO
       *            <日数>
                    ADD     RECE62-NYUKHNNISSU(IDX)
                                                  TO  SUM-NYUKHNNISSU
@@ -2280,7 +2280,7 @@
                MOVE    ZERO                  TO  SUM-AREA  
                PERFORM   VARYING   IDX   FROM    4   BY  1
                          UNTIL     IDX       >   10
-                         OR        RECE62-NYUTOKRYO (IDX)    >   ZERO
+                         OR        RECE62-NYUTOKRYO (IDX)    =   ZERO
       *            <日数>
                    ADD     RECE62-NYUTOKNISSU(IDX)
                                                  TO  SUM-NYUKHNNISSU
