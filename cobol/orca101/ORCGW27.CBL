@@ -69,6 +69,7 @@
            03  IDX2                                PIC 9(05).
            03  IDX3                                PIC 9(05).
            03  IDX4                                PIC 9(05).
+           03  IDX5                                PIC 9(05).
            03  IDXI                                PIC 9(05).
       *
       *    ∞Ïª˛ŒŒ∞Ë
@@ -115,6 +116,10 @@
            03  WRK-BTU-NAME                PIC X(20).
            03  WRK-SELNUM                  PIC 9(03).
            03  WRK-SRYCD                   PIC X(09).
+           03  WRK-SEL-CNT                 PIC 9(05).
+           03  WRK-SEL-IDX                 PIC 9(05).
+      *    ∆˛Œœπ‡Ã‹Ãæ
+           03  WRK-MCP-WIDGET              PIC X(64).
       *
       *    ∏«ƒÍ√ÕŒŒ∞Ë
        01  CONST-AREA.
@@ -565,6 +570,8 @@
       *****************************************************************
        200-GMNSENI                           SECTION.
       *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+      *
            EVALUATE    MCP-EVENT       ALSO      MCP-WIDGET
       *    Ã·§Î
            WHEN    "CLICKED"       ALSO    "B01"
@@ -590,6 +597,9 @@
            WHEN    "CLICKED"       ALSO    "CHK_SNR_RYOYO2"
            WHEN    "CLICKED"       ALSO    "CHK_HOSYASEN"
            WHEN    "CLICKED"       ALSO    "CHK_RYOYO"
+           WHEN    "CLICKED"       ALSO    "CHK_BTU_RYOYO1"
+           WHEN    "CLICKED"       ALSO    "CHK_BTU_RYOYO2"
+           WHEN    "CLICKED"       ALSO    "CHK_BTU_RYOYO3"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
       *
       *        ∆˛Œœ∏ƒΩÍ§Œ•ª•√•»
@@ -606,6 +616,8 @@
       *    ≤Òœ√°°ΩËÕ˝
       *****************************************************************
        200-ENTRY                             SECTION.
+      *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
       *    …¬≈ÔÃææŒ
@@ -689,6 +701,13 @@
                                    TO  SPA-GMN-W27-CHK-HOSYASEN
       *    Œ≈Õ‹¥ƒ∂≠≤√ªª
            MOVE    W27-CHK-RYOYO   TO  SPA-GMN-W27-CHK-RYOYO
+      *
+      *    Œ≈Õ‹…¬≈Ô¥ƒ∂≠≤√ªª
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   3 )
+               MOVE    W27-CHK-BTU-RYOYO (IDX1)
+                                   TO  SPA-GMN-W27-CHK-BTU-RYOYO (IDX1)
+           END-PERFORM
       *
            .
       *
@@ -911,6 +930,15 @@
                MOVE    "2"         TO  SYS-5002-RYOYO-KBN
            END-IF
       *
+      *    Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   3 )
+               IF    ( SPA-GMN-W27-CHK-BTU-RYOYO  (IDX1)  =   "F" )
+                   MOVE    "1"     TO  SYS-5002-BTU-RYOYO-KBN (IDX1)
+               ELSE
+                   MOVE    "2"     TO  SYS-5002-BTU-RYOYO-KBN (IDX1)
+               END-IF
+           END-PERFORM
            .
       *
        4811-BRM-KSN-EDIT-EXT.
@@ -1185,6 +1213,30 @@
                MOVE    "F"     TO  SPA-GMN-W27-CHK-RYOYO
            END-IF
       *
+      *    Œ≈Õ‹…¬≈Ô¥ƒ∂≠≤√ªª£±
+           IF    ( SPA-GMN-W27-TBTU-RYOYO-KBN (IDXI 1)
+                                                       =   "2" )
+               MOVE    "T"     TO  SPA-GMN-W27-CHK-BTU-RYOYO (1)
+           ELSE
+               MOVE    "F"     TO  SPA-GMN-W27-CHK-BTU-RYOYO (1)
+           END-IF
+      *
+      *    Œ≈Õ‹…¬≈Ô¥ƒ∂≠≤√ªª£≤
+           IF    ( SPA-GMN-W27-TBTU-RYOYO-KBN (IDXI 2)
+                                                       =   "2" )
+               MOVE    "T"     TO  SPA-GMN-W27-CHK-BTU-RYOYO (2)
+           ELSE
+               MOVE    "F"     TO  SPA-GMN-W27-CHK-BTU-RYOYO (2)
+           END-IF
+      *
+      *    Œ≈Õ‹…¬≈Ô¥ƒ∂≠≤√ªª£≥
+           IF    ( SPA-GMN-W27-TBTU-RYOYO-KBN (IDXI 3)
+                                                       =   "2" )
+               MOVE    "T"     TO  SPA-GMN-W27-CHK-BTU-RYOYO (3)
+           ELSE
+               MOVE    "F"     TO  SPA-GMN-W27-CHK-BTU-RYOYO (3)
+           END-IF
+      *
            .
       *
        4100-INPUT-AREA-EDIT-EXT.
@@ -1351,6 +1403,20 @@
                                        TO  SPA-GMN-W27-TRYOYO-KBN
                                                                  (IDX1)
       *
+
+      *        Œ≈Õ‹…¬≈Ô¥ƒ∂≠≤√ªª£±
+               MOVE    SYS-5002-BTU-RYOYO-KBN (1)
+                                       TO  SPA-GMN-W27-TBTU-RYOYO-KBN
+                                                           (IDX1 1)
+      *        Œ≈Õ‹…¬≈Ô¥ƒ∂≠≤√ªª£≤
+               MOVE    SYS-5002-BTU-RYOYO-KBN (2)
+                                       TO  SPA-GMN-W27-TBTU-RYOYO-KBN
+                                                           (IDX1 2)
+      *        Œ≈Õ‹…¬≈Ô¥ƒ∂≠≤√ªª£≥
+               MOVE    SYS-5002-BTU-RYOYO-KBN (3)
+                                       TO  SPA-GMN-W27-TBTU-RYOYO-KBN
+                                                           (IDX1 3)
+      *
       *        …¬ººæ Û∆…§ﬂπ˛§ﬂ
                MOVE    "SYSKANRI-KEY4" TO  WRK-DBPATH
                PERFORM 900-TBL-READ-SEC
@@ -1409,6 +1475,12 @@
       *
       *    Œ≈Õ‹¥ƒ∂≠≤√ªª
            PERFORM 4100-A219-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4100-SSTKIJUN-CHK-EXT
+           END-IF
+      *
+      *    Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª
+           PERFORM 4100-A222-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4100-SSTKIJUN-CHK-EXT
            END-IF
@@ -1616,6 +1688,107 @@
        4100-A219-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    Œ≈Õ‹…¬≈Ô¥ƒ∂≠≤√ªª•¡•ß•√•ØΩËÕ˝
+      *****************************************************************
+       4100-A222-CHK-SEC               SECTION.
+      *
+           IF  ( SPA-GMN-W27-CHK-BTU-RYOYO (1)     =   "T" )
+      *        ≤√ªª≤ƒ«Ω§´•¡•ß•√•Ø
+               MOVE    SYS-5002-BTU-RYOYO-CD (1)
+                                   TO  WRK-SRYCD
+               PERFORM 4100-TENSU-SEL-SEC
+      *
+               MOVE    WRK-NYUKSNKBN
+                                   TO  WRK-KSN-NYUKSNKBN
+      *
+               PERFORM 4100-NYUKSN-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+      *
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-BTU-RYOYO (1)
+      *
+                   MOVE    9       TO  SPA-GMN-W27-CUR
+                   GO  TO  4100-A222-CHK-EXT
+               END-IF
+      *
+      *        ª‹¿ﬂ¥Ω‡§Ú•¡•ß•√•Ø
+               IF    ( SYS-1006-SSTKIJUN (090) =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    9       TO  SPA-GMN-W27-CUR
+      *
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-BTU-RYOYO (1)
+      *
+                   MOVE    "0003"  TO  SPA-ERRCD
+                   GO  TO  4100-A222-CHK-EXT
+               END-IF
+           END-IF
+      *
+           IF  ( SPA-GMN-W27-CHK-BTU-RYOYO (2)     =   "T" )
+      *        ≤√ªª≤ƒ«Ω§´•¡•ß•√•Ø
+               MOVE    SYS-5002-BTU-RYOYO-CD (2)
+                                   TO  WRK-SRYCD
+               PERFORM 4100-TENSU-SEL-SEC
+      *
+               MOVE    WRK-NYUKSNKBN
+                                   TO  WRK-KSN-NYUKSNKBN
+      *
+               PERFORM 4100-NYUKSN-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+      *
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-BTU-RYOYO (2)
+      *
+                   MOVE    10      TO  SPA-GMN-W27-CUR
+                   GO  TO  4100-A222-CHK-EXT
+               END-IF
+      *
+      *        ª‹¿ﬂ¥Ω‡§Ú•¡•ß•√•Ø
+               IF    ( SYS-1006-SSTKIJUN (091) =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    10      TO  SPA-GMN-W27-CUR
+                   MOVE    "0003"  TO  SPA-ERRCD
+      *
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-BTU-RYOYO (2)
+      *
+                   GO  TO  4100-A222-CHK-EXT
+               END-IF
+           END-IF
+      *
+           IF  ( SPA-GMN-W27-CHK-BTU-RYOYO (3)     =   "T" )
+      *        ≤√ªª≤ƒ«Ω§´•¡•ß•√•Ø
+               MOVE    SYS-5002-BTU-RYOYO-CD (3)
+                                   TO  WRK-SRYCD
+               PERFORM 4100-TENSU-SEL-SEC
+      *
+               MOVE    WRK-NYUKSNKBN
+                                   TO  WRK-KSN-NYUKSNKBN
+      *
+               PERFORM 4100-NYUKSN-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+      *
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-BTU-RYOYO (3)
+      *
+                   MOVE    11      TO  SPA-GMN-W27-CUR
+                   GO  TO  4100-A222-CHK-EXT
+               END-IF
+      *
+      *        ª‹¿ﬂ¥Ω‡§Ú•¡•ß•√•Ø
+               IF    ( SYS-1006-SSTKIJUN (110) =   1 )
+                   CONTINUE
+               ELSE
+                   MOVE    11      TO  SPA-GMN-W27-CUR
+                   MOVE    "0003"  TO  SPA-ERRCD
+      *
+                   MOVE    "F"     TO  SPA-GMN-W27-CHK-BTU-RYOYO (3)
+      *
+                   GO  TO  4100-A222-CHK-EXT
+               END-IF
+           END-IF
+      *
+           .
+       4100-A222-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    …¬≈Ôæ Û∏°∫˜ΩËÕ˝
       *****************************************************************
        4100-SYS-5001-SEL-SEC           SECTION.
@@ -1811,6 +1984,9 @@
                                        SPA-GMN-W27-CHK-SNR-RYOYO (2)
                                        SPA-GMN-W27-CHK-HOSYASEN
                                        SPA-GMN-W27-CHK-RYOYO
+                                       SPA-GMN-W27-CHK-BTU-RYOYO (1)
+                                       SPA-GMN-W27-CHK-BTU-RYOYO (2)
+                                       SPA-GMN-W27-CHK-BTU-RYOYO (3)
       *
            .
        4201-CHK-BTN-CLEAR-EXT.
@@ -1915,6 +2091,24 @@
       *
            END-IF
       *
+      *
+      *    Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª§Œ£±£≤£≥§Œ§§§∫§Ï§´§Œ§ﬂ
+      *    ¡™¬Ú§µ§Ï§∆§§§Î§≥§»
+           INITIALIZE  WRK-SEL-CNT
+                       WRK-SEL-IDX
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   3 )
+               IF    ( SPA-GMN-W27-CHK-BTU-RYOYO (IDX1)    =   "T" )
+                   COMPUTE WRK-SEL-CNT =   WRK-SEL-CNT     +   1
+                   MOVE    IDX1        TO  WRK-SEL-IDX
+               END-IF
+           END-PERFORM
+      *
+           IF    ( WRK-SEL-CNT     >   1 )
+               COMPUTE SPA-GMN-W27-CUR =   WRK-SEL-IDX +   8
+               MOVE    "1006"          TO  SPA-ERRCD
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
            .
       *
        4900-KANRENCHK-EXT.
@@ -1985,6 +2179,13 @@
                                            TO  W27-CHK-HOSYASEN
       *    Œ≈Õ‹¥ƒ∂≠≤√ªª
            MOVE    SPA-GMN-W27-CHK-RYOYO   TO  W27-CHK-RYOYO
+      *
+      *    Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   3 )
+               MOVE    SPA-GMN-W27-CHK-BTU-RYOYO (IDX1)
+                                   TO  W27-CHK-BTU-RYOYO (IDX1)
+           END-PERFORM
       *
       *    …¬ººæ Û•Í•π•»ŒŒ∞Ë
            MOVE    SPA-GMN-W27-BRMLST-CNT  TO  W27-BRMLST-CNT
@@ -2092,6 +2293,12 @@
                MOVE    "CHK_HOSYASEN"      TO  MCP-WIDGET
            WHEN    008
                MOVE    "CHK_RYOYO"         TO  MCP-WIDGET
+           WHEN    009
+               MOVE    "CHK_BTU_RYOYO1"    TO  MCP-WIDGET
+           WHEN    010
+               MOVE    "CHK_BTU_RYOYO2"    TO  MCP-WIDGET
+           WHEN    011
+               MOVE    "CHK_BTU_RYOYO3"    TO  MCP-WIDGET
            WHEN    100
                MOVE    "KJNYMD"            TO  MCP-WIDGET
            WHEN    212
@@ -2107,7 +2314,7 @@
       *****************************************************************
        5011-INPUT-CUR-SEC          SECTION.
       *
-           EVALUATE    MCP-WIDGET
+           EVALUATE    WRK-MCP-WIDGET
            WHEN    "BTU_NAME"
                MOVE    001             TO  SPA-GMN-W27-CUR
            WHEN    "STSELNUM"
@@ -2124,11 +2331,17 @@
                MOVE    007             TO  SPA-GMN-W27-CUR
            WHEN    "CHK_RYOYO"
                MOVE    008             TO  SPA-GMN-W27-CUR
+           WHEN    "CHK_BTU_RYOYO1"
+               MOVE    009             TO  SPA-GMN-W27-CUR
+           WHEN    "CHK_BTU_RYOYO2"
+               MOVE    010             TO  SPA-GMN-W27-CUR
+           WHEN    "CHK_BTU_RYOYO3"
+               MOVE    011             TO  SPA-GMN-W27-CUR
            END-EVALUATE
       *
       *    º°•´°º•Ω•Î∞Ã√÷§Ú¿ﬂƒÍ
-           EVALUATE    MCP-WIDGET
-           WHEN    "CHK_RYOYO"
+           EVALUATE    WRK-MCP-WIDGET
+           WHEN    "CHK_BTU_RYOYO3"
                MOVE    212             TO  SPA-GMN-W27-CUR
            WHEN    OTHER
                COMPUTE SPA-GMN-W27-CUR =   SPA-GMN-W27-CUR
@@ -2198,6 +2411,11 @@
                MOVE    "ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤Œ≈Õ‹¥ƒ∂≠≤√ªª£±§»£≤§œ∆±ª˛§À"
                                        TO  SPA-ERRMSG (1 : 40)
                MOVE    "≤√ªª§«§≠§ﬁ§ª§Û"
+                                       TO  SPA-ERRMSG (41 : )
+           WHEN    "1006"
+               MOVE    "Œ≈Õ‹…¬≈ÔŒ≈Õ‹¥ƒ∂≠≤√ªª§œ§§§∫§Ï§´£±§ƒ§Œ§ﬂ¡™"
+                                       TO  SPA-ERRMSG (1 : 40)
+               MOVE    "¬Ú§∑§∆§Ø§¿§µ§§"
                                        TO  SPA-ERRMSG (41 : )
            WHEN    "1201"
                MOVE    "ππø∑§«§≠§ﬁ§ª§Û§«§∑§ø"

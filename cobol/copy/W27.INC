@@ -45,3 +45,4 @@
               04  W27-CHK-SNR-RYOYO        PIC X   OCCURS  2.
               04  W27-CHK-HOSYASEN         PIC X.
               04  W27-CHK-RYOYO            PIC X.
+              04  W27-CHK-BTU-RYOYO        PIC X   OCCURS  3.

@@ -552,6 +552,8 @@
       *****************************************************************
        200-GMNSENI                           SECTION.
       *
+           MOVE    MCP-WIDGET              TO  WRK-MCP-WIDGET
+      *
            EVALUATE    MCP-EVENT       ALSO      MCP-WIDGET
       *    Ìá¤ë
            WHEN    "CLICKED"       ALSO    "B01"
@@ -575,9 +577,9 @@
       *    Æþ±¡²Ã»»¾ðÊó
            WHEN    "CLICKED"       ALSO    "CHK_NANBYO"
            WHEN    "CLICKED"       ALSO    "CHK_TOKUSYU"
-           WHEN    "CLICKED"       ALSO    "CHK_YORYO1"
-           WHEN    "CLICKED"       ALSO    "CHK_YORYO2"
-           WHEN    "CLICKED"       ALSO    "CHK_YORYO3"
+      *    WHEN    "CLICKED"       ALSO    "CHK_YORYO1"
+      *    WHEN    "CLICKED"       ALSO    "CHK_YORYO2"
+      *    WHEN    "CLICKED"       ALSO    "CHK_YORYO3"
            WHEN    "CLICKED"       ALSO    "CHK_JIDO"
            WHEN    "CLICKED"       ALSO    "CHK_SEISIN"
            WHEN    "CLICKED"       ALSO    "CHK_KANGO1"
@@ -680,11 +682,11 @@
            MOVE    W26-CHK-TOKUSYU TO  SPA-GMN-W26-CHK-TOKUSYU
       *
       *    ÎÅÍÜÉÂÅï´Ä¶­²Ã»»
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   3 )
-               MOVE    W26-CHK-YORYO (IDX1)
-                                   TO  SPA-GMN-W26-CHK-YORYO (IDX1)
-           END-PERFORM
+      *    PERFORM VARYING IDX1    FROM    1   BY  1
+      *            UNTIL ( IDX1    >   3 )
+      *        MOVE    W26-CHK-YORYO (IDX1)
+      *                            TO  SPA-GMN-W26-CHK-YORYO (IDX1)
+      *    END-PERFORM
       *
       *    »ùÆ¸¡¦»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»
            MOVE    W26-CHK-JIDO    TO  SPA-GMN-W26-CHK-JIDO
@@ -884,16 +886,16 @@
            END-IF
       *
       *    ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   3 )
+      *    PERFORM VARYING IDX1    FROM    1   BY  1
+      *            UNTIL ( IDX1    >   3 )
       *        MOVE    CONST-YORYOCD (IDX1)
       *                            TO  SYS-5001-YORYO-CD (IDX1)
-               IF    ( SPA-GMN-W26-CHK-YORYO  (IDX1)  =   "F" )
-                   MOVE    "1"         TO  SYS-5001-YORYO-KBN (IDX1)
-               ELSE
-                   MOVE    "2"         TO  SYS-5001-YORYO-KBN (IDX1)
-               END-IF
-           END-PERFORM
+      *        IF    ( SPA-GMN-W26-CHK-YORYO  (IDX1)  =   "F" )
+      *            MOVE    "1"         TO  SYS-5001-YORYO-KBN (IDX1)
+      *        ELSE
+      *            MOVE    "2"         TO  SYS-5001-YORYO-KBN (IDX1)
+      *        END-IF
+      *    END-PERFORM
       *
       *    »ùÆ¸¡¦»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»
       *    MOVE    CONST-JIDOCD        TO  SYS-5001-JIDO-CD
@@ -1123,6 +1125,7 @@
            MOVE    WRK-HENYMDG     TO  SPA-GMN-W26-STYUKYMD
            MOVE    WRK-SYMD        TO  SPA-GMN-W26-STYUKYMD-S
       *
+      *
       *    Í­¸ú´ü´Ö½ªÎ»Æü
            MOVE    SYS-5001-EDYUKYMD
                                    TO  WRK-YMD
@@ -1144,14 +1147,14 @@
                MOVE    "F"         TO  SPA-GMN-W26-CHK-TOKUSYU
            END-IF
       *    ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   3 )
-               IF    ( SYS-5001-YORYO-KBN (IDX1)   =   2 )
-                   MOVE    "T"     TO  SPA-GMN-W26-CHK-YORYO (IDX1)
-               ELSE
-                   MOVE    "F"     TO  SPA-GMN-W26-CHK-YORYO (IDX1)
-               END-IF
-           END-PERFORM
+      *    PERFORM VARYING IDX1    FROM    1   BY  1
+      *            UNTIL ( IDX1    >   3 )
+      *        IF    ( SYS-5001-YORYO-KBN (IDX1)   =   2 )
+      *            MOVE    "T"     TO  SPA-GMN-W26-CHK-YORYO (IDX1)
+      *        ELSE
+      *            MOVE    "F"     TO  SPA-GMN-W26-CHK-YORYO (IDX1)
+      *        END-IF
+      *    END-PERFORM
       *    »ùÆ¸¡¦»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»
            IF    ( SYS-5001-JIDO-KBN   =   2 )
                MOVE    "T"     TO  SPA-GMN-W26-CHK-JIDO
@@ -1214,10 +1217,10 @@
            END-IF
       *
       *    ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»
-           PERFORM 4100-A222-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4100-SSTKIJUN-CHK-EXT
-           END-IF
+      *    PERFORM 4100-A222-CHK-SEC
+      *    IF    ( SPA-ERRCD   NOT =   SPACE )
+      *        GO  TO  4100-SSTKIJUN-CHK-EXT
+      *    END-IF
       *
       *    »ùÆ¸¡¦»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»
            PERFORM 4100-A231-CHK-SEC
@@ -1344,104 +1347,104 @@
       *****************************************************************
       *    ÎÅÍÜÉÂÅï´Ä¶­²Ã»»¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
-       4100-A222-CHK-SEC               SECTION.
+      *4100-A222-CHK-SEC               SECTION.
       *
-           IF  ( SPA-GMN-W26-CHK-YORYO (1)     =   "T" )
+      *    IF  ( SPA-GMN-W26-CHK-YORYO (1)     =   "T" )
       *        ²Ã»»²ÄÇ½¤«¥Á¥§¥Ã¥¯
-               MOVE    SYS-5001-YORYO-CD (1)
-                                   TO  WRK-SRYCD
-               PERFORM 4100-TENSU-SEL-SEC
+      *        MOVE    SYS-5001-YORYO-CD (1)
+      *                            TO  WRK-SRYCD
+      *        PERFORM 4100-TENSU-SEL-SEC
       *
-               MOVE    WRK-NYUKSNKBN
-                                   TO  WRK-KSN-NYUKSNKBN
+      *        MOVE    WRK-NYUKSNKBN
+      *                            TO  WRK-KSN-NYUKSNKBN
       *
-               PERFORM 4100-NYUKSN-CHK-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
+      *        PERFORM 4100-NYUKSN-CHK-SEC
+      *        IF    ( SPA-ERRCD   NOT =   SPACE )
       *
-                   MOVE    "F"     TO  SPA-GMN-W26-CHK-YORYO (1)
+      *            MOVE    "F"     TO  SPA-GMN-W26-CHK-YORYO (1)
       *
-                   MOVE    4       TO  SPA-GMN-W26-CUR
-                   GO  TO  4100-A222-CHK-EXT
-               END-IF
+      *            MOVE    4       TO  SPA-GMN-W26-CUR
+      *            GO  TO  4100-A222-CHK-EXT
+      *        END-IF
       *
       *        »ÜÀß´ð½à¤ò¥Á¥§¥Ã¥¯
-               IF    ( SYS-1006-SSTKIJUN (090) =   1 )
-                   CONTINUE
-               ELSE
-                   MOVE    4       TO  SPA-GMN-W26-CUR
+      *        IF    ( SYS-1006-SSTKIJUN (090) =   1 )
+      *            CONTINUE
+      *        ELSE
+      *            MOVE    4       TO  SPA-GMN-W26-CUR
       *
-                   MOVE    "F"     TO  SPA-GMN-W26-CHK-YORYO (1)
+      *            MOVE    "F"     TO  SPA-GMN-W26-CHK-YORYO (1)
       *
-                   MOVE    "0003"  TO  SPA-ERRCD
-                   GO  TO  4100-A222-CHK-EXT
-               END-IF
-           END-IF
+      *            MOVE    "0003"  TO  SPA-ERRCD
+      *            GO  TO  4100-A222-CHK-EXT
+      *        END-IF
+      *    END-IF
       *
-           IF  ( SPA-GMN-W26-CHK-YORYO (2)     =   "T" )
+      *    IF  ( SPA-GMN-W26-CHK-YORYO (2)     =   "T" )
       *        ²Ã»»²ÄÇ½¤«¥Á¥§¥Ã¥¯
-               MOVE    SYS-5001-YORYO-CD (2)
-                                   TO  WRK-SRYCD
-               PERFORM 4100-TENSU-SEL-SEC
+      *        MOVE    SYS-5001-YORYO-CD (2)
+      *                            TO  WRK-SRYCD
+      *        PERFORM 4100-TENSU-SEL-SEC
       *
-               MOVE    WRK-NYUKSNKBN
-                                   TO  WRK-KSN-NYUKSNKBN
+      *        MOVE    WRK-NYUKSNKBN
+      *                            TO  WRK-KSN-NYUKSNKBN
       *
-               PERFORM 4100-NYUKSN-CHK-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
+      *        PERFORM 4100-NYUKSN-CHK-SEC
+      *        IF    ( SPA-ERRCD   NOT =   SPACE )
       *
-                   MOVE    "F"     TO  SPA-GMN-W26-CHK-YORYO (2)
+      *            MOVE    "F"     TO  SPA-GMN-W26-CHK-YORYO (2)
       *
-                   MOVE    5       TO  SPA-GMN-W26-CUR
-                   GO  TO  4100-A222-CHK-EXT
-               END-IF
+      *            MOVE    5       TO  SPA-GMN-W26-CUR
+      *            GO  TO  4100-A222-CHK-EXT
+      *        END-IF
       *
       *        »ÜÀß´ð½à¤ò¥Á¥§¥Ã¥¯
-               IF    ( SYS-1006-SSTKIJUN (091) =   1 )
-                   CONTINUE
-               ELSE
-                   MOVE    5       TO  SPA-GMN-W26-CUR
-                   MOVE    "0003"  TO  SPA-ERRCD
+      *        IF    ( SYS-1006-SSTKIJUN (091) =   1 )
+      *            CONTINUE
+      *        ELSE
+      *            MOVE    5       TO  SPA-GMN-W26-CUR
+      *            MOVE    "0003"  TO  SPA-ERRCD
       *
-                   MOVE    "F"     TO  SPA-GMN-W26-CHK-YORYO (2)
+      *            MOVE    "F"     TO  SPA-GMN-W26-CHK-YORYO (2)
       *
-                   GO  TO  4100-A222-CHK-EXT
-               END-IF
-           END-IF
+      *            GO  TO  4100-A222-CHK-EXT
+      *        END-IF
+      *    END-IF
       *
-           IF  ( SPA-GMN-W26-CHK-YORYO (3)     =   "T" )
+      *    IF  ( SPA-GMN-W26-CHK-YORYO (3)     =   "T" )
       *        ²Ã»»²ÄÇ½¤«¥Á¥§¥Ã¥¯
-               MOVE    SYS-5001-YORYO-CD (3)
-                                   TO  WRK-SRYCD
-               PERFORM 4100-TENSU-SEL-SEC
+      *        MOVE    SYS-5001-YORYO-CD (3)
+      *                            TO  WRK-SRYCD
+      *        PERFORM 4100-TENSU-SEL-SEC
       *
-               MOVE    WRK-NYUKSNKBN
-                                   TO  WRK-KSN-NYUKSNKBN
+      *        MOVE    WRK-NYUKSNKBN
+      *                            TO  WRK-KSN-NYUKSNKBN
       *
-               PERFORM 4100-NYUKSN-CHK-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
+      *        PERFORM 4100-NYUKSN-CHK-SEC
+      *        IF    ( SPA-ERRCD   NOT =   SPACE )
       *
-                   MOVE    "F"     TO  SPA-GMN-W26-CHK-YORYO (3)
+      *            MOVE    "F"     TO  SPA-GMN-W26-CHK-YORYO (3)
       *
-                   MOVE    6       TO  SPA-GMN-W26-CUR
-                   GO  TO  4100-A222-CHK-EXT
-               END-IF
+      *            MOVE    6       TO  SPA-GMN-W26-CUR
+      *            GO  TO  4100-A222-CHK-EXT
+      *        END-IF
       *
       *        »ÜÀß´ð½à¤ò¥Á¥§¥Ã¥¯
-               IF    ( SYS-1006-SSTKIJUN (110) =   1 )
-                   CONTINUE
-               ELSE
-                   MOVE    6       TO  SPA-GMN-W26-CUR
-                   MOVE    "0003"  TO  SPA-ERRCD
+      *        IF    ( SYS-1006-SSTKIJUN (110) =   1 )
+      *            CONTINUE
+      *        ELSE
+      *            MOVE    6       TO  SPA-GMN-W26-CUR
+      *            MOVE    "0003"  TO  SPA-ERRCD
       *
-                   MOVE    "F"     TO  SPA-GMN-W26-CHK-YORYO (3)
+      *            MOVE    "F"     TO  SPA-GMN-W26-CHK-YORYO (3)
       *
-                   GO  TO  4100-A222-CHK-EXT
-               END-IF
-           END-IF
+      *            GO  TO  4100-A222-CHK-EXT
+      *        END-IF
+      *    END-IF
       *
-           .
-       4100-A222-CHK-EXT.
-           EXIT.
+      *    .
+      *4100-A222-CHK-EXT.
+      *    EXIT.
       *****************************************************************
       *    »ùÆ¸¡¦»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
@@ -1767,9 +1770,9 @@
       *
            MOVE   "F"              TO  SPA-GMN-W26-CHK-NANBYO
                                        SPA-GMN-W26-CHK-TOKUSYU
-                                       SPA-GMN-W26-CHK-YORYO (1)
-                                       SPA-GMN-W26-CHK-YORYO (2)
-                                       SPA-GMN-W26-CHK-YORYO (3)
+      *                                SPA-GMN-W26-CHK-YORYO (1)
+      *                                SPA-GMN-W26-CHK-YORYO (2)
+      *                                SPA-GMN-W26-CHK-YORYO (3)
                                        SPA-GMN-W26-CHK-JIDO
                                        SPA-GMN-W26-CHK-SEISIN
                                        SPA-GMN-W26-CHK-KANGO (1)
@@ -1831,23 +1834,23 @@
       *
       *    ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»¤Î£±£²£³¤Î¤¤¤º¤ì¤«¤Î¤ß
       *    ÁªÂò¤µ¤ì¤Æ¤¤¤ë¤³¤È
-           INITIALIZE  WRK-SEL-CNT
-                       WRK-SEL-IDX
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   3 )
+      *    INITIALIZE  WRK-SEL-CNT
+      *                WRK-SEL-IDX
+      *    PERFORM VARYING IDX1    FROM    1   BY  1
+      *            UNTIL ( IDX1    >   3 )
       *
-               IF    ( SPA-GMN-W26-CHK-YORYO (IDX1)    =   "T" )
-                   COMPUTE WRK-SEL-CNT =   WRK-SEL-CNT +   1
-                   MOVE    IDX1        TO  WRK-SEL-IDX
-               END-IF
+      *        IF    ( SPA-GMN-W26-CHK-YORYO (IDX1)    =   "T" )
+      *            COMPUTE WRK-SEL-CNT =   WRK-SEL-CNT +   1
+      *            MOVE    IDX1        TO  WRK-SEL-IDX
+      *        END-IF
       *
-           END-PERFORM
+      *    END-PERFORM
       *
-           IF    ( WRK-SEL-CNT     >   1 )
-               COMPUTE SPA-GMN-W26-CUR =   WRK-SEL-IDX +   3
-               MOVE    "1002"          TO  SPA-ERRCD
-               GO  TO  4900-KANRENCHK-EXT
-           END-IF
+      *    IF    ( WRK-SEL-CNT     >   1 )
+      *        COMPUTE SPA-GMN-W26-CUR =   WRK-SEL-IDX +   3
+      *        MOVE    "1002"          TO  SPA-ERRCD
+      *        GO  TO  4900-KANRENCHK-EXT
+      *    END-IF
       *
       *    ´Ç¸îÇÛÃÖ²Ã»»¤Î£±£²£³£´£µ¤Î¤¤¤º¤ì¤«¤Î¤ß
       *    ÁªÂò¤µ¤ì¤Æ¤¤¤ë¤³¤È
@@ -1932,11 +1935,11 @@
            MOVE     SPA-GMN-W26-CHK-TOKUSYU
                                    TO  W26-CHK-TOKUSYU
       *    ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   3 )
-               MOVE    SPA-GMN-W26-CHK-YORYO (IDX1)
-                                   TO  W26-CHK-YORYO (IDX1)
-           END-PERFORM
+      *    PERFORM VARYING IDX1    FROM    1   BY  1
+      *            UNTIL ( IDX1    >   3 )
+      *        MOVE    SPA-GMN-W26-CHK-YORYO (IDX1)
+      *                            TO  W26-CHK-YORYO (IDX1)
+      *    END-PERFORM
       *
       *    »ùÆ¸¡¦»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»
            MOVE    SPA-GMN-W26-CHK-JIDO
@@ -1996,9 +1999,9 @@
            MOVE    SPA-GMN-W26-STATE   TO  W26-B12-STATE
                                            W26-CHK-NANBYO-STATE
                                            W26-CHK-TOKUSYU-STATE
-                                           W26-CHK-YORYO-STATE (1)
-                                           W26-CHK-YORYO-STATE (2)
-                                           W26-CHK-YORYO-STATE (3)
+      *                                    W26-CHK-YORYO-STATE (1)
+      *                                    W26-CHK-YORYO-STATE (2)
+      *                                    W26-CHK-YORYO-STATE (3)
                                            W26-CHK-JIDO-STATE
                                            W26-CHK-SEISIN-STATE
                                            W26-CHK-KANGO-STATE (1)
@@ -2015,6 +2018,7 @@
       *    ²èÌÌ¥«¡¼¥½¥ë¥»¥Ã¥È½èÍý
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
+      *
       *
            IF     (SPA-ERRCD           =   SPACE)  AND
                   (SPA-GMN-W26-CUR     =   ZERO )
@@ -2035,12 +2039,12 @@
                MOVE    "CHK_NANBYO"    TO  MCP-WIDGET
            WHEN    003
                MOVE    "CHK_TOKUSYU"   TO  MCP-WIDGET
-           WHEN    004
-               MOVE    "CHK_YORYO1"    TO  MCP-WIDGET
-           WHEN    005
-               MOVE    "CHK_YORYO2"    TO  MCP-WIDGET
-           WHEN    006
-               MOVE    "CHK_YORYO3"    TO  MCP-WIDGET
+      *    WHEN    004
+      *        MOVE    "CHK_YORYO1"    TO  MCP-WIDGET
+      *    WHEN    005
+      *        MOVE    "CHK_YORYO2"    TO  MCP-WIDGET
+      *    WHEN    006
+      *        MOVE    "CHK_YORYO3"    TO  MCP-WIDGET
            WHEN    007
                MOVE    "CHK_JIDO"      TO  MCP-WIDGET
            WHEN    008
@@ -2070,6 +2074,7 @@
       *****************************************************************
        5011-INPUT-CUR-SEC          SECTION.
       *
+      *
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "BTU_NAME"
                MOVE    001             TO  SPA-GMN-W26-CUR
@@ -2077,12 +2082,12 @@
                MOVE    002             TO  SPA-GMN-W26-CUR
            WHEN    "CHK_TOKUSYU"
                MOVE    003             TO  SPA-GMN-W26-CUR
-           WHEN    "CHK_YORYO1"
-               MOVE    004             TO  SPA-GMN-W26-CUR
-           WHEN    "CHK_YORYO2"
-               MOVE    005             TO  SPA-GMN-W26-CUR
-           WHEN    "CHK_YORYO3"
-               MOVE    006             TO  SPA-GMN-W26-CUR
+      *    WHEN    "CHK_YORYO1"
+      *        MOVE    004             TO  SPA-GMN-W26-CUR
+      *    WHEN    "CHK_YORYO2"
+      *        MOVE    005             TO  SPA-GMN-W26-CUR
+      *    WHEN    "CHK_YORYO3"
+      *        MOVE    006             TO  SPA-GMN-W26-CUR
            WHEN    "CHK_JIDO"
                MOVE    007             TO  SPA-GMN-W26-CUR
            WHEN    "CHK_SEISIN"
@@ -2100,7 +2105,9 @@
            END-EVALUATE
       *
       *    ¼¡¥«¡¼¥½¥ë°ÌÃÖ¤òÀßÄê
-           EVALUATE    MCP-WIDGET
+           EVALUATE    WRK-MCP-WIDGET
+           WHEN    "CHK_TOKUSYU"
+               MOVE    007             TO  SPA-GMN-W26-CUR
            WHEN    "CHK_KANGO5"
                MOVE    212             TO  SPA-GMN-W26-CUR
            WHEN    OTHER

@@ -20,9 +20,6 @@
               03  W26-CHK-TOKUSYU.
                 04  W26-VALUE   PIC X.
               03  W26-CHK-TOKUSYU-STATE    PIC S9(9)   BINARY.
-              03  W26-CHK-YORYO-OCC OCCURS 3.
-                04  W26-CHK-YORYO          PIC X.
-                04  W26-CHK-YORYO-STATE    PIC S9(9)   BINARY.
               03  W26-CHK-JIDO.
                 04  W26-VALUE   PIC X.
               03  W26-CHK-JIDO-STATE       PIC S9(9)   BINARY.

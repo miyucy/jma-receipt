@@ -30,18 +30,6 @@ W26	{
 			value	bool;
 			state	int;
 		};
-		CHK_YORYO1	{
-			value	bool;
-			state	int;
-		};
-		CHK_YORYO2	{
-			value	bool;
-			state	int;
-		};
-		CHK_YORYO3	{
-			value	bool;
-			state	int;
-		};
 		CHK_JIDO	{
 			value	bool;
 			state	int;

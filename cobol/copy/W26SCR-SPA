@@ -56,8 +56,8 @@
       *          ÆÃ¼ì¼À´µÆþ±¡»ÜÀß´ÉÍý²Ã»»
                  11  SPA-GMN-W26-CHK-TOKUSYU           PIC X.
       *          ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»
-                 11  SPA-GMN-W26-CHK-YORYO             PIC X
-                                                       OCCURS 3.
+      *          11  SPA-GMN-W26-CHK-YORYO             PIC X
+      *                                                OCCURS 3.
       *          »ùÆ¸¡¦»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»
                  11  SPA-GMN-W26-CHK-JIDO              PIC X.
       *          Àº¿À²Ê±þµÞÆþ±¡»ÜÀß´ÉÍý²Ã»»
@@ -129,6 +129,9 @@
                  11  SPA-GMN-W27-CHK-HOSYASEN          PIC X.
       *              ÎÅÍÜ´Ä¶­²Ã»»
                  11  SPA-GMN-W27-CHK-RYOYO             PIC X.
+      *              ÎÅÍÜÉÂÅï´Ä¶­²Ã»»
+                 11  SPA-GMN-W27-CHK-BTU-RYOYO         PIC X
+                                                       OCCURS 3.
       *        ´ð½àÆü
                09    SPA-GMN-W27-KJNYMD-AREA.
                  11  SPA-GMN-W27-KJNYMD                PIC X(10).
@@ -167,6 +170,9 @@
                    13  SPA-GMN-W27-THOSYASEN-KBN       PIC X(01).
       *                ÎÅÍÜ´Ä¶­²Ã»»
                    13  SPA-GMN-W27-TRYOYO-KBN          PIC X(01).
+      *                ÎÅÍÜÉÂÅï´Ä¶­²Ã»»
+                   13  SPA-GMN-W27-TBTU-RYOYO-KBN      PIC X(01)
+                                                       OCCURS 3.
       *
                  11  SPA-GMN-W27-BRMLST-SEL            PIC 9(05).
       *

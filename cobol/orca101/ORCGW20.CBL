@@ -2380,12 +2380,12 @@
            MOVE    "1"             TO  SYS-5001-TOKUSYU-KBN
       *
       *    ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   3 )
-               MOVE    CONST-YORYOCD (IDX1)
-                                   TO  SYS-5001-YORYO-CD (IDX1)
-               MOVE    "1"         TO  SYS-5001-YORYO-KBN (IDX1)
-           END-PERFORM
+      *    PERFORM VARYING IDX1    FROM    1   BY  1
+      *            UNTIL ( IDX1    >   3 )
+      *        MOVE    CONST-YORYOCD (IDX1)
+      *                            TO  SYS-5001-YORYO-CD (IDX1)
+      *        MOVE    "1"         TO  SYS-5001-YORYO-KBN (IDX1)
+      *    END-PERFORM
       *
       *    »ùÆ¸¡¦»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»
            MOVE    CONST-JIDOCD    TO  SYS-5001-JIDO-CD

@@ -57,24 +57,36 @@
       *¿ÇÎÅ²Ê
                05  SYS-5002-BRM-KA      PIC  X(02).
       *
+      *²Ã»»ÎÎ°è
+               05  SYS-5002-KSNAREA.
       *¿·À¸»ùÆþ±¡°åÎÅ´ÉÍý²Ã»»
-               05  SYS-5002-SINSEIJI.
-                   07  SYS-5002-SINSEIJI-CD      PIC X(09).
-                   07  SYS-5002-SINSEIJI-KBN     PIC X(01).
+                   07  SYS-5002-SINSEIJI.
+                       09  SYS-5002-SINSEIJI-CD    PIC X(09).
+                       09  SYS-5002-SINSEIJI-KBN   PIC X(01).
       *¿ÇÎÅ½êÎÅÍÜÉÂ¾²ÎÅÍÜ´Ä¶­²Ã»»
-               05  SYS-5002-SNR-RYOYO            OCCURS 2.
-                   07  SYS-5002-SNR-RYOYO-CD     PIC X(09).
-                   07  SYS-5002-SNR-RYOYO-KBN    PIC X(01).
+                   07  SYS-5002-SNR-RYOYO          OCCURS 2.
+                       09  SYS-5002-SNR-RYOYO-CD   PIC X(09).
+                       09  SYS-5002-SNR-RYOYO-KBN  PIC X(01).
       *Êü¼ÍÀþ¼£ÎÅÉÂ¼¼´ÉÍý²Ã»»
-               05  SYS-5002-HOSYASEN.
-                   07  SYS-5002-HOSYASEN-CD      PIC X(09).
-                   07  SYS-5002-HOSYASEN-KBN     PIC X(01).
+                   07  SYS-5002-HOSYASEN.
+                       09  SYS-5002-HOSYASEN-CD    PIC X(09).
+                       09  SYS-5002-HOSYASEN-KBN   PIC X(01).
       *ÎÅÍÜ´Ä¶­²Ã»»
-               05  SYS-5002-RYOYO.
-                   07  SYS-5002-RYOYO-CD         PIC X(09).
-                   07  SYS-5002-RYOYO-KBN        PIC X(01).
+                   07  SYS-5002-RYOYO.
+                       09  SYS-5002-RYOYO-CD       PIC X(09).
+                       09  SYS-5002-RYOYO-KBN      PIC X(01).
+      *ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»
+      *¡ÊÉÂÅï´ÉÍý¾ðÊó¤«¤é°ÜÆ° H15.02.27)
+                   07  SYS-5002-BTU-RYOYO          OCCURS  3.
+                       09  SYS-5002-BTU-RYOYO-CD   PIC X(09).
+                       09  SYS-5002-BTU-RYOYO-KBN  PIC X(01).
+      *Æþ±¡ÎÁ²Ã»»ºÆÄêµÁ
+               05  SYS-5002-KSNTBLR  REDEFINES  SYS-5002-KSNAREA.
+                 07  SYS-5002-KSN              OCCURS  8.
+                   09  SYS-5002-KSNCD              PIC X(09).
+                   09  SYS-5002-KSNKBN             PIC X(01).
       *Í½È÷
-           03                           PIC  X(426).
+           03                           PIC  X(396).
       *Ã¼Ëö£É£Ä
            03  SYS-5002-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

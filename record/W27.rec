@@ -59,5 +59,14 @@ W27	{
 		CHK_RYOYO	{
 			value	bool;
 		};
+		CHK_BTU_RYOYO1	{
+			value	bool;
+		};
+		CHK_BTU_RYOYO2	{
+			value	bool;
+		};
+		CHK_BTU_RYOYO3	{
+			value	bool;
+		};
 	};
 };

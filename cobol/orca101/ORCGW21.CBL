@@ -141,6 +141,12 @@
                                        PIC X(09) OCCURS 2.
            03  CONST-HOSYASEN          PIC X(09) VALUE "190106670".
            03  CONST-RYOYO             PIC X(09) VALUE "190105570".
+           03  CONST-BTU-RYOYO-VAL.
+               05                      PIC X(09) VALUE "190106070".
+               05                      PIC X(09) VALUE "190106170".
+               05                      PIC X(09) VALUE "190106270".
+           03  CONST-BTU-RYOYO-R   REDEFINES   CONST-BTU-RYOYO-VAL.
+               05  CONST-BTU-RYOYO     PIC X(09) OCCURS 3.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -2117,6 +2123,14 @@
       *    ÎÅÍÜ´Ä¶­²Ã»»
            MOVE    CONST-RYOYO     TO  SYS-5002-RYOYO-CD
            MOVE    "1"             TO  SYS-5002-RYOYO-KBN
+      *
+      *    ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   3 )
+               MOVE    CONST-BTU-RYOYO (IDX1)
+                                   TO  SYS-5002-BTU-RYOYO-CD  (IDX1)
+               MOVE    "1"         TO  SYS-5002-BTU-RYOYO-KBN (IDX1)
+           END-PERFORM
       *
            .
        4201-BRM-KSN-EDIT-EXT.
