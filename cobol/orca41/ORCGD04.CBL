@@ -39,6 +39,9 @@
       *  01.00.06    ひさなが     03/03/03  出力範囲の桁誤り変更
       *  01.00.07    太田         03/03/31  SHELL引数の受け渡しを
       *                                     コピー句を用いて行うよう修正
+      *  01.00.08    ひさなが     03/07/29  チェック内容全件印刷追加
+      *                                     科情報の印刷
+      *                                     入外区分の印刷
       *
       *****************************************************************
       *
@@ -140,6 +143,12 @@
            03  T-SINRYOU-G         PIC X(04).
            03  T-SINRYOU-Y         PIC X(02).
            03  T-SINRYOU-M         PIC X(02).
+      *
+      *    入外区分領域
+       01  T-NYUGAIKBN-AREA.
+           03  T-NYUGAIKBN-K1      PIC X(02).
+           03  T-NYUGAIKBN-MSG     PIC X(04).
+           03  T-NYUGAIKBN-K2      PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -263,9 +272,9 @@
            ACCEPT  SYS-TIME            FROM    TIME.
       *
            OPEN    INPUT                   DID1-FILE.
-      *    診療年月 入力処理
+      *    診療年月 入外区分 入力処理
            PERFORM T-000-CHEKCHEK-SEC  VARYING IDX1  FROM  1  BY 1
-                                       UNTIL   IDX1  >     2.
+                                       UNTIL   IDX1  >     3.
       *
            CLOSE                           DID1-FILE.
       *
@@ -360,16 +369,19 @@
            EXIT.
       *
       *****************************************************************
-      *    診療年月 入力処理
+      *    診療年月 入外区分 入力処理
       *****************************************************************
        T-000-CHEKCHEK-SEC                SECTION.
       *
            READ    DID1-FILE
                    AT   END
-                        MOVE     3       TO    IDX1
+                        MOVE     4       TO    IDX1
                    NOT  AT  END
                         IF  IDX1   =   2
                             PERFORM T-000-CNV-YM-SEC
+                        END-IF
+                        IF  IDX1   =   3
+                            PERFORM T-000-CNV-NYUGAIKBN-SEC
                         END-IF
            END-READ.
       *
@@ -401,6 +413,20 @@
       *
        T-000-CNV-YM-EXT.
            EXIT.
+      *
+      *修正/*開始*03.07.29*********************************************
+      *****************************************************************
+      *    入外区分 編集処理
+      *****************************************************************
+       T-000-CNV-NYUGAIKBN-SEC           SECTION.
+      *
+           MOVE    "（"                TO  T-NYUGAIKBN-K1.
+           MOVE    DID1-REC(2:4)       TO  T-NYUGAIKBN-MSG.
+           MOVE    "）"                TO  T-NYUGAIKBN-K2.
+      *
+       T-000-CNV-NYUGAIKBN-EXT.
+           EXIT.
+      *修正/*終了*03.07.29*********************************************
       *
       *****************************************************************
       *    管理マスタ読み込み
@@ -526,7 +552,10 @@
            MOVE    DID5-NAME(1:30)       TO    W-HC401-NAME (IDX1).
            MOVE    DID5-NENREI           TO    W-HEN03-C.
            MOVE    W-HEN03-X             TO    W-HC401-NENREI (IDX1).
-           MOVE    DID5-MESG(77:90)      TO    W-HC401-MESG (IDX1).
+      *修正/*開始*03.07.29*********************************************
+      *     MOVE    DID5-MESG(77:90)      TO    W-HC401-MESG (IDX1).
+           MOVE    DID5-MESG(1:90)       TO    W-HC401-MESG (IDX1).
+      *修正/*終了*03.07.29*********************************************
            COMPUTE     IDX1     =     IDX1     +     1.
       *
        T-100-CHEKWEITE-EXT.
@@ -578,7 +607,10 @@
            MOVE    DID7-NAME(1:30)       TO    W-HC401-NAME (IDX1).
            MOVE    DID7-NENREI           TO    W-HEN03-C.
            MOVE    W-HEN03-X             TO    W-HC401-NENREI (IDX1).
-           MOVE    DID7-MESG(77:90)      TO    W-HC401-MESG (IDX1).
+      *修正/*開始*03.07.29*********************************************
+      *     MOVE    DID7-MESG(77:90)      TO    W-HC401-MESG (IDX1).
+           MOVE    DID7-MESG(1:90)       TO    W-HC401-MESG (IDX1).
+      *修正/*終了*03.07.29*********************************************
            COMPUTE     IDX1     =     IDX1     +     1.
       *
        T-150-CHEKWEITE-EXT.
@@ -630,7 +662,10 @@
            MOVE    DID6-NAME(1:30)       TO    W-HC401-NAME (IDX1).
            MOVE    DID6-NENREI           TO    W-HEN03-C.
            MOVE    W-HEN03-X             TO    W-HC401-NENREI (IDX1).
-           MOVE    DID6-MESG(77:90)      TO    W-HC401-MESG (IDX1).
+      *修正/*開始*03.07.29*********************************************
+      *     MOVE    DID6-MESG(77:90)      TO    W-HC401-MESG (IDX1).
+           MOVE    DID6-MESG(1:90)       TO    W-HC401-MESG (IDX1).
+      *修正/*終了*03.07.29*********************************************
            COMPUTE     IDX1     =     IDX1     +     1.
       *
        T-200-CHEKWEITE-EXT.
@@ -682,7 +717,10 @@
            MOVE    DID9-NAME(1:30)       TO    W-HC401-NAME (IDX1).
            MOVE    DID9-NENREI           TO    W-HEN03-C.
            MOVE    W-HEN03-X             TO    W-HC401-NENREI (IDX1).
-           MOVE    DID9-MESG(77:90)      TO    W-HC401-MESG (IDX1).
+      *修正/*開始*03.07.29*********************************************
+      *     MOVE    DID9-MESG(77:90)      TO    W-HC401-MESG (IDX1).
+           MOVE    DID9-MESG(1:90)       TO    W-HC401-MESG (IDX1).
+      *修正/*終了*03.07.29*********************************************
            COMPUTE     IDX1     =     IDX1     +     1.
       *
        T-400-CHEKWEITE-EXT.
@@ -698,6 +736,9 @@
            MOVE    T-SINRYOU-G         TO  W-HC401-SINRYOU-G.
            MOVE    T-SINRYOU-Y         TO  W-HC401-SINRYOU-Y.
            MOVE    T-SINRYOU-M         TO  W-HC401-SINRYOU-M.
+      *修正/*開始*03.07.29*********************************************
+           MOVE    T-NYUGAIKBN-AREA    TO  W-HC401-NYUGAIKBN.
+      *修正/*終了*03.07.29*********************************************
            MOVE    W-PAGE              TO  W-HEN03-C.
            MOVE    W-HEN03-X           TO  W-HC401-PAGE.
       *
@@ -707,10 +748,7 @@
            MOVE    1                   TO  SPRT-RENNUM.
            MOVE    "ORCBSD1"           TO  SPRT-TBL-KEY.
            MOVE    WRK-PARA-SYSYMD     TO  SPRT-TBL-GROUP(1:8).
-      *修正/*開始*03.03.03**********************************************
-      *     MOVE    SYS-TIME            TO  SPRT-TBL-GROUP(9:8).
            MOVE    SYS-TIME(1:6)       TO  SPRT-TBL-GROUP(9:6).
-      *修正/*終了*03.03.03**********************************************
            MOVE    WRK-PARA-SRYYM      TO  SPRT-SRYYM.
            MOVE    WRK-PARA-SYSYMD     TO  SPRT-SKYYMD.
            MOVE    "orcbsd01.sh"       TO  SPRT-SHELLID.
@@ -718,8 +756,11 @@
            MOVE    ZERO                TO  SPRT-PRIORITY.
            MOVE    "HC401"             TO  SPRT-PRTID.
            MOVE    LNK-DAY2-EDTYMD3(1:16)  TO  SPRT-TITLE.
-           MOVE    "分チェックリスト"  TO  SPRT-TITLE(17:16).       
-           MOVE    W-HC401             TO  SPRT-PRTDATA.     
+           MOVE    "分チェックリスト"  TO  SPRT-TITLE(17:16).
+      *修正/*開始*03.07.29*********************************************
+           MOVE    T-NYUGAIKBN-AREA    TO  SPRT-TITLE(33:8).
+      *修正/*終了*03.07.29*********************************************
+           MOVE    W-HC401             TO  SPRT-PRTDATA.
            MOVE    WRK-PARA-TERMID     TO  SPRT-TERMID.
            MOVE    WRK-PARA-OPID       TO  SPRT-OPID.
            MOVE    SYS-1031-PRTNM (5)  TO  SPRT-PRTNM.
@@ -735,7 +776,7 @@
            MOVE    1                   TO  JOB-JOBID.
            MOVE    "ORCBSD1"           TO  JOB-SHELLID.
            CALL    "ORCSJOB"           USING
-                                       WRK-JOBKANRI-AREA  
+                                       WRK-JOBKANRI-AREA
                                        JOBKANRI-REC.
            IF  WRK-JOBKANRI-RETURN   =   ZERO
                INITIALIZE                      WRK-JOBKANRI-AREA
@@ -761,7 +802,7 @@
            MOVE    "ORCBSD1"           TO  JOB-SHELLID.
            MOVE    WRK-PARA-TERMID     TO  JOB-TERMID.
            CALL    "ORCSJOB"           USING
-                                       WRK-JOBKANRI-AREA  
+                                       WRK-JOBKANRI-AREA
                                        JOBKANRI-REC.
            IF  WRK-JOBKANRI-RETURN   =   ZERO
                INITIALIZE                      WRK-JOBKANRI-AREA
@@ -792,37 +833,37 @@
            CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA.
            MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME.
       *
-           MOVE    SPACE               TO  LNK-PRTKANRI-AREA
-           INITIALIZE                      LNK-PRTKANRI-AREA
-           MOVE    1                   TO  LNK-PRTKANRI-RENNUM
-           MOVE    "ORCBSD1"           TO  LNK-PRTKANRI-TBL-KEY  
-           MOVE    WRK-PARA-SYSYMD     TO  LNK-PRTKANRI-TBL-GROUP (1:8)
-           MOVE    SYS-TIME            TO  LNK-PRTKANRI-TBL-GROUP (9: )
-           MOVE    1                   TO  LNK-PRTKANRI-SHORI-RENNUM
-           MOVE    WRK-PARA-SRYYM      TO  LNK-PRTKANRI-SRYYM
-           MOVE    WRK-PARA-SYSYMD     TO  LNK-PRTKANRI-SKYYMD
-           MOVE    "orcbsd01"          TO  LNK-PRTKANRI-SHELLID
-           MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
-           MOVE    WRK-PARA-TERMID     TO  LNK-PRTKANRI-TERMID
-           MOVE    WRK-PARA-OPID       TO  LNK-PRTKANRI-OPID
-           MOVE    SYS-1031-PRTNM (5)  TO  LNK-PRTKANRI-PRTNM
+           MOVE    SPACE               TO  LNK-PRTKANRI-AREA.
+           INITIALIZE                      LNK-PRTKANRI-AREA.
+           MOVE    1                   TO  LNK-PRTKANRI-RENNUM.
+           MOVE    "ORCBSD1"           TO  LNK-PRTKANRI-TBL-KEY.
+           MOVE    WRK-PARA-SYSYMD     TO  LNK-PRTKANRI-TBL-GROUP (1:8).
+           MOVE    SYS-TIME            TO  LNK-PRTKANRI-TBL-GROUP (9: ).
+           MOVE    1                   TO  LNK-PRTKANRI-SHORI-RENNUM.
+           MOVE    WRK-PARA-SRYYM      TO  LNK-PRTKANRI-SRYYM.
+           MOVE    WRK-PARA-SYSYMD     TO  LNK-PRTKANRI-SKYYMD.
+           MOVE    "orcbsd01"          TO  LNK-PRTKANRI-SHELLID.
+           MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY.
+           MOVE    WRK-PARA-TERMID     TO  LNK-PRTKANRI-TERMID.
+           MOVE    WRK-PARA-OPID       TO  LNK-PRTKANRI-OPID.
+           MOVE    SYS-1031-PRTNM (5)  TO  LNK-PRTKANRI-PRTNM.
       *
-           MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
+           MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1.
            MOVE    LNK-PRTKANRI-TBL-KEY
-                                       TO  SHELLTBL-ARG2
+                                       TO  SHELLTBL-ARG2.
            MOVE    LNK-PRTKANRI-TBL-GROUP
-                                       TO  SHELLTBL-ARG3
+                                       TO  SHELLTBL-ARG3.
            MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                       TO  SHELLTBL-ARG4
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5
-           MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6
+                                       TO  SHELLTBL-ARG4.
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5.
+           MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6.
            MOVE    LNK-PRTKANRI-SHELLID
-                                       TO  SHELLTBL-ARG7
+                                       TO  SHELLTBL-ARG7.
            MOVE    LNK-PRTKANRI-PRIORITY
-                                       TO  SHELLTBL-ARG8
-           MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9
-           MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
-           MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
+                                       TO  SHELLTBL-ARG8.
+           MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9.
+           MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10.
+           MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11.
       *
            MOVE    "/var/tmp/ERR.dat"  TO  SHELLTBL-ARG12.
            MOVE    "0000002"           TO  SHELLTBL-ARG13.

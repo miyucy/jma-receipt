@@ -38,6 +38,7 @@
       *  01.00.04    ¤Ò¤µ¤Ê¤¬     03/04/17  Æþ±¡»þÊÝ¸±ÁÈ¹ç¤»¥Á¥§¥Ã¥¯
       *  01.00.05    ¤Ò¤µ¤Ê¤¬     03/05/13  ¥Ü¥¿¥ó¤¬²¡¤»¤Ê¤¤¾ì¹ç½¤Àµ
       *  01.00.06    ¤Ò¤µ¤Ê¤¬     03/06/06  ÉÂÌ¾¥³¡¼¥ÉÈ´¤±¤Î¥Á¥§¥¯ÄÉ²Ã
+      *  01.00.07    ¤Ò¤µ¤Ê¤¬     03/07/29  ¥Á¥§¥Ã¥¯ÆâÍÆÁ´·ï°õºþÄÉ²Ã
       *
       *****************************************************************
       *
@@ -88,24 +89,28 @@
                    07  SPA-GMN-SRYYMD         PIC X(08).
                    07  SPA-GMN-SRYYMD-S       PIC X(08).
                    07  SPA-GMN-SRYYM-D        PIC X(16).
-                   07  SPA-GMN-NYUGAIKBN      PIC X(01).
-                   07  SPA-GMN-NYUGAIKBN-MSG  PIC X(10).
-                   07  SPA-GMN-TBLG1.
-                       09  SPA-GNM-TBL1       OCCURS  2.
-                           11  SPA-GMN-GAI    PIC X(10).
-                       09  SPA-GNM-TBL2       OCCURS  20.
-                           11  SPA-GMN-MSG    PIC X(60).
-                           11  SPA-GMN-BTN    PIC X(01).
-                   07  SPA-GMN-TBLG2.
-                       09  SPA-GNM-TBL3       OCCURS  20.
-                           11  SPA-GMN-CNV    PIC X(01).
+                   07  SPA-GMN-NYUGAIKBN-DSP.
+                       09  SPA-GMN-NYUGAIKBN      PIC X(01).
+                       09  SPA-GMN-NYUGAIKBN-AKI  PIC X(01).
+                       09  SPA-GMN-NYUGAIKBN-MSG  PIC X(14).
+                   07  SPA-GMN-TBLG.
+                       09  SPA-GMN-TBL1       OCCURS  5.
+                           11  SPA-GMN-NYUGAIKBN-K    PIC X(01).
+                           11  SPA-GMN-NYUGAIKBN-FL   PIC X(01).
+                           11  SPA-GMN-NYUGAIKBN-M    PIC X(14).
+                       09  SPA-GMN-TBL2       OCCURS  20.
+                           11  SPA-GMN-MSG            PIC X(40).
+                           11  SPA-GMN-CHKKBN         PIC X(16).
+                           11  SPA-GMN-TBL3       OCCURS  5.
+                               13  SPA-GMN-CHKKBN-K   PIC X(01).
+                               13  SPA-GMN-CHKKBN-FL  PIC X(01).
+                               13  SPA-GMN-CHKKBN-M   PIC X(14).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-MOTOPG         PIC X(08).
       *
        01  SPA-WRK-AREA.
-           03  SPA-WRK-WRK         PIC X(70).
-           03  SPA-WRK-TBLG1       PIC X(1240).
-           03  SPA-WRK-TBLG2       PIC X(20).
+           03  SPA-WRK-WRK         PIC X(82).
+           03  SPA-WRK-TBLG        PIC X(3200).
            03  SPA-WRK-MOTOPG      PIC X(08).
       *
        01  WRK-HEN-AREA.
@@ -120,6 +125,7 @@
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
+           03  FLG-ERR             PIC 9(01).
       *
       *    ¥¨¥ó¥É¥¹¥Æ¡¼¥¿¥¹ÎÎ°è
        01  STS-AREA.
@@ -145,64 +151,56 @@
                "¥Á¥§¥¯¾ò·ï¤¬»ØÄê¤µ¤ì¤Æ¤¤¤Þ¤»¤ó¡£".
            03  T-MESSAGE-800-06    PIC X(16)   VALUE
                "ÆþÎÏ¥¨¥é¡¼¤Ç¤¹¡£".
+           03  T-MESSAGE-800-51    PIC X(12)   VALUE
+               "³ÎÇ§        ".
+           03  T-MESSAGE-800-52    PIC X(12)   VALUE
+               "³ÎÇ§  Á´°õºþ".
            03  T-MESSAGE-900-01    PIC X(10)   VALUE
                "Æþ±¡      ".
            03  T-MESSAGE-900-02    PIC X(10)   VALUE
                "³°Íè      ".
-           03  T-MESSAGE-900-03    PIC X(60)   VALUE
-               "ÊÝ¸±¼ÔÈÖ¹æÈ´¤±¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "   ".
-           03  T-MESSAGE-900-04    PIC X(60)   VALUE
-               "ÈïÊÝ¸±¼Ôµ­¹æ¡¦ÈÖ¹æÈ´¤±¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "   ".
-           03  T-MESSAGE-900-05    PIC X(60)   VALUE
-               "¸øÈñÉéÃ´¼ÔÈÖ¹æ¡¦¼õµë¼ÔÈÖ¹æÈ´¤±¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "   ".
-           03  T-MESSAGE-900-06    PIC X(60)   VALUE
-               "ÊÝ¸±Å¬ÍÑÇ¯Îð¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "   ".
-           03  T-MESSAGE-900-07    PIC X(60)   VALUE
-               "ÉÂÌ¾È´¤±¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "   ".
-           03  T-MESSAGE-900-08    PIC X(60)   VALUE
-               "¿ÇÎÅ³«»ÏÆü¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "   ".
-           03  T-MESSAGE-900-09    PIC X(60)   VALUE
-               "µ¿¤¤ÉÂÌ¾¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "    ".
-           03  T-MESSAGE-900-10    PIC X(60)   VALUE
-               "ÌôºÞ¤ÈÉÂÌ¾¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "    ".
-           03  T-MESSAGE-900-11    PIC X(60)   VALUE
-               "¿ÇÎÅ¹Ô°Ù¤ÈÉÂÌ¾¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "    ".
-           03  T-MESSAGE-900-12    PIC X(60)   VALUE
-               "ÌôºÞ¤È¶Ø´÷¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "    ".
-           03  T-MESSAGE-900-13    PIC X(60)   VALUE
-               "ÌôºÞ¤ÎÊ»ÍÑ¶Ø´÷¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "    ".
-           03  T-MESSAGE-900-14    PIC X(60)   VALUE
-               "¿ÇÎÅ¹Ô°Ù¤ÎÊ»ÍÑ»»Äê¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "    ".
-           03  T-MESSAGE-900-15    PIC X(60)   VALUE
-               "¼ÂÆü¿ô¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "    ".
-           03  T-MESSAGE-900-16    PIC X(60)   VALUE
-               "´µ¼Ô»áÌ¾¡¦´µ¼ÔÉÂÌ¾¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "    ".
-           03  T-MESSAGE-900-17    PIC X(60)   VALUE
-               "ÊÝ¸±ÁÈ¹ç¤»Í­¸ú´ü´Ö¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "    ".
-           03  T-MESSAGE-900-18    PIC X(60)   VALUE
-               "ÉÂÌ¾¥³¡¼¥ÉÈ´¤±¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²
-      -        "    ".
-           03  T-MESSAGE-900-19    PIC X(60)   VALUE
-               "12345678901234567890123456789012345678901234567890123456
-      -        "7890".
-           03  T-MESSAGE-900-20    PIC X(60)   VALUE
-               "12345678901234567890123456789012345678901234567890123456
-      -        "7890".
+           03  T-MESSAGE-900-03    PIC X(40)   VALUE
+               "ÊÝ¸±¼ÔÈÖ¹æÈ´¤±¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-04    PIC X(40)   VALUE
+               "ÈïÊÝ¸±¼Ôµ­¹æ¡¦ÈÖ¹æÈ´¤±¡²¡²¡²¡²¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-05    PIC X(40)   VALUE
+               "¸øÈñÉéÃ´¼ÔÈÖ¹æ¡¦¼õµë¼ÔÈÖ¹æÈ´¤±¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-06    PIC X(40)   VALUE
+               "ÊÝ¸±Å¬ÍÑÇ¯Îð¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-07    PIC X(40)   VALUE
+               "ÉÂÌ¾È´¤±¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-08    PIC X(40)   VALUE
+               "¿ÇÎÅ³«»ÏÆü¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-09    PIC X(40)   VALUE
+               "µ¿¤¤ÉÂÌ¾¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-10    PIC X(40)   VALUE
+               "ÌôºÞ¤ÈÉÂÌ¾¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-11    PIC X(40)   VALUE
+               "¿ÇÎÅ¹Ô°Ù¤ÈÉÂÌ¾¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-12    PIC X(40)   VALUE
+               "ÌôºÞ¤È¶Ø´÷¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-13    PIC X(40)   VALUE
+               "Ê»ÍÑ¶Ø´÷¤ÎÌôºÞ¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-14    PIC X(40)   VALUE
+               "Ê»ÍÑ»»Äê¤Î¿ÇÎÅ¹Ô°Ù¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-15    PIC X(40)   VALUE
+               "¼ÂÆü¿ô¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-16    PIC X(40)   VALUE
+               "´µ¼Ô»áÌ¾¡¦´µ¼ÔÉÂÌ¾¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-17    PIC X(40)   VALUE
+               "ÊÝ¸±ÁÈ¹ç¤»Í­¸ú´ü´Ö¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-18    PIC X(40)   VALUE
+               "ÉÂÌ¾¥³¡¼¥ÉÈ´¤±¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
+           03  T-MESSAGE-900-19    PIC X(40)   VALUE
+               "1234567890123456789012345678901234567890".
+           03  T-MESSAGE-900-20    PIC X(40)   VALUE
+               "1234567890123456789012345678901234567890".
+           03  T-MESSAGE-900-21    PIC X(40)   VALUE
+               "1234567890123456789012345678901234567890".
+           03  T-MESSAGE-900-22    PIC X(40)   VALUE
+               "1234567890123456789012345678901234567890".
+           03  T-MESSAGE-900-23    PIC X(40)   VALUE
+               "1234567890123456789012345678901234567890".
       *
       *    ¥·¥§¥ëÍÑÎÎ°è
            COPY    "CPSHELLTBL.INC".
@@ -368,7 +366,6 @@
                    MOVE    1                   TO  FLG-END
                    MOVE    SPACE               TO  SPA-GMN-KBN
                END-IF
-      *½¤Àµ/*³«»Ï*03.05.13*********************************************
                IF  (SPA-MOTOPG        =   "D99")        AND
                    (SPA-GMN-RUN   NOT =   ZERO  AND  2)
                    MOVE    "CHK"               TO  WRK-JOBKANRI-MODE
@@ -386,7 +383,6 @@
                    END-IF
                END-IF
                MOVE    SPACE               TO  SPA-MOTOPG
-      *½¤Àµ/*½ªÎ»*03.05.13*********************************************
            ELSE
       *        ½é´ü²èÌÌ¥»¥Ã¥È
                PERFORM 300-SCREEN-SEC
@@ -417,46 +413,90 @@
                MOVE    LNK-SCRSPA              TO  SPA-WRK-AREA
            END-IF.
       *
-           MOVE    1                       TO  SPA-GMN-CUR.
+           MOVE    1                      TO  SPA-GMN-CUR.
       *
-           MOVE    SPACE                   TO  SPA-GMN-TBLG1.
-           MOVE    "00000000000000000000"  TO  SPA-GMN-TBLG2.
-           MOVE    "2"                     TO  SPA-GMN-NYUGAIKBN.
-           MOVE    T-MESSAGE-900-02        TO  SPA-GMN-NYUGAIKBN-MSG.
-           MOVE    T-MESSAGE-900-01        TO  SPA-GMN-GAI(1).
-           MOVE    T-MESSAGE-900-02        TO  SPA-GMN-GAI(2).
-           MOVE    T-MESSAGE-900-03(1:60)  TO  SPA-GMN-MSG(1).
-           MOVE    SPACE                   TO  SPA-GMN-BTN(1).
-           MOVE    T-MESSAGE-900-04(1:60)  TO  SPA-GMN-MSG(2).
-           MOVE    SPACE                   TO  SPA-GMN-BTN(2).
-           MOVE    T-MESSAGE-900-05(1:60)  TO  SPA-GMN-MSG(3).
-           MOVE    SPACE                   TO  SPA-GMN-BTN(3).
-           MOVE    T-MESSAGE-900-06(1:60)  TO  SPA-GMN-MSG(4).
-           MOVE    SPACE                   TO  SPA-GMN-BTN(4).
-           MOVE    T-MESSAGE-900-07(1:60)  TO  SPA-GMN-MSG(5).
-           MOVE    SPACE                   TO  SPA-GMN-BTN(5).
-           MOVE    T-MESSAGE-900-08(1:60)  TO  SPA-GMN-MSG(6).
-           MOVE    SPACE                   TO  SPA-GMN-BTN(6).
-           MOVE    T-MESSAGE-900-09(1:60)  TO  SPA-GMN-MSG(7).
-           MOVE    SPACE                   TO  SPA-GMN-BTN(7).
-           MOVE    T-MESSAGE-900-10(1:60)  TO  SPA-GMN-MSG(8).
-           MOVE    SPACE                   TO  SPA-GMN-BTN(8).
-           MOVE    T-MESSAGE-900-11(1:60)  TO  SPA-GMN-MSG(9).
-           MOVE    SPACE                   TO  SPA-GMN-BTN(9).
-           MOVE    T-MESSAGE-900-13(1:60)  TO  SPA-GMN-MSG(10).
-           MOVE    SPACE                   TO  SPA-GMN-BTN(10).
-           MOVE    T-MESSAGE-900-14(1:60)  TO  SPA-GMN-MSG(11).
-           MOVE    SPACE                   TO  SPA-GMN-BTN(11).
-           MOVE    T-MESSAGE-900-15(1:60)  TO  SPA-GMN-MSG(12).
-           MOVE    SPACE                   TO  SPA-GMN-BTN(12).
-           MOVE    T-MESSAGE-900-16(1:60)  TO  SPA-GMN-MSG(13).
-           MOVE    SPACE                   TO  SPA-GMN-BTN(13).
-           MOVE    T-MESSAGE-900-17(1:60)  TO  SPA-GMN-MSG(14).
-           MOVE    SPACE                   TO  SPA-GMN-BTN(14).
-      *½¤Àµ/*³«»Ï*03.06.06*********************************************
-           MOVE    T-MESSAGE-900-18(1:60)  TO  SPA-GMN-MSG(15).
-           MOVE    SPACE                   TO  SPA-GMN-BTN(15).
-      *½¤Àµ/*½ªÎ»*03.06.06*********************************************
+           MOVE    SPACE                  TO  SPA-GMN-TBLG.
+           MOVE    "2"                    TO  SPA-GMN-NYUGAIKBN.
+           MOVE    T-MESSAGE-900-02       TO  SPA-GMN-NYUGAIKBN-MSG.
+           MOVE    "1"                    TO  SPA-GMN-NYUGAIKBN-K (1).
+           MOVE    "2"                    TO  SPA-GMN-NYUGAIKBN-K (2).
+           MOVE    T-MESSAGE-900-01       TO  SPA-GMN-NYUGAIKBN-M (1).
+           MOVE    T-MESSAGE-900-02       TO  SPA-GMN-NYUGAIKBN-M (2).
+           MOVE    T-MESSAGE-900-03       TO  SPA-GMN-MSG (1).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (1 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (1 2).
+           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (1 1).
+           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (1 2).
+           MOVE    T-MESSAGE-900-04       TO  SPA-GMN-MSG (2).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (2 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (2 2).
+           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (2 1).
+           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (2 2).
+           MOVE    T-MESSAGE-900-05       TO  SPA-GMN-MSG (3).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (3 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (3 2).
+           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (3 1).
+           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (3 2).
+           MOVE    T-MESSAGE-900-06       TO  SPA-GMN-MSG (4).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (4 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (4 2).
+           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (4 1).
+           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (4 2).
+           MOVE    T-MESSAGE-900-07       TO  SPA-GMN-MSG (5).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (5 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (5 2).
+           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (5 1).
+           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (5 2).
+           MOVE    T-MESSAGE-900-08       TO  SPA-GMN-MSG (6).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (6 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (6 2).
+           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (6 1).
+           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (6 2).
+           MOVE    T-MESSAGE-900-09       TO  SPA-GMN-MSG (7).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (7 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (7 2).
+           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (7 1).
+           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (7 2).
+           MOVE    T-MESSAGE-900-10       TO  SPA-GMN-MSG (8).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (8 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (8 2).
+           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (8 1).
+           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (8 2).
+           MOVE    T-MESSAGE-900-11       TO  SPA-GMN-MSG (9).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (9 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (9 2).
+           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (9 1).
+           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (9 2).
+           MOVE    T-MESSAGE-900-13       TO  SPA-GMN-MSG (10).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (10 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (10 2).
+           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (10 1).
+           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (10 2).
+           MOVE    T-MESSAGE-900-14       TO  SPA-GMN-MSG (11).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (11 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (11 2).
+           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (11 1).
+           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (11 2).
+           MOVE    T-MESSAGE-900-15       TO  SPA-GMN-MSG (12).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (12 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (12 2).
+           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (12 1).
+           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (12 2).
+           MOVE    T-MESSAGE-900-16       TO  SPA-GMN-MSG (13).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (13 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (13 2).
+           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (13 1).
+           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (13 2).
+           MOVE    T-MESSAGE-900-17       TO  SPA-GMN-MSG (14).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (14 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (14 2).
+           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (14 1).
+           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (14 2).
+           MOVE    T-MESSAGE-900-18       TO  SPA-GMN-MSG (15).
+           MOVE    "1"                    TO  SPA-GMN-CHKKBN-K (15 1).
+           MOVE    "2"                    TO  SPA-GMN-CHKKBN-K (15 2).
+           MOVE    T-MESSAGE-800-51       TO  SPA-GMN-CHKKBN-M (15 1).
+           MOVE    T-MESSAGE-800-52       TO  SPA-GMN-CHKKBN-M (15 2).
            IF  SPA-MOTOPG   =   "XA01"  OR  "XB01"
                MOVE    SPA-WRK-AREA            TO  SPA-D01-AREA
            END-IF.
@@ -473,19 +513,17 @@
       *
            MOVE    SPA-MOTOPG          TO  SPA-NAI-MOTOPG.
       *
-           MOVE    1                   TO  SPA-GMN-CUR.
-      *
            IF  (SPA-SRYYMD      NOT =   SPACE)  AND
                (SPA-NYUGAIKBN   NOT =   SPACE)
                MOVE    SPA-HOSPID      TO  SPA-GMN-HOSPID
                MOVE    SPA-SRYYMD      TO  SPA-GMN-SRYYMD-S
-               IF  SPA-NYUGAIKBN   =   "1"
-                   MOVE    "1"             TO    SPA-GMN-NYUGAIKBN
-                   MOVE    SPA-GMN-GAI(1)  TO    SPA-GMN-NYUGAIKBN-MSG
-               ELSE
-                   MOVE    "2"             TO    SPA-GMN-NYUGAIKBN
-                   MOVE    SPA-GMN-GAI(2)  TO    SPA-GMN-NYUGAIKBN-MSG
-               END-IF
+               PERFORM VARYING IDX1  FROM  1  BY 1
+                       UNTIL   IDX1  >     D01-NYUGAIKBN-COUNT
+                   IF  SPA-NYUGAIKBN  =  SPA-GMN-NYUGAIKBN-K (IDX1)
+                       MOVE    SPA-GMN-TBL1 (IDX1)
+                                              TO  SPA-GMN-NYUGAIKBN-DSP
+                   END-IF
+               END-PERFORM
                PERFORM T-000-RECECHEK-SEC
            ELSE
                MOVE    1               TO  SPA-GMN-PAGE
@@ -520,7 +558,7 @@
                        MOVE    "NEW"              TO  MCP-PUTTYPE
                        MOVE    "DERR"             TO  MCP-WINDOW
                        PERFORM 900-PUT-WINDOW
-                       MOVE    1                   TO  FLG-END
+                       MOVE    1                  TO  FLG-END
                    END-IF
                WHEN    "CLICKED"       ALSO    "B13"
                    PERFORM 530-RIDSET2-SEC
@@ -528,49 +566,30 @@
                    IF  SPA-GMN-RUN   =   ZERO   OR   2
                        PERFORM T-000-YMDCHEK-SEC
                    END-IF
-               WHEN    "CLICKED"       ALSO    "NYUGAIKBN"
+               WHEN    "CHANGED"       ALSO    "NYUGAIKBN"
                    IF  SPA-GMN-RUN   =   ZERO   OR   2
-                       MOVE    23                  TO    SPA-GMN-CUR
-                       PERFORM VARYING IDX1  FROM  1  BY 1
-                               UNTIL   IDX1  >    20
-                               IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
-                                   COMPUTE SPA-GMN-CUR  =  IDX1  +  2
-                                   MOVE    21               TO    IDX1
-                               END-IF
-                       END-PERFORM
-                       EVALUATE    SPA-GMN-NYUGAIKBN
-                           WHEN    "2"
-                                   MOVE    "1"
-                                           TO    SPA-GMN-NYUGAIKBN
-                                   MOVE    SPA-GMN-GAI(1)
-                                           TO    SPA-GMN-NYUGAIKBN-MSG
-                           WHEN    OTHER
-                                   MOVE    "2"
-                                           TO    SPA-GMN-NYUGAIKBN
-                                   MOVE    SPA-GMN-GAI(2)
-                                           TO    SPA-GMN-NYUGAIKBN-MSG
-                       END-EVALUATE
+                       PERFORM T-000-NYUGAICHEK-SEC
                    END-IF
-               WHEN    "CLICKED"       ALSO    "CHKBTN1"
-               WHEN    "CLICKED"       ALSO    "CHKBTN2"
-               WHEN    "CLICKED"       ALSO    "CHKBTN3"
-               WHEN    "CLICKED"       ALSO    "CHKBTN4"
-               WHEN    "CLICKED"       ALSO    "CHKBTN5"
-               WHEN    "CLICKED"       ALSO    "CHKBTN6"
-               WHEN    "CLICKED"       ALSO    "CHKBTN7"
-               WHEN    "CLICKED"       ALSO    "CHKBTN8"
-               WHEN    "CLICKED"       ALSO    "CHKBTN9"
-               WHEN    "CLICKED"       ALSO    "CHKBTN10"
-               WHEN    "CLICKED"       ALSO    "CHKBTN11"
-               WHEN    "CLICKED"       ALSO    "CHKBTN12"
-               WHEN    "CLICKED"       ALSO    "CHKBTN13"
-               WHEN    "CLICKED"       ALSO    "CHKBTN14"
-               WHEN    "CLICKED"       ALSO    "CHKBTN15"
-               WHEN    "CLICKED"       ALSO    "CHKBTN16"
-               WHEN    "CLICKED"       ALSO    "CHKBTN17"
-               WHEN    "CLICKED"       ALSO    "CHKBTN18"
-               WHEN    "CLICKED"       ALSO    "CHKBTN19"
-               WHEN    "CLICKED"       ALSO    "CHKBTN20"
+               WHEN    "CHANGED"       ALSO    "CHKKBN01"
+               WHEN    "CHANGED"       ALSO    "CHKKBN02"
+               WHEN    "CHANGED"       ALSO    "CHKKBN03"
+               WHEN    "CHANGED"       ALSO    "CHKKBN04"
+               WHEN    "CHANGED"       ALSO    "CHKKBN05"
+               WHEN    "CHANGED"       ALSO    "CHKKBN06"
+               WHEN    "CHANGED"       ALSO    "CHKKBN07"
+               WHEN    "CHANGED"       ALSO    "CHKKBN08"
+               WHEN    "CHANGED"       ALSO    "CHKKBN09"
+               WHEN    "CHANGED"       ALSO    "CHKKBN10"
+               WHEN    "CHANGED"       ALSO    "CHKKBN11"
+               WHEN    "CHANGED"       ALSO    "CHKKBN12"
+               WHEN    "CHANGED"       ALSO    "CHKKBN13"
+               WHEN    "CHANGED"       ALSO    "CHKKBN14"
+               WHEN    "CHANGED"       ALSO    "CHKKBN15"
+               WHEN    "CHANGED"       ALSO    "CHKKBN16"
+               WHEN    "CHANGED"       ALSO    "CHKKBN17"
+               WHEN    "CHANGED"       ALSO    "CHKKBN18"
+               WHEN    "CHANGED"       ALSO    "CHKKBN19"
+               WHEN    "CHANGED"       ALSO    "CHKKBN20"
                    IF  SPA-GMN-RUN   =   ZERO   OR   2
                        PERFORM T-000-CHEKCHEK-SEC
                    END-IF
@@ -590,47 +609,27 @@
                WHEN    "ACTIVATE"      ALSO    "SRYYM"
                    PERFORM T-000-YMDCHEK-SEC
                WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
-                   MOVE    23                  TO    SPA-GMN-CUR
-                   PERFORM VARYING IDX1  FROM  1  BY 1
-                           UNTIL   IDX1  >    20
-                           IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
-                               COMPUTE SPA-GMN-CUR  =  IDX1  +  2
-                               MOVE    21
-                                       TO    IDX1
-                           END-IF
-                   END-PERFORM
-                   EVALUATE    SPA-GMN-NYUGAIKBN
-                       WHEN    "2"
-                               MOVE    "1"
-                                       TO    SPA-GMN-NYUGAIKBN
-                               MOVE    SPA-GMN-GAI(1)
-                                       TO    SPA-GMN-NYUGAIKBN-MSG
-                       WHEN    OTHER
-                               MOVE    "2"
-                                       TO    SPA-GMN-NYUGAIKBN
-                               MOVE    SPA-GMN-GAI(2)
-                                       TO    SPA-GMN-NYUGAIKBN-MSG
-                   END-EVALUATE
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN1"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN2"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN3"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN4"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN5"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN6"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN7"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN8"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN9"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN10"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN11"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN12"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN13"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN14"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN15"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN16"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN17"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN18"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN19"
-               WHEN    "ACTIVATE"      ALSO    "CHKBTN20"
+                   PERFORM T-000-NYUGAICHEK-SEC
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN01"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN02"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN03"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN04"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN05"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN06"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN07"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN08"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN09"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN10"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN11"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN12"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN13"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN14"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN15"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN16"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN17"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN18"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN19"
+               WHEN    "ACTIVATE"      ALSO    "CHKKBN20"
                    PERFORM T-000-CHEKCHEK-SEC
                WHEN    OTHER
                    MOVE    1                   TO  SPA-GMN-CUR
@@ -688,156 +687,183 @@
            MOVE    SPACE                   TO  D01.
       *
            MOVE    SPA-GMN-SRYYMD(1:6)     TO  D01-SRYYM.
-           MOVE    SPA-GMN-NYUGAIKBN-MSG   TO  D01-NYUGAIMSG.
+           MOVE    SPA-GMN-NYUGAIKBN-DSP   TO  D01-NYUGAIKBN.
+           MOVE    ZERO                    TO  D01-NYUGAIKBN-COUNT.
       *
-           EVALUATE    SPA-GMN-NYUGAIKBN
-               WHEN    "1"
-                       MOVE    "F"             TO    D01-NYUGAIKBN
-               WHEN    "2"
-                       MOVE    "T"             TO    D01-NYUGAIKBN
-           END-EVALUATE.
+           PERFORM VARYING IDX1  FROM  1  BY 1
+                   UNTIL   IDX1  >     5
+               IF  SPA-GMN-TBL1 (IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL1 (IDX1)
+                                         TO  D01-NYUGAIKBN-ITEM (IDX1)
+                   MOVE    IDX1          TO  D01-NYUGAIKBN-COUNT
+               END-IF
+           END-PERFORM.
       *
-           MOVE    SPA-GMN-MSG(1)          TO  D01-CHKMSG1.
-           MOVE    SPA-GMN-MSG(2)          TO  D01-CHKMSG2.
-           MOVE    SPA-GMN-MSG(3)          TO  D01-CHKMSG3.
-           MOVE    SPA-GMN-MSG(4)          TO  D01-CHKMSG4.
-           MOVE    SPA-GMN-MSG(5)          TO  D01-CHKMSG5.
-           MOVE    SPA-GMN-MSG(6)          TO  D01-CHKMSG6.
-           MOVE    SPA-GMN-MSG(7)          TO  D01-CHKMSG7.
-           MOVE    SPA-GMN-MSG(8)          TO  D01-CHKMSG8.
-           MOVE    SPA-GMN-MSG(9)          TO  D01-CHKMSG9.
-           MOVE    SPA-GMN-MSG(10)         TO  D01-CHKMSG10.
-           MOVE    SPA-GMN-MSG(11)         TO  D01-CHKMSG11.
-           MOVE    SPA-GMN-MSG(12)         TO  D01-CHKMSG12.
-           MOVE    SPA-GMN-MSG(13)         TO  D01-CHKMSG13.
-           MOVE    SPA-GMN-MSG(14)         TO  D01-CHKMSG14.
-           MOVE    SPA-GMN-MSG(15)         TO  D01-CHKMSG15.
-           MOVE    SPA-GMN-MSG(16)         TO  D01-CHKMSG16.
-           MOVE    SPA-GMN-MSG(17)         TO  D01-CHKMSG17.
-           MOVE    SPA-GMN-MSG(18)         TO  D01-CHKMSG18.
-           MOVE    SPA-GMN-MSG(19)         TO  D01-CHKMSG19.
-           MOVE    SPA-GMN-MSG(20)         TO  D01-CHKMSG20.
+           MOVE    SPA-GMN-MSG (1)        TO  D01-CHKMSG1.
+           MOVE    SPA-GMN-MSG (2)        TO  D01-CHKMSG2.
+           MOVE    SPA-GMN-MSG (3)        TO  D01-CHKMSG3.
+           MOVE    SPA-GMN-MSG (4)        TO  D01-CHKMSG4.
+           MOVE    SPA-GMN-MSG (5)        TO  D01-CHKMSG5.
+           MOVE    SPA-GMN-MSG (6)        TO  D01-CHKMSG6.
+           MOVE    SPA-GMN-MSG (7)        TO  D01-CHKMSG7.
+           MOVE    SPA-GMN-MSG (8)        TO  D01-CHKMSG8.
+           MOVE    SPA-GMN-MSG (9)        TO  D01-CHKMSG9.
+           MOVE    SPA-GMN-MSG (10)       TO  D01-CHKMSG10.
+           MOVE    SPA-GMN-MSG (11)       TO  D01-CHKMSG11.
+           MOVE    SPA-GMN-MSG (12)       TO  D01-CHKMSG12.
+           MOVE    SPA-GMN-MSG (13)       TO  D01-CHKMSG13.
+           MOVE    SPA-GMN-MSG (14)       TO  D01-CHKMSG14.
+           MOVE    SPA-GMN-MSG (15)       TO  D01-CHKMSG15.
+           MOVE    SPA-GMN-MSG (16)       TO  D01-CHKMSG16.
+           MOVE    SPA-GMN-MSG (17)       TO  D01-CHKMSG17.
+           MOVE    SPA-GMN-MSG (18)       TO  D01-CHKMSG18.
+           MOVE    SPA-GMN-MSG (19)       TO  D01-CHKMSG19.
+           MOVE    SPA-GMN-MSG (20)       TO  D01-CHKMSG20.
       *
-           EVALUATE    SPA-GMN-BTN(1)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN1
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN1
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(2)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN2
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN2
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(3)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN3
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN3
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(4)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN4
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN4
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(5)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN5
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN5
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(6)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN6
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN6
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(7)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN7
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN7
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(8)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN8
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN8
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(9)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN9
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN9
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(10)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN10
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN10
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(11)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN11
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN11
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(12)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN12
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN12
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(13)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN13
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN13
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(14)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN14
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN14
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(15)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN15
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN15
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(16)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN16
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN16
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(17)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN17
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN17
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(18)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN18
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN18
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(19)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN19
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN19
-           END-EVALUATE.
-           EVALUATE    SPA-GMN-BTN(20)
-               WHEN    "F"
-                       MOVE    "F"             TO  D01-CHKBTN20
-               WHEN    "T"
-                       MOVE    "T"             TO  D01-CHKBTN20
-           END-EVALUATE.
+           MOVE    SPA-GMN-CHKKBN (1)     TO  D01-CHKKBN01.
+           MOVE    SPA-GMN-CHKKBN (2)     TO  D01-CHKKBN02.
+           MOVE    SPA-GMN-CHKKBN (3)     TO  D01-CHKKBN03.
+           MOVE    SPA-GMN-CHKKBN (4)     TO  D01-CHKKBN04.
+           MOVE    SPA-GMN-CHKKBN (5)     TO  D01-CHKKBN05.
+           MOVE    SPA-GMN-CHKKBN (6)     TO  D01-CHKKBN06.
+           MOVE    SPA-GMN-CHKKBN (7)     TO  D01-CHKKBN07.
+           MOVE    SPA-GMN-CHKKBN (8)     TO  D01-CHKKBN08.
+           MOVE    SPA-GMN-CHKKBN (9)     TO  D01-CHKKBN09.
+           MOVE    SPA-GMN-CHKKBN (10)    TO  D01-CHKKBN10.
+           MOVE    SPA-GMN-CHKKBN (11)    TO  D01-CHKKBN11.
+           MOVE    SPA-GMN-CHKKBN (12)    TO  D01-CHKKBN12.
+           MOVE    SPA-GMN-CHKKBN (13)    TO  D01-CHKKBN13.
+           MOVE    SPA-GMN-CHKKBN (14)    TO  D01-CHKKBN14.
+           MOVE    SPA-GMN-CHKKBN (15)    TO  D01-CHKKBN15.
+           MOVE    SPA-GMN-CHKKBN (16)    TO  D01-CHKKBN16.
+           MOVE    SPA-GMN-CHKKBN (17)    TO  D01-CHKKBN17.
+           MOVE    SPA-GMN-CHKKBN (18)    TO  D01-CHKKBN18.
+           MOVE    SPA-GMN-CHKKBN (19)    TO  D01-CHKKBN19.
+           MOVE    SPA-GMN-CHKKBN (20)    TO  D01-CHKKBN20.
+           MOVE    ZERO                   TO  D01-CHKKBN01-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN02-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN03-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN04-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN05-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN06-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN07-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN08-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN09-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN10-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN11-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN12-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN13-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN14-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN15-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN16-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN17-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN18-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN19-COUNT.
+           MOVE    ZERO                   TO  D01-CHKKBN20-COUNT.
+      *
+           PERFORM VARYING IDX1  FROM  1  BY 1
+                   UNTIL   IDX1  >     5
+               IF  SPA-GMN-TBL3 (1 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (1 IDX1)
+                                           TO  D01-CHKKBN01-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN01-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (2 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (2 IDX1)
+                                           TO  D01-CHKKBN02-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN02-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (3 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (3 IDX1)
+                                           TO  D01-CHKKBN03-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN03-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (4 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (4 IDX1)
+                                           TO  D01-CHKKBN04-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN04-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (5 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (5 IDX1)
+                                           TO  D01-CHKKBN05-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN05-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (6 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (6 IDX1)
+                                           TO  D01-CHKKBN06-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN06-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (7 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (7 IDX1)
+                                           TO  D01-CHKKBN07-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN07-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (8 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (8 IDX1)
+                                           TO  D01-CHKKBN08-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN08-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (9 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (9 IDX1)
+                                           TO  D01-CHKKBN09-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN09-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (10 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (10 IDX1)
+                                           TO  D01-CHKKBN10-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN10-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (11 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (11 IDX1)
+                                           TO  D01-CHKKBN11-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN11-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (12 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (12 IDX1)
+                                           TO  D01-CHKKBN12-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN12-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (13 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (13 IDX1)
+                                           TO  D01-CHKKBN13-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN13-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (14 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (14 IDX1)
+                                           TO  D01-CHKKBN14-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN14-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (15 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (15 IDX1)
+                                           TO  D01-CHKKBN15-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN15-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (16 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (16 IDX1)
+                                           TO  D01-CHKKBN16-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN16-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (17 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (17 IDX1)
+                                           TO  D01-CHKKBN17-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN17-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (18 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (18 IDX1)
+                                           TO  D01-CHKKBN18-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN18-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (19 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (19 IDX1)
+                                           TO  D01-CHKKBN19-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN19-COUNT
+               END-IF
+               IF  SPA-GMN-TBL3 (20 IDX1)  NOT =  SPACE
+                   MOVE    SPA-GMN-TBL3 (20 IDX1)
+                                           TO  D01-CHKKBN20-ITEM (IDX1)
+                   MOVE    IDX1            TO  D01-CHKKBN20-COUNT
+               END-IF
+           END-PERFORM
       *
            PERFORM 5011-MAPCUR-SEC.
       *
@@ -855,45 +881,45 @@
                WHEN    02
                    MOVE    "NYUGAIKBN"     TO  MCP-WIDGET
                WHEN    03
-                   MOVE    "CHKBTN1"       TO  MCP-WIDGET
+                   MOVE    "CHKKBN01"      TO  MCP-WIDGET
                WHEN    04
-                   MOVE    "CHKBTN2"       TO  MCP-WIDGET
+                   MOVE    "CHKKBN02"      TO  MCP-WIDGET
                WHEN    05
-                   MOVE    "CHKBTN3"       TO  MCP-WIDGET
+                   MOVE    "CHKKBN03"      TO  MCP-WIDGET
                WHEN    06
-                   MOVE    "CHKBTN4"       TO  MCP-WIDGET
+                   MOVE    "CHKKBN04"      TO  MCP-WIDGET
                WHEN    07
-                   MOVE    "CHKBTN5"       TO  MCP-WIDGET
+                   MOVE    "CHKKBN05"      TO  MCP-WIDGET
                WHEN    08
-                   MOVE    "CHKBTN6"       TO  MCP-WIDGET
+                   MOVE    "CHKKBN06"      TO  MCP-WIDGET
                WHEN    09
-                   MOVE    "CHKBTN7"       TO  MCP-WIDGET
+                   MOVE    "CHKKBN07"      TO  MCP-WIDGET
                WHEN    10
-                   MOVE    "CHKBTN8"       TO  MCP-WIDGET
+                   MOVE    "CHKKBN08"      TO  MCP-WIDGET
                WHEN    11
-                   MOVE    "CHKBTN9"       TO  MCP-WIDGET
+                   MOVE    "CHKKBN09"      TO  MCP-WIDGET
                WHEN    12
-                   MOVE    "CHKBTN10"      TO  MCP-WIDGET
+                   MOVE    "CHKKBN10"      TO  MCP-WIDGET
                WHEN    13
-                   MOVE    "CHKBTN11"      TO  MCP-WIDGET
+                   MOVE    "CHKKBN11"      TO  MCP-WIDGET
                WHEN    14
-                   MOVE    "CHKBTN12"      TO  MCP-WIDGET
+                   MOVE    "CHKKBN12"      TO  MCP-WIDGET
                WHEN    15
-                   MOVE    "CHKBTN13"      TO  MCP-WIDGET
+                   MOVE    "CHKKBN13"      TO  MCP-WIDGET
                WHEN    16
-                   MOVE    "CHKBTN14"      TO  MCP-WIDGET
+                   MOVE    "CHKKBN14"      TO  MCP-WIDGET
                WHEN    17
-                   MOVE    "CHKBTN15"      TO  MCP-WIDGET
+                   MOVE    "CHKKBN15"      TO  MCP-WIDGET
                WHEN    18
-                   MOVE    "CHKBTN16"      TO  MCP-WIDGET
+                   MOVE    "CHKKBN16"      TO  MCP-WIDGET
                WHEN    19
-                   MOVE    "CHKBTN17"      TO  MCP-WIDGET
+                   MOVE    "CHKKBN17"      TO  MCP-WIDGET
                WHEN    20
-                   MOVE    "CHKBTN18"      TO  MCP-WIDGET
+                   MOVE    "CHKKBN18"      TO  MCP-WIDGET
                WHEN    21
-                   MOVE    "CHKBTN19"      TO  MCP-WIDGET
+                   MOVE    "CHKKBN19"      TO  MCP-WIDGET
                WHEN    22
-                   MOVE    "CHKBTN20"      TO  MCP-WIDGET
+                   MOVE    "CHKKBN20"      TO  MCP-WIDGET
                WHEN    23
                    MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE.
@@ -914,7 +940,7 @@
            MOVE    "ORCBSD1"          TO  JOB-SHELLID.
            MOVE    SPA-TERMID         TO  JOB-TERMID.
            CALL    "ORCSJOB"          USING
-                                      WRK-JOBKANRI-AREA  
+                                      WRK-JOBKANRI-AREA
                                       JOBKANRI-REC.
            MOVE    SPACE              TO  DID2.
            MOVE    SPACE              TO  D99.
@@ -928,8 +954,8 @@
                    MOVE    2                  TO  SPA-GMN-RUN
                END-IF
                IF  MCP-WIDGET   =   "B13"
-                   MOVE    JOB-JOBID          TO  D99-RENNUM   (1)
-                   MOVE    JOB-SHELLMSG       TO  D99-SHORINM  (1)
+                   MOVE    JOB-JOBID          TO  D99-RENNUM  (1)
+                   MOVE    JOB-SHELLMSG       TO  D99-SHORINM (1)
                    MOVE    JOB-STARTTIME(1:2) TO  WRK-HH
                    MOVE    JOB-STARTTIME(3:2) TO  WRK-MM
                    MOVE    JOB-STARTTIME(5:2) TO  WRK-SS
@@ -937,10 +963,10 @@
                    MOVE    JOB-ENDTIME(1:2)   TO  WRK-HH
                    MOVE    JOB-ENDTIME(3:2)   TO  WRK-MM
                    MOVE    JOB-ENDTIME(5:2)   TO  WRK-SS
-                   MOVE    WRK-HENTIME        TO  D99-ENDTIME  (1)
+                   MOVE    WRK-HENTIME        TO  D99-ENDTIME (1)
                    MOVE    JOB-UPDCNT         TO  WRK-PAGE
-                   MOVE    WRK-PAGE           TO  D99-PAGE     (1)
-                   MOVE    JOB-YOBI           TO  D99-ERRMSG   (1)
+                   MOVE    WRK-PAGE           TO  D99-PAGE    (1)
+                   MOVE    JOB-YOBI           TO  D99-ERRMSG  (1)
                    IF  JOB-ENDYMD   =   SPACE
                        MOVE    "½èÍýÃæ¤Ç¤¹"   TO  D99-MSG
                    ELSE
@@ -1070,7 +1096,48 @@
            MOVE    "ORCGD4"      TO  DID4PARA-FILE-ID.
            MOVE    SPA-TERMID    TO  DID4PARA-TERMID.
       *
-       T-000-CHEKCHEK-EXT.
+       T-000-CHEKSETT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ³°¶èÊ¬ ³ÎÇ§½èÍý
+      *****************************************************************
+       T-000-NYUGAICHEK-SEC              SECTION.
+      *
+           MOVE    SPACE              TO  SPA-GMN-NYUGAIKBN-DSP.
+           MOVE    1                  TO  FLG-ERR.
+           PERFORM VARYING IDX1  FROM  1  BY 1
+                   UNTIL   IDX1  >     D01-NYUGAIKBN-COUNT
+               IF  D01-NYUGAIKBN(1:1)  =  SPA-GMN-NYUGAIKBN-K (IDX1)
+                   MOVE    SPA-GMN-TBL1 (IDX1)
+                                              TO  SPA-GMN-NYUGAIKBN-DSP
+                   MOVE    ZERO               TO  FLG-ERR
+               END-IF
+           END-PERFORM.
+      *
+           IF  FLG-ERR  =  ZERO
+               MOVE    23                  TO  SPA-GMN-CUR
+               PERFORM VARYING IDX1  FROM  1  BY 1
+                       UNTIL   IDX1  >    20
+                   IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
+                       COMPUTE SPA-GMN-CUR  =  IDX1  +  2
+                       MOVE    21              TO  IDX1
+                   END-IF
+               END-PERFORM
+           ELSE
+               MOVE    "0001"              TO  DERR-ERRCODE
+               MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+               MOVE    "B01"               TO  MCP-WIDGET
+               MOVE    "D01"               TO  SPA-MOTOPG
+               MOVE    "DERR"              TO  SPA-SAKIPG
+               MOVE    "NEW"               TO  MCP-PUTTYPE
+               MOVE    "DERR"              TO  MCP-WINDOW
+               PERFORM 900-PUT-WINDOW
+               MOVE    2                   TO  SPA-GMN-CUR
+               MOVE    1                   TO  FLG-END
+           END-IF.
+      *
+       T-000-NYUGAICHEK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1079,418 +1146,778 @@
        T-000-CHEKCHEK-SEC                SECTION.
       *
            EVALUATE    MCP-WIDGET
-             WHEN    "CHKBTN1"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN01"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (1)
                  IF  SPA-GMN-MSG (1)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(1)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(1)
-                           MOVE    "    "    TO  SPA-GMN-MSG(1)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(1)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(1)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(1)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(1)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  2  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN01(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN01-COUNT
+                             IF  D01-CHKKBN01(1:1) =
+                                           SPA-GMN-CHKKBN-K (1 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (1 IDX1)
+                                                TO  SPA-GMN-CHKKBN (1)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  2  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    3                   TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN2"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN02"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (2)
                  IF  SPA-GMN-MSG (2)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(2)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(2)
-                           MOVE    "    "    TO  SPA-GMN-MSG(2)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(2)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(2)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(2)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(2)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  3  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN02(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN02-COUNT
+                             IF  D01-CHKKBN02(1:1) =
+                                           SPA-GMN-CHKKBN-K (2 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (2 IDX1)
+                                                TO  SPA-GMN-CHKKBN (2)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  3  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    4                   TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN3"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN03"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (3)
                  IF  SPA-GMN-MSG (3)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(3)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(3)
-                           MOVE    "    "    TO  SPA-GMN-MSG(3)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(3)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(3)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(3)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(3)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  4  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN03(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN03-COUNT
+                             IF  D01-CHKKBN03(1:1) =
+                                           SPA-GMN-CHKKBN-K (3 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (3 IDX1)
+                                                TO  SPA-GMN-CHKKBN (3)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  4  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    5                   TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN4"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN04"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (4)
                  IF  SPA-GMN-MSG (4)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(4)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(4)
-                           MOVE    "    "    TO  SPA-GMN-MSG(4)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(4)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(4)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(4)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(4)
-                     END-EVALUATE
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN04(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN04-COUNT
+                             IF  D01-CHKKBN04(1:1) =
+                                           SPA-GMN-CHKKBN-K (4 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (4 IDX1)
+                                                TO  SPA-GMN-CHKKBN (4)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  5  BY 1
+                                 UNTIL   IDX1  >    20
+                             IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
+                                 COMPUTE SPA-GMN-CUR  =  IDX1  +  2
+                                 MOVE    21       TO  IDX1
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    6                   TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-                 PERFORM VARYING IDX1  FROM  5  BY 1
-                         UNTIL   IDX1  >    20
-                         IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
-                             COMPUTE SPA-GMN-CUR  =  IDX1  +  2
-                             MOVE    21       TO  IDX1
-                         END-IF
-                 END-PERFORM
-             WHEN    "CHKBTN5"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN05"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (5)
                  IF  SPA-GMN-MSG (5)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(5)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(5)
-                           MOVE    "    "    TO  SPA-GMN-MSG(5)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(5)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(5)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(5)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(5)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  6  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN05(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN05-COUNT
+                             IF  D01-CHKKBN05(1:1) =
+                                           SPA-GMN-CHKKBN-K (5 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (5 IDX1)
+                                                TO  SPA-GMN-CHKKBN(5)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  6  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    7                   TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN6"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN06"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (6)
                  IF  SPA-GMN-MSG (6)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(6)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(6)
-                           MOVE    "    "    TO  SPA-GMN-MSG(6)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(6)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(6)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(6)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(6)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  7  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN06(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN06-COUNT
+                             IF  D01-CHKKBN06(1:1) =
+                                           SPA-GMN-CHKKBN-K (6 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (6 IDX1)
+                                                TO  SPA-GMN-CHKKBN (6)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  7  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    8                   TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN7"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN07"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (7)
                  IF  SPA-GMN-MSG (7)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(7)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(7)
-                           MOVE    "    "    TO  SPA-GMN-MSG(7)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(7)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(7)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(7)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(7)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  8  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN07(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN07-COUNT
+                             IF  D01-CHKKBN07(1:1) =
+                                           SPA-GMN-CHKKBN-K (7 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (7 IDX1)
+                                                TO  SPA-GMN-CHKKBN (7)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  8  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    9                   TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN8"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN08"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (8)
                  IF  SPA-GMN-MSG (8)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(8)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(8)
-                           MOVE    "    "    TO  SPA-GMN-MSG(8)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(8)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(8)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(8)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(8)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  9  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN08(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN08-COUNT
+                             IF  D01-CHKKBN08(1:1) =
+                                           SPA-GMN-CHKKBN-K (8 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (8 IDX1)
+                                                TO  SPA-GMN-CHKKBN (8)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  9  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    10                  TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN9"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN09"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (9)
                  IF  SPA-GMN-MSG (9)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(9)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(9)
-                           MOVE    "    "    TO  SPA-GMN-MSG(9)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(9)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(9)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(9)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(9)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  10  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN09(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN09-COUNT
+                             IF  D01-CHKKBN09(1:1) =
+                                           SPA-GMN-CHKKBN-K (9 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (9 IDX1)
+                                                TO  SPA-GMN-CHKKBN (9)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  10  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    11                  TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN10"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN10"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (10)
                  IF  SPA-GMN-MSG (10)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(10)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(10)
-                           MOVE    "    "    TO  SPA-GMN-MSG(10)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(10)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(10)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(10)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(10)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  11  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN10(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN10-COUNT
+                             IF  D01-CHKKBN10(1:1) =
+                                           SPA-GMN-CHKKBN-K (10 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (10 IDX1)
+                                                TO  SPA-GMN-CHKKBN(10)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  11  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    12                  TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN11"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN11"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (11)
                  IF  SPA-GMN-MSG (11)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(11)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(11)
-                           MOVE    "    "    TO  SPA-GMN-MSG(11)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(11)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(11)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(11)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(11)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  12  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN11(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN11-COUNT
+                             IF  D01-CHKKBN11(1:1) =
+                                           SPA-GMN-CHKKBN-K (11 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (11 IDX1)
+                                                TO  SPA-GMN-CHKKBN (11)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  12  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    13                  TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN12"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN12"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (12)
                  IF  SPA-GMN-MSG (12)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(12)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(12)
-                           MOVE    "    "    TO  SPA-GMN-MSG(12)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(12)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(12)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(12)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(12)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  13  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN12(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN12-COUNT
+                             IF  D01-CHKKBN12(1:1) =
+                                           SPA-GMN-CHKKBN-K (12 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (12 IDX1)
+                                                TO  SPA-GMN-CHKKBN (12)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  13  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    14                  TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN13"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN13"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (13)
                  IF  SPA-GMN-MSG (13)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(13)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(13)
-                           MOVE    "    "    TO  SPA-GMN-MSG(13)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(13)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(13)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(13)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(13)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  14  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN13(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN13-COUNT
+                             IF  D01-CHKKBN13(1:1) =
+                                           SPA-GMN-CHKKBN-K (13 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (13 IDX1)
+                                                TO  SPA-GMN-CHKKBN (13)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  14  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    15                  TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN14"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN14"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (14)
                  IF  SPA-GMN-MSG (14)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(14)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(14)
-                           MOVE    "    "    TO  SPA-GMN-MSG(14)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(14)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(14)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(14)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(14)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  15  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN14(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN14-COUNT
+                             IF  D01-CHKKBN14(1:1) =
+                                           SPA-GMN-CHKKBN-K (14 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (14 IDX1)
+                                                TO  SPA-GMN-CHKKBN (14)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  15  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    16                  TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN15"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN15"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (15)
                  IF  SPA-GMN-MSG (15)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(15)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(15)
-                           MOVE    "    "    TO  SPA-GMN-MSG(15)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(15)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(15)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(15)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(15)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  16  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN15(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN15-COUNT
+                             IF  D01-CHKKBN15(1:1) =
+                                           SPA-GMN-CHKKBN-K (15 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (15 IDX1)
+                                                TO  SPA-GMN-CHKKBN (15)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  16  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    17                  TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN16"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN16"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (16)
                  IF  SPA-GMN-MSG (16)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(16)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(16)
-                           MOVE    "    "    TO  SPA-GMN-MSG(16)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(16)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(16)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(16)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(16)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  17  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN16(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN16-COUNT
+                             IF  D01-CHKKBN16(1:1) =
+                                           SPA-GMN-CHKKBN-K (16 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (16 IDX1)
+                                                TO  SPA-GMN-CHKKBN (16)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  17  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    18                  TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN17"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN17"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (17)
                  IF  SPA-GMN-MSG (17)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(17)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(17)
-                           MOVE    "    "    TO  SPA-GMN-MSG(17)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(17)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(17)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(17)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(17)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  18  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN17(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN17-COUNT
+                             IF  D01-CHKKBN17(1:1) =
+                                           SPA-GMN-CHKKBN-K (17 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (17 IDX1)
+                                                TO  SPA-GMN-CHKKBN (17)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  18  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
-                 END-IF
-             WHEN    "CHKBTN18"
-                 MOVE    23                      TO  SPA-GMN-CUR
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    19                  TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
+             WHEN    "CHKKBN18"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (18)
                  IF  SPA-GMN-MSG (18)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(18)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(18)
-                           MOVE    "    "    TO  SPA-GMN-MSG(18)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(18)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(18)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(18)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(18)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  19  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN18(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN18-COUNT
+                             IF  D01-CHKKBN18(1:1) =
+                                           SPA-GMN-CHKKBN-K (18 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (18 IDX1)
+                                                TO  SPA-GMN-CHKKBN (18)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  19  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    20                  TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN19"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN19"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (19)
                  IF  SPA-GMN-MSG (19)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(19)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(19)
-                           MOVE    "    "    TO  SPA-GMN-MSG(19)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(19)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(19)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(19)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(19)
-                     END-EVALUATE
-                     PERFORM VARYING IDX1  FROM  20  BY 1
-                             UNTIL   IDX1  >    20
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN19(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN19-COUNT
+                             IF  D01-CHKKBN19(1:1) =
+                                           SPA-GMN-CHKKBN-K (19 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (19 IDX1)
+                                                TO  SPA-GMN-CHKKBN (19)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         PERFORM VARYING IDX1  FROM  20  BY 1
+                                 UNTIL   IDX1  >    20
                              IF  SPA-GMN-MSG (IDX1)  NOT =  SPACE
                                  COMPUTE SPA-GMN-CUR  =  IDX1  +  2
                                  MOVE    21       TO  IDX1
                              END-IF
-                     END-PERFORM
+                         END-PERFORM
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    21                  TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
-             WHEN    "CHKBTN20"
-                 MOVE    23                      TO  SPA-GMN-CUR
+             WHEN    "CHKKBN20"
+                 MOVE    23                     TO  SPA-GMN-CUR
+                 MOVE    SPACE                  TO  SPA-GMN-CHKKBN (20)
                  IF  SPA-GMN-MSG (20)  NOT =  SPACE
-                     EVALUATE    SPA-GMN-BTN(20)
-                       WHEN    "T"
-                           MOVE    "F"       TO  SPA-GMN-BTN(20)
-                           MOVE    "    "    TO  SPA-GMN-MSG(20)(57:4)
-                           MOVE    "0"       TO  SPA-GMN-CNV(20)
-                       WHEN    OTHER
-                           MOVE    "T"       TO  SPA-GMN-BTN(20)
-                           MOVE    "³ÎÇ§"    TO  SPA-GMN-MSG(20)(57:4)
-                           MOVE    "1"       TO  SPA-GMN-CNV(20)
-                     END-EVALUATE
+                     MOVE    1                      TO  FLG-ERR
+                     IF  D01-CHKKBN20(1:1)  NOT =  SPACE
+                         PERFORM VARYING IDX1  FROM  1  BY 1
+                                 UNTIL   IDX1  >     D01-CHKKBN20-COUNT
+                             IF  D01-CHKKBN20(1:1) =
+                                           SPA-GMN-CHKKBN-K (20 IDX1)
+                                 MOVE    SPA-GMN-TBL3 (20 IDX1)
+                                                TO  SPA-GMN-CHKKBN(20)
+                                 MOVE    ZERO   TO  FLG-ERR
+                             END-IF
+                         END-PERFORM
+                     ELSE
+                         MOVE    ZERO   TO  FLG-ERR
+                     END-IF
+                     IF  FLG-ERR  =  ZERO
+                         CONTINUE
+                     ELSE
+                         MOVE    "0001"              TO  DERR-ERRCODE
+                         MOVE    T-MESSAGE-800-06    TO  DERR-ERRMSG
+                         MOVE    "B01"               TO  MCP-WIDGET
+                         MOVE    "D01"               TO  SPA-MOTOPG
+                         MOVE    "DERR"              TO  SPA-SAKIPG
+                         MOVE    "NEW"               TO  MCP-PUTTYPE
+                         MOVE    "DERR"              TO  MCP-WINDOW
+                         PERFORM 900-PUT-WINDOW
+                         MOVE    22                  TO  SPA-GMN-CUR
+                         MOVE    1                   TO  FLG-END
+                     END-IF
                  END-IF
              WHEN    OTHER
                  MOVE    1                       TO  SPA-GMN-CUR
@@ -1504,48 +1931,51 @@
       *****************************************************************
        T-000-RECECHEK-SEC                SECTION.
       *
-           MOVE    SPACE                       TO    DID1-REC.
-           MOVE    SPA-GMN-HOSPID              TO    DID1-REC.
+           MOVE    SPACE                       TO  DID1-REC.
+           MOVE    SPA-GMN-HOSPID              TO  DID1-REC.
            WRITE   DID1-REC.
       *      
-           MOVE    SPACE                       TO    DID1-REC.
-           MOVE    SPA-GMN-SRYYMD(1:6)         TO    DID1-REC(1:6).
-           MOVE    SPA-GMN-SRYYMD-S(1:6)       TO    DID1-REC(7:6).
+           MOVE    SPACE                       TO  DID1-REC.
+           MOVE    SPA-GMN-SRYYMD(1:6)         TO  DID1-REC(1:6).
+           MOVE    SPA-GMN-SRYYMD-S(1:6)       TO  DID1-REC(7:6).
            WRITE   DID1-REC.
       *
-           MOVE    SPACE                       TO    DID1-REC.
-           MOVE    SPA-GMN-NYUGAIKBN           TO    DID1-REC(1:1).
-           MOVE    SPA-GMN-NYUGAIKBN-MSG       TO    DID1-REC(2:10).
+           MOVE    SPACE                       TO  DID1-REC.
+           MOVE    SPA-GMN-NYUGAIKBN           TO  DID1-REC(1:1).
+           MOVE    SPA-GMN-NYUGAIKBN-MSG       TO  DID1-REC(2:10).
            WRITE   DID1-REC.
       *
-           MOVE    SPACE                       TO    DID1-REC.
-           MOVE    SPA-GMN-TBLG2               TO    DID1-REC(1:20).
+           MOVE    SPACE                       TO  DID1-REC.
+           PERFORM VARYING IDX1  FROM  1  BY 1
+                   UNTIL   IDX1  >    20
+               MOVE    SPA-GMN-CHKKBN (IDX1)(1:1)  TO  DID1-REC(IDX1:1)
+           END-PERFORM.
            WRITE   DID1-REC.
       *
            INITIALIZE                                ORCSMKPASSAREA.
            MOVE    "scripts/allways/orcbsd01.sh" TO  MKPASS-IN-01.
            CALL    "ORCSMKPASS"               USING  ORCSMKPASSAREA.
            MOVE    MKPASS-OT-01                  TO  SHELL-NAME.
-           MOVE    SPA-GMN-SRYYMD-S(1:6)       TO  SHELL-SRYYM.
-           MOVE    SPA-TERMID                  TO  SHELL-TERMID
-                                                   SHELL-WK-TERMID.
-           MOVE    SPA-SYSYMD                  TO  SHELL-SYSYMD.
-           MOVE    SPA-OPID                    TO  SHELL-OPID.
-           MOVE    ZERO                        TO  SHELL-SYOKBN.
-           MOVE    ZERO                        TO  SHELL-RECEKBN.
-           MOVE    DID4PARA                    TO  SHELL-ERRFILE.
-           MOVE    SHELL-NAME                  TO  SHELLTBL-NAME.
-           MOVE    SHELL-ARG1                  TO  SHELLTBL-ARG1.
-           MOVE    SHELL-ARG2                  TO  SHELLTBL-ARG2.
-           MOVE    SHELL-ARG3                  TO  SHELLTBL-ARG3.
-           MOVE    SHELL-ARG4                  TO  SHELLTBL-ARG4.
-           MOVE    SHELL-ARG5                  TO  SHELLTBL-ARG5.
-           MOVE    SHELLTBL                    TO  MCPDATA-REC.
-           MOVE    "SHELL"                     TO  MCP-FUNC.
-           MOVE    PATH-SHELL-SHELL            TO  MCP-PATH.
-           CALL    "MCPSUB"                    USING
-                                               MCPAREA
-                                               MCPDATA-REC.
+           MOVE    SPA-GMN-SRYYMD-S(1:6)         TO  SHELL-SRYYM.
+           MOVE    SPA-TERMID                    TO  SHELL-TERMID
+                                                     SHELL-WK-TERMID.
+           MOVE    SPA-SYSYMD                    TO  SHELL-SYSYMD.
+           MOVE    SPA-OPID                      TO  SHELL-OPID.
+           MOVE    ZERO                          TO  SHELL-SYOKBN.
+           MOVE    ZERO                          TO  SHELL-RECEKBN.
+           MOVE    DID4PARA                      TO  SHELL-ERRFILE.
+           MOVE    SHELL-NAME                    TO  SHELLTBL-NAME.
+           MOVE    SHELL-ARG1                    TO  SHELLTBL-ARG1.
+           MOVE    SHELL-ARG2                    TO  SHELLTBL-ARG2.
+           MOVE    SHELL-ARG3                    TO  SHELLTBL-ARG3.
+           MOVE    SHELL-ARG4                    TO  SHELLTBL-ARG4.
+           MOVE    SHELL-ARG5                    TO  SHELLTBL-ARG5.
+           MOVE    SHELLTBL                      TO  MCPDATA-REC.
+           MOVE    "SHELL"                       TO  MCP-FUNC.
+           MOVE    PATH-SHELL-SHELL              TO  MCP-PATH.
+           CALL    "MCPSUB"                      USING
+                                                 MCPAREA
+                                                 MCPDATA-REC.
       *
        T-000-RECECHEK-EXT.
            EXIT.

@@ -24,7 +24,7 @@
       *  コンポーネント名  : チェック確認データ振り分け
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  01.07.13    ひさなが 　   新規作成
+      *  01.07.13    ひさなが      新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -33,6 +33,8 @@
       *  01.00.01    ひさなが     02/03/01  印刷順、印刷グループの変更
       *  01.00.01    ひさなが     02/03/14  メッセージのコードを名称へ
       *  01.00.02    ひさなが     02/05/07  半角チェックの追加
+      *  01.00.03    ひさなが     03/07/29  チェック内容全件印刷追加
+      *                                     科情報の印刷
       *
       *****************************************************************
       *
@@ -165,6 +167,8 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX1                PIC 9(03).
+           03  IDY1                PIC 9(03).
+           03  IDY2                PIC 9(03).
       *
       *    氏名、生年月日、年齢、患者番号、編集作業領域
        01  W-SAGIYOU.
@@ -184,11 +188,25 @@
            03  W-PTNUM             PIC X(020).
            03  W-HOSPID            PIC X(024).
            03  W-PTID              PIC X(010).
+           03  W-MESG              PIC X(200).
+           03  W-MESG-NAME1        PIC X(200).
+           03  W-MESG-NAME2        PIC X(200).
+           03  W-MESG-SEIDONAME    PIC X(100).
+      *
+      *    診療科情報作業
+       01  W-SYS-SRYKA-AREA.
+           03  W-SYS-SRYKA-LIST               OCCURS  100.
+               05  W-SYS-SRYKA         PIC X(02).
+               05  W-SYS-SRYKAMEI      PIC X(12).
+           03  W-SYS-SRYKA-MAX1        PIC 9(04).
       *
       *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
+      *
+      *    システム管理マスタ
+           COPY    "CPSK1005.INC".
       *
       *    患者情報
        01  PTINF-REC.
@@ -267,8 +285,61 @@
            PERFORM T-000-CHEKCHEK-SEC  VARYING IDX1  FROM  1  BY 1
                                        UNTIL   IDX1  >     2.
       *
+      *修正/*開始*03.07.29*********************************************
+      *    診療科 入力処理
+           INITIALIZE                  W-SYS-SRYKA-AREA.
+           INITIALIZE                  SYS-1005-REC.
+           MOVE    "1005"              TO  SYS-1005-KANRICD.
+           MOVE    ZERO                TO  SYS-1005-STYUKYMD.
+           MOVE    ALL "9"             TO  SYS-1005-EDYUKYMD.
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC.
+           MOVE    T-SINRYOU-AREA(1:6) TO  ORC-DBYMD(1:6).
+           MOVE    "01"                TO  ORC-DBYMD(7:2).
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH.
+      *
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *
+           IF  MCP-RC   =   ZERO
+               PERFORM T-000-KANRIMST-READ-SEC
+               PERFORM VARYING     IDY1    FROM    1   BY  1
+                       UNTIL      (IDY1            >   100)  OR
+                                  (MCP-RC      NOT =   ZERO)
+                   MOVE    MCPDATA-REC           TO  SYS-1005-REC
+                   MOVE    SYS-1005-KBNCD (1:2)  TO
+                                                 W-SYS-SRYKA (IDY1)
+                   MOVE    SYS-1005-SRYKANAME2   TO
+                                                 W-SYS-SRYKAMEI (IDY1)
+                   MOVE    IDY1                  TO  W-SYS-SRYKA-MAX1
+                   PERFORM T-000-KANRIMST-READ-SEC
+               END-PERFORM
+           END-IF.
+      *
+           INITIALIZE                  MCPAREA.
+           MOVE    "DBCLOSE"           TO  MCP-FUNC.
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+      *修正/*終了*03.07.29*********************************************
+      *
        T-000-CHEKINITK-EXT.
            EXIT.
+      *
+      *******************
+      *
+       T-000-KANRIMST-READ-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC.
+           MOVE    "SYSKANRI-KEY2"     TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
       *
       *****************************************************************
       *    終　了　処　理
@@ -375,6 +446,9 @@
                    AT   END
                         MOVE     1                     TO    FLG-END
                    NOT  AT  END
+      *修正/*開始*03.07.29*********************************************
+                        PERFORM T-101-CHEKCHEK-SEC
+      *修正/*終了*03.07.29*********************************************
                         EVALUATE    DID2-REC(71:3)
                             WHEN    "100"
                             WHEN    "200"
@@ -399,6 +473,25 @@
       *
        T-100-CHEKCHEK-EXT.
            EXIT.
+      *修正/*開始*03.07.29*********************************************
+      *
+      *****************************************************************
+      *    科情報の決定 処理
+      *****************************************************************
+       T-101-CHEKCHEK-SEC                SECTION.
+      *
+           MOVE    ZERO                  TO  IDY2.
+           PERFORM VARYING    IDY1   FROM   1   BY  1
+                   UNTIL      IDY1   >   W-SYS-SRYKA-MAX1
+               IF  W-SYS-SRYKA (IDY1)   =   DID2-REC(191:2)
+                   MOVE    IDY1                  TO  IDY2
+                   MOVE    200                   TO  IDY1
+               END-IF
+           END-PERFORM.
+      *
+       T-101-CHEKCHEK-EXT.
+           EXIT.
+      *修正/*終了*03.07.29*********************************************
       *
       *****************************************************************
       *    チェック確認データ 振り分けデータ１出力 処理
@@ -409,7 +502,9 @@
            MOVE    DID2-REC(71:6)      TO  DID5-MESGID.
            MOVE    DID2-REC(1:24)      TO  DID5-HOSPID.
            MOVE    T-CNT-IN            TO  DID5-SEQNO.
-           MOVE    DID2-REC(1:200)     TO  DID5-MESG.
+      *修正/*開始*03.07.29*********************************************
+      *     MOVE    DID2-REC(1:200)     TO  DID5-MESG.
+      *修正/*終了*03.07.29*********************************************
            IF  (DID2-REC(1:24)    NOT =   W-HOSPID)  OR
                (DID2-REC(26:10)   NOT =   W-PTID)
                PERFORM T-300-CHEKCHEK-SEC
@@ -420,10 +515,19 @@
            MOVE    W-NAME              TO  DID5-NAME.
            MOVE    W-NENREI            TO  DID5-NENREI.
            MOVE    W-PTNUM             TO  DID5-PTNUM.
-           IF  DID2-REC(71:6) =  "400-06"
-               MOVE    DID2-REC(37:10)     TO    DID5-MESG(135:10)
-               PERFORM T-500-CHEKCHEK-SEC
-           END-IF.
+      *修正/*開始*03.07.29*********************************************
+      *     IF  DID2-REC(71:6) =  "400-06"
+      *         MOVE    DID2-REC(37:10)     TO    DID5-MESG(135:10)
+      *         PERFORM T-500-CHEKCHEK-SEC
+      *     END-IF.
+           EVALUATE    DID2-REC(71:6)
+               WHEN    "400-06"
+                  PERFORM T-500-CHEKCHEK-SEC
+               WHEN    OTHER
+                  PERFORM T-201-CHEKCHEK-HEN1-SEC
+           END-EVALUATE.
+           MOVE    W-MESG              TO  DID5-MESG.
+      *修正/*終了*03.07.29*********************************************
            WRITE   DID5-REC.
       *
        T-201-CHEKCHEK-EXT.
@@ -438,7 +542,9 @@
            MOVE    DID2-REC(71:6)      TO  DID6-MESGID.
            MOVE    DID2-REC(1:24)      TO  DID6-HOSPID.
            MOVE    T-CNT-IN            TO  DID6-SEQNO.
-           MOVE    DID2-REC(1:200)     TO  DID6-MESG.
+      *修正/*開始*03.07.29*********************************************
+      *     MOVE    DID2-REC(1:200)     TO  DID6-MESG.
+      *修正/*終了*03.07.29*********************************************
            IF  (DID2-REC(1:24)    NOT =   W-HOSPID)  OR
                (DID2-REC(26:10)   NOT =   W-PTID)
                PERFORM T-300-CHEKCHEK-SEC
@@ -449,20 +555,41 @@
            MOVE    W-NAME              TO  DID6-NAME.
            MOVE    W-NENREI            TO  DID6-NENREI.
            MOVE    W-PTNUM             TO  DID6-PTNUM.
-           IF  DID2-REC(71:6) =  "530-07"  OR  "530-06"
-               MOVE    DID2-REC(37:9)      TO    DID6-MESG(135:9)
-               MOVE    DID2-REC(47:9)      TO    DID6-MESG(145:9)
-               PERFORM T-510-CHEKCHEK-SEC
-           END-IF.
-           IF  DID2-REC(71:6) =  "530-04"  OR  "530-03"
-               MOVE    DID2-REC(37:9)      TO    DID6-MESG(135:9)
-               MOVE    DID2-REC(161:6)     TO    DID6-MESG(145:6)
-               PERFORM T-512-CHEKCHEK-SEC
-           END-IF.
-           IF  DID2-REC(71:6) =  "540-02"  OR  "540-03"
-               MOVE    DID2-REC(37:9)      TO    DID6-MESG(128:9)
-               PERFORM T-512-CHEKCHEK-SEC
-           END-IF.
+      *修正/*開始*03.07.29*********************************************
+      *     IF  DID2-REC(71:6) =  "530-07"  OR  "530-06"
+      *         MOVE    DID2-REC(37:9)      TO    DID6-MESG(121:9)
+      *         MOVE    DID2-REC(47:9)      TO    DID6-MESG(153:9)
+      *         PERFORM T-510-CHEKCHEK-SEC
+      *     END-IF.
+      *     IF  DID2-REC(71:6) =  "530-04"  OR  "530-03"
+      *         MOVE    DID2-REC(37:9)      TO    DID6-MESG(135:9)
+      *         PERFORM T-512-CHEKCHEK-SEC
+      *     END-IF.
+      *     IF  DID2-REC(71:6) =  "540-02"  OR  "540-03"
+      *         MOVE    DID2-REC(37:9)      TO    DID6-MESG(131:9)
+      *         PERFORM T-512-CHEKCHEK-SEC
+      *     END-IF.
+           MOVE    ALL SPACE           TO    W-MESG-NAME1.
+           MOVE    ALL SPACE           TO    W-MESG-NAME2.
+           EVALUATE    DID2-REC(71:6)
+               WHEN    "530-07"
+               WHEN    "530-06"
+                  MOVE    DID2-REC(37:9)      TO    W-MESG-NAME1
+                  MOVE    DID2-REC(47:9)      TO    W-MESG-NAME2
+                  PERFORM T-510-CHEKCHEK-SEC
+               WHEN    "530-04"
+               WHEN    "530-03"
+                  MOVE    DID2-REC(37:9)      TO    W-MESG-NAME1
+                  PERFORM T-512-CHEKCHEK-SEC
+               WHEN    "540-03"
+               WHEN    "540-02"
+                  MOVE    DID2-REC(37:9)      TO    W-MESG-NAME1
+                  PERFORM T-512-CHEKCHEK-SEC
+               WHEN    OTHER
+                  PERFORM T-201-CHEKCHEK-HEN1-SEC
+           END-EVALUATE.
+           MOVE    W-MESG              TO  DID6-MESG.
+      *修正/*終了*03.07.29*********************************************
            IF  DID2-REC(71:6) =  "530-07"  OR  "530-06"
                PERFORM T-520-CHEKCHEK-SEC
                IF  (FLG-MCP1 =  1)  AND  (FLG-MCP2 =  1)
@@ -484,7 +611,9 @@
            MOVE    DID2-REC(71:6)      TO  DID7-MESGID.
            MOVE    DID2-REC(1:24)      TO  DID7-HOSPID.
            MOVE    T-CNT-IN            TO  DID7-SEQNO.
-           MOVE    DID2-REC(1:200)     TO  DID7-MESG.
+      *修正/*開始*03.07.29*********************************************
+      *     MOVE    DID2-REC(1:200)     TO  DID7-MESG.
+      *修正/*終了*03.07.29*********************************************
            IF  (DID2-REC(1:24)    NOT =   W-HOSPID)  OR
                (DID2-REC(26:10)   NOT =   W-PTID)
                PERFORM T-300-CHEKCHEK-SEC
@@ -495,6 +624,10 @@
            MOVE    W-NAME              TO  DID7-NAME.
            MOVE    W-NENREI            TO  DID7-NENREI.
            MOVE    W-PTNUM             TO  DID7-PTNUM.
+      *修正/*開始*03.07.29*********************************************
+           PERFORM T-201-CHEKCHEK-HEN1-SEC.
+           MOVE    W-MESG              TO  DID7-MESG.
+      *修正/*終了*03.07.29*********************************************
            WRITE   DID7-REC.
       *
        T-203-CHEKCHEK-EXT.
@@ -509,7 +642,9 @@
            MOVE    DID2-REC(71:6)      TO  DID9-MESGID.
            MOVE    DID2-REC(1:24)      TO  DID9-HOSPID.
            MOVE    T-CNT-IN            TO  DID9-SEQNO.
-           MOVE    DID2-REC(1:200)     TO  DID9-MESG.
+      *修正/*開始*03.07.29*********************************************
+      *     MOVE    DID2-REC(1:200)     TO  DID9-MESG.
+      *修正/*終了*03.07.29*********************************************
            IF  (DID2-REC(1:24)    NOT =   W-HOSPID)  OR
                (DID2-REC(26:10)   NOT =   W-PTID)
                PERFORM T-300-CHEKCHEK-SEC
@@ -520,10 +655,68 @@
            MOVE    W-NAME              TO  DID9-NAME.
            MOVE    W-NENREI            TO  DID9-NENREI.
            MOVE    W-PTNUM             TO  DID9-PTNUM.
+      *修正/*開始*03.07.29*********************************************
+           PERFORM T-201-CHEKCHEK-HEN1-SEC.
+           MOVE    W-MESG              TO  DID9-MESG.
+      *修正/*終了*03.07.29*********************************************
            WRITE   DID9-REC.
       *
        T-204-CHEKCHEK-EXT.
            EXIT.
+      *修正/*開始*03.07.29*********************************************
+      *
+      *****************************************************************
+      *    科情報のメッセージに取り込み編集１ 処理
+      *****************************************************************
+       T-201-CHEKCHEK-HEN1-SEC           SECTION.
+      *
+           MOVE    ALL SPACE           TO  W-MESG.
+           IF  IDY2    =   ZERO
+               EVALUATE    DID2-REC(194:1)
+                   WHEN    "1"
+                      STRING  "［入院］"             DELIMITED BY SIZE
+                              DID2-REC(77:90)        DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+                   WHEN    "2"
+                      STRING  "［診療］"             DELIMITED BY SIZE
+                              DID2-REC(77:90)        DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+                   WHEN    OTHER
+                      STRING  DID2-REC(77:90)        DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+               END-EVALUATE
+           ELSE
+               EVALUATE    DID2-REC(194:1)
+                   WHEN    "1"
+                      STRING  "［"                   DELIMITED BY SIZE
+                              W-SYS-SRYKAMEI (IDY2)  DELIMITED BY SPACE
+                              "（入院）］"           DELIMITED BY SIZE
+                              DID2-REC(77:90)        DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+                   WHEN    "2"
+                      STRING  "［"                   DELIMITED BY SIZE
+                              W-SYS-SRYKAMEI (IDY2)  DELIMITED BY SPACE
+                              "（診療）］"           DELIMITED BY SIZE
+                              DID2-REC(77:90)        DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+                   WHEN    OTHER
+                      STRING  "［"                   DELIMITED BY SIZE
+                              W-SYS-SRYKAMEI (IDY2)  DELIMITED BY SPACE
+                              "］"                   DELIMITED BY SIZE
+                              DID2-REC(77:90)        DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+               END-EVALUATE
+           END-IF.
+      *
+       T-201-CHEKCHEK-HEN1-EXT.
+           EXIT.
+      *修正/*終了*03.07.29*********************************************
       *
       *****************************************************************
       *    患者情報テーブル 参照処理
@@ -575,7 +768,7 @@
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
-                                       MCPDATA-REC.    
+                                       MCPDATA-REC.
       *
        T-300-CHEKCHEK-READ-EXT.
            EXIT.
@@ -625,7 +818,7 @@
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
-                                       MCPDATA-REC.    
+                                       MCPDATA-REC.
       *
        T-400-CHEKCHEK-READ-EXT.
            EXIT.
@@ -635,6 +828,11 @@
       *****************************************************************
        T-500-CHEKCHEK-SEC                SECTION.
       *
+      *修正/*開始*03.07.29*********************************************
+           MOVE    ALL SPACE           TO  W-MESG.
+           MOVE    ALL SPACE           TO  W-MESG-SEIDONAME.
+           MOVE    DID2-REC(37:3)      TO  W-MESG-SEIDONAME.
+      *修正/*終了*03.07.29*********************************************
            INITIALIZE                  HKNNUM-REC.
            MOVE    DID2-REC(1:24)      TO  HKN-HOSPID.
            MOVE    DID2-REC(37:3)      TO  HKN-HKNNUM.
@@ -650,10 +848,20 @@
            IF  MCP-RC    =   ZERO
                PERFORM T-500-CHEKCHEK-READ-SEC
                IF  MCP-RC    =   ZERO
-                   MOVE    MCPDATA-REC         TO  HKNNUM-REC 
-                   MOVE    HKN-SEIDONAME(1:64) TO  DID5-MESG(135:64)
+                   MOVE    MCPDATA-REC         TO  HKNNUM-REC
+      *修正/*開始*03.07.29*********************************************
+      *             MOVE    HKN-SEIDONAME(1:64) TO  DID5-MESG(135:64)
+                   MOVE    HKN-SEIDONAME       TO  W-MESG-SEIDONAME
+      *修正/*終了*03.07.29*********************************************
                END-IF
            END-IF.
+      *修正/*開始*03.07.29*********************************************
+           STRING  DID2-REC(77:90)        DELIMITED BY SPACE
+                   "、"                   DELIMITED BY SIZE
+                   W-MESG-SEIDONAME       DELIMITED BY SPACE
+                         INTO             W-MESG
+           END-STRING.
+      *修正/*終了*03.07.29*********************************************
       *
            INITIALIZE                  MCPAREA.
            MOVE    "DBCLOSE"           TO  MCP-FUNC.
@@ -675,7 +883,7 @@
            CALL    "ORCMCPSUB"         USING
                                        MCPAREA
                                        ORCMCPAREA
-                                       MCPDATA-REC.    
+                                       MCPDATA-REC.
       *
        T-500-CHEKCHEK-READ-EXT.
            EXIT.
@@ -702,7 +910,10 @@
                PERFORM T-510-CHEKCHEK-READ-SEC
                IF  MCP-RC    =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-                   MOVE    TNS-NAME(1:28)      TO  DID6-MESG(107:31)
+      *修正/*開始*03.07.29*********************************************
+      *             MOVE    TNS-NAME(1:28)      TO  DID6-MESG(107:31)
+                   MOVE    TNS-NAME            TO  W-MESG-NAME1
+      *修正/*終了*03.07.29*********************************************
                END-IF
            END-IF.
       *
@@ -731,7 +942,10 @@
                PERFORM T-510-CHEKCHEK-READ-SEC
                IF  MCP-RC    =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-                   MOVE    TNS-NAME(1:28)      TO  DID6-MESG(138:28)
+      *修正/*開始*03.07.29*********************************************
+      *             MOVE    TNS-NAME(1:28)      TO  DID6-MESG(138:28)
+                   MOVE    TNS-NAME            TO  W-MESG-NAME2
+      *修正/*終了*03.07.29*********************************************
                END-IF
            END-IF.
       *
@@ -742,6 +956,76 @@
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC.
+      *
+      *修正/*開始*03.07.29*********************************************
+           MOVE    ALL SPACE           TO  W-MESG.
+           IF  IDY2    =   ZERO
+               EVALUATE    DID2-REC(194:1)
+                   WHEN    "1"
+                      STRING  "［入院］"             DELIMITED BY SIZE
+                              DID2-REC(77:90)        DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME1           DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME2           DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+                   WHEN    "2"
+                      STRING  "［診療］"             DELIMITED BY SIZE
+                              DID2-REC(77:90)        DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME1           DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME2           DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+                   WHEN    OTHER
+                      STRING  DID2-REC(77:90)        DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME1           DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME2           DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+               END-EVALUATE
+           ELSE
+               EVALUATE    DID2-REC(194:1)
+                   WHEN    "1"
+                      STRING  "［"                   DELIMITED BY SIZE
+                              W-SYS-SRYKAMEI (IDY2)  DELIMITED BY SPACE
+                              "（入院）］"           DELIMITED BY SIZE
+                              DID2-REC(77:90)        DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME1           DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME2           DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+                   WHEN    "2"
+                      STRING  "［"                   DELIMITED BY SIZE
+                              W-SYS-SRYKAMEI (IDY2)  DELIMITED BY SPACE
+                              "（診療）］"           DELIMITED BY SIZE
+                              DID2-REC(77:90)        DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME1           DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME2           DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+                   WHEN    OTHER
+                      STRING  "［"                   DELIMITED BY SIZE
+                              W-SYS-SRYKAMEI (IDY2)  DELIMITED BY SPACE
+                              "］"                   DELIMITED BY SIZE
+                              DID2-REC(77:90)        DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME1           DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME2           DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+               END-EVALUATE
+           END-IF.
+      *修正/*終了*03.07.29*********************************************
       *
        T-510-CHEKCHEK-EXT.
            EXIT.
@@ -767,8 +1051,10 @@
                PERFORM T-510-CHEKCHEK-READ-SEC
                IF  MCP-RC    =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-                   MOVE    TNS-NAME(1:70)      TO  DID6-MESG(123:70)
-               END-IF
+      *修正/*開始*03.07.29*********************************************
+      *             MOVE    TNS-NAME(1:70)      TO  DID6-MESG(131:70)
+                   MOVE    TNS-NAME            TO  W-MESG-NAME1
+      *修正/*終了*03.07.29*********************************************
            END-IF.
       *
            INITIALIZE                  MCPAREA.
@@ -778,6 +1064,64 @@
                                        MCPAREA
                                        ORCMCPAREA
                                        MCPDATA-REC.
+      *
+      *修正/*開始*03.07.29*********************************************
+           MOVE    ALL SPACE           TO  W-MESG.
+           IF  IDY2    =   ZERO
+               EVALUATE    DID2-REC(194:1)
+                   WHEN    "1"
+                      STRING  "［入院］"             DELIMITED BY SIZE
+                              DID2-REC(77:90)        DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME1           DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+                   WHEN    "2"
+                      STRING  "［診療］"             DELIMITED BY SIZE
+                              DID2-REC(77:90)        DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME1           DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+                   WHEN    OTHER
+                      STRING  DID2-REC(77:90)        DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME1           DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+               END-EVALUATE
+           ELSE
+               EVALUATE    DID2-REC(194:1)
+                   WHEN    "1"
+                      STRING  "［"                   DELIMITED BY SIZE
+                              W-SYS-SRYKAMEI (IDY2)  DELIMITED BY SPACE
+                              "（入院）］"           DELIMITED BY SIZE
+                              DID2-REC(77:90)        DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME1           DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+                   WHEN    "2"
+                      STRING  "［"                   DELIMITED BY SIZE
+                              W-SYS-SRYKAMEI (IDY2)  DELIMITED BY SPACE
+                              "（診療）］"           DELIMITED BY SIZE
+                              DID2-REC(77:90)        DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME1           DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+                   WHEN    OTHER
+                      STRING  "［"                   DELIMITED BY SIZE
+                              W-SYS-SRYKAMEI (IDY2)  DELIMITED BY SPACE
+                              "］"                   DELIMITED BY SIZE
+                              DID2-REC(77:90)        DELIMITED BY SPACE
+                              "、"                   DELIMITED BY SIZE
+                              W-MESG-NAME1           DELIMITED BY SPACE
+                                    INTO             W-MESG
+                      END-STRING
+               END-EVALUATE
+           END-IF.
+      *修正/*終了*03.07.29*********************************************
       *
        T-512-CHEKCHEK-EXT.
            EXIT.
@@ -808,7 +1152,7 @@
            MOVE    DID2-REC(26:10)     TO  ACCT-PTID.
            MOVE    DID2-REC(191:2)     TO  ACCT-SRYKA.
            MOVE    T-SINRYOU-AREA      TO  ACCT-SRYYM.
-           MOVE    DID2-REC(171:8)     TO  ACCT-ZAINUM.          
+           MOVE    DID2-REC(171:8)     TO  ACCT-ZAINUM.
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC.
            MOVE    "DBSELECT"          TO  MCP-FUNC.
@@ -840,7 +1184,7 @@
            MOVE    DID2-REC(26:10)     TO  ACCT-PTID.
            MOVE    DID2-REC(191:2)     TO  ACCT-SRYKA.
            MOVE    T-SINRYOU-AREA      TO  ACCT-SRYYM.
-           MOVE    DID2-REC(181:8)     TO  ACCT-ZAINUM.          
+           MOVE    DID2-REC(181:8)     TO  ACCT-ZAINUM.
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC.
            MOVE    "DBSELECT"          TO  MCP-FUNC.

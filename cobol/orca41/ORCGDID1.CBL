@@ -27,7 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *      
+      *  01.00.01    ひさなが     03/07/29  チェック内容全件印刷追加
+      *
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -56,17 +57,22 @@
                    07  SPA-GMN-SRYYMD         PIC X(08).
                    07  SPA-GMN-SRYYMD-S       PIC X(08).
                    07  SPA-GMN-SRYYM-D        PIC X(16).
-                   07  SPA-GMN-NYUGAIKBN      PIC X(01).
-                   07  SPA-GMN-NYUGAIKBN-MSG  PIC X(10).
-                   07  SPA-GMN-TBLG1.
-                       09  SPA-GNM-TBL1       OCCURS  2.
-                           11  SPA-GMN-GAI    PIC X(10).
-                       09  SPA-GNM-TBL2       OCCURS  20.
-                           11  SPA-GMN-MSG    PIC X(60).
-                           11  SPA-GMN-BTN    PIC X(01).
-                   07  SPA-GMN-TBLG2.
-                       09  SPA-GNM-TBL3       OCCURS  20.
-                           11  SPA-GMN-CNV    PIC X(01).
+                   07  SPA-GMN-NYUGAIKBN-DSP.
+                       09  SPA-GMN-NYUGAIKBN      PIC X(01).
+                       09  SPA-GMN-NYUGAIKBN-AKI  PIC X(01).
+                       09  SPA-GMN-NYUGAIKBN-MSG  PIC X(14).
+                   07  SPA-GMN-TBLG.
+                       09  SPA-GMN-TBL1       OCCURS  5.
+                           11  SPA-GMN-NYUGAIKBN-K    PIC X(01).
+                           11  SPA-GMN-NYUGAIKBN-FL   PIC X(01).
+                           11  SPA-GMN-NYUGAIKBN-M    PIC X(14).
+                       09  SPA-GMN-TBL2       OCCURS  20.
+                           11  SPA-GMN-MSG            PIC X(40).
+                           11  SPA-GMN-CHKKBN         PIC X(16).
+                           11  SPA-GMN-TBL3       OCCURS  5.
+                               13  SPA-GMN-CHKKBN-K   PIC X(01).
+                               13  SPA-GMN-CHKKBN-FL  PIC X(01).
+                               13  SPA-GMN-CHKKBN-M   PIC X(14).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-MOTOPG         PIC X(08).
       *
