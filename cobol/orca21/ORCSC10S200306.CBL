@@ -1080,11 +1080,25 @@
       *    保険毎のコードの判定
            MOVE    SANTEI-SRYCD        TO  WRK-SRYCD
            PERFORM 1000-SANTEI-CHK-SEC
-           IF     (FLG-HKNSAN          =   1   )  AND
-                  (SPA-HKNKBN      NOT =   ZERO)  AND
-                  (SANTEI-HKNCOMBINUM  NOT =   SPA-HKNCOMBINUM)
-               GO      TO      10011-TOUGETU-CHK-EXT
+           IF      FLG-HKNSAN          =   1
+      *        一般の保険で今回が労災の時対象外
+               IF      (SANTEI-HKNCOMBINUM     =   ZERO )  AND
+                       (SPA-HKNKBN             =   1     )
+                   GO      TO      10011-TOUGETU-CHK-EXT
+               END-IF
+      *        労災の保険で今回が一般
+               IF      (SANTEI-HKNCOMBINUM NOT =   ZERO )  AND
+                       (SPA-HKNKBN             =   ZERO )
+                   GO      TO      10011-TOUGETU-CHK-EXT
+               END-IF
+      *        労災の保険で今回が労災の時判定
+               IF      (SANTEI-HKNCOMBINUM NOT =   ZERO )  AND
+                       (SPA-HKNKBN             =   1    )  AND
+                       (SANTEI-HKNCOMBINUM NOT =   SPA-HKNCOMBINUM)
+                   GO      TO      10011-TOUGETU-CHK-EXT
+               END-IF
            END-IF
+      *
       *
       *    上限１日
            MOVE    ZERO                TO  WRK-DAYCNT
