@@ -1896,6 +1896,12 @@
                                            TO  SPA-GMN-NYUKINKBN-G
                MOVE    SPA-GMN-NYUKINKBN   TO  SPA-MAE-NYUKINKBN
            END-IF
+           IF      SPA-GMN-NYUKINKBN       =   SPACE
+               MOVE    "1"                 TO  SPA-GMN-NYUKINKBN
+           END-IF
+           IF      SPA-GMN-HAKHOUFLG       =   SPACE
+               MOVE    "1"                 TO  SPA-GMN-HAKHOUFLG
+           END-IF
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-NYUKINKBN-MAX
