@@ -820,6 +820,7 @@ path	key34 	{
 			AND   a.NYUGAIKBN   =   :NYUGAIKBN
 			AND   a.SRYYMD      >=  :SKYSTYMD
 			AND   a.SRYYMD      <=  :SKYEDYMD
+			AND   a.DENPJTIKBN  <>  '3'
 			AND   a.CREATEKBN   <>  '3'
 			AND   a.CHOSEI      <>  0
 			AND   a.HOSPID    =   b.HOSPID
