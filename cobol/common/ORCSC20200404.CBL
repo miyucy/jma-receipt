@@ -891,13 +891,13 @@
       *
       *        長期投与加算（処方）
                IF      WRK-COM-INPUTCD (IDX)   =   "120003170"
-                   MOVE    1                   TO  FLG-TOKUSYO1
-                   MOVE    IDX                 TO  IDX-T1
+                   MOVE    1                   TO  FLG-CHOKIKA2
+                   MOVE    IDX                 TO  IDX-T2
                END-IF
       *        長期投与加算（処方せん）
                IF      WRK-COM-INPUTCD (IDX)   =   "120003270"
-                   MOVE    1                   TO  FLG-TOKUSYO2
-                   MOVE    IDX                 TO  IDX-T2
+                   MOVE    1                   TO  FLG-CHOKIKA1
+                   MOVE    IDX                 TO  IDX-T1
                END-IF
       *
       *        投薬で入院回数の時、回数集計
@@ -942,6 +942,24 @@
            IF      FLG-TOKUSYO2        =   1
                IF      FLG-SYOHORYO        =   ZERO
                    MOVE    "1015"              TO  SPA-ERRCD
+                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-T2)
+               END-IF
+           END-IF
+      *
+      *    長期投薬処方箋料がある時、処方箋料があること
+           IF      FLG-CHOKIKA1        =   1
+               IF     (FLG-SYOHOSENN       =   ZERO )  OR
+                      (FLG-CHOUKI          =   ZERO )
+                   MOVE    "1037"              TO  SPA-ERRCD
+                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-T1)
+               END-IF
+           END-IF
+      *
+      *    特定疾患処方管理加算処方料がある時の、処方料があること
+           IF      FLG-CHOKIKA2        =   1
+               IF     (FLG-SYOHORYO        =   ZERO )  OR
+                      (FLG-CHOUKI          =   ZERO )
+                   MOVE    "1037"              TO  SPA-ERRCD
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-T2)
                END-IF
            END-IF
