@@ -773,10 +773,31 @@
                        LNK-SYU-TGMONEY-TAX(12) * 1.05          
            END-IF.
       *
-      *    ÉÂ±¡¸ºÌÈ¤Î·×»»¡Ê¼«Èñ¡¦Ï«ºÒ¡¦¼«ÇåÀÕ¤ò½ü¤¯¡Ë
+      *    ÀÁµá¶â³Û¤Î·×»»¡ÊÄ´À°¶â´Þ¤Þ¤º¡Ë
+           COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY    +
+                                            LNK-SYU-TGMONEY(12) +
+                                            LNK-SYU-TGMONEY-TAX(12) +
+                                            LNK-SYU-JIHI-TOTAL  +
+                                            LNK-SYU-JIHI-TOTAL-TAX  +
+                                            LNK-SYU-JIHI-TAX.
+      *
+      *    ¼«ÈñÊÝ¸±¤ÎÊä½õ¶èÊ¬¤¬²ÝÀÇ¤Î¾ì¹ç¡¢¾ÃÈñÀÇ·×»»¤ò¹Ô¤¦
+           IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" ) AND
+               ( COMB-HOJOKBN           =  "1" )
+      *
+              IF    WK-TAX1001-KBN  =  "1"
+                 COMPUTE  LNK-SYU-SKYMONEY   =  
+                           ( LNK-SYU-SKYMONEY  *  1.05 ) + 0.5
+              ELSE
+                 COMPUTE  LNK-SYU-SKYMONEY   =  
+                             LNK-SYU-SKYMONEY  *  1.05
+              END-IF
+      *
+           END-IF.     
+      *
+      *    ÉÂ±¡¸ºÌÈ¤Î·×»»¡ÊÏ«ºÒ¡¦¼«ÇåÀÕ¤ò½ü¤¯¡Ë
            IF     LNK-SYU-SKYMONEY         NOT  =   ZERO
-              IF   (COMB-SYU-HKNKOHSBTKBN     =    "8"           )
-              OR   (LNK-SYU-SYUHKNNUM         =    "971" OR "973")
+              IF   LNK-SYU-SYUHKNNUM         =    "971" OR "973"
                    CONTINUE
               ELSE
                    INITIALIZE                           PTINF-REC
@@ -808,28 +829,6 @@
                                                  MCPDATA-REC
               END-IF
            END-IF.
-      *
-      *    ÀÁµá¶â³Û¤Î·×»»¡ÊÄ´À°¶â´Þ¤Þ¤º¡Ë
-           COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY    +
-                                            LNK-SYU-TGMONEY(12) +
-                                            LNK-SYU-TGMONEY-TAX(12) +
-                                            LNK-SYU-JIHI-TOTAL  +
-                                            LNK-SYU-JIHI-TOTAL-TAX  +
-                                            LNK-SYU-JIHI-TAX.
-      *
-      *    ¼«ÈñÊÝ¸±¤ÎÊä½õ¶èÊ¬¤¬²ÝÀÇ¤Î¾ì¹ç¡¢¾ÃÈñÀÇ·×»»¤ò¹Ô¤¦
-           IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" ) AND
-               ( COMB-HOJOKBN           =  "1" )
-      *
-              IF    WK-TAX1001-KBN  =  "1"
-                 COMPUTE  LNK-SYU-SKYMONEY   =  
-                           ( LNK-SYU-SKYMONEY  *  1.05 ) + 0.5
-              ELSE
-                 COMPUTE  LNK-SYU-SKYMONEY   =  
-                             LNK-SYU-SKYMONEY  *  1.05
-              END-IF
-      *
-           END-IF.     
       *
       *    ÀÁµá¶â³Û¤Î·×»»¡ÊÏ«ºÒÊÝ¸±Å¬ÍÑ»þ¤Î±ß·ú¤Æ¹àÌÜ²Ã»»¡Ë
       *    ¡ãÏ«ºÒ»ØÄê¡Ê£°¡ó¡Ë¡ä                                         
