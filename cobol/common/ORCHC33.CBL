@@ -72,6 +72,8 @@
            03  FLG-ARI             PIC 9(01).
            03  FLG-HKNKBN              PIC 9(01).
       *
+           03  FLG-GENTEN              PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-PAGE            PIC 9(06).
@@ -129,7 +131,10 @@
       *
            03  WRK-ZZ9                 PIC ZZ9.
            03  WRK-Z9                  PIC Z9.
-           03  WRK-Z59                 PIC ZZZZ9.
+           03  WRK-Z59-X.
+               05  WRK-Z59                 PIC ZZZZ9.
+               05  WRK-Z59-R               REDEFINES   WRK-Z59
+                                           PIC ----9.
            03  WRK-Z89                 PIC ZZZZZZZ9.
            03  WRK-Z79S                PIC -------9.
       *
@@ -155,13 +160,13 @@
                05  WRK-H-DD            PIC Z9.
            03  WRK-DAY                 PIC 9(02).
       *     集計
-           03  WRK-GOK-ZAITEN          PIC 9(07).
+           03  WRK-GOK-ZAITEN          PIC S9(07).
            03  WRK-GOK-JIHIKEI         PIC 9(07).
            03  WRK-JIHIKEI             PIC 9(07).
            03  WRK-SKYMONEY            PIC S9(07).
       *
            03  WRK-SUM-TEN             PIC 9(07).
-           03  WRK-ZAITEN              PIC 9(07).
+           03  WRK-ZAITEN              PIC S9(07).
            03  WRK-RSI-MONEY           PIC 9(07).
       *
            03  WRK-TUK-ZAITEN          PIC 9(07).
@@ -176,7 +181,7 @@
            03  TBL-OCC-1               OCCURS   10.
       *        剤点数
                05  TBL-OCC-2           OCCURS   200.
-                   07  TBL-ZAITEN          PIC 9(05).
+                   07  TBL-ZAITEN          PIC S9(05).
                    07  TBL-OCC-3           OCCURS   31.
                        09  TBL-DAY         PIC 9(03).
       *
@@ -668,7 +673,18 @@
                                        OR  "80" ) 
                PERFORM 200111-RSI-ZAITEN-SEC
            ELSE
+      *        逓減点数を判定する
+               MOVE    ZERO                TO  FLG-GENTEN
+               IF     (ACCT-SRYKBN         =   "21" )  AND
+                      (ACCT-ZAITEN         >   ZERO )  AND
+                      (ACCT-YKZTEN         =   ZERO )
+                   PERFORM 200112-GEN-TENSU-SEC
+               END-IF
                MOVE    ACCT-ZAITEN         TO  WRK-ZAITEN
+               IF      FLG-GENTEN          =   1
+                   COMPUTE WRK-ZAITEN      =   WRK-ZAITEN
+                                           *   -1
+               END-IF
            END-IF
       *
            IF      WRK-ZAITEN          =   ZERO
@@ -763,6 +779,60 @@
       *
            .
        200111-RSI-ZAITEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ編集処理
+      *****************************************************************
+       200112-GEN-TENSU-SEC                SECTION.
+      *
+      *    診療行為マスター読み込み
+           INITIALIZE                      SRYACT-REC
+           MOVE    ACCT-HOSPID         TO  SRY-HOSPID
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  SRY-PTID
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+      *    点数検索用日付編集
+           MOVE    ACCT-SRYYM          TO  WRK-SRYYMD(1:6)
+           MOVE    "01"                TO  WRK-SRYYMD(7:2)
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL       IDX-D   >   31
+               IF      ACCT-DAY (1 IDX-D)  NOT =   ZERO
+                   MOVE    IDX-D           TO  WRK-SRYYMD(7:2)
+                   MOVE    31              TO  IDX-D
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+               PERFORM 930-SRYACT-RAED-SEC
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+           PERFORM UNTIL       FLG-SRYACT      =   1
+      *        薬剤料逓減　を減算
+               IF     (ACCT-SRYKBN         =   "21" )  AND
+                      (SRY-SRYCD (01)      =   "630010002")
+                   MOVE    1               TO  FLG-GENTEN
+                   MOVE    1               TO  FLG-SRYACT
+               ELSE
+                   MOVE    "SRYACT-KEY2"       TO  ORC-DBPATH
+                   PERFORM 930-SRYACT-RAED-SEC
+               END-IF
+           END-PERFORM
+      *
+           .
+       200112-GEN-TENSU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -924,7 +994,11 @@
                END-IF
            END-PERFORM
       *
-           MOVE    TBL-ZAITEN (IDX1 IDX2)  TO  WRK-Z59
+           IF      TBL-ZAITEN (IDX1 IDX2)  >   ZERO
+               MOVE    TBL-ZAITEN (IDX1 IDX2)  TO  WRK-Z59
+           ELSE
+               MOVE    TBL-ZAITEN (IDX1 IDX2)  TO  WRK-Z59-R
+           END-IF
            COMPUTE WRK-GOK-ZAITEN      =   WRK-GOK-ZAITEN
                                        +  (TBL-ZAITEN (IDX1 IDX2)
                                        *   TBL-DAY (IDX1 IDX2 IDX) )
@@ -933,12 +1007,12 @@
                   (TBL-DAY (IDX1 IDX2 IDX) >  1     )
       *        回数あり
                MOVE    TBL-DAY (IDX1 IDX2 IDX) TO  WRK-Z9
-               MOVE    WRK-Z59         TO  TBL-NAIYO(IDX-T1 IDX1)(1:5)
+               MOVE    WRK-Z59-X       TO  TBL-NAIYO(IDX-T1 IDX1)(1:5)
                MOVE    "x"             TO  TBL-NAIYO(IDX-T1 IDX1)(6:1)
                MOVE    WRK-Z9          TO  TBL-NAIYO(IDX-T1 IDX1)(7:2)
            ELSE
       *        点数のみ
-               MOVE    WRK-Z59         TO  TBL-NAIYO(IDX-T1 IDX1)
+               MOVE    WRK-Z59-X       TO  TBL-NAIYO(IDX-T1 IDX1)
            END-IF
       *    最大行編集
            IF      IDX-T1              >   IDX-MAX
@@ -963,8 +1037,14 @@
            MOVE    WRK-DAY             TO  WRK-H-DD
       *
       *    点数合計
-           MOVE    WRK-GOK-ZAITEN      TO  WRK-Z89
-           MOVE    WRK-Z89             TO  TBL-NAIYO(01 08)
+           IF      WRK-GOK-ZAITEN      >   ZERO
+               MOVE    WRK-GOK-ZAITEN      TO  WRK-Z89
+               MOVE    WRK-Z89             TO  TBL-NAIYO(01 08)
+           ELSE
+               MOVE    WRK-GOK-ZAITEN      TO  WRK-Z79S
+               MOVE    WRK-Z79S            TO  TBL-NAIYO(01 08)
+           END-IF
+      *
       *    月点数合計
            ADD     WRK-GOK-ZAITEN      TO  WRK-TUK-ZAITEN
       *
