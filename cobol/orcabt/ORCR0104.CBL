@@ -55,6 +55,8 @@
       *  01.00.18    NACL-門脇    04/01/26  カナ氏名の長さ等修正
       *  01.00.19    NACL-藤原    04/02/18  社保ＯＣＲ区分の追加
       *  01.00.20    NACL-藤原    04/03/05  保険履歴に保険者番号を追加
+      *  01.00.21    NACL-藤原    04/03/05  主病名のみのときシス管の設定
+      *                                     により区切り線を出力する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -431,6 +433,7 @@
                                                PIC X(12).
                            11  WRK-HKN-FL2     PIC X(04).
            03  WRK-RIREKI-MAX                  PIC 9(02).                
+           03  WRK-HKN-RIREKI-X                PIC X(60).
            03  WRK-HKN-HKNJANUM                PIC X(16).
            03  WRK-HKN-NUM                     PIC X(50).
            03  WRK-HKN-KIGO                    PIC X(50).
@@ -1240,6 +1243,7 @@
                                                    TO  WRK-HKN-NUM
                        END-IF
                    END-IF
+                   MOVE    SPACE                  TO  WRK-HKN-RIREKI-X
                    STRING  WRK-HKN-TEISYUTUSAKI   DELIMITED  BY  SPACE
                            RECE09-TANSEIDONAME    DELIMITED  BY  SPACE
                            "　"                   DELIMITED  BY  SIZE
@@ -1248,8 +1252,36 @@
                            WRK-HKN-KIGO           DELIMITED  BY  SPACE
                            "−"                   DELIMITED  BY  SIZE
                            WRK-HKN-NUM            DELIMITED  BY  SPACE
+                              INTO    WRK-HKN-RIREKI-X
+                   END-STRING
+                   IF      WRK-HKN-RIREKI-X (53:) NOT =   SPACE           
+                       STRING  WRK-HKN-TEISYUTUSAKI
+                                                  DELIMITED  BY  SPACE
+                               RECE09-TANSEIDONAME
+                                                  DELIMITED  BY  SPACE
+                               "　"               DELIMITED  BY  SIZE
+                               WRK-HKN-HKNJANUM   DELIMITED  BY  SPACE
                               INTO    WRK-HKN-RIREKI (WRK-RIREKI-MAX)
-                   END-STRING           
+                       END-STRING
+                       ADD     1                   TO  WRK-RIREKI-MAX
+                       IF      WRK-RIREKI-MAX     >   50
+                           MOVE
+                               "保険履歴情報がテーブルオーバーしました"
+                                                   TO  WRK-RECEERR
+                           PERFORM 500-ERR-HENSYU-SEC
+                           MOVE    2               TO  SPA-STS
+                           GO  TO  2001-RIREKI-HEN-EXT
+                       END-IF    
+                       STRING  WRK-HKN-KIGO       DELIMITED  BY  SPACE
+                               "−"               DELIMITED  BY  SIZE
+                               WRK-HKN-NUM        DELIMITED  BY  SPACE
+                               INTO
+                                   WRK-HKN-RIREKI (WRK-RIREKI-MAX)(13:)
+                       END-STRING
+                   ELSE
+                       MOVE    WRK-HKN-RIREKI-X   TO
+                                       WRK-HKN-RIREKI (WRK-RIREKI-MAX)  
+                   END-IF   
                END-IF                   
                IF      WRK-HKN-RIREKI (WRK-RIREKI-MAX)(13:)
                                           NOT =   SPACE
@@ -2618,6 +2650,35 @@
                END-IF
            END-IF
       *
+      *    主病名との区切り線編集処理     
+           IF    ( SYS-2005-SYUBYOHENFLG   =   "3" )
+           AND   ( WRK-BO-SYUBYOFLG        =   "1" )
+               IF      WRK-LINEBYO     <   WRK-BYOMEI-LINE
+                   ADD     1           TO  WRK-LINEBYO
+                   MOVE    WRK-KUGIRI3 TO HC06-BYOMEI(WRK-LINEBYO)(2:52)
+               ELSE
+                   IF      WRK-LINETEK >=   WRK-TEKIYOU-LINE
+                       PERFORM 34120-PAGE-SEC
+                   END-IF    
+                   ADD     1           TO  WRK-LINETEK
+                   IF      CNT-PAGE        =   1
+                       MOVE    WRK-KUGIRI1 TO
+                                           HC06-TEKIYO (WRK-LINETEK)
+                   ELSE
+                       EVALUATE    SYS-2005-NEXTPRTKBN-G
+                           WHEN    "0"
+                               MOVE    WRK-KUGIRI1     TO
+                                           HC06-TEKIYO (WRK-LINETEK)
+                           WHEN    "1"    
+                               MOVE    WRK-KUGIRI1     TO
+                                           HC061-TEKIYO (WRK-LINETEK)
+                           WHEN    "2"
+                               MOVE    WRK-KUGIRI1     TO
+                                           HC062-TEKIYO (WRK-LINETEK)
+                       END-EVALUATE
+                   END-IF    
+               END-IF
+           END-IF
            .
        320-HC101-BYOMEI-HEN-EXT.
            EXIT.
@@ -2778,7 +2839,7 @@
        3211-SYUBYOFLG-HENSYU-SEC         SECTION.
       *
       *    主病名編集フラグが区切り有のときのみ処理を行う
-           IF      SYS-2005-SYUBYOHENFLG   =   "1"
+           IF      SYS-2005-SYUBYOHENFLG   =   "1" OR  "3"
       *        主病名との区切り線（副傷病名があるときのみ）     
                IF      WRK-BYO-OLD             =   LOW-VALUE
                    CONTINUE
@@ -2817,7 +2878,7 @@
            END-IF        
       *
            .
-       3210-BYOMEI-SET-EXT.
+       3211-SYUBYOFLG-HENSYU-EXT.
            EXIT.
       ****************************************************************
       *     傷病名１出力処理
