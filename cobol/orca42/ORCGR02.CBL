@@ -72,7 +72,8 @@
       *  01.05.02    NACL-藤原    04/06/30  印刷順の追加（個別作成時のみ）
       *  01.05.03    NACL-藤原    04/07/12  指定印刷時の選択項目の色指定
       *  中止処理追加
-      *  01.06.01    NACL-藤原    04/09/28 中止ボタンを追加
+      *  01.06.01    NACL-藤原    04/09/28  中止ボタンを追加
+      *                                     印刷済のチェック表示対応 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -170,6 +171,7 @@
                                                    PIC X(01).
                                    15  SPA-GMN-TCHK-STYLE
                                                    PIC X(20).
+                               13  SPA-GMN-TPRTFLG PIC X(01).
                    07  SPA-GMN-TBL1.
                        09  SPA-GMN-TBL-OCC1        OCCURS   2.
                            11  SPA-GMN-TBL-G1      OCCURS   36.
@@ -2132,6 +2134,34 @@
       *                         
       *    情報確認画面を表示                                                   
            PERFORM 490-KAKUNIN-SEC
+      *
+      *    印刷済フラグの設定
+           IF    ( SPA-GMN-SYOKBN  =   "F" )
+           AND   ( SPA-GMN-PRTKBN  =   "1" )
+           AND   ( SPA-GMN-PREFKBN =   "1" )
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       WRK-CONS-LINE-MAX
+                       OR      SPA-NAI-PRTJYUNI(1 IDX)   =   SPACE
+                   IF    ( SPA-GMN-TCHK-VALUE  (1 IDX)
+                                                   =   "T"   )
+                   AND   ( SPA-GMN-TSTDATA (1 IDX) =   SPACE )
+                   AND   ( SPA-GMN-TEDDATA (1 IDX) =   SPACE )
+                       MOVE    "1"         TO  SPA-GMN-TPRTFLG (1 IDX)
+                   END-IF
+               END-PERFORM 
+               IF      SPA-GMN-PRTJYUN     =   "01"    OR  "02"
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       WRK-CONS-LINE-MAX
+                           OR      SPA-NAI-PRTJYUNI(2 IDX)   =   SPACE
+                       IF    ( SPA-GMN-TCHK-VALUE  (2 IDX)
+                                                       =   "T"   )
+                       AND   ( SPA-GMN-TSTDATA (2 IDX) =   SPACE )
+                       AND   ( SPA-GMN-TEDDATA (2 IDX) =   SPACE )
+                           MOVE    "1"     TO  SPA-GMN-TPRTFLG (2 IDX)
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-IF     
            .
        450-PRINT-EXT.
            EXIT.
@@ -2671,6 +2701,13 @@
                                            TO  R02-TCHK-VALUE (IDX) 
                MOVE    SPA-GMN-TSYURUINAME (IDW IDX)
                                            TO  R02-TCHK-LABEL (IDX)
+               IF      SPA-GMN-TPRTFLG     (IDW IDX)
+                                           =   "1"
+                   MOVE    "済"            TO  R02-TPRTFLG        (IDX)
+                   MOVE    "blue"          TO  R02-TPRTFLG-STYLE  (IDX)
+               ELSE
+                   MOVE    "black"         TO  R02-TPRTFLG-STYLE  (IDX)
+               END-IF
                IF    ( SPA-GMN-SYOKBN      =   "F"   )
                AND   ( SPA-GMN-TCHK-VALUE  (IDW IDX)
                                            =   "T"   )
