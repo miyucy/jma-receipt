@@ -1950,7 +1950,12 @@
       *    出力処理
       *****************************************************************
        450-PRINT-SEC                SECTION.
-      *    
+      *
+      *    フラグ初期化
+           MOVE    ZERO            TO  SPA-R01-JOBCNT       
+                                       SPA-R01-STOPFLG    
+           MOVE    SPACE           TO  SPA-R99-CANCEL
+      *
       *    印刷ＤＢのＫＥＹ用     
            ACCEPT  SYS-YMD         FROM    DATE
            COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
@@ -2502,6 +2507,8 @@
                                        TO  WRK-SS
                MOVE    WRK-HENTIME     TO  R99-ENDTIME  (IDX)
                MOVE    JOB-YOBI        TO  R99-ERRMSG   (IDX)
+               COMPUTE R99-PROGRESSBAR-VALUE  =
+                       JOB-STEPCNT  /   SPA-R01-JOBCNT *   100
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "処理中です"    TO  R99-MSG
                ELSE
