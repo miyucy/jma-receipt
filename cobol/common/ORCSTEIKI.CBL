@@ -305,7 +305,7 @@
                          FLG-AREA.
       *
       *    調剤料一括変更処理
-           PERFORM       NYUIN-CHOZAI-SEC.
+      ****     PERFORM       NYUIN-CHOZAI-SEC.
       *
            PERFORM       NYUIN-HANBETU-SEC.
       *
