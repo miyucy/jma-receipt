@@ -128,6 +128,9 @@
       *  01.02.29   NACL-門脇     03/08/20  公費実日数テーブル情報のセット
       *  01.02.30   NACL-門脇     03/09/18  一部負担金額編集修正
       *  01.02.31   NACL-門脇     03/09/24  コメント編集フラグのセット
+      *  01.02.32   NACL-門脇     03/09/29  包括対象検査情報のセット
+      *                                     検査等実施判断情報のセット
+      *                                     各種番号等情報のセット
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1317,6 +1320,19 @@
                END-IF
                MOVE    TNS-YUKOKETA       TO    RECE05-YUKOKETA(IDX4)
                MOVE    TNS-DATAKBN        TO    RECE05-DATAKBN (IDX4)
+               MOVE    TNS-HOUKNSKBN      TO    RECE05-HOUKNSKBN(IDX4)
+               MOVE    TNS-KNSJISKBN      TO    RECE05-KNSJISKBN(IDX4)
+               MOVE    TNS-CDKBN-KBN      TO    RECE05-CDKBN-KBN(IDX4)
+               MOVE    TNS-CDKBN-SYO      TO    RECE05-CDKBN-SYO(IDX4)
+               MOVE    TNS-CDKBN-BU       TO    RECE05-CDKBN-BU(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM   
+                                      TO RECE05-CDKBN-KBNNUM(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM-EDA
+                                      TO RECE05-CDKBN-KBNNUM-EDA(IDX4)
+               MOVE    TNS-CDKBN-KOUBAN
+                                      TO RECE05-CDKBN-KOUBAN(IDX4)
+               MOVE    TNS-KOUHYOJYUNNUM  
+                                      TO RECE05-KOUHYOJYUNNUM(IDX4)
       *******  IF      SRY-SRYCD(IDX2)    =     CONS-COMMENT
                IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
                AND     SRY-INPUTNUM (IDX2)      NOT =   ZERO

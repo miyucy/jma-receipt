@@ -50,6 +50,9 @@
       *  01.00.16    NACL-門脇    03/08/27  特定疾患改正対応
       *  01.00.17    NACL-門脇    03/09/18  一部負担金額編集修正
       *  01.00.18    NACL-門脇    03/09/24  コメント編集修正
+      *  01.00.19    NACL-門脇    03/09/29  包括対象検査情報のセット
+      *                                     検査等実施判断情報のセット
+      *                                     各種番号等情報のセット
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3393,6 +3396,19 @@
                MOVE    TNS-NYUTENTTLKBN   TO    RECE65-TENTTLKBN(IDX4)
                MOVE    TNS-YUKOKETA       TO    RECE65-YUKOKETA(IDX4)
                MOVE    TNS-DATAKBN        TO    RECE65-DATAKBN (IDX4)
+               MOVE    TNS-HOUKNSKBN      TO    RECE65-HOUKNSKBN(IDX4)
+               MOVE    TNS-KNSJISKBN      TO    RECE65-KNSJISKBN(IDX4)
+               MOVE    TNS-CDKBN-KBN      TO    RECE65-CDKBN-KBN(IDX4)
+               MOVE    TNS-CDKBN-SYO      TO    RECE65-CDKBN-SYO(IDX4)
+               MOVE    TNS-CDKBN-BU       TO    RECE65-CDKBN-BU(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM   
+                                      TO RECE65-CDKBN-KBNNUM(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM-EDA
+                                      TO RECE65-CDKBN-KBNNUM-EDA(IDX4)
+               MOVE    TNS-CDKBN-KOUBAN
+                                      TO RECE65-CDKBN-KOUBAN(IDX4)
+               MOVE    TNS-KOUHYOJYUNNUM  
+                                      TO RECE65-KOUHYOJYUNNUM(IDX4)
                IF      SRY-SRYCD    (IDX2)(1:1)     =   "8"
                AND     SRY-INPUTNUM (IDX2)      NOT =   ZERO
                    MOVE    SRY-HOSPID           TO  PTCOM-HOSPID
@@ -3710,6 +3726,19 @@
                MOVE    TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(IDX4)
                MOVE    TNS-YUKOKETA        TO  RECE65-YUKOKETA(IDX4)
                MOVE    TNS-DATAKBN         TO  RECE65-DATAKBN (IDX4)
+               MOVE    TNS-HOUKNSKBN       TO  RECE65-HOUKNSKBN(IDX4)
+               MOVE    TNS-KNSJISKBN       TO  RECE65-KNSJISKBN(IDX4)
+               MOVE    TNS-CDKBN-KBN       TO  RECE65-CDKBN-KBN(IDX4)
+               MOVE    TNS-CDKBN-SYO       TO  RECE65-CDKBN-SYO(IDX4)
+               MOVE    TNS-CDKBN-BU        TO  RECE65-CDKBN-BU(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM   
+                                      TO RECE65-CDKBN-KBNNUM(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM-EDA
+                                      TO RECE65-CDKBN-KBNNUM-EDA(IDX4)
+               MOVE    TNS-CDKBN-KOUBAN
+                                      TO RECE65-CDKBN-KOUBAN(IDX4)
+               MOVE    TNS-KOUHYOJYUNNUM  
+                                      TO RECE65-KOUHYOJYUNNUM(IDX4)
                IF      NSRY-SRYCD    (IDX2)(1:1)     =   "8"
                AND     NSRY-INPUTNUM (IDX2)      NOT =   ZERO
                    MOVE    NSRY-HOSPID           TO  PTCOM-HOSPID
@@ -3796,6 +3825,19 @@
                MOVE    TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(IDX4)
                MOVE    TNS-YUKOKETA        TO  RECE65-YUKOKETA(IDX4)
                MOVE    TNS-DATAKBN         TO  RECE65-DATAKBN (IDX4)
+               MOVE    TNS-HOUKNSKBN       TO  RECE65-HOUKNSKBN(IDX4)
+               MOVE    TNS-KNSJISKBN       TO  RECE65-KNSJISKBN(IDX4)
+               MOVE    TNS-CDKBN-KBN       TO  RECE65-CDKBN-KBN(IDX4)
+               MOVE    TNS-CDKBN-SYO       TO  RECE65-CDKBN-SYO(IDX4)
+               MOVE    TNS-CDKBN-BU        TO  RECE65-CDKBN-BU(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM   
+                                      TO RECE65-CDKBN-KBNNUM(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM-EDA
+                                      TO RECE65-CDKBN-KBNNUM-EDA(IDX4)
+               MOVE    TNS-CDKBN-KOUBAN
+                                      TO RECE65-CDKBN-KOUBAN(IDX4)
+               MOVE    TNS-KOUHYOJYUNNUM  
+                                      TO RECE65-KOUHYOJYUNNUM(IDX4)
                IF      NSRY-SRYCD    (IDX2)(1:1)     =   "8"
                AND     NSRY-INPUTNUM (IDX2)      NOT =   ZERO
                    MOVE    NSRY-HOSPID           TO  PTCOM-HOSPID
@@ -3875,6 +3917,19 @@
            MOVE    TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(1)
            MOVE    TNS-YUKOKETA        TO  RECE65-YUKOKETA(1)
            MOVE    TNS-DATAKBN         TO  RECE65-DATAKBN (1)
+           MOVE    TNS-HOUKNSKBN       TO  RECE65-HOUKNSKBN(1)
+           MOVE    TNS-KNSJISKBN       TO  RECE65-KNSJISKBN(1)
+           MOVE    TNS-CDKBN-KBN       TO  RECE65-CDKBN-KBN(1)
+           MOVE    TNS-CDKBN-SYO       TO  RECE65-CDKBN-SYO(1)
+           MOVE    TNS-CDKBN-BU        TO  RECE65-CDKBN-BU(1)
+           MOVE    TNS-CDKBN-KBNNUM   
+                                  TO RECE65-CDKBN-KBNNUM(1)
+           MOVE    TNS-CDKBN-KBNNUM-EDA
+                                  TO RECE65-CDKBN-KBNNUM-EDA(1)
+           MOVE    TNS-CDKBN-KOUBAN
+                                  TO RECE65-CDKBN-KOUBAN(1)
+           MOVE    TNS-KOUHYOJYUNNUM  
+                                  TO RECE65-KOUHYOJYUNNUM(1)
            MOVE    TNS-NAME            TO  RECE65-NAME(1)
       *
            .
@@ -3939,6 +3994,19 @@
                 MOVE    TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(IDX4)
                 MOVE    TNS-YUKOKETA        TO  RECE65-YUKOKETA(IDX4)
                 MOVE    TNS-DATAKBN         TO  RECE65-DATAKBN (IDX4)
+                MOVE    TNS-HOUKNSKBN       TO  RECE65-HOUKNSKBN(IDX4)
+                MOVE    TNS-KNSJISKBN       TO  RECE65-KNSJISKBN(IDX4)
+                MOVE    TNS-CDKBN-KBN       TO  RECE65-CDKBN-KBN(IDX4)
+                MOVE    TNS-CDKBN-SYO       TO  RECE65-CDKBN-SYO(IDX4)
+                MOVE    TNS-CDKBN-BU        TO  RECE65-CDKBN-BU(IDX4)
+                MOVE    TNS-CDKBN-KBNNUM   
+                                      TO RECE65-CDKBN-KBNNUM(IDX4)
+                MOVE    TNS-CDKBN-KBNNUM-EDA
+                                      TO RECE65-CDKBN-KBNNUM-EDA(IDX4)
+                MOVE    TNS-CDKBN-KOUBAN
+                                      TO RECE65-CDKBN-KOUBAN(IDX4)
+                MOVE    TNS-KOUHYOJYUNNUM  
+                                      TO RECE65-KOUHYOJYUNNUM(IDX4)
                 MOVE    TNS-NAME            TO  RECE65-NAME(IDX4)
       *
               END-IF
@@ -4030,6 +4098,19 @@
            MOVE    TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(1)
            MOVE    TNS-YUKOKETA        TO  RECE65-YUKOKETA(1)
            MOVE    TNS-DATAKBN         TO  RECE65-DATAKBN (1)
+           MOVE    TNS-HOUKNSKBN       TO  RECE65-HOUKNSKBN(1)
+           MOVE    TNS-KNSJISKBN       TO  RECE65-KNSJISKBN(1)
+           MOVE    TNS-CDKBN-KBN       TO  RECE65-CDKBN-KBN(1)
+           MOVE    TNS-CDKBN-SYO       TO  RECE65-CDKBN-SYO(1)
+           MOVE    TNS-CDKBN-BU        TO  RECE65-CDKBN-BU(1)
+           MOVE    TNS-CDKBN-KBNNUM   
+                                       TO  RECE65-CDKBN-KBNNUM(1)
+           MOVE    TNS-CDKBN-KBNNUM-EDA
+                                       TO  RECE65-CDKBN-KBNNUM-EDA(1)
+           MOVE    TNS-CDKBN-KOUBAN
+                                       TO  RECE65-CDKBN-KOUBAN(1)
+           MOVE    TNS-KOUHYOJYUNNUM  
+                                       TO  RECE65-KOUHYOJYUNNUM(1)
            MOVE    TNS-NAME            TO  RECE65-NAME(1)
       *
            .
@@ -4123,6 +4204,19 @@
                   MOVE  TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(IDX4)
                   MOVE  TNS-YUKOKETA        TO  RECE65-YUKOKETA(IDX4)
                   MOVE  TNS-DATAKBN         TO  RECE65-DATAKBN (IDX4)
+                  MOVE  TNS-HOUKNSKBN       TO  RECE65-HOUKNSKBN(IDX4)
+                  MOVE  TNS-KNSJISKBN       TO  RECE65-KNSJISKBN(IDX4)
+                  MOVE  TNS-CDKBN-KBN       TO  RECE65-CDKBN-KBN(IDX4)
+                  MOVE  TNS-CDKBN-SYO       TO  RECE65-CDKBN-SYO(IDX4)
+                  MOVE  TNS-CDKBN-BU        TO  RECE65-CDKBN-BU(IDX4)
+                  MOVE  TNS-CDKBN-KBNNUM   
+                                      TO RECE65-CDKBN-KBNNUM(IDX4)
+                  MOVE  TNS-CDKBN-KBNNUM-EDA
+                                      TO RECE65-CDKBN-KBNNUM-EDA(IDX4)
+                  MOVE  TNS-CDKBN-KOUBAN
+                                      TO RECE65-CDKBN-KOUBAN(IDX4)
+                  MOVE  TNS-KOUHYOJYUNNUM  
+                                      TO RECE65-KOUHYOJYUNNUM(IDX4)
                   MOVE  TNS-NAME            TO  RECE65-NAME(IDX4)
       *
                   MOVE  WRK-ORCSTEN-SRYCD(IDX2)  TO  WRK-SRYCD

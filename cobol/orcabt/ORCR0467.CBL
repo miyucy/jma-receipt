@@ -122,7 +122,6 @@
            03  FLG-RECE41          PIC 9(01).
            03  FLG-RECE46          PIC 9(01).
            03  FLG-RECE47          PIC 9(01).
-           03  FLG-TENSU           PIC 9(01).
            03  FLG-SP              PIC 9(01).
            03  FLG-NOPRT           PIC 9(01).
            03  FLG-HENSYU          PIC 9(01).
@@ -285,9 +284,6 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
-      *
-      *    点数
-           COPY    "CPTENSU.INC".
       *
       *****************************************************************
       *    サブプロ用領域
