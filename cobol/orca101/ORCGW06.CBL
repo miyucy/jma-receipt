@@ -91,7 +91,7 @@
                05  SPA-GMN-SEMONKACD-AREA.
       ****         07  SPA-GMN-SEMONKACD      OCCURS  5.
       *****************09  SPA-GMNCD-LIST     OCCURS 10.
-                   07  SPA-GMNCD-LIST         OCCURS 5.
+                   07  SPA-GMNCD-LIST         OCCURS 50.
                        09  SPA-GMNCD-L        PIC X(02).
                        09  SPA-GMNCD-FL       PIC X(01).
                        09  SPA-GMNCD-MEIL     PIC X(14).
@@ -469,7 +469,7 @@
            PERFORM 900-SYSKANRI-SELECT-SEC
       *
            PERFORM  VARYING    IDX     FROM    1   BY  1
-               UNTIL          (IDX     >   10  )  OR
+               UNTIL          (IDX     >   50  )  OR
                               (FLG-SYSKANRI  =   1 )
                MOVE    MCPDATA-REC     TO  SYS-1005-REC
                MOVE    SYS-1005-KBNCD  TO  SPA-GMNCD-L (IDX)
