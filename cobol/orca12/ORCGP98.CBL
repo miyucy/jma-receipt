@@ -340,7 +340,7 @@
       *
            EVALUATE    SPA-GMN98-CUR
                WHEN    1
-                   MOVE    "SELNUM1"       TO  MCP-WIDGET
+                   MOVE    "SELNUM"        TO  MCP-WIDGET
                WHEN    2
                    MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -476,6 +476,9 @@
            IF SPA-GMN98-PAGE                     >  1
                COMPUTE  SPA-GMN98-PAGE  =  SPA-GMN98-PAGE    -  1
            END-IF.
+           MOVE    1                   TO  SPA-GMN98-CUR
+      *
+           .
       *
        430-ADRFW-EXT.
            EXIT.
@@ -487,8 +490,10 @@
       *
            IF  SPA-GMN98-PAGE                    <  SPA-GMN98-MAX
                COMPUTE  SPA-GMN98-PAGE  =  SPA-GMN98-PAGE    +  1
-           END-IF.
+           END-IF
+           MOVE    1                   TO  SPA-GMN98-CUR
       *
+           .
        440-ADRBK-EXT.
            EXIT.
       *
@@ -547,11 +552,16 @@
            MOVE    WRK-IDX3(3:1)       TO  IDX1
            COMPUTE IDXZ                =   ((IDX2   -   1  )  *  5 )
                                        +   IDX1
+           COMPUTE IDXY        =  ((SPA-GMN98-PAGE  -   1)  *   50)
+                               +  IDXZ
+           MOVE    IDXY                TO  IDXZ
       *
-           IF     (IDXZ                >   ZERO  AND  <=   50  )  AND
+           MOVE    1                   TO  SPA-GMN98-CUR
+           IF     (IDXZ                >   ZERO  AND  <=   100  )  AND
                   (SPA-GMN98-KBNCD(IDXZ)   NOT =   SPACE )
                MOVE    SPA-GMN98-KBNCD(IDXZ)   TO  SPA-GMN98-SELNUM
                PERFORM 5101-ADRS-HENSYU-SEC
+               MOVE    2                   TO  SPA-GMN98-CUR
            END-IF
            .
       *
