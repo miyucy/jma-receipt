@@ -18,6 +18,7 @@ bind	"J98"		"OpenCOBOL"	"ORCGJ98";
 bind	"J99"		"OpenCOBOL"	"ORCGJ99";
 bind	"JERR"		"OpenCOBOL"	"ORCGJERR";
 bind	"JID1"		"OpenCOBOL"	"ORCGJID1";
+bind	"JID2"		"OpenCOBOL"	"ORCGJID2";
 
 multiplex_group	orca24;
 
@@ -40,6 +41,7 @@ data	{
 		J99;
                 JERR;
                 JID1;
+                JID2;
 	};
 };
 
