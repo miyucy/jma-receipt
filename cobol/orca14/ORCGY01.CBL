@@ -2993,7 +2993,7 @@
                END-IF
            END-IF
       *
-      *    明細ﾚｺｰﾄﾞ追加
+      *    明細レコード追加
            MOVE    SPACE               TO  YYK-REC
            INITIALIZE                      YYK-REC
            MOVE    SPA-HOSPID          TO  YYK-HOSPID

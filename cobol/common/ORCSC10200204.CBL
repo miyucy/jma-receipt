@@ -3268,7 +3268,7 @@
                END-IF
            END-IF
            IF      LNK-ORCSC-SYOYMD(7:2)   =   "01"
-      *        初診料算定日が１日の時､翌月から
+      *        初診料算定日が１日の時翌月から
                IF      WRK-KEIYMD(1:6)     <=  SPA-SRYYMD(1:6)
                    CONTINUE
                ELSE

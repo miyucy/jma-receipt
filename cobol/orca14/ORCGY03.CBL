@@ -733,10 +733,10 @@
       *    一覧印刷
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 460-YYKICHI-SEC
-      *    前ﾍﾟｰｼﾞ表示
+      *    前ページ表示
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 430-MAEGMN-SEC
-      *    次ﾍﾟｰｼﾞ表示
+      *    次ページ表示
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 440-ATOGMN-SEC
            END-EVALUATE

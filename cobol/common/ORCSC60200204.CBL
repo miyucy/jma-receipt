@@ -2166,7 +2166,7 @@
                IF     (WRK-KENSAGRP (IDX)  NOT =   ZERO )  AND
                       (WRK-KEN-KBN  (IDX)      =   ZERO )
                    EVALUATE    IDX
-      *                «¢é• µ ÿ»Ω√«Œ¡
+      *                «¢°¶ µ ÿ»Ω√«Œ¡
                        WHEN    01
                            MOVE    "160061710"     TO  WRK-KEN-SRYCD
                                                                 (IDX)
