@@ -42,6 +42,7 @@
       *  01.02.03    MCC-多々納   02/02/13  デモ用項目の削除
       *  01.02.04    MCC-多々納   02/02/22  MID1の追加
       *  01.02.05    NACL-多々納  02/10/22  病床数追加
+      *  01.02.06    NACL-多々納  02/12/19  入院時日付変更修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -280,6 +281,7 @@
       *---- (01.00.04) LINE ADD START --------------------------------
       *    Ｍ０１より戻ってきた時、システム日付のセットをしない
            IF      SPA-MOTOPG          =   "M01"
+                                       OR  "M01N"
                MOVE    SPA-SYSYMDWH        TO  WRK-WSYSYMDH
                MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
                MOVE    SPA-SYSYMDW         TO  WRK-WYMD
