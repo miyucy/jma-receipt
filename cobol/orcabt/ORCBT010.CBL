@@ -36,6 +36,7 @@
       *  01.00.05    NACL-藤原    04/04/05  病名コード９９９９９９９読み飛ばす
       *  01.00.06    NACL-藤原    04/04/06  編集病名のとき疑いフラグからの
       *                                     病名コード追加をやめる
+      *  01.00.07    NACL-藤原    04/04/27  ユーザーコメントの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2384,9 +2385,11 @@
                    END-IF
                END-IF
       *
-               IF    ( SRY-SRYCD    (IDX2)(1:1)
+               IF (   (SRY-SRYCD    (IDX2)(1:1)
                                                =   "8"  )
-               AND   ( SRY-INPUTNUM (IDX2) NOT =   ZERO )
+                   OR (SRY-SRYCD    (IDX2)(1:3)
+                                               =   "008") ) 
+               AND (   SRY-INPUTNUM (IDX2) NOT =   ZERO   )
                    MOVE    SRY-HOSPID              TO  PTCOM-HOSPID
                    MOVE    SRY-PTID                TO  PTCOM-PTID
                    MOVE    SRY-ZAINUM              TO  PTCOM-ZAINUM
