@@ -761,6 +761,9 @@
                    PERFORM 800-ERRMSG-EDIT-SEC
                END-IF
       *
+      *        収納明細作成処理
+               PERFORM 20031-SYUMEI-SAKUSEI-SEC
+      *
       *        日別収納作成処理
                IF    ( TEIKI06-SYUDAY-EXIST-FLG    =   1 )
                    PERFORM 20031-SYUDAY-SAKUSEI-SEC
@@ -775,9 +778,6 @@
                MOVE    SYU-SKYMONEY
                                        TO  WRK-TEIKIRRK-SKYMONEY
                PERFORM 20031-TEIKIRRK-SUM-SEC
-      *
-      *        収納明細作成処理
-               PERFORM 20031-SYUMEI-SAKUSEI-SEC
       *
       *        最新病棟番号別集計処理
                PERFORM 20031-NOW-BTUNUM-SUM-SEC
@@ -876,6 +876,7 @@
            MOVE    SYU-SKYMONEY        TO  PTTEIKIRRK-SKYMONEY
            MOVE    SYU-NYUIN-RRKNUM    TO  PTTEIKIRRK-RRKNUM
            MOVE    SYU-DENPNUM         TO  PTTEIKIRRK-DENPNUM
+           MOVE    1                   TO  PTTEIKIRRK-DENPEDANUM
            MOVE    ZERO                TO  PTTEIKIRRK-SKYUPDFLG
       *
            PERFORM 800-MCNDATE-SEC
@@ -1183,6 +1184,9 @@
                    PERFORM 20071-SYUDAY-SAKUSEI-SEC
                END-IF
       *
+      *        収納明細作成処理
+               PERFORM 20071-SYUMEI-SAKUSEI-SEC
+      *
       *        患者定期請求履歴更新処理
                PERFORM 20071-PTTEIKIRRK-KOUSIN-SEC
       *
@@ -1192,9 +1196,6 @@
                MOVE    TEIKI09-TSI-SKYMONEY
                                        TO  WRK-TEIKIRRK-SKYMONEY
                PERFORM 20031-TEIKIRRK-SUM-SEC
-      *
-      *        収納明細作成処理
-               PERFORM 20071-SYUMEI-SAKUSEI-SEC
       *
       *        最新病棟番号別集計処理
                PERFORM 20031-NOW-BTUNUM-SUM-SEC
@@ -1306,6 +1307,7 @@
       *
            MOVE    SYU-NYUIN-RRKNUM    TO  PTTEIKIRRK-RRKNUM
            MOVE    SYU-DENPNUM         TO  PTTEIKIRRK-DENPNUM
+           MOVE    SMEI-DENPEDANUM     TO  PTTEIKIRRK-DENPEDANUM
       *
            MOVE    1                   TO  PTTEIKIRRK-SKYUPDFLG
       *

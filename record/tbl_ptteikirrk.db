@@ -12,6 +12,7 @@ tbl_ptteikirrk {
        SKYMONEY        number(9);
        RRKNUM          number(03);
        DENPNUM         number(07);
+       DENPEDANUM      number(02);
        SKYUPDFLG       number(01);
        TERMID          varchar(16);
        OPID            varchar(16);
@@ -156,3 +157,17 @@ path	key7		{
 		;
 	};
 };
+
+path	key8		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptteikirrk_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptteikirrk
+        WHERE  HOSPID  =   :HOSPID
+        AND    PTID    =   :PTID
+		ORDER  BY  SKYEDYMD DESC ,
+		           HKNCOMBINUM
+		;
+	};
+};
+

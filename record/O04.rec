@@ -1,0 +1,312 @@
+O04	{
+	fixed14	{
+		PTNUM	{
+			value	varchar(20);
+		};
+		SRYYM	{
+			value	varchar(15);
+		};
+		KANANAME	{
+			value	varchar(50);
+		};
+		NAME	{
+			value	varchar(50);
+		};
+		SEX	{
+			value	varchar(4);
+		};
+		BIRTHDAY	{
+			value	varchar(9);
+		};
+		HKNCOMBI	{
+			value	varchar(50);
+		};
+		RATE	{
+			value	varchar(6);
+		};
+		SRYKA	{
+			value	varchar(10);
+		};
+		NAIYO	{
+			value	varchar(10);
+		};
+		DENPNUM	{
+			value	varchar(10);
+		};
+		DENPJTI	{
+			value	varchar(10);
+		};
+		HAKYMD	{
+			value	varchar(9);
+		};
+		SSUHKNTEN	{
+			value	number(8);
+		};
+		SDOHKNTEN	{
+			value	number(8);
+		};
+		ZTKHKNTEN	{
+			value	number(8);
+		};
+		TYKHKNTEN	{
+			value	number(8);
+		};
+		CSYHKNTEN	{
+			value	number(8);
+		};
+		SYCHKNTEN	{
+			value	number(8);
+		};
+		SJTHKNTEN	{
+			value	number(8);
+		};
+		KNSHKNTEN	{
+			value	number(8);
+		};
+		GZUHKNTEN	{
+			value	number(8);
+		};
+		ETCHKNTEN	{
+			value	number(8);
+		};
+		NYUHKNTEN	{
+			value	number(8);
+		};
+		TOTALHKNTEN	{
+			value	number(8);
+		};
+		SSUTGMONEY	{
+			value	number(8);
+		};
+		SDOTGMONEY	{
+			value	number(8);
+		};
+		ZTKTGMONEY	{
+			value	number(8);
+		};
+		TYKTGMONEY	{
+			value	number(8);
+		};
+		CSYTGMONEY	{
+			value	number(8);
+		};
+		SYCTGMONEY	{
+			value	number(8);
+		};
+		SJTGMONEY	{
+			value	number(8);
+		};
+		KNSTGMONEY	{
+			value	number(8);
+		};
+		GZUTGMONEY	{
+			value	number(8);
+		};
+		ETCTGMONEY	{
+			value	number(8);
+		};
+		NYUTGMONEY	{
+			value	number(8);
+		};
+		HKNTEKMONEY	{
+			value	number(8);
+		};
+		HKNTEKGAI	{
+			value	number(8);
+		};
+		JIHIMSG1	{
+			value	varchar(14);
+		};
+		JIHIMSG2	{
+			value	varchar(14);
+		};
+		JIHIMSG3	{
+			value	varchar(14);
+		};
+		JIHIMSG4	{
+			value	varchar(14);
+		};
+		JIHIMSG5	{
+			value	varchar(14);
+		};
+		JIHI1	{
+			value	number(8);
+		};
+		JIHI2	{
+			value	number(8);
+		};
+		JIHI3	{
+			value	number(8);
+		};
+		JIHI4	{
+			value	number(8);
+		};
+		JIHI5	{
+			value	number(8);
+		};
+		JIHITOTAL	{
+			value	number(8);
+		};
+		JIHI1TAX	{
+			value	number(8);
+		};
+		JIHI2TAX	{
+			value	number(8);
+		};
+		JIHI3TAX	{
+			value	number(8);
+		};
+		JIHI4TAX	{
+			value	number(8);
+		};
+		JIHI5TAX	{
+			value	number(8);
+		};
+		JIHITAXTOTAL	{
+			value	number(8);
+		};
+		JIHITAX	{
+			value	number(8);
+		};
+		SKJRYOYO	{
+			value	number(8);
+		};
+		SKJFTN	{
+			value	number(8);
+		};
+		YKZFTN	{
+			value	number(8);
+		};
+		RJNFTN	{
+			value	number(8);
+		};
+		KOHFTN	{
+			value	number(8);
+		};
+		FTNTOTAL	{
+			value	number(8);
+		};
+		RSISHOSHIN	{
+			value	number(8);
+		};
+		RSISAISHIN	{
+			value	number(8);
+		};
+		RSISDO	{
+			value	number(8);
+		};
+		RSIETC	{
+			value	number(8);
+		};
+		RMSAGAKU	{
+			value	number(8);
+		};
+		CHOSEI	{
+			value	number(8);
+		};
+		SYKMONEY	{
+			value	number(8);
+		};
+		NYUKINGK	{
+			value	number(8);
+		};
+		MISYUZAN	{
+			value	number(8);
+		};
+		ZENMISYU_GAI	{
+			value	number(8);
+		};
+		ZENMISYU_NYU	{
+			value	number(8);
+		};
+		GOKMISYU	{
+			value	number(8);
+		};
+		CHOSEIIN	{
+			state	int;
+			value	number(8);
+		};
+		KINGAKU	{
+			value	number(8);
+		};
+		NYUKINYMD	{
+			value	varchar(10);
+		};
+		CMB_NYUKINHOUHOU	{
+			NYUKINHOUHOU	{
+				value	varchar(33);
+	           	state	int;
+			};
+			count	int;
+			item	varchar(33)[50];
+			state	int;
+		};
+		CMB_SKYPRT	{
+			SKYPRT	{
+				value	varchar(24);
+			};
+			count	int;
+			item	varchar(24)[5];
+		};
+		RIREKIIN	{
+			value	number(2);
+		};
+		scrolledwindow1	{
+			clist1	{
+				count	int;
+				row int;
+				rowattr int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(13);
+					value2	varchar(12);
+					value3	varchar(11);
+					value4	varchar(12);
+					value5	varchar(10);
+				}	[50];
+				select	bool[50];
+			};
+		};
+		LBLSKY1ST	{
+			value	varchar(04);
+		};
+		SKY1ST	{
+			value	number(8);
+		};
+		LBLSKY2ND	{
+			value	varchar(04);
+		};
+		SKY2ND	{
+			value	number(8);
+		};
+		LBLSKY3RD	{
+			value	varchar(04);
+		};
+		SKY3RD	{
+			value	number(8);
+		};
+		LBLSKYSGK	{
+			value	varchar(04);
+		};
+		SKYSGK	{
+			value	number(8);
+		};
+		SKYSELNUM	{
+			value	number(2);
+		};
+		scrolledwindow2	{
+			SKYLIST	{
+				count	int;
+				row int;
+				rowattr int;
+				item	{
+					value0	varchar(2);
+					value1	varchar(9);
+					value3	varchar(2);
+					value4	varchar(4);
+				}	[50];
+				select	bool[50];
+			};
+		};
+	};
+};

@@ -46,8 +46,10 @@
            03  PTTEIKIRRK-SKYMONEY         PIC  S9(09).
       *入院履歴−履歴連番
            03  PTTEIKIRRK-RRKNUM           PIC  9(03).
-      *入院履歴−伝票番号
+      *収納−伝票番号
            03  PTTEIKIRRK-DENPNUM          PIC  9(07).
+      *収納−伝票番号枝番
+           03  PTTEIKIRRK-DENPEDANUM       PIC  9(02).
       *請求データ更新フラグ（０：新規／１：訂正）
            03  PTTEIKIRRK-SKYUPDFLG        PIC  9(01).
       *端末ＩＤ

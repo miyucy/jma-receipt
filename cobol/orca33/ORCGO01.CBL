@@ -249,6 +249,7 @@
            COPY    "O01.INC".
            COPY    "O02.INC".
            COPY    "O03.INC".
+           COPY    "O04.INC".
            COPY    "O99.INC".
            COPY    "OERR.INC".
            COPY    "OID1.INC".
@@ -367,6 +368,7 @@
                    GO      TO      300-SCREEN-EXT
                WHEN    "O02"
                WHEN    "O03"
+               WHEN    "O04"
                    PERFORM 350-O01SPASET-SEC
                    GO      TO      300-SCREEN-EXT
                WHEN    "O99"
@@ -681,6 +683,9 @@
       *    確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-TOUROKU-SEC
+      *    確定
+               WHEN    "CLICKED"       ALSO    "B09"
+                   PERFORM 490-O04-SENI-SEC
       *    処理確認
                WHEN    "CLICKED"       ALSO    "B13"
                    PERFORM 490-KAKUNIN-SEC
@@ -916,6 +921,29 @@
       *
            .
        400-KOBETU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    請求確認画面遷移処理
+      *****************************************************************
+       490-O04-SENI-SEC                SECTION.
+      *
+      *    画面移行用のパラメタ
+           PERFORM 45011-PARA-HENSYU-SEC
+      *
+           MOVE    "O04"               TO  SPA-SAKIPG
+           MOVE    "O01"               TO  SPA-MOTOPG
+           MOVE    "O01"               TO  SPA-O01-MOTOPG
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       490-O04-SENI-EXT.
            EXIT.
       *
       *****************************************************************

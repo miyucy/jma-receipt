@@ -64,6 +64,7 @@
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-PTINF                   PIC 9(01).
            03  FLG-SYUNOU                  PIC 9(01).
+           03  FLG-SYUMEI                  PIC 9(01).
            03  FLG-TEIKIPRT                PIC 9(01).
            03  FLG-TAISYO                  PIC 9(01).
       *
@@ -122,6 +123,10 @@
       *    ¼ýÇ¼¥Þ¥¹¥¿¡¼
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
+      *
+      *    ¼ýÇ¼ÌÀºÙ
+       01  SYUMEI-REC.
+           COPY    "CPSYUMEI.INC".
       *
       *    ´µ¼ÔÄê´üÀÁµáÍúÎò
        01  PTTEIKIRRK-REC.
@@ -427,7 +432,14 @@
            IF    ( SYS-5010-NYUKINKBN      =   "2" )
             AND  ( SYS-5010-NYUKINPRTKBN   =   "2" )
                IF    ( PTTEIKIRRK-SKYMONEY >   ZERO )
-                   MOVE    PTTEIKIRRK-SKYMONEY
+                   INITIALIZE              SYUMEI-REC
+                   MOVE    PTTEIKIRRK-HOSPID       TO  SMEI-HOSPID
+                   MOVE    "1"                     TO  SMEI-NYUGAIKBN
+                   MOVE    PTTEIKIRRK-PTID         TO  SMEI-PTID
+                   MOVE    PTTEIKIRRK-DENPNUM      TO  SMEI-DENPNUM
+                   MOVE    PTTEIKIRRK-DENPEDANUM   TO  SMEI-DENPEDANUM
+                   PERFORM 900-SYUMEI-KEY-SEL-SEC
+                   MOVE    SMEI-NYUHEN-MONEY
                                        TO  ORCHCN03-NYUKIN    (CNT-OUT1)
                END-IF
            END-IF
@@ -525,6 +537,29 @@
       *
            .
        900-SYUNOU-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼ýÇ¼ÌÀºÙÆÉ¹þ¡Ê¼ç¥­¡¼¡Ë
+      *****************************************************************
+       900-SYUMEI-KEY-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYUMEI
+      *
+           MOVE    SYUMEI-REC          TO  MCPDATA-REC
+           MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUMEI-REC
+           ELSE
+               MOVE    1               TO  FLG-SYUMEI
+               INITIALIZE                  SYUMEI-REC
+           END-IF
+      *
+           MOVE    "SYUMEI-KEY"        TO  ORC-DBPATH
+           PERFORM 910-DBCLOSE-SEC
+      *
+           .
+       900-SYUMEI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤â¹Ô¤¦)

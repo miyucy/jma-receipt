@@ -180,6 +180,9 @@
        01  WRK-AREA.
            03  WRK-TEIKIERR            PIC X(200).
            03  WRK-PTID                PIC 9(10).
+           03  WRK-GEN-SKYMONEY        PIC S9(09).
+           03  WRK-GEN-CHOSEI          PIC S9(09).
+           03  WRK-SAGAKU              PIC S9(09).
       *
            COPY    "MCPAREA".
       *
@@ -423,6 +426,11 @@
                                        GENSYU-UPYMD
                                        GENSYU-UPHMS
       *
+           COMPUTE GENSYU-SKYMONEY
+               =   GENSYU-SKYMONEY -   GENSYU-CHOSEI
+      *
+           MOVE    ZERO            TO  GENSYU-CHOSEI
+      *
            IF    ( ZOUSYUNOU-REC   NOT =   GENSYUNOU-REC )
       *
                EVALUATE    SYS-5010-SAISYORIKBN
@@ -482,6 +490,15 @@
            MOVE    TEIKI01-SYU-DAT     TO  ZOUSYUNOU-REC
            MOVE    TEIKI04-SYU-DAT     TO  GENSYUNOU-REC
       *
+           MOVE    GENSYU-CHOSEI       TO  WRK-GEN-CHOSEI
+      *
+           COMPUTE WRK-GEN-SKYMONEY
+               =   GENSYU-SKYMONEY     -   WRK-GEN-CHOSEI
+      *
+           COMPUTE WRK-SAGAKU
+               =   WRK-GEN-SKYMONEY
+               -   ZOUSYU-SKYMONEY
+      *
            COMPUTE TEIKI09-TSI-SKYTEN
                =   ZOUSYU-TOTAL-HKNTEN
                -   GENSYU-TOTAL-HKNTEN
@@ -489,6 +506,31 @@
            COMPUTE TEIKI09-TSI-SKYMONEY-TAX-SAI
                =   ZOUSYU-SKYMONEY-TAX-SAI
                -   GENSYU-SKYMONEY-TAX-SAI
+      *
+           IF    ( WRK-SAGAKU          >   ZERO )
+               IF    ( WRK-SAGAKU      >   GENSYU-SKYMONEY )
+                   MOVE    ZERO            TO  ZOUSYU-SKYMONEY
+      *
+                   COMPUTE ZOUSYU-CHOSEI
+                       =   WRK-GEN-CHOSEI
+                       +   WRK-SAGAKU
+                       -   GENSYU-SKYMONEY
+               ELSE
+                   COMPUTE ZOUSYU-SKYMONEY
+                       =   GENSYU-SKYMONEY
+                       -   WRK-SAGAKU
+      *
+                   MOVE    WRK-GEN-CHOSEI  TO  ZOUSYU-CHOSEI
+               END-IF
+           ELSE
+      *
+               COMPUTE ZOUSYU-SKYMONEY
+                   =   ZOUSYU-SKYMONEY
+                   +   WRK-GEN-CHOSEI
+      *
+               MOVE    WRK-GEN-CHOSEI  TO  ZOUSYU-CHOSEI
+      *
+           END-IF
       *
            COMPUTE TEIKI09-TSI-SKYMONEY
                =   ZOUSYU-SKYMONEY
