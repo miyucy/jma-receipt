@@ -33,16 +33,20 @@
       *  01.00.01    NACL-藤原    02/12/11  入外区分追加 
       *  01.00.02    NACL-藤原    03/01/14  入院会計の読込追加
       *                                     入外区分の表示追加 
-      *  01.00.03   NACL-藤原     03.01.20  月代り受給者番号に入外区分を追加
-      *  01.00.04   NACL-藤原     03.07.07  公費の開始日が末日でも対象と
+      *  01.00.03   NACL-藤原     03/01/20  月代り受給者番号に入外区分を追加
+      *  01.00.04   NACL-藤原     03/07/07  公費の開始日が末日でも対象と
       *                                     なるように修正
-      *  01.00.05   NACL-藤原     04.01.09  受給者番号のチェックをマスタ設定
+      *  01.00.05   NACL-藤原     04/01/09  受給者番号のチェックをマスタ設定
       *                                     により行なう
-      *  01.00.06   NACL-門脇     04.01.14  診療行為の包括分は除く
+      *  01.00.06   NACL-門脇     04/01/14  診療行為の包括分は除く
       *                                     SRYACCT9→30
-      *  01.00.07   NACL-藤原     04.07.12  負担者番号・カナ氏名順の表示にする
+      *  01.00.07   NACL-藤原     04/07/12  負担者番号・カナ氏名順の表示にする
       *                                     該当月の保険組合せの主保険の
       *                                     チェックを追加する
+      *  01.00.08   NACL-藤原     04/07/15  診療会計テーブルの読み込みを
+      *                                     グループ化に変更
+      *                                     会計を残して入院取消を行った
+      *                                     ままの入院会計は対象としない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -109,6 +113,7 @@
       *     
            03  FLG-CHK             PIC 9(01).
            03  FLG-SEIHO           PIC 9(01). 
+           03  FLG-ZAISKBKBN       PIC 9(01). 
            03  FLG-TOUROKU         PIC 9(01).
       *
       *    添字領域
@@ -477,6 +482,7 @@
            PERFORM UNTIL       FLG-PTKOHINF    =   1
       *
                MOVE    ZERO                TO  FLG-SEIHO
+                                               FLG-ZAISKBKBN
       *
       *        診療会計読み込み
                INITIALIZE                  SRYACCT-REC
@@ -487,13 +493,13 @@
                                        TO  ACCT-NYUGAIKBN
                MOVE    SRYACCT-REC     TO  MCPDATA-REC
                MOVE    "DBSELECT"      TO  MCP-FUNC
-               MOVE    "SRYACCT-KEY30" TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY37" TO  ORC-DBPATH
                CALL    "ORCMCPSUB"         USING
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
                IF      MCP-RC          =   ZERO
-                   MOVE    "SRYACCT-KEY30" TO  ORC-DBPATH
+                   MOVE    "SRYACCT-KEY37" TO  ORC-DBPATH
                    PERFORM 900-SRYACCT-NEXT-SEC
                ELSE
                    INITIALIZE              SRYACCT-REC
@@ -535,14 +541,14 @@
                        MOVE    KEY-NEW             TO  KEY-OLD
                        PERFORM     UNTIL   FLG-SRYACCT     =   1 
                                    OR      KEY-NEW     NOT =   KEY-OLD            
-                           MOVE    "SRYACCT-KEY30" TO  ORC-DBPATH
+                           MOVE    "SRYACCT-KEY37" TO  ORC-DBPATH
                            PERFORM 900-SRYACCT-NEXT-SEC
                        END-PERFORM    
                    END-IF         
                END-PERFORM
       *        カーソルクロース
                MOVE    "DBCLOSE"           TO  MCP-FUNC
-               MOVE    "SRYACCT-KEY30"     TO  ORC-DBPATH
+               MOVE    "SRYACCT-KEY37"     TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
@@ -571,8 +577,13 @@
       *
                    PERFORM             UNTIL    FLG-NYUINACCT  =   1
                                        OR       FLG-SEIHO      =   1
+      *
+                       IF      NACCT-ZAISKBKBN     =   "1"
+                           MOVE    1                   TO  FLG-ZAISKBKBN
+                       END-IF
       *                保険組合せ読込み
-                       IF      NACCT-ZAISKBKBN     =   "5"
+                       IF    ( NACCT-ZAISKBKBN     =   "5" )
+                       AND   ( FLG-ZAISKBKBN       =   1   )
                            PERFORM VARYING IDXX    FROM    1   BY  1
                                    UNTIL   IDXX        >   31
                                    OR      FLG-SEIHO   =   1
