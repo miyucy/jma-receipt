@@ -34,6 +34,7 @@
       *  02.00.00    NACL-多々納  03/07/07  異動情報追加
       *                                     一括入力へ変更
       *  02.01.01    NACL-森脇    04/07/14  給付割合を追加
+      *  02.01.02    NACL-多々納  04/07/27  検証番号チェックの修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -141,9 +142,13 @@
                    07  SPA-NAI-UPDFLG     PIC 9(01).
                    07  SPA-HKNJANUM-LEN   PIC 9(01).
                    07  SPA-NAI-HKNNUML    OCCURS  100.
-                       09  SPA-NAI-HKNKOHSBTKBN   PIC X(01).
+                       09  SPA-NAI-THKNKOHSBTKBN   PIC X(01).
+                       09  SPA-NAI-TKENSNUMCHKKBN  PIC X(01).
       *            異動年月日
                    07  SPA-NAI-IDOYMD         PIC X(08).
+      *
+                   07  SPA-NAI-HKNKOHSBTKBN   PIC X(01).
+                   07  SPA-NAI-KENSNUMCHKKBN  PIC X(01).
       *
            COPY    "ENUM-VALUE".
       *
@@ -156,6 +161,7 @@
            03  FLG-TOUROKU         PIC 9(01). 
            03  FLG-ERR             PIC 9(01). 
            03  FLG-OK              PIC 9(01). 
+           03  FLG-CHK             PIC 9(01). 
       *
       *    添字領域
       *
@@ -412,9 +418,12 @@
                                                       (SPA-GMN-HKNIDX)
                    END-IF                                       
                    MOVE    HKN-HKNKOHSBTKBN    TO
-                                               SPA-NAI-HKNKOHSBTKBN
+                                               SPA-NAI-THKNKOHSBTKBN
                                                       (SPA-GMN-HKNIDX)
-               END-IF                                       
+                   MOVE    HKN-KENSNUMCHKKBN    TO
+                                               SPA-NAI-TKENSNUMCHKKBN
+                                                      (SPA-GMN-HKNIDX)
+               END-IF
       *
                MOVE    "HKNNUM-KEY3"       TO  ORC-DBPATH
                PERFORM 921-HKNMST-NEXT-SEC
@@ -734,6 +743,10 @@
                    IF      SPA-GMN-HKNNUM      =   SPA-GMN-HKNNUML (IDX)
                        MOVE    SPA-GMN-HKNNUMLST (IDX)
                                                TO  SPA-GMN-HKNNUM-G
+                       MOVE    SPA-NAI-THKNKOHSBTKBN(IDX)
+                                               TO  SPA-NAI-HKNKOHSBTKBN
+                       MOVE    SPA-NAI-TKENSNUMCHKKBN(IDX)
+                                               TO  SPA-NAI-KENSNUMCHKKBN
                        MOVE    SPA-GMN-HKNIDX  TO  IDX
                    END-IF
                END-PERFORM
@@ -1039,19 +1052,24 @@
        4105-HKNNUM-CHK-SEC          SECTION.
       *
            IF      SPA-GMN-HKNNUM      =   SPACE
-               CONTINUE
+               MOVE    SPACE               TO  SPA-NAI-HKNKOHSBTKBN
+               MOVE    SPACE               TO  SPA-NAI-KENSNUMCHKKBN
            ELSE
-               MOVE    ZERO               TO  WRK-HENFLG
+               MOVE    ZERO               TO  FLG-OK
                PERFORM VARYING IDY FROM   1   BY  1
-                       UNTIL   IDY >      SPA-GMN-HKNIDX
-                       OR      WRK-HENFLG =   1
+                       UNTIL  (IDY >      SPA-GMN-HKNIDX )
+                       OR     (FLG-OK     =   1  )
                    IF      SPA-GMN-HKNNUM =   SPA-GMN-HKNNUML (IDY)
                        MOVE    SPA-GMN-HKNNUMLST (IDY)
-                                          TO  SPA-GMN-HKNNUM-G
-                       MOVE    1          TO  WRK-HENFLG
+                                              TO  SPA-GMN-HKNNUM-G
+                       MOVE    1              TO  FLG-OK
+                       MOVE    SPA-NAI-THKNKOHSBTKBN(IDY)
+                                               TO  SPA-NAI-HKNKOHSBTKBN
+                       MOVE    SPA-NAI-TKENSNUMCHKKBN(IDY)
+                                               TO  SPA-NAI-KENSNUMCHKKBN
                    END-IF
                END-PERFORM
-               IF      WRK-HENFLG          =   ZERO
+               IF      FLG-OK              =   ZERO
                    MOVE    "0004"              TO  SPA-ERRCD
                    MOVE    6                   TO  SPA-GMN-CUR
                    GO  TO  4105-HKNNUM-CHK-EXT
@@ -1105,8 +1123,8 @@
                            ELSE 
                                MOVE    "0005"         TO  SPA-ERRCD
                            END-IF      
-                       END-IF                     
-               END-EVALUATE                     
+                       END-IF 
+               END-EVALUATE
            END-IF        
       *
            IF      SPA-ERRCD       NOT =   SPACE
@@ -1377,12 +1395,73 @@
       *****************************************************************
        4109-TOUROKU-CHK-SEC             SECTION.
       *
-           IF      SPA-GMN-HKNJANUM     =   SPACE
+           IF      SPA-GMN-HKNJANUM    =   SPACE
                MOVE    "0008"          TO  SPA-ERRCD
                MOVE    1               TO  SPA-GMN-CUR
                GO      TO      4109-TOUROKU-CHK-EXT
            END-IF
       *
+           IF      SPA-GMN-HKNNUM      =   SPACE
+               MOVE    "0004"          TO  SPA-ERRCD
+               MOVE    6               TO  SPA-GMN-CUR
+               GO      TO      4109-TOUROKU-CHK-EXT
+           END-IF
+      *
+           IF      SPA-NAI-UPDFLG      =   ZERO
+               PERFORM 41091-HKNJANUM-CHK-SEC
+           END-IF
+           .
+       4109-TOUROKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    必須入力チェック処理
+      *****************************************************************
+       41091-HKNJANUM-CHK-SEC             SECTION.
+      *
+           IF      SPA-HKNJANUM-LEN    =   4   OR  6  OR  8
+               CONTINUE
+           ELSE
+               MOVE    "0001"          TO  SPA-ERRCD
+           END-IF
+      *
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-GMN-HKNJANUM (1:SPA-HKNJANUM-LEN)
+                                      IS  NOT NUMERIC      )
+               MOVE    "0001"         TO  SPA-ERRCD
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-HKNKOHSBTKBN    =  "1"  OR  "4"
+                                               OR  "8" OR  "9"
+                                               OR  SPACE
+      *            保険
+                   IF      SPA-HKNJANUM-LEN    =   4
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
+               ELSE
+      *            公費
+                   IF      SPA-NAI-KENSNUMCHKKBN   =   "1"
+                      MOVE    1               TO  FLG-CHK
+                   END-IF
+               END-IF
+           END-IF
+      *    入力された保険者番号をセットすれば、サブプロ内で
+      *    検証してくれる (処理区分:2)
+           IF      FLG-CHK             =   1
+               INITIALIZE               LNK-CHKDGT-AREA
+               MOVE    2                TO  LNK-I-SYORIKBN
+               MOVE    SPA-GMN-HKNJANUM TO  LNK-I-CODE
+               CALL    "ORCSCHKDGT"       USING   LNK-CHKDGT-AREA
+               IF      LNK-O-ERRCD      NOT =   ZERO
+                   MOVE    "0002"       TO  SPA-ERRCD
+               END-IF
+           END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    1               TO  SPA-GMN-CUR
+           END-IF
            .
        4109-TOUROKU-CHK-EXT.
            EXIT.
