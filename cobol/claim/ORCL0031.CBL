@@ -42,6 +42,7 @@
       *  01.00.07    NACL-藤原    04/03/22  更新エラー時の処理終了
       *  01.00.08    NACL-多々納  04/03/29  外用回数編集修正
       *  01.00.09    NACL-多々納  04/08/24  入院回数修正
+      *  01.00.10    NACL-多々納  04/10/21  ドクター追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -171,6 +172,8 @@
            03  WRK-SRYKA           PIC X(02).
            03  WRK-SRYKA-KEY       PIC X(02).
            03  WRK-NYUGAIKBN       PIC X(01).
+      *
+           03  WRK-DRCD            PIC X(05).
       *
            03  WRK-KASAN           PIC 9(04).
            03  WRK-SYUGI           PIC 9(04).
@@ -708,6 +711,12 @@
                MOVE   "2"              TO  WRK-NYUGAIKBN
            END-IF
       *
+      *    ドクター
+           IF      LF04-DOCCD (1:5)    NUMERIC
+               MOVE    LF04-DOCCD(1:5)     TO  WRK-DRCD
+           ELSE
+               MOVE    SPACE               TO  WRK-DRCD
+           END-IF
            .
        2000-SYOKI-SET-EXT.
            EXIT.
@@ -1418,6 +1427,8 @@
            MOVE    WRK-PTID            TO  TBL-WKSRY-PTID (TBL-MAX)
       *    診療科
            MOVE    WRK-SRYKA           TO  TBL-WKSRY-SRYKA (TBL-MAX)
+      *    ドクター
+           MOVE    WRK-DRCD            TO  TBL-WKSRY-DRCD  (TBL-MAX)
       *
       *    診療日付
            MOVE    WRK-SRYYMD          TO  TBL-WKSRY-SRYYMD (TBL-MAX)
