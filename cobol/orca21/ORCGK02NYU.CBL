@@ -1397,6 +1397,7 @@
       *    入外区分
            IF      SPA-NYUGAIKBN       =   "2"
       *        外来の時、外来処理へ
+               MOVE    SPACE               TO  WRK-PUTTYPE
                PERFORM 410109-K02IDOU-SEC
                GO      TO      3009-SAIHEN-EXT
            END-IF
@@ -1698,6 +1699,7 @@
                        MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
                        INITIALIZE                  SPA-K01KYOUTU
                        INITIALIZE                  SPA-K02
+                       MOVE    "JOIN"              TO  WRK-PUTTYPE
                        PERFORM 410109-K02IDOU-SEC
                    ELSE
       *                退院日を診療日へ
@@ -3338,6 +3340,7 @@
       *    ’Ｇ’で外来へ移動する
            IF      SPA-GMN-PTNUM(1:1)  =   "G"  OR  "g"
                INITIALIZE                  SPA-KYOTUKEY
+               MOVE    SPACE               TO  WRK-PUTTYPE
                PERFORM 410109-K02IDOU-SEC
                GO  TO                  41010-PTNUM-SYORI-EXT
            END-IF
@@ -3394,10 +3397,6 @@
       *
       *    入院が存在するかのチェック
            PERFORM 410101-NYUINRRK-CHK-SEC
-      *TEST
-           DISPLAY "K02N WRK-NYUINYMD:"  WRK-NYUINYMD
-                  ",TAIN:" WRK-TAIINYMD
-      *TEST
       *    入外区分
            IF      SPA-NYUGAIKBN       =   "2"
       *        外来の時、外来処理へ
@@ -3405,6 +3404,7 @@
                MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
                INITIALIZE                  SPA-K01KYOUTU
                INITIALIZE                  SPA-K02
+               MOVE    SPACE               TO  WRK-PUTTYPE
                PERFORM 410109-K02IDOU-SEC
                GO      TO      41010-PTNUM-SYORI-EXT
            END-IF
@@ -3536,10 +3536,6 @@
            MOVE    SPA-K02N-NYUINYMD   TO  WRK-NYUINYMD
            MOVE    SPA-K02N-TAIINYMD   TO  WRK-TAIINYMD
       *
-      *TEST
-           DISPLAY "K02N SPA-K02N-NYUINYMD:" SPA-K02N-NYUINYMD
-                   ",SPA-K02N-TAIINYMD:" SPA-K02N-TAIINYMD
-      *TEST
            .
        410101-NYUINRRK-CHK-EXT.
            EXIT.
@@ -3598,7 +3594,11 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           IF      WRK-PUTTYPE     NOT =   SPACE
+               MOVE    WRK-PUTTYPE         TO  MCP-PUTTYPE
+           ELSE
+               MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           END-IF
            MOVE    "K02"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
