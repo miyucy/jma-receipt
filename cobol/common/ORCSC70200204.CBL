@@ -32,6 +32,7 @@
       * 01.00.02     MCC-Â¿¡¹Ç¼   02/03/18  »ÜÀßÉÔÅ¬¹çÄÉ²Ã
       * 01.00.03     MCC-Â¿¡¹Ç¼   02/04/25  »£±ÆÎÁ¤Ë²ó¿ôÆþÎÏÄÉ²Ã
       * 01.00.04     MCC-Â¿¡¹Ç¼   02/04/**  Ï«ºÒÍÑÄÉ²Ã
+      * 01.00.05     NACL-Â¿¡¹Ç¼  02/09/27  ¿ÇÃÇ¼«Æ°È¯À¸ÄÉ²Ã
       *****************************************************************
       *
       *
@@ -2110,6 +2111,12 @@
            END-IF
       *
       *    Åö·î»»Äê¤Ê¤·
+           IF      LNK-SC91-ATO-CNT    <=  LNK-SC91-CNT
+               COMPUTE LNK-SC91-CNT    =   LNK-SC91-CNT
+                                       -   LNK-SC91-ATO-CNT
+           ELSE
+               MOVE    ZERO            TO  LNK-SC91-CNT
+           END-IF
            IF      LNK-SC91-CNT        =  ZERO
       *        £Ã£Ô¡¥£Í£Ò£É¤Î»»Äê¥Á¥§¥Ã¥¯
                IF      WRK-COM-INPUTCD (IDX-Z)     =   "170022290"  OR
@@ -2176,7 +2183,7 @@
        300-AUTO-SYORI-SEC                SECTION.
       *
       *2001.3.21  ¼«Æ°»»Äê¤òÊÝÎ±»ö¹à¤È¤¹¤ë
-           GO      TO      300-AUTO-SYORI-EXT.
+      *****GO      TO      300-AUTO-SYORI-EXT.
       *
       *
            MOVE    ZERO                TO  FLG-CTMRI
@@ -2187,26 +2194,27 @@
                    UNTIL      (IDX-Z       >   200     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+               IF     (WRK-COM-SRYSYUKBN (IDX-Z)  =   "700")  AND
+                      (WRK-COM-INPUTCD(IDX-Z)(1:1)
+                                               =   "1"  )  AND
+                      (WRK-COM-DATAKBN(IDX-Z)  =   "1"  )
       *
-      *        £ØÀþÍ­¤ê
-               IF      WRK-COM-TNSSRYSYUKBN(IDX-Z) =   "721"
-                   MOVE    1                       TO  FLG-XSEN
-               END-IF
+                   EVALUATE    WRK-COM-TNSSRYSYUKBN(IDX-Z)
+      *                £ØÀþÍ­¤ê
+                       WHEN    "721"
+                           MOVE    1                   TO  FLG-XSEN
+                   END-EVALUATE
       *
-      *        ¸¡ººÅù¼Â»ÜÈ½Äê¥°¥ë¡¼¥×
-               EVALUATE    WRK-COM-KNSJISGRPKBN (IDX-Z)
-      *            ³Ë°å³Ø
-                   WHEN    31
-                       MOVE    1                   TO  FLG-KAKUI
-      *            ¥³¥ó¥Ô¥å¡¼¥¿
-                   WHEN    32
-                       IF      WRK-COM-TNSSRYSYUKBN(IDX-Z)   =   "710"
-      *                    Â¾°å»£±Æ
-                           MOVE    2                   TO  FLG-CTMRI
-                       ELSE
+      *            ¸¡ººÅù¼Â»ÜÈ½Äê¥°¥ë¡¼¥×
+                   EVALUATE    WRK-COM-KNSJISGRPKBN (IDX-Z)
+      *                ³Ë°å³Ø
+                       WHEN    31
+                           MOVE    1                   TO  FLG-KAKUI
+      *                ¥³¥ó¥Ô¥å¡¼¥¿
+                       WHEN    32
                            MOVE    1                   TO  FLG-CTMRI
-                       END-IF
-               END-EVALUATE
+                   END-EVALUATE
+               END-IF
            END-PERFORM
       *
       *
@@ -2214,7 +2222,8 @@
       *
       *    ²èÁü¿ÇÃÇ´ÉÍý²Ã»»ÄÉ²Ã¡Ê¼Ì¿¿¿ÇÃÇ¡Ë
            IF      FLG-XSEN            =   1
-               MOVE    "170020270"         TO  WRK-SRYCD
+      *        ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±
+               MOVE    "170025210"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD-2
                PERFORM 3002-KASAN-SYORI-SEC
                IF      FLG-ERR             =   ZERO
@@ -2232,79 +2241,47 @@
                MOVE    SPACE               TO  WRK-SRYCD-2
                PERFORM 3002-KASAN-SYORI-SEC
                IF      FLG-ERR             =   ZERO
-                   MOVE    "700"           TO  LNK-ORCSC-SRYSYUKBN
-                                                         (08 IDXS)
-                   MOVE    "70"            TO  LNK-ORCSC-SRYKBN
-                                                         (08 IDXS)
-               END-IF
-      *        ²èÁü¿ÇÃÇ´ÉÍý²Ã»»¡Ê³Ë°å³Ø¡Ë
-               MOVE    "170021370"         TO  WRK-SRYCD
-               MOVE    SPACE               TO  WRK-SRYCD-2
-               PERFORM 3002-KASAN-SYORI-SEC
-               IF      FLG-ERR             =   ZERO
-                   MOVE    "700"           TO  LNK-ORCSC-SRYSYUKBN
-                                                         (08 IDXS)
-                   MOVE    "70"            TO  LNK-ORCSC-SRYKBN
-                                                         (08 IDXS)
+      *            ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£²¡Ê³Ë°å³Ø¡Ë
+                   MOVE    "170025610"         TO  WRK-SRYCD
+                   MOVE    SPACE               TO  WRK-SRYCD-2
+                   PERFORM 3002-KASAN-SYORI-SEC
+                   IF      FLG-ERR             =   ZERO
+                       CONTINUE
+                   ELSE
+      *                ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±¡Ê³Ë°å³Ø¡Ë
+                       IF      FLG-ARI         =   ZERO
+                           MOVE    "170025410"         TO  WRK-SRYCD
+                           MOVE    SPACE               TO  WRK-SRYCD-2
+                           PERFORM 3002-KASAN-SYORI-SEC
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *
       *    ¥³¥ó¥Ô¥å¡¼¥¿¿ÇÃÇÎÁ²Ã»»Í­¤ê
            IF      FLG-CTMRI           =   1
-      *        ¥³¥ó¥Ô¥å¡¼¥¿¿ÇÃÇÎÁ²Ã»»Í­¤ê
-               IF      LNK-ORCSC-ROUJIN    =   ZERO
-                   MOVE    "170015410"         TO  WRK-SRYCD
-                   MOVE    SPACE               TO  WRK-SRYCD-2
-               ELSE
-                   MOVE    "170700710"         TO  WRK-SRYCD
-                   MOVE    SPACE               TO  WRK-SRYCD-2
-               END-IF
+      *        ¥³¥ó¥Ô¥å¡¼¥¿ÃÇÁØ¿ÇÃÇ
+               MOVE    "170015410"         TO  WRK-SRYCD
+               MOVE    SPACE               TO  WRK-SRYCD-2
                PERFORM 3002-KASAN-SYORI-SEC
                IF      FLG-ERR             =   ZERO
-                   MOVE    "700"           TO  LNK-ORCSC-SRYSYUKBN
-                                                         (08 IDXS)
-                   MOVE    "70"            TO  LNK-ORCSC-SRYKBN
-                                                         (08 IDXS)
-               END-IF
-      *        ²èÁü¿ÇÃÇ´ÉÍý²Ã»»¡Ê¥³¥ó¥Ô¥å¡¼¥¿¿ÇÃÇ¡Ë
-               IF      LNK-ORCSC-ROUJIN    =   ZERO
-                   MOVE    "170021470"         TO  WRK-SRYCD
+      *            ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£²¡Ê¥³¥ó¥Ô¥å¡¼¥¿ÃÇÁØ¿ÇÃÇ¡Ë
+                   MOVE    "170025710"         TO  WRK-SRYCD
                    MOVE    SPACE               TO  WRK-SRYCD-2
-               ELSE
-                   MOVE    "170701270"         TO  WRK-SRYCD
-                   MOVE    SPACE               TO  WRK-SRYCD-2
-               END-IF
-               PERFORM 3002-KASAN-SYORI-SEC
-               IF      FLG-ERR             =   ZERO
-                   MOVE    "700"           TO  LNK-ORCSC-SRYSYUKBN
-                                                         (08 IDXS)
-                   MOVE    "70"            TO  LNK-ORCSC-SRYKBN
-                                                         (08 IDXS)
+                   PERFORM 3002-KASAN-SYORI-SEC
+                   IF      FLG-ERR             =   ZERO
+                       CONTINUE
+                   ELSE
+      *                ²èÁü¿ÇÃÇ´ÉÍý²Ã»»£±¡Ê¥³¥ó¥Ô¥å¡¼¥¿ÃÇÁØ¿ÇÃÇ¡Ë
+                       IF      FLG-ARI         =   ZERO
+                           MOVE    "170025510"         TO  WRK-SRYCD
+                           MOVE    SPACE               TO  WRK-SRYCD-2
+                           PERFORM 3002-KASAN-SYORI-SEC
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *
-      *    Â¾°å¥³¥ó¥Ô¥å¡¼¥¿¿ÇÃÇÎÁ²Ã»»Í­¤ê
-           IF      FLG-CTMRI           =   2
-               MOVE    "170019950"         TO  WRK-SRYCD
-               MOVE    SPACE               TO  WRK-SRYCD-2
-               PERFORM 3002-KASAN-SYORI-SEC
-               IF      FLG-ERR             =   ZERO
-                   MOVE    "700"           TO  LNK-ORCSC-SRYSYUKBN
-                                                         (08 IDXS)
-                   MOVE    "70"            TO  LNK-ORCSC-SRYKBN
-                                                         (08 IDXS)
-               END-IF
-      *        ²èÁü¿ÇÃÇ´ÉÍý²Ã»»¡ÊÂ¾°å¥³¥ó¥Ô¥å¡¼¥¿¿ÇÃÇ¡Ë
-               MOVE    "170021470"         TO  WRK-SRYCD
-               MOVE    SPACE               TO  WRK-SRYCD-2
-               PERFORM 3002-KASAN-SYORI-SEC
-               IF      FLG-ERR             =   ZERO
-                   MOVE    "700"           TO  LNK-ORCSC-SRYSYUKBN
-                                                         (08 IDXS)
-                   MOVE    "70"            TO  LNK-ORCSC-SRYKBN
-                                                         (08 IDXS)
-               END-IF
-           END-IF
            .
       *
        300-AUTO-SYORI-EXT.
@@ -2329,45 +2306,22 @@
            IF      FLG-ERR             =   1
                GO      TO      3002-KASAN-SYORI-EXT
            END-IF
-      *
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
-           PERFORM 910-TENSU-READ-SEC
-           IF      FLG-TENSU       NOT =   ZERO
-               MOVE    "0001"              TO  SPA-ERRCD
-               MOVE    1                   TO  FLG-ERR
-               GO      TO      3002-KASAN-SYORI-EXT
-           END-IF
-      *
-      *        »»ÄêÍúÎò¥Á¥§¥Ã¥¯½èÍý
-           IF      TNS-SANTEIRRKKBN    NOT =   ZERO
-               PERFORM 3001-SANTEI-CHK-SEC
-           END-IF
+      *    ÄÉ²Ã¤Î¥Á¥§¥Ã¥¯
+           PERFORM 3001-SANTEI-CHK-SEC
            IF      FLG-ERR             =   ZERO
+      *
+               MOVE    WRK-SRYCD       TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+      *
                ADD     1               TO  IDXS
                MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
-                                                   (08 IDXS)
+                                                       (08 IDXS)
                MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
-                                                   (08 IDXS)
-      *
-      *        ²Ã»»ÎÁ»»Äê
-               IF      WRK-SRYCD-2     NOT =   SPACE
-                   MOVE    WRK-SRYCD-2         TO  TNS-SRYCD
-                   PERFORM 910-TENSU-READ-SEC
-                   IF      FLG-TENSU       =   ZERO
-      *                »»ÄêÍúÎò¥Á¥§¥Ã¥¯½èÍý
-                       IF      TNS-SANTEIRRKKBN    NOT =   ZERO
-                           PERFORM 3001-SANTEI-CHK-SEC
-                           IF      FLG-ERR             =   ZERO
-                               MOVE    WRK-SRYCD-2
-                                               TO  LNK-ORCSC-SRYCD-KS
-                                                              (08 IDXS)
-                               MOVE    TNS-TEN TO  LNK-ORCSC-TENSU-KS
-                                                             (08 IDXS)
-                           END-IF
-                       END-IF 
-                    END-IF
-                    MOVE    ZERO           TO  FLG-ERR
-                END-IF
+                                                       (08 IDXS)
+               MOVE    "700"           TO  LNK-ORCSC-SRYSYUKBN
+                                                        (08 IDXS)
+               MOVE    "70"            TO  LNK-ORCSC-SRYKBN
+                                                        (08 IDXS)
            END-IF
       *
            .
@@ -2379,25 +2333,40 @@
       *****************************************************************
        3001-SANTEI-CHK-SEC         SECTION.
       *
-           INITIALIZE                      ORCSC91AREA
-           MOVE    "2"                 TO  LNK-SC91-KBN
-           MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
-           MOVE    WRK-SRYCD           TO  LNK-SC91-SRYCD
-           MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
-           CALL    "ORCSC91"       USING
-                                       MCPAREA
-                                       ORCSC91AREA
-                                       WRK-SCR-REC
-                                       SPA-AREA
-                                       TNS-TENSU-REC
+           MOVE    ZERO                TO  FLG-ERR
+           MOVE    ZERO                TO  FLG-ARI
       *
-           IF      LNK-SC91-ERRCD      =   SPACE
-      *        ÄÉ²Ã¤¢¤ê
-               MOVE    ZERO            TO  FLG-ERR
-           ELSE
-      *        ÄÉ²Ã¤Ê¤·
-               MOVE    1               TO  FLG-ERR
+           MOVE    WRK-SCR-REC         TO  HOZ-SCR-REC
+           MOVE    WRK-GMN-MAX         TO  WRK-IDX
+           ADD     1                   TO  WRK-IDX
+      *    ÅÀ¿ô¥Þ¥¹¥¿ÊÔ½¸¡¦´ðËÜ¥Á¥§¥Ã¥¯
+           INITIALIZE                  ORCSC92AREA
+           MOVE    "3"                 TO  LNK-SC92-KBN
+           MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
+           MOVE    WRK-IDX             TO  LNK-SC92-GMN-IDX
+           MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
+           MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
+           MOVE    LNK-ORCSC-ROUJIN    TO  LNK-SC92-ROUJIN
+           MOVE    SPACE               TO  LNK-SC92-LSTSRYKA
+           MOVE    SPACE               TO  LNK-SC92-LSTSRYKAMEI
+           MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC92-TEISEI-AREA
+           CALL    "ORCSC92"           USING
+                                       MCPAREA
+                                       ORCSC92AREA
+                                       HOZ-SCR-REC
+                                       SPA-AREA
+      *
+      *    ¥¨¥é¡¼¤Î»þ¡¢ÄÉ²Ã¤Ê¤·
+           IF     (SPA-ERRCD           NOT =   SPACE )  OR
+                  (LNK-SC92-ERRAREA    NOT =   SPACE )
+      *        »»ÄêÍúÎò¤¢¤ê¤Î»þ
+               IF      LNK-SC92-ERRCD3 NOT =   SPACE
+                   MOVE    1               TO  FLG-ARI
+               END-IF
+               MOVE    1                   TO  FLG-ERR
            END-IF
+      *
+           MOVE    SPACE               TO  SPA-ERRCD
       *
            .
        3001-SANTEI-CHK-EXT.
