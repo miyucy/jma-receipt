@@ -309,6 +309,7 @@
            03  SPA-K98GMN-AREA.
                05  SPA-K98-GMN-MAX               PIC 9(03).
                05  SPA-K98-NEXT                  PIC 9(04).
+               05  SPA-K98-PAGE                  PIC 9(04).
       *********05  SPA-K98-NAI-SELNUM            PIC 9(03).
       *
                05  SPA-K98-GMN-SELNUM-G.
@@ -352,26 +353,6 @@
                    07  SPA-K98-USERMEI            PIC X(18).
                05  SPA-K98-USER-COB               OCCURS  10.
                    07  SPA-K98-USERLST            PIC X(20).
-      *
-      *    £Ë£°£²£±²èÌÌÍÑ
-           03  SPA-K021GMN-AREA.
-               05  SPA-K021-CUR                PIC 9(02).
-               05  SPA-K021-SYORI              PIC 9(01).
-               05  SPA-K021-TBLREC         OCCURS  30.
-                   07  SPA-K021-TSEQNO             PIC 9(03).
-                   07  SPA-K021-TTOUMEI            PIC X(100).
-                   07  SPA-K021-TKNKMEI            PIC X(100).
-                   07  SPA-K021-TTOUYMDW           PIC X(09).
-                   07  SPA-K021-TSYOJYOUCD         PIC X(07).
-                   07  SPA-K021-TTOUYMD            PIC X(08).
-               05  SPA-K021-MAX                    PIC 9(04).
-               05  SPA-K021-INPUTAREA.
-                   07  SPA-K021-GMN-SELNUM         PIC X(03).
-                   07  SPA-K021-SELNUM             PIC 9(03).
-                   07  SPA-K021-TOUMEI             PIC X(100).
-                   07  SPA-K021-KNKMEI             PIC X(100).
-                   07  SPA-K021-SYOJYOU            PIC X(2048).
-                   07  SPA-K021-SAYOKIJYO          PIC X(2048).
       *
       *    £Ë£°£²£³²èÌÌÍÑ
            03  SPA-K023GMN-AREA.
@@ -449,4 +430,20 @@
                        09  SPA-GMN-F1L         PIC X(01).
                        09  SPA-GMN-DRCDMEIL    PIC X(24).
                05  SPA-DRCD-MAX            PIC 9(04).
+      *
+      *    £Ë£°£²£±²èÌÌÍÑ
+           03  SPA-K021GMN-AREA.
+               05  SPA-K021-CUR                PIC 9(02).
+               05  SPA-K021-SYORI              PIC 9(01).
+               05  SPA-K021-TBLREC         OCCURS  30.
+                   07  SPA-K021-TSEQNO             PIC 9(03).
+                   07  SPA-K021-TTOUMEI            PIC X(100).
+                   07  SPA-K021-TKNKMEI            PIC X(100).
+                   07  SPA-K021-TTOUYMDW           PIC X(09).
+                   07  SPA-K021-TSYOJYOUCD         PIC X(07).
+                   07  SPA-K021-TTOUYMD            PIC X(08).
+               05  SPA-K021-MAX                    PIC 9(04).
+               05  SPA-K021-INPUTAREA.
+                   07  SPA-K021-GMN-SELNUM         PIC X(03).
+                   07  SPA-K021-SELNUM             PIC 9(03).
       *
