@@ -1743,27 +1743,27 @@
            EVALUATE    SPA-KIDCD
                WHEN    "0101"
                    MOVE    SPACE               TO  SPA-KIDCD
-                   IF      SPA-KID1-FLG        =   "OK"
+                   PERFORM 30019-DOUSAISIN-SEC
+      ************ MOVE    SPACE               TO  SPA-KIDCD
       *            診療料　自動修正
-                   MOVE    SPA-CHK-IDX         TO  SPA-GMN-IDX
+      *            MOVE    SPA-CHK-IDX         TO  SPA-GMN-IDX
       *            入力分変換処理
-                   MOVE    SPA-K01KYOUTU       TO  SPA-WORK
-                   INITIALIZE                      ORCSC10SAREA
-                   MOVE    "5"                 TO  LNK-SC10S-SYORI
-                   CALL    "ORCSC10S"          USING
-                                               ORCSC10SAREA
-                                               SPA-AREA
-                                               SPA-SCR-REC
-                                               SPA-K02
-                   MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-                   MOVE    SPACE               TO  SPA-ERRCD
-                   MOVE    SPACE               TO  SPA-KIDCD
+      *            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *            INITIALIZE                      ORCSC10SAREA
+      *            MOVE    "5"                 TO  LNK-SC10S-SYORI
+      *            CALL    "ORCSC10S"          USING
+      *                                        ORCSC10SAREA
+      *                                        SPA-AREA
+      *                                        SPA-SCR-REC
+      *                                        SPA-K02
+      *            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *            MOVE    SPACE               TO  SPA-ERRCD
+      *            MOVE    SPACE               TO  SPA-KIDCD
       *
       *            診療行為、計計算処理、編集
-                   MOVE    "1"             TO  FLG-TOROKU
-                   PERFORM 510-TBLHEN-SEC
-                   MOVE    SPACE           TO  FLG-TOROKU
-                   END-IF
+      *            MOVE    "1"             TO  FLG-TOROKU
+      *            PERFORM 510-TBLHEN-SEC
+      ************ MOVE    SPACE           TO  FLG-TOROKU
       *
                WHEN    "0102"
                    MOVE    SPACE               TO  SPA-KIDCD
@@ -4777,7 +4777,7 @@
       *    カーソル位置のクリア等
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   200
-               IF      SPA-COM-CUR (IDX)   =   "1"
+               IF      SPA-COM-CUR (IDX)   =   "1"  OR  "2"
                    IF      SPA-GMN-INPUTCD (IDX)   NOT =   SPACE
                        MOVE    ZERO                TO  FLG-INPUT-NASI
                    END-IF
@@ -12205,7 +12205,9 @@
                    IF      SPA-COM-CUR (WRK-IDX)   =   "1"
                        MOVE    SPACE       TO  SPA-MAE-INPUTCD(WRK-IDX)
                    ELSE
-                       MOVE    SPACE       TO  SPA-COM-CUR (WRK-IDX)
+                       IF      SPA-COM-CUR (WRK-IDX)   NOT =   "2"
+                           MOVE    SPACE       TO  SPA-COM-CUR (WRK-IDX)
+                       END-IF
                    END-IF
                END-IF
       *

@@ -4083,7 +4083,7 @@
       *    カーソル位置のクリア等
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   WRK-GYO-MAX
-               IF      SPA-COM-CUR (IDX)   =   "1"
+               IF      SPA-COM-CUR (IDX)   =   "1"  OR  "2"
                    IF      SPA-GMN-INPUTCD (IDX)   NOT =   SPACE
                        MOVE    ZERO                TO  FLG-INPUT-NASI
                    END-IF
@@ -10969,7 +10969,9 @@
                    IF      SPA-COM-CUR (WRK-IDX)   =   "1"
                        MOVE    SPACE       TO  SPA-MAE-INPUTCD(WRK-IDX)
                    ELSE
-                       MOVE    SPACE       TO  SPA-COM-CUR (WRK-IDX)
+                       IF      SPA-COM-CUR (WRK-IDX)   NOT =   "2"
+                           MOVE    SPACE       TO  SPA-COM-CUR (WRK-IDX)
+                       END-IF
                    END-IF
                END-IF
       *
