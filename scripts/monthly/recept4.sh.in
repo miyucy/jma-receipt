@@ -48,18 +48,20 @@ fi
     nkf -s /var/tmp/RECE300.dat > ${13}RECEIPTC.UKE
 
     if  [ ${17} -eq '1' ]; then
-	$FDW -host ${18} -command jma-receipt-fd-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
-	if  [ $? -ne 0 ]; then
-	    ERRCD='0000'$?
+	$FDW -host ${18} -command fd-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
+	RC=$?
+	if  [ $RC -ne '0' ]; then
+	    ERRCD='0000'$RC
 	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD:${#ERRCD}-4:4}
             exit
 	fi
     fi
 
     if  [ ${17} -eq '2' ]; then
-	$FDW -host ${18} -command jma-receipt-mo-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
-	if  [ $? -ne 0 ]; then
-	    ERRCD='0000'$?
+	$FDW -host ${18} -command mo-write.sh ${13}RECEIPTC.UKE RECEIPTC.UKE
+	RC=$?
+	if  [ $RC -ne '0' ]; then
+	    ERRCD='0000'$RC
 	    $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD:${#ERRCD}-4:4}
             exit
 	fi

@@ -44,13 +44,11 @@ fi
             exit 
         else
 	        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBT020 -parameter $3,$5,$1,$9,${11},${13},${14},${15}
-	    fi
+	fi
 
         if  [ -e ${15} ]; then
             exit 
-        else
-	        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${13}${14} 
-	    fi
+	fi
 
 #       ´Á»ú¥³¡¼¥ÉÊÑ´¹¡Ê£Å£Õ£Ã¤«¤é¥·¥Õ¥È£Ê£É£Ó¡Ë
 
@@ -72,32 +70,53 @@ fi
 #
         if   [ ${9} != '2' ]; then
              case ${16} in
-                  1) 	$FDW -host ${18} -command jma-receipt-fd-write.sh /tmp/$7 $7
-                        continue;;
-                  2) 	$FDW -host ${18} -command jma-receipt-mo-write.sh /tmp/$7 $7
-                        continue;;
-                  3) 	$FDW -host ${18} -command jma-receipt-user1-write.sh /tmp/$7 $7
-                        continue;;
-                  4) 	$FDW -host ${18} -command jma-receipt-user2-write.sh /tmp/$7 $7
-                        continue;;
-                  5) 	$FDW -host ${18} -command jma-receipt-user3-write.sh /tmp/$7 $7
-                        continue;;
+                  1) 	$FDW -host ${18} -command fd-write.sh /tmp/$7 $7
+			RC=$?
+                        ;;
+                  2) 	$FDW -host ${18} -command mo-write.sh /tmp/$7 $7
+			RC=$?
+                        ;;
+                  3) 	$FDW -host ${18} -command user1-write.sh /tmp/$7 $7
+			RC=$?
+                        ;;
+                  4) 	$FDW -host ${18} -command user2-write.sh /tmp/$7 $7
+			RC=$?
+                        ;;
+                  5) 	$FDW -host ${18} -command user3-write.sh /tmp/$7 $7
+			RC=$?
+                        ;;
              esac
+	     if  [ $RC -ne '0' ]; then
+		ERRCD='0000'$RC
+        	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4}
+		exit
+	     fi
         fi         
         if   [ ${9} != '1' ]; then
              case ${17} in
-                  1) 	$FDW -host ${18} -command jma-receipt-fd-write.sh /tmp/$8 $8
-                        continue;;
-                  2) 	$FDW -host ${18} -command jma-receipt-mo-write.sh /tmp/$8 $8
-                        continue;;
-                  3) 	$FDW -host ${18} -command jma-receipt-user1-write.sh /tmp/$8 $8
-                        continue;;
-                  4) 	$FDW -host ${18} -command jma-receipt-user2-write.sh /tmp/$8 $8
-                        continue;;
-                  5) 	$FDW -host ${18} -command jma-receipt-user3-write.sh /tmp/$8 $8
-                        continue;;
+                  1) 	$FDW -host ${18} -command fd-write.sh /tmp/$8 $8
+			RC=$?
+                        ;;
+                  2) 	$FDW -host ${18} -command mo-write.sh /tmp/$8 $8
+			RC=$?
+                        ;;
+                  3) 	$FDW -host ${18} -command user1-write.sh /tmp/$8 $8
+			RC=$?
+                        ;;
+                  4) 	$FDW -host ${18} -command user2-write.sh /tmp/$8 $8
+			RC=$?
+                        ;;
+                  5) 	$FDW -host ${18} -command user3-write.sh /tmp/$8 $8
+			RC=$?
+                        ;;
              esac
+	     if  [ $RC -ne '0' ]; then
+		ERRCD='0000'$RC
+        	$DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${13}${14}${ERRCD:${#ERRCD}-4:4}
+		exit
+	     fi
         fi         
 
-	
+        $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt ORCBJOB -parameter JBE${13}${14}
+
         exit 
