@@ -4,6 +4,7 @@ W04	{
 			value	varchar(4);
 		};
 		RENNUM	{
+	           	state	int;
 			value	varchar(10);
 		};
 		PTID	{

@@ -30,6 +30,7 @@
       *  01.01.01    MCC-藤原     01/09/21  JOINの修正      
       *  01.01.02    MCC-藤原     01/11/27  自由構成区分追加
       *  02.00.01    NACL-多々納  02/11/12  一括入力 
+      *  02.00.02    NACL-多々納  03/03/17  連番号変更可能へ修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -84,10 +85,17 @@
                    07  SPA-NAI-STYUKYMD           PIC 9(08).
                    07  SPA-NAI-EDYUKYMD           PIC 9(08).
       *
+                   07  SPA-MAE-RENNUM         PIC 9(10).
+                   07  SPA-PTNUM-HEN          PIC 9(01).
+      *
+      *
+           COPY    "ENUM-VALUE".
+      *
       *
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-KOUSIN          PIC 9(01).
       *
       *    カウント領域
       *
@@ -346,10 +354,13 @@
                MOVE    SYS-1009-NEN        TO  SPA-GMN-NEN
                MOVE    SYS-1009-RENNUM     TO  SPA-GMN-RENNUM  
                MOVE    SYS-1009-PTID       TO  SPA-GMN-PTID
+      *
+               MOVE    SYS-1009-RENNUM     TO  SPA-MAE-RENNUM  
            ELSE
                MOVE    SPA-SYSYMD (1:4)    TO  SPA-GMN-NEN
+               MOVE    ZERO                TO  SPA-MAE-RENNUM  
            END-IF     
-      *  
+      *
             MOVE    1                   TO  SPA-GMN-CUR
             EVALUATE    SPA-GMN-PTNUMKSIKBN
                 WHEN    "1"
@@ -383,6 +394,9 @@
                WHEN    "CLICKED"       ALSO    "N02"
                WHEN    "CLICKED"       ALSO    "N03"
                    PERFORM 440-TAG-CHANGE-SEC
+      *    患者番号変更
+               WHEN    "CLICKED"       ALSO    "B09"
+                   PERFORM 409-PTNUM-HENKOU-SEC
            END-EVALUATE
       *
            .
@@ -397,6 +411,10 @@
       *        患者番号構成区分
                WHEN    "ACTIVATE"      ALSO    "PTNUMKSIKBN"
                    PERFORM 4101-PTNUMKSIKBN-CHK-SEC
+      *        患者番号構成区分
+               WHEN    "ACTIVATE"      ALSO    "RENNUM"
+                   MOVE    ZERO            TO  FLG-KOUSIN
+                   PERFORM 4109-RENNUM-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    ANY
       *            一括入力
                    MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
@@ -728,6 +746,53 @@
            EXIT.
       *
       *****************************************************************
+      *   患者番号変更処理
+      *****************************************************************
+       409-PTNUM-HENKOU-SEC                      SECTION.
+      *    患者番号変更
+           MOVE    1                   TO  SPA-PTNUM-HEN
+           MOVE    20                  TO  SPA-GMN-CUR
+      *
+           .
+       409-PTNUM-HENKOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   患者番号変更処理
+      *****************************************************************
+       4109-RENNUM-CHK-SEC                      SECTION.
+      *    患者番号変更
+           MOVE    W04-RENNUM          TO  SPA-GMN-RENNUM
+      *    年度毎に連番のクリアをする時
+           IF    SPA-GMN-NEN            NOT =   SPA-SYSYMD (1:4)
+               MOVE    SPA-SYSYMD(1:4)          TO  SYS-1009-NEN
+               IF     (SPA-GMN-PTNUMKSIKBN      =   "2")   AND
+                      (SPA-GMN-HJNKSIRENNUMKBN  =   "1")
+                   IF      SPA-GMN-RENNUM   NOT =   ZERO
+                        MOVE    "9000"          TO  SPA-ERRCD
+                        MOVE    20              TO  SPA-GMN-CUR
+                        GO      TO      4109-RENNUM-CHK-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF      FLG-KOUSIN          =   1
+               GO      TO      4109-RENNUM-CHK-EXT
+           END-IF
+      *
+           IF      SPA-GMN-RENNUM      <   SPA-MAE-RENNUM
+               MOVE    "9001"          TO  SPA-ERRCD
+               MOVE    20              TO  SPA-GMN-CUR
+               GO      TO      4109-RENNUM-CHK-EXT
+           ELSE
+               MOVE    99              TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4109-RENNUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                        SECTION.
@@ -765,6 +830,11 @@
                   END-IF
                END-IF  
            END-IF
+      *    連番号の修正
+           IF      SPA-PTNUM-HEN       =   1
+               MOVE    1               TO  FLG-KOUSIN
+               PERFORM 4109-RENNUM-CHK-SEC
+           END-IF
            .
        490-TOUROKU-EXT.
            EXIT.
@@ -791,14 +861,18 @@
                MOVE    SPA-W01-EDYUKYMD        TO  SYS-1009-EDYUKYMD
                MOVE    SPA-GMN-NEN             TO  SYS-1009-NEN
            END-IF
+      *    連番号更新
+           IF      SPA-PTNUM-HEN       =   1
+               MOVE    SPA-GMN-RENNUM      TO  SYS-1009-RENNUM
+           END-IF
       *
-          IF    SPA-GMN-NEN            NOT =   SPA-SYSYMD (1:4)
-              MOVE    SPA-SYSYMD(1:4)          TO  SYS-1009-NEN
-              IF     (SPA-GMN-PTNUMKSIKBN      =   "2")   AND
-                     (SPA-GMN-HJNKSIRENNUMKBN  =   "1")
-                  MOVE    ZERO                 TO  SYS-1009-RENNUM
-              END-IF
-          END-IF
+           IF    SPA-GMN-NEN            NOT =   SPA-SYSYMD (1:4)
+               MOVE    SPA-SYSYMD(1:4)          TO  SYS-1009-NEN
+               IF     (SPA-GMN-PTNUMKSIKBN      =   "2")   AND
+                      (SPA-GMN-HJNKSIRENNUMKBN  =   "1")
+                   MOVE    ZERO                 TO  SYS-1009-RENNUM
+               END-IF
+           END-IF
            MOVE    SPA-GMN-PTNUMKSIKBN      TO  SYS-1009-PTNUMKSIKBN 
            MOVE    SPA-GMN-JIYKSIKBN        TO  SYS-1009-JIYKSIKBN 
            MOVE    SPA-GMN-JIYKSIKETA       TO  SYS-1009-JIYKSIKETA 
@@ -1067,6 +1141,13 @@
       *
            MOVE    SPA-GMN-PAGENO           TO  W04-PAGENO
       *
+      *    連番号入力のプロテクト
+           IF      SPA-PTNUM-HEN       =   1
+               MOVE    WIDGET-NORMAL       TO  W04-RENNUM-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  W04-RENNUM-STATE
+           END-IF
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -1095,6 +1176,13 @@
                                                TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
+                                               TO  SPA-ERRMSG
+               WHEN    "9000"
+                   MOVE    "連番号は年度変更により、ゼロに変更されます"
+                                               TO  SPA-ERRMSG
+               WHEN    "9001"
+                   MOVE
+                   "警告！連番号は前回より後の番号にして下さい。"
                                                TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "更新ができませんでした"
@@ -1190,6 +1278,8 @@
                     MOVE  "KKCKSIATOKETA"    TO   MCP-WIDGET
                 WHEN    11
                     MOVE  "JIYKSIKBN"        TO   MCP-WIDGET
+                WHEN    20
+                    MOVE  "RENNUM"           TO   MCP-WIDGET
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE

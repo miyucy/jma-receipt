@@ -19,8 +19,9 @@
             03  W04-FIXED2.
               04  W04-NEN.
                 05  W04-VALUE   PIC X(4).
-              04  W04-RENNUM.
-                05  W04-VALUE   PIC X(10).
+              04  W04-RENNUM-G.
+                05  W04-RENNUM-STATE   PIC S9(9)   BINARY.
+                05  W04-RENNUM   PIC X(10).
               04  W04-PTID.
                 05  W04-VALUE   PIC X(10).
               04  W04-STYUKYMD.

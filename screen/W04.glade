@@ -5,13 +5,9 @@
   <name>W04</name>
   <program_name>W04</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -220,7 +216,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 28 Feb 2001 04:20:29 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>連番号変更</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -327,7 +323,7 @@
 	<data>CHANGED</data>
 	<last_modification_time>Fri, 22 Dec 2000 06:15:36 GMT</last_modification_time>
       </signal>
-      <editable>False</editable>
+      <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
       <text></text>
