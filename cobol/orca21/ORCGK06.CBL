@@ -1250,7 +1250,7 @@
       *
       *    ณฮวง
            PERFORM 4102-SRYCD-CHK-SEC
-           IF      SPA-ERRCD       NOT =   100
+           IF      SPA-ERRCD        NOT =   SPACE
                GO      TO      420-TUIKA-EXT
            END-IF
       *
