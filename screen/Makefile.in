@@ -5,7 +5,8 @@ INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 
 SCREEN_sources = \
-	M00.glade.in
+	M00.glade.in \
+	M97.glade.in
 
 SCREEN_screen = \
 	C02.glade \
@@ -266,7 +267,6 @@ SCREEN_screen = \
 	S05.glade \
 	I22.glade \
 	I23.glade \
-	M97.glade \
 	S06.glade \
 
 SCREEN_objs = $(SCREEN_sources:.glade.in=.glade)
@@ -296,6 +296,7 @@ filecheck:
 	-name ".cvsignore" -o \
 	-name "*.bak" -o \
 	-name "M00.glade" -o \
+	-name "M97.glade" -o \
 	-name "build-stamp" -o \
 	-printf "file\t%f\n") \
 	|sort +1 |uniq -u -f1 
