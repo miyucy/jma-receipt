@@ -2564,7 +2564,13 @@
                MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
            END-IF
       *         
-           IF      RECE62-SHOKUJINISSU (IDX3)  >   ZERO
+           IF    ( RECE62-SHOKUJINISSU (IDX3) >   ZERO                 )
+           AND   ((RECE62-SHOKUJINISSU (IDX3)     NOT =
+                                      RECE62-SHOKUJINISSU   (IDX1)) OR
+                  (RECE62-SHOKUJIRYOYOHI (IDX3)   NOT =
+                                      RECE62-SHOKUJIRYOYOHI (IDX1)) OR
+                  (RECE62-SHOKUJIFTN (IDX3)       NOT =
+                                      RECE62-SHOKUJIFTN     (IDX1))    )
                MOVE    RECE62-SHOKUJINISSU (IDX3)
                                                TO  WRK-KGK2
                MOVE    WRK-KGK2            TO  HC06-SYONISSU(3)
