@@ -26,8 +26,7 @@
               03  HCN01-SYUTOKYY  PIC X(2).
               03  HCN01-SYUTOKMM  PIC X(2).
               03  HCN01-SYUTOKDD  PIC X(2).
-            02  HCN01-HPTNUM.
-              03  HCN01-HPTNUMS   PIC X(1)        OCCURS  8 TIMES.
+            02  HCN01-HPTNUM    PIC X(16).
             02  HCN01-KIGONUM   PIC X(52).
             02  HCN01-HIHKNNAME PIC X(26).
             02  HCN01-ZOKUGARA  PIC X(26).
@@ -39,10 +38,10 @@
             02  HCN01-JIGYONAME PIC X(52).
             02  HCN01-JIGYOADRS PIC X(52).
             02  HCN01-KOH-TBL           OCCURS  2 TIMES.
-              03  HCN01-FTNSNO.
-                04  HCN01-FTNSNOS   PIC X(1)        OCCURS  8 TIMES.
-              03  HCN01-JKYSNO.
-                04  HCN01-JKYSNOS   PIC X(1)        OCCURS  7 TIMES.
+              03  HCN01-JKYSNO    PIC X(14).
+              03  HCN01-JKYSNON   PIC X(20).
+              03  HCN01-FTNSNO    PIC X(16).
+              03  HCN01-FTNSNON   PIC X(20).
               03  HCN01-KOHENDYMD.
                 04  HCN01-KOHENDGG  PIC X(4).
                 04  HCN01-KOHENDYY  PIC X(2).
