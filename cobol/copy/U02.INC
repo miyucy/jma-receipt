@@ -92,7 +92,7 @@
                     07  U02-ULPTNUM       PIC X(20).
                     07  U02-ULNAME        PIC X(50).
                     07  U02-ULSRYKA       PIC X(10).
-                    07  U02-ULDRNAME      PIC X(20).
+                    07  U02-ULDRNAME      PIC X(27).
                     07  U02-ULSRYNAIYO    PIC X(20).
                     07  U02-ULRRKYMD      PIC X(10).
                   05  U02-UKETUKE-SELECT  PIC X       OCCURS  100 TIMES.

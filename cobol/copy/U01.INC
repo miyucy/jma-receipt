@@ -35,7 +35,7 @@
                     07  U01-SI-CONDITION  PIC X(6).
                     07  U01-SI-SRYKAMEI  PIC X(6).
                     07  U01-SI-SRYNAIYOMEI  PIC X(8).
-                    07  U01-SI-DRCD  PIC X(12).
+                    07  U01-SI-DRCD  PIC X(20).
                     07  U01-SI-UKETIME  PIC X(8).
                     07  U01-SI-YYKTIME  PIC X(8).
                   06  U01-SI-SELECT  PIC X       OCCURS  100 TIMES.
@@ -50,7 +50,7 @@
                     07  U01-SZ-CONDITION  PIC X(6).
                     07  U01-SZ-SRYKAMEI  PIC X(6).
                     07  U01-SZ-SRYNAIYOMEI  PIC X(8).
-                    07  U01-SZ-DRCD  PIC X(12).
+                    07  U01-SZ-DRCD  PIC X(20).
                     07  U01-SZ-UKETIME  PIC X(8).
                     07  U01-SZ-YYKTIME  PIC X(8).
                   06  U01-SZ-SELECT  PIC X       OCCURS  100 TIMES.
