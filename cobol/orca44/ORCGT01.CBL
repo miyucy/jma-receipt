@@ -82,9 +82,6 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *****レセプト明細ファイル シェル領域 
-      *****COPY    "CPCOMMONSHELL1.INC".
-      *
       *    エラーファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
@@ -641,7 +638,6 @@
                    WHEN    "6666"
                        MOVE    "JOIN"          TO  MCP-PUTTYPE
                        PERFORM 210-BACK-SYORI-SEC
-                   WHEN    "1011"
                    WHEN    "1012"
                    WHEN    "1013"
                        PERFORM 480-PRINT-SEC
@@ -674,6 +670,8 @@
                        ELSE
                            PERFORM 460-RECEDEN-SEC
                        END-IF
+                   WHEN    "1011"
+                       PERFORM 480-PRINT-SEC
                    WHEN    OTHER
                        PERFORM 450-PRINT-SEC
                END-EVALUATE 
@@ -1420,65 +1418,64 @@
       *    印刷処理
       *
            IF      SPA-TID1-FLG        =   "OK"
-           PERFORM 45011-JOBKANRI-HENSYU-SEC
-      *                                   
-      *****MOVE    RECEERR             TO  SHELL-ERRFILE
+               PERFORM 45011-JOBKANRI-HENSYU-SEC
       *
-           MOVE    0                   TO  WRK-STPAGE
-           MOVE    99999               TO  WRK-EDPAGE
+               MOVE    0                   TO  WRK-STPAGE
+               MOVE    99999               TO  WRK-EDPAGE
       *             
-           MOVE    SPACE               TO  SHELLTBL
-           MOVE    "/scripts/allways/print.sh"
-                                       TO  WRK-SHELL-NAME
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+               MOVE    SPACE               TO  SHELLTBL
+               MOVE    "/scripts/allways/print.sh"
+                                           TO  WRK-SHELL-NAME
+      *        ファイルデイレクトリ位置指定
+               INITIALIZE                  ORCSMKPASSAREA
+               MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
       *                               
-           MOVE    SPACE               TO  LNK-PRTKANRI-AREA
-           INITIALIZE                      LNK-PRTKANRI-AREA
-           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
-                                       TO  LNK-PRTKANRI-TBL-KEY 
-           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
-                                       TO  LNK-PRTKANRI-TBL-GROUP
-           MOVE    ZERO                TO  LNK-PRTKANRI-RENNUM
-           MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
-           MOVE    SPA-NAI-SKYYM       TO  LNK-PRTKANRI-SRYYM 
-           MOVE    SPA-NAI-SKYYMD      TO  LNK-PRTKANRI-SKYYMD
-           MOVE    "print.sh"          TO  LNK-PRTKANRI-SHELLID
-           MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
-           MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
-           MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
-           MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1       
-           MOVE    LNK-PRTKANRI-TBL-KEY
-                                       TO  SHELLTBL-ARG2     
-           MOVE    LNK-PRTKANRI-TBL-GROUP
-                                       TO  SHELLTBL-ARG3       
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                       TO  SHELLTBL-ARG4       
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5       
-           MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6       
-           MOVE    LNK-PRTKANRI-SHELLID
-                                       TO  SHELLTBL-ARG7       
-           MOVE    LNK-PRTKANRI-PRIORITY
-                                       TO  SHELLTBL-ARG8      
-           MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9       
-           MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
-           MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
+               MOVE    SPACE               TO  LNK-PRTKANRI-AREA
+               INITIALIZE                      LNK-PRTKANRI-AREA
+               MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                           TO  LNK-PRTKANRI-TBL-KEY 
+               MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                           TO  LNK-PRTKANRI-TBL-GROUP
+               MOVE    ZERO                TO  LNK-PRTKANRI-RENNUM
+               MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
+               MOVE    SPA-NAI-SKYYM       TO  LNK-PRTKANRI-SRYYM 
+               MOVE    SPA-NAI-SKYYMD      TO  LNK-PRTKANRI-SKYYMD
+               MOVE    "print.sh"          TO  LNK-PRTKANRI-SHELLID
+               MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
+      *****    MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
+               MOVE    WRK-CONS-TERMID     TO  LNK-PRTKANRI-TERMID
+               MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
+               MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1       
+               MOVE    LNK-PRTKANRI-TBL-KEY
+                                           TO  SHELLTBL-ARG2     
+               MOVE    LNK-PRTKANRI-TBL-GROUP
+                                           TO  SHELLTBL-ARG3       
+               MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                           TO  SHELLTBL-ARG4       
+               MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5       
+               MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6       
+               MOVE    LNK-PRTKANRI-SHELLID
+                                           TO  SHELLTBL-ARG7       
+               MOVE    LNK-PRTKANRI-PRIORITY
+                                           TO  SHELLTBL-ARG8      
+               MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9       
+               MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
+               MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
       *                 
-           MOVE    RECEERR             TO  SHELLTBL-ARG12
-           MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
-           MOVE    WRK-CONS-JOB-SHELLID
-                                       TO  SHELLTBL-ARG14
-           MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
-           MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING
-                                       MCPAREA
-                                       MCPDATA-REC
+               MOVE    RECEERR             TO  SHELLTBL-ARG12
+               MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
+               MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  SHELLTBL-ARG14
+               MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
+               MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
+               MOVE    SHELLTBL            TO  MCPDATA-REC
+               MOVE    "SHELL"             TO  MCP-FUNC
+               MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+               CALL    "MCPSUB"            USING
+                                           MCPAREA
+                                           MCPDATA-REC
            END-IF       
       *
       *    ＪＯＢＩＤ更新処理
@@ -1785,6 +1782,55 @@
            EXIT.
       *
       *****************************************************************
+      *    印刷処理
+      *****************************************************************
+       45013-PRINT-SYORI-SEC           SECTION.
+      *
+           MOVE    0                   TO  WRK-STPAGE
+           MOVE    99999               TO  WRK-EDPAGE
+      *             
+           MOVE    SPACE               TO  SHELLTBL
+           MOVE    "/scripts/allways/print.sh"
+                                       TO  WRK-SHELL-NAME
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+           MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1       
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                       TO  SHELLTBL-ARG2     
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                       TO  SHELLTBL-ARG3       
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                       TO  SHELLTBL-ARG4       
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5       
+           MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6       
+           MOVE    LNK-PRTKANRI-SHELLID
+                                       TO  SHELLTBL-ARG7       
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                       TO  SHELLTBL-ARG8      
+           MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9       
+           MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
+           MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
+      *             
+           MOVE    RECEERR             TO  SHELLTBL-ARG12
+           MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SHELLTBL-ARG14
+           MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
+           MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+           .
+       45013-PRINT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    レセ電前処理
       *****************************************************************
        460-RECEDEN-GID-SEC                SECTION.
@@ -1913,7 +1959,8 @@
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
       *     
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
-           MOVE    WRK-CONS-TERMID     TO  RECEERR-TERMID
+      *****MOVE    WRK-CONS-TERMID     TO  RECEERR-TERMID
+           MOVE    SPA-TERMID          TO  RECEERR-TERMID
       *     
       *    出力先プリンタ名割り当て情報編集
            MOVE    SPACE               TO  SYS-1031-REC
@@ -1948,23 +1995,21 @@
            END-IF    
       *
       *    印刷ＤＢのＫＥＹ用     
-           MOVE    WRK-SYSYMD          TO
+           MOVE    WRK-SYSYMD      TO
                                    WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
-           MOVE    SYS-TIME            TO
+           MOVE    SYS-TIME        TO
                                    WRK-CONS-PRTKANRI-TBL-GROUP (9:)
       *
            PERFORM 45011-JOBKANRI-HENSYU-SEC
-      *                                 
-      *    MOVE    RECEERR             TO  SHELL-ERRFILE
       *             
            MOVE    SPACE           TO  SHELLTBL
            MOVE    "scripts/monthly/recept4.sh"
-                                       TO  WRK-SHELL-NAME
+                                   TO  WRK-SHELL-NAME
       *    ファイルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+           MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *                                 
            MOVE    SPACE           TO  LNK-PRTKANRI-AREA
            INITIALIZE                  LNK-PRTKANRI-AREA
@@ -2041,65 +2086,9 @@
                                    MCPDATA-REC
       *
       *    印刷処理
-      *
            IF      SPA-TID1-FLG        =   "OK"
                PERFORM 45011-JOBKANRI-HENSYU-SEC
-      *
-               MOVE    0                   TO  WRK-STPAGE
-               MOVE    99999               TO  WRK-EDPAGE
-      *             
-               MOVE    SPACE               TO  SHELLTBL
-               MOVE    "/scripts/allways/print.sh"
-                                           TO  WRK-SHELL-NAME
-      *        ファイルデイレクトリ位置指定
-               INITIALIZE                  ORCSMKPASSAREA
-               MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
-      *                               
-               MOVE    SPACE               TO  LNK-PRTKANRI-AREA
-               INITIALIZE                      LNK-PRTKANRI-AREA
-               MOVE    WRK-CONS-PRTKANRI-TBL-KEY
-                                           TO  LNK-PRTKANRI-TBL-KEY 
-               MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
-                                           TO  LNK-PRTKANRI-TBL-GROUP
-               MOVE    ZERO                TO  LNK-PRTKANRI-RENNUM
-               MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
-               MOVE    SPA-NAI-SKYYM       TO  LNK-PRTKANRI-SRYYM 
-               MOVE    SPA-NAI-SKYYMD      TO  LNK-PRTKANRI-SKYYMD
-               MOVE    "print.sh"          TO  LNK-PRTKANRI-SHELLID
-               MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
-               MOVE    SPA-TERMID          TO  LNK-PRTKANRI-TERMID
-               MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
-               MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1       
-               MOVE    LNK-PRTKANRI-TBL-KEY
-                                           TO  SHELLTBL-ARG2     
-               MOVE    LNK-PRTKANRI-TBL-GROUP
-                                           TO  SHELLTBL-ARG3       
-               MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                           TO  SHELLTBL-ARG4       
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5       
-               MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6       
-               MOVE    LNK-PRTKANRI-SHELLID
-                                           TO  SHELLTBL-ARG7       
-               MOVE    LNK-PRTKANRI-PRIORITY
-                                           TO  SHELLTBL-ARG8      
-               MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9       
-               MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
-               MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
-      *                 
-               MOVE    RECEERR             TO  SHELLTBL-ARG12
-               MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
-               MOVE    WRK-CONS-JOB-SHELLID
-                                           TO  SHELLTBL-ARG14
-               MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
-               MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
-               MOVE    SHELLTBL            TO  MCPDATA-REC
-               MOVE    "SHELL"             TO  MCP-FUNC
-               MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-               CALL    "MCPSUB"            USING
-                                           MCPAREA
-                                           MCPDATA-REC
+               PERFORM 45013-PRINT-SYORI-SEC
            END-IF       
       *
       *    ＪＯＢＩＤ更新処理
@@ -2165,47 +2154,165 @@
       *    印刷処理（チェック・集計表）
       *****************************************************************
        480-PRINT-SEC                 SECTION.
-      *                                 
+      *     
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
-      *****MOVE    RECEERR             TO  SHELL-ERRFILE
            OPEN    OUTPUT   RECEERR-FILE
            CLOSE   RECEERR-FILE
       *
-           MOVE    SPACE               TO  SHELLTBL 
            EVALUATE    SPA-TIDCD
                WHEN    "1011"
-                   MOVE    "scripts/monthly/recept5.sh" 
-                                               TO  WRK-SHELL-NAME
-                   MOVE    "0"                 TO  WRK-SHELL-RECEKBN
-               WHEN    "1012"
-                   MOVE    "1"                 TO  WRK-SHELL-RECEKBN
-                   MOVE    "scripts/monthly/sokatsu.sh"
-                                               TO  WRK-SHELL-NAME
-               WHEN    "1013"
-                   MOVE    "scripts/monthly/sokatsu.sh"
-                                               TO  WRK-SHELL-NAME
-                   MOVE    "2"                 TO  WRK-SHELL-RECEKBN
-           END-EVALUATE
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *            ジョブ管理削除処理
+                   MOVE    "ALL"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  JOB-SHELLID
+                   CALL    "ORCSJOB"       USING   ORCSJOBKANRIAREA  
+                                                   JOBKANRI-REC
+                   IF      SJOBKANRI-RETURN    =   ZERO
+                       CONTINUE
+                   ELSE
+                       MOVE    "1004"              TO  SPA-ERRCD
+                       GO  TO  480-PRINT-EXT
+                   END-IF             
       *     
-           MOVE    SPA-NAI-SKYYM       TO  WRK-SHELL-SRYYM 
-           MOVE    SPA-TERMID          TO  WRK-SHELL-TERMID
-           MOVE    SPA-SYSYMD          TO  WRK-SHELL-SYSYMD    
-           MOVE    WRK-SHELL-ARG1      TO  SHELLTBL-ARG1
-           MOVE    WRK-SHELL-RECEKBN   TO  SHELLTBL-ARG2
-           MOVE    RECEERR             TO  SHELLTBL-ARG3
-           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG4
-           MOVE    SPA-TERMID          TO  SHELLTBL-ARG5
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
-           CALL    "MCPSUB"            USING   MCPAREA
-                                               MCPDATA-REC                         
+      *            出力先プリンタ名割り当て情報編集
+                   MOVE    SPACE               TO  SYS-1031-REC
+                   INITIALIZE                  SYS-1031-REC
+                   MOVE    "1031"              TO  SYS-1031-KANRICD
+                   MOVE    "*"                 TO  SYS-1031-KBNCD
+                   MOVE    SYS-1031-REC        TO  MCPDATA-REC
+                   MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+                   PERFORM 900-SYSKANRI-INV-SEC
+                   IF      FLG-SYSKANRI        =   ZERO
+                       MOVE    MCPDATA-REC         TO  SYS-1031-REC
+                   ELSE    
+                       INITIALIZE                  SYS-1031-REC
+                   END-IF
+      *
+      *            印刷ＤＢのＫＥＹ用     
+                   ACCEPT  SYS-YMD             FROM    DATE
+                   COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
+                   MOVE    SYS-MM              TO  WRK-SYSMM
+                   MOVE    SYS-DD              TO  WRK-SYSDD
+                   ACCEPT  SYS-TIME            FROM    TIME
+                   MOVE    SPACE               TO
+                                           WRK-CONS-PRTKANRI-TBL-GROUP                                
+                   MOVE    WRK-SYSYMD          TO
+                                   WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
+                   MOVE    SYS-TIME            TO
+                                   WRK-CONS-PRTKANRI-TBL-GROUP (9:)
+      *
+                   MOVE    ZERO                TO  WRK-CONS-JOB-JOBID     
+                                                   WRK-PRTKANRI-RENNUM
+                   PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *             
+                   MOVE    SPACE           TO  SHELLTBL
+                   MOVE    "scripts/monthly/recept5.sh"
+                                           TO  WRK-SHELL-NAME
+      *            ファイルデイレクトリ位置指定
+                   INITIALIZE                  ORCSMKPASSAREA
+                   MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
+                   CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+                   MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *                                 
+                   MOVE    SPACE           TO  LNK-PRTKANRI-AREA
+                   INITIALIZE                  LNK-PRTKANRI-AREA
+                   ADD     1               TO  WRK-PRTKANRI-RENNUM
+                   MOVE    WRK-PRTKANRI-RENNUM
+                                           TO  LNK-PRTKANRI-RENNUM 
+                   MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                           TO  LNK-PRTKANRI-TBL-KEY 
+                   MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                           TO  LNK-PRTKANRI-TBL-GROUP
+                   MOVE    SPA-NAI-SKYYM   TO  LNK-PRTKANRI-SRYYM 
+                   MOVE    SPA-SYSYMD      TO  LNK-PRTKANRI-SKYYMD
+                   MOVE    "recept5.sh"    TO  LNK-PRTKANRI-SHELLID
+                   MOVE    ZERO            TO  LNK-PRTKANRI-PRIORITY
+                   MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID 
+                   MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
+                   MOVE    SYS-1031-PRTNM (5)
+                                           TO  LNK-PRTKANRI-PRTNM
+                   MOVE    LNK-PRTKANRI-RENNUM
+                                           TO  SHELLTBL-ARG1       
+                   MOVE    LNK-PRTKANRI-TBL-KEY
+                                           TO  SHELLTBL-ARG2     
+                   MOVE    LNK-PRTKANRI-TBL-GROUP
+                                           TO  SHELLTBL-ARG3       
+                   MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                           TO  SHELLTBL-ARG4       
+                   MOVE    LNK-PRTKANRI-SRYYM
+                                           TO  SHELLTBL-ARG5       
+                   MOVE    LNK-PRTKANRI-SKYYMD
+                                           TO  SHELLTBL-ARG6       
+                   MOVE    LNK-PRTKANRI-SHELLID
+                                           TO  SHELLTBL-ARG7       
+                   MOVE    LNK-PRTKANRI-PRIORITY
+                                           TO  SHELLTBL-ARG8      
+                   MOVE    LNK-PRTKANRI-TERMID
+                                           TO  SHELLTBL-ARG9       
+                   MOVE    LNK-PRTKANRI-OPID
+                                           TO  SHELLTBL-ARG10      
+                   MOVE    LNK-PRTKANRI-PRTNM
+                                           TO  SHELLTBL-ARG11      
+                   MOVE    SPA-HOSPID      TO  SHELLTBL-ARG12
+                   MOVE    WRK-CONS-JOB-JOBID
+                                           TO  SHELLTBL-ARG13
+                   MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  SHELLTBL-ARG14         
+                   MOVE    RECEERR         TO  SHELLTBL-ARG15
+                   MOVE    SHELLTBL        TO  MCPDATA-REC
+                   MOVE    "SHELL"         TO  MCP-FUNC
+                   MOVE    PATH-SHELL-SHELL
+                                           TO  MCP-PATH
+                   CALL    "MCPSUB"        USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                   IF      MCP-RC          NOT =   ZERO
+                       DISPLAY "ERROR MCP-RC=" MCP-RC 
+                   END-IF
+      *
+      *            印刷処理
+                   IF      SPA-TID1-FLG    =   "OK"
+                       PERFORM 45011-JOBKANRI-HENSYU-SEC
+                       PERFORM 45013-PRINT-SYORI-SEC
+                   END-IF       
+      *
+      *            ＪＯＢＩＤ更新処理
+                   PERFORM 45012-JOBID-UPD-SEC
+      *     
+      *            情報確認画面を表示                                                   
+                   PERFORM 490-KAKUNIN-SEC
+               WHEN    OTHER
+                   MOVE    SPACE               TO  SHELLTBL
+                   EVALUATE    SPA-TIDCD 
+                       WHEN    "1012"
+                           MOVE    "1"             TO  WRK-SHELL-RECEKBN
+                       WHEN    "1013"
+                           MOVE    "2"             TO  WRK-SHELL-RECEKBN
+                   END-EVALUATE
+                   MOVE    "scripts/monthly/sokatsu.sh"
+                                               TO  WRK-SHELL-NAME
+      *            ファイルデイレクトリ位置指定
+                   INITIALIZE                  ORCSMKPASSAREA
+                   MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+                   CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+                   MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *     
+                   MOVE    SPA-NAI-SKYYM       TO  WRK-SHELL-SRYYM 
+                   MOVE    SPA-TERMID          TO  WRK-SHELL-TERMID
+                   MOVE    SPA-SYSYMD          TO  WRK-SHELL-SYSYMD    
+                   MOVE    WRK-SHELL-ARG1      TO  SHELLTBL-ARG1
+                   MOVE    WRK-SHELL-RECEKBN   TO  SHELLTBL-ARG2
+                   MOVE    RECEERR             TO  SHELLTBL-ARG3
+                   MOVE    SPA-HOSPID          TO  SHELLTBL-ARG4
+                   MOVE    SPA-TERMID          TO  SHELLTBL-ARG5
+                   MOVE    SHELLTBL            TO  MCPDATA-REC
+                   MOVE    "SHELL"             TO  MCP-FUNC
+                   MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
+                   CALL    "MCPSUB"            USING   MCPAREA
+                                                   MCPDATA-REC                         
+           END-EVALUATE
           .
        480-PRINT-EXT.
            EXIT.
@@ -2447,6 +2554,7 @@
                    WHEN    "1004"
                    WHEN    "1005"
                    WHEN    "1010"
+                   WHEN    "1011"
                    WHEN    "1014"  
                        PERFORM 530-TID2SET-SEC
                        GO  TO  500-SET-SCREEN-EXT
@@ -2606,9 +2714,6 @@
            MOVE    SPACE               TO  WRK-TIDMSG
       *
            EVALUATE    SPA-TIDCD
-               WHEN    "1011"
-                   MOVE    "チェックリストの印刷処理を行います"
-                                       TO  WRK-TIDMSG
                WHEN    "1012"
                    MOVE    "集計表（社保）の印刷処理を行います"
                                        TO  WRK-TIDMSG
@@ -2674,6 +2779,9 @@
                                        TO  WRK-TIDMSG
                    MOVE    "（症状詳記の印刷を指定）"
                                        TO  WRK-TIDMSG (39:)
+               WHEN    "1011"
+                   MOVE    "チェックリストの印刷処理を行います"
+                                       TO  WRK-TIDMSG
                WHEN    "1014"
                    MOVE    "国保分のレセプト電算データを作成します"
                                        TO  WRK-TIDMSG
