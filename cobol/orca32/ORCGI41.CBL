@@ -92,6 +92,7 @@
            03  FLG-DBRC            PIC 9(01).
            03  FLG-NYUKSN          PIC 9(01).
            03  FLG-SST             PIC 9(01).
+           03  FLG-NYUINKHNRYO     PIC 9(01).
       *
       *    •∑•π•∆•‡ŒŒ∞Ë
        01  SYS-AREA.
@@ -3842,6 +3843,7 @@
       *****************************************************************
        410181-NYUINACCT-HEN-SEC           SECTION.
       *
+           MOVE    ZERO                TO  FLG-NYUINKHNRYO
            MOVE    SPA-NAI-SRYYM-41    TO  WRK-SYMD(1:6).
            MOVE    "01"                TO  WRK-SYMD(7:2).
            PERFORM 41012-SEIWA-HEN-SEC.
@@ -3907,6 +3909,9 @@
       *
                    ADD     1                   TO  IDX
                    PERFORM 3101-NYUINACCT-SPA-SEC
+                   IF      NACCT-ZAISKBKBN     =   "1"
+                       MOVE   1                TO   FLG-NYUINKHNRYO
+                   END-IF
       *
                    MOVE    "NYUINACCT-KEY16"   TO  ORC-DBPATH
                    PERFORM 900-NYUINACCT-READ-SEC
@@ -4149,7 +4154,9 @@
                END-IF
            END-PERFORM.
       *
-           IF      SPA-ERRCD          NOT =   SPACE
+           IF     (SPA-ERRCD          NOT =   SPACE)   OR
+                 ((SPA-ERRCD          =       SPACE)  AND
+                  (FLG-NYUINKHNRYO    =       ZERO))
                MOVE    ZERO           TO      FLG-KAIKEI-SAKUSEI
                MOVE    SPACE          TO      SPA-ERRCD
                PERFORM   410191-KAIKEI-SAKUSEI-SEC
