@@ -96,6 +96,7 @@
       *  01.02.09   MCC-小豆沢    02.10.16  特定器材点数の集計先を修正
       *  01.02.10   MCC-小豆沢    02.11.06  約束処方時の点数欄表示修正
       *  01.02.11   NACL-門脇     02.11.26  検診コードを編集できるよう修正
+      *  01.02.15   NACL-藤原     02.12.02  酸素の時単価を表示するように追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -196,6 +197,7 @@
            03  FLG-OSINKBN                             PIC 9(01).
            03  FLG-RECE02                              PIC 9(01).
            03  FLG-KANJI                               PIC 9(01).
+           03  FLG-SP                                  PIC 9(01). 
            03  FLG-PTCOM                               PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
@@ -227,6 +229,8 @@
            03  IDX4                                    PIC 9(03). 
            03  IDY                                     PIC 9(03).
            03  IDZ                                     PIC 9(03).
+           03  IDW                                     PIC 9(03).
+           03  NUM-IDX                                 PIC 9(01).
            03  HC-IDX                                  PIC 9(03).
            03  KH-IDX                                  PIC 9(03).
            03  BUN-IDX                                 PIC 9(03).
@@ -347,6 +351,24 @@
            03  WRK-TOKKI                               PIC X(02).
            03  TOKKI-IDX                               PIC 9(02). 
       *
+      *    数字半角全角変換用     
+           03  WRK-CHAR-IDX                    PIC 9(02).
+           03  WRK-CHAR-HENKAN-AREA.
+               05  WRK-CHAR-X                  PIC X(20).
+               05  WRK-CHAR-N                  PIC X(40).
+               05  WRK-CHAR-CNT                PIC 9(02).
+               05  WRK-CHAR-N-CNT              PIC 9(02).
+      *     
+      *    単価編集用     
+           03  WRK-TANKA                       PIC 9(09)V9(02).
+           03  WRK-TANKA-R  REDEFINES  WRK-TANKA.
+               05  WRK-TANKA-S1                PIC 9(09).
+               05  WRK-TANKA-S2                PIC 9(02).
+           03  WRK-TANKA-X.
+               05  WRK-TANKA-Z1                PIC ZZZZZZZZ9.
+               05  WRK-TANKA-Z2                PIC X(01).
+               05  WRK-TANKA-Z3                PIC ZZ.
+      *
       *---------------------------------------------------------------
       *  回数減算用退避領域
       *
@@ -420,6 +442,9 @@
            03  CONS-TOKKI11        PIC X(14) VALUE "00000099990111".
            03  CONS-TOKKI12        PIC X(14) VALUE "00000099990112".
       *
+      *    酸素 
+           COPY    "CMSANSOTBL.INC".
+      *
       *   日本語数字
        01  TBL-SUJI-AREA.
            03  FILLER          PIC X(20)   VALUE
@@ -473,6 +498,9 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    半角チェックサブ
+           COPY    "CPORCSKANACHK.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -633,8 +661,8 @@
                PERFORM     210-HENSYU-SEC
       *
                PERFORM     RECE02-READ-SEC
-      	       IF  CNT-IN-COMMIT   =    300
-	           MOVE  ZERO          TO      CNT-IN-COMMIT
+      	       IF  CNT-IN-COMMIT   =   300
+      	           MOVE  ZERO          TO      CNT-IN-COMMIT
                    PERFORM 900-DBCOMMIT-SEC
                    PERFORM 900-DBSTART-SEC
                END-IF
@@ -1006,6 +1034,31 @@
                ELSE
                    MOVE    TNS-NAME            TO    RECE05-NAME(IDX4)
                END-IF
+      *
+      *        酸素のとき単価を編集
+               IF      SRY-SRYCD (IDX2) (1:1)  =   "7"
+                   SET     TBL-SANSO           TO  1
+                   SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
+                       AT  END
+                           MOVE    ZERO            TO  FLG-SANSO-OK
+                       WHEN    SRY-SRYCD (IDX2)    =   TBL-SANSO-SRYCD
+                                                            (TBL-SANSO)
+                           MOVE    1               TO  FLG-SANSO-OK
+                   END-SEARCH
+                   IF      FLG-SANSO-OK        =   "1"
+                       PERFORM RECE05-TENSOU-TANKA-HEN-SEC
+                       COMPUTE IDW =   RECE05-YUKOKETA(IDX4)  *  2 
+                                                   +   3                    
+                       MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
+                                                   TO
+                                               RECE05-NAME(IDX4)(IDW:)   
+                       COMPUTE RECE05-YUKOKETA(IDX4)
+                                               =   RECE05-YUKOKETA(IDX4)
+                                                   +   1   
+                                                   +
+                                                  (WRK-CHAR-N-CNT  /  2)
+                   END-IF
+               END-IF        
       *----------------------------------------------------------------
       *        在宅部分のレセプト編集用に往診（特別往診）・夜間・
       *        深夜・緊急の剤判定を追加
@@ -1037,6 +1090,77 @@
            .
        RECE05-TENSOU-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    酸素の単価編集処理
+      *****************************************************************
+       RECE05-TENSOU-TANKA-HEN-SEC     SECTION.
+      *
+           IF      TNS-TEN         =   ZERO
+               GO  TO  RECE05-TENSOU-TANKA-HEN-EXT  
+           END-IF
+      *
+           MOVE    SPACE           TO  WRK-TANKA-X
+      * 
+      *    数字表示用編集（半角）
+           MOVE    TNS-TEN         TO  WRK-TANKA
+           MOVE    WRK-TANKA-S1    TO  WRK-TANKA-Z1
+           MOVE    ZERO            TO  FLG-SP
+           PERFORM   VARYING   IDY   FROM    2   BY  -1
+                     UNTIL     IDY           =   ZERO
+             IF  WRK-TANKA-S2(IDY:1) NOT =   ZERO
+                 MOVE    1               TO  FLG-SP
+             END-IF
+             IF  FLG-SP                  =   1
+                 MOVE    WRK-TANKA-S2(IDY:1)
+                                         TO  WRK-TANKA-Z3(IDY:1)
+             END-IF
+           END-PERFORM
+           IF  WRK-TANKA-Z3          NOT =   SPACE
+               MOVE    "."               TO  WRK-TANKA-Z2
+           END-IF
+      *        
+           INITIALIZE                      WRK-CHAR-HENKAN-AREA
+           MOVE    WRK-TANKA-X         TO  WRK-CHAR-X
+           MOVE    12                  TO  WRK-CHAR-CNT
+           MOVE    1                   TO  WRK-CHAR-IDX
+           MOVE    ZERO                TO  WRK-CHAR-N-CNT
+      *     
+           PERFORM VARYING     IDW     FROM    1   BY  1
+                   UNTIL       IDW     >   WRK-CHAR-CNT
+               IF      WRK-CHAR-X (IDW:1)  =   SPACE
+                   CONTINUE
+               ELSE        
+                   IF    WRK-CHAR-X (IDW:1)  IS  NUMERIC
+                       IF      WRK-CHAR-X (IDW:1)  =   "0"
+                           MOVE    TBL-SUJI (10)
+                                       TO  WRK-CHAR-N (WRK-CHAR-IDX:)
+                       ELSE
+                           MOVE    WRK-CHAR-X (IDW:1)  TO  NUM-IDX
+                           MOVE    TBL-SUJI (NUM-IDX)
+                                       TO  WRK-CHAR-N (WRK-CHAR-IDX:)
+                       END-IF                    
+                   ELSE
+                       IF    WRK-CHAR-X (IDW:1)  =   "."
+                           MOVE    "．"   TO  WRK-CHAR-N (WRK-CHAR-IDX:)
+                       ELSE    
+                           MOVE    "  "   TO  WRK-CHAR-N (WRK-CHAR-IDX:)
+                       END-IF
+                   END-IF    
+                   ADD     2           TO  WRK-CHAR-IDX
+                                           WRK-CHAR-N-CNT
+               END-IF    
+           END-PERFORM
+      *
+           IF      WRK-CHAR-N-CNT      >   ZERO
+                   MOVE    "円"        TO  WRK-CHAR-N (WRK-CHAR-IDX:)
+                   ADD     2           TO  WRK-CHAR-N-CNT
+           END-IF                             
+      *
+           .
+       RECE05-TENSOU-TANKA-HEN-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    レセプト中間ファイルの項目転送２（Ｆ００２）
