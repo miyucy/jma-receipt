@@ -1914,4 +1914,3 @@
       *
        900-PUT-WINDOW-EXT.
            EXIT.
-      *
