@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-藤原    02/09/19  アフターケア・自賠責対応
       * 01.00.02     NACL-藤原    02/11/27  受診履歴の読込に入外区分を追加
+      *  01.07.09    NACL-藤原    03/02/28  診療科４０に変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -530,7 +531,7 @@
                                                   (SPA-C07-SRYKAMAX)
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   10  )  OR
+                   UNTIL      (IDX     >   40  )  OR
                               (SPA-GMN-C02-SRYKAL (IDX)
                                            =   SPACE )
                ADD     1                   TO  SPA-C07-SRYKAMAX

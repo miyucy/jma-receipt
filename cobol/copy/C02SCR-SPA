@@ -40,6 +40,7 @@
       *                                     追加
       *  新傷病名マスタ対応 
       *  01.04.01    NACL-藤原    02/08/20  病名コード移行用項目の追加
+      *  01.04.02    NACL-藤原    03/02/28  診療科４０に変更
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -55,7 +56,7 @@
                        09  SPA-GMN-C02-SYSYMD          PIC X(09).
                        09  SPA-GMN-C02-HKNCOMBIMEIH    PIC X(100).
                        09  SPA-GMN-C02-FTNRATE         PIC X(10).
-                       09  SPA-GMN-C02-SRYKALST        OCCURS  10.
+                       09  SPA-GMN-C02-SRYKALST        OCCURS  40.
                            11  SPA-GMN-C02-SRYKAL      PIC X(02).
                            11  SPA-GMN-C02-F1L         PIC X(01).
                            11  SPA-GMN-C02-SRYKAMEIL   PIC X(20).
@@ -341,7 +342,7 @@
                    07  SPA-C07-SRYKAH        PIC X(01).
                    07  SPA-C07-SRYKAMEI      PIC X(12).
                05  SPA-C07-SRYKA-AREA.
-                   07  SPA-C07-SRYKA-LIST      OCCURS  10.
+                   07  SPA-C07-SRYKA-LIST      OCCURS  41.
                        09  SPA-C07-SRYKAL      PIC X(02).
                        09  SPA-C07-F1L         PIC X(01).
                        09  SPA-C07-SRYKAMEIL   PIC X(12).

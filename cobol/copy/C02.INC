@@ -39,7 +39,7 @@
                 04  C02-SRYKA-COUNT
                                 PIC S9(9)   BINARY.
                 04  C02-SRYKALST
-                                PIC X(21)   OCCURS  10 TIMES.
+                                PIC X(21)   OCCURS  40 TIMES.
               03  C02-B03-STATE
                                 PIC S9(9)   BINARY.
               03  C02-B09-STATE

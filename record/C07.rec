@@ -17,7 +17,7 @@ C07	{
 				value	varchar(21);
 			};
 			count	int;
-			item	varchar(20)[10];
+			item	varchar(20)[41];
 		};
 		MIDASI	{
 		    style   varchar(20);

@@ -96,6 +96,7 @@
       *  01.07.07    NACL-藤原    02/12/13  病名文字数のチェック修正
       *  01.07.08    NACL-藤原    03/02/14  入力ＣＤ検索から戻ったときの
       *                                     カルテ病名の編集を追加
+      *  01.07.09    NACL-藤原    03/02/28  診療科４０に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1302,7 +1303,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   10   )  OR
+                   UNTIL       (IDX            >   40   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC           TO  SYS-1005-REC
                MOVE    SYS-1005-KBNCD (1:2)  TO
@@ -1401,7 +1402,7 @@
            IF      FLG-JYURRK          =   ZERO
                MOVE    JYURRK-SRYKA        TO  SPA-GMN-C02-SRYKA
                PERFORM VARYING IDY FROM   1   BY  1
-                       UNTIL   IDY >      10
+                       UNTIL   IDY >      SPA-GMN-C02-SRYKA-MAX
                    IF      SPA-GMN-C02-SRYKA 
                                   =   SPA-GMN-C02-SRYKAL (IDY)
                        MOVE    SPA-GMN-C02-SRYKALST (IDY)
@@ -1668,7 +1669,7 @@
       *
            MOVE    ZERO               TO  WRK-HENFLG
            PERFORM VARYING IDY FROM   1   BY  1
-                   UNTIL   IDY >      10
+                   UNTIL   IDY >      SPA-GMN-C02-SRYKA-MAX
                    OR      WRK-HENFLG =   1
                IF      SPA-GMN-C02-SRYKA 
                                   =   SPA-GMN-C02-SRYKAL (IDY)

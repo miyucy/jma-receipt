@@ -28,7 +28,7 @@
                 04  C07-SRYKA.
                   05  C07-VALUE  PIC X(21).
                 04  C07-SRYKA-COUNT  PIC S9(9)   BINARY.
-                04  C07-SRYKA-ITEM   PIC X(20)   OCCURS  10 TIMES.
+                04  C07-SRYKA-ITEM   PIC X(20)   OCCURS  41 TIMES.
               03  C07-MIDASI-G.
                 04  C07-MIDASI-STYLE  PIC X(20).
                 04  C07-MIDASI       PIC X(20).
