@@ -103,6 +103,7 @@
            03  FLG-MIJISI-JYOKU                        PIC 9(01).       
            03  FLG-SENTEICDCHG                         PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
+           03  FLG-HKNCOMBI                            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -161,6 +162,7 @@
                05  WRK-PARA-JOBID                      PIC 9(07).
                05  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-SYS-SRYYMD                          PIC X(08).
+           03  WRK-TAHKNCOMBI                          PIC 9(04).
       *
        01  WRK-TENTEK.
            03  WRK-TENTEK-SYUTEN                       PIC 9(07).
@@ -250,6 +252,10 @@
       *    選定入院料
        01  SENTEICDCHG-REC.
            COPY    "CPSENTEICDCHG.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -571,6 +577,9 @@
                                            ORCMCPAREA
                                            MCPDATA-REC
       *
+      *
+           MOVE     ZERO      TO      WRK-TAHKNCOMBI
+      *
            PERFORM  VARYING  IDY    FROM    1   BY  1
                           UNTIL   IDY     >       31
       *
@@ -578,6 +587,13 @@
                           UNTIL   IDX1    >       10
                           OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
       *
+               IF     RECE62-NYUINRYOFLG     =  "1"
+                 IF         WRK-DAY5(IDY)      NOT =  ZERO
+                 AND        WRK-DAY1(IDY)      NOT =  ZERO
+                     MOVE   WRK-DAY5(IDY)     TO    WRK-TAHKNCOMBI
+                 END-IF
+                 MOVE    10              TO    IDX1
+               ELSE
                  IF        WRK-DAY5(IDY)   =   RECE62-HKNCOMBI (IDX1)
                       MOVE    ZERO            TO    FLG-SHOSAISIN
                       IF   WRK-DAY1(IDY)   NOT =    ZERO    
@@ -586,10 +602,42 @@
                       PERFORM   RECE62-TENSOU11-SEC
                       MOVE    10              TO    IDX1
                  END-IF
+               END-IF
       *
               END-PERFORM
       *
            END-PERFORM
+      *
+      *    ＜他保険にて入院料を算定している場合の保険決定＞
+      *    入院基本料無し、又は、組み合わせ＝自費・・・１
+      *    組み合わせ＝労災                      ・・・２
+      *    組み合わせ＝自賠責                    ・・・３
+           IF   RECE62-NYUINRYOFLG       =  "1"
+           AND  WRK-TAHKNCOMBI      NOT  =  ZERO
+                   INITIALIZE                  HKNCOMBI-REC
+                   MOVE    RECE62-HOSPID   TO  COMB-HOSPID
+                   MOVE    RECE62-PTID     TO  COMB-PTID
+                   MOVE    WRK-TAHKNCOMBI  TO  COMB-HKNCOMBINUM
+                   MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
+                   PERFORM HKNCOMBI-INV-SEC
+                   IF      FLG-HKNCOMBI    =   ZERO
+      *               IF  COMB-HKNNUM(1:2)  =  "98"
+      *                  CONTINUE
+      *               END-IF
+                      IF  COMB-HKNNUM       =  "971"
+                         MOVE    "2"   TO   RECE62-NYUINRYOFLG
+                      END-IF
+                      IF  COMB-HKNNUM       =  "973"
+                         MOVE    "3"   TO   RECE62-NYUINRYOFLG
+                      END-IF
+                   END-IF
+                   MOVE    "DBCLOSE"           TO  MCP-FUNC
+                   MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+           END-IF
       *
       *+++
       *
@@ -3051,6 +3099,43 @@
       *
            .
        SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せマスタ読込
+      *****************************************************************
+       HKNCOMBI-INV-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "HKNCOMBI-KEY"      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-HKNCOMBI
+                   MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
+                   IF      COMB-DELKBN         =   "1"
+                       MOVE    1               TO  FLG-HKNCOMBI
+                   END-IF
+               ELSE
+                   MOVE    1                   TO  FLG-HKNCOMBI
+                   INITIALIZE                      HKNCOMBI-REC
+               END-IF
+           ELSE
+               MOVE    1                       TO  FLG-HKNCOMBI
+               INITIALIZE                          HKNCOMBI-REC
+           END-IF
+      *
+           .
+       HKNCOMBI-INV-EXT.
            EXIT.
       *
       *****************************************************************

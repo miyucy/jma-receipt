@@ -2703,25 +2703,25 @@
                        IF    BUN-IDX        =   1
                            COMPUTE   RECE02-TENSU(12 BUN-IDX)  =
                                      RECE02-TENSU(12 BUN-IDX)  +
-                                    (WK-KIZAITEN   *   WK-ZAIKAISU)  +
+      ***                           (WK-KIZAITEN   *   WK-ZAIKAISU)  +
                                     (WK-SYUTEN     *   WK-ZAIKAISU)
                        END-IF
                        IF    BUN-IDX2       =   2
                            COMPUTE   RECE02-TENSU(12 BUN-IDX2)  =
                                      RECE02-TENSU(12 BUN-IDX2)  +
-                                    (WK-KIZAITEN   *   WK-ZAIKAISU)  +
+      ***                           (WK-KIZAITEN   *   WK-ZAIKAISU)  +
                                     (WK-SYUTEN     *   WK-ZAIKAISU)
                        END-IF
                        IF    BUN-IDX3       =   3
                            COMPUTE   RECE02-TENSU(12 BUN-IDX3)  =
                                      RECE02-TENSU(12 BUN-IDX3)  +
-                                    (WK-KIZAITEN   *   WK-ZAIKAISU)  +
+      ***                           (WK-KIZAITEN   *   WK-ZAIKAISU)  +
                                     (WK-SYUTEN     *   WK-ZAIKAISU)
                        END-IF
                        IF    BUN-IDX4       =   4
                            COMPUTE   RECE02-TENSU(12 BUN-IDX4)  =
                                      RECE02-TENSU(12 BUN-IDX4)  +
-                                    (WK-KIZAITEN   *   WK-ZAIKAISU)  +
+      ***                           (WK-KIZAITEN   *   WK-ZAIKAISU)  +
                                     (WK-SYUTEN     *   WK-ZAIKAISU)
                        END-IF
                    END-IF
@@ -2729,21 +2729,25 @@
                    IF    BUN-IDX        =   1
                        COMPUTE   RECE02-TENSU(13 BUN-IDX)  =
                                  RECE02-TENSU(13 BUN-IDX)  +
+                                (WK-KIZAITEN *   WK-ZAIKAISU)  +
                                 (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
                        COMPUTE   RECE02-TENSU(13 BUN-IDX2)  =
                                  RECE02-TENSU(13 BUN-IDX2)  +
+                                (WK-KIZAITEN *   WK-ZAIKAISU)  +
                                 (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
                        COMPUTE   RECE02-TENSU(13 BUN-IDX3)  =
                                  RECE02-TENSU(13 BUN-IDX3)  +
+                                (WK-KIZAITEN *   WK-ZAIKAISU)  +
                                 (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
                        COMPUTE   RECE02-TENSU(13 BUN-IDX4)  =
                                  RECE02-TENSU(13 BUN-IDX4)  +
+                                (WK-KIZAITEN *   WK-ZAIKAISU)  +
                                 (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
       *    ≈ÍÃÙ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
