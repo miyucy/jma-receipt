@@ -3428,8 +3428,10 @@
                COMPUTE LNK-S01-SYUTEN (LNK-SYUNOU2-MAX)
                                            =   LNK-S01-SYUTEN
                                                       (LNK-SYUNOU2-MAX)
-                                           +  (LNK-WKSRY-SYUTEN1 (IDX)
+                                           + ((LNK-WKSRY-SYUTEN1 (IDX)
                                            -   WRK-SYUTEN1    )
+                                           *   LNK-WKSRY-ZAIKAIKEI
+                                                             (IDX) )
            END-IF
       *
            .

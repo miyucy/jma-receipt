@@ -550,6 +550,9 @@
            03  WRK-KOH3HKNNUM      PIC X(03).
            03  WRK-KOH4HKNNUM      PIC X(03).
       *
+           03  WRK-SEL-HKNNUM          PIC X(03).
+           03  WRK-SYU-HKNNUM          PIC X(03).
+      *
       *    保険名称編集
            03  WRK-MAE-GMN-MAX     PIC 9(04).
       *    保険組合せ保存
@@ -2700,7 +2703,10 @@
                 MOVE    SPA-K97-SYU-DRCD       TO  SPA-DRCD
                 MOVE    SPA-K97-SYU-DRNAME     TO  SPA-DRCD-NAME
            ELSE
-               IF      SPA-GMN-IDX         =   ZERO
+               IF     (SPA-GMN-IDX         =   ZERO )  OR
+                      (SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:1)
+                                        NOT =   "$"  AND
+                                                "#" )
                    IF      SPA-GMN-MAX         <   199
                        MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
                        ADD     1                   TO  SPA-GMN-IDX
@@ -6286,11 +6292,24 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-CHK
+           MOVE    SPACE               TO  WRK-SYU-HKNNUM
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-HKN-MAX
+               IF      SPA-HKNCOMBINUM     =   SPA-GMN-THKNCOMBINUM
+                                                             (IDX)
+                   MOVE    SPA-NAI-HKNNUM (IDX)  TO  WRK-SYU-HKNNUM
+                   MOVE    SPA-HKN-MAX           TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           MOVE    SPACE               TO  WRK-SEL-HKNNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-HKN-MAX )  OR
                               (FLG-CHK     =    1   ) 
                IF      WRK-HKNCOMBI        =   SPA-GMN-THKNCOMBINUM
                                                              (IDX)
+                   MOVE    SPA-NAI-HKNNUM (IDX)  TO  WRK-SEL-HKNNUM
                    MOVE    IDX               TO  IDY
                    MOVE    1                 TO  FLG-CHK
                END-IF
@@ -6370,13 +6389,18 @@
                    IF      IDX-KA          NOT =   ZERO
                        MOVE    IDX-KA          TO  SPA-GMN-IDX
                    END-IF
+                   IF      WRK-SEL-HKNNUM      =   WRK-SYU-HKNNUM
+                       MOVE    "099409901"     TO  WRK-SRYCD
+                   ELSE
+                       MOVE    "099999902"     TO  WRK-SRYCD
+                   END-IF
                    IF      SPA-GMN-IDX     <   200
                        ADD     1               TO  SPA-GMN-IDX
                        PERFORM 41014-GYOINSN-SEC
                        IF      SPA-ERRCD       =   SPACE
-                           MOVE    "099999902"     TO  SPA-GMN-INPUTCD
+                           MOVE    WRK-SRYCD       TO  SPA-GMN-INPUTCD
                                                        (SPA-GMN-IDX)
-                           MOVE    "099999902"     TO  SPA-COM-INPUTCD
+                           MOVE    WRK-SRYCD       TO  SPA-COM-INPUTCD
                                                        (SPA-GMN-IDX)
                            MOVE    "1"             TO  SPA-COM-IN
                                                        (SPA-GMN-IDX)
@@ -6408,14 +6432,16 @@
                              ((SPA-GMN-INPUTCD(IDX)    =   SPACE ) AND
                               (SPA-COM-INPUTCD(IDX)    =   SPACE )) OR
                              ( FLG-CHK3    =   1       )
-               IF      SPA-COM-INPUTCD (IDX)  =   "099999902"
+               IF      SPA-COM-INPUTCD (IDX)  =   "099409901"
+                                              OR  "099999902"
                    MOVE    IDX                TO  IDX-HKN
                END-IF
                IF      SPA-COM-INPUTCD (IDX)  =   "830000020"
                                               OR  "830000021"
                    MOVE    IDX                TO  IDX-KA
                END-IF
-               IF     (SPA-COM-INPUTCD (IDX)  =   "099999902"
+               IF     (SPA-COM-INPUTCD (IDX)  =   "099409901"
+                                              OR  "099999902"
                                               OR  "830000020"
                                               OR  "830000021") OR
                       (SPA-GMN-INPUTCD (IDX)(1:1)  =   "." 
