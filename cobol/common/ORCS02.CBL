@@ -751,6 +751,8 @@
                    PERFORM  PTINF-READ-SEC
                ELSE
                    DISPLAY   "PTINF SELECT ERR"
+      *
+                   INITIALIZE                   PTINF-REC
                END-IF
       *
                MOVE    "DBCLOSE"            TO  MCP-FUNC
@@ -775,8 +777,18 @@
                    END-IF
                ELSE
                    DISPLAY  "PTINF AGE-CHK ERR " LNK-SYU-PTID
+      *
+                   MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
                END-IF
-           END-IF.                                                      
+           END-IF.       
+           IF   LNK-S02-KOUREI-NYUIN-KBN   =  "1"
+               IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
+                   MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
+               END-IF
+               IF  COMB-HKNNUM  =  SPACE  
+                   MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
+               END-IF
+           END-IF.                                               
       *
       *    保険番号テーブルから公費の負担上限金額の取得
            PERFORM         210-HOKEN-KAISU-SEC.
@@ -2109,6 +2121,7 @@
                END-IF
            ELSE
                DISPLAY   "PTINF SELECT ERR"
+               MOVE     ZERO   TO      WRK-NENREI
            END-IF
       *
            MOVE    "DBCLOSE"            TO  MCP-FUNC

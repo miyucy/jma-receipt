@@ -1007,11 +1007,20 @@
                                                    CONS-ZAITAKU3    OR
                                                    CONS-ZAITAKU4
                         MOVE   "1"        TO    RECE02-ZAITAKU
+      *
+                        IF  RECE02-RECESYUBETU   =   "8888"
+                              MOVE  SPACE       TO  RECE02-ZAITAKU
+                        END-IF
+                        IF  RECE02-HKNNUM        =   SPACE 
+                              MOVE  SPACE       TO  RECE02-ZAITAKU
+                        END-IF
+      *
                       END-IF
                    END-IF
       *
                  END-IF
                END-IF
+      *
                MOVE    SRY-SRYSURYO(IDX2) TO    RECE05-SRYSURYO(IDX4)
                MOVE    SRY-SRYKAISU(IDX2) TO    RECE05-SRYKAISU(IDX4)
                MOVE    SRY-MEISKYFLG(IDX2) TO   RECE05-MEISKYFLG(IDX4)

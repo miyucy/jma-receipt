@@ -946,6 +946,14 @@
                  ( AGECHK-NENREI       >=  65  AND                  
                    RECE61-KOHID    NOT  =   ZERO   )                  
                MOVE    "1"                 TO  RECE62-KOUREI
+      *
+               IF  RECE62-RECESYUBETU   =   "8888"
+                   MOVE  SPACE       TO  RECE62-KOUREI
+               END-IF
+               IF  RECE62-HKNNUM        =   SPACE 
+                   MOVE  SPACE       TO  RECE62-KOUREI
+               END-IF
+      *
            END-IF
       *
       *    入院年月日・最終科

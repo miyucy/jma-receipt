@@ -1421,6 +1421,8 @@
                    PERFORM  PTINF-READ-SEC
                ELSE
                    DISPLAY   "PTINF SELECT ERR"
+      *
+                   INITIALIZE                   PTINF-REC
                END-IF
       *
                MOVE    "DBCLOSE"            TO  MCP-FUNC
@@ -1446,6 +1448,16 @@
                    END-IF
                ELSE
                    DISPLAY  "PTINF AGE-CHK ERR " LNK-SYU-PTID
+      *
+                   MOVE  SPACE       TO  LNK-S01-KOUREI-ZAITAKU-KBN
+               END-IF
+           END-IF.
+           IF   LNK-S01-KOUREI-ZAITAKU-KBN   =  "1"
+               IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
+                   MOVE  SPACE       TO  LNK-S01-KOUREI-ZAITAKU-KBN
+               END-IF
+               IF  COMB-HKNNUM  =  SPACE  
+                   MOVE  SPACE       TO  LNK-S01-KOUREI-ZAITAKU-KBN
                END-IF
            END-IF.
       *
@@ -1465,6 +1477,8 @@
                    PERFORM  PTINF-READ-SEC
                ELSE
                    DISPLAY   "PTINF SELECT ERR"
+      *
+                   INITIALIZE                   PTINF-REC
                END-IF
       *
                MOVE    "DBCLOSE"            TO  MCP-FUNC
@@ -1488,8 +1502,18 @@
                    END-IF
                ELSE
                    DISPLAY  "PTINF AGE-CHK ERR " LNK-SYU-PTID
+      *
+                   MOVE    SPACE       TO  FLG-KOUREI-KBN
                END-IF
            END-IF.
+           IF   FLG-KOUREI-KBN  =  "1"
+               IF  COMB-SYU-HKNKOHSBTKBN   =   "8"
+                   MOVE  SPACE       TO  FLG-KOUREI-KBN
+               END-IF
+               IF  COMB-HKNNUM  =  SPACE  
+                   MOVE  SPACE       TO  FLG-KOUREI-KBN
+               END-IF
+           END-IF.   
       *----(01.00.23) LINE ADD END   --------------------------
       *
       *    保険番号テーブルから公費の負担上限回数と上限金額の取得
@@ -2832,6 +2856,7 @@
                    END-IF
                ELSE
                    DISPLAY   "PTINF SELECT ERR"
+                   MOVE     ZERO   TO      WRK-NENREI
                END-IF
       *
                MOVE    "DBCLOSE"            TO  MCP-FUNC
@@ -3860,6 +3885,7 @@
                END-IF
            ELSE
                DISPLAY   "PTINF SELECT ERR"
+               MOVE     ZERO   TO      WRK-NENREI
            END-IF.
       *
            MOVE    "DBCLOSE"            TO  MCP-FUNC.
