@@ -167,6 +167,8 @@
            03  RECE41-SAISHINTIME         PIC  X(01).
       *ºÆ¿ÇÅ¦Í×°õºþ¶èÊ¬
            03  RECE41-SAISHIN-PRTKBN      PIC  X(01).
+      *ºÆ¿ÇÅ¦Í×°õºþ¶èÊ¬£²
+           03  RECE41-SAISHIN-PRTKBN2     PIC  X(01).
       *³°Íè´ÉÍý²Ã»»Å¦Í×°õºþ¶èÊ¬
            03  RECE41-GAIRAIKSN-PRTKBN    PIC  X(01).
       *·ÑÂ³´ÉÍý²Ã»»°õºþ¶èÊ¬
@@ -199,5 +201,5 @@
                05  RECE41-SYUTEN-JI       PIC  9(09).
                05  RECE41-YKZTEN-JI       PIC  9(09).
       *Í½È÷
-           03  RECE41-FILLER              PIC  X(84).
+           03  RECE41-FILLER              PIC  X(83).
       *
