@@ -36,6 +36,7 @@
       * 01.00.01     NACL-¬ø°π«º  03/05/23  £»£±£µ«Ø£∂∑Ó≤˛¿µ¬–±˛
       * 01.00.02     NACL-¬ø°π«º  03/07/01  ≥∞ÕËø«Œ≈Œ¡ƒ…≤√
       * 01.00.03     NACL-¬ø°π«º  04/02/17  ø«Œ≈≤ °«£ÿ£ÿ°«ƒ…≤√
+      * 01.00.04     NACL-¬ø°π«º  04/10/29   ›∏±¡»πÁ§ª§Œ¡™¬Ú ¨§Ú∫«ΩÈ§ÿ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -85,6 +86,8 @@
            03  IDY                 PIC 9(04).
            03  IDY1                PIC 9(01).
            03  IDZ                 PIC 9(04).
+      *
+           03  IDX-HZN             PIC 9(04).
       *
       *    ∞Ïª˛ŒŒ∞Ë
        01  WRK-AREA.
@@ -513,6 +516,10 @@
       *     ›∏±«ØŒ°¶…È√¥≥‰πÁªªƒÍ•µ•÷
            COPY    "CPORCSAGECHK.INC".
       *
+       01  HZN-LF01-REC. 
+           COPY    "CPRLF001.INC"    REPLACING  //LF01-//
+                                     BY         //HZN-LF01-//.
+      *
       *
       *    £’£…£ƒºË∆¿Õ—•®•Í•¢
        01 UIDIO-AREA.
@@ -537,8 +544,6 @@
        01  WRK-LF01-REC. 
            COPY    "CPRLF001.INC"    REPLACING  //LF01//
                                      BY         //WRK-LF01//.
-           
-       
       *
       ******************************************************************
       *
@@ -890,6 +895,7 @@
            END-IF
       *
            MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX-HZN
            MOVE    SPACE               TO   WRK-FTNRATEMEI
            PERFORM UNTIL       (IDX            =   20   )  OR
                                (FLG-HKNCOMBI   =   1    )
@@ -936,6 +942,7 @@
       *
                        IF      LNK-HKNCOMBI        =   COMB-HKNCOMBINUM
                            MOVE    C-UID           TO  WRK-C-UID
+                           MOVE    IDX             TO  IDX-HZN
                        END-IF
       *
                        MOVE    LNK-SYSYMD          TO  WRK-WYMD
@@ -1005,6 +1012,7 @@
       *
                        IF      LNK-HKNCOMBI        =   COMB-HKNCOMBINUM
                            MOVE    C-UID           TO  WRK-C-UID
+                           MOVE    IDX             TO  IDX-HZN
                        END-IF
       *
                        MOVE    LNK-SYSYMD          TO  WRK-WYMD
@@ -1093,6 +1101,9 @@
                                         MCPDATA-REC
       *    ª»Õ— ›∏± (claim:insuranceUid)
            MOVE    WRK-C-UID           TO  WRK-LF01-FIL1
+           IF      IDX-HZN             >   ZERO
+               PERFORM 2002-HKNCOMBI-LIST-SEC
+           END-IF
       *
       *    ΩÈø«°ø∫∆ø«
            MOVE    SPACE               TO  WRK-SYOYMD
@@ -1516,6 +1527,31 @@
 076800     .
 076900 20012-KOHID-HENSYU-EXT.
 077000     EXIT.
+      *
+      *****************************************************************
+      *     ›∏±¡»πÁ§ª•Í•π•»ΩËÕ˝
+      *****************************************************************
+       2002-HKNCOMBI-LIST-SEC        SECTION.
+      *
+           INITIALIZE                  HZN-LF01-REC
+           MOVE    1                   TO  IDX
+           MOVE    WRK-LF01-TBL(IDX-HZN)   TO  HZN-LF01-TBL (1)
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL      (IDY     >   20  )  OR
+                              (IDX     >=  20  )
+               IF      IDX-HZN         NOT =   IDY
+                   ADD     1               TO  IDX
+                   MOVE    WRK-LF01-TBL(IDY)   TO  HZN-LF01-TBL (IDX)
+               END-IF
+           END-PERFORM
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   20
+               MOVE    HZN-LF01-TBL(IDX)   TO  WRK-LF01-TBL (IDX)
+           END-PERFORM
+      *
+           .
+       2002-HKNCOMBI-LIST-EXT.
+           EXIT.
       *
       *****************************************************************
       *    …È√¥Œ®°¶…È√¥≥€ ‘Ω∏ΩËÕ˝
