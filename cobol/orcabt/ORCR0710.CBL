@@ -2221,10 +2221,10 @@
                                              TO  WRK-KGK2
                    MOVE    WRK-KGK2          TO  HC06-SYOKAISU (IDX)
                    EVALUATE    IDX
-                       WHEN    2
-                           MOVE    "特"          TO  HC06-SYOKJN (1)
                        WHEN    3
-                           MOVE    "選"          TO  HC06-SYOKJN (2)
+                           MOVE    "特"          TO  HC06-SYOKBN (IDX)
+                       WHEN    4
+                           MOVE    "選"          TO  HC06-SYOKBN (IDX)
                    END-EVALUATE        
                END-IF                                        
            END-PERFORM          
