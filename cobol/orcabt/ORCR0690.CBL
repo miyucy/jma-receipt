@@ -1017,7 +1017,7 @@
                        IF      RECE65-SRYCD(IDX) =   CONS-TEIGEN
                            MOVE    1             TO  FLG-TEIGEN
                        END-IF
-                       IF    ( RECE64-SRYKBN     =   "90"              )
+                       IF    ( RECE64-SRYKBN     =   "90" OR "92"      )
                        AND   ( RECE65-SRYCD(IDX) =   CONS-GENZAN1  OR 
                                                      CONS-GENZAN2  OR
                                                      CONS-GENZAN3  OR
@@ -2320,6 +2320,9 @@
                MOVE    RECE64-SRYKA      TO  RECE66-SRYKA
                MOVE    RECE64-SRYKBN     TO  RECE66-SRYKBN
                MOVE    RECE64-ZAISKBKBN  TO  RECE66-ZAISKBKBN
+               IF    RECE64-ZAISKBKBN  =   "1" OR "2"
+                   MOVE   RECE64-ZAINUM  TO  RECE66-ZAISKBBAN
+               END-IF
                MOVE    TBL-ZAI (IDY)     TO  RECE66-TEKIYO-INF
       *---------適用欄並び替え用の編集（表用番号等）-----------------
                IF      IDY               =   1
