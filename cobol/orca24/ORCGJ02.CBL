@@ -1256,13 +1256,18 @@
            END-IF
       *    受診履歴編集
            PERFORM 3103-JYURRK-HEN-SEC
-           IF      SPA-RRK-MAX         =   ZERO
-               IF      SPA-SRYKA-MAX       =   1
-                   MOVE    07              TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    06              TO  SPA-GMN-CUR
+           IF     (SPA-NYUGAIKBN       =  "1"   ) AND
+                  (SPA-J01-SRYKA   NOT =   SPACE)
+               CONTINUE
+           ELSE
+               IF      SPA-RRK-MAX         =   ZERO
+                   IF      SPA-SRYKA-MAX       =   1
+                       MOVE    07              TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    06              TO  SPA-GMN-CUR
+                   END-IF
+                   GO      TO      310-SPA-SET-EXT
                END-IF
-               GO      TO      310-SPA-SET-EXT
            END-IF
       *
       *----(01.00.01) LINE ADD END   ----------------------------------
@@ -1405,6 +1410,36 @@
                PERFORM 970-JYURRK-READ-SEC
            END-PERFORM
       *
+      *    入院で調剤料のみの時のチェック
+           IF     (SPA-NYUGAIKBN       =   "1" )  AND
+                  (SPA-J01-SRYKA       =   SPACE ) 
+      *        診療会計マスターを編集
+               INITIALIZE                      SRYACCT-REC 
+               MOVE    SPA-HOSPID          TO  ACCT-HOSPID
+               MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+               MOVE    SPA-GMN-PTID        TO  ACCT-PTID
+               MOVE    SPA-NAI-SRYYM       TO  ACCT-SRYYM
+               MOVE    "SRYACCT-KEY7"      TO  WRK-ORC-DBPATH
+      *
+               MOVE    SRYACCT-REC         TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    WRK-ORC-DBPATH      TO  ORC-DBPATH
+                   PERFORM 900-SRYACCT-READ-SEC
+               ELSE
+                   INITIALIZE                  SRYACCT-REC
+                   MOVE    1               TO  FLG-SRYACCT
+               END-IF
+               IF      FLG-SRYACCT         =   ZERO
+                   MOVE    ACCT-SRYKA         TO  SPA-J01-SRYKA
+                   MOVE    ACCT-SRYKA         TO  SPA-GMN-SRYKA
+               END-IF
+           END-IF
       *
            .
        310310-JYURRK-CHK-EXT.

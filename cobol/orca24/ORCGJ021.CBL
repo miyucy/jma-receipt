@@ -775,7 +775,8 @@
                MOVE    1               TO  FLG-JYURRK
            END-IF
       *
-           IF      FLG-JYURRK          =   1
+           IF     (FLG-JYURRK          =   1  )  AND
+                  (SPA-NYUGAIKBN       =   "2" )
                MOVE    "0002"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-J021-CUR
                GO      TO      4001-MAE-HKNCOMBI-EXT
