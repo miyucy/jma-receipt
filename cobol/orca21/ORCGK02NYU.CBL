@@ -5760,38 +5760,38 @@
       *
                END-IF
            END-IF
-      *
+      *一括チェックですべて行っているため
       *    算定回数チェック（各基本チェックを行う時、ここで）
-           IF      FLG-TOROKU          =   "1"
-               PERFORM VARYING SPA-GMN-IDX  FROM    1   BY  1
-                       UNTIL  (SPA-GMN-IDX     >   WRK-GYO-MAX  )   OR
-                              (SPA-GMN-INPUTCD (SPA-GMN-IDX)
-                                               =   SPACE )  OR
-                              (SPA-ERRCD   NOT =   SPACE )
-                   IF      SPA-COM-SANTEIRRKKBN(SPA-GMN-IDX)
-                                               NOT =   ZERO
-                       MOVE    "3"             TO  WRK-SANTEI-SYORI
-                       PERFORM 41011231-SANTEI-CHK-SEC
-                       IF      SPA-ERRCD(1:1)      =   "K"
-                           IF      SPA-COM-KZMFLG (SPA-GMN-IDX)
-                                                       =   SPACE
-                                MOVE    "1"        TO  SPA-COM-KZMFLG
-                                                         (SPA-GMN-IDX)
-                                MOVE    "2"        TO  SPA-COM-CUR
-                                                         (SPA-GMN-IDX)
-                           ELSE
-                               MOVE    SPACE           TO  SPA-ERRCD
-                               MOVE    SPACE           TO  SPA-COM-CUR
-                                                         (SPA-GMN-IDX)
-                          END-IF
-                       END-IF
-                       IF      SPA-ERRCD       NOT =   SPACE
-                           MOVE    "1"            TO  SPA-COM-CUR
-                                                          (SPA-GMN-IDX)
-                       END-IF
-                   END-IF
-               END-PERFORM
-           END-IF
+      *    IF      FLG-TOROKU          =   "1"
+      *        PERFORM VARYING SPA-GMN-IDX  FROM    1   BY  1
+      *                UNTIL  (SPA-GMN-IDX     >   WRK-GYO-MAX  )   OR
+      *                       (SPA-GMN-INPUTCD (SPA-GMN-IDX)
+      *                                        =   SPACE )  OR
+      *                       (SPA-ERRCD   NOT =   SPACE )
+      *            IF      SPA-COM-SANTEIRRKKBN(SPA-GMN-IDX)
+      *                                        NOT =   ZERO
+      *                MOVE    "3"             TO  WRK-SANTEI-SYORI
+      *                PERFORM 41011231-SANTEI-CHK-SEC
+      *                IF      SPA-ERRCD(1:1)      =   "K"
+      *                    IF      SPA-COM-KZMFLG (SPA-GMN-IDX)
+      *                                                =   SPACE
+      *                         MOVE    "1"        TO  SPA-COM-KZMFLG
+      *                                                  (SPA-GMN-IDX)
+      *                         MOVE    "2"        TO  SPA-COM-CUR
+      *                                                  (SPA-GMN-IDX)
+      *                    ELSE
+      *                        MOVE    SPACE           TO  SPA-ERRCD
+      *                        MOVE    SPACE           TO  SPA-COM-CUR
+      *                                                  (SPA-GMN-IDX)
+      *                   END-IF
+      *                END-IF
+      *                IF      SPA-ERRCD       NOT =   SPACE
+      *                    MOVE    "1"            TO  SPA-COM-CUR
+      *                                                   (SPA-GMN-IDX)
+      *                END-IF
+      *            END-IF
+      *        END-PERFORM
+      *****END-IF
       *
       *    ７０歳到達の警告
            IF      SPA-ERRCD       =   SPACE
@@ -5896,6 +5896,7 @@
                    MOVE    WRK-KAISU           TO  SPA-COM-KAISU (IDX)
                    MOVE    WRK-NYUIN-AREA      TO  SPA-COM-NYUIN-AREA
                                                                  (IDX)
+               END-IF
            END-PERFORM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -8734,84 +8735,84 @@
                END-IF
            END-IF
       *
-           MOVE   ZERO                 TO  IDX-SET
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX              >   WRK-GYO-MAX ) OR
-                              (SPA-ERRCD        NOT =   SPACE )   OR
-                              (SPA-GMN-INPUTCD(IDX) =   SPACE )
-               IF     (SPA-COM-CHKFLG (IDX)    =   SPACE )  AND
-                      (SPA-GMN-INPUTCD(IDX)(1:1)
-                                           NOT =   "."  AND "S"
-                                                        AND "*")
+      *    MOVE   ZERO                 TO  IDX-SET
+      *    一括入力なので、以下のチェックなし
+      *    PERFORM VARYING     IDX     FROM    1   BY  1
+      *            UNTIL      (IDX              >   WRK-GYO-MAX ) OR
+      *                       (SPA-ERRCD        NOT =   SPACE )   OR
+      *                       (SPA-GMN-INPUTCD(IDX) =   SPACE )
+      *        IF     (SPA-COM-CHKFLG (IDX)    =   SPACE )  AND
+      *               (SPA-GMN-INPUTCD(IDX)(1:1)
+      *                                    NOT =   "."  AND "S"
+      *                                                 AND "*")
       *
       *            点数マスタ編集・基本チェック
-                   INITIALIZE                  ORCSC92AREA
-                   MOVE    SPACE               TO  LNK-SC92-KBN
-                   MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
-                   MOVE    "K02"               TO  LNK-SC92-PG 
-                   MOVE    IDX                 TO  LNK-SC92-GMN-IDX
-                   MOVE    SPA-COM-INPUTCD (IDX)
-                                               TO  LNK-SC92-SRYCD
-                   MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
-                   MOVE    SPA-15MIMAN-ARI     TO  LNK-SC92-15MIMAN-ARI
-                   MOVE    SPA-NAI-ROUJIN      TO  LNK-SC92-ROUJIN
-                   MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
-                   MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
-                   MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
-                   CALL    "ORCSC92"           USING
-                                               MCPAREA
-                                               ORCSC92AREA
-                                               SPA-SCR-REC
-                                               SPA-AREA
+      *            INITIALIZE                  ORCSC92AREA
+      *            MOVE    SPACE               TO  LNK-SC92-KBN
+      *            MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
+      *            MOVE    "K02"               TO  LNK-SC92-PG 
+      *            MOVE    IDX                 TO  LNK-SC92-GMN-IDX
+      *            MOVE    SPA-COM-INPUTCD (IDX)
+      *                                        TO  LNK-SC92-SRYCD
+      *            MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
+      *            MOVE    SPA-15MIMAN-ARI     TO  LNK-SC92-15MIMAN-ARI
+      *            MOVE    SPA-NAI-ROUJIN      TO  LNK-SC92-ROUJIN
+      *            MOVE    SPA-LSTSRYKA        TO  LNK-SC92-LSTSRYKA
+      *            MOVE    SPA-LSTSRYKAMEI     TO  LNK-SC92-LSTSRYKAMEI
+      *            MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC92-TEISEI-AREA
+      *            CALL    "ORCSC92"           USING
+      *                                        MCPAREA
+      *                                        ORCSC92AREA
+      *                                        SPA-SCR-REC
+      *                                        SPA-AREA
       *
       *            小児科外来診療科の時、年齢エラーはそのまま
-                   IF      SPA-SYONIKA-ARI     NOT =   ZERO
-                       IF      LNK-SC92-ERRCD5 NOT =   SPACE
-                           MOVE    SPACE           TO  LNK-SC92-ERRCD5
-                       END-IF
-                   END-IF
+      *            IF      SPA-SYONIKA-ARI     NOT =   ZERO
+      *                IF      LNK-SC92-ERRCD5 NOT =   SPACE
+      *                    MOVE    SPACE           TO  LNK-SC92-ERRCD5
+      *                END-IF
+      *            END-IF
       *
-                   PERFORM VARYING     IDX-ERR FROM    1  BY  1
-                           UNTIL      (IDX-ERR     >   10     )  OR
-                                      (SPA-ERRCD   NOT =   SPACE)
-                       IF      LNK-SC92-ERRCD(IDX-ERR) NOT =   SPACE
-                           MOVE    LNK-SC92-ERRCD(IDX-ERR)
-                                                       TO  SPA-ERRCD
-                           IF      IDX-ERR             =   3 OR 6
-                               MOVE    LNK-SC92-ERRMSG TO  SPA-ERRMSG2
-                           END-IF
-                       END-IF
-                   END-PERFORM
+      *            PERFORM VARYING     IDX-ERR FROM    1  BY  1
+      *                    UNTIL      (IDX-ERR     >   10     )  OR
+      *                               (SPA-ERRCD   NOT =   SPACE)
+      *                IF      LNK-SC92-ERRCD(IDX-ERR) NOT =   SPACE
+      *                    MOVE    LNK-SC92-ERRCD(IDX-ERR)
+      *                                                TO  SPA-ERRCD
+      *                    IF      IDX-ERR             =   3 OR 6
+      *                        MOVE    LNK-SC92-ERRMSG TO  SPA-ERRMSG2
+      *                    END-IF
+      *                END-IF
+      *            END-PERFORM
       *---(01.00.01) LINE ADD  START  ----
       *            警告判定
-                   IF      SPA-ERRCD(1:1)      =   "K"
-                       IF      SPA-COM-KZMFLG (IDX)  =   SPACE
-                           MOVE    "1"         TO  SPA-COM-KZMFLG(IDX)
-                       ELSE
-                           MOVE    SPACE           TO  SPA-ERRCD
-                       END-IF
-                   END-IF
+      *            IF      SPA-ERRCD(1:1)      =   "K"
+      *                IF      SPA-COM-KZMFLG (IDX)  =   SPACE
+      *                    MOVE    "1"         TO  SPA-COM-KZMFLG(IDX)
+      *                ELSE
+      *                    MOVE    SPACE           TO  SPA-ERRCD
+      *                END-IF
+      *            END-IF
       *---(01.00.01) LINE ADD  END    ----
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       IF      SPA-ERRCD(1:1)      =   "K"
-                           MOVE    "2"             TO  SPA-COM-CUR(IDX)
-                       ELSE
-                           IF      SPA-COM-SET(IDX)    =   SPACE
-                               MOVE    "1"         TO  SPA-COM-CUR(IDX)
-                           ELSE
-                               MOVE    "S001"      TO  SPA-ERRCD
-                               MOVE    "1"         TO  SPA-COM-CUR
-                                                           (IDX-SET)
-                           END-IF
-                       END-IF
-                   END-IF
-               END-IF
+      *            IF      SPA-ERRCD       NOT =   SPACE
+      *                IF      SPA-ERRCD(1:1)      =   "K"
+      *                    MOVE    "2"             TO  SPA-COM-CUR(IDX)
+      *                ELSE
+      *                    IF      SPA-COM-SET(IDX)    =   SPACE
+      *                        MOVE    "1"         TO  SPA-COM-CUR(IDX)
+      *                    ELSE
+      *                        MOVE    "S001"      TO  SPA-ERRCD
+      *                        MOVE    "1"         TO  SPA-COM-CUR
+      *                                                    (IDX-SET)
+      *                    END-IF
+      *                END-IF
+      *            END-IF
+      *        END-IF
       *
-               IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "S"
-                   MOVE   IDX              TO  IDX-SET
-               END-IF
-           END-PERFORM
+      *        IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "S"
+      *            MOVE   IDX              TO  IDX-SET
+      *        END-IF
+      *****END-PERFORM
       *
            .
        41001-KIHON-CHK-EXT.
