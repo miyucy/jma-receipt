@@ -630,7 +630,7 @@
            MOVE    HZN-JYURRK-REC      TO  JYURRK-REC
       *    受診履歴連番が０の時、訂正分として削除する
            IF      JYURRK-RENNUM       =   ZERO
-      *?       MOVE    1               TO  FLG-DELETE
+               MOVE    1               TO  FLG-DELETE
                MOVE    4               TO  FLG-ERR2
            END-IF
            IF     (FLG-JYURRK          =   ZERO )  OR
@@ -1019,8 +1019,14 @@
       *
       *            算定履歴の削除処理
                    MOVE    ACCT-DAY (IDX-1 IDX-2)  TO  WRK-KAISU
+                   IF      ACCT-DAY (IDX-1 1)    =   ZERO
+                       MOVE    ACCT-ZAIKAISU     TO  WRK-KAISU
+                   END-IF
                    PERFORM 4500113-TEISEI-SANTEI-SEC
       *
+                   IF      ACCT-DAY (IDX-1 1)    =   ZERO
+                       MOVE    ZERO           TO  ACCT-ZAIKAISU
+                   ELSE
       *            剤回数　変更
                    COMPUTE ACCT-ZAIKAISU       =   ACCT-ZAIKAISU
                                                -   ACCT-DAY
@@ -1030,6 +1036,7 @@
                                                        (IDX-1 IDX-2)
                    MOVE    ZERO                TO  ACCT-DAY
                                                        (IDX-1 IDX-2)
+                   END-IF
       *            回数がゼロの時、削除
                    IF      ACCT-ZAIKAISU       =   ZERO
       *
