@@ -68,6 +68,7 @@
       *  01.05.19    NACL-藤原    04/09/03  医療機関編集情報を追加
       *  01.05.20    NACL-藤原    04/11/15  病名機能情報を追加
       *  01.05.21    NACL-多々納  05/02/08  入院指示せん設定を追加
+      *  01.05.20    NACL-藤原    05/03/15  レセプト特記事項編集情報を追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -269,6 +270,8 @@
            03  FILLER              PIC X(35)   VALUE
                "2005 レセプト・総括印刷情報".
            03  FILLER              PIC X(35)   VALUE
+               "2006 レセプト特記事項編集情報".
+           03  FILLER              PIC X(35)   VALUE
                "3001 統計帳票出力情報（日次）".
            03  FILLER              PIC X(35)   VALUE
                "3002 統計帳票出力情報（月次）".
@@ -278,11 +281,11 @@
                "4001 労災自賠医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   33.
+           03  TBL-KANRICD-TBL         OCCURS   34.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   33.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   34.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -437,6 +440,7 @@
            COPY    "W29.INC".
            COPY    "W30.INC".
            COPY    "W60.INC".
+           COPY    "W61.INC".
            COPY    "W98.INC".
            COPY    "W99.INC".
            COPY    "WERR.INC".
@@ -1054,6 +1058,7 @@
                WHEN    "5004"
                WHEN    "5005"
                WHEN    "5006"
+               WHEN    "2006"
                    MOVE    SPACE           TO  SPA-GMN-KBNCD
                    MOVE    12              TO  SPA-GMN-CUR
                    GO  TO  4104-KANRICD-CHK-EXT
@@ -1675,7 +1680,8 @@
              OR                            "5003" 
              OR                            "5004" 
              OR                            "5005"
-             OR                            "5006")
+             OR                            "5006"
+             OR                            "2006")
                CONTINUE
            ELSE
       *        入力チェック
@@ -1728,6 +1734,8 @@
                WHEN    "2004"
                    MOVE    "W08"               TO  SPA-SAKIPG
       *---- (01.02.02) LINE ADD END   --------------------------------
+               WHEN    "2006"
+                   MOVE    "W61"               TO  SPA-SAKIPG
               WHEN    "1030"
               WHEN    "1031"
                    MOVE    "W11"               TO  SPA-SAKIPG

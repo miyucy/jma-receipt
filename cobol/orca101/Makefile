@@ -35,6 +35,7 @@ SRCS = ORCGW01.CBL \
        ORCGW19.CBL \
        ORCGW30.CBL \
        ORCGW60.CBL \
+       ORCGW61.CBL \
         
 
 top_builddir = ../..

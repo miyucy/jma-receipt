@@ -1,0 +1,81 @@
+W61	{
+	fixed6	{
+		SELNUM	{
+			value	number(3);
+		};
+		STYUKYMD	{
+			value	varchar(10);
+		};
+		EDYUKYMD	{
+			value	varchar(10);
+		};
+		HKNNUM	{
+			value	varchar(3);
+		};
+		SEIDONAME	{
+			value	varchar(50);
+		};
+		TEISYUTUSAKI_COMBO	{
+			TEISYUTUSAKI	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[2];
+		};
+		HKNJANUM	{
+			value	varchar(8);
+		};
+		HKNJANAME	{
+			value	varchar(100);
+		};
+		ZAITAKU_COMBO	{
+			ZAITAKU	{
+				value	varchar(12);
+			};
+			count	int;
+			item	varchar(12)[2];
+		};
+		RJNKBN_COMBO	{
+			RJNKBN	{
+				value	varchar(12);
+			};
+			count	int;
+			item	varchar(12)[2];
+		};
+		TOKKI	{
+			value	varchar(12);
+		};
+		KYURATE	{
+			value	number(3);
+		};
+		RECEDEN_TOKKI	{
+			value	varchar(2);
+		};
+		RECEDEN_KYURATE	{
+			value	number(3);
+		};
+		RECEDEN_KORECKBN_COMBO	{
+			RECEDEN_KORECKBN	{
+				value	varchar(12);
+			};
+			count	int;
+			item	varchar(12)[2];
+		};
+		scrolledwindow28	{
+			TOKKILST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(3);
+					value2	varchar(50);
+					value3	varchar(8);
+					value4	varchar(8);
+					value5	varchar(9);
+					value6	varchar(9);
+				}	[100];
+				select	bool[100];
+			};
+		};
+	};
+};
