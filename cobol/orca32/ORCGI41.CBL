@@ -112,6 +112,7 @@
            03  IDX7                PIC 9(04).
            03  IDX8                PIC 9(03).
            03  IDX9                PIC 9(03).
+           03  IDX10               PIC 9(03).
            03  IDY                 PIC 9(04).
            03  IDG                 PIC 9(04).
            03  IDH                 PIC 9(04).
@@ -255,6 +256,7 @@
                05  WRK-KEI         PIC Z(07).
       *
            03  WRK-MEISYO          PIC X(40).
+	   03  WRK-TUSAN           PIC 9(08).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -1037,41 +1039,8 @@
                                            TO  STUSAN-KJNYMD
                    CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
       *
-                   INITIALIZE                      STS-AREA-DAY
-                   INITIALIZE                      LNK-DAY6-AREA
-                   MOVE    "61"                TO  LNK-DAY6-IRAI
-                   MOVE    PTNYUINRRK-NYUINYMD TO  LNK-DAY6-KIJUN
-                   MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-                   COMPUTE LNK-DAY6-ZOGEN
-                       =   91    -     STUSAN-NISSU05  +   1
-                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                       LNK-DAY6-AREA
-                   IF    ( LNK-DAY6-KOYOMI    >=   PTNYUINRRK-NYUINYMD )
-                       MOVE    LNK-DAY6-KOYOMI     TO  SPA-GMN-IJYOU91
-                       MOVE    LNK-DAY6-KOYOMI     TO  WRK-SYMD
-                       PERFORM 41012-SEIWA-HEN-SEC
-                       MOVE    WRK-HENYMDG         TO  SPA-GMN-IJYOU91
-                   ELSE
-                       MOVE    "********"          TO  SPA-GMN-IJYOU91
-                   END-IF
-      *
-                   INITIALIZE                      STS-AREA-DAY
-                   INITIALIZE                      LNK-DAY6-AREA
-                   MOVE    "61"                TO  LNK-DAY6-IRAI
-                   MOVE    PTNYUINRRK-NYUINYMD TO  LNK-DAY6-KIJUN
-                   MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-                   COMPUTE LNK-DAY6-ZOGEN
-                       =   180   -     STUSAN-NISSU04  +   1
-                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                       LNK-DAY6-AREA
-                   IF    ( LNK-DAY6-KOYOMI    >=   PTNYUINRRK-NYUINYMD )
-                       MOVE    LNK-DAY6-KOYOMI     TO  SPA-GMN-IJYOU180
-                       MOVE    LNK-DAY6-KOYOMI     TO  WRK-SYMD
-                       PERFORM 41012-SEIWA-HEN-SEC
-                       MOVE    WRK-HENYMDG         TO  SPA-GMN-IJYOU180
-                   ELSE
-                       MOVE    "********"          TO  SPA-GMN-IJYOU180
-                   END-IF
+                   PERFORM 3103-91DAYS-EDIT-SEC
+                   PERFORM 3103-180DAYS-EDIT-SEC
       *
                    MOVE    PTNYUINRRK-NYUINYMD TO  SPA-GMN-NYUINBI-41
                    MOVE    PTNYUINRRK-NYUINYMD TO  WRK-SYMD
@@ -1093,6 +1062,95 @@
        3103-PTNYUINRRK-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *   ９１日編集処理
+      *****************************************************************
+       3103-91DAYS-EDIT-SEC            SECTION.
+      *
+           IF    ( STUSAN-RRK-FLG-OVER NOT =   ZERO )
+               MOVE    "********"  TO  SPA-GMN-IJYOU91
+               GO  TO  3103-91DAYS-EDIT-EXT
+           END-IF
+      *
+           MOVE    STUSAN-NISSU05  TO  WRK-TUSAN
+      *
+           PERFORM VARYING IDX10   FROM    1   BY  1
+                   UNTIL ( IDX10   >   STUSAN-RRK-CNT )
+               IF    ( STUSAN-RRK-JTIKBN (IDX10)
+                                           NOT = "5" )
+                   COMPUTE WRK-TUSAN
+                       =   WRK-TUSAN   -   STUSAN-RRK-NISSU (IDX10)
+                   IF    ( WRK-TUSAN  <    91 )
+                       IF    ( STUSAN-RRK-JTIKBN (IDX10)
+                                               = "6" )
+                           MOVE    "********"  TO  SPA-GMN-IJYOU91
+                       ELSE
+                           INITIALIZE                  STS-AREA-DAY
+                           INITIALIZE                  LNK-DAY6-AREA
+                           MOVE    "61"            TO  LNK-DAY6-IRAI
+                           MOVE    STUSAN-RRK-NYUINYMD (IDX10)
+                                                   TO  LNK-DAY6-KIJUN
+                           MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                           COMPUTE LNK-DAY6-ZOGEN
+                               =   91   -          WRK-TUSAN
+                           CALL    "ORCSDAY"   USING   STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                           MOVE    LNK-DAY6-KOYOMI TO  SPA-GMN-IJYOU91
+                           MOVE    LNK-DAY6-KOYOMI TO  WRK-SYMD
+                           PERFORM 41012-SEIWA-HEN-SEC
+                           MOVE    WRK-HENYMDG     TO  SPA-GMN-IJYOU91
+                       END-IF
+                       MOVE    STUSAN-RRK-CNT      TO  IDX10
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       3103-91DAYS-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *   １８０日編集処理
+      *****************************************************************
+       3103-180DAYS-EDIT-SEC           SECTION.
+      *
+           IF    ( STUSAN-RRK-FLG-OVER NOT =   ZERO )
+               MOVE    "********"  TO  SPA-GMN-IJYOU180
+               GO  TO  3103-180DAYS-EDIT-EXT
+           END-IF
+      *
+           MOVE    STUSAN-NISSU04  TO  WRK-TUSAN
+      *
+           PERFORM VARYING IDX10   FROM    1   BY  1
+                   UNTIL ( IDX10   >   STUSAN-RRK-CNT )
+               COMPUTE WRK-TUSAN
+                   =   WRK-TUSAN   -   STUSAN-RRK-NISSU (IDX10)
+               IF    ( WRK-TUSAN   <   180 )
+                   IF    ( STUSAN-RRK-JTIKBN (IDX10)
+                                           = "5"   OR  "6" )
+                       MOVE    "********"  TO  SPA-GMN-IJYOU180
+                   ELSE
+                       INITIALIZE                  STS-AREA-DAY
+                       INITIALIZE                  LNK-DAY6-AREA
+                       MOVE    "61"            TO  LNK-DAY6-IRAI
+                       MOVE    STUSAN-RRK-NYUINYMD (IDX10)
+                                               TO  LNK-DAY6-KIJUN
+                       MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                       COMPUTE LNK-DAY6-ZOGEN
+                           =   180   -         WRK-TUSAN
+                       CALL    "ORCSDAY"   USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                       MOVE    LNK-DAY6-KOYOMI TO  SPA-GMN-IJYOU180
+                       MOVE    LNK-DAY6-KOYOMI TO  WRK-SYMD
+                       PERFORM 41012-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMDG     TO  SPA-GMN-IJYOU180
+                   END-IF
+                   MOVE    STUSAN-RRK-CNT      TO  IDX10
+               END-IF
+           END-PERFORM
+      *
+           .
+       3103-180DAYS-EDIT-EXT.
+           EXIT.
       *****************************************************************
       *   入院会計マスターより画面内容編集処理
       *****************************************************************
