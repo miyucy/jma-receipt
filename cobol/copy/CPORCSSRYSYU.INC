@@ -20,8 +20,13 @@
       *                         COPY  (CPORCSSRYSYU.INC) *
       *
       *-------------------------------------------------*
+      *  ½¤ÀµÍúÎò
+      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  01.00.01    NACL-Â¿¡¹Ç¼  02/10/09  ºÇÂç¿ô¤ò£±£°£°¤Ø
+      ******************************************************************
        01  MSYU-DATA-REC.
-           03  MSYU-TBL-OCC        OCCURS    70   INDEXED   MSYU-IDX.
+      *****03  MSYU-TBL-OCC        OCCURS    70   INDEXED   MSYU-IDX.
+           03  MSYU-TBL-OCC        OCCURS    100  INDEXED   MSYU-IDX.
                05  MSYU-SRYKBN         PIC X(02).
                05  FILLER              PIC X(01).
                05  MSYU-SRYSYUKBN      PIC X(03).
