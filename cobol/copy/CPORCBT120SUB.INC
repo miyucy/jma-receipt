@@ -66,84 +66,88 @@
                05  LNK-ORCBT120SUB-MAE-NYUINKA         PIC  X(02).
       *Á°Æü¥ì¥»ÅÅÆþ±¡²Ê
                05  LNK-ORCBT120SUB-MAE-RECENYUINKA     PIC  X(02).
+      *Æþ±¡ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
+               05  LNK-ORCBT120SUB-NYU-HKNCOMBINUM     PIC  9(04).
       *¼ýÇ¼¾ðÊóÊÖµÑ¥¨¥ê¥¢
                05  LNK-ORCBT120SUB-SYU-AREA            OCCURS 10.
       *ÅÁÉ¼ÈÖ¹æ
-                   07  LNK-ORCBT120SUB-SYU-DENPNUM     PIC  9(07).
+                   07  LNK-ORCBT120SUB-DENPNUM         PIC  9(07).
       *ÅÁÉ¼¾õÂÖ¶èÊ¬
-                   07  LNK-ORCBT120SUB-SYU-DENPJTUKBN  PIC  X(01).
+                   07  LNK-ORCBT120SUB-DENPJTIKBN      PIC  X(01).
       *ÅÁÉ¼ºîÀ®¶èÊ¬
-                   07  LNK-ORCBT120SUB-SYU-CREATEKBN   PIC  9(07).
+                   07  LNK-ORCBT120SUB-CREATEKBN       PIC  9(07).
       *ÊÝ¸±ÅÀ¿ô
-                   07  LNK-ORCBT120SUB-SYU-HKNTEN      PIC  9(07).
+                   07  LNK-ORCBT120SUB-HKNTEN          PIC  9(07).
       *ÊÝ¸±ÉéÃ´¶â³Û
-                   07  LNK-ORCBT120SUB-SYU-HKNMONEY    PIC  9(07).
+                   07  LNK-ORCBT120SUB-HKNMONEY        PIC  9(07).
       *ÊÝ¸±Å¬ÍÑ³°¶â³Û
-                   07  LNK-ORCBT120SUB-SYU-TGMONEY     PIC  9(07).
+                   07  LNK-ORCBT120SUB-TGMONEY         PIC  9(07).
       *ÊÝ¸±Å¬ÍÑ³°¶âÀÇ³Û
-                   07  LNK-ORCBT120SUB-SYU-TGMONEY-TAX PIC  9(07).
+                   07  LNK-ORCBT120SUB-TGMONEY-TAX     PIC  9(07).
       *¼«Èñ¶â³Û
-                   07  LNK-ORCBT120SUB-SYU-JIHI        PIC  9(07).
+                   07  LNK-ORCBT120SUB-JIHI            PIC  9(07).
       *¼«ÈñÀÇ³Û
-                   07  LNK-ORCBT120SUB-SYU-JIHI-TAX    PIC  9(07).
+                   07  LNK-ORCBT120SUB-JIHI-TAX        PIC  9(07).
       *¿©»öÉéÃ´¶â³Û
-                   07  LNK-ORCBT120SUB-SYU-SKJ         PIC  9(07).
+                   07  LNK-ORCBT120SUB-SKJ             PIC  9(07).
       *¾ÃÈñÀÇ³Û
-                   07  LNK-ORCBT120SUB-SYU-SKJ-TAX     PIC  9(07).
+                   07  LNK-ORCBT120SUB-SKJ-TAX         PIC  9(07).
       *ÀÁµá¶â³Û
-                   07  LNK-ORCBT120SUB-SYU-SKYMONEY    PIC  9(07).
+                   07  LNK-ORCBT120SUB-SKYMONEY        PIC  9(07).
+      *ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
+                   07  LNK-ORCBT120SUB-HKNCOMBINUM     PIC  9(04).
       *ÊÝ¸±ÈÖ¹æ
-                   07  LNK-ORCBT120SUB-SYU-HKNNUM      PIC  X(03).
+                   07  LNK-ORCBT120SUB-HKNNUM          PIC  X(03).
       *ÊÝ¸±£É£Ä
-                   07  LNK-ORCBT120SUB-SYU-HKNID       PIC  9(10).
+                   07  LNK-ORCBT120SUB-HKNID           PIC  9(10).
       *ÊÝ¸±¼ÔÈÖ¹æ
-                   07  LNK-ORCBT120SUB-SYU-HKNJANUM    PIC  X(08).
+                   07  LNK-ORCBT120SUB-HKNJANUM        PIC  X(08).
       *ËÜ¿Í²ÈÂ²¶èÊ¬
-                   07  LNK-ORCBT120SUB-SYU-HONKZKKBN   PIC  X(01).
+                   07  LNK-ORCBT120SUB-HONKZKKBN       PIC  X(01).
       *Êä½õ¶èÊ¬
-                   07  LNK-ORCBT120SUB-SYU-HOJOKBN     PIC  X(01).
+                   07  LNK-ORCBT120SUB-HOJOKBN         PIC  X(01).
       *·ÑÂ³¶èÊ¬
-                   07  LNK-ORCBT120SUB-SYU-CONTKBN     PIC  X(01).
+                   07  LNK-ORCBT120SUB-CONTKBN         PIC  X(01).
       *¸øÈñ¡ÝÉéÃ´¾ðÊó
-                   07  LNK-ORCBT120SUB-SYU-KOHAREA.
+                   07  LNK-ORCBT120SUB-KOHAREA.
       *¸øÈñ£±¡Ý¸øÈñÈÖ¹æ
-                     09  LNK-ORCBT120SUB-SYU-KOH1HKNNUM  PIC  X(03).
+                     09  LNK-ORCBT120SUB-KOH1HKNNUM    PIC  X(03).
       *¸øÈñ£±¡Ý¸øÈñ£É£Ä
-                     09  LNK-ORCBT120SUB-SYU-KOH1ID      PIC  9(10).
+                     09  LNK-ORCBT120SUB-KOH1ID        PIC  9(10).
       *¸øÈñ£±¡Ý»ÙÊ§¶èÊ¬
-                     09  LNK-ORCBT120SUB-SYU-KOH1PAYKBN  PIC  X(02).
+                     09  LNK-ORCBT120SUB-KOH1PAYKBN    PIC  X(02).
       *¸øÈñ£²¡Ý¸øÈñÈÖ¹æ
-                     09  LNK-ORCBT120SUB-SYU-KOH2HKNNUM  PIC  X(03).
+                     09  LNK-ORCBT120SUB-KOH2HKNNUM    PIC  X(03).
       *¸øÈñ£²¡Ý¸øÈñ£É£Ä
-                     09  LNK-ORCBT120SUB-SYU-KOH2ID      PIC  9(10).
+                     09  LNK-ORCBT120SUB-KOH2ID        PIC  9(10).
       *¸øÈñ£²¡Ý»ÙÊ§¶èÊ¬
-                     09  LNK-ORCBT120SUB-SYU-KOH2PAYKBN  PIC  X(02).
+                     09  LNK-ORCBT120SUB-KOH2PAYKBN    PIC  X(02).
       *¸øÈñ£³¡Ý¸øÈñÈÖ¹æ
-                     09  LNK-ORCBT120SUB-SYU-KOH3HKNNUM  PIC  X(03).
+                     09  LNK-ORCBT120SUB-KOH3HKNNUM    PIC  X(03).
       *¸øÈñ£³¡Ý¸øÈñ£É£Ä
-                     09  LNK-ORCBT120SUB-SYU-KOH3ID      PIC  9(10).
+                     09  LNK-ORCBT120SUB-KOH3ID        PIC  9(10).
       *¸øÈñ£³¡Ý»ÙÊ§¶èÊ¬
-                     09  LNK-ORCBT120SUB-SYU-KOH3PAYKBN  PIC  X(02).
+                     09  LNK-ORCBT120SUB-KOH3PAYKBN    PIC  X(02).
       *¸øÈñ£´¡Ý¸øÈñÈÖ¹æ
-                     09  LNK-ORCBT120SUB-SYU-KOH4HKNNUM  PIC  X(03).
+                     09  LNK-ORCBT120SUB-KOH4HKNNUM    PIC  X(03).
       *¸øÈñ£´¡Ý¸øÈñ£É£Ä
-                     09  LNK-ORCBT120SUB-SYU-KOH4ID      PIC  9(10).
+                     09  LNK-ORCBT120SUB-KOH4ID        PIC  9(10).
       *¸øÈñ£´¡Ý»ÙÊ§¶èÊ¬
-                     09  LNK-ORCBT120SUB-SYU-KOH4PAYKBN  PIC  X(02).
+                     09  LNK-ORCBT120SUB-KOH4PAYKBN    PIC  X(02).
       *¸øÈñ¡ÝÉéÃ´¾ðÊóºÆÄêµÁ
-                   07  LNK-ORCBT120SUB-SYU-KOHFTN-TABLE  REDEFINES
-                                        LNK-ORCBT120SUB-SYU-KOHAREA.
-                     09  LNK-ORCBT120SUB-SYU-KOHFTN-TBL  OCCURS  4.
+                   07  LNK-ORCBT120SUB-KOHFTN-TABLE  REDEFINES
+                                        LNK-ORCBT120SUB-KOHAREA.
+                     09  LNK-ORCBT120SUB-KOHFTN-TBL    OCCURS  4.
       *¸øÈñ¡Ý¸øÈñÈÖ¹æ
-                       11  LNK-ORCBT120SUB-SYU-KOH-HKNNUM  PIC  X(03).
+                       11  LNK-ORCBT120SUB-KOH-HKNNUM  PIC  X(03).
       *¸øÈñ¡Ý¸øÈñ£É£Ä
-                       11  LNK-ORCBT120SUB-SYU-KOH-ID      PIC  9(10).
+                       11  LNK-ORCBT120SUB-KOH-ID      PIC  9(10).
       *¸øÈñ¡Ý»ÙÊ§¶èÊ¬
-                       11  LNK-ORCBT120SUB-SYU-KOH-PAYKBN  PIC  X(02).
+                       11  LNK-ORCBT120SUB-KOH-PAYKBN  PIC  X(02).
       *Ï«ºÒÊÝ¸±¶èÊ¬
-                   07  LNK-ORCBT120SUB-SYU-RSIHKNKBN     PIC  X(01).
+               05  LNK-ORCBT120SUB-RSIHKNKBN           PIC  X(01).
       *¼«ÇåÀÕÀÁµá
-                   07  LNK-ORCBT120SUB-SYU-JIBAIKBN      PIC  X(01).
+               05  LNK-ORCBT120SUB-JIBAIKBN            PIC  X(01).
       *
       *Éüµ¢¥³¡¼¥É¡Ê£±¡§»»ÄêÆü¥¨¥é¡¼¡¡£²¡§´µ¼Ô¸¡º÷¥¨¥é¡¼¡¡£³¡§¿ÇÎÅ²Ê¥¨¥é¡¼
       *            £´¡§Ì¤Æþ±¡¡¡£µ¡§¾ðÊó¼èÆÀ¥¨¥é¡¼¡Ë
