@@ -29,8 +29,8 @@
            03  RSITUSAN-PTID               PIC  9(10).
       *    保険組合せ
            03  RSITUSAN-HKNCOMBI           PIC  X(04).
-      *    基準日
-           03  RSITUSAN-KJNYMD             PIC  X(08).
+      *    診療年月
+           03  RSITUSAN-SRYYM              PIC  X(06).
       *
       *    出力領域
            03  RSITUSAN-OUT-AREA.
