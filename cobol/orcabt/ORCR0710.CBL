@@ -6446,28 +6446,31 @@
                            GO  TO  900-RECE62-READ-SEC
                          ELSE
       *
-                       DISPLAY "RECE62  PTNUM=" RECE62-PTNUM
+                           DISPLAY "RECE62  PTNUM=" RECE62-PTNUM
       *
-                       ADD     1                   TO  CNT-RECE62
-                       MOVE    RECE62-HOSPID       TO  KEY-N-HOSPID
-                       MOVE    RECE62-SRYYM        TO  KEY-N-SRYYM
-                       MOVE    RECE62-NYUGAIKBN    TO  KEY-N-NYUGAIKBN
-                       MOVE    RECE62-PTID         TO  KEY-N-PTID
-                       MOVE    RECE62-RECEKA       TO  KEY-N-RECEKA
-                       MOVE    RECE62-TEISYUTUSAKI TO
+                           ADD     1               TO  CNT-RECE62
+                           MOVE    RECE62-HOSPID   TO  KEY-N-HOSPID
+                           MOVE    RECE62-SRYYM    TO  KEY-N-SRYYM
+                           MOVE    RECE62-NYUGAIKBN
+                                                   TO  KEY-N-NYUGAIKBN
+                           MOVE    RECE62-PTID     TO  KEY-N-PTID
+                           MOVE    RECE62-RECEKA   TO  KEY-N-RECEKA
+                           MOVE    RECE62-TEISYUTUSAKI TO
                                                    KEY-N-TEISYUTUSAKI
-                       MOVE    RECE62-RECESYUBETU  TO  KEY-N-RECESYUBETU
-                       MOVE    RECE62-HKNJANUM-KEY TO
+                           MOVE    RECE62-RECESYUBETU
+                                                   TO  KEY-N-RECESYUBETU
+                           MOVE    RECE62-HKNJANUM-KEY TO
                                                    KEY-N-HKNJANUM-KEY
       *
-                       IF   WRK-PARA-SRYYM     =  ZERO
-      *                     ∞ÂŒ≈µ°¥ÿ£…£ƒ ‘Ω∏
-                            MOVE  RECE62-SRYYM   TO
-                                              WRK-SYS-SRYYMD(1:6)
-                            MOVE  "01"           TO
-                                              WRK-SYS-SRYYMD(7:2)
-                            PERFORM 900-SYSKANRI-HENSYU-SEC
-                       END-IF
+                           IF   WRK-PARA-SRYYM     =  ZERO
+      *                         ∞ÂŒ≈µ°¥ÿ£…£ƒ ‘Ω∏
+                                MOVE  RECE62-SRYYM   TO
+                                                  WRK-SYS-SRYYMD(1:6)
+                                MOVE  "01"           TO
+                                                  WRK-SYS-SRYYMD(7:2)
+                                PERFORM 900-SYSKANRI-HENSYU-SEC
+                           END-IF
+                         END-IF
       *
                      END-IF
                    END-IF    
