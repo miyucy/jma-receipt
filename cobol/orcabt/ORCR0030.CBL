@@ -2719,6 +2719,9 @@
                   OR   ( SYU-KOH-HKNNUM(2)   =   "012" )                
                   OR   ( SYU-KOH-HKNNUM(3)   =   "012" )                
                   OR   ( SYU-KOH-HKNNUM(4)   =   "012" )                
+                      IF  FTN-KOH-XXX  >   8000
+                         MOVE    8000   TO   FTN-KOH-XXX
+                      END-IF
                       COMPUTE  FTN-KOH-YYY  =   8000  -  FTN-KOH-XXX      
                       IF  WRK-FTNKEI  >  FTN-KOH-YYY                      
                         ADD    FTN-KOH-YYY  TO  RECE02-FTNMONEY(1)        
@@ -2734,10 +2737,14 @@
                         END-IF                                            
                       END-IF
                   ELSE
-                    IF   ( SYU-KOH-HKNNUM(1)   =   "972" )                
-                    OR   ( SYU-KOH-HKNNUM(2)   =   "972" )                
-                    OR   ( SYU-KOH-HKNNUM(3)   =   "972" )                
-                    OR   ( SYU-KOH-HKNNUM(4)   =   "972" )                
+                    IF   ( RECE02-TOKKI(1)     =   "02"  )
+                    OR   ( RECE02-TOKKI(2)     =   "02"  )
+                    OR   ( RECE02-TOKKI(3)     =   "02"  )
+                    OR   ( RECE02-TOKKI(4)     =   "02"  )
+                    OR   ( RECE02-TOKKI(5)     =   "02"  )
+                      IF  FTN-KOH-XXX  >  10000
+                         MOVE   10000   TO   FTN-KOH-XXX
+                      END-IF
                       COMPUTE  FTN-KOH-YYY  =  10000  -  FTN-KOH-XXX      
                       IF  WRK-FTNKEI  >  FTN-KOH-YYY                      
                         ADD    FTN-KOH-YYY  TO  RECE02-FTNMONEY(1)        
@@ -2753,6 +2760,9 @@
                         END-IF                                            
                       END-IF
                     ELSE
+                      IF  FTN-KOH-XXX  >  12000
+                         MOVE   12000   TO   FTN-KOH-XXX
+                      END-IF
                       COMPUTE  FTN-KOH-YYY  =  12000  -  FTN-KOH-XXX      
                       IF  WRK-FTNKEI  >  FTN-KOH-YYY                      
                         ADD    FTN-KOH-YYY  TO  RECE02-FTNMONEY(1)        
