@@ -217,6 +217,10 @@ SCREEN_screen = \
         XBER.glade \
         XBID.glade \
         XERR.glade \
+        XC01.glade \
+        XC99.glade \
+        XCERR.glade \
+        XCID1.glade \
         XID1.glade \
         Y01.glade \
         Y03.glade \
