@@ -50,6 +50,7 @@
       *  03.00.04    NACL−多々納 02/10/08  処方せんに在宅薬剤院外追加
       *                                     フリーコメントの修正など
       *  03.00.05    NACL−多々納 02/10/10  外来管理加算チェックの有無
+      *                                     訂正時の薬情表示等
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -478,6 +479,9 @@
                05  WRK-HZN-ATAI4           PIC X(10).
       *    老人年齢
            03  WRK-ROU-NEN             PIC 9(02).
+      *    算定回数
+           03  WRK-CNT                 PIC 9(03).
+           03  FLG-AUTO-OK             PIC 9(01).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -2570,6 +2574,7 @@
                MOVE    ZERO                TO  IDXS
                PERFORM     VARYING   IDY   FROM    IDX1   BY  1
                            UNTIL     IDY   >   5
+                   MOVE    ZERO                 TO  FLG-AUTO-OK
       *
       *            自動作成分は編集しない
                    IF    ( LNK-WKSRY-SRYCD  (IDX IDY)    =   SPACE) OR
@@ -2578,6 +2583,14 @@
                          ( LNK-WKSRY-AUTOKBN(IDX IDY)    =   "3"  )  OR
                          ( WRK-SYORIFLG                  =   1    AND
                            LNK-WKSRY-AUTOKBN(IDX IDY)    =   "2" OR "3")
+      *                訂正自動作成で算定回数を超えている時対象とする
+                       IF      (WRK-SYORIFLG             =   1  )  AND
+                               (LNK-WKSRY-AUTOKBN(IDX IDY)   =   "3")
+                           PERFORM 31012-AUTOCHK-SEC
+                           IF      FLG-AUTO-OK         =   1
+                               PERFORM 31011-SPA-HEN-SEC
+                           END-IF
+                       END-IF
       *                注射の手技料は対象とする
                        IF     (LNK-WKSRY-SRYSYUKBN (IDX) =   "310" OR
                                                              "320" OR
@@ -2808,6 +2821,9 @@
                                        =   "A" OR "B" OR "C"  OR  "D"
                MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
            END-IF
+           IF      FLG-AUTO-OK         =   1
+               MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
+           END-IF
       *
            MOVE    LNK-WKSRY-INPUTCHI-G (IDX IDY)
                                        TO  SPA-COM-INPUTCHI-G  (IDX2)
@@ -2915,6 +2931,36 @@
       *
            .
        31011-SPA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   自動算定分編集処理
+      *****************************************************************
+       31012-AUTOCHK-SEC                  SECTION.
+      *
+           MOVE    ZERO                 TO  FLG-AUTO-OK
+      *
+      *    算定履歴チェック処理
+           INITIALIZE                  ORCSC91AREA
+           MOVE    WRK-SYORIFLG        TO  LNK-SC91-SYORIFLG
+           MOVE    LNK-WKSRY-SRYCD  (IDX IDY)
+                                       TO  LNK-SC91-SRYCD
+           MOVE    "4"                 TO  LNK-SC91-KBN
+           MOVE    ZERO                TO  LNK-SC91-GMN-IDX
+           MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC91-TEISEI-AREA
+      *
+           CALL    "ORCSC91"           USING    MCPAREA
+                                                ORCSC91AREA
+                                                SPA-SCR-REC
+                                                SPA-AREA
+                                                TNS-TENSU-REC
+           IF      LNK-SC91-ERRCD      =   "K004"
+               MOVE    1               TO  FLG-AUTO-OK
+               MOVE    SPACE           TO  LNK-SC91-ERRCD
+           END-IF
+      *
+           .
+       31012-AUTOCHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5493,9 +5539,15 @@
                IF      ISET-INPUTCD        =   "810000001"
                    MOVE    ISET-COMMENT    TO  SPA-GMN-MEISYO-G
                                                           (SPA-GMN-IDX)
+                   MOVE    "1"             TO  SPA-COM-MEIFLG
+                                                          (SPA-GMN-IDX)
                ELSE
                    MOVE    ISET-COMMENT    TO  SPA-GMN-MEISYO
                                                           (SPA-GMN-IDX)
+                   IF      ISET-INPUTCD(1:2)   =   "83" 
+                       MOVE    "1"         TO  SPA-COM-MEIFLG
+                                                          (SPA-GMN-IDX)
+                   END-IF
                END-IF
       *
                MOVE    ISET-ATAI (01)  TO  SPA-COM-ATAI1 (SPA-GMN-IDX)
@@ -5744,9 +5796,15 @@
                IF      ISET-INPUTCD        =   "810000001"
                    MOVE    ISET-COMMENT    TO  SPA-GMN-MEISYO-G
                                                           (SPA-GMN-IDX)
+                   MOVE    "1"             TO  SPA-COM-MEIFLG
+                                                          (SPA-GMN-IDX)
                ELSE
                    MOVE    ISET-COMMENT    TO  SPA-GMN-MEISYO
                                                           (SPA-GMN-IDX)
+                   IF      ISET-INPUTCD(1:2)   =   "83" 
+                       MOVE    "1"         TO  SPA-COM-MEIFLG
+                                                          (SPA-GMN-IDX)
+                   END-IF
                END-IF
       *
                MOVE    ISET-ATAI (01)  TO  SPA-COM-ATAI1 (SPA-GMN-IDX)
