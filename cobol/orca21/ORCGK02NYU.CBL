@@ -1614,11 +1614,16 @@
       *    初期ＳＰＡ編集処理
            IF     (SPA-SRYYMD      NOT =   SPA-GMN-SRYYMD )  OR
                   (SPA-PTID        NOT =   SPA-GMN-PTID   )
+      *        選択された科・保険
+               MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBINUM
+               MOVE    SPA-SRYKA           TO  WRK-SRYKA
       *        入院が存在するかのチェック
                MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
                PERFORM 410101-NYUINRRK-CHK-SEC
       *        入外区分
                MOVE    "1"                 TO  SPA-NYUGAIKBN
+               MOVE    WRK-HKNCOMBINUM     TO  SPA-HKNCOMBINUM
+               MOVE    WRK-SRYKA           TO  SPA-SRYKA
       *
                INITIALIZE                  ORCSC95AREA
                MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
