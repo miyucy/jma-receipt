@@ -229,6 +229,8 @@
            03  WRK-SKYMONEY            PIC  9(07).
       *º¹³Û
            03  WRK-SAGAKU              PIC S9(07).
+      *¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+           03  WRK-SKYMONEY-TAX-SAI    PIC  9(07).
       *Æþ¶â¹ç·×³Û
            03  WRK-NYUKIN-TOTAL        PIC  9(07).
       *Æþ¶â²ó¿ô
@@ -698,6 +700,7 @@
       *    ÄûÀµ¤Î»þ¡¢Á°¤ÎÀÁµá³Û¤òµá¤á¤ë
            IF      SPA-SYORIFLG        =   ZERO
                MOVE    ZERO                TO  WRK-SKYMONEY
+               MOVE    ZERO                TO  WRK-SKYMONEY-TAX-SAI
                MOVE    ZERO                TO  WRK-NYUKIN-TOTAL
            ELSE
                MOVE    SYUNOU-REC          TO  WRK-SYUNOU-REC
@@ -719,6 +722,8 @@
                MOVE    SYU-SKYMONEY        TO  WRK-SKYMONEY
       *        Æþ¶â¹ç·×³Û
                MOVE    SYU-NYUKIN-TOTAL    TO  WRK-NYUKIN-TOTAL
+      *        ¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+               MOVE    SYU-SKYMONEY-TAX-SAI    TO  WRK-SKYMONEY-TAX-SAI
       *
                MOVE    WRK-SYUNOU-REC      TO  SYUNOU-REC
            END-IF
@@ -811,12 +816,18 @@
       *        º£²óÀÁµá³Û ¡Ý Á°²óÀÁµá³Û
                COMPUTE SPA-NAI-SEIKYU      =   SYU-SKYMONEY
                                            -   WRK-SKYMONEY
+               COMPUTE SPA-NAI-SKYMONEY-TAX-SAI
+                                           =   SYU-SKYMONEY-TAX-SAI
+                                           -   WRK-SKYMONEY-TAX-SAI
       *        ¥¯¥ê¥¢¤Î»þ¡¢¥¼¥í¤È¤¹¤ë
                IF      IDX-KOUI            =   ZERO
                    MOVE    ZERO            TO  SPA-NAI-SEIKYU
+                   MOVE    ZERO            TO  SPA-NAI-SKYMONEY-TAX-SAI
                END-IF
            ELSE
                MOVE    SYU-SKYMONEY        TO  SPA-NAI-SEIKYU
+               MOVE    SYU-SKYMONEY-TAX-SAI
+                                           TO  SPA-NAI-SKYMONEY-TAX-SAI
            END-IF
       *
       *    ½é´üº£²óÀÁµá³Û
@@ -2771,6 +2782,9 @@
            MOVE    WRK-DENPNUM         TO  ORCHC03-DENPNUM
            MOVE    SPA-GMN-SEIKYU      TO  ORCHC03-SEIKYU
            MOVE    SPA-GMN-NYUKIN      TO  ORCHC03-NYUKIN
+      *    ¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+           MOVE    SPA-NAI-SKYMONEY-TAX-SAI
+                                       TO  ORCHC03-SEIKYU-TAX-SAI
       *    Á°²óÌ¤¼ý³Û
            MOVE    SPA-GMN-ZENMISYU    TO  ORCHC03-ZENMISYU
       *    Á°²óÊÖ¶â³Û
@@ -2797,6 +2811,9 @@
                MOVE    WRK-DENPNUM         TO  ORCHC03-DENPNUM
                MOVE    SPA-GMN-SEIKYU      TO  ORCHC03-SEIKYU
                MOVE    SPA-GMN-NYUKIN      TO  ORCHC03-NYUKIN
+      *       ¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+               MOVE    SPA-NAI-SKYMONEY-TAX-SAI
+                                           TO  ORCHC03-SEIKYU-TAX-SAI
                MOVE    SPA-FUKU-DENPNUM    TO  ORCHC03-FUKU-DENPNUM
       *        ÄûÀµ¡¦·ÑÂ³Ãæ¤Î»þ
                IF     (SPA-SYORIFLG        =   1    )  AND

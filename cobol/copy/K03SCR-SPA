@@ -135,6 +135,7 @@
                    07  SPA-NAI-SEIKYU            PIC S9(07).
                    07  SPA-KON-SKYMONEY          PIC S9(07).
                    07  SPA-NAI-CHOSEI            PIC X(01).
+                   07  SPA-NAI-SKYMONEY-TAX-SAI  PIC S9(07).
       *
                    07  SPA-MAE-NYUKINKBN         PIC X(01).
                    07  SPA-MAE-CHOSEI            PIC S9(07).
