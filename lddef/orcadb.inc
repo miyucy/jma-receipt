@@ -83,6 +83,7 @@ db	{
         tbl_toukeimemo;
 	tbl_btpara;
         tbl_order;
+        tbl_help;
 };
 db	"shell"	{
 	shell;

@@ -28,6 +28,7 @@ bind	"KERR"		"OpenCOBOL"	"ORCGKERR";
 bind	"KERR2"		"OpenCOBOL"	"ORCGKERR2";
 bind	"KID1"		"OpenCOBOL"	"ORCGKID1";
 bind	"KID2"		"OpenCOBOL"	"ORCGKID2";
+bind	"KHELP"		"OpenCOBOL"	"ORCGKHELP";
 
 multiplex_group	orca21;
 
@@ -59,6 +60,7 @@ data	{
                 KERR2;
                 KID1;
                 KID2;
+                KHELP;
 	};
 };
 

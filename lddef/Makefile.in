@@ -41,6 +41,7 @@ LDFILE_sources = \
 	orca106.ld.in \
 	orca107.ld.in \
 	orca108.ld.in \
+	orca109.ld.in \
 
 hosp_LDFILE_sources = \
 	orca31.ld.in \
