@@ -212,6 +212,7 @@
       *  01.01.46    NACL-太田    03/03/10  SENTEICDCHG-KEY,2,3,ALL追加
       *  01.01.47    NACL-伊藤    03/03/11  INTERACT-KEY3の追加
       *                                     INTERACT-UPD1,DEL1追加 
+      *  01.01.48    NACL-藤原    03/03/14  PTBYO-KEY7追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1235,6 +1236,9 @@
       *追加/*終了*02.03.19********************************************
                WHEN    ANY             ALSO   "PTBYOMEI-KEY6"
                    MOVE    PATH-TBL-PTBYOMEI-KEY6 
+                                       TO  WRK-PATH
+               WHEN    ANY             ALSO   "PTBYOMEI-KEY7"
+                   MOVE    PATH-TBL-PTBYOMEI-KEY7 
                                        TO  WRK-PATH
       *追加/*開始*01.09.15********************************************
                WHEN    ANY             ALSO   "PTBYOMEI-ALL"
