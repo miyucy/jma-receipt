@@ -888,6 +888,12 @@
                   (SPA-SYORIFLG        =   ZERO       )
                PERFORM 10014-UKETUKE-CHK-SEC
            END-IF
+      *
+      *    中途終了からの場合、ドクターを受付から決定する
+           IF     (LNK-SC95-PG         =   "K10" )  AND
+                  (SPA-DRCD            =   SPACE )
+               PERFORM 10014-UKETUKE-CHK-SEC
+           END-IF
       *    受診履歴情報セット
            PERFORM 1001-SPA-JYUSIN-SEC
       *
@@ -1169,9 +1175,16 @@
       **********   OR     (SPA-DRCD    NOT =   SPACE )
       *        会計のまだの最初の受付を対象とする
                IF      UKE-KAIKEITIME      =   ZERO
-                   MOVE    UKE-SRYKA           TO  SPA-SRYKA
-                   MOVE    UKE-DRCD            TO  SPA-DRCD
-                   MOVE    1                   TO  FLG-UKETUKE
+                   IF     (SPA-GMN-SRYKA   NOT =   SPACE  )  AND
+                          (SPA-GMN-SRYKA       =   UKE-SRYKA )
+                       MOVE    UKE-SRYKA           TO  SPA-SRYKA
+                       MOVE    UKE-DRCD            TO  SPA-DRCD
+                       MOVE    1                   TO  FLG-UKETUKE
+                   ELSE
+                       MOVE    UKE-SRYKA           TO  SPA-SRYKA
+                       MOVE    UKE-DRCD            TO  SPA-DRCD
+                       MOVE    1                   TO  FLG-UKETUKE
+                   END-IF
                END-IF
                IF      FLG-UKETUKE         =   ZERO
                    MOVE    "UKETUKE-KEY2"      TO  ORC-DBPATH
@@ -2167,6 +2180,7 @@
                                                TO  SPA-GMN-TABOO (IDX)
                END-IF
            END-IF
+      *
            MOVE    IDX                 TO  SPA-TABOO-MAX
       *
            .
@@ -2547,6 +2561,12 @@
       *?   MOVE    ZERO                TO  SPA-FTNRATE
       *?   MOVE    SPACE               TO  SPA-FTNRATEMEI
       *
+           IF      LNK-SC95-PG         =   "K02"  OR  "K01"
+               CONTINUE
+           ELSE
+               MOVE    SPA-SRYKA           TO  SPA-GMN-SRYKA
+           END-IF
+      *
       *    前回患者保存
            MOVE    SPA-PTID            TO  SPA-LAST-PTID
            MOVE    SPA-PTNUM           TO  SPA-LAST-PTNUM
@@ -2564,6 +2584,13 @@
                   (SPA-SYORIFLG        =   ZERO       )
                PERFORM 10014-UKETUKE-CHK-SEC
            END-IF
+      *
+      *    中途終了からの場合、ドクターを受付から決定する
+           IF     (LNK-SC95-PG         =   "K10" )  AND
+                  (SPA-DRCD            =   SPACE )
+               PERFORM 10014-UKETUKE-CHK-SEC
+           END-IF
+      *
       *    診療科、ドクター名称編集
            PERFORM 10012-SYSKAN-SEC
       *
