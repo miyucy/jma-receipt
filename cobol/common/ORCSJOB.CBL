@@ -32,6 +32,9 @@
       *  01.00.03    NACL-藤原    03/02/24  頁数のチェック
       *  01.00.04    NACL-太田    03/08/11  途中経過更新処理を追加
       *  01.00.05    NACL-藤原    04/09/28  STP,CANを追加
+      *  01.00.06    NACL-藤原    04/12/20  CN2を追加
+      *                                     JBEのときYOBIが空白以外のとき
+      *                                     だけ編集を行う
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -144,6 +147,10 @@
                        PERFORM 200-CANCEL-SEC
                        PERFORM 900-DBCOMMIT-SEC
                        PERFORM 900-DBSTART-SEC
+               WHEN    "CA2"
+                       PERFORM 210-CANCEL2-SEC
+                       PERFORM 900-DBCOMMIT-SEC
+                       PERFORM 900-DBSTART-SEC
                WHEN    OTHER
                        MOVE  10            TO  SJOBKANRI-RETURN  
                        MOVE  1             TO  FLG-END
@@ -214,7 +221,11 @@
            PERFORM 500-SYSYMD-HENSYU-SEC
            MOVE    WRK-SYSYMD-8        TO  WRK-JOB-ENDYMD
            ACCEPT  WRK-JOB-ENDTIME     FROM TIME
-           MOVE    JOB-YOBI            TO  WRK-JOB-YOBI
+           IF      JOB-YOBI            =   SPACE
+               CONTINUE
+           ELSE
+               MOVE    JOB-YOBI            TO  WRK-JOB-YOBI
+           END-IF
            MOVE    JOB-ERRCD           TO  WRK-JOB-ERRCD
            MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -492,7 +503,7 @@
            PERFORM 910-JOBKANRI-INV2-SEC
            IF      FLG-JOBKANRI   NOT  =  ZERO
                MOVE  MCP-RC                TO  SJOBKANRI-RETURN
-               GO  TO  120-JBE-EXT
+               GO  TO  200-CANCEL-EXT
            END-IF
       *
       *    レコード更新
@@ -519,6 +530,42 @@
       *
            .
        200-CANCEL-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    ジョブ中止処理（終了日、終了時間の設定なし）
+      *****************************************************************
+       210-CANCEL2-SEC                 SECTION.
+      *
+      *    レコード存在チェック
+           MOVE    JOBKANRI-REC        TO  MCPDATA-REC
+           PERFORM 910-JOBKANRI-INV2-SEC
+           IF      FLG-JOBKANRI   NOT  =  ZERO
+               MOVE  MCP-RC                TO  SJOBKANRI-RETURN
+               GO  TO  210-CANCEL2-EXT
+           END-IF
+      *
+      *    レコード更新
+           MOVE    JOB-YOBI            TO  WRK-JOB-YOBI
+           MOVE    JOB-ERRCD           TO  WRK-JOB-ERRCD
+           MOVE    JOB-STOPFLG         TO  WRK-JOB-STOPFLG
+           MOVE    WRK-JOBKANRI-REC    TO  MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    PATH-TBL-JOBKANRI-UPD1
+                                       TO  MCP-PATH
+           CALL    "MCPSUB"            USING
+                                       MCPAREA
+                                       MCPDATA-REC
+      *
+           IF      MCP-RC     =   ZERO
+               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+           ELSE
+               DISPLAY "UPDATE ERR KEY = [" MCP-RC JOB-SHELLID "]"   
+               MOVE  MCP-RC            TO  SJOBKANRI-RETURN
+           END-IF
+      *
+           .
+       210-CANCEL2-EXT.
            EXIT.
       * 
       *****************************************************************
