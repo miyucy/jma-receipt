@@ -133,6 +133,9 @@
            03  IDW8                PIC 9(04).
            03  IDW9                PIC 9(04).
            03  IDV                 PIC 9(04).
+      *    ÅÀ¿ô¥Þ¥¹¥¿Í½Ìó¥³¡¼¥ÉÎÎ°è
+       01  WRK-YOYAKU.
+           03  W-YOYAKU            PIC X(09)   VALUE   "099999916".
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-SRYYMD.
@@ -1952,10 +1955,11 @@
                            (SPA-WRK-CHK-KBN (IDY)   NOT =  ALL SPACE)
                            MOVE    SPA-GMN-TDAY-41 (IDX IDY)(1:2)
                                                  TO  I41-TDAY (IDX IDY)
-                           IF (SPA-GMN-TZAISKBKBN-41 (IDX)
-                                                            = "1")  AND
+                           IF (SPA-GMN-TZAISKBKBN-41 (IDX)  = "1")  AND
+                              (SPA-GMN-TSRYCD-41 (IDX)
+                                                   NOT = W-YOYAKU)  AND
                               (SPA-GMN-TDAY-41 (IDX IDY)
-                                                        NOT = SPACE)
+                                                   NOT = SPACE)
                                MOVE    SPA-GMN-TDAY-41 (IDX IDY)
                                                  TO  WRK-CHK-DAY (IDY)
                            END-IF
@@ -2645,18 +2649,10 @@
                GO      TO      41012-DAY-CHK-EXT
            END-IF.
            MOVE    SPA-NAI-TBANGO-41 (SPA-GMN-NUM-41)   TO  IDX2.
-           IF     SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "1"
-               IF     SPA-WRK-CHK-KBN (IDX)   NOT =  "1"  AND  "2"
-                   MOVE    "0024"          TO  SPA-ERRCD
-                   MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
-                   GO      TO      41012-DAY-CHK-EXT
-               END-IF
-           ELSE
-               IF     SPA-WRK-CHK-KBN (IDX)   NOT =  "2"
-                   MOVE    "0024"          TO  SPA-ERRCD
-                   MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
-                   GO      TO      41012-DAY-CHK-EXT
-               END-IF
+           IF     SPA-WRK-CHK-KBN (IDX)   NOT =  "1"
+               MOVE    "0024"          TO  SPA-ERRCD
+               MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
+               GO      TO      41012-DAY-CHK-EXT
            END-IF.
            IF    (SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "1")   AND
                  (I41-DAY (IDX)              NOT = SPACE)  AND
@@ -2738,10 +2734,19 @@
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
                GO      TO      41012-DAY-CHK-EXT
            END-IF.
-           IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)      =  "1")  AND
-                 (SPA-GMN-DAY-41 (IDX)          NOT = ZERO)  AND
-                 (WRK-GMN-DAY (IDX)                 = ZERO)  AND
+           IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)      =  "1")      AND
+                 (SPA-GMN-TSRYCD-41 (IDX2)      NOT = W-YOYAKU)  AND
+                 (SPA-GMN-DAY-41 (IDX)          NOT = ZERO)      AND
+                 (WRK-GMN-DAY (IDX)                 = ZERO)      AND
                  (WRK-CHK-DAY (IDX)             NOT = ZERO)
+               MOVE    "0024"          TO  SPA-ERRCD
+               MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
+               GO      TO      41012-DAY-CHK-EXT
+           END-IF.
+           IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)      =  "1")      AND
+                 (SPA-GMN-TSRYCD-41 (IDX2)          = W-YOYAKU)  AND
+                 (SPA-GMN-DAY-41 (IDX)          NOT = ZERO)      AND
+                 (WRK-CHK-DAY (IDX)                 = ZERO)
                MOVE    "0024"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
                GO      TO      41012-DAY-CHK-EXT
@@ -2932,45 +2937,22 @@
                GO      TO      41017-KOMENTO-CHK-EXT
            END-IF.
            MOVE    SPA-NAI-TBANGO-41 (SPA-GMN-NUM-41)   TO  IDX2.
-           IF     SPA-GMN-TZAISKBKBN-41 (IDX2)   NOT =  "1"
-               IF     SPA-WRK-CHK-KBN (SPA-WRK-KOMENTO-S)   NOT =  "2"
+           IF     SPA-WRK-CHK-KBN (SPA-WRK-KOMENTO-S)   NOT =  "1"
+               MOVE    03                  TO  SPA-GMN-CUR-41
+               MOVE    "0024"              TO  SPA-ERRCD
+               GO      TO      41017-KOMENTO-CHK-EXT
+           END-IF.
+           IF     SPA-WRK-KOMENTO-E   NOT =  99
+               IF     SPA-WRK-CHK-KBN (SPA-WRK-KOMENTO-E)   NOT =  "1"
                    MOVE    03                  TO  SPA-GMN-CUR-41
                    MOVE    "0024"              TO  SPA-ERRCD
                    GO      TO      41017-KOMENTO-CHK-EXT
-               END-IF
-               IF     SPA-WRK-KOMENTO-E   NOT =  99
-                   IF     SPA-WRK-CHK-KBN (SPA-WRK-KOMENTO-E) NOT = "2"
-                       MOVE    03                  TO  SPA-GMN-CUR-41
-                       MOVE    "0024"              TO  SPA-ERRCD
-                       GO      TO      41017-KOMENTO-CHK-EXT
-                   END-IF
-               ELSE
-                   IF     SPA-WRK-CHK-KBN (IDV)   NOT =  "2"
-                       MOVE    03                  TO  SPA-GMN-CUR-41
-                       MOVE    "0024"              TO  SPA-ERRCD
-                       GO      TO      41017-KOMENTO-CHK-EXT
-                   END-IF
                END-IF
            ELSE
-               IF     SPA-WRK-CHK-KBN (SPA-WRK-KOMENTO-S)
-                                                    NOT =  "1"  AND "2"
+               IF     SPA-WRK-CHK-KBN (IDV)   NOT =  "1"
                    MOVE    03                  TO  SPA-GMN-CUR-41
                    MOVE    "0024"              TO  SPA-ERRCD
                    GO      TO      41017-KOMENTO-CHK-EXT
-               END-IF
-               IF     SPA-WRK-KOMENTO-E   NOT =  99
-                   IF     SPA-WRK-CHK-KBN (SPA-WRK-KOMENTO-E)
-                                                    NOT =  "1"  AND "2"
-                       MOVE    03                  TO  SPA-GMN-CUR-41
-                       MOVE    "0024"              TO  SPA-ERRCD
-                       GO      TO      41017-KOMENTO-CHK-EXT
-                   END-IF
-               ELSE
-                   IF     SPA-WRK-CHK-KBN (IDV)   NOT =  "1"  AND "2"
-                       MOVE    03                  TO  SPA-GMN-CUR-41
-                       MOVE    "0024"              TO  SPA-ERRCD
-                       GO      TO      41017-KOMENTO-CHK-EXT
-                   END-IF
                END-IF
            END-IF.
            IF     (SPA-WRK-KOMENTO-E              =   99)   AND
@@ -3061,9 +3043,16 @@
            IF     SPA-WRK-KOMENTO-E   NOT =  99
                PERFORM   VARYING  IDX  FROM  SPA-WRK-KOMENTO-S  BY  1
                          UNTIL    IDX       >    SPA-WRK-KOMENTO-E
-                  IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)    =  "1")  AND
-                        (WRK-GMN-DAY (IDX)               = ZERO)  AND
+                  IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)    =  "1")     AND
+                        (SPA-GMN-TSRYCD-41 (IDX2)    NOT = W-YOYAKU) AND
+                        (WRK-GMN-DAY (IDX)               = ZERO)     AND
                         (WRK-CHK-DAY (IDX)           NOT = ZERO)
+                      MOVE    03           TO  SPA-GMN-CUR-41
+                      MOVE    "0024"       TO  SPA-ERRCD
+                  END-IF
+                  IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)    =  "1")     AND
+                        (SPA-GMN-TSRYCD-41 (IDX2)        = W-YOYAKU) AND
+                        (WRK-CHK-DAY (IDX)               = ZERO)
                       MOVE    03           TO  SPA-GMN-CUR-41
                       MOVE    "0024"       TO  SPA-ERRCD
                   END-IF
@@ -3087,9 +3076,16 @@
            ELSE
                PERFORM   VARYING  IDX  FROM  SPA-WRK-KOMENTO-S  BY  1
                          UNTIL    IDX      >    IDV
-                  IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)    =  "1")  AND
-                        (WRK-GMN-DAY (IDX)               = ZERO)  AND
+                  IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)    =  "1")     AND
+                        (SPA-GMN-TSRYCD-41 (IDX2)    NOT = W-YOYAKU) AND
+                        (WRK-GMN-DAY (IDX)               = ZERO)     AND
                         (WRK-CHK-DAY (IDX)           NOT = ZERO)
+                      MOVE    03           TO  SPA-GMN-CUR-41
+                      MOVE    "0024"       TO  SPA-ERRCD
+                  END-IF
+                  IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)    =  "1")     AND
+                        (SPA-GMN-TSRYCD-41 (IDX2)        = W-YOYAKU) AND
+                        (WRK-CHK-DAY (IDX)               = ZERO)
                       MOVE    03           TO  SPA-GMN-CUR-41
                       MOVE    "0024"       TO  SPA-ERRCD
                   END-IF
@@ -3210,18 +3206,6 @@
                    PERFORM 970-PTNYUINRRK-READ-SEC
                END-PERFORM
            END-IF.
-      *
-           PERFORM   VARYING  IDX  FROM  1  BY 1
-                     UNTIL    IDX    >   SPA-GMN-MAX-41
-               IF      SPA-GMN-TZAISKBKBN-41 (IDX)   =  "1"
-                   PERFORM VARYING    IDK      FROM    1   BY  1
-                           UNTIL      IDK      >   31
-                       IF    SPA-GMN-TDAY-41 (IDX IDK)   NOT =   SPACE
-                           MOVE    "2"    TO  SPA-WRK-CHK-KBN (IDK)
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-PERFORM.
       *
            INITIALIZE                        STS-AREA-DAY.
            INITIALIZE                        LNK-DAY7-AREA.
@@ -5318,7 +5302,8 @@
            MOVE   ALL SPACE            TO  SPA-WRK-CHK-KBN-TBL.
            PERFORM   VARYING  IDX  FROM  1  BY 1
                      UNTIL    IDX    >   SPA-GMN-MAX-41
-               IF      SPA-GMN-TZAISKBKBN-41 (IDX)   =  "1"
+               IF     (SPA-GMN-TZAISKBKBN-41 (IDX)    =  "1")  AND
+                      (SPA-GMN-TSRYCD-41 (IDX)    NOT =  W-YOYAKU)
                    PERFORM VARYING    IDK      FROM    1   BY  1
                            UNTIL      IDK      >   31
                        IF    SPA-GMN-TDAY-41   (IDX IDK)   NOT =  
