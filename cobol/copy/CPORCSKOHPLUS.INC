@@ -49,6 +49,8 @@
                05  LNK-SKOHPLUS-FTNKBN              PIC  X(01).
       *入院−食事療養区分
                05  LNK-SKOHPLUS-NYUSKJRYYKBN        PIC  X(01).
+      *レセプト請求区分
+               05  LNK-SKOHPLUS-RECESKYKBN          PIC  X(01).
       *
       *復帰コード
            03  LNK-SKOHPLUS-RC                      PIC S9(9) BINARY.
