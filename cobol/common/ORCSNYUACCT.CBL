@@ -1502,6 +1502,10 @@
            IF      LNK-SCNYUACCT-SYORI-KBN     =   "4"
                GO      TO      200-TAIIN-SYORI-EXT
            END-IF
+      *    次月分の時、削除をしない
+           IF      LNK-SCNYUACCT-SYORI-KBN     =   "9"
+               GO      TO      200-TAIIN-SYORI-EXT
+           END-IF
       *
       *    診療会計をすべて削除する・退院日を最終受診日とする
            INITIALIZE                  ORCSCNYUINAREA
