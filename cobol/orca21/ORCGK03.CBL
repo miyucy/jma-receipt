@@ -2642,6 +2642,8 @@
       *
       *    伝票番号を編集する
            MOVE    ORCSCGAIRAI-DENPNUM TO  WRK-DENPNUM
+           MOVE    ORCSCGAIRAI-JYURRK-RENNUM
+                                       TO  WRK-JYURRK-RENNUM
       *
       *    各帳票印刷
            PERFORM 45009-PRINT-SEC
@@ -3224,7 +3226,7 @@
                WHEN    "0026"
                    MOVE    "複数科継続の時は、入金の充当はできません。"
                                        TO  SPA-ERRMSG
-                   MOVE    "入金額か取扱いを変更して下さい"
+                   MOVE    "入金額か取扱いを変更して下さい。"
                                        TO  SPA-ERRMSG(43:)
                WHEN    "1030"
                    MOVE    "処方せんプログラムがありません。"
