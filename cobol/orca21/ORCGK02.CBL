@@ -11977,8 +11977,8 @@
                            END-IF
                        END-IF
       *                フリーコメントで未入力の行
-                       IF     (SPA-COM-IN2 (IDX)   =   "3" ) AND
-                              (SPA-COM-IN  (IDX)   =   "1" )
+                       IF     (SPA-COM-IN2 (WRK-IDX)   =   "3" ) AND
+                              (SPA-COM-IN  (WRK-IDX)   =   "1" )
                            MOVE    IDX             TO  WRK-MAP-CUR3
                            MOVE    WRK-PAGE        TO  WRK-MAP-PAGE3
                        END-IF
@@ -12339,8 +12339,10 @@
                MOVE    1               TO  WRK-IDX2
            END-IF
       *
-           IF      WRK-IDX2            >   20
-               MOVE    08              TO  SPA-GMN-CUR
+           IF      SPA-GMN-CUR         =   1
+               IF      WRK-IDX2            >   20
+                   MOVE    08              TO  SPA-GMN-CUR
+               END-IF
            END-IF
       *
       *    患者番号が空白の時、患者番号へ

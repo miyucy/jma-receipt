@@ -1650,10 +1650,12 @@
       *        診療科変更確認
                WHEN    "0107"
                    IF      SPA-KID1-FLG        =   "OK"
-                       PERFORM 41013-SRYKA-CHANGE-SEC
+      **************** PERFORM 41013-SRYKA-CHANGE-SEC
+      *
+      *                画面用スパ編集処理
+                       PERFORM                     310-SPA-GMNSET-SEC
                    ELSE
-                       MOVE    SPA-MAE-SRYKA-G
-                                           TO  SPA-GMN-SRYKA-G
+                       MOVE    7               TO  SPA-GMN-CUR
                    END-IF
       *
       *        診療日が未来日の確認
@@ -3974,6 +3976,7 @@
            MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
            MOVE    SPA-GMN-SRYKAMEI    TO  SPA-SRYKAMEI
       *
+           MOVE    SPA-SCR-REC         TO  HZN-SCR-REC
       *    初期ＳＰＡ編集処理
            INITIALIZE                  ORCSC95AREA
            MOVE    SPA-NAI-SRYYMD      TO  LNK-SC95-SRYYMD
@@ -3996,13 +3999,20 @@
       *    スパ共通編集処理
            PERFORM                 310-SPA-SET-SEC
       *    チェック用月内診療行為セット
-           PERFORM                 320-SPA-CHKSET-SEC
+      *****PERFORM                 320-SPA-CHKSET-SEC
       *    パラメタファイルより表示
            MOVE    3               TO  FLG-PARASET
            PERFORM                 3002-PARA-SET-SEC
       *
+      *    再表示編集処理
+           IF      LNK-WKSRYACT-MAX    >   ZERO
+               MOVE    "0107"          TO  SPA-KIDCD
+           END-IF
+      *
       *    画面用スパ編集処理
-           PERFORM                 310-SPA-GMNSET-SEC
+      *****PERFORM                     310-SPA-GMNSET-SEC
+      *
+           MOVE    HZN-SCR-REC         TO  SPA-SCR-REC
       *
            MOVE    1               TO  SPA-GMN-PAGE
            MOVE    1               TO  SPA-GMN-CUR
@@ -10861,8 +10871,8 @@
                            END-IF
                        END-IF
       *                フリーコメントで未入力の行
-                       IF     (SPA-COM-IN2 (IDX)   =   "3" ) AND
-                              (SPA-COM-IN  (IDX)   =   "1" )
+                       IF     (SPA-COM-IN2 (WRK-IDX)   =   "3" ) AND
+                              (SPA-COM-IN  (WRK-IDX)   =   "1" )
                            MOVE    IDX             TO  WRK-MAP-CUR3
                            MOVE    WRK-PAGE        TO  WRK-MAP-PAGE3
                        END-IF
@@ -11192,8 +11202,10 @@
                MOVE    1               TO  WRK-IDX2
            END-IF
       *
-           IF      WRK-IDX2            >   24
-               MOVE    09              TO  SPA-GMN-CUR
+           IF      SPA-GMN-CUR         =   1
+               IF      WRK-IDX2            >   24
+                   MOVE    09              TO  SPA-GMN-CUR
+               END-IF
            END-IF
       *
       *    患者番号が空白の時、患者番号へ
@@ -11341,9 +11353,10 @@
                    MOVE    "訂正のみ行うようにして下さい。"
                                        TO  WRK-KIDMSG(31:)
                WHEN    "0107"
-               MOVE
-               "診療科が変更されました。現在の診療内容はクリアします。"
+                   MOVE    "この科の中途終了データが存在します。"
                                        TO  WRK-KIDMSG
+                   MOVE    "ＯＫで中途終了内容へ置換えます。"
+                                       TO  WRK-KIDMSG(41:)
                WHEN    "0108"
                MOVE
                "初診算定日を登録します。現在の診療内容はクリアします。"
