@@ -73,6 +73,7 @@
            03  FLG-PTNYUINRRK      PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
+           03  FLG-PTINF           PIC 9(01).
       *
            03  FLG-NAIYAK          PIC X(01).
            03  FLG-TONPUK          PIC X(01).
@@ -88,6 +89,9 @@
       *
            03  FLG-UPD             PIC 9(01).
            03  FLG-SET             PIC 9(01).
+           03  FLG-KAIKEI-SAKUSEI  PIC 9(01).
+           03  FLG-DBRC            PIC 9(01).
+           03  FLG-NYUKSN          PIC 9(01).
       *
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
@@ -137,6 +141,28 @@
            03  WRK-BTU             PIC X(02).
            03  WRK-BTU-NAME        PIC X(20).
            03  WRK-KUMI-NAME       PIC X(32).
+      *    ¥Ñ¥¹Ì¾ÎÎ°è
+           03  WRK-DBPATH          PIC X(20).
+      *    Æþ±¡²ñ·×ºîÀ®ÍÑ¥ï¡¼¥¯
+           03  WRK-TSUSAN          PIC 9(05).
+           03  WRK-RRKNUM          PIC 9(03).
+           03  WRK-STYMD           PIC X(08).
+           03  WRK-EDYMD           PIC X(08).
+           03  WRK-NISSU           PIC 9(05).
+           03  WRK-NISSU1          PIC 9(05).
+           03  WRK-NISSU2          PIC 9(05).
+           03  WRK-SANTEISTYMD     PIC X(08).
+           03  WRK-TOKUTEI-NYUIN   PIC X(02).
+           03  WRK-SAGAKU-KBN      PIC X(02).
+           03  WRK-SAGAKU-KBN9  REDEFINES  WRK-SAGAKU-KBN
+                                   PIC 9(02).
+           03  WRK-HKNCOMBINUM     PIC X(04).
+           03  WRK-HKNCOMBINUM9   REDEFINES  WRK-HKNCOMBINUM
+                                   PIC 9(04).
+           03  IDX6                PIC 9(03).
+           03  IDX7                PIC 9(03).
+           03  IDX8                PIC 9(03).
+           03  WRK-TAIHI-SRYKA     PIC X(02).
       *    Ç¯Îð·×»»ÍÑ
            03  WRK-YMDS1.
                05  WRK-YYS1        PIC 9(04).
@@ -213,6 +239,18 @@
                05  WRK-HAS-YY      PIC 9(04).
                05  WRK-HAS-MM      PIC 9(02).
                05  WRK-HAS-DD      PIC 9(02).
+      *
+      *    ´µ¼ÔÇ¯Îð»»½ÐÍÑ¥¨¥ê¥¢
+       01  WRK-NENREI-AREA.
+           03  WRK-NENREI                  PIC 9(03).
+           03  WRK-YMDS1.
+               05  WRK-YYS1                PIC 9(04).
+               05  WRK-MMS1                PIC 9(02).
+               05  WRK-DDS1                PIC 9(02).
+           03  WRK-YMDS2.
+               05  WRK-YYS2                PIC 9(04).
+               05  WRK-MMS2                PIC 9(02).
+               05  WRK-DDS2                PIC 9(02).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -327,6 +365,12 @@
       *
       *   ¿ÇÎÅ²Ê»»ÄêÍúÎò¹¹¿·¥µ¥Ö
            COPY    "CPORCSKARRK.INC".
+      *
+      *    ½é´ü²Ã»»»»Äê¥µ¥Ö
+           COPY    "CPORCSSYOKIKSN.INC".
+      *
+      *    Æþ±¡²ñ·×ºîÀ®¥µ¥Ö
+           COPY    "CPORCSNYUACCT.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -3903,18 +3947,27 @@
            END-PERFORM.
       *
            IF      SPA-ERRCD          NOT =   SPACE
-               MOVE    SPA-SAG-SRYYM-41    TO  WRK-SYMD(1:6)
-               MOVE    "01"                TO  WRK-SYMD(7:2)
-               PERFORM 41012-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG(1:6)    TO  SPA-I40-SRYYMDW
-               MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SRYYM-41
-               MOVE    SPA-SAG-SRYYM-41    TO  SPA-I40-SRYYMD
-               MOVE    SPA-SAG-SRYYM-41    TO  SPA-NAI-SRYYM-41
-               MOVE    "0028"              TO  SPA-ERRCD
-               IF      SPA-GMN-MAX-41     =   ZERO
-                   MOVE    07                  TO  SPA-GMN-CUR-41
+      *
+               MOVE    ZERO           TO      FLG-KAIKEI-SAKUSEI
+               DISPLAY   "410191-KAIKEI-SAKUSEI-SEC"
+               PERFORM   410191-KAIKEI-SAKUSEI-SEC
+               IF      FLG-KAIKEI-SAKUSEI    =    1
+                    MOVE    SPACE     TO      SPA-ERRCD
+               ELSE
+      *
+                 MOVE    SPA-SAG-SRYYM-41    TO  WRK-SYMD(1:6)
+                 MOVE    "01"                TO  WRK-SYMD(7:2)
+                 PERFORM 41012-SEIWA-HEN-SEC
+                 MOVE    WRK-HENYMDG(1:6)    TO  SPA-I40-SRYYMDW
+                 MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SRYYM-41
+                 MOVE    SPA-SAG-SRYYM-41    TO  SPA-I40-SRYYMD
+                 MOVE    SPA-SAG-SRYYM-41    TO  SPA-NAI-SRYYM-41
+                 MOVE    "0028"              TO  SPA-ERRCD
+                 IF      SPA-GMN-MAX-41     =   ZERO
+                     MOVE    07                  TO  SPA-GMN-CUR-41
+                 END-IF
+                 GO      TO       41019-JIGETU-SYORI-EXT
                END-IF
-               GO      TO       41019-JIGETU-SYORI-EXT
            END-IF.
            MOVE    WRK-SYMD        TO  SPA-WRK-YMDS3.
       *
@@ -3935,6 +3988,632 @@
            END-IF.
       *
        41019-JIGETU-COMPUTE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   ²ñ·×ºîÀ®½èÍý
+      *****************************************************************
+       410191-KAIKEI-SAKUSEI-SEC            SECTION.
+      *
+      *    ²èÌÌ¤Ç³«¤¤¤Æ¤¤¤ëÅö·î¤ÇÂà±¡ºÑ¤ß¤Î´µ¼Ô¤Ë¤Ä¤¤¤Æ¤Ï
+      *    Æþ±¡²ñ·×¤òºîÀ®¤·¤Ê¤¤
+      *
+      *    ´µ¼ÔÆþ±¡ÍúÎò¤ÎÆÉ¤ß¹þ¤ß
+           INITIALIZE                      PTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTNYUINRRK-KEY9"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC               =  ZERO
+               MOVE    "PTNYUINRRK-KEY9"   TO  ORC-DBPATH
+               PERFORM 970-PTNYUINRRK-READ-SEC
+               IF      FLG-PTNYUINRRK   =  ZERO
+                   IF       PTNYUINRRK-TAIINYMD    =   "99999999"
+                            PERFORM  410191-NYUACCT-SAKUSEI-SEC
+                            MOVE     1          TO  FLG-KAIKEI-SAKUSEI
+                   ELSE
+                            MOVE     ZERO       TO  FLG-KAIKEI-SAKUSEI
+                   END-IF
+               END-IF
+           ELSE
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           MOVE    "PTNYUINRRK-KEY9"   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           .
+      *
+       410191-KAIKEI-SAKUSEI-EXT.
+           EXIT.
+      *
+      ***************************************************************** 021118
+      *    Æþ±¡²ñ·×¥Æ¡¼¥Ö¥ëºîÀ®½èÍý                                     021118
+      ***************************************************************** 021118
+       410191-NYUACCT-SAKUSEI-SEC   SECTION.                             021118
+      *                                                                 021118
+           DISPLAY   "410191-NYUACCT-SAKUSEI-SEC"
+           INITIALIZE      ORCSSYOKIKSNAREA
+      *
+      *    ÄÌ»»Æü¿ô¤òµá¤á¤ë¡ÊÆþ±¡ÍúÎò¤ò¸¡º÷¡Ë
+           MOVE    ZERO                TO  WRK-TSUSAN
+           INITIALIZE                      PTNYUINRRK-REC
+           MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
+           MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "PTNYUINRRK-KEY9"   TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"             USING
+                                           MCPAREA
+                                           ORCMCPAREA
+                                           MCPDATA-REC
+           IF      MCP-RC               =  ZERO
+               MOVE    "PTNYUINRRK-KEY9"   TO  ORC-DBPATH
+               PERFORM 970-PTNYUINRRK-READ-SEC
+               MOVE    PTNYUINRRK-RRKNUM
+                                       TO  WRK-RRKNUM
+               MOVE    PTNYUINRRK-TENNYUYMD
+                                       TO  WRK-SANTEISTYMD
+               MOVE    PTNYUINRRK-TOKUTEI-NYUIN
+                                       TO  WRK-TOKUTEI-NYUIN
+           ELSE
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+           DISPLAY   "410191-NYUACCT-SAKUSEI-SEC2"
+      *
+           PERFORM    UNTIL   (FLG-PTNYUINRRK        =   1)   OR
+                              (PTNYUINRRK-RRKNUM  NOT =  WRK-RRKNUM)
+               MOVE    PTNYUINRRK-TENNYUYMD
+                                           TO  WRK-STYMD
+               IF      PTNYUINRRK-TENSTUYMD    NOT =   SPACE
+                       MOVE    SPA-NAI-SRYYM-41   TO  WRK-EDYMD(1:6)
+                       MOVE    "31"               TO  WRK-EDYMD(7:2)
+               ELSE
+                       MOVE    PTNYUINRRK-TENSTUYMD
+                                           TO  WRK-EDYMD
+               END-IF
+               MOVE   "20030228"             TO  WRK-EDYMD
+               PERFORM    410191-KIKAN-CALC-SEC
+               ADD      WRK-NISSU2         TO  WRK-TSUSAN
+               MOVE    "PTNYUINRRK-KEY9"   TO  ORC-DBPATH
+               PERFORM  970-PTNYUINRRK-READ-SEC
+           END-PERFORM
+           DISPLAY   "410191-NYUACCT-SAKUSEI-SEC3"
+      *
+           MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
+           MOVE    SPA-NAI-SRYYM-41
+                                   TO  SYOKIKSN-IN-SANTEISTYMD(1:6)
+           MOVE    "01"            TO  SYOKIKSN-IN-SANTEISTYMD(7:2)
+      *
+           IF      WRK-TOKUTEI-NYUIN          NOT =   SPACE
+               PERFORM   410191-TOKTEI-NYUIN-SET-SEC
+           ELSE
+               PERFORM   4801-BTUSEL-SEC
+               IF  SYS-5001-BTU-KHNSRYCD      NOT =   SPACE
+                   MOVE    SYS-5001-BTU-KHNSRYCD
+                                       TO  SYOKIKSN-IN-KHNSRYCD
+                   PERFORM   4801-RJNCD-CHG-SEC
+                   CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
+                   IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
+                       MOVE    "2006"      TO  SPA-ERRCD
+                       GO  TO  410191-NYUACCT-SAKUSEI-EXT
+                   END-IF
+               ELSE
+                   MOVE    "2006"      TO  SPA-ERRCD
+                   GO  TO  410191-NYUACCT-SAKUSEI-EXT
+               END-IF
+           END-IF
+           DISPLAY   "410191-NYUACCT-SAKUSEI-SEC4"
+      *
+      *    Æþ±¡²ñ·×ºîÀ®¥µ¥Ö¤Î¸Æ½Ð¤·
+           INITIALIZE            ORCSNYUACCT-AREA
+           MOVE    "8"                TO  LNK-SCNYUACCT-SYORI-KBN
+           MOVE    "1"                TO  SPA-NYUGAIKBN
+           MOVE    PTNYUINRRK-PTID    TO  SPA-PTID
+           DISPLAY  "PTNYUINRRK-PTID = " PTNYUINRRK-PTID
+           MOVE    PTNYUINRRK-NYUINKA TO  SPA-SRYKA
+           MOVE    SYOKIKSN-IN-KHNSRYCD
+                           TO  LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+      **     MOVE    SYOKIKSN-IN-SANTEISTYMD
+      **                     TO   LNK-SCNYUACCT-STSRYYMD
+      **     MOVE    SPA-NAI-I01-IDOYMD
+      **                     TO   LNK-SCNYUACCT-EDSRYYMD
+           MOVE      SYOKIKSN-IN-SANTEISTYMD
+                             TO   LNK-SCNYUACCT-STSRYYMD
+                                  LNK-SCNYUACCT-EDSRYYMD
+           DISPLAY "LNK-SCNYUACCT-STSRYYMD = " LNK-SCNYUACCT-STSRYYMD
+           PERFORM   VARYING   IDX6   FROM   1   BY   1
+               UNTIL (SYOKIKSN-OT-KGNSRYCD(IDX6)  =  SPACE) OR
+                     (IDX6   >     7)
+               MOVE   SYOKIKSN-OT-KGNSRYCD(IDX6)
+                         TO  LNK-SCNYUACCT-KAGEN-SRYCD(IDX6)
+               MOVE   SYOKIKSN-OT-YUKOSTYMD(IDX6)
+                         TO  LNK-SCNYUACCT-KAGEN-STYUKYMD(IDX6)
+               MOVE   SYOKIKSN-OT-YUKOEDYMD(IDX6)
+                         TO  LNK-SCNYUACCT-KAGEN-EDYUKYMD(IDX6)
+               DISPLAY "SYOKIKSN-OT-KGNSRYCD(IDX6) = "
+                                      SYOKIKSN-OT-KGNSRYCD(IDX6)
+               DISPLAY "SYOKIKSN-OT-YUKOSTYMD(IDX6) = "
+                                      SYOKIKSN-OT-YUKOSTYMD(IDX6)
+               DISPLAY "SYOKIKSN-OT-YUKOEDYMD(IDX6) = "
+                                      SYOKIKSN-OT-YUKOEDYMD(IDX6)
+               DISPLAY  "IDX6 = " IDX6
+           END-PERFORM
+      *    ÄÌ»»»»ÄêºÑÆü¿ô
+               MOVE   WRK-TSUSAN    TO  LNK-SCNYUACCT-NYUKHN-NISUU
+               DISPLAY  "WRK-TSUSAN = " WRK-TSUSAN
+      *    Æþ±¡ÎÁ²Ã»»¿ÇÎÅ¥³¡¼¥É
+           IF      WRK-TOKUTEI-NYUIN    =   SPACE
+               PERFORM    410191-NYUKSN-GET-SEC
+           END-IF
+      *    ³°Çñ
+           MOVE   "099999911"   TO  LNK-SCNYUACCT-GAIHAKU-SRYCD
+      *    ¼¼ÎÁº¹³Û
+           MOVE   "099999912"   TO  LNK-SCNYUACCT-SAGAKU-SRYCD
+           IF     PTNYUINRRK-RM-SAGAKU   =   SPACE
+               MOVE    ZERO     TO  LNK-SCNYUACCT-SAGAKU-KBN
+           ELSE
+               MOVE   PTNYUINRRK-RM-SAGAKU 
+                                TO  WRK-SAGAKU-KBN
+               MOVE   WRK-SAGAKU-KBN9
+                                TO  LNK-SCNYUACCT-SAGAKU-KBN
+           END-IF
+      *    ¿©»ö¶èÊ¬
+           MOVE   "099999913"   TO  LNK-SCNYUACCT-SHOKUJI-SRYCD
+           MOVE   1             TO  LNK-SCNYUACCT-SHOKUJIKBN
+      *    ÊÝ¸±ÁÈ¹ç¤»
+           MOVE   "099999914"   TO  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD
+           MOVE   PTNYUINRRK-HKNCOMBINUM
+                                TO  WRK-HKNCOMBINUM
+           MOVE   WRK-HKNCOMBINUM9 
+                                TO  LNK-SCNYUACCT-HKNCOMBINUM
+           DISPLAY   "LNK-SCNYUACCT-HKNCOMBINUM = "
+                                    LNK-SCNYUACCT-HKNCOMBINUM
+      *    Å¾²Ê¸µÆþ±¡²Ê
+           MOVE   "00"          TO  LNK-SCNYUACCT-MOTO-NYUINKA
+      **     MOVE   SPA-GMN-I01-NYUINKA-MOT (1 : 2)
+      **                          TO  LNK-SCNYUACCT-MOTO-NYUINKA
+           MOVE   SPA-SRYKA     TO  WRK-TAIHI-SRYKA
+           MOVE   "00"          TO  SPA-SRYKA
+      **   
+           DISPLAY "ŽÆŽ­Ž³Ž²ŽÝŽ¶Ž²Ž¹Ž² Ž»Ž¸Ž¾Ž²ŽÏŽ´ ŽËŽ®Ž³Ž¼ŽÞ"
+           DISPLAY  "SPA-HOSPID = " SPA-HOSPID
+           DISPLAY  "SPA-NYUGAIKBN = " SPA-NYUGAIKBN
+           DISPLAY  "SPA-PTID = " SPA-PTID
+           DISPLAY  "SPA-SRYKA = " SPA-SRYKA
+           DISPLAY  "LNK-SCNYUACCT-STSRYYMD = " LNK-SCNYUACCT-STSRYYMD
+           DISPLAY  "LNK-SCNYUACCT-EDSRYYMD = " LNK-SCNYUACCT-EDSRYYMD
+           DISPLAY  "LNK-SCNYUACCT-NYUKHN-SRYCD(1) = " 
+                                         LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+           DISPLAY  "LNK-SCNYUACCT-KAGEN-SRYCD(1) = "
+                                         LNK-SCNYUACCT-KAGEN-SRYCD(1)
+           DISPLAY  "LNK-SCNYUACCT-KAGEN-STYUKYMD(1) = "
+                                      LNK-SCNYUACCT-KAGEN-STYUKYMD(1)
+           DISPLAY  "LNK-SCNYUACCT-KAGEN-EDYUKYMD(1) = "
+                                      LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
+           DISPLAY  "LNK-SCNYUACCT-NYUKHN-NISUU = "
+                                         LNK-SCNYUACCT-NYUKHN-NISUU
+           DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(1) = "
+                                     LNK-SCNYUACCT-NYUKHNKSN-SRYCD(1)
+           DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(2) = "
+                                     LNK-SCNYUACCT-NYUKHNKSN-SRYCD(2)
+           DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(3) = "
+                                     LNK-SCNYUACCT-NYUKHNKSN-SRYCD(3)
+           DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(4) = "
+                                     LNK-SCNYUACCT-NYUKHNKSN-SRYCD(4)
+           DISPLAY  "LNK-SCNYUACCT-NYUKHNKSN-SRYCD(5) = "
+                                     LNK-SCNYUACCT-NYUKHNKSN-SRYCD(5)
+           DISPLAY  "ORCSNYUACCT CALL "
+           CALL   "ORCSNYUACCT"  USING   SPA-AREA
+                                         ORCSNYUACCT-AREA
+           MOVE   WRK-TAIHI-SRYKA TO     SPA-SRYKA
+           IF     LNK-SCNYUACCT-RC   NOT =  ZERO
+               DISPLAY  "ORCGI01 ORCSNYUACCT ERR RC = "
+                         LNK-SCNYUACCT-RC
+           END-IF
+      *
+           .
+      *                                                                 021118
+       410191-NYUACCT-SAKUSEI-EXT.                                       021118
+           EXIT.                                                        021118
+      *
+      *****************************************************************
+      *    ´ü´Ö»»½Ð½èÍý
+      *****************************************************************
+       410191-KIKAN-CALC-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  WRK-NISSU1
+                                           WRK-NISSU2
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY5-AREA
+           MOVE    "51"                TO  LNK-DAY5-IRAI
+           MOVE    WRK-STYMD           TO  LNK-DAY5-START
+           MOVE    WRK-EDYMD           TO  LNK-DAY5-END
+           CALL  "ORCSDAY"             USING   STS-AREA-DAY
+                                           LNK-DAY5-AREA
+      *
+           MOVE    LNK-DAY5-NISSU1     TO  WRK-NISSU1
+           MOVE    LNK-DAY5-NISSU2     TO  WRK-NISSU2
+      *
+           .
+       410191-KIKAN-CALC-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÆÃÄêÆþ±¡ÎÁ¥»¥Ã¥È½èÍý
+      *****************************************************************
+       410191-TOKTEI-NYUIN-SET-SEC   SECTION.
+      *    ÉÂÅï
+           IF  PTNYUINRRK-TOKUTEI-KBN   =   "1"
+             EVALUATE    PTNYUINRRK-TOKUTEI-NYUIN
+               WHEN    "01"
+                       MOVE   "190075810"   TO  SYOKIKSN-IN-KHNSRYCD
+             END-EVALUATE
+           END-IF
+      *    ÉÂÅï
+           IF  PTNYUINRRK-TOKUTEI-KBN   =   "2"
+             EVALUATE    PTNYUINRRK-TOKUTEI-NYUIN
+               WHEN    "01"
+                       MOVE   "190111110"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "02"
+                       MOVE   "190111210"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "03"
+                       MOVE   "190055210"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "04"
+                       MOVE   "190055310"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "05"
+                       MOVE   "190739910"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "06"
+                       MOVE   "190740110"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "07"
+                       MOVE   "190055010"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "08"
+                       MOVE   "190055110"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "09"
+                       MOVE   "190028910"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "10"
+                       MOVE   "190111410"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "11"
+                       MOVE   "190066910"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "12"
+                       MOVE   "190067010"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "13"
+                       MOVE   "190075910"   TO  SYOKIKSN-IN-KHNSRYCD
+             END-EVALUATE
+           END-IF
+      *    ÉÂ¼¼
+           IF  PTNYUINRRK-TOKUTEI-KBN   =   "3"
+             EVALUATE    PTNYUINRRK-TOKUTEI-NYUIN
+               WHEN    "01"
+                       MOVE   "190075710"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "02"
+                       MOVE   "190774110"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "03"
+                       MOVE   "190024510"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "04"
+                       MOVE   "190110210"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "05"
+                       MOVE   "190110310"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "06"
+                       MOVE   "190024310"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "07"
+                       MOVE   "190110410"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "08"
+                       MOVE   "190110510"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "09"
+                       MOVE   "190024610"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "10"
+                       MOVE   "190024710"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "11"
+                       MOVE   "190066710"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "12"
+                       MOVE   "190066810"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "13"
+                       MOVE   "190024810"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "14"
+                       MOVE   "190075510"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "15"
+                       MOVE   "190788810"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "20"
+                       MOVE   "190076710"   TO  SYOKIKSN-IN-KHNSRYCD
+               WHEN    "21"
+                       MOVE   "190076810"   TO  SYOKIKSN-IN-KHNSRYCD
+             END-EVALUATE
+           END-IF
+      *
+           .
+       410191-BTU-TOKTEI-NYUIN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÎÁ²Ã»»¤Î¼è¤ê¹þ¤ß½èÍý
+      *****************************************************************
+       410191-NYUKSN-GET-SEC         SECTION.
+      *
+           MOVE   ZERO             TO   IDX8
+      *
+      *°åÎÅµ¡´Ø²Ã»»¡Ê¸º»»¡Ë¾ðÊó
+           INITIALIZE              SYSKANRI-REC
+           MOVE    "5000"          TO  SYS-KANRICD
+           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+      *
+      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¤Î°åÎÅµ¡´Ø¾ðÊó¤è¤ê¼èÆÀ
+           MOVE    "SYSKANRI-KEY2" TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+      *
+           IF   FLG-DBRC           =    ZERO
+               MOVE    MCPDATA-REC TO   SYS-5000-REC
+      *        °åÎÅµ¡´Ø¸º»»¾ðÊó
+      *         PERFORM   VARYING   IDX7   FROM   1  BY  1
+      *           UNTIL  (SYS-5000-GENCD(IDX7)    =   SPACE)  OR
+      *                  (IDX7                    >   5)
+      *              IF   SYS-5000-GENKBN(IDX7)   =   "2"
+      *                   ADD    1                TO  IDX8
+      *                   MOVE   SYS-5000-GENCD(IDX7)  TO
+      *                             LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+      *              END-IF
+      *         END-PERFORM
+      *        Æþ±¡ÎÁ²Ã»»
+               PERFORM   VARYING   IDX7   FROM   1  BY  1
+                 UNTIL  (SYS-5000-KSNCD(IDX7)    =   SPACE)  OR
+                        (IDX7                    >   20)
+                    IF   SYS-5000-KSNKBN(IDX7)   =   "2"
+      **                   PERFORM   4801-NYUKSN-CHK-SEC
+      **                   IF     FLG-NYUKSN       =   ZERO   
+                             ADD    1                TO  IDX8
+                             MOVE   SYS-5000-KSNCD(IDX7)  TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+      **                   END-IF
+                    END-IF
+               END-PERFORM
+      *        ÃÏ°è²Ã»»
+               IF   SYS-5000-CHIIKIKSN    NOT =   SPACE
+                    ADD    1        TO   IDX8
+                    MOVE   SYS-5000-CHIIKIKSN   TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+           END-IF
+      *
+      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¥¯¥í¡¼¥º
+           MOVE    "SYSKANRI-KEY2" TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+      *ÉÂÅï²Ã»»¾ðÊó
+           PERFORM     4801-BTUSEL-SEC
+      *
+           IF   FLG-SYSKANRI           =    ZERO
+      *
+      *        ´Ç¸îÊä½õ²Ã»»
+               IF    SYS-5001-BTU-KNGHJOKSN   NOT =   SPACE
+                   ADD      1          TO     IDX8
+                   EVALUATE     SYS-5001-BTU-KNGHJOKSN
+                       WHEN     "01"
+                           MOVE  "190103070"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "02"
+                           MOVE  "190103470"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "03"
+                           MOVE  "190103770"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "04"
+                           MOVE  "190103970"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "05"
+                           MOVE  "190104070"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                   END-EVALUATE
+               END-IF
+      *
+      *        Ìë´Ö¶ÐÌ³Åù´Ç¸î²Ã»»
+               IF    SYS-5001-BTU-YAKANKNGKSN   NOT =   SPACE
+                   ADD      1          TO     IDX8
+                   EVALUATE     SYS-5001-BTU-YAKANKNGKSN
+                       WHEN     "01"
+                           MOVE  "190109870"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "02"
+                           MOVE  "190076070"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "03"
+                           MOVE  "190076170"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "04"
+                           MOVE  "190076370"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                       WHEN     "05"
+                           MOVE  "190076470"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                   END-EVALUATE
+               END-IF
+      *
+      *        ¾®»ùÆþ±¡°åÎÅ´ÉÍýÎÁ²Ã»»¡ÊÊÝ°é»Î£±¿Í°Ê¾å¡Ë
+               IF    SYS-5001-BTU-HIKSISUKBN   =   "2"
+                   ADD      1          TO     IDX8
+                   MOVE  "190111370"   TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+      *
+      *        ÉÂÅïÆþ±¡ÎÁ²Ã»»
+               PERFORM   VARYING   IDX7   FROM   1  BY  1
+                 UNTIL  (SYS-5001-KSNCD(IDX7)    =   SPACE)  OR
+                        (IDX7                    >   12)
+                    IF   IDX7          =       6
+      *                 »ùÆ¸»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»¡Ê£²£°ºÍÌ¤Ëþ¡Ë
+                        IF   SYS-5001-KSNKBN(IDX7)   =   "2"
+                             PERFORM   4801-PT-AGE-SEC
+                             IF     WRK-NENREI    <      20
+                                 ADD    1                TO  IDX8
+                                 MOVE   SYS-5001-KSNCD(IDX7)  TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                             END-IF
+                        END-IF
+                    ELSE
+                        IF   SYS-5001-KSNKBN(IDX7)   =   "2"
+                             ADD    1                TO  IDX8
+                             MOVE   SYS-5001-KSNCD(IDX7)  TO
+                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+                        END-IF
+                    END-IF
+               END-PERFORM
+           END-IF
+      *
+      *ÉÂ¼¼¾ðÊó
+           PERFORM     4801-BRMSEL-SEC
+      *
+           IF   FLG-SYSKANRI       =    ZERO
+      *        ¿·À¸»ùÆþ±¡°åÎÅ´ÉÍý²Ã»»
+               IF   SYS-5002-SINSEIJI-KBN     =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   SYS-5002-SINSEIJI-CD  TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+      *        ¿ÇÎÅ½êÎÅÍÜÉÂ¾²ÎÅÍÜ´Ä¶­²Ã»»¡Ê£±¡Ë
+               IF   SYS-5002-SNR-RYOYO-KBN(1)     =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   SYS-5002-SNR-RYOYO-CD(1)  TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+      *        ¿ÇÎÅ½êÎÅÍÜÉÂ¾²ÎÅÍÜ´Ä¶­²Ã»»¡Ê£²¡Ë
+               IF   SYS-5002-SNR-RYOYO-KBN(2)     =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   SYS-5002-SNR-RYOYO-CD(2)  TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+      *        Êü¼ÍÀþ¼£ÎÅÉÂ¼¼´ÉÍý²Ã»»
+               IF   SYS-5002-HOSYASEN-KBN     =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   SYS-5002-HOSYASEN-CD  TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+      *        ÎÅÍÜ´Ä¶­²Ã»»
+               IF   SYS-5002-RYOYO-KBN     =   "2"
+                    ADD     1       TO     IDX8
+                    MOVE   SYS-5002-RYOYO-CD  TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+           END-IF
+      *
+           .
+      *
+       410191-NYUKSN-GET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡´µ¼Ô¤ÎÇ¯Îð»»½Ð
+      *****************************************************************
+       4801-PT-AGE-SEC         SECTION.
+      *
+           INITIALIZE                      PTINF-REC
+           MOVE    SPA-HOSPID          TO  PTINF-HOSPID
+           MOVE    PTNYUINRRK-PTID     TO  PTINF-PTID
+           MOVE    PTINF-REC           TO  MCPDATA-REC
+           MOVE    "PTINF-KEY"         TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO  )
+               MOVE    MCPDATA-REC     TO  PTINF-REC
+           ELSE
+               MOVE    1               TO  FLG-PTINF
+           END-IF
+      *
+           IF      FLG-PTINF           =   1
+               MOVE    ZERO            TO  WRK-NENREI
+           ELSE
+               MOVE   PTINF-BIRTHDAY   TO  WRK-YMDS1
+               MOVE   SYOKIKSN-IN-SANTEISTYMD
+                                       TO  WRK-YMDS2
+               MOVE   ZERO             TO  WRK-NENREI
+               COMPUTE  WRK-NENREI     =   WRK-YYS2
+                                       -   WRK-YYS1
+               IF   WRK-YMDS1(5:4)     >   WRK-YMDS2(5:4)
+                    ADD   -1           TO  WRK-NENREI
+               END-IF
+           END-IF
+      *
+           .
+      *
+       4801-PT-AGE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÉÂÅï¾ðÊó¸¡º÷½èÍý
+      *****************************************************************
+       4801-BTUSEL-SEC             SECTION.
+      *
+           INITIALIZE              SYSKANRI-REC
+           MOVE    ZERO            TO  FLG-SYSKANRI
+      *
+           MOVE    "5001"          TO  SYS-KANRICD
+           MOVE    PTNYUINRRK-BTUNUM
+                                   TO  SYS-KBNCD
+           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY10"
+                                   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO )
+               MOVE    MCPDATA-REC
+                                  TO  SYS-5001-REC
+           ELSE
+               MOVE    1          TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY10"
+                                   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           .
+       4801-BTUSEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÉÂ¼¼¾ðÊó¸¡º÷½èÍý
+      *****************************************************************
+       4801-BRMSEL-SEC             SECTION.
+      *
+           INITIALIZE              SYSKANRI-REC
+           MOVE    ZERO            TO  FLG-SYSKANRI
+      *
+           MOVE    "5002"          TO  SYS-KANRICD
+           MOVE    PTNYUINRRK-BRMNUM
+                                   TO  SYS-KBNCD
+           MOVE    SPA-SYSYMD      TO  ORC-DBYMD
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "SYSKANRI-KEY10"
+                                   TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC    =   ZERO )
+               MOVE    MCPDATA-REC
+                                  TO  SYS-5002-REC
+           ELSE
+               MOVE    1          TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "SYSKANRI-KEY10"
+                                   TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           .
+       4801-BRMSEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÎÁ°ìÈÌ¥³¡¼¥É¤«¤éÏ·¿Í¥³¡¼¥É¤Ø¤ÎÃÖ¤­´¹¤¨½èÍý
+      *****************************************************************
+       4801-RJNCD-CHG-SEC   SECTION.
+      *
+      *
+           .
+       4801-RJNCD-CHG-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4847,6 +5526,79 @@
       *
        520-JIDSET-EXT.
            EXIT.
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *****************************************************************
+       900-TBL-SELECT-SEC              SECTION.
+      *
+           MOVE    ZERO            TO  FLG-DBRC
+           MOVE    WRK-DBPATH      TO  ORC-DBPATH
+           PERFORM 910-DB-SELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    WRK-DBPATH  TO  ORC-DBPATH
+               PERFORM 910-DB-READ-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   CONTINUE
+               ELSE
+                   MOVE    1       TO  FLG-DBRC
+               END-IF
+           ELSE
+               MOVE    1           TO  FLG-DBRC
+           END-IF
+      *
+           .
+       900-TBL-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ëÆÉ¹þ½èÍý
+      *****************************************************************
+       900-TBL-READ-SEC                SECTION.
+      *
+           MOVE    ZERO            TO  FLG-DBRC
+           MOVE    WRK-DBPATH      TO  ORC-DBPATH
+           PERFORM 910-DB-READ-SEC
+           IF    ( MCP-RC          =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    1           TO  FLG-DBRC
+           END-IF
+      *
+           .
+       900-TBL-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â¸¡º÷½èÍý
+      *****************************************************************
+       910-DB-SELECT-SEC               SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+      *
+           .
+      *
+       910-DB-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *****************************************************************
+       910-DB-READ-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+      *
+           .
+      *
+       910-DB-READ-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß½èÍý
@@ -5184,5 +5936,32 @@
                                 MCPDATA-REC.
       *
        900-PUT-WINDOW-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *****************************************************************
+       900-TBL-CLOSE-SEC               SECTION.
+      *
+           MOVE    WRK-DBPATH      TO  ORC-DBPATH
+           PERFORM 910-DB-CLOSE-SEC
+      *
+           .
+       900-TBL-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *****************************************************************
+       910-DB-CLOSE-SEC                SECTION.
+      *
+           MOVE    "DBCLOSE"            TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           .
+      *
+       910-DB-CLOSE-EXT.
            EXIT.
       *
