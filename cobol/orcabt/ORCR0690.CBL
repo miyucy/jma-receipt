@@ -1190,28 +1190,6 @@
                IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2) 
                                          =   TBL-NOSRYCD (IDY)
                    MOVE    1                 TO  FLG-NOPRT
-      *            ＊再診の場合
-                   IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                                         =   "112009210"  OR
-                                             "112010150"  OR
-                                             "112009750"  OR
-                                             "112010650"  OR
-                                             "112703710"  OR
-                                             "112704450"  OR
-                                             "112704150"  OR
-                                             "112704850"
-                     IF  RECE62-SAISHIN-PRTKBN   =   "1"
-                         MOVE    ZERO          TO  FLG-NOPRT
-                     END-IF
-                   END-IF
-      *            ＊外来管理加算の場合
-                   IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                                         =   "112011010"  OR
-                                             "112705310"
-                     IF  RECE62-GAIRAIKSN-PRTKBN   =   "1"
-                         MOVE    ZERO          TO  FLG-NOPRT
-                     END-IF
-                   END-IF
       *            一つの剤に他の明細も存在する場合
                    IF  RECE64-MEISAISU       >   1
                        MOVE    ZERO          TO  FLG-NOPRT

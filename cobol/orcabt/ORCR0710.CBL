@@ -133,10 +133,12 @@
                                    BY         //RECEERR//.
            03                      PIC X(04)   VALUE   ".dat".
       *
-      *     
-           COPY    "HCN06.INC".
-           COPY    "HCN061.INC".
-           COPY    "HCN062.INC".
+      *       
+           COPY    "HCN06.INC"     REPLACING  //HCN06//
+                                   BY         //HC06//.
+            COPY    "HCN061.INC"   REPLACING  //HCN061//
+                                   BY         //HC061//.
+      *     COPY    "HCN062.INC".
       *
       *    ¥¹¥ÑÎÎ°è
        01  SPA-AREA.
@@ -280,8 +282,8 @@
                                    PIC X(08).                                       
       *
       *    ¸©Ã±ÍÑ¹àÌÜ¥Õ¥¡¥¤¥ëÍÑ¥ï¡¼¥¯     
-           COPY    "HCN06.INC"     REPLACING  //HCN06//
-                                   BY         //RECE67-HCN06//.
+           COPY    "HC06.INC"     REPLACING  //HC06//
+                                   BY         //RECE67-HC06//.
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -1067,7 +1069,7 @@
       *****************************************************************
        301-RECE67-HENSYU-SEC           SECTION.
       *
-           MOVE    SPACE               TO  RECE67-HCN06
+           MOVE    SPACE               TO  RECE67-HC06
       *       
            INITIALIZE                      RECE67-REC
            MOVE    RECE62-HOSPID       TO  RECE67-HOSPID
@@ -1082,7 +1084,7 @@
            MOVE    RECE62-TEKSTYMD     TO  RECE67-TEKSTYMD
            PERFORM 990-RECE67-READ-SEC
            IF      FLG-RECE67          =   ZERO
-               MOVE    RECE67-PRTDATA      TO  RECE67-HCN06
+               MOVE    RECE67-PRTDATA      TO  RECE67-HC06
            END-IF    
            .
        301-RECE67-HENSYU-EXT.
@@ -1093,23 +1095,23 @@
       *****************************************************************
        310-HC101-HEAD-HEN-SEC          SECTION.
       *
-           INITIALIZE                      HCN06
-           MOVE    SPACE               TO  HCN06
+           INITIALIZE                      HC06
+           MOVE    SPACE               TO  HC06
       *
       *    ´µ¼ÔÈÖ¹æ
-           MOVE    RECE62-PTNUM        TO  HCN06-PTNUM
+           MOVE    RECE62-PTNUM        TO  HC06-PTNUM
       *
       *    Äó½ÐÀè
            IF      RECE62-RECESYUBETU  =    "0000"  OR  "8888"
-               MOVE    SPACE           TO  HCN06-TEISYUTUSAKI
+               MOVE    SPACE           TO  HC06-TEISYUTUSAKI
            ELSE    
                EVALUATE    RECE62-TEISYUTUSAKI
                    WHEN    1
-                       MOVE    "£±¼Ò"          TO  HCN06-TEISYUTUSAKI
+                       MOVE    "£±¼Ò"          TO  HC06-TEISYUTUSAKI
                    WHEN    2
-                       MOVE    "£²¹ñ"          TO  HCN06-TEISYUTUSAKI
+                       MOVE    "£²¹ñ"          TO  HC06-TEISYUTUSAKI
                    WHEN    OTHER
-                       MOVE    SPACE           TO  HCN06-TEISYUTUSAKI
+                       MOVE    SPACE           TO  HC06-TEISYUTUSAKI
                END-EVALUATE
            END-IF    
       *
@@ -1118,14 +1120,14 @@
            MOVE    "01"                TO  WRK-SDD
            MOVE    WRK-SYMD            TO  WRK-SRYYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    LNK-DAY2-EDTYMD1-Y  TO  HCN06-SRYY 
-           MOVE    LNK-DAY2-EDTYMD1-M  TO  HCN06-SRYM 
+           MOVE    LNK-DAY2-EDTYMD1-Y  TO  HC06-SRYY 
+           MOVE    LNK-DAY2-EDTYMD1-M  TO  HC06-SRYM 
       *
       *    ¸©ÈÖ
-           MOVE    SYS-1001-PREFNUM    TO  HCN06-PREFNUM
+           MOVE    SYS-1001-PREFNUM    TO  HC06-PREFNUM
       *
       *    °åÎÅµ¡´Ø¥³¡¼¥É
-           MOVE    SYS-1001-HOSPCDN    TO  HCN06-HOSPCDN
+           MOVE    SYS-1001-HOSPCDN    TO  HC06-HOSPCDN
       *
       *    ÊÝ¸±¼ïÊÌ£±
            PERFORM 3110-HKNSBT1-SET-SEC
@@ -1137,10 +1139,10 @@
            PERFORM 3110-HONKZK-SET-SEC
       *
       *    Ï·¿ÍÊÝ¸±¡Ý»ÔÄ®Â¼ÈÖ¹æ
-           MOVE    RECE62-RJNFTNJANUM  TO  HCN06-RJNFTNJANUM
+           MOVE    RECE62-RJNFTNJANUM  TO  HC06-RJNFTNJANUM
       *
       *    Ï·¿ÍÊÝ¸±¡Ý¼õµë¼ÔÈÖ¹æ
-           MOVE    RECE62-RJNJKYSNUM   TO  HCN06-RJNJKYSNUM
+           MOVE    RECE62-RJNJKYSNUM   TO  HC06-RJNJKYSNUM
       *
       *    ÊÝ¸±¼ÔÈÖ¹æ¡¦¸øÈñ¡ÝÉéÃ´¼ÔÈÖ¹æ¡¦¼õµë¼ÔÈÖ¹æ¡¦¿ÇÎÅ¼ÂÆü¿ô¡¦µ­¹æÈÖ¹æ
            PERFORM 3110-KANREN-NUM-SET-SEC
@@ -1149,19 +1151,19 @@
            PERFORM 3110-KYURATE-SET-SEC
       *
       *    ¥«¥Ê»áÌ¾
-           MOVE    RECE62-KANANAME     TO  HCN06-KANANAME
+           MOVE    RECE62-KANANAME     TO  HC06-KANANAME
       *
       *    »áÌ¾
-           MOVE    RECE62-NAME         TO  HCN06-NAME
+           MOVE    RECE62-NAME         TO  HC06-NAME
       *
       *    À­ÊÌ
            EVALUATE    RECE62-SEX
            WHEN    "1"
-               MOVE    "£±"            TO  HCN06-SEXNUM
-               MOVE    "ÃË"            TO  HCN06-SEXN
+               MOVE    "£±"            TO  HC06-SEXNUM
+               MOVE    "ÃË"            TO  HC06-SEXN
            WHEN    "2"
-               MOVE    "£²"            TO  HCN06-SEXNUM
-               MOVE    "½÷"            TO  HCN06-SEXN
+               MOVE    "£²"            TO  HC06-SEXNUM
+               MOVE    "½÷"            TO  HC06-SEXN
            END-EVALUATE
       *
       *    À¸Ç¯·îÆü
@@ -1173,14 +1175,14 @@
            CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
            IF      KANACHK-RC      =   ZERO
                MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                       TO  HCN06-BIRTHDAY(1:)
+                                       TO  HC06-BIRTHDAY(1:)
            END-IF    
            MOVE    RECE62-BIRTHDAY     TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    LNK-DAY2-EDTYMD2 (1:2)
-                                       TO  HCN06-BIRTHDAY(3:2)
+                                       TO  HC06-BIRTHDAY(3:2)
            MOVE    LNK-DAY2-EDTYMD2 (5:)
-                                       TO  HCN06-BIRTHDAY(5:)
+                                       TO  HC06-BIRTHDAY(5:)
       *
       *    ÆÃµ­»ö¹à
            PERFORM 3110-TOKKI-SET-SEC
@@ -1193,57 +1195,50 @@
                        WHEN    "1"
                        WHEN    "A"
                        WHEN    "D"
-                           MOVE    "¿¦Ì³¾å"              TO  HCN06-JIYU
+                           MOVE    "¿¦Ì³¾å"              TO  HC06-JIYU
                        WHEN    "2"
                        WHEN    "B"
                        WHEN    "E"
-                           MOVE    "²¼Á¥¸å£³¥ö·î°ÊÆâ"    TO  HCN06-JIYU
+                           MOVE    "²¼Á¥¸å£³¥ö·î°ÊÆâ"    TO  HC06-JIYU
                        WHEN    "3"
                        WHEN    "C"
                        WHEN    "F"
-                           MOVE    "ÄÌ¶ÐºÒ³²"            TO  HCN06-JIYU
+                           MOVE    "ÄÌ¶ÐºÒ³²"            TO  HC06-JIYU
                    END-EVALUATE
            END-EVALUATE        
       *
       *    °åÎÅµ¡´Ø½êºßÃÏ
-           MOVE    SYS-1002-ADRS       TO  HCN06-HOSPADRS
+           MOVE    SYS-1002-ADRS       TO  HC06-HOSPADRS
       *
       *    °åÎÅµ¡´ØÌ¾¾Î
-           MOVE    SYS-1001-HOSPNAME   TO  HCN06-HOSPNAME
+           MOVE    SYS-1001-HOSPNAME   TO  HC06-HOSPNAME
       *
       *    °åÎÅµ¡´Ø£Ô£Å£Ì
-           MOVE    SYS-1002-TEL        TO  HCN06-HOSPTEL
+           MOVE    SYS-1002-TEL        TO  HC06-HOSPTEL
       *
       *     ¿ÇÎÅ²Ê
       *     IF  RECE62-SRYKA        NOT =   SPACE
-      *         MOVE    SPACE           TO  HCN06-SRYKA
+      *         MOVE    SPACE           TO  HC06-SRYKA
       *     ELSE
-               MOVE    SPACE           TO  HCN06-SRYKA
+               MOVE    SPACE           TO  HC06-SRYKA
       *     END-IF
       *
       *    ÉÂ¾²¿ô
            MOVE    SYS-1001-BEDSU      TO  WRK-BEDSU
-           MOVE    WRK-BEDSU           TO  HCN06-BEDSU
-      *
-      *    £Ï£Ã£Ò
-           IF  CNT-PAGE                =   1
-               MOVE    RECE62-OCR3     TO  HCN06-OCR1
-               MOVE    RECE62-OCR2     TO  HCN06-OCR2
-               MOVE    RECE62-OCR1     TO  HCN06-OCR3
-           END-IF
+           MOVE    WRK-BEDSU           TO  HC06-BEDSU
       *
       *    ¸©Ã±ÍÑ¹àÌÜ
            IF      CNT-PAGE            =   1
            AND     FLG-RECE67          =   ZERO
-               INSPECT RECE67-HCN06-HEAD1-G  REPLACING   ALL "  "
+               INSPECT RECE67-HC06-HEAD1-G  REPLACING   ALL "  "
                                                         BY  "¡¡" 
-               INSPECT RECE67-HCN06-HEAD2-G  REPLACING   ALL "  "
+               INSPECT RECE67-HC06-HEAD2-G  REPLACING   ALL "  "
                                                         BY  "¡¡" 
-               INSPECT RECE67-HCN06-HEAD3-G  REPLACING   ALL "  "
+               INSPECT RECE67-HC06-HEAD3-G  REPLACING   ALL "  "
                                                         BY  "¡¡" 
-               MOVE    RECE67-HCN06-HEAD1-G TO  HCN06-HEAD1-G
-               MOVE    RECE67-HCN06-HEAD2-G TO  HCN06-HEAD2-G
-               MOVE    RECE67-HCN06-HEAD3-G TO  HCN06-HEAD3-G
+               MOVE    RECE67-HC06-HEAD1-G TO  HC06-HEAD1-G
+               MOVE    RECE67-HC06-HEAD2-G TO  HC06-HEAD2-G
+               MOVE    RECE67-HC06-HEAD3-G TO  HC06-HEAD3-G
            END-IF
       *
            .
@@ -1255,23 +1250,23 @@
       *****************************************************************
        310-HC102-HEAD-HEN-SEC          SECTION.
       *
-           INITIALIZE                      HCN061
-           MOVE    SPACE               TO  HCN061
+           INITIALIZE                      HC061
+           MOVE    SPACE               TO  HC061
       *
       *    ´µ¼ÔÈÖ¹æ
-           MOVE    RECE62-PTNUM        TO  HCN061-PTNUM
+           MOVE    RECE62-PTNUM        TO  HC061-PTNUM
       *
       *    Äó½ÐÀè
            IF      RECE62-RECESYUBETU  =    "0000"  OR  "8888"
-               MOVE    SPACE           TO  HCN06-TEISYUTUSAKI
+               MOVE    SPACE           TO  HC06-TEISYUTUSAKI
            ELSE    
                EVALUATE    RECE62-TEISYUTUSAKI
                    WHEN    1
-                       MOVE    "£±¼Ò"          TO  HCN061-TEISYUTUSAKI
+                       MOVE    "£±¼Ò"          TO  HC061-TEISYUTUSAKI
                    WHEN    2
-                       MOVE    "£²¹ñ"          TO  HCN061-TEISYUTUSAKI
+                       MOVE    "£²¹ñ"          TO  HC061-TEISYUTUSAKI
                    WHEN    OTHER
-                       MOVE    SPACE           TO  HCN061-TEISYUTUSAKI
+                       MOVE    SPACE           TO  HC061-TEISYUTUSAKI
                END-EVALUATE
            END-IF    
       *
@@ -1280,14 +1275,14 @@
            MOVE    "01"                TO  WRK-SDD
            MOVE    WRK-SYMD            TO  WRK-SRYYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    LNK-DAY2-EDTYMD1-Y  TO  HCN06-SRYY 
-           MOVE    LNK-DAY2-EDTYMD1-M  TO  HCN06-SRYM 
+           MOVE    LNK-DAY2-EDTYMD1-Y  TO  HC06-SRYY 
+           MOVE    LNK-DAY2-EDTYMD1-M  TO  HC06-SRYM 
       *
       *    ¸©ÈÖ
-           MOVE    SYS-1001-PREFNUM    TO  HCN06-PREFNUM
+           MOVE    SYS-1001-PREFNUM    TO  HC06-PREFNUM
       *
       *    °åÎÅµ¡´Ø¥³¡¼¥É
-           MOVE    SYS-1001-HOSPCDN    TO  HCN06-HOSPCDN
+           MOVE    SYS-1001-HOSPCDN    TO  HC06-HOSPCDN
       *
       *    ÊÝ¸±¼ïÊÌ£±
            PERFORM 3110-HKNSBT1-SET-SEC
@@ -1299,10 +1294,10 @@
            PERFORM 3110-HONKZK-SET-SEC
       *
       *    Ï·¿ÍÊÝ¸±¡Ý»ÔÄ®Â¼ÈÖ¹æ
-           MOVE    RECE62-RJNFTNJANUM  TO  HCN06-RJNFTNJANUM
+           MOVE    RECE62-RJNFTNJANUM  TO  HC06-RJNFTNJANUM
       *
       *    Ï·¿ÍÊÝ¸±¡Ý¼õµë¼ÔÈÖ¹æ
-           MOVE    RECE62-RJNJKYSNUM   TO  HCN06-RJNJKYSNUM
+           MOVE    RECE62-RJNJKYSNUM   TO  HC06-RJNJKYSNUM
       *
       *    ÊÝ¸±¼ÔÈÖ¹æ¡¦¸øÈñ¡ÝÉéÃ´¼ÔÈÖ¹æ¡¦¼õµë¼ÔÈÖ¹æ¡¦¿ÇÎÅ¼ÂÆü¿ô¡¦µ­¹æÈÖ¹æ
            PERFORM 3110-KANREN-NUM-SET-SEC
@@ -1311,19 +1306,19 @@
            PERFORM 3110-KYURATE-SET-SEC
       *
       *    ¥«¥Ê»áÌ¾
-           MOVE    RECE62-KANANAME     TO  HCN06-KANANAME
+           MOVE    RECE62-KANANAME     TO  HC06-KANANAME
       *
       *    »áÌ¾
-           MOVE    RECE62-NAME         TO  HCN06-NAME
+           MOVE    RECE62-NAME         TO  HC06-NAME
       *
       *    À­ÊÌ
            EVALUATE    RECE62-SEX
            WHEN    "1"
-               MOVE    "£±"            TO  HCN06-SEXNUM
-               MOVE    "ÃË"            TO  HCN06-SEXN
+               MOVE    "£±"            TO  HC06-SEXNUM
+               MOVE    "ÃË"            TO  HC06-SEXN
            WHEN    "2"
-               MOVE    "£²"            TO  HCN06-SEXNUM
-               MOVE    "½÷"            TO  HCN06-SEXN
+               MOVE    "£²"            TO  HC06-SEXNUM
+               MOVE    "½÷"            TO  HC06-SEXN
            END-EVALUATE
       *
       *    À¸Ç¯·îÆü
@@ -1335,14 +1330,14 @@
            CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
            IF      KANACHK-RC      =   ZERO
                MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                       TO  HCN06-BIRTHDAY(1:)
+                                       TO  HC06-BIRTHDAY(1:)
            END-IF    
            MOVE    RECE62-BIRTHDAY     TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    LNK-DAY2-EDTYMD2 (1:2)
-                                       TO  HCN06-BIRTHDAY(3:2)
+                                       TO  HC06-BIRTHDAY(3:2)
            MOVE    LNK-DAY2-EDTYMD2 (5:)
-                                       TO  HCN06-BIRTHDAY(5:)
+                                       TO  HC06-BIRTHDAY(5:)
       *
       *    ÆÃµ­»ö¹à
            PERFORM 3110-TOKKI-SET-SEC
@@ -1355,57 +1350,50 @@
                        WHEN    "1"
                        WHEN    "A"
                        WHEN    "D"
-                           MOVE    "¿¦Ì³¾å"              TO  HCN06-JIYU
+                           MOVE    "¿¦Ì³¾å"              TO  HC06-JIYU
                        WHEN    "2"
                        WHEN    "B"
                        WHEN    "E"
-                           MOVE    "²¼Á¥¸å£³¥ö·î°ÊÆâ"    TO  HCN06-JIYU
+                           MOVE    "²¼Á¥¸å£³¥ö·î°ÊÆâ"    TO  HC06-JIYU
                        WHEN    "3"
                        WHEN    "C"
                        WHEN    "F"
-                           MOVE    "ÄÌ¶ÐºÒ³²"            TO  HCN06-JIYU
+                           MOVE    "ÄÌ¶ÐºÒ³²"            TO  HC06-JIYU
                    END-EVALUATE
            END-EVALUATE        
       *
       *    °åÎÅµ¡´Ø½êºßÃÏ
-           MOVE    SYS-1002-ADRS       TO  HCN06-HOSPADRS
+           MOVE    SYS-1002-ADRS       TO  HC06-HOSPADRS
       *
       *    °åÎÅµ¡´ØÌ¾¾Î
-           MOVE    SYS-1001-HOSPNAME   TO  HCN06-HOSPNAME
+           MOVE    SYS-1001-HOSPNAME   TO  HC06-HOSPNAME
       *
       *    °åÎÅµ¡´Ø£Ô£Å£Ì
-           MOVE    SYS-1002-TEL        TO  HCN06-HOSPTEL
+           MOVE    SYS-1002-TEL        TO  HC06-HOSPTEL
       *
       *     ¿ÇÎÅ²Ê
       *     IF  RECE62-SRYKA        NOT =   SPACE
-      *         MOVE    SPACE           TO  HCN06-SRYKA
+      *         MOVE    SPACE           TO  HC06-SRYKA
       *     ELSE
-               MOVE    SPACE           TO  HCN06-SRYKA
+               MOVE    SPACE           TO  HC06-SRYKA
       *     END-IF
       *
       *    ÉÂ¾²¿ô
            MOVE    SYS-1001-BEDSU      TO  WRK-BEDSU
-           MOVE    WRK-BEDSU           TO  HCN06-BEDSU
-      *
-      *    £Ï£Ã£Ò
-           IF  CNT-PAGE                =   1
-               MOVE    RECE62-OCR3     TO  HCN06-OCR1
-               MOVE    RECE62-OCR2     TO  HCN06-OCR2
-               MOVE    RECE62-OCR1     TO  HCN06-OCR3
-           END-IF
+           MOVE    WRK-BEDSU           TO  HC06-BEDSU
       *
       *    ¸©Ã±ÍÑ¹àÌÜ
            IF      CNT-PAGE            =   1
            AND     FLG-RECE67          =   ZERO
-               INSPECT RECE67-HCN06-HEAD1-G  REPLACING   ALL "  "
+               INSPECT RECE67-HC06-HEAD1-G  REPLACING   ALL "  "
                                                         BY  "¡¡" 
-               INSPECT RECE67-HCN06-HEAD2-G  REPLACING   ALL "  "
+               INSPECT RECE67-HC06-HEAD2-G  REPLACING   ALL "  "
                                                         BY  "¡¡" 
-               INSPECT RECE67-HCN06-HEAD3-G  REPLACING   ALL "  "
+               INSPECT RECE67-HC06-HEAD3-G  REPLACING   ALL "  "
                                                         BY  "¡¡" 
-               MOVE    RECE67-HCN06-HEAD1-G TO  HCN06-HEAD1-G
-               MOVE    RECE67-HCN06-HEAD2-G TO  HCN06-HEAD2-G
-               MOVE    RECE67-HCN06-HEAD3-G TO  HCN06-HEAD3-G
+               MOVE    RECE67-HC06-HEAD1-G TO  HC06-HEAD1-G
+               MOVE    RECE67-HC06-HEAD2-G TO  HC06-HEAD2-G
+               MOVE    RECE67-HC06-HEAD3-G TO  HC06-HEAD3-G
            END-IF
       *
            .
@@ -1426,16 +1414,16 @@
                    WHEN    "1"
                        EVALUATE    RECE62-TEISYUTUSAKI
                            WHEN    1
-                               MOVE    "£±¼Ò"      TO  HCN06-HKNSBT1
+                               MOVE    "£±¼Ò"      TO  HC06-HKNSBT1
                            WHEN    2
-                               MOVE    "£±¹ñ"      TO  HCN06-HKNSBT1
+                               MOVE    "£±¹ñ"      TO  HC06-HKNSBT1
                        END-EVALUATE
                    WHEN    "2"
-                       MOVE    "£²¸øÈñ"        TO  HCN06-HKNSBT1
+                       MOVE    "£²¸øÈñ"        TO  HC06-HKNSBT1
                    WHEN    "3"
-                       MOVE    "£³Ï·¿Í"        TO  HCN06-HKNSBT1
+                       MOVE    "£³Ï·¿Í"        TO  HC06-HKNSBT1
                    WHEN    "4"
-                       MOVE    "£´Âà¿¦"        TO  HCN06-HKNSBT1
+                       MOVE    "£´Âà¿¦"        TO  HC06-HKNSBT1
                END-EVALUATE
            END-IF    
       *
@@ -1455,11 +1443,11 @@
            ELSE                                        
                EVALUATE    RECE62-RECESYUBETU (3:1)
                    WHEN    "1"
-                       MOVE    "£±Ã±ÆÈ"        TO  HCN06-HKNSBT2
+                       MOVE    "£±Ã±ÆÈ"        TO  HC06-HKNSBT2
                    WHEN    "2"
-                       MOVE    "£²£²Ê»"        TO  HCN06-HKNSBT2
+                       MOVE    "£²£²Ê»"        TO  HC06-HKNSBT2
                    WHEN    "3"
-                       MOVE    "£³£³Ê»"        TO  HCN06-HKNSBT2
+                       MOVE    "£³£³Ê»"        TO  HC06-HKNSBT2
                END-EVALUATE
            END-IF    
       *
@@ -1479,15 +1467,15 @@
            ELSE                                        
                EVALUATE    RECE62-RECESYUBETU (4:1)
                    WHEN    "1"
-                       MOVE    "£±ËÜÆþ"     TO  HCN06-HONKZK
+                       MOVE    "£±ËÜÆþ"     TO  HC06-HONKZK
                    WHEN    "3"
-                       MOVE    "£³»°Æþ"     TO  HCN06-HONKZK
+                       MOVE    "£³»°Æþ"     TO  HC06-HONKZK
                    WHEN    "5"
-                       MOVE    "£µ²ÈÆþ"     TO  HCN06-HONKZK
+                       MOVE    "£µ²ÈÆþ"     TO  HC06-HONKZK
                    WHEN    "7"
-                       MOVE    "£·¹âÆþ£¹"   TO  HCN06-HONKZK
+                       MOVE    "£·¹âÆþ£¹"   TO  HC06-HONKZK
                    WHEN    "9"
-                       MOVE    "£¹¹âÆþ£¸"   TO  HCN06-HONKZK
+                       MOVE    "£¹¹âÆþ£¸"   TO  HC06-HONKZK
                END-EVALUATE
            END-IF    
       *
@@ -1529,7 +1517,7 @@
                    END-IF
                END-IF
            END-IF
-             MOVE   WRK-HKNJANUM    TO    HCN06-HKNJANUM
+             MOVE   WRK-HKNJANUM    TO    HC06-HKNJANUM
       *
       *    <µ­¹æ¡¦ÈÖ¹æ>
            IF      WRK-3SYU-KBN           =   ALL "1" AND 
@@ -1542,7 +1530,7 @@
                CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                IF      KANACHK-RC      =   ZERO
                    MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                           TO  HCN06-KIGO
+                                           TO  HC06-KIGO
                END-IF    
            ELSE 
                INITIALIZE              ORCSKANACHKAREA
@@ -1551,7 +1539,7 @@
                CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                IF      KANACHK-RC      =   ZERO
                    MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                           TO  HCN06-KIGO
+                                           TO  HC06-KIGO
                END-IF    
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "2"             TO  KANACHK-SYORI 
@@ -1559,7 +1547,7 @@
                CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                IF      KANACHK-RC      =   ZERO
                    MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                           TO  HCN06-NUM
+                                           TO  HC06-NUM
                END-IF    
            END-IF
       *
@@ -1595,10 +1583,10 @@
            IF      KANACHK-RC      =   ZERO
                IF      KANACHK-SYUBETU =   1
                    MOVE    RECE62-KOHFTNJANUM(IDA)
-                                       TO  HCN06-KOHFTNJANUM1
+                                       TO  HC06-KOHFTNJANUM1
                ELSE
                    MOVE    RECE62-KOHFTNJANUM(IDA)
-                                       TO  HCN06-KOHFTNJANUM1N
+                                       TO  HC06-KOHFTNJANUM1N
                END-IF                        
            END-IF    
       *    ¸øÉé£²
@@ -1610,10 +1598,10 @@
            IF      KANACHK-RC      =   ZERO
                IF      KANACHK-SYUBETU =   1
                    MOVE    RECE62-KOHFTNJANUM(IDB)
-                                       TO  HCN06-KOHFTNJANUM2
+                                       TO  HC06-KOHFTNJANUM2
                ELSE
                    MOVE    RECE62-KOHFTNJANUM(IDB)
-                                       TO  HCN06-KOHFTNJANUM2N
+                                       TO  HC06-KOHFTNJANUM2N
                END-IF                        
            END-IF    
       *    ¸ø¼õ£±
@@ -1625,10 +1613,10 @@
            IF      KANACHK-RC      =   ZERO
                IF      KANACHK-SYUBETU =   1
                    MOVE    RECE62-KOHJKYSNUM(IDA)
-                                       TO  HCN06-KOHJKYSNUM1
+                                       TO  HC06-KOHJKYSNUM1
                ELSE
                    MOVE    RECE62-KOHJKYSNUM(IDA)
-                                       TO  HCN06-KOHJKYSNUM1N
+                                       TO  HC06-KOHJKYSNUM1N
                END-IF                        
            END-IF    
       *    ¸ø¼õ£²
@@ -1640,10 +1628,10 @@
            IF      KANACHK-RC      =   ZERO
                IF      KANACHK-SYUBETU =   1
                    MOVE    RECE62-KOHJKYSNUM(IDB)
-                                       TO  HCN06-KOHJKYSNUM2
+                                       TO  HC06-KOHJKYSNUM2
                ELSE
                    MOVE    RECE62-KOHJKYSNUM(IDB)
-                                       TO  HCN06-KOHJKYSNUM2N
+                                       TO  HC06-KOHJKYSNUM2N
                END-IF                        
            END-IF    
       *
@@ -1651,18 +1639,18 @@
            IF      CNT-PAGE        =   1
                MOVE    RECE62-JNISSU (IDX1)
                                        TO  WRK-JINISSUZ
-               MOVE    WRK-JINISSU     TO  HCN06-JINISSU
+               MOVE    WRK-JINISSU     TO  HC06-JINISSU
                IF  RECE62-JNISSU (IDX1)
                                    NOT =   RECE62-JNISSU (IDX2)
                    MOVE    RECE62-JNISSU (IDX2)
                                            TO  WRK-JINISSUZ
-                   MOVE    WRK-JINISSU     TO  HCN06-JINISSU1
+                   MOVE    WRK-JINISSU     TO  HC06-JINISSU1
                END-IF
                IF  RECE62-JNISSU (IDX1)
                                    NOT =   RECE62-JNISSU (IDX3)
                    MOVE    RECE62-JNISSU (IDX3)
                                            TO  WRK-JINISSUZ
-                   MOVE    WRK-JINISSU     TO  HCN06-JINISSU2
+                   MOVE    WRK-JINISSU     TO  HC06-JINISSU2
                END-IF
            END-IF
       *
@@ -1675,7 +1663,7 @@
       *****************************************************************
        3110-KYURATE-SET-SEC        SECTION.
       *
-           MOVE   SPACE              TO  HCN06-KYURATE
+           MOVE   SPACE              TO  HC06-KYURATE
       *          
       *    ¹ñÊÝORÂà¿¦¼Ô¤Î¤ß°õ»ú
            IF  ((RECE62-TEISYUTUSAKI =   "2"  )       AND
@@ -1690,7 +1678,7 @@
                    COMPUTE WRK-KYURATE-9   =   (100 -   RECE62-KYURATE)
                                                / 10 
                    IF      WRK-KYURATE-9       >   ZERO
-                       MOVE   "µë³ä"               TO  HCN06-KYURATE
+                       MOVE   "µë³ä"               TO  HC06-KYURATE
                        MOVE    WRK-KYURATE-9       TO  WRK-KYURATE
                        INITIALIZE              ORCSKANACHKAREA
                        MOVE    "2"             TO  KANACHK-SYORI 
@@ -1698,7 +1686,7 @@
                        CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                        IF      KANACHK-RC      =   ZERO
                            MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                               TO  HCN06-KYURATE(5:)
+                                               TO  HC06-KYURATE(5:)
                        END-IF    
                    END-IF
                END-IF    
@@ -1719,15 +1707,15 @@
                    OR    ( RECE62-TOKKI(IDX)   =   SPACE )
                    OR    ( IDZ                 =   4     ) 
       *
-               MOVE    SPACE                   TO  HCN06-TOKKI (IDX)
+               MOVE    SPACE                   TO  HC06-TOKKI (IDX)
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL ( IDX2            >   11    )
-                       OR    ( HCN06-TOKKI (IDX)
+                       OR    ( HC06-TOKKI (IDX)
                                            NOT =   SPACE )
                    IF      RECE62-TOKKI(IDX)   =   TBL-TOKKICD(IDX2)
                        ADD     1                TO  IDZ
                        MOVE    TBL-TOKKINAME(IDX2)
-                                                TO  HCN06-TOKKI (IDZ)
+                                                TO  HC06-TOKKI (IDZ)
                    END-IF
                END-PERFORM
            END-PERFORM
@@ -1737,10 +1725,10 @@
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX                 >   4
                        OR      IDZ                 =   4     
-                       OR      RECE67-HCN06-TOKKI(IDX)  =   SPACE
+                       OR      RECE67-HC06-TOKKI(IDX)  =   SPACE
                    ADD     1                    TO  IDZ    
-                   MOVE    RECE67-HCN06-TOKKI (IDX)           
-                                                TO  HCN06-TOKKI (IDZ)
+                   MOVE    RECE67-HC06-TOKKI (IDX)           
+                                                TO  HC06-TOKKI (IDZ)
                END-PERFORM
            END-IF
       *
@@ -1984,14 +1972,14 @@
                    IF      WRK-LINEBYO     <   WRK-BYOMEI-LINE
                        ADD     1           TO  WRK-LINEBYO
                        MOVE    WRK-KUGIRI3 TO
-                                       HCN06-BYOMEI(WRK-LINEBYO)(2:52)
+                                       HC06-BYOMEI(WRK-LINEBYO)(2:52)
                    ELSE
                        IF      WRK-LINETEK >=   WRK-TEKIYOU-LINE
                            PERFORM 34120-PAGE-SEC
                        END-IF    
                        ADD     1           TO  WRK-LINETEK
                        MOVE    WRK-KUGIRI1 TO
-                                           HCN06-TEKIYO (WRK-LINETEK)
+                                           HC06-TEKIYO (WRK-LINETEK)
                    END-IF
                END-IF
            END-IF        
@@ -2023,24 +2011,24 @@
                                            TO  WRK-BYOMEI1-NO 
                END-IF    
       *        ¿ÇÎÅ³«»ÏÆü
-               MOVE    WRK-BYOMEI1-NO      TO  HCN06-SRYYMD
+               MOVE    WRK-BYOMEI1-NO      TO  HC06-SRYYMD
                                                     (WRK-LINEBYO)
                MOVE    WRK-BO-SRYYMD       TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
                MOVE    LNK-DAY2-EDTYMD3 (5:)
-                                           TO  HCN06-SRYYMD
+                                           TO  HC06-SRYYMD
                                                     (WRK-LINEBYO)(7:)
       *        Å¾µ¢
-               MOVE    WRK-BYOMEI1-NO    TO  HCN06-TENKI(WRK-LINEBYO)
+               MOVE    WRK-BYOMEI1-NO    TO  HC06-TENKI(WRK-LINEBYO)
                EVALUATE    WRK-BO-TENKIKBN
                WHEN    "1"
-                   MOVE    "¼£¤æ"    TO  HCN06-TENKI(WRK-LINEBYO)(7:)
+                   MOVE    "¼£¤æ"    TO  HC06-TENKI(WRK-LINEBYO)(7:)
                WHEN    "2"
-                   MOVE    "»àË´"    TO  HCN06-TENKI(WRK-LINEBYO)(7:)
+                   MOVE    "»àË´"    TO  HC06-TENKI(WRK-LINEBYO)(7:)
                WHEN    "3"
-                   MOVE    "Ãæ»ß"    TO  HCN06-TENKI(WRK-LINEBYO)(7:)
+                   MOVE    "Ãæ»ß"    TO  HC06-TENKI(WRK-LINEBYO)(7:)
                WHEN    OTHER
-                   MOVE    SPACE     TO  HCN06-TENKI(WRK-LINEBYO)
+                   MOVE    SPACE     TO  HC06-TENKI(WRK-LINEBYO)
                END-EVALUATE
       *        Å¾µ¢Æü
                IF      WRK-BO-TENKIYMD     =   SPACE
@@ -2049,12 +2037,12 @@
                    MOVE    WRK-BO-TENKIYMD TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
                    MOVE    LNK-DAY2-EDTYMD3 (17:)
-                                           TO  HCN06-TENKIYMD
+                                           TO  HC06-TENKIYMD
                                                     (WRK-LINEBYO)
                END-IF                                     
            END-IF
       *    ÉÂÌ¾
-           MOVE    WRK-BYOMEI1     TO  HCN06-BYOMEI(WRK-LINEBYO)
+           MOVE    WRK-BYOMEI1     TO  HC06-BYOMEI(WRK-LINEBYO)
       *
       *    ¥¯¥ê¥¢
            MOVE    SPACE           TO  WRK-BYOMEI1
@@ -2114,8 +2102,8 @@
                END-IF
            END-IF    
       *
-           MOVE    WRK-BYOMEI2 TO  HCN06-TEKIYO (WRK-LINETEK)
-           INSPECT HCN06-TEKIYO (WRK-LINETEK)
+           MOVE    WRK-BYOMEI2 TO  HC06-TEKIYO (WRK-LINETEK)
+           INSPECT HC06-TEKIYO (WRK-LINETEK)
                            REPLACING    ALL   "  "   BY   "¡¡"
       *
       *    ºÇ¸å¤ÎÉÂÌ¾¤Ë°õ»ú¤¹¤ë¥¹¥Ú¡¼¥¹¤¬¤Ê¤«¤Ã¤¿¤È¤­ 
@@ -2128,8 +2116,8 @@
                    PERFORM 34120-PAGE-SEC
                END-IF    
                ADD     1               TO  WRK-LINETEK
-               MOVE    WRK-BYOMEI2     TO  HCN06-TEKIYO (WRK-LINETEK)
-               INSPECT HCN06-TEKIYO (WRK-LINETEK)
+               MOVE    WRK-BYOMEI2     TO  HC06-TEKIYO (WRK-LINETEK)
+               INSPECT HC06-TEKIYO (WRK-LINETEK)
                                REPLACING    ALL   "  "   BY   "¡¡"
            END-IF
       *
@@ -2203,11 +2191,11 @@
       *
            EVALUATE  RECE62-SHOSHINTIME
                WHEN  "1"
-                     MOVE  "¡Ê»þ´Ö³°¡Ë"   TO  HCN06-SHOSHINTIME
+                     MOVE  "¡Ê»þ´Ö³°¡Ë"   TO  HC06-SHOSHINTIME
                WHEN  "2"
-                     MOVE  "¡Ê¿¼Ìë¡Ë"     TO  HCN06-SHOSHINTIME
+                     MOVE  "¡Ê¿¼Ìë¡Ë"     TO  HC06-SHOSHINTIME
                WHEN  "3"
-                     MOVE  "¡ÊµÙÆü¡Ë"     TO  HCN06-SHOSHINTIME
+                     MOVE  "¡ÊµÙÆü¡Ë"     TO  HC06-SHOSHINTIME
            END-EVALUATE
       *     
            IF      RECE62-HKNNUM      =   SPACE
@@ -2231,14 +2219,14 @@
                      UNTIL     IDX       >   22
       *        <²ó¿ô>
                MOVE    RECE62-KAISU(IDX)         TO  WRK-KAISUZ
-               MOVE    WRK-KAISU                 TO  HCN06-KAISU   (IDX)
+               MOVE    WRK-KAISU                 TO  HC06-KAISU   (IDX)
       *        <ÅÀ¿ô¡¦¸øÈñÅÀ¿ô>
                MOVE    RECE62-TENSU(IDX IDX1)    TO  WRK-TENSUZ
-               MOVE    WRK-TENSU                 TO  HCN06-TENSU   (IDX)
+               MOVE    WRK-TENSU                 TO  HC06-TENSU   (IDX)
                IF      IDX2                      >   ZERO
                    MOVE    RECE62-TENSU(IDX IDX2)
                                                  TO  WRK-KOUTENZ
-                   MOVE    WRK-KOUTEN            TO  HCN06-KOUTEN  (IDX)
+                   MOVE    WRK-KOUTEN            TO  HC06-KOUTEN  (IDX)
                END-IF
            END-PERFORM
       *
@@ -2247,18 +2235,18 @@
                      UNTIL     IDX       >   32
       *        <Ã±²Á>
                MOVE    RECE62-KHNTEN (IDX)   TO  WRK-KHNTENZ
-               MOVE    WRK-KHNTEN            TO  HCN06-KHNTEN  (IDX)
+               MOVE    WRK-KHNTEN            TO  HC06-KHNTEN  (IDX)
       *        <²ó¿ô>
                MOVE    RECE62-KAISU(IDX)     TO  WRK-KAISUZ
-               MOVE    WRK-KAISU             TO  HCN06-KAISU   (IDX)
+               MOVE    WRK-KAISU             TO  HC06-KAISU   (IDX)
       *        <ÅÀ¿ô¡¦¸øÈñÅÀ¿ô>
                MOVE    RECE62-TENSU(IDX IDX1)
                                              TO  WRK-TENSUZ
-               MOVE    WRK-TENSU             TO  HCN06-TENSU   (IDX)
+               MOVE    WRK-TENSU             TO  HC06-TENSU   (IDX)
                IF      IDX2                  >   ZERO
                    MOVE    RECE62-TENSU(IDX IDX2)
                                              TO  WRK-KOUTENZ
-                   MOVE    WRK-KOUTEN        TO  HCN06-KOUTEN  (IDX)
+                   MOVE    WRK-KOUTEN        TO  HC06-KOUTEN  (IDX)
                END-IF
            END-PERFORM
       *
@@ -2284,18 +2272,18 @@
       *    ÊÝ¸±
            IF      RECE62-TOTALTEN (IDX1)     >   ZERO
                MOVE    RECE62-TOTALTEN (IDX1) TO  WRK-KGK6
-               MOVE    WRK-KGK6               TO  HCN06-TOTALTEN(1)
+               MOVE    WRK-KGK6               TO  HC06-TOTALTEN(1)
                IF      RECE62-FTNMONEY (IDX1) >   ZERO
                    MOVE    RECE62-FTNMONEY (IDX1) TO  WRK-KGK7
-                   MOVE    WRK-KGK7               TO  HCN06-FTNMONEY(1)
+                   MOVE    WRK-KGK7               TO  HC06-FTNMONEY(1)
                END-IF
            END-IF
-           IF      RECE62-ZAITAKU-SAIKEI  >   ZERO
-               MOVE    "("                    TO  HCN06-FTNMONEYSAI(1:1)
-               MOVE   RECE62-ZAITAKU-SAIKEI   TO  WRK-KGK7
-               MOVE   WRK-KGK7                TO  HCN06-FTNMONEYSAI(3:8)
+           IF      RECE62-KOUREI-SAIKEI  >   ZERO
+               MOVE    "("                    TO  HC06-FTNMONEYSAI(1:1)
+               MOVE   RECE62-KOUREI-SAIKEI   TO  WRK-KGK7
+               MOVE   WRK-KGK7                TO  HC06-FTNMONEYSAI(3:8)
                MOVE    ")"                    TO
-                                              HCN06-FTNMONEYSAI(11:1)
+                                              HC06-FTNMONEYSAI(11:1)
            END-IF    
       *    ¸øÈñ£±
            IF    ( RECE62-TOTALTEN (IDX2) >   ZERO                     )
@@ -2305,14 +2293,14 @@
                                       NOT =   RECE62-FTNMONEY (IDX1))  )
                IF    RECE62-FTNMONEY (IDX2)   >   ZERO
                    MOVE    RECE62-FTNMONEY (IDX2) TO  WRK-KGK7
-                   MOVE    WRK-KGK7               TO  HCN06-FTNMONEY(2)
+                   MOVE    WRK-KGK7               TO  HC06-FTNMONEY(2)
                END-IF
            END-IF
            IF      RECE62-TOTALTEN (IDX2) >   ZERO                     
            AND     RECE62-TOTALTEN (IDX2)
                                       NOT =   RECE62-TOTALTEN (IDX1)   
                MOVE    RECE62-TOTALTEN (IDX2) TO  WRK-KGK6
-               MOVE    WRK-KGK6               TO  HCN06-TOTALTEN(2)
+               MOVE    WRK-KGK6               TO  HC06-TOTALTEN(2)
            END-IF
       *    ¸øÈñ£²
            IF    (RECE62-TOTALTEN (IDX3) >   ZERO                      )
@@ -2326,7 +2314,7 @@
       *
                IF    RECE62-FTNMONEY (IDX3)   >   ZERO
                    MOVE    RECE62-FTNMONEY (IDX3) TO  WRK-KGK7
-                   MOVE    WRK-KGK7               TO  HCN06-FTNMONEY(3)
+                   MOVE    WRK-KGK7               TO  HC06-FTNMONEY(3)
                END-IF
       *
              END-IF
@@ -2336,7 +2324,7 @@
            AND     RECE62-TOTALTEN (IDX3)
                                       NOT =   RECE62-TOTALTEN (IDX1)
                MOVE    RECE62-TOTALTEN (IDX3) TO  WRK-KGK6
-               MOVE    WRK-KGK6               TO  HCN06-TOTALTEN(3)
+               MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
            END-IF
       *
            .
@@ -2355,11 +2343,11 @@
                    PERFORM 34120-PAGE-SEC
                END-IF    
                ADD     1               TO  WRK-LINETEK
-               MOVE    WRK-KUGIRI1 TO  HCN06-TEKIYO (WRK-LINETEK)
+               MOVE    WRK-KUGIRI1 TO  HC06-TEKIYO (WRK-LINETEK)
            END-IF
       *
            IF      RECE62-TEISYOTOKU   =   SPACE
-           OR      RECE62-ZAITAKU      =   SPACE
+           OR      RECE62-KOUREI      =   SPACE
                CONTINUE
            ELSE
                IF  WRK-LINETEK           >   WRK-TEKIYOU-LINE
@@ -2369,10 +2357,10 @@
                EVALUATE    RECE62-TEISYOTOKU
                    WHEN    "1"
                        MOVE    "Äã½êÆÀ£±"
-                                       TO  HCN06-TEKIYO(WRK-LINETEK)
+                                       TO  HC06-TEKIYO(WRK-LINETEK)
                    WHEN    "2"
                        MOVE    "Äã½êÆÀ£²"
-                                       TO  HCN06-TEKIYO(WRK-LINETEK)
+                                       TO  HC06-TEKIYO(WRK-LINETEK)
                END-EVALUATE        
            END-IF
       *         
@@ -2467,7 +2455,7 @@
                    END-IF
       *            ¿ÇÎÅ¶èÊ¬
                    ADD     1               TO  WRK-LINETEK
-                   MOVE    RECE661-SRYKBN  TO  HCN06-SRYKBN
+                   MOVE    RECE661-SRYKBN  TO  HC06-SRYKBN
                                                        (WRK-LINETEK)
                ELSE
       *            ¶èÀÚ¤êÀþ
@@ -2478,7 +2466,7 @@
                    ADD     1             TO  WRK-LINETEK
                    IF  RECE661-SRYKBN    NOT =   WRK-R061-SRYKBN-O
                        MOVE    RECE661-SRYKBN
-                                   TO  HCN06-SRYKBN  (WRK-LINETEK)
+                                   TO  HC06-SRYKBN  (WRK-LINETEK)
                    END-IF
                END-IF
            ELSE
@@ -2488,7 +2476,7 @@
       *    ÌÀºÙ
            INSPECT RECE661-TEKIYO-INF
                            REPLACING    ALL   "  "   BY   "¡¡"
-           MOVE    RECE661-TEKIYO-INF  TO  HCN06-TEKIYO(WRK-LINETEK)
+           MOVE    RECE661-TEKIYO-INF  TO  HC06-TEKIYO(WRK-LINETEK)
       *
            .
        3410-RECE661-HENSYU-EXT.
@@ -2504,9 +2492,9 @@
            EVALUATE    FLG-KUGIRI
            WHEN    2
                PERFORM 34110-KOHNAME-SET-SEC
-               MOVE    WRK-KUGIRI2 TO  HCN06-TEKIYO (WRK-LINETEK)
+               MOVE    WRK-KUGIRI2 TO  HC06-TEKIYO (WRK-LINETEK)
            WHEN    1
-               MOVE    WRK-KUGIRI1 TO  HCN06-TEKIYO (WRK-LINETEK)
+               MOVE    WRK-KUGIRI1 TO  HC06-TEKIYO (WRK-LINETEK)
            END-EVALUATE
       *
            .
@@ -2581,9 +2569,9 @@
       *
       *    ¸©Ã±ÍÑ¹àÌÜ
            IF      FLG-RECE67           =   ZERO
-               INSPECT RECE67-HCN06-BODY     REPLACING   ALL "  "
+               INSPECT RECE67-HC06-BODY     REPLACING   ALL "  "
                                                         BY  "¡¡" 
-               MOVE    RECE67-HCN06-BODY     TO  HCN06-BODY
+               MOVE    RECE67-HC06-BODY     TO  HC06-BODY
            END-IF
       *
            .
@@ -2681,7 +2669,7 @@
                            ELSE
                                ADD     1           TO  WRK-LINETEK
                                MOVE    WRK-KUGIRI1     TO 
-                                               HCN06-TEKIYO(WRK-LINETEK)
+                                               HC06-TEKIYO(WRK-LINETEK)
                            END-IF
                        END-IF
                      END-IF
@@ -2695,7 +2683,7 @@
                        END-IF
                        ADD     1               TO  WRK-LINETEK
                        MOVE    WRK-COMMENT (IDX)
-                                       TO  HCN06-TEKIYO(WRK-LINETEK)
+                                       TO  HC06-TEKIYO(WRK-LINETEK)
                      END-PERFORM
                  END-IF
                END-IF  
@@ -2721,7 +2709,7 @@
                        ELSE
                            ADD     1               TO  WRK-LINETEK
                            MOVE    WRK-KUGIRI1     TO 
-                                               HCN06-TEKIYO(WRK-LINETEK)
+                                               HC06-TEKIYO(WRK-LINETEK)
                        END-IF
                    END-IF
                END-IF
@@ -2734,7 +2722,7 @@
                INSPECT WRK-HKN-RIREKI-TBL (IDX)    REPLACING   ALL "  "
                                                                BY  "¡¡"  
                MOVE    WRK-HKN-RIREKI-TBL (IDX)
-                                       TO  HCN06-TEKIYO(WRK-LINETEK)
+                                       TO  HC06-TEKIYO(WRK-LINETEK)
            END-PERFORM
       *
            .
@@ -2777,7 +2765,7 @@
        3901-RECE08-INSERT-SEC        SECTION.
       *
            INITIALIZE                  RECE08-REC
-           MOVE    "HCN06"              TO  RECE08-PRTID
+           MOVE    "HC06"              TO  RECE08-PRTID
            MOVE    WRK-PARA-SRYYM      TO  RECE08-RECEYM
            MOVE    WRK-SYSYMD          TO  RECE08-CREYMD
            MOVE    SYS-TIME (1:6)      TO  RECE08-CREHMS
@@ -2876,7 +2864,7 @@
                MOVE    ZERO                TO  RECE08-PRTJYUN
                                                RECE08-PRTRENNUM
                MOVE    "HCN06.red"         TO  RECE08-FORMID
-               MOVE    HCN06               TO  RECE08-PRTDATA
+               MOVE    HC06                TO  RECE08-PRTDATA
                MOVE    "RECEPRT-KEY"       TO  ORC-DBPATH
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    RECE08-REC          TO  MCPDATA-REC
@@ -3073,8 +3061,6 @@
                                        RECE10-FTNMONEYINF (IDX)
                MOVE    RECE62-SHOKUJIINF (IDX) TO
                                        RECE10-SHOKUJIINF (IDX)
-               MOVE    RECE62-YKZFTNINF  (IDX) TO
-                                       RECE10-YKZFTNINF   (IDX)
            END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       45
@@ -3092,7 +3078,7 @@
            END-IF             
       *     
            MOVE    RECE62-AGE          TO  RECE10-AGE  
-           MOVE    RECE62-ZAITAKU      TO  RECE10-ZAITAKU    
+           MOVE    RECE62-KOUREI      TO  RECE10-ZAITAKU    
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "SEIKYU-KEY"        TO  ORC-DBPATH
