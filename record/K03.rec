@@ -225,10 +225,10 @@ K03	{
 		};
 		DRCDCOMBO	{
 			DRCD	{
-				value	varchar(20);
+				value	varchar(27);
 			};
 			count	int;
-			item	varchar(20)[10];
+			item	varchar(27)[50];
 		};
 	};
 };
