@@ -1564,8 +1564,8 @@
            END-IF
       *
       *    外用薬で薬剤の時、回数を編集
-           IF      (TBL-WKSRY-SRYKBN (TBL-MAX)     =   "23" )  AND
-                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:1) =   "6" )
+           IF      (TBL-WKSRY-SRYKBN (TBL-MAX)     =   "23" )
+      ******** AND (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:1) =   "6" )
       *        回数
                MOVE    ZERO                TO  WRK-KAISU
                INITIALIZE                      ORCSNUMAREA
@@ -1783,6 +1783,14 @@
            ADD      1                  TO  IDX-S
            MOVE     WRK-SRYCD          TO  TBL-WKSRY-SRYCD
                                            (TBL-MAX IDX-S)
+      *    外用の時、回数を設定
+           IF     (TBL-WKSRY-SRYKBN(01)    =   "23" )  AND
+                  (IDX-S                   >   1    )
+               MOVE    TBL-WKSRY-SRYKAISU  (TBL-MAX IDX-S - 1)
+                                       TO  TBL-WKSRY-SRYKAISU
+                                                       (TBL-MAX IDX-S)
+           END-IF
+      *
            .
       *
        20041-YOUHOU-SET-EXT.
