@@ -1269,7 +1269,8 @@
                               (SRY-SRYCD (IDX)     =   SPACE )
       *        登録時の自動算定分は対象外（点滴以外）
                IF     (SRY-AUTOKBN (IDX)   =   "3" ) AND
-                      (SRY-SRYSYUKBN   NOT =   "330" )
+                      (SRY-SRYSYUKBN   NOT =   "330" AND
+                                               "340" )
                    CONTINUE
                ELSE
                    ADD     1                   TO  IDY
@@ -1277,6 +1278,11 @@
                    MOVE    SRY-SRYSURYO (IDX)  TO  WKSRY-SRYSURYO (IDY)
                    MOVE    SRY-SRYKAISU (IDX)  TO  WKSRY-SRYKAISU (IDY)
                    MOVE    SRY-AUTOKBN  (IDX)  TO  WKSRY-AUTOKBN  (IDY)
+      *            自動発生の中心静脈注射のみ選択可能とする
+                   IF     (SRY-AUTOKBN (IDX)   =   "3" )  AND
+                          (SRY-SRYSYUKBN       =   "340")
+                       MOVE    SPACE           TO  WKSRY-AUTOKBN (IDY)
+                   END-IF
                    MOVE    SRY-INPUTNUM (IDX)  TO  WKSRY-INPUTNUM (IDY)
                    MOVE    SRY-JIHIMONEY(IDX)  TO  WKSRY-JIHIMONEY(IDY)
                    IF      SRY-INPUTNUM (IDX)  NOT =   ZERO
