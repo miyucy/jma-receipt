@@ -44,7 +44,7 @@
                05  FILLER             PIC  X(57) VALUE SPACE.
            03  SHELL-ARG1.
                05  SHELL-SRYYM        PIC  X(06).
-     *          05  SHELL-TERMID       PIC  X(32).
+      *         05  SHELL-TERMID       PIC  X(32).
                05  SHELL-TERMID       PIC  X(64).
                05  SHELL-SYSYMD       PIC  X(08). 
                05  SHELL-OPID         PIC  X(16).
