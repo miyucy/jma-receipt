@@ -107,6 +107,7 @@
            03  IDXB                        PIC 9(05).
            03  TN-IDX                      PIC 9(02).
            03  IDX-DAY                     PIC 9(02).
+           03  IDX-SHOKUJI                 PIC 9(02).
       *
       *    パラメタ領域
        01  PARA-AREA.
@@ -610,8 +611,15 @@
                    END-IF
       *            食事
                    IF    ( NACCT-ZAISKBKBN     =    "4"    )
-                       MOVE    NACCT-DAY(IDX-DAY)
-                                           TO  WRK-TAIHI-SHOKUJI
+                       MOVE    ZERO      TO   IDX-SHOKUJI
+                       PERFORM VARYING IDX-SHOKUJI FROM IDX-DAY BY -1
+                          UNTIL (IDX-SHOKUJI  < 1)
+                                IF  NACCT-DAY(IDX-SHOKUJI) NOT = ZERO
+                                    MOVE  NACCT-DAY(IDX-SHOKUJI)
+                                            TO  WRK-TAIHI-SHOKUJI
+                                    MOVE  1   TO  IDX-SHOKUJI
+                                END-IF
+                       END-PERFORM
                    END-IF
       *            保険組合せ
                    IF    ( NACCT-ZAISKBKBN     =    "5"    )
