@@ -43,6 +43,7 @@
       *  01.00.10    NACL-ÌçÏÆ    04/01/21  Ï«ºÒ¤ÎÆÃÄê´ïºà(09593)ÂÐ±þ
       *  01.00.11    NACL-ÌçÏÆ    04/01/21  Ï«ºÒ¡¦¼«ÇåÀÕ¤ÎÆþ±¡¼¼ÎÁ²Ã»»
       *                                     (09594)ÂÐ±þ
+      *  01.00.12    NACL-¾®Æ¦Âô  04/02/24  ·îÅÓÃæ¤Î°åÎÅµ¡´Ø¸º»»ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1321,6 +1322,8 @@
                     END-IF
                END-PERFORM
              END-IF
+             MOVE     "SYSKANRI-KEY"   TO  WK-PATH
+             PERFORM   CSR-CLOSE-SEC
            ELSE
                PERFORM  SYS-5000-GET-SEC
       *
@@ -3649,6 +3652,9 @@
                   END-PERFORM
              END-PERFORM
            END-IF
+      *
+           MOVE     "SYSKANRI-KEY"   TO  WK-PATH
+           PERFORM   CSR-CLOSE-SEC
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYSKANRI-REC
