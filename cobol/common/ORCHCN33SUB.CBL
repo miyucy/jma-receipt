@@ -76,6 +76,8 @@
            03  IDV                         PIC 9(02).
            03  TSY90-IDX                   PIC 9(02).
            03  ETC-IDX                     PIC 9(02).
+           03  IDX-ST                      PIC 9(02).
+           03  IDX-ED                      PIC 9(02).
       *
       *    コンスタント値
        01  CONSTANT-AREA.
@@ -257,6 +259,10 @@
            03  TABLE-SENTEI.
                05  TBL-SENTEI                  PIC 9(01)   OCCURS  31.
       *
+      *    入院科退避用テーブル
+           03  TABLE-NYUINKA.
+               05  TBL-NYUINKA                 PIC X(01)   OCCURS  31.
+      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -413,7 +419,9 @@
                ELSE
                     PERFORM    VARYING   IDX1   FROM   1   BY   1
                                UNTIL     IDX1   >      31
-                        MOVE   "1"       TO    WRK-SRYKA-DAY(IDX1)
+                        IF     NACCT-DAY(IDX1)  NOT =  ZERO
+                            MOVE   "1"     TO    WRK-SRYKA-DAY(IDX1)
+                        END-IF
                     END-PERFORM
                END-IF
            END-IF
@@ -430,7 +438,10 @@
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      *対象診療科の取得
+      *対象入院科の取得
+           INITIALIZE                           TABLE-NYUINKA
+           MOVE    ZERO                     TO  IDX-ST
+                                                IDX-ED
            INITIALIZE                           PTNYUINRRK-REC
            MOVE    LNK-ORCHCN33SUB-HOSPID   TO  PTNYUINRRK-HOSPID
            MOVE    LNK-ORCHCN33SUB-PTID     TO  PTNYUINRRK-PTID
@@ -449,6 +460,30 @@
                                LNK-ORCHCN33SUB-SANTEIYM)
                            IF   LNK-ORCHCN33SUB-SRYKA = "00"
                                CONTINUE
+                           ELSE
+                               IF     LNK-ORCHCN33SUB-SRYKA   =
+                                                PTNYUINRRK-NYUINKA
+                                   IF  PTNYUINRRK-TENNYUYMD(1:6)   <
+                                             LNK-ORCHCN33SUB-SANTEIYM
+                                       MOVE  1       TO   IDX-ST
+                                   ELSE
+                                       MOVE  PTNYUINRRK-TENNYUYMD(7:2)
+                                                     TO   IDX-ST
+                                   END-IF
+                                   IF  PTNYUINRRK-TENSTUYMD(1:6)   >
+                                             LNK-ORCHCN33SUB-SANTEIYM
+                                       MOVE  31      TO   IDX-ED
+                                   ELSE
+                                       MOVE  PTNYUINRRK-TENSTUYMD(7:2)
+                                                     TO   IDX-ED
+                                   END-IF
+                                   PERFORM  VARYING  IDX1  
+                                            FROM IDX-ST   BY  1
+                                            UNTIL (IDX1  >  IDX-ED)
+                                        MOVE  "1"   TO
+                                                     TBL-NYUINKA(IDX1)
+                                   END-PERFORM
+                               END-IF
                            END-IF
                        END-IF
                    END-IF
@@ -462,6 +497,18 @@
       *    患者入院履歴クローズ
            MOVE    "PTNYUINRRK-KEY3"           TO  ORC-DBPATH
            PERFORM   910-DB-CLOSE-SEC
+      *
+           IF      LNK-ORCHCN33SUB-SRYKA   NOT =    "00"
+               PERFORM    VARYING  IDX1   FROM  1  BY  1
+                          UNTIL    IDX1   >    31
+                   IF    (WRK-SRYKA-DAY(IDX1)   =   "1")   AND
+                         (TBL-NYUINKA(IDX1)     =   "1")
+                       CONTINUE
+                   ELSE
+                       MOVE   SPACE   TO   WRK-SRYKA-DAY(IDX1)
+                   END-IF
+               END-PERFORM
+           END-IF
       *
       *入院料の取得
            MOVE    ZERO                    TO  FLG-OK
