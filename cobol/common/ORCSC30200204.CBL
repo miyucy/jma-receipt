@@ -36,6 +36,7 @@
       * 01.00.06     NACL−多々納 03/04/01  中心静脈自動発生追加
       * 01.00.07     NACL−多々納 03/04/10  皮下筋注射変換なし(312)追加
       * 01.00.08     NACL−多々納 03/09/04  手術料との算定エラー追加
+      * 01.00.09     NACL−多々納 03/10/03  手術料との算定エラーを警告へ
       *****************************************************************
       *
       *
@@ -1199,6 +1200,8 @@
                                                    "33"  )  AND
                       (WRK-COM-INPUTCD(IDX)(1:1)  =  "1" )  AND
                       (WRK-COM-DATAKBN(IDX)    =   "1"   )
+      *          警告表示なしの場合のみ
+                 AND  (WRK-COM-KZMFLG (IDX)    =   SPACE )
                    IF      IDX-CHU             =   ZERO
                        MOVE    IDX                 TO  IDX-CHU
                    END-IF
@@ -1215,11 +1218,15 @@
            END-PERFORM
       *----(01.00.01) LINE ADD START ----------------------------------
       *
-      *    手術がある時、注射の手技料はエラーとする
+      *    手術がある時、注射の手技料は警告とする
            IF     (FLG-SYUJUTU         =   1  )  AND
                   (IDX-CHU             >   ZERO )
-               MOVE    "0140"              TO  SPA-ERRCD
-               MOVE    "1"                 TO  WRK-COM-CUR(IDX-CHU)
+               IF      WRK-COM-KZMFLG (IDX-CHU)    =   SPACE
+                   MOVE    "K140"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                           (IDX-CHU)
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-CHU)
+               END-IF
            END-IF
       *
            .

@@ -294,11 +294,6 @@
                WHEN    "0157"
                    MOVE    "動脈注射は１日１回しか算定できません。"
                                        TO  SPA-ERRMSG
-               WHEN    "0140"
-                   MOVE    "手術が算定されています。注射料は算定"
-                                       TO  SPA-ERRMSG
-                   MOVE    "できません。手技料なしの種別にして下さい。"
-                                       TO  SPA-ERRMSG(37:)
                WHEN    "0058"
                    MOVE    "外来管理加算は算定済です。算定できません。"
                                        TO  SPA-ERRMSG
@@ -755,6 +750,12 @@
                                                 TO  SPA-ERRMSG
                    MOVE    "患者登録はできません。"
                                                 TO  SPA-ERRMSG(33:)
+      *
+               WHEN    "K140"
+                   MOVE    "警告！手術が算定されています。"
+                                       TO  SPA-ERRMSG
+                   MOVE    "注射料は算定できません。"
+                                       TO  SPA-ERRMSG(31:)
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.
