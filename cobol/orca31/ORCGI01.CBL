@@ -86,7 +86,8 @@
       *  01.00.41    NACL-太田    03.11.14  更新日付編集対応
       *  01.00.42    NACL-小豆沢  03.11.26  老人患者の判定条件追加
       *  01.00.43    NACL-小豆沢  03.12.01  広範囲熱傷特定集中治療室管理料の
-      *                                     算定対応追加
+      *                                     算定対応追加（算定上限日数経過後の
+      *                                     一般入院料算定はコメントとする）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -7678,7 +7679,8 @@
                  MOVE    59                TO  LNK-DAY6-ZOGEN
                  CALL  "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
-                 MOVE    LNK-DAY6-KEISAN
+      **           MOVE    LNK-DAY6-KEISAN
+                   MOVE    "99999999"
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
       *          一般入院料の算定開始日を算定
                  INITIALIZE                STS-AREA-DAY
@@ -7713,9 +7715,9 @@
                  MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
                                   TO      WRK-IPN-HANTEI-YMD2
       *          一般入院会計作成用のフラグ設定
-                 IF      WRK-IPN-HANTEI-YMD1 > WRK-IPN-HANTEI-YMD2
-                     MOVE    "1"   TO     IPN-NYUKAIKEI-SAKUSEI-FLG
-                 END-IF
+      **           IF      WRK-IPN-HANTEI-YMD1 > WRK-IPN-HANTEI-YMD2
+      **               MOVE    "1"   TO     IPN-NYUKAIKEI-SAKUSEI-FLG
+      **           END-IF
            END-IF
       *
       *-------特定入院対応ここまで-----------------------------------
@@ -8648,7 +8650,8 @@
                      MOVE   WK-TOKUTEI-DAY     TO  LNK-DAY6-ZOGEN
                      CALL  "ORCSDAY"           USING   STS-AREA-DAY
                                                        LNK-DAY6-AREA
-                     MOVE    LNK-DAY6-KEISAN   TO
+      **             MOVE    LNK-DAY6-KEISAN   TO
+                     MOVE    "99999999"        TO
                                   LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
                  END-IF
       *          一般入院料の算定開始日を算定
@@ -8684,9 +8687,9 @@
                  MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
                                   TO      WRK-IPN-HANTEI-YMD2
       *          一般入院会計作成用のフラグ設定
-                 IF      WRK-IPN-HANTEI-YMD1 > WRK-IPN-HANTEI-YMD2
-                     MOVE    "1"   TO     IPN-NYUKAIKEI-SAKUSEI-FLG
-                 END-IF
+      **           IF      WRK-IPN-HANTEI-YMD1 > WRK-IPN-HANTEI-YMD2
+      **               MOVE    "1"   TO     IPN-NYUKAIKEI-SAKUSEI-FLG
+      **           END-IF
            END-IF
       *-------特定入院対応ここまで-----------------------------------
       *
@@ -9095,7 +9098,8 @@
                      MOVE   WK-TOKUTEI-DAY     TO  LNK-DAY6-ZOGEN
                      CALL  "ORCSDAY"           USING   STS-AREA-DAY
                                                        LNK-DAY6-AREA
-                     MOVE    LNK-DAY6-KEISAN   TO
+      **             MOVE    LNK-DAY6-KEISAN   TO
+                     MOVE   "99999999"         TO
                                   LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
                  END-IF
       *          一般入院料の算定開始日を算定
@@ -9131,9 +9135,9 @@
                  MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
                                   TO      WRK-IPN-HANTEI-YMD2
       *          一般入院会計作成用のフラグ設定
-                 IF      WRK-IPN-HANTEI-YMD1 > WRK-IPN-HANTEI-YMD2
-                     MOVE    "1"   TO     IPN-NYUKAIKEI-SAKUSEI-FLG
-                 END-IF
+      **           IF      WRK-IPN-HANTEI-YMD1 > WRK-IPN-HANTEI-YMD2
+      **               MOVE    "1"   TO     IPN-NYUKAIKEI-SAKUSEI-FLG
+      **           END-IF
            END-IF
       *-------特定入院対応ここまで-----------------------------------
       *
@@ -9613,7 +9617,8 @@
                      MOVE   WK-TOKUTEI-DAY     TO  LNK-DAY6-ZOGEN
                      CALL  "ORCSDAY"           USING   STS-AREA-DAY
                                                        LNK-DAY6-AREA
-                     MOVE    LNK-DAY6-KEISAN   TO
+      **             MOVE    LNK-DAY6-KEISAN   TO
+                     MOVE    "99999999"        TO
                                   LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
                  END-IF
       *          一般入院料の算定開始日を算定
@@ -9649,9 +9654,9 @@
                  MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
                                   TO      WRK-IPN-HANTEI-YMD2
       *          一般入院会計作成用のフラグ設定
-                 IF      WRK-IPN-HANTEI-YMD1 > WRK-IPN-HANTEI-YMD2
-                     MOVE    "1"   TO     IPN-NYUKAIKEI-SAKUSEI-FLG
-                 END-IF
+      **           IF      WRK-IPN-HANTEI-YMD1 > WRK-IPN-HANTEI-YMD2
+      **               MOVE    "1"   TO     IPN-NYUKAIKEI-SAKUSEI-FLG
+      **           END-IF
            END-IF
       *-------特定入院対応ここまで-----------------------------------
       *
