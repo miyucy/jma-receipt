@@ -29,6 +29,8 @@
            03  KANACHK-SYORI               PIC X(01).
       *    入力領域
            03  KANACHK-MAE-INPUT           PIC X(1000).
+      *    出力桁数（全角の最大桁数の指定（省略可））
+           03  KANACHK-MAX-CNT             PIC 9(04).
       *
       *    出力領域（半角空白を全角へ置換えて編集）
            03  KANACHK-OUT-INPUT           PIC X(1000).
