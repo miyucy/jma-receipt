@@ -62,6 +62,7 @@
       *  01.01.07    NACL-藤原    04/07/12  給付割合の編集条件を変更
       *  01.01.08    NACL-藤原    04/08/18  公費２の請求点の編集条件を修正
       *  01.01.10    NACL-藤原    04/09/13  帳票別指定編集情報からの編集
+      *  01.01.11    NACL-門脇    04/09/16  公費２の実日数の編集条件を修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2741,7 +2742,7 @@
                                            TO  WRK-JINISSUZ
                    MOVE    WRK-JINISSU     TO  HC06-JINISSU1
                END-IF
-               IF      RECE02-JNISSU (IDX1)
+               IF      RECE02-JNISSU (IDX2)
                                    NOT =   RECE02-JNISSU (IDX3)
                AND     IDX3        NOT =   KOHIDX1
                    MOVE    RECE02-JNISSU (IDX3)

@@ -79,6 +79,8 @@
       *  01.01.08    NACL-Æ£¸¶    04/07/12  µëÉÕ³ä¹ç¤ÎÊÔ½¸¾ò·ï¤òÊÑ¹¹
       *  01.01.09    NACL-Æ£¸¶    04/08/18  ¸øÈñ£²¤ÎÀÁµáÅÀ¤ÎÊÔ½¸¾ò·ï¤ò½¤Àµ
       *  01.01.10    NACL-Æ£¸¶    04/09/13  Ä¢É¼ÊÌ»ØÄêÊÔ½¸¾ðÊó¤«¤é¤ÎÊÔ½¸
+      *  01.01.11    NACL-ÌçÏÆ    04/09/16  ¸øÈñ£²¤Î¼ÂÆü¿ô¡¢¿©»öÎÅÍÜ¤ÎÊÔ½¸
+      *                                     ¾ò·ï¤ò½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2709,7 +2711,7 @@
                                            TO  WRK-JINISSUZ
                    MOVE    WRK-JINISSU     TO  HC06-JINISSU1
                END-IF
-               IF  RECE62-JNISSU (IDX1)
+               IF  RECE62-JNISSU (IDX2)
                                    NOT =   RECE62-JNISSU (IDX3)
                  IF  RECE62-FUKUSHIFLG  =  "1"
                    MOVE    RECE62-JNISSU (IDX3)
@@ -3811,11 +3813,11 @@
       *         
            IF    ( RECE62-SHOKUJINISSU (IDX3) >   ZERO                 )
            AND   ((RECE62-SHOKUJINISSU (IDX3)     NOT =
-                                      RECE62-SHOKUJINISSU   (IDX1)) OR
+                                      RECE62-SHOKUJINISSU   (IDX2)) OR
                   (RECE62-SHOKUJIRYOYOHI (IDX3)   NOT =
-                                      RECE62-SHOKUJIRYOYOHI (IDX1)) OR
+                                      RECE62-SHOKUJIRYOYOHI (IDX2)) OR
                   (RECE62-SHOKUJIFTN (IDX3)       NOT =
-                                      RECE62-SHOKUJIFTN     (IDX1))    )
+                                      RECE62-SHOKUJIFTN     (IDX2))    )
                MOVE    RECE62-SHOKUJINISSU (IDX3)
                                                TO  WRK-KGK2
                MOVE    WRK-KGK2            TO  HC06-SYONISSU(3)
