@@ -32,6 +32,7 @@
       *  01.00.03    MCC-藤原     02/05/17  コラムリスト700に変更
       *
       *  01.01.01    NACL-藤原    02/08/23  新傷病名マスタ対応
+      *  01.01.01    NACL-藤原    02/11/18  分類名の選択番号のチェック修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -61,6 +62,8 @@
            03  FLG-END             PIC 9(01).
            03  FLG-USERBYOMEI      PIC 9(01).
            03  FLG-BYOMEI          PIC 9(01).
+      *
+           03  FLG-CHK             PIC 9(01).     
       *
       *    添字領域
        01  IDX-AREA.
@@ -298,11 +301,22 @@
            IF      SPA-GMN-C04-SELNUM1 =   ZERO
                MOVE    2                   TO  SPA-GMN-C04-CUR
            ELSE
-               IF      SPA-GMN-C04-SELNUM1 >   SPA-GMN-C04-BUNRUI-MAX
+      *********IF      SPA-GMN-C04-SELNUM1 >   SPA-GMN-C04-BUNRUI-MAX
+               MOVE    ZERO                TO  FLG-CHK  
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-C04-BUNRUI-MAX
+                       OR      FLG-CHK     =   1
+                   IF      SPA-GMN-C04-SELNUM1 =
+                                           SPA-GMN-C04-BBUNRUICD (IDX)
+                       MOVE    IDX             TO  SPA-NAI-C04-SELNUM1
+                       MOVE    1               TO  FLG-CHK
+                   END-IF
+               END-PERFORM
+               IF      FLG-CHK             =   ZERO                           
                    MOVE    "0012"          TO  SPA-ERRCD
                ELSE
-                   MOVE    SPA-GMN-C04-SELNUM1
-                                           TO  SPA-NAI-C04-SELNUM1
+      *************MOVE    SPA-GMN-C04-SELNUM1
+      *************                        TO  SPA-NAI-C04-SELNUM1
                    MOVE    "USERBYOMEI-KEY7"
                                            TO  WRK-PATH                         
                    PERFORM 410011-BUNRUI-HENSYU-SEC
@@ -747,7 +761,8 @@
       *
            IF      WRK-SELNO           >   ZERO
                MOVE    WRK-SELNO           TO  SPA-NAI-C04-SELNUM1
-                                               SPA-GMN-C04-SELNUM1
+               MOVE    SPA-GMN-C04-BBUNRUICD (SPA-NAI-C04-SELNUM1) 
+                                           TO SPA-GMN-C04-SELNUM1
            END-IF
       *
            MOVE    "USERBYOMEI-KEY7"   TO  WRK-PATH                         
