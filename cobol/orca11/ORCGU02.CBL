@@ -57,6 +57,8 @@
       *  02.00.07    NACL-多々納  03/03/26  カルテ続紙印刷追加
       *  02.00.08    NACL-多々納  03/06/25  受付一覧更新追加
       *  02.00.09    NACL-多々納  03/06/30  カスタマイズ帳票名取得サブ追加
+      *  02.00.10    NACL-多々納  03/09/26  業務権限判定追加
+      *                                     処方せんにドクターなし追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -900,7 +902,7 @@
 070400 31012-SORT-SEC              SECTION.
 070800*  
 070900     PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       99
+                   UNTIL   IDX     >=      100
                    OR      WRK-SORT-NARABE(IDX)   =   SPACE
                COMPUTE IDY     =   IDX     +   1
                PERFORM VARYING IDZ     FROM    IDY     BY  1
@@ -1766,7 +1768,9 @@
       *         受付完了へ
                MOVE    62                  TO  SPA-GMN-CUR
            ELSE
-               IF      SPA-GMN-PTID        =   ZERO
+               IF     (SPA-GMN-PTID        =   ZERO  )
+      **           権限がある場合
+      **        AND   (SPA-GSRAUTH-12      =   "1"  )
       *            患者登録へ
                    MOVE    58                  TO  SPA-GMN-CUR
                ELSE
@@ -2545,8 +2549,12 @@
                MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
                MOVE    SPA-GMN-SRYKANAME   TO  SPA-SRYKAMEI
                MOVE    "2"                 TO  SPA-NYUGAIKBN
-               MOVE    "1"                 TO  SPA-DRCD (1:1) 
-               MOVE    SPA-GMN-DRCD        TO  SPA-DRCD (2:)
+               IF      SPA-GMN-DRCD        =   SPACE
+                   MOVE    SPACE               TO  SPA-DRCD
+               ELSE
+                   MOVE    "1"                 TO  SPA-DRCD (1:1) 
+                   MOVE    SPA-GMN-DRCD        TO  SPA-DRCD (2:)
+               END-IF
                MOVE    SPA-GMN-COMBINUM    TO  SPA-HKNCOMBINUM
                INITIALIZE                      ORCHC19AREA
                MOVE    ZERO                TO  ORCHC19-RENNUM
@@ -2734,8 +2742,12 @@
                MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
                MOVE    SPA-GMN-SRYKANAME   TO  SPA-SRYKAMEI
                MOVE    "2"                 TO  SPA-NYUGAIKBN
-               MOVE    "1"                 TO  SPA-DRCD (1:1) 
-               MOVE    SPA-GMN-DRCD        TO  SPA-DRCD (2:)
+               IF      SPA-GMN-DRCD        =   SPACE
+                   MOVE    SPACE               TO  SPA-DRCD
+               ELSE
+                   MOVE    "1"                 TO  SPA-DRCD (1:1) 
+                   MOVE    SPA-GMN-DRCD        TO  SPA-DRCD (2:)
+               END-IF
                MOVE    SPA-GMN-COMBINUM    TO  SPA-HKNCOMBINUM
                INITIALIZE                      ORCHC19AREA
                MOVE    ZERO                TO  ORCHC19-RENNUM
@@ -2793,6 +2805,10 @@
            PERFORM 900-UKETUKE-READ-SEC
            IF      FLG-UKETUKE         =   ZERO
                ADD     1                   TO  UKE-PTID
+               IF      UKE-PTID            >   99999
+                   MOVE    "1007"              TO  SPA-ERRCD
+                   GO  TO  4901-UKEADD-EXT
+               END-IF
                MOVE    UKE-PTID            TO  WRK-UKEID
                MOVE    UKETUKE-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -2855,7 +2871,7 @@
            MOVE    UKETUKE-REC              TO  WRK-UKETUKE-REC
            PERFORM 900-UKETUKE-READ-SEC
            IF      FLG-UKETUKE         =   ZERO
-               MOVE    "1002"              TO  SPA-ERRCD
+               MOVE    "1006"              TO  SPA-ERRCD
                DISPLAY "U02 UKETUKE INS ERR KEY:"  UKE-KEY
                GO      TO      4901-UKEADD-EXT
            END-IF
@@ -3340,6 +3356,16 @@
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *
+      ***  患者登録の権限がない時、エラー
+      *    IF      SPA-GSRAUTH-12      =   "1"
+      *        CONTINUE
+      *    ELSE
+      *        MOVE    "0028"              TO  SPA-ERRCD
+      *        MOVE    2                   TO  SPA-GMN-CUR
+      *        GO  TO  492-ORCGP01-EXT
+      **** END-IF
+      *
+      *
            IF      SPA-GMN-SELNUM      >   ZERO
       *
       *    選択番号チェック
@@ -3429,6 +3455,9 @@
            MOVE    SPA-GMN-SRYKANAME   TO  SPA-SRYKAMEI
       *    患者氏名
            MOVE    SPA-GMN-NAME        TO  SPA-NAME
+      *    ドクター
+           MOVE    "1"                 TO  SPA-DRCD (1:1) 
+           MOVE    SPA-GMN-DRCD        TO  SPA-DRCD (2:)
       *
            .
       *
@@ -3809,6 +3838,39 @@
                   (SPA-GMN-NAME    NOT =   SPACE)
                MOVE    WIDGET-INSENSITIVE      TO  U02-NAME-STATE
            END-IF
+      *
+      *業務処理権限設定
+      *    患者登録
+      *    IF      SPA-GSRAUTH-12      =   "1"
+      *        MOVE    WIDGET-NORMAL       TO  U02-B05-STATE
+      *    ELSE
+      *        MOVE    WIDGET-INSENSITIVE  TO  U02-B05-STATE
+      *    END-IF
+      *    診療行為
+      *    IF      SPA-GSRAUTH-21      =   "1"
+      *        MOVE    WIDGET-NORMAL       TO  U02-B06-STATE
+      *    ELSE
+      *        MOVE    WIDGET-INSENSITIVE  TO  U02-B06-STATE
+      *    END-IF
+      *    病名登録
+      *    IF      SPA-GSRAUTH-22      =   "1"
+      *        MOVE    WIDGET-NORMAL       TO  U02-B07-STATE
+      *    ELSE
+      *        MOVE    WIDGET-INSENSITIVE  TO  U02-B07-STATE
+      *    END-IF
+      *    収納登録
+      *    IF      SPA-GSRAUTH-23      =   "1"
+      *        MOVE    WIDGET-NORMAL       TO  U02-B08-STATE
+      *    ELSE
+      *        MOVE    WIDGET-INSENSITIVE  TO  U02-B08-STATE
+      *    END-IF
+      *    会計照会
+      *    IF      SPA-GSRAUTH-24      =   "1"
+      *        MOVE    WIDGET-NORMAL       TO  U02-B09S-STATE
+      *    ELSE
+      *        MOVE    WIDGET-INSENSITIVE  TO  U02-B09S-STATE
+      ***  END-IF
+      *
            .
        51O-GSRAUTH-EXT.
            EXIT.
@@ -3971,6 +4033,11 @@
                    MOVE
                    "選択中です。受付一覧の更新はできません。"
                                                 TO  SPA-ERRMSG
+               WHEN    "0028"
+                   MOVE    "患者登録の業務権限はありません。"
+                                                TO  SPA-ERRMSG
+                   MOVE    "患者登録はできません。"
+                                                TO  SPA-ERRMSG(33:)
                WHEN    "2001"
                    MOVE    "前の未確認保険はありません。。"
                                                 TO  SPA-ERRMSG
@@ -3993,6 +4060,16 @@
                WHEN    "1005"
                    MOVE    "受付マスタの削除処理でエラーになりました"
                                                 TO  SPA-ERRMSG
+               WHEN    "1006"
+                   MOVE    "既に受付ＩＤが登録されています。"
+                                                TO  SPA-ERRMSG
+                   MOVE    "再度、受付登録をして下さい。"
+                                                TO  SPA-ERRMSG(33:)
+               WHEN    "1007"
+                   MOVE    "受付ＩＤが９９９９９を超えます。"
+                                                TO  SPA-ERRMSG
+                   MOVE    "これ以上受付はできません。"
+                                                TO  SPA-ERRMSG(33:)
       *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
