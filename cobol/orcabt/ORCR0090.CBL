@@ -515,6 +515,8 @@
            03  FILLER          PIC X(09)   VALUE   "112011010".
       *    老人外来管理加算（３回目まで）
            03  FILLER          PIC X(09)   VALUE   "112705310".
+      *    老人外来管理加算（病院）（３回目まで）
+           03  FILLER          PIC X(09)   VALUE   "112705110".
       *    再診（乳幼児）加算
            03  FILLER          PIC X(09)   VALUE   "112000970".
       *    再診（乳幼児）（時間外等）加算
@@ -592,9 +594,9 @@
       *    老人同日再診（病院）(１回目）
            03  FILLER          PIC X(09)   VALUE   "112703050".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   48.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   49.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   48.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   49.         
       *
       *    固定値
        01  CONST-AREA.
@@ -1456,7 +1458,8 @@
                                   "112007410"  OR  "112702310"  OR
                                   "112007950"  OR  "112702750"  OR
                                   "112008850"  OR  "112703450"  OR
-                                  "112008350"  OR  "112703050"     )
+                                  "112008350"  OR  "112703050"  OR
+                                  "112705110"                      )
                        MOVE    ZERO          TO  FLG-NOPRT
                  ELSE
                        MOVE    1             TO  FLG-NOPRT
