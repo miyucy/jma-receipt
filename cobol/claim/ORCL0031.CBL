@@ -1679,6 +1679,9 @@
                ELSE
                    MOVE    SNUM-OUTNUM         TO  WRK-SURYO
                END-IF
+               IF      WRK-SURYO           =   ZERO
+                   MOVE    1               TO  WRK-SURYO
+               END-IF
                MOVE    WRK-SURYO           TO  TBL-WKSRY-SRYSURYO
                                                      (TBL-MAX IDX-S)
       *
@@ -1843,6 +1846,9 @@
                MOVE    SNUM-OUTNUM         TO  WRK-KAISU
            ELSE
                MOVE    SNUM-OUTNUM         TO  WRK-KAISU
+           END-IF
+           IF      WRK-KAISU           =   ZERO
+               MOVE    1               TO  WRK-KAISU
            END-IF
       *    ºÞ²ó¿ô·×
            IF      TBL-WKSRY-SRYKBN(01)    =   "23" 
