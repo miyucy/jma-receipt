@@ -35,6 +35,7 @@
       *  01.00.05    MCC-藤原     02/06/04  再印刷・情報削除ボタン追加
       *  01.00.06    NACL-藤原    02/09/12  ディレクトリをサブプロへ
       *  01.00.07    NACL-森脇    03/02/12  パラメタ入力チェック追加
+      *  01.00.08    NACL-多々納  03/03/31  未入力時、画面編集追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -42,14 +43,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       * 
-006900*    エラーファイル
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -105,7 +106,7 @@
            03  FLG-END                PIC 9(01).
            03  FLG-SYSKANRI           PIC 9(01).
       *
-           03  FLG-CHK                PIC 9(01).     
+           03  FLG-CHK                PIC 9(01). 
       *
       *    フラグ領域
        01  STS-AREA.
@@ -578,10 +579,13 @@
            IF  SPA-GMN-PARA (IDZ IDY)    =   SPACE
                EVALUATE    SPA-NAI-PARA (IDZ IDY)
                    WHEN    "YMD"
-                       MOVE    SPA-SYSYMD  TO  SPA-NAI-HENPARA (IDZ IDY)
+                       MOVE    SPA-SYSYMD   TO  SPA-NAI-HENPARA(IDZ IDY)
+                       MOVE    SPA-SYSYMDWH TO  SPA-GMN-PARA  (IDZ IDY)
                    WHEN    "YM"
                        MOVE    SPA-SYSYMD(1:6)
                                            TO  SPA-NAI-HENPARA (IDZ IDY)
+                       MOVE    SPA-SYSYMDWH(1:6)
+                                           TO  SPA-GMN-PARA  (IDZ IDY)
                    WHEN    "PSN1"
                        MOVE    0           TO  SPA-NAI-HENPARA (IDZ IDY)
                    WHEN     OTHER
@@ -656,7 +660,7 @@
                COMPUTE IDZ1    =   IDY     +   1     
                PERFORM VARYING IDZ2    FROM    IDZ1    BY  1
                        UNTIL   IDZ2    >       3
-                   ADD     1                    TO  SPA-GMN-CUR
+                   ADD     1                   TO  SPA-GMN-CUR
                    IF      SPA-NAI-PARA (IDZ IDZ2)  NOT =   SPACE
                        GO  TO  4101-NEXT-CUR-EXT
                    END-IF
@@ -846,7 +850,7 @@
                            MOVE    SPACE           TO  WRK-RECEERR
                            STRING  "処理中です【"  DELIMITED  BY  SIZE
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
-                                   "】"            DELIMITED  BY  SIZE      
+                                   "】"            DELIMITED  BY  SIZE
                                                    INTO  WRK-RECEERR
                            MOVE    SYS-3003-JOBID  TO  IDX
                        END-IF
@@ -858,22 +862,22 @@
            IF      SPA-ERRCD           =   SPACE
                MOVE    ZERO                TO  FLG-CHK 
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       100
-                      OR      SPA-ERRCD   NOT =   SPACE
+                       UNTIL  (IDX >       100   )
+                       OR     (SPA-ERRCD   NOT =   SPACE )
                    IF      SPA-GMN-CHK-VALUE   (IDX)   =   "T"
                        MOVE    1                   TO  FLG-CHK 
                        PERFORM VARYING IDZ FROM    1   BY  1
                                UNTIL   IDZ >       3
-                           IF      SPA-GMN-PARAHYOJI(IDX IDZ)
-                                                   NOT =   SPACE
-                           AND     SPA-NAI-HENPARA  (IDX IDZ)
-                                                   =   SPACE
+                           IF     (SPA-GMN-PARAHYOJI(IDX IDZ)
+                                                   NOT =   SPACE )
+                           AND    (SPA-NAI-HENPARA  (IDX IDZ)
+                                                   =   SPACE )
                                MOVE    "0004"      TO  SPA-ERRCD
                            END-IF
                        END-PERFORM
-                   END-IF                   
+                   END-IF
                END-PERFORM
-           END-IF        
+           END-IF
       *
            IF      SPA-ERRCD           =   SPACE   
                IF      FLG-CHK             =   ZERO           
@@ -940,7 +944,7 @@
       *
            MOVE    ZERO                TO  WRK-CONS-JOB-JOBID     
                                            WRK-PRTKANRI-RENNUM
-           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP                                
+           MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP
       *     
            MOVE    "RECEERR"           TO  RECEERR-FILE-ID
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
@@ -964,8 +968,8 @@
                                    WRK-CONS-PRTKANRI-TBL-GROUP (9:)
       *
            PERFORM VARYING IDY FROM    1       BY  1
-                   UNTIL   IDY             >   100
-                   OR      SPA-ERRCD   NOT =   SPACE    
+                   UNTIL  (IDY             >   100  )
+                   OR     (SPA-ERRCD   NOT =   SPACE)   
                IF      SPA-GMN-CHK-VALUE   (IDY)   =   "T"
       *
                    PERFORM 45011-JOBKANRI-HENSYU-SEC
@@ -981,7 +985,7 @@
                                            TO  LNK-PRTKANRI-TBL-KEY 
                    MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
                                            TO  LNK-PRTKANRI-TBL-GROUP
-                   MOVE    "000000"        TO  LNK-PRTKANRI-SRYYM 
+                   MOVE    "000000"        TO  LNK-PRTKANRI-SRYYM
                    MOVE    SPA-SYSYMD      TO  LNK-PRTKANRI-SKYYMD
                    MOVE    "execoprg.sh"   TO  LNK-PRTKANRI-SHELLID
                    MOVE    ZERO            TO  LNK-PRTKANRI-PRIORITY
@@ -1064,7 +1068,7 @@
            MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
                                        TO  LNK-PRTKANRI-TBL-GROUP
            MOVE    ZERO                TO  LNK-PRTKANRI-RENNUM
-           MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM                             
+           MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM 
            MOVE    "000000"            TO  LNK-PRTKANRI-SRYYM 
            MOVE    SPA-SYSYMD          TO  LNK-PRTKANRI-SKYYMD
            MOVE    "print.sh"          TO  LNK-PRTKANRI-SHELLID
@@ -1099,7 +1103,7 @@
            MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
            CALL    "MCPSUB"            USING
                                        MCPAREA
-                                       MCPDATA-REC                         
+                                       MCPDATA-REC 
       *
       *    ＪＯＢＩＤ更新処理
       *
@@ -1123,7 +1127,7 @@
        45011-JOBKANRI-HENSYU-SEC       SECTION.
       *
            ADD     1               TO  WRK-CONS-JOB-JOBID
-      *       
+      *
            MOVE    "DEL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-JOBID
