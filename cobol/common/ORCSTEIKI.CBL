@@ -1317,6 +1317,17 @@
                    WHEN    "80"
                     COMPUTE SYU-HKNTEN (10)   =  SYU-HKNTEN (10)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
+      *            Æþ±¡ÎÁ²Ã»»
+                   WHEN    "90"
+                   WHEN    "92"
+                    IF     ACCT-SRYCDTOTAL    =   190080470  OR
+                                                  190799670
+                        COMPUTE SYU-HKNTEN (11)   =  SYU-HKNTEN (11) -
+                               (ACCT-ZAITEN  *   SINRYO-COUNT)
+                   ELSE
+                        COMPUTE SYU-HKNTEN (11)   =  SYU-HKNTEN (11) +
+                               (ACCT-ZAITEN  *   SINRYO-COUNT)
+                   END-IF
       *            ÊÝ¸±Å¬ÍÑ³°µÚ¤Ó¼«Èñ
                    WHEN    "95"
                    WHEN    "96"
