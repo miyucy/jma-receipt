@@ -429,6 +429,16 @@
                PERFORM 100-SRYACT-KOU-SEC
                PERFORM 200-JYURRK-SYORI-SEC
            END-IF
+      *
+      *    当月の調剤料を算定しなおす
+           INITIALIZE                  ORCSCHOZAIAREA
+           MOVE    "1"                 TO  ORCSCHO-KBN
+           MOVE    SPA-PTID            TO  ORCSCHO-PTID
+           MOVE    SPA-SRYYMD(1:6)     TO  ORCSCHO-SRYYM
+           CALL    "ORCSCHOZAI"        USING
+                                       SPA-AREA
+                                       ORCSCHOZAIAREA
+      *
       *    来月の調剤料を算定しなおす
            PERFORM 600-NEXT-CHOZAI-SEC
       *
