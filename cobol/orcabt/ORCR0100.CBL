@@ -132,6 +132,7 @@
       *  01.02.09    NACL-ÌçÏÆ    04/01/20  ¼«Èñ¥ì¥»Å¦Í×ÍóÊÔ½¸½¤Àµ
       *  01.02.10    NACL-ÌçÏÆ    04/05/13  ½é¿Ç»þ¤Ë»þ´Ö³°¡¦¿¼Ìë¡¦µÙÆü¤¬
       *                                     £²¤Ä°Ê¾å¤¢¤Ã¤¿¾ì¹ç¤Îµ­ºÜÂÐ±þ
+      *  01.01.06    NACL-¾®Æ¦Âô  04/05/19  £Ä£Â½ñ¤­¹þ¤ß»þ¤Î¥³¥ß¥Ã¥ÈÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -303,6 +304,7 @@
            03  CNT-ZAIMEISAISU     PIC 9(03).
            03  CNT-PAGE            PIC 9(03).
            03  CNT-KENSU           PIC 9(03). 
+           03  CNT-COMMIT          PIC 9(03). 
       *
       *    ¥·¥¹¥Æ¥àÎÎ°è
        01  SYS-AREA.
@@ -1119,6 +1121,13 @@
                        ADD     1                      TO  CNT-KENSU
       *                                      
                        PERFORM 2001-SYORI-SEC
+      *
+                       ADD     1                 TO  CNT-COMMIT
+                       IF  CNT-COMMIT      =    300
+                           MOVE  ZERO      TO      CNT-COMMIT
+                           PERFORM 900-DBCOMMIT-SEC
+                           PERFORM 900-DBSTART-SEC
+                       END-IF
       *
                        PERFORM 990-RECE02-READ-SEC
                    END-PERFORM
@@ -4560,4 +4569,32 @@
                                         MCPDATA-REC.
            .
        900-DBCLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â¡¡£Ã£Ï£Í£Í£É£Ô½èÍý
+      *****************************************************************
+       900-DBCOMMIT-SEC            SECTION.
+      *
+           MOVE    "DBCOMMIT"          TO  MCP-FUNC.
+           CALL    "MCPSUB"          USING
+                                        MCPAREA
+                                        MCPDATA-REC.
+      *
+           .
+       900-DBCOMMIT-EXT.
+           EXIT.
+      *      
+      *****************************************************************
+      *    £Ä£Â¡¡£Ó£Ô£Á£Ò£Ô½èÍý
+      *****************************************************************
+       900-DBSTART-SEC                SECTION.
+      *
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC.
+           .
+       900-DBSTART-EXT.
            EXIT.
