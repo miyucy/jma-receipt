@@ -84,6 +84,7 @@
       *  01.01.26    NACL-太田    03.05.01  収納一覧リスト表示修正
       *  01.01.27    NACL-太田    03.05.13  患者が特定された時点で
       *                                     支払証明書が出力できるよう修正
+      *  01.01.28    NACL-門脇    03.05.14  自賠責：腰部固定帯対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -343,6 +344,8 @@
       *
            03  WK-SINDAN           PIC  9(08).                          
            03  WK-MEISAI           PIC  9(08).                          
+      *
+           03  WK-YOUBUKASAN       PIC  9(08).
       *
            03  WK-SYUTEN-KEI       PIC  9(08).                          010112
            03  WRK-TEN             PIC  9(08).                          010112
@@ -2677,6 +2680,8 @@
            MOVE     ZERO               TO      WK-SINDAN                
                                                WK-MEISAI                
       *
+           MOVE     ZERO               TO      WK-YOUBUKASAN
+      *
            MOVE     ZERO               TO      FLG-SENIN-SYOSIN         
       *
            PERFORM      4401-SINKAI-SET-SEC
@@ -3004,6 +3009,7 @@
                                        -   WK-RSISAISHIN                010112
                                        -   WK-RSISDO                    010112
                                        -   WK-RSIETC                    010112
+                                       -   WK-YOUBUKASAN
       *
              COMPUTE   LNK-S01-SINDAN  =  WK-SINDAN  *  10
              COMPUTE   LNK-S01-MEISAI  =  WK-MEISAI  *  10
@@ -3816,6 +3822,12 @@
                            COMPUTE WK-MEISAI = WK-MEISAI +              
                                   (WRK-TEN  *   TBL-ZAIKAISU (IDX1))     
                          END-IF                                         
+      *
+                         IF    SRY-SRYCD (IDX8)  =   "140037490"
+                           COMPUTE WK-YOUBUKASAN = WK-YOUBUKASAN +
+                                  (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
+
+                         END-IF
       *                                                                 010112
                     END-IF                                              010112
       *                                                                 010112
