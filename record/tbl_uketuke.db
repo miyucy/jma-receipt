@@ -8,6 +8,7 @@ tbl_uketuke {
 	SRYKA   			char(2);
 	DRCD    			char(5);
 	SRYNAIYO			char(2);
+	HKNCOMBI			number(4,0);
 	KAIKEITIME			number(4,0);
 	KEYYYKTIME			number(4,0);
 	YYKTIME 			number(4,0);
@@ -98,6 +99,21 @@ path	del12 	{
 			WHERE   HOSPID    =   :HOSPID
 			AND   PTID        =   :PTID
                         AND   UKEID      <>   0
+		;
+	};
+};
+
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_uketuke_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_uketuke
+			WHERE   HOSPID    =   :HOSPID
+			AND   UKEYMD      =   :UKEYMD
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			ORDER   BY        UKEID,
+                                          UKETIME
 		;
 	};
 };

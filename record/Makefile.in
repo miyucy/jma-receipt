@@ -298,6 +298,7 @@ RECORD_files = \
 	X04.rec \
 	W30.rec \
 	W60.rec \
+	K081.rec \
 
 DEF_files = \
 	HC01.def \
@@ -449,6 +450,7 @@ DB_files = \
 	query_dtchk.db \
 	tbl_chksnd.db \
 	tbl_receupd.db \
+	tbl_orderprt.db \
 
 all:   
 

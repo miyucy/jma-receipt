@@ -1,3 +1,4 @@
+
 K08	{
 	fixed1	{
 		PTNUM	{
@@ -126,6 +127,10 @@ K08	{
 		MSGDATA	{
 		    style   varchar(20);
 			value	varchar(60);
+		};
+		B10	{
+	           	state	int;
+			label	varchar(10);
 		};
 	};
 };
