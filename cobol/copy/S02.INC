@@ -44,7 +44,7 @@
                     06  S02-TDENPNUM    PIC X(9).
                     06  S02-TSRYKA      PIC X(6).
                     06  S02-TNYUGAI     PIC X(4).
-                    06  S02-THKN        PIC X(30).
+                    06  S02-THKN        PIC X(50).
                     06  S02-TFTNRATE    PIC X(5).
                     06  S02-TSKYSTYMD   PIC X(11).
                     06  S02-TSRYYMD     PIC X(15).

@@ -22,7 +22,7 @@
               03  S03N-NAME      PIC X(50).
               03  S03N-SEX       PIC X(4).
               03  S03N-BIRTHDAY  PIC X(9).
-              03  S03N-HKNCOMBI  PIC X(30).
+              03  S03N-HKNCOMBI  PIC X(50).
               03  S03N-RATE      PIC X(6).
               03  S03N-SRYKA     PIC X(10).
               03  S03N-NYUGAIKBN PIC X(6).

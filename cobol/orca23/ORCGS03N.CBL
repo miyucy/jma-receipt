@@ -64,7 +64,7 @@
                    07  SPA-GMN-PTNUM             PIC X(20).
                    07  SPA-GMN-KANANAME          PIC X(100).
                    07  SPA-GMN-SEX               PIC X(02).
-                   07  SPA-GMN-KUMI              PIC X(36).
+                   07  SPA-GMN-KUMI              PIC X(50).
                    07  SPA-GMN-RITU              PIC X(10).
                    07  SPA-GMN-SRYYMD            PIC X(09).
                    07  SPA-GMN-NAME              PIC X(100).
@@ -1094,7 +1094,6 @@
            PERFORM     VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       5 
                MOVE    SPA-GMN-JIHIMSG(IDX)  TO  S03N-JIHIMSG (IDX)
-               DISPLAY "S03N-JIHIMSG (" IDX ") = " S03N-JIHIMSG (IDX)
            END-PERFORM
       *    Ï«ºÒÊÝ¸±Å¬ÍÑÊ¬
            MOVE    SPA-GMN-RSISHOSHIN    TO  S03N-RSISHOSHIN

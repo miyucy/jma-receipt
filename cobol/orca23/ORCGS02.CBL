@@ -152,7 +152,7 @@
                            11  SPA-GMN-TDENPNUM    PIC 9(07).
                            11  SPA-GMN-TNYUGAIKBN  PIC X(04).
                            11  SPA-GMN-TSRYKA      PIC X(06).
-                           11  SPA-GMN-THKNCOMBI   PIC X(36).
+                           11  SPA-GMN-THKNCOMBI   PIC X(50).
                            11  SPA-GMN-TFTNRATE    PIC X(08).
                            11  SPA-GMN-TSRYYMD     PIC X(15).
                            11  SPA-GMN-TSKYEDYMD   PIC X(06).

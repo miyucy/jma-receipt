@@ -78,7 +78,7 @@
                    07  SPA-GMN-PTNUM             PIC X(20).
                    07  SPA-GMN-KANANAME          PIC X(100).
                    07  SPA-GMN-SEX               PIC X(02).
-                   07  SPA-GMN-KUMI              PIC X(36).
+                   07  SPA-GMN-KUMI              PIC X(50).
                    07  SPA-GMN-RITU              PIC X(10).
                    07  SPA-GMN-SRYYMD            PIC X(09).
                    07  SPA-GMN-NAME              PIC X(100).

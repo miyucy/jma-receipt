@@ -65,7 +65,7 @@
       *負担率名称
            05  SPA-S01-FTNRATEMEI        PIC X(10).
       *保険組合せ内容
-           05  SPA-S01-HKNCOMBIMEI       PIC X(40).
+           05  SPA-S01-HKNCOMBIMEI       PIC X(50).
       *入外区分
            05  SPA-S01-NYUGAIKBN         PIC X(01).
       *入外区分（ヘッダー）

@@ -19,7 +19,7 @@ S03	{
 			value	varchar(9);
 		};
 		HKNCOMBI	{
-			value	varchar(30);
+			value	varchar(50);
 		};
 		RATE	{
 			value	varchar(6);
