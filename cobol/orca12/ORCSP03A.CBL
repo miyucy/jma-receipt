@@ -1928,8 +1928,8 @@
                GO      TO      2005-IDOYMD-CHECK-EXT
            END-IF
       *
-           IF      (SPA-HKNJA-IDOYMD   <   SPA-NAI-HTEKSTYMD )  OR
-                   (SPA-HKNJA-IDOYMD   <   SPA-NAI-HTEKEDYMD )
+           IF      (SPA-HKNJA-IDOYMD   <=  SPA-NAI-HTEKSTYMD )  OR
+                   (SPA-HKNJA-IDOYMD   <=  SPA-NAI-HTEKEDYMD )
                CONTINUE
            ELSE
                MOVE    SPACE           TO  SPA-HKNJA-KEIFLG

@@ -1460,9 +1460,9 @@
            END-IF
       *
            IF      (SPA-PTKOH-IDOYMD (IDX-K)
-                                       <   SPA-NAI-KTEKSTYMD(IDX-K)) OR
+                                       <=  SPA-NAI-KTEKSTYMD(IDX-K)) OR
                    (SPA-PTKOH-IDOYMD (IDX-K)
-                                       <   SPA-NAI-KTEKEDYMD(IDX-K))
+                                       <=  SPA-NAI-KTEKEDYMD(IDX-K))
                CONTINUE
            ELSE
                MOVE    SPACE           TO  SPA-NAI-PTKOH-KEIFLG (IDX-K)
