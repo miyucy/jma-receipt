@@ -5944,7 +5944,7 @@
                GO  TO  4801-ZENKAI-ZIINRRK-CHK-EXT
            END-IF
       *
-      *    前歴の自院歴が｢入院中｣の場合
+      *    前歴の自院歴が「入院中」の場合
            IF    ( WKPTNYUINRRK-JTIKBN         =   "6" )
             AND  ( WKPTNYUINRRK-NYUINCHUKBN    =   "1" )
       *
@@ -10564,12 +10564,12 @@
                MOVE    "退院月の会計テーブルが作成されていません"
                                        TO  SPA-ERRMSG
            WHEN    "1031"
-               MOVE    "前歴の自院歴が｢入院中｣です。前歴の継続"
+               MOVE    "前歴の自院歴が「入院中」です。前歴の継続"
                                        TO  SPA-ERRMSG (1 : 40)
                MOVE    "入院として登録してください"
                                        TO  SPA-ERRMSG (41 : )
            WHEN    "1032"
-               MOVE    "前歴の自院歴が｢入院中｣です。入院日を前"
+               MOVE    "前歴の自院歴が「入院中」です。入院日を前"
                                        TO  SPA-ERRMSG (1 : 40)
                MOVE    "歴の退院日の翌日にしてください"
                                        TO  SPA-ERRMSG (41 : )

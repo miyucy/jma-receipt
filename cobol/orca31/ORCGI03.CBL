@@ -1697,7 +1697,7 @@
            END-IF
       *
       *    継続の場合、
-      *    継続元が自院歴で、｢入院中｣でないこと
+      *    継続元が自院歴で、「入院中」でないこと
            IF    ( SPA-GMN-I03-SHOKAI-CD   =   "2" )
                PERFORM 4801-ZIIN-NYUINCHU-CHK
                IF    ( SPA-ERRCD       NOT =   ZERO )
@@ -2091,7 +2091,7 @@
                MOVE    "退院済／入院中を入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "1011"
-               MOVE    "継続元の歴が｢自院歴−入院中｣の場合は、"
+               MOVE    "継続元の歴が「自院歴−入院中」の場合は、"
                                        TO  SPA-ERRMSG (1:40)
                MOVE    "登録処理は行えません。"
                                        TO  SPA-ERRMSG (41:)
