@@ -18,7 +18,7 @@
             01  HCML02.
               03  HCML02-SRYCD                 PIC  X(9)    OCCURS  15.
               03  HCML02-NAME                  PIC  X(100)  OCCURS  15.
-              03  HCML02-TEN                   PIC  X(12)   OCCURS  15.
+              03  HCML02-TEN                   PIC  X(14)   OCCURS  15.
               03  HCML02-TANINAME              PIC  X(24)   OCCURS  15.
               03  HCML02-DATAKBN               PIC  X(1)    OCCURS  15.
               03  HCML02-JGNTEN                PIC  X(7)    OCCURS  15.

@@ -29,6 +29,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.01.01    NACL-¿¹ÏÆ    03/03/10  TERMID¤ÎÎÎ°è»ØÄê¤Ê¤·
       *  01.01.02    NACL-¿¹ÏÆ    03/07/14  Ä¢É¼¤òHCML03¢ªHCML04¤ËÊÑ¹¹
+      *  01.01.03    NACL-¿¹ÏÆ    04/03/16  ÅÀ¿ô¤Î·å½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -123,7 +124,9 @@
                05  WRK-CDKBN-KOUBAN      PIC X(2).
       *
            03  WRK-PAGE              PIC ZZ,ZZ9.
-           03  WRK-TEN               PIC Z,ZZZ,ZZ9.99.
+      *----(01.01.03)--UPD-START---
+           03  WRK-TEN               PIC ZZZ,ZZZ,ZZ9.99.
+      *----(01.01.03)--UPD-END-----
       *----(01.01.02)--ADD-START---
            03  WRK-ZZ9               PIC ZZ9.
       *----(01.01.02)--ADD-END-----

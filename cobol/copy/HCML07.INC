@@ -4,7 +4,7 @@
             02  HCML07-HOSPNAME PIC X(60).
             02  HCML07-SRYCD    PIC X(9)        OCCURS  15 TIMES.
             02  HCML07-NAME PIC X(100)  OCCURS  15 TIMES.
-            02  HCML07-TEN  PIC X(12)   OCCURS  15 TIMES.
+            02  HCML07-TEN  PIC X(14)   OCCURS  15 TIMES.
             02  HCML07-HKNTEK   PIC X(12)       OCCURS  15 TIMES.
             02  HCML07-BUI  PIC X(10)   OCCURS  15 TIMES.
             02  HCML07-GAITEN   PIC X(3)        OCCURS  15 TIMES.

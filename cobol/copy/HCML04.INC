@@ -5,7 +5,7 @@
             02  HCML04-NAIYO-TBL        OCCURS  15 TIMES.
               03  HCML04-SRYCD    PIC X(9).
               03  HCML04-NAME PIC X(100).
-              03  HCML04-TEN  PIC X(12).
+              03  HCML04-TEN  PIC X(14).
               03  HCML04-HKNTEK   PIC X(1).
               03  HCML04-BUI  PIC X(10).
               03  HCML04-GAITEN   PIC X(3).

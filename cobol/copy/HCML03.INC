@@ -18,7 +18,7 @@
             01  HCML03.
               03  HCML03-SRYCD          PIC  X(9)      OCCURS  15.
               03  HCML03-NAME           PIC  X(100)    OCCURS  15.
-              03  HCML03-TEN            PIC  X(12)     OCCURS  15.
+              03  HCML03-TEN            PIC  X(14)     OCCURS  15.
               03  HCML03-TANINAME       PIC  X(24)     OCCURS  15.
               03  HCML03-TENSIKIBETU    PIC  X(1)      OCCURS  15.
               03  HCML03-SRYKBN         PIC  X(2)      OCCURS  15.

@@ -17,7 +17,7 @@
       ********************************************************************
             01  HCML01.
               03  HCML01-SRYCD            PIC  X(9)    OCCURS  15.
-              03  HCML01-TEN              PIC  X(12)   OCCURS  15.
+              03  HCML01-TEN              PIC  X(14)   OCCURS  15.
               03  HCML01-TANINAME         PIC  X(24)   OCCURS  15.
               03  HCML01-CSYYOURYO        PIC  X(5)    OCCURS  15.
               03  HCML01-MADOKUKBN        PIC  X(8)    OCCURS  15.

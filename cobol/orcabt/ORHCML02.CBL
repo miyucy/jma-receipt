@@ -35,6 +35,7 @@
       *  01.01.01    NACL-∆£∏∂    02/10/10  •µ•§•»∂Ë ¨ƒ…≤√
       *  01.01.02    NACL-øπœ∆    03/03/10  TERMID§ŒŒŒ∞ËªÿƒÍ§ §∑
       *  02.00.01    NACL-øπœ∆    03/12/25  §Ω§Œ¬æ∫‡Œ¡ƒ…≤√
+      *  02.00.02    NACL-øπœ∆    04/03/16  ≈¿øÙ§Œ∑ÂΩ§¿µ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -113,7 +114,9 @@
       *     03  WRK-IN                PIC X.
       *
            03  WRK-PAGE              PIC ZZ,ZZ9.
-           03  WRK-TEN               PIC Z,ZZZ,ZZ9.99.
+      *----(02.00.02)--UPD-START---
+           03  WRK-TEN               PIC ZZZ,ZZZ,ZZ9.99.
+      *----(02.00.02)--UPD-END-----
            03  WRK-JGNTEN            PIC ZZZ,ZZ9.
            03  WRK-KGNAGE            PIC Z9.
            03  WRK-JGNAGE            PIC Z9.

@@ -18,7 +18,7 @@
           01  HCML05.
               03  HCML05-SRYCD                 PIC  X(9)    OCCURS  15.
               03  HCML05-NAME                  PIC  X(100)  OCCURS  15.
-              03  HCML05-TEN                   PIC  X(12)   OCCURS  15.
+              03  HCML05-TEN                   PIC  X(14)   OCCURS  15.
               03  HCML05-TANINAME              PIC  X(24)   OCCURS  15.
               03  HCML05-DATAKBN               PIC  X(1)    OCCURS  15.
               03  HCML05-JGNTEN                PIC  X(7)    OCCURS  15.
