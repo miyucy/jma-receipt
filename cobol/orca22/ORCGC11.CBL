@@ -1376,6 +1376,8 @@
       *
            INITIALIZE                  SPA-GMN-C11-BODY1
                                        SPA-NAI-C11-BODY1
+                                       SPA-GMN-C11-SELNUM2
+                                       SPA-NAI-C11-SELNUM2
       *
            IF      WRK-BANGO           >   ZERO
                MOVE    WRK-BANGO           TO  SPA-NAI-C11-SELNUM1
@@ -1410,6 +1412,8 @@
       *
            INITIALIZE                  SPA-GMN-C11-BODY1
                                        SPA-NAI-C11-BODY1
+                                       SPA-GMN-C11-SELNUM1
+                                       SPA-NAI-C11-SELNUM1
       *
            IF      WRK-BANGO           >   ZERO
                MOVE    WRK-BANGO           TO  SPA-NAI-C11-SELNUM2
