@@ -146,6 +146,7 @@
       <y>724</y>
       <width>80</width>
       <height>24</height>
+      <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>0</modifiers>
 	<key>GDK_F6</key>
@@ -168,6 +169,7 @@
       <y>724</y>
       <width>80</width>
       <height>24</height>
+      <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>0</modifiers>
 	<key>GDK_F7</key>
@@ -207,6 +209,7 @@
       <y>724</y>
       <width>80</width>
       <height>24</height>
+      <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>0</modifiers>
 	<key>GDK_F9</key>
@@ -229,7 +232,6 @@
       <y>724</y>
       <width>80</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>0</modifiers>
 	<key>GDK_F10</key>
@@ -252,7 +254,6 @@
       <y>724</y>
       <width>80</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>0</modifiers>
 	<key>GDK_F11</key>
@@ -2566,7 +2567,7 @@
 	  <last_modification_time>Tue, 25 Sep 2001 01:28:45 GMT</last_modification_time>
 	</signal>
 	<columns>4</columns>
-	<column_widths>30,65,20,35</column_widths>
+	<column_widths>20,75,20,35</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -2575,7 +2576,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label1588</name>
-	  <label>»÷πÊ</label>
+	  <label></label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>

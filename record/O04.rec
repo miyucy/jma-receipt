@@ -310,7 +310,7 @@ O04	{
 				rowattr int;
 				item	{
 					value0	varchar(2);
-					value1	varchar(9);
+					value1	varchar(10);
 					value3	varchar(2);
 					value4	varchar(4);
 				}	[50];

@@ -153,7 +153,7 @@
                   05  O04-SKYLIST-ROWATTR  PIC S9(9)   BINARY.
                   05  O04-SKYLIST-ITEM     OCCURS  50 TIMES.
                       06  O04-TSK-RENNUM   PIC X(2).
-                      06  O04-TSK-SKYKKN   PIC X(9).
+                      06  O04-TSK-SKYKKN   PIC X(10).
                       06  O04-TSK-SRYKA    PIC X(2).
                       06  O04-TSK-HKNCOMBI PIC X(4).
                   05  O04-SKYLIST-SELECT   PIC X

@@ -190,7 +190,7 @@
                    07  SPA-GMN-O04-SKYLIST-SEL         PIC 9(02).
                    07  SPA-GMN-O04-SKYTBL-OCC          OCCURS  50.
                        09  SPA-GMN-O04-TSK-RENNUM      PIC 9(02).
-                       09  SPA-GMN-O04-TSK-SKYKKN      PIC X(09).
+                       09  SPA-GMN-O04-TSK-SKYKKN      PIC X(10).
                        09  SPA-GMN-O04-TSK-SRYKAMEI    PIC X(02).
                        09  SPA-GMN-O04-TSK-HKNCOMBI    PIC 9(04).
                    07  SPA-GMN-O04-SKYSELNUM           PIC 9(02).

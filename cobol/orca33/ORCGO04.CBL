@@ -119,6 +119,7 @@
            03  WRK-SKYKKN-G.
                05  WRK-SKYKKN-YM                   PIC X(06).
                05  WRK-SKYKKN-KBT                  PIC X(03).
+               05  WRK-SKYKKN-MRK                  PIC X(01).
            03  WRK-SYU-NYUGAIKBN                   PIC X(01).
            03  WRK-SYU-PTID                        PIC 9(10).
            03  WRK-SYU-DENPNUM                     PIC 9(07).
@@ -2147,6 +2148,10 @@
                    MOVE    " -3"           TO  WRK-SKYKKN-KBT
                END-EVALUATE
       *
+               IF    ( PTTEIKIRRK-SAKKBN   =   "9" )
+                   MOVE    "*"             TO  WRK-SKYKKN-MRK
+               END-IF
+      *
                MOVE    WRK-SKYKKN-G
                                    TO  SPA-GMN-O04-TSK-SKYKKN (IDX-LST)
       *
@@ -3324,7 +3329,7 @@
                    IF    ( SPA-GMN-O04-CHOSEIIN   <=   ZERO )
                        MOVE    SPACE   TO  SMEI-JOUTAIKBN
                    ELSE
-                       MOVE    "1"     TO  SMEI-JOUTAIKBN
+                       MOVE    "9"     TO  SMEI-JOUTAIKBN
                    END-IF
                WHEN    2
                    CONTINUE
