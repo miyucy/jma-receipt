@@ -1403,11 +1403,13 @@
                GO  TO  41021-KIHON-1026-EXT
            END-IF
       *
-      *    割引対象チェック処理
-           PERFORM 4122-DISCOUNT-OBJ-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO  TO  41021-KIHON-1026-EXT
-           END-IF
+      *    暫定 ST 2003.08.12
+      *     割引対象チェック処理
+      *     PERFORM 4122-DISCOUNT-OBJ-CHK-SEC
+      *     IF      SPA-ERRCD       NOT =   SPACE
+      *         GO  TO  41021-KIHON-1026-EXT
+      *     END-IF
+      *    暫定 ED
            .
        41021-KIHON-1026-EXT.
            EXIT.
@@ -2235,8 +2237,10 @@
                                            TO  SYS-1026-DISCOUNT-BODY 
                    MOVE    SPA-GMN-DISCOUNT-KBN
                                            TO  SYS-1026-DISCOUNT-KBN 
-                   MOVE    SPA-GMN-DISCOUNT-OBJ
-                                           TO  SYS-1026-DISCOUNT-OBJ 
+      *    暫定 ST 2003.08.12
+      *            MOVE    SPA-GMN-DISCOUNT-OBJ
+      *                                    TO  SYS-1026-DISCOUNT-OBJ 
+      *    暫定 ED
                    MOVE    SYS-1026-REC        TO  SYSKANRI-REC
       * 
       *    医療機関情報ー割引率情報
@@ -2814,7 +2818,10 @@
                 WHEN    51
                     MOVE  "DISCOUNTKBN"    TO   MCP-WIDGET
                 WHEN    52
-                    MOVE  "DISCOUNTOBJ"    TO   MCP-WIDGET
+      * 暫定 ST 2003.08.12
+      *             MOVE  "DISCOUNTOBJ"    TO   MCP-WIDGET
+                    MOVE  "DISCOUNTBODY"   TO   MCP-WIDGET
+      * 暫定 ED
                 WHEN    60
                     MOVE  "CONDITIONBODY"  TO   MCP-WIDGET
                 WHEN    61

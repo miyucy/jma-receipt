@@ -1908,7 +1908,7 @@
 	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>DISCOUNTOBJ_COMBO</name>
-	  <x>210</x>
+	  <x>2210</x>
 	  <y>88</y>
 	  <width>200</width>
 	  <height>24</height>
@@ -1980,7 +1980,7 @@
 	<widget>
 	  <class>GtkLabel</class>
 	  <name>label1607</name>
-	  <x>56</x>
+	  <x>2056</x>
 	  <y>88</y>
 	  <width>155</width>
 	  <height>18</height>
