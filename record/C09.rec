@@ -6,10 +6,11 @@ C09	{
 				row 	int;
 				rowattr	int;
 				item	{
-					value0	varchar(7);
-					value1	varchar(40);
-				}	[21];
-				select	bool[21];
+					value0	varchar(2);
+					value1	varchar(7);
+					value2	varchar(40);
+				}	[100];
+				select	bool[100];
 			};
 		};
 	};
