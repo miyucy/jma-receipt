@@ -134,7 +134,7 @@ J02	{
 				count	int;
 				item	{
 					value1	varchar(3);
-					value2	varchar(60);
+					value2	varchar(80);
 					value3	varchar(13);
 					value4	varchar(7);
 					value5	varchar(4);

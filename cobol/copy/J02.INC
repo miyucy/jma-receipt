@@ -48,7 +48,7 @@
                   05  J02-DATALIST-COUNT   PIC S9(9)   BINARY.
                   05  J02-DATALIST-ITEM        OCCURS  400 TIMES.
                     06  J02-TNO          PIC X(3).
-                    06  J02-TMEISYO      PIC X(60).
+                    06  J02-TMEISYO      PIC X(80).
                     06  J02-TSURYO       PIC X(13).
                     06  J02-TTENSU       PIC X(7).
                     06  J02-THKNCOMBI    PIC X(4).
