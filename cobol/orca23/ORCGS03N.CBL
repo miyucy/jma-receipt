@@ -32,6 +32,7 @@
       *  01.01.02    NACL-森脇    03.01.06  S04の追加
       *  01.01.03    NACL-太田    03.01.23  食事の計算方法修正
       *  01.01.04    NACL-太田    03.03.25  入院の保険適用外金額欄追加
+      *  01.01.05    NACL-太田    03.10.27  入金上限額のチェックを修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -118,7 +119,7 @@
                        09  SPA-GMN-FI1L          PIC X(01).
                        09  SPA-GMN-NYUKINLMEI    PIC X(24).
       *
-                   07  SPA-GMN-TBL               OCCURS  12.
+                   07  SPA-GMN-TBL               OCCURS  50.
                        09  SPA-GMN-EDABAN-T      PIC 9(02).
                        09  SPA-GMN-SEIKYU-T      PIC S9(10).
                        09  SPA-GMN-NYUKIN-T      PIC S9(10).
@@ -689,7 +690,7 @@
           MOVE    1                   TO      IDX.
           PERFORM
                UNTIL   (FLG-SYUMEI     =       1          ) OR
-                       (IDX            >       12         ) 
+                       (IDX            >       50         ) 
                    MOVE SMEI-DENPEDANUM TO  SPA-GMN-EDABAN-T (IDX)
                    MOVE SMEI-SKYMONEY   TO  SPA-GMN-SEIKYU-T (IDX)
                    MOVE SMEI-NYUHEN-MONEY TO SPA-GMN-NYUKIN-T (IDX)
@@ -1078,7 +1079,7 @@
            END-IF.
       *
            PERFORM    VARYING IDX     FROM    1   BY  1      
-                      UNTIL   IDX     >       10 
+                      UNTIL   IDX     >       50 
                       OR      SPA-GMN-EDABAN-T (IDX)  =   ZERO
                MOVE   SPA-GMN-EDABAN-T(IDX)   TO  WRK-EDABAN
                MOVE   WRK-EDABAN              TO  S03N-TRENNUM (IDX)
@@ -1334,6 +1335,15 @@
       *
            PERFORM 310-SPA-SET-SEC
       *
+           EVALUATE     SPA-S01-SYORINO
+           WHEN     "05"
+               MOVE    2       TO  SPA-GMN-CUR
+           WHEN     "07"
+               CONTINUE
+           WHEN     "08"
+               MOVE    1       TO  SPA-GMN-CUR
+           END-EVALUATE
+      *
            .
        410-KOUMOKU-SYORI-EXT.
            EXIT.
@@ -1461,14 +1471,9 @@
            MOVE     ZERO          TO  SPA-NYUKINGK
            EVALUATE    SPA-S01-SYORINO
                WHEN    "05"
-                 PERFORM  VARYING   IDY  FROM 1  BY  1
-                          UNTIL     IDY  >  12
-                   COMPUTE SPA-NYUKINGK = SPA-NYUKINGK
-                                        + SPA-GMN-NYUKIN-T(IDY)
-                 END-PERFORM
-      *
-                 COMPUTE SPA-NYUKINGK = SPA-NYUKINGK
-                                        + SPA-GMN-NYUKIN-IN
+                 COMPUTE SPA-NYUKINGK
+                     =   SPA-GMN-DENPYO-KEI
+                     +   SPA-GMN-NYUKIN-IN
                WHEN    "08"
                  COMPUTE SPA-NYUKINGK = SPA-GMN-DENPYO-KEI - 
                              SPA-GMN-NYUKIN-T(SPA-GMN-RIREKIIN) +

@@ -113,10 +113,10 @@
               03  S03N-SCROLLEDWINDOW1.
                 04  S03N-CLIST1.
                   05  S03N-CLIST1-COUNT   PIC S9(9)   BINARY.
-                  05  S03N-ITEM        OCCURS  10 TIMES.
+                  05  S03N-ITEM        OCCURS  50 TIMES.
                   06  S03N-TRENNUM PIC X(4).
                   06  S03N-TSKYMONY    PIC X(12).
                   06  S03N-TNYUKINMONEY    PIC X(12).
                   06  S03N-TSYORIYMD   PIC X(11).
                   06  S03N-TJTI    PIC X(12).
-                  05  S03N-SELECT  PIC X       OCCURS  10 TIMES.
+                  05  S03N-SELECT  PIC X       OCCURS  50 TIMES.
