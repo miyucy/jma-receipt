@@ -246,6 +246,8 @@
            MOVE    WRK-PARA-TERMID     TO  RECEERR-TERMID
       *
       *    医療機関減算の取得（システム管理テーブルより）
+           MOVE     ZERO               TO  WRK-MIJISI
+      *
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5000"              TO  SYS-KANRICD
            MOVE    "*"                 TO  SYS-KBNCD
@@ -351,14 +353,14 @@
            MOVE       SPACE             TO     WRK-DAY-TABLE
            INITIALIZE                          WRK-DAY-TABLE
       *
-           PERFORM    VARYING    IDX    FROM   1   BY   1
-                      UNTIL     (IDX      >   10)  OR
-                                (RECE62-SRYKA(IDX)   =   SPACE)
+      ***  PERFORM    VARYING    IDX    FROM   1   BY   1
+      ***             UNTIL     (IDX      >   10)  OR
+      ***                       (RECE62-SRYKA(IDX)   =   SPACE)
                PERFORM    RECE62-HENSYU-SEC
                PERFORM    RECE62-HENSYU2-SEC
                PERFORM    RECE62-HENSYU3-SEC
                PERFORM    RECE62-HENSYU9-SEC
-           END-PERFORM
+      ***  END-PERFORM
       *
            PERFORM     JNISSU-SET-SEC
       *
@@ -376,17 +378,17 @@
            MOVE    RECE62-HOSPID         TO      NACCT-HOSPID
            MOVE    RECE62-NYUGAIKBN      TO      NACCT-NYUGAIKBN
            MOVE    RECE62-PTID           TO      NACCT-PTID
-           MOVE    RECE62-SRYKA(IDX)     TO      NACCT-SRYKA
+      ***  MOVE    RECE62-SRYKA(IDX)     TO      NACCT-SRYKA
            MOVE    RECE62-SRYYM          TO      NACCT-SRYYM
            MOVE    NYUINACCT-REC         TO      MCPDATA-REC
            MOVE    "DBSELECT"            TO      MCP-FUNC
-           MOVE    "NYUINACCT-KEY2"      TO      ORC-DBPATH
+           MOVE    "NYUINACCT-KEY7"      TO      ORC-DBPATH
            CALL    "ORCMCPSUB"           USING   MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC
            IF      MCP-RC             =       ZERO
       *
-               MOVE    "NYUINACCT-KEY2"  TO      ORC-DBPATH
+               MOVE    "NYUINACCT-KEY7"  TO      ORC-DBPATH
                PERFORM  NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
@@ -396,14 +398,14 @@
                        PERFORM    NYUIN-DAY-TAIHI-SEC
                  END-IF
       *
-                 MOVE          "NYUINACCT-KEY2"  TO   ORC-DBPATH
+                 MOVE          "NYUINACCT-KEY7"  TO   ORC-DBPATH
                  PERFORM        NYUINACCT-READ-SEC
                END-PERFORM
       *
            END-IF
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY2"        TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY7"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -529,17 +531,17 @@
            MOVE    RECE62-HOSPID         TO      NACCT-HOSPID
            MOVE    RECE62-NYUGAIKBN      TO      NACCT-NYUGAIKBN
            MOVE    RECE62-PTID           TO      NACCT-PTID
-           MOVE    RECE62-SRYKA(IDX)     TO      NACCT-SRYKA
+      ***  MOVE    RECE62-SRYKA(IDX)     TO      NACCT-SRYKA
            MOVE    RECE62-SRYYM          TO      NACCT-SRYYM
            MOVE    NYUINACCT-REC         TO      MCPDATA-REC
            MOVE    "DBSELECT"            TO      MCP-FUNC
-           MOVE    "NYUINACCT-KEY2"      TO      ORC-DBPATH
+           MOVE    "NYUINACCT-KEY7"      TO      ORC-DBPATH
            CALL    "ORCMCPSUB"           USING   MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC
            IF      MCP-RC             =       ZERO
       *
-               MOVE    "NYUINACCT-KEY2"  TO      ORC-DBPATH
+               MOVE    "NYUINACCT-KEY7"  TO      ORC-DBPATH
                PERFORM  NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
@@ -593,14 +595,14 @@
       *
                  END-IF
       *
-                 MOVE          "NYUINACCT-KEY2"  TO   ORC-DBPATH
+                 MOVE          "NYUINACCT-KEY7"  TO   ORC-DBPATH
                  PERFORM        NYUINACCT-READ-SEC
                END-PERFORM
       *
            END-IF
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY2"        TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY7"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -754,6 +756,7 @@
                   PERFORM  VARYING  ID1    FROM    1   BY  1
                                 UNTIL   ID1                   > 10
                                   OR    RECE62-NYUKHNRYO(ID1) = ZERO
+                                  OR    FLG-ARI               = 1
                       IF  RECE62-NYUKHNRYO(ID1)  =  WRK-NYUKHNRYO
                             ADD   1   TO   RECE62-NYUKHNNISSU(ID1)
                             ADD   WRK-NYUKHNRYO
@@ -798,6 +801,7 @@
                   PERFORM  VARYING  ID1    FROM    1   BY  1
                                 UNTIL   ID1                   > 10
                                   OR    RECE62-NYUTOKRYO(ID1) = ZERO
+                                  OR    FLG-ARI               = 1
                       IF  RECE62-NYUTOKRYO(ID1)  =  WRK-NYUTOKRYO
                             ADD   1   TO   RECE62-NYUTOKNISSU(ID1)
                             ADD   WRK-NYUTOKRYO
@@ -847,18 +851,18 @@
            MOVE    NACCT-HOSPID       TO   NSRY-HOSPID
            MOVE    NACCT-NYUGAIKBN    TO   NSRY-NYUGAIKBN
            MOVE    NACCT-PTID         TO   NSRY-PTID
-           MOVE    NACCT-SRYKA        TO   NSRY-SRYKA
+      ***  MOVE    NACCT-SRYKA        TO   NSRY-SRYKA
            MOVE    NACCT-SRYYM        TO   NSRY-SRYYM
            MOVE    NACCT-ZAINUM       TO   NSRY-ZAINUM
            MOVE    NYUINACT-REC       TO   MCPDATA-REC
            MOVE    "DBSELECT"         TO   MCP-FUNC
-           MOVE    "NYUINACT-KEY2"    TO   ORC-DBPATH
+           MOVE    "NYUINACT-KEY9"    TO   ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
            IF      MCP-RC             =    ZERO
-               MOVE    "NYUINACT-KEY2"     TO   ORC-DBPATH
+               MOVE    "NYUINACT-KEY9"     TO   ORC-DBPATH
                PERFORM NYUINACT-READ-SEC
            ELSE
                MOVE    1              TO   FLG-NYUINACT
@@ -899,7 +903,7 @@
                                            WRK-KHNTEN
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC
-           MOVE    "NYUINACT-KEY2"         TO  ORC-DBPATH
+           MOVE    "NYUINACT-KEY9"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -920,18 +924,18 @@
            MOVE    NACCT-HOSPID       TO   NSRY-HOSPID
            MOVE    NACCT-NYUGAIKBN    TO   NSRY-NYUGAIKBN
            MOVE    NACCT-PTID         TO   NSRY-PTID
-           MOVE    NACCT-SRYKA        TO   NSRY-SRYKA
+      ***  MOVE    NACCT-SRYKA        TO   NSRY-SRYKA
            MOVE    NACCT-SRYYM        TO   NSRY-SRYYM
            MOVE    NACCT-ZAINUM       TO   NSRY-ZAINUM
            MOVE    NYUINACT-REC       TO   MCPDATA-REC
            MOVE    "DBSELECT"         TO   MCP-FUNC
-           MOVE    "NYUINACT-KEY2"    TO   ORC-DBPATH
+           MOVE    "NYUINACT-KEY9"    TO   ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
            IF      MCP-RC             =    ZERO
-               MOVE    "NYUINACT-KEY2"     TO   ORC-DBPATH
+               MOVE    "NYUINACT-KEY9"     TO   ORC-DBPATH
                PERFORM NYUINACT-READ-SEC
            ELSE
                MOVE    1              TO   FLG-NYUINACT
@@ -942,6 +946,14 @@
                  UNTIL  (FLG-NYUKHN         =   1)    OR
                         (NYUINACT-IDX       >   5)    OR
                         (NSRY-SRYCD(NYUINACT-IDX)  =  SPACE)
+                   IF    NSRY-SRYCD(NYUINACT-IDX)  =  "190080470"
+                                                  OR  "190799670"
+                                                  OR  "190080570"
+                                                  OR  "190799770"
+                                                  OR  "190111690"
+                                                  OR  "190809090"
+                                                  OR  "190111790"
+                                                  OR  "190809190"
                      MOVE    SPACE         TO   TNS-TENSU-REC
                      INITIALIZE                 TNS-TENSU-REC
                      MOVE    NSRY-SRYCD(NYUINACT-IDX) TO   TNS-SRYCD
@@ -961,11 +973,12 @@
                                                      MCPAREA
                                                      ORCMCPAREA
                                                      MCPDATA-REC
+                   END-IF
                END-PERFORM
            END-IF
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC
-           MOVE    "NYUINACT-KEY2"         TO  ORC-DBPATH
+           MOVE    "NYUINACT-KEY9"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -984,17 +997,17 @@
            MOVE    RECE62-HOSPID         TO      NACCT-HOSPID
            MOVE    RECE62-NYUGAIKBN      TO      NACCT-NYUGAIKBN
            MOVE    RECE62-PTID           TO      NACCT-PTID
-           MOVE    RECE62-SRYKA(IDX)     TO      NACCT-SRYKA
+      ***  MOVE    RECE62-SRYKA(IDX)     TO      NACCT-SRYKA
            MOVE    RECE62-SRYYM          TO      NACCT-SRYYM
            MOVE    NYUINACCT-REC         TO      MCPDATA-REC
            MOVE    "DBSELECT"            TO      MCP-FUNC
-           MOVE    "NYUINACCT-KEY2"      TO      ORC-DBPATH
+           MOVE    "NYUINACCT-KEY7"      TO      ORC-DBPATH
            CALL    "ORCMCPSUB"           USING   MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC
            IF      MCP-RC             =       ZERO
       *
-               MOVE    "NYUINACCT-KEY2"  TO      ORC-DBPATH
+               MOVE    "NYUINACCT-KEY7"  TO      ORC-DBPATH
                PERFORM  NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
@@ -1020,14 +1033,14 @@
       *
                  END-IF
       *
-                 MOVE          "NYUINACCT-KEY2"  TO   ORC-DBPATH
+                 MOVE          "NYUINACCT-KEY7"  TO   ORC-DBPATH
                  PERFORM        NYUINACCT-READ-SEC
                END-PERFORM
       *
            END-IF
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY2"        TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY7"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -1038,17 +1051,17 @@
            MOVE    RECE62-HOSPID         TO      NACCT-HOSPID
            MOVE    RECE62-NYUGAIKBN      TO      NACCT-NYUGAIKBN
            MOVE    RECE62-PTID           TO      NACCT-PTID
-           MOVE    RECE62-SRYKA(IDX)     TO      NACCT-SRYKA
+      ***  MOVE    RECE62-SRYKA(IDX)     TO      NACCT-SRYKA
            MOVE    RECE62-SRYYM          TO      NACCT-SRYYM
            MOVE    NYUINACCT-REC         TO      MCPDATA-REC
            MOVE    "DBSELECT"            TO      MCP-FUNC
-           MOVE    "NYUINACCT-KEY2"      TO      ORC-DBPATH
+           MOVE    "NYUINACCT-KEY7"      TO      ORC-DBPATH
            CALL    "ORCMCPSUB"           USING   MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC
            IF      MCP-RC             =       ZERO
       *
-               MOVE    "NYUINACCT-KEY2"  TO      ORC-DBPATH
+               MOVE    "NYUINACCT-KEY7"  TO      ORC-DBPATH
                PERFORM  NYUINACCT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
@@ -1074,14 +1087,14 @@
       *
                  END-IF
       *
-                 MOVE          "NYUINACCT-KEY2"  TO   ORC-DBPATH
+                 MOVE          "NYUINACCT-KEY7"  TO   ORC-DBPATH
                  PERFORM        NYUINACCT-READ-SEC
                END-PERFORM
       *
            END-IF
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC
-           MOVE    "NYUINACCT-KEY2"        TO  ORC-DBPATH
+           MOVE    "NYUINACCT-KEY7"        TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -1100,19 +1113,19 @@
            MOVE    NACCT-HOSPID       TO   NSRY-HOSPID
            MOVE    NACCT-NYUGAIKBN    TO   NSRY-NYUGAIKBN
            MOVE    NACCT-PTID         TO   NSRY-PTID
-           MOVE    NACCT-SRYKA        TO   NSRY-SRYKA
+      ***  MOVE    NACCT-SRYKA        TO   NSRY-SRYKA
            MOVE    NACCT-SRYYM        TO   NSRY-SRYYM
            MOVE    NACCT-ZAINUM       TO   NSRY-ZAINUM
            MOVE    NYUINACT-REC       TO   MCPDATA-REC
            MOVE    "DBSELECT"         TO   MCP-FUNC
-           MOVE    "NYUINACT-KEY2"    TO   ORC-DBPATH
+           MOVE    "NYUINACT-KEY9"    TO   ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
                                            MCPDATA-REC
            IF      MCP-RC             =       ZERO
       *
-               MOVE    "NYUINACT-KEY2"  TO      ORC-DBPATH
+               MOVE    "NYUINACT-KEY9"  TO      ORC-DBPATH
                PERFORM  NYUINACT-READ-SEC
                PERFORM  UNTIL  (FLG-NYUINACT  =    "1")
       *
@@ -1131,6 +1144,7 @@
                          PERFORM  VARYING  ID1    FROM    1   BY  1
                                 UNTIL   ID1                   > 20
                                   OR    RECE62-NYUSYUBETU(ID1) = SPACE
+                                  OR    FLG-ARI                = 1 
                              IF  RECE62-NYUSYUBETU(ID1)  
                                         =  NYURYAKUSHO-RYAKUSHO
                                  MOVE  1   TO   FLG-ARI
@@ -1149,14 +1163,14 @@
                                                        MCPDATA-REC
                  END-PERFORM
       *
-                 MOVE          "NYUINACT-KEY2"  TO   ORC-DBPATH
+                 MOVE          "NYUINACT-KEY9"  TO   ORC-DBPATH
                  PERFORM        NYUINACT-READ-SEC
                END-PERFORM
       *
            END-IF
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC
-           MOVE    "NYUINACT-KEY2"         TO  ORC-DBPATH
+           MOVE    "NYUINACT-KEY9"         TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
@@ -1175,16 +1189,16 @@
            MOVE    RECE62-HOSPID        TO      ACCT-HOSPID
            MOVE    RECE62-NYUGAIKBN     TO      ACCT-NYUGAIKBN
            MOVE    RECE62-PTID          TO      ACCT-PTID
-           MOVE    RECE62-SRYKA(IDX)    TO      ACCT-SRYKA
+      ***  MOVE    RECE62-SRYKA(IDX)    TO      ACCT-SRYKA
            MOVE    RECE62-SRYYM         TO      ACCT-SRYYM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBSELECT"           TO      MCP-FUNC
-           MOVE    "SRYACCT-KEY2"       TO      ORC-DBPATH
+           MOVE    "SRYACCT-KEY7"       TO      ORC-DBPATH
            CALL    "ORCMCPSUB"           USING   MCPAREA
                                                  ORCMCPAREA
                                                  MCPDATA-REC
            IF      MCP-RC               =       ZERO
-               MOVE    "SRYACCT-KEY2"   TO      ORC-DBPATH
+               MOVE    "SRYACCT-KEY7"   TO      ORC-DBPATH
                PERFORM  SRYACCT-READ-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
@@ -1199,13 +1213,13 @@
                            END-IF
                        END-IF
                    END-PERFORM
-                   MOVE     "SRYACCT-KEY2"   TO   ORC-DBPATH
+                   MOVE     "SRYACCT-KEY7"   TO   ORC-DBPATH
                    PERFORM   SRYACCT-READ-SEC
                END-PERFORM
            END-IF
       *
            MOVE    "DBCLOSE"               TO  MCP-FUNC
-           MOVE    "SRYACCT-KEY2"          TO  ORC-DBPATH
+           MOVE    "SRYACCT-KEY7"          TO  ORC-DBPATH
            CALL    "ORCMCPSUB"             USING
                                            MCPAREA
                                            ORCMCPAREA
