@@ -33,6 +33,7 @@
       *  02.00.01    MCC¡ÝÂ¿¡¹Ç¼  01/09/07  ²èÌÌÊÑ¹¹¤ËÈ¼¤¦½¤Àµ
       *  02.00.02    MCC¡ÝÂ¿¡¹Ç¼  02/07/16  ¥¤¥ó¥¿¡¼¥Õ¥§¡¼¥¹¤ÎÊÑ¹¹
       *  02.00.03    NACL¡ÝÂ¿¡¹Ç¼ 02/09/24  ¸¡º÷½¤Àµ
+      *  02.00.04    NACL¡ÝÂ¿¡¹Ç¼ 03/08/01  ²èÁü¿ÇÃÇ¤Î»£±Æ²ó¿ôÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1492,6 +1493,12 @@
            IF      LNK-WKSRY-AUTOKBN (IDX IDY)
                                        =   "A" OR "B" OR "C"  OR  "D"
                MOVE    SPACE           TO  SPA-COM-AUTOKBN (IDX2)
+           END-IF
+      *    ¿ôÎÌÆþÎÏ»þ
+           IF      LNK-WKSRY-AUTOKBN (IDX IDY)
+                                       =   "S"
+               MOVE    "1"                 TO  SPA-COM-SURFLG  (IDX2)
+               MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
            END-IF
       *
            MOVE    LNK-WKSRY-INPUTCHI-G (IDX IDY)
@@ -3433,7 +3440,7 @@
                PERFORM 41014-GYOINSN-SEC
            END-IF
            PERFORM
-                   UNTIL     (FLG-INPUTSET     =   1 )  OR
+                  UNTIL     (FLG-INPUTSET     =   1 )  OR
                              (SPA-ERRCD    NOT =   SPACE )  OR
                              (SPA-GMN-IDX      >=  200   )
       *
@@ -5470,6 +5477,11 @@
            IF      SPA-COM-KEIFLG (IDX)    =   SPACE  OR  "2"
       *        ¿ôÎÌ
                MOVE    SPA-COM-SURYO  (IDX)    TO  ISET-SURYO1
+               IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
+                      (SPA-COM-SURFLG (IDX)    =   SPACE   )  AND
+                      (SPA-COM-SURYO (IDX)     >   1      )
+                   MOVE    1                   TO  ISET-SURYO1
+               END-IF
            ELSE
       *        ÊÝ¸±³°¶â³Û
                MOVE    SPA-COM-KEI (IDX)       TO  ISET-SURYO1

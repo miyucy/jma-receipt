@@ -63,6 +63,7 @@
       *  03.00.15    NACL-多々納  03/05/26  最終退院日編集追加
       *  03.00.16    NACL-多々納  03/06/27  カスタマイズ帳票名取得サブ追加
       *  03.00.17    NACL-多々納  03/07/17  入力修正他
+      *  03.00.18    NACL-多々納  03/08/01  数量入力判定追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -905,6 +906,13 @@
        000-PROC-SEC                SECTION.
       *
       *
+      *TEST
+           ACCEPT  WRK-SYSTIME         FROM    TIME
+           DISPLAY "K02 START:" WRK-SYSTIME (1:2) ":" 
+                                WRK-SYSTIME (3:2) ":" 
+                                WRK-SYSTIME (5:2) ":" 
+                                WRK-SYSTIME (7:2) "/" 
+      *TEST
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
@@ -958,6 +966,13 @@
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-K02         TO  SPA-FREE
       *
+      *TEST
+           ACCEPT  WRK-SYSTIME         FROM    TIME
+           DISPLAY "K02 END  :" WRK-SYSTIME (1:2) ":" 
+                                WRK-SYSTIME (3:2) ":" 
+                                WRK-SYSTIME (5:2) ":" 
+                                WRK-SYSTIME (7:2) "/" 
+      *TEST
       *
            .
            EXIT    PROGRAM
@@ -2986,10 +3001,19 @@
                    IF     (SPA-COM-INPUTCD(IDX-1)(1:1)   =   "1" )  AND
                           (SPA-COM-DATAKBN (IDX-1)       =   "1" )  AND
                           (SPA-COM-KZMCOMPSIKIBETU(IDX-1)  NOT =  ZERO)
-                       IF     (SPA-COM-SURYO (IDX-1)     >   1   )  AND
-                              (FLG-FIRUMU                =   ZERO)
-                           MOVE    "1"         TO  SPA-COM-SURFLG
+                     AND  (SPA-COM-SURYO (IDX-1)         >   1   )
+                       IF      FLG-FIRUMU                =   ZERO
+                           MOVE    "1"             TO  SPA-COM-SURFLG
                                                                (IDX-1)
+                       ELSE
+                           IF      SPA-COM-SURFLG (IDX-1)
+                                                       NOT =   "1"
+                               MOVE    1           TO  SPA-COM-SURYO
+                                                               (IDX-1)
+      *                        入力コードの画面用再編集
+                               MOVE    IDX-1               TO  IDX
+                               PERFORM 3101-INPUTCD-HEN-SEC
+                           END-IF
                        END-IF
                    END-IF
                END-IF
@@ -3172,6 +3196,12 @@
                                        TO  SPA-COM-AUTOKBN  (IDX2)
            IF      LNK-WKSRY-AUTOKBN (IDX IDY)
                                        =   "A" OR "B" OR "C"  OR  "D"
+               MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
+           END-IF
+      *    数量入力時
+           IF      LNK-WKSRY-AUTOKBN (IDX IDY)
+                                       =   "S"
+               MOVE    "1"                 TO  SPA-COM-SURFLG  (IDX2)
                MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
            END-IF
            IF      FLG-AUTO-OK         =   1
@@ -10436,6 +10466,12 @@
       *            自動算定区分
                    MOVE    SPA-COM-AUTOKBN (IDX)    TO  WKSRY-AUTOKBN
                                                                  (IDY)
+      *            数量の入力がある時
+                   IF     (SPA-COM-AUTOKBN (IDX)    =   SPACE )  AND
+                          (SPA-COM-SURFLG  (IDX)    =   "1"   )
+                       MOVE    "S"                  TO  WKSRY-AUTOKBN
+                                                                 (IDY)
+                   END-IF
       *            時間外区分入力がある時、英字変換後セット
                    IF      SPA-COM-AUTOKBN (IDX)    =   SPACE
                        PERFORM 45022-JIKANGAI-SET-SEC
@@ -10936,6 +10972,12 @@
       *            自動算定区分
                    MOVE    SPA-COM-AUTOKBN (IDX)    TO  WKSRY-AUTOKBN
                                                                  (IDY)
+      *            数量の入力がある時
+                   IF     (SPA-COM-AUTOKBN (IDX)    =   SPACE )  AND
+                          (SPA-COM-SURFLG  (IDX)    =   "1"   )
+                       MOVE    "S"                  TO  WKSRY-AUTOKBN
+                                                                 (IDY)
+                   END-IF
       *            時間外区分入力がある時、英字変換後セット
                    IF      SPA-COM-AUTOKBN (IDX)    =   SPACE
                        PERFORM 45022-JIKANGAI-SET-SEC
