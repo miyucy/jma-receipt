@@ -746,11 +746,6 @@
            03  CONS-RJNRIGAKU6     PIC X(09) VALUE "180707310".
            03  CONS-RJNRIGAKU7     PIC X(09) VALUE "180707410".
            03  CONS-RJNRIGAKU8     PIC X(09) VALUE "180707510".
-           03  CONS-RJNRIGAKU9     PIC X(09) VALUE "180707670".
-           03  CONS-RJNRIGAKU10    PIC X(09) VALUE "180707770".
-           03  CONS-RJNRIGAKU11    PIC X(09) VALUE "180707870".
-           03  CONS-RJNRIGAKU12    PIC X(09) VALUE "180707970".
-           03  CONS-RJNRIGAKU13    PIC X(09) VALUE "180708070".
       *
       *    »ÀÁÇ 
            COPY    "CMSANSOTBL.INC".
@@ -2097,12 +2092,7 @@
                                                  CONS-RJNRIGAKU5  OR
                                                  CONS-RJNRIGAKU6  OR
                                                  CONS-RJNRIGAKU7  OR
-                                                 CONS-RJNRIGAKU8  OR
-                                                 CONS-RJNRIGAKU9  OR
-                                                 CONS-RJNRIGAKU10 OR
-                                                 CONS-RJNRIGAKU11 OR
-                                                 CONS-RJNRIGAKU12 OR
-                                                 CONS-RJNRIGAKU13
+                                                 CONS-RJNRIGAKU8
                          MOVE  "Ï·¿Í"    TO   RECE65-NAME(IDX4)(1:4)
                          MOVE  TNS-NAME  TO   RECE65-NAME(IDX4)(5:) 
                          COMPUTE  RECE65-YUKOKETA(IDX4) =
