@@ -5,6 +5,9 @@ dnl Checks for programs.
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
+AC_PATH_PROG(COBC, cobc)
+AC_SUBST(COBC)
+
 dnl Checks for libraries.
 
 dnl Checks for header files.
@@ -13,6 +16,7 @@ AC_HEADER_STDC
 dnl Checks for typedefs, structures, and compiler characteristics.
 
 dnl Checks for library functions.
+
 
 AC_OUTPUT([
 cobol/Makefile

@@ -1,12 +1,9 @@
-COBOL = cobc
 INSTALL = @INSTALL@
-MKDIR = mkdir -p
 CP = cp
 
 prefix = @prefix@
 exec_prefix= @exec_prefix@
-orcadir = ${exec_prefix}/orca
-etcdir = ${orcadir}/etc
+sysconfdir = @sysconfdir@
 install_ignore := Makefile.in Makefile build-stamp
 
 all:   

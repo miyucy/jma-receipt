@@ -1,10 +1,9 @@
-COBOL = cobc
 INSTALL = @INSTALL@
-MKDIR = mkdir -p
-CP = cp
 
 prefix = @prefix@
 exec_prefix= @exec_prefix@
+sysconfdir = @sysconfdir@
+
 orcadir = ${exec_prefix}/orca
 
 SUBDIRS = cobol lddef record screen form scripts doc data etc init

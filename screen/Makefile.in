@@ -1,6 +1,4 @@
-COBOL = cobc
 INSTALL = @INSTALL@
-MKDIR = mkdir -p
 CP = cp
 
 prefix = @prefix@
