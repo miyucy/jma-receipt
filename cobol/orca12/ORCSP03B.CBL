@@ -1960,7 +1960,7 @@
                MOVE    LNK-DAY6-KEISAN  TO  WRK-BASEYMD
            ELSE
                MOVE    SPACE            TO  WRK-BASEYMD
-               MOVE    "0008"           TO  SPA-ERRCD
+               MOVE    "0099"           TO  SPA-ERRCD
            END-IF
       *
            .
