@@ -15,6 +15,7 @@ for f in `ls ${SITESRCDIR}/cobol`; do
     m=`echo $f | sed 's/CBL$/so/'`
     echo -n "Building ${m}..."
     cobc -m -o ${SITELIBDIR}/${m} \
+         -I ${PATCHCOPYDIR} \
          -I ${COPYDIR} \
          -I ${SITESRCDIR}/cobol/copy \
         ${SITESRCDIR}/cobol/${f}
