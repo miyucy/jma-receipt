@@ -1533,7 +1533,9 @@
                MOVE    SPA-NAI-C02-BYOMEICD (IDZ)
                                    TO  BYO-BYOMEICD
                PERFORM 410111-BYOMEI-HENSYU-SEC
+               MOVE    SPACE       TO  SPA-NAI-C02-BYOMEITOP (IDZ) 
            END-PERFORM
+           MOVE    "1"             TO  SPA-NAI-C02-BYOMEITOP (1)
       *
            PERFORM 41021-BYOMEI-HENSYU-SEC
       *
@@ -3324,24 +3326,16 @@
       *    病名コード編集チェック処理
       *****************************************************************
        41021-BYOMEI-HENSYU-SEC        SECTION.
-      *
-      *    未コード化傷病名のとき
-      *****PERFORM VARYING IDX FROM    1   BY  1
-      *****        UNTIL   IDX >       6 
-      *****    IF      SPA-NAI-C02-BYOMEICD (IDX)
-      *****                            =   WRK-CONS-BYOMEICD
-      *****            GO  TO  41021-BYOMEI-HENSYU-EXT
-      *****    END-IF
-      *****END-PERFORM                                
       *         
            MOVE    ZERO                TO  SPA-NAI-C02-BYOMEIMOJI
            MOVE    SPACE               TO  SPA-GMN-C02-BYOMEIHENFLG
            MOVE    SPACE               TO  SPA-NAI-C02-BYOMEIHENFLG
+      *
       *    病名編集
            MOVE    SPA-NAI-C02-BYOMEI(1)
                                        TO  WRK-BYOMEI
            PERFORM VARYING IDX FROM    2   BY  1
-                   UNTIL   IDX >       6
+                   UNTIL   IDX >       21
                IF      SPA-NAI-C02-BYOMEITOP   (IDX)   =   "1"
                AND     WRK-BYOMEI                  NOT =   SPACE    
                    STRING  WRK-BYOMEI              DELIMITED  BY  SPACE
@@ -3361,8 +3355,8 @@
            IF      WRK-BYOMEI          NOT =   SPA-GMN-C02-BYOMEI
       *      疑いフラグ編集
              PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       6
-                   OR      SPA-GMN-C02-UTAGAIFLG   =   "3"
+                     UNTIL   IDX >       21
+                     OR      SPA-GMN-C02-UTAGAIFLG   =   "3"
                EVALUATE    SPA-NAI-C02-UTAGAIFLG   (IDX)
                    WHEN    "1"
                        IF      SPA-GMN-C02-UTAGAIFLG   =   "2"
@@ -3390,12 +3384,12 @@
       *      慢性区分編集
              MOVE    SPACE               TO  SPA-GMN-C02-MANSEIKBN-G  
              PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       6
-               IF      SPA-NAI-C02-TOKSKNCD (IDX)   NOT =   ZERO
-                   MOVE    SPA-NAI-C02-TOKSKNCD (IDX)
-                                           TO  SPA-GMN-C02-MANSEIKBN
-                   MOVE    6               TO  IDX
-               END-IF   
+                     UNTIL   IDX >       21
+                 IF      SPA-NAI-C02-TOKSKNCD (IDX)   NOT =   ZERO
+                     MOVE    SPA-NAI-C02-TOKSKNCD (IDX)
+                                             TO  SPA-GMN-C02-MANSEIKBN
+                     MOVE    21              TO  IDX
+                 END-IF   
              END-PERFORM
       *     
              MOVE    SPA-GMN-C02-MANSEIKBN
@@ -5475,7 +5469,7 @@
       * 
            IF      SPA-NAI-C02-BYOMEIMOJI          >   ZERO
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       6
+                       UNTIL   IDX >       21
                    IF      SPA-NAI-C02-BYOMEICD (IDX)  NOT =   SPACE
                        ADD     1               TO  IDY              
                        MOVE    SPA-NAI-C02-BYOMEICD (IDX)
