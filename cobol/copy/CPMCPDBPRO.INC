@@ -276,6 +276,7 @@
       *  01.01.97    NACL-小豆沢　03/08/29  PTHKNINF-KEY6追加
       *  01.01.98    NACL-小豆沢  03/08/29  KOHPLUSの追加
       *  01.01.99    NACL-藤原    03/08/29  RECEPRT-KEY18〜KEY29追加
+      *  01.01.100   NACL-太田    03/08/29  KOHPLUS-UPD1の追加
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1050,6 +1051,9 @@
                                        TO  WRK-PATH
                WHEN    "DBDELETE"      ALSO   "KOHPLUS-DEL1"
                    MOVE    PATH-TBL-KOHPLUS-DEL1
+                                       TO  WRK-PATH
+               WHEN    "DBUPDATE"      ALSO   "KOHPLUS-UPD1"
+                   MOVE    PATH-TBL-KOHPLUS-UPD1
                                        TO  WRK-PATH
       *---- (NYUIN.08) LINE ADD END      ------------------------------
                WHEN    ANY             ALSO   "SYSKANRI-KEY"
