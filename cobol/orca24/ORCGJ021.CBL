@@ -1524,14 +1524,17 @@
       *    受診履歴
            PERFORM 300311-JYURRK-UPD-SEC
       *
-      *    診療会計
-      *****PERFORM 300312-SRYACCT-UPD-SEC
+           IF      SPA-ERRCD           =   SPACE
+      *        算定履歴
+               PERFORM 300314-SANTEI-UPD-SEC
+           END-IF
       *
-      *    算定履歴
-           PERFORM 300314-SANTEI-UPD-SEC
-      *
-      *    レセプトコメント
-           PERFORM 300315-RECECOM-UPD-SEC
+           IF     (SPA-J021-DAY1       =   SPA-J021-STDAY )  AND
+                  (SPA-J021-DAY2       =   SPA-J021-ENDAY )  AND
+                  (SPA-ERRCD           =   SPACE )
+      *        レセプトコメント
+               PERFORM 300315-RECECOM-UPD-SEC
+           END-IF
       *
            .
        30032-DB-KOUSIN-EXT.
