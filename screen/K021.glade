@@ -290,7 +290,7 @@
       <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
 
       <widget>
-	<class>GtkText</class>
+	<class>GtkPandaText</class>
 	<name>SAYOKIJYO</name>
 	<width>700</width>
 	<height>56</height>
@@ -312,7 +312,7 @@
       <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
 
       <widget>
-	<class>GtkText</class>
+	<class>GtkPandaText</class>
 	<name>SYOJYOU</name>
 	<width>696</width>
 	<height>56</height>

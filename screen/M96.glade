@@ -233,7 +233,7 @@
     </widget>
 
     <widget>
-      <class>GtkCList</class>
+      <class>GtkPandaCList</class>
       <name>LIST1</name>
       <x>35</x>
       <y>45</y>
@@ -326,7 +326,7 @@
     </widget>
 
     <widget>
-      <class>GtkCList</class>
+      <class>GtkPandaCList</class>
       <name>LIST2</name>
       <x>35</x>
       <y>145</y>
