@@ -4526,8 +4526,10 @@
       *
                 PERFORM  21121-KOHFTN-KINGAKU-SEC
       *
-                MOVE     WRK-GAIJGNGAK
+                IF    RECE02-HKNNUM   =  SPACE
+                   MOVE     WRK-GAIJGNGAK
                              TO  RECE02-FTNMONEY(KOHFTN-IDX + 1)
+                END-IF
       *
              END-IF
       *

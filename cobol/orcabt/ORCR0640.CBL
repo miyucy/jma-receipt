@@ -6386,8 +6386,10 @@
                 PERFORM  KOHFTN-KINGAKU-SEC
       *
                 IF  RECE62-KOHNUM(KOHFTN-IDX) =  "012"
+                    IF    RECE62-HKNNUM   =  SPACE
                       MOVE  WRK-NYUJGNGAK
                                    TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
+                    END-IF
                 ELSE
                   IF  WRK-NYUJGNGAK  NOT =  ZERO
                     IF  WRK-FTNKEI3  =  WRK-NYUJGNGAK
