@@ -7252,6 +7252,7 @@
                                    TO  LNK-S02-SKYSTYMD
            MOVE    SPA-NAI-I01-TAIINYMD
                                    TO  LNK-S02-SKYEDYMD
+           MOVE    SPA-SYSYMD      TO  LNK-S02-SYSYMD
            DISPLAY "LNK-S02-HOSPID             = " LNK-S02-HOSPID
            DISPLAY "LNK-S02-NYUGAIKBN          = " LNK-S02-NYUGAIKBN
            DISPLAY "LNK-S02-PTID               = " LNK-S02-PTID
