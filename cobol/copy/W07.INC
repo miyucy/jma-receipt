@@ -24,7 +24,7 @@
                     04  W07-NOTEBOOK1.
                       05  W07-PAGENO            PIC S9(9)   BINARY.
                       05  W07-TAG1.
-                        06  W07-DATA-TBL        OCCURS  5.
+                        06  W07-DATA-TBL        OCCURS  6.
                           07  W07-DATA-COMBO.
                             08  W07-DATA.   
                               09  W07-VALUE     PIC X(12).

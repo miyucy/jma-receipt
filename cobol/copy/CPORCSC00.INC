@@ -86,6 +86,8 @@
            03  LNK-ORCSC-YAKJYO-2          PIC  9(01).
       *薬剤情報提供料有無(老人２）
            03  LNK-ORCSC-YAKJYO-3          PIC  9(01).
+      *特定薬剤治療管理料有無
+           03  LNK-ORCSC-TOKUTEI-FLG       PIC  9(01).
       *
       *処方箋料算定判定用
            03  LNK-ORCSC-SANTEI.
