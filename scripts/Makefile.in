@@ -152,6 +152,7 @@ filecheck:
 	-name "teiki1.sh" -o \
 	-name "teiki2.sh" -o \
 	-name "tensu.sh" -o \
+	-name "toukei1.sh" -o \
 	-printf "file\t%f\n") \
 	|sort +1 |uniq -u -f1
 
