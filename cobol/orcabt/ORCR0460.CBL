@@ -47,6 +47,7 @@
       *  01.00.12    NACL-門脇    03.05.08  先頭の診療行為コードの判定修正
       *  01.00.13    NACL-門脇    03.05.13  腰部固定帯加算を器材点へ
       *  01.00.14    NACL-藤原    03.05.27  検査のまとめの修正
+      *  01.00.15    NACL-門脇    03.06.05  摘要欄出力条件修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -421,6 +422,22 @@
       *
       *   印字しない診療行為テーブル
        01  TBL-NOSRYCD-AREA.
+      *    時間外（再診）
+           03  FILLER          PIC X(09)   VALUE   "112001110".
+      *    時間外特例（再診）
+           03  FILLER          PIC X(09)   VALUE   "112001410".
+      *    時間外（再診）
+           03  FILLER          PIC X(09)   VALUE   "112701010".
+      *    時間外特例（再診）
+           03  FILLER          PIC X(09)   VALUE   "112701310".
+      *    休診（再診）
+           03  FILLER          PIC X(09)   VALUE   "112001210".
+      *    休日（再診）
+           03  FILLER          PIC X(09)   VALUE   "112701110".
+      *    深夜（再診）
+           03  FILLER          PIC X(09)   VALUE   "112001310".
+      *    深夜（再診）
+           03  FILLER          PIC X(09)   VALUE   "112701210".
       *    処方料（７種類以上）
            03  FILLER          PIC X(09)   VALUE   "120002610".
       *    処方料（その他）
@@ -460,9 +477,9 @@
       *    再診料算定科：
            03  FILLER          PIC X(09)   VALUE   "830000021".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   19.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   27.
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   19.
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   27.
       *
       *    固定値
        01  CONST-AREA.
@@ -1222,9 +1239,9 @@
                      END-IF
                    END-IF
       *            一つの剤に他の明細も存在する場合
-                   IF  RECE44-MEISAISU       >   1
-                       MOVE    ZERO          TO  FLG-NOPRT
-                   END-IF
+      ***          IF  RECE44-MEISAISU       >   1
+      ***              MOVE    ZERO          TO  FLG-NOPRT
+      ***          END-IF
       *            ＊再診ダミーの場合
                    IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)          
                                          =   "099120001"             
