@@ -45,6 +45,7 @@
       *  01.00.10    NACL-門脇    03.03.06  初再診のコメント編集対応
       *  01.00.11    NACL-門脇    03.03.12  先頭の診療行為コードの判定修正
       *  01.00.12    NACL-門脇    03.05.08  先頭の診療行為コードの判定修正
+      *  01.00.13    NACL-門脇    03.05.13  腰部固定帯加算を器材点へ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -546,6 +547,9 @@
       *    採血（Ｂ−Ｃ）
            03 WRK-CONS-SAIKETSU3       PIC X(09)   VALUE "160095810".
       *
+      *    腰部固定帯加算
+           03  WRK-CONS-YOUBUKASAN     PIC X(09)   VALUE "140037490".
+      *
       *    フィルム料（乳幼児）加算
            03  WRK-CONS-FILM-YOUJI-KASAN
                                        PIC X(09)   VALUE 
@@ -891,7 +895,16 @@
                                    MOVE    2             TO  IDY
                                END-IF    
                            WHEN    "1"
-                               MOVE    3             TO  IDY
+                               IF   RECE41-HKNKBN    NOT  =  "4" 
+                                   MOVE    3                 TO  IDY
+                               ELSE
+                                   IF  RECE45-SRYCD (IDX)    =
+                                           WRK-CONS-YOUBUKASAN
+                                       MOVE    4             TO  IDY
+                                   ELSE
+                                       MOVE    3             TO  IDY
+                                   END-IF
+                               END-IF
                            WHEN    "6"
                                MOVE    5             TO  IDY
                            WHEN    "7"

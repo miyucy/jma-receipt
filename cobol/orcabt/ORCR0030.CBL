@@ -113,6 +113,7 @@
       *                                     処理の対象としない
       *  01.02.20   NACL-門脇     03/04/24  一部負担金（）の編集修正
       *  01.02.21   NACL-門脇     03/05/08  名称有効桁のセット
+      *  01.02.22   NACL-門脇     03/05/13  処方せん回数のセット修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2583,6 +2584,14 @@
                     COMPUTE WRK-NYUYOUJI-SHOKAN = WRK-NYUYOUJI-SHOKAN +
                                                   WK-ZAIKAISU 
                    END-IF
+                   IF SRY-SRYCD(IDX3)      =    CONS-SHOHOSEN1 OR
+                                                CONS-SHOHOSEN2 OR
+                                                CONS-SHOHOSEN3 OR
+                                                CONS-SHOHOSEN4 OR
+                                                CONS-SHOHOKSN1 OR
+                                                CONS-SHOHOKSN2
+                           ADD    WK-ZAIKAISU  TO  RECE02-KAISU(33)
+                   END-IF
                    IF    BUN-IDX        =   1
                        IF   SRY-SRYCD(IDX3)   =  CONS-SHOHOSEN1 OR
                                                  CONS-SHOHOSEN2 OR
@@ -2590,7 +2599,6 @@
                                                  CONS-SHOHOSEN4 OR
                                                  CONS-SHOHOKSN1 OR
                                                  CONS-SHOHOKSN2
-                           ADD    WK-ZAIKAISU  TO  RECE02-KAISU(33)
                            COMPUTE   RECE02-TENSU(33 BUN-IDX)  =
                                      RECE02-TENSU(33 BUN-IDX)  +
                                     (TNS-TEN   *   ACCT-ZAIKAISU)

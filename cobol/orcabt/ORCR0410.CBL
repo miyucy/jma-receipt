@@ -35,6 +35,7 @@
       *  01.00.05    NACL-ÌçÏÆ    03.04.14  Ï«ºÒ¤Î¾®¿ôÅÀ°Ê²¼¶â³Û·×»»
       *                                     »Í¼Î¸ÞÆþ¤ËÊÑ¹¹
       *  01.00.06    NACL-ÌçÏÆ    03.04.15  ¼«ÇåÀÕÊ¸½ñÎÁ¾ÃÈñÀÇÂÐ±þ
+      *  01.00.07    NACL-ÌçÏÆ    03.05.13  ¹øÉô¸ÇÄêÂÓ²Ã»»¤ò´ïºàÅÀ¤Ø
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -234,6 +235,9 @@
            03  CONS-GAIRAI1    PIC X(09)   VALUE   "101120070".
            03  CONS-GAIRAI2    PIC X(09)   VALUE   "101120080".
            03  CONS-GAIRAI3    PIC X(09)   VALUE   "101120090".
+      *
+      *    ¹øÉô¸ÇÄêÂÓ²Ã»»
+           03  CONS-YOUBUKASAN PIC X(09)   VALUE   "140037490".
       *
       *---------------------------------------------------------------
       *
@@ -725,14 +729,16 @@
                                  END-IF                                 
                                END-IF                                   
       *
-                               PERFORM VARYING ID1 FROM 1  BY 1
+                               IF    RECE41-HKNKBN   =   "4"
+                                PERFORM VARYING ID1 FROM 1  BY 1
                                            UNTIL    ID1     >    31
                                  IF  ACCT-DAY(1 ID1)   NOT =    ZERO
                                    MOVE  ACCT-DAY(1 ID1)  
                                                TO      WRK-ZAIKAISU-JI
                                    PERFORM   SYUGITEN-HANTEI-SEC
                                  END-IF
-                               END-PERFORM
+                                END-PERFORM
+                               END-IF
       *
                                PERFORM   TENSOU-SEC
                                PERFORM   TENSOU2-SEC
@@ -1394,6 +1400,15 @@
                                COMPUTE  TBL-SYUTEN-JI(ID1)  =
                                         TBL-SYUTEN-JI(ID1)  -
                                  ( WRK-ZAIKAISU-JI * WRK-TEN-JI )
+                       END-IF
+      *
+                       IF   SRY-SRYCD(IDY) =  CONS-YOUBUKASAN
+                            COMPUTE  TBL-SYUTEN-JI(ID1)  =
+                                     TBL-SYUTEN-JI(ID1)  -
+                                    ( WRK-ZAIKAISU-JI * TNS-TEN )
+                            COMPUTE  TBL-YKZTEN-JI(ID1)  =
+                                     TBL-YKZTEN-JI(ID1)  +
+                                    ( WRK-ZAIKAISU-JI * TNS-TEN )
                        END-IF
       *
                  END-PERFORM

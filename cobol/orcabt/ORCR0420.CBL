@@ -44,6 +44,7 @@
       *  01.00.12    NACL-ÌçÏÆ    03.04.14  ¼«ÇåÀÕ¤Î¾®¿ôÅÀ°Ê²¼¶â³Û·×»»
       *                                     »Í¼Î¸ÞÆþ¤ËÊÑ¹¹
       *  01.00.13    NACL-ÌçÏÆ    03.05.08  Ì¾¾ÎÍ­¸ú·å¤Î¥»¥Ã¥È
+      *  01.00.14    NACL-ÌçÏÆ    03.05.13  ¹øÉô¸ÇÄêÂÓ²Ã»»¤ò´ïºàÅÀ¤Ø
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -272,6 +273,7 @@
            03  WRK-SURYOUTOTAL                         PIC 9(07)V9(03).
            03  WRK-KSNRATE                             PIC 9V99.    
            03  WRK-SRYCD                               PIC 9(09).   
+           03  WRK-YOUBUKASAN                          PIC 9(07).
       *
            03  WRK-DAY                                 PIC 9(02).
       *
@@ -388,13 +390,16 @@
            03  CONS-ROUCOM1    PIC X(09)   VALUE   "840800001".
            03  CONS-ROUCOM2    PIC X(09)   VALUE   "840800002". 
       *
+      *    ¹øÉô¸ÇÄêÂÓ²Ã»»
+           03  CONS-YOUBUKASAN PIC X(09)   VALUE   "140037490".
+      *
       *    ¥Õ¥£¥ë¥àÎÁ¡ÊÆýÍÄ»ù¡Ë²Ã»»
            03  CONS-FILM-YOUJI-KASAN  
                                PIC X(09)   VALUE   "799990070".
       *    »ÀÁÇÊäÀµÎ¨
            03  CONS-SANSO      PIC X(09)   VALUE   "770020070".
       *    ¹âµ¤°µ»ÀÁÇ²Ã»»
-           03  CONS-SANSO2         PIC X(09) VALUE "770030070".
+           03  CONS-SANSO2     PIC X(09)   VALUE   "770030070".
       *
       *****»ÀÁÇ 
       *****COPY    "CMSANSOTBL.INC".
@@ -664,6 +669,7 @@
                                                        WRK-MEISAI-CNT
                                                        WRK-SRYCDTOTAL
                                                        WRK-SURYOUTOTAL
+                                                       WRK-YOUBUKASAN
                                PERFORM   RECE44-TENSOU-SEC
                                PERFORM   RECE45-HENSYU-SEC
                                PERFORM   RECE44-WRITE-SEC
@@ -688,6 +694,7 @@
                                                       WRK-MEISAI-CNT
                                                       WRK-SRYCDTOTAL
                                                       WRK-SURYOUTOTAL
+                                                      WRK-YOUBUKASAN
                                       PERFORM   RECE44-TENSOU-SEC
                                       PERFORM   RECE45-HENSYU-SEC
                                       PERFORM   RECE44-WRITE-SEC
@@ -749,6 +756,7 @@
                                                      WRK-MEISAI-CNT
                                                      WRK-SRYCDTOTAL
                                                      WRK-SURYOUTOTAL
+                                                     WRK-YOUBUKASAN
                                PERFORM   RECE44-TENSOU-SEC
                                PERFORM   RECE45-HENSYU-SEC
                                PERFORM   RECE44-WRITE-SEC
@@ -775,6 +783,7 @@
                                                       WRK-MEISAI-CNT
                                                       WRK-SRYCDTOTAL
                                                       WRK-SURYOUTOTAL
+                                                      WRK-YOUBUKASAN
                                       PERFORM   RECE44-TENSOU-SEC
                                       PERFORM   RECE45-HENSYU-SEC
                                       PERFORM   RECE44-WRITE-SEC
@@ -981,6 +990,14 @@
                       END-IF
                   END-IF
                ELSE                                                     
+                  IF      SRY-SRYCD(IDX2)    =     CONS-YOUBUKASAN
+                    COMPUTE  WRK-YOUBUKASAN   =  WRK-YOUBUKASAN
+                                              +  TNS-TEN
+                    COMPUTE  RECE44-SYUTEN1   =  RECE44-SYUTEN1
+                                              -  TNS-TEN
+                    COMPUTE  RECE44-KIZAITEN  =  RECE44-KIZAITEN
+                                              +  TNS-TEN
+                  END-IF
                   IF ( ACCT-SRYKBN          =  "80"               ) AND
                      ( SRY-SRYCD(IDX2)(1:5) =  "09591" OR "09592" )
                                 MOVE   "95"   TO    RECE44-SRYKBN       
@@ -1418,6 +1435,12 @@
                                      COMPUTE  WK-YKZTEN  =  WK-YKZTEN
                                                          +  ACCT-SYUTEN2
                                   END-IF
+                                  IF  WRK-YOUBUKASAN  NOT =  ZERO
+                                   COMPUTE  WK-SYUTEN  = WK-SYUTEN
+                                                       - WRK-YOUBUKASAN
+                                   COMPUTE  WK-YKZTEN  = WK-YKZTEN
+                                                       + WRK-YOUBUKASAN
+                                  END-IF
                              END-IF
                            END-IF                                       
                          END-IF
@@ -1426,6 +1449,14 @@
                            MOVE    ACCT-SYUTEN1   TO   WK-SYUTEN
                            MOVE    ACCT-KIZAITEN  TO   WK-KIZAITEN
                            MOVE    ACCT-YKZTEN    TO   WK-YKZTEN
+                           IF   RECE41-HKNKBN   =  "4"
+                             IF  WRK-YOUBUKASAN  NOT =  ZERO
+                                COMPUTE  WK-SYUTEN   =  WK-SYUTEN
+                                                     -  WRK-YOUBUKASAN
+                                COMPUTE  WK-KIZAITEN =  WK-KIZAITEN
+                                                     +  WRK-YOUBUKASAN
+                             END-IF
+                           END-IF
                        END-IF
                    ELSE
                        IF   SRY-SRYKBN  =  "21"  OR  "22"  OR  "23" OR
@@ -2228,15 +2259,7 @@
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    ¤½¤ÎÂ¾¤Î¥ì¥»ÅÀ¿ôÍó¤ÎÊÔ½¸
                WHEN    "80"
-                   IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN2
-                     COMPUTE  WRK-TOKUTEI-SKAN2 =  WRK-TOKUTEI-SKAN2 +
-                                                   WK-ZAIKAISU 
-                   END-IF
-                   IF SRY-SRYCD(IDX3)      =    CONS-SHOHOKSN1
-                    COMPUTE WRK-NYUYOUJI-SHOKAN = WRK-NYUYOUJI-SHOKAN +
-                                                  WK-ZAIKAISU 
-                   END-IF
-                   IF   SRY-SRYCD(IDX3)   =     CONS-SHOHOSEN1 OR
+                   IF   SRY-SRYCD(IDX3)   =      CONS-SHOHOSEN1 OR
                                                  CONS-SHOHOSEN2 OR
                                                  CONS-SHOHOSEN3 OR
                                                  CONS-SHOHOSEN4 OR
@@ -2422,12 +2445,12 @@
                    IF    FLG-ZAITAKU    =   ZERO
                        COMPUTE   RECE41-TENSU(7)  =
                                  RECE41-TENSU(7)  +
-                                (WK-KIZAITEN   *   WK-ZAIKAISU)  +
                                 (WK-SYUTEN     *   WK-ZAIKAISU)
                    END-IF
       *            ÌôºÞ
                    COMPUTE   RECE41-TENSU-YAK(7)  =
                              RECE41-TENSU-YAK(7)  +
+                             (WK-KIZAITEN *   WK-ZAIKAISU)  +
                              (WK-YKZTEN   *   WK-ZAIKAISU)
       *    ÅêÌô¤Î¥ì¥»ÅÀ¿ôÍó¤ÎÊÔ½¸
                WHEN    "21"
