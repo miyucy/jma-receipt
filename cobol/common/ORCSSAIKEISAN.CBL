@@ -45,6 +45,8 @@
            03  IDX2                        PIC 9(03).
            03  IDX3                        PIC 9(03).
            03  IDY                         PIC 9(03).
+           03  IDZ                         PIC 9(03).
+           03  IDW                         PIC 9(03).
            03  SAI-IDX                     PIC 9(03).
       *
       *    ¥Õ¥é¥°ÎÎ°è
@@ -62,6 +64,7 @@
            03  FLG-SENIN                   PIC 9(01).
            03  FLG-SENIN-SYOSIN            PIC 9(01).
            03  FLG-NOGRP                   PIC 9(01).
+           03  FLG-OK                      PIC 9(01).
       *
       *    ¥ï¡¼¥¯ÎÎ°è
        01  WRK-AREA.
@@ -71,6 +74,7 @@
                  05  WRK-ATO-SEIKYUGK      PIC 9(07).
            03  WRK-GRP-DENPNUM             PIC 9(07).
            03  WRK-TAIHI-DENPNUM           PIC 9(07).
+           03  WRK-TAIHI-SYUHKNNUM         PIC X(03).
            03  WRK-TAIHI-HKNCOMBINUM       PIC X(04).
            03  WRK-GRPCNT                  PIC 9(02).
            03  WRK-SAIKEISAN-YMD.
@@ -320,6 +324,8 @@
                                              TO  WRK-TAIHI-HKNCOMBINUM
                           MOVE  SYU-FUKU-DENPNUM
                                              TO  WRK-TAIHI-DENPNUM
+                          MOVE  SYU-SYUHKNNUM
+                                             TO  WRK-TAIHI-SYUHKNNUM
                           ADD   1            TO  WRK-GRPCNT
                        END-IF
                        MOVE    "SYUNOU-KEY27"   TO  ORC-DBPATH
@@ -592,15 +598,23 @@
                    MOVE     LNK-SYU-SKYMONEY(IDY) TO   WRK-SKYMONEY(IDY)
                    COMPUTE  WRK-GRP-SGKMONEY(IDY)  =   WRK-SKYMONEY(IDY)
                                                    -   WRK-RUI-SKYMONEY
-                   MOVE     WRK-GRP-SGKMONEY(IDY)
-                                        TO   WRK-GRP-SGKMONEY(IDY - 1)
-                   COMPUTE  WRK-KEISAN  =  WRK-SKYMONEY(IDY - 1)
-                                        +  WRK-GRP-SGKMONEY(IDY - 1)
-                   IF       WRK-KEISAN  <   0
-                       MOVE     ZERO          TO   WRK-SKYMONEY(IDY - 1)
-                   ELSE
-                       MOVE     WRK-KEISAN    TO   WRK-SKYMONEY(IDY - 1)
-                   END-IF
+      *
+                   MOVE      ZERO      TO      FLG-OK
+                   COMPUTE   IDW    =  IDY  -  1
+                   PERFORM   VARYING   IDZ   FROM    IDW   BY   -1
+                              UNTIL   (IDZ       <       1)
+                               OR     (FLG-OK    =       1)
+                       COMPUTE  WRK-KEISAN  =  WRK-SKYMONEY(IDZ)
+                                            +  WRK-GRP-SGKMONEY(IDY)
+                       IF       WRK-KEISAN  <   0
+                           CONTINUE
+                       ELSE
+                           MOVE     WRK-GRP-SGKMONEY(IDY)
+                                              TO   WRK-GRP-SGKMONEY(IDZ)
+                           MOVE     WRK-KEISAN    TO   WRK-SKYMONEY(IDZ)
+                           MOVE     1         TO   FLG-OK
+                       END-IF
+                   END-PERFORM
       *
                 END-IF
       *
@@ -779,6 +793,8 @@
                   MOVE  "00"              TO   LNK-SYU-SRYKA(IDY)
                   MOVE  WRK-TAIHI-HKNCOMBINUM
                                           TO   LNK-SYU-HKNCOMBINUM(IDY)
+                  MOVE  WRK-TAIHI-SYUHKNNUM
+                                          TO   LNK-SYU-SYUHKNNUM(IDY)
       *
       ***         MOVE  ZERO              TO   WRK-MAE-SEIKYUGK(IDY)
              ELSE

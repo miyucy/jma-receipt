@@ -3443,6 +3443,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH1HKNFTNMONEY
                                                       TO  FTN-KOHI1-D-K
                                    IF  SYU-KOH1YKZFTNKBN   =    "2"       
@@ -3495,6 +3496,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH2HKNFTNMONEY
                                                       TO  FTN-KOHI1-D-K
                                    IF  SYU-KOH2YKZFTNKBN   =    "2"       
@@ -3547,6 +3549,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH3HKNFTNMONEY
                                                       TO  FTN-KOHI1-D-K
                                    IF  SYU-KOH3YKZFTNKBN   =    "2"       
@@ -3599,6 +3602,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH4HKNFTNMONEY
                                                       TO  FTN-KOHI1-D-K
                                    IF  SYU-KOH4YKZFTNKBN   =    "2"       
@@ -3759,6 +3763,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH1HKNFTNMONEY
                                                       TO  FTN-KOHI2-D-K
                                    IF  SYU-KOH1YKZFTNKBN   =    "2"       
@@ -3811,6 +3816,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH2HKNFTNMONEY
                                                       TO  FTN-KOHI2-D-K
                                    IF  SYU-KOH2YKZFTNKBN   =    "2"       
@@ -3863,6 +3869,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH3HKNFTNMONEY
                                                       TO  FTN-KOHI2-D-K
                                    IF  SYU-KOH3YKZFTNKBN   =    "2"       
@@ -3915,6 +3922,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH4HKNFTNMONEY
                                                       TO  FTN-KOHI2-D-K
                                    IF  SYU-KOH4YKZFTNKBN   =    "2"       
@@ -4074,6 +4082,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH1HKNFTNMONEY
                                                       TO  FTN-KOHI3-D-K
                                    IF  SYU-KOH1YKZFTNKBN   =    "2"       
@@ -4126,6 +4135,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH2HKNFTNMONEY
                                                       TO  FTN-KOHI3-D-K
                                    IF  SYU-KOH2YKZFTNKBN   =    "2"       
@@ -4178,6 +4188,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH3HKNFTNMONEY
                                                       TO  FTN-KOHI3-D-K
                                    IF  SYU-KOH3YKZFTNKBN   =    "2"       
@@ -4230,6 +4241,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH4HKNFTNMONEY
                                                       TO  FTN-KOHI3-D-K
                                    IF  SYU-KOH4YKZFTNKBN   =    "2"       
@@ -4389,6 +4401,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH1HKNFTNMONEY
                                                       TO  FTN-KOHI4-D-K
                                    IF  SYU-KOH1YKZFTNKBN   =    "2"       
@@ -4441,6 +4454,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH2HKNFTNMONEY
                                                       TO  FTN-KOHI4-D-K
                                    IF  SYU-KOH2YKZFTNKBN   =    "2"       
@@ -4493,6 +4507,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH3HKNFTNMONEY
                                                       TO  FTN-KOHI4-D-K
                                    IF  SYU-KOH3YKZFTNKBN   =    "2"       
@@ -4545,6 +4560,7 @@
                                                        NOT =  ZERO ) AND
                                       (LNK-SYU-DOUJI-DENPNUM
                                                  =  SYU-DOUJI-DENPNUM))
+                                 OR  ( FLG-GRPNYURYOKU     =  1       )
                                    ADD   SYU-KOH4HKNFTNMONEY
                                                       TO  FTN-KOHI4-D-K
                                    IF  SYU-KOH4YKZFTNKBN   =    "2"       
