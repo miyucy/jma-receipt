@@ -33,6 +33,7 @@
       * 00.01.03     NACL-森脇     20021011  ーボタン追加
       * 00.01.04     NACL-森脇     20021011  登録時のクリア処理変更
       * 00.01.05     NACL-森脇     20021107  記号の半角全角混在チェック
+      * 01.01.01     NACL-森脇     20021209  検索文字変更
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -122,7 +123,10 @@
       *
       *    カナ検索用
        01  WRK-PIN-AREA.
-           03  WRK-PIN         PIC X(02).
+      *----(01.01.01)--UPD-START---
+      *     03  WRK-PIN         PIC X(02).
+           03  WRK-PIN         PIC 9(02).
+      *----(01.01.01)--UPD-END-----
            03  WRK-PED.
              05  WRK-PEDX      PIC X(02)   OCCURS  13.
            03  WRK-PKANA       PIC X(02).
@@ -309,7 +313,13 @@
       *    カナ入力
            IF          MCP-EVENT    =   "CLICKED"
                AND     MCP-WIDGET(1:3)  =   "KEN"
-               MOVE    MCP-WIDGET(4:2)  TO  WRK-PIN
+      *----(01.01.01)--ADD-START---
+               IF      MCP-WIDGET(5:)   =   SPACE
+                   MOVE    MCP-WIDGET(4:1)  TO  WRK-PIN(2:1)
+               ELSE
+                   MOVE    MCP-WIDGET(4:2)  TO  WRK-PIN(1:2)
+               END-IF
+      *----(01.01.01)--ADD-END-----
                PERFORM 490-KEN-PHEN-SEC
            END-IF
            .
