@@ -1518,7 +1518,7 @@
                MOVE    SPA-PTKOH-PAYKBN(IDX)(2:1)
                                            TO  SPA-MAE-KOHKBN  (IDY)
            END-IF
-           MOVE    SPA-PTKOH-FTNJANUM(IDX)
+           MOVE    SPA-PTKOH-FTNJANUM (IDX)
                                            TO  SPA-MAE-FTNJANUM   (IDY)
            MOVE    SPA-PTKOH-MAEKAKUNINYMD (IDX)
                                            TO  SPA-MAE-KKAKUNINYMD(IDY)
@@ -1572,12 +1572,18 @@
                INITIALIZE                  HKNJAINF-REC
                MOVE    1               TO  FLG-HKNJAINF
            END-IF
-           MOVE    "DBCLOSE"             TO  MCP-FUNC
-           MOVE    "HKNJAINF-KEY"        TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
+           MOVE    "DBCLOSE"           TO  MCP-FUNC
+           MOVE    "HKNJAINF-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      FLG-HKNJAINF        =   ZERO
+      *        保険者番号の公費種別が違う時
+               IF      HKNJA-HKNNUM    NOT =   SPA-GMN-KOHNUM (IDY)
+                   MOVE    1               TO  FLG-HKNJAINF
+               END-IF
+           END-IF
       *
       *    保険者番号あり
            IF      FLG-HKNJAINF        =   ZERO
@@ -1586,7 +1592,7 @@
                                            TO  SPA-NAI-PTKOH-KEIFLG(IDY)
            ELSE
                MOVE    SPACE               TO  SPA-PTKOH-IDOYMD(IDY)
-               MOVE    SPACE               TO  SPA-NAI-PTKOH-KEIFLG(IDY)
+               MOVE    "1"                 TO  SPA-NAI-PTKOH-KEIFLG(IDY)
            END-IF
       *
       *
@@ -3437,7 +3443,7 @@
                END-IF
            END-IF
            .
-       4101-COMMENT-SET-EXT.
+       4101-COMMENT-CHK-EXT.
            EXIT.
       *
       ****************************************************************

@@ -66,6 +66,8 @@
       *
            03  FLG-AUTO            PIC 9(01).
       *
+           03  FLG-HKNNUM-CHK      PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
@@ -370,6 +372,7 @@
                                        ORCSKANACHKAREA
            IF      KANACHK-RC2         =   7
                MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-FTNJANUM (IDX-K)
+               MOVE    ZERO                TO  KANACHK-RC2
            END-IF
       *    全角の時、すべてのチェックをはずす
            IF     (KANACHK-RC          =   ZERO  )  AND
@@ -379,15 +382,16 @@
                    MOVE    "0095"              TO  SPA-ERRCD
                    MOVE    20                  TO  SPA-GMN-CUR
                END-IF
-           END-IF
+           ELSE
       *    半角で間に空白がないこと
-           IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                  (KANACHK-RC2     NOT =   ZERO  )  OR
-                  (KANACHK-SYUBETU     =   2     )
-               IF      SPA-ERRCD           =   SPACE
-                   MOVE    "0071"              TO  SPA-ERRCD
+               IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                      (KANACHK-RC2     NOT =   ZERO  )  OR
+                      (KANACHK-SYUBETU     =   2     )
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    "0071"              TO  SPA-ERRCD
+                   END-IF
+                   MOVE    20                  TO  SPA-GMN-CUR
                END-IF
-               MOVE    20                  TO  SPA-GMN-CUR
            END-IF
       *
            IF     (SPA-GMN-FTNJANUM (IDX-K)  NOT =   SPACE ) AND
@@ -400,7 +404,8 @@
            END-IF
       *
            IF     (SPA-GMN-FTNJANUM (IDX-K)  NOT =   SPACE ) AND
-                  (SPA-ERRCD           =   SPACE )
+                  (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-NAI-PTKOH-KEIFLG(IDX-K)   =   SPACE  )
                PERFORM 10011-FTNJANUM-DB-CHK-SEC
            END-IF
       *
@@ -440,13 +445,25 @@
                                         ORCMCPAREA
                                         MCPDATA-REC
       *
+           IF      FLG-HKNJAINF        =   ZERO
+      *        保険判定
+               IF     (HKNJA-HKNNUM            =   "027"  )  OR
+                      (SPA-MAE-KOHNUM (IDX-K)  =   HKNJA-HKNNUM)
+                   CONTINUE
+               ELSE
+                   PERFORM 101100-HKNNUM-CHK-SEC
+                   IF      FLG-HKNNUM-CHK      =   1
+                       MOVE    1               TO  FLG-HKNJAINF
+                   END-IF
+               END-IF
+           END-IF
       *    保険者番号あり
            IF      FLG-HKNJAINF        =   ZERO
                MOVE    HKNJA-HKNNUM        TO  WRK-MAE-KOHNUM
       *
                MOVE    HKNJA-IDOYMD        TO  SPA-PTKOH-IDOYMD (IDX-K)
            ELSE
-               MOVE    SPACE               TO  SPA-NAI-PTKOH-KEIFLG
+               MOVE    "1"                 TO  SPA-NAI-PTKOH-KEIFLG
                                                                (IDX-K)
                PERFORM 10110-KOHHBTNUMKBN-SEC
                IF      WRK-KOHHBTNUMKBN    =   ZERO
@@ -523,6 +540,44 @@
       *
            .
        10011-FTNJANUM-DB-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    法別番号チェック区分編集処理
+      *****************************************************************
+       101100-HKNNUM-CHK-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKNNUM-CHK
+           MOVE    SPACE               TO  HKNNUM-REC
+           MOVE    HKNJA-HOSPID        TO  HKN-HOSPID
+           MOVE    HKNJA-HKNNUM        TO  HKN-HKNNUM
+           MOVE    ZERO                TO  HKN-PAYKBN
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "HKNNUM-KEY7"       TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "HKNNUM-KEY7"   TO  ORC-DBPATH
+               PERFORM 921-HKNMST-NEXT-SEC
+           ELSE
+               INITIALIZE              HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+      *
+           IF      FLG-HKNNUM          =   ZERO
+      *        保険公費種別区分
+               IF      HKN-HKNKOHSBTKBN    =   "1"  OR  "4"
+                                           OR  "8"  OR  "9"
+                   MOVE    1               TO  FLG-HKNNUM-CHK
+               END-IF
+           END-IF
+      *
+           .
+       101100-HKNNUM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1114,13 +1169,11 @@
            END-IF
       *
       *    保険者異動日チェック
-           IF      SPA-PTKOH-IDOYMD(IDX-K)     =   SPACE
+           IF     (SPA-PTKOH-IDOYMD(IDX-K)     =   SPACE)  OR
+                  (SPA-NAI-PTKOH-KEIFLG (IDX-K)    =   "1")
                CONTINUE
            ELSE
                PERFORM 2005-IDOYMD-CHECK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO      TO      200-KANREN-CHK-EXT
-               END-IF
            END-IF
       *
            .
@@ -1575,23 +1628,16 @@
       *****************************************************************
        2005-IDOYMD-CHECK-SEC         SECTION.
       *
-           IF      SPA-NAI-PTKOH-KEIFLG (IDX-K)    =   "1"
-               GO      TO      2005-IDOYMD-CHECK-EXT
-           END-IF
-      *
            IF      (SPA-PTKOH-IDOYMD (IDX-K)
                                        <=  SPA-NAI-KTEKSTYMD(IDX-K)) OR
                    (SPA-PTKOH-IDOYMD (IDX-K)
                                        <=  SPA-NAI-KTEKEDYMD(IDX-K))
-               CONTINUE
+               MOVE    "K004"          TO  SPA-ERRCD
+               MOVE    "1"             TO  SPA-NAI-PTKOH-KEIFLG (IDX-K)
+               MOVE    20              TO  SPA-GMN-CUR
            ELSE
                MOVE    SPACE           TO  SPA-NAI-PTKOH-KEIFLG (IDX-K)
-               GO      TO      2005-IDOYMD-CHECK-EXT
            END-IF
-      *
-           MOVE    "K004"              TO  SPA-ERRCD
-           MOVE    "1"                 TO  SPA-NAI-PTKOH-KEIFLG (IDX-K)
-           MOVE    20                  TO  SPA-GMN-CUR
       *
            .
        2005-IDOYMD-CHECK-EXT.
