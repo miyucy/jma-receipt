@@ -41,6 +41,7 @@
       *  01.00.11    NACL-太田    03/09/12  前回未収額をマイナス表示可とする
       *  01.00.12    NACL-多々納  03/12/15  ＭＯＮＰＥ対応
       *                                     氏名３０文字対応
+      *  01.00.13    NACL-太田    04/03/17  （再）の文字の編集を削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1058,8 +1059,8 @@
       *
       *    発行区分
            EVALUATE    ORCHC03-HAKKOFLG
-               WHEN    1
-                   MOVE    "（再）"        TO  HC03-MIDASHI
+      *        WHEN    1
+      *            MOVE    "（再）"        TO  HC03-MIDASHI
                WHEN    2
                    MOVE    "（訂正）"      TO  HC03-MIDASHI
            END-EVALUATE

@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-小豆沢  04/01/29  保険適用外の記載と消費税対応
+      *  01.00.02    NACL-太田    04/03/17  （再）の文字の編集を削除
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1062,8 +1063,8 @@
       *
       *    発行区分
            EVALUATE    ORCHC03-HAKKOFLG
-               WHEN    1
-                   MOVE    "（再）"        TO  HC03-MIDASHI
+      *        WHEN    1
+      *            MOVE    "（再）"        TO  HC03-MIDASHI
                WHEN    2
                    MOVE    "（訂正）"      TO  HC03-MIDASHI
            END-EVALUATE
