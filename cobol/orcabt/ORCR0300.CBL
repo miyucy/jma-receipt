@@ -439,15 +439,6 @@
       *            点数
                    07  TBL-KOUI-SRYKBN12-TEN    PIC  9(09)V9(02).
       *
-      *    診療行為データ用テーブル（再診）
-       01  TBL-KOUI-SRYKBN12-SAISIN-AREA.
-           03  TBL-KOUI-SRYKBN12-SAISIN-REC     OCCURS  20.
-               05  TBL-KOUI-SRYKBN12-SAISIN-SRYACTINF.
-      *            回数
-                   07  TBL-KOUI-SRYKBN12-SAISIN-KAISU  PIC  9(04).
-      *            点数
-                   07  TBL-KOUI-SRYKBN12-SAISIN-TEN    PIC  9(09)V9(02).
-      *
        01  WRK-RECE05-REC.
            COPY    "CPRCF005.INC"  REPLACING  //RECE05//
                                    BY         //WRK-RECE05//.
@@ -538,59 +529,6 @@
                    07  WRK-CONS-JIKANGAI-TEN
                                       PIC 9(09).
            03  WRK-CONS-JIKANGAI-MAX  PIC 9(02)    VALUE   16.    
-      *
-      *    再診
-           03  WRK-CONS-SAISIN-TABLE. 
-      *    再診（１回目）
-               05  FILLER      PIC X(09)   VALUE   "112009210".
-      *    老人再診（１回目）
-               05  FILLER      PIC X(09)   VALUE   "112703710".
-      *    電話等再診（１回目）
-               05  FILLER      PIC X(09)   VALUE   "112009750".
-      *    老人電話等再診（１回目）
-               05  FILLER      PIC X(09)   VALUE   "112704150".
-      *    同日電話等再診（１回目）
-               05  FILLER      PIC X(09)   VALUE   "112010650".
-      *    老人同日電話等再診（１回目）
-               05  FILLER      PIC X(09)   VALUE   "112704850".
-      *    同日再診（１回目）
-               05  FILLER      PIC X(09)   VALUE   "112010150".
-      *    老人同日再診（１回目）
-               05  FILLER      PIC X(09)   VALUE   "112704450".
-      *    再診（病院）(１回目）
-               05  FILLER      PIC X(09)   VALUE   "112007410".
-      *    老人再診（病院）(１回目）
-               05  FILLER      PIC X(09)   VALUE   "112702310".
-      *    電話等再診（病院）(１回目）
-               05  FILLER      PIC X(09)   VALUE   "112007950".
-      *    老人電話等再診（病院）(１回目）
-               05  FILLER      PIC X(09)   VALUE   "112702750".
-      *    同日電話等再診（病院）(１回目）
-               05  FILLER      PIC X(09)   VALUE   "112008850".
-      *    老人同日電話等再診（病院）(１回目）
-               05  FILLER      PIC X(09)   VALUE   "112703450".
-      *    同日再診（病院）(１回目）
-               05  FILLER      PIC X(09)   VALUE   "112008350".
-      *    老人同日再診（病院）(１回目）
-               05  FILLER      PIC X(09)   VALUE   "112703050".
-      *    再診（外来診療料）
-               05  FILLER      PIC X(09)   VALUE   "112011310".
-      *    再診（外来診療料）
-               05  FILLER      PIC X(09)   VALUE   "112705510".
-      *    同日外来診療料
-               05  FILLER      PIC X(09)   VALUE   "112011710".
-      *    同日外来診療料
-               05  FILLER      PIC X(09)   VALUE   "112705850".
-           03  WRK-CONS-SAISIN-TABLE-R  REDEFINES   
-                                      WRK-CONS-SAISIN-TABLE.
-               05  WRK-CONS-SAISIN-SRYCD-G       OCCURS  20.
-                   07  WRK-CONS-SAISIN-SRYCD
-                                      PIC X(09).
-           03  WRK-CONS-SAISIN-TEN-TABLE.
-               05  WRK-CONS-SAISIN-TEN-G         OCCURS  20.
-                   07  WRK-CONS-SAISIN-TEN
-                                      PIC 9(09).
-           03  WRK-CONS-SAISIN-MAX  PIC 9(02)    VALUE   20.    
       *
       *    液体酸素・可搬式液体酸素容器（ＬＧＣ）
            03  WRK-CONS-SANSO1        PIC X(09)   VALUE   "739210000".
@@ -784,18 +722,6 @@
                    MOVE    TNS-TEN         TO
                                            WRK-CONS-JIKANGAI-TEN (IDX)
                END-PERFORM
-      *
-      *        再診点数取得
-               INITIALIZE                  WRK-CONS-SAISIN-TEN-TABLE
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       WRK-CONS-SAISIN-MAX
-                   INITIALIZE                  TNS-TENSU-REC
-                   MOVE    WRK-CONS-SAISIN-SRYCD (IDX)
-                                           TO  TNS-SRYCD
-                   PERFORM 900-TENSU-READ-SEC
-                   MOVE    TNS-TEN         TO
-                                           WRK-CONS-SAISIN-TEN (IDX)
-               END-PERFORM
            END-IF    
            .
        100-INIT-EXT.
@@ -902,8 +828,8 @@
       *
                MOVE    ZERO               TO  WRK-RENNUM
       *
-               INITIALIZE                 WRK-RECE041-SRYKBN
-                                          TBL-KOUI-SRYKBN12-SAISIN-AREA
+               INITIALIZE                     WRK-RECE041-SRYKBN
+                                              TBL-KOUI-SRYKBN12-AREA
       *
       *        保険履歴情報編集処理
                PERFORM     2001-RIREKI-HEN-SEC 
@@ -1639,22 +1565,23 @@
                                          NOT =   RECE041-HOJOKBN      )
                OR     ( RECE02-TEKSTYMD  NOT =   RECE041-TEKSTYMD     )
       *
-      *        再診料をまとめて出力する
-               IF      WRK-RECE041-SRYKBN     =   SPACE
-               AND     RECE041-SRYKBN         =   "12"
-                   MOVE    RECE041-SRYKBN        TO  WRK-RECE041-SRYKBN
-               END-IF
-               IF      WRK-RECE041-SRYKBN     =   "12"
-               AND     RECE041-SRYKBN         >   "12"
-                   PERFORM 20079-SRYKBN12-SAISIN-HENSYU-SEC
-               END-IF 
+      ***        再診の時間外を別剤とする
+      ***         IF      WRK-RECE041-SRYKBN     =   SPACE
+      ***         AND     RECE041-SRYKBN         =   "12"
+      ***             MOVE    RECE041-SRYKBN        TO  WRK-RECE041-SRYKBN
+      ***         END-IF
+      ***         IF      WRK-RECE041-SRYKBN     =   "12"
+      ***         AND     RECE041-SRYKBN         >   "12"
+      ***             PERFORM 20079-SRYKBN12-JIKANGAI-HENSYU-SEC
+      ***             MOVE    SPACE                  TO  WRK-RECE041-SRYKBN
+      ***         END-IF 
       *        負担区分編集処理
                PERFORM 20070-FTNKBN-HENSYU-SEC        
       *        明細テーブル退避処理
                PERFORM 20071-ZAI-TAIHI-SEC
       *       摘要データ編集処理
                IF      FLG-END           =   ZERO
-      *************PERFORM 20074-ZAI-KOUI-SORT-SEC
+      *****        PERFORM 20074-ZAI-KOUI-SORT-SEC
                    PERFORM 20072-ZAI-HENSYU-SEC
       *
       *            再診の時間外を別剤とする
@@ -1666,10 +1593,11 @@
                END-IF     
            END-PERFORM
       *
-      *    再診のみのとき
-           IF      WRK-RECE041-SRYKBN     =   "12"
-               PERFORM 20079-SRYKBN12-SAISIN-HENSYU-SEC 
-           END-IF 
+      ***    再診のみのとき
+      ***     IF      WRK-RECE041-SRYKBN     =   "12"
+      ***         PERFORM 20079-SRYKBN12-JIKANGAI-HENSYU-SEC 
+      ***         MOVE    SPACE                  TO  WRK-RECE041-SRYKBN
+      ***     END-IF 
            .
        2007-HENSYU-EXT.
            EXIT. 
@@ -2029,20 +1957,6 @@
                    IF      RECE05-SRYCD (IDX)
                                    =   WRK-CONS-JIKANGAI-SRYCD (IDY)
                        MOVE    IDY           TO  FLG-GAITENTTLKBN
-      *???
-               DISPLAY "FLG=" RECE05-SRYCD (IDX) "#" 
-                              FLG-GAITENTTLKBN "#" 
-      *???
-                       GO  TO  200711-KOUI-TAIHI-EXT
-                   END-IF
-               END-PERFORM
-      *
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       WRK-CONS-SAISIN-MAX
-                   IF      RECE05-SRYCD (IDX)
-                               =   WRK-CONS-SAISIN-SRYCD (IDY)
-                       ADD     RECE041-ZAIKAISU    TO
-                              TBL-KOUI-SRYKBN12-SAISIN-KAISU (IDY)
                        GO  TO  200711-KOUI-TAIHI-EXT
                    END-IF
                END-PERFORM
@@ -2283,10 +2197,11 @@
       *    摘要データ編集処理
       *****************************************************************
        20072-ZAI-HENSYU-SEC          SECTION.
-      *
+      *     
       *    診療行為データ・コメントデータの編集
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-TBLMAX1
+      *
       *        診療行為最終データ又は次がコメントデータの場合
                MOVE    ZERO            TO  FLG-TBLMAX
                IF      IDX             =   WRK-SRYCD1-MAX
@@ -2471,18 +2386,7 @@
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-TBLMAX7
                PERFORM 200723-KIZAI-HENSYU-SEC
-           END-PERFORM
-      *         
-      *    時間外の編集     
-           IF      FLG-GAITENTTLKBN    >   ZERO
-               MOVE    FLG-GAITENTTLKBN    TO  IDY
-               ADD RECE041-ZAIKAISU  TO  TBL-KOUI-SRYKBN12-KAISU (1)
-               MOVE
-                       WRK-CONS-JIKANGAI-SRYCD (IDY)
-                                     TO  TBL-KOUI-SRYKBN12-SRYCD (1)    
-               MOVE    WRK-CONS-JIKANGAI-TEN (IDY)
-                                     TO  TBL-KOUI-SRYKBN12-TEN   (1)    
-           END-IF
+           END-PERFORM            
            .
        20072-ZAI-HENSYU-EXT.
            EXIT.
@@ -2665,7 +2569,7 @@
            EXIT.
       *
       *****************************************************************
-      *    再診の時間外加算ときの編集処理
+      *    再診のときの編集処理
       *****************************************************************
        20079-SRYKBN12-JIKANGAI-HENSYU-SEC   SECTION.
       *
@@ -2712,59 +2616,6 @@
            END-PERFORM
            .
        20079-SRYKBN12-JIKANGAI-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    再診料のまとめ編集処理
-      *****************************************************************
-       20079-SRYKBN12-SAISIN-HENSYU-SEC   SECTION.
-      *
-      *    診療行為データの編集
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       WRK-CONS-SAISIN-MAX
-               IF      TBL-KOUI-SRYKBN12-SAISIN-KAISU (IDX)   >   ZERO
-                   MOVE    SPACE               TO  WRK-REC
-                   MOVE    ZERO                TO  WRK-REC-LENGTH
-      *          
-                   MOVE    "SI,"               TO  WRK-REC
-                   MOVE    3                   TO  WRK-REC-LENGTH
-      *            診療識別
-                   MOVE    "12"                TO  WRK-DATA
-                   MOVE    2                   TO  WRK-NAGASA
-                   PERFORM 5004-MOJI-HENSYU-SEC  
-      *            負担区分
-                   MOVE    WRK-FTNKBN          TO  WRK-DATA
-                   MOVE    1                   TO  WRK-NAGASA
-                   PERFORM 5004-MOJI-HENSYU-SEC  
-      *            診療行為コード
-                   MOVE    WRK-CONS-SAISIN-SRYCD (IDX)
-                                                   TO  WRK-DATA
-                   MOVE    9                   TO  WRK-NAGASA
-                   PERFORM 5004-MOJI-HENSYU-SEC  
-      *            数量
-                   PERFORM 5005-NUM-HENSYU-SEC  
-      *            点数
-                   MOVE    WRK-CONS-SAISIN-TEN (IDX)
-                                               TO  WRK-TENSU
-                   MOVE    WRK-TENSU           TO  WRK-NUM
-                   MOVE    7                   TO  WRK-NAGASA
-                   PERFORM 5005-NUM-HENSYU-SEC  
-      *            回数
-                   MOVE    TBL-KOUI-SRYKBN12-SAISIN-KAISU (IDX)
-                                               TO  WRK-KAISU
-                   MOVE    WRK-KAISU           TO  WRK-NUM
-                   MOVE    3                   TO  WRK-NAGASA
-                   MOVE    1                   TO  WRK-END 
-                   PERFORM 5005-NUM-HENSYU-SEC  
-      *
-                   PERFORM 5001-FILE-WRITE-SEC
-               END-IF
-           END-PERFORM
-      *
-           INITIALIZE              TBL-KOUI-SRYKBN12-SAISIN-AREA
-           MOVE    SPACE           TO  WRK-RECE041-SRYKBN                    
-           .
-       20079-SRYKBN12-SAISIN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
