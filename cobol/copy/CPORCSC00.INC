@@ -29,6 +29,8 @@
       *
        01  ORCSC00AREA.
       *
+         02  LNK-ORCSZAI-AREA.
+      *
       *    １：剤ごとのチェック＆算定
       *    ２：全体のチェック
       *    ３：終了時の自動加算算定
@@ -108,6 +110,7 @@
       *        寝たきり老人在宅総合診察料あり
                05  LNK-ORCSC-NETAKIRI-ARI        PIC  9(01).
                05  LNK-ORCSC-NETAKIRI-ARI2       PIC  9(01).
+               05  LNK-ORCSC-NETAKIRI-ARI3       PIC  9(01).
       *        在宅訪問診療料有り
                05  LNK-ORCSC-HOUMON-ARI           PIC  9(01).
       *        小児科外来診療科算定有り
@@ -147,41 +150,6 @@
            03  LNK-ORCSC-GAIRAI-NASI       PIC  9(01).
       *時間外特例区分
            03  LNK-ORCSC-JIKANTOKU         PIC  9(01).
-      *
-      *リハビリ当月内回数集計
-           03  LNK-ORCSC-RIGAKU-TBL.
-      *        １:理学、２：作業、３：言語
-               05  LNK-ORCSC-DCNT-TBL        OCCURS  3.
-      *        集団
-                   07  LNK-ORCSC-DCNT-SN-G.
-                       09  LNK-ORCSC-DCNT-SN     PIC 9(03)   OCCURS  31.
-      *            当日
-                   07  LNK-ORCSC-TCNT-S          PIC 9(03).
-      *            月計
-                   07  LNK-ORCSC-TCNT-SN         PIC 9(03).
-      *        個別
-                   07  LNK-ORCSC-DCNT-KN-G.
-                       09  LNK-ORCSC-DCNT-KN     PIC 9(03)   OCCURS  31.
-                   07  LNK-ORCSC-TCNT-K          PIC 9(03).
-                   07  LNK-ORCSC-TCNT-KN         PIC 9(03).
-      *        早期リハ等加算（逓減対象外）
-               05  LNK-ORCSC-GAICNT-G.
-                   07  LNK-ORCSC-GCNT            PIC 9(01)   OCCURS  31.
-      *    早期リハ等加算（今回入力分）
-           03  LNK-ORCSC-GAI-FLG-G.
-               05  LNK-ORCSC-GAI-FLG           PIC 9(01)   OCCURS  31.
-      *******  05  LNK-ORCSC-RIGAKU-OCCS       OCCURS  6.
-      *            07  LNK-ORCSC-RIGAKU-SRYCD  PIC  X(09).
-      *            07  LNK-ORCSC-RIGAKU-CNT    PIC  9(03).
-      *            入院用追加
-      *            07  LNK-ORCSC-RIG-KBN       PIC  X(01).
-      *            07  LNK-ORCSC-RIG-RYO       PIC  X(01).
-      *            07  LNK-ORCSC-RIG-DAY-G.
-      *                09  LNK-ORCSC-RIG-DAY   PIC  9(01)
-      *                                        OCCURS 31.
-      *        05  LNK-ORCSC-SOUKI-G.
-      *            07  LNK-ORCSC-SOUKI-FLG PIC  9(01)
-      *********                                OCCURS 31.
       *    リハビリ逓減確認
            03  LNK-ORCSC-FLG-RIHTEI            PIC 9(01).
       *投薬の継続分チェック
@@ -248,4 +216,38 @@
            03  LNK-ORCSC-RSIOK              PIC  X(01).
       *    エラーメッセージ
            03  LNK-ORCSC-ERRMSG             PIC  X(80).
+      *
+      *    全体件数
+         02  LNK-ORCSALL-AREA.
+      *
+      *リハビリ当月内回数集計
+           03  LNK-ORCSC-RIGAKU-TBL.
+      *        １:理学、２：作業、３：言語
+               05  LNK-ORCSC-DCNT-TBL        OCCURS  3.
+      *        集団
+                   07  LNK-ORCSC-DCNT-SN-G.
+                       09  LNK-ORCSC-DCNT-SN     PIC 9(03)   OCCURS  31.
+      *            当日
+                   07  LNK-ORCSC-TCNT-S          PIC 9(03).
+      *            月計
+                   07  LNK-ORCSC-TCNT-SN         PIC 9(03).
+      *        個別
+                   07  LNK-ORCSC-DCNT-KN-G.
+                       09  LNK-ORCSC-DCNT-KN     PIC 9(03)   OCCURS  31.
+                   07  LNK-ORCSC-TCNT-K          PIC 9(03).
+                   07  LNK-ORCSC-TCNT-KN         PIC 9(03).
+      *        早期リハ等加算（逓減対象外）
+               05  LNK-ORCSC-GAICNT-G.
+                   07  LNK-ORCSC-GCNT            PIC 9(01)   OCCURS  31.
+      *    早期リハ等加算（今回入力分）
+           03  LNK-ORCSC-GAI-FLG-G.
+               05  LNK-ORCSC-GAI-FLG           PIC 9(01)   OCCURS  31.
+      *
+      *    検査逓減領域
+           03  LNK-ORCSC-TEIGEN-AREA.
+               05  LNK-ORCSC-TEIGEN-OCC        OCCURS   20.
+                   07  LNK-ORCSC-TEIGEN-SRYCD     PIC X(09).
+                   07  LNK-ORCSC-TEIGEN-HOU       PIC X(02).
+                   07  LNK-ORCSC-TEIGEN-CNT       PIC 9(03).
+                   07  LNK-ORCSC-TEIGEN-SANTEI    PIC 9(03).
       *

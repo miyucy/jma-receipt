@@ -79,7 +79,7 @@
                 04  K02-TABOO.
                   05  K02-VALUE   PIC X(62).
                 04  K02-TABOO-COUNT   PIC S9(9)   BINARY.
-                04  K02-TABOO-ITEM    PIC X(62)   OCCURS  23 TIMES.
+                04  K02-TABOO-ITEM    PIC X(62)   OCCURS  32 TIMES.
               03  K02-SYORIMEI.
                 04  K02-SYORIMEI-STYLE   PIC X(20).
                 04  K02-SYORIMEI-VALUE   PIC X(12).

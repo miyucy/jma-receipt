@@ -26,6 +26,7 @@
       *  01.00.03    NACL-多々納  02/08/06  アフターケア用追加
       *  01.00.04    NACL-多々納  02/08/26  老人区分移動
       *  01.00.05    NACL-多々納  02/10/17  入院用追加
+      *  01.00.06    NACL-多々納  03/12/09  セット画面に入外区分等追加
       ************************************************************
       *
        01  SPA-K02.
@@ -235,6 +236,27 @@
                05  SPA-GMN5-CUR            PIC 9(02).
       *        更新フラグ
                05  SPA-UPDFLG              PIC X(01).
+      *        前の状態
+               05  SPA-K05-MAE-NYUGAIKBN       PIC X(01).
+               05  SPA-K05-MAE-ROUJIN          PIC X(01).
+      *        入外区分
+               05  SPA-K05-NYUGAIKBN-G.
+                   07  SPA-K05-NYUGAIKBN       PIC X(01).
+                   07  SPA-K05-K1              PIC X(01).
+                   07  SPA-K05-NYUGAIKBNMEI    PIC X(08).
+      *
+               05  SPA-K05-NYUGAIKBNLST-G.
+                   07  SPA-K05-NYUGAIKBNLST    PIC X(10)
+                                               OCCURS   2.
+      *        老人区分
+               05  SPA-K05-ROUJIN-G.
+                   07  SPA-K05-ROUJIN          PIC X(01).
+                   07  SPA-K05-K2              PIC X(01).
+                   07  SPA-K05-ROUJINMEI       PIC X(08).
+      *
+               05  SPA-K05-ROUJINLST-G.
+                   07  SPA-K05-ROUJINLST       PIC X(10)
+                                               OCCURS   2.
       *
       *    Ｋ０５１画面固有ＳＰＡ
            03  SPA-K051-AREA.

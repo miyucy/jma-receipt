@@ -33,3 +33,13 @@
               03  K05-SYORINAME.
                 04  K05-SYORINAME-STYLE   PIC X(20).
                 04  K05-SYORINAME-VALUE   PIC X(20).
+              03  K05-NYUGAIKBNCOMB.
+                04  K05-NYUGAIKBN.
+                  05  K05-VALUE   PIC X(10).
+                04  K05-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.
+                04  K05-NYUGAIKBN-ITEM    PIC X(10)   OCCURS  2 TIMES.
+              03  K05-ROUJINCOMB.
+                04  K05-ROUJIN.
+                  05  K05-VALUE   PIC X(10).
+                04  K05-ROUJIN-COUNT   PIC S9(9)   BINARY.
+                04  K05-ROUJIN-ITEM    PIC X(10)   OCCURS  3 TIMES.
