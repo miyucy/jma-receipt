@@ -752,6 +752,8 @@
                05  SPA-GMN98-PAGE                         PIC 9(01).
                05  SPA-GMN98-MAX                          PIC 9(01).
                05  SPA-GMN98-MAX-PAGE                     PIC 9(01).
+      *        ¸µ£Ð£Ç
+               05  SPA-GMN98-MOTOPG                       PIC X(08).
       *
                05  SPA-GMN98-SELNUM                       PIC 9(03).
                05  SPA-GMN98-ADRS                         PIC X(100).
@@ -769,6 +771,8 @@
            03  SPA-P981-AREA.
                05  SPA-GMN981-CUR                   PIC 9(02).
                05  SPA-GMN981-UPDFLG                PIC 9(01). 
+      *        ¸µ£Ð£Ç
+               05  SPA-GMN981-MOTOPG                PIC X(08).
      *
                05  SPA-GMN981-AREA.
                    07  SPA-GMN981-KBNCD             PIC 9(03).
