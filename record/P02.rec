@@ -622,14 +622,15 @@ P02	{
 						row	int;
 						rowattr	int;
 						item	{
-							value1	varchar(6);
+							value0	varchar(6);
+							value1	varchar(10);
 							value2	varchar(10);
 							value3	varchar(10);
 							value4	varchar(10);
 							value5	varchar(10);
 							value6	varchar(10);
 							value7	varchar(10);
-							value8	varchar(10);
+							value8	varchar(20);
 						}	[50];
 						select	bool[50];
 					};
@@ -846,6 +847,9 @@ P02	{
 				};
 				P024_FTNSELNUM2	{
 					value	number(3);
+				};
+				P024_JKYSNUM	{
+					value	varchar(40);
 				};
 			};
 			FIXPAGE8	{
