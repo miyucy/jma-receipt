@@ -88,6 +88,7 @@
                    07  TBL-SURYO           PIC 9(05)V9(03).
                05  WRK-YSRYCD              PIC X(09).
                05  WRK-SRYKBN              PIC X(02).
+               05  WRK-SRYSYUKBN           PIC X(03).
       *
            03  WRK-ZAITENKEI            PIC 9(07).
       *
@@ -188,6 +189,16 @@
       *            中途終了時発行
                    PERFORM 200-WKSRYACT-SYORI-SEC
            END-EVALUATE
+      *
+      *TEST
+      *    DISPLAY "ORCSCH30-KBN:" ORCSCH30-KBN
+      *    DISPLAY "ORCHC30-MAX:" ORCHC30-MAX
+      *    PERFORM VARYING    IDX   FROM    1  BY  1
+      *            UNTIL      IDX   >  ORCHC30-MAX
+      *      DISPLAY "ORCHC30-SRYCD:" ORCHC30-SRYCD (IDX)
+      *              ",ORCHC30-YSRYCD:" ORCHC30-YSRYCD (IDX)
+      *    END-PERFORM 
+      *TEST
       *
       *    印刷処理へ
            IF      ORCHC30-MAX         >   ZERO
@@ -418,11 +429,13 @@
            MOVE    ZERO                TO  IDX-S
            MOVE    SPACE               TO  WRK-YSRYCD
            MOVE    SPACE               TO  WRK-SRYKBN
+           MOVE    SPACE               TO  WRK-SRYSYUKBN
            PERFORM
                    UNTIL   FLG-SRYACT      =   1
       *        投薬を対象とする
                IF      SRY-SRYKBN          =   "21"   OR  "22" OR "23"
                    MOVE    SRY-SRYKBN          TO  WRK-SRYKBN
+                   MOVE    SRY-SRYSYUKBN       TO  WRK-SRYSYUKBN
       *            診療会計より、点数チェック
                    PERFORM 20021-SRYACCT-SYORI-SEC
                    MOVE    ZERO                TO  FLG-OK
@@ -437,7 +450,9 @@
                        MOVE    1               TO  FLG-OK
                    END-IF
       *            処方のみのときは院内分とする
-                   IF      SRY-SRYSYUKBN(3:1)  =   "3"
+                   IF      WRK-SRYSYUKBN       =   "213"  OR
+                                                   "223"  OR
+                                                   "233"
                        IF      ORCSCH30-KBN        =   "1"
                            MOVE    1               TO  FLG-OK
                        END-IF
@@ -601,6 +616,7 @@
            MOVE    ZERO                TO  IDX-S
            MOVE    SPACE               TO  WRK-YSRYCD
            MOVE    SPACE               TO  WRK-SRYKBN
+           MOVE    SPACE               TO  WRK-SRYSYUKBN
            MOVE    ZERO                TO  WRK-ZAITENKEI
            PERFORM
                UNTIL   FLG-WKSRYACT    =   1
@@ -619,7 +635,9 @@
                            MOVE    1               TO  FLG-OK
                        END-IF
       *                処方のみのときは院内分とする
-                       IF      WKSRY-SRYSYUKBN(3:1)    =   "3"
+                       IF      WRK-SRYSYUKBN       =   "213"  OR
+                                                       "223"  OR
+                                                       "233"
                            IF      ORCSCH30-KBN        =   "3"
                                MOVE    1               TO  FLG-OK
                            END-IF
@@ -640,6 +658,7 @@
                    MOVE    ZERO                TO  IDX-S
                    MOVE    SPACE               TO  WRK-YSRYCD
                    MOVE    WKSRY-SRYKBN        TO  WRK-SRYKBN
+                   MOVE    WKSRY-SRYSYUKBN     TO  WRK-SRYSYUKBN
                    MOVE    ZERO                TO  WRK-ZAITENKEI
                END-IF
       *
@@ -667,6 +686,17 @@
                IF     (ORCSCH30-KBN        =   "4" )  AND
                       (WRK-ZAITENKEI       =   ZERO)
                    MOVE    1               TO  FLG-OK
+               END-IF
+      *        処方のみのときは院内分とする
+               IF      WRK-SRYSYUKBN       =   "213"  OR
+                                               "223"  OR
+                                               "233"
+                   IF      ORCSCH30-KBN        =   "3"
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+                   IF      ORCSCH30-KBN        =   "4"
+                       MOVE    ZERO            TO  FLG-OK
+                   END-IF
                END-IF
                IF      FLG-OK              =   1
       *            パラメタ編集
