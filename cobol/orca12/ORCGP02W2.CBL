@@ -488,13 +488,6 @@
       *    保険情報セット処理
       *****************************************************************
        330-HKNINF-SET-SEC             SECTION.
-      *TEST
-                      DISPLAY "P02W2 PTHKN-PTID:" PTHKN-PTID
-                              ",PTHKN-HKNNUM:" PTHKN-HKNNUM
-                              ",PTHKN-TEKSTYMD:" PTHKN-TEKSTYMD
-                              ",PTHKN-TEKEDYMD:" PTHKN-TEKEDYMD
-                              ",CNT-HKN:" CNT-HKN
-      *TEST
       *
            MOVE    PTHKN-HKNID          TO  WRK-HKN-HKNID    (CNT-HKN)
            MOVE    PTHKN-HKNNUM         TO  WRK-HKN-HKNNUM   (CNT-HKN)
@@ -557,14 +550,6 @@
       *    公費情報セット処理
       *****************************************************************
        330-KOHINF-SET-SEC               SECTION.
-      *TEST
-                      DISPLAY "P002 PTKOH-PTID:" PTKOH-PTID
-                              ",PTKOH-KOHNUM:" PTKOH-KOHNUM
-                              ",PTKOH-KOHID:" PTKOH-KOHID
-                              ",PTKOH-TEKSTYMD:" PTKOH-TEKSTYMD
-                              ",PTKOH-TEKEDYMD:" PTKOH-TEKEDYMD
-                              ",CNT-KOH:" CNT-KOH
-      *TEST
       *
            MOVE    PTKOH-KOHID          TO  WRK-KOH-KOHID     (CNT-KOH)
            MOVE    PTKOH-KOHNUM         TO  WRK-KOH-HKNNUM    (CNT-KOH)
