@@ -1087,13 +1087,17 @@
                                END-EVALUATE
                        END-EVALUATE
       *                ∆√ Ã¥…Õ˝≤√ªª
-                       MOVE  WRK-SYS5000-SHOKUCD(2 IDX1)
+                       IF    WRK-SYS5000-SHOKUCD(2 IDX1)  NOT = SPACE
+                           MOVE  WRK-SYS5000-SHOKUCD(2 IDX1)
                                           TO  WRK-SKJ-TOKU-KANRI(IDX1)
-                       ADD   200          TO  WRK-SKJ-MONEY(IDX1)
+                           ADD   200          TO  WRK-SKJ-MONEY(IDX1)
+                       END-IF
       *                ø©∆≤≤√ªª
-                       MOVE  WRK-SYS5000-SHOKUCD(3 IDX1)
+                       IF    WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
+                           MOVE  WRK-SYS5000-SHOKUCD(3 IDX1)
                                           TO  WRK-SKJ-SHOKUDOU(IDX1)
-                       ADD    50          TO  WRK-SKJ-MONEY(IDX1)
+                           ADD    50          TO  WRK-SKJ-MONEY(IDX1)
+                       END-IF
                    END-IF
                END-PERFORM
            END-IF
