@@ -98,7 +98,6 @@
       *    保険組合せ一覧画面用
            03  SPA-I41-AREA-41.
                05  SPA-I41-MAX-41                        PIC 9(04).
-               05  SPA-I41-PAGE-41                       PIC 9(02).
                05  SPA-I41-TBL-41.
                    07  SPA-I41-TBLREC-41                 OCCURS  40.
                        09  SPA-I41-THKNCOMBI-41          PIC 9(04).

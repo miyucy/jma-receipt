@@ -148,113 +148,6 @@
            03  WRK-WIDGET-SW       PIC X(01).
            03  WRK-INPUTCD-W       PIC X(22).
       *
-      *
-      *    ¸¡ººÅù¼Â»ÜÈ½ÃÇ¥°¥ë¡¼¥×¶èÊ¬¥Æ¡¼¥Ö¥ë
-       01  WRK-TBL-GRP.
-           03  FILLER              PIC X(02)   VALUE   "01".
-           03  FILLER              PIC X(40)   VALUE
-                     "Ç¢¡¦ÊµÊØÅù¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE
-                     "Ç¢¡¦ÊµÊØÅù¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "02".
-           03  FILLER              PIC X(40)   VALUE   "·ì±Õ³ØÅª¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE   "·ì±Õ³ØÅª¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "31".
-           03  FILLER              PIC X(40)   VALUE
-                     "À¸²½³ØÅª¸¡ºº¡Ê£±¡Ë¡ÊÊñ³ç¡Ë".
-           03  FILLER              PIC X(20)   VALUE
-                     "À¸¡Ê£±¡Ë¡ÊÊñ³ç¡Ë".
-           03  FILLER              PIC X(02)   VALUE   "32".
-           03  FILLER              PIC X(40)   VALUE
-                     "À¸²½³ØÅª¸¡ºº¡Ê£±¡Ë¡ÊÊñ³ç°Ê³°¡Ë".
-           03  FILLER              PIC X(20)   VALUE
-                     "À¸¡Ê£±¡Ë¡ÊÊñ³ç°Ê³°¡Ë".
-           03  FILLER              PIC X(02)   VALUE   "41".
-           03  FILLER              PIC X(40)   VALUE
-                     "À¸²½³ØÅª¸¡ºº¡Ê£²¡Ë¡ÊÊñ³ç¡Ë".
-           03  FILLER              PIC X(20)   VALUE
-                     "À¸¡Ê£²¡Ë¡ÊÊñ³ç¡Ë".
-           03  FILLER              PIC X(02)   VALUE   "42".
-           03  FILLER              PIC X(40)   VALUE
-                     "À¸²½³ØÅª¸¡ºº¡Ê£²¡Ë¡ÊÊñ³ç°Ê³°¡Ë".
-           03  FILLER              PIC X(20)   VALUE
-                     "À¸¡Ê£²¡Ë¡ÊÊñ³ç°Ê³°¡Ë".
-           03  FILLER              PIC X(02)   VALUE   "05".
-           03  FILLER              PIC X(40)   VALUE   "ÌÈ±Ö³ØÅª¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE   "ÌÈ±Ö³ØÅª¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "06".
-           03  FILLER              PIC X(40)   VALUE
-                     "ÈùÀ¸Êª³ØÅª¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE
-                     "ÈùÀ¸Êª³ØÅª¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "07".
-           03  FILLER              PIC X(40)   VALUE   "ÉÂÍý³ØÅª¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE   "ÉÂÍý³ØÅª¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "08".
-           03  FILLER              PIC X(40)   VALUE
-                     "´ðËÜÅª¸¡ÂÎ¸¡ºº¼Â»ÜÎÁ".
-           03  FILLER              PIC X(20)   VALUE
-                     "´ðËÜÅª¸¡ÂÎ¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "11".
-           03  FILLER              PIC X(40)   VALUE
-                     "¸ÆµÛ½Û´Äµ¡Ç½¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE
-                     "¸ÆµÛ½Û´Äµ¡Ç½¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "12".
-           03  FILLER              PIC X(40)   VALUE   "Ä¶²»ÇÈ¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE   "Ä¶²»ÇÈ¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "13".
-           03  FILLER              PIC X(40)   VALUE
-                     "´Æ»ëÁõÃÖ¤Ë¤è¤ë½ô¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE
-                     "´Æ»ëÁõÃÖ¤Ë¤è¤ë½ô¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "14".
-           03  FILLER              PIC X(40)   VALUE   "Ç¾ÇÈ¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE   "Ç¾ÇÈ¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "15".
-           03  FILLER              PIC X(40)   VALUE   "¿À·Ð¡¦¶Ú¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE   "¿À·Ð¡¦¶Ú¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "16".
-           03  FILLER              PIC X(40)   VALUE
-                     "¼ªÉ¡°ö¹¢²Ê³ØÅª¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE
-                     "¼ªÉ¡°ö¹¢²Ê³ØÅª¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "17".
-           03  FILLER              PIC X(40)   VALUE   "´ã²Ê³ØÅª¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE   "´ã²Ê³ØÅª¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "18".
-           03  FILLER              PIC X(40)   VALUE
-                     "Î×¾²¿´Íý¿À·Ð¿´Íý¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE
-                     "Î×¾²¿´Íý¿À·Ð¿´Íý¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "19".
-           03  FILLER              PIC X(40)   VALUE   "Éé²Ù»î¸³".
-           03  FILLER              PIC X(20)   VALUE   "Éé²Ù»î¸³".
-           03  FILLER              PIC X(02)   VALUE   "20".
-           03  FILLER              PIC X(40)   VALUE
-                     "¥é¥¸¥ª¥¢¥¤¥½¥È¡¼¥×¤òÍÑ¤¤¤¿½ô¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE
-                     "¥é¥¸¥ª¥¢¥¤¥½¥È¡¼¥×".
-           03  FILLER              PIC X(02)   VALUE   "21".
-           03  FILLER              PIC X(40)   VALUE   "Æâ»ë¶À¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE   "Æâ»ë¶À¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "22".
-           03  FILLER              PIC X(40)   VALUE
-                     "¿ÇÃÇÀü»É¸¡ÂÎºÎ¼èÎÁ".
-           03  FILLER              PIC X(20)   VALUE
-                     "¿ÇÃÇÀü»É¸¡ÂÎºÎ¼èÎÁ".
-           03  FILLER              PIC X(02)   VALUE   "98".
-           03  FILLER              PIC X(40)   VALUE   "Ï«ºÒ¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE   "Ï«ºÒ¸¡ºº".
-           03  FILLER              PIC X(02)   VALUE   "99".
-           03  FILLER              PIC X(40)   VALUE   "¤½¤ÎÂ¾¤Î¸¡ºº".
-           03  FILLER              PIC X(20)   VALUE   "¤½¤ÎÂ¾¤Î¸¡ºº".
-       01  WRK-TBL-GRP-R           REDEFINES   WRK-TBL-GRP.
-           03  TBL-GRP-OCC         OCCURS  24  INDEXED  BY  TBL-IDX.
-               05  TBL-GRP-KBN     PIC X(02).
-               05  TBL-GRP-MEI     PIC X(40).
-               05  TBL-GRP-RMEI    PIC X(20).
-      *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
       *****************************************************************
@@ -655,12 +548,8 @@
            END-IF.
       *
            INITIALIZE                      TNS-TENSU-REC.
-           IF      SPA-I48-GMN-SYORI   =   "9"
-               MOVE    SPA-I48-NAI-KENSANO TO  TNS-KNSJISGRPKBN
-           ELSE
-               MOVE    WRK-INPUTCD         TO  TNS-NAME
-               MOVE    WRK-INPUTCD         TO  TNS-KANANAME
-           END-IF.
+           MOVE    WRK-INPUTCD         TO  TNS-NAME.
+           MOVE    WRK-INPUTCD         TO  TNS-KANANAME.
       *
       *    ¥æ¡¼¥¶¡¼ÅÐÏ¿Ê¬
            IF      SPA-I48-GMN-SYORI   =   "U"
@@ -1114,35 +1003,6 @@
            EXIT.
       *
       *****************************************************************
-      *    ¸¡ºº¥°¥ë¡¼¥×Ì¾¾ÎÊÔ½¸½èÍý
-      *****************************************************************
-       5010-GRPMEI-SET-SEC             SECTION.
-      *
-      *
-           SET     TBL-IDX            TO  1.
-           SEARCH      TBL-GRP-OCC     VARYING   TBL-IDX
-                   AT  END
-                       MOVE    SPACE           TO  WRK-GRP-MEI
-                   WHEN    SPA-I48-NAI-KENSANO =
-                                               TBL-GRP-KBN (TBL-IDX)
-                       MOVE    TBL-GRP-RMEI  (TBL-IDX)
-                                                TO  WRK-GRP-MEI
-           END-SEARCH.
-           MOVE    SPACE               TO  WRK-GRP-MEI-X.
-           IF      SPA-I48-GMN-ALL     =   SPACE
-               STRING      WRK-GRP-MEI     DELIMITED  BY  SPACE
-                           "¡Ê¼«±¡¡Ë"      DELIMITED  BY  SIZE
-                           INTO            WRK-GRP-MEI-X
-           ELSE
-               STRING      WRK-GRP-MEI     DELIMITED  BY  SPACE
-                           "¡ÊÁ´ÂÎ¡Ë"      DELIMITED  BY  SIZE
-                           INTO            WRK-GRP-MEI-X
-           END-IF.
-      *
-       5010-GRPMEI-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ²èÌÌ¥«¡¼¥½¥ë¥»¥Ã¥È½èÍý
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
@@ -1409,47 +1269,6 @@
            END-IF.
       *
        41012-SRYCD-SEL-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¸¡ºº¥°¥ë¡¼¥×ÁªÂò½èÍý
-      *****************************************************************
-       41013-KENSA-GRP-SEC             SECTION.
-      *
-           MOVE    1                   TO  SPA-GMN-CUR4.
-      *
-           IF     (SPA-I48-NAI-SELNUM(IDX-1)
-                                       NOT =   ZERO ) AND
-                  (IDX-1               NOT =   1     ) 
-               MOVE    "0003"          TO  SPA-ERRCD
-               GO      TO      41013-KENSA-GRP-EXT
-           ELSE
-               IF      SPA-I48-NAI-SELNUM(IDX-1)   =   ZERO
-                   GO      TO      41013-KENSA-GRP-EXT
-               END-IF
-           END-IF.
-      *
-           IF      WRK-SELNO           =   ZERO
-               MOVE    "0002"              TO  SPA-ERRCD
-               GO      TO      41013-KENSA-GRP-EXT
-           END-IF.
-           MOVE    SPA-I48-GMN-NO-X(WRK-SELNO)  TO  SPA-I48-NAI-KENSA.
-      *
-           PERFORM 5010-GRPMEI-SET-SEC.
-           IF      WRK-GRP-MEI         =   SPACE
-               MOVE    "0001"              TO  SPA-ERRCD
-           ELSE
-               MOVE    "1"                 TO  SPA-I48-GMN-SYORI2
-               MOVE    SPACE               TO  SPA-I48-TYPE
-               INITIALIZE                      SPA-I48-GMN-SELNUM-G
-               INITIALIZE                      SPA-I48-NAI-SELNUM-G
-               MOVE    SPACE               TO  SPA-I48-SRYCD-G
-      *        £Ó£Ð£Á¥»¥Ã¥È
-               MOVE    ZERO                TO  SPA-I48-NEXT
-               PERFORM 310-SPA-SET-SEC
-           END-IF.
-      *
-       41013-KENSA-GRP-EXT.
            EXIT.
       *
       *****************************************************************

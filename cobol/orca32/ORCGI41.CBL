@@ -117,6 +117,9 @@
            03  IDW5                PIC 9(04).
            03  IDW6                PIC 9(04).
            03  IDW7                PIC 9(04).
+           03  IDW8                PIC 9(04).
+           03  IDW9                PIC 9(04).
+           03  IDV                 PIC 9(04).
       *    一時領域
        01  WRK-AREA.
            03  WRK-PARA-EDANUM     PIC 9(03).
@@ -212,6 +215,20 @@
                05  WRK-HAS-YY      PIC 9(04).
                05  WRK-HAS-MM      PIC 9(02).
                05  WRK-HAS-DD      PIC 9(02).
+      *    入力可能日計算用
+       01  WRK-HANTEI-AREA.
+           03  WRK-YMDS3.
+               05  WRK-YYS3        PIC 9(04).
+               05  WRK-MMS3        PIC 9(02).
+               05  WRK-DDS3        PIC 9(02).
+           03  WRK-YMDS4.
+               05  WRK-YYS4        PIC 9(04).
+               05  WRK-MMS4        PIC 9(02).
+               05  WRK-DDS4        PIC 9(02).
+           03  WRK-YMDS5.
+               05  WRK-YYS5        PIC 9(04).
+               05  WRK-MMS5        PIC 9(02).
+               05  WRK-DDS5        PIC 9(02).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -227,12 +244,18 @@
            03  WRK-KOMENTO-S       PIC 9(02).
            03  WRK-KOMENTO-E       PIC 9(02).
            03  WRK-KOMENTO-D       PIC 9(02).
+           03  WRK-KOMENTO-SRYCD   PIC X(09).
+           03  WRK-KOMENTO-SRYYM.
+               05  WRK-KOMENTO-SRYY    PIC 9(04).
+               05  WRK-KOMENTO-SRYM    PIC 9(02).
       *    表示明細変更作業
        01  WRK-GMN-DSP-TBL.
            03  WRK-GMN-DAY-G.
                05  WRK-GMN-DAY     PIC 9(03)  OCCURS  31.
            03  WRK-CHK-TBL.
                05  WRK-CHK-DAY     PIC 9(03)  OCCURS  31.
+           03  WRK-CHK-KBN-TBL.
+               05  WRK-CHK-KBN     PIC X(01)  OCCURS  31.
       *
       *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
@@ -568,6 +591,7 @@
                    MOVE    SPA-SYSYMD  (1:6)  TO  SPA-SAG-SRYYM-41
                    MOVE    SPA-SYSYMDWH       TO  SPA-I40-SRYYMDW
                    MOVE    SPA-SYSYMD         TO  SPA-I40-SRYYMD
+                   MOVE    SPA-SYSYMD         TO  WRK-YMDS3
                    MOVE    1                  TO  SPA-NYUGAIKBN
                    MOVE    SPACE              TO  SPA-GMN-SRYKA-IG-41
                    MOVE    "00"               TO  SPA-GMN-SRYKA-I-41
@@ -586,6 +610,7 @@
                    MOVE    SPA-SYSYMD  (1:6)  TO  SPA-SAG-SRYYM-41
                    MOVE    SPA-SYSYMDWH       TO  SPA-I40-SRYYMDW
                    MOVE    SPA-SYSYMD         TO  SPA-I40-SRYYMD
+                   MOVE    SPA-SYSYMD         TO  WRK-YMDS3
                    MOVE    1                  TO  SPA-NYUGAIKBN
                    MOVE    SPACE              TO  SPA-GMN-SRYKA-IG-41
                    MOVE    "00"               TO  SPA-GMN-SRYKA-I-41
@@ -602,6 +627,7 @@
                    MOVE    SPA-I40-SRYYMDW(1:6) TO SPA-GMN-SRYYM-41
                    MOVE    SPA-I40-SRYYMD (1:6) TO SPA-NAI-SRYYM-41
                    MOVE    SPA-I40-SRYYMD (1:6) TO SPA-SAG-SRYYM-41
+                   MOVE    SPA-I40-SRYYMD       TO WRK-YMDS3
                    MOVE    SPACE                TO SPA-GMN-SRYKA-IG-41
                    MOVE    "00"                 TO SPA-GMN-SRYKA-I-41
                    MOVE    "全科指定"           TO SPA-GMN-SRYKAMEI-I-41
@@ -1055,7 +1081,10 @@
            END-IF.
       *
            IF      FLG-PTNYUINRRK      =   ZERO
+               MOVE    ZERO                TO  WRK-YMDS4
+               MOVE    "99999999"          TO  WRK-YMDS5
                IF      PTNYUINRRK-NYUINYMD NOT =   SPACE
+                   MOVE    PTNYUINRRK-NYUINYMD TO  WRK-YMDS4
                    INITIALIZE                      STS-AREA-DAY
                    INITIALIZE                      LNK-DAY6-AREA
                    MOVE    "61"                TO  LNK-DAY6-IRAI
@@ -1088,8 +1117,9 @@
                    MOVE    WRK-HENYMDG         TO  SPA-GMN-NYUINBI-41
                END-IF
                IF      PTNYUINRRK-TAIINYMD NOT =   SPACE
+                   MOVE    PTNYUINRRK-TAIINYMD TO  WRK-YMDS5
                    IF   PTNYUINRRK-TAIINYMD    =   "99999999"
-                       MOVE    SPACE           TO  SPA-GMN-TAINBI-41
+                       MOVE    SPACE               TO  SPA-GMN-TAINBI-41
                    ELSE
                        MOVE    PTNYUINRRK-TAIINYMD TO SPA-GMN-TAINBI-41
                        MOVE    PTNYUINRRK-TAIINYMD TO WRK-SYMD
@@ -1911,14 +1941,7 @@
       *
                MOVE    "HKNCOMBI-KEY2"      TO  ORC-DBPATH
                PERFORM 940-HKNCOMBI-NEXT-SEC
-           END-PERFORM
-      *
-           IF      SPA-I41-MAX-41         >   ZERO
-               COMPUTE SPA-I41-PAGE-41    =  (SPA-I41-MAX-41    -   1) 
-                                           /  20    +   1
-           ELSE
-               MOVE    1                   TO  SPA-I41-PAGE-41
-           END-IF.
+           END-PERFORM.
       *
        3105-HKNCOMBI-HEN-EXT.
            EXIT.
@@ -2361,7 +2384,7 @@
       *
            MOVE    SPA-GMN-SRYKA-IG-41 TO  SPA-MAE-SRYKA-G-41.
            MOVE    I41-NYUINKA         TO  SPA-GMN-SRYKA-IG-41.
-      *    診療科選択なし
+      *    入院科選択なし
            IF     (SPA-GMN-SRYKA-I-41  =   SPACE)   OR
                   (SPA-GMN-PTID        =   ZERO)
                GO      TO      41013-NYUINKA-SYORI-EXT
@@ -2465,6 +2488,7 @@
                END-IF
                MOVE    SGDAY-SDAY(1:6)     TO  SPA-NAI-SRYYM-41
                MOVE    SGDAY-SDAY(1:6)     TO  SPA-SAG-SRYYM-41
+               MOVE    SGDAY-SDAY          TO  WRK-YMDS3
                MOVE    1                   TO  SPA-GENSAN-RE1-41
                MOVE    ZERO                TO  SPA-GENSAN-RE2-41
                INITIALIZE                  SPA-5000-GENSAN-CHK-TBL-41
@@ -2490,7 +2514,7 @@
            EXIT.
       *
       *****************************************************************
-      *    番号選択入力処理
+      *    診療年月変更の確認処理
       *****************************************************************
        410181-SRYYM-CHANGE-SEC             SECTION.
       *
@@ -2570,6 +2594,7 @@
                GO      TO      41011-BANGO-CHK-EXT
            END-IF.
       *
+           MOVE    SPACE               TO  WRK-KOMENTO-SRYCD.
            IF      SPA-GMN-NUM-41    =   ZERO
                INITIALIZE                  SPA-GMN-INPUT-41
                INITIALIZE                  SPA-NAIGMN-AREA-41
@@ -2602,6 +2627,12 @@
                MOVE    SPA-NAI-ROUJIN-41   (SPA-GMN-NUM-41)
                                            TO  SPA-GMN-ROUJIN-41
       *
+               IF     SPA-GMN-TZAISKBKBN-41  (IDX)   =   "2"  OR  "3"
+                                                     OR  "4"  OR  "5"
+                   MOVE    SPA-GMN-TSRYCD-41  (IDX)
+                                           TO  WRK-KOMENTO-SRYCD
+               END-IF
+      *
                MOVE    1                   TO  SPA-IDXZ-41
       *
                MOVE    2                   TO  SPA-GMN-CUR-41
@@ -2617,6 +2648,12 @@
        41012-DAY-CHK-SEC             SECTION.
       *
            MOVE    2                   TO  SPA-GMN-CUR-41.
+           MOVE    ZERO                TO  WRK-KOMENTO-E.
+      *
+           PERFORM 41013-DAY-CHK2-SEC.
+           IF     SPA-ERRCD        NOT =   SPACE
+               GO      TO      41012-DAY-CHK-EXT
+           END-IF.
       *
            MOVE    SPA-GMN-DAY-G-41    TO  WRK-GMN-DAY-G.
            MOVE    SPA-DAY-IDX-41      TO  IDX.
@@ -2653,6 +2690,11 @@
                MOVE    SNUM-OUTNUM     TO  IDX3
            END-IF.
            MOVE    SPA-NAI-TBANGO-41 (SPA-GMN-NUM-41)   TO  IDX2.
+           IF     WRK-CHK-KBN (IDX)   NOT =  "1"
+               MOVE    "0024"          TO  SPA-ERRCD
+               MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
+               GO      TO      41012-DAY-CHK-EXT
+           END-IF.
            IF    (SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "1")   AND
                  (I41-DAY (IDX)              NOT = SPACE)  AND
                  (SPA-GMN-DAY-41 (IDX)       NOT =   1)
@@ -2671,7 +2713,7 @@
            IF    SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "3"
                MOVE    "0024"          TO  SPA-ERRCD
                PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY             >   30
+                       UNTIL       IDY             >   SPA-SAGAKU-MAX-41
                    IF    SPA-GMN-DAY-41 (IDX)(2:2)
                                        =  SPA-GMN-SAGAKUNO-41 (IDY)(1:2)
                        MOVE    SPACE           TO  SPA-ERRCD
@@ -2696,7 +2738,7 @@
            IF    SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "5"
                MOVE    "0024"          TO  SPA-ERRCD
                PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY             >   30
+                       UNTIL       IDY             >   SPA-I41-MAX-41
                    IF    SPA-GMN-DAY-41 (IDX)(2:2)
                                       =  SPA-I41-THKNCOMBI-41 (IDY)(3:2)
                        MOVE    SPACE           TO  SPA-ERRCD
@@ -2803,6 +2845,11 @@
                GO      TO      41017-KOMENTO-CHK-EXT
            END-IF.
       *
+           PERFORM 41013-DAY-CHK2-SEC.
+           IF     SPA-ERRCD        NOT =   SPACE
+               GO      TO      41017-KOMENTO-CHK-EXT
+           END-IF.
+      *
            MOVE    SPA-GMN-DAY-G-41    TO  WRK-GMN-DAY-G.
            MOVE    SPACE               TO  SPA-ERRCD.
            MOVE    ZERO                TO  IDW3.
@@ -2820,14 +2867,14 @@
                    MOVE    IDW5                TO  IDW3
                    COMPUTE   IDW6    =    IDW6    +    1
                END-IF
-               IF      I41-KOMENTO(IDW5:1)   =   "."
+               IF      I41-KOMENTO(IDW5:1)   =   "/"
                    MOVE    IDW5                TO  IDW4
                    COMPUTE   IDW7    =    IDW7    +    1
                END-IF
            END-PERFORM.
            IF     (IDW6   NOT =   1)     OR
                   (IDW7   NOT =   1)     OR
-                  (IDW3       >   IDW4)
+                  (IDW3       <   IDW4)
                MOVE    "0022"              TO  SPA-ERRCD
            END-IF.
            IF     SPA-ERRCD        NOT =   SPACE
@@ -2836,6 +2883,30 @@
            END-IF.
            INITIALIZE                      ORCSNUMAREA.
            MOVE    1                   TO  IDW6.
+           MOVE    1                   TO  IDW7.
+           PERFORM UNTIL   I41-KOMENTO(IDW6:1)   =   "/"
+               MOVE    I41-KOMENTO(IDW6:1) TO  SNUM-INX(IDW7:1)
+               ADD     1                   TO  IDW6
+               ADD     1                   TO  IDW7
+           END-PERFORM.
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA.
+           IF      SNUM-RC         NOT =   ZERO
+               MOVE    03                  TO  SPA-GMN-CUR-41
+               MOVE    "0022"              TO  SPA-ERRCD
+               GO      TO      41017-KOMENTO-CHK-EXT
+           END-IF.
+           MOVE    SNUM-OUTNUM         TO  WRK-KOMENTO-D.
+           IF     (WRK-KOMENTO-D   NOT =   ZERO)   AND
+                  (WRK-KOMENTO-D   NOT =   1)      AND
+                  (WRK-KOMENTO-D   NOT =   2)      AND
+                  (WRK-KOMENTO-D   NOT =   3)
+               MOVE    03                  TO  SPA-GMN-CUR-41
+               MOVE    "0022"              TO  SPA-ERRCD
+               GO      TO      41017-KOMENTO-CHK-EXT
+           END-IF.
+           INITIALIZE                      ORCSNUMAREA.
+           ADD     1                   TO  IDW6.
            MOVE    1                   TO  IDW7.
            PERFORM UNTIL   I41-KOMENTO(IDW6:1)   =   "-"
                MOVE    I41-KOMENTO(IDW6:1) TO  SNUM-INX(IDW7:1)
@@ -2852,22 +2923,6 @@
            MOVE    SNUM-OUTNUM         TO  WRK-KOMENTO-S.
            INITIALIZE                      ORCSNUMAREA.
            ADD     1                   TO  IDW6.
-           MOVE    1                   TO  IDW7.
-           PERFORM UNTIL   I41-KOMENTO(IDW6:1)   =   "."
-               MOVE    I41-KOMENTO(IDW6:1) TO  SNUM-INX(IDW7:1)
-               ADD     1                   TO  IDW6
-               ADD     1                   TO  IDW7
-           END-PERFORM.
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA.
-           IF      SNUM-RC         NOT =   ZERO
-               MOVE    03                  TO  SPA-GMN-CUR-41
-               MOVE    "0022"              TO  SPA-ERRCD
-               GO      TO      41017-KOMENTO-CHK-EXT
-           END-IF.
-           MOVE    SNUM-OUTNUM         TO  WRK-KOMENTO-E.
-           INITIALIZE                      ORCSNUMAREA.
-           ADD     1                   TO  IDW6.
            MOVE    I41-KOMENTO(IDW6:2) TO  SNUM-INX(1:2).
            CALL    "ORCSNUM"           USING
                                        ORCSNUMAREA.
@@ -2876,15 +2931,40 @@
                MOVE    "0022"              TO  SPA-ERRCD
                GO      TO      41017-KOMENTO-CHK-EXT
            END-IF.
-           MOVE    SNUM-OUTNUM         TO  WRK-KOMENTO-D.
+           MOVE    SNUM-OUTNUM         TO  WRK-KOMENTO-E.
            IF     (WRK-KOMENTO-S       <   1)    OR
                   (WRK-KOMENTO-S       >   31)   OR
                   (WRK-KOMENTO-E       <   1)    OR
-                  (WRK-KOMENTO-E       >   31)   OR
+                  ((WRK-KOMENTO-E       >   31)   AND
+                   (WRK-KOMENTO-E   NOT =   99))   OR
                   (WRK-KOMENTO-S       >   WRK-KOMENTO-E)
                MOVE    03                  TO  SPA-GMN-CUR-41
                MOVE    "0022"              TO  SPA-ERRCD
                GO      TO      41017-KOMENTO-CHK-EXT
+           END-IF.
+           IF     (WRK-KOMENTO-SRYCD   =   SPACE)    AND
+                  (WRK-KOMENTO-E       =   99)
+               MOVE    03                  TO  SPA-GMN-CUR-41
+               MOVE    "0024"              TO  SPA-ERRCD
+               GO      TO      41017-KOMENTO-CHK-EXT
+           END-IF.
+           IF     WRK-CHK-KBN (WRK-KOMENTO-S)   NOT =  "1"
+               MOVE    03                  TO  SPA-GMN-CUR-41
+               MOVE    "0024"              TO  SPA-ERRCD
+               GO      TO      41017-KOMENTO-CHK-EXT
+           END-IF.
+           IF     WRK-KOMENTO-E   NOT =  99
+               IF     WRK-CHK-KBN (WRK-KOMENTO-E)   NOT =  "1"
+                   MOVE    03                  TO  SPA-GMN-CUR-41
+                   MOVE    "0024"              TO  SPA-ERRCD
+                   GO      TO      41017-KOMENTO-CHK-EXT
+               END-IF
+           ELSE
+               IF     WRK-CHK-KBN (IDV)   NOT =  "1"
+                   MOVE    03                  TO  SPA-GMN-CUR-41
+                   MOVE    "0024"              TO  SPA-ERRCD
+                   GO      TO      41017-KOMENTO-CHK-EXT
+               END-IF
            END-IF.
            INITIALIZE                      ORCSNUMAREA.
            MOVE    I41-NUM             TO  SNUM-INX.
@@ -2896,8 +2976,14 @@
                GO      TO      41017-KOMENTO-CHK-EXT
            END-IF.
            MOVE    SNUM-OUTNUM         TO  IDX3.
+           IF      IDX3         =   ZERO
+               MOVE    03                  TO  SPA-GMN-CUR-41
+               MOVE    "0013"              TO  SPA-ERRCD
+               GO      TO      41017-KOMENTO-CHK-EXT
+           END-IF.
            MOVE    SPA-NAI-TBANGO-41 (SPA-GMN-NUM-41)   TO  IDX2.
            IF    (SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "1")   AND
+                 (WRK-KOMENTO-D              NOT =  ZERO)  AND
                  (WRK-KOMENTO-D              NOT =   1)
                MOVE    "0024"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
@@ -2905,6 +2991,7 @@
                GO      TO      41017-KOMENTO-CHK-EXT
            END-IF.
            IF    (SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "2")   AND
+                 (WRK-KOMENTO-D              NOT =  ZERO)  AND
                  (WRK-KOMENTO-D              NOT =   1)    AND
                  (WRK-KOMENTO-D              NOT =   2)
                MOVE    "0024"          TO  SPA-ERRCD
@@ -2915,18 +3002,18 @@
            IF    SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "3"
                MOVE    "0024"          TO  SPA-ERRCD
                PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY             >   30
+                       UNTIL       IDY             >   SPA-SAGAKU-MAX-41
                    IF    WRK-KOMENTO-D(1:2)
                                        =  SPA-GMN-SAGAKUNO-41 (IDY)(1:2)
                        MOVE    SPACE           TO  SPA-ERRCD
                        MOVE    99              TO  IDY
                    END-IF
                END-PERFORM
-                   IF    SPA-ERRCD    NOT = SPACE
-                       MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
-                       MOVE    03              TO  SPA-GMN-CUR-41
-                       GO      TO      41017-KOMENTO-CHK-EXT
-                   END-IF
+               IF    SPA-ERRCD    NOT = SPACE
+                   MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
+                   MOVE    03              TO  SPA-GMN-CUR-41
+                   GO      TO      41017-KOMENTO-CHK-EXT
+               END-IF
            END-IF.
            IF    (SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "4")  AND
                  (WRK-KOMENTO-D              NOT = ZERO)  AND
@@ -2941,20 +3028,21 @@
            IF    SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "5"
                MOVE    "0024"          TO  SPA-ERRCD
                PERFORM VARYING     IDY     FROM    1   BY  1
-                       UNTIL       IDY             >   30
+                       UNTIL       IDY             >   SPA-I41-MAX-41
                    IF    WRK-KOMENTO-D(1:2)
                                       =  SPA-I41-THKNCOMBI-41 (IDY)(3:2)
                        MOVE    SPACE           TO  SPA-ERRCD
                        MOVE    99              TO  IDY
                    END-IF
                END-PERFORM
-                   IF    SPA-ERRCD    NOT = SPACE
-                       MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
-                       MOVE    03              TO  SPA-GMN-CUR-41
-                       GO      TO      41017-KOMENTO-CHK-EXT
-                   END-IF
+               IF    SPA-ERRCD    NOT = SPACE
+                   MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
+                   MOVE    03              TO  SPA-GMN-CUR-41
+                   GO      TO      41017-KOMENTO-CHK-EXT
+               END-IF
            END-IF.
            IF    (SPA-GMN-TZAISKBKBN-41 (IDX2)   =  "6")   AND
+                 (WRK-KOMENTO-D              NOT =  ZERO)  AND
                  (WRK-KOMENTO-D              NOT =   1)
                MOVE    "0024"          TO  SPA-ERRCD
                MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
@@ -2967,22 +3055,119 @@
       *         MOVE    "0025"        TO  SPA-ERRCD
       *         GO      TO      41017-KOMENTO-CHK-EXT
       *     END-IF.
-           PERFORM   VARYING   IDX    FROM    WRK-KOMENTO-S  BY  1
-                     UNTIL     IDX       >    WRK-KOMENTO-E
-              IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)      =  "1")  AND
-                    (WRK-GMN-DAY (IDX)                 = ZERO)  AND
-                    (WRK-CHK-DAY (IDX)             NOT = ZERO)
-                  MOVE    03           TO  SPA-GMN-CUR-41
-                  MOVE    "0024"       TO  SPA-ERRCD
-              END-IF
-              IF   (SPA-NAI-TZAISKBKBN-41 (IDX3)   NOT =  "1")  AND
-                   (WRK-CHK-DAY (IDX)                  = ZERO)
-                 MOVE    03            TO  SPA-GMN-CUR-41
-                 MOVE    "0026"        TO  SPA-ERRCD
-              END-IF
-           END-PERFORM.
+           IF     WRK-KOMENTO-E   NOT =  99
+               PERFORM   VARYING   IDX    FROM    WRK-KOMENTO-S  BY  1
+                         UNTIL     IDX       >    WRK-KOMENTO-E
+                  IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)      =  "1")  AND
+                        (WRK-GMN-DAY (IDX)                 = ZERO)  AND
+                        (WRK-CHK-DAY (IDX)             NOT = ZERO)
+                      MOVE    03           TO  SPA-GMN-CUR-41
+                      MOVE    "0024"       TO  SPA-ERRCD
+                  END-IF
+                  IF   (SPA-NAI-TZAISKBKBN-41 (IDX3)   NOT =  "1")  AND
+                       (WRK-CHK-DAY (IDX)                  = ZERO)
+                     MOVE    03            TO  SPA-GMN-CUR-41
+                     MOVE    "0026"        TO  SPA-ERRCD
+                  END-IF
+               END-PERFORM
+           ELSE
+               PERFORM   VARYING   IDX    FROM    WRK-KOMENTO-S  BY  1
+                         UNTIL     IDX       >    IDV
+                  IF    (SPA-NAI-TZAISKBKBN-41 (IDX3)      =  "1")  AND
+                        (WRK-GMN-DAY (IDX)                 = ZERO)  AND
+                        (WRK-CHK-DAY (IDX)             NOT = ZERO)
+                      MOVE    03           TO  SPA-GMN-CUR-41
+                      MOVE    "0024"       TO  SPA-ERRCD
+                  END-IF
+                  IF   (SPA-NAI-TZAISKBKBN-41 (IDX3)   NOT =  "1")  AND
+                       (WRK-CHK-DAY (IDX)                  = ZERO)
+                     MOVE    03            TO  SPA-GMN-CUR-41
+                     MOVE    "0026"        TO  SPA-ERRCD
+                  END-IF
+               END-PERFORM
+           END-IF.
       *
        41017-KOMENTO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    剤変更入力可能区分セット
+      *****************************************************************
+       41013-DAY-CHK2-SEC              SECTION.
+      *
+           MOVE    ALL "1"         TO  WRK-CHK-KBN-TBL.
+      *
+           IF     WRK-YMDS3(1:6)       <   WRK-YMDS4(1:6)
+               MOVE    ALL SPACE       TO  WRK-CHK-KBN-TBL
+           END-IF.
+      *
+           IF     WRK-YMDS3(1:6)       >   WRK-YMDS5(1:6)
+               MOVE    ALL SPACE       TO  WRK-CHK-KBN-TBL
+           END-IF.
+      *
+           IF     WRK-YMDS3(1:6)       =   WRK-YMDS4(1:6)
+               MOVE    WRK-YMDS4(7:2)  TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO)    OR
+                      (SNUM-MINKBN     NOT =   SPACE)   OR
+                      (SNUM-SYOKBN     NOT =   SPACE)
+                   MOVE    "0003"          TO  SPA-ERRCD
+                   MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
+                   GO      TO      41013-DAY-CHK2-EXT
+               ELSE
+                   MOVE    SNUM-OUTNUM     TO  IDW9
+               END-IF
+               PERFORM VARYING    IDW8     FROM    1   BY  1
+                       UNTIL      IDW8     =   IDW9
+                   MOVE    ALL SPACE       TO  WRK-CHK-KBN (IDW8)
+               END-PERFORM
+           END-IF.
+      *
+           IF     WRK-YMDS3(1:6)       =   WRK-YMDS5(1:6)
+               MOVE    WRK-YMDS5(7:2)  TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO)    OR
+                      (SNUM-MINKBN     NOT =   SPACE)   OR
+                      (SNUM-SYOKBN     NOT =   SPACE)
+                   MOVE    "0003"          TO  SPA-ERRCD
+                   MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
+                   GO      TO      41013-DAY-CHK2-EXT
+               ELSE
+                   MOVE    SNUM-OUTNUM     TO  IDW9
+               END-IF
+               PERFORM VARYING    IDW8     FROM    IDW9   BY  1
+                       UNTIL      IDW8     >   31
+                   MOVE    ALL SPACE       TO  WRK-CHK-KBN (IDW8)
+               END-PERFORM
+           END-IF.
+      *
+           INITIALIZE                      STS-AREA-DAY.
+           INITIALIZE                      LNK-DAY7-AREA.
+           MOVE    "71"                TO  LNK-DAY7-IRAI.
+           MOVE    WRK-YMDS3(1:6)      TO  LNK-DAY7-YM.
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY7-AREA.
+           MOVE    LNK-DAY7-KOYOMI(7:2)  TO  SNUM-INX.
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA.
+           IF     (SNUM-RC         NOT =   ZERO)    OR
+                  (SNUM-MINKBN     NOT =   SPACE)   OR
+                  (SNUM-SYOKBN     NOT =   SPACE)
+               MOVE    "0003"          TO  SPA-ERRCD
+               MOVE    WRK-GMN-DAY-G   TO  SPA-GMN-DAY-G-41
+               GO      TO      41013-DAY-CHK2-EXT
+           ELSE
+               MOVE    SNUM-OUTNUM     TO  IDV
+               COMPUTE   IDW9   =   SNUM-OUTNUM   +   1
+           END-IF.
+           PERFORM VARYING    IDW8     FROM    IDW9   BY  1
+                   UNTIL      IDW8     >   31
+               MOVE    ALL SPACE       TO  WRK-CHK-KBN (IDW8)
+           END-PERFORM.
+      *
+       41013-DAY-CHK2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3495,7 +3680,7 @@
            MOVE    SPA-NAI-SRYYM-41   TO  WRK-SYMD(1:6).
            MOVE    "01"               TO  WRK-SYMD(7:2).
            PERFORM 41012-SEIWA-HEN-SEC.
-           MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SRYYM-41.
+           MOVE    WRK-HENYMDG(1:6)   TO  SPA-GMN-SRYYM-41.
       *
       *    入院会計マスターより編集をする
            PERFORM 410181-NYUINACCT-HEN-SEC.
@@ -3503,6 +3688,7 @@
                MOVE    "0027"              TO  SPA-ERRCD
                GO      TO       41018-ZENGETU-SYORI-EXT
            END-IF.
+           MOVE    WRK-SYMD           TO  WRK-YMDS3.
       *
       *    保存用パラメタ作成
            PERFORM 4201-NYUINACCT-PARA-SEC.
@@ -3783,7 +3969,7 @@
            MOVE    SPA-NAI-SRYYM-41   TO  WRK-SYMD(1:6).
            MOVE    "01"               TO  WRK-SYMD(7:2).
            PERFORM 41012-SEIWA-HEN-SEC.
-           MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SRYYM-41.
+           MOVE    WRK-HENYMDG(1:6)   TO  SPA-GMN-SRYYM-41.
       *
       *    入院会計マスターより編集をする
            PERFORM 410181-NYUINACCT-HEN-SEC.
@@ -3791,6 +3977,7 @@
                MOVE    "0028"              TO  SPA-ERRCD
                GO      TO       41019-JIGETU-SYORI-EXT
            END-IF.
+           MOVE    WRK-SYMD           TO  WRK-YMDS3.
       *
       *    保存用パラメタ作成
            PERFORM 4201-NYUINACCT-PARA-SEC.
@@ -3810,11 +3997,19 @@
            END-IF.
       *    一括修正の反映
            IF      SPA-GMN-KOMENTO-41   NOT =   SPACE
-               PERFORM   VARYING   IDX    FROM    WRK-KOMENTO-S   BY  1
-                         UNTIL     IDX        >   WRK-KOMENTO-E
-                   MOVE    WRK-KOMENTO-D   TO  SPA-GMN-DAY-41 (IDX)
-      *             MOVE    WRK-KOMENTO-D   TO  SPA-GNAI-DAY-41 (IDX)
-               END-PERFORM
+               IF     WRK-KOMENTO-E   NOT =  99
+                   PERFORM   VARYING  IDX  FROM  WRK-KOMENTO-S  BY  1
+                             UNTIL    IDX    >   WRK-KOMENTO-E
+                       MOVE    WRK-KOMENTO-D   TO  SPA-GMN-DAY-41 (IDX)
+      **                 MOVE    WRK-KOMENTO-D   TO  SPA-GNAI-DAY-41 (IDX)
+                   END-PERFORM
+               ELSE
+                   PERFORM   VARYING  IDX  FROM  WRK-KOMENTO-S  BY  1
+                             UNTIL    IDX    >   IDV
+                       MOVE    WRK-KOMENTO-D   TO  SPA-GMN-DAY-41 (IDX)
+      **                 MOVE    WRK-KOMENTO-D   TO  SPA-GNAI-DAY-41 (IDX)
+                   END-PERFORM
+               END-IF
            END-IF.
       *
            MOVE   SPA-GMN-NUM-41         TO  IDX.
@@ -3968,6 +4163,12 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO       490-TOROKU-EXT
            END-IF.
+           IF     (WRK-KOMENTO-SRYCD   NOT =   SPACE)    AND
+                  (WRK-KOMENTO-E           =   99)
+               MOVE    ZERO           TO  FLG-NYUINACT
+               PERFORM 4901-NYUINACCT-UPD2-SEC
+                       UNTIL      FLG-NYUINACT   =   1
+           END-IF.
       *
       *    患者が選択されてきた時は、元の画面へ
            IF      SPA-I40-MOTOFLG     =   "0"
@@ -4049,16 +4250,133 @@
                                                ORCMCPAREA
                                                MCPDATA-REC
                    IF      MCP-RC          NOT =   ZERO
-                        DISPLAY "I41 NYUINACCT UPD ERR:" MCP-RC
+                        DISPLAY "I41 NYUINACCT UPD ERR01:" MCP-RC
                         MOVE    "2000"          TO  SPA-ERRCD
                         GO  TO  4901-NYUINACCT-UPD-EXT
                    END-IF
                ELSE
-                   DISPLAY "I41 NYUINACCT READ ERR:" NACCT-KEY
+                   DISPLAY "I41 NYUINACCT READ ERR01:" NACCT-KEY
                END-IF
            END-PERFORM.
       *
+           MOVE    SPA-NAI-SRYYM-41            TO  WRK-KOMENTO-SRYYM.
+      *
        4901-NYUINACCT-UPD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院会計マスター更新処理（一括修正で終了日が９９の時）
+      *****************************************************************
+       4901-NYUINACCT-UPD2-SEC           SECTION.
+      *
+           COMPUTE WRK-KOMENTO-SRYM    =   WRK-KOMENTO-SRYM    +   1.
+           IF      WRK-KOMENTO-SRYM    >   12
+               MOVE    1                   TO  WRK-KOMENTO-SRYM
+               COMPUTE WRK-KOMENTO-SRYY    =   WRK-KOMENTO-SRYY    +   1
+           END-IF.
+      *
+      *    診療行為マスター読み込み
+           INITIALIZE                      NYUINACT-REC.
+           MOVE    SPA-HOSPID          TO  NSRY-HOSPID.
+           MOVE    "1"                 TO  NSRY-NYUGAIKBN.
+           MOVE    SPA-GMN-PTID        TO  NSRY-PTID.
+           MOVE    WRK-KOMENTO-SRYYM   TO  NSRY-SRYYM.
+           MOVE    WRK-KOMENTO-SRYCD   TO  NSRY-SRYCD (1).
+           MOVE    WRK-KOMENTO-SRYCD   TO  NSRY-SRYCD (2).
+           MOVE    WRK-KOMENTO-SRYCD   TO  NSRY-SRYCD (3).
+           MOVE    WRK-KOMENTO-SRYCD   TO  NSRY-SRYCD (4).
+           MOVE    WRK-KOMENTO-SRYCD   TO  NSRY-SRYCD (5).
+      *
+           MOVE    NYUINACT-REC        TO  MCPDATA-REC.
+           MOVE    "DBSELECT"          TO  MCP-FUNC.
+           MOVE    "NYUINACT-KEY7"     TO  ORC-DBPATH.
+           CALL    "ORCMCPSUB"         USING
+                                       MCPAREA
+                                       ORCMCPAREA
+                                       MCPDATA-REC.
+           IF      MCP-RC              =   ZERO
+               MOVE    "NYUINACT-KEY7"     TO  ORC-DBPATH
+               PERFORM 930-NYUINACT-RAED-SEC
+           ELSE
+               INITIALIZE                  NYUINACT-REC
+               MOVE    1               TO  FLG-NYUINACT
+           END-IF.
+      *
+           PERFORM UNTIL       FLG-NYUINACT    =   1
+               INITIALIZE                       NYUINACCT-REC
+               MOVE    NSRY-HOSPID              TO  NACCT-HOSPID
+               MOVE    NSRY-NYUGAIKBN           TO  NACCT-NYUGAIKBN
+               MOVE    NSRY-PTID                TO  NACCT-PTID
+               MOVE    NSRY-SRYKA               TO  NACCT-SRYKA
+               MOVE    NSRY-SRYYM               TO  NACCT-SRYYM
+               MOVE    NSRY-SRYKBN              TO  NACCT-SRYKBN
+               MOVE    NSRY-ZAINUM              TO  NACCT-ZAINUM
+      *
+               MOVE    NYUINACCT-REC            TO  MCPDATA-REC
+               MOVE    "DBSELECT"               TO  MCP-FUNC
+               MOVE    "NYUINACCT-KEY"          TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"              USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "NYUINACCT-KEY"     TO  ORC-DBPATH
+                   PERFORM 900-NYUINACCT-READ-SEC
+               ELSE
+                   INITIALIZE                      NYUINACCT-REC
+                   MOVE    1                   TO  FLG-NYUINACCT
+               END-IF
+               IF      FLG-NYUINACCT        =   ZERO
+      *            入院会計マスターを変更する
+                   INITIALIZE                      STS-AREA-DAY
+                   INITIALIZE                      LNK-DAY7-AREA
+                   MOVE    "71"                TO  LNK-DAY7-IRAI
+                   MOVE    WRK-KOMENTO-SRYYM   TO  LNK-DAY7-YM
+                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY7-AREA
+                   MOVE    LNK-DAY7-KOYOMI(7:2)  TO  SNUM-INX
+                   CALL    "ORCSNUM"           USING
+                                               ORCSNUMAREA
+                   IF     (SNUM-RC         NOT =   ZERO)    OR
+                          (SNUM-MINKBN     NOT =   SPACE)   OR
+                          (SNUM-SYOKBN     NOT =   SPACE)
+                       MOVE    "0003"          TO  SPA-ERRCD
+                       GO      TO      4901-NYUINACCT-UPD2-EXT
+                   ELSE
+                       MOVE    SNUM-OUTNUM     TO  IDV
+                   END-IF
+                   MOVE    ZERO                TO  NACCT-ZAIKAISU
+                   DISPLAY " *** IDV " IDV
+                   PERFORM   VARYING  IDX  FROM  1  BY  1
+                             UNTIL    IDX    >   IDV
+                   DISPLAY "     IDX " IDX
+                   DISPLAY "     NACCT-ZAIKAISU " NACCT-ZAIKAISU
+                       MOVE    WRK-KOMENTO-D   TO  NACCT-DAY  (IDX)
+                       ADD     WRK-KOMENTO-D   TO  NACCT-ZAIKAISU
+                   DISPLAY "     NACCT-ZAIKAISU " NACCT-ZAIKAISU
+                   END-PERFORM
+      *
+                   MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   MOVE    "NYUINACCT-UPD1"    TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"         USING
+                                               MCPAREA
+                                               ORCMCPAREA
+                                               MCPDATA-REC
+                   IF      MCP-RC          NOT =   ZERO
+                        DISPLAY "I41 NYUINACCT UPD ERR01:" MCP-RC
+                        MOVE    "2000"          TO  SPA-ERRCD
+                        GO  TO  4901-NYUINACCT-UPD2-EXT
+                   END-IF
+               ELSE
+                   DISPLAY "I41 NYUINACCT READ ERR02:" NACCT-KEY
+               END-IF
+      *
+               MOVE    "NYUINACT-KEY7"     TO  ORC-DBPATH
+               PERFORM 930-NYUINACT-RAED-SEC
+           END-PERFORM.
+      *
+       4901-NYUINACCT-UPD2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4308,8 +4626,10 @@
                    MOVE    "。剤変更はできません。"
                                        TO  WRK-ERRMSG(43:)
                WHEN    "0022"
-                   MOVE    "数字とハイフンとピリオドで入力して下さい。"
-                                       TO  WRK-ERRMSG
+                   MOVE    "数字とスラッシュと"
+                                       TO  WRK-ERRMSG(1:18)
+                   MOVE    "ハイフンで入力して下さい。"
+                                       TO  WRK-ERRMSG(19:)
                WHEN    "0023"
                    MOVE    "全科指定では指定できません。"
                                        TO  WRK-ERRMSG
@@ -4390,6 +4710,11 @@
                    MOVE    "診療年月が変更されました。現在までの修正"
                                        TO  WRK-JIDMSG1
                    MOVE    "分を登録します。"
+                                       TO  WRK-JIDMSG2
+               WHEN    "0109"
+                   MOVE    "入院基本料が未設定の項目があります。未設"
+                                       TO  WRK-JIDMSG1
+                   MOVE    "定部分も登録します。"
                                        TO  WRK-JIDMSG2
                WHEN    OTHER
                    MOVE    SPA-ERRCD
