@@ -638,7 +638,7 @@
       *
       *    全体を追加
            MOVE    "0000"              TO  SPA-GMN-THKNCOMBINUM (01)
-           MOVE    "全保険（包括まとめ以外）"
+           MOVE    "全保険（包括分以外）"
                                        TO  SPA-GMN-THKNCOMBIMEI (01)
       *
            MOVE    1                   TO  IDH

@@ -311,6 +311,7 @@
       *
       *    ¿ÇÎÅ¹Ô°ÙÌ¾¾Î
            03  WRK-SRYSYUMEI       PIC X(40).
+           03  WRK-SRYSYUMEI2      PIC X(40).
            03  WRK-SRYKAMEI        PIC X(12).
            03  WRK-TEKEDYMD        PIC X(08).
       *
@@ -2011,6 +2012,16 @@
                        MOVE    MSYU-SRYMEI (MSYU-IDX)
                                                TO  WRK-SRYSYUMEI
                END-SEARCH
+           END-IF
+      *
+      *    Êñ³çÊ¬¤ÎÌ¾¾ÎÊÔ½¸
+           IF      ACCT-HKNCOMBI       =   "9999"
+               MOVE    SPACE               TO  WRK-SRYSYUMEI2
+               STRING  WRK-SRYSYUMEI       DELIMITED  BY  SPACE
+                       "¡ÊÊñ³çÊ¬¡Ë"        DELIMITED  BY  SIZE
+                                       INTO    WRK-SRYSYUMEI2
+               END-STRING
+               MOVE    WRK-SRYSYUMEI2      TO  WRK-SRYSYUMEI
            END-IF
       *
            IF      SRY-SRYSYUKBN          =   SPACE
