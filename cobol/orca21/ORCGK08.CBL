@@ -2025,13 +2025,13 @@
                                            ORCSAGECHKAREA
                IF     (AGECHK-NENREI       >=   70  )  OR
                       (SPA-NAI-ROUJIN      =    1   )
-                   MOVE    1               TO
+                   MOVE    "1"             TO
                                            LNK-S01-KOUREI-ZAITAKU-KBN
                END-IF
            END-IF
       *TEST
-           DISPLAY "K08 LNK-S01-SYUTEN:"   LNK-S01-SYUTEN
-                   ",ZAUTAKU:" LNK-S01-KOUREI-ZAITAKU-KBN
+      *    DISPLAY "K08 LNK-S01-SYUTEN:"   LNK-S01-SYUTEN
+      *            ",ZAUTAKU:" LNK-S01-KOUREI-ZAITAKU-KBN
       *TEST
       *
            CALL    "ORCS01NEW"         USING   MCPAREA
@@ -2148,7 +2148,7 @@
            END-IF
       *
       *    ÌôºÞÎÁÄþ¸º¤ÏÂÐ¾Ý³°
-           IF      LNK-WKSRY-SRYCD (01 01)     =   "630010002"
+           IF      LNK-WKSRY-SRYCD (IDX 01)    =   "630010002"
                GO      TO      450511-JIBAI-SYORI-EXT
            END-IF
       *
