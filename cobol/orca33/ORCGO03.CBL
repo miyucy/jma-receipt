@@ -417,7 +417,7 @@
            MOVE    "T"             TO  SPA-GMN-SYOKBN
       *
       *    ファイル作成区分
-           EVALUATE    SPA-O01-FILEKBN
+           EVALUATE    TEIKIKANRI-SYOKBN
                WHEN    "1"
                    MOVE    SPACE               TO  WRK-SYMD
                    MOVE    TEIKIKANRI-SRYYM    TO  WRK-SYMD (1 : 6)
