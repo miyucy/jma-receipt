@@ -4153,6 +4153,7 @@
       *
            MOVE    ZERO               TO  FLG-SET.
       *
+           DISPLAY  "SPA-NAI-SRYYM-41 = " SPA-NAI-SRYYM-41
            MOVE    SPA-NAI-SRYYM-41   TO  WRK-SYMD(1:6)
                                           WRK-NAI-SRYYM-41.
            MOVE    "01"               TO  WRK-SYMD(7:2).
@@ -4228,6 +4229,7 @@
       *                                                                 021118
            DISPLAY   "410191-NYUACCT-SAKUSEI-SEC"
            INITIALIZE      ORCSSYOKIKSNAREA
+           MOVE    SPA-NAI-SRYYM-41   TO   WRK-NAI-SRYYM-41.
       *
       *    ÄÌ»»Æü¿ô¤òµá¤á¤ë¡ÊÆþ±¡ÍúÎò¤ò¸¡º÷¡Ë
            MOVE    ZERO                TO  WRK-TSUSAN
@@ -4269,6 +4271,7 @@
                            INITIALIZE                    STS-AREA-DAY
                            INITIALIZE                    LNK-DAY7-AREA
                            MOVE    "71"              TO  LNK-DAY7-IRAI
+                        DISPLAY "WRK-NAI-SRYYM-41 = " WRK-NAI-SRYYM-41
                            IF      WRK-NAI-SRYYM-41-MM    =   1
                                    COMPUTE  WRK-NAI-SRYYM-41-YY
                                         =   WRK-NAI-SRYYM-41-YY   -  1
@@ -4277,6 +4280,7 @@
                                    COMPUTE  WRK-NAI-SRYYM-41-MM
                                         =   WRK-NAI-SRYYM-41-MM   -  1
                            END-IF
+                         DISPLAY "GETSUMATSU YYMM = " WRK-NAI-SRYYM-41
                            MOVE    WRK-NAI-SRYYM-41    TO  LNK-DAY7-YM
                            CALL    "ORCSDAY"       USING STS-AREA-DAY
                                                          LNK-DAY7-AREA
