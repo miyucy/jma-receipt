@@ -1140,7 +1140,7 @@
                        MOVE    SPA-GMN-SIJISEN-PRT (IDX)
                                        TO  SYS-5007-SIJISEN-PRT (IDX)
                    END-PERFORM
-           END-EVALAUTE
+           END-EVALUATE
       *
            .
        4911-DB-HENSYU-EXT.
