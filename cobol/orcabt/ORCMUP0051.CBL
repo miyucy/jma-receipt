@@ -93,6 +93,7 @@
       *
            03  FLG-SYORI               PIC 9(01).
            03  FLG-SRYCDCHG            PIC 9(01).
+           03  FLG-TENSU               PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -125,8 +126,8 @@
                05  WRK-SMM2            PIC 9(02).
                05  WRK-SDD2            PIC 9(02).
       *
-           03  WRK-ERRCD               PIC 9(01). 
-           03  WRK-UPD-ERRCD           PIC 9(01). 
+           03  WRK-ERRCD               PIC 9(02). 
+           03  WRK-UPD-ERRCD           PIC 9(02). 
       *
            03  WRK-IN                  PIC X(01). 
       *
@@ -142,7 +143,7 @@
                05  MES-TITLE1-DD       PIC X(02) VALUE SPACE.
       *
            01  WRK-MSG-AREA.
-               03  WRK-MSG-01          PIC X(20).
+               03  WRK-MSG-01          PIC X(30).
                03  FILLER              PIC X(01)   VALUE   SPACE.
                03  WRK-SYORIKBN        PIC X(01).
                03  FILLER              PIC X(01)   VALUE   ",".
@@ -167,6 +168,9 @@
       *    老人・一般コード振替
        01  SRYCDCHG-REC.
            COPY    "CPSRYCDCHG.INC".
+      *
+      *    点数マスタ−
+           COPY    "CPTENSU.INC".
       *
       *    共通パラメタ
            COPY    "MCPAREA".
@@ -331,6 +335,8 @@
       *
       *    あればそのまま
            IF      FLG-SRYCDCHG        =   ZERO
+               MOVE    5               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
                GO      TO      2010-INSERT-SYORI-EXT
            END-IF
       *
@@ -374,6 +380,38 @@
            END-IF
            IF      FLG-SRYCDCHG        =   ZERO
                MOVE    2               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+               GO      TO      2010-INSERT-SYORI-EXT
+           END-IF
+      *    一般コードチェック
+           MOVE    SPACE               TO  TNS-TENSU-REC
+           MOVE    CHGWK-IPNSRYCD      TO  TNS-SRYCD
+           PERFORM 910-TENSU-READ-SEC
+           IF      FLG-TENSU           =   1
+               MOVE    6               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+               GO      TO      2010-INSERT-SYORI-EXT
+           END-IF
+           IF      TNS-ROUTEKKBN       =   1
+               CONTINUE
+           ELSE
+               MOVE    7               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+               GO      TO      2010-INSERT-SYORI-EXT
+           END-IF
+      *    老人コードチェック
+           MOVE    SPACE               TO  TNS-TENSU-REC
+           MOVE    CHGWK-RJNSRYCD      TO  TNS-SRYCD
+           PERFORM 910-TENSU-READ-SEC
+           IF      FLG-TENSU           =   1
+               MOVE    6               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+               GO      TO      2010-INSERT-SYORI-EXT
+           END-IF
+           IF      TNS-ROUTEKKBN       =   2
+               CONTINUE
+           ELSE
+               MOVE    8               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
                GO      TO      2010-INSERT-SYORI-EXT
            END-IF
@@ -503,13 +541,28 @@
            MOVE    CHGWK-RJNSRYCD     TO  WRK-RJNSRYCD
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE    "老人コード存在"   TO  WRK-MSG-01
+                   MOVE    "老人コード存在済" 
+                                               TO  WRK-MSG-01
                WHEN    2
-                   MOVE    "一般コード存在"   TO  WRK-MSG-01
+                   MOVE    "一般コード存在済"
+                                              TO  WRK-MSG-01
                WHEN    3
-                   MOVE    "追加エラー"       TO  WRK-MSG-01
+                   MOVE    "追加エラー"
+                                              TO  WRK-MSG-01
                WHEN    4
                    MOVE    "削除エラー"
+                                               TO  WRK-MSG-01
+               WHEN    5
+                   MOVE    "登録済エラー"
+                                               TO  WRK-MSG-01
+               WHEN    6
+                   MOVE    "点数マスタなし"
+                                               TO  WRK-MSG-01
+               WHEN    7
+                   MOVE    "一般コードエラー"
+                                               TO  WRK-MSG-01
+               WHEN    8
+                   MOVE    "老人コードエラー"
                                                TO  WRK-MSG-01
            END-EVALUATE
       *
@@ -546,6 +599,8 @@
            MOVE    MES-TITLE1          TO  PLF-REC
            WRITE   PLF-REC
       *
+           MOVE    SYS-MM              TO  WRK-SMM
+           MOVE    SYS-DD              TO  WRK-SDD
       *
            .
        2700-OUTLST-INIT-EXT.
@@ -613,6 +668,51 @@
       *
            .
        910-CHK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数マスター読込
+      *****************************************************************
+       910-TENSU-READ-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  TNS-YUKOSTYMD
+           MOVE    ALL "9"             TO  TNS-YUKOEDYMD
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+           MOVE    WRK-SYMD            TO  ORC-DBYMD
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+               CALL    "ORCMCPSUB"          USING
+                                            MCPAREA
+                                            ORCMCPAREA
+                                            MCPDATA-REC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+                   MOVE    ZERO                TO  FLG-TENSU
+               ELSE
+                   INITIALIZE                  TNS-TENSU-REC
+                   MOVE    1                   TO  FLG-TENSU
+               END-IF
+           ELSE
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+      *
+      *    MOVE    "DBCLOSE"           TO  MCP-FUNC
+      *    MOVE    "TENSU-KEY"         TO  ORC-DBPATH
+      *    CALL    "MCPDBSUB"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+      *
+           .
+       910-TENSU-READ-EXT.
            EXIT.
       *
       *****************************************************************
