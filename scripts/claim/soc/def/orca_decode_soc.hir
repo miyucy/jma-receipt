@@ -1263,7 +1263,7 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 			# mmlCm:Id[1]@mmlCm:tableId
 			# mmlCm:Id[1]@mmlCm:type
 			# mmlCm:Id[1]@mmlCm:checkDigit
-			# mmlCm:Id[1]
+			 mmlCm:Id[1] = 10
 
 
 			# 生成者 氏名情報
