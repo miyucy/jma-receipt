@@ -84,6 +84,8 @@
            03  RECE44-SYOSANTEIKA-COMMENT PIC  X(01).
       *再診料算定科：
            03  RECE44-SAISANTEIKA-COMMENT PIC  X(01).
+      *同日再診
+           03  RECE44-DOUJITUSAI-COMMENT  PIC  X(01).
       *リハビリ
            03  RECE44-RIHABIRI-COMMENT    PIC  X(01).
       *

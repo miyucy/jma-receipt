@@ -191,6 +191,7 @@
            03  CNT-RIHA            PIC 9(06).
            03  CNT-JUSHIN          PIC 9(06).
            03  CNT-SANTEIKA        PIC 9(06).
+           03  CNT-DOUJITU         PIC 9(06).
            03  CNT-IN-COMMIT       PIC 9(06).
       *
       *    添字領域
@@ -586,6 +587,7 @@
        200-MAIN-SEC                SECTION.
       *
            MOVE       ZERO             TO  CNT-SANTEIKA
+                                           CNT-DOUJITU
            INITIALIZE                      WRK-RIGAKU-AREA
            INITIALIZE                      WRK-TAIHI-ZAINUM
       *
@@ -630,6 +632,10 @@
                          IF  RECE44-SAISANTEIKA-COMMENT  =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
                          END-IF
+      *               （同日再診のカウント）
+                         IF  RECE44-DOUJITUSAI-COMMENT   =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-DOUJITU
+                         END-IF
                       WHEN      "80"
       *               （リハビリのカウント）
                          IF  RECE44-RIHABIRI-COMMENT     =  "1"
@@ -647,6 +653,10 @@
       *               （再診料算定科：のカウント）
                          IF  RECE44-SAISANTEIKA-COMMENT  =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
+                         END-IF
+      *               （同日再診のカウント）
+                         IF  RECE44-DOUJITUSAI-COMMENT   =  "1"
+                            ADD    RECE44-ZAIKAISU   TO   CNT-DOUJITU
                          END-IF
                       WHEN      "40"                                    
       *               （リハビリのカウント）                            
@@ -722,6 +732,12 @@
                     PERFORM   2001-JUSHIN-COMMENT-SEC
              END-IF
       *
+           END-IF
+      *
+      *    同日複数再診
+      *
+           IF     CNT-DOUJITU     >   ZERO
+                PERFORM    2001-DOUJITU-COMMENT-SEC
            END-IF
       *
       *    パラメータ０４ファイルより編集
@@ -1229,6 +1245,56 @@
       *
            .
        2001-JUSHIN-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同日複数再診のコメント編集
+      *****************************************************************
+       2001-DOUJITU-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE441-REC
+           MOVE    RECE41-HOSPID       TO  RECE441-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE441-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE441-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE441-PTID
+           MOVE    RECE41-RECEKA       TO  RECE441-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE441-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE441-TEKSTYMD
+           MOVE    99999991            TO  RECE441-ZAINUM
+           MOVE    "99"                TO  RECE441-SRYKBN
+           MOVE    1                   TO  RECE441-MEISAISU
+      *
+           WRITE   RECE441-REC
+           ADD     1                   TO  CNT-RECE44
+      *
+           INITIALIZE                      RECE451-REC
+           MOVE    RECE41-HOSPID       TO  RECE451-HOSPID
+           MOVE    RECE41-SRYYM        TO  RECE451-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE451-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE451-PTID
+           MOVE    RECE41-RECEKA       TO  RECE451-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE451-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE451-TEKSTYMD
+           MOVE    99999991            TO  RECE451-ZAINUM
+           MOVE    "99"                TO  RECE451-SRYKBN
+      *    同日複数再診のコメントの挿入
+           MOVE    SPACE                TO  COM-RECE45-REC
+           INITIALIZE                       COM-RECE45-REC
+           MOVE    "840000002"          TO  COM-SRYCD(1)
+           MOVE    ZERO                 TO  COM-SRYSURYO(1)
+           MOVE    11                   TO  COM-YUKOKETA(1)
+           MOVE    "同日複数再診（　　回）"  TO COM-NAME(1)
+           MOVE    CNT-DOUJITU          TO  DAY-IDX
+           MOVE    TBL-DAY(DAY-IDX)     TO  COM-NAME(1)(15:4)
+           MOVE    "1"                  TO  COM-SIKFLG(1)
+           MOVE    COM-SRYACTINF(1)     TO  RECE451-SRYACTINF(1)
+           MOVE    COM-NAMEINF(1)       TO  RECE451-NAMEINF(1)
+           MOVE    COM-SIKFLG(1)        TO  RECE451-SIKFLGINF(1)
+           WRITE   RECE451-REC
+           ADD     1                    TO  CNT-RECE45
+      *
+           .
+       2001-DOUJITU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

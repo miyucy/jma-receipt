@@ -1751,13 +1751,7 @@
                                             "112703350"   OR
       *
                                             "112011710"   OR
-                                            "112011810"   OR
-                                            "112011910"   OR
-                                            "112012010"   OR
-                                            "112012210"   OR
-                                            "112705850"   OR
-                                            "112705950"   OR
-                                            "112706050"
+                                            "112705850"   
                         MOVE   "1"    TO    RECE02-COMCNTFLG
                         MOVE   "1"    TO    RECE04-DOUJITUSAI-COMMENT
               END-IF

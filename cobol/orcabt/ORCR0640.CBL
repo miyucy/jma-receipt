@@ -3564,6 +3564,7 @@
        RECE65-TENSOU-COMCNT-HEN-SEC               SECTION.
       *
            IF      RECE64-SRYKBN      =     "80"
+      *       リハビリ
               IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
                                             "180022210"   OR
                                             "180706810"   OR

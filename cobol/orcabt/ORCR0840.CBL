@@ -2576,6 +2576,7 @@
                    RECE84-SRYKBN         =  "80"       )
            OR     (RECE82-HKNKBN         =  "4"    AND
                    RECE84-SRYKBN         =  "40"       )
+      *       リハビリ
               IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
                                             "180022210"   OR
                                             "180706810"   OR

@@ -1526,6 +1526,7 @@
        RECE45-TENSOU-COMCNT-HEN-SEC               SECTION.
       *
            IF      RECE44-SRYKBN      =     "11"
+      *       ½é¿ÇÎÁ»»Äê²Ê¡§
               IF   SRY-SRYCD(IDX2)    =     "830000020"
                         MOVE   "1"    TO    RECE41-COMCNTFLG
                         MOVE   "1"    TO    RECE44-SYOSANTEIKA-COMMENT
@@ -1533,9 +1534,16 @@
            END-IF
       *
            IF      RECE44-SRYKBN      =     "12"
+      *       ºÆ¿ÇÎÁ»»Äê²Ê¡§
               IF   SRY-SRYCD(IDX2)    =     "830000021"
                         MOVE   "1"    TO    RECE41-COMCNTFLG
                         MOVE   "1"    TO    RECE44-SAISANTEIKA-COMMENT
+              END-IF
+      *       Æ±ÆüºÆ¿Ç
+              IF   SRY-SRYCD(IDX2)    =     "112011710"   OR
+                                            "112705850"   
+                        MOVE   "1"    TO    RECE41-COMCNTFLG
+                        MOVE   "1"    TO    RECE44-DOUJITUSAI-COMMENT
               END-IF
            END-IF
       *
@@ -1543,6 +1551,7 @@
                    RECE44-SRYKBN         =  "80"       )
            OR     (RECE41-HKNKBN         =  "4"    AND
                    RECE44-SRYKBN         =  "40"       )
+      *       ¥ê¥Ï¥Ó¥ê
               IF   SRY-SRYCD(IDX2)    =     "180706910"   OR
                                             "180022210"   OR
                                             "180706810"   OR
