@@ -57,6 +57,7 @@
       *  01.00.18    NACL-ÌçÏÆ    04/02/10  À¸ÊÝ¤Î¿©»öÉéÃ´·×»»½¤Àµ
       *  01.00.19    NACL-ÌçÏÆ    04/02/10  À¸ÊÝ¤Î¸øÈñÉéÃ´¸ÂÅÙ³ÛÀßÄê
       *  01.00.20    NACL-ÌçÏÆ    04/03/12  ¸øÈñÉéÃ´±ßÃ±°ÌÊÔ½¸
+      *  01.00.21    NACL-ÌçÏÆ    04/04/06  ºßÁí¿Ç¥Õ¥é¥°ÊÔ½¸½¤Àµ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -118,6 +119,7 @@
            03  FLG-HKNCOMBI            PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
+           03  FLG-PTKOHINF            PIC 9(01).
            03  FLG-NYUINACCT           PIC 9(01).
            03  FLG-SRYACCT             PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
@@ -386,6 +388,8 @@
            03  FLG-SANTEI1-ENTANI      PIC X(01).                       
            03  FLG-SANTEI-SYU-ENTANI   PIC X(01).                       
       *
+           03  FLG-ROUJINHOKEN         PIC X(01).
+      *
       *    ¿©»öÉéÃ´»»Äê¥¨¥ê¥¢
        01  WK-SHOKUJI-TAIHI-AREA.
            03  WK-SHOKUJIRYOYO         PIC 9(01).
@@ -494,6 +498,10 @@
       *    ´µ¼Ô¸øÈñÉéÃ´
        01  PTKOHFTN-REC.
            COPY    "CPPTKOHFTN.INC".
+      *
+      *    ´µ¼Ô¸øÈñ¾ðÊó
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -1448,6 +1456,42 @@
       *
       *
            INITIALIZE    WK-SYUHKN-TAIHI-AREA.
+      *
+      *    ¸øÈñÃ±ÆÈ¤ÇÏ·¿ÍÊÝ¸±ÆþÎÏ¤¬¤¢¤ë¤«¥Á¥§¥Ã¥¯
+           IF      COMB-HKNNUM          =   SPACE
+           AND     COMB-KOH1HKNNUM  NOT =   SPACE
+           AND     COMB-KOH2HKNNUM      =   SPACE
+           AND     COMB-KOH3HKNNUM      =   SPACE
+           AND     COMB-KOH4HKNNUM      =   SPACE
+                INITIALIZE                       PTKOHINF-REC
+                MOVE    LNK-SYU-HOSPID       TO  PTKOH-HOSPID
+                MOVE    LNK-SYU-PTID         TO  PTKOH-PTID
+                MOVE    "027"                TO  PTKOH-KOHNUM
+                MOVE    PTKOHINF-REC         TO  MCPDATA-REC
+                MOVE    "DBSELECT"           TO  MCP-FUNC
+                MOVE    "PTKOHINF-KEY4"      TO  ORC-DBPATH
+                CALL    "ORCMCPSUB"           USING   MCPAREA
+                                                      ORCMCPAREA
+                                                      MCPDATA-REC
+                IF      MCP-RC               =       ZERO
+                    MOVE    "PTKOHINF-KEY4"  TO      ORC-DBPATH
+                    PERFORM  PTKOHINF-READ-SEC
+                    PERFORM  UNTIL   FLG-PTKOHINF    =   1
+                        IF      PTKOH-TEKSTYMD(1:6)  <=
+                                                 LNK-SYU-SRYYMD(1:6)
+                        AND     LNK-SYU-SRYYMD(1:6)  <=
+                                                 PTKOH-TEKEDYMD(1:6)
+                        AND     PTKOH-SAKJOKBN   =  SPACE
+                           MOVE   "1"           TO  FLG-ROUJINHOKEN
+                           MOVE    1            TO  FLG-PTKOHINF     
+                        ELSE
+                           MOVE    "PTKOHINF-KEY4"  TO  ORC-DBPATH
+                           PERFORM  PTKOHINF-READ-SEC
+                        END-IF   
+                    END-PERFORM
+                END-IF
+           END-IF.
+      *
            IF  LNK-S02-KOUREI-NYUIN-KBN     =   SPACE   
       *        ´µ¼ÔÇ¯Îð·×»»
                INITIALIZE                           PTINF-REC
@@ -1483,9 +1527,11 @@
                CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
                IF      AGECHK-RC       =   ZERO
-                   IF  ( AGECHK-NENREI   >=  70 ) OR
-                      (( AGECHK-NENREI   >=  65 AND                  
-                         COMB-KOH1HKNNUM  = "027"))                  
+                   IF  ( AGECHK-NENREI   >=  70      ) OR
+                       ( AGECHK-NENREI   >=  65  AND
+                         COMB-KOH1HKNNUM  = "027"    ) OR
+                       ( AGECHK-NENREI   >=  65  AND
+                         FLG-ROUJINHOKEN  = "1"      )
                        MOVE  "1"     TO  LNK-S02-KOUREI-NYUIN-KBN
                    END-IF
                ELSE
@@ -7619,5 +7665,27 @@
       *
            .
        TENSU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼Ô¸øÈñ¾ðÊóÆÉ¹þ
+      *****************************************************************
+       PTKOHINF-READ-SEC           SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+               MOVE    ZERO            TO  FLG-PTKOHINF
+           ELSE
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       PTKOHINF-READ-EXT.
            EXIT.
       *
