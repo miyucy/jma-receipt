@@ -893,7 +893,7 @@
                        MOVE    IDH-MAX         TO  IDH
                    ELSE
                        PERFORM 200112-KOH-CHK-SEC
-                       IF      WRK-HKNCOMBI    NOT =   SPACE
+                       IF      WRK-HKNCOMBI    NOT =   ZERO
                            MOVE    IDH-MAX         TO  IDH
                        END-IF
                    END-IF
@@ -1007,7 +1007,7 @@
        200112-KOH-CHK-SEC                SECTION.
       *
       *    Ì¾¾Î¤¬¤¢¤ë»þ¡¢Ì¾¾Î¤ÎÈ½Äê
-           IF    ((LF04-HKNKOH-PROVIDER(1 1)   =   SPACE )  OR
+           IF    ((LF04-HKNKOH-PROVIDER(1 1)   =   SPACE ) OR
                   (LF04-HKNKOH-PROVIDER(1 1)
                                        =   TBL-COMB-KOH-TANSEIDONAME
                                                       (IDH 1)))
@@ -1024,12 +1024,9 @@
                GO      TO      200112-KOH-CHK-EXT
            END-IF
       *
-           IF     ((WRK-KOHID (1)      =   ZERO     )  OR
-                   (WRK-KOHID (1)      =   TBL-COMB-KOH1ID(IDH))) AND
-                  ((WRK-KOHID (2)      =   ZERO     )  OR
-                   (WRK-KOHID (2)      =   TBL-COMB-KOH2ID(IDH))) AND
-                  ((WRK-KOHID (3)      =   ZERO     )  OR
-                   (WRK-KOHID (3)      =   TBL-COMB-KOH3ID(IDH)))
+           IF      (WRK-KOHID (1)      =   TBL-COMB-KOH1ID(IDH)) AND
+                   (WRK-KOHID (2)      =   TBL-COMB-KOH2ID(IDH)) AND
+                   (WRK-KOHID (3)      =   TBL-COMB-KOH3ID(IDH))
       *        ¸øÈñÂÐ¾Ý
                MOVE    TBL-COMB-HKNCOMBINUM(IDH)
                                            TO  WRK-HKNCOMBI
