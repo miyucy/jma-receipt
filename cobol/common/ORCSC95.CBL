@@ -2497,24 +2497,25 @@
            IF      SPA-JIKANCHK-TIME (1)   NOT =   ZERO
                IF      (WRK-SYS-HHMM       >=  SPA-JIKANCHK-STR(1))
                    AND (WRK-SYS-HHMM       <=  SPA-JIKANCHK-END(1))
-                   CONTINUE
-               ELSE
                    MOVE    1               TO  FLG-TIME
                END-IF
            END-IF
            IF      SPA-JIKANCHK-TIME (2)   NOT =   ZERO
                IF      (WRK-SYS-HHMM       >=  SPA-JIKANCHK-STR(2))
                    AND (WRK-SYS-HHMM       <=  SPA-JIKANCHK-END(2))
-                   CONTINUE
-               ELSE
                    MOVE    1               TO  FLG-TIME
                END-IF
            END-IF
       *    除外時間外
-           IF      FLG-TIME            =   1
-               MOVE    "1"             TO  SPA-JIKANCHK-ERR
-           ELSE
+           IF     (SPA-JIKANCHK-TIME (1)   =   ZERO )  AND
+                  (SPA-JIKANCHK-TIME (2)   =   ZERO )
                MOVE    ZERO            TO  SPA-JIKANCHK-ERR
+           ELSE
+               IF      FLG-TIME            =   1
+                   MOVE    ZERO            TO  SPA-JIKANCHK-ERR
+               ELSE
+                   MOVE    "1"             TO  SPA-JIKANCHK-ERR
+               END-IF
            END-IF
            .
        1109-TIMEI-CHK-EXT.
