@@ -2237,43 +2237,44 @@
                                        SPA-R01-STOPFLG    
            MOVE    SPACE           TO  SPA-R99-CANCEL
       *
-           IF      SPA-GMN-SYORI       =   "1"
-      *        レセプト指示更新
-               INITIALIZE                  SYS-2001-REC
+      *    レセプト指示更新
+           INITIALIZE                  SYS-2001-REC
+           MOVE    "2001"              TO  SYS-2001-KANRICD
+           MOVE    "*"                 TO  SYS-2001-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORC-DBYMD
+           MOVE    SYS-2001-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-2001-REC
+           ELSE
+               INITIALIZE                      SYS-2001-REC
                MOVE    "2001"              TO  SYS-2001-KANRICD
                MOVE    "*"                 TO  SYS-2001-KBNCD
-               MOVE    SPA-SYSYMD          TO  ORC-DBYMD
-               MOVE    SYS-2001-REC        TO  MCPDATA-REC
-               PERFORM 900-SYSKANRI-INV-SEC
-               IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-2001-REC
-               ELSE
-                   INITIALIZE                      SYS-2001-REC
-                   MOVE    "2001"              TO  SYS-2001-KANRICD
-                   MOVE    "*"                 TO  SYS-2001-KBNCD
-                   MOVE    ALL ZERO            TO  SYS-2001-STYUKYMD
-                   MOVE    ALL "9"             TO  SYS-2001-EDYUKYMD
-               END-IF 
-               MOVE    "2"                 TO  SYS-2001-SYOKBN
-               MOVE    SPA-R01-RECEKBN     TO  SYS-2001-RECEKBN
-               MOVE    SPA-R01-NYUGAIKBN   TO  SYS-2001-NYUGAIKBN
-               MOVE    SYS-2001-REC        TO  MCPDATA-REC
-               IF      FLG-SYSKANRI        =   1
-                   MOVE    "DBINSERT"          TO  MCP-FUNC
-               ELSE
-                  MOVE    "DBUPDATE"          TO  MCP-FUNC
-               END-IF
-               MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-               CALL    "ORCMCPSUB"          USING
-                                            MCPAREA
-                                            ORCMCPAREA
-                                            MCPDATA-REC
-               IF      MCP-RC          NOT =   ZERO 
-                   MOVE    "1003"              TO  SPA-ERRCD
-                   DISPLAY "2001 SYSKANRI-KEY =>" SYS-2001-KEY 
-                   GO  TO  450-KOUSHIN-EXT
-               END-IF
+               MOVE    ALL ZERO            TO  SYS-2001-STYUKYMD
+               MOVE    ALL "9"             TO  SYS-2001-EDYUKYMD
+           END-IF 
+           MOVE    "2"                 TO  SYS-2001-SYOKBN
+           MOVE    "000000"            TO  SYS-2001-SRYYM
+           MOVE    SPA-R01-RECEKBN     TO  SYS-2001-RECEKBN
+           MOVE    SPA-R01-NYUGAIKBN   TO  SYS-2001-NYUGAIKBN
+           MOVE    SYS-2001-REC        TO  MCPDATA-REC
+           IF      FLG-SYSKANRI        =   1
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+           ELSE
+              MOVE    "DBUPDATE"          TO  MCP-FUNC
+           END-IF
+           MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
+           CALL    "ORCMCPSUB"          USING
+                                        MCPAREA
+                                        ORCMCPAREA
+                                        MCPDATA-REC
+           IF      MCP-RC          NOT =   ZERO 
+               MOVE    "1003"              TO  SPA-ERRCD
+               DISPLAY "2001 SYSKANRI-KEY =>" SYS-2001-KEY 
+               GO  TO  450-KOUSHIN-EXT
+           END-IF
       *
+           IF      SPA-GMN-SYORI       =   "1"
       *        個別指示削除処理
                INITIALIZE                  SYS-2002-REC
                MOVE    "2002"              TO  SYS-2002-KANRICD
