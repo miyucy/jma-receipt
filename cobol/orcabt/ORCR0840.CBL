@@ -43,6 +43,7 @@
       *  01.01.03    NACL-ÌçÏÆ    04/04/05  ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ¤Î
       *                                     ¥³¥á¥ó¥ÈÂÐ±þ
       *  01.01.04    NACL-ÌçÏÆ    04/04/26  ¥æ¡¼¥¶¡¼¥³¥á¥ó¥ÈÄÉ²ÃÂÐ±þ
+      *  01.01.05    NACL-ÌçÏÆ    04/05/20  ÅÀÅ©¤Î´ïºàÃ±²ÁÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -237,6 +238,7 @@
            03  IDX9                                    PIC 9(03).
            03  IDY                                     PIC 9(03).
            03  IDY2                                    PIC 9(03).
+           03  IDY3                                    PIC 9(03).
            03  IDZ                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
            03  ID1                                     PIC 9(03).
@@ -2633,14 +2635,14 @@
            MOVE    TNS-TEN         TO  WRK-TANKA
            MOVE    WRK-TANKA-S1    TO  WRK-TANKA-Z1
            MOVE    ZERO            TO  FLG-SP
-           PERFORM   VARYING   IDY   FROM    2   BY  -1
-                     UNTIL     IDY           =   ZERO
-             IF  WRK-TANKA-S2(IDY:1) NOT =   ZERO
+           PERFORM   VARYING   IDY3   FROM    2   BY  -1
+                     UNTIL     IDY3           =   ZERO
+             IF  WRK-TANKA-S2(IDY3:1) NOT =   ZERO
                  MOVE    1               TO  FLG-SP
              END-IF
              IF  FLG-SP                  =   1
-                 MOVE    WRK-TANKA-S2(IDY:1)
-                                         TO  WRK-TANKA-Z3(IDY:1)
+                 MOVE    WRK-TANKA-S2(IDY3:1)
+                                         TO  WRK-TANKA-Z3(IDY3:1)
              END-IF
            END-PERFORM
            IF  WRK-TANKA-Z3          NOT =   SPACE
@@ -3099,6 +3101,30 @@
                                               +  WRK-ORCSTEN-SURYO(IDX2)
                   COMPUTE  RECE84-MEISAISU    =  RECE84-MEISAISU
                                               +  1
+      *
+      *           ÆÃÄê´ïºà¤ÎÃ±²ÁÊÔ½¸
+                  IF      WRK-ORCSTEN-SRYCD(IDX2)(1:1)  =   "7"
+                    IF  WRK-ORCSTEN-SRYCD(IDX2)       =
+                                       CONS-FILM-YOUJI-KASAN  OR
+                                       CONS-SANSO             OR
+                                       CONS-SANSO2              
+                      CONTINUE
+                    ELSE
+                      IF      TNS-TEN         =   ZERO
+                        CONTINUE
+                      ELSE
+                        PERFORM 220111-RECE85-TENSOU-TANKA-HEN-SEC
+                        COMPUTE IDW =   RECE85-YUKOKETA(IDX4)  *  2
+                                    +   3
+                        MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
+                                   TO   RECE85-NAME(IDX4)(IDW:)
+                        COMPUTE RECE85-YUKOKETA(IDX4)  =
+                                RECE85-YUKOKETA(IDX4)  +
+                                  1                    +
+                               (WRK-CHAR-N-CNT  /  2)
+                      END-IF
+                    END-IF
+                  END-IF
       *
                 END-IF  
       *
