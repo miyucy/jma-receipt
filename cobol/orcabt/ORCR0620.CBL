@@ -840,6 +840,11 @@
            AND     RECE62-KOHHBTNUM (2) =   SPACE
            AND     RECE62-KOHHBTNUM (3) =   SPACE
            AND     RECE62-KOHHBTNUM (4) =   SPACE
+             IF      RECE61-SRYYM         >=  "200210"
+             AND     RECE62-AGE           >=  75 
+                   ADD      1           TO  TOKKI-IDX
+                   MOVE    "04"         TO  RECE62-TOKKI (TOKKI-IDX)
+             ELSE
                INITIALIZE                       PTKOHINF-REC
                MOVE    RECE61-HOSPID        TO  PTKOH-HOSPID
                MOVE    RECE61-PTID          TO  PTKOH-PTID
@@ -867,6 +872,7 @@
                        END-IF   
                    END-PERFORM
                END-IF
+             END-IF
            END-IF              
       *
       *    年金履歴より
