@@ -97,6 +97,8 @@
            03  FLG-SRYACCT                 PIC 9(01).
            03  FLG-SYUARI                  PIC 9(01).
            03  FLG-RJN                     PIC 9(01).
+           03  FLG-NYUINACCT               PIC 9(01).
+           03  FLG-NYUINACCTARI            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -289,6 +291,7 @@
            03  WRK-ORCHCN01-SYORIKBN       PIC X(01).
            03  WRK-ORCHCN01-PRTKBN         PIC X(01).
            03  WRK-AGECHK-SRYYMD           PIC X(08).
+           03  WRK-NACCT-SRYYM             PIC X(08).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -417,6 +420,10 @@
       *    選定療養費
        01  SENTEICDCHG-REC.
            COPY    "CPSENTEICDCHG.INC".
+      *
+      *    入院会計
+       01  NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC".
       *
       *
       *****************************************************************
@@ -5954,6 +5961,14 @@
       *
            END-IF
       *
+      *    退院月に会計テーブルが存在していること
+           MOVE    SPA-NAI-I01-TAIINYMD (1 : 6)
+                                       TO  WRK-NACCT-SRYYM
+           PERFORM 4801-NYUINACCT-SEL-SEC
+           IF    ( FLG-NYUINACCTARI    =   ZERO )
+               MOVE    "1030"          TO  SPA-ERRCD
+               GO  TO  4801-TAIIN-TOUROKU-CHK-EXT
+           END-IF
       *
            .
        4801-TAIIN-TOUROKU-CHK-EXT.
@@ -6082,8 +6097,61 @@
                    GO  TO  4801-TEKNA-CHK-EXT
            END-IF
       *
+      *    該当月の会計テーブルが作成済であること
+           MOVE    SPA-NAI-I01-IDOYMD (1 : 6)
+                                       TO  WRK-NACCT-SRYYM
+           PERFORM 4801-NYUINACCT-SEL-SEC
+           IF    ( FLG-NYUINACCTARI    =   ZERO )
+               MOVE    "1029"          TO  SPA-ERRCD
+               GO  TO  4801-TEKNA-CHK-EXT
+           END-IF
+      *
            .
        4801-TEKNA-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計検索処理
+      *****************************************************************
+       4801-NYUINACCT-SEL-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYUINACCTARI
+      *
+           MOVE    ZERO                TO  FLG-NYUINACCT
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    SPA-HOSPID          TO  NACCT-HOSPID
+           MOVE    "1"                 TO  NACCT-NYUGAIKBN
+           MOVE    SPA-NAI-I01-PTID    TO  NACCT-PTID
+           MOVE    WRK-NACCT-SRYYM
+                                       TO  NACCT-SRYYM
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "NYUINACCT-KEY7"    TO  WRK-DBPATH
+           PERFORM 900-TBL-SELECT-SEC
+           IF    ( FLG-DBRC        NOT =   ZERO )
+               MOVE    1               TO  FLG-NYUINACCT
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-NYUINACCT       NOT =   ZERO )
+                    OR   ( FLG-NYUINACCTARI    NOT =   ZERO )
+      *
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+      *
+               IF    ( NACCT-ZAISKBKBN     =    "1"    )
+                   MOVE    1           TO  FLG-NYUINACCTARI
+               END-IF
+      *
+               MOVE    "NYUINACCT-KEY7"    TO  WRK-DBPATH
+               PERFORM 900-TBL-READ-SEC
+               IF    ( FLG-DBRC    NOT =   ZERO )
+                   MOVE     1          TO  FLG-NYUINACCT
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "NYUINACCT-KEY7"    TO  WRK-DBPATH
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+           .
+       4801-NYUINACCT-SEL-EXT.
            EXIT.
       *****************************************************************
       *    異動取消時関連チェック
@@ -7972,7 +8040,7 @@
       *    通算日数、算定開始日を求める
            PERFORM 4801-TSUSAN-SANTEI-GET-SEC
            IF    ( SPA-ERRCD    NOT =  SPACE )
-               GO  TO  4801-NYUKAIKEI-EDIT-EXT
+               GO  TO  4801-IDOKAIKEI-CANCEL-EXT
            END-IF
       *
            MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
@@ -8009,11 +8077,11 @@
                    CALL    "ORCSSYOKIKSN"  USING   ORCSSYOKIKSNAREA
                    IF    ( SYOKIKSN-OT-RC  NOT =   ZERO )
                        MOVE    "2006"      TO  SPA-ERRCD
-                       GO  TO  4801-NYUKAIKEI-EDIT-EXT
+                       GO  TO  4801-IDOKAIKEI-CANCEL-EXT
                    END-IF
                ELSE
                    MOVE    "2006"      TO  SPA-ERRCD
-                   GO  TO  4801-NYUKAIKEI-EDIT-EXT
+                   GO  TO  4801-IDOKAIKEI-CANCEL-EXT
                END-IF
            END-IF
       *
@@ -9300,7 +9368,7 @@
       *    負担金計算処理
            PERFORM 490-FTNKIN-CALC-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  480-TOUROKU-EXT
+               GO  TO  490-TAIIN-SYORI-EXT
            END-IF
       *
       *    請求確認画面遷移処理
@@ -10063,6 +10131,12 @@
                                        TO  SPA-ERRMSG (1 : 40)
                MOVE    "月途中の入金（請求）を取消してください"
                                        TO  SPA-ERRMSG (41 : )
+           WHEN    "1029"
+               MOVE    "異動月の会計テーブルが作成されていません"
+                                       TO  SPA-ERRMSG
+           WHEN    "1030"
+               MOVE    "退院月の会計テーブルが作成されていません"
+                                       TO  SPA-ERRMSG
            WHEN    "2012"
                MOVE    "退院計算に必要な会計情報が作成されていません"
                                        TO  SPA-ERRMSG
