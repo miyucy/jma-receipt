@@ -646,3 +646,87 @@ path	key28 	{
 	};
 };
 
+path	key29 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key29_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   SRYYM       =   :SRYYM
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   ZAIKAISU    >   0 
+                        AND   HKNCOMBI   <>  '9999'
+			ORDER  BY  PTID,HKNCOMBI,SRYKA,
+                                   ZAINUM
+		;
+	};
+};
+
+path	key30 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key30_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+			AND   ZAIKAISU    >   0 
+                        AND   HKNCOMBI   <>  '9999'
+			ORDER  BY  PTID,HKNCOMBI,SRYKA,
+                                   ZAINUM
+		;
+	};
+};
+
+path	key31 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key31_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYM       =   :SRYYM
+			AND   ZAINUM      =   :ZAINUM
+                        AND   HKNCOMBI   <>  '9999'
+			ORDER   BY      SRYKBN
+		;
+	};
+};
+
+path	key32 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key32_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYM       =   :SRYYM
+                        AND   HKNCOMBI   <>  '9999'
+			ORDER   BY      SRYKBN,
+                                        ZAINUM
+		;
+	};
+};
+
+path	key33 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_key33_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct
+			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+                        AND   HKNCOMBI   <>  '9999'
+			ORDER  BY   SRYKA,
+                                    SRYKBN,
+                                    ZAINUM
+		;
+	};
+};
+
