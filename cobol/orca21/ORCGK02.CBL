@@ -1356,6 +1356,7 @@
       *                戻る
                        MOVE    ZERO               TO  FLG-PARASET
                        PERFORM 3002-PARA-SET-SEC
+                       PERFORM 3003-GMN-HEN-SEC
                        IF      SPA-GMN-PTID   NOT =   ZERO
       *                    排他制御処理
                            PERFORM 990-LOCK-IN-SEC

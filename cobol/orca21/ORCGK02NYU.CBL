@@ -1237,11 +1237,11 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "K01"
       *            壳闻联买より
-                   IF     (SPA-ERRMSG(1:2)    =   "NO"  )  AND
-                          (SPA-CONTFLG        =   ZERO  )
+                   IF      SPA-ERRMSG(1:2)    =   "NO"
       *                提る
                        MOVE    ZERO               TO  FLG-PARASET
                        PERFORM 3002-PARA-SET-SEC
+                       PERFORM 3003-GMN-HEN-SEC
                        IF      SPA-GMN-PTID   NOT =   ZERO
       *                    怯戮扩告借妄
                            PERFORM 990-LOCK-IN-SEC
