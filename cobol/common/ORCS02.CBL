@@ -53,7 +53,8 @@
            03  WK-SEIKYUGK             PIC 9(10).
            03  WK-NYUKFTNRATE          PIC 9(03).
            03  WK-TOKUTEI-COMPFTN      PIC 9(08).
-           03  WK-TOKUTEI-COMPFTN2     PIC 9(08).                       
+           03  WK-TOKUTEI-COMPFTN2     PIC 9(08).
+           03  WK-TOKUTEI-COMPFTN3     PIC 9(08).
        01  WK-FLG.
            03  FLG-SYUNOU              PIC 9(01).
            03  FLG-TNKRRK              PIC 9(01).
@@ -1454,6 +1455,7 @@
                END-IF
            END-IF.
       *
+           MOVE     ZERO     TO     WK-TOKUTEI-COMPFTN3.
       *
            PERFORM    VARYING   KOH-IDX    FROM   1   BY   1
                       UNTIL    (KOH-IDX    >      4)
@@ -2305,6 +2307,10 @@
                               WK-NYUKFTNRATE  /  100
                COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
                          WK-ZENGAKU   *  WK-FUTANWARI
+               IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "027"           
+                    MOVE   LNK-SYU-KOH-COMPFTN(KOH-IDX)                 
+                                            TO WK-TOKUTEI-COMPFTN3      
+               END-IF                                      
                IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
                    (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
                    (LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051")
@@ -2381,6 +2387,15 @@
                        MOVE  WK-TOKUTEI-COMPFTN  TO  LNK-SYU-SYUCOMPFTN
                    END-IF
                END-IF
+               IF     (((HKN-HKNKOHSBTKBN     =       "3")    AND       
+                        (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR 
+                        (LNK-SYU-KOH-HKNNUM(KOH-IDX)  =   "051")    )   
+               AND    (  LNK-SYU-KOH-HKNNUM(1)        =   "027"     )   
+                   IF    WK-TOKUTEI-COMPFTN3   NOT =    ZERO            
+                       MOVE   WK-TOKUTEI-COMPFTN3                       
+                                            TO  LNK-SYU-KOH-COMPFTN(1)  
+                   END-IF                                               
+               END-IF                    
                IF    LNK-SYU-SYUCOMPFTN   NOT =    ZERO
                    IF   LNK-S02-KOUREI-NYUIN-KBN     =   "1"
                    AND  LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027"       
@@ -2515,6 +2530,10 @@
                               WK-NYUKFTNRATE  /  100
                COMPUTE   LNK-SYU-KOH-COMPFTN(KOH-IDX)  =
                          WK-ZENGAKU   *  WK-FUTANWARI
+               IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "027"           
+                    MOVE   LNK-SYU-KOH-COMPFTN(KOH-IDX)                 
+                                            TO WK-TOKUTEI-COMPFTN3      
+               END-IF                
                IF ((HKN-HKNKOHSBTKBN     =       "3")    AND
                    (LNK-SYU-KOH-HKNNUM(KOH-IDX)  NOT =  "027")) OR
                    (LNK-SYU-KOH-HKNNUM(KOH-IDX)  =      "051")
