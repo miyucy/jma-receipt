@@ -510,6 +510,9 @@
            03  T-MESSAGE-510-08    PIC X(90)   VALUE
                "510-08該当患者の患者病名情報は診療年月に対応する病名が入
       -        "力されていません                  ".
+           03  T-MESSAGE-510-09    PIC X(90)   VALUE
+               "510-09該当患者は患者病名情報の病名に全角文字以外が入力さ
+      -        "れています                        ".
            03  T-MESSAGE-520-01    PIC X(90)   VALUE
                "520-01診療科履歴情報テーブル異常                        
       -        "                                  ".
@@ -1964,15 +1967,35 @@
                            WRITE   DID2-REC
                            MOVE    "*"               TO  T-ERR-02
                        END-IF
-                       IF  ((T-ERR-02            =   SPACE)  OR
-                            (SPA-GMN-CNV (2) NOT =   "1"))  AND
+                       IF  (T-ERR-02            =   SPACE)  AND
                            (PTHKN-KIGO      NOT =   SPACE)
-                           PERFORM VARYING    IDY4    FROM    1   BY  1
-                                   UNTIL      IDY4            >   80
-                               IF  (PTHKN-KIGO(IDY4:1) NOT = X"0A") AND
-                                   (PTHKN-KIGO(IDY4:1) NOT = X"00") AND
-                                   (PTHKN-KIGO(IDY4:1)     < X"A1")
-                                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                           INITIALIZE              ORCSKANACHKAREA
+                           MOVE    "1"             TO  KANACHK-SYORI
+                           MOVE    PTHKN-KIGO      TO  KANACHK-MAE-INPUT
+                           CALL    "ORCSKANACHK"   USING
+                                                   ORCSKANACHKAREA
+                           IF  KANACHK-RC   NOT =   ZERO
+                               COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                               MOVE    SPACE         TO  DID2-REC
+                               MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
+                               MOVE    "-"           TO  DID2-REC(25:1)
+                               MOVE    ACCT-PTID     TO  DID2-REC(26:10)
+                               MOVE    "-"           TO  DID2-REC(36:1)
+                               MOVE    COMB-HKNID    TO  DID2-REC(37:10)
+                               MOVE    T-MESSAGE-300-05
+                                                     TO  DID2-REC(71:90)
+                               WRITE   DID2-REC
+                               IF  SPA-GMN-CNV (2)  =  "1"
+                                   MOVE    "*"           TO  T-ERR-02
+                               END-IF
+                           ELSE
+                               IF  (PTHKN-KIGO           =   SPACE)  OR
+                                   (PTHKN-KIGO           =   "　")   OR
+                                   ((PTHKN-KIGO      NOT =   SPACE) AND
+                                    (PTHKN-KIGO(1:1) NOT =   X"0A") AND
+                                    (PTHKN-KIGO(1:1) NOT =   X"00") AND
+                                    (PTHKN-KIGO(1:1)     <   X"A1"))
+                                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                                    MOVE    SPACE     TO  DID2-REC
                                    MOVE    ACCT-HOSPID
                                                      TO  DID2-REC(1:24)
@@ -1984,35 +2007,58 @@
                                    MOVE    T-MESSAGE-300-05
                                                      TO  DID2-REC(71:90)
                                    WRITE   DID2-REC
-                                   MOVE    "*"       TO  T-ERR-02
-                                   MOVE    99        TO  IDY4
+                                   IF  SPA-GMN-CNV (2)  =  "1"
+                                       MOVE    "*"          TO  T-ERR-02
+                                   END-IF
                                END-IF
-                           END-PERFORM
+                           END-IF
                        END-IF
-                       IF  ((T-ERR-02            =   SPACE)  OR
-                            (SPA-GMN-CNV (2) NOT =   "1"))  AND
+                       IF  (T-ERR-02            =   SPACE)  AND
                            (PTHKN-NUM       NOT =   SPACE)
-                           PERFORM VARYING    IDY4    FROM    1   BY  1
-                                   UNTIL      IDY4            >   80
-                               IF  (PTHKN-NUM(IDY4:1) NOT = X"0A") AND
-                                   (PTHKN-NUM(IDY4:1) NOT = X"00") AND
-                                   (PTHKN-NUM(IDY4:1)     < X"A1")
-                                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                           INITIALIZE              ORCSKANACHKAREA
+                           MOVE    "1"             TO  KANACHK-SYORI
+                           MOVE    PTHKN-NUM       TO  KANACHK-MAE-INPUT
+                           CALL    "ORCSKANACHK"   USING
+                                                   ORCSKANACHKAREA
+                           IF  KANACHK-RC   NOT =   ZERO
+                               COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                               MOVE    SPACE         TO  DID2-REC
+                               MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
+                               MOVE    "-"           TO  DID2-REC(25:1)
+                               MOVE    ACCT-PTID     TO  DID2-REC(26:10)
+                               MOVE    "-"           TO  DID2-REC(36:1)
+                               MOVE    COMB-HKNID    TO  DID2-REC(37:10)
+                               MOVE    T-MESSAGE-300-06
+                                                     TO  DID2-REC(71:90)
+                               WRITE   DID2-REC
+                               IF  SPA-GMN-CNV (2)  =  "1"
+                                   MOVE    "*"           TO  T-ERR-02
+                               END-IF
+                           ELSE
+                               IF  (PTHKN-NUM            =   SPACE)  OR
+                                   (PTHKN-NUM            =   "　")   OR
+                                   ((PTHKN-NUM       NOT =   SPACE) AND
+                                    (PTHKN-NUM(1:1)  NOT =   X"0A") AND
+                                    (PTHKN-NUM(1:1)  NOT =   X"00") AND
+                                    (PTHKN-NUM(1:1)      <   X"A1"))
+                                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                                    MOVE    SPACE     TO  DID2-REC
                                    MOVE    ACCT-HOSPID
                                                      TO  DID2-REC(1:24)
                                    MOVE    "-"       TO  DID2-REC(25:1)
-                                   MOVE    ACCT-PTID TO  DID2-REC(26:10)
+                                   MOVE    ACCT-PTID
+                                                     TO  DID2-REC(26:10)
                                    MOVE    "-"       TO  DID2-REC(36:1)
                                    MOVE    COMB-HKNID
                                                      TO  DID2-REC(37:10)
                                    MOVE    T-MESSAGE-300-06
                                                      TO  DID2-REC(71:90)
                                    WRITE   DID2-REC
-                                   MOVE    "*"       TO  T-ERR-02
-                                   MOVE    99        TO  IDY4
+                                   IF  SPA-GMN-CNV (2)  =  "1"
+                                       MOVE    "*"          TO  T-ERR-02
+                                   END-IF
                                END-IF
-                           END-PERFORM
+                           END-IF
                        END-IF
                    END-IF
                    IF  (T-ERR-13-2           =   SPACE)  AND
@@ -2037,10 +2083,12 @@
                            END-IF
                        ELSE
       *修正/*開始*03.09.20*********************************************
-                           IF  (T-ERR-13-2           =   SPACE)  AND
-                               (SPA-GMN-CNV (13) NOT =   SPACE)  AND
-                               ((PTHKN-KIGO           =   SPACE)  OR
-                                (PTHKN-KIGO           =   "　"))
+                           IF  (PTHKN-KIGO           =   SPACE)  OR
+                               (PTHKN-KIGO           =   "　")   OR
+                               ((PTHKN-KIGO      NOT =   SPACE) AND
+                                (PTHKN-KIGO(1:1) NOT =   X"0A") AND
+                                (PTHKN-KIGO(1:1) NOT =   X"00") AND
+                                (PTHKN-KIGO(1:1)     <   X"A1"))
                                COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                                MOVE    SPACE         TO  DID2-REC
                                MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
@@ -2054,36 +2102,6 @@
                                IF  SPA-GMN-CNV (13)  =  "1"
                                    MOVE    "*"           TO  T-ERR-13-2
                                END-IF
-                           END-IF
-                           IF  (T-ERR-13-2           =   SPACE)  AND
-                               (SPA-GMN-CNV (13) NOT =   SPACE)  AND
-                               (PTHKN-KIGO       NOT =   SPACE)
-                               PERFORM VARYING   IDY4   FROM   1   BY  1
-                                       UNTIL     IDY4          >   80
-                                   IF  (PTHKN-KIGO(IDY4:1)
-                                                        NOT = X"0A") AND
-                                       (PTHKN-KIGO(IDY4:1)
-                                                        NOT = X"00") AND
-                                       (PTHKN-KIGO(IDY4:1)  < X"A1")
-                                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                                       MOVE    SPACE TO  DID2-REC
-                                       MOVE    ACCT-HOSPID
-                                                     TO  DID2-REC(1:24)
-                                       MOVE    "-"   TO  DID2-REC(25:1)
-                                       MOVE    ACCT-PTID
-                                                     TO  DID2-REC(26:10)
-                                       MOVE    "-"   TO  DID2-REC(36:1)
-                                       MOVE    COMB-HKNID
-                                                     TO  DID2-REC(37:10)
-                                       MOVE    T-MESSAGE-600-02
-                                                     TO  DID2-REC(71:90)
-                                       WRITE   DID2-REC
-                                       IF  SPA-GMN-CNV (13)  =  "1"
-                                           MOVE    "*"    TO  T-ERR-13-2
-                                       END-IF
-                                       MOVE    99            TO  IDY4
-                                   END-IF
-                               END-PERFORM
                            END-IF
       *修正/*終了*03.09.20*********************************************
                        END-IF
@@ -2110,10 +2128,12 @@
                            END-IF
                        ELSE
       *修正/*開始*03.09.20*********************************************
-                           IF  (T-ERR-13-2           =   SPACE)  AND
-                               (SPA-GMN-CNV (13) NOT =   SPACE)  AND
-                               ((PTHKN-NUM            =   SPACE)  OR
-                                (PTHKN-NUM            =   "　"))
+                           IF  (PTHKN-NUM            =   SPACE)  OR
+                               (PTHKN-NUM            =   "　")   OR
+                               ((PTHKN-NUM       NOT =   SPACE) AND
+                                (PTHKN-NUM(1:1)  NOT =   X"0A") AND
+                                (PTHKN-NUM(1:1)  NOT =   X"00") AND
+                                (PTHKN-NUM(1:1)      <   X"A1"))
                                COMPUTE T-CNT-OUT = T-CNT-OUT + 1
                                MOVE    SPACE         TO  DID2-REC
                                MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
@@ -2127,36 +2147,6 @@
                                IF  SPA-GMN-CNV (13)  =  "1"
                                    MOVE    "*"           TO  T-ERR-13-2
                                END-IF
-                           END-IF
-                           IF  (T-ERR-13-2           =   SPACE)  AND
-                               (SPA-GMN-CNV (13) NOT =   SPACE)  AND
-                               (PTHKN-NUM        NOT =   SPACE)
-                               PERFORM VARYING   IDY4   FROM   1   BY  1
-                                       UNTIL     IDY4          >   80
-                                   IF  (PTHKN-NUM(IDY4:1)
-                                                        NOT = X"0A") AND
-                                       (PTHKN-NUM(IDY4:1)
-                                                        NOT = X"00") AND
-                                       (PTHKN-NUM(IDY4:1)   < X"A1")
-                                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                                       MOVE    SPACE TO  DID2-REC
-                                       MOVE    ACCT-HOSPID
-                                                     TO  DID2-REC(1:24)
-                                       MOVE    "-"   TO  DID2-REC(25:1)
-                                       MOVE    ACCT-PTID
-                                                     TO  DID2-REC(26:10)
-                                       MOVE    "-"   TO  DID2-REC(36:1)
-                                       MOVE    COMB-HKNID
-                                                     TO  DID2-REC(37:10)
-                                       MOVE    T-MESSAGE-600-03
-                                                     TO  DID2-REC(71:90)
-                                       WRITE   DID2-REC
-                                       IF  SPA-GMN-CNV (13)  =  "1"
-                                           MOVE    "*"    TO  T-ERR-13-2
-                                       END-IF
-                                       MOVE    99            TO  IDY4
-                                   END-IF
-                               END-PERFORM
                            END-IF
       *修正/*終了*03.09.20*********************************************
                        END-IF
@@ -2818,7 +2808,7 @@
                                        ORCSKANACHKAREA
                IF  KANACHK-RC           NOT =   ZERO
                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                   MOVE    SPACE             TO  DID1-REC
+                   MOVE    SPACE             TO  DID2-REC
                    MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
                    MOVE    "-"               TO  DID2-REC(25:1)
                    MOVE    ACCT-PTID         TO  DID2-REC(26:10)
@@ -2829,12 +2819,14 @@
                    END-IF
                ELSE
       *修正/*開始*03.09.20*********************************************
-                   IF  (T-ERR-13               =   SPACE)  AND
-                       (SPA-GMN-CNV (13)   NOT =   SPACE)  AND
-                       ((PTINF-KANANAME         =   SPACE)  OR
-                        (PTINF-KANANAME         =   "　"))
+                   IF  (PTINF-KANANAME          =   SPACE)   OR
+                       (PTINF-KANANAME          =   "　")    OR
+                       ((PTINF-KANANAME      NOT =   SPACE) AND
+                        (PTINF-KANANAME(1:1) NOT =   X"0A") AND
+                        (PTINF-KANANAME(1:1) NOT =   X"00") AND
+                        (PTINF-KANANAME(1:1)     <   X"A1"))
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-                       MOVE    SPACE             TO  DID1-REC
+                       MOVE    SPACE             TO  DID2-REC
                        MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
                        MOVE    "-"               TO  DID2-REC(25:1)
                        MOVE    ACCT-PTID         TO  DID2-REC(26:10)
@@ -2843,29 +2835,6 @@
                        IF  SPA-GMN-CNV (13)  =  "1"
                            MOVE    "*"               TO  T-ERR-13
                        END-IF
-                   END-IF
-                   IF  (T-ERR-13               =   SPACE)  AND
-                       (SPA-GMN-CNV (13)   NOT =   SPACE)  AND
-                       (PTINF-KANANAME     NOT =   SPACE)
-                       PERFORM VARYING    IDY4    FROM    1   BY  1
-                               UNTIL      IDY4            >   100
-                           IF  (PTINF-KANANAME(IDY4:1) NOT = X"0A") AND
-                               (PTINF-KANANAME(IDY4:1) NOT = X"00") AND
-                               (PTINF-KANANAME(IDY4:1)     < X"A1")
-                               COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-                               MOVE    SPACE         TO  DID1-REC
-                               MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
-                               MOVE    "-"           TO  DID2-REC(25:1)
-                               MOVE    ACCT-PTID     TO  DID2-REC(26:10)
-                               MOVE    T-MESSAGE-600-01
-                                                     TO  DID2-REC(71:90)
-                               WRITE   DID2-REC
-                               IF  SPA-GMN-CNV (13)  =  "1"
-                                   MOVE    "*"           TO  T-ERR-13
-                               END-IF
-                               MOVE    999           TO  IDY4
-                           END-IF
-                       END-PERFORM
                    END-IF
       *修正/*終了*03.09.20*********************************************
                END-IF
@@ -2879,7 +2848,7 @@
                                        ORCSKANACHKAREA
                IF  KANACHK-RC   NOT =   ZERO
                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                   MOVE    SPACE             TO  DID1-REC
+                   MOVE    SPACE             TO  DID2-REC
                    MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
                    MOVE    "-"               TO  DID2-REC(25:1)
                    MOVE    ACCT-PTID         TO  DID2-REC(26:10)
@@ -2890,12 +2859,14 @@
                    END-IF
                ELSE
       *修正/*開始*03.09.20*********************************************
-                   IF  (T-ERR-13               =   SPACE)  AND
-                       (SPA-GMN-CNV (13)   NOT =   SPACE)  AND
-                       ((PTINF-NAME             =   SPACE)  OR
-                        (PTINF-NAME             =   "　"))
+                   IF  (PTINF-NAME             =   SPACE)   OR
+                       (PTINF-NAME             =   "　")    OR
+                       ((PTINF-NAME         NOT =   SPACE) AND
+                        (PTINF-NAME(1:1)    NOT =   X"0A") AND
+                        (PTINF-NAME(1:1)    NOT =   X"00") AND
+                        (PTINF-NAME(1:1)        <   X"A1"))
                        COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                       MOVE    SPACE             TO  DID1-REC
+                       MOVE    SPACE             TO  DID2-REC
                        MOVE    ACCT-HOSPID       TO  DID2-REC(1:24)
                        MOVE    "-"               TO  DID2-REC(25:1)
                        MOVE    ACCT-PTID         TO  DID2-REC(26:10)
@@ -2904,29 +2875,6 @@
                        IF  SPA-GMN-CNV (13)  =  "1"
                            MOVE    "*"               TO  T-ERR-13
                        END-IF
-                   END-IF
-                   IF  (T-ERR-13               =   SPACE)  AND
-                       (SPA-GMN-CNV (13)   NOT =   SPACE)  AND
-                       (PTINF-NAME         NOT =   SPACE)
-                       PERFORM VARYING    IDY4    FROM    1   BY  1
-                               UNTIL      IDY4            >   100
-                           IF  (PTINF-NAME(IDY4:1) NOT = X"0A") AND
-                               (PTINF-NAME(IDY4:1) NOT = X"00") AND
-                               (PTINF-NAME(IDY4:1)     < X"A1")
-                               COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                               MOVE    SPACE         TO  DID1-REC
-                               MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
-                               MOVE    "-"           TO  DID2-REC(25:1)
-                               MOVE    ACCT-PTID     TO  DID2-REC(26:10)
-                               MOVE    T-MESSAGE-600-01
-                                                     TO  DID2-REC(71:90)
-                               WRITE   DID2-REC
-                               IF  SPA-GMN-CNV (13)  =  "1"
-                                   MOVE    "*"           TO  T-ERR-13
-                               END-IF
-                               MOVE    999           TO  IDY4
-                           END-IF
-                       END-PERFORM
                    END-IF
       *修正/*終了*03.09.20*********************************************
                END-IF
@@ -3069,11 +3017,11 @@
                                (T-ERR-05            = SPACE)  AND
                                (PTBYO-BYOMEI        = SPACE)
                                COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                               MOVE SPACE            TO  DID2-REC
-                               MOVE ACCT-HOSPID      TO  DID2-REC(1:24)
-                               MOVE "-"              TO  DID2-REC(25:1)
-                               MOVE ACCT-PTID        TO  DID2-REC(26:10)
-                               MOVE ACCT-SRYKA       TO  DID2-REC(191:2)
+                               MOVE    SPACE         TO  DID2-REC
+                               MOVE    ACCT-HOSPID   TO  DID2-REC(1:24)
+                               MOVE    "-"           TO  DID2-REC(25:1)
+                               MOVE    ACCT-PTID     TO  DID2-REC(26:10)
+                               MOVE    ACCT-SRYKA    TO  DID2-REC(191:2)
                                STRING T-MESSAGE-510-03
                                                      DELIMITED BY SPACE
                                       "、"           DELIMITED BY SIZE
@@ -3085,6 +3033,58 @@
                                IF  SPA-GMN-CNV (5)  =  "1"
                                    MOVE    "*"           TO  T-ERR-05
                                    MOVE    "ED"          TO  T-HANNTEI6
+                               END-IF
+                           END-IF
+                           IF  (SPA-GMN-CNV (5) NOT = SPACE)  AND
+                               (T-ERR-05            = SPACE)  AND
+                               (PTBYO-BYOMEI    NOT = SPACE)
+                               INITIALIZE           ORCSKANACHKAREA
+                               MOVE "1"             TO KANACHK-SYORI
+                               MOVE PTBYO-BYOMEI    TO KANACHK-MAE-INPUT
+                               CALL "ORCSKANACHK"      USING
+                                                       ORCSKANACHKAREA
+                               IF  KANACHK-RC   NOT =   ZERO
+                                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
+                                   MOVE    SPACE     TO  DID2-REC
+                                   MOVE    ACCT-HOSPID
+                                                     TO  DID2-REC(1:24)
+                                   MOVE    "-"       TO  DID2-REC(25:1)
+                                   MOVE    ACCT-PTID TO  DID2-REC(26:10)
+                                   MOVE    ACCT-SRYKA
+                                                     TO  DID2-REC(191:2)
+                                   MOVE    T-MESSAGE-510-09
+                                                     TO  DID2-REC(71:90)
+                                   WRITE   DID2-REC
+                                   IF  SPA-GMN-CNV (5)  =  "1"
+                                       MOVE    "*"        TO  T-ERR-05
+                                       MOVE    "ED"       TO  T-HANNTEI6
+                                   END-IF
+                               ELSE
+                                   IF  (PTBYO-BYOMEI       =  SPACE)  OR
+                                       (PTBYO-BYOMEI       =  "　")   OR
+                                       ((PTBYO-BYOMEI   NOT = SPACE) AND
+                                        (PTBYO-BYOMEI(1:1)
+                                                        NOT = X"0A") AND
+                                        (PTBYO-BYOMEI(1:1)
+                                                        NOT = X"00") AND
+                                        (PTBYO-BYOMEI(1:1)  < X"A1"))
+                                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                                       MOVE    SPACE TO  DID2-REC
+                                       MOVE    ACCT-HOSPID
+                                                     TO  DID2-REC(1:24)
+                                       MOVE    "-"   TO  DID2-REC(25:1)
+                                       MOVE    ACCT-PTID
+                                                     TO  DID2-REC(26:10)
+                                       MOVE    ACCT-SRYKA
+                                                     TO  DID2-REC(191:2)
+                                       MOVE    T-MESSAGE-510-09
+                                                     TO  DID2-REC(71:90)
+                                       WRITE   DID2-REC
+                                       IF  SPA-GMN-CNV (5)  =  "1"
+                                           MOVE    "*"    TO  T-ERR-05
+                                           MOVE    "ED"   TO  T-HANNTEI6
+                                       END-IF
+                                   END-IF
                                END-IF
                            END-IF
                            IF  ((SPA-GMN-CNV (7) NOT = SPACE)    AND
@@ -3140,7 +3140,7 @@
                                                        ORCSKANACHKAREA
                                IF  KANACHK-RC   NOT =   ZERO
                                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-                                   MOVE    SPACE     TO  DID1-REC
+                                   MOVE    SPACE     TO  DID2-REC
                                    MOVE    ACCT-HOSPID
                                                      TO  DID2-REC(1:24)
                                    MOVE    "-"       TO  DID2-REC(25:1)
@@ -3155,59 +3155,30 @@
                                    END-IF
                                ELSE
       *修正/*開始*03.09.20*********************************************
-                               IF  (SPA-GMN-CNV (13) NOT =   SPACE)  AND
-                                   (T-ERR-13-3           =   SPACE)  AND
-                                   ((PTBYO-BYOMEI         =   SPACE)  OR
-                                    (PTBYO-BYOMEI         =   "　"))
-                                   COMPUTE T-CNT-OUT = T-CNT-OUT + 1
-                                   MOVE    SPACE    TO  DID1-REC
-                                   MOVE    ACCT-HOSPID
-                                                     TO  DID2-REC(1:24)
-                                   MOVE    "-"       TO  DID2-REC(25:1)
-                                   MOVE    ACCT-PTID TO  DID2-REC(26:10)
-                                   MOVE    T-MESSAGE-600-04
-                                                     TO  DID2-REC(71:90)
-                                   MOVE    ACCT-SRYKA
-                                                     TO  DID2-REC(191:2)
-                                   WRITE   DID2-REC
-                                   IF  SPA-GMN-CNV (13)  =  "1"
-                                       MOVE    "*"       TO  T-ERR-13-3
-                                   END-IF
-                               END-IF
-                               IF  (SPA-GMN-CNV (13) NOT =   SPACE)  AND
-                                   (T-ERR-13-3           =   SPACE)  AND
-                                   (PTBYO-BYOMEI     NOT =   SPACE)
-                                   PERFORM VARYING  IDY4  FROM  1  BY  1
-                                           UNTIL    IDY4        >  160
-                                       IF  (PTBYO-BYOMEI(IDY4:1)
+                                   IF  (PTBYO-BYOMEI       =  SPACE)  OR
+                                       (PTBYO-BYOMEI       =  "　")   OR
+                                       ((PTBYO-BYOMEI   NOT = SPACE) AND
+                                        (PTBYO-BYOMEI(1:1)
                                                         NOT = X"0A") AND
-                                           (PTBYO-BYOMEI(IDY4:1)
+                                        (PTBYO-BYOMEI(1:1)
                                                         NOT = X"00") AND
-                                           (PTBYO-BYOMEI(IDY4:1)
-                                                           < X"A1")
-                                           COMPUTE T-CNT-OUT = T-CNT-OUT
-                                                                     + 1
-                                           MOVE    SPACE
-                                                     TO  DID1-REC
-                                           MOVE    ACCT-HOSPID
+                                        (PTBYO-BYOMEI(1:1)  < X"A1"))
+                                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                                       MOVE    SPACE TO  DID2-REC
+                                       MOVE    ACCT-HOSPID
                                                      TO  DID2-REC(1:24)
-                                           MOVE    "-"
-                                                     TO  DID2-REC(25:1)
-                                           MOVE    ACCT-PTID
+                                       MOVE    "-"   TO  DID2-REC(25:1)
+                                       MOVE    ACCT-PTID
                                                      TO  DID2-REC(26:10)
-                                           MOVE    T-MESSAGE-600-04
+                                       MOVE    T-MESSAGE-600-04
                                                      TO  DID2-REC(71:90)
-                                           MOVE    ACCT-SRYKA
+                                       MOVE    ACCT-SRYKA
                                                      TO  DID2-REC(191:2)
-                                           WRITE   DID2-REC
-                                           IF  SPA-GMN-CNV (13)  =  "1"
-                                               MOVE    "*"
-                                                          TO  T-ERR-13-3
-                                           END-IF
-                                           MOVE    999        TO  IDY4
+                                       WRITE   DID2-REC
+                                       IF  SPA-GMN-CNV (13)  =  "1"
+                                           MOVE    "*"    TO  T-ERR-13-3
                                        END-IF
-                                   END-PERFORM
-                               END-IF
+                                   END-IF
       *修正/*終了*03.09.20*********************************************
                                END-IF
                            END-IF
@@ -3221,7 +3192,7 @@
                                                        ORCSKANACHKAREA
                                IF  KANACHK-RC   NOT =   ZERO
                                    COMPUTE T-CNT-OUT = T-CNT-OUT + 1 
-                                   MOVE    SPACE    TO  DID1-REC
+                                   MOVE    SPACE    TO  DID2-REC
                                    MOVE    ACCT-HOSPID
                                                     TO  DID2-REC(1:24)
                                    MOVE    "-"      TO  DID2-REC(25:1)
@@ -3237,42 +3208,32 @@
                                    END-IF
                                ELSE
       *修正/*開始*03.09.20*********************************************
-                               IF  (SPA-GMN-CNV (13)
-                                                     NOT =   SPACE)  AND
-                                   (T-ERR-13-3           =   SPACE)  AND
-                                   (PTBYO-CHARTBYOMEI
-                                                     NOT =   SPACE)
-                                   PERFORM VARYING  IDY4  FROM  1  BY  1
-                                           UNTIL    IDY4        >  160
-                                       IF  (PTBYO-CHARTBYOMEI(IDY4:1)
+                                   IF  (PTBYO-CHARTBYOMEI   =  "　")  OR
+                                       ((PTBYO-CHARTBYOMEI
+                                                        NOT = SPACE) AND
+                                        (PTBYO-CHARTBYOMEI(1:1)
                                                         NOT = X"0A") AND
-                                           (PTBYO-CHARTBYOMEI(IDY4:1)
+                                        (PTBYO-CHARTBYOMEI(1:1)
                                                         NOT = X"00") AND
-                                           (PTBYO-CHARTBYOMEI(IDY4:1)
-                                                           < X"A1")
-                                           COMPUTE T-CNT-OUT = T-CNT-OUT
-                                                                     + 1
-                                           MOVE    SPACE
-                                                     TO  DID1-REC
-                                           MOVE    ACCT-HOSPID
+                                        (PTBYO-CHARTBYOMEI(1:1)
+                                                            < X"A1"))
+                                       COMPUTE T-CNT-OUT = T-CNT-OUT + 1
+                                       MOVE    SPACE
+                                                     TO  DID2-REC
+                                       MOVE    ACCT-HOSPID
                                                      TO  DID2-REC(1:24)
-                                           MOVE    "-"
-                                                     TO  DID2-REC(25:1)
-                                           MOVE    ACCT-PTID
+                                       MOVE    "-"   TO  DID2-REC(25:1)
+                                       MOVE    ACCT-PTID
                                                      TO  DID2-REC(26:10)
-                                           MOVE    T-MESSAGE-600-04
+                                       MOVE    T-MESSAGE-600-04
                                                      TO  DID2-REC(71:90)
-                                           MOVE    ACCT-SRYKA
+                                       MOVE    ACCT-SRYKA
                                                      TO  DID2-REC(191:2)
-                                           WRITE   DID2-REC
-                                           IF  SPA-GMN-CNV (13)  =  "1"
-                                               MOVE    "*"
-                                                          TO  T-ERR-13-3
-                                           END-IF
-                                           MOVE    999        TO  IDY4
-                                       END-IF
-                                   END-PERFORM
-                               END-IF
+                                       WRITE   DID2-REC
+                                       IF  SPA-GMN-CNV (13)  =  "1"
+                                           MOVE    "*"    TO  T-ERR-13-3
+                                        END-IF
+                                   END-IF
       *修正/*終了*03.09.20*********************************************
                                END-IF
                            END-IF
@@ -4956,7 +4917,11 @@
       *                 MOVE    SPACE             TO  W-SRYCD-S3-KBN
       *                 MOVE    SPACE             TO  W-SRYCD-82 (IDY5)
       *             END-IF
-                   IF  ((TNS-JITUDAY       =   2)           AND
+                   IF  ((TNS-SRYKBN        =  "11")         OR
+                        (TNS-SRYKBN        =  "12")         OR
+                        (TNS-SRYKBN        =  "13")         OR
+                        (TNS-SRYKBN        =  "14"))            AND
+                       ((TNS-JITUDAY       =   2)           AND
                         (TNS-DAYCNT        =   1   OR   2))     OR
                        (SRY-SRYCD (IDX3)  =  W-YOYAKU7      OR
                                              W-YOYAKU8      OR
@@ -4980,7 +4945,26 @@
                    END-IF
                    IF  (TNS-JITUDAY       =   1)    AND
                        (TNS-DAYCNT        =   0)
-                       PERFORM T-540-RECECHEK-COMP-SEC
+                       IF  W-JITU-DAY3    =   W-JITU-DAY5
+                         PERFORM VARYING  IDY3  FROM  1  BY  1
+                                 UNTIL    IDY3  >    20
+                           IF  W-JITU-SRYCD (IDY3)  =  SRY-SRYCD (IDX3)
+                                MOVE    30                TO  IDY3
+                           ELSE
+                             IF  W-JITU-SRYCD (IDY3)   =   SPACE
+                               MOVE    SRY-SRYCD (IDX3)
+                                                 TO  W-JITU-SRYCD (IDY3)
+                               MOVE    30        TO  IDY3
+                             END-IF
+                           END-IF
+                         END-PERFORM
+                       ELSE
+                         IF  W-JITU-DAY3    >   W-JITU-DAY5
+                           MOVE    W-JITU-DAY3      TO  W-JITU-DAY5
+                           INITIALIZE                   WK-JITUDAY2
+                           MOVE    SRY-SRYCD (IDX3) TO  W-JITU-SRYCD (1)
+                         END-IF
+                       END-IF
                    END-IF
       *修正/*終了*03.08.21*********************************************
                END-IF
@@ -5057,34 +5041,6 @@
            END-PERFORM.
       *
        T-540-RECECHEK-CHK2-EXT.
-           EXIT.
-      *
-      *******************
-      *
-       T-540-RECECHEK-COMP-SEC           SECTION.
-      *
-           IF  W-JITU-DAY3    =   W-JITU-DAY5
-               PERFORM VARYING  IDY3  FROM  1  BY  1
-                       UNTIL    IDY3  >    20
-                   IF  W-JITU-SRYCD (IDY3)   =   SRY-SRYCD (IDX3)
-                       MOVE    30                TO  IDY3
-                   ELSE
-                       IF  W-JITU-SRYCD (IDY3)   =   SPACE
-                           MOVE    SRY-SRYCD (IDX3)
-                                                 TO  W-JITU-SRYCD (IDY3)
-                           MOVE    30            TO  IDY3
-                       END-IF
-                   END-IF
-               END-PERFORM
-           ELSE
-               IF  W-JITU-DAY3    >   W-JITU-DAY5
-                   MOVE    W-JITU-DAY3       TO  W-JITU-DAY5
-                   INITIALIZE                    WK-JITUDAY2
-                   MOVE    SRY-SRYCD (IDX3)  TO  W-JITU-SRYCD (1)
-               END-IF
-           END-IF.
-      *
-       T-540-RECECHEK-COMP-EXT.
            EXIT.
       *
       *****************************************************************
