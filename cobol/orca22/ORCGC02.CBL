@@ -911,13 +911,13 @@
            IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
                                                    OR  "K02N")
            AND   ( SPA-PTNUM       NOT =   SPACE             )
-               MOVE    SPA-PTNUM       TO  C02-PTNUM
-               PERFORM 41015-PTNUM-CHK-SEC
-               MOVE    SPA-PTID        TO  SPA-NAI-C02-PTID
-               MOVE    SPA-HKNCOMBIMEI TO  SPA-GMN-C02-HKNCOMBIMEIH
-               MOVE    SPA-FTNRATEMEI  TO  SPA-GMN-C02-FTNRATE
                MOVE    SPA-SRYYMDW     TO  SPA-GMN-C02-SYSYMD
                MOVE    SPA-SRYYMD      TO  SPA-NAI-C02-SYSYMD
+               MOVE    SPA-PTNUM       TO  C02-PTNUM
+               PERFORM 41015-PTNUM-CHK-SEC
+      *********MOVE    SPA-PTID        TO  SPA-NAI-C02-PTID
+               MOVE    SPA-HKNCOMBIMEI TO  SPA-GMN-C02-HKNCOMBIMEIH
+               MOVE    SPA-FTNRATEMEI  TO  SPA-GMN-C02-FTNRATE
                IF      SPA-SRYKA   NOT =   SPACE    
                    MOVE    SPA-SRYKAMEI    TO  SPA-GMN-C02-SRYKAMEI
                    MOVE    SPA-SRYKA       TO  SPA-GMN-C02-SRYKA
@@ -3513,7 +3513,7 @@
                MOVE    2                    TO  SPA-GMN-C02-CUR
            ELSE
                IF      SPA-GMN-C02-TENKIKBN =   SPACE
-                   MOVE    29                   TO  SPA-GMN-C02-CUR
+                   MOVE    18                   TO  SPA-GMN-C02-CUR
                ELSE                 
                    MOVE    13                   TO  SPA-GMN-C02-CUR
                END-IF    
@@ -3677,156 +3677,132 @@
            END-PERFORM
       *
       *    病名からコード検索処理
-      *****IF      SPA-NAI-C02-USERBYOMEIFLG (1)
-      *****                                     =   "1"
-      *****    COMPUTE SPA-NAI-C02-BYOMEIMOJI   =   KANACHK-MAX /   2
-      *****    IF      SPA-NAI-C02-BYOMEIHENFLG         =   SPACE
-      *****        IF      WRK-BYOMEI-OLD
-      *****                             NOT =   SPA-GMN-C02-BYOMEI 
-      *****            MOVE    "1"          TO  SPA-NAI-C02-BYOMEIHENFLG
-      *****            MOVE    " 病名編集"  TO  SPA-GMN-C02-BYOMEIHENFLG
-      *****        ELSE
-      *****            MOVE    SPACE        TO  SPA-GMN-C02-BYOMEIHENFLG
-      *****                                     SPA-NAI-C02-BYOMEIHENFLG
-      *****        END-IF
-      *****    END-IF
-      *****ELSE 
-      *****IF      WRK-BYOMEI-OLD       NOT =   SPA-GMN-C02-BYOMEI 
-               INITIALIZE           ORCSBYOMEIAREA
-               MOVE    "1"             TO  LNK-BYO-SYORI
-               MOVE    SPA-GMN-C02-BYOMEI
-                                       TO  LNK-BYO-BYOMEI
-               IF      SPA-GMN-C02-SYUBYOFLG
-                                       =   "1"
-                   MOVE    SPA-GMN-C02-SYUBYOFLG
+           INITIALIZE           ORCSBYOMEIAREA
+           MOVE    "1"             TO  LNK-BYO-SYORI
+           MOVE    SPA-GMN-C02-BYOMEI
+                                   TO  LNK-BYO-BYOMEI
+           IF      SPA-GMN-C02-SYUBYOFLG
+                                   =   "1"
+               MOVE    SPA-GMN-C02-SYUBYOFLG
                                        TO  LNK-BYO-SYUBYOFLG 
+           END-IF
+           CALL    "ORCSBYOMEI"     USING    ORCSBYOMEIAREA
+      * 
+           INITIALIZE               SPA-NAI-C02-BYOMEI-TBL
+           MOVE    ZERO         TO  IDZ
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       LNK-BYO-BYOMEI-MAX
+               ADD     1           TO  IDZ
+               MOVE    LNK-BYO-TBYOMEICD (IDX)
+                                   TO  SPA-NAI-C02-BYOMEICD  (IDZ)
+                                       SPA-NAI-C02-BYOMEICD-O(IDZ 1)
+               IF      IDZ             =   1
+                   MOVE    "1"         TO  SPA-NAI-C02-BYOMEITOP(IDZ)
                END-IF
-               CALL    "ORCSBYOMEI"     USING    ORCSBYOMEIAREA
-      *********IF      LNK-BYO-BYOMEICD-MAX-ERR =   1
-      *********    MOVE    "0077"          TO  SPA-ERRCD
-      *********ELSE
-                   INITIALIZE               SPA-NAI-C02-BYOMEI-TBL
-                   MOVE    ZERO         TO  IDZ
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       LNK-BYO-BYOMEI-MAX
-                       ADD     1           TO  IDZ
-                       MOVE    LNK-BYO-TBYOMEICD (IDX)
-                                       TO  SPA-NAI-C02-BYOMEICD  (IDZ)
-                                           SPA-NAI-C02-BYOMEICD-O(IDZ 1)
-                       IF      IDZ             =   1
-                           MOVE    "1"     TO
-                                           SPA-NAI-C02-BYOMEITOP(IDZ)
-                       END-IF
-                       MOVE    LNK-BYO-TBYOMEI (IDX)
+               MOVE    LNK-BYO-TBYOMEI (IDX)
                                        TO  SPA-NAI-C02-BYOMEI   (IDZ)
                                            SPA-NAI-C02-BYOMEI-O (IDZ 1)
-                       MOVE   LNK-BYO-TUTAGAIFLG (IDX)
+               MOVE   LNK-BYO-TUTAGAIFLG (IDX)
                                        TO  SPA-NAI-C02-UTAGAIFLG(IDZ)
-                       MOVE    LNK-BYO-TTOKSKNCD (IDX)
+               MOVE    LNK-BYO-TTOKSKNCD (IDX)
                                        TO  SPA-NAI-C02-TOKSKNCD (IDZ)
-                       MOVE    LNK-BYO-TTANDOKUKBN (IDX)
+               MOVE    LNK-BYO-TTANDOKUKBN (IDX)
                                        TO
                                        SPA-NAI-C02-TANDOKUKBN-O (IDZ 1)
-                       IF      SPA-NAI-C02-TANDOKUKBN-O (IDZ 1)
+               IF      SPA-NAI-C02-TANDOKUKBN-O (IDZ 1)
                                    NOT =   ZERO
-                           MOVE    LNK-BYO-TBYOMEI (IDX)
+                   MOVE    LNK-BYO-TBYOMEI (IDX)
                                                TO  WRK-TANDOKUKBN-BYOMEI
-                       END-IF  
-                   END-PERFORM
+               END-IF  
+           END-PERFORM
       *
-                   MOVE    LNK-BYO-BYOMEIMOJI
-                                       TO  SPA-NAI-C02-BYOMEIMOJI
-                   MOVE    LNK-BYO-UTAGAIFLG
-                                       TO  SPA-GMN-C02-UTAGAIFLG
+           MOVE    LNK-BYO-BYOMEIMOJI  TO  SPA-NAI-C02-BYOMEIMOJI
+           MOVE    LNK-BYO-UTAGAIFLG   TO  SPA-GMN-C02-UTAGAIFLG
                                            WRK-KBN
-                   PERFORM 5001-UTAGAIFLG-HENSYU-SEC
-                   MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-UTAGAIFLGMEI
-                   IF      LNK-BYO-MANSEIKBN
-                                       NOT =   ZERO
-                       MOVE    LNK-BYO-MANSEIKBN
-                                           TO  SPA-GMN-C02-MANSEIKBN
+           PERFORM 5001-UTAGAIFLG-HENSYU-SEC
+           MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-UTAGAIFLGMEI
+           IF      LNK-BYO-MANSEIKBN
+                                   NOT =   ZERO
+               MOVE    LNK-BYO-MANSEIKBN   TO  SPA-GMN-C02-MANSEIKBN
                                                WRK-KBN
-                       PERFORM 5001-MANSEIKBN-HENSYU-SEC                                
-                       MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-MANSEIKBNMEI
-                   END-IF
-                   MOVE    LNK-BYO-BYOMEIHENFLG
-                                           TO  SPA-NAI-C02-BYOMEIHENFLG
-                   IF      SPA-NAI-C02-BYOMEIHENFLG  =   "1" 
-                       MOVE    "病名編集"  TO  SPA-GMN-C02-BYOMEIHENFLG
-                   ELSE
-                       MOVE    SPACE       TO  SPA-GMN-C02-BYOMEIHENFLG
-                   END-IF    
-                   MOVE    1           TO  SPA-NAI-C02-BYOMEICD-MAX
-                   IF      LNK-BYO-BYOMEIHENFLG    =   SPACE                          
-                       IF      LNK-BYO-HAISIYMD-ERR    NOT =   ZERO
-                           MOVE    LNK-BYO-HAISIYMD-ERR
-                                                       TO  WRK-SYMD
-                           PERFORM 5002-HIZUKE-HEN-SEC
-                           MOVE    LNK-DAY2-EDTYMD3   TO  WRK-HAISIYMDH
-                       END-IF        
-                       IF      LNK-BYO-IKOSAKICD   NOT =   SPACE
-                           MOVE    LNK-BYO-IKOSAKICD-INDEX
-                                           TO  IDX
-                           MOVE    SPA-NAI-C02-BYOMEICD (IDX) 
+               PERFORM 5001-MANSEIKBN-HENSYU-SEC                                
+               MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-MANSEIKBNMEI
+           END-IF
+           MOVE    LNK-BYO-BYOMEIHENFLG
+                                       TO  SPA-NAI-C02-BYOMEIHENFLG
+           IF      SPA-NAI-C02-BYOMEIHENFLG  =   "1" 
+               MOVE    "病名編集"  TO  SPA-GMN-C02-BYOMEIHENFLG
+           ELSE
+               MOVE    SPACE       TO  SPA-GMN-C02-BYOMEIHENFLG
+           END-IF    
+           MOVE    1           TO  SPA-NAI-C02-BYOMEICD-MAX
+           IF      LNK-BYO-BYOMEIHENFLG    =   SPACE                          
+               IF      LNK-BYO-HAISIYMD-ERR    NOT =   ZERO
+                   MOVE    LNK-BYO-HAISIYMD-ERR
+                                               TO  WRK-SYMD
+                   PERFORM 5002-HIZUKE-HEN-SEC
+                   MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HAISIYMDH
+               END-IF        
+               IF      LNK-BYO-IKOSAKICD   NOT =   SPACE
+                   MOVE    LNK-BYO-IKOSAKICD-INDEX
+                                               TO  IDX
+                   MOVE    SPA-NAI-C02-BYOMEICD (IDX) 
                                            TO  SPA-C02-IKOMOTO-BYOMEICD
-                           MOVE    SPA-NAI-C02-BYOMEI   (IDX) 
+                   MOVE    SPA-NAI-C02-BYOMEI   (IDX) 
                                            TO  SPA-C02-IKOMOTO-BYOMEI
-                           MOVE    LNK-BYO-IKOSAKICD
+                   MOVE    LNK-BYO-IKOSAKICD
                                            TO  SPA-C02-IKOSAKI-BYOMEICD
-                           MOVE    LNK-BYO-IKOSAKICD-BYOMEI
+                   MOVE    LNK-BYO-IKOSAKICD-BYOMEI
                                            TO  SPA-C02-IKOSAKI-BYOMEI
-                           MOVE    IDX     TO  SPA-C02-IKOSAKI-INDEX                    
-                           MOVE    "0101"  TO  SPA-CIDCD2
-                           MOVE    SPACE   TO  WRK-HAISIYMDH
-                       END-IF
-                   END-IF
+                   MOVE    IDX     TO  SPA-C02-IKOSAKI-INDEX                    
+                   MOVE    "0101"  TO  SPA-CIDCD2
+                   MOVE    SPACE   TO  WRK-HAISIYMDH
+               END-IF
+           END-IF
       *
-      *            病名コード最大個数オーバー
-                   IF      LNK-BYO-BYOMEICD-MAX-ERR =   1
-                       MOVE    "0077"          TO  SPA-ERRCD
-                       MOVE    SPACE           TO  SPA-CIDCD2
-                                                   WRK-HAISIYMDH
-                       GO  TO  41013-BYOMEI-CHK-EXT
-                   END-IF
+      *    病名コード最大個数オーバー
+           IF      LNK-BYO-BYOMEICD-MAX-ERR =   1
+               MOVE    "0077"          TO  SPA-ERRCD
+               MOVE    SPACE           TO  SPA-CIDCD2
+                                           WRK-HAISIYMDH
+               GO  TO  41013-BYOMEI-CHK-EXT
+           END-IF
       *
-      *            病名コード順エラー
-                   IF      LNK-BYO-BYOMEICD-ERR    >   ZERO
-                       MOVE    "0103"          TO  SPA-ERRCD
-                       MOVE    SPACE           TO  SPA-CIDCD2
-                                                   WRK-HAISIYMDH
-                       GO  TO  41013-BYOMEI-CHK-EXT
-                   END-IF
+      *    病名コード順エラー
+           IF      LNK-BYO-BYOMEICD-ERR    >   ZERO
+               MOVE    "0103"          TO  SPA-ERRCD
+               MOVE    SPACE           TO  SPA-CIDCD2
+                                           WRK-HAISIYMDH
+               MOVE    28          TO  SPA-GMN-C02-CUR
+               GO  TO  41013-BYOMEI-CHK-EXT
+           END-IF
       *
-      *            単独使用禁止エラー
-                   IF      LNK-BYO-TANDOKUKBN-ERR  =   1
-                       MOVE    "0076"          TO  SPA-ERRCD
-                       MOVE    SPACE           TO  SPA-CIDCD2
-                                                   WRK-HAISIYMDH
-                       GO  TO  41013-BYOMEI-CHK-EXT
-                   ELSE
-                       MOVE    SPACE           TO  WRK-TANDOKUKBN-BYOMEI
-                   END-IF
+      *    単独使用禁止エラー
+           IF      LNK-BYO-TANDOKUKBN-ERR
+                                       =   1
+               MOVE    "0076"          TO  SPA-ERRCD
+               MOVE    SPACE           TO  SPA-CIDCD2
+                                           WRK-HAISIYMDH
+               GO  TO  41013-BYOMEI-CHK-EXT
+           ELSE
+               MOVE    SPACE           TO  WRK-TANDOKUKBN-BYOMEI
+           END-IF
       *
-                   IF      SPA-ERRCD       =   SPACE
-                       MOVE    28          TO  SPA-GMN-C02-CUR
-                   END-IF
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    28              TO  SPA-GMN-C02-CUR
+           END-IF
       *
-      *            廃止病名警告
-                   IF      SPA-CIDCD2          =   SPACE
-                   AND     WRK-HAISIYMDH   NOT =   SPACE
-                       MOVE    "0075"          TO  SPA-ERRCD
-                   END-IF    
-                   GO  TO  41013-BYOMEI-CHK-EXT
-      *********END-IF
-      *****END-IF    
-      *
-           MOVE    28                   TO  SPA-GMN-C02-CUR
+      *    廃止病名警告
+           IF    ( SPA-CIDCD2          =   SPACE )
+           AND   ( WRK-HAISIYMDH   NOT =   SPACE )
+               MOVE    "0075"          TO  SPA-ERRCD
+           END-IF    
            .
        41013-BYOMEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    保険病名フラグ　入力処理
+      *    保険病名フラグ入力処理
       *****************************************************************
        41014-HKNBYOMEIFLG-CHK-SEC                SECTION.
       *   
