@@ -179,3 +179,20 @@ path	key6	{
 		;
 	};
 };
+
+path	key7	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk
+			WHERE   CHKKBN    =   :CHKKBN
+			AND   SRYCD       >=  :SRYCD
+			AND   SRYCD       <=  :UPSRYCD
+			AND   CDKBN       =   :CDKBN
+			AND   YUKOSTYMD  <=   :YUKOSTYMD
+			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			ORDER   BY        SRYCD,
+                                          RENNUM
+		;
+	};
+};

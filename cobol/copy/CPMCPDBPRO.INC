@@ -267,6 +267,7 @@
       *                                     SYUNOU-KEY19追加
       *                                     PTBYOMEI-KEY12追加
       *  01.01.90    NACL-藤原    03/09/06  RECEDENの追加
+      *  01.01.91    NACL-多々納　03/08/11  CHK-KEY7追加 
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -1127,6 +1128,10 @@
                    PERFORM 2001-SEL-CHK-SEC
                WHEN    ANY             ALSO   "CHK-KEY6"
                    MOVE    PATH-TBL-CHK-KEY6
+                                       TO  WRK-PATH
+                   PERFORM 2001-SEL-CHK-SEC
+               WHEN    ANY             ALSO   "CHK-KEY7"
+                   MOVE    PATH-TBL-CHK-KEY7
                                        TO  WRK-PATH
                    PERFORM 2001-SEL-CHK-SEC
       *追加/*終了*01.09.12********************************************
