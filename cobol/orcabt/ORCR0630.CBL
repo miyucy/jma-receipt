@@ -50,6 +50,8 @@
       *  01.00.15    NACL-門脇    04/08/04  同一保険番号対応
       *  中止処理追加
       *  01.01.01    NACL-藤原    04/10/07  中止処理の追加
+      *  01.01.02    NACL-小豆沢  04/12/10  入院略称マスタの読み込みワーク
+      *                                     対応
       *****************************************************************
       *
       *
@@ -116,6 +118,7 @@
            03  FLG-SENTEICDCHG                         PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
            03  FLG-FUKUSHI                             PIC 9(01).
+           03  FLG-NYURYAKUWRK                         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -212,6 +215,16 @@
                    07  WRK-NYUKHNKEI2                  PIC S9(09).
                    07  WRK-NYUTOKKEI2                  PIC S9(09).
       *
+      *    入院略称退避ワーク
+           03  WRK-NYURYAKU-OCC                       OCCURS  200.
+               05  WRK-NYURYAKU-SRYCD                 PIC X(09).
+               05  WRK-NYURYAKU-YUKOSTYMD             PIC X(09).
+               05  WRK-NYURYAKU-YUKOEDYMD             PIC X(09).
+               05  WRK-NYURYAKU-DATA                  PIC X(400).
+           03  WRK-NYUYAKU-CD                         PIC X(09).
+           03  WRK-NYURYAKU-IDX                       PIC 9(03).
+           03  WRK-NYURYAKU-MAX                       PIC 9(03).
+      *
        01  WRK-TENTEK.
            03  WRK-TENTEK-SYUTEN                       PIC 9(07).
            03  WRK-TENTEK-ZAIKAISU                     PIC 9(04).
@@ -228,6 +241,8 @@
       *    固定端末ＩＤ
            03  WRK-CONS-TERMID     PIC X(64)   VALUE
                                    "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
+      *    入院略称読み込みワーク用
+           03  WRK-NYURYAKU-CONST-MAX             PIC 9(03) VALUE 200.
       *
            03  WRK-RECEERR                             PIC X(200). 
       *
@@ -3668,34 +3683,89 @@
       *****************************************************************
        NYURYAKUSHO-READ-SEC        SECTION.
       *
-           MOVE    NYURYAKUSHO-REC     TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "NYUINRYAKUSHO-KEY" TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
+           MOVE     ZERO       TO    FLG-NYURYAKUSHO
+      *
+           PERFORM  910-NYURYAKUWRK-CHK-SEC
+      *
+           IF      FLG-NYURYAKUWRK     =   ZERO
+               MOVE    NYURYAKUSHO-REC     TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
                MOVE    "NYUINRYAKUSHO-KEY" TO  ORC-DBPATH
                CALL    "ORCMCPSUB"          USING
                                             MCPAREA
                                             ORCMCPAREA
                                             MCPDATA-REC
                IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  NYURYAKUSHO-REC
-                   MOVE    ZERO                TO  FLG-NYURYAKUSHO
+                   MOVE    "DBFETCH"           TO  MCP-FUNC
+                   MOVE    "NYUINRYAKUSHO-KEY" TO  ORC-DBPATH
+                   CALL    "ORCMCPSUB"          USING
+                                                MCPAREA
+                                                ORCMCPAREA
+                                                MCPDATA-REC
+                   IF      MCP-RC               =   ZERO
+                       MOVE    MCPDATA-REC      TO  NYURYAKUSHO-REC
+                       MOVE    ZERO             TO  FLG-NYURYAKUSHO
+                       PERFORM  910-NYURYAKUWRK-HEN-SEC
+                   ELSE
+                       MOVE    1                TO  FLG-NYURYAKUSHO
+                       INITIALIZE                   NYURYAKUSHO-REC
+                   END-IF
                ELSE
-                   MOVE    1                   TO  FLG-NYURYAKUSHO
-                   INITIALIZE                  NYURYAKUSHO-REC
+                   MOVE    1                    TO  FLG-NYURYAKUSHO
+                   INITIALIZE                       NYURYAKUSHO-REC
                END-IF
-           ELSE
-               MOVE    1                   TO  FLG-NYURYAKUSHO
-               INITIALIZE                  NYURYAKUSHO-REC
            END-IF
       *
            .
        NYURYAKUSHO-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院略称マスター退避ワークチェック処理
+      *****************************************************************
+       910-NYURYAKUWRK-CHK-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYURYAKUWRK
+      *
+           PERFORM VARYING WRK-NYURYAKU-IDX  FROM    1   BY  1
+             UNTIL ( WRK-NYURYAKU-IDX  >   WRK-NYURYAKU-CONST-MAX ) OR
+                   ( FLG-NYURYAKUWRK   =     1 )      OR
+                   ( WRK-NYURYAKU-IDX  >   200 )
+               IF    ( WRK-NYURYAKU-SRYCD (WRK-NYURYAKU-IDX)
+                                       =   NYURYAKUSHO-SRYCD )
+                 AND ( WRK-NYURYAKU-YUKOSTYMD (WRK-NYURYAKU-IDX)
+                                       <=  ORC-DBYMD)
+                 AND ( WRK-NYURYAKU-YUKOEDYMD (WRK-NYURYAKU-IDX)
+                                       >=  ORC-DBYMD)
+                   MOVE    1           TO  FLG-NYURYAKUWRK
+                   MOVE    WRK-NYURYAKU-DATA (WRK-NYURYAKU-IDX)
+                                       TO  NYURYAKUSHO-REC
+               END-IF
+           END-PERFORM
+      *
+           .
+       910-NYURYAKUWRK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院略称マスター退避ワーク編集処理
+      *****************************************************************
+       910-NYURYAKUWRK-HEN-SEC               SECTION.
+      *
+           IF    ( WRK-NYURYAKU-CONST-MAX  >   WRK-NYURYAKU-MAX )
+               COMPUTE WRK-NYURYAKU-MAX    =  WRK-NYURYAKU-MAX   +   1
+               MOVE    NYURYAKUSHO-SRYCD   TO  WRK-NYURYAKU-SRYCD
+                                                   (WRK-NYURYAKU-MAX)
+               MOVE    NYURYAKUSHO-YUKOSTYMD
+                                           TO  WRK-NYURYAKU-YUKOSTYMD
+                                                   (WRK-NYURYAKU-MAX)
+               MOVE    NYURYAKUSHO-YUKOEDYMD
+                                           TO  WRK-NYURYAKU-YUKOEDYMD
+                                                   (WRK-NYURYAKU-MAX)
+               MOVE    NYURYAKUSHO-REC     TO  WRK-NYURYAKU-DATA
+                                                   (WRK-NYURYAKU-MAX)
+           END-IF
+      *
+           .
+       910-NYURYAKUWRK-HEN-EXT.
            EXIT.
       *
       *****************************************************************
