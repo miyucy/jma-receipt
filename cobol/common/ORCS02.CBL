@@ -626,6 +626,11 @@
                                        LNK-SYU-SKJ-FTNDAY(IDX)
            END-PERFORM.
            MOVE    SPACE           TO  LNK-SYU-DAYINFFLG.
+           MOVE    SPACE           TO  LNK-SYU-DISCOUNT-KBN
+                                       LNK-SYU-DISCOUNT-BODY
+                                       LNK-SYU-DISCOUNT-RATEKBN
+                                       LNK-SYU-DISCOUNT-TEIRITU.
+           MOVE    ZERO            TO  LNK-SYU-DISCOUNT-RATE.
       *
       *    請求金額端数区分、消費税端数区分の取り込み
            INITIALIZE                         SYS-1001-REC.

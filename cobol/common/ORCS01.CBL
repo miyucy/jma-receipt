@@ -746,6 +746,11 @@
                                        LNK-SYU-RSIJIBAI-SKYMONEY
                                        LNK-SYU-SKYMONEY-TAX-SAI.
            MOVE    SPACE           TO  LNK-SYU-ZAITAKU.
+           MOVE    SPACE           TO  LNK-SYU-DISCOUNT-KBN
+                                       LNK-SYU-DISCOUNT-BODY
+                                       LNK-SYU-DISCOUNT-RATEKBN
+                                       LNK-SYU-DISCOUNT-TEIRITU.
+           MOVE    ZERO            TO  LNK-SYU-DISCOUNT-RATE.
       *
       *    保険組合せマスタの参照部分確定
            PERFORM   100-KAKUTEI-SEC.
