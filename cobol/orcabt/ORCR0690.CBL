@@ -35,6 +35,7 @@
       *  01.00.03    NACL-Æ£¸¶    03.01.30  ÆýÍÄ»ù²Ã»»¤Î»þ¼êµ»¤ËÉ½¼¨
       *  01.00.04    NACL-Æ£¸¶    03.02.04  ¸¡ºº¤Ë²Ã»»¤¬¤¢¤ë¤È¤­¤Þ¤È¤á¤Ê¤¤
       *  01.00.05    NACL-ÌçÏÆ    03.03.06  ½éºÆ¿Ç¤Î¥³¥á¥ó¥ÈÊÔ½¸ÂÐ±þ
+      *  01.00.06    NACL-ÌçÏÆ    03.03.10  ½é¿Ç»þ¤ÎÅ¦Í×ÂÐ¾Ý¥³¡¼¥ÉÊÑ¹¹Åù
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -143,21 +144,16 @@
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
-           03  FLG-RECE62          PIC 9(01).
            03  FLG-RECE64          PIC 9(01).
            03  FLG-RECE65          PIC 9(01).
            03  FLG-SP              PIC 9(01).
            03  FLG-NOPRT           PIC 9(01).
-           03  FLG-SYOSIN          PIC 9(01).
-           03  FLG-KEIKNRKSN       PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
-           03  FLG-KENSA           PIC 9(01).
            03  FLG-TEIGEN          PIC 9(01).
            03  FLG-COMMENT         PIC 9(01).
            03  FLG-COMMENT2        PIC 9(01).
            03  FLG-COMMENT3        PIC 9(01).
            03  FLG-HIKAKIN         PIC 9(01).
-           03  FLG-DSAISHIN        PIC 9(01).
            03  FLG-SRYCD1          PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
@@ -167,8 +163,6 @@
            03  CNT-RECE64          PIC 9(06).
            03  CNT-RECE65          PIC 9(06).
            03  CNT-RECE66          PIC 9(06).
-      *
-           03  CNT-SRYKBN60        PIC 9(03).     
       *
            03  CNT-SYOSIN-KASAN    PIC 9(02).
       *
@@ -184,10 +178,6 @@
       *    ºÞ¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÊÌÊÔ½¸ÍÑ     
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
-      *     
-           03  WRK-SYU-INDEX       PIC 9(04).
-           03  WRK-YKZ-INDEX       PIC 9(04).
-           03  WRK-KIZ-INDEX       PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -202,14 +192,11 @@
       *
            03  WRK-LINENUM         PIC 9(05).
       *
-           03  WRK-TENSUGOKEI      PIC 9(07).
       *    ºÞ°õ»ú¹Ô¿ô
            03  WRK-TBLMAX          PIC 9(03).
       *    ºÞÌÀºÙÁí¿ô¡Ê¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÊÌ¡Ë
            03  WRK-ZAIWMAX-G.
                05  WRK-ZAIWMAX     PIC 9(03)   OCCURS  6.
-      *    ºÞ°õ»úÂÐ¾Ý¿ô
-           03  CNT-ZAITAISYO       PIC 9(03).
       * 
            03  WRK-YUKOKETA        PIC  9(02).
            03  WRK-NAME            PIC  X(200).
@@ -227,19 +214,7 @@
                05  WRK-CHAR-N-CNT              PIC 9(02).
       *
            03  WRK-EDIT-AREA.
-               05  WRK-CLM                     PIC 9(03).
                05  WRK-WCLM                    PIC 9(03).
-      *
-           03  WRK-RECE62-KEY.
-               05  WRK-R02-HOSPID              PIC  X(24).
-               05  WRK-R02-SRYYM               PIC  9(06).
-               05  WRK-R02-NYUGAIKBN           PIC  X(01).
-               05  WRK-R02-PTID                PIC  9(10).
-               05  WRK-R02-RECEKA              PIC  X(02).
-               05  WRK-R02-TEISYUTUSAKI        PIC  9(01).
-               05  WRK-R02-RECESYUBETU         PIC  9(04).
-               05  WRK-R02-HKNJANUM-KEY        PIC  X(08).
-               05  WRK-R02-TEKSTYMD            PIC  X(08). 
       *
            03  WRK-KOUI                        PIC X(210).
       *
@@ -254,21 +229,18 @@
                05  WRK-X                       PIC X(02).
                05  WRK-ZAIKAISU                PIC X(06).
       *
+           03  WRK-ZAITEN-SYOSIN               PIC 9(08).
            03  WRK-ZAITENX                     PIC ZZZZZZ9.
            03  WRK-ZAIKAISUX                   PIC ZZ9.
            03  WRK-TNSKAI-ST                   PIC 9(02).
            03  WRK-TNSKAI-KETA                 PIC 9(02).
       *
            03  WRK-SRYCD                       PIC X(01).
-      *     
-           03  WRK-R05IDX                      PIC 9(02).
       *
       *    ¸¡ºº¤Î²ó¿ô
            03  WRK-KENSA-KAISU                 PIC 9(05). 
       *     
-           03  WRK-WLINETEK                    PIC 9(03).
            03  WRK-SRYSURYOW                   PIC X(20).
-           03  WRK-ZAIIDX                      PIC 9(03).
            03  WRK-NAMEKETA                    PIC 9(03).
            03  WRK-YOHAKU                      PIC 9(03).
            03  WRK-WKETA                       PIC 9(03).
@@ -297,27 +269,10 @@
            03  WRK-WIDX1                       PIC 9(03).
            03  WRK-WIDX2                       PIC 9(03).
       *     
-           03  WRK-SRYKBN                      PIC X(02).
            03  WRK-Z9                          PIC ZZZ9.
       *
       *    ºÞ¤Î¿ÇÎÅ¼ïÊÌ¶èÊ¬
            03  WRK-SRYSYUKBN                   PIC X(03).
-      *
-      *
-       01  WRK-HENSYU-AREA.
-           03  WRK-HENYMDG         PIC X(22).
-           03  WRK-HENYMD.
-               05  WRK-HGO         PIC X(01).
-               05  WRK-HYY         PIC Z9.
-               05  FILLER          PIC X(01)   VALUE  ".".
-               05  WRK-HMM         PIC Z9.
-               05  FILLER          PIC X(01)   VALUE  ".".
-               05  WRK-HDD         PIC Z9.
-      *
-           03  WRK-HENTIME.
-               05  WRK-THH         PIC 99.
-               05  FILLER          PIC X(01)   VALUE  ":".
-               05  WRK-TMM         PIC 99.
       *
       *    ºÞ¡¦¿ÇÎÅ¹Ô°Ù¥Æ¡¼¥Ö¥ë
        01  TBL-ZAI-AREA.
@@ -447,32 +402,6 @@
            03  FILLER          PIC X(09)   VALUE   "111700110".
       *    ½é¿Ç¡Ê¿ÇÎÅ½ê¡Ë
            03  FILLER          PIC X(09)   VALUE   "111700210".
-      *    ºÆ¿Ç¡ÊÆýÍÄ»ù¡Ë²Ã»»
-      ***     03  FILLER          PIC X(09)   VALUE   "112000970".
-      *    ºÆ¿Ç¡ÊÍÄ»ù¡Ë²Ã»»
-      ***     03  FILLER          PIC X(09)   VALUE   "112001070".
-      *    »þ´Ö³°¡ÊºÆ¿Ç¡Ë
-      ***     03  FILLER          PIC X(09)   VALUE   "112001110".
-      *    µÙ¿Ç¡ÊºÆ¿Ç¡Ë
-      ***     03  FILLER          PIC X(09)   VALUE   "112001210".
-      *    ¿¼Ìë¡ÊºÆ¿Ç¡Ë
-      ***     03  FILLER          PIC X(09)   VALUE   "112001310".
-      *    ³°Íè´ÉÍý²Ã»»
-      ***     03  FILLER          PIC X(09)   VALUE   "112005610".
-      *    ºÆ¿Ç¡ÊÆýÍÄ»ù¡Ë¡Ê»þ´Ö³°Åù¡Ë²Ã»»
-      ***     03  FILLER          PIC X(09)   VALUE   "112006970".
-      *    ºÆ¿Ç¡ÊÍÄ»ù¡Ë¡Ê»þ´Ö³°Åù¡Ë²Ã»»
-      ***     03  FILLER          PIC X(09)   VALUE   "112007070".
-      *    ·ÑÂ³´ÉÍý²Ã»»
-      **** 03  FILLER          PIC X(09)   VALUE   "112007170".
-      *    »þ´Ö³°¡ÊºÆ¿Ç¡Ë
-      ***     03  FILLER          PIC X(09)   VALUE   "112701010".
-      *    µÙÆü¡ÊºÆ¿Ç¡Ë
-      ***     03  FILLER          PIC X(09)   VALUE   "112701110".
-      *    ¿¼Ìë¡ÊºÆ¿Ç¡Ë
-      ***     03  FILLER          PIC X(09)   VALUE   "112701210".
-      *    ·ÑÂ³´ÉÍý²Ã»»
-      *    03  FILLER          PIC X(09)   VALUE   "112702270".
       *    ½èÊýÎÁ¡Ê£·¼ïÎà°Ê¾å¡Ë
            03  FILLER          PIC X(09)   VALUE   "120002610".
       *    ½èÊýÎÁ¡Ê¤½¤ÎÂ¾¡Ë
@@ -495,40 +424,16 @@
            03  FILLER          PIC X(09)   VALUE   "120000410".
       *    Ä´ºÞÎÁ¡ÊËã¡¦¸þ¡¦³Ð¡¦ÆÇ¡Ë¡ÊÆþ±¡³°¡Ë
            03  FILLER          PIC X(09)   VALUE   "120000110".
-      *    ºÆ¿Ç¡Ê£±²óÌÜ¡Ë
-           03  FILLER          PIC X(09)   VALUE   "112009210".
-      *    Æ±ÆüºÆ¿Ç¡Ê£±²óÌÜ¡Ë
-      ***     03  FILLER          PIC X(09)   VALUE   "112010150".
-      *    ÅÅÏÃÅùºÆ¿Ç¡Ê£±²óÌÜ¡Ë
-      ***     03  FILLER          PIC X(09)   VALUE   "112009750".
-      *    Æ±ÆüÅÅÏÃÅùºÆ¿Ç¡Ê£±²óÌÜ¡Ë
-      ***     03  FILLER          PIC X(09)   VALUE   "112010650".
-      *    Ï·¿ÍºÆ¿Ç¡Ê£±²óÌÜ¡Ë
-           03  FILLER          PIC X(09)   VALUE   "112703710".
-      *    Ï·¿ÍÆ±ÆüºÆ¿Ç¡Ê£±²óÌÜ¡Ë
-      ***     03  FILLER          PIC X(09)   VALUE   "112704450".
-      *    Ï·¿ÍÅÅÏÃÅùºÆ¿Ç¡Ê£±²óÌÜ¡Ë
-      ***     03  FILLER          PIC X(09)   VALUE   "112704150".
-      *    Ï·¿ÍÆ±ÆüÅÅÏÃÅùºÆ¿Ç¡Ê£±²óÌÜ¡Ë
-      ***     03  FILLER          PIC X(09)   VALUE   "112704850".
-      *    ³°Íè´ÉÍý²Ã»»¡Ê£³²óÌÜ¤Þ¤Ç¡Ë
-           03  FILLER          PIC X(09)   VALUE   "112011010".
-      *    Ï·¿Í³°Íè´ÉÍý²Ã»»¡Ê£³²óÌÜ¤Þ¤Ç¡Ë
-           03  FILLER          PIC X(09)   VALUE   "112705310".
       *    ¼ÂÆü¿ô»»Äê
            03  FILLER          PIC X(09)   VALUE   "099409901".
       *    ½é¿ÇÎÁ¥À¥ß¡¼
            03  FILLER          PIC X(09)   VALUE   "099110001".
-      *    ºÆ¿ÇÎÁ¥À¥ß¡¼
-           03  FILLER          PIC X(09)   VALUE   "099120001".
       *    ½é¿ÇÎÁ»»Äê²Ê¡§
            03  FILLER          PIC X(09)   VALUE   "830000020".
-      *    ºÆ¿ÇÎÁ»»Äê²Ê¡§
-           03  FILLER          PIC X(09)   VALUE   "830000021".
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   24.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   18.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   24.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   18.         
       *
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
@@ -539,22 +444,13 @@
            03  WRK-CONS-BUNKAKU-MOJISU
                                PIC 9(02)   VALUE   4.                    
            03  WRK-CONS-BUNKAKU
-                               PIC X(04)   VALUE   "Ê¬²è".                          
-      *    ·ÑÂ³´ÉÍý²Ã»»
-           03  CONS-KEIZOKU    PIC X(09)   VALUE   "112007170".
-           03  CONS-KEIZOKU1   PIC X(09)   VALUE   "112702270".
-      *    ³°Íè´ÉÍý²Ã»»
-           03  CONS-GAIRAI     PIC X(09)   VALUE   "112005610".
+                               PIC X(04)   VALUE   "Ê¬²è".
       *    ÌôºÞÎÁÄþ¸º
            03  CONS-TEIGEN     PIC X(09)   VALUE   "630010002".
       *    ÌôºÞ¡Ê¸º¡Ë
            03  CONS-YKZ20      PIC X(09)   VALUE   "820000047".
-      *---- (01.00.05) LINE ADD START --------------------------------
+      *
       *¥Õ¥ê¡¼¥³¥á¥ó¥È
-      *    ÅÅÏÃºÆ¿Ç¡Ê¡¡²ó¡Ë
-           03  CONS-COMMENT1   PIC X(09)   VALUE   "840000001".
-      *    Æ±ÆüÊ£¿ôºÆ¿Ç¡Ê¡¡²ó¡Ë 
-           03  CONS-COMMENT2   PIC X(09)   VALUE   "840000002".
       *    ¥Õ¥ê¡¼¥³¥á¥ó¥È 
            03  CONS-COMMENT3   PIC X(09)   VALUE   "810000001".
       *    Ê£¿ô¿ÇÎÅ²Ê¼õ¿Ç
@@ -567,20 +463,10 @@
            03  CONS-COMMENT7   PIC X(09)   VALUE   "820000005".
       *    ·ò¹¯¿ÇÃÇ¤«¤é
            03  CONS-COMMENT8   PIC X(09)   VALUE   "820000006".
-      *---- (01.00.05) LINE ADD END   --------------------------------
-      *---- (01.01.07) LINE ADD START --------------------------------
-      *Æ±ÆüºÆ¿Ç´Ø·¸
-      *    ¡ÚÏ·¡ÛÆ±ÆüºÆ¿Ç¡Ê¿ÇÎÅ½ê¡Ë
-           03  CONS-DSAISHIN1  PIC X(09)   VALUE   "112700850".
-      *    Æ±ÆüºÆ¿Ç¡Ê¿ÇÎÅ½ê¡Ë 
-           03  CONS-DSAISHIN2  PIC X(09)   VALUE   "112003350".
-      *    ¡ÚÏ·¡ÛÆ±ÆüÅÅÏÃÅùºÆ¿Ç¡Ê¿ÇÎÅ½ê¡Ë
-           03  CONS-DSAISHIN3  PIC X(09)   VALUE   "112700950".
-      *    Æ±ÆüÅÅÏÃÅùºÆ¿Ç¡Ê¿ÇÎÅ½ê¡Ë
-           03  CONS-DSAISHIN4  PIC X(09)   VALUE   "112003150".
-      *---- (01.01.07) LINE ADD END   --------------------------------
+      *
       *Èé²¼¶ÚÆùÃí¼Í
            03  CONS-HIKAKIN    PIC X(09)   VALUE   "130000510".
+      *
       *½é¿Ç²Ã»»     
       *    ½é¿Ç¡Ê¿ÇÎÅ½ê¡Ë¾Ò²ð´µ¼Ô²Ã»»
            03  WRK-CONS-SYOSIN-KASAN1  PIC X(09)   VALUE 
@@ -609,6 +495,43 @@
       *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£¶¡Ë
            03  WRK-CONS-SYOSIN-KASAN9  PIC X(09)   VALUE 
                                                    "111011170".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£±¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN10 PIC X(09)   VALUE 
+                                                   "111011270".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£²¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN11 PIC X(09)   VALUE 
+                                                   "111011370".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£³¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN12 PIC X(09)   VALUE 
+                                                   "111009970".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£´¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN13 PIC X(09)   VALUE 
+                                                   "111010070".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£µ¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN14 PIC X(09)   VALUE 
+                                                   "111010170".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£¶¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN15 PIC X(09)   VALUE 
+                                                   "111010270".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£±¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN16 PIC X(09)   VALUE 
+                                                   "111702770".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£²¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN17 PIC X(09)   VALUE 
+                                                   "111702870".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£³¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN18 PIC X(09)   VALUE 
+                                                   "111702370".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£´¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN19 PIC X(09)   VALUE 
+                                                   "111702470".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£µ¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN20 PIC X(09)   VALUE 
+                                                   "111702570".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£¶¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN21 PIC X(09)   VALUE 
+                                                   "111702670".
+      *
       *    Ì¤¼Â»Ü¸º»»
            03  CONS-GENZAN1            PIC X(09)   VALUE   "190080470".
            03  CONS-GENZAN2            PIC X(09)   VALUE   "190799670".
@@ -765,9 +688,8 @@
       *        ¹Ô¥«¥¦¥ó¥¿½é´ü²½
            MOVE    ZERO                TO  WRK-LINENUM
       *    ¸¡ºº²ó¿ô½é´ü²½
-           MOVE    ZERO                TO   WRK-KENSA-KAISU
+           MOVE    ZERO                TO  WRK-KENSA-KAISU
       *
-           MOVE    ZERO                TO  CNT-SRYKBN60   
            INITIALIZE                      WRK-RECE64-TABLE
                                            WRK-RECE64-MAX 
                                            WRK-SUM-KAISU-TABLE
@@ -816,9 +738,6 @@
                INITIALIZE                      TBL-ZAIW-AREA
                MOVE    ZERO                TO  WRK-ZAIWMAX-G
                MOVE    ZERO                TO  WRK-TBLMAX
-               MOVE    ZERO                TO  WRK-TENSUGOKEI
-               MOVE    ZERO                TO  FLG-SYOSIN
-      *****    MOVE    RECE64-SRYKBN       TO  WRK-SRYKBN
                MOVE    ZERO                TO  FLG-TEIGEN
                                                FLG-COMMENT
                                                FLG-COMMENT2
@@ -840,9 +759,6 @@
       *                ½é¿Ç
                        WHEN    "11"
                            PERFORM 2003-SRYKBN11-HENSYU-SEC
-      *                ºÆ¿Ç
-                       WHEN    "12"
-                           PERFORM 2004-SRYKBN12-HENSYU-SEC
       *                ¸¡ºº
                        WHEN    "60"
                            PERFORM 2006-SRYKBN60-CHECK-SEC 
@@ -881,7 +797,6 @@
       *
            MOVE    SPACE               TO  WRK-ZAI
            MOVE    "¡ö"                TO  WRK-ZAI-MK
-           MOVE    ZERO                TO  WRK-CLM
       *    ÅÀ¿ô¡¦²ó¿ô¥»¥Ã¥È
            MOVE    RECE64-ZAITEN       TO  WRK-ZAITENX
            MOVE    RECE64-ZAIKAISU     TO  WRK-ZAIKAISUX
@@ -1027,9 +942,7 @@
                        END-IF                     
       *
       *---- (01.00.05) LINE ADD START --------------------------------
-                       IF      RECE65-SRYCD(IDX) =   CONS-COMMENT1   OR
-                                                     CONS-COMMENT2   OR
-                                                     CONS-COMMENT3   OR
+                       IF      RECE65-SRYCD(IDX) =   CONS-COMMENT3   OR
                                                      CONS-COMMENT4   
                            MOVE    1             TO  FLG-COMMENT
                        END-IF 
@@ -1081,9 +994,8 @@
       *    ºÞ¡¡ÌÀºÙ¥Æ¡¼¥Ö¥ë¥Á¥§¥Ã¥¯
            INITIALIZE                    TBL-ZAI-AREA
            MOVE    ZERO              TO  WRK-TBLMAX
-           MOVE    ZERO              TO  WRK-TENSUGOKEI
-           MOVE    ZERO              TO  CNT-ZAITAISYO
            MOVE    ZERO              TO  CNT-SYOSIN-KASAN
+           MOVE    ZERO              TO  WRK-ZAITEN-SYOSIN
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       1  
@@ -1137,7 +1049,6 @@
                                              OR  "111003610"
                                              OR  "111700110"
                                              OR  "111700210"
-                       MOVE    1             TO  FLG-SYOSIN
       *                °ì¤Ä¤ÎºÞ¤ËÂ¾¤ÎÌÀºÙ¤âÂ¸ºß¤¹¤ë¾ì¹ç
                        IF  RECE64-MEISAISU       >   1
                            MOVE    ZERO          TO  FLG-NOPRT
@@ -1158,6 +1069,18 @@
                                             OR  WRK-CONS-SYOSIN-KASAN7
                                             OR  WRK-CONS-SYOSIN-KASAN8
                                             OR  WRK-CONS-SYOSIN-KASAN9
+                                            OR  WRK-CONS-SYOSIN-KASAN10
+                                            OR  WRK-CONS-SYOSIN-KASAN11
+                                            OR  WRK-CONS-SYOSIN-KASAN12
+                                            OR  WRK-CONS-SYOSIN-KASAN13
+                                            OR  WRK-CONS-SYOSIN-KASAN14
+                                            OR  WRK-CONS-SYOSIN-KASAN15
+                                            OR  WRK-CONS-SYOSIN-KASAN16
+                                            OR  WRK-CONS-SYOSIN-KASAN17
+                                            OR  WRK-CONS-SYOSIN-KASAN18
+                                            OR  WRK-CONS-SYOSIN-KASAN19
+                                            OR  WRK-CONS-SYOSIN-KASAN20
+                                            OR  WRK-CONS-SYOSIN-KASAN21
                                             OR  CONS-COMMENT5         
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         
@@ -1174,6 +1097,18 @@
                                              OR  WRK-CONS-SYOSIN-KASAN7 
                                              OR  WRK-CONS-SYOSIN-KASAN8 
                                              OR  WRK-CONS-SYOSIN-KASAN9 
+                                             OR  WRK-CONS-SYOSIN-KASAN10
+                                             OR  WRK-CONS-SYOSIN-KASAN11
+                                             OR  WRK-CONS-SYOSIN-KASAN12
+                                             OR  WRK-CONS-SYOSIN-KASAN13
+                                             OR  WRK-CONS-SYOSIN-KASAN14
+                                             OR  WRK-CONS-SYOSIN-KASAN15
+                                             OR  WRK-CONS-SYOSIN-KASAN16
+                                             OR  WRK-CONS-SYOSIN-KASAN17
+                                             OR  WRK-CONS-SYOSIN-KASAN18
+                                             OR  WRK-CONS-SYOSIN-KASAN19
+                                             OR  WRK-CONS-SYOSIN-KASAN20
+                                             OR  WRK-CONS-SYOSIN-KASAN21
                         ADD      1           TO  CNT-SYOSIN-KASAN       
                    END-IF                                               
       *
@@ -1185,7 +1120,9 @@
                    PERFORM 900-TENSU-INV-SEC
       *            ÅÀ¿ô¡¦²ó¿ô¥»¥Ã¥È
                    IF    TNS-TEN  NOT =  ZERO
-                     MOVE    TNS-TEN           TO  WRK-ZAITENX
+                     ADD     TNS-TEN           TO  WRK-ZAITEN-SYOSIN
+                     MOVE    WRK-ZAITEN-SYOSIN TO  WRK-ZAITENX
+      ***************MOVE    TNS-TEN           TO  WRK-ZAITENX
                      MOVE    RECE64-ZAIKAISU   TO  WRK-ZAIKAISUX
       *              É¬Í×Í­¸ú·å¿ô¡¦³«»Ï°ÌÃÖ¡¦²ó¿ôÊÔ½¸
                      PERFORM 810-TENSUKAI-HEN-SEC
@@ -1195,176 +1132,8 @@
                END-IF
            END-IF                                          
       *
-      *    ¼±ÊÌ¤¬ÅÀ¿ô¤Î¾ì¹ç
-           IF  FLG-NOPRT                     =   ZERO
-               IF      TBL-ZAIW-TENSIKIBETU (WRK-WIDX1 WRK-WIDX2)
-                                             =   3
-                   ADD     TBL-ZAIW-TEN (WRK-WIDX1 WRK-WIDX2)
-                                             TO  WRK-TENSUGOKEI
-               END-IF
-           END-IF
-      *
            .
        20031-SRYKBN11-CHECK-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
-      *    ¥ì¥»¥×¥È£°£´¥Õ¥¡¥¤¥ë  ¿ÇÎÅ¶èÊ¬¡Ê£±£²¡ËÊÔ½¸½èÍý
-      *****************************************************************
-       2004-SRYKBN12-HENSYU-SEC    SECTION.
-      *
-      *    ºÞ¡¡ÌÀºÙ¥Æ¡¼¥Ö¥ë¥Á¥§¥Ã¥¯
-           INITIALIZE                    TBL-ZAI-AREA
-           MOVE    ZERO              TO  WRK-TBLMAX
-           MOVE    ZERO              TO  WRK-TENSUGOKEI
-           MOVE    ZERO              TO  CNT-ZAITAISYO
-           MOVE    ZERO              TO  FLG-KEIKNRKSN
-           MOVE    ZERO              TO  FLG-DSAISHIN
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       1  
-                   OR     (FLG-KEIKNRKSN   =   1)
-                   PERFORM VARYING IDX2    FROM    1   BY  1
-                       UNTIL   IDX2    >   WRK-ZAIWMAX (IDX1)  
-                       OR      FLG-KEIKNRKSN   =   1           
-                   MOVE    IDX1          TO  WRK-WIDX1
-                   MOVE    IDX2          TO  WRK-WIDX2
-                   PERFORM 20041-SRYKBN12-CHECK-SEC
-                   IF  FLG-NOPRT         =   ZERO
-      *                ¥ì¥»¥×¥È£°£µºÞÊÔ½¸½èÍý
-                       PERFORM 430-TBLZAI-HEN-SEC
-                   END-IF
-               END-PERFORM    
-           END-PERFORM
-      *
-      *
-      *    ------------------------
-      *     ¿ÇÎÅ¶èÊ¬£±£²¡¡Îã³°½èÍý
-      *    ------------------------
-      *****ÅÀ¿ô¤¬ÉÔÌÀ¤À¤«¤éÌÀºÙ¤Ë°õ»ú¤¹¤ëÉ¬Í×¤¬¤¢¤ë
-      *****IF  WRK-TBLMAX           =   ZERO
-      ***  ºÆ¿Ç¤Î¤È¤­
-           IF  ( RECE62-KHNTEN  (2)      =   ZERO )  AND
-               ( RECE62-KAISU   (2)      >   ZERO )
-                   CONTINUE
-      *            PERFORM 20042-SRYKBN12-REIGAI-SEC
-      ***  END-IF
-           ELSE
-      *        ·ÑÂ³´ÉÍý²Ã»»¤Î¤È¤­
-               IF ((FLG-KEIKNRKSN     =   1)  OR
-                   (FLG-DSAISHIN      =   1)) AND  
-                   (WRK-TBLMAX        >   1) 
-                   PERFORM 20042-SRYKBN12-REIGAI-SEC
-               END-IF
-           END-IF    
-      *
-           IF  WRK-TBLMAX           >   ZERO
-      *        ºÞÌÀºÙ¿ô¤È°õ»úÂÐ¾ÝÌÀºÙ¿ô¤¬°Û¤Ê¤ë¾ì¹ç
-               IF  RECE64-MEISAISU   NOT =   CNT-ZAITAISYO
-                   PERFORM 400-TENSU-SAIKEISAN-SEC
-               END-IF
-      *        ÅÀ¿ô¡¦²ó¿ô¥»¥Ã¥È½èÍý
-               MOVE    WRK-TBLMAX       TO  IDY
-               PERFORM 440-TNSKAI-SET-SEC
-               MOVE    IDY              TO  WRK-TBLMAX
-      *        ºÞ¡¦¿ÇÎÅ¹Ô°Ù¥Æ¡¼¥Ö¥ë½ÐÎÏ½èÍý
-               PERFORM 450-RECE66-OUT-SEC
-           END-IF
-      *
-           .
-       2004-SRYKBN12-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ÌÀºÙ°õ»ú¥Á¥§¥Ã¥¯ ¿ÇÎÅ¶èÊ¬¡Ê£±£²¡Ë ½èÍý
-      *****************************************************************
-       20041-SRYKBN12-CHECK-SEC        SECTION.
-      * 
-           MOVE    ZERO              TO  FLG-NOPRT
-      *
-      *    ÉþÍÑÊýË¡¤Ç¤Ê¤¤¤³¤È
-           IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)
-                                     =   "001"
-               MOVE    1                 TO  FLG-NOPRT
-           END-IF
-      *
-      *    ¿ÇÎÅ¹Ô°Ù¥Æ¡¼¥Ö¥ë¤ËÂ¸ºß¤·¤¿¾ì¹ç¡¢°õ»ú¤·¤Ê¤¤¤³¤È
-           PERFORM   VARYING   IDY   FROM    1   BY  1
-                     UNTIL   ( IDY           >   TBL-NOSRYCD-MAX )
-                     OR      ( FLG-NOPRT     =    1              )
-               IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2) 
-                                         =   TBL-NOSRYCD (IDY)
-                   MOVE    1                 TO  FLG-NOPRT
-      *            °ì¤Ä¤ÎºÞ¤ËÂ¾¤ÎÌÀºÙ¤âÂ¸ºß¤¹¤ë¾ì¹ç
-                   IF  RECE64-MEISAISU       >   1
-                       MOVE    ZERO          TO  FLG-NOPRT
-                   END-IF
-      *            ¡öºÆ¿Ç¥À¥ß¡¼¤Î¾ì¹ç
-                   IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)           
-                                         =   "099120001"              
-                       MOVE    1             TO  FLG-NOPRT            
-                   END-IF                                             
-               END-IF
-           END-PERFORM
-      *
-           IF  FLG-NOPRT             =   ZERO
-      *        ¼±ÊÌ¤¬ÅÀ¿ô¤Î¾ì¹ç
-               IF  TBL-ZAIW-TENSIKIBETU (WRK-WIDX1 WRK-WIDX2)
-                                     =   3
-                   ADD     TBL-ZAIW-TEN (WRK-WIDX1 WRK-WIDX2)
-                                         TO  WRK-TENSUGOKEI
-               END-IF
-      *        ·ÑÂ³´ÉÍý²Ã»»
-      *********IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-      *                                  =   CONS-KEIZOKU    OR
-      *                                      CONS-KEIZOKU1 
-      *            MOVE    1                 TO  FLG-KEIKNRKSN
-      *********END-IF
-      *        Æ±ÆüºÆ¿Ç¡ÊÆ±ÆüÅÅÏÃºÆ¿Ç´Þ¤à¡Ë
-               IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                                         =   CONS-DSAISHIN1  OR
-                                             CONS-DSAISHIN2  OR
-                                             CONS-DSAISHIN3  OR
-                                             CONS-DSAISHIN4
-                   MOVE    1                 TO  FLG-DSAISHIN
-               END-IF
-           END-IF    
-      *
-           .
-       20041-SRYKBN12-CHECK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¿ÇÎÅ¶èÊ¬£±£²¡¡Îã³°½èÍý
-      *****************************************************************
-       20042-SRYKBN12-REIGAI-SEC        SECTION.
-      *
-           MOVE    SPACE               TO  WRK-ZAI
-           MOVE    "¡ö"                TO  WRK-ZAI-MK
-           INITIALIZE                      TBL-ZAI-AREA
-           MOVE    ZERO                TO  WRK-TBLMAX
-           MOVE    ZERO                TO  WRK-TENSUGOKEI
-           MOVE    ZERO                TO  CNT-ZAITAISYO
-      *     
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       5  
-               PERFORM VARYING IDX2    FROM    1   BY  1
-                       UNTIL   IDX2    >   WRK-ZAIWMAX (IDX1)  
-                   MOVE    IDX1          TO  WRK-WIDX1
-                   MOVE    IDX2          TO  WRK-WIDX2
-      *            ³°Íè´ÉÍý²Ã»»°Ê³°¤Ï°õ»ú
-                   IF  TBL-ZAIW-SRYCD (IDX1 IDX2)  NOT =   CONS-GAIRAI
-      *                ¥ì¥»¥×¥È£°£µºÞÊÔ½¸½èÍý
-                       PERFORM 430-TBLZAI-HEN-SEC
-                       ADD     TBL-ZAIW-TEN (IDX1 IDX2)
-                                           TO  WRK-TENSUGOKEI
-                   END-IF
-               END-PERFORM
-           END-PERFORM    
-      *
-           .
-       20042-SRYKBN12-REIGAI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1582,8 +1351,6 @@
       *
            INITIALIZE                    TBL-ZAI-AREA
            MOVE    ZERO              TO  WRK-TBLMAX
-           MOVE    ZERO              TO  WRK-TENSUGOKEI
-           MOVE    ZERO              TO  CNT-ZAITAISYO
            MOVE    SPACE             TO  WRK-ZAI
            MOVE    "¡ö"              TO  WRK-ZAI-MK
       *     
@@ -1730,8 +1497,6 @@
            MOVE    "¡ö"                TO  WRK-ZAI-MK
            INITIALIZE                    TBL-ZAI-AREA
            MOVE    ZERO              TO  WRK-TBLMAX
-           MOVE    ZERO              TO  WRK-TENSUGOKEI
-           MOVE    ZERO              TO  CNT-ZAITAISYO
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       5  
                PERFORM VARYING IDX2    FROM    1   BY  1
@@ -1740,7 +1505,6 @@
                    MOVE    IDX2          TO  WRK-WIDX2
       *            ¥ì¥»¥×¥È£°£µºÞÊÔ½¸½èÍý
                    PERFORM 430-TBLZAI-HEN-SEC
-                   ADD     TBL-ZAIW-TEN (IDX IDX1) TO  WRK-TENSUGOKEI
                END-PERFORM    
            END-PERFORM
       *
@@ -1896,9 +1660,6 @@
                    INITIALIZE                      TBL-ZAIW-AREA
                    MOVE    ZERO                TO  WRK-ZAIWMAX-G
                    MOVE    ZERO                TO  WRK-TBLMAX
-                   MOVE    ZERO                TO  WRK-TENSUGOKEI
-                   MOVE    ZERO                TO  FLG-SYOSIN
-      *****        MOVE    RECE64-SRYKBN       TO  WRK-SRYKBN
                    MOVE    ZERO                TO  FLG-TEIGEN
                                                    FLG-COMMENT
                                                    FLG-COMMENT2
@@ -1941,41 +1702,6 @@
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ôºÆ·×»»½èÍý
-      *****************************************************************
-       400-TENSU-SAIKEISAN-SEC    SECTION.
-      *
-           MOVE    SPACE               TO  WRK-ZAI
-           MOVE    "¡ö"                TO  WRK-ZAI-MK
-      *    ÅÀ¿ô¡¦²ó¿ô¥»¥Ã¥È
-           MOVE    WRK-TENSUGOKEI      TO  WRK-ZAITENX
-           MOVE    RECE64-ZAIKAISU     TO  WRK-ZAIKAISUX
-      *    É¬Í×Í­¸ú·å¿ô¡¦³«»Ï°ÌÃÖ¡¦²ó¿ôÊÔ½¸
-           PERFORM 810-TENSUKAI-HEN-SEC
-      *
-           .
-       400-TENSU-SAIKEISAN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ÌÀºÙ¶õÇò½èÍý
-      *****************************************************************
-       410-MEISAI-SPACE-SEC   SECTION.
-      *
-           PERFORM   VARYING   IDY   FROM    1   BY  1
-                     UNTIL     IDY   >       WRK-TBLMAX
-               IF  IDY                   =   1
-                   MOVE    SPACE         TO  TBL-ZAI (IDY)(3:)
-               ELSE
-                   INITIALIZE                TBL-ZAI (IDY)
-               END-IF
-           END-PERFORM
-           MOVE    1                 TO  WRK-TBLMAX
-      *
-           .
-       410-MEISAI-SPACE-EXT.
-           EXIT.
-      *****************************************************************
       *    ºÞ¥Æ¡¼¥Ö¥ëÊÔ½¸½èÍý
       *****************************************************************
        430-TBLZAI-HEN-SEC     SECTION.
@@ -1998,8 +1724,6 @@
                MOVE    WRK-KOUI (51:)    TO  WRK-ZAI-NAME
                PERFORM 4303-ZAITBL-TENSO-SEC
            END-IF
-      *
-           ADD     1               TO  CNT-ZAITAISYO
       *
            .
        430-TBLZAI-HEN-EXT.
@@ -2315,7 +2039,7 @@
                GO  TO  440-TNSKAI-SET-EXT
            END-IF
            IF     (FLG-COMMENT2       =   1)     AND                   
-                  (RECE64-SRYKBN      =   "11" OR "12" OR "99")
+                  (RECE64-SRYKBN      =   "11" OR "99")
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF                                                      
            IF     (FLG-COMMENT3       =    1  )   AND                  
@@ -2323,11 +2047,6 @@
                   (CNT-SYOSIN-KASAN   =   ZERO)                        
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF                                                      
-           IF     (FLG-COMMENT3       =    1  )   AND                  
-                  (RECE64-SRYKBN      =   "12")   AND                  
-                  (RECE64-ZAITEN      =   ZERO)                        
-               GO  TO  440-TNSKAI-SET-EXT                              
-           END-IF     
            IF     (FLG-COMMENT3       =    1  )   AND                  
                   (RECE64-SRYKBN      =   "33")   AND                  
                   (RECE64-ZAITEN      =   ZERO)                        
@@ -2426,8 +2145,8 @@
                   END-IF
                END-IF
       *
-               IF    ( FLG-COMMENT2     =   1           )               
-               AND   ( RECE64-SRYKBN    =  "11" OR "12" )               
+               IF    ( FLG-COMMENT2     =   1   )               
+               AND   ( RECE64-SRYKBN    =  "11" )               
                    MOVE  SPACE           TO  RECE66-SRYKBN              
                END-IF        
       *
@@ -2735,29 +2454,6 @@
       *
            .
        900-TENSU-INV-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ÅÀ¿ôÆÉ¹þ
-      *****************************************************************
-       TENSU-READ-SEC           SECTION.
-      *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-      
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
-               MOVE    ZERO            TO  FLG-TENSU
-           ELSE
-               INITIALIZE                  TNS-TENSU-REC
-               MOVE    1               TO  FLG-TENSU
-           END-IF
-      *
-           .
-       TENSU-READ-EXT.
            EXIT.
       *
       *****************************************************************

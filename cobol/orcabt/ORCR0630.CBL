@@ -534,7 +534,7 @@
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                 MOVE    ZERO     TO    FLG-SHOSAISIN
-                                IF   ACCT-SRYKBN  =  "11"  OR  "12"  OR
+                                IF   ACCT-SRYKBN  =  "11"  OR
                                                      "13"  OR  "14"
                                     PERFORM   SHOSAISIN-HANTEI-SEC
                                 END-IF
@@ -543,8 +543,7 @@
                            IF   (ACCT-ZAITEN    =        ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                 MOVE    ZERO     TO    FLG-SHOSAISIN
-                                IF   ACCT-SRYKBN  =  "11"  OR  "12" 
-                                                           OR  "99" 
+                                IF   ACCT-SRYKBN  =  "11"  OR  "99" 
                                     PERFORM   SHOSAISIN-HANTEI-SEC
                                 END-IF
                                 PERFORM   RECE62-TENSOU12-SEC

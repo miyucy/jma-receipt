@@ -714,7 +714,7 @@
                                  PERFORM RECE64-WRITE-SEC
                                END-IF
                            ELSE
-                               IF   ACCT-SRYKBN  =  "11"  OR  "12" OR
+                               IF   ACCT-SRYKBN  =  "11"  OR
                                                     "33"  OR  "99" 
                                  IF  ACCT-SRYCDTOTAL = CONS-TOKKI1 OR
                                                        CONS-TOKKI2 OR

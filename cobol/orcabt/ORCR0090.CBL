@@ -303,6 +303,7 @@
                05  WRK-X                       PIC X(02).
                05  WRK-ZAIKAISU                PIC X(06).
       *
+           03  WRK-ZAITEN-SYOSIN               PIC 9(08).
            03  WRK-ZAITENX                     PIC ZZZZZZ9.
            03  WRK-ZAIKAISUX                   PIC ZZ9.
            03  WRK-TNSKAI-ST                   PIC 9(02).
@@ -650,6 +651,43 @@
       *    ¾®»ù²Ê³°Íè¿ÇÎÅÎÁ¡Ê¾Ò²ð´µ¼Ô²Ã»»£¶¡Ë
            03  WRK-CONS-SYOSIN-KASAN9  PIC X(09)   VALUE 
                                                    "111011170".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£±¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN10 PIC X(09)   VALUE 
+                                                   "111011270".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£²¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN11 PIC X(09)   VALUE 
+                                                   "111011370".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£³¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN12 PIC X(09)   VALUE 
+                                                   "111009970".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£´¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN13 PIC X(09)   VALUE 
+                                                   "111010070".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£µ¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN14 PIC X(09)   VALUE 
+                                                   "111010170".
+      *    ¾Ò²ð´µ¼Ô²Ã»»£¶¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN15 PIC X(09)   VALUE 
+                                                   "111010270".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£±¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN16 PIC X(09)   VALUE 
+                                                   "111702770".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£²¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN17 PIC X(09)   VALUE 
+                                                   "111702870".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£³¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN18 PIC X(09)   VALUE 
+                                                   "111702370".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£´¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN19 PIC X(09)   VALUE 
+                                                   "111702470".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£µ¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN20 PIC X(09)   VALUE 
+                                                   "111702570".
+      *    ¡ãÏ·¡ä¾Ò²ð´µ¼Ô²Ã»»£¶¡ÊÉÂ±¡¡Ë
+           03  WRK-CONS-SYOSIN-KASAN21 PIC X(09)   VALUE 
+                                                   "111702670".
+      *
       *    ¸¡ºº¤Î²ó¿ô¤Ë½¸·×¤·¤Ê¤¤¿ÇÎÅ¹Ô°Ù
       *    ºÎ·ì¡Ê£Â¡Ý£Á¡Ë
            03  WRK-CONS-SAIKETSU1      PIC X(09)   VALUE "160101210".
@@ -1096,6 +1134,7 @@
            MOVE    ZERO              TO  WRK-TENSUGOKEI
            MOVE    ZERO              TO  CNT-ZAITAISYO
            MOVE    ZERO              TO  CNT-SYOSIN-KASAN               
+           MOVE    ZERO              TO  WRK-ZAITEN-SYOSIN
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       1  
@@ -1174,6 +1213,18 @@
                                             OR  WRK-CONS-SYOSIN-KASAN7
                                             OR  WRK-CONS-SYOSIN-KASAN8
                                             OR  WRK-CONS-SYOSIN-KASAN9
+                                            OR  WRK-CONS-SYOSIN-KASAN10
+                                            OR  WRK-CONS-SYOSIN-KASAN11
+                                            OR  WRK-CONS-SYOSIN-KASAN12
+                                            OR  WRK-CONS-SYOSIN-KASAN13
+                                            OR  WRK-CONS-SYOSIN-KASAN14
+                                            OR  WRK-CONS-SYOSIN-KASAN15
+                                            OR  WRK-CONS-SYOSIN-KASAN16
+                                            OR  WRK-CONS-SYOSIN-KASAN17
+                                            OR  WRK-CONS-SYOSIN-KASAN18
+                                            OR  WRK-CONS-SYOSIN-KASAN19
+                                            OR  WRK-CONS-SYOSIN-KASAN20
+                                            OR  WRK-CONS-SYOSIN-KASAN21
                                             OR  CONS-COMMENT5         
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         
@@ -1190,6 +1241,18 @@
                                              OR  WRK-CONS-SYOSIN-KASAN7 
                                              OR  WRK-CONS-SYOSIN-KASAN8 
                                              OR  WRK-CONS-SYOSIN-KASAN9 
+                                             OR  WRK-CONS-SYOSIN-KASAN10
+                                             OR  WRK-CONS-SYOSIN-KASAN11
+                                             OR  WRK-CONS-SYOSIN-KASAN12
+                                             OR  WRK-CONS-SYOSIN-KASAN13
+                                             OR  WRK-CONS-SYOSIN-KASAN14
+                                             OR  WRK-CONS-SYOSIN-KASAN15
+                                             OR  WRK-CONS-SYOSIN-KASAN16
+                                             OR  WRK-CONS-SYOSIN-KASAN17
+                                             OR  WRK-CONS-SYOSIN-KASAN18
+                                             OR  WRK-CONS-SYOSIN-KASAN19
+                                             OR  WRK-CONS-SYOSIN-KASAN20
+                                             OR  WRK-CONS-SYOSIN-KASAN21
                         ADD      1           TO  CNT-SYOSIN-KASAN       
                    END-IF                                               
       *
@@ -1201,7 +1264,9 @@
                    PERFORM 900-TENSU-INV-SEC
       *            ÅÀ¿ô¡¦²ó¿ô¥»¥Ã¥È
                    IF    TNS-TEN  NOT =  ZERO                           
-                     MOVE    TNS-TEN           TO  WRK-ZAITENX          
+                     ADD     TNS-TEN           TO  WRK-ZAITEN-SYOSIN
+                     MOVE    WRK-ZAITEN-SYOSIN TO  WRK-ZAITENX
+      ***************MOVE    TNS-TEN           TO  WRK-ZAITENX
                      MOVE    RECE04-ZAIKAISU   TO  WRK-ZAIKAISUX        
       *              É¬Í×Í­¸ú·å¿ô¡¦³«»Ï°ÌÃÖ¡¦²ó¿ôÊÔ½¸
                      PERFORM 810-TENSUKAI-HEN-SEC                       
