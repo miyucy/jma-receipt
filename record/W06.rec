@@ -38,35 +38,35 @@ W06	{
 				value	varchar(17);
 			};
 			count	int;
-			item	varchar(17)[10];
+			item	varchar(17)[50];
 		};
 		SEMONKACOMBO2	{
 			SEMONKACD2	{
 				value	varchar(17);
 			};
 			count	int;
-			item	varchar(17)[10];
+			item	varchar(17)[50];
 		};
 		SEMONKACOMBO3	{
 			SEMONKACD3	{
 				value	varchar(17);
 			};
 			count	int;
-			item	varchar(17)[10];
+			item	varchar(17)[50];
 		};
 		SEMONKACOMBO4	{
 			SEMONKACD4	{
 				value	varchar(17);
 			};
 			count	int;
-			item	varchar(17)[10];
+			item	varchar(17)[50];
 		};
 		SEMONKACOMBO5	{
 			SEMONKACD5	{
 				value	varchar(17);
 			};
 			count	int;
-			item	varchar(17)[10];
+			item	varchar(17)[50];
 		};
 		CHK01	{
 			value	bool;

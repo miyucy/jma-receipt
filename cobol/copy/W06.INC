@@ -32,7 +32,7 @@
                     05  W06-SEMONKACD.
                       06  W06-CD-VALUE    PIC X(17).
                     05  W06-CD-COUNT      PIC S9(9)   BINARY.
-                    05  W06-CD-ITEM       PIC X(17)   OCCURS  10.
+                    05  W06-CD-ITEM       PIC X(17)   OCCURS  50.
                   04  W06-CHK01            PIC X.
                   04  W06-CHK02            PIC X.
                   04  W06-CHK03            PIC X.
