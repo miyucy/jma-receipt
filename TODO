@@ -3,3 +3,10 @@
 
 * CPCOMMONSHELL*.INC に依存しているものを CPHOMEDIR.INC を使用するように
   書き換える。(CPCOMMONSHELL*.INC は廃止する)。
+
+* サブディレクトリを変更可能にする。
+  CPHOMEDIR.INC に(もしくは新しいCOPY句を作成して) SCRIPTS, SCREEN, 
+  FORM, RECORD....を追加し、そこから取得するように変更する。
+
+* OpenCOBOL 0.11 対応
+  (http://open-cobol.sourceforge.net/)
