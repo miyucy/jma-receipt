@@ -175,6 +175,7 @@
            03  WRK-PAGE                    PIC ZZZZZZZZZ9.
            03  WRK-EDTYMD1                 PIC X(10).
            03  WRK-EDTYMD3                 PIC X(22).
+           03  WRK-Z9                      PIC Z9.
       *
        01  CONST-AREA.
            03  CONST-LINE                  PIC X(40)   VALUE
@@ -500,8 +501,11 @@
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   CONST-CHKKBN-MAX )
       *
+               MOVE    IDX0            TO  WRK-Z9
                MOVE    CONST-LINE      TO  SPA-GMN-D01-CHKMSG (IDX0)
-               STRING  CONST-CHKMSG (IDX0) DELIMITED   BY  SPACE
+               STRING  WRK-Z9              DELIMITED   BY  SIZE
+                       ". "                DELIMITED   BY  SIZE
+                       CONST-CHKMSG (IDX0) DELIMITED   BY  SPACE
                INTO    SPA-GMN-D01-CHKMSG (IDX0)
                END-STRING
       *
@@ -1634,6 +1638,19 @@
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
+      *    確認項目がいずれか一つは入力されていること
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   CONST-CHKKBN-MAX )
+                    OR   ( SPA-GMN-D01-CHKKBN (IDX0)
+                                   NOT =   SPACE )
+                CONTINUE
+           END-PERFORM
+      *
+           IF    ( IDX0    >   CONST-CHKKBN-MAX )
+               MOVE    "1002"          TO  SPA-ERRCD
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
+      *
            .
        4900-KANRENCHK-EXT.
            EXIT.
@@ -2006,6 +2023,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "診療年月を入力してください"
+                                       TO  SPA-ERRMSG
+           WHEN    "1002"
+               MOVE    "確認項目を入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "4001"              THRU    "4999"
                MOVE    "更新処理に失敗しました"
