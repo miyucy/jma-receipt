@@ -21,6 +21,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    04/02/01  病名コード２１に変更
       ************************************************************
       *01  RECE83-REC.
            03  RECE83-KEY.
@@ -52,10 +53,25 @@
                05  RECE83-BYOMEICD-4    PIC X(07).
                05  RECE83-BYOMEICD-5    PIC X(07).
                05  RECE83-BYOMEICD-6    PIC X(07).
+               05  RECE83-BYOMEICD-7    PIC X(07).
+               05  RECE83-BYOMEICD-8    PIC X(07).
+               05  RECE83-BYOMEICD-9    PIC X(07).
+               05  RECE83-BYOMEICD-10   PIC X(07).
+               05  RECE83-BYOMEICD-11   PIC X(07).
+               05  RECE83-BYOMEICD-12   PIC X(07).
+               05  RECE83-BYOMEICD-13   PIC X(07).
+               05  RECE83-BYOMEICD-14   PIC X(07).
+               05  RECE83-BYOMEICD-15   PIC X(07).
+               05  RECE83-BYOMEICD-16   PIC X(07).
+               05  RECE83-BYOMEICD-17   PIC X(07).
+               05  RECE83-BYOMEICD-18   PIC X(07).
+               05  RECE83-BYOMEICD-19   PIC X(07).
+               05  RECE83-BYOMEICD-20   PIC X(07).
+               05  RECE83-BYOMEICD-21   PIC X(07).
       *
            03  RECE83-BYOMEICD-R        REDEFINES   RECE83-BYOMEICD-G.
                05  RECE83-BYOMEICD      PIC X(07)
-                                       OCCURS   6.
+                                       OCCURS   21.
       *疑いフラグ
            03  RECE83-UTAGAIFLG         PIC X(01).
       *慢性フラグ

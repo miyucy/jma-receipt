@@ -21,6 +21,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    04/02/01  病名コード２１に変更
       ************************************************************
       *01  RECE42-REC.
            03  RECE42-KEY.
@@ -64,14 +65,27 @@
                05  RECE42-BYOMEICD-4    PIC X(07).
                05  RECE42-BYOMEICD-5    PIC X(07).
                05  RECE42-BYOMEICD-6    PIC X(07).
+               05  RECE42-BYOMEICD-7    PIC X(07).
+               05  RECE42-BYOMEICD-8    PIC X(07).
+               05  RECE42-BYOMEICD-9    PIC X(07).
+               05  RECE42-BYOMEICD-10   PIC X(07).
+               05  RECE42-BYOMEICD-11   PIC X(07).
+               05  RECE42-BYOMEICD-12   PIC X(07).
+               05  RECE42-BYOMEICD-13   PIC X(07).
+               05  RECE42-BYOMEICD-14   PIC X(07).
+               05  RECE42-BYOMEICD-15   PIC X(07).
+               05  RECE42-BYOMEICD-16   PIC X(07).
+               05  RECE42-BYOMEICD-17   PIC X(07).
+               05  RECE42-BYOMEICD-18   PIC X(07).
+               05  RECE42-BYOMEICD-19   PIC X(07).
+               05  RECE42-BYOMEICD-20   PIC X(07).
+               05  RECE42-BYOMEICD-21   PIC X(07).
       *
            03  RECE42-BYOMEICD-R        REDEFINES   RECE42-BYOMEICD-G.
                05  RECE42-BYOMEICD      PIC X(07)
-                                       OCCURS   6.
+                                       OCCURS   21.
       *疑いフラグ
            03  RECE42-UTAGAIFLG         PIC X(01).
-      *主病名フラグ
-      *****03  RECE42-SYUBYOFLG         PIC X(01).
       *慢性フラグ
            03  RECE42-MANSEIKBN         PIC 9(02).
       *保険組合番号
@@ -80,12 +94,6 @@
            03  RECE42-REZEFLG           PIC X(01).
       *レセプト表示月数
            03  RECE42-REZEMM            PIC 9(02).
-      *転帰区分
-      *****03  RECE42-TENKIKBN          PIC X(01).
-      *転帰日
-      **** 03  RECE42-TENKIYMD          PIC X(08).
-      *病名
-      **** 03  RECE42-BYOMEI            PIC X(160).
       *病名文字数
            03  RECE42-BYOMEIMOJI        PIC 9(03).
       *病名編集フラグ
