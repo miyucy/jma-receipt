@@ -214,6 +214,13 @@
                                                LNK-BYO-BYOMEI-MAX
            END-IF
       *
+           IF      LNK-BYO-TBYOMEICD (1)   =   "0000999"
+               MOVE    "0000999"           TO  LNK-BYO-KHNBYOMEICD
+               MOVE    SPACE               TO  LNK-BYO-KHNBUICD (1)
+                                               LNK-BYO-KHNBUICD (2)
+                                               LNK-BYO-KHNBUICD (3)
+           END-IF
+      *
            IF      LNK-BYO-BYOMEICD-ERR
                                        =   "1" OR  "2" OR  "9"
                MOVE    "1"                 TO  LNK-BYO-BYOMEIHENFLG
