@@ -37,6 +37,7 @@
       * 01.00.08     NACL-多々納  02/12/17  在宅指導料の追加（143)
       * 01.00.09     NACL-多々納  02/12/20  自費修正時の修正
       * 01.00.10     NACL-多々納  03/01/30  入院時検査まとめをやめる
+      * 01.00.11     NACL-多々納  03/02/12  自費の剤分離の修正
       *****************************************************************
       *
       *
@@ -64,6 +65,8 @@
            03  FLG-JIHI            PIC 9(01).
       *    手技料フラグ
            03  FLG-SYUGI           PIC 9(01).
+      *    １剤フラグ
+           03  FLG-ZAI             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -357,6 +360,8 @@
       *****************************************************************
        5101-SYRKBN-SET-SEC             SECTION.
       *
+           MOVE    ZERO                TO  FLG-ZAI
+      *
       *    セット入力時、前の診療種別とする
            IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "S"
                IF     (IDX                 =   1   )   OR
@@ -530,6 +535,7 @@
                                                                (IDX)
                            MOVE    "1"           TO  SPA-COM-ZAIEND
                                                                (IDX)
+                           MOVE    1             TO  FLG-ZAI
       *                    自賠責の時、８０とする
                            IF     (SPA-RSI-HKNKBN            =  "4") AND
                                   (SPA-COM-INPUTCD(IDX)(1:5) =  "09591"
@@ -541,6 +547,7 @@
                                                                (IDX)
                                MOVE    "1"       TO  SPA-COM-ZAIEND
                                                                (IDX)
+                               MOVE    1         TO  FLG-ZAI
                            END-IF
       *                保険外（自費）（1行１剤とする）
                        WHEN    "096"
@@ -550,6 +557,7 @@
                                                                (IDX)
                            MOVE    "1"           TO  SPA-COM-ZAIEND
                                                                (IDX)
+                           MOVE    1         TO  FLG-ZAI
       *                特定器材（前の剤に付属する）
                        WHEN    "059"
                            MOVE    SPACE         TO  SPA-COM-SRYSYUKBN
@@ -901,7 +909,17 @@
                END-IF
            END-IF
       *
-           IF     FLG-SYORI            =   ZERO
+      *    １剤１明細のコードの時は、剤終了とする
+           IF      FLG-ZAI             =   1
+               IF     (IDX             >   1   )  AND
+                      (SPA-GMN-INPUTCD(IDX - 1)(1:1)   NOT =   ".")
+                   MOVE    2               TO  FLG-SYORI
+               ELSE
+                   MOVE    1               TO  FLG-SYORI
+               END-IF
+           END-IF
+      *
+           IF      FLG-SYORI           =   ZERO
       *        剤継続
                MOVE    SPACE           TO  SPA-COM-ZAIEND (IDX)
                IF      IDX             >   1
