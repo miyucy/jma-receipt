@@ -38,6 +38,7 @@
       *  01.00.07    NACL−多々納 02/08/20  検査グループ変更
       *  01.00.08    NACL−多々納 02/11/05  一括入力へ変更
       *  01.00.09    NACL−多々納 02/12/11  期限外の空白表示修正
+      *  01.00.11    NACL−多々納 03/10/31  セットからの次頁追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -546,8 +547,9 @@
            END-IF
       *
            MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX2
            PERFORM
-               UNTIL      (IDX             >=  200 )   OR
+               UNTIL      (IDX             >   200 )   OR
                           (FLG-INPUTCD     =   1   )
       *
                PERFORM 31011-INPUTCD-CHK-SEC
@@ -555,16 +557,7 @@
       *
                    IF     (ICD-DSPNAME     NOT =   SPACE )  AND
                           (ICD-SRYCD(1:1)      =   "S"  OR  "P")
-      *
-                       ADD     1                   TO  WRK-CNT-ENT
-                       MOVE    IDX                 TO  SPA-J98-GMN-NO
-                                                                (IDX)
-                       MOVE    ICD-INPUTCD     TO  SPA-J98-GMN-INPUTCD
-                                                                (IDX)
-                       MOVE    ICD-SRYCD           TO  SPA-J98-GMN-SRYCD
-                                                                (IDX)
-                       MOVE    ICD-DSPNAME         TO  SPA-J98-GMN-NAME
-                                                               (IDX)
+                       PERFORM 31013-SET-HEN-SEC
                    ELSE
       *                点数マスタより編集
                        INITIALIZE                  TNS-TENSU-REC
@@ -593,7 +586,11 @@
                        IF      FLG-TENSU           =   ZERO
                            PERFORM 31021-TENSU-CHK-SEC
                            IF      FLG-CHK         =   ZERO
-                               PERFORM 31012-INPUTCD-HEN-SEC
+                               ADD     1               TO  IDX2
+      *                        次ページの時、表示分は読み飛ばし
+                               IF      IDX2            >=  SPA-J98-NEXT
+                                   PERFORM 31012-INPUTCD-HEN-SEC
+                               END-IF
                            END-IF
                        END-IF
                    END-IF
@@ -618,11 +615,50 @@
            EXIT.
       *
       *****************************************************************
+      *   セット一覧編集処理
+      *****************************************************************
+       31013-SET-HEN-SEC                 SECTION.
+      *
+           ADD     1               TO  IDX2
+      *    次ページの時、表示分は読み飛ばし
+           IF      IDX2            >=  SPA-J98-NEXT
+               CONTINUE
+           ELSE
+               GO      TO      31013-SET-HEN-EXT
+           END-IF
+      *
+           ADD     1                   TO  IDX
+           IF      IDX                 >   200
+               MOVE    IDX2                TO  SPA-J98-NEXT
+               MOVE    1                   TO  FLG-MAX
+           ELSE
+               ADD     1                   TO  WRK-CNT-ENT
+               MOVE    IDX                 TO  SPA-J98-GMN-NO  (IDX)
+               MOVE    ICD-INPUTCD         TO  SPA-J98-GMN-INPUTCD
+                                                                (IDX)
+               MOVE    ICD-SRYCD           TO  SPA-J98-GMN-SRYCD
+                                                                (IDX)
+               MOVE    ICD-DSPNAME         TO  SPA-J98-GMN-NAME
+                                                               (IDX)
+           END-IF
+      *
+           .
+       31013-SET-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *   入力コードより編集処理
       *****************************************************************
        31012-INPUTCD-HEN-SEC                 SECTION.
       *
            ADD     1                   TO  IDX
+      *    ２００件オーバーチェック
+           IF      IDX                 >   200
+               MOVE    1                   TO  FLG-MAX
+               MOVE    IDX2                TO  SPA-J98-NEXT
+               GO      TO      31012-INPUTCD-HEN-EXT
+           END-IF
+      *
            ADD     1                   TO  WRK-CNT-ENT
            MOVE    IDX                 TO  SPA-J98-GMN-NO     (IDX)
            MOVE    ICD-INPUTCD         TO  SPA-J98-GMN-INPUTCD (IDX)

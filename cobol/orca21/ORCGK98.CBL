@@ -40,6 +40,7 @@
       *  01.00.09    NACL−多々納 02/12/11  期限外の空白表示修正
       *  01.00.10    NACL−多々納 03/04/30  ５明細入力追加
       *                                     確定ボタン追加
+      *  01.00.11    NACL−多々納 03/10/31  セットからの次頁追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -601,6 +602,7 @@
        3101-INPUTCD-SET-SEC            SECTION.
       *
            MOVE    ZERO                TO  WRK-CNT-ENT
+           MOVE    ZERO                TO  FLG-MAX
       *    セットの時、種別コードは６とする
            IF      SPA-K98-GMN-INPUT(1:1)  =   "P"  OR  "S"
                MOVE    "6"                 TO  SPA-K98-CDSYUBETU
@@ -644,8 +646,9 @@
            END-IF
       *
            MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX2
            PERFORM
-               UNTIL      (IDX         >=  200 )   OR
+               UNTIL      (IDX             >  200  )   OR
                           (FLG-INPUTCD     =   1   )
       *
                PERFORM 31011-INPUTCD-CHK-SEC
@@ -653,17 +656,7 @@
       *
                    IF     (ICD-DSPNAME     NOT =   SPACE )  AND
                           (ICD-SRYCD(1:1)      =   "S"  OR  "P")
-      *
-                       ADD     1                   TO  IDX
-                       ADD     1                   TO  WRK-CNT-ENT
-                       MOVE    IDX                 TO  SPA-K98-GMN-NO
-                                                                (IDX)
-                       MOVE    ICD-INPUTCD     TO  SPA-K98-GMN-INPUTCD
-                                                                (IDX)
-                       MOVE    ICD-SRYCD           TO  SPA-K98-GMN-SRYCD
-                                                                (IDX)
-                       MOVE    ICD-DSPNAME         TO  SPA-K98-GMN-NAME
-                                                               (IDX)
+                       PERFORM 31013-SET-HEN-SEC
                    ELSE
       *                点数マスタより編集
                        INITIALIZE                  TNS-TENSU-REC
@@ -692,7 +685,11 @@
                        IF      FLG-TENSU           =   ZERO
                            PERFORM 31021-TENSU-CHK-SEC
                            IF      FLG-CHK         =   ZERO
-                               PERFORM 31012-INPUTCD-HEN-SEC
+                               ADD     1               TO  IDX2
+      *                        次ページの時、表示分は読み飛ばし
+                               IF      IDX2            >=  SPA-K98-NEXT
+                                   PERFORM 31012-INPUTCD-HEN-SEC
+                               END-IF
                            END-IF
                        END-IF
                    END-IF
@@ -711,9 +708,46 @@
                                         MCPDATA-REC
       *
            MOVE    WRK-CNT-ENT         TO  SPA-K98-GMN-MAX
+               IF      FLG-MAX         NOT =   ZERO
+                   MOVE    "0005"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    ZERO                TO  SPA-K98-NEXT
+               END-IF
       *
            .
        3101-INPUTCD-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   セット一覧編集処理
+      *****************************************************************
+       31013-SET-HEN-SEC                 SECTION.
+      *
+           ADD     1               TO  IDX2
+      *    次ページの時、表示分は読み飛ばし
+           IF      IDX2            >=  SPA-K98-NEXT
+               CONTINUE
+           ELSE
+               GO      TO      31013-SET-HEN-EXT
+           END-IF
+      *
+           ADD     1                   TO  IDX
+           IF      IDX                 >   200
+               MOVE    IDX2                TO  SPA-K98-NEXT
+               MOVE    1                   TO  FLG-MAX
+           ELSE
+               ADD     1                   TO  WRK-CNT-ENT
+               MOVE    IDX                 TO  SPA-K98-GMN-NO  (IDX)
+               MOVE    ICD-INPUTCD         TO  SPA-K98-GMN-INPUTCD
+                                                                (IDX)
+               MOVE    ICD-SRYCD           TO  SPA-K98-GMN-SRYCD
+                                                                (IDX)
+               MOVE    ICD-DSPNAME         TO  SPA-K98-GMN-NAME
+                                                               (IDX)
+           END-IF
+      *
+           .
+       31013-SET-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -722,6 +756,13 @@
        31012-INPUTCD-HEN-SEC                 SECTION.
       *
            ADD     1                   TO  IDX
+      *    ２００件オーバーチェック
+           IF      IDX                 >   200
+               MOVE    1                   TO  FLG-MAX
+               MOVE    IDX2                TO  SPA-K98-NEXT
+               GO      TO      31012-INPUTCD-HEN-EXT
+           END-IF
+      *
            ADD     1                   TO  WRK-CNT-ENT
            MOVE    IDX                 TO  SPA-K98-GMN-NO     (IDX)
            MOVE    ICD-INPUTCD         TO  SPA-K98-GMN-INPUTCD (IDX)

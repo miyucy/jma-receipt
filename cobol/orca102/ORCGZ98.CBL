@@ -36,6 +36,7 @@
       *                                     コードを検索するように修正
       *  01.00.06    MCC−多々納  02/05/28  労災追加
       *  01.00.07    NACL−多々納 02/08/20  検査グループ変更
+      *  01.00.09    NACL−多々納 03/10/31  セットからの次頁追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -552,8 +553,9 @@
            END-IF
       *
            MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX2
            PERFORM
-               UNTIL      (IDX             >=  200 )   OR
+               UNTIL      (IDX             >   200 )   OR
                           (FLG-INPUTCD     =   1   )
       *
                PERFORM 31011-INPUTCD-CHK-SEC
@@ -561,17 +563,8 @@
       *
                    IF     (ICD-DSPNAME     NOT =   SPACE )  AND
                           (ICD-SRYCD(1:1)      =   "S"  OR  "P")
+                       PERFORM 31013-SET-HEN-SEC
       *
-                       ADD     1                   TO  IDX
-                       ADD     1                   TO  WRK-CNT-ENT
-                       MOVE    IDX                 TO  SPA-Z98-GMN-NO
-                                                                (IDX)
-                       MOVE    ICD-INPUTCD     TO  SPA-Z98-GMN-INPUTCD
-                                                                (IDX)
-                       MOVE    ICD-SRYCD           TO  SPA-Z98-GMN-SRYCD
-                                                                (IDX)
-                       MOVE    ICD-DSPNAME         TO  SPA-Z98-GMN-NAME
-                                                               (IDX)
                    ELSE
       *                点数マスタより編集
                        INITIALIZE                  TNS-TENSU-REC
@@ -599,47 +592,13 @@
       *
                        IF      FLG-TENSU           =   ZERO
       *
-                           ADD     1               TO  IDX
-                           ADD     1               TO  WRK-CNT-ENT
-                           MOVE    IDX             TO  SPA-Z98-GMN-NO
-                                                                (IDX)
-                           MOVE    ICD-INPUTCD     TO
-                                                   SPA-Z98-GMN-INPUTCD
-                                                                (IDX)
-                           MOVE    ICD-SRYCD       TO  SPA-Z98-GMN-SRYCD
-                                                                (IDX)
                            PERFORM 31021-TENSU-CHK-SEC
                            IF      FLG-CHK         =   ZERO
-                               MOVE    TNS-NAME
-                                               TO  SPA-Z98-GMN-NAME
-                                                                (IDX)
-                               MOVE    TNS-TEN
-                                               TO  SPA-Z98-GMN-KISOTEN
-                                                                (IDX)
-      *                         薬剤・器材の時単位
-                               IF      TNS-SRYCD (1:1) =   "6"  OR  "7"
-                                   MOVE    TNS-TANINAME    TO
-                                               SPA-Z98-GMN-TANI(IDX)
+                               ADD     1               TO  IDX2
+      *                        次ページの時、表示分は読み飛ばし
+                               IF      IDX2            >=  SPA-Z98-NEXT
+                                   PERFORM 31012-INPUTCD-HEN-SEC
                                END-IF
-      *
-      *----(01.00.01) LINE ADD START ----------------------------------
-      *                診療行為で老人の時、再編集
-                               IF     (TNS-SRYCD(1:1)      =   "1") AND
-                                      (TNS-ROUTEKKBN       =   2  )
-                                   MOVE    SPACE   TO  SPA-Z98-GMN-NAME
-                                                                (IDX)
-                                   STRING  "［老］"
-                                     TNS-NAME      DELIMITED   BY  SIZE
-                                     INTO        SPA-Z98-GMN-NAME(IDX)
-                                   END-STRING
-                               END-IF
-                           ELSE
-                               INITIALIZE          SPA-Z98-GMN-TBLREC
-                                                                (IDX)
-                               COMPUTE IDX             =   IDX    -   1
-                               COMPUTE WRK-CNT-ENT     =   WRK-CNT-ENT
-                                                       -   1
-      *----(01.00.01) LINE ADD START ----------------------------------
                            END-IF
                        END-IF
                    END-IF
@@ -661,6 +620,77 @@
       *
            .
        3101-INPUTCD-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   セット一覧編集処理
+      *****************************************************************
+       31013-SET-HEN-SEC                 SECTION.
+      *
+           ADD     1               TO  IDX2
+      *    次ページの時、表示分は読み飛ばし
+           IF      IDX2            >=  SPA-Z98-NEXT
+               CONTINUE
+           ELSE
+               GO      TO      31013-SET-HEN-EXT
+           END-IF
+      *
+           ADD     1                   TO  IDX
+           IF      IDX                 >   200
+               MOVE    IDX2                TO  SPA-Z98-NEXT
+               MOVE    1                   TO  FLG-MAX
+           ELSE
+               ADD     1                   TO  WRK-CNT-ENT
+               MOVE    IDX                 TO  SPA-Z98-GMN-NO  (IDX)
+               MOVE    ICD-INPUTCD         TO  SPA-Z98-GMN-INPUTCD
+                                                                (IDX)
+               MOVE    ICD-SRYCD           TO  SPA-Z98-GMN-SRYCD
+                                                                (IDX)
+               MOVE    ICD-DSPNAME         TO  SPA-Z98-GMN-NAME
+                                                               (IDX)
+           END-IF
+      *
+           .
+       31013-SET-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   入力コードより編集処理
+      *****************************************************************
+       31012-INPUTCD-HEN-SEC                 SECTION.
+      *
+           ADD     1                   TO  IDX
+      *    ２００件オーバーチェック
+           IF      IDX                 >   200
+               MOVE    1                   TO  FLG-MAX
+               MOVE    IDX2                TO  SPA-Z98-NEXT
+               GO      TO      31012-INPUTCD-HEN-EXT
+           END-IF
+      *
+           ADD     1                   TO  WRK-CNT-ENT
+           MOVE    IDX                 TO  SPA-Z98-GMN-NO     (IDX)
+           MOVE    ICD-INPUTCD         TO  SPA-Z98-GMN-INPUTCD (IDX)
+           MOVE    ICD-SRYCD           TO  SPA-Z98-GMN-SRYCD   (IDX)
+           MOVE    TNS-NAME            TO  SPA-Z98-GMN-NAME    (IDX)
+           MOVE    TNS-TEN             TO  SPA-Z98-GMN-KISOTEN (IDX)
+      *    薬剤・器材の時単位
+           IF      TNS-SRYCD (1:1) =   "6"  OR  "7"
+                MOVE    TNS-TANINAME       TO  SPA-Z98-GMN-TANI(IDX)
+           END-IF
+      *
+      *----(01.00.01) LINE ADD START ----------------------------------
+      *    診療行為で老人の時、再編集
+           IF     (TNS-SRYCD(1:1)      =   "1") AND
+                  (TNS-ROUTEKKBN       =   2  )
+                MOVE    SPACE              TO  SPA-Z98-GMN-NAME (IDX)
+                STRING  "［老］"
+                        TNS-NAME      DELIMITED   BY  SIZE
+                               INTO        SPA-Z98-GMN-NAME(IDX)
+                END-STRING
+           END-IF
+      *
+           .
+       31012-INPUTCD-HEN-EXT.
            EXIT.
       *
       *****************************************************************
