@@ -62,7 +62,7 @@
            03  WRK-ERRMSG          PIC X(40).
            03  WRK-PIN.
                05  PIN9            PIC 9(02).
-               05  PIN9-R          REDEFINES  PIN9.
+               05  FILLER          REDEFINES  PIN9.
                    07  PIN10       PIC 9(01).
                    07  PIN1        PIC 9(01).
            03  WRK-PED.
@@ -86,6 +86,7 @@
       *      
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -98,7 +99,16 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA32SCRAREA.INC".
+           COPY    "I41.INC".
+           COPY    "I42.INC".
+           COPY    "I43.INC".
+           COPY    "I44.INC".
+           COPY    "I45.INC".
+           COPY    "I48.INC".
+           COPY    "I49.INC".
+           COPY    "I4ERR.INC".
+           COPY    "I4ID1.INC".
+      *
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -547,9 +557,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"   USING   MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA.
+           CALL   "ORCMCPSUB"   USING
+                                MCPAREA
+                                ORCMCPAREA
+                                MCPDATA-REC.
       *
            .
        900-PUT-WINDOW-EXT.

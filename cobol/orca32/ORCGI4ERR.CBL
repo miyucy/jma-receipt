@@ -55,6 +55,7 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -70,7 +71,15 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA32SCRAREA.INC".
+           COPY    "I41.INC".
+           COPY    "I42.INC".
+           COPY    "I43.INC".
+           COPY    "I44.INC".
+           COPY    "I45.INC".
+           COPY    "I48.INC".
+           COPY    "I49.INC".
+           COPY    "I4ERR.INC".
+           COPY    "I4ID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -130,9 +139,10 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"   USING   MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA.
+           CALL   "ORCMCPSUB"       USING
+                                    MCPAREA
+                                    ORCMCPAREA
+                                    MCPDATA-REC.
       *
        900-PUT-WINDOW-EXT.
            EXIT.

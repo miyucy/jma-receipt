@@ -49,30 +49,17 @@
                05  SPA-GMN-SEX                 PIC X(02).
       *患者生年月日
                05  SPA-GMN-BIRTHDAY            PIC X(08).
-      *患者年齢
-               05  SPA-GMN-AGE                 PIC X(09).
       *患者生年月日（和暦編集）
                05  SPA-GMN-BIRTHDAYW           PIC X(09).
       *入院情報
                05  SPA-GMN-NYUIN-AREA.
-                   07  SPA-GMN-IJYOU91-STYLE   PIC X(20).
                    07  SPA-GMN-IJYOU91         PIC X(09).
                    07  SPA-GMN-IJYOU180        PIC X(09).
                    07  SPA-GMN-NYUINBI         PIC X(09).
                    07  SPA-GMN-TAINBI          PIC X(09).
                    07  SPA-GMN-NYUINNISSU      PIC S9(06).
-                   07  SPA-GMN-TSUSANNISSU     PIC S9(06).
                    07  SPA-NAI-NYUINBI         PIC X(08).
                    07  SPA-NAI-TAINBI          PIC X(08).
-                   07  SPA-GMN-SYUBETSU1       PIC X(20).
-                   07  SPA-GMN-SYUBETSU2       PIC X(20).
-                   07  SPA-GMN-SYUBETSU3       PIC X(20).
-                   07  SPA-GMN-SYUBETSU4       PIC X(20).
-                   07  SPA-GMN-SYUBETSU5       PIC X(20).
-                   07  SPA-GMN-SYUBETSU6       PIC X(20).
-                   07  SPA-GMN-LASTNYUIN       PIC X(40).
-                   07  SPA-GMN-NYUINKA         PIC X(40).
-                   07  SPA-GMN-UPYMD           PIC X(20).
       *
       *診療区分
                05  SPA-SRYKBN                  PIC X(02).
@@ -96,16 +83,12 @@
                        09  SPA-NAI-NENREI-MM   PIC 9(02).
                        09  SPA-NAI-NENREI-DD   PIC 9(02).
       *    入院会計マスター診療期間年月
-      *        05  SPA-SRYYM-SML                   PIC X(06).
-      *        05  SPA-SRYYM-BIG                   PIC X(06).
+               05  SPA-SRYYM-SML                   PIC X(06).
+               05  SPA-SRYYM-BIG                   PIC X(06).
       *
       *    次月会計作成用の保険組合せと食事の退避領域
                05  SPA-TAIHI-HKN                   PIC 9(03).
                05  SPA-TAIHI-SHOKUJI               PIC 9(03).
-               05  SPA-TAIHI-SHOKUJI-ASA           PIC 9(03).
-               05  SPA-TAIHI-SHOKUJI-HIRU          PIC 9(03).
-               05  SPA-TAIHI-SHOKUJI-YORU          PIC 9(03).
-               05  SPA-SHOKUDOU-OFF                PIC 9(03).
       *
            03  SPA-IID1-AREA.
       *警告メッセージ
@@ -146,14 +129,5 @@
            03  SPA-5000-GENSAN-INF-TBL-41.
                05  SPA-5000-GENSAN-INF-41        OCCURS  10.
                    07  SPA-5000-DSPCD-41         PIC  X(09).
-      *       入院会計外泊区分
-               05  SPA-5000-NACCT-GAIHAKUKBN
-                                           PIC  X(01).
-      *       入院時食事療養区分
-               05  SPA-5000-NACCT-SKJKBN       PIC  X(01).
-      *       ＡＤＬ入力区分
-               05  SPA-5000-ADLINPUTKBN        PIC  X(01).
-      *       療養病棟（病床）会計表示区分
-               05  SPA-5000-RYOYODSPKBN        PIC  X(01).
       *
       *
