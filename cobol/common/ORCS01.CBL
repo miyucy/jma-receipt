@@ -94,6 +94,9 @@
       *  01.00.25    NACL¡ÝÌçÏÆ   02/10/28  ÄûÀµ»þ¤Î¸ºÌÈ»»Äê½¤Àµ
       *  01.00.26    NACL¡Ý¾®Æ¦Âô 02/12/05  £¶£µºÐ°Ê¾å¤Î¿²¤¿¤­¤êÏ·¿Í¤Ë¤Ä¤¤¤Æ
       *                                     ÌôºÞÉéÃ´¶â¤ò»»Äê¤·¤Ê¤¤¤è¤¦½¤Àµ
+      *  01.00.27    NACL¡Ý¾®Æ¦Âô 02/12/20  £¶£µºÐ°Ê¾å¤Î¿²¤¿¤­¤êÏ·¿Í¤Ë¤Ä¤¤¤Æ
+      *                                     ÌôºÞÉéÃ´¶â¤ò»»Äê¤·¤Ê¤¤¤è¤¦½¤Àµ
+      *                                     ¡Ê¥Õ¥é¥°½é´ü²½°ÌÃÖÊÑ¹¹¡Ë
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -485,6 +488,7 @@
                                        LNK-SYU-SYUCOMPYKZFTN
                                        LNK-SYU-SYUCOMPTOTAL
            MOVE    SPACE    TO  LNK-SYU-SYUYKZFTNKBN.
+           INITIALIZE    WK-SYUHKN-TAIHI-AREA.
            PERFORM   VARYING   IDX   FROM   1    BY   1
              UNTIL   IDX   >   4
                   MOVE    ZERO     TO  LNK-SYU-KOH-HKNFTNMONEY(IDX)
