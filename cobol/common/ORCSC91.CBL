@@ -32,6 +32,7 @@
       *  01.00.03    MCC-多々納   02.05.17  労災用保険種別毎の追加
       *  01.00.04    NACL-多々納  02.08.06  同時算定チェックに継続管理加
       *                                     算追加
+      *  01.00.05    NACL-多々納  02.12.17  入院時算定チェック変更
       *****************************************************************
       *
       *
@@ -51,6 +52,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
+           03  FLG-NYU-CHK         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -711,6 +713,18 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   200 )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
+      *        入院で１日上限の時、入力日のみ
+               MOVE    ZERO            TO  FLG-NYU-CHK
+               IF     (SPA-NYUGAIKBN       =   "1"   )  AND
+                      (TNS-JGNCNT1D        >   ZERO  )  AND
+                      (SPA-COM-NYU-KAI(IDX)    >   ZERO )
+                   MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+                   IF      SPA-COM-NYUINDAY(IDX IDX-Y2)    =   ZERO
+                       MOVE    1               TO  FLG-NYU-CHK
+                   END-IF
+               END-IF
+      *
+            IF     FLG-NYU-CHK          =   ZERO
                IF      LNK-SC91-KBN        =   "1"  OR  "3"
                    IF      IDX             =   LNK-SC91-GMN-IDX
                        CONTINUE
@@ -732,6 +746,7 @@
                                                TO  WRK-DOCNT
                    END-IF
                END-IF
+             END-IF
            END-PERFORM
       *
            .
@@ -825,7 +840,7 @@
                   (LNK-SC91-DAYMAXCNT  >   ZERO   )
                IF      LNK-SC91-DAYMAXCNT
                                    <= ( WRK-SC91-DAYCNT  +  WRK-DAYCNT
-                                                          +  WRK-DOCNT )
+                                                         +  WRK-DOCNT )
                    MOVE    "0033"          TO  LNK-SC91-ERRCD
       *            消炎鎮痛処置の時、エラーメッセージを換える
                    IF      WRK-CODE        =   "005"
@@ -1117,6 +1132,18 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   200 )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
+      *        入院で１日上限の時、入力日のみ
+               MOVE    ZERO            TO  FLG-NYU-CHK
+               IF     (SPA-NYUGAIKBN       =   "1"   )  AND
+                      (TNS-JGNCNT1D        >   ZERO  )  AND
+                      (SPA-COM-NYU-KAI(IDX)    >   ZERO )
+                   MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+                   IF      SPA-COM-NYUINDAY(IDX IDX-Y2)    =   ZERO
+                       MOVE    1               TO  FLG-NYU-CHK
+                   END-IF
+               END-IF
+      *
+            IF     FLG-NYU-CHK          =   ZERO
                IF      LNK-SC91-KBN        =   "1"  OR  "3"
                    IF      IDX             =   LNK-SC91-GMN-IDX
                        CONTINUE
@@ -1142,6 +1169,7 @@
                                                TO  WRK-CHK-SRYCD
                    END-IF
                END-IF
+             END-IF
            END-PERFORM
       *
            .

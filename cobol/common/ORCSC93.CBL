@@ -33,6 +33,8 @@
       * 01.00.04     NACL-Â¿¡¹Ç¼  02/10/18  Æþ±¡ÄÉ²Ã
       * 01.00.05     NACL-Â¿¡¹Ç¼  02/11/11  £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁÄÉ²Ã
       * 01.00.06     NACL-Â¿¡¹Ç¼  02/11/20  ¼«ÇåÀÕ´ïºàÄÉ²Ã
+      * 01.00.07     NACL-Â¿¡¹Ç¼  02/11/22  ²èÁü¿ÇÃÇ¤ÎÅÀÅ©ÄÉ²Ã¡Ê731)
+      * 01.00.08     NACL-Â¿¡¹Ç¼  02/12/17  ºßÂð»ØÆ³ÎÁ¤ÎÄÉ²Ã¡Ê143)
       *****************************************************************
       *
       *
@@ -941,6 +943,15 @@
       *****************************************************************
        51011-SRYSYUKBN-KBN-SEC           SECTION.
       *
+      *    ºßÂð»ØÆ³ÎÁ¤Î»þ¡¢ºßÂð»ØÆ³ÎÁ¤È¤¹¤ë
+           IF     (WRK-SRYSYUKBN           =   "143" )  AND
+                  (SPA-COM-TNSSRYKBN (IDX) =   "14"  )
+               MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN (IDX)
+               MOVE    SPA-COM-TNSSRYKBN (IDX) TO  WRK-SRYKBN
+               MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN   (IDX)
+               GO      TO      51011-SRYSYUKBN-KBN-EXT
+           END-IF
+      *
            IF      SPA-COM-TNSSRYKBN (IDX) NOT =   ZERO
                MOVE    SPA-COM-TNSSRYKBN (IDX) TO  WRK-SRYKBN
            END-IF
@@ -1109,6 +1120,17 @@
                            END-IF
                    END-EVALUATE
                END-IF
+      *        ºßÂð»ØÆ³ÎÁ¤Î»þ¡¢ÅÀ¿ô²Ã»»¤Ï£Ï£Ë
+               IF      LNK-SC93-NETAKIRI-ARI   =   1
+                   IF     (WRK-SRYSYUKBN           =   "143" )  AND
+                          (SPA-COM-SRYKBN (IDX)    =   "14"  )
+                       IF      SPA-COM-TENSIKIBETU (IDX)   =   "1"  OR
+                                                               "3"
+                           MOVE    1               TO  FLG-ARI
+                       END-IF
+                   END-IF
+               END-IF
+      *
            END-IF
            IF      FLG-ARI             =   ZERO
                MOVE    "0013"              TO  SPA-ERRCD

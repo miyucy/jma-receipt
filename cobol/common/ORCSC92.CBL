@@ -285,6 +285,11 @@
                END-IF
                GO      TO      000-PROC-EXT
            END-IF
+      *    併用算定チェックのみの時、終了
+           IF      LNK-SC92-KBN        =   "4"
+               PERFORM 2005-HEIYOU-CHK-SEC
+               GO      TO      000-PROC-EXT
+           END-IF
       *
       *    基本チェック
            PERFORM 200-INPUTCD-KIHON-SEC

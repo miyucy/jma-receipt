@@ -44,6 +44,8 @@
       * 02.00.09     NACL¡ÝÂ¿¡¹Ç¼ 02/11/11  £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁÄÉ²Ã
       * 02.00.10     NACL¡ÝÂ¿¡¹Ç¼ 02/11/25  £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁ¤Î¥Á¥§¥Ã¥¯¤ò
       *                                     £Ë£°£²¤Î¤ß¤È¤¹¤ë
+      * 02.00.11     NACL¡ÝÂ¿¡¹Ç¼ 02/12/06  ½é¿Ç¤Î»þÏ«ºÒ¤ÎÃÖ´¹¤¨¤ò¤·¤Ê¤¤
+      * 02.00.12     NACL-Â¿¡¹Ç¼  02/12/17  ºßÂð»ØÆ³ÎÁ¤ÎÄÉ²Ã¡Ê143)
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1293,6 +1295,13 @@
                    WHEN    "112006070"
                        GO      TO      1005-KASAN-CHK-EXT
                END-EVALUATE
+           END-IF
+      *    ¿²¤¿¤­¤êºßÂð¤¬¤¢¤ê¡¢ºßÂð»ØÆ³ÎÁ¤Ï£Ï£Ë¤È¤¹¤ë
+           IF     (LNK-ORCSC-NETAKIRI-ARI  NOT =   ZERO  )  OR
+                  (LNK-ORCSC-NETAKIRI-ARI2 NOT =   ZERO  )
+               IF      WRK-COM-SRYSYUKBN (IDX-Z)   =   "143"
+                   MOVE    1                   TO  FLG-ARI
+               END-IF
            END-IF
       *
            IF      FLG-ARI             =   ZERO
