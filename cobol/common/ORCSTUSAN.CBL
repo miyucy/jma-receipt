@@ -28,7 +28,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.00.10    NACL-太田    03.03.12  日付４の計算方法修正
+      *  01.00.01    NACL-太田    03.03.12  日付４の計算方法修正
+      *  01.00.02    NACL-太田    03.03.24  特定入院料の考慮を削除
       *****************************************************************
       *
        ENVIRONMENT                         DIVISION.
@@ -51,7 +52,6 @@
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACT                PIC 9(01).
-           03  FLG-TOKUTEI                 PIC 9(01).
            03  FLG-SENTEICDCHG             PIC 9(01).
       *
       *    添字領域
@@ -377,8 +377,7 @@
                        GO  TO  2121-NYUINACCT-SEL-EXT
                    END-IF
       *
-                   IF    ( FLG-TOKUTEI     =   ZERO )
-                     AND ( FLG-SENTEICDCHG =   ZERO )
+                   IF  ( FLG-SENTEICDCHG =   ZERO )
                        PERFORM 2121-NYUINACT-TUSAN-SEC
                    END-IF
                END-IF
@@ -401,8 +400,6 @@
       *    入院診療行為検索処理
       *****************************************************************
        2121-NYUINACT-SEL-SEC               SECTION.
-      *
-           MOVE    ZERO                TO  FLG-TOKUTEI
       *
            MOVE    ZERO                TO  FLG-NYUINACT
            INITIALIZE                      NYUINACT-REC
@@ -445,11 +442,7 @@
                    MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
                    IF    ( TNS-DATAKBN     =   1 )
                        MOVE    1           TO  FLG-HIT
-                       IF  ( TNS-NYUTENTTLKBN  =   920 )
-                           MOVE    1       TO  FLG-TOKUTEI
-                       ELSE
-                           PERFORM 2121-SENTEICDCHG-CHK-SEC
-                       END-IF
+                       PERFORM 2121-SENTEICDCHG-CHK-SEC
                    END-IF
                END-IF
       *
