@@ -284,7 +284,7 @@
       *  01.01.104   NACL-太田    03/09/30  SYUNOU-KEY20追加
       *  01.01.105   NACL-藤原    03/10/03  PTBYOMEI-KEY13追加
       *  01.01.106   NACL-藤原    03/10/07  PTBYOMEI-KEYKEY14,KEY15追加
-      *  01.01.107   NACL-森脇    03/10/09  BD003-KEY,KEY2,KEY3,KEY4追加
+      *  01.01.107   NACL-森脇    03/10/09  BD003-KEY,KEY2,KEY3追加
       *  01.01.108   NACL-太田    03/10/10  I001-KEY4追加
       *  01.01.109   NACL-藤原    03/10/16  SYUNOU-KEY21追加
       *  01.01.110   NACL-多々納　03/11/11  RECECOM-KEY4
@@ -3043,9 +3043,6 @@
                                        TO  WRK-PATH
                WHEN    ANY             ALSO   "BD003-KEY3"
                    MOVE    PATH-VIEW-BD003-KEY3
-                                       TO  WRK-PATH
-               WHEN    ANY             ALSO   "BD003-KEY4"
-                   MOVE    PATH-VIEW-BD003-KEY4
                                        TO  WRK-PATH
       *
                WHEN    ANY             ALSO   "SYUDAY-KEY"
