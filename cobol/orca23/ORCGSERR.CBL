@@ -74,6 +74,7 @@
       *****COPY    "S01.INC".
            COPY    "S02.INC".
            COPY    "S03.INC".
+           COPY    "S03N.INC".
            COPY    "SERR.INC".
       *
        PROCEDURE                   DIVISION    USING

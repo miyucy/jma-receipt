@@ -1,0 +1,252 @@
+S03N	{
+	fixed14	{
+		PTNUM	{
+			value	varchar(20);
+		};
+		SRYYMD	{
+			value	varchar(9);
+		};
+		KANANAME	{
+			value	varchar(50);
+		};
+		NAME	{
+			value	varchar(50);
+		};
+		SEX	{
+			value	varchar(4);
+		};
+		BIRTHDAY	{
+			value	varchar(9);
+		};
+		HKNCOMBI	{
+			value	varchar(30);
+		};
+		RATE	{
+			value	varchar(6);
+		};
+		SRYKA	{
+			value	varchar(10);
+		};
+		NYUGAIKBN	{
+			value	varchar(6);
+		};
+		NAIYO	{
+			value	varchar(10);
+		};
+		DENPNUM	{
+			value	varchar(10);
+		};
+		DENPJTI	{
+			value	varchar(10);
+		};
+		HAKYMD	{
+			value	varchar(9);
+		};
+		SSUHKNTEN	{
+			value	number(10);
+		};
+		SDOHKNTEN	{
+			value	number(10);
+		};
+		ZTKHKNTEN	{
+			value	number(10);
+		};
+		TYKHKNTEN	{
+			value	number(10);
+		};
+		CSYHKNTEN	{
+			value	number(10);
+		};
+		SYCHKNTEN	{
+			value	number(10);
+		};
+		SJTHKNTEN	{
+			value	number(10);
+		};
+		KNSHKNTEN	{
+			value	number(10);
+		};
+		GZUHKNTEN	{
+			value	number(10);
+		};
+		ETCHKNTEN	{
+			value	number(10);
+		};
+		NYUHKNTEN	{
+			value	number(10);
+		};
+		TOTALHKNTEN	{
+			value	number(10);
+		};
+		SSUTGMONEY	{
+			value	number(10);
+		};
+		SDOTGMONEY	{
+			value	number(10);
+		};
+		ZTKTGMONEY	{
+			value	number(10);
+		};
+		TYKTGMONEY	{
+			value	number(10);
+		};
+		CSYTGMONEY	{
+			value	number(10);
+		};
+		SYCTGMONEY	{
+			value	number(10);
+		};
+		SJTGMONEY	{
+			value	number(10);
+		};
+		KNSTGMONEY	{
+			value	number(10);
+		};
+		GZUTGMONEY	{
+			value	number(10);
+		};
+		ETCTGMONEY	{
+			value	number(10);
+		};
+		HKNTEKMONEY	{
+			value	number(10);
+		};
+		HKNTEKGAI	{
+			value	number(10);
+		};
+		JIHIMSG1	{
+			value	varchar(20);
+		};
+		JIHIMSG2	{
+			value	varchar(20);
+		};
+		JIHIMSG3	{
+			value	varchar(20);
+		};
+		JIHIMSG4	{
+			value	varchar(20);
+		};
+		JIHIMSG5	{
+			value	varchar(20);
+		};
+		JIHI1	{
+			value	number(10);
+		};
+		JIHI2	{
+			value	number(10);
+		};
+		JIHI3	{
+			value	number(10);
+		};
+		JIHI4	{
+			value	number(10);
+		};
+		JIHI5	{
+			value	number(10);
+		};
+		JIHITOTAL	{
+			value	number(10);
+		};
+		JIHI1TAX	{
+			value	number(10);
+		};
+		JIHI2TAX	{
+			value	number(10);
+		};
+		JIHI3TAX	{
+			value	number(10);
+		};
+		JIHI4TAX	{
+			value	number(10);
+		};
+		JIHI5TAX	{
+			value	number(10);
+		};
+		JIHITAXTOTAL	{
+			value	number(10);
+		};
+		JIHITAX	{
+			value	number(10);
+		};
+		SKJRYOYO	{
+			value	number(10);
+		};
+		SKJFTN	{
+			value	number(10);
+		};
+		YKZFTN	{
+			value	number(10);
+		};
+		RJNFTN	{
+			value	number(10);
+		};
+		KOHFTN	{
+			value	number(10);
+		};
+		FTNTOTAL	{
+			value	number(10);
+		};
+		RSISHOSHIN	{
+			value	number(10);
+		};
+		RSISAISHIN	{
+			value	number(10);
+		};
+		RSISDO	{
+			value	number(10);
+		};
+		RSIETC	{
+			value	number(10);
+		};
+		RMSAGAKU	{
+			value	number(10);
+		};
+		SYKMONEY	{
+			value	number(10);
+		};
+		NYUKINGK1	{
+			value	number(10);
+		};
+		MISYUZAN	{
+			value	number(10);
+		};
+		ZENMISYU_GAI	{
+			value	number(10);
+		};
+		ZENMISYU_NYU	{
+			value	number(10);
+		};
+		GOKMISYU	{
+			value	number(10);
+		};
+		NYUKINGK2	{
+			value	number(10);
+		};
+		NYUKINYMD	{
+			value	varchar(10);
+		};
+		NYUKINHOUHOU_COMBO	{
+			NYUKINHOUHOU	{
+				value	varchar(27);
+			};
+			count	int;
+			item	varchar(27)[3];
+		};
+		RIREKIIN	{
+			value	number(2);
+		};
+		scrolledwindow1	{
+			clist1	{
+				count	int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(12);
+					value2	varchar(12);
+					value3	varchar(11);
+					value4	varchar(12);
+				}	[10];
+				select	bool[10];
+			};
+		};
+	};
+};

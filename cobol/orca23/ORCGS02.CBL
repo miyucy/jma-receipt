@@ -436,6 +436,7 @@
       *****COPY    "S01.INC".
            COPY    "S02.INC".
            COPY    "S03.INC".
+           COPY    "S03N.INC".
            COPY    "SERR.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -572,18 +573,23 @@
       *                ¼ýÇ¼ÊÔ½¸
                        MOVE    SPA-SRYKAMEI    TO  SPA-GMN-SRYKAMEI
                        MOVE    SPA-SRYKA       TO  SPA-GMN-SRYKA
-      *                ¼õ¿ÇÍúÎò¤è¤ê¿ÇÎÅ²Ê·èÄê
-                       PERFORM 3103-JYURRK-CHK-SEC
-                       IF    ( SPA-BEDSU   >   ZERO )
-                           MOVE    "0"         TO  SPA-GMN-NYUGAIKBN
+      *                ¼ýÇ¼¥Þ¥¹¥¿¤è¤ê¿ÇÎÅ²Ê·èÄê
+                       PERFORM 3103-SYUNOU-CHK-SEC
+                       IF    ( SPA-BEDSU       >   ZERO )
+                           MOVE    "0"             TO  SPA-GMN-NYUGAIKBN
                        ELSE
-                           MOVE    "2"         TO  SPA-GMN-NYUGAIKBN
+                           IF    ( SPA-GMN-NYUGAIKBN
+                                   =   SPACE )
+                               MOVE    "2"         TO  SPA-GMN-NYUGAIKBN
+                           END-IF
                        END-IF
+      *
                        PERFORM 3101-COMBO-SYOKI-SET-SEC
                        PERFORM 300-SYUNOU-HENSYU-SEC
                        MOVE    1               TO   SPA-GMN-CUR
                    END-IF
                WHEN    "S03"
+               WHEN    "S03N"
                    PERFORM 320-S03SPASET-SEC
                WHEN    OTHER
                    PERFORM 310-SPA-SET-SEC
@@ -756,49 +762,41 @@
            EXIT.
       *
       *****************************************************************
-      *   ¼õ¿ÇÍúÎò¤è¤ê¿ÇÎÅ²Ê·èÄê½èÍý
+      *   ¼ýÇ¼¥Þ¥¹¥¿¤è¤ê¿ÇÎÅ²Ê·èÄê½èÍý
       *****************************************************************
-       3103-JYURRK-CHK-SEC             SECTION.
+       3103-SYUNOU-CHK-SEC             SECTION.
       *
-      *    ¼õ¿ÇÎò¤ò¸¡º÷¤¹¤ë  °åÎÅµ¡´Ø¡¢´µ¼Ô£É£Ä
-           INITIALIZE                  JYURRK-REC
-           MOVE    SPA-HOSPID          TO  JYURRK-HOSPID
-           MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
-           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-           MOVE    SPA-NAI-SRYYM       TO  JYURRK-SRYYMD(1:6)
-           MOVE    "31"                TO  JYURRK-SRYYMD(7:2)
+             INITIALIZE                      SYUNOU-REC
+             MOVE    SPA-HOSPID          TO  SYU-HOSPID
+             MOVE    SPA-GMN-PTID        TO  SYU-PTID
+             MOVE    SPA-NAI-SRYYM       TO  SYU-SRYYMD (1 : 6)
+             MOVE    "__"                TO  SYU-SRYYMD (7 : 2)
+             MOVE    SYUNOU-REC          TO  MCPDATA-REC
+             MOVE    "DBSELECT"          TO  MCP-FUNC
+             MOVE    "SYUNOU-KEY6"       TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"          USING
+                                          MCPAREA
+                                          ORCMCPAREA
+                                          MCPDATA-REC
+             IF      MCP-RC              =    ZERO
+                 MOVE    "SYUNOU-KEY6"         TO  ORC-DBPATH
+                 PERFORM 900-SYUNOU-NEXT-SEC
+                 MOVE    SYU-NYUGAIKBN   TO    SPA-GMN-NYUGAIKBN
+                 MOVE    SYU-SRYKA       TO    SPA-GMN-SRYKA
+             ELSE
+                 MOVE    1                    TO  FLG-SYUNOU
+             END-IF
       *
-           MOVE    JYURRK-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "JYURRK-KEY10"      TO  ORC-DBPATH
-           CALL    "ORCMCPSUB"          USING
-                                        MCPAREA
-                                        ORCMCPAREA
-                                        MCPDATA-REC
-           IF      MCP-RC              =   ZERO
-               MOVE    "JYURRK-KEY10"      TO  ORC-DBPATH
-               PERFORM 960-JYURRK-READ-SEC
-           ELSE
-               INITIALIZE                  JYURRK-REC
-               MOVE    1               TO  FLG-JYURRK
-           END-IF
+             MOVE    "DBCLOSE"           TO  MCP-FUNC
+             MOVE    "SYUNOU-KEY6"        TO  ORC-DBPATH
+             CALL    "ORCMCPSUB"          USING
+                                          MCPAREA
+                                          ORCMCPAREA
+                                          MCPDATA-REC
       *
-           DISPLAY "SPA-NAI-SRYYM = " SPA-NAI-SRYYM
-           DISPLAY "JYURRK-SRYYMD = " JYURRK-SRYYMD
-           PERFORM
-               UNTIL   FLG-JYURRK          =   1
-               IF      SPA-NAI-SRYYM       =   JYURRK-SRYYMD(1:6)
-                   MOVE    JYURRK-SRYKA        TO  SPA-GMN-SRYKA
-                   MOVE    JYURRK-NYUGAIKBN    TO  SPA-GMN-NYUGAIKBN
-               END-IF
-      *
-               MOVE    "JYURRK-KEY10"      TO  ORC-DBPATH
-               PERFORM 960-JYURRK-READ-SEC
-               DISPLAY "FLG-JYURRK = " FLG-JYURRK
-           END-PERFORM
            .
       *
-       3103-JYURRK-CHK-EXT.
+       3103-SYUNOU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -872,8 +870,9 @@
       *     
              PERFORM    UNTIL      (FLG-SYUNOU      =   1  )  
                  MOVE    ZERO               TO  FLG-SYORI
-                 IF     (SPA-GMN-SRYKA   NOT =   SPACE    )  AND
-                        (SPA-GMN-SRYKA   NOT =   SYU-SRYKA)
+                 IF     (SPA-GMN-SRYKA       =   SPACE    )  OR
+                       ((SPA-GMN-SRYKA   NOT =   SPACE    )  AND
+                        (SPA-GMN-SRYKA   NOT =   SYU-SRYKA))
                      MOVE    1                 TO  FLG-SYORI
                  END-IF
       *
@@ -1406,8 +1405,8 @@
            MOVE    SPA-GMN-PTID        TO  SPA-LAST-PTID
            MOVE    SPA-GMN-PTNUM       TO  SPA-LAST-PTNUM
       *
-      *    ¼õ¿ÇÎò¥Á¥§¥Ã¥¯½èÍý
-           PERFORM 3103-JYURRK-CHK-SEC
+      *    ¼ýÇ¼¥Þ¥¹¥¿¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 3103-SYUNOU-CHK-SEC
       *
       *    Æþ³°¶èÊ¬
            IF    ( SPA-BEDSU       >   ZERO )
@@ -1512,8 +1511,8 @@
                GO  TO  4104-SRYYM-CHK-EXT
            END-IF
       *
-      *    ¼õ¿ÇÎò¥Á¥§¥Ã¥¯½èÍý
-           PERFORM 3103-JYURRK-CHK-SEC
+      *    ¼ýÇ¼¥Þ¥¹¥¿¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 3103-SYUNOU-CHK-SEC
       *
       *    Æþ³°¶èÊ¬
            IF    ( SPA-BEDSU       >   ZERO )
@@ -3129,11 +3128,17 @@
            MOVE    "05"                TO  SPA-S01-SYORINO
            PERFORM 4901-SPAKYOTUKEY-SET-SEC
       *
-           MOVE    "S02"               TO  SPA-MOTOPG
-           MOVE    "S03"               TO  SPA-SAKIPG
+           MOVE    "S02"           TO  SPA-MOTOPG
       *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE.
-           MOVE   "S03    "            TO  MCP-WINDOW.
+           IF    ( SPA-BEDSU    >      ZERO )
+               MOVE    "S03N"          TO  SPA-SAKIPG
+               MOVE   "CHANGE"         TO  MCP-PUTTYPE
+               MOVE   "S03N"           TO  MCP-WINDOW
+           ELSE
+               MOVE    "S03"           TO  SPA-SAKIPG
+               MOVE   "CHANGE"         TO  MCP-PUTTYPE
+               MOVE   "S03    "        TO  MCP-WINDOW
+           END-IF
       *
            PERFORM 900-PUT-WINDOW.
       *
@@ -3257,11 +3262,17 @@
            MOVE    "07"                TO  SPA-S01-SYORINO
            PERFORM 4901-SPAKYOTUKEY-SET-SEC
       *
-           MOVE    "S02"               TO  SPA-MOTOPG
-           MOVE    "S03"               TO  SPA-SAKIPG
+           MOVE    "S02"           TO  SPA-MOTOPG
       *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE.
-           MOVE   "S03    "            TO  MCP-WINDOW.
+           IF    ( SPA-BEDSU    >      ZERO )
+               MOVE    "S03N"          TO  SPA-SAKIPG
+               MOVE   "CHANGE"         TO  MCP-PUTTYPE
+               MOVE   "S03N"           TO  MCP-WINDOW
+           ELSE
+               MOVE    "S03"           TO  SPA-SAKIPG
+               MOVE   "CHANGE"         TO  MCP-PUTTYPE
+               MOVE   "S03    "        TO  MCP-WINDOW
+           END-IF
       *
            PERFORM 900-PUT-WINDOW.
       *
@@ -3316,11 +3327,17 @@
            MOVE    "08"                TO  SPA-S01-SYORINO
            PERFORM 4901-SPAKYOTUKEY-SET-SEC
       *
-           MOVE    "S02"               TO  SPA-MOTOPG
-           MOVE    "S03"               TO  SPA-SAKIPG
+           MOVE    "S02"           TO  SPA-MOTOPG
       *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE.
-           MOVE   "S03    "            TO  MCP-WINDOW.
+           IF    ( SPA-BEDSU    >      ZERO )
+               MOVE    "S03N"          TO  SPA-SAKIPG
+               MOVE   "CHANGE"         TO  MCP-PUTTYPE
+               MOVE   "S03N"           TO  MCP-WINDOW
+           ELSE
+               MOVE    "S03"           TO  SPA-SAKIPG
+               MOVE   "CHANGE"         TO  MCP-PUTTYPE
+               MOVE   "S03    "        TO  MCP-WINDOW
+           END-IF
       *
            PERFORM 900-PUT-WINDOW.
       *
@@ -3350,12 +3367,17 @@
            MOVE    "09"                TO  SPA-S01-SYORINO
            PERFORM 4901-SPAKYOTUKEY-SET-SEC
       *
-           MOVE    "S02"               TO  SPA-MOTOPG
-           MOVE    "S03"               TO  SPA-SAKIPG
-           MOVE    SPA-S01KYOUTU       TO  SPA-WORK
+           MOVE    "S02"           TO  SPA-MOTOPG
       *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE.
-           MOVE   "S03    "            TO  MCP-WINDOW.
+           IF    ( SPA-BEDSU    >      ZERO )
+               MOVE    "S03N"          TO  SPA-SAKIPG
+               MOVE   "CHANGE"         TO  MCP-PUTTYPE
+               MOVE   "S03N"           TO  MCP-WINDOW
+           ELSE
+               MOVE    "S03"           TO  SPA-SAKIPG
+               MOVE   "CHANGE"         TO  MCP-PUTTYPE
+               MOVE   "S03    "        TO  MCP-WINDOW
+           END-IF
       *
            PERFORM 900-PUT-WINDOW.
       *
