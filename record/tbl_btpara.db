@@ -79,6 +79,18 @@ path	key5		{
 	};
 };
 
+path	key6		{ 	
+	DBSELECT	{
+		DECLARE tbl_btpara_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_btpara
+			WHERE   SHELLID     =   :SHELLID  AND
+					SCRIPTID    =   :SCRIPTID
+					ORDER BY  RENNUM DESC
+		;
+	};
+};
+
 path	upd1	{ 	
 	DBUPDATE	{
 		UPDATE	tbl_btpara
