@@ -1784,7 +1784,7 @@
                                        ORCSKANACHKAREA
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
-               MOVE    "0030"              TO  SPA-ERRCD
+               MOVE    "0036"              TO  SPA-ERRCD
                MOVE    14                  TO  SPA-GMN2D-CUR
                IF      KANACHK-RC2         =   7
                    MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN2D-CITYNAME
@@ -2573,6 +2573,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0031"
                    MOVE    "傷病の部位は全角で入力して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0036"
+                   MOVE    "郡市区は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
                WHEN    "0032"
                    MOVE    "郡市区がありません。"
