@@ -1469,10 +1469,10 @@
       *    END-IF
       *
       *    定期請求チェック処理
-      *    PERFORM 4101-SEIKYU-CHK-SEC
-      *    IF    ( SPA-ERRCD   NOT =   SPACE )
-      *        GO  TO  4102-KIHON-CHK-EXT
-      *    END-IF
+           PERFORM 4101-SEIKYU-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
       *
       *    検索時患者表示チェック処理
            PERFORM 4101-DISPKBN-CHK-SEC
@@ -2966,7 +2966,7 @@
            IF    ( WRK-CMB-ITM     NOT =   SPACE )
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SYORIKBN
            ELSE
-               MOVE    "0001"      TO  SPA-ERRCD
+               MOVE    "0012"      TO  SPA-ERRCD
                PERFORM 510-ERRCD-SET-SEC
                MOVE    2           TO  SPA-GMN-I01-CUR
                GO  TO  4101-SYORIKBN-CHK-EXT
@@ -3248,7 +3248,7 @@
                IF    ( SPA-ERRCD   NOT =   SPACE )
       *
       *            エラーコードを設定（後続の処理は続行）
-                   MOVE    "0001"      TO  SPA-ERRCD
+                   MOVE    "0013"      TO  SPA-ERRCD
                    MOVE    3           TO  SPA-GMN-I01-CUR
                    MOVE    WRK-IDOYMD  TO  WRK-YMD
                    PERFORM 5002-HIZUKE-CHK-SEC
@@ -3316,7 +3316,7 @@
                PERFORM 5002-HIZUKE-CHK-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
       *            エラーコードを設定（後続の処理は続行）
-                   MOVE    "0001"      TO  SPA-ERRCD
+                   MOVE    "0017"      TO  SPA-ERRCD
                    MOVE    7           TO  SPA-GMN-I01-CUR
                    MOVE    WRK-NYUINYMD
                                        TO  WRK-YMD
@@ -3383,6 +3383,7 @@
                                    TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
+               MOVE    "0021"      TO  SPA-ERRCD
                MOVE    11          TO  SPA-GMN-I01-CUR
                GO  TO  4101-TAIINYMD-CHK-EXT
            END-IF
@@ -3433,7 +3434,7 @@
       *
            IF    ( WRK-STR2        NOT =   SPACE )
                MOVE    SPACE           TO  SPA-GMN-I01-BTUNAME
-               MOVE    "0001"          TO  SPA-ERRCD
+               MOVE    "0014"          TO  SPA-ERRCD
                MOVE    4               TO  SPA-GMN-I01-CUR
                GO  TO  4101-BRMNUM-CHK-EXT
            END-IF
@@ -3841,7 +3842,7 @@
                    END-IF
                END-IF
            ELSE
-               MOVE    "0001"      TO  SPA-ERRCD
+               MOVE    "0015"      TO  SPA-ERRCD
                MOVE    5           TO  SPA-GMN-I01-CUR
                GO  TO  4101-BTUNAME-CHK-EXT
            END-IF
@@ -3872,7 +3873,7 @@
            IF    ( WRK-CMB-ITM     NOT =   SPACE )
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SAGAKU
            ELSE
-               MOVE    "0001"      TO  SPA-ERRCD
+               MOVE    "0016"      TO  SPA-ERRCD
                MOVE    6           TO  SPA-GMN-I01-CUR
                GO  TO  4101-SAGAKU-CHK-EXT
            END-IF
@@ -3896,7 +3897,7 @@
            IF    ( WRK-CMB-ITM     NOT =   SPACE )
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-NYUINKA
            ELSE
-               MOVE    "0001"      TO  SPA-ERRCD
+               MOVE    "0018"      TO  SPA-ERRCD
                MOVE    8           TO  SPA-GMN-I01-CUR
                GO  TO  4101-NYUINKA-CHK-EXT
            END-IF
@@ -3920,7 +3921,7 @@
            IF    ( WRK-CMB-ITM     NOT =   SPACE )
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SHOKAI
            ELSE
-               MOVE    "0001"      TO  SPA-ERRCD
+               MOVE    "0019"      TO  SPA-ERRCD
                MOVE    9           TO  SPA-GMN-I01-CUR
                GO  TO  4101-SHOKAI-CHK-EXT
            END-IF
@@ -3993,7 +3994,7 @@
            IF    ( WRK-CMB-ITM     NOT =   SPACE )
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-DR (IDX1)
            ELSE
-               MOVE    "0001"      TO  SPA-ERRCD
+               MOVE    "0022"      TO  SPA-ERRCD
                COMPUTE SPA-GMN-I01-CUR =   IDX1    +   11
                GO  TO  4101-DR-CHK-EXT
            END-IF
@@ -4035,7 +4036,7 @@
                MOVE    WRK-CMB-ITM2
                                    TO  SPA-NAI-I01-FTNRATE
            ELSE
-               MOVE    "0001"      TO  SPA-ERRCD
+               MOVE    "0023"      TO  SPA-ERRCD
                MOVE    15          TO  SPA-GMN-I01-CUR
                GO  TO  4101-HKNCOMBI-CHK-EXT
            END-IF
@@ -4063,7 +4064,7 @@
                MOVE    WRK-CMB-ITM2
                                    TO  SPA-NAI-I01-TOKNYUIN-ORG
            ELSE
-               MOVE    "0001"      TO  SPA-ERRCD
+               MOVE    "0024"      TO  SPA-ERRCD
                MOVE    16          TO  SPA-GMN-I01-CUR
                GO  TO  4101-TOKNYUIN-CHK-EXT
            END-IF
@@ -4098,7 +4099,7 @@
            IF    ( WRK-CMB-ITM     NOT =   SPACE )
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SEIKYU
            ELSE
-               MOVE    "0001"      TO  SPA-ERRCD
+               MOVE    "0025"      TO  SPA-ERRCD
                MOVE    18          TO  SPA-GMN-I01-CUR
                GO  TO  4101-SEIKYU-CHK-EXT
            END-IF
@@ -4123,7 +4124,7 @@
            IF    ( WRK-CMB-ITM     NOT =   SPACE )
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-DISPKBN
            ELSE
-               MOVE    "0001"      TO  SPA-ERRCD
+               MOVE    "0026"      TO  SPA-ERRCD
                MOVE    19          TO  SPA-GMN-I01-CUR
                GO  TO  4101-DISPKBN-CHK-EXT
            END-IF
@@ -4143,7 +4144,7 @@
       *
       *    入力された番号が存在するかチェック
            IF    ( SPA-GMN-I01-SELNUM  >   SPA-GMN-I01-NYUREKILST-CNT )
-               MOVE    "0001"      TO  SPA-ERRCD
+               MOVE    "0027"      TO  SPA-ERRCD
                MOVE    100         TO  SPA-GMN-I01-CUR
                GO  TO  4101-SELNUM-CHK-EXT
            END-IF
@@ -7897,6 +7898,7 @@
            DISPLAY "LNK-S02-SKYEDYMD           = " LNK-S02-SKYEDYMD
            CALL    "ORCSNYUFTN"    USING
                                    MCPAREA
+                                   SPA-AREA
                                    LNK-ORCS02-REC
                                    LNK-SYUNOU-REC-T
            DISPLAY "LNK-S02-RC = " LNK-S02-RC
@@ -8827,18 +8829,14 @@
       *???     END-IF
       *??? END-IF
       *
-      *??? xx 暫定 xx 定期請求区分にはカーソルを飛ばさないようにする xx
            IF    ( SPA-GMN-I01-CUR =   18  )
-               COMPUTE SPA-GMN-I01-CUR =   SPA-GMN-I01-CUR +   1
+               IF  ( SPA-GMN-I01-SEIKYU-STT    =   WIDGET-NORMAL )
+                   MOVE    "SEIKYU"        TO  MCP-WIDGET
+                   GO  TO  5001-MAPCUR-EXT
+               ELSE
+                   COMPUTE SPA-GMN-I01-CUR =   SPA-GMN-I01-CUR +   1
+               END-IF
            END-IF
-      *??? IF    ( SPA-GMN-I01-CUR =   18  )
-      *???     IF  ( SPA-GMN-I01-SEIKYU-STT    =   WIDGET-NORMAL )
-      *???         MOVE    "SEIKYU"        TO  MCP-WIDGET
-      *???         GO  TO  5001-MAPCUR-EXT
-      *???     ELSE
-      *???         COMPUTE SPA-GMN-I01-CUR =   SPA-GMN-I01-CUR +   1
-      *???     END-IF
-      *??? END-IF
       *
            IF    ( SPA-GMN-I01-CUR =   19  )
                IF  ( SPA-GMN-I01-DISPKBN-STT   =   WIDGET-NORMAL )
@@ -8949,6 +8947,57 @@
                                        TO  SPA-ERRMSG
            WHEN    "0005"
                MOVE    "初歴を選択してください"
+                                       TO  SPA-ERRMSG
+           WHEN    "0011"
+               MOVE    "患者番号入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0012"
+               MOVE    "処理区分入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0013"
+               MOVE    "異動日入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0014"
+               MOVE    "病室番号入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0015"
+               MOVE    "病棟名入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0016"
+               MOVE    "室料差額入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0017"
+               MOVE    "入院日入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0018"
+               MOVE    "入院科入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0019"
+               MOVE    "初回入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0020"
+               MOVE    "初歴入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0021"
+               MOVE    "退院日入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0022"
+               MOVE    "担当医入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0023"
+               MOVE    "保険組合せ入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0024"
+               MOVE    "特定入院料入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0025"
+               MOVE    "定期請求入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0026"
+               MOVE    "検索時患者表示入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0027"
+               MOVE    "選択番号入力エラー" 
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "患者番号を入力してください"
