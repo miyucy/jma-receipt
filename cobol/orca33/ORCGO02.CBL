@@ -544,7 +544,10 @@
                    PERFORM 210-BACK-SYORI-SEC
                ELSE    
                    IF      SPA-OIDCD       =   "1002"
-                       PERFORM 450-KOUSHIN-SEC
+                       PERFORM 4501-JOBKANRICHK-SEC
+                       IF    ( SPA-ERRCD       =   SPACE )
+                           PERFORM 450-KOUSHIN-SEC
+                       END-IF
                    ELSE
                        IF      SPA-OIDCD       =   "1003"
                           PERFORM 460-CLEAR-SEC
@@ -1714,29 +1717,10 @@
       *****************************************************************
        450-TOUROKU-SEC                SECTION.
       *
-      *    ジョブ管理チェック処理
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-CONS-JOB-JOBID
-                                   TO  JOB-JOBID
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                   ORCSJOBKANRIAREA 
-                                   JOBKANRI-REC 
-           IF    ( SJOBKANRI-RETURN
-                                   =   ZERO )
-               IF    ( JOB-ENDYMD      =   SPACE )
-                   MOVE    "7777"          TO  SPA-ERRCD
-                   MOVE    SPACE           TO  WRK-TEIKIERR
-                   STRING  "定期請求作成処理中です【"
-                                             DELIMITED  BY  SIZE
-                           JOB-SHELLMSG      DELIMITED  BY  SPACE
-                           "】"              DELIMITED  BY  SIZE
-                                             INTO  WRK-TEIKIERR
-                   END-STRING
+      *    ジョブ管理チェック
+           PERFORM 4501-JOBKANRICHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
                    GO  TO  450-TOUROKU-EXT
-               END-IF
            END-IF
       *
            IF    ( SPA-GMN-MAX        =   ZERO )
@@ -1930,6 +1914,38 @@
        450-KOUSHIN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ジョブ管理チェック処理
+      *****************************************************************
+       4501-JOBKANRICHK-SEC            SECTION.
+      *
+      *    ジョブ管理チェック処理
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA
+                                   JOBKANRI-REC 
+           IF      SJOBKANRI-RETURN
+                                   =   ZERO
+               IF      JOB-ENDYMD      =   SPACE
+                   MOVE    "7777"          TO  SPA-ERRCD
+                   MOVE    SPACE             TO  WRK-TEIKIERR
+                   STRING  "定期請求処理中です【"
+                                             DELIMITED  BY  SIZE
+                           JOB-SHELLMSG      DELIMITED  BY  SPACE
+                           "】"              DELIMITED  BY  SIZE
+                                             INTO  WRK-TEIKIERR
+                   END-STRING
+               END-IF
+           END-IF
+      *
+           .
+       4501-JOBKANRICHK-EXT.
+           EXIT.
       *****************************************************************
       *    印刷画面へ遷移
       *****************************************************************
