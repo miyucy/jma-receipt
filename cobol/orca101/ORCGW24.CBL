@@ -40,7 +40,6 @@
       *  01.00.01    NACL-太田    04.03.04  臨床研修病院入院診療加算
       *                                     離島加算追加
       *  01.00.02    NACL-太田    04.08.23  入院会計室料差額区分追加
-      *                                     入院会計食事区分追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -470,9 +469,6 @@
       *    入院会計室料差額区分コンボ
            PERFORM 310-CMB-NACCT-BRMSGK-SET-SEC
       *
-      *    入院会計食事区分コンボ
-           PERFORM 310-CMB-NACCT-SKJ-SET-SEC
-      *
            .
        310-CMB-SYOKI-EXT.
            EXIT.
@@ -734,20 +730,6 @@
        310-CMB-NACCT-BRMSGK-SET-EXT.
            EXIT.
       *****************************************************************
-      *    入院会計食事区分コンボ
-      *****************************************************************
-       310-CMB-NACCT-SKJ-SET-SEC   SECTION.
-      *
-           MOVE    2               TO  SPA-GMN-W24-NACCT-SKJ-CNT
-      *
-           MOVE    "1 算定しない"  TO  SPA-GMN-W24-NACCT-SKJ-ITM (1)
-      *
-           MOVE    "2 算定する"    TO  SPA-GMN-W24-NACCT-SKJ-ITM (2)
-      *
-           .
-       310-CMB-NACCT-SKJ-SET-EXT.
-           EXIT.
-      *****************************************************************
       *    入力情報編集処理
       *****************************************************************
        310-INPUT-AREA-EDIT-SEC     SECTION.
@@ -826,16 +808,6 @@
            ELSE
                MOVE    SPA-GMN-W24-NACCT-BRMSGK-ITM (1)
                                            TO  SPA-GMN-W24-NACCT-BRMSGK
-           END-IF
-      *
-      *    入院会計食事区分
-           MOVE    SYS-5000-NACCT-SKJKBN  TO  WRK-CMB-CD
-           PERFORM 4103-CMB-NACCT-SKJ-SRH-SEC
-           IF    ( WRK-CMB-ITM     NOT =   SPACE )
-               MOVE    WRK-CMB-ITM         TO  SPA-GMN-W24-NACCT-SKJ
-           ELSE
-               MOVE    SPA-GMN-W24-NACCT-SKJ-ITM (1)
-                                           TO  SPA-GMN-W24-NACCT-SKJ
            END-IF
       *
       *    入院料加算情報
@@ -1195,8 +1167,6 @@
            MOVE    W24-BRMSGK-TAX      TO  SPA-GMN-W24-BRMSGK-TAX
       *    入院会計室料差額区分
            MOVE    W24-NACCT-BRMSGK    TO  SPA-GMN-W24-NACCT-BRMSGK
-      *    入院会計食事区分
-           MOVE    W24-NACCT-SKJ       TO  SPA-GMN-W24-NACCT-SKJ
       *
       *    入院加算情報
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -1296,12 +1266,6 @@
       *
       *    入院会計室料差額区分
            PERFORM 4100-NACCT-BRMSGK-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
-      *
-      *    入院会計食事区分
-           PERFORM 4100-NACCT-SKJ-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1704,10 +1668,6 @@
            MOVE    SPA-GMN-W24-NACCT-BRMSGK-CD
                                    TO  SYS-5000-NACCT-BRMSGKKBN
       *
-      *    入院会計食事区分
-           MOVE    SPA-GMN-W24-NACCT-SKJ-CD
-                                   TO  SYS-5000-NACCT-SKJKBN
-      *
       *    入院料加算情報
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >    20 )
@@ -2021,31 +1981,6 @@
       *
            .
        4100-NACCT-BRMSGK-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院会計食事区分
-      *****************************************************************
-       4100-NACCT-SKJ-CHK-SEC         SECTION.
-      *
-           IF    ( SPA-GMN-W24-NACCT-SKJ =   SPACE )
-               MOVE    SPA-GMN-W24-NACCT-SKJ-ITM (1)
-                                       TO  SPA-GMN-W24-NACCT-SKJ
-               GO  TO  4100-NACCT-SKJ-CHK-EXT
-           END-IF
-      *
-      *    該当コードのデータが存在するかチェック
-           MOVE    SPA-GMN-W24-NACCT-SKJ-CD
-                                       TO  WRK-CMB-CD
-           PERFORM 4103-CMB-NACCT-SKJ-SRH-SEC
-           IF    ( WRK-CMB-ITM     NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-NACCT-SKJ
-           ELSE
-               MOVE    SPA-GMN-W24-NACCT-SKJ-ITM (1)
-                                       TO  SPA-GMN-W24-NACCT-SKJ
-           END-IF
-      *
-           .
-       4100-NACCT-SKJ-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院加算情報チェック処理
@@ -3048,32 +2983,6 @@
        4103-CMB-NACCT-BRMSGK-SRH-EXT.
            EXIT.
       *****************************************************************
-      *    入院会計食事サーチ処理
-      *****************************************************************
-       4103-CMB-NACCT-SKJ-SRH-SEC      SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM
-                                       WRK-CMB-IDX
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-W24-NACCT-SKJ-CNT )
-                    OR   ( SPA-GMN-W24-NACCT-SKJ-ITM (IDX-CMB)
-                                                        (1 : 1)
-                                   =   WRK-CMB-CD )
-      *
-               CONTINUE
-      *
-           END-PERFORM
-      *
-           IF    ( IDX-CMB     <=  SPA-GMN-W24-NACCT-SKJ-CNT )
-               MOVE    SPA-GMN-W24-NACCT-SKJ-ITM (IDX-CMB)
-                                       TO  WRK-CMB-ITM
-           END-IF
-      *
-           .
-       4103-CMB-NACCT-SKJ-SRH-EXT.
-           EXIT.
-      *****************************************************************
       *    入力情報領域初期化処理
       *****************************************************************
        4201-INPUT-AREA-INIT-SEC        SECTION.
@@ -3122,9 +3031,6 @@
       *
            MOVE    SPA-GMN-W24-NACCT-BRMSGK-ITM (1)
                                    TO  SPA-GMN-W24-NACCT-BRMSGK
-      *
-           MOVE    SPA-GMN-W24-NACCT-SKJ-ITM (1)
-                                   TO  SPA-GMN-W24-NACCT-SKJ
       *
            MOVE    SPA-GMN-W24-SENTEI-FTNKBN-ITM (1)
                                    TO  SPA-GMN-W24-SENTEI-FTNKBN
@@ -3491,19 +3397,6 @@
       *
            END-PERFORM
       *
-      *    入院会計食事区分
-           MOVE    SPA-GMN-W24-NACCT-SKJ
-                                   TO  W24-NACCT-SKJ
-           MOVE    SPA-GMN-W24-NACCT-SKJ-CNT
-                                   TO  W24-NACCT-SKJ-CNT
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   W24-NACCT-SKJ-CNT )
-      *
-               MOVE    SPA-GMN-W24-NACCT-SKJ-ITM (IDX1)
-                                   TO  W24-NACCT-SKJ-ITM (IDX1)
-      *
-           END-PERFORM
-      *
       *    入院加算情報
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   20 )
@@ -3816,8 +3709,6 @@
                MOVE    "BRMSGK_TAX"    TO  MCP-WIDGET
            WHEN    047
                MOVE    "NACCT_BRMSGK"  TO  MCP-WIDGET
-           WHEN    048
-               MOVE    "NACCT_SKJ"     TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -3932,15 +3823,13 @@
                MOVE    046             TO  SPA-GMN-W24-CUR
            WHEN    "NACCT_BRMSGK"
                MOVE    047             TO  SPA-GMN-W24-CUR
-           WHEN    "NACCT_SKJ"
-               MOVE    048             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *
       *    次カーソル位置を設定
            EVALUATE    MCP-WIDGET
            WHEN    "GN_JOKUSO"
                MOVE    046             TO  SPA-GMN-W24-CUR
-           WHEN    "NACCT_SKJ"
+           WHEN    "NACCT_BRMSGK"
                MOVE    008             TO  SPA-GMN-W24-CUR
            WHEN    "SK_SYOKUDO"
                MOVE    005             TO  SPA-GMN-W24-CUR

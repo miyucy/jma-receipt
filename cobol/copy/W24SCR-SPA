@@ -89,11 +89,6 @@
                    13  SPA-GMN-W24-NACCT-BRMSGK-CD     PIC X(01).
                    13                                  PIC X(01).
                    13  SPA-GMN-W24-NACCT-BRMSGK-NM     PIC X(14).
-      *          入院会計食事区分
-                 11  SPA-GMN-W24-NACCT-SKJ.
-                   13  SPA-GMN-W24-NACCT-SKJ-CD        PIC X(01).
-                   13                                  PIC X(01).
-                   13  SPA-GMN-W24-NACCT-SKJ-NM        PIC X(14).
       *          入院加算情報
                  11  SPA-GMN-W24-FRAME3.
                    13  SPA-GMN-W24-CHK-NYUKSN.
@@ -290,12 +285,6 @@
                    13  SPA-GMN-W24-NACCT-BRMSGK-ITM    PIC X(16)
                                                        OCCURS  5.
       *
-      *          入院会計食事区分
-                 11  SPA-GMN-W24-CMB-NACCT-SKJ.
-                   13  SPA-GMN-W24-NACCT-SKJ-CNT       PIC S9(9)
-                                                       BINARY.
-                   13  SPA-GMN-W24-NACCT-SKJ-ITM       PIC X(16)
-                                                       OCCURS  5.
              07  SPA-NAI-W24-AREA.
                09  SPA-NAI-W24-NYUKSN-SRYCD-G.
                  11  SPA-NAI-W24-NYUKSN-SRYCD    PIC X(09)

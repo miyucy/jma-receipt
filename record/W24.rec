@@ -80,13 +80,6 @@ W24	{
 			count	int;
 			item	varchar(16)[05];
 		};
-		CMB_NACCT_SKJ	{
-			NACCT_SKJ	{
-				value	varchar(16);
-			};
-			count	int;
-			item	varchar(16)[05];
-		};
 		frame3	{
 			fixed9	{
 				CHK_NYUKSN01	{
