@@ -67,7 +67,7 @@
               03  HC06-KHNTEN          PIC  X(7)   OCCURS  5.
               03  HC06-HOSPNAME        PIC  X(80).
               03  HC06-HOSPADRS        PIC  X(50).
-              03  HC06-NAME            PIC  X(32).
+              03  HC06-NAME            PIC  X(50).
               03  HC06-HEAD1-G.
                   05  HC06-HEAD1       PIC  X(46)  OCCURS  2.
               03  HC06-HEAD2-G.
