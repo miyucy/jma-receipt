@@ -2036,6 +2036,15 @@
       *********MOVE    "分画"              TO  SPA-GMN-TTANI2  (IDG)
            END-IF
       *
+      *    撮影回数（フィルムなしの場合）
+           IF     (SRY-SRYCD  (IDZ)(1:1)   =   "1" )  AND
+                  (SRY-AUTOKBN(IDZ)        =   "S" )  AND
+                  (SRY-SRYSURYO (IDZ)      >   1   )
+               MOVE    SRY-SRYSURYO (IDZ)  TO  WRK-SURYO
+               PERFORM 310121-SURYO-HEN-SEC
+               MOVE    WRK-SURYO-X         TO  SPA-GMN-TSURYOU (IDG)
+           END-IF
+      *
       *    老人適用区分（同一剤は同じ）
            IF      TNS-ROUTEKKBN       =   ZERO
                IF      SPA-NAI-ROUTEKKBN(IDX)  =   ZERO

@@ -170,6 +170,8 @@
       *
            03  FLG-CHK-OK          PIC 9(01).
       *
+           03  FLG-FIRUMU          PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDS                 PIC 9(04).
@@ -1204,6 +1206,7 @@
            MOVE    ZERO                TO  SPA-GMN-MAX
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  FLG-YAKZAI
+           MOVE    ZERO                TO  FLG-FIRUMU
       *
            INITIALIZE                      SRYACT-REC
            MOVE    SPA-HOSPID          TO  SRY-HOSPID
@@ -1269,6 +1272,28 @@
       *D   END-IF
       *
            MOVE    IDX2                TO  SPA-GMN-MAX
+      *    画像診断のフィルム判定
+           PERFORM VARYING     IDX-1   FROM    1   BY 1
+                   UNTIL       IDX-1   >   IDX2
+               IF     (SPA-COM-INPUTCD(IDX-1)(1:1)   =   "1" )  AND
+                      (SPA-COM-DATAKBN (IDX-1)       =   "1" )  AND
+                      (SPA-COM-KZMCOMPSIKIBETU(IDX-1)  NOT =  ZERO)  AND
+                      (SPA-COM-SURYO (IDX-1)         >   1   )
+                   IF      FLG-FIRUMU                =   ZERO
+                       MOVE    "1"             TO  SPA-COM-SURFLG
+                                                               (IDX-1)
+                   ELSE
+                       IF      SPA-COM-SURFLG (IDX-1)
+                                                   NOT =   "1"
+                           MOVE    1           TO  SPA-COM-SURYO
+                                                               (IDX-1)
+      *                    入力コードの画面用再編集
+                           MOVE    IDX-1               TO  IDX
+                           PERFORM 3101-INPUTCD-HEN-SEC
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
       *
            .
        3103-SINKOU-HEN-EXT.
@@ -1320,6 +1345,11 @@
                PERFORM 31011-JIKANKBN-SET-SEC
                MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
            END-IF
+      *    数量入力時
+           IF      SRY-AUTOKBN (IDS)   =   "S"
+               MOVE    "1"                 TO  SPA-COM-SURFLG  (IDX2)
+               MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
+           END-IF
       *
       *    約束セットの時、以下処理なし
            IF      SRY-SRYCD(IDS)(1:1) =   "S"
@@ -1344,6 +1374,14 @@
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    SPACE           TO  SPA-ERRCD
            END-IF 
+      *
+      *    フィルムの判定
+           IF      SRY-SRYKBN          =   "70"
+               IF     (SPA-COM-INPUTCD (IDX2)(1:1) =   "7" )  AND
+                      (SPA-COM-DATAKBN (IDX2)      =   "3" )
+                   MOVE    1               TO  FLG-FIRUMU
+               END-IF
+           END-IF
       *
       *    コメントの時、コメント内容編集
            IF     (SPA-COM-INPUTCD (IDX2)(1:1) =   "0"  OR  "8" )  AND
@@ -4739,9 +4777,6 @@
                    MOVE    1               TO  FLG-OK2
                END-IF
            END-IF
-      *TEST
-           DISPLAY "J04 ORCSCZAICHK-ZAINUM:" ORCSCZAICHK-ZAINUM
-      *TEST
       *
            .
        45011-NAIYOU-CHK-EXT.
@@ -4936,6 +4971,11 @@
            END-IF
       *    自動算定区分
            MOVE    SPA-COM-AUTOKBN (IDX)   TO  SRY-AUTOKBN (IDS)
+      *    数量の入力がある時
+           IF     (SPA-COM-AUTOKBN (IDX)   =   SPACE )  AND
+                  (SPA-COM-SURFLG  (IDX)   =   "1"   )
+               MOVE    "S"                     TO  SRY-AUTOKBN (IDS)
+           END-IF
       *    時間外区分入力がある時、英字変換後セット
            IF      SPA-COM-AUTOKBN (IDX)    =   SPACE
                 PERFORM 45022-JIKANGAI-SET-SEC
