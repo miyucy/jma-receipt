@@ -38,6 +38,7 @@
       *  01.01.01    NACL-森脇    02.12.12  MONPEに対応
       *  01.01.02    NACL-伊藤    03.03.03  画像パス名サイズ変更
       *  01.01.03    NACL-伊藤    03.03.28  印刷用データサイズ変更
+      *  01.01.04    NACL-森脇    03/07/14  出力先プリンタサブ追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -222,6 +223,10 @@
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
       *----(00.01.02)--ADD-END------
+      *----(01.01.04)--ADD-START---
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
+      *----(01.01.04)--ADD-END-----
       *
       *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
@@ -269,6 +274,7 @@
       *
       *    出力先プリンタ名割り当て情報編集
            PERFORM 900-1031-READ-SEC
+           DISPLAY "SYS-1031-PRTNM(8)=" SYS-1031-PRTNM(8)
       *
       *    医療機関情報−基本情報セット
            PERFORM 900-1001-READ-SEC
@@ -1664,18 +1670,32 @@
       *****************************************************************
        900-1031-READ-SEC             SECTION.
       *
+      *----(01.01.04)--UPD-START---
       *    出力先プリンタ名割り当て情報編集
-           MOVE    SPACE               TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"              TO  SYS-1031-KANRICD
-           MOVE    "*"                 TO  SYS-1031-KBNCD
-           MOVE    SYS-1031-REC        TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1031-REC
-           ELSE
+      *     MOVE    SPACE               TO  SYS-1031-REC
+      *     INITIALIZE                  SYS-1031-REC
+      *     MOVE    "1031"              TO  SYS-1031-KANRICD
+      *     MOVE    "*"                 TO  SYS-1031-KBNCD
+      *     MOVE    SYS-1031-REC        TO  MCPDATA-REC
+      *     PERFORM 800-SYSKANRI-READ-SEC
+      *     IF      FLG-SYSKANRI        =   ZERO
+      *         MOVE    MCPDATA-REC         TO  SYS-1031-REC
+      *     ELSE
+      *         INITIALIZE                  SYS-1031-REC
+      *     END-IF
+      *    出力先プリンタ名割り当て情報編集
+           INITIALIZE                      SYS-1031-REC
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1031-REC
+           IF      ORCSPRTNM-RC    NOT =   ZERO
                INITIALIZE                  SYS-1031-REC
-           END-IF
+           END-IF 
            .
       *
        900-1031-READ-EXT.
