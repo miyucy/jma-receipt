@@ -88,6 +88,7 @@ path	key3 	{
 		SELECT *
 		FROM tbl_nyuinact
 			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
 			ORDER  BY  SRYKA,

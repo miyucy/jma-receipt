@@ -244,6 +244,7 @@ path	key11 	{
 		SELECT *
 		FROM tbl_nyuinacct
 			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYM       =   :SRYYM
@@ -260,6 +261,7 @@ path	key12 	{
 		SELECT *
 		FROM tbl_nyuinacct
 			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
 			ORDER  BY   SRYKBN,
@@ -289,6 +291,7 @@ path	key14 	{
 		SELECT *
 		FROM tbl_nyuinacct
 			WHERE   HOSPID      =   :HOSPID
+			AND     NYUGAIKBN   =   '1'
 			AND     PTID        =   :PTID
 			AND     SRYYM       =   :SRYYM
 			AND   ( ZAISKBKBN   =   '1'   OR
@@ -304,6 +307,7 @@ path	key15 	{
 		SELECT *
 		FROM tbl_nyuinacct
 			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA
 			AND   SRYYM       =   :SRYYM
@@ -319,6 +323,7 @@ path	key16 	{
 		SELECT *
 		FROM tbl_nyuinacct
 			WHERE   HOSPID    =   :HOSPID
+			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
 			ORDER  BY   ZAISKBKBN,
@@ -333,6 +338,7 @@ path	key17 	{
 		SELECT *
 		FROM tbl_nyuinacct
 			WHERE   HOSPID      =   :HOSPID
+			AND     NYUGAIKBN   =   '1'
 			AND     PTID        =   :PTID
 			AND     SRYYM       =   :SRYYM
 			AND     ZAISKBKBN   =   :ZAISKBKBN
