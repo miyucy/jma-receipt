@@ -173,8 +173,10 @@
       *
       *特定入院基本料情報
            03  RECE62-NYUTOKINF           OCCURS  10.
-      *特定入院料・その他
+      *特定入院料・その他（点）
                05  RECE62-NYUTOKRYO       PIC  9(09).
+      *特定入院料・その他（略称）
+               05  RECE62-NYUTOKRYO-RYAKU PIC  X(14).
       *入院日数
                05  RECE62-NYUTOKNISSU     PIC  9(02).
       *合計金額情報
@@ -188,6 +190,7 @@
                05  RECE62-NYUTOKKEIINF2   OCCURS  5.
       *合計金額２
                    07  RECE62-NYUTOKKEI2  PIC S9(09).
+      *
       *食事療養費情報
            03  RECE62-SHOKUJIINF          OCCURS  5.
       *食事日数
