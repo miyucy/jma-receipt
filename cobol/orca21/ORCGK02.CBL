@@ -1823,6 +1823,16 @@
                WHEN    "0119"
                    PERFORM 300110-TAHOKEN-SYORI-SEC
       *
+      *        入院画面へ
+               WHEN    "0121"
+                   IF      SPA-KID1-FLG        =   "OK"
+                       MOVE    SPA-GMN-PTNUM   TO  SPA-PTNUM
+                       MOVE    SPA-GMN-PTID    TO  SPA-PTID
+                       PERFORM 450-K02N-SYORI-SEC
+                   ELSE
+                       MOVE    ZERO            TO  SPA-GMN-CUR
+                   END-IF
+      *
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KID1-FLG
            MOVE    SPACE               TO  SPA-KIDCD
@@ -2569,6 +2579,9 @@
       *****MOVE    ZERO                TO  FLG-SINSATU
       *    入院中の時、入院開始日の時のみ初診料の自動発生を行う
            PERFORM 3109-NYUIN-CHK-SEC
+           IF      SPA-KIDCD      NOT =   SPACE
+               GO      TO      310-SPA-GMNSET-EXT
+           END-IF
       *
       *    初診料自動発生処理
            IF    ((LNK-WKSRYACT-MAX        >   ZERO    )  AND
@@ -3188,7 +3201,8 @@
                               (FLG-NYUIN           =   1 )
       *        入院中
                IF     (PTNYUINRRK-TENNYUYMD    <=  SPA-NAI-SRYYMD) AND
-                      (PTNYUINRRK-TENSTUYMD    >=  SPA-NAI-SRYYMD)
+                     ((PTNYUINRRK-TENSTUYMD    >=  SPA-NAI-SRYYMD) OR
+                      (PTNYUINRRK-TENSTUYMD    =   SPACE         ))
                    IF      PTNYUINRRK-TENNYUYMD    =   SPA-NAI-SRYYMD
                        CONTINUE
                    ELSE
@@ -3199,7 +3213,11 @@
                MOVE    "PTNYUINRRK-KEY8"   TO  ORC-DBPATH
                PERFORM 910-PTNYUINRRK-READ-SEC
            END-PERFORM
-      *
+      *    入院中の時、エラーとする
+           IF      FLG-NYUIN           =   "1"
+               MOVE    "0121"          TO  SPA-KIDCD
+               MOVE    ZERO            TO  SPA-GMN-CUR
+           END-IF
            .
        3109-NYUIN-CHK-EXT.
            EXIT.
@@ -12244,6 +12262,11 @@
                                        TO  WRK-KIDMSG
                    MOVE    "振替えます。よろしいですか？"
                                        TO  WRK-KIDMSG(31:)
+               WHEN    "0121"
+                   MOVE    "入院中の患者です。入院画面へ遷移します。"
+                                       TO  WRK-KIDMSG
+                   MOVE    "よろしいですか？"
+                                       TO  WRK-KIDMSG(41:)
                WHEN    OTHER
                    MOVE    SPA-KIDCD
                                        TO  WRK-KIDMSG
