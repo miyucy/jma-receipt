@@ -71,6 +71,13 @@
                05  SPA-CHOKITOFLG          PIC  9(01).
       *外用の入力回数（剤判定の場合に使用）
                05  SPA-CHOKIKAISU          PIC  9(05).
+      *        警告済み
+               05  SPA-KEI-FLG             PIC 9(01).
+      *    展開時の診療コード
+           03  SPA-J04-TEISEI-AREA.
+               05  SPA-J04-TEISEI-OCC          OCCURS   200.
+                   07  SPA-J04-TEI-SRYCD       PIC X(09).
+                   07  SPA-J04-TEI-KAISU       PIC 9(03).
       *
       *    Ｋ９８画面用
            03  SPA-J98-MOTOPG              PIC X(08).

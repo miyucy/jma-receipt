@@ -82,4 +82,16 @@
                        09  SPA-NAI-ROUTEKKBN       PIC  9(01).
       *                剤点数マイナス分
                        09  SPA-NAI-ZAITENFLG       PIC  9(01).
+      *                算定履歴区分
+                       09  SPA-NAI-SANTEIRRKKBN    PIC  9(01).
+      *                月上限
+                       09  SPA-NAI-JGNCNT          PIC  9(03).
+      *                日上限
+                       09  SPA-NAI-JGNCNT1D        PIC  9(03).
+      *                月上限
+                       09  SPA-NAI-JGNCNTETC       PIC  9(03).
+      *                エラー識別
+                       09  SPA-NAI-JGNCNTERR       PIC  9(01).
+      *                内分泌負荷試験判定
+                       09  SPA-NAI-HOUKNSKBN       PIC  9(02).
       *
