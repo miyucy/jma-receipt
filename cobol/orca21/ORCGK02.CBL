@@ -525,6 +525,8 @@
            03  WRK-HKNCOMBI        PIC X(50).
       *    保険名称編集
            03  WRK-MAE-GMN-MAX     PIC 9(04).
+      *    保険組合せ保存
+           03  WRK-MAE-HKNCOMBI    PIC X(04).
       *
       *    特定疾患自動算定チェック用
            03  FLG-KYUJITU         PIC 9(01).
@@ -1316,7 +1318,7 @@
                            PERFORM 30010-INIT-GMN-SEC
                        ELSE
                            IF      SPA-SYORIFLG        =   ZERO
-                               PERFORM 3009-SAIHEN-SEC
+                               PERFORM 30011-INIT-HEN-SEC
                            ELSE
                                PERFORM 3003-GMN-HEN-SEC
                            END-IF
@@ -1578,6 +1580,84 @@
       *****************************************************************
       *    診療行為再編集処理
       *****************************************************************
+       30011-INIT-HEN-SEC              SECTION.
+      *
+           MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
+           MOVE    ZERO                TO  SPA-NAI-ROUSTR
+      *
+           MOVE    SPA-GMN-HKNCOMBINUM TO  WRK-MAE-HKNCOMBI
+           MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
+           MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
+           MOVE    SPA-DRCD            TO  WRK-DRCD
+      *
+           MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
+           MOVE    SPA-GMN-PTID        TO  SPA-PTID
+      *
+           MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
+           MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
+      *
+           INITIALIZE                  ORCSC95AREA
+           MOVE    "2"                 TO  LNK-SC95-KBN
+           MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
+           MOVE    SPA-SRYYMDW         TO  LNK-SC95-SRYYMDG
+           MOVE    "K10"               TO  LNK-SC95-PG
+           CALL    "ORCSC95"           USING
+                                       MCPAREA
+                                       ORCSC95AREA
+                                       SPA-AREA
+                                       SPA-K01KYOUTU
+                                       SPA-K02
+      *
+      *    排他制御処理
+           PERFORM 990-LOCK-IN2-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      30011-INIT-HEN-EXT
+           END-IF
+      *
+           MOVE    WRK-DRCD            TO  SPA-DRCD
+           MOVE    WRK-MAE-HKNCOMBI    TO  SPA-GMN-HKNCOMBINUM
+           MOVE    WRK-MAE-HKNCOMBI    TO  SPA-HKNCOMBINUM
+      *
+      *    チェック用月内診療行為セット
+           PERFORM                 320-SPA-CHKSET-SEC
+      *
+      *    スパ共通編集処理
+           PERFORM                 310-SPA-SET-SEC
+           MOVE    WRK-SCR-REC         TO  SPA-SCR-REC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      30011-INIT-HEN-EXT
+           END-IF
+      *
+      *    診察料のみ変換する
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           INITIALIZE                      ORCSC10SAREA
+           MOVE    "S"                 TO  LNK-SC10S-SYORI
+           CALL    "ORCSC10S"          USING
+                                       ORCSC10SAREA
+                                       SPA-AREA
+                                       SPA-SCR-REC
+                                       SPA-K02
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *
+      *    診療行為、計計算処理、編集
+           MOVE    SPACE               TO  FLG-TOROKU
+           PERFORM 510-TBLHEN-SEC
+           MOVE    SPACE               TO  FLG-TOROKU
+      *
+           MOVE    1                   TO  SPA-GMN-CUR
+      *
+           MOVE    SPACE               TO  SPA-KID1-FLG
+      *
+           MOVE    ZERO                TO  SPA-NAI-ROUSTR
+      *
+      *
+           .
+       30011-INIT-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療行為再編集処理
+      *****************************************************************
        3009-SAIHEN-SEC              SECTION.
       *
       *    患者番号変更、Ｋ０１、Ｐ０２よりの時　初画面を編集
@@ -1756,6 +1836,11 @@
       *
       *    スパ共通編集処理
            PERFORM                 310-SPA-SET-SEC
+      *
+      *    保険組合せの無い場合、エラーをクリアする
+           IF      SPA-HKN-ERR         =   4
+               MOVE    SPACE               TO  SPA-ERRCD
+           END-IF
       *
       *    画面用スパ編集処理
            PERFORM                 310-SPA-GMNSET-SEC
@@ -2750,7 +2835,14 @@
                END-IF
            END-PERFORM
            IF      FLG-CHK             =   ZERO
-               MOVE   1                TO  IDX
+               IF      SPA-GMN-HKNCOMBINUM =   SPACE
+                   MOVE   1                TO  IDX
+               ELSE
+      *            選択した保険がない場合、エラー
+                   MOVE   "1034"               TO  SPA-ERRCD
+                   MOVE    4                   TO  SPA-HKN-ERR
+                   GO     TO    3101-HKNCOMBI-HEN-EXT
+               END-IF
            ELSE
                MOVE   IDY              TO  IDX
            END-IF
@@ -10731,6 +10823,12 @@
                MOVE    "1006"              TO  SPA-ERRCD
                GO      TO      41001-KIHON-CHK-EXT
            END-IF
+      *    保険未選択の場合、エラー
+           IF      SPA-HKN-ERR         =   4
+               MOVE    "1034"              TO  SPA-ERRCD
+               MOVE    5                   TO  SPA-GMN-CUR
+               GO      TO      41001-KIHON-CHK-EXT
+           END-IF
       *
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
@@ -13034,6 +13132,11 @@
       *    保険未選択の場合、エラー
            IF      SPA-HKN-ERR         =   3
                MOVE    "1006"              TO  SPA-ERRCD
+           END-IF
+      *    保険選択エラーの場合
+           IF      SPA-HKN-ERR         =   4
+               MOVE    "1034"              TO  SPA-ERRCD
+               MOVE    5                   TO  SPA-GMN-CUR
            END-IF
       *
       *    数量ゼロの場合、エラー表示しない
