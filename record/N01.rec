@@ -22,16 +22,32 @@ N01	{
 			count	int;
 			item	varchar(30)[100];
 		};
-		KYURATE1COMBO	{
-			KYURATE1	{
+		HGKYURATECOMBO	{
+			HGKYURATE	{
 				value	varchar(30);
 			};
 			state   int;
 			count	int;
 			item	varchar(30)[3];
 		};
-		KYURATE2COMBO	{
-			KYURATE2	{
+		HNKYURATECOMBO	{
+			HNKYURATE	{
+				value	varchar(30);
+			};
+			state   int;
+			count	int;
+			item	varchar(30)[3];
+		};
+		KGKYURATECOMBO	{
+			KGKYURATE	{
+				value	varchar(30);
+			};
+			state   int;
+			count	int;
+			item	varchar(30)[3];
+		};
+		KNKYURATECOMBO	{
+			KNKYURATE	{
 				value	varchar(30);
 			};
 			state   int;
