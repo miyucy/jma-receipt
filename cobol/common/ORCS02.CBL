@@ -155,7 +155,6 @@
        01  WK-SHOKUJI-TAIHI-AREA.
            03  WK-SHOKUJIRYOYO         PIC 9(01).
            03  WK-TOKUKANRIKASAN       PIC 9(01).
-      *    03  WK-SHOKUDOKASAN         PIC 9(01).
            03  WK-SHOKUJI-NISSU        PIC 9(02).
            03  WK-SHOKUJI-RYOYOHI      PIC 9(07).
            03  WK-SHOKUJI-RYOYOHI95    PIC 9(07).
@@ -1073,37 +1072,7 @@
                (LNK-S02-KOUREI-NYUIN-KBN  =       "1")
       *
                IF   LNK-S02-TEIKI-KBN     =   "X"
-                 INITIALIZE                         SYU-SYUNOU-REC
-                 MOVE    LNK-SYU-HOSPID     TO      SYU-HOSPID
-                 MOVE    LNK-SYU-NYUGAIKBN  TO      SYU-NYUGAIKBN
-                 MOVE    LNK-SYU-PTID       TO      SYU-PTID
-                 MOVE    SYU-SYUNOU-REC     TO      MCPDATA-REC
-                 MOVE    "DBSELECT"         TO      MCP-FUNC
-                 MOVE    "SYUNOU-KEY10"     TO      ORC-DBPATH
-                 CALL    "ORCMCPSUB"         USING   MCPAREA
-                                                     ORCMCPAREA
-                                                     MCPDATA-REC
-                 IF      MCP-RC             =       ZERO
-                   MOVE    "SYUNOU-KEY10" TO      ORC-DBPATH
-                   PERFORM  SYUNOU-READ-SEC
-                   PERFORM  UNTIL  (FLG-SYUNOU   =    "1")
-                     IF (LNK-SYU-SKYSTYMD(1:6) = SYU-SKYSTYMD(1:6)) AND
-                        (SYU-DENPJTIKBN    NOT =  "3")
-                             PERFORM        2201-SYUNOU-COUNT-SEC
-                     END-IF
-                     MOVE           "SYUNOU-KEY10"   TO   ORC-DBPATH
-                     PERFORM        SYUNOU-READ-SEC
-                   END-PERFORM
-                 ELSE
-                   MOVE    12              TO        LNK-S02-RC
-                 END-IF
-      *
-                 MOVE    "DBCLOSE"               TO  MCP-FUNC
-                 MOVE    "SYUNOU-KEY10"          TO  ORC-DBPATH
-                 CALL    "ORCMCPSUB"              USING
-                                                  MCPAREA
-                                                  ORCMCPAREA
-                                                  MCPDATA-REC
+                 CONTINUE
                ELSE
                  INITIALIZE                         SYU-SYUNOU-REC
                  MOVE    LNK-SYU-HOSPID     TO      SYU-HOSPID
@@ -1615,11 +1584,6 @@
                             ELSE
                                MOVE  1       TO   WK-TOKUKANRIKASAN
                             END-IF
-      *                     IF  SYS-5000-SHOKUKBN(2) =  "1"
-      *                        MOVE  ZERO    TO   WK-SHOKUDOKASAN
-      *                     ELSE
-      *                        MOVE  1       TO   WK-SHOKUDOKASAN
-      *                     END-IF
                      ELSE
                             MOVE     2       TO   WK-SHOKUJIRYOYO
                      END-IF
@@ -1703,7 +1667,8 @@
                PERFORM  SRYACCT-READ-SEC
                PERFORM  UNTIL  (FLG-SRYACCT    =    "1")
       *
-                 IF     ACCT-SRYCDTOTAL    =    197001210
+                 IF     ACCT-SRYCDTOTAL    =    197001210  OR
+                                                197000470
                              PERFORM        23001-ROSAITOKU-TAIHI-SEC
                  END-IF
       *
@@ -1855,11 +1820,6 @@
                                               WK-SHOKUJI-JIHI
                             ADD   200    TO   LNK-SYU-SHOKUJI1
                           END-IF
-      *                   IF    WK-SHOKUDOKASAN    =  1
-      *                     ADD    50    TO   WK-SHOKUJI-RYOYOHI
-      *                                       WK-SHOKUJI-JIHI
-      *                     ADD    50    TO   LNK-SYU-SHOKUJI1
-      *                   END-IF
                         WHEN  2
                           ADD       1    TO   WK-SHOKUJI-NISSU
                                               LNK-SYU-SHOKUJI1-NISSU
@@ -1879,11 +1839,6 @@
                                               WK-SHOKUJI-JIHI
                             ADD   200    TO   LNK-SYU-SHOKUJI1
                           END-IF
-      *                   IF    WK-SHOKUDOKASAN    =  1
-      *                     ADD    50    TO   WK-SHOKUJI-RYOYOHI
-      *                                       WK-SHOKUJI-JIHI
-      *                     ADD    50    TO   LNK-SYU-SHOKUJI1
-      *                   END-IF
                           ADD     350    TO   WK-SHOKUJI-RYOYOHI
                                               WK-SHOKUJI-JIHI
                           MOVE    350    TO   LNK-SYU-SHOKUJI3
@@ -1899,11 +1854,6 @@
                                               WK-SHOKUJI-JIHI
                             ADD   200    TO   LNK-SYU-SHOKUJI1
                           END-IF
-      *                   IF    WK-SHOKUDOKASAN    =  1
-      *                     ADD    50    TO   WK-SHOKUJI-RYOYOHI
-      *                                       WK-SHOKUJI-JIHI
-      *                     ADD    50    TO   LNK-SYU-SHOKUJI1
-      *                   END-IF
                           ADD      50    TO   WK-SHOKUJI-RYOYOHI
                                               WK-SHOKUJI-JIHI
                           MOVE     50    TO   LNK-SYU-SHOKUJI4
