@@ -1703,7 +1703,7 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM   UNTIL     FLG-HKNCOMBI    =   1
-               IF  COMB-DELKBN             =   SPACE
+               IF      COMB-DELKBN             =   SPACE
                    ADD     1                   TO  IDX
                    MOVE    SPACE               TO  PARA-REC
                    INITIALIZE                      PARA-REC
@@ -2670,14 +2670,38 @@
            MOVE    SPA-HKNJA-BANTI     TO  P02-P02-HKNJAADRS2
            MOVE    SPA-HKNJA-TEL       TO  P02-P02-HKNJATEL
       *    ラベルの全角空白を半角へ
-           INSPECT P02-P02-HKNNAME
-                   REPLACING   ALL "　"  BY  "  "
-           INSPECT P02-P02-HKNNAME2
-                   REPLACING   ALL "　"  BY  "  "
-           INSPECT P02-P02-HKNJAADRS
-                   REPLACING   ALL "　"  BY  "  "
-           INSPECT P02-P02-HKNJAADRS2
-                   REPLACING   ALL "　"  BY  "  "
+      **** INSPECT P02-P02-HKNNAME
+      *            REPLACING   ALL "　"  BY  "  "
+      *    INSPECT P02-P02-HKNNAME2
+      *            REPLACING   ALL "　"  BY  "  "
+      *    INSPECT P02-P02-HKNJAADRS
+      *            REPLACING   ALL "　"  BY  "  "
+      *    INSPECT P02-P02-HKNJAADRS2
+      *****        REPLACING   ALL "　"  BY  "  "
+           PERFORM VARYING     IDX     FROM    1   BY  2
+                   UNTIL       IDX     >=  24
+               IF      P02-P02-HKNNAME(IDX:2)  =   "　"
+                   MOVE    "  "            TO  P02-P02-HKNNAME(IDX:2)
+               END-IF
+           END-PERFORM
+           PERFORM VARYING     IDX     FROM    1   BY  2
+                   UNTIL       IDX     >=  24
+               IF      P02-P02-HKNNAME2(IDX:2)  =   "　"
+                   MOVE    "  "            TO  P02-P02-HKNNAME2(IDX:2)
+               END-IF
+           END-PERFORM
+           PERFORM VARYING     IDX     FROM    1   BY  2
+                   UNTIL       IDX     >=  24
+               IF      P02-P02-HKNJAADRS(IDX:2)  =   "　"
+                   MOVE    "  "            TO  P02-P02-HKNJAADRS(IDX:2)
+               END-IF
+           END-PERFORM
+           PERFORM VARYING     IDX     FROM    1   BY  2
+                   UNTIL       IDX     >=  24
+               IF      P02-P02-HKNJAADRS2(IDX:2)  =   "　"
+                   MOVE    "  "            TO  P02-P02-HKNJAADRS2(IDX:2)
+               END-IF
+           END-PERFORM
       *
       *    公費情報１
            MOVE    SPA-GMN-KOHNUM-G (01)   TO  P02-P02-KOHNUM1
