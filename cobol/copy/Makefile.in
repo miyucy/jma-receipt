@@ -212,6 +212,8 @@ COPYS = \
 	CPSK1033.INC \
 	CPSK1034.INC \
 	CPSK1035.INC \
+        CPSK1036.INC \
+        CPSK1037.INC \
 	CPSK2001.INC \
 	CPSK2002.INC \
 	CPSK2003.INC \
@@ -773,7 +775,6 @@ COPYS = \
         HCN22.INC \
         HCN23.INC \
         W16.INC \
-        CPSK1036.INC \
         HCM37.INC \
         HCMC001.INC \
         CPORCSSYU40.INC \
