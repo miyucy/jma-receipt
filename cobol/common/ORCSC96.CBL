@@ -351,8 +351,12 @@
                    MOVE    "同時併施分です。入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "0071"
-                   MOVE    "撮影料が違います。"
+      ************ MOVE    "撮影料が違います。"
+      ***********                      TO  SPA-ERRMSG
+                   MOVE    "剤内に撮影料が算定されています。"
                                        TO  SPA-ERRMSG
+                   MOVE    "剤を分けて下さい。"
+                                       TO  SPA-ERRMSG(33:)
                WHEN    "0072"
                    MOVE
                "撮影料はこれ以上入力できません。剤を変えて下さい"

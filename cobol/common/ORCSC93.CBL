@@ -868,22 +868,6 @@
                MOVE    1               TO  FLG-SYUGI
            END-IF
       *
-      *    £Ã£Ô¡¢£Í£Ò£É¤Î»þ¡¢¼êµ»ÎÁ¤ÇºÞÊ¬Î¥¤È¤¹¤ë
-           IF     (SPA-COM-SRYKBN (IDX)    =   "70" )  AND
-                  (SPA-COM-DATAKBN(IDX)    =   "1" )   AND
-                  (SPA-COM-TNSSRYSYUKBN (IDX)
-                                           =   "723"
-                                           OR  "724"  )  AND
-                  (SPA-COM-HOUKATUTEIGENKBN(IDX)
-                                           =   "201"
-                                           OR  "202"
-                                           OR  "203"  )
-               IF      FLG-SYUGI           =   1
-                   MOVE    2               TO  FLG-SYORI
-               END-IF
-               MOVE    1               TO  FLG-SYUGI
-           END-IF
-      *
       *    ¿Ç¶è¡¡ÊÑ¹¹»þ
            IF     (IDX                 >   1         )  AND
                   (SPA-COM-SRYKBN (IDX - 1)
