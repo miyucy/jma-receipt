@@ -53,6 +53,7 @@
       *  02.00.03    NACL-多々納  02/11/26  診療科、ドクター件数変更
       *  02.00.04    NACL-多々納  02/12/16  新規患者取消修正
       *  02.00.05    NACL-多々納  03/02/26  診療科・ドクター件数修正
+      *  02.00.06    NACL-多々納  03/03/05  排他制御処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -300,6 +301,9 @@
       *
       *    ドクター編集変換サブ
            COPY    "CPORCSDRSET.INC".
+      *
+      *    排他制御サブパラメタ
+           COPY    "CPORCSLOCK.INC".
       *
       *===> For Claim Start
            COPY    "CPSHELLTBL.INC".
@@ -1246,6 +1250,13 @@
                GO  TO  4101-PTNUM-CHK-EXT
            END-IF
       *
+      *    排他制御処理
+           PERFORM 990-LOCK-IN-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    2                   TO  SPA-GMN-CUR
+               GO      TO      4101-PTNUM-CHK-EXT
+           END-IF
+      *
            MOVE    PTINF-NAME          TO  SPA-GMN-NAME
       *
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
@@ -1714,6 +1725,14 @@
            MOVE    ZERO                TO  SPA-GMN-COMBINUM
       *    登録済みの患者の時、保険情報をセットする
            IF      SPA-GMN-PTID        NOT =  ZERO
+      *
+      *        排他制御処理
+               PERFORM 990-LOCK-IN-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   MOVE    1                   TO  SPA-GMN-CUR
+                   GO      TO      4104-SELNUM-EXT
+               END-IF
+      *
                PERFORM 410114-KUMIHYOJI-SEC
                PERFORM 410115-KAKUHYOJI-SEC
                IF      SPA-GMN-SELNUM          =   ZERO
@@ -2218,6 +2237,9 @@
       *****************************************************************
        210-BACK                        SECTION.
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
            IF      SPA-MACHIPG         =   "U02"
       *        待ち受け画面の時、Ｍ０１へ
                MOVE    "M01"               TO  SPA-SAKIPG
@@ -2267,6 +2289,9 @@
                                        SPA-NAI-SEX
       *****MOVE    ZERO                TO  SPA-NAI-SELNUM
            INITIALIZE                  SPA-NAIB-AREA
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
       *
            MOVE    SPA-GMN-DRCDLST   (01)
                                        TO  SPA-GMN-DRCD-G
@@ -3878,6 +3903,12 @@
                WHEN    "1005"
                    MOVE    "受付マスタの削除処理でエラーになりました"
                                                 TO  SPA-ERRMSG
+      *
+               WHEN    "9999"
+                   MOVE    "他端末で使用中です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
+      *
            END-EVALUATE
       *
            MOVE    SPACE                TO  U2ERR
@@ -4355,6 +4386,40 @@
        993-PTRSIINF-NEXT-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *    排他制御処理
+      *****************************************************************
+       990-LOCK-IN-SEC         SECTION.
+      *
+      *    排他制御処理
+           MOVE    1                   TO  SLOCK-MODE
+           MOVE    SPA-GMN-PTID        TO  SLOCK-PTID
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           IF      SLOCK-RETURN    NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+           END-IF
+           .
+       990-LOCK-IN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御解除処理
+      *****************************************************************
+       990-LOCK-OUT-SEC         SECTION.
+      *
+      *    排他制御解除処理
+           MOVE    2                   TO  SLOCK-MODE
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           .
+       990-LOCK-OUT-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理

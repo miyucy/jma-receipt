@@ -47,6 +47,7 @@
       *  02.00.04    NACL-多々納  02/11/20  ＣＬＡＩＭ処理追加
       *  02.00.05    NACL-多々納  02/11/21  共済下船３月追加
       *  02.00.06    NACL-多々納  03/01/28  一括削除に患者定期請求追加
+      *  02.00.07    NACL-多々納  03/03/05  排他制御処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -353,6 +354,9 @@
            COPY    "CPORCSP02.INC".
       *   チェックデジット
            COPY    "CPORCCHKDGT.INC".
+      *
+      *    排他制御サブパラメタ
+           COPY    "CPORCSLOCK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1181,13 +1185,19 @@
       *    患者マスター存在チェック
            MOVE    SPA-HOSPID         TO  PTINF-HOSPID
            MOVE    SPA-GMN-PTID       TO  PTINF-PTID
-           PERFORM 900-PTINF-READ-SEC
+           PERFORM  900-PTINF-READ-SEC
            IF      FLG-PTINF      NOT =   ZERO
                MOVE    SPACE               TO  SPA-GMN-NAME
                MOVE    "1003"              TO  SPA-ERRCD
                GO      TO      4100-PTNUM-SYORI-EXT
            END-IF
            MOVE    "P02 "              TO  SPA-P02-GAMEN
+      *
+      *    排他制御処理
+           PERFORM 990-LOCK-IN-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4100-PTNUM-SYORI-EXT
+           END-IF
       *
            MOVE    2                   TO  SPA-P02-SYORI
            MOVE    1                   TO  SPA-GMN-CUR
@@ -1424,6 +1434,9 @@
            MOVE    "P02"               TO  SPA-P02-GAMEN
            MOVE    ZERO                TO  SPA-GMN-CUR
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
            PERFORM 310-SPA-SET-SEC
       *
            .
@@ -1472,6 +1485,9 @@
            END-IF
       *----(01.00.03) LINE ADD END   ----------------------------------
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
            IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
                                                   OR  "I01"
                MOVE    "P02"               TO  SPA-MOTOPG
@@ -1506,6 +1522,9 @@
       *    戻る　処理
       *****************************************************************
        210-BACK-SYORI-SEC               SECTION.
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
       *
            IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
                                                   OR  "I01"
@@ -1665,6 +1684,10 @@
            MOVE    "P02"               TO  SPA-P02-GAMEN
            MOVE    ZERO                TO  SPA-GMN-CUR
            PERFORM 310-SPA-SET-SEC
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
            .
       *
        4991-DELETE-SYORI-EXT.
@@ -2149,6 +2172,8 @@
                PERFORM 4906-CLAIM-SOUSIN-SEC
            END-IF
       *
+      *
+      *
       **** IF      SPA-MACHIPG         =   "U02"  OR  "K02" OR "Q02"
            IF      SPA-HZN-MOTOPG(1:3) =   "U02"  OR  "K02" OR "Q02"
                                                   OR  "I01"
@@ -2169,6 +2194,9 @@
                    GO      TO      4902-KOUSIN-SYORI-EXT
                END-IF
            END-IF
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
       *
       *    各画面を初期編集する
            MOVE    SPA-HZN-PTNUM       TO  WRK-HZN-PTNUM
@@ -3256,6 +3284,11 @@
                    MOVE    "全角で入力して下さい"    TO  SPA-ERRMSG
                WHEN    "2517"
                    MOVE    "変更年月日が重複しています"  TO  SPA-ERRMSG
+      *
+               WHEN    "9999"
+                   MOVE    "他端末で使用中です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
            END-EVALUATE
            MOVE    MCP-WIDGET          TO  SPA-WIDGET
       *
@@ -3643,6 +3676,39 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    排他制御処理
+      *****************************************************************
+       990-LOCK-IN-SEC         SECTION.
+      *
+      *    排他制御処理
+           MOVE    1                   TO  SLOCK-MODE
+           MOVE    SPA-GMN-PTID        TO  SLOCK-PTID
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           IF      SLOCK-RETURN    NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+           END-IF
+           .
+       990-LOCK-IN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御解除処理
+      *****************************************************************
+       990-LOCK-OUT-SEC         SECTION.
+      *
+      *    排他制御解除処理
+           MOVE    2                   TO  SLOCK-MODE
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           .
+       990-LOCK-OUT-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ＰＵＴ　処理

@@ -29,6 +29,7 @@
       *  01.00.01    MCC-藤原     01/05/24  患者番号ゼロ詰め処理
       *  01.00.02    NACL-多々納  02/08/02  画面のＳＰＡを保存領域へ編集
       *  01.00.03    NACL-多々納  02/11/20  GO TO 先修正他
+      *  01.00.04    NACL-多々納  03/03/05  排他制御処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -406,11 +407,14 @@
       *
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *   患者番号変換サブ
+      *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
       *    ドクター編集変換サブ
            COPY    "CPORCSDRSET.INC".
+      *
+      *    排他制御サブパラメタ
+           COPY    "CPORCSLOCK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1520,6 +1524,12 @@
            PERFORM 3101-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTHDAYH
       *
+      *    排他制御処理
+           PERFORM 990-LOCK-IN-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41013-KNJBAN-EXT
+           END-IF
+      *
            IF      SPA-GMN-YYKNAME NOT =   SPA-GMN-NAME
       *********MOVE    "0006"          TO  SPA-ERRCD
                MOVE    SPA-GMN-NAME    TO  SPA-GMN-YYKNAME
@@ -1582,6 +1592,12 @@
                    MOVE    WRK-SEX         TO  SPA-GMN-SEX
                    MOVE    WRK-BIRTHDAYH   TO  SPA-GMN-BIRTHDAYH
                    MOVE    WRK-NAME        TO  SPA-GMN-YYKNAME
+      *
+      *            排他制御処理
+                   PERFORM 990-LOCK-IN-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                        GO      TO      41014-YYKNAME-EXT
+                   END-IF
                END-IF
                MOVE    5               TO  SPA-GMN-CUR
            END-IF
@@ -2406,6 +2422,9 @@
                    MOVE    WRK-SEX             TO  SPA-GMN-SEX
                    MOVE    WRK-BIRTHDAYH       TO  SPA-GMN-BIRTHDAYH
                    MOVE    PTINF-NAME          TO  SPA-GMN-YYKNAME
+      *
+      *            排他制御処理
+                   PERFORM 990-LOCK-IN-SEC
                END-IF
            END-IF
       *
@@ -2781,6 +2800,9 @@
       *
            MOVE    3                   TO  SPA-GMN-CUR
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
            .
        220-CLEAR-EXT.
            EXIT.
@@ -2851,6 +2873,10 @@
            MOVE    ZERO                TO  SPA-NAI-SELBAN
       *
            MOVE    3                   TO  SPA-GMN-CUR
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
            .
        490-TOROKU-EXT.
            EXIT.
@@ -3644,6 +3670,12 @@
                WHEN    "K001"
                    MOVE    "注意！予約日が過去です。"
                                                TO  SPA-ERRMSG
+      *
+               WHEN    "9999"
+                   MOVE    "他端末で使用中です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
+      *
            END-EVALUATE
       *
            MOVE    SPACE                TO  YERR
@@ -3796,6 +3828,40 @@
       *
            .
        900-SYSKANRIT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御処理
+      *****************************************************************
+       990-LOCK-IN-SEC         SECTION.
+      *
+      *    排他制御処理
+           MOVE    1                   TO  SLOCK-MODE
+           MOVE    SPA-GMN-PTID        TO  SLOCK-PTID
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           IF      SLOCK-RETURN    NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+           END-IF
+           .
+       990-LOCK-IN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    排他制御解除処理
+      *****************************************************************
+       990-LOCK-OUT-SEC         SECTION.
+      *
+      *    排他制御解除処理
+           MOVE    2                   TO  SLOCK-MODE
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           .
+       990-LOCK-OUT-EXT.
            EXIT.
       *
       *****************************************************************

@@ -35,6 +35,7 @@
       *  01.00.06    NACL-多々納  02/09/11  自賠責追加
       *  01.00.07    NACL-多々納  02/10/25  入院追加
       *  01.00.08    NACL-多々納  02/12/09  剤削除修正
+      *  01.00.09    NACL-多々納  03/03/05  排他制御処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -500,6 +501,9 @@
       *    入院調剤料更新サブ
            COPY    "CPORCSCHOZAI.INC".
       *
+      *    排他制御サブパラメタ
+           COPY    "CPORCSLOCK.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -814,6 +818,8 @@
                        MOVE    1                   TO  FLG-HENSYU
                        PERFORM 310-SPA-SET-SEC
                        MOVE    1                   TO  SPA-GMN-CUR
+      *                排他制御処理
+                       PERFORM 990-LOCK-IN-SEC
                    END-IF
                WHEN    "U02"
                    INITIALIZE                  SPA-J01KYOUTU
@@ -2679,6 +2685,13 @@
            PERFORM 41012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTHDAYW
       *
+      *    排他制御処理
+           PERFORM 990-LOCK-IN-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41010-PTNUM-SYORI-EXT
+           END-IF
+      *
+      *
       *    前回患者
            MOVE    SPA-GMN-PTNUM       TO  SPA-LAST-PTNUM
            MOVE    SPA-GMN-PTID        TO  SPA-LAST-PTID
@@ -4235,6 +4248,9 @@
                MOVE    ZERO                TO  SPA-J02-SYORI
       *
                MOVE    1                   TO  SPA-GMN-CUR
+      *
+      *        排他制御解除処理
+               PERFORM 990-LOCK-OUT-SEC
            END-IF
       *
            .
@@ -4552,6 +4568,9 @@
            END-IF
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
            MOVE    "J02"               TO  SPA-MOTOPG
            MOVE    SPA-MOTOPG2         TO  SPA-SAKIPG
            IF      SPA-J02-MOTOPG      =   "M01"
@@ -4586,6 +4605,9 @@
       *    戻る　処理
       *****************************************************************
        210-BACK-SYORI-SEC           SECTION.
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
       *
            MOVE    "J02"               TO  SPA-MOTOPG
            MOVE    SPA-J02-MOTOPG      TO  SPA-SAKIPG
@@ -5311,6 +5333,9 @@
                MOVE    SPA-J02-SRYYMDW(1:6)    TO  SPA-GMN-SRYYM
                MOVE    SPA-J02-SRYYMD (1:6)    TO  SPA-NAI-SRYYM
                MOVE    SPACE               TO  SPA-GMN-SRYKA-G
+      *
+      *        排他制御解除処理
+               PERFORM 990-LOCK-OUT-SEC
            ELSE
       *        更新後、戻るへ
                PERFORM 210-BACK
@@ -6834,6 +6859,16 @@
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません"
                                        TO  WRK-ERRMSG
+      *
+               WHEN    "9999"
+                   MOVE    "他端末で使用中です。"
+                                               TO  WRK-ERRMSG
+                   MOVE    SLOCK-MSG           TO  WRK-ERRMSG(21:)
+      *
+               WHEN    OTHER
+                   MOVE    SPA-ERRCD
+                                       TO  WRK-ERRMSG
+      *
            END-EVALUATE
       *
            MOVE    SPACE               TO  JERR
@@ -6903,8 +6938,9 @@
                                        TO  WRK-JIDMSG
                    MOVE    "現在までの修正分を登録します。"
                                        TO  WRK-JIDMSG(31:)
+      *
                WHEN    OTHER
-                   MOVE    SPA-ERRCD
+                   MOVE    SPA-JIDCD
                                        TO  WRK-JIDMSG
            END-EVALUATE
       *
@@ -7317,37 +7353,41 @@
            .
        910-PTNYUINRRK-READ-EXT.
            EXIT.
-      *****************************************************************
-      *    パラメタデータ順読み
-      *****************************************************************
-      *990-PARA-READ-SEC         SECTION.
-      *
-      *    READ    PARA-FILE 
-      *        INVALID
-      *            MOVE    1           TO  FLG-PARA
-      *        NOT INVALID
-      *            MOVE    ZERO        TO  FLG-PARA
-      *    END-READ
-      *
-      *    .
-      *980-PARA-READ-EXT.
-      *    EXIT.
       *
       *****************************************************************
-      *    パラメタデータ順読み
+      *    排他制御処理
       *****************************************************************
-      *990-PARA-NEXT-SEC           SECTION.
+       990-LOCK-IN-SEC         SECTION.
       *
-      *    READ    PARA-FILE       NEXT
-      *        AT  END
-      *            MOVE    1           TO  FLG-PARA
-      *        NOT AT  END
-      *            MOVE    ZERO        TO  FLG-PARA
-      *    END-READ
+      *    排他制御処理
+           MOVE    1                   TO  SLOCK-MODE
+           MOVE    SPA-GMN-PTID        TO  SLOCK-PTID
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           IF      SLOCK-RETURN    NOT =   ZERO
+               MOVE    "9999"              TO  SPA-ERRCD
+           END-IF
+           .
+       990-LOCK-IN-EXT.
+           EXIT.
       *
-      *    .
-      *990-PARA-NEXT-EXT.
-      *    EXIT.
+      *****************************************************************
+      *    排他制御解除処理
+      *****************************************************************
+       990-LOCK-OUT-SEC         SECTION.
+      *
+      *    排他制御解除処理
+           MOVE    2                   TO  SLOCK-MODE
+           CALL    "ORCSLOCK"          USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
+           .
+       990-LOCK-OUT-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    ＰＵＴ　処理
