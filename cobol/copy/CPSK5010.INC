@@ -36,16 +36,22 @@
                05  SYS-5010-EDYUKYMD    PIC  X(08).
       *´ÉÍý¥Æ¡¼¥Ö¥ë
            03  SYS-5010-TBL.
+               05  SYS-5010-SEIKYU-DAY-VAL.
       *£±´üÀÁµáÆü
-               05  SYS-5010-SEIKYU-DAY1 PIC  9(02).
+                   07  SYS-5010-SEIKYU-DAY1 PIC  9(02).
       *£²´üÀÁµáÆü
-               05  SYS-5010-SEIKYU-DAY2 PIC  9(02).
+                   07  SYS-5010-SEIKYU-DAY2 PIC  9(02).
       *£³´üÀÁµáÆü
-               05  SYS-5010-SEIKYU-DAY3 PIC  9(02).
+                   07  SYS-5010-SEIKYU-DAY3 PIC  9(02).
+               05  SYS-5010-SEIKYU-DAY-R    REDEFINES
+                   SYS-5010-SEIKYU-DAY-VAL.
+                   07  SYS-5010-SEIKYU-DAY-OCC   OCCURS  3.
+                       09  SYS-5010-SEIKYU-DAY
+                                            PIC  9(02).
       *ºÆÀÁµá¶èÊ¬¡Ê£±¡§ÀÖÅÁ½èÍý¡¡£²¡§ÄûÀµ¹¹¿·¡Ë
                05  SYS-5010-RESEIKYUKBN PIC  X(01).
       *Í½È÷
-           03                           PIC  X(497).
+           03                           PIC  X(493).
       *Ã¼Ëö£É£Ä
            03  SYS-5010-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

@@ -1026,7 +1026,7 @@
                MOVE    SYS-5012-SRYYM      TO  WRK-YMD
                PERFORM 20021-GETUMATU-GET-SEC
                MOVE    WRK-YMD     TO  WRK-KIKANED (1)
-               MOVE    1               TO  WRK-KIKANSAKKBN (1)
+               MOVE    9               TO  WRK-KIKANSAKKBN (1)
                GO  TO  20021-SEIKYU-KIKAN-GET-EXT
            END-IF
       *

@@ -44,4 +44,7 @@
                     06  O02-TNAME    PIC X(50).
                     06  O02-TSRYYM   PIC X(7).
                     06  O02-TSAKKBN  PIC X(14).
+                    06  O02-TSKYKIKAN  PIC X(21).
+                    06  O02-TNYUINYMD  PIC X(09).
+                    06  O02-TTAIINYMD  PIC X(09).
                   05  O02-SELECT  PIC X       OCCURS  100 TIMES.

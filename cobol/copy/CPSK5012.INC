@@ -44,6 +44,14 @@
                05  SYS-5012-SRYYM       PIC  X(06).
       *ºîÀ®¶èÊ¬
                05  SYS-5012-SAKKBN      PIC  X(01).
+      *ÀÁµá³«»ÏÆü
+               05  SYS-5012-SKYSTYMD    PIC  X(08).
+      *ÀÁµá½ªÎ»Æü
+               05  SYS-5012-SKYEDYMD    PIC  X(08).
+      *Æþ±¡Æü
+               05  SYS-5012-NYUINYMD    PIC  X(08).
+      *Âà±¡Æü
+               05  SYS-5012-TAIINYMD    PIC  X(08).
       *Í½È÷
            03                           PIC  X(463).
       *Ã¼Ëö£É£Ä

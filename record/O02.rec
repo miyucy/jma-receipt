@@ -30,6 +30,9 @@ O02	{
 					value2	varchar(50);
 					value3	varchar(7);
 					value4	varchar(14);
+					value5	varchar(21);
+					value6	varchar(09);
+					value7	varchar(09);
 				}	[100];
 				select	bool[100];
 			};
