@@ -29,6 +29,7 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-ÂÀÅÄ    02/12/05  ¿ÇÎÅ²Ê£¹£¹·ïÂÐ±þÅù
       *  01.00.02    NACL-ÂÀÅÄ    02/01/14  COPY¶ç¤Î½ÅÊ£ÄêµÁ¤ò½¤Àµ
+      *  01.00.03    NACL-ÂÀÅÄ    02/10/14  CSV½ÐÎÏ¡¢°õºþµ¡Ç½ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -167,6 +168,20 @@
            03  WRK-SKIP-KNS        PIC 9(05).
            03  WRK-PROC-FLG                        PIC 9(1).
            03  WRK-SHORIERR                        PIC X(200).
+           03  WRK-CALC-YMD1.
+               05  WRK-CALC-YY1                    PIC 9(04).
+               05  WRK-CALC-MM1                    PIC 9(02).
+               05  WRK-CALC-DD1                    PIC 9(02).
+      *
+           03  WRK-CALC-YMD2.
+               05  WRK-CALC-YY2                    PIC 9(04).
+               05  WRK-CALC-MM2                    PIC 9(02).
+               05  WRK-CALC-DD2                    PIC 9(02).
+           03  WRK-AGE-YY                          PIC S9(04).
+           03  WRK-AGE-MM                          PIC S9(02).
+           03  WRK-AGE-G.
+               05  WRK-AGE-Z                       PIC ---9.
+               05  WRK-AGE-MEI                     PIC X(04).
       *
        01  WRK-CONS-AREA.
            03  WRK-CONS-AGE-TABLE.
@@ -2266,6 +2281,31 @@
                WHEN    "2"
                    MOVE    "½÷"        TO  SPA-GMN-TSEX    (IDX)
            END-EVALUATE
+      *
+           IF  (   I001-BIRTHDAY   <   SPA-SYSYMD )
+               MOVE    I001-BIRTHDAY   TO  WRK-CALC-YMD1
+               MOVE    SPA-SYSYMD      TO  WRK-CALC-YMD2
+               PERFORM 45021-AGE-CALC-SEC
+           ELSE
+               MOVE    SPA-SYSYMD      TO  WRK-CALC-YMD1
+               MOVE    I001-BIRTHDAY   TO  WRK-CALC-YMD2
+               PERFORM 45021-AGE-CALC-SEC
+               COMPUTE WRK-AGE-YY   =   WRK-AGE-YY
+                                    *   -1
+               COMPUTE WRK-AGE-MM   =   WRK-AGE-MM
+                                    *   -1
+           END-IF
+      *
+           IF    ( WRK-AGE-YY          =   ZERO )
+               MOVE    WRK-AGE-MM      TO  WRK-AGE-Z
+               MOVE    "¥ö·î"          TO  WRK-AGE-MEI
+           ELSE
+               MOVE    WRK-AGE-YY      TO  WRK-AGE-Z
+               MOVE    "ºÐ"            TO  WRK-AGE-MEI
+           END-IF
+      *
+           MOVE    WRK-AGE-G           TO  SPA-GMN-TAGE (IDX)
+      *
            PERFORM VARYING IDY FROM   1   BY  1
                    UNTIL   IDY >      SPA-GMN-BTUNUM-MAX
                IF      I001-BTUNUM    =   SPA-GMN-BTUNUML (IDY)
@@ -2320,6 +2360,30 @@
            EXIT.
       *
       *
+      *****************************************************************
+      *    Ç¯Îð·×»»½èÍý
+      *****************************************************************
+       45021-AGE-CALC-SEC              SECTION.
+      *
+           COMPUTE WRK-AGE-YY          =   WRK-CALC-YY2
+                                       -   WRK-CALC-YY1
+           IF    ( WRK-CALC-YMD1(5:4)  >   WRK-CALC-YMD2(5:4) )
+               COMPUTE WRK-AGE-YY      =   WRK-AGE-YY
+                                       -   1
+               COMPUTE WRK-AGE-MM      =  (WRK-CALC-MM2    +   12 )
+                                       -   WRK-CALC-MM1
+           ELSE
+               COMPUTE WRK-AGE-MM      =   WRK-CALC-MM2
+                                       -   WRK-CALC-MM1
+           END-IF
+           IF    ( WRK-CALC-DD1        >   WRK-CALC-DD2 )
+               COMPUTE WRK-AGE-MM      =   WRK-AGE-MM
+                                       -   1
+           END-IF
+           .
+      *
+       45021-AGE-CALC-EXT.
+           EXIT.
       *****************************************************************
       *    £Ó£Ñ£ÌÊ¸ÊÔ½¸½èÍý¡ÊÊÂ¤ÙÂØ¤¨¾ò·ï¡Ë
       *****************************************************************
@@ -2597,6 +2661,7 @@
                  MOVE    SPA-GMN-TPTNUM    (IDX) TO  I20-TPTNUM    (IDX)
                  MOVE    SPA-GMN-TNAME     (IDX) TO  I20-TNAME     (IDX)
                  MOVE    SPA-GMN-TSEX      (IDX) TO  I20-TSEX      (IDX)
+                 MOVE    SPA-GMN-TAGE      (IDX) TO  I20-TAGE      (IDX)
                  MOVE    SPA-GMN-TBTUNAME  (IDX) TO  I20-TBTUNAME  (IDX) 
                  MOVE    SPA-GMN-TBRMNUM   (IDX) TO  I20-TBRMNUM   (IDX) 
                  MOVE    SPA-GMN-TNYUINYMD (IDX) TO  I20-TNYUINYMD (IDX)
@@ -2639,11 +2704,6 @@
                MOVE    WIDGET-NORMAL       TO  I20-B10-STATE
                                                I20-B11-STATE
            END-IF
-      *
-      *    »ÃÄê ST
-           MOVE    WIDGET-INSENSITIVE      TO  I20-B10-STATE
-                                               I20-B11-STATE
-      *    »ÃÄê ED
       *
            PERFORM 5001-MAPCUR-SEC
       *
