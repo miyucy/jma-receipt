@@ -9112,7 +9112,8 @@
                END-IF
            END-IF
       *
-           MOVE   ZERO                 TO  IDX-SET
+           MOVE    ZERO                TO  IDX-SET
+           MOVE    SPA-SRYYMD          TO  WRK-SPA-SRYYMD
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX              >   WRK-GYO-MAX)  OR
                               (SPA-ERRCD        NOT =   SPACE )   OR
@@ -9121,6 +9122,14 @@
                       (SPA-GMN-INPUTCD(IDX)(1:1)
                                            NOT =   "."  AND "S"
                                                         AND "*" )
+      *            入院日の最後の日を診療日とする
+                   MOVE    WRK-SPA-SRYYMD      TO  SPA-SRYYMD
+                   PERFORM VARYING IDX-N2      FROM    1   BY  1
+                           UNTIL   IDX-N2      >   31
+                       IF      SPA-COM-NYUINDAY(IDX IDX-N2)    >   ZERO
+                           MOVE    IDX-N2     TO  SPA-SRYYMD(7:2)
+                       END-IF
+                   END-PERFORM
       *
       *           点数マスタ編集・基本チェック
                    INITIALIZE                  ORCSC92AREA
@@ -9189,6 +9198,7 @@
                    MOVE   IDX              TO  IDX-SET
                END-IF
            END-PERFORM
+           MOVE    WRK-SPA-SRYYMD          TO  SPA-SRYYMD
       *
            .
        41001-KIHON-CHK-EXT.
